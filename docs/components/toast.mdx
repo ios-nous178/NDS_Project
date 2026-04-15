@@ -1,0 +1,157 @@
+---
+sidebar_position: 10
+title: Toast
+---
+
+import { Toast, Button } from "@nudge-eap/react";
+
+# Toast
+
+사용자에게 피드백 메시지를 일시적으로 표시하는 토스트 컴포넌트입니다. Provider 기반 컨텍스트 API와 명령형 API를 모두 지원합니다.
+
+```tsx
+import { Toast } from "@nudge-eap/react";
+
+const { Provider: ToastProvider, useToast, show: showToast } = Toast;
+```
+
+---
+
+## 기본 사용법
+
+### 1. Provider 설정
+
+```tsx
+// App.tsx
+import { Toast } from "@nudge-eap/react";
+
+function App() {
+  return (
+    <Toast.Provider position="bottom" duration={3000}>
+      <YourApp />
+    </Toast.Provider>
+  );
+}
+```
+
+### 2. Hook으로 호출
+
+```tsx
+function SaveButton() {
+  const { toast } = Toast.useToast();
+
+  return (
+    <button onClick={() => toast("저장되었습니다")}>
+      저장
+    </button>
+  );
+}
+```
+
+### 3. Variant 지정
+
+```tsx
+const { toast } = Toast.useToast();
+
+toast("저장이 완료되었습니다", { variant: "success" });
+toast("오류가 발생했습니다", { variant: "error" });
+toast("새 소식이 있습니다", { variant: "info" });
+```
+
+### 4. 액션 버튼
+
+```tsx
+toast("상담 예약이 취소되었습니다", {
+  action: {
+    label: "되돌리기",
+    onClick: () => handleUndo(),
+  },
+});
+```
+
+---
+
+## 명령형 API (Provider 외부)
+
+```tsx
+import { Toast } from "@nudge-eap/react";
+
+// Provider 안에서 연결 (1회)
+function ToastConnector() {
+  const { toast } = Toast.useToast();
+  useEffect(() => { Toast.setGlobalToast(toast); }, [toast]);
+  return null;
+}
+
+// 어디서든 호출
+Toast.show("저장되었습니다");
+Toast.show("오류!", { variant: "error" });
+```
+
+---
+
+## ToastProvider Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `position` | `"top" \| "bottom"` | `"bottom"` | 표시 위치 |
+| `duration` | `number` | `3000` | 기본 지속 시간 (ms) |
+| `maxCount` | `number` | `3` | 최대 동시 표시 개수 |
+| `portalContainer` | `HTMLElement \| null` | `document.body` | 토스트 뷰포트 포털 컨테이너 |
+
+## toast() Options
+
+| 옵션 | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `variant` | `"default" \| "success" \| "error" \| "info"` | `"default"` | 색상 변형 |
+| `duration` | `number` | Provider 설정값 | 개별 지속 시간 |
+| `action` | `{ label, onClick }` | — | 액션 버튼 |
+
+---
+
+## Variant별 스타일
+
+| Variant | 배경 | 텍스트 |
+|---|---|---|
+| `default` | 반투명 검정 (0.8) | 흰색 |
+| `success` | Success BG | Success Main |
+| `error` | Error BG | Error Main |
+| `info` | Primary BG | Primary Main |
+
+---
+
+## 애니메이션
+
+| 이벤트 | 애니메이션 |
+|---|---|
+| 진입 | fadeIn + slideUp 0.2s |
+| 퇴장 | fadeOut + slideDown 0.4s |
+
+---
+
+## WebView Toast 마이그레이션
+
+```tsx
+// Before (WebView)
+import Toast from '@/app.component/toast/Toast';
+Toast.alert("메시지", "bottom");
+
+// After (Design System)
+import { Toast } from "@nudge-eap/react";
+Toast.show("메시지");
+```
+
+---
+
+## 접근성
+
+- `aria-live="polite"` 뷰포트에 적용 (스크린 리더 알림)
+- `aria-relevant="additions"` 새 토스트만 읽기
+- `role="status"` 개별 토스트에 적용
+- 포인터 이벤트: 토스트만 클릭 가능 (뷰포트 자체는 `pointer-events: none`)
+
+---
+
+## 구조 메모
+
+`Toast`의 queue, dismiss, duration 규칙은 core contract로 유지하고, viewport를 어디에 렌더링할지는 web layer로 분리합니다. 기본값은 `document.body`지만, 필요하면 `portalContainer`로 렌더링 위치를 주입할 수 있습니다.

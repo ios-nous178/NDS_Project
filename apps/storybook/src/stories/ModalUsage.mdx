@@ -1,0 +1,176 @@
+import { Meta, Canvas, Controls, Source, Subtitle, Title } from "@storybook/blocks";
+import * as ModalStories from "./Modal.stories";
+
+<Meta of={ModalStories} title="Guides/Modal Usage" />
+
+<Title>Modal Usage</Title>
+<Subtitle>복붙 가능한 예제로 Modal의 flat, compound, slotProps, className 패턴을 비교합니다.</Subtitle>
+
+## 기본 사용
+
+<Canvas of={ModalStories.Default} />
+
+<Source
+  language="tsx"
+  code={`import { useState } from "react";
+import { Button, Modal } from "@nudge-eap/react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>모달 열기</Button>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="상담 안내"
+        closable
+        closeText="취소"
+        confirmText="확인"
+        onConfirm={(close) => close()}
+      >
+        전문 상담사와의 상담을 예약하시겠습니까?
+      </Modal>
+    </>
+  );
+}`}
+/>
+
+## Compound API
+
+<Canvas of={ModalStories.CompoundCustom} />
+
+<Source
+  language="tsx"
+  code={`import { useState } from "react";
+import { Badge, Button, Modal } from "@nudge-eap/react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>커스텀 모달 열기</Button>
+      <Modal.Root open={open} onClose={() => setOpen(false)}>
+        <Modal.Overlay />
+        <Modal.Content maxWidth={400}>
+          <Modal.Header
+            style={{
+              justifyContent: "flex-start",
+              gap: 8,
+              borderBottom: "1px solid #ECECEC",
+            }}
+          >
+            <span style={{ fontWeight: 700, fontSize: 18 }}>알림</span>
+            <Badge variant="primary">NEW</Badge>
+          </Modal.Header>
+          <Modal.Body style={{ textAlign: "left" }}>
+            Compound API를 사용하면 슬롯을 자유롭게 조립할 수 있습니다.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="outlined" fullWidth onClick={() => setOpen(false)}>
+              나중에 하기
+            </Button>
+            <Button fullWidth onClick={() => setOpen(false)}>
+              지금 확인
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal.Root>
+    </>
+  );
+}`}
+/>
+
+## slotProps 패턴
+
+<Canvas of={ModalStories.WebViewPlaylistEditWithSlotProps} />
+
+<Source
+  language="tsx"
+  code={`import { useState } from "react";
+import { Button, Modal } from "@nudge-eap/react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  const [playlistName, setPlaylistName] = useState("집중 업무 BGM");
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>slotProps 버전 보기</Button>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        showModalButtonGroup={false}
+        maxWidth={300}
+        slotProps={{
+          content: {
+            style: { ["--nds-modal-radius" as string]: "12px" },
+          },
+          body: {
+            style: {
+              padding: "24px 16px 20px",
+              textAlign: "left",
+            },
+          },
+        }}
+      >
+        <input
+          type="text"
+          value={playlistName}
+          onChange={(event) => setPlaylistName(event.target.value)}
+        />
+      </Modal>
+    </>
+  );
+}`}
+/>
+
+## className 패턴
+
+<Canvas of={ModalStories.WebViewPlaylistEditWithClassNames} />
+
+<Source
+  language="tsx"
+  code={`import { useState } from "react";
+import { Button, Modal } from "@nudge-eap/react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  const [playlistName, setPlaylistName] = useState("주말 드라이브");
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>className 버전 보기</Button>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        showModalButtonGroup={false}
+        maxWidth={300}
+        contentClassName="webview-playlist-edit-modal-class"
+        bodyClassName="webview-playlist-edit-modal-class__body"
+        contentStyle={{ ["--nds-modal-radius" as string]: "12px" }}
+      >
+        <input
+          type="text"
+          value={playlistName}
+          onChange={(event) => setPlaylistName(event.target.value)}
+        />
+      </Modal>
+    </>
+  );
+}`}
+/>
+
+## 프로젝트 패턴
+
+실제 서비스에서 자주 보이는 모달 패턴도 바로 확인할 수 있습니다.
+
+<Canvas of={ModalStories.HomePageCounselingAppDownload} />
+
+<Canvas of={ModalStories.WebViewParticipateReward} />
+
+## Controls
+
+<Controls of={ModalStories.Default} />

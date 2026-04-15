@@ -1,0 +1,289 @@
+---
+sidebar_position: 4
+title: Input
+---
+
+import { Input } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+import Playground from "@site/src/components/Playground";
+
+# Input
+
+텍스트 입력 필드 컴포넌트입니다. 라벨, 도움 텍스트, 에러 상태, 클리어 버튼, prefix/suffix 슬롯을 지원합니다. Flat API와 Compound API를 모두 제공합니다.
+
+```tsx
+import { Input } from "@nudge-eap/react";
+```
+
+---
+
+## 플레이그라운드
+
+<Playground
+  title="Input Playground"
+  controls={[
+    { name: "label", type: "text", default: "이메일", placeholder: "라벨" },
+    { name: "placeholder", type: "text", default: "example@email.com", placeholder: "Placeholder" },
+    { name: "helperText", type: "text", default: "", placeholder: "도움 텍스트" },
+    { name: "error", type: "boolean", default: false },
+    { name: "disabled", type: "boolean", default: false },
+    { name: "readOnly", type: "boolean", default: false },
+  ]}
+  render={(props) => (
+    <div style={{ width: 320 }}>
+      <Input
+        label={props.label || undefined}
+        placeholder={props.placeholder}
+        helperText={props.helperText || undefined}
+        error={props.error}
+        disabled={props.disabled}
+        readOnly={props.readOnly}
+      />
+    </div>
+  )}
+/>
+
+---
+
+## Flat API
+
+### 기본 사용법
+
+<ComponentPreview title="기본">
+  <div style={{ width: 320 }}>
+    <Input placeholder="이름을 입력하세요" />
+  </div>
+</ComponentPreview>
+
+```tsx
+<Input placeholder="이름을 입력하세요" />
+```
+
+### 라벨과 도움 텍스트
+
+<ComponentPreview title="라벨 + 도움 텍스트">
+  <div style={{ width: 320 }}>
+    <Input
+      label="이메일"
+      placeholder="example@email.com"
+      helperText="회사 이메일을 입력해주세요"
+    />
+  </div>
+</ComponentPreview>
+
+```tsx
+<Input
+  label="이메일"
+  placeholder="example@email.com"
+  helperText="회사 이메일을 입력해주세요"
+/>
+```
+
+### 에러 상태
+
+<ComponentPreview title="에러">
+  <div style={{ width: 320 }}>
+    <Input
+      label="이메일"
+      placeholder="example@email.com"
+      error
+      errorMessage="올바른 이메일 형식이 아닙니다"
+    />
+  </div>
+</ComponentPreview>
+
+```tsx
+<Input
+  label="이메일"
+  placeholder="example@email.com"
+  error
+  errorMessage="올바른 이메일 형식이 아닙니다"
+/>
+```
+
+### 클리어 버튼
+
+```tsx
+const [value, setValue] = useState("");
+
+<Input
+  label="검색"
+  value={value}
+  onChange={(e) => setValue(e.target.value)}
+  clearable
+  onClear={() => setValue("")}
+  placeholder="검색어를 입력하세요"
+/>
+```
+
+### Prefix / Suffix
+
+```tsx
+import { SearchIcon } from "@nudge-eap/icons";
+
+<Input
+  prefix={<SearchIcon />}
+  placeholder="검색"
+/>
+
+<Input
+  suffix={<Button size="xs" variant="soft">전송</Button>}
+  placeholder="메시지 입력"
+/>
+```
+
+### 비활성화 / 읽기 전용
+
+<ComponentPreview title="Disabled / ReadOnly" row={false} gap="16px">
+  <div style={{ width: 320 }}>
+    <Input label="이름" value="홍길동" disabled />
+  </div>
+  <div style={{ width: 320 }}>
+    <Input label="이름" value="홍길동" readOnly />
+  </div>
+</ComponentPreview>
+
+```tsx
+<Input label="이름" value="홍길동" disabled />
+<Input label="이름" value="홍길동" readOnly />
+```
+
+---
+
+## Compound API
+
+각 요소를 직접 조합하여 자유로운 레이아웃을 구성합니다.
+
+```tsx
+<Input.Root error>
+  <Input.Label>이메일</Input.Label>
+  <Input.Wrapper>
+    <Input.Field placeholder="example@email.com" />
+    <Input.ClearButton onClick={() => setValue("")} />
+  </Input.Wrapper>
+  <Input.Helper error>올바른 이메일 형식이 아닙니다</Input.Helper>
+</Input.Root>
+```
+
+### 커스텀 레이아웃
+
+```tsx
+<Input.Root>
+  <div style={{ display: "flex", justifyContent: "space-between" }}>
+    <Input.Label>비밀번호</Input.Label>
+    <a href="/forgot">비밀번호 찾기</a>
+  </div>
+  <Input.Wrapper>
+    <Input.Field type="password" placeholder="8자 이상" />
+  </Input.Wrapper>
+  <Input.Helper>영문, 숫자, 특수문자를 포함해주세요</Input.Helper>
+</Input.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `label` | `string` | — | 라벨 텍스트 |
+| `helperText` | `string` | — | 도움 텍스트 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `errorMessage` | `string` | — | 에러 메시지 (helperText 대신 표시) |
+| `clearable` | `boolean` | `false` | 클리어 버튼 표시 |
+| `onClear` | `() => void` | — | 클리어 콜백 |
+| `prefix` | `ReactNode` | — | 좌측 addon (아이콘 등) |
+| `suffix` | `ReactNode` | — | 우측 addon (버튼 등) |
+| `fullWidth` | `boolean` | `true` | 부모 너비 100% 채움 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `readOnly` | `boolean` | `false` | 읽기 전용 |
+| `slotProps` | `InputSlotProps` | — | 내부 슬롯별 props 전달 |
+| `wrapperClassName` | `string` | — | Wrapper className |
+| `wrapperStyle` | `CSSProperties` | — | Wrapper 인라인 스타일 |
+
+`<input>` HTML 속성을 모두 지원합니다 (`value`, `onChange`, `placeholder`, `type` 등).
+
+---
+
+## Compound 컴포넌트
+
+### Input.Root
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `error` | `boolean` | `false` | 에러 상태 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `readOnly` | `boolean` | `false` | 읽기 전용 |
+| `fullWidth` | `boolean` | `true` | 전체 너비 |
+
+### Input.Label
+
+`<label>` 요소입니다. `htmlFor`가 Input.Field의 `id`와 자동으로 연결됩니다.
+
+### Input.Wrapper
+
+입력 필드를 감싸는 컨테이너입니다. focus, error, disabled, readonly 상태에 따라 border 색상이 변경됩니다.
+
+### Input.Field
+
+실제 `<input>` 요소입니다. `ref` 전달을 지원합니다.
+
+### Input.ClearButton
+
+입력값 삭제 버튼입니다. `aria-label="입력 삭제"`가 내장되어 있습니다.
+
+### Input.Helper
+
+도움 텍스트/에러 메시지를 표시합니다.
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `error` | `boolean` | — | 에러 스타일 적용 |
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-input-width` | `100%` | 컴포넌트 너비 |
+| `--nds-input-height` | `48px` | 입력 필드 높이 |
+| `--nds-input-radius` | `8px` | 모서리 둥글기 |
+| `--nds-input-border-color` | Neutral 300 | 테두리 색상 |
+| `--nds-input-background` | White | 배경색 |
+| `--nds-input-label-gap` | `12px` | 라벨-필드 간격 |
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]
+├── label [data-slot="label"]
+├── div [data-slot="wrapper"]  [data-focused] [data-error] [data-disabled] [data-readonly]
+│   ├── (prefix)
+│   ├── input [data-slot="field"]
+│   ├── button [data-slot="clear"]   (clearable일 때)
+│   └── (suffix)
+└── span [data-slot="helper"]  [data-error]
+```
+
+---
+
+## 상태별 스타일
+
+| 상태 | 테두리 색상 | 배경색 |
+|---|---|---|
+| 기본 | Neutral 300 | White |
+| 포커스 | Blue 500 | White |
+| 에러 | Red 500 | White |
+| 비활성화 | Neutral 300 | Neutral 50 |
+| 읽기 전용 | Neutral 300 | Neutral 50 |
+
+---
+
+## 접근성
+
+- `<label>`과 `<input>`이 `htmlFor`/`id`로 자동 연결
+- 클리어 버튼에 `aria-label="입력 삭제"` 내장
+- `ref` 전달 지원

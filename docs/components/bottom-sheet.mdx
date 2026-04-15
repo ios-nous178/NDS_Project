@@ -1,0 +1,228 @@
+---
+sidebar_position: 7
+title: BottomSheet
+---
+
+import { BottomSheet, Button } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+
+# BottomSheet
+
+화면 하단에서 올라오는 모바일 UX 핵심 오버레이 컴포넌트입니다. 드래그 핸들, 헤더, 바디, 푸터 슬롯을 지원하며, Modal과 동일한 접근성 규칙(포커스 트랩, ESC 닫기, `aria-modal`)을 따릅니다. Flat API와 Compound API를 모두 지원합니다.
+
+```tsx
+import { BottomSheet } from "@nudge-eap/react";
+```
+
+---
+
+## Flat API
+
+### 기본 사용법
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<Button onClick={() => setOpen(true)}>열기</Button>
+<BottomSheet
+  open={open}
+  onClose={() => setOpen(false)}
+  title="상담 유형 선택"
+  closable
+>
+  <p>바텀시트 콘텐츠</p>
+</BottomSheet>
+```
+
+### 푸터 포함
+
+```tsx
+<BottomSheet
+  open={open}
+  onClose={() => setOpen(false)}
+  title="옵션 선택"
+  closable
+  footer={
+    <Button fullWidth onClick={() => setOpen(false)}>
+      선택 완료
+    </Button>
+  }
+>
+  <SelectionList />
+</BottomSheet>
+```
+
+### 핸들 없이
+
+```tsx
+<BottomSheet
+  open={open}
+  onClose={() => setOpen(false)}
+  showHandle={false}
+  title="안내"
+  closable
+>
+  <p>핸들이 없는 바텀시트입니다.</p>
+</BottomSheet>
+```
+
+---
+
+## Compound API
+
+각 요소를 직접 조합하여 자유로운 레이아웃을 구성합니다.
+
+```tsx
+<BottomSheet.Root open={open} onClose={() => setOpen(false)}>
+  <BottomSheet.Overlay />
+  <BottomSheet.Content maxWidth={400}>
+    <BottomSheet.Handle />
+    <BottomSheet.Header title="알림 설정" closable />
+    <BottomSheet.Body>
+      <p>Compound API로 자유롭게 조합할 수 있습니다.</p>
+    </BottomSheet.Body>
+    <BottomSheet.Footer>
+      <Button variant="outlined" fullWidth onClick={() => setOpen(false)}>
+        취소
+      </Button>
+      <Button fullWidth onClick={() => setOpen(false)}>
+        확인
+      </Button>
+    </BottomSheet.Footer>
+  </BottomSheet.Content>
+</BottomSheet.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `open` | `boolean` | — | 열림 상태 |
+| `onClose` | `() => void` | — | 닫기 콜백 |
+| `closable` | `boolean` | `false` | 닫기 버튼 표시 |
+| `mask` | `boolean` | `true` | 오버레이 표시 |
+| `isMaskClose` | `boolean` | `true` | 오버레이 클릭 시 닫기 |
+| `showHandle` | `boolean` | `true` | 드래그 핸들 표시 |
+| `title` | `string` | — | 헤더 타이틀 |
+| `children` | `ReactNode` | — | 본문 콘텐츠 |
+| `footer` | `ReactNode` | — | 푸터 콘텐츠 |
+| `maxWidth` | `number` | `664` | 최대 너비 (px) |
+| `maxHeight` | `string` | `"85vh"` | 최대 높이 |
+| `slotProps` | `BottomSheetSlotProps` | — | 슬롯별 props 전달 |
+
+---
+
+## Compound 컴포넌트
+
+### BottomSheet.Root
+
+포털 + 컨텍스트 프로바이더입니다. `open`/`onClose`를 관리합니다.
+
+| Prop | 타입 | 설명 |
+|---|---|---|
+| `open` | `boolean` | 열림 상태 |
+| `onClose` | `() => void` | 닫기 콜백 |
+
+### BottomSheet.Overlay
+
+배경 오버레이입니다.
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `isMaskClose` | `boolean` | `true` | 클릭 시 닫기 |
+
+### BottomSheet.Content
+
+메인 콘텐츠 컨테이너입니다. 하단 정렬, 라운드 상단 모서리가 적용됩니다.
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `maxWidth` | `number` | `664` | 최대 너비 |
+| `maxHeight` | `string` | `"85vh"` | 최대 높이 |
+
+### BottomSheet.Handle
+
+드래그 핸들 바입니다. 36x4px 라운드 바로 시각적 affordance를 제공합니다.
+
+### BottomSheet.Header
+
+타이틀과 닫기 버튼 영역입니다.
+
+| Prop | 타입 | 설명 |
+|---|---|---|
+| `title` | `string` | 타이틀 텍스트 |
+| `closable` | `boolean` | 닫기 버튼 표시 |
+
+### BottomSheet.Body
+
+스크롤 가능한 본문 영역입니다. `-webkit-overflow-scrolling: touch`가 적용됩니다.
+
+### BottomSheet.Footer
+
+하단 액션 영역입니다. 자식 요소에 `flex: 1`이 적용됩니다.
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-bottom-sheet-max-width` | `664px` | 최대 너비 |
+| `--nds-bottom-sheet-max-height` | `85vh` | 최대 높이 |
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]  [data-closing]
+├── div [data-slot="overlay"]
+└── div [data-slot="content"]  (role="dialog", aria-modal)
+    ├── div [data-slot="handle"]
+    ├── div [data-slot="header"]  [data-has-title]
+    │   ├── h3 (title)
+    │   └── button [data-slot="close"]
+    ├── div [data-slot="body"]
+    └── div [data-slot="footer"]
+```
+
+---
+
+## 애니메이션
+
+| 이벤트 | 오버레이 | 콘텐츠 |
+|---|---|---|
+| 열기 | fadeIn 0.2s | slideUp 0.2s |
+| 닫기 | fadeOut 0.2s | slideDown 0.2s |
+
+닫기 애니메이션이 완료된 후 `onClose`가 호출됩니다.
+
+---
+
+## WebView BottomSheet 마이그레이션
+
+```tsx
+// Before (WebView)
+<BottomSheet isOpened={isOpened} handleClose={handleClose}>
+  {children}
+</BottomSheet>
+
+// After (Design System)
+<BottomSheet open={isOpened} onClose={handleClose}>
+  {children}
+</BottomSheet>
+```
+
+---
+
+## 접근성
+
+- `role="dialog"`, `aria-modal="true"` 적용
+- `aria-labelledby` 타이틀 연결 (useId)
+- `aria-describedby` 본문 연결
+- 포커스 트랩: Tab 키로 포커스가 바텀시트 내에서 순환
+- ESC 키로 닫기
+- 열릴 때 body scroll 잠금 (`overflow: hidden`)
+- 닫힐 때 이전 scroll 상태 복원

@@ -1,0 +1,186 @@
+---
+sidebar_position: 2
+title: Badge
+---
+
+import { Badge } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+import Playground from "@site/src/components/Playground";
+
+# Badge
+
+상태, 카테고리, 또는 라벨을 표시하는 인라인 컴포넌트입니다. 6가지 색상 변형과 2가지 사이즈를 제공합니다.
+
+```tsx
+import { Badge } from "@nudge-eap/react";
+```
+
+---
+
+## 플레이그라운드
+
+<Playground
+  title="Badge Playground"
+  controls={[
+    { name: "variant", type: "select", options: ["primary", "secondary", "success", "caution", "error", "neutral"], default: "neutral" },
+    { name: "size", type: "select", options: ["sm", "md"], default: "md" },
+    { name: "children", type: "text", default: "Badge", placeholder: "라벨 텍스트" },
+  ]}
+  render={(props) => (
+    <Badge variant={props.variant} size={props.size}>
+      {props.children || "Badge"}
+    </Badge>
+  )}
+/>
+
+---
+
+## 기본 사용법
+
+<ComponentPreview title="기본">
+  <Badge>기본</Badge>
+</ComponentPreview>
+
+```tsx
+<Badge>기본</Badge>
+```
+
+---
+
+## Variant (색상)
+
+6가지 의미 기반 색상을 제공합니다.
+
+<ComponentPreview title="Variants">
+  <Badge variant="primary">프라이머리</Badge>
+  <Badge variant="secondary">세컨더리</Badge>
+  <Badge variant="success">성공</Badge>
+  <Badge variant="caution">주의</Badge>
+  <Badge variant="error">에러</Badge>
+  <Badge variant="neutral">기본</Badge>
+</ComponentPreview>
+
+```tsx
+<Badge variant="primary">프라이머리</Badge>
+<Badge variant="secondary">세컨더리</Badge>
+<Badge variant="success">성공</Badge>
+<Badge variant="caution">주의</Badge>
+<Badge variant="error">에러</Badge>
+<Badge variant="neutral">기본</Badge>
+```
+
+| Variant | 배경색 | 텍스트 색상 | 사용 시점 |
+|---|---|---|---|
+| `primary` | Blue 100 | Blue 600 | 기본 강조, 카테고리 |
+| `secondary` | Magenta 100 | Magenta 600 | 보조 구분 |
+| `success` | Green 50 | Green 500 | 성공, 완료 상태 |
+| `caution` | Yellow 50 | Yellow 600 | 경고, 주의 |
+| `error` | Red 50 | Red 500 | 에러, 실패 |
+| `neutral` | Neutral 100 | Neutral 700 | 일반 정보 (기본값) |
+
+---
+
+## Size
+
+<ComponentPreview title="Sizes">
+  <Badge size="sm">Small</Badge>
+  <Badge size="md">Medium</Badge>
+</ComponentPreview>
+
+```tsx
+<Badge size="sm">Small</Badge>
+<Badge size="md">Medium</Badge>
+```
+
+| Size | 패딩 | 폰트 | 라운드 |
+|---|---|---|---|
+| `sm` | 2px 6px | 11px | 4px |
+| `md` | 4px 8px | 13px | 6px |
+
+---
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `variant` | `BadgeVariant` | `"neutral"` | 색상 변형 |
+| `size` | `"sm"` \| `"md"` | `"md"` | 사이즈 |
+| `labelClassName` | `string` | — | 라벨 span에 추가할 className |
+| `slotProps` | `BadgeSlotProps` | — | 내부 슬롯별 props 전달 |
+| `className` | `string` | — | 루트 요소 className |
+| `style` | `CSSProperties` | — | 루트 요소 인라인 스타일 |
+
+**BadgeVariant**: `"primary"` | `"secondary"` | `"success"` | `"caution"` | `"error"` | `"neutral"`
+
+`<span>` HTML 속성을 모두 지원합니다.
+
+---
+
+## SlotProps
+
+```tsx
+interface BadgeSlotProps {
+  label?: React.HTMLAttributes<HTMLSpanElement>;
+}
+```
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-badge-padding-y` | `4px` | 상하 패딩 |
+| `--nds-badge-padding-x` | `8px` | 좌우 패딩 |
+| `--nds-badge-radius` | `6px` | 모서리 둥글기 |
+| `--nds-badge-gap` | `4px` | 내부 gap |
+| `--nds-badge-background` | — | 배경색 |
+| `--nds-badge-text-color` | — | 텍스트 색상 |
+| `--nds-badge-font-size` | `13px` | 폰트 크기 |
+| `--nds-badge-line-height` | `18px` | 줄 높이 |
+| `--nds-badge-font-weight` | `600` | 폰트 굵기 |
+
+---
+
+## data-slot 구조
+
+```
+span [data-slot="root"] [data-variant] [data-size]
+└── span [data-slot="label"]
+```
+
+---
+
+## 활용 예시
+
+### 리스트 항목에 상태 표시
+
+<ComponentPreview title="리스트 + 상태">
+  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <span style={{ fontSize: 15, fontWeight: 500, color: "#383838" }}>프로젝트 A</span>
+    <Badge variant="success" size="sm">진행중</Badge>
+  </div>
+</ComponentPreview>
+
+```tsx
+<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+  <span>프로젝트 A</span>
+  <Badge variant="success" size="sm">진행중</Badge>
+</div>
+```
+
+### 여러 태그 나열
+
+<ComponentPreview title="태그 목록">
+  <Badge variant="primary" size="sm">React</Badge>
+  <Badge variant="secondary" size="sm">TypeScript</Badge>
+  <Badge variant="neutral" size="sm">Storybook</Badge>
+</ComponentPreview>
+
+```tsx
+<div style={{ display: "flex", gap: 4 }}>
+  <Badge variant="primary" size="sm">React</Badge>
+  <Badge variant="secondary" size="sm">TypeScript</Badge>
+  <Badge variant="neutral" size="sm">Storybook</Badge>
+</div>
+```

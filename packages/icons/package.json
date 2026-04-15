@@ -1,0 +1,30 @@
+{
+  "name": "@nudge-eap/icons",
+  "version": "0.1.0",
+  "description": "SVG icon components for NudgeEAP Design System",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "generate": "node scripts/generate.js",
+    "build": "node scripts/generate.js && tsc",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "react": "^19.1.0",
+    "@types/react": "^19.1.0",
+    "typescript": "^5.7.0"
+  }
+}

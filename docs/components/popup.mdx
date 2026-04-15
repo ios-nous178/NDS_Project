@@ -1,0 +1,302 @@
+---
+sidebar_position: 5
+title: Popup
+---
+
+import { useState } from "react";
+import { Popup, Button } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+
+export const AlertPopupDemo = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button size="md" onClick={() => setOpen(true)}>알림 팝업</Button>
+      <Popup
+        open={open}
+        onClose={() => setOpen(false)}
+        title="알림"
+        description="변경사항이 저장되었습니다."
+        onConfirm={() => setOpen(false)}
+      />
+    </>
+  );
+};
+
+export const ConfirmPopupDemo = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button size="md" variant="outlined" onClick={() => setOpen(true)}>확인/취소 팝업</Button>
+      <Popup
+        open={open}
+        onClose={() => setOpen(false)}
+        title="삭제 확인"
+        description="이 항목을 삭제하시겠습니까?"
+        confirmText="삭제"
+        cancelText="취소"
+        onConfirm={() => setOpen(false)}
+        onCancel={() => setOpen(false)}
+      />
+    </>
+  );
+};
+
+export const SimplePopupDemo = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button size="md" variant="soft" onClick={() => setOpen(true)}>타이틀 없는 팝업</Button>
+      <Popup
+        open={open}
+        onClose={() => setOpen(false)}
+        description="네트워크 연결을 확인해주세요."
+        onConfirm={() => setOpen(false)}
+      />
+    </>
+  );
+};
+
+# Popup
+
+확인/취소 액션을 요청하는 팝업 알림 컴포넌트입니다. Alert Dialog 패턴을 따르며, Modal보다 간결한 구조로 단순 확인/취소 시나리오에 적합합니다.
+
+```tsx
+import { Popup } from "@nudge-eap/react";
+```
+
+---
+
+## 라이브 데모
+
+<ComponentPreview title="클릭하여 팝업 열기">
+  <AlertPopupDemo />
+  <ConfirmPopupDemo />
+  <SimplePopupDemo />
+</ComponentPreview>
+
+---
+
+## Flat API
+
+### 확인 팝업
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<Popup
+  open={open}
+  onClose={() => setOpen(false)}
+  title="알림"
+  description="변경사항이 저장되었습니다."
+  onConfirm={() => setOpen(false)}
+/>
+```
+
+### 확인 + 취소 팝업
+
+```tsx
+<Popup
+  open={open}
+  onClose={() => setOpen(false)}
+  title="삭제 확인"
+  description="이 항목을 삭제하시겠습니까?"
+  confirmText="삭제"
+  cancelText="취소"
+  onConfirm={() => {
+    handleDelete();
+    setOpen(false);
+  }}
+  onCancel={() => setOpen(false)}
+/>
+```
+
+### 타이틀 없이
+
+```tsx
+<Popup
+  open={open}
+  onClose={() => setOpen(false)}
+  description="네트워크 연결을 확인해주세요."
+  onConfirm={() => setOpen(false)}
+/>
+```
+
+### 여러 줄 설명
+
+```tsx
+<Popup
+  open={open}
+  onClose={() => setOpen(false)}
+  title="로그아웃"
+  description={
+    <>
+      로그아웃하시겠습니까?
+      <br />
+      저장되지 않은 변경사항은 사라집니다.
+    </>
+  }
+  confirmText="로그아웃"
+  onConfirm={handleLogout}
+  onCancel={() => setOpen(false)}
+/>
+```
+
+---
+
+## Compound API
+
+```tsx
+<Popup.Root open={open} onClose={() => setOpen(false)}>
+  <Popup.Overlay />
+  <Popup.Content>
+    <Popup.TextInfo>
+      <Popup.Title>권한 필요</Popup.Title>
+      <Popup.Description>
+        이 기능을 사용하려면 카메라 접근 권한이 필요합니다.
+      </Popup.Description>
+    </Popup.TextInfo>
+    <Popup.Actions>
+      <Popup.CancelButton onClick={() => setOpen(false)}>
+        나중에
+      </Popup.CancelButton>
+      <Popup.ConfirmButton onClick={handlePermission}>
+        설정으로 이동
+      </Popup.ConfirmButton>
+    </Popup.Actions>
+  </Popup.Content>
+</Popup.Root>
+```
+
+### 확인 버튼만
+
+```tsx
+<Popup.Root open={open} onClose={() => setOpen(false)}>
+  <Popup.Overlay />
+  <Popup.Content>
+    <Popup.TextInfo>
+      <Popup.Description>완료되었습니다.</Popup.Description>
+    </Popup.TextInfo>
+    <Popup.Actions>
+      <Popup.ConfirmButton onClick={() => setOpen(false)}>
+        확인
+      </Popup.ConfirmButton>
+    </Popup.Actions>
+  </Popup.Content>
+</Popup.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `open` | `boolean` | — | 팝업 표시 여부 (필수) |
+| `onClose` | `() => void` | — | 닫기 콜백 |
+| `title` | `string` | — | 타이틀 (없으면 description만 표시) |
+| `description` | `ReactNode` | — | 설명 텍스트 |
+| `confirmText` | `string` | `"확인"` | 확인 버튼 텍스트 |
+| `onConfirm` | `() => void` | — | 확인 콜백 |
+| `cancelText` | `string` | `"취소"` | 취소 버튼 텍스트 |
+| `onCancel` | `() => void` | — | 취소 콜백 (제공 시 Cancel 버튼 표시) |
+| `isMaskClose` | `boolean` | `true` | 오버레이 클릭으로 닫기 |
+| `maxWidth` | `number` | `400` | 최대 너비 (px) |
+| `slotProps` | `PopupSlotProps` | — | 내부 슬롯별 props 전달 |
+
+---
+
+## Compound 컴포넌트
+
+### Popup.Root
+
+| Prop | 타입 | 설명 |
+|---|---|---|
+| `open` | `boolean` | 팝업 표시 여부 (필수) |
+| `onClose` | `() => void` | 닫기 콜백 |
+
+### Popup.Overlay
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `isMaskClose` | `boolean` | `true` | 클릭 시 닫기 |
+
+### Popup.Content
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `maxWidth` | `number` | `400` | 최대 너비 |
+
+### Popup.TextInfo
+
+텍스트 영역 컨테이너입니다. Title과 Description을 감싸는 역할입니다.
+
+### Popup.Title
+
+`<h3>` 타이틀 요소입니다. `aria-labelledby`와 자동 연결됩니다.
+
+### Popup.Description
+
+`<p>` 설명 요소입니다. `aria-describedby`와 자동 연결됩니다.
+
+### Popup.Actions
+
+버튼 영역 컨테이너입니다. 자식이 1개면 세로 배치, 2개면 가로 배치됩니다.
+
+### Popup.CancelButton
+
+회색 배경의 취소 버튼입니다. 기본 텍스트는 `"취소"`입니다.
+
+### Popup.ConfirmButton
+
+파란색 배경의 확인 버튼입니다. 기본 텍스트는 `"확인"`입니다.
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-popup-max-width` | `400px` | 팝업 최대 너비 |
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]
+├── div [data-slot="overlay"]
+└── div [data-slot="content"]  role="alertdialog" aria-modal="true"
+    ├── div [data-slot="text-info"]
+    │   ├── h3 [data-slot="title"]
+    │   └── p [data-slot="description"]
+    └── div [data-slot="actions"]  [data-single]
+        ├── button [data-slot="cancel-button"]
+        └── button [data-slot="confirm-button"]
+```
+
+---
+
+## Modal vs Popup
+
+| | Modal | Popup |
+|---|---|---|
+| 용도 | 복잡한 대화형 UI (폼, 상세정보 등) | 단순 확인/취소 알림 |
+| ARIA role | `dialog` | `alertdialog` |
+| 구조 | Header / Body / Footer 분리 | TextInfo + Actions |
+| 최대 너비 기본값 | 320px | 400px |
+| 버튼 스타일 | 텍스트 버튼 (border-top 구분) | Solid 버튼 (gap 구분) |
+| z-index | 1000 | 1100 |
+
+---
+
+## 접근성
+
+- `role="alertdialog"`, `aria-modal="true"` 자동 적용
+- `aria-labelledby`가 Title과 자동 연결
+- `aria-describedby`가 Description과 자동 연결
+- ESC 키로 닫기
+- Tab 키 포커스 트랩
+- 열릴 때 첫 번째 버튼에 자동 포커스
+- 닫힐 때 이전 포커스 요소로 복귀
+- body 스크롤 자동 잠금

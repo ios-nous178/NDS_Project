@@ -1,0 +1,54 @@
+{
+  "name": "nudge-eap-design-system",
+  "private": true,
+  "version": "0.0.0",
+  "description": "NudgeEAP Design System monorepo",
+  "packageManager": "pnpm@9.6.0",
+  "engines": {
+    "node": "20.x"
+  },
+  "volta": {
+    "node": "20.20.2",
+    "pnpm": "9.6.0"
+  },
+  "scripts": {
+    "generate:component-inventory": "node scripts/generate-component-inventory.mjs",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint && markdownlint-cli2 \"docs/**/*.md\"",
+    "lint:fix": "eslint . --fix && prettier --write . && markdownlint-cli2 --fix \"docs/**/*.md\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "storybook": "turbo dev --filter=@nudge-eap/storybook",
+    "docs:dev": "turbo dev --filter=@nudge-eap/docs",
+    "docs:build": "turbo build --filter=@nudge-eap/docs",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "lint-staged": "lint-staged",
+    "prepare": "test -d .git && husky || true"
+  },
+  "prebuild": "pnpm generate:component-inventory",
+  "predev": "pnpm generate:component-inventory",
+  "predocs:dev": "pnpm generate:component-inventory",
+  "predocs:build": "pnpm generate:component-inventory",
+  "prestorybook": "pnpm generate:component-inventory",
+  "prelint": "pnpm generate:component-inventory",
+  "devDependencies": {
+    "@changesets/cli": "^2.29.6",
+    "@eslint/js": "^9.27.0",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "markdownlint-cli2": "^0.18.1",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.32.0",
+    "eslint-plugin-unused-imports": "^4.1.4"
+  }
+}

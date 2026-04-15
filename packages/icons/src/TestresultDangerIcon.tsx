@@ -1,0 +1,27 @@
+import React from "react";
+
+export interface TestresultDangerIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TestresultDangerIcon = React.forwardRef<SVGSVGElement, TestresultDangerIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(2.666, 3.288)">
+    <path d="M16.1628 10.9483C16.2846 11.7708 15.6598 12.4444 14.7754 12.4444H3.89171C3.00733 12.4444 2.38251 11.7708 2.50426 10.9483L3.9009 1.49618C4.02264 0.673606 4.84501 0 5.72939 0H12.9377C13.8221 0 14.6444 0.673606 14.7662 1.49618L16.1628 10.9461V10.9483Z" fill="#F72E49"/>
+    <path d="M1.54415 10.5845H17.1252C17.9772 10.5845 18.6692 11.2869 18.6692 12.1518V15.855C18.6692 16.7199 17.9772 17.4223 17.1252 17.4223H1.54415C0.692131 17.4223 0.00016276 16.7199 0.00016276 15.855V12.1518C0.00016276 11.2869 0.692131 10.5845 1.54415 10.5845Z" fill="currentColor"/>
+  </g>
+    </svg>
+  )
+);
+
+TestresultDangerIcon.displayName = "TestresultDangerIcon";

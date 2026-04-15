@@ -1,0 +1,19 @@
+{
+  "ignores": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.docusaurus/**",
+    "**/storybook-static/**",
+  ],
+  "config": {
+    "default": true,
+    "MD001": false,
+    "MD013": false,
+    "MD025": false,
+    "MD034": false,
+    "MD033": false,
+    "MD040": false,
+    "MD041": false,
+  },
+}

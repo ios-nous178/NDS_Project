@@ -1,0 +1,156 @@
+---
+sidebar_position: 8
+title: Select
+---
+
+import { Select } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+
+# Select
+
+드롭다운 선택 컴포넌트입니다. Portal 기반 드롭다운, 외부 클릭/스크롤 자동 닫힘, 라벨/에러/헬퍼 텍스트를 지원합니다. Flat API와 Compound API를 모두 지원합니다.
+
+```tsx
+import { Select } from "@nudge-eap/react";
+```
+
+---
+
+## Flat API
+
+### 기본 사용법
+
+```tsx
+const [value, setValue] = useState<string | undefined>();
+
+const options = [
+  { value: "mental", label: "심리상담" },
+  { value: "legal", label: "법률상담" },
+  { value: "finance", label: "재무상담" },
+];
+
+<Select
+  label="상담 유형"
+  options={options}
+  value={value}
+  onValueChange={setValue}
+  placeholder="유형을 선택해주세요"
+  helperText="원하시는 상담 유형을 선택해주세요"
+/>
+```
+
+### 에러 상태
+
+```tsx
+<Select
+  label="상담 유형"
+  options={options}
+  value={undefined}
+  onValueChange={setValue}
+  error
+  errorMessage="상담 유형을 선택해주세요"
+/>
+```
+
+### 비활성화
+
+```tsx
+<Select
+  label="상담 유형"
+  options={options}
+  value="mental"
+  onValueChange={setValue}
+  disabled
+/>
+```
+
+---
+
+## Compound API
+
+```tsx
+<Select.Root value={value} onValueChange={setValue}>
+  <Select.Label>상담 분야</Select.Label>
+  <Select.Trigger placeholder="분야를 선택해주세요">
+    {selectedLabel}
+  </Select.Trigger>
+  <Select.Dropdown>
+    {options.map((opt) => (
+      <Select.Option key={opt.value} value={opt.value}>
+        {opt.label}
+      </Select.Option>
+    ))}
+  </Select.Dropdown>
+  <Select.Helper>도움 텍스트</Select.Helper>
+</Select.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `options` | `SelectItem[]` | — | 옵션 목록 |
+| `value` | `string` | — | 선택된 값 |
+| `onValueChange` | `(v: string) => void` | — | 값 변경 콜백 |
+| `label` | `string` | — | 라벨 |
+| `placeholder` | `string` | `"선택"` | 플레이스홀더 |
+| `helperText` | `string` | — | 도움 텍스트 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `errorMessage` | `string` | — | 에러 메시지 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `fullWidth` | `boolean` | `true` | 전체 너비 |
+| `portalContainer` | `HTMLElement \| null` | `document.body` | 드롭다운 포털 컨테이너 |
+| `slotProps` | `SelectSlotProps` | — | 슬롯 프롭 |
+
+### SelectItem
+
+| 속성 | 타입 | 설명 |
+|---|---|---|
+| `value` | `string` | 값 |
+| `label` | `string` | 표시 텍스트 |
+| `disabled` | `boolean` | 비활성화 |
+
+---
+
+## Compound 컴포넌트
+
+| 컴포넌트 | 역할 |
+|---|---|
+| `Select.Root` | 상태 관리 + 컨텍스트 |
+| `Select.Label` | 라벨 |
+| `Select.Trigger` | 트리거 버튼 |
+| `Select.Dropdown` | Portal 기반 드롭다운 |
+| `Select.Option` | 개별 옵션 |
+| `Select.Helper` | 도움/에러 텍스트 |
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-select-width` | `100%` | 너비 |
+| `--nds-select-height` | `48px` | 트리거 높이 |
+| `--nds-select-radius` | `8px` | 모서리 |
+| `--nds-select-border-color` | Neutral 300 | 테두리 |
+| `--nds-select-background` | White | 배경 |
+| `--nds-select-label-gap` | `12px` | 라벨-트리거 간격 |
+| `--nds-select-dropdown-max-height` | `200px` | 드롭다운 최대 높이 |
+
+---
+
+## 접근성
+
+- `aria-haspopup="listbox"`, `aria-expanded` 트리거에 적용
+- `role="listbox"` 드롭다운, `role="option"` 개별 옵션
+- `aria-selected` 선택 상태 표시
+- 외부 클릭 + 스크롤 시 자동 닫힘
+- `label`과 `htmlFor` 자동 연결
+
+---
+
+## 구조 메모
+
+`Select`의 선택 상태와 option 계약은 core contract로 보고, portal 렌더링과 바깥 클릭 감지, 스크롤 닫힘 같은 동작은 web layer로 분리해 관리합니다. 필요하면 `portalContainer`를 주입해 렌더링 위치를 바꿀 수 있습니다.

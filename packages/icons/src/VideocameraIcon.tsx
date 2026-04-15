@@ -1,0 +1,27 @@
+import React from "react";
+
+export interface VideocameraIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const VideocameraIcon = React.forwardRef<SVGSVGElement, VideocameraIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(0.75, 5)">
+<rect x="1" y="1" width="15" height="12" rx="3" stroke="currentColor" strokeWidth="2"/>
+<path d="M16.5 4.54163C16.5 4.2145 16.6992 3.92034 17.0029 3.79885L20.1286 2.54856C20.7855 2.28581 21.5 2.76957 21.5 3.47703V10.382C21.5 11.1253 20.7177 11.6088 20.0528 11.2764L16.9422 9.72111C16.6712 9.5856 16.5 9.30859 16.5 9.00557V4.54163Z" stroke="currentColor" strokeWidth="2"/>
+</g>
+    </svg>
+  )
+);
+
+VideocameraIcon.displayName = "VideocameraIcon";

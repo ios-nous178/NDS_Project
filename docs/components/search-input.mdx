@@ -1,0 +1,186 @@
+---
+sidebar_position: 5
+title: SearchInput
+---
+
+import { SearchInput } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+import Playground from "@site/src/components/Playground";
+
+# SearchInput
+
+검색 입력 필드 컴포넌트입니다. 검색 아이콘, 클리어 버튼, Enter 키 검색을 기본 지원하며, `outlined`와 `filled` 두 가지 스타일 변형을 제공합니다. Flat API와 Compound API를 모두 지원합니다.
+
+```tsx
+import { SearchInput } from "@nudge-eap/react";
+```
+
+---
+
+## 플레이그라운드
+
+<Playground
+  title="SearchInput Playground"
+  controls={[
+    { name: "placeholder", type: "text", default: "검색어를 입력해주세요", placeholder: "Placeholder" },
+    { name: "variant", type: "select", default: "outlined", options: ["outlined", "filled"] },
+    { name: "clearable", type: "boolean", default: true },
+    { name: "showSearchButton", type: "boolean", default: true },
+  ]}
+  render={(props) => (
+    <div style={{ width: 320 }}>
+      <SearchInput
+        placeholder={props.placeholder}
+        variant={props.variant}
+        clearable={props.clearable}
+        showSearchButton={props.showSearchButton}
+      />
+    </div>
+  )}
+/>
+
+---
+
+## Flat API
+
+### 기본 사용법 (Outlined)
+
+<ComponentPreview title="Outlined">
+  <div style={{ width: 320 }}>
+    <SearchInput placeholder="검색어를 입력해주세요" />
+  </div>
+</ComponentPreview>
+
+```tsx
+<SearchInput placeholder="검색어를 입력해주세요" />
+```
+
+### Filled 변형
+
+<ComponentPreview title="Filled">
+  <div style={{ width: 320 }}>
+    <SearchInput placeholder="어떤 고민이 있으신가요?" variant="filled" />
+  </div>
+</ComponentPreview>
+
+```tsx
+<SearchInput placeholder="어떤 고민이 있으신가요?" variant="filled" />
+```
+
+### 검색 콜백
+
+```tsx
+const [keyword, setKeyword] = useState("");
+
+<SearchInput
+  value={keyword}
+  onChange={(e) => setKeyword(e.target.value)}
+  onClear={() => setKeyword("")}
+  onSearch={() => handleSearch(keyword)}
+  placeholder="검색"
+/>
+```
+
+---
+
+## Compound API
+
+각 요소를 직접 조합하여 자유로운 레이아웃을 구성합니다.
+
+```tsx
+<SearchInput.Root>
+  <SearchInput.Wrapper variant="filled">
+    <SearchInput.Field
+      value={keyword}
+      onChange={(e) => setKeyword(e.target.value)}
+      placeholder="도움이 필요하세요?"
+    />
+    {keyword && <SearchInput.ClearButton onClick={() => setKeyword("")} />}
+    <SearchInput.SearchButton onClick={handleSearch} />
+  </SearchInput.Wrapper>
+</SearchInput.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `variant` | `"outlined" \| "filled"` | `"outlined"` | 스타일 변형 |
+| `clearable` | `boolean` | `true` | 클리어 버튼 자동 표시 |
+| `onClear` | `() => void` | — | 클리어 콜백 |
+| `showSearchButton` | `boolean` | `true` | 검색 버튼 표시 |
+| `onSearch` | `() => void` | — | 검색 실행 콜백 (버튼 클릭 + Enter) |
+| `searchIcon` | `ReactNode` | — | 검색 아이콘 커스텀 |
+| `fullWidth` | `boolean` | `true` | 부모 너비 100% |
+| `slotProps` | `SearchInputSlotProps` | — | 슬롯별 props 전달 |
+
+`<input>` HTML 속성을 모두 지원합니다 (`value`, `onChange`, `placeholder` 등).
+
+---
+
+## Compound 컴포넌트
+
+### SearchInput.Root
+
+검색 입력 루트 컨테이너입니다.
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `fullWidth` | `boolean` | `true` | 전체 너비 |
+
+### SearchInput.Wrapper
+
+입력 필드를 감싸는 컨테이너입니다.
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `focused` | `boolean` | `false` | 포커스 상태 |
+| `variant` | `"outlined" \| "filled"` | `"outlined"` | 스타일 변형 |
+
+### SearchInput.Field
+
+`<input type="search">` 요소입니다. `ref` 전달을 지원합니다.
+
+### SearchInput.ClearButton
+
+검색어 삭제 버튼입니다. `aria-label="검색어 지우기"`가 내장되어 있습니다.
+
+### SearchInput.SearchButton
+
+검색 실행 버튼입니다. `aria-label="검색"`이 내장되어 있습니다.
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-search-input-width` | `100%` | 컴포넌트 너비 |
+| `--nds-search-input-height` | `48px` | 입력 필드 높이 |
+| `--nds-search-input-radius` | `8px` | 모서리 둥글기 |
+| `--nds-search-input-border-color` | Neutral 300 | 테두리 색상 |
+| `--nds-search-input-background` | White / Neutral 100 | 배경색 (variant별) |
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]
+└── div [data-slot="wrapper"]  [data-focused] [data-variant]
+    ├── input [data-slot="field"]  (type="search")
+    ├── button [data-slot="clear"]     (값이 있을 때)
+    └── button [data-slot="search-button"]
+```
+
+---
+
+## 접근성
+
+- 클리어 버튼에 `aria-label="검색어 지우기"` 내장
+- 검색 버튼에 `aria-label="검색"` 내장
+- `type="search"`로 시맨틱 역할 명시
+- `ref` 전달 지원
+- Enter 키로 검색 실행 지원

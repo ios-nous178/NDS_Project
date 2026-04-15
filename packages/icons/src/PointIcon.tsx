@@ -1,0 +1,27 @@
+import React from "react";
+
+export interface PointIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const PointIcon = React.forwardRef<SVGSVGElement, PointIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(2, 2)">
+    <circle cx="10" cy="10" r="10" fill="currentColor"/>
+    <path fillRule="evenodd" clipRule="evenodd" d="M9.06403 15H7.22241V6.11115H10.7092C12.7289 6.11115 13.8891 7.35731 13.8891 9.10685C13.8891 10.8809 12.7104 12.1026 10.6601 12.1026H9.06403V15ZM9.06445 7.62134V10.617H10.3659C11.4586 10.617 11.9926 10.0032 11.9865 9.10691C11.9926 8.22293 11.4586 7.62748 10.3659 7.62134H9.06445Z" fill="white"/>
+  </g>
+    </svg>
+  )
+);
+
+PointIcon.displayName = "PointIcon";

@@ -1,0 +1,180 @@
+.wrapper {
+  border: 1px solid #E6E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #F8F9FB;
+  border-bottom: 1px solid #E6E7EB;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4E5462;
+}
+
+.headerIcon {
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.body {
+  display: flex;
+  min-height: 200px;
+}
+
+.preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  background: #FFFFFF;
+}
+
+.controls {
+  width: 240px;
+  flex-shrink: 0;
+  padding: 16px;
+  background: #FAFAFA;
+  border-left: 1px solid #E6E7EB;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6C7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Select group */
+.selectGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.selectBtn {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #E6E7EB;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #4E5462;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.selectBtn:hover {
+  border-color: #D2D5D9;
+  background: #F3F4F6;
+}
+
+.selectBtnActive {
+  background: #017EE4;
+  border-color: #017EE4;
+  color: #FFFFFF;
+}
+
+.selectBtnActive:hover {
+  background: #1B65BA;
+  border-color: #1B65BA;
+}
+
+/* Toggle */
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border: none;
+  border-radius: 11px;
+  background: #D2D5D9;
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 0;
+}
+
+.toggleOn {
+  background: #2B96ED;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.toggleOn .toggleThumb {
+  transform: translateX(18px);
+}
+
+/* Text input */
+.textInput {
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid #E6E7EB;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #383838;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.textInput:focus {
+  border-color: #2B96ED;
+}
+
+/* Code bar */
+.codeBar {
+  padding: 10px 16px;
+  background: #1E1E1E;
+  border-top: 1px solid #E6E7EB;
+  overflow-x: auto;
+}
+
+.codeOutput {
+  font-size: 12.5px !important;
+  line-height: 1.5;
+  color: #D4D4D4 !important;
+  background: none !important;
+  padding: 0 !important;
+  border: none !important;
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .body {
+    flex-direction: column;
+  }
+
+  .controls {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #E6E7EB;
+  }
+}

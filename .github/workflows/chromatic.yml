@@ -1,0 +1,63 @@
+name: Chromatic
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: chromatic-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    env:
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Skip Chromatic if token is missing
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN == '' }}
+        run: echo "CHROMATIC_PROJECT_TOKEN is not configured. Skipping Chromatic publish."
+
+      # main 브랜치: baseline 자동 수락 (auto-accept)
+      - name: Publish to Chromatic (baseline)
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' && github.ref == 'refs/heads/main' }}
+        run: |
+          pnpm --filter @nudge-eap/storybook chromatic \
+            --project-token=$CHROMATIC_PROJECT_TOKEN \
+            --build-script-name=build \
+            --auto-accept-changes \
+            --only-changed
+
+      # PR: UI diff 검증 + interaction test 실행
+      - name: Publish to Chromatic (PR)
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' && github.ref != 'refs/heads/main' }}
+        run: |
+          pnpm --filter @nudge-eap/storybook chromatic \
+            --project-token=$CHROMATIC_PROJECT_TOKEN \
+            --build-script-name=build \
+            --only-changed \
+            --exit-zero-on-changes \
+            --diagnostics

@@ -1,0 +1,124 @@
+---
+sidebar_position: 12
+title: Card
+---
+
+import { Card, Button, Badge } from "@nudge-eap/react";
+
+# Card
+
+범용 카드 프리미티브 컴포넌트입니다. 썸네일, 헤더, 바디, 푸터 슬롯을 제공하며, 상담사 카드, 프로그램 카드 등 도메인별 레시피의 기반으로 사용됩니다.
+
+```tsx
+import { Card } from "@nudge-eap/react";
+```
+
+---
+
+## Flat API
+
+```tsx
+<Card
+  variant="outlined"
+  thumbnail={<img src="/profile.jpg" alt="상담사" />}
+  title="김상담 상담사님"
+  subtitle="심리상담 전문"
+  meta={<><span>★</span> 4.9</>}
+  footer={<Button fullWidth size="sm">예약하기</Button>}
+>
+  따뜻한 공감과 전문적 기법으로 함께 해결책을 찾아갑니다.
+</Card>
+```
+
+---
+
+## Compound API
+
+```tsx
+<Card.Root variant="outlined" clickable>
+  <Card.Thumbnail>
+    <img src="/profile.jpg" alt="상담사" />
+  </Card.Thumbnail>
+  <Card.Header>
+    <div>
+      <Card.Title>박민지 상담사님</Card.Title>
+      <Card.Subtitle>심리상담 · 경력 8년</Card.Subtitle>
+    </div>
+    <Card.Meta>★ 4.8</Card.Meta>
+  </Card.Header>
+  <Card.Body>
+    내담자 후기 영역
+  </Card.Body>
+  <Card.Footer>
+    <Button fullWidth>예약</Button>
+  </Card.Footer>
+</Card.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `variant` | `"outlined" \| "elevated" \| "flat"` | `"outlined"` | 스타일 변형 |
+| `clickable` | `boolean` | `false` | 클릭 가능 (hover 효과) |
+| `thumbnail` | `ReactNode` | — | 썸네일 콘텐츠 |
+| `thumbnailRatio` | `string` | `"16 / 10"` | 썸네일 비율 |
+| `title` | `string` | — | 제목 |
+| `subtitle` | `string` | — | 부제목 |
+| `meta` | `ReactNode` | — | 우상단 메타 정보 |
+| `children` | `ReactNode` | — | 본문 |
+| `footer` | `ReactNode` | — | 푸터 |
+| `footerNoBorder` | `boolean` | `false` | 푸터 테두리 숨김 |
+| `onClick` | `MouseEventHandler` | — | 클릭 핸들러 |
+| `slotProps` | `CardSlotProps` | — | 슬롯 프롭 |
+
+---
+
+## Compound 컴포넌트
+
+| 컴포넌트 | 역할 |
+|---|---|
+| `Card.Root` | 루트 컨테이너 (variant, clickable) |
+| `Card.Thumbnail` | 이미지 영역 (aspectRatio 지원) |
+| `Card.Header` | 제목 + 메타 행 |
+| `Card.Title` | 제목 (`<h3>`) |
+| `Card.Subtitle` | 부제목 |
+| `Card.Meta` | 우상단 메타 |
+| `Card.Body` | 본문 |
+| `Card.Footer` | 하단 액션 |
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-card-width` | `100%` | 너비 |
+| `--nds-card-radius` | `8px` | 모서리 |
+| `--nds-card-background` | White | 배경 |
+| `--nds-card-thumbnail-ratio` | `16 / 10` | 썸네일 비율 |
+
+---
+
+## 상담사 카드 레시피
+
+Counselor Card는 도메인 의존성이 높으므로 `Card` 프리미티브 위에 프로젝트별로 조합합니다.
+
+```tsx
+// 홈페이지 스타일
+<Card variant="outlined" clickable onClick={() => navigate(url)}>
+  <Card.Thumbnail aspectRatio="282 / 180">
+    <img src={counselor.profile} alt={counselor.name} />
+  </Card.Thumbnail>
+  <Card.Header>
+    <Card.Title>{counselor.name} 상담사님</Card.Title>
+    <Card.Meta>★ {counselor.rating}</Card.Meta>
+  </Card.Header>
+  <Card.Body>
+    <p style={{ color: magenta[500], fontWeight: 700 }}>내담자 후기</p>
+    <p>{counselor.bestReview}</p>
+  </Card.Body>
+</Card>
+```

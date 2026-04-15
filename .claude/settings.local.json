@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:developers-apps-in-toss.toss.im)",
+      "Bash(kill 49415)",
+      "Bash(mv components/button.md components/button.mdx)",
+      "Bash(mv components/badge.md components/badge.mdx)",
+      "Bash(mv components/modal.md components/modal.mdx)",
+      "Bash(mv components/input.md components/input.mdx)",
+      "Bash(mv components/popup.md components/popup.mdx)",
+      "Bash(xargs kill:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/docs/components/button)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/)",
+      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && head -15 {}')",
+      "Bash(git -C /Users/eprnf/02_NudgeEAP/NudgeEAPDesignSystem log --oneline)",
+      "Bash(python3:*)"
+    ]
+  }
+}

@@ -1,0 +1,403 @@
+/* ─── Theme Colors ─── */
+
+:root {
+  --ifm-color-primary: #2B96ED;
+  --ifm-color-primary-dark: #158BE9;
+  --ifm-color-primary-darker: #017EE4;
+  --ifm-color-primary-darkest: #1B65BA;
+  --ifm-color-primary-light: #47A5F0;
+  --ifm-color-primary-lighter: #67B5F2;
+  --ifm-color-primary-lightest: #91CAF6;
+
+  --ifm-background-color: #FFFFFF;
+  --ifm-background-surface-color: #FFFFFF;
+
+  --ifm-font-family-base: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --ifm-heading-font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --ifm-font-family-monospace: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
+  --ifm-code-font-size: 90%;
+
+  --ifm-global-radius: 8px;
+  --ifm-global-shadow-lw: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --ifm-global-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --ifm-global-shadow-tl: 0 12px 36px rgba(0, 0, 0, 0.08);
+
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.85);
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-height: 60px;
+
+  --ifm-footer-background-color: #111111;
+  --ifm-footer-color: rgba(255, 255, 255, 0.7);
+  --ifm-footer-link-color: rgba(255, 255, 255, 0.7);
+  --ifm-footer-title-color: #FFFFFF;
+
+  --ifm-toc-border-color: #F3F4F6;
+
+  --ifm-hr-border-color: #E6E7EB;
+
+  --doc-sidebar-width: 280px;
+}
+
+html[data-theme="dark"] {
+  --ifm-background-color: #111111;
+  --ifm-background-surface-color: #1A1A1A;
+  --ifm-toc-border-color: #2A2A2A;
+  --ifm-hr-border-color: #2A2A2A;
+}
+
+/* ─── Navbar ─── */
+
+.navbar {
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid rgba(230, 231, 235, 0.6);
+  padding: 0 24px;
+}
+
+.navbar__title {
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.navbar__link {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.navbar__link--active {
+  font-weight: 700;
+}
+
+/* ─── Sidebar ─── */
+
+.menu {
+  padding: 12px !important;
+}
+
+.menu__link {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 7px 12px;
+  transition: all 0.15s;
+}
+
+.menu__link:hover {
+  background: #F3F4F6;
+}
+
+.menu__link--active:not(.menu__link--sublist) {
+  background: rgba(43, 150, 237, 0.08);
+  color: var(--ifm-color-primary-darker);
+  font-weight: 600;
+}
+
+.menu__list-item-collapsible .menu__link {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6C7280;
+}
+
+.menu__list-item-collapsible:hover {
+  background: none;
+}
+
+.theme-doc-sidebar-item-category > .menu__list {
+  border-left: 1px solid #E6E7EB;
+  margin-left: 12px;
+  padding-left: 8px;
+}
+
+/* ─── Doc Content ─── */
+
+.theme-doc-markdown {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #383838;
+}
+
+.theme-doc-markdown header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+
+.theme-doc-markdown h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-top: 48px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #E6E7EB;
+}
+
+.theme-doc-markdown h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 36px;
+}
+
+.theme-doc-markdown h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 28px;
+}
+
+.theme-doc-markdown p {
+  margin-bottom: 16px;
+}
+
+/* ─── Code Blocks ─── */
+
+.prism-code {
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  border-radius: 10px !important;
+}
+
+code {
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  background: #F3F4F6;
+  color: #017EE4;
+  border: none;
+}
+
+div[class*="codeBlockContainer"] {
+  border-radius: 12px !important;
+  overflow: hidden;
+  border: 1px solid #E6E7EB;
+  box-shadow: none !important;
+  margin-bottom: 20px;
+}
+
+div[class*="codeBlockTitle"] {
+  background: #F8F9FB !important;
+  border-bottom: 1px solid #E6E7EB;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px !important;
+}
+
+/* ─── Tables ─── */
+
+/* 테이블 래퍼: 넘칠 때 가로 스크롤 */
+.theme-doc-markdown div[class*="tableWrapper"],
+.theme-doc-markdown > table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  display: table;
+  width: 100%;
+  font-size: 14px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #E6E7EB;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+table thead tr {
+  background: #F8F9FB;
+}
+
+table thead th {
+  font-weight: 600;
+  font-size: 13px;
+  color: #4E5462;
+  text-transform: none;
+  padding: 10px 14px;
+  border-bottom: 1px solid #E6E7EB;
+  border-right: none;
+  white-space: nowrap;
+}
+
+table tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #F3F4F6;
+  border-right: none;
+  color: #383838;
+  vertical-align: top;
+}
+
+/* Props 테이블의 타입 칼럼: 줄바꿈 허용 */
+table tbody td:nth-child(2) {
+  max-width: 220px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+table tbody td:nth-child(2) code {
+  white-space: normal;
+  word-break: break-all;
+}
+
+table tbody td code {
+  font-size: 12.5px;
+}
+
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+table tbody tr:hover {
+  background: #FAFAFA;
+}
+
+table code {
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+/* ─── Blockquotes ─── */
+
+blockquote {
+  border-left: 3px solid var(--ifm-color-primary);
+  background: rgba(43, 150, 237, 0.04);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  color: #4E5462;
+}
+
+/* ─── Admonitions ─── */
+
+.admonition {
+  border-radius: 10px;
+  border-left-width: 3px;
+}
+
+/* ─── TOC ─── */
+
+.table-of-contents__link {
+  font-size: 13px;
+  color: #6C7280;
+}
+
+.table-of-contents__link--active {
+  color: var(--ifm-color-primary-darker);
+  font-weight: 600;
+}
+
+/* ─── Footer ─── */
+
+.footer {
+  border-top: none;
+  padding: 48px 0 36px;
+}
+
+.footer__title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.footer__link-item {
+  font-size: 14px;
+  line-height: 2;
+}
+
+.footer__copyright {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Breadcrumbs ─── */
+
+.breadcrumbs__link {
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+/* ─── Pagination ─── */
+
+.pagination-nav__link {
+  border-radius: 12px;
+  border-color: #E6E7EB;
+  padding: 16px 20px;
+  transition: all 0.2s;
+}
+
+.pagination-nav__link:hover {
+  border-color: #D2D5D9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.pagination-nav__sublabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6C7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pagination-nav__label {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* ─── Scrollbar ─── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D2D5D9;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA2AE;
+}
+
+/* ─── Selection ─── */
+
+::selection {
+  background: rgba(43, 150, 237, 0.15);
+}
+
+/* ─── Smooth transitions ─── */
+
+a {
+  transition: color 0.15s;
+}
+
+/* ─── Horizontal Rule ─── */
+
+hr {
+  border: none;
+  border-top: 1px solid #E6E7EB;
+  margin: 32px 0;
+}
+
+/* ─── Doc Item Container ─── */
+
+article {
+  max-width: none;
+}
+
+.theme-doc-markdown > header + p {
+  font-size: 16px;
+  color: #4E5462;
+  line-height: 1.7;
+}

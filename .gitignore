@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+.turbo
+.docusaurus
+*.tsbuildinfo
+storybook-static
+coverage
+chromatic-diagnostics.json
+chromatic.log

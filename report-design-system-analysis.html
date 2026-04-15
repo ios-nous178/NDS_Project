@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NudgeEAP Design System Coverage Assessment</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --paper: #fffdf8;
+      --paper-strong: #ffffff;
+      --ink: #1f1a17;
+      --muted: #6b625b;
+      --line: #ddd2c5;
+      --brand: #0f5c4d;
+      --brand-soft: #e6f4ef;
+      --blue: #0d66d0;
+      --blue-soft: #eaf3ff;
+      --amber: #a55b00;
+      --amber-soft: #fff4e5;
+      --red: #b42318;
+      --red-soft: #fff0ed;
+      --shadow: 0 18px 40px rgba(38, 30, 20, 0.08);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 92, 77, 0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(13, 102, 208, 0.08), transparent 24%),
+        linear-gradient(180deg, #f8f5ef 0%, #f4f1ea 45%, #efe8dd 100%);
+      line-height: 1.65;
+      padding: 32px 20px 64px;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(15, 92, 77, 0.96), rgba(11, 61, 103, 0.96)),
+        linear-gradient(135deg, #0f5c4d, #0b3d67);
+      color: #f7fbfa;
+      border-radius: 28px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -60px -80px auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      filter: blur(6px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 840px;
+      font-size: 16px;
+      color: rgba(247, 251, 250, 0.88);
+    }
+
+    .hero-meta {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+    }
+
+    section {
+      margin-top: 24px;
+      background: rgba(255, 253, 248, 0.92);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(221, 210, 197, 0.9);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      box-shadow: 0 8px 22px rgba(38, 30, 20, 0.04);
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    p, li {
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .lead {
+      font-size: 16px;
+      color: #463f39;
+    }
+
+    .score-grid,
+    .metric-grid,
+    .insight-grid,
+    .roadmap-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .score-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      margin-top: 18px;
+    }
+
+    .insight-grid,
+    .roadmap-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card,
+    .metric,
+    .insight,
+    .roadmap {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .card .label,
+    .metric .label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .card .value,
+    .metric .value {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .card.good { background: var(--brand-soft); }
+    .card.good .value { color: var(--brand); }
+    .card.info { background: var(--blue-soft); }
+    .card.info .value { color: var(--blue); }
+    .card.warn { background: var(--amber-soft); }
+    .card.warn .value { color: var(--amber); }
+    .card.risk { background: var(--red-soft); }
+    .card.risk .value { color: var(--red); }
+
+    .small {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .badge.good { background: var(--brand-soft); color: var(--brand); }
+    .badge.info { background: var(--blue-soft); color: var(--blue); }
+    .badge.warn { background: var(--amber-soft); color: var(--amber); }
+    .badge.risk { background: var(--red-soft); color: var(--red); }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--paper-strong);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    thead {
+      background: #f6efe5;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    thead th {
+      border-top: 0;
+      color: #514943;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .rating {
+      font-weight: 700;
+    }
+
+    .rating.good { color: var(--brand); }
+    .rating.info { color: var(--blue); }
+    .rating.warn { color: var(--amber); }
+    .rating.risk { color: var(--red); }
+
+    ul {
+      margin: 12px 0 0 18px;
+      padding: 0;
+    }
+
+    .quote {
+      padding: 18px 20px;
+      border-left: 4px solid var(--brand);
+      background: linear-gradient(90deg, rgba(15, 92, 77, 0.08), rgba(15, 92, 77, 0.02));
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: #352f2b;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-top: 16px;
+    }
+
+    .footnote {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: var(--radius-sm);
+      background: #f7f2eb;
+      color: #655d56;
+      font-size: 13px;
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 18px 14px 48px; }
+      .hero, section { padding: 22px; }
+      .card .value, .metric .value { font-size: 32px; }
+      h2 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div class="eyebrow">Coverage Assessment</div>
+      <h1>NudgeEAP Design System<br>기획·설계·테스트·운영 커버리지 진단 보고서</h1>
+      <p>현재 저장소를 직접 읽고, 문서·컴포넌트·테스트·CI·운영 흔적을 교차 검토한 뒤 작성한 냉정한 평가다. 결론부터 말하면 이 시스템은 방향성과 구조는 꽤 좋지만, 운영 성숙도와 추적성은 아직 “잘 설계된 구축기”에 더 가깝다.</p>
+      <div class="hero-meta">
+        <span>기준 저장소: <strong style="margin-left:6px;">NudgeEAPDesignSystem</strong></span>
+        <span>생성 시각: <strong style="margin-left:6px;">2026-04-12 23:57:07 KST</strong></span>
+        <span>평가 방식: <strong style="margin-left:6px;">로컬 코드베이스 실사 + 실행 검증</strong></span>
+      </div>
+    </header>
+
+    <section>
+      <h2>총평</h2>
+      <p class="lead">현재 수준은 “초기 프로토타입”은 이미 벗어났다. 토큰, React 컴포넌트, Storybook, Docusaurus, 메타데이터, 테스트, CI가 모두 존재한다는 점에서 기반 공사는 분명히 끝난 상태다. 다만 그것이 곧바로 “운영형 디자인시스템”을 의미하진 않는다. 특히 Figma 추적성, 릴리스 운영, 변경 영향도 관리, 문서-현실 동기화에서는 아직 사람이 많이 메워야 한다.</p>
+      <div class="quote">한 줄 판정: 설계와 문서화는 중상급, 테스트는 중간 이상, 운영은 중간, 추적성은 낮음.</div>
+      <div class="score-grid" style="margin-top:20px;">
+        <div class="card good">
+          <span class="label">종합 점수</span>
+          <div class="value">72</div>
+          <div class="small">100점 기준. 잘 만든 기반 위에 아직 덜 닫힌 운영체계가 얹힌 상태.</div>
+        </div>
+        <div class="card good">
+          <span class="label">기획 커버리지</span>
+          <div class="value">79</div>
+          <div class="small">목표, 원칙, 워크플로우, 역할 분담, 문서 체계가 비교적 명확하다.</div>
+        </div>
+        <div class="card info">
+          <span class="label">설계 커버리지</span>
+          <div class="value">76</div>
+          <div class="small">토큰 중심 구조와 모노레포 설계는 좋지만 primitive 통합은 더 필요하다.</div>
+        </div>
+        <div class="card warn">
+          <span class="label">테스트 커버리지</span>
+          <div class="value">70</div>
+          <div class="small">생각보다 높지만 아직 전체 컴포넌트 폭을 완전히 덮지는 못한다.</div>
+        </div>
+        <div class="card warn">
+          <span class="label">운영 커버리지</span>
+          <div class="value">63</div>
+          <div class="small">CI와 Chromatic은 있으나 릴리스, 정책 강제, 추적성 자동화는 약하다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>근거 요약</h2>
+      <div class="metric-grid">
+        <div class="metric">
+          <span class="label">구현 컴포넌트</span>
+          <div class="value">15</div>
+          <div class="small">`metadata/componentInventory.json` 기준 implemented 15/15</div>
+        </div>
+        <div class="metric">
+          <span class="label">컴포넌트 문서</span>
+          <div class="value">15</div>
+          <div class="small">컴포넌트 상세 docs 페이지가 구현 수와 1:1로 맞물린다.</div>
+        </div>
+        <div class="metric">
+          <span class="label">Story 페이지</span>
+          <div class="value">21</div>
+          <div class="small">컴포넌트 15 + 토큰/가이드류 레퍼런스 스토리 포함</div>
+        </div>
+        <div class="metric">
+          <span class="label">Play 시나리오</span>
+          <div class="value">81</div>
+          <div class="small">단순 데모보다 QA 지향 Storybook으로 운영 중이라는 강한 신호</div>
+        </div>
+        <div class="metric">
+          <span class="label">Vitest 파일</span>
+          <div class="value">9</div>
+          <div class="small">컴포넌트 테스트 8개 + 통합 테스트 1개</div>
+        </div>
+        <div class="metric">
+          <span class="label">테스트 케이스</span>
+          <div class="value">61</div>
+          <div class="small">`pnpm test` 실제 실행 결과 기준 61/61 통과</div>
+        </div>
+        <div class="metric">
+          <span class="label">Statements</span>
+          <div class="value">61.47%</div>
+          <div class="small">React 패키지 기준 공식 코드 커버리지 산출이 이미 동작한다.</div>
+        </div>
+        <div class="metric">
+          <span class="label">Figma 연결률</span>
+          <div class="value">27%</div>
+          <div class="small">4/15만 링크와 node id가 있어 추적성은 낮다.</div>
+        </div>
+      </div>
+      <div class="footnote">실행 확인: `pnpm test`는 현재 저장소에서 성공했고, `turbo.json`과 `.github/workflows/ci.yml`에도 `test` 단계가 연결돼 있다. 즉 테스트는 “문서상 계획”이 아니라 실제 품질 게이트로 작동하기 시작한 상태다.</div>
+    </section>
+
+    <section>
+      <h2>영역별 냉정한 평가</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>영역</th>
+              <th>점수</th>
+              <th>판정</th>
+              <th>왜 이렇게 봤는가</th>
+              <th>핵심 결핍</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>기획</strong></td>
+              <td>79</td>
+              <td class="rating good">잘 정리된 구축기</td>
+              <td>`DESIGN_SYSTEM_PLAN`, `QA_AUTOMATION_PLAN_V1`, `FIGMA_TO_REACT_WORKFLOW`, `STYLING_STRUCTURE_GUIDE` 등 운영 문서가 단순 소개가 아니라 의사결정 근거와 역할 분리를 담고 있다.</td>
+              <td>문서가 앞서가는 부분이 있다. 일부는 이미 실행됐지만, 일부는 아직 계획 단계라 문서와 현실의 간극이 생긴다.</td>
+            </tr>
+            <tr>
+              <td><strong>설계</strong></td>
+              <td>76</td>
+              <td class="rating info">구조는 좋고 통합도는 보통</td>
+              <td>`tokens`, `react`, `icons`, `tailwind-preset`, `storybook`, `docs`로 분리된 모노레포는 합리적이다. Flat + Compound API 방향도 컴포넌트 특성과 잘 맞는다.</td>
+              <td>오버레이 계열 primitive의 공통화가 완전하지 않다. `Modal`, `BottomSheet`, `Select`, `Popup`의 로직이 개별 구현에 더 가깝다.</td>
+            </tr>
+            <tr>
+              <td><strong>테스트</strong></td>
+              <td>70</td>
+              <td class="rating info">중간 이상</td>
+              <td>Storybook `play` 81개, test-runner, a11y 실패 처리, Vitest 61개, coverage 61.47%는 예상보다 꽤 성숙하다. 특히 오버레이 계열 테스트가 이미 존재한다는 점이 좋다.</td>
+              <td>미검증 컴포넌트가 아직 분명하다. `Button`, `Badge`, `Card`, `Chip`, `EmptyState`, `SearchInput`, `DSHighlight`는 0% coverage다.</td>
+            </tr>
+            <tr>
+              <td><strong>운영</strong></td>
+              <td>63</td>
+              <td class="rating warn">부분 성숙</td>
+              <td>CI, Chromatic workflow, Husky, lint-staged, metadata inventory, Figma 링크 검사 스크립트까지는 있다. 기본 운영 골격은 갖췄다.</td>
+              <td>릴리스 자동화, 배포 정책, required checks 체계, 변경 영향도 리포팅, Figma 동기화 자동화는 아직 미흡하다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>강점</h2>
+      <div class="insight-grid">
+        <article class="insight">
+          <span class="badge good">Strong</span>
+          <h3>문서와 실물이 함께 간다</h3>
+          <p>이 저장소는 “컴포넌트는 있는데 설명이 없는 상태”가 아니다. 컴포넌트 문서, 토큰 문서, 운영 계획, 인벤토리가 서로 연결되어 있어서 팀 온보딩과 기준 정렬에 강하다.</p>
+        </article>
+        <article class="insight">
+          <span class="badge good">Strong</span>
+          <h3>Storybook이 데모를 넘어 QA 도구가 됐다</h3>
+          <p>스토리 수보다 중요한 건 사용 방식이다. 현재는 `play` 시나리오와 a11y 검사를 붙여 “시각 계약서 + 인터랙션 검증면”으로 쓰고 있다. 이건 실무적으로 큰 차이다.</p>
+        </article>
+        <article class="insight">
+          <span class="badge good">Strong</span>
+          <h3>모노레포 분리가 실용적이다</h3>
+          <p>토큰, 리액트, 아이콘, 프리셋, 문서, 스토리북의 경계가 무리 없이 나뉘어 있다. 과설계보다 실제 사용 우선의 패키징이라는 점이 좋다.</p>
+        </article>
+        <article class="insight">
+          <span class="badge good">Strong</span>
+          <h3>테스트가 생각보다 실전적이다</h3>
+          <p>`FieldActionRow` 통합 테스트는 MSW까지 사용하고 있고, `Modal`, `Select`, `BottomSheet`, `Popup`도 단위 테스트가 있다. 가장 위험한 계열을 먼저 잡기 시작했다는 뜻이다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>냉정하게 본 약점</h2>
+      <div class="insight-grid">
+        <article class="insight">
+          <span class="badge risk">Risk</span>
+          <h3>Figma 추적성이 너무 약하다</h3>
+          <p>컴포넌트 15개 중 4개만 Figma 링크와 node id가 있다. 설계와 구현이 아무리 좋아도 디자이너-기획자-개발자가 같은 기준점을 추적하지 못하면 운영 비용이 커진다.</p>
+        </article>
+        <article class="insight">
+          <span class="badge risk">Risk</span>
+          <h3>문서 성숙도에 비해 운영 자동화가 덜 닫혔다</h3>
+          <p>QA 계획 문서는 매우 좋지만, 토큰 영향 분석, Figma sync 자동화, PR 정책 강제, 릴리스 파이프라인은 아직 실제 시스템보다 아이디어가 앞서 있다.</p>
+        </article>
+        <article class="insight">
+          <span class="badge warn">Gap</span>
+          <h3>테스트 폭이 전체 컴포넌트를 덮지 못한다</h3>
+          <p>현재 coverage 61.47%는 나쁘지 않지만 exported UI 기준으로는 빈 구멍이 뚜렷하다. 버튼, 카드, 칩, 엠티스테이트, 배지, 서치인풋은 회귀 안전망이 약하다.</p>
+        </article>
+        <article class="insight">
+          <span class="badge warn">Gap</span>
+          <h3>공통 오버레이 primitive가 덜 성숙했다</h3>
+          <p>`createPortal`, scroll lock, dismissable layer, keyboard contract 같은 관심사가 여러 파일에 분산되어 있다. 지금은 관리 가능하지만 컴포넌트가 더 늘면 중복 버그가 생기기 쉽다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>테스트 커버리지 상세 진단</h2>
+      <p class="lead">테스트는 “없다”가 아니라 “좋은 출발을 했지만 아직 전체 제품을 완전히 감싸지 못한다”가 더 정확하다.</p>
+      <div style="margin-top:10px;">
+        <span class="badge good">CI에서 `pnpm test` 실행</span>
+        <span class="badge good">Storybook a11y `error` 처리</span>
+        <span class="badge good">Storybook test-runner 존재</span>
+        <span class="badge info">Chromatic workflow 존재</span>
+        <span class="badge warn">UI diff required 여부는 불명확</span>
+      </div>
+      <div class="table-wrap" style="margin-top:18px;">
+        <table>
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>현재 상태</th>
+              <th>평가</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Storybook breadth</td>
+              <td>컴포넌트 스토리 15개, `play` 시나리오 81개</td>
+              <td class="rating good">넓다. QA를 생각하며 스토리를 쓰고 있다.</td>
+            </tr>
+            <tr>
+              <td>Unit / integration tests</td>
+              <td>9개 파일, 61개 테스트, 모두 통과</td>
+              <td class="rating info">양호하다. 특히 고위험 컴포넌트를 우선 타격한 점이 좋다.</td>
+            </tr>
+            <tr>
+              <td>Coverage visibility</td>
+              <td>Statements 61.47%, Branches 61.37%, Functions 88.33%</td>
+              <td class="rating info">정량 관리가 가능해졌다. 이건 분명한 진전이다.</td>
+            </tr>
+            <tr>
+              <td>Weak spots</td>
+              <td>`Badge`, `Button`, `Card`, `Chip`, `EmptyState`, `SearchInput`, `DSHighlight` 미커버</td>
+              <td class="rating warn">다음 라운드에서 채워야 하는 명확한 구멍</td>
+            </tr>
+            <tr>
+              <td>Accessibility automation</td>
+              <td>Storybook preview + test-runner에 axe 검사 연결</td>
+              <td class="rating good">디자인시스템으로서 매우 중요한 기반을 이미 확보</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>운영 성숙도 상세 진단</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>운영 항목</th>
+              <th>상태</th>
+              <th>판정</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>기본 품질 게이트</td>
+              <td>Lint, typecheck, test, build, docs build, Storybook build, Storybook test, Figma link check</td>
+              <td class="rating good">상당히 좋다. 작은 팀 기준으로는 이미 운영 형태다.</td>
+            </tr>
+            <tr>
+              <td>시각 회귀</td>
+              <td>Chromatic workflow 존재, 토큰 없으면 skip</td>
+              <td class="rating info">도입은 되었지만 조직 규칙으로 완전히 굳었다고 보기는 어렵다.</td>
+            </tr>
+            <tr>
+              <td>릴리스 체계</td>
+              <td>Changesets는 있으나 publish 운영 체계는 뚜렷하지 않음</td>
+              <td class="rating warn">패키지 배포를 진짜 시작하면 여기서 운영 부채가 드러날 가능성이 높다.</td>
+            </tr>
+            <tr>
+              <td>추적성</td>
+              <td>메타데이터 인벤토리는 있으나 Figma 연결률 27%</td>
+              <td class="rating risk">운영 관점 최약점</td>
+            </tr>
+            <tr>
+              <td>변경 영향 분석</td>
+              <td>토큰 영향도 자동 리포트 없음</td>
+              <td class="rating warn">토큰 변경이 많아질수록 위험해진다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>우선 개선 과제</h2>
+      <div class="roadmap-grid">
+        <article class="roadmap">
+          <span class="badge risk">P0</span>
+          <h3>Figma 링크를 최소 80%까지 올리기</h3>
+          <p>가장 먼저 막아야 할 운영 리스크다. 설계 자산과 구현 자산을 연결하지 못하면 디자인시스템은 시간이 갈수록 “개발자 전용 컴포넌트 라이브러리”가 된다.</p>
+          <ul>
+            <li>`metadata/componentInventory.json`의 11개 누락 항목 보강</li>
+            <li>컴포넌트 추가 시 Figma URL과 node id를 PR 필수 항목으로 강제</li>
+          </ul>
+        </article>
+        <article class="roadmap">
+          <span class="badge risk">P0</span>
+          <h3>미커버 컴포넌트 테스트 추가</h3>
+          <p>현재 테스트는 기반이 좋다. 그래서 더 아깝다. 빈 구멍만 채워도 체감 안전망이 크게 올라간다.</p>
+          <ul>
+            <li>`Button`, `SearchInput`, `Chip`, `Card`, `Badge`, `EmptyState`부터 우선 작성</li>
+            <li>coverage 하한선을 70% 이상으로 설정해 회귀를 방지</li>
+          </ul>
+        </article>
+        <article class="roadmap">
+          <span class="badge warn">P1</span>
+          <h3>오버레이 primitive 통합</h3>
+          <p>포털, dismiss, focus, scroll lock을 공통 유틸 또는 hook 층으로 모으는 편이 좋다. 지금 단계에서 정리해야 규모가 커져도 안 터진다.</p>
+          <ul>
+            <li>`Modal`, `Popup`, `BottomSheet`, `Select`의 중복 계약 추출</li>
+            <li>공통 overlay contract 테스트 세트 마련</li>
+          </ul>
+        </article>
+        <article class="roadmap">
+          <span class="badge warn">P1</span>
+          <h3>운영 지표를 정기 보고서화</h3>
+          <p>이 저장소는 이미 숫자를 뽑을 수 있다. 이제는 그 숫자를 팀 의사결정에 쓰면 된다.</p>
+          <ul>
+            <li>coverage, Figma 링크율, story 수, package 변경량을 CI summary로 노출</li>
+            <li>월 단위 디자인시스템 상태 보고서 자동 생성</li>
+          </ul>
+        </article>
+        <article class="roadmap">
+          <span class="badge info">P2</span>
+          <h3>릴리스 운영 체계 명문화</h3>
+          <p>패키지 소비처가 늘기 전에 changeset 작성 규칙, 버전 정책, 배포 cadence, breaking change 대응 원칙을 문서화해야 한다.</p>
+        </article>
+        <article class="roadmap">
+          <span class="badge info">P2</span>
+          <h3>README와 현행 상태 동기화</h3>
+          <p>README 일부 표현은 실제 저장소보다 초기 상태에 머물러 있다. 외부 협업자에게는 이 차이가 신뢰도 저하로 보일 수 있다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>최종 판정</h2>
+      <p class="lead">이 디자인시스템은 “허술한 초안”이 아니다. 토큰, 컴포넌트, 문서, 스토리북, 테스트, CI가 모두 유기적으로 연결되기 시작했다는 점에서 기본 체력은 분명히 있다. 다만 냉정하게 보면 아직 운영형 성숙 단계의 문턱에 서 있는 상태다.</p>
+      <p class="lead">즉, 지금은 <strong>잘 만든 구축기</strong>다. 다음 단계는 더 많은 컴포넌트를 만드는 것이 아니라, 이미 만든 것을 추적 가능하고, 검증 가능하고, 릴리스 가능하게 만드는 것이다. 그 전환만 성공하면 이 저장소는 팀 내부 레퍼런스 수준을 넘어 진짜 제품형 디자인시스템으로 갈 수 있다.</p>
+      <div style="margin-top:14px;">
+        <span class="badge good">구조적 잠재력 높음</span>
+        <span class="badge info">테스트 기반 양호</span>
+        <span class="badge warn">운영 자동화 보강 필요</span>
+        <span class="badge risk">Figma 추적성 시급</span>
+      </div>
+      <div class="footnote">평가 근거에 사용한 주요 소스: `README.md`, `docs/DESIGN_SYSTEM_PLAN.md`, `docs/QA_AUTOMATION_PLAN_V1.md`, `metadata/componentInventory.json`, `turbo.json`, `.github/workflows/ci.yml`, `.github/workflows/chromatic.yml`, Storybook stories, React tests, `pnpm test` 실제 실행 결과.</div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+---
+sidebar_position: 9
+title: Checkbox & Radio
+---
+
+import { Checkbox, CheckboxGroup, Radio, RadioGroup, RadioGroupItem } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+
+# Checkbox & Radio
+
+체크박스와 라디오 버튼 컴포넌트입니다. 네이티브 `<input>` 위에 커스텀 인디케이터를 렌더링하며, `CheckboxGroup`과 `RadioGroup`으로 그룹 레이아웃을 관리합니다.
+
+```tsx
+import { Checkbox, CheckboxGroup, Radio, RadioGroup, RadioGroupItem } from "@nudge-eap/react";
+```
+
+---
+
+## Checkbox
+
+### 기본 사용법
+
+```tsx
+const [checked, setChecked] = useState(false);
+
+<Checkbox
+  checked={checked}
+  onCheckedChange={setChecked}
+  label="개인정보 처리 동의"
+/>
+```
+
+### CheckboxGroup
+
+```tsx
+<CheckboxGroup>
+  <Checkbox checked={a} onCheckedChange={setA} label="심리상담 동의" />
+  <Checkbox checked={b} onCheckedChange={setB} label="개인정보 처리 동의" />
+  <Checkbox checked={c} onCheckedChange={setC} label="마케팅 수신 동의 (선택)" />
+</CheckboxGroup>
+```
+
+### 가로 배치
+
+```tsx
+<CheckboxGroup layout="horizontal" gap={20}>
+  <Checkbox checked={a} onCheckedChange={setA} label="스트레스" />
+  <Checkbox checked={b} onCheckedChange={setB} label="수면" />
+  <Checkbox checked={c} onCheckedChange={setC} label="대인관계" />
+</CheckboxGroup>
+```
+
+---
+
+## Radio
+
+### RadioGroup 사용
+
+```tsx
+const [value, setValue] = useState("face");
+
+<RadioGroup name="counsel-type" value={value} onValueChange={setValue}>
+  <RadioGroupItem value="face" label="대면 상담" />
+  <RadioGroupItem value="video" label="화상 상담" />
+  <RadioGroupItem value="chat" label="채팅 상담" />
+</RadioGroup>
+```
+
+### 가로 배치
+
+```tsx
+<RadioGroup name="gender" value={value} onValueChange={setValue} layout="horizontal" gap={24}>
+  <RadioGroupItem value="male" label="남성" />
+  <RadioGroupItem value="female" label="여성" />
+</RadioGroup>
+```
+
+### 단독 사용
+
+```tsx
+<Radio
+  name="option"
+  checked={selected === "a"}
+  onCheckedChange={() => setSelected("a")}
+  label="옵션 A"
+/>
+```
+
+---
+
+## Checkbox Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `checked` | `boolean` | `false` | 체크 상태 |
+| `onCheckedChange` | `(checked: boolean) => void` | — | 변경 콜백 |
+| `label` | `ReactNode` | — | 라벨 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+
+`<input>` HTML 속성을 모두 지원합니다.
+
+## Radio Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `checked` | `boolean` | `false` | 선택 상태 |
+| `onCheckedChange` | `(checked: boolean) => void` | — | 변경 콜백 |
+| `label` | `ReactNode` | — | 라벨 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+
+## CheckboxGroup / RadioGroup Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `layout` | `"vertical" \| "horizontal"` | `"vertical"` | 방향 |
+| `gap` | `number` | `12` | 간격 (px) |
+
+### RadioGroup 추가 Props
+
+| Prop | 타입 | 설명 |
+|---|---|---|
+| `name` | `string` | 그룹 name |
+| `value` | `string` | 선택된 값 |
+| `onValueChange` | `(v: string) => void` | 변경 콜백 |
+
+### RadioGroupItem Props
+
+| Prop | 타입 | 설명 |
+|---|---|---|
+| `value` | `string` | 아이템 값 |
+| `label` | `ReactNode` | 라벨 |
+| `disabled` | `boolean` | 비활성화 |
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-choice-group-direction` | `column` | 그룹 방향 |
+| `--nds-choice-group-gap` | `12px` | 그룹 간격 |
+
+---
+
+## data-slot 구조
+
+```
+# Checkbox
+label [data-slot="root"] [data-disabled]
+├── input (visually hidden)
+├── span [data-slot="indicator"] [data-checked]
+│   └── svg (체크 아이콘)
+└── span [data-slot="label"]
+
+# Radio
+label [data-slot="root"] [data-disabled]
+├── input (visually hidden)
+├── span [data-slot="indicator"] [data-checked]
+│   └── ::after (내부 원)
+└── span [data-slot="label"]
+```
+
+---
+
+## 접근성
+
+- 네이티브 `<input type="checkbox">` / `<input type="radio">` 사용 (스크린 리더 완벽 지원)
+- 시각적 인디케이터는 `aria-hidden="true"`
+- `<label>` + `htmlFor`로 클릭 영역 확대
+- `role="group"` (CheckboxGroup), `role="radiogroup"` (RadioGroup) 적용
+- `ref` 전달 지원

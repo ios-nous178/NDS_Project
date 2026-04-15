@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NudgeEAP Design System - 종합 성숙도 감사 보고서</title>
+  <style>
+    :root {
+      --blue-800: #1B65BA;
+      --blue-600: #2B96ED;
+      --blue-100: #E8F4FD;
+      --blue-50: #F0F8FF;
+      --red-500: #F13F00;
+      --red-100: #FFF0EC;
+      --green-500: #13BFA2;
+      --green-100: #E6F9F5;
+      --yellow-500: #FFC303;
+      --yellow-100: #FFF8E0;
+      --neutral-900: #1A1A1A;
+      --neutral-700: #4A4A4A;
+      --neutral-500: #7A7A7A;
+      --neutral-300: #B0B0B0;
+      --neutral-100: #F0F0F0;
+      --neutral-50: #F8F8F8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #F4F6F9;
+      color: var(--neutral-900);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .report-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Header */
+    .report-header {
+      background: linear-gradient(135deg, #1B65BA 0%, #2B96ED 50%, #13BFA2 100%);
+      border-radius: 20px;
+      padding: 60px 48px;
+      color: white;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .report-header::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+
+    .report-header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .report-header .subtitle {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 24px;
+    }
+
+    .report-meta {
+      display: flex;
+      gap: 32px;
+      font-size: 14px;
+      opacity: 0.85;
+      flex-wrap: wrap;
+    }
+
+    .report-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .summary-card .score {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .summary-card .label {
+      font-size: 14px;
+      color: var(--neutral-500);
+      margin-bottom: 8px;
+    }
+
+    .summary-card .bar {
+      height: 6px;
+      background: var(--neutral-100);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .summary-card .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+
+    .score-excellent { color: var(--green-500); }
+    .score-good { color: var(--blue-600); }
+    .score-fair { color: var(--yellow-500); }
+    .score-poor { color: var(--red-500); }
+
+    .bar-excellent { background: var(--green-500); }
+    .bar-good { background: var(--blue-600); }
+    .bar-fair { background: var(--yellow-500); }
+    .bar-poor { background: var(--red-500); }
+
+    /* Section */
+    .section {
+      background: white;
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .section h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section h2 .badge {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .badge-excellent { background: var(--green-100); color: var(--green-500); }
+    .badge-good { background: var(--blue-100); color: var(--blue-800); }
+    .badge-fair { background: var(--yellow-100); color: #B38600; }
+    .badge-poor { background: var(--red-100); color: var(--red-500); }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--neutral-500);
+      margin-bottom: 24px;
+    }
+
+    .section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 24px 0 12px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--neutral-100);
+    }
+
+    .section h3:first-of-type {
+      margin-top: 0;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    thead th {
+      background: var(--neutral-50);
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--neutral-700);
+      border-bottom: 2px solid var(--neutral-100);
+    }
+
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--neutral-100);
+      vertical-align: top;
+    }
+
+    tbody tr:hover {
+      background: var(--neutral-50);
+    }
+
+    /* Status Tags */
+    .tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .tag-yes { background: var(--green-100); color: #0A8F7A; }
+    .tag-no { background: var(--red-100); color: var(--red-500); }
+    .tag-partial { background: var(--yellow-100); color: #B38600; }
+    .tag-na { background: var(--neutral-100); color: var(--neutral-500); }
+
+    /* Checklist */
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checklist li {
+      padding: 8px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--neutral-100);
+    }
+
+    .checklist li:last-child { border-bottom: none; }
+
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .check-yes { background: var(--green-100); color: var(--green-500); }
+    .check-no { background: var(--red-100); color: var(--red-500); }
+    .check-partial { background: var(--yellow-100); color: #B38600; }
+
+    /* Improvement Cards */
+    .improvement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .improvement-card {
+      border: 1px solid var(--neutral-100);
+      border-radius: 12px;
+      padding: 20px;
+      background: var(--neutral-50);
+    }
+
+    .improvement-card .priority {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .priority-critical { background: var(--red-500); color: white; }
+    .priority-high { background: #FF6B35; color: white; }
+    .priority-medium { background: var(--yellow-500); color: var(--neutral-900); }
+    .priority-low { background: var(--neutral-300); color: white; }
+
+    .improvement-card h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .improvement-card p {
+      font-size: 13px;
+      color: var(--neutral-700);
+      line-height: 1.6;
+    }
+
+    /* Radar / Coverage Bar */
+    .coverage-bar-container {
+      margin-bottom: 12px;
+    }
+
+    .coverage-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .coverage-bar-label .cat-name { font-weight: 600; }
+    .coverage-bar-label .cat-pct { color: var(--neutral-500); }
+
+    .coverage-bar {
+      height: 10px;
+      background: var(--neutral-100);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .coverage-bar-inner {
+      height: 100%;
+      border-radius: 5px;
+    }
+
+    /* Overall Grade */
+    .overall-grade {
+      text-align: center;
+      padding: 48px;
+    }
+
+    .grade-circle {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-600), var(--green-500));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 8px 32px rgba(43, 150, 237, 0.3);
+    }
+
+    .grade-circle span {
+      font-size: 56px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .grade-label {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--neutral-700);
+    }
+
+    .grade-sublabel {
+      font-size: 14px;
+      color: var(--neutral-500);
+      margin-top: 4px;
+    }
+
+    /* Verdict Box */
+    .verdict-box {
+      background: linear-gradient(135deg, var(--blue-50), var(--green-100));
+      border: 1px solid rgba(43, 150, 237, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+
+    .verdict-box h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--blue-800);
+    }
+
+    .verdict-box p {
+      font-size: 14px;
+      color: var(--neutral-700);
+      line-height: 1.7;
+    }
+
+    /* Footer */
+    .report-footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 13px;
+      color: var(--neutral-500);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .report-header { padding: 36px 24px; }
+      .report-header h1 { font-size: 26px; }
+      .section { padding: 24px; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .improvement-grid { grid-template-columns: 1fr; }
+      .report-meta { flex-direction: column; gap: 8px; }
+    }
+
+    @media print {
+      body { background: white; }
+      .report-container { padding: 0; }
+      .section { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="report-container">
+
+    <!-- Header -->
+    <header class="report-header">
+      <h1>NudgeEAP Design System</h1>
+      <div class="subtitle">종합 성숙도 감사 보고서 (Comprehensive Maturity Audit Report)</div>
+      <div class="report-meta">
+        <span>Report Generated: 2026-04-13 (일) KST</span>
+        <span>Auditor: Claude Opus 4.6 &mdash; Design System Specialist</span>
+        <span>Version Audited: 0.1.0 (Pre-release)</span>
+        <span>Monorepo: 6 packages / 4 libs + 2 apps</span>
+      </div>
+    </header>
+
+    <!-- Executive Summary Scores -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="score score-excellent">92</div>
+        <div class="label">기획 &amp; 설계 (Planning)</div>
+        <div class="bar"><div class="bar-fill bar-excellent" style="width:92%"></div></div>
+      </div>
+      <div class="summary-card">
+        <div class="score score-excellent">90</div>
+        <div class="label">개발 (Development)</div>
+        <div class="bar"><div class="bar-fill bar-excellent" style="width:90%"></div></div>
+      </div>
+      <div class="summary-card">
+        <div class="score score-fair">62</div>
+        <div class="label">테스트 (Testing)</div>
+        <div class="bar"><div class="bar-fill bar-fair" style="width:62%"></div></div>
+      </div>
+      <div class="summary-card">
+        <div class="score score-excellent">88</div>
+        <div class="label">운영 (Operations)</div>
+        <div class="bar"><div class="bar-fill bar-excellent" style="width:88%"></div></div>
+      </div>
+      <div class="summary-card">
+        <div class="score score-good">78</div>
+        <div class="label">종합 (Overall)</div>
+        <div class="bar"><div class="bar-fill bar-good" style="width:78%"></div></div>
+      </div>
+    </div>
+
+    <!-- Overall Grade -->
+    <div class="section">
+      <div class="overall-grade">
+        <div class="grade-circle"><span>B+</span></div>
+        <div class="grade-label">종합 등급: B+ (우수)</div>
+        <div class="grade-sublabel">기획/설계와 개발 품질은 A급이나, 테스트 커버리지가 전체 성숙도를 끌어내리고 있음</div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 1. 기획 & 설계 -->
+    <!-- ============================================ -->
+    <div class="section">
+      <h2>1. 기획 &amp; 설계 (Planning &amp; Architecture) <span class="badge badge-excellent">92점 / A</span></h2>
+      <p class="section-desc">디자인 시스템의 전략적 방향, 아키텍처 설계, 원칙 수립, Figma 연동 수준을 평가합니다.</p>
+
+      <h3>1.1 아키텍처 &amp; 원칙</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>설계 원칙 문서화</strong> &mdash; DESIGN_SYSTEM_PLAN.md에 4대 원칙 명시: Tokens First, Framework Agnostic, Style Adapter, Recipe Over Domain</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>모노레포 구조</strong> &mdash; pnpm workspace + Turbo 기반, 6개 패키지(tokens, react, icons, tailwind-preset, storybook, docs)로 명확한 관심사 분리</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>토큰 퍼스트 전략</strong> &mdash; 모든 스타일이 @nudge-eap/tokens에서 파생. Color(semantic alias 포함), Typography(11단계), Spacing(21단계), Radius, Elevation, Motion 토큰 완비</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Figma-to-Code 워크플로우</strong> &mdash; FIGMA_TO_REACT_WORKFLOW.md 문서화, componentInventory.json에 Figma nodeId 매핑, check-figma-links.mjs 자동 검증 스크립트</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>컴포넌트 API 전략</strong> &mdash; Flat API + Compound Component 이중 패턴 채택 (예: &lt;Input label="..." /&gt; vs &lt;Input.Root&gt;&lt;Input.Label /&gt;...)</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>메타데이터 시스템</strong> &mdash; componentInventory.json이 단일 진실 소스(SSOT)로 기능, 자동 문서 생성 파이프라인 연결</div></li>
+        <li><span class="check-icon check-partial">&#9679;</span><div><strong>다크 모드 전략</strong> &mdash; Storybook에서 light/gray/dark 배경 지원하나, 체계적인 다크 테마 토큰 세트는 미구축</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>i18n/RTL 전략</strong> &mdash; Docusaurus는 ko 로케일 설정되어 있으나, 컴포넌트 레벨의 국제화/RTL 지원 전략 부재</div></li>
+      </ul>
+
+      <h3>1.2 문서화 현황</h3>
+      <table>
+        <thead>
+          <tr><th>문서 유형</th><th>파일 수</th><th>상세</th><th>평가</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>전략/아키텍처 문서</td><td>5</td><td>DESIGN_SYSTEM_PLAN, TOKENS, FIGMA_TO_REACT_WORKFLOW, AUTOMATION_WORKFLOW, QA_AUTOMATION_PLAN</td><td><span class="tag tag-yes">충분</span></td></tr>
+          <tr><td>컴포넌트 문서 (MDX)</td><td>16+</td><td>모든 구현 컴포넌트에 대한 개별 문서</td><td><span class="tag tag-yes">충분</span></td></tr>
+          <tr><td>토큰 문서</td><td>4</td><td>colors, typography, spacing, sizing</td><td><span class="tag tag-yes">충분</span></td></tr>
+          <tr><td>가이드 문서</td><td>5+</td><td>디자인 원칙, 스타일링 구조, 시작하기</td><td><span class="tag tag-yes">충분</span></td></tr>
+          <tr><td>AI/자동화 가이드</td><td>2</td><td>AI_PROMPTS, PLANNER_DESIGNER_AI_GUIDE</td><td><span class="tag tag-yes">독창적</span></td></tr>
+          <tr><td>마이그레이션 가이드</td><td>1</td><td>MODAL_MIGRATION_NOTES</td><td><span class="tag tag-partial">시작 단계</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>1.3 Figma 연동 커버리지</h3>
+      <table>
+        <thead>
+          <tr><th>컴포넌트</th><th>Figma Node ID</th><th>Figma URL</th><th>상태</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Button</td><td>508:6962</td><td><span class="tag tag-yes">연결됨</span></td><td><span class="tag tag-yes">완전</span></td></tr>
+          <tr><td>Input</td><td>430:4212</td><td><span class="tag tag-yes">연결됨</span></td><td><span class="tag tag-yes">완전</span></td></tr>
+          <tr><td>Modal</td><td>612:18421</td><td><span class="tag tag-yes">연결됨</span></td><td><span class="tag tag-yes">완전</span></td></tr>
+          <tr><td>Popup</td><td>612:18903</td><td><span class="tag tag-yes">연결됨</span></td><td><span class="tag tag-yes">완전</span></td></tr>
+          <tr><td>Toast</td><td>612:19273</td><td><span class="tag tag-yes">연결됨</span></td><td><span class="tag tag-yes">완전</span></td></tr>
+          <tr><td>Tabs</td><td>592:17252</td><td><span class="tag tag-yes">연결됨</span></td><td><span class="tag tag-yes">완전</span></td></tr>
+          <tr><td>EmptyState</td><td>688:27139</td><td><span class="tag tag-yes">연결됨</span></td><td><span class="tag tag-yes">완전</span></td></tr>
+          <tr><td>FieldActionRow</td><td>689:27429</td><td><span class="tag tag-yes">연결됨</span></td><td><span class="tag tag-yes">완전</span></td></tr>
+          <tr><td>Badge</td><td>&mdash;</td><td><span class="tag tag-no">미연결</span></td><td><span class="tag tag-no">누락</span></td></tr>
+          <tr><td>Card</td><td>&mdash;</td><td><span class="tag tag-no">미연결</span></td><td><span class="tag tag-no">누락</span></td></tr>
+          <tr><td>Chip</td><td>&mdash;</td><td><span class="tag tag-no">미연결</span></td><td><span class="tag tag-no">누락</span></td></tr>
+          <tr><td>Checkbox</td><td>&mdash;</td><td><span class="tag tag-no">미연결</span></td><td><span class="tag tag-no">누락</span></td></tr>
+          <tr><td>Select</td><td>&mdash;</td><td><span class="tag tag-no">미연결</span></td><td><span class="tag tag-no">누락</span></td></tr>
+          <tr><td>SearchInput</td><td>&mdash;</td><td><span class="tag tag-no">미연결</span></td><td><span class="tag tag-no">누락</span></td></tr>
+          <tr><td>BottomSheet</td><td>&mdash;</td><td><span class="tag tag-no">미연결</span></td><td><span class="tag tag-no">누락</span></td></tr>
+          <tr><td>DSHighlight</td><td>&mdash;</td><td><span class="tag tag-na">N/A</span></td><td><span class="tag tag-na">유틸리티</span></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px; color:var(--neutral-500); margin-top:8px;">Figma 연동률: 8/15 (53%) &mdash; 핵심 컴포넌트 절반 이상이 미연결 상태</p>
+
+      <h3>1.4 감점 요인</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>다크 모드 토큰 체계 부재 (-3점)</strong> &mdash; semantic token에 light/dark 분기 없음. CSS variable 구조는 갖추었으나 실제 다크 테마 값 세트 미정의</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>국제화 전략 부재 (-3점)</strong> &mdash; 컴포넌트 내 한국어 하드코딩 (예: "입력 삭제", "모달 닫기", "선택"). i18n 추상화 레이어 없음</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>Figma 연동 불완전 (-2점)</strong> &mdash; 15개 중 8개만 연결. 디자인-개발 추적성의 갭</div></li>
+      </ul>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 2. 개발 품질 -->
+    <!-- ============================================ -->
+    <div class="section">
+      <h2>2. 개발 품질 (Development Quality) <span class="badge badge-excellent">90점 / A</span></h2>
+      <p class="section-desc">컴포넌트 구현 품질, TypeScript 활용도, 접근성, 성능, 스타일링 아키텍처를 평가합니다.</p>
+
+      <h3>2.1 컴포넌트 인벤토리 &amp; 복잡도</h3>
+      <table>
+        <thead>
+          <tr><th>컴포넌트</th><th>카테고리</th><th>LOC</th><th>패턴</th><th>복잡도</th><th>Compound Parts</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Button</td><td>일반</td><td>431</td><td>Flat + Slot</td><td>&#9733;&#9733;&#9733;&#9734;&#9734;</td><td>&mdash;</td></tr>
+          <tr><td>Badge</td><td>일반</td><td>154</td><td>Flat + Slot</td><td>&#9733;&#9734;&#9734;&#9734;&#9734;</td><td>&mdash;</td></tr>
+          <tr><td>Card</td><td>일반</td><td>407</td><td>Compound (8)</td><td>&#9733;&#9733;&#9733;&#9734;&#9734;</td><td>Root, Thumbnail, Header, Title, Description, Body, Footer, Actions</td></tr>
+          <tr><td>Input</td><td>입력</td><td>563</td><td>Compound (6)</td><td>&#9733;&#9733;&#9733;&#9733;&#9734;</td><td>Root, Label, Field, Helper, ClearButton, +</td></tr>
+          <tr><td>SearchInput</td><td>입력</td><td>583</td><td>Compound (6)</td><td>&#9733;&#9733;&#9733;&#9733;&#9734;</td><td>Root, Label, Field, Helper, ClearButton, +</td></tr>
+          <tr><td>Select</td><td>입력</td><td>791</td><td>Compound (6) + Portal</td><td>&#9733;&#9733;&#9733;&#9733;&#9733;</td><td>Root, Label, Trigger, Option, Helper, Portal</td></tr>
+          <tr><td>Checkbox</td><td>입력</td><td>507</td><td>Group + Context</td><td>&#9733;&#9733;&#9733;&#9734;&#9734;</td><td>Group, Item</td></tr>
+          <tr><td>Chip</td><td>입력</td><td>326</td><td>Flat</td><td>&#9733;&#9733;&#9734;&#9734;&#9734;</td><td>&mdash;</td></tr>
+          <tr><td>Modal</td><td>오버레이</td><td>703</td><td>Compound (6) + Portal</td><td>&#9733;&#9733;&#9733;&#9733;&#9733;</td><td>Root, Overlay, Content, Header, Body, Footer</td></tr>
+          <tr><td>Popup</td><td>오버레이</td><td>569</td><td>Compound + Portal</td><td>&#9733;&#9733;&#9733;&#9733;&#9734;</td><td>Root, Overlay, Content, +</td></tr>
+          <tr><td>BottomSheet</td><td>오버레이</td><td>600</td><td>Compound (7) + Portal + Focus Trap</td><td>&#9733;&#9733;&#9733;&#9733;&#9733;</td><td>Root, Overlay, Content, Handle, Header, Body, Footer</td></tr>
+          <tr><td>Tabs</td><td>내비게이션</td><td>480</td><td>Compound (4) + Keyboard Nav</td><td>&#9733;&#9733;&#9733;&#9733;&#9734;</td><td>Root, List, Trigger, Content</td></tr>
+          <tr><td>Toast</td><td>피드백</td><td>334</td><td>Context Provider + Portal</td><td>&#9733;&#9733;&#9733;&#9733;&#9734;</td><td>Provider, ToastItem</td></tr>
+          <tr><td>EmptyState</td><td>피드백</td><td>260</td><td>Compound (3)</td><td>&#9733;&#9733;&#9734;&#9734;&#9734;</td><td>Root, Icon, Action</td></tr>
+          <tr><td>FieldActionRow</td><td>레이아웃</td><td>392</td><td>Compound (3)</td><td>&#9733;&#9733;&#9733;&#9734;&#9734;</td><td>Root, Input, Button</td></tr>
+          <tr><td>DSHighlight</td><td>유틸리티</td><td>393</td><td>Flat + Context</td><td>&#9733;&#9733;&#9733;&#9734;&#9734;</td><td>&mdash;</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px; color:var(--neutral-500);">총 16개 React 컴포넌트 (~7,500 LOC) + 83개 SVG 아이콘 컴포넌트</p>
+
+      <h3>2.2 TypeScript &amp; API 품질</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Strict Mode</strong> &mdash; tsconfig.json에서 strict: true 활성화. 모든 패키지에 declaration + declarationMap 생성</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Props Interface</strong> &mdash; 모든 컴포넌트에 명시적 TypeScript 인터페이스 정의 (예: ButtonVariant, ButtonSize, ButtonColor, ButtonSlotProps, ButtonProps)</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>forwardRef</strong> &mdash; 모든 인터랙티브 컴포넌트에 React.forwardRef 적용</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>displayName</strong> &mdash; 디버깅을 위한 displayName 설정 완료</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Context 검증</strong> &mdash; 모든 compound 컴포넌트에서 context null 체크 + 의미 있는 에러 메시지 throw</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>useId()</strong> &mdash; 고유 ID 자동 생성으로 SSR 호환성 확보</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Zero Runtime Dependencies</strong> &mdash; React 18+ 외 외부 런타임 의존성 없음 (styled-components, emotion 등 미사용)</div></li>
+      </ul>
+
+      <h3>2.3 접근성 (Accessibility)</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>ARIA 속성</strong> &mdash; aria-label, aria-labelledby, aria-describedby, aria-invalid, aria-modal, aria-haspopup, aria-expanded, aria-selected, aria-disabled 등 포괄적 적용</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>키보드 내비게이션</strong> &mdash; Modal(Escape/Tab), Tabs(Arrow/Home/End), Select(Arrow/Enter), Checkbox(Space/Enter) 구현</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>포커스 관리</strong> &mdash; Modal/BottomSheet에 Focus Trap 구현, 이전 포커스 복원</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>시맨틱 HTML</strong> &mdash; dialog, tab, option, group, alert, status 등 적절한 role 사용</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>스크린 리더</strong> &mdash; Toast에 aria-live="polite", 에러 시 role="alert"</div></li>
+        <li><span class="check-icon check-partial">&#9679;</span><div><strong>색상 대비</strong> &mdash; Storybook a11y 애드온에서 WCAG AA 규칙 적용하나, 모든 variant 조합에 대한 체계적 검증은 미확인</div></li>
+      </ul>
+
+      <h3>2.4 스타일링 아키텍처</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>CSS Variables</strong> &mdash; --nds- 접두사로 모든 컴포넌트 스타일을 CSS 변수화. 외부 오버라이드 용이</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>:where() Specificity Trick</strong> &mdash; 제로 특이성 셀렉터로 Tailwind/커스텀 클래스의 !important 없는 오버라이드 허용</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>BEM 네이밍</strong> &mdash; nds-component__slot 패턴으로 일관된 클래스명</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Tailwind Preset</strong> &mdash; @nudge-eap/tailwind-preset으로 토큰-Tailwind 브릿지 제공</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>애니메이션</strong> &mdash; Modal(fade-in/slide-up), Toast(enter/exit), BottomSheet(slide), Tabs(indicator slide) keyframe 애니메이션 구현</div></li>
+      </ul>
+
+      <h3>2.5 감점 요인</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>React.memo 미적용 (-2점)</strong> &mdash; 정적 서브 컴포넌트(Label, Body, Footer 등)에 React.memo 미적용. 대규모 리스트 렌더링 시 불필요한 리렌더 가능</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>Error Boundary 미제공 (-2점)</strong> &mdash; 디자인 시스템 레벨의 ErrorBoundary 컴포넌트 부재</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>Form 통합 미지원 (-2점)</strong> &mdash; React Hook Form, Formik 등과의 통합 패턴/어댑터 미제공</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>JSDoc/인라인 문서 부족 (-2점)</strong> &mdash; 컴포넌트 소스 내 JSDoc 주석이 최소한. Props에 대한 인라인 설명 부족으로 IDE 자동완성 경험 저하</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>Skeleton/Loading 컴포넌트 부재 (-2점)</strong> &mdash; 로딩 상태 표현을 위한 Skeleton, Spinner, Loading 컴포넌트 미구현</div></li>
+      </ul>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 3. 테스트 -->
+    <!-- ============================================ -->
+    <div class="section">
+      <h2>3. 테스트 (Testing) <span class="badge badge-fair">62점 / C+</span></h2>
+      <p class="section-desc">단위/통합/시각적/접근성 테스트의 범위, 깊이, 자동화 수준을 냉철하게 평가합니다. <strong>이 영역이 전체 시스템의 최대 약점입니다.</strong></p>
+
+      <h3>3.1 테스트 인프라</h3>
+      <table>
+        <thead>
+          <tr><th>항목</th><th>도구</th><th>상태</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>테스트 러너</td><td>Vitest 2.1.9</td><td><span class="tag tag-yes">구축됨</span></td></tr>
+          <tr><td>DOM 환경</td><td>jsdom 25.0.1</td><td><span class="tag tag-yes">구축됨</span></td></tr>
+          <tr><td>컴포넌트 테스트</td><td>@testing-library/react 16.3.0</td><td><span class="tag tag-yes">구축됨</span></td></tr>
+          <tr><td>유저 인터랙션</td><td>@testing-library/user-event 14.6.1</td><td><span class="tag tag-yes">구축됨</span></td></tr>
+          <tr><td>API 모킹</td><td>MSW 2.4.9</td><td><span class="tag tag-yes">구축됨</span></td></tr>
+          <tr><td>커버리지</td><td>@vitest/coverage-v8</td><td><span class="tag tag-yes">구축됨</span></td></tr>
+          <tr><td>시각적 회귀</td><td>Chromatic</td><td><span class="tag tag-yes">CI 연동</span></td></tr>
+          <tr><td>접근성 자동 테스트</td><td>axe-playwright</td><td><span class="tag tag-yes">Storybook 연동</span></td></tr>
+          <tr><td>스냅샷 테스트</td><td>&mdash;</td><td><span class="tag tag-no">미구축</span></td></tr>
+          <tr><td>E2E 테스트</td><td>&mdash;</td><td><span class="tag tag-no">미구축</span></td></tr>
+          <tr><td>성능 테스트</td><td>&mdash;</td><td><span class="tag tag-no">미구축</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>3.2 컴포넌트별 테스트 커버리지</h3>
+      <table>
+        <thead>
+          <tr><th>컴포넌트</th><th>단위 테스트</th><th>LOC</th><th>스토리</th><th>Chromatic</th><th>커버리지 판정</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Button</td><td><span class="tag tag-yes">있음</span></td><td>124</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-yes">양호</span></td></tr>
+          <tr><td>Badge</td><td><span class="tag tag-yes">있음</span></td><td>64</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-partial">기본</span></td></tr>
+          <tr><td>Input</td><td><span class="tag tag-yes">있음</span></td><td style="color:var(--red-500); font-weight:600;">38</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-no">부족</span></td></tr>
+          <tr><td>Modal</td><td><span class="tag tag-yes">있음</span></td><td>160</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-yes">양호</span></td></tr>
+          <tr><td>Popup</td><td><span class="tag tag-yes">있음</span></td><td>162</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-yes">양호</span></td></tr>
+          <tr><td>Select</td><td><span class="tag tag-yes">있음</span></td><td>121</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-partial">기본</span></td></tr>
+          <tr><td>Tabs</td><td><span class="tag tag-yes">있음</span></td><td style="color:var(--red-500); font-weight:600;">51</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-no">부족</span></td></tr>
+          <tr><td>Toast</td><td><span class="tag tag-yes">있음</span></td><td>73</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-partial">기본</span></td></tr>
+          <tr><td>Checkbox</td><td><span class="tag tag-yes">있음</span></td><td>172</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-yes">양호</span></td></tr>
+          <tr><td>BottomSheet</td><td><span class="tag tag-yes">있음</span></td><td>140</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-partial">기본</span></td></tr>
+          <tr><td>FieldActionRow</td><td><span class="tag tag-yes">통합</span></td><td>348</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-yes">양호</span></td></tr>
+          <tr style="background: var(--red-100);">
+            <td><strong>Card</strong></td><td><span class="tag tag-no">없음</span></td><td>&mdash;</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-no">미커버</span></td></tr>
+          <tr style="background: var(--red-100);">
+            <td><strong>Chip</strong></td><td><span class="tag tag-no">없음</span></td><td>&mdash;</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-no">미커버</span></td></tr>
+          <tr style="background: var(--red-100);">
+            <td><strong>EmptyState</strong></td><td><span class="tag tag-no">없음</span></td><td>&mdash;</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-no">미커버</span></td></tr>
+          <tr style="background: var(--red-100);">
+            <td><strong>SearchInput</strong></td><td><span class="tag tag-no">없음</span></td><td>&mdash;</td><td><span class="tag tag-yes">있음</span></td><td><span class="tag tag-yes">연동</span></td><td><span class="tag tag-no">미커버</span></td></tr>
+          <tr style="background: var(--red-100);">
+            <td><strong>DSHighlight</strong></td><td><span class="tag tag-no">없음</span></td><td>&mdash;</td><td><span class="tag tag-no">없음</span></td><td><span class="tag tag-no">없음</span></td><td><span class="tag tag-no">완전 미커버</span></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px; color:var(--neutral-500); margin-top:8px;">단위 테스트 커버리지: 11/16 컴포넌트 (69%) | Storybook 커버리지: 15/16 (94%) | 완전 미커버: 1개 (DSHighlight)</p>
+
+      <h3>3.3 테스트 깊이 분석</h3>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">렌더링 테스트 (기본 마운트)</span><span class="cat-pct">69%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-fair" style="width:69%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">인터랙션 테스트 (클릭, 입력, 키보드)</span><span class="cat-pct">56%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-fair" style="width:56%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">상태 변화 테스트 (open/close, 값 변경)</span><span class="cat-pct">50%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-fair" style="width:50%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">접근성 테스트 (ARIA, 키보드, 포커스)</span><span class="cat-pct">44%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-poor" style="width:44%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">엣지 케이스 (disabled, error, empty, overflow)</span><span class="cat-pct">31%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-poor" style="width:31%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">Variant 조합 테스트</span><span class="cat-pct">19%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-poor" style="width:19%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">스냅샷 / 시각적 단위 테스트</span><span class="cat-pct">0%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-poor" style="width:0%"></div></div>
+      </div>
+
+      <h3>3.4 핵심 문제점 (냉철한 평가)</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>테스트가 "얕다" (-10점)</strong> &mdash; Input 38줄, Tabs 51줄은 기본 렌더링 확인 수준. 563줄짜리 Input 컴포넌트에 38줄 테스트는 커버리지 비율 6.7%에 불과. 에러 상태, 클리어 버튼, controlled/uncontrolled 전환 등 핵심 시나리오 미검증</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>5개 컴포넌트 테스트 전무 (-8점)</strong> &mdash; Card, Chip, EmptyState, SearchInput, DSHighlight에 단위 테스트 없음. 특히 SearchInput(583 LOC)은 복잡한 인터랙션을 가진 컴포넌트</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>스냅샷 테스트 전무 (-5점)</strong> &mdash; 컴포넌트 variant 조합의 의도치 않은 DOM 변경을 감지할 방법이 Chromatic에만 의존. Chromatic이 실패하면 안전망 없음</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>E2E 테스트 전무 (-5점)</strong> &mdash; 실제 브라우저에서의 컴포넌트 동작 검증 없음. 특히 Portal 기반 컴포넌트(Modal, Select, BottomSheet)의 실제 렌더링 환경 테스트 부재</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>커버리지 임계값이 낮음 (-3점)</strong> &mdash; statements 70%, branches 60%는 "최소" 수준. 디자인 시스템은 소비자가 많으므로 80%+ 권장</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>통합 테스트 1건 (-3점)</strong> &mdash; FieldActionRow만 통합 테스트 존재. 컴포넌트 간 조합 시나리오(Modal 안의 Form, Toast + Button 연동 등) 미검증</div></li>
+        <li><span class="check-icon check-partial">&#9679;</span><div><strong>CI에서 커버리지 리포트 미공개 (-2점)</strong> &mdash; 커버리지는 로컬에서만 확인 가능. PR에 커버리지 변화를 표시하지 않아 품질 하락 감지 어려움</div></li>
+      </ul>
+
+      <h3>3.5 긍정적 측면</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Chromatic 시각적 회귀 테스트</strong> &mdash; PR마다 자동 실행, mobile/desktop 뷰포트 비교. 이것이 현재 가장 강력한 테스트 안전망</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>axe-playwright 접근성 자동 테스트</strong> &mdash; Storybook 스토리 전체에 WCAG 2.1 AA 규칙 적용</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>MSW 인프라 구축</strong> &mdash; API 모킹 서버 셋업 완료. 확장 가능한 기반 마련</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>QA 전략 문서</strong> &mdash; QA_AUTOMATION_PLAN_V1.md, COMPONENT_TEST_COVERAGE_ASSESSMENT, COMPONENT_UNIT_SNAPSHOT_TEST_STRATEGY 문서 존재 (실행이 관건)</div></li>
+      </ul>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 4. 운영 -->
+    <!-- ============================================ -->
+    <div class="section">
+      <h2>4. 운영 (Operations &amp; DevOps) <span class="badge badge-excellent">88점 / A-</span></h2>
+      <p class="section-desc">CI/CD, 버전 관리, 코드 품질 게이트, 자동화 수준을 평가합니다.</p>
+
+      <h3>4.1 CI/CD 파이프라인</h3>
+      <table>
+        <thead>
+          <tr><th>파이프라인</th><th>트리거</th><th>단계</th><th>평가</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ci.yml</strong></td>
+            <td>PR + main push</td>
+            <td>
+              1. Lint (ESLint + Prettier + Markdownlint)<br>
+              2. Typecheck (tsc --noEmit)<br>
+              3. Test (Vitest + Coverage)<br>
+              4. Build (all packages)<br>
+              5. Build Docs (Docusaurus)<br>
+              6. Build Storybook<br>
+              7. Storybook Tests (test-runner)<br>
+              8. Figma Link Coverage Check
+            </td>
+            <td><span class="tag tag-yes">포괄적</span></td>
+          </tr>
+          <tr>
+            <td><strong>chromatic.yml</strong></td>
+            <td>PR + main push</td>
+            <td>
+              1. Build Storybook<br>
+              2. Upload to Chromatic<br>
+              3. Visual diff (PR) / Auto-accept (main)<br>
+              4. Interaction test 실행
+            </td>
+            <td><span class="tag tag-yes">우수</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.2 코드 품질 게이트</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Pre-commit Hook</strong> &mdash; Husky + lint-staged: JS/TS 파일에 ESLint --fix + Prettier, MD 파일에 markdownlint --fix</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Pre-push Hook</strong> &mdash; pnpm typecheck 실행 (타입 에러 있는 코드 push 방지)</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>PR Template</strong> &mdash; Figma 링크, 디자인 시스템 체크리스트, QA 체크리스트 포함</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>ESLint Flat Config</strong> &mdash; TypeScript strict + React Hooks + unused-imports 규칙</div></li>
+        <li><span class="check-icon check-yes">&#10003;</span><div><strong>Changesets</strong> &mdash; 시맨틱 버전관리 체계 구축, public access npm 배포 준비 완료</div></li>
+        <li><span class="check-icon check-partial">&#9679;</span><div><strong>Frozen Lockfile</strong> &mdash; CI에서 --frozen-lockfile 사용하나, Dependabot/Renovate 미설정</div></li>
+      </ul>
+
+      <h3>4.3 자동화 도구</h3>
+      <table>
+        <thead>
+          <tr><th>도구</th><th>용도</th><th>평가</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>generate-component-inventory.mjs</td><td>componentInventory.json에서 inventory.md 자동 생성</td><td><span class="tag tag-yes">독창적</span></td></tr>
+          <tr><td>check-figma-links.mjs</td><td>Figma 링크 누락 컴포넌트 감지 + GH Actions Summary 출력</td><td><span class="tag tag-yes">독창적</span></td></tr>
+          <tr><td>dev-storybook.mjs</td><td>Storybook 개발 서버 헬퍼</td><td><span class="tag tag-yes">유용</span></td></tr>
+          <tr><td>extract-styles.mjs</td><td>컴포넌트에서 CSS 추출</td><td><span class="tag tag-yes">핵심</span></td></tr>
+          <tr><td>generate-css.js (tokens)</td><td>TS 토큰에서 CSS 변수 파일 생성</td><td><span class="tag tag-yes">핵심</span></td></tr>
+          <tr><td>generate.js (icons)</td><td>SVG에서 React 컴포넌트 자동 생성</td><td><span class="tag tag-yes">핵심</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.4 감점 요인</h3>
+      <ul class="checklist">
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>npm 미배포 (-3점)</strong> &mdash; 모든 패키지가 0.1.0이고 실제 npm registry에 publish된 이력 없음. 배포 파이프라인(release workflow) 미구축</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>CHANGELOG 미생성 (-2점)</strong> &mdash; Changesets 도입했으나 실제 CHANGELOG.md 파일 미존재</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>의존성 자동 업데이트 미설정 (-2점)</strong> &mdash; Dependabot/Renovate 미설정. 보안 취약점 의존성 방치 위험</div></li>
+        <li><span class="check-icon check-no">&#10007;</span><div><strong>배포 프리뷰 없음 (-2점)</strong> &mdash; PR별 Storybook/Docs 프리뷰 배포가 없어 리뷰어의 시각적 확인 불편</div></li>
+        <li><span class="check-icon check-partial">&#9679;</span><div><strong>모니터링 없음 (-1점)</strong> &mdash; 배포 후 패키지 다운로드 수, 번들 사이즈 추적 등 운영 메트릭 부재 (배포 전이므로 가중치 낮음)</div></li>
+      </ul>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5. 종합 커버리지 매트릭스 -->
+    <!-- ============================================ -->
+    <div class="section">
+      <h2>5. 종합 커버리지 매트릭스</h2>
+      <p class="section-desc">디자인 시스템의 각 영역별 세부 커버리지를 시각화합니다.</p>
+
+      <h3>5.1 영역별 커버리지</h3>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">설계 원칙 &amp; 아키텍처 문서</span><span class="cat-pct">95%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-excellent" style="width:95%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">토큰 체계 (Color, Typography, Spacing, Radius, Motion)</span><span class="cat-pct">90%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-excellent" style="width:90%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">컴포넌트 구현 (16개 React + 83 Icons)</span><span class="cat-pct">85%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-excellent" style="width:85%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">컴포넌트 문서 (MDX + Storybook Stories)</span><span class="cat-pct">94%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-excellent" style="width:94%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">접근성 (ARIA + 키보드 + 포커스)</span><span class="cat-pct">85%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-excellent" style="width:85%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">TypeScript 타입 안전성</span><span class="cat-pct">95%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-excellent" style="width:95%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">CI/CD 파이프라인</span><span class="cat-pct">85%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-excellent" style="width:85%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">코드 품질 게이트 (Lint + Hooks + PR Template)</span><span class="cat-pct">90%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-excellent" style="width:90%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">단위/통합 테스트</span><span class="cat-pct">45%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-poor" style="width:45%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">시각적 회귀 테스트 (Chromatic)</span><span class="cat-pct">80%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-good" style="width:80%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">Figma 디자인 연동</span><span class="cat-pct">53%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-fair" style="width:53%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">다크 모드</span><span class="cat-pct">15%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-poor" style="width:15%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">국제화 (i18n / RTL)</span><span class="cat-pct">10%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-poor" style="width:10%"></div></div>
+      </div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar-label"><span class="cat-name">npm 배포 &amp; 릴리즈 프로세스</span><span class="cat-pct">30%</span></div>
+        <div class="coverage-bar"><div class="coverage-bar-inner bar-poor" style="width:30%"></div></div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 6. 개선 권고사항 -->
+    <!-- ============================================ -->
+    <div class="section">
+      <h2>6. 개선 권고사항 (Improvement Recommendations)</h2>
+      <p class="section-desc">우선순위와 영향도에 따라 분류한 구체적 개선 항목입니다.</p>
+
+      <h3>6.1 Critical (즉시 필요)</h3>
+      <div class="improvement-grid">
+        <div class="improvement-card">
+          <span class="priority priority-critical">CRITICAL</span>
+          <h4>테스트 커버리지 확대</h4>
+          <p>
+            <strong>현재:</strong> 11/16 컴포넌트에 테스트 존재, 일부는 38줄 수준으로 형식적<br>
+            <strong>목표:</strong> 전 컴포넌트 80%+ 라인 커버리지<br>
+            <strong>액션:</strong><br>
+            &bull; Card, Chip, EmptyState, SearchInput, DSHighlight 테스트 작성<br>
+            &bull; Input(38줄), Tabs(51줄) 테스트를 150줄+ 수준으로 보강<br>
+            &bull; 각 컴포넌트별 최소 테스트: 렌더링, Props, 인터랙션, 접근성, 에러 상태, disabled 상태<br>
+            &bull; vitest.config.ts 커버리지 임계값을 80/70/80/80으로 상향
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-critical">CRITICAL</span>
+          <h4>누락 Figma 링크 보완</h4>
+          <p>
+            <strong>현재:</strong> 15개 중 8개만 Figma 연결 (53%)<br>
+            <strong>목표:</strong> 100% Figma 트레이서빌리티<br>
+            <strong>액션:</strong> Badge, Card, Chip, Checkbox, Select, SearchInput, BottomSheet에 Figma nodeId 매핑 추가. check-figma-links.mjs를 CI에서 warning이 아닌 error로 전환
+          </p>
+        </div>
+      </div>
+
+      <h3>6.2 High Priority (1-2주 이내)</h3>
+      <div class="improvement-grid">
+        <div class="improvement-card">
+          <span class="priority priority-high">HIGH</span>
+          <h4>npm 배포 파이프라인 구축</h4>
+          <p>
+            <strong>현재:</strong> Changesets 설정만 완료, 실제 publish 워크플로우 없음<br>
+            <strong>액션:</strong> .github/workflows/release.yml 생성 &mdash; changeset version + publish 자동화. NPM_TOKEN secret 설정. pre-release (0.x) 전략 정의
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-high">HIGH</span>
+          <h4>스냅샷 테스트 도입</h4>
+          <p>
+            <strong>현재:</strong> Chromatic에만 의존하는 시각적 회귀 감지<br>
+            <strong>액션:</strong> 각 컴포넌트의 주요 variant 조합에 대해 Vitest 인라인 스냅샷 추가. COMPONENT_UNIT_SNAPSHOT_TEST_STRATEGY.md 문서에 따른 실행
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-high">HIGH</span>
+          <h4>CI 커버리지 리포트 공개</h4>
+          <p>
+            <strong>현재:</strong> 커버리지가 로컬에서만 확인 가능<br>
+            <strong>액션:</strong> CI에서 coverage summary를 PR comment로 게시 (예: vitest-coverage-report-action). 커버리지 하락 시 PR 블로킹
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-high">HIGH</span>
+          <h4>Dependabot / Renovate 설정</h4>
+          <p>
+            <strong>현재:</strong> 의존성 자동 업데이트 없음<br>
+            <strong>액션:</strong> .github/dependabot.yml 추가. @storybook, vitest, typescript 등 주요 의존성 주간 자동 PR 생성
+          </p>
+        </div>
+      </div>
+
+      <h3>6.3 Medium Priority (1개월 이내)</h3>
+      <div class="improvement-grid">
+        <div class="improvement-card">
+          <span class="priority priority-medium">MEDIUM</span>
+          <h4>다크 모드 토큰 체계 구축</h4>
+          <p>
+            CSS variable 구조는 이미 갖추고 있으므로, semantic token에 light/dark 분기 추가. data-theme="dark" 속성 기반 전환. Storybook에서 테마 토글 지원
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-medium">MEDIUM</span>
+          <h4>i18n 추상화 레이어</h4>
+          <p>
+            컴포넌트 내 하드코딩된 한국어 문자열("입력 삭제", "모달 닫기", "선택")을 상수로 추출. defaultLabels 객체 + props 오버라이드 패턴으로 국제화 준비
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-medium">MEDIUM</span>
+          <h4>Skeleton / Loading 컴포넌트</h4>
+          <p>
+            디자인 시스템에서 가장 흔히 필요한 로딩 표현 컴포넌트 부재. Skeleton, Spinner, Progress 컴포넌트 추가. 토큰 기반 애니메이션 적용
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-medium">MEDIUM</span>
+          <h4>PR별 Storybook 프리뷰 배포</h4>
+          <p>
+            Chromatic이 스크린샷 비교는 제공하지만, 인터랙티브 프리뷰 URL은 별도 설정 필요. Vercel/Netlify preview 또는 Chromatic의 published Storybook 활용
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-medium">MEDIUM</span>
+          <h4>JSDoc Props 문서화</h4>
+          <p>
+            모든 exported Props interface에 JSDoc 주석 추가. IDE 자동완성에서 각 prop의 용도, 기본값, 예시가 표시되도록 개선. react-docgen-typescript와 시너지
+          </p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-medium">MEDIUM</span>
+          <h4>번들 사이즈 모니터링</h4>
+          <p>
+            size-limit 또는 bundlemon 도입하여 PR별 번들 사이즈 변화 추적. 디자인 시스템은 소비자 번들에 직접 영향을 미치므로 사이즈 관리 필수
+          </p>
+        </div>
+      </div>
+
+      <h3>6.4 Low Priority (분기 내)</h3>
+      <div class="improvement-grid">
+        <div class="improvement-card">
+          <span class="priority priority-low">LOW</span>
+          <h4>E2E 테스트 도입</h4>
+          <p>Playwright로 Portal 기반 컴포넌트(Modal, Select, BottomSheet, Toast)의 실제 브라우저 동작 검증. 크로스 브라우저 테스트</p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-low">LOW</span>
+          <h4>React.memo 최적화</h4>
+          <p>정적 compound 서브 컴포넌트(Label, Body, Footer, Description 등)에 React.memo 적용. 성능 프로파일링 후 선택적 적용</p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-low">LOW</span>
+          <h4>CHANGELOG.md 자동 생성</h4>
+          <p>Changesets의 changelog 생성 기능 활성화. 릴리즈 시 자동으로 CHANGELOG.md 업데이트</p>
+        </div>
+        <div class="improvement-card">
+          <span class="priority priority-low">LOW</span>
+          <h4>Docs 버전 관리</h4>
+          <p>Docusaurus 버전 기능으로 메이저 버전별 문서 분기. 소비자가 이전 버전 참조 가능하도록</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 7. 결론 -->
+    <!-- ============================================ -->
+    <div class="section">
+      <h2>7. 결론 (Conclusion)</h2>
+
+      <div class="verdict-box">
+        <h4>종합 판정</h4>
+        <p>
+          NudgeEAP Design System은 <strong>기획/설계와 개발 품질에서 A급 성숙도</strong>를 보여줍니다.
+          토큰 퍼스트 아키텍처, 컴파운드 컴포넌트 패턴, 접근성 구현, CSS variable 기반 스타일링,
+          Figma 연동 자동화 등은 업계 모범 사례에 부합합니다.
+        </p>
+        <p style="margin-top:12px;">
+          그러나 <strong>테스트 영역이 가장 큰 약점</strong>입니다. 인프라는 우수하게 갖추어져 있으나(Vitest, Testing Library, MSW, Chromatic, axe-playwright),
+          실제 테스트 코드의 양과 깊이가 부족합니다. 5개 컴포넌트에 테스트가 전무하고,
+          존재하는 테스트도 일부는 형식적 수준입니다. 디자인 시스템은 다수의 소비자 프로젝트에 영향을 미치므로,
+          <strong>테스트 부족은 전체 생태계의 안정성 리스크</strong>입니다.
+        </p>
+        <p style="margin-top:12px;">
+          운영 측면에서는 CI/CD, 코드 품질 게이트, 자동화 스크립트가 잘 구축되어 있으나,
+          <strong>실제 npm 배포와 릴리즈 프로세스가 미완성</strong>입니다.
+          v0.1.0 상태에서 실제 소비자에게 전달되기 위한 마지막 마일의 자동화가 필요합니다.
+        </p>
+        <p style="margin-top:12px;">
+          <strong>최우선 액션:</strong> (1) 테스트 커버리지 80%+ 달성 (2) 누락 Figma 링크 100% 보완 (3) npm release 파이프라인 구축.
+          이 세 가지가 해결되면 B+ → A 등급으로 도약할 수 있는 잠재력이 충분합니다.
+        </p>
+      </div>
+
+      <h3 style="margin-top:32px;">점수 산출 근거</h3>
+      <table>
+        <thead>
+          <tr><th>영역</th><th>가중치</th><th>점수</th><th>가중 점수</th><th>핵심 근거</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>기획 &amp; 설계</td><td>20%</td><td>92</td><td>18.4</td><td>원칙/아키텍처/문서 우수, 다크모드/i18n/Figma 연동 미흡</td></tr>
+          <tr><td>개발 품질</td><td>30%</td><td>90</td><td>27.0</td><td>TS strict, 컴파운드 패턴, a11y 우수. memo/ErrorBoundary/Form 통합 부재</td></tr>
+          <tr><td>테스트</td><td>25%</td><td>62</td><td>15.5</td><td>인프라 우수하나 실질 커버리지 부족. 5개 미커버, 스냅샷/E2E 전무</td></tr>
+          <tr><td>운영</td><td>25%</td><td>88</td><td>22.0</td><td>CI/CD/자동화 우수. npm 배포/CHANGELOG/Dependabot 미구축</td></tr>
+          <tr style="font-weight:700; background:var(--blue-50);">
+            <td>종합</td><td>100%</td><td colspan="2">82.9 → B+</td><td>테스트 강화 시 A 등급 가능</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <footer class="report-footer">
+      <p>
+        This report was generated by Claude Opus 4.6 (Design System Specialist) on 2026-04-13 KST<br>
+        NudgeEAP Design System v0.1.0 &mdash; Monorepo at /Users/eprnf/02_NudgeEAP/NudgeEAPDesignSystem<br>
+        &copy; 2026 NudgeEAP. Confidential &mdash; Internal Use Only.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

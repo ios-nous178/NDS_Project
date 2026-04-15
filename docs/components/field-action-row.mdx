@@ -1,0 +1,175 @@
+---
+sidebar_position: 14
+title: FieldActionRow
+---
+
+import { FieldActionRow, Button } from "@nudge-eap/react";
+
+# FieldActionRow
+
+입력 필드 + 액션 버튼 조합 레이아웃 컴포넌트입니다. 휴대폰 인증, 인증번호 입력 등 "입력 → 확인" 패턴에 특화되어 있습니다.
+
+```tsx
+import { FieldActionRow } from "@nudge-eap/react";
+```
+
+---
+
+## Flat API
+
+### 휴대폰 인증
+
+```tsx
+<FieldActionRow
+  field={
+    <input
+      type="tel"
+      value={phone}
+      onChange={(e) => setPhone(e.target.value)}
+      placeholder="숫자만 입력해 주세요."
+    />
+  }
+  action={
+    <button type="button" disabled={phone.length < 10} onClick={handleSend}>
+      인증 번호 받기
+    </button>
+  }
+  actionTone="outline"
+/>
+```
+
+### 인증번호 입력 + 타이머
+
+```tsx
+<FieldActionRow
+  field={
+    <input type="number" placeholder="인증번호 6자리" />
+  }
+  action={
+    <button type="button">확인</button>
+  }
+  actionTone="solid"
+  timer="02:58"
+  helperText="이메일 또는 문자로 전송된 인증번호를 입력해주세요"
+/>
+```
+
+### 에러 상태
+
+```tsx
+<FieldActionRow
+  field={<input type="tel" value="010-0000-0000" />}
+  action={<button disabled>인증 번호 받기</button>}
+  error
+  helperText="휴대폰 번호를 확인해주세요."
+/>
+```
+
+### 타이머 만료
+
+```tsx
+<FieldActionRow
+  field={<input type="number" placeholder="인증번호 6자리" />}
+  action={<button disabled>확인</button>}
+  timer="00:00"
+  timerExpired
+  error
+  helperText="인증 시간이 만료되었습니다."
+/>
+```
+
+---
+
+## Compound API
+
+```tsx
+<FieldActionRow.Root>
+  <FieldActionRow.Row>
+    <FieldActionRow.Field error={hasError}>
+      <input type="tel" placeholder="숫자만 입력해 주세요." />
+      <FieldActionRow.Timer expired={isExpired}>02:58</FieldActionRow.Timer>
+    </FieldActionRow.Field>
+    <FieldActionRow.Action tone="outline">
+      <button type="button">인증 번호 받기</button>
+    </FieldActionRow.Action>
+  </FieldActionRow.Row>
+  <FieldActionRow.Helper error={hasError}>
+    도움 텍스트
+  </FieldActionRow.Helper>
+</FieldActionRow.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `field` | `ReactNode` | — | 입력 필드 (input 또는 Input 컴포넌트) |
+| `action` | `ReactNode` | — | 액션 버튼 |
+| `actionTone` | `"outline" \| "solid"` | `"outline"` | 버튼 스타일 |
+| `timer` | `ReactNode` | — | 타이머 표시 (입력 필드 우측) |
+| `timerExpired` | `boolean` | `false` | 타이머 만료 상태 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `helperText` | `string` | — | 도움/에러 텍스트 |
+| `success` | `boolean` | `false` | 성공 상태 |
+| `slotProps` | `FieldActionRowSlotProps` | — | 슬롯 프롭 |
+
+---
+
+## Compound 컴포넌트
+
+| 컴포넌트 | 역할 |
+|---|---|
+| `FieldActionRow.Root` | 루트 |
+| `FieldActionRow.Row` | 입력 + 버튼 가로 행 |
+| `FieldActionRow.Field` | 입력 필드 래퍼 |
+| `FieldActionRow.Timer` | 타이머 표시 (Field 내부) |
+| `FieldActionRow.Action` | 버튼 래퍼 (tone 지원) |
+| `FieldActionRow.Helper` | 도움/에러/성공 텍스트 |
+
+---
+
+## 상태별 스타일
+
+| 상태 | 필드 테두리 | 헬퍼 텍스트 | 타이머 |
+|---|---|---|---|
+| 기본 | Neutral 300 | Neutral 500 | Primary |
+| 포커스 | Blue 500 | — | — |
+| 에러 | Red 500 | Red 500 | — |
+| 성공 | — | Green 300 | — |
+| 타이머 만료 | — | — | Red 500 |
+
+---
+
+## 마이그레이션
+
+```tsx
+// Before (SignUpPhoneInput)
+<div className="flex gap-2">
+  <input className="..." />
+  <button className="...">인증 번호 받기</button>
+</div>
+
+// After
+<FieldActionRow
+  field={<input type="tel" placeholder="숫자만 입력해 주세요." />}
+  action={<button>인증 번호 받기</button>}
+  actionTone="outline"
+/>
+```
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]
+├── div [data-slot="row"]
+│   ├── div [data-slot="field"] [data-error]
+│   │   ├── input
+│   │   └── span [data-slot="timer"] [data-expired]
+│   └── div [data-slot="action"] [data-tone]
+│       └── button
+└── span [data-slot="helper"] [data-error] [data-success]
+```

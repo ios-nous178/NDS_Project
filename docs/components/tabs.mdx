@@ -1,0 +1,262 @@
+---
+sidebar_position: 6
+title: Tabs
+---
+
+import { Tabs } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+import Playground from "@site/src/components/Playground";
+
+# Tabs
+
+탭 내비게이션 컴포넌트입니다. `line`, `pill`, `square` 세 가지 변형을 지원하며, 슬라이딩 인디케이터 애니메이션이 내장되어 있습니다. Flat API와 Compound API를 모두 지원합니다.
+
+```tsx
+import { Tabs } from "@nudge-eap/react";
+```
+
+---
+
+## 플레이그라운드
+
+<Playground
+  title="Tabs Playground"
+  controls={[
+    { name: "variant", type: "select", default: "line", options: ["line", "pill", "square"] },
+  ]}
+  render={(props) => {
+    const items = [
+      { key: "all", title: "전체", content: <div style={{ padding: 16 }}>전체 콘텐츠</div> },
+      { key: "counsel", title: "상담", content: <div style={{ padding: 16 }}>상담 콘텐츠</div> },
+      { key: "challenge", title: "챌린지", content: <div style={{ padding: 16 }}>챌린지 콘텐츠</div> },
+    ];
+    return (
+      <div style={{ width: 360 }}>
+        <Tabs
+          items={items}
+          activeKey="all"
+          onTabChange={() => {}}
+          variant={props.variant}
+        />
+      </div>
+    );
+  }}
+/>
+
+---
+
+## Flat API
+
+### Line 변형
+
+```tsx
+const [activeKey, setActiveKey] = useState("all");
+
+const items = [
+  { key: "all", title: "전체", content: <AllContent /> },
+  { key: "counsel", title: "상담", content: <CounselContent /> },
+  { key: "challenge", title: "챌린지", content: <ChallengeContent /> },
+];
+
+<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} variant="line" />
+```
+
+### Pill 변형
+
+```tsx
+<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} variant="pill" />
+```
+
+### Square 변형
+
+```tsx
+<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} variant="square" />
+```
+
+### 탭만 사용 (패널 없이)
+
+`content`를 생략하면 탭 리스트만 렌더링됩니다.
+
+```tsx
+const items = [
+  { key: "address", title: "주소 검색" },
+  { key: "center", title: "센터 검색" },
+];
+
+<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} />
+```
+
+---
+
+## Compound API
+
+각 요소를 직접 조합하여 자유로운 레이아웃을 구성합니다.
+
+```tsx
+<Tabs.Root activeKey={activeKey} onTabChange={setActiveKey} variant="line">
+  <Tabs.List>
+    <Tabs.Trigger tabKey="address">주소 검색</Tabs.Trigger>
+    <Tabs.Trigger tabKey="center">센터 검색</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Panel tabKey="address">
+    <AddressSearch />
+  </Tabs.Panel>
+  <Tabs.Panel tabKey="center">
+    <CenterSearch />
+  </Tabs.Panel>
+</Tabs.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `items` | `TabItem[]` | — | 탭 아이템 목록 |
+| `activeKey` | `string` | — | 현재 활성 탭 키 |
+| `onTabChange` | `(key: string) => void` | — | 탭 변경 콜백 |
+| `variant` | `"line" \| "pill" \| "square"` | `"line"` | 스타일 변형 |
+| `fullWidth` | `boolean` | `true` | 전체 너비 |
+| `slotProps` | `TabsSlotProps` | — | 슬롯별 props 전달 |
+
+### TabItem
+
+| 속성 | 타입 | 설명 |
+|---|---|---|
+| `key` | `string` | 탭 식별자 |
+| `title` | `ReactNode` | 탭 라벨 |
+| `content` | `ReactNode` | 패널 콘텐츠 (생략 시 패널 미렌더링) |
+
+---
+
+## Compound 컴포넌트
+
+### Tabs.Root
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `activeKey` | `string` | — | 활성 탭 키 |
+| `onTabChange` | `(key: string) => void` | — | 탭 변경 콜백 |
+| `variant` | `"line" \| "pill" \| "square"` | `"line"` | 변형 |
+
+### Tabs.List
+
+탭 버튼을 감싸는 `<ul>` 요소입니다. `role="tablist"`이 적용됩니다. `line` 변형에서는 슬라이딩 인디케이터가 자동으로 포함됩니다.
+
+### Tabs.Trigger
+
+개별 탭 버튼입니다.
+
+| Prop | 타입 | 설명 |
+|---|---|---|
+| `tabKey` | `string` | 탭 식별자 (activeKey와 비교) |
+
+### Tabs.Panel
+
+탭 콘텐츠 패널입니다. 비활성 패널은 DOM에서 제거됩니다.
+
+| Prop | 타입 | 설명 |
+|---|---|---|
+| `tabKey` | `string` | 이 패널에 대응하는 탭 키 |
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-tabs-width` | `100%` | 컴포넌트 너비 |
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]
+├── ul [data-slot="list"]  [data-variant]  (role="tablist")
+│   ├── li [data-slot="trigger"]  [data-active]  (role="tab")
+│   ├── li [data-slot="trigger"]  [data-active]
+│   └── span [data-slot="indicator"]  (line variant만)
+├── div [data-slot="panel"]  [data-hidden]  (role="tabpanel")
+└── div [data-slot="panel"]  [data-hidden]
+```
+
+---
+
+## 변형별 스타일
+
+| 변형 | 인디케이터 | 활성 스타일 |
+|---|---|---|
+| `line` | 하단 3px 바 (슬라이딩) | 진한 텍스트, font-weight 500 |
+| `pill` | 없음 | Blue 500 배경, 흰색 텍스트 |
+| `square` | 없음 | 흰색 배경, 그림자, font-weight 500 |
+
+---
+
+## WebView SlideTab 마이그레이션
+
+기존 WebView의 `SlideTab` 컴포넌트를 대체합니다.
+
+| 기존 navigationType | 디자인시스템 variant |
+|---|---|
+| `LINE` | `"line"` |
+| `PILL` | `"pill"` |
+| `SQUARE` | `"square"` |
+| `CIRCLE` | `"pill"` (가장 유사) |
+
+```tsx
+// Before (WebView)
+<SlideTab
+  currentTabKey={currentTabKey}
+  pageTabList={pageTabList}
+  handleTabChange={handleTabChange}
+  navigationType="LINE"
+/>
+
+// After (Design System)
+<Tabs
+  items={pageTabList.map(({ key, title, content }) => ({ key, title, content }))}
+  activeKey={currentTabKey}
+  onTabChange={handleTabChange}
+  variant="line"
+/>
+```
+
+---
+
+## QA 체크포인트
+
+Storybook에서 아래 시나리오를 별도 story로 유지합니다.
+
+- Flat API와 Compound API parity
+- 패널 없이 탭 리스트만 쓰는 경우
+- 긴 라벨과 overflow
+- 스크롤 가능한 많은 탭
+- WebView `SlideTab` 마이그레이션
+- 키보드 전환 리뷰
+
+이 스토리들은 시각 회귀와 기본 상호작용을 확인하는 용도입니다. 반면 키보드 화살표 이동, `aria-controls`와 `aria-labelledby` 연결, active tab의 `tabIndex` 규칙 같은 항목은 컴포넌트 테스트에서 고정하는 편이 더 적합합니다.
+
+---
+
+## 구조 메모
+
+`Tabs`는 Flat API와 Compound API를 모두 제공하지만, 앞으로 크로스플랫폼 대응 가능성을 열어두려면 Compound API를 기준 계약으로 보고 Flat API는 thin adapter처럼 유지하는 편이 좋습니다.
+
+현재 `line` variant의 indicator는 웹 DOM 측정에 기대고 있으므로, 구조 검토에서는 다음 항목을 따로 확인합니다.
+
+- indicator 계산이 renderer-specific layer로 분리 가능한지
+- active state와 keyboard 규칙이 headless하게 분리 가능한지
+- 슬롯 계약이 CSS class가 아니라 역할 단위로 문서화되어 있는지
+
+즉 Storybook QA는 parity와 회귀를 확인하고, 구조 검토는 React와 DOM 의존도를 줄일 수 있는지 확인하는 식으로 역할을 나눕니다.
+
+---
+
+## 접근성
+
+- `role="tablist"`, `role="tab"`, `role="tabpanel"` 시맨틱 구조
+- `aria-selected` 활성 탭 표시
+- 키보드 지원: Enter / Space로 탭 전환
+- `tabIndex` 관리: 활성 탭만 0, 나머지 -1

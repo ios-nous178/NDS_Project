@@ -1,0 +1,142 @@
+---
+sidebar_position: 0
+title: 한눈에 보기
+---
+
+import { Button, Badge, Input } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+
+# 컴포넌트
+
+NudgeEAP Design System이 제공하는 React 컴포넌트입니다. 모든 컴포넌트는 Flat API와 Compound API를 모두 지원하며, CSS 변수와 `slotProps`를 통해 스타일을 자유롭게 확장할 수 있습니다.
+
+반복 UI를 기반으로 다음 추출 후보를 검토할 때는 [추출 후보 목록](/docs/components/candidates)과 [컴포넌트 인벤토리](/docs/components/inventory)를 함께 참고해주세요.
+
+전체 설계 기준은 [디자인 원칙](/docs/guide/design-principles)에서, 실제 서비스 적용 시작점은 [페이지 교체 우선순위](/docs/guide/page-migration-priority)에서 함께 볼 수 있습니다.
+
+---
+
+## 컴포넌트 미리보기
+
+<ComponentPreview title="Button">
+  <Button variant="solid">Solid</Button>
+  <Button variant="outlined">Outlined</Button>
+  <Button variant="soft">Soft</Button>
+  <Button variant="outlined-sub">Outlined Sub</Button>
+</ComponentPreview>
+
+<ComponentPreview title="Badge">
+  <Badge variant="primary">프라이머리</Badge>
+  <Badge variant="secondary">세컨더리</Badge>
+  <Badge variant="success">성공</Badge>
+  <Badge variant="caution">주의</Badge>
+  <Badge variant="error">에러</Badge>
+  <Badge variant="neutral">기본</Badge>
+</ComponentPreview>
+
+<ComponentPreview title="Input">
+  <div style={{ width: 320 }}>
+    <Input label="이메일" placeholder="example@email.com" helperText="회사 이메일을 입력해주세요" />
+  </div>
+  <div style={{ width: 320 }}>
+    <Input label="에러 상태" placeholder="입력값" error errorMessage="올바른 형식이 아닙니다" />
+  </div>
+</ComponentPreview>
+
+---
+
+## 일반
+
+| 컴포넌트 | 설명 | 상태 |
+|---|---|---|
+| [**Button**](/docs/components/button) | 클릭 액션을 위한 버튼. 4가지 변형, 6가지 사이즈 지원 | ✅ |
+| [**Badge**](/docs/components/badge) | 상태나 카테고리를 표시하는 라벨. 6가지 색상 변형 | ✅ |
+| [**Card**](/docs/components/card) | 범용 카드 프리미티브. 썸네일, 헤더, 바디, 푸터 슬롯 | ✅ |
+
+## 입력
+
+| 컴포넌트 | 설명 | 상태 |
+|---|---|---|
+| [**Input**](/docs/components/input) | 텍스트 입력 필드. 라벨, 에러, 클리어 버튼 등 지원 | ✅ |
+| [**SearchInput**](/docs/components/search-input) | 검색 전용 입력. 검색 아이콘, 클리어, Enter 검색 지원 | ✅ |
+| [**Select**](/docs/components/select) | 드롭다운 선택. Portal 기반, 라벨/에러 지원 | ✅ |
+| [**Checkbox & Radio**](/docs/components/checkbox-radio) | 체크박스/라디오. 커스텀 인디케이터, Group 레이아웃 | ✅ |
+| [**Chip**](/docs/components/chip) | 선택/삭제 가능한 태그. outlined/filled/soft 변형 | ✅ |
+
+## 레이아웃
+
+| 컴포넌트 | 설명 | 상태 |
+|---|---|---|
+| [**FieldActionRow**](/docs/components/field-action-row) | 입력+버튼 조합. 인증/타이머/에러 상태 지원 | ✅ |
+
+## 내비게이션
+
+| 컴포넌트 | 설명 | 상태 |
+|---|---|---|
+| [**Tabs**](/docs/components/tabs) | 탭 내비게이션. line/pill/square 변형, 슬라이딩 인디케이터 | ✅ |
+
+## 오버레이
+
+| 컴포넌트 | 설명 | 상태 |
+|---|---|---|
+| [**Modal**](/docs/components/modal) | 대화형 모달 다이얼로그. 포커스 트랩, 접근성 내장 | ✅ |
+| [**Popup**](/docs/components/popup) | 확인/취소 팝업 알림. Alert Dialog 패턴 | ✅ |
+| [**BottomSheet**](/docs/components/bottom-sheet) | 하단 오버레이. 드래그 핸들, 포커스 트랩, 애니메이션 내장 | ✅ |
+
+## 피드백
+
+| 컴포넌트 | 설명 | 상태 |
+|---|---|---|
+| [**Toast**](/docs/components/toast) | 일시적 피드백 메시지. 4가지 variant, Provider + 명령형 API | ✅ |
+| [**EmptyState**](/docs/components/empty-state) | 빈 상태 화면. 아이콘, 제목, 설명, 액션 슬롯 지원 | ✅ |
+
+---
+
+## 공통 특징
+
+### Hybrid API
+
+모든 컴포넌트는 두 가지 사용 방식을 제공합니다.
+
+```tsx
+// Flat — 간단하게
+<Input label="이름" placeholder="입력하세요" error errorMessage="필수 항목입니다" />
+
+// Compound — 자유롭게
+<Input.Root error>
+  <Input.Label>이름</Input.Label>
+  <Input.Wrapper>
+    <Input.Field placeholder="입력하세요" />
+    <Input.ClearButton onClick={handleClear} />
+  </Input.Wrapper>
+  <Input.Helper error>필수 항목입니다</Input.Helper>
+</Input.Root>
+```
+
+### CSS 변수 기반 스타일링
+
+모든 컴포넌트의 시각적 속성은 CSS 변수로 노출됩니다. 프로젝트 테마에 맞게 오버라이드할 수 있습니다.
+
+```css
+/* 프로젝트 전역 오버라이드 */
+:root {
+  --nds-button-radius: 12px;
+  --nds-input-radius: 12px;
+}
+```
+
+### data-slot 속성
+
+각 내부 요소는 `data-slot` 속성을 가지며, 이를 통해 styled-components나 CSS에서 타겟팅할 수 있습니다.
+
+```css
+[data-slot="label"] {
+  font-weight: 600;
+}
+```
+
+### 접근성
+
+- Modal/Popup: 포커스 트랩, ESC 닫기, `aria-modal`, `aria-labelledby` 내장
+- Input: `label`과 `htmlFor` 자동 연결
+- Button: `type="button"` 기본값, `disabled` 상태 처리

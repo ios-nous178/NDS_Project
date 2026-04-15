@@ -1,0 +1,171 @@
+---
+sidebar_position: 11
+title: EmptyState
+---
+
+import { EmptyState, Button } from "@nudge-eap/react";
+import ComponentPreview from "@site/src/components/ComponentPreview";
+
+# EmptyState
+
+빈 상태, 검색 결과 없음, 오류 화면을 표시하는 컴포넌트입니다. 아이콘, 제목, 설명, 액션 슬롯을 제공합니다. Flat API와 Compound API를 모두 지원합니다.
+
+```tsx
+import { EmptyState } from "@nudge-eap/react";
+```
+
+---
+
+## Flat API
+
+### 기본 사용법
+
+```tsx
+<EmptyState
+  title="데이터가 없습니다"
+  description="아직 등록된 내용이 없습니다."
+/>
+```
+
+### 검색 결과 없음
+
+```tsx
+<EmptyState
+  icon={<SearchEmptyIcon />}
+  title="검색 결과가 없습니다"
+  description="다른 검색어로 다시 시도해보세요."
+/>
+```
+
+### 에러 + 액션 버튼
+
+```tsx
+<EmptyState
+  icon={<ErrorIcon />}
+  title="일시적인 오류가 발생했습니다"
+  description="잠시 후 다시 시도해주세요."
+  action={
+    <Button variant="outlined" size="sm" onClick={handleRetry}>
+      다시 시도
+    </Button>
+  }
+/>
+```
+
+### 최소 높이 지정
+
+```tsx
+<EmptyState
+  title="리스트가 없습니다."
+  minHeight={360}
+/>
+```
+
+---
+
+## Compound API
+
+```tsx
+<EmptyState.Root minHeight={300}>
+  <EmptyState.Icon>
+    <img src="/images/placeholder.png" alt="empty" />
+  </EmptyState.Icon>
+  <EmptyState.Title>상담 내역이 없습니다</EmptyState.Title>
+  <EmptyState.Description>
+    첫 상담을 예약해보세요.
+  </EmptyState.Description>
+  <EmptyState.Action>
+    <Button size="sm">상담 예약하기</Button>
+  </EmptyState.Action>
+</EmptyState.Root>
+```
+
+---
+
+## Flat API Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| `icon` | `ReactNode` | 기본 아이콘 | 상단 아이콘/이미지 |
+| `title` | `string` | — | 제목 |
+| `description` | `string` | — | 설명 (줄바꿈 지원) |
+| `action` | `ReactNode` | — | 하단 액션 (버튼 등) |
+| `minHeight` | `number \| string` | `200px` | 최소 높이 |
+| `slotProps` | `EmptyStateSlotProps` | — | 슬롯 프롭 |
+
+---
+
+## Compound 컴포넌트
+
+| 컴포넌트 | 역할 |
+|---|---|
+| `EmptyState.Root` | 루트 컨테이너 (중앙 정렬) |
+| `EmptyState.Icon` | 아이콘/이미지 영역 |
+| `EmptyState.Title` | 제목 |
+| `EmptyState.Description` | 설명 문구 |
+| `EmptyState.Action` | 하단 액션 영역 |
+
+---
+
+## CSS 변수
+
+| 변수 | 기본값 | 설명 |
+|---|---|---|
+| `--nds-empty-state-min-height` | `200px` | 최소 높이 |
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]
+├── div [data-slot="icon"]
+│   └── svg / img
+├── h3 [data-slot="title"]
+├── p [data-slot="description"]
+└── div [data-slot="action"]
+    └── (Button 등)
+```
+
+---
+
+## WebView 마이그레이션
+
+```tsx
+// Before (WebView - NoneEmpty)
+<NoneEmpty desc="등록된 상담이 없습니다" />
+
+// Before (WebView - NoneList)
+<NoneList desc="리스트가 없습니다." />
+
+// Before (HomePage - EmptyContent)
+<EmptyContent message="검색 결과가 없습니다" />
+
+// After (Design System)
+<EmptyState title="등록된 상담이 없습니다" />
+<EmptyState title="리스트가 없습니다." minHeight={360} />
+<EmptyState title="검색 결과가 없습니다" />
+```
+
+---
+
+## QA 체크포인트
+
+Storybook에서 아래 시나리오를 별도 story로 유지합니다.
+
+- 기본 empty state
+- 액션 버튼 포함 상태
+- 최소 높이 변형
+- Flat API와 Compound API parity
+- multiline description review
+
+특히 multiline description은 Flat API의 string과 Compound API의 children 표현 방식이 달라질 수 있으므로, 두 API를 나란히 비교하는 parity story를 유지하는 편이 좋습니다. visual QA는 결과 차이를 잘 잡고, 컴포넌트 테스트는 그 원인이 구현인지 사용 방식인지 구분하는 데 도움이 됩니다.
+
+---
+
+## 접근성
+
+- 시맨틱 `<h3>` 제목 사용
+- 아이콘 영역 `aria-hidden="true"`
+- `white-space: pre-line`으로 줄바꿈 지원
+- `word-break: keep-all`로 한국어 줄바꿈 최적화
