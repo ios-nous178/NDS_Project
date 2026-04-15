@@ -38,7 +38,6 @@ phases:
       - cp -R apps/storybook/storybook-static/. eb-bundle/public/storybook/
       - cp -R apps/docs/build/. eb-bundle/public/docs/
       - cp apps/web-server/server.js apps/web-server/package.json apps/web-server/Procfile eb-bundle/
-      - cp -R apps/web-server/.ebextensions eb-bundle/.ebextensions
       - cd eb-bundle && npm install --omit=dev --no-audit --no-fund && cd ..
       - echo "=== eb-bundle contents ==="
       - ls -la eb-bundle
