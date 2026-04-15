@@ -28,8 +28,10 @@ const config: StorybookConfig = {
     },
   },
   async viteFinal(config) {
+    const isBuild = process.env.NODE_ENV === "production";
     return {
       ...config,
+      base: isBuild ? "/storybook/" : config.base,
       cacheDir: resolve(appDir, "node_modules/.cache/storybook/sb-vite"),
       optimizeDeps: {
         ...config.optimizeDeps,

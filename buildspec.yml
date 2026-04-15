@@ -1,0 +1,57 @@
+version: 0.2
+
+# CodeBuild buildspec for NudgeEAP Design System
+# - Builds Storybook (static) and Docusaurus (docs)
+# - Bundles them with apps/web-server (Express) into an EB-deployable artifact
+# - The output artifact is consumed by the CodePipeline Elastic Beanstalk Deploy action
+
+env:
+  variables:
+    PNPM_VERSION: "9.6.0"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - corepack enable
+      - corepack prepare pnpm@${PNPM_VERSION} --activate
+      - pnpm config set store-dir .pnpm-store
+      - node -v
+      - pnpm -v
+
+  pre_build:
+    commands:
+      - pnpm install --frozen-lockfile
+      - pnpm generate:component-inventory
+
+  build:
+    commands:
+      - pnpm build
+      - pnpm docs:build
+      - pnpm --filter @nudge-eap/storybook build
+
+  post_build:
+    commands:
+      - rm -rf eb-bundle
+      - mkdir -p eb-bundle/public/storybook eb-bundle/public/docs
+      - cp -R apps/storybook/storybook-static/. eb-bundle/public/storybook/
+      - cp -R apps/docs/build/. eb-bundle/public/docs/
+      - cp apps/web-server/server.js apps/web-server/package.json apps/web-server/Procfile eb-bundle/
+      - cp -R apps/web-server/.ebextensions eb-bundle/.ebextensions
+      - cd eb-bundle && npm install --omit=dev --no-audit --no-fund && cd ..
+      - echo "=== eb-bundle contents ==="
+      - ls -la eb-bundle
+      - du -sh eb-bundle
+
+artifacts:
+  base-directory: eb-bundle
+  files:
+    - '**/*'
+  name: nudge-eap-ds-$(date +%Y-%m-%d-%H%M%S)
+
+cache:
+  paths:
+    - '.pnpm-store/**/*'
+    - 'node_modules/.cache/**/*'
+    - '.turbo/**/*'

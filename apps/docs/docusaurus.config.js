@@ -7,8 +7,8 @@ const config = {
   tagline: "토큰, 컴포넌트, 워크플로우, 문서를 한곳에서 관리합니다",
   favicon: "img/favicon.svg",
 
-  url: "http://localhost",
-  baseUrl: "/",
+  url: process.env.SITE_URL || "http://localhost",
+  baseUrl: "/docs/",
 
   organizationName: "nudge-eap",
   projectName: "design-system",
@@ -43,7 +43,7 @@ const config = {
       {
         docs: {
           path: "../../docs",
-          routeBasePath: "docs",
+          routeBasePath: "/",
           sidebarPath: require.resolve("./sidebars.js"),
         },
         blog: false,
@@ -66,10 +66,10 @@ const config = {
         href: "/",
       },
       items: [
-        { to: "/docs/getting-started", label: "시작하기", position: "left" },
-        { to: "/docs/components/overview", label: "컴포넌트", position: "left" },
-        { to: "/docs/tokens/colors", label: "토큰", position: "left" },
-        { to: "/docs/guide/design-principles", label: "가이드", position: "left" },
+        { to: "/getting-started", label: "시작하기", position: "left" },
+        { to: "/components/overview", label: "컴포넌트", position: "left" },
+        { to: "/tokens/colors", label: "토큰", position: "left" },
+        { to: "/guide/design-principles", label: "가이드", position: "left" },
         { href: storybookUrl, label: "스토리북", position: "right" },
       ],
     },
@@ -79,33 +79,33 @@ const config = {
         {
           title: "시작하기",
           items: [
-            { label: "소개", to: "/docs/intro" },
-            { label: "설치 및 설정", to: "/docs/getting-started" },
-            { label: "디자인 원칙", to: "/docs/guide/design-principles" },
+            { label: "소개", to: "/intro" },
+            { label: "설치 및 설정", to: "/getting-started" },
+            { label: "디자인 원칙", to: "/guide/design-principles" },
           ],
         },
         {
           title: "컴포넌트",
           items: [
-            { label: "한눈에 보기", to: "/docs/components/overview" },
-            { label: "Button", to: "/docs/components/button" },
-            { label: "Modal", to: "/docs/components/modal" },
-            { label: "Input", to: "/docs/components/input" },
+            { label: "한눈에 보기", to: "/components/overview" },
+            { label: "Button", to: "/components/button" },
+            { label: "Modal", to: "/components/modal" },
+            { label: "Input", to: "/components/input" },
           ],
         },
         {
           title: "토큰",
           items: [
-            { label: "색상", to: "/docs/tokens/colors" },
-            { label: "타이포그래피", to: "/docs/tokens/typography" },
-            { label: "간격 및 사이징", to: "/docs/tokens/spacing" },
+            { label: "색상", to: "/tokens/colors" },
+            { label: "타이포그래피", to: "/tokens/typography" },
+            { label: "간격 및 사이징", to: "/tokens/spacing" },
           ],
         },
         {
           title: "탐색",
           items: [
             { label: "스토리북", href: storybookUrl },
-            { label: "스타일링 가이드", to: "/docs/guide/styling" },
+            { label: "스타일링 가이드", to: "/guide/styling" },
           ],
         },
       ],
