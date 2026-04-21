@@ -5,6 +5,9 @@
     "**/build/**",
     "**/.docusaurus/**",
     "**/storybook-static/**",
+    "design-system-ui-v4-4*.md",
+    "harness/**",
+    "mockups/**",
   ],
   "config": {
     "default": true,
