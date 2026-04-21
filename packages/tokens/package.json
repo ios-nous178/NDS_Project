@@ -9,7 +9,12 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./css": "./dist/tokens.css"
+    "./brands": {
+      "types": "./dist/brands/index.d.ts",
+      "import": "./dist/brands/index.js"
+    },
+    "./css": "./dist/tokens.css",
+    "./css/trost": "./dist/trost.css"
   },
   "files": [
     "dist"

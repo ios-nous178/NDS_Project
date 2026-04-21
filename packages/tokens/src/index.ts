@@ -4,3 +4,22 @@ export type { TypeStyle } from "./typography";
 export { spacing, radius, borderWidth, sizing } from "./spacing";
 export { elevation, shadow, zIndex } from "./elevation";
 export { motion, duration, easing, transition } from "./motion";
+
+// Brand themes
+export type {
+  BrandTheme,
+  SemanticColors,
+  ColorScale,
+  TypographyOverrides,
+  SpacingOverrides,
+  ElevationOverrides,
+} from "./brands";
+export { nudgeEapTheme, trostTheme } from "./brands";
+export {
+  trostYellow,
+  trostCobalt,
+  trostPink,
+  trostNeutral,
+  trostStatus,
+  trostSemantic,
+} from "./brands";
