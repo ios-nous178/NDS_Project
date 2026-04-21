@@ -1,6 +1,9 @@
 ---
-sidebar_position: 14
+sidebar_position: 9
 title: FieldActionRow
+description: 입력 필드와 버튼을 한 줄로 조합하는 레이아웃 컴포넌트
+category: 레이아웃
+related: [Input, Button]
 ---
 
 import { FieldActionRow, Button } from "@nudge-eap/react";
@@ -12,6 +15,23 @@ import { FieldActionRow, Button } from "@nudge-eap/react";
 ```tsx
 import { FieldActionRow } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- **입력 필드 + 버튼**을 한 줄로 배치할 때 (인증번호 발송, 쿠폰 적용, 타이머 등)
+- Input과 Button의 높이/정렬을 자동으로 맞춰야 할 때
+- 에러 상태, 타이머 등 부가 정보를 입력 줄 아래에 표시할 때
+
+### 이럴 때 사용하지 마세요
+- 버튼 없이 입력만 필요할 때 → [Input](/docs/components/input)을 사용하세요
+- 검색 기능 → [SearchInput](/docs/components/search-input)을 사용하세요
+- 복잡한 폼 레이아웃 (여러 필드 + 여러 버튼) → 개별 Input + Button 조합을 사용하세요
+
+### 자주 하는 실수
+- 복잡한 폼 전체를 FieldActionRow로 구성 — 이 컴포넌트는 "입력 1개 + 버튼 1개" 패턴에 최적화되어 있습니다
 
 ---
 

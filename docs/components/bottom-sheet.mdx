@@ -1,6 +1,9 @@
 ---
-sidebar_position: 7
+sidebar_position: 13
 title: BottomSheet
+description: 화면 하단에서 올라오는 모바일 오버레이 컴포넌트
+category: 오버레이
+related: [Modal, Popup]
 ---
 
 import { BottomSheet, Button } from "@nudge-eap/react";
@@ -13,6 +16,24 @@ import ComponentPreview from "@site/src/components/ComponentPreview";
 ```tsx
 import { BottomSheet } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- **모바일 화면**에서 하단 슬라이드 UI가 필요할 때 (옵션 선택, 필터, 상세 정보 등)
+- 드래그로 닫을 수 있는 자연스러운 모바일 UX가 필요할 때
+- 화면 전체를 가리지 않으면서 추가 콘텐츠를 보여줄 때
+
+### 이럴 때 사용하지 마세요
+- 데스크톱 전용 화면에서 대화상자가 필요할 때 → [Modal](/docs/components/modal)을 사용하세요
+- 단순 확인/취소 알림 → [Popup](/docs/components/popup)을 사용하세요
+- 간단한 드롭다운 선택 → [Select](/docs/components/select)를 사용하세요
+
+### 자주 하는 실수
+- 데스크톱에서 BottomSheet를 주요 UI로 사용 — 하단 정렬은 데스크톱에서 어색합니다. 데스크톱에서는 Modal을 사용하세요
+- 매우 짧은 콘텐츠에 BottomSheet 사용 — 오버레이 비용 대비 효과가 낮습니다. Popup이나 Toast를 고려하세요
 
 ---
 

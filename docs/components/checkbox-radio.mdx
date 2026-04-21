@@ -1,6 +1,9 @@
 ---
-sidebar_position: 9
+sidebar_position: 7
 title: Checkbox & Radio
+description: 체크박스와 라디오 버튼. 복수 선택 또는 단일 선택에 사용
+category: 입력
+related: [Select, Chip]
 ---
 
 import { Checkbox, CheckboxGroup, Radio, RadioGroup, RadioGroupItem } from "@nudge-eap/react";
@@ -13,6 +16,24 @@ import ComponentPreview from "@site/src/components/ComponentPreview";
 ```tsx
 import { Checkbox, CheckboxGroup, Radio, RadioGroup, RadioGroupItem } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- **Checkbox**: 여러 항목 중 복수 선택, 또는 단일 동의/약관 체크
+- **Radio**: 여러 항목 중 **하나만 선택** (옵션이 2~5개일 때)
+- 모든 옵션을 한 번에 보여줘야 할 때
+
+### 이럴 때 사용하지 마세요
+- 옵션이 많아 드롭다운이 적절할 때 (6개 이상) → [Select](/docs/components/select)를 사용하세요
+- 선택 후 즉시 필터가 적용되는 인터랙티브 태그 → [Chip](/docs/components/chip)을 사용하세요
+- on/off 토글 → Switch 컴포넌트를 사용하세요 (단, 미구현 시 Checkbox로 대체 가능)
+
+### 자주 하는 실수
+- Radio를 복수 선택 용도로 사용 — Radio는 항상 하나만 선택됩니다. 복수 선택은 Checkbox를 사용하세요
+- Checkbox/Radio에 `label` 없이 사용 — 접근성을 위해 항상 라벨을 제공하세요
 
 ---
 
