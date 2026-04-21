@@ -670,13 +670,12 @@ export default function TrostTestListMockup() {
             {relatedTags.map((tag) => (
               <Chip
                 key={tag.label}
+                label={tag.label}
                 variant="outlined"
                 size="md"
                 shape="pill"
                 onClick={() => console.log(`navigate: ${tag.linkedTestUrl}`)}
-              >
-                {tag.label}
-              </Chip>
+              />
             ))}
           </div>
         </div>
