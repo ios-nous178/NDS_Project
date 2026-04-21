@@ -1,15 +1,15 @@
 /* ─── Layout ─── */
 
 .page {
-  --color-primary: #2B96ED;
-  --color-primary-dark: #017EE4;
-  --color-secondary: #ED2E77;
-  --color-bg: #FFFFFF;
-  --color-bg-alt: #F8F9FB;
+  --color-primary: #2b96ed;
+  --color-primary-dark: #017ee4;
+  --color-secondary: #ed2e77;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f8f9fb;
   --color-text: #111111;
-  --color-text-sub: #4E5462;
-  --color-text-muted: #6C7280;
-  --color-border: #E6E7EB;
+  --color-text-sub: #4e5462;
+  --color-text-muted: #6c7280;
+  --color-border: #e6e7eb;
   --color-card: rgba(255, 255, 255, 0.95);
 }
 
@@ -52,7 +52,7 @@
 }
 
 .heroGradient {
-  background: linear-gradient(135deg, #2B96ED 0%, #017EE4 50%, #ED2E77 100%);
+  background: linear-gradient(135deg, #2b96ed 0%, #017ee4 50%, #ed2e77 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -111,7 +111,7 @@
 
 .btnSecondary:hover {
   background: var(--color-bg-alt);
-  border-color: #D2D5D9;
+  border-color: #d2d5d9;
   transform: translateY(-1px);
 }
 
@@ -223,7 +223,7 @@
 }
 
 .componentCard:hover {
-  border-color: #D2D5D9;
+  border-color: #d2d5d9;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   transform: translateY(-2px);
 }
@@ -236,7 +236,11 @@
   height: 44px;
   border-radius: 12px;
   background: color-mix(in srgb, var(--accent) 10%, transparent);
-  font-size: 20px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+  font-family: var(--ifm-font-family-monospace, monospace);
+  letter-spacing: -0.02em;
   flex-shrink: 0;
 }
 
@@ -297,7 +301,7 @@
 }
 
 .tokenCard:hover {
-  border-color: #D2D5D9;
+  border-color: #d2d5d9;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   transform: translateY(-2px);
 }
@@ -332,7 +336,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #1E1E1E;
+  background: #1e1e1e;
 }
 
 .codeDot {
@@ -351,8 +355,8 @@
 .codeBlock {
   margin: 0 !important;
   padding: 20px 24px !important;
-  background: #1E1E1E !important;
-  color: #D4D4D4 !important;
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
   font-size: 13.5px !important;
   line-height: 1.7 !important;
   border-radius: 0 !important;
@@ -382,7 +386,7 @@
 }
 
 .quickLink:hover {
-  border-color: #D2D5D9;
+  border-color: #d2d5d9;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   transform: translateY(-2px);
 }
@@ -444,7 +448,7 @@
 .apiCode {
   margin: 0 !important;
   padding: 16px !important;
-  background: #F3F4F6 !important;
+  background: #f3f4f6 !important;
   color: #383838 !important;
   font-size: 12.5px !important;
   line-height: 1.65 !important;

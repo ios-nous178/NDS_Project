@@ -1,6 +1,9 @@
 ---
-sidebar_position: 11
+sidebar_position: 15
 title: EmptyState
+description: 데이터가 없는 빈 화면을 안내하는 컴포넌트
+category: 피드백
+related: [Toast]
 ---
 
 import { EmptyState, Button } from "@nudge-eap/react";
@@ -13,6 +16,24 @@ import ComponentPreview from "@site/src/components/ComponentPreview";
 ```tsx
 import { EmptyState } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 데이터가 없는 **빈 화면**을 표시할 때 (검색 결과 없음, 목록이 비어있음 등)
+- 빈 상태에서 사용자에게 **다음 행동을 안내**할 때 (데이터 추가, 필터 변경 등)
+- 아이콘 + 제목 + 설명 + 액션 버튼 조합이 필요할 때
+
+### 이럴 때 사용하지 마세요
+- 에러 페이지 (500, 404 등) → 전용 에러 페이지를 사용하세요
+- 데이터 로딩 중 → Skeleton이나 Spinner를 사용하세요
+- 첫 사용 온보딩 가이드 → 전용 온보딩 UI를 사용하세요
+
+### 자주 하는 실수
+- 데이터 로딩 중에 EmptyState를 잠깐 보여줌 — 로딩 상태와 빈 상태를 구분하세요. 로딩 완료 후 데이터가 없을 때만 표시합니다
+- 액션 버튼 없이 "데이터가 없습니다"만 표시 — 사용자가 다음에 무엇을 해야 하는지 안내하세요
 
 ---
 

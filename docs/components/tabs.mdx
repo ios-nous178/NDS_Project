@@ -1,6 +1,9 @@
 ---
-sidebar_position: 6
+sidebar_position: 10
 title: Tabs
+description: 같은 맥락 내에서 뷰를 전환하는 탭 내비게이션 컴포넌트
+category: 내비게이션
+related: []
 ---
 
 import { Tabs } from "@nudge-eap/react";
@@ -14,6 +17,25 @@ import Playground from "@site/src/components/Playground";
 ```tsx
 import { Tabs } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 같은 맥락 내에서 **뷰를 전환**할 때 (프로필 탭, 설정 카테고리 등)
+- 콘텐츠를 논리적 그룹으로 나누되, 같은 페이지에서 전환해야 할 때
+- 탭 간 콘텐츠가 **동등한 수준**의 정보일 때
+
+### 이럴 때 사용하지 마세요
+- 페이지 간 네비게이션 → 라우터 기반 Navigation을 사용하세요
+- 단계별 진행 (1단계 → 2단계 → 3단계) → Stepper 패턴을 사용하세요
+- 콘텐츠 접기/펴기 → Accordion 패턴을 사용하세요
+
+### 자주 하는 실수
+- 탭이 2개 미만 — 탭 UI의 의미가 없습니다. 1개면 탭 없이 바로 표시하세요
+- 탭 내용이 서로 완전히 무관 — 탭은 같은 주제의 다른 관점을 보여줄 때 사용합니다. 무관한 콘텐츠는 별도 섹션으로 분리하세요
+- 탭이 너무 많아 가로 스크롤 발생 — 5개 이상이면 다른 UI 패턴을 고려하세요
 
 ---
 

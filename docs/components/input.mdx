@@ -1,6 +1,9 @@
 ---
 sidebar_position: 4
 title: Input
+description: 사용자로부터 한 줄 텍스트를 입력받는 컴포넌트
+category: 입력
+related: [SearchInput, Select, FieldActionRow]
 ---
 
 import { Input } from "@nudge-eap/react";
@@ -14,6 +17,25 @@ import Playground from "@site/src/components/Playground";
 ```tsx
 import { Input } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 사용자로부터 **한 줄 텍스트**를 입력받을 때 (이름, 이메일, 비밀번호 등)
+- 라벨, 에러 메시지, 도움말이 함께 필요한 폼 필드일 때
+- prefix/suffix 슬롯으로 단위나 아이콘을 함께 표시할 때
+
+### 이럴 때 사용하지 마세요
+- 검색 전용 입력 (검색 아이콘 + 클리어 + Enter 트리거) → [SearchInput](/docs/components/search-input)을 사용하세요
+- 미리 정해진 옵션에서 선택 → [Select](/docs/components/select)를 사용하세요
+- 입력 필드 + 버튼을 한 줄로 조합 → [FieldActionRow](/docs/components/field-action-row)를 사용하세요
+- 여러 줄 텍스트 입력 → `<textarea>`를 사용하세요
+
+### 자주 하는 실수
+- `label` 없이 `placeholder`만 사용 — placeholder는 입력 시 사라지므로 접근성과 UX 모두 나빠집니다. 항상 `label`을 제공하세요
+- 에러 상태에서 `errorMessage` 미제공 — `error` prop만으로는 사용자가 무엇이 잘못인지 알 수 없습니다
 
 ---
 

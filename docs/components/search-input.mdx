@@ -1,6 +1,9 @@
 ---
 sidebar_position: 5
 title: SearchInput
+description: 검색 전용 입력 컴포넌트. 검색 아이콘, 클리어, Enter 검색을 지원
+category: 입력
+related: [Input, Select]
 ---
 
 import { SearchInput } from "@nudge-eap/react";
@@ -14,6 +17,22 @@ import Playground from "@site/src/components/Playground";
 ```tsx
 import { SearchInput } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- **검색 기능**을 제공할 때 (목록 필터링, 전체 검색 등)
+- 검색 아이콘 + 입력 + 클리어 버튼 + Enter 트리거 패턴이 필요할 때
+
+### 이럴 때 사용하지 마세요
+- 일반 텍스트 입력 (이름, 이메일 등) → [Input](/docs/components/input)을 사용하세요
+- 미리 정해진 옵션에서 필터링 → [Select](/docs/components/select) 또는 [Chip](/docs/components/chip)을 사용하세요
+
+### 자주 하는 실수
+- 검색이 아닌 일반 입력에 SearchInput 사용 — 검색 아이콘이 사용자에게 잘못된 기대를 줍니다
+- 검색 결과가 없을 때 피드백 미제공 — [EmptyState](/docs/components/empty-state)와 함께 사용하세요
 
 ---
 

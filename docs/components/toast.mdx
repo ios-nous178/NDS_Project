@@ -1,6 +1,9 @@
 ---
-sidebar_position: 10
+sidebar_position: 14
 title: Toast
+description: 사용자에게 일시적 피드백 메시지를 표시하는 토스트 컴포넌트
+category: 피드백
+related: [Popup, Modal]
 ---
 
 import { Toast, Button } from "@nudge-eap/react";
@@ -14,6 +17,25 @@ import { Toast } from "@nudge-eap/react";
 
 const { Provider: ToastProvider, useToast, show: showToast } = Toast;
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 사용자 액션에 대한 **일시적 피드백**을 표시할 때 (저장 완료, 복사됨, 전송됨 등)
+- 사용자의 작업 흐름을 **차단하지 않고** 결과를 알릴 때
+- 되돌리기(Undo) 액션을 함께 제공할 때
+
+### 이럴 때 사용하지 마세요
+- 사용자의 즉각적인 판단이 필요한 메시지 → [Popup](/docs/components/popup)을 사용하세요
+- 지속적으로 보여야 하는 정보 → 인라인 메시지나 배너를 사용하세요
+- 폼 유효성 에러 → [Input](/docs/components/input)의 `error` 상태를 사용하세요
+
+### 자주 하는 실수
+- 중요한 에러를 Toast로만 표시 — 3초 후 사라지므로 사용자가 놓칩니다. 중요한 에러는 Popup이나 인라인 에러를 사용하세요
+- Toast에 긴 텍스트 넣기 — 짧고 명확한 한 줄 메시지가 적합합니다
+- 액션 없이 에러 Toast만 표시 — 사용자가 할 수 있는 행동(재시도 등)을 `action`으로 함께 제공하세요
 
 ---
 

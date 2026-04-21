@@ -1,6 +1,9 @@
 ---
 sidebar_position: 2
 title: Badge
+description: 상태나 카테고리를 표시하는 읽기 전용 라벨 컴포넌트
+category: 일반
+related: [Chip, Button]
 ---
 
 import { Badge } from "@nudge-eap/react";
@@ -14,6 +17,24 @@ import Playground from "@site/src/components/Playground";
 ```tsx
 import { Badge } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 상태(성공, 에러, 주의)나 카테고리를 **읽기 전용 라벨**로 표시할 때
+- 목록 항목에 짧은 메타 정보를 덧붙일 때 (신규, 완료, 대기 중 등)
+- 숫자 카운트를 강조할 때 (알림 뱃지 등)
+
+### 이럴 때 사용하지 마세요
+- 사용자가 클릭하여 선택/해제하거나 삭제할 수 있는 태그 → [Chip](/docs/components/chip)을 사용하세요
+- 액션을 트리거하는 용도 → [Button](/docs/components/button)을 사용하세요
+- 긴 설명 텍스트를 담을 때 → 일반 텍스트나 인라인 메시지를 사용하세요
+
+### 자주 하는 실수
+- Badge에 `onClick` 핸들러를 붙여 인터랙티브하게 사용 — 읽기 전용이어야 합니다. 인터랙션이 필요하면 Chip을 사용하세요
+- 한 화면에 너무 많은 색상 variant를 혼용 — 의미 체계가 흐려집니다. 색상별 의미를 일관되게 유지하세요
 
 ---
 

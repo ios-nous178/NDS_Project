@@ -1,6 +1,9 @@
 ---
-sidebar_position: 8
+sidebar_position: 6
 title: Select
+description: 드롭다운 방식으로 미리 정해진 옵션 중 하나를 선택하는 컴포넌트
+category: 입력
+related: [Input, Checkbox, Radio, Chip]
 ---
 
 import { Select } from "@nudge-eap/react";
@@ -13,6 +16,24 @@ import ComponentPreview from "@site/src/components/ComponentPreview";
 ```tsx
 import { Select } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 미리 정해진 옵션 목록에서 **하나를 선택**할 때
+- 옵션이 5개 이상이라 화면에 모두 노출하기 어려울 때
+- 폼 안에서 드롭다운 선택이 필요한 필드일 때
+
+### 이럴 때 사용하지 마세요
+- 옵션이 3개 이하일 때 → [Radio](/docs/components/checkbox-radio)를 사용하세요 (한눈에 보임)
+- 복수 선택이 필요할 때 → [Checkbox](/docs/components/checkbox-radio) 또는 [Chip](/docs/components/chip)을 사용하세요
+- 사용자가 직접 텍스트를 입력해야 할 때 → [Input](/docs/components/input)을 사용하세요
+
+### 자주 하는 실수
+- 옵션이 2개뿐인데 Select 사용 — Radio가 더 직관적입니다
+- 옵션 목록이 매우 길 때(50개+) 검색 기능 없이 사용 — 사용자가 스크롤로 찾기 어렵습니다
 
 ---
 

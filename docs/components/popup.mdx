@@ -1,6 +1,9 @@
 ---
-sidebar_position: 5
+sidebar_position: 12
 title: Popup
+description: 단순 확인/취소 액션을 요청하는 팝업 알림 컴포넌트
+category: 오버레이
+related: [Modal, BottomSheet, Toast]
 ---
 
 import { useState } from "react";
@@ -64,6 +67,25 @@ export const SimplePopupDemo = () => {
 ```tsx
 import { Popup } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- **단순 확인/취소** 판단만 필요할 때 (삭제 확인, 로그아웃 확인, 알림 메시지 등)
+- 제목 + 설명 + 확인/취소 버튼이면 충분한 간결한 대화상자일 때
+- Alert Dialog 패턴이 필요할 때 (`alertdialog` role)
+
+### 이럴 때 사용하지 마세요
+- 폼 입력이나 복잡한 레이아웃이 필요한 대화상자 → [Modal](/docs/components/modal)을 사용하세요
+- 모바일에서 하단 목록 선택 UI → [BottomSheet](/docs/components/bottom-sheet)를 사용하세요
+- 일시적 피드백 (저장 완료, 복사됨) → [Toast](/docs/components/toast)를 사용하세요
+
+### 자주 하는 실수
+- Popup 안에 폼 입력을 넣기 — Popup은 텍스트 + 버튼 구조입니다. 입력이 필요하면 Modal을 사용하세요
+- `description` 없이 `title`만 표시 — 사용자에게 충분한 맥락을 제공하세요
+- 중요하지 않은 알림에 Popup 사용 — 사용자 흐름을 차단합니다. 비차단 알림은 Toast가 적합합니다
 
 ---
 

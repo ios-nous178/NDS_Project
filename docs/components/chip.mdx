@@ -1,6 +1,9 @@
 ---
-sidebar_position: 13
+sidebar_position: 8
 title: Chip
+description: 선택, 해제, 삭제가 가능한 인터랙티브 태그 컴포넌트
+category: 입력
+related: [Badge, Button, Checkbox]
 ---
 
 import { Chip } from "@nudge-eap/react";
@@ -12,6 +15,24 @@ import { Chip } from "@nudge-eap/react";
 ```tsx
 import { Chip } from "@nudge-eap/react";
 ```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 사용자가 **선택/해제/삭제**할 수 있는 인터랙티브 태그일 때 (필터, 관심사, 태그 선택 등)
+- 선택된 항목을 시각적으로 표시하고 제거할 수 있게 할 때
+- 카테고리 필터를 토글 형태로 제공할 때
+
+### 이럴 때 사용하지 마세요
+- 읽기 전용 상태 라벨 → [Badge](/docs/components/badge)를 사용하세요
+- 주요 액션 트리거 → [Button](/docs/components/button)을 사용하세요
+- 폼에서 명확한 복수 선택 → [Checkbox](/docs/components/checkbox-radio)를 사용하세요
+
+### 자주 하는 실수
+- 읽기 전용 라벨에 Chip을 사용 — 사용자가 클릭 가능하다고 오해합니다. 읽기 전용이면 Badge를 사용하세요
+- 너무 긴 텍스트를 Chip에 넣기 — Chip은 짧은 키워드에 적합합니다
 
 ---
 

@@ -4,7 +4,7 @@ const storybookUrl = process.env.STORYBOOK_BASE_URL || "http://localhost:6006";
 
 const config = {
   title: "NudgeEAP Design System",
-  tagline: "토큰, 컴포넌트, 워크플로우, 문서를 한곳에서 관리합니다",
+  tagline: "기획, 디자인, 개발이 같은 언어로 소통하는 디자인 시스템",
   favicon: "img/favicon.svg",
 
   url: process.env.SITE_URL || "http://localhost",
