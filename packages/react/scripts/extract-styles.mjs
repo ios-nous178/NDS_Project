@@ -16,6 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /* ─── tokens 소스에서 직접 값 로드 ─── */
 
 const tokensDir = path.resolve(__dirname, "../../tokens/src");
+const tokensDistDir = path.resolve(__dirname, "../../tokens/dist");
 
 function loadTokenModule(filename) {
   let src = fs.readFileSync(path.join(tokensDir, filename), "utf-8");
@@ -52,6 +53,10 @@ const tokenEval = new Function(`
 `);
 
 const tokens = tokenEval();
+
+// cv (CSS variable references) — 빌드된 JS에서 import (TypeScript 구문 포함이라 eval 불가)
+const { cv } = await import(path.join(tokensDistDir, "cssVar.js"));
+tokens.cv = cv;
 
 /* ─── 컴포넌트 CSS 추출 ─── */
 
