@@ -2,7 +2,7 @@
  * 브랜드별 헤더/푸터 콘텐츠 데이터
  *
  * AppBar / AppFooter 컴파운드 서브 컴포넌트 props와 1:1 매핑.
- * apps/storybook/public/brand-logos/ 에서 로고 이미지 서빙.
+ * 로고 이미지는 Vite asset import로 가져와 빌드 시 base path가 자동 반영됩니다.
  */
 
 import type {
@@ -12,6 +12,15 @@ import type {
   CompanyInfoData,
   TrendingKeywordItem,
 } from "@nudge-eap/react";
+
+/* ─── Logo asset imports (Vite resolves base path automatically) ─── */
+import nudgeEapLogo from "../public/brand-logos/nudge-eap-logo.png";
+import nudgeEapLogoFooter from "../public/brand-logos/nudge-eap-logo-footer.png";
+import trostLogo from "../public/brand-logos/trost-logo.svg";
+import trostLogoMobile from "../public/brand-logos/trost-logo-mobile.webp";
+import genietLogoPc from "../public/brand-logos/geniet-logo-pc.webp";
+import genietLogoMobile from "../public/brand-logos/geniet-logo-mobile.webp";
+import genietLogoFooter from "../public/brand-logos/geniet-logo-footer.webp";
 
 /* ─── Types ─── */
 
@@ -62,9 +71,9 @@ export interface BrandFixture {
 
 const nudgeEap: BrandFixture = {
   logo: {
-    headerPc: { src: "/brand-logos/nudge-eap-logo.png", width: 200, height: 80 },
-    headerMobile: { src: "/brand-logos/nudge-eap-logo.png", width: 120, height: 24 },
-    footer: { src: "/brand-logos/nudge-eap-logo-footer.png", width: 99, height: 30 },
+    headerPc: { src: nudgeEapLogo, width: 200, height: 80 },
+    headerMobile: { src: nudgeEapLogo, width: 120, height: 24 },
+    footer: { src: nudgeEapLogoFooter, width: 99, height: 30 },
   },
   header: {
     pcMaxWidth: 1200,
@@ -112,9 +121,9 @@ const nudgeEap: BrandFixture = {
 
 const trost: BrandFixture = {
   logo: {
-    headerPc: { src: "/brand-logos/trost-logo.svg", width: 90, height: 36 },
-    headerMobile: { src: "/brand-logos/trost-logo-mobile.webp", width: 80, height: 28 },
-    footer: { src: "/brand-logos/trost-logo.svg", width: 72, height: 28 },
+    headerPc: { src: trostLogo, width: 90, height: 36 },
+    headerMobile: { src: trostLogoMobile, width: 80, height: 28 },
+    footer: { src: trostLogo, width: 72, height: 28 },
   },
   header: {
     pcMaxWidth: 1080,
@@ -180,9 +189,9 @@ const trost: BrandFixture = {
 
 const geniet: BrandFixture = {
   logo: {
-    headerPc: { src: "/brand-logos/geniet-logo-pc.webp", width: 165, height: 54 },
-    headerMobile: { src: "/brand-logos/geniet-logo-mobile.webp", width: 97, height: 28 },
-    footer: { src: "/brand-logos/geniet-logo-footer.webp", width: 166, height: 48 },
+    headerPc: { src: genietLogoPc, width: 165, height: 54 },
+    headerMobile: { src: genietLogoMobile, width: 97, height: 28 },
+    footer: { src: genietLogoFooter, width: 166, height: 48 },
   },
   header: {
     pcMaxWidth: 1280,
