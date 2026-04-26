@@ -1,10 +1,9 @@
 import React from "react";
 import {
-  colors,
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   spacing,
   transition,
   typeScale,
@@ -76,66 +75,68 @@ const chipStyles = `
   /* ─── Outlined ─── */
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="outlined"]) {
-    border: 1px solid ${semantic.border.default};
-    background: ${semantic.bg.white};
-    color: ${semantic.text.subtle};
+    border: 1px solid var(--nds-chip-border, ${cv.border.default});
+    background: ${cv.bg.white};
+    color: var(--nds-chip-text, ${cv.text.subtle});
+    font-size: var(--nds-chip-font-size, inherit);
+    font-weight: var(--nds-chip-font-weight, inherit);
   }
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="outlined"][data-selected="true"]) {
-    border-color: ${semantic.primary.main};
-    color: ${semantic.primary.main};
-    background: ${semantic.bg.white};
+    border-color: var(--nds-chip-selected-border, ${cv.primary.main});
+    color: var(--nds-chip-selected-text, ${cv.primary.main});
+    background: var(--nds-chip-selected-background, ${cv.bg.white});
   }
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="outlined"][data-interactive="true"]:hover) {
-    border-color: ${semantic.primary.main};
-    background: ${semantic.primary.bgLighter || "#f1f8fd"};
+    border-color: ${cv.primary.main};
+    background: ${cv.primary.bgLighter || "#f1f8fd"};
   }
 
   /* ─── Filled ─── */
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="filled"]) {
     border: 1px solid transparent;
-    background: ${colors.neutral[100]};
-    color: ${semantic.text.subtle};
+    background: ${cv.bg.light};
+    color: ${cv.text.subtle};
   }
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="filled"][data-selected="true"]) {
-    background: ${semantic.primary.main};
-    color: ${semantic.text.inverse};
+    background: ${cv.primary.main};
+    color: ${cv.primary.fg};
   }
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="filled"][data-interactive="true"]:hover) {
-    background: ${colors.neutral[200]};
+    background: ${cv.border.light};
   }
 
   /* ─── Soft ─── */
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="soft"]) {
     border: 1px solid transparent;
-    background: ${semantic.primary.bgLighter || "#f1f8fd"};
-    color: ${semantic.primary.main};
+    background: ${cv.primary.bgLighter || "#f1f8fd"};
+    color: ${cv.primary.main};
   }
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="soft"][data-interactive="true"]:hover) {
-    background: ${semantic.primary.bg};
+    background: ${cv.primary.bg};
   }
 
   /* ─── Strong ─── */
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="strong"]) {
-    border: 1px solid ${colors.neutral[900]};
-    background: ${semantic.bg.white};
-    color: ${colors.neutral[900]};
+    border: 1px solid ${cv.text.default};
+    background: ${cv.bg.white};
+    color: ${cv.text.default};
   }
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="strong"][data-selected="true"]) {
-    background: ${colors.neutral[900]};
-    color: ${semantic.text.inverse};
+    background: ${cv.text.default};
+    color: ${cv.text.inverse};
   }
 
   :where(.${CHIP_ROOT_CLASS}[data-variant="strong"][data-interactive="true"]:hover) {
-    background: ${colors.neutral[50]};
+    background: ${cv.bg.light};
   }
 
   /* ─── Remove ─── */

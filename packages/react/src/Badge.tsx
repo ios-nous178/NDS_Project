@@ -1,5 +1,5 @@
 import React from "react";
-import { colors, fontFamily, fontWeight, semantic } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight } from "@nudge-eap/tokens";
 
 export type BadgeVariant = "primary" | "secondary" | "success" | "caution" | "error" | "neutral";
 export type BadgeSize = "sm" | "md";
@@ -16,8 +16,8 @@ const badgeStyles = `
     gap: var(--nds-badge-gap, 4px);
     padding: var(--nds-badge-padding-y, 4px) var(--nds-badge-padding-x, 8px);
     border-radius: var(--nds-badge-radius, 6px);
-    background: var(--nds-badge-background, ${colors.neutral[100]});
-    color: var(--nds-badge-text-color, ${semantic.text.subtle});
+    background: var(--nds-badge-background, ${cv.bg.light});
+    color: var(--nds-badge-text-color, ${cv.text.subtle});
     font-family: var(--nds-badge-font-family, ${fontFamily.web});
     font-size: var(--nds-badge-font-size, 13px);
     line-height: var(--nds-badge-line-height, 18px);
@@ -34,28 +34,28 @@ const badgeStyles = `
 
 const variantStyles = {
   primary: {
-    backgroundColor: semantic.primary.bg,
-    color: colors.blue[600],
+    backgroundColor: cv.primary.bg,
+    color: cv.primary.hover,
   },
   secondary: {
-    backgroundColor: semantic.secondary.bg,
-    color: colors.magenta[600],
+    backgroundColor: cv.secondary.bg,
+    color: cv.secondary.sub,
   },
   success: {
-    backgroundColor: semantic.success.bg,
-    color: colors.green[500],
+    backgroundColor: cv.success.bg,
+    color: cv.success.main,
   },
   caution: {
-    backgroundColor: semantic.caution.bg,
-    color: semantic.caution.text,
+    backgroundColor: cv.caution.bg,
+    color: cv.caution.text,
   },
   error: {
-    backgroundColor: semantic.error.bg,
-    color: semantic.error.main,
+    backgroundColor: cv.error.bg,
+    color: cv.error.main,
   },
   neutral: {
-    backgroundColor: colors.neutral[100],
-    color: semantic.text.subtle,
+    backgroundColor: cv.bg.light,
+    color: cv.text.subtle,
   },
 } as const;
 
