@@ -1,9 +1,9 @@
 import React from "react";
 import {
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   spacing,
   transition,
   typeScale,
@@ -47,14 +47,14 @@ const fieldActionRowStyles = `
     width: 100%;
     height: 48px;
     padding: 0 ${spacing[16]}px;
-    border: 1px solid var(--nds-far-border-color, ${semantic.border.default});
+    border: 1px solid var(--nds-far-border-color, ${cv.border.default});
     border-radius: ${radius.md}px;
-    background: ${semantic.bg.white};
+    background: ${cv.bg.white};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
     outline: none;
     box-sizing: border-box;
     transition: border-color ${transition.default};
@@ -68,20 +68,20 @@ const fieldActionRowStyles = `
   }
 
   :where(.${FAR_FIELD_CLASS} input::placeholder) {
-    color: ${semantic.text.placeholder};
+    color: ${cv.text.placeholder};
     font-size: ${typeScale.body2.fontSize}px;
   }
 
   :where(.${FAR_FIELD_CLASS} input:focus) {
-    border-color: ${semantic.border.focus};
+    border-color: ${cv.border.focus};
   }
 
   :where(.${FAR_FIELD_CLASS}[data-error="true"] input) {
-    border-color: ${semantic.error.main};
+    border-color: ${cv.error.main};
   }
 
   :where(.${FAR_FIELD_CLASS}[data-success="true"] input) {
-    border-color: ${semantic.success.main};
+    border-color: ${cv.success.main};
   }
 
   :where(.${FAR_TIMER_CLASS}) {
@@ -91,11 +91,11 @@ const fieldActionRowStyles = `
     transform: translateY(-50%);
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
-    color: ${semantic.primary.main};
+    color: ${cv.primary.main};
   }
 
   :where(.${FAR_TIMER_CLASS}[data-expired="true"]) {
-    color: ${semantic.error.main};
+    color: ${cv.error.main};
   }
 
   :where(.${FAR_ACTION_CLASS}) {
@@ -123,54 +123,54 @@ const fieldActionRowStyles = `
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="outline"] button) {
-    border: 1px solid ${semantic.primary.main};
-    background: ${semantic.bg.white};
-    color: ${semantic.primary.main};
+    border: 1px solid ${cv.primary.main};
+    background: ${cv.bg.white};
+    color: ${cv.primary.main};
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="outline"] button:hover:not(:disabled)) {
-    border-color: ${semantic.primary.hover};
-    color: ${semantic.primary.hover};
+    border-color: ${cv.primary.hover};
+    color: ${cv.primary.hover};
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button) {
-    border: 1px solid ${semantic.primary.main};
-    background: ${semantic.primary.main};
-    color: ${semantic.text.inverse};
+    border: 1px solid ${cv.primary.main};
+    background: ${cv.primary.main};
+    color: ${cv.primary.fg};
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:hover:not(:disabled)) {
-    background: ${semantic.primary.hover};
-    border-color: ${semantic.primary.hover};
+    background: ${cv.primary.hover};
+    border-color: ${cv.primary.hover};
   }
 
   :where(.${FAR_ACTION_CLASS} button:disabled) {
-    border-color: ${semantic.border.disabled};
-    background: ${semantic.bg.disabled};
-    color: ${semantic.text.disabled};
+    border-color: ${cv.border.disabled};
+    background: ${cv.bg.disabled};
+    color: ${cv.text.disabled};
     cursor: not-allowed;
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:disabled) {
     border-color: transparent;
-    background: ${semantic.bg.disabled};
-    color: ${semantic.text.disabled};
+    background: ${cv.bg.disabled};
+    color: ${cv.text.disabled};
   }
 
   :where(.${FAR_HELPER_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
     transition: color ${transition.default};
   }
 
   :where(.${FAR_HELPER_CLASS}[data-error="true"]) {
-    color: ${semantic.error.main};
+    color: ${cv.error.main};
   }
 
   :where(.${FAR_HELPER_CLASS}[data-success="true"]) {
-    color: ${semantic.error.main};
+    color: ${cv.error.main};
   }
 `;
 

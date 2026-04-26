@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { colors, radius, spacing, typeScale, shadow, zIndex, semantic } from "@nudge-eap/tokens";
+import { cv, radius, spacing, typeScale, shadow, zIndex } from "@nudge-eap/tokens";
 
 type DivProps = React.HTMLAttributes<HTMLDivElement>;
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
@@ -55,7 +55,7 @@ const modalStyles = `
   :where(.${OVERLAY_CLASS}) {
     position: fixed;
     inset: 0;
-    background-color: ${semantic.bg.overlay};
+    background-color: ${cv.bg.overlay};
     animation: nds-modal-fade-in 0.2s ease-out;
   }
 
@@ -67,7 +67,7 @@ const modalStyles = `
     flex-direction: column;
     overflow: hidden;
     border-radius: var(--nds-modal-radius, ${radius.lg}px);
-    background-color: ${colors.neutral["00"]};
+    background-color: ${cv.bg.white};
     box-shadow: ${shadow.md};
     animation: nds-modal-slide-up 0.2s ease-out;
   }
@@ -82,7 +82,7 @@ const modalStyles = `
   }
 
   :where(.${HEADER_CLASS}[data-has-title="true"]) {
-    border-bottom-color: ${colors.neutral[200]};
+    border-bottom-color: ${cv.border.light};
   }
 
   :where(.${HEADER_TITLE_CLASS}) {
@@ -90,7 +90,7 @@ const modalStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     font-weight: 700;
     line-height: ${typeScale.headline5.lineHeight}px;
-    color: ${colors.neutral[800]};
+    color: ${cv.text.default};
   }
 
   :where(.${CLOSE_CLASS}) {
@@ -100,14 +100,14 @@ const modalStyles = `
     padding: 4px;
     font-size: 20px;
     line-height: 1;
-    color: ${colors.neutral[500]};
+    color: ${cv.text.disabled};
   }
 
   :where(.${BODY_CLASS}) {
     padding: ${spacing[20]}px;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: 1.5;
-    color: ${colors.neutral[700]};
+    color: ${cv.text.subtle};
     text-align: center;
   }
 
@@ -115,7 +115,7 @@ const modalStyles = `
     display: flex;
     width: 100%;
     min-height: 48px;
-    border-top: 1px solid ${colors.neutral[200]};
+    border-top: 1px solid ${cv.border.light};
     box-sizing: border-box;
   }
 
@@ -138,16 +138,16 @@ const modalStyles = `
   }
 
   :where(.${FOOTER_CANCEL_CLASS}) {
-    color: ${colors.neutral[600]};
+    color: ${cv.text.subtle};
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}) {
     font-weight: 700;
-    color: ${colors.blue[600]};
+    color: ${cv.primary.hover};
   }
 
   :where(.${FOOTER_CLASS}[data-has-both-actions="true"] .${FOOTER_CANCEL_CLASS}) {
-    border-right: 1px solid ${colors.neutral[200]};
+    border-right: 1px solid ${cv.border.light};
   }
 
   @keyframes nds-modal-fade-in {

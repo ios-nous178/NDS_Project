@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import {
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   shadow,
   sizing,
   spacing,
@@ -42,7 +42,7 @@ const selectStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
   }
 
   :where(.${SELECT_TRIGGER_CLASS}) {
@@ -53,9 +53,9 @@ const selectStyles = `
     width: 100%;
     min-height: var(--nds-select-height, ${sizing.input.default}px);
     padding: 0 ${spacing[12]}px;
-    border: 1px solid var(--nds-select-border-color, ${semantic.border.default});
+    border: 1px solid var(--nds-select-border-color, ${cv.border.default});
     border-radius: var(--nds-select-radius, ${radius.md}px);
-    background: var(--nds-select-background, ${semantic.bg.white});
+    background: var(--nds-select-background, ${cv.bg.white});
     cursor: pointer;
     font-family: inherit;
     box-sizing: border-box;
@@ -63,15 +63,15 @@ const selectStyles = `
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-open="true"]) {
-    border-color: ${semantic.border.focus};
+    border-color: ${cv.border.focus};
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-error="true"]) {
-    border-color: ${semantic.error.main};
+    border-color: ${cv.error.main};
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-disabled="true"]) {
-    background: ${semantic.bg.disabled};
+    background: ${cv.bg.disabled};
     cursor: not-allowed;
     opacity: 0.6;
   }
@@ -82,7 +82,7 @@ const selectStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -90,7 +90,7 @@ const selectStyles = `
   }
 
   :where(.${SELECT_TRIGGER_TEXT_CLASS}[data-placeholder="true"]) {
-    color: ${semantic.text.placeholder};
+    color: ${cv.text.placeholder};
   }
 
   :where(.${SELECT_CHEVRON_CLASS}) {
@@ -99,7 +99,7 @@ const selectStyles = `
     justify-content: center;
     flex-shrink: 0;
     margin-left: ${spacing[4]}px;
-    color: ${semantic.icon.subtle};
+    color: ${cv.icon.subtle};
     transition: transform ${transition.default};
   }
 
@@ -116,8 +116,8 @@ const selectStyles = `
     position: fixed;
     max-height: var(--nds-select-dropdown-max-height, 200px);
     overflow-y: auto;
-    background: ${semantic.bg.white};
-    border: 1px solid ${semantic.border.light};
+    background: ${cv.bg.white};
+    border: 1px solid ${cv.border.light};
     border-radius: ${radius.md}px;
     box-shadow: ${shadow.md};
     z-index: ${zIndex.dropdown};
@@ -133,27 +133,27 @@ const selectStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
     cursor: pointer;
     transition: background-color ${transition.default};
   }
 
   :where(.${SELECT_OPTION_CLASS}:hover) {
-    background: ${semantic.bg.light};
+    background: ${cv.bg.light};
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-selected="true"]) {
-    color: ${semantic.primary.main};
-    background: ${semantic.primary.bgLighter};
+    color: ${cv.primary.main};
+    background: ${cv.primary.bgLighter};
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-active="true"]) {
-    background: ${semantic.bg.light};
+    background: ${cv.bg.light};
     outline: none;
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-disabled="true"]) {
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
     cursor: not-allowed;
   }
 
@@ -161,11 +161,11 @@ const selectStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
   }
 
   :where(.${SELECT_HELPER_CLASS}[data-error="true"]) {
-    color: ${semantic.error.main};
+    color: ${cv.error.main};
   }
 
   @keyframes nds-select-fade-in {

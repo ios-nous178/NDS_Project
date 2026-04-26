@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import {
-  colors,
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   shadow,
   sizing,
   spacing,
@@ -52,8 +51,8 @@ const tabsStyles = `
   /* ─── line variant ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"]) {
-    background: ${semantic.bg.white};
-    border-bottom: 1px solid ${semantic.border.light};
+    background: ${cv.bg.white};
+    border-bottom: 1px solid ${cv.border.light};
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}) {
@@ -69,14 +68,14 @@ const tabsStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
     padding: 0;
     transition: color ${transition.default}, font-weight ${transition.default};
     position: relative;
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
     font-weight: ${fontWeight.medium};
   }
 
@@ -85,14 +84,14 @@ const tabsStyles = `
     bottom: 0;
     left: 0;
     height: 3px;
-    background: ${semantic.text.default};
+    background: ${cv.text.default};
     transition: transform ${transition.slow}, width ${transition.slow};
   }
 
   /* ─── pill variant ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="pill"]) {
-    background: ${semantic.bg.white};
+    background: ${cv.bg.white};
     padding: ${spacing[16]}px ${spacing[16]}px 0;
     gap: ${spacing[8]}px;
     overflow-x: auto;
@@ -110,7 +109,7 @@ const tabsStyles = `
     justify-content: center;
     height: ${sizing.tabs.pill}px;
     padding: 0 ${spacing[16]}px;
-    background: ${colors.neutral[100]};
+    background: ${cv.bg.light};
     border: none;
     border-radius: ${radius.pill}px;
     cursor: pointer;
@@ -118,20 +117,20 @@ const tabsStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
     white-space: nowrap;
     transition: background-color ${transition.default}, color ${transition.default};
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="pill"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    background: ${semantic.primary.main};
-    color: ${semantic.text.inverse};
+    background: ${cv.primary.main};
+    color: ${cv.primary.fg};
   }
 
   /* ─── square variant ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="square"]) {
-    background: ${colors.neutral[100]};
+    background: ${cv.bg.light};
     border-radius: ${radius.md}px;
     padding: ${spacing[4]}px;
     gap: ${spacing[4]}px;
@@ -151,14 +150,14 @@ const tabsStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
     padding: 0 ${spacing[12]}px;
     transition: background-color ${transition.default}, color ${transition.default};
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="square"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    background: ${semantic.bg.white};
-    color: ${semantic.text.default};
+    background: ${cv.bg.white};
+    color: ${cv.text.default};
     font-weight: ${fontWeight.medium};
     box-shadow: ${shadow.sm};
   }

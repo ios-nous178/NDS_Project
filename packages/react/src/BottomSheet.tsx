@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { colors, fontFamily, radius, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, radius, spacing, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -49,8 +49,8 @@ const bottomSheetStyles = `
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: ${radius.lg}px ${radius.lg}px 0 0;
-    background-color: ${colors.neutral["00"]};
+    border-radius: var(--nds-bottom-sheet-radius, ${radius.lg}px) var(--nds-bottom-sheet-radius, ${radius.lg}px) 0 0;
+    background-color: ${cv.bg.white};
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
     animation: nds-bs-slide-up 0.2s ease-out;
     font-family: ${fontFamily.web};
@@ -71,10 +71,10 @@ const bottomSheetStyles = `
 
   :where(.${BS_HANDLE_CLASS}::after) {
     content: "";
-    width: 36px;
-    height: 4px;
+    width: var(--nds-bottom-sheet-handle-width, 36px);
+    height: var(--nds-bottom-sheet-handle-height, 4px);
     border-radius: ${radius.pill}px;
-    background: ${colors.neutral[300]};
+    background: var(--nds-bottom-sheet-handle-color, ${cv.border.default});
   }
 
   :where(.${BS_HEADER_CLASS}) {
@@ -86,7 +86,7 @@ const bottomSheetStyles = `
   }
 
   :where(.${BS_HEADER_CLASS}[data-has-title="true"]) {
-    border-bottom: 1px solid ${colors.neutral[200]};
+    border-bottom: 1px solid ${cv.border.light};
   }
 
   :where(.${BS_HEADER_TITLE_CLASS}) {
@@ -94,7 +94,7 @@ const bottomSheetStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     font-weight: 700;
     line-height: ${typeScale.headline5.lineHeight}px;
-    color: ${colors.neutral[800]};
+    color: ${cv.text.default};
   }
 
   :where(.${BS_CLOSE_CLASS}) {
@@ -104,7 +104,7 @@ const bottomSheetStyles = `
     padding: 4px;
     font-size: 20px;
     line-height: 1;
-    color: ${colors.neutral[500]};
+    color: ${cv.text.disabled};
   }
 
   :where(.${BS_BODY_CLASS}) {
@@ -114,14 +114,14 @@ const bottomSheetStyles = `
     padding: ${spacing[20]}px;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: 1.5;
-    color: ${colors.neutral[700]};
+    color: ${cv.text.subtle};
   }
 
   :where(.${BS_FOOTER_CLASS}) {
     display: flex;
     gap: ${spacing[8]}px;
     padding: ${spacing[12]}px ${spacing[20]}px;
-    border-top: 1px solid ${colors.neutral[200]};
+    border-top: 1px solid ${cv.border.light};
   }
 
   :where(.${BS_FOOTER_CLASS} > *) {

@@ -1,10 +1,9 @@
 import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import {
-  colors,
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   sizing,
   spacing,
   transition,
@@ -53,7 +52,7 @@ const inputStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}) {
@@ -63,9 +62,9 @@ const inputStyles = `
     width: 100%;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 ${spacing[16]}px;
-    border: 1px solid var(--nds-input-border-color, ${semantic.border.default});
+    border: 1px solid var(--nds-input-border-color, ${cv.border.default});
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: var(--nds-input-background, ${semantic.bg.white});
+    background: var(--nds-input-background, ${cv.bg.white});
     box-sizing: border-box;
     transition:
       border-color ${transition.default},
@@ -73,20 +72,20 @@ const inputStyles = `
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-focused="true"]) {
-    border-color: ${semantic.border.focus};
+    border-color: ${cv.border.focus};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-error="true"]) {
-    border-color: ${semantic.error.main};
+    border-color: ${cv.error.main};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-disabled="true"]) {
-    background: ${semantic.bg.light};
+    background: ${cv.bg.light};
     cursor: default;
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-readonly="true"]) {
-    background: ${semantic.bg.light};
+    background: ${cv.bg.light};
   }
 
   :where(.${INPUT_FIELD_CLASS}) {
@@ -99,16 +98,16 @@ const inputStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
     padding: 0;
   }
 
   :where(.${INPUT_FIELD_CLASS}::placeholder) {
-    color: ${semantic.text.placeholder};
+    color: ${cv.text.placeholder};
   }
 
   :where(.${INPUT_FIELD_CLASS}:disabled) {
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
     cursor: default;
   }
 
@@ -122,12 +121,12 @@ const inputStyles = `
 
   :where(.${INPUT_PREFIX_CLASS}) {
     margin-right: ${spacing[8]}px;
-    color: ${semantic.icon.default};
+    color: ${cv.icon.default};
   }
 
   :where(.${INPUT_SUFFIX_CLASS}) {
     margin-left: ${spacing[8]}px;
-    color: ${semantic.icon.default};
+    color: ${cv.icon.default};
   }
 
   :where(.${INPUT_CLEAR_CLASS}) {
@@ -140,7 +139,7 @@ const inputStyles = `
     cursor: pointer;
     padding: 0;
     margin-left: ${spacing[8]}px;
-    color: ${semantic.icon.subtle};
+    color: ${cv.icon.subtle};
     line-height: 1;
   }
 
@@ -153,11 +152,11 @@ const inputStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${semantic.text.subtle};
+    color: ${cv.text.subtle};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-error="true"]) {
-    color: ${semantic.error.main};
+    color: ${cv.error.main};
   }
 `;
 
@@ -373,8 +372,7 @@ export const InputClearButton: React.FC<InputClearButtonProps> = React.memo(
       {...rest}
     >
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="10" fill={colors.neutral[400]} />{" "}
-        {/* neutral[400]: clear 버튼 원형 배경 */}
+        <circle cx="12" cy="12" r="10" fill={cv.border.default} /> {/* clear 버튼 원형 배경 */}
         <path d="M8 8L16 16M16 8L8 16" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </button>

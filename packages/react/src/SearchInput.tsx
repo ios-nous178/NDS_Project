@@ -1,10 +1,9 @@
 import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import {
-  colors,
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   sizing,
   spacing,
   transition,
@@ -39,7 +38,7 @@ const searchInputStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}) {
@@ -49,9 +48,9 @@ const searchInputStyles = `
     width: 100%;
     min-height: var(--nds-search-input-height, 48px);
     padding: 0 ${spacing[16]}px;
-    border: 1px solid var(--nds-search-input-border-color, ${semantic.border.default});
+    border: 1px solid var(--nds-search-input-border-color, ${cv.border.default});
     border-radius: var(--nds-search-input-radius, ${radius.md}px);
-    background: var(--nds-search-input-background, ${semantic.bg.white});
+    background: var(--nds-search-input-background, ${cv.bg.white});
     box-sizing: border-box;
     transition:
       border-color ${transition.default},
@@ -59,16 +58,16 @@ const searchInputStyles = `
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-focused="true"]) {
-    border-color: ${semantic.border.focus};
+    border-color: ${cv.border.focus};
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-variant="filled"]) {
     border-color: transparent;
-    background: var(--nds-search-input-background, ${semantic.bg.coolGray});
+    background: var(--nds-search-input-background, ${cv.bg.coolGray});
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-variant="filled"][data-focused="true"]) {
-    border-color: ${semantic.border.focus};
+    border-color: ${cv.border.focus};
   }
 
   :where(.${SEARCH_FIELD_CLASS}) {
@@ -81,12 +80,12 @@ const searchInputStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
     padding: 0;
   }
 
   :where(.${SEARCH_FIELD_CLASS}::placeholder) {
-    color: ${semantic.text.placeholder};
+    color: ${cv.text.placeholder};
   }
 
   :where(.${SEARCH_FIELD_CLASS}[type="search"]) {
@@ -112,7 +111,7 @@ const searchInputStyles = `
     cursor: pointer;
     padding: 0;
     margin-left: ${spacing[8]}px;
-    color: ${semantic.icon.subtle};
+    color: ${cv.icon.subtle};
     line-height: 1;
   }
 
@@ -131,7 +130,7 @@ const searchInputStyles = `
     cursor: pointer;
     padding: 0;
     margin-left: ${spacing[8]}px;
-    color: ${semantic.icon.default};
+    color: ${cv.icon.default};
     line-height: 1;
   }
 
@@ -144,11 +143,11 @@ const searchInputStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
   }
 
   :where(.${SEARCH_HELPER_CLASS}[data-error="true"]) {
-    color: ${semantic.error.main};
+    color: ${cv.error.main};
   }
 `;
 
@@ -321,7 +320,7 @@ export const SearchInputClearButton: React.FC<SearchInputClearButtonProps> = Rea
       {...rest}
     >
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="10" fill={colors.neutral[400]} />
+        <circle cx="12" cy="12" r="10" fill={cv.border.default} />
         <path d="M8 8L16 16M16 8L8 16" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </button>

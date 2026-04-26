@@ -1,9 +1,9 @@
 import React, { createContext, useCallback, useContext, useId } from "react";
 import {
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   spacing,
   transition,
   typeScale,
@@ -67,15 +67,15 @@ const choiceStyles = `
     width: 20px;
     height: 20px;
     margin-top: 1px;
-    border: 1.5px solid ${semantic.border.default};
+    border: 1.5px solid ${cv.border.default};
     border-radius: ${radius.sm}px;
-    background: ${semantic.bg.white};
+    background: ${cv.bg.white};
     transition: border-color ${transition.default}, background-color ${transition.default};
   }
 
   :where(.${CB_INDICATOR_CLASS}[data-checked="true"]) {
-    border-color: ${semantic.primary.main};
-    background: ${semantic.primary.main};
+    border-color: ${cv.primary.main};
+    background: ${cv.primary.main};
   }
 
   :where(.${CB_INDICATOR_CLASS} svg) {
@@ -93,7 +93,7 @@ const choiceStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
     user-select: none;
   }
 
@@ -101,12 +101,12 @@ const choiceStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
     margin-left: 28px;
   }
 
   :where(.${CB_HELPER_CLASS}[data-error="true"]) {
-    color: ${semantic.error.main};
+    color: ${cv.error.main};
   }
 
   /* ─── Radio ─── */
@@ -145,14 +145,14 @@ const choiceStyles = `
     width: 20px;
     height: 20px;
     margin-top: 1px;
-    border: 1.5px solid ${semantic.border.default};
+    border: 1.5px solid ${cv.border.default};
     border-radius: ${radius.pill}px;
-    background: ${semantic.bg.white};
+    background: ${cv.bg.white};
     transition: border-color ${transition.default};
   }
 
   :where(.${RADIO_INDICATOR_CLASS}[data-checked="true"]) {
-    border-color: ${semantic.primary.main};
+    border-color: ${cv.primary.main};
   }
 
   :where(.${RADIO_CLASS}__dot) {
@@ -160,7 +160,7 @@ const choiceStyles = `
     width: 10px;
     height: 10px;
     border-radius: ${radius.pill}px;
-    background: ${semantic.primary.main};
+    background: ${cv.primary.main};
     opacity: 0;
     transform: scale(0);
     transition: opacity ${transition.default}, transform ${transition.default};
@@ -175,7 +175,7 @@ const choiceStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
     user-select: none;
   }
 
@@ -183,12 +183,12 @@ const choiceStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${semantic.text.disabled};
+    color: ${cv.text.disabled};
     margin-left: 28px;
   }
 
   :where(.${RADIO_HELPER_CLASS}[data-error="true"]) {
-    color: ${semantic.error.main};
+    color: ${cv.error.main};
   }
 
   /* ─── Groups ─── */

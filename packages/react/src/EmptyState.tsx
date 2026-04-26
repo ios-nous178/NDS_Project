@@ -1,5 +1,5 @@
 import React from "react";
-import { fontFamily, fontWeight, semantic, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -31,7 +31,7 @@ const emptyStateStyles = `
     align-items: center;
     justify-content: center;
     margin-bottom: ${spacing[16]}px;
-    color: ${semantic.icon.subtle};
+    color: ${cv.icon.subtle};
   }
 
   :where(.${EMPTY_ICON_CLASS} svg) {
@@ -50,7 +50,7 @@ const emptyStateStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body1.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
   }
 
   :where(.${EMPTY_DESC_CLASS}) {
@@ -58,7 +58,7 @@ const emptyStateStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
-    color: ${semantic.text.subtle};
+    color: ${cv.text.subtle};
     white-space: pre-line;
     word-break: keep-all;
   }

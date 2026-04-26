@@ -1,9 +1,9 @@
 import React from "react";
 import {
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   shadow,
   spacing,
   transition,
@@ -33,13 +33,13 @@ const cardStyles = `
     font-family: ${fontFamily.web};
     box-sizing: border-box;
     border-radius: var(--nds-card-radius, ${radius.md}px);
-    background: var(--nds-card-background, ${semantic.bg.white});
+    background: var(--nds-card-background, ${cv.bg.white});
     overflow: hidden;
     transition: background-color ${transition.default}, box-shadow ${transition.default};
   }
 
   :where(.${CARD_ROOT_CLASS}[data-variant="outlined"]) {
-    border: 1px solid ${semantic.border.light};
+    border: 1px solid var(--nds-card-border-color, ${cv.border.light});
   }
 
   :where(.${CARD_ROOT_CLASS}[data-variant="elevated"]) {
@@ -51,7 +51,7 @@ const cardStyles = `
   }
 
   :where(.${CARD_ROOT_CLASS}[data-clickable="true"]:hover) {
-    background: var(--nds-card-hover-background, ${semantic.bg.coolGrayLighter});
+    background: var(--nds-card-hover-background, ${cv.bg.coolGrayLighter});
   }
 
   :where(.${CARD_THUMBNAIL_CLASS}) {
@@ -59,7 +59,7 @@ const cardStyles = `
     width: 100%;
     aspect-ratio: var(--nds-card-thumbnail-ratio, 16 / 10);
     overflow: hidden;
-    background: ${semantic.bg.light};
+    background: ${cv.bg.light};
   }
 
   :where(.${CARD_THUMBNAIL_CLASS} img) {
@@ -81,7 +81,7 @@ const cardStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     font-weight: ${fontWeight.bold};
     line-height: ${typeScale.body1.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
   }
 
   :where(.${CARD_SUBTITLE_CLASS}) {
@@ -89,7 +89,7 @@ const cardStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${semantic.text.subtle};
+    color: ${cv.text.subtle};
   }
 
   :where(.${CARD_META_CLASS}) {
@@ -100,7 +100,7 @@ const cardStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${semantic.text.default};
+    color: ${cv.text.default};
   }
 
   :where(.${CARD_BODY_CLASS}) {
@@ -108,7 +108,7 @@ const cardStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
-    color: ${semantic.text.subtle};
+    color: ${cv.text.subtle};
   }
 
   :where(.${CARD_FOOTER_CLASS}) {
@@ -116,7 +116,7 @@ const cardStyles = `
     align-items: center;
     gap: ${spacing[8]}px;
     padding: 0 ${spacing[16]}px ${spacing[16]}px;
-    border-top: 1px solid ${semantic.border.light};
+    border-top: 1px solid ${cv.border.light};
     margin-top: auto;
     padding-top: ${spacing[12]}px;
   }

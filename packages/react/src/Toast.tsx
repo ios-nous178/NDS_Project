@@ -1,8 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
+  cv,
   fontFamily,
   fontWeight,
-  semantic,
   spacing,
   transition,
   typeScale,
@@ -69,35 +69,36 @@ const toastStyles = `
     display: inline-flex;
     align-items: center;
     gap: ${spacing[12]}px;
-    max-width: 400px;
-    padding: ${spacing[12]}px ${spacing[20]}px;
-    border-radius: 22px;
+    max-width: var(--nds-toast-max-width, 400px);
+    padding: var(--nds-toast-padding, ${spacing[12]}px ${spacing[20]}px);
+    border-radius: var(--nds-toast-radius, 22px);
     font-family: ${fontFamily.web};
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.regular};
+    font-size: var(--nds-toast-font-size, ${typeScale.body3.fontSize}px);
+    font-weight: var(--nds-toast-font-weight, ${fontWeight.regular});
     line-height: ${typeScale.body3.lineHeight}px;
+    box-shadow: var(--nds-toast-shadow, none);
     pointer-events: auto;
     box-sizing: border-box;
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="default"]) {
-    background: rgba(17, 17, 17, 0.8);
-    color: ${semantic.text.inverse};
+    background: var(--nds-toast-background, rgba(17, 17, 17, 0.8));
+    color: ${cv.text.inverse};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="success"]) {
-    background: ${semantic.success.bg};
-    color: ${semantic.success.main};
+    background: ${cv.success.bg};
+    color: ${cv.success.main};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="error"]) {
-    background: ${semantic.error.bg};
-    color: ${semantic.error.main};
+    background: ${cv.error.bg};
+    color: ${cv.error.main};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="info"]) {
-    background: ${semantic.primary.bg};
-    color: ${semantic.primary.main};
+    background: ${cv.primary.bg};
+    color: ${cv.primary.main};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-entering="true"]) {

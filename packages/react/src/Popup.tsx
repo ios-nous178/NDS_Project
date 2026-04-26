@@ -1,15 +1,6 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  colors,
-  fontFamily,
-  radius,
-  spacing,
-  typeScale,
-  shadow,
-  zIndex,
-  semantic,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, radius, spacing, typeScale, shadow, zIndex } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -42,7 +33,7 @@ const popupStyles = `
   :where(.${POPUP_OVERLAY_CLASS}) {
     position: fixed;
     inset: 0;
-    background-color: ${semantic.bg.overlay};
+    background-color: ${cv.bg.overlay};
     animation: nds-popup-fade-in 0.2s ease-out;
   }
 
@@ -55,7 +46,7 @@ const popupStyles = `
     gap: ${spacing[24]}px;
     padding: ${spacing[28]}px ${spacing[16]}px ${spacing[16]}px;
     border-radius: ${radius.md}px;
-    background: ${colors.neutral["00"]};
+    background: ${cv.bg.white};
     box-shadow: ${shadow.lg};
     animation: nds-popup-scale-in 0.2s ease-out;
   }
@@ -66,7 +57,7 @@ const popupStyles = `
     align-items: center;
     gap: ${spacing[8]}px;
     text-align: center;
-    color: ${colors.neutral[800]};
+    color: ${cv.text.default};
     font-family: ${fontFamily.web};
   }
 
@@ -75,7 +66,7 @@ const popupStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     font-weight: 700;
     line-height: ${typeScale.body1.lineHeight}px;
-    color: ${colors.neutral[800]};
+    color: ${cv.text.default};
   }
 
   :where(.${POPUP_DESC_CLASS}) {
@@ -83,7 +74,7 @@ const popupStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: 400;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${colors.neutral[800]};
+    color: ${cv.text.default};
   }
 
   :where(.${POPUP_ACTIONS_CLASS}) {
@@ -119,13 +110,13 @@ const popupStyles = `
   }
 
   :where(.${POPUP_BTN_CANCEL_CLASS}) {
-    background: ${colors.neutral[500]};
-    color: ${colors.neutral["00"]};
+    background: ${cv.text.disabled};
+    color: ${cv.bg.white};
   }
 
   :where(.${POPUP_BTN_CONFIRM_CLASS}) {
-    background: ${colors.blue[500]};
-    color: ${colors.neutral["00"]};
+    background: ${cv.primary.main};
+    color: ${cv.primary.fg};
   }
 
   @keyframes nds-popup-fade-in {

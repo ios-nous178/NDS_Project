@@ -1,10 +1,9 @@
 import React from "react";
 import {
-  colors,
+  cv,
   fontFamily,
   fontWeight,
   radius,
-  semantic,
   sizing,
   spacing,
   transition,
@@ -31,8 +30,8 @@ const buttonStyles = `
     padding: var(--nds-button-padding-y, ${spacing[12]}px) var(--nds-button-padding-x, ${spacing[16]}px);
     border-radius: var(--nds-button-radius, ${radius.md}px);
     border: 1px solid var(--nds-button-border-color, transparent);
-    background: var(--nds-button-background, ${semantic.primary.main});
-    color: var(--nds-button-text-color, ${semantic.text.inverse});
+    background: var(--nds-button-background, ${cv.primary.main});
+    color: var(--nds-button-text-color, ${cv.primary.fg});
     font-family: var(--nds-button-font-family, ${fontFamily.web});
     font-size: var(--nds-button-font-size, ${typeScale.body1.fontSize}px);
     line-height: var(--nds-button-line-height, ${typeScale.body1.lineHeight}px);
@@ -150,75 +149,75 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     // Figma: Solid + first
     solid: {
       enabled: {
-        background: colors.blue[500],
-        text: colors.neutral["00"],
-        border: colors.blue[500],
+        background: cv.primary.main,
+        text: cv.primary.fg,
+        border: cv.primary.main,
       },
       disabled: {
-        background: colors.neutral[500],
-        text: colors.neutral["00"],
-        border: colors.neutral[500],
+        background: cv.text.disabled,
+        text: cv.bg.white,
+        border: cv.text.disabled,
       },
       hover: {
-        background: colors.blue[600],
-        text: colors.neutral["00"],
-        border: colors.blue[600],
+        background: cv.primary.hover,
+        text: cv.primary.fg,
+        border: cv.primary.hover,
       },
     },
     // Figma: Solid + first의 soft 표현 (primary soft)
     soft: {
       enabled: {
-        background: colors.blue[100],
-        text: colors.blue[500],
-        border: colors.blue[100],
+        background: cv.primary.bg,
+        text: cv.primary.main,
+        border: cv.primary.bg,
       },
       disabled: {
-        background: colors.neutral[200],
-        text: colors.neutral[500],
-        border: colors.neutral[200],
+        background: cv.border.light,
+        text: cv.text.disabled,
+        border: cv.border.light,
       },
       hover: {
-        background: colors.blue[200],
-        text: colors.blue[500],
-        border: colors.blue[200],
+        background: cv.primary.lighter,
+        text: cv.primary.main,
+        border: cv.primary.lighter,
       },
     },
     // Figma: Outlined
     outlined: {
       enabled: {
-        background: colors.neutral["00"],
-        text: colors.blue[500],
-        border: colors.blue[500],
+        background: cv.bg.white,
+        text: cv.primary.main,
+        border: cv.primary.main,
       },
       disabled: {
-        background: colors.neutral["00"],
-        text: colors.neutral[500],
-        border: colors.neutral[300],
+        background: cv.bg.white,
+        text: cv.text.disabled,
+        border: cv.border.default,
       },
       hover: {
-        background: colors.blue[50],
-        text: colors.blue[500],
-        border: colors.blue[500],
+        background: cv.primary.bgLighter,
+        text: cv.primary.main,
+        border: cv.primary.main,
       },
     },
     // Figma: Outlined_sub — neutral border, medium weight
     "outlined-sub": {
       enabled: {
-        background: colors.neutral["00"],
-        text: colors.neutral[800],
-        border: colors.neutral[300],
+        background: cv.bg.white,
+        text: cv.text.default,
+        border: cv.border.default,
         fontWeight: 500,
       },
       disabled: {
-        background: colors.neutral["00"],
-        text: colors.neutral[500],
-        border: colors.neutral[200],
+        background: cv.bg.white,
+        text: cv.text.disabled,
+        border: cv.border.light,
         fontWeight: 500,
       },
       hover: {
-        background: colors.neutral[50],
-        text: colors.neutral[800],
-        border: colors.neutral[300],
+        background: cv.bg.light,
+        text: cv.text.default,
+        border: cv.border.default,
         fontWeight: 500,
       },
     },
@@ -227,74 +226,74 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     // Figma: Solid + second (= soft blue)
     solid: {
       enabled: {
-        background: colors.blue[100],
-        text: colors.blue[500],
-        border: colors.blue[100],
+        background: cv.primary.bg,
+        text: cv.primary.main,
+        border: cv.primary.bg,
       },
       disabled: {
-        background: colors.neutral[200],
-        text: colors.neutral[500],
-        border: colors.neutral[200],
+        background: cv.border.light,
+        text: cv.text.disabled,
+        border: cv.border.light,
       },
       hover: {
-        background: colors.blue[200],
-        text: colors.blue[500],
-        border: colors.blue[200],
+        background: cv.primary.lighter,
+        text: cv.primary.main,
+        border: cv.primary.lighter,
       },
     },
     // secondary soft = solid과 동일
     soft: {
       enabled: {
-        background: colors.blue[100],
-        text: colors.blue[500],
-        border: colors.blue[100],
+        background: cv.primary.bg,
+        text: cv.primary.main,
+        border: cv.primary.bg,
       },
       disabled: {
-        background: colors.neutral[200],
-        text: colors.neutral[500],
-        border: colors.neutral[200],
+        background: cv.border.light,
+        text: cv.text.disabled,
+        border: cv.border.light,
       },
       hover: {
-        background: colors.blue[200],
-        text: colors.blue[500],
-        border: colors.blue[200],
+        background: cv.primary.lighter,
+        text: cv.primary.main,
+        border: cv.primary.lighter,
       },
     },
     // Outlined은 primary와 동일 (피그마에 secondary outlined 없음)
     outlined: {
       enabled: {
-        background: colors.neutral["00"],
-        text: colors.blue[500],
-        border: colors.blue[500],
+        background: cv.bg.white,
+        text: cv.primary.main,
+        border: cv.primary.main,
       },
       disabled: {
-        background: colors.neutral["00"],
-        text: colors.neutral[500],
-        border: colors.neutral[300],
+        background: cv.bg.white,
+        text: cv.text.disabled,
+        border: cv.border.default,
       },
       hover: {
-        background: colors.blue[50],
-        text: colors.blue[500],
-        border: colors.blue[500],
+        background: cv.primary.bgLighter,
+        text: cv.primary.main,
+        border: cv.primary.main,
       },
     },
     "outlined-sub": {
       enabled: {
-        background: colors.neutral["00"],
-        text: colors.neutral[800],
-        border: colors.neutral[300],
+        background: cv.bg.white,
+        text: cv.text.default,
+        border: cv.border.default,
         fontWeight: 500,
       },
       disabled: {
-        background: colors.neutral["00"],
-        text: colors.neutral[500],
-        border: colors.neutral[200],
+        background: cv.bg.white,
+        text: cv.text.disabled,
+        border: cv.border.light,
         fontWeight: 500,
       },
       hover: {
-        background: colors.neutral[50],
-        text: colors.neutral[800],
-        border: colors.neutral[300],
+        background: cv.bg.light,
+        text: cv.text.default,
+        border: cv.border.default,
         fontWeight: 500,
       },
     },
