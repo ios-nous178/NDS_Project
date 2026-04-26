@@ -13,9 +13,14 @@
   },
   "scripts": {
     "generate:component-inventory": "node scripts/generate-component-inventory.mjs",
+    "generate:tokens": "node scripts/sync-tokens.mjs --write && pnpm --filter=@nudge-eap/tokens build",
+    "lint:tokens": "node scripts/sync-tokens.mjs --check",
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint && markdownlint-cli2 \"docs/**/*.md\"",
+    "lint": "turbo lint && markdownlint-cli2 \"docs/**/*.md\" && npx @google/design.md lint DESIGN.md && node scripts/sync-tokens.mjs --check",
+    "lint:design": "npx @google/design.md lint DESIGN.md",
+    "export:tailwind": "npx @google/design.md export --format tailwind DESIGN.md",
+    "export:dtcg": "npx @google/design.md export --format dtcg DESIGN.md",
     "lint:fix": "eslint . --fix && prettier --write . && markdownlint-cli2 --fix \"docs/**/*.md\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -38,9 +43,11 @@
   "devDependencies": {
     "@changesets/cli": "^2.29.6",
     "@eslint/js": "^9.27.0",
+    "@google/design.md": "^0.1.1",
     "eslint": "^9.27.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
@@ -49,6 +56,6 @@
     "turbo": "^2.4.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.32.0",
-    "eslint-plugin-unused-imports": "^4.1.4"
+    "yaml": "^2.8.3"
   }
 }

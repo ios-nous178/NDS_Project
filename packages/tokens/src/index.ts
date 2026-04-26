@@ -1,4 +1,6 @@
 export { colors, neutral, coolGray, blue, magenta, yellow, red, green, semantic } from "./colors";
+export { cv } from "./cssVar";
+export type { CssVarRef } from "./cssVar";
 export { typography, fontFamily, fontWeight, typeScale } from "./typography";
 export type { TypeStyle } from "./typography";
 export { spacing, radius, borderWidth, sizing } from "./spacing";
