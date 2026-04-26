@@ -1,0 +1,53 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import { Breadcrumb } from "@nudge-eap/react";
+
+const meta: Meta<typeof Breadcrumb> = {
+  title: "Components/Breadcrumb",
+  component: Breadcrumb,
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+};
+
+export default meta;
+type Story = StoryObj<typeof Breadcrumb>;
+
+export const Playground: Story = {
+  args: {
+    items: [
+      { label: "홈", href: "/" },
+      { label: "심리검사", href: "/test" },
+      { label: "스트레스 검사" },
+    ],
+  },
+};
+
+export const TwoLevels: Story = {
+  name: "Example/2단계",
+  args: {
+    items: [{ label: "홈", href: "/" }, { label: "마이페이지" }],
+  },
+};
+
+export const FourLevels: Story = {
+  name: "Example/4단계",
+  args: {
+    items: [
+      { label: "홈", href: "/" },
+      { label: "서비스", href: "/service" },
+      { label: "심리검사", href: "/service/test" },
+      { label: "PHQ-9 우울증 검사" },
+    ],
+  },
+};
+
+export const CustomSeparator: Story = {
+  name: "Example/커스텀 구분자",
+  args: {
+    items: [
+      { label: "홈", href: "/" },
+      { label: "카테고리", href: "/category" },
+      { label: "상세" },
+    ],
+    separator: "/",
+  },
+};
