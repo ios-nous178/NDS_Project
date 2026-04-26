@@ -1,4 +1,5 @@
-// Typography Tokens — Figma Design Guide 실측 기반
+// Auto-generated from DESIGN.md — do not edit manually
+// Run `pnpm generate:tokens` to regenerate
 
 export const fontFamily = {
   web: "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
@@ -8,7 +9,7 @@ export const fontFamily = {
 export const fontWeight = {
   regular: 400,
   medium: 500,
-  semibold: 600, // ⚠️ Figma 실측 (Badge) — 기존 토큰 누락
+  semibold: 600,
   bold: 700,
 } as const;
 
