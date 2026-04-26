@@ -1,0 +1,187 @@
+---
+title: AppFooter
+description: 하단 푸터 컴포넌트. 회사 정보 영역(Info)과 탭 네비게이션 바(TabBar) 두 가지 형태를 제공합니다.
+---
+
+# AppFooter
+
+하단 푸터 컴포넌트입니다. **홈페이지 회사정보 푸터**와 **앱 하단 탭바**를 통합한 compound 컴포넌트입니다.
+
+## 사용 대상
+
+| 프로젝트 | 기존 컴포넌트 | NDS 대응 |
+|----------|-------------|----------|
+| NudgeEAP HomePage | `layout/Footer` | `AppFooter.Info` |
+| NudgeEAP WebView | `NavigationBarFooter` | `AppFooter.TabBar` |
+| TrostWeb Desktop | `DesktopFooter` | `AppFooter.Info` |
+| TrostWeb Mobile | `MobileBottomNavBar` | `AppFooter.TabBar` |
+| Geniet HomePage PC | `PcFooter` | `AppFooter.Info` |
+| Geniet HomePage Mobile | `MobileFooter` | `AppFooter.Info` |
+| Geniet HomePage Mobile Nav | `MobileFooterNav` | `AppFooter.TabBar` |
+
+## AppFooter.Info — 회사 정보 푸터
+
+```tsx
+import { AppFooter } from "@nudge-eap/react";
+
+// NudgeEAP 홈페이지
+const nudgeLinks = [
+  { label: "개인정보 처리방침", href: "/privacy", bold: true },
+  { label: "서비스 이용약관", href: "/terms" },
+  { label: "위치기반 서비스 이용약관", href: "/location-terms" },
+];
+
+<AppFooter.Info
+  links={nudgeLinks}
+  companyInfo={
+    <div>
+      <p>서울특별시 강남구 역삼로1길 8, 5층</p>
+      <p>사업자 번호: 101-86-16191 | 전화: 02-2268-5980</p>
+      <p>© 2023 Dain Co.Ltd., All Rights Reserved</p>
+    </div>
+  }
+/>
+```
+
+### 지니어트 푸터
+
+```tsx
+// 지니어트: 약관+고객문의(mailto) + 회사정보 + 로고
+const genietLinks = [
+  { label: "이용약관", href: "/rules/service" },
+  { label: "개인정보처리방침", href: "/rules/privacy", bold: true },
+  { label: "고객 문의", href: "mailto:geniet_app@geniet.co.kr" },
+];
+
+<AppFooter.Info
+  links={genietLinks}
+  companyInfo={
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div>
+        <p>지니어트 고객 문의 가능 시간: 평일 10:00 ~ 18:00</p>
+        <p style={{ marginTop: 16, fontWeight: 500 }}>넛지모바일 주식회사</p>
+        <p>대표이사: 한상범 | 사업자등록번호: 897-87-02757</p>
+        <p>주소: 서울시 강남구 테헤란로20길 18, 6층</p>
+        <p style={{ marginTop: 12, color: "#999" }}>
+          Copyright 2024 by Geniet, Inc. ALL Rights Reserved
+        </p>
+      </div>
+      <img src="/images/logo/web-geniet-logo-footer.webp" alt="지니어트" width={166} height={48} />
+    </div>
+  }
+/>
+```
+
+## AppFooter.TabBar — 하단 탭 네비게이션
+
+```tsx
+import { AppFooter } from "@nudge-eap/react";
+
+// NudgeEAP WebView (3탭)
+const nudgeTabs = [
+  { key: "home", label: "홈", icon: <HomeIcon />, activeIcon: <HomeFilledIcon />, href: "/" },
+  { key: "shop", label: "심리샵", icon: <ShopIcon />, activeIcon: <ShopFilledIcon />, href: "/shop" },
+  { key: "my", label: "마이", icon: <MyIcon />, activeIcon: <MyFilledIcon />, href: "/my" },
+];
+
+<AppFooter.TabBar
+  tabs={nudgeTabs}
+  activeTab="home"
+  onTabClick={(tab, e) => {
+    e.preventDefault();
+    router.push(tab.href);
+  }}
+/>
+```
+
+### 지니어트 탭바
+
+```tsx
+// 지니어트 모바일 (4탭: 홈/커뮤니티/헬시딜/음식리뷰)
+// 웹뷰(WEBVIEW_CASHWALK, WEBVIEW_GENIET)에서는 숨김 처리
+const genietTabs = [
+  { key: "home", label: "홈", icon: <HomeOff />, activeIcon: <HomeOn />, href: "/" },
+  { key: "community", label: "커뮤니티", icon: <CommunityOff />, activeIcon: <CommunityOn />, href: "/community" },
+  { key: "healthydeal", label: "헬시딜", icon: <ShoppingOff />, activeIcon: <ShoppingOn />, href: "/cashdeal" },
+  { key: "review", label: "음식 리뷰", icon: <ReviewOff />, activeIcon: <ReviewOn />, href: "/reviews" },
+];
+
+// 웹뷰 환경에서는 렌더하지 않음
+{hostEnv !== "WEBVIEW_CASHWALK" && hostEnv !== "WEBVIEW_GENIET" && (
+  <AppFooter.TabBar
+    tabs={genietTabs}
+    activeTab={currentTab}
+    style={{ boxShadow: "0 -2px 10px 0 rgba(17,17,17,0.05)" }}
+  />
+)}
+```
+
+### Next.js Link 연동
+
+```tsx
+import Link from "next/link";
+
+<AppFooter.TabBar
+  tabs={tabs}
+  activeTab={currentTab}
+  renderTab={(tab, isActive, children) => (
+    <Link
+      key={tab.key}
+      href={tab.href}
+      className="nds-app-footer__nav-item"
+      data-active={isActive || undefined}
+    >
+      {children}
+    </Link>
+  )}
+/>
+```
+
+## Props
+
+### AppFooter.Info
+
+| Prop | 타입 | 설명 |
+|------|------|------|
+| `links` | `FooterLinkItem[]` | 약관 링크 목록 |
+| `companyInfo` | `ReactNode` | 회사 정보 영역 |
+| `onLinkClick` | `(link, e) => void` | 링크 클릭 핸들러 |
+
+### AppFooter.TabBar
+
+| Prop | 타입 | 설명 |
+|------|------|------|
+| `tabs` | `FooterTabItem[]` | 탭 목록 |
+| `activeTab` | `string` | 현재 활성 탭 key |
+| `onTabClick` | `(tab, e) => void` | 탭 클릭 핸들러 |
+| `renderTab` | `(tab, isActive, children) => ReactNode` | 커스텀 탭 렌더러 |
+
+## 디자인 토큰
+
+| 토큰 | 값 | 설명 |
+|------|-----|------|
+| `sizing.bottomBar.height` | `56px` | TabBar 높이 (전 프로젝트 공통) |
+| `neutral[50]` / `#FAFAFA` | Info 배경색 (NudgeEAP/지니어트 공통) |
+| `neutral["00"]` / `#FFFFFF` | TabBar 배경색 |
+| `neutral[200]` / `#ECECEC` | TabBar 상단 보더 |
+| `typeScale.label` | `11px` | 탭 라벨 폰트 (전 프로젝트 공통) |
+| `typeScale.caption1` | `13px` | Info 링크 폰트 |
+
+## 프로젝트별 차이점
+
+| 속성 | NudgeEAP | 트로스트 | 지니어트 |
+|------|----------|---------|---------|
+| Info 배경 | `#FAFAFA` | PC `#333` / Mobile `#464646` | `#FAFAFA` |
+| Info 최대 폭 | 1200px | 1080px | 1280px |
+| TabBar 탭 수 | 3 (홈/심리샵/마이) | 5 (홈/사운드/내음악/커뮤니티/마이) | 4 (홈/커뮤니티/헬시딜/리뷰) |
+| TabBar 보더 | `border-top` | `border-top` | `box-shadow` (그림자) |
+| 웹뷰 숨김 | `isApp` 쿼리 파라미터 | `isWebview` 체크 | `hostEnv` 스토어 |
+| 회사명 | (주)다인 | (주)다인 | 넛지모바일 주식회사 |
+
+트로스트 다크 배경은 `style={{ "--nds-footer-background": "#333" }}`로 오버라이드합니다.
+
+## AI 컨텍스트
+
+- **Info**: 홈페이지 하단 공통. 약관 링크 + 회사 정보(주소/사업자번호/연락처) 배치. NudgeEAP/지니어트는 밝은 배경(`#FAFAFA`), 트로스트는 다크 배경(`#333`). 지니어트는 통신판매중개자 고지와 고객문의 시간 안내가 추가됨.
+- **TabBar**: 앱 하단 고정 네비. 아이콘+라벨 구조, active 상태에서 filled 아이콘 전환. 지니어트는 `border-top` 대신 상단 그림자 사용, 웹뷰(`WEBVIEW_CASHWALK`/`WEBVIEW_GENIET`)에서 숨김.
+- 전 프로젝트 공통: 탭바 높이 56px, 라벨 11px, 아이콘 24px.

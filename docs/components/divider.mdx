@@ -1,0 +1,39 @@
+---
+title: Divider
+description: 콘텐츠 구분선 컴포넌트. 수평/수직 방향을 지원합니다.
+---
+
+# Divider
+
+콘텐츠 영역을 시각적으로 분리하는 구분선입니다.
+
+## 사용법
+
+```tsx
+import { Divider } from "@nudge-eap/react";
+
+// 수평 구분선
+<Divider />
+
+// 간�� 포함
+<Divider spacing={16} />
+
+// 수직 구분선 (인라인 텍스트 사이)
+<div style={{ display: "flex", alignItems: "center" }}>
+  <span>항목 A</span>
+  <Divider orientation="vertical" />
+  <span>항목 B</span>
+</div>
+
+// 두꺼운 섹션 구분선
+<Divider thickness={8} color="#f5f5f5" />
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | 방향 |
+| `thickness` | `number` | `1` | 두께 (px) |
+| `spacing` | `number` | — | 양쪽 margin (px) |
+| `color` | `string` | `border.light` | 색상 오버라이드 |
