@@ -1,0 +1,48 @@
+---
+title: Pagination
+description: 페이지 네비게이션 컴포넌트.
+---
+
+# Pagination
+
+콘텐츠 목록의 페이지를 전환하는 네비게이션 컴포넌트입니다.
+
+## 사용법
+
+```tsx
+import { Pagination } from "@nudge-eap/react";
+
+const [page, setPage] = useState(1);
+
+<Pagination
+  page={page}
+  totalPages={20}
+  onPageChange={setPage}
+/>
+
+// 화살표 없이
+<Pagination
+  page={page}
+  totalPages={10}
+  onPageChange={setPage}
+  showArrows={false}
+/>
+
+// 형제 페이지 수 조정
+<Pagination
+  page={page}
+  totalPages={50}
+  siblings={2}
+  onPageChange={setPage}
+/>
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `page` | `number` | — | 현재 페이지 (1부터) |
+| `totalPages` | `number` | — | 전체 페이지 수 |
+| `siblings` | `number` | `1` | 현재 페이지 좌우 표시 수 |
+| `onPageChange` | `(page: number) => void` | — | 페이지 변경 콜백 |
+| `showArrows` | `boolean` | `true` | 이전/다음 화살표 |

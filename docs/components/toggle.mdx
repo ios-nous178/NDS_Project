@@ -1,0 +1,35 @@
+---
+title: Toggle
+description: on/off 스위치 컴포넌트.
+---
+
+# Toggle
+
+설정 값을 켜거나 끄는 스위치 컴포넌트입니다.
+
+## 사용법
+
+```tsx
+import { Toggle } from "@nudge-eap/react";
+
+const [enabled, setEnabled] = useState(false);
+
+<Toggle
+  checked={enabled}
+  onCheckedChange={setEnabled}
+  label="알림 수신"
+/>
+
+// 작은 크기
+<Toggle size="sm" checked={enabled} onCheckedChange={setEnabled} />
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `checked` | `boolean` | `false` | 토글 상태 |
+| `onCheckedChange` | `(checked: boolean) => void` | — | 변경 콜백 |
+| `label` | `ReactNode` | — | 라벨 텍스트 |
+| `size` | `"sm" \| "md"` | `"md"` | 크기 (md: 44x24, sm: 36x20) |
+| `disabled` | `boolean` | `false` | 비활성화 |

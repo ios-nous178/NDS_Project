@@ -1,0 +1,36 @@
+---
+title: Avatar
+description: 사용자 프로필 이미지 컴포넌트. 이미지, 이니셜, 기본 아이콘 폴백을 지원합니다.
+---
+
+# Avatar
+
+사용자 프로필 이미지 컴포넌트입니다. 이미지 로드 실패 시 이니셜 또는 기본 아이콘으로 폴백됩니다.
+
+## 사용법
+
+```tsx
+import { Avatar } from "@nudge-eap/react";
+
+// 이미지
+<Avatar src="/profile.jpg" alt="홍길동" size="lg" />
+
+// 이니셜 폴백 (이미지 없을 때)
+<Avatar name="홍길동" size="md" />
+
+// 기본 아이콘 폴백
+<Avatar size="sm" />
+
+// 커스텀 폴백
+<Avatar fallback={<CustomIcon />} />
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `src` | `string \| null` | — | 이미지 URL |
+| `alt` | `string` | `""` | alt 텍스트 |
+| `name` | `string` | — | 이니셜 추출용 이름 |
+| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | 크기 (24/32/40/48/64px) |
+| `fallback` | `ReactNode` | — | 커스텀 폴백 |

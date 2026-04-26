@@ -13,7 +13,30 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/)",
       "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && head -15 {}')",
       "Bash(git -C /Users/eprnf/02_NudgeEAP/NudgeEAPDesignSystem log --oneline)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "mcp__notion__notion-search",
+      "mcp__notion__notion-fetch",
+      "Bash(mkdir -p /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/harness)",
+      "Bash(mkdir -p /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/mockups/trost-test-list)",
+      "Bash(cp /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/mockups/trost-test-list/mock-data.ts /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/apps/storybook/src/stories/trost-test-list-mock-data.ts)",
+      "Bash(cp /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/mockups/trost-test-list/mockup.tsx /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/apps/storybook/src/stories/TrostTestListMockup.tsx)",
+      "mcp__notion__notion-create-pages",
+      "mcp__notion__notion-update-page",
+      "WebSearch",
+      "Bash(git push:*)",
+      "WebFetch(domain:stitch.withgoogle.com)",
+      "WebFetch(domain:app-companion-430619.appspot.com)",
+      "Bash(xargs -I {} ls {})",
+      "Bash(xargs basename:*)",
+      "Bash(cp /Users/eprnf/02_NudgeEAP/NudgeEAPHomePage/public/images/counsel/logo-dain@3x.png /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/apps/storybook/public/brand-logos/nudge-eap-logo.png)",
+      "Bash(cp /Users/eprnf/01_Trost/TrostWeb/public/images/header/trost-logo-black.svg /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/apps/storybook/public/brand-logos/trost-logo.svg)",
+      "Bash(cp /Users/eprnf/01_Trost/TrostWeb/public/images/header/img-trost-logo-black@2x.webp /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/apps/storybook/public/brand-logos/trost-logo-mobile.webp)",
+      "Bash(cp /Users/eprnf/05_Geniet/GenietHomePage/public/images/logo/logo.webp /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/apps/storybook/public/brand-logos/geniet-logo-pc.webp)",
+      "Bash(cp /Users/eprnf/05_Geniet/GenietHomePage/public/images/logo/mobile-geniet-logo-header.webp /Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/apps/storybook/public/brand-logos/geniet-logo-mobile.webp)",
+      "Bash(brew list:*)",
+      "Bash(chmod +x:*)",
+      "Bash(bash -n setup.sh)",
+      "Bash(pwsh -NoProfile -Command 'try { [System.Management.Automation.PSParser]::Tokenize\\(\\(Get-Content -Raw setup.ps1\\), [ref]$null\\) | Out-Null; '\\\\''syntax ok'\\\\'' } catch { $_.Exception.Message }')"
     ]
   }
 }

@@ -1,0 +1,135 @@
+---
+title: AppBar
+description: 상단 네비게이션 바 컴포넌트. 홈페이지 헤더, 웹뷰 타이틀 바 등에 사용합니다.
+---
+
+# AppBar
+
+상단 네비게이션 바 컴포넌트입니다. **NudgeEAP**, **트로스트**, **지니어트** 전체 프로젝트의 헤더를 통합한 디자인 시스템 컴포넌트입니다.
+
+## 사용 대상
+
+| 프로젝트 | 기존 컴포넌트 | NDS 대응 |
+|----------|-------------|----------|
+| NudgeEAP HomePage | `layout/Header` | `AppBar variant="default"` |
+| NudgeEAP WebView | `NavigationBarHeader` | `AppBar variant="webview"` |
+| TrostWeb Desktop | `DesktopHeader` | `AppBar variant="default"` (children으로 2단 구성) |
+| TrostWeb App | `TrostAppHeader` | `AppBar variant="default"` |
+| Geniet HomePage PC | `PcHeader` (MainBar + NavBar) | `AppBar variant="default"` (children으로 2단 구성) |
+| Geniet HomePage Mobile | `MobileMainHeader` | `AppBar variant="default"` (50px) |
+| Geniet HomeWeb | `CommonHeader` | `AppBar variant="webview"` |
+
+## 기본 사용법
+
+```tsx
+import { AppBar } from "@nudge-eap/react";
+
+// 홈페이지 기본 헤더
+<AppBar
+  title="넛지 EAP"
+  leftSlot={<img src="/logo.svg" alt="Logo" />}
+  rightSlot={<button>메뉴</button>}
+/>
+
+// 웹뷰 타이틀 바 (중앙 타이틀 + 좌측 뒤로가기)
+<AppBar
+  variant="webview"
+  position="fixed"
+  title="심리검사 결과"
+  leftSlot={<button onClick={goBack}>←</button>}
+/>
+
+// 투명 배경 (스크롤 시 전환)
+<AppBar variant="transparent" elevated={scrolled} />
+```
+
+### 지니어트 PC 2단 헤더 (children 사용)
+
+지니어트/트로스트 PC 헤더처럼 MainBar + NavBar 2단 구조가 필요할 때는 `children`을 직접 전달합니다. `children`이 있으면 `leftSlot`/`title`/`rightSlot`은 무시됩니다.
+
+```tsx
+// 지니어트 PC: 로고+검색+인증 상단바 + GNB 네비게이션 하단바
+<AppBar position="static" style={{ "--nds-app-bar-height": "auto" }}>
+  {/* MainBar */}
+  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: 1280, margin: "0 auto", padding: "40px 0 20px" }}>
+    <Logo />
+    <SearchBar />
+    <AuthMenu />
+  </div>
+  <hr style={{ border: "none", borderTop: "1px solid #ececec" }} />
+  {/* NavBar */}
+  <nav style={{ display: "flex", alignItems: "center", width: 1280, height: 56, margin: "0 auto" }}>
+    <GNBMenu />
+  </nav>
+</AppBar>
+
+// 지니어트 모바일: 50px sticky 헤더
+<AppBar
+  leftSlot={<GenietLogo />}
+  rightSlot={
+    <div style={{ display: "flex", gap: 16 }}>
+      <UserPoint />
+      <AuthButton />
+    </div>
+  }
+  style={{ "--nds-app-bar-height": "50px" }}
+/>
+```
+
+### 지니어트 WebView 헤더 (CommonHeader 대체)
+
+```tsx
+// GenietHomeWeb CommonHeader → AppBar variant="webview"
+<AppBar
+  variant="webview"
+  position="fixed"
+  title={title.length > 15 ? `${title.substring(0, 15)}...` : title}
+  leftSlot={<BackButton />}
+  rightSlot={<OptionButton />}
+  style={{ "--nds-app-bar-height": "50px", maxWidth: 664 }}
+/>
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `variant` | `"default" \| "webview" \| "transparent"` | `"default"` | 스타일 변형 |
+| `position` | `"sticky" \| "fixed" \| "static"` | `"sticky"` | CSS position |
+| `title` | `ReactNode` | — | 타이틀 (webview에서 중앙 정렬) |
+| `leftSlot` | `ReactNode` | — | 좌측 영역 (로고, 뒤로가기 등) |
+| `rightSlot` | `ReactNode` | — | 우측 영역 (액션 버튼, 메뉴 등) |
+| `elevated` | `boolean` | `false` | 그림자 표시 |
+| `children` | `ReactNode` | — | 커스텀 내부 구조 (사용 시 slot props 무시) |
+| `slotProps` | `AppBarSlotProps` | — | 내부 슬롯별 HTML props |
+
+## 디자인 토큰
+
+| 토큰 | 값 | 출처 |
+|------|-----|------|
+| `sizing.appBar.height` | `52px` | NudgeEAP/Trost 기본 (지니어트 모바일: 50px) |
+| `zIndex.appBar` | `300` | NDS elevation |
+| `spacing[16]` | `16px` | 좌우 패딩 |
+| `neutral["00"]` | `#FFFFFF` | 배경색 |
+| `neutral[200]` | `#ECECEC` | 하단 보더 |
+
+## 프로젝트별 차이점
+
+| 속성 | NudgeEAP | 트로스트 | 지니어트 |
+|------|----------|---------|---------|
+| 모바일 높이 | 52px | 56px | 50px |
+| PC 최대 폭 | 1200px | 1080px | 1280px |
+| PC 구조 | 단일 바 | 배너+유틸리티+탭 (3단) | 메인바+네비바 (2단) |
+| 웹뷰 높이 | 52px | 44px (WebviewCommonHeader) | 50px |
+| 웹뷰 max-width | — | — | 664px |
+
+높이 차이는 CSS 변수 `--nds-app-bar-height`로 오버라이드합니다.
+
+## AI 컨텍스트
+
+- **variant="default"**: NudgeEAP/트로스트/지니어트 홈페이지의 sticky 헤더. 로고 + GNB 메뉴 + 인증 버튼 패턴.
+- **variant="webview"**: WebView 앱 내장 헤더. 좌측 뒤로가기, 중앙 타이틀(최대 60%), 우측 액션. NudgeEAP 52px, 트로스트 44px, 지니어트 50px.
+- **variant="transparent"**: 스크롤 전 투명 → elevated로 전환하는 패턴.
+- 트로스트 앱 헤더(로고+에너지포인트+알림)는 `leftSlot`/`rightSlot`으로 조합.
+- 지니어트/트로스트 PC 2단 이상 헤더는 `children`으로 자유롭게 구성.
+- 지니어트는 웹뷰 환경 감지(`hostEnv`)로 헤더 변형을 결정 — `WEBVIEW_CASHWALK`/`WEBVIEW_GENIET` 시 뒤로가기 노출.

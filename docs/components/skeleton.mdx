@@ -1,0 +1,33 @@
+---
+title: Skeleton
+description: 콘텐츠 로딩 중 표시하는 플레이스홀더 컴포넌트.
+---
+
+# Skeleton
+
+콘텐츠가 로딩되는 동안 표시하는 펄스 애니메이션 플레이스홀더입니다.
+
+## 사용법
+
+```tsx
+import { Skeleton } from "@nudge-eap/react";
+
+// 사각형 (카드, 이미지 영역)
+<Skeleton width={200} height={120} />
+
+// 원형 (아바타)
+<Skeleton variant="circular" width={40} />
+
+// 텍스트 라인
+<Skeleton variant="text" width="80%" />
+<Skeleton variant="text" width="60%" />
+```
+
+## Props
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `variant` | `"rectangular" \| "circular" \| "text"` | `"rectangular"` | 형태 |
+| `width` | `number \| string` | `"100%"` | 너비 |
+| `height` | `number \| string` | — | 높이 (circular은 width와 동일) |
+| `radius` | `number` | `8px` | 코너 반경 오버라이드 |
