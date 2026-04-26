@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { neutral, coolGray, blue, magenta, yellow, red, green } from "@nudge-eap/tokens";
+import { neutral, coolGray, blue, magenta, yellow, red, green, semantic } from "@nudge-eap/tokens";
 import React from "react";
 
 function Swatch({ name, hex }: { name: string; hex: string }) {
@@ -35,10 +35,48 @@ function PaletteGroup({ title, palette }: { title: string; palette: Record<strin
   );
 }
 
+function SemanticGroup({ title, tokens }: { title: string; tokens: Record<string, string> }) {
+  return (
+    <div style={{ marginBottom: 32 }}>
+      <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>{title}</h3>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 8 }}>
+        {Object.entries(tokens).map(([key, value]) => (
+          <Swatch key={key} name={key} hex={value} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ColorTokensPage() {
   return (
     <div style={{ fontFamily: "'Pretendard', sans-serif", padding: 24 }}>
       <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Color Tokens</h2>
+
+      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16, color: "#111111" }}>
+        Semantic Colors
+      </h2>
+      <SemanticGroup title="Primary" tokens={semantic.primary} />
+      <SemanticGroup title="Secondary" tokens={semantic.secondary} />
+      <SemanticGroup title="Error" tokens={semantic.error} />
+      <SemanticGroup title="Caution" tokens={semantic.caution} />
+      <SemanticGroup title="Success" tokens={semantic.success} />
+      <SemanticGroup title="Text" tokens={semantic.text} />
+      <SemanticGroup title="Background" tokens={semantic.bg} />
+      <SemanticGroup title="Border" tokens={semantic.border} />
+      <SemanticGroup title="Icon" tokens={semantic.icon} />
+
+      <h2
+        style={{
+          fontSize: 20,
+          fontWeight: 700,
+          marginBottom: 16,
+          marginTop: 48,
+          color: "#111111",
+        }}
+      >
+        Primitive Scales
+      </h2>
       <PaletteGroup title="Neutral" palette={neutral} />
       <PaletteGroup title="Cool Gray" palette={coolGray} />
       <PaletteGroup title="Blue (Primary)" palette={blue} />
