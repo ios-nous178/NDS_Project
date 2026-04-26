@@ -1,11 +1,11 @@
-# Harness 구조 — Design System 기반 UI 개발 파이프라인
+# Harness v2 — Design System 기반 목업 파이프라인
 
-> v4.4 문서 기반. Harness = AI 호출 단계 + .md 산출물 계약.
+> mockup-layout + 강제 매핑 규칙 + 반응형 체크리스트 적용
 
 ## 파이프라인 흐름
 
 ```
-Ticket (비정형)
+기획자: PRD (자연어, Notion, 채팅)
     |
     v
 [Harness 1] ── HARNESS_1_PROMPT.md
@@ -14,55 +14,65 @@ Ticket (비정형)
 PRD.md (구조화된 기획서)
     |
     v
-[Harness 2] ── HARNESS_2_PROMPT.md  <── DS Registry (componentInventory.json)
+[Harness 2 v2] ── HARNESS_2_PROMPT.md
+    |               ├── DS Registry (componentInventory.json)
+    |               └── mockup-layout.tsx (공통 레이아웃)
+    v
+UI_SCHEMA.md + Coverage + 강제 매핑 + 반응형 체크포인트
     |
     v
-UI_SCHEMA.md + Coverage (DS 매핑)
+[Mockup Renderer v2] ── MOCKUP_RENDERER_PROMPT.md
+    |                     ├── DS Registry
+    |                     ├── mockup-layout.tsx
+    |                     └── Self-Check 8항목
+    v
+{Mockup}.tsx + mock-data.ts + {Mockup}.stories.tsx
     |
     v
-[Mockup Renderer] ── MOCKUP_RENDERER_PROMPT.md  <── DS Registry
-    |
-    v
-mockup.tsx + mock-data.ts (React 목업, ephemeral)
-    |
-    v
-Storybook 호스팅 → 기획자 피드백 루프
+Storybook 확인 → 기획자 피드백 → (필요 시 재생성)
 ```
+
+## v1 → v2 변경점
+
+| v1 문제                                 | v2 해결                                                 |
+| --------------------------------------- | ------------------------------------------------------- |
+| 헤더/푸터 매번 인라인 → 스토리와 불일치 | MockupLayout 필수 (brand prop으로 3개 브랜드 커버)      |
+| DS 컴포넌트 있는데 인라인 구현          | 강제 매핑 규칙 (Tabs, Pagination, Select 등 10개)       |
+| 컴포넌트 API 틀림 (Chip children 등)    | Renderer에 자주 틀리는 API 명시 + Self-Check            |
+| 모바일 반응형 미흡                      | Harness 2에서 반응형 체크포인트 식별, Renderer에 패턴표 |
+| UI 통일성 부족                          | UI Schema에 패턴 참조 추가                              |
+
+## 기획자 사용법
+
+기획자는 코드를 몰라도 됩니다.
+
+1. **PRD 작성**: Notion 또는 대화로 기능 요구사항 전달
+2. **목업 생성 요청**: Claude에게 "이 PRD로 트로스트 목업 만들어줘"
+3. **Storybook 확인**: 배포된 URL에서 Desktop/Mobile 뷰 확인
+4. **피드백**: "검색 필터 위치 바꿔줘", "카드에 이미지 넣어줘" 등 자연어로 요청
+5. **반복**: 만족할 때까지 피드백 루프
 
 ## 디렉토리 구조
 
 ```
 harness/
-  README.md                    ← 이 파일
-  HARNESS_1_PROMPT.md          ← Harness 1: Ticket → PRD.md
-  HARNESS_2_PROMPT.md          ← Harness 2: PRD → UI Schema + Coverage
-  MOCKUP_RENDERER_PROMPT.md    ← Mockup Renderer: Schema → React 목업
+  README.md                        ← 이 파일
+  HARNESS_1_PROMPT.md              ← Ticket → PRD.md
+  HARNESS_2_PROMPT.md              ← PRD → UI Schema + Coverage (v2)
+  MOCKUP_RENDERER_PROMPT.md        ← Schema → React 목업 (v2)
 
-mockups/{ticketId}/
-  PRD.md                       ← Harness 1 산출물
-  UI_SCHEMA.md                 ← Harness 2 산출물
-  mockup.tsx                   ← Mockup Renderer 산출물 (ephemeral)
-  mock-data.ts                 ← Mock 데이터
+apps/storybook/src/stories/
+  mockup-layout.tsx                ← 브랜드 공통 레이아웃 (MockupLayout)
+  {Brand}{Page}Mockup.tsx          ← 목업 컴포넌트
+  {brand}-{page}-mock-data.ts      ← 더미 데이터
+  {Brand}{Page}Mockup.stories.tsx  ← 스토리 (Default + Mobile)
 ```
 
-## Harness 4요소
+## Self-Check (Renderer 생성 후)
 
-각 Harness는 다음 4가지로 구성:
-
-1. **Input contract** — 입력 형식/출처 명시
-2. **Prompt / agent** — AI 프롬프트 템플릿
-3. **Output contract (.md)** — 산출물 형식 고정
-4. **Review gate** — 사람 검토 단계
-
-## DS Registry 연동
-
-- `metadata/componentInventory.json`이 DS Registry 역할
-- Harness 2, Mockup Renderer 모두 이 파일을 참조
-- DS 컴포넌트 추가/변경 시 Registry 업데이트 → 다음 파이프라인부터 자동 반영
-
-## 산출물 원칙
-
-- 모든 중간 산출물은 `.md`로 git에 저장
-- UI Schema는 **ephemeral** — 저장 자산이 아닌 중간 표현
-- mockup.tsx도 ephemeral — 구현 시작점으로만 활용
-- PRD.md만 영구 자산
+- [ ] MockupLayout으로 감쌌는가
+- [ ] DS에 있는 컴포넌트를 인라인으로 만들지 않았는가
+- [ ] 강제 매핑 규칙 10개 모두 준수했는가
+- [ ] useIsMobile()로 모바일 분기 처리했는가
+- [ ] 스토리에 Default + Mobile 둘 다 있는가
+- [ ] tsc --noEmit 통과하는가
