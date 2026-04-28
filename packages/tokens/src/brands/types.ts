@@ -42,6 +42,8 @@ export interface SemanticColors {
     bg: string;
   };
   text: {
+    strong: string;
+    normal: string;
     default: string;
     disabled: string;
     placeholder: string;

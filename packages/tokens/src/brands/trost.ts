@@ -81,6 +81,8 @@ export const trostSemantic = {
     bg: "#E6F9F2",
   },
   text: {
+    strong: trostNeutral[1000], // #000000
+    normal: trostNeutral[800], // #333333
     default: trostNeutral[800],
     disabled: trostNeutral[500],
     placeholder: trostNeutral[500],

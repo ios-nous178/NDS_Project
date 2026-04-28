@@ -21,7 +21,9 @@ export type TypeStyle = {
 };
 
 export const typeScale = {
-  display: { fontSize: 40, lineHeight: 52, letterSpacing: 0, fontWeight: fontWeight.bold },
+  display1: { fontSize: 52, lineHeight: 74, letterSpacing: 0, fontWeight: fontWeight.bold },
+  display2: { fontSize: 48, lineHeight: 62, letterSpacing: 0, fontWeight: fontWeight.bold },
+  display3: { fontSize: 40, lineHeight: 52, letterSpacing: 0, fontWeight: fontWeight.bold },
   headline1: { fontSize: 36, lineHeight: 48, letterSpacing: 0, fontWeight: fontWeight.bold },
   headline2: { fontSize: 28, lineHeight: 38, letterSpacing: 0, fontWeight: fontWeight.bold },
   headline3: { fontSize: 24, lineHeight: 32, letterSpacing: 0, fontWeight: fontWeight.bold },
@@ -31,8 +33,8 @@ export const typeScale = {
   body2: { fontSize: 15, lineHeight: 22, letterSpacing: 0, fontWeight: fontWeight.medium },
   body3: { fontSize: 14, lineHeight: 20, letterSpacing: 0, fontWeight: fontWeight.regular },
   caption1: { fontSize: 13, lineHeight: 18, letterSpacing: 0, fontWeight: fontWeight.regular },
-  caption2: { fontSize: 12, lineHeight: 18, letterSpacing: 0, fontWeight: fontWeight.regular },
-  label: { fontSize: 11, lineHeight: 18, letterSpacing: 0, fontWeight: fontWeight.regular },
+  caption2: { fontSize: 12, lineHeight: 16, letterSpacing: 0, fontWeight: fontWeight.regular },
+  label: { fontSize: 11, lineHeight: 14, letterSpacing: 0, fontWeight: fontWeight.regular },
 } as const;
 
 export const typography = {
