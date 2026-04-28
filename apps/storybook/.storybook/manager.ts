@@ -1,5 +1,6 @@
 import { addons, types } from "@storybook/manager-api";
 import React from "react";
+import { ICON_NAMES, ICON_SVGS } from "./icon-registry";
 
 const ADDON_ID = "nds-token-editor";
 const PANEL_ID = `${ADDON_ID}/panel`;
@@ -448,6 +449,8 @@ interface CssElementInfo {
   styles: Record<string, string>;
   tokenVars: { name: string; value: string; prop: string }[];
   children: { index: number; tag: string; text: string }[];
+  imgSrc?: string;
+  bgImage?: string;
 }
 
 function CssEditorPanel() {
@@ -470,6 +473,11 @@ function CssEditorPanel() {
   const [textEditing, setTextEditing] = React.useState(false);
   const [boxModel, setBoxModel] = React.useState(false);
   const [showPalette, setShowPalette] = React.useState(false);
+  const [imageUrl, setImageUrl] = React.useState("");
+  const [showIcons, setShowIcons] = React.useState(false);
+  const [iconSearch, setIconSearch] = React.useState("");
+  const [iconSize, setIconSize] = React.useState(24);
+  const [iconColor, setIconColor] = React.useState("currentColor");
 
   // ── Undo/Redo 히스토리 (최대 50단계) ──
   type Snap = {
@@ -553,6 +561,7 @@ function CssEditorPanel() {
         setChildOrder((e.data.payload.children || []).map((_: unknown, i: number) => i));
         setHiddenChildren(new Set());
         setTextEditing(false);
+        setImageUrl("");
       }
     };
     window.addEventListener("message", fn);
@@ -595,6 +604,7 @@ function CssEditorPanel() {
           hiddenChildren: Array.from(hiddenChildren),
           textEditing,
           boxModel,
+          imageReplace: imageUrl || undefined,
         },
         "*",
       );
@@ -602,7 +612,7 @@ function CssEditorPanel() {
     } catch {
       /* 무시 */
     }
-  }, [styleOvr, tokenOvr, customCss, childOrders, hiddenChildren, textEditing, boxModel]);
+  }, [styleOvr, tokenOvr, customCss, childOrders, hiddenChildren, textEditing, boxModel, imageUrl]);
 
   const isColor = (v: string) => /^#|^rgb/.test(v);
   const childOrderChanged = childOrder.some((v, i) => v !== i);
@@ -879,6 +889,7 @@ ${screenshotDataUrl ? `<img class="screenshot" src="${screenshotDataUrl}" alt="�
     setHiddenChildren(new Set());
     setTextEditing(false);
     setBoxModel(false);
+    setImageUrl("");
     const iframe = document.querySelector<HTMLIFrameElement>("#storybook-preview-iframe");
     try {
       iframe?.contentWindow?.postMessage({ type: "nds-css-reset" }, "*");
@@ -1219,6 +1230,211 @@ ${screenshotDataUrl ? `<img class="screenshot" src="${screenshotDataUrl}" alt="�
               },
               info.path,
             ),
+          ),
+
+          // ── 이미지 교체 ──
+          (info.imgSrc || info.bgImage) &&
+            h(
+              "div",
+              { style: { marginBottom: 12 } },
+              sectionHeader("이미지 교체"),
+              // 현재 이미지 미리보기
+              h("img", {
+                src: imageUrl || info.imgSrc || info.bgImage || "",
+                style: {
+                  width: "100%",
+                  maxHeight: 80,
+                  objectFit: "cover" as const,
+                  borderRadius: 4,
+                  border: "1px solid #EEE",
+                  marginBottom: 6,
+                  display: "block",
+                },
+              }),
+              // URL 입력
+              h(
+                "div",
+                { style: { display: "flex", gap: 4, marginBottom: 4 } },
+                h("input", {
+                  type: "text",
+                  placeholder: "이미지 URL 붙여넣기",
+                  value: imageUrl,
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => setImageUrl(e.target.value),
+                  style: {
+                    flex: 1,
+                    padding: "4px 6px",
+                    border: "1px solid #DDD",
+                    borderRadius: 4,
+                    fontSize: 11,
+                  },
+                }),
+                imageUrl &&
+                  h(
+                    "button",
+                    {
+                      onClick: () => setImageUrl(""),
+                      style: {
+                        fontSize: 10,
+                        color: "#F44",
+                        border: "none",
+                        background: "none",
+                        cursor: "pointer",
+                      },
+                    },
+                    "↩",
+                  ),
+              ),
+              // 파일 업로드
+              h("input", {
+                type: "file",
+                accept: "image/*",
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    if (typeof reader.result === "string") setImageUrl(reader.result);
+                  };
+                  reader.readAsDataURL(file);
+                },
+                style: { fontSize: 10, width: "100%" },
+              }),
+            ),
+
+          // ── 아이콘 삽입 ──
+          h(
+            "div",
+            { style: { marginBottom: 12 } },
+            h(
+              "div",
+              {
+                onClick: () => setShowIcons(!showIcons),
+                style: {
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: "#333",
+                  marginBottom: 4,
+                  paddingBottom: 4,
+                  borderBottom: "1px solid #EEE",
+                  cursor: "pointer",
+                  userSelect: "none" as const,
+                },
+              },
+              `${showIcons ? "▼" : "▶"} 아이콘 (${ICON_NAMES.length})`,
+            ),
+            showIcons &&
+              h(
+                React.Fragment,
+                null,
+                // 검색 + 사이즈 + 색상
+                h(
+                  "div",
+                  { style: { display: "flex", gap: 4, marginBottom: 6, alignItems: "center" } },
+                  h("input", {
+                    placeholder: "아이콘 검색...",
+                    value: iconSearch,
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                      setIconSearch(e.target.value),
+                    style: {
+                      flex: 1,
+                      padding: "3px 6px",
+                      border: "1px solid #DDD",
+                      borderRadius: 4,
+                      fontSize: 10,
+                    },
+                  }),
+                  h("input", {
+                    type: "number",
+                    value: iconSize,
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                      setIconSize(Number(e.target.value) || 24),
+                    title: "사이즈 (px)",
+                    style: {
+                      width: 36,
+                      padding: "3px 4px",
+                      border: "1px solid #DDD",
+                      borderRadius: 4,
+                      fontSize: 10,
+                      textAlign: "center" as const,
+                    },
+                  }),
+                  h("input", {
+                    type: "color",
+                    value: iconColor === "currentColor" ? "#383838" : iconColor,
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                      setIconColor(e.target.value),
+                    title: "아이콘 색상",
+                    style: {
+                      width: 22,
+                      height: 22,
+                      border: "1px solid #DDD",
+                      borderRadius: 3,
+                      padding: 0,
+                      cursor: "pointer",
+                    },
+                  }),
+                ),
+                // 아이콘 그리드
+                h(
+                  "div",
+                  {
+                    style: {
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fill, minmax(36px, 1fr))",
+                      gap: 3,
+                      maxHeight: 200,
+                      overflowY: "auto" as const,
+                      padding: 2,
+                    },
+                  },
+                  ...ICON_NAMES.filter(
+                    (n) => !iconSearch || n.includes(iconSearch.toLowerCase()),
+                  ).map((name) => {
+                    // SVG에 사이즈/색상 적용
+                    const svg = (ICON_SVGS[name] || "")
+                      .replace(/width="[^"]*"/, `width="${iconSize}"`)
+                      .replace(/height="[^"]*"/, `height="${iconSize}"`)
+                      .replace(/currentColor/g, iconColor);
+                    return h("div", {
+                      key: name,
+                      onClick: () => {
+                        const iframe = document.querySelector<HTMLIFrameElement>(
+                          "#storybook-preview-iframe",
+                        );
+                        try {
+                          iframe?.contentWindow?.postMessage(
+                            {
+                              type: "nds-css-icon",
+                              svg: (ICON_SVGS[name] || "")
+                                .replace(/width="[^"]*"/, `width="${iconSize}"`)
+                                .replace(/height="[^"]*"/, `height="${iconSize}"`)
+                                .replace(/currentColor/g, iconColor),
+                              name,
+                            },
+                            "*",
+                          );
+                        } catch {
+                          /* 무시 */
+                        }
+                      },
+                      title: name,
+                      dangerouslySetInnerHTML: { __html: svg },
+                      style: {
+                        width: 36,
+                        height: 36,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 4,
+                        border: "1px solid #EEE",
+                        cursor: "pointer",
+                        background: "#fff",
+                        overflow: "hidden" as const,
+                      },
+                    });
+                  }),
+                ),
+              ),
           ),
 
           // ── 레이아웃 ──

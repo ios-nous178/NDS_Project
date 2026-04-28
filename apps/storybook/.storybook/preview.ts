@@ -606,6 +606,14 @@ function initCssEditor() {
           text: (child.textContent || "").trim().slice(0, 25),
         }));
 
+      // 이미지 정보
+      const imgSrc = el.tagName === "IMG" ? (el as HTMLImageElement).src : undefined;
+      const bgImg = cs.backgroundImage;
+      const bgImage =
+        bgImg && bgImg !== "none"
+          ? bgImg.replace(/^url\(["']?/, "").replace(/["']?\)$/, "")
+          : undefined;
+
       window.parent.postMessage(
         {
           type: "nds-css-select",
@@ -617,6 +625,8 @@ function initCssEditor() {
             styles,
             tokenVars,
             children,
+            imgSrc,
+            bgImage,
           },
         },
         "*",
@@ -675,6 +685,21 @@ function initCssEditor() {
           }
         }
       }
+      // 아이콘 삽입은 별도 메시지로 처리
+      // (apply와 분리 — 한 번만 실행)
+
+      // 이미지 교체
+      if (selectedEl && e.data.imageReplace) {
+        if (selectedEl.tagName === "IMG") {
+          (selectedEl as HTMLImageElement).src = e.data.imageReplace;
+        } else {
+          selectedEl.style.setProperty(
+            "background-image",
+            `url("${e.data.imageReplace}")`,
+            "important",
+          );
+        }
+      }
       // 텍스트 편집 모드
       textEditMode = !!e.data.textEditing;
       if (selectedEl) {
@@ -695,6 +720,42 @@ function initCssEditor() {
       // 커스텀 CSS
       if (e.data.customCss !== undefined) {
         customStyle.textContent = e.data.customCss;
+      }
+    }
+
+    if (e.data?.type === "nds-css-icon" && selectedEl) {
+      // 선택된 요소에 아이콘 SVG 삽입
+      const svg = e.data.svg as string;
+      if (selectedEl.tagName === "IMG") {
+        // img → svg로 교체
+        const wrapper = document.createElement("span");
+        wrapper.innerHTML = svg;
+        wrapper.style.display = "inline-flex";
+        selectedEl.parentNode?.replaceChild(wrapper, selectedEl);
+        selectedEl = wrapper as HTMLElement;
+      } else if (
+        selectedEl.tagName === "SVG" ||
+        selectedEl.tagName === "svg" ||
+        selectedEl.closest("svg")
+      ) {
+        // 기존 SVG → 새 SVG로 교체
+        const target =
+          selectedEl.tagName === "SVG" || selectedEl.tagName === "svg"
+            ? selectedEl
+            : selectedEl.closest("svg")!;
+        const wrapper = document.createElement("span");
+        wrapper.innerHTML = svg;
+        wrapper.style.display = "inline-flex";
+        target.parentNode?.replaceChild(wrapper, target);
+        selectedEl = wrapper as HTMLElement;
+      } else {
+        // 일반 요소 → 내부에 SVG 삽입 (기존 내용 유지하면서 앞에 추가)
+        const wrapper = document.createElement("span");
+        wrapper.innerHTML = svg;
+        wrapper.style.display = "inline-flex";
+        wrapper.style.verticalAlign = "middle";
+        wrapper.style.marginRight = "4px";
+        selectedEl.insertBefore(wrapper, selectedEl.firstChild);
       }
     }
 
