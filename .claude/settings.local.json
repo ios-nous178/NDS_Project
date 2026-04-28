@@ -36,7 +36,14 @@
       "Bash(brew list:*)",
       "Bash(chmod +x:*)",
       "Bash(bash -n setup.sh)",
-      "Bash(pwsh -NoProfile -Command 'try { [System.Management.Automation.PSParser]::Tokenize\\(\\(Get-Content -Raw setup.ps1\\), [ref]$null\\) | Out-Null; '\\\\''syntax ok'\\\\'' } catch { $_.Exception.Message }')"
+      "Bash(pwsh -NoProfile -Command 'try { [System.Management.Automation.PSParser]::Tokenize\\(\\(Get-Content -Raw setup.ps1\\), [ref]$null\\) | Out-Null; '\\\\''syntax ok'\\\\'' } catch { $_.Exception.Message }')",
+      "Bash(file:*)",
+      "mcp__figma__use_figma",
+      "mcp__figma__get_metadata",
+      "mcp__figma__get_screenshot",
+      "Bash(curl:*)",
+      "mcp__figma__get_design_context",
+      "mcp__figma__get_variable_defs"
     ]
   }
 }
