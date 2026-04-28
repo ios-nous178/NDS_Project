@@ -33,6 +33,8 @@ export const cv = {
     bg: v("--color-semantic-success-bg"),
   },
   text: {
+    strong: v("--color-semantic-text-strong"),
+    normal: v("--color-semantic-text-normal"),
     default: v("--color-semantic-text-default"),
     subtle: v("--color-semantic-text-subtle"),
     disabled: v("--color-semantic-text-disabled"),

@@ -27,14 +27,18 @@ export const coolGray = {
 } as const;
 
 export const blue = {
-  50: "#F1F8FD",
-  100: "#E3F2FC",
-  200: "#91CAF6",
-  300: "#67B5F2",
-  400: "#47A5F0",
-  500: "#2B96ED",
-  600: "#017EE4",
-  800: "#1B65BA",
+  10: "#F8FCFE",
+  25: "#EAF6FD",
+  50: "#E1F2FC",
+  100: "#B6DDF9",
+  200: "#87C9F6",
+  300: "#53B2F3",
+  400: "#1AA3F2",
+  500: "#0094F0",
+  600: "#0086E3",
+  700: "#0074D0",
+  800: "#0063BF",
+  900: "#0046A0",
 } as const;
 
 export const magenta = {
@@ -43,7 +47,7 @@ export const magenta = {
   200: "#F8B8CF",
   300: "#F15890",
   500: "#ED2E77",
-  600: "#EA005F",
+  600: "#D9005C",
   800: "#C30058",
 } as const;
 
@@ -52,14 +56,18 @@ export const yellow = {
   100: "#FFEDB3",
   200: "#FFE282",
   300: "#FFD84F",
-  400: "#FFC303",
+  400: "#FFCD27",
   500: "#FFC303",
-  600: "#FFA100",
 } as const;
 
 export const red = {
   50: "#FEE9E6",
+  100: "#FFA98C",
+  200: "#FF875D",
+  400: "#FF4E0C",
   500: "#F13F00",
+  700: "#E33800",
+  800: "#CB2700",
 } as const;
 
 export const green = {
@@ -67,18 +75,18 @@ export const green = {
   100: "#AAE3D7",
   200: "#6FD2BD",
   300: "#13BFA2",
-  400: "#00B08F",
-  500: "#00A07C",
+  400: "#00A07C",
+  500: "#008260",
 } as const;
 
 export const semantic = {
   primary: {
-    main: blue[500],
-    hover: blue[600],
-    pressed: blue[800],
-    lighter: blue[200],
-    bg: blue[100],
-    bgLighter: blue[50],
+    main: "#2B96ED", // 팔레트 blue 스케일 변경으로 디커플링
+    hover: "#017EE4",
+    pressed: "#1B65BA",
+    lighter: "#91CAF6",
+    bg: "#E3F2FC",
+    bgLighter: "#F1F8FD",
     fg: neutral["00"],
   },
   secondary: {
@@ -93,7 +101,7 @@ export const semantic = {
   },
   caution: {
     main: yellow[500],
-    text: yellow[600],
+    text: "#FFA100", // yellow.600 제거됨, 값 직접 지정
     bg: yellow[50],
   },
   success: {
@@ -101,6 +109,8 @@ export const semantic = {
     bg: green[50],
   },
   text: {
+    strong: neutral[1000], // #000000
+    normal: neutral[900], // #111111
     default: neutral[800],
     subtle: neutral[700],
     disabled: neutral[500],
@@ -118,7 +128,7 @@ export const semantic = {
   border: {
     default: neutral[300],
     light: neutral[200],
-    focus: blue[500],
+    focus: "#2B96ED", // 팔레트 디커플링
     disabled: neutral[200],
   },
   icon: {
