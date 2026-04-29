@@ -20,10 +20,18 @@ const HEADER_CLASS = `${MODAL_CLASS}__header`;
 const HEADER_TITLE_CLASS = `${MODAL_CLASS}__header-title`;
 const CLOSE_CLASS = `${MODAL_CLASS}__close`;
 const BODY_CLASS = `${MODAL_CLASS}__body`;
+const IMAGE_CLASS = `${MODAL_CLASS}__image`;
 const FOOTER_CLASS = `${MODAL_CLASS}__footer`;
 const FOOTER_ACTION_CLASS = `${MODAL_CLASS}__footer-action`;
 const FOOTER_CANCEL_CLASS = `${MODAL_CLASS}__footer-cancel`;
 const FOOTER_CONFIRM_CLASS = `${MODAL_CLASS}__footer-confirm`;
+
+export type ModalDevice = "pc" | "mobile";
+
+const DEVICE_WIDTH: Record<ModalDevice, number> = {
+  pc: 332,
+  mobile: 294,
+};
 
 const ModalContext = createContext<ModalContextValue | undefined>(undefined);
 
@@ -109,6 +117,20 @@ const modalStyles = `
     line-height: 1.5;
     color: ${cv.text.subtle};
     text-align: center;
+  }
+
+  :where(.${IMAGE_CLASS}) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto;
+  }
+
+  :where(.${IMAGE_CLASS} > *) {
+    width: 100%;
+    height: 100%;
   }
 
   :where(.${FOOTER_CLASS}) {
@@ -396,6 +418,17 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   );
 };
 
+export interface ModalImageProps extends Omit<DivProps, "children"> {
+  /** 64px 영역 안에 들어갈 이미지/아이콘 노드 */
+  children: React.ReactNode;
+}
+
+export const ModalImage: React.FC<ModalImageProps> = ({ children, className, ...rest }) => (
+  <div data-slot="image" className={cx(IMAGE_CLASS, className)} {...rest}>
+    {children}
+  </div>
+);
+
 export interface ModalBodyProps extends Omit<DivProps, "children"> {
   /** 모달 본문 콘텐츠 */
   children: React.ReactNode;
@@ -531,6 +564,10 @@ export interface ModalProps {
   isMaskClose?: boolean;
   /** 모달 제목 */
   title?: string;
+  /** 타이틀 위에 표시할 이미지/아이콘 (64x64) */
+  image?: React.ReactNode;
+  /** 디바이스별 기본 너비 (`pc`=332, `mobile`=294). `maxWidth`가 지정되면 무시됨. */
+  device?: ModalDevice;
   /** 모달 본문 콘텐츠 */
   children: React.ReactNode;
   /** 확인 버튼 클릭 콜백. `onClose`를 인자로 받아 호출하면 모달이 닫힘 */
@@ -578,6 +615,8 @@ export const ModalComponent: React.FC<ModalProps> = ({
   mask = true,
   isMaskClose = true,
   title,
+  image,
+  device,
   children,
   onConfirm,
   confirmText,
@@ -615,11 +654,12 @@ export const ModalComponent: React.FC<ModalProps> = ({
         />
       )}
       <ModalContent
-        maxWidth={maxWidth}
+        maxWidth={maxWidth ?? (device ? DEVICE_WIDTH[device] : undefined)}
         className={cx(slotProps?.content?.className, contentClassName)}
         style={{ ...slotProps?.content?.style, ...contentStyle }}
         {...omitDomProps(slotProps?.content)}
       >
+        {image && <ModalImage>{image}</ModalImage>}
         {(title || closable) && (
           <ModalHeader
             title={title}
@@ -662,6 +702,7 @@ export const Modal = Object.assign(ModalComponent, {
   Overlay: ModalOverlay,
   Content: ModalContent,
   Header: ModalHeader,
+  Image: ModalImage,
   Body: ModalBody,
   Footer: ModalFooter,
 });

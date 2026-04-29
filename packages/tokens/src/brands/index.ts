@@ -17,4 +17,5 @@ export {
   trostNeutral,
   trostStatus,
   trostSemantic,
+  trostEapBanner,
 } from "./trost";

@@ -1,4 +1,6 @@
 export * from "./Button";
+export * from "./TextButton";
+export * from "./IconButton";
 export * from "./Badge";
 export * from "./Modal";
 export * from "./Input";
