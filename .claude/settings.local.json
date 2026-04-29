@@ -38,5 +38,9 @@
       "Bash(bash -n setup.sh)",
       "Bash(pwsh -NoProfile -Command 'try { [System.Management.Automation.PSParser]::Tokenize\\(\\(Get-Content -Raw setup.ps1\\), [ref]$null\\) | Out-Null; '\\\\''syntax ok'\\\\'' } catch { $_.Exception.Message }')"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "nudge-design-system",
+    "apps-in-toss"
+  ]
 }
