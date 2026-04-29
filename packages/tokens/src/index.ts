@@ -24,4 +24,5 @@ export {
   trostNeutral,
   trostStatus,
   trostSemantic,
+  trostEapBanner,
 } from "./brands";

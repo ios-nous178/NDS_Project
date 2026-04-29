@@ -149,14 +149,35 @@ const inputStyles = `
   }
 
   :where(.${INPUT_HELPER_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    gap: ${spacing[6]}px;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.text.subtle};
   }
 
-  :where(.${INPUT_HELPER_CLASS}[data-error="true"]) {
+  :where(.${INPUT_HELPER_CLASS}[data-variant="error"]) {
     color: ${cv.error.main};
+  }
+
+  :where(.${INPUT_HELPER_CLASS}[data-variant="success"]) {
+    color: ${cv.primary.main};
+  }
+
+  :where(.${INPUT_HELPER_CLASS}__icon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  :where(.${INPUT_HELPER_CLASS}__icon svg) {
+    width: 16px;
+    height: 16px;
   }
 `;
 
@@ -175,6 +196,7 @@ interface InputContextValue {
   error: boolean;
   disabled: boolean;
   readOnly: boolean;
+  complete: boolean;
   hasHelper: boolean;
   setHasHelper: (v: boolean) => void;
 }
@@ -196,6 +218,8 @@ export interface InputRootProps extends React.HTMLAttributes<HTMLDivElement> {
   disabled?: boolean;
   /** 읽기 전용 */
   readOnly?: boolean;
+  /** 입력 완료 상태 (검증 통과 시 시각적 표시용) */
+  complete?: boolean;
   /** 부모 너비에 맞춤 @default true */
   fullWidth?: boolean;
   /** 입력 필드 높이 변형 @default "default" */
@@ -210,6 +234,7 @@ export const InputRoot: React.FC<InputRootProps> = ({
   error = false,
   disabled = false,
   readOnly = false,
+  complete = false,
   fullWidth = true,
   size = "default",
   inputId: inputIdProp,
@@ -236,6 +261,7 @@ export const InputRoot: React.FC<InputRootProps> = ({
         error,
         disabled,
         readOnly,
+        complete,
         hasHelper,
         setHasHelper,
       }}
@@ -294,7 +320,7 @@ export const InputWrapper: React.FC<InputWrapperProps> = ({
   style,
   ...rest
 }) => {
-  const { focused, error, disabled, readOnly } = useInputContext();
+  const { focused, error, disabled, readOnly, complete } = useInputContext();
 
   return (
     <div
@@ -303,6 +329,7 @@ export const InputWrapper: React.FC<InputWrapperProps> = ({
       data-error={error ? "true" : "false"}
       data-disabled={disabled ? "true" : "false"}
       data-readonly={readOnly ? "true" : "false"}
+      data-complete={complete ? "true" : "false"}
       className={cx(INPUT_WRAPPER_CLASS, className)}
       style={style}
       {...rest}
@@ -382,15 +409,23 @@ InputClearButton.displayName = "InputClearButton";
 
 /* ─── Compound: Helper ─── */
 
+export type InputHelperVariant = "default" | "success" | "error";
+
 export interface InputHelperProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** true이면 에러 스타일 + role="alert" 적용 */
+  /** true이면 에러 스타일 + role="alert" 적용 (`variant="error"`와 동일) */
   error?: boolean;
+  /** 헬퍼 텍스트 색상 변형 @default "default" */
+  variant?: InputHelperVariant;
+  /** 텍스트 앞에 표시할 16x16 아이콘 */
+  icon?: React.ReactNode;
   /** 도움/에러 메시지 텍스트 */
   children: React.ReactNode;
 }
 
 export const InputHelper: React.FC<InputHelperProps> = ({
   error,
+  variant,
+  icon,
   children,
   className,
   id: idProp,
@@ -398,6 +433,8 @@ export const InputHelper: React.FC<InputHelperProps> = ({
 }) => {
   const ctx = useContext(InputContext);
   const helperId = idProp ?? ctx?.helperId;
+  const resolvedVariant: InputHelperVariant = variant ?? (error ? "error" : "default");
+  const isError = resolvedVariant === "error";
 
   React.useEffect(() => {
     ctx?.setHasHelper(true);
@@ -408,11 +445,16 @@ export const InputHelper: React.FC<InputHelperProps> = ({
     <span
       id={helperId}
       data-slot="helper"
-      data-error={error ? "true" : "false"}
+      data-variant={resolvedVariant}
       className={cx(INPUT_HELPER_CLASS, className)}
-      role={error ? "alert" : undefined}
+      role={isError ? "alert" : undefined}
       {...rest}
     >
+      {icon && (
+        <span data-slot="helper-icon" className={`${INPUT_HELPER_CLASS}__icon`}>
+          {icon}
+        </span>
+      )}
       {children}
     </span>
   );
@@ -447,6 +489,12 @@ export interface InputProps extends Omit<
   error?: boolean;
   /** 에러 메시지 (helperText 대신 표시) */
   errorMessage?: string;
+  /** 입력 완료(검증 통과) 상태 */
+  complete?: boolean;
+  /** 성공 메시지 (helperText 대신 표시, primary 색상) */
+  successMessage?: string;
+  /** helper 텍스트 앞에 표시할 16x16 아이콘 */
+  helperIcon?: React.ReactNode;
   /** 클리어 버튼 표시 여부 */
   clearable?: boolean;
   /** 클리어 시 콜백 */
@@ -474,6 +522,9 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
       helperText,
       error = false,
       errorMessage,
+      complete = false,
+      successMessage,
+      helperIcon,
       clearable = false,
       onClear,
       suffix,
@@ -506,7 +557,17 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
     const currentValue = isControlled ? value : internalValue;
     const hasValue = currentValue !== "" && currentValue !== undefined && currentValue !== null;
     const showError = error || !!errorMessage;
-    const displayHelper = showError ? errorMessage : helperText;
+    const showSuccess = !showError && (complete || !!successMessage);
+    const displayHelper = showError
+      ? errorMessage ?? helperText
+      : showSuccess
+        ? successMessage ?? helperText
+        : helperText;
+    const helperVariant: InputHelperVariant = showError
+      ? "error"
+      : showSuccess
+        ? "success"
+        : "default";
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -527,6 +588,7 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
         error={showError}
         disabled={disabled}
         readOnly={readOnly}
+        complete={showSuccess}
         fullWidth={fullWidth}
         size={size}
         inputId={idProp}
@@ -574,7 +636,8 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
 
         {displayHelper && (
           <InputHelper
-            error={showError}
+            variant={helperVariant}
+            icon={helperIcon}
             className={slotProps?.helper?.className}
             style={slotProps?.helper?.style}
           >

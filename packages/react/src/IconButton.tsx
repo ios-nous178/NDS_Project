@@ -1,0 +1,97 @@
+import React from "react";
+import { cv, radius, transition } from "@nudge-eap/tokens";
+
+export type IconButtonSize = "x-large" | "large" | "medium" | "small";
+
+const ICON_BUTTON_CLASS = "nds-icon-button";
+
+// eslint-disable-next-line unused-imports/no-unused-vars
+const iconButtonStyles = `
+  :where(.${ICON_BUTTON_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--nds-icon-button-size, 32px);
+    height: var(--nds-icon-button-size, 32px);
+    padding: 0;
+    border: none;
+    border-radius: ${radius.sm}px;
+    background: transparent;
+    color: var(--nds-icon-button-color, ${cv.icon.default});
+    cursor: pointer;
+    transition:
+      background-color ${transition.default},
+      color ${transition.default};
+  }
+
+  :where(.${ICON_BUTTON_CLASS}:disabled) {
+    cursor: default;
+    color: ${cv.text.disabled};
+  }
+
+  :where(.${ICON_BUTTON_CLASS}:not(:disabled):hover) {
+    background: var(--nds-icon-button-hover-bg, ${cv.bg.light});
+  }
+
+  :where(.${ICON_BUTTON_CLASS} svg) {
+    width: var(--nds-icon-button-icon-size, 24px);
+    height: var(--nds-icon-button-icon-size, 24px);
+  }
+`;
+
+const sizeConfig = {
+  "x-large": { box: 36, icon: 36 },
+  large: { box: 32, icon: 32 },
+  medium: { box: 28, icon: 28 },
+  small: { box: 24, icon: 24 },
+} as const;
+
+const cx = (...classNames: Array<string | undefined | false | null>) =>
+  classNames.filter(Boolean).join(" ");
+
+export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** 버튼 크기 @default "large" */
+  size?: IconButtonSize;
+  /** 표시할 아이콘 */
+  icon: React.ReactNode;
+  /** 접근성 라벨 (필수) */
+  "aria-label": string;
+}
+
+export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
+  (
+    {
+      size = "large",
+      icon,
+      className,
+      style,
+      type = "button",
+      ...rest
+    },
+    ref,
+  ) => {
+    const s = sizeConfig[size];
+
+    return (
+      <button
+        ref={ref}
+        type={type}
+        data-slot="root"
+        data-size={size}
+        className={cx(ICON_BUTTON_CLASS, className)}
+        style={
+          {
+            "--nds-icon-button-size": `${s.box}px`,
+            "--nds-icon-button-icon-size": `${s.icon}px`,
+            ...style,
+          } as React.CSSProperties
+        }
+        {...rest}
+      >
+        {icon}
+      </button>
+    );
+  },
+);
+
+IconButton.displayName = "IconButton";

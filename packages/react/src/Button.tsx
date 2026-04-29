@@ -12,7 +12,7 @@ import {
 
 export type ButtonVariant = "solid" | "outlined" | "soft" | "outlined-sub";
 export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "field";
-export type ButtonColor = "primary" | "secondary";
+export type ButtonColor = "primary" | "secondary" | "assistive";
 
 const BUTTON_CLASS = "nds-button";
 const BUTTON_LABEL_CLASS = `${BUTTON_CLASS}__label`;
@@ -275,6 +275,84 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         background: cv.primary.bgLighter,
         text: cv.primary.main,
         border: cv.primary.main,
+      },
+    },
+    "outlined-sub": {
+      enabled: {
+        background: cv.bg.white,
+        text: cv.text.default,
+        border: cv.border.default,
+        fontWeight: 500,
+      },
+      disabled: {
+        background: cv.bg.white,
+        text: cv.text.disabled,
+        border: cv.border.light,
+        fontWeight: 500,
+      },
+      hover: {
+        background: cv.bg.light,
+        text: cv.text.default,
+        border: cv.border.default,
+        fontWeight: 500,
+      },
+    },
+  },
+  assistive: {
+    // Figma: Solid/Assistive — cool gray filled
+    solid: {
+      enabled: {
+        background: "#9CA2AE",
+        text: cv.bg.white,
+        border: "#9CA2AE",
+      },
+      disabled: {
+        background: cv.border.light,
+        text: cv.text.disabled,
+        border: cv.border.light,
+      },
+      hover: {
+        background: "#7E8593",
+        text: cv.bg.white,
+        border: "#7E8593",
+      },
+    },
+    soft: {
+      enabled: {
+        background: cv.bg.light,
+        text: cv.text.default,
+        border: cv.bg.light,
+      },
+      disabled: {
+        background: cv.border.light,
+        text: cv.text.disabled,
+        border: cv.border.light,
+      },
+      hover: {
+        background: cv.border.light,
+        text: cv.text.default,
+        border: cv.border.light,
+      },
+    },
+    // Figma: Outlined/Assistive — neutral border, default text
+    outlined: {
+      enabled: {
+        background: cv.bg.white,
+        text: cv.text.default,
+        border: cv.border.default,
+        fontWeight: 500,
+      },
+      disabled: {
+        background: cv.bg.white,
+        text: cv.text.disabled,
+        border: cv.border.light,
+        fontWeight: 500,
+      },
+      hover: {
+        background: cv.bg.light,
+        text: cv.text.default,
+        border: cv.border.default,
+        fontWeight: 500,
       },
     },
     "outlined-sub": {
