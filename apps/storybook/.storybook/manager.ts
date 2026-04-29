@@ -551,6 +551,31 @@ function CssEditorPanel() {
     return () => window.removeEventListener("keydown", handler);
   }, [undo, redo]);
 
+  // Backspace / Delete 단축키 — 선택 요소 숨기기 (display:none, undo로 복구)
+  React.useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== "Backspace" && e.key !== "Delete") return;
+      const t = e.target as HTMLElement | null;
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.tagName === "SELECT" ||
+          t.isContentEditable)
+      )
+        return;
+      if (textEditing) return;
+      if (!info) return;
+      // <html>/<body>는 페이지 전체가 사라지므로 가드
+      const tag = (info as { tag?: string }).tag?.toLowerCase();
+      if (tag === "html" || tag === "body") return;
+      e.preventDefault();
+      setStyleOvr((prev) => ({ ...prev, display: "none" }));
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [info, textEditing]);
+
   // preview에서 요소 선택 메시지 수신
   React.useEffect(() => {
     const fn = (e: MessageEvent) => {
@@ -1190,6 +1215,11 @@ ${screenshotDataUrl ? `<img class="screenshot" src="${screenshotDataUrl}" alt="�
           "↪ 다시실행",
         ),
         h("span", null, `${histPos.current}/${histRef.current.length - 1}`),
+        h(
+          "span",
+          { style: { marginLeft: "auto", fontSize: 9, color: "#BBB" } },
+          "Backspace=숨김 · ⌘Z=되돌리기",
+        ),
       ),
 
     // ── 선택된 요소 or 안내 ──
