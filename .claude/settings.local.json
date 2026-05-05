@@ -36,11 +36,13 @@
       "Bash(brew list:*)",
       "Bash(chmod +x:*)",
       "Bash(bash -n setup.sh)",
-      "Bash(pwsh -NoProfile -Command 'try { [System.Management.Automation.PSParser]::Tokenize\\(\\(Get-Content -Raw setup.ps1\\), [ref]$null\\) | Out-Null; '\\\\''syntax ok'\\\\'' } catch { $_.Exception.Message }')"
+      "Bash(pwsh -NoProfile -Command 'try { [System.Management.Automation.PSParser]::Tokenize\\(\\(Get-Content -Raw setup.ps1\\), [ref]$null\\) | Out-Null; '\\\\''syntax ok'\\\\'' } catch { $_.Exception.Message }')",
+      "mcp__figma__get_design_context",
+      "mcp__figma__get_screenshot",
+      "mcp__figma__get_metadata",
+      "Bash(claude --version)",
+      "Bash(curl -sI \"https://www.figma.com/api/mcp/asset/24cb8e12-cabb-46ce-bc15-5e6ebb94f82b\")"
     ]
   },
-  "enabledMcpjsonServers": [
-    "nudge-design-system",
-    "apps-in-toss"
-  ]
+  "enabledMcpjsonServers": ["nudge-design-system", "apps-in-toss"]
 }
