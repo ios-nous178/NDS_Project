@@ -1,5 +1,5 @@
 .wrapper {
-  border: 1px solid #E6E7EB;
+  border: 1px solid #e6e7eb;
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 24px;
@@ -10,11 +10,11 @@
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: #F8F9FB;
-  border-bottom: 1px solid #E6E7EB;
+  background: #f8f9fb;
+  border-bottom: 1px solid #e6e7eb;
   font-size: 13px;
   font-weight: 700;
-  color: #4E5462;
+  color: #4e5462;
 }
 
 .headerIcon {
@@ -33,15 +33,15 @@
   align-items: center;
   justify-content: center;
   padding: 32px 24px;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .controls {
   width: 240px;
   flex-shrink: 0;
   padding: 16px;
-  background: #FAFAFA;
-  border-left: 1px solid #E6E7EB;
+  background: #fafafa;
+  border-left: 1px solid #e6e7eb;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -57,7 +57,7 @@
 .label {
   font-size: 11px;
   font-weight: 600;
-  color: #6C7280;
+  color: #6c7280;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -73,29 +73,29 @@
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 500;
-  border: 1px solid #E6E7EB;
+  border: 1px solid #e6e7eb;
   border-radius: 6px;
-  background: #FFFFFF;
-  color: #4E5462;
+  background: #ffffff;
+  color: #4e5462;
   cursor: pointer;
   transition: all 0.15s;
   font-family: inherit;
 }
 
 .selectBtn:hover {
-  border-color: #D2D5D9;
-  background: #F3F4F6;
+  border-color: #d2d5d9;
+  background: #f3f4f6;
 }
 
 .selectBtnActive {
-  background: #017EE4;
-  border-color: #017EE4;
-  color: #FFFFFF;
+  background: #017ee4;
+  border-color: #017ee4;
+  color: #ffffff;
 }
 
 .selectBtnActive:hover {
-  background: #1B65BA;
-  border-color: #1B65BA;
+  background: #1b65ba;
+  border-color: #1b65ba;
 }
 
 /* Toggle */
@@ -105,14 +105,14 @@
   height: 22px;
   border: none;
   border-radius: 11px;
-  background: #D2D5D9;
+  background: #d2d5d9;
   cursor: pointer;
   transition: background 0.2s;
   padding: 0;
 }
 
 .toggleOn {
-  background: #2B96ED;
+  background: #2b96ed;
 }
 
 .toggleThumb {
@@ -122,7 +122,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s;
 }
@@ -135,9 +135,9 @@
 .textInput {
   padding: 6px 10px;
   font-size: 13px;
-  border: 1px solid #E6E7EB;
+  border: 1px solid #e6e7eb;
   border-radius: 6px;
-  background: #FFFFFF;
+  background: #ffffff;
   color: #383838;
   font-family: inherit;
   outline: none;
@@ -145,21 +145,21 @@
 }
 
 .textInput:focus {
-  border-color: #2B96ED;
+  border-color: #2b96ed;
 }
 
 /* Code bar */
 .codeBar {
   padding: 10px 16px;
-  background: #1E1E1E;
-  border-top: 1px solid #E6E7EB;
+  background: #1e1e1e;
+  border-top: 1px solid #e6e7eb;
   overflow-x: auto;
 }
 
 .codeOutput {
   font-size: 12.5px !important;
   line-height: 1.5;
-  color: #D4D4D4 !important;
+  color: #d4d4d4 !important;
   background: none !important;
   padding: 0 !important;
   border: none !important;
@@ -175,6 +175,6 @@
   .controls {
     width: 100%;
     border-left: none;
-    border-top: 1px solid #E6E7EB;
+    border-top: 1px solid #e6e7eb;
   }
 }

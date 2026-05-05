@@ -23,17 +23,20 @@ import { Input } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - 사용자로부터 **한 줄 텍스트**를 입력받을 때 (이름, 이메일, 비밀번호 등)
 - 라벨, 에러 메시지, 도움말이 함께 필요한 폼 필드일 때
 - prefix/suffix 슬롯으로 단위나 아이콘을 함께 표시할 때
 
 ### 이럴 때 사용하지 마세요
+
 - 검색 전용 입력 (검색 아이콘 + 클리어 + Enter 트리거) → [SearchInput](/docs/components/search-input)을 사용하세요
 - 미리 정해진 옵션에서 선택 → [Select](/docs/components/select)를 사용하세요
 - 입력 필드 + 버튼을 한 줄로 조합 → [FieldActionRow](/docs/components/field-action-row)를 사용하세요
 - 여러 줄 텍스트 입력 → `<textarea>`를 사용하세요
 
 ### 자주 하는 실수
+
 - `label` 없이 `placeholder`만 사용 — placeholder는 입력 시 사라지므로 접근성과 UX 모두 나빠집니다. 항상 `label`을 제공하세요
 - 에러 상태에서 `errorMessage` 미제공 — `error` prop만으로는 사용자가 무엇이 잘못인지 알 수 없습니다
 
@@ -85,20 +88,12 @@ import { Input } from "@nudge-eap/react";
 
 <ComponentPreview title="라벨 + 도움 텍스트">
   <div style={{ width: 320 }}>
-    <Input
-      label="이메일"
-      placeholder="example@email.com"
-      helperText="회사 이메일을 입력해주세요"
-    />
+    <Input label="이메일" placeholder="example@email.com" helperText="회사 이메일을 입력해주세요" />
   </div>
 </ComponentPreview>
 
 ```tsx
-<Input
-  label="이메일"
-  placeholder="example@email.com"
-  helperText="회사 이메일을 입력해주세요"
-/>
+<Input label="이메일" placeholder="example@email.com" helperText="회사 이메일을 입력해주세요" />
 ```
 
 ### 에러 상태
@@ -135,7 +130,7 @@ const [value, setValue] = useState("");
   clearable
   onClear={() => setValue("")}
   placeholder="검색어를 입력하세요"
-/>
+/>;
 ```
 
 ### Prefix / Suffix
@@ -206,22 +201,22 @@ import { SearchIcon } from "@nudge-eap/icons";
 
 ## Flat API Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `label` | `string` | — | 라벨 텍스트 |
-| `helperText` | `string` | — | 도움 텍스트 |
-| `error` | `boolean` | `false` | 에러 상태 |
-| `errorMessage` | `string` | — | 에러 메시지 (helperText 대신 표시) |
-| `clearable` | `boolean` | `false` | 클리어 버튼 표시 |
-| `onClear` | `() => void` | — | 클리어 콜백 |
-| `prefix` | `ReactNode` | — | 좌측 addon (아이콘 등) |
-| `suffix` | `ReactNode` | — | 우측 addon (버튼 등) |
-| `fullWidth` | `boolean` | `true` | 부모 너비 100% 채움 |
-| `disabled` | `boolean` | `false` | 비활성화 |
-| `readOnly` | `boolean` | `false` | 읽기 전용 |
-| `slotProps` | `InputSlotProps` | — | 내부 슬롯별 props 전달 |
-| `wrapperClassName` | `string` | — | Wrapper className |
-| `wrapperStyle` | `CSSProperties` | — | Wrapper 인라인 스타일 |
+| Prop               | 타입             | 기본값  | 설명                               |
+| ------------------ | ---------------- | ------- | ---------------------------------- |
+| `label`            | `string`         | —       | 라벨 텍스트                        |
+| `helperText`       | `string`         | —       | 도움 텍스트                        |
+| `error`            | `boolean`        | `false` | 에러 상태                          |
+| `errorMessage`     | `string`         | —       | 에러 메시지 (helperText 대신 표시) |
+| `clearable`        | `boolean`        | `false` | 클리어 버튼 표시                   |
+| `onClear`          | `() => void`     | —       | 클리어 콜백                        |
+| `prefix`           | `ReactNode`      | —       | 좌측 addon (아이콘 등)             |
+| `suffix`           | `ReactNode`      | —       | 우측 addon (버튼 등)               |
+| `fullWidth`        | `boolean`        | `true`  | 부모 너비 100% 채움                |
+| `disabled`         | `boolean`        | `false` | 비활성화                           |
+| `readOnly`         | `boolean`        | `false` | 읽기 전용                          |
+| `slotProps`        | `InputSlotProps` | —       | 내부 슬롯별 props 전달             |
+| `wrapperClassName` | `string`         | —       | Wrapper className                  |
+| `wrapperStyle`     | `CSSProperties`  | —       | Wrapper 인라인 스타일              |
 
 `<input>` HTML 속성을 모두 지원합니다 (`value`, `onChange`, `placeholder`, `type` 등).
 
@@ -231,12 +226,12 @@ import { SearchIcon } from "@nudge-eap/icons";
 
 ### Input.Root
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `error` | `boolean` | `false` | 에러 상태 |
-| `disabled` | `boolean` | `false` | 비활성화 |
-| `readOnly` | `boolean` | `false` | 읽기 전용 |
-| `fullWidth` | `boolean` | `true` | 전체 너비 |
+| Prop        | 타입      | 기본값  | 설명      |
+| ----------- | --------- | ------- | --------- |
+| `error`     | `boolean` | `false` | 에러 상태 |
+| `disabled`  | `boolean` | `false` | 비활성화  |
+| `readOnly`  | `boolean` | `false` | 읽기 전용 |
+| `fullWidth` | `boolean` | `true`  | 전체 너비 |
 
 ### Input.Label
 
@@ -258,22 +253,22 @@ import { SearchIcon } from "@nudge-eap/icons";
 
 도움 텍스트/에러 메시지를 표시합니다.
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `error` | `boolean` | — | 에러 스타일 적용 |
+| Prop    | 타입      | 기본값 | 설명             |
+| ------- | --------- | ------ | ---------------- |
+| `error` | `boolean` | —      | 에러 스타일 적용 |
 
 ---
 
 ## CSS 변수
 
-| 변수 | 기본값 | 설명 |
-|---|---|---|
-| `--nds-input-width` | `100%` | 컴포넌트 너비 |
-| `--nds-input-height` | `48px` | 입력 필드 높이 |
-| `--nds-input-radius` | `8px` | 모서리 둥글기 |
-| `--nds-input-border-color` | Neutral 300 | 테두리 색상 |
-| `--nds-input-background` | White | 배경색 |
-| `--nds-input-label-gap` | `12px` | 라벨-필드 간격 |
+| 변수                       | 기본값      | 설명           |
+| -------------------------- | ----------- | -------------- |
+| `--nds-input-width`        | `100%`      | 컴포넌트 너비  |
+| `--nds-input-height`       | `48px`      | 입력 필드 높이 |
+| `--nds-input-radius`       | `8px`       | 모서리 둥글기  |
+| `--nds-input-border-color` | Neutral 300 | 테두리 색상    |
+| `--nds-input-background`   | White       | 배경색         |
+| `--nds-input-label-gap`    | `12px`      | 라벨-필드 간격 |
 
 ---
 
@@ -294,12 +289,12 @@ div [data-slot="root"]
 
 ## 상태별 스타일
 
-| 상태 | 테두리 색상 | 배경색 |
-|---|---|---|
-| 기본 | Neutral 300 | White |
-| 포커스 | Blue 500 | White |
-| 에러 | Red 500 | White |
-| 비활성화 | Neutral 300 | Neutral 50 |
+| 상태      | 테두리 색상 | 배경색     |
+| --------- | ----------- | ---------- |
+| 기본      | Neutral 300 | White      |
+| 포커스    | Blue 500    | White      |
+| 에러      | Red 500     | White      |
+| 비활성화  | Neutral 300 | Neutral 50 |
 | 읽기 전용 | Neutral 300 | Neutral 50 |
 
 ---

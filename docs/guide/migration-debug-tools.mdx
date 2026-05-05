@@ -3,8 +3,8 @@ sidebar_position: 6
 title: 마이그레이션 & 디버깅 도구
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 # 마이그레이션 & 디버깅 도구
 
@@ -105,8 +105,8 @@ Portal 오버레이는 DOM 트리 바깥에서 렌더링되므로 **어떤 `over
 
 ### DS Highlight 동작 영상
 
-<div style={{ margin: '16px 0' }}>
-  <video controls width="100%" style={{ borderRadius: 8, border: '1px solid #d8d8d8' }}>
+<div style={{ margin: "16px 0" }}>
+  <video controls width="100%" style={{ borderRadius: 8, border: "1px solid #d8d8d8" }}>
     <source src="/video/migration/260412_NDS_highlight_demo.mov" />
   </video>
 </div>
@@ -194,9 +194,7 @@ Portal 오버레이는 DOM 트리 바깥에서 렌더링되므로 **어떤 `over
 
 ```tsx
 // 기존 li 기반 태그
-<li className="px-2 py-1 bg-[#f1f8fd] text-[#2b96ed] text-[13px] rounded-md">
-  #{topic.label}
-</li>
+<li className="px-2 py-1 bg-[#f1f8fd] text-[#2b96ed] text-[13px] rounded-md">#{topic.label}</li>
 ```
 
   </TabItem>
@@ -204,13 +202,7 @@ Portal 오버레이는 DOM 트리 바깥에서 렌더링되므로 **어떤 `over
 
 ```tsx
 // NDS Chip (soft) + Tailwind px 오버라이드
-<Chip
-  label={`#${topic.label}`}
-  variant="soft"
-  shape="square"
-  size="sm"
-  className="px-2"
-/>
+<Chip label={`#${topic.label}`} variant="soft" shape="square" size="sm" className="px-2" />
 ```
 
   </TabItem>
@@ -265,7 +257,9 @@ Portal 오버레이는 DOM 트리 바깥에서 렌더링되므로 **어떤 `over
 ```tsx
 // PartnerSearchInput.tsx (상태 관리 + 이벤트 핸들러 직접 구현)
 const [value, setValue] = useState(defaultValue);
-const handleKeyPress = (e) => { if (e.key === 'Enter') onSearch(value); };
+const handleKeyPress = (e) => {
+  if (e.key === "Enter") onSearch(value);
+};
 
 <div className="relative w-full">
   <input
@@ -275,8 +269,12 @@ const handleKeyPress = (e) => { if (e.key === 'Enter') onSearch(value); };
     className="w-full h-12 pl-4 pr-10 border rounded-lg"
   />
   <Image src="/ic-search.svg" className="absolute right-3 top-3" />
-  {value && <button onClick={() => setValue('')} className="...">X</button>}
-</div>
+  {value && (
+    <button onClick={() => setValue("")} className="...">
+      X
+    </button>
+  )}
+</div>;
 ```
 
   </TabItem>
@@ -288,7 +286,7 @@ const handleKeyPress = (e) => { if (e.key === 'Enter') onSearch(value); };
   value={value}
   onChange={(e) => setValue(e.target.value)}
   onSearch={() => onSearch(value)}
-  onClear={() => onSearch('')}
+  onClear={() => onSearch("")}
   placeholder="상담사 이름 또는 키워드 검색"
   variant="filled"
 />
@@ -316,14 +314,14 @@ useEffect(() => {
   const handleClickOutside = (e) => {
     if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setIsOpen(false);
   };
-  document.addEventListener('mousedown', handleClickOutside);
-  return () => document.removeEventListener('mousedown', handleClickOutside);
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
 }, []);
 
 <div ref={dropdownRef} className="relative">
   <button onClick={() => setIsOpen(!isOpen)}>{label}</button>
   {isOpen && <ul className="absolute ...">...</ul>}
-</div>
+</div>;
 ```
 
   </TabItem>
@@ -347,18 +345,29 @@ useEffect(() => {
 
 ### 전체 화면 비교 (PC)
 
-<Tabs defaultValue="after" values={[
-  { label: '기존 (Before)', value: 'before' },
-  { label: 'DS 적용 (After)', value: 'after' }
-]}>
+<Tabs
+  defaultValue="after"
+  values={[
+    { label: "기존 (Before)", value: "before" },
+    { label: "DS 적용 (After)", value: "after" },
+  ]}
+>
   <TabItem value="before">
     <div style={{ border: "1px solid #d8d8d8", borderRadius: 8, padding: 4 }}>
-      <img src="/img/migration/260412_NDS_migration_before_pc.png" alt="기존 PC" style={{ width: '100%', borderRadius: 4, display: 'block' }} />
+      <img
+        src="/img/migration/260412_NDS_migration_before_pc.png"
+        alt="기존 PC"
+        style={{ width: "100%", borderRadius: 4, display: "block" }}
+      />
     </div>
   </TabItem>
   <TabItem value="after">
     <div style={{ border: "1px solid #d8d8d8", borderRadius: 8, padding: 4 }}>
-      <img src="/img/migration/260412_NDS_migration_after_pc.png" alt="DS 적용 PC" style={{ width: '100%', borderRadius: 4, display: 'block' }} />
+      <img
+        src="/img/migration/260412_NDS_migration_after_pc.png"
+        alt="DS 적용 PC"
+        style={{ width: "100%", borderRadius: 4, display: "block" }}
+      />
     </div>
   </TabItem>
 </Tabs>
@@ -512,7 +521,7 @@ static/img/migration/
 
 ```tsx
 // layout.tsx 또는 page.tsx
-import '@nudge-eap/react/styles.css';
+import "@nudge-eap/react/styles.css";
 ```
 
 ### 2. Next.js App Router에서 사용
@@ -521,15 +530,15 @@ Next.js에서는 `'use client'` 지시어가 필요하므로 re-export 래퍼를
 
 ```tsx
 // src/components/DSHighlight.tsx
-'use client';
+"use client";
 
-export { DSHighlightProvider, DSMark, useDSHighlight } from '@nudge-eap/react';
+export { DSHighlightProvider, DSMark, useDSHighlight } from "@nudge-eap/react";
 ```
 
 ### 3. 페이지에 적용
 
 ```tsx
-import { DSHighlightProvider, DSMark } from '@/components/DSHighlight';
+import { DSHighlightProvider, DSMark } from "@/components/DSHighlight";
 
 export default function MyPageDS() {
   return (
@@ -554,7 +563,7 @@ export default function MyPageDS() {
 `'use client'`가 불필요하므로 직접 import합니다.
 
 ```tsx
-import { DSHighlightProvider, DSMark } from '@nudge-eap/react';
+import { DSHighlightProvider, DSMark } from "@nudge-eap/react";
 ```
 
 그 다음 이 문서에 해당 페이지의 비교 섹션을 추가하세요.

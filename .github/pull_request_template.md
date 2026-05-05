@@ -26,7 +26,7 @@
 
 변경된 token:
 
-- 
+-
 
 ## Storybook
 

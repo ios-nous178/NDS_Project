@@ -14,7 +14,9 @@ export const AlertPopupDemo = () => {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button size="md" onClick={() => setOpen(true)}>알림 팝업</Button>
+      <Button size="md" onClick={() => setOpen(true)}>
+        알림 팝업
+      </Button>
       <Popup
         open={open}
         onClose={() => setOpen(false)}
@@ -30,7 +32,9 @@ export const ConfirmPopupDemo = () => {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button size="md" variant="outlined" onClick={() => setOpen(true)}>확인/취소 팝업</Button>
+      <Button size="md" variant="outlined" onClick={() => setOpen(true)}>
+        확인/취소 팝업
+      </Button>
       <Popup
         open={open}
         onClose={() => setOpen(false)}
@@ -49,7 +53,9 @@ export const SimplePopupDemo = () => {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button size="md" variant="soft" onClick={() => setOpen(true)}>타이틀 없는 팝업</Button>
+      <Button size="md" variant="soft" onClick={() => setOpen(true)}>
+        타이틀 없는 팝업
+      </Button>
       <Popup
         open={open}
         onClose={() => setOpen(false)}
@@ -73,16 +79,19 @@ import { Popup } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - **단순 확인/취소** 판단만 필요할 때 (삭제 확인, 로그아웃 확인, 알림 메시지 등)
 - 제목 + 설명 + 확인/취소 버튼이면 충분한 간결한 대화상자일 때
 - Alert Dialog 패턴이 필요할 때 (`alertdialog` role)
 
 ### 이럴 때 사용하지 마세요
+
 - 폼 입력이나 복잡한 레이아웃이 필요한 대화상자 → [Modal](/docs/components/modal)을 사용하세요
 - 모바일에서 하단 목록 선택 UI → [BottomSheet](/docs/components/bottom-sheet)를 사용하세요
 - 일시적 피드백 (저장 완료, 복사됨) → [Toast](/docs/components/toast)를 사용하세요
 
 ### 자주 하는 실수
+
 - Popup 안에 폼 입력을 넣기 — Popup은 텍스트 + 버튼 구조입니다. 입력이 필요하면 Modal을 사용하세요
 - `description` 없이 `title`만 표시 — 사용자에게 충분한 맥락을 제공하세요
 - 중요하지 않은 알림에 Popup 사용 — 사용자 흐름을 차단합니다. 비차단 알림은 Toast가 적합합니다
@@ -112,7 +121,7 @@ const [open, setOpen] = useState(false);
   title="알림"
   description="변경사항이 저장되었습니다."
   onConfirm={() => setOpen(false)}
-/>
+/>;
 ```
 
 ### 확인 + 취소 팝업
@@ -174,17 +183,11 @@ const [open, setOpen] = useState(false);
   <Popup.Content>
     <Popup.TextInfo>
       <Popup.Title>권한 필요</Popup.Title>
-      <Popup.Description>
-        이 기능을 사용하려면 카메라 접근 권한이 필요합니다.
-      </Popup.Description>
+      <Popup.Description>이 기능을 사용하려면 카메라 접근 권한이 필요합니다.</Popup.Description>
     </Popup.TextInfo>
     <Popup.Actions>
-      <Popup.CancelButton onClick={() => setOpen(false)}>
-        나중에
-      </Popup.CancelButton>
-      <Popup.ConfirmButton onClick={handlePermission}>
-        설정으로 이동
-      </Popup.ConfirmButton>
+      <Popup.CancelButton onClick={() => setOpen(false)}>나중에</Popup.CancelButton>
+      <Popup.ConfirmButton onClick={handlePermission}>설정으로 이동</Popup.ConfirmButton>
     </Popup.Actions>
   </Popup.Content>
 </Popup.Root>
@@ -200,9 +203,7 @@ const [open, setOpen] = useState(false);
       <Popup.Description>완료되었습니다.</Popup.Description>
     </Popup.TextInfo>
     <Popup.Actions>
-      <Popup.ConfirmButton onClick={() => setOpen(false)}>
-        확인
-      </Popup.ConfirmButton>
+      <Popup.ConfirmButton onClick={() => setOpen(false)}>확인</Popup.ConfirmButton>
     </Popup.Actions>
   </Popup.Content>
 </Popup.Root>
@@ -212,19 +213,19 @@ const [open, setOpen] = useState(false);
 
 ## Flat API Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `open` | `boolean` | — | 팝업 표시 여부 (필수) |
-| `onClose` | `() => void` | — | 닫기 콜백 |
-| `title` | `string` | — | 타이틀 (없으면 description만 표시) |
-| `description` | `ReactNode` | — | 설명 텍스트 |
-| `confirmText` | `string` | `"확인"` | 확인 버튼 텍스트 |
-| `onConfirm` | `() => void` | — | 확인 콜백 |
-| `cancelText` | `string` | `"취소"` | 취소 버튼 텍스트 |
-| `onCancel` | `() => void` | — | 취소 콜백 (제공 시 Cancel 버튼 표시) |
-| `isMaskClose` | `boolean` | `true` | 오버레이 클릭으로 닫기 |
-| `maxWidth` | `number` | `400` | 최대 너비 (px) |
-| `slotProps` | `PopupSlotProps` | — | 내부 슬롯별 props 전달 |
+| Prop          | 타입             | 기본값   | 설명                                 |
+| ------------- | ---------------- | -------- | ------------------------------------ |
+| `open`        | `boolean`        | —        | 팝업 표시 여부 (필수)                |
+| `onClose`     | `() => void`     | —        | 닫기 콜백                            |
+| `title`       | `string`         | —        | 타이틀 (없으면 description만 표시)   |
+| `description` | `ReactNode`      | —        | 설명 텍스트                          |
+| `confirmText` | `string`         | `"확인"` | 확인 버튼 텍스트                     |
+| `onConfirm`   | `() => void`     | —        | 확인 콜백                            |
+| `cancelText`  | `string`         | `"취소"` | 취소 버튼 텍스트                     |
+| `onCancel`    | `() => void`     | —        | 취소 콜백 (제공 시 Cancel 버튼 표시) |
+| `isMaskClose` | `boolean`        | `true`   | 오버레이 클릭으로 닫기               |
+| `maxWidth`    | `number`         | `400`    | 최대 너비 (px)                       |
+| `slotProps`   | `PopupSlotProps` | —        | 내부 슬롯별 props 전달               |
 
 ---
 
@@ -232,22 +233,22 @@ const [open, setOpen] = useState(false);
 
 ### Popup.Root
 
-| Prop | 타입 | 설명 |
-|---|---|---|
-| `open` | `boolean` | 팝업 표시 여부 (필수) |
-| `onClose` | `() => void` | 닫기 콜백 |
+| Prop      | 타입         | 설명                  |
+| --------- | ------------ | --------------------- |
+| `open`    | `boolean`    | 팝업 표시 여부 (필수) |
+| `onClose` | `() => void` | 닫기 콜백             |
 
 ### Popup.Overlay
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
+| Prop          | 타입      | 기본값 | 설명         |
+| ------------- | --------- | ------ | ------------ |
 | `isMaskClose` | `boolean` | `true` | 클릭 시 닫기 |
 
 ### Popup.Content
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `maxWidth` | `number` | `400` | 최대 너비 |
+| Prop       | 타입     | 기본값 | 설명      |
+| ---------- | -------- | ------ | --------- |
+| `maxWidth` | `number` | `400`  | 최대 너비 |
 
 ### Popup.TextInfo
 
@@ -277,8 +278,8 @@ const [open, setOpen] = useState(false);
 
 ## CSS 변수
 
-| 변수 | 기본값 | 설명 |
-|---|---|---|
+| 변수                    | 기본값  | 설명           |
+| ----------------------- | ------- | -------------- |
 | `--nds-popup-max-width` | `400px` | 팝업 최대 너비 |
 
 ---
@@ -301,14 +302,14 @@ div [data-slot="root"]
 
 ## Modal vs Popup
 
-| | Modal | Popup |
-|---|---|---|
-| 용도 | 복잡한 대화형 UI (폼, 상세정보 등) | 단순 확인/취소 알림 |
-| ARIA role | `dialog` | `alertdialog` |
-| 구조 | Header / Body / Footer 분리 | TextInfo + Actions |
-| 최대 너비 기본값 | 320px | 400px |
-| 버튼 스타일 | 텍스트 버튼 (border-top 구분) | Solid 버튼 (gap 구분) |
-| z-index | 1000 | 1100 |
+|                  | Modal                              | Popup                 |
+| ---------------- | ---------------------------------- | --------------------- |
+| 용도             | 복잡한 대화형 UI (폼, 상세정보 등) | 단순 확인/취소 알림   |
+| ARIA role        | `dialog`                           | `alertdialog`         |
+| 구조             | Header / Body / Footer 분리        | TextInfo + Actions    |
+| 최대 너비 기본값 | 320px                              | 400px                 |
+| 버튼 스타일      | 텍스트 버튼 (border-top 구분)      | Solid 버튼 (gap 구분) |
+| z-index          | 1000                               | 1100                  |
 
 ---
 

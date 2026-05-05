@@ -20,7 +20,6 @@ export const MypageIcon = React.forwardRef<SVGSVGElement, MypageIconProps>(
         <mask id="mask0_0_34" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
           <rect id="Rectangle 2433" width="24" height="24" fill="currentColor" />
         </mask>
-
         <g mask="url(#mask0_0_34)">
           <path
             id="Path"

@@ -21,16 +21,19 @@ import { FieldActionRow } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - **입력 필드 + 버튼**을 한 줄로 배치할 때 (인증번호 발송, 쿠폰 적용, 타이머 등)
 - Input과 Button의 높이/정렬을 자동으로 맞춰야 할 때
 - 에러 상태, 타이머 등 부가 정보를 입력 줄 아래에 표시할 때
 
 ### 이럴 때 사용하지 마세요
+
 - 버튼 없이 입력만 필요할 때 → [Input](/docs/components/input)을 사용하세요
 - 검색 기능 → [SearchInput](/docs/components/search-input)을 사용하세요
 - 복잡한 폼 레이아웃 (여러 필드 + 여러 버튼) → 개별 Input + Button 조합을 사용하세요
 
 ### 자주 하는 실수
+
 - 복잡한 폼 전체를 FieldActionRow로 구성 — 이 컴포넌트는 "입력 1개 + 버튼 1개" 패턴에 최적화되어 있습니다
 
 ---
@@ -62,12 +65,8 @@ import { FieldActionRow } from "@nudge-eap/react";
 
 ```tsx
 <FieldActionRow
-  field={
-    <input type="number" placeholder="인증번호 6자리" />
-  }
-  action={
-    <button type="button">확인</button>
-  }
+  field={<input type="number" placeholder="인증번호 6자리" />}
+  action={<button type="button">확인</button>}
   actionTone="solid"
   timer="02:58"
   helperText="이메일 또는 문자로 전송된 인증번호를 입력해주세요"
@@ -113,9 +112,7 @@ import { FieldActionRow } from "@nudge-eap/react";
       <button type="button">인증 번호 받기</button>
     </FieldActionRow.Action>
   </FieldActionRow.Row>
-  <FieldActionRow.Helper error={hasError}>
-    도움 텍스트
-  </FieldActionRow.Helper>
+  <FieldActionRow.Helper error={hasError}>도움 텍스트</FieldActionRow.Helper>
 </FieldActionRow.Root>
 ```
 
@@ -123,42 +120,42 @@ import { FieldActionRow } from "@nudge-eap/react";
 
 ## Flat API Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `field` | `ReactNode` | — | 입력 필드 (input 또는 Input 컴포넌트) |
-| `action` | `ReactNode` | — | 액션 버튼 |
-| `actionTone` | `"outline" \| "solid"` | `"outline"` | 버튼 스타일 |
-| `timer` | `ReactNode` | — | 타이머 표시 (입력 필드 우측) |
-| `timerExpired` | `boolean` | `false` | 타이머 만료 상태 |
-| `error` | `boolean` | `false` | 에러 상태 |
-| `helperText` | `string` | — | 도움/에러 텍스트 |
-| `success` | `boolean` | `false` | 성공 상태 |
-| `slotProps` | `FieldActionRowSlotProps` | — | 슬롯 프롭 |
+| Prop           | 타입                      | 기본값      | 설명                                  |
+| -------------- | ------------------------- | ----------- | ------------------------------------- |
+| `field`        | `ReactNode`               | —           | 입력 필드 (input 또는 Input 컴포넌트) |
+| `action`       | `ReactNode`               | —           | 액션 버튼                             |
+| `actionTone`   | `"outline" \| "solid"`    | `"outline"` | 버튼 스타일                           |
+| `timer`        | `ReactNode`               | —           | 타이머 표시 (입력 필드 우측)          |
+| `timerExpired` | `boolean`                 | `false`     | 타이머 만료 상태                      |
+| `error`        | `boolean`                 | `false`     | 에러 상태                             |
+| `helperText`   | `string`                  | —           | 도움/에러 텍스트                      |
+| `success`      | `boolean`                 | `false`     | 성공 상태                             |
+| `slotProps`    | `FieldActionRowSlotProps` | —           | 슬롯 프롭                             |
 
 ---
 
 ## Compound 컴포넌트
 
-| 컴포넌트 | 역할 |
-|---|---|
-| `FieldActionRow.Root` | 루트 |
-| `FieldActionRow.Row` | 입력 + 버튼 가로 행 |
-| `FieldActionRow.Field` | 입력 필드 래퍼 |
-| `FieldActionRow.Timer` | 타이머 표시 (Field 내부) |
-| `FieldActionRow.Action` | 버튼 래퍼 (tone 지원) |
-| `FieldActionRow.Helper` | 도움/에러/성공 텍스트 |
+| 컴포넌트                | 역할                     |
+| ----------------------- | ------------------------ |
+| `FieldActionRow.Root`   | 루트                     |
+| `FieldActionRow.Row`    | 입력 + 버튼 가로 행      |
+| `FieldActionRow.Field`  | 입력 필드 래퍼           |
+| `FieldActionRow.Timer`  | 타이머 표시 (Field 내부) |
+| `FieldActionRow.Action` | 버튼 래퍼 (tone 지원)    |
+| `FieldActionRow.Helper` | 도움/에러/성공 텍스트    |
 
 ---
 
 ## 상태별 스타일
 
-| 상태 | 필드 테두리 | 헬퍼 텍스트 | 타이머 |
-|---|---|---|---|
-| 기본 | Neutral 300 | Neutral 500 | Primary |
-| 포커스 | Blue 500 | — | — |
-| 에러 | Red 500 | Red 500 | — |
-| 성공 | — | Green 300 | — |
-| 타이머 만료 | — | — | Red 500 |
+| 상태        | 필드 테두리 | 헬퍼 텍스트 | 타이머  |
+| ----------- | ----------- | ----------- | ------- |
+| 기본        | Neutral 300 | Neutral 500 | Primary |
+| 포커스      | Blue 500    | —           | —       |
+| 에러        | Red 500     | Red 500     | —       |
+| 성공        | —           | Green 300   | —       |
+| 타이머 만료 | —           | —           | Red 500 |
 
 ---
 

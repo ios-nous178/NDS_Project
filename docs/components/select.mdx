@@ -22,16 +22,19 @@ import { Select } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - 미리 정해진 옵션 목록에서 **하나를 선택**할 때
 - 옵션이 5개 이상이라 화면에 모두 노출하기 어려울 때
 - 폼 안에서 드롭다운 선택이 필요한 필드일 때
 
 ### 이럴 때 사용하지 마세요
+
 - 옵션이 3개 이하일 때 → [Radio](/docs/components/checkbox-radio)를 사용하세요 (한눈에 보임)
 - 복수 선택이 필요할 때 → [Checkbox](/docs/components/checkbox-radio) 또는 [Chip](/docs/components/chip)을 사용하세요
 - 사용자가 직접 텍스트를 입력해야 할 때 → [Input](/docs/components/input)을 사용하세요
 
 ### 자주 하는 실수
+
 - 옵션이 2개뿐인데 Select 사용 — Radio가 더 직관적입니다
 - 옵션 목록이 매우 길 때(50개+) 검색 기능 없이 사용 — 사용자가 스크롤로 찾기 어렵습니다
 
@@ -57,7 +60,7 @@ const options = [
   onValueChange={setValue}
   placeholder="유형을 선택해주세요"
   helperText="원하시는 상담 유형을 선택해주세요"
-/>
+/>;
 ```
 
 ### 에러 상태
@@ -76,13 +79,7 @@ const options = [
 ### 비활성화
 
 ```tsx
-<Select
-  label="상담 유형"
-  options={options}
-  value="mental"
-  onValueChange={setValue}
-  disabled
-/>
+<Select label="상담 유형" options={options} value="mental" onValueChange={setValue} disabled />
 ```
 
 ---
@@ -92,9 +89,7 @@ const options = [
 ```tsx
 <Select.Root value={value} onValueChange={setValue}>
   <Select.Label>상담 분야</Select.Label>
-  <Select.Trigger placeholder="분야를 선택해주세요">
-    {selectedLabel}
-  </Select.Trigger>
+  <Select.Trigger placeholder="분야를 선택해주세요">{selectedLabel}</Select.Trigger>
   <Select.Dropdown>
     {options.map((opt) => (
       <Select.Option key={opt.value} value={opt.value}>
@@ -110,55 +105,55 @@ const options = [
 
 ## Flat API Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `options` | `SelectItem[]` | — | 옵션 목록 |
-| `value` | `string` | — | 선택된 값 |
-| `onValueChange` | `(v: string) => void` | — | 값 변경 콜백 |
-| `label` | `string` | — | 라벨 |
-| `placeholder` | `string` | `"선택"` | 플레이스홀더 |
-| `helperText` | `string` | — | 도움 텍스트 |
-| `error` | `boolean` | `false` | 에러 상태 |
-| `errorMessage` | `string` | — | 에러 메시지 |
-| `disabled` | `boolean` | `false` | 비활성화 |
-| `fullWidth` | `boolean` | `true` | 전체 너비 |
+| Prop              | 타입                  | 기본값          | 설명                   |
+| ----------------- | --------------------- | --------------- | ---------------------- |
+| `options`         | `SelectItem[]`        | —               | 옵션 목록              |
+| `value`           | `string`              | —               | 선택된 값              |
+| `onValueChange`   | `(v: string) => void` | —               | 값 변경 콜백           |
+| `label`           | `string`              | —               | 라벨                   |
+| `placeholder`     | `string`              | `"선택"`        | 플레이스홀더           |
+| `helperText`      | `string`              | —               | 도움 텍스트            |
+| `error`           | `boolean`             | `false`         | 에러 상태              |
+| `errorMessage`    | `string`              | —               | 에러 메시지            |
+| `disabled`        | `boolean`             | `false`         | 비활성화               |
+| `fullWidth`       | `boolean`             | `true`          | 전체 너비              |
 | `portalContainer` | `HTMLElement \| null` | `document.body` | 드롭다운 포털 컨테이너 |
-| `slotProps` | `SelectSlotProps` | — | 슬롯 프롭 |
+| `slotProps`       | `SelectSlotProps`     | —               | 슬롯 프롭              |
 
 ### SelectItem
 
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `value` | `string` | 값 |
-| `label` | `string` | 표시 텍스트 |
-| `disabled` | `boolean` | 비활성화 |
+| 속성       | 타입      | 설명        |
+| ---------- | --------- | ----------- |
+| `value`    | `string`  | 값          |
+| `label`    | `string`  | 표시 텍스트 |
+| `disabled` | `boolean` | 비활성화    |
 
 ---
 
 ## Compound 컴포넌트
 
-| 컴포넌트 | 역할 |
-|---|---|
-| `Select.Root` | 상태 관리 + 컨텍스트 |
-| `Select.Label` | 라벨 |
-| `Select.Trigger` | 트리거 버튼 |
+| 컴포넌트          | 역할                 |
+| ----------------- | -------------------- |
+| `Select.Root`     | 상태 관리 + 컨텍스트 |
+| `Select.Label`    | 라벨                 |
+| `Select.Trigger`  | 트리거 버튼          |
 | `Select.Dropdown` | Portal 기반 드롭다운 |
-| `Select.Option` | 개별 옵션 |
-| `Select.Helper` | 도움/에러 텍스트 |
+| `Select.Option`   | 개별 옵션            |
+| `Select.Helper`   | 도움/에러 텍스트     |
 
 ---
 
 ## CSS 변수
 
-| 변수 | 기본값 | 설명 |
-|---|---|---|
-| `--nds-select-width` | `100%` | 너비 |
-| `--nds-select-height` | `48px` | 트리거 높이 |
-| `--nds-select-radius` | `8px` | 모서리 |
-| `--nds-select-border-color` | Neutral 300 | 테두리 |
-| `--nds-select-background` | White | 배경 |
-| `--nds-select-label-gap` | `12px` | 라벨-트리거 간격 |
-| `--nds-select-dropdown-max-height` | `200px` | 드롭다운 최대 높이 |
+| 변수                               | 기본값      | 설명               |
+| ---------------------------------- | ----------- | ------------------ |
+| `--nds-select-width`               | `100%`      | 너비               |
+| `--nds-select-height`              | `48px`      | 트리거 높이        |
+| `--nds-select-radius`              | `8px`       | 모서리             |
+| `--nds-select-border-color`        | Neutral 300 | 테두리             |
+| `--nds-select-background`          | White       | 배경               |
+| `--nds-select-label-gap`           | `12px`      | 라벨-트리거 간격   |
+| `--nds-select-dropdown-max-height` | `200px`     | 드롭다운 최대 높이 |
 
 ---
 

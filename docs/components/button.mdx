@@ -23,16 +23,19 @@ import { Button } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - 폼 제출, 다이얼로그 확인/취소 등 **사용자 액션을 트리거**할 때
 - 상태를 변경하는 동작이 필요할 때 (저장, 삭제, 전송 등)
 - 워크플로우의 다음 단계로 진행할 때 (다음, 완료, 시작하기)
 
 ### 이럴 때 사용하지 마세요
+
 - 다른 페이지로 이동만 할 때 → `<a>` 태그 또는 라우터의 Link를 사용하세요
 - 읽기 전용 상태 라벨을 표시할 때 → [Badge](/docs/components/badge)를 사용하세요
 - 선택/해제가 가능한 필터 태그일 때 → [Chip](/docs/components/chip)을 사용하세요
 
 ### 자주 하는 실수
+
 - `onClick`에서 페이지 이동만 수행하는 Button — 스크린 리더가 링크로 인식하지 못합니다. 네비게이션에는 `<a>`를 사용하세요
 - `disabled` 상태에서 비활성 이유를 안내하지 않음 — Tooltip이나 helperText로 이유를 함께 표시하세요
 - `variant` 선택 기준 없이 사용 — 한 화면에서 `solid`는 1개(주요 CTA)만, 나머지는 `outlined` 이하로 위계를 나누세요
@@ -44,7 +47,12 @@ import { Button } from "@nudge-eap/react";
 <Playground
   title="Button Playground"
   controls={[
-    { name: "variant", type: "select", options: ["solid", "outlined", "soft", "outlined-sub"], default: "solid" },
+    {
+      name: "variant",
+      type: "select",
+      options: ["solid", "outlined", "soft", "outlined-sub"],
+      default: "solid",
+    },
     { name: "size", type: "select", options: ["xl", "lg", "md", "sm", "xs"], default: "lg" },
     { name: "color", type: "select", options: ["primary", "secondary"], default: "primary" },
     { name: "disabled", type: "boolean", default: false },
@@ -70,7 +78,9 @@ import { Button } from "@nudge-eap/react";
 
 <ComponentPreview title="기본">
   <Button>확인</Button>
-  <Button variant="solid" size="lg" color="primary">시작하기</Button>
+  <Button variant="solid" size="lg" color="primary">
+    시작하기
+  </Button>
 </ComponentPreview>
 
 ```tsx
@@ -98,12 +108,12 @@ import { Button } from "@nudge-eap/react";
 <Button variant="outlined-sub">Outlined Sub</Button>
 ```
 
-| Variant | 설명 | 사용 시점 |
-|---|---|---|
-| `solid` | 배경 채움 (기본값) | 주요 CTA, 강한 강조 |
-| `outlined` | 테두리만 표시 | 보조 액션, solid와 함께 사용 |
-| `soft` | 연한 배경 + 컬러 텍스트 | 부드러운 강조 |
-| `outlined-sub` | 회색 테두리 + neutral 텍스트 | 가장 약한 강조, 보조 버튼 |
+| Variant        | 설명                         | 사용 시점                    |
+| -------------- | ---------------------------- | ---------------------------- |
+| `solid`        | 배경 채움 (기본값)           | 주요 CTA, 강한 강조          |
+| `outlined`     | 테두리만 표시                | 보조 액션, solid와 함께 사용 |
+| `soft`         | 연한 배경 + 컬러 텍스트      | 부드러운 강조                |
+| `outlined-sub` | 회색 테두리 + neutral 텍스트 | 가장 약한 강조, 보조 버튼    |
 
 ---
 
@@ -129,14 +139,14 @@ import { Button } from "@nudge-eap/react";
 <Button size="field">Field (48px)</Button>
 ```
 
-| Size | 높이 | 폰트 | 패딩 (좌우) | 사용 시점 |
-|---|---|---|---|---|
-| `xl` | 56px | 18px | 16px | 하단 CTA 등 큰 버튼 |
-| `lg` | 48px | 16px | 16px | 기본 버튼 (기본값) |
-| `md` | 44px | 15px | 16px | 카드 내부 등 중간 크기 |
-| `sm` | 42px | 14px | 12px | 리스트 액션 등 작은 버튼 |
-| `xs` | 38px | 13px | 12px | 인라인, 태그 옆 등 |
-| `field` | 48px | 15px | 16px | Input 옆 연동 버튼 |
+| Size    | 높이 | 폰트 | 패딩 (좌우) | 사용 시점                |
+| ------- | ---- | ---- | ----------- | ------------------------ |
+| `xl`    | 56px | 18px | 16px        | 하단 CTA 등 큰 버튼      |
+| `lg`    | 48px | 16px | 16px        | 기본 버튼 (기본값)       |
+| `md`    | 44px | 15px | 16px        | 카드 내부 등 중간 크기   |
+| `sm`    | 42px | 14px | 12px        | 리스트 액션 등 작은 버튼 |
+| `xs`    | 38px | 13px | 12px        | 인라인, 태그 옆 등       |
+| `field` | 48px | 15px | 16px        | Input 옆 연동 버튼       |
 
 ---
 
@@ -152,10 +162,10 @@ import { Button } from "@nudge-eap/react";
 <Button color="secondary">Secondary</Button>
 ```
 
-| Color | 설명 |
-|---|---|
-| `primary` | Blue 계열 (기본값) |
-| `secondary` | Soft Blue 계열 |
+| Color       | 설명               |
+| ----------- | ------------------ |
+| `primary`   | Blue 계열 (기본값) |
+| `secondary` | Soft Blue 계열     |
 
 ---
 
@@ -189,9 +199,15 @@ import { SearchIcon, ChevronRightIcon } from "@nudge-eap/icons";
 
 <ComponentPreview title="Disabled">
   <Button disabled>비활성화</Button>
-  <Button disabled variant="outlined">비활성화</Button>
-  <Button disabled variant="soft">비활성화</Button>
-  <Button disabled variant="outlined-sub">비활성화</Button>
+  <Button disabled variant="outlined">
+    비활성화
+  </Button>
+  <Button disabled variant="soft">
+    비활성화
+  </Button>
+  <Button disabled variant="outlined-sub">
+    비활성화
+  </Button>
 </ComponentPreview>
 
 ```tsx
@@ -205,19 +221,19 @@ import { SearchIcon, ChevronRightIcon } from "@nudge-eap/icons";
 
 ## Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `variant` | `ButtonVariant` | `"solid"` | 버튼 스타일 변형 |
-| `size` | `ButtonSize` | `"lg"` | 버튼 크기 |
-| `color` | `ButtonColor` | `"primary"` | 색상 테마 |
-| `fullWidth` | `boolean` | `false` | 부모 너비 100% 채움 |
-| `leftIcon` | `ReactNode` | — | 왼쪽 아이콘 |
-| `rightIcon` | `ReactNode` | — | 오른쪽 아이콘 |
-| `disabled` | `boolean` | `false` | 비활성화 상태 |
-| `labelClassName` | `string` | — | 라벨 span className |
-| `slotProps` | `ButtonSlotProps` | — | 슬롯별 props 전달 |
-| `className` | `string` | — | 루트 className |
-| `style` | `CSSProperties` | — | 루트 인라인 스타일 |
+| Prop             | 타입              | 기본값      | 설명                |
+| ---------------- | ----------------- | ----------- | ------------------- |
+| `variant`        | `ButtonVariant`   | `"solid"`   | 버튼 스타일 변형    |
+| `size`           | `ButtonSize`      | `"lg"`      | 버튼 크기           |
+| `color`          | `ButtonColor`     | `"primary"` | 색상 테마           |
+| `fullWidth`      | `boolean`         | `false`     | 부모 너비 100% 채움 |
+| `leftIcon`       | `ReactNode`       | —           | 왼쪽 아이콘         |
+| `rightIcon`      | `ReactNode`       | —           | 오른쪽 아이콘       |
+| `disabled`       | `boolean`         | `false`     | 비활성화 상태       |
+| `labelClassName` | `string`          | —           | 라벨 span className |
+| `slotProps`      | `ButtonSlotProps` | —           | 슬롯별 props 전달   |
+| `className`      | `string`          | —           | 루트 className      |
+| `style`          | `CSSProperties`   | —           | 루트 인라인 스타일  |
 
 **ButtonVariant**: `"solid"` | `"outlined"` | `"soft"` | `"outlined-sub"`
 
@@ -254,29 +270,27 @@ interface ButtonSlotProps {
 
 ## CSS 변수
 
-| 변수 | 기본값 | 설명 |
-|---|---|---|
-| `--nds-button-width` | `auto` | 버튼 너비 |
-| `--nds-button-height` | `48px` | 버튼 높이 |
-| `--nds-button-padding-x` | `16px` | 좌우 패딩 |
-| `--nds-button-padding-y` | `12px` | 상하 패딩 |
-| `--nds-button-radius` | `8px` | 모서리 둥글기 |
-| `--nds-button-gap` | `8px` | 아이콘-라벨 간격 |
-| `--nds-button-font-size` | `16px` | 폰트 크기 |
-| `--nds-button-line-height` | `24px` | 줄 높이 |
-| `--nds-button-font-weight` | `700` | 폰트 굵기 |
-| `--nds-button-background` | — | 배경색 |
-| `--nds-button-text-color` | — | 텍스트 색상 |
-| `--nds-button-border-color` | — | 테두리 색상 |
-| `--nds-button-hover-background` | — | 호버 배경색 |
-| `--nds-button-hover-text-color` | — | 호버 텍스트 색상 |
-| `--nds-button-hover-border-color` | — | 호버 테두리 색상 |
+| 변수                              | 기본값 | 설명             |
+| --------------------------------- | ------ | ---------------- |
+| `--nds-button-width`              | `auto` | 버튼 너비        |
+| `--nds-button-height`             | `48px` | 버튼 높이        |
+| `--nds-button-padding-x`          | `16px` | 좌우 패딩        |
+| `--nds-button-padding-y`          | `12px` | 상하 패딩        |
+| `--nds-button-radius`             | `8px`  | 모서리 둥글기    |
+| `--nds-button-gap`                | `8px`  | 아이콘-라벨 간격 |
+| `--nds-button-font-size`          | `16px` | 폰트 크기        |
+| `--nds-button-line-height`        | `24px` | 줄 높이          |
+| `--nds-button-font-weight`        | `700`  | 폰트 굵기        |
+| `--nds-button-background`         | —      | 배경색           |
+| `--nds-button-text-color`         | —      | 텍스트 색상      |
+| `--nds-button-border-color`       | —      | 테두리 색상      |
+| `--nds-button-hover-background`   | —      | 호버 배경색      |
+| `--nds-button-hover-text-color`   | —      | 호버 텍스트 색상 |
+| `--nds-button-hover-border-color` | —      | 호버 테두리 색상 |
 
 ```tsx
 // 커스텀 둥글기
-<Button style={{ "--nds-button-radius": "24px" } as React.CSSProperties}>
-  Pill 버튼
-</Button>
+<Button style={{ "--nds-button-radius": "24px" } as React.CSSProperties}>Pill 버튼</Button>
 ```
 
 ---

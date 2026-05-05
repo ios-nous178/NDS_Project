@@ -23,16 +23,19 @@ import { Badge } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - 상태(성공, 에러, 주의)나 카테고리를 **읽기 전용 라벨**로 표시할 때
 - 목록 항목에 짧은 메타 정보를 덧붙일 때 (신규, 완료, 대기 중 등)
 - 숫자 카운트를 강조할 때 (알림 뱃지 등)
 
 ### 이럴 때 사용하지 마세요
+
 - 사용자가 클릭하여 선택/해제하거나 삭제할 수 있는 태그 → [Chip](/docs/components/chip)을 사용하세요
 - 액션을 트리거하는 용도 → [Button](/docs/components/button)을 사용하세요
 - 긴 설명 텍스트를 담을 때 → 일반 텍스트나 인라인 메시지를 사용하세요
 
 ### 자주 하는 실수
+
 - Badge에 `onClick` 핸들러를 붙여 인터랙티브하게 사용 — 읽기 전용이어야 합니다. 인터랙션이 필요하면 Chip을 사용하세요
 - 한 화면에 너무 많은 색상 variant를 혼용 — 의미 체계가 흐려집니다. 색상별 의미를 일관되게 유지하세요
 
@@ -43,7 +46,12 @@ import { Badge } from "@nudge-eap/react";
 <Playground
   title="Badge Playground"
   controls={[
-    { name: "variant", type: "select", options: ["primary", "secondary", "success", "caution", "error", "neutral"], default: "neutral" },
+    {
+      name: "variant",
+      type: "select",
+      options: ["primary", "secondary", "success", "caution", "error", "neutral"],
+      default: "neutral",
+    },
     { name: "size", type: "select", options: ["sm", "md"], default: "md" },
     { name: "children", type: "text", default: "Badge", placeholder: "라벨 텍스트" },
   ]}
@@ -90,14 +98,14 @@ import { Badge } from "@nudge-eap/react";
 <Badge variant="neutral">기본</Badge>
 ```
 
-| Variant | 배경색 | 텍스트 색상 | 사용 시점 |
-|---|---|---|---|
-| `primary` | Blue 100 | Blue 600 | 기본 강조, 카테고리 |
-| `secondary` | Magenta 100 | Magenta 600 | 보조 구분 |
-| `success` | Green 50 | Green 500 | 성공, 완료 상태 |
-| `caution` | Yellow 50 | Yellow 600 | 경고, 주의 |
-| `error` | Red 50 | Red 500 | 에러, 실패 |
-| `neutral` | Neutral 100 | Neutral 700 | 일반 정보 (기본값) |
+| Variant     | 배경색      | 텍스트 색상 | 사용 시점           |
+| ----------- | ----------- | ----------- | ------------------- |
+| `primary`   | Blue 100    | Blue 600    | 기본 강조, 카테고리 |
+| `secondary` | Magenta 100 | Magenta 600 | 보조 구분           |
+| `success`   | Green 50    | Green 500   | 성공, 완료 상태     |
+| `caution`   | Yellow 50   | Yellow 600  | 경고, 주의          |
+| `error`     | Red 50      | Red 500     | 에러, 실패          |
+| `neutral`   | Neutral 100 | Neutral 700 | 일반 정보 (기본값)  |
 
 ---
 
@@ -113,23 +121,23 @@ import { Badge } from "@nudge-eap/react";
 <Badge size="md">Medium</Badge>
 ```
 
-| Size | 패딩 | 폰트 | 라운드 |
-|---|---|---|---|
-| `sm` | 2px 6px | 11px | 4px |
-| `md` | 4px 8px | 13px | 6px |
+| Size | 패딩    | 폰트 | 라운드 |
+| ---- | ------- | ---- | ------ |
+| `sm` | 2px 6px | 11px | 4px    |
+| `md` | 4px 8px | 13px | 6px    |
 
 ---
 
 ## Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `variant` | `BadgeVariant` | `"neutral"` | 색상 변형 |
-| `size` | `"sm"` \| `"md"` | `"md"` | 사이즈 |
-| `labelClassName` | `string` | — | 라벨 span에 추가할 className |
-| `slotProps` | `BadgeSlotProps` | — | 내부 슬롯별 props 전달 |
-| `className` | `string` | — | 루트 요소 className |
-| `style` | `CSSProperties` | — | 루트 요소 인라인 스타일 |
+| Prop             | 타입             | 기본값      | 설명                         |
+| ---------------- | ---------------- | ----------- | ---------------------------- |
+| `variant`        | `BadgeVariant`   | `"neutral"` | 색상 변형                    |
+| `size`           | `"sm"` \| `"md"` | `"md"`      | 사이즈                       |
+| `labelClassName` | `string`         | —           | 라벨 span에 추가할 className |
+| `slotProps`      | `BadgeSlotProps` | —           | 내부 슬롯별 props 전달       |
+| `className`      | `string`         | —           | 루트 요소 className          |
+| `style`          | `CSSProperties`  | —           | 루트 요소 인라인 스타일      |
 
 **BadgeVariant**: `"primary"` | `"secondary"` | `"success"` | `"caution"` | `"error"` | `"neutral"`
 
@@ -149,17 +157,17 @@ interface BadgeSlotProps {
 
 ## CSS 변수
 
-| 변수 | 기본값 | 설명 |
-|---|---|---|
-| `--nds-badge-padding-y` | `4px` | 상하 패딩 |
-| `--nds-badge-padding-x` | `8px` | 좌우 패딩 |
-| `--nds-badge-radius` | `6px` | 모서리 둥글기 |
-| `--nds-badge-gap` | `4px` | 내부 gap |
-| `--nds-badge-background` | — | 배경색 |
-| `--nds-badge-text-color` | — | 텍스트 색상 |
-| `--nds-badge-font-size` | `13px` | 폰트 크기 |
-| `--nds-badge-line-height` | `18px` | 줄 높이 |
-| `--nds-badge-font-weight` | `600` | 폰트 굵기 |
+| 변수                      | 기본값 | 설명          |
+| ------------------------- | ------ | ------------- |
+| `--nds-badge-padding-y`   | `4px`  | 상하 패딩     |
+| `--nds-badge-padding-x`   | `8px`  | 좌우 패딩     |
+| `--nds-badge-radius`      | `6px`  | 모서리 둥글기 |
+| `--nds-badge-gap`         | `4px`  | 내부 gap      |
+| `--nds-badge-background`  | —      | 배경색        |
+| `--nds-badge-text-color`  | —      | 텍스트 색상   |
+| `--nds-badge-font-size`   | `13px` | 폰트 크기     |
+| `--nds-badge-line-height` | `18px` | 줄 높이       |
+| `--nds-badge-font-weight` | `600`  | 폰트 굵기     |
 
 ---
 
@@ -179,29 +187,45 @@ span [data-slot="root"] [data-variant] [data-size]
 <ComponentPreview title="리스트 + 상태">
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
     <span style={{ fontSize: 15, fontWeight: 500, color: "#383838" }}>프로젝트 A</span>
-    <Badge variant="success" size="sm">진행중</Badge>
+    <Badge variant="success" size="sm">
+      진행중
+    </Badge>
   </div>
 </ComponentPreview>
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
   <span>프로젝트 A</span>
-  <Badge variant="success" size="sm">진행중</Badge>
+  <Badge variant="success" size="sm">
+    진행중
+  </Badge>
 </div>
 ```
 
 ### 여러 태그 나열
 
 <ComponentPreview title="태그 목록">
-  <Badge variant="primary" size="sm">React</Badge>
-  <Badge variant="secondary" size="sm">TypeScript</Badge>
-  <Badge variant="neutral" size="sm">Storybook</Badge>
+  <Badge variant="primary" size="sm">
+    React
+  </Badge>
+  <Badge variant="secondary" size="sm">
+    TypeScript
+  </Badge>
+  <Badge variant="neutral" size="sm">
+    Storybook
+  </Badge>
 </ComponentPreview>
 
 ```tsx
 <div style={{ display: "flex", gap: 4 }}>
-  <Badge variant="primary" size="sm">React</Badge>
-  <Badge variant="secondary" size="sm">TypeScript</Badge>
-  <Badge variant="neutral" size="sm">Storybook</Badge>
+  <Badge variant="primary" size="sm">
+    React
+  </Badge>
+  <Badge variant="secondary" size="sm">
+    TypeScript
+  </Badge>
+  <Badge variant="neutral" size="sm">
+    Storybook
+  </Badge>
 </div>
 ```
