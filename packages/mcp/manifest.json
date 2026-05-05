@@ -1,0 +1,2494 @@
+{
+  "generatedAt": "2026-05-05T09:52:02.907Z",
+  "repoRoot": "/Users/eprnf/04_DPLaps/NudgeEAPDesignSystem",
+  "packages": [
+    {
+      "name": "@nudge-eap/tokens",
+      "version": "0.1.0",
+      "dependencies": {},
+      "peerDependencies": {},
+      "cssExports": ["@nudge-eap/tokens/css", "@nudge-eap/tokens/css/trost"]
+    },
+    {
+      "name": "@nudge-eap/react",
+      "version": "0.1.0",
+      "dependencies": {
+        "@nudge-eap/tokens": "workspace:*"
+      },
+      "peerDependencies": {
+        "react": ">=18.0.0",
+        "react-dom": ">=18.0.0"
+      },
+      "cssExports": ["@nudge-eap/react/styles.css"]
+    },
+    {
+      "name": "@nudge-eap/icons",
+      "version": "0.1.0",
+      "dependencies": {},
+      "peerDependencies": {
+        "react": ">=18.0.0"
+      },
+      "cssExports": []
+    },
+    {
+      "name": "@nudge-eap/tailwind-preset",
+      "version": "0.1.0",
+      "dependencies": {
+        "@nudge-eap/tokens": "workspace:*"
+      },
+      "peerDependencies": {},
+      "cssExports": []
+    }
+  ],
+  "components": [
+    {
+      "name": "Accordion",
+      "props": [
+        {
+          "name": "type",
+          "optional": true,
+          "type": "AccordionType"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string | string[]"
+        },
+        {
+          "name": "defaultValue",
+          "optional": true,
+          "type": "string | string[]"
+        },
+        {
+          "name": "onValueChange",
+          "optional": true,
+          "type": "(value: string | string[]) => void"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Accordion.d.ts"
+    },
+    {
+      "name": "AppBar",
+      "props": [
+        {
+          "name": "left",
+          "optional": true,
+          "type": "React.HTMLAttributes<HTMLDivElement>"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.HTMLAttributes<HTMLHeadingElement>"
+        },
+        {
+          "name": "right",
+          "optional": true,
+          "type": "React.HTMLAttributes<HTMLDivElement>"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/AppBar.d.ts"
+    },
+    {
+      "name": "AppFooter",
+      "props": [
+        {
+          "name": "links",
+          "optional": true,
+          "type": "FooterLinkItem[]"
+        },
+        {
+          "name": "companyInfo",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onLinkClick",
+          "optional": true,
+          "type": "(link: FooterLinkItem, e: React.MouseEvent) => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/AppFooter.d.ts"
+    },
+    {
+      "name": "Avatar",
+      "props": [
+        {
+          "name": "src",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "alt",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "AvatarSize"
+        },
+        {
+          "name": "fallback",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Avatar.d.ts"
+    },
+    {
+      "name": "Badge",
+      "props": [
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.HTMLAttributes<HTMLSpanElement>"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Badge.d.ts"
+    },
+    {
+      "name": "Banner",
+      "props": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "BannerVariant"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "actionLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onAction",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "actionHref",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "imageSrc",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "imageAlt",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "imageWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "imageHeight",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "href",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "closable",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onClose",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "fullImageSrc",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "fullImageSrcSet",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Banner.d.ts"
+    },
+    {
+      "name": "BottomSheet",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<BottomSheetRootProps, \"open\" | \"onClose\" | \"children\">"
+        },
+        {
+          "name": "overlay",
+          "optional": true,
+          "type": "Omit<BottomSheetOverlayProps, \"isMaskClose\">"
+        },
+        {
+          "name": "content",
+          "optional": true,
+          "type": "Omit<BottomSheetContentProps, \"children\" | \"maxWidth\" | \"maxHeight\">"
+        },
+        {
+          "name": "handle",
+          "optional": true,
+          "type": "BottomSheetHandleProps"
+        },
+        {
+          "name": "header",
+          "optional": true,
+          "type": "Omit<BottomSheetHeaderProps, \"title\" | \"closable\" | \"children\">"
+        },
+        {
+          "name": "body",
+          "optional": true,
+          "type": "Omit<BottomSheetBodyProps, \"children\">"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "Omit<BottomSheetFooterProps, \"children\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/BottomSheet.d.ts"
+    },
+    {
+      "name": "Breadcrumb",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "BreadcrumbItem[]"
+        },
+        {
+          "name": "separator",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onItemClick",
+          "optional": true,
+          "type": "(item: BreadcrumbItem, index: number, e: React.MouseEvent) => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Breadcrumb.d.ts"
+    },
+    {
+      "name": "Button",
+      "props": [
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.HTMLAttributes<HTMLSpanElement>"
+        },
+        {
+          "name": "leftIcon",
+          "optional": true,
+          "type": "React.HTMLAttributes<HTMLSpanElement>"
+        },
+        {
+          "name": "rightIcon",
+          "optional": true,
+          "type": "React.HTMLAttributes<HTMLSpanElement>"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Button.d.ts"
+    },
+    {
+      "name": "Card",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<CardRootProps, \"children\" | \"variant\" | \"clickable\">"
+        },
+        {
+          "name": "thumbnail",
+          "optional": true,
+          "type": "Omit<CardThumbnailProps, \"children\">"
+        },
+        {
+          "name": "header",
+          "optional": true,
+          "type": "Omit<CardHeaderProps, \"children\">"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "Omit<CardTitleProps, \"children\">"
+        },
+        {
+          "name": "subtitle",
+          "optional": true,
+          "type": "Omit<CardSubtitleProps, \"children\">"
+        },
+        {
+          "name": "meta",
+          "optional": true,
+          "type": "Omit<CardMetaProps, \"children\">"
+        },
+        {
+          "name": "body",
+          "optional": true,
+          "type": "Omit<CardBodyProps, \"children\">"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "Omit<CardFooterProps, \"children\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Card.d.ts"
+    },
+    {
+      "name": "Checkbox",
+      "props": [
+        {
+          "name": "checked",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onCheckedChange",
+          "optional": true,
+          "type": "(checked: boolean) => void"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Checkbox.d.ts"
+    },
+    {
+      "name": "Chip",
+      "props": [
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "ChipVariant"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "ChipSize"
+        },
+        {
+          "name": "pill",
+          "optional": false,
+          "type": "완전 둥근, square: 8px 라운드) */"
+        },
+        {
+          "name": "shape",
+          "optional": true,
+          "type": "ChipShape"
+        },
+        {
+          "name": "selected",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "onRemove",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Chip.d.ts"
+    },
+    {
+      "name": "DatePicker",
+      "props": [
+        {
+          "name": "value",
+          "optional": true,
+          "type": "Date"
+        },
+        {
+          "name": "onChange",
+          "optional": false,
+          "type": "(value: Date) => void"
+        },
+        {
+          "name": "minDate",
+          "optional": true,
+          "type": "Date"
+        },
+        {
+          "name": "maxDate",
+          "optional": true,
+          "type": "Date"
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "portalContainer",
+          "optional": true,
+          "type": "HTMLElement | null"
+        },
+        {
+          "name": "formatValue",
+          "optional": true,
+          "type": "(d: Date) => string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/DatePicker.d.ts"
+    },
+    {
+      "name": "Divider",
+      "props": [
+        {
+          "name": "orientation",
+          "optional": true,
+          "type": "DividerOrientation"
+        },
+        {
+          "name": "thickness",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "spacing",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Divider.d.ts"
+    },
+    {
+      "name": "Drawer",
+      "props": [
+        {
+          "name": "open",
+          "optional": false,
+          "type": "boolean"
+        },
+        {
+          "name": "onClose",
+          "optional": false,
+          "type": "() => void"
+        },
+        {
+          "name": "side",
+          "optional": true,
+          "type": "DrawerSide"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "DrawerSize"
+        },
+        {
+          "name": "width",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "closeOnOverlayClick",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "closeOnEsc",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "showCloseButton",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "portalContainer",
+          "optional": true,
+          "type": "HTMLElement | null"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Drawer.d.ts"
+    },
+    {
+      "name": "DropdownMenu",
+      "props": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactElement"
+        },
+        {
+          "name": "items",
+          "optional": true,
+          "type": "DropdownMenuItem[]"
+        },
+        {
+          "name": "groups",
+          "optional": true,
+          "type": "DropdownMenuGroup[]"
+        },
+        {
+          "name": "align",
+          "optional": true,
+          "type": "DropdownAlign"
+        },
+        {
+          "name": "minWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "portalContainer",
+          "optional": true,
+          "type": "HTMLElement | null"
+        },
+        {
+          "name": "panelClassName",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/DropdownMenu.d.ts"
+    },
+    {
+      "name": "DSHighlight",
+      "props": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "defaultMode",
+          "optional": true,
+          "type": "HighlightMode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/DSHighlight.d.ts"
+    },
+    {
+      "name": "EmptyState",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<EmptyStateRootProps, \"children\" | \"minHeight\">"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Omit<EmptyStateIconProps, \"children\">"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "Omit<EmptyStateTitleProps, \"children\">"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "Omit<EmptyStateDescriptionProps, \"children\">"
+        },
+        {
+          "name": "action",
+          "optional": true,
+          "type": "Omit<EmptyStateActionProps, \"children\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/EmptyState.d.ts"
+    },
+    {
+      "name": "FieldActionRow",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<FieldActionRowRootProps, \"children\">"
+        },
+        {
+          "name": "field",
+          "optional": true,
+          "type": "Omit<FieldActionRowFieldProps, \"children\" | \"error\">"
+        },
+        {
+          "name": "action",
+          "optional": true,
+          "type": "Omit<FieldActionRowActionProps, \"children\" | \"tone\">"
+        },
+        {
+          "name": "helper",
+          "optional": true,
+          "type": "Omit<FieldActionRowHelperProps, \"children\" | \"error\" | \"success\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts"
+    },
+    {
+      "name": "FormField",
+      "props": [
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "helper",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "optional",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "counter",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "htmlFor",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/FormField.d.ts"
+    },
+    {
+      "name": "IconButton",
+      "props": [
+        {
+          "name": "size",
+          "optional": true,
+          "type": "IconButtonSize"
+        },
+        {
+          "name": "icon",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/IconButton.d.ts"
+    },
+    {
+      "name": "Input",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<InputRootProps, \"children\" | \"error\" | \"disabled\" | \"readOnly\" | \"fullWidth\">"
+        },
+        {
+          "name": "wrapper",
+          "optional": true,
+          "type": "Omit<InputWrapperProps, \"children\">"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "Omit<InputLabelProps, \"children\">"
+        },
+        {
+          "name": "field",
+          "optional": true,
+          "type": "Omit<InputFieldProps, never>"
+        },
+        {
+          "name": "clearButton",
+          "optional": true,
+          "type": "InputClearButtonProps"
+        },
+        {
+          "name": "helper",
+          "optional": true,
+          "type": "Omit<InputHelperProps, \"children\" | \"error\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Input.d.ts"
+    },
+    {
+      "name": "LikertScale",
+      "props": [
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "options",
+          "optional": false,
+          "type": "LikertOption[]"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string | number"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string | number) => void"
+        },
+        {
+          "name": "startLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "endLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/LikertScale.d.ts"
+    },
+    {
+      "name": "List",
+      "props": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "ListVariant"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/List.d.ts"
+    },
+    {
+      "name": "Modal",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<ModalRootProps, \"open\" | \"onClose\" | \"children\">"
+        },
+        {
+          "name": "overlay",
+          "optional": true,
+          "type": "Omit<ModalOverlayProps, \"isMaskClose\">"
+        },
+        {
+          "name": "content",
+          "optional": true,
+          "type": "Omit<ModalContentProps, \"children\" | \"maxWidth\">"
+        },
+        {
+          "name": "header",
+          "optional": true,
+          "type": "Omit<ModalHeaderProps, \"title\" | \"closable\" | \"children\">"
+        },
+        {
+          "name": "body",
+          "optional": true,
+          "type": "Omit<ModalBodyProps, \"children\">"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "Omit<ModalFooterProps, \"children\" | \"onConfirm\" | \"onClose\" | \"confirmText\" | \"closeText\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Modal.d.ts"
+    },
+    {
+      "name": "Pagination",
+      "props": [
+        {
+          "name": "page",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "totalPages",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "siblings",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onPageChange",
+          "optional": false,
+          "type": "(page: number) => void"
+        },
+        {
+          "name": "showArrows",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Pagination.d.ts"
+    },
+    {
+      "name": "Popup",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<PopupRootProps, \"open\" | \"onClose\" | \"children\">"
+        },
+        {
+          "name": "overlay",
+          "optional": true,
+          "type": "Omit<PopupOverlayProps, \"isMaskClose\">"
+        },
+        {
+          "name": "content",
+          "optional": true,
+          "type": "Omit<PopupContentProps, \"children\" | \"maxWidth\">"
+        },
+        {
+          "name": "textInfo",
+          "optional": true,
+          "type": "Omit<PopupTextInfoProps, \"children\">"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "Omit<PopupTitleProps, \"children\">"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "Omit<PopupDescriptionProps, \"children\">"
+        },
+        {
+          "name": "actions",
+          "optional": true,
+          "type": "Omit<PopupActionsProps, \"children\">"
+        },
+        {
+          "name": "cancelButton",
+          "optional": true,
+          "type": "ButtonHTMLProps"
+        },
+        {
+          "name": "confirmButton",
+          "optional": true,
+          "type": "ButtonHTMLProps"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Popup.d.ts"
+    },
+    {
+      "name": "ProgressBar",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "ProgressBarSize"
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ProgressBar.d.ts"
+    },
+    {
+      "name": "SearchInput",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<SearchInputRootProps, \"children\" | \"fullWidth\" | \"inputId\">"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "Omit<SearchInputLabelProps, \"children\">"
+        },
+        {
+          "name": "wrapper",
+          "optional": true,
+          "type": "Omit<SearchInputWrapperProps, \"children\" | \"focused\" | \"variant\">"
+        },
+        {
+          "name": "field",
+          "optional": true,
+          "type": "Omit<SearchInputFieldProps, never>"
+        },
+        {
+          "name": "clearButton",
+          "optional": true,
+          "type": "SearchInputClearButtonProps"
+        },
+        {
+          "name": "searchButton",
+          "optional": true,
+          "type": "SearchInputSearchButtonProps"
+        },
+        {
+          "name": "helper",
+          "optional": true,
+          "type": "Omit<SearchInputHelperProps, \"children\" | \"error\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/SearchInput.d.ts"
+    },
+    {
+      "name": "SegmentedControl",
+      "props": [],
+      "dtsRelPath": "packages/react/dist/SegmentedControl.d.ts"
+    },
+    {
+      "name": "Select",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<SelectRootProps, \"children\" | \"value\" | \"onValueChange\" | \"disabled\" | \"error\" | \"portalContainer\">"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "Omit<SelectLabelProps, \"children\">"
+        },
+        {
+          "name": "trigger",
+          "optional": true,
+          "type": "Omit<SelectTriggerProps, \"placeholder\" | \"children\">"
+        },
+        {
+          "name": "dropdown",
+          "optional": true,
+          "type": "Omit<SelectDropdownProps, \"children\">"
+        },
+        {
+          "name": "option",
+          "optional": true,
+          "type": "Omit<SelectOptionProps, \"value\" | \"children\" | \"disabled\">"
+        },
+        {
+          "name": "helper",
+          "optional": true,
+          "type": "Omit<SelectHelperProps, \"children\" | \"error\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Select.d.ts"
+    },
+    {
+      "name": "Skeleton",
+      "props": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "SkeletonVariant"
+        },
+        {
+          "name": "width",
+          "optional": true,
+          "type": "number | string"
+        },
+        {
+          "name": "height",
+          "optional": true,
+          "type": "number | string"
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Skeleton.d.ts"
+    },
+    {
+      "name": "StarRating",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "onValueChange",
+          "optional": true,
+          "type": "(value: number) => void"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "showValue",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/StarRating.d.ts"
+    },
+    {
+      "name": "Stepper",
+      "props": [
+        {
+          "name": "steps",
+          "optional": false,
+          "type": "StepItem[]"
+        },
+        {
+          "name": "current",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "StepperVariant"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Stepper.d.ts"
+    },
+    {
+      "name": "Tabs",
+      "props": [
+        {
+          "name": "root",
+          "optional": true,
+          "type": "Omit<TabsRootProps, \"activeKey\" | \"onTabChange\" | \"variant\" | \"children\">"
+        },
+        {
+          "name": "list",
+          "optional": true,
+          "type": "Omit<TabsListProps, \"children\">"
+        },
+        {
+          "name": "trigger",
+          "optional": true,
+          "type": "Omit<TabsTriggerProps, \"tabKey\" | \"children\">"
+        },
+        {
+          "name": "panel",
+          "optional": true,
+          "type": "Omit<TabsPanelProps, \"tabKey\" | \"children\">"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Tabs.d.ts"
+    },
+    {
+      "name": "Textarea",
+      "props": [
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "helperText",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "maxLength",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "minHeight",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "resize",
+          "optional": true,
+          "type": "\"none\" | \"vertical\" | \"horizontal\" | \"both\""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Textarea.d.ts"
+    },
+    {
+      "name": "TextButton",
+      "props": [
+        {
+          "name": "size",
+          "optional": true,
+          "type": "TextButtonSize"
+        },
+        {
+          "name": "leftIcon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "rightIcon",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/TextButton.d.ts"
+    },
+    {
+      "name": "TimeSlotPicker",
+      "props": [
+        {
+          "name": "slots",
+          "optional": true,
+          "type": "TimeSlot[]"
+        },
+        {
+          "name": "groups",
+          "optional": true,
+          "type": "TimeSlotGroup[]"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "columns",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "emptyText",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/TimeSlotPicker.d.ts"
+    },
+    {
+      "name": "Toast",
+      "props": [
+        {
+          "name": "position",
+          "optional": true,
+          "type": "ToastPosition"
+        },
+        {
+          "name": "duration",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "maxCount",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "portalContainer",
+          "optional": true,
+          "type": "HTMLElement | null"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Toast.d.ts"
+    },
+    {
+      "name": "Toggle",
+      "props": [
+        {
+          "name": "checked",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onCheckedChange",
+          "optional": true,
+          "type": "(checked: boolean) => void"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "ToggleSize"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Toggle.d.ts"
+    },
+    {
+      "name": "Tooltip",
+      "props": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "placement",
+          "optional": true,
+          "type": "TooltipPlacement"
+        },
+        {
+          "name": "delay",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Tooltip.d.ts"
+    },
+    {
+      "name": "TrendingKeywords",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "TrendingKeywordItem[]"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "09",
+          "optional": false,
+          "type": "00 기준\") */"
+        },
+        {
+          "name": "timestamp",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "autoplayDelay",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onKeywordClick",
+          "optional": true,
+          "type": "(item: TrendingKeywordItem) => void"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/TrendingKeywords.d.ts"
+    }
+  ],
+  "icons": [
+    "AddlistIcon",
+    "ArrowBackIcon",
+    "ArrowNextIcon",
+    "BlockIcon",
+    "BluetoothIcon",
+    "CalendarIcon",
+    "CameraIcon",
+    "CenterIcon",
+    "ChallengeActiveIcon",
+    "ChallengeIcon",
+    "ChevronDownIcon",
+    "ChevronLeftIcon",
+    "ChevronRightIcon",
+    "ChevronUpIcon",
+    "CloseIcon",
+    "CommentIcon",
+    "CounselActiveIcon",
+    "CounselIcon",
+    "CounselingChatIcon",
+    "CounselingVideoIcon",
+    "CouponIcon",
+    "DecorationStickerIcon",
+    "DecorationTextIcon",
+    "DeleteIcon",
+    "DownloadIcon",
+    "DragIcon",
+    "EditIcon",
+    "EyeIcon",
+    "EyeOffIcon",
+    "FacilityIcon",
+    "FavoriteActiveIcon",
+    "FavoriteIcon",
+    "FilterIcon",
+    "HamburgerIcon",
+    "HomeActiveIcon",
+    "HomeIcon",
+    "InfoIcon",
+    "InputdeleteIcon",
+    "LikeActiveIcon",
+    "LikeIcon",
+    "LinkIcon",
+    "LocateIcon",
+    "LockIcon",
+    "MentalcareActiveIcon",
+    "MentalcareIcon",
+    "MicrophoneIcon",
+    "MinusIcon",
+    "MonitorIcon",
+    "MoreIcon",
+    "MymusicIcon",
+    "MypageActiveIcon",
+    "MypageIcon",
+    "PauseIcon",
+    "PinIcon",
+    "PlayIcon",
+    "PlusIcon",
+    "PointIcon",
+    "PushActiveIcon",
+    "PushIcon",
+    "RecentIcon",
+    "RefreshIcon",
+    "RepeatIcon",
+    "ReportIcon",
+    "SearchIcon",
+    "SettingIcon",
+    "ShareIcon",
+    "ShuffleIcon",
+    "SirenIcon",
+    "SkipBackIcon",
+    "SkipForwardIcon",
+    "SleepmodeOffIcon",
+    "SleepmodeOnIcon",
+    "StarIcon",
+    "SubwayIcon",
+    "TelephoneIcon",
+    "TestIcon",
+    "TestresultDangerIcon",
+    "TestresultSafeIcon",
+    "TestresultWarningIcon",
+    "ThumbUpIcon",
+    "TimeIcon",
+    "VideocameraIcon",
+    "WalkIcon",
+    "WebIcon"
+  ],
+  "tokens": [
+    {
+      "name": "--border-default",
+      "value": "1px",
+      "group": "border"
+    },
+    {
+      "name": "--border-none",
+      "value": "0px",
+      "group": "border"
+    },
+    {
+      "name": "--color-blue-10",
+      "value": "#F8FCFE",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-100",
+      "value": "#B6DDF9",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-200",
+      "value": "#87C9F6",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-25",
+      "value": "#EAF6FD",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-300",
+      "value": "#53B2F3",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-400",
+      "value": "#1AA3F2",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-50",
+      "value": "#E1F2FC",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-500",
+      "value": "#0094F0",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-600",
+      "value": "#0086E3",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-700",
+      "value": "#0074D0",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-800",
+      "value": "#0063BF",
+      "group": "color"
+    },
+    {
+      "name": "--color-blue-900",
+      "value": "#0046A0",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-100",
+      "value": "#F3F4F6",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-200",
+      "value": "#E6E7EB",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-300",
+      "value": "#D2D5D9",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-400",
+      "value": "#9CA2AE",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-50",
+      "value": "#F8F9FB",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-500",
+      "value": "#6C7280",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-600",
+      "value": "#4E5462",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-100",
+      "value": "#AAE3D7",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-200",
+      "value": "#6FD2BD",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-300",
+      "value": "#13BFA2",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-400",
+      "value": "#00A07C",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-50",
+      "value": "#E5F7F4",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-500",
+      "value": "#008260",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-100",
+      "value": "#FCE3EC",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-200",
+      "value": "#F8B8CF",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-300",
+      "value": "#F15890",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-50",
+      "value": "#FDF1F5",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-500",
+      "value": "#ED2E77",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-600",
+      "value": "#D9005C",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-800",
+      "value": "#C30058",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-00",
+      "value": "#FFFFFF",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-100",
+      "value": "#F5F5F5",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-1000",
+      "value": "#000000",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-200",
+      "value": "#ECECEC",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-300",
+      "value": "#D8D8D8",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-400",
+      "value": "#C7C7C7",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-50",
+      "value": "#FAFAFA",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-500",
+      "value": "#999999",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-600",
+      "value": "#777777",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-700",
+      "value": "#666666",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-800",
+      "value": "#383838",
+      "group": "color"
+    },
+    {
+      "name": "--color-neutral-900",
+      "value": "#111111",
+      "group": "color"
+    },
+    {
+      "name": "--color-red-100",
+      "value": "#FFA98C",
+      "group": "color"
+    },
+    {
+      "name": "--color-red-200",
+      "value": "#FF875D",
+      "group": "color"
+    },
+    {
+      "name": "--color-red-400",
+      "value": "#FF4E0C",
+      "group": "color"
+    },
+    {
+      "name": "--color-red-50",
+      "value": "#FEE9E6",
+      "group": "color"
+    },
+    {
+      "name": "--color-red-500",
+      "value": "#F13F00",
+      "group": "color"
+    },
+    {
+      "name": "--color-red-700",
+      "value": "#E33800",
+      "group": "color"
+    },
+    {
+      "name": "--color-red-800",
+      "value": "#CB2700",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-bg-coolGray",
+      "value": "#F3F4F6",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-bg-coolGrayLighter",
+      "value": "#F8F9FB",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-bg-disabled",
+      "value": "#ECECEC",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-bg-light",
+      "value": "#FAFAFA",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-bg-overlay",
+      "value": "rgba(0,0,0,0.5)",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-bg-white",
+      "value": "#FFFFFF",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-border-default",
+      "value": "#D8D8D8",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-border-disabled",
+      "value": "#ECECEC",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-border-focus",
+      "value": "#2B96ED",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-border-light",
+      "value": "#ECECEC",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-caution-bg",
+      "value": "#FFFAE8",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-caution-main",
+      "value": "#FFC303",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-caution-text",
+      "value": "#FFA100",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-error-bg",
+      "value": "#FEE9E6",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-error-main",
+      "value": "#F13F00",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-icon-default",
+      "value": "#383838",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-icon-inverse",
+      "value": "#FFFFFF",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-icon-subtle",
+      "value": "#999999",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-primary-bg",
+      "value": "#E3F2FC",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-primary-bgLighter",
+      "value": "#F1F8FD",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-primary-fg",
+      "value": "#FFFFFF",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-primary-hover",
+      "value": "#017EE4",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-primary-lighter",
+      "value": "#91CAF6",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-primary-main",
+      "value": "#2B96ED",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-primary-pressed",
+      "value": "#1B65BA",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-secondary-bg",
+      "value": "#FCE3EC",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-secondary-bgLighter",
+      "value": "#FDF1F5",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-secondary-lighter",
+      "value": "#F8B8CF",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-secondary-sub",
+      "value": "#ED2E77",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-success-bg",
+      "value": "#E5F7F4",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-success-main",
+      "value": "#13BFA2",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-text-default",
+      "value": "#383838",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-text-disabled",
+      "value": "#999999",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-text-inverse",
+      "value": "#FFFFFF",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-text-normal",
+      "value": "#111111",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-text-placeholder",
+      "value": "#999999",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-text-strong",
+      "value": "#000000",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-text-subtle",
+      "value": "#666666",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-100",
+      "value": "#FFEDB3",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-200",
+      "value": "#FFE282",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-300",
+      "value": "#FFD84F",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-400",
+      "value": "#FFCD27",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-50",
+      "value": "#FFFAE8",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-500",
+      "value": "#FFC303",
+      "group": "color"
+    },
+    {
+      "name": "--font-system",
+      "value": "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+      "group": "font"
+    },
+    {
+      "name": "--font-web",
+      "value": "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+      "group": "font"
+    },
+    {
+      "name": "--font-weight-bold",
+      "value": "700",
+      "group": "font"
+    },
+    {
+      "name": "--font-weight-medium",
+      "value": "500",
+      "group": "font"
+    },
+    {
+      "name": "--font-weight-regular",
+      "value": "400",
+      "group": "font"
+    },
+    {
+      "name": "--font-weight-semibold",
+      "value": "600",
+      "group": "font"
+    },
+    {
+      "name": "--radius-lg",
+      "value": "12px",
+      "group": "radius"
+    },
+    {
+      "name": "--radius-md",
+      "value": "8px",
+      "group": "radius"
+    },
+    {
+      "name": "--radius-none",
+      "value": "0px",
+      "group": "radius"
+    },
+    {
+      "name": "--radius-pill",
+      "value": "9999px",
+      "group": "radius"
+    },
+    {
+      "name": "--radius-sm",
+      "value": "4px",
+      "group": "radius"
+    },
+    {
+      "name": "--radius-xs",
+      "value": "6px",
+      "group": "radius"
+    },
+    {
+      "name": "--size-appBar-height",
+      "value": "52px",
+      "group": "size"
+    },
+    {
+      "name": "--size-bottomBar-height",
+      "value": "56px",
+      "group": "size"
+    },
+    {
+      "name": "--size-button-field",
+      "value": "48px",
+      "group": "size"
+    },
+    {
+      "name": "--size-button-lg",
+      "value": "48px",
+      "group": "size"
+    },
+    {
+      "name": "--size-button-md",
+      "value": "44px",
+      "group": "size"
+    },
+    {
+      "name": "--size-button-sm",
+      "value": "42px",
+      "group": "size"
+    },
+    {
+      "name": "--size-button-xl",
+      "value": "56px",
+      "group": "size"
+    },
+    {
+      "name": "--size-button-xs",
+      "value": "38px",
+      "group": "size"
+    },
+    {
+      "name": "--size-icon-default",
+      "value": "24px",
+      "group": "size"
+    },
+    {
+      "name": "--size-icon-sm",
+      "value": "20px",
+      "group": "size"
+    },
+    {
+      "name": "--size-icon-xs",
+      "value": "16px",
+      "group": "size"
+    },
+    {
+      "name": "--size-input-default",
+      "value": "48px",
+      "group": "size"
+    },
+    {
+      "name": "--size-input-field",
+      "value": "44px",
+      "group": "size"
+    },
+    {
+      "name": "--size-tabs-line",
+      "value": "50px",
+      "group": "size"
+    },
+    {
+      "name": "--size-tabs-pill",
+      "value": "35px",
+      "group": "size"
+    },
+    {
+      "name": "--size-tabs-square",
+      "value": "36px",
+      "group": "size"
+    },
+    {
+      "name": "--spacing-0",
+      "value": "0px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-1",
+      "value": "1px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-10",
+      "value": "10px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-11",
+      "value": "11px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-12",
+      "value": "12px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-13",
+      "value": "13px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-16",
+      "value": "16px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-2",
+      "value": "2px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-20",
+      "value": "20px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-24",
+      "value": "24px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-28",
+      "value": "28px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-30",
+      "value": "30px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-33",
+      "value": "33px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-36",
+      "value": "36px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-4",
+      "value": "4px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-48",
+      "value": "48px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-6",
+      "value": "6px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-64",
+      "value": "64px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-7",
+      "value": "7px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-8",
+      "value": "8px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-80",
+      "value": "80px",
+      "group": "spacing"
+    },
+    {
+      "name": "--text-body1-line-height",
+      "value": "24px",
+      "group": "text"
+    },
+    {
+      "name": "--text-body1-size",
+      "value": "16px",
+      "group": "text"
+    },
+    {
+      "name": "--text-body1-weight",
+      "value": "500",
+      "group": "text"
+    },
+    {
+      "name": "--text-body2-line-height",
+      "value": "22px",
+      "group": "text"
+    },
+    {
+      "name": "--text-body2-size",
+      "value": "15px",
+      "group": "text"
+    },
+    {
+      "name": "--text-body2-weight",
+      "value": "500",
+      "group": "text"
+    },
+    {
+      "name": "--text-body3-line-height",
+      "value": "20px",
+      "group": "text"
+    },
+    {
+      "name": "--text-body3-size",
+      "value": "14px",
+      "group": "text"
+    },
+    {
+      "name": "--text-body3-weight",
+      "value": "400",
+      "group": "text"
+    },
+    {
+      "name": "--text-caption1-line-height",
+      "value": "18px",
+      "group": "text"
+    },
+    {
+      "name": "--text-caption1-size",
+      "value": "13px",
+      "group": "text"
+    },
+    {
+      "name": "--text-caption1-weight",
+      "value": "400",
+      "group": "text"
+    },
+    {
+      "name": "--text-caption2-line-height",
+      "value": "16px",
+      "group": "text"
+    },
+    {
+      "name": "--text-caption2-size",
+      "value": "12px",
+      "group": "text"
+    },
+    {
+      "name": "--text-caption2-weight",
+      "value": "400",
+      "group": "text"
+    },
+    {
+      "name": "--text-display1-line-height",
+      "value": "74px",
+      "group": "text"
+    },
+    {
+      "name": "--text-display1-size",
+      "value": "52px",
+      "group": "text"
+    },
+    {
+      "name": "--text-display1-weight",
+      "value": "700",
+      "group": "text"
+    },
+    {
+      "name": "--text-display2-line-height",
+      "value": "62px",
+      "group": "text"
+    },
+    {
+      "name": "--text-display2-size",
+      "value": "48px",
+      "group": "text"
+    },
+    {
+      "name": "--text-display2-weight",
+      "value": "700",
+      "group": "text"
+    },
+    {
+      "name": "--text-display3-line-height",
+      "value": "52px",
+      "group": "text"
+    },
+    {
+      "name": "--text-display3-size",
+      "value": "40px",
+      "group": "text"
+    },
+    {
+      "name": "--text-display3-weight",
+      "value": "700",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline1-line-height",
+      "value": "48px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline1-size",
+      "value": "36px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline1-weight",
+      "value": "700",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline2-line-height",
+      "value": "38px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline2-size",
+      "value": "28px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline2-weight",
+      "value": "700",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline3-line-height",
+      "value": "32px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline3-size",
+      "value": "24px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline3-weight",
+      "value": "700",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline4-line-height",
+      "value": "28px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline4-size",
+      "value": "20px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline4-weight",
+      "value": "700",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline5-line-height",
+      "value": "26px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline5-size",
+      "value": "18px",
+      "group": "text"
+    },
+    {
+      "name": "--text-headline5-weight",
+      "value": "700",
+      "group": "text"
+    },
+    {
+      "name": "--text-label-line-height",
+      "value": "14px",
+      "group": "text"
+    },
+    {
+      "name": "--text-label-size",
+      "value": "11px",
+      "group": "text"
+    },
+    {
+      "name": "--text-label-weight",
+      "value": "400",
+      "group": "text"
+    }
+  ]
+}
