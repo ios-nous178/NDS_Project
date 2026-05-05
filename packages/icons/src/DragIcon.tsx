@@ -16,13 +16,36 @@ export const DragIcon = React.forwardRef<SVGSVGElement, DragIconProps>(
       color={color}
       {...props}
     >
-      <g transform="translate(3.5, 5)">
-<path d="M1 7H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M1 1H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M1 13H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-</g>
+      <g transform="translate(4 5)">
+        <g id="menu (1)">
+          <path
+            id="Path"
+            d="M1 7H16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            id="Path_2"
+            d="M1 1H16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            id="Path_3"
+            d="M1 13H16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      </g>
     </svg>
-  )
+  ),
 );
 
 DragIcon.displayName = "DragIcon";

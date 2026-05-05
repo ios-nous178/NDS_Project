@@ -1,7 +1,11 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/>
-  <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-  <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/>
-  <path d="M8.59 13.51L15.42 17.49" stroke="currentColor" stroke-width="2"/>
-  <path d="M15.41 6.51L8.59 10.49" stroke="currentColor" stroke-width="2"/>
+  <g transform="translate(3 2)">
+    <g id="Group">
+<circle id="Oval" cx="14.5" cy="3.5" r="2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle id="Oval_2" cx="3.5" cy="10" r="2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle id="Oval_3" cx="14.5" cy="16.5" r="2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Path" d="M6 11L12 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Path_2" d="M12 5L6 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+  </g>
 </svg>

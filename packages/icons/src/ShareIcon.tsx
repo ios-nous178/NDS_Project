@@ -16,13 +16,58 @@ export const ShareIcon = React.forwardRef<SVGSVGElement, ShareIconProps>(
       color={color}
       {...props}
     >
-      <circle cx="18" cy="5" r="3" stroke="currentColor" strokeWidth="2"/>
-  <circle cx="6" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
-  <circle cx="18" cy="19" r="3" stroke="currentColor" strokeWidth="2"/>
-  <path d="M8.59 13.51L15.42 17.49" stroke="currentColor" strokeWidth="2"/>
-  <path d="M15.41 6.51L8.59 10.49" stroke="currentColor" strokeWidth="2"/>
+      <g transform="translate(3 2)">
+        <g id="Group">
+          <circle
+            id="Oval"
+            cx="14.5"
+            cy="3.5"
+            r="2.5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <circle
+            id="Oval_2"
+            cx="3.5"
+            cy="10"
+            r="2.5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <circle
+            id="Oval_3"
+            cx="14.5"
+            cy="16.5"
+            r="2.5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            id="Path"
+            d="M6 11L12 15"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            id="Path_2"
+            d="M12 5L6 9"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      </g>
     </svg>
-  )
+  ),
 );
 
 ShareIcon.displayName = "ShareIcon";

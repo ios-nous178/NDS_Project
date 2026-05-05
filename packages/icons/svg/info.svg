@@ -1,5 +1,11 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-  <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="12" cy="8" r="1" fill="currentColor"/>
+  <g transform="translate(2 2)">
+    <g id="Group 13">
+<circle id="Oval" cx="10" cy="10" r="9.25" stroke="currentColor" stroke-width="1.5"/>
+<g id="!">
+<circle id="Oval_2" cx="1" cy="1" r="1" transform="matrix(1 0 0 -1 9 7.5)" fill="currentColor"/>
+<rect id="Rectangle" width="2" height="6" rx="1" transform="matrix(1 0 0 -1 9 14.7)" fill="currentColor"/>
+</g>
+</g>
+  </g>
 </svg>

@@ -16,15 +16,38 @@ export const MonitorIcon = React.forwardRef<SVGSVGElement, MonitorIconProps>(
       color={color}
       {...props}
     >
-      <g transform="translate(1, 2)">
-<rect x="1" y="1" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2"/>
-<path d="M6 19L16 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-<path d="M13 16V19" stroke="currentColor" strokeWidth="2"/>
-<path d="M9 16V19" stroke="currentColor" strokeWidth="2"/>
-<path d="M1.5 11.5H20.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-</g>
+      <g transform="translate(1 2)">
+        <g id="ic_eap_monitor_gray500">
+          <rect
+            id="Rectangle 2469"
+            x="1"
+            y="1"
+            width="20"
+            height="14"
+            rx="2"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <path
+            id="Vector 50"
+            d="M6 19L16 19"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <path id="Vector 49" d="M13 16V19" stroke="currentColor" strokeWidth="2" />
+          <path id="Vector 52" d="M9 16V19" stroke="currentColor" strokeWidth="2" />
+          <path
+            id="Vector 51"
+            d="M1.5 11.5H20.5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </g>
+      </g>
     </svg>
-  )
+  ),
 );
 
 MonitorIcon.displayName = "MonitorIcon";

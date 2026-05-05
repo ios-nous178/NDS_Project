@@ -16,10 +16,27 @@ export const EyeIcon = React.forwardRef<SVGSVGElement, EyeIconProps>(
       color={color}
       {...props}
     >
-      <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+      <g transform="translate(0 4)">
+        <g id="eye">
+          <path
+            id="Shape"
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M12 0C17.4219 0 21.887 4.62766 23.6412 6.54255C24.1196 7.18085 24.1196 7.81915 23.6412 8.45745C21.887 10.3723 17.2625 15 12 15C6.57807 15 1.95349 10.5319 0.358804 8.45745C-0.119601 7.97872 -0.119601 7.18085 0.358804 6.70213C1.95349 4.62766 6.57807 0 12 0ZM6.7377 7.49999C6.7377 10.3723 9.12972 12.7659 12.0002 12.7659C14.8706 12.7659 17.2626 10.3723 17.2626 7.49999C17.2626 4.62765 14.8706 2.23403 12.0002 2.23403C9.12972 2.23403 6.7377 4.62765 6.7377 7.49999Z"
+            fill="currentColor"
+          />
+          <ellipse
+            id="Oval"
+            cx="11.9997"
+            cy="7.49997"
+            rx="2.5515"
+            ry="2.55319"
+            fill="currentColor"
+          />
+        </g>
+      </g>
     </svg>
-  )
+  ),
 );
 
 EyeIcon.displayName = "EyeIcon";

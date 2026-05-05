@@ -35,10 +35,15 @@ function svgToComponent(svgContent, componentName) {
     .replace(/stroke-width/g, "strokeWidth")
     .replace(/stroke-linecap/g, "strokeLinecap")
     .replace(/stroke-linejoin/g, "strokeLinejoin")
+    .replace(/stroke-miterlimit/g, "strokeMiterlimit")
+    .replace(/stroke-dasharray/g, "strokeDasharray")
     .replace(/fill-rule/g, "fillRule")
     .replace(/clip-rule/g, "clipRule")
     .replace(/clip-path/g, "clipPath")
-    .replace(/xmlns:xlink/g, "xmlnsXlink");
+    .replace(/mask-type/g, "maskType")
+    .replace(/xmlns:xlink/g, "xmlnsXlink")
+    // Strip plain string style attrs — JSX requires style={{...}}, not style="..."
+    .replace(/\s+style="[^"]*"/g, "");
 
   return `import React from "react";
 

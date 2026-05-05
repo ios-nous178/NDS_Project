@@ -16,11 +16,18 @@ export const DownloadIcon = React.forwardRef<SVGSVGElement, DownloadIconProps>(
       color={color}
       {...props}
     >
-      <path d="M21 15V19C21 19.5523 20.5523 20 20 20H4C3.44772 20 3 19.5523 3 19V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d="M7 10L12 15L17 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d="M12 15V3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <g transform="translate(2 2)">
+        <path
+          id="download"
+          d="M19 13V17C19 17.5304 18.7893 18.0391 18.4142 18.4142C18.0391 18.7893 17.5304 19 17 19H3C2.46957 19 1.96086 18.7893 1.58579 18.4142C1.21071 18.0391 1 17.5304 1 17V13M15 8L10 13L5 8M10 13V1"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
     </svg>
-  )
+  ),
 );
 
 DownloadIcon.displayName = "DownloadIcon";

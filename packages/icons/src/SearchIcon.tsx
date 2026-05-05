@@ -16,10 +16,31 @@ export const SearchIcon = React.forwardRef<SVGSVGElement, SearchIconProps>(
       color={color}
       {...props}
     >
-      <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="2"/>
-  <path d="M15.5 15.5L20 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <g transform="translate(3 3)">
+        <g id="Group 2">
+          <ellipse
+            id="Oval"
+            cx="8"
+            cy="8"
+            rx="7"
+            ry="7"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            id="Path"
+            d="M17 17L13 13"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      </g>
     </svg>
-  )
+  ),
 );
 
 SearchIcon.displayName = "SearchIcon";
