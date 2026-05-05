@@ -1,0 +1,202 @@
+import React, { useId } from "react";
+import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+
+/* ─── Class names ─── */
+
+const FF_CLASS = "nds-form-field";
+const FF_ROOT_CLASS = `${FF_CLASS}__root`;
+const FF_LABEL_ROW_CLASS = `${FF_CLASS}__label-row`;
+const FF_LABEL_CLASS = `${FF_CLASS}__label`;
+const FF_REQUIRED_CLASS = `${FF_CLASS}__required`;
+const FF_OPTIONAL_CLASS = `${FF_CLASS}__optional`;
+const FF_DESC_CLASS = `${FF_CLASS}__description`;
+const FF_CONTROL_CLASS = `${FF_CLASS}__control`;
+const FF_FOOTER_CLASS = `${FF_CLASS}__footer`;
+const FF_HELPER_CLASS = `${FF_CLASS}__helper`;
+const FF_ERROR_CLASS = `${FF_CLASS}__error`;
+const FF_COUNTER_CLASS = `${FF_CLASS}__counter`;
+
+/* ─── Types ─── */
+
+export interface FormFieldProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** 필드 라벨 */
+  label?: React.ReactNode;
+  /** 라벨 위 세부 설명 (예: 검사 문항) */
+  description?: React.ReactNode;
+  /** 도움말 (에러가 없을 때) */
+  helper?: React.ReactNode;
+  /** 에러 메시지 (있으면 helper 대신 표시) */
+  error?: React.ReactNode;
+  /** 필수 표시 (* 빨간 별) */
+  required?: boolean;
+  /** 선택 표시 ("(선택)" 회색 텍스트) */
+  optional?: boolean;
+  /** 글자 수 카운터 (예: "12 / 200") */
+  counter?: React.ReactNode;
+  /** 라벨이 가리킬 컨트롤 id (없으면 자동 생성) */
+  htmlFor?: string;
+  /** 폼 컨트롤 (Input/Textarea/Select/Radio 등) */
+  children: React.ReactNode;
+}
+
+/* ─── Styles ─── */
+
+// eslint-disable-next-line unused-imports/no-unused-vars
+const formFieldStyles = `
+  :where(.${FF_ROOT_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[8]}px;
+    width: 100%;
+    font-family: ${fontFamily.web};
+    box-sizing: border-box;
+  }
+
+  :where(.${FF_LABEL_ROW_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[4]}px;
+  }
+
+  :where(.${FF_LABEL_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    gap: ${spacing[4]}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    font-weight: ${fontWeight.medium};
+    color: ${cv.text.default};
+  }
+
+  :where(.${FF_REQUIRED_CLASS}) {
+    color: ${cv.error.main};
+    font-weight: ${fontWeight.medium};
+  }
+
+  :where(.${FF_OPTIONAL_CLASS}) {
+    color: ${cv.text.disabled};
+    font-weight: ${fontWeight.regular};
+  }
+
+  :where(.${FF_DESC_CLASS}) {
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    font-weight: ${fontWeight.regular};
+    color: ${cv.text.subtle};
+  }
+
+  :where(.${FF_CONTROL_CLASS}) {
+    display: contents;
+  }
+
+  :where(.${FF_FOOTER_CLASS}) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: ${spacing[8]}px;
+  }
+
+  :where(.${FF_HELPER_CLASS}) {
+    flex: 1 1 auto;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
+    color: ${cv.text.subtle};
+  }
+
+  :where(.${FF_ERROR_CLASS}) {
+    flex: 1 1 auto;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
+    color: ${cv.error.main};
+  }
+
+  :where(.${FF_COUNTER_CLASS}) {
+    flex-shrink: 0;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
+    color: ${cv.text.disabled};
+    text-align: right;
+  }
+`;
+
+/* ─── Utils ─── */
+
+const cx = (...classNames: Array<string | undefined | false | null>) =>
+  classNames.filter(Boolean).join(" ");
+
+/* ─── Component ─── */
+
+export const FormField: React.FC<FormFieldProps> = ({
+  label,
+  description,
+  helper,
+  error,
+  required = false,
+  optional = false,
+  counter,
+  htmlFor: htmlForProp,
+  children,
+  className,
+  ...rest
+}) => {
+  const generatedId = useId();
+  const fieldId = htmlForProp ?? generatedId;
+  const helperId = `${fieldId}-helper`;
+  const errorId = `${fieldId}-error`;
+
+  const showFooter = helper !== undefined || error !== undefined || counter !== undefined;
+
+  return (
+    <div data-slot="root" className={cx(FF_ROOT_CLASS, className)} {...rest}>
+      {(label !== undefined || description !== undefined) && (
+        <div data-slot="label-row" className={FF_LABEL_ROW_CLASS}>
+          {label !== undefined && (
+            <label data-slot="label" className={FF_LABEL_CLASS} htmlFor={fieldId}>
+              <span>{label}</span>
+              {required && (
+                <span aria-hidden="true" className={FF_REQUIRED_CLASS}>
+                  *
+                </span>
+              )}
+              {optional && !required && (
+                <span aria-hidden="true" className={FF_OPTIONAL_CLASS}>
+                  (선택)
+                </span>
+              )}
+            </label>
+          )}
+          {description !== undefined && (
+            <div data-slot="description" className={FF_DESC_CLASS}>
+              {description}
+            </div>
+          )}
+        </div>
+      )}
+      <div data-slot="control" className={FF_CONTROL_CLASS}>
+        {children}
+      </div>
+      {showFooter && (
+        <div data-slot="footer" className={FF_FOOTER_CLASS}>
+          {error !== undefined ? (
+            <span data-slot="error" id={errorId} role="alert" className={FF_ERROR_CLASS}>
+              {error}
+            </span>
+          ) : helper !== undefined ? (
+            <span data-slot="helper" id={helperId} className={FF_HELPER_CLASS}>
+              {helper}
+            </span>
+          ) : (
+            <span aria-hidden="true" />
+          )}
+          {counter !== undefined && (
+            <span data-slot="counter" className={FF_COUNTER_CLASS}>
+              {counter}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+FormField.displayName = "FormField";
