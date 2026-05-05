@@ -39,6 +39,21 @@ export const borderWidth = {
   default: 1,
 } as const;
 
+export const grid = {
+  mobile: {
+    columns: 4,
+    margin: 16,
+    gutter: 8,
+    contentWidth: 328,
+  },
+  desktop: {
+    columns: 12,
+    margin: 360,
+    gutter: 24,
+    contentWidth: 1200,
+  },
+} as const;
+
 export const sizing = {
   icon: {
     xs: 16,
