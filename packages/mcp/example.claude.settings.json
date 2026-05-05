@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "nudge-eap-ds": {
+      "command": "node",
+      "args": ["/Users/eprnf/04_DPLaps/NudgeEAPDesignSystem/packages/mcp/dist/server.js"]
+    }
+  }
+}

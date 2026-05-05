@@ -59,13 +59,15 @@ pnpm build --filter @nudge-eap/react
 pnpm build --filter @nudge-eap/icons
 pnpm build --filter @nudge-eap/tailwind-preset   # Tailwind 쓸 때만
 
-# 3. tgz 패킹
+# 3. tgz 패킹 — pnpm pack은 --filter 지원 안 함, 각 패키지 디렉토리에서 실행
 mkdir -p ~/local-packages
-pnpm --filter @nudge-eap/tokens          pack --pack-destination ~/local-packages
-pnpm --filter @nudge-eap/react           pack --pack-destination ~/local-packages
-pnpm --filter @nudge-eap/icons           pack --pack-destination ~/local-packages
-pnpm --filter @nudge-eap/tailwind-preset pack --pack-destination ~/local-packages   # Tailwind 쓸 때만
+(cd packages/tokens          && pnpm pack --pack-destination ~/local-packages)
+(cd packages/react           && pnpm pack --pack-destination ~/local-packages)
+(cd packages/icons           && pnpm pack --pack-destination ~/local-packages)
+(cd packages/tailwind-preset && pnpm pack --pack-destination ~/local-packages)   # Tailwind 쓸 때만
 ```
+
+> **주의**: `pnpm --filter ... pack`은 "Unknown option: 'recursive'" 에러로 실패합니다. `pnpm pack`은 단일 패키지 명령이라 해당 패키지 디렉토리에서 실행해야 합니다.
 
 결과:
 
@@ -84,8 +86,8 @@ pnpm --filter @nudge-eap/tailwind-preset pack --pack-destination ~/local-package
 ```bash
 # DS 폴더에서
 pnpm build --filter @nudge-eap/tokens && pnpm build --filter @nudge-eap/react
-pnpm --filter @nudge-eap/tokens pack --pack-destination ~/local-packages
-pnpm --filter @nudge-eap/react  pack --pack-destination ~/local-packages
+(cd packages/tokens && pnpm pack --pack-destination ~/local-packages)
+(cd packages/react  && pnpm pack --pack-destination ~/local-packages)
 
 # 외부 목업 프로젝트에서
 rm -rf node_modules/@nudge-eap
@@ -624,6 +626,7 @@ fs.writeFileSync(
    }
    ```
 4. **외부 프로젝트의 `CLAUDE.md` 갱신**:
+
    ```markdown
    ## 도구 사용 규칙
 
