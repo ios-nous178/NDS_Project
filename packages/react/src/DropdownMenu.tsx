@@ -256,22 +256,11 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
 
   type TriggerProps = {
     onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-    ref?: React.Ref<HTMLElement>;
   };
   const childProps = (children as React.ReactElement<TriggerProps>).props;
   const trigger = cloneElement(
     children as React.ReactElement<TriggerProps>,
     {
-      ref: (node: HTMLElement | null) => {
-        triggerRef.current = node;
-        const orig = (
-          children as React.ReactElement<TriggerProps> & { ref?: React.Ref<HTMLElement> }
-        ).ref;
-        if (typeof orig === "function") orig(node);
-        else if (orig && typeof orig === "object" && "current" in orig) {
-          (orig as React.MutableRefObject<HTMLElement | null>).current = node;
-        }
-      },
       onClick: (e: React.MouseEvent<HTMLElement>) => {
         childProps.onClick?.(e);
         setOpen((prev) => !prev);
@@ -284,7 +273,14 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
 
   return (
     <>
-      {trigger}
+      <span
+        ref={(node) => {
+          triggerRef.current = node;
+        }}
+        style={{ display: "inline-flex" }}
+      >
+        {trigger}
+      </span>
       {open && (
         <WebPortal container={portalContainer}>
           <div
