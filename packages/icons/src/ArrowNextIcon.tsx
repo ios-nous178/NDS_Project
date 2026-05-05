@@ -16,9 +16,18 @@ export const ArrowNextIcon = React.forwardRef<SVGSVGElement, ArrowNextIconProps>
       color={color}
       {...props}
     >
-      <path d="M4.5 12H19.5M19.5 12L13.875 6M19.5 12L13.875 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <g transform="translate(19.5 5) scale(-1 1)">
+        <path
+          id="Vector"
+          d="M16 7H1M6.625 13L1 7L6.625 1"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
     </svg>
-  )
+  ),
 );
 
 ArrowNextIcon.displayName = "ArrowNextIcon";

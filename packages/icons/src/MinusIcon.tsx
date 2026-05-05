@@ -16,9 +16,22 @@ export const MinusIcon = React.forwardRef<SVGSVGElement, MinusIconProps>(
       color={color}
       {...props}
     >
-      <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <g transform="translate(4 11)">
+        <g id="Group 3541">
+          <line
+            id="Line 11"
+            x1="1"
+            y1="1"
+            x2="15"
+            y2="1"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </g>
+      </g>
     </svg>
-  )
+  ),
 );
 
 MinusIcon.displayName = "MinusIcon";

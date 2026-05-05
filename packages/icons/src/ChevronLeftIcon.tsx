@@ -16,9 +16,18 @@ export const ChevronLeftIcon = React.forwardRef<SVGSVGElement, ChevronLeftIconPr
       color={color}
       {...props}
     >
-      <path d="M15 6L9 12L15 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <g transform="translate(7 4)">
+        <path
+          id="Vector"
+          d="M8 1L1 8L8 15"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
     </svg>
-  )
+  ),
 );
 
 ChevronLeftIcon.displayName = "ChevronLeftIcon";
