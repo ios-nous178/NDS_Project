@@ -11,10 +11,10 @@
 
 ### 소비 프로젝트
 
-| 프로젝트 | 프레임워크 | 라우터 | 스타일 시스템 | 상태 관리 |
-| --- | --- | --- | --- | --- |
-| NudgeEAPHomePage | Next.js 14 | App Router | Tailwind CSS | Zustand + React Query |
-| NudgeEAPWebView | Next.js 14 | Pages Router | styled-components | Zustand + React Query |
+| 프로젝트         | 프레임워크 | 라우터       | 스타일 시스템     | 상태 관리             |
+| ---------------- | ---------- | ------------ | ----------------- | --------------------- |
+| NudgeEAPHomePage | Next.js 14 | App Router   | Tailwind CSS      | Zustand + React Query |
+| NudgeEAPWebView  | Next.js 14 | Pages Router | styled-components | Zustand + React Query |
 
 공통 사항
 
@@ -187,13 +187,13 @@ Flat API는 Compound를 미리 조립한 케이스로 보고 관리합니다.
 
 ### 선택 가이드
 
-| 기준 | Flat API | Compound API |
-| --- | --- | --- |
-| 커스텀 필요 | 없음 | 있음 |
-| 사용 빈도 | 높음 | 중간 |
-| 학습 비용 | 낮음 | 중간 |
-| 유연성 | 제한적 | 높음 |
-| 적합한 예 | Button, Badge, 기본 Input | 검색형 Input, Modal 내부 구조, 액션 결합 패턴 |
+| 기준        | Flat API                  | Compound API                                  |
+| ----------- | ------------------------- | --------------------------------------------- |
+| 커스텀 필요 | 없음                      | 있음                                          |
+| 사용 빈도   | 높음                      | 중간                                          |
+| 학습 비용   | 낮음                      | 중간                                          |
+| 유연성      | 제한적                    | 높음                                          |
+| 적합한 예   | Button, Badge, 기본 Input | 검색형 Input, Modal 내부 구조, 액션 결합 패턴 |
 
 ---
 
@@ -405,20 +405,20 @@ AI는 보조 도구로 사용합니다.
 
 # 13. 문서 로드맵
 
-| 문서 | 목적 | 상태 |
-| --- | --- | --- |
-| `DESIGN_SYSTEM_PLAN.md` | 초기 전략과 변경된 기획 판단 정리 | 운영 중 |
-| `TOKENS.md` | 디자인 토큰 정의서 | 운영 중 |
-| `AI_PROMPTS.md` | AI 자동화 프롬프트 템플릿 | 운영 중 |
-| `PLANNER_DESIGNER_AI_GUIDE.md` | 기획자/디자이너용 AI 활용 가이드 | 운영 중 |
-| `FIGMA_TO_REACT_WORKFLOW.md` | Figma에서 코드/문서로 이어지는 흐름 | 운영 중 |
-| `AUTOMATION_WORKFLOW.md` | 자동화 워크플로우 | 운영 중 |
-| `STYLING_STRUCTURE_GUIDE.md` | 스타일 구조 가이드 | 운영 중 |
-| `MODAL_MIGRATION_NOTES.md` | 실서비스 비교 및 마이그레이션 기록 | 운영 중 |
-| `docs/components/inventory.md` | 메타데이터 기반 컴포넌트 인벤토리 | 자동 생성 |
-| `docs/components/candidates.mdx` | 추출 후보와 우선순위 | 운영 중 |
-| `CONTRIBUTING.md` | 컴포넌트 추가 절차와 규칙 | 미작성 |
-| `RELEASE_STRATEGY.md` | 버전 관리와 배포 전략 | 미작성 |
+| 문서                             | 목적                                | 상태      |
+| -------------------------------- | ----------------------------------- | --------- |
+| `DESIGN_SYSTEM_PLAN.md`          | 초기 전략과 변경된 기획 판단 정리   | 운영 중   |
+| `TOKENS.md`                      | 디자인 토큰 정의서                  | 운영 중   |
+| `AI_PROMPTS.md`                  | AI 자동화 프롬프트 템플릿           | 운영 중   |
+| `PLANNER_DESIGNER_AI_GUIDE.md`   | 기획자/디자이너용 AI 활용 가이드    | 운영 중   |
+| `FIGMA_TO_REACT_WORKFLOW.md`     | Figma에서 코드/문서로 이어지는 흐름 | 운영 중   |
+| `AUTOMATION_WORKFLOW.md`         | 자동화 워크플로우                   | 운영 중   |
+| `STYLING_STRUCTURE_GUIDE.md`     | 스타일 구조 가이드                  | 운영 중   |
+| `MODAL_MIGRATION_NOTES.md`       | 실서비스 비교 및 마이그레이션 기록  | 운영 중   |
+| `docs/components/inventory.md`   | 메타데이터 기반 컴포넌트 인벤토리   | 자동 생성 |
+| `docs/components/candidates.mdx` | 추출 후보와 우선순위                | 운영 중   |
+| `CONTRIBUTING.md`                | 컴포넌트 추가 절차와 규칙           | 미작성    |
+| `RELEASE_STRATEGY.md`            | 버전 관리와 배포 전략               | 미작성    |
 
 우선순위
 

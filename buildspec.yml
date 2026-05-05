@@ -46,11 +46,11 @@ phases:
 artifacts:
   base-directory: eb-bundle
   files:
-    - '**/*'
+    - "**/*"
   name: nudge-eap-ds-$(date +%Y-%m-%d-%H%M%S)
 
 cache:
   paths:
-    - '.pnpm-store/**/*'
-    - 'node_modules/.cache/**/*'
-    - '.turbo/**/*'
+    - ".pnpm-store/**/*"
+    - "node_modules/.cache/**/*"
+    - ".turbo/**/*"

@@ -22,16 +22,19 @@ import { EmptyState } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - 데이터가 없는 **빈 화면**을 표시할 때 (검색 결과 없음, 목록이 비어있음 등)
 - 빈 상태에서 사용자에게 **다음 행동을 안내**할 때 (데이터 추가, 필터 변경 등)
 - 아이콘 + 제목 + 설명 + 액션 버튼 조합이 필요할 때
 
 ### 이럴 때 사용하지 마세요
+
 - 에러 페이지 (500, 404 등) → 전용 에러 페이지를 사용하세요
 - 데이터 로딩 중 → Skeleton이나 Spinner를 사용하세요
 - 첫 사용 온보딩 가이드 → 전용 온보딩 UI를 사용하세요
 
 ### 자주 하는 실수
+
 - 데이터 로딩 중에 EmptyState를 잠깐 보여줌 — 로딩 상태와 빈 상태를 구분하세요. 로딩 완료 후 데이터가 없을 때만 표시합니다
 - 액션 버튼 없이 "데이터가 없습니다"만 표시 — 사용자가 다음에 무엇을 해야 하는지 안내하세요
 
@@ -42,10 +45,7 @@ import { EmptyState } from "@nudge-eap/react";
 ### 기본 사용법
 
 ```tsx
-<EmptyState
-  title="데이터가 없습니다"
-  description="아직 등록된 내용이 없습니다."
-/>
+<EmptyState title="데이터가 없습니다" description="아직 등록된 내용이 없습니다." />
 ```
 
 ### 검색 결과 없음
@@ -76,10 +76,7 @@ import { EmptyState } from "@nudge-eap/react";
 ### 최소 높이 지정
 
 ```tsx
-<EmptyState
-  title="리스트가 없습니다."
-  minHeight={360}
-/>
+<EmptyState title="리스트가 없습니다." minHeight={360} />
 ```
 
 ---
@@ -92,9 +89,7 @@ import { EmptyState } from "@nudge-eap/react";
     <img src="/images/placeholder.png" alt="empty" />
   </EmptyState.Icon>
   <EmptyState.Title>상담 내역이 없습니다</EmptyState.Title>
-  <EmptyState.Description>
-    첫 상담을 예약해보세요.
-  </EmptyState.Description>
+  <EmptyState.Description>첫 상담을 예약해보세요.</EmptyState.Description>
   <EmptyState.Action>
     <Button size="sm">상담 예약하기</Button>
   </EmptyState.Action>
@@ -105,33 +100,33 @@ import { EmptyState } from "@nudge-eap/react";
 
 ## Flat API Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `icon` | `ReactNode` | 기본 아이콘 | 상단 아이콘/이미지 |
-| `title` | `string` | — | 제목 |
-| `description` | `string` | — | 설명 (줄바꿈 지원) |
-| `action` | `ReactNode` | — | 하단 액션 (버튼 등) |
-| `minHeight` | `number \| string` | `200px` | 최소 높이 |
-| `slotProps` | `EmptyStateSlotProps` | — | 슬롯 프롭 |
+| Prop          | 타입                  | 기본값      | 설명                |
+| ------------- | --------------------- | ----------- | ------------------- |
+| `icon`        | `ReactNode`           | 기본 아이콘 | 상단 아이콘/이미지  |
+| `title`       | `string`              | —           | 제목                |
+| `description` | `string`              | —           | 설명 (줄바꿈 지원)  |
+| `action`      | `ReactNode`           | —           | 하단 액션 (버튼 등) |
+| `minHeight`   | `number \| string`    | `200px`     | 최소 높이           |
+| `slotProps`   | `EmptyStateSlotProps` | —           | 슬롯 프롭           |
 
 ---
 
 ## Compound 컴포넌트
 
-| 컴포넌트 | 역할 |
-|---|---|
-| `EmptyState.Root` | 루트 컨테이너 (중앙 정렬) |
-| `EmptyState.Icon` | 아이콘/이미지 영역 |
-| `EmptyState.Title` | 제목 |
-| `EmptyState.Description` | 설명 문구 |
-| `EmptyState.Action` | 하단 액션 영역 |
+| 컴포넌트                 | 역할                      |
+| ------------------------ | ------------------------- |
+| `EmptyState.Root`        | 루트 컨테이너 (중앙 정렬) |
+| `EmptyState.Icon`        | 아이콘/이미지 영역        |
+| `EmptyState.Title`       | 제목                      |
+| `EmptyState.Description` | 설명 문구                 |
+| `EmptyState.Action`      | 하단 액션 영역            |
 
 ---
 
 ## CSS 변수
 
-| 변수 | 기본값 | 설명 |
-|---|---|---|
+| 변수                           | 기본값  | 설명      |
+| ------------------------------ | ------- | --------- |
 | `--nds-empty-state-min-height` | `200px` | 최소 높이 |
 
 ---

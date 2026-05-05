@@ -16,10 +16,10 @@ export const PauseIcon = React.forwardRef<SVGSVGElement, PauseIconProps>(
       color={color}
       {...props}
     >
-      <rect x="6" y="3" width="4" height="18" rx="3" fill="currentColor"/>
-<rect x="14" y="3" width="4" height="18" rx="3" fill="currentColor"/>
+      <rect x="6" y="3" width="4" height="18" rx="3" fill="currentColor" />
+      <rect x="14" y="3" width="4" height="18" rx="3" fill="currentColor" />
     </svg>
-  )
+  ),
 );
 
 PauseIcon.displayName = "PauseIcon";

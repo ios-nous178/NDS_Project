@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
 
 export type TextButtonSize = "large" | "medium";
 
@@ -89,16 +82,7 @@ export interface TextButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
 
 export const TextButton = React.forwardRef<HTMLButtonElement, TextButtonProps>(
   (
-    {
-      size = "medium",
-      leftIcon,
-      rightIcon,
-      className,
-      style,
-      children,
-      type = "button",
-      ...rest
-    },
+    { size = "medium", leftIcon, rightIcon, className, style, children, type = "button", ...rest },
     ref,
   ) => {
     const s = sizeConfig[size];

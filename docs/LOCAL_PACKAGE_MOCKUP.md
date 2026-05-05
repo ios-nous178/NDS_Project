@@ -615,6 +615,7 @@ fs.writeFileSync(
    - SDK: `@modelcontextprotocol/sdk` (Anthropic 공식)
    - 위치: `packages/mcp/` (DS 모노레포 내) — 외부 프로젝트는 `npx @nudge-eap/mcp` 또는 로컬 경로로 실행
 3. **사용자의 Claude Code 설정**: 외부 프로젝트의 `.claude/settings.json` 또는 `~/.claude/settings.json`에:
+
    ```json
    {
      "mcpServers": {
@@ -625,6 +626,7 @@ fs.writeFileSync(
      }
    }
    ```
+
 4. **외부 프로젝트의 `CLAUDE.md` 갱신**:
 
    ```markdown

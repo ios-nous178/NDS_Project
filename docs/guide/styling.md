@@ -52,10 +52,12 @@ NDS 기본 스타일 < CSS 변수 오버라이드 < className < slotProps < inli
 
 ```tsx
 <Button
-  style={{
-    "--nds-button-radius": "24px",
-    "--nds-button-gap": "12px",
-  } as React.CSSProperties}
+  style={
+    {
+      "--nds-button-radius": "24px",
+      "--nds-button-gap": "12px",
+    } as React.CSSProperties
+  }
 >
   Pill 버튼
 </Button>
@@ -69,13 +71,11 @@ NDS 기본 스타일 < CSS 변수 오버라이드 < className < slotProps < inli
 
 ```tsx
 // Tailwind
-<Button className="shadow-lg hover:shadow-xl transition-shadow">
-  그림자 버튼
-</Button>
+<Button className="shadow-lg hover:shadow-xl transition-shadow">그림자 버튼</Button>;
 
 // CSS Modules
-import styles from './MyPage.module.css';
-<Badge className={styles.customBadge}>태그</Badge>
+import styles from "./MyPage.module.css";
+<Badge className={styles.customBadge}>태그</Badge>;
 ```
 
 ---
@@ -103,13 +103,13 @@ import styles from './MyPage.module.css';
 
 ### 컴포넌트별 슬롯
 
-| 컴포넌트 | 사용 가능한 슬롯 |
-|---|---|
-| Button | `label`, `leftIcon`, `rightIcon` |
-| Badge | `label` |
-| Input | `root`, `wrapper`, `label`, `field`, `clearButton`, `helper` |
-| Modal | `root`, `overlay`, `content`, `header`, `body`, `footer` |
-| Popup | `root`, `overlay`, `content`, `textInfo`, `title`, `description`, `actions`, `cancelButton`, `confirmButton` |
+| 컴포넌트 | 사용 가능한 슬롯                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------ |
+| Button   | `label`, `leftIcon`, `rightIcon`                                                                             |
+| Badge    | `label`                                                                                                      |
+| Input    | `root`, `wrapper`, `label`, `field`, `clearButton`, `helper`                                                 |
+| Modal    | `root`, `overlay`, `content`, `header`, `body`, `footer`                                                     |
+| Popup    | `root`, `overlay`, `content`, `textInfo`, `title`, `description`, `actions`, `cancelButton`, `confirmButton` |
 
 ---
 
@@ -134,8 +134,8 @@ import styles from './MyPage.module.css';
 ### styled-components에서 사용
 
 ```tsx
-import styled from 'styled-components';
-import { Button } from '@nudge-eap/react';
+import styled from "styled-components";
+import { Button } from "@nudge-eap/react";
 
 const GlowButton = styled(Button)`
   box-shadow: 0 0 20px rgba(43, 150, 237, 0.3);
@@ -159,17 +159,31 @@ const GlowButton = styled(Button)`
 
 ```css
 /* variant별 스타일 */
-.nds-button[data-variant="solid"] { /* ... */ }
-.nds-button[data-variant="outlined"] { /* ... */ }
+.nds-button[data-variant="solid"] {
+  /* ... */
+}
+.nds-button[data-variant="outlined"] {
+  /* ... */
+}
 
 /* size별 스타일 */
-.nds-button[data-size="xl"] { /* ... */ }
+.nds-button[data-size="xl"] {
+  /* ... */
+}
 
 /* 상태별 스타일 */
-[data-slot="wrapper"][data-focused="true"] { /* ... */ }
-[data-slot="wrapper"][data-disabled="true"] { /* ... */ }
-[data-slot="header"][data-has-title="true"] { /* ... */ }
-[data-slot="footer"][data-has-both-actions="true"] { /* ... */ }
+[data-slot="wrapper"][data-focused="true"] {
+  /* ... */
+}
+[data-slot="wrapper"][data-disabled="true"] {
+  /* ... */
+}
+[data-slot="header"][data-has-title="true"] {
+  /* ... */
+}
+[data-slot="footer"][data-has-both-actions="true"] {
+  /* ... */
+}
 ```
 
 ---
@@ -199,25 +213,27 @@ export default {
 ```html
 <!-- 색상 -->
 <div class="text-primary bg-blue-100 border-neutral-300">
+  <!-- 타이포 -->
+  <h1 class="text-headline3 font-bold">
+    <p class="text-body1 font-medium">
+      <!-- 간격 -->
+    </p>
 
-<!-- 타이포 -->
-<h1 class="text-headline3 font-bold">
-<p class="text-body1 font-medium">
-
-<!-- 간격 -->
-<div class="p-4 gap-2 rounded-md">
-
-<!-- 사이징 -->
-<div class="h-btn-lg h-appbar h-input">
+    <div class="p-4 gap-2 rounded-md">
+      <!-- 사이징 -->
+      <div class="h-btn-lg h-appbar h-input"></div>
+    </div>
+  </h1>
+</div>
 ```
 
 ---
 
 ## 네이밍 규칙 요약
 
-| 규칙 | 예시 |
-|---|---|
-| CSS 변수 | `--nds-button-radius`, `--nds-input-border-color` |
-| CSS 클래스 | `nds-button`, `nds-modal__content` |
-| data-slot | `data-slot="root"`, `data-slot="label"` |
-| data 속성 | `data-variant="solid"`, `data-size="lg"` |
+| 규칙       | 예시                                              |
+| ---------- | ------------------------------------------------- |
+| CSS 변수   | `--nds-button-radius`, `--nds-input-border-color` |
+| CSS 클래스 | `nds-button`, `nds-modal__content`                |
+| data-slot  | `data-slot="root"`, `data-slot="label"`           |
+| data 속성  | `data-variant="solid"`, `data-size="lg"`          |

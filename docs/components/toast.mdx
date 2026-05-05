@@ -23,16 +23,19 @@ const { Provider: ToastProvider, useToast, show: showToast } = Toast;
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - 사용자 액션에 대한 **일시적 피드백**을 표시할 때 (저장 완료, 복사됨, 전송됨 등)
 - 사용자의 작업 흐름을 **차단하지 않고** 결과를 알릴 때
 - 되돌리기(Undo) 액션을 함께 제공할 때
 
 ### 이럴 때 사용하지 마세요
+
 - 사용자의 즉각적인 판단이 필요한 메시지 → [Popup](/docs/components/popup)을 사용하세요
 - 지속적으로 보여야 하는 정보 → 인라인 메시지나 배너를 사용하세요
 - 폼 유효성 에러 → [Input](/docs/components/input)의 `error` 상태를 사용하세요
 
 ### 자주 하는 실수
+
 - 중요한 에러를 Toast로만 표시 — 3초 후 사라지므로 사용자가 놓칩니다. 중요한 에러는 Popup이나 인라인 에러를 사용하세요
 - Toast에 긴 텍스트 넣기 — 짧고 명확한 한 줄 메시지가 적합합니다
 - 액션 없이 에러 Toast만 표시 — 사용자가 할 수 있는 행동(재시도 등)을 `action`으로 함께 제공하세요
@@ -62,11 +65,7 @@ function App() {
 function SaveButton() {
   const { toast } = Toast.useToast();
 
-  return (
-    <button onClick={() => toast("저장되었습니다")}>
-      저장
-    </button>
-  );
+  return <button onClick={() => toast("저장되었습니다")}>저장</button>;
 }
 ```
 
@@ -101,7 +100,9 @@ import { Toast } from "@nudge-eap/react";
 // Provider 안에서 연결 (1회)
 function ToastConnector() {
   const { toast } = Toast.useToast();
-  useEffect(() => { Toast.setGlobalToast(toast); }, [toast]);
+  useEffect(() => {
+    Toast.setGlobalToast(toast);
+  }, [toast]);
   return null;
 }
 
@@ -114,40 +115,40 @@ Toast.show("오류!", { variant: "error" });
 
 ## ToastProvider Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `position` | `"top" \| "bottom"` | `"bottom"` | 표시 위치 |
-| `duration` | `number` | `3000` | 기본 지속 시간 (ms) |
-| `maxCount` | `number` | `3` | 최대 동시 표시 개수 |
+| Prop              | 타입                  | 기본값          | 설명                        |
+| ----------------- | --------------------- | --------------- | --------------------------- |
+| `position`        | `"top" \| "bottom"`   | `"bottom"`      | 표시 위치                   |
+| `duration`        | `number`              | `3000`          | 기본 지속 시간 (ms)         |
+| `maxCount`        | `number`              | `3`             | 최대 동시 표시 개수         |
 | `portalContainer` | `HTMLElement \| null` | `document.body` | 토스트 뷰포트 포털 컨테이너 |
 
 ## toast() Options
 
-| 옵션 | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `variant` | `"default" \| "success" \| "error" \| "info"` | `"default"` | 색상 변형 |
-| `duration` | `number` | Provider 설정값 | 개별 지속 시간 |
-| `action` | `{ label, onClick }` | — | 액션 버튼 |
+| 옵션       | 타입                                          | 기본값          | 설명           |
+| ---------- | --------------------------------------------- | --------------- | -------------- |
+| `variant`  | `"default" \| "success" \| "error" \| "info"` | `"default"`     | 색상 변형      |
+| `duration` | `number`                                      | Provider 설정값 | 개별 지속 시간 |
+| `action`   | `{ label, onClick }`                          | —               | 액션 버튼      |
 
 ---
 
 ## Variant별 스타일
 
-| Variant | 배경 | 텍스트 |
-|---|---|---|
-| `default` | 반투명 검정 (0.8) | 흰색 |
-| `success` | Success BG | Success Main |
-| `error` | Error BG | Error Main |
-| `info` | Primary BG | Primary Main |
+| Variant   | 배경              | 텍스트       |
+| --------- | ----------------- | ------------ |
+| `default` | 반투명 검정 (0.8) | 흰색         |
+| `success` | Success BG        | Success Main |
+| `error`   | Error BG          | Error Main   |
+| `info`    | Primary BG        | Primary Main |
 
 ---
 
 ## 애니메이션
 
-| 이벤트 | 애니메이션 |
-|---|---|
-| 진입 | fadeIn + slideUp 0.2s |
-| 퇴장 | fadeOut + slideDown 0.4s |
+| 이벤트 | 애니메이션               |
+| ------ | ------------------------ |
+| 진입   | fadeIn + slideUp 0.2s    |
+| 퇴장   | fadeOut + slideDown 0.4s |
 
 ---
 
@@ -155,7 +156,7 @@ Toast.show("오류!", { variant: "error" });
 
 ```tsx
 // Before (WebView)
-import Toast from '@/app.component/toast/Toast';
+import Toast from "@/app.component/toast/Toast";
 Toast.alert("메시지", "bottom");
 
 // After (Design System)

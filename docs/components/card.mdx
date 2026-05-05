@@ -21,16 +21,19 @@ import { Card } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - 관련 정보(이미지, 텍스트, 액션)를 **하나의 시각적 단위**로 묶어 표시할 때
 - 목록에서 각 항목을 카드 형태로 나열할 때 (상담 목록, 프로필 카드 등)
 - 콘텐츠 영역에 시각적 경계(그림자/테두리)를 줄 때
 
 ### 이럴 때 사용하지 마세요
+
 - 단순 구분선만 필요할 때 → `<div>` + border로 충분합니다
 - 전체 페이지 레이아웃을 잡을 때 → 일반 레이아웃 컴포넌트를 사용하세요
 - 내부에 또 다른 Card를 중첩할 때 → 시각적 계층이 복잡해집니다. 평탄하게 구성하세요
 
 ### 자주 하는 실수
+
 - Card 안에 Card를 중첩 — 그림자/테두리가 겹쳐 시각적으로 혼란스럽습니다
 - Card 전체를 클릭 가능하게 만들면서 내부에도 별도 버튼 배치 — 클릭 영역이 충돌합니다. 카드 클릭 또는 내부 버튼 중 하나만 선택하세요
 
@@ -44,8 +47,16 @@ import { Card } from "@nudge-eap/react";
   thumbnail={<img src="/profile.jpg" alt="상담사" />}
   title="김상담 상담사님"
   subtitle="심리상담 전문"
-  meta={<><span>★</span> 4.9</>}
-  footer={<Button fullWidth size="sm">예약하기</Button>}
+  meta={
+    <>
+      <span>★</span> 4.9
+    </>
+  }
+  footer={
+    <Button fullWidth size="sm">
+      예약하기
+    </Button>
+  }
 >
   따뜻한 공감과 전문적 기법으로 함께 해결책을 찾아갑니다.
 </Card>
@@ -67,9 +78,7 @@ import { Card } from "@nudge-eap/react";
     </div>
     <Card.Meta>★ 4.8</Card.Meta>
   </Card.Header>
-  <Card.Body>
-    내담자 후기 영역
-  </Card.Body>
+  <Card.Body>내담자 후기 영역</Card.Body>
   <Card.Footer>
     <Button fullWidth>예약</Button>
   </Card.Footer>
@@ -80,45 +89,45 @@ import { Card } from "@nudge-eap/react";
 
 ## Flat API Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `variant` | `"outlined" \| "elevated" \| "flat"` | `"outlined"` | 스타일 변형 |
-| `clickable` | `boolean` | `false` | 클릭 가능 (hover 효과) |
-| `thumbnail` | `ReactNode` | — | 썸네일 콘텐츠 |
-| `thumbnailRatio` | `string` | `"16 / 10"` | 썸네일 비율 |
-| `title` | `string` | — | 제목 |
-| `subtitle` | `string` | — | 부제목 |
-| `meta` | `ReactNode` | — | 우상단 메타 정보 |
-| `children` | `ReactNode` | — | 본문 |
-| `footer` | `ReactNode` | — | 푸터 |
-| `footerNoBorder` | `boolean` | `false` | 푸터 테두리 숨김 |
-| `onClick` | `MouseEventHandler` | — | 클릭 핸들러 |
-| `slotProps` | `CardSlotProps` | — | 슬롯 프롭 |
+| Prop             | 타입                                 | 기본값       | 설명                   |
+| ---------------- | ------------------------------------ | ------------ | ---------------------- |
+| `variant`        | `"outlined" \| "elevated" \| "flat"` | `"outlined"` | 스타일 변형            |
+| `clickable`      | `boolean`                            | `false`      | 클릭 가능 (hover 효과) |
+| `thumbnail`      | `ReactNode`                          | —            | 썸네일 콘텐츠          |
+| `thumbnailRatio` | `string`                             | `"16 / 10"`  | 썸네일 비율            |
+| `title`          | `string`                             | —            | 제목                   |
+| `subtitle`       | `string`                             | —            | 부제목                 |
+| `meta`           | `ReactNode`                          | —            | 우상단 메타 정보       |
+| `children`       | `ReactNode`                          | —            | 본문                   |
+| `footer`         | `ReactNode`                          | —            | 푸터                   |
+| `footerNoBorder` | `boolean`                            | `false`      | 푸터 테두리 숨김       |
+| `onClick`        | `MouseEventHandler`                  | —            | 클릭 핸들러            |
+| `slotProps`      | `CardSlotProps`                      | —            | 슬롯 프롭              |
 
 ---
 
 ## Compound 컴포넌트
 
-| 컴포넌트 | 역할 |
-|---|---|
-| `Card.Root` | 루트 컨테이너 (variant, clickable) |
-| `Card.Thumbnail` | 이미지 영역 (aspectRatio 지원) |
-| `Card.Header` | 제목 + 메타 행 |
-| `Card.Title` | 제목 (`<h3>`) |
-| `Card.Subtitle` | 부제목 |
-| `Card.Meta` | 우상단 메타 |
-| `Card.Body` | 본문 |
-| `Card.Footer` | 하단 액션 |
+| 컴포넌트         | 역할                               |
+| ---------------- | ---------------------------------- |
+| `Card.Root`      | 루트 컨테이너 (variant, clickable) |
+| `Card.Thumbnail` | 이미지 영역 (aspectRatio 지원)     |
+| `Card.Header`    | 제목 + 메타 행                     |
+| `Card.Title`     | 제목 (`<h3>`)                      |
+| `Card.Subtitle`  | 부제목                             |
+| `Card.Meta`      | 우상단 메타                        |
+| `Card.Body`      | 본문                               |
+| `Card.Footer`    | 하단 액션                          |
 
 ---
 
 ## CSS 변수
 
-| 변수 | 기본값 | 설명 |
-|---|---|---|
-| `--nds-card-width` | `100%` | 너비 |
-| `--nds-card-radius` | `8px` | 모서리 |
-| `--nds-card-background` | White | 배경 |
+| 변수                         | 기본값    | 설명        |
+| ---------------------------- | --------- | ----------- |
+| `--nds-card-width`           | `100%`    | 너비        |
+| `--nds-card-radius`          | `8px`     | 모서리      |
+| `--nds-card-background`      | White     | 배경        |
 | `--nds-card-thumbnail-ratio` | `16 / 10` | 썸네일 비율 |
 
 ---

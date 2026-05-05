@@ -59,17 +59,7 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  (
-    {
-      size = "large",
-      icon,
-      className,
-      style,
-      type = "button",
-      ...rest
-    },
-    ref,
-  ) => {
+  ({ size = "large", icon, className, style, type = "button", ...rest }, ref) => {
     const s = sizeConfig[size];
 
     return (

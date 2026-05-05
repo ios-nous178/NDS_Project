@@ -23,16 +23,19 @@ import { Tabs } from "@nudge-eap/react";
 ## 사용 가이드
 
 ### 이럴 때 사용하세요
+
 - 같은 맥락 내에서 **뷰를 전환**할 때 (프로필 탭, 설정 카테고리 등)
 - 콘텐츠를 논리적 그룹으로 나누되, 같은 페이지에서 전환해야 할 때
 - 탭 간 콘텐츠가 **동등한 수준**의 정보일 때
 
 ### 이럴 때 사용하지 마세요
+
 - 페이지 간 네비게이션 → 라우터 기반 Navigation을 사용하세요
 - 단계별 진행 (1단계 → 2단계 → 3단계) → Stepper 패턴을 사용하세요
 - 콘텐츠 접기/펴기 → Accordion 패턴을 사용하세요
 
 ### 자주 하는 실수
+
 - 탭이 2개 미만 — 탭 UI의 의미가 없습니다. 1개면 탭 없이 바로 표시하세요
 - 탭 내용이 서로 완전히 무관 — 탭은 같은 주제의 다른 관점을 보여줄 때 사용합니다. 무관한 콘텐츠는 별도 섹션으로 분리하세요
 - 탭이 너무 많아 가로 스크롤 발생 — 5개 이상이면 다른 UI 패턴을 고려하세요
@@ -50,16 +53,15 @@ import { Tabs } from "@nudge-eap/react";
     const items = [
       { key: "all", title: "전체", content: <div style={{ padding: 16 }}>전체 콘텐츠</div> },
       { key: "counsel", title: "상담", content: <div style={{ padding: 16 }}>상담 콘텐츠</div> },
-      { key: "challenge", title: "챌린지", content: <div style={{ padding: 16 }}>챌린지 콘텐츠</div> },
+      {
+        key: "challenge",
+        title: "챌린지",
+        content: <div style={{ padding: 16 }}>챌린지 콘텐츠</div>,
+      },
     ];
     return (
       <div style={{ width: 360 }}>
-        <Tabs
-          items={items}
-          activeKey="all"
-          onTabChange={() => {}}
-          variant={props.variant}
-        />
+        <Tabs items={items} activeKey="all" onTabChange={() => {}} variant={props.variant} />
       </div>
     );
   }}
@@ -80,7 +82,7 @@ const items = [
   { key: "challenge", title: "챌린지", content: <ChallengeContent /> },
 ];
 
-<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} variant="line" />
+<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} variant="line" />;
 ```
 
 ### Pill 변형
@@ -105,7 +107,7 @@ const items = [
   { key: "center", title: "센터 검색" },
 ];
 
-<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} />
+<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} />;
 ```
 
 ---
@@ -133,21 +135,21 @@ const items = [
 
 ## Flat API Props
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `items` | `TabItem[]` | — | 탭 아이템 목록 |
-| `activeKey` | `string` | — | 현재 활성 탭 키 |
-| `onTabChange` | `(key: string) => void` | — | 탭 변경 콜백 |
-| `variant` | `"line" \| "pill" \| "square"` | `"line"` | 스타일 변형 |
-| `fullWidth` | `boolean` | `true` | 전체 너비 |
-| `slotProps` | `TabsSlotProps` | — | 슬롯별 props 전달 |
+| Prop          | 타입                           | 기본값   | 설명              |
+| ------------- | ------------------------------ | -------- | ----------------- |
+| `items`       | `TabItem[]`                    | —        | 탭 아이템 목록    |
+| `activeKey`   | `string`                       | —        | 현재 활성 탭 키   |
+| `onTabChange` | `(key: string) => void`        | —        | 탭 변경 콜백      |
+| `variant`     | `"line" \| "pill" \| "square"` | `"line"` | 스타일 변형       |
+| `fullWidth`   | `boolean`                      | `true`   | 전체 너비         |
+| `slotProps`   | `TabsSlotProps`                | —        | 슬롯별 props 전달 |
 
 ### TabItem
 
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `key` | `string` | 탭 식별자 |
-| `title` | `ReactNode` | 탭 라벨 |
+| 속성      | 타입        | 설명                                |
+| --------- | ----------- | ----------------------------------- |
+| `key`     | `string`    | 탭 식별자                           |
+| `title`   | `ReactNode` | 탭 라벨                             |
 | `content` | `ReactNode` | 패널 콘텐츠 (생략 시 패널 미렌더링) |
 
 ---
@@ -156,11 +158,11 @@ const items = [
 
 ### Tabs.Root
 
-| Prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| `activeKey` | `string` | — | 활성 탭 키 |
-| `onTabChange` | `(key: string) => void` | — | 탭 변경 콜백 |
-| `variant` | `"line" \| "pill" \| "square"` | `"line"` | 변형 |
+| Prop          | 타입                           | 기본값   | 설명         |
+| ------------- | ------------------------------ | -------- | ------------ |
+| `activeKey`   | `string`                       | —        | 활성 탭 키   |
+| `onTabChange` | `(key: string) => void`        | —        | 탭 변경 콜백 |
+| `variant`     | `"line" \| "pill" \| "square"` | `"line"` | 변형         |
 
 ### Tabs.List
 
@@ -170,24 +172,24 @@ const items = [
 
 개별 탭 버튼입니다.
 
-| Prop | 타입 | 설명 |
-|---|---|---|
+| Prop     | 타입     | 설명                         |
+| -------- | -------- | ---------------------------- |
 | `tabKey` | `string` | 탭 식별자 (activeKey와 비교) |
 
 ### Tabs.Panel
 
 탭 콘텐츠 패널입니다. 비활성 패널은 DOM에서 제거됩니다.
 
-| Prop | 타입 | 설명 |
-|---|---|---|
+| Prop     | 타입     | 설명                     |
+| -------- | -------- | ------------------------ |
 | `tabKey` | `string` | 이 패널에 대응하는 탭 키 |
 
 ---
 
 ## CSS 변수
 
-| 변수 | 기본값 | 설명 |
-|---|---|---|
+| 변수               | 기본값 | 설명          |
+| ------------------ | ------ | ------------- |
 | `--nds-tabs-width` | `100%` | 컴포넌트 너비 |
 
 ---
@@ -208,11 +210,11 @@ div [data-slot="root"]
 
 ## 변형별 스타일
 
-| 변형 | 인디케이터 | 활성 스타일 |
-|---|---|---|
-| `line` | 하단 3px 바 (슬라이딩) | 진한 텍스트, font-weight 500 |
-| `pill` | 없음 | Blue 500 배경, 흰색 텍스트 |
-| `square` | 없음 | 흰색 배경, 그림자, font-weight 500 |
+| 변형     | 인디케이터             | 활성 스타일                        |
+| -------- | ---------------------- | ---------------------------------- |
+| `line`   | 하단 3px 바 (슬라이딩) | 진한 텍스트, font-weight 500       |
+| `pill`   | 없음                   | Blue 500 배경, 흰색 텍스트         |
+| `square` | 없음                   | 흰색 배경, 그림자, font-weight 500 |
 
 ---
 
@@ -221,11 +223,11 @@ div [data-slot="root"]
 기존 WebView의 `SlideTab` 컴포넌트를 대체합니다.
 
 | 기존 navigationType | 디자인시스템 variant |
-|---|---|
-| `LINE` | `"line"` |
-| `PILL` | `"pill"` |
-| `SQUARE` | `"square"` |
-| `CIRCLE` | `"pill"` (가장 유사) |
+| ------------------- | -------------------- |
+| `LINE`              | `"line"`             |
+| `PILL`              | `"pill"`             |
+| `SQUARE`            | `"square"`           |
+| `CIRCLE`            | `"pill"` (가장 유사) |
 
 ```tsx
 // Before (WebView)

@@ -559,9 +559,9 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
     const showError = error || !!errorMessage;
     const showSuccess = !showError && (complete || !!successMessage);
     const displayHelper = showError
-      ? errorMessage ?? helperText
+      ? (errorMessage ?? helperText)
       : showSuccess
-        ? successMessage ?? helperText
+        ? (successMessage ?? helperText)
         : helperText;
     const helperVariant: InputHelperVariant = showError
       ? "error"

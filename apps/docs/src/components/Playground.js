@@ -14,7 +14,8 @@ import styles from "./Playground.module.css";
 export default function Playground({ controls = [], render, title = "Playground" }) {
   const initial = {};
   for (const c of controls) {
-    initial[c.name] = c.default ?? (c.type === "boolean" ? false : c.type === "text" ? "" : c.options?.[0]);
+    initial[c.name] =
+      c.default ?? (c.type === "boolean" ? false : c.type === "text" ? "" : c.options?.[0]);
   }
   const [values, setValues] = useState(initial);
 
@@ -27,9 +28,7 @@ export default function Playground({ controls = [], render, title = "Playground"
         {title}
       </div>
       <div className={styles.body}>
-        <div className={styles.preview}>
-          {render(values)}
-        </div>
+        <div className={styles.preview}>{render(values)}</div>
         <div className={styles.controls}>
           {controls.map((control) => (
             <div key={control.name} className={styles.control}>
@@ -69,9 +68,7 @@ export default function Playground({ controls = [], render, title = "Playground"
         </div>
       </div>
       <div className={styles.codeBar}>
-        <code className={styles.codeOutput}>
-          {generateCode(controls, values, render)}
-        </code>
+        <code className={styles.codeOutput}>{generateCode(controls, values, render)}</code>
       </div>
     </div>
   );
