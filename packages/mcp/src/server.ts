@@ -18,6 +18,8 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -521,8 +523,12 @@ function getSetupInstructions(args: {
   steps.push({
     step: 7,
     title: "동작 확인",
-    commands: ["npm run dev"],
-    note: "브라우저에서 Vite dev URL을 열어 동작을 확인합니다. 이후 prds/*.md를 작성하고 Claude에게 목업 생성을 요청하세요.",
+    commands: [
+      "npm install --save-dev playwright",
+      "npx playwright install chromium",
+      "npm run dev",
+    ],
+    note: "MCP의 start_dev_server/check_preview가 dev URL을 열어 런타임 에러와 빈 화면 여부를 확인할 수 있습니다. 이후 prds/*.md를 작성하고 Claude에게 목업 생성을 요청하세요.",
   });
 
   return {
@@ -538,6 +544,81 @@ function getSetupInstructions(args: {
       dependsOn: Object.keys(p.dependencies).filter((d) => d.startsWith("@nudge-eap/")),
     })),
     steps,
+  };
+}
+
+function getClaudeMdTemplate(args: { projectName?: string }) {
+  const title = args.projectName ? `# ${args.projectName}` : "# NudgeEAP Mockup Workspace";
+
+  return `${title}
+
+## 작업 원칙
+
+- 이 프로젝트는 NudgeEAP Design System 기반 목업 작업 공간이다.
+- DS 컴포넌트/아이콘/토큰을 추측해서 사용하지 말고, MCP 도구로 확인한 뒤 사용한다.
+- 구현 완료의 기준은 코드 작성이 아니라 실제 dev 화면이 에러 없이 렌더링되는 것이다.
+
+## 도구 사용 규칙
+
+- 컴포넌트/아이콘/토큰 사용 전 \`search_component\` / \`find_icon\` / \`lookup_token\` 호출
+- 처음 쓰는 주요 컴포넌트는 \`get_component_guide\` 호출
+- 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
+- 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
+- 구현 후 \`start_dev_server\`로 dev 서버 실행
+- dev URL이 응답하면 \`check_preview\`로 런타임 에러, Vite overlay, 빈 화면 여부 확인
+- \`check_preview.ok === false\`이면 에러를 수정하고 다시 \`check_preview\`
+- 완료 전 \`get_dos_and_donts\`로 최종 sanity check
+- 작업 종료 시 MCP가 띄운 서버는 \`stop_dev_server\`로 종료
+
+## UI 구현 규칙
+
+- 가능한 한 DS 컴포넌트를 우선 사용한다.
+- raw \`button\`, \`input\`, \`select\`, \`textarea\`는 특별한 이유가 없으면 사용하지 않는다.
+- 색상/간격은 인라인 hex, rgb, px 값보다 DS 토큰을 우선 사용한다.
+- 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
+- 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
+- 모든 클릭 가능한 요소는 목업이어도 \`onClick\` 동작을 갖는다.
+
+## 검증 루프
+
+1. DS 원칙 확인: \`get_design_principles\`
+2. 필요한 컴포넌트/아이콘/토큰 검색
+3. 목업 구현
+4. \`validate_mockup\` 실행 및 수정
+5. \`start_dev_server\` 실행
+6. \`check_preview\` 실행 및 런타임 오류 수정
+7. \`get_dos_and_donts\`로 최종 확인
+8. \`stop_dev_server\`로 dev 서버 종료
+`;
+}
+
+function createClaudeMd(args: { cwd?: string; projectName?: string; overwrite?: boolean }) {
+  const cwd = path.resolve(args.cwd ?? process.cwd());
+  if (!fs.existsSync(cwd)) {
+    return { ok: false, error: `cwd not found: ${cwd}` };
+  }
+
+  const filePath = path.join(cwd, "CLAUDE.md");
+  const exists = fs.existsSync(filePath);
+  if (exists && !args.overwrite) {
+    return {
+      ok: false,
+      filePath,
+      exists: true,
+      error: "CLAUDE.md already exists. Pass overwrite: true to replace it.",
+      preview: fs.readFileSync(filePath, "utf-8").slice(0, 1200),
+    };
+  }
+
+  const content = getClaudeMdTemplate({ projectName: args.projectName });
+  fs.writeFileSync(filePath, content, "utf-8");
+
+  return {
+    ok: true,
+    filePath,
+    overwritten: exists,
+    bytes: Buffer.byteLength(content, "utf-8"),
+    next: "Restart or reload Claude Code in this project so the new CLAUDE.md instructions are picked up.",
   };
 }
 
@@ -680,6 +761,315 @@ console.log(\`✓ \${outFile}\`);`,
   };
 }
 
+/* ───────────── 목업 dev 서버 / 화면 체크 ───────────── */
+
+interface DevServerSession {
+  id: string;
+  cwd: string;
+  command: string;
+  args: string[];
+  process: ChildProcessWithoutNullStreams;
+  startedAt: string;
+  logs: string[];
+  url?: string;
+  error?: string;
+}
+
+const devServerSessions = new Map<string, DevServerSession>();
+let devServerSessionSeq = 0;
+
+function pushSessionLog(session: DevServerSession, text: string) {
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .filter(Boolean);
+  session.logs.push(...lines);
+  if (session.logs.length > 120) {
+    session.logs.splice(0, session.logs.length - 120);
+  }
+}
+
+function extractDevServerUrl(logs: string[]) {
+  const joined = logs.join("\n");
+  const matches = joined.match(
+    /https?:\/\/(?:localhost|127\.0\.0\.1|\[[^\]]+\]|[^\s/]+):\d+[^\s]*/g,
+  );
+  return matches?.[0];
+}
+
+async function waitForUrl(url: string, timeoutMs: number) {
+  const started = Date.now();
+  let lastError = "";
+  while (Date.now() - started < timeoutMs) {
+    try {
+      const response = await fetch(url, { method: "GET" });
+      if (response.ok || response.status < 500) return { ok: true, status: response.status };
+      lastError = `HTTP ${response.status}`;
+    } catch (error) {
+      lastError = (error as Error).message;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  return { ok: false, error: lastError || "Timed out waiting for dev server." };
+}
+
+async function startDevServer(args: {
+  cwd?: string;
+  command?: string;
+  args?: string[];
+  url?: string;
+  port?: number;
+  timeoutMs?: number;
+}) {
+  const cwd = path.resolve(args.cwd ?? process.cwd());
+  if (!fs.existsSync(cwd)) {
+    return { ok: false, error: `cwd not found: ${cwd}` };
+  }
+
+  const command = args.command ?? "npm";
+  const commandArgs = args.args ?? ["run", "dev", "--", "--host", "127.0.0.1"];
+  const expectedUrl = args.url ?? (args.port ? `http://127.0.0.1:${args.port}` : undefined);
+  const timeoutMs = args.timeoutMs ?? 20_000;
+  const id = `dev-${++devServerSessionSeq}`;
+
+  const child = spawn(command, commandArgs, {
+    cwd,
+    env: { ...process.env, BROWSER: "none" },
+    stdio: "pipe",
+  });
+
+  const session: DevServerSession = {
+    id,
+    cwd,
+    command,
+    args: commandArgs,
+    process: child,
+    startedAt: new Date().toISOString(),
+    logs: [],
+  };
+  devServerSessions.set(id, session);
+
+  child.stdout.on("data", (chunk: Buffer) => {
+    pushSessionLog(session, chunk.toString("utf-8"));
+    session.url = session.url ?? extractDevServerUrl(session.logs);
+  });
+  child.stderr.on("data", (chunk: Buffer) => {
+    pushSessionLog(session, chunk.toString("utf-8"));
+    session.url = session.url ?? extractDevServerUrl(session.logs);
+  });
+  child.on("error", (error) => {
+    session.error = error.message;
+    pushSessionLog(session, `[process error] ${error.message}`);
+  });
+  child.on("exit", (code, signal) => {
+    pushSessionLog(session, `[process exited] code=${code ?? "null"} signal=${signal ?? "null"}`);
+  });
+
+  const started = Date.now();
+  while (
+    !session.url &&
+    !session.error &&
+    child.exitCode === null &&
+    Date.now() - started < Math.min(timeoutMs, 8_000)
+  ) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+
+  if (session.error) {
+    return {
+      ok: false,
+      sessionId: id,
+      cwd,
+      command: `${command} ${commandArgs.join(" ")}`,
+      error: session.error,
+      logs: session.logs.slice(-30),
+    };
+  }
+
+  const url = expectedUrl ?? session.url ?? "http://127.0.0.1:5173";
+  session.url = url;
+  const reachable = await waitForUrl(url, timeoutMs);
+
+  return {
+    ok: reachable.ok,
+    sessionId: id,
+    url,
+    cwd,
+    command: `${command} ${commandArgs.join(" ")}`,
+    status: reachable,
+    logs: session.logs.slice(-30),
+    next: reachable.ok
+      ? `Call check_preview with { "url": "${url}", "sessionId": "${id}" }.`
+      : "Read logs, fix the dev server error, or pass the actual Vite URL with the url argument.",
+  };
+}
+
+function stopDevServer(args: { sessionId?: string }) {
+  const ids = args.sessionId ? [args.sessionId] : [...devServerSessions.keys()];
+  const stopped: Array<{ sessionId: string; ok: boolean; note: string }> = [];
+
+  for (const id of ids) {
+    const session = devServerSessions.get(id);
+    if (!session) {
+      stopped.push({ sessionId: id, ok: false, note: "No such session." });
+      continue;
+    }
+    if (session.process.exitCode === null) {
+      session.process.kill("SIGTERM");
+      stopped.push({ sessionId: id, ok: true, note: "SIGTERM sent." });
+    } else {
+      stopped.push({ sessionId: id, ok: true, note: "Process was already exited." });
+    }
+    devServerSessions.delete(id);
+  }
+
+  return { stopped };
+}
+
+async function loadPlaywright(cwd: string) {
+  try {
+    const requireFromProject = createRequire(path.join(cwd, "package.json"));
+    const resolved = requireFromProject.resolve("playwright");
+    return await import(resolved);
+  } catch {
+    return null;
+  }
+}
+
+function joinUrl(baseUrl: string, routePath?: string) {
+  if (!routePath) return baseUrl;
+  const base = baseUrl.replace(/\/$/, "");
+  const route =
+    routePath.startsWith("/") || routePath.startsWith("#") ? routePath : `/${routePath}`;
+  return route.startsWith("#") ? `${base}/${route}` : `${base}${route}`;
+}
+
+async function checkPreview(args: {
+  url?: string;
+  routePath?: string;
+  cwd?: string;
+  sessionId?: string;
+  timeoutMs?: number;
+  minTextLength?: number;
+  viewport?: { width?: number; height?: number };
+}) {
+  const session = args.sessionId ? devServerSessions.get(args.sessionId) : undefined;
+  const cwd = path.resolve(args.cwd ?? session?.cwd ?? process.cwd());
+  const baseUrl = args.url ?? session?.url ?? "http://127.0.0.1:5173";
+  const url = joinUrl(baseUrl, args.routePath);
+  const timeoutMs = args.timeoutMs ?? 15_000;
+  const minTextLength = args.minTextLength ?? 8;
+
+  const reachable = await waitForUrl(url, timeoutMs);
+  if (!reachable.ok) {
+    return {
+      ok: false,
+      url,
+      phase: "http",
+      error: reachable.error,
+      devServerLogs: session?.logs.slice(-40),
+    };
+  }
+
+  const playwright = await loadPlaywright(cwd);
+  if (!playwright) {
+    return {
+      ok: false,
+      url,
+      phase: "browser",
+      error: "Playwright is not installed in the mockup project.",
+      install: ["npm install --save-dev playwright", "npx playwright install chromium"],
+      httpStatus: reachable.status,
+      note: "HTTP responded, but runtime render errors and blank-screen checks need a real browser. Install Playwright in the mockup project, then call check_preview again.",
+    };
+  }
+
+  const consoleErrors: string[] = [];
+  const pageErrors: string[] = [];
+  const failedRequests: string[] = [];
+  const browser = await playwright.chromium.launch({ headless: true });
+
+  try {
+    const page = await browser.newPage({
+      viewport: {
+        width: args.viewport?.width ?? 1440,
+        height: args.viewport?.height ?? 900,
+      },
+    });
+    page.on("console", (message: { type: () => string; text: () => string }) => {
+      if (message.type() === "error") consoleErrors.push(message.text());
+    });
+    page.on("pageerror", (error: Error) => pageErrors.push(error.message));
+    page.on(
+      "requestfailed",
+      (request: { url: () => string; failure: () => { errorText: string } | null }) => {
+        failedRequests.push(`${request.url()} ${request.failure()?.errorText ?? ""}`.trim());
+      },
+    );
+
+    await page.goto(url, { waitUntil: "networkidle", timeout: timeoutMs });
+    await page.waitForTimeout(300);
+
+    const renderState = await page.evaluate(() => {
+      const root = document.getElementById("root") ?? document.body;
+      const rootText = (root.textContent ?? "").trim();
+      const bodyText = (document.body.textContent ?? "").trim();
+      const visibleElementCount = [...document.body.querySelectorAll("*")].filter((element) => {
+        const style = window.getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        return (
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          Number(style.opacity) !== 0 &&
+          rect.width > 0 &&
+          rect.height > 0
+        );
+      }).length;
+      const viteOverlay = document.querySelector("vite-error-overlay");
+      const viteOverlayText =
+        viteOverlay?.shadowRoot?.textContent?.trim() ?? viteOverlay?.textContent?.trim() ?? "";
+      const bodyRect = document.body.getBoundingClientRect();
+
+      return {
+        title: document.title,
+        rootChildCount: root.children.length,
+        rootTextLength: rootText.length,
+        bodyTextLength: bodyText.length,
+        visibleElementCount,
+        bodyWidth: Math.round(bodyRect.width),
+        bodyHeight: Math.round(bodyRect.height),
+        viteOverlayText,
+      };
+    });
+
+    const problems: string[] = [];
+    if (pageErrors.length > 0) problems.push("pageerror");
+    if (consoleErrors.length > 0) problems.push("console-error");
+    if (renderState.viteOverlayText) problems.push("vite-error-overlay");
+    if (renderState.rootChildCount === 0) problems.push("empty-root");
+    if (renderState.bodyTextLength < minTextLength && renderState.visibleElementCount < 3) {
+      problems.push("likely-blank-screen");
+    }
+
+    return {
+      ok: problems.length === 0,
+      url,
+      problems,
+      renderState,
+      consoleErrors: consoleErrors.slice(0, 20),
+      pageErrors: pageErrors.slice(0, 20),
+      failedRequests: failedRequests.slice(0, 20),
+      devServerLogs: session?.logs.slice(-40),
+      suggestion:
+        problems.length > 0
+          ? "Fix the reported runtime/build error, then call check_preview again before reporting completion."
+          : "Preview rendered without detected runtime errors or blank-screen symptoms.",
+    };
+  } finally {
+    await browser.close();
+  }
+}
+
 /* ───────────── MCP 서버 등록 ───────────── */
 
 const server = new Server(
@@ -818,6 +1208,30 @@ const TOOLS = [
     },
   },
   {
+    name: "create_claude_md",
+    description:
+      "Create a CLAUDE.md file in an external mockup project with NudgeEAP DS MCP usage rules, validation loop, and preview-check workflow.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        cwd: {
+          type: "string",
+          description:
+            "Project root where CLAUDE.md will be created. Defaults to the MCP process cwd.",
+        },
+        projectName: {
+          type: "string",
+          description: "Optional title for the generated CLAUDE.md.",
+        },
+        overwrite: {
+          type: "boolean",
+          description: "Replace an existing CLAUDE.md. Default: false.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "get_design_principles",
     description:
       "Return DESIGN.md-derived principles: brand tone, color semantics, typography rules, spacing scale, elevation rules, shape scale, do's/don'ts, banned patterns. Call this at the start of any mockup task.",
@@ -841,6 +1255,102 @@ const TOOLS = [
           enum: ["singlefile", "snapshot"],
           description: "Default: 'singlefile'. Use 'snapshot' for static-only output without JS.",
         },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "start_dev_server",
+    description:
+      "Start a local mockup development server from the project root and wait until its URL responds. Use before visual/runtime preview checks.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        cwd: {
+          type: "string",
+          description: "Project root. Defaults to the MCP process cwd.",
+        },
+        command: {
+          type: "string",
+          description: "Executable to run. Default: npm.",
+        },
+        args: {
+          type: "array",
+          items: { type: "string" },
+          description: "Command args. Default: ['run', 'dev', '--', '--host', '127.0.0.1'].",
+        },
+        url: {
+          type: "string",
+          description:
+            "Expected dev server URL. If omitted, parsed from logs or falls back to http://127.0.0.1:5173.",
+        },
+        port: {
+          type: "number",
+          description: "Convenience fallback for url, e.g. 5173.",
+        },
+        timeoutMs: {
+          type: "number",
+          description: "Wait timeout. Default: 20000.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "check_preview",
+    description:
+      "Open a dev-server URL in Playwright and detect runtime errors, Vite error overlays, failed requests, and likely blank screens. Requires playwright installed in the mockup project.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        url: {
+          type: "string",
+          description:
+            "Base URL to check. Defaults to start_dev_server session URL or http://127.0.0.1:5173.",
+        },
+        routePath: {
+          type: "string",
+          description:
+            "Optional route path or hash path to append, e.g. '/trost/list' or '#/trost/list'.",
+        },
+        cwd: {
+          type: "string",
+          description:
+            "Project root used to resolve playwright. Defaults to session cwd or MCP cwd.",
+        },
+        sessionId: {
+          type: "string",
+          description: "Session id returned by start_dev_server.",
+        },
+        timeoutMs: {
+          type: "number",
+          description: "Navigation/check timeout. Default: 15000.",
+        },
+        minTextLength: {
+          type: "number",
+          description:
+            "Minimum body text length before the page is suspicious if few visible elements exist. Default: 8.",
+        },
+        viewport: {
+          type: "object",
+          properties: {
+            width: { type: "number" },
+            height: { type: "number" },
+          },
+          additionalProperties: false,
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "stop_dev_server",
+    description:
+      "Stop a dev server started by start_dev_server. If sessionId is omitted, stops all dev server sessions owned by this MCP process.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sessionId: { type: "string" },
       },
       additionalProperties: false,
     },
@@ -933,6 +1443,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "get_main_tsx_imports":
         result = getMainTsxImports(args as { brand?: string });
         break;
+      case "create_claude_md":
+        result = createClaudeMd(
+          args as { cwd?: string; projectName?: string; overwrite?: boolean },
+        );
+        break;
       case "get_setup_instructions":
         result = getSetupInstructions(
           args as {
@@ -954,6 +1469,34 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "get_export_html_instructions":
         result = getExportHtmlInstructions(args as { mode?: "singlefile" | "snapshot" });
+        break;
+      case "start_dev_server":
+        result = await startDevServer(
+          args as {
+            cwd?: string;
+            command?: string;
+            args?: string[];
+            url?: string;
+            port?: number;
+            timeoutMs?: number;
+          },
+        );
+        break;
+      case "check_preview":
+        result = await checkPreview(
+          args as {
+            url?: string;
+            routePath?: string;
+            cwd?: string;
+            sessionId?: string;
+            timeoutMs?: number;
+            minTextLength?: number;
+            viewport?: { width?: number; height?: number };
+          },
+        );
+        break;
+      case "stop_dev_server":
+        result = stopDevServer(args as { sessionId?: string });
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);

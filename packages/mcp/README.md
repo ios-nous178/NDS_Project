@@ -77,6 +77,14 @@ claude
 | `validate_mockup`     | mockup `.tsx` 검증 — `source` 또는 `filePath` 입력 |
 | `suggest_replacement` | 인라인 hex/px → 토큰 자동 매핑 제안                |
 
+### 실행 / 화면 체크
+
+| Tool               | 설명                                                                                            |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| `start_dev_server` | 외부 목업 프로젝트 루트에서 dev 서버를 직접 실행하고 URL 응답 대기                              |
+| `check_preview`    | Playwright로 실제 브라우저 렌더링을 열어 console error, pageerror, Vite overlay, 빈 화면을 검사 |
+| `stop_dev_server`  | `start_dev_server`가 띄운 dev 서버 종료                                                         |
+
 ### 외부 프로젝트 세팅
 
 | Tool                     | 설명                                                                                                  |
@@ -84,6 +92,7 @@ claude
 | `list_packages`          | DS 패키지 목록 + 버전 + 의존성 그래프 + peer deps + CSS exports                                       |
 | `get_install_command`    | `.tgz` 파일 검증 후 즉시 실행 가능한 `npm install` 명령 반환                                          |
 | `get_main_tsx_imports`   | `src/main.tsx`에 추가할 토큰/컴포넌트 CSS import 코드 반환 (브랜드 선택)                              |
+| `create_claude_md`       | 외부 목업 프로젝트 루트에 DS MCP 사용 규칙과 화면 검증 루프가 담긴 `CLAUDE.md` 생성                   |
 | `get_setup_instructions` | 신규 외부 프로젝트의 풀 세팅 가이드 (Vite 생성 → 설치 → CSS import → 폴더 구조 → MCP 등록 → dev 실행) |
 
 ### 디자인 가이드 / 큐레이션 (DESIGN.md 기반)
@@ -127,6 +136,7 @@ claude
 ## 초기 세팅 (한 번)
 
 - 새 워크스페이스라면 가장 먼저 `get_setup_instructions` 도구를 호출해 단계별 가이드를 받는다.
+- 새 워크스페이스 루트에 `create_claude_md`를 호출해 이 규칙을 프로젝트 지침으로 저장한다.
 - 7단계(Vite 생성 → DS 설치 → react-router → CSS import → 폴더 → MCP 등록 → dev)를 그대로 수행.
 
 ## 모든 목업 작업의 시작 (매번)
@@ -141,6 +151,9 @@ claude
 - 목업 .tsx 작성 직후 반드시 validate_mockup 호출
 - 위반 있으면 suggest_replacement 활용해 수정 → 다시 validate_mockup
 - 최대 3회까지 자동 수정. 그래도 위반이 남으면 사용자에게 보고.
+- 구현 후 `start_dev_server` 호출 → URL이 뜨면 `check_preview` 호출
+- `check_preview.ok === false`이면 consoleErrors/pageErrors/viteOverlayText/devServerLogs를 보고 수정 → 다시 `check_preview`
+- 화면 검증이 끝나면 장시간 세션 방지를 위해 `stop_dev_server` 호출
 - 모든 인터랙티브 요소(Button, IconButton, TextButton, Card.Root clickable)에 onClick 핸들러 부착 — 목업이라도 토스트/console.log 시뮬레이션
 - 표준 variant에 없는 톤이 필요하면 raw 요소로 대체 금지 — 컴포넌트의 style/icon 같은 확장 슬롯 활용
 - 마무리 직전 `get_dos_and_donts` 호출해 sanity check
@@ -160,6 +173,13 @@ pnpm --filter @nudge-eap/mcp dev
 
 # 수동 실행 (디버그용 — 실제로는 Claude가 stdio로 띄움)
 node packages/mcp/dist/server.js
+```
+
+`check_preview`는 외부 목업 프로젝트에 Playwright가 설치되어 있어야 런타임 렌더링을 검사할 수 있습니다.
+
+```bash
+npm install --save-dev playwright
+npx playwright install chromium
 ```
 
 DS를 수정한 뒤에는 다음 순서로:
