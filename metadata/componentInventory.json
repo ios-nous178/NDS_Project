@@ -622,5 +622,17 @@
     "figmaNodeId": "",
     "usageSummary": "알림 시각, 복약 시간, 상담 슬롯 시작",
     "notes": "step은 초 단위 (5분=300). 슬롯 목록 선택은 TimeSlotPicker."
+  },
+  {
+    "name": "AddressSearch",
+    "category": "입력",
+    "status": "implemented",
+    "description": "주소 검색 + 상세 주소 입력. 외부 API 결과를 results로 받는 패턴",
+    "storybookTitle": "Components/AddressSearch",
+    "docsPath": "/docs/components/address-search",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "회원가입 주소, 배송 주소, 방문 상담 주소",
+    "notes": "검색 자체는 외부 API. value = 주소 + 상세 한 묶음."
   }
 ]

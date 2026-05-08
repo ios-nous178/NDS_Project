@@ -87,6 +87,7 @@ module.exports = {
         "components/tip-card",
         "components/pin-pad",
         "components/time-picker",
+        "components/address-search",
       ],
     },
     {
