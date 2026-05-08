@@ -610,5 +610,17 @@
     "figmaNodeId": "",
     "usageSummary": "앱 진입 PIN, 간편 결제 비밀번호, 보안 키패드",
     "notes": "OtpInput과 분리. shuffleSeed는 useMemo로 고정."
+  },
+  {
+    "name": "TimePicker",
+    "category": "입력",
+    "status": "implemented",
+    "description": "시간만 선택 (HH:mm). step/min/max, 에러/헬퍼 지원",
+    "storybookTitle": "Components/TimePicker",
+    "docsPath": "/docs/components/time-picker",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "알림 시각, 복약 시간, 상담 슬롯 시작",
+    "notes": "step은 초 단위 (5분=300). 슬롯 목록 선택은 TimeSlotPicker."
   }
 ]

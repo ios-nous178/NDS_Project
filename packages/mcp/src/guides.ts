@@ -883,6 +883,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "보안 키패드: shuffle + 진입 시점 시드",
     ],
   },
+  TimePicker: {
+    name: "TimePicker",
+    summary: "시간만 선택 (HH:mm). step(초 단위)/min/max 지원. 날짜+시간은 DatePicker와 조합.",
+    pitfalls: [
+      "step은 초 단위 — 5분이면 300, 15분이면 900.",
+      "min/max도 HH:mm 문자열 — Date 객체 X.",
+      "상담 슬롯 목록에서 선택은 TimeSlotPicker가 적합 — TimePicker는 자유 시각 입력.",
+    ],
+    recommended: ["알림: step=300, min='07:00' max='23:00'", "복약: step=900"],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
