@@ -682,5 +682,17 @@
     "figmaNodeId": "",
     "usageSummary": "단체 상담 댓글, 그룹 채팅, 노트/일기 멘션, 해시태그 자동완성",
     "notes": "users는 전체 목록(컴포넌트가 자동 필터). 텍스트는 plain — ID 보존은 외부 파싱."
+  },
+  {
+    "name": "Confetti",
+    "category": "피드백",
+    "status": "implemented",
+    "description": "축하 이펙트. canvas + RAF 기반, 색상/입자수/지속 커스텀",
+    "storybookTitle": "Components/Confetti",
+    "docsPath": "/docs/components/confetti",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "챌린지 완료, 첫 가입 환영, 검사 종료 (긍정 결과)",
+    "notes": "active를 항상 true로 두지 말 것. onComplete에서 false 리셋."
   }
 ]
