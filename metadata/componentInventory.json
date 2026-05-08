@@ -334,5 +334,17 @@
     "figmaNodeId": "",
     "usageSummary": "감정 일기 리스트, 자유 메모, 챌린지 회고",
     "notes": "본문 3줄 클램프 기본. title 생략 가능."
+  },
+  {
+    "name": "ChatComposer",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "채팅 입력바. 자동 확장 textarea, 빠른 응답, 첨부/마이크, 글자수 제한",
+    "storybookTitle": "Components/ChatComposer",
+    "docsPath": "/docs/components/chat-composer",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "1:1 채팅 상담, 챗봇 대화, AI 상담 입력",
+    "notes": "ChatBubble과 짝. controlled, Enter=전송 / Shift+Enter=줄바꿈."
   }
 ]
