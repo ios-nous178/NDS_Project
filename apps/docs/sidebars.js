@@ -53,6 +53,7 @@ module.exports = {
         "components/calendar",
         "components/carousel",
         "components/video-player",
+        "components/number-stepper",
       ],
     },
     {

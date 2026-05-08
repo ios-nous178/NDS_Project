@@ -59,3 +59,4 @@ export * from "./DateRangePicker";
 export * from "./Calendar";
 export * from "./Carousel";
 export * from "./VideoPlayer";
+export * from "./NumberStepper";
