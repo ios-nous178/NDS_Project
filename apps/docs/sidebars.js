@@ -103,6 +103,11 @@ module.exports = {
         "components/status-timeline",
         "components/filter-bar",
         "components/user-card",
+        "components/product-card",
+        "components/data-table",
+        "components/content-viewer",
+        "components/attachment-item",
+        "components/media-thumbnail",
       ],
     },
     {

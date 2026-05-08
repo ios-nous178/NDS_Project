@@ -814,5 +814,17 @@
     "figmaNodeId": "",
     "usageSummary": "팔로우 리스트, 그룹 멤버, 추천 친구, 작성자 프로필",
     "notes": "CounselorCard(EAP 특화)와 분리된 일반 사용자용."
+  },
+  {
+    "name": "ProductCard",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "상품 카드. 썸네일 1:1 + 뱃지 + 제목 + 가격(PriceTag) + 품절",
+    "storybookTitle": "Components/ProductCard",
+    "docsPath": "/docs/components/product-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "굿즈/콘텐츠 그리드, 검색 결과, 추천 캐러셀",
+    "notes": "가격은 PriceTag 슬롯. 품절은 soldOut(오버레이), 라벨은 badge."
   }
 ]
