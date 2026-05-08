@@ -15,7 +15,7 @@ description: 홈 화면 인삿말 카드. 사용자 호칭 + 질문 + 액션 슬
 
 ### 자주 하는 실수
 - `greeting`은 시간대 자동 인식 X — 외부에서 "좋은 아침이에요"/"좋은 오후예요" 등 직접 결정
-- 호칭(`name`)은 컴포넌트가 자동으로 "{name}님" 처리
+- 호칭(`name`)은 컴포넌트가 자동으로 `"{name}님"` 처리
 
 ## 사용법
 
@@ -38,7 +38,7 @@ import { GreetingHeader, MoodSelector } from "@nudge-eap/react";
 
 | Prop       | 타입                           | 기본값           | 설명                              |
 | ---------- | ------------------------------ | ---------------- | --------------------------------- |
-| `name`     | `string`                       | —                | 사용자 호칭 (자동 "{name}님")     |
+| `name`     | `string`                       | —                | 사용자 호칭 (자동 `"{name}님"`)   |
 | `greeting` | `string`                       | `"안녕하세요"`   | 인삿말                            |
 | `question` | `ReactNode`                    | —                | 메인 질문/메시지                  |
 | `trailing` | `ReactNode`                    | —                | 우측 슬롯 (Avatar/IconButton 등)  |
