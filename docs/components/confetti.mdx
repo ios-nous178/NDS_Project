@@ -1,0 +1,41 @@
+---
+title: Confetti
+description: 축하 이펙트. 챌린지 완료, 검사 종료, 목표 달성 등 긍정 모멘트.
+---
+
+# Confetti
+
+화면에 색종이가 흩날리는 축하 효과입니다. canvas + requestAnimationFrame 기반이라 가볍고, `active=true`로 만드는 순간 한 번 발사됩니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 챌린지 / 미션 완료
+- 첫 가입 환영
+- 검사 완료 후 (긍정 결과)
+
+### 자주 하는 실수
+- `active`를 항상 true로 두지 말 것 — 한 번 발사된 후 `onComplete`에서 false로 리셋
+- 진지한 결과(부정/주의 등)에 쓰지 말 것 — 톤이 어울리지 않음
+- 모달 안에서 사용할 때는 z-index가 9999여서 모달 위에 그려짐 (의도)
+
+## 사용법
+
+```tsx
+import { Confetti } from "@nudge-eap/react";
+
+const [active, setActive] = useState(false);
+
+<Button onClick={() => setActive(true)}>축하 받기</Button>
+<Confetti active={active} onComplete={() => setActive(false)} />
+```
+
+## Props
+
+| Prop         | 타입         | 기본값  | 설명                              |
+| ------------ | ------------ | ------- | --------------------------------- |
+| `active`     | `boolean`    | —       | 활성화 (true가 되는 순간 발사)    |
+| `onComplete` | `() => void` | —       | 애니메이션 종료 콜백              |
+| `colors`     | `string[]`   | 6색     | 색상 팔레트                       |
+| `count`      | `number`     | `80`    | 입자 수                           |
+| `duration`   | `number`     | `2200`  | 지속 시간 ms                      |

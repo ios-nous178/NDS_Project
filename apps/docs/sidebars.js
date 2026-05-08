@@ -92,6 +92,7 @@ module.exports = {
         "components/pull-to-refresh",
         "components/waveform-player",
         "components/mention-input",
+        "components/confetti",
       ],
     },
     {
