@@ -71,6 +71,8 @@ module.exports = {
         "FIGMA_TO_REACT_WORKFLOW",
         "STYLING_STRUCTURE_GUIDE",
         "COMPONENT_DOC_TEMPLATE",
+        "NUDGE_EAP_DS_MCP_USAGE",
+        "HTML_MOCKUP_GUIDE",
       ],
     },
   ],

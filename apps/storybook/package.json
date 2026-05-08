@@ -16,6 +16,7 @@
     "@nudge-eap/tailwind-preset": "workspace:*",
     "@nudge-eap/react": "workspace:*",
     "@nudge-eap/icons": "workspace:*",
+    "antd": "^5.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

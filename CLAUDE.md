@@ -11,7 +11,7 @@ EAP 멘탈케어 플랫폼 디자인 시스템 모노레포.
 **사용자가 개발자가 아닐 수 있습니다. 에러가 나면 직접 해결하세요.**
 
 ```bash
-# 1. node 확인 (20.x 필요)
+# 1. node 확인 (22.x 필요)
 node -v
 # 없으면: 사용자에게 SETUP.md 1단계 안내
 
@@ -40,14 +40,30 @@ pnpm --filter storybook dev
 
 ## 목업 작성
 
+### 디자인시스템 분기 (중요)
+
+목업 종류에 따라 사용하는 디자인시스템이 다릅니다. 작업 시작 전에 어느 쪽인지 먼저 확인하세요.
+
+| 목업 종류            | 디자인시스템       | 출처                                                                  |
+| -------------------- | ------------------ | --------------------------------------------------------------------- |
+| 사용자 앱 / Trost 앱 | `@nudge-eap/react` | 자체 DS — `nudge-eap-ds` MCP로 조회                                   |
+| CMS / 어드민         | `antd`             | npm 패키지 (apps/storybook에 설치됨), MCP 없음 — 학습된 지식으로 사용 |
+
+- 사용자가 "어드민", "CMS", "운영툴", "백오피스" 등을 언급하면 CMS 규칙을 따르세요.
+- 그 외(앱, 사용자 화면, Trost, Geniet, NudgeEAP)는 사용자 앱 규칙을 따르세요.
+- **사용자 앱 작업 시**: `mcp__nudge-eap-ds__*` 도구를 적극 활용하세요 (`get_design_principles`, `get_component_guide`, `search_component`, `find_icon`, `lookup_token`, `validate_mockup` 등).
+- **CMS 작업 시**: `import { Button, Form, Table, ... } from "antd"` 형태로 직접 import. 별도 MCP 없이 작성 → 모르는 props는 추측하지 말고 [https://ant.design/components/overview](https://ant.design/components/overview) 문서를 확인하세요.
+- 두 디자인시스템을 한 화면에서 섞어 쓰지 마세요. 화면 종류에 맞는 한 쪽만 사용합니다.
+
 ### 사용자가 "OO 페이지 목업 만들어줘"라고 하면
 
-1. 스토리북이 실행 중인지 확인 (아니면 먼저 실행)
-2. 아래 규칙에 따라 목업 생성
-3. `npx tsc --noEmit --project apps/storybook/tsconfig.json` 으로 타입 체크
-4. 사용자에게 스토리북에서 확인하라고 안내
+1. **어떤 종류의 목업인지 확인** (사용자 앱 vs CMS)
+2. 스토리북이 실행 중인지 확인 (아니면 먼저 실행)
+3. 종류에 맞는 규칙에 따라 목업 생성
+4. `npx tsc --noEmit --project apps/storybook/tsconfig.json` 으로 타입 체크
+5. 사용자에게 스토리북에서 확인하라고 안내
 
-### 필수 규칙
+### 사용자/Trost 앱 목업 - 필수 규칙
 
 #### 1. MockupLayout 필수
 
@@ -101,6 +117,46 @@ apps/storybook/src/stories/
 - [ ] Chip은 label prop, Select는 onValueChange 사용했는가
 - [ ] useIsMobile()로 모바일 분기했는가
 - [ ] 스토리에 Default + Mobile 있는가
+- [ ] tsc --noEmit 통과하는가
+
+### CMS/어드민 목업 - 필수 규칙
+
+CMS/어드민 화면을 만들 때는 NudgeEAP 디자인시스템 대신 **Ant Design(antd)** 을 기준 UI 라이브러리로 사용합니다.
+
+#### 1. 기술 스택
+
+- React + TypeScript 기준으로 작성
+- antd 컴포넌트를 **우선** 사용 (직접 만들지 않음)
+- 다음 컴포넌트는 **절대 직접 구현 금지**, 무조건 antd 사용:
+  `Button`, `Form`, `Input`, `Select`, `DatePicker`, `Table`, `Modal`, `Drawer`, `Tabs`, `Tag`, `Space`, `Card`, `Pagination`
+
+#### 2. 스타일 원칙
+
+- **AntD 기본 스타일 유지**. 색·타이포·컴포넌트 외형은 건드리지 않음
+- 레이아웃 여백과 정보 구조만 조정 (`Space`, `Row/Col`, `gap` 등)
+- CSS는 최소화. 인라인 스타일이나 styled-components 남발 금지
+- NudgeEAP 토큰(`@nudge-eap/tokens`) 사용하지 말 것 — antd 기본값에 맡김
+
+#### 3. 레이아웃 톤
+
+- 운영툴 화면답게 **조밀하고 스캔하기 쉬운** 레이아웃
+- 마케팅 페이지처럼 큰 히어로, 장식 카드, 과한 비주얼 사용 금지
+- 한 화면에 정보 밀도를 높이고, 액션은 우측 상단/하단 고정 영역에 배치
+- 모바일 반응형 신경 쓰지 않아도 됨 (데스크톱 기준)
+
+#### 4. 추측 금지
+
+- antd MCP는 사용하지 않습니다. 컴포넌트 props가 헷갈리면 추측하지 말고 [공식 문서](https://ant.design/components/overview) 또는 `node_modules/antd/lib/{component}/index.d.ts` 타입 정의를 직접 확인
+- antd v5 기준으로 작성 (`pnpm --filter storybook list antd`로 버전 확인 가능)
+
+#### 5. Self-Check
+
+CMS 목업 생성 후 반드시 확인:
+
+- [ ] antd에서 import 했는가 (직접 구현하지 않았는가)
+- [ ] NudgeEAP DS 컴포넌트를 섞어 쓰지 않았는가
+- [ ] CSS/스타일을 최소화했는가 (antd 기본값 유지)
+- [ ] 마케팅 톤이 아닌 운영툴 톤인가 (조밀, 정보 위주)
 - [ ] tsc --noEmit 통과하는가
 
 ### 하네스 파이프라인 (상세)
