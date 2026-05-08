@@ -86,6 +86,7 @@ module.exports = {
         "components/greeting-header",
         "components/tip-card",
         "components/pin-pad",
+        "components/time-picker",
       ],
     },
     {
