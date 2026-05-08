@@ -1,0 +1,61 @@
+---
+title: AttachmentItem
+description: 이미 첨부된 파일을 표시하는 행. FileUpload(업로드)와 역할 분리.
+---
+
+# AttachmentItem
+
+진단서·처방전·검사결과 PDF 등 **이미 첨부된 파일을 보여주는** 컴포넌트입니다. `FileUpload`(업로드 영역)와는 역할이 다르며 보통 페어로 사용됩니다.
+
+## 사용법
+
+```tsx
+import { AttachmentItem } from "@nudge-eap/react";
+
+// 표시 + 다운로드 + 제거
+<AttachmentItem
+  name="2026-04-10_PHQ9_결과.pdf"
+  size={245760}
+  href="/api/files/abc.pdf"
+  onRemove={() => removeFile("abc")}
+/>
+
+// 업로드 진행 중
+<AttachmentItem
+  name="진단서.pdf"
+  size={4194304}
+  status="uploading"
+  progress={45}
+/>
+
+// 거부됨
+<AttachmentItem
+  name="too_big.pdf"
+  size={52428800}
+  status="error"
+  errorMessage="크기 제한(10MB) 초과"
+  onRemove={() => {}}
+/>
+```
+
+## Props
+
+| Prop           | 타입                                                              | 기본값   | 설명                                       |
+| -------------- | ----------------------------------------------------------------- | -------- | ------------------------------------------ |
+| `name`         | `string`                                                          | —        | 파일 이름                                  |
+| `size`         | `number`                                                          | —        | 파일 크기 (bytes)                          |
+| `fileType`     | `"pdf"\|"image"\|"video"\|"audio"\|"document"\|"archive"\|"other"` | 확장자 추론 | 미지정 시 name에서 자동                    |
+| `status`       | `"uploading" \| "done" \| "error"`                                | `"done"` | 상태                                       |
+| `progress`     | `number`                                                          | —        | 0~100, status="uploading"                  |
+| `href`         | `string`                                                          | —        | 다운로드 링크 (있으면 `<a download>`)      |
+| `onDownload`   | `() => void`                                                      | —        | 다운로드 버튼 클릭                         |
+| `onRemove`     | `() => void`                                                      | —        | 제거 버튼 표시 + 클릭                      |
+| `errorMessage` | `ReactNode`                                                       | —        | error 상태에서 표시                        |
+| `icon`         | `ReactNode`                                                       | 자동     | 좌측 아이콘 커스터마이즈                   |
+
+## 가이드
+
+- `FileUpload`의 `value: File[]`를 매핑해서 `AttachmentItem`으로 노출하는 패턴이 가장 흔함.
+- `fileType`은 확장자에서 자동 추론되어 색상도 자동 매핑됨 (PDF=red, image=primary, document=success 등).
+- `status="uploading"` 시 다운로드 버튼은 자동으로 숨겨짐.
+- `href` 있으면 `<a download>`, 없고 `onDownload`만 있으면 `<button>`. 둘 다 가능.
