@@ -58,3 +58,4 @@ export * from "./FileUpload";
 export * from "./DateRangePicker";
 export * from "./Calendar";
 export * from "./Carousel";
+export * from "./VideoPlayer";

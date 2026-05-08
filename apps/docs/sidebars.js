@@ -52,6 +52,7 @@ module.exports = {
         "components/date-range-picker",
         "components/calendar",
         "components/carousel",
+        "components/video-player",
       ],
     },
     {
