@@ -542,6 +542,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "방문 상담: mode='in-person', location='강남센터 3층 301호'",
     ],
   },
+  JournalEntry: {
+    name: "JournalEntry",
+    summary:
+      "감정 일기 한 건 카드. 무드(이모지) + 날짜 + 제목 + 본문 클램프 + 태그 + 썸네일 + 푸터.",
+    pitfalls: [
+      "본문은 기본 3줄 클램프. 전체 노출하려면 maxLines={9999}로 해제.",
+      "title 없이 body만으로도 동작 — 짧은 메모형 일기에는 title 생략이 자연스러움.",
+      "tags 안에 # 기호를 넣지 말 것. 컴포넌트가 자동으로 # 접두사 붙임.",
+    ],
+    recommended: [
+      "리스트: onClick으로 디테일 진입",
+      "감정 일기: mood에 이모지, tags에 감정 키워드",
+      "사진 일기: thumbnailSrc 추가",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
