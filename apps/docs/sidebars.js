@@ -82,6 +82,7 @@ module.exports = {
         "components/notification-item",
         "components/countdown-timer",
         "components/online-indicator",
+        "components/reaction-picker",
       ],
     },
     {

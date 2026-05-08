@@ -827,6 +827,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["상담사 리스트: showLabel=true로 텍스트 함께", "아바타 점: 라벨 없이 size=10"],
   },
+  ReactionPicker: {
+    name: "ReactionPicker",
+    summary: "콘텐츠 반응 칩 그룹. 이모지 + 카운트, 다중 또는 단일 선택, hideCount 옵션.",
+    pitfalls: [
+      "value는 single이어도 string[] (길이 0~1) — 일관된 형태로 처리.",
+      "options.count가 undefined면 자동 숨김. 0은 표시됨.",
+      "옵션 4~6개 권장. 8개 이상이면 가로 폭 부담.",
+    ],
+    recommended: [
+      "콘텐츠 좋아요/응원: 다중 선택 + 카운트 표시",
+      "사용자 한 표: single + hideCount",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

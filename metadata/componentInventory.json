@@ -562,5 +562,17 @@
     "figmaNodeId": "",
     "usageSummary": "상담사 리스트 상태, 아바타 우하단 점, 그룹 채팅 참가자",
     "notes": "online은 자동 펄스 — 별도 강조 효과 추가 X."
+  },
+  {
+    "name": "ReactionPicker",
+    "category": "일반",
+    "status": "implemented",
+    "description": "이모지 반응 칩 그룹. 다중/단일 선택, 카운트 표시 옵션",
+    "storybookTitle": "Components/ReactionPicker",
+    "docsPath": "/docs/components/reaction-picker",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "콘텐츠 좋아요/공감, 일기 반응, 챌린지 게시판",
+    "notes": "value는 항상 string[] (single도 길이 0~1)."
   }
 ]
