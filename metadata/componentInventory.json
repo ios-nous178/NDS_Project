@@ -754,5 +754,17 @@
     "figmaNodeId": "",
     "usageSummary": "커뮤니티 투표, 챌린지 주제 정하기, 가벼운 의견 수렴",
     "notes": "임상 척도는 LikertScale. count는 외부 state로 갱신."
+  },
+  {
+    "name": "PriceTag",
+    "category": "일반",
+    "status": "implemented",
+    "description": "가격 + 할인율 + 원가 표시. 무료/유료 자동, 천 단위 콤마",
+    "storybookTitle": "Components/PriceTag",
+    "docsPath": "/docs/components/price-tag",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "상품/콘텐츠/구독 가격, 결제 합계, 쿠폰 결과",
+    "notes": "amount+originalAmount 둘 다 number일 때 할인율 자동. prefix/unit 하나만 쓸 것."
   }
 ]

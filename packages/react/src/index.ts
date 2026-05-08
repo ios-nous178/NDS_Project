@@ -104,3 +104,4 @@ export * from "./LikeButton";
 export * from "./ShareSheet";
 export * from "./ReviewCard";
 export * from "./VotePoll";
+export * from "./PriceTag";
