@@ -63,6 +63,7 @@ module.exports = {
         "components/emotion-heatmap",
         "components/appointment-card",
         "components/journal-entry",
+        "components/chat-composer",
       ],
     },
     {

@@ -69,3 +69,4 @@ export * from "./StreakCard";
 export * from "./EmotionHeatmap";
 export * from "./AppointmentCard";
 export * from "./JournalEntry";
+export * from "./ChatComposer";
