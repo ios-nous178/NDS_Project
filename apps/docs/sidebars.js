@@ -69,6 +69,7 @@ module.exports = {
         "components/coach-mark",
         "components/sparkline",
         "components/circular-progress",
+        "components/multi-step-form",
       ],
     },
     {
