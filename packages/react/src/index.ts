@@ -63,3 +63,4 @@ export * from "./NumberStepper";
 export * from "./Autocomplete";
 export * from "./SelectionCard";
 export * from "./Snackbar";
+export * from "./FAB";

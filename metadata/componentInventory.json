@@ -262,5 +262,17 @@
     "figmaNodeId": "",
     "usageSummary": "되돌리기 메시지, 페이지 시스템 안내, 폼 결과 알림",
     "notes": "Toast는 Provider+자동 dismiss, Snackbar는 직접 렌더링+사용자 제어."
+  },
+  {
+    "name": "FAB",
+    "category": "일반",
+    "status": "implemented",
+    "description": "Floating Action Button. 화면 하단 떠 있는 주요 액션. md/lg, primary/secondary/neutral, fixed 위치 4종",
+    "storybookTitle": "Components/FAB",
+    "docsPath": "/docs/components/fab",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "일기 새로 작성, 감정 기록 추가, 빠른 만들기 액션",
+    "notes": "한 화면에 1개. StickyBottom CTA와 동시 사용 금지."
   }
 ]
