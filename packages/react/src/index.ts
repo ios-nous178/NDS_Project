@@ -114,3 +114,4 @@ export * from "./StatusTimeline";
 export * from "./FilterBar";
 export * from "./UserCard";
 export * from "./ProductCard";
+export * from "./CouponCard";

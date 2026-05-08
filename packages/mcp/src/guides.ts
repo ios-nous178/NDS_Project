@@ -1115,6 +1115,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "추천 캐러셀: ProductCard + Carousel 결합",
     ],
   },
+  CouponCard: {
+    name: "CouponCard",
+    summary: "쿠폰 카드. 좌측 할인율(큰 숫자) + 우측 정보·사용 버튼. 점선 + 반원 컷아웃 자동.",
+    pitfalls: [
+      "discount와 discountSuffix는 분리 — '30%할인'이 아니라 '30%' + '할인'.",
+      "disabled=true면 버튼 자동 disabledLabel로 변경.",
+      "쿠폰 발급/사용 처리는 외부 API — onAction 안에서.",
+    ],
+    recommended: [
+      "% 할인: discount='30%' discountSuffix='할인'",
+      "금액 할인: discount='5,000' discountSuffix='원'",
+      "무료: discount='무료' discountSuffix=''",
+    ],
+  },
   DataTable: {
     name: "DataTable",
     summary:
