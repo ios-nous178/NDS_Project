@@ -720,6 +720,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "알림 진입: badge='3' 같은 미읽음 카운트",
     ],
   },
+  TagInput: {
+    name: "TagInput",
+    summary:
+      "태그 자유 입력. Enter/쉼표로 추가, Backspace로 마지막 삭제. Chip 표시(읽기 전용)와 분리.",
+    pitfalls: [
+      "value의 태그 문자열에 '#' 접두를 직접 넣지 말 것 — 컴포넌트가 표시 시 자동 추가, 입력 시 자동 제거.",
+      "정해진 옵션에서 다중 선택은 SelectionCard mode='multiple' 또는 Chip 토글이 적합.",
+      "자동완성이 필요하면 Autocomplete + 직접 태그 관리 — TagInput은 자유 입력 전용.",
+    ],
+    recommended: [
+      "관심사 등록: maxTags=5, onMaxReached로 토스트",
+      "콘텐츠 태그: allowDuplicates=false (기본)",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

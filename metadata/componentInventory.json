@@ -466,5 +466,17 @@
     "figmaNodeId": "",
     "usageSummary": "홈 진입 메뉴, 마이페이지 빠른 메뉴",
     "notes": "4칸이 기본 균형. 5칸 배치는 어색 — 3 또는 4로 조정."
+  },
+  {
+    "name": "TagInput",
+    "category": "입력",
+    "status": "implemented",
+    "description": "태그 자유 입력. Enter/쉼표로 추가, Backspace로 삭제, maxTags 제한",
+    "storybookTitle": "Components/TagInput",
+    "docsPath": "/docs/components/tag-input",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "관심사/키워드 입력, 일기 태그, 알림 키워드 등록",
+    "notes": "# 접두는 자동. 정해진 옵션은 SelectionCard 또는 Chip 토글 사용."
   }
 ]

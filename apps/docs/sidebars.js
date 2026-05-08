@@ -74,6 +74,7 @@ module.exports = {
         "components/page-header",
         "components/stat-card",
         "components/quick-action-grid",
+        "components/tag-input",
       ],
     },
     {
