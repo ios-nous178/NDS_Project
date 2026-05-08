@@ -80,6 +80,7 @@ module.exports = {
         "components/call-control-bar",
         "components/voice-recorder",
         "components/notification-item",
+        "components/countdown-timer",
       ],
     },
     {
