@@ -818,6 +818,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "마감 카운트: 임박 시 빨강 강조 자동",
     ],
   },
+  OnlineIndicator: {
+    name: "OnlineIndicator",
+    summary: "presence 점 (online/away/busy/offline). online은 자동 펄스 애니메이션.",
+    pitfalls: [
+      "online에 별도 강조 효과 추가하지 말 것 — 자동 펄스 있음.",
+      "아바타 우하단에 올릴 때 부모 position:relative + 점 position:absolute.",
+    ],
+    recommended: ["상담사 리스트: showLabel=true로 텍스트 함께", "아바타 점: 라벨 없이 size=10"],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

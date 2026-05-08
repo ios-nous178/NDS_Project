@@ -81,6 +81,7 @@ module.exports = {
         "components/voice-recorder",
         "components/notification-item",
         "components/countdown-timer",
+        "components/online-indicator",
       ],
     },
     {

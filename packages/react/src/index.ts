@@ -87,3 +87,4 @@ export * from "./CallControlBar";
 export * from "./VoiceRecorder";
 export * from "./NotificationItem";
 export * from "./CountdownTimer";
+export * from "./OnlineIndicator";
