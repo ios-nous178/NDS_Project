@@ -61,3 +61,4 @@ export * from "./Carousel";
 export * from "./VideoPlayer";
 export * from "./NumberStepper";
 export * from "./Autocomplete";
+export * from "./SelectionCard";

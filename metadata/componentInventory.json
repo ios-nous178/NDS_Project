@@ -238,5 +238,17 @@
     "figmaNodeId": "",
     "usageSummary": "약 검색, 시설 검색, 키워드 추천",
     "notes": "options는 외부 필터링 결과 — 비동기 검색 케이스를 1차 고려한 설계."
+  },
+  {
+    "name": "SelectionCard",
+    "category": "입력",
+    "status": "implemented",
+    "description": "카드형 단일/다중 선택지. RadioCard/CheckboxCard 통합. Compound API.",
+    "storybookTitle": "Components/SelectionCard",
+    "docsPath": "/docs/components/selection-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "설문 선택지, 가입 플랜, 상담 방식, 관심사 선택",
+    "notes": "단순 라벨만 있는 선택은 Radio/Checkbox 사용. SelectionCard는 카드 단위 의미 있는 선택지용."
   }
 ]

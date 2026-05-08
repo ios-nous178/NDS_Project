@@ -1,0 +1,72 @@
+---
+title: SelectionCard
+description: 카드형 단일/다중 선택지. RadioCard / CheckboxCard를 한 컴포넌트로 통합.
+---
+
+# SelectionCard
+
+각 옵션을 카드로 보여주는 라디오/체크박스입니다. 옵션마다 제목·설명·아이콘이 있고 사용자가 카드 전체를 탭하기 좋은 화면(설문, 온보딩, 가입 플랜 선택 등)에 사용하세요.
+
+> 작은 라벨만 있는 단순 선택은 `Radio` / `Checkbox`를 그대로 쓰면 됩니다. SelectionCard는 "카드 형태의 의미 있는 선택지"를 위한 것.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 설문/온보딩에서 옵션마다 설명이 함께 들어가는 경우
+- 가입 플랜, 상담 방식, 알림 시점처럼 **의미가 풍부한** 선택지
+- 모바일 터치 영역이 충분해야 할 때 (카드 전체가 hit area)
+
+### 이럴 때 사용하지 마세요
+- 단순 라벨만 있고 빠른 선택이 목적 → `Radio`, `Checkbox`
+- 옵션 5개 이상 + 라벨 짧음 → `Chip` 토글 그룹
+
+## 사용법
+
+```tsx
+import { SelectionCard } from "@nudge-eap/react";
+
+// 단일 선택 (RadioCard)
+<SelectionCard.Group mode="single" value={v} onValueChange={setV}>
+  <SelectionCard.Item value="chat" title="채팅 상담" description="비대면 텍스트" />
+  <SelectionCard.Item value="video" title="화상 상담" description="얼굴 보며" />
+</SelectionCard.Group>
+
+// 다중 선택 (CheckboxCard)
+<SelectionCard.Group mode="multiple" values={vs} onValuesChange={setVs}>
+  <SelectionCard.Item value="sleep" title="수면 문제" />
+  <SelectionCard.Item value="anxiety" title="불안" />
+</SelectionCard.Group>
+
+// 아이콘 포함
+<SelectionCard.Item title="아침 명상" icon={<span>🌅</span>} ... />
+
+// 가로 배치
+<SelectionCard.Group layout="horizontal" ...>
+  <SelectionCard.Item value="low" title="낮음" />
+  <SelectionCard.Item value="mid" title="보통" />
+  <SelectionCard.Item value="high" title="높음" />
+</SelectionCard.Group>
+```
+
+## SelectionCard.Group Props
+
+| Prop             | 타입                          | 기본값       | 설명                                 |
+| ---------------- | ----------------------------- | ------------ | ------------------------------------ |
+| `mode`           | `"single" \| "multiple"`      | `"single"`   | 단일/다중 선택                       |
+| `value`          | `string`                      | —            | (single) 선택된 값                   |
+| `values`         | `string[]`                    | —            | (multiple) 선택된 값 배열            |
+| `onValueChange`  | `(v: string) => void`         | —            | (single) 변경 콜백                   |
+| `onValuesChange` | `(vs: string[]) => void`      | —            | (multiple) 변경 콜백                 |
+| `layout`         | `"vertical" \| "horizontal"`  | `"vertical"` | 카드 배치                            |
+| `name`           | `string`                      | 자동         | (single) radio name                  |
+
+## SelectionCard.Item Props
+
+| Prop            | 타입         | 기본값  | 설명                                |
+| --------------- | ------------ | ------- | ----------------------------------- |
+| `value`         | `string`     | —       | 옵션 값                             |
+| `title`         | `ReactNode`  | —       | 카드 제목                           |
+| `description`   | `ReactNode`  | —       | 보조 설명                           |
+| `icon`          | `ReactNode`  | —       | 좌측 큰 아이콘 (인디케이터와 별개)  |
+| `disabled`      | `boolean`    | `false` | 비활성화                            |
+| `showIndicator` | `boolean`    | `true`  | 라디오/체크 인디케이터 표시         |

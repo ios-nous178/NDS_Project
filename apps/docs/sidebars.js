@@ -55,6 +55,7 @@ module.exports = {
         "components/video-player",
         "components/number-stepper",
         "components/autocomplete",
+        "components/selection-card",
       ],
     },
     {
