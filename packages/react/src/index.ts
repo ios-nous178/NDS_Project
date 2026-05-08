@@ -65,3 +65,4 @@ export * from "./SelectionCard";
 export * from "./Snackbar";
 export * from "./FAB";
 export * from "./BreathingGuide";
+export * from "./StreakCard";

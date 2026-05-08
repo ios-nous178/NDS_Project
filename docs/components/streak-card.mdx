@@ -1,0 +1,57 @@
+---
+title: StreakCard
+description: 연속 기록 트래커 카드. 현재 streak + 최근 N일 점 그리드.
+---
+
+# StreakCard
+
+"OO일째" 같은 연속 기록을 강조하고, 최근 며칠의 완료 여부를 점으로 보여주는 카드입니다. 챌린지/습관 트래킹 화면에서 사용하세요.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 감정 기록, 명상, 복약 같은 **습관 강화** 화면
+- 챌린지 진행 상황 보드
+
+### 자주 하는 실수
+- streak가 0일 때 풀 너비 카드를 띄우면 동기 부여 효과가 약함 → 더 작은 EmptyState 같은 안내 권장
+- `days`는 최근 7~14일 정도가 시각적으로 적절. 30일 이상이면 EmotionHeatmap을 검토
+
+## 사용법
+
+```tsx
+import { StreakCard } from "@nudge-eap/react";
+
+<StreakCard
+  title="감정 기록"
+  streak={7}
+  days={[
+    { date: "2026-05-02", label: "일", done: true },
+    { date: "2026-05-03", label: "월", done: true },
+    // ...
+  ]}
+  footer="이번 주 매일 기록했어요. 멋져요!"
+/>
+
+// 점 그리드 없이 숫자만
+<StreakCard title="복약" streak={28} icon="💊" />
+```
+
+## Props
+
+| Prop     | 타입             | 기본값        | 설명                              |
+| -------- | ---------------- | ------------- | --------------------------------- |
+| `title`  | `ReactNode`      | `"연속 기록"` | 카드 제목                         |
+| `streak` | `number`         | —             | 현재 연속 일수                    |
+| `unit`   | `string`         | `"일"`        | 단위 (예: `"주"`로 변경 가능)     |
+| `days`   | `StreakDay[]`    | —             | 최근 일자 점 그리드               |
+| `icon`   | `ReactNode`      | `"🔥"`        | 좌측 원형 아이콘                  |
+| `footer` | `ReactNode`      | —             | 카드 하단 안내 텍스트             |
+
+### `StreakDay`
+
+| Prop    | 타입       | 설명                          |
+| ------- | ---------- | ----------------------------- |
+| `date`  | `string`   | `YYYY-MM-DD`                  |
+| `done`  | `boolean`  | 완료 여부                     |
+| `label` | `string`   | 점 위에 표시할 라벨 (요일 등) |

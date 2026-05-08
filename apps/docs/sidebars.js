@@ -59,6 +59,7 @@ module.exports = {
         "components/snackbar",
         "components/fab",
         "components/breathing-guide",
+        "components/streak-card",
       ],
     },
     {

@@ -286,5 +286,17 @@
     "figmaNodeId": "",
     "usageSummary": "명상 시작, 이완 가이드, 위기 상황 진정, 잠들기 호흡",
     "notes": "박스 호흡 기본, 4-7-8 등 커스텀 가능. cycles + onComplete로 종료."
+  },
+  {
+    "name": "StreakCard",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "연속 기록 트래커 카드. streak 숫자 + 최근 일자 점 그리드, today 자동 표시",
+    "storybookTitle": "Components/StreakCard",
+    "docsPath": "/docs/components/streak-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "감정 기록 streak, 명상/복약 챌린지, 습관 트래킹",
+    "notes": "최근 7~14일 점 그리드. 30일+ 트래킹은 EmotionHeatmap 검토."
   }
 ]
