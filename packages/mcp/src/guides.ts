@@ -930,6 +930,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "라벨 커스텀: pullLabel='당겨서 일기 동기화'",
     ],
   },
+  WaveformPlayer: {
+    name: "WaveformPlayer",
+    summary:
+      "음성 메시지 재생 (파형 시각화). AudioPlayer가 트랙바 형태라면 WaveformPlayer는 컴팩트 메시지용.",
+    pitfalls: [
+      "peaks 미지정 시 src 기반 의사 랜덤 — 정확한 파형이 필요하면 서버 메타데이터로 전달.",
+      "긴 콘텐츠(>5분)는 AudioPlayer가 더 적합.",
+      "막대 개수(bars)는 32~48 권장. 너무 많으면 모바일에서 막대가 1px 미만으로 줄어듦.",
+    ],
+    recommended: [
+      "채팅 음성 메시지: 기본 사용",
+      "내 메시지: color=primary, 상대 메시지: color='#666'",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

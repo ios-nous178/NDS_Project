@@ -90,6 +90,7 @@ module.exports = {
         "components/address-search",
         "components/image-cropper",
         "components/pull-to-refresh",
+        "components/waveform-player",
       ],
     },
     {

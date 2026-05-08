@@ -96,3 +96,4 @@ export * from "./TimePicker";
 export * from "./AddressSearch";
 export * from "./ImageCropper";
 export * from "./PullToRefresh";
+export * from "./WaveformPlayer";
