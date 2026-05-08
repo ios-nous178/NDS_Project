@@ -44,5 +44,5 @@
       "Bash(curl -sI \"https://www.figma.com/api/mcp/asset/24cb8e12-cabb-46ce-bc15-5e6ebb94f82b\")"
     ]
   },
-  "enabledMcpjsonServers": ["nudge-design-system", "apps-in-toss"]
+  "enabledMcpjsonServers": ["nudge-design-system", "apps-in-toss", "nudge-eap-ds"]
 }
