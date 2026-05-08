@@ -57,6 +57,7 @@ module.exports = {
         "components/autocomplete",
         "components/selection-card",
         "components/snackbar",
+        "components/fab",
       ],
     },
     {
