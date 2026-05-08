@@ -19,6 +19,13 @@ import {
   trostNeutral,
   trostStatus,
   trostSemantic,
+  monepleYellow,
+  monepleCobalt,
+  moneplePink,
+  monepleNeutral,
+  monepleStatus,
+  monepleSemantic,
+  monepleTheme,
 } from "@nudge-eap/tokens";
 import { trostTheme } from "@nudge-eap/tokens";
 
@@ -203,6 +210,104 @@ export const trostPreset = {
         hairline: trostTheme.elevation!.shadow!.hairline,
         none: "none",
       },
+    },
+  },
+};
+
+/**
+ * Moneple Tailwind CSS Preset
+ *
+ * Moneple production colors are tenant-driven CSS variables. The preset mirrors
+ * the Moneple05 community surface so Tailwind users get the same defaults as CSS.
+ */
+export const moneplePreset = {
+  theme: {
+    extend: {
+      colors: {
+        neutral: objectToPx(monepleNeutral),
+        yellow: objectToPx(monepleYellow),
+        cobalt: objectToPx(monepleCobalt),
+        pink: objectToPx(moneplePink),
+        status: objectToPx(monepleStatus),
+        primary: {
+          main: monepleSemantic.primary.main,
+          hover: monepleSemantic.primary.hover,
+          lighter: monepleSemantic.primary.lighter,
+          bg: monepleSemantic.primary.bg,
+          "bg-lighter": monepleSemantic.primary.bgLighter,
+          fg: monepleSemantic.primary.fg,
+        },
+        secondary: {
+          sub: monepleSemantic.secondary.sub,
+          lighter: monepleSemantic.secondary.lighter,
+          bg: monepleSemantic.secondary.bg,
+          "bg-lighter": monepleSemantic.secondary.bgLighter,
+        },
+        error: {
+          main: monepleSemantic.error.main,
+          bg: monepleSemantic.error.bg,
+        },
+        caution: {
+          main: monepleSemantic.caution.main,
+          text: monepleSemantic.caution.text,
+          bg: monepleSemantic.caution.bg,
+        },
+        success: {
+          main: monepleSemantic.success.main,
+          bg: monepleSemantic.success.bg,
+        },
+      },
+      fontFamily: {
+        sans: monepleTheme.typography!.fontFamily!.web.split(", "),
+      },
+      fontWeight: {
+        regular: String(fontWeight.regular),
+        medium: String(fontWeight.medium),
+        bold: String(fontWeight.bold),
+      },
+      fontSize: Object.fromEntries(
+        Object.entries(monepleTheme.typography!.typeScale!).map(([key, val]) => [
+          key,
+          [
+            `${val.fontSize}px`,
+            { lineHeight: `${val.lineHeight}px`, fontWeight: String(val.fontWeight) },
+          ],
+        ]),
+      ),
+      spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
+      borderRadius: {
+        none: "0px",
+        xs: `${monepleTheme.spacing!.radius!.xs}px`,
+        sm: `${monepleTheme.spacing!.radius!.sm}px`,
+        DEFAULT: `${monepleTheme.spacing!.radius!.md}px`,
+        md: `${monepleTheme.spacing!.radius!.md}px`,
+        lg: `${monepleTheme.spacing!.radius!.lg}px`,
+        xl: `${monepleTheme.spacing!.radius!.xl}px`,
+        sheet: `${monepleTheme.spacing!.radius!.sheet}px`,
+        chip: `${monepleTheme.spacing!.radius!.chip}px`,
+        pill: "9999px",
+      },
+      height: {
+        "btn-lg": `${sizing.button.lg}px`,
+        "btn-md": `${sizing.button.md}px`,
+        "btn-sm": `${sizing.button.sm}px`,
+        "btn-xs": `${sizing.button.xs}px`,
+        "btn-field": `${sizing.button.field}px`,
+        appbar: `${sizing.appBar.height}px`,
+        bottombar: `${sizing.bottomBar.height}px`,
+        input: `${sizing.input.default}px`,
+        "input-field": `${sizing.input.field}px`,
+      },
+      boxShadow: {
+        sm: monepleTheme.elevation!.shadow!.sm,
+        md: monepleTheme.elevation!.shadow!.md,
+        lg: monepleTheme.elevation!.shadow!.lg,
+        up: monepleTheme.elevation!.shadow!.up,
+        none: "none",
+      },
+      zIndex: Object.fromEntries(
+        Object.entries(monepleTheme.elevation!.zIndex!).map(([key, val]) => [key, String(val)]),
+      ),
     },
   },
 };
