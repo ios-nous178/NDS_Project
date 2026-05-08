@@ -850,5 +850,17 @@
     "figmaNodeId": "",
     "usageSummary": "결제 직전, 상담 예약 확인, 신청서 검토",
     "notes": "할인은 emphasis='discount'. EAP 무료는 emphasis='info'."
+  },
+  {
+    "name": "CardVisual",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "신용/체크카드 비주얼. 8개 브랜드 톤, 마지막 4자리만 표시",
+    "storybookTitle": "Components/CardVisual",
+    "docsPath": "/docs/components/card-visual",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "카드 등록, 결제 수단 관리, 결제 카드 선택",
+    "notes": "전체 번호 넣어도 자동으로 마지막 4자리만. 보안 위해 의도적."
   }
 ]

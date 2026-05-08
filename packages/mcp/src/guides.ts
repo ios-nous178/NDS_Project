@@ -1142,6 +1142,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "EAP 무료 상담: 회사 부담 emphasis='info'",
     ],
   },
+  CardVisual: {
+    name: "CardVisual",
+    summary: "신용/체크카드 비주얼. 8개 브랜드 톤 내장. 마지막 4자리만 표시 (자동 마스킹).",
+    pitfalls: [
+      "전체 카드번호 넣어도 마지막 4자리만 표시 — 보안 위해 의도적.",
+      "만료된 카드는 disabled + label='만료됨' 패턴.",
+      "그라데이션 배경은 토큰이 아닌 브랜드 정체성 — 외부에서 override 자제.",
+    ],
+    recommended: ["결제 수단 관리: brand별 자동 색", "별명: label='용돈 카드'"],
+  },
   DataTable: {
     name: "DataTable",
     summary:
