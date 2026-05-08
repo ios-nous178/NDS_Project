@@ -574,5 +574,17 @@
     "figmaNodeId": "",
     "usageSummary": "콘텐츠 좋아요/공감, 일기 반응, 챌린지 게시판",
     "notes": "value는 항상 string[] (single도 길이 0~1)."
+  },
+  {
+    "name": "GreetingHeader",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "홈 인삿말 카드. {name}님 자동, greeting/question/trailing/actions 슬롯",
+    "storybookTitle": "Components/GreetingHeader",
+    "docsPath": "/docs/components/greeting-header",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "홈 화면 최상단, 마이페이지 인삿말",
+    "notes": "name에 '님' 직접 X. greeting은 외부에서 시간대 결정."
   }
 ]
