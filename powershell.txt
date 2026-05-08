@@ -1,0 +1,465 @@
+# =====================================================================
+# NudgeEAP Design System MCP - Claude Desktop Auto Setup (Robust)
+# =====================================================================
+# Prerequisites (install before running):
+#   1. Git: https://git-scm.com
+#   2. nvm-windows: https://github.com/coreybutler/nvm-windows/releases
+#      Install destination: C:\nvm
+#      Symlink:              C:\nvm4w\nodejs
+#   3. Claude Desktop (run at least once)
+#
+# Usage:
+#   1. Right-click PowerShell -> Run as administrator
+#   2. cd $env:USERPROFILE\Downloads
+#   3. Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+#   4. .\setup-nudge-eap-mcp.ps1
+# =====================================================================
+
+# ---------- Configuration ----------
+$REPO_URL = "https://github.com/cashwalk/NudgeEAPDesignSystem.git"
+$CLONE_DIR = "C:\dev"
+$PROJECT_NAME = "NudgeEAPDesignSystem"
+$NODE_VERSION = "22.17.1"
+$MCP_NAME = "nudge-eap-ds"
+# -----------------------------------
+
+# CRITICAL: ALL global error/warning behaviors set to non-stopping
+$ErrorActionPreference = "SilentlyContinue"
+$WarningPreference = "SilentlyContinue"
+$ProgressPreference = "SilentlyContinue"
+
+# IMPORTANT: Disable PowerShell's native command error handling completely
+# This is a PowerShell 7+ feature that does the right thing for older versions too
+$PSNativeCommandUseErrorActionPreference = $false
+
+$ProjectPath = Join-Path $CLONE_DIR $PROJECT_NAME
+
+# Console UTF-8
+try {
+    chcp 65001 | Out-Null
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+    $OutputEncoding = [System.Text.Encoding]::UTF8
+} catch {}
+
+function Write-Step($msg) {
+    Write-Host ""
+    Write-Host "=== $msg ===" -ForegroundColor Cyan
+}
+function Write-OK($msg)   { Write-Host "[OK] $msg" -ForegroundColor Green }
+function Write-Warn2($msg) { Write-Host "[WARN] $msg" -ForegroundColor Yellow }
+function Write-Err2($msg)  { Write-Host "[ERROR] $msg" -ForegroundColor Red }
+
+function Stop-OnError($msg) {
+    Write-Err2 $msg
+    Write-Host ""
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
+# Robust external command runner
+# - Uses Start-Process so PowerShell never sees the child's stderr as an exception
+# - Captures both stdout and stderr to log file, displays them in real-time
+# - Returns the exit code reliably
+function Invoke-External {
+    param(
+        [Parameter(Mandatory=$true)][string]$Command,
+        [string[]]$Arguments = @(),
+        [string]$WorkingDir = (Get-Location).Path
+    )
+
+    $argString = ($Arguments | ForEach-Object {
+        if ($_ -match '\s') { "`"$_`"" } else { $_ }
+    }) -join ' '
+
+    $displayCmd = if ($argString) { "$Command $argString" } else { $Command }
+    Write-Host "> $displayCmd" -ForegroundColor DarkGray
+
+    $stdoutLog = [System.IO.Path]::GetTempFileName()
+    $stderrLog = [System.IO.Path]::GetTempFileName()
+
+    try {
+        $proc = Start-Process -FilePath $Command `
+                              -ArgumentList $Arguments `
+                              -WorkingDirectory $WorkingDir `
+                              -NoNewWindow `
+                              -Wait `
+                              -PassThru `
+                              -RedirectStandardOutput $stdoutLog `
+                              -RedirectStandardError $stderrLog
+
+        $stdoutContent = Get-Content $stdoutLog -Raw -ErrorAction SilentlyContinue
+        $stderrContent = Get-Content $stderrLog -Raw -ErrorAction SilentlyContinue
+
+        if ($stdoutContent) { Write-Host $stdoutContent }
+        if ($stderrContent) { Write-Host $stderrContent -ForegroundColor DarkGray }
+
+        return $proc.ExitCode
+    } catch {
+        Write-Warn2 "Failed to start process: $_"
+        return -1
+    } finally {
+        Remove-Item $stdoutLog -ErrorAction SilentlyContinue
+        Remove-Item $stderrLog -ErrorAction SilentlyContinue
+    }
+}
+
+# Run command via cmd.exe (for shell builtins like nvm, npm, pnpm shims)
+function Invoke-CmdShell {
+    param(
+        [Parameter(Mandatory=$true)][string]$CommandLine,
+        [string]$WorkingDir = (Get-Location).Path
+    )
+    Write-Host "> $CommandLine" -ForegroundColor DarkGray
+
+    $stdoutLog = [System.IO.Path]::GetTempFileName()
+    $stderrLog = [System.IO.Path]::GetTempFileName()
+
+    try {
+        $proc = Start-Process -FilePath "cmd.exe" `
+                              -ArgumentList "/c", $CommandLine `
+                              -WorkingDirectory $WorkingDir `
+                              -NoNewWindow `
+                              -Wait `
+                              -PassThru `
+                              -RedirectStandardOutput $stdoutLog `
+                              -RedirectStandardError $stderrLog
+
+        $stdoutContent = Get-Content $stdoutLog -Raw -ErrorAction SilentlyContinue
+        $stderrContent = Get-Content $stderrLog -Raw -ErrorAction SilentlyContinue
+
+        if ($stdoutContent) { Write-Host $stdoutContent }
+        if ($stderrContent) { Write-Host $stderrContent -ForegroundColor DarkGray }
+
+        return $proc.ExitCode
+    } catch {
+        Write-Warn2 "Failed: $_"
+        return -1
+    } finally {
+        Remove-Item $stdoutLog -ErrorAction SilentlyContinue
+        Remove-Item $stderrLog -ErrorAction SilentlyContinue
+    }
+}
+
+# Get full path of a command
+function Get-CommandPath {
+    param([string]$Name)
+    $cmd = Get-Command $Name -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+    return $null
+}
+
+# =====================================================================
+# Step 1: Admin permission check
+# =====================================================================
+Write-Step "1. Admin permission check"
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin) {
+    Stop-OnError "Run PowerShell as Administrator. Right-click PowerShell -> Run as administrator."
+}
+Write-OK "Running as Administrator"
+
+# =====================================================================
+# Step 2: Git check
+# =====================================================================
+Write-Step "2. Git check"
+$gitPath = Get-CommandPath "git"
+if (-not $gitPath) {
+    Write-Err2 "Git is not installed."
+    Write-Host "Download from: https://git-scm.com" -ForegroundColor Yellow
+    Stop-OnError "Install Git and run this script again."
+}
+Write-OK "Git available: $gitPath"
+
+# =====================================================================
+# Step 3: nvm-windows check
+# =====================================================================
+Write-Step "3. nvm-windows check"
+$env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User")
+if ($env:NVM_HOME -and (Test-Path "$env:NVM_HOME\nvm.exe")) {
+    $env:PATH = "$env:NVM_HOME;$env:NVM_SYMLINK;$env:PATH"
+}
+
+$nvmPath = Get-CommandPath "nvm"
+if (-not $nvmPath) {
+    Write-Err2 "nvm-windows is not installed or not in PATH."
+    Write-Host ""
+    Write-Host "Download nvm-setup.exe from:" -ForegroundColor Yellow
+    Write-Host "  https://github.com/coreybutler/nvm-windows/releases" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "IMPORTANT: During install, set paths to AVOID Korean/non-ASCII characters:" -ForegroundColor Yellow
+    Write-Host "  - Destination Location: C:\nvm" -ForegroundColor Yellow
+    Write-Host "  - Symlink Location:     C:\nvm4w\nodejs" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "After installing nvm, CLOSE this PowerShell window," -ForegroundColor Yellow
+    Write-Host "open a NEW one as Administrator, and run this script again." -ForegroundColor Yellow
+    Stop-OnError "nvm-windows required."
+}
+Write-OK "nvm available: $nvmPath"
+
+# =====================================================================
+# Step 4: Install and activate Node
+# =====================================================================
+Write-Step "4. Install and activate Node $NODE_VERSION"
+Invoke-CmdShell "nvm install $NODE_VERSION" | Out-Null
+Invoke-CmdShell "nvm use $NODE_VERSION" | Out-Null
+
+$env:PATH = "$env:NVM_HOME;$env:NVM_SYMLINK;$env:PATH"
+Start-Sleep -Seconds 2
+
+$nodePath = Get-CommandPath "node"
+if (-not $nodePath) {
+    Stop-OnError "Node activation failed. Close this PowerShell, open a new one as Administrator, and re-run."
+}
+Write-OK "Node activated at $nodePath"
+
+# =====================================================================
+# Step 5: Execution policy
+# =====================================================================
+Write-Step "5. PowerShell execution policy"
+$policy = Get-ExecutionPolicy -Scope CurrentUser
+if ($policy -eq "Restricted" -or $policy -eq "Undefined") {
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    Write-OK "Execution policy set to RemoteSigned (CurrentUser)"
+} else {
+    Write-OK "Execution policy already set ($policy)"
+}
+
+# =====================================================================
+# Step 6: Install pnpm
+# =====================================================================
+Write-Step "6. Install pnpm"
+$pnpmPath = Get-CommandPath "pnpm"
+if (-not $pnpmPath) {
+    Write-Host "Installing pnpm globally..."
+    Invoke-CmdShell "npm install -g pnpm" | Out-Null
+    Start-Sleep -Seconds 2
+    $env:PATH = "$env:NVM_HOME;$env:NVM_SYMLINK;$env:PATH"
+    $pnpmPath = Get-CommandPath "pnpm"
+}
+if (-not $pnpmPath) {
+    Stop-OnError "pnpm installation failed."
+}
+Write-OK "pnpm available: $pnpmPath"
+
+# =====================================================================
+# Step 7: Clone repository
+# =====================================================================
+Write-Step "7. Clone repository"
+if (-not (Test-Path $CLONE_DIR)) {
+    New-Item -Path $CLONE_DIR -ItemType Directory -Force | Out-Null
+}
+if (Test-Path "$ProjectPath\.git") {
+    Write-OK "Repository already exists, skipping clone"
+} else {
+    Set-Location $CLONE_DIR
+    Write-Host "Cloning repository..."
+    Invoke-CmdShell "git clone $REPO_URL" | Out-Null
+}
+
+if (-not (Test-Path "$ProjectPath\.git")) {
+    Stop-OnError "Clone failed. Check network and Git installation."
+}
+Set-Location $ProjectPath
+Write-OK "Project at: $ProjectPath"
+
+# =====================================================================
+# Step 8: Install dependencies
+# =====================================================================
+Write-Step "8. Install dependencies (this may take 1-3 minutes)"
+$env:HUSKY = "0"
+Invoke-CmdShell "pnpm install" -WorkingDir $ProjectPath | Out-Null
+
+if (-not (Test-Path "$ProjectPath\node_modules")) {
+    Stop-OnError "pnpm install failed - node_modules not created."
+}
+Write-OK "Dependencies installed"
+
+# =====================================================================
+# Step 9: Remove BOM from package.json files
+# =====================================================================
+Write-Step "9. Clean BOM from package.json files"
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+$bomCount = 0
+$packageJsonFiles = Get-ChildItem -Path $ProjectPath -Filter "package.json" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch "node_modules" }
+foreach ($file in $packageJsonFiles) {
+    try {
+        $bytes = [System.IO.File]::ReadAllBytes($file.FullName)
+        $hasBom = $bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF
+        if ($hasBom) {
+            $content = [System.IO.File]::ReadAllText($file.FullName)
+            [System.IO.File]::WriteAllText($file.FullName, $content, $utf8NoBom)
+            $bomCount++
+        }
+    } catch {}
+}
+Write-OK "BOM cleanup done ($bomCount files fixed)"
+
+# =====================================================================
+# Step 10: Patch react package.json (Node ESM compatibility)
+# =====================================================================
+Write-Step "10. Patch react package build script"
+$reactPkgPath = Join-Path $ProjectPath "packages\react\package.json"
+if (Test-Path $reactPkgPath) {
+    $content = [System.IO.File]::ReadAllText($reactPkgPath)
+    if ($content -match '"build":\s*"tsc && node scripts/extract-styles\.mjs"') {
+        $content = $content -replace '"build":\s*"tsc && node scripts/extract-styles\.mjs"', '"build": "tsc"'
+        [System.IO.File]::WriteAllText($reactPkgPath, $content, $utf8NoBom)
+        Write-OK "Patched react/package.json"
+    } else {
+        Write-OK "react/package.json already patched or different"
+    }
+} else {
+    Write-Warn2 "react/package.json not found"
+}
+
+# =====================================================================
+# Step 11: Build MCP
+# =====================================================================
+Write-Step "11. Build MCP server"
+Invoke-CmdShell "pnpm build --filter @nudge-eap/mcp --force" -WorkingDir $ProjectPath | Out-Null
+
+$serverJs = Join-Path $ProjectPath "packages\mcp\dist\server.js"
+if (-not (Test-Path $serverJs)) {
+    Write-Err2 "Build failed - server.js not generated."
+    Write-Host ""
+    Write-Host "Try manually:" -ForegroundColor Yellow
+    Write-Host "  cd $ProjectPath\packages\mcp" -ForegroundColor Yellow
+    Write-Host "  pnpm run build" -ForegroundColor Yellow
+    Stop-OnError "Build failed."
+}
+Write-OK "Build complete: $serverJs"
+
+# =====================================================================
+# Step 12: Detect Claude Desktop config location
+# =====================================================================
+Write-Step "12. Detect Claude Desktop config location"
+
+$candidates = @(
+    "$env:APPDATA\Claude",
+    "$env:LOCALAPPDATA\AnthropicClaude",
+    "$env:LOCALAPPDATA\Claude"
+)
+
+$storePackages = Get-ChildItem -Path "$env:LOCALAPPDATA\Packages" -Filter "Claude_*" -ErrorAction SilentlyContinue
+foreach ($pkg in $storePackages) {
+    $storeConfig = Join-Path $pkg.FullName "LocalCache\Roaming\Claude"
+    if (Test-Path $storeConfig) {
+        $candidates += $storeConfig
+    }
+}
+
+$realConfigDir = $null
+foreach ($candidate in $candidates) {
+    if ((Test-Path $candidate) -and ((Test-Path "$candidate\Cache") -or (Test-Path "$candidate\Local Storage") -or (Test-Path "$candidate\logs"))) {
+        $realConfigDir = $candidate
+        break
+    }
+}
+
+if (-not $realConfigDir) {
+    foreach ($candidate in $candidates) {
+        if (Test-Path $candidate) {
+            $realConfigDir = $candidate
+            break
+        }
+    }
+}
+
+if (-not $realConfigDir) {
+    $realConfigDir = "$env:APPDATA\Claude"
+    New-Item -Path $realConfigDir -ItemType Directory -Force | Out-Null
+    Write-Warn2 "No active Claude data folder detected. Created default location."
+    Write-Warn2 "Run Claude Desktop at least once, then re-run this script for accurate detection."
+}
+
+Write-OK "Config location: $realConfigDir"
+
+# =====================================================================
+# Step 13: Write claude_desktop_config.json
+# =====================================================================
+Write-Step "13. Write claude_desktop_config.json"
+
+$nodePath = Get-CommandPath "node"
+$serverPath = $serverJs
+
+Write-Host "  command (node):  $nodePath"
+Write-Host "  args (server):   $serverPath"
+
+$configPath = Join-Path $realConfigDir "claude_desktop_config.json"
+
+$configObject = $null
+if (Test-Path $configPath) {
+    try {
+        $existing = [System.IO.File]::ReadAllText($configPath)
+        if ($existing.Trim()) {
+            $configObject = $existing | ConvertFrom-Json -ErrorAction SilentlyContinue
+            if ($configObject) {
+                Write-Host "  Existing config detected - merge mode"
+            }
+        }
+    } catch {
+        $configObject = $null
+    }
+}
+
+if (-not $configObject) {
+    $configObject = [PSCustomObject]@{}
+}
+
+if (-not $configObject.PSObject.Properties['mcpServers']) {
+    $configObject | Add-Member -MemberType NoteProperty -Name 'mcpServers' -Value ([PSCustomObject]@{})
+}
+
+$mcpEntry = [PSCustomObject]@{
+    command = $nodePath
+    args = @($serverPath)
+}
+
+if ($configObject.mcpServers.PSObject.Properties[$MCP_NAME]) {
+    $configObject.mcpServers.PSObject.Properties.Remove($MCP_NAME)
+}
+$configObject.mcpServers | Add-Member -MemberType NoteProperty -Name $MCP_NAME -Value $mcpEntry
+
+$json = $configObject | ConvertTo-Json -Depth 20
+[System.IO.File]::WriteAllText($configPath, $json, $utf8NoBom)
+
+Write-OK "Config saved: $configPath"
+
+# =====================================================================
+# Step 14: Stop Claude Desktop
+# =====================================================================
+Write-Step "14. Stop Claude Desktop"
+$claudeProcs = Get-Process Claude -ErrorAction SilentlyContinue
+if ($claudeProcs) {
+    Write-Host "  Stopping $($claudeProcs.Count) Claude process(es)..."
+    $claudeProcs | Stop-Process -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 3
+    Write-OK "Claude stopped"
+} else {
+    Write-OK "Claude was not running"
+}
+
+# =====================================================================
+# Done!
+# =====================================================================
+Write-Host ""
+Write-Host "============================================" -ForegroundColor Green
+Write-Host "  SETUP COMPLETE!" -ForegroundColor Green
+Write-Host "============================================" -ForegroundColor Green
+Write-Host ""
+Write-Host "Summary:" -ForegroundColor White
+Write-Host "  Project:      $ProjectPath"
+Write-Host "  Server:       $serverPath"
+Write-Host "  Node:         $nodePath"
+Write-Host "  Config file:  $configPath"
+Write-Host ""
+Write-Host "Next steps:" -ForegroundColor Yellow
+Write-Host "  1. Launch Claude Desktop from Start Menu"
+Write-Host "  2. Open a new chat"
+Write-Host "  3. Click connector / tool icon near input"
+Write-Host "  4. Verify '$MCP_NAME' appears in the list"
+Write-Host ""
+Write-Host "Test prompt:" -ForegroundColor Cyan
+Write-Host '  "What components does the NudgeEAP design system have?"'
+Write-Host ""
+Read-Host "Press Enter to exit"
