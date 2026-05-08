@@ -66,6 +66,7 @@ module.exports = {
         "components/chat-composer",
         "components/phone-input",
         "components/signature-pad",
+        "components/coach-mark",
       ],
     },
     {
