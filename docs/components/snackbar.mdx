@@ -1,0 +1,67 @@
+---
+title: Snackbar
+description: 액션을 포함할 수 있는 inline 알림. Toast(자동 사라짐, Provider)와 분리.
+---
+
+# Snackbar
+
+화면의 특정 위치에 inline으로 박혀 있는 알림입니다. **액션 버튼**(되돌리기 등)이나 **닫기 버튼**을 포함할 수 있습니다.
+
+> Toast와 헷갈리지 마세요:
+> - **Toast**: Provider + 명령형 API. 화면 한쪽에 떠있다가 자동으로 사라짐. 액션 한 개 정도까지.
+> - **Snackbar**: 직접 렌더링하는 인라인 컴포넌트. 페이지 안에 박혀 있고, 사용자가 닫거나 액션을 클릭할 때까지 유지.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 폼 하단의 저장 결과 메시지
+- 페이지 상단에 고정된 시스템 안내 (네트워크 끊김 등)
+- "삭제됐어요. 되돌리기" 같이 액션이 필요한 알림
+
+### 이럴 때 사용하지 마세요
+- 짧은 임시 안내 → `Toast`
+- 페이지 상단 띠형 알림 (이미지/타이틀/CTA) → `Banner`
+
+## 사용법
+
+```tsx
+import { Snackbar } from "@nudge-eap/react";
+
+// 기본 (어두운 배경)
+<Snackbar title="변경사항이 저장됐어요" />
+
+// 액션 버튼
+<Snackbar
+  title="감정 기록을 삭제했어요"
+  actionLabel="되돌리기"
+  onAction={handleUndo}
+/>
+
+// 시맨틱 variant
+<Snackbar variant="success" title="저장 완료" description="다음 단계로 이동합니다." />
+<Snackbar variant="error" title="저장 실패" actionLabel="다시 시도" onAction={retry} />
+
+// 닫기 가능
+<Snackbar title="안내" closable onClose={() => setVisible(false)} />
+```
+
+## Props
+
+| Prop          | 타입                                              | 기본값  | 설명                              |
+| ------------- | ------------------------------------------------- | ------- | --------------------------------- |
+| `variant`     | `"info" \| "success" \| "warning" \| "error"`     | —       | 시맨틱 톤. 미지정 시 어두운 배경  |
+| `title`       | `ReactNode`                                       | —       | 본문                              |
+| `description` | `ReactNode`                                       | —       | 보조 설명                         |
+| `icon`        | `ReactNode`                                       | 자동    | 좌측 아이콘 (variant 기본을 덮어씀) |
+| `actionLabel` | `string`                                          | —       | 우측 액션 버튼 라벨               |
+| `onAction`    | `() => void`                                      | —       | 액션 콜백                         |
+| `closable`    | `boolean`                                         | `false` | 닫기 버튼 표시                    |
+| `onClose`     | `() => void`                                      | —       | 닫기 콜백                         |
+
+## CSS 변수
+
+| 변수                      | 기본값       | 설명         |
+| ------------------------- | ------------ | ------------ |
+| `--nds-snackbar-bg`       | `#1A1A1A` (default) / variant에 따라 | 배경색 |
+| `--nds-snackbar-fg`       | `#fff` / variant에 따라              | 글자색 |
+| `--nds-snackbar-radius`   | `8px`        | 모서리       |

@@ -250,5 +250,17 @@
     "figmaNodeId": "",
     "usageSummary": "설문 선택지, 가입 플랜, 상담 방식, 관심사 선택",
     "notes": "단순 라벨만 있는 선택은 Radio/Checkbox 사용. SelectionCard는 카드 단위 의미 있는 선택지용."
+  },
+  {
+    "name": "Snackbar",
+    "category": "피드백",
+    "status": "implemented",
+    "description": "inline 알림. 액션(되돌리기), 닫기, 시맨틱 variant 지원. Toast와 분리된 컴포넌트",
+    "storybookTitle": "Components/Snackbar",
+    "docsPath": "/docs/components/snackbar",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "되돌리기 메시지, 페이지 시스템 안내, 폼 결과 알림",
+    "notes": "Toast는 Provider+자동 dismiss, Snackbar는 직접 렌더링+사용자 제어."
   }
 ]
