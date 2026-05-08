@@ -66,3 +66,4 @@ export * from "./Snackbar";
 export * from "./FAB";
 export * from "./BreathingGuide";
 export * from "./StreakCard";
+export * from "./EmotionHeatmap";
