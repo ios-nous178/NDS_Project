@@ -75,3 +75,4 @@ export * from "./SignaturePad";
 export * from "./CoachMark";
 export * from "./Sparkline";
 export * from "./CircularProgress";
+export * from "./MultiStepForm";

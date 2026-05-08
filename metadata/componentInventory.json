@@ -406,5 +406,17 @@
     "figmaNodeId": "",
     "usageSummary": "일일 목표 달성률, 챌린지 진행, 업로드 진행도",
     "notes": "ScoreGauge(단계 분류)와 분리, ProgressBar(가로)와 분리."
+  },
+  {
+    "name": "MultiStepForm",
+    "category": "레이아웃",
+    "status": "implemented",
+    "description": "다단계 폼 컨테이너. 진행/검증/제출 관리, useMultiStepForm 훅 제공",
+    "storybookTitle": "Components/MultiStepForm",
+    "docsPath": "/docs/components/multi-step-form",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "회원가입, 본인 인증, 검사 단계, 챌린지 마법사",
+    "notes": "Stepper(인디케이터만)와 분리. canProceed 동기 boolean."
   }
 ]
