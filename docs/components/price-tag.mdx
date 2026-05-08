@@ -1,0 +1,50 @@
+---
+title: PriceTag
+description: 가격 + 할인율 + 원가 표시. 무료/유료 자동 처리.
+---
+
+# PriceTag
+
+가격을 일관된 모양으로 표시하는 컴포넌트입니다. 원가가 함께 있으면 자동으로 할인율 계산, 0원이면 "무료" 라벨.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 상품 / 콘텐츠 / 구독 가격
+- 결제 화면 합계
+- 쿠폰 할인 결과 표시
+
+### 자주 하는 실수
+- `amount`와 `originalAmount` 모두 number일 때만 할인율이 자동 계산됨
+- 통화는 prefix("$") 또는 unit("원") 중 하나로 — 둘 다 쓰면 "$1,000원" 어색
+
+## 사용법
+
+```tsx
+import { PriceTag } from "@nudge-eap/react";
+
+// 할인 표시
+<PriceTag amount={39000} originalAmount={45000} />
+
+// 무료
+<PriceTag amount={0} />
+
+// 큰 사이즈 (상세 페이지)
+<PriceTag amount={39000} originalAmount={45000} size="lg" />
+
+// 달러
+<PriceTag amount={29.99} originalAmount={49.99} prefix="$" unit="" />
+```
+
+## Props
+
+| Prop               | 타입                       | 기본값  | 설명                              |
+| ------------------ | -------------------------- | ------- | --------------------------------- |
+| `amount`           | `number \| string`         | —       | 현재 가격                         |
+| `originalAmount`   | `number`                   | —       | 원가 (취소선 + 할인율 자동)       |
+| `unit`             | `string`                   | `"원"`  | 통화 suffix                       |
+| `prefix`           | `string`                   | —       | 통화 prefix (예: `$`)             |
+| `size`             | `"sm" \| "md" \| "lg"`     | `"md"`  | 크기                              |
+| `discountPosition` | `"before" \| "none"`       | `"before"` | 할인율 위치                  |
+| `formatThousands`  | `boolean`                  | `true`  | 천 단위 콤마 자동                 |
+| `freeLabel`        | `string`                   | `"무료"` | 0원일 때 라벨                  |

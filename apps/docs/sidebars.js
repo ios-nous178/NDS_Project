@@ -98,6 +98,7 @@ module.exports = {
         "components/share-sheet",
         "components/review-card",
         "components/vote-poll",
+        "components/price-tag",
       ],
     },
     {
