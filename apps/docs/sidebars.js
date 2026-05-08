@@ -106,6 +106,7 @@ module.exports = {
         "components/product-card",
         "components/coupon-card",
         "components/order-summary-card",
+        "components/card-visual",
         "components/data-table",
         "components/content-viewer",
         "components/attachment-item",
