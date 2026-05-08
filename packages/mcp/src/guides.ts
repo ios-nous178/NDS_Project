@@ -431,6 +431,23 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "키워드 자동완성: highlight=true (기본), 결과 없을 때 emptyMessage 커스텀",
     ],
   },
+  SelectionCard: {
+    name: "SelectionCard",
+    summary: "카드형 단일/다중 선택지 (RadioCard/CheckboxCard 통합). compound — Group + Item.",
+    pitfalls: [
+      "라벨만 있는 단순 선택은 Radio/Checkbox를 쓸 것 — SelectionCard는 카드 단위(타이틀+설명+아이콘) 전제.",
+      "mode='single'에서는 value/onValueChange, mode='multiple'에서는 values/onValuesChange. 헷갈리지 말 것.",
+      "옵션이 5개 이상이면서 라벨이 짧다면 Chip 토글 그룹이 더 컴팩트.",
+      "horizontal 레이아웃은 옵션 3개 이하일 때만. 그 이상은 wrap돼서 어색해짐.",
+    ],
+    recommended: [
+      "상담 방식 선택: <SelectionCard.Group mode='single'> <Item value='chat' title='채팅' description='...' />",
+      "관심사 다중: mode='multiple', 카드마다 description으로 의미 보강",
+      "플랜 선택: icon prop으로 좌측 일러스트, title/description으로 가격/혜택",
+    ],
+    interactivePattern:
+      "Group의 onValueChange/onValuesChange로만 상태 관리. Item에 onClick 부착 금지(라벨이 input을 토글).",
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
