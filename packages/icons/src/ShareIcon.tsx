@@ -17,57 +17,16 @@ export const ShareIcon = React.forwardRef<SVGSVGElement, ShareIconProps>(
       {...props}
     >
       <g transform="translate(3 2)">
-        <g id="Group">
-          <circle
-            id="Oval"
-            cx="14.5"
-            cy="3.5"
-            r="2.5"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle
-            id="Oval_2"
-            cx="3.5"
-            cy="10"
-            r="2.5"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle
-            id="Oval_3"
-            cx="14.5"
-            cy="16.5"
-            r="2.5"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            id="Path"
-            d="M6 11L12 15"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            id="Path_2"
-            d="M12 5L6 9"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
-      </g>
+    <g id="Group">
+<circle id="Oval" cx="14.5" cy="3.5" r="2.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<circle id="Oval_2" cx="3.5" cy="10" r="2.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<circle id="Oval_3" cx="14.5" cy="16.5" r="2.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Path" d="M6 11L12 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Path_2" d="M12 5L6 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+</g>
+  </g>
     </svg>
-  ),
+  )
 );
 
 ShareIcon.displayName = "ShareIcon";

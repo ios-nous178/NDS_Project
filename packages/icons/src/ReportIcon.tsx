@@ -17,16 +17,16 @@ export const ReportIcon = React.forwardRef<SVGSVGElement, ReportIconProps>(
       {...props}
     >
       <g transform="translate(2 2)">
-        <g id="ic/report/gray500">
-          <circle id="Oval" cx="10" cy="10" r="9.25" stroke="currentColor" strokeWidth="1.5" />
-          <g id="!">
-            <circle id="Oval_2" cx="10" cy="13.7" r="1" fill="currentColor" />
-            <rect id="Rectangle" x="9" y="5.5" width="2" height="6" rx="1" fill="currentColor" />
-          </g>
-        </g>
-      </g>
+    <g id="ic/report/gray500">
+<circle id="Oval" cx="10" cy="10" r="9.25" stroke="currentColor" strokeWidth="1.5"/>
+<g id="!">
+<circle id="Oval_2" cx="10" cy="13.7" r="1" fill="currentColor"/>
+<rect id="Rectangle" x="9" y="5.5" width="2" height="6" rx="1" fill="currentColor"/>
+</g>
+</g>
+  </g>
     </svg>
-  ),
+  )
 );
 
 ReportIcon.displayName = "ReportIcon";

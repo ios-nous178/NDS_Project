@@ -17,26 +17,13 @@ export const MymusicIcon = React.forwardRef<SVGSVGElement, MymusicIconProps>(
       {...props}
     >
       <g id="icon_mymusic_black">
-        <g id="Rectangle 2539"></g>
-        <path
-          id="Vector"
-          d="M17.5 17V5C17.5 5 21 7 21 10M17.5 17.4C17.5 18.726 16.157 19.8 14.5 19.8C12.843 19.8 11.5 18.725 11.5 17.4C11.5 16.075 12.843 15 14.5 15C16.157 15 17.5 16.075 17.5 17.4Z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          id="Vector_2"
-          d="M12 6H3M12 10H3M7 14H3"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </g>
+<g id="Rectangle 2539">
+</g>
+<path id="Vector" d="M17.5 17V5C17.5 5 21 7 21 10M17.5 17.4C17.5 18.726 16.157 19.8 14.5 19.8C12.843 19.8 11.5 18.725 11.5 17.4C11.5 16.075 12.843 15 14.5 15C16.157 15 17.5 16.075 17.5 17.4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Vector_2" d="M12 6H3M12 10H3M7 14H3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+</g>
     </svg>
-  ),
+  )
 );
 
 MymusicIcon.displayName = "MymusicIcon";

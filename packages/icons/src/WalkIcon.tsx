@@ -17,10 +17,11 @@ export const WalkIcon = React.forwardRef<SVGSVGElement, WalkIconProps>(
       {...props}
     >
       <g transform="translate(-4 -4)">
-        <g id="Rectangle"></g>
-      </g>
+    <g id="Rectangle">
+</g>
+  </g>
     </svg>
-  ),
+  )
 );
 
 WalkIcon.displayName = "WalkIcon";

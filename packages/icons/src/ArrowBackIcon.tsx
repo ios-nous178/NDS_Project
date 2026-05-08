@@ -17,17 +17,10 @@ export const ArrowBackIcon = React.forwardRef<SVGSVGElement, ArrowBackIconProps>
       {...props}
     >
       <g transform="translate(4.5 5)">
-        <path
-          id="Vector"
-          d="M16 7H1M6.625 13L1 7L6.625 1"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </g>
+    <path id="Vector" d="M16 7H1M6.625 13L1 7L6.625 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </g>
     </svg>
-  ),
+  )
 );
 
 ArrowBackIcon.displayName = "ArrowBackIcon";

@@ -17,28 +17,13 @@ export const PlusIcon = React.forwardRef<SVGSVGElement, PlusIconProps>(
       {...props}
     >
       <g transform="translate(4 4)">
-        <g id="Group 3541">
-          <line
-            id="Line 11"
-            x1="1"
-            y1="8"
-            x2="15"
-            y2="8"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <path
-            id="Line 12"
-            d="M8 15V9V1"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </g>
-      </g>
+    <g id="Group 3541">
+<line id="Line 11" x1="1" y1="8" x2="15" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+<path id="Line 12" d="M8 15V9V1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+</g>
+  </g>
     </svg>
-  ),
+  )
 );
 
 PlusIcon.displayName = "PlusIcon";
