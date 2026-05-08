@@ -1,0 +1,46 @@
+---
+title: WaveformPlayer
+description: 음성 메시지 재생 (파형 시각화). AudioPlayer의 컴팩트 형태.
+---
+
+# WaveformPlayer
+
+채팅 음성 메시지나 짧은 음성 메모를 재생하는 컴팩트한 플레이어입니다. 막대형 파형(waveform)으로 시각화하고, 클릭으로 위치 이동을 지원합니다.
+
+> AudioPlayer가 트랙바 + 큰 컨트롤로 콘텐츠 재생용이라면, WaveformPlayer는 **메시지/메모용** 컴팩트 형태입니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 채팅 음성 메시지
+- 짧은 음성 메모 재생
+- 일기 음성 모드 재생
+
+### 자주 하는 실수
+- `peaks`를 안 주면 src 기반 의사 랜덤 파형이 그려짐 — 정확한 파형이 필요하면 서버에서 미리 계산해 전달
+- 긴 콘텐츠(>5분)에는 트랙바 형태인 `AudioPlayer`가 더 적합
+
+## 사용법
+
+```tsx
+import { WaveformPlayer } from "@nudge-eap/react";
+
+<WaveformPlayer src={voiceUrl} />
+
+// 사전 계산된 파형 (서버 메타데이터)
+<WaveformPlayer src={voiceUrl} peaks={preCalculatedPeaks} />
+
+// 사용자 색
+<WaveformPlayer src={voiceUrl} color="var(--color-semantic-success-main)" />
+```
+
+## Props
+
+| Prop       | 타입         | 기본값  | 설명                              |
+| ---------- | ------------ | ------- | --------------------------------- |
+| `src`      | `string`     | —       | 오디오 URL                        |
+| `peaks`    | `number[]`   | 자동    | 파형 진폭 (0~1)                   |
+| `bars`     | `number`     | `36`    | 막대 개수 (peaks 미지정 시)       |
+| `color`    | `string`     | primary | 사용자 보이스 컬러                |
+| `duration` | `number`     | 자동    | 표시 길이(초). 미지정 시 metadata |
+| `autoPlay` | `boolean`    | `false` | 자동 재생                         |

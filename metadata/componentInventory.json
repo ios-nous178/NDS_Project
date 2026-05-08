@@ -658,5 +658,17 @@
     "figmaNodeId": "",
     "usageSummary": "일기/콘텐츠 리스트 새로고침, 모바일 화면",
     "notes": "최상단(scrollTop=0)에서만 트리거. 모바일 우선."
+  },
+  {
+    "name": "WaveformPlayer",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "음성 메시지 파형 플레이어. peaks 사전계산 또는 의사 랜덤, 클릭 시 시킹",
+    "storybookTitle": "Components/WaveformPlayer",
+    "docsPath": "/docs/components/waveform-player",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "채팅 음성 메시지, 짧은 음성 메모 재생",
+    "notes": "AudioPlayer(트랙바)와 분리된 컴팩트 메시지 형태."
   }
 ]
