@@ -579,7 +579,7 @@
     "name": "GreetingHeader",
     "category": "도메인",
     "status": "implemented",
-    "description": "홈 인삿말 카드. {name}님 자동, greeting/question/trailing/actions 슬롯",
+    "description": "홈 인삿말 카드. `{name}`님 자동, greeting/question/trailing/actions 슬롯",
     "storybookTitle": "Components/GreetingHeader",
     "docsPath": "/docs/components/greeting-header",
     "figmaUrl": "",
