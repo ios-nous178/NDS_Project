@@ -91,3 +91,4 @@ export * from "./OnlineIndicator";
 export * from "./ReactionPicker";
 export * from "./GreetingHeader";
 export * from "./TipCard";
+export * from "./PinPad";
