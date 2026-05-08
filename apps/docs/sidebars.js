@@ -95,6 +95,7 @@ module.exports = {
         "components/confetti",
         "components/comment-item",
         "components/like-button",
+        "components/share-sheet",
       ],
     },
     {

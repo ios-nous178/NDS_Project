@@ -1,0 +1,61 @@
+---
+title: ShareSheet
+description: 공유 모달 (BottomSheet 형태). 카카오/SMS/이메일/링크 복사.
+---
+
+# ShareSheet
+
+화면 하단에서 올라오는 공유 모달입니다. 4칸 그리드의 공유 대상 + 선택적으로 링크 복사 인풋을 보여줍니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 콘텐츠/일기/검사 결과 공유
+- 챌린지 인증 공유
+- 추천인 링크 발송
+
+### 자주 하는 실수
+- `targets`의 `onClick`은 외부 SDK 호출(카카오 sharing 등)을 직접 — 컴포넌트는 아무 SDK도 안 부름
+- `link`를 주면 `navigator.clipboard.writeText` 자동 — HTTPS 환경 필요
+
+## 사용법
+
+```tsx
+import { ShareSheet } from "@nudge-eap/react";
+
+<ShareSheet
+  open={open}
+  onClose={() => setOpen(false)}
+  title="이 콘텐츠 공유"
+  targets={[
+    { key: "kakao", label: "카카오톡", icon: "💬", bg: "#FEE500", onClick: shareKakao },
+    { key: "sms", label: "메시지", icon: "📱", bg: "#A2D2FF", onClick: shareSMS },
+    { key: "email", label: "이메일", icon: "✉️", bg: "#FFE3D8", onClick: shareEmail },
+    { key: "save", label: "이미지로 저장", icon: "📥", bg: "#E8E2FA", onClick: saveAsImage },
+  ]}
+  link="https://app.nudge.health/contents/abc123"
+/>
+```
+
+## Props
+
+| Prop           | 타입             | 기본값       | 설명                          |
+| -------------- | ---------------- | ------------ | ----------------------------- |
+| `open`         | `boolean`        | —            | 열림 여부                     |
+| `onClose`      | `() => void`     | —            | 닫기 콜백                     |
+| `title`        | `ReactNode`      | `"공유하기"` | 제목                          |
+| `description`  | `ReactNode`      | —            | 설명                          |
+| `targets`      | `ShareTarget[]`  | —            | 공유 대상 4칸 그리드          |
+| `link`         | `string`         | —            | 복사 가능한 링크 (선택)       |
+| `copiedLabel`  | `string`         | `"복사됨"`   | 복사 후 라벨                  |
+| `onLinkCopied` | `() => void`     | —            | 복사 후 콜백 (외부 토스트 등) |
+
+### `ShareTarget`
+
+| Prop      | 타입         | 설명                              |
+| --------- | ------------ | --------------------------------- |
+| `key`     | `string`     | 고유 키                           |
+| `label`   | `string`     | 라벨                              |
+| `icon`    | `ReactNode`  | 이모지/아이콘                     |
+| `onClick` | `() => void` | 클릭 콜백 (외부 SDK 호출은 여기서) |
+| `bg`      | `string`     | 아이콘 배경 색 (선택)             |
