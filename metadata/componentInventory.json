@@ -634,5 +634,17 @@
     "figmaNodeId": "",
     "usageSummary": "회원가입 주소, 배송 주소, 방문 상담 주소",
     "notes": "검색 자체는 외부 API. value = 주소 + 상세 한 묶음."
+  },
+  {
+    "name": "ImageCropper",
+    "category": "입력",
+    "status": "implemented",
+    "description": "이미지 자르기 (원형/사각형). 드래그+줌, ref.toDataURL() PNG 추출",
+    "storybookTitle": "Components/ImageCropper",
+    "docsPath": "/docs/components/image-cropper",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "프로필 사진 등록, 커버 이미지 자르기",
+    "notes": "외부 이미지는 CORS 필요. outputSize 200~400 권장."
   }
 ]

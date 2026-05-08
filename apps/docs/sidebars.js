@@ -88,6 +88,7 @@ module.exports = {
         "components/pin-pad",
         "components/time-picker",
         "components/address-search",
+        "components/image-cropper",
       ],
     },
     {
