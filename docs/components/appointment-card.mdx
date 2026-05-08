@@ -1,0 +1,72 @@
+---
+title: AppointmentCard
+description: 잡힌 상담 예약 카드. 날짜·시간·상담 방식·상태·액션 표시.
+---
+
+# AppointmentCard
+
+이미 잡힌 상담 일정 한 건을 보여주는 카드입니다. 좌측에 날짜 블록, 우측에 제목·시간·방식·상태·액션이 배치됩니다.
+
+> `CounselorCard`와 분리: 그건 상담사를 **선택하기 위한** 프로필 카드, 이건 **잡힌 일정**을 보여주는 카드.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- "내 예약" 리스트
+- 홈 화면 다음 일정 알림
+- 상담사 페이지의 "내 다음 세션"
+
+### 자주 하는 실수
+- 상담사 선택 화면에 쓰지 말 것 — 그건 `CounselorCard`
+- onClick(카드 전체)과 actions를 동시에 두면 액션 클릭 시 카드 onClick이 함께 발동되지 않음 (내부에서 stopPropagation 처리됨 — 의도적)
+
+## 사용법
+
+```tsx
+import { AppointmentCard } from "@nudge-eap/react";
+
+<AppointmentCard
+  date="2026-05-15"
+  startTime="14:00"
+  endTime="14:50"
+  title="김민지 상담사 — 화상 상담"
+  mode="video"
+  status="confirmed"
+  actions={[
+    { label: "상세", onClick: openDetail },
+    { label: "참여", onClick: joinSession, primary: true },
+  ]}
+/>
+
+// 방문 상담 (장소 포함)
+<AppointmentCard
+  date="..."
+  startTime="11:00"
+  title="박지원 상담사"
+  mode="in-person"
+  location="강남센터 3층 301호"
+  status="confirmed"
+/>
+```
+
+## Props
+
+| Prop        | 타입                                                                       | 기본값        | 설명                            |
+| ----------- | -------------------------------------------------------------------------- | ------------- | ------------------------------- |
+| `date`      | `string`                                                                   | —             | `YYYY-MM-DD`                    |
+| `startTime` | `string`                                                                   | —             | `HH:mm`                         |
+| `endTime`   | `string`                                                                   | —             | `HH:mm` (선택)                  |
+| `title`     | `ReactNode`                                                                | —             | 제목 (상담사 이름 등)           |
+| `mode`      | `"video" \| "phone" \| "chat" \| "in-person"`                              | —             | 상담 방식                       |
+| `location`  | `ReactNode`                                                                | —             | 장소 (in-person 모드)           |
+| `status`    | `"scheduled" \| "confirmed" \| "in-progress" \| "completed" \| "canceled"` | `"scheduled"` | 상태 (배지 색상 자동)           |
+| `actions`   | `AppointmentAction[]`                                                      | —             | 우측 하단 버튼들                |
+| `onClick`   | `() => void`                                                               | —             | 카드 전체 클릭 (상세 진입)      |
+
+### `AppointmentAction`
+
+| Prop      | 타입         | 설명                  |
+| --------- | ------------ | --------------------- |
+| `label`   | `string`     | 버튼 라벨             |
+| `onClick` | `() => void` | 클릭 콜백             |
+| `primary` | `boolean`    | 강조 (1차 액션 스타일) |
