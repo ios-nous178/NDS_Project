@@ -1062,6 +1062,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "후원: presets에 set:true 4종 (5천/1만/3만/5만)",
     ],
   },
+  StatusTimeline: {
+    name: "StatusTimeline",
+    summary:
+      "단계 진행 트래커 (가로/세로). current 이전은 완료, 이후는 todo. ActivityTimeline(시간순 로그)과 분리.",
+    pitfalls: [
+      "current는 현재 진행 인덱스 (0-based). 전부 완료는 current=steps.length.",
+      "ActivityTimeline은 자유로운 시간순 로그 — StatusTimeline은 정해진 단계 트래커.",
+      "단계 5개 이상은 가로형이 좁아짐 — 세로형 권장.",
+    ],
+    recommended: [
+      "배송 추적: 가로형 4단계, time 표시",
+      "상담 진행: 세로형, description으로 단계 설명",
+      "신청서: 접수→검토→승인 3단계",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

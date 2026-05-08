@@ -778,5 +778,17 @@
     "figmaNodeId": "",
     "usageSummary": "송금/결제, 후원/응원, 충전 금액",
     "notes": "value=number|null (빈 입력은 null). NumberStepper(작은 정수)와 분리."
+  },
+  {
+    "name": "StatusTimeline",
+    "category": "일반",
+    "status": "implemented",
+    "description": "단계 진행 트래커. 가로/세로, current 기준 done/current/todo 자동 색",
+    "storybookTitle": "Components/StatusTimeline",
+    "docsPath": "/docs/components/status-timeline",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "배송 추적, 상담 진행, 신청 처리",
+    "notes": "ActivityTimeline(자유 로그)과 분리. 정해진 선형 단계용."
   }
 ]
