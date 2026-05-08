@@ -89,6 +89,7 @@ module.exports = {
         "components/time-picker",
         "components/address-search",
         "components/image-cropper",
+        "components/pull-to-refresh",
       ],
     },
     {
