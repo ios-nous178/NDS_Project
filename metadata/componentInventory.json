@@ -418,5 +418,17 @@
     "figmaNodeId": "",
     "usageSummary": "회원가입, 본인 인증, 검사 단계, 챌린지 마법사",
     "notes": "Stepper(인디케이터만)와 분리. canProceed 동기 boolean."
+  },
+  {
+    "name": "ExpandableText",
+    "category": "일반",
+    "status": "implemented",
+    "description": "긴 텍스트 줄 수 클램프 + 더보기/접기 자동 토글",
+    "storybookTitle": "Components/ExpandableText",
+    "docsPath": "/docs/components/expandable-text",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "일기 미리보기, 콘텐츠 설명, 약관 미리보기, 리뷰",
+    "notes": "line-height 기반 측정. JournalEntry는 자체 클램프 있음 — 중첩 금지."
   }
 ]
