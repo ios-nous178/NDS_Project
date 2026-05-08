@@ -8,3 +8,5 @@ storybook-static
 coverage
 chromatic-diagnostics.json
 chromatic.log
+.DS_Store
+*.tgz
