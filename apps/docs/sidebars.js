@@ -50,6 +50,7 @@ module.exports = {
         "components/otp-input",
         "components/file-upload",
         "components/date-range-picker",
+        "components/calendar",
       ],
     },
     {
