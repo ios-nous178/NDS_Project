@@ -76,3 +76,4 @@ export * from "./CoachMark";
 export * from "./Sparkline";
 export * from "./CircularProgress";
 export * from "./MultiStepForm";
+export * from "./ExpandableText";

@@ -661,6 +661,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "비동기 제출: submitting prop으로 버튼 비활성, onSubmit async",
     ],
   },
+  ExpandableText: {
+    name: "ExpandableText",
+    summary: "긴 텍스트 줄 수 클램프 + '더보기/접기' 자동. 짧은 텍스트면 토글 자동 숨김.",
+    pitfalls: [
+      "본문 안에 폰트 사이즈가 섞이면 line-height 측정 정확도 떨어짐 — 단일 톤 텍스트에만 사용.",
+      "JournalEntry는 자체 본문 클램프(maxLines)를 가지고 있음. 카드 안에서 ExpandableText 중첩하지 말 것.",
+      "hideCollapse=true는 약관 같이 한 번 펼치면 끝나는 케이스용. 일기/콘텐츠는 접기도 가능해야 함.",
+    ],
+    recommended: [
+      "콘텐츠 설명: lines={3}로 미리보기 + 더보기",
+      "약관: hideCollapse + expandLabel='이용약관 전문 보기'",
+      "리뷰: 기본 3줄, 자연스러운 토글",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
