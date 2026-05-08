@@ -93,3 +93,4 @@ export * from "./GreetingHeader";
 export * from "./TipCard";
 export * from "./PinPad";
 export * from "./TimePicker";
+export * from "./AddressSearch";

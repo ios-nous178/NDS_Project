@@ -893,6 +893,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["알림: step=300, min='07:00' max='23:00'", "복약: step=900"],
   },
+  AddressSearch: {
+    name: "AddressSearch",
+    summary:
+      "주소 검색 + 상세 주소 입력. 검색 자체는 외부 API(카카오/네이버)로 처리, results만 전달.",
+    pitfalls: [
+      "onSearch는 외부 API 호출 트리거 — 컴포넌트가 직접 검색 안 함.",
+      "value는 주소 + 상세 한 묶음 — 폼 state에서 단일 값으로 관리.",
+      "loading 상태 동안 검색 버튼 비활성 — 직접 disabled 처리 X.",
+    ],
+    recommended: [
+      "회원가입 주소: query/results를 외부 hook으로 관리",
+      "방문 상담 주소: helperText='출입 가능한 주소를 입력해주세요'",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
