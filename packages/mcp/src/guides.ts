@@ -1088,6 +1088,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["콘텐츠 리스트: 다중 선택 + count", "상담사 분야: single"],
   },
+  UserCard: {
+    name: "UserCard",
+    summary:
+      "범용 프로필 미니카드. row/stacked, verified, action 슬롯. CounselorCard(EAP 특화)와 분리.",
+    pitfalls: [
+      "onClick과 action 동시 사용 가능 — action 클릭은 stopPropagation됨 (의도).",
+      "bio는 자동 2줄 클램프. 디테일은 별도 화면으로.",
+      "EAP 상담사 전용은 CounselorCard. UserCard는 일반 사용자/멤버용.",
+    ],
+    recommended: [
+      "팔로우 리스트: row + 작은 action 버튼",
+      "프로필 모달: stacked + bio + 큰 action",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

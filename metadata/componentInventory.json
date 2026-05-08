@@ -802,5 +802,17 @@
     "figmaNodeId": "",
     "usageSummary": "콘텐츠/상품/상담사 리스트 필터, 검색 결과 필터링",
     "notes": "Tabs(뷰 전환)과 분리. single은 다시 누르면 해제됨."
+  },
+  {
+    "name": "UserCard",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "범용 프로필 미니카드. row/stacked, verified, action 슬롯",
+    "storybookTitle": "Components/UserCard",
+    "docsPath": "/docs/components/user-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "팔로우 리스트, 그룹 멤버, 추천 친구, 작성자 프로필",
+    "notes": "CounselorCard(EAP 특화)와 분리된 일반 사용자용."
   }
 ]
