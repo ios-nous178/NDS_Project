@@ -56,6 +56,7 @@ module.exports = {
         "components/number-stepper",
         "components/autocomplete",
         "components/selection-card",
+        "components/snackbar",
       ],
     },
     {

@@ -448,6 +448,24 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     interactivePattern:
       "Group의 onValueChange/onValuesChange로만 상태 관리. Item에 onClick 부착 금지(라벨이 input을 토글).",
   },
+  Snackbar: {
+    name: "Snackbar",
+    summary:
+      "inline 알림. 액션(되돌리기) / 닫기 버튼 / 시맨틱 variant 지원. Toast(자동 사라짐)와 분리된 컴포넌트.",
+    pitfalls: [
+      "임시 메시지(저장됨/복사됨)에 Snackbar를 길게 띄우지 말 것 — Toast가 더 적합.",
+      "액션이 두 개 이상 필요하면 Snackbar 대신 Modal/Popup을 검토.",
+      "variant 미지정 시 검은 배경. 페이지가 흰 배경일 때 가장 강조되며, 시맨틱 톤이 필요하면 variant 사용.",
+      "title 없이 description만 사용하지 말 것 — 시맨틱 의미가 무너짐.",
+    ],
+    recommended: [
+      "되돌리기: <Snackbar title='삭제됐어요' actionLabel='되돌리기' onAction={undo} />",
+      "에러 + 재시도: variant='error' actionLabel='다시 시도'",
+      "사용자가 닫을 때까지 유지: closable + onClose",
+    ],
+    interactivePattern:
+      "Snackbar는 자체 visibility를 관리하지 않음 — 부모가 mount/unmount로 표시 여부 통제.",
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
