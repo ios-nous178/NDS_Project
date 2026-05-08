@@ -93,6 +93,7 @@ module.exports = {
         "components/waveform-player",
         "components/mention-input",
         "components/confetti",
+        "components/comment-item",
       ],
     },
     {

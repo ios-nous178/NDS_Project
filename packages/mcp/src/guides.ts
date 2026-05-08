@@ -966,6 +966,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["챌린지 완료: 결과 화면 마운트 시 1회", "첫 가입 환영: 가입 완료 모달 위에 발사"],
   },
+  CommentItem: {
+    name: "CommentItem",
+    summary:
+      "댓글 한 건. 작성자/시간/본문 + 좋아요/답글 슬롯 + 답글 트리(replies). 본문 줄바꿈 자동 보존.",
+    pitfalls: [
+      "답글에는 isReply=true로 들여쓰기 시각 강조. 빠뜨리면 평면적으로 보임.",
+      "likeAction은 슬롯 — LikeButton 컴포넌트를 직접 넘김. 텍스트 버튼만 두지 말 것.",
+      "본문은 white-space: pre-wrap — text에 줄바꿈 그대로 넣으면 됨.",
+    ],
+    recommended: [
+      "콘텐츠 댓글: avatar + author + likeAction + onReply",
+      "답글 트리: replies={<>... isReply ...</>}",
+      "상담사 댓글: authorBadge로 역할 표시",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
