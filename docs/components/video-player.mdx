@@ -1,0 +1,68 @@
+---
+title: VideoPlayer
+description: 영상 재생 컴포넌트. 포스터, 커스텀 컨트롤, 비율 조정 지원.
+---
+
+# VideoPlayer
+
+HTML5 `<video>`를 감싸 일관된 외형(포스터, 재생 오버레이, 진행 바)을 제공하는 컴포넌트입니다.
+명상 영상, 상담 안내 영상, 콘텐츠 큐레이션에 사용하세요.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 호스팅된 mp4/webm 영상을 인앱에서 재생
+- 포스터 이미지로 첫 화면을 디자인하고 재생을 유도
+
+### 이럴 때 사용하지 마세요
+- YouTube/Vimeo embed가 필요할 때 → iframe으로 직접 (해당 플랫폼 정책 준수)
+- 라이브 스트리밍/HLS → HLS.js 등 별도 라이브러리
+
+### 자주 하는 실수
+- `autoPlay` 켤 때 `muted` 빠뜨리면 브라우저가 차단
+- 모바일 인라인 재생을 위해 `playsInline`은 항상 켜져 있음 (built-in)
+
+## 사용법
+
+```tsx
+import { VideoPlayer } from "@nudge-eap/react";
+
+// 기본 (커스텀 UI)
+<VideoPlayer
+  src="/videos/meditation.mp4"
+  poster="/videos/meditation-cover.jpg"
+  title="아침 명상"
+  durationLabel="5:30"
+/>
+
+// 네이티브 컨트롤 사용
+<VideoPlayer src="..." nativeControls />
+
+// 1:1 비율 (인스타 스토리 형식)
+<VideoPlayer src="..." aspectRatio="1 / 1" />
+
+// 자동 재생 (음소거 필수)
+<VideoPlayer src="..." autoPlay muted loop />
+```
+
+## Props
+
+| Prop             | 타입                | 기본값    | 설명                                        |
+| ---------------- | ------------------- | --------- | ------------------------------------------- |
+| `src`            | `string`            | —         | 비디오 URL (필수)                           |
+| `poster`         | `string`            | —         | 포스터 이미지 URL                           |
+| `title`          | `ReactNode`         | —         | 좌측 상단 제목                              |
+| `durationLabel`  | `string`            | 자동      | 우측 상단 길이. 미지정 시 metadata에서 계산 |
+| `autoPlay`       | `boolean`           | `false`   | 자동 재생 (muted 필수)                      |
+| `muted`          | `boolean`           | `false`   | 음소거                                      |
+| `loop`           | `boolean`           | `false`   | 반복 재생                                   |
+| `nativeControls` | `boolean`           | `false`   | 브라우저 기본 컨트롤 사용                   |
+| `aspectRatio`    | `string`            | `16 / 9`  | CSS aspect-ratio                            |
+| `onEnded`        | `() => void`        | —         | 종료 콜백                                   |
+
+## CSS 변수
+
+| 변수                            | 기본값  | 설명     |
+| ------------------------------- | ------- | -------- |
+| `--nds-video-player-radius`     | `12px`  | 모서리   |
+| `--nds-video-player-aspect`     | `16/9`  | 비율     |

@@ -202,5 +202,17 @@
     "figmaNodeId": "",
     "usageSummary": "홈 배너, 콘텐츠 추천, 이미지 갤러리, 온보딩 슬라이드",
     "notes": "포인터/터치 드래그 + 자동 재생을 한 컴포넌트로 통합."
+  },
+  {
+    "name": "VideoPlayer",
+    "category": "일반",
+    "status": "implemented",
+    "description": "HTML5 video 래퍼. 포스터, 커스텀 컨트롤, 비율 조정 지원",
+    "storybookTitle": "Components/VideoPlayer",
+    "docsPath": "/docs/components/video-player",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "명상 영상, 상담 안내 영상, 콘텐츠 큐레이션",
+    "notes": "AudioPlayer의 영상 버전. 라이브 스트리밍/HLS는 별도 라이브러리 필요."
   }
 ]
