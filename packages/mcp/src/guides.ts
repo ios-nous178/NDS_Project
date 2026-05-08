@@ -996,6 +996,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "primary 톤: activeColor=primary로 좋아요/북마크 같은 의미 강조",
     ],
   },
+  ShareSheet: {
+    name: "ShareSheet",
+    summary:
+      "BottomSheet 형태 공유 모달. 4칸 그리드 + 선택적 링크 복사. 외부 SDK(카카오/메시지)는 onClick에서 직접 호출.",
+    pitfalls: [
+      "컴포넌트가 SDK를 부르지 않음 — targets[i].onClick 안에서 카카오/네이버 등 직접 호출.",
+      "link 복사는 navigator.clipboard 사용 — HTTPS 환경 필요. file://나 http://에선 동작 X.",
+      "Modal/BottomSheet과 별도. ShareSheet은 그리드 4칸 + 링크 정형 패턴.",
+    ],
+    recommended: [
+      "콘텐츠 공유: 카카오/SMS/이메일/저장 + link",
+      "챌린지 인증: 이미지 저장 + 카카오톡",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

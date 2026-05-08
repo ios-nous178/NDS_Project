@@ -101,3 +101,4 @@ export * from "./MentionInput";
 export * from "./Confetti";
 export * from "./CommentItem";
 export * from "./LikeButton";
+export * from "./ShareSheet";

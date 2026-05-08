@@ -718,5 +718,17 @@
     "figmaNodeId": "",
     "usageSummary": "콘텐츠/일기/댓글 단일 좋아요, 게시물 푸터",
     "notes": "ReactionPicker(여러 이모지)와 분리. controlled."
+  },
+  {
+    "name": "ShareSheet",
+    "category": "오버레이",
+    "status": "implemented",
+    "description": "BottomSheet 형태 공유 모달. 4칸 그리드 + 링크 복사",
+    "storybookTitle": "Components/ShareSheet",
+    "docsPath": "/docs/components/share-sheet",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "콘텐츠/검사/일기 공유, 챌린지 인증, 추천인 링크",
+    "notes": "외부 SDK(카카오/SMS)는 targets onClick에서 직접 호출. clipboard는 HTTPS 필요."
   }
 ]
