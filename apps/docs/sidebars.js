@@ -91,6 +91,7 @@ module.exports = {
         "components/image-cropper",
         "components/pull-to-refresh",
         "components/waveform-player",
+        "components/mention-input",
       ],
     },
     {
