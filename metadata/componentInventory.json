@@ -826,5 +826,17 @@
     "figmaNodeId": "",
     "usageSummary": "굿즈/콘텐츠 그리드, 검색 결과, 추천 캐러셀",
     "notes": "가격은 PriceTag 슬롯. 품절은 soldOut(오버레이), 라벨은 badge."
+  },
+  {
+    "name": "CouponCard",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "쿠폰 카드. 좌측 할인율 + 우측 정보, 점선 + 반원 컷아웃 자동",
+    "storybookTitle": "Components/CouponCard",
+    "docsPath": "/docs/components/coupon-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "쿠폰함, EAP 무료 코드, 챌린지 보상권",
+    "notes": "discount/suffix 분리. disabled=true면 버튼 자동 변경."
   }
 ]

@@ -1,0 +1,241 @@
+import React from "react";
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  radius,
+  spacing,
+  transition,
+  typeScale,
+} from "@nudge-eap/tokens";
+
+/* ─── Constants ─── */
+
+const CC_CLASS = "nds-coupon-card";
+const CC_LEFT_CLASS = `${CC_CLASS}__left`;
+const CC_DIVIDER_CLASS = `${CC_CLASS}__divider`;
+const CC_RIGHT_CLASS = `${CC_CLASS}__right`;
+const CC_DISCOUNT_CLASS = `${CC_CLASS}__discount`;
+const CC_TITLE_CLASS = `${CC_CLASS}__title`;
+const CC_DESC_CLASS = `${CC_CLASS}__desc`;
+const CC_EXPIRY_CLASS = `${CC_CLASS}__expiry`;
+const CC_ACTION_CLASS = `${CC_CLASS}__action`;
+
+/* ─── Types ─── */
+
+export interface CouponCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** 할인 금액/율 표시 (예: "30%", "5,000원") */
+  discount: React.ReactNode;
+  /** 보조 단위 (예: "할인", "OFF") */
+  discountSuffix?: React.ReactNode;
+  /** 쿠폰 제목 */
+  title: React.ReactNode;
+  /** 조건/설명 */
+  description?: React.ReactNode;
+  /** 만료일 라벨 */
+  expiry?: React.ReactNode;
+  /** 사용 버튼 라벨 */
+  actionLabel?: string;
+  /** 사용/받기 콜백 */
+  onAction?: () => void;
+  /** 비활성/만료 */
+  disabled?: boolean;
+  /** 비활성 라벨 (사용 완료/만료) */
+  disabledLabel?: string;
+}
+
+/* ─── Styles ─── */
+
+// eslint-disable-next-line unused-imports/no-unused-vars
+const ccStyles = `
+  :where(.${CC_CLASS}) {
+    display: flex;
+    align-items: stretch;
+    background: var(--nds-coupon-bg, var(--color-semantic-primary-bg, #EBF1FF));
+    color: var(--nds-coupon-fg, var(--color-semantic-primary-main, #4080F0));
+    border-radius: ${radius.lg}px;
+    font-family: ${fontFamily.web};
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  :where(.${CC_CLASS}[data-disabled="true"]) {
+    background: ${cv.bg.coolGray};
+    color: ${cv.text.subtle};
+  }
+
+  :where(.${CC_LEFT_CLASS}) {
+    flex-shrink: 0;
+    width: 110px;
+    padding: ${spacing[16]}px ${spacing[12]}px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: ${spacing[4]}px;
+  }
+
+  :where(.${CC_DISCOUNT_CLASS}) {
+    font-size: 32px;
+    font-weight: ${fontWeight.bold};
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  :where(.${CC_DISCOUNT_CLASS}) > small {
+    display: block;
+    font-size: ${typeScale.caption1.fontSize}px;
+    font-weight: ${fontWeight.semibold};
+    margin-top: ${spacing[4]}px;
+    opacity: 0.85;
+  }
+
+  :where(.${CC_DIVIDER_CLASS}) {
+    width: 1px;
+    background: repeating-linear-gradient(
+      to bottom,
+      currentColor 0,
+      currentColor 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    opacity: 0.4;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  :where(.${CC_DIVIDER_CLASS})::before,
+  :where(.${CC_DIVIDER_CLASS})::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    background: ${cv.bg.white};
+    left: -8px;
+  }
+  :where(.${CC_DIVIDER_CLASS})::before { top: -8px; }
+  :where(.${CC_DIVIDER_CLASS})::after { bottom: -8px; }
+
+  :where(.${CC_RIGHT_CLASS}) {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: ${spacing[12]}px;
+    padding: ${spacing[16]}px ${spacing[20]}px;
+    color: ${cv.text.default};
+    background: ${cv.bg.white};
+  }
+
+  :where(.${CC_CLASS}[data-disabled="true"]) .${CC_RIGHT_CLASS} {
+    color: ${cv.text.subtle};
+  }
+
+  :where(.${CC_RIGHT_CLASS}) > div {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  :where(.${CC_TITLE_CLASS}) {
+    font-size: ${typeScale.body3.fontSize}px;
+    font-weight: ${fontWeight.bold};
+    margin: 0;
+  }
+
+  :where(.${CC_DESC_CLASS}) {
+    font-size: ${typeScale.caption1.fontSize}px;
+    color: ${cv.text.subtle};
+  }
+
+  :where(.${CC_EXPIRY_CLASS}) {
+    font-size: ${typeScale.caption2.fontSize}px;
+    color: ${cv.text.subtle};
+    margin-top: ${spacing[4]}px;
+  }
+
+  :where(.${CC_ACTION_CLASS}) {
+    flex-shrink: 0;
+    height: 32px;
+    padding: 0 ${spacing[12]}px;
+    border: none;
+    border-radius: 9999px;
+    background: var(--color-semantic-primary-main, #4080F0);
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: ${typeScale.caption1.fontSize}px;
+    font-weight: ${fontWeight.semibold};
+    transition: opacity ${transition.default};
+  }
+
+  :where(.${CC_ACTION_CLASS}:hover) { opacity: 0.85; }
+
+  :where(.${CC_ACTION_CLASS}[disabled]) {
+    background: ${cv.border.default};
+    cursor: not-allowed;
+  }
+`;
+
+const cx = (...classNames: Array<string | undefined | false | null>) =>
+  classNames.filter(Boolean).join(" ");
+
+/* ─── Component ─── */
+
+export const CouponCard = React.forwardRef<HTMLDivElement, CouponCardProps>(
+  (
+    {
+      discount,
+      discountSuffix = "할인",
+      title,
+      description,
+      expiry,
+      actionLabel = "사용하기",
+      onAction,
+      disabled = false,
+      disabledLabel = "사용 완료",
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
+    return (
+      <div
+        ref={ref}
+        data-slot="root"
+        data-disabled={disabled ? "true" : "false"}
+        className={cx(CC_CLASS, className)}
+        {...rest}
+      >
+        <div className={CC_LEFT_CLASS}>
+          <span className={CC_DISCOUNT_CLASS}>
+            {discount}
+            {discountSuffix && <small>{discountSuffix}</small>}
+          </span>
+        </div>
+        <span className={CC_DIVIDER_CLASS} aria-hidden />
+        <div className={CC_RIGHT_CLASS}>
+          <div>
+            <p className={CC_TITLE_CLASS}>{title}</p>
+            {description && <span className={CC_DESC_CLASS}>{description}</span>}
+            {expiry && <span className={CC_EXPIRY_CLASS}>{expiry}</span>}
+          </div>
+          {onAction && (
+            <button
+              type="button"
+              className={CC_ACTION_CLASS}
+              disabled={disabled}
+              onClick={onAction}
+            >
+              {disabled ? disabledLabel : actionLabel}
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  },
+);
+
+CouponCard.displayName = "CouponCard";
