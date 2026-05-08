@@ -790,6 +790,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "챗 음성 메시지: maxSeconds=60",
     ],
   },
+  NotificationItem: {
+    name: "NotificationItem",
+    summary: "알림 리스트 한 건. kind별 아이콘 톤, 미읽음 점, 시간 라벨, 본문 2줄 클램프.",
+    pitfalls: [
+      "Toast/Snackbar와 다름 — 알림 센터(히스토리) 한 건 표현용.",
+      "description 본문은 자동 2줄 클램프. 더 길게 보여주려면 onClick으로 디테일 진입.",
+      "unread는 단순 시각 표시 — 읽음 처리는 onClick 안에서 외부 state 갱신.",
+    ],
+    recommended: [
+      "알림 센터: List 안에 NotificationItem 반복",
+      "kind별 자동 아이콘: 직접 icon prop 안 줘도 됨",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
