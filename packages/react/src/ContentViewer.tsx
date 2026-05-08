@@ -1,0 +1,188 @@
+import React, { useEffect, useRef } from "react";
+import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+
+/* ─── Constants ─── */
+
+const CV_CLASS = "nds-content-viewer";
+
+// eslint-disable-next-line unused-imports/no-unused-vars
+const contentViewerStyles = `
+  :where(.${CV_CLASS}) {
+    width: 100%;
+    font-family: ${fontFamily.web};
+    color: ${cv.text.default};
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: 1.7;
+    word-break: break-word;
+    box-sizing: border-box;
+  }
+
+  :where(.${CV_CLASS}) > *:first-child { margin-top: 0; }
+  :where(.${CV_CLASS}) > *:last-child { margin-bottom: 0; }
+
+  :where(.${CV_CLASS}) h1 { font-size: ${typeScale.headline2.fontSize}px; line-height: ${typeScale.headline2.lineHeight}px; font-weight: ${fontWeight.bold}; margin: ${spacing[24]}px 0 ${spacing[12]}px; color: ${cv.text.strong}; }
+  :where(.${CV_CLASS}) h2 { font-size: ${typeScale.headline3.fontSize}px; line-height: ${typeScale.headline3.lineHeight}px; font-weight: ${fontWeight.bold}; margin: ${spacing[20]}px 0 ${spacing[10]}px; color: ${cv.text.strong}; }
+  :where(.${CV_CLASS}) h3 { font-size: ${typeScale.headline4.fontSize}px; line-height: ${typeScale.headline4.lineHeight}px; font-weight: ${fontWeight.bold}; margin: ${spacing[16]}px 0 ${spacing[8]}px; color: ${cv.text.strong}; }
+  :where(.${CV_CLASS}) h4 { font-size: ${typeScale.headline5.fontSize}px; line-height: ${typeScale.headline5.lineHeight}px; font-weight: ${fontWeight.bold}; margin: ${spacing[16]}px 0 ${spacing[8]}px; color: ${cv.text.strong}; }
+
+  :where(.${CV_CLASS}) p { margin: 0 0 ${spacing[12]}px; }
+  :where(.${CV_CLASS}) p:last-child { margin-bottom: 0; }
+
+  :where(.${CV_CLASS}) ul,
+  :where(.${CV_CLASS}) ol { margin: 0 0 ${spacing[12]}px; padding-left: ${spacing[20]}px; }
+  :where(.${CV_CLASS}) li { margin: ${spacing[2]}px 0; }
+
+  :where(.${CV_CLASS}) a {
+    color: ${cv.primary.main};
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  :where(.${CV_CLASS}) a:hover { opacity: 0.85; }
+
+  :where(.${CV_CLASS}) strong { font-weight: ${fontWeight.bold}; }
+  :where(.${CV_CLASS}) em { font-style: italic; }
+
+  :where(.${CV_CLASS}) blockquote {
+    margin: ${spacing[12]}px 0;
+    padding: ${spacing[10]}px ${spacing[16]}px;
+    border-left: 3px solid ${cv.primary.main};
+    background: ${cv.primary.bgLighter};
+    color: ${cv.text.normal};
+    border-radius: 0 ${radius.sm}px ${radius.sm}px 0;
+  }
+
+  :where(.${CV_CLASS}) code {
+    padding: 2px 6px;
+    background: ${cv.bg.coolGrayLighter};
+    border-radius: ${radius.sm}px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+
+  :where(.${CV_CLASS}) pre {
+    margin: ${spacing[12]}px 0;
+    padding: ${spacing[12]}px ${spacing[16]}px;
+    background: ${cv.bg.coolGrayLighter};
+    border-radius: ${radius.md}px;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: 1.5;
+  }
+  :where(.${CV_CLASS}) pre code {
+    padding: 0;
+    background: none;
+  }
+
+  :where(.${CV_CLASS}) img {
+    max-width: 100%;
+    height: auto;
+    border-radius: ${radius.md}px;
+    margin: ${spacing[8]}px 0;
+    display: block;
+  }
+
+  :where(.${CV_CLASS}) hr {
+    margin: ${spacing[20]}px 0;
+    border: 0;
+    border-top: 1px solid ${cv.border.light};
+  }
+
+  :where(.${CV_CLASS}) table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: ${spacing[12]}px 0;
+    font-size: ${typeScale.body3.fontSize}px;
+  }
+  :where(.${CV_CLASS}) th,
+  :where(.${CV_CLASS}) td {
+    padding: ${spacing[8]}px ${spacing[10]}px;
+    border: 1px solid ${cv.border.light};
+    text-align: left;
+  }
+  :where(.${CV_CLASS}) th {
+    background: ${cv.bg.coolGrayLighter};
+    font-weight: ${fontWeight.bold};
+    color: ${cv.text.subtle};
+  }
+`;
+
+/* ─── Utils ─── */
+
+const cx = (...classNames: Array<string | undefined | false | null>) =>
+  classNames.filter(Boolean).join(" ");
+
+/**
+ * 매우 단순한 안전 정리 — script/iframe/style 등 위험 태그를 통째로 제거하고
+ * on*= 인라인 핸들러를 떼어냄. 강력한 sanitize가 필요하면 호출부에서
+ * DOMPurify 등으로 사전에 처리한 HTML을 넘기는 게 권장.
+ */
+const stripDangerous = (html: string): string =>
+  html
+    .replace(/<\/?(script|iframe|object|embed|style|link|meta|form|input)[^>]*>/gi, "")
+    .replace(/\son[a-z]+\s*=\s*"[^"]*"/gi, "")
+    .replace(/\son[a-z]+\s*=\s*'[^']*'/gi, "")
+    .replace(/\son[a-z]+\s*=\s*[^\s>]+/gi, "")
+    .replace(/javascript:/gi, "");
+
+/* ─── Component ─── */
+
+export interface ContentViewerProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** 본문 HTML — 호출부에서 sanitize한 안전한 HTML 권장 */
+  html: string;
+  /** 컴포넌트 내부에서 한 번 더 위험 태그 제거 (기본 true) */
+  sanitize?: boolean;
+  /** 이미지에 loading="lazy" 자동 부여 (기본 true) */
+  imageLazy?: boolean;
+  /** 외부 링크(http/https)에 target="_blank" + rel 자동 부여 (기본 true) */
+  externalLinkBlank?: boolean;
+}
+
+export const ContentViewer = React.forwardRef<HTMLDivElement, ContentViewerProps>(
+  (
+    { html, sanitize = true, imageLazy = true, externalLinkBlank = true, className, ...rest },
+    forwardedRef,
+  ) => {
+    const localRef = useRef<HTMLDivElement>(null);
+    const ref = (forwardedRef as React.RefObject<HTMLDivElement>) ?? localRef;
+
+    const safeHtml = sanitize ? stripDangerous(html) : html;
+
+    useEffect(() => {
+      const root = (ref as React.RefObject<HTMLDivElement>).current;
+      if (!root) return;
+
+      if (imageLazy) {
+        root.querySelectorAll("img").forEach((img) => {
+          if (!img.getAttribute("loading")) img.setAttribute("loading", "lazy");
+          if (!img.getAttribute("decoding")) img.setAttribute("decoding", "async");
+        });
+      }
+
+      if (externalLinkBlank) {
+        root.querySelectorAll("a[href]").forEach((a) => {
+          const href = a.getAttribute("href") ?? "";
+          if (/^https?:\/\//i.test(href)) {
+            if (!a.getAttribute("target")) a.setAttribute("target", "_blank");
+            const rel = (a.getAttribute("rel") ?? "").split(/\s+/);
+            if (!rel.includes("noopener")) rel.push("noopener");
+            if (!rel.includes("noreferrer")) rel.push("noreferrer");
+            a.setAttribute("rel", rel.filter(Boolean).join(" "));
+          }
+        });
+      }
+    }, [safeHtml, imageLazy, externalLinkBlank, ref]);
+
+    return (
+      <div
+        ref={ref}
+        data-slot="root"
+        className={cx(CV_CLASS, className)}
+        dangerouslySetInnerHTML={{ __html: safeHtml }}
+        {...rest}
+      />
+    );
+  },
+);
+
+ContentViewer.displayName = "ContentViewer";
