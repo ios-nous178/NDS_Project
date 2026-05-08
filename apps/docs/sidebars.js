@@ -64,6 +64,7 @@ module.exports = {
         "components/appointment-card",
         "components/journal-entry",
         "components/chat-composer",
+        "components/phone-input",
       ],
     },
     {

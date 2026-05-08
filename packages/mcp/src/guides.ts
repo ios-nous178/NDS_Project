@@ -572,6 +572,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "음성 메모: onMic만, onAttach 생략",
     ],
   },
+  PhoneInput: {
+    name: "PhoneInput",
+    summary:
+      "국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드/국기는 countries 데이터에서 조회.",
+    pitfalls: [
+      "countryCode는 ISO code(KR, US 등)로 관리. '+82' 문자열을 state에 두지 말 것.",
+      "번호 마스킹/하이픈 자동화는 컴포넌트가 강제하지 않음 — 필요하면 onValueChange에서 직접.",
+      "기본 5개국(KR/US/JP/CN/GB) 외 필요하면 countries prop으로 직접 정의.",
+    ],
+    recommended: [
+      "회원가입: helperText='인증번호를 받을 번호를 입력해주세요'",
+      "에러: error + helperText='번호 형식이 올바르지 않아요'",
+      "프로필 표시: disabled로 변경 불가 표시",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
