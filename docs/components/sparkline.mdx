@@ -1,0 +1,54 @@
+---
+title: Sparkline
+description: 미니 추이 차트. 카드 안의 작은 그래프 (line/area/bar).
+---
+
+# Sparkline
+
+축/레이블 없는 작은 추이 그래프입니다. 메트릭 카드 안에 "최근 7일 추이" 같은 시각적 신호로 사용하세요.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 카드 우측 하단의 "최근 N일 추이"
+- 리스트 아이템 옆 작은 트렌드
+- 대시보드의 빠른 시각 신호
+
+### 이럴 때 사용하지 마세요
+- 정확한 값 비교가 필요할 때 → 본격 차트 라이브러리
+- 데이터 포인트가 50개 이상 → 가독성 저하
+
+## 사용법
+
+```tsx
+import { Sparkline } from "@nudge-eap/react";
+
+<Sparkline data={[3, 4, 5, 6, 5, 4, 6, 7]} kind="line" width={120} height={36} />
+
+// 영역 채우기 + 색상 커스텀
+<Sparkline
+  data={sleepHours}
+  kind="area"
+  color="var(--color-semantic-success-main)"
+/>
+
+// 막대 형태
+<Sparkline data={steps} kind="bar" />
+
+// 음수가 있는 경우 baseline 표시
+<Sparkline data={moodScores} kind="line" showBaseline />
+```
+
+## Props
+
+| Prop           | 타입                          | 기본값         | 설명                              |
+| -------------- | ----------------------------- | -------------- | --------------------------------- |
+| `data`         | `number[]`                    | —              | 숫자 배열                         |
+| `kind`         | `"line" \| "area" \| "bar"`   | `"line"`       | 표시 종류                         |
+| `color`        | `string`                      | `primary.main` | 라인/영역/바 색상                 |
+| `width`        | `number`                      | `120`          | 가로 px                           |
+| `height`       | `number`                      | `36`           | 세로 px                           |
+| `strokeWidth`  | `number`                      | `2`            | 라인 두께                         |
+| `showBaseline` | `boolean`                     | `false`        | 0 기준선 표시                     |
+| `showLastDot`  | `boolean`                     | `true`         | 마지막 점 강조 (line/area)        |
+| `aria-label`   | `string`                      | `"추세 차트"`   | 접근성 라벨                       |
