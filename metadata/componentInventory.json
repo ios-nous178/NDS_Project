@@ -694,5 +694,17 @@
     "figmaNodeId": "",
     "usageSummary": "챌린지 완료, 첫 가입 환영, 검사 종료 (긍정 결과)",
     "notes": "active를 항상 true로 두지 말 것. onComplete에서 false 리셋."
+  },
+  {
+    "name": "CommentItem",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "댓글 한 건. 작성자 + 본문 + 좋아요/답글 슬롯 + 답글 트리",
+    "storybookTitle": "Components/CommentItem",
+    "docsPath": "/docs/components/comment-item",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "콘텐츠/일기/Q&A 댓글, 그룹 코멘트, 후기 페이지",
+    "notes": "isReply로 답글 들여쓰기. 본문 줄바꿈 자동 보존."
   }
 ]
