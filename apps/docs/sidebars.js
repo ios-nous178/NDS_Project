@@ -65,6 +65,7 @@ module.exports = {
         "components/journal-entry",
         "components/chat-composer",
         "components/phone-input",
+        "components/signature-pad",
       ],
     },
     {
