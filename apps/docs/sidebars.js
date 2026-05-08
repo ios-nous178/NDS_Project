@@ -77,6 +77,7 @@ module.exports = {
         "components/tag-input",
         "components/lightbox",
         "components/avatar-group",
+        "components/call-control-bar",
       ],
     },
     {

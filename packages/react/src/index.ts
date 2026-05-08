@@ -83,3 +83,4 @@ export * from "./QuickActionGrid";
 export * from "./TagInput";
 export * from "./Lightbox";
 export * from "./AvatarGroup";
+export * from "./CallControlBar";

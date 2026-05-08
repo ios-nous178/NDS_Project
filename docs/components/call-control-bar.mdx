@@ -1,0 +1,58 @@
+---
+title: CallControlBar
+description: 통화 컨트롤 바. 화상/음성 상담 중 음소거·카메라·스피커·종료.
+---
+
+# CallControlBar
+
+상담 통화 화면 하단에 두는 컨트롤 바입니다. 음소거, 카메라(화상), 스피커(음성), 종료를 일관되게 표현합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 화상 상담 화면
+- 음성 상담 화면
+- AI 통화 인터페이스
+
+### 자주 하는 실수
+- `onCameraChange`와 `onSpeakerChange`는 모두 옵션 — 안 주면 해당 버튼 자동 숨김. 화상 상담은 카메라만, 음성 상담은 스피커만 노출
+- 종료 버튼은 항상 빨간색 — 직접 색을 override하지 말 것 (시맨틱 의미 유지)
+
+## 사용법
+
+```tsx
+import { CallControlBar } from "@nudge-eap/react";
+
+// 화상 상담
+<CallControlBar
+  duration="03:42"
+  muted={muted}
+  onMutedChange={setMuted}
+  cameraOn={camera}
+  onCameraChange={setCamera}
+  onEnd={endCall}
+/>
+
+// 음성 상담
+<CallControlBar
+  muted={muted}
+  onMutedChange={setMuted}
+  speakerOn={speaker}
+  onSpeakerChange={setSpeaker}
+  onEnd={endCall}
+/>
+```
+
+## Props
+
+| Prop              | 타입                         | 기본값  | 설명                                |
+| ----------------- | ---------------------------- | ------- | ----------------------------------- |
+| `muted`           | `boolean`                    | —       | 음소거 상태                         |
+| `onMutedChange`   | `(b: boolean) => void`       | —       | 음소거 토글                         |
+| `cameraOn`        | `boolean`                    | —       | 카메라 ON                           |
+| `onCameraChange`  | `(b: boolean) => void`       | —       | 카메라 토글 (지정 시 버튼 노출)     |
+| `speakerOn`       | `boolean`                    | —       | 스피커 ON                           |
+| `onSpeakerChange` | `(b: boolean) => void`       | —       | 스피커 토글 (지정 시 버튼 노출)     |
+| `onEnd`           | `() => void`                 | —       | 종료 콜백                           |
+| `duration`        | `ReactNode`                  | —       | 통화 시간 표시 (mm:ss)              |
+| `extra`           | `ReactNode`                  | —       | 좌측 추가 버튼 (채팅 전환 등)       |
