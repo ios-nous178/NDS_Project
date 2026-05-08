@@ -81,3 +81,4 @@ export * from "./PageHeader";
 export * from "./StatCard";
 export * from "./QuickActionGrid";
 export * from "./TagInput";
+export * from "./Lightbox";

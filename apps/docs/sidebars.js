@@ -75,6 +75,7 @@ module.exports = {
         "components/stat-card",
         "components/quick-action-grid",
         "components/tag-input",
+        "components/lightbox",
       ],
     },
     {
