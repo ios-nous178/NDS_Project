@@ -68,6 +68,7 @@ module.exports = {
         "components/signature-pad",
         "components/coach-mark",
         "components/sparkline",
+        "components/circular-progress",
       ],
     },
     {

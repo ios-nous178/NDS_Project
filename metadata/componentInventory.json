@@ -394,5 +394,17 @@
     "figmaNodeId": "",
     "usageSummary": "메트릭 카드 추이, 리스트 트렌드, 대시보드 신호",
     "notes": "본격 차트 아님. 50+ 포인트는 부적합. baseline은 음수 데이터일 때만."
+  },
+  {
+    "name": "CircularProgress",
+    "category": "피드백",
+    "status": "implemented",
+    "description": "원형 진행도. value/max 비율, 라벨/캡션 커스텀, semantic 색상 지원",
+    "storybookTitle": "Components/CircularProgress",
+    "docsPath": "/docs/components/circular-progress",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "일일 목표 달성률, 챌린지 진행, 업로드 진행도",
+    "notes": "ScoreGauge(단계 분류)와 분리, ProgressBar(가로)와 분리."
   }
 ]

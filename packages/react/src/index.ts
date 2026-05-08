@@ -74,3 +74,4 @@ export * from "./PhoneInput";
 export * from "./SignaturePad";
 export * from "./CoachMark";
 export * from "./Sparkline";
+export * from "./CircularProgress";
