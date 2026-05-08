@@ -1102,6 +1102,85 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "프로필 모달: stacked + bio + 큰 action",
     ],
   },
+  ProductCard: {
+    name: "ProductCard",
+    summary: "상품 그리드 한 칸. 썸네일 1:1 + 뱃지 + 제목 + 가격 슬롯(PriceTag) + 품절 오버레이.",
+    pitfalls: [
+      "가격은 price 슬롯에 <PriceTag /> 직접 — 문자열 넣으면 포맷 일관성 깨짐.",
+      "품절은 soldOut. badge(좌상단 NEW/BEST)와 다른 오버레이.",
+      "title은 자동 2줄 클램프. 더 길게 보여주려면 디테일 화면.",
+    ],
+    recommended: [
+      "굿즈 그리드: 2칸/3칸, PriceTag size='sm'",
+      "추천 캐러셀: ProductCard + Carousel 결합",
+    ],
+  },
+  DataTable: {
+    name: "DataTable",
+    summary:
+      "정렬·클릭·빈 상태·로딩·모바일 카드 변환을 모두 갖춘 표. 사용자 앱(약 복용 이력 등)과 운영툴 양쪽에 사용.",
+    pitfalls: [
+      "CMS/어드민은 antd Table을 우선 — DataTable은 사용자 앱(특히 모바일 cards 모드)에서 강점.",
+      "columns[].key는 데이터 객체의 실제 key 또는 임의 식별자. render가 있으면 key 자체는 매핑 안 해도 됨.",
+      "정렬은 controlled — sortKey/sortDirection/onSort 셋을 부모에서 관리. 컴포넌트가 자체 정렬하지 않음.",
+      'responsive="cards"는 max-width 640px에서만 카드로 전환. cardLabel/hideOnCard로 카드 모드 표시 조절.',
+      "rowKey는 함수 — index 사용은 reorder 시 버그. 가능하면 row.id 같은 안정적 키.",
+    ],
+    recommended: [
+      '사용자 앱 약 복용 이력: responsive="cards" + size="sm"',
+      "리스트가 길면 외부에 Pagination 컴포넌트와 조합",
+    ],
+    interactivePattern:
+      "행 클릭으로 상세 진입. 정렬 가능 컬럼은 sortable: true 명시 + 외부에서 정렬 처리.",
+  },
+  ContentViewer: {
+    name: "ContentViewer",
+    summary:
+      "HTML/리치 텍스트 본문 렌더러. 위험 태그 자동 정리 + 이미지 lazy + 외부 링크 noopener 자동.",
+    pitfalls: [
+      "html prop은 가능한 한 호출부에서 sanitize한 안전한 HTML을 넘기는 게 정석. 컴포넌트 내장 sanitize는 보완책 (script/iframe/on*=/javascript: 정도만 정리).",
+      "사용자 입력 HTML은 반드시 서버나 DOMPurify 같은 라이브러리로 1차 처리 후 넘길 것 — 내장 sanitize는 알려진 attack vector만 커버.",
+      "내부 링크는 그대로 — http(s)로 시작하는 외부 링크에만 target=_blank + rel='noopener noreferrer' 자동.",
+      "본문 안 table/blockquote/pre 까지 표준 스타일 적용됨 — 검사 해설/명상 가이드 등 긴 본문에 적합.",
+    ],
+    recommended: [
+      "검사 결과 해설, 명상 가이드 본문, 정신건강 콘텐츠 — externalLinkBlank로 외부 참고자료 안전 노출",
+      "이미지 많은 본문은 imageLazy로 초기 렌더 부담 감소",
+    ],
+  },
+  AttachmentItem: {
+    name: "AttachmentItem",
+    summary:
+      "이미 첨부된 파일을 보여주는 행 — FileUpload(업로드 영역)와 역할 분리. 진단서/처방전 등 EAP 의료 파일 표시.",
+    pitfalls: [
+      "FileUpload와 페어로 자주 사용 — FileUpload의 value(File[])를 매핑해서 AttachmentItem으로 노출하는 패턴.",
+      "fileType 미지정 시 name 확장자에서 자동 추론 (pdf/image/video/audio/document/archive). 추론 실패는 'other'.",
+      'status="uploading"이면 자동으로 다운로드 버튼 숨김 — progress 함께 사용.',
+      'status="error" + errorMessage로 거부 사유 지속 노출. Toast보다 명확.',
+      "href와 onDownload 둘 다 제공 가능 — href가 있으면 <a download>, 없으면 button.",
+    ],
+    recommended: [
+      '진단서 첨부: name + size + status="done" + href + onRemove',
+      '업로드 진행 중: status="uploading" + progress 폴링',
+    ],
+  },
+  MediaThumbnail: {
+    name: "MediaThumbnail",
+    summary:
+      "일반 이미지 표준 — aspectRatio + fit + rounded + lazy + fallback + placeholder. Avatar(사람 얼굴)와 다른 콘텐츠 이미지용.",
+    pitfalls: [
+      "Avatar는 사람 얼굴/이니셜 전용 — 콘텐츠 썸네일·검사 결과 이미지·일반 이미지는 MediaThumbnail.",
+      "aspectRatio 미지정 시 부모 너비에 따라 의도치 않은 높이가 잡힐 수 있음 — 카드/그리드에서는 명시 권장.",
+      'alt는 필수 — 장식 이미지면 빈 문자열(alt="") 명시.',
+      "fallbackSrc는 onError 시 한 번 시도 → 그래도 실패면 placeholder. 무한 루프 방지를 위해 fallback 자체가 또 실패하면 placeholder만 표시.",
+      'rounded="pill"는 정사각형(aspectRatio="1/1")과 함께 써야 자연스러움 — 직사각형에 pill은 길쭉한 알약 모양.',
+    ],
+    recommended: [
+      '콘텐츠 카드 썸네일: aspectRatio="16/9" rounded="md"',
+      '리스트 썸네일: aspectRatio="1/1" rounded="md" width=64',
+      '프로필성 이미지지만 Avatar로 처리 어려운 케이스: aspectRatio="1/1" rounded="pill"',
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

@@ -113,3 +113,4 @@ export * from "./MediaThumbnail";
 export * from "./StatusTimeline";
 export * from "./FilterBar";
 export * from "./UserCard";
+export * from "./ProductCard";
