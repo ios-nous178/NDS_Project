@@ -1,0 +1,57 @@
+---
+title: LikeButton
+description: 좋아요 토글 + 카운트. 클릭 시 펑 애니메이션, K 단위 자동 표시.
+---
+
+# LikeButton
+
+콘텐츠/댓글의 좋아요를 토글하는 버튼입니다. 클릭 시 작은 펑 애니메이션이 들어가고 카운트는 1000 이상이면 자동으로 K 단위로 표시됩니다.
+
+> `ReactionPicker`가 여러 이모지 반응(좋아요/응원/공감)이라면, LikeButton은 단일 좋아요 토글입니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 콘텐츠/일기/댓글의 단일 좋아요
+- CommentItem의 likeAction 슬롯
+- 게시물 푸터
+
+### 자주 하는 실수
+- liked/count는 controlled — 외부 상태를 사실(source of truth)로 두고 onChange에서 둘 다 갱신
+- 카운트가 음수가 되지 않도록 외부에서 가드 (컴포넌트는 받은 값 그대로 표시)
+
+## 사용법
+
+```tsx
+import { LikeButton } from "@nudge-eap/react";
+
+const [liked, setLiked] = useState(false);
+const [count, setCount] = useState(12);
+
+<LikeButton
+  liked={liked}
+  count={count}
+  onChange={(v) => {
+    setLiked(v);
+    setCount((c) => c + (v ? 1 : -1));
+    api.toggleLike(postId, v);
+  }}
+/>
+
+// 카운트 숨김
+<LikeButton liked={v} onChange={setV} hideCount />
+
+// 사용자 색
+<LikeButton liked={v} count={4} onChange={setV} activeColor="var(--color-semantic-primary-main)" />
+```
+
+## Props
+
+| Prop          | 타입                         | 기본값  | 설명                              |
+| ------------- | ---------------------------- | ------- | --------------------------------- |
+| `liked`       | `boolean`                    | —       | 좋아요 상태                       |
+| `onChange`    | `(liked: boolean) => void`   | —       | 토글 콜백                         |
+| `count`       | `number`                     | —       | 카운트                            |
+| `size`        | `"sm" \| "md" \| "lg"`       | `"md"`  | 크기                              |
+| `hideCount`   | `boolean`                    | `false` | 카운트 숨김                       |
+| `activeColor` | `string`                     | error.main | 활성 색 (CSS color/var)        |
