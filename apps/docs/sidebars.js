@@ -60,6 +60,7 @@ module.exports = {
         "components/fab",
         "components/breathing-guide",
         "components/streak-card",
+        "components/emotion-heatmap",
       ],
     },
     {

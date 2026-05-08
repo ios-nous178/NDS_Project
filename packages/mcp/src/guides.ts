@@ -513,6 +513,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "끊긴 후 재시작: footer로 '작은 시작' 같은 격려 문구",
     ],
   },
+  EmotionHeatmap: {
+    name: "EmotionHeatmap",
+    summary: "월간 감정 히트맵. 5단계(0~4)를 색 강도로 시각화. 셀 클릭으로 그 날 상세 화면 진입.",
+    pitfalls: [
+      "entries에 없는 날짜는 자동으로 빈 셀(점선). 0 단계로 채우지 말 것 — treatZeroAsEmpty 기본 true.",
+      "colors는 5개 필수 + 옅음→짙음 순서. 4개나 6개 넘기면 인덱스 어긋남.",
+      "30일 미만 기록(7~14일)은 StreakCard가 더 적절 — 히트맵은 한 달 단위.",
+    ],
+    recommended: [
+      "기분 트렌드: 기본 푸른 5단계, onCellClick으로 일기 화면 이동",
+      "스트레스 강도: warm 톤(#FFE9C4 → #C25B0E), legendLabels={low:'차분',high:'활기'}",
+      "챌린지 30일: title='30일 챌린지', 빈 셀이 남은 일자",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

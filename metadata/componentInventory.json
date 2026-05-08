@@ -298,5 +298,17 @@
     "figmaNodeId": "",
     "usageSummary": "감정 기록 streak, 명상/복약 챌린지, 습관 트래킹",
     "notes": "최근 7~14일 점 그리드. 30일+ 트래킹은 EmotionHeatmap 검토."
+  },
+  {
+    "name": "EmotionHeatmap",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "월간 감정 히트맵. 5단계 색 강도, 빈 셀(기록 없음), 셀 클릭 진입",
+    "storybookTitle": "Components/EmotionHeatmap",
+    "docsPath": "/docs/components/emotion-heatmap",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "기분 월간 리포트, 스트레스 트렌드, 30일 챌린지 시각화",
+    "notes": "GitHub 잔디형 카드. 30일+ 트래킹용 — 그 미만은 StreakCard."
   }
 ]
