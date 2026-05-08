@@ -382,5 +382,17 @@
     "figmaNodeId": "",
     "usageSummary": "첫 진입 온보딩, 새 기능 출시 안내, 도움말 재생",
     "notes": "Tooltip과 분리 (가벼운 hover용). selector 또는 element-getter로 target 지정."
+  },
+  {
+    "name": "Sparkline",
+    "category": "일반",
+    "status": "implemented",
+    "description": "미니 추이 차트 (line/area/bar). 축/레이블 없는 카드용 시각 신호",
+    "storybookTitle": "Components/Sparkline",
+    "docsPath": "/docs/components/sparkline",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "메트릭 카드 추이, 리스트 트렌드, 대시보드 신호",
+    "notes": "본격 차트 아님. 50+ 포인트는 부적합. baseline은 음수 데이터일 때만."
   }
 ]

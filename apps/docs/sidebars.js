@@ -67,6 +67,7 @@ module.exports = {
         "components/phone-input",
         "components/signature-pad",
         "components/coach-mark",
+        "components/sparkline",
       ],
     },
     {
