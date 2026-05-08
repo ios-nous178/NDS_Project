@@ -790,5 +790,17 @@
     "figmaNodeId": "",
     "usageSummary": "배송 추적, 상담 진행, 신청 처리",
     "notes": "ActivityTimeline(자유 로그)과 분리. 정해진 선형 단계용."
+  },
+  {
+    "name": "FilterBar",
+    "category": "내비게이션",
+    "status": "implemented",
+    "description": "가로 필터 칩 그룹. 다중/단일 선택, 카운트, 자동 초기화 버튼",
+    "storybookTitle": "Components/FilterBar",
+    "docsPath": "/docs/components/filter-bar",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "콘텐츠/상품/상담사 리스트 필터, 검색 결과 필터링",
+    "notes": "Tabs(뷰 전환)과 분리. single은 다시 누르면 해제됨."
   }
 ]

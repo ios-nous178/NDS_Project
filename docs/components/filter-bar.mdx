@@ -1,0 +1,59 @@
+---
+title: FilterBar
+description: 가로 필터 칩 묶음. 선택 상태 + 카운트 + 초기화.
+---
+
+# FilterBar
+
+리스트 화면 상단에 두는 가로 필터 칩 그룹입니다. 칩 토글로 활성/비활성 표시, 활성 1개 이상이면 자동으로 초기화 버튼 노출.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 콘텐츠 / 상품 / 상담사 리스트 필터
+- 검색 결과 필터링
+
+### 자주 하는 실수
+- 옵션 8개 이상이면 가로 스크롤. 데스크톱 화면에서는 `Tabs`나 별도 필터 패널 검토
+- `single`은 라디오 동작과 같지만 다시 누르면 해제됨 (Tabs와 다름)
+
+## 사용법
+
+```tsx
+import { FilterBar } from "@nudge-eap/react";
+
+const [filters, setFilters] = useState<string[]>([]);
+
+<FilterBar
+  options={[
+    { key: "meditation", label: "명상", count: 12 },
+    { key: "sleep", label: "수면", count: 8 },
+    { key: "stress", label: "스트레스", count: 24 },
+  ]}
+  value={filters}
+  onValueChange={setFilters}
+/>
+
+// 단일 선택
+<FilterBar options={...} value={v} onValueChange={setV} single />
+```
+
+## Props
+
+| Prop            | 타입                       | 기본값  | 설명                              |
+| --------------- | -------------------------- | ------- | --------------------------------- |
+| `options`       | `FilterOption[]`           | —       | 옵션 목록                         |
+| `value`         | `string[]`                 | —       | 활성 키 배열                      |
+| `onValueChange` | `(v: string[]) => void`    | —       | 변경 콜백                         |
+| `single`        | `boolean`                  | `false` | 단일 선택 (다시 누르면 해제)      |
+| `showReset`     | `boolean`                  | 자동    | 초기화 버튼 표시 (활성 1개+ 자동) |
+| `resetLabel`    | `string`                   | `"초기화"` | 초기화 라벨                  |
+
+### `FilterOption`
+
+| Prop      | 타입         | 설명                |
+| --------- | ------------ | ------------------- |
+| `key`     | `string`     | 고유 키             |
+| `label`   | `ReactNode`  | 라벨                |
+| `count`   | `number`     | 카운트 (선택)       |
+| `disabled`| `boolean`    | 비활성화            |

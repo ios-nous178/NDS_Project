@@ -101,6 +101,7 @@ module.exports = {
         "components/price-tag",
         "components/amount-input",
         "components/status-timeline",
+        "components/filter-bar",
       ],
     },
     {
