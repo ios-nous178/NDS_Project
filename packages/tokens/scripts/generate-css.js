@@ -5,6 +5,7 @@
  * Outputs:
  *   dist/tokens.css  — NudgeEAP 기본 토큰
  *   dist/trost.css   — Trost 브랜드 오버라이드 토큰
+ *   dist/moneple.css — Moneple 브랜드 오버라이드 토큰
  */
 const fs = require("fs");
 const path = require("path");
@@ -91,24 +92,24 @@ function generateBaseTokens() {
   return lines.join("\n") + "\n";
 }
 
-// ─── Trost brand override CSS ───────────────────────────
+// ─── Brand override CSS ────────────────────────────────
 
-function generateTrostTokens() {
-  const { trostTheme } = require("../dist/brands/trost");
+function generateBrandTokens({ theme, title, cssImport }) {
+  const pascalTitle = title.charAt(0).toUpperCase() + title.slice(1);
 
   const lines = [
     "/**",
-    " * Trost Brand Tokens",
+    ` * ${pascalTitle} Brand Tokens`,
     " * NudgeEAP tokens.css 이후에 import하면 브랜드 토큰이 오버라이드됩니다.",
     " *",
     " * Usage:",
     " *   @import '@nudge-eap/tokens/css';",
-    " *   @import '@nudge-eap/tokens/css/trost';",
+    ` *   @import '@nudge-eap/tokens/css/${cssImport}';`,
     " */",
     ":root {",
   ];
 
-  const { palette, semantic, typography, spacing: spacingOverrides, elevation } = trostTheme;
+  const { palette, semantic, typography, spacing: spacingOverrides, elevation } = theme;
 
   // Palette colors
   lines.push("  /* ── Palette ── */");
@@ -182,5 +183,17 @@ fs.writeFileSync(tokensPath, generateBaseTokens());
 console.log(`Generated ${tokensPath}`);
 
 const trostPath = path.join(distDir, "trost.css");
-fs.writeFileSync(trostPath, generateTrostTokens());
+const { trostTheme } = require("../dist/brands/trost");
+fs.writeFileSync(
+  trostPath,
+  generateBrandTokens({ theme: trostTheme, title: "trost", cssImport: "trost" }),
+);
 console.log(`Generated ${trostPath}`);
+
+const moneplePath = path.join(distDir, "moneple.css");
+const { monepleTheme } = require("../dist/brands/moneple");
+fs.writeFileSync(
+  moneplePath,
+  generateBrandTokens({ theme: monepleTheme, title: "moneple", cssImport: "moneple" }),
+);
+console.log(`Generated ${moneplePath}`);
