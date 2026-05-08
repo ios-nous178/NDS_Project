@@ -103,3 +103,4 @@ export * from "./CommentItem";
 export * from "./LikeButton";
 export * from "./ShareSheet";
 export * from "./ReviewCard";
+export * from "./VotePoll";

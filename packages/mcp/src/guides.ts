@@ -1023,6 +1023,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "상품 리뷰: meta='구매 인증' + verified",
     ],
   },
+  VotePoll: {
+    name: "VotePoll",
+    summary: "짧은 투표 카드. 옵션 + 결과 바, 투표 후 자동 결과 노출. 본격 설문은 LikertScale.",
+    pitfalls: [
+      "count는 외부 state — 컴포넌트가 자체로 카운트 추적 안 함. 서버 응답으로 갱신.",
+      "votedKey가 있으면 자동 결과 노출. 마감만 보여주려면 showResults + disabled.",
+      "임상 척도(PHQ-9 등)는 LikertScale을 쓸 것. VotePoll은 가벼운 의견 수렴용.",
+    ],
+    recommended: ["커뮤니티: votedKey + onVote에서 서버 호출", "마감 결과: showResults disabled"],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

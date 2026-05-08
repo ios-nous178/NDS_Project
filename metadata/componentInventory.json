@@ -742,5 +742,17 @@
     "figmaNodeId": "",
     "usageSummary": "상담 후기, 콘텐츠 리뷰, 상품 후기, 챌린지 후기",
     "notes": "rating 0~5 + 0.5 단위. 본문 pre-wrap 자동."
+  },
+  {
+    "name": "VotePoll",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "짧은 투표 카드. 질문 + 옵션 + 결과 바. 투표 후 자동 결과 노출",
+    "storybookTitle": "Components/VotePoll",
+    "docsPath": "/docs/components/vote-poll",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "커뮤니티 투표, 챌린지 주제 정하기, 가벼운 의견 수렴",
+    "notes": "임상 척도는 LikertScale. count는 외부 state로 갱신."
   }
 ]
