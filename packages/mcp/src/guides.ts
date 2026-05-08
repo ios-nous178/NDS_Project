@@ -869,6 +869,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "홈 카드: 짧은 description + actionLabel",
     ],
   },
+  PinPad: {
+    name: "PinPad",
+    summary: "PIN 키패드. 점 인디케이터 + 숫자 그리드. SMS 인증은 OtpInput, 일반 입력은 Input.",
+    pitfalls: [
+      "shuffleSeed를 매 렌더 새로 계산하면 키 배치 흔들림 — useMemo로 진입 시점에 고정.",
+      "onComplete는 길이 도달 시 1회. 실패 시 value=''로 리셋해야 다시 입력 가능.",
+      "OtpInput과 혼동 금지 — PIN은 사용자 비밀, OTP는 외부에서 받는 인증번호.",
+    ],
+    recommended: [
+      "앱 진입 PIN: length=6 (기본)",
+      "간편 결제: length=4",
+      "보안 키패드: shuffle + 진입 시점 시드",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

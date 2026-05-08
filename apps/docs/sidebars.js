@@ -85,6 +85,7 @@ module.exports = {
         "components/reaction-picker",
         "components/greeting-header",
         "components/tip-card",
+        "components/pin-pad",
       ],
     },
     {

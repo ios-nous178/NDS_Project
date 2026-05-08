@@ -1,0 +1,53 @@
+---
+title: PinPad
+description: 비밀번호/PIN 키패드. 점 인디케이터 + 숫자 그리드, 셔플 옵션.
+---
+
+# PinPad
+
+간편 비밀번호, PIN 인증 같은 4~6자리 숫자 입력 키패드입니다. OtpInput(인증번호)과 분리됩니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 앱 진입 비밀번호 / 간편 PIN
+- 결제 비밀번호 (보안 키패드)
+
+### 이럴 때 사용하지 마세요
+- SMS 인증번호 입력 → `OtpInput`
+- 일반 텍스트/이메일 → `Input`
+
+### 자주 하는 실수
+- `shuffleSeed`를 매 렌더 새로 계산하면 키 배치가 흔들림 — 화면 진입 시점에 한 번만 결정 (`useMemo` 또는 `Date.now()`를 외부 state로)
+- 길이 도달 시 `onComplete` 한 번만 호출 — 인증 실패 시 `value=""`로 리셋해야 다시 시도 가능
+
+## 사용법
+
+```tsx
+import { PinPad } from "@nudge-eap/react";
+
+const [pin, setPin] = useState("");
+
+<PinPad
+  label="비밀번호 6자리를 입력하세요"
+  value={pin}
+  onValueChange={setPin}
+  onComplete={(v) => verifyPin(v)}
+/>
+
+// 보안 키패드
+<PinPad value={pin} onValueChange={setPin} shuffle shuffleSeed={Date.now()} />
+```
+
+## Props
+
+| Prop          | 타입                       | 기본값  | 설명                              |
+| ------------- | -------------------------- | ------- | --------------------------------- |
+| `value`       | `string`                   | —       | 입력값 (숫자 문자열)              |
+| `onValueChange` | `(v: string) => void`    | —       | 변경 콜백                         |
+| `length`      | `number`                   | `6`     | PIN 길이                          |
+| `onComplete`  | `(v: string) => void`      | —       | 길이 도달 시 콜백                 |
+| `label`       | `ReactNode`                | —       | 상단 라벨                         |
+| `shuffle`     | `boolean`                  | `false` | 키 배치 셔플 (보안)               |
+| `shuffleSeed` | `number`                   | `1`     | 셔플 시드 (동일 시드 = 동일 배치) |
+| `error`       | `boolean`                  | `false` | 에러 (점 흔들림)                  |
