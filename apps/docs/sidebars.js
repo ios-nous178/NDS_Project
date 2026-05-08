@@ -84,6 +84,7 @@ module.exports = {
         "components/online-indicator",
         "components/reaction-picker",
         "components/greeting-header",
+        "components/tip-card",
       ],
     },
     {
