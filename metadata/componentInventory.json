@@ -730,5 +730,17 @@
     "figmaNodeId": "",
     "usageSummary": "콘텐츠/검사/일기 공유, 챌린지 인증, 추천인 링크",
     "notes": "외부 SDK(카카오/SMS)는 targets onClick에서 직접 호출. clipboard는 HTTPS 필요."
+  },
+  {
+    "name": "ReviewCard",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "별점 후기 카드 (0.5 단위). 작성자/제목/본문/태그/푸터/verified",
+    "storybookTitle": "Components/ReviewCard",
+    "docsPath": "/docs/components/review-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "상담 후기, 콘텐츠 리뷰, 상품 후기, 챌린지 후기",
+    "notes": "rating 0~5 + 0.5 단위. 본문 pre-wrap 자동."
   }
 ]
