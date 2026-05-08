@@ -803,6 +803,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "kind별 자동 아이콘: 직접 icon prop 안 줘도 됨",
     ],
   },
+  CountdownTimer: {
+    name: "CountdownTimer",
+    summary:
+      "종료 시각까지 자동 카운트다운. 1초 단위 갱신, 10초 이하 빨강 강조, mm:ss/hh:mm:ss/remaining 포맷.",
+    pitfalls: [
+      "endsAt을 매 렌더 새로 계산하면 카운트가 흔들림 — useMemo로 고정.",
+      "onComplete는 0초 도달 시 1회만. 재시작은 endsAt을 새로 set.",
+      "remaining 포맷은 자연어 — 정확한 카운트가 필요하면 mm:ss/hh:mm:ss.",
+    ],
+    recommended: [
+      "인증 만료: useMemo로 expiry 고정 + onComplete로 재발송",
+      "라이브 시작: format='remaining' (자연어)",
+      "마감 카운트: 임박 시 빨강 강조 자동",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

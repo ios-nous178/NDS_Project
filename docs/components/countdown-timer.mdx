@@ -1,0 +1,47 @@
+---
+title: CountdownTimer
+description: 종료 시각까지 남은 시간을 자동 카운트다운. 임박 시 빨간색 강조.
+---
+
+# CountdownTimer
+
+특정 종료 시각(endsAt)까지 남은 시간을 1초 단위로 자동 갱신하는 컴포넌트입니다. 인증 만료, 라이브 시작까지, 미션 마감 등에 사용하세요.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 인증 코드 만료 표시
+- 라이브 상담 시작까지 남은 시간
+- 챌린지/미션 마감
+
+### 자주 하는 실수
+- `endsAt`을 `Date.now() + N`처럼 매 렌더 새로 계산하면 카운트가 흔들림 — `useMemo` 또는 외부 state로 고정
+- 0초 도달 시 `onComplete`가 한 번만 호출됨 — 자동 재시작 원하면 부모가 `endsAt`을 새로 설정
+
+## 사용법
+
+```tsx
+import { CountdownTimer } from "@nudge-eap/react";
+
+const expiry = useMemo(() => Date.now() + 3 * 60 * 1000, []);
+
+<CountdownTimer endsAt={expiry} label="후 만료" onComplete={resendCode} />
+
+// 자연어
+<CountdownTimer endsAt={liveStartTime} format="remaining" />
+
+// 시간 단위 큰 카운트다운
+<CountdownTimer endsAt={endOfDay} format="hh:mm:ss" />
+```
+
+## Props
+
+| Prop          | 타입                                  | 기본값      | 설명                              |
+| ------------- | ------------------------------------- | ----------- | --------------------------------- |
+| `endsAt`      | `string \| number \| Date`            | —           | 종료 시각 (ISO/timestamp/Date)    |
+| `format`      | `"mm:ss" \| "hh:mm:ss" \| "remaining"` | `"mm:ss"`   | 표시 포맷                         |
+| `onComplete`  | `() => void`                          | —           | 0초 도달 시 (1회)                 |
+| `onTick`      | `(ms: number) => void`                | —           | 매초 콜백                         |
+| `urgentColor` | `boolean`                             | `true`      | 10초 이하일 때 빨강 강조          |
+| `label`       | `ReactNode`                           | —           | 시간 옆 라벨                      |
+| `expiredText` | `ReactNode`                           | `"만료됨"`  | 만료 시 표시                      |

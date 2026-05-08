@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T03:10:48.213Z",
+  "generatedAt": "2026-05-08T05:37:57.581Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -126,6 +126,67 @@
       "dtsRelPath": "packages/react/dist/AppFooter.d.ts"
     },
     {
+      "name": "AppointmentCard",
+      "props": [
+        {
+          "name": "date",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "HH",
+          "optional": false,
+          "type": "mm) */"
+        },
+        {
+          "name": "startTime",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "HH",
+          "optional": false,
+          "type": "mm, 선택) */"
+        },
+        {
+          "name": "endTime",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "mode",
+          "optional": true,
+          "type": "AppointmentMode"
+        },
+        {
+          "name": "location",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "AppointmentStatus"
+        },
+        {
+          "name": "actions",
+          "optional": true,
+          "type": "AppointmentAction[]"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/AppointmentCard.d.ts"
+    },
+    {
       "name": "AssessmentResultCard",
       "props": [
         {
@@ -223,6 +284,77 @@
       "dtsRelPath": "packages/react/dist/AudioPlayer.d.ts"
     },
     {
+      "name": "Autocomplete",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "options",
+          "optional": false,
+          "type": "AutocompleteOption[]"
+        },
+        {
+          "name": "onSelect",
+          "optional": true,
+          "type": "(option: AutocompleteOption) => void"
+        },
+        {
+          "name": "loading",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "emptyMessage",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "minQueryLength",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "highlight",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Autocomplete.d.ts"
+    },
+    {
       "name": "Avatar",
       "props": [
         {
@@ -252,6 +384,32 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Avatar.d.ts"
+    },
+    {
+      "name": "AvatarGroup",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "AvatarGroupItem[]"
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "AvatarSize"
+        },
+        {
+          "name": "overlap",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/AvatarGroup.d.ts"
     },
     {
       "name": "Badge",
@@ -408,6 +566,52 @@
       "dtsRelPath": "packages/react/dist/Breadcrumb.d.ts"
     },
     {
+      "name": "BreathingGuide",
+      "props": [
+        {
+          "name": "phases",
+          "optional": true,
+          "type": "BreathingPhase[]"
+        },
+        {
+          "name": "autoStart",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "cycles",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onComplete",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "playing",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onPlayingChange",
+          "optional": true,
+          "type": "(playing: boolean) => void"
+        },
+        {
+          "name": "showCount",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "hideControls",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/BreathingGuide.d.ts"
+    },
+    {
       "name": "Button",
       "props": [
         {
@@ -427,6 +631,108 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Button.d.ts"
+    },
+    {
+      "name": "Calendar",
+      "props": [
+        {
+          "name": "month",
+          "optional": true,
+          "type": "string | Date"
+        },
+        {
+          "name": "onMonthChange",
+          "optional": true,
+          "type": "(yearMonth: string) => void"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onChange",
+          "optional": true,
+          "type": "(date: string) => void"
+        },
+        {
+          "name": "isDateDisabled",
+          "optional": true,
+          "type": "(date: string) => boolean"
+        },
+        {
+          "name": "markers",
+          "optional": true,
+          "type": "CalendarMarker[]"
+        },
+        {
+          "name": "hideHeader",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "weekStartsOn",
+          "optional": true,
+          "type": "0 | 1"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Calendar.d.ts"
+    },
+    {
+      "name": "CallControlBar",
+      "props": [
+        {
+          "name": "muted",
+          "optional": false,
+          "type": "boolean"
+        },
+        {
+          "name": "onMutedChange",
+          "optional": false,
+          "type": "(muted: boolean) => void"
+        },
+        {
+          "name": "cameraOn",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onCameraChange",
+          "optional": true,
+          "type": "(on: boolean) => void"
+        },
+        {
+          "name": "speakerOn",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onSpeakerChange",
+          "optional": true,
+          "type": "(on: boolean) => void"
+        },
+        {
+          "name": "onEnd",
+          "optional": false,
+          "type": "() => void"
+        },
+        {
+          "name": "mm",
+          "optional": false,
+          "type": "ss 또는 ReactNode). 표시 영역 */"
+        },
+        {
+          "name": "duration",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "extra",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/CallControlBar.d.ts"
     },
     {
       "name": "Card",
@@ -475,6 +781,57 @@
       "dtsRelPath": "packages/react/dist/Card.d.ts"
     },
     {
+      "name": "Carousel",
+      "props": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "activeIndex",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onActiveIndexChange",
+          "optional": true,
+          "type": "(index: number) => void"
+        },
+        {
+          "name": "autoplay",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "indicator",
+          "optional": true,
+          "type": "CarouselIndicator"
+        },
+        {
+          "name": "showArrows",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "gap",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "loop",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Carousel.d.ts"
+    },
+    {
       "name": "ChatBubble",
       "props": [
         {
@@ -519,6 +876,67 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ChatBubble.d.ts"
+    },
+    {
+      "name": "ChatComposer",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "onSubmit",
+          "optional": false,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "maxLength",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onAttach",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "onMic",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "quickReplies",
+          "optional": true,
+          "type": "QuickReply[]"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "submitOnEnter",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "maxHeight",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ChatComposer.d.ts"
     },
     {
       "name": "Checkbox",
@@ -608,6 +1026,93 @@
       "dtsRelPath": "packages/react/dist/Chip.d.ts"
     },
     {
+      "name": "CircularProgress",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "thickness",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "trackColor",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/CircularProgress.d.ts"
+    },
+    {
+      "name": "CoachMark",
+      "props": [
+        {
+          "name": "open",
+          "optional": false,
+          "type": "boolean"
+        },
+        {
+          "name": "steps",
+          "optional": false,
+          "type": "CoachMarkStep[]"
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onStepChange",
+          "optional": true,
+          "type": "(index: number) => void"
+        },
+        {
+          "name": "onClose",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "finishLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "nextLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "skipLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "hideSkip",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/CoachMark.d.ts"
+    },
+    {
       "name": "ConsentChecklist",
       "props": [
         {
@@ -693,6 +1198,47 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CounselorCard.d.ts"
+    },
+    {
+      "name": "CountdownTimer",
+      "props": [
+        {
+          "name": "endsAt",
+          "optional": false,
+          "type": "string | number | Date"
+        },
+        {
+          "name": "format",
+          "optional": true,
+          "type": "CountdownFormat"
+        },
+        {
+          "name": "onComplete",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "onTick",
+          "optional": true,
+          "type": "(ms: number) => void"
+        },
+        {
+          "name": "urgentColor",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "expiredText",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/CountdownTimer.d.ts"
     },
     {
       "name": "CrisisCallout",
@@ -992,6 +1538,57 @@
       "dtsRelPath": "packages/react/dist/DSHighlight.d.ts"
     },
     {
+      "name": "EmotionHeatmap",
+      "props": [
+        {
+          "name": "month",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "entries",
+          "optional": false,
+          "type": "EmotionEntry[]"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onCellClick",
+          "optional": true,
+          "type": "(date: string, level: EmotionLevel) => void"
+        },
+        {
+          "name": "treatZeroAsEmpty",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "colors",
+          "optional": true,
+          "type": "[string, string, string, string, string]"
+        },
+        {
+          "name": "legendLabels",
+          "optional": true,
+          "type": "{"
+        },
+        {
+          "name": "low",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "high",
+          "optional": false,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/EmotionHeatmap.d.ts"
+    },
+    {
       "name": "EmptyState",
       "props": [
         {
@@ -1021,6 +1618,83 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/EmptyState.d.ts"
+    },
+    {
+      "name": "ExpandableText",
+      "props": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "lines",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "expandLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "collapseLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "hideCollapse",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "expanded",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onExpandedChange",
+          "optional": true,
+          "type": "(v: boolean) => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ExpandableText.d.ts"
+    },
+    {
+      "name": "FAB",
+      "props": [
+        {
+          "name": "icon",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "FABColor"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "FABSize"
+        },
+        {
+          "name": "position",
+          "optional": true,
+          "type": "FABPosition"
+        },
+        {
+          "name": "offset",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/FAB.d.ts"
     },
     {
       "name": "FieldActionRow",
@@ -1208,6 +1882,88 @@
       "dtsRelPath": "packages/react/dist/Input.d.ts"
     },
     {
+      "name": "JournalEntry",
+      "props": [
+        {
+          "name": "date",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "mood",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "body",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "maxLines",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "tags",
+          "optional": true,
+          "type": "string[]"
+        },
+        {
+          "name": "thumbnailSrc",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/JournalEntry.d.ts"
+    },
+    {
+      "name": "Lightbox",
+      "props": [
+        {
+          "name": "open",
+          "optional": false,
+          "type": "boolean"
+        },
+        {
+          "name": "images",
+          "optional": false,
+          "type": "LightboxImage[]"
+        },
+        {
+          "name": "index",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onIndexChange",
+          "optional": true,
+          "type": "(i: number) => void"
+        },
+        {
+          "name": "onClose",
+          "optional": false,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Lightbox.d.ts"
+    },
+    {
       "name": "LikertScale",
       "props": [
         {
@@ -1378,6 +2134,154 @@
       "dtsRelPath": "packages/react/dist/MoodSelector.d.ts"
     },
     {
+      "name": "MultiStepForm",
+      "props": [
+        {
+          "name": "steps",
+          "optional": false,
+          "type": "MultiStepFormStep[]"
+        },
+        {
+          "name": "current",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onCurrentChange",
+          "optional": true,
+          "type": "(index: number) => void"
+        },
+        {
+          "name": "onSubmit",
+          "optional": true,
+          "type": "() => void | Promise<void>"
+        },
+        {
+          "name": "indicator",
+          "optional": true,
+          "type": "MultiStepFormIndicator"
+        },
+        {
+          "name": "nextLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "prevLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "submitLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "submitting",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/MultiStepForm.d.ts"
+    },
+    {
+      "name": "NotificationItem",
+      "props": [
+        {
+          "name": "kind",
+          "optional": true,
+          "type": "NotificationKind"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "3",
+          "optional": false,
+          "type": "42\") */"
+        },
+        {
+          "name": "time",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "unread",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/NotificationItem.d.ts"
+    },
+    {
+      "name": "NumberStepper",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: number) => void"
+        },
+        {
+          "name": "min",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "NumberStepperSize"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "editable",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "unit",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/NumberStepper.d.ts"
+    },
+    {
       "name": "OtpInput",
       "props": [
         {
@@ -1419,6 +2323,47 @@
       "dtsRelPath": "packages/react/dist/OtpInput.d.ts"
     },
     {
+      "name": "PageHeader",
+      "props": [
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "subtitle",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onBack",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "breadcrumb",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "actions",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "bottom",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "bordered",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/PageHeader.d.ts"
+    },
+    {
       "name": "Pagination",
       "props": [
         {
@@ -1448,6 +2393,57 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Pagination.d.ts"
+    },
+    {
+      "name": "PhoneInput",
+      "props": [
+        {
+          "name": "countryCode",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onCountryChange",
+          "optional": false,
+          "type": "(code: string) => void"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "helperText",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "countries",
+          "optional": true,
+          "type": "PhoneCountry[]"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/PhoneInput.d.ts"
     },
     {
       "name": "Popup",
@@ -1525,6 +2521,27 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ProgressBar.d.ts"
+    },
+    {
+      "name": "QuickActionGrid",
+      "props": [
+        {
+          "name": "actions",
+          "optional": false,
+          "type": "QuickAction[]"
+        },
+        {
+          "name": "columns",
+          "optional": true,
+          "type": "2 | 3 | 4"
+        },
+        {
+          "name": "gap",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/QuickActionGrid.d.ts"
     },
     {
       "name": "Radio",
@@ -1671,6 +2688,98 @@
       "dtsRelPath": "packages/react/dist/Select.d.ts"
     },
     {
+      "name": "SelectionCard",
+      "props": [
+        {
+          "name": "mode",
+          "optional": true,
+          "type": "SelectionCardMode"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "values",
+          "optional": true,
+          "type": "string[]"
+        },
+        {
+          "name": "onValueChange",
+          "optional": true,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "onValuesChange",
+          "optional": true,
+          "type": "(values: string[]) => void"
+        },
+        {
+          "name": "layout",
+          "optional": true,
+          "type": "SelectionCardLayout"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/SelectionCard.d.ts"
+    },
+    {
+      "name": "SignaturePad",
+      "props": [
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "height",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "penColor",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "penWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onChange",
+          "optional": true,
+          "type": "(dataUrl: string | null) => void"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "hideControls",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/SignaturePad.d.ts"
+    },
+    {
       "name": "Skeleton",
       "props": [
         {
@@ -1758,6 +2867,98 @@
       "dtsRelPath": "packages/react/dist/Slider.d.ts"
     },
     {
+      "name": "Snackbar",
+      "props": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "SnackbarVariant"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "actionLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onAction",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "closable",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onClose",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Snackbar.d.ts"
+    },
+    {
+      "name": "Sparkline",
+      "props": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": "number[]"
+        },
+        {
+          "name": "kind",
+          "optional": true,
+          "type": "SparklineKind"
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "width",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "height",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "strokeWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "showBaseline",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "showLastDot",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Sparkline.d.ts"
+    },
+    {
       "name": "Spinner",
       "props": [
         {
@@ -1815,6 +3016,57 @@
       "dtsRelPath": "packages/react/dist/StarRating.d.ts"
     },
     {
+      "name": "StatCard",
+      "props": [
+        {
+          "name": "label",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "unit",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "delta",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "trend",
+          "optional": true,
+          "type": "StatCardTrend"
+        },
+        {
+          "name": "trailing",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/StatCard.d.ts"
+    },
+    {
       "name": "Stepper",
       "props": [
         {
@@ -1834,6 +3086,42 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Stepper.d.ts"
+    },
+    {
+      "name": "StreakCard",
+      "props": [
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "streak",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "unit",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "days",
+          "optional": true,
+          "type": "StreakDay[]"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/StreakCard.d.ts"
     },
     {
       "name": "Tabs",
@@ -1860,6 +3148,67 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Tabs.d.ts"
+    },
+    {
+      "name": "TagInput",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string[]"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(tags: string[]) => void"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "helperText",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "maxTags",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onMaxReached",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "allowDuplicates",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/TagInput.d.ts"
     },
     {
       "name": "Textarea",
@@ -2102,6 +3451,118 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/TrendingKeywords.d.ts"
+    },
+    {
+      "name": "VideoPlayer",
+      "props": [
+        {
+          "name": "src",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "poster",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "mm",
+          "optional": false,
+          "type": "ss`). 비디오가 로드되면 자동 계산 */"
+        },
+        {
+          "name": "durationLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "autoPlay",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "muted",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "loop",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "false",
+          "optional": false,
+          "type": "커스텀 UI) */"
+        },
+        {
+          "name": "nativeControls",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "16",
+          "optional": false,
+          "type": "9 */"
+        },
+        {
+          "name": "aspectRatio",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onEnded",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/VideoPlayer.d.ts"
+    },
+    {
+      "name": "VoiceRecorder",
+      "props": [
+        {
+          "name": "state",
+          "optional": false,
+          "type": "VoiceRecorderState"
+        },
+        {
+          "name": "onStateChange",
+          "optional": false,
+          "type": "(state: VoiceRecorderState) => void"
+        },
+        {
+          "name": "seconds",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "maxSeconds",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onComplete",
+          "optional": true,
+          "type": "(seconds: number) => void"
+        },
+        {
+          "name": "idleLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "recordingLabel",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/VoiceRecorder.d.ts"
     }
   ],
   "icons": [
