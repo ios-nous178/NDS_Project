@@ -100,9 +100,7 @@ export const WithBadgeAndReplies: Story = {
 export const SimpleList: Story = {
   name: "Recipe/간단 리스트",
   render: () => (
-    <div
-      style={{ width: 480, display: "flex", flexDirection: "column", divider: "1px solid #eee" }}
-    >
+    <div style={{ width: 480, display: "flex", flexDirection: "column" }}>
       {[
         { name: "김민지", time: "3분 전", text: "이 글 잘 읽었어요." },
         { name: "이수영", time: "1시간 전", text: "저도 비슷한 경험이 있어요. 공감해요." },
