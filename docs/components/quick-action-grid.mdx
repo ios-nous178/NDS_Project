@@ -1,0 +1,64 @@
+---
+title: QuickActionGrid
+description: 홈 진입 빠른 액션 그리드. 4~6칸의 아이콘 + 라벨 + 배지.
+---
+
+# QuickActionGrid
+
+홈 화면 상단의 4~6칸 빠른 액션을 일관되게 묶는 컴포넌트입니다. 각 액션은 아이콘(이모지) + 라벨로 표시되며, 알림 카운트나 NEW 배지를 함께 노출할 수 있습니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 홈 화면 상단의 진입 메뉴 (감정기록 / 상담예약 / 챌린지 / 콘텐츠)
+- 마이페이지의 빠른 메뉴 그리드
+
+### 자주 하는 실수
+- 4칸이 가장 균형 잡힘. 5칸은 배치가 어색하니 columns=4 + actions 8개(2행) 또는 columns=3
+- 라벨은 짧게 (4글자 이하 권장). 길어지면 줄바꿈됨
+
+## 사용법
+
+```tsx
+import { QuickActionGrid } from "@nudge-eap/react";
+
+<QuickActionGrid
+  actions={[
+    { key: "record", icon: "📝", label: "감정 기록", onClick: () => router.push("/journal") },
+    { key: "counsel", icon: "💬", label: "상담 예약", onClick: () => router.push("/counseling") },
+    { key: "challenge", icon: "🎯", label: "챌린지", onClick: () => router.push("/challenge") },
+    { key: "content", icon: "📚", label: "콘텐츠", onClick: () => router.push("/contents") },
+  ]}
+/>
+
+// 배지
+<QuickActionGrid
+  actions={[
+    { key: "notif", icon: "🔔", label: "알림", badge: "3", onClick: ... },
+    ...
+  ]}
+/>
+
+// 3칸 × 2줄
+<QuickActionGrid columns={3} actions={[...6개]} />
+```
+
+## Props
+
+| Prop      | 타입                     | 기본값  | 설명                  |
+| --------- | ------------------------ | ------- | --------------------- |
+| `actions` | `QuickAction[]`          | —       | 액션 배열             |
+| `columns` | `2 \| 3 \| 4`            | `4`     | 한 줄 칸 수           |
+| `gap`     | `number`                 | `12`    | 칼럼 간격 px          |
+
+### `QuickAction`
+
+| Prop      | 타입         | 설명                                |
+| --------- | ------------ | ----------------------------------- |
+| `key`     | `string`     | 고유 키                             |
+| `icon`    | `ReactNode`  | 아이콘/이모지                       |
+| `label`   | `ReactNode`  | 라벨                                |
+| `onClick` | `() => void` | 클릭 콜백                           |
+| `badge`   | `ReactNode`  | 우상단 배지 (예: "NEW", "3")        |
+| `disabled`| `boolean`    | 비활성화                            |
+| `iconBg`  | `string`     | 아이콘 배경 색 (CSS color, 선택)    |

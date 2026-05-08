@@ -454,5 +454,17 @@
     "figmaNodeId": "",
     "usageSummary": "대시보드 메트릭 그리드, 리포트 요약 카드, 디테일 핵심 지표",
     "notes": "trend(up/down/flat)에 따라 delta 배지 색 자동. trailing 슬롯에 Sparkline 결합."
+  },
+  {
+    "name": "QuickActionGrid",
+    "category": "레이아웃",
+    "status": "implemented",
+    "description": "홈 빠른 액션 그리드. 2/3/4칸, 아이콘 + 라벨 + 배지, iconBg 커스텀",
+    "storybookTitle": "Components/QuickActionGrid",
+    "docsPath": "/docs/components/quick-action-grid",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "홈 진입 메뉴, 마이페이지 빠른 메뉴",
+    "notes": "4칸이 기본 균형. 5칸 배치는 어색 — 3 또는 4로 조정."
   }
 ]

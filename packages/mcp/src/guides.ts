@@ -705,6 +705,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "추이 시각화: trailing={<Sparkline />} 결합",
     ],
   },
+  QuickActionGrid: {
+    name: "QuickActionGrid",
+    summary: "홈 빠른 액션 그리드. 4~6칸 아이콘+라벨, 배지 지원. 4칸이 기본 균형.",
+    pitfalls: [
+      "라벨이 길면 줄바꿈됨. 4글자 이하 권장.",
+      "5칸은 배치가 어색 — columns=4 + 8개(2행) 또는 columns=3 사용.",
+      "배지는 알림 카운트(숫자) 또는 짧은 라벨('N','NEW') 위주. 긴 텍스트 X.",
+      "아이콘은 이모지가 가장 단순하지만, 통일된 톤이 필요하면 SVG icon 컴포넌트로 교체.",
+    ],
+    recommended: [
+      "홈 진입: 4칸 (감정기록 / 상담 / 챌린지 / 콘텐츠)",
+      "시간대별 명상: iconBg로 시간대 톤 표현",
+      "알림 진입: badge='3' 같은 미읽음 카운트",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
