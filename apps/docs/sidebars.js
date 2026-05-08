@@ -100,6 +100,7 @@ module.exports = {
         "components/vote-poll",
         "components/price-tag",
         "components/amount-input",
+        "components/status-timeline",
       ],
     },
     {
