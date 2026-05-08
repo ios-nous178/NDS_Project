@@ -1,0 +1,70 @@
+---
+title: Carousel
+description: 슬라이드/스와이프 캐러셀. 홈 배너, 콘텐츠 추천, 온보딩 슬라이드.
+---
+
+# Carousel
+
+가로 스와이프로 여러 슬라이드를 보여주는 캐러셀입니다. 포인터/터치 드래그, 자동 재생, 도트/카운터 인디케이터, loop를 지원합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 홈 상단 프로모션 배너
+- 콘텐츠/상담사 추천 슬라이더
+- 온보딩 단계 화면 (3~5장)
+
+### 이럴 때 사용하지 마세요
+- 정보 위계상 모든 항목이 동등하게 보여야 할 때 → 가로 스크롤 리스트가 더 적합
+- 슬라이드가 1~2장인 경우 → 굳이 캐러셀 쓰지 말 것
+
+### 자주 하는 실수
+- `autoplay`만 켜두고 `loop`를 안 켜면 마지막 슬라이드에서 멈춤
+- 슬라이드 안에 자체 가로 스크롤이 있으면 드래그 충돌
+
+## 사용법
+
+```tsx
+import { Carousel } from "@nudge-eap/react";
+
+// 기본 (도트)
+<Carousel>
+  <img src="/banner-1.png" />
+  <img src="/banner-2.png" />
+</Carousel>
+
+// 자동 재생 + 무한 루프
+<Carousel autoplay={3000} loop>
+  ...
+</Carousel>
+
+// 카운터 (이미지 갤러리)
+<Carousel indicator="counter">
+  ...
+</Carousel>
+
+// 외부에서 제어
+<Carousel activeIndex={idx} onActiveIndexChange={setIdx}>
+  ...
+</Carousel>
+```
+
+## Props
+
+| Prop                  | 타입                              | 기본값   | 설명                            |
+| --------------------- | --------------------------------- | -------- | ------------------------------- |
+| `children`            | `ReactNode`                       | —        | 각 자식이 한 슬라이드           |
+| `activeIndex`         | `number`                          | —        | 활성 인덱스 (controlled)        |
+| `onActiveIndexChange` | `(i: number) => void`             | —        | 인덱스 변경 콜백                |
+| `autoplay`            | `number`                          | —        | 자동 재생 ms. 미지정 시 비활성  |
+| `step`                | `number`                          | `1`      | 한 번에 이동하는 슬라이드 수    |
+| `indicator`           | `"dots" \| "counter" \| "none"`   | `"dots"` | 인디케이터 종류                 |
+| `showArrows`          | `boolean`                         | `true`   | 좌우 화살표 (호버 시 노출)      |
+| `gap`                 | `number`                          | `0`      | 슬라이드 사이 간격 px           |
+| `loop`                | `boolean`                         | `false`  | 마지막 → 처음 순환              |
+
+## CSS 변수
+
+| 변수                      | 기본값 | 설명     |
+| ------------------------- | ------ | -------- |
+| `--nds-carousel-radius`   | `12px` | 모서리   |

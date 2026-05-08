@@ -190,5 +190,17 @@
     "figmaNodeId": "",
     "usageSummary": "상담 예약, 감정 캘린더, 복약 캘린더, 일정 뷰",
     "notes": "DatePicker(popover 입력)와 분리. 캘린더 자체가 콘텐츠인 화면용."
+  },
+  {
+    "name": "Carousel",
+    "category": "일반",
+    "status": "implemented",
+    "description": "가로 스와이프 슬라이더. drag, autoplay, loop, dots/counter 인디케이터 지원",
+    "storybookTitle": "Components/Carousel",
+    "docsPath": "/docs/components/carousel",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "홈 배너, 콘텐츠 추천, 이미지 갤러리, 온보딩 슬라이드",
+    "notes": "포인터/터치 드래그 + 자동 재생을 한 컴포넌트로 통합."
   }
 ]

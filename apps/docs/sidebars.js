@@ -51,6 +51,7 @@ module.exports = {
         "components/file-upload",
         "components/date-range-picker",
         "components/calendar",
+        "components/carousel",
       ],
     },
     {
