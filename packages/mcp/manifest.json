@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-05T10:52:31.197Z",
-  "repoRoot": "/Users/eprnf/04_DPLaps/NudgeEAPDesignSystem",
+  "generatedAt": "2026-05-08T03:10:48.213Z",
+  "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -73,6 +73,17 @@
       "dtsRelPath": "packages/react/dist/Accordion.d.ts"
     },
     {
+      "name": "ActivityTimeline",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "TimelineItem[]"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ActivityTimeline.d.ts"
+    },
+    {
       "name": "AppBar",
       "props": [
         {
@@ -113,6 +124,103 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/AppFooter.d.ts"
+    },
+    {
+      "name": "AssessmentResultCard",
+      "props": [
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "score",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "maxScore",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "level",
+          "optional": false,
+          "type": "AssessmentLevel"
+        },
+        {
+          "name": "levelText",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "actionLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onAction",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/AssessmentResultCard.d.ts"
+    },
+    {
+      "name": "AudioPlayer",
+      "props": [
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "subtitle",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "playing",
+          "optional": false,
+          "type": "boolean"
+        },
+        {
+          "name": "onPlayPause",
+          "optional": false,
+          "type": "(next: boolean) => void"
+        },
+        {
+          "name": "currentTime",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "duration",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "onSeek",
+          "optional": true,
+          "type": "(time: number) => void"
+        },
+        {
+          "name": "onSkipBack",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "onSkipForward",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/AudioPlayer.d.ts"
     },
     {
       "name": "Avatar",
@@ -367,6 +475,52 @@
       "dtsRelPath": "packages/react/dist/Card.d.ts"
     },
     {
+      "name": "ChatBubble",
+      "props": [
+        {
+          "name": "role",
+          "optional": false,
+          "type": "ChatRole"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "3",
+          "optional": false,
+          "type": "24\") */"
+        },
+        {
+          "name": "time",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "avatarSrc",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "group",
+          "optional": true,
+          "type": "ChatGroupPosition"
+        },
+        {
+          "name": "read",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ChatBubble.d.ts"
+    },
+    {
       "name": "Checkbox",
       "props": [
         {
@@ -454,6 +608,124 @@
       "dtsRelPath": "packages/react/dist/Chip.d.ts"
     },
     {
+      "name": "ConsentChecklist",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "ConsentItem[]"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string[]"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string[]) => void"
+        },
+        {
+          "name": "allLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "expandable",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ConsentChecklist.d.ts"
+    },
+    {
+      "name": "CounselorCard",
+      "props": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "jobTitle",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "imageSrc",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "rating",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "reviewCount",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "tags",
+          "optional": true,
+          "type": "string[]"
+        },
+        {
+          "name": "bio",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "ctaLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onCtaClick",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "onCardClick",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/CounselorCard.d.ts"
+    },
+    {
+      "name": "CrisisCallout",
+      "props": [
+        {
+          "name": "tone",
+          "optional": true,
+          "type": "CrisisTone"
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "actions",
+          "optional": true,
+          "type": "CrisisAction[]"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/CrisisCallout.d.ts"
+    },
+    {
       "name": "DatePicker",
       "props": [
         {
@@ -513,6 +785,57 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/DatePicker.d.ts"
+    },
+    {
+      "name": "DateRangePicker",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "DateRange"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(range: DateRange) => void"
+        },
+        {
+          "name": "startLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "endLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "presets",
+          "optional": true,
+          "type": "DateRangePreset[]"
+        },
+        {
+          "name": "minDate",
+          "optional": true,
+          "type": "Date"
+        },
+        {
+          "name": "maxDate",
+          "optional": true,
+          "type": "Date"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/DateRangePicker.d.ts"
     },
     {
       "name": "Divider",
@@ -726,6 +1049,62 @@
       "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts"
     },
     {
+      "name": "FileUpload",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "File[]"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(files: File[]) => void"
+        },
+        {
+          "name": "accept",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "multiple",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "maxSize",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onReject",
+          "optional": true,
+          "type": "(files: File[], reason: \"size\" | \"accept\") => void"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "hint",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "errorMessage",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/FileUpload.d.ts"
+    },
+    {
       "name": "FormField",
       "props": [
         {
@@ -886,6 +1265,47 @@
       "dtsRelPath": "packages/react/dist/List.d.ts"
     },
     {
+      "name": "MedicationItem",
+      "props": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "dosage",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "times",
+          "optional": true,
+          "type": "MedicationTime[]"
+        },
+        {
+          "name": "note",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "taken",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onTakenChange",
+          "optional": true,
+          "type": "(taken: boolean) => void"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/MedicationItem.d.ts"
+    },
+    {
       "name": "Modal",
       "props": [
         {
@@ -920,6 +1340,83 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Modal.d.ts"
+    },
+    {
+      "name": "MoodSelector",
+      "props": [
+        {
+          "name": "options",
+          "optional": true,
+          "type": "MoodOption[]"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "showLabels",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/MoodSelector.d.ts"
+    },
+    {
+      "name": "OtpInput",
+      "props": [
+        {
+          "name": "length",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "onComplete",
+          "optional": true,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "autoFocus",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/OtpInput.d.ts"
     },
     {
       "name": "Pagination",
@@ -1030,6 +1527,68 @@
       "dtsRelPath": "packages/react/dist/ProgressBar.d.ts"
     },
     {
+      "name": "Radio",
+      "props": [
+        {
+          "name": "checked",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onCheckedChange",
+          "optional": true,
+          "type": "(checked: boolean) => void"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Radio.d.ts"
+    },
+    {
+      "name": "ScoreGauge",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "segments",
+          "optional": true,
+          "type": "GaugeSegment[]"
+        },
+        {
+          "name": "showLabel",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "showLegend",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ScoreGauge.d.ts"
+    },
+    {
       "name": "SearchInput",
       "props": [
         {
@@ -1136,6 +1695,88 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Skeleton.d.ts"
+    },
+    {
+      "name": "Slider",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: number) => void"
+        },
+        {
+          "name": "min",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "startLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "endLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "showValue",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "formatValue",
+          "optional": true,
+          "type": "(value: number) => React.ReactNode"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Slider.d.ts"
+    },
+    {
+      "name": "Spinner",
+      "props": [
+        {
+          "name": "size",
+          "optional": true,
+          "type": "SpinnerSize | number"
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Spinner.d.ts"
     },
     {
       "name": "StarRating",
