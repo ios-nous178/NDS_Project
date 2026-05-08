@@ -1,0 +1,37 @@
+---
+title: Spinner
+description: 인라인 회전 로딩 인디케이터. 짧은 fetch에 사용합니다.
+---
+
+# Spinner
+
+인라인 회전 로딩 인디케이터입니다. 2초 미만의 짧은 비동기 작업에 사용하고, 더 긴 로딩은 `Skeleton`을 사용하세요.
+
+## 사용법
+
+```tsx
+import { Spinner, Button } from "@nudge-eap/react";
+
+<Spinner />
+<Spinner size="sm" />
+<Spinner size={48} />
+
+// 버튼 내부
+<Button disabled>
+  <Spinner size="sm" color="currentColor" />
+  <span>처리 중...</span>
+</Button>
+```
+
+## Props
+
+| Prop    | 타입                          | 기본값      | 설명                            |
+| ------- | ----------------------------- | ----------- | ------------------------------- |
+| `size`  | `"sm" \| "md" \| "lg" \| number` | `"md"`      | 크기 (sm=16, md=24, lg=32)      |
+| `color` | `string`                      | primary.main | 색상 (CSS color 값/토큰 var)    |
+| `label` | `string`                      | `"로딩 중"` | 스크린리더용 라벨               |
+
+## 가이드
+
+- 전체 페이지 로딩에 단독으로 띄우지 말 것 — 빈 화면 인상이 강합니다. 레이아웃을 유지하는 `Skeleton`이 UX에 더 좋음.
+- 버튼 내부에서는 `color="currentColor"`로 컨텍스트 색에 맞춤.

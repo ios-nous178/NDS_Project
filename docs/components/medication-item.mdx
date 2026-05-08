@@ -1,0 +1,52 @@
+---
+title: MedicationItem
+description: 복용약 한 줄 표시. 이름/용량/시기/체크.
+---
+
+# MedicationItem
+
+복용약 한 줄을 표시합니다. 약 이름·용량·복용 시기·노트·체크를 한 행에서 다룹니다.
+
+## 사용법
+
+```tsx
+import { MedicationItem } from "@nudge-eap/react";
+
+// 표시 전용
+<MedicationItem
+  name="졸로프트"
+  dosage="50mg / 1정"
+  times={["morning"]}
+  note="식후 30분"
+/>
+
+// 체크 가능
+const [taken, setTaken] = useState(false);
+<MedicationItem
+  name="라믹탈"
+  dosage="25mg"
+  times={["morning", "evening"]}
+  taken={taken}
+  onTakenChange={setTaken}
+/>
+```
+
+## Props
+
+| Prop            | 타입                          | 기본값  | 설명                              |
+| --------------- | ----------------------------- | ------- | --------------------------------- |
+| `name`          | `string`                      | —       | 약 이름                           |
+| `dosage`        | `ReactNode`                   | —       | 용량 (예: "10mg", "1정")          |
+| `times`         | `MedicationTime[]`            | —       | 복용 시기                         |
+| `note`          | `ReactNode`                   | —       | 노트 (예: "식후 30분")            |
+| `taken`         | `boolean`                     | `false` | 복용 완료                         |
+| `onTakenChange` | `(taken: boolean) => void`    | —       | 변경 콜백 (제공 시 체크박스 표시) |
+| `icon`          | `ReactNode`                   | 기본 💊 | 좌측 아이콘 커스터마이즈          |
+
+`MedicationTime = "morning" | "noon" | "evening" | "bedtime"` (각각 아침/점심/저녁/취침으로 자동 라벨링)
+
+## 가이드
+
+- 리스트로 쌓을 때 부모에 `gap: 8~12px`. 컴포넌트 자체는 margin이 없음.
+- `onTakenChange` 미제공 → 체크박스 비표시 (표시 전용).
+- 분 단위 복약 시간은 `note`에 텍스트로 (`"식후 30분"`).

@@ -1,0 +1,55 @@
+---
+title: AudioPlayer
+description: 명상·이완 가이드 오디오 플레이어. UI 전용, 상태는 외부 관리.
+---
+
+# AudioPlayer
+
+명상·이완 가이드 오디오 플레이어입니다. **UI만 제공**하고 재생 상태(`playing`/`currentTime`/`duration`)는 외부에서 관리합니다.
+
+## 사용법
+
+```tsx
+import { AudioPlayer } from "@nudge-eap/react";
+
+const audioRef = useRef<HTMLAudioElement>(null);
+const [playing, setPlaying] = useState(false);
+const [time, setTime] = useState(0);
+
+<AudioPlayer
+  title="마음을 편안하게 하는 호흡 명상"
+  subtitle="10분 가이드 · 박지수"
+  playing={playing}
+  onPlayPause={(next) => {
+    if (next) audioRef.current?.play();
+    else audioRef.current?.pause();
+    setPlaying(next);
+  }}
+  currentTime={time}
+  duration={600}
+  onSeek={(t) => {
+    if (audioRef.current) audioRef.current.currentTime = t;
+    setTime(t);
+  }}
+/>
+```
+
+## Props
+
+| Prop             | 타입                             | 기본값 | 설명                                |
+| ---------------- | -------------------------------- | ------ | ----------------------------------- |
+| `title`          | `ReactNode`                      | —      | 제목                                |
+| `subtitle`       | `ReactNode`                      | —      | 부제                                |
+| `playing`        | `boolean`                        | —      | 재생 중 여부                        |
+| `onPlayPause`    | `(next: boolean) => void`        | —      | 재생/일시정지 토글                  |
+| `currentTime`    | `number`                         | —      | 현재 위치 (초)                      |
+| `duration`       | `number`                         | —      | 총 길이 (초)                        |
+| `onSeek`         | `(time: number) => void`         | —      | 시크 콜백 (없으면 슬라이더 disabled) |
+| `onSkipBack`     | `() => void`                     | —      | 이전 트랙 (제공 시 표시)            |
+| `onSkipForward`  | `() => void`                     | —      | 다음 트랙 (제공 시 표시)            |
+
+## 가이드
+
+- 재생 상태는 `useState` + `<audio>` ref로 부모에서 관리. DS는 UI만 그림.
+- `<audio>`의 `timeupdate` 이벤트로 `currentTime` 동기화 권장.
+- 단일 트랙은 `onSkipBack/Forward` 생략, 시리즈는 둘 다 부착.

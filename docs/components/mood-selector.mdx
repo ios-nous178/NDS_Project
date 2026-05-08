@@ -1,0 +1,50 @@
+---
+title: MoodSelector
+description: 5단계 기분 선택 컴포넌트. EAP 앱 첫 화면 핵심 인터랙션.
+---
+
+# MoodSelector
+
+오늘의 기분을 5단계 이모지로 선택하는 컴포넌트입니다. EAP 앱의 데일리 체크인에 자주 쓰입니다.
+
+## 사용법
+
+```tsx
+import { MoodSelector } from "@nudge-eap/react";
+
+// 기본 5단계 (😢 😟 😐 🙂 😀)
+<MoodSelector value={mood} onValueChange={setMood} />
+
+// 라벨 숨기고 컴팩트하게
+<MoodSelector value={mood} onValueChange={setMood} showLabels={false} />
+
+// 직접 옵션 정의 (3단계 등)
+<MoodSelector
+  value={mood}
+  onValueChange={setMood}
+  options={[
+    { value: "bad", emoji: "😟", label: "별로" },
+    { value: "ok", emoji: "🙂", label: "괜찮아요" },
+    { value: "great", emoji: "😀", label: "좋아요" },
+  ]}
+/>
+```
+
+## Props
+
+| Prop            | 타입                                  | 기본값    | 설명                      |
+| --------------- | ------------------------------------- | --------- | ------------------------- |
+| `value`         | `string`                              | —         | 선택된 값                 |
+| `onValueChange` | `(value: string) => void`             | —         | 변경 콜백                 |
+| `options`       | `MoodOption[]`                        | 5단계 기본 | 직접 옵션 정의            |
+| `name`          | `string`                              | 자동 생성 | radio name                |
+| `showLabels`    | `boolean`                             | `true`    | 이모지 아래 라벨 표시     |
+| `disabled`      | `boolean`                             | `false`   | 비활성화                  |
+
+`MoodOption = { value: string; emoji: string; label?: ReactNode }`
+
+## 가이드
+
+- 옵션 4~6개 권장. 7개 이상은 가로 폭 문제로 라벨이 잘림.
+- `value` 미선택 상태가 default이므로 폼 제출 전 검증 필수.
+- 선택 직후 토스트만 띄우고 끝내지 말고, 메모/저장 같은 다음 단계로 자연스럽게 연결.

@@ -1,0 +1,53 @@
+---
+title: ChatBubble
+description: 1:1 상담/챗봇 말풍선. 그룹 위치에 따라 코너가 자동 정리됩니다.
+---
+
+# ChatBubble
+
+1:1 비대면 상담·챗봇 채팅 말풍선입니다. `group` 위치(`first`/`middle`/`last`/`single`)에 따라 모서리가 자동 처리됩니다.
+
+## 사용법
+
+```tsx
+import { ChatBubble } from "@nudge-eap/react";
+
+// 단독 메시지
+<ChatBubble role="them" name="박민지 상담사" time="오후 3:24" group="single">
+  안녕하세요, 오늘 컨디션은 어떠세요?
+</ChatBubble>
+
+// 그룹 메시지 (같은 발신자 연속)
+<ChatBubble role="them" name="박민지 상담사" group="first">
+  좋아요, 그동안 어떻게 지냈는지 들려주실 수 있나요?
+</ChatBubble>
+<ChatBubble role="them" group="middle">
+  편하신 만큼만 말씀해주세요.
+</ChatBubble>
+<ChatBubble role="them" time="오후 3:26" group="last">
+  처음이라 긴장될 수도 있어요.
+</ChatBubble>
+
+// 내 메시지 + 읽음
+<ChatBubble role="me" time="오후 3:30" group="single" read>
+  쉬어도 회복이 잘 안 돼요.
+</ChatBubble>
+```
+
+## Props
+
+| Prop        | 타입                                                 | 기본값      | 설명                                     |
+| ----------- | ---------------------------------------------------- | ----------- | ---------------------------------------- |
+| `role`      | `"me" \| "them"`                                     | —           | 발신자                                   |
+| `children`  | `ReactNode`                                          | —           | 메시지 본문                              |
+| `time`      | `ReactNode`                                          | —           | 시간 (single/last에서만 노출)            |
+| `name`      | `string`                                             | —           | 발신자 이름 (them, first에서만)          |
+| `avatarSrc` | `string`                                             | —           | 프로필 이미지 (them만)                   |
+| `group`     | `"single" \| "first" \| "middle" \| "last"`          | `"single"`  | 그룹 내 위치 (코너 처리)                |
+| `read`      | `boolean`                                            | —           | 읽음 표시 (me)                           |
+
+## 가이드
+
+- `group`을 안 넘기면 매 메시지가 둥근 모서리로 떠서 그룹감이 없음. 같은 발신자 연속 메시지엔 반드시 명시.
+- `name`/`time`은 `group=single`/`first`/`last`의 적절한 위치에만 노출 — 모든 메시지에 시간 박지 말 것.
+- 긴 대화는 list virtualization 권장 (DS는 단순 렌더만).
