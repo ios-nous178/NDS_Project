@@ -72,6 +72,7 @@ module.exports = {
         "components/multi-step-form",
         "components/expandable-text",
         "components/page-header",
+        "components/stat-card",
       ],
     },
     {
