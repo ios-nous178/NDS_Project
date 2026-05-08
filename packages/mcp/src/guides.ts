@@ -399,6 +399,22 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "자동 반복 미리보기: autoPlay muted loop",
     ],
   },
+  NumberStepper: {
+    name: "NumberStepper",
+    summary:
+      "수량 조절 +/- 버튼 입력. Stepper(과정 인디케이터)와 이름은 비슷하지만 전혀 다른 용도.",
+    pitfalls: [
+      "Stepper(StepperVariant: numbered/dots)와 혼동 금지. 그건 회원가입 단계 같은 '진행도 표시'.",
+      "큰 범위(100+) 입력에는 부적합. tap/click을 N번 해야 하므로 Input type='number'를 쓸 것.",
+      "min/max 도달 시 해당 버튼이 자동 비활성. 외부에서 또 비활성 처리할 필요 없음.",
+    ],
+    recommended: [
+      "복약 횟수: min=1 max=10 unit='회'",
+      "장바구니 수량: min=1 max=99 editable",
+      "알림 빈도: step=5 unit='분'",
+    ],
+    interactivePattern: "value/onValueChange는 controlled 강제. 내부 state 없음 — 부모에서 관리.",
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

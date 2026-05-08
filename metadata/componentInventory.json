@@ -214,5 +214,17 @@
     "figmaNodeId": "",
     "usageSummary": "명상 영상, 상담 안내 영상, 콘텐츠 큐레이션",
     "notes": "AudioPlayer의 영상 버전. 라이브 스트리밍/HLS는 별도 라이브러리 필요."
+  },
+  {
+    "name": "NumberStepper",
+    "category": "입력",
+    "status": "implemented",
+    "description": "수량 조절 +/- 버튼 입력. min/max 자동 비활성, 단위 표시, 직접 타이핑 옵션",
+    "storybookTitle": "Components/NumberStepper",
+    "docsPath": "/docs/components/number-stepper",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "복약 횟수, 챌린지 목표, 알림 빈도, 수량 입력",
+    "notes": "Stepper(과정 인디케이터)와 다름. 작은 정수 값 조절 전용."
   }
 ]

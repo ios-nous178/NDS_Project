@@ -1,0 +1,55 @@
+---
+title: NumberStepper
+description: 수량(개수/회차) 조절을 위한 +/- 버튼 입력. Stepper(과정 인디케이터)와 다릅니다.
+---
+
+# NumberStepper
+
+`-` / `+` 버튼으로 정수 값을 조절하는 입력 컴포넌트입니다.
+복약 횟수, 챌린지 목표, 알림 빈도처럼 **연속적인 작은 정수 값**을 받을 때 사용하세요.
+
+> 헷갈리지 마세요: `Stepper`는 "1단계 → 2단계" 같은 **과정 인디케이터**입니다. 수량 조절은 **NumberStepper**.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 0~99 범위의 작은 정수 (회차/개수)
+- 단위(회, 잔, 알, 분)와 함께 보여줄 때
+- 키보드 입력보다 탭/클릭 한 번에 조절이 더 자연스러울 때
+
+### 이럴 때 사용하지 마세요
+- 큰 범위 (100~10000) → `Input type="number"` + 키패드
+- 연속 슬라이더가 필요할 때 → `Slider`
+
+## 사용법
+
+```tsx
+import { NumberStepper } from "@nudge-eap/react";
+
+// 기본
+<NumberStepper value={n} onValueChange={setN} min={0} max={10} />
+
+// 단위 표시
+<NumberStepper value={n} onValueChange={setN} min={1} max={5} unit="회" />
+
+// 직접 타이핑 가능
+<NumberStepper value={n} onValueChange={setN} editable step={5} />
+
+// 큰 사이즈 (모바일 터치 영역 확장)
+<NumberStepper size="lg" value={n} onValueChange={setN} />
+```
+
+## Props
+
+| Prop            | 타입                       | 기본값  | 설명                          |
+| --------------- | -------------------------- | ------- | ----------------------------- |
+| `value`         | `number`                   | —       | 현재 값 (controlled)          |
+| `onValueChange` | `(v: number) => void`      | —       | 변경 콜백                     |
+| `min`           | `number`                   | `0`     | 최솟값                        |
+| `max`           | `number`                   | `99`    | 최댓값                        |
+| `step`          | `number`                   | `1`     | 증감 단위                     |
+| `size`          | `"sm" \| "md" \| "lg"`     | `"md"`  | 크기                          |
+| `unit`          | `string`                   | —       | 값 옆 단위 표시               |
+| `editable`      | `boolean`                  | `false` | input으로 직접 타이핑         |
+| `disabled`      | `boolean`                  | `false` | 비활성화                      |
+| `aria-label`    | `string`                   | `"수량 조절"` | 그룹 레이블             |
