@@ -499,6 +499,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "콘텐츠 카드: cycles=3, autoStart, onComplete로 다음 단계",
     ],
   },
+  StreakCard: {
+    name: "StreakCard",
+    summary: "연속 기록 트래커 카드. streak 숫자 + 최근 7~14일 점 그리드. 챌린지/습관 강화 화면.",
+    pitfalls: [
+      "days는 최근 7~14일이 시각적으로 적절. 30일 이상이면 EmotionHeatmap 사용 검토.",
+      "streak=0 상태로 풀 너비 카드를 노출하면 동기 부여 효과가 약함 — 시작 단계에는 더 작은 EmptyState 안내가 좋음.",
+      "오늘 데이터가 미완료일 때는 자동으로 점선 테두리(today)로 표시. 'today' 표시를 직접 만들지 말 것.",
+    ],
+    recommended: [
+      "감정 기록 7일: days=[{date,label:'일',done}, ...] 7개",
+      "복약 트래킹: icon='💊', 숫자만 강조 (days 생략)",
+      "끊긴 후 재시작: footer로 '작은 시작' 같은 격려 문구",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
