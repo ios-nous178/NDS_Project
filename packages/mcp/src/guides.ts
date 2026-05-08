@@ -130,6 +130,224 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "상태(주의/에러/성공)를 표현할 때는 color prop에 semantic 토큰 var(--color-semantic-*-main)을 넘겨 시각적 의미를 통일.",
     ],
   },
+  Radio: {
+    name: "Radio",
+    summary:
+      "단일 선택 입력. 단독으로 쓸 일은 거의 없고, RadioGroup + RadioGroupItem 조합으로 사용.",
+    pitfalls: [
+      "Radio를 단독으로 여러 개 두고 same name만 맞추는 패턴은 동기화 버그가 잦음. 무조건 RadioGroup으로 감쌀 것.",
+      "RadioGroupItem은 RadioGroupContext 안에서만 동작. throw가 나면 RadioGroup으로 감싸지지 않은 것.",
+      "value prop은 string. 숫자/객체 쓸 거면 String(value)로 직렬화하고 onValueChange에서 다시 파싱.",
+    ],
+    recommended: [
+      '<RadioGroup name="freq" value={v} onValueChange={setV}> <RadioGroupItem value="daily" label="매일" /> ... </RadioGroup>',
+      'horizontal 옵션 3개 이하일 때만 layout="horizontal". 그 이상이면 vertical이 스캔 쉬움.',
+    ],
+    interactivePattern:
+      "그룹 단위로 onValueChange 한 번만 부착. 개별 Radio에 onCheckedChange 부착하지 말 것.",
+  },
+  Slider: {
+    name: "Slider",
+    summary: "연속값 입력 (통증·스트레스 강도 등). LikertScale은 고정 N단계, Slider는 연속.",
+    pitfalls: [
+      "5단계 같은 이산형 평가는 LikertScale을 쓸 것. Slider step=1 max=4로 흉내내지 말 것 — 시각적 의미가 다름.",
+      "showValue=false인데 startLabel/endLabel만 있으면 사용자가 현재 값을 알 수 없음. 한쪽은 무조건 표시.",
+      "max-min 범위가 너무 크면 한 칸 차이가 시각적으로 안 보임. step을 sensible 단위(5/10)로.",
+    ],
+    recommended: [
+      '통증 강도: min=0 max=10 step=1 startLabel="없음" endLabel="극심" showValue',
+      "스트레스 %: min=0 max=100 step=5 showValue formatValue={(v) => `${v}%`}",
+    ],
+  },
+  Spinner: {
+    name: "Spinner",
+    summary: "인라인 회전 로더. 짧은 fetch (<2s)에 사용. 긴 로딩은 Skeleton.",
+    pitfalls: [
+      "전체 페이지 로딩에 Spinner를 가운데 띄우지 말 것 — 빈 화면 인상이 강함. Skeleton(레이아웃 유지)이 UX 더 좋음.",
+      '버튼 내부에 넣을 때는 size="sm", color={cv.primary.fg} 등 컨텍스트 색에 맞춰 oversiede.',
+      'label prop은 스크린리더용 ("로딩 중"이 기본). 무음 처리 금지.',
+    ],
+    recommended: [
+      '<Button disabled><Spinner size="sm" color="currentColor" /> 처리 중...</Button>',
+      '리스트 끝 무한스크롤: <Spinner size="md" />',
+    ],
+  },
+  MoodSelector: {
+    name: "MoodSelector",
+    summary: "5단계 기분 선택. EAP 앱 첫 화면 핵심 인터랙션. 기본 5개 옵션이 내장됨.",
+    pitfalls: [
+      "options를 직접 넘길 때 5개를 벗어나면 가로 폭 문제 — 4~6개가 권장 범위.",
+      "이모지 대신 아이콘 컴포넌트를 emoji 자리에 넘기지 말 것. emoji는 string 필드.",
+      "value 미선택 상태가 default이므로 폼 제출 전 검증 필수.",
+    ],
+    recommended: [
+      "기본: <MoodSelector value={mood} onValueChange={setMood} /> (5단계 자동)",
+      "showLabels=false로 컴팩트하게 (좁은 카드 안)",
+    ],
+    interactivePattern:
+      "기록 후 다음 단계(메모/저장)로 이어주는 게 자연스러움. 선택 직후 토스트만 띄우고 끝내지 말 것.",
+  },
+  AssessmentResultCard: {
+    name: "AssessmentResultCard",
+    summary:
+      "심리검사 결과 카드. score/maxScore + level(normal/mild/moderate/severe) + 색 자동 매핑.",
+    pitfalls: [
+      "level과 점수를 임의로 분리하지 말 것 — 외부에서 점수 → 단계 매핑이 검사마다 다르므로 호출부에서 결정해서 넘김.",
+      'title prop은 검사명("PHQ-9" 등). HTMLDivElement.title과 충돌 방지를 위해 Omit되어 있으니 ReactNode 가능.',
+      'severe인데 description만 있고 후속 액션이 없으면 안전. severe 결과엔 actionLabel("상담 연결") 또는 옆에 CrisisCallout을 같이 둘 것.',
+    ],
+    colorMatrix: {
+      normal: "success.bg + success.main — 정상",
+      mild: "caution.bg + caution.text — 주의",
+      moderate: "caution.bg + caution.text — 경계 (mild보다 진한 텍스트로 톤 차이)",
+      severe: "error.bg + error.main — 심각",
+    },
+    interactivePattern:
+      "actionLabel 클릭은 결과 상세 또는 다음 액션(상담 예약)으로. severe면 CrisisCallout과 묶어서 같이 노출.",
+  },
+  CrisisCallout: {
+    name: "CrisisCallout",
+    summary: "위기 신호 시 1393/119 등 즉시 연결 박스. dismiss 불가능. EAP의 안전 책임 영역.",
+    pitfalls: [
+      "Banner와 외형이 비슷하지만 절대 closable 만들지 말 것 — 위기 안내는 dismiss 되면 안 됨.",
+      'tone="caution"은 "잠시 휴식이 필요해요" 수준에만. 자살 사고 등 실제 위기는 무조건 tone="danger".',
+      "phoneNumber 제공 시 자동으로 tel: 링크 — 모바일에서 바로 통화. 데스크톱에서도 동작은 OS 핸들러가 받음.",
+      "CrisisCallout 단독으로 화면 어딘가에 두지 말고, severe 결과 옆/혹은 채팅 화면 상단에 배치.",
+    ],
+    recommended: [
+      'tone="danger" + actions=[{ label: "1393 자살예방상담", phoneNumber: "1393" }, { label: "119 응급", phoneNumber: "119", variant: "outlined" }]',
+    ],
+  },
+  CounselorCard: {
+    name: "CounselorCard",
+    summary: "상담사 프로필 카드. 이름/자격/평점/태그/소개/예약 CTA. 1~2열 그리드에 잘 어울림.",
+    pitfalls: [
+      "imageSrc 없을 때 자동으로 이름 이니셜 표기. 빈 div를 imageSrc로 우회하지 말 것.",
+      'tags는 5개 이하 권장 (그 이상은 시각 잡음). 정말 많이 보여줘야 하면 "+3" 더보기 패턴.',
+      "ctaLabel 누르면 stopPropagation 자동 — onCardClick과 별개로 동작. 둘 다 부착해도 안전.",
+      "bio는 -webkit-line-clamp 2로 자동 잘림. 더 긴 본문은 상세 페이지로.",
+    ],
+    interactivePattern:
+      "리스트 화면에서는 카드 전체 클릭 → 상세, CTA(예약)는 상세 안에서. 두 액션을 한 화면에서 동시에 두면 사용자가 헷갈림.",
+  },
+  ChatBubble: {
+    name: "ChatBubble",
+    summary: "1:1 상담/챗봇 말풍선. role=me|them, group으로 코너 정리.",
+    pitfalls: [
+      "group prop을 안 넘기면 매 메시지가 둥근 모서리로 떠서 그룹감이 없음. 같은 발신자 연속 메시지면 first/middle/last 명시.",
+      'them 측 avatar는 group="single"|"last" 일 때만 보이고, first/middle은 visibility:hidden으로 자리만 차지 — 정렬 어긋나지 않음. 직접 avatar를 끄지 말 것.',
+      "time과 read는 메시지 끝(single/last)에만 노출. 모든 메시지에 시간 박지 말 것.",
+      "텍스트 외 이미지/카드 첨부는 children에 직접 ReactNode 넘김. 별도 prop 없음.",
+    ],
+    recommended: [
+      "group: 단독 single, 첫 메시지 first, 중간 middle, 마지막 last",
+      "긴 대화 화면은 list virtualization 권장 (DS는 단순 렌더만 제공)",
+    ],
+  },
+  ConsentChecklist: {
+    name: "ConsentChecklist",
+    summary: "전체동의 + 항목별 체크 + 펼치기. 회원가입/민감정보 동의에 표준화.",
+    pitfalls: [
+      "items[].required=true인데 체크 안 됐을 때의 검증은 호출부 책임. 컴포넌트 자체에서 막지 않음.",
+      'detail이 길면 펼친 영역이 화면을 덮음 — 본문은 핵심만, 전문은 "전문 보기" 링크로.',
+      '전체동의 토글 동작이 직관적이어야 함: 부분 체크 상태에서 누르면 "전체 체크"가 아니라 "전체 해제"로 가는 사례가 있는데, 이 컴포넌트는 "모두 체크면 해제, 아니면 전체 체크".',
+    ],
+    interactivePattern:
+      "필수만 자동체크 후 사용자가 선택만 토글하는 흐름이 회원가입 컨버전에 유리.",
+  },
+  ScoreGauge: {
+    name: "ScoreGauge",
+    summary: "점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑.",
+    pitfalls: [
+      "단계 경계는 검사마다 다름. segments prop으로 직접 넘겨 결과 해석을 통일.",
+      "needle은 transform: rotate로 회전. CSS transform 충돌 환경(예: 부모 transform)에선 어긋날 수 있어 wrapper 별도 권장.",
+      "showLegend는 4개라 모바일 가로폭 부족하면 줄 바뀜 — 카드 안에선 false 권장.",
+      'max를 점수 합과 동일하게 — "100 만점"으로 정규화하지 말 것 (해석 매트릭스가 어긋남).',
+    ],
+    recommended: [
+      'PHQ-9: <ScoreGauge value={score} max={27} segments={[{level:"normal",label:"정상",from:0,to:5}, {level:"mild",label:"경증",from:5,to:10}, ...]} />',
+    ],
+  },
+  MedicationItem: {
+    name: "MedicationItem",
+    summary: "복용약 한 줄 표시. 이름/용량/시기/노트 + 체크.",
+    pitfalls: [
+      "리스트로 쌓을 때는 부모에 gap 8~12px. MedicationItem은 자체 margin 없음.",
+      "onTakenChange를 안 넘기면 체크박스가 안 보임 — 표시 전용으로 쓸 수 있음.",
+      'times는 morning/noon/evening/bedtime 4개 enum만. 복약 시간을 분 단위로 보여주려면 note에 "식후 30분" 같이 텍스트로.',
+    ],
+    interactivePattern:
+      '체크 후 즉시 토스트보다 리스트 상단에 "오늘 X/Y 복용 완료" 진행도 ProgressBar 표시가 더 동기 부여됨.',
+  },
+  AudioPlayer: {
+    name: "AudioPlayer",
+    summary: "명상/이완 가이드 플레이어. 재생/일시정지/시크/이전/다음.",
+    pitfalls: [
+      "playing/currentTime/duration은 외부 상태 — useState + audio ref + timeupdate 이벤트로 동기화. DS는 UI만 제공.",
+      "onSeek 미제공이면 슬라이더가 disabled. 시크 막을 거면 명시적으로.",
+      "title prop도 HTMLDivElement.title과 충돌하지 않도록 Omit됨. ReactNode 가능.",
+      "onSkipBack/Forward는 옵셔널 — 단일 트랙이면 둘 다 생략하면 표시 안 됨.",
+    ],
+    recommended: ["10분 미만 단일 가이드: SkipBack/Forward 생략. 시리즈 재생만 둘 다 부착."],
+  },
+  ActivityTimeline: {
+    name: "ActivityTimeline",
+    summary: "상담/검사 이력 타임라인. dot + line + 날짜/제목/상태 배지.",
+    pitfalls: [
+      "마지막 항목의 line은 자동으로 안 그려짐(:last-child). 중간에 splice해서 추가/삭제할 때 key 유지 잘 할 것.",
+      'status="ongoing"는 box-shadow ring 효과 — 한 화면에 여럿 두면 시각 잡음. 보통 1개만.',
+      "statusLabel 없이 status만 주면 dot 색만 바뀌고 우측 배지는 안 뜸. 둘 다 필요.",
+      "items 길이가 20+ 넘으면 페이지네이션 또는 가상화 권장.",
+    ],
+    interactivePattern:
+      "각 아이템을 클릭 가능하게 하려면 description 자리에 작은 TextButton/Link를 넣는 패턴 — 행 전체 onClick은 우발 클릭 위험.",
+  },
+  OtpInput: {
+    name: "OtpInput",
+    summary: "N자리 인증코드 입력. 자동 포커스 이동, 붙여넣기 분배, 숫자 전용.",
+    pitfalls: [
+      "value는 string. length만큼 채워지면 onComplete 발화 — 그 안에서 자동 제출 처리하면 사용자 경험 좋음.",
+      'autoComplete="one-time-code"가 첫 셀에만 붙음 — iOS/Android에서 SMS 자동 추출이 동작하려면 첫 셀만이어야 함.',
+      "입력은 숫자만 허용 (영문/특수문자 자동 필터링). 영숫자 OTP가 필요하면 별도 컴포넌트 필요.",
+      "Backspace는 두 단계 동작: 현재 셀에 값 있으면 비우고, 비어있으면 이전 셀로 포커스 이동 + 비움.",
+    ],
+    recommended: [
+      "회원가입/로그인 SMS 인증: length=6, autoFocus, onComplete로 자동 검증 호출",
+      "에러 시 error prop + Toast 같이 띄우기. 자동 clear는 사용자 혼란 유발 — 호출부에서 결정.",
+    ],
+    interactivePattern:
+      "인증 실패 시 자동 clear는 옵션 — 어떤 자리가 틀렸는지 모르므로 보통 통째 clear가 안전.",
+  },
+  FileUpload: {
+    name: "FileUpload",
+    summary: "Drag&drop + 클릭 업로드. multiple/accept/maxSize 지원. 제어 컴포넌트.",
+    pitfalls: [
+      "value가 File[] 제어 컴포넌트 — 내부 상태 안 가짐. 부모에서 useState로 관리.",
+      'onValueChange는 "성공" 파일만, onReject는 거부된 파일 — 둘이 분리되어 있음. 같이 다루지 말 것.',
+      "maxSize는 bytes 단위 (10MB = 10 * 1024 * 1024). MB로 착각하지 말 것.",
+      "accept는 브라우저 힌트일 뿐이라 실제로는 다른 파일도 들어올 수 있음 — 서버에서 한 번 더 검증 필요.",
+      "multiple=false에서 두 번째 파일을 드롭하면 첫 번째를 덮어씀(slice(0, 1)). 추가 누적 X.",
+    ],
+    recommended: [
+      '프로필 이미지: accept="image/*", maxSize=5MB, multiple=false',
+      '진단서 첨부: accept=".pdf,.jpg,.png", maxSize=10MB, multiple',
+      "errorMessage prop으로 거부 사유 지속 표시 (Toast 한 번 띄우는 것보다 명확)",
+    ],
+  },
+  DateRangePicker: {
+    name: "DateRangePicker",
+    summary: "시작/끝 날짜 한 쌍 선택. DatePicker 두 개 + 빠른 프리셋(최근 7일 등).",
+    pitfalls: [
+      "value는 { from?, to? } — 부분 선택 가능 (시작만 있을 수 있음). 폼 검증 시 둘 다 있는지 체크.",
+      "끝일은 자동으로 minDate=시작일 — 시작일을 뒤로 옮기면 끝일이 자동으로 비워짐(value.to>from 체크).",
+      "프리셋은 defaultRangePresets로 빠른 것 3개 제공 (7일/30일/이번 달). 검사·리포트마다 다른 기본값이 필요하면 직접 정의.",
+      'presets[].range는 함수 — 호출 시점의 "오늘"을 기준으로 계산하기 위함. 객체 리터럴로 박지 말 것.',
+    ],
+    recommended: [
+      "리포트 기간 필터: defaultRangePresets 그대로 사용",
+      '검사 이력 검색: maxDate=오늘, presets에 "전체" 추가',
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
