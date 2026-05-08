@@ -226,5 +226,17 @@
     "figmaNodeId": "",
     "usageSummary": "복약 횟수, 챌린지 목표, 알림 빈도, 수량 입력",
     "notes": "Stepper(과정 인디케이터)와 다름. 작은 정수 값 조절 전용."
+  },
+  {
+    "name": "Autocomplete",
+    "category": "입력",
+    "status": "implemented",
+    "description": "입력값 기반 자동완성 드롭다운. 키보드 네비게이션, 매칭 하이라이트, 로딩/빈 상태",
+    "storybookTitle": "Components/Autocomplete",
+    "docsPath": "/docs/components/autocomplete",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "약 검색, 시설 검색, 키워드 추천",
+    "notes": "options는 외부 필터링 결과 — 비동기 검색 케이스를 1차 고려한 설계."
   }
 ]

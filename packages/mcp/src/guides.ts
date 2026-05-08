@@ -415,6 +415,22 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     interactivePattern: "value/onValueChange는 controlled 강제. 내부 state 없음 — 부모에서 관리.",
   },
+  Autocomplete: {
+    name: "Autocomplete",
+    summary:
+      "입력 + 드롭다운 추천. SearchInput(자유 검색)과 Select(고정 목록)의 중간. 키보드 ↓↑/Enter/Esc 내장.",
+    pitfalls: [
+      "options는 외부에서 필터링해 전달 — 컴포넌트가 자동 필터링하지 않음 (서버 검색을 위한 의도적 설계).",
+      "onSelect 후 onValueChange(label)이 자동 호출됨. value를 다시 set하지 말 것 (이중 호출).",
+      "minQueryLength=0으로 두면 빈 입력에서도 드롭다운이 열림. 추천 노출이 의도가 아니면 1+ 권장.",
+      "options 수가 매우 많으면(50+) 가상 스크롤 별도 필요. 컴포넌트는 max-height 280px + scroll만 제공.",
+    ],
+    recommended: [
+      "약 검색: useMemo로 클라이언트 필터, description에 성분/용량",
+      "센터 검색: minQueryLength=2, 비동기 fetch + loading=isFetching",
+      "키워드 자동완성: highlight=true (기본), 결과 없을 때 emptyMessage 커스텀",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

@@ -1,0 +1,88 @@
+---
+title: Autocomplete
+description: 입력값 기반 자동완성. 약 검색, 시설 검색, 키워드 추천에 사용.
+---
+
+# Autocomplete
+
+입력 도중 추천 옵션을 드롭다운으로 보여주는 컴포넌트입니다.
+키보드 네비게이션(Up/Down/Enter/Escape), 매칭 텍스트 하이라이트, 로딩/빈 상태를 지원합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 정해진 사전(약, 시설, 카테고리)에서 빠르게 찾을 때
+- 사용자가 정확한 이름을 모를 가능성이 높을 때
+
+### 이럴 때 사용하지 마세요
+- 자유 검색만 필요하고 추천이 없을 때 → `SearchInput`
+- 옵션 수가 작고 모두 보여줄 수 있을 때 → `Select`
+
+### 자주 하는 실수
+- `options`는 외부에서 필터링해 전달해야 함 — 컴포넌트가 자동 필터링하지 않음 (서버 검색 케이스 고려)
+- `onSelect` 후에는 자동으로 `onValueChange(option.label)`이 호출됨
+
+## 사용법
+
+```tsx
+import { Autocomplete } from "@nudge-eap/react";
+
+const [query, setQuery] = useState("");
+const filtered = useMemo(
+  () => ALL.filter((o) => o.label.includes(query)),
+  [query]
+);
+
+<Autocomplete
+  label="복용 약"
+  placeholder="약 이름 검색"
+  value={query}
+  onValueChange={setQuery}
+  options={filtered}
+  onSelect={(opt) => setSelectedId(opt.value)}
+/>
+
+// 서버 비동기 검색
+<Autocomplete
+  value={q}
+  onValueChange={(v) => { setQ(v); fetchSuggestions(v); }}
+  options={results}
+  loading={isFetching}
+  minQueryLength={2}
+/>
+```
+
+## Props
+
+| Prop             | 타입                                    | 기본값       | 설명                                |
+| ---------------- | --------------------------------------- | ------------ | ----------------------------------- |
+| `value`          | `string`                                | —            | 입력값 (controlled)                 |
+| `onValueChange`  | `(v: string) => void`                   | —            | 입력 변경 콜백                      |
+| `options`        | `AutocompleteOption[]`                  | —            | 추천 옵션 (외부 필터링 결과)        |
+| `onSelect`       | `(opt: AutocompleteOption) => void`     | —            | 옵션 선택 콜백                      |
+| `loading`        | `boolean`                               | `false`      | 로딩 상태 표시                      |
+| `emptyMessage`   | `ReactNode`                             | `"결과가 없어요"` | 빈 상태 메시지                 |
+| `minQueryLength` | `number`                                | `1`          | 드롭다운 표시 최소 입력 길이        |
+| `highlight`      | `boolean`                               | `true`       | 매칭 텍스트 하이라이트              |
+| `label`          | `ReactNode`                             | —            | 입력 라벨                           |
+| `placeholder`    | `string`                                | —            | 자리표시자                          |
+| `disabled`       | `boolean`                               | `false`      | 비활성화                            |
+| `error`          | `boolean`                               | `false`      | 에러 보더                           |
+| `fullWidth`      | `boolean`                               | `false`      | 가로 가득                           |
+
+### `AutocompleteOption`
+
+| Prop          | 타입         | 설명                       |
+| ------------- | ------------ | -------------------------- |
+| `value`       | `string`     | 고유 값                    |
+| `label`       | `string`     | 표시 라벨                  |
+| `description` | `string`     | 보조 설명 (선택)           |
+| `icon`        | `ReactNode`  | 좌측 아이콘 (선택)         |
+
+## 키보드
+
+| 키          | 동작                       |
+| ----------- | -------------------------- |
+| `↓` / `↑`   | 옵션 이동                  |
+| `Enter`     | 활성 옵션 선택             |
+| `Escape`    | 드롭다운 닫기              |

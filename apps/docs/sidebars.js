@@ -54,6 +54,7 @@ module.exports = {
         "components/carousel",
         "components/video-player",
         "components/number-stepper",
+        "components/autocomplete",
       ],
     },
     {
