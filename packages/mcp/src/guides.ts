@@ -1010,6 +1010,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "챌린지 인증: 이미지 저장 + 카카오톡",
     ],
   },
+  ReviewCard: {
+    name: "ReviewCard",
+    summary: "별점 후기 카드 (0.5 단위). 작성자/별점/본문/태그/푸터 슬롯, verified 인증 마크.",
+    pitfalls: [
+      "rating은 0~5, 0.5 단위. 범위 밖이면 시각적으로 깨짐.",
+      "본문 줄바꿈은 white-space: pre-wrap 자동 — body에 \\n 그대로 사용.",
+      "footer는 보통 LikeButton/도움됨 버튼. 자유 슬롯이라 텍스트도 가능.",
+    ],
+    recommended: [
+      "상담 후기: verified + tags=['편안함','전문성']",
+      "상품 리뷰: meta='구매 인증' + verified",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

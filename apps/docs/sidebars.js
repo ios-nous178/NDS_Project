@@ -96,6 +96,7 @@ module.exports = {
         "components/comment-item",
         "components/like-button",
         "components/share-sheet",
+        "components/review-card",
       ],
     },
     {

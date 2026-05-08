@@ -1,0 +1,53 @@
+---
+title: ReviewCard
+description: 별점 후기 카드. 0.5 단위 별점, 인증 마크, 태그/푸터 슬롯.
+---
+
+# ReviewCard
+
+상담 후기, 콘텐츠 리뷰, 상품 평가 같은 후기를 표현하는 카드입니다. 0.5단위 별점과 본문, 선택적 태그·푸터를 지원합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 상담사/콘텐츠/상품 후기 리스트
+- 검사 결과에 대한 리뷰
+- 챌린지 후기
+
+### 자주 하는 실수
+- `rating`은 0~5 범위 + 0.5 단위. 외부에서 그 범위 밖이면 시각적으로 깨짐
+- 본문은 `white-space: pre-wrap` — 줄바꿈 그대로 보존. 별도 렌더 컴포넌트 필요 없음
+
+## 사용법
+
+```tsx
+import { ReviewCard, LikeButton } from "@nudge-eap/react";
+
+<ReviewCard
+  avatar={<Avatar name="김민지" />}
+  author="김민지"
+  meta="2026.05.07"
+  verified
+  rating={4.5}
+  ratingLabel="4.5"
+  title="진심으로 들어주셔서 감사해요"
+  body={longText}
+  tags={["편안함", "전문성"]}
+  footer={<LikeButton liked={liked} count={count} onChange={...} size="sm" />}
+/>
+```
+
+## Props
+
+| Prop          | 타입         | 기본값  | 설명                              |
+| ------------- | ------------ | ------- | --------------------------------- |
+| `avatar`      | `ReactNode`  | —       | 작성자 아바타                     |
+| `author`      | `ReactNode`  | —       | 작성자 이름                       |
+| `meta`        | `ReactNode`  | —       | 보조 메타 (날짜/인증 등)          |
+| `rating`      | `number`     | —       | 별점 0~5 (0.5 단위)               |
+| `ratingLabel` | `ReactNode`  | —       | 별점 옆 라벨 (예: "4.5")          |
+| `title`       | `ReactNode`  | —       | 본문 제목 (선택)                  |
+| `body`        | `ReactNode`  | —       | 본문                              |
+| `tags`        | `string[]`   | —       | 해시태그                          |
+| `footer`      | `ReactNode`  | —       | 푸터 슬롯 (좋아요 등)             |
+| `verified`    | `boolean`    | `false` | 인증 후기 ✓ 마크                  |
