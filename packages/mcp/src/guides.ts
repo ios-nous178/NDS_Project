@@ -917,6 +917,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["프로필 사진: shape='circle' outputSize=200", "커버: shape='square' size=320"],
   },
+  PullToRefresh: {
+    name: "PullToRefresh",
+    summary: "모바일 풀 투 리프레시. 화면 최상단에서 당기면 onRefresh, Promise 종료 자동 처리.",
+    pitfalls: [
+      "scrollTop > 0이면 트리거 X — 항상 최상단에서만 동작 (의도적).",
+      "데스크톱에서 패턴이 어색 — 모바일 우선 화면에만.",
+      "threshold가 너무 작으면 일반 스크롤도 잘못 인식. 64~96 권장.",
+    ],
+    recommended: [
+      "리스트 새로고침: onRefresh={async () => { await refetch(); }}",
+      "라벨 커스텀: pullLabel='당겨서 일기 동기화'",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

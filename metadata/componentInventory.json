@@ -646,5 +646,17 @@
     "figmaNodeId": "",
     "usageSummary": "프로필 사진 등록, 커버 이미지 자르기",
     "notes": "외부 이미지는 CORS 필요. outputSize 200~400 권장."
+  },
+  {
+    "name": "PullToRefresh",
+    "category": "레이아웃",
+    "status": "implemented",
+    "description": "모바일 풀 투 리프레시. 최상단 당기면 onRefresh, Promise 자동 처리",
+    "storybookTitle": "Components/PullToRefresh",
+    "docsPath": "/docs/components/pull-to-refresh",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "일기/콘텐츠 리스트 새로고침, 모바일 화면",
+    "notes": "최상단(scrollTop=0)에서만 트리거. 모바일 우선."
   }
 ]
