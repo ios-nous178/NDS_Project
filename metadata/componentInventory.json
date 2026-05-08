@@ -514,5 +514,17 @@
     "figmaNodeId": "",
     "usageSummary": "화상 상담, 음성 상담, AI 통화 인터페이스",
     "notes": "카메라/스피커는 onChange 안 주면 버튼 자동 숨김. 종료 버튼 색 고정."
+  },
+  {
+    "name": "VoiceRecorder",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "음성 메모 녹음 UI. 큰 버튼 + 타이머 + 펄스 인디케이터, maxSeconds 자동 종료",
+    "storybookTitle": "Components/VoiceRecorder",
+    "docsPath": "/docs/components/voice-recorder",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "감정 일기 음성 모드, 챗 음성 메시지, 상담 음성 메모",
+    "notes": "마이크 접근/저장은 외부 처리. seconds는 외부 timer로 갱신."
   }
 ]
