@@ -747,6 +747,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "단일: 이미지 1장 + caption로 컨텍스트 제공",
     ],
   },
+  AvatarGroup: {
+    name: "AvatarGroup",
+    summary: "여러 아바타를 겹쳐 표시 + 초과 +N. 단체 상담/챌린지 참가자 같은 시각 신호용.",
+    pitfalls: [
+      "정확한 명단이 목적이면 List가 더 적절. AvatarGroup은 'N명이 함께'라는 시각 신호.",
+      "단일 아바타는 Avatar 그대로. AvatarGroup은 N명 ≥ 2 케이스용.",
+      "max를 너무 크게 두면(7+) 가로 폭이 늘어남 — 모바일은 4 권장.",
+    ],
+    recommended: [
+      "단체 상담 참여자: max=4 size='md'",
+      "챌린지: max=5 size='sm'",
+      "이미지 + 이니셜 혼합: src 없으면 자동 이니셜 fallback",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

@@ -76,6 +76,7 @@ module.exports = {
         "components/quick-action-grid",
         "components/tag-input",
         "components/lightbox",
+        "components/avatar-group",
       ],
     },
     {
