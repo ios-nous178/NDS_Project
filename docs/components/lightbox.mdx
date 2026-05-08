@@ -1,0 +1,64 @@
+---
+title: Lightbox
+description: 이미지 풀스크린 확대 보기. 키보드/방향키 네비, 캡션 지원.
+---
+
+# Lightbox
+
+이미지를 풀스크린으로 확대해서 보여주는 모달입니다. 키보드(`Esc`/`←`/`→`), 좌우 화살표 버튼, 카운터, 캡션을 지원합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 일기 사진 / 콘텐츠 이미지 클릭 시 확대
+- 갤러리 / 앨범 보기
+- 검사 결과 이미지 확대
+
+### 자주 하는 실수
+- `body.overflow` 스크롤 잠금이 자동 처리됨 — 외부에서 또 잠그지 말 것
+- 이미지가 1장이면 좌우 네비 자동 숨김 (별도 조건 분기 불필요)
+
+## 사용법
+
+```tsx
+import { Lightbox } from "@nudge-eap/react";
+
+const [open, setOpen] = useState(false);
+const [idx, setIdx] = useState(0);
+
+<Lightbox
+  open={open}
+  images={[
+    { src: "/photo1.jpg", alt: "공원", caption: "공원에서 본 풍경 — 2026.05.07" },
+    { src: "/photo2.jpg", alt: "바다" },
+  ]}
+  index={idx}
+  onIndexChange={setIdx}
+  onClose={() => setOpen(false)}
+/>
+```
+
+## Props
+
+| Prop            | 타입                       | 기본값  | 설명                              |
+| --------------- | -------------------------- | ------- | --------------------------------- |
+| `open`          | `boolean`                  | —       | 열림 여부                         |
+| `images`        | `LightboxImage[]`          | —       | 이미지 목록                       |
+| `index`         | `number`                   | —       | 현재 인덱스 (controlled, 선택)    |
+| `onIndexChange` | `(i: number) => void`      | —       | 인덱스 변경 콜백                  |
+| `onClose`       | `() => void`               | —       | 닫기 콜백                         |
+
+### `LightboxImage`
+
+| Prop      | 타입         | 설명                  |
+| --------- | ------------ | --------------------- |
+| `src`     | `string`     | 이미지 URL            |
+| `alt`     | `string`     | 접근성 alt 텍스트     |
+| `caption` | `ReactNode`  | 이미지 아래 캡션      |
+
+## 키보드
+
+| 키            | 동작              |
+| ------------- | ----------------- |
+| `Esc`         | 닫기              |
+| `←` / `→`     | 이전/다음 이미지  |

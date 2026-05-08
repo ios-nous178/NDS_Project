@@ -478,5 +478,17 @@
     "figmaNodeId": "",
     "usageSummary": "관심사/키워드 입력, 일기 태그, 알림 키워드 등록",
     "notes": "# 접두는 자동. 정해진 옵션은 SelectionCard 또는 Chip 토글 사용."
+  },
+  {
+    "name": "Lightbox",
+    "category": "오버레이",
+    "status": "implemented",
+    "description": "이미지 풀스크린 확대 모달. 키보드 네비, 좌우 버튼, 카운터, 캡션",
+    "storybookTitle": "Components/Lightbox",
+    "docsPath": "/docs/components/lightbox",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "일기 사진 확대, 콘텐츠 이미지 갤러리, 검사 결과 이미지",
+    "notes": "body 스크롤 잠금 자동. 1장이면 네비 자동 숨김."
   }
 ]
