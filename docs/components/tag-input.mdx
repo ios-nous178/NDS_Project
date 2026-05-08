@@ -1,0 +1,64 @@
+---
+title: TagInput
+description: 태그 자유 입력. Enter / 쉼표로 구분, Backspace로 마지막 태그 삭제.
+---
+
+# TagInput
+
+사용자가 자유롭게 태그를 입력하는 컴포넌트입니다. Chip 표시(읽기 전용 라벨)와 다르게 입력·삭제·중복 검사·최대 개수 제한을 모두 처리합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 관심사 / 키워드 입력
+- 일기 / 콘텐츠 메모 태그
+- 알림 키워드 등록
+
+### 이럴 때 사용하지 마세요
+- 정해진 옵션에서 다중 선택 → `SelectionCard mode="multiple"` 또는 `Chip` 토글
+- 자동완성 추천이 필요할 때 → `Autocomplete`
+
+### 자주 하는 실수
+- 태그 자체에 `#`을 붙이지 말 것 (자동으로 `#` 접두 표시됨). 입력값도 `#` 떼고 저장됨
+- `Backspace`로 빈 입력일 때 마지막 태그 삭제됨 — 의도된 UX
+
+## 사용법
+
+```tsx
+import { TagInput } from "@nudge-eap/react";
+
+const [tags, setTags] = useState<string[]>([]);
+
+<TagInput
+  label="관심사"
+  value={tags}
+  onValueChange={setTags}
+  helperText="Enter 또는 , 로 구분해서 입력하세요"
+  maxTags={5}
+  onMaxReached={() => toast.warn("최대 5개까지 입력 가능해요")}
+/>
+```
+
+## Props
+
+| Prop              | 타입                       | 기본값                | 설명                                |
+| ----------------- | -------------------------- | --------------------- | ----------------------------------- |
+| `value`           | `string[]`                 | —                     | 태그 배열 (controlled)              |
+| `onValueChange`   | `(tags: string[]) => void` | —                     | 변경 콜백                           |
+| `label`           | `ReactNode`                | —                     | 라벨                                |
+| `placeholder`     | `string`                   | `"태그 입력 후 Enter"` | 자리표시자                       |
+| `helperText`      | `ReactNode`                | —                     | 헬퍼 / 에러 메시지                  |
+| `error`           | `boolean`                  | `false`               | 에러 보더                           |
+| `maxTags`         | `number`                   | —                     | 최대 태그 수                        |
+| `onMaxReached`    | `() => void`               | —                     | maxTags 도달 시 콜백                |
+| `allowDuplicates` | `boolean`                  | `false`               | 중복 허용                           |
+| `fullWidth`       | `boolean`                  | `false`               | 가로 가득                           |
+| `disabled`        | `boolean`                  | `false`               | 비활성화                            |
+
+## 키보드
+
+| 키        | 동작                          |
+| --------- | ----------------------------- |
+| `Enter`   | 현재 입력값을 태그로 추가     |
+| `,`       | 현재 입력값을 태그로 추가     |
+| `Backspace` (빈 입력) | 마지막 태그 삭제   |
