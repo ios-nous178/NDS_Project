@@ -840,6 +840,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "사용자 한 표: single + hideCount",
     ],
   },
+  GreetingHeader: {
+    name: "GreetingHeader",
+    summary:
+      "홈 인삿말 카드. 사용자 호칭({name}님 자동) + 인삿말 + 질문 + 액션 슬롯(MoodSelector 등).",
+    pitfalls: [
+      "greeting은 시간대 자동 인식 X — 외부에서 '좋은 아침이에요' 같은 시간대 표현 결정.",
+      "name에 '님' 직접 붙이지 말 것 — 컴포넌트가 자동.",
+      "tone='primary'는 카드 위에 또 카드를 올릴 때(흰 배경 위) 시각 분리에 유용.",
+    ],
+    recommended: [
+      "홈 진입: actions={<MoodSelector />}로 첫 인터랙션 결합",
+      "마이페이지: trailing={<Avatar />}",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

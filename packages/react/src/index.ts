@@ -89,3 +89,4 @@ export * from "./NotificationItem";
 export * from "./CountdownTimer";
 export * from "./OnlineIndicator";
 export * from "./ReactionPicker";
+export * from "./GreetingHeader";

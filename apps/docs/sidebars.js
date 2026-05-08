@@ -83,6 +83,7 @@ module.exports = {
         "components/countdown-timer",
         "components/online-indicator",
         "components/reaction-picker",
+        "components/greeting-header",
       ],
     },
     {
