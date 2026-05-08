@@ -94,6 +94,7 @@ module.exports = {
         "components/mention-input",
         "components/confetti",
         "components/comment-item",
+        "components/like-button",
       ],
     },
     {

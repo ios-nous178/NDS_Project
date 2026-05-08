@@ -981,6 +981,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "상담사 댓글: authorBadge로 역할 표시",
     ],
   },
+  LikeButton: {
+    name: "LikeButton",
+    summary:
+      "좋아요 토글 + 카운트. 클릭 펑 애니메이션, 1000+는 자동 K 변환. ReactionPicker(여러 이모지)와 분리.",
+    pitfalls: [
+      "liked/count는 controlled — 외부 source of truth + onChange에서 둘 다 갱신.",
+      "여러 종류 반응(공감/응원/와우)이 필요하면 ReactionPicker — LikeButton은 단일 좋아요.",
+      "카운트가 음수가 되지 않도록 외부 가드.",
+    ],
+    recommended: [
+      "콘텐츠 푸터: size='md' count 자동 K",
+      "CommentItem: likeAction={<LikeButton size='sm' />}",
+      "primary 톤: activeColor=primary로 좋아요/북마크 같은 의미 강조",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
