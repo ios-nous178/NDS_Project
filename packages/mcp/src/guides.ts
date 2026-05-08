@@ -907,6 +907,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "방문 상담 주소: helperText='출입 가능한 주소를 입력해주세요'",
     ],
   },
+  ImageCropper: {
+    name: "ImageCropper",
+    summary: "이미지 자르기 (circle/square). 드래그+줌, ref.toDataURL()로 PNG 추출.",
+    pitfalls: [
+      "외부 이미지(https) 자르기는 CORS 헤더 필요 — 서버 응답에 Access-Control-Allow-Origin 없으면 dataURL이 비어나옴.",
+      "outputSize는 보통 200~400 — 너무 작으면 화질 저하.",
+      "CSS transform 기반 변환이라 매우 큰 이미지(>4000px)는 모바일에서 끊길 수 있음.",
+    ],
+    recommended: ["프로필 사진: shape='circle' outputSize=200", "커버: shape='square' size=320"],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
