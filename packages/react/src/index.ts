@@ -56,3 +56,4 @@ export * from "./ActivityTimeline";
 export * from "./OtpInput";
 export * from "./FileUpload";
 export * from "./DateRangePicker";
+export * from "./Calendar";

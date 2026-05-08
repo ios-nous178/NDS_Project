@@ -178,5 +178,17 @@
     "figmaNodeId": "",
     "usageSummary": "휴대폰 인증, 인증번호 확인, 이메일 인증, 쿠폰 코드 입력",
     "notes": "SignUpPhoneInput, SignUpSMSCodeInput, FormPhoneVerifyInput 패턴을 통합한 레이아웃 컴포넌트입니다."
+  },
+  {
+    "name": "Calendar",
+    "category": "입력",
+    "status": "implemented",
+    "description": "인라인 월간 캘린더 그리드. 날짜 선택, 마커, 비활성 날짜 처리 지원",
+    "storybookTitle": "Components/Calendar",
+    "docsPath": "/docs/components/calendar",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "상담 예약, 감정 캘린더, 복약 캘린더, 일정 뷰",
+    "notes": "DatePicker(popover 입력)와 분리. 캘린더 자체가 콘텐츠인 화면용."
   }
 ]
