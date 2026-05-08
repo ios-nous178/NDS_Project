@@ -73,6 +73,7 @@ module.exports = {
         "components/expandable-text",
         "components/page-header",
         "components/stat-card",
+        "components/quick-action-grid",
       ],
     },
     {
