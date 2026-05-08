@@ -24,7 +24,13 @@ import { fileURLToPath } from "node:url";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { COMPONENT_GUIDES, DESIGN_PRINCIPLES } from "./guides.js";
+import {
+  COMPONENT_GUIDES,
+  DESIGN_PRINCIPLES,
+  ADMIN_CMS_GUIDE,
+  SCOPE_ADVISORY,
+  detectIntentFromText,
+} from "./guides.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const manifestPath = path.resolve(__dirname, "../manifest.json");
@@ -72,6 +78,27 @@ interface PackageMeta {
   peerDependencies: Record<string, string>;
   cssExports: string[];
 }
+interface BrandDef {
+  slug: string;
+  name: string;
+  version?: string;
+  description?: string;
+  primaryColor: string | null;
+  keyColors: {
+    primary: string | null;
+    secondary: string | null;
+    error: string | null;
+    caution: string | null;
+    success: string | null;
+    surface: string | null;
+    onSurface: string | null;
+  };
+  fontFamilies: string[];
+  designMdRelPath: string;
+  cssImport: string | null;
+  jsExport: string | null;
+  ready: boolean;
+}
 interface Manifest {
   generatedAt: string;
   repoRoot: string;
@@ -79,6 +106,7 @@ interface Manifest {
   components: ComponentDef[];
   icons: string[];
   tokens: TokenDef[];
+  brands: BrandDef[];
 }
 
 function loadManifest(): Manifest {
@@ -96,6 +124,9 @@ const componentByName = new Map(manifest.components.map((c) => [c.name, c]));
 const iconSet = new Set(manifest.icons);
 const tokenSet = new Set(manifest.tokens.map((t) => t.name));
 const tokenByName = new Map(manifest.tokens.map((t) => [t.name, t]));
+const brandsList: BrandDef[] = manifest.brands ?? [];
+const brandBySlug = new Map(brandsList.map((b) => [b.slug, b]));
+const brandSlugs = brandsList.map((b) => b.slug);
 
 /* ───────────── 검색 점수 ───────────── */
 
@@ -114,10 +145,15 @@ function scoreMatch(query: string, name: string): number {
 /* ───────────── Tool 핸들러 ───────────── */
 
 function listComponents() {
-  return manifest.components.map((c) => ({
-    name: c.name,
-    propCount: c.props.length,
-  }));
+  return {
+    _advisory:
+      "이 목록은 사용자 앱(Trost/Geniet/NudgeEAP) 컴포넌트입니다. " +
+      "어드민/CMS 화면이라면 antd v5를 쓰고 get_admin_cms_guide를 먼저 호출하세요.",
+    components: manifest.components.map((c) => ({
+      name: c.name,
+      propCount: c.props.length,
+    })),
+  };
 }
 
 function getComponent(name: string) {
@@ -432,13 +468,27 @@ function getInstallCommand(args: { tgzDir?: string; includeTailwind?: boolean })
 function getMainTsxImports(args: { brand?: string }) {
   const tokensPkg = getPkg("@nudge-eap/tokens");
   const reactPkg = getPkg("@nudge-eap/react");
+  const resolved = resolveBrand(args.brand);
+
   const lines: string[] = [];
+  const notes: string[] = [
+    "토큰 CSS는 컴포넌트 CSS보다 먼저 import해야 변수가 적용됨.",
+    "브랜드별 CSS는 한 번에 하나만 import (덮어쓰기됨).",
+  ];
+
   if (tokensPkg) {
     lines.push(`import "@nudge-eap/tokens/css";  // 공통 토큰`);
-    if (args.brand) {
-      lines.push(`import "@nudge-eap/tokens/css/${args.brand}";  // 브랜드 토큰`);
-    } else {
-      lines.push(`import "@nudge-eap/tokens/css/trost";  // 브랜드 (trost | geniet | nudge-eap)`);
+    if (resolved.ok && resolved.brand?.cssImport) {
+      lines.push(`import "${resolved.brand.cssImport}";  // 브랜드 토큰 (${resolved.brand.slug})`);
+    } else if (resolved.ok && resolved.brand && !resolved.brand.cssImport) {
+      lines.push(`// '${resolved.brand.slug}' 브랜드는 토큰 CSS export가 준비되지 않았습니다.`);
+      notes.push(
+        `브랜드 '${resolved.brand.slug}' 의 CSS export 미준비. list_brands로 ready: true 브랜드 확인.`,
+      );
+    } else if (!resolved.ok) {
+      const available = resolved.availableBrands.join(" | ");
+      lines.push(`// 브랜드 미지정 또는 알 수 없음. 사용 가능: ${available}`);
+      notes.push(resolved.error ?? "list_brands로 사용 가능한 브랜드 확인.");
     }
   }
   if (reactPkg) {
@@ -447,11 +497,120 @@ function getMainTsxImports(args: { brand?: string }) {
   return {
     targetFile: "src/main.tsx (또는 src/index.tsx)",
     placement: "최상단 (다른 import보다 먼저)",
+    resolvedBrand: resolved.brand?.slug,
+    availableBrands: resolved.availableBrands,
     code: lines.join("\n"),
-    notes: [
-      "토큰 CSS는 컴포넌트 CSS보다 먼저 import해야 변수가 적용됨.",
-      "브랜드별 CSS는 한 번에 하나만 import (덮어쓰기됨).",
+    notes,
+  };
+}
+
+function getSetupInstructionsAdminCms(args: { withRouter?: boolean }) {
+  const steps: Array<{
+    step: number;
+    title: string;
+    commands?: string[];
+    code?: string;
+    note?: string;
+  }> = [];
+
+  steps.push({
+    step: 1,
+    title: "Vite + React + TS 프로젝트 생성 (이미 있으면 건너뛰기)",
+    commands: [
+      "npm create vite@latest my-admin-mockup -- --template react-ts",
+      "cd my-admin-mockup",
+      "npm install",
     ],
+  });
+
+  steps.push({
+    step: 2,
+    title: "antd + 아이콘 + dayjs (한국어 로케일) 설치",
+    commands: [
+      "npm install antd@5 @ant-design/icons dayjs",
+      ...(args.withRouter !== false ? ["npm install react-router-dom"] : []),
+    ],
+    note: "NudgeEAPCMS 본 레포 기준 antd 5.5.1을 사용합니다. dayjs는 antd DatePicker / 한국어 로케일에 필요.",
+  });
+
+  steps.push({
+    step: 3,
+    title: "main.tsx에 ConfigProvider + 한국어 locale + reset.css 설정",
+    code: `import { ConfigProvider, App as AntdApp } from "antd";
+import koKR from "antd/locale/ko_KR";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import "antd/dist/reset.css";
+import "./index.css";
+
+dayjs.locale("ko");
+
+const FONT_STACK =
+  "Mulish, Gothic_A1, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', helvetica, 'Apple SD Gothic Neo', sans-serif";
+
+const theme = {
+  token: {
+    colorPrimary: "#2B96ED",
+    fontFamily: FONT_STACK,
+    borderRadius: 6,
+  },
+  components: {
+    Layout: { siderBg: "#ffffff", bodyBg: "#f4f4f4" },
+    Menu:   { itemSelectedColor: "#000", itemSelectedBg: "#fff" },
+    Table:  { headerBg: "#fafafa", headerColor: "#727272", rowHoverBg: "#f8fbff" },
+  },
+};
+
+// <ConfigProvider locale={koKR} theme={theme}>
+//   <AntdApp>
+//     <HashRouter>...</HashRouter>
+//   </AntdApp>
+// </ConfigProvider>`,
+    note: "어드민에서는 NudgeEAP 토큰을 import하지 마세요. antd 기본 토큰 + 위 색상만 사용.",
+  });
+
+  steps.push({
+    step: 4,
+    title: "전역 CSS — body bg / 폰트",
+    code: `html, body, #root {
+  margin: 0; padding: 0; height: 100%;
+  background: #f4f4f4;
+  font-family: Mulish, Gothic_A1, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+}`,
+    note: "src/index.css 최상단. CMS reset.css 컨벤션 그대로.",
+  });
+
+  steps.push({
+    step: 5,
+    title: "AdminLayout / HeaderSubject / SideSetting / TinyHeader 컴포넌트 작성",
+    note:
+      "구체적 패턴은 get_admin_cms_guide 호출 결과 참고. " +
+      "사이더 240px 라이트 + 6px 톱 액센트 + INFO/CMS MENU/SETTING 블록, " +
+      "본문 padding 40 60 200, 푸터 'Copyright © Nudge EAP. All Rights Reserved.'",
+  });
+
+  steps.push({
+    step: 6,
+    title: "(선택) Playwright 설치 — 미리보기 자동 검증",
+    commands: ["npm install --save-dev playwright", "npx playwright install chromium"],
+    note: "MCP의 start_dev_server / check_preview가 어드민 화면도 똑같이 검증할 수 있습니다.",
+  });
+
+  steps.push({
+    step: 7,
+    title: "동작 확인",
+    commands: ["npm run dev"],
+    note: "기본 5173 포트. start_dev_server / check_preview 사용 가능.",
+  });
+
+  return {
+    intent: "admin-cms",
+    rationale:
+      "어드민/CMS 화면은 NudgeEAP DS가 아니라 antd v5 + NudgeEAPCMS 시각 컨벤션을 따릅니다. " +
+      "이 셋업은 그 컨벤션과 1:1로 맞춥니다. 시각 디테일은 get_admin_cms_guide 참고.",
+    techStack: ADMIN_CMS_GUIDE.techStack,
+    steps,
+    nextTools: ["get_admin_cms_guide"],
   };
 }
 
@@ -460,7 +619,13 @@ function getSetupInstructions(args: {
   brand?: string;
   withRouter?: boolean;
   includeTailwind?: boolean;
+  intent?: string;
 }) {
+  const detected = detectIntentFromText(args.intent);
+  if (args.intent === "admin-cms" || detected === "admin-cms") {
+    return getSetupInstructionsAdminCms({ withRouter: args.withRouter });
+  }
+
   const tgzDir = args.tgzDir ? path.resolve(args.tgzDir) : TGZ_DIR_DEFAULT;
   const install = getInstallCommand({
     tgzDir,
@@ -532,6 +697,10 @@ function getSetupInstructions(args: {
   });
 
   return {
+    intent: "user-app",
+    _advisory:
+      "이 셋업은 사용자 앱(Trost/Geniet/NudgeEAP) 화면용입니다. " +
+      "어드민/CMS/운영툴 화면이면 'intent: \"admin-cms\"' 옵션을 넘겨 antd 기반 셋업으로 전환하세요.",
     summary: {
       tgzDir,
       requiredPackages: REQUIRED_PACKAGES,
@@ -547,14 +716,72 @@ function getSetupInstructions(args: {
   };
 }
 
-function getClaudeMdTemplate(args: { projectName?: string }) {
+function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" | "admin-cms" }) {
   const title = args.projectName ? `# ${args.projectName}` : "# NudgeEAP Mockup Workspace";
 
-  return `${title}
+  if (args.intent === "admin-cms") {
+    return `${title}
+
+## 분기 — 이 프로젝트는 어드민/CMS 목업이다
+
+- 사용 라이브러리: **antd v5** (NudgeEAPCMS 기준 5.5.1) + @ant-design/icons + dayjs(ko)
+- **금지**: \`@nudge-eap/react\`, \`@nudge-eap/tokens\`, \`@nudge-eap/icons\` 어떤 형태로도 import하지 말 것
+- nudge-eap-ds MCP는 두 가지 도구만 사용:
+  - \`get_admin_cms_guide\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
+  - \`start_dev_server\` / \`check_preview\` / \`stop_dev_server\` — 어드민에서도 동일하게 사용 가능
 
 ## 작업 원칙
 
-- 이 프로젝트는 NudgeEAP Design System 기반 목업 작업 공간이다.
+- 어드민은 정보 밀도가 높고 스캔하기 쉬운 레이아웃이 우선. 마케팅/장식 톤 금지.
+- antd 컴포넌트를 직접 만들지 말고 그대로 사용 (\`Button\`, \`Form\`, \`Input\`, \`Select\`, \`DatePicker\`, \`Table\`, \`Modal\`, \`Tabs\`, \`Tag\`, \`Space\`, \`Card\`, \`Pagination\`).
+- 색/타이포/외형은 antd 기본값 유지. \`ConfigProvider\` 토큰은 색·폰트·라디우스 정도만.
+
+## 시각 컨벤션 (NudgeEAPCMS 기반)
+
+- **사이더**: 240px 라이트, \`border-right: 1px solid #ececec\`, 상단 6px 브랜드 액센트(#2B96ED)
+- **사이더 내부**: \`INFO\` 블록(이메일+이름 Tag+권한 Tag) → \`CMS MENU\` 블록(<Menu theme="light" mode="inline">) → \`SETTING\` 블록(로그아웃/정보수정)
+- **메뉴 선택**: \`border-right: 6px solid #2B96ED\`
+- **본문**: \`margin-left: 240px\`, \`padding: 40px 60px 200px\`
+- **body bg**: \`#f4f4f4\`, **font**: \`Mulish, Gothic_A1, 'Malgun Gothic', '맑은 고딕'\`
+- **HeaderSubject**: Breadcrumb \`separator=">"\` + h1 22/700 #383838 + desc 12/#6b6a6a + \`border-bottom: 1px solid #e4e4e4\`
+- **검색 폼**: \`Form\` 안 \`Select(100px) + Input.Search(enterButton="검색") + 초기화 Button\` / 우측 액션 / 하단 "검색된 개수: N"
+- **Table**: \`size="middle"\`, 컬럼 거의 모두 \`align: "center"\`, 클릭 가능한 셀은 \`<Button type="link">\`, \`pagination={{ defaultPageSize: 20, position: ["bottomCenter"], showSizeChanger: false }}\`
+- **Status Tag**: \`width: 60px; text-align: center;\` (TagAdminRole 컨벤션)
+- **푸터**: \`Copyright © Nudge EAP. All Rights Reserved.\` (12px / #b1b1b1 / border-top #ececec)
+
+자세한 코드 예시는 \`get_admin_cms_guide\`를 호출해 가져오세요.
+
+## 검증 루프
+
+1. \`get_admin_cms_guide\` 호출해 컨벤션 재확인
+2. AdminLayout(Sider+Content+Footer) → 페이지 작성
+3. \`tsc --noEmit\` 통과
+4. \`start_dev_server\` → \`check_preview\` → 에러 0건 확인
+5. \`stop_dev_server\`
+
+## Self-Check
+
+- [ ] antd에서 import (직접 button/input/select 만들지 않음)
+- [ ] @nudge-eap/* 어떤 패키지도 import하지 않음
+- [ ] 사이드바 라이트 240px + 6px 톱 액센트 + INFO/CMS MENU/SETTING 블록 있음
+- [ ] HeaderSubject + 검색 폼(Select+Input.Search+초기화) + Table(align center+Button.link) 패턴 일관
+- [ ] body \`#f4f4f4\` + 본문 \`padding: 40 60 200\` + 푸터 카피 있음
+- [ ] tsc --noEmit 통과
+`;
+  }
+
+  return `${title}
+
+## 분기 (먼저 확인)
+
+- **어드민/CMS/운영툴/백오피스 화면이라면 이 CLAUDE.md를 따르지 말 것.**
+  \`create_claude_md\` 도구를 \`intent: "admin-cms"\`로 다시 호출해 어드민용 가이드를 받으세요.
+  어드민에는 antd v5를 사용하고 \`get_admin_cms_guide\`로 컨벤션을 확인합니다.
+- 이 가이드는 사용자 앱(Trost/Geniet/NudgeEAP) 화면용입니다.
+
+## 작업 원칙
+
+- 이 프로젝트는 NudgeEAP Design System 기반 사용자 앱 목업 작업 공간이다.
 - DS 컴포넌트/아이콘/토큰을 추측해서 사용하지 말고, MCP 도구로 확인한 뒤 사용한다.
 - 구현 완료의 기준은 코드 작성이 아니라 실제 dev 화면이 에러 없이 렌더링되는 것이다.
 
@@ -592,7 +819,12 @@ function getClaudeMdTemplate(args: { projectName?: string }) {
 `;
 }
 
-function createClaudeMd(args: { cwd?: string; projectName?: string; overwrite?: boolean }) {
+function createClaudeMd(args: {
+  cwd?: string;
+  projectName?: string;
+  overwrite?: boolean;
+  intent?: string;
+}) {
   const cwd = path.resolve(args.cwd ?? process.cwd());
   if (!fs.existsSync(cwd)) {
     return { ok: false, error: `cwd not found: ${cwd}` };
@@ -610,7 +842,11 @@ function createClaudeMd(args: { cwd?: string; projectName?: string; overwrite?: 
     };
   }
 
-  const content = getClaudeMdTemplate({ projectName: args.projectName });
+  const detected = detectIntentFromText(args.intent);
+  const intent: "user-app" | "admin-cms" =
+    args.intent === "admin-cms" || detected === "admin-cms" ? "admin-cms" : "user-app";
+
+  const content = getClaudeMdTemplate({ projectName: args.projectName, intent });
   fs.writeFileSync(filePath, content, "utf-8");
 
   return {
@@ -618,18 +854,113 @@ function createClaudeMd(args: { cwd?: string; projectName?: string; overwrite?: 
     filePath,
     overwritten: exists,
     bytes: Buffer.byteLength(content, "utf-8"),
+    intent,
     next: "Restart or reload Claude Code in this project so the new CLAUDE.md instructions are picked up.",
   };
 }
 
 /* ───────────── 가이드 / 디자인 원칙 ───────────── */
 
+const ENTRY_TOOL_ADVISORY =
+  "이 MCP는 사용자 앱(Trost / Geniet / NudgeEAP) 컴포넌트만 노출합니다. " +
+  "어드민/CMS/운영툴/백오피스 화면이라면 antd v5를 쓰고 get_admin_cms_guide를 호출하세요. " +
+  "두 디자인시스템을 한 화면에서 섞어쓰지 마세요.";
+
+function getScopeAdvisory() {
+  return SCOPE_ADVISORY;
+}
+
+/* ───────────── 브랜드 디스커버리 / 검증 ─────────────
+ * 브랜드는 brands/{slug}/DESIGN.md 와 packages/tokens/dist 를 스캔해
+ * manifest.brands 에 자동으로 들어간다. 새 브랜드 폴더만 추가하고
+ * pnpm --filter @nudge-eap/mcp build:manifest 만 다시 돌리면 된다. */
+
+function listBrands() {
+  return {
+    _advisory:
+      "사용자 앱 브랜드 목록입니다. 어드민/CMS는 브랜드 무관 (antd 기본). " +
+      "'ready: false'인 브랜드는 토큰 CSS 내보내기가 아직 준비되지 않아 import 불가.",
+    count: brandsList.length,
+    brands: brandsList.map((b) => ({
+      slug: b.slug,
+      name: b.name,
+      version: b.version,
+      description: b.description,
+      primaryColor: b.primaryColor,
+      ready: b.ready,
+      cssImport: b.cssImport,
+    })),
+    note:
+      "한 화면에 한 브랜드만 사용 (브랜드별 토큰 CSS는 덮어쓰기됨). " +
+      "상세 정보가 필요하면 get_brand_info(slug) 호출.",
+  };
+}
+
+function getBrandInfo(args: { brand: string }) {
+  const slug = args.brand;
+  const brand = brandBySlug.get(slug);
+  if (!brand) {
+    return {
+      ok: false,
+      error: `Unknown brand: '${slug}'.`,
+      availableBrands: brandSlugs,
+      hint: "list_brands로 사용 가능한 브랜드를 확인하세요.",
+    };
+  }
+  return {
+    ok: true,
+    ...brand,
+    usage: {
+      cssImport: brand.cssImport
+        ? `import "${brand.cssImport}";`
+        : "이 브랜드의 토큰 CSS export가 아직 packages/tokens/package.json에 등록되어 있지 않습니다. 'ready: true'인 브랜드를 사용하거나, DS 레포에서 export를 추가하세요.",
+      jsTheme: brand.jsExport
+        ? `import { ${slug.replace(/-(.)/g, (_, c) => c.toUpperCase())}Theme } from "${brand.jsExport}";`
+        : null,
+      mainTsxOrder: [
+        `import "@nudge-eap/tokens/css";  // 공통 토큰 (먼저)`,
+        brand.cssImport ? `import "${brand.cssImport}";  // 브랜드 토큰` : "// 브랜드 CSS 미준비",
+        `import "@nudge-eap/react/styles.css";  // 컴포넌트 스타일`,
+      ],
+    },
+  };
+}
+
+function resolveBrand(input?: string): {
+  ok: boolean;
+  brand?: BrandDef;
+  error?: string;
+  availableBrands: string[];
+} {
+  if (!input) {
+    // 기본값 — 첫 번째 'ready' 브랜드 또는 첫 브랜드
+    const fallback = brandsList.find((b) => b.ready) ?? brandsList[0];
+    return {
+      ok: !!fallback,
+      brand: fallback,
+      availableBrands: brandSlugs,
+      error: fallback ? undefined : "No brands found in manifest.",
+    };
+  }
+  const brand = brandBySlug.get(input);
+  if (brand) return { ok: true, brand, availableBrands: brandSlugs };
+  return {
+    ok: false,
+    availableBrands: brandSlugs,
+    error: `Unknown brand: '${input}'. Available: ${brandSlugs.join(", ")}.`,
+  };
+}
+
 function getDesignPrinciples() {
-  return DESIGN_PRINCIPLES;
+  return { _advisory: ENTRY_TOOL_ADVISORY, ...DESIGN_PRINCIPLES };
 }
 
 function getDosAndDonts() {
-  return { dos: DESIGN_PRINCIPLES.dos, donts: DESIGN_PRINCIPLES.donts };
+  return {
+    _advisory: ENTRY_TOOL_ADVISORY,
+    dos: DESIGN_PRINCIPLES.dos,
+    donts: DESIGN_PRINCIPLES.donts,
+  };
 }
 
 function getComponentGuide(name: string) {
@@ -641,6 +972,20 @@ function getComponentGuide(name: string) {
     };
   }
   return guide;
+}
+
+function getAdminCmsGuide(args: { intent?: string }) {
+  return {
+    intent: "admin-cms",
+    note:
+      "어드민/CMS 화면을 만들 때 따라야 할 시각/구조 컨벤션. " +
+      "이 가이드는 NudgeEAPCMS(antd 5.5.1) 실제 운영 코드에서 추출했습니다.",
+    detectedKeyword:
+      args.intent && detectIntentFromText(args.intent) === "admin-cms"
+        ? "admin-cms 의도로 인식됨"
+        : undefined,
+    ...ADMIN_CMS_GUIDE,
+  };
 }
 
 /* ───────────── HTML 단일 파일 추출 ───────────── */
@@ -1079,8 +1424,53 @@ const server = new Server(
 
 const TOOLS = [
   {
+    name: "get_scope_advisory",
+    description:
+      "Return scope of this MCP and the user-app vs admin-cms branching rule. Call this first if there's any ambiguity about which design system to use. Cheap one-shot rule of thumb without loading full component data.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+  {
+    name: "list_brands",
+    description:
+      "List all sub-brands available in this design system (auto-discovered from brands/ folder + tokens dist). Each brand has slug, name, primary color, css import path, and 'ready' flag (false = token CSS export not yet wired up). Use this whenever the user picks or references a brand.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+  {
+    name: "get_brand_info",
+    description:
+      "Return full info for one brand: name, version, description, key semantic colors (primary/secondary/error/caution/success/surface/onSurface), font families, css/js import paths, and main.tsx import order. Use after list_brands to drill into a specific brand.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        brand: {
+          type: "string",
+          description: "Brand slug (e.g. 'trost', 'nudge-eap', 'geniet'). See list_brands.",
+        },
+      },
+      required: ["brand"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "get_admin_cms_guide",
+    description:
+      "Return the visual / structural conventions for admin / CMS / 운영툴 / 백오피스 mockups (sider, page header, search form, table, status tags, modal, color tokens). Source: NudgeEAPCMS (antd 5.5.1) actual operating code. Use this INSTEAD of get_design_principles when building admin screens — admin uses antd v5, not @nudge-eap/react.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        intent: {
+          type: "string",
+          description:
+            "Optional natural-language intent string (e.g. user prompt) to confirm admin-cms detection. Not required.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "list_components",
-    description: "Return all available DS React components.",
+    description:
+      "Return all available DS React components (user-app: Trost / Geniet / NudgeEAP). For admin / CMS screens, do NOT use these — call get_admin_cms_guide instead.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
@@ -1195,13 +1585,14 @@ const TOOLS = [
   {
     name: "get_main_tsx_imports",
     description:
-      "Return the CSS import lines that must be added to src/main.tsx (or equivalent entrypoint). Specify a brand (trost | geniet | nudge-eap) to get the right token CSS import.",
+      "Return the CSS import lines that must be added to src/main.tsx. Pass an optional 'brand' slug — validated against the dynamic brand list (list_brands). If a brand has no CSS export yet, the response notes that and falls back gracefully.",
     inputSchema: {
       type: "object",
       properties: {
         brand: {
           type: "string",
-          enum: ["trost", "geniet", "nudge-eap"],
+          description:
+            "Brand slug (see list_brands). If omitted, the first 'ready' brand is used as default.",
         },
       },
       additionalProperties: false,
@@ -1210,7 +1601,7 @@ const TOOLS = [
   {
     name: "create_claude_md",
     description:
-      "Create a CLAUDE.md file in an external mockup project with NudgeEAP DS MCP usage rules, validation loop, and preview-check workflow.",
+      "Create a CLAUDE.md file in an external mockup project with usage rules, validation loop, and preview-check workflow. Pass intent='admin-cms' for admin/CMS projects (antd-based) or intent='user-app' for user app projects (default).",
     inputSchema: {
       type: "object",
       properties: {
@@ -1226,6 +1617,11 @@ const TOOLS = [
         overwrite: {
           type: "boolean",
           description: "Replace an existing CLAUDE.md. Default: false.",
+        },
+        intent: {
+          type: "string",
+          description:
+            "Workspace intent. 'admin-cms' generates an antd-based admin guide; 'user-app' (default) generates the DS-based user-app guide. Free-text strings are scanned for admin keywords (어드민/CMS/운영툴/백오피스/admin/cms/backoffice).",
         },
       },
       additionalProperties: false,
@@ -1371,18 +1767,24 @@ const TOOLS = [
   {
     name: "get_setup_instructions",
     description:
-      "Return a step-by-step setup guide for a fresh external mockup project: Vite scaffold, .tgz install, CSS imports, folder structure, MCP registration. Use this whenever a user starts a new mockup workspace.",
+      "Return a step-by-step setup guide for a fresh external mockup project. Pass intent='admin-cms' for admin/CMS projects (antd-based setup with NudgeEAPCMS conventions) or omit / pass 'user-app' for the default user-app DS setup (Vite + .tgz install + CSS imports + MCP registration).",
     inputSchema: {
       type: "object",
       properties: {
+        intent: {
+          type: "string",
+          description:
+            "Workspace intent. 'admin-cms' returns antd-based setup steps; 'user-app' (default) returns DS-based setup. Free-text strings are scanned for admin keywords (어드민/CMS/운영툴/백오피스/admin/cms/backoffice).",
+        },
         tgzDir: {
           type: "string",
-          description: "Where the .tgz files live. Default: <DS_repo>/local-packages",
+          description:
+            "[user-app only] Where the .tgz files live. Default: <DS_repo>/local-packages",
         },
         brand: {
           type: "string",
-          enum: ["trost", "geniet", "nudge-eap"],
-          description: "Default brand CSS to import (default: trost).",
+          description:
+            "[user-app only] Brand slug (see list_brands). If omitted, the first 'ready' brand is used as default.",
         },
         withRouter: {
           type: "boolean",
@@ -1390,7 +1792,8 @@ const TOOLS = [
         },
         includeTailwind: {
           type: "boolean",
-          description: "Include @nudge-eap/tailwind-preset install (default: false).",
+          description:
+            "[user-app only] Include @nudge-eap/tailwind-preset install (default: false).",
         },
       },
       additionalProperties: false,
@@ -1407,6 +1810,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   let result: unknown;
   try {
     switch (name) {
+      case "get_scope_advisory":
+        result = getScopeAdvisory();
+        break;
+      case "list_brands":
+        result = listBrands();
+        break;
+      case "get_brand_info":
+        result = getBrandInfo(args as { brand: string });
+        break;
+      case "get_admin_cms_guide":
+        result = getAdminCmsGuide(args as { intent?: string });
+        break;
       case "list_components":
         result = listComponents();
         break;
@@ -1445,7 +1860,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "create_claude_md":
         result = createClaudeMd(
-          args as { cwd?: string; projectName?: string; overwrite?: boolean },
+          args as { cwd?: string; projectName?: string; overwrite?: boolean; intent?: string },
         );
         break;
       case "get_setup_instructions":
@@ -1455,6 +1870,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             brand?: string;
             withRouter?: boolean;
             includeTailwind?: boolean;
+            intent?: string;
           },
         );
         break;

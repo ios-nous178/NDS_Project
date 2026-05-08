@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T06:55:15.884Z",
+  "generatedAt": "2026-05-08T07:34:49.292Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -7,7 +7,11 @@
       "version": "0.1.0",
       "dependencies": {},
       "peerDependencies": {},
-      "cssExports": ["@nudge-eap/tokens/css", "@nudge-eap/tokens/css/trost"]
+      "cssExports": [
+        "@nudge-eap/tokens/css",
+        "@nudge-eap/tokens/css/trost",
+        "@nudge-eap/tokens/css/moneple"
+      ]
     },
     {
       "name": "@nudge-eap/react",
@@ -964,6 +968,47 @@
       "dtsRelPath": "packages/react/dist/Card.d.ts"
     },
     {
+      "name": "CardVisual",
+      "props": [
+        {
+          "name": "number",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "holder",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "expiry",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "brand",
+          "optional": true,
+          "type": "CardVisualBrand"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "showChip",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/CardVisual.d.ts"
+    },
+    {
       "name": "Carousel",
       "props": [
         {
@@ -1540,6 +1585,57 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CountdownTimer.d.ts"
+    },
+    {
+      "name": "CouponCard",
+      "props": [
+        {
+          "name": "discount",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "discountSuffix",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "expiry",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "actionLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onAction",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabledLabel",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/CouponCard.d.ts"
     },
     {
       "name": "CrisisCallout",
@@ -2873,6 +2969,37 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/OnlineIndicator.d.ts"
+    },
+    {
+      "name": "OrderSummaryCard",
+      "props": [
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "rows",
+          "optional": false,
+          "type": "OrderSummaryRow[]"
+        },
+        {
+          "name": "totalLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "total",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/OrderSummaryCard.d.ts"
     },
     {
       "name": "OtpInput",
@@ -5772,6 +5899,71 @@
       "name": "--text-label-weight",
       "value": "400",
       "group": "text"
+    }
+  ],
+  "brands": [
+    {
+      "slug": "geniet",
+      "name": "Geniet",
+      "version": "alpha",
+      "description": "다이어트 정보, 식품 칼로리 검증, 건강식품 구매를 한곳에서. 캐시워크 연동 건강 관리 + 리워드 커머스 플랫폼. 틸(Teal) 컬러 기반 모바일 퍼스트 UI.",
+      "primaryColor": "#48C2C5",
+      "keyColors": {
+        "primary": "#48C2C5",
+        "secondary": null,
+        "error": "#FF3258",
+        "caution": "#FFB700",
+        "success": "#55D695",
+        "surface": "#FFFFFF",
+        "onSurface": "#111111"
+      },
+      "fontFamilies": ["Noto Sans KR"],
+      "designMdRelPath": "brands/geniet/DESIGN.md",
+      "cssImport": null,
+      "jsExport": null,
+      "ready": false
+    },
+    {
+      "slug": "nudge-eap",
+      "name": "NudgeEAP",
+      "version": "alpha",
+      "description": "EAP(Employee Assistance Program) 멘탈케어 플랫폼 디자인 시스템. 신뢰감 있는 블루 톤 기반, 접근성과 명확성을 우선하는 모바일 퍼스트 UI.",
+      "primaryColor": "#2B96ED",
+      "keyColors": {
+        "primary": "#2B96ED",
+        "secondary": "#ED2E77",
+        "error": "#F13F00",
+        "caution": "#FFC303",
+        "success": "#13BFA2",
+        "surface": "#FFFFFF",
+        "onSurface": "#383838"
+      },
+      "fontFamilies": ["Pretendard"],
+      "designMdRelPath": "brands/nudge-eap/DESIGN.md",
+      "cssImport": null,
+      "jsExport": "@nudge-eap/tokens/brands",
+      "ready": false
+    },
+    {
+      "slug": "trost",
+      "name": "Trost",
+      "version": "alpha",
+      "description": "한국 #1 온라인 심리 상담 플랫폼. 따뜻하고 안심되는 옐로우 시그니처 컬러와 차분한 톤으로, 심리 상담 진입 장벽을 낮추는 모바일 퍼스트 UI.",
+      "primaryColor": "#FFF42E",
+      "keyColors": {
+        "primary": "#FFF42E",
+        "secondary": "#4968FF",
+        "error": "#FF4111",
+        "caution": "#FF9D00",
+        "success": "#00BC78",
+        "surface": "#FFFFFF",
+        "onSurface": "#333333"
+      },
+      "fontFamilies": ["Pretendard Variable"],
+      "designMdRelPath": "brands/trost/DESIGN.md",
+      "cssImport": "@nudge-eap/tokens/css/trost",
+      "jsExport": "@nudge-eap/tokens/brands",
+      "ready": true
     }
   ]
 }

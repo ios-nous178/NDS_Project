@@ -8,6 +8,303 @@
  * - 표준 variant에 없는 톤이 필요할 때 확장 슬롯 사용 패턴
  */
 
+/* ──────────────────────────────────────────────────────────────────────
+ * Intent 감지 / 분기
+ *
+ * 이 MCP는 본질적으로 "사용자 앱(@nudge-eap/react)" 컴포넌트 라이브러리를
+ * 노출하지만, 사용자가 어드민/CMS 화면을 만들 때는 antd를 써야 한다.
+ *
+ * 사용자의 자연어 요청에 다음 키워드가 보이면 admin-cms 의도로 간주:
+ *   어드민 / 운영툴 / 관리자 / 관리자페이지 / CMS / 백오피스 / admin / cms / backoffice
+ *   상담 관리(admin), 멤버십 관리(admin) 같이 운영자가 보는 화면
+ *
+ * 사용자 앱으로 간주하는 키워드:
+ *   사용자 앱 / 모바일 앱 / 마이페이지 / 회원가입 / 상담 신청 / 챌린지 / 일기 / 콘텐츠 카드
+ *   Trost / Geniet / NudgeEAP 사용자 화면
+ * ────────────────────────────────────────────────────────────────────── */
+
+const ADMIN_KEYWORDS = [
+  "어드민",
+  "운영툴",
+  "운영 툴",
+  "관리자페이지",
+  "관리자 페이지",
+  "관리자툴",
+  "관리자 툴",
+  "백오피스",
+  "백 오피스",
+  "CMS",
+  "cms",
+  "Cms",
+  "admin",
+  "Admin",
+  "ADMIN",
+  "backoffice",
+  "back-office",
+  "정산 관리",
+  "감사 로그",
+];
+
+export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | "unknown" {
+  if (!text) return "unknown";
+  const normalized = text.toLowerCase();
+  for (const k of ADMIN_KEYWORDS) {
+    if (normalized.includes(k.toLowerCase())) return "admin-cms";
+  }
+  return "unknown";
+}
+
+export const SCOPE_ADVISORY = {
+  scope: "사용자 앱 (Trost / Geniet / NudgeEAP) 화면 전용",
+  intentBranching: {
+    "admin-cms": {
+      keywords: ADMIN_KEYWORDS,
+      action:
+        "어드민/CMS/운영툴/백오피스 화면이라면 이 DS(@nudge-eap/react)를 쓰지 말 것. " +
+        "antd v5를 사용하고, 시각/구조 컨벤션은 get_admin_cms_guide를 호출해 확인할 것. " +
+        "두 라이브러리를 한 화면에서 섞어쓰지 말 것.",
+      tools: ["get_admin_cms_guide", "get_setup_instructions(intent='admin-cms')"],
+    },
+    "user-app": {
+      action:
+        "사용자 앱 화면(B2C, 멘탈케어 사용자 플로우)이라면 이 MCP의 도구들을 적극 사용. " +
+        "get_design_principles → search_component → get_component_guide → 작성 → validate_mockup.",
+    },
+  },
+  hardRule: "두 디자인시스템을 한 화면에서 혼용 금지.",
+};
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Admin / CMS 컨벤션
+ *
+ * 출처: NudgeEAPCMS 코드베이스(Next.js + antd 5.5.1 + styled-components)
+ *   /src/styled/reset.css           (폰트 스택, body bg)
+ *   /src/app/(primary)/layout.tsx   (Shell + content padding + footer)
+ *   /src/layout/ScreenLocalNavigationBar.tsx (라이트 사이더 + 6px 브랜드 액센트)
+ *   /src/layout/component/SideMenu.tsx       (메뉴 선택 시 right 6px 액센트)
+ *   /src/layout/component/SideUserInfo.tsx   (사이드 INFO 블록)
+ *   /src/layout/component/SideSetting.tsx    (사이드 SETTING 블록 + 로그아웃/정보수정)
+ *   /src/layout/component/TinyHeader.tsx     (10px 200 #adadad 라벨)
+ *   /src/components/header/HeaderSubject.tsx (페이지 제목 + Breadcrumb)
+ *   /src/feature/partner/screens/ScreenPartnerManagement.tsx (목록 화면 패턴)
+ *   /src/feature/partner/components/PartnerSearchForm.tsx    (검색 폼 패턴)
+ *   /src/feature/membership/components/SearchMembershipInput.tsx (Select+Input.Search+초기화)
+ *   /src/feature/partner/constant/partnerListColumns.tsx     (테이블 컬럼 컨벤션)
+ * ────────────────────────────────────────────────────────────────────── */
+
+export interface AdminCmsGuide {
+  scope: string;
+  rationale: string;
+  techStack: {
+    required: string[];
+    forbidden: string[];
+    optional: string[];
+  };
+  layout: {
+    body: { background: string; fontFamily: string };
+    sider: Record<string, string>;
+    sideUserInfo: string;
+    sideMenu: Record<string, string>;
+    sideSetting: string;
+    content: Record<string, string>;
+    footer: Record<string, string>;
+  };
+  pageHeader: {
+    component: string;
+    structure: string;
+    style: Record<string, string>;
+  };
+  searchForm: {
+    pattern: string;
+    leftRow: string[];
+    rightRow: string[];
+    countLine: string;
+  };
+  table: Record<string, string>;
+  tag: Record<string, string>;
+  modal: Record<string, string>;
+  colors: Record<string, string>;
+  forbidden: string[];
+  selfCheck: string[];
+  example: string;
+}
+
+export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
+  scope:
+    "어드민/CMS/운영툴/백오피스 화면. 사용자 앱이 아닌 운영자가 보는 화면. " +
+    "출처: NudgeEAPCMS (Next.js + antd 5.5.1 + styled-components) 실제 운영 코드.",
+  rationale:
+    "NudgeEAP DS는 B2C 멘탈케어 앱 화면을 위한 컴포넌트 셋이다. 어드민은 정보 밀도 / 표 / 폼 / " +
+    "필터 위주라 antd가 더 적합하고, 운영팀이 익숙한 시각 언어와도 일치한다.",
+  techStack: {
+    required: [
+      "react ^18",
+      "antd ^5 (NudgeEAPCMS 기준 5.5.1)",
+      "@ant-design/icons ^5",
+      "dayjs (locale: ko)",
+    ],
+    forbidden: [
+      "@nudge-eap/react — 사용자 앱 DS, 어드민에서 절대 import 금지",
+      "@nudge-eap/tokens — 어드민에서는 antd 기본 토큰 사용",
+      "큰 그라디언트, 마케팅 히어로, 장식 배경",
+    ],
+    optional: ["styled-components (CMS 본 레포 컨벤션)", "react-router-dom (Vite 단독일 때)"],
+  },
+  layout: {
+    body: {
+      background: "#f4f4f4",
+      fontFamily:
+        "Mulish, Gothic_A1, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', helvetica, 'Apple SD Gothic Neo', sans-serif",
+    },
+    sider: {
+      width: "240px (SIDEBAR_WIDTH 상수)",
+      theme: 'antd Sider theme="light"',
+      background: "#ffffff",
+      position: "fixed (좌측 0, top 0, height 100vh)",
+      borderRight: "1px solid #ececec",
+      zIndex: "10",
+      topAccent: "상단 6px 브랜드 컬러 라인 (border-top: 6px solid var(--color-main, #2B96ED))",
+    },
+    sideUserInfo:
+      "Sider 상단 24px padding 영역에 [로고/h1] + TinyHeader('INFO') + 이메일(12px #333) + " +
+      "antd Tag(이름, borderRadius 3) + '권한:' + TagAdminRole(60px width center).",
+    sideMenu: {
+      header: "TinyHeader('CMS MENU', padding '0 24px')",
+      menu: '<Menu theme="light" mode="inline" inlineIndent={22} items={...} selectedKeys={[현재경로]} />',
+      selectedItem: "border-right: 6px solid var(--color-main); color: #000;",
+      submenuSelected: "color: #000; font-weight: 600;",
+      itemColors: "기본 #383838 / hover #000 / disabled 회색 (실제 권한 매트릭스에 따라 필터링)",
+    },
+    sideSetting:
+      "Sider 하단에 별도 section. TinyHeader('SETTING', padding '0') + " +
+      "두 개의 antd Button (LogoutOutlined '로그아웃', UserOutlined '정보수정' disabled). " +
+      "버튼 높이 35px, font-size 12px, 두 버튼 width 48.5%씩.",
+    content: {
+      marginLeft: "240px",
+      padding: "40px 60px 200px",
+      width: "100%",
+      maxWidth: "고정 max-width 없음 — 전체 폭 사용",
+    },
+    footer: {
+      placement: "content 아래 70px margin-top",
+      text: "Copyright © Nudge EAP. All Rights Reserved.",
+      style:
+        "text-align center / padding 13px 0 / border-top 1px solid #ececec / color #b1b1b1 / font-weight 100 / font-size 12px / letter-spacing 0.2px",
+    },
+  },
+  pageHeader: {
+    component: "components/header/HeaderSubject (Breadcrumb + h1 + desc)",
+    structure:
+      '<HeaderSubject subject="고객사 관리" desc="..." navigationItems={[{title:"Partner"},{title:"Partner Management",href:"/partner/list"}]} />',
+    style: {
+      wrapper: "border-bottom: 1px solid #e4e4e4; padding: 0 0 25px; margin: 0 0 25px;",
+      breadcrumb:
+        '<Breadcrumb items={...} separator=">" />, font-size 11px, color #727272, link color #000',
+      title:
+        "h1: font-size 22px / weight 700 / color #383838 / margin-bottom 12px / text-transform capitalize",
+      desc: "font-size 12px / color #6b6a6a / padding-left 3px / text-transform capitalize",
+    },
+  },
+  searchForm: {
+    pattern:
+      "antd Form 안에 Select(검색 기준) + Input.Search(enterButton='검색') + Button(초기화). " +
+      "필터(Segmented / Select 등)와 액션(생성/내보내기)은 우측 정렬. 그 아래 한 줄에 '검색된 개수: N'.",
+    leftRow: [
+      "<Form.Item name='searchBy'><Select style={{width:100}} options={[{value:'TITLE',label:'멤버십명'},{value:'ID',label:'멤버십 ID'}]} /></Form.Item>",
+      "<Form.Item name='keyword'><Input.Search placeholder='검색어를 입력해주세요' enterButton='검색' onSearch={handleSearch} /></Form.Item>",
+      "<Button htmlType='button' onClick={handleReset}>초기화</Button>",
+    ],
+    rightRow: [
+      "추가 필터 (Segmented '전체/진행중/대기/종료 포함', 고객사 Select 등)",
+      "주요 액션 버튼 (생성, CSV 내보내기 등)",
+    ],
+    countLine:
+      "<div className='cms-search-form__count'>검색된 개수: {count}</div> — font-size 12, color #6b6a6a",
+  },
+  table: {
+    base: '<Table size="middle" rowKey="id" />',
+    pagination:
+      'pagination={{ defaultPageSize: 20, position: ["bottomCenter"], showSizeChanger: false, size: "default", total }}',
+    columns:
+      "거의 모든 컬럼에 align:'center'. 행 정보 가독성보다 컬럼 헤더와 셀 정렬을 일관되게 유지하는 게 우선.",
+    clickableCell:
+      "ID/이름/숫자 등 클릭 가능한 셀은 <Button type='link'>{value}</Button>으로 감싼다. 굵은 텍스트로 대체 X.",
+    rowHeight: "size='middle' 기본 (~48px). 직접 px 지정 금지.",
+    headerStyle:
+      "antd 기본값 유지. headerBg #fafafa, headerColor #727272 정도까지만 ConfigProvider로 조정.",
+  },
+  tag: {
+    statusTagWidth:
+      "상태/권한 같은 enum Tag는 width: 60px; text-align: center; (TagAdminRole 컨벤션)",
+    statusColors:
+      "active=green, pending=gold, ended=default(grey), warning=orange, error=red. 운영자 권한별 색은 admin red / volcano / green / gold / lime / purple / cyan / blue.",
+  },
+  modal: {
+    invocation: "Modal.useModal() 또는 <Modal open={...} />. centered + destroyOnClose 권장.",
+    formLayout:
+      'Form layout="vertical" 기본. 라벨 좌측 정렬이 필요하면 labelAlign="left" labelCol={{flex:"120px"}} colon={false}.',
+    footer:
+      "antd 기본 footer (확인/취소) 또는 우측 그룹 액션 정렬. 좌측엔 파괴 액션(종료처리, 삭제) 분리.",
+  },
+  colors: {
+    "--color-main": "#2B96ED — 사이드바 톱 액센트 / 메뉴 선택 우측 보더 / 링크",
+    text: "#383838 (제목) / #727272 (보조) / #aaa (subtle) / #b1b1b1 (footer)",
+    border: "#ececec (light) / #e4e4e4 (HeaderSubject 하단)",
+    bg: "#f4f4f4 (body) / #fafafa (hover/header) / #ffffff (sider, content surface)",
+    note: "어드민에서는 NudgeEAP 토큰을 import하지 말 것. 위 색상을 인라인 또는 styled-components로 직접 지정.",
+  },
+  forbidden: [
+    "@nudge-eap/react / @nudge-eap/tokens / @nudge-eap/icons import (어드민 화면에서)",
+    "큰 히어로 카드, 마케팅 톤, 그라디언트 배경",
+    "antd Table 위에 별도 Card wrapper로 그림자+패딩 추가 (CMS는 본문에 직접 노출)",
+    "Tabs를 페이지 단위로 남발 (CMS는 페이지 단위 Tabs 거의 사용 안 함)",
+  ],
+  selfCheck: [
+    "antd에서 import 했는가 (직접 button/input/select 만들지 않았는가)",
+    "@nudge-eap/* 패키지를 어드민 화면에서 import 하지 않았는가",
+    "사이드바에 라이트 240px + 6px 톱 액센트 + INFO + CMS MENU + SETTING 블록이 있는가",
+    "본문 padding 40 60 200, body #f4f4f4, footer 'Copyright © Nudge EAP...' 있는가",
+    "HeaderSubject(Breadcrumb separator='>', h1 22/700, desc 12)로 페이지 헤더를 구성했는가",
+    "검색 폼이 [Select + Input.Search + 초기화] 패턴인가, 검색된 개수 N이 노출되는가",
+    "Table 컬럼이 align:center 일관 + pagination position bottomCenter인가",
+    "클릭 가능한 셀이 <Button type='link'>인가",
+    "tsc --noEmit 통과하는가",
+  ],
+  example: `// pages/MembershipDetail.tsx (요약)
+import { Layout, Menu, Breadcrumb, Tag, Table, Form, Select, Input, Button, Segmented } from "antd";
+import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
+
+// AdminLayout = <Sider light 240px + 6px top + INFO + CMS MENU + SETTING>
+//             + <Content padding="40 60 200">{children}</Content> + Footer
+
+<AdminLayout>
+  <HeaderSubject
+    subject="멤버십 관리"
+    desc="고객사 멤버십을 관리합니다."
+    navigationItems={[{ title: "Membership" }, { title: "List", href: "/membership/list" }]}
+  />
+  <Form form={form} className="cms-search-form" initialValues={{ searchBy: "TITLE", keyword: "" }}>
+    <Form.Item name="searchBy"><Select style={{ width: 100 }} options={...} /></Form.Item>
+    <Form.Item name="keyword"><Input.Search enterButton="검색" onSearch={handleSearch} /></Form.Item>
+    <Button onClick={handleReset}>초기화</Button>
+  </Form>
+  <div className="cms-search-form__count">검색된 개수: {count}</div>
+  <Table
+    size="middle"
+    rowKey="id"
+    columns={[
+      { title: "ID", dataIndex: "id", align: "center", width: 100 },
+      { title: "이름", dataIndex: "name", align: "center",
+        render: (v, r) => <Button type="link">{v}</Button> },
+      { title: "상태", dataIndex: "status", align: "center", width: 100,
+        render: v => <Tag color={...} className="tag-fixed">{label}</Tag> },
+    ]}
+    dataSource={list}
+    pagination={{ defaultPageSize: 20, position: ["bottomCenter"], showSizeChanger: false }}
+  />
+</AdminLayout>`,
+};
+
 export interface ComponentGuide {
   name: string;
   summary: string;
