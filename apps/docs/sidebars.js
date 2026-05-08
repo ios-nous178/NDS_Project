@@ -102,6 +102,7 @@ module.exports = {
         "components/amount-input",
         "components/status-timeline",
         "components/filter-bar",
+        "components/user-card",
       ],
     },
     {
