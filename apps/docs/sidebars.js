@@ -99,6 +99,7 @@ module.exports = {
         "components/review-card",
         "components/vote-poll",
         "components/price-tag",
+        "components/amount-input",
       ],
     },
     {

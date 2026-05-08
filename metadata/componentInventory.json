@@ -766,5 +766,17 @@
     "figmaNodeId": "",
     "usageSummary": "상품/콘텐츠/구독 가격, 결제 합계, 쿠폰 결과",
     "notes": "amount+originalAmount 둘 다 number일 때 할인율 자동. prefix/unit 하나만 쓸 것."
+  },
+  {
+    "name": "AmountInput",
+    "category": "입력",
+    "status": "implemented",
+    "description": "큰 금액 입력. 자동 천 단위 콤마, presets, max/min 클램프",
+    "storybookTitle": "Components/AmountInput",
+    "docsPath": "/docs/components/amount-input",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "송금/결제, 후원/응원, 충전 금액",
+    "notes": "value=number|null (빈 입력은 null). NumberStepper(작은 정수)와 분리."
   }
 ]
