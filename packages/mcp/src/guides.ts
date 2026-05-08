@@ -944,6 +944,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "내 메시지: color=primary, 상대 메시지: color='#666'",
     ],
   },
+  MentionInput: {
+    name: "MentionInput",
+    summary: "@멘션 입력. 자동완성 드롭다운 + 키보드 네비. 트리거 커스텀 (#로 해시태그도 가능).",
+    pitfalls: [
+      "users는 전체 목록 — 컴포넌트가 자동 필터. 외부에서 미리 필터링하지 말 것.",
+      "저장된 텍스트는 plain '@김민지' 형태 — ID로 보존하려면 별도 파싱.",
+      "trigger 앞에 공백 또는 시작 위치여야 자동완성 트리거. 'email@a.com' 같은 케이스는 무시됨 (의도적).",
+    ],
+    recommended: ["단체 채팅 댓글: trigger='@'", "해시태그 자동완성: trigger='#'"],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

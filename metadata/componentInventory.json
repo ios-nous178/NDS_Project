@@ -670,5 +670,17 @@
     "figmaNodeId": "",
     "usageSummary": "채팅 음성 메시지, 짧은 음성 메모 재생",
     "notes": "AudioPlayer(트랙바)와 분리된 컴팩트 메시지 형태."
+  },
+  {
+    "name": "MentionInput",
+    "category": "입력",
+    "status": "implemented",
+    "description": "@멘션 자동완성 입력. 트리거 커스텀(#도 가능), 키보드 ↓↑/Enter/Esc",
+    "storybookTitle": "Components/MentionInput",
+    "docsPath": "/docs/components/mention-input",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "단체 상담 댓글, 그룹 채팅, 노트/일기 멘션, 해시태그 자동완성",
+    "notes": "users는 전체 목록(컴포넌트가 자동 필터). 텍스트는 plain — ID 보존은 외부 파싱."
   }
 ]
