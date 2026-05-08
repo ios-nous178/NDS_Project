@@ -854,6 +854,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "마이페이지: trailing={<Avatar />}",
     ],
   },
+  TipCard: {
+    name: "TipCard",
+    summary:
+      "한 줄 인사이트/팁 카드. info/success/warning/neutral 톤. 위기는 CrisisCallout, 페이지 띠는 Banner.",
+    pitfalls: [
+      "위기/긴급 안내에 사용하지 말 것 — CrisisCallout이 적합.",
+      "페이지 상단 띠 알림은 Banner. TipCard는 콘텐츠 영역 안의 카드.",
+      "actionLabel + onClick 함께 줘도 액션 버튼은 stopPropagation됨 (의도적).",
+    ],
+    recommended: [
+      "오늘의 팁: tone='info' label='오늘의 팁' actionLabel='시작하기'",
+      "챌린지 격려: tone='success' (완료 후 안내)",
+      "홈 카드: 짧은 description + actionLabel",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

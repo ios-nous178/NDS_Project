@@ -586,5 +586,17 @@
     "figmaNodeId": "",
     "usageSummary": "홈 화면 최상단, 마이페이지 인삿말",
     "notes": "name에 '님' 직접 X. greeting은 외부에서 시간대 결정."
+  },
+  {
+    "name": "TipCard",
+    "category": "피드백",
+    "status": "implemented",
+    "description": "한 줄 인사이트/팁 카드. 4 tone, 라벨/제목/설명/액션, 카드 클릭",
+    "storybookTitle": "Components/TipCard",
+    "docsPath": "/docs/components/tip-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "오늘의 팁, 새 콘텐츠 안내, 챌린지 완료 격려",
+    "notes": "위기는 CrisisCallout, 페이지 띠는 Banner. TipCard는 콘텐츠 안 카드."
   }
 ]
