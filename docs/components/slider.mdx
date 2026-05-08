@@ -1,0 +1,54 @@
+---
+title: Slider
+description: 연속값을 입력받는 슬라이더. 통증·스트레스 강도 등에 사용합니다.
+---
+
+# Slider
+
+연속값을 입력받는 슬라이더입니다. `LikertScale`(고정 N단계)과 다르게 임의의 정수/소수를 다룰 수 있습니다.
+
+## 사용법
+
+```tsx
+import { Slider } from "@nudge-eap/react";
+
+// 통증 강도 0~10
+<Slider
+  value={pain}
+  onValueChange={setPain}
+  min={0}
+  max={10}
+  step={1}
+  startLabel="없음"
+  endLabel="극심함"
+  showValue
+/>
+
+// 스트레스 % 표시
+<Slider
+  value={stress}
+  onValueChange={setStress}
+  showValue
+  formatValue={(v) => `${v}%`}
+/>
+```
+
+## Props
+
+| Prop            | 타입                                 | 기본값  | 설명                  |
+| --------------- | ------------------------------------ | ------- | --------------------- |
+| `value`         | `number`                             | —       | 현재 값               |
+| `onValueChange` | `(value: number) => void`            | —       | 변경 콜백             |
+| `min`           | `number`                             | `0`     | 최소값                |
+| `max`           | `number`                             | `100`   | 최대값                |
+| `step`          | `number`                             | `1`     | 단계                  |
+| `startLabel`    | `ReactNode`                          | —       | 좌측 끝 라벨          |
+| `endLabel`      | `ReactNode`                          | —       | 우측 끝 라벨          |
+| `showValue`     | `boolean`                            | `false` | 현재 값 표시          |
+| `formatValue`   | `(value: number) => ReactNode`       | —       | 값 표시 포맷터        |
+| `disabled`      | `boolean`                            | `false` | 비활성화              |
+
+## 가이드
+
+- 5단계 같은 이산형 평가는 `LikertScale`을 사용. Slider로 흉내내지 말 것.
+- `showValue`나 `startLabel/endLabel` 중 하나는 반드시 표시 — 사용자가 현재 값을 알 수 있어야 함.

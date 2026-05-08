@@ -1,0 +1,57 @@
+---
+title: ConsentChecklist
+description: 약관 동의 묶음 — 전체동의 + 항목별 + 펼치기.
+---
+
+# ConsentChecklist
+
+회원가입·민감정보 동의 같은 다중 약관 동의를 한 컴포넌트로 표현합니다. 전체동의 토글, 항목별 체크, 약관 본문 펼치기를 모두 지원합니다.
+
+## 사용법
+
+```tsx
+import { ConsentChecklist } from "@nudge-eap/react";
+
+const items = [
+  {
+    key: "service",
+    label: "서비스 이용약관",
+    required: true,
+    detail: "본 약관은 NudgeEAP가 제공하는 서비스 이용에 관한 권리·의무를 정합니다...",
+  },
+  {
+    key: "privacy",
+    label: "개인정보 수집·이용",
+    required: true,
+    detail: "수집 항목: 이름, 이메일, 휴대폰번호. 보관 기간: 회원 탈퇴 시까지.",
+  },
+  {
+    key: "marketing",
+    label: "마케팅 정보 수신",
+    required: false,
+    detail: "프로모션·이벤트 정보를 받아보실 수 있어요.",
+  },
+];
+
+const [agreed, setAgreed] = useState<string[]>([]);
+
+<ConsentChecklist items={items} value={agreed} onValueChange={setAgreed} />
+```
+
+## Props
+
+| Prop            | 타입                          | 기본값       | 설명                                |
+| --------------- | ----------------------------- | ------------ | ----------------------------------- |
+| `items`         | `ConsentItem[]`               | —            | 약관 목록                           |
+| `value`         | `string[]`                    | —            | 선택된 키들                         |
+| `onValueChange` | `(value: string[]) => void`   | —            | 변경 콜백                           |
+| `allLabel`      | `ReactNode`                   | `"전체 동의"` | 전체동의 라벨                       |
+| `expandable`    | `boolean`                     | `true`       | detail이 있는 항목 펼치기 허용      |
+
+`ConsentItem = { key, label, required?, detail? }`
+
+## 가이드
+
+- `required: true`인 항목 미체크 검증은 호출부 책임. 컴포넌트 자체는 막지 않음.
+- 전체동의 토글: 모두 체크면 해제, 아니면 전체 체크 (부분 체크 상태에서도 동일).
+- `detail`은 핵심만. 약관 전문은 별도 페이지로 분리하는 게 가독성 좋음.

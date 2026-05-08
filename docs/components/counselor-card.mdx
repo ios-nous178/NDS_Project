@@ -1,0 +1,47 @@
+---
+title: CounselorCard
+description: 상담사 프로필 카드. 사진/자격/평점/태그/예약 CTA.
+---
+
+# CounselorCard
+
+상담사 검색·선택 화면의 카드형 프로필. 1~2열 그리드에 잘 어울립니다.
+
+## 사용법
+
+```tsx
+import { CounselorCard } from "@nudge-eap/react";
+
+<CounselorCard
+  name="박민지"
+  jobTitle="임상심리전문가"
+  imageSrc="/counselors/123.jpg"
+  rating={4.8}
+  reviewCount={120}
+  tags={["우울", "불안", "직장스트레스"]}
+  bio="따뜻한 공감과 인지행동치료(CBT) 기반으로 함께 해결책을 찾아갑니다."
+  ctaLabel="예약하기"
+  onCtaClick={() => router.push(`/counselors/123/booking`)}
+/>
+```
+
+## Props
+
+| Prop          | 타입               | 기본값 | 설명                              |
+| ------------- | ------------------ | ------ | --------------------------------- |
+| `name`        | `string`           | —      | 이름                              |
+| `jobTitle`    | `ReactNode`        | —      | 직책/자격                         |
+| `imageSrc`    | `string`           | —      | 프로필 사진 (없으면 이니셜 자동) |
+| `rating`      | `number`           | —      | 평점 (예: 4.8)                    |
+| `reviewCount` | `number`           | —      | 리뷰 수                           |
+| `tags`        | `string[]`         | —      | 전공 태그                         |
+| `bio`         | `ReactNode`        | —      | 짧은 소개 (2줄 자동 잘림)         |
+| `ctaLabel`    | `string`           | —      | CTA 라벨 (제공 시 푸터에 버튼)    |
+| `onCtaClick`  | `() => void`       | —      | CTA 클릭                          |
+| `onCardClick` | `() => void`       | —      | 카드 전체 클릭 (CTA와 별개)       |
+
+## 가이드
+
+- `tags`는 5개 이하 권장. 그 이상은 시각 잡음.
+- `bio`는 자동으로 2줄 잘림 (line-clamp). 더 긴 본문은 상세 페이지로 분리.
+- 리스트 화면에서는 카드 전체 클릭 → 상세, CTA(예약)는 상세 안에서 노출하는 흐름이 사용자가 헷갈리지 않음.

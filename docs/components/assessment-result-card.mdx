@@ -1,0 +1,51 @@
+---
+title: AssessmentResultCard
+description: 심리검사 결과 카드. 점수/단계/색상이 자동 매핑됩니다.
+---
+
+# AssessmentResultCard
+
+PHQ-9, GAD-7 등 심리검사 결과를 표준화된 형식으로 표시합니다. `level`에 따라 테두리·배지 색이 자동으로 매핑됩니다.
+
+## 사용법
+
+```tsx
+import { AssessmentResultCard } from "@nudge-eap/react";
+
+<AssessmentResultCard
+  title="PHQ-9 우울 검사"
+  score={14}
+  maxScore={27}
+  level="moderate"
+  description="중등도 우울로, 전문가 상담이 권장됩니다."
+  actionLabel="상담 예약하기"
+  onAction={() => router.push("/booking")}
+/>
+```
+
+## Props
+
+| Prop          | 타입                                                       | 기본값 | 설명                                  |
+| ------------- | ---------------------------------------------------------- | ------ | ------------------------------------- |
+| `title`       | `ReactNode`                                                | —      | 검사명                                |
+| `score`       | `number`                                                   | —      | 점수                                  |
+| `maxScore`    | `number`                                                   | —      | 최대 점수                             |
+| `level`       | `"normal" \| "mild" \| "moderate" \| "severe"`             | —      | 결과 단계 (호출부에서 매핑해서 넘김)  |
+| `levelText`   | `ReactNode`                                                | 자동   | 단계 라벨 (기본 정상/주의/경계/심각) |
+| `description` | `ReactNode`                                                | —      | 1줄 해석                              |
+| `actionLabel` | `string`                                                   | —      | 액션 버튼 라벨                        |
+| `onAction`    | `() => void`                                               | —      | 액션 클릭                             |
+
+## 단계별 색상
+
+| Level      | 테두리·배지       | 의미   |
+| ---------- | ----------------- | ------ |
+| `normal`   | success           | 정상   |
+| `mild`     | caution (연한)    | 주의   |
+| `moderate` | caution (진한)    | 경계   |
+| `severe`   | error             | 심각   |
+
+## 가이드
+
+- 점수 → 단계 매핑은 검사마다 다르므로 호출부에서 결정해서 넘김. 컴포넌트 내부에서 추측하지 않음.
+- `level="severe"`인 경우 후속 액션(상담 연결) 또는 `CrisisCallout`을 함께 노출할 것.
