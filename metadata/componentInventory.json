@@ -838,5 +838,17 @@
     "figmaNodeId": "",
     "usageSummary": "쿠폰함, EAP 무료 코드, 챌린지 보상권",
     "notes": "discount/suffix 분리. disabled=true면 버튼 자동 변경."
+  },
+  {
+    "name": "OrderSummaryCard",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "주문/예약 요약 카드. 라벨:값 행 + 합계 + CTA 슬롯, emphasis 강조",
+    "storybookTitle": "Components/OrderSummaryCard",
+    "docsPath": "/docs/components/order-summary-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "결제 직전, 상담 예약 확인, 신청서 검토",
+    "notes": "할인은 emphasis='discount'. EAP 무료는 emphasis='info'."
   }
 ]
