@@ -1,0 +1,65 @@
+---
+title: PageHeader
+description: 페이지 단위 헤더. 제목 + 서브타이틀 + 우측 액션 + 하단 탭 슬롯.
+---
+
+# PageHeader
+
+각 페이지 상단의 **타이틀 영역**을 일관되게 묶는 컴포넌트입니다. 글로벌 네비인 `AppBar`와 다르게 페이지 단위로 사용하고, 뒤로가기·브레드크럼·액션·하단 탭을 한 번에 처리합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 디테일 화면 (상담 상세, 콘텐츠 상세, 일기 상세)
+- 리스트 화면 상단 (감정 일기, 콘텐츠 목록)
+- 하단에 탭/필터가 따라 붙는 화면
+
+### 이럴 때 사용하지 마세요
+- 글로벌 네비 → `AppBar`
+- 사용자가 페이지 안에서 일정 영역만 볼 때 → 그냥 섹션 헤더로 처리
+
+### 자주 하는 실수
+- `onBack`이 있으면 화살표가 자동으로 좌측에 노출 — 직접 IconButton 추가 금지
+- `bottom`은 헤더 padding 외곽까지 펼쳐지도록 음수 마진 처리됨. 직접 padding을 추가하지 말 것
+
+## 사용법
+
+```tsx
+import { PageHeader, Button, Breadcrumb, Tabs } from "@nudge-eap/react";
+
+// 기본
+<PageHeader
+  title="감정 일기"
+  subtitle="이번 주 4번 기록했어요"
+  actions={<Button>새 글 쓰기</Button>}
+  bordered
+/>
+
+// 디테일 (뒤로가기)
+<PageHeader title="상담 상세" onBack={() => router.back()} />
+
+// 브레드크럼 + 다중 액션
+<PageHeader
+  breadcrumb={<Breadcrumb items={...} />}
+  title="마음챙김 가이드"
+  actions={<><Button variant="outlined">공유</Button><Button>구독</Button></>}
+/>
+
+// 하단 탭
+<PageHeader
+  title="콘텐츠"
+  bottom={<Tabs ... />}
+/>
+```
+
+## Props
+
+| Prop         | 타입         | 기본값  | 설명                                     |
+| ------------ | ------------ | ------- | ---------------------------------------- |
+| `title`      | `ReactNode`  | —       | 제목                                     |
+| `subtitle`   | `ReactNode`  | —       | 서브타이틀                               |
+| `onBack`     | `() => void` | —       | 좌측 ← 버튼 콜백 (지정 시 자동 노출)     |
+| `breadcrumb` | `ReactNode`  | —       | 좌측 상단 브레드크럼                     |
+| `actions`    | `ReactNode`  | —       | 우측 상단 액션 버튼들                    |
+| `bottom`     | `ReactNode`  | —       | 헤더 하단 영역 (탭/필터 등)              |
+| `bordered`   | `boolean`    | `false` | 하단 보더 표시 (스크롤 분리감)           |

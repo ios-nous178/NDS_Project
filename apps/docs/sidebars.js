@@ -71,6 +71,7 @@ module.exports = {
         "components/circular-progress",
         "components/multi-step-form",
         "components/expandable-text",
+        "components/page-header",
       ],
     },
     {
