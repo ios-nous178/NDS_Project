@@ -84,3 +84,4 @@ export * from "./TagInput";
 export * from "./Lightbox";
 export * from "./AvatarGroup";
 export * from "./CallControlBar";
+export * from "./VoiceRecorder";

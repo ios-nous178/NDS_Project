@@ -78,6 +78,7 @@ module.exports = {
         "components/lightbox",
         "components/avatar-group",
         "components/call-control-bar",
+        "components/voice-recorder",
       ],
     },
     {
