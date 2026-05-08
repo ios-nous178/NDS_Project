@@ -691,6 +691,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "탭형 페이지: title + bottom={<Tabs />}",
     ],
   },
+  StatCard: {
+    name: "StatCard",
+    summary: "메트릭 강조 카드. 라벨 + 큰 숫자/단위 + delta(변화량) + Sparkline 슬롯(trailing).",
+    pitfalls: [
+      "trend만 주고 delta를 빼면 trend 색이 의미 없어짐. 둘 다 함께 사용.",
+      "그리드에서 카드마다 value 자릿수 차이가 크면 baseline이 흔들림 — 동일 단위로 통일.",
+      "trailing에 Sparkline을 넣을 때 width 100~120, height 36~48 정도가 적절. 그 이상은 카드 균형 깨짐.",
+    ],
+    recommended: [
+      "대시보드 4-up 그리드: <StatCard label, value, unit, delta, trend>",
+      "리포트 hero: + icon으로 강조",
+      "추이 시각화: trailing={<Sparkline />} 결합",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */

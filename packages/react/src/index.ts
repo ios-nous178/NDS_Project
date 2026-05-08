@@ -78,3 +78,4 @@ export * from "./CircularProgress";
 export * from "./MultiStepForm";
 export * from "./ExpandableText";
 export * from "./PageHeader";
+export * from "./StatCard";
