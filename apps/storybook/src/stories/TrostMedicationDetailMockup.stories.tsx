@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import TrostMedicationDetailMockup from "./TrostMedicationDetailMockup";
 
 const meta: Meta<typeof TrostMedicationDetailMockup> = {
-  title: "Mockups/TrostMedicationDetail",
+  title: "Mockups/Trost/Medication Detail",
   component: TrostMedicationDetailMockup,
   parameters: {
     layout: "fullscreen",

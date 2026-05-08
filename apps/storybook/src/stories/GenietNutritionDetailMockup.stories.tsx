@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import GenietNutritionDetailMockup from "./GenietNutritionDetailMockup";
 
 const meta: Meta<typeof GenietNutritionDetailMockup> = {
-  title: "Mockups/GenietNutritionDetail",
+  title: "Mockups/Geniet/Nutrition Detail",
   component: GenietNutritionDetailMockup,
   parameters: {
     layout: "fullscreen",
