@@ -1,0 +1,53 @@
+---
+title: OrderSummaryCard
+description: 주문/예약 요약 카드. 라벨:값 행 + 합계 + CTA 슬롯.
+---
+
+# OrderSummaryCard
+
+결제 직전, 예약 확정 직전에 보여주는 항목별 정리 카드입니다. 라벨:값 행이 줄지어 있고 하단에 합계 + CTA가 들어갑니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 결제 직전 합계
+- 상담 예약 확인 화면
+- 신청서 검토
+
+### 자주 하는 실수
+- 할인은 `emphasis: "discount"` (빨간색) — 음수 금액 직접 색칠하지 말 것
+- 합계는 ReactNode — PriceTag을 직접 넘기거나 단순 문자열 둘 다 가능
+
+## 사용법
+
+```tsx
+import { OrderSummaryCard, Button } from "@nudge-eap/react";
+
+<OrderSummaryCard
+  rows={[
+    { label: "상품 금액", value: "39,000원" },
+    { label: "쿠폰 할인", value: "-5,000원", emphasis: "discount" },
+    { label: "배송비", value: "무료" },
+  ]}
+  total={<>33,000원</>}
+  footer={<Button fullWidth>33,000원 결제하기</Button>}
+/>
+```
+
+## Props
+
+| Prop         | 타입                  | 기본값          | 설명                          |
+| ------------ | --------------------- | --------------- | ----------------------------- |
+| `title`      | `ReactNode`           | `"결제 정보"`   | 카드 제목                     |
+| `rows`       | `OrderSummaryRow[]`   | —               | 라벨:값 행                    |
+| `totalLabel` | `ReactNode`           | `"총 결제금액"` | 합계 라벨                     |
+| `total`      | `ReactNode`           | —               | 합계 값                       |
+| `footer`     | `ReactNode`           | —               | 푸터 (CTA 등)                 |
+
+### `OrderSummaryRow`
+
+| Prop       | 타입                          | 설명                              |
+| ---------- | ----------------------------- | --------------------------------- |
+| `label`    | `ReactNode`                   | 라벨                              |
+| `value`    | `ReactNode`                   | 값                                |
+| `emphasis` | `"discount" \| "info"`        | 강조 (빨간/파란 톤)               |

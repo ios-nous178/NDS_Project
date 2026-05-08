@@ -1129,6 +1129,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "무료: discount='무료' discountSuffix=''",
     ],
   },
+  OrderSummaryCard: {
+    name: "OrderSummaryCard",
+    summary: "결제/예약 요약 카드. 라벨:값 행 + 합계 + CTA 슬롯. emphasis로 할인/안내 강조.",
+    pitfalls: [
+      "할인은 emphasis='discount' (빨간색). 음수 금액에 직접 색칠하지 말 것.",
+      "rows 너무 많으면(8+) 한 화면 정보 과다 — 핵심만 추려서.",
+      "total은 ReactNode — PriceTag 또는 문자열 자유.",
+    ],
+    recommended: [
+      "결제: 상품 금액/쿠폰/포인트/배송비 + 합계",
+      "EAP 무료 상담: 회사 부담 emphasis='info'",
+    ],
+  },
   DataTable: {
     name: "DataTable",
     summary:
