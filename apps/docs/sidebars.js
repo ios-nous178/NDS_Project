@@ -62,6 +62,7 @@ module.exports = {
         "components/streak-card",
         "components/emotion-heatmap",
         "components/appointment-card",
+        "components/journal-entry",
       ],
     },
     {

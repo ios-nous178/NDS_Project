@@ -322,5 +322,17 @@
     "figmaNodeId": "",
     "usageSummary": "내 예약 리스트, 홈 다음 일정, 상담사 페이지 다음 세션",
     "notes": "CounselorCard(상담사 선택용)와 분리. 잡힌 일정 표시 전용."
+  },
+  {
+    "name": "JournalEntry",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "감정 일기 카드. 무드 + 날짜 + 제목 + 본문 클램프 + 태그 + 썸네일",
+    "storybookTitle": "Components/JournalEntry",
+    "docsPath": "/docs/components/journal-entry",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "감정 일기 리스트, 자유 메모, 챌린지 회고",
+    "notes": "본문 3줄 클램프 기본. title 생략 가능."
   }
 ]

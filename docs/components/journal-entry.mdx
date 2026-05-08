@@ -1,0 +1,57 @@
+---
+title: JournalEntry
+description: 감정 일기 / 자유 기록 한 건을 보여주는 카드.
+---
+
+# JournalEntry
+
+날짜·무드·제목·본문 미리보기·태그·썸네일을 담는 일기 카드입니다. 본문은 기본 3줄 클램프로 잘려 보입니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 감정 일기 리스트
+- 자유 메모/저널 화면
+- 챌린지 회고록
+
+### 자주 하는 실수
+- title 없이 body만 써도 됨 — 짧은 메모형 일기에서는 title 생략이 자연스러움
+- 본문 전체를 보여주려면 maxLines={9999}로 클램프 해제
+
+## 사용법
+
+```tsx
+import { JournalEntry } from "@nudge-eap/react";
+
+<JournalEntry
+  date="2026-05-08"
+  mood="🙂"
+  title="오늘은 평온했다"
+  body="회의가 적었던 하루. 팀 점심에서 이야기가 잘 통했다."
+  tags={["평온", "산책"]}
+  footer="3분 전 기록"
+  onClick={() => router.push(`/journal/${id}`)}
+/>
+
+// 썸네일 포함
+<JournalEntry
+  date="오늘"
+  mood="😄"
+  body="공원에서 한참 앉아 있었다."
+  thumbnailSrc="/photos/park.jpg"
+/>
+```
+
+## Props
+
+| Prop           | 타입          | 기본값  | 설명                            |
+| -------------- | ------------- | ------- | ------------------------------- |
+| `date`         | `ReactNode`   | —       | 날짜 또는 표시 라벨             |
+| `mood`         | `ReactNode`   | —       | 좌측 이모지/아이콘              |
+| `title`        | `ReactNode`   | —       | 제목 (선택)                     |
+| `body`         | `ReactNode`   | —       | 본문 미리보기                   |
+| `maxLines`     | `number`      | `3`     | 본문 최대 줄 수 (CSS clamp)     |
+| `tags`         | `string[]`    | —       | 해시태그                        |
+| `thumbnailSrc` | `string`      | —       | 우측 썸네일                     |
+| `footer`       | `ReactNode`   | —       | 하단 메타 (예: "3분 전 기록")   |
+| `onClick`      | `() => void`  | —       | 카드 클릭 (디테일 진입)         |
