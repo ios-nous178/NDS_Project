@@ -1,0 +1,52 @@
+---
+title: AvatarGroup
+description: 아바타 겹침 표시. 단체 상담, 챌린지 참가자 등 N명을 한 줄로.
+---
+
+# AvatarGroup
+
+여러 명의 아바타를 살짝 겹쳐 보여주는 컴포넌트입니다. 초과분은 `+N`으로 자동 요약됩니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 단체 상담 참여자 표시
+- 챌린지 참가자
+- 가족 구성원 / 팀 멤버
+
+### 자주 하는 실수
+- 단일 아바타 → `Avatar`를 그대로 사용
+- 정확한 명단 표시가 목적이면 List가 더 적절. AvatarGroup은 "N명이 함께"라는 시각 신호용
+
+## 사용법
+
+```tsx
+import { AvatarGroup } from "@nudge-eap/react";
+
+<AvatarGroup
+  items={[
+    { name: "김민지" },
+    { name: "이수영" },
+    { src: "/photo.jpg", name: "박지원" },
+  ]}
+  max={4}
+  size="md"
+/>
+```
+
+## Props
+
+| Prop      | 타입                                            | 기본값  | 설명                              |
+| --------- | ----------------------------------------------- | ------- | --------------------------------- |
+| `items`   | `AvatarGroupItem[]`                             | —       | 아바타 목록                       |
+| `max`     | `number`                                        | `4`     | 표시 최대 개수 (초과는 +N)        |
+| `size`    | `"xs" \| "sm" \| "md" \| "lg" \| "xl"`          | `"md"`  | Avatar 크기                       |
+| `overlap` | `number`                                        | size별 자동 | 겹침 정도 px                  |
+
+### `AvatarGroupItem`
+
+| Prop   | 타입             | 설명                  |
+| ------ | ---------------- | --------------------- |
+| `src`  | `string \| null` | 이미지 URL (선택)     |
+| `name` | `string`         | 이니셜 fallback / alt |
+| `alt`  | `string`         | alt 오버라이드        |
