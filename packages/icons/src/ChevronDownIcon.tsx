@@ -17,17 +17,10 @@ export const ChevronDownIcon = React.forwardRef<SVGSVGElement, ChevronDownIconPr
       {...props}
     >
       <g transform="translate(4 8)">
-        <path
-          id="Vector"
-          d="M1 1L8 8L15 1"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </g>
+    <path id="Vector" d="M1 1L8 8L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </g>
     </svg>
-  ),
+  )
 );
 
 ChevronDownIcon.displayName = "ChevronDownIcon";

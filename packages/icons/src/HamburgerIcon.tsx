@@ -17,35 +17,14 @@ export const HamburgerIcon = React.forwardRef<SVGSVGElement, HamburgerIconProps>
       {...props}
     >
       <g transform="translate(4 5)">
-        <g id="Group 4741">
-          <path
-            id="Path"
-            d="M1 7H16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            id="Path_2"
-            d="M1 1H16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            id="Path_3"
-            d="M1 13H16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
-      </g>
+    <g id="Group 4741">
+<path id="Path" d="M1 7H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Path_2" d="M1 1H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Path_3" d="M1 13H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+</g>
+  </g>
     </svg>
-  ),
+  )
 );
 
 HamburgerIcon.displayName = "HamburgerIcon";

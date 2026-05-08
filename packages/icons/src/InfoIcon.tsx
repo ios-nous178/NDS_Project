@@ -17,30 +17,16 @@ export const InfoIcon = React.forwardRef<SVGSVGElement, InfoIconProps>(
       {...props}
     >
       <g transform="translate(2 2)">
-        <g id="Group 13">
-          <circle id="Oval" cx="10" cy="10" r="9.25" stroke="currentColor" strokeWidth="1.5" />
-          <g id="!">
-            <circle
-              id="Oval_2"
-              cx="1"
-              cy="1"
-              r="1"
-              transform="matrix(1 0 0 -1 9 7.5)"
-              fill="currentColor"
-            />
-            <rect
-              id="Rectangle"
-              width="2"
-              height="6"
-              rx="1"
-              transform="matrix(1 0 0 -1 9 14.7)"
-              fill="currentColor"
-            />
-          </g>
-        </g>
-      </g>
+    <g id="Group 13">
+<circle id="Oval" cx="10" cy="10" r="9.25" stroke="currentColor" strokeWidth="1.5"/>
+<g id="!">
+<circle id="Oval_2" cx="1" cy="1" r="1" transform="matrix(1 0 0 -1 9 7.5)" fill="currentColor"/>
+<rect id="Rectangle" width="2" height="6" rx="1" transform="matrix(1 0 0 -1 9 14.7)" fill="currentColor"/>
+</g>
+</g>
+  </g>
     </svg>
-  ),
+  )
 );
 
 InfoIcon.displayName = "InfoIcon";

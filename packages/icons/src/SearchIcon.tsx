@@ -17,30 +17,13 @@ export const SearchIcon = React.forwardRef<SVGSVGElement, SearchIconProps>(
       {...props}
     >
       <g transform="translate(3 3)">
-        <g id="Group 2">
-          <ellipse
-            id="Oval"
-            cx="8"
-            cy="8"
-            rx="7"
-            ry="7"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            id="Path"
-            d="M17 17L13 13"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
-      </g>
+    <g id="Group 2">
+<ellipse id="Oval" cx="8" cy="8" rx="7" ry="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Path" d="M17 17L13 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+</g>
+  </g>
     </svg>
-  ),
+  )
 );
 
 SearchIcon.displayName = "SearchIcon";

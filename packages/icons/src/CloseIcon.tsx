@@ -17,23 +17,11 @@ export const CloseIcon = React.forwardRef<SVGSVGElement, CloseIconProps>(
       {...props}
     >
       <g id="Group 3632">
-        <path
-          id="Vector 72"
-          d="M6 6L18 18"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <path
-          id="Vector 73"
-          d="M18 6L6 18"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </g>
+<path id="Vector 72" d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+<path id="Vector 73" d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+</g>
     </svg>
-  ),
+  )
 );
 
 CloseIcon.displayName = "CloseIcon";
