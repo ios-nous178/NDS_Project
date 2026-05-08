@@ -526,5 +526,17 @@
     "figmaNodeId": "",
     "usageSummary": "감정 일기 음성 모드, 챗 음성 메시지, 상담 음성 메모",
     "notes": "마이크 접근/저장은 외부 처리. seconds는 외부 timer로 갱신."
+  },
+  {
+    "name": "NotificationItem",
+    "category": "피드백",
+    "status": "implemented",
+    "description": "알림 리스트 한 건. kind 5종, 미읽음 점, 시간 라벨, 본문 2줄 클램프",
+    "storybookTitle": "Components/NotificationItem",
+    "docsPath": "/docs/components/notification-item",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "알림 센터, 푸시 히스토리, 시스템 안내 리스트",
+    "notes": "Toast/Snackbar와 분리. 알림 히스토리 한 건 표현용."
   }
 ]

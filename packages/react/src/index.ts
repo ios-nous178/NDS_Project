@@ -85,3 +85,4 @@ export * from "./Lightbox";
 export * from "./AvatarGroup";
 export * from "./CallControlBar";
 export * from "./VoiceRecorder";
+export * from "./NotificationItem";

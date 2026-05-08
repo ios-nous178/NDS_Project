@@ -79,6 +79,7 @@ module.exports = {
         "components/avatar-group",
         "components/call-control-bar",
         "components/voice-recorder",
+        "components/notification-item",
       ],
     },
     {
