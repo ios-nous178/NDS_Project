@@ -72,3 +72,4 @@ export * from "./JournalEntry";
 export * from "./ChatComposer";
 export * from "./PhoneInput";
 export * from "./SignaturePad";
+export * from "./CoachMark";

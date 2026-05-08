@@ -370,5 +370,17 @@
     "figmaNodeId": "",
     "usageSummary": "EAP 가입 동의서, 상담 시작 동의, 의료/법적 동의 서명",
     "notes": "터치 디바이스 호환. ref로 제출 시점에만 dataURL 추출 권장."
+  },
+  {
+    "name": "CoachMark",
+    "category": "오버레이",
+    "status": "implemented",
+    "description": "온보딩 dim 툴팁. 특정 영역 강조 + 단계별 안내, placement 4방향",
+    "storybookTitle": "Components/CoachMark",
+    "docsPath": "/docs/components/coach-mark",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "첫 진입 온보딩, 새 기능 출시 안내, 도움말 재생",
+    "notes": "Tooltip과 분리 (가벼운 hover용). selector 또는 element-getter로 target 지정."
   }
 ]
