@@ -5,19 +5,24 @@
   "description": "NudgeEAP Design System monorepo",
   "packageManager": "pnpm@9.6.0",
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "volta": {
-    "node": "20.20.2",
+    "node": "22.11.0",
     "pnpm": "9.6.0"
   },
   "scripts": {
     "generate:component-inventory": "node scripts/generate-component-inventory.mjs",
     "generate:tokens": "node scripts/sync-tokens.mjs --write && pnpm --filter=@nudge-eap/tokens build",
     "lint:tokens": "node scripts/sync-tokens.mjs --check",
+    "sync:docs": "node scripts/sync-version-docs.mjs",
+    "lint:docs": "node scripts/sync-version-docs.mjs --check",
+    "pack:local": "node scripts/pack-local-packages.mjs",
+    "pack:local:no-build": "node scripts/pack-local-packages.mjs --no-build",
+    "release:local": "node scripts/pack-local-packages.mjs && node scripts/sync-version-docs.mjs",
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint && markdownlint-cli2 \"docs/**/*.md\" && npx @google/design.md lint DESIGN.md && node scripts/sync-tokens.mjs --check",
+    "lint": "turbo lint && markdownlint-cli2 \"docs/**/*.md\" && npx @google/design.md lint DESIGN.md && node scripts/sync-tokens.mjs --check && node scripts/sync-version-docs.mjs --check",
     "lint:design": "npx @google/design.md lint DESIGN.md",
     "export:tailwind": "npx @google/design.md export --format tailwind DESIGN.md",
     "export:dtcg": "npx @google/design.md export --format dtcg DESIGN.md",

@@ -43,7 +43,7 @@ NudgeEAPDesignSystem
 ## 시작하기
 
 ```bash
-# 요구 사항: Node.js 20.x, pnpm 9.x
+# 요구 사항: Node.js 22.x, pnpm 9.x
 
 pnpm install          # 의존성 설치
 pnpm build            # 전체 빌드
