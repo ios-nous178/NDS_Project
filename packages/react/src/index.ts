@@ -67,3 +67,4 @@ export * from "./FAB";
 export * from "./BreathingGuide";
 export * from "./StreakCard";
 export * from "./EmotionHeatmap";
+export * from "./AppointmentCard";

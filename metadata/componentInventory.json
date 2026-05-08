@@ -310,5 +310,17 @@
     "figmaNodeId": "",
     "usageSummary": "기분 월간 리포트, 스트레스 트렌드, 30일 챌린지 시각화",
     "notes": "GitHub 잔디형 카드. 30일+ 트래킹용 — 그 미만은 StreakCard."
+  },
+  {
+    "name": "AppointmentCard",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "잡힌 상담 예약 카드. 날짜 블록 + 시간/방식/장소/상태 + 액션 버튼들",
+    "storybookTitle": "Components/AppointmentCard",
+    "docsPath": "/docs/components/appointment-card",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "내 예약 리스트, 홈 다음 일정, 상담사 페이지 다음 세션",
+    "notes": "CounselorCard(상담사 선택용)와 분리. 잡힌 일정 표시 전용."
   }
 ]
