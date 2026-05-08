@@ -1048,6 +1048,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "구독: amount=29000, unit='원/월'",
     ],
   },
+  AmountInput: {
+    name: "AmountInput",
+    summary:
+      "큰 금액 입력. 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프. NumberStepper(작은 정수)와 분리.",
+    pitfalls: [
+      "value는 number | null. 빈 입력은 null (0이 아님).",
+      "presets의 set: true = 값 설정, false/미지정 = 누적. 헷갈리지 말 것.",
+      "max/min 자동 클램프 — 외부 검증 X. 단, 에러 메시지는 외부에서 helperText로.",
+    ],
+    recommended: [
+      "송금: presets +1만/+5만/전액(set), max=balance",
+      "후원: presets에 set:true 4종 (5천/1만/3만/5만)",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
