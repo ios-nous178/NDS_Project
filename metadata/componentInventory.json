@@ -274,5 +274,17 @@
     "figmaNodeId": "",
     "usageSummary": "일기 새로 작성, 감정 기록 추가, 빠른 만들기 액션",
     "notes": "한 화면에 1개. StickyBottom CTA와 동시 사용 금지."
+  },
+  {
+    "name": "BreathingGuide",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "호흡 가이드 애니메이션. 원형 확장/축소로 들숨/멈춤/날숨/쉼 시각화. phases 자유 정의",
+    "storybookTitle": "Components/BreathingGuide",
+    "docsPath": "/docs/components/breathing-guide",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "명상 시작, 이완 가이드, 위기 상황 진정, 잠들기 호흡",
+    "notes": "박스 호흡 기본, 4-7-8 등 커스텀 가능. cycles + onComplete로 종료."
   }
 ]

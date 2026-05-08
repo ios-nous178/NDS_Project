@@ -483,6 +483,22 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "하단바 있는 화면: offset={72}",
     ],
   },
+  BreathingGuide: {
+    name: "BreathingGuide",
+    summary:
+      "호흡 가이드 애니메이션. 원이 커지고 작아지면서 들숨/멈춤/날숨/쉼을 시각화. phases로 사이클 자유 정의.",
+    pitfalls: [
+      "cycles 미지정 시 무한 반복. 콘텐츠 종료를 원하면 cycles + onComplete 페어 사용.",
+      "phases의 seconds는 정수만(타이머 1초 단위). 분 단위 호흡은 의도적으로 미지원.",
+      "외부에서 playing prop 줄 때 onPlayingChange를 빼먹으면 내부 시작/정지 버튼이 동작 안 함.",
+      "CrisisCallout 위에 즉시 노출하면 압박감을 줄 수 있음. 위기 상황 → 안내 후 별도 화면에서 시작 권장.",
+    ],
+    recommended: [
+      "박스 호흡(기본): <BreathingGuide />",
+      "수면 유도: phases=[{inhale:4},{hold:7},{exhale:8}]",
+      "콘텐츠 카드: cycles=3, autoStart, onComplete로 다음 단계",
+    ],
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
