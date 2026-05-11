@@ -1,5 +1,13 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  sizing,
+  spacing,
+  transition,
+  typeScale,
+} from "@nudge-eap/tokens";
 
 export type TextButtonSize = "large" | "medium";
 
@@ -13,15 +21,16 @@ const textButtonStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--nds-text-button-gap, ${spacing[4]}px);
-    padding: 0;
+    gap: var(--nds-text-button-gap, ${spacing[2]}px);
+    padding: ${spacing[4]}px;
     border: none;
     background: transparent;
-    color: var(--nds-text-button-color, ${cv.text.default});
+    /* Figma node 171:8538/171:8550 — geniet/gray/700 = #777 (neutral/600) */
+    color: var(--nds-text-button-color, ${cv.text.subtle});
     font-family: ${fontFamily.web};
     font-size: var(--nds-text-button-font-size, ${typeScale.body2.fontSize}px);
     line-height: var(--nds-text-button-line-height, ${typeScale.body2.lineHeight}px);
-    font-weight: ${fontWeight.medium};
+    font-weight: ${fontWeight.regular};
     cursor: pointer;
     transition: color ${transition.default};
   }
@@ -55,16 +64,20 @@ const textButtonStyles = `
   }
 `;
 
+/* Figma 실측 (171:8550 large / 171:8538 medium)
+ *   large : 16·24 / icon 16 / gap 2 / regular
+ *   medium: 14·20 / icon 16 / gap 2 / regular
+ */
 const sizeConfig = {
   large: {
-    fontSize: typeScale.body2.fontSize,
-    lineHeight: typeScale.body2.lineHeight,
-    iconSize: 18,
+    fontSize: typeScale.body1.fontSize,
+    lineHeight: typeScale.body1.lineHeight,
+    iconSize: sizing.icon.xs,
   },
   medium: {
     fontSize: typeScale.body3.fontSize,
     lineHeight: typeScale.body3.lineHeight,
-    iconSize: 16,
+    iconSize: sizing.icon.xs,
   },
 } as const;
 

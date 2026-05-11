@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  coolGray,
   cv,
   fontFamily,
   fontWeight,
@@ -76,16 +77,23 @@ const buttonStyles = `
   }
 `;
 
-/* ─── Size config (피그마 실측) ─── */
+/* ─── Size config (피그마 실측 — Library node 171:8385 기준) ───
+ *   XL(52): px 16 / py 14 / 16·24 / icon 20 / gap 8
+ *   L (48): px 16 / py 12 / 16·24 / icon 20 / gap 8
+ *   M (44): px 24 / py 11 / 15·22 / icon 20 / gap 8
+ *   S (42): px 16 / py 11 / 14·20 / icon 20 / gap 8
+ *   XS(38): px 16 / py 10 / 13·18 / icon 18 / gap 6
+ */
 
 const sizeConfig = {
   xl: {
     height: sizing.button.xl,
     px: spacing[16],
-    py: spacing[16],
-    fontSize: typeScale.headline5.fontSize,
-    lineHeight: typeScale.headline5.lineHeight,
-    iconSize: sizing.icon.default,
+    py: spacing[14],
+    fontSize: typeScale.body1.fontSize,
+    lineHeight: typeScale.body1.lineHeight,
+    iconSize: sizing.icon.sm,
+    gap: spacing[8],
   },
   lg: {
     height: sizing.button.lg,
@@ -93,31 +101,35 @@ const sizeConfig = {
     py: spacing[12],
     fontSize: typeScale.body1.fontSize,
     lineHeight: typeScale.body1.lineHeight,
-    iconSize: sizing.icon.default,
+    iconSize: sizing.icon.sm,
+    gap: spacing[8],
   },
   md: {
     height: sizing.button.md,
-    px: spacing[16],
-    py: spacing[10],
+    px: spacing[24],
+    py: spacing[11],
     fontSize: typeScale.body2.fontSize,
     lineHeight: typeScale.body2.lineHeight,
     iconSize: sizing.icon.sm,
+    gap: spacing[8],
   },
   sm: {
     height: sizing.button.sm,
-    px: spacing[12],
+    px: spacing[16],
     py: spacing[11],
     fontSize: typeScale.body3.fontSize,
     lineHeight: typeScale.body3.lineHeight,
     iconSize: sizing.icon.sm,
+    gap: spacing[8],
   },
   xs: {
     height: sizing.button.xs,
-    px: spacing[12],
-    py: spacing[11],
+    px: spacing[16],
+    py: spacing[10],
     fontSize: typeScale.caption1.fontSize,
     lineHeight: typeScale.caption1.lineHeight,
-    iconSize: sizing.icon.sm,
+    iconSize: 18,
+    gap: spacing[6],
   },
   field: {
     height: sizing.button.field,
@@ -126,6 +138,7 @@ const sizeConfig = {
     fontSize: typeScale.body2.fontSize,
     lineHeight: typeScale.body2.lineHeight,
     iconSize: sizing.icon.sm,
+    gap: spacing[8],
   },
 } as const;
 
@@ -146,7 +159,7 @@ interface VariantStyleSet {
 
 const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
   primary: {
-    // Figma: Solid + first
+    // Figma: Solid/Primary (eap-button-bg-*)
     solid: {
       enabled: {
         background: cv.primary.main,
@@ -154,9 +167,10 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.primary.main,
       },
       disabled: {
-        background: cv.text.disabled,
+        // Figma --eap-button-bg-disabled = #9CA2AE (cool-gray/400)
+        background: coolGray[400],
         text: cv.bg.white,
-        border: cv.text.disabled,
+        border: coolGray[400],
       },
       hover: {
         background: cv.primary.hover,
@@ -223,40 +237,43 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
   },
   secondary: {
-    // Figma: Solid + second (= soft blue)
+    // Figma: Solid/Secondary (eap-button-bg-secondary-*)
+    //   default = #F1F8FD (primary.bgLighter)
+    //   hover   = #E3F2FC (primary.bg)
+    //   disabled bg = #E6E7EB (cool-gray/200), text = #9CA2AE (cool-gray/400)
     solid: {
       enabled: {
+        background: cv.primary.bgLighter,
+        text: cv.primary.main,
+        border: cv.primary.bgLighter,
+      },
+      disabled: {
+        background: coolGray[200],
+        text: coolGray[400],
+        border: coolGray[200],
+      },
+      hover: {
         background: cv.primary.bg,
         text: cv.primary.main,
         border: cv.primary.bg,
-      },
-      disabled: {
-        background: cv.border.light,
-        text: cv.text.disabled,
-        border: cv.border.light,
-      },
-      hover: {
-        background: cv.primary.lighter,
-        text: cv.primary.main,
-        border: cv.primary.lighter,
       },
     },
-    // secondary soft = solid과 동일
+    // secondary soft = solid과 동일 (Figma에 별도 soft variant 없음)
     soft: {
       enabled: {
+        background: cv.primary.bgLighter,
+        text: cv.primary.main,
+        border: cv.primary.bgLighter,
+      },
+      disabled: {
+        background: coolGray[200],
+        text: coolGray[400],
+        border: coolGray[200],
+      },
+      hover: {
         background: cv.primary.bg,
         text: cv.primary.main,
         border: cv.primary.bg,
-      },
-      disabled: {
-        background: cv.border.light,
-        text: cv.text.disabled,
-        border: cv.border.light,
-      },
-      hover: {
-        background: cv.primary.lighter,
-        text: cv.primary.main,
-        border: cv.primary.lighter,
       },
     },
     // Outlined은 primary와 동일 (피그마에 secondary outlined 없음)
@@ -453,6 +470,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "--nds-button-height": `${sizeStyle.height}px`,
             "--nds-button-padding-x": `${sizeStyle.px}px`,
             "--nds-button-padding-y": `${sizeStyle.py}px`,
+            "--nds-button-gap": `${sizeStyle.gap}px`,
             "--nds-button-font-size": `${sizeStyle.fontSize}px`,
             "--nds-button-line-height": `${sizeStyle.lineHeight}px`,
             "--nds-button-icon-size": `${sizeStyle.iconSize}px`,

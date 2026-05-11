@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-11T06:18:59.273Z",
+  "generatedAt": "2026-05-11T06:33:07.401Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -218,19 +218,39 @@
       "name": "AppBar",
       "props": [
         {
-          "name": "left",
+          "name": "variant",
           "optional": true,
-          "type": "React.HTMLAttributes<HTMLDivElement>"
+          "type": "AppBarVariant"
+        },
+        {
+          "name": "position",
+          "optional": true,
+          "type": "AppBarPosition"
         },
         {
           "name": "title",
           "optional": true,
-          "type": "React.HTMLAttributes<HTMLHeadingElement>"
+          "type": "React.ReactNode"
         },
         {
-          "name": "right",
+          "name": "leftSlot",
           "optional": true,
-          "type": "React.HTMLAttributes<HTMLDivElement>"
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "rightSlot",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "elevated",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "AppBarSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/AppBar.d.ts"
@@ -265,19 +285,9 @@
           "type": "string"
         },
         {
-          "name": "HH",
-          "optional": false,
-          "type": "mm) */"
-        },
-        {
           "name": "startTime",
           "optional": false,
           "type": "string"
-        },
-        {
-          "name": "HH",
-          "optional": false,
-          "type": "mm, 선택) */"
         },
         {
           "name": "endTime",
@@ -602,9 +612,24 @@
       "name": "Badge",
       "props": [
         {
-          "name": "label",
+          "name": "variant",
           "optional": true,
-          "type": "React.HTMLAttributes<HTMLSpanElement>"
+          "type": "BadgeVariant"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "BadgeSize"
+        },
+        {
+          "name": "labelClassName",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "BadgeSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/Badge.d.ts"
@@ -694,39 +719,74 @@
       "name": "BottomSheet",
       "props": [
         {
-          "name": "root",
-          "optional": true,
-          "type": "Omit<BottomSheetRootProps, \"open\" | \"onClose\" | \"children\">"
+          "name": "open",
+          "optional": false,
+          "type": "boolean"
         },
         {
-          "name": "overlay",
+          "name": "onClose",
           "optional": true,
-          "type": "Omit<BottomSheetOverlayProps, \"isMaskClose\">"
+          "type": "() => void"
         },
         {
-          "name": "content",
+          "name": "closable",
           "optional": true,
-          "type": "Omit<BottomSheetContentProps, \"children\" | \"maxWidth\" | \"maxHeight\">"
+          "type": "boolean"
         },
         {
-          "name": "handle",
+          "name": "mask",
           "optional": true,
-          "type": "BottomSheetHandleProps"
+          "type": "boolean"
         },
         {
-          "name": "header",
+          "name": "isMaskClose",
           "optional": true,
-          "type": "Omit<BottomSheetHeaderProps, \"title\" | \"closable\" | \"children\">"
+          "type": "boolean"
         },
         {
-          "name": "body",
+          "name": "showHandle",
           "optional": true,
-          "type": "Omit<BottomSheetBodyProps, \"children\">"
+          "type": "boolean"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
         },
         {
           "name": "footer",
           "optional": true,
-          "type": "Omit<BottomSheetFooterProps, \"children\">"
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "maxWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "maxHeight",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "BottomSheetSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/BottomSheet.d.ts"
@@ -802,19 +862,44 @@
       "name": "Button",
       "props": [
         {
-          "name": "label",
+          "name": "variant",
           "optional": true,
-          "type": "React.HTMLAttributes<HTMLSpanElement>"
+          "type": "ButtonVariant"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "ButtonSize"
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "ButtonColor"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
         },
         {
           "name": "leftIcon",
           "optional": true,
-          "type": "React.HTMLAttributes<HTMLSpanElement>"
+          "type": "React.ReactNode"
         },
         {
           "name": "rightIcon",
           "optional": true,
-          "type": "React.HTMLAttributes<HTMLSpanElement>"
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "labelClassName",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "ButtonSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/Button.d.ts"
@@ -904,11 +989,6 @@
           "type": "() => void"
         },
         {
-          "name": "mm",
-          "optional": false,
-          "type": "ss 또는 ReactNode). 표시 영역 */"
-        },
-        {
           "name": "duration",
           "optional": true,
           "type": "React.ReactNode"
@@ -925,44 +1005,74 @@
       "name": "Card",
       "props": [
         {
-          "name": "root",
+          "name": "variant",
           "optional": true,
-          "type": "Omit<CardRootProps, \"children\" | \"variant\" | \"clickable\">"
+          "type": "CardVariant"
+        },
+        {
+          "name": "clickable",
+          "optional": true,
+          "type": "boolean"
         },
         {
           "name": "thumbnail",
           "optional": true,
-          "type": "Omit<CardThumbnailProps, \"children\">"
+          "type": "React.ReactNode"
         },
         {
-          "name": "header",
+          "name": "thumbnailRatio",
           "optional": true,
-          "type": "Omit<CardHeaderProps, \"children\">"
+          "type": "string"
         },
         {
           "name": "title",
           "optional": true,
-          "type": "Omit<CardTitleProps, \"children\">"
+          "type": "string"
         },
         {
           "name": "subtitle",
           "optional": true,
-          "type": "Omit<CardSubtitleProps, \"children\">"
+          "type": "string"
         },
         {
           "name": "meta",
           "optional": true,
-          "type": "Omit<CardMetaProps, \"children\">"
+          "type": "React.ReactNode"
         },
         {
-          "name": "body",
+          "name": "children",
           "optional": true,
-          "type": "Omit<CardBodyProps, \"children\">"
+          "type": "React.ReactNode"
         },
         {
           "name": "footer",
           "optional": true,
-          "type": "Omit<CardFooterProps, \"children\">"
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "footerNoBorder",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "React.MouseEventHandler<HTMLDivElement>"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "CardSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/Card.d.ts"
@@ -1071,11 +1181,6 @@
           "name": "children",
           "optional": false,
           "type": "React.ReactNode"
-        },
-        {
-          "name": "3",
-          "optional": false,
-          "type": "24\") */"
         },
         {
           "name": "time",
@@ -1216,11 +1321,6 @@
           "type": "ChipSize"
         },
         {
-          "name": "pill",
-          "optional": false,
-          "type": "완전 둥근, square: 8px 라운드) */"
-        },
-        {
           "name": "shape",
           "optional": true,
           "type": "ChipShape"
@@ -1283,6 +1383,26 @@
         },
         {
           "name": "trackColor",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "caption",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "hideLabel",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "aria-label",
           "optional": true,
           "type": "string"
         }
@@ -1670,7 +1790,68 @@
     },
     {
       "name": "DataTable",
-      "props": [],
+      "props": [
+        {
+          "name": "columns",
+          "optional": false,
+          "type": "DataTableColumn<T>[]"
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": "T[]"
+        },
+        {
+          "name": "rowKey",
+          "optional": false,
+          "type": "(row: T, rowIndex: number) => string"
+        },
+        {
+          "name": "onRowClick",
+          "optional": true,
+          "type": "(row: T, rowIndex: number) => void"
+        },
+        {
+          "name": "sortKey",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "sortDirection",
+          "optional": true,
+          "type": "SortDirection"
+        },
+        {
+          "name": "onSort",
+          "optional": true,
+          "type": "(key: string, direction: SortDirection) => void"
+        },
+        {
+          "name": "emptyMessage",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "loading",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "name": "responsive",
+          "optional": true,
+          "type": "\"scroll\" | \"cards\""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
       "dtsRelPath": "packages/react/dist/DataTable.d.ts"
     },
     {
@@ -1975,17 +2156,17 @@
         {
           "name": "legendLabels",
           "optional": true,
-          "type": "{"
-        },
-        {
-          "name": "low",
-          "optional": false,
-          "type": "string"
+          "type": "{ low: string"
         },
         {
           "name": "high",
           "optional": false,
           "type": "string"
+        },
+        {
+          "name": "weekStartsOn",
+          "optional": true,
+          "type": "0 | 1"
         }
       ],
       "dtsRelPath": "packages/react/dist/EmotionHeatmap.d.ts"
@@ -1994,29 +2175,44 @@
       "name": "EmptyState",
       "props": [
         {
-          "name": "root",
-          "optional": true,
-          "type": "Omit<EmptyStateRootProps, \"children\" | \"minHeight\">"
-        },
-        {
           "name": "icon",
           "optional": true,
-          "type": "Omit<EmptyStateIconProps, \"children\">"
+          "type": "React.ReactNode"
         },
         {
           "name": "title",
           "optional": true,
-          "type": "Omit<EmptyStateTitleProps, \"children\">"
+          "type": "string"
         },
         {
           "name": "description",
           "optional": true,
-          "type": "Omit<EmptyStateDescriptionProps, \"children\">"
+          "type": "string"
         },
         {
           "name": "action",
           "optional": true,
-          "type": "Omit<EmptyStateActionProps, \"children\">"
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "minHeight",
+          "optional": true,
+          "type": "number | string"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "EmptyStateSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/EmptyState.d.ts"
@@ -2094,6 +2290,11 @@
           "name": "offset",
           "optional": true,
           "type": "number"
+        },
+        {
+          "name": "aria-label",
+          "optional": true,
+          "type": "string"
         }
       ],
       "dtsRelPath": "packages/react/dist/FAB.d.ts"
@@ -2102,24 +2303,59 @@
       "name": "FieldActionRow",
       "props": [
         {
-          "name": "root",
-          "optional": true,
-          "type": "Omit<FieldActionRowRootProps, \"children\">"
-        },
-        {
           "name": "field",
-          "optional": true,
-          "type": "Omit<FieldActionRowFieldProps, \"children\" | \"error\">"
+          "optional": false,
+          "type": "React.ReactNode"
         },
         {
           "name": "action",
-          "optional": true,
-          "type": "Omit<FieldActionRowActionProps, \"children\" | \"tone\">"
+          "optional": false,
+          "type": "React.ReactNode"
         },
         {
-          "name": "helper",
+          "name": "actionTone",
           "optional": true,
-          "type": "Omit<FieldActionRowHelperProps, \"children\" | \"error\" | \"success\">"
+          "type": "\"outline\" | \"solid\""
+        },
+        {
+          "name": "timer",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "timerExpired",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "helperText",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "success",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "FieldActionRowSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts"
@@ -2315,6 +2551,11 @@
           "name": "icon",
           "optional": false,
           "type": "React.ReactNode"
+        },
+        {
+          "name": "aria-label",
+          "optional": false,
+          "type": "string"
         }
       ],
       "dtsRelPath": "packages/react/dist/IconButton.d.ts"
@@ -2359,34 +2600,84 @@
       "name": "Input",
       "props": [
         {
-          "name": "root",
-          "optional": true,
-          "type": "Omit<InputRootProps, \"children\" | \"error\" | \"disabled\" | \"readOnly\" | \"fullWidth\">"
-        },
-        {
-          "name": "wrapper",
-          "optional": true,
-          "type": "Omit<InputWrapperProps, \"children\">"
-        },
-        {
           "name": "label",
           "optional": true,
-          "type": "Omit<InputLabelProps, \"children\">"
+          "type": "string"
         },
         {
-          "name": "field",
+          "name": "helperText",
           "optional": true,
-          "type": "Omit<InputFieldProps, never>"
+          "type": "string"
         },
         {
-          "name": "clearButton",
+          "name": "error",
           "optional": true,
-          "type": "InputClearButtonProps"
+          "type": "boolean"
         },
         {
-          "name": "helper",
+          "name": "errorMessage",
           "optional": true,
-          "type": "Omit<InputHelperProps, \"children\" | \"error\">"
+          "type": "string"
+        },
+        {
+          "name": "complete",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "successMessage",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "helperIcon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "clearable",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onClear",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "suffix",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "prefix",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "InputSize"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "InputSlotProps"
+        },
+        {
+          "name": "wrapperClassName",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "wrapperStyle",
+          "optional": true,
+          "type": "React.CSSProperties"
         }
       ],
       "dtsRelPath": "packages/react/dist/Input.d.ts"
@@ -2728,34 +3019,139 @@
       "name": "Modal",
       "props": [
         {
-          "name": "root",
-          "optional": true,
-          "type": "Omit<ModalRootProps, \"open\" | \"onClose\" | \"children\">"
+          "name": "open",
+          "optional": false,
+          "type": "boolean"
         },
         {
-          "name": "overlay",
+          "name": "onClose",
           "optional": true,
-          "type": "Omit<ModalOverlayProps, \"isMaskClose\">"
+          "type": "() => void"
         },
         {
-          "name": "content",
+          "name": "closable",
           "optional": true,
-          "type": "Omit<ModalContentProps, \"children\" | \"maxWidth\">"
+          "type": "boolean"
         },
         {
-          "name": "header",
+          "name": "mask",
           "optional": true,
-          "type": "Omit<ModalHeaderProps, \"title\" | \"closable\" | \"children\">"
+          "type": "boolean"
         },
         {
-          "name": "body",
+          "name": "isMaskClose",
           "optional": true,
-          "type": "Omit<ModalBodyProps, \"children\">"
+          "type": "boolean"
         },
         {
-          "name": "footer",
+          "name": "title",
           "optional": true,
-          "type": "Omit<ModalFooterProps, \"children\" | \"onConfirm\" | \"onClose\" | \"confirmText\" | \"closeText\">"
+          "type": "string"
+        },
+        {
+          "name": "image",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "device",
+          "optional": true,
+          "type": "ModalDevice"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onConfirm",
+          "optional": true,
+          "type": "(onClose: () => void) => void"
+        },
+        {
+          "name": "confirmText",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "closeText",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "showModalButtonGroup",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "maxWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "overlayClassName",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "overlayStyle",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "contentClassName",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "contentStyle",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "headerClassName",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "headerStyle",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "bodyClassName",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "modalBodyStyle",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "footerClassName",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "footerStyle",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "ModalSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/Modal.d.ts"
@@ -2871,11 +3267,6 @@
           "type": "React.ReactNode"
         },
         {
-          "name": "3",
-          "optional": false,
-          "type": "42\") */"
-        },
-        {
           "name": "time",
           "optional": true,
           "type": "React.ReactNode"
@@ -2938,6 +3329,11 @@
         },
         {
           "name": "unit",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "aria-label",
           "optional": true,
           "type": "string"
         }
@@ -3215,49 +3611,69 @@
       "name": "Popup",
       "props": [
         {
-          "name": "root",
-          "optional": true,
-          "type": "Omit<PopupRootProps, \"open\" | \"onClose\" | \"children\">"
+          "name": "open",
+          "optional": false,
+          "type": "boolean"
         },
         {
-          "name": "overlay",
+          "name": "onClose",
           "optional": true,
-          "type": "Omit<PopupOverlayProps, \"isMaskClose\">"
-        },
-        {
-          "name": "content",
-          "optional": true,
-          "type": "Omit<PopupContentProps, \"children\" | \"maxWidth\">"
-        },
-        {
-          "name": "textInfo",
-          "optional": true,
-          "type": "Omit<PopupTextInfoProps, \"children\">"
+          "type": "() => void"
         },
         {
           "name": "title",
           "optional": true,
-          "type": "Omit<PopupTitleProps, \"children\">"
+          "type": "string"
         },
         {
           "name": "description",
           "optional": true,
-          "type": "Omit<PopupDescriptionProps, \"children\">"
+          "type": "React.ReactNode"
         },
         {
-          "name": "actions",
+          "name": "confirmText",
           "optional": true,
-          "type": "Omit<PopupActionsProps, \"children\">"
+          "type": "string"
         },
         {
-          "name": "cancelButton",
+          "name": "onConfirm",
           "optional": true,
-          "type": "ButtonHTMLProps"
+          "type": "() => void"
         },
         {
-          "name": "confirmButton",
+          "name": "cancelText",
           "optional": true,
-          "type": "ButtonHTMLProps"
+          "type": "string"
+        },
+        {
+          "name": "onCancel",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "isMaskClose",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "maxWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "PopupSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/Popup.d.ts"
@@ -3605,80 +4021,176 @@
       "name": "SearchInput",
       "props": [
         {
-          "name": "root",
-          "optional": true,
-          "type": "Omit<SearchInputRootProps, \"children\" | \"fullWidth\" | \"inputId\">"
-        },
-        {
           "name": "label",
           "optional": true,
-          "type": "Omit<SearchInputLabelProps, \"children\">"
+          "type": "string"
         },
         {
-          "name": "wrapper",
+          "name": "helperText",
           "optional": true,
-          "type": "Omit<SearchInputWrapperProps, \"children\" | \"focused\" | \"variant\">"
+          "type": "string"
         },
         {
-          "name": "field",
+          "name": "error",
           "optional": true,
-          "type": "Omit<SearchInputFieldProps, never>"
+          "type": "boolean"
         },
         {
-          "name": "clearButton",
+          "name": "errorMessage",
           "optional": true,
-          "type": "SearchInputClearButtonProps"
+          "type": "string"
         },
         {
-          "name": "searchButton",
+          "name": "variant",
           "optional": true,
-          "type": "SearchInputSearchButtonProps"
+          "type": "SearchInputVariant"
         },
         {
-          "name": "helper",
+          "name": "clearable",
           "optional": true,
-          "type": "Omit<SearchInputHelperProps, \"children\" | \"error\">"
+          "type": "boolean"
+        },
+        {
+          "name": "onClear",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "showSearchButton",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onSearch",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "searchIcon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "SearchInputSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/SearchInput.d.ts"
     },
     {
       "name": "SegmentedControl",
-      "props": [],
+      "props": [
+        {
+          "name": "options",
+          "optional": false,
+          "type": "SegmentedOption<T>[]"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "T"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: T) => void"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "SegmentedControlSize"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
       "dtsRelPath": "packages/react/dist/SegmentedControl.d.ts"
     },
     {
       "name": "Select",
       "props": [
         {
-          "name": "root",
+          "name": "options",
+          "optional": false,
+          "type": "SelectItem[]"
+        },
+        {
+          "name": "value",
           "optional": true,
-          "type": "Omit<SelectRootProps, \"children\" | \"value\" | \"onValueChange\" | \"disabled\" | \"error\" | \"portalContainer\">"
+          "type": "string"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string) => void"
         },
         {
           "name": "label",
           "optional": true,
-          "type": "Omit<SelectLabelProps, \"children\">"
+          "type": "string"
         },
         {
-          "name": "trigger",
+          "name": "placeholder",
           "optional": true,
-          "type": "Omit<SelectTriggerProps, \"placeholder\" | \"children\">"
+          "type": "string"
         },
         {
-          "name": "dropdown",
+          "name": "helperText",
           "optional": true,
-          "type": "Omit<SelectDropdownProps, \"children\">"
+          "type": "string"
         },
         {
-          "name": "option",
+          "name": "error",
           "optional": true,
-          "type": "Omit<SelectOptionProps, \"value\" | \"children\" | \"disabled\">"
+          "type": "boolean"
         },
         {
-          "name": "helper",
+          "name": "errorMessage",
           "optional": true,
-          "type": "Omit<SelectHelperProps, \"children\" | \"error\">"
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "portalContainer",
+          "optional": true,
+          "type": "HTMLElement | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "SelectSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/Select.d.ts"
@@ -3996,6 +4508,11 @@
           "name": "showLastDot",
           "optional": true,
           "type": "boolean"
+        },
+        {
+          "name": "aria-label",
+          "optional": true,
+          "type": "string"
         }
       ],
       "dtsRelPath": "packages/react/dist/Sparkline.d.ts"
@@ -4190,24 +4707,44 @@
       "name": "Tabs",
       "props": [
         {
-          "name": "root",
-          "optional": true,
-          "type": "Omit<TabsRootProps, \"activeKey\" | \"onTabChange\" | \"variant\" | \"children\">"
+          "name": "items",
+          "optional": false,
+          "type": "TabItem[]"
         },
         {
-          "name": "list",
-          "optional": true,
-          "type": "Omit<TabsListProps, \"children\">"
+          "name": "activeKey",
+          "optional": false,
+          "type": "string"
         },
         {
-          "name": "trigger",
-          "optional": true,
-          "type": "Omit<TabsTriggerProps, \"tabKey\" | \"children\">"
+          "name": "onTabChange",
+          "optional": false,
+          "type": "(key: string) => void"
         },
         {
-          "name": "panel",
+          "name": "variant",
           "optional": true,
-          "type": "Omit<TabsPanelProps, \"tabKey\" | \"children\">"
+          "type": "TabsVariant"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "TabsSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/Tabs.d.ts"
@@ -4339,11 +4876,6 @@
       "name": "TimePicker",
       "props": [
         {
-          "name": "HH",
-          "optional": false,
-          "type": "mm`) */"
-        },
-        {
           "name": "value",
           "optional": false,
           "type": "string"
@@ -4384,19 +4916,9 @@
           "type": "boolean"
         },
         {
-          "name": "HH",
-          "optional": false,
-          "type": "mm) */"
-        },
-        {
           "name": "min",
           "optional": true,
           "type": "string"
-        },
-        {
-          "name": "HH",
-          "optional": false,
-          "type": "mm) */"
         },
         {
           "name": "max",
@@ -4605,11 +5127,6 @@
           "type": "string"
         },
         {
-          "name": "09",
-          "optional": false,
-          "type": "00 기준\") */"
-        },
-        {
           "name": "timestamp",
           "optional": true,
           "type": "string"
@@ -4702,11 +5219,6 @@
           "type": "React.ReactNode"
         },
         {
-          "name": "mm",
-          "optional": false,
-          "type": "ss`). 비디오가 로드되면 자동 계산 */"
-        },
-        {
           "name": "durationLabel",
           "optional": true,
           "type": "string"
@@ -4727,19 +5239,9 @@
           "type": "boolean"
         },
         {
-          "name": "false",
-          "optional": false,
-          "type": "커스텀 UI) */"
-        },
-        {
           "name": "nativeControls",
           "optional": true,
           "type": "boolean"
-        },
-        {
-          "name": "16",
-          "optional": false,
-          "type": "9 */"
         },
         {
           "name": "aspectRatio",
@@ -6297,7 +6799,7 @@
     },
     {
       "name": "--size-button-xl",
-      "value": "56px",
+      "value": "52px",
       "group": "size"
     },
     {

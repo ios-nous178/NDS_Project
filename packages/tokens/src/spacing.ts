@@ -89,7 +89,7 @@ export const sizing = {
     default: 24,
   },
   button: {
-    xl: 56,
+    xl: 52,
     lg: 48,
     md: 44,
     sm: 42,

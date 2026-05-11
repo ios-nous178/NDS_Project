@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, radius, transition } from "@nudge-eap/tokens";
+import { cv, neutral, radius, transition } from "@nudge-eap/tokens";
 
 export type IconButtonSize = "x-large" | "large" | "medium" | "small";
 
@@ -30,7 +30,8 @@ const iconButtonStyles = `
   }
 
   :where(.${ICON_BUTTON_CLASS}:not(:disabled):hover) {
-    background: var(--nds-icon-button-hover-bg, ${cv.bg.light});
+    /* Figma 171:8590 — hover bg = #F5F5F5 (neutral/100) */
+    background: var(--nds-icon-button-hover-bg, ${neutral[100]});
   }
 
   :where(.${ICON_BUTTON_CLASS} svg) {
@@ -39,11 +40,14 @@ const iconButtonStyles = `
   }
 `;
 
+/* Figma 실측 (171:8576 large / 171:8580 medium / 171:8584 small / 171:8588 X-large)
+ * box 안에 4px padding으로 icon이 들어감 (small만 4px → icon 16).
+ */
 const sizeConfig = {
-  "x-large": { box: 36, icon: 36 },
-  large: { box: 32, icon: 32 },
-  medium: { box: 28, icon: 28 },
-  small: { box: 24, icon: 24 },
+  "x-large": { box: 36, icon: 28 },
+  large: { box: 32, icon: 24 },
+  medium: { box: 28, icon: 20 },
+  small: { box: 24, icon: 16 },
 } as const;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
