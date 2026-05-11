@@ -21,6 +21,7 @@ const INPUT_PREFIX_CLASS = `${INPUT_CLASS}__prefix`;
 const INPUT_SUFFIX_CLASS = `${INPUT_CLASS}__suffix`;
 const INPUT_CLEAR_CLASS = `${INPUT_CLASS}__clear`;
 const INPUT_HELPER_CLASS = `${INPUT_CLASS}__helper`;
+const INPUT_HELPER_GROUP_CLASS = `${INPUT_CLASS}__helper-group`;
 
 export type InputSize = "default" | "field";
 
@@ -60,7 +61,8 @@ const inputStyles = `
   :where(.${INPUT_LABEL_CLASS}) + :where(.${INPUT_WRAPPER_CLASS}) {
     margin-top: var(--nds-input-label-gap, ${spacing[12]}px);
   }
-  :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_CLASS}) {
+  :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_CLASS}),
+  :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_GROUP_CLASS}) {
     margin-top: var(--nds-input-helper-gap, ${spacing[8]}px);
   }
 
@@ -191,6 +193,16 @@ const inputStyles = `
   :where(.${INPUT_HELPER_CLASS}__icon svg) {
     width: 16px;
     height: 16px;
+  }
+
+  /* Figma 명세: HelpText 1 ↔ HelpText 2 row, 항목 간 gap 12.
+   * 좁은 폭에서는 wrap. align-items: flex-start 로 아이콘이 첫 줄에 정렬. */
+  :where(.${INPUT_HELPER_GROUP_CLASS}) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    column-gap: ${spacing[12]}px;
+    row-gap: ${spacing[4]}px;
   }
 `;
 
@@ -423,6 +435,34 @@ export const InputClearButton: React.FC<InputClearButtonProps> = React.memo(
 );
 InputClearButton.displayName = "InputClearButton";
 
+/* ─── Compound: HelperGroup ─── */
+
+export interface InputHelperGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** 여러 `InputHelper` 를 row 로 배치. 폭이 좁아지면 wrap */
+  children: React.ReactNode;
+}
+
+/**
+ * Figma 명세상 HelpText 가 2개 이상 row 로 노출되는 경우(예: 비밀번호 규칙 체크리스트)에 사용.
+ * 단일 helper 면 그냥 `InputHelper` 를 직접 쓰면 됨.
+ */
+export const InputHelperGroup: React.FC<InputHelperGroupProps> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const ctx = useContext(InputContext);
+  React.useEffect(() => {
+    ctx?.setHasHelper(true);
+    return () => ctx?.setHasHelper(false);
+  }, [ctx]);
+  return (
+    <div data-slot="helper-group" className={cx(INPUT_HELPER_GROUP_CLASS, className)} {...rest}>
+      {children}
+    </div>
+  );
+};
+
 /* ─── Compound: Helper ─── */
 
 export type InputHelperVariant = "default" | "success" | "error";
@@ -493,6 +533,17 @@ export interface InputSlotProps {
   helper?: Omit<InputHelperProps, "children" | "error">;
 }
 
+export interface InputHelperItem {
+  /** 표시할 텍스트 (React 노드 가능) */
+  text: React.ReactNode;
+  /** 16x16 아이콘 (variant 색상을 따라감) */
+  icon?: React.ReactNode;
+  /** 항목별 색상 변형 — 미지정 시 default */
+  variant?: InputHelperVariant;
+  /** 고유 key (없으면 index 기반) */
+  key?: React.Key;
+}
+
 export interface InputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "size" | "prefix"
@@ -509,6 +560,11 @@ export interface InputProps extends Omit<
   complete?: boolean;
   /** 성공 메시지 (helperText 대신 표시, primary 색상) */
   successMessage?: string;
+  /**
+   * 여러 헬퍼 항목을 row 로 노출 (Figma multi-helper 패턴).
+   * errorMessage/successMessage 가 우선이며, 둘 다 없을 때 적용된다.
+   */
+  helpers?: InputHelperItem[];
   /** helper 텍스트 앞에 표시할 16x16 아이콘 */
   helperIcon?: React.ReactNode;
   /** 클리어 버튼 표시 여부 */
@@ -540,6 +596,7 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
       errorMessage,
       complete = false,
       successMessage,
+      helpers,
       helperIcon,
       clearable = false,
       onClear,
@@ -574,11 +631,14 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
     const hasValue = currentValue !== "" && currentValue !== undefined && currentValue !== null;
     const showError = error || !!errorMessage;
     const showSuccess = !showError && (complete || !!successMessage);
-    const displayHelper = showError
+    // 단일 헬퍼 우선순위: errorMessage > successMessage > helperText
+    // helpers(배열) 는 위 3개가 모두 없을 때만 그룹으로 노출
+    const singleHelper = showError
       ? (errorMessage ?? helperText)
       : showSuccess
         ? (successMessage ?? helperText)
         : helperText;
+    const showHelperGroup = !singleHelper && Array.isArray(helpers) && helpers.length > 0;
     const helperVariant: InputHelperVariant = showError
       ? "error"
       : showSuccess
@@ -650,15 +710,28 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
           )}
         </InputWrapper>
 
-        {displayHelper && (
+        {singleHelper && (
           <InputHelper
             variant={helperVariant}
             icon={helperIcon}
             className={slotProps?.helper?.className}
             style={slotProps?.helper?.style}
           >
-            {displayHelper}
+            {singleHelper}
           </InputHelper>
+        )}
+        {showHelperGroup && (
+          <InputHelperGroup>
+            {helpers!.map((h, i) => (
+              <InputHelper
+                key={h.key ?? i}
+                variant={h.variant ?? "default"}
+                icon={h.icon ?? helperIcon}
+              >
+                {h.text}
+              </InputHelper>
+            ))}
+          </InputHelperGroup>
         )}
       </InputRoot>
     );
@@ -676,4 +749,5 @@ export const Input = Object.assign(InputComponent, {
   Field: InputField,
   ClearButton: InputClearButton,
   Helper: InputHelper,
+  HelperGroup: InputHelperGroup,
 });
