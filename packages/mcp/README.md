@@ -87,13 +87,14 @@ claude
 
 ### 외부 프로젝트 세팅
 
-| Tool                     | 설명                                                                                                  |
-| ------------------------ | ----------------------------------------------------------------------------------------------------- |
-| `list_packages`          | DS 패키지 목록 + 버전 + 의존성 그래프 + peer deps + CSS exports                                       |
-| `get_install_command`    | `.tgz` 파일 검증 후 즉시 실행 가능한 `npm install` 명령 반환                                          |
-| `get_main_tsx_imports`   | `src/main.tsx`에 추가할 토큰/컴포넌트 CSS import 코드 반환 (브랜드 선택)                              |
-| `create_claude_md`       | 외부 목업 프로젝트 루트에 DS MCP 사용 규칙과 화면 검증 루프가 담긴 `CLAUDE.md` 생성                   |
-| `get_setup_instructions` | 신규 외부 프로젝트의 풀 세팅 가이드 (Vite 생성 → 설치 → CSS import → 폴더 구조 → MCP 등록 → dev 실행) |
+| Tool                      | 설명                                                                                                  |
+| ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `list_packages`           | DS 패키지 목록 + 버전 + 의존성 그래프 + peer deps + CSS exports                                       |
+| `get_install_command`     | `.tgz` 파일 검증 후 즉시 실행 가능한 `npm install` 명령 반환                                          |
+| `get_update_instructions` | GitHub에서 받은 DS 레포의 MCP 업데이트 명령 반환 (`git pull origin main` → MCP build)                 |
+| `get_main_tsx_imports`    | `src/main.tsx`에 추가할 토큰/컴포넌트 CSS import 코드 반환 (브랜드 선택)                              |
+| `create_claude_md`        | 외부 목업 프로젝트 루트에 DS MCP 사용 규칙과 화면 검증 루프가 담긴 `CLAUDE.md` 생성                   |
+| `get_setup_instructions`  | 신규 외부 프로젝트의 풀 세팅 가이드 (Vite 생성 → 설치 → CSS import → 폴더 구조 → MCP 등록 → dev 실행) |
 
 ### 디자인 가이드 / 큐레이션 (DESIGN.md 기반)
 

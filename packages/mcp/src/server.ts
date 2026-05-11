@@ -693,6 +693,53 @@ function getInstallCommand(args: { tgzDir?: string; includeTailwind?: boolean })
   };
 }
 
+function getUpdateInstructions(args: { source?: string; includeLocalPackages?: boolean }) {
+  const source = args.source ?? "github";
+  const steps = [
+    {
+      step: 1,
+      title: "NudgeEAPDesignSystem 레포지토리로 이동",
+      commands: [`cd ${manifest.repoRoot}`],
+    },
+    {
+      step: 2,
+      title: "GitHub main 최신 코드 받기",
+      commands: ["git pull origin main"],
+      note:
+        source === "github"
+          ? "GitHub에서 받은 레포지토리를 기준으로 합니다."
+          : "source가 달라도 main 기준 업데이트 명령은 동일합니다.",
+    },
+    {
+      step: 3,
+      title: "MCP 재빌드",
+      commands: ["pnpm build --filter @nudge-eap/mcp"],
+      note: "manifest.json 재생성 + dist/server.js 갱신. 이후 Claude/Codex 세션을 재시작하면 새 MCP가 반영됩니다.",
+    },
+  ];
+
+  if (args.includeLocalPackages) {
+    steps.push({
+      step: 4,
+      title: "선택: 외부 목업 프로젝트 설치용 .tgz까지 갱신",
+      commands: ["pnpm release:local"],
+      note: "React 컴포넌트/토큰/아이콘 변경까지 외부 프로젝트에 설치해야 할 때만 실행합니다.",
+    });
+  }
+
+  return {
+    source,
+    repoRoot: manifest.repoRoot,
+    summary: "GitHub에서 받은 NudgeEAPDesignSystem 레포지토리의 MCP 업데이트 절차.",
+    quickCommand: "git pull origin main && pnpm build --filter @nudge-eap/mcp",
+    steps,
+    afterUpdate: [
+      "Claude/Codex MCP 세션 재시작",
+      "필요하면 list_packages 또는 list_brands로 새 manifest 반영 확인",
+    ],
+  };
+}
+
 function getMainTsxImports(args: { brand?: string }) {
   const tokensPkg = getPkg("@nudge-eap/tokens");
   const reactPkg = getPkg("@nudge-eap/react");
@@ -1954,6 +2001,25 @@ const TOOLS = [
     },
   },
   {
+    name: "get_update_instructions",
+    description:
+      "Return commands for planners/non-developers to update this NudgeEAPDesignSystem repository from GitHub and rebuild the MCP server. Typical request: 'git pull origin main 후 pnpm build --filter @nudge-eap/mcp 해줘'.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source: {
+          type: "string",
+          description: "Where the repo came from. Default: 'github'.",
+        },
+        includeLocalPackages: {
+          type: "boolean",
+          description: "Also include pnpm release:local for .tgz package refresh. Default: false.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "get_main_tsx_imports",
     description:
       "Return the CSS import lines that must be added to src/main.tsx. Pass an optional 'brand' slug — validated against the dynamic brand list (list_brands). If a brand has no CSS export yet, the response notes that and falls back gracefully.",
@@ -2252,6 +2318,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "get_install_command":
         result = getInstallCommand(args as { tgzDir?: string; includeTailwind?: boolean });
+        break;
+      case "get_update_instructions":
+        result = getUpdateInstructions(args as { source?: string; includeLocalPackages?: boolean });
         break;
       case "get_main_tsx_imports":
         result = getMainTsxImports(args as { brand?: string });
