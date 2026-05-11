@@ -81,7 +81,7 @@ export const green = {
 
 export const semantic = {
   primary: {
-    main: "#2B96ED", // 팔레트 blue 스케일 변경으로 디커플링
+    main: "#2B96ED",
     hover: "#017EE4",
     pressed: "#1B65BA",
     lighter: "#91CAF6",
@@ -101,7 +101,7 @@ export const semantic = {
   },
   caution: {
     main: yellow[500],
-    text: "#FFA100", // yellow.600 제거됨, 값 직접 지정
+    text: "#FFA100",
     bg: yellow[50],
   },
   success: {
@@ -109,8 +109,8 @@ export const semantic = {
     bg: green[50],
   },
   text: {
-    strong: neutral[1000], // #000000
-    normal: neutral[900], // #111111
+    strong: neutral[1000],
+    normal: neutral[900],
     default: neutral[800],
     subtle: neutral[700],
     disabled: neutral[500],
@@ -128,7 +128,7 @@ export const semantic = {
   border: {
     default: neutral[300],
     light: neutral[200],
-    focus: "#2B96ED", // 팔레트 디커플링
+    focus: "#2B96ED",
     disabled: neutral[200],
   },
   icon: {

@@ -11,7 +11,18 @@ const fs = require("fs");
 const path = require("path");
 
 const { colors } = require("../dist/colors");
-const { spacing, radius, borderWidth, sizing } = require("../dist/spacing");
+const { eap } = require("../dist/eap");
+const {
+  spacing,
+  gap,
+  padding,
+  radius,
+  shape,
+  borderWidth,
+  stroke,
+  sizing,
+  grid,
+} = require("../dist/spacing");
 const { fontFamily, fontWeight, typeScale } = require("../dist/typography");
 
 // ─── Helper ─────────────────────────────────────────────
@@ -38,6 +49,22 @@ function flattenSizing(obj, prefix, lines) {
   }
 }
 
+function camelToKebab(s) {
+  return s.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+function flattenEapVars(obj, prefix, lines) {
+  for (const [key, value] of Object.entries(obj)) {
+    const part = camelToKebab(key);
+    const varName = prefix ? `${prefix}-${part}` : part;
+    if (typeof value === "string") {
+      lines.push(`  --eap-${varName}: ${value};`);
+    } else if (typeof value === "object" && value !== null) {
+      flattenEapVars(value, varName, lines);
+    }
+  }
+}
+
 // ─── NudgeEAP tokens.css (기존) ─────────────────────────
 
 function generateBaseTokens() {
@@ -46,22 +73,94 @@ function generateBaseTokens() {
   // Colors
   flattenToVars(colors, "", lines);
 
-  // Spacing
+  // EAP semantic mapping (Figma SemanticColorGuide · NudgeEAP 한정)
   lines.push("");
+  lines.push("  /* ── EAP Semantic (Figma 222:2) ── */");
+  flattenEapVars(eap, "", lines);
+
+  // Spacing — Primitive Scale (Figma · SpacingGuide, 4pt grid)
+  // 기존 --spacing-N 유지 + Figma 가이드 명칭과 매칭되는 --eap-space-N alias 도 emit
+  lines.push("");
+  lines.push("  /* ── Spacing (Primitive, Figma · SpacingGuide) ── */");
   for (const [key, value] of Object.entries(spacing)) {
     lines.push(`  --spacing-${key}: ${value}px;`);
   }
-
-  // Radius
   lines.push("");
+  lines.push("  /* Figma 가이드 alias (--eap-space-N, 16 primitives) */");
+  const figmaSpacePrimitive = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40];
+  for (const n of figmaSpacePrimitive) {
+    lines.push(`  --eap-space-${n}: ${n}px;`);
+  }
+
+  // Gap — Semantic (Figma · SpacingGuide / Gap)
+  lines.push("");
+  lines.push("  /* ── Gap (Semantic, Figma · SpacingGuide / Gap) ── */");
+  for (const [key, value] of Object.entries(gap)) {
+    lines.push(`  --gap-${key}: ${value}px;`);
+    lines.push(`  --eap-gap-${key}: ${value}px;`);
+  }
+
+  // Padding — Semantic (Figma · SpacingGuide / Padding)
+  lines.push("");
+  lines.push("  /* ── Padding (Semantic, Figma · SpacingGuide / Padding) ── */");
+  for (const [key, value] of Object.entries(padding)) {
+    lines.push(`  --padding-${key}: ${value}px;`);
+    lines.push(`  --eap-padding-${key}: ${value}px;`);
+  }
+
+  // Grid — 거터·마진 (Figma · SpacingGuide / Grid)
+  lines.push("");
+  lines.push("  /* ── Grid (Figma · SpacingGuide / Grid) ── */");
+  lines.push(`  --grid-gutter-mobile: ${grid.mobile.gutter}px;`);
+  lines.push(`  --grid-gutter-pc: ${grid.desktop.gutter}px;`);
+  lines.push(`  --grid-margin-mobile: ${grid.mobile.margin}px;`);
+  lines.push(`  --grid-margin-pc: ${grid.desktop.margin}px;`);
+  lines.push(`  --grid-margin-pc-min: ${grid.desktop.minMargin}px;`);
+  lines.push(`  --grid-content-mobile: ${grid.mobile.contentWidth}px;`);
+  lines.push(`  --grid-content-pc: ${grid.desktop.contentWidth}px;`);
+  lines.push(`  --eap-grid-gutter-mo: ${grid.mobile.gutter}px;`);
+  lines.push(`  --eap-grid-gutter-pc: ${grid.desktop.gutter}px;`);
+  lines.push(`  --eap-grid-margin-mo: ${grid.mobile.margin}px;`);
+  lines.push(`  --eap-grid-margin-pc: ${grid.desktop.margin}px;`);
+
+  // Radius — Primitive (Figma · RadiusGuide)
+  lines.push("");
+  lines.push("  /* ── Radius (Primitive, Figma · RadiusGuide) ── */");
   for (const [key, value] of Object.entries(radius)) {
     lines.push(`  --radius-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
   }
-
-  // Border Width
   lines.push("");
+  lines.push("  /* Figma 가이드 alias (--eap-radius-N / full) */");
+  const figmaRadiusPrimitive = [0, 2, 4, 6, 8, 12, 16, 24];
+  for (const n of figmaRadiusPrimitive) {
+    lines.push(`  --eap-radius-${n}: ${n}px;`);
+  }
+  lines.push(`  --eap-radius-full: 9999px;`);
+
+  // Shape — Semantic (Figma · RadiusGuide / Semantic)
+  lines.push("");
+  lines.push("  /* ── Shape (Semantic, Figma · RadiusGuide / Semantic) ── */");
+  for (const [key, value] of Object.entries(shape)) {
+    lines.push(`  --shape-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
+    lines.push(`  --eap-shape-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
+  }
+
+  // Border Width — Primitive (Figma · BorderGuide)
+  lines.push("");
+  lines.push("  /* ── Border Width (Primitive, Figma · BorderGuide) ── */");
   for (const [key, value] of Object.entries(borderWidth)) {
     lines.push(`  --border-${key}: ${value}px;`);
+  }
+  lines.push(`  --eap-border-width-0: 0px;`);
+  lines.push(`  --eap-border-width-1: 1px;`);
+  lines.push(`  --eap-border-width-2: 2px;`);
+
+  // Stroke — Semantic (Figma · BorderGuide / Semantic)
+  lines.push("");
+  lines.push("  /* ── Stroke (Semantic, Figma · BorderGuide / Semantic) ── */");
+  for (const [key, value] of Object.entries(stroke)) {
+    lines.push(`  --stroke-${key}: ${value}px;`);
+    lines.push(`  --eap-stroke-${key}: ${value}px;`);
   }
 
   // Sizing
