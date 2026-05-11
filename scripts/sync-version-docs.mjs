@@ -47,15 +47,30 @@ const versions = PACKAGES.map((p) => {
 
 const todayDate = new Date().toISOString().slice(0, 10);
 
-// Last commit date that touched any of the tracked packages — falls back to today
+// Last commit date that touched any of the tracked packages — falls back to today.
+// If there are *staged* changes under packages/, that means a packages-touching commit
+// is in flight right now (pre-commit hook) — use today's date so the in-flight commit
+// itself carries the up-to-date stamp.
 let lastUpdate = todayDate;
 try {
   const trackedPaths = PACKAGES.map((p) => p.dir).join(" ");
-  const out = execSync(`git log -1 --format=%cs -- ${trackedPaths}`, {
+  const staged = execSync("git diff --cached --name-only", {
     cwd: ROOT,
     encoding: "utf-8",
-  }).trim();
-  if (out) lastUpdate = out;
+  });
+  const hasStagedPackageChange = staged
+    .split("\n")
+    .some((f) => PACKAGES.some((p) => f.startsWith(`${p.dir}/`)));
+
+  if (hasStagedPackageChange) {
+    lastUpdate = todayDate;
+  } else {
+    const out = execSync(`git log -1 --format=%cs -- ${trackedPaths}`, {
+      cwd: ROOT,
+      encoding: "utf-8",
+    }).trim();
+    if (out) lastUpdate = out;
+  }
 } catch {
   // git not available — keep today
 }
