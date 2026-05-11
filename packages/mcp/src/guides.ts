@@ -492,13 +492,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "검색 변형이 필요하면 SearchInput을 사용. Input에 SearchIcon을 직접 박지 말 것.",
       "label/helper 의 typography 는 caption-2(12/16) — body3(14/20) 로 키우지 말 것. Figma 명세보다 크면 폼이 산만해짐.",
       "complete=true 와 errorMessage 를 동시에 주지 말 것 — error 가 우선이지만 success 의도가 묻힘.",
-      "Multi-helper(헬퍼 2개 row 노출) 패턴은 현재 DS 미지원 — Figma 명세에는 있음. 필요 시 raw flex 로 만들지 말고 별도 API 요청.",
+      "errorMessage/successMessage/helperText 중 하나라도 있으면 helpers 배열은 무시됨. 단일/멀티 의도를 분리해서 사용.",
     ],
     recommended: [
       "기본: <Input label='이메일' placeholder='example@nudge.kr' helperText='...' />",
       "검증 실패: errorMessage 사용 — role='alert' 가 자동 부착됨",
       "검증 성공: complete + successMessage — primary 컬러 헬퍼로 자동 전환",
       "달력/검색 같은 아이콘 affordance: suffix prop (24x24)",
+      "Multi-helper(비밀번호 규칙 체크리스트 등): helpers={[{ text, icon?, variant? }, ...]} — 또는 compound <Input.HelperGroup><Input.Helper>…</Input.Helper>…</Input.HelperGroup>",
     ],
     sizeMatrix: {
       default: "height 48 / padding 16·13 / wrapper gap 10 / radius 8",
