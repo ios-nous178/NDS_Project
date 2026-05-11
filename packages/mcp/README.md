@@ -102,7 +102,7 @@ claude
 | `get_design_principles` | DESIGN.md에서 추출한 브랜드 톤 / 컬러 의미 / 타이포 규칙 / 8px 그리드 / elevation / shapes / Do's & Don'ts / banned patterns       |
 | `get_dos_and_donts`     | Do/Don't 룰만 짧게 — 마무리 sanity check용                                                                                         |
 | `get_component_guide`   | 컴포넌트별 큐레이션 가이드: 함정(pitfalls), 색상 매트릭스, 추천 패턴, 인터랙션 패턴. **처음 사용하는 컴포넌트는 무조건 호출 권장** |
-| `get_pattern_guide`     | CTA 그룹, 안내문 강조, 드롭다운 옵션 밀도, 고밀도 리스트 등 UX 패턴별 배치/위계 가이드                                             |
+| `get_pattern_guide`     | CTA 그룹, 아이콘 컬러, 안내문 강조, 드롭다운 옵션 밀도, 고밀도 리스트 등 UX 패턴별 배치/위계 가이드                                |
 
 ### 단일 HTML 추출
 
@@ -131,6 +131,7 @@ claude
 | `primary-cta-overuse`                | primary solid로 보이는 Button이 한 화면에 여러 개 있음                                     |
 | `chip-overuse`                       | Chip이 과도하게 많이 사용됨                                                                |
 | `chip-decorative-use`                | Chip이 상태/분류가 아닌 장식성 라벨처럼 사용됨                                             |
+| `icon-default-color`                 | 단독 아이콘이 주변 UI에 맞는 토큰 컬러 없이 기본 currentColor에 의존함                     |
 | `visual-emphasis-overload`           | 색 배경, 아이콘, Chip/Badge, 그라데이션 등 강조 장치가 동시에 과다 사용됨                  |
 
 `// allow-native` 주석이 같은 줄에 있으면 `native-element` 룰을 통과시킵니다.
@@ -150,7 +151,7 @@ claude
 
 - 작업 시작 시 한 번 `get_design_principles` 호출 — 브랜드 톤/컬러 의미/8px 그리드/금지 패턴 숙지
 - 처음 쓰는 컴포넌트마다 `get_component_guide(name)` 호출 — 색상 매트릭스, 함정, 인터랙션 패턴 확인
-- CTA가 많은 화면, 안내문/강조 박스, 옵션 많은 Select, 정보 과밀 리스트는 `get_pattern_guide(name)` 호출
+- CTA가 많은 화면, 단독 아이콘, 안내문/강조 박스, 옵션 많은 Select, 정보 과밀 리스트는 `get_pattern_guide(name)` 호출
 - 특히 Button / Card / Chip / IconButton / Tabs / Select / Banner / Modal은 함정이 알려져 있으니 항상 가이드 먼저 확인
 
 ## 도구 사용 규칙
