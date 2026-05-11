@@ -67,17 +67,23 @@ const modalStyles = `
     animation: nds-modal-fade-in 0.2s ease-out;
   }
 
+  /* Figma · Modal · Mobile 294 / PC 332 카드 패딩(비대칭):
+     top 28 / x 16 / bottom 16, 본문 그룹과 버튼 그룹 사이 gap 24px.
+     image-title-description 그룹 내부는 gap 8px. */
   :where(.${CONTENT_CLASS}) {
     position: relative;
     width: 100%;
-    max-width: var(--nds-modal-max-width, 320px);
+    max-width: var(--nds-modal-max-width, 332px);
     display: flex;
     flex-direction: column;
+    gap: ${spacing[8]}px;
+    padding: ${spacing[28]}px ${spacing[16]}px ${spacing[16]}px;
     overflow: hidden;
-    border-radius: var(--nds-modal-radius, ${radius.lg}px);
+    border-radius: var(--nds-modal-radius, ${radius.md}px);
     background-color: ${cv.bg.white};
     box-shadow: ${shadow.md};
     animation: nds-modal-slide-up 0.2s ease-out;
+    box-sizing: border-box;
   }
 
   :where(.${HEADER_CLASS}) {
@@ -85,19 +91,16 @@ const modalStyles = `
     align-items: center;
     justify-content: space-between;
     gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px ${spacing[20]}px;
-    border-bottom: 1px solid transparent;
-  }
-
-  :where(.${HEADER_CLASS}[data-has-title="true"]) {
-    border-bottom-color: ${cv.border.light};
+    padding: 0;
   }
 
   :where(.${HEADER_TITLE_CLASS}) {
     margin: 0;
-    font-size: ${typeScale.headline5.fontSize}px;
+    flex: 1;
+    text-align: center;
+    font-size: ${typeScale.body1.fontSize}px;
     font-weight: 700;
-    line-height: ${typeScale.headline5.lineHeight}px;
+    line-height: ${typeScale.body1.lineHeight}px;
     color: ${cv.text.default};
   }
 
@@ -112,11 +115,17 @@ const modalStyles = `
   }
 
   :where(.${BODY_CLASS}) {
-    padding: ${spacing[20]}px;
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: 1.5;
-    color: ${cv.text.subtle};
+    padding: 0;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    color: ${cv.text.default};
     text-align: center;
+  }
+
+  /* 본문 그룹(image/header/body)과 푸터 사이 24px gap:
+     ModalContent 의 gap 8px + 추가 16px margin */
+  :where(.${BODY_CLASS}:has(+ .${FOOTER_CLASS})) {
+    margin-bottom: ${spacing[16]}px;
   }
 
   :where(.${IMAGE_CLASS}) {
@@ -133,16 +142,17 @@ const modalStyles = `
     height: 100%;
   }
 
+  /* Figma · Modal · Footer (171:9947 등): Primary 솔리드 + Outlined Cancel 가로 분할.
+     버튼 padding 11/24, radius 8, gap 8, font 15/22. */
   :where(.${FOOTER_CLASS}) {
     display: flex;
     width: 100%;
-    min-height: 48px;
-    border-top: 1px solid ${cv.border.light};
+    gap: ${spacing[8]}px;
     box-sizing: border-box;
   }
 
   :where(.${FOOTER_CLASS}[data-layout="custom"]) {
-    padding: ${spacing[12]}px ${spacing[20]}px;
+    padding: 0;
     gap: ${spacing[8]}px;
     justify-content: center;
   }
@@ -153,23 +163,46 @@ const modalStyles = `
 
   :where(.${FOOTER_ACTION_CLASS}) {
     flex: 1;
-    border: none;
-    background: none;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: ${spacing[11]}px ${spacing[24]}px;
+    border-radius: ${radius.md}px;
+    border: 1px solid transparent;
     cursor: pointer;
     font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
   }
 
   :where(.${FOOTER_CANCEL_CLASS}) {
-    color: ${cv.text.subtle};
+    background-color: ${cv.bg.white};
+    border-color: ${cv.border.default};
+    color: ${cv.text.default};
+    font-weight: 500;
+  }
+
+  :where(.${FOOTER_CANCEL_CLASS}:hover) {
+    background-color: ${cv.bg.light};
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}) {
+    background-color: ${cv.primary.main};
+    border-color: ${cv.primary.main};
+    color: ${cv.text.inverse};
     font-weight: 700;
-    color: ${cv.primary.hover};
   }
 
-  :where(.${FOOTER_CLASS}[data-has-both-actions="true"] .${FOOTER_CANCEL_CLASS}) {
-    border-right: 1px solid ${cv.border.light};
+  :where(.${FOOTER_CONFIRM_CLASS}:hover) {
+    background-color: ${cv.primary.hover};
+    border-color: ${cv.primary.hover};
+  }
+
+  :where(.${FOOTER_CONFIRM_CLASS}:active) {
+    background-color: ${cv.primary.pressed};
+    border-color: ${cv.primary.pressed};
   }
 
   @keyframes nds-modal-fade-in {
@@ -265,7 +298,7 @@ export const ModalOverlay: React.FC<ModalOverlayProps> = ({
 };
 
 export interface ModalContentProps extends Omit<DivProps, "children"> {
-  /** 콘텐츠 최대 너비 (px) @default 320 */
+  /** 콘텐츠 최대 너비 (px) @default 332 (Figma PC 기준) */
   maxWidth?: number;
   /** 모달 콘텐츠 (Header, Body, Footer 등) */
   children: React.ReactNode;
@@ -276,7 +309,7 @@ export interface ModalContentProps extends Omit<DivProps, "children"> {
 }
 
 export const ModalContent: React.FC<ModalContentProps> = ({
-  maxWidth = 320,
+  maxWidth = 332,
   children,
   className,
   style,
