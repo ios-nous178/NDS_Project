@@ -5,9 +5,9 @@
  * 컴포넌트 역할 기반 토큰. 기존 atomic 팔레트(colors.ts) 및 NudgeEAP semantic
  * 토큰을 alias로 참조하며, Figma에서만 등장하는 값은 hex literal로 직접 지정.
  *
- * - 출처: figma.com/design/MqR7O3uvBvH5tVngwzbqGH (node 222:2)
+ * - 출처: figma.com/design/MqR7O3uvBvH5tVngwzbqGH (node 222:2 + Input 섹션 294:12)
  * - CSS 변수 컨벤션: `--eap-{group}-{role}-{variant}` 또는 `--eap-{group}-{variant}`
- *   (예: `--eap-bg-brand-default`, `--eap-button-bg-pressed`)
+ *   (예: `--eap-bg-brand-default`, `--eap-button-bg-pressed`, `--eap-input-bg`)
  * - 적용 범위: NudgeEAP 브랜드 한정. Trost/Moneple은 자체 brand CSS만 사용.
  */
 
@@ -133,6 +133,21 @@ export const eap = {
       caution: yellow[500], // #FFC303
     },
   },
+  /**
+   * Figma `Section_Input` (294:12).
+   * `--eap-input-bg`/`--eap-input-placeholder`는 suffix 없이 emit되도록
+   * 다른 그룹과 달리 flat camelCase 구조 사용.
+   */
+  input: {
+    bg: neutral["00"], // #FFFFFF — --eap-input-bg
+    bgDisabled: neutral[50], // #FAFAFA — --eap-input-bg-disabled
+    borderDefault: neutral[300], // #D8D8D8 — --eap-input-border-default
+    borderHover: neutral[400], // #C7C7C7 — --eap-input-border-hover
+    borderFocus: semantic.primary.main, // #2B96ED — --eap-input-border-focus
+    borderError: red[500], // #F13F00 — --eap-input-border-error
+    borderDisabled: neutral[300], // #D8D8D8 — --eap-input-border-disabled
+    placeholder: neutral[500], // #999999 — --eap-input-placeholder
+  },
 } as const;
 
 /** `var(--eap-*)` 참조 헬퍼 — runtime에서 CSS 변수로 컴포넌트에 주입 */
@@ -251,6 +266,16 @@ export const eapVar = {
       error: v("--eap-fill-status-error"),
       caution: v("--eap-fill-status-caution"),
     },
+  },
+  input: {
+    bg: v("--eap-input-bg"),
+    bgDisabled: v("--eap-input-bg-disabled"),
+    borderDefault: v("--eap-input-border-default"),
+    borderHover: v("--eap-input-border-hover"),
+    borderFocus: v("--eap-input-border-focus"),
+    borderError: v("--eap-input-border-error"),
+    borderDisabled: v("--eap-input-border-disabled"),
+    placeholder: v("--eap-input-placeholder"),
   },
 } as const;
 
