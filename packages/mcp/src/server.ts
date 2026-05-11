@@ -27,6 +27,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprot
 import {
   COMPONENT_GUIDES,
   DESIGN_PRINCIPLES,
+  PATTERN_GUIDES,
   ADMIN_CMS_GUIDE,
   SCOPE_ADVISORY,
   detectIntentFromText,
@@ -208,6 +209,25 @@ interface Violation {
   suggestion?: string;
 }
 
+function lineNumberAt(source: string, index: number): number {
+  return source.slice(0, index).split("\n").length;
+}
+
+function getJsxBlocks(
+  source: string,
+  componentName: string,
+): Array<{ block: string; line: number }> {
+  const blocks: Array<{ block: string; line: number }> = [];
+  const pattern = new RegExp(
+    `<\\s*${componentName}\\b[\\s\\S]*?(?:<\\/\\s*${componentName}\\s*>|\\/>)`,
+    "g",
+  );
+  for (const match of source.matchAll(pattern)) {
+    blocks.push({ block: match[0], line: lineNumberAt(source, match.index ?? 0) });
+  }
+  return blocks;
+}
+
 function validateMockupSource(source: string): Violation[] {
   const violations: Violation[] = [];
   const lines = source.split("\n");
@@ -345,6 +365,97 @@ function validateMockupSource(source: string): Violation[] {
     }
   }
 
+  const buttonBlocks = getJsxBlocks(source, "Button");
+  const arrowButtonBlocks = buttonBlocks.filter(({ block }) =>
+    /(?:Arrow(?:Next|Right)|ChevronRight)Icon|<\s*(?:ArrowNext|ChevronRight)Icon\b|[→›]/.test(
+      block,
+    ),
+  );
+  if (arrowButtonBlocks.length > 1) {
+    violations.push({
+      rule: "button-arrow-overuse",
+      line: arrowButtonBlocks[1].line,
+      detail: `Arrow/Chevron CTA가 ${arrowButtonBlocks.length}개 발견됨.`,
+      suggestion:
+        "우측 화살표는 대표 전진 CTA 1개에만 남기고 반복/보조 CTA에서는 제거. get_pattern_guide('cta-group') 참조.",
+    });
+  }
+  for (const { block, line } of arrowButtonBlocks) {
+    const before = source.slice(Math.max(0, source.indexOf(block) - 240), source.indexOf(block));
+    if (
+      /\.map\s*\(/.test(before) ||
+      /variant\s*=\s*["'](outlined|outlined-sub|soft|text|ghost)["']/.test(block)
+    ) {
+      violations.push({
+        rule: "button-arrow-secondary-or-repeated",
+        line,
+        detail: block.split("\n")[0].trim(),
+        suggestion:
+          "반복 리스트나 보조 variant CTA에는 화살표를 붙이지 않는 편이 자연스럽습니다. 대표 primary CTA 1개에만 사용하세요.",
+      });
+    }
+  }
+
+  const primarySolidButtons = buttonBlocks.filter(({ block }) => {
+    const hasPrimary = /color\s*=\s*["']primary["']/.test(block) || !/color\s*=/.test(block);
+    const explicitlyNonSolid = /variant\s*=\s*["'](outlined|outlined-sub|soft|text|ghost)["']/.test(
+      block,
+    );
+    return hasPrimary && !explicitlyNonSolid;
+  });
+  if (primarySolidButtons.length > 1) {
+    violations.push({
+      rule: "primary-cta-overuse",
+      line: primarySolidButtons[1].line,
+      detail: `primary solid로 보이는 Button이 ${primarySolidButtons.length}개 발견됨.`,
+      suggestion:
+        "primary solid는 화면의 가장 중요한 액션 1개만 사용하고, 나머지는 outlined/assistive/text 계열로 낮추세요.",
+    });
+  }
+
+  const chipBlocks = getJsxBlocks(source, "Chip");
+  if (chipBlocks.length > 8) {
+    violations.push({
+      rule: "chip-overuse",
+      line: chipBlocks[8].line,
+      detail: `Chip이 ${chipBlocks.length}개 발견됨.`,
+      suggestion:
+        "Chip은 상태/분류/짧은 속성에만 제한적으로 사용하세요. 섹션 장식이나 모든 카드 반복 강조는 피하세요. get_component_guide('Chip') 참조.",
+    });
+  }
+  for (const { block, line } of chipBlocks) {
+    const label = block.match(/label\s*=\s*["']([^"']+)["']/)?.[1];
+    if (label && (label.length > 8 || /^(안내|확인|추천|혜택|중요|필독|NEW|신규)$/i.test(label))) {
+      violations.push({
+        rule: "chip-decorative-use",
+        line,
+        detail: `Chip label='${label}'`,
+        suggestion:
+          "Chip은 장식성 섹션 라벨보다 상태/분류/속성 표시용으로 사용하세요. 일반 안내 강조는 텍스트 위계나 neutral notice로 처리하세요.",
+      });
+    }
+  }
+
+  const emphasisSignals = [
+    { name: "gradient", matched: /(linear|radial|conic)-gradient\s*\(/.test(source) },
+    { name: "chip", matched: /<\s*Chip\b/.test(source) },
+    { name: "badge", matched: /<\s*Badge\b/.test(source) },
+    {
+      name: "semantic-background",
+      matched: /background(?:Color)?\s*:\s*["']var\(--color-semantic-/.test(source),
+    },
+    { name: "icon", matched: /<\s*\w+Icon\b/.test(source) },
+  ].filter((signal) => signal.matched);
+  if (emphasisSignals.length >= 4) {
+    violations.push({
+      rule: "visual-emphasis-overload",
+      line: 1,
+      detail: `강조 장치가 동시에 많이 사용됨: ${emphasisSignals.map((s) => s.name).join(", ")}`,
+      suggestion:
+        "안내/보조 영역은 색 배경, 아이콘, Chip/Badge, 굵은 제목 중 1~2개만 사용하세요. get_pattern_guide('notice') 참조.",
+    });
+  }
+
   return violations;
 }
 
@@ -474,6 +585,7 @@ function getMainTsxImports(args: { brand?: string }) {
   const notes: string[] = [
     "토큰 CSS는 컴포넌트 CSS보다 먼저 import해야 변수가 적용됨.",
     "브랜드별 CSS는 한 번에 하나만 import (덮어쓰기됨).",
+    "./index.css 는 프로젝트의 minimal reset(브라우저 기본값 정리) + 페이지 단 스타일을 담는다. tokens.css 보다 뒤에 와야 토큰 변수를 참조할 수 있다.",
   ];
 
   if (tokensPkg) {
@@ -494,6 +606,7 @@ function getMainTsxImports(args: { brand?: string }) {
   if (reactPkg) {
     lines.push(`import "@nudge-eap/react/styles.css";  // 컴포넌트 스타일`);
   }
+  lines.push(`import "./index.css";  // 프로젝트 reset + 페이지 스타일`);
   return {
     targetFile: "src/main.tsx (또는 src/index.tsx)",
     placement: "최상단 (다른 import보다 먼저)",
@@ -503,6 +616,88 @@ function getMainTsxImports(args: { brand?: string }) {
     notes,
   };
 }
+
+/**
+ * Vite react-ts 템플릿이 만드는 기본 index.css 를 덮어쓰는 minimal reset.
+ * - DS 토큰을 참조하므로 tokens.css import 이후에 와야 한다 (getMainTsxImports 참고).
+ * - 브라우저 기본값(body margin, heading margin, button chrome 등) 만 정리.
+ *   세부 컴포넌트 스타일은 그대로 :where(.nds-*) 가 책임진다.
+ */
+const MINIMAL_RESET_CSS = `/* nudge-eap-ds minimal reset
+ * 브라우저 기본값을 DS 토큰 기준으로 정리한다.
+ * tokens.css 이후 import 되어야 var(--font-family-default) 등이 적용된다.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-body-2);
+  line-height: var(--line-height-body-2);
+  color: var(--color-semantic-text-default);
+  background: var(--color-semantic-bg-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* 헤더/문단 margin 제거 — 간격은 부모 컨테이너의 gap/spacing 토큰으로 통일 */
+h1, h2, h3, h4, h5, h6,
+p, figure, blockquote, dl, dd {
+  margin: 0;
+}
+
+/* 폼 요소 chrome 제거 — DS Button/Input 이 자체 스타일 책임 */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* 링크 기본 색/밑줄 제거 — 사용처에서 명시적으로 지정 */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 미디어 요소 기본 — 박스 모델/반응형 */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe {
+  display: block;
+  max-width: 100%;
+}
+
+/* 리스트 기본 padding 제거 */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+`;
 
 function getSetupInstructionsAdminCms(args: { withRouter?: boolean }) {
   const steps: Array<{
@@ -667,17 +862,27 @@ function getSetupInstructions(args: {
     step: 4,
     title: "토큰 / 컴포넌트 CSS import 추가",
     code: imports.code,
-    note: `${imports.targetFile} 의 ${imports.placement}에 추가.`,
+    note: `${imports.targetFile} 의 ${imports.placement}에 추가. './index.css' 는 다음 단계에서 만든다.`,
   });
 
   steps.push({
     step: 5,
+    title: "src/index.css 에 minimal reset 작성 (Vite 템플릿 기본 index.css 를 덮어쓰기)",
+    code: MINIMAL_RESET_CSS,
+    note:
+      "브라우저 기본값(body margin 8px, heading margin, button chrome, link 색 등) 만 정리한다. " +
+      "DS 컴포넌트 스타일은 그대로 :where(.nds-*) 가 책임지므로 추가 리셋은 불필요. " +
+      "var(--font-family-default) 같은 토큰을 참조하므로 main.tsx 에서 tokens.css 이후에 import 되어야 한다.",
+  });
+
+  steps.push({
+    step: 6,
     title: "기본 폴더 구조 생성",
     commands: ["mkdir -p src/mockups prds docs"],
   });
 
   steps.push({
-    step: 6,
+    step: 7,
     title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
     commands: [
       `claude mcp add nudge-eap-ds --scope project -- node ${path.join(manifest.repoRoot, "packages/mcp/dist/server.js")}`,
@@ -686,7 +891,7 @@ function getSetupInstructions(args: {
   });
 
   steps.push({
-    step: 7,
+    step: 8,
     title: "동작 확인",
     commands: [
       "npm install --save-dev playwright",
@@ -789,6 +994,7 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 
 - 컴포넌트/아이콘/토큰 사용 전 \`search_component\` / \`find_icon\` / \`lookup_token\` 호출
 - 처음 쓰는 주요 컴포넌트는 \`get_component_guide\` 호출
+- CTA 그룹, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_pattern_guide\` 호출
 - 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
 - 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
 - 구현 후 \`start_dev_server\`로 dev 서버 실행
@@ -804,18 +1010,23 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 - 색상/간격은 인라인 hex, rgb, px 값보다 DS 토큰을 우선 사용한다.
 - 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
+- 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA에는 붙이지 않는다.
+- primary solid 버튼은 한 화면의 대표 액션 1개만 사용한다.
+- Chip/Badge는 상태, 분류, 짧은 속성 표시용으로만 사용하고 안내문/섹션 장식으로 남발하지 않는다.
+- 안내 영역은 neutral surface를 기본으로 하고 색 배경/아이콘/Chip/Badge/굵은 제목 중 1~2개만 조합한다.
 - 모든 클릭 가능한 요소는 목업이어도 \`onClick\` 동작을 갖는다.
 
 ## 검증 루프
 
 1. DS 원칙 확인: \`get_design_principles\`
 2. 필요한 컴포넌트/아이콘/토큰 검색
-3. 목업 구현
-4. \`validate_mockup\` 실행 및 수정
-5. \`start_dev_server\` 실행
-6. \`check_preview\` 실행 및 런타임 오류 수정
-7. \`get_dos_and_donts\`로 최종 확인
-8. \`stop_dev_server\`로 dev 서버 종료
+3. 필요한 UX 패턴 확인: \`get_pattern_guide\`
+4. 목업 구현
+5. \`validate_mockup\` 실행 및 수정
+6. \`start_dev_server\` 실행
+7. \`check_preview\` 실행 및 런타임 오류 수정
+8. \`get_dos_and_donts\`로 최종 확인
+9. \`stop_dev_server\`로 dev 서버 종료
 `;
 }
 
@@ -975,6 +1186,21 @@ function getComponentGuide(name: string) {
     _advisory: guide.figmaNodeUrl
       ? "Figma 원본 노드 URL이 포함되어 있습니다. 픽셀/색/매트릭스가 의심되면 figmaNodeUrl 을 확인하세요."
       : "이 가이드는 아직 Figma 노드와 연결되지 않았습니다. list_figma_sync_status 로 다른 컴포넌트의 sync 상태를 확인할 수 있습니다.",
+    ...guide,
+  };
+}
+
+function getPatternGuide(name: string) {
+  const guide = PATTERN_GUIDES[name];
+  if (!guide) {
+    return {
+      error: `No pattern guide for '${name}'.`,
+      knownGuides: Object.keys(PATTERN_GUIDES),
+    };
+  }
+  return {
+    _advisory:
+      "컴포넌트 API가 아니라 배치/위계/강조 사용량 기준입니다. 목업 작성 전 또는 validate_mockup 경고 수정 시 참고하세요.",
     ...guide,
   };
 }
@@ -1792,6 +2018,22 @@ const TOOLS = [
     },
   },
   {
+    name: "get_pattern_guide",
+    description:
+      "Return UX pattern guidance for mockup layout decisions, including CTA groups, notice/callout emphasis, dropdown option density, and dense lists. Use this when visual hierarchy or information density is ambiguous.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description: "Pattern name: 'cta-group', 'notice', 'dropdown', or 'dense-list'.",
+        },
+      },
+      required: ["name"],
+      additionalProperties: false,
+    },
+  },
+  {
     name: "list_figma_sync_status",
     description:
       "List all curated component guides and whether each is synced with a Figma node (figmaNodeUrl/sizeMatrix/stateMatrix). Useful for design QA — see which components still need a Figma-spec audit.",
@@ -1919,6 +2161,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "get_component_guide":
         result = getComponentGuide((args as { name: string }).name);
+        break;
+      case "get_pattern_guide":
+        result = getPatternGuide((args as { name: string }).name);
         break;
       case "list_figma_sync_status":
         result = listFigmaSyncStatus();
