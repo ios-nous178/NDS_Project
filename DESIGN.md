@@ -119,6 +119,15 @@ colors:
     default: "{neutral.800}" # #383838
     subtle: "{neutral.500}" # #999999
     inverse: "{neutral.00}" # #FFFFFF
+  # 폼 필드 상태(input helper text, validation state) 전용 색.
+  # 일반적인 "성공" 의미의 `colors.success.main`(녹색)과 다르다:
+  #   - status.success = primary 색 — 폼 검증 통과 / "complete" 시각화 (Figma Input "Success" 셀)
+  #   - status.default = neutral 회색 — helper 기본 hint 색
+  #   - status.error   = error 색   — 폼 오류 (Figma `--color-status-error`)
+  status:
+    default: "{neutral.500}" # #999999 — helper default
+    success: "#2B96ED" # primary.main — 폼 "complete" (Figma 의도)
+    error: "{red.500}" # #F13F00 — 폼 오류 (alias of error.main)
 
 # ── Typography ──────────────────────────────────────────────
 typography:
@@ -201,6 +210,7 @@ spacing:
   6: 6px # 뱃지·칩 내부 여백
   7: 7px # legacy
   8: 8px # 카드 내부 수직 간격
+  9: 9px # Button XS padding-y (38px height = 18+18+2)
   10: 10px # 리스트 아이템 내부 패딩
   11: 11px # legacy
   12: 12px # 섹션 내부 간격

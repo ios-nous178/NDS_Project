@@ -136,6 +136,11 @@ export const semantic = {
     subtle: neutral[500],
     inverse: neutral["00"],
   },
+  status: {
+    default: neutral[500],
+    success: "#2B96ED",
+    error: red[500],
+  },
 } as const;
 
 export const colors = {

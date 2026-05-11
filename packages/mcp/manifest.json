@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-11T07:26:49.900Z",
+  "generatedAt": "2026-05-11T07:57:16.840Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -5883,6 +5883,21 @@
       "group": "color"
     },
     {
+      "name": "--color-semantic-status-default",
+      "value": "#999999",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-status-error",
+      "value": "#F13F00",
+      "group": "color"
+    },
+    {
+      "name": "--color-semantic-status-success",
+      "value": "#2B96ED",
+      "group": "color"
+    },
+    {
       "name": "--color-semantic-success-bg",
       "value": "#E5F7F4",
       "group": "color"
@@ -7155,6 +7170,11 @@
     {
       "name": "--spacing-80",
       "value": "80px",
+      "group": "spacing"
+    },
+    {
+      "name": "--spacing-9",
+      "value": "9px",
       "group": "spacing"
     },
     {
