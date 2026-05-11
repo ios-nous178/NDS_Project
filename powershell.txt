@@ -19,7 +19,7 @@
 $REPO_URL = "https://github.com/cashwalk/NudgeEAPDesignSystem.git"
 $CLONE_DIR = "C:\dev"
 $PROJECT_NAME = "NudgeEAPDesignSystem"
-$NODE_VERSION = "22.17.1"
+$NODE_VERSION = "24.15.0"
 $MCP_NAME = "nudge-eap-ds"
 # -----------------------------------
 
