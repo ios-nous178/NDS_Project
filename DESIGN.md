@@ -313,7 +313,7 @@ sizing:
     sm: 20px
     default: 24px
   button:
-    xl: 56px
+    xl: 52px
     lg: 48px
     md: 44px
     sm: 42px

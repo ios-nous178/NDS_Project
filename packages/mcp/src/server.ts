@@ -971,7 +971,34 @@ function getComponentGuide(name: string) {
       knownGuides: Object.keys(COMPONENT_GUIDES),
     };
   }
-  return guide;
+  return {
+    _advisory: guide.figmaNodeUrl
+      ? "Figma 원본 노드 URL이 포함되어 있습니다. 픽셀/색/매트릭스가 의심되면 figmaNodeUrl 을 확인하세요."
+      : "이 가이드는 아직 Figma 노드와 연결되지 않았습니다. list_figma_sync_status 로 다른 컴포넌트의 sync 상태를 확인할 수 있습니다.",
+    ...guide,
+  };
+}
+
+function listFigmaSyncStatus() {
+  const entries = Object.values(COMPONENT_GUIDES).map((g) => ({
+    name: g.name,
+    hasFigmaUrl: Boolean(g.figmaNodeUrl),
+    figmaNodeUrl: g.figmaNodeUrl ?? null,
+    hasSizeMatrix: Boolean(g.sizeMatrix),
+    hasStateMatrix: Boolean(g.stateMatrix),
+    hasColorMatrix: Boolean(g.colorMatrix),
+    hasAccessibility: Boolean(g.accessibility?.length),
+  }));
+  const synced = entries.filter((e) => e.hasFigmaUrl);
+  return {
+    _advisory:
+      "Figma Library(MqR7O3uvBvH5tVngwzbqGH) 와 sync 된 컴포넌트 목록. " +
+      "hasFigmaUrl=true 인 항목은 get_component_guide 응답에서 figmaNodeUrl 을 바로 클릭할 수 있습니다.",
+    total: entries.length,
+    syncedCount: synced.length,
+    pendingCount: entries.length - synced.length,
+    entries,
+  };
 }
 
 function getAdminCmsGuide(args: { intent?: string }) {
@@ -1754,13 +1781,23 @@ const TOOLS = [
   {
     name: "get_component_guide",
     description:
-      "Return curated usage guide for a specific component (pitfalls, color matrix, recommended patterns, interactive pattern). Always call this before using Button/Card/Chip/IconButton/Tabs/Select for the first time in a mockup.",
+      "Return curated usage guide for a specific component (pitfalls, color/size/state matrix, accessibility, interactive pattern, figmaNodeUrl). Always call this before using Button/Card/Chip/IconButton/Tabs/Select for the first time in a mockup.",
     inputSchema: {
       type: "object",
       properties: {
         name: { type: "string", description: "Component name, e.g. 'Button'" },
       },
       required: ["name"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "list_figma_sync_status",
+    description:
+      "List all curated component guides and whether each is synced with a Figma node (figmaNodeUrl/sizeMatrix/stateMatrix). Useful for design QA — see which components still need a Figma-spec audit.",
+    inputSchema: {
+      type: "object",
+      properties: {},
       additionalProperties: false,
     },
   },
@@ -1882,6 +1919,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "get_component_guide":
         result = getComponentGuide((args as { name: string }).name);
+        break;
+      case "list_figma_sync_status":
+        result = listFigmaSyncStatus();
         break;
       case "get_export_html_instructions":
         result = getExportHtmlInstructions(args as { mode?: "singlefile" | "snapshot" });

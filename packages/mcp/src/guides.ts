@@ -310,54 +310,113 @@ export interface ComponentGuide {
   summary: string;
   pitfalls: string[];
   recommended?: string[];
+  /** color × variant 별 표시 톤 요약 */
   colorMatrix?: Record<string, string>;
+  /** size 값 × 픽셀 스펙 (Figma 실측 기준) */
+  sizeMatrix?: Record<string, string>;
+  /** state(active/hover/disabled) 별 토큰/배경 매핑 */
+  stateMatrix?: Record<string, string>;
+  /** 출처 Figma 노드 URL (Library 파일) */
+  figmaNodeUrl?: string;
+  /** 접근성 가이드 (aria/대비/타겟 사이즈 등) */
+  accessibility?: string[];
   interactivePattern?: string;
 }
 
 export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Button: {
     name: "Button",
-    summary: "1차/2차 CTA. color × variant 매트릭스 조합으로 톤 결정.",
+    summary:
+      "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
     pitfalls: [
-      "color='assistive' + variant='solid'은 cool-gray 배경(#9CA2AE)이라 비활성 버튼처럼 보임. 활성 CTA로 사용 금지.",
-      "primary 색은 화면당 가장 중요한 1개 액션에만 사용 (DESIGN.md Do's). 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
-      "파란 카드 위에 두는 CTA는 'secondary' solid (흰 배경 + 파란 글씨)가 대비 안전. 'assistive' solid는 거의 안 보임.",
+      "color='assistive' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
+      "primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
+      "Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'magenta'를 기대하면 안 됨.",
+      "Outlined/Assistive 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=assistive variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
     ],
     recommended: [
       "1차 CTA: color='primary', variant='solid'",
-      "보조 액션: color='primary', variant='outlined' 또는 'soft'",
+      "보조 액션 (밝은 배경 위): color='primary', variant='outlined'",
+      "보조 액션 (파란 카드 위 등): color='secondary', variant='solid' — 옅은 파랑 배경",
+      "중립 액션(취소/뒤로): color='assistive', variant='outlined'",
       "파괴 액션: color='error', variant='solid'",
-      "비활성처럼 회색을 의도한 경우라면 disabled prop을 쓰고, '어두운 회색 솔리드'로 인상을 주려고 assistive를 솔리드로 쓰지 말 것",
+      "회색 인상을 주려고 assistive/solid 를 쓰지 말 것 — disabled prop 이 정공법",
     ],
     colorMatrix: {
-      "primary/solid": "primary fill + 흰 텍스트 — 가장 중요한 CTA",
-      "primary/outlined": "흰 배경 + primary 보더/텍스트 — 보조 액션",
-      "primary/soft": "primary 25 배경 + primary 텍스트 — 3차 액션",
-      "secondary/solid": "magenta 또는 흰배경 + 컬러 텍스트(브랜드 매트릭스 따름) — 강조",
-      "assistive/solid": "cool-gray 400 배경 — 비활성처럼 보임. 사용 자제",
-      "error/solid": "error fill — 파괴 액션 한정",
+      "primary/solid": "#2B96ED 배경 + 흰 텍스트 — 가장 중요한 CTA",
+      "primary/outlined": "흰 배경 + #2B96ED 보더/텍스트 — 밝은 배경 위 보조 액션",
+      "primary/soft": "#F1F8FD 배경 + #2B96ED 텍스트 — 3차 액션 (Figma 라이브러리엔 별도 셀 없음)",
+      "secondary/solid":
+        "#F1F8FD 배경 + #2B96ED 텍스트 — 파란 카드/배경 위 강조 (default), hover=#E3F2FC",
+      "assistive/outlined":
+        "흰 배경 + #D8D8D8 보더 + #383838 medium weight 텍스트 — 중립 액션. Figma는 M/S/XS 만 지원, disabled 없음",
+      "error/solid": "error fill + 흰 텍스트 — 파괴 액션 한정",
     },
+    sizeMatrix: {
+      xl: "height 52 / px 16 / py 14 / 16·24 bold / icon 20 / gap 8",
+      lg: "height 48 / px 16 / py 12 / 16·24 bold / icon 20 / gap 8",
+      md: "height 44 / px 24 / py 11 / 15·22 bold / icon 20 / gap 8",
+      sm: "height 42 / px 16 / py 11 / 14·20 bold / icon 20 / gap 8",
+      xs: "height 38 / px 16 / py 10 / 13·18 bold / icon 18 / gap 6",
+    },
+    stateMatrix: {
+      "primary/solid/disabled": "bg #9CA2AE (cool-gray/400) + 흰 텍스트",
+      "secondary/solid/disabled": "bg #E6E7EB (cool-gray/200) + 텍스트 #9CA2AE",
+      outlined_disabled: "흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE (Figma 명세)",
+      hover: "primary=#017EE4 / secondary=#E3F2FC / outlined/assistive=#FAFAFA",
+    },
+    accessibility: [
+      "터치 타겟 최소 44px — md(44)/lg(48)/xl(52) 권장. xs(38)/sm(42)는 보조 행에서만.",
+      "Figma 의 'Hover / Focused' 셀은 한 상태로 합쳐져 있지만 코드에서는 :focus-visible 도 동일 hover 톤으로 노출됨 — 키보드 포커스링이 사라지지 않게 customizing 시 outline 토큰 유지.",
+      "disabled 버튼에도 aria-disabled 가 자동 부착되도록 disabled prop 사용 (raw <button> 대체 금지).",
+    ],
     interactivePattern:
       "버튼은 onClick 핸들러를 항상 부착. 목업에서도 라우팅 시뮬(toast/console.log)이라도 넣을 것.",
   },
   IconButton: {
     name: "IconButton",
-    summary: "아이콘만 있는 버튼. 접근성을 위해 aria-label 필수.",
+    summary:
+      "아이콘만 있는 버튼 (Figma Library node 171:8560 기준). 접근성을 위해 aria-label 필수.",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8560",
     pitfalls: [
-      "aria-label 누락 시 스크린리더가 읽지 못함.",
-      "AppBar 우측 빈 영역에 아이콘이 들어갈 자리에 ChevronRight 같은 장식만 두면 인터랙션이 없는 채로 시각적 잡음만 발생.",
+      "aria-label 누락 시 스크린리더가 읽지 못함 (prop 강제됨).",
+      "AppBar 우측 빈 영역에 ChevronRight 같은 장식만 두지 말 것 — 인터랙션 없이 시각적 잡음.",
+      "Figma 명세에 disabled 상태가 없음 — disabled 가 필요한 흐름이면 Button(icon-only 처리) 또는 Tooltip 으로 우회.",
     ],
     recommended: [
       "AppBar 우측엔 알림/설정 같은 실제 기능 IconButton을 두기.",
       "<IconButton icon={<PushIcon/>} aria-label='알림' onClick={...}>",
     ],
+    sizeMatrix: {
+      "x-large": "box 36 / icon 28 (padding 4)",
+      large: "box 32 / icon 24 (padding 4)",
+      medium: "box 28 / icon 20 (padding 4)",
+      small: "box 24 / icon 16 (padding 4)",
+    },
+    stateMatrix: {
+      hover: "bg #F5F5F5 (neutral/100), radius 4",
+      disabled: "icon color = text/disabled (Figma에는 미정의)",
+    },
   },
   TextButton: {
     name: "TextButton",
-    summary: "텍스트만으로 된 액션. '전체보기' 같은 인라인 링크에 적합.",
+    summary:
+      "텍스트만으로 된 액션 — '전체보기' 같은 인라인 링크에 적합 (Figma Library node 171:8522).",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8522",
     pitfalls: [
-      "단순 <span>으로 만들지 말 것 — DS TextButton에 호버/포커스/접근성 처리가 들어있음.",
+      "단순 <span>/<a>로 만들지 말 것 — DS TextButton 에 호버/포커스/접근성 처리가 들어 있음.",
+      "Figma 호버 명세가 opacity-50 으로 잡혀 있음 (대비비 위험) — 코드에서는 primary 컬러로 대체. 의도적 차이.",
     ],
+    sizeMatrix: {
+      large: "16·24 regular / icon 16 / gap 2 / padding 4",
+      medium: "14·20 regular / icon 16 / gap 2 / padding 4",
+    },
+    stateMatrix: {
+      default: "color #777 (neutral/600)",
+      disabled: "color #999 (neutral/500)",
+      hover: "color primary/main (DS), Figma는 opacity-50 — 가이드 차이 항목",
+    },
   },
   Card: {
     name: "Card",

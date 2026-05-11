@@ -21,21 +21,66 @@ function readDtsExports(dir) {
     .filter((n) => n !== "index" && /^[A-Z]/.test(n));
 }
 
+/**
+ * d.ts에서 `<ComponentName>Props` 인터페이스/타입을 찾아 props를 추출한다.
+ * - 첫 번째 `*Props` 가 아니라 파일명과 매칭되는 `<basename>Props` 를 우선 선택
+ *   (예: Button.d.ts → `ButtonProps`, `ButtonSlotProps`/`ButtonOptionProps` 등은 무시)
+ * - `extends ...` 가 있어도 본문 `{ ... }` 만 캡처
+ * - 중첩 제네릭(`Record<string, X<Y>>`) 까지 한 prop 라인으로 읽도록 라인 분할 후 파싱
+ */
 function extractPropsFromDts(dtsPath) {
   if (!fs.existsSync(dtsPath)) return null;
   const src = fs.readFileSync(dtsPath, "utf-8");
-  const propsMatch =
-    src.match(/(?:type|interface)\s+(\w+Props)\s*=?\s*\{([^}]*)\}/s) ||
-    src.match(/(?:type|interface)\s+(\w+Props)\s+extends\s+[^{]+\{([^}]*)\}/s);
-  if (!propsMatch) return null;
-  const body = propsMatch[2];
-  const props = [];
-  const lineRegex = /(\w+)(\??):\s*([^;\n]+)[;\n]/g;
-  let m;
-  while ((m = lineRegex.exec(body)) !== null) {
-    props.push({ name: m[1], optional: m[2] === "?", type: m[3].trim() });
+  const basename = path.basename(dtsPath).replace(/\.d\.ts$/, "");
+  const preferredName = `${basename}Props`;
+
+  // 모든 `<Name>Props` 선언을 수집 (interface/type 둘 다)
+  const declRegex = /(?:export\s+)?(?:interface|type)\s+(\w+Props)\b/g;
+  const candidates = [];
+  let dm;
+  while ((dm = declRegex.exec(src)) !== null) {
+    candidates.push({ name: dm[1], index: dm.index });
   }
-  return { typeName: propsMatch[1], props };
+  if (candidates.length === 0) return null;
+
+  const chosen =
+    candidates.find((c) => c.name === preferredName) ??
+    candidates.find((c) => /Slot|Option|Item/.test(c.name) === false) ??
+    candidates[0];
+
+  // 선택된 인터페이스의 `{ ... }` 본문을 brace 매칭으로 정확히 추출
+  const after = src.slice(chosen.index);
+  const open = after.indexOf("{");
+  if (open === -1) return null;
+  let depth = 0;
+  let end = -1;
+  for (let i = open; i < after.length; i++) {
+    const ch = after[i];
+    if (ch === "{") depth++;
+    else if (ch === "}") {
+      depth--;
+      if (depth === 0) {
+        end = i;
+        break;
+      }
+    }
+  }
+  if (end === -1) return null;
+  const body = after.slice(open + 1, end);
+
+  // prop 라인 파싱 — `;` 로 분리 (블록 주석/한 줄 주석 모두 제거 후)
+  const cleaned = body.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*\n/g, "\n");
+  const props = [];
+  for (const raw of cleaned.split(";")) {
+    const line = raw.trim();
+    if (!line) continue;
+    // 형태: <name>?: <type>  | "<quoted>"?: <type>
+    const m = line.match(/^(?:"([^"]+)"|(\w+))(\??):\s*([\s\S]+)$/);
+    if (!m) continue;
+    const name = m[1] ?? m[2];
+    props.push({ name, optional: m[3] === "?", type: m[4].trim().replace(/\s+/g, " ") });
+  }
+  return { typeName: chosen.name, props };
 }
 
 const reactDist = path.join(repoRoot, "packages/react/dist");
