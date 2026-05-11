@@ -162,6 +162,11 @@ const inputStyles = `
     height: ${sizing.icon.default}px;
   }
 
+  /* Helper text color — colors.status (default/success/error) 토큰을 사용.
+   *   default = #999 (helper hint)
+   *   success = primary main — 폼 검증 통과 ("complete" 의도, Figma Input "Success" 셀)
+   *   error   = error main — 폼 오류
+   * 일반 success(녹색, Banner/Toast 용) 와 구분하기 위해 status 그룹으로 분리. */
   :where(.${INPUT_HELPER_CLASS}) {
     display: inline-flex;
     align-items: center;
@@ -169,18 +174,19 @@ const inputStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption2.lineHeight}px;
-    /* Figma helper default color = #999 (neutral/500) */
-    color: ${cv.text.disabled};
+    color: ${cv.status.default};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-variant="error"]) {
-    color: ${cv.error.main};
+    color: ${cv.status.error};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-variant="success"]) {
-    color: ${cv.primary.main};
+    color: ${cv.status.success};
   }
 
+  /* Helper icon 은 부모 helper 의 color 를 currentColor 로 상속받는다 —
+   * variant 별 (default/success/error) 색을 자동 따라가므로 여기서 color 지정 X. */
   :where(.${INPUT_HELPER_CLASS}__icon) {
     display: inline-flex;
     align-items: center;
@@ -188,6 +194,7 @@ const inputStyles = `
     flex-shrink: 0;
     width: 16px;
     height: 16px;
+    color: inherit;
   }
 
   :where(.${INPUT_HELPER_CLASS}__icon svg) {

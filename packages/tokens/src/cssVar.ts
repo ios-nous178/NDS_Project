@@ -60,6 +60,11 @@ export const cv = {
     subtle: v("--color-semantic-icon-subtle"),
     inverse: v("--color-semantic-icon-inverse"),
   },
+  status: {
+    default: v("--color-semantic-status-default"),
+    success: v("--color-semantic-status-success"),
+    error: v("--color-semantic-status-error"),
+  },
 } as const;
 
 export type CssVarRef = typeof cv;
