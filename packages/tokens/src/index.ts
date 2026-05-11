@@ -1,9 +1,11 @@
 export { colors, neutral, coolGray, blue, magenta, yellow, red, green, semantic } from "./colors";
 export { cv } from "./cssVar";
 export type { CssVarRef } from "./cssVar";
+export { eap, eapVar } from "./eap";
+export type { EapTokens, EapVarRef } from "./eap";
 export { typography, fontFamily, fontWeight, typeScale } from "./typography";
 export type { TypeStyle } from "./typography";
-export { spacing, radius, borderWidth, sizing, grid } from "./spacing";
+export { spacing, gap, padding, radius, shape, borderWidth, stroke, sizing, grid } from "./spacing";
 export { elevation, shadow, zIndex } from "./elevation";
 export { motion, duration, easing, transition } from "./motion";
 

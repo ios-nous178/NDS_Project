@@ -113,26 +113,62 @@ function generateColors() {
 function generateSpacing() {
   const lines = [HEADER];
 
-  // spacing
+  // spacing (Figma · SpacingGuide · Primitive)
   lines.push("export const spacing = {");
   for (const [k, v] of Object.entries(tokens.spacing)) {
     lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
   }
   lines.push("} as const;\n");
 
-  // radius
+  // gap (Figma · SpacingGuide · Semantic Gap)
+  if (tokens.gap) {
+    lines.push("export const gap = {");
+    for (const [k, v] of Object.entries(tokens.gap)) {
+      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+    }
+    lines.push("} as const;\n");
+  }
+
+  // padding (Figma · SpacingGuide · Semantic Padding)
+  if (tokens.padding) {
+    lines.push("export const padding = {");
+    for (const [k, v] of Object.entries(tokens.padding)) {
+      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+    }
+    lines.push("} as const;\n");
+  }
+
+  // radius (Figma · RadiusGuide · Primitive)
   lines.push("export const radius = {");
   for (const [k, v] of Object.entries(tokens.rounded)) {
     lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
   }
   lines.push("} as const;\n");
 
-  // borderWidth
+  // shape (Figma · RadiusGuide · Semantic Shape)
+  if (tokens.shape) {
+    lines.push("export const shape = {");
+    for (const [k, v] of Object.entries(tokens.shape)) {
+      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+    }
+    lines.push("} as const;\n");
+  }
+
+  // borderWidth (Figma · BorderGuide · Primitive)
   lines.push("export const borderWidth = {");
   for (const [k, v] of Object.entries(tokens.borderWidth)) {
     lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
   }
   lines.push("} as const;\n");
+
+  // stroke (Figma · BorderGuide · Semantic Stroke)
+  if (tokens.stroke) {
+    lines.push("export const stroke = {");
+    for (const [k, v] of Object.entries(tokens.stroke)) {
+      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+    }
+    lines.push("} as const;\n");
+  }
 
   // sizing (nested)
   lines.push("export const sizing = {");
@@ -144,6 +180,24 @@ function generateSpacing() {
     lines.push("  },");
   }
   lines.push("} as const;\n");
+
+  // grid (Figma · SpacingGuide · Grid)
+  if (tokens.grid) {
+    lines.push("export const grid = {");
+    for (const [bp, entries] of Object.entries(tokens.grid)) {
+      lines.push(`  ${bp}: {`);
+      for (const [k, v] of Object.entries(entries)) {
+        // columns 는 unitless 정수, 그 외는 px 값
+        if (k === "columns") {
+          lines.push(`    ${fmtKey(k)}: ${Number(v)},`);
+        } else {
+          lines.push(`    ${fmtKey(k)}: ${stripUnit(v)},`);
+        }
+      }
+      lines.push("  },");
+    }
+    lines.push("} as const;\n");
+  }
 
   return lines.join("\n");
 }
