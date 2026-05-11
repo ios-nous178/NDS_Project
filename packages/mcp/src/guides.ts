@@ -448,10 +448,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Modal: {
     name: "Modal",
-    summary: "중앙 정렬 다이얼로그. 12px radius, 24px padding, 50% overlay.",
+    summary:
+      "사용자의 현재 흐름을 일시적으로 중단하고 중요한 결정/응답을 받기 위한 오버레이 UI. " +
+      "Radius 8px (shape.md), 카드 padding 비대칭 (top 28 / x 16 / bottom 16), " +
+      "본문 그룹과 버튼 그룹 사이 24px gap, 50% overlay, shadow.md. " +
+      "Device 너비: PC 332px / Mobile 294px (device='pc'|'mobile' 또는 maxWidth로 지정). " +
+      "Type: default / title(헤더) / Image(64×64 아이콘+타이틀). " +
+      "Button: 최대 2개 (1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할).",
     pitfalls: [
-      "Modal 내부에 다시 큰 그림자/보더를 추가하지 말 것 (이미 elevation md 적용됨).",
+      "Modal 내부에 다시 큰 그림자/보더를 추가하지 말 것 (이미 shadow.md 적용됨).",
       "ESC/오버레이 클릭으로 닫히는 기본 동작을 막으면 접근성 저해.",
+      "버튼은 최대 2개까지만 사용. 3개 이상이 필요하면 BottomSheet 검토.",
+      "maxWidth 미지정 시 기본 332px(PC). 모바일 화면이면 device='mobile' 로 294px 지정.",
+      "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
     ],
   },
   Tabs: {
@@ -476,8 +485,40 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Input: {
     name: "Input",
-    summary: "1px 보더, surface 배경, 48px 높이. 라벨/헬퍼/아이콘 슬롯.",
-    pitfalls: ["검색 변형이 필요하면 SearchInput을 사용. Input에 SearchIcon을 직접 박지 말 것."],
+    summary:
+      "1px 보더, 흰 배경, 48px 높이. label/wrapper(field+addon)/helper 의 compound 구조 (Figma Library node 171:9903 기준).",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9903",
+    pitfalls: [
+      "검색 변형이 필요하면 SearchInput을 사용. Input에 SearchIcon을 직접 박지 말 것.",
+      "label/helper 의 typography 는 caption-2(12/16) — body3(14/20) 로 키우지 말 것. Figma 명세보다 크면 폼이 산만해짐.",
+      "complete=true 와 errorMessage 를 동시에 주지 말 것 — error 가 우선이지만 success 의도가 묻힘.",
+      "Multi-helper(헬퍼 2개 row 노출) 패턴은 현재 DS 미지원 — Figma 명세에는 있음. 필요 시 raw flex 로 만들지 말고 별도 API 요청.",
+    ],
+    recommended: [
+      "기본: <Input label='이메일' placeholder='example@nudge.kr' helperText='...' />",
+      "검증 실패: errorMessage 사용 — role='alert' 가 자동 부착됨",
+      "검증 성공: complete + successMessage — primary 컬러 헬퍼로 자동 전환",
+      "달력/검색 같은 아이콘 affordance: suffix prop (24x24)",
+    ],
+    sizeMatrix: {
+      default: "height 48 / padding 16·13 / wrapper gap 10 / radius 8",
+      field: "height 44 / 같은 토큰, label-gap 8",
+    },
+    stateMatrix: {
+      default: "border #D8D8D8 / bg white / placeholder #999",
+      typing: "border #2B96ED (cv.border.focus) / text #111 (cv.text.normal)",
+      error: "border #F13F00 (cv.error.main) / helper color same",
+      disabled: "border #D8D8D8 / bg #FAFAFA (cv.bg.light) / text #999",
+      complete: "border #D8D8D8 / bg white / helper variant=success(=primary blue)",
+    },
+    accessibility: [
+      "label 은 InputLabel(자동 htmlFor 연결)을 통해 부착 — placeholder 로 대체 금지.",
+      "errorMessage 가 있으면 helper 가 role='alert' 로 노출 — 스크린리더가 즉시 안내.",
+      "aria-describedby 가 helperId 와 자동 연결됨 (helper 가 있을 때만).",
+      "Clear 버튼은 aria-label='입력 삭제' 가 기본 제공 — readOnly/disabled 면 자동 숨김.",
+    ],
+    interactivePattern:
+      "controlled/uncontrolled 모두 지원. clearable + onClear 로 값 초기화 콜백 부착. suffix slot 에 IconButton 등을 넣어도 됨 (단 onClick 핸들러 필수).",
   },
   ProgressBar: {
     name: "ProgressBar",

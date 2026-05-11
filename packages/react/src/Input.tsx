@@ -24,14 +24,22 @@ const INPUT_HELPER_CLASS = `${INPUT_CLASS}__helper`;
 
 export type InputSize = "default" | "field";
 
+/* Figma 실측 (171:9903)
+ *   label ↔ wrapper gap : 12px
+ *   wrapper ↔ helper gap: 8px (disabled=12)
+ *   helper(items) gap   : 12px (HelpText 1 ↔ HelpText 2)
+ *   wrapper text↔icon gap: 10px
+ */
 const inputSizeConfig = {
   default: {
     height: sizing.input.default,
     labelGap: spacing[12],
+    helperGap: spacing[8],
   },
   field: {
     height: sizing.input.field,
     labelGap: spacing[8],
+    helperGap: spacing[8],
   },
 } as const;
 
@@ -42,16 +50,24 @@ const inputStyles = `
   :where(.${INPUT_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--nds-input-label-gap, ${spacing[12]}px);
     width: var(--nds-input-width, 100%);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
 
+  /* label ↔ wrapper 간격은 label gap, wrapper ↔ helper 간격은 helper gap.
+   * Figma 명세상 두 간격이 다르므로 children에 직접 margin 부여 */
+  :where(.${INPUT_LABEL_CLASS}) + :where(.${INPUT_WRAPPER_CLASS}) {
+    margin-top: var(--nds-input-label-gap, ${spacing[12]}px);
+  }
+  :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_CLASS}) {
+    margin-top: var(--nds-input-helper-gap, ${spacing[8]}px);
+  }
+
   :where(.${INPUT_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.body3.lineHeight}px;
+    line-height: ${typeScale.caption2.lineHeight}px;
     color: ${cv.text.default};
   }
 
@@ -59,6 +75,7 @@ const inputStyles = `
     position: relative;
     display: flex;
     align-items: center;
+    gap: ${spacing[10]}px;
     width: 100%;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 ${spacing[16]}px;
@@ -69,6 +86,10 @@ const inputStyles = `
     transition:
       border-color ${transition.default},
       background-color ${transition.default};
+  }
+
+  :where(.${INPUT_ROOT_CLASS}[data-disabled="true"]) {
+    --nds-input-helper-gap: ${spacing[12]}px;
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-focused="true"]) {
@@ -98,7 +119,8 @@ const inputStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    /* Figma --color-label-normal = #111 (neutral/900) */
+    color: ${cv.text.normal};
     padding: 0;
   }
 
@@ -117,15 +139,6 @@ const inputStyles = `
     align-items: center;
     flex-shrink: 0;
     line-height: 1;
-  }
-
-  :where(.${INPUT_PREFIX_CLASS}) {
-    margin-right: ${spacing[8]}px;
-    color: ${cv.icon.default};
-  }
-
-  :where(.${INPUT_SUFFIX_CLASS}) {
-    margin-left: ${spacing[8]}px;
     color: ${cv.icon.default};
   }
 
@@ -138,7 +151,6 @@ const inputStyles = `
     background: none;
     cursor: pointer;
     padding: 0;
-    margin-left: ${spacing[8]}px;
     color: ${cv.icon.subtle};
     line-height: 1;
   }
@@ -152,10 +164,11 @@ const inputStyles = `
     display: inline-flex;
     align-items: center;
     gap: ${spacing[6]}px;
-    font-size: ${typeScale.caption1.fontSize}px;
+    font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    line-height: ${typeScale.caption2.lineHeight}px;
+    /* Figma helper default color = #999 (neutral/500) */
+    color: ${cv.text.disabled};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-variant="error"]) {
@@ -269,15 +282,18 @@ export const InputRoot: React.FC<InputRootProps> = ({
       <div
         data-slot="root"
         data-size={size}
-        className={cx(INPUT_ROOT_CLASS, className)}
+        data-disabled={disabled ? "true" : "false"}
+        data-error={error ? "true" : "false"}
         style={
           {
             "--nds-input-width": fullWidth ? "100%" : "auto",
             "--nds-input-height": `${sizeStyle.height}px`,
             "--nds-input-label-gap": `${sizeStyle.labelGap}px`,
+            "--nds-input-helper-gap": `${sizeStyle.helperGap}px`,
             ...style,
           } as React.CSSProperties
         }
+        className={cx(INPUT_ROOT_CLASS, className)}
         {...rest}
       >
         {children}
