@@ -618,12 +618,16 @@ function getMainTsxImports(args: { brand?: string }) {
   const notes: string[] = [
     "토큰 CSS는 컴포넌트 CSS보다 먼저 import해야 변수가 적용됨.",
     "브랜드별 CSS는 한 번에 하나만 import (덮어쓰기됨).",
-    "./index.css 는 프로젝트의 minimal reset(브라우저 기본값 정리) + 페이지 단 스타일을 담는다. tokens.css 보다 뒤에 와야 토큰 변수를 참조할 수 있다.",
+    "./index.css 는 프로젝트의 minimal reset(브라우저 기본값 정리)을 담는다. tokens.css 보다 뒤, react/styles.css 보다 앞에 둬야 DS 컴포넌트 스타일을 덮지 않는다.",
   ];
 
   if (tokensPkg) {
     lines.push(`import "@nudge-eap/tokens/css";  // 공통 토큰`);
-    if (resolved.ok && resolved.brand?.cssImport) {
+    if (resolved.ok && resolved.brand?.cssImport === "@nudge-eap/tokens/css") {
+      notes.push(
+        `브랜드 '${resolved.brand.slug}' 는 공통 토큰 CSS가 기본값입니다. 별도 브랜드 CSS import가 필요 없습니다.`,
+      );
+    } else if (resolved.ok && resolved.brand?.cssImport) {
       lines.push(`import "${resolved.brand.cssImport}";  // 브랜드 토큰 (${resolved.brand.slug})`);
     } else if (resolved.ok && resolved.brand && !resolved.brand.cssImport) {
       lines.push(`// '${resolved.brand.slug}' 브랜드는 토큰 CSS export가 준비되지 않았습니다.`);
@@ -637,9 +641,9 @@ function getMainTsxImports(args: { brand?: string }) {
     }
   }
   if (reactPkg) {
+    lines.push(`import "./index.css";  // 프로젝트 minimal reset`);
     lines.push(`import "@nudge-eap/react/styles.css";  // 컴포넌트 스타일`);
   }
-  lines.push(`import "./index.css";  // 프로젝트 reset + 페이지 스타일`);
   return {
     targetFile: "src/main.tsx (또는 src/index.tsx)",
     placement: "최상단 (다른 import보다 먼저)",
@@ -659,6 +663,8 @@ function getMainTsxImports(args: { brand?: string }) {
 const MINIMAL_RESET_CSS = `/* nudge-eap-ds minimal reset
  * 브라우저 기본값을 DS 토큰 기준으로 정리한다.
  * tokens.css 이후 import 되어야 var(--font-family-default) 등이 적용된다.
+ * react/styles.css 이전 import 되어야 DS 컴포넌트 룰이 reset을 이긴다.
+ * element selector reset은 :where()로 감싸 specificity를 0으로 유지한다.
  */
 
 *,
@@ -667,13 +673,12 @@ const MINIMAL_RESET_CSS = `/* nudge-eap-ds minimal reset
   box-sizing: border-box;
 }
 
-html,
-body {
+:where(html, body) {
   margin: 0;
   padding: 0;
 }
 
-body {
+:where(body) {
   font-family: var(--font-family-default);
   font-size: var(--font-size-body-2);
   line-height: var(--line-height-body-2);
@@ -685,21 +690,17 @@ body {
 }
 
 /* 헤더/문단 margin 제거 — 간격은 부모 컨테이너의 gap/spacing 토큰으로 통일 */
-h1, h2, h3, h4, h5, h6,
-p, figure, blockquote, dl, dd {
+:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
   margin: 0;
 }
 
 /* 폼 요소 chrome 제거 — DS Button/Input 이 자체 스타일 책임 */
-button,
-input,
-select,
-textarea {
+:where(button, input, select, textarea) {
   font: inherit;
   color: inherit;
 }
 
-button {
+:where(button) {
   background: none;
   border: 0;
   padding: 0;
@@ -707,25 +708,19 @@ button {
 }
 
 /* 링크 기본 색/밑줄 제거 — 사용처에서 명시적으로 지정 */
-a {
+:where(a) {
   color: inherit;
   text-decoration: none;
 }
 
 /* 미디어 요소 기본 — 박스 모델/반응형 */
-img,
-svg,
-video,
-canvas,
-audio,
-iframe {
+:where(img, svg, video, canvas, audio, iframe) {
   display: block;
   max-width: 100%;
 }
 
 /* 리스트 기본 padding 제거 */
-ul,
-ol {
+:where(ul, ol) {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1164,7 +1159,11 @@ function getBrandInfo(args: { brand: string }) {
         : null,
       mainTsxOrder: [
         `import "@nudge-eap/tokens/css";  // 공통 토큰 (먼저)`,
-        brand.cssImport ? `import "${brand.cssImport}";  // 브랜드 토큰` : "// 브랜드 CSS 미준비",
+        brand.cssImport && brand.cssImport !== "@nudge-eap/tokens/css"
+          ? `import "${brand.cssImport}";  // 브랜드 토큰`
+          : brand.cssImport === "@nudge-eap/tokens/css"
+            ? "// nudge-eap은 공통 토큰 CSS가 기본 브랜드 CSS"
+            : "// 브랜드 CSS 미준비",
         `import "@nudge-eap/react/styles.css";  // 컴포넌트 스타일`,
       ],
     },
@@ -1178,8 +1177,9 @@ function resolveBrand(input?: string): {
   availableBrands: string[];
 } {
   if (!input) {
-    // 기본값 — 첫 번째 'ready' 브랜드 또는 첫 브랜드
-    const fallback = brandsList.find((b) => b.ready) ?? brandsList[0];
+    // 기본값 — nudge-eap base CSS, 없으면 첫 번째 'ready' 브랜드 또는 첫 브랜드
+    const fallback =
+      brandBySlug.get("nudge-eap") ?? brandsList.find((b) => b.ready) ?? brandsList[0];
     return {
       ok: !!fallback,
       brand: fallback,

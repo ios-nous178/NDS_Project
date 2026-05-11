@@ -34,6 +34,15 @@ const iconButtonStyles = `
     background: var(--nds-icon-button-hover-bg, ${neutral[100]});
   }
 
+  :where(.${ICON_BUTTON_CLASS}:focus) {
+    outline: none;
+  }
+
+  :where(.${ICON_BUTTON_CLASS}:focus-visible) {
+    outline: 2px solid var(--nds-icon-button-focus-ring-color, ${cv.primary.main});
+    outline-offset: var(--nds-icon-button-focus-ring-offset, 2px);
+  }
+
   :where(.${ICON_BUTTON_CLASS} svg) {
     width: var(--nds-icon-button-icon-size, 24px);
     height: var(--nds-icon-button-icon-size, 24px);

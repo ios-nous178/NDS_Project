@@ -181,6 +181,7 @@ function collectBrands() {
   const cssExports = Object.keys(tokensPkg.exports ?? {})
     .filter((k) => k.startsWith("./css/"))
     .map((k) => k.replace(/^\.\/css\//, ""));
+  const hasBaseCssExport = Boolean(tokensPkg.exports?.["./css"]);
 
   const jsThemes = fs.existsSync(tokensBrandsDir)
     ? fs
@@ -205,7 +206,11 @@ function collectBrands() {
       fontFamilies: [],
     };
 
-    const cssImport = cssExports.includes(slug) ? `@nudge-eap/tokens/css/${slug}` : null;
+    const cssImport = cssExports.includes(slug)
+      ? `@nudge-eap/tokens/css/${slug}`
+      : slug === "nudge-eap" && hasBaseCssExport
+        ? "@nudge-eap/tokens/css"
+        : null;
     const jsExport = jsThemes.includes(slug) ? `@nudge-eap/tokens/brands` : null;
 
     return {
