@@ -3,8 +3,10 @@ import {
   cv,
   fontFamily,
   fontWeight,
+  grid,
   neutral,
   radius,
+  sizing,
   spacing,
   transition,
   typeScale,
@@ -14,11 +16,16 @@ import {
 /* ─── Constants (Figma Library node 96:25923 — NudgeEAP Web Header) ───
  *   Header height: 80 (콘텐츠 79 + 하단 보더 1)
  *   콘텐츠 max-width 1200 — 1920 뷰포트에서 좌우 360px 마진
+ *     · 1200 이상 viewport: inner padding 0, 콘텐츠가 max-width 1200 경계에 직접 붙음
+ *     · 1199 이하 viewport: grid.desktop.minMargin (40px) 좌우 padding 자동 적용
  *   Logo: width 200 / height 60 (image), 헤더 안에서 vertical center
- *   Menu item: h 79 / px 20 / py 18, font headline-5(18/26) Bold, color #111 (neutral/900)
+ *   Menu item: h 79 / px 20, font headline-5(18/26) Bold, color #111 (neutral/900)
+ *     · padding-y 두지 않고 height + align-items center 로 정렬 (Button 패턴과 동일)
  *   Action: gap 16, 우측 정렬
- *     · 앱 다운로드: bg neutral/100 (#F5F5F5), px 14 / py 9, radius 8, body-1(16/24) Bold primary
- *     · 로그인/로그아웃: white bg, 1px primary border, px 18 / py 9, radius 8, body-1 Bold primary
+ *     · 앱 다운로드: bg neutral/100 (#F5F5F5), px 14, height sizing.button.sm (42),
+ *       radius 8, body-1(16/24) Bold primary
+ *     · 로그인/로그아웃: white bg, 1px primary border, px 18, height sizing.button.md (44),
+ *       radius 8, body-1 Bold primary
  *   브랜드별 색은 tokens.css 의 --color-semantic-primary-* / --color-semantic-text-* 가
  *   자동으로 끌어와짐. 클라이언트 로고는 per-tenant 이미지라 prop 으로 주입한다.
  */
@@ -56,12 +63,19 @@ const webHeaderStyles = `
     display: flex;
     align-items: center;
     width: 100%;
-    max-width: var(--nds-web-header-max-width, 1200px);
+    max-width: var(--nds-web-header-max-width, ${grid.desktop.contentWidth}px);
     height: 100%;
     margin: 0 auto;
-    padding: 0 var(--nds-web-header-padding-x, ${spacing[24]}px);
+    padding: 0 var(--nds-web-header-padding-x, 0);
     box-sizing: border-box;
     gap: ${spacing[40]}px;
+  }
+
+  /* DESIGN.md grid.desktop: 1200 미만 뷰포트는 좌우 minMargin(40px) 적용. */
+  @media (max-width: ${grid.desktop.contentWidth - 1}px) {
+    :where(.${WH_INNER_CLASS}) {
+      --nds-web-header-padding-x: ${grid.desktop.minMargin}px;
+    }
   }
 
   :where(.${WH_LOGO_CLASS}) {
@@ -133,12 +147,14 @@ const webHeaderStyles = `
     flex-shrink: 0;
   }
 
-  /* 앱 다운로드 (회색 배경 + primary 텍스트) */
+  /* 앱 다운로드 (회색 배경 + primary 텍스트)
+     Figma 실측 height 42 (sizing.button.sm). height + align-items center 로 정렬. */
   :where(.${WH_DOWNLOAD_CLASS}) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[8]}px ${spacing[14]}px;
+    min-height: ${sizing.button.sm}px;
+    padding: 0 ${spacing[14]}px;
     background: ${neutral[100]};
     color: ${cv.primary.main};
     font-family: inherit;
@@ -150,6 +166,7 @@ const webHeaderStyles = `
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;
+    box-sizing: border-box;
     transition: background-color ${transition.default};
   }
 
@@ -157,12 +174,14 @@ const webHeaderStyles = `
     background: ${neutral[200]};
   }
 
-  /* 로그인 / 로그아웃 — white bg + primary border */
+  /* 로그인 / 로그아웃 — white bg + primary border
+     Figma 실측 height 44 (sizing.button.md). height + align-items center 로 정렬. */
   :where(.${WH_AUTH_CLASS}) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[8]}px ${spacing[18]}px;
+    min-height: ${sizing.button.md}px;
+    padding: 0 ${spacing[18]}px;
     background: ${cv.bg.white};
     color: ${cv.primary.main};
     font-family: inherit;
@@ -174,6 +193,7 @@ const webHeaderStyles = `
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;
+    box-sizing: border-box;
     transition:
       background-color ${transition.default},
       color ${transition.default};
