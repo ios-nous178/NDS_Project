@@ -1,4 +1,4 @@
-import { addons, types } from "@storybook/manager-api";
+import { addons, types } from "storybook/manager-api";
 import React from "react";
 import { ICON_NAMES, ICON_SVGS } from "./icon-registry";
 

@@ -1,4 +1,4 @@
-import { userEvent } from "@storybook/test";
+import { userEvent } from "storybook/test";
 
 const IS_DEV_STORYBOOK = import.meta.env.DEV;
 const INTERACTION_DELAY_MS = IS_DEV_STORYBOOK ? 180 : 0;

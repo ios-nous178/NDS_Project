@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within } from "@storybook/test";
+import { expect, within } from "storybook/test";
 import { Tabs, type TabsProps } from "@nudge-eap/react";
 import { colors } from "@nudge-eap/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
