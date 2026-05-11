@@ -113,7 +113,7 @@ const selectionCardStyles = `
     border-color: ${cv.primary.main};
   }
 
-  :where(.${SC_ITEM_CLASS}:focus-within) {
+  :where(.${SC_ITEM_CLASS}:has(:focus-visible)) {
     outline: 2px solid ${cv.primary.main};
     outline-offset: 2px;
   }
