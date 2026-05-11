@@ -2,18 +2,23 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
 import React from "react";
 
+// Figma 가이드(171:6676)와 동일하게 각 스케일을 Bold/Medium/Regular 3개 weight 로 노출.
+const WEIGHT_VARIANTS: Array<{ label: string; value: number }> = [
+  { label: "Bold", value: 700 },
+  { label: "Medium", value: 500 },
+  { label: "Regular", value: 400 },
+];
+
 function TypeRow({
   name,
   fontSize,
   lineHeight,
   letterSpacing,
-  weight,
 }: {
   name: string;
   fontSize: number;
   lineHeight: number;
   letterSpacing: number;
-  weight: number;
 }) {
   return (
     <div
@@ -30,39 +35,31 @@ function TypeRow({
           {name}
         </div>
         <div style={{ fontSize: 12, color: "#777777", lineHeight: "18px" }}>
-          {fontSize}px / {lineHeight}px / {weight}
+          {fontSize}px / {lineHeight}px
         </div>
         <div style={{ fontSize: 12, color: "#999999", lineHeight: "18px" }}>
           letter-spacing: {letterSpacing}
         </div>
       </div>
 
-      <div>
-        <div
-          style={{
-            fontFamily: fontFamily.web,
-            fontSize,
-            lineHeight: `${lineHeight}px`,
-            letterSpacing,
-            fontWeight: weight,
-            color: "#383838",
-          }}
-        >
-          The quick brown fox jumps over the lazy dog
-        </div>
-        <div
-          style={{
-            fontFamily: fontFamily.web,
-            fontSize,
-            lineHeight: `${lineHeight}px`,
-            letterSpacing,
-            fontWeight: weight,
-            color: "#383838",
-            marginTop: 8,
-          }}
-        >
-          오늘의 감정 흐름을 차분하게 살펴보세요
-        </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {WEIGHT_VARIANTS.map((w) => (
+          <div key={w.value}>
+            <div style={{ fontSize: 11, color: "#999999", marginBottom: 4 }}>{w.label}</div>
+            <div
+              style={{
+                fontFamily: fontFamily.web,
+                fontSize,
+                lineHeight: `${lineHeight}px`,
+                letterSpacing,
+                fontWeight: w.value,
+                color: "#383838",
+              }}
+            >
+              가나다라 Aa 123 The quick brown fox
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -106,7 +103,6 @@ function TypographyTokensPage() {
             fontSize={token.fontSize}
             lineHeight={token.lineHeight}
             letterSpacing={token.letterSpacing}
-            weight={token.fontWeight}
           />
         ))}
       </div>

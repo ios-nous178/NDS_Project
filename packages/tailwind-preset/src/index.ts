@@ -87,10 +87,7 @@ export const nudgeEapPreset = {
       fontSize: Object.fromEntries(
         Object.entries(typeScale).map(([key, val]) => [
           key,
-          [
-            `${val.fontSize}px`,
-            { lineHeight: `${val.lineHeight}px`, fontWeight: String(val.fontWeight) },
-          ],
+          [`${val.fontSize}px`, { lineHeight: `${val.lineHeight}px` }],
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
@@ -174,10 +171,7 @@ export const trostPreset = {
       fontSize: Object.fromEntries(
         Object.entries(trostTheme.typography!.typeScale!).map(([key, val]) => [
           key,
-          [
-            `${val.fontSize}px`,
-            { lineHeight: `${val.lineHeight}px`, fontWeight: String(val.fontWeight) },
-          ],
+          [`${val.fontSize}px`, { lineHeight: `${val.lineHeight}px` }],
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
@@ -268,10 +262,7 @@ export const moneplePreset = {
       fontSize: Object.fromEntries(
         Object.entries(monepleTheme.typography!.typeScale!).map(([key, val]) => [
           key,
-          [
-            `${val.fontSize}px`,
-            { lineHeight: `${val.lineHeight}px`, fontWeight: String(val.fontWeight) },
-          ],
+          [`${val.fontSize}px`, { lineHeight: `${val.lineHeight}px` }],
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),

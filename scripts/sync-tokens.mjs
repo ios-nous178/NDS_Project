@@ -222,28 +222,21 @@ function generateTypography() {
   }
   lines.push("} as const;\n");
 
-  // TypeStyle type
+  // TypeStyle type — fontWeight 는 typeScale 에 포함하지 않는다 (Figma 가이드는
+  // 각 스케일을 Bold/Medium/Regular 3개 weight 모두 등가로 노출. 단일 default 두지 않음).
+  // 사용처에서 fontWeight 토큰을 별도로 명시한다.
   lines.push("export type TypeStyle = {");
   lines.push("  fontSize: number;");
   lines.push("  lineHeight: number;");
   lines.push("  letterSpacing: number;");
-  lines.push("  fontWeight: number;");
   lines.push("};\n");
-
-  // typeScale — reference fontWeight constants
-  const weightValueToKey = {};
-  for (const [k, v] of Object.entries(typo.fontWeight)) {
-    weightValueToKey[v] = k;
-  }
 
   lines.push("export const typeScale = {");
   for (const [name, style] of Object.entries(typo.typeScale)) {
     // Convert kebab-case to camelCase for keys
     const camelName = name.replace(/-(\w)/g, (_, c) => c.toUpperCase());
-    const wKey = weightValueToKey[style.fontWeight];
-    const wExpr = wKey ? `fontWeight.${wKey}` : Number(style.fontWeight);
     lines.push(
-      `  ${camelName}: { fontSize: ${stripUnit(style.fontSize)}, lineHeight: ${stripUnit(style.lineHeight)}, letterSpacing: ${stripUnit(style.letterSpacing)}, fontWeight: ${wExpr} },`,
+      `  ${camelName}: { fontSize: ${stripUnit(style.fontSize)}, lineHeight: ${stripUnit(style.lineHeight)}, letterSpacing: ${stripUnit(style.letterSpacing)} },`,
     );
   }
   lines.push("} as const;\n");

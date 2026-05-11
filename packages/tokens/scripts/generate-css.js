@@ -53,6 +53,24 @@ function camelToKebab(s) {
   return s.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
+/**
+ * typeScale 키(camelCase + 숫자)를 Figma 가이드의 kebab 형태로 변환.
+ *   body1 → body-1 / display3 → display-3 / headline1 → headline-1 / label → label
+ */
+function typeScaleKeyToFigma(s) {
+  return s.replace(/([a-z])(\d)/g, "$1-$2");
+}
+
+/**
+ * fontFamily 키를 Figma 가이드 이름으로 매핑.
+ *   web → default (Figma --font-family-default 와 정합)
+ *   system → system
+ */
+function fontFamilyKeyToFigma(key) {
+  if (key === "web") return "default";
+  return key;
+}
+
 function flattenEapVars(obj, prefix, lines) {
   for (const [key, value] of Object.entries(obj)) {
     const part = camelToKebab(key);
@@ -167,10 +185,10 @@ function generateBaseTokens() {
   lines.push("");
   flattenSizing(sizing, "", lines);
 
-  // Font Family
+  // Font Family — Figma 가이드 명명(--font-family-default / -system)에 맞춤
   lines.push("");
   for (const [key, value] of Object.entries(fontFamily)) {
-    lines.push(`  --font-${key}: ${value};`);
+    lines.push(`  --font-family-${fontFamilyKeyToFigma(key)}: ${value};`);
   }
 
   // Font Weight
@@ -179,12 +197,14 @@ function generateBaseTokens() {
     lines.push(`  --font-weight-${key}: ${value};`);
   }
 
-  // Type Scale
+  // Type Scale — Figma 가이드 변수명(--font-size-body-1 / --line-height-body-1)에 정합.
+  // fontWeight 는 스케일에 묶지 않고(스케일당 default 없음), --font-weight-* 토큰을
+  // 사용처에서 직접 조합한다.
   lines.push("");
   for (const [key, value] of Object.entries(typeScale)) {
-    lines.push(`  --text-${key}-size: ${value.fontSize}px;`);
-    lines.push(`  --text-${key}-line-height: ${value.lineHeight}px;`);
-    lines.push(`  --text-${key}-weight: ${value.fontWeight};`);
+    const figmaKey = typeScaleKeyToFigma(key);
+    lines.push(`  --font-size-${figmaKey}: ${value.fontSize}px;`);
+    lines.push(`  --line-height-${figmaKey}: ${value.lineHeight}px;`);
   }
 
   lines.push("}");
@@ -229,15 +249,15 @@ function generateBrandTokens({ theme, title, cssImport }) {
     lines.push("  /* ── Typography ── */");
     if (typography.fontFamily) {
       for (const [key, value] of Object.entries(typography.fontFamily)) {
-        lines.push(`  --font-${key}: ${value};`);
+        lines.push(`  --font-family-${fontFamilyKeyToFigma(key)}: ${value};`);
       }
     }
     if (typography.typeScale) {
       lines.push("");
       for (const [key, value] of Object.entries(typography.typeScale)) {
-        lines.push(`  --text-${key}-size: ${value.fontSize}px;`);
-        lines.push(`  --text-${key}-line-height: ${value.lineHeight}px;`);
-        lines.push(`  --text-${key}-weight: ${value.fontWeight};`);
+        const figmaKey = typeScaleKeyToFigma(key);
+        lines.push(`  --font-size-${figmaKey}: ${value.fontSize}px;`);
+        lines.push(`  --line-height-${figmaKey}: ${value.lineHeight}px;`);
       }
     }
   }
