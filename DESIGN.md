@@ -210,7 +210,6 @@ spacing:
   6: 6px # 뱃지·칩 내부 여백
   7: 7px # legacy
   8: 8px # 카드 내부 수직 간격
-  9: 9px # Button XS padding-y (38px height = 18+18+2)
   10: 10px # 리스트 아이템 내부 패딩
   11: 11px # legacy
   12: 12px # 섹션 내부 간격

@@ -28,7 +28,7 @@ const buttonStyles = `
     gap: var(--nds-button-gap, ${spacing[8]}px);
     width: var(--nds-button-width, auto);
     min-height: var(--nds-button-height, 48px);
-    padding: var(--nds-button-padding-y, ${spacing[12]}px) var(--nds-button-padding-x, ${spacing[16]}px);
+    padding: 0 var(--nds-button-padding-x, ${spacing[16]}px);
     border-radius: var(--nds-button-radius, ${radius.md}px);
     border: 1px solid var(--nds-button-border-color, transparent);
     background: var(--nds-button-background, ${cv.primary.main});
@@ -78,18 +78,22 @@ const buttonStyles = `
 `;
 
 /* ─── Size config (피그마 실측 — Library node 171:8385 기준) ───
- *   XL(52): px 16 / py 14 / 16·24 / icon 20 / gap 8
- *   L (48): px 16 / py 12 / 16·24 / icon 20 / gap 8
- *   M (44): px 24 / py 11 / 15·22 / icon 20 / gap 8
- *   S (42): px 16 / py 11 / 14·20 / icon 20 / gap 8
- *   XS(38): px 16 / py 10 / 13·18 / icon 18 / gap 6
+ * 버튼 높이는 sizing.button.{size} 토큰이 단일 source of truth.
+ * padding-y 는 두지 않고 align-items: center 로 콘텐츠를 수직 정렬한다.
+ *   (자연 높이 = line-height + 2px border < min-height 가 모든 사이즈에서 성립)
+ *
+ *   XL(52):    px 16 / 16·24 / icon 20 / gap 8
+ *   L (48):    px 16 / 16·24 / icon 20 / gap 8
+ *   M (44):    px 24 / 15·22 / icon 20 / gap 8
+ *   S (42):    px 16 / 14·20 / icon 20 / gap 8
+ *   XS(38):    px 16 / 13·18 / icon 18 / gap 6
+ *   Field(48): px 16 / 15·22 / icon 20 / gap 8
  */
 
 const sizeConfig = {
   xl: {
     height: sizing.button.xl,
     px: spacing[16],
-    py: spacing[14],
     fontSize: typeScale.body1.fontSize,
     lineHeight: typeScale.body1.lineHeight,
     iconSize: sizing.icon.sm,
@@ -98,7 +102,6 @@ const sizeConfig = {
   lg: {
     height: sizing.button.lg,
     px: spacing[16],
-    py: spacing[12],
     fontSize: typeScale.body1.fontSize,
     lineHeight: typeScale.body1.lineHeight,
     iconSize: sizing.icon.sm,
@@ -107,7 +110,6 @@ const sizeConfig = {
   md: {
     height: sizing.button.md,
     px: spacing[24],
-    py: spacing[11],
     fontSize: typeScale.body2.fontSize,
     lineHeight: typeScale.body2.lineHeight,
     iconSize: sizing.icon.sm,
@@ -116,7 +118,6 @@ const sizeConfig = {
   sm: {
     height: sizing.button.sm,
     px: spacing[16],
-    py: spacing[11],
     fontSize: typeScale.body3.fontSize,
     lineHeight: typeScale.body3.lineHeight,
     iconSize: sizing.icon.sm,
@@ -125,7 +126,6 @@ const sizeConfig = {
   xs: {
     height: sizing.button.xs,
     px: spacing[16],
-    py: spacing[10],
     fontSize: typeScale.caption1.fontSize,
     lineHeight: typeScale.caption1.lineHeight,
     iconSize: 18,
@@ -134,7 +134,6 @@ const sizeConfig = {
   field: {
     height: sizing.button.field,
     px: spacing[16],
-    py: spacing[13],
     fontSize: typeScale.body2.fontSize,
     lineHeight: typeScale.body2.lineHeight,
     iconSize: sizing.icon.sm,
@@ -469,7 +468,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {
             "--nds-button-height": `${sizeStyle.height}px`,
             "--nds-button-padding-x": `${sizeStyle.px}px`,
-            "--nds-button-padding-y": `${sizeStyle.py}px`,
             "--nds-button-gap": `${sizeStyle.gap}px`,
             "--nds-button-font-size": `${sizeStyle.fontSize}px`,
             "--nds-button-line-height": `${sizeStyle.lineHeight}px`,
