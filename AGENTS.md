@@ -51,7 +51,7 @@ pnpm --filter storybook dev
 
 - 사용자가 "어드민", "CMS", "운영툴", "백오피스" 등을 언급하면 CMS 규칙을 따르세요.
 - 그 외(앱, 사용자 화면, Trost, Geniet, NudgeEAP)는 사용자 앱 규칙을 따르세요.
-- **사용자 앱 작업 시**: `mcp__nudge-eap-ds__*` 도구를 적극 활용하세요 (`get_design_principles`, `get_component_guide`, `search_component`, `find_icon`, `lookup_token`, `validate_mockup` 등).
+- **사용자 앱 작업 시**: `mcp__nudge-eap-ds__*` 도구를 적극 활용하세요 (`get_design_principles`, `get_component_guide`, `get_pattern_guide`, `search_component`, `find_icon`, `lookup_token`, `validate_mockup` 등).
 - **CMS 작업 시**: `import { Button, Form, Table, ... } from "antd"` 형태로 직접 import. 별도 MCP 없이 작성 → 모르는 props는 추측하지 말고 [https://ant.design/components/overview](https://ant.design/components/overview) 문서를 확인하세요.
 - 두 디자인시스템을 한 화면에서 섞어 쓰지 마세요. 화면 종류에 맞는 한 쪽만 사용합니다.
 
@@ -100,6 +100,15 @@ DS에 없는 것 (임시 구현 허용): Accordion(`mockup-layout`에 있음), S
 **3. 반응형**
 `useIsMobile()` 훅 사용. 모바일: 테이블→카드, 필터→가로스크롤, CTA→세로배치
 
+#### 3-1. CTA / 강조 UX 규칙
+
+- CTA가 여러 개여도 우측 화살표 아이콘은 대표 전진 액션 1개에만 사용합니다.
+- 반복 카드/리스트의 "자세히 보기" 버튼에는 화살표를 반복하지 않습니다.
+- primary solid 버튼은 한 화면의 가장 중요한 액션 1개만 사용합니다.
+- Chip/Badge는 상태, 분류, 짧은 속성 표시용입니다. 섹션 제목 장식이나 일반 안내문 강조 용도로 남발하지 않습니다.
+- 안내 영역은 기본적으로 neutral surface를 사용하고, 색 배경/아이콘/Chip/Badge/굵은 제목 중 1~2개만 조합합니다.
+- CTA 그룹, 안내문, 옵션 많은 드롭다운, 정보 과밀 리스트를 만들 때는 `get_pattern_guide("cta-group" | "notice" | "dropdown" | "dense-list")`를 확인합니다.
+
 #### 4. 파일 구조
 
 ```
@@ -115,6 +124,10 @@ apps/storybook/src/stories/
 - [ ] MockupLayout 사용했는가
 - [ ] DS 컴포넌트를 인라인으로 만들지 않았는가
 - [ ] Chip은 label prop, Select는 onValueChange 사용했는가
+- [ ] 화살표 CTA는 대표 액션 1개에만 있는가
+- [ ] primary solid 버튼이 한 화면에 1개 이하인가
+- [ ] Chip/Badge가 장식이 아니라 상태/분류/속성 표시로 쓰였는가
+- [ ] 안내 영역 강조 장치가 과하지 않은가
 - [ ] useIsMobile()로 모바일 분기했는가
 - [ ] 스토리에 Default + Mobile 있는가
 - [ ] tsc --noEmit 통과하는가

@@ -39,6 +39,33 @@ import { Button } from "@nudge-eap/react";
 - `onClick`에서 페이지 이동만 수행하는 Button — 스크린 리더가 링크로 인식하지 못합니다. 네비게이션에는 `<a>`를 사용하세요
 - `disabled` 상태에서 비활성 이유를 안내하지 않음 — Tooltip이나 helperText로 이유를 함께 표시하세요
 - `variant` 선택 기준 없이 사용 — 한 화면에서 `solid`는 1개(주요 CTA)만, 나머지는 `outlined` 이하로 위계를 나누세요
+- 다른 페이지로 이동하는 CTA마다 우측 화살표 아이콘을 붙임 — ArrowNext/ChevronRight 계열은 대표 전진 CTA 1개에만 사용하세요
+- 카드 리스트의 모든 "자세히 보기" 버튼에 화살표 반복 — 반복 CTA는 아이콘 없이 쓰거나 카드 전체 클릭 패턴을 검토하세요
+
+---
+
+## CTA 아이콘 정책
+
+화살표 아이콘은 "이 화면에서 가장 중요한 다음 행동"을 빠르게 찾게 하는 장치입니다. 이동 버튼이라고 해서 항상 붙이지 않습니다.
+
+- 한 뷰포트에서 화살표 CTA는 최대 1개를 권장합니다.
+- 동일 섹션에 CTA가 여러 개라면 대표 CTA에만 화살표를 붙입니다.
+- `outlined`, `soft`, `outlined-sub` 같은 보조 버튼에는 기본적으로 화살표를 붙이지 않습니다.
+- 반복 카드 안의 CTA에는 화살표를 반복하지 않습니다.
+
+```tsx
+// Good
+<Button color="primary" variant="solid" rightIcon={<ArrowNextIcon />}>
+  상담 신청하기
+</Button>
+<Button color="primary" variant="outlined">검사 시작하기</Button>
+<Button color="assistive" variant="outlined">자세히 보기</Button>
+
+// Avoid
+<Button rightIcon={<ArrowNextIcon />}>상담 신청하기</Button>
+<Button rightIcon={<ArrowNextIcon />}>검사 시작하기</Button>
+<Button rightIcon={<ArrowNextIcon />}>자세히 보기</Button>
+```
 
 ---
 

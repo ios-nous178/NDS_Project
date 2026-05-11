@@ -68,7 +68,7 @@ export const SCOPE_ADVISORY = {
     "user-app": {
       action:
         "사용자 앱 화면(B2C, 멘탈케어 사용자 플로우)이라면 이 MCP의 도구들을 적극 사용. " +
-        "get_design_principles → search_component → get_component_guide → 작성 → validate_mockup.",
+        "get_design_principles → search_component → get_component_guide/get_pattern_guide → 작성 → validate_mockup.",
     },
   },
   hardRule: "두 디자인시스템을 한 화면에서 혼용 금지.",
@@ -310,6 +310,15 @@ export interface ComponentGuide {
   summary: string;
   pitfalls: string[];
   recommended?: string[];
+  usagePolicy?: {
+    useFor?: string[];
+    doNotUseFor?: string[];
+    limits?: Record<string, string | number>;
+  };
+  examples?: {
+    do: string;
+    dont: string;
+  };
   /** color × variant 별 표시 톤 요약 */
   colorMatrix?: Record<string, string>;
   /** size 값 × 픽셀 스펙 (Figma 실측 기준) */
@@ -332,6 +341,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "color='assistive' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
       "primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
+      "다른 페이지로 이동하는 CTA라고 해서 모든 Button에 화살표 아이콘을 붙이지 말 것. ArrowNext/ChevronRight 류 아이콘은 대표 전진 액션 1개에만 사용.",
+      "카드 리스트/섹션 리스트에서 반복되는 '자세히 보기 →' 버튼은 시각 소음이 큼. 반복 CTA는 아이콘 없이 텍스트만 쓰거나 카드 전체 클릭 패턴을 검토.",
       "Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'magenta'를 기대하면 안 됨.",
       "Outlined/Assistive 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=assistive variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
     ],
@@ -343,6 +354,30 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "파괴 액션: color='error', variant='solid'",
       "회색 인상을 주려고 assistive/solid 를 쓰지 말 것 — disabled prop 이 정공법",
     ],
+    usagePolicy: {
+      useFor: [
+        "화면의 대표 CTA, 명확한 실행 액션, 중요한 폼 제출",
+        "ArrowNext/ChevronRight 아이콘은 다음 단계로 이동하는 대표 CTA 1개",
+      ],
+      doNotUseFor: [
+        "반복 카드마다 붙는 장식성 화살표 CTA",
+        "동일 위계 CTA 여러 개에 모두 우측 화살표 아이콘 부착",
+        "단순 보조 이동/자세히 보기 링크에 습관적으로 화살표 사용",
+      ],
+      limits: {
+        primarySolidPerScreen: 1,
+        arrowIconButtonPerViewport: 1,
+        repeatedListArrowButton: "avoid",
+      },
+    },
+    examples: {
+      do: `<Button color="primary" variant="solid" rightIcon={<ArrowNextIcon />}>상담 신청하기</Button>
+<Button color="primary" variant="outlined">검사 시작하기</Button>
+<Button color="assistive" variant="outlined">자세히 보기</Button>`,
+      dont: `<Button rightIcon={<ArrowNextIcon />}>상담 신청하기</Button>
+<Button rightIcon={<ArrowNextIcon />}>검사 시작하기</Button>
+<Button rightIcon={<ArrowNextIcon />}>자세히 보기</Button>`,
+    },
     colorMatrix: {
       "primary/solid": "#2B96ED 배경 + 흰 텍스트 — 가장 중요한 CTA",
       "primary/outlined": "흰 배경 + #2B96ED 보더/텍스트 — 밝은 배경 위 보조 액션",
@@ -439,12 +474,30 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary: "pill 형태 라벨. variant: outlined/filled/soft. label prop 필수.",
     pitfalls: [
       "label prop을 빠뜨리고 children을 넣지 말 것 — DS API와 어긋남.",
+      "Chip은 상태/분류/짧은 속성 표시용이다. 새 섹션을 강조하거나 일반 안내문을 꾸미는 장식으로 쓰지 말 것.",
+      "모든 카드/섹션 제목 앞에 Chip을 붙이면 위계가 무너진다. 카드당 최대 1~2개, 섹션당 최대 2개 수준으로 제한.",
+      "긴 문장이나 CTA 보조 문구를 Chip에 넣지 말 것. 8자 안팎의 짧은 라벨만 자연스럽다.",
       "표준 variant에 없는 톤(예: caution, success)이 필요해도 raw <span>/<div>로 대체 금지. style prop으로 background/color/font-weight를 토큰 변수로 override + icon prop으로 좌측 도트 주입이 정공법.",
     ],
     recommended: [
       "주의 톤: <Chip label='주의 필요' variant='filled' shape='pill' size='sm' icon={<span style={{width:6,height:6,borderRadius:9999,background:'var(--color-semantic-caution-main)'}}/>} style={{background:'var(--color-semantic-caution-bg)',color:'var(--color-semantic-caution-text)',fontWeight:600}} />",
       "성공/에러도 같은 패턴으로 토큰 var()만 교체",
     ],
+    usagePolicy: {
+      useFor: ["상태: 진행중, 완료, 마감", "분류: 상담, 검사, 교육", "짧은 속성: 신규, 추천, 필수"],
+      doNotUseFor: [
+        "일반 안내문 강조",
+        "섹션 제목 장식",
+        "모든 카드에 반복되는 시각 장식",
+        "긴 문장",
+        "CTA를 더 눈에 띄게 만들기 위한 보조 장식",
+      ],
+      limits: {
+        maxLabelLength: 8,
+        maxPerCard: 2,
+        maxPerSection: 2,
+      },
+    },
   },
   Modal: {
     name: "Modal",
@@ -1680,6 +1733,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
   },
   dos: [
     "Primary 색상은 화면당 가장 중요한 1개 액션에만 사용",
+    "강조 장치는 화면당 우선순위가 가장 높은 영역에 집중하고, 안내/보조 영역은 기본적으로 neutral surface를 사용",
     "텍스트 대비비 WCAG AA (4.5:1) 이상 유지",
     "터치 타겟은 최소 44px 보장",
     "8px 그리드에 맞춰 간격 설정",
@@ -1693,6 +1747,9 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "그라데이션 배경 사용 금지 — 단색 토큰만",
     "Card 슬롯(Header/Body/Footer)에 외곽 padding 추가 금지 — 자체 padding과 충돌",
     "Button color='assistive' + variant='solid' 조합을 활성 CTA로 사용 금지 (비활성처럼 보임)",
+    "색 배경 + 아이콘 + Chip/Badge + 굵은 제목/그라데이션을 한 안내 영역에 동시에 넣지 마세요",
+    "다른 페이지로 이동하는 CTA마다 우측 화살표를 반복하지 마세요",
+    "Chip/Badge를 새 섹션 장식이나 일반 안내문 강조 용도로 남발하지 마세요",
     "DS 컴포넌트에 정확히 매칭되는 쓰임이 있는데 raw <button>/<input>/<span>으로 대체 금지",
   ],
   bannedPatterns: [
@@ -1701,4 +1758,97 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
       rule: "linear-gradient / radial-gradient / conic-gradient — 사용 금지",
     },
   ],
+};
+
+export interface PatternGuide {
+  name: string;
+  summary: string;
+  rules: string[];
+  avoid: string[];
+  metrics?: Record<string, string | number>;
+}
+
+export const PATTERN_GUIDES: Record<string, PatternGuide> = {
+  "cta-group": {
+    name: "cta-group",
+    summary: "여러 CTA가 함께 있는 영역의 위계/아이콘 정책.",
+    rules: [
+      "Primary solid는 화면 또는 주요 섹션의 대표 액션 1개에만 사용.",
+      "ArrowNext/ChevronRight 아이콘은 대표 전진 CTA 1개에만 사용하고, 반복 CTA에서는 제거.",
+      "동일 위계의 CTA가 여러 개면 아이콘 없이 텍스트와 버튼 variant로만 구분.",
+      "카드 리스트에서는 각 카드마다 버튼을 두기보다 Card.Root clickable 또는 텍스트 링크 패턴을 우선 검토.",
+      "외부 링크는 화살표보다 Link/ExternalLink 성격의 아이콘을 검토.",
+    ],
+    avoid: [
+      "모든 '자세히 보기' 버튼에 화살표 반복",
+      "보조/outlined CTA에 습관적으로 ArrowNext 부착",
+      "한 뷰포트에 primary solid CTA 2개 이상",
+    ],
+    metrics: {
+      maxArrowIconButtonPerViewport: 1,
+      maxPrimarySolidPerScreen: 1,
+    },
+  },
+  notice: {
+    name: "notice",
+    summary: "안내문/콜아웃/알림 영역의 강조 예산.",
+    rules: [
+      "안내문은 기본적으로 neutral surface와 본문 텍스트로 처리.",
+      "주의/성공/오류처럼 의미가 명확한 경우에만 semantic color 사용.",
+      "한 안내 영역에는 색 배경, 아이콘, Chip/Badge, 굵은 제목 중 최대 2개만 사용.",
+      "그라데이션은 금지. 캠페인/히어로가 아닌 안내문에는 단색 토큰만 사용.",
+      "새로 생긴 섹션이라는 이유만으로 배경색/아이콘/배지를 추가하지 않음.",
+    ],
+    avoid: [
+      "gradient + icon + badge + bold headline 동시 사용",
+      "일반 안내문에 Chip으로 '안내', '추천', '확인' 라벨 반복",
+      "안내 박스 안에 다시 강조 카드/강조 배지를 중첩",
+    ],
+    metrics: {
+      maxColoredNoticePerScreen: 1,
+      maxEmphasisDevicesPerNotice: 2,
+    },
+  },
+  dropdown: {
+    name: "dropdown",
+    summary: "Select/Dropdown 옵션 수에 따른 높이와 검색 정책.",
+    rules: [
+      "옵션 7개 이하는 일반 Select.",
+      "옵션 8~15개는 max-height 320px 안팎의 스크롤 목록.",
+      "옵션 15개 초과는 검색 가능 Select/Autocomplete 검토.",
+      "옵션 50개 초과는 서버 검색 또는 가상화 검토.",
+      "옵션 라벨은 1줄 유지. 보조 설명은 help text나 별도 상세 영역으로 분리.",
+    ],
+    avoid: [
+      "긴 문장 옵션을 드롭다운에 그대로 노출",
+      "옵션 15개 초과인데 검색 없이 긴 스크롤만 제공",
+      "모바일에서 좁은 팝오버 안에 긴 옵션 목록 표시",
+    ],
+    metrics: {
+      defaultMaxHeight: "320px",
+      searchThreshold: 15,
+      virtualizationThreshold: 50,
+    },
+  },
+  "dense-list": {
+    name: "dense-list",
+    summary: "정보가 과밀한 리스트/카드 영역의 배치 원칙.",
+    rules: [
+      "반복 아이템의 상태, 날짜, 금액, 진행률 위치를 고정해 스캔 경로를 만든다.",
+      "카드 하나에 주요 정보 3개, 보조 정보 5개를 넘기지 않는다.",
+      "상세 설명은 기본 노출보다 Accordion/상세 페이지/ExpandableText로 분리.",
+      "모바일에서는 표보다 카드형, 필터는 가로 스크롤 또는 접힘 영역을 우선.",
+      "반복 카드마다 CTA를 2개 이상 두지 않는다.",
+    ],
+    avoid: [
+      "카드마다 Chip, 색 배경, 아이콘 CTA를 모두 반복",
+      "상태/날짜/CTA 위치가 카드마다 달라지는 배치",
+      "모든 정보를 첫 화면에 펼쳐 설명하는 구성",
+    ],
+    metrics: {
+      maxPrimaryFactsPerCard: 3,
+      maxSecondaryFactsPerCard: 5,
+      maxCtaPerRepeatedCard: 1,
+    },
+  },
 };

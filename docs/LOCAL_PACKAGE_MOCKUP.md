@@ -566,17 +566,20 @@ fs.writeFileSync(
 
 #### Tool 목록
 
-| Tool                  | 설명                                                                     | 반환                                 |
-| --------------------- | ------------------------------------------------------------------------ | ------------------------------------ |
-| `list_components`     | DS의 모든 React 컴포넌트 이름 + 한 줄 설명                               | `[{name, summary}]`                  |
-| `get_component`       | 특정 컴포넌트의 상세 props/예제                                          | `{name, props[], examples[], notes}` |
-| `search_component`    | 자연어 의도(예: "탭 UI")로 매칭되는 컴포넌트 후보 추천                   | `[{name, score, reason}]`            |
-| `list_icons`          | 모든 아이콘 이름                                                         | `string[]`                           |
-| `find_icon`           | 자연어(예: "검색")로 아이콘 후보 추천                                    | `[{name, score}]`                    |
-| `list_tokens`         | 디자인 토큰 CSS 변수 + 값                                                | `[{name, value, group}]`             |
-| `lookup_token`        | 의도(예: "primary 색상", "12px 간격")로 토큰 추천                        | `[{name, value, score}]`             |
-| `validate_mockup`     | `.tsx` 소스를 받아 위반 항목 반환                                        | `[{rule, line, detail, suggestion}]` |
-| `suggest_replacement` | 위반 라인에 대한 자동 수정 제안 (예: `#FF5722` → `var(--color-primary)`) | `{before, after, confidence}`        |
+| Tool                    | 설명                                                                     | 반환                                 |
+| ----------------------- | ------------------------------------------------------------------------ | ------------------------------------ |
+| `list_components`       | DS의 모든 React 컴포넌트 이름 + 한 줄 설명                               | `[{name, summary}]`                  |
+| `get_component`         | 특정 컴포넌트의 상세 props/예제                                          | `{name, props[], examples[], notes}` |
+| `search_component`      | 자연어 의도(예: "탭 UI")로 매칭되는 컴포넌트 후보 추천                   | `[{name, score, reason}]`            |
+| `list_icons`            | 모든 아이콘 이름                                                         | `string[]`                           |
+| `find_icon`             | 자연어(예: "검색")로 아이콘 후보 추천                                    | `[{name, score}]`                    |
+| `list_tokens`           | 디자인 토큰 CSS 변수 + 값                                                | `[{name, value, group}]`             |
+| `lookup_token`          | 의도(예: "primary 색상", "12px 간격")로 토큰 추천                        | `[{name, value, score}]`             |
+| `validate_mockup`       | `.tsx` 소스를 받아 위반 항목 반환                                        | `[{rule, line, detail, suggestion}]` |
+| `suggest_replacement`   | 위반 라인에 대한 자동 수정 제안 (예: `#FF5722` → `var(--color-primary)`) | `{before, after, confidence}`        |
+| `get_design_principles` | 브랜드 톤, 색상 의미, 타이포/간격, 금지 패턴 반환                        | `{dos, donts, bannedPatterns}`       |
+| `get_component_guide`   | Button/Chip/Select 등 컴포넌트별 함정과 사용 정책 반환                   | `{pitfalls, usagePolicy, examples}`  |
+| `get_pattern_guide`     | CTA 그룹, 안내문 강조, 드롭다운, 고밀도 리스트 UX 기준 반환              | `{rules, avoid, metrics}`            |
 
 #### Resource 목록
 
@@ -594,15 +597,16 @@ fs.writeFileSync(
 ```
 [1회차]
 1. 사용자가 PRD 제시
-2. Claude: search_component 로 후보 탐색 → get_component로 props 확인
-3. .tsx 작성
-4. Claude: validate_mockup(작성한 파일) 호출
-5. 위반 있으면 → suggest_replacement 호출 → 수정
+2. Claude: search_component 로 후보 탐색 → get_component/get_component_guide로 props와 함정 확인
+3. CTA/안내문/드롭다운/고밀도 리스트가 있으면 get_pattern_guide로 UX 기준 확인
+4. .tsx 작성
+5. Claude: validate_mockup(작성한 파일) 호출
+6. 위반 있으면 → suggest_replacement 또는 get_pattern_guide 호출 → 수정
 [2회차]
-6. 다시 validate_mockup 호출
-7. 여전히 위반 있으면 수정
+7. 다시 validate_mockup 호출
+8. 여전히 위반 있으면 수정
 [3회차]
-8. validate_mockup 통과 또는 사용자에게 보고
+9. validate_mockup 통과 또는 사용자에게 보고
 ```
 
 루프 사이에 외부 명령(`npm run lint:mockup`)을 띄울 필요가 없고, Claude가 **결정적인 응답을 가진 도구**를 호출하므로 환각 가능성이 크게 줄어듭니다.
@@ -635,6 +639,8 @@ fs.writeFileSync(
    - 컴포넌트가 필요하면 먼저 `search_component` 호출
    - 아이콘이 필요하면 먼저 `find_icon` 호출
    - 토큰이 필요하면 먼저 `lookup_token` 호출
+   - Button/Chip/Select 등 주요 컴포넌트는 `get_component_guide` 호출
+   - CTA 그룹, 안내문 강조, 옵션 많은 Select, 정보 과밀 리스트는 `get_pattern_guide` 호출
    - **목업 파일을 작성한 직후 반드시 `validate_mockup` 호출**
    - 위반이 있으면 최대 3회까지 수정 후 재검증
    ```

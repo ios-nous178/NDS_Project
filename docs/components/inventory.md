@@ -32,8 +32,8 @@ title: 컴포넌트 인벤토리
 | **PriceTag**        | 가격 + 할인율 + 원가 표시. 무료/유료 자동, 천 단위 콤마                                               | ✅ 구현됨 | 연결 필요                                                                                                | [열기](http://localhost:6006/?path=/docs/components-pricetag--docs)        | [열기](http://localhost:3001/docs/components/price-tag)        | 상품/콘텐츠/구독 가격, 결제 합계, 쿠폰 결과                |
 | **StatusTimeline**  | 단계 진행 트래커. 가로/세로, current 기준 done/current/todo 자동 색                                   | ✅ 구현됨 | 연결 필요                                                                                                | [열기](http://localhost:6006/?path=/docs/components-statustimeline--docs)  | [열기](http://localhost:3001/docs/components/status-timeline)  | 배송 추적, 상담 진행, 신청 처리                            |
 
-- **Button**: Figma 컴포넌트 세트 링크를 연결하면 Storybook Docs와 인벤토리 문서에 자동 반영됩니다.
-- **Badge**: 색상 variant와 사용 목적을 Figma nomenclature와 맞춰두면 관리가 쉬워집니다.
+- **Button**: Figma 컴포넌트 세트 링크를 연결하면 Storybook Docs와 인벤토리 문서에 자동 반영됩니다. 화살표 CTA는 대표 전진 액션 1개에만 사용합니다.
+- **Badge**: 색상 variant와 사용 목적을 Figma nomenclature와 맞춰두면 관리가 쉬워집니다. 장식성 섹션 라벨로 반복하지 않습니다.
 - **Card**: CounselorCard 등 도메인 카드의 프리미티브. 도메인 의존 레시피는 프로젝트별로 조합합니다.
 - **Carousel**: 포인터/터치 드래그 + 자동 재생을 한 컴포넌트로 통합.
 - **VideoPlayer**: AudioPlayer의 영상 버전. 라이브 스트리밍/HLS는 별도 라이브러리 필요.
@@ -73,9 +73,9 @@ title: 컴포넌트 인벤토리
 
 - **Input**: 검색형, 인증형처럼 화면 패턴별 Figma 링크를 붙이면 기획/디자인 협업에 특히 유용합니다.
 - **SearchInput**: HomePage SearchInput, WebView EapHomeSearchBox 패턴을 통합한 컴포넌트입니다.
-- **Select**: WebView FilterSelect, HomePage SelectItem 패턴을 통합한 컴포넌트입니다.
+- **Select**: WebView FilterSelect, HomePage SelectItem 패턴을 통합한 컴포넌트입니다. 옵션 15개 초과는 검색 가능 UI를 검토합니다.
 - **Checkbox**: Checkbox, Radio, CheckboxGroup, RadioGroup, RadioGroupItem을 포함합니다.
-- **Chip**: WebView FilterChip, HomePage CounselorSubjectChip 패턴을 통합한 컴포넌트입니다.
+- **Chip**: WebView FilterChip, HomePage CounselorSubjectChip 패턴을 통합한 컴포넌트입니다. 상태/분류/짧은 속성 표시용이며 안내문/섹션 장식으로 남발하지 않습니다.
 - **Calendar**: DatePicker(popover 입력)와 분리. 캘린더 자체가 콘텐츠인 화면용.
 - **NumberStepper**: Stepper(과정 인디케이터)와 다름. 작은 정수 값 조절 전용.
 - **Autocomplete**: options는 외부 필터링 결과 — 비동기 검색 케이스를 1차 고려한 설계.

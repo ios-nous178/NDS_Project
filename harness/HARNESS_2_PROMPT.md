@@ -22,6 +22,7 @@
 3. DS에 없는 컴포넌트는 type에 그대로 기술하되 Coverage에 missing으로 분류
 4. 비즈니스 맥락 컴포넌트(예: SocialLogin)는 Product comp 후보로 표기
 5. Layout은 MockupLayout 사용을 전제 (Section, Grid, Stack은 인라인)
+6. CTA가 많은 영역, 안내문/강조 박스, 옵션 많은 드롭다운, 정보 과밀 리스트는 UX 패턴 검토 대상으로 표시
 
 ### 강제 매핑 규칙
 아래 UI 패턴이 PRD에 있으면 반드시 해당 DS 컴포넌트로 매핑:
@@ -74,12 +75,15 @@
 
 ## 반응형 체크포인트
 {모바일에서 특별히 처리해야 할 영역 목록}
+
+## UX 패턴 체크포인트
+{cta-group / notice / dropdown / dense-list 중 Renderer가 get_pattern_guide로 확인해야 할 항목 목록}
 ```
 
 ## Output Contract
 
 - 파일명: `mockups/{ticketId}/UI_SCHEMA.md`
-- 형식: JSON Schema + Coverage Report + 강제 매핑 내역 + 반응형 체크포인트 (Markdown)
+- 형식: JSON Schema + Coverage Report + 강제 매핑 내역 + 반응형/UX 패턴 체크포인트 (Markdown)
 - 인코딩: UTF-8
 
 ## Review Gate
@@ -91,3 +95,4 @@
   - [ ] 강제 매핑 규칙이 빠짐없이 적용되었는가
   - [ ] Coverage Report가 정확한가
   - [ ] 반응형 체크포인트가 식별되었는가
+  - [ ] UX 패턴 체크포인트가 식별되었는가
