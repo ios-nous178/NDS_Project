@@ -130,77 +130,65 @@ typography:
     medium: 500
     semibold: 600
     bold: 700
+  # 14개 type scale × 3개 weight(Bold/Medium/Regular) 매트릭스 (Figma 171:6676 가이드).
+  # 스케일당 단일 default weight 는 두지 않음 — 사용처에서 weight 를 명시한다.
   typeScale:
     display-1:
       fontSize: 52px
       lineHeight: 74px
       letterSpacing: 0
-      fontWeight: 700
     display-2:
       fontSize: 48px
       lineHeight: 62px
       letterSpacing: 0
-      fontWeight: 700
     display-3:
       fontSize: 40px
       lineHeight: 52px
       letterSpacing: 0
-      fontWeight: 700
     headline-1:
       fontSize: 36px
       lineHeight: 48px
       letterSpacing: 0
-      fontWeight: 700
     headline-2:
       fontSize: 28px
       lineHeight: 38px
       letterSpacing: 0
-      fontWeight: 700
     headline-3:
       fontSize: 24px
       lineHeight: 32px
       letterSpacing: 0
-      fontWeight: 700
     headline-4:
       fontSize: 20px
       lineHeight: 28px
       letterSpacing: 0
-      fontWeight: 700
     headline-5:
       fontSize: 18px
       lineHeight: 26px
       letterSpacing: 0
-      fontWeight: 700
     body-1:
       fontSize: 16px
       lineHeight: 24px
       letterSpacing: 0
-      fontWeight: 500
     body-2:
       fontSize: 15px
       lineHeight: 22px
       letterSpacing: 0
-      fontWeight: 500
     body-3:
       fontSize: 14px
       lineHeight: 20px
       letterSpacing: 0
-      fontWeight: 400
     caption-1:
       fontSize: 13px
       lineHeight: 18px
       letterSpacing: 0
-      fontWeight: 400
     caption-2:
       fontSize: 12px
       lineHeight: 16px
       letterSpacing: 0
-      fontWeight: 400
     label:
       fontSize: 11px
       lineHeight: 14px
       letterSpacing: 0
-      fontWeight: 400
 
 # ── Spacing (Primitive Scale, 4pt grid) ────────────────────
 # Figma · ┗ Grid / Border / Radius · SpacingGuide

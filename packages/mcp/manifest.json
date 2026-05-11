@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-11T06:50:56.040Z",
+  "generatedAt": "2026-05-11T07:00:25.130Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -6298,6 +6298,46 @@
       "group": "eap"
     },
     {
+      "name": "--eap-input-bg",
+      "value": "#FFFFFF",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-bg-disabled",
+      "value": "#FAFAFA",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-border-default",
+      "value": "#D8D8D8",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-border-disabled",
+      "value": "#D8D8D8",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-border-error",
+      "value": "#F13F00",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-border-focus",
+      "value": "#2B96ED",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-border-hover",
+      "value": "#C7C7C7",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-placeholder",
+      "value": "#999999",
+      "group": "eap"
+    },
+    {
       "name": "--eap-padding-lg",
       "value": "20px",
       "group": "eap"
@@ -6563,13 +6603,83 @@
       "group": "eap"
     },
     {
-      "name": "--font-system",
+      "name": "--font-family-default",
+      "value": "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+      "group": "font"
+    },
+    {
+      "name": "--font-family-system",
       "value": "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
       "group": "font"
     },
     {
-      "name": "--font-web",
-      "value": "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+      "name": "--font-size-body-1",
+      "value": "16px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-body-2",
+      "value": "15px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-body-3",
+      "value": "14px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-caption-1",
+      "value": "13px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-caption-2",
+      "value": "12px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-display-1",
+      "value": "52px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-display-2",
+      "value": "48px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-display-3",
+      "value": "40px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-headline-1",
+      "value": "36px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-headline-2",
+      "value": "28px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-headline-3",
+      "value": "24px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-headline-4",
+      "value": "20px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-headline-5",
+      "value": "18px",
+      "group": "font"
+    },
+    {
+      "name": "--font-size-label",
+      "value": "11px",
       "group": "font"
     },
     {
@@ -6656,6 +6766,76 @@
       "name": "--grid-margin-pc-min",
       "value": "40px",
       "group": "grid"
+    },
+    {
+      "name": "--line-height-body-1",
+      "value": "24px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-body-2",
+      "value": "22px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-body-3",
+      "value": "20px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-caption-1",
+      "value": "18px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-caption-2",
+      "value": "16px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-display-1",
+      "value": "74px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-display-2",
+      "value": "62px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-display-3",
+      "value": "52px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-headline-1",
+      "value": "48px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-headline-2",
+      "value": "38px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-headline-3",
+      "value": "32px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-headline-4",
+      "value": "28px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-headline-5",
+      "value": "26px",
+      "group": "line"
+    },
+    {
+      "name": "--line-height-label",
+      "value": "14px",
+      "group": "line"
     },
     {
       "name": "--padding-lg",
@@ -6991,216 +7171,6 @@
       "name": "--stroke-none",
       "value": "0px",
       "group": "stroke"
-    },
-    {
-      "name": "--text-body1-line-height",
-      "value": "24px",
-      "group": "text"
-    },
-    {
-      "name": "--text-body1-size",
-      "value": "16px",
-      "group": "text"
-    },
-    {
-      "name": "--text-body1-weight",
-      "value": "500",
-      "group": "text"
-    },
-    {
-      "name": "--text-body2-line-height",
-      "value": "22px",
-      "group": "text"
-    },
-    {
-      "name": "--text-body2-size",
-      "value": "15px",
-      "group": "text"
-    },
-    {
-      "name": "--text-body2-weight",
-      "value": "500",
-      "group": "text"
-    },
-    {
-      "name": "--text-body3-line-height",
-      "value": "20px",
-      "group": "text"
-    },
-    {
-      "name": "--text-body3-size",
-      "value": "14px",
-      "group": "text"
-    },
-    {
-      "name": "--text-body3-weight",
-      "value": "400",
-      "group": "text"
-    },
-    {
-      "name": "--text-caption1-line-height",
-      "value": "18px",
-      "group": "text"
-    },
-    {
-      "name": "--text-caption1-size",
-      "value": "13px",
-      "group": "text"
-    },
-    {
-      "name": "--text-caption1-weight",
-      "value": "400",
-      "group": "text"
-    },
-    {
-      "name": "--text-caption2-line-height",
-      "value": "16px",
-      "group": "text"
-    },
-    {
-      "name": "--text-caption2-size",
-      "value": "12px",
-      "group": "text"
-    },
-    {
-      "name": "--text-caption2-weight",
-      "value": "400",
-      "group": "text"
-    },
-    {
-      "name": "--text-display1-line-height",
-      "value": "74px",
-      "group": "text"
-    },
-    {
-      "name": "--text-display1-size",
-      "value": "52px",
-      "group": "text"
-    },
-    {
-      "name": "--text-display1-weight",
-      "value": "700",
-      "group": "text"
-    },
-    {
-      "name": "--text-display2-line-height",
-      "value": "62px",
-      "group": "text"
-    },
-    {
-      "name": "--text-display2-size",
-      "value": "48px",
-      "group": "text"
-    },
-    {
-      "name": "--text-display2-weight",
-      "value": "700",
-      "group": "text"
-    },
-    {
-      "name": "--text-display3-line-height",
-      "value": "52px",
-      "group": "text"
-    },
-    {
-      "name": "--text-display3-size",
-      "value": "40px",
-      "group": "text"
-    },
-    {
-      "name": "--text-display3-weight",
-      "value": "700",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline1-line-height",
-      "value": "48px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline1-size",
-      "value": "36px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline1-weight",
-      "value": "700",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline2-line-height",
-      "value": "38px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline2-size",
-      "value": "28px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline2-weight",
-      "value": "700",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline3-line-height",
-      "value": "32px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline3-size",
-      "value": "24px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline3-weight",
-      "value": "700",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline4-line-height",
-      "value": "28px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline4-size",
-      "value": "20px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline4-weight",
-      "value": "700",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline5-line-height",
-      "value": "26px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline5-size",
-      "value": "18px",
-      "group": "text"
-    },
-    {
-      "name": "--text-headline5-weight",
-      "value": "700",
-      "group": "text"
-    },
-    {
-      "name": "--text-label-line-height",
-      "value": "14px",
-      "group": "text"
-    },
-    {
-      "name": "--text-label-size",
-      "value": "11px",
-      "group": "text"
-    },
-    {
-      "name": "--text-label-weight",
-      "value": "400",
-      "group": "text"
     }
   ],
   "brands": [
