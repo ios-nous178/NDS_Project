@@ -1126,6 +1126,46 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "리뷰: 기본 3줄, 자연스러운 토글",
     ],
   },
+  WebHeader: {
+    name: "WebHeader",
+    summary:
+      "데스크탑 Web 사이트용 글로벌 헤더. 좌측 클라이언트 로고 + 중앙 GNB + 우측 액션(앱 다운로드 / 로그인·로그아웃). 모바일 AppBar 와 별도 (Figma Library node 96:25923).",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=96-25918",
+    pitfalls: [
+      "AppBar 와 혼동 금지 — AppBar 는 모바일 상단 바(52px, 뒤로가기/타이틀). WebHeader 는 데스크탑 헤더(80px, 1200px max-width, GNB).",
+      "클라이언트 로고는 per-tenant 이미지라 src/href 를 prop 으로 주입. DS 가 로고 이미지를 갖고 있지 않다.",
+      "브랜드(NudgeEAP / Trost / Moneple) 별 색은 tokens.css 로 자동 정렬 — primary main 이 한 군데 들어가 있어 별도 색 prop 불필요. 인라인 컬러로 덮어쓰지 말 것.",
+      "메뉴 아이템에 활성 표시: activeKey 또는 MenuItem 의 active prop 사용 — 직접 border-bottom 인라인으로 그리지 말 것.",
+    ],
+    recommended: [
+      "기본 사용: items 배열 + activeKey",
+      "<WebHeader>\n  <WebHeader.Logo src=tenantLogo href='/' alt='AMORE PACIFIC' />\n  <WebHeader.Menu items={GNB} activeKey={current} onItemClick={navigate} />\n  <WebHeader.Actions>\n    <WebHeader.AppDownloadButton href='/download' />\n    <WebHeader.AuthButton authState={isLoggedIn ? 'logout' : 'login'} onClick={...} />\n  </WebHeader.Actions>\n</WebHeader>",
+      "회원/비회원 토글: authState='login' (비회원) / 'logout' (로그인 상태)",
+      "앱 다운로드 버튼이 필요 없으면 WebHeader.AppDownloadButton 만 빼면 됨 — Actions 컨테이너는 유지",
+    ],
+    sizeMatrix: {
+      header: "height 80 / bottom border 1px (#ECECEC) / content max-width 1200, 좌우 24 padding",
+      logo: "height 60 / max-width 200 / object-fit contain",
+      "menu-item":
+        "h 79(헤더 -1) / px 20 / headline-5(18·26) bold / 활성 시 primary 색 + bottom 3px",
+      "download-btn": "px 14 / py 8 / radius 8 / bg neutral/100 / body-1 bold primary",
+      "auth-btn": "px 18 / py 8 / radius 8 / 1px primary border / body-1 bold primary",
+    },
+    stateMatrix: {
+      "menu-item/default": "color #111 (text.normal)",
+      "menu-item/hover": "color primary main",
+      "menu-item/active": "color primary main + 3px primary 하단 보더",
+      "download/hover": "bg neutral/200 (#ECECEC)",
+      "auth/hover": "bg primary.bgLighter (#F1F8FD)",
+    },
+    accessibility: [
+      "Logo 는 <a href> 로 감싸 홈 진입 보장. alt 에 클라이언트 이름 명시 (예: 'AMORE PACIFIC').",
+      "Menu 는 <nav> 로 노출 — 각 item 은 href 가 있으면 <a>, 없으면 <button>. onItemClick 호출 시 href 있는 경우 preventDefault 자동.",
+      "AuthButton 은 authState 가 의미 라벨('로그인'/'로그아웃')을 결정. aria-label 자동 부착.",
+    ],
+    interactivePattern:
+      "Logo / Menu / Actions 안의 모든 버튼·링크에 onClick 또는 href 부착 필수. position='sticky' 로 스크롤 시 상단 고정도 가능 (z-index 자동).",
+  },
   PageHeader: {
     name: "PageHeader",
     summary:
@@ -1739,6 +1779,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "8px 그리드에 맞춰 간격 설정",
     "인터랙티브 요소(Button/IconButton/Card.Root clickable/Tabs)에는 onClick 등 핸들러를 반드시 부착",
     "표준 variant에 없는 톤이 필요하면 컴포넌트의 style/icon 같은 확장 슬롯을 활용 (raw 요소로 대체 금지)",
+    "단독 아이콘은 주변 텍스트/배경과 어울리는 토큰 컬러를 명시하거나 부모 color를 토큰으로 지정해 currentColor가 의도한 색을 상속하게 함",
   ],
   donts: [
     "한 화면에 3개 이상의 폰트 웨이트를 혼용하지 마세요",
@@ -1750,6 +1791,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "색 배경 + 아이콘 + Chip/Badge + 굵은 제목/그라데이션을 한 안내 영역에 동시에 넣지 마세요",
     "다른 페이지로 이동하는 CTA마다 우측 화살표를 반복하지 마세요",
     "Chip/Badge를 새 섹션 장식이나 일반 안내문 강조 용도로 남발하지 마세요",
+    "단독 아이콘을 기본 currentColor 그대로 방치하지 마세요 — 검정/본문색 아이콘이 주변 UI 톤과 어긋날 수 있음",
     "DS 컴포넌트에 정확히 매칭되는 쓰임이 있는데 raw <button>/<input>/<span>으로 대체 금지",
   ],
   bannedPatterns: [
@@ -1787,6 +1829,28 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     metrics: {
       maxArrowIconButtonPerViewport: 1,
       maxPrimarySolidPerScreen: 1,
+    },
+  },
+  "icon-color": {
+    name: "icon-color",
+    summary: "아이콘 컬러를 주변 텍스트/배경/상태 톤에 맞추는 기준.",
+    rules: [
+      "아이콘 컴포넌트의 기본값은 currentColor다. 단독 배치 시 부모 color가 명시되어 있지 않으면 본문색/검정으로 보여 어색할 수 있다.",
+      "Button, IconButton, Chip, Select 등 DS 컴포넌트 슬롯 안의 아이콘은 컴포넌트가 정한 텍스트 컬러를 상속하게 두는 것이 기본이다.",
+      "안내/상태/빈 상태/카드 장식처럼 단독으로 배치한 아이콘은 color prop 또는 부모 style.color를 토큰 var()로 명시한다.",
+      "아이콘 색은 주변 텍스트와 같은 color token을 쓰거나, 상태 의미가 있으면 semantic 토큰(primary/caution/error/success)을 쓴다.",
+      "아이콘만 별도 강한 색으로 튀게 하지 않는다. 강조가 필요하면 텍스트, 배경, 아이콘 중 1~2개만 함께 조합한다.",
+    ],
+    avoid: [
+      "<InfoIcon />처럼 단독 아이콘을 색 지정 없이 배치",
+      "안내 박스 안에서 아이콘만 브랜드 primary로 과하게 강조",
+      "아이콘에 hex/rgb 직접 지정",
+      "한 섹션 안에서 아이콘마다 다른 semantic color를 섞는 구성",
+    ],
+    metrics: {
+      standaloneIconColor: "required",
+      preferredColor: "currentColor from explicit parent token or icon color prop",
+      maxSemanticIconColorsPerSection: 1,
     },
   },
   notice: {
