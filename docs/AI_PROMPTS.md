@@ -242,6 +242,7 @@ Check:
 
 - primary solid Button is used for only one most important action
 - ArrowNext/ChevronRight icon appears only on the representative forward CTA
+- standalone icons have an explicit token color or inherit currentColor from an explicit token-colored parent
 - repeated card/list CTAs do not repeat arrow icons
 - Chip/Badge is used for status, category, or short attributes, not decoration
 - notice/callout areas do not combine too many emphasis devices

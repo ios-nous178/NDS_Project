@@ -228,6 +228,16 @@ function getJsxBlocks(
   return blocks;
 }
 
+function getIconBlocks(source: string): Array<{ block: string; line: number; index: number }> {
+  const blocks: Array<{ block: string; line: number; index: number }> = [];
+  const pattern = /<\s*\w+Icon\b[\s\S]*?(?:\/>|>\s*<\/\s*\w+Icon\s*>)/g;
+  for (const match of source.matchAll(pattern)) {
+    const index = match.index ?? 0;
+    blocks.push({ block: match[0], line: lineNumberAt(source, index), index });
+  }
+  return blocks;
+}
+
 function validateMockupSource(source: string): Violation[] {
   const violations: Violation[] = [];
   const lines = source.split("\n");
@@ -432,6 +442,29 @@ function validateMockupSource(source: string): Violation[] {
         detail: `Chip label='${label}'`,
         suggestion:
           "Chip은 장식성 섹션 라벨보다 상태/분류/속성 표시용으로 사용하세요. 일반 안내 강조는 텍스트 위계나 neutral notice로 처리하세요.",
+      });
+    }
+  }
+
+  for (const { block, line, index } of getIconBlocks(source)) {
+    const contextBefore = source.slice(Math.max(0, index - 120), index);
+    const compactContextBefore = contextBefore.replace(/\s+/g, " ");
+    const isDsIconSlot =
+      /(leftIcon|rightIcon|icon|prefix|suffix)\s*=\s*\{\s*$/.test(contextBefore) ||
+      /(leftIcon|rightIcon|icon|prefix|suffix)\s*=\s*\{\s*$/.test(compactContextBefore);
+    const hasExplicitColor =
+      /\bcolor\s*=/.test(block) ||
+      /\bstyle\s*=\s*\{\s*\{[\s\S]*?\bcolor\s*:/.test(block) ||
+      /\bclassName\s*=/.test(block);
+    const parentHasTokenColor = /color\s*:\s*["']var\(--color-/.test(contextBefore);
+
+    if (!isDsIconSlot && !hasExplicitColor && !parentHasTokenColor) {
+      violations.push({
+        rule: "icon-default-color",
+        line,
+        detail: block.split("\n")[0].trim(),
+        suggestion:
+          "단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시하세요. 예: color='var(--color-semantic-primary-main)' 또는 부모 style color. get_pattern_guide('icon-color') 참조.",
       });
     }
   }
@@ -994,7 +1027,7 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 
 - 컴포넌트/아이콘/토큰 사용 전 \`search_component\` / \`find_icon\` / \`lookup_token\` 호출
 - 처음 쓰는 주요 컴포넌트는 \`get_component_guide\` 호출
-- CTA 그룹, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_pattern_guide\` 호출
+- CTA 그룹, 아이콘 컬러, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_pattern_guide\` 호출
 - 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
 - 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
 - 구현 후 \`start_dev_server\`로 dev 서버 실행
@@ -1011,6 +1044,7 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 - 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
 - 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA에는 붙이지 않는다.
+- 단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시한다.
 - primary solid 버튼은 한 화면의 대표 액션 1개만 사용한다.
 - Chip/Badge는 상태, 분류, 짧은 속성 표시용으로만 사용하고 안내문/섹션 장식으로 남발하지 않는다.
 - 안내 영역은 neutral surface를 기본으로 하고 색 배경/아이콘/Chip/Badge/굵은 제목 중 1~2개만 조합한다.
@@ -2020,13 +2054,14 @@ const TOOLS = [
   {
     name: "get_pattern_guide",
     description:
-      "Return UX pattern guidance for mockup layout decisions, including CTA groups, notice/callout emphasis, dropdown option density, and dense lists. Use this when visual hierarchy or information density is ambiguous.",
+      "Return UX pattern guidance for mockup layout decisions, including CTA groups, icon color, notice/callout emphasis, dropdown option density, and dense lists. Use this when visual hierarchy or information density is ambiguous.",
     inputSchema: {
       type: "object",
       properties: {
         name: {
           type: "string",
-          description: "Pattern name: 'cta-group', 'notice', 'dropdown', or 'dense-list'.",
+          description:
+            "Pattern name: 'cta-group', 'icon-color', 'notice', 'dropdown', or 'dense-list'.",
         },
       },
       required: ["name"],
