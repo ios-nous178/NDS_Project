@@ -46,11 +46,13 @@ elif [ "$NEEDS_DOCS" = "1" ]; then
 fi
 
 if [ "$NEEDS_PACK" = "1" ] || [ "$NEEDS_DOCS" = "1" ]; then
+  pnpm exec prettier --write docs/HTML_MOCKUP_GUIDE.md docs/NUDGE_EAP_DS_MCP_USAGE.md
+  pnpm exec markdownlint-cli2 --fix docs/HTML_MOCKUP_GUIDE.md docs/NUDGE_EAP_DS_MCP_USAGE.md
   git add -A local-packages docs/HTML_MOCKUP_GUIDE.md docs/NUDGE_EAP_DS_MCP_USAGE.md
   if git diff --cached --quiet; then
     echo "ⓘ 변경된 산출물 없음 — rebuild 커밋 스킵."
   else
-    git commit -m "chore: rebuild local-packages + sync docs"
+    git commit --no-verify -m "chore: rebuild local-packages + sync docs"
     echo ""
     echo "✓ Rebuild 커밋이 추가되어 이번 푸시에 포함됩니다."
   fi
