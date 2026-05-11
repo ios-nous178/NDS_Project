@@ -20,6 +20,7 @@ export * from "./FieldActionRow";
 export * from "./DSHighlight";
 export * from "./AppBar";
 export * from "./AppFooter";
+export * from "./WebHeader";
 export * from "./Skeleton";
 export * from "./StarRating";
 export * from "./Toggle";
