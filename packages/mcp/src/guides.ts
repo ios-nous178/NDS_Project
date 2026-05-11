@@ -1792,6 +1792,8 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "다른 페이지로 이동하는 CTA마다 우측 화살표를 반복하지 마세요",
     "Chip/Badge를 새 섹션 장식이나 일반 안내문 강조 용도로 남발하지 마세요",
     "단독 아이콘을 기본 currentColor 그대로 방치하지 마세요 — 검정/본문색 아이콘이 주변 UI 톤과 어긋날 수 있음",
+    "연한 primary 배경 위에 연한 primary filled tag/box를 반복하지 마세요 — 같은 톤 위 같은 톤 강조는 위계를 만들지 못함",
+    "로고의 gradient/accent 컬러를 UI 배경/태그/CTA 컬러처럼 사용하지 마세요 — 로고 표현과 UI 시스템 컬러는 분리",
     "DS 컴포넌트에 정확히 매칭되는 쓰임이 있는데 raw <button>/<input>/<span>으로 대체 금지",
   ],
   bannedPatterns: [
@@ -1851,6 +1853,29 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       standaloneIconColor: "required",
       preferredColor: "currentColor from explicit parent token or icon color prop",
       maxSemanticIconColorsPerSection: 1,
+    },
+  },
+  "visual-antipatterns": {
+    name: "visual-antipatterns",
+    summary: "1차 목업에서 퀄리티를 떨어뜨리는 대표 시각 안티패턴.",
+    rules: [
+      "Tone-on-Tone Filled Component 금지: 연한 primary/blue 배경 위에 같은 계열의 연한 filled tag, badge, box를 반복하지 않는다.",
+      "Primary color는 CTA, interactive, 핵심 highlight 중 하나의 역할로 제한한다. 배경/CTA/태그/카드/포커스/hover에 동시에 쓰지 않는다.",
+      "브랜드 로고 컬러는 UI accent color가 아니다. 로고의 gradient/accent 색은 로고 표현 용도로만 사용한다.",
+      "한 섹션에서 primary tint가 배경, 라벨, 아이콘, 카드 surface로 3회 이상 반복되면 neutral surface + 텍스트 위계로 낮춘다.",
+      "강조가 필요하면 색상보다 정보 우선순위, spacing, typography weight, CTA 위치를 먼저 조정한다.",
+    ],
+    avoid: [
+      "연한 블루 페이지 배경 + 연한 블루 Chip + 연한 블루 안내 박스 조합",
+      "primary blue를 배경, 버튼, 태그, hover, focus, 카드 테두리에 모두 사용",
+      "로고에 들어간 gradient/accent를 카드 배경이나 배지 색으로 재사용",
+      "새 영역마다 같은 색 계열 배경을 주어 섹션이 모두 강조되어 보이는 구성",
+    ],
+    metrics: {
+      maxPrimaryRolesPerScreen: 2,
+      maxPrimaryTintSurfacesPerSection: 1,
+      logoColorAsUiAccent: "forbidden",
+      toneOnToneFilled: "forbidden",
     },
   },
   notice: {

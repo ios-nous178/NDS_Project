@@ -423,6 +423,90 @@ function validateMockupSource(source: string): Violation[] {
     });
   }
 
+  const primaryTokenRefs = [
+    ...source.matchAll(
+      /var\(--color-(?:semantic-primary|blue|cobalt|trostEapBanner|yellow-primary)[\w-]*\)/g,
+    ),
+  ];
+  const primaryRoleSignals = [
+    {
+      name: "button",
+      matched:
+        /<\s*Button\b[\s\S]*?(?:color\s*=\s*["']primary["']|variant\s*=\s*["']solid["'])/.test(
+          source,
+        ),
+    },
+    {
+      name: "chip",
+      matched: /<\s*Chip\b[\s\S]*?(?:color|background|variant\s*=\s*["']filled["'])/.test(source),
+    },
+    {
+      name: "badge",
+      matched: /<\s*Badge\b[\s\S]*?(?:color|background|variant\s*=\s*["']filled["'])/.test(source),
+    },
+    {
+      name: "background",
+      matched:
+        /background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+          source,
+        ),
+    },
+    {
+      name: "border",
+      matched:
+        /border(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+          source,
+        ),
+    },
+    {
+      name: "icon",
+      matched:
+        /<\s*\w+Icon\b[\s\S]*?color\s*=\s*["']var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+          source,
+        ),
+    },
+  ].filter((signal) => signal.matched);
+
+  if (primaryTokenRefs.length >= 8 || primaryRoleSignals.length >= 4) {
+    violations.push({
+      rule: "primary-color-role-overload",
+      line: 1,
+      detail: `primary 계열 색상이 여러 역할로 과다 사용됨: ${primaryRoleSignals.map((s) => s.name).join(", ") || `${primaryTokenRefs.length} token refs`}`,
+      suggestion:
+        "Primary color는 CTA/interactive/highlight 중 제한된 역할에만 사용하세요. 배경/태그/카드/포커스까지 모두 primary로 처리하지 말고 neutral surface와 텍스트 위계로 낮추세요. get_pattern_guide('visual-antipatterns') 참조.",
+    });
+  }
+
+  if (
+    /background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|cobalt-(?:50|100))/g.test(
+      source,
+    ) &&
+    /<\s*(?:Chip|Badge)\b[\s\S]*?(?:variant\s*=\s*["'](?:filled|soft)["']|background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|cobalt-(?:50|100)))/.test(
+      source,
+    )
+  ) {
+    violations.push({
+      rule: "tone-on-tone-filled",
+      line: 1,
+      detail: "연한 primary/blue 배경과 같은 계열 filled/soft 라벨이 함께 사용됨.",
+      suggestion:
+        "같은 톤 위 같은 톤 filled component는 강조 계층이 약합니다. 배경은 neutral로 낮추거나 라벨을 outlined/text 계열로 바꾸세요. get_pattern_guide('visual-antipatterns') 참조.",
+    });
+  }
+
+  if (
+    /(linear|radial|conic)-gradient\s*\(/.test(source) &&
+    /(logo|brand|accent|hero|card|badge|chip|background)/i.test(source)
+  ) {
+    violations.push({
+      rule: "logo-color-as-ui-accent",
+      line: 1,
+      detail: "gradient/accent 색상이 UI surface나 강조 요소로 사용된 정황.",
+      suggestion:
+        "브랜드 로고 컬러는 UI accent color가 아닙니다. 로고 표현 용도로만 두고 UI는 DS semantic token을 사용하세요. get_pattern_guide('visual-antipatterns') 참조.",
+    });
+  }
+
   const chipBlocks = getJsxBlocks(source, "Chip");
   if (chipBlocks.length > 8) {
     violations.push({
@@ -1022,7 +1106,7 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 
 - 컴포넌트/아이콘/토큰 사용 전 \`search_component\` / \`find_icon\` / \`lookup_token\` 호출
 - 처음 쓰는 주요 컴포넌트는 \`get_component_guide\` 호출
-- CTA 그룹, 아이콘 컬러, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_pattern_guide\` 호출
+- CTA 그룹, 아이콘 컬러, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_pattern_guide\` 호출
 - 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
 - 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
 - 구현 후 \`start_dev_server\`로 dev 서버 실행
@@ -2054,14 +2138,14 @@ const TOOLS = [
   {
     name: "get_pattern_guide",
     description:
-      "Return UX pattern guidance for mockup layout decisions, including CTA groups, icon color, notice/callout emphasis, dropdown option density, and dense lists. Use this when visual hierarchy or information density is ambiguous.",
+      "Return UX pattern guidance for mockup layout decisions, including CTA groups, icon color, visual antipatterns, notice/callout emphasis, dropdown option density, and dense lists. Use this when visual hierarchy or information density is ambiguous.",
     inputSchema: {
       type: "object",
       properties: {
         name: {
           type: "string",
           description:
-            "Pattern name: 'cta-group', 'icon-color', 'notice', 'dropdown', or 'dense-list'.",
+            "Pattern name: 'cta-group', 'icon-color', 'visual-antipatterns', 'notice', 'dropdown', or 'dense-list'.",
         },
       },
       required: ["name"],
