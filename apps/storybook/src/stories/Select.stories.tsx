@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within, waitFor } from "@storybook/test";
+import { expect, within, waitFor } from "storybook/test";
 import { Select, type SelectProps } from "@nudge-eap/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";

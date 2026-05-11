@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, within } from "@storybook/test";
+import { expect, fn, within } from "storybook/test";
 import { Card, Button, type CardProps } from "@nudge-eap/react";
 import { colors } from "@nudge-eap/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
