@@ -138,6 +138,9 @@ const selectionCardStyles = `
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
   }
 
   :where(.${SC_INDICATOR_CLASS}) {
