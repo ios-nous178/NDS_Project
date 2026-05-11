@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-11T08:03:50.595Z",
+  "generatedAt": "2026-05-11T08:36:19.113Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -7243,9 +7243,9 @@
       },
       "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/nudge-eap/DESIGN.md",
-      "cssImport": null,
+      "cssImport": "@nudge-eap/tokens/css",
       "jsExport": "@nudge-eap/tokens/brands",
-      "ready": false
+      "ready": true
     },
     {
       "slug": "trost",

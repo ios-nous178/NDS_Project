@@ -56,6 +56,15 @@ const buttonStyles = `
     color: var(--nds-button-hover-text-color, var(--nds-button-text-color));
   }
 
+  :where(.${BUTTON_CLASS}:focus) {
+    outline: none;
+  }
+
+  :where(.${BUTTON_CLASS}:focus-visible) {
+    outline: 2px solid var(--nds-button-focus-ring-color, ${cv.primary.main});
+    outline-offset: var(--nds-button-focus-ring-offset, 2px);
+  }
+
   :where(.${BUTTON_LABEL_CLASS}) {
     display: inline-flex;
     align-items: center;
