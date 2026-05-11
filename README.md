@@ -98,6 +98,14 @@ Storybook 하단 패널에서 사용할 수 있는 도구:
 - **CSS 편집기** — 요소 선택 후 스타일 직접 수정, undo/redo, 디자인 리포트 생성
 - **HTML/PNG 내보내기** — 목업을 standalone HTML 또는 PNG 스크린샷으로 저장
 
+## MCP 목업 가드레일
+
+`@nudge-eap/mcp`는 외부 목업 프로젝트에서 Claude/Codex가 DS 컴포넌트, 아이콘, 토큰, UX 패턴 기준을 조회하도록 돕습니다.
+
+- `get_component_guide`: Button/Chip/Select 등 컴포넌트별 사용 함정 확인
+- `get_pattern_guide`: CTA 그룹, 안내문 강조, 드롭다운, 고밀도 리스트 배치 기준 확인
+- `validate_mockup`: 토큰 위반뿐 아니라 화살표 CTA 남발, primary CTA 과다, Chip/Badge 장식 사용, 강조 과잉까지 검증
+
 ## 문서
 
 | 문서                                                            | 설명                               |

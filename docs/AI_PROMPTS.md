@@ -220,8 +220,39 @@ Check:
 - typography tokens
 - color tokens
 - component usage
+- CTA hierarchy
+- visual emphasis overuse
+- dropdown/list density
 
 Return violations if found.
+
+---
+
+# 9. Mockup UX Guardrails
+
+목적
+
+목업 생성 시 AI가 모든 새 영역을 강조하거나 CTA마다 화살표를 붙이는 문제를 줄입니다.
+
+Prompt
+
+Review this mockup against NudgeEAP DS UX guardrails.
+
+Check:
+
+- primary solid Button is used for only one most important action
+- ArrowNext/ChevronRight icon appears only on the representative forward CTA
+- repeated card/list CTAs do not repeat arrow icons
+- Chip/Badge is used for status, category, or short attributes, not decoration
+- notice/callout areas do not combine too many emphasis devices
+- Select/dropdown option count matches the recommended pattern
+- dense lists keep fixed scan positions for status, date, amount, progress, and CTA
+
+Return:
+
+1. issues ordered by severity
+2. suggested replacement pattern
+3. whether `get_pattern_guide("cta-group" | "notice" | "dropdown" | "dense-list")` should be consulted
 
 ---
 

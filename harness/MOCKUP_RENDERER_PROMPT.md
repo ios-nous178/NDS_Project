@@ -64,6 +64,17 @@ import { MockupLayout, useIsMobile, Accordion, StickyBottomBar } from "./mockup-
 - Select: `onValueChange` (onChange가 아님)
 - Tabs: `items`의 각 항목은 `{ key, title }` 형태
 
+### 3-1. CTA / 강조 위계
+
+AI는 새 영역을 만들 때 모든 것을 강조하기 쉽습니다. 아래 기준을 반드시 지키세요.
+
+- primary solid 버튼은 한 화면 또는 주요 섹션의 대표 액션 1개에만 사용합니다.
+- ArrowNext/ChevronRight 같은 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용합니다.
+- 반복 카드/리스트의 "자세히 보기" CTA에는 화살표를 반복하지 않습니다.
+- Chip/Badge는 상태, 분류, 짧은 속성 표시용입니다. 섹션 제목 장식이나 일반 안내문 강조로 사용하지 않습니다.
+- 안내 영역은 neutral surface를 기본으로 하고, 색 배경/아이콘/Chip/Badge/굵은 제목 중 1~2개만 조합합니다.
+- 드롭다운 옵션이 15개를 넘으면 검색 가능한 UI를 검토하고, 50개 이상이면 서버 검색/가상화를 검토합니다.
+
 ### 4. 반응형 필수
 
 useIsMobile() 훅을 사용하여 모바일/데스크탑을 구분하세요.
@@ -159,6 +170,10 @@ npx tsc --noEmit --project apps/storybook/tsconfig.json
 - [ ] DS에 있는 컴포넌트를 인라인으로 만들지 않았는가
 - [ ] Chip은 label prop을 사용했는가
 - [ ] Select는 onValueChange를 사용했는가
+- [ ] 화살표 CTA는 대표 액션 1개에만 있는가
+- [ ] primary solid 버튼이 한 화면에 1개 이하인가
+- [ ] Chip/Badge가 장식이 아니라 상태/분류/속성 표시로 쓰였는가
+- [ ] 안내 영역이 색 배경/아이콘/배지/굵은 제목을 과하게 겹치지 않았는가
 - [ ] useIsMobile()로 모바일 분기 처리했는가
 - [ ] 테이블이 있으면 모바일에서 카드형으로 전환했는가
 - [ ] 스토리에 Default + Mobile 둘 다 있는가

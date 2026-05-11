@@ -41,6 +41,7 @@ Storybook 확인 → 기획자 피드백 → (필요 시 재생성)
 | 컴포넌트 API 틀림 (Chip children 등)    | Renderer에 자주 틀리는 API 명시 + Self-Check            |
 | 모바일 반응형 미흡                      | Harness 2에서 반응형 체크포인트 식별, Renderer에 패턴표 |
 | UI 통일성 부족                          | UI Schema에 패턴 참조 추가                              |
+| 모든 CTA/새 영역을 과하게 강조          | CTA/강조 UX 가드레일 + MCP `get_pattern_guide` 활용     |
 
 ## 기획자 사용법
 
@@ -73,6 +74,9 @@ apps/storybook/src/stories/
 - [ ] MockupLayout으로 감쌌는가
 - [ ] DS에 있는 컴포넌트를 인라인으로 만들지 않았는가
 - [ ] 강제 매핑 규칙 10개 모두 준수했는가
+- [ ] 화살표 CTA는 대표 액션 1개에만 있는가
+- [ ] Chip/Badge가 장식이 아니라 상태/분류/속성 표시로 쓰였는가
+- [ ] 안내 영역 강조 장치가 과하지 않은가
 - [ ] useIsMobile()로 모바일 분기 처리했는가
 - [ ] 스토리에 Default + Mobile 둘 다 있는가
 - [ ] tsc --noEmit 통과하는가
