@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within, fn } from "@storybook/test";
+import { expect, within, fn } from "storybook/test";
 import { Button } from "@nudge-eap/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";

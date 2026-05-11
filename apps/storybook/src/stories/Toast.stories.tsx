@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within, waitFor, waitForElementToBeRemoved } from "@storybook/test";
+import { expect, within, waitFor, waitForElementToBeRemoved } from "storybook/test";
 import { Toast, Button } from "@nudge-eap/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";

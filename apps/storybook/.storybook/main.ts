@@ -8,12 +8,7 @@ const workspaceRoot = resolve(appDir, "../..");
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(ts|tsx)"],
-  addons: [
-    "@storybook/addon-essentials",
-    "@storybook/addon-a11y",
-    "@storybook/addon-interactions",
-    "@chromatic-com/storybook",
-  ],
+  addons: ["@storybook/addon-docs", "@storybook/addon-a11y", "@chromatic-com/storybook"],
   staticDirs: ["../public"],
   framework: {
     name: "@storybook/react-vite",

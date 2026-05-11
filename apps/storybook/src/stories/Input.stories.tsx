@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within } from "@storybook/test";
+import { expect, within } from "storybook/test";
 import { Input, type InputProps } from "@nudge-eap/react";
 import { SearchIcon } from "@nudge-eap/icons";
 import { getComponentDocsDescription } from "../componentDocs";

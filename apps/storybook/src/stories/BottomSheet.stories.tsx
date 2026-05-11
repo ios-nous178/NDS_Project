@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within, waitFor } from "@storybook/test";
+import { expect, within, waitFor } from "storybook/test";
 import { BottomSheet, Button, type BottomSheetProps } from "@nudge-eap/react";
 import { colors } from "@nudge-eap/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
