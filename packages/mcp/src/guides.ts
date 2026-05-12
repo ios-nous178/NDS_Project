@@ -1835,23 +1835,26 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   },
   "icon-color": {
     name: "icon-color",
-    summary: "아이콘 컬러를 주변 텍스트/배경/상태 톤에 맞추는 기준.",
+    summary:
+      "아이콘 컬러를 주변 텍스트/배경/상태 톤에 맞추는 기준. Figma `Section_Icon`(227:2)의 `--eap-icon-*` 토큰을 우선 사용.",
     rules: [
       "아이콘 컴포넌트의 기본값은 currentColor다. 단독 배치 시 부모 color가 명시되어 있지 않으면 본문색/검정으로 보여 어색할 수 있다.",
       "Button, IconButton, Chip, Select 등 DS 컴포넌트 슬롯 안의 아이콘은 컴포넌트가 정한 텍스트 컬러를 상속하게 두는 것이 기본이다.",
-      "안내/상태/빈 상태/카드 장식처럼 단독으로 배치한 아이콘은 color prop 또는 부모 style.color를 토큰 var()로 명시한다.",
-      "아이콘 색은 주변 텍스트와 같은 color token을 쓰거나, 상태 의미가 있으면 semantic 토큰(primary/caution/error/success)을 쓴다.",
+      "안내/상태/빈 상태/카드 장식처럼 단독으로 배치한 아이콘은 `color` prop 또는 부모 `style.color`를 `var(--eap-icon-*)` 토큰으로 명시한다.",
+      "용도별 토큰 매핑: 본문 옆 강조=`--eap-icon-strong-default`(#383838), 보조 정보/메타=`--eap-icon-normal-default`(#666666), 비활성=`--eap-icon-disabled-default`(#C7C7C7), 어두운 배경 위=`--eap-icon-inverse-default`(#FFFFFF), 브랜드 강조=`--eap-icon-brand-default`(#2B96ED).",
+      "상태 의미가 있을 때만 status 토큰을 사용한다: 성공=`--eap-icon-status-success`(#13BFA2), 오류=`--eap-icon-status-error`(#F13F00), 주의=`--eap-icon-status-caution`(#FFC303).",
       "아이콘만 별도 강한 색으로 튀게 하지 않는다. 강조가 필요하면 텍스트, 배경, 아이콘 중 1~2개만 함께 조합한다.",
     ],
     avoid: [
       "<InfoIcon />처럼 단독 아이콘을 색 지정 없이 배치",
       "안내 박스 안에서 아이콘만 브랜드 primary로 과하게 강조",
-      "아이콘에 hex/rgb 직접 지정",
+      "아이콘에 hex/rgb 직접 지정 — `--eap-icon-*` 토큰만 사용",
+      "구식 `--color-semantic-icon-*` 토큰 사용 — `--eap-icon-*`로 대체",
       "한 섹션 안에서 아이콘마다 다른 semantic color를 섞는 구성",
     ],
     metrics: {
       standaloneIconColor: "required",
-      preferredColor: "currentColor from explicit parent token or icon color prop",
+      preferredColor: "var(--eap-icon-*) — strong/normal/disabled/inverse/brand/status",
       maxSemanticIconColorsPerSection: 1,
     },
   },

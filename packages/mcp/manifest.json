@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-12T02:51:23.133Z",
+  "generatedAt": "2026-05-12T03:09:39.261Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -6361,6 +6361,26 @@
     {
       "name": "--eap-input-border-hover",
       "value": "#C7C7C7",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-helpertext-default",
+      "value": "#999999",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-helpertext-disabled",
+      "value": "#C7C7C7",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-helpertext-error",
+      "value": "#F13F00",
+      "group": "eap"
+    },
+    {
+      "name": "--eap-input-helpertext-success",
+      "value": "#2B96ED",
       "group": "eap"
     },
     {
