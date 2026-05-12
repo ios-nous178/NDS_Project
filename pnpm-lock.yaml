@@ -214,6 +214,9 @@ importers:
 
   packages/react:
     dependencies:
+      '@nudge-eap/icons':
+        specifier: workspace:*
+        version: link:../icons
       '@nudge-eap/tokens':
         specifier: workspace:*
         version: link:../tokens
