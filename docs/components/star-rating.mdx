@@ -1,0 +1,28 @@
+---
+title: StarRating
+description: 별점 표시/입력. 0.5 단위, readonly/inline edit 모드, size 커스텀
+---
+
+# StarRating
+
+별점 표시·입력. 0.5 단위까지 표현 가능하며 readonly · editable 모드를 모두 지원합니다.
+
+## 사용법
+
+```tsx
+import { StarRating } from "@nudge-eap/react";
+
+// 표시 전용
+<StarRating value={4.5} size={20} />
+
+// 입력
+const [score, setScore] = useState(0);
+<StarRating value={score} onChange={setScore} editable size={28} />
+```
+
+
+> ReviewCard 내부 슬롯으로도 사용. value는 0~5 + 0.5 단위.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/StarRating](http://localhost:6006/?path=/docs/components-star-rating--docs)로 진입할 수 있습니다.

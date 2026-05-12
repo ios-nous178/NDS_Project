@@ -1,0 +1,29 @@
+---
+title: FormField
+description: label / helper / error 슬롯을 갖춘 입력 필드 래퍼. 내부 입력 컴포넌트는 children
+---
+
+# FormField
+
+라벨 · 헬퍼 · 에러 슬롯을 통합한 입력 필드 래퍼. 내부 컨트롤은 `children`으로 받습니다.
+
+## 사용법
+
+```tsx
+import { FormField, Input } from "@nudge-eap/react";
+
+<FormField
+  label="이메일"
+  required
+  helper="로그인 시 사용됩니다"
+>
+  <Input placeholder="you@example.com" />
+</FormField>
+```
+
+
+> Input/Select 등 단일 컨트롤에 label과 헬퍼를 일관되게 붙일 때 사용.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/FormField](http://localhost:6006/?path=/docs/components-form-field--docs)로 진입할 수 있습니다.

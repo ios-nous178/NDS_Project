@@ -1208,7 +1208,7 @@
     "name": "Breadcrumb",
     "category": "내비게이션",
     "status": "implemented",
-    "description": "경로 탐색 브레드크럼. items({label, href?})[], 마지막 항목은 자동 비활성화",
+    "description": "경로 탐색 브레드크럼. items 배열에 label · href(선택) 객체를 전달, 마지막 항목은 자동 비활성화",
     "storybookTitle": "Components/Breadcrumb",
     "docsPath": "/docs/components/breadcrumb",
     "figmaUrl": "",

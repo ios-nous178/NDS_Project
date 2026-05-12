@@ -1,0 +1,33 @@
+---
+title: SegmentedControl
+description: 가로 세그먼트 컨트롤. 2~4개 옵션 단일 선택, sm/md 사이즈
+---
+
+# SegmentedControl
+
+2~4개 옵션을 가로로 배치한 단일 선택 컨트롤. 옵션이 5개 이상이거나 스크롤이 필요하면 `Tabs` / `FilterBar`.
+
+## 사용법
+
+```tsx
+import { SegmentedControl } from "@nudge-eap/react";
+
+const [view, setView] = useState("week");
+
+<SegmentedControl
+  value={view}
+  onValueChange={setView}
+  options={[
+    { value: "day", label: "일" },
+    { value: "week", label: "주" },
+    { value: "month", label: "월" },
+  ]}
+/>
+```
+
+
+> 옵션 ≥ 5개거나 스크롤 필요하면 Tabs / FilterBar 검토.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/SegmentedControl](http://localhost:6006/?path=/docs/components-segmented-control--docs)로 진입할 수 있습니다.

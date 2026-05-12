@@ -1,0 +1,30 @@
+---
+title: Stepper
+description: 단계 인디케이터. numbered/dots variant, 현재 단계 강조
+---
+
+# Stepper
+
+다단계 흐름의 진행 단계 인디케이터. `numbered`(번호) · `dots`(점) 변형. 실제 폼 관리는 `MultiStepForm`.
+
+## 사용법
+
+```tsx
+import { Stepper } from "@nudge-eap/react";
+
+<Stepper
+  current={1}
+  steps={[
+    { key: "terms", label: "약관 동의" },
+    { key: "info", label: "정보 입력" },
+    { key: "done", label: "완료" },
+  ]}
+/>
+```
+
+
+> 값 조절은 NumberStepper. Stepper는 단계 시각화 전용. 실제 폼 관리는 MultiStepForm.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/Stepper](http://localhost:6006/?path=/docs/components-stepper--docs)로 진입할 수 있습니다.

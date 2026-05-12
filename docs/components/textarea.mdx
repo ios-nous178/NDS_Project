@@ -1,0 +1,27 @@
+---
+title: Textarea
+description: 여러 줄 텍스트 입력. autoResize, maxLength 카운터, error/helper 지원
+---
+
+# Textarea
+
+여러 줄 텍스트 입력. `Input`(한 줄)과 분리됩니다. 자동 높이 조절은 `autoResize`로 켭니다.
+
+## 사용법
+
+```tsx
+import { Textarea } from "@nudge-eap/react";
+
+<Textarea
+  placeholder="오늘의 일기를 적어보세요"
+  minHeight={120}
+  maxLength={500}
+/>
+```
+
+
+> Input(한 줄)과 분리. 자동 높이 조절은 autoResize prop.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/Textarea](http://localhost:6006/?path=/docs/components-textarea--docs)로 진입할 수 있습니다.

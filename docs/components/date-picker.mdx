@@ -1,0 +1,30 @@
+---
+title: DatePicker
+description: 단일 날짜 선택 popover. trigger 필드 + 캘린더 드롭다운, min/max 날짜
+---
+
+# DatePicker
+
+단일 날짜 선택 popover. 트리거 필드를 클릭하면 캘린더가 펼쳐집니다. `Calendar`(인라인)와 분리된 입력 형태.
+
+## 사용법
+
+```tsx
+import { DatePicker } from "@nudge-eap/react";
+
+const [date, setDate] = useState<Date | undefined>();
+
+<DatePicker
+  value={date}
+  onChange={setDate}
+  minDate={new Date()}
+  placeholder="날짜를 선택하세요"
+/>
+```
+
+
+> Calendar(인라인 캘린더)와 분리. 입력 필드 형태로 폼에 들어갈 때 사용.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/DatePicker](http://localhost:6006/?path=/docs/components-date-picker--docs)로 진입할 수 있습니다.

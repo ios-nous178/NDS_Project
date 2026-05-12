@@ -1,0 +1,28 @@
+---
+title: DSHighlight
+description: 디자인시스템 사용 영역/컴포넌트 시각화 도구. OFF/영역/개별/전체 4모드
+---
+
+# DSHighlight
+
+디자인시스템 사용 영역과 컴포넌트를 시각적으로 표시하는 개발용 도구. `OFF` / `영역` / `개별` / `전체` 4모드.
+
+## 사용법
+
+```tsx
+import { DSHighlightProvider, DSMark } from "@nudge-eap/react";
+
+<DSHighlightProvider>
+  <DSMark id="hero">홈 히어로</DSMark>
+  <DSMark id="program-list">프로그램 리스트</DSMark>
+</DSHighlightProvider>
+
+// 키보드 단축키 또는 화면 우상단 토글로 4모드 순환
+```
+
+
+> 프로덕션에서는 비활성. DSHighlightProvider + DSMark 조합.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/DSHighlight](http://localhost:6006/?path=/docs/components-d-s-highlight--docs)로 진입할 수 있습니다.

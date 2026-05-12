@@ -161,12 +161,12 @@ title: 컴포넌트 인벤토리
 
 ## 내비게이션
 
-| 컴포넌트       | 설명                                                                           | 상태      | Figma     | Storybook                                                             | Docs                                                     | 활용 범위                                                |
-| -------------- | ------------------------------------------------------------------------------ | --------- | --------- | --------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
-| **Tabs**       | 탭 내비게이션. line/pill/square 변형과 슬라이딩 인디케이터 지원                | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-tabs--docs)       | [열기](http://localhost:3001/docs/components/tabs)       | 카테고리 전환, 검색 탭, 콘텐츠 분류, 필터 탭             |
-| **FilterBar**  | 가로 필터 칩 그룹. 다중/단일 선택, 카운트, 자동 초기화 버튼                    | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-filterbar--docs)  | [열기](http://localhost:3001/docs/components/filter-bar) | 콘텐츠/상품/상담사 리스트 필터, 검색 결과 필터링         |
-| **Pagination** | 페이지 네비게이션. page/totalPages/onPageChange, 모바일에서는 자동 컴팩트 모드 | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-pagination--docs) | [열기](http://localhost:3001/docs/components/pagination) | 리스트/검색 결과 페이지 이동, 운영툴 테이블 페이지네이션 |
-| **Breadcrumb** | 경로 탐색 브레드크럼. items({label, href?})[], 마지막 항목은 자동 비활성화     | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-breadcrumb--docs) | [열기](http://localhost:3001/docs/components/breadcrumb) | 디테일 화면 상단, 카테고리 깊은 트리, 운영툴 위치 표시   |
+| 컴포넌트       | 설명                                                                                           | 상태      | Figma     | Storybook                                                             | Docs                                                     | 활용 범위                                                |
+| -------------- | ---------------------------------------------------------------------------------------------- | --------- | --------- | --------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
+| **Tabs**       | 탭 내비게이션. line/pill/square 변형과 슬라이딩 인디케이터 지원                                | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-tabs--docs)       | [열기](http://localhost:3001/docs/components/tabs)       | 카테고리 전환, 검색 탭, 콘텐츠 분류, 필터 탭             |
+| **FilterBar**  | 가로 필터 칩 그룹. 다중/단일 선택, 카운트, 자동 초기화 버튼                                    | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-filterbar--docs)  | [열기](http://localhost:3001/docs/components/filter-bar) | 콘텐츠/상품/상담사 리스트 필터, 검색 결과 필터링         |
+| **Pagination** | 페이지 네비게이션. page/totalPages/onPageChange, 모바일에서는 자동 컴팩트 모드                 | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-pagination--docs) | [열기](http://localhost:3001/docs/components/pagination) | 리스트/검색 결과 페이지 이동, 운영툴 테이블 페이지네이션 |
+| **Breadcrumb** | 경로 탐색 브레드크럼. items 배열에 label · href(선택) 객체를 전달, 마지막 항목은 자동 비활성화 | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-breadcrumb--docs) | [열기](http://localhost:3001/docs/components/breadcrumb) | 디테일 화면 상단, 카테고리 깊은 트리, 운영툴 위치 표시   |
 
 - **Tabs**: WebView SlideTab(LINE/PILL/SQUARE/CIRCLE/CHALLENGE_SQUARE) 패턴을 통합한 컴포넌트입니다.
 - **FilterBar**: Tabs(뷰 전환)과 분리. single은 다시 누르면 해제됨.
