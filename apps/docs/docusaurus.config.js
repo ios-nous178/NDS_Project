@@ -3,7 +3,7 @@
 const storybookUrl = process.env.STORYBOOK_BASE_URL || "http://localhost:6006";
 
 const config = {
-  title: "NudgeEAP Design System",
+  title: "넛지 디자인시스템",
   tagline: "기획, 디자인, 개발이 같은 언어로 소통하는 디자인 시스템",
   favicon: "img/favicon.svg",
 
@@ -59,9 +59,9 @@ const config = {
 
   themeConfig: {
     navbar: {
-      title: "NudgeEAP DS",
+      title: "넛지 디자인시스템",
       logo: {
-        alt: "NudgeEAP Design System",
+        alt: "넛지 디자인시스템",
         src: "img/logo.svg",
         href: "/",
       },
@@ -109,7 +109,7 @@ const config = {
           ],
         },
       ],
-      copyright: `${new Date().getFullYear()} NudgeEAP Design System`,
+      copyright: `${new Date().getFullYear()} 넛지 디자인시스템`,
     },
   },
 };

@@ -3,9 +3,9 @@ sidebar_position: 1
 title: 소개
 ---
 
-# NudgeEAP Design System
+# 넛지 디자인시스템
 
-NudgeEAP Design System(NDS)은 Button, Modal, Input 등 **15개 React 컴포넌트**와 디자인 토큰, 아이콘을 제공하는 공용 UI 라이브러리입니다. Figma 디자인과 1:1로 동기화되어 있으며, 기획·디자인·개발 모두가 같은 용어와 기준으로 소통할 수 있도록 설계되었습니다.
+넛지 디자인시스템(Nudge DS, 패키지 네임스페이스 `@nudge-eap/*`)은 Button, Modal, Input 같은 React 컴포넌트와 디자인 토큰, 84개 아이콘을 제공하는 공용 UI 라이브러리입니다. Figma 디자인과 1:1로 동기화되어 있으며, 기획·디자인·개발 모두가 같은 용어와 기준으로 소통할 수 있도록 설계되었습니다.
 
 ---
 
