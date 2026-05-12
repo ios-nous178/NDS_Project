@@ -18,7 +18,13 @@ const AR_LEVEL_CLASS = `${AR_CLASS}__level`;
 const AR_BODY_CLASS = `${AR_CLASS}__body`;
 const AR_SCORE_CLASS = `${AR_CLASS}__score`;
 const AR_SCORE_VALUE_CLASS = `${AR_CLASS}__score-value`;
+const AR_SCORE_UNIT_CLASS = `${AR_CLASS}__score-unit`;
 const AR_SCORE_MAX_CLASS = `${AR_CLASS}__score-max`;
+const AR_GAUGE_CLASS = `${AR_CLASS}__gauge`;
+const AR_GAUGE_BAR_CLASS = `${AR_CLASS}__gauge-bar`;
+const AR_GAUGE_SEG_CLASS = `${AR_CLASS}__gauge-seg`;
+const AR_GAUGE_LABELS_CLASS = `${AR_CLASS}__gauge-labels`;
+const AR_GAUGE_LABEL_CLASS = `${AR_CLASS}__gauge-label`;
 const AR_DESC_CLASS = `${AR_CLASS}__description`;
 const AR_FOOTER_CLASS = `${AR_CLASS}__footer`;
 const AR_ACTION_CLASS = `${AR_CLASS}__action`;
@@ -26,6 +32,8 @@ const AR_ACTION_CLASS = `${AR_CLASS}__action`;
 /* ─── Types ─── */
 
 export type AssessmentLevel = "normal" | "mild" | "moderate" | "severe";
+
+const LEVEL_ORDER: AssessmentLevel[] = ["normal", "mild", "moderate", "severe"];
 
 const LEVEL_DEFAULT_TEXT: Record<AssessmentLevel, string> = {
   normal: "정상",
@@ -37,12 +45,16 @@ const LEVEL_DEFAULT_TEXT: Record<AssessmentLevel, string> = {
 // eslint-disable-next-line unused-imports/no-unused-vars
 const assessmentResultStyles = `
   :where(.${AR_CLASS}) {
+    --nds-ar-level-color: ${cv.text.subtle};
+    --nds-ar-level-bg: ${cv.bg.coolGrayLighter};
+    --nds-ar-level-text: ${cv.text.subtle};
     display: flex;
     flex-direction: column;
-    gap: ${spacing[16]}px;
+    gap: ${spacing[20]}px;
     padding: ${spacing[20]}px ${spacing[24]}px;
     background: ${cv.bg.white};
     border: 1px solid ${cv.border.light};
+    border-left: 4px solid var(--nds-ar-level-color);
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -50,88 +62,151 @@ const assessmentResultStyles = `
   }
 
   :where(.${AR_CLASS}[data-level="normal"]) {
-    border-color: ${cv.success.main};
+    --nds-ar-level-color: ${cv.success.main};
+    --nds-ar-level-bg: ${cv.success.bg};
+    --nds-ar-level-text: ${cv.success.main};
   }
-  :where(.${AR_CLASS}[data-level="mild"]),
+  :where(.${AR_CLASS}[data-level="mild"]) {
+    --nds-ar-level-color: ${cv.caution.main};
+    --nds-ar-level-bg: ${cv.caution.bg};
+    --nds-ar-level-text: ${cv.caution.text};
+  }
   :where(.${AR_CLASS}[data-level="moderate"]) {
-    border-color: ${cv.caution.main};
+    --nds-ar-level-color: ${cv.caution.text};
+    --nds-ar-level-bg: ${cv.caution.bg};
+    --nds-ar-level-text: ${cv.caution.text};
   }
   :where(.${AR_CLASS}[data-level="severe"]) {
-    border-color: ${cv.error.main};
+    --nds-ar-level-color: ${cv.error.main};
+    --nds-ar-level-bg: ${cv.error.bg};
+    --nds-ar-level-text: ${cv.error.main};
   }
 
   :where(.${AR_HEADER_CLASS}) {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: ${spacing[12]}px;
   }
 
   :where(.${AR_TITLE_CLASS}) {
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: ${typeScale.body2.lineHeight}px;
-    font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
     margin: 0;
+    font-size: ${typeScale.body1.fontSize}px;
+    line-height: ${typeScale.body1.lineHeight}px;
+    font-weight: ${fontWeight.bold};
+    color: ${cv.text.default};
+    letter-spacing: -0.01em;
   }
 
   :where(.${AR_LEVEL_CLASS}) {
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[4]}px ${spacing[10]}px;
+    padding: ${spacing[4]}px ${spacing[12]}px;
     border-radius: ${radius.pill}px;
+    background: var(--nds-ar-level-bg);
+    color: var(--nds-ar-level-text);
     font-size: ${typeScale.caption1.fontSize}px;
-    font-weight: ${fontWeight.bold};
     line-height: ${typeScale.caption1.lineHeight}px;
-  }
-
-  :where(.${AR_LEVEL_CLASS}[data-level="normal"]) {
-    background: ${cv.success.bg};
-    color: ${cv.success.main};
-  }
-  :where(.${AR_LEVEL_CLASS}[data-level="mild"]),
-  :where(.${AR_LEVEL_CLASS}[data-level="moderate"]) {
-    background: ${cv.caution.bg};
-    color: ${cv.caution.text};
-  }
-  :where(.${AR_LEVEL_CLASS}[data-level="severe"]) {
-    background: ${cv.error.bg};
-    color: ${cv.error.main};
+    font-weight: ${fontWeight.bold};
   }
 
   :where(.${AR_BODY_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: ${spacing[16]}px;
   }
 
   :where(.${AR_SCORE_CLASS}) {
     display: flex;
     align-items: baseline;
-    gap: ${spacing[4]}px;
+    gap: ${spacing[6]}px;
   }
 
   :where(.${AR_SCORE_VALUE_CLASS}) {
-    font-size: ${typeScale.headline2.fontSize}px;
-    line-height: ${typeScale.headline2.lineHeight}px;
+    font-size: ${typeScale.headline1.fontSize}px;
+    line-height: ${typeScale.headline1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: var(--nds-ar-level-color);
+    letter-spacing: -0.02em;
+  }
+
+  :where(.${AR_SCORE_UNIT_CLASS}) {
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
+    font-weight: ${fontWeight.bold};
+    color: var(--nds-ar-level-color);
   }
 
   :where(.${AR_SCORE_MAX_CLASS}) {
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: ${typeScale.body2.lineHeight}px;
+    margin-left: ${spacing[4]}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
     color: ${cv.text.subtle};
   }
 
+  :where(.${AR_GAUGE_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[6]}px;
+  }
+
+  :where(.${AR_GAUGE_BAR_CLASS}) {
+    display: flex;
+    gap: ${spacing[4]}px;
+  }
+
+  :where(.${AR_GAUGE_SEG_CLASS}) {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: ${cv.border.light};
+    transition: height ${transition.default}, background ${transition.default}, opacity ${transition.default};
+  }
+
+  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="normal"]) { background: ${cv.success.main}; }
+  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="mild"]) { background: ${cv.caution.main}; }
+  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="moderate"]) { background: ${cv.caution.text}; }
+  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="severe"]) { background: ${cv.error.main}; }
+
+  :where(.${AR_GAUGE_SEG_CLASS}[data-active="false"]) {
+    opacity: 0.25;
+  }
+  :where(.${AR_GAUGE_SEG_CLASS}[data-active="true"]) {
+    height: 10px;
+    border-radius: 5px;
+  }
+
+  :where(.${AR_GAUGE_LABELS_CLASS}) {
+    display: flex;
+    gap: ${spacing[4]}px;
+  }
+
+  :where(.${AR_GAUGE_LABEL_CLASS}) {
+    flex: 1;
+    text-align: center;
+    font-size: ${typeScale.caption2.fontSize}px;
+    line-height: ${typeScale.caption2.lineHeight}px;
+    font-weight: ${fontWeight.medium};
+    color: ${cv.text.placeholder};
+  }
+  :where(.${AR_GAUGE_LABEL_CLASS}[data-active="true"]) {
+    color: var(--nds-ar-level-text);
+    font-weight: ${fontWeight.bold};
+  }
+
   :where(.${AR_DESC_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.normal};
+    margin: 0;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
+    color: ${cv.text.subtle};
   }
 
   :where(.${AR_FOOTER_CLASS}) {
+    margin-top: ${spacing[4]}px;
+    padding-top: ${spacing[12]}px;
+    border-top: 1px solid ${cv.border.light};
     display: flex;
     justify-content: flex-end;
   }
@@ -193,6 +268,12 @@ export interface AssessmentResultCardProps extends Omit<
   actionLabel?: string;
   /** 액션 클릭 */
   onAction?: () => void;
+  /** 점수 단위 (기본: "점") */
+  scoreUnit?: React.ReactNode;
+  /** 4단계 게이지 숨기기 (단순 카드로 표시) */
+  hideGauge?: boolean;
+  /** 단계별 라벨 커스터마이즈 */
+  levelLabels?: Partial<Record<AssessmentLevel, React.ReactNode>>;
 }
 
 export const AssessmentResultCard = React.forwardRef<HTMLDivElement, AssessmentResultCardProps>(
@@ -206,12 +287,16 @@ export const AssessmentResultCard = React.forwardRef<HTMLDivElement, AssessmentR
       description,
       actionLabel,
       onAction,
+      scoreUnit = "점",
+      hideGauge,
+      levelLabels,
       className,
       ...rest
     },
     ref,
   ) => {
-    const levelLabel = levelText ?? LEVEL_DEFAULT_TEXT[level];
+    const resolveLabel = (lvl: AssessmentLevel) => levelLabels?.[lvl] ?? LEVEL_DEFAULT_TEXT[lvl];
+    const levelChipLabel = levelText ?? resolveLabel(level);
 
     return (
       <div
@@ -225,8 +310,8 @@ export const AssessmentResultCard = React.forwardRef<HTMLDivElement, AssessmentR
           <h3 data-slot="title" className={AR_TITLE_CLASS}>
             {title}
           </h3>
-          <span data-slot="level" data-level={level} className={AR_LEVEL_CLASS}>
-            {levelLabel}
+          <span data-slot="level" className={AR_LEVEL_CLASS}>
+            {levelChipLabel}
           </span>
         </div>
         <div data-slot="body" className={AR_BODY_CLASS}>
@@ -234,12 +319,44 @@ export const AssessmentResultCard = React.forwardRef<HTMLDivElement, AssessmentR
             <span data-slot="score-value" className={AR_SCORE_VALUE_CLASS}>
               {score}
             </span>
+            {scoreUnit && (
+              <span data-slot="score-unit" className={AR_SCORE_UNIT_CLASS}>
+                {scoreUnit}
+              </span>
+            )}
             {maxScore !== undefined && (
               <span data-slot="score-max" className={AR_SCORE_MAX_CLASS}>
-                / {maxScore}점
+                / {maxScore}
+                {scoreUnit ?? ""}
               </span>
             )}
           </div>
+          {!hideGauge && (
+            <div data-slot="gauge" className={AR_GAUGE_CLASS}>
+              <div className={AR_GAUGE_BAR_CLASS}>
+                {LEVEL_ORDER.map((lvl) => (
+                  <div
+                    key={lvl}
+                    className={AR_GAUGE_SEG_CLASS}
+                    data-seg={lvl}
+                    data-active={lvl === level}
+                  />
+                ))}
+              </div>
+              <div className={AR_GAUGE_LABELS_CLASS}>
+                {LEVEL_ORDER.map((lvl) => (
+                  <span
+                    key={lvl}
+                    className={AR_GAUGE_LABEL_CLASS}
+                    data-seg={lvl}
+                    data-active={lvl === level}
+                  >
+                    {resolveLabel(lvl)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
           {description && (
             <p data-slot="description" className={AR_DESC_CLASS}>
               {description}
