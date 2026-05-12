@@ -1,0 +1,31 @@
+---
+title: LikertScale
+description: 5점 또는 N점 리커트 척도. ‘전혀 아니다 ~ 매우 그렇다’ 라벨 슬롯
+---
+
+# LikertScale
+
+5점 또는 N점 리커트 척도. PHQ-9, GAD-7 같은 정형 임상 척도에 사용합니다. 가벼운 의견 수렴은 `VotePoll` 검토.
+
+## 사용법
+
+```tsx
+import { LikertScale } from "@nudge-eap/react";
+
+const [v, setV] = useState<string | number>(3);
+
+<LikertScale
+  value={v}
+  onValueChange={setV}
+  options={[{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }]}
+  startLabel="전혀 아니다"
+  endLabel="매우 그렇다"
+/>
+```
+
+
+> 가벼운 의견 수렴은 VotePoll. LikertScale은 정형 설문 척도.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/LikertScale](http://localhost:6006/?path=/docs/components-likert-scale--docs)로 진입할 수 있습니다.

@@ -1,0 +1,32 @@
+---
+title: TrendingKeywords
+description: 실시간 인기 검색어 리스트. 순위 + 키워드 + trend(new/up/down/same) 화살표
+---
+
+# TrendingKeywords
+
+실시간 인기 검색어 리스트. 순위 + 키워드 + trend(new/up/down/same) 화살표.
+
+## 사용법
+
+```tsx
+import { TrendingKeywords } from "@nudge-eap/react";
+
+<TrendingKeywords
+  title="인기 검색어"
+  timestamp="09:00 기준"
+  items={[
+    { rank: 1, trend: "up", keyword: "직장 스트레스" },
+    { rank: 2, trend: "same", keyword: "불안" },
+    { rank: 3, trend: "new", keyword: "수면" },
+  ]}
+  onKeywordClick={(item) => navigate(`/search?q=${item.keyword}`)}
+/>
+```
+
+
+> value/onChange 패턴 아님 — 클릭 시 검색 트리거하도록 외부에서 라우팅.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/TrendingKeywords](http://localhost:6006/?path=/docs/components-trending-keywords--docs)로 진입할 수 있습니다.

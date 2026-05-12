@@ -1,0 +1,25 @@
+---
+title: TextButton
+description: 텍스트 링크 형식의 보조 버튼. large/medium, underline/none variant
+---
+
+# TextButton
+
+텍스트 링크 형식의 보조 버튼. `large` · `medium` 두 가지 사이즈를 지원합니다. 주요 CTA에는 `Button` 사용.
+
+## 사용법
+
+```tsx
+import { TextButton } from "@nudge-eap/react";
+
+<TextButton size="medium" onClick={() => navigate("/more")}>
+  더보기
+</TextButton>
+```
+
+
+> 주요 CTA는 Button 사용. TextButton은 비중이 낮은 보조 액션 전용.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/TextButton](http://localhost:6006/?path=/docs/components-text-button--docs)로 진입할 수 있습니다.

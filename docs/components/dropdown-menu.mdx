@@ -1,0 +1,31 @@
+---
+title: DropdownMenu
+description: 버튼 트리거 액션 드롭다운. 그룹/구분선/아이콘/단축키 슬롯
+---
+
+# DropdownMenu
+
+버튼 트리거 액션 드롭다운. 값 선택이 아니라 명령형 액션 모음에 사용합니다 (값 선택은 `Select`).
+
+## 사용법
+
+```tsx
+import { DropdownMenu } from "@nudge-eap/react";
+
+<DropdownMenu
+  items={[
+    { key: "edit", label: "편집", onSelect: () => {} },
+    { key: "share", label: "공유", onSelect: () => {} },
+    { key: "delete", label: "삭제", danger: true, onSelect: () => {} },
+  ]}
+>
+  <IconButton aria-label="더보기" icon={<MoreIcon />} />
+</DropdownMenu>
+```
+
+
+> 값 선택은 Select. DropdownMenu는 명령형 액션 모음 전용.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/DropdownMenu](http://localhost:6006/?path=/docs/components-dropdown-menu--docs)로 진입할 수 있습니다.

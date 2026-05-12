@@ -1,0 +1,33 @@
+---
+title: WebHeader
+description: 데스크톱/태블릿 웹 헤더. 로고 + 메뉴 + 우측 액션, sticky/fixed/static 위치
+---
+
+# WebHeader
+
+데스크톱·태블릿용 웹 헤더. 로고 + 메뉴 + 우측 액션 슬롯. 모바일 앱은 `AppBar` 사용.
+
+## 사용법
+
+```tsx
+import { WebHeader } from "@nudge-eap/react";
+
+<WebHeader position="sticky" maxWidth={1200}>
+  <WebHeader.Logo alt="Brand" src="/logo.svg" />
+  <WebHeader.Menu>
+    <WebHeader.MenuItem href="/" active>홈</WebHeader.MenuItem>
+    <WebHeader.MenuItem href="/programs">콘텐츠</WebHeader.MenuItem>
+    <WebHeader.MenuItem href="/counselors">상담</WebHeader.MenuItem>
+  </WebHeader.Menu>
+  <WebHeader.Actions>
+    <WebHeader.AuthButton href="/signin">로그인</WebHeader.AuthButton>
+  </WebHeader.Actions>
+</WebHeader>
+```
+
+
+> 모바일 앱은 AppBar 사용. WebHeader는 큰 화면 가로 메뉴 전용.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/WebHeader](http://localhost:6006/?path=/docs/components-web-header--docs)로 진입할 수 있습니다.

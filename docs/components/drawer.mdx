@@ -1,0 +1,34 @@
+---
+title: Drawer
+description: 사이드 드로어 패널. left/right, sm/md/lg, 포커스 트랩 내장
+---
+
+# Drawer
+
+사이드에서 슬라이드되는 패널. 모바일은 `BottomSheet`, 데스크톱·태블릿은 `Drawer`로 분기 권장.
+
+## 사용법
+
+```tsx
+import { Drawer } from "@nudge-eap/react";
+
+const [open, setOpen] = useState(false);
+
+<Drawer
+  open={open}
+  onClose={() => setOpen(false)}
+  side="right"
+  size="md"
+  title="필터"
+  footer={<Button onClick={apply}>적용</Button>}
+>
+  {/* body */}
+</Drawer>
+```
+
+
+> 모바일은 BottomSheet, 데스크톱·태블릿은 Drawer로 분기 권장.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/Drawer](http://localhost:6006/?path=/docs/components-drawer--docs)로 진입할 수 있습니다.

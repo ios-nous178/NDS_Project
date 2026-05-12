@@ -1,0 +1,24 @@
+---
+title: IconButton
+description: 아이콘 전용 버튼. x-large/large/medium/small 4단계, 원형/정사각 모양
+---
+
+# IconButton
+
+아이콘 전용 버튼. `aria-label`이 필수입니다. 텍스트가 같이 보여야 한다면 `Button` 또는 `TextButton`을 사용하세요.
+
+## 사용법
+
+```tsx
+import { IconButton } from "@nudge-eap/react";
+import { SearchIcon } from "@nudge-eap/icons";
+
+<IconButton aria-label="검색" icon={<SearchIcon size={20} />} size="medium" />
+```
+
+
+> aria-label 필수. 텍스트가 함께 보여야 한다면 Button 또는 TextButton 사용.
+
+## 인벤토리
+
+전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/IconButton](http://localhost:6006/?path=/docs/components-icon-button--docs)로 진입할 수 있습니다.
