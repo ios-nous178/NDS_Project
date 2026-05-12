@@ -1,15 +1,8 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DropdownMenu, IconButton, Button } from "@nudge-eap/react";
+import { MoreIcon } from "@nudge-eap/icons";
 import { getComponentDocsDescription } from "../componentDocs";
-
-const MoreIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <circle cx="5" cy="10" r="1.5" fill="currentColor" />
-    <circle cx="10" cy="10" r="1.5" fill="currentColor" />
-    <circle cx="15" cy="10" r="1.5" fill="currentColor" />
-  </svg>
-);
 
 const meta: Meta = {
   title: "Components/DropdownMenu",
@@ -39,7 +32,10 @@ function MoreActionsExample() {
           { key: "delete", label: "삭제", onSelect: () => alert("삭제"), danger: true },
         ]}
       >
-        <IconButton icon={<MoreIcon />} aria-label="더보기" />
+        <IconButton
+          icon={<MoreIcon size={20} color="var(--eap-icon-normal-default)" aria-hidden="true" />}
+          aria-label="더보기"
+        />
       </DropdownMenu>
     </div>
   );

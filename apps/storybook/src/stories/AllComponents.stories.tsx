@@ -9,7 +9,6 @@ import {
   AvatarGroup,
   Badge,
   Banner,
-  BottomSheet,
   BreathingGuide,
   Button,
   Calendar,
@@ -19,7 +18,6 @@ import {
   Checkbox,
   Chip,
   CircularProgress,
-  CoachMark,
   CommentItem,
   Confetti,
   CountdownTimer,
@@ -35,10 +33,8 @@ import {
   IconButton,
   Input,
   JournalEntry,
-  Lightbox,
   LikeButton,
   MentionInput,
-  Modal,
   NotificationItem,
   NumberStepper,
   OnlineIndicator,
@@ -47,7 +43,6 @@ import {
   Pagination,
   PhoneInput,
   PinPad,
-  Popup,
   PriceTag,
   ProductCard,
   ProgressBar,
@@ -58,7 +53,6 @@ import {
   SearchInput,
   Select,
   SelectionCard,
-  ShareSheet,
   Skeleton,
   Slider,
   Snackbar,
@@ -73,13 +67,21 @@ import {
   TextButton,
   TimePicker,
   TipCard,
-  Toast,
   Toggle,
-  Tooltip,
   UserCard,
   VotePoll,
 } from "@nudge-eap/react";
-import { CalendarIcon, PlusIcon, SearchIcon, ShareIcon } from "@nudge-eap/icons";
+import {
+  CalendarIcon,
+  PlusIcon,
+  SearchIcon,
+  ShareIcon,
+  CloseIcon,
+  MicrophoneIcon,
+  VideocameraIcon,
+  TelephoneIcon,
+} from "@nudge-eap/icons";
+import { cv, radius, shadow } from "@nudge-eap/tokens";
 import inventory from "../../../../metadata/componentInventory.json";
 
 /* ──────────────────────────────────────────
@@ -284,162 +286,93 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Snackbar variant="success" title="저장되었어요" />
     </div>
   ),
-  Modal: () => {
-    function ModalTrigger() {
-      const [open, setOpen] = useState(false);
-      return (
-        <>
-          <Button size="sm" onClick={() => setOpen(true)}>
-            Modal 열기
-          </Button>
-          <Modal
-            open={open}
-            onClose={() => setOpen(false)}
-            title="알림"
-            confirmText="확인"
-            onConfirm={(close) => close()}
-          >
-            모달 본문입니다.
-          </Modal>
-        </>
-      );
-    }
-    return <ModalTrigger />;
-  },
+  Modal: () => (
+    <div style={mockModalSurface}>
+      <div style={mockModalHeader}>
+        <div style={mockModalHeaderSpacer} aria-hidden />
+        <div style={mockModalHeaderTitle}>알림</div>
+        <span style={mockModalClose} aria-hidden>
+          <CloseIcon size={16} color="var(--eap-icon-normal-default)" />
+        </span>
+      </div>
+      <div style={mockModalBody}>저장된 변경사항을 적용할까요?</div>
+      <div style={mockModalFooter}>
+        <div style={mockModalCancelBtn}>취소</div>
+        <div style={mockModalConfirmBtn}>확인</div>
+      </div>
+    </div>
+  ),
   Tooltip: () => (
-    <Tooltip content="툴팁 내용" placement="top">
+    <div style={mockTooltipWrap}>
       <Button size="sm" variant="outlined">
         Hover
       </Button>
-    </Tooltip>
+      <div style={mockTooltipBubble}>
+        툴팁 내용
+        <span style={mockTooltipArrow} aria-hidden />
+      </div>
+    </div>
   ),
 
-  /* ─── Overlay (portal trigger) ─── */
-  Popup: () => {
-    function P() {
-      const [open, setOpen] = useState(false);
-      return (
-        <>
-          <Button size="sm" variant="outlined" onClick={() => setOpen(true)}>
-            Popup 열기
-          </Button>
-          <Popup
-            open={open}
-            onClose={() => setOpen(false)}
-            title="확인"
-            description="정말 진행할까요?"
-            confirmText="확인"
-            onConfirm={() => setOpen(false)}
-          />
-        </>
-      );
-    }
-    return <P />;
-  },
-  BottomSheet: () => {
-    function B() {
-      const [open, setOpen] = useState(false);
-      return (
-        <>
-          <Button size="sm" variant="outlined" onClick={() => setOpen(true)}>
-            Sheet 열기
-          </Button>
-          <BottomSheet open={open} onClose={() => setOpen(false)} title="필터">
-            <p style={{ margin: 0, fontSize: 13 }}>옵션을 선택하세요.</p>
-          </BottomSheet>
-        </>
-      );
-    }
-    return <B />;
-  },
-  Toast: () => {
-    function ToastTrigger() {
-      const { toast } = Toast.useToast();
-      return (
-        <Button size="sm" variant="outlined" onClick={() => toast("저장되었어요")}>
-          Toast 띄우기
-        </Button>
-      );
-    }
-    return (
-      <Toast.Provider>
-        <ToastTrigger />
-      </Toast.Provider>
-    );
-  },
-  Lightbox: () => {
-    function L() {
-      const [open, setOpen] = useState(false);
-      return (
-        <>
-          <Button size="sm" variant="outlined" onClick={() => setOpen(true)}>
-            이미지 보기
-          </Button>
-          <Lightbox
-            open={open}
-            onClose={() => setOpen(false)}
-            images={[{ src: "https://placehold.co/600x400" }]}
-          />
-        </>
-      );
-    }
-    return <L />;
-  },
-  ShareSheet: () => {
-    function S() {
-      const [open, setOpen] = useState(false);
-      return (
-        <>
-          <Button size="sm" variant="outlined" onClick={() => setOpen(true)}>
-            공유 시트
-          </Button>
-          <ShareSheet
-            open={open}
-            onClose={() => setOpen(false)}
-            targets={[
-              {
-                key: "copy",
-                label: "복사",
-                icon: <ShareIcon size={20} />,
-                onClick: () => setOpen(false),
-              },
-              {
-                key: "link",
-                label: "링크",
-                icon: <ShareIcon size={20} />,
-                onClick: () => setOpen(false),
-              },
-            ]}
-          />
-        </>
-      );
-    }
-    return <S />;
-  },
-  CoachMark: () => {
-    function C() {
-      const [open, setOpen] = useState(false);
-      return (
-        <>
-          <Button size="sm" variant="outlined" onClick={() => setOpen(true)} data-cm-target>
-            도움말 보기
-          </Button>
-          <CoachMark
-            open={open}
-            onClose={() => setOpen(false)}
-            steps={[
-              {
-                target: "[data-cm-target]",
-                title: "여기를 눌러보세요",
-                description: "이 버튼이 핵심 액션입니다.",
-              },
-            ]}
-          />
-        </>
-      );
-    }
-    return <C />;
-  },
+  /* ─── Overlay (정적 미리보기) ─── */
+  Popup: () => (
+    <div style={mockPopupSurface}>
+      <div style={mockPopupTitle}>정말 삭제할까요?</div>
+      <div style={mockPopupDesc}>이 작업은 되돌릴 수 없습니다.</div>
+      <div style={mockPopupActions}>
+        <div style={mockPopupCancelBtn}>취소</div>
+        <div style={mockPopupConfirmBtn}>삭제</div>
+      </div>
+    </div>
+  ),
+  BottomSheet: () => (
+    <div style={mockBottomSheet}>
+      <div style={mockGrabber} aria-hidden />
+      <div style={mockSheetTitle}>필터</div>
+      <div style={mockSheetBody}>옵션을 선택하세요.</div>
+    </div>
+  ),
+  Toast: () => (
+    <div style={mockToast}>
+      <span style={mockToastIcon} aria-hidden>
+        ✓
+      </span>
+      <span>저장되었어요</span>
+    </div>
+  ),
+  Lightbox: () => (
+    <div style={mockLightbox}>
+      <div style={mockLightboxImage} aria-hidden />
+    </div>
+  ),
+  ShareSheet: () => (
+    <div style={mockShareSheet}>
+      {[
+        { key: "copy", label: "복사" },
+        { key: "link", label: "링크" },
+        { key: "more", label: "더보기" },
+      ].map((t) => (
+        <div key={t.key} style={mockShareItem}>
+          <span style={mockShareIcon} aria-hidden>
+            <ShareIcon size={18} />
+          </span>
+          <span style={mockShareLabel}>{t.label}</span>
+        </div>
+      ))}
+    </div>
+  ),
+  CoachMark: () => (
+    <div style={mockCoachWrap}>
+      <Button size="sm" variant="outlined">
+        도움말
+      </Button>
+      <div style={mockCoachCard}>
+        <span style={mockCoachArrow} aria-hidden />
+        <div style={mockCoachTitle}>여기를 눌러보세요</div>
+        <div style={mockCoachDesc}>이 버튼이 핵심 액션입니다.</div>
+      </div>
+    </div>
+  ),
 
   /* ─── Domain / Data cards ─── */
   AppointmentCard: () => (
@@ -835,7 +768,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
   /* ─── Misc / Visual ─── */
   FAB: () => (
     <div style={previewRow}>
-      <FAB icon={<PlusIcon size={20} />} label="추가" onClick={() => {}} />
+      <FAB position="static" icon={<PlusIcon size={20} />} label="추가" onClick={() => {}} />
     </div>
   ),
   Sparkline: () => <Sparkline data={[3, 5, 4, 8, 6, 9, 7, 11]} width={140} height={40} />,
@@ -1004,7 +937,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
           justifyContent: "center",
         }}
       >
-        🎤
+        <MicrophoneIcon size={20} color="var(--eap-icon-normal-default)" />
       </span>
       <span
         style={{
@@ -1017,7 +950,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
           justifyContent: "center",
         }}
       >
-        📹
+        <VideocameraIcon size={20} color="var(--eap-icon-normal-default)" />
       </span>
       <span
         style={{
@@ -1031,7 +964,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
           justifyContent: "center",
         }}
       >
-        📞
+        <TelephoneIcon size={20} color="var(--eap-icon-inverse-default)" />
       </span>
     </div>
   ),
@@ -1042,6 +975,330 @@ const previewRow: React.CSSProperties = {
   flexWrap: "wrap",
   alignItems: "center",
   gap: 8,
+};
+
+/* ──────────────────────────────────────────
+   Overlay 정적 미리보기용 스타일
+   (Modal·Popup·BottomSheet·Toast 등 포털 컴포넌트의 시각적 형태만 흉내)
+   ────────────────────────────────────────── */
+
+/* Modal — 헤더(타이틀 + ×) + 본문 + 분할 푸터 (Modal.tsx 토큰 정합) */
+const mockModalSurface: React.CSSProperties = {
+  width: 244,
+  background: cv.bg.white,
+  border: `1px solid ${cv.border.light}`,
+  borderRadius: radius.lg,
+  padding: "18px 18px 14px",
+  boxShadow: shadow.lg,
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+};
+
+const mockModalHeader: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+};
+
+const mockModalHeaderSpacer: React.CSSProperties = {
+  width: 20,
+  height: 20,
+};
+
+const mockModalHeaderTitle: React.CSSProperties = {
+  flex: 1,
+  textAlign: "center",
+  fontSize: 14,
+  fontWeight: 700,
+  color: cv.text.default,
+};
+
+const mockModalClose: React.CSSProperties = {
+  width: 20,
+  height: 20,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: cv.text.disabled,
+  fontSize: 14,
+};
+
+const mockModalBody: React.CSSProperties = {
+  fontSize: 12,
+  lineHeight: 1.55,
+  color: cv.text.default,
+  textAlign: "center",
+  padding: "4px 4px 8px",
+};
+
+const mockModalFooter: React.CSSProperties = {
+  display: "flex",
+  gap: 8,
+};
+
+const mockModalCancelBtn: React.CSSProperties = {
+  flex: 1,
+  padding: "9px 0",
+  borderRadius: radius.md,
+  border: `1px solid ${cv.border.default}`,
+  background: cv.bg.white,
+  color: cv.text.default,
+  fontSize: 12,
+  fontWeight: 500,
+  textAlign: "center",
+};
+
+const mockModalConfirmBtn: React.CSSProperties = {
+  flex: 1,
+  padding: "10px 0",
+  borderRadius: radius.md,
+  background: cv.primary.main,
+  color: cv.text.inverse,
+  fontSize: 12,
+  fontWeight: 700,
+  textAlign: "center",
+};
+
+/* Popup — alert 톤. 닫기 없음, 컴팩트, disabled-gray cancel + primary confirm (Popup.tsx 토큰 정합) */
+const mockPopupSurface: React.CSSProperties = {
+  width: 224,
+  background: cv.bg.white,
+  borderRadius: radius.radius16,
+  padding: "20px 20px 14px",
+  boxShadow: shadow.lg,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 6,
+};
+
+const mockPopupTitle: React.CSSProperties = {
+  fontSize: 14,
+  fontWeight: 700,
+  color: cv.text.default,
+  textAlign: "center",
+};
+
+const mockPopupDesc: React.CSSProperties = {
+  fontSize: 12,
+  lineHeight: 1.55,
+  color: cv.text.subtle,
+  textAlign: "center",
+  marginBottom: 8,
+};
+
+const mockPopupActions: React.CSSProperties = {
+  display: "flex",
+  gap: 8,
+  width: "100%",
+};
+
+const mockPopupCancelBtn: React.CSSProperties = {
+  flex: 1,
+  padding: "10px 0",
+  borderRadius: radius.md,
+  background: cv.text.disabled,
+  color: cv.bg.white,
+  fontSize: 12,
+  fontWeight: 700,
+  textAlign: "center",
+};
+
+const mockPopupConfirmBtn: React.CSSProperties = {
+  flex: 1,
+  padding: "10px 0",
+  borderRadius: radius.md,
+  background: cv.primary.main,
+  color: cv.primary.fg,
+  fontSize: 12,
+  fontWeight: 700,
+  textAlign: "center",
+};
+
+const mockTooltipWrap: React.CSSProperties = {
+  position: "relative",
+  paddingTop: 32,
+};
+
+const mockTooltipBubble: React.CSSProperties = {
+  position: "absolute",
+  top: 0,
+  left: "50%",
+  transform: "translateX(-50%)",
+  padding: "6px 10px",
+  background: cv.text.default,
+  color: cv.text.inverse,
+  borderRadius: radius.xs,
+  fontSize: 11,
+  fontWeight: 500,
+  whiteSpace: "nowrap",
+};
+
+const mockTooltipArrow: React.CSSProperties = {
+  position: "absolute",
+  bottom: -4,
+  left: "50%",
+  transform: "translateX(-50%) rotate(45deg)",
+  width: 8,
+  height: 8,
+  background: cv.text.default,
+};
+
+const mockBottomSheet: React.CSSProperties = {
+  width: 244,
+  background: cv.bg.white,
+  border: `1px solid ${cv.border.light}`,
+  borderRadius: `${radius.radius16}px ${radius.radius16}px ${radius.sm}px ${radius.sm}px`,
+  padding: "10px 18px 18px",
+  boxShadow: shadow.up,
+  display: "flex",
+  flexDirection: "column",
+  gap: 8,
+};
+
+const mockGrabber: React.CSSProperties = {
+  width: 32,
+  height: 4,
+  borderRadius: radius.pill,
+  background: cv.border.default,
+  alignSelf: "center",
+  marginBottom: 8,
+};
+
+const mockSheetTitle: React.CSSProperties = {
+  fontSize: 14,
+  fontWeight: 700,
+  color: cv.text.default,
+};
+
+const mockSheetBody: React.CSSProperties = {
+  fontSize: 12,
+  lineHeight: 1.55,
+  color: cv.text.default,
+};
+
+const mockToast: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8,
+  padding: "10px 14px",
+  background: cv.text.default,
+  color: cv.text.inverse,
+  borderRadius: radius.pill,
+  fontSize: 12,
+  fontWeight: 600,
+  boxShadow: shadow.md,
+};
+
+const mockToastIcon: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 18,
+  height: 18,
+  borderRadius: radius.pill,
+  background: cv.success.main,
+  color: cv.text.inverse,
+  fontSize: 11,
+  fontWeight: 800,
+};
+
+const mockLightbox: React.CSSProperties = {
+  position: "relative",
+  width: 200,
+  height: 130,
+  borderRadius: radius.lg,
+  background: cv.text.default,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  overflow: "hidden",
+};
+
+const mockLightboxImage: React.CSSProperties = {
+  width: 130,
+  height: 90,
+  borderRadius: radius.xs,
+  background: cv.bg.coolGray,
+};
+
+const mockShareSheet: React.CSSProperties = {
+  width: 244,
+  background: cv.bg.white,
+  border: `1px solid ${cv.border.light}`,
+  borderRadius: radius.lg,
+  padding: "14px 16px",
+  boxShadow: shadow.md,
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-around",
+  alignItems: "center",
+  gap: 12,
+};
+
+const mockShareItem: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 6,
+};
+
+const mockShareIcon: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 36,
+  height: 36,
+  borderRadius: radius.pill,
+  background: cv.bg.coolGrayLighter,
+  color: cv.text.default,
+};
+
+const mockShareLabel: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: cv.text.subtle,
+};
+
+const mockCoachWrap: React.CSSProperties = {
+  position: "relative",
+  paddingTop: 76,
+};
+
+const mockCoachCard: React.CSSProperties = {
+  position: "absolute",
+  top: 0,
+  left: "50%",
+  transform: "translateX(-50%)",
+  width: 200,
+  padding: "10px 12px",
+  background: cv.text.default,
+  color: cv.text.inverse,
+  borderRadius: radius.lg,
+  boxShadow: shadow.md,
+};
+
+const mockCoachArrow: React.CSSProperties = {
+  position: "absolute",
+  bottom: -5,
+  left: "50%",
+  transform: "translateX(-50%) rotate(45deg)",
+  width: 10,
+  height: 10,
+  background: cv.text.default,
+};
+
+const mockCoachTitle: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  marginBottom: 2,
+};
+
+const mockCoachDesc: React.CSSProperties = {
+  fontSize: 11,
+  color: cv.text.placeholder,
+  lineHeight: 1.5,
 };
 
 /* ──────────────────────────────────────────
@@ -1108,10 +1365,26 @@ function ComponentCard({ entry }: { entry: InventoryEntry }) {
 
       <p style={cardDesc}>{entry.description}</p>
 
+      <dl style={cardMeta}>
+        {entry.usageSummary && (
+          <div style={cardMetaRow}>
+            <dt style={cardMetaLabel}>활용</dt>
+            <dd style={cardMetaValue} title={entry.usageSummary}>
+              {entry.usageSummary}
+            </dd>
+          </div>
+        )}
+        {entry.notes && (
+          <div style={cardMetaRow}>
+            <dt style={cardMetaLabel}>메모</dt>
+            <dd style={cardMetaValue} title={entry.notes}>
+              {entry.notes}
+            </dd>
+          </div>
+        )}
+      </dl>
+
       <div style={cardFoot}>
-        <span style={cardUsage} title={entry.usageSummary}>
-          {entry.usageSummary}
-        </span>
         <a href={storybookHref} style={footLink}>
           Storybook →
         </a>
@@ -1381,23 +1654,49 @@ const cardDesc: React.CSSProperties = {
   overflow: "hidden",
 };
 
+const cardMeta: React.CSSProperties = {
+  margin: 0,
+  padding: "8px 18px 4px",
+  display: "flex",
+  flexDirection: "column",
+  gap: 6,
+};
+
+const cardMetaRow: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "44px 1fr",
+  gap: 10,
+  alignItems: "baseline",
+};
+
+const cardMetaLabel: React.CSSProperties = {
+  margin: 0,
+  fontSize: 10.5,
+  fontWeight: 700,
+  color: "#94a3b8",
+  letterSpacing: "0.04em",
+  textTransform: "uppercase",
+};
+
+const cardMetaValue: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  lineHeight: 1.55,
+  color: "#475569",
+  display: "-webkit-box",
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+};
+
 const cardFoot: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
-  justifyContent: "space-between",
+  justifyContent: "flex-end",
   gap: 8,
   padding: "10px 18px 14px",
   borderTop: "1px solid #F2F2F2",
-  marginTop: 6,
-};
-
-const cardUsage: React.CSSProperties = {
-  flex: 1,
-  fontSize: 11.5,
-  color: "#888",
-  whiteSpace: "nowrap",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
+  marginTop: 8,
 };
 
 const footLink: React.CSSProperties = {

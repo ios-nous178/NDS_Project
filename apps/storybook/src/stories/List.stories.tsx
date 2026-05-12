@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { List, ListItem, Avatar, Badge, Toggle } from "@nudge-eap/react";
+import { ChevronRightIcon } from "@nudge-eap/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
@@ -20,15 +21,7 @@ export default meta;
 type Story = StoryObj;
 
 const Chevron = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path
-      d="M6 4L10 8L6 12"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
+  <ChevronRightIcon size={16} color="var(--eap-icon-normal-default)" aria-hidden="true" />
 );
 
 function CardExample() {

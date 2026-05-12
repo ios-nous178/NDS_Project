@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
 import { Chip, type ChipProps } from "@nudge-eap/react";
+import { PinIcon, TelephoneIcon } from "@nudge-eap/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
@@ -197,7 +198,7 @@ export const HomePageStyles: Story = {
             shape="square"
             size="sm"
             className="h-6 px-[5px] bg-[#f3f4f6] text-[#4b5563]"
-            icon={<span style={{ fontSize: 12 }}>📍</span>}
+            icon={<PinIcon size={12} color="var(--eap-icon-normal-default)" />}
           />
           <Chip
             label="전화"
@@ -205,7 +206,7 @@ export const HomePageStyles: Story = {
             shape="square"
             size="sm"
             className="h-6 px-[5px] bg-[#f3f4f6] text-[#4b5563]"
-            icon={<span style={{ fontSize: 12 }}>📞</span>}
+            icon={<TelephoneIcon size={12} color="var(--eap-icon-normal-default)" />}
           />
         </div>
       </div>

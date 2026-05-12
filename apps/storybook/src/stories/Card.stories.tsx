@@ -2,6 +2,7 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, within } from "storybook/test";
 import { Card, Button, type CardProps } from "@nudge-eap/react";
+import { StarIcon } from "@nudge-eap/icons";
 import { colors } from "@nudge-eap/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
@@ -48,7 +49,7 @@ export const Outlined: Story = {
         subtitle="심리상담 전문"
         meta={
           <>
-            <span style={{ color: colors.yellow[500] }}>★</span>
+            <StarIcon size={14} color="var(--eap-icon-status-caution)" />
             <span>4.9</span>
           </>
         }
@@ -146,7 +147,7 @@ export const CompoundCounselorCard: Story = {
             <Card.Subtitle>심리상담 · 경력 8년</Card.Subtitle>
           </div>
           <Card.Meta>
-            <span style={{ color: colors.yellow[500] }}>★</span>
+            <StarIcon size={14} color="var(--eap-icon-status-caution)" />
             <span>4.8</span>
           </Card.Meta>
         </Card.Header>

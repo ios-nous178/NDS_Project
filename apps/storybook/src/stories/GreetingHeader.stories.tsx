@@ -1,6 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { GreetingHeader, MoodSelector, IconButton, Avatar } from "@nudge-eap/react";
+import { PushIcon } from "@nudge-eap/icons";
 
 const meta: Meta<typeof GreetingHeader> = {
   title: "Components/GreetingHeader",
@@ -19,7 +20,12 @@ export const Playground: Story = {
         name="민지"
         greeting="좋은 아침이에요"
         question="오늘 기분은 어때요?"
-        trailing={<IconButton aria-label="알림" icon={<span>🔔</span>} />}
+        trailing={
+          <IconButton
+            aria-label="알림"
+            icon={<PushIcon size={20} color="var(--eap-icon-normal-default)" />}
+          />
+        }
       />
     </div>
   ),

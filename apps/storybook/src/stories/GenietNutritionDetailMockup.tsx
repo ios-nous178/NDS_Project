@@ -30,6 +30,7 @@ import {
   Divider,
   Breadcrumb,
 } from "@nudge-eap/react";
+import { StarIcon } from "@nudge-eap/icons";
 import { MockupLayout, useIsMobile, Accordion } from "./mockup-layout";
 import {
   currentFood,
@@ -70,15 +71,15 @@ function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg
+        <StarIcon
           key={i}
-          width={size}
-          height={size}
-          viewBox="0 0 16 16"
-          fill={i <= Math.round(rating) ? G.star : "#E0E0E0"}
-        >
-          <path d="M8 1.12l1.95 3.95 4.36.64-3.15 3.07.74 4.35L8 10.93l-3.9 2.2.74-4.35L1.69 5.71l4.36-.64L8 1.12z" />
-        </svg>
+          size={size}
+          color={
+            i <= Math.round(rating)
+              ? "var(--eap-icon-status-caution)"
+              : "var(--eap-icon-disabled-default)"
+          }
+        />
       ))}
       <span style={{ marginLeft: 4, fontSize: size - 2, color: G.subtle, fontWeight: 600 }}>
         {rating}

@@ -1,6 +1,14 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ProductCard, PriceTag } from "@nudge-eap/react";
+import { StarIcon } from "@nudge-eap/icons";
+
+const RatingFooter = ({ children }: { children: React.ReactNode }) => (
+  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+    <StarIcon size={12} color="var(--eap-icon-status-caution)" />
+    {children}
+  </span>
+);
 
 const meta: Meta<typeof ProductCard> = {
   title: "Components/ProductCard",
@@ -20,7 +28,7 @@ export const Playground: Story = {
         description="마음챙김 굿즈"
         title="마음챙김 가이드북 + 명상 카드 세트"
         price={<PriceTag amount={29000} originalAmount={39000} size="md" />}
-        footer={<>★ 4.8 (124)</>}
+        footer={<RatingFooter>4.8 (124)</RatingFooter>}
         onClick={() => undefined}
       />
     </div>
@@ -38,7 +46,7 @@ export const Grid: Story = {
           description="굿즈"
           title={`마음챙김 상품 ${i}`}
           price={<PriceTag amount={10000 * i} size="sm" />}
-          footer={<>★ {(4.0 + i * 0.2).toFixed(1)}</>}
+          footer={<RatingFooter>{(4.0 + i * 0.2).toFixed(1)}</RatingFooter>}
           onClick={() => undefined}
         />
       ))}

@@ -1,5 +1,6 @@
 import React from "react";
 import { fontFamily, fontWeight, radius, spacing, transition, typeScale } from "@nudge-eap/tokens";
+import { InfoIcon, ThumbUpIcon, TestresultWarningIcon } from "@nudge-eap/icons";
 
 /* ─── Constants ─── */
 
@@ -57,11 +58,11 @@ const TONE_ICON_BG: Record<TipCardTone, string> = {
   neutral: "#888",
 };
 
-const TONE_DEFAULT_ICON: Record<TipCardTone, string> = {
-  info: "💡",
-  success: "✨",
-  warning: "💭",
-  neutral: "ℹ️",
+const TONE_DEFAULT_ICON: Record<TipCardTone, React.ReactNode> = {
+  info: <InfoIcon size={20} />,
+  success: <ThumbUpIcon size={20} />,
+  warning: <TestresultWarningIcon size={20} />,
+  neutral: <InfoIcon size={20} />,
 };
 
 // eslint-disable-next-line unused-imports/no-unused-vars

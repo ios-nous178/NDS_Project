@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { CoachMark } from "@nudge-eap/react";
+import { EditIcon, SettingIcon } from "@nudge-eap/icons";
 
 const meta: Meta<typeof CoachMark> = {
   title: "Components/CoachMark",
@@ -23,14 +24,20 @@ export const Playground: Story = {
         <div
           style={{ display: "flex", gap: 24, padding: 24, background: "#FAFBFC", borderRadius: 12 }}
         >
-          <button id="t-record" style={{ padding: "12px 24px" }}>
-            📝 기록
+          <button
+            id="t-record"
+            style={{ padding: "12px 24px", display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            <EditIcon size={16} color="var(--eap-icon-normal-default)" /> 기록
           </button>
           <button id="t-discover" style={{ padding: "12px 24px" }}>
             ✨ 둘러보기
           </button>
-          <button id="t-settings" style={{ padding: "12px 24px" }}>
-            ⚙️ 설정
+          <button
+            id="t-settings"
+            style={{ padding: "12px 24px", display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            <SettingIcon size={16} color="var(--eap-icon-normal-default)" /> 설정
           </button>
         </div>
         <CoachMark
