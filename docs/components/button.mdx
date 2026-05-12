@@ -12,7 +12,12 @@ import Playground from "@site/src/components/Playground";
 
 # Button
 
-사용자의 클릭 액션을 처리하는 버튼 컴포넌트입니다. 4가지 변형(variant)과 6가지 사이즈를 제공하며, 아이콘 슬롯을 통해 좌우에 아이콘을 배치할 수 있습니다.
+:::tip Figma 가이드 정합 완료 (2026-05-12)
+Figma 컴포넌트 세트(node `508:6962`) 및 라이브러리 노드(`171:8385`) 기준으로 **사이즈, 패딩, 토큰, primary·secondary·assistive variant**가 정합 검증되었습니다.
+이 페이지의 표/예제는 현재 `packages/react/src/Button.tsx`의 구현과 동기화된 값입니다.
+:::
+
+사용자의 클릭 액션을 처리하는 버튼 컴포넌트입니다. 4가지 변형(variant), 3가지 색상, 6가지 사이즈를 제공하며, 아이콘 슬롯을 통해 좌우에 아이콘을 배치할 수 있습니다.
 
 ```tsx
 import { Button } from "@nudge-eap/react";
@@ -146,10 +151,10 @@ import { Button } from "@nudge-eap/react";
 
 ## Size
 
-6가지 사이즈를 제공합니다. Figma 실측 기반입니다.
+6가지 사이즈를 제공합니다. Figma 라이브러리 노드 `171:8385` 실측 기반이며, 높이는 `sizing.button.{size}` 토큰을 단일 소스로 사용합니다.
 
 <ComponentPreview title="Sizes">
-  <Button size="xl">XL (56px)</Button>
+  <Button size="xl">XL (52px)</Button>
   <Button size="lg">LG (48px)</Button>
   <Button size="md">MD (44px)</Button>
   <Button size="sm">SM (42px)</Button>
@@ -158,7 +163,7 @@ import { Button } from "@nudge-eap/react";
 </ComponentPreview>
 
 ```tsx
-<Button size="xl">XL (56px)</Button>
+<Button size="xl">XL (52px)</Button>
 <Button size="lg">LG (48px)</Button>
 <Button size="md">MD (44px)</Button>
 <Button size="sm">SM (42px)</Button>
@@ -166,14 +171,14 @@ import { Button } from "@nudge-eap/react";
 <Button size="field">Field (48px)</Button>
 ```
 
-| Size    | 높이 | 폰트 | 패딩 (좌우) | 사용 시점                |
-| ------- | ---- | ---- | ----------- | ------------------------ |
-| `xl`    | 56px | 18px | 16px        | 하단 CTA 등 큰 버튼      |
-| `lg`    | 48px | 16px | 16px        | 기본 버튼 (기본값)       |
-| `md`    | 44px | 15px | 16px        | 카드 내부 등 중간 크기   |
-| `sm`    | 42px | 14px | 12px        | 리스트 액션 등 작은 버튼 |
-| `xs`    | 38px | 13px | 12px        | 인라인, 태그 옆 등       |
-| `field` | 48px | 15px | 16px        | Input 옆 연동 버튼       |
+| Size    | 높이 | 폰트 / 라인 | 패딩 (좌우) | 아이콘 / Gap | 사용 시점                |
+| ------- | ---- | ----------- | ----------- | ------------ | ------------------------ |
+| `xl`    | 52px | 16 / 24px   | 16px        | 20 / 8px     | 하단 CTA 등 큰 버튼      |
+| `lg`    | 48px | 16 / 24px   | 16px        | 20 / 8px     | 기본 버튼 (기본값)       |
+| `md`    | 44px | 15 / 22px   | 24px        | 20 / 8px     | 카드 내부 등 중간 크기   |
+| `sm`    | 42px | 14 / 20px   | 16px        | 20 / 8px     | 리스트 액션 등 작은 버튼 |
+| `xs`    | 38px | 13 / 18px   | 16px        | 18 / 6px     | 인라인, 태그 옆 등       |
+| `field` | 48px | 15 / 22px   | 16px        | 20 / 8px     | Input 옆 연동 버튼       |
 
 ---
 
@@ -182,17 +187,20 @@ import { Button } from "@nudge-eap/react";
 <ComponentPreview title="Colors">
   <Button color="primary">Primary</Button>
   <Button color="secondary">Secondary</Button>
+  <Button color="assistive">Assistive</Button>
 </ComponentPreview>
 
 ```tsx
 <Button color="primary">Primary</Button>
 <Button color="secondary">Secondary</Button>
+<Button color="assistive">Assistive</Button>
 ```
 
-| Color       | 설명               |
-| ----------- | ------------------ |
-| `primary`   | Blue 계열 (기본값) |
-| `secondary` | Soft Blue 계열     |
+| Color       | 설명                                       | 주요 사용처             |
+| ----------- | ------------------------------------------ | ----------------------- |
+| `primary`   | Blue 계열 (기본값)                         | 주요 CTA                |
+| `secondary` | Soft Blue 계열 (Solid도 옅은 배경 + 컬러)  | 보조 액션, 가벼운 강조  |
+| `assistive` | Cool Gray 계열 (Solid은 회색 채움)         | 시스템/취소 등 무채색 CTA |
 
 ---
 
@@ -266,7 +274,7 @@ import { SearchIcon, ChevronRightIcon } from "@nudge-eap/icons";
 
 **ButtonSize**: `"xl"` | `"lg"` | `"md"` | `"sm"` | `"xs"` | `"field"`
 
-**ButtonColor**: `"primary"` | `"secondary"`
+**ButtonColor**: `"primary"` | `"secondary"` | `"assistive"`
 
 `<button>` HTML 속성을 모두 지원합니다 (`onClick`, `type`, `form` 등).
 
