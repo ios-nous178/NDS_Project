@@ -133,6 +133,10 @@ const stStyles = `
     background: ${cv.primary.main};
   }
 
+  :where(.${ST_LINE_CLASS}[data-state="hidden"]) {
+    background: transparent;
+  }
+
   :where(.${ST_CLASS}[data-direction="horizontal"]) .${ST_LINE_CLASS} {
     flex: 1;
     height: 2px;
@@ -201,11 +205,17 @@ export const StatusTimeline = React.forwardRef<HTMLOListElement, StatusTimelineP
       >
         {steps.map((step, i) => {
           const state = stateOf(i, current);
+          const isFirst = i === 0;
           const isLast = i === steps.length - 1;
-          const lineState = i < current ? "done" : "todo";
+          // 양쪽 half-line: 좌측은 이전 dot과의 연결, 우측은 다음 dot과의 연결
+          const leftLineState = isFirst ? "hidden" : i <= current ? "done" : "todo";
+          const rightLineState = isLast ? "hidden" : i < current ? "done" : "todo";
           return (
             <li key={step.key} className={ST_ITEM_CLASS} data-state={state}>
               <div className={ST_INDICATOR_CLASS}>
+                {direction === "horizontal" && (
+                  <span className={ST_LINE_CLASS} data-state={leftLineState} aria-hidden />
+                )}
                 <span className={ST_DOT_CLASS} data-state={state} aria-hidden>
                   {state === "done" ? (
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -221,7 +231,12 @@ export const StatusTimeline = React.forwardRef<HTMLOListElement, StatusTimelineP
                     i + 1
                   )}
                 </span>
-                {!isLast && <span className={ST_LINE_CLASS} data-state={lineState} aria-hidden />}
+                {direction === "horizontal" && (
+                  <span className={ST_LINE_CLASS} data-state={rightLineState} aria-hidden />
+                )}
+                {direction === "vertical" && !isLast && (
+                  <span className={ST_LINE_CLASS} data-state={rightLineState} aria-hidden />
+                )}
               </div>
               <div className={ST_BODY_CLASS}>
                 <span className={ST_LABEL_CLASS} data-state={state}>

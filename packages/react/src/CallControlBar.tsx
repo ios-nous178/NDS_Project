@@ -1,4 +1,13 @@
 import React from "react";
+import * as NDSIcons from "@nudge-eap/icons";
+
+// @nudge-eap/icons는 React 19 타입으로 빌드되어 React 18 타입 시스템과 forwardRef 시그니처가
+// 호환되지 않음. 런타임 동작은 동일하므로 컴포넌트 타입을 일치시키기 위해 좁은 타입으로 캐스트.
+type IconComp = React.ComponentType<{ size?: number; style?: React.CSSProperties }>;
+const MicrophoneIcon = NDSIcons.MicrophoneIcon as unknown as IconComp;
+const VideocameraIcon = NDSIcons.VideocameraIcon as unknown as IconComp;
+const MymusicIcon = NDSIcons.MymusicIcon as unknown as IconComp;
+const TelephoneIcon = NDSIcons.TelephoneIcon as unknown as IconComp;
 import {
   cv,
   fontFamily,
@@ -112,10 +121,39 @@ const cbStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     color: rgba(255, 255, 255, 0.7);
   }
+
+  :where(.${CB_BTN_CLASS}) [data-icon-wrap] {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :where(.${CB_BTN_CLASS}) [data-icon-slash] {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
+
+const SlashOverlay: React.FC = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden data-icon-slash>
+    <line
+      x1="4"
+      y1="4"
+      x2="20"
+      y2="20"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 /* ─── Component ─── */
 
@@ -150,44 +188,10 @@ export const CallControlBar = React.forwardRef<HTMLDivElement, CallControlBarPro
             aria-pressed={muted}
             onClick={() => onMutedChange(!muted)}
           >
-            {muted ? (
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-                <rect
-                  x="8"
-                  y="3"
-                  width="6"
-                  height="10"
-                  rx="3"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M5 10c0 3 3 6 6 6s6-3 6-6M11 16v3"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path d="M3 3l16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-                <rect
-                  x="8"
-                  y="3"
-                  width="6"
-                  height="10"
-                  rx="3"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M5 10c0 3 3 6 6 6s6-3 6-6M11 16v3"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            )}
+            <span data-icon-wrap>
+              <MicrophoneIcon size={22} />
+              {muted && <SlashOverlay />}
+            </span>
           </button>
 
           {/* 카메라 */}
@@ -200,49 +204,10 @@ export const CallControlBar = React.forwardRef<HTMLDivElement, CallControlBarPro
               aria-pressed={!cameraOn}
               onClick={() => onCameraChange(!cameraOn)}
             >
-              {cameraOn ? (
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-                  <rect
-                    x="2"
-                    y="6"
-                    width="13"
-                    height="10"
-                    rx="2"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="M15 9l5-3v10l-5-3z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              ) : (
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-                  <rect
-                    x="2"
-                    y="6"
-                    width="13"
-                    height="10"
-                    rx="2"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="M15 9l5-3v10l-5-3z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M3 3l16 16"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              )}
+              <span data-icon-wrap>
+                <VideocameraIcon size={22} />
+                {!cameraOn && <SlashOverlay />}
+              </span>
             </button>
           )}
 
@@ -256,15 +221,7 @@ export const CallControlBar = React.forwardRef<HTMLDivElement, CallControlBarPro
               aria-pressed={!!speakerOn}
               onClick={() => onSpeakerChange(!speakerOn)}
             >
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-                <path d="M3 8h4l5-4v14l-5-4H3z" fill="currentColor" />
-                <path
-                  d="M16 7c1.5 1.5 1.5 6.5 0 8M19 4c3 3 3 11 0 14"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <MymusicIcon size={22} />
             </button>
           )}
 
@@ -275,12 +232,7 @@ export const CallControlBar = React.forwardRef<HTMLDivElement, CallControlBarPro
             aria-label="통화 종료"
             onClick={onEnd}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path
-                fill="currentColor"
-                d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"
-              />
-            </svg>
+            <TelephoneIcon size={22} style={{ transform: "rotate(135deg)" }} />
           </button>
         </div>
       </div>

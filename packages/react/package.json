@@ -20,6 +20,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@nudge-eap/icons": "workspace:*",
     "@nudge-eap/tokens": "workspace:*"
   },
   "peerDependencies": {

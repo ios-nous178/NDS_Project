@@ -72,8 +72,8 @@ const tiStyles = `
     flex-wrap: wrap;
     align-items: center;
     gap: ${spacing[6]}px;
-    min-height: 44px;
-    padding: ${spacing[6]}px ${spacing[10]}px;
+    min-height: 48px;
+    padding: ${spacing[8]}px ${spacing[12]}px;
     border: 1px solid ${cv.border.default};
     border-radius: ${radius.md}px;
     background: ${cv.bg.white};
