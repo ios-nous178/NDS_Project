@@ -37,7 +37,9 @@ import type { MockupUsage } from "./types/usage.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const manifestPath = path.resolve(__dirname, "../manifest.json");
-const repoRoot = path.resolve(__dirname, "../../..");
+const repoRoot = process.env.NUDGE_EAP_DS_REPO_ROOT
+  ? path.resolve(process.env.NUDGE_EAP_DS_REPO_ROOT)
+  : path.resolve(__dirname, "../../..");
 
 function checkManifestFreshness() {
   if (!fs.existsSync(manifestPath)) return;
@@ -118,7 +120,8 @@ function loadManifest(): Manifest {
       `manifest.json not found at ${manifestPath}. Run 'pnpm --filter @nudge-eap/mcp build:manifest' first.`,
     );
   }
-  return JSON.parse(fs.readFileSync(manifestPath, "utf-8")) as Manifest;
+  const parsed = JSON.parse(fs.readFileSync(manifestPath, "utf-8")) as Manifest;
+  return { ...parsed, repoRoot };
 }
 
 checkManifestFreshness();
