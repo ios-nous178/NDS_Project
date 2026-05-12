@@ -63,13 +63,14 @@ const variantConfig: Record<SnackbarVariant, { bg: string; fg: string; icon: str
 const snackbarStyles = `
   :where(.${SB_CLASS}) {
     display: inline-flex;
-    align-items: flex-start;
+    align-items: center;
     gap: ${spacing[12]}px;
     padding: ${spacing[12]}px ${spacing[16]}px;
     border-radius: var(--nds-snackbar-radius, ${radius.md}px);
     background: var(--nds-snackbar-bg, #1A1A1A);
     color: var(--nds-snackbar-fg, #fff);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--nds-snackbar-border, transparent);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
     font-family: ${fontFamily.web};
     width: var(--nds-snackbar-width, auto);
     max-width: 480px;
@@ -80,18 +81,26 @@ const snackbarStyles = `
   :where(.${SB_CLASS}[data-variant="success"]),
   :where(.${SB_CLASS}[data-variant="warning"]),
   :where(.${SB_CLASS}[data-variant="error"]) {
-    box-shadow: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    border-color: var(--nds-snackbar-icon, transparent);
+  }
+
+  :where(.${SB_CLASS}[data-has-desc="true"]) {
+    align-items: flex-start;
   }
 
   :where(.${SB_ICON_CLASS}) {
     flex-shrink: 0;
     width: 20px;
     height: 20px;
-    margin-top: 2px;
     color: var(--nds-snackbar-icon, currentColor);
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+
+  :where(.${SB_CLASS}[data-has-desc="true"]) .${SB_ICON_CLASS} {
+    margin-top: 1px;
   }
 
   :where(.${SB_BODY_CLASS}) {
@@ -99,7 +108,7 @@ const snackbarStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: ${spacing[2]}px;
   }
 
   :where(.${SB_TITLE_CLASS}) {
@@ -117,21 +126,35 @@ const snackbarStyles = `
   }
 
   :where(.${SB_ACTION_CLASS}) {
+    height: 28px;
+    padding: 0 ${spacing[8]}px;
     border: none;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.12);
     color: inherit;
     font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.bold};
-    padding: 0 ${spacing[4]}px;
     cursor: pointer;
     flex-shrink: 0;
-    margin-top: 2px;
     border-radius: ${radius.sm}px;
-    transition: opacity ${transition.default};
+    transition: background-color ${transition.default};
   }
 
-  :where(.${SB_ACTION_CLASS}:hover) { opacity: 0.75; }
+  :where(.${SB_CLASS}[data-variant="info"]) .${SB_ACTION_CLASS},
+  :where(.${SB_CLASS}[data-variant="success"]) .${SB_ACTION_CLASS},
+  :where(.${SB_CLASS}[data-variant="warning"]) .${SB_ACTION_CLASS},
+  :where(.${SB_CLASS}[data-variant="error"]) .${SB_ACTION_CLASS} {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  :where(.${SB_ACTION_CLASS}:hover) { background: rgba(255, 255, 255, 0.2); }
+
+  :where(.${SB_CLASS}[data-variant="info"]) .${SB_ACTION_CLASS}:hover,
+  :where(.${SB_CLASS}[data-variant="success"]) .${SB_ACTION_CLASS}:hover,
+  :where(.${SB_CLASS}[data-variant="warning"]) .${SB_ACTION_CLASS}:hover,
+  :where(.${SB_CLASS}[data-variant="error"]) .${SB_ACTION_CLASS}:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
 
   :where(.${SB_ACTION_CLASS}:focus-visible) {
     outline: 2px solid currentColor;
@@ -150,12 +173,14 @@ const snackbarStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-top: -2px;
     opacity: 0.7;
-    transition: opacity ${transition.default};
+    transition: opacity ${transition.default}, background-color ${transition.default};
   }
 
-  :where(.${SB_CLOSE_CLASS}:hover) { opacity: 1; }
+  :where(.${SB_CLOSE_CLASS}:hover) {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.06);
+  }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -250,6 +275,7 @@ export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(
         aria-live="polite"
         data-slot="root"
         data-variant={variant ?? "default"}
+        data-has-desc={description ? "true" : "false"}
         className={cx(SB_CLASS, className)}
         style={styleVars}
         {...rest}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ShareSheet, Button } from "@nudge-eap/react";
+import { CommentIcon, DownloadIcon, LinkIcon, MoreIcon, TelephoneIcon } from "@nudge-eap/icons";
 
 const meta: Meta<typeof ShareSheet> = {
   title: "Components/ShareSheet",
@@ -27,23 +28,29 @@ export const Playground: Story = {
             {
               key: "kakao",
               label: "카카오톡",
-              icon: "💬",
+              icon: <CommentIcon size={22} color="#3C1E1E" />,
               bg: "#FEE500",
               onClick: () => alert("카카오 공유"),
             },
-            { key: "sms", label: "메시지", icon: "📱", bg: "#A2D2FF", onClick: () => alert("SMS") },
             {
-              key: "email",
-              label: "이메일",
-              icon: "✉️",
-              bg: "#FFE3D8",
-              onClick: () => alert("이메일"),
+              key: "sms",
+              label: "메시지",
+              icon: <TelephoneIcon size={22} color="#1F4FB8" />,
+              bg: "#DCEAFF",
+              onClick: () => alert("SMS"),
+            },
+            {
+              key: "copy",
+              label: "링크 복사",
+              icon: <LinkIcon size={22} color="#4F3A8E" />,
+              bg: "#E8E2FA",
+              onClick: () => alert("링크 복사"),
             },
             {
               key: "save",
               label: "이미지로 저장",
-              icon: "📥",
-              bg: "#E8E2FA",
+              icon: <DownloadIcon size={22} color="#8C4A2A" />,
+              bg: "#FFE3D8",
               onClick: () => alert("저장"),
             },
           ]}
@@ -68,11 +75,17 @@ export const NoLink: Story = {
             {
               key: "kakao",
               label: "카카오톡",
-              icon: "💬",
+              icon: <CommentIcon size={22} color="#3C1E1E" />,
               bg: "#FEE500",
               onClick: () => undefined,
             },
-            { key: "more", label: "더보기", icon: "···", bg: "#F2F4F6", onClick: () => undefined },
+            {
+              key: "more",
+              label: "더보기",
+              icon: <MoreIcon size={22} color="#383838" />,
+              bg: "#F2F4F6",
+              onClick: () => undefined,
+            },
           ]}
         />
       </div>

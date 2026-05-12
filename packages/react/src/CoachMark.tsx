@@ -20,7 +20,11 @@ const CM_STEP_CLASS = `${CM_CLASS}__step`;
 const CM_TITLE_CLASS = `${CM_CLASS}__title`;
 const CM_DESC_CLASS = `${CM_CLASS}__desc`;
 const CM_FOOTER_CLASS = `${CM_CLASS}__footer`;
+const CM_DOTS_CLASS = `${CM_CLASS}__dots`;
+const CM_DOT_CLASS = `${CM_CLASS}__dot`;
+const CM_ACTIONS_CLASS = `${CM_CLASS}__actions`;
 const CM_BTN_CLASS = `${CM_CLASS}__btn`;
+const CM_SKIP_CLASS = `${CM_CLASS}__skip`;
 
 /* ─── Types ─── */
 
@@ -74,34 +78,44 @@ const cmStyles = `
   :where(.${CM_HOLE_CLASS}) {
     position: absolute;
     border-radius: ${radius.md}px;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+    box-shadow:
+      0 0 0 9999px rgba(0, 0, 0, 0.6),
+      0 0 0 2px rgba(255, 255, 255, 0.9) inset;
     transition: all ${transition.default};
     pointer-events: none;
   }
 
   :where(.${CM_TOOLTIP_CLASS}) {
     position: absolute;
-    max-width: 320px;
-    padding: ${spacing[16]}px;
+    width: 320px;
+    max-width: calc(100vw - ${spacing[32]}px);
+    padding: ${spacing[20]}px;
     background: ${cv.bg.white};
     border-radius: ${radius.lg}px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
     font-family: ${fontFamily.web};
     color: ${cv.text.default};
     z-index: 1;
   }
 
   :where(.${CM_STEP_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px ${spacing[8]}px;
+    border-radius: 9999px;
+    background: ${cv.primary.lighter};
+    color: ${cv.primary.main};
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
-    margin-bottom: ${spacing[4]}px;
+    font-weight: ${fontWeight.semibold};
+    margin-bottom: ${spacing[12]}px;
   }
 
   :where(.${CM_TITLE_CLASS}) {
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: ${typeScale.body2.lineHeight}px;
+    font-size: ${typeScale.body1.fontSize}px;
+    line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    margin: 0 0 ${spacing[8]}px 0;
+    color: ${cv.text.default};
+    margin: 0 0 ${spacing[6]}px 0;
   }
 
   :where(.${CM_DESC_CLASS}) {
@@ -115,27 +129,69 @@ const cmStyles = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: ${spacing[16]}px;
-    gap: ${spacing[8]}px;
+    margin-top: ${spacing[20]}px;
+    gap: ${spacing[12]}px;
+  }
+
+  :where(.${CM_DOTS_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    gap: ${spacing[6]}px;
+  }
+
+  :where(.${CM_DOT_CLASS}) {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: ${cv.border.default};
+    transition: all ${transition.default};
+  }
+
+  :where(.${CM_DOT_CLASS}[data-active="true"]) {
+    width: 18px;
+    background: ${cv.primary.main};
+  }
+
+  :where(.${CM_ACTIONS_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    gap: ${spacing[4]}px;
+  }
+
+  :where(.${CM_SKIP_CLASS}) {
+    height: 36px;
+    padding: 0 ${spacing[12]}px;
+    border: none;
+    background: transparent;
+    color: ${cv.text.subtle};
+    cursor: pointer;
+    font-family: inherit;
+    font-size: ${typeScale.caption1.fontSize}px;
+    font-weight: ${fontWeight.medium};
+    border-radius: ${radius.sm}px;
+  }
+
+  :where(.${CM_SKIP_CLASS}:hover) {
+    background: ${cv.bg.coolGrayLighter};
+    color: ${cv.text.default};
   }
 
   :where(.${CM_BTN_CLASS}) {
     height: 36px;
     padding: 0 ${spacing[16]}px;
     border-radius: ${radius.md}px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: none;
+    background: ${cv.primary.main};
+    color: #fff;
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
-    font-weight: ${fontWeight.semibold};
+    font-weight: ${fontWeight.bold};
+    transition: background-color ${transition.default};
   }
 
-  :where(.${CM_BTN_CLASS}[data-primary="true"]) {
-    background: ${cv.primary.main};
-    color: #fff;
-    border-color: transparent;
+  :where(.${CM_BTN_CLASS}:hover) {
+    background: ${cv.primary.hover};
   }
 `;
 
@@ -278,21 +334,30 @@ export const CoachMark: React.FC<CoachMarkProps> = ({
         style={tooltipPos ? { top: tooltipPos.top, left: tooltipPos.left } : { top: 80, left: 16 }}
       >
         <div className={CM_STEP_CLASS}>
-          {idx + 1} / {steps.length}
+          STEP {idx + 1} / {steps.length}
         </div>
         <h3 className={CM_TITLE_CLASS}>{current.title}</h3>
         {current.description && <p className={CM_DESC_CLASS}>{current.description}</p>}
         <div className={CM_FOOTER_CLASS}>
-          {!hideSkip && !isLast ? (
-            <button type="button" className={CM_BTN_CLASS} onClick={onClose}>
-              {skipLabel}
+          <div className={CM_DOTS_CLASS} aria-hidden="true">
+            {steps.map((_, dotIdx) => (
+              <span
+                key={dotIdx}
+                className={CM_DOT_CLASS}
+                data-active={dotIdx === idx ? "true" : "false"}
+              />
+            ))}
+          </div>
+          <div className={CM_ACTIONS_CLASS}>
+            {!hideSkip && !isLast && (
+              <button type="button" className={CM_SKIP_CLASS} onClick={onClose}>
+                {skipLabel}
+              </button>
+            )}
+            <button type="button" className={CM_BTN_CLASS} onClick={goNext}>
+              {isLast ? finishLabel : nextLabel}
             </button>
-          ) : (
-            <span />
-          )}
-          <button type="button" className={CM_BTN_CLASS} data-primary="true" onClick={goNext}>
-            {isLast ? finishLabel : nextLabel}
-          </button>
+          </div>
         </div>
       </div>
     </div>,

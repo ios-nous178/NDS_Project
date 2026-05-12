@@ -71,20 +71,26 @@ const tiStyles = `
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: ${spacing[4]}px;
-    min-height: 48px;
-    padding: ${spacing[8]}px ${spacing[12]}px;
+    gap: ${spacing[6]}px;
+    min-height: 44px;
+    padding: ${spacing[6]}px ${spacing[10]}px;
     border: 1px solid ${cv.border.default};
     border-radius: ${radius.md}px;
     background: ${cv.bg.white};
-    transition: border-color ${transition.default};
+    transition: border-color ${transition.default}, box-shadow ${transition.default};
     cursor: text;
   }
 
-  :where(.${TI_FIELD_CLASS}:focus-within) { border-color: ${cv.primary.main}; }
+  :where(.${TI_FIELD_CLASS}:focus-within) {
+    border-color: ${cv.primary.main};
+    box-shadow: 0 0 0 3px var(--color-semantic-primary-bg, rgba(64, 128, 240, 0.15));
+  }
   :where(.${TI_FIELD_CLASS}[data-error="true"]) { border-color: var(--color-semantic-error-main); }
+  :where(.${TI_FIELD_CLASS}[data-error="true"]:focus-within) {
+    box-shadow: 0 0 0 3px var(--color-semantic-error-bg, rgba(224, 77, 77, 0.15));
+  }
   :where(.${TI_FIELD_CLASS}[data-disabled="true"]) {
-    background: ${cv.bg.coolGray};
+    background: ${cv.bg.coolGrayLighter};
     cursor: not-allowed;
   }
 
@@ -92,18 +98,19 @@ const tiStyles = `
     display: inline-flex;
     align-items: center;
     gap: ${spacing[4]}px;
-    height: 28px;
-    padding: 0 ${spacing[8]}px;
+    height: 26px;
+    padding: 0 ${spacing[4]}px 0 ${spacing[10]}px;
     border-radius: 9999px;
     background: var(--color-semantic-primary-bg, #EBF1FF);
     color: ${cv.primary.main};
     font-size: ${typeScale.caption1.fontSize}px;
+    line-height: 1;
     font-weight: ${fontWeight.semibold};
   }
 
   :where(.${TI_REMOVE_CLASS}) {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border: none;
     background: transparent;
     color: inherit;
@@ -114,20 +121,25 @@ const tiStyles = `
     justify-content: center;
     padding: 0;
     opacity: 0.7;
-    transition: opacity ${transition.default};
+    transition: opacity ${transition.default}, background-color ${transition.default};
   }
 
-  :where(.${TI_REMOVE_CLASS}:hover) { opacity: 1; }
+  :where(.${TI_REMOVE_CLASS}:hover) {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.08);
+  }
 
   :where(.${TI_INPUT_CLASS}) {
     flex: 1;
-    min-width: 80px;
+    min-width: 60px;
+    height: 26px;
     border: none;
     background: transparent;
     outline: none;
-    padding: 4px 0;
+    padding: 0 ${spacing[2]}px;
     font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: 26px;
     color: ${cv.text.default};
   }
 
