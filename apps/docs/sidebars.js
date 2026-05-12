@@ -8,6 +8,7 @@ module.exports = {
       collapsed: false,
       items: [
         "components/overview",
+        "components/gallery",
         "components/candidates",
         "components/inventory",
         "components/icons",
