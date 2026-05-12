@@ -55,6 +55,158 @@ export const Playground: Story = {
   ],
 };
 
+/* ─── Figma Spec (430:4212 / 171:9903 / Section_Input 294:12) ─── */
+
+const INPUT_SPEC_ROWS: Array<{ key: string; value: string }> = [
+  { key: "사이즈 (default / field)", value: "높이 48 / 44px" },
+  { key: "Wrapper padding-X", value: "16px" },
+  { key: "Wrapper 텍스트 ↔ 아이콘 gap", value: "10px" },
+  { key: "Wrapper radius", value: "8px (radius.md)" },
+  { key: "Label ↔ Wrapper gap", value: "12px (default) / 8px (field)" },
+  { key: "Wrapper ↔ Helper gap", value: "8px (disabled 12px)" },
+  { key: "Helper 그룹 column gap", value: "12px" },
+  { key: "Helper 아이콘", value: "16×16, color 부모 상속" },
+];
+
+const HELPER_VARIANT_ROWS: Array<{
+  variant: string;
+  token: string;
+  color: string;
+  usage: string;
+}> = [
+  { variant: "default", token: "Text/Muted/Default", color: "#999999", usage: "일반 도움말" },
+  { variant: "success", token: "Text/Brand/Default", color: "#2B96ED", usage: "폼 검증 통과" },
+  { variant: "error", token: "Text/Status/Error", color: "#F13F00", usage: "폼 오류" },
+  { variant: "disabled", token: "Text/Disabled/Default", color: "#C7C7C7", usage: "비활성" },
+];
+
+export const FigmaSpec: StoryObj<InputProps> = {
+  name: "Spec/✓ Figma Synced (430:4212)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Figma 컴포넌트(430:4212) 및 라이브러리 노드(171:9903), Section_Input(294:12) 기준 실측 스펙. 코드는 `packages/react/src/Input.tsx`에서 단일 소스로 관리됩니다.",
+      },
+    },
+  },
+  render: () => (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 20,
+        minWidth: 560,
+        fontFamily: "Pretendard, sans-serif",
+      }}
+    >
+      <table style={{ borderCollapse: "collapse", fontSize: 13 }}>
+        <thead>
+          <tr style={{ background: "#F5F5F5" }}>
+            <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+              사이즈/간격 항목
+            </th>
+            <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+              값
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {INPUT_SPEC_ROWS.map((row) => (
+            <tr key={row.key}>
+              <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5", fontWeight: 600 }}>
+                {row.key}
+              </td>
+              <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div>
+        <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>
+          Helper variant 컬러 (Section_Input 294:12)
+        </p>
+        <table style={{ borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ background: "#F5F5F5" }}>
+              <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+                variant
+              </th>
+              <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+                토큰
+              </th>
+              <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+                컬러
+              </th>
+              <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+                용도
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {HELPER_VARIANT_ROWS.map((row) => (
+              <tr key={row.variant}>
+                <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5", fontWeight: 600 }}>
+                  {row.variant}
+                </td>
+                <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.token}</td>
+                <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: 12,
+                      height: 12,
+                      borderRadius: 2,
+                      backgroundColor: row.color,
+                      verticalAlign: "middle",
+                      marginRight: 6,
+                      border: "1px solid #E5E5E5",
+                    }}
+                  />
+                  <code>{row.color}</code>
+                </td>
+                <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.usage}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  ),
+};
+
+export const HelperVariants: StoryObj<InputProps> = {
+  name: "State/Helper Variants",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Section_Input 294:12 정합화 후 추가된 helper variant 4종. Banner/Toast의 녹색 success와 구분되도록 success는 브랜드 톤(파랑)을 사용합니다.",
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: "flex", width: 360, flexDirection: "column", gap: 16 }}>
+      <Input label="기본" placeholder="입력해주세요" helperText="일반 도움말 텍스트입니다" />
+      <Input.Root>
+        <Input.Label>검증 통과</Input.Label>
+        <Input.Wrapper>
+          <Input.Field value="hello@nudgehealth.co.kr" readOnly />
+        </Input.Wrapper>
+        <Input.Helper variant="success">사용 가능한 이메일입니다</Input.Helper>
+      </Input.Root>
+      <Input
+        label="에러"
+        value="wrong@email"
+        errorMessage="올바른 이메일 형식이 아닙니다"
+        readOnly
+      />
+      <Input label="비활성" value="입력 불가" disabled helperText="비활성 상태 안내" />
+    </div>
+  ),
+};
+
 export const States: Story = {
   name: "State/States",
   render: () => (

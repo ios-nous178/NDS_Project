@@ -8,8 +8,10 @@
     "docsPath": "/docs/components/button",
     "figmaUrl": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=508-6962",
     "figmaNodeId": "508:6962",
+    "figmaSynced": true,
+    "figmaSyncedAt": "2026-05-12",
     "usageSummary": "기본 CTA, 보조 액션, 필드 버튼",
-    "notes": "Figma 컴포넌트 세트 링크를 연결하면 Storybook Docs와 인벤토리 문서에 자동 반영됩니다."
+    "notes": "Figma 508:6962 / 라이브러리 노드 171:8385 기준으로 사이즈(xl 52 / lg 48 / md 44 / sm 42 / xs 38 / field 48), 패딩, 토큰, primary·secondary·assistive variant 정합 완료."
   },
   {
     "name": "Badge",
@@ -32,8 +34,10 @@
     "docsPath": "/docs/components/input",
     "figmaUrl": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=430-4212",
     "figmaNodeId": "430:4212",
+    "figmaSynced": true,
+    "figmaSyncedAt": "2026-05-12",
     "usageSummary": "기본 입력, 검색 필드, 인증번호 입력, 액션 버튼 결합 행",
-    "notes": "검색형, 인증형처럼 화면 패턴별 Figma 링크를 붙이면 기획/디자인 협업에 특히 유용합니다."
+    "notes": "Figma 430:4212 / 171:9903 / Section_Input 294:12 기준 정합 완료 — 사이즈(default 48 / field 44), gap(label 12, helper 8, group 12), helpertext variant(default/success/error/disabled)."
   },
   {
     "name": "Modal",
@@ -44,8 +48,10 @@
     "docsPath": "/docs/components/modal",
     "figmaUrl": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=612-18421",
     "figmaNodeId": "612:18421",
+    "figmaSynced": true,
+    "figmaSyncedAt": "2026-05-12",
     "usageSummary": "확인 모달, 커스텀 콘텐츠 모달, 실서비스 마이그레이션 예시",
-    "notes": "실서비스에 대응하는 Figma frame 또는 component set 링크를 연결하면 migration notes와 함께 보기 좋습니다."
+    "notes": "Figma 612:18421 / 171:9947 기준 정합 완료 — 콘텐츠 너비(PC 332 / Mobile 294), 카드 패딩(28/16/16), 푸터 버튼(padding 11/24, radius 8, gap 8, font 15/22)."
   },
   {
     "name": "Popup",

@@ -604,6 +604,62 @@ function ParticipateRewardModalExample() {
   );
 }
 
+/* ─── Figma Spec (612:18421 / 171:9947) ─── */
+
+const MODAL_SPEC_ROWS: Array<{ key: string; value: string }> = [
+  { key: "콘텐츠 너비", value: "PC 332px / Mobile 294px (device prop으로 분기)" },
+  { key: "콘텐츠 패딩", value: "상 28 / 좌우 16 / 하 16" },
+  { key: "콘텐츠 라운드", value: "8px (--nds-modal-radius)" },
+  { key: "콘텐츠 그림자", value: "shadow.md (디자인 토큰)" },
+  { key: "본문 그룹 ↔ 푸터 간격", value: "24px (gap 8 + body margin-bottom 16)" },
+  { key: "이미지/타이틀/본문 내부 gap", value: "8px" },
+  { key: "푸터 버튼 padding / radius / gap", value: "11/24 · 8 · 8" },
+  { key: "푸터 버튼 font", value: "15 / 22 (확인 700, 취소 500)" },
+];
+
+export const FigmaSpec: Story = {
+  name: "Spec/✓ Figma Synced (612:18421)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Figma 컴포넌트(612:18421) 및 라이브러리 노드(171:9947) 실측 기반 모달 스펙. 코드는 `packages/react/src/Modal.tsx`에서 단일 소스로 관리됩니다.",
+      },
+    },
+  },
+  render: () => (
+    <table
+      style={{
+        borderCollapse: "collapse",
+        fontFamily: "Pretendard, sans-serif",
+        fontSize: 13,
+        minWidth: 520,
+      }}
+    >
+      <thead>
+        <tr style={{ background: "#F5F5F5" }}>
+          <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+            항목
+          </th>
+          <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+            값
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {MODAL_SPEC_ROWS.map((row) => (
+          <tr key={row.key}>
+            <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5", fontWeight: 600 }}>
+              {row.key}
+            </td>
+            <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.value}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ),
+};
+
 export const Default: Story = {
   name: "State/Default",
   args: {

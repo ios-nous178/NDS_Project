@@ -24,7 +24,7 @@ const meta: Meta<typeof Button> = {
     size: { control: "radio", options: ["xl", "lg", "md", "sm", "xs", "field"] },
     color: {
       control: "radio",
-      options: ["primary", "secondary"],
+      options: ["primary", "secondary", "assistive"],
     },
     disabled: { control: "boolean" },
     fullWidth: { control: "boolean" },
@@ -43,6 +43,127 @@ export default meta;
 type Story = StoryObj<typeof Button>;
 
 export const Playground: Story = {};
+
+/* ─── Figma Spec (508:6962 / 171:8385) ─── */
+
+const SPEC_ROWS: Array<{
+  size: string;
+  height: string;
+  font: string;
+  paddingX: string;
+  icon: string;
+  gap: string;
+}> = [
+  { size: "xl", height: "52px", font: "16 / 24px", paddingX: "16px", icon: "20px", gap: "8px" },
+  {
+    size: "lg (기본)",
+    height: "48px",
+    font: "16 / 24px",
+    paddingX: "16px",
+    icon: "20px",
+    gap: "8px",
+  },
+  { size: "md", height: "44px", font: "15 / 22px", paddingX: "24px", icon: "20px", gap: "8px" },
+  { size: "sm", height: "42px", font: "14 / 20px", paddingX: "16px", icon: "20px", gap: "8px" },
+  { size: "xs", height: "38px", font: "13 / 18px", paddingX: "16px", icon: "18px", gap: "6px" },
+  { size: "field", height: "48px", font: "15 / 22px", paddingX: "16px", icon: "20px", gap: "8px" },
+];
+
+export const FigmaSpec: Story = {
+  name: "Spec/✓ Figma Synced (508:6962)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Figma 컴포넌트 세트(508:6962) 및 라이브러리 노드(171:8385) 실측 기반 사이즈/패딩/아이콘 매트릭스. `sizing.button.{size}` 토큰이 단일 source of truth입니다.",
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 520 }}>
+      <table
+        style={{
+          borderCollapse: "collapse",
+          fontFamily: "Pretendard, sans-serif",
+          fontSize: 13,
+        }}
+      >
+        <thead>
+          <tr style={{ background: "#F5F5F5" }}>
+            <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+              Size
+            </th>
+            <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+              Height
+            </th>
+            <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+              Font / Line
+            </th>
+            <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+              Padding-X
+            </th>
+            <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+              Icon
+            </th>
+            <th style={{ padding: "8px 12px", textAlign: "left", border: "1px solid #E5E5E5" }}>
+              Gap
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {SPEC_ROWS.map((row) => (
+            <tr key={row.size}>
+              <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5", fontWeight: 600 }}>
+                {row.size}
+              </td>
+              <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.height}</td>
+              <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.font}</td>
+              <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.paddingX}</td>
+              <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.icon}</td>
+              <td style={{ padding: "8px 12px", border: "1px solid #E5E5E5" }}>{row.gap}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p style={{ margin: 0, fontSize: 12, color: "#666", lineHeight: 1.6 }}>
+        Color × Variant 매트릭스: <code>primary</code>, <code>secondary</code>,
+        <code> assistive</code> × <code>solid</code>, <code>outlined</code>, <code>soft</code>,
+        <code> outlined-sub</code> 조합이 정합 완료되었습니다. 자세한 색상은 아래
+        <strong> State/Variant Color Matrix</strong>를 확인하세요.
+      </p>
+    </div>
+  ),
+};
+
+export const ColorMatrix: Story = {
+  name: "Spec/Color × Variant Matrix",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {(["primary", "secondary", "assistive"] as const).map((color) => (
+        <div key={color}>
+          <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>{color}</p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <Button color={color} variant="solid">
+              Solid
+            </Button>
+            <Button color={color} variant="outlined">
+              Outlined
+            </Button>
+            <Button color={color} variant="soft">
+              Soft
+            </Button>
+            <Button color={color} variant="outlined-sub">
+              Outlined-sub
+            </Button>
+            <Button color={color} variant="solid" disabled>
+              Disabled
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  ),
+};
 
 export const Default: Story = {
   name: "State/Default",

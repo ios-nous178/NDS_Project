@@ -12,6 +12,11 @@ import Playground from "@site/src/components/Playground";
 
 # Input
 
+:::tip Figma 가이드 정합 완료 (2026-05-12)
+Figma 컴포넌트(node `430:4212`) 및 라이브러리 노드(`171:9903`, Section_Input `294:12`) 기준으로 **사이즈, gap, helpertext variant 컬러(default/success/error/disabled), 아이콘 사이즈**가 정합 검증되었습니다.
+이 페이지의 표/예제는 현재 `packages/react/src/Input.tsx`의 구현과 동기화된 값입니다.
+:::
+
 텍스트 입력 필드 컴포넌트입니다. 라벨, 도움 텍스트, 에러 상태, 클리어 버튼, prefix/suffix 슬롯을 지원합니다. Flat API와 Compound API를 모두 제공합니다.
 
 ```tsx
@@ -251,24 +256,51 @@ import { SearchIcon } from "@nudge-eap/icons";
 
 ### Input.Helper
 
-도움 텍스트/에러 메시지를 표시합니다.
+도움 텍스트/에러 메시지를 표시합니다. Section_Input(`294:12`) 기준 4가지 variant 컬러를 지원합니다.
 
-| Prop    | 타입      | 기본값 | 설명             |
-| ------- | --------- | ------ | ---------------- |
-| `error` | `boolean` | —      | 에러 스타일 적용 |
+| Prop      | 타입                                              | 기본값      | 설명                                          |
+| --------- | ------------------------------------------------- | ----------- | --------------------------------------------- |
+| `error`   | `boolean`                                         | —           | 에러 스타일 + `role="alert"` (variant="error"와 동일) |
+| `variant` | `"default" \| "success" \| "error" \| "disabled"` | `"default"` | 헬퍼 텍스트 색상 변형                         |
+| `icon`    | `ReactNode`                                       | —           | 텍스트 앞 16×16 아이콘 (color는 헬퍼 컬러 상속) |
+
+#### Helper variant 컬러 (Figma Section_Input 294:12 기준)
+
+| variant    | 토큰                                | 컬러      | 용도                       |
+| ---------- | ----------------------------------- | --------- | -------------------------- |
+| `default`  | Text/Muted/Default                  | `#999999` | 일반 도움말                |
+| `success`  | Text/Brand/Default                  | `#2B96ED` | 폼 검증 통과 (브랜드 톤)   |
+| `error`    | Text/Status/Error                   | `#F13F00` | 폼 오류                    |
+| `disabled` | Text/Disabled/Default               | `#C7C7C7` | 비활성 상태                |
+
+> Banner/Toast의 success(녹색)와 의도적으로 구분 — 폼 검증 통과는 브랜드 톤을 사용합니다.
 
 ---
 
+## Figma 스펙 (430:4212 / 171:9903)
+
+| 영역                        | 값                                       |
+| --------------------------- | ---------------------------------------- |
+| 사이즈 (default / field)    | 높이 48 / 44px                           |
+| Wrapper padding-X           | 16px                                     |
+| Wrapper 내부 텍스트↔아이콘 gap | 10px                                  |
+| Wrapper radius              | 8px (`radius.md`)                        |
+| Label ↔ Wrapper gap         | 12px (default) / 8px (field)             |
+| Wrapper ↔ Helper gap        | 8px (disabled 12px)                      |
+| Helper 그룹 column gap      | 12px (HelpText 1 ↔ HelpText 2 사이)      |
+| Helper 아이콘                | 16×16, color는 부모 helper 컬러 상속     |
+
 ## CSS 변수
 
-| 변수                       | 기본값      | 설명           |
-| -------------------------- | ----------- | -------------- |
-| `--nds-input-width`        | `100%`      | 컴포넌트 너비  |
-| `--nds-input-height`       | `48px`      | 입력 필드 높이 |
-| `--nds-input-radius`       | `8px`       | 모서리 둥글기  |
-| `--nds-input-border-color` | Neutral 300 | 테두리 색상    |
-| `--nds-input-background`   | White       | 배경색         |
-| `--nds-input-label-gap`    | `12px`      | 라벨-필드 간격 |
+| 변수                       | 기본값      | 설명                                |
+| -------------------------- | ----------- | ----------------------------------- |
+| `--nds-input-width`        | `100%`      | 컴포넌트 너비                       |
+| `--nds-input-height`       | `48px`      | 입력 필드 높이 (size="field"는 44px) |
+| `--nds-input-radius`       | `8px`       | 모서리 둥글기                       |
+| `--nds-input-border-color` | Neutral 300 | 테두리 색상                         |
+| `--nds-input-background`   | White       | 배경색                              |
+| `--nds-input-label-gap`    | `12px`      | 라벨-필드 간격                      |
+| `--nds-input-helper-gap`   | `8px`       | 필드-헬퍼 간격 (disabled 12px)      |
 
 ---
 
