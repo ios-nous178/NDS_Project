@@ -58,6 +58,10 @@ const tokens = tokenEval();
 const { cv } = await import(path.join(tokensDistDir, "cssVar.js"));
 tokens.cv = cv;
 
+// eapVar (Figma SemanticColorGuide CSS variable references) — 마찬가지로 빌드된 JS에서 import
+const { eapVar } = await import(path.join(tokensDistDir, "eap.js"));
+tokens.eapVar = eapVar;
+
 /* ─── 컴포넌트 CSS 추출 ─── */
 
 const srcDir = path.resolve(__dirname, "../src");

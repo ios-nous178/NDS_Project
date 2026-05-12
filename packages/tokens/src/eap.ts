@@ -89,16 +89,20 @@ export const eap = {
       disabled: neutral[200], // #ECECEC
     },
   },
+  /**
+   * Figma `Section_Icon` (227:2). 8 roles · 단일 variant(default).
+   * 단독 배치된 아이콘 컬러는 hex 직접 지정 대신 본 토큰(`--eap-icon-*`)을 사용한다.
+   */
   icon: {
-    strong: { default: neutral[800] }, // #383838
-    normal: { default: neutral[700] }, // #666666
-    disabled: { default: neutral[400] }, // #C7C7C7
-    inverse: { default: neutral["00"] }, // #FFFFFF
-    brand: { default: semantic.primary.main }, // #2B96ED
+    strong: { default: neutral[800] }, // #383838 ← Neutral · 800
+    normal: { default: neutral[700] }, // #666666 ← Figma Neutral · 600
+    disabled: { default: neutral[400] }, // #C7C7C7 ← Figma Neutral · 200
+    inverse: { default: neutral["00"] }, // #FFFFFF ← Neutral · 00 (white)
+    brand: { default: semantic.primary.main }, // #2B96ED ← Atomic/Bright Blue · 500
     status: {
-      success: green[300], // #13BFA2
-      error: red[500], // #F13F00
-      caution: yellow[500], // #FFC303
+      success: green[300], // #13BFA2 ← Atomic/Green · 500
+      error: red[500], // #F13F00 ← Atomic/Orange Red · 500
+      caution: yellow[500], // #FFC303 ← Golden Yellow · 500
     },
   },
   border: {
@@ -137,6 +141,8 @@ export const eap = {
    * Figma `Section_Input` (294:12).
    * `--eap-input-bg`/`--eap-input-placeholder`는 suffix 없이 emit되도록
    * 다른 그룹과 달리 flat camelCase 구조 사용.
+   * `helpertext*`는 Figma CSS 변수 표기(`--eap-input-helpertext-*`)에 맞춰
+   * 한 단어로 유지.
    */
   input: {
     bg: neutral["00"], // #FFFFFF — --eap-input-bg
@@ -147,6 +153,10 @@ export const eap = {
     borderError: red[500], // #F13F00 — --eap-input-border-error
     borderDisabled: neutral[300], // #D8D8D8 — --eap-input-border-disabled
     placeholder: neutral[500], // #999999 — --eap-input-placeholder
+    helpertextDefault: neutral[500], // #999999 ← Text/Muted/Default
+    helpertextSuccess: semantic.primary.main, // #2B96ED ← Text/Brand/Default
+    helpertextError: red[500], // #F13F00 ← Text/Status/Error
+    helpertextDisabled: neutral[400], // #C7C7C7 ← Text/Disabled/Default
   },
 } as const;
 
@@ -276,6 +286,10 @@ export const eapVar = {
     borderError: v("--eap-input-border-error"),
     borderDisabled: v("--eap-input-border-disabled"),
     placeholder: v("--eap-input-placeholder"),
+    helpertextDefault: v("--eap-input-helpertext-default"),
+    helpertextSuccess: v("--eap-input-helpertext-success"),
+    helpertextError: v("--eap-input-helpertext-error"),
+    helpertextDisabled: v("--eap-input-helpertext-disabled"),
   },
 } as const;
 

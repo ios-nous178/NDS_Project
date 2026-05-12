@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import {
   cv,
+  eapVar,
   fontFamily,
   fontWeight,
   radius,
@@ -162,11 +163,12 @@ const inputStyles = `
     height: ${sizing.icon.default}px;
   }
 
-  /* Helper text color — colors.status (default/success/error) 토큰을 사용.
-   *   default = #999 (helper hint)
-   *   success = primary main — 폼 검증 통과 ("complete" 의도, Figma Input "Success" 셀)
-   *   error   = error main — 폼 오류
-   * 일반 success(녹색, Banner/Toast 용) 와 구분하기 위해 status 그룹으로 분리. */
+  /* Helper text color — Figma Section_Input (294:12) Input/HelperText/* 토큰 사용.
+   *   default  = #999999 (Text/Muted/Default — 일반 도움말)
+   *   success  = #2B96ED (Text/Brand/Default — 폼 검증 통과)
+   *   error    = #F13F00 (Text/Status/Error — 폼 오류)
+   *   disabled = #C7C7C7 (Text/Disabled/Default — 비활성)
+   * 일반 success(녹색, Banner/Toast 용)과 구분되도록 brand 톤으로 분리. */
   :where(.${INPUT_HELPER_CLASS}) {
     display: inline-flex;
     align-items: center;
@@ -174,15 +176,20 @@ const inputStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.status.default};
+    color: ${eapVar.input.helpertextDefault};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-variant="error"]) {
-    color: ${cv.status.error};
+    color: ${eapVar.input.helpertextError};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-variant="success"]) {
-    color: ${cv.status.success};
+    color: ${eapVar.input.helpertextSuccess};
+  }
+
+  :where(.${INPUT_HELPER_CLASS}[data-variant="disabled"]),
+  :where(.${INPUT_ROOT_CLASS}[data-disabled="true"]) :where(.${INPUT_HELPER_CLASS}) {
+    color: ${eapVar.input.helpertextDisabled};
   }
 
   /* Helper icon 은 부모 helper 의 color 를 currentColor 로 상속받는다 —
@@ -472,7 +479,7 @@ export const InputHelperGroup: React.FC<InputHelperGroupProps> = ({
 
 /* ─── Compound: Helper ─── */
 
-export type InputHelperVariant = "default" | "success" | "error";
+export type InputHelperVariant = "default" | "success" | "error" | "disabled";
 
 export interface InputHelperProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** true이면 에러 스타일 + role="alert" 적용 (`variant="error"`와 동일) */
