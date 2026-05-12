@@ -120,6 +120,51 @@ app.get("/", (_req, res) => {
       .shortcut-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
       .shortcut-arrow { color: #94a3b8; font-size: 16px; line-height: 1; }
       .shortcut:hover .shortcut-arrow { color: #0f172a; }
+
+      .resources {
+        margin-top: 24px;
+      }
+      .resources-label {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        color: #94a3b8;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .resource {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #0f172a;
+        background: #ffffff;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .resource:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+      }
+      .resource-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #f1f5f9;
+        color: #475569;
+        flex-shrink: 0;
+      }
+      .resource-text { flex: 1; text-align: left; min-width: 0; }
+      .resource-title { display: block; font-size: 14px; font-weight: 600; color: #0f172a; }
+      .resource-sub { display: block; font-size: 12px; color: #64748b; margin-top: 2px; }
+      .resource-arrow { color: #94a3b8; font-size: 15px; line-height: 1; }
+      .resource:hover .resource-arrow { color: #0f172a; }
+
       @media (max-width: 480px) {
         .shortcuts-grid { grid-template-columns: 1fr; }
       }
@@ -153,6 +198,22 @@ app.get("/", (_req, res) => {
             <span class="shortcut-arrow" aria-hidden="true">→</span>
           </a>
         </div>
+      </section>
+
+      <section class="resources">
+        <div class="resources-label">설치 / 업데이트</div>
+        <a class="resource" href="https://www.notion.so/cashwalkteam/35ea054b7d82807bb097c6c9d6b3d272" target="_blank" rel="noopener noreferrer">
+          <span class="resource-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M3 5.5L11 4v8H3V5.5zM12 3.8L21 2.5V12h-9V3.8zM3 13h8v8L3 19.5V13zm9 0h9v9.5L12 21v-8z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="resource-text">
+            <span class="resource-title">Windows 환경 설치 / 업데이트 가이드</span>
+            <span class="resource-sub">Notion · 비개발자용 셋업 문서</span>
+          </span>
+          <span class="resource-arrow" aria-hidden="true">↗</span>
+        </a>
       </section>
     </main>
   </body>
