@@ -36,26 +36,32 @@ export interface SnackbarProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 
 /* ─── Styles ─── */
 
+/**
+ * Variant 디자인 원칙:
+ * - 배경은 DS 시맨틱 토큰의 옅은 틴트(`*.bg`)
+ * - 텍스트는 일률적으로 `text.default` (중립) — 비비드 컬러풀 텍스트 사용 금지
+ * - variant 아이덴티티는 "배경 틴트 + 아이콘 색"으로만 표현
+ */
 const variantConfig: Record<SnackbarVariant, { bg: string; fg: string; icon: string }> = {
   info: {
-    bg: "var(--color-semantic-info-bg, #EBF1FF)",
-    fg: "var(--color-semantic-info-text, #1F4FB8)",
-    icon: "var(--color-semantic-info-main, #4080F0)",
+    bg: "var(--color-semantic-primary-bg)",
+    fg: "var(--color-semantic-text-default)",
+    icon: "var(--color-semantic-primary-main)",
   },
   success: {
-    bg: "var(--color-semantic-success-bg, #E5F8E9)",
-    fg: "var(--color-semantic-success-text, #1A6D2C)",
-    icon: "var(--color-semantic-success-main, #2BAA48)",
+    bg: "var(--color-semantic-success-bg)",
+    fg: "var(--color-semantic-text-default)",
+    icon: "var(--color-semantic-success-main)",
   },
   warning: {
-    bg: "var(--color-semantic-caution-bg, #FFF4E0)",
-    fg: "var(--color-semantic-caution-text, #8C5B00)",
-    icon: "var(--color-semantic-caution-main, #F0A030)",
+    bg: "var(--color-semantic-caution-bg)",
+    fg: "var(--color-semantic-text-default)",
+    icon: "var(--color-semantic-caution-text)",
   },
   error: {
-    bg: "var(--color-semantic-error-bg, #FFE9E9)",
-    fg: "var(--color-semantic-error-text, #B83333)",
-    icon: "var(--color-semantic-error-main, #E04D4D)",
+    bg: "var(--color-semantic-error-bg)",
+    fg: "var(--color-semantic-text-default)",
+    icon: "var(--color-semantic-error-main)",
   },
 };
 
@@ -67,10 +73,9 @@ const snackbarStyles = `
     gap: ${spacing[12]}px;
     padding: ${spacing[12]}px ${spacing[16]}px;
     border-radius: var(--nds-snackbar-radius, ${radius.md}px);
-    background: var(--nds-snackbar-bg, #1A1A1A);
-    color: var(--nds-snackbar-fg, #fff);
+    background: var(--nds-snackbar-bg, var(--color-semantic-bg-coolGray));
+    color: var(--nds-snackbar-fg, var(--color-semantic-text-default));
     border: 1px solid var(--nds-snackbar-border, transparent);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
     font-family: ${fontFamily.web};
     width: var(--nds-snackbar-width, auto);
     max-width: 480px;
@@ -81,8 +86,7 @@ const snackbarStyles = `
   :where(.${SB_CLASS}[data-variant="success"]),
   :where(.${SB_CLASS}[data-variant="warning"]),
   :where(.${SB_CLASS}[data-variant="error"]) {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    border-color: var(--nds-snackbar-icon, transparent);
+    border: 0;
   }
 
   :where(.${SB_CLASS}[data-has-desc="true"]) {
@@ -114,14 +118,13 @@ const snackbarStyles = `
   :where(.${SB_TITLE_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.semibold};
+    font-weight: ${fontWeight.bold};
     margin: 0;
   }
 
   :where(.${SB_DESC_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    opacity: 0.85;
     margin: 0;
   }
 
@@ -140,11 +143,15 @@ const snackbarStyles = `
     transition: background-color ${transition.default};
   }
 
+  /* variant 액션 버튼: 배경 칩이 옅은 배경에서 묻혀버려서 text-only 강조 톤으로 전환.
+     색은 variant 아이콘 색을 그대로 받아 variant 아이덴티티 강화. */
   :where(.${SB_CLASS}[data-variant="info"]) .${SB_ACTION_CLASS},
   :where(.${SB_CLASS}[data-variant="success"]) .${SB_ACTION_CLASS},
   :where(.${SB_CLASS}[data-variant="warning"]) .${SB_ACTION_CLASS},
   :where(.${SB_CLASS}[data-variant="error"]) .${SB_ACTION_CLASS} {
-    background: rgba(0, 0, 0, 0.06);
+    background: transparent;
+    color: var(--nds-snackbar-icon);
+    padding: 0 ${spacing[6]}px;
   }
 
   :where(.${SB_ACTION_CLASS}:hover) { background: rgba(255, 255, 255, 0.2); }
@@ -153,7 +160,7 @@ const snackbarStyles = `
   :where(.${SB_CLASS}[data-variant="success"]) .${SB_ACTION_CLASS}:hover,
   :where(.${SB_CLASS}[data-variant="warning"]) .${SB_ACTION_CLASS}:hover,
   :where(.${SB_CLASS}[data-variant="error"]) .${SB_ACTION_CLASS}:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.06);
   }
 
   :where(.${SB_ACTION_CLASS}:focus-visible) {

@@ -79,14 +79,13 @@ export interface PhoneInputProps extends Omit<
 // eslint-disable-next-line unused-imports/no-unused-vars
 const phoneInputStyles = `
   :where(.${PI_ROOT_CLASS}) {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     gap: ${spacing[8]}px;
+    width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
-
-  :where(.${PI_ROOT_CLASS}[data-full-width="true"]) { width: 100%; }
 
   :where(.${PI_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
