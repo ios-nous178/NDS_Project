@@ -1,0 +1,188 @@
+---
+sidebar_position: 10
+title: MCP 도구 레퍼런스
+description: nudge-eap-ds MCP 서버가 제공하는 31개 도구의 용도/입력/대표 사용 시점 정리
+---
+
+# MCP 도구 레퍼런스
+
+`nudge-eap-ds` MCP 서버는 Claude가 NudgeEAP 디자인시스템 정보를 정확하게 찾아쓸 수 있도록 **31개 도구**를 제공합니다.
+대부분의 도구는 **Claude에게 한국어로 부탁하면 자동으로 호출**되므로 직접 인자를 타이핑할 필요는 없습니다.
+이 페이지는 어떤 상황에 어떤 도구가 쓰이는지를 한눈에 확인하기 위한 레퍼런스입니다.
+
+> 사용 흐름과 환경 설치는 [MCP 사용 가이드](/docs/NUDGE_EAP_DS_MCP_USAGE)를 먼저 참고하세요.
+> 이 페이지는 패키지: `packages/mcp/src/server.ts` 의 단일 출처에서 발췌·정리한 내용입니다.
+
+---
+
+## 카테고리별 한눈 보기
+
+| 카테고리            | 도구 개수 | 대표 도구                                                |
+| ------------------- | --------- | -------------------------------------------------------- |
+| 스코프/브랜드 가드  | 4         | `get_scope_advisory`, `list_brands`, `get_brand_info`, `get_admin_cms_guide` |
+| 컴포넌트 조회       | 4         | `list_components`, `get_component`, `search_component`, `get_component_guide` |
+| 아이콘 조회         | 2         | `list_icons`, `find_icon`                                |
+| 토큰 조회/제안      | 3         | `list_tokens`, `lookup_token`, `suggest_replacement`     |
+| 가이드/원칙         | 4         | `get_design_principles`, `get_dos_and_donts`, `get_pattern_guide`, `list_figma_sync_status` |
+| 목업 검증·집계      | 2         | `validate_mockup`, `report_mockup_usage`                 |
+| 프로젝트 셋업       | 5         | `get_setup_instructions`, `list_packages`, `get_install_command`, `get_main_tsx_imports`, `create_claude_md` |
+| Dev 서버·미리보기   | 3         | `start_dev_server`, `check_preview`, `stop_dev_server`   |
+| HTML/배포           | 1         | `get_export_html_instructions`                           |
+| 유지보수            | 1         | `get_update_instructions`                                |
+
+---
+
+## 1. 스코프 / 브랜드 가드
+
+작업을 시작하기 전 어떤 디자인시스템을 사용해야 하는지(사용자 앱 vs 어드민 CMS), 어떤 브랜드인지 확인하는 도구들.
+
+| 도구                   | 용도                                                                                              | 호출 시점                          |
+| ---------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `get_scope_advisory`   | 이 MCP의 적용 범위와 사용자 앱 vs 어드민 CMS 분기 규칙을 반환. 모호하면 가장 먼저 호출         | 모호한 작업 진입 시               |
+| `list_brands`          | brands/ 폴더와 토큰 dist에서 자동 발견된 서브 브랜드 목록(슬러그/이름/주색상/CSS 경로/ready 플래그) | 브랜드 분기 직전                  |
+| `get_brand_info`       | 한 브랜드의 풀 정보 — 시멘틱 컬러, 폰트, css·js 임포트 경로, `main.tsx` import 순서             | 특정 브랜드 작업 시작 시          |
+| `get_admin_cms_guide`  | 어드민/CMS/운영툴/백오피스 시안용 antd 5.5.1 규약 — sider, page header, search form, table, modal | 어드민 시안 작업 시. 이때는 `get_design_principles` 대신 이걸 호출 |
+
+---
+
+## 2. 컴포넌트 조회
+
+| 도구                  | 용도                                                                                                | 호출 시점                                             |
+| --------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `list_components`     | 사용자 앱(Trost/Geniet/NudgeEAP)용 DS React 컴포넌트 전체 목록                                       | 컴포넌트 선택 단계                                    |
+| `get_component`       | 정확한 컴포넌트명으로 props 상세 조회 (`name: "Button"` 같이 case-sensitive)                          | 작성 전 props 확인                                    |
+| `search_component`    | 자연어 쿼리로 컴포넌트 검색 (`"tab"`, `"avatar"` 등)                                                  | 이름을 모를 때                                        |
+| `get_component_guide` | **Button/Card/Chip/IconButton/Tabs/Select** 등 핵심 컴포넌트의 큐레이션 가이드(함정/매트릭스/접근성/Figma 노드) | 핵심 컴포넌트를 처음 쓰기 직전 — 항상 먼저 호출 |
+
+---
+
+## 3. 아이콘 조회
+
+| 도구          | 용도                                                                                                | 호출 시점                            |
+| ------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `list_icons`  | `@nudge-eap/icons` 전체 84개 + Figma Iconography(379:490) 카테고리/Line·Filled·Color 스타일 메타데이터 | 카탈로그 탐색                       |
+| `find_icon`   | 자연어 쿼리로 아이콘 검색 (`"search"`, `"arrow back"`). 결과에 category/style/pair 포함 — Line/Filled 정확히 선택 | 용도만 알 때                  |
+
+> 사이즈/터치/스타일 규칙은 `get_pattern_guide("iconography")`, 색상 토큰 매핑은 `get_pattern_guide("icon-color")`로 보강하세요. 자세한 카탈로그는 [Docs · Icons](/docs/components/icons).
+
+---
+
+## 4. 토큰 조회/제안
+
+| 도구                  | 용도                                                                            | 호출 시점                                     |
+| --------------------- | ------------------------------------------------------------------------------- | --------------------------------------------- |
+| `list_tokens`         | 디자인 토큰 전체 목록. `group` 파라미터로 색상/스페이싱 등 필터                | 토큰 탐색                                     |
+| `lookup_token`        | 쿼리(이름·값) 매칭. `"#FF5722"`, `"primary"`처럼 hex나 키워드로 검색           | 시안 색을 토큰으로 환원할 때                  |
+| `suggest_replacement` | 인라인 컬러/스페이싱을 포함한 코드 스니펫 → 토큰 치환 제안                       | `validate_mockup` 후 자동 fix를 만들 때       |
+
+---
+
+## 5. 가이드/원칙
+
+| 도구                       | 용도                                                                                                          | 호출 시점                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `get_design_principles`    | DESIGN.md 기반 — 브랜드 톤, 컬러 시멘틱, 타이포, 스페이싱, 엘리베이션, 셰이프, do's/don'ts, 금지 패턴            | 사용자 앱 목업 작업 시작 시 **항상 호출**                    |
+| `get_dos_and_donts`        | `get_design_principles`의 do/don't 서브셋 — 짧은 sanity check용                                                | 목업 마무리 직전                                            |
+| `get_pattern_guide`        | UX 패턴 가이드 — CTA 그룹, 아이콘 컬러, 아이코노그래피, 시각적 안티패턴, 안내문, 드롭다운 밀도, dense-list 등 | 위계/아이콘/밀도 결정이 모호할 때                            |
+| `list_figma_sync_status`   | 큐레이션된 가이드별 Figma 노드 매핑 상태(figmaNodeUrl/sizeMatrix/stateMatrix)                                   | 디자인 QA — Figma 정합 audit 누락 점검                       |
+
+`get_pattern_guide`의 주요 패턴 키:
+
+- `cta-group` · `icon-color` · `iconography` · `notice` · `dropdown` · `dense-list` · `visual-antipattern`
+
+---
+
+## 6. 목업 검증·집계
+
+| 도구                   | 용도                                                                                                                            | 호출 시점                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `validate_mockup`      | 목업 `.tsx` 소스(or `filePath`)를 DS 규칙으로 검증 — `{ rule, line, detail, suggestion }` 위반 리스트 반환                       | 목업 작성 직후/저장 시                                                     |
+| `report_mockup_usage`  | TSX를 AST로 파싱 → 각 JSX를 ds(@nudge-eap/react) / adminCms(antd) / customNative(raw `<button>`) / external 로 분류·집계. 로컬 `.ds-usage-log.jsonl` + Google Sheets 웹훅 동시 적재 | 목업 생성/수정 후, HTML export 후 — CLAUDE.md에 명시된 필수 단계 |
+
+---
+
+## 7. 프로젝트 셋업 / 외부 시안 프로젝트
+
+새 시안 프로젝트에 DS를 붙일 때 쓰는 도구들. 대개 한 번씩만 호출합니다.
+
+| 도구                       | 용도                                                                                                                  | 호출 시점                                |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `get_setup_instructions`   | 신규 외부 시안 프로젝트용 단계별 셋업 가이드. `intent`로 `admin-cms`(antd) / `user-app`(default) 분기                  | 시안 프로젝트 첫 셋업                    |
+| `list_packages`            | DS 패키지 목록 — 버전, required/optional, 내부 의존성, peer deps, CSS 익스포트                                         | 무엇을 install해야 할지 파악할 때         |
+| `get_install_command`      | `local-packages/`의 `.tgz` 4개를 사용한 `npm install ./...tgz` 커맨드 생성. 파일 존재 검증 포함                          | 시안 프로젝트 설치 시점                  |
+| `get_main_tsx_imports`     | `src/main.tsx`에 추가해야 할 CSS import 라인. `brand` 슬러그를 받아 `list_brands`로 검증 — CSS 미준비 브랜드는 경고 메시지 | DS 처음 적재 시                          |
+| `create_claude_md`         | 외부 시안 프로젝트에 `CLAUDE.md` 생성 — 규칙, 검증 루프, 프리뷰 워크플로우. `intent='admin-cms'` 분기                   | 시안 프로젝트 초기화 마지막 단계         |
+
+---
+
+## 8. Dev 서버 / 미리보기
+
+목업의 런타임 동작을 자동 검증할 때 사용.
+
+| 도구                | 용도                                                                                                                  | 호출 시점                                                |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `start_dev_server`  | 프로젝트 루트에서 로컬 dev 서버 기동 + URL 응답까지 대기                                                                | 시각/런타임 프리뷰 직전                                  |
+| `check_preview`     | Playwright로 dev URL을 열고 런타임 에러/Vite overlay/실패 요청/빈 화면 감지. 시안 프로젝트에 Playwright 설치 필요       | dev 서버 기동 후                                         |
+| `stop_dev_server`   | `start_dev_server`로 시작한 세션 종료. `sessionId` 생략 시 이 MCP 프로세스가 소유한 모든 dev 세션 종료                  | 검증 끝났을 때                                           |
+
+---
+
+## 9. HTML 배포
+
+| 도구                            | 용도                                                                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `get_export_html_instructions`  | 시안을 의존성 없는 단일 HTML로 export하는 두 가지 모드 안내 — `singlefile`(Vite + vite-plugin-singlefile, 인터랙션 보존, **권장**) / `snapshot`(Playwright 정적 DOM+CSS 캡처) |
+
+---
+
+## 10. 유지보수
+
+| 도구                       | 용도                                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `get_update_instructions`  | DS 본 레포를 최신화하고 MCP 서버를 재빌드하는 커맨드 — 비개발자(기획자) 친화. 한 줄 부탁(`git pull origin main 후 pnpm build --filter @nudge-eap/mcp`) 자동 실행 |
+
+---
+
+## 호출 흐름 치트시트
+
+### 새 사용자 앱 시안을 만들 때
+
+```
+1. get_scope_advisory                       (분기 확인)
+2. list_brands → get_brand_info             (브랜드 선택)
+3. get_design_principles                    (전역 규칙 로드)
+4. (필요 시) list_components / search_component
+5. (핵심 컴포넌트 첫 사용 직전) get_component_guide
+6. (모호한 패턴이면) get_pattern_guide
+7. (아이콘 필요) find_icon → list_icons
+8. (토큰 매칭) lookup_token / suggest_replacement
+9. validate_mockup                          (저장 시)
+10. report_mockup_usage                     (집계 적재)
+```
+
+### 어드민 CMS 시안을 만들 때
+
+```
+1. get_scope_advisory                       (어드민이면 여기서 분기)
+2. get_admin_cms_guide                      (= antd 규약)
+3. (목업 작성 — antd 우선)
+4. validate_mockup → report_mockup_usage
+```
+
+### 새 시안 프로젝트 초기화
+
+```
+1. get_setup_instructions(intent: "user-app" | "admin-cms")
+2. list_packages → get_install_command
+3. (설치 후) get_main_tsx_imports
+4. create_claude_md
+5. start_dev_server → check_preview → stop_dev_server
+```
+
+---
+
+## 안 보일 때
+
+- `/mcp` 입력 → `nudge-eap-ds`가 떠 있는지 확인
+- 떠 있는데 도구가 없으면 → Claude Code 재시작 (MCP는 시작 시점에만 도구 로드)
+- 그래도 안 되면 → [MCP 사용 가이드 — 안 될 때](/docs/NUDGE_EAP_DS_MCP_USAGE)
