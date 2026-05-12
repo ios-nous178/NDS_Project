@@ -2,6 +2,9 @@ import React, { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
   ActivityTimeline,
   AddressSearch,
   AmountInput,
@@ -37,6 +40,7 @@ import {
   CrisisCallout,
   DataTable,
   type DataTableColumn,
+  type DateRange,
   DatePicker,
   DateRangePicker,
   Divider,
@@ -365,39 +369,63 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   BottomSheet: () => (
-    <div style={mockBottomSheet}>
-      <div style={mockGrabber} aria-hidden />
-      <div style={mockSheetTitle}>필터</div>
-      <div style={mockSheetBody}>옵션을 선택하세요.</div>
+    <div style={mockOverlayStage}>
+      <div style={mockStageBody}>본문 영역</div>
+      <div style={mockStageScrim} aria-hidden />
+      <div style={mockBottomSheetPanel}>
+        <div style={mockGrabber} aria-hidden />
+        <div style={mockSheetTitle}>필터</div>
+        <div style={mockSheetBody}>옵션을 선택하세요.</div>
+      </div>
     </div>
   ),
   Toast: () => (
-    <div style={mockToast}>
-      <span style={mockToastIcon} aria-hidden>
-        ✓
-      </span>
-      <span>저장되었어요</span>
+    <div style={mockOverlayStage}>
+      <div style={mockStageBody}>본문 영역</div>
+      <div style={mockToastFloating}>
+        <span style={mockToastIcon} aria-hidden>
+          ✓
+        </span>
+        <span>저장되었어요</span>
+      </div>
     </div>
   ),
   Lightbox: () => (
-    <div style={mockLightbox}>
-      <div style={mockLightboxImage} aria-hidden />
+    <div style={mockLightboxStage}>
+      <span style={mockLightboxCloseBtn} aria-hidden>
+        <CloseIcon size={12} color="#fff" />
+      </span>
+      <span style={mockLightboxNavLeft} aria-hidden>
+        ‹
+      </span>
+      <span style={mockLightboxNavRight} aria-hidden>
+        ›
+      </span>
+      <div style={mockLightboxImageNew} aria-hidden />
+      <div style={mockLightboxCounter}>1 / 4</div>
     </div>
   ),
   ShareSheet: () => (
-    <div style={mockShareSheet}>
-      {[
-        { key: "copy", label: "복사" },
-        { key: "link", label: "링크" },
-        { key: "more", label: "더보기" },
-      ].map((t) => (
-        <div key={t.key} style={mockShareItem}>
-          <span style={mockShareIcon} aria-hidden>
-            <ShareIcon size={18} />
-          </span>
-          <span style={mockShareLabel}>{t.label}</span>
+    <div style={mockOverlayStage}>
+      <div style={mockStageBody}>본문 영역</div>
+      <div style={mockStageScrim} aria-hidden />
+      <div style={mockShareSheetPanel}>
+        <div style={mockGrabber} aria-hidden />
+        <div style={mockShareSheetRow}>
+          {[
+            { key: "copy", label: "복사" },
+            { key: "link", label: "링크" },
+            { key: "more", label: "더보기" },
+          ].map((t) => (
+            <div key={t.key} style={mockShareItem}>
+              <span style={mockShareIcon} aria-hidden>
+                <ShareIcon size={16} />
+              </span>
+              <span style={mockShareLabel}>{t.label}</span>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   ),
   CoachMark: () => (
@@ -1072,9 +1100,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
   },
   DateRangePicker: () => {
     function R() {
-      const [v, setV] = useState<{ start?: Date; end?: Date }>({
-        start: new Date("2026-05-01"),
-        end: new Date("2026-05-07"),
+      const [v, setV] = useState<DateRange>({
+        from: new Date("2026-05-01"),
+        to: new Date("2026-05-07"),
       });
       return (
         <div style={{ width: "100%", maxWidth: 220 }}>
@@ -1157,17 +1185,23 @@ const PREVIEWS: Record<string, PreviewRender> = {
 
   /* 오버레이 */
   Drawer: () => (
-    <div style={mockDrawerSurface}>
-      <div style={mockDrawerHeader}>
-        <div style={mockDrawerTitle}>필터</div>
-        <span style={mockDrawerClose} aria-hidden>
-          <CloseIcon size={14} color="var(--eap-icon-normal-default)" />
-        </span>
+    <div style={mockDrawerStage}>
+      <div style={mockDrawerPageHint} aria-hidden>
+        본문
       </div>
-      <div style={mockDrawerBody}>
-        <div style={mockDrawerRow}>· 정렬 기준</div>
-        <div style={mockDrawerRow}>· 카테고리</div>
-        <div style={mockDrawerRow}>· 기간</div>
+      <div style={mockDrawerScrim} aria-hidden />
+      <div style={mockDrawerPanel}>
+        <div style={mockDrawerHeader}>
+          <div style={mockDrawerTitle}>필터</div>
+          <span style={mockDrawerClose} aria-hidden>
+            <CloseIcon size={12} color="var(--eap-icon-normal-default)" />
+          </span>
+        </div>
+        <div style={mockDrawerBody}>
+          <div style={mockDrawerRow}>정렬 기준</div>
+          <div style={mockDrawerRow}>카테고리</div>
+          <div style={mockDrawerRow}>기간</div>
+        </div>
       </div>
     </div>
   ),
@@ -1180,7 +1214,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
         <div style={mockDropdownItem}>편집</div>
         <div style={mockDropdownItem}>공유</div>
         <div style={mockDropdownDivider} aria-hidden />
-        <div style={{ ...mockDropdownItem, color: cv.danger.main }}>삭제</div>
+        <div style={{ ...mockDropdownItem, color: cv.error.main }}>삭제</div>
       </div>
     </div>
   ),
@@ -1200,94 +1234,83 @@ const PREVIEWS: Record<string, PreviewRender> = {
 
   /* 레이아웃 */
   AppBar: () => (
-    <div
-      style={{
-        width: 240,
-        border: `1px solid ${cv.border.light}`,
-        borderRadius: 8,
-        overflow: "hidden",
-      }}
-    >
+    <div style={mockPhoneShell}>
       <AppBar
+        position="static"
         title="페이지 제목"
-        leftSlot={<ChevronLeftIcon size={22} color="var(--eap-icon-normal-default)" />}
-        rightSlot={<SearchIcon size={20} color="var(--eap-icon-normal-default)" />}
+        leftSlot={<ChevronLeftIcon size={20} color="var(--eap-icon-normal-default)" />}
+        rightSlot={<SearchIcon size={18} color="var(--eap-icon-normal-default)" />}
       />
+      <div style={mockPhoneBody}>본문 영역</div>
     </div>
   ),
   AppFooter: () => (
-    <div
-      style={{
-        width: 240,
-        border: `1px solid ${cv.border.light}`,
-        borderRadius: 8,
-        overflow: "hidden",
-      }}
-    >
+    <div style={mockPhoneShell}>
+      <div style={{ ...mockPhoneBody, flex: 1 }}>본문 영역</div>
       <AppFooter.TabBar
         activeTab="home"
         onTabClick={() => {}}
+        style={
+          {
+            position: "static",
+            width: "100%",
+            "--nds-footer-height": "52px",
+          } as React.CSSProperties
+        }
         tabs={[
           {
             key: "home",
             label: "홈",
             href: "#",
-            icon: <HomeIcon size={20} />,
-            activeIcon: <HomeActiveIcon size={20} />,
+            icon: <HomeIcon size={18} />,
+            activeIcon: <HomeActiveIcon size={18} />,
           },
           {
             key: "search",
             label: "탐색",
             href: "#",
-            icon: <SearchIcon size={20} />,
-            activeIcon: <SearchIcon size={20} />,
+            icon: <SearchIcon size={18} />,
+            activeIcon: <SearchIcon size={18} />,
           },
           {
             key: "my",
             label: "마이",
             href: "#",
-            icon: <MypageIcon size={20} />,
-            activeIcon: <MypageIcon size={20} />,
+            icon: <MypageIcon size={18} />,
+            activeIcon: <MypageIcon size={18} />,
           },
         ]}
       />
     </div>
   ),
   WebHeader: () => (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: 280,
-        border: `1px solid ${cv.border.light}`,
-        borderRadius: 8,
-        overflow: "hidden",
-        transform: "scale(0.85)",
-        transformOrigin: "center",
-      }}
-    >
-      <WebHeader position="static" maxWidth={400}>
-        <WebHeader.Logo alt="브랜드" src="https://placehold.co/72x20/2B96ED/FFF?text=Brand" />
-        <WebHeader.Menu>
-          <WebHeader.MenuItem href="#" active>
-            홈
-          </WebHeader.MenuItem>
-          <WebHeader.MenuItem href="#">콘텐츠</WebHeader.MenuItem>
-          <WebHeader.MenuItem href="#">상담</WebHeader.MenuItem>
-        </WebHeader.Menu>
-      </WebHeader>
+    <div style={mockDesktopShell}>
+      <div style={mockDesktopScaler}>
+        <WebHeader position="static" maxWidth={480}>
+          <WebHeader.Logo alt="Brand" src="https://placehold.co/72x20/2B96ED/FFFFFF?text=Brand" />
+          <WebHeader.Menu>
+            <WebHeader.MenuItem href="#" active>
+              홈
+            </WebHeader.MenuItem>
+            <WebHeader.MenuItem href="#">콘텐츠</WebHeader.MenuItem>
+            <WebHeader.MenuItem href="#">상담</WebHeader.MenuItem>
+          </WebHeader.Menu>
+        </WebHeader>
+        <div style={mockDesktopBody}>본문 영역</div>
+      </div>
     </div>
   ),
   Accordion: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <Accordion type="single" defaultValue="a">
-        <Accordion.Item value="a">
-          <Accordion.Trigger>이용 약관</Accordion.Trigger>
-          <Accordion.Content>약관 본문이 여기에 표시됩니다.</Accordion.Content>
-        </Accordion.Item>
-        <Accordion.Item value="b">
-          <Accordion.Trigger>개인정보 처리방침</Accordion.Trigger>
-          <Accordion.Content>약관 본문이 여기에 표시됩니다.</Accordion.Content>
-        </Accordion.Item>
+        <AccordionItem value="a">
+          <AccordionTrigger>이용 약관</AccordionTrigger>
+          <AccordionContent>약관 본문이 여기에 표시됩니다.</AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="b">
+          <AccordionTrigger>개인정보 처리방침</AccordionTrigger>
+          <AccordionContent>약관 본문이 여기에 표시됩니다.</AccordionContent>
+        </AccordionItem>
       </Accordion>
     </div>
   ),
@@ -1428,7 +1451,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
   AttachmentItem: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
-      <AttachmentItem name="진단서_2026.pdf" size={234567} status="ready" onDownload={() => {}} />
+      <AttachmentItem name="진단서_2026.pdf" size={234567} status="done" onDownload={() => {}} />
     </div>
   ),
   MediaThumbnail: () => (
@@ -1449,8 +1472,8 @@ const PREVIEWS: Record<string, PreviewRender> = {
   DataTable: () => {
     type Row = { id: string; name: string; status: string };
     const columns: DataTableColumn<Row>[] = [
-      { key: "name", header: "이름", accessor: (r) => r.name },
-      { key: "status", header: "상태", accessor: (r) => r.status, align: "right" },
+      { key: "name", title: "이름", render: (r) => r.name },
+      { key: "status", title: "상태", render: (r) => r.status, align: "right" },
     ];
     const data: Row[] = [
       { id: "1", name: "홍길동", status: "완료" },
@@ -1659,16 +1682,80 @@ const mockTooltipArrow: React.CSSProperties = {
   background: cv.text.default,
 };
 
-const mockBottomSheet: React.CSSProperties = {
-  width: 244,
-  background: cv.bg.white,
+/* BottomSheet / ShareSheet / Toast — 화면 안 dim + 하단 시트 */
+const mockOverlayStage: React.CSSProperties = {
+  position: "relative",
+  width: 220,
+  height: 160,
   border: `1px solid ${cv.border.light}`,
-  borderRadius: `${radius.radius16}px ${radius.radius16}px ${radius.sm}px ${radius.sm}px`,
-  padding: "10px 18px 18px",
-  boxShadow: shadow.up,
+  borderRadius: radius.lg,
+  background: cv.bg.coolGrayLighter,
+  overflow: "hidden",
+};
+
+const mockStageBody: React.CSSProperties = {
+  padding: "10px 14px",
+  fontSize: 11,
+  fontWeight: 500,
+  color: cv.text.placeholder,
+};
+
+const mockStageScrim: React.CSSProperties = {
+  position: "absolute",
+  inset: 0,
+  background: "rgba(17,17,17,0.32)",
+};
+
+const mockBottomSheetPanel: React.CSSProperties = {
+  position: "absolute",
+  left: 0,
+  right: 0,
+  bottom: 0,
+  background: cv.bg.white,
+  borderTopLeftRadius: radius.lg,
+  borderTopRightRadius: radius.lg,
+  padding: "8px 14px 14px",
   display: "flex",
   flexDirection: "column",
+  gap: 6,
+};
+
+const mockShareSheetPanel: React.CSSProperties = {
+  position: "absolute",
+  left: 0,
+  right: 0,
+  bottom: 0,
+  background: cv.bg.white,
+  borderTopLeftRadius: radius.lg,
+  borderTopRightRadius: radius.lg,
+  padding: "8px 12px 12px",
+  display: "flex",
+  flexDirection: "column",
+  gap: 6,
+};
+
+const mockShareSheetRow: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-around",
+  alignItems: "center",
   gap: 8,
+};
+
+const mockToastFloating: React.CSSProperties = {
+  position: "absolute",
+  bottom: 18,
+  left: "50%",
+  transform: "translateX(-50%)",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+  padding: "6px 12px",
+  background: cv.text.default,
+  color: cv.text.inverse,
+  borderRadius: radius.pill,
+  fontSize: 11,
+  fontWeight: 600,
+  boxShadow: shadow.md,
 };
 
 const mockGrabber: React.CSSProperties = {
@@ -1677,78 +1764,111 @@ const mockGrabber: React.CSSProperties = {
   borderRadius: radius.pill,
   background: cv.border.default,
   alignSelf: "center",
-  marginBottom: 8,
+  marginBottom: 4,
 };
 
 const mockSheetTitle: React.CSSProperties = {
-  fontSize: 14,
+  fontSize: 13,
   fontWeight: 700,
   color: cv.text.default,
 };
 
 const mockSheetBody: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: 11,
   lineHeight: 1.55,
-  color: cv.text.default,
-};
-
-const mockToast: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 8,
-  padding: "10px 14px",
-  background: cv.text.default,
-  color: cv.text.inverse,
-  borderRadius: radius.pill,
-  fontSize: 12,
-  fontWeight: 600,
-  boxShadow: shadow.md,
+  color: cv.text.subtle,
 };
 
 const mockToastIcon: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  width: 18,
-  height: 18,
+  width: 16,
+  height: 16,
   borderRadius: radius.pill,
   background: cv.success.main,
   color: cv.text.inverse,
-  fontSize: 11,
+  fontSize: 10,
   fontWeight: 800,
 };
 
-const mockLightbox: React.CSSProperties = {
+/* Lightbox — 풀스크린 dark stage + 가운데 이미지 + 닫기/네비/카운터 */
+const mockLightboxStage: React.CSSProperties = {
   position: "relative",
-  width: 200,
-  height: 130,
-  borderRadius: radius.lg,
-  background: cv.text.default,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+  width: 220,
+  height: 140,
+  borderRadius: radius.md,
+  background: "#111111",
   overflow: "hidden",
 };
 
-const mockLightboxImage: React.CSSProperties = {
+const mockLightboxCloseBtn: React.CSSProperties = {
+  position: "absolute",
+  top: 8,
+  right: 8,
+  width: 22,
+  height: 22,
+  borderRadius: radius.pill,
+  background: "rgba(255,255,255,0.18)",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const mockLightboxNavLeft: React.CSSProperties = {
+  position: "absolute",
+  top: "50%",
+  left: 6,
+  transform: "translateY(-50%)",
+  width: 22,
+  height: 22,
+  borderRadius: radius.pill,
+  background: "rgba(255,255,255,0.18)",
+  color: "#fff",
+  fontSize: 16,
+  lineHeight: "20px",
+  textAlign: "center",
+  fontWeight: 700,
+};
+
+const mockLightboxNavRight: React.CSSProperties = {
+  position: "absolute",
+  top: "50%",
+  right: 6,
+  transform: "translateY(-50%)",
+  width: 22,
+  height: 22,
+  borderRadius: radius.pill,
+  background: "rgba(255,255,255,0.18)",
+  color: "#fff",
+  fontSize: 16,
+  lineHeight: "20px",
+  textAlign: "center",
+  fontWeight: 700,
+};
+
+const mockLightboxImageNew: React.CSSProperties = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 130,
-  height: 90,
+  height: 80,
   borderRadius: radius.xs,
   background: cv.bg.coolGray,
 };
 
-const mockShareSheet: React.CSSProperties = {
-  width: 244,
-  background: cv.bg.white,
-  border: `1px solid ${cv.border.light}`,
-  borderRadius: radius.lg,
-  padding: "14px 16px",
-  boxShadow: shadow.md,
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-around",
-  alignItems: "center",
-  gap: 12,
+const mockLightboxCounter: React.CSSProperties = {
+  position: "absolute",
+  bottom: 8,
+  left: "50%",
+  transform: "translateX(-50%)",
+  padding: "3px 10px",
+  borderRadius: radius.pill,
+  background: "rgba(255,255,255,0.18)",
+  color: "#fff",
+  fontSize: 10,
+  fontWeight: 600,
 };
 
 const mockShareItem: React.CSSProperties = {
@@ -1815,6 +1935,207 @@ const mockCoachDesc: React.CSSProperties = {
   lineHeight: 1.5,
 };
 
+/* Drawer / DropdownMenu / DSHighlight 정적 미리보기 — 인터랙션 의존이라 모형 사용 */
+
+/* Drawer — 화면 프레임 + dim 스크림 + 우측 슬라이드 패널 */
+const mockDrawerStage: React.CSSProperties = {
+  position: "relative",
+  width: 220,
+  height: 130,
+  background: cv.bg.coolGrayLighter,
+  border: `1px solid ${cv.border.light}`,
+  borderRadius: radius.md,
+  overflow: "hidden",
+};
+
+const mockDrawerPageHint: React.CSSProperties = {
+  position: "absolute",
+  top: 10,
+  left: 12,
+  fontSize: 11,
+  fontWeight: 600,
+  color: cv.text.placeholder,
+};
+
+const mockDrawerScrim: React.CSSProperties = {
+  position: "absolute",
+  inset: 0,
+  background: "rgba(17,17,17,0.32)",
+};
+
+const mockDrawerPanel: React.CSSProperties = {
+  position: "absolute",
+  top: 0,
+  right: 0,
+  bottom: 0,
+  width: 132,
+  background: cv.bg.white,
+  boxShadow: shadow.lg,
+  display: "flex",
+  flexDirection: "column",
+};
+
+const mockDrawerHeader: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "8px 10px",
+  borderBottom: `1px solid ${cv.border.light}`,
+};
+
+const mockDrawerTitle: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  color: cv.text.default,
+};
+
+const mockDrawerClose: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 16,
+  height: 16,
+};
+
+const mockDrawerBody: React.CSSProperties = {
+  padding: "8px 10px",
+  display: "flex",
+  flexDirection: "column",
+  gap: 4,
+};
+
+const mockDrawerRow: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 500,
+  color: cv.text.subtle,
+  padding: "4px 6px",
+  borderRadius: radius.xs,
+  background: cv.bg.coolGrayLighter,
+};
+
+const mockDropdownWrap: React.CSSProperties = {
+  position: "relative",
+  paddingTop: 8,
+  paddingRight: 132,
+  paddingBottom: 88,
+};
+
+const mockDropdownTrigger: React.CSSProperties = {
+  position: "absolute",
+  top: 0,
+  left: "50%",
+  transform: "translateX(-50%)",
+  width: 32,
+  height: 32,
+  borderRadius: radius.pill,
+  background: cv.bg.coolGrayLighter,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const mockDropdownPanel: React.CSSProperties = {
+  position: "absolute",
+  top: 40,
+  left: "50%",
+  transform: "translateX(-50%)",
+  width: 140,
+  background: cv.bg.white,
+  border: `1px solid ${cv.border.light}`,
+  borderRadius: radius.md,
+  boxShadow: shadow.md,
+  padding: "6px 0",
+  display: "flex",
+  flexDirection: "column",
+};
+
+const mockDropdownItem: React.CSSProperties = {
+  padding: "6px 14px",
+  fontSize: 12,
+  fontWeight: 500,
+  color: cv.text.default,
+};
+
+const mockDropdownDivider: React.CSSProperties = {
+  height: 1,
+  background: cv.border.light,
+  margin: "4px 0",
+};
+
+const dsHighlightFrame: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 8,
+  padding: "10px 14px",
+  border: `1px dashed ${cv.primary.main}`,
+  borderRadius: radius.md,
+  background: "rgba(43,150,237,0.06)",
+};
+
+const dsHighlightLabel: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: cv.text.subtle,
+};
+
+const dsHighlightMode: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  padding: "3px 8px",
+  borderRadius: radius.pill,
+  background: cv.bg.white,
+  border: `1px solid ${cv.border.default}`,
+  color: cv.text.subtle,
+};
+
+const dsHighlightModeActive: React.CSSProperties = {
+  ...dsHighlightMode,
+  background: cv.primary.main,
+  borderColor: cv.primary.main,
+  color: cv.primary.fg,
+};
+
+/* AppBar / AppFooter / WebHeader — 화면 프레임 안에 배치해야 비례가 맞다 */
+const mockPhoneShell: React.CSSProperties = {
+  width: 220,
+  height: 160,
+  border: `1px solid ${cv.border.light}`,
+  borderRadius: radius.lg,
+  background: cv.bg.coolGrayLighter,
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+};
+
+const mockPhoneBody: React.CSSProperties = {
+  padding: "10px 14px",
+  fontSize: 11,
+  fontWeight: 500,
+  color: cv.text.placeholder,
+};
+
+const mockDesktopShell: React.CSSProperties = {
+  width: 250,
+  height: 130,
+  border: `1px solid ${cv.border.light}`,
+  borderRadius: radius.md,
+  background: cv.bg.coolGrayLighter,
+  overflow: "hidden",
+};
+
+const mockDesktopScaler: React.CSSProperties = {
+  width: 500,
+  transform: "scale(0.5)",
+  transformOrigin: "top left",
+};
+
+const mockDesktopBody: React.CSSProperties = {
+  padding: "16px 24px",
+  fontSize: 18,
+  fontWeight: 500,
+  color: cv.text.placeholder,
+};
+
 /* ──────────────────────────────────────────
    Meta + Story
    ────────────────────────────────────────── */
@@ -1863,7 +2184,7 @@ function ComponentCard({ entry }: { entry: InventoryEntry }) {
         <span style={cardName}>{entry.name}</span>
         <div style={cardTags}>
           <span style={categoryTag}>{entry.category}</span>
-          {entry.figmaSynced && <span style={syncedTag}>Synced</span>}
+          {entry.figmaSynced && <span style={syncedTag}>가이드</span>}
         </div>
       </div>
 
@@ -1925,6 +2246,12 @@ class ErrorBoundary extends React.Component<
 function Catalog() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("전체");
+  const [syncedOnly, setSyncedOnly] = useState(false);
+
+  const syncedCount = useMemo(
+    () => inventory.filter((e) => (e as InventoryEntry).figmaSynced).length,
+    [],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -1935,9 +2262,10 @@ function Catalog() {
         entry.name.toLowerCase().includes(q) ||
         entry.description.toLowerCase().includes(q) ||
         (entry.usageSummary ?? "").toLowerCase().includes(q);
-      return matchesCategory && matchesQuery;
+      const matchesSynced = !syncedOnly || Boolean((entry as InventoryEntry).figmaSynced);
+      return matchesCategory && matchesQuery && matchesSynced;
     });
-  }, [query, category]);
+  }, [query, category, syncedOnly]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, InventoryEntry[]>();
@@ -1974,6 +2302,16 @@ function Catalog() {
             </button>
           ))}
         </div>
+        <label style={syncedToggle}>
+          <input
+            type="checkbox"
+            checked={syncedOnly}
+            onChange={(e) => setSyncedOnly(e.target.checked)}
+            style={syncedToggleInput}
+          />
+          <span>Figma 가이드</span>
+          <span style={syncedToggleCount}>{syncedCount}</span>
+        </label>
         <span style={countLabel}>
           {filtered.length} / {inventory.length}
         </span>
@@ -2050,6 +2388,38 @@ const categoryChipActive: React.CSSProperties = {
   background: "#111111",
   borderColor: "#111111",
   color: "#FFFFFF",
+};
+
+const syncedToggle: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+  padding: "5px 12px",
+  background: "#FFFFFF",
+  border: "1px solid #D8D8D8",
+  borderRadius: 100,
+  fontSize: 12,
+  fontWeight: 600,
+  color: "#444",
+  cursor: "pointer",
+  userSelect: "none",
+};
+
+const syncedToggleInput: React.CSSProperties = {
+  margin: 0,
+  width: 14,
+  height: 14,
+  cursor: "pointer",
+  accentColor: "#00A07C",
+};
+
+const syncedToggleCount: React.CSSProperties = {
+  padding: "1px 7px",
+  borderRadius: 10,
+  background: "rgba(0,160,124,0.12)",
+  color: "#00A07C",
+  fontSize: 11,
+  fontWeight: 700,
 };
 
 const countLabel: React.CSSProperties = {
