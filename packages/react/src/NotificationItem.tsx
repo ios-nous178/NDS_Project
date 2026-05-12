@@ -1,5 +1,12 @@
 import React from "react";
 import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+import {
+  InfoIcon,
+  ThumbUpIcon,
+  TestresultWarningIcon,
+  BlockIcon,
+  PushIcon,
+} from "@nudge-eap/icons";
 
 /* ─── Constants ─── */
 
@@ -50,12 +57,12 @@ const KIND_FG: Record<NotificationKind, string> = {
   system: "#666",
 };
 
-const KIND_ICON: Record<NotificationKind, string> = {
-  info: "ℹ️",
-  success: "✅",
-  warning: "⚠️",
-  error: "⛔",
-  system: "🔔",
+const KIND_ICON: Record<NotificationKind, React.ReactNode> = {
+  info: <InfoIcon size={20} />,
+  success: <ThumbUpIcon size={20} />,
+  warning: <TestresultWarningIcon size={20} />,
+  error: <BlockIcon size={20} />,
+  system: <PushIcon size={20} />,
 };
 
 // eslint-disable-next-line unused-imports/no-unused-vars

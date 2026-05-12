@@ -29,6 +29,10 @@ const config: StorybookConfig = {
       ...config,
       base: isBuild ? "/storybook/" : config.base,
       cacheDir: resolve(appDir, "node_modules/.cache/storybook/sb-vite"),
+      resolve: {
+        ...config.resolve,
+        dedupe: [...(config.resolve?.dedupe ?? []), "react", "react-dom"],
+      },
       optimizeDeps: {
         ...config.optimizeDeps,
         force: true,

@@ -1,24 +1,10 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { FAB } from "@nudge-eap/react";
+import { PlusIcon, EditIcon } from "@nudge-eap/icons";
 
-const PlusIcon = (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-    <path d="M11 4v14M4 11h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-  </svg>
-);
-
-const EditIcon = (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-    <path
-      d="M14 4l4 4-9 9H5v-4l9-9z"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinejoin="round"
-      strokeLinecap="round"
-    />
-  </svg>
-);
+const plusIconNode = <PlusIcon size={22} aria-hidden />;
+const editIconNode = <EditIcon size={22} aria-hidden />;
 
 const meta: Meta<typeof FAB> = {
   title: "Components/FAB",
@@ -42,22 +28,22 @@ type Story = StoryObj<typeof FAB>;
 export const Playground: Story = {
   render: (args) => (
     <div style={{ height: 200, position: "relative" }}>
-      <FAB {...args} icon={PlusIcon} />
+      <FAB {...args} icon={plusIconNode} />
     </div>
   ),
 };
 
 export const Extended: Story = {
   name: "Variant/Extended (라벨 포함)",
-  render: () => <FAB icon={EditIcon} label="새로 작성" position="static" />,
+  render: () => <FAB icon={editIconNode} label="새로 작성" position="static" />,
 };
 
 export const Sizes: Story = {
   name: "Size/md vs lg",
   render: () => (
     <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-      <FAB icon={PlusIcon} aria-label="md" size="md" position="static" />
-      <FAB icon={PlusIcon} aria-label="lg" size="lg" position="static" />
+      <FAB icon={plusIconNode} aria-label="md" size="md" position="static" />
+      <FAB icon={plusIconNode} aria-label="lg" size="lg" position="static" />
     </div>
   ),
 };
@@ -66,9 +52,9 @@ export const Colors: Story = {
   name: "Color/primary secondary neutral",
   render: () => (
     <div style={{ display: "flex", gap: 16, padding: 24, background: "#F5F6F8", borderRadius: 12 }}>
-      <FAB icon={PlusIcon} aria-label="primary" color="primary" position="static" />
-      <FAB icon={PlusIcon} aria-label="secondary" color="secondary" position="static" />
-      <FAB icon={PlusIcon} aria-label="neutral" color="neutral" position="static" />
+      <FAB icon={plusIconNode} aria-label="primary" color="primary" position="static" />
+      <FAB icon={plusIconNode} aria-label="secondary" color="secondary" position="static" />
+      <FAB icon={plusIconNode} aria-label="neutral" color="neutral" position="static" />
     </div>
   ),
 };
@@ -93,7 +79,7 @@ export const FixedBottomRight: Story = {
           bottom: 16,
         }}
       >
-        <FAB icon={EditIcon} aria-label="새 글 작성" position="static" />
+        <FAB icon={editIconNode} aria-label="새 글 작성" position="static" />
       </div>
     </div>
   ),

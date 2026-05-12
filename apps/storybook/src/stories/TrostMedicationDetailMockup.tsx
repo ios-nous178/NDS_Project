@@ -17,6 +17,7 @@ import {
   Avatar,
   Select,
 } from "@nudge-eap/react";
+import { StarIcon } from "@nudge-eap/icons";
 import { getBrandFixture } from "../brand-fixtures";
 import { MockupLayout, useIsMobile, Accordion } from "./mockup-layout";
 import {
@@ -67,12 +68,15 @@ function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
     <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg key={i} width={size} height={size} viewBox="0 0 16 16">
-          <path
-            d="M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z"
-            fill={i <= Math.round(rating) ? "#FFD54F" : "#E0E0E0"}
-          />
-        </svg>
+        <StarIcon
+          key={i}
+          size={size}
+          color={
+            i <= Math.round(rating)
+              ? "var(--eap-icon-status-caution)"
+              : "var(--eap-icon-disabled-default)"
+          }
+        />
       ))}
       <span style={{ fontSize: 14, fontWeight: 700, color: T.black, marginLeft: 4 }}>
         {rating.toFixed(1)}
@@ -1203,12 +1207,7 @@ function SimilarDrugCard({
         </div>
         <div style={{ textAlign: "right" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <svg width="14" height="14" viewBox="0 0 16 16">
-              <path
-                d="M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z"
-                fill="#FFD54F"
-              />
-            </svg>
+            <StarIcon size={14} color="var(--eap-icon-status-caution)" />
             <span style={{ fontSize: 14, fontWeight: 700, color: T.black }}>
               {drug.avgRating.toFixed(1)}
             </span>
@@ -1408,12 +1407,7 @@ function CounselorCard({ counselor, isMobile }: { counselor: Counselor; isMobile
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <svg width="13" height="13" viewBox="0 0 16 16">
-                <path
-                  d="M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z"
-                  fill="#FFD54F"
-                />
-              </svg>
+              <StarIcon size={13} color="var(--eap-icon-status-caution)" />
               <span style={{ fontSize: 13, fontWeight: 700, color: T.black }}>
                 {counselor.rating}
               </span>
@@ -1599,13 +1593,15 @@ function ReviewForm({ drugName, onClose }: { drugName: string; onClose: () => vo
               onClick={() => setRating(star)}
               style={{ border: "none", background: "none", cursor: "pointer", padding: 2 }}
             >
-              <svg width="32" height="32" viewBox="0 0 16 16">
-                <path
-                  d="M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z"
-                  fill={star <= (hoverRating || rating) ? "#FFD54F" : "#E0E0E0"}
-                  style={{ transition: "fill 0.1s" }}
-                />
-              </svg>
+              <StarIcon
+                size={32}
+                color={
+                  star <= (hoverRating || rating)
+                    ? "var(--eap-icon-status-caution)"
+                    : "var(--eap-icon-disabled-default)"
+                }
+                style={{ transition: "color 0.1s" }}
+              />
             </button>
           ))}
           {rating > 0 && (

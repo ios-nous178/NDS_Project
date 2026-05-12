@@ -1,6 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { AppFooter, AppFooterTabBar } from "@nudge-eap/react";
+import { HomeIcon, HomeActiveIcon, CommentIcon, CouponIcon, LikeIcon } from "@nudge-eap/icons";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("geniet");
@@ -13,30 +14,28 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-const TabIcon = ({ char, filled }: { char: string; filled?: boolean }) => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <rect
-      x="3"
-      y="3"
-      width="18"
-      height="18"
-      rx="5"
-      fill={filled ? "currentColor" : "none"}
-      stroke="currentColor"
-      strokeWidth="1.5"
-    />
-    <text
-      x="12"
-      y="16"
-      textAnchor="middle"
-      fontSize="10"
-      fill={filled ? "white" : "currentColor"}
-      fontWeight="600"
-    >
-      {char}
-    </text>
-  </svg>
-);
+const TAB_ICON_COLOR = "var(--eap-icon-normal-default)";
+const TAB_ICON_ACTIVE_COLOR = "var(--eap-icon-brand-default)";
+
+const tabIconFor = (label: string, active?: boolean) => {
+  const color = active ? TAB_ICON_ACTIVE_COLOR : TAB_ICON_COLOR;
+  switch (label) {
+    case "홈":
+      return active ? (
+        <HomeActiveIcon size={24} color={color} />
+      ) : (
+        <HomeIcon size={24} color={color} />
+      );
+    case "커뮤니티":
+      return <CommentIcon size={24} color={color} />;
+    case "헬시딜":
+      return <CouponIcon size={24} color={color} />;
+    case "음식 리뷰":
+      return <LikeIcon size={24} color={color} />;
+    default:
+      return <HomeIcon size={24} color={color} />;
+  }
+};
 
 export const InfoFooter: Story = {
   name: "커머스 고지 푸터",
@@ -61,8 +60,8 @@ export const TabBar: Story = {
       key: `tab-${i}`,
       label: l,
       href: "#",
-      icon: <TabIcon char={l[0]} />,
-      activeIcon: <TabIcon char={l[0]} filled />,
+      icon: tabIconFor(l),
+      activeIcon: tabIconFor(l, true),
     }));
     return (
       <div style={{ height: 120, background: "#f9f9f9", display: "flex", alignItems: "flex-end" }}>

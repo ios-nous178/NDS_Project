@@ -1,6 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Banner } from "@nudge-eap/react";
+import { ChevronRightIcon } from "@nudge-eap/icons";
 
 const meta: Meta = {
   title: "Brands/Trost/Banner",
@@ -79,15 +80,7 @@ export const AppDownload: Story = {
             }}
           >
             앱 다운로드 하기
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M7.5 4L13.5 10L7.5 16"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <ChevronRightIcon size={20} color="var(--eap-icon-inverse-default)" aria-hidden />
           </a>
         </div>
         <img
@@ -148,15 +141,7 @@ export const CashtalkSubs: Story = {
           }}
         >
           채널 바로가기
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M7.5 4L13.5 10L7.5 16"
-              stroke="#4968FF"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ChevronRightIcon size={20} color="#4968FF" aria-hidden />
         </a>
       </div>
     </Banner>

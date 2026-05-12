@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, fn } from "storybook/test";
 import { Button } from "@nudge-eap/react";
+import { LockIcon, CommentIcon } from "@nudge-eap/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
@@ -346,7 +347,11 @@ export const WebviewChallengeButtons: Story = {
       <Button color="primary" fullWidth>
         참여하기
       </Button>
-      <Button color="primary" fullWidth leftIcon={<span>🔒</span>}>
+      <Button
+        color="primary"
+        fullWidth
+        leftIcon={<LockIcon size={18} color="var(--eap-icon-inverse-default)" />}
+      >
         인증하고 참여하기
       </Button>
       <Button variant="soft" color="primary" fullWidth>
@@ -384,7 +389,10 @@ export const WithIconsAndSlots: Story = {
   name: "Recipe/With Icons And Slots",
   render: () => (
     <div style={{ display: "flex", width: 360, flexDirection: "column", gap: 12 }}>
-      <Button leftIcon={<span>💬</span>} fullWidth>
+      <Button
+        leftIcon={<CommentIcon size={18} color="var(--eap-icon-inverse-default)" />}
+        fullWidth
+      >
         앱에서 상담하기
       </Button>
       <Button
