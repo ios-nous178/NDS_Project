@@ -13,6 +13,7 @@
   },
   "scripts": {
     "generate:component-inventory": "node scripts/generate-component-inventory.mjs",
+    "generate:component-guides": "node scripts/generate-component-guides.mjs",
     "generate:tokens": "node scripts/sync-tokens.mjs --write && pnpm --filter=@nudge-eap/tokens build",
     "lint:tokens": "node scripts/sync-tokens.mjs --check",
     "sync:docs": "node scripts/sync-version-docs.mjs",
@@ -41,12 +42,12 @@
     "lint-staged": "lint-staged",
     "prepare": "test -d .git && husky || true"
   },
-  "prebuild": "pnpm generate:component-inventory",
-  "predev": "pnpm generate:component-inventory",
-  "predocs:dev": "pnpm generate:component-inventory",
-  "predocs:build": "pnpm generate:component-inventory",
-  "prestorybook": "pnpm generate:component-inventory",
-  "prelint": "pnpm generate:component-inventory",
+  "prebuild": "pnpm generate:component-inventory && pnpm generate:component-guides",
+  "predev": "pnpm generate:component-inventory && pnpm generate:component-guides",
+  "predocs:dev": "pnpm generate:component-inventory && pnpm generate:component-guides",
+  "predocs:build": "pnpm generate:component-inventory && pnpm generate:component-guides",
+  "prestorybook": "pnpm generate:component-inventory && pnpm generate:component-guides",
+  "prelint": "pnpm generate:component-inventory && pnpm generate:component-guides",
   "devDependencies": {
     "@changesets/cli": "^2.29.6",
     "@eslint/js": "^9.27.0",

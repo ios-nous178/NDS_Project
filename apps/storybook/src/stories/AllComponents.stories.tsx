@@ -126,6 +126,24 @@ import {
 } from "@nudge-eap/icons";
 import { cv, radius, shadow } from "@nudge-eap/tokens";
 import inventory from "../../../../metadata/componentInventory.json";
+import componentGuides from "../../../../metadata/componentGuides.json";
+
+type ComponentGuide = {
+  name: string;
+  summary?: string;
+  pitfalls?: string[];
+  recommended?: string[];
+  usagePolicy?: {
+    useFor?: string[];
+    doNotUseFor?: string[];
+    limits?: Record<string, string | number>;
+  };
+  figmaNodeUrl?: string;
+  accessibility?: string[];
+};
+
+const GUIDES: Record<string, ComponentGuide> =
+  (componentGuides as { components?: Record<string, ComponentGuide> }).components ?? {};
 
 /* ──────────────────────────────────────────
    Preview registry
@@ -2178,6 +2196,18 @@ function toStoryId(title: string) {
 function ComponentCard({ entry }: { entry: InventoryEntry }) {
   const render = PREVIEWS[entry.name];
   const storybookHref = `/?path=/docs/${toStoryId(entry.storybookTitle)}--docs`;
+  const guide = GUIDES[entry.name];
+  const figmaHref = guide?.figmaNodeUrl ?? entry.figmaUrl;
+  const [guideOpen, setGuideOpen] = useState(false);
+  const hasGuideBody = Boolean(
+    guide &&
+    (guide.summary ||
+      guide.usagePolicy?.useFor?.length ||
+      guide.usagePolicy?.doNotUseFor?.length ||
+      guide.pitfalls?.length ||
+      guide.recommended?.length),
+  );
+
   return (
     <div style={card}>
       <div style={cardHead}>
@@ -2219,7 +2249,49 @@ function ComponentCard({ entry }: { entry: InventoryEntry }) {
         )}
       </dl>
 
+      {hasGuideBody && (
+        <div style={guideBlock}>
+          <button
+            type="button"
+            onClick={() => setGuideOpen((v) => !v)}
+            style={guideToggle}
+            aria-expanded={guideOpen}
+          >
+            <span>사용 가이드</span>
+            <span style={guideToggleChevron} data-open={guideOpen}>
+              ▾
+            </span>
+          </button>
+          {guideOpen && (
+            <div style={guideBody}>
+              {guide?.summary && <p style={guideSummary}>{guide.summary}</p>}
+              {guide?.usagePolicy?.useFor && guide.usagePolicy.useFor.length > 0 && (
+                <GuideList tone="do" title="이럴 때 써요" items={guide.usagePolicy.useFor} />
+              )}
+              {guide?.usagePolicy?.doNotUseFor && guide.usagePolicy.doNotUseFor.length > 0 && (
+                <GuideList
+                  tone="dont"
+                  title="이럴 땐 피해요"
+                  items={guide.usagePolicy.doNotUseFor}
+                />
+              )}
+              {guide?.pitfalls && guide.pitfalls.length > 0 && (
+                <GuideList tone="warn" title="주의" items={guide.pitfalls.slice(0, 3)} />
+              )}
+              {guide?.recommended && guide.recommended.length > 0 && (
+                <GuideList tone="info" title="권장" items={guide.recommended.slice(0, 4)} />
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       <div style={cardFoot}>
+        {figmaHref && (
+          <a href={figmaHref} target="_blank" rel="noopener noreferrer" style={footLink}>
+            Figma 가이드 →
+          </a>
+        )}
         <a href={storybookHref} style={footLink}>
           Storybook →
         </a>
@@ -2227,6 +2299,39 @@ function ComponentCard({ entry }: { entry: InventoryEntry }) {
     </div>
   );
 }
+
+type GuideTone = "do" | "dont" | "warn" | "info";
+
+function GuideList({ tone, title, items }: { tone: GuideTone; title: string; items: string[] }) {
+  return (
+    <div style={guideListBlock}>
+      <p style={{ ...guideListTitle, color: TONE_COLOR[tone] }}>
+        {TONE_ICON[tone]} {title}
+      </p>
+      <ul style={guideListUl}>
+        {items.map((item, i) => (
+          <li key={i} style={guideListLi}>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+const TONE_ICON: Record<GuideTone, string> = {
+  do: "✓",
+  dont: "✕",
+  warn: "⚠",
+  info: "•",
+};
+
+const TONE_COLOR: Record<GuideTone, string> = {
+  do: "#00A07C",
+  dont: "#D04A3F",
+  warn: "#C77700",
+  info: "#017EE4",
+};
 
 /* React 18에서 error boundary는 클래스만 가능. 인라인으로 정의. */
 class ErrorBoundary extends React.Component<
@@ -2589,6 +2694,78 @@ const footLink: React.CSSProperties = {
   textDecoration: "none",
   fontWeight: 700,
   whiteSpace: "nowrap",
+};
+
+const guideBlock: React.CSSProperties = {
+  padding: "8px 18px 0",
+  borderTop: "1px solid #F2F2F2",
+  marginTop: 8,
+};
+
+const guideToggle: React.CSSProperties = {
+  all: "unset",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  padding: "8px 0",
+  fontSize: 12,
+  fontWeight: 700,
+  color: "#333",
+  cursor: "pointer",
+  fontFamily: "inherit",
+};
+
+const guideToggleChevron: React.CSSProperties = {
+  fontSize: 11,
+  color: "#888",
+  transition: "transform 0.15s ease",
+};
+
+const guideBody: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  padding: "4px 0 12px",
+};
+
+const guideSummary: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  lineHeight: 1.55,
+  color: "#475569",
+  background: "#F8FAFC",
+  padding: "8px 10px",
+  borderRadius: 6,
+  border: "1px solid #E2E8F0",
+};
+
+const guideListBlock: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 4,
+};
+
+const guideListTitle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 11,
+  fontWeight: 800,
+  letterSpacing: "0.02em",
+  textTransform: "uppercase",
+};
+
+const guideListUl: React.CSSProperties = {
+  margin: 0,
+  padding: "0 0 0 14px",
+  display: "flex",
+  flexDirection: "column",
+  gap: 3,
+};
+
+const guideListLi: React.CSSProperties = {
+  fontSize: 12,
+  lineHeight: 1.5,
+  color: "#475569",
 };
 
 /* ──────────────────────────────────────────
