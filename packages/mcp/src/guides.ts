@@ -1812,6 +1812,162 @@ export interface PatternGuide {
   metrics?: Record<string, string | number>;
 }
 
+/**
+ * Figma Iconography(379:490) 라이브러리 분류와 스타일 메타데이터.
+ * 카테고리: basic / navigation / action / media / state-reaction / location / eap-service / color
+ * 스타일:   line(기본) / filled(강조·활성·소형) / color(다색 일러스트성 아이콘)
+ */
+export type IconCategory =
+  | "basic"
+  | "navigation"
+  | "action"
+  | "media"
+  | "state-reaction"
+  | "location"
+  | "eap-service"
+  | "color";
+
+export type IconStyle = "line" | "filled" | "color";
+
+export interface IconMeta {
+  category: IconCategory;
+  style: IconStyle;
+  /** 같은 의미의 짝(예: HomeIcon ↔ HomeActiveIcon)이 있을 때 페어 이름. */
+  pair?: string;
+}
+
+export const ICON_CATEGORY_LABELS: Record<IconCategory, string> = {
+  basic: "기본 (Basic)",
+  navigation: "탐색 (Navigation)",
+  action: "액션 (Action)",
+  media: "미디어 (Media)",
+  "state-reaction": "상태·반응 (State / Reaction)",
+  location: "위치·연결 (Location / Connect)",
+  "eap-service": "EAP 서비스 (EAP Service)",
+  color: "컬러 아이콘 (Color)",
+};
+
+export const ICON_METADATA: Record<string, IconMeta> = {
+  // ── 기본 (Basic) ─────────────────────────────────────────
+  ArrowBackIcon: { category: "basic", style: "line" },
+  ArrowNextIcon: { category: "basic", style: "line" },
+  ChevronUpIcon: { category: "basic", style: "line" },
+  ChevronDownIcon: { category: "basic", style: "line" },
+  ChevronLeftIcon: { category: "basic", style: "line" },
+  ChevronRightIcon: { category: "basic", style: "line" },
+  CloseIcon: { category: "basic", style: "line" },
+  LockIcon: { category: "basic", style: "line" },
+  InputdeleteIcon: { category: "basic", style: "line" },
+  DragIcon: { category: "basic", style: "line" },
+  PlusIcon: { category: "basic", style: "line" },
+  MinusIcon: { category: "basic", style: "line" },
+
+  // ── 탐색 (Navigation) ─ GNB 탭 / 탐색 보조 ──────────────
+  HomeIcon: { category: "navigation", style: "line", pair: "HomeActiveIcon" },
+  HomeActiveIcon: { category: "navigation", style: "filled", pair: "HomeIcon" },
+  MentalcareIcon: { category: "navigation", style: "line", pair: "MentalcareActiveIcon" },
+  MentalcareActiveIcon: { category: "navigation", style: "filled", pair: "MentalcareIcon" },
+  CounselIcon: { category: "navigation", style: "line", pair: "CounselActiveIcon" },
+  CounselActiveIcon: { category: "navigation", style: "filled", pair: "CounselIcon" },
+  ChallengeIcon: { category: "navigation", style: "line", pair: "ChallengeActiveIcon" },
+  ChallengeActiveIcon: { category: "navigation", style: "filled", pair: "ChallengeIcon" },
+  MypageIcon: { category: "navigation", style: "line", pair: "MypageActiveIcon" },
+  MypageActiveIcon: { category: "navigation", style: "filled", pair: "MypageIcon" },
+  PushIcon: { category: "navigation", style: "line", pair: "PushActiveIcon" },
+  PushActiveIcon: { category: "navigation", style: "filled", pair: "PushIcon" },
+  CalendarIcon: { category: "navigation", style: "line" },
+  HamburgerIcon: { category: "navigation", style: "line" },
+  MoreIcon: { category: "navigation", style: "line" },
+  SearchIcon: { category: "navigation", style: "line" },
+
+  // ── 액션 (Action) ────────────────────────────────────────
+  EditIcon: { category: "action", style: "line" },
+  ShareIcon: { category: "action", style: "line" },
+  DownloadIcon: { category: "action", style: "line" },
+  AddlistIcon: { category: "action", style: "line" },
+  CommentIcon: { category: "action", style: "line" },
+  DeleteIcon: { category: "action", style: "line" },
+  BlockIcon: { category: "action", style: "line" },
+  FilterIcon: { category: "action", style: "line" },
+  RefreshIcon: { category: "action", style: "line" },
+  SettingIcon: { category: "action", style: "line" },
+
+  // ── 미디어 (Media) ───────────────────────────────────────
+  PlayIcon: { category: "media", style: "line" },
+  PauseIcon: { category: "media", style: "line" },
+  SkipBackIcon: { category: "media", style: "line" },
+  SkipForwardIcon: { category: "media", style: "line" },
+  RepeatIcon: { category: "media", style: "line" },
+  ShuffleIcon: { category: "media", style: "line" },
+  VideocameraIcon: { category: "media", style: "line" },
+  MicrophoneIcon: { category: "media", style: "line" },
+  MymusicIcon: { category: "media", style: "line" },
+  DecorationStickerIcon: { category: "media", style: "line" },
+  DecorationTextIcon: { category: "media", style: "line" },
+  CameraIcon: { category: "media", style: "filled" },
+  SleepmodeOffIcon: { category: "media", style: "line", pair: "SleepmodeOnIcon" },
+  SleepmodeOnIcon: { category: "media", style: "filled", pair: "SleepmodeOffIcon" },
+
+  // ── 상태·반응 (State / Reaction) ────────────────────────
+  StarIcon: { category: "state-reaction", style: "line" },
+  FavoriteIcon: { category: "state-reaction", style: "line", pair: "FavoriteActiveIcon" },
+  FavoriteActiveIcon: { category: "state-reaction", style: "filled", pair: "FavoriteIcon" },
+  LikeIcon: { category: "state-reaction", style: "line", pair: "LikeActiveIcon" },
+  LikeActiveIcon: { category: "state-reaction", style: "filled", pair: "LikeIcon" },
+  ThumbUpIcon: { category: "state-reaction", style: "line" },
+  InfoIcon: { category: "state-reaction", style: "line" },
+  ReportIcon: { category: "state-reaction", style: "line" },
+  TimeIcon: { category: "state-reaction", style: "line" },
+  RecentIcon: { category: "state-reaction", style: "line" },
+  EyeIcon: { category: "state-reaction", style: "line", pair: "EyeOffIcon" },
+  EyeOffIcon: { category: "state-reaction", style: "line", pair: "EyeIcon" },
+
+  // ── 위치·연결 (Location / Connect) ──────────────────────
+  LocateIcon: { category: "location", style: "line" },
+  TelephoneIcon: { category: "location", style: "line" },
+  WebIcon: { category: "location", style: "line" },
+  BluetoothIcon: { category: "location", style: "line" },
+  SubwayIcon: { category: "location", style: "line" },
+  WalkIcon: { category: "location", style: "line" },
+  PinIcon: { category: "location", style: "line" },
+  LinkIcon: { category: "location", style: "line" },
+  CouponIcon: { category: "location", style: "line" },
+  PointIcon: { category: "location", style: "line" },
+  MonitorIcon: { category: "location", style: "line" },
+
+  // ── EAP 서비스 (EAP Service) ────────────────────────────
+  CounselingChatIcon: { category: "eap-service", style: "line" },
+  CounselingVideoIcon: { category: "eap-service", style: "line" },
+  TestIcon: { category: "eap-service", style: "line" },
+  FacilityIcon: { category: "eap-service", style: "line" },
+  CenterIcon: { category: "eap-service", style: "line" },
+
+  // ── 컬러 아이콘 (Color) — 다색 일러스트, 컬러 토큰을 적용하지 않음 ──
+  TestresultSafeIcon: { category: "color", style: "color" },
+  TestresultWarningIcon: { category: "color", style: "color" },
+  TestresultDangerIcon: { category: "color", style: "color" },
+  SirenIcon: { category: "color", style: "color" },
+};
+
+/** 카테고리별로 아이콘 이름을 묶은 인덱스. find_icon / list_icons 응답 보강용. */
+export function getIconCategoryIndex(): Record<IconCategory, string[]> {
+  const index: Record<IconCategory, string[]> = {
+    basic: [],
+    navigation: [],
+    action: [],
+    media: [],
+    "state-reaction": [],
+    location: [],
+    "eap-service": [],
+    color: [],
+  };
+  for (const [name, meta] of Object.entries(ICON_METADATA)) {
+    index[meta.category].push(name);
+  }
+  for (const list of Object.values(index)) list.sort();
+  return index;
+}
+
 export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cta-group": {
     name: "cta-group",
@@ -1836,13 +1992,14 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "icon-color": {
     name: "icon-color",
     summary:
-      "아이콘 컬러를 주변 텍스트/배경/상태 톤에 맞추는 기준. Figma `Section_Icon`(227:2)의 `--eap-icon-*` 토큰을 우선 사용.",
+      "아이콘 컬러 매핑 기준. Figma Iconography(379:490)의 Color Usage 표와 `--eap-icon-*` 시맨틱 토큰을 단일 진실 소스로 사용. 사이즈/스타일/터치 영역 기준은 get_pattern_guide('iconography')를 함께 확인.",
     rules: [
       "아이콘 컴포넌트의 기본값은 currentColor다. 단독 배치 시 부모 color가 명시되어 있지 않으면 본문색/검정으로 보여 어색할 수 있다.",
       "Button, IconButton, Chip, Select 등 DS 컴포넌트 슬롯 안의 아이콘은 컴포넌트가 정한 텍스트 컬러를 상속하게 두는 것이 기본이다.",
       "안내/상태/빈 상태/카드 장식처럼 단독으로 배치한 아이콘은 `color` prop 또는 부모 `style.color`를 `var(--eap-icon-*)` 토큰으로 명시한다.",
-      "용도별 토큰 매핑: 본문 옆 강조=`--eap-icon-strong-default`(#383838), 보조 정보/메타=`--eap-icon-normal-default`(#666666), 비활성=`--eap-icon-disabled-default`(#C7C7C7), 어두운 배경 위=`--eap-icon-inverse-default`(#FFFFFF), 브랜드 강조=`--eap-icon-brand-default`(#2B96ED).",
-      "상태 의미가 있을 때만 status 토큰을 사용한다: 성공=`--eap-icon-status-success`(#13BFA2), 오류=`--eap-icon-status-error`(#F13F00), 주의=`--eap-icon-status-caution`(#FFC303).",
+      "용도별 토큰 매핑(Figma Color Usage 표):\n  · 본문 옆 강조 → `--eap-icon-strong-default` (Neutral/800 · #383838)\n  · 보조 정보·메타 → `--eap-icon-normal-default` (Neutral/600 · #666666)\n  · 비활성 → `--eap-icon-disabled-default` (Neutral/300 · #C7C7C7)\n  · 어두운 배경 위 → `--eap-icon-inverse-default` (White · #FFFFFF)\n  · 브랜드 강조 → `--eap-icon-brand-default` (Bright Blue/500 · #2B96ED)",
+      "상태 의미가 있을 때만 status 토큰을 사용한다:\n  · 성공 → `--eap-icon-status-success` (Teal/500 · #13BFA2)\n  · 오류 → `--eap-icon-status-error` (Orange Red/500 · #F13F00)\n  · 주의 → `--eap-icon-status-caution` (Golden Yellow/500 · #FFC303)",
+      "TestresultSafe/Warning/Danger, Siren 같은 '컬러 아이콘'(다색 일러스트성)은 시맨틱 토큰을 덧씌우지 않는다. 그대로 사용한다.",
       "아이콘만 별도 강한 색으로 튀게 하지 않는다. 강조가 필요하면 텍스트, 배경, 아이콘 중 1~2개만 함께 조합한다.",
     ],
     avoid: [
@@ -1851,11 +2008,49 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "아이콘에 hex/rgb 직접 지정 — `--eap-icon-*` 토큰만 사용",
       "구식 `--color-semantic-icon-*` 토큰 사용 — `--eap-icon-*`로 대체",
       "한 섹션 안에서 아이콘마다 다른 semantic color를 섞는 구성",
+      "컬러(다색) 아이콘에 color prop을 강제로 덮어쓰는 사용",
     ],
     metrics: {
       standaloneIconColor: "required",
       preferredColor: "var(--eap-icon-*) — strong/normal/disabled/inverse/brand/status",
       maxSemanticIconColorsPerSection: 1,
+    },
+  },
+  iconography: {
+    name: "iconography",
+    summary:
+      "Figma Iconography(379:490) 라이브러리 기준 아이콘 사이즈·터치 영역·Line/Filled 스타일·카테고리 전반 가이드. 컬러 토큰은 get_pattern_guide('icon-color')와 함께 본다.",
+    rules: [
+      "기본 사이즈는 24px. 인터페이스 용도에 맞춰 12 / 16 / 20 / 24 / 32 / 48 px의 6단계만 사용한다. 최소 사이즈는 12px.",
+      "15px 이하의 작은 사이즈에서는 시각 복잡도를 낮추기 위해 Fill(Filled) 스타일을 우선 사용한다. (Line은 얇은 선이 손상되어 보임)",
+      "기본 액션·내비게이션 아이콘은 Line(Stroke) 스타일을 우선한다. 현재 활성 상태(GNB 활성 탭, 좋아요 ON 등)와 강조용 단일 아이콘은 Filled를 사용한다.",
+      "한 화면에서 Line 과 Filled 를 같은 의미 그룹 안에서 섞지 않는다. 같은 GNB · 같은 카드 리스트 · 같은 툴바 안에서는 한쪽으로 통일한다.",
+      "단독 아이콘 버튼(IconButton 포함)의 터치 영역은 최소 40px. 사이즈별 권장: 20px 아이콘 → 40px touch, 24px 아이콘 → 44px touch. 40px 미만은 접근성 위반.",
+      "아이콘 자체에 padding 을 직접 주지 말고 IconButton 의 size prop 또는 부모 컨테이너 padding/min-width 로 터치 영역을 확보한다.",
+      "네이밍 컨벤션: 기본 Line = `XIcon`, Filled 짝 = `XActiveIcon` 또는 `XOnIcon` (예: HomeIcon ↔ HomeActiveIcon, SleepmodeOffIcon ↔ SleepmodeOnIcon). 짝 정보는 ICON_METADATA[name].pair 로 확인.",
+      "카테고리 8종(basic / navigation / action / media / state-reaction / location / eap-service / color)은 의미 분류일 뿐 강제 import 경로 분리가 아니다. find_icon 결과의 카테고리는 유사 의미 후보를 찾는 힌트로 사용.",
+      "컬러(다색) 카테고리 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger, Siren) 전용이다. 일반 UI 강조에 색 아이콘을 끼워 넣지 않는다.",
+      "필요한 아이콘이 없으면 인라인 `<svg>`를 만들지 말고 `packages/icons/svg/`에 kebab-case 로 SVG 를 추가한 뒤 `pnpm --filter @nudge-eap/icons build` 로 컴포넌트를 재생성한다. viewBox 는 0 0 24 24, stroke/fill 은 `currentColor` 로 유지.",
+    ],
+    avoid: [
+      "12 / 16 / 20 / 24 / 32 / 48 외의 임의 사이즈 (예: 18px, 22px) 사용",
+      "12px 미만 아이콘",
+      "15px 이하에서 가는 Line 스타일을 그대로 사용 — Filled 로 교체",
+      "동일 화면 / 동일 그룹에서 Line + Filled 스타일 혼용",
+      "단독 IconButton 의 터치 영역을 40px 미만으로 두기",
+      "아이콘 컴포넌트를 인라인 `<svg>` 로 직접 작성하기 — `@nudge-eap/icons` 사용",
+      "컬러(다색) 아이콘에 color prop 강제 적용 — 다색 표현이 어긋남",
+    ],
+    metrics: {
+      sizeScale: "12 / 16 / 20 / 24 / 32 / 48 px",
+      defaultSize: "24px",
+      minSize: "12px",
+      fillThreshold: "≤15px 권장 스타일 = Filled",
+      minTouchArea: "40px",
+      touchAreaIcon20: "40px",
+      touchAreaIcon24: "44px",
+      figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=379-490",
+      categories: "basic, navigation, action, media, state-reaction, location, eap-service, color",
     },
   },
   "visual-antipatterns": {
