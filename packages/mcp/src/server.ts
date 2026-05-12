@@ -30,6 +30,9 @@ import {
   PATTERN_GUIDES,
   ADMIN_CMS_GUIDE,
   SCOPE_ADVISORY,
+  ICON_METADATA,
+  ICON_CATEGORY_LABELS,
+  getIconCategoryIndex,
   detectIntentFromText,
 } from "./guides.js";
 import { parseMockupUsage, appendUsageToLog, postUsageToWebhook } from "./usage-tracker.js";
@@ -181,12 +184,42 @@ function searchComponent(query: string) {
     .slice(0, 10);
 }
 
+function decorateIcon(name: string) {
+  const meta = ICON_METADATA[name];
+  if (!meta) return { name };
+  return {
+    name,
+    category: meta.category,
+    categoryLabel: ICON_CATEGORY_LABELS[meta.category],
+    style: meta.style,
+    pair: meta.pair,
+  };
+}
+
 function findIcon(query: string) {
   return manifest.icons
-    .map((name) => ({ name, score: scoreMatch(query, name) }))
+    .map((name) => ({ ...decorateIcon(name), score: scoreMatch(query, name) }))
     .filter((c) => c.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 10);
+}
+
+function listIcons() {
+  const categoryIndex = getIconCategoryIndex();
+  return {
+    _advisory:
+      "사이즈/터치 영역/Line·Filled 스타일 정책은 get_pattern_guide('iconography'), 컬러 토큰은 get_pattern_guide('icon-color') 호출. 새 아이콘은 packages/icons/svg/에 kebab-case SVG로 추가.",
+    icons: manifest.icons.map(decorateIcon),
+    byCategory: Object.fromEntries(
+      Object.entries(categoryIndex).map(([cat, names]) => [
+        cat,
+        {
+          label: ICON_CATEGORY_LABELS[cat as keyof typeof ICON_CATEGORY_LABELS],
+          icons: names,
+        },
+      ]),
+    ),
+  };
 }
 
 function listTokens(group?: string) {
@@ -1465,7 +1498,7 @@ await browser.close();`,
         tool: "report_mockup_usage",
         example: "report_mockup_usage({ filePath: 'src/mockups/TrostCounseling.tsx' })",
         storage: ".ds-usage-log.jsonl (프로젝트 루트, gitignored)",
-        webhookEnv: "NUDGE_DS_USAGE_WEBHOOK (선택, 있으면 Google Sheets webhook 등으로 자동 POST)",
+        sheets: "성공 호출마다 Google Sheets 공용 webhook으로 자동 POST (override 불가).",
       },
     };
   }
@@ -1522,7 +1555,7 @@ export default defineConfig({
       tool: "report_mockup_usage",
       example: "report_mockup_usage({ filePath: 'src/mockups/TrostCounseling.tsx' })",
       storage: ".ds-usage-log.jsonl (프로젝트 루트, gitignored)",
-      webhookEnv: "NUDGE_DS_USAGE_WEBHOOK (선택, 있으면 Google Sheets webhook 등으로 자동 POST)",
+      sheets: "성공 호출마다 Google Sheets 공용 webhook으로 자동 POST (override 불가).",
     },
     perMockupExport: {
       summary:
@@ -1549,7 +1582,7 @@ console.log(\`✓ \${outFile}\`);`,
 
 /* ───────────── DS 사용량 자동 집계 ───────────── */
 
-const DEFAULT_USAGE_WEBHOOK =
+const USAGE_WEBHOOK_URL =
   "https://script.google.com/macros/s/AKfycbzgWCu2Y5BygcMakF9qItU3d-bvducUD3mFkryqLQ5RiSRPF1ExzUnkyYDimsTb7d74/exec";
 
 async function reportMockupUsage(args: {
@@ -1559,7 +1592,6 @@ async function reportMockupUsage(args: {
   brand?: "trost" | "geniet" | "nudge-eap";
   cwd?: string;
   dryRun?: boolean;
-  webhookUrl?: string;
 }): Promise<{
   usage: MockupUsage;
   logPath: string | null;
@@ -1588,17 +1620,13 @@ async function reportMockupUsage(args: {
     appendUsageToLog(usage, logPath);
   }
 
-  const webhookUrl =
-    args.webhookUrl !== undefined
-      ? args.webhookUrl
-      : (process.env.NUDGE_DS_USAGE_WEBHOOK ?? DEFAULT_USAGE_WEBHOOK);
   const webhook: { attempted: boolean; ok?: boolean; status?: number; error?: string } = {
     attempted: false,
   };
-  if (!dryRun && webhookUrl) {
+  if (!dryRun) {
     webhook.attempted = true;
     try {
-      const res = await postUsageToWebhook(usage, webhookUrl);
+      const res = await postUsageToWebhook(usage, USAGE_WEBHOOK_URL);
       webhook.ok = res.ok;
       webhook.status = res.status;
     } catch (err) {
@@ -2001,12 +2029,14 @@ const TOOLS = [
   },
   {
     name: "list_icons",
-    description: "Return all icon names available in @nudge-eap/icons.",
+    description:
+      "Return all icons in @nudge-eap/icons with Figma Iconography(379:490) category and Line/Filled/Color style metadata. Response also includes `byCategory` index. Always pair with get_pattern_guide('iconography') for size/touch/style rules and get_pattern_guide('icon-color') for token mapping.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
     name: "find_icon",
-    description: "Find icon names by natural language query (e.g. 'search', 'arrow back').",
+    description:
+      "Find icons by natural language query (e.g. 'search', 'arrow back'). Result entries include category/style/pair fields so callers can pick the right Line vs Filled variant.",
     inputSchema: {
       type: "object",
       properties: { query: { type: "string" } },
@@ -2181,7 +2211,7 @@ const TOOLS = [
   {
     name: "report_mockup_usage",
     description:
-      "Parse a mockup TSX file with AST and aggregate Design System usage. Classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Appends a JSONL record to .ds-usage-log.jsonl at the project root and POSTs to the shared usage Sheet webhook by default (overridable via env NUDGE_DS_USAGE_WEBHOOK or webhookUrl arg; pass empty string to disable). Call this after generating or modifying a mockup, or after exporting HTML. Returns the aggregated usage object.",
+      "Parse a mockup TSX file with AST and aggregate Design System usage. Classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Always appends to .ds-usage-log.jsonl at the project root AND POSTs to the shared Google Sheets usage webhook (no override — every successful call records to the central sheet). Call this after generating or modifying a mockup, or after exporting HTML. Returns the aggregated usage object.",
     inputSchema: {
       type: "object",
       properties: {
@@ -2211,12 +2241,7 @@ const TOOLS = [
         dryRun: {
           type: "boolean",
           description:
-            "If true, return usage but do NOT write to JSONL or POST to webhook. Default: false.",
-        },
-        webhookUrl: {
-          type: "string",
-          description:
-            "Explicit webhook URL. Falls back to env NUDGE_DS_USAGE_WEBHOOK, then to the bundled default. Provide empty string to disable.",
+            "If true, return usage but do NOT write to JSONL or POST to the Sheets webhook. Default: false.",
         },
       },
       required: ["filePath"],
@@ -2335,14 +2360,14 @@ const TOOLS = [
   {
     name: "get_pattern_guide",
     description:
-      "Return UX pattern guidance for mockup layout decisions, including CTA groups, icon color, visual antipatterns, notice/callout emphasis, dropdown option density, and dense lists. Use this when visual hierarchy or information density is ambiguous.",
+      "Return UX pattern guidance for mockup layout decisions: CTA groups, icon color, full iconography spec (size/touch/style), visual antipatterns, notice/callout emphasis, dropdown option density, and dense lists. Use whenever visual hierarchy, icon usage, or information density is ambiguous.",
     inputSchema: {
       type: "object",
       properties: {
         name: {
           type: "string",
           description:
-            "Pattern name: 'cta-group', 'icon-color', 'visual-antipatterns', 'notice', 'dropdown', or 'dense-list'.",
+            "Pattern name: 'cta-group', 'icon-color', 'iconography', 'visual-antipatterns', 'notice', 'dropdown', or 'dense-list'.",
         },
       },
       required: ["name"],
@@ -2427,7 +2452,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = searchComponent((args as { query: string }).query);
         break;
       case "list_icons":
-        result = manifest.icons;
+        result = listIcons();
         break;
       case "find_icon":
         result = findIcon((args as { query: string }).query);
@@ -2499,7 +2524,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             brand?: "trost" | "geniet" | "nudge-eap";
             cwd?: string;
             dryRun?: boolean;
-            webhookUrl?: string;
           },
         );
         break;
