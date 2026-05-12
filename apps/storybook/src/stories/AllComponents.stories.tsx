@@ -1,44 +1,70 @@
 import React, { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
+  Accordion,
+  ActivityTimeline,
   AddressSearch,
   AmountInput,
+  AppBar,
+  AppFooter,
   AppointmentCard,
+  AssessmentResultCard,
+  AttachmentItem,
+  AudioPlayer,
   Autocomplete,
   Avatar,
   AvatarGroup,
   Badge,
   Banner,
+  Breadcrumb,
   BreathingGuide,
   Button,
   Calendar,
   Card,
   CardVisual,
   Carousel,
+  ChatBubble,
   Checkbox,
   Chip,
   CircularProgress,
   CommentItem,
   Confetti,
+  ConsentChecklist,
+  ContentViewer,
+  CounselorCard,
   CountdownTimer,
   CouponCard,
+  CrisisCallout,
+  DataTable,
+  type DataTableColumn,
+  DatePicker,
+  DateRangePicker,
   Divider,
   EmotionHeatmap,
   EmptyState,
   ExpandableText,
   FAB,
   FieldActionRow,
+  FileUpload,
   FilterBar,
+  FormField,
   GreetingHeader,
   IconButton,
   Input,
   JournalEntry,
   LikeButton,
+  LikertScale,
+  List,
+  ListItem,
+  MediaThumbnail,
+  MedicationItem,
   MentionInput,
+  MoodSelector,
   NotificationItem,
   NumberStepper,
   OnlineIndicator,
   OrderSummaryCard,
+  OtpInput,
   PageHeader,
   Pagination,
   PhoneInput,
@@ -50,7 +76,9 @@ import {
   Radio,
   ReactionPicker,
   ReviewCard,
+  ScoreGauge,
   SearchInput,
+  SegmentedControl,
   Select,
   SelectionCard,
   Skeleton,
@@ -61,25 +89,36 @@ import {
   StarRating,
   StatCard,
   StatusTimeline,
+  Stepper,
   StreakCard,
   Tabs,
   TagInput,
   TextButton,
+  Textarea,
   TimePicker,
+  TimeSlotPicker,
   TipCard,
   Toggle,
+  TrendingKeywords,
   UserCard,
   VotePoll,
+  WebHeader,
 } from "@nudge-eap/react";
 import {
   CalendarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CloseIcon,
+  HomeActiveIcon,
+  HomeIcon,
+  MicrophoneIcon,
+  MoreIcon,
+  MypageIcon,
   PlusIcon,
   SearchIcon,
   ShareIcon,
-  CloseIcon,
-  MicrophoneIcon,
-  VideocameraIcon,
   TelephoneIcon,
+  VideocameraIcon,
 } from "@nudge-eap/icons";
 import { cv, radius, shadow } from "@nudge-eap/tokens";
 import inventory from "../../../../metadata/componentInventory.json";
@@ -966,6 +1005,481 @@ const PREVIEWS: Record<string, PreviewRender> = {
       >
         <TelephoneIcon size={20} color="var(--eap-icon-inverse-default)" />
       </span>
+    </div>
+  ),
+
+  /* ─── 신규 컴포넌트 미리보기 ─── */
+
+  /* 일반 */
+  DSHighlight: () => (
+    <div style={dsHighlightFrame}>
+      <div style={dsHighlightLabel}>OFF · 영역 · 개별 · 전체</div>
+      <div style={{ display: "flex", gap: 6 }}>
+        {["OFF", "영역", "개별", "전체"].map((m, i) => (
+          <span key={m} style={i === 1 ? dsHighlightModeActive : dsHighlightMode}>
+            {m}
+          </span>
+        ))}
+      </div>
+    </div>
+  ),
+
+  /* 입력 */
+  Textarea: () => (
+    <div style={{ width: "100%", maxWidth: 220 }}>
+      <Textarea placeholder="오늘의 일기를 적어보세요" minHeight={72} />
+    </div>
+  ),
+  FormField: () => (
+    <div style={{ width: "100%", maxWidth: 220 }}>
+      <FormField label="이메일" required helper="로그인 시 사용됩니다">
+        <Input placeholder="you@example.com" />
+      </FormField>
+    </div>
+  ),
+  FileUpload: () => {
+    function F() {
+      const [files, setFiles] = useState<File[]>([]);
+      return (
+        <div style={{ width: "100%", maxWidth: 240 }}>
+          <FileUpload value={files} onValueChange={setFiles} description="PDF · 최대 10MB" />
+        </div>
+      );
+    }
+    return <F />;
+  },
+  OtpInput: () => {
+    function O() {
+      const [v, setV] = useState("12");
+      return (
+        <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
+          <OtpInput length={6} value={v} onValueChange={setV} />
+        </div>
+      );
+    }
+    return <O />;
+  },
+  DatePicker: () => {
+    function D() {
+      const [v, setV] = useState<Date | undefined>(new Date("2026-05-12"));
+      return (
+        <div style={{ width: "100%", maxWidth: 200 }}>
+          <DatePicker value={v} onChange={setV} />
+        </div>
+      );
+    }
+    return <D />;
+  },
+  DateRangePicker: () => {
+    function R() {
+      const [v, setV] = useState<{ start?: Date; end?: Date }>({
+        start: new Date("2026-05-01"),
+        end: new Date("2026-05-07"),
+      });
+      return (
+        <div style={{ width: "100%", maxWidth: 220 }}>
+          <DateRangePicker value={v} onValueChange={setV} />
+        </div>
+      );
+    }
+    return <R />;
+  },
+  TimeSlotPicker: () => {
+    function T() {
+      const [v, setV] = useState("14:00");
+      return (
+        <div style={{ width: "100%", maxWidth: 220 }}>
+          <TimeSlotPicker
+            value={v}
+            onValueChange={setV}
+            columns={3}
+            slots={[
+              { value: "13:00" },
+              { value: "13:30", unavailable: true },
+              { value: "14:00" },
+              { value: "14:30" },
+              { value: "15:00" },
+              { value: "15:30" },
+            ]}
+          />
+        </div>
+      );
+    }
+    return <T />;
+  },
+  MoodSelector: () => {
+    function M() {
+      const [v, setV] = useState("good");
+      return (
+        <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
+          <MoodSelector value={v} onValueChange={setV} showLabels={false} />
+        </div>
+      );
+    }
+    return <M />;
+  },
+  LikertScale: () => {
+    function L() {
+      const [v, setV] = useState<string | number>(3);
+      return (
+        <div style={{ width: "100%", maxWidth: 240 }}>
+          <LikertScale
+            value={v}
+            onValueChange={setV}
+            options={[{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }]}
+            startLabel="전혀 아니다"
+            endLabel="매우 그렇다"
+          />
+        </div>
+      );
+    }
+    return <L />;
+  },
+  SegmentedControl: () => {
+    function S() {
+      const [v, setV] = useState("week");
+      return (
+        <div style={{ width: "100%", maxWidth: 200 }}>
+          <SegmentedControl
+            value={v}
+            onValueChange={setV}
+            options={[
+              { value: "day", label: "일" },
+              { value: "week", label: "주" },
+              { value: "month", label: "월" },
+            ]}
+          />
+        </div>
+      );
+    }
+    return <S />;
+  },
+
+  /* 오버레이 */
+  Drawer: () => (
+    <div style={mockDrawerSurface}>
+      <div style={mockDrawerHeader}>
+        <div style={mockDrawerTitle}>필터</div>
+        <span style={mockDrawerClose} aria-hidden>
+          <CloseIcon size={14} color="var(--eap-icon-normal-default)" />
+        </span>
+      </div>
+      <div style={mockDrawerBody}>
+        <div style={mockDrawerRow}>· 정렬 기준</div>
+        <div style={mockDrawerRow}>· 카테고리</div>
+        <div style={mockDrawerRow}>· 기간</div>
+      </div>
+    </div>
+  ),
+  DropdownMenu: () => (
+    <div style={mockDropdownWrap}>
+      <div style={mockDropdownTrigger}>
+        <MoreIcon size={18} color="var(--eap-icon-normal-default)" />
+      </div>
+      <div style={mockDropdownPanel}>
+        <div style={mockDropdownItem}>편집</div>
+        <div style={mockDropdownItem}>공유</div>
+        <div style={mockDropdownDivider} aria-hidden />
+        <div style={{ ...mockDropdownItem, color: cv.danger.main }}>삭제</div>
+      </div>
+    </div>
+  ),
+
+  /* 내비게이션 */
+  Breadcrumb: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <Breadcrumb
+        items={[
+          { label: "홈", href: "#" },
+          { label: "프로그램", href: "#" },
+          { label: "스트레스" },
+        ]}
+      />
+    </div>
+  ),
+
+  /* 레이아웃 */
+  AppBar: () => (
+    <div
+      style={{
+        width: 240,
+        border: `1px solid ${cv.border.light}`,
+        borderRadius: 8,
+        overflow: "hidden",
+      }}
+    >
+      <AppBar
+        title="페이지 제목"
+        leftSlot={<ChevronLeftIcon size={22} color="var(--eap-icon-normal-default)" />}
+        rightSlot={<SearchIcon size={20} color="var(--eap-icon-normal-default)" />}
+      />
+    </div>
+  ),
+  AppFooter: () => (
+    <div
+      style={{
+        width: 240,
+        border: `1px solid ${cv.border.light}`,
+        borderRadius: 8,
+        overflow: "hidden",
+      }}
+    >
+      <AppFooter.TabBar
+        activeTab="home"
+        onTabClick={() => {}}
+        tabs={[
+          {
+            key: "home",
+            label: "홈",
+            href: "#",
+            icon: <HomeIcon size={20} />,
+            activeIcon: <HomeActiveIcon size={20} />,
+          },
+          {
+            key: "search",
+            label: "탐색",
+            href: "#",
+            icon: <SearchIcon size={20} />,
+            activeIcon: <SearchIcon size={20} />,
+          },
+          {
+            key: "my",
+            label: "마이",
+            href: "#",
+            icon: <MypageIcon size={20} />,
+            activeIcon: <MypageIcon size={20} />,
+          },
+        ]}
+      />
+    </div>
+  ),
+  WebHeader: () => (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 280,
+        border: `1px solid ${cv.border.light}`,
+        borderRadius: 8,
+        overflow: "hidden",
+        transform: "scale(0.85)",
+        transformOrigin: "center",
+      }}
+    >
+      <WebHeader position="static" maxWidth={400}>
+        <WebHeader.Logo alt="브랜드" src="https://placehold.co/72x20/2B96ED/FFF?text=Brand" />
+        <WebHeader.Menu>
+          <WebHeader.MenuItem href="#" active>
+            홈
+          </WebHeader.MenuItem>
+          <WebHeader.MenuItem href="#">콘텐츠</WebHeader.MenuItem>
+          <WebHeader.MenuItem href="#">상담</WebHeader.MenuItem>
+        </WebHeader.Menu>
+      </WebHeader>
+    </div>
+  ),
+  Accordion: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <Accordion type="single" defaultValue="a">
+        <Accordion.Item value="a">
+          <Accordion.Trigger>이용 약관</Accordion.Trigger>
+          <Accordion.Content>약관 본문이 여기에 표시됩니다.</Accordion.Content>
+        </Accordion.Item>
+        <Accordion.Item value="b">
+          <Accordion.Trigger>개인정보 처리방침</Accordion.Trigger>
+          <Accordion.Content>약관 본문이 여기에 표시됩니다.</Accordion.Content>
+        </Accordion.Item>
+      </Accordion>
+    </div>
+  ),
+  List: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <List variant="divided">
+        <ListItem
+          title="알림 설정"
+          description="푸시 · 이메일"
+          trailing={<ChevronRightIcon size={16} color="var(--eap-icon-normal-default)" />}
+          onSelect={() => {}}
+        />
+        <ListItem
+          title="결제 수단"
+          trailing={<ChevronRightIcon size={16} color="var(--eap-icon-normal-default)" />}
+          onSelect={() => {}}
+        />
+        <ListItem
+          title="로그아웃"
+          trailing={<ChevronRightIcon size={16} color="var(--eap-icon-normal-default)" />}
+        />
+      </List>
+    </div>
+  ),
+  Stepper: () => (
+    <div style={{ width: "100%", maxWidth: 220 }}>
+      <Stepper
+        current={1}
+        steps={[
+          { key: "1", label: "약관" },
+          { key: "2", label: "정보" },
+          { key: "3", label: "완료" },
+        ]}
+      />
+    </div>
+  ),
+
+  /* 도메인 */
+  AssessmentResultCard: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <AssessmentResultCard
+        title="PHQ-9 우울 검사"
+        score={12}
+        maxScore={27}
+        level="mild"
+        description="가벼운 우울 수준이에요."
+      />
+    </div>
+  ),
+  CrisisCallout: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <CrisisCallout
+        tone="danger"
+        title="지금 도움이 필요하다면"
+        description="자살예방상담전화로 연결할 수 있어요."
+        actions={[{ label: "1393", phoneNumber: "1393", withPhoneIcon: true }]}
+      />
+    </div>
+  ),
+  CounselorCard: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <CounselorCard
+        name="김상담"
+        jobTitle="임상심리전문가"
+        rating={4.8}
+        reviewCount={120}
+        tags={["우울", "불안", "직장스트레스"]}
+        bio="EAP 10년차. 직장인 스트레스 전문."
+      />
+    </div>
+  ),
+  ChatBubble: () => (
+    <div style={{ width: "100%", maxWidth: 240, display: "flex", flexDirection: "column", gap: 6 }}>
+      <ChatBubble role="them" name="상담사" time="3:24">
+        오늘 컨디션 어떠세요?
+      </ChatBubble>
+      <ChatBubble role="me" time="3:25" read>
+        괜찮은 편이에요.
+      </ChatBubble>
+    </div>
+  ),
+  ConsentChecklist: () => {
+    function C() {
+      const [v, setV] = useState<string[]>(["service"]);
+      return (
+        <div style={{ width: "100%", maxWidth: 240 }}>
+          <ConsentChecklist
+            value={v}
+            onValueChange={setV}
+            items={[
+              { key: "service", label: "서비스 이용 약관", required: true },
+              { key: "privacy", label: "개인정보 수집·이용", required: true },
+              { key: "marketing", label: "마케팅 정보 수신 (선택)" },
+            ]}
+          />
+        </div>
+      );
+    }
+    return <C />;
+  },
+  ScoreGauge: () => (
+    <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
+      <ScoreGauge value={42} max={100} showLabel />
+    </div>
+  ),
+  MedicationItem: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <MedicationItem
+        name="라믹탈"
+        dosage="25mg · 1정"
+        times={["morning", "bedtime"]}
+        note="식후 30분"
+      />
+    </div>
+  ),
+  AudioPlayer: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <AudioPlayer
+        title="마음을 편안하게"
+        subtitle="10분 가이드"
+        playing={false}
+        onPlayPause={() => {}}
+        currentTime={72}
+        duration={600}
+      />
+    </div>
+  ),
+  ActivityTimeline: () => (
+    <div style={{ width: "100%", maxWidth: 220 }}>
+      <ActivityTimeline
+        items={[
+          { key: "1", date: "5/12", title: "1차 상담", status: "completed", statusLabel: "완료" },
+          { key: "2", date: "5/19", title: "2차 상담", status: "ongoing", statusLabel: "진행" },
+          { key: "3", date: "5/26", title: "3차 상담", status: "default" },
+        ]}
+      />
+    </div>
+  ),
+  AttachmentItem: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <AttachmentItem name="진단서_2026.pdf" size={234567} status="ready" onDownload={() => {}} />
+    </div>
+  ),
+  MediaThumbnail: () => (
+    <div style={{ width: 140 }}>
+      <MediaThumbnail
+        src="https://placehold.co/140x90"
+        alt="썸네일"
+        aspectRatio="16/9"
+        rounded="md"
+      />
+    </div>
+  ),
+  ContentViewer: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <ContentViewer html='<h3 style="margin:0 0 6px;font-size:13px">결과 해설</h3><p style="margin:0;font-size:12px;color:#555">가벼운 우울 수준이며, 충분한 휴식이 필요합니다.</p>' />
+    </div>
+  ),
+  DataTable: () => {
+    type Row = { id: string; name: string; status: string };
+    const columns: DataTableColumn<Row>[] = [
+      { key: "name", header: "이름", accessor: (r) => r.name },
+      { key: "status", header: "상태", accessor: (r) => r.status, align: "right" },
+    ];
+    const data: Row[] = [
+      { id: "1", name: "홍길동", status: "완료" },
+      { id: "2", name: "김상담", status: "예약" },
+      { id: "3", name: "이지원", status: "취소" },
+    ];
+    return (
+      <div style={{ width: "100%", maxWidth: 240 }}>
+        <DataTable
+          columns={columns}
+          data={data}
+          rowKey={(r) => r.id}
+          size="sm"
+          responsive="scroll"
+        />
+      </div>
+    );
+  },
+  TrendingKeywords: () => (
+    <div style={{ width: "100%", maxWidth: 220 }}>
+      <TrendingKeywords
+        title="인기 검색어"
+        timestamp="09:00 기준"
+        items={[
+          { rank: 1, trend: "up", keyword: "직장 스트레스" },
+          { rank: 2, trend: "same", keyword: "불안" },
+          { rank: 3, trend: "new", keyword: "수면" },
+        ]}
+      />
     </div>
   ),
 };

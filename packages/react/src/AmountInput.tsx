@@ -65,13 +65,12 @@ export interface AmountPreset {
 // eslint-disable-next-line unused-imports/no-unused-vars
 const aiStyles = `
   :where(.${AI_CLASS}) {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     gap: ${spacing[8]}px;
+    width: 100%;
     font-family: ${fontFamily.web};
   }
-
-  :where(.${AI_CLASS}[data-full-width="true"]) { width: 100%; }
 
   :where(.${AI_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;

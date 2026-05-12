@@ -170,9 +170,16 @@ export const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
           <button type="button" className={FB_RESET_CLASS} onClick={() => onValueChange([])}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
               <path
-                d="M2.5 5h9v.5a4 4 0 11-1.2 2.8M2 2v3h3"
+                d="M12 7A5 5 0 1 1 7 2c1.7 0 3.22.85 4.13 2.15"
                 stroke="currentColor"
-                strokeWidth="1.5"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M12 2v3h-3"
+                stroke="currentColor"
+                strokeWidth="1.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />

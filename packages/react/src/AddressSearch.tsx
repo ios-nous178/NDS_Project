@@ -98,6 +98,7 @@ const asStyles = `
 
   :where(.${AS_INPUT_CLASS}) {
     flex: 1;
+    min-width: 0;
     height: ${sizing.input.default}px;
     padding: 0 ${spacing[16]}px;
     border: 1px solid ${cv.border.default};

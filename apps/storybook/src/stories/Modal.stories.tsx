@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, waitFor } from "storybook/test";
 import { Badge, Button, Modal, type ModalProps } from "@nudge-eap/react";
+import { cv } from "@nudge-eap/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
@@ -293,7 +294,7 @@ function PlaylistEditModalUIExample() {
                   margin: 0,
                   fontSize: 12,
                   letterSpacing: "-0.6px",
-                  color: "#6B7280",
+                  color: cv.text.subtle,
                 }}
               >
                 {playlistName.length}/25 자
@@ -322,7 +323,7 @@ function PlaylistEditModalUIExample() {
                 variant="solid"
                 size="md"
                 fullWidth
-                style={{ backgroundColor: "#6B7280", borderColor: "#6B7280" }}
+                style={{ backgroundColor: cv.text.disabled, borderColor: cv.text.disabled }}
                 onClick={() => setOpen(false)}
               >
                 취소
@@ -380,7 +381,7 @@ function PlaylistEditModalSlotPropsExample() {
               margin: 0,
               fontSize: 12,
               letterSpacing: "-0.6px",
-              color: "#6B7280",
+              color: cv.text.subtle,
             }}
           >
             {playlistName.length}/25 자
@@ -409,7 +410,7 @@ function PlaylistEditModalSlotPropsExample() {
             variant="solid"
             size="md"
             fullWidth
-            style={{ backgroundColor: "#6B7280", borderColor: "#6B7280" }}
+            style={{ backgroundColor: cv.text.disabled, borderColor: cv.text.disabled }}
             onClick={() => setOpen(false)}
           >
             취소
@@ -456,7 +457,7 @@ function PlaylistEditModalClassNameExample() {
               margin: 0,
               fontSize: 12,
               letterSpacing: "-0.6px",
-              color: "#6B7280",
+              color: cv.text.subtle,
             }}
           >
             {playlistName.length}/25 자
@@ -485,7 +486,7 @@ function PlaylistEditModalClassNameExample() {
             variant="solid"
             size="md"
             fullWidth
-            style={{ backgroundColor: "#6B7280", borderColor: "#6B7280" }}
+            style={{ backgroundColor: cv.text.disabled, borderColor: cv.text.disabled }}
             onClick={() => setOpen(false)}
           >
             취소
