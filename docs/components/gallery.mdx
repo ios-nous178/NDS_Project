@@ -1,0 +1,34 @@
+---
+sidebar_position: 1
+title: 전체 카탈로그
+description: 모든 컴포넌트를 한눈에 — 카테고리·검색·Figma 정합 필터
+---
+
+import ComponentGallery from "@site/src/components/ComponentGallery";
+
+# 전체 카탈로그
+
+`@nudge-eap/react`가 제공하는 모든 컴포넌트를 한 페이지에서 확인할 수 있도록 정리한 페이지입니다.
+**카테고리 칩으로 좁히고, 이름·설명·활용 키워드로 검색하고, "Figma Synced"만 필터링**할 수 있습니다.
+
+> 실제 동작과 인터랙션은 Storybook의 [`Foundations / All Components`](http://localhost:6006/?path=/docs/foundations-all-components--all-search-filter) 카탈로그에서 라이브 미니 프리뷰로 확인할 수 있어요.
+> 컴포넌트 하나의 props와 상태 매트릭스를 깊게 보고 싶다면 카드를 클릭해 개별 문서로 이동하세요.
+
+<ComponentGallery />
+
+---
+
+## 사용 팁
+
+- **빠르게 컴포넌트 이름이 떠오르지 않을 때** — 키워드 검색이 가장 빠릅니다. 예: `차트`, `시간`, `상담`.
+- **Figma 정합 상태를 확인할 때** — "Figma Synced만" 토글로 검증 완료된 컴포넌트만 봅니다.
+- **카테고리 의미**
+  - **일반** — Button, Badge, Card 같은 범용 프리미티브
+  - **입력** — Input, Select, Checkbox 등 폼 입력 컴포넌트
+  - **오버레이** — Modal, BottomSheet, Popup 등 portal 기반 UI
+  - **피드백** — Toast, Snackbar, EmptyState, Progress
+  - **내비게이션** — Tabs, FilterBar
+  - **레이아웃** — PageHeader, MultiStepForm, FieldActionRow
+  - **도메인** — MoodSelector, CounselorCard 등 EAP 도메인 특화 컴포넌트
+
+> 전체 표 형식으로 보고 싶다면 [컴포넌트 인벤토리](/components/inventory)를 참고하세요. Figma 링크와 활용 메모가 함께 표시됩니다.
