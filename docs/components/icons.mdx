@@ -1,0 +1,242 @@
+---
+sidebar_position: 2
+title: Icons
+description: NudgeEAP Design System 아이콘 패키지 — 84개 SVG 아이콘 카탈로그와 사용 가이드
+category: 기본
+---
+
+# Icons
+
+:::tip Figma Iconography(379:490) 정합 완료
+모든 아이콘은 Figma Iconography 노드(`379:490`) 기준 **24×24 viewBox / currentColor** 규약으로 통일되어 있습니다.
+색상은 부모의 `color` CSS 변수를 상속받습니다 — 별도 토큰 컬러 prop을 받지 않습니다.
+:::
+
+```tsx
+import { ChevronRightIcon, SearchIcon, HomeIcon } from "@nudge-eap/icons";
+```
+
+총 **84개** 아이콘을 제공합니다. 모든 아이콘은 동일한 React 컴포넌트 인터페이스를 따릅니다.
+
+---
+
+## 기본 사용법
+
+```tsx
+import { SearchIcon } from "@nudge-eap/icons";
+
+<SearchIcon />                    // 24×24, currentColor
+<SearchIcon size={20} />          // 사이즈 조절
+<SearchIcon color="#2B96ED" />    // 직접 색상 지정 (권장하지 않음)
+<SearchIcon aria-hidden="true" /> // 장식용 아이콘
+```
+
+| Prop          | 타입                     | 기본값            | 설명                                              |
+| ------------- | ------------------------ | ----------------- | ------------------------------------------------- |
+| `size`        | `number \| string`       | `24`              | 너비/높이 (정사각형)                              |
+| `color`       | `string`                 | `"currentColor"`  | 직접 색상 지정 — 가급적 부모의 `color` 토큰 사용 |
+| ...           | `SVGProps<SVGSVGElement>` | —                | `className`, `style`, `aria-*` 등 모두 지원       |
+
+`React.forwardRef`로 ref 전달도 지원합니다.
+
+---
+
+## 색상 가이드
+
+아이콘은 `currentColor`를 기본값으로 사용하므로 **부모의 `color` 속성을 그대로 따라갑니다**.
+
+```tsx
+// Good — 부모 토큰 컬러 상속
+<span style={{ color: "var(--nds-text-default)" }}>
+  <SearchIcon /> 검색
+</span>
+
+// Good — 버튼 색상에 자동으로 맞춰짐
+<Button leftIcon={<SearchIcon />}>검색</Button>
+
+// Avoid — 직접 hex 색상
+<SearchIcon color="#111111" />
+```
+
+:::warning 단독 아이콘은 명시적 토큰 컬러 지정
+주변 텍스트 없이 단독으로 배치되는 아이콘(예: 빈 영역의 안내 아이콘)은 `currentColor`만 믿지 말고 주변 배경에 맞는 토큰 컬러를 명시하세요.
+패턴 가이드는 [`get_pattern_guide("icon-color")`](#mcp-도구로-아이콘-찾기)로 확인할 수 있습니다.
+:::
+
+---
+
+## 사이즈 가이드
+
+| 용도                       | 사이즈 | 토큰                   |
+| -------------------------- | ------ | ---------------------- |
+| 기본/본문 인라인           | 24px   | `sizing.icon.default`  |
+| 버튼 (xl/lg/md/sm/field)   | 20px   | `sizing.icon.sm`       |
+| 버튼 (xs)                  | 18px   | (직접 지정)            |
+| Helper text inline         | 16px   | `sizing.icon.xs`       |
+| GNB / AppBar               | 24px   | `sizing.icon.default`  |
+
+---
+
+## 아이콘 카탈로그
+
+전체 84개 아이콘 목록입니다. 컴포넌트 이름은 kebab-case 파일명을 PascalCase + `Icon` 접미사로 변환합니다 (예: `arrow-back` → `ArrowBackIcon`).
+
+> 🔎 **시각적 카탈로그**는 Storybook `Foundations/Icons`에서 확인하세요 — 클릭하면 컴포넌트 이름이 복사됩니다.
+
+### Navigation / Chevron
+
+| 파일명           | 컴포넌트            | 용도                |
+| ---------------- | ------------------- | ------------------- |
+| `arrow-back`     | `ArrowBackIcon`     | 뒤로가기 (대표 CTA) |
+| `arrow-next`     | `ArrowNextIcon`     | 다음/진행 (대표 CTA) |
+| `chevron-left`   | `ChevronLeftIcon`   | 좌측 펼침 (보조)    |
+| `chevron-right`  | `ChevronRightIcon`  | 우측 펼침 (보조)    |
+| `chevron-up`     | `ChevronUpIcon`     | 위로 펼침/접기      |
+| `chevron-down`   | `ChevronDownIcon`   | 아래로 펼침         |
+| `hamburger`      | `HamburgerIcon`     | GNB 메뉴            |
+| `close`          | `CloseIcon`         | 모달/팝업 닫기      |
+| `more`           | `MoreIcon`          | 더보기              |
+
+### GNB (탭 — Active/Inactive 쌍)
+
+`*-active` 변형은 선택 상태입니다.
+
+| 파일명               | 컴포넌트              | 용도            |
+| -------------------- | --------------------- | --------------- |
+| `home` / `home-active`             | `HomeIcon` / `HomeActiveIcon`             | 홈 탭          |
+| `counsel` / `counsel-active`       | `CounselIcon` / `CounselActiveIcon`       | 상담 탭        |
+| `mentalcare` / `mentalcare-active` | `MentalcareIcon` / `MentalcareActiveIcon` | 멘탈케어 탭    |
+| `challenge` / `challenge-active`   | `ChallengeIcon` / `ChallengeActiveIcon`   | 챌린지 탭      |
+| `mypage` / `mypage-active`         | `MypageIcon` / `MypageActiveIcon`         | 마이페이지 탭  |
+
+### Action / Form
+
+| 파일명         | 컴포넌트          | 용도                       |
+| -------------- | ----------------- | -------------------------- |
+| `search`       | `SearchIcon`      | 검색                       |
+| `filter`       | `FilterIcon`      | 필터                       |
+| `edit`         | `EditIcon`        | 편집                       |
+| `delete`       | `DeleteIcon`      | 삭제                       |
+| `inputdelete`  | `InputdeleteIcon` | Input 클리어 (16px 기본)   |
+| `plus`         | `PlusIcon`        | 추가                       |
+| `minus`        | `MinusIcon`       | 제거                       |
+| `addlist`      | `AddlistIcon`     | 리스트에 추가              |
+| `refresh`      | `RefreshIcon`     | 새로고침                   |
+| `download`     | `DownloadIcon`    | 다운로드                   |
+| `share`        | `ShareIcon`       | 공유                       |
+| `link`         | `LinkIcon`        | 링크 복사                  |
+| `setting`      | `SettingIcon`     | 설정                       |
+
+### State / Status
+
+| 파일명               | 컴포넌트              | 용도                  |
+| -------------------- | --------------------- | --------------------- |
+| `info`               | `InfoIcon`            | 안내 (Helper success) |
+| `siren`              | `SirenIcon`           | 위기/긴급 안내        |
+| `report`             | `ReportIcon`          | 신고                  |
+| `block`              | `BlockIcon`           | 차단                  |
+| `testresult-safe`    | `TestresultSafeIcon`  | 검사 결과 안전        |
+| `testresult-warning` | `TestresultWarningIcon` | 검사 결과 주의      |
+| `testresult-danger`  | `TestresultDangerIcon` | 검사 결과 위험       |
+
+### Reaction / Social
+
+| 파일명           | 컴포넌트            | 용도                |
+| ---------------- | ------------------- | ------------------- |
+| `like` / `like-active`         | `LikeIcon` / `LikeActiveIcon`         | 좋아요             |
+| `favorite` / `favorite-active` | `FavoriteIcon` / `FavoriteActiveIcon` | 즐겨찾기           |
+| `thumb-up`       | `ThumbUpIcon`       | 추천                |
+| `star`           | `StarIcon`          | 별점                |
+| `comment`        | `CommentIcon`       | 댓글                |
+| `push` / `push-active`         | `PushIcon` / `PushActiveIcon`         | 푸시 알림          |
+
+### Media / Player
+
+| 파일명          | 컴포넌트          | 용도              |
+| --------------- | ----------------- | ----------------- |
+| `play`          | `PlayIcon`        | 재생              |
+| `pause`         | `PauseIcon`       | 일시정지          |
+| `skip-back`     | `SkipBackIcon`    | 이전 곡           |
+| `skip-forward`  | `SkipForwardIcon` | 다음 곡           |
+| `shuffle`       | `ShuffleIcon`     | 셔플              |
+| `repeat`        | `RepeatIcon`      | 반복              |
+| `microphone`    | `MicrophoneIcon`  | 녹음              |
+| `videocamera`   | `VideocameraIcon` | 영상 통화/녹화    |
+| `camera`        | `CameraIcon`      | 사진 촬영         |
+| `mymusic`       | `MymusicIcon`     | 내 음악           |
+| `sleepmode-on` / `sleepmode-off` | `SleepmodeOnIcon` / `SleepmodeOffIcon` | 수면 모드 |
+
+### Counseling / Care
+
+| 파일명               | 컴포넌트                  | 용도                  |
+| -------------------- | ------------------------- | --------------------- |
+| `counseling-chat`    | `CounselingChatIcon`      | 채팅 상담             |
+| `counseling-video`   | `CounselingVideoIcon`     | 영상 상담             |
+| `facility`           | `FacilityIcon`            | 시설/병원             |
+| `telephone`          | `TelephoneIcon`           | 전화                  |
+| `test`               | `TestIcon`                | 자가검사              |
+
+### Misc
+
+| 파일명               | 컴포넌트              | 용도                 |
+| -------------------- | --------------------- | -------------------- |
+| `calendar`           | `CalendarIcon`        | 캘린더/날짜          |
+| `time`               | `TimeIcon`            | 시간                 |
+| `recent`             | `RecentIcon`          | 최근 항목            |
+| `coupon`             | `CouponIcon`          | 쿠폰                 |
+| `point`              | `PointIcon`           | 포인트               |
+| `eye` / `eye-off`    | `EyeIcon` / `EyeOffIcon` | 비밀번호 보기/숨기기 |
+| `pin`                | `PinIcon`             | 핀/고정              |
+| `locate`             | `LocateIcon`          | 위치                 |
+| `subway`             | `SubwayIcon`          | 지하철               |
+| `walk`               | `WalkIcon`            | 걸어서 이동          |
+| `center`             | `CenterIcon`          | 중심 잡기/현 위치    |
+| `bluetooth`          | `BluetoothIcon`       | 블루투스             |
+| `monitor`            | `MonitorIcon`         | 모니터/디스플레이    |
+| `web`                | `WebIcon`             | 웹사이트             |
+| `drag`               | `DragIcon`            | 드래그 핸들          |
+| `decoration-sticker` | `DecorationStickerIcon` | 스티커 꾸미기      |
+| `decoration-text`    | `DecorationTextIcon`  | 텍스트 꾸미기        |
+
+---
+
+## MCP 도구로 아이콘 찾기
+
+용도/키워드만 알고 정확한 이름은 모를 때 `nudge-eap-ds` MCP 도구로 검색하세요.
+
+```
+list_icons             # 전체 84개 목록
+find_icon("검색")       # 키워드/한국어 별칭으로 후보 추출
+find_icon("플레이")     # → play, play-active 등
+find_icon("위치")       # → locate, pin
+```
+
+Claude에게는 한국어로 그대로 부탁하면 됩니다:
+
+> "사용자 위치 표시할 아이콘 찾아줘"
+> "재생/일시정지 아이콘 추천해줘"
+
+자세한 사용법은 [MCP 사용 가이드](/docs/NUDGE_EAP_DS_MCP_USAGE)와 [MCP 도구 레퍼런스](/docs/guide/mcp-tools-reference)를 참고하세요.
+
+---
+
+## 자주 하는 실수
+
+- **아이콘만 있는 버튼에 `aria-label` 누락** — 시각 장애인 사용자가 버튼 용도를 알 수 없습니다. `<button aria-label="검색"><SearchIcon /></button>` 형식으로 작성하세요.
+- **장식용 아이콘에 alt text 추가** — 텍스트 옆 장식 아이콘은 `aria-hidden="true"`로 스크린 리더에서 숨기세요.
+- **다른 아이콘 라이브러리와 혼용** — `react-icons`, `lucide-react`, MUI Icons 등을 섞어 쓰면 stroke 두께/스타일이 달라집니다. **`@nudge-eap/icons`만 사용**하세요. 없는 아이콘은 디자인팀에 요청합니다.
+- **inline SVG 직접 작성** — 아이콘이 필요하면 항상 패키지에서 import. 직접 SVG를 박으면 Figma sync 추적이 끊깁니다.
+
+---
+
+## 아이콘 추가 워크플로우
+
+신규 아이콘이 필요한 경우:
+
+1. Figma Iconography 노드(`379:490`)에 아이콘 추가 (디자인팀)
+2. `pnpm --filter @nudge-eap/icons fetch:figma` (Figma API에서 SVG 받기)
+3. `pnpm --filter @nudge-eap/icons generate` (TSX 컴포넌트 자동 생성)
+4. `pnpm build --filter @nudge-eap/icons`
+5. 시안 프로젝트에서 새 `.tgz`로 재설치
+
+스크립트 위치: `packages/icons/scripts/{fetch-figma,normalize-figma,generate}.js`

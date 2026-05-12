@@ -41,12 +41,13 @@ Figma 컴포넌트와 코드 컴포넌트가 어떻게 연결되는지 파악하
 
 ## 패키지 구성
 
-| 패키지                       | 설명                                          |
-| ---------------------------- | --------------------------------------------- |
-| `@nudge-eap/react`           | React 컴포넌트 (Button, Modal, Input 등 15종) |
-| `@nudge-eap/tokens`          | 디자인 토큰 (색상, 타이포그래피, 간격)        |
-| `@nudge-eap/icons`           | SVG 아이콘 React 컴포넌트 (83종)              |
-| `@nudge-eap/tailwind-preset` | Tailwind CSS 프리셋                           |
+| 패키지                       | 설명                                                                                                               |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `@nudge-eap/react`           | React 컴포넌트 (Button, Modal, Input 등)                                                                           |
+| `@nudge-eap/tokens`          | 디자인 토큰 (색상, 타이포그래피, 간격)                                                                             |
+| `@nudge-eap/icons`           | SVG 아이콘 React 컴포넌트 84종 — [Icons 카탈로그](/docs/components/icons)                                          |
+| `@nudge-eap/tailwind-preset` | Tailwind CSS 프리셋                                                                                                |
+| `@nudge-eap/mcp`             | Claude용 MCP 서버 — [사용 가이드](/docs/NUDGE_EAP_DS_MCP_USAGE) · [도구 레퍼런스](/docs/guide/mcp-tools-reference) |
 
 ---
 
