@@ -8,8 +8,11 @@ const IC_VIEWPORT_CLASS = `${IC_CLASS}__viewport`;
 const IC_IMG_CLASS = `${IC_CLASS}__img`;
 const IC_OVERLAY_CLASS = `${IC_CLASS}__overlay`;
 const IC_CIRCLE_CLASS = `${IC_CLASS}__circle`;
+const IC_HINT_CLASS = `${IC_CLASS}__hint`;
 const IC_CONTROLS_CLASS = `${IC_CLASS}__controls`;
 const IC_LABEL_CLASS = `${IC_CLASS}__label`;
+const IC_ZOOM_BTN_CLASS = `${IC_CLASS}__zoom-btn`;
+const IC_ZOOM_VALUE_CLASS = `${IC_CLASS}__zoom-value`;
 const IC_SLIDER_CLASS = `${IC_CLASS}__slider`;
 
 /* ─── Types ─── */
@@ -56,7 +59,8 @@ const icStyles = `
     position: relative;
     width: var(--nds-cropper-size, 240px);
     height: var(--nds-cropper-size, 240px);
-    background: #000;
+    background: #1a1a1a;
+    border-radius: ${radius.md}px;
     overflow: hidden;
     user-select: none;
     touch-action: none;
@@ -87,7 +91,7 @@ const icStyles = `
     position: absolute;
     inset: 0;
     box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
-    border: 2px solid #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.9);
   }
 
   :where(.${IC_OVERLAY_CLASS}[data-shape="circle"]) .${IC_CIRCLE_CLASS} {
@@ -98,12 +102,52 @@ const icStyles = `
     border-radius: ${radius.md}px;
   }
 
+  :where(.${IC_HINT_CLASS}) {
+    font-size: ${typeScale.caption2.fontSize}px;
+    line-height: ${typeScale.caption2.lineHeight}px;
+    color: ${cv.text.subtle};
+  }
+
   :where(.${IC_CONTROLS_CLASS}) {
     width: 100%;
     max-width: 320px;
     display: flex;
     align-items: center;
     gap: ${spacing[12]}px;
+  }
+
+  :where(.${IC_ZOOM_BTN_CLASS}) {
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    border: 1px solid ${cv.border.default};
+    background: ${cv.bg.white};
+    color: ${cv.text.default};
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  :where(.${IC_ZOOM_BTN_CLASS}:hover:not(:disabled)) {
+    background: ${cv.bg.coolGrayLighter};
+    border-color: ${cv.border.focus};
+  }
+
+  :where(.${IC_ZOOM_BTN_CLASS}:disabled) {
+    color: ${cv.text.disabled};
+    cursor: not-allowed;
+  }
+
+  :where(.${IC_ZOOM_VALUE_CLASS}) {
+    min-width: 40px;
+    text-align: center;
+    font-size: ${typeScale.caption1.fontSize}px;
+    font-variant-numeric: tabular-nums;
+    color: ${cv.text.subtle};
+    font-weight: ${fontWeight.medium};
   }
 
   :where(.${IC_SLIDER_CLASS}) {
@@ -192,6 +236,12 @@ export const ImageCropper = React.forwardRef<ImageCropperHandle, ImageCropperPro
 
     const baseScale = naturalSize.w ? size / Math.min(naturalSize.w, naturalSize.h) : 1;
 
+    const ZOOM_MIN = 1;
+    const ZOOM_MAX = 3;
+    const ZOOM_STEP = 0.1;
+    const clampZoom = (z: number) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
+    const zoomPercent = Math.round(zoom * 100);
+
     return (
       <div data-slot="root" className={cx(IC_CLASS, className)} {...rest}>
         {label && <span className={IC_LABEL_CLASS}>{label}</span>}
@@ -225,19 +275,44 @@ export const ImageCropper = React.forwardRef<ImageCropperHandle, ImageCropperPro
             <div className={IC_CIRCLE_CLASS} />
           </div>
         </div>
+        <span className={IC_HINT_CLASS}>드래그해서 위치를 맞춰주세요</span>
         <div className={IC_CONTROLS_CLASS}>
-          <span style={{ fontSize: 12, color: "#666" }}>축소</span>
+          <button
+            type="button"
+            className={IC_ZOOM_BTN_CLASS}
+            aria-label="축소"
+            disabled={zoom <= ZOOM_MIN}
+            onClick={() => setZoom((z) => clampZoom(z - ZOOM_STEP))}
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
+              <rect x="2" y="5.25" width="8" height="1.5" rx="0.75" fill="currentColor" />
+            </svg>
+          </button>
           <input
             className={IC_SLIDER_CLASS}
             type="range"
-            min={1}
-            max={3}
+            min={ZOOM_MIN}
+            max={ZOOM_MAX}
             step={0.05}
             value={zoom}
             aria-label="확대/축소"
             onChange={(e) => setZoom(Number(e.target.value))}
           />
-          <span style={{ fontSize: 12, color: "#666" }}>확대</span>
+          <button
+            type="button"
+            className={IC_ZOOM_BTN_CLASS}
+            aria-label="확대"
+            disabled={zoom >= ZOOM_MAX}
+            onClick={() => setZoom((z) => clampZoom(z + ZOOM_STEP))}
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
+              <rect x="2" y="5.25" width="8" height="1.5" rx="0.75" fill="currentColor" />
+              <rect x="5.25" y="2" width="1.5" height="8" rx="0.75" fill="currentColor" />
+            </svg>
+          </button>
+          <span className={IC_ZOOM_VALUE_CLASS} aria-live="polite">
+            {zoomPercent}%
+          </span>
         </div>
       </div>
     );

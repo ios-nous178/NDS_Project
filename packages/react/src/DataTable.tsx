@@ -128,6 +128,10 @@ const dataTableStyles = `
   }
 
   :where(.${DT_SORT_ICON_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
     color: ${cv.text.disabled};
     transition: color ${transition.default}, transform ${transition.default};
   }
@@ -238,8 +242,15 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
 const SortIcon = () => (
-  <svg width="10" height="12" viewBox="0 0 10 12" fill="none" aria-hidden="true">
-    <path d="M5 1L9 5H1L5 1Z" fill="currentColor" />
+  <svg
+    width="10"
+    height="10"
+    viewBox="0 0 10 10"
+    fill="none"
+    aria-hidden="true"
+    style={{ display: "block" }}
+  >
+    <path d="M5 2.5L8.5 7.5H1.5L5 2.5Z" fill="currentColor" />
   </svg>
 );
 

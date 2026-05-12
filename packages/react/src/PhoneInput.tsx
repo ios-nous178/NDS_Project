@@ -1,9 +1,10 @@
-import React, { useId } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import {
   cv,
   fontFamily,
   fontWeight,
   radius,
+  shadow,
   sizing,
   spacing,
   transition,
@@ -16,11 +17,17 @@ const PI_CLASS = "nds-phone-input";
 const PI_ROOT_CLASS = `${PI_CLASS}__root`;
 const PI_LABEL_CLASS = `${PI_CLASS}__label`;
 const PI_FIELD_CLASS = `${PI_CLASS}__field`;
+const PI_FIELD_WRAP_CLASS = `${PI_CLASS}__field-wrap`;
 const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
+const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
 const PI_FLAG_CLASS = `${PI_CLASS}__flag`;
 const PI_DIVIDER_CLASS = `${PI_CLASS}__divider`;
 const PI_INPUT_CLASS = `${PI_CLASS}__input`;
 const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
+const PI_MENU_CLASS = `${PI_CLASS}__menu`;
+const PI_MENU_ITEM_CLASS = `${PI_CLASS}__menu-item`;
+const PI_MENU_NAME_CLASS = `${PI_CLASS}__menu-name`;
+const PI_MENU_DIAL_CLASS = `${PI_CLASS}__menu-dial`;
 
 /* ─── Types ─── */
 
@@ -87,6 +94,10 @@ const phoneInputStyles = `
     color: ${cv.text.default};
   }
 
+  :where(.${PI_FIELD_WRAP_CLASS}) {
+    position: relative;
+  }
+
   :where(.${PI_FIELD_CLASS}) {
     display: flex;
     align-items: stretch;
@@ -105,7 +116,7 @@ const phoneInputStyles = `
   :where(.${PI_DIAL_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: ${spacing[6]}px;
     padding: 0 ${spacing[12]}px;
     border: none;
     background: transparent;
@@ -115,7 +126,11 @@ const phoneInputStyles = `
     font-weight: ${fontWeight.medium};
     cursor: pointer;
     flex-shrink: 0;
-    appearance: none;
+    transition: background-color ${transition.default};
+  }
+
+  :where(.${PI_DIAL_CLASS}:hover:not(:disabled)) {
+    background: ${cv.bg.coolGrayLighter};
   }
 
   :where(.${PI_DIAL_CLASS}:focus-visible) {
@@ -123,9 +138,74 @@ const phoneInputStyles = `
     outline-offset: -2px;
   }
 
+  :where(.${PI_DIAL_CLASS}:disabled) { cursor: not-allowed; opacity: 0.6; }
+
   :where(.${PI_FLAG_CLASS}) {
     font-size: 18px;
     line-height: 1;
+  }
+
+  :where(.${PI_CHEVRON_CLASS}) {
+    color: ${cv.text.subtle};
+    transition: transform ${transition.default};
+    display: inline-flex;
+  }
+
+  :where(.${PI_DIAL_CLASS}[aria-expanded="true"]) .${PI_CHEVRON_CLASS} {
+    transform: rotate(180deg);
+  }
+
+  :where(.${PI_MENU_CLASS}) {
+    position: absolute;
+    top: calc(100% + ${spacing[4]}px);
+    left: 0;
+    z-index: 10;
+    min-width: 240px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding: ${spacing[4]}px;
+    background: ${cv.bg.white};
+    border: 1px solid ${cv.border.light};
+    border-radius: ${radius.md}px;
+    box-shadow: ${shadow.md};
+    list-style: none;
+    margin: 0;
+  }
+
+  :where(.${PI_MENU_ITEM_CLASS}) {
+    display: flex;
+    align-items: center;
+    gap: ${spacing[8]}px;
+    width: 100%;
+    padding: ${spacing[8]}px ${spacing[10]}px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: ${radius.sm}px;
+    font-family: inherit;
+    font-size: ${typeScale.body3.fontSize}px;
+    color: ${cv.text.default};
+    text-align: left;
+    transition: background-color ${transition.default};
+  }
+
+  :where(.${PI_MENU_ITEM_CLASS}:hover),
+  :where(.${PI_MENU_ITEM_CLASS}[data-selected="true"]) {
+    background: ${cv.bg.coolGrayLighter};
+  }
+
+  :where(.${PI_MENU_NAME_CLASS}) {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :where(.${PI_MENU_DIAL_CLASS}) {
+    color: ${cv.text.subtle};
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
   }
 
   :where(.${PI_DIVIDER_CLASS}) {
@@ -183,7 +263,26 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
     ref,
   ) => {
     const inputId = useId();
+    const menuId = useId();
     const country = countries.find((c) => c.code === countryCode) ?? countries[0];
+    const wrapRef = useRef<HTMLDivElement>(null);
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+      if (!open) return;
+      const onDocClick = (e: MouseEvent) => {
+        if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
+      };
+      const onKey = (e: KeyboardEvent) => {
+        if (e.key === "Escape") setOpen(false);
+      };
+      document.addEventListener("mousedown", onDocClick);
+      document.addEventListener("keydown", onKey);
+      return () => {
+        document.removeEventListener("mousedown", onDocClick);
+        document.removeEventListener("keydown", onKey);
+      };
+    }, [open]);
 
     return (
       <div
@@ -196,34 +295,74 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             {label}
           </label>
         )}
-        <div className={PI_FIELD_CLASS} data-error={error ? "true" : "false"}>
-          <select
-            className={PI_DIAL_CLASS}
-            value={countryCode}
-            disabled={disabled}
-            onChange={(e) => onCountryChange(e.target.value)}
-            aria-label="국가 코드"
-          >
-            {countries.map((c) => (
-              <option key={c.code} value={c.code}>
-                {c.flag} {c.dialCode} ({c.name})
-              </option>
-            ))}
-          </select>
-          <span className={PI_DIVIDER_CLASS} aria-hidden />
-          <input
-            ref={ref}
-            id={inputId}
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel-national"
-            className={PI_INPUT_CLASS}
-            value={value}
-            disabled={disabled}
-            placeholder={placeholder ?? "01012345678"}
-            onChange={(e) => onValueChange(e.target.value)}
-            {...rest}
-          />
+        <div ref={wrapRef} className={PI_FIELD_WRAP_CLASS}>
+          <div className={PI_FIELD_CLASS} data-error={error ? "true" : "false"}>
+            <button
+              type="button"
+              className={PI_DIAL_CLASS}
+              disabled={disabled}
+              onClick={() => setOpen((v) => !v)}
+              aria-label={`국가 코드: ${country.name} ${country.dialCode}`}
+              aria-haspopup="listbox"
+              aria-expanded={open}
+              aria-controls={menuId}
+            >
+              <span className={PI_FLAG_CLASS} aria-hidden>
+                {country.flag}
+              </span>
+              <span>{country.dialCode}</span>
+              <span className={PI_CHEVRON_CLASS} aria-hidden>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path
+                    d="M3 4.5L6 7.5L9 4.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </button>
+            <span className={PI_DIVIDER_CLASS} aria-hidden />
+            <input
+              ref={ref}
+              id={inputId}
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel-national"
+              className={PI_INPUT_CLASS}
+              value={value}
+              disabled={disabled}
+              placeholder={placeholder ?? "01012345678"}
+              onChange={(e) => onValueChange(e.target.value)}
+              {...rest}
+            />
+          </div>
+          {open && (
+            <ul id={menuId} role="listbox" className={PI_MENU_CLASS}>
+              {countries.map((c) => (
+                <li key={c.code} role="presentation">
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={c.code === countryCode}
+                    data-selected={c.code === countryCode ? "true" : "false"}
+                    className={PI_MENU_ITEM_CLASS}
+                    onClick={() => {
+                      onCountryChange(c.code);
+                      setOpen(false);
+                    }}
+                  >
+                    <span className={PI_FLAG_CLASS} aria-hidden>
+                      {c.flag}
+                    </span>
+                    <span className={PI_MENU_NAME_CLASS}>{c.name}</span>
+                    <span className={PI_MENU_DIAL_CLASS}>{c.dialCode}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         {helperText && (
           <p className={PI_HELPER_CLASS} data-error={error ? "true" : "false"}>

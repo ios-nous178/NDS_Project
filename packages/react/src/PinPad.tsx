@@ -116,11 +116,19 @@ const ppStyles = `
 
   :where(.${PP_KEY_CLASS}[data-action="true"]) {
     background: transparent;
-    font-size: ${typeScale.caption1.fontSize}px;
     color: ${cv.text.subtle};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   :where(.${PP_KEY_CLASS}[data-action="true"]:hover) { background: ${cv.bg.coolGray}; }
+
+  :where(.${PP_KEY_CLASS}[data-action="true"]:disabled) {
+    color: ${cv.text.disabled};
+    cursor: not-allowed;
+  }
+  :where(.${PP_KEY_CLASS}[data-action="true"]:disabled:hover) { background: transparent; }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -202,7 +210,20 @@ export const PinPad = React.forwardRef<HTMLDivElement, PinPadProps>(
             onClick={back}
             disabled={value.length === 0}
           >
-            ←
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M8 5h12a2 2 0 012 2v10a2 2 0 01-2 2H8l-6-7 6-7z"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M13 9l4 6M17 9l-4 6"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            </svg>
           </button>
         </div>
       </div>

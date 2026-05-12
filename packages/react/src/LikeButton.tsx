@@ -8,9 +8,9 @@ const LB_ICON_CLASS = `${LB_CLASS}__icon`;
 const LB_COUNT_CLASS = `${LB_CLASS}__count`;
 
 const sizeConfig = {
-  sm: { icon: 16, count: 12, gap: 4 },
-  md: { icon: 20, count: 13, gap: 6 },
-  lg: { icon: 24, count: 14, gap: 6 },
+  sm: { icon: 18, count: 13, gap: 4 },
+  md: { icon: 22, count: 14, gap: 6 },
+  lg: { icon: 28, count: 15, gap: 6 },
 } as const;
 
 export type LikeButtonSize = keyof typeof sizeConfig;
@@ -143,13 +143,25 @@ export const LikeButton = React.forwardRef<HTMLButtonElement, LikeButtonProps>(
       >
         <span className={LB_ICON_CLASS} aria-hidden>
           {liked ? (
-            <svg width={s.icon} height={s.icon} viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z" />
+            <svg
+              width={s.icon}
+              height={s.icon}
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              style={{ display: "block" }}
+            >
+              <path d="M12 20.85l-1.36-1.24C5.4 14.86 2 11.78 2 8c0-3.08 2.42-5.5 5.5-5.5 1.74 0 3.41.81 4.5 2.09C13.09 3.31 14.76 2.5 16.5 2.5 19.58 2.5 22 4.92 22 8c0 3.78-3.4 6.86-8.64 11.61L12 20.85z" />
             </svg>
           ) : (
-            <svg width={s.icon} height={s.icon} viewBox="0 0 24 24" fill="none">
+            <svg
+              width={s.icon}
+              height={s.icon}
+              viewBox="0 0 24 24"
+              fill="none"
+              style={{ display: "block" }}
+            >
               <path
-                d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z"
+                d="M12 20.85l-1.36-1.24C5.4 14.86 2 11.78 2 8c0-3.08 2.42-5.5 5.5-5.5 1.74 0 3.41.81 4.5 2.09C13.09 3.31 14.76 2.5 16.5 2.5 19.58 2.5 22 4.92 22 8c0 3.78-3.4 6.86-8.64 11.61L12 20.85z"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinejoin="round"

@@ -17,6 +17,7 @@ const ROOT_CLASS = `${MODAL_CLASS}__root`;
 const OVERLAY_CLASS = `${MODAL_CLASS}__overlay`;
 const CONTENT_CLASS = `${MODAL_CLASS}__content`;
 const HEADER_CLASS = `${MODAL_CLASS}__header`;
+const HEADER_SPACER_CLASS = `${MODAL_CLASS}__header-spacer`;
 const HEADER_TITLE_CLASS = `${MODAL_CLASS}__header-title`;
 const CLOSE_CLASS = `${MODAL_CLASS}__close`;
 const BODY_CLASS = `${MODAL_CLASS}__body`;
@@ -86,12 +87,20 @@ const modalStyles = `
     box-sizing: border-box;
   }
 
+  /* Header: 좌측 28px 고스트 스페이서 + flex:1 타이틀 + 우측 28px 닫기 버튼.
+     스페이서가 X 버튼 폭을 좌측에 미러링해서 타이틀이 모달 박스 기준 정중앙에 정렬됨. */
   :where(.${HEADER_CLASS}) {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: ${spacing[12]}px;
     padding: 0;
+  }
+
+  :where(.${HEADER_SPACER_CLASS}) {
+    flex: 0 0 28px;
+    height: 28px;
+    visibility: hidden;
   }
 
   :where(.${HEADER_TITLE_CLASS}) {
@@ -105,6 +114,11 @@ const modalStyles = `
   }
 
   :where(.${CLOSE_CLASS}) {
+    flex: 0 0 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     background: none;
     cursor: pointer;
@@ -402,18 +416,24 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
 }) => {
   const { onClose, titleId } = useModalContext();
 
+  const hasTitle = Boolean(title || children);
+
   return (
     <div
       data-slot="header"
-      data-has-title={title || children ? "true" : "false"}
+      data-has-title={hasTitle ? "true" : "false"}
       className={cx(HEADER_CLASS, className)}
       {...rest}
     >
+      {closable && hasTitle && (
+        <span aria-hidden="true" data-slot="header-spacer" className={HEADER_SPACER_CLASS} />
+      )}
       {children ? (
         <div
           id={titleId}
-          className={cx(HEADER_TITLE_CLASS, titleClassName, titleProps?.className)}
-          style={titleProps?.style}
+          data-slot="header-content"
+          className={cx(titleClassName, titleProps?.className)}
+          style={{ display: "contents", ...titleProps?.style }}
           {...omitDomProps(titleProps)}
         >
           {children}
