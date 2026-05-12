@@ -116,8 +116,8 @@ app.get("/", (_req, res) => {
         background: #f8fafc;
       }
       .shortcut-text { text-align: left; }
-      .shortcut-title { font-size: 14px; font-weight: 600; color: #0f172a; }
-      .shortcut-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
+      .shortcut-title { display: block; font-size: 14px; font-weight: 600; color: #0f172a; }
+      .shortcut-sub { display: block; font-size: 12px; color: #64748b; margin-top: 2px; }
       .shortcut-arrow { color: #94a3b8; font-size: 16px; line-height: 1; }
       .shortcut:hover .shortcut-arrow { color: #0f172a; }
 
