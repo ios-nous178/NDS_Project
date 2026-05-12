@@ -180,6 +180,15 @@ importers:
 
   packages/mcp:
     dependencies:
+      '@babel/parser':
+        specifier: ^7.25.0
+        version: 7.29.2
+      '@babel/traverse':
+        specifier: ^7.25.0
+        version: 7.29.0
+      '@babel/types':
+        specifier: ^7.25.0
+        version: 7.29.0
       '@modelcontextprotocol/sdk':
         specifier: ^1.0.4
         version: 1.29.0(zod@3.25.76)
@@ -193,6 +202,9 @@ importers:
         specifier: workspace:*
         version: link:../tokens
     devDependencies:
+      '@types/babel__traverse':
+        specifier: ^7.20.0
+        version: 7.28.0
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.39

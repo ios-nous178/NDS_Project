@@ -32,6 +32,8 @@ import {
   SCOPE_ADVISORY,
   detectIntentFromText,
 } from "./guides.js";
+import { parseMockupUsage, appendUsageToLog, postUsageToWebhook } from "./usage-tracker.js";
+import type { MockupUsage } from "./types/usage.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const manifestPath = path.resolve(__dirname, "../manifest.json");
@@ -1452,7 +1454,16 @@ await browser.close();`,
         "터미널 1: npm run dev  # Vite dev 서버 5173 띄우기",
         "터미널 2: node scripts/export-html-snapshot.mjs /trost/counseling out/trost-counseling.html",
         "→ out/trost-counseling.html 한 파일만 더블클릭해서 브라우저로 열면 동일하게 보임",
+        "마지막: MCP `report_mockup_usage` 툴로 원본 .tsx 경로를 넘겨 사용량 자동 적재. 예) report_mockup_usage({ filePath: 'src/mockups/TrostCounseling.tsx' }). HTML이 아니라 *.tsx 소스를 넘기는 이유: AST 기반이라 custom 구현·variant까지 정확히 집계됨.",
       ],
+      tracking: {
+        summary:
+          "export 산출물(.html)은 공유용. 사용량 집계는 *원본 .tsx* 를 AST 파싱하므로 export mode와 무관하게 동작.",
+        tool: "report_mockup_usage",
+        example: "report_mockup_usage({ filePath: 'src/mockups/TrostCounseling.tsx' })",
+        storage: ".ds-usage-log.jsonl (프로젝트 루트, gitignored)",
+        webhookEnv: "NUDGE_DS_USAGE_WEBHOOK (선택, 있으면 Google Sheets webhook 등으로 자동 POST)",
+      },
     };
   }
 
@@ -1500,7 +1511,16 @@ export default defineConfig({
       "npm run build:html",
       "결과: dist/index.html  (단일 파일, 의존성 없음)",
       "공유: 그 파일 하나만 전달. 받는 사람은 더블클릭으로 열기. 라우팅은 #/trost/list 같은 hash로 동작.",
+      "마지막: MCP `report_mockup_usage` 툴로 원본 .tsx 경로를 넘겨 사용량 자동 적재. singlefile은 HTML body가 빈 shell이라 정적 파싱 불가하므로 *.tsx 소스 기반 집계가 유일한 방법.",
     ],
+    tracking: {
+      summary:
+        "singlefile 산출물은 inline JS 번들이라 정적 HTML 파싱 0건. 사용량은 원본 .tsx AST로 집계함 → mode 무관 동일 결과.",
+      tool: "report_mockup_usage",
+      example: "report_mockup_usage({ filePath: 'src/mockups/TrostCounseling.tsx' })",
+      storage: ".ds-usage-log.jsonl (프로젝트 루트, gitignored)",
+      webhookEnv: "NUDGE_DS_USAGE_WEBHOOK (선택, 있으면 Google Sheets webhook 등으로 자동 POST)",
+    },
     perMockupExport: {
       summary:
         "단일 목업만 빌드해서 깔끔히 뽑고 싶을 때 — 임시로 App을 그 라우트만 렌더하도록 바꾸고 빌드.",
@@ -1522,6 +1542,69 @@ console.log(\`✓ \${outFile}\`);`,
       note: "이 방식은 vite.config의 build.rollupOptions.input을 환경변수에서 받도록 살짝 수정 필요.",
     },
   };
+}
+
+/* ───────────── DS 사용량 자동 집계 ───────────── */
+
+const DEFAULT_USAGE_WEBHOOK =
+  "https://script.google.com/macros/s/AKfycbzgWCu2Y5BygcMakF9qItU3d-bvducUD3mFkryqLQ5RiSRPF1ExzUnkyYDimsTb7d74/exec";
+
+async function reportMockupUsage(args: {
+  filePath: string;
+  mockupName?: string;
+  context?: "user-app" | "admin-cms" | "unknown";
+  brand?: "trost" | "geniet" | "nudge-eap";
+  cwd?: string;
+  dryRun?: boolean;
+  webhookUrl?: string;
+}): Promise<{
+  usage: MockupUsage;
+  logPath: string | null;
+  webhook: { attempted: boolean; ok?: boolean; status?: number; error?: string };
+}> {
+  const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
+  const filePath = path.isAbsolute(args.filePath)
+    ? args.filePath
+    : path.resolve(cwd, args.filePath);
+
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`File not found: ${filePath}`);
+  }
+
+  const usage = parseMockupUsage(filePath, {
+    cwd,
+    mockupNameHint: args.mockupName,
+    contextHint: args.context,
+    brandHint: args.brand,
+  });
+
+  const dryRun = args.dryRun === true;
+  let logPath: string | null = null;
+  if (!dryRun) {
+    logPath = path.join(cwd, ".ds-usage-log.jsonl");
+    appendUsageToLog(usage, logPath);
+  }
+
+  const webhookUrl =
+    args.webhookUrl !== undefined
+      ? args.webhookUrl
+      : (process.env.NUDGE_DS_USAGE_WEBHOOK ?? DEFAULT_USAGE_WEBHOOK);
+  const webhook: { attempted: boolean; ok?: boolean; status?: number; error?: string } = {
+    attempted: false,
+  };
+  if (!dryRun && webhookUrl) {
+    webhook.attempted = true;
+    try {
+      const res = await postUsageToWebhook(usage, webhookUrl);
+      webhook.ok = res.ok;
+      webhook.status = res.status;
+    } catch (err) {
+      webhook.ok = false;
+      webhook.error = (err as Error).message;
+    }
+  }
+
+  return { usage, logPath, webhook };
 }
 
 /* ───────────── 목업 dev 서버 / 화면 체크 ───────────── */
@@ -2093,6 +2176,51 @@ const TOOLS = [
     },
   },
   {
+    name: "report_mockup_usage",
+    description:
+      "Parse a mockup TSX file with AST and aggregate Design System usage. Classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Appends a JSONL record to .ds-usage-log.jsonl at the project root and POSTs to the shared usage Sheet webhook by default (overridable via env NUDGE_DS_USAGE_WEBHOOK or webhookUrl arg; pass empty string to disable). Call this after generating or modifying a mockup, or after exporting HTML. Returns the aggregated usage object.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        filePath: {
+          type: "string",
+          description: "Absolute or repo-relative path to the mockup .tsx file to analyze.",
+        },
+        mockupName: {
+          type: "string",
+          description: "Optional display name. Defaults to the filename without extension.",
+        },
+        context: {
+          type: "string",
+          enum: ["user-app", "admin-cms", "unknown"],
+          description: "Override context detection. Default: auto-detected from imports.",
+        },
+        brand: {
+          type: "string",
+          enum: ["trost", "geniet", "nudge-eap"],
+          description: "Override brand detection. Default: auto-detected from filename/path.",
+        },
+        cwd: {
+          type: "string",
+          description:
+            "Project root used to relativize file paths and place the log file. Defaults to MCP process cwd.",
+        },
+        dryRun: {
+          type: "boolean",
+          description:
+            "If true, return usage but do NOT write to JSONL or POST to webhook. Default: false.",
+        },
+        webhookUrl: {
+          type: "string",
+          description:
+            "Explicit webhook URL. Falls back to env NUDGE_DS_USAGE_WEBHOOK, then to the bundled default. Provide empty string to disable.",
+        },
+      },
+      required: ["filePath"],
+      additionalProperties: false,
+    },
+  },
+  {
     name: "start_dev_server",
     description:
       "Start a local mockup development server from the project root and wait until its URL responds. Use before visual/runtime preview checks.",
@@ -2358,6 +2486,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "get_export_html_instructions":
         result = getExportHtmlInstructions(args as { mode?: "singlefile" | "snapshot" });
+        break;
+      case "report_mockup_usage":
+        result = await reportMockupUsage(
+          args as {
+            filePath: string;
+            mockupName?: string;
+            context?: "user-app" | "admin-cms" | "unknown";
+            brand?: "trost" | "geniet" | "nudge-eap";
+            cwd?: string;
+            dryRun?: boolean;
+            webhookUrl?: string;
+          },
+        );
         break;
       case "start_dev_server":
         result = await startDevServer(

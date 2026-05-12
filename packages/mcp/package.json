@@ -20,12 +20,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@babel/parser": "^7.25.0",
+    "@babel/traverse": "^7.25.0",
+    "@babel/types": "^7.25.0",
     "@modelcontextprotocol/sdk": "^1.0.4",
     "@nudge-eap/tokens": "workspace:*",
     "@nudge-eap/react": "workspace:*",
     "@nudge-eap/icons": "workspace:*"
   },
   "devDependencies": {
+    "@types/babel__traverse": "^7.20.0",
     "@types/node": "^20.0.0",
     "typescript": "^5.7.0"
   }

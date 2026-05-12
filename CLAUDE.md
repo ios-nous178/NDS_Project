@@ -133,6 +133,7 @@ apps/storybook/src/stories/
 - [ ] useIsMobile()로 모바일 분기했는가
 - [ ] 스토리에 Default + Mobile 있는가
 - [ ] tsc --noEmit 통과하는가
+- [ ] `report_mockup_usage` 로 사용량 집계 적재했는가 (e.g., `mcp__nudge-eap-ds__report_mockup_usage({ filePath: 'apps/storybook/src/stories/{Brand}{Page}Mockup.tsx' })`)
 
 ### CMS/어드민 목업 - 필수 규칙
 
@@ -173,6 +174,7 @@ CMS 목업 생성 후 반드시 확인:
 - [ ] CSS/스타일을 최소화했는가 (antd 기본값 유지)
 - [ ] 마케팅 톤이 아닌 운영툴 톤인가 (조밀, 정보 위주)
 - [ ] tsc --noEmit 통과하는가
+- [ ] `report_mockup_usage` 로 사용량 집계 적재했는가 (context: "admin-cms")
 
 ### 하네스 파이프라인 (상세)
 

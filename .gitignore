@@ -10,3 +10,4 @@ chromatic-diagnostics.json
 chromatic.log
 .DS_Store
 *.tgz
+.ds-usage-log.jsonl
