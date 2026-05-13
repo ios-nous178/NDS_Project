@@ -284,20 +284,75 @@ const PREVIEWS: Record<string, PreviewRender> = {
   },
   Tabs: () => {
     function TabsPreview() {
-      const [k, setK] = useState("home");
-      return (
-        <div style={{ width: "100%", maxWidth: 220 }}>
-          <Tabs
-            activeKey={k}
-            onTabChange={setK}
-            variant="line"
-            size="mobile"
-            tone="neutral"
-            items={[
-              { key: "home", title: "홈" },
-              { key: "list", title: "목록" },
-            ]}
+      const [lineKey, setLineKey] = useState("home");
+      const [chipKey, setChipKey] = useState("all");
+      const [segKey, setSegKey] = useState("dash");
+      const dashIcon = (
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+          <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+          <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+          <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+          <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      );
+      const riskIcon = (
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M10 2L18 17H2L10 2Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
           />
+        </svg>
+      );
+      return (
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: 240 }}>
+            <Tabs
+              activeKey={lineKey}
+              onTabChange={setLineKey}
+              variant="line"
+              size="mobile"
+              tone="neutral"
+              items={[
+                { key: "home", title: "홈" },
+                { key: "list", title: "목록" },
+              ]}
+            />
+          </div>
+          <div style={{ width: "100%", maxWidth: 240 }}>
+            <Tabs
+              activeKey={chipKey}
+              onTabChange={setChipKey}
+              variant="chip"
+              size="mobile"
+              tone="color"
+              fullWidth={false}
+              items={[
+                { key: "all", title: "전체" },
+                { key: "work", title: "직장" },
+                { key: "love", title: "연애" },
+              ]}
+            />
+          </div>
+          <div style={{ width: "100%", maxWidth: 240 }}>
+            <Tabs
+              activeKey={segKey}
+              onTabChange={setSegKey}
+              variant="segment"
+              items={[
+                { key: "dash", title: "대시보드", icon: dashIcon },
+                { key: "risk", title: "고위험군", icon: riskIcon },
+              ]}
+            />
+          </div>
         </div>
       );
     }
