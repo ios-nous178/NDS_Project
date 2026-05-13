@@ -69,7 +69,9 @@ import { Button, Badge } from "@nudge-eap/react";
 function App() {
   return (
     <div>
-      <Badge variant="primary">신규</Badge>
+      <Badge variant="fill" color="brand">
+        신규
+      </Badge>
       <Button variant="solid" size="lg" onClick={() => alert("클릭!")}>
         시작하기
       </Button>

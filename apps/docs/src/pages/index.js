@@ -206,9 +206,15 @@ function ComponentPreviewGrid() {
               <span className={styles.previewBadge}>Stable</span>
             </div>
             <div className={styles.previewBody}>
-              <Badge variant="primary">신규</Badge>
-              <Badge variant="success">완료</Badge>
-              <Badge variant="error">필수</Badge>
+              <Badge variant="fill" color="brand">
+                신규
+              </Badge>
+              <Badge variant="ghost" color="success">
+                완료
+              </Badge>
+              <Badge variant="line" color="error">
+                필수
+              </Badge>
             </div>
             <div className={styles.previewFoot}>
               <span>상태 · 카테고리 · 라벨</span>
