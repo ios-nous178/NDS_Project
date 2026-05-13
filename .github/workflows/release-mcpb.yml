@@ -3,18 +3,29 @@ name: Release MCPB
 # packages/mcp/manifest.json 의 version 이 바뀌었을 때만 새 릴리즈를 만든다.
 # (디자인 토큰/컴포넌트만 바뀐 경우에도 catalog 가 갱신되지만, 별도 릴리즈가
 #  필요하면 manifest.version 을 올려서 main 에 푸시하면 된다.)
+#
+# 트리거되지 않는 변경 (= .mcpb 결과물에 영향이 없는 것들):
+#   - docs/**, apps/docs/**, **/*.md (README 포함) — 문서 수정
+#   - mockups/**, apps/storybook/** — 스토리북/목업
+#   - local-packages/**, dist/**, dist-mcpb/** — 빌드 산출물
+#   - 따라서 "docs만 업데이트"한 push 는 이 워크플로우를 돌리지 않는다.
+#   (여러 커밋이 한 push 에 묶여 그 중 하나라도 아래 paths 에 매치되면
+#    GitHub Actions 특성상 워크플로우는 실행된다 — 그 경우 manifest.version
+#    검증 단계에서 자동으로 skip 된다.)
 
 on:
   push:
     branches: [main]
     paths:
+      # mcpb 자체 (매니페스트 · MCP 서버 · 패킹 스크립트)
       - "packages/mcp/manifest.json"
       - "packages/mcp/src/**"
       - "packages/mcp/scripts/**"
+      - "scripts/pack-mcpb.mjs"
+      # 번들에 포함되는 DS 소스 (토큰 · 컴포넌트 · 아이콘)
       - "packages/tokens/src/**"
       - "packages/react/src/**"
       - "packages/icons/svg/**"
-      - "scripts/pack-mcpb.mjs"
   workflow_dispatch: {}
 
 jobs:
@@ -22,6 +33,17 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      # Slack 봇 업로드용. 두 시크릿 모두 비어 있으면 알림 단계가 자동 skip 된다.
+      #   - SLACK_BOT_TOKEN: xoxb- 로 시작하는 Bot User OAuth Token
+      #     (chat:write · files:write 스코프 필요, 채널에 봇 invite 필수)
+      #   - SLACK_CHANNEL_ID: C0123456789 형식의 채널 ID
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+      # 디자인시스템 문서 URL.
+      # Repository Variables (Settings → Secrets and variables → Actions → Variables)
+      # 에서 DOCS_URL 을 설정하면 그 값을 쓰고, 미설정 시 아래 기본값을 쓴다.
+      DOCS_URL: ${{ vars.DOCS_URL || 'http://nudge-eap-design-system.eba-afhh232q.ap-northeast-2.elasticbeanstalk.com/' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -98,3 +120,35 @@ jobs:
             ```
           generate_release_notes: true
           fail_on_unmatched_files: true
+
+      # 1단계: 채널에 짧은 헤드 메시지만 띄움 → 노이즈 최소화
+      - name: Post release head message
+        id: slack_head
+        if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: "${{ secrets.SLACK_CHANNEL_ID }}"
+            text: "NudgeEAP DS MCPB v${{ steps.meta.outputs.version }} 릴리즈 — 상세 내용은 스레드 확인"
+            blocks:
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: "*NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}* 릴리즈\n_설치 파일 · 문서 링크는 스레드 확인_"
+
+      # 2단계: 위 메시지의 스레드 안에 파일 업로드 + 디테일
+      - name: Upload mcpb to Slack thread
+        if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          method: files.uploadV2
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel_id: "${{ secrets.SLACK_CHANNEL_ID }}"
+            thread_ts: "${{ fromJson(steps.slack_head.outputs.response).ts }}"
+            initial_comment: "*설치 방법*\nClaude Desktop 에서 첨부된 .mcpb 파일을 더블클릭하거나 Settings → Extensions → Install from file 로 설치하세요.\n\n*디자인시스템 문서*\n${{ env.DOCS_URL }}\n\n*릴리즈 페이지*\nhttps://github.com/${{ github.repository }}/releases/tag/${{ steps.meta.outputs.tag }}"
+            file: "./dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
+            filename: "nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
+            title: "NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}"
