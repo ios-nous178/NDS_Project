@@ -133,7 +133,7 @@ title: 컴포넌트 인벤토리
 - **TimeSlotPicker**: TimePicker(자유 입력) / Calendar(날짜만)와 분리. 정해진 슬롯 리스트 전용.
 - **MoodSelector**: EAP 앱 첫 화면 핵심 인터랙션. JournalEntry 작성 진입 트리거.
 - **LikertScale**: 가벼운 의견 수렴은 VotePoll. LikertScale은 정형 설문 척도.
-- **SegmentedControl**: 옵션 ≥ 5개거나 스크롤 필요하면 Tabs / FilterBar 검토.
+- **SegmentedControl**: 옵션 ≥ 5개거나 스크롤 필요하면 Tabs / FilterBar 검토. Tabs `segment`(56px page-level CMS nav, slate active)와 별개 — SegmentedControl은 inline form value selector(32–36px, white-pill active).
 
 ## 오버레이
 
@@ -169,7 +169,9 @@ title: 컴포넌트 인벤토리
 | **Breadcrumb** | 경로 탐색 브레드크럼. items 배열에 label · href(선택) 객체를 전달, 마지막 항목은 자동 비활성화 | ✅ 구현됨 | 연결 필요 | [열기](http://localhost:6006/?path=/docs/components-breadcrumb--docs) | [열기](http://localhost:3001/docs/components/breadcrumb) | 디테일 화면 상단, 카테고리 깊은 트리, 운영툴 위치 표시   |
 
 - **Tabs**: Line(Mobile·PC), Chip(Mobile·PC), Segment(PC·CMS 전용) 3가지 유형으로 정리. Line/Chip은 Neutral·Color 톤을 지원합니다.
-- **FilterBar**: Tabs(뷰 전환)과 분리. single은 다시 누르면 해제됨.
+  - `chip` vs FilterBar: 단일 선택으로 콘텐츠를 바꾸면 Tabs `chip`, 같은 리스트를 다중/단일 필터링하면 FilterBar (count·초기화 필요 시 FilterBar).
+  - `segment` vs SegmentedControl: 페이지/뷰 분할이면 Tabs `segment`(56px, slate active), 폼 내부 토글이면 SegmentedControl(32–36px, white-pill active).
+- **FilterBar**: Tabs(뷰 전환)과 분리. single은 다시 누르면 해제됨. Mobile에서 Tabs `chip`과 외형 유사하므로 역할(선택 모델·count·리셋 유무)로 구분.
 - **Pagination**: 무한 스크롤 화면에서는 사용하지 않는다.
 - **Breadcrumb**: 모바일 화면에서는 두 단계 이하면 생략 권장.
 
