@@ -127,45 +127,6 @@ export const CheckboxDisabled: Story = {
   render: () => <CheckboxDisabledExample />,
 };
 
-function CheckboxIndeterminateExample() {
-  const [items, setItems] = useState({ stress: true, sleep: false, relation: false });
-  const checked = Object.values(items).filter(Boolean).length;
-  const allChecked = checked === 3;
-  const indeterminate = checked > 0 && !allChecked;
-  return (
-    <CheckboxGroup>
-      <Checkbox
-        checked={allChecked}
-        indeterminate={indeterminate}
-        onCheckedChange={(c) => setItems({ stress: c, sleep: c, relation: c })}
-        label={`전체 선택 (${checked}/3)`}
-      />
-      <div style={{ paddingLeft: 32, display: "flex", flexDirection: "column", gap: 8 }}>
-        <Checkbox
-          checked={items.stress}
-          onCheckedChange={(c) => setItems((s) => ({ ...s, stress: c }))}
-          label="스트레스"
-        />
-        <Checkbox
-          checked={items.sleep}
-          onCheckedChange={(c) => setItems((s) => ({ ...s, sleep: c }))}
-          label="수면"
-        />
-        <Checkbox
-          checked={items.relation}
-          onCheckedChange={(c) => setItems((s) => ({ ...s, relation: c }))}
-          label="대인관계"
-        />
-      </div>
-    </CheckboxGroup>
-  );
-}
-
-export const CheckboxIndeterminate: Story = {
-  name: "State/Checkbox Indeterminate",
-  render: () => <CheckboxIndeterminateExample />,
-};
-
 export const RadioGroupVertical: Story = {
   name: "State/Radio Group Vertical",
   render: () => <RadioGroupExample />,

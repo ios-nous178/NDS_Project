@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useRef } from "react";
+import React, { useCallback, useId } from "react";
 import {
   cv,
   fontFamily,
@@ -16,7 +16,6 @@ const CB_ROOT_CLASS = `${CB_CLASS}__root`;
 const CB_INPUT_CLASS = `${CB_CLASS}__input`;
 const CB_INDICATOR_CLASS = `${CB_CLASS}__indicator`;
 const CB_CHECK_ICON_CLASS = `${CB_CLASS}__check`;
-const CB_DASH_ICON_CLASS = `${CB_CLASS}__dash`;
 const CB_LABEL_CLASS = `${CB_CLASS}__label`;
 const CB_HELPER_CLASS = `${CB_CLASS}__helper`;
 const CB_GROUP_CLASS = `${CB_CLASS}-group`;
@@ -70,8 +69,7 @@ const checkboxStyles = `
     transition: border-color ${transition.default}, background-color ${transition.default};
   }
 
-  :where(.${CB_INDICATOR_CLASS}[data-state="checked"]),
-  :where(.${CB_INDICATOR_CLASS}[data-state="indeterminate"]) {
+  :where(.${CB_INDICATOR_CLASS}[data-state="checked"]) {
     border-color: ${cv.fill.brand};
     background: ${cv.fill.brand};
   }
@@ -81,14 +79,12 @@ const checkboxStyles = `
     background: ${cv.bg.disabled};
   }
 
-  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}[data-state="checked"]),
-  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}[data-state="indeterminate"]) {
+  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}[data-state="checked"]) {
     background: ${cv.bg.disabled};
     border-color: ${cv.borderRole.disabled};
   }
 
-  :where(.${CB_CHECK_ICON_CLASS}),
-  :where(.${CB_DASH_ICON_CLASS}) {
+  :where(.${CB_CHECK_ICON_CLASS}) {
     position: absolute;
     inset: 0;
     margin: auto;
@@ -99,16 +95,11 @@ const checkboxStyles = `
     color: ${cv.bg.white};
   }
 
-  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_CHECK_ICON_CLASS}),
-  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_DASH_ICON_CLASS}) {
+  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_CHECK_ICON_CLASS}) {
     color: ${cv.iconRole.disabled};
   }
 
   :where(.${CB_INDICATOR_CLASS}[data-state="checked"] .${CB_CHECK_ICON_CLASS}) {
-    opacity: 1;
-  }
-
-  :where(.${CB_INDICATOR_CLASS}[data-state="indeterminate"] .${CB_DASH_ICON_CLASS}) {
     opacity: 1;
   }
 
@@ -160,8 +151,6 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
   /** 체크 상태 */
   checked?: boolean;
-  /** 부분 선택 상태 (자식 일부만 선택된 부모 등). checked보다 우선합니다. */
-  indeterminate?: boolean;
   /** 변경 콜백 */
   onCheckedChange?: (checked: boolean) => void;
   /** 라벨 */
@@ -176,7 +165,6 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
       checked = false,
-      indeterminate = false,
       onCheckedChange,
       label,
       disabled = false,
@@ -189,20 +177,6 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ) => {
     const generatedId = useId();
     const inputId = idProp ?? generatedId;
-    const innerRef = useRef<HTMLInputElement | null>(null);
-
-    const setRefs = useCallback(
-      (node: HTMLInputElement | null) => {
-        innerRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
-      },
-      [ref],
-    );
-
-    useEffect(() => {
-      if (innerRef.current) innerRef.current.indeterminate = indeterminate;
-    }, [indeterminate]);
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -212,7 +186,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       [onCheckedChange, onChange],
     );
 
-    const state = indeterminate ? "indeterminate" : checked ? "checked" : "unchecked";
+    const state = checked ? "checked" : "unchecked";
 
     return (
       <label
@@ -222,13 +196,12 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         htmlFor={inputId}
       >
         <input
-          ref={setRefs}
+          ref={ref}
           type="checkbox"
           id={inputId}
           checked={checked}
           disabled={disabled}
           onChange={handleChange}
-          aria-checked={indeterminate ? "mixed" : checked}
           className={CB_INPUT_CLASS}
           {...rest}
         />
@@ -251,14 +224,6 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-          </svg>
-          <svg
-            className={CB_DASH_ICON_CLASS}
-            viewBox="0 0 14 14"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M3 7H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </span>
         {label && (

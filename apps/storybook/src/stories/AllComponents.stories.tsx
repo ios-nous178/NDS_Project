@@ -216,9 +216,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
   Checkbox: () => (
     <div style={previewRow}>
       <Checkbox checked onCheckedChange={() => undefined} />
-      <Checkbox indeterminate onCheckedChange={() => undefined} />
       <Checkbox checked={false} onCheckedChange={() => undefined} />
       <Checkbox checked disabled onCheckedChange={() => undefined} />
+      <Checkbox checked={false} disabled onCheckedChange={() => undefined} />
     </div>
   ),
   Radio: () => (
