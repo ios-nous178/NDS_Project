@@ -287,49 +287,6 @@ function CheckboxExampleAgreement() {
   );
 }
 
-function CheckboxIndeterminateExample() {
-  const [items, setItems] = useState({ a: true, b: false, c: false });
-  const checkedCount = Object.values(items).filter(Boolean).length;
-  const allChecked = checkedCount === 3;
-  const indeterminate = checkedCount > 0 && !allChecked;
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 320 }}>
-      <Checkbox
-        checked={allChecked}
-        indeterminate={indeterminate}
-        onCheckedChange={(c) => setItems({ a: c, b: c, c })}
-        label={`전체 선택 (${checkedCount}/3)`}
-      />
-      <div
-        style={{
-          paddingLeft: 32,
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          borderLeft: `1px solid ${colors.neutral[100]}`,
-          marginLeft: 10,
-        }}
-      >
-        <Checkbox
-          checked={items.a}
-          onCheckedChange={(c) => setItems((s) => ({ ...s, a: c }))}
-          label="알림 받기"
-        />
-        <Checkbox
-          checked={items.b}
-          onCheckedChange={(c) => setItems((s) => ({ ...s, b: c }))}
-          label="뉴스레터 구독"
-        />
-        <Checkbox
-          checked={items.c}
-          onCheckedChange={(c) => setItems((s) => ({ ...s, c }))}
-          label="이벤트 정보 수신"
-        />
-      </div>
-    </div>
-  );
-}
-
 export const CheckboxStates: Story = {
   name: "Checkbox/States + 사용 예시",
   render: () => (
@@ -346,9 +303,6 @@ export const CheckboxStates: Story = {
           <StateRow label="Checked">
             <Checkbox checked onCheckedChange={() => undefined} />
           </StateRow>
-          <StateRow label="Indeterminate">
-            <Checkbox indeterminate onCheckedChange={() => undefined} />
-          </StateRow>
           <StateRow label="Disabled (Unchecked)">
             <Checkbox checked={false} disabled onCheckedChange={() => undefined} />
           </StateRow>
@@ -363,12 +317,6 @@ export const CheckboxStates: Story = {
               <CheckboxExampleAgreement />
             </div>
           </div>
-          <div>
-            <strong style={{ fontSize: 14 }}>사용 예시 — 부분 선택(Indeterminate)</strong>
-            <div style={{ marginTop: 12 }}>
-              <CheckboxIndeterminateExample />
-            </div>
-          </div>
         </div>
       </div>
     </GuideSection>
@@ -381,12 +329,11 @@ export const CheckboxSpecs: Story = {
     <GuideSection title="Checkbox · Specs">
       <SpecTable
         rows={[
-          { key: "크기", value: "20 × 20px (아이콘 기준)" },
+          { key: "크기", value: "18 × 18px (24×24 frame)" },
           { key: "터치 영역", value: "최소 44 × 44px (모바일)" },
           { key: "Radius", value: "4px" },
-          { key: "Unchecked", value: "border 2px, borderNormal" },
+          { key: "Unchecked", value: "border 1.5px, borderNormal" },
           { key: "Checked", value: "fillBrand 배경, 흰색 체크 아이콘" },
-          { key: "Indeterminate", value: "fillBrand 배경, 흰색 가로선 (부분 선택)" },
           { key: "Disabled", value: "배경/텍스트 모두 연회색 (borderDisabled / textDisabled)" },
           { key: "사용처", value: "약관 동의 · 다중 항목 선택 · 필터" },
         ]}
