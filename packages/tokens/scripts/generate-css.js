@@ -24,6 +24,7 @@ const {
   grid,
 } = require("../dist/spacing");
 const { fontFamily, fontWeight, typeScale } = require("../dist/typography");
+const { shadow, zIndex } = require("../dist/elevation");
 
 // ─── Helper ─────────────────────────────────────────────
 
@@ -201,6 +202,20 @@ function generateBaseTokens() {
     const figmaKey = typeScaleKeyToFigma(key);
     lines.push(`  --font-size-${figmaKey}: ${value.fontSize}px;`);
     lines.push(`  --line-height-${figmaKey}: ${value.lineHeight}px;`);
+  }
+
+  // Shadow — Figma · ElevationGuide(556:2). E0 ~ E3 → --shadow-0 ~ --shadow-3
+  lines.push("");
+  lines.push("  /* ── Shadow (Figma · ElevationGuide 556:2) ── */");
+  for (const [key, value] of Object.entries(shadow)) {
+    lines.push(`  --shadow-${key}: ${value};`);
+  }
+
+  // Z-Index
+  lines.push("");
+  lines.push("  /* ── Z-Index ── */");
+  for (const [key, value] of Object.entries(zIndex)) {
+    lines.push(`  --z-${key}: ${value};`);
   }
 
   lines.push("}");

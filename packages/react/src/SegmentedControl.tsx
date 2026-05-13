@@ -98,7 +98,7 @@ const segmentedStyles = `
     background: ${cv.bg.white};
     color: ${cv.text.default};
     font-weight: ${fontWeight.medium};
-    box-shadow: ${shadow.sm};
+    box-shadow: ${shadow["1"]};
   }
 
   :where(.${SC_ITEM_CLASS}:disabled) {

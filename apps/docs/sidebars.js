@@ -119,7 +119,13 @@ module.exports = {
       type: "category",
       label: "디자인 토큰",
       collapsed: false,
-      items: ["tokens/colors", "tokens/typography", "tokens/spacing", "semantic-tokens"],
+      items: [
+        "tokens/colors",
+        "tokens/typography",
+        "tokens/spacing",
+        "tokens/elevation",
+        "semantic-tokens",
+      ],
     },
     {
       type: "category",

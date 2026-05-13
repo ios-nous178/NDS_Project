@@ -82,7 +82,7 @@ const modalStyles = `
     overflow: hidden;
     border-radius: var(--nds-modal-radius, ${radius.md}px);
     background-color: ${cv.bg.white};
-    box-shadow: ${shadow.md};
+    box-shadow: ${shadow["3"]};
     animation: nds-modal-slide-up 0.2s ease-out;
     box-sizing: border-box;
   }

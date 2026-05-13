@@ -177,12 +177,12 @@ export const monepleTheme: BrandTheme = {
     },
   },
   elevation: {
+    // Figma 가이드(556:2) — 4 Levels (E0 ~ E3). 기본 UI는 Border, Shadow는 떠있는 요소에만.
     shadow: {
-      sm: "0 0 16px rgba(0, 0, 0, 0.06)",
-      md: "0 4px 12px rgba(0, 0, 0, 0.12)",
-      lg: "0 8px 24px rgba(0, 0, 0, 0.16)",
-      up: "0 -4px 12px rgba(0, 0, 0, 0.1)",
-      none: "none",
+      "0": "none",
+      "1": "0px 0px 16px rgba(0, 0, 0, 0.06)", // Moneple: 옅고 균일한 카드 호버 shadow
+      "2": "0px 4px 12px rgba(0, 0, 0, 0.10)",
+      "3": "0px 8px 24px rgba(0, 0, 0, 0.12)",
     },
     zIndex: {
       base: 0,

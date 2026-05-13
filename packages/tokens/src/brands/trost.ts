@@ -167,13 +167,12 @@ export const trostTheme: BrandTheme = {
     },
   },
   elevation: {
+    // Figma 가이드(556:2) — 4 Levels (E0 ~ E3). 기본 UI는 Border, Shadow는 떠있는 요소에만.
     shadow: {
-      sm: "0 2px 16px rgba(0, 0, 0, 0.12)", // Trost card shadow
-      md: "0 4px 12px rgba(0, 0, 0, 0.15)",
-      lg: "0 11px 15px -7px rgba(0, 0, 0, 0.2)",
-      up: "0 -4px 12px rgba(0, 0, 0, 0.1)",
-      hairline: "inset 0 0 0 1px #E5E5E5", // Trost 고유: hairline inset border
-      none: "none",
+      "0": "none",
+      "1": "0px 2px 16px rgba(0, 0, 0, 0.10)", // Trost: 약간 더 부드러운 카드 호버 shadow
+      "2": "0px 4px 12px rgba(0, 0, 0, 0.10)",
+      "3": "0px 8px 24px rgba(0, 0, 0, 0.12)",
     },
     zIndex: {
       base: 0,
