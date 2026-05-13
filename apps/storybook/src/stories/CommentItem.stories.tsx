@@ -50,7 +50,7 @@ export const WithBadgeAndReplies: Story = {
         avatar={<Avatar name="박지원" />}
         author="박지원"
         authorBadge={
-          <Badge variant="primary" size="sm">
+          <Badge variant="fill" color="brand" size="sm">
             상담사
           </Badge>
         }

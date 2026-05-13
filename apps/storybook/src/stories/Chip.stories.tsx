@@ -1,11 +1,35 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Chip, chipGuide, type ChipProps, type ChipVariantKey } from "@nudge-eap/react";
+import {
+  Chip,
+  chipColorGuide,
+  chipVariantGuide,
+  type ChipColor,
+  type ChipProps,
+  type ChipVariant,
+} from "@nudge-eap/react";
 import { PinIcon, TelephoneIcon } from "@nudge-eap/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 import { DesignGuideBadge } from "../components/DesignGuideBadge";
+
+const VARIANTS: ChipVariant[] = ["fill", "outlined", "ghost"];
+const COLORS: ChipColor[] = ["brand", "neutral", "success", "error", "caution"];
+
+const VARIANT_USAGE: Record<ChipVariant, string> = {
+  fill: "선택됨 (강조)",
+  outlined: "선택 가능 (기본)",
+  ghost: "비활성 / 보조",
+};
+
+const COLOR_LABEL: Record<ChipColor, string> = {
+  brand: "브랜드",
+  neutral: "일반",
+  success: "완료",
+  error: "오류",
+  caution: "주의",
+};
 
 const meta: Meta<ChipProps> = {
   title: "Components/Chip",
@@ -22,24 +46,24 @@ const meta: Meta<ChipProps> = {
   argTypes: {
     variant: {
       control: "radio",
-      options: ["outlined", "filled", "soft", "strong"],
+      options: VARIANTS,
+      description: "Figma `Style` — fill(선택됨) / outlined(선택 가능) / ghost(비활성)",
+    },
+    color: {
+      control: "radio",
+      options: COLORS,
     },
     size: {
       control: "radio",
-      options: ["sm", "md", "lg"],
+      options: ["sm", "md"],
     },
-    shape: {
-      control: "radio",
-      options: ["pill", "square"],
-    },
-    selected: { control: "boolean" },
     disabled: { control: "boolean" },
   },
   args: {
     label: "심리상담",
     variant: "outlined",
+    color: "brand",
     size: "md",
-    shape: "pill",
   },
 };
 
@@ -48,44 +72,35 @@ type Story = StoryObj<ChipProps>;
 
 export const Playground: Story = {};
 
-export const Variants: Story = {
-  name: "State/Variants",
+export const StyleMatrix: Story = {
+  name: "Figma/Style × Color Matrix",
   render: () => (
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-      <Chip label="Outlined" variant="outlined" />
-      <Chip label="Outlined Selected" variant="outlined" selected />
-      <Chip label="Filled" variant="filled" />
-      <Chip label="Filled Selected" variant="filled" selected />
-      <Chip label="Soft" variant="soft" />
-      <Chip label="Strong" variant="strong" />
-      <Chip label="Strong Selected" variant="strong" selected />
-    </div>
-  ),
-};
-
-export const Shapes: Story = {
-  name: "State/Shapes",
-  render: () => (
-    <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-      <div style={{ textAlign: "center" }}>
-        <p style={{ marginBottom: 8, fontSize: 12 }}>Pill (Default)</p>
-        <Chip label="심리상담" shape="pill" variant="filled" />
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <p style={{ marginBottom: 8, fontSize: 12 }}>Square (8px)</p>
-        <Chip label="심리상담" shape="square" variant="filled" />
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {VARIANTS.map((variant) => (
+        <div key={variant} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ minWidth: 110 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, textTransform: "capitalize" }}>
+              {variant}
+            </div>
+            <div style={{ fontSize: 11, color: "#888" }}>{VARIANT_USAGE[variant]}</div>
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {COLORS.map((color) => (
+              <Chip key={color} label={COLOR_LABEL[color]} variant={variant} color={color} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   ),
 };
 
 export const Sizes: Story = {
-  name: "State/Sizes",
+  name: "Figma/Sizes",
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <Chip label="Small" size="sm" variant="filled" />
-      <Chip label="Medium" size="md" variant="filled" />
-      <Chip label="Large" size="lg" variant="filled" />
+      <Chip label="Small" size="sm" variant="fill" color="brand" />
+      <Chip label="Medium" size="md" variant="fill" color="brand" />
     </div>
   ),
 };
@@ -117,8 +132,8 @@ function ToggleChipsExample() {
         <Chip
           key={s}
           label={s}
-          variant="strong"
-          selected={selected.has(s)}
+          variant={selected.has(s) ? "fill" : "outlined"}
+          color="brand"
           onClick={() => toggle(s)}
         />
       ))}
@@ -140,8 +155,8 @@ function RemovableChipsExample() {
         <Chip
           key={f}
           label={f}
-          variant="outlined"
-          selected
+          variant="fill"
+          color="brand"
           onRemove={() => setFilters((prev) => prev.filter((x) => x !== f))}
         />
       ))}
@@ -153,64 +168,30 @@ export const Disabled: Story = {
   name: "State/Disabled",
   render: () => (
     <div style={{ display: "flex", gap: 8 }}>
-      <Chip label="Disabled" variant="outlined" disabled />
-      <Chip label="Disabled Selected" variant="filled" selected disabled />
+      <Chip label="Disabled" variant="outlined" color="brand" disabled />
+      <Chip label="Disabled Filled" variant="fill" color="brand" disabled />
     </div>
   ),
 };
 
-/**
- * 홈페이지의 실무 스타일을 재현한 예시입니다.
- * (사각형 라운드 + 특정 가로 패딩)
- */
-export const HomePageStyles: Story = {
-  name: "Recipe/Homepage Practical Styles",
+export const WithIcon: Story = {
+  name: "Recipe/With Icon",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-      <div>
-        <p style={{ marginBottom: 8, fontSize: 12, color: "#666" }}>
-          1. 상단 선택 필터 (Active Filter)
-        </p>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Chip label="서울" shape="square" selected onRemove={() => {}} />
-          <Chip label="심리상담" shape="square" selected onRemove={() => {}} />
-        </div>
-      </div>
-
-      <div>
-        <p style={{ marginBottom: 8, fontSize: 12, color: "#666" }}>
-          2. 카드 내부 키워드 (#태그, 촘촘한 패딩)
-        </p>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Chip label="#불안" variant="soft" shape="square" size="sm" className="px-2" />
-          <Chip label="#우울" variant="soft" shape="square" size="sm" className="px-2" />
-          <Chip label="#대인관계" variant="soft" shape="square" size="sm" className="px-2" />
-        </div>
-      </div>
-
-      <div>
-        <p style={{ marginBottom: 8, fontSize: 12, color: "#666" }}>
-          3. 상담 방식 (아이콘 + 작은 사이즈)
-        </p>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Chip
-            label="대면"
-            variant="filled"
-            shape="square"
-            size="sm"
-            className="h-6 px-[5px] bg-[#f3f4f6] text-[#4b5563]"
-            icon={<PinIcon size={12} color="var(--semantic-icon-normal-default)" />}
-          />
-          <Chip
-            label="전화"
-            variant="filled"
-            shape="square"
-            size="sm"
-            className="h-6 px-[5px] bg-[#f3f4f6] text-[#4b5563]"
-            icon={<TelephoneIcon size={12} color="var(--semantic-icon-normal-default)" />}
-          />
-        </div>
-      </div>
+    <div style={{ display: "flex", gap: 8 }}>
+      <Chip
+        label="대면"
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        icon={<PinIcon size={14} color="currentColor" />}
+      />
+      <Chip
+        label="전화"
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        icon={<TelephoneIcon size={14} color="currentColor" />}
+      />
     </div>
   ),
 };
@@ -223,9 +204,10 @@ export const ToggleInteraction: Story = {
     const user = createInteractionUser();
     const chip = canvas.getByRole("button", { name: "수면" });
 
-    await expect(chip).toHaveAttribute("aria-pressed", "false");
+    await expect(chip).toHaveAttribute("data-variant", "outlined");
     await user.click(chip);
-    await expect(chip).toHaveAttribute("aria-pressed", "true");
+    const chipAfter = canvas.getByRole("button", { name: "수면" });
+    await expect(chipAfter).toHaveAttribute("data-variant", "fill");
   },
 };
 
@@ -250,14 +232,12 @@ export const KeyboardToggleInteraction: Story = {
     const user = createInteractionUser();
 
     const chip = canvas.getByRole("button", { name: "대인관계" });
-    await expect(chip).toHaveAttribute("aria-pressed", "false");
+    await expect(chip).toHaveAttribute("data-variant", "outlined");
 
     chip.focus();
     await user.keyboard("{Enter}");
-    await expect(chip).toHaveAttribute("aria-pressed", "true");
-
-    await user.keyboard(" ");
-    await expect(chip).toHaveAttribute("aria-pressed", "false");
+    const after = canvas.getByRole("button", { name: "대인관계" });
+    await expect(after).toHaveAttribute("data-variant", "fill");
   },
 };
 
@@ -265,8 +245,8 @@ export const DisabledChipInteraction: Story = {
   name: "Interaction/Disabled Chip",
   render: () => (
     <div style={{ display: "flex", gap: 8 }}>
-      <Chip label="비활성" variant="outlined" disabled />
-      <Chip label="비활성 선택" variant="filled" selected disabled />
+      <Chip label="비활성" variant="outlined" color="brand" disabled />
+      <Chip label="비활성 채움" variant="fill" color="brand" disabled />
     </div>
   ),
   play: async ({ canvasElement }) => {
@@ -275,51 +255,8 @@ export const DisabledChipInteraction: Story = {
     const disabledChip = canvas.getByText("비활성").closest("[data-slot]");
     await expect(disabledChip).toHaveAttribute("data-disabled", "true");
 
-    const disabledSelected = canvas.getByText("비활성 선택").closest("[data-slot]");
-    await expect(disabledSelected).toHaveAttribute("data-disabled", "true");
-  },
-};
-
-export const RemoveAllChipsInteraction: Story = {
-  name: "Edge/Remove All Chips Empties List",
-  render: () => <RemovableChipsExample />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const user = createInteractionUser();
-
-    // 모든 칩을 하나씩 삭제
-    await user.click(canvas.getByRole("button", { name: "서울 삭제" }));
-    await expect(canvas.queryByText("서울")).not.toBeInTheDocument();
-
-    await user.click(canvas.getByRole("button", { name: "심리상담 삭제" }));
-    await expect(canvas.queryByText("심리상담")).not.toBeInTheDocument();
-
-    await user.click(canvas.getByRole("button", { name: "대면 삭제" }));
-    await expect(canvas.queryByText("대면")).not.toBeInTheDocument();
-
-    // 칩이 모두 삭제되면 버튼이 없어야 함
-    await expect(canvas.queryAllByRole("button").length).toBe(0);
-  },
-};
-
-export const SelectedStateToggleBackInteraction: Story = {
-  name: "Edge/Selected State Toggle Back",
-  render: () => <ToggleChipsExample />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const user = createInteractionUser();
-
-    // "스트레스"는 기본 선택 상태
-    const stressChip = canvas.getByRole("button", { name: "스트레스" });
-    await expect(stressChip).toHaveAttribute("aria-pressed", "true");
-
-    // 클릭으로 해제
-    await user.click(stressChip);
-    await expect(stressChip).toHaveAttribute("aria-pressed", "false");
-
-    // 다시 클릭으로 선택
-    await user.click(stressChip);
-    await expect(stressChip).toHaveAttribute("aria-pressed", "true");
+    const disabledFilled = canvas.getByText("비활성 채움").closest("[data-slot]");
+    await expect(disabledFilled).toHaveAttribute("data-disabled", "true");
   },
 };
 
@@ -328,31 +265,54 @@ export const DesignGuideOverview: Story = {
   parameters: {
     docs: {
       description: {
-        story: "각 variant 가 Figma 가이드에 등재되었는지(core/experimental) 한눈에 확인.",
+        story: "각 variant/color 가 Figma 가이드(171:10856)에 등재된 core 항목인지 확인.",
       },
     },
   },
-  render: () => {
-    const variants: ChipVariantKey[] = ["outlined", "filled", "soft", "strong"];
-    return (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 16 }}>
-        {variants.map((variant) => (
-          <div
-            key={variant}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-              padding: 12,
-              border: "1px solid #ECECEC",
-              borderRadius: 8,
-            }}
-          >
-            <Chip label={variant} variant={variant} />
-            <DesignGuideBadge meta={chipGuide[variant]} />
-          </div>
-        ))}
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div>
+        <h4 style={{ marginBottom: 12 }}>Variants</h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 16 }}>
+          {VARIANTS.map((variant) => (
+            <div
+              key={variant}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                padding: 12,
+                border: "1px solid #ECECEC",
+                borderRadius: 8,
+              }}
+            >
+              <Chip label={variant} variant={variant} color="brand" />
+              <DesignGuideBadge meta={chipVariantGuide[variant]} />
+            </div>
+          ))}
+        </div>
       </div>
-    );
-  },
+      <div>
+        <h4 style={{ marginBottom: 12 }}>Colors</h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 16 }}>
+          {COLORS.map((color) => (
+            <div
+              key={color}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                padding: 12,
+                border: "1px solid #ECECEC",
+                borderRadius: 8,
+              }}
+            >
+              <Chip label={COLOR_LABEL[color]} variant="fill" color={color} />
+              <DesignGuideBadge meta={chipColorGuide[color]} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  ),
 };

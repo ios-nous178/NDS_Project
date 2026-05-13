@@ -448,10 +448,10 @@ function PostHeader() {
   return (
     <>
       <div className="moneple-label-row">
-        <Badge variant="primary" size="sm">
+        <Badge variant="fill" color="brand" size="sm">
           {post.board}
         </Badge>
-        <Badge variant="neutral" size="sm">
+        <Badge variant="ghost" color="neutral" size="sm">
           인기글
         </Badge>
       </div>
@@ -560,8 +560,8 @@ function Comments() {
       <header className="moneple-comments-head">
         <h2>댓글 {post.comments}</h2>
         <div style={{ display: "flex", gap: 8 }}>
-          <Chip label="등록순" size="sm" variant="strong" selected />
-          <Chip label="최신순" size="sm" variant="outlined" />
+          <Chip label="등록순" size="sm" variant="fill" color="neutral" />
+          <Chip label="최신순" size="sm" variant="outlined" color="neutral" />
         </div>
       </header>
       <div className="moneple-comment-list">

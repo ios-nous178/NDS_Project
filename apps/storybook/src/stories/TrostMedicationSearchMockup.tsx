@@ -218,7 +218,7 @@ function ShapeIcon({
  * 유틸
  * ──────────────────────────────────────────── */
 
-const cautionBadgeVariant: Record<CautionLevel, "success" | "caution" | "error"> = {
+const cautionBadgeColor: Record<CautionLevel, "success" | "caution" | "error"> = {
   낮음: "success",
   보통: "caution",
   높음: "error",
@@ -438,10 +438,9 @@ export default function TrostMedicationSearchMockup() {
                     <Chip
                       key={keyword}
                       label={keyword}
-                      variant="outlined"
-                      selected={searchQuery === keyword}
+                      variant={searchQuery === keyword ? "fill" : "outlined"}
+                      color="brand"
                       size="sm"
-                      shape="pill"
                       onClick={() => setSearchQuery(searchQuery === keyword ? "" : keyword)}
                     />
                   ))}
@@ -649,10 +648,9 @@ export default function TrostMedicationSearchMockup() {
             <Chip
               key={cat.key}
               label={cat.label}
-              variant="outlined"
-              selected={selectedCategory === cat.key}
+              variant={selectedCategory === cat.key ? "fill" : "outlined"}
+              color="brand"
               size={isMobile ? "sm" : "md"}
-              shape="pill"
               onClick={() => setSelectedCategory(cat.key as "전체" | MedicationCategory)}
             />
           ))}
@@ -867,8 +865,8 @@ export default function TrostMedicationSearchMockup() {
               key={tag.label}
               label={tag.label}
               variant="outlined"
+              color="brand"
               size="md"
-              shape="pill"
               onClick={() => console.log(`navigate: ${tag.url}`)}
             />
           ))}
@@ -902,8 +900,12 @@ function MedicationCard({ med, isMobile }: { med: Medication; isMobile: boolean 
           <div style={{ flex: 1, minWidth: 0 }}>
             {/* 상단: 카테고리 + 주의등급 */}
             <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
-              <Badge variant="neutral">{med.category}</Badge>
-              <Badge variant={cautionBadgeVariant[med.cautionLevel]}>주의 {med.cautionLevel}</Badge>
+              <Badge variant="ghost" color="neutral">
+                {med.category}
+              </Badge>
+              <Badge variant="ghost" color={cautionBadgeColor[med.cautionLevel]}>
+                주의 {med.cautionLevel}
+              </Badge>
             </div>
 
             {/* 약명 + 성분명 */}

@@ -149,8 +149,8 @@ function BoardTabs() {
           key={tab}
           label={tab}
           size="sm"
-          selected={index === 0}
-          variant={index === 0 ? "strong" : "filled"}
+          variant={index === 0 ? "fill" : "ghost"}
+          color="neutral"
           onClick={() => undefined}
         />
       ))}
@@ -162,7 +162,7 @@ function BestStrip() {
   return (
     <section className="moneple-best-strip">
       <div className="moneple-strip-title">
-        <Badge variant="primary" size="sm">
+        <Badge variant="fill" color="brand" size="sm">
           BEST
         </Badge>
         <strong>많이 읽은 글</strong>

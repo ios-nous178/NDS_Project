@@ -174,15 +174,21 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
   Badge: () => (
     <div style={previewRow}>
-      <Badge variant="primary">신규</Badge>
-      <Badge variant="success">완료</Badge>
-      <Badge variant="error">필수</Badge>
+      <Badge variant="fill" color="brand">
+        신규
+      </Badge>
+      <Badge variant="ghost" color="success">
+        완료
+      </Badge>
+      <Badge variant="line" color="error">
+        필수
+      </Badge>
     </div>
   ),
   Chip: () => (
     <div style={previewRow}>
-      <Chip label="우울감" />
-      <Chip label="수면" />
+      <Chip label="우울감" variant="outlined" color="brand" />
+      <Chip label="수면" variant="fill" color="brand" />
     </div>
   ),
   Avatar: () => (
@@ -284,6 +290,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
           <Tabs
             activeKey={k}
             onTabChange={setK}
+            variant="line"
+            size="mobile"
+            tone="neutral"
             items={[
               { key: "home", title: "홈" },
               { key: "list", title: "목록" },
