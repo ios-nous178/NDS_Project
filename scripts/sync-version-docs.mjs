@@ -77,16 +77,57 @@ try {
 
 // ── Render block ────────────────────────────────────────────
 
+// markdownlint-cli2 --fix pads table cells by *visual width* (CJK & emoji = 2 cols).
+// We mirror that here so the script's output is already canonical — otherwise the
+// pre-commit hook keeps re-flowing the table and `--check` flaps.
+function visualWidth(s) {
+  let w = 0;
+  for (const ch of s) {
+    const cp = ch.codePointAt(0);
+    const wide =
+      (cp >= 0x1100 && cp <= 0x115f) ||
+      (cp >= 0x2e80 && cp <= 0xa4cf) ||
+      (cp >= 0xac00 && cp <= 0xd7a3) ||
+      (cp >= 0xf900 && cp <= 0xfaff) ||
+      (cp >= 0xfe30 && cp <= 0xfe4f) ||
+      (cp >= 0xff00 && cp <= 0xff60) ||
+      (cp >= 0xffe0 && cp <= 0xffe6) ||
+      (cp >= 0x1f300 && cp <= 0x1f9ff);
+    w += wide ? 2 : 1;
+  }
+  return w;
+}
+
+function padCell(text, width) {
+  return text + " ".repeat(Math.max(0, width - visualWidth(text)));
+}
+
+function renderTable(rows) {
+  const colCount = rows[0].length;
+  const widths = new Array(colCount).fill(0);
+  for (const row of rows) {
+    for (let i = 0; i < colCount; i++) {
+      widths[i] = Math.max(widths[i], visualWidth(row[i]));
+    }
+  }
+  const fmtRow = (row) => `| ${row.map((c, i) => padCell(c, widths[i])).join(" | ")} |`;
+  const sep = `| ${widths.map((w) => "-".repeat(w)).join(" | ")} |`;
+  return [fmtRow(rows[0]), sep, ...rows.slice(1).map(fmtRow)].join("\n");
+}
+
 function renderBlock() {
-  const rows = versions.map((p) => `| ${p.label} | **${p.version}** |`).join("\n");
+  const tableRows = [
+    ["항목", "버전"],
+    ...versions.map((p) => [p.label, `**${p.version}**`]),
+    ["마지막 업데이트", `**${lastUpdate}**`],
+  ];
   return [
     MARKER_BEGIN,
+    "",
     `## 📌 현재 버전 (${todayDate} 기준)`,
     "",
-    "| 항목 | 버전 |",
-    "| --- | --- |",
-    rows,
-    `| 마지막 업데이트 | **${lastUpdate}** |`,
+    renderTable(tableRows),
+    "",
     MARKER_END,
   ].join("\n");
 }
