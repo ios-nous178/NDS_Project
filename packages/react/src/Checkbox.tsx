@@ -61,10 +61,10 @@ const checkboxStyles = `
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    margin-top: 1px;
-    border: 2px solid ${cv.borderRole.normal};
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    border: 1.5px solid ${cv.borderRole.normal};
     border-radius: ${radius.sm}px;
     background: ${cv.bg.white};
     transition: border-color ${transition.default}, background-color ${transition.default};
@@ -92,8 +92,8 @@ const checkboxStyles = `
     position: absolute;
     inset: 0;
     margin: auto;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     opacity: 0;
     transition: opacity ${transition.default};
     color: ${cv.bg.white};
