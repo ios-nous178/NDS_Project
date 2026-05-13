@@ -82,7 +82,7 @@ const checkboxStyles = `
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}[data-state="checked"]),
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}[data-state="indeterminate"]) {
-    background: ${cv.borderRole.disabled};
+    background: ${cv.bg.disabled};
     border-color: ${cv.borderRole.disabled};
   }
 
@@ -92,6 +92,12 @@ const checkboxStyles = `
     height: 14px;
     opacity: 0;
     transition: opacity ${transition.default};
+    color: ${cv.bg.white};
+  }
+
+  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_CHECK_ICON_CLASS}),
+  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_DASH_ICON_CLASS}) {
+    color: ${cv.iconRole.disabled};
   }
 
   :where(.${CB_INDICATOR_CLASS}[data-state="checked"] .${CB_CHECK_ICON_CLASS}) {
@@ -236,7 +242,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           >
             <path
               d="M3 7L6 10L11 4"
-              stroke="white"
+              stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -248,7 +254,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M3 7H11" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <path d="M3 7H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </span>
         {label && (
