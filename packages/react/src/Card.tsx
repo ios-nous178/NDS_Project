@@ -43,7 +43,7 @@ const cardStyles = `
   }
 
   :where(.${CARD_ROOT_CLASS}[data-variant="elevated"]) {
-    box-shadow: ${shadow.sm};
+    box-shadow: ${shadow["1"]};
   }
 
   :where(.${CARD_ROOT_CLASS}[data-clickable="true"]) {

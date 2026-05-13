@@ -47,7 +47,7 @@ const popupStyles = `
     padding: ${spacing[28]}px ${spacing[16]}px ${spacing[16]}px;
     border-radius: ${radius.md}px;
     background: ${cv.bg.white};
-    box-shadow: ${shadow.lg};
+    box-shadow: ${shadow["3"]};
     animation: nds-popup-scale-in 0.2s ease-out;
   }
 

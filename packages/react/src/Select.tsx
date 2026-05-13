@@ -119,7 +119,7 @@ const selectStyles = `
     background: ${cv.bg.white};
     border: 1px solid ${cv.border.light};
     border-radius: ${radius.md}px;
-    box-shadow: ${shadow.md};
+    box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
     box-sizing: border-box;
     animation: nds-select-fade-in ${transition.default};

@@ -157,7 +157,7 @@ const datePickerStyles = `
     background: ${cv.bg.white};
     border: 1px solid ${cv.border.light};
     border-radius: ${radius.md}px;
-    box-shadow: ${shadow.md};
+    box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
     padding: ${spacing[12]}px;
     box-sizing: border-box;

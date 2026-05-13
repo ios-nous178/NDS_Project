@@ -151,7 +151,7 @@ const trendingKeywordsStyles = `
     padding: ${spacing[24]}px;
     background: ${cv.bg.white};
     border-radius: ${radius.lg}px;
-    box-shadow: ${shadow.sm};
+    box-shadow: ${shadow["1"]};
     z-index: 100;
     opacity: 0;
     visibility: hidden;

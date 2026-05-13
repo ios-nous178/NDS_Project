@@ -342,7 +342,7 @@ const AppBarComponent = React.forwardRef<HTMLElement, AppBarProps>(
             "--nds-app-bar-padding-x": `${spacing[16]}px`,
             "--nds-app-bar-background": variantStyle.background,
             "--nds-app-bar-border-bottom": variantStyle.borderBottom,
-            "--nds-app-bar-shadow": elevated ? shadow.sm : variantStyle.shadow,
+            "--nds-app-bar-shadow": elevated ? shadow["1"] : variantStyle.shadow,
             "--nds-app-bar-title-font-size": `${variantStyle.titleFontSize}px`,
             "--nds-app-bar-title-line-height": `${variantStyle.titleLineHeight}px`,
             "--nds-app-bar-title-font-weight": variantStyle.titleFontWeight,

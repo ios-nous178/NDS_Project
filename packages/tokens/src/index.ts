@@ -8,7 +8,8 @@ export type { GuideStatus, GuideMeta } from "./guide";
 export { typography, fontFamily, fontWeight, typeScale } from "./typography";
 export type { TypeStyle } from "./typography";
 export { spacing, gap, padding, radius, shape, borderWidth, stroke, sizing, grid } from "./spacing";
-export { elevation, shadow, zIndex } from "./elevation";
+export { elevation, shadow, zIndex, elevationLevel } from "./elevation";
+export type { ShadowLevel, ElevationLevelName } from "./elevation";
 export { motion, duration, easing, transition } from "./motion";
 
 // Brand themes
