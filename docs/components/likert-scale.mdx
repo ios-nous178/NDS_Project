@@ -5,13 +5,40 @@ description: 5점 또는 N점 리커트 척도. ‘전혀 아니다 ~ 매우 그
 
 # LikertScale
 
-5점 또는 N점 리커트 척도. PHQ-9, GAD-7 같은 정형 임상 척도에 사용합니다. 가벼운 의견 수렴은 `VotePoll` 검토.
-
-## 사용법
+PHQ-9, GAD-7 같은 정형 임상 척도 또는 5점·7점 의견 조사를 위한 리커트 척도 컴포넌트입니다. 내부적으로 네이티브 `<input type="radio">`를 사용해 `radiogroup` 시맨틱을 가지며, 좌/우 끝(`startLabel` / `endLabel`)에 앵커 라벨을 둘 수 있습니다. 가벼운 의견 수렴 용도라면 `VotePoll` 같은 별도 컴포넌트를 검토하세요.
 
 ```tsx
 import { LikertScale } from "@nudge-eap/react";
+```
 
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- PHQ-9, GAD-7 등 **정형 임상 척도**의 각 문항 응답 입력
+- "전혀 아니다 ~ 매우 그렇다" 같은 **양극단 사이의 점수**를 선택해야 할 때
+- 동일 형식 문항이 반복되는 **설문지 형 UI**
+
+### 이럴 때 사용하지 마세요
+
+- "예/아니오" 둘 중 하나 → [Radio](/docs/components/checkbox-radio) 또는 SegmentedControl을 사용하세요
+- 가벼운 만족도/투표 → `VotePoll`을 검토하세요
+- 옵션 라벨이 점수가 아닌 카테고리 → `RadioGroup`이 더 자연스럽습니다
+
+### 자주 하는 실수
+
+- 옵션 라벨에 양극단 표현을 매번 적기 — 같은 의미라면 `startLabel` / `endLabel` 앵커로 한 번만 표시하세요
+- `value` 타입을 string과 number로 섞어 사용 — 내부에서 `String()`으로 비교하지만, 일관성을 위해 옵션 정의와 통일하세요
+
+---
+
+## 기본 사용
+
+### 5점 척도
+
+```tsx
 const [v, setV] = useState<string | number>(3);
 
 <LikertScale
@@ -20,12 +47,107 @@ const [v, setV] = useState<string | number>(3);
   options={[{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }]}
   startLabel="전혀 아니다"
   endLabel="매우 그렇다"
+/>;
+```
+
+### 옵션별 라벨 표시
+
+각 옵션에 `label`을 지정하면 점 아래에 함께 표시됩니다.
+
+```tsx
+<LikertScale
+  value={v}
+  onValueChange={setV}
+  options={[
+    { value: 0, label: "전혀" },
+    { value: 1, label: "조금" },
+    { value: 2, label: "보통" },
+    { value: 3, label: "자주" },
+    { value: 4, label: "항상" },
+  ]}
 />
 ```
 
+### 7점 척도
 
-> 가벼운 의견 수렴은 VotePoll. LikertScale은 정형 설문 척도.
+옵션 개수에 제한이 없으므로 7점·9점 척도도 가능합니다.
 
-## 인벤토리
+```tsx
+<LikertScale
+  value={v}
+  onValueChange={setV}
+  options={Array.from({ length: 7 }, (_, i) => ({ value: i + 1 }))}
+  startLabel="전혀 그렇지 않다"
+  endLabel="매우 그렇다"
+/>
+```
 
-전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/LikertScale](http://localhost:6006/?path=/docs/components-likert-scale--docs)로 진입할 수 있습니다.
+### 비활성화
+
+```tsx
+<LikertScale value={v} onValueChange={setV} options={options} disabled />
+```
+
+---
+
+## Props
+
+### LikertScale
+
+| Prop            | 타입                                  | 기본값     | 설명                                              |
+| --------------- | ------------------------------------- | ---------- | ------------------------------------------------- |
+| `options`       | `LikertOption[]`                      | —          | 옵션 목록 (필수)                                  |
+| `value`         | `string \| number`                    | —          | 선택된 값                                         |
+| `onValueChange` | `(value: string \| number) => void`   | —          | 값 변경 콜백 (필수)                               |
+| `name`          | `string`                              | `useId()`  | radio name 속성. 미지정 시 자동 생성              |
+| `startLabel`    | `ReactNode`                           | —          | 좌측 끝 앵커 라벨 (예: "전혀 그렇지 않다")        |
+| `endLabel`      | `ReactNode`                           | —          | 우측 끝 앵커 라벨 (예: "매우 그렇다")             |
+| `disabled`      | `boolean`                             | `false`    | 비활성화                                          |
+| `className`     | `string`                              | —          | 루트 className                                    |
+
+`<div>` HTML 속성을 모두 지원합니다 (`onChange`는 prop 시그니처에서 제외).
+
+### LikertOption
+
+| 속성    | 타입               | 설명                                          |
+| ------- | ------------------ | --------------------------------------------- |
+| `value` | `string \| number` | 옵션 값                                       |
+| `label` | `ReactNode`        | 점 아래에 표시할 라벨 (없으면 점만 표시)      |
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]   (role="radiogroup")
+├── div [data-slot="track"]
+│   ├── span.nds-likert__line   (점 사이를 잇는 가로선)
+│   └── label [data-slot="item"] [data-checked] [data-disabled]
+│       ├── input.nds-likert__input (type="radio", visually-hidden)
+│       ├── span [data-slot="dot"] [data-checked]
+│       │   └── span.nds-likert__dot-inner   (체크 시 흰 원)
+│       └── span [data-slot="item-label"]    (옵션 label이 있을 때)
+└── div [data-slot="anchors"]   (startLabel 또는 endLabel이 있을 때)
+    ├── span [data-slot="anchor-start"]
+    └── span [data-slot="anchor-end"]
+```
+
+내부 점(dot)은 네이티브 radio를 시각적으로 숨기고(`clip: rect(0,0,0,0)`) 커스텀 점을 그립니다 — 폼 제출과 키보드 동작은 네이티브 radio 그대로 유지됩니다.
+
+---
+
+## CSS 변수
+
+이 컴포넌트는 CSS 변수를 노출하지 않습니다. 점·선·라벨 색상은 시멘틱 토큰(`cv.border.default`, `cv.border.light`, `cv.primary.main`, `cv.primary.lighter`, `cv.text.subtle`, `cv.text.default`)에 직접 바인딩됩니다.
+
+---
+
+## 접근성
+
+- 루트: `role="radiogroup"` — 스크린 리더가 옵션들을 그룹으로 인지
+- 각 옵션: 네이티브 `<input type="radio" name>`을 사용 — 같은 `name`을 공유해 단일 선택이 강제됨
+- 라벨/점은 `<label htmlFor>`로 input과 연결 → 점·라벨 클릭으로 선택 가능
+- 키보드: 네이티브 radio 동작 그대로 — Tab으로 그룹 진입, ←/→ 또는 ↑/↓로 옵션 이동
+- `:focus-visible` 시 점 외곽에 `2px solid` outline 표시 (마우스 사용 시에는 표시 안 됨)
+- `disabled` 시 모든 input이 비활성화되고 opacity 0.5로 표시
+- 양극단 anchor 라벨은 `aria-hidden`이 아니므로 스크린 리더가 척도의 의미를 함께 읽습니다

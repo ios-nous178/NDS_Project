@@ -5,13 +5,33 @@ description: 사이드 드로어 패널. left/right, sm/md/lg, 포커스 트랩 
 
 # Drawer
 
-사이드에서 슬라이드되는 패널. 모바일은 `BottomSheet`, 데스크톱·태블릿은 `Drawer`로 분기 권장.
-
-## 사용법
+화면 좌/우 사이드에서 슬라이드되는 패널입니다. `title` / `description` / `footer` 슬롯과 닫기 버튼(X)을 내장하며, ESC · 오버레이 클릭 · X 버튼 세 가지 닫기 트리거를 제공합니다. 모바일은 `BottomSheet`, 데스크톱·태블릿은 `Drawer`로 분기하는 것을 권장합니다.
 
 ```tsx
 import { Drawer } from "@nudge-eap/react";
+```
 
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 본문을 가리지 않고 **보조 정보·필터·상세**를 열어야 할 때
+- 폼이 길어 모달보다 **세로 스크롤이 자연스러운 컨텍스트**가 필요할 때
+- 같은 화면 안에서 **컨텍스트 전환 없이 작업을 마치고 돌아갈 때**
+
+### 이럴 때 사용하지 마세요
+
+- 모바일 환경에서 하단에서 올라오는 시트 → `BottomSheet`를 사용하세요
+- 본문 위에 강제로 띄우는 결정/확인 다이얼로그 → `Modal`을 사용하세요
+- 가벼운 메시지/알림 → `Snackbar` 또는 `Banner`를 사용하세요
+
+---
+
+## 기본 사용
+
+```tsx
 const [open, setOpen] = useState(false);
 
 <Drawer
@@ -20,15 +40,94 @@ const [open, setOpen] = useState(false);
   side="right"
   size="md"
   title="필터"
-  footer={<Button onClick={apply}>적용</Button>}
+  description="원하는 조건을 골라주세요"
+  footer={
+    <>
+      <Button variant="outlined" onClick={() => setOpen(false)}>닫기</Button>
+      <Button onClick={apply}>적용</Button>
+    </>
+  }
 >
-  {/* body */}
+  {/* body 콘텐츠 */}
+</Drawer>;
+```
+
+### width 직접 지정
+
+`size` 대신 `width`(px)를 지정하면 우선 적용됩니다.
+
+```tsx
+<Drawer open={open} onClose={onClose} side="right" width={640}>
+  {/* ... */}
 </Drawer>
 ```
 
+### 헤더 없이 사용
 
-> 모바일은 BottomSheet, 데스크톱·태블릿은 Drawer로 분기 권장.
+`title` / `description`을 비우고 `showCloseButton={false}`를 주면 본문만 노출됩니다.
 
-## 인벤토리
+```tsx
+<Drawer open={open} onClose={onClose} showCloseButton={false}>
+  커스텀 헤더 / 본문
+</Drawer>
+```
 
-전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/Drawer](http://localhost:6006/?path=/docs/components-drawer--docs)로 진입할 수 있습니다.
+---
+
+## Props
+
+| Prop                  | 타입                      | 기본값    | 설명                                              |
+| --------------------- | ------------------------- | --------- | ------------------------------------------------- |
+| `open`                | `boolean`                 | —         | 열림 상태 (필수)                                  |
+| `onClose`             | `() => void`              | —         | 닫기 콜백 (오버레이 · ESC · X 버튼)               |
+| `side`                | `"left" \| "right"`       | `"right"` | 슬라이드 방향                                     |
+| `size`                | `"sm" \| "md" \| "lg"`    | `"md"`    | 사전 정의 폭: sm 320 / md 400 / lg 520px          |
+| `width`               | `number`                  | —         | 폭 직접 지정 (px). `size`보다 우선                |
+| `title`               | `ReactNode`               | —         | 헤더 타이틀                                       |
+| `description`         | `ReactNode`               | —         | 헤더 보조 텍스트                                  |
+| `footer`              | `ReactNode`               | —         | 푸터 영역 (보통 액션 버튼)                        |
+| `closeOnOverlayClick` | `boolean`                 | `true`    | 오버레이 클릭 시 닫기                             |
+| `closeOnEsc`          | `boolean`                 | `true`    | ESC로 닫기                                        |
+| `showCloseButton`     | `boolean`                 | `true`    | 헤더 우측 X 버튼 표시                             |
+| `children`            | `ReactNode`               | —         | body 콘텐츠                                       |
+| `portalContainer`     | `HTMLElement \| null`     | —         | 포털 컨테이너 (미지정 시 `document.body`)         |
+| `className`           | `string`                  | —         | 루트 className                                    |
+
+`<div>` HTML 속성을 모두 지원합니다 (`title` 제외 — DrawerProps의 `title`이 우선).
+
+---
+
+## data-slot 구조
+
+```
+(Portal)
+└── div [data-slot="root"] [data-side="left" | "right"]  (role="dialog", aria-modal="true")
+    ├── div [data-slot="overlay"]
+    └── div [data-slot="content"]
+        ├── div [data-slot="header"] [data-empty]   (조건부)
+        │   ├── h2 [data-slot="title"]
+        │   ├── p  [data-slot="description"]
+        │   └── button [data-slot="close"]  (aria-label="닫기")
+        ├── div [data-slot="body"]
+        └── div [data-slot="footer"]   (조건부)
+```
+
+---
+
+## CSS 변수
+
+| 변수                  | 기본값  | 설명                                  |
+| --------------------- | ------- | ------------------------------------- |
+| `--nds-drawer-width`  | `400px` | 콘텐츠 폭. `width` / `size`로 자동 설정 |
+
+오버레이 색상, shadow, slide-in 애니메이션은 내부 `@keyframes`(`nds-drawer-slide-in-left/right`)로 고정됩니다.
+
+---
+
+## 접근성
+
+- 루트 컨테이너: `role="dialog"` + `aria-modal="true"`
+- `title`이 있으면 `aria-labelledby`, `description`이 있으면 `aria-describedby` 자동 연결
+- ESC 키로 닫기 (`closeOnEsc={false}`로 비활성 가능)
+- 열린 동안 `document.body.style.overflow = "hidden"`로 배경 스크롤 잠금
+- X 닫기 버튼에 `aria-label="닫기"` 부여

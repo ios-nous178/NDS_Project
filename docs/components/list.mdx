@@ -5,15 +5,35 @@ description: 리스트 컨테이너. plain/card/divided variant, sm/md/lg 사이
 
 # List
 
-줄 단위 단순 리스트 컨테이너. `plain` · `card` · `divided` 변형을 지원합니다. 복합 카드 그리드는 `Card` 사용.
-
-## 사용법
+줄 단위 단순 리스트 컨테이너입니다. `plain` · `card` · `divided` 세 가지 변형을 지원하며, `ListItem`과 페어로 사용합니다.
 
 ```tsx
 import { List, ListItem } from "@nudge-eap/react";
+```
 
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 설정 메뉴, 알림 항목 등 **줄 단위의 동일한 구조**가 반복되는 리스트일 때
+- 좌측 아이콘/아바타 + 본문(제목·설명) + 우측 액션(chevron, switch, badge)의 표준 행 구성일 때
+- 행을 누르면 상세로 이동하는 **단순 내비게이션 리스트**일 때
+
+### 이럴 때 사용하지 마세요
+
+- 복합 카드 그리드, 시각적으로 풍부한 카드 → [Card](/docs/components/card)를 사용하세요
+- 표 형식 데이터(컬럼 정렬·정렬 헤더) → DataTable을 사용하세요
+
+---
+
+## 기본 사용
+
+```tsx
 <List variant="divided">
   <ListItem
+    leading={<BellIcon />}
     title="알림 설정"
     description="푸시 · 이메일"
     trailing={<ChevronRightIcon />}
@@ -23,9 +43,63 @@ import { List, ListItem } from "@nudge-eap/react";
 </List>
 ```
 
+`children`을 전달하면 `title` / `description` 대신 커스텀 본문을 그릴 수 있습니다.
 
-> 복합 카드 그리드는 Card 또는 도메인 카드. List는 줄 단위 단순 리스트.
+---
 
-## 인벤토리
+## Props
 
-전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/List](http://localhost:6006/?path=/docs/components-list--docs)로 진입할 수 있습니다.
+### List
+
+| Prop        | 타입                                  | 기본값    | 설명                          |
+| ----------- | ------------------------------------- | --------- | ----------------------------- |
+| `variant`   | `"plain" \| "card" \| "divided"`      | `"plain"` | 표시 변형                     |
+| `children`  | `ReactNode`                           | —         | `ListItem` 자식들             |
+| `className` | `string`                              | —         | 루트 className                |
+
+`<ul>` HTML 속성을 모두 지원합니다.
+
+### ListItem
+
+| Prop          | 타입                  | 기본값  | 설명                                            |
+| ------------- | --------------------- | ------- | ----------------------------------------------- |
+| `leading`     | `ReactNode`           | —       | 좌측 슬롯 (Avatar, 아이콘, Checkbox 등)         |
+| `title`       | `ReactNode`           | —       | 메인 라벨                                       |
+| `description` | `ReactNode`           | —       | 보조 설명                                       |
+| `trailing`    | `ReactNode`           | —       | 우측 슬롯 (chevron, badge, switch, 액션 버튼)   |
+| `onSelect`    | `() => void`          | —       | 클릭 콜백 (지정 시 `role="button"`)             |
+| `disabled`    | `boolean`             | `false` | 비활성화                                        |
+| `active`     | `boolean`             | `false` | 활성/선택 상태                                  |
+| `size`        | `"sm" \| "md" \| "lg"` | `"md"`  | 패딩 크기                                       |
+| `children`    | `ReactNode`           | —       | 커스텀 본문 (지정 시 title/description 무시)    |
+
+`<li>` HTML 속성을 모두 지원합니다.
+
+---
+
+## data-slot 구조
+
+```
+ul [data-slot="root"] [data-variant]
+└── li [data-slot="item"] [data-size] [data-interactive] [data-active] [data-disabled]
+    ├── span [data-slot="leading"]      (leading이 있을 때)
+    ├── span [data-slot="body"]
+    │   ├── span [data-slot="title"]
+    │   └── span [data-slot="description"]
+    └── span [data-slot="trailing"]     (trailing이 있을 때)
+```
+
+---
+
+## CSS 변수
+
+이 컴포넌트는 CSS 변수를 노출하지 않습니다. 외형 커스텀은 `data-variant`, `data-size` 등 data 속성으로 타겟팅하세요.
+
+---
+
+## 접근성
+
+- `<ul role="list">` 시맨틱 구조
+- `onSelect` 지정 시 `role="button"`, `tabIndex={0}` 부여 — Enter / Space 키로 활성화
+- `disabled` 시 `aria-disabled="true"` + 포인터 이벤트 차단
+- `:focus-visible`로 키보드 포커스 인디케이터 표시

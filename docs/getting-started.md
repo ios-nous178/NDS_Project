@@ -55,7 +55,7 @@ import { SearchIcon, CloseIcon, ChevronRightIcon } from "@nudge-eap/icons";
 <CloseIcon className="my-icon" aria-hidden="true" />
 ```
 
-83종의 아이콘을 제공합니다. 전체 목록은 [README의 Icons Package 섹션](https://github.com/anthropics/nudge-eap-design-system#icons-package)을 참고하세요.
+84종의 아이콘을 제공합니다. 전체 목록은 [Icons 문서](/docs/components/icons)를 참고하세요.
 
 ---
 
@@ -115,7 +115,7 @@ import "@nudge-eap/tokens/css";
 | ---------------------------- | ---------------------------------------- | ------- |
 | `@nudge-eap/tokens`          | 디자인 토큰 (색상, 타이포, 간격)         | ✅ 안정 |
 | `@nudge-eap/react`           | React 컴포넌트 (Button, Badge, Modal 등) | ✅ 안정 |
-| `@nudge-eap/icons`           | SVG 아이콘 React 컴포넌트 (83종)         | ✅ 안정 |
+| `@nudge-eap/icons`           | SVG 아이콘 React 컴포넌트 (84종)         | ✅ 안정 |
 | `@nudge-eap/tailwind-preset` | Tailwind CSS 프리셋                      | ✅ 안정 |
 
 ---

@@ -1,7 +1,15 @@
 ---
 version: alpha
 name: Geniet
+status: legacy
 description: "다이어트 정보, 식품 칼로리 검증, 건강식품 구매를 한곳에서. 캐시워크 연동 건강 관리 + 리워드 커머스 플랫폼. 틸(Teal) 컬러 기반 모바일 퍼스트 UI."
+note: |
+  ⚠️ 현재 활성 3-brand 라인업은 NudgeEAP / Trost / **Moneple** 입니다.
+  - 토큰: packages/tokens/src/brands/moneple.ts (Yellow #FFF42E)
+  - 시멘틱 토큰 카탈로그: docs/semantic-tokens.md
+  Geniet (Teal) 브랜드 스펙은 레거시 목업/MCP catalog와의 호환을 위해 유지되어 있으며,
+  packages/tokens 에는 더 이상 genietTheme 이 존재하지 않습니다.
+  Moneple 로의 마이그레이션이 완료되면 brands/moneple/DESIGN.md 로 옮기거나 삭제됩니다.
 colors:
   primary: "#48C2C5"
   primary-light: "#7ED4D6"

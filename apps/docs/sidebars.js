@@ -9,7 +9,6 @@ module.exports = {
       items: [
         "components/overview",
         "components/gallery",
-        "components/candidates",
         "components/inventory",
         "components/icons",
         "components/button",
