@@ -39,16 +39,16 @@ export interface FABProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 
 const colorConfig: Record<FABColor, { bg: string; fg: string }> = {
   primary: {
-    bg: "var(--color-semantic-primary-main, #4080F0)",
-    fg: "var(--color-semantic-primary-fg, #fff)",
+    bg: "var(--semantic-primary-main, #4080F0)",
+    fg: "var(--semantic-primary-fg, #fff)",
   },
   secondary: {
-    bg: "var(--color-semantic-secondary-main, #1A1A1A)",
+    bg: "var(--semantic-secondary-main, #1A1A1A)",
     fg: "#fff",
   },
   neutral: {
-    bg: "var(--color-semantic-bg-white, #fff)",
-    fg: "var(--color-semantic-text-default, #1A1A1A)",
+    bg: "var(--semantic-bg-white, #fff)",
+    fg: "var(--semantic-text-default, #1A1A1A)",
   },
 };
 

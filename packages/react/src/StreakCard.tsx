@@ -67,8 +67,8 @@ const streakStyles = `
     width: 36px;
     height: 36px;
     border-radius: 9999px;
-    background: var(--color-semantic-caution-bg, #FFF4E0);
-    color: var(--color-semantic-caution-main, #F0A030);
+    background: var(--semantic-caution-bg, #FFF4E0);
+    color: var(--semantic-caution-main, #F0A030);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -134,12 +134,12 @@ const streakStyles = `
   }
 
   :where(.${SK_DAY_DOT_CLASS}[data-done="true"]) {
-    background: var(--color-semantic-caution-main, #F0A030);
-    border-color: var(--color-semantic-caution-main, #F0A030);
+    background: var(--semantic-caution-main, #F0A030);
+    border-color: var(--semantic-caution-main, #F0A030);
   }
 
   :where(.${SK_DAY_DOT_CLASS}[data-today="true"]:not([data-done="true"])) {
-    border: 2px dashed var(--color-semantic-caution-main, #F0A030);
+    border: 2px dashed var(--semantic-caution-main, #F0A030);
     background: ${cv.bg.white};
   }
 

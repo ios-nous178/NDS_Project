@@ -121,13 +121,13 @@ const stStyles = `
   }
 
   :where(.${ST_DELTA_CLASS}[data-trend="up"]) {
-    background: var(--color-semantic-success-bg, #E5F8E9);
-    color: var(--color-semantic-success-text, #1A6D2C);
+    background: var(--semantic-success-bg, #E5F8E9);
+    color: var(--semantic-success-text, #1A6D2C);
   }
 
   :where(.${ST_DELTA_CLASS}[data-trend="down"]) {
-    background: var(--color-semantic-error-bg, #FFE9E9);
-    color: var(--color-semantic-error-text, #B83333);
+    background: var(--semantic-error-bg, #FFE9E9);
+    color: var(--semantic-error-text, #B83333);
   }
 
   :where(.${ST_FOOTER_CLASS}) {

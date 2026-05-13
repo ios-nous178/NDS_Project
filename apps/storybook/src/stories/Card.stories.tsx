@@ -49,7 +49,7 @@ export const Outlined: Story = {
         subtitle="심리상담 전문"
         meta={
           <>
-            <StarIcon size={14} color="var(--eap-icon-status-caution)" />
+            <StarIcon size={14} color="var(--semantic-icon-status-caution)" />
             <span>4.9</span>
           </>
         }
@@ -147,7 +147,7 @@ export const CompoundCounselorCard: Story = {
             <Card.Subtitle>심리상담 · 경력 8년</Card.Subtitle>
           </div>
           <Card.Meta>
-            <StarIcon size={14} color="var(--eap-icon-status-caution)" />
+            <StarIcon size={14} color="var(--semantic-icon-status-caution)" />
             <span>4.8</span>
           </Card.Meta>
         </Card.Header>

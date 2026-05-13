@@ -108,10 +108,10 @@ const cbStyles = `
   }
 
   :where(.${CB_END_CLASS}) {
-    background: var(--color-semantic-error-main, #E04D4D);
+    background: var(--semantic-error-main, #E04D4D);
   }
 
-  :where(.${CB_END_CLASS}:hover) { background: var(--color-semantic-error-text, #B83333); }
+  :where(.${CB_END_CLASS}:hover) { background: var(--semantic-error-text, #B83333); }
 
   :where(.${CB_LABEL_CLASS}) {
     display: flex;

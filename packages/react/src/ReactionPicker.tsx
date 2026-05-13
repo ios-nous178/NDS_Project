@@ -70,7 +70,7 @@ const rpStyles = `
   :where(.${RP_ITEM_CLASS}:hover:not([disabled])) { background: ${cv.bg.coolGray}; }
 
   :where(.${RP_ITEM_CLASS}[data-active="true"]) {
-    background: var(--color-semantic-primary-bg, #EBF1FF);
+    background: var(--semantic-primary-bg, #EBF1FF);
     border-color: ${cv.primary.main};
     color: ${cv.primary.main};
   }

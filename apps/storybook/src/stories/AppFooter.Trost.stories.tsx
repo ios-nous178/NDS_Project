@@ -88,8 +88,8 @@ const SNSIcons = () => (
 
 /* ─── Tab icon ─── */
 
-const TAB_ICON_COLOR = "var(--eap-icon-normal-default)";
-const TAB_ICON_ACTIVE_COLOR = "var(--eap-icon-brand-default)";
+const TAB_ICON_COLOR = "var(--semantic-icon-normal-default)";
+const TAB_ICON_ACTIVE_COLOR = "var(--semantic-icon-brand-default)";
 
 const tabIconFor = (label: string, active?: boolean) => {
   const color = active ? TAB_ICON_ACTIVE_COLOR : TAB_ICON_COLOR;

@@ -83,7 +83,7 @@ const pcStyles = `
     left: ${spacing[8]}px;
     padding: 2px 8px;
     border-radius: 9999px;
-    background: var(--color-semantic-error-main, #E04D4D);
+    background: var(--semantic-error-main, #E04D4D);
     color: #fff;
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.bold};

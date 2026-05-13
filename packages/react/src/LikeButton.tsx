@@ -55,11 +55,11 @@ const lbStyles = `
   }
 
   :where(.${LB_CLASS}[data-liked="true"]) {
-    color: var(--nds-like-color, var(--color-semantic-error-main, #E04D4D));
+    color: var(--nds-like-color, var(--semantic-error-main, #E04D4D));
   }
 
   :where(.${LB_CLASS}:hover) {
-    color: var(--nds-like-color, var(--color-semantic-error-main, #E04D4D));
+    color: var(--nds-like-color, var(--semantic-error-main, #E04D4D));
   }
 
   :where(.${LB_CLASS}:focus-visible) {

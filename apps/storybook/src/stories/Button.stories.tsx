@@ -350,7 +350,7 @@ export const WebviewChallengeButtons: Story = {
       <Button
         color="primary"
         fullWidth
-        leftIcon={<LockIcon size={18} color="var(--eap-icon-inverse-default)" />}
+        leftIcon={<LockIcon size={18} color="var(--semantic-icon-inverse-default)" />}
       >
         인증하고 참여하기
       </Button>
@@ -390,7 +390,7 @@ export const WithIconsAndSlots: Story = {
   render: () => (
     <div style={{ display: "flex", width: 360, flexDirection: "column", gap: 12 }}>
       <Button
-        leftIcon={<CommentIcon size={18} color="var(--eap-icon-inverse-default)" />}
+        leftIcon={<CommentIcon size={18} color="var(--semantic-icon-inverse-default)" />}
         fullWidth
       >
         앱에서 상담하기

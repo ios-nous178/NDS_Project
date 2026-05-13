@@ -47,8 +47,8 @@ function MoneplePostDetailStyles() {
     <style>{`
       .moneple-detail {
         min-height: 100%;
-        background: var(--color-semantic-bg-white, #FFFFFF);
-        color: var(--color-semantic-text-default, #333333);
+        background: var(--semantic-bg-white, #FFFFFF);
+        color: var(--semantic-text-default, #333333);
         font-family: var(--font-web);
       }
 
@@ -70,10 +70,10 @@ function MoneplePostDetailStyles() {
         width: 220px;
         min-height: 180px;
         padding: 16px;
-        border: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border: 1px solid var(--semantic-border-default, #EDEDED);
         border-radius: 8px;
-        background: var(--color-semantic-bg-light, #F5F5F5);
-        color: var(--color-semantic-text-placeholder, #999999);
+        background: var(--semantic-bg-light, #F5F5F5);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 12px;
         line-height: 18px;
       }
@@ -88,9 +88,9 @@ function MoneplePostDetailStyles() {
       .moneple-detail-guide,
       .moneple-comment-composer,
       .moneple-comments {
-        border: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border: 1px solid var(--semantic-border-default, #EDEDED);
         border-radius: 8px;
-        background: var(--color-semantic-bg-white, #FFFFFF);
+        background: var(--semantic-bg-white, #FFFFFF);
       }
 
       .moneple-side-card {
@@ -104,8 +104,8 @@ function MoneplePostDetailStyles() {
       .moneple-side-card h2 {
         margin: 0;
         padding: 14px 16px;
-        border-bottom: 1px solid var(--color-semantic-border-default, #EDEDED);
-        color: var(--color-semantic-text-default, #333333);
+        border-bottom: 1px solid var(--semantic-border-default, #EDEDED);
+        color: var(--semantic-text-default, #333333);
         font-size: 15px;
         line-height: 22px;
       }
@@ -113,7 +113,7 @@ function MoneplePostDetailStyles() {
       .moneple-side-card p {
         margin: 0;
         padding: 14px 16px;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 13px;
         line-height: 19px;
       }
@@ -124,7 +124,7 @@ function MoneplePostDetailStyles() {
         padding: 9px 16px;
         border: 0;
         background: transparent;
-        color: var(--color-semantic-text-subtle, #666666);
+        color: var(--semantic-text-subtle, #666666);
         font-family: inherit;
         font-size: 14px;
         line-height: 20px;
@@ -133,11 +133,11 @@ function MoneplePostDetailStyles() {
       }
 
       .moneple-side-card button:hover {
-        background: var(--color-semantic-bg-light, #F5F5F5);
+        background: var(--semantic-bg-light, #F5F5F5);
       }
 
       .moneple-side-card button.is-active {
-        color: var(--color-semantic-caution-text, #FF9D00);
+        color: var(--semantic-caution-text, #FF9D00);
         font-weight: 700;
       }
 
@@ -159,7 +159,7 @@ function MoneplePostDetailStyles() {
 
       .moneple-detail-title {
         margin: 0 0 16px;
-        color: var(--color-semantic-text-strong, #151515);
+        color: var(--semantic-text-strong, #151515);
         font-size: 30px;
         font-weight: 700;
         line-height: 40px;
@@ -172,14 +172,14 @@ function MoneplePostDetailStyles() {
         justify-content: space-between;
         gap: 16px;
         padding-bottom: 16px;
-        border-bottom: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border-bottom: 1px solid var(--semantic-border-default, #EDEDED);
       }
 
       .moneple-author {
         display: flex;
         align-items: center;
         min-width: 0;
-        color: var(--color-semantic-text-strong, #151515);
+        color: var(--semantic-text-strong, #151515);
         font-size: 14px;
         font-weight: 500;
       }
@@ -189,7 +189,7 @@ function MoneplePostDetailStyles() {
         flex-wrap: wrap;
         justify-content: flex-end;
         gap: 12px;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 14px;
         line-height: 20px;
         white-space: nowrap;
@@ -201,14 +201,14 @@ function MoneplePostDetailStyles() {
         justify-content: space-between;
         gap: 16px;
         padding: 10px 14px;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 13px;
         line-height: 18px;
       }
 
       .moneple-detail-copy code {
         overflow: hidden;
-        color: var(--color-semantic-text-subtle, #666666);
+        color: var(--semantic-text-subtle, #666666);
         font-family: inherit;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -216,15 +216,15 @@ function MoneplePostDetailStyles() {
 
       .moneple-detail-guide {
         padding: 9px 14px;
-        background: var(--color-semantic-bg-light, #F5F5F5);
-        color: var(--color-semantic-text-subtle, #666666);
+        background: var(--semantic-bg-light, #F5F5F5);
+        color: var(--semantic-text-subtle, #666666);
         font-size: 13px;
         line-height: 20px;
       }
 
       .moneple-editor-viewer {
         padding: 12px 0 4px;
-        color: var(--color-semantic-text-default, #333333);
+        color: var(--semantic-text-default, #333333);
         font-size: 15px;
         line-height: 28px;
         word-break: break-word;
@@ -237,14 +237,14 @@ function MoneplePostDetailStyles() {
       .moneple-editor-image {
         margin: 22px 0;
         padding: 18px;
-        border: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border: 1px solid var(--semantic-border-default, #EDEDED);
         border-radius: 8px;
-        background: var(--color-semantic-bg-light, #F5F5F5);
+        background: var(--semantic-bg-light, #F5F5F5);
       }
 
       .moneple-editor-image strong {
         display: block;
-        color: var(--color-semantic-text-default, #333333);
+        color: var(--semantic-text-default, #333333);
         font-size: 14px;
         line-height: 20px;
       }
@@ -252,7 +252,7 @@ function MoneplePostDetailStyles() {
       .moneple-editor-image span {
         display: block;
         margin-top: 6px;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 13px;
         line-height: 19px;
       }
@@ -267,10 +267,10 @@ function MoneplePostDetailStyles() {
       .moneple-reaction {
         min-width: 84px;
         height: 44px;
-        border: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border: 1px solid var(--semantic-border-default, #EDEDED);
         border-radius: 9999px;
-        background: var(--color-semantic-bg-white, #FFFFFF);
-        color: var(--color-semantic-text-default, #333333);
+        background: var(--semantic-bg-white, #FFFFFF);
+        color: var(--semantic-text-default, #333333);
         font-family: inherit;
         font-size: 14px;
         font-weight: 700;
@@ -278,8 +278,8 @@ function MoneplePostDetailStyles() {
       }
 
       .moneple-reaction.is-active {
-        border-color: var(--color-semantic-primary-main, #FFF42E);
-        background: var(--color-semantic-primary-main, #FFF42E);
+        border-color: var(--semantic-primary-main, #FFF42E);
+        background: var(--semantic-primary-main, #FFF42E);
       }
 
       .moneple-icon-menu {
@@ -287,7 +287,7 @@ function MoneplePostDetailStyles() {
         justify-content: center;
         gap: 10px;
         padding: 12px 0 20px;
-        border-bottom: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border-bottom: 1px solid var(--semantic-border-default, #EDEDED);
       }
 
       .moneple-icon-menu button {
@@ -296,7 +296,7 @@ function MoneplePostDetailStyles() {
         border: 0;
         border-radius: 6px;
         background: transparent;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-family: inherit;
         font-size: 12px;
         line-height: 18px;
@@ -304,7 +304,7 @@ function MoneplePostDetailStyles() {
       }
 
       .moneple-icon-menu button:hover {
-        background: var(--color-semantic-bg-light, #F5F5F5);
+        background: var(--semantic-bg-light, #F5F5F5);
       }
 
       .moneple-page-buttons {
@@ -331,7 +331,7 @@ function MoneplePostDetailStyles() {
       }
 
       .moneple-composer-footer span {
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 12px;
         line-height: 16px;
       }
@@ -346,12 +346,12 @@ function MoneplePostDetailStyles() {
         align-items: center;
         gap: 12px;
         padding: 16px;
-        border-bottom: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border-bottom: 1px solid var(--semantic-border-default, #EDEDED);
       }
 
       .moneple-comments-head h2 {
         margin: 0;
-        color: var(--color-semantic-text-default, #333333);
+        color: var(--semantic-text-default, #333333);
         font-size: 16px;
         line-height: 24px;
       }
@@ -364,7 +364,7 @@ function MoneplePostDetailStyles() {
         border: 0;
         background: transparent;
         padding: 0;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-family: inherit;
         font-size: 13px;
         font-weight: 700;

@@ -251,7 +251,7 @@ export const BreathingGuide = React.forwardRef<HTMLDivElement, BreathingGuidePro
             <p className={BG_LABEL_CLASS}>{label}</p>
             {showCount && playing && <p className={BG_COUNT_CLASS}>{secondsLeft}</p>}
             {!playing && cycles ? (
-              <small style={{ color: "var(--color-semantic-text-subtle, #888)" }}>
+              <small style={{ color: "var(--semantic-text-subtle, #888)" }}>
                 {cycleCount} / {cycles} 사이클
               </small>
             ) : null}

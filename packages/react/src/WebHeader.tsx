@@ -26,7 +26,7 @@ import {
  *       radius 8, body-1(16/24) Bold primary
  *     · 로그인/로그아웃: white bg, 1px primary border, px 18, height sizing.button.md (44),
  *       radius 8, body-1 Bold primary
- *   브랜드별 색은 tokens.css 의 --color-semantic-primary-* / --color-semantic-text-* 가
+ *   브랜드별 색은 tokens.css 의 --semantic-primary-* / --semantic-text-* 가
  *   자동으로 끌어와짐. 클라이언트 로고는 per-tenant 이미지라 prop 으로 주입한다.
  */
 

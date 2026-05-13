@@ -28,7 +28,7 @@ export const Playground: Story = {
             id="t-record"
             style={{ padding: "12px 24px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
-            <EditIcon size={16} color="var(--eap-icon-normal-default)" /> 기록
+            <EditIcon size={16} color="var(--semantic-icon-normal-default)" /> 기록
           </button>
           <button id="t-discover" style={{ padding: "12px 24px" }}>
             ✨ 둘러보기
@@ -37,7 +37,7 @@ export const Playground: Story = {
             id="t-settings"
             style={{ padding: "12px 24px", display: "inline-flex", alignItems: "center", gap: 6 }}
           >
-            <SettingIcon size={16} color="var(--eap-icon-normal-default)" /> 설정
+            <SettingIcon size={16} color="var(--semantic-icon-normal-default)" /> 설정
           </button>
         </div>
         <CoachMark

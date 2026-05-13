@@ -56,6 +56,26 @@ export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | 
 
 export const SCOPE_ADVISORY = {
   scope: "사용자 앱 (Trost / Geniet / NudgeEAP) 화면 전용",
+  role: {
+    purpose:
+      "이 MCP의 역할은 '별도의 외부 목업 프로젝트(예: Vite + React)에서 DS를 소비해 목업을 만드는 것'이다. " +
+      "DS 레포(NudgeEAPDesignSystem) 자체의 소스 코드를 수정하거나 GitHub에 푸시하는 것은 이 MCP의 역할이 아니다.",
+    inScope: [
+      "외부 목업 프로젝트에서 DS 컴포넌트/아이콘/토큰 조회",
+      "외부 목업 프로젝트에 CLAUDE.md / 환경 셋업 생성",
+      "사용자 앱 또는 어드민/CMS 목업 .tsx 작성·검증",
+      "목업 dev 서버 실행 / preview 확인 / 종료",
+    ],
+    outOfScope: [
+      "DS 레포의 컴포넌트/토큰/아이콘 소스 코드 수정",
+      "DS 레포에 대한 git commit, git push, PR 생성, 브랜치 조작",
+      "GitHub 레포지토리(이 DS 또는 다른 레포) 직접 변경",
+      "DS 패키지 버전 bump, npm publish, 릴리즈 작업",
+    ],
+    ifAskedToModifyRepo:
+      "사용자가 DS 레포 수정이나 GitHub 푸시를 요청하면, 이 MCP의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내할 것. " +
+      "이 MCP는 외부 프로젝트에서 DS를 '소비'하는 쪽이며, DS 레포를 '생산'하는 쪽이 아니다.",
+  },
   intentBranching: {
     "admin-cms": {
       keywords: ADMIN_KEYWORDS,
@@ -480,7 +500,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "표준 variant에 없는 톤(예: caution, success)이 필요해도 raw <span>/<div>로 대체 금지. style prop으로 background/color/font-weight를 토큰 변수로 override + icon prop으로 좌측 도트 주입이 정공법.",
     ],
     recommended: [
-      "주의 톤: <Chip label='주의 필요' variant='filled' shape='pill' size='sm' icon={<span style={{width:6,height:6,borderRadius:9999,background:'var(--color-semantic-caution-main)'}}/>} style={{background:'var(--color-semantic-caution-bg)',color:'var(--color-semantic-caution-text)',fontWeight:600}} />",
+      "주의 톤: <Chip label='주의 필요' variant='filled' shape='pill' size='sm' icon={<span style={{width:6,height:6,borderRadius:9999,background:'var(--semantic-caution-main)'}}/>} style={{background:'var(--semantic-caution-bg)',color:'var(--semantic-caution-text)',fontWeight:600}} />",
       "성공/에러도 같은 패턴으로 토큰 var()만 교체",
     ],
     usagePolicy: {
@@ -578,7 +598,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "ProgressBar",
     summary: "value/max 기반 진행도.",
     pitfalls: [
-      "상태(주의/에러/성공)를 표현할 때는 color prop에 semantic 토큰 var(--color-semantic-*-main)을 넘겨 시각적 의미를 통일.",
+      "상태(주의/에러/성공)를 표현할 때는 color prop에 semantic 토큰 var(--semantic-*-main)을 넘겨 시각적 의미를 통일.",
     ],
   },
   Radio: {
@@ -1992,27 +2012,27 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "icon-color": {
     name: "icon-color",
     summary:
-      "아이콘 컬러 매핑 기준. Figma Iconography(379:490)의 Color Usage 표와 `--eap-icon-*` 시맨틱 토큰을 단일 진실 소스로 사용. 사이즈/스타일/터치 영역 기준은 get_pattern_guide('iconography')를 함께 확인.",
+      "아이콘 컬러 매핑 기준. Figma Iconography(379:490)의 Color Usage 표와 `--semantic-icon-*` 시맨틱 토큰을 단일 진실 소스로 사용. 사이즈/스타일/터치 영역 기준은 get_pattern_guide('iconography')를 함께 확인.",
     rules: [
       "아이콘 컴포넌트의 기본값은 currentColor다. 단독 배치 시 부모 color가 명시되어 있지 않으면 본문색/검정으로 보여 어색할 수 있다.",
       "Button, IconButton, Chip, Select 등 DS 컴포넌트 슬롯 안의 아이콘은 컴포넌트가 정한 텍스트 컬러를 상속하게 두는 것이 기본이다.",
-      "안내/상태/빈 상태/카드 장식처럼 단독으로 배치한 아이콘은 `color` prop 또는 부모 `style.color`를 `var(--eap-icon-*)` 토큰으로 명시한다.",
-      "용도별 토큰 매핑(Figma Color Usage 표):\n  · 본문 옆 강조 → `--eap-icon-strong-default` (Neutral/800 · #383838)\n  · 보조 정보·메타 → `--eap-icon-normal-default` (Neutral/600 · #666666)\n  · 비활성 → `--eap-icon-disabled-default` (Neutral/300 · #C7C7C7)\n  · 어두운 배경 위 → `--eap-icon-inverse-default` (White · #FFFFFF)\n  · 브랜드 강조 → `--eap-icon-brand-default` (Bright Blue/500 · #2B96ED)",
-      "상태 의미가 있을 때만 status 토큰을 사용한다:\n  · 성공 → `--eap-icon-status-success` (Teal/500 · #13BFA2)\n  · 오류 → `--eap-icon-status-error` (Orange Red/500 · #F13F00)\n  · 주의 → `--eap-icon-status-caution` (Golden Yellow/500 · #FFC303)",
+      "안내/상태/빈 상태/카드 장식처럼 단독으로 배치한 아이콘은 `color` prop 또는 부모 `style.color`를 `var(--semantic-icon-*)` 토큰으로 명시한다.",
+      "용도별 토큰 매핑(Figma Color Usage 표):\n  · 본문 옆 강조 → `--semantic-icon-strong-default` (Neutral/800 · #383838)\n  · 보조 정보·메타 → `--semantic-icon-normal-default` (Neutral/600 · #666666)\n  · 비활성 → `--semantic-icon-disabled-default` (Neutral/300 · #C7C7C7)\n  · 어두운 배경 위 → `--semantic-icon-inverse-default` (White · #FFFFFF)\n  · 브랜드 강조 → `--semantic-icon-brand-default` (Bright Blue/500 · #2B96ED)",
+      "상태 의미가 있을 때만 status 토큰을 사용한다:\n  · 성공 → `--semantic-icon-status-success` (Teal/500 · #13BFA2)\n  · 오류 → `--semantic-icon-status-error` (Orange Red/500 · #F13F00)\n  · 주의 → `--semantic-icon-status-caution` (Golden Yellow/500 · #FFC303)",
       "TestresultSafe/Warning/Danger, Siren 같은 '컬러 아이콘'(다색 일러스트성)은 시맨틱 토큰을 덧씌우지 않는다. 그대로 사용한다.",
       "아이콘만 별도 강한 색으로 튀게 하지 않는다. 강조가 필요하면 텍스트, 배경, 아이콘 중 1~2개만 함께 조합한다.",
     ],
     avoid: [
       "<InfoIcon />처럼 단독 아이콘을 색 지정 없이 배치",
       "안내 박스 안에서 아이콘만 브랜드 primary로 과하게 강조",
-      "아이콘에 hex/rgb 직접 지정 — `--eap-icon-*` 토큰만 사용",
-      "구식 `--color-semantic-icon-*` 토큰 사용 — `--eap-icon-*`로 대체",
+      "아이콘에 hex/rgb 직접 지정 — `--semantic-icon-*` 토큰만 사용",
+      "구식 `--semantic-icon-*` 토큰 사용 — `--semantic-icon-*`로 대체",
       "한 섹션 안에서 아이콘마다 다른 semantic color를 섞는 구성",
       "컬러(다색) 아이콘에 color prop을 강제로 덮어쓰는 사용",
     ],
     metrics: {
       standaloneIconColor: "required",
-      preferredColor: "var(--eap-icon-*) — strong/normal/disabled/inverse/brand/status",
+      preferredColor: "var(--semantic-icon-*) — strong/normal/disabled/inverse/brand/status",
       maxSemanticIconColorsPerSection: 1,
     },
   },

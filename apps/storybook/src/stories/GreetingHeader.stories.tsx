@@ -23,7 +23,7 @@ export const Playground: Story = {
         trailing={
           <IconButton
             aria-label="알림"
-            icon={<PushIcon size={20} color="var(--eap-icon-normal-default)" />}
+            icon={<PushIcon size={20} color="var(--semantic-icon-normal-default)" />}
           />
         }
       />

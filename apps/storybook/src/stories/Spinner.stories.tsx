@@ -49,7 +49,7 @@ export const InfiniteLoad: Story = {
         alignItems: "center",
         gap: 8,
         padding: 40,
-        color: "var(--color-semantic-text-subtle)",
+        color: "var(--semantic-text-subtle)",
       }}
     >
       <Spinner />

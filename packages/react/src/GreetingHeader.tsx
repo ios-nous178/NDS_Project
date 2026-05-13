@@ -44,7 +44,7 @@ const ghStyles = `
   }
 
   :where(.${GH_CLASS}[data-tone="primary"]) {
-    background: var(--color-semantic-primary-bg, #EBF1FF);
+    background: var(--semantic-primary-bg, #EBF1FF);
   }
 
   :where(.${GH_TOP_CLASS}) {

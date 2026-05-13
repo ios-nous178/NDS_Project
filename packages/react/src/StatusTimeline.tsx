@@ -121,7 +121,7 @@ const stStyles = `
     background: ${cv.bg.white};
     border-color: ${cv.primary.main};
     color: ${cv.primary.main};
-    box-shadow: 0 0 0 4px var(--color-semantic-primary-bg, rgba(64, 128, 240, 0.18));
+    box-shadow: 0 0 0 4px var(--semantic-primary-bg, rgba(64, 128, 240, 0.18));
   }
 
   :where(.${ST_LINE_CLASS}) {

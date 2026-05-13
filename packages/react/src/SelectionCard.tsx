@@ -120,7 +120,7 @@ const selectionCardStyles = `
 
   :where(.${SC_ITEM_CLASS}[data-checked="true"]) {
     border-color: ${cv.primary.main};
-    background: var(--color-semantic-primary-bg, ${cv.bg.coolGray});
+    background: var(--semantic-primary-bg, ${cv.bg.coolGray});
   }
 
   :where(.${SC_ITEM_CLASS}[data-disabled="true"]) {

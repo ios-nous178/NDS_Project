@@ -51,8 +51,8 @@ const ccStyles = `
   :where(.${CC_CLASS}) {
     display: flex;
     align-items: stretch;
-    background: var(--nds-coupon-bg, var(--color-semantic-primary-bg, #EBF1FF));
-    color: var(--nds-coupon-fg, var(--color-semantic-primary-main, #4080F0));
+    background: var(--nds-coupon-bg, var(--semantic-primary-bg, #EBF1FF));
+    color: var(--nds-coupon-fg, var(--semantic-primary-main, #4080F0));
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     overflow: hidden;
@@ -162,7 +162,7 @@ const ccStyles = `
     padding: 0 ${spacing[12]}px;
     border: none;
     border-radius: 9999px;
-    background: var(--color-semantic-primary-main, #4080F0);
+    background: var(--semantic-primary-main, #4080F0);
     color: #fff;
     cursor: pointer;
     font-family: inherit;

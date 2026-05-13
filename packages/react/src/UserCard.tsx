@@ -176,7 +176,7 @@ export const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
           <p className={UC_NAME_CLASS}>
             {name}
             {verified && (
-              <span style={{ marginLeft: 4, color: "var(--color-semantic-primary-main, #4080F0)" }}>
+              <span style={{ marginLeft: 4, color: "var(--semantic-primary-main, #4080F0)" }}>
                 ✓
               </span>
             )}

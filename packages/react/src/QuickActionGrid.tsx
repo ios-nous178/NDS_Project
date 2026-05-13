@@ -90,7 +90,7 @@ const qaStyles = `
     width: 48px;
     height: 48px;
     border-radius: ${radius.md}px;
-    background: var(--nds-quick-action-icon-bg, var(--color-semantic-primary-bg, #EBF1FF));
+    background: var(--nds-quick-action-icon-bg, var(--semantic-primary-bg, #EBF1FF));
     color: ${cv.primary.main};
     display: inline-flex;
     align-items: center;
@@ -116,7 +116,7 @@ const qaStyles = `
     min-width: 18px;
     height: 18px;
     border-radius: 9999px;
-    background: var(--color-semantic-error-main, #E04D4D);
+    background: var(--semantic-error-main, #E04D4D);
     color: #fff;
     font-size: 10px;
     line-height: 14px;

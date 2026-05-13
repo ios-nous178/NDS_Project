@@ -76,8 +76,8 @@ function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
           size={size}
           color={
             i <= Math.round(rating)
-              ? "var(--eap-icon-status-caution)"
-              : "var(--eap-icon-disabled-default)"
+              ? "var(--semantic-icon-status-caution)"
+              : "var(--semantic-icon-disabled-default)"
           }
         />
       ))}

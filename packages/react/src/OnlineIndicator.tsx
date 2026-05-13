@@ -23,9 +23,9 @@ export interface OnlineIndicatorProps extends Omit<React.HTMLAttributes<HTMLSpan
 }
 
 const STATUS_COLOR: Record<PresenceStatus, string> = {
-  online: "var(--color-semantic-success-main, #2BAA48)",
-  away: "var(--color-semantic-caution-main, #F0A030)",
-  busy: "var(--color-semantic-error-main, #E04D4D)",
+  online: "var(--semantic-success-main, #2BAA48)",
+  away: "var(--semantic-caution-main, #F0A030)",
+  busy: "var(--semantic-error-main, #E04D4D)",
   offline: "#A0A4AC",
 };
 

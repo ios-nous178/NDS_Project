@@ -76,24 +76,24 @@ const STATUS_LABEL: Record<AppointmentStatus, string> = {
 
 const STATUS_COLORS: Record<AppointmentStatus, { bg: string; fg: string }> = {
   scheduled: {
-    bg: "var(--color-semantic-info-bg, #EBF1FF)",
-    fg: "var(--color-semantic-info-text, #1F4FB8)",
+    bg: "var(--semantic-info-bg, #EBF1FF)",
+    fg: "var(--semantic-info-text, #1F4FB8)",
   },
   confirmed: {
-    bg: "var(--color-semantic-success-bg, #E5F8E9)",
-    fg: "var(--color-semantic-success-text, #1A6D2C)",
+    bg: "var(--semantic-success-bg, #E5F8E9)",
+    fg: "var(--semantic-success-text, #1A6D2C)",
   },
   "in-progress": {
-    bg: "var(--color-semantic-caution-bg, #FFF4E0)",
-    fg: "var(--color-semantic-caution-text, #8C5B00)",
+    bg: "var(--semantic-caution-bg, #FFF4E0)",
+    fg: "var(--semantic-caution-text, #8C5B00)",
   },
   completed: {
     bg: "#F2F4F6",
     fg: "#666",
   },
   canceled: {
-    bg: "var(--color-semantic-error-bg, #FFE9E9)",
-    fg: "var(--color-semantic-error-text, #B83333)",
+    bg: "var(--semantic-error-bg, #FFE9E9)",
+    fg: "var(--semantic-error-text, #B83333)",
   },
 };
 

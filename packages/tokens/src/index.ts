@@ -1,8 +1,10 @@
 export { colors, neutral, coolGray, blue, magenta, yellow, red, green, semantic } from "./colors";
 export { cv } from "./cssVar";
 export type { CssVarRef } from "./cssVar";
-export { eap, eapVar } from "./eap";
-export type { EapTokens, EapVarRef } from "./eap";
+export { eap } from "./eap";
+export type { EapTokens } from "./eap";
+export { semanticGuide, getSemanticGuide } from "./guide";
+export type { GuideStatus, GuideMeta } from "./guide";
 export { typography, fontFamily, fontWeight, typeScale } from "./typography";
 export type { TypeStyle } from "./typography";
 export { spacing, gap, padding, radius, shape, borderWidth, stroke, sizing, grid } from "./spacing";

@@ -33,7 +33,9 @@ function MoreActionsExample() {
         ]}
       >
         <IconButton
-          icon={<MoreIcon size={20} color="var(--eap-icon-normal-default)" aria-hidden="true" />}
+          icon={
+            <MoreIcon size={20} color="var(--semantic-icon-normal-default)" aria-hidden="true" />
+          }
           aria-label="더보기"
         />
       </DropdownMenu>

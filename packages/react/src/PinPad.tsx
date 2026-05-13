@@ -82,8 +82,8 @@ const ppStyles = `
   }
 
   :where(.${PP_DOTS_CLASS}[data-error="true"]) .${PP_DOT_CLASS}[data-filled="true"] {
-    background: var(--color-semantic-error-main, #E04D4D);
-    border-color: var(--color-semantic-error-main, #E04D4D);
+    background: var(--semantic-error-main, #E04D4D);
+    border-color: var(--semantic-error-main, #E04D4D);
   }
 
   :where(.${PP_GRID_CLASS}) {

@@ -22,7 +22,7 @@ function groupTokens(vars: Record<string, string>) {
 
   for (const [key, value] of Object.entries(vars)) {
     // --nds-button-background → Button
-    // --color-semantic-primary-main → Semantic Color
+    // --semantic-primary-main → Semantic Color
     let group = "기타";
     if (key.includes("--nds-button")) group = "Button";
     else if (key.includes("--nds-input")) group = "Input";
@@ -36,7 +36,7 @@ function groupTokens(vars: Record<string, string>) {
     else if (key.includes("--nds-app-bar")) group = "AppBar";
     else if (key.includes("--nds-footer")) group = "Footer";
     else if (key.includes("--nds-tab")) group = "Tabs";
-    else if (key.includes("--color-semantic")) group = "시맨틱 컬러";
+    else if (key.includes("--semantic")) group = "시맨틱 컬러";
     else if (key.includes("--radius")) group = "Radius";
     else if (key.includes("--font")) group = "Typography";
 
@@ -334,7 +334,7 @@ function TokenRow({
   const colorInputRef = useRef<HTMLInputElement>(null);
 
   // --nds-button-background → button-background
-  const shortName = tokenKey.replace(/^--(nds-|color-semantic-)/, "");
+  const shortName = tokenKey.replace(/^--(nds-|semantic-)/, "");
 
   return (
     <div
