@@ -30,7 +30,7 @@ const dividerStyles = `
   }
 `;
 
-/* ──�� Utils ─── */
+/* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
