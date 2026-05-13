@@ -56,6 +56,7 @@ const checkboxStyles = `
   }
 
   :where(.${CB_INDICATOR_CLASS}) {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -88,8 +89,11 @@ const checkboxStyles = `
 
   :where(.${CB_CHECK_ICON_CLASS}),
   :where(.${CB_DASH_ICON_CLASS}) {
-    width: 14px;
-    height: 14px;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 16px;
+    height: 16px;
     opacity: 0;
     transition: opacity ${transition.default};
     color: ${cv.bg.white};
