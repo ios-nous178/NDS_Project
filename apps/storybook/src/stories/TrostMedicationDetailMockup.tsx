@@ -145,10 +145,10 @@ function CounselingCTA({
   );
 }
 
-const severityBadge: Record<string, "error" | "caution" | "primary"> = {
+const severityBadge: Record<string, "error" | "caution" | "brand"> = {
   금기: "error",
   경고: "caution",
-  주의: "primary",
+  주의: "brand",
 };
 const severityColor: Record<string, string> = { 심각: T.error, 보통: T.caution, 경미: T.cobalt };
 const cautionColor: Record<string, string> = { 높음: T.error, 보통: T.caution, 낮음: T.success };
@@ -248,14 +248,14 @@ export default function TrostMedicationDetailMockup() {
 
           {/* 카���고리 배지 */}
           <div style={{ display: "flex", gap: 6, marginBottom: 16, flexWrap: "wrap" }}>
-            <Badge variant="neutral" style={{ whiteSpace: "nowrap" }}>
+            <Badge variant="ghost" color="neutral" style={{ whiteSpace: "nowrap" }}>
               {med.category}
             </Badge>
-            <Badge variant="neutral" style={{ whiteSpace: "nowrap" }}>
+            <Badge variant="ghost" color="neutral" style={{ whiteSpace: "nowrap" }}>
               {med.subCategory}
             </Badge>
             {med.insuranceCovered && (
-              <Badge variant="success" style={{ whiteSpace: "nowrap" }}>
+              <Badge variant="ghost" color="success" style={{ whiteSpace: "nowrap" }}>
                 급여 적용
               </Badge>
             )}
@@ -388,6 +388,7 @@ export default function TrostMedicationDetailMockup() {
             activeKey={activeTab}
             onTabChange={(key) => setActiveTab(key as typeof activeTab)}
             variant="line"
+            size={isMobile ? "mobile" : "pc"}
             fullWidth={!isMobile}
             slotProps={{
               list: {
@@ -552,7 +553,9 @@ export default function TrostMedicationDetailMockup() {
                         }}
                       >
                         <div>
-                          <Badge variant="neutral">{a.category}</Badge>
+                          <Badge variant="ghost" color="neutral">
+                            {a.category}
+                          </Badge>
                           <div
                             style={{
                               fontWeight: 700,
@@ -686,7 +689,9 @@ export default function TrostMedicationDetailMockup() {
               return (
                 <div key={severity} style={{ marginBottom: 28 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                    <Badge variant={severityBadge[severity]}>{severity}</Badge>
+                    <Badge variant="ghost" color={severityBadge[severity]}>
+                      {severity}
+                    </Badge>
                     <span style={{ fontSize: 13, color: T.subtle }}>{items.length}건</span>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -932,10 +937,9 @@ export default function TrostMedicationDetailMockup() {
                   <Chip
                     key={key}
                     label={label}
-                    variant="outlined"
-                    selected={reviewSort === key}
+                    variant={reviewSort === key ? "fill" : "outlined"}
+                    color="brand"
                     size="sm"
-                    shape="pill"
                     onClick={() => setReviewSort(key)}
                   />
                 ))}
@@ -1144,7 +1148,9 @@ export default function TrostMedicationDetailMockup() {
                   <div
                     style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}
                   >
-                    <Badge variant="neutral">{a.category}</Badge>
+                    <Badge variant="ghost" color="neutral">
+                      {a.category}
+                    </Badge>
                     <span style={{ fontSize: 12, color: T.subtle }}>{a.readTime}</span>
                   </div>
                   <div style={{ fontWeight: 700, fontSize: 15, color: T.black, marginBottom: 4 }}>
@@ -1199,8 +1205,14 @@ function SimilarDrugCard({
       >
         <div>
           <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-            <Badge variant="neutral">{drug.category}</Badge>
-            {drug.insuranceCovered && <Badge variant="success">급여</Badge>}
+            <Badge variant="ghost" color="neutral">
+              {drug.category}
+            </Badge>
+            {drug.insuranceCovered && (
+              <Badge variant="ghost" color="success">
+                급여
+              </Badge>
+            )}
           </div>
           <div style={{ fontWeight: 700, fontSize: 18, color: T.black }}>{drug.name}</div>
           <div style={{ fontSize: 13, color: T.cobalt, fontWeight: 500 }}>{drug.genericName}</div>
@@ -1301,7 +1313,9 @@ function CommunityPostCard({ post }: { post: CommunityPost }) {
             marginBottom: 8,
           }}
         >
-          <Badge variant="neutral">{post.category}</Badge>
+          <Badge variant="ghost" color="neutral">
+            {post.category}
+          </Badge>
           <span style={{ fontSize: 12, color: T.subtle }}>{post.date}</span>
         </div>
         <div style={{ fontWeight: 700, fontSize: 15, color: T.black, marginBottom: 6 }}>
@@ -1690,10 +1704,9 @@ function ReviewForm({ drugName, onClose }: { drugName: string; onClose: () => vo
             <Chip
               key={tag}
               label={tag}
-              variant="outlined"
-              selected={selectedTags.includes(tag)}
+              variant={selectedTags.includes(tag) ? "fill" : "outlined"}
+              color="brand"
               size="sm"
-              shape="pill"
               onClick={() => toggleTag(tag)}
             />
           ))}

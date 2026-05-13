@@ -46,7 +46,11 @@ function CardExample() {
           leading={<Avatar name="이지훈" size="sm" />}
           title="이지훈 상담사"
           description="청소년 / 진로"
-          trailing={<Badge variant="primary">신규</Badge>}
+          trailing={
+            <Badge variant="fill" color="brand">
+              신규
+            </Badge>
+          }
           onSelect={() => {}}
         />
       </List>

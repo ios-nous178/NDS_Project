@@ -1,8 +1,35 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Badge, badgeGuide, type BadgeVariantKey } from "@nudge-eap/react";
+import {
+  Badge,
+  badgeColorGuide,
+  badgeVariantGuide,
+  type BadgeColor,
+  type BadgeVariant,
+} from "@nudge-eap/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { DesignGuideBadge } from "../components/DesignGuideBadge";
+
+const VARIANTS: BadgeVariant[] = ["fill", "ghost", "line"];
+const COLORS: BadgeColor[] = ["brand", "neutral", "success", "error", "caution", "info"];
+
+const COLOR_USAGE: Record<BadgeColor, string> = {
+  brand: "주요 액션, 브랜드 강조",
+  neutral: "일반 카테고리, 기본 레이블",
+  success: "완료, 성공, 진행 중",
+  error: "오류, 실패, 위험",
+  caution: "주의, 경고, 선착순",
+  info: "정보, 안내, 공지",
+};
+
+const COLOR_LABEL: Record<BadgeColor, string> = {
+  brand: "Brand",
+  neutral: "Neutral",
+  success: "완료",
+  error: "오류",
+  caution: "주의",
+  info: "정보",
+};
 
 const meta: Meta<typeof Badge> = {
   title: "Components/Badge",
@@ -19,17 +46,23 @@ const meta: Meta<typeof Badge> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "success", "caution", "error", "neutral"],
+      options: VARIANTS,
+      description: "Figma `Style` — fill(강조) → ghost(보조) → line(최소)",
+    },
+    color: {
+      control: "select",
+      options: COLORS,
     },
     size: {
       control: "select",
-      options: ["sm", "md"],
+      options: ["sm", "md", "lg"],
     },
   },
   args: {
-    variant: "primary",
+    variant: "fill",
+    color: "brand",
     size: "md",
-    children: "참여중",
+    children: "Brand",
   },
 };
 
@@ -38,74 +71,101 @@ type Story = StoryObj<typeof Badge>;
 
 export const Playground: Story = {};
 
-export const Primary: Story = {
-  name: "State/Primary",
-  args: {
-    variant: "primary",
-    children: "기본 배지",
-  },
-};
-
-export const Success: Story = {
-  name: "State/Success",
-  args: {
-    variant: "success",
-    children: "완료",
-  },
-};
-
-export const Error: Story = {
-  name: "State/Error",
-  args: {
-    variant: "error",
-    children: "오류",
-  },
+export const StyleMatrix: Story = {
+  name: "Figma/Style × Color Matrix",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {VARIANTS.map((variant) => (
+        <div key={variant} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span
+            style={{
+              minWidth: 64,
+              fontSize: 13,
+              fontWeight: 700,
+              textTransform: "capitalize",
+            }}
+          >
+            {variant}
+          </span>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {COLORS.map((color) => (
+              <Badge key={color} variant={variant} color={color}>
+                {COLOR_LABEL[color]}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  ),
 };
 
 export const SizeScale: Story = {
-  name: "State/Size Scale",
+  name: "Figma/Size Scale",
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <Badge size="sm">Small</Badge>
-      <Badge size="md">Medium</Badge>
+      <Badge size="sm" color="brand">
+        SM
+      </Badge>
+      <Badge size="md" color="brand">
+        MD
+      </Badge>
+      <Badge size="lg" color="brand">
+        LG
+      </Badge>
     </div>
   ),
 };
 
-export const ChallengeBadges: Story = {
-  name: "Recipe/Challenge Badges",
+export const ColorUsage: Story = {
+  name: "Figma/Color Usage",
   render: () => (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-      <Badge variant="secondary">배당형</Badge>
-      <Badge variant="caution">선착순형</Badge>
-      <Badge variant="primary">응모형</Badge>
-      <Badge variant="success">참여중</Badge>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "auto 1fr auto",
+        gap: "12px 16px",
+        alignItems: "center",
+      }}
+    >
+      {COLORS.map((color) => (
+        <>
+          <span key={`${color}-label`} style={{ fontSize: 13, fontWeight: 600 }}>
+            {COLOR_LABEL[color]}
+          </span>
+          <span key={`${color}-usage`} style={{ fontSize: 12, color: "#888" }}>
+            {COLOR_USAGE[color]}
+          </span>
+          <Badge key={`${color}-sample`} variant="fill" color={color}>
+            {COLOR_LABEL[color]}
+          </Badge>
+        </>
+      ))}
     </div>
   ),
 };
 
-export const CouponAndStatusBadges: Story = {
-  name: "Recipe/Coupon And Status Badges",
+export const StatusBadges: Story = {
+  name: "Recipe/Status Badges",
   render: () => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-      <Badge variant="primary">방문 전용</Badge>
-      <Badge variant="secondary">온라인 전용</Badge>
-      <Badge variant="neutral">상태없음</Badge>
-      <Badge variant="error">취소됨</Badge>
-    </div>
-  ),
-};
-
-export const RoundedPillExamples: Story = {
-  name: "Recipe/Rounded Pill Examples",
-  render: () => (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-      <Badge style={{ borderRadius: 999, paddingInline: 10 }}>배당형</Badge>
-      <Badge variant="caution" style={{ borderRadius: 999, paddingInline: 10 }}>
+      <Badge variant="fill" color="success">
+        참여중
+      </Badge>
+      <Badge variant="fill" color="caution">
         선착순
       </Badge>
-      <Badge variant="primary" style={{ borderRadius: 999, paddingInline: 10 }}>
-        응모형
+      <Badge variant="fill" color="error">
+        취소됨
+      </Badge>
+      <Badge variant="ghost" color="brand">
+        방문 전용
+      </Badge>
+      <Badge variant="ghost" color="neutral">
+        온라인 전용
+      </Badge>
+      <Badge variant="line" color="info">
+        공지
       </Badge>
     </div>
   ),
@@ -115,7 +175,8 @@ export const LabelSlotOverride: Story = {
   name: "Recipe/Label Slot Override",
   render: () => (
     <Badge
-      variant="secondary"
+      variant="ghost"
+      color="brand"
       slotProps={{
         label: {
           style: {
@@ -132,7 +193,8 @@ export const LabelSlotOverride: Story = {
 export const VariantRenderingInteraction: Story = {
   name: "Interaction/Variant Rendering",
   args: {
-    variant: "success",
+    variant: "fill",
+    color: "success",
     size: "sm",
     children: "참여중",
   },
@@ -140,31 +202,28 @@ export const VariantRenderingInteraction: Story = {
     const canvas = within(canvasElement);
     const badge = canvas.getByText("참여중").closest('[data-slot="root"]');
 
-    await expect(badge).toHaveAttribute("data-variant", "success");
+    await expect(badge).toHaveAttribute("data-variant", "fill");
+    await expect(badge).toHaveAttribute("data-color", "success");
     await expect(badge).toHaveAttribute("data-size", "sm");
   },
 };
 
-export const AllVariantsContractInteraction: Story = {
-  name: "Interaction/All Variants Contract",
+export const AllColorsContractInteraction: Story = {
+  name: "Interaction/All Colors Contract",
   render: () => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-      <Badge variant="primary">Primary</Badge>
-      <Badge variant="secondary">Secondary</Badge>
-      <Badge variant="success">Success</Badge>
-      <Badge variant="caution">Caution</Badge>
-      <Badge variant="error">Error</Badge>
-      <Badge variant="neutral">Neutral</Badge>
+      {COLORS.map((color) => (
+        <Badge key={color} color={color}>
+          {color}
+        </Badge>
+      ))}
     </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-
-    const variants = ["primary", "secondary", "success", "caution", "error", "neutral"] as const;
-    for (const variant of variants) {
-      const text = variant.charAt(0).toUpperCase() + variant.slice(1);
-      const badge = canvas.getByText(text).closest('[data-slot="root"]');
-      await expect(badge).toHaveAttribute("data-variant", variant);
+    for (const color of COLORS) {
+      const badge = canvas.getByText(color).closest('[data-slot="root"]');
+      await expect(badge).toHaveAttribute("data-color", color);
     }
   },
 };
@@ -175,6 +234,7 @@ export const SizeContractInteraction: Story = {
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <Badge size="sm">Small</Badge>
       <Badge size="md">Medium</Badge>
+      <Badge size="lg">Large</Badge>
     </div>
   ),
   play: async ({ canvasElement }) => {
@@ -185,6 +245,9 @@ export const SizeContractInteraction: Story = {
 
     const md = canvas.getByText("Medium").closest('[data-slot="root"]');
     await expect(md).toHaveAttribute("data-size", "md");
+
+    const lg = canvas.getByText("Large").closest('[data-slot="root"]');
+    await expect(lg).toHaveAttribute("data-size", "lg");
   },
 };
 
@@ -193,38 +256,54 @@ export const DesignGuideOverview: Story = {
   parameters: {
     docs: {
       description: {
-        story: "각 variant 가 Figma 가이드에 등재되었는지(core/experimental) 한눈에 확인.",
+        story: "각 variant/color 가 Figma 가이드(171:10856)에 등재된 core 항목인지 확인.",
       },
     },
   },
-  render: () => {
-    const variants: BadgeVariantKey[] = [
-      "primary",
-      "secondary",
-      "success",
-      "caution",
-      "error",
-      "neutral",
-    ];
-    return (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 16 }}>
-        {variants.map((variant) => (
-          <div
-            key={variant}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-              padding: 12,
-              border: "1px solid #ECECEC",
-              borderRadius: 8,
-            }}
-          >
-            <Badge variant={variant}>{variant}</Badge>
-            <DesignGuideBadge meta={badgeGuide[variant]} />
-          </div>
-        ))}
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div>
+        <h4 style={{ marginBottom: 12 }}>Variants</h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 16 }}>
+          {VARIANTS.map((variant) => (
+            <div
+              key={variant}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                padding: 12,
+                border: "1px solid #ECECEC",
+                borderRadius: 8,
+              }}
+            >
+              <Badge variant={variant}>{variant}</Badge>
+              <DesignGuideBadge meta={badgeVariantGuide[variant]} />
+            </div>
+          ))}
+        </div>
       </div>
-    );
-  },
+      <div>
+        <h4 style={{ marginBottom: 12 }}>Colors</h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 16 }}>
+          {COLORS.map((color) => (
+            <div
+              key={color}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                padding: 12,
+                border: "1px solid #ECECEC",
+                borderRadius: 8,
+              }}
+            >
+              <Badge color={color}>{color}</Badge>
+              <DesignGuideBadge meta={badgeColorGuide[color]} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  ),
 };

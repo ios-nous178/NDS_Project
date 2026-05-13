@@ -224,8 +224,12 @@ export default function GenietNutritionDetailMockup() {
                 justifyContent: isMobile ? "center" : "flex-start",
               }}
             >
-              <Badge variant="primary">{food.category}</Badge>
-              <Badge variant="success">슈퍼푸드</Badge>
+              <Badge variant="ghost" color="brand">
+                {food.category}
+              </Badge>
+              <Badge variant="ghost" color="success">
+                슈퍼푸드
+              </Badge>
             </div>
 
             <h1
@@ -294,7 +298,7 @@ export default function GenietNutritionDetailMockup() {
               }}
             >
               {food.tags.map((tag) => (
-                <Chip key={tag} label={tag} variant="soft" size="sm" />
+                <Chip key={tag} label={tag} variant="ghost" color="brand" size="sm" />
               ))}
             </div>
           </div>
@@ -314,6 +318,7 @@ export default function GenietNutritionDetailMockup() {
           activeKey={activeTab}
           onTabChange={setActiveTab}
           variant="line"
+          size={isMobile ? "mobile" : "pc"}
           fullWidth={isMobile}
         />
       </Section>
@@ -577,7 +582,11 @@ export default function GenietNutritionDetailMockup() {
               title={recipe.title}
               subtitle={`${recipe.calories}kcal · ${recipe.cookTime}`}
               meta={
-                <Badge variant={recipe.difficulty === "쉬움" ? "success" : "neutral"} size="sm">
+                <Badge
+                  variant="ghost"
+                  color={recipe.difficulty === "쉬움" ? "success" : "neutral"}
+                  size="sm"
+                >
                   {recipe.difficulty}
                 </Badge>
               }
@@ -633,7 +642,7 @@ export default function GenietNutritionDetailMockup() {
                   {deal.imageEmoji}
                   {deal.badge && (
                     <div style={{ position: "absolute", top: 8, left: 8 }}>
-                      <Badge variant="primary" size="sm">
+                      <Badge variant="fill" color="brand" size="sm">
                         {deal.badge}
                       </Badge>
                     </div>
@@ -706,7 +715,7 @@ export default function GenietNutritionDetailMockup() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {["콜레스테롤 관리", "키토 식단", "이유식", "건강한 지방", "전문가 추천"].map(
                 (tag) => (
-                  <Chip key={tag} label={tag} variant="soft" size="sm" />
+                  <Chip key={tag} label={tag} variant="ghost" color="brand" size="sm" />
                 ),
               )}
             </div>
@@ -752,7 +761,7 @@ export default function GenietNutritionDetailMockup() {
                 >
                   <div style={{ display: "flex", gap: 6 }}>
                     {review.tags.map((tag) => (
-                      <Chip key={tag} label={tag} variant="outlined" size="sm" />
+                      <Chip key={tag} label={tag} variant="outlined" color="brand" size="sm" />
                     ))}
                   </div>
                   <span style={{ fontSize: 12, color: G.muted }}>
@@ -802,7 +811,7 @@ export default function GenietNutritionDetailMockup() {
               thumbnailRatio="1/1"
               title={sf.name}
               meta={
-                <Badge variant="neutral" size="sm">
+                <Badge variant="ghost" color="neutral" size="sm">
                   {sf.category}
                 </Badge>
               }
@@ -863,7 +872,14 @@ export default function GenietNutritionDetailMockup() {
         <SectionTitle sub="관련 검색어로 더 많은 영양 정보를 찾아보세요">🔍 관련 검색</SectionTitle>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {relatedSearchTags.map((tag) => (
-            <Chip key={tag} label={tag} variant="outlined" size="md" onClick={() => {}} />
+            <Chip
+              key={tag}
+              label={tag}
+              variant="outlined"
+              color="brand"
+              size="md"
+              onClick={() => {}}
+            />
           ))}
         </div>
       </Section>

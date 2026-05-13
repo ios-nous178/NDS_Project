@@ -10,7 +10,9 @@ import { Chip } from "@nudge-eap/react";
 
 # Chip
 
-선택 가능한 태그/필터 컴포넌트입니다. 읽기 전용 `Badge`와 달리 interactive한 선택/해제, 삭제 동작을 지원합니다.
+> ✅ **Figma 가이드 정합 완료** · 검증일 2026-05-13 · [Figma 171:10856](https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-10856)
+
+선택 가능한 태그/필터 컴포넌트입니다. 읽기 전용 `Badge`와 달리 인터랙티브한 선택/삭제 동작을 지원합니다.
 
 ```tsx
 import { Chip } from "@nudge-eap/react";
@@ -38,7 +40,7 @@ import { Chip } from "@nudge-eap/react";
 - 너무 긴 텍스트를 Chip에 넣기 — Chip은 짧은 키워드에 적합합니다
 - 새 섹션을 강조하기 위해 제목 앞에 Chip을 붙임 — 섹션 장식은 텍스트 위계로 처리하세요
 - 모든 카드에 Chip을 반복해서 붙임 — 카드당 1~2개, 섹션당 2개 안팎으로 제한하세요
-- 안내문을 더 눈에 띄게 하려고 "안내", "추천", "중요" Chip을 붙임 — 일반 안내는 neutral surface와 본문 텍스트로 처리하세요
+- "안내", "추천", "중요" Chip 남발 — 일반 안내는 neutral surface와 본문 텍스트로 처리하세요
 
 ---
 
@@ -56,80 +58,119 @@ Chip은 상태, 분류, 짧은 속성처럼 사용자가 빠르게 스캔해야 
 
 ---
 
+## Variant — Style
+
+Figma `Style` 축. 선택 상태에 따라 단계적으로 사용합니다.
+
+| Variant    | 사용 맥락          | 비고               |
+| ---------- | ------------------ | ------------------ |
+| `fill`     | 선택됨 (강조)      | 활성 필터, 선택됨  |
+| `outlined` | 선택 가능 (기본)   | 토글 가능 상태     |
+| `ghost`    | 비활성 / 보조      | 옅은 안내, #태그   |
+
+---
+
+## Color
+
+Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를 사용합니다.
+
+| Color     | 사용 맥락             |
+| --------- | --------------------- |
+| `brand`   | 주요 필터, 브랜드 선택 |
+| `neutral` | 일반 카테고리 필터    |
+| `success` | 완료 상태 (참여가능)  |
+| `error`   | 오류/실패 상태 표시   |
+| `caution` | 주의 필요 항목        |
+
+---
+
+## Size
+
+모바일 기준 토큰. Pill(완전 둥근) 라운드만 사용합니다.
+
+| Size | 높이 | 패딩 (H · V) | 폰트                    |
+| ---- | ---- | ------------ | ----------------------- |
+| `sm` | 24px | 10 · 3px     | Caption 2 (12/16, Bold) |
+| `md` | 28px | 12 · 4px     | Body 3 (14/20, Bold)    |
+
+---
+
 ## 기본 사용법
 
 ```tsx
-<Chip label="심리상담" />
+<Chip label="심리상담" variant="outlined" color="brand" />
 ```
 
-### 토글 선택
+### 토글 선택 (선택됨 → fill)
 
 ```tsx
-<Chip label="스트레스" variant="filled" selected={isSelected} onClick={() => toggle()} />
+<Chip
+  label="스트레스"
+  variant={isSelected ? "fill" : "outlined"}
+  color="brand"
+  onClick={() => toggle()}
+/>
 ```
 
 ### 삭제 가능
 
 ```tsx
-<Chip label="서울" variant="outlined" selected onRemove={() => removeFilter("서울")} />
+<Chip
+  label="서울"
+  variant="fill"
+  color="brand"
+  onRemove={() => removeFilter("서울")}
+/>
 ```
 
 ### 아이콘 포함
 
 ```tsx
-<Chip label="새 상담" icon={<PlusIcon />} variant="soft" onClick={handleAdd} />
+<Chip
+  label="대면"
+  variant="ghost"
+  color="neutral"
+  size="sm"
+  icon={<PinIcon size={14} color="currentColor" />}
+/>
 ```
 
 ---
 
 ## Props
 
-| Prop       | 타입                               | 기본값       | 설명                              |
-| ---------- | ---------------------------------- | ------------ | --------------------------------- |
-| `label`    | `string`                           | —            | 라벨 텍스트                       |
-| `variant`  | `"outlined" \| "filled" \| "soft"` | `"outlined"` | 스타일 변형                       |
-| `size`     | `"sm" \| "md" \| "lg"`             | `"md"`       | 크기                              |
-| `selected` | `boolean`                          | `false`      | 선택 상태                         |
-| `disabled` | `boolean`                          | `false`      | 비활성화                          |
-| `onClick`  | `() => void`                       | —            | 클릭 콜백 (있으면 interactive)    |
-| `onRemove` | `() => void`                       | —            | 삭제 콜백 (있으면 삭제 버튼 표시) |
-| `icon`     | `ReactNode`                        | —            | 좌측 아이콘                       |
+| Prop       | 타입            | 기본값       | 설명                                |
+| ---------- | --------------- | ------------ | ----------------------------------- |
+| `label`    | `string`        | —            | 라벨 텍스트                         |
+| `variant`  | `ChipVariant`   | `"outlined"` | Figma Style (fill/outlined/ghost)   |
+| `color`    | `ChipColor`     | `"brand"`    | Figma Color                         |
+| `size`     | `ChipSize`      | `"md"`       | 사이즈 (`sm` / `md`)                |
+| `disabled` | `boolean`       | `false`      | 비활성화                            |
+| `onClick`  | `() => void`    | —            | 클릭 콜백 (있으면 interactive)      |
+| `onRemove` | `() => void`    | —            | 삭제 콜백 (있으면 삭제 버튼 표시)   |
+| `icon`     | `ReactNode`     | —            | 좌측 아이콘                         |
 
----
-
-## 변형별 스타일
-
-| 변형       | 기본                     | 선택                     |
-| ---------- | ------------------------ | ------------------------ |
-| `outlined` | 회색 테두리, 흰 배경     | 파란 테두리, 파란 텍스트 |
-| `filled`   | 회색 배경                | 파란 배경, 흰 텍스트     |
-| `soft`     | 연파랑 배경, 파란 텍스트 | —                        |
-
-## 크기별 높이
-
-| Size | 높이 | 폰트            |
-| ---- | ---- | --------------- |
-| `sm` | 28px | caption2 (12px) |
-| `md` | 36px | body3 (14px)    |
-| `lg` | 44px | body2 (15px)    |
+**ChipVariant**: `"fill"` | `"outlined"` | `"ghost"`
+**ChipColor**: `"brand"` | `"neutral"` | `"success"` | `"error"` | `"caution"`
+**ChipSize**: `"sm"` | `"md"`
 
 ---
 
 ## Badge와의 차이
 
-|          | Badge                 | Chip                 |
-| -------- | --------------------- | -------------------- |
-| 용도     | 상태 표시 (읽기 전용) | 필터/선택 (인터랙션) |
-| 클릭     | 불가                  | 가능                 |
-| 삭제     | 불가                  | 가능                 |
-| selected | 없음                  | 있음                 |
+|        | Badge                 | Chip                 |
+| ------ | --------------------- | -------------------- |
+| 용도   | 상태 표시 (읽기 전용) | 필터/선택 (인터랙션) |
+| 클릭   | 불가                  | 가능                 |
+| 삭제   | 불가                  | 가능                 |
+| 라운드 | 4 / 4 / 6px           | Pill(full)           |
 
 ---
 
 ## data-slot 구조
 
 ```
-div [data-slot="root"] [data-variant] [data-size] [data-selected] [data-interactive] [data-disabled]
+div [data-slot="root"] [data-variant] [data-color] [data-size] [data-interactive] [data-disabled]
 ├── span [data-slot="icon"]
 ├── span [data-slot="label"]
 └── button [data-slot="remove"]
@@ -137,27 +178,20 @@ div [data-slot="root"] [data-variant] [data-size] [data-selected] [data-interact
 
 ---
 
-## 마이그레이션
+## DO / Don't
 
-```tsx
-// Before (WebView FilterChip)
-<FilterChip label="서울" handleRemove={() => remove("서울")} />
-
-// After
-<Chip label="서울" variant="outlined" selected onRemove={() => remove("서울")} />
-
-// Before (HomePage CounselorSubjectChip)
-<CounselorSubjectChip subject="심리상담" isSelected={true} onClick={toggle} />
-
-// After
-<Chip label="심리상담" variant="filled" size="lg" selected={true} onClick={toggle} />
-```
+- ✅ 선택됨 = `variant="fill"`, 선택 가능 = `variant="outlined"`, 비활성 = `variant="ghost"`
+- ✅ Status 표현 시 의미에 맞는 Color 사용
+- ✅ 동일 화면 내 다양한 Status Chip 혼용 최소화
+- ❌ Chip을 단순 레이블로 사용 (Badge와 역할 혼동)
+- ❌ 고정 색상(하드코딩) 사용
+- ❌ Badge와 Chip의 혼용 사용
 
 ---
 
 ## 접근성
 
 - interactive일 때 `role="button"`, `tabIndex=0`
-- 토글형일 때 `aria-pressed` 적용
 - 삭제 버튼에 `aria-label="{label} 삭제"` 내장
 - Enter / Space 키보드 지원
+- `disabled`일 때 `aria-disabled="true"` + `pointer-events: none`

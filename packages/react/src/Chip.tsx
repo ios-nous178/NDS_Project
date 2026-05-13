@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { fontFamily, fontWeight, radius, transition } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -19,130 +11,145 @@ const CHIP_ICON_CLASS = `${CHIP_CLASS}__icon`;
 
 /* ─── Types ─── */
 
-export type ChipVariant = "outlined" | "filled" | "soft" | "strong";
-export type ChipSize = "sm" | "md" | "lg";
-export type ChipShape = "pill" | "square";
+export type ChipVariant = "fill" | "outlined" | "ghost";
+export type ChipColor = "brand" | "neutral" | "success" | "error" | "caution";
+export type ChipSize = "sm" | "md";
 
-/* ─── Styles ─── */
+/* ─── Color tokens ─── */
 
-// :where() 를 사용하여 내부 스타일의 우선순위를 0으로 낮춥니다.
-// 이를 통해 외부에서 주입하는 className (Tailwind 등)이 !important 없이도 우선 적용됩니다.
+type ChipColorTokens = {
+  background: string;
+  text: string;
+  border: string;
+};
+
+const FILL_COLORS: Record<ChipColor, ChipColorTokens> = {
+  brand: {
+    background: "var(--semantic-fill-brand-default)",
+    text: "var(--semantic-text-inverse-default, #ffffff)",
+    border: "transparent",
+  },
+  neutral: {
+    background: "var(--semantic-fill-neutral-default)",
+    text: "var(--semantic-text-inverse-default, #ffffff)",
+    border: "transparent",
+  },
+  success: {
+    background: "var(--semantic-bg-status-success)",
+    text: "var(--semantic-text-status-success)",
+    border: "transparent",
+  },
+  error: {
+    background: "var(--semantic-fill-status-error)",
+    text: "var(--semantic-text-inverse-default, #ffffff)",
+    border: "transparent",
+  },
+  caution: {
+    background: "var(--semantic-fill-status-caution)",
+    text: "var(--semantic-text-strong-default)",
+    border: "transparent",
+  },
+};
+
+const OUTLINED_COLORS: Record<ChipColor, ChipColorTokens> = {
+  brand: {
+    background: "var(--semantic-bg-surface-default, #ffffff)",
+    text: "var(--semantic-text-brand-default)",
+    border: "var(--semantic-border-brand-default)",
+  },
+  neutral: {
+    background: "var(--semantic-bg-surface-default, #ffffff)",
+    text: "var(--semantic-text-normal-default)",
+    border: "var(--semantic-border-normal-default)",
+  },
+  success: {
+    background: "var(--semantic-bg-surface-default, #ffffff)",
+    text: "var(--semantic-text-status-success)",
+    border: "var(--semantic-text-status-success)",
+  },
+  error: {
+    background: "var(--semantic-bg-surface-default, #ffffff)",
+    text: "var(--semantic-text-status-error)",
+    border: "var(--semantic-border-status-error)",
+  },
+  caution: {
+    background: "var(--semantic-bg-surface-default, #ffffff)",
+    text: "var(--semantic-text-status-caution)",
+    border: "var(--semantic-border-status-caution)",
+  },
+};
+
+const GHOST_COLORS: Record<ChipColor, ChipColorTokens> = {
+  brand: {
+    background: "var(--semantic-bg-brand-subtle)",
+    text: "var(--semantic-text-brand-default)",
+    border: "transparent",
+  },
+  neutral: {
+    background: "var(--semantic-bg-surface-subtle)",
+    text: "var(--semantic-text-normal-default)",
+    border: "transparent",
+  },
+  success: {
+    background: "var(--semantic-bg-status-success)",
+    text: "var(--semantic-text-status-success)",
+    border: "transparent",
+  },
+  error: {
+    background: "var(--semantic-bg-status-error)",
+    text: "var(--semantic-text-status-error)",
+    border: "transparent",
+  },
+  caution: {
+    background: "var(--semantic-bg-status-caution)",
+    text: "var(--semantic-text-status-caution)",
+    border: "transparent",
+  },
+};
+
+const COLORS_BY_VARIANT: Record<ChipVariant, Record<ChipColor, ChipColorTokens>> = {
+  fill: FILL_COLORS,
+  outlined: OUTLINED_COLORS,
+  ghost: GHOST_COLORS,
+};
+
+/* ─── Size tokens ─── */
+
+type ChipSizeTokens = {
+  height: number;
+  paddingY: number;
+  paddingX: number;
+  fontSize: number;
+  lineHeight: number;
+};
+
+const SIZE_TOKENS: Record<ChipSize, ChipSizeTokens> = {
+  sm: { height: 24, paddingY: 3, paddingX: 10, fontSize: 12, lineHeight: 16 },
+  md: { height: 28, paddingY: 4, paddingX: 12, fontSize: 14, lineHeight: 20 },
+};
+
+/* ─── Hover/Disabled CSS ─── */
 
 const chipStyles = `
   :where(.${CHIP_ROOT_CLASS}) {
-    display: inline-flex;
-    align-items: center;
-    gap: ${spacing[4]}px;
-    font-family: ${fontFamily.web};
-    box-sizing: border-box;
-    cursor: default;
     transition:
       background-color ${transition.default},
       border-color ${transition.default},
-      color ${transition.default},
-      box-shadow ${transition.default};
-    user-select: none;
-    padding: 0 ${spacing[16]}px; /* Default padding */
+      color ${transition.default};
   }
 
-  /* ─── Shape ─── */
-
-  :where(.${CHIP_ROOT_CLASS}[data-shape="pill"]) {
-    border-radius: ${radius.pill}px;
+  :where(.${CHIP_ROOT_CLASS}[data-interactive="true"]) {
+    cursor: pointer;
   }
 
-  :where(.${CHIP_ROOT_CLASS}[data-shape="square"]) {
-    border-radius: ${radius.md}px;
+  :where(.${CHIP_ROOT_CLASS}[data-interactive="true"]:hover) {
+    filter: brightness(0.96);
   }
 
-  /* ─── Size ─── */
-
-  :where(.${CHIP_ROOT_CLASS}[data-size="sm"]) {
-    height: 32px;
-    padding: 0 ${spacing[10]}px;
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-size="md"]) {
-    height: 36px;
-    padding: 0 ${spacing[16]}px;
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-size="lg"]) {
-    height: 44px;
-    padding: 0 ${spacing[20]}px;
-  }
-
-  /* ─── Outlined ─── */
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="outlined"]) {
-    border: 1px solid var(--nds-chip-border, ${cv.border.default});
-    background: ${cv.bg.white};
-    color: var(--nds-chip-text, ${cv.text.subtle});
-    font-size: var(--nds-chip-font-size, inherit);
-    font-weight: var(--nds-chip-font-weight, inherit);
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="outlined"][data-selected="true"]) {
-    border-color: var(--nds-chip-selected-border, ${cv.primary.main});
-    color: var(--nds-chip-selected-text, ${cv.primary.main});
-    background: var(--nds-chip-selected-background, ${cv.bg.white});
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="outlined"][data-interactive="true"]:hover) {
-    border-color: ${cv.primary.main};
-    background: ${cv.primary.bgLighter || "#f1f8fd"};
-  }
-
-  /* ─── Filled ─── */
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="filled"]) {
-    border: 1px solid transparent;
-    background: ${cv.bg.light};
-    color: ${cv.text.subtle};
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="filled"][data-selected="true"]) {
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="filled"][data-interactive="true"]:hover) {
-    background: ${cv.border.light};
-  }
-
-  /* ─── Soft ─── */
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="soft"]) {
-    border: 1px solid transparent;
-    background: ${cv.primary.bgLighter || "#f1f8fd"};
-    color: ${cv.primary.main};
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="soft"][data-interactive="true"]:hover) {
-    background: ${cv.primary.bg};
-  }
-
-  /* ─── Strong ─── */
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="strong"]) {
-    border: 1px solid ${cv.text.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="strong"][data-selected="true"]) {
-    background: ${cv.text.default};
-    color: ${cv.text.inverse};
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-variant="strong"][data-interactive="true"]:hover) {
-    background: ${cv.bg.light};
-  }
-
-  /* ─── Remove ─── */
-
-  :where(.${CHIP_ROOT_CLASS}:has(.${CHIP_REMOVE_CLASS})) {
-    padding-right: ${spacing[10]}px;
+  :where(.${CHIP_ROOT_CLASS}[data-disabled="true"]) {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
   :where(.${CHIP_REMOVE_CLASS}) {
@@ -154,11 +161,11 @@ const chipStyles = `
     background: none;
     cursor: pointer;
     padding: 0;
-    margin-left: ${spacing[2]}px;
+    margin-left: 2px;
     color: inherit;
     opacity: 0.6;
     line-height: 1;
-    transition: 
+    transition:
       opacity ${transition.default},
       transform ${transition.default};
   }
@@ -172,39 +179,6 @@ const chipStyles = `
     width: 14px;
     height: 14px;
   }
-
-  /* ─── Disabled ─── */
-
-  :where(.${CHIP_ROOT_CLASS}[data-disabled="true"]) {
-    opacity: 0.4;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
-  /* ─── Label ─── */
-
-  :where(.${CHIP_ROOT_CLASS}[data-size="sm"] .${CHIP_LABEL_CLASS}) {
-    font-size: ${typeScale.caption2.fontSize}px;
-    line-height: ${typeScale.caption2.lineHeight}px;
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-size="md"] .${CHIP_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-  }
-
-  :where(.${CHIP_ROOT_CLASS}[data-size="lg"] .${CHIP_LABEL_CLASS}) {
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: ${typeScale.body2.lineHeight}px;
-    font-weight: ${fontWeight.bold};
-  }
-
-  :where(.${CHIP_LABEL_CLASS}) {
-    font-weight: ${fontWeight.medium};
-    white-space: nowrap;
-  }
-
-  /* ─── Icon ─── */
 
   :where(.${CHIP_ICON_CLASS}) {
     display: inline-flex;
@@ -229,14 +203,12 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 export interface ChipProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick"> {
   /** 라벨 텍스트 */
   label: string;
-  /** 스타일 변형 */
+  /** 시각적 스타일 (Figma "Style") */
   variant?: ChipVariant;
+  /** 의미 컬러 (Figma "Color") */
+  color?: ChipColor;
   /** 크기 */
   size?: ChipSize;
-  /** 모양 (pill: 완전 둥근, square: 8px 라운드) */
-  shape?: ChipShape;
-  /** 선택 상태 */
-  selected?: boolean;
   /** 비활성화 */
   disabled?: boolean;
   /** 클릭 콜백 */
@@ -250,17 +222,42 @@ export interface ChipProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
 export const Chip: React.FC<ChipProps> = ({
   label,
   variant = "outlined",
+  color = "brand",
   size = "md",
-  shape = "pill",
-  selected = false,
   disabled = false,
   onClick,
   onRemove,
   icon,
   className,
+  style,
   ...rest
 }) => {
   const isInteractive = !!onClick;
+  const colorTokens = COLORS_BY_VARIANT[variant][color];
+  const sizeTokens = SIZE_TOKENS[size];
+
+  const hasRemove = !!onRemove && !disabled;
+  const paddingRight = hasRemove ? Math.max(sizeTokens.paddingX - 4, 6) : sizeTokens.paddingX;
+
+  const rootStyle: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 4,
+    height: sizeTokens.height,
+    padding: `${sizeTokens.paddingY}px ${paddingRight}px ${sizeTokens.paddingY}px ${sizeTokens.paddingX}px`,
+    borderRadius: radius.pill,
+    background: colorTokens.background,
+    color: colorTokens.text,
+    border: `1px solid ${colorTokens.border}`,
+    fontFamily: fontFamily.web,
+    fontSize: sizeTokens.fontSize,
+    lineHeight: `${sizeTokens.lineHeight}px`,
+    fontWeight: fontWeight.bold,
+    boxSizing: "border-box",
+    userSelect: "none",
+    whiteSpace: "nowrap",
+    ...style,
+  };
 
   return (
     <>
@@ -268,15 +265,15 @@ export const Chip: React.FC<ChipProps> = ({
       <div
         data-slot="root"
         data-variant={variant}
+        data-color={color}
         data-size={size}
-        data-shape={shape}
-        data-selected={selected ? "true" : "false"}
         data-interactive={isInteractive ? "true" : "false"}
         data-disabled={disabled ? "true" : "false"}
         role={isInteractive ? "button" : undefined}
         tabIndex={isInteractive && !disabled ? 0 : undefined}
-        aria-pressed={isInteractive ? selected : undefined}
+        aria-disabled={disabled || undefined}
         className={cx(CHIP_ROOT_CLASS, className)}
+        style={rootStyle}
         onClick={!disabled ? onClick : undefined}
         onKeyDown={
           isInteractive && !disabled
@@ -298,7 +295,7 @@ export const Chip: React.FC<ChipProps> = ({
         <span data-slot="label" className={CHIP_LABEL_CLASS}>
           {label}
         </span>
-        {onRemove && !disabled && (
+        {hasRemove && (
           <button
             type="button"
             data-slot="remove"
@@ -306,7 +303,7 @@ export const Chip: React.FC<ChipProps> = ({
             className={CHIP_REMOVE_CLASS}
             onClick={(e) => {
               e.stopPropagation();
-              onRemove();
+              onRemove?.();
             }}
           >
             <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">

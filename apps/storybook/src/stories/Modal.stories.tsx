@@ -50,7 +50,9 @@ export function Example() {
             }}
           >
             <span style={{ fontWeight: 700, fontSize: 18 }}>알림</span>
-            <Badge variant="primary">NEW</Badge>
+            <Badge variant="fill" color="brand">
+              NEW
+            </Badge>
           </Modal.Header>
           <Modal.Body style={{ textAlign: "left" }}>
             Compound API를 사용하면 슬롯을 자유롭게 조립할 수 있습니다.
@@ -238,7 +240,9 @@ function CompoundModalExample() {
             }}
           >
             <span style={{ fontWeight: 700, fontSize: 18, color: "#111111" }}>알림</span>
-            <Badge variant="primary">NEW</Badge>
+            <Badge variant="fill" color="brand">
+              NEW
+            </Badge>
           </Modal.Header>
           <Modal.Body style={{ textAlign: "left" }}>
             <p style={{ marginTop: 0 }}>

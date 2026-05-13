@@ -12,7 +12,9 @@ import Playground from "@site/src/components/Playground";
 
 # Badge
 
-상태, 카테고리, 또는 라벨을 표시하는 인라인 컴포넌트입니다. 6가지 색상 변형과 2가지 사이즈를 제공합니다.
+> ✅ **Figma 가이드 정합 완료** · 검증일 2026-05-13 · [Figma 171:10856](https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-10856)
+
+상태, 카테고리, 또는 라벨을 표시하는 인라인 컴포넌트입니다. 3가지 스타일(`fill` / `ghost` / `line`) × 6가지 색상 × 3가지 크기 매트릭스를 제공합니다.
 
 ```tsx
 import { Badge } from "@nudge-eap/react";
@@ -33,12 +35,11 @@ import { Badge } from "@nudge-eap/react";
 - 사용자가 클릭하여 선택/해제하거나 삭제할 수 있는 태그 → [Chip](/docs/components/chip)을 사용하세요
 - 액션을 트리거하는 용도 → [Button](/docs/components/button)을 사용하세요
 - 긴 설명 텍스트를 담을 때 → 일반 텍스트나 인라인 메시지를 사용하세요
-- 일반 안내문이나 새 섹션을 장식적으로 강조할 때 → 텍스트 위계와 neutral surface를 사용하세요
 
 ### 자주 하는 실수
 
-- Badge에 `onClick` 핸들러를 붙여 인터랙티브하게 사용 — 읽기 전용이어야 합니다. 인터랙션이 필요하면 Chip을 사용하세요
-- 한 화면에 너무 많은 색상 variant를 혼용 — 의미 체계가 흐려집니다. 색상별 의미를 일관되게 유지하세요
+- Badge에 `onClick`을 붙여 인터랙티브하게 사용 — 읽기 전용이어야 합니다. 인터랙션이 필요하면 Chip을 사용하세요
+- 동일 화면에서 3가지 이상의 Color를 혼용 — 의미 체계가 흐려집니다
 - 모든 카드에 "추천", "안내", "중요" 같은 Badge를 반복 — 실제 상태나 분류가 아니면 사용하지 마세요
 
 ---
@@ -51,14 +52,20 @@ import { Badge } from "@nudge-eap/react";
     {
       name: "variant",
       type: "select",
-      options: ["primary", "secondary", "success", "caution", "error", "neutral"],
-      default: "neutral",
+      options: ["fill", "ghost", "line"],
+      default: "fill",
     },
-    { name: "size", type: "select", options: ["sm", "md"], default: "md" },
+    {
+      name: "color",
+      type: "select",
+      options: ["brand", "neutral", "success", "error", "caution", "info"],
+      default: "brand",
+    },
+    { name: "size", type: "select", options: ["sm", "md", "lg"], default: "md" },
     { name: "children", type: "text", default: "Badge", placeholder: "라벨 텍스트" },
   ]}
   render={(props) => (
-    <Badge variant={props.variant} size={props.size}>
+    <Badge variant={props.variant} color={props.color} size={props.size}>
       {props.children || "Badge"}
     </Badge>
   )}
@@ -66,168 +73,115 @@ import { Badge } from "@nudge-eap/react";
 
 ---
 
-## 기본 사용법
+## Variant — Style
 
-<ComponentPreview title="기본">
-  <Badge>기본</Badge>
+Figma `Style` 축. 시각적 우선순위는 `fill` → `ghost` → `line` 순으로 낮아집니다.
+
+<ComponentPreview title="Style">
+  <Badge variant="fill" color="brand">Fill</Badge>
+  <Badge variant="ghost" color="brand">Ghost</Badge>
+  <Badge variant="line" color="brand">Line</Badge>
 </ComponentPreview>
 
-```tsx
-<Badge>기본</Badge>
-```
+| Variant | 사용 비중 | 설명             |
+| ------- | --------- | ---------------- |
+| `fill`  | 높음      | 강조             |
+| `ghost` | 중간      | 보조 (옅은 톤)   |
+| `line`  | 낮음      | 최소 (테두리만) |
 
 ---
 
-## Variant (색상)
+## Color
 
-6가지 의미 기반 색상을 제공합니다.
+Figma `Color` 축. 의미에 맞는 컬러를 사용하세요.
 
-<ComponentPreview title="Variants">
-  <Badge variant="primary">프라이머리</Badge>
-  <Badge variant="secondary">세컨더리</Badge>
-  <Badge variant="success">성공</Badge>
-  <Badge variant="caution">주의</Badge>
-  <Badge variant="error">에러</Badge>
-  <Badge variant="neutral">기본</Badge>
+<ComponentPreview title="Color × Style">
+  <div style={{ display: "flex", gap: 8 }}>
+    <Badge variant="fill" color="brand">Brand</Badge>
+    <Badge variant="fill" color="neutral">Neutral</Badge>
+    <Badge variant="fill" color="success">완료</Badge>
+    <Badge variant="fill" color="error">오류</Badge>
+    <Badge variant="fill" color="caution">주의</Badge>
+    <Badge variant="fill" color="info">정보</Badge>
+  </div>
 </ComponentPreview>
 
-```tsx
-<Badge variant="primary">프라이머리</Badge>
-<Badge variant="secondary">세컨더리</Badge>
-<Badge variant="success">성공</Badge>
-<Badge variant="caution">주의</Badge>
-<Badge variant="error">에러</Badge>
-<Badge variant="neutral">기본</Badge>
-```
-
-| Variant     | 배경색      | 텍스트 색상 | 사용 시점           |
-| ----------- | ----------- | ----------- | ------------------- |
-| `primary`   | Blue 100    | Blue 600    | 기본 강조, 카테고리 |
-| `secondary` | Magenta 100 | Magenta 600 | 보조 구분           |
-| `success`   | Green 50    | Green 500   | 성공, 완료 상태     |
-| `caution`   | Yellow 50   | Yellow 600  | 경고, 주의          |
-| `error`     | Red 50      | Red 500     | 에러, 실패          |
-| `neutral`   | Neutral 100 | Neutral 700 | 일반 정보 (기본값)  |
+| Color     | 의미                  | 사용 예              |
+| --------- | --------------------- | -------------------- |
+| `brand`   | 주요 액션, 브랜드 강조 | 카테고리, 신규       |
+| `neutral` | 일반 카테고리         | 기본 레이블          |
+| `success` | 완료, 성공, 진행 중   | 참여중, 완료         |
+| `error`   | 오류, 실패, 위험      | 취소됨, 만료         |
+| `caution` | 주의, 경고, 선착순    | 선착순, 주의         |
+| `info`    | 정보, 안내, 공지      | 공지, 안내           |
 
 ---
 
 ## Size
 
-<ComponentPreview title="Sizes">
-  <Badge size="sm">Small</Badge>
-  <Badge size="md">Medium</Badge>
-</ComponentPreview>
+모바일 기준 토큰입니다.
 
-```tsx
-<Badge size="sm">Small</Badge>
-<Badge size="md">Medium</Badge>
-```
-
-| Size | 패딩    | 폰트 | 라운드 |
-| ---- | ------- | ---- | ------ |
-| `sm` | 2px 6px | 11px | 4px    |
-| `md` | 4px 8px | 13px | 6px    |
+| Size | 높이 | 패딩 (H · V) | 라운드 | 폰트                  |
+| ---- | ---- | ------------ | ------ | --------------------- |
+| `sm` | 22px | 6 · 3px      | 4px    | Label (11/14, Bold)   |
+| `md` | 26px | 8 · 4px      | 4px    | Caption 1 (13/18, Bold) |
+| `lg` | 30px | 10 · 5px     | 6px    | Body 3 (14/20, Bold)  |
 
 ---
 
 ## Props
 
-| Prop             | 타입             | 기본값      | 설명                         |
-| ---------------- | ---------------- | ----------- | ---------------------------- |
-| `variant`        | `BadgeVariant`   | `"neutral"` | 색상 변형                    |
-| `size`           | `"sm"` \| `"md"` | `"md"`      | 사이즈                       |
-| `labelClassName` | `string`         | —           | 라벨 span에 추가할 className |
-| `slotProps`      | `BadgeSlotProps` | —           | 내부 슬롯별 props 전달       |
-| `className`      | `string`         | —           | 루트 요소 className          |
-| `style`          | `CSSProperties`  | —           | 루트 요소 인라인 스타일      |
+| Prop             | 타입             | 기본값      | 설명                                       |
+| ---------------- | ---------------- | ----------- | ------------------------------------------ |
+| `variant`        | `BadgeVariant`   | `"fill"`    | Figma Style (`fill` / `ghost` / `line`)    |
+| `color`          | `BadgeColor`     | `"neutral"` | Figma Color                                |
+| `size`           | `BadgeSize`      | `"md"`      | 사이즈 (`sm` / `md` / `lg`)                |
+| `labelClassName` | `string`         | —           | 라벨 span에 추가할 className               |
+| `slotProps`      | `BadgeSlotProps` | —           | 내부 슬롯별 props 전달                     |
+| `className`      | `string`         | —           | 루트 요소 className                        |
+| `style`          | `CSSProperties`  | —           | 루트 요소 인라인 스타일                    |
 
-**BadgeVariant**: `"primary"` | `"secondary"` | `"success"` | `"caution"` | `"error"` | `"neutral"`
+**BadgeVariant**: `"fill"` | `"ghost"` | `"line"`
+**BadgeColor**: `"brand"` | `"neutral"` | `"success"` | `"error"` | `"caution"` | `"info"`
+**BadgeSize**: `"sm"` | `"md"` | `"lg"`
 
 `<span>` HTML 속성을 모두 지원합니다.
-
----
-
-## SlotProps
-
-```tsx
-interface BadgeSlotProps {
-  label?: React.HTMLAttributes<HTMLSpanElement>;
-}
-```
-
----
-
-## CSS 변수
-
-| 변수                      | 기본값 | 설명          |
-| ------------------------- | ------ | ------------- |
-| `--nds-badge-padding-y`   | `4px`  | 상하 패딩     |
-| `--nds-badge-padding-x`   | `8px`  | 좌우 패딩     |
-| `--nds-badge-radius`      | `6px`  | 모서리 둥글기 |
-| `--nds-badge-gap`         | `4px`  | 내부 gap      |
-| `--nds-badge-background`  | —      | 배경색        |
-| `--nds-badge-text-color`  | —      | 텍스트 색상   |
-| `--nds-badge-font-size`   | `13px` | 폰트 크기     |
-| `--nds-badge-line-height` | `18px` | 줄 높이       |
-| `--nds-badge-font-weight` | `600`  | 폰트 굵기     |
 
 ---
 
 ## data-slot 구조
 
 ```
-span [data-slot="root"] [data-variant] [data-size]
+span [data-slot="root"] [data-variant] [data-color] [data-size]
 └── span [data-slot="label"]
 ```
 
 ---
 
+## DO / Don't
+
+- ✅ 상태 의미에 맞는 Color 사용 (Success=완료, Error=오류)
+- ✅ Fill → Ghost → Line 순 우선순위 적용
+- ✅ Semantic Color Token으로 바인딩
+- ❌ 동일 화면에서 3가지 이상 Color 혼용
+- ❌ Badge와 Chip의 혼용 사용 (역할 구분 필요)
+- ❌ 고정 색상(하드코딩) 사용
+
+---
+
 ## 활용 예시
 
-### 리스트 항목에 상태 표시
-
-<ComponentPreview title="리스트 + 상태">
+<ComponentPreview title="상태 라벨">
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
     <span style={{ fontSize: 15, fontWeight: 500, color: "#383838" }}>프로젝트 A</span>
-    <Badge variant="success" size="sm">
+    <Badge variant="ghost" color="success" size="sm">
       진행중
     </Badge>
   </div>
 </ComponentPreview>
 
 ```tsx
-<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-  <span>프로젝트 A</span>
-  <Badge variant="success" size="sm">
-    진행중
-  </Badge>
-</div>
-```
-
-### 여러 태그 나열
-
-<ComponentPreview title="태그 목록">
-  <Badge variant="primary" size="sm">
-    React
-  </Badge>
-  <Badge variant="secondary" size="sm">
-    TypeScript
-  </Badge>
-  <Badge variant="neutral" size="sm">
-    Storybook
-  </Badge>
-</ComponentPreview>
-
-```tsx
-<div style={{ display: "flex", gap: 4 }}>
-  <Badge variant="primary" size="sm">
-    React
-  </Badge>
-  <Badge variant="secondary" size="sm">
-    TypeScript
-  </Badge>
-  <Badge variant="neutral" size="sm">
-    Storybook
-  </Badge>
-</div>
+<Badge variant="ghost" color="success" size="sm">진행중</Badge>
+<Badge variant="fill" color="brand" size="sm">NEW</Badge>
+<Badge variant="line" color="info">공지</Badge>
 ```
