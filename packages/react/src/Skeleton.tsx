@@ -34,6 +34,12 @@ const skeletonStyles = `
     transform: scale(1, 0.6);
     transform-origin: 0 60%;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    :where(.${SK_CLASS}) {
+      animation: none;
+    }
+  }
 `;
 
 /* ─── Component ─── */
