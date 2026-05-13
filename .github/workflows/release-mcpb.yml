@@ -121,25 +121,11 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
 
-      # 1단계: 채널에 짧은 헤드 메시지만 띄움 → 노이즈 최소화
-      - name: Post release head message
-        id: slack_head
-        if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
-        uses: slackapi/slack-github-action@v2.0.0
-        with:
-          method: chat.postMessage
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
-          payload: |
-            channel: "${{ secrets.SLACK_CHANNEL_ID }}"
-            text: "NudgeEAP DS MCPB v${{ steps.meta.outputs.version }} 릴리즈 — 상세 내용은 스레드 확인"
-            blocks:
-              - type: section
-                text:
-                  type: mrkdwn
-                  text: "*NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}* 릴리즈\n_설치 파일 · 문서 링크는 스레드 확인_"
-
-      # 2단계: 위 메시지의 스레드 안에 파일 업로드 + 디테일
-      - name: Upload mcpb to Slack thread
+      # 1단계: 채널 헤드 = .mcpb 파일 업로드 메시지 (제일 눈에 띄게)
+      #   - initial_comment 가 채널 메시지 본문, 거기에 .mcpb 파일이 첨부된다
+      #   - 응답의 files[0].shares.public[CHANNEL][0].ts 로 헤드 메시지 ts 추출
+      - name: Upload mcpb as channel head
+        id: upload_head
         if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
         uses: slackapi/slack-github-action@v2.0.0
         with:
@@ -147,60 +133,117 @@ jobs:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
             channel_id: "${{ secrets.SLACK_CHANNEL_ID }}"
-            thread_ts: "${{ fromJson(steps.slack_head.outputs.response).ts }}"
-            initial_comment: "*설치 방법*\nClaude Desktop 에서 첨부된 .mcpb 파일을 더블클릭하거나 Settings → Extensions → Install from file 로 설치하세요.\n\n*디자인시스템 문서*\n${{ env.DOCS_URL }}\n\n*릴리즈 페이지*\nhttps://github.com/${{ github.repository }}/releases/tag/${{ steps.meta.outputs.tag }}"
+            initial_comment: "*NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}* 릴리즈\n_설치 방법 · 문서 링크 · 변경 사항은 스레드 확인_"
             file: "./dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
             filename: "nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
             title: "NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}"
 
-      # 3단계: 같은 스레드에 릴리즈 본문(자동 생성된 release notes) 요약 댓글
-      - name: Post release notes to Slack thread
+      # 2단계: 헤드 메시지 ts 추출 + 스레드 안에 설치 안내/문서/릴리즈 페이지 댓글
+      - name: Post details to Slack thread
+        id: slack_details
         if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
         env:
-          GH_TOKEN: ${{ github.token }}
-          THREAD_TS: ${{ fromJson(steps.slack_head.outputs.response).ts }}
+          UPLOAD_RESPONSE: ${{ steps.upload_head.outputs.response }}
+          CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          VERSION: ${{ steps.meta.outputs.version }}
           TAG: ${{ steps.meta.outputs.tag }}
         run: |
           set -euo pipefail
 
-          # softprops/action-gh-release 가 generate_release_notes: true 로 만든 본문
-          BODY=$(gh release view "$TAG" --json body --jq '.body')
+          # files.uploadV2 응답에서 채널 공유 메시지의 ts 를 뽑는다.
+          # 공개 채널이면 shares.public, 비공개 채널이면 shares.private 에 들어있다.
+          THREAD_TS=$(printf '%s' "$UPLOAD_RESPONSE" | jq -r --arg ch "$CHANNEL_ID" '
+            .files[0].shares.public[$ch][0].ts //
+            .files[0].shares.private[$ch][0].ts //
+            empty
+          ')
+          if [ -z "$THREAD_TS" ]; then
+            echo "::error::헤드 메시지 ts 추출 실패. files.uploadV2 응답:"
+            echo "$UPLOAD_RESPONSE"
+            exit 1
+          fi
+          echo "thread_ts=$THREAD_TS" >> "$GITHUB_OUTPUT"
 
-          # GitHub MD → Slack mrkdwn 최소 변환
-          #   - **굵게**          → *굵게*
-          #   - 헤딩(#, ##, ###)  → *굵게* 한 줄
-          #   - " by @user in https://.../pull/N" → " (#N)"  (간결화)
-          #   - "**Full Changelog**: ..." 줄 제거 (릴리즈 페이지 링크 이미 위에 있음)
-          NOTES=$(echo "$BODY" \
-            | sed -E 's/\*\*([^*]+)\*\*/*\1*/g' \
-            | sed -E 's/^#+ (.*)/*\1*/g' \
-            | sed -E 's| by @[A-Za-z0-9_-]+ in https?://github\.com/[^ ]*pull/([0-9]+)| (#\1)|g' \
-            | sed -E '/^\*Full Changelog\*:/d' \
-            | sed -E '/^Full Changelog:/d')
+          DETAILS="*설치 방법*
+Claude Desktop 에서 헤드 메시지에 첨부된 .mcpb 파일을 더블클릭하거나 Settings → Extensions → Install from file 로 설치하세요.
+또는 <${{ env.DOCS_URL }}|디자인시스템 문서> 내부 상세 가이드를 확인하세요.
 
-          # Slack chat.postMessage text 한도 4000자, 여유 두고 3000자에서 자른다
-          if [ ${#NOTES} -gt 3000 ]; then
-            NOTES="${NOTES:0:3000}
+*디자인시스템 문서*
+${{ env.DOCS_URL }}
+
+*릴리즈 페이지*
+https://github.com/${{ github.repository }}/releases/tag/$TAG"
+
+          PAYLOAD=$(jq -n \
+            --arg channel "$CHANNEL_ID" \
+            --arg thread "$THREAD_TS" \
+            --arg text "$DETAILS" \
+            '{channel: $channel, thread_ts: $thread, text: $text, unfurl_links: false, unfurl_media: false}')
+
+          RESP=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $BOT_TOKEN" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            --data "$PAYLOAD")
+          echo "Slack response: $RESP"
+          echo "$RESP" | jq -e '.ok' >/dev/null
+
+      # 3단계: 같은 스레드에 변경 사항(git log 기반) 댓글
+      #   PR 워크플로우가 아니라 직접 push 하는 팀이라 GitHub generate-notes API
+      #   대신 git log 로 직접 커밋 메시지를 뽑는다. 빌드 산출물 자동 커밋
+      #   (chore: rebuild local-packages…) 은 노이즈라 제외한다.
+      - name: Post changelog to Slack thread
+        if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != '' && steps.slack_details.outputs.thread_ts != ''
+        env:
+          CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          THREAD_TS: ${{ steps.slack_details.outputs.thread_ts }}
+          TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          # 새로 만든 태그(TAG) 직전의 가장 최근 태그를 찾는다.
+          # (없으면 = 최초 릴리즈, 전체 히스토리에서 뽑는다.)
+          PREV_TAG=$(git tag --sort=-v:refname | grep -v "^${TAG}$" | head -n 1 || true)
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="${PREV_TAG}..${TAG}"
+            HEADER="*변경 사항* (\`${PREV_TAG}\` → \`${TAG}\`)"
+          else
+            RANGE="${TAG}"
+            HEADER="*변경 사항* (최초 릴리즈)"
+          fi
+
+          # 노이즈 커밋 필터: rebuild local-packages / Merge branch
+          COMMITS=$(git log --no-merges --pretty='format:- %s' "$RANGE" \
+            | grep -Ev '^- chore: rebuild local-packages' \
+            | grep -Ev '^- Merge branch ' \
+            || true)
+
+          if [ -z "$(echo "$COMMITS" | tr -d '[:space:]')" ]; then
+            BODY="$HEADER
+
+_변경 사항 없음 (노이즈 커밋만 존재)_"
+          else
+            BODY="$HEADER
+
+$COMMITS"
+          fi
+
+          # Slack text 한도 4000자, 여유 두고 3500자에서 자른다
+          if [ ${#BODY} -gt 3500 ]; then
+            BODY="${BODY:0:3500}
 
 _(이하 생략 — 릴리즈 페이지에서 전체 확인)_"
           fi
 
-          # 본문 비었으면 스킵
-          if [ -z "$(echo "$NOTES" | tr -d '[:space:]')" ]; then
-            echo "릴리즈 본문 비어있음 — 노트 댓글 스킵"
-            exit 0
-          fi
-
-          # jq 로 안전하게 JSON 페이로드 생성 (임의 문자열 escape 처리)
           PAYLOAD=$(jq -n \
-            --arg channel "${{ secrets.SLACK_CHANNEL_ID }}" \
+            --arg channel "$CHANNEL_ID" \
             --arg thread "$THREAD_TS" \
-            --arg text "*릴리즈 내용*
-$NOTES" \
+            --arg text "$BODY" \
             '{channel: $channel, thread_ts: $thread, text: $text, unfurl_links: false, unfurl_media: false}')
 
           RESP=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
-            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Authorization: Bearer $BOT_TOKEN" \
             -H "Content-Type: application/json; charset=utf-8" \
             --data "$PAYLOAD")
           echo "Slack response: $RESP"
