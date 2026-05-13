@@ -165,15 +165,17 @@ jobs:
           fi
           echo "thread_ts=$THREAD_TS" >> "$GITHUB_OUTPUT"
 
-          DETAILS="*설치 방법*
-Claude Desktop 에서 헤드 메시지에 첨부된 .mcpb 파일을 더블클릭하거나 Settings → Extensions → Install from file 로 설치하세요.
-또는 <${{ env.DOCS_URL }}|디자인시스템 문서> 내부 상세 가이드를 확인하세요.
-
-*디자인시스템 문서*
-${{ env.DOCS_URL }}
-
-*릴리즈 페이지*
-https://github.com/${{ github.repository }}/releases/tag/$TAG"
+          # printf 로 멀티라인 문자열 빌드 (YAML block scalar 들여쓰기 회피용)
+          DETAILS=$(printf '%s\n' \
+            '*설치 방법*' \
+            'Claude Desktop 에서 헤드 메시지에 첨부된 .mcpb 파일을 더블클릭하거나 Settings → Extensions → Install from file 로 설치하세요.' \
+            "또는 <${{ env.DOCS_URL }}|디자인시스템 문서> 내부 상세 가이드를 확인하세요." \
+            '' \
+            '*디자인시스템 문서*' \
+            "${{ env.DOCS_URL }}" \
+            '' \
+            '*릴리즈 페이지*' \
+            "https://github.com/${{ github.repository }}/releases/tag/$TAG")
 
           PAYLOAD=$(jq -n \
             --arg channel "$CHANNEL_ID" \
@@ -220,20 +222,14 @@ https://github.com/${{ github.repository }}/releases/tag/$TAG"
             || true)
 
           if [ -z "$(echo "$COMMITS" | tr -d '[:space:]')" ]; then
-            BODY="$HEADER
-
-_변경 사항 없음 (노이즈 커밋만 존재)_"
+            BODY=$(printf '%s\n\n%s' "$HEADER" '_변경 사항 없음 (노이즈 커밋만 존재)_')
           else
-            BODY="$HEADER
-
-$COMMITS"
+            BODY=$(printf '%s\n\n%s' "$HEADER" "$COMMITS")
           fi
 
           # Slack text 한도 4000자, 여유 두고 3500자에서 자른다
           if [ ${#BODY} -gt 3500 ]; then
-            BODY="${BODY:0:3500}
-
-_(이하 생략 — 릴리즈 페이지에서 전체 확인)_"
+            BODY=$(printf '%s\n\n%s' "${BODY:0:3500}" '_(이하 생략 — 릴리즈 페이지에서 전체 확인)_')
           fi
 
           PAYLOAD=$(jq -n \
