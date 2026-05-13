@@ -133,7 +133,7 @@ jobs:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
             channel_id: "${{ secrets.SLACK_CHANNEL_ID }}"
-            initial_comment: "*NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}* 릴리즈\n_설치 방법 · 문서 링크 · 변경 사항은 스레드 확인_"
+            initial_comment: "📦NudgeEAP DS MCPB v${{ steps.meta.outputs.version }} 업데이트📦\n\n설치 방법 / 문서 링크 / 변경 사항은 스레드에서 확인 부탁드립니다"
             file: "./dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
             filename: "nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
             title: "NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}"
