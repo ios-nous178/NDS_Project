@@ -121,83 +121,79 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
 
-      # 1단계: 채널 헤드 = .mcpb 파일 업로드 메시지 (제일 눈에 띄게)
-      #   - initial_comment 가 채널 메시지 본문, 거기에 .mcpb 파일이 첨부된다
-      #   - 응답의 files[0].shares.public[CHANNEL][0].ts 로 헤드 메시지 ts 추출
-      - name: Upload mcpb as channel head
-        id: upload_head
+      # ─── Slack 알림 ───────────────────────────────────────────
+      # 구조:
+      #   1) 채널 헤드(텍스트) → chat.postMessage 로 박아 ts 를 즉시 확정
+      #   2) .mcpb 파일 → 스레드 안에 업로드 (files.uploadV2 thread_ts)
+      #   3) 설치 안내/문서/릴리즈 페이지 → 스레드 댓글
+      #   4) git log 기반 변경사항 → 스레드 댓글
+      #
+      # 이전에는 "파일을 채널 헤드로 직접 업로드"하는 구조였는데,
+      # slack-github-action v2 의 files.uploadV2 응답이 채널 공유 ts 를
+      # 즉시 채워주지 않는 케이스가 있어 스레드 댓글 단계가 깨졌다.
+      # chat.postMessage 응답의 ts 는 결정론적이므로 헤드를 먼저 박는다.
+      # (files.info 폴링도 불필요 → files:read 스코프 없이 chat:write +
+      #  files:write 만으로 동작)
+      - name: Post Slack channel head
+        id: head
         if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
+        env:
+          CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          TEXT=$(printf '%s\n\n%s' \
+            "📦 *NudgeEAP DS MCPB v${VERSION} 업데이트* 📦" \
+            "설치 방법 / 문서 링크 / 변경 사항은 스레드에서 확인 부탁드립니다 🧵")
+
+          PAYLOAD=$(jq -n \
+            --arg channel "$CHANNEL_ID" \
+            --arg text "$TEXT" \
+            '{channel: $channel, text: $text, unfurl_links: false, unfurl_media: false}')
+
+          RESP=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $BOT_TOKEN" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            --data "$PAYLOAD")
+          echo "Slack response: $RESP"
+          echo "$RESP" | jq -e '.ok' >/dev/null
+
+          TS=$(printf '%s' "$RESP" | jq -r '.ts // empty')
+          if [ -z "$TS" ]; then
+            echo "::error::chat.postMessage 응답에서 ts 추출 실패: $RESP"
+            exit 1
+          fi
+          echo "thread_ts=$TS" >> "$GITHUB_OUTPUT"
+
+      - name: Upload mcpb to Slack thread
+        if: steps.tag_check.outputs.exists == 'false' && steps.head.outputs.thread_ts != ''
         uses: slackapi/slack-github-action@v2.0.0
         with:
           method: files.uploadV2
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
             channel_id: "${{ secrets.SLACK_CHANNEL_ID }}"
-            initial_comment: "📦NudgeEAP DS MCPB v${{ steps.meta.outputs.version }} 업데이트📦\n\n설치 방법 / 문서 링크 / 변경 사항은 스레드에서 확인 부탁드립니다"
+            thread_ts: "${{ steps.head.outputs.thread_ts }}"
             file: "./dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
             filename: "nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
             title: "NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}"
 
-      # 2단계: 헤드 메시지 ts 추출 + 스레드 안에 설치 안내/문서/릴리즈 페이지 댓글
-      - name: Post details to Slack thread
-        id: slack_details
-        if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
+      - name: Post install details to Slack thread
+        if: steps.tag_check.outputs.exists == 'false' && steps.head.outputs.thread_ts != ''
         env:
-          UPLOAD_RESPONSE: ${{ steps.upload_head.outputs.response }}
           CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
           BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          VERSION: ${{ steps.meta.outputs.version }}
+          THREAD_TS: ${{ steps.head.outputs.thread_ts }}
           TAG: ${{ steps.meta.outputs.tag }}
         run: |
           set -euo pipefail
 
-          # slack-github-action v2 의 files.uploadV2 응답은 한 단계 더 감싸져
-          # 실제 파일이 .files[0].files[0] 에 들어있다 (구버전 호환을 위해
-          # .files[0] / .file 경로도 같이 시도).
-          # 또한 V2 업로드의 채널 공유는 약간 비동기여서 즉시 응답의 .shares 가
-          # 비어 있는 케이스가 있다 → 그럴 때는 file.id 로 files.info 를
-          # 짧게 폴링해서 채널 공유 ts 가 채워질 때까지 기다린다.
-          FILE_ID=$(printf '%s' "$UPLOAD_RESPONSE" | jq -r '
-            (.files[0].files[0] // .files[0] // .file // empty).id // empty
-          ')
-          THREAD_TS=$(printf '%s' "$UPLOAD_RESPONSE" | jq -r --arg ch "$CHANNEL_ID" '
-            (.files[0].files[0] // .files[0] // .file // empty) as $f |
-            $f.shares.public[$ch][0].ts //
-            $f.shares.private[$ch][0].ts //
-            empty
-          ')
-
-          INFO=""
-          if [ -z "$THREAD_TS" ] && [ -n "$FILE_ID" ]; then
-            for attempt in 1 2 3 4 5; do
-              sleep 2
-              INFO=$(curl -sS "https://slack.com/api/files.info?file=$FILE_ID" \
-                -H "Authorization: Bearer $BOT_TOKEN")
-              THREAD_TS=$(printf '%s' "$INFO" | jq -r --arg ch "$CHANNEL_ID" '
-                .file.shares.public[$ch][0].ts //
-                .file.shares.private[$ch][0].ts //
-                empty
-              ')
-              [ -n "$THREAD_TS" ] && break
-            done
-          fi
-
-          if [ -z "$THREAD_TS" ]; then
-            echo "::error::헤드 메시지 ts 추출 실패. 업로드 응답:"
-            echo "$UPLOAD_RESPONSE"
-            if [ -n "$INFO" ]; then
-              echo "마지막 files.info 응답:"
-              echo "$INFO"
-            fi
-            exit 1
-          fi
-          echo "thread_ts=$THREAD_TS" >> "$GITHUB_OUTPUT"
-
-          # printf 로 멀티라인 문자열 빌드 (YAML block scalar 들여쓰기 회피용)
           DETAILS=$(printf '%s\n' \
             '*설치 방법*' \
-            'Claude Desktop 에서 헤드 메시지에 첨부된 .mcpb 파일을 더블클릭하거나 Settings → Extensions → Install from file 로 설치하세요.' \
-            "또는 <${{ env.DOCS_URL }}|디자인시스템 문서> 내부 상세 가이드를 확인하세요." \
+            '위에 첨부된 .mcpb 파일을 다운받아 Claude Desktop 에서 더블클릭하거나 Settings → Extensions → Install from file 로 설치하세요.' \
+            "추가 가이드는 <${{ env.DOCS_URL }}|디자인시스템 문서>에서 확인할 수 있어요." \
             '' \
             '*디자인시스템 문서*' \
             "${{ env.DOCS_URL }}" \
@@ -218,16 +214,15 @@ jobs:
           echo "Slack response: $RESP"
           echo "$RESP" | jq -e '.ok' >/dev/null
 
-      # 3단계: 같은 스레드에 변경 사항(git log 기반) 댓글
-      #   PR 워크플로우가 아니라 직접 push 하는 팀이라 GitHub generate-notes API
-      #   대신 git log 로 직접 커밋 메시지를 뽑는다. 빌드 산출물 자동 커밋
-      #   (chore: rebuild local-packages…) 은 노이즈라 제외한다.
+      # git log 기반 변경사항. PR 워크플로우가 아니라 직접 push 하는 팀이라
+      # GitHub generate-notes API 대신 git log 로 직접 커밋 메시지를 뽑는다.
+      # 빌드 산출물 자동 커밋(chore: rebuild local-packages…) 은 노이즈라 제외.
       - name: Post changelog to Slack thread
-        if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != '' && steps.slack_details.outputs.thread_ts != ''
+        if: steps.tag_check.outputs.exists == 'false' && steps.head.outputs.thread_ts != ''
         env:
           CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
           BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          THREAD_TS: ${{ steps.slack_details.outputs.thread_ts }}
+          THREAD_TS: ${{ steps.head.outputs.thread_ts }}
           TAG: ${{ steps.meta.outputs.tag }}
         run: |
           set -euo pipefail
