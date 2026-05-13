@@ -175,7 +175,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.primary.main,
       },
       disabled: {
-        // Figma --eap-button-bg-disabled = #9CA2AE (cool-gray/400)
+        // Figma --semantic-button-bg-disabled = #9CA2AE (cool-gray/400)
         background: coolGray[400],
         text: cv.bg.white,
         border: coolGray[400],

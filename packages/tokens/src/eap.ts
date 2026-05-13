@@ -1,14 +1,12 @@
 /**
- * NudgeEAP 전용 시멘틱 매핑 레이어 (`--eap-*`)
+ * Role-based semantic tokens (Figma SemanticColorGuide 222:2 + Input 294:12)
  *
- * Figma 라이브러리(SemanticColorGuide, 68 tokens · 8 roles)와 1:1 매핑되는
- * 컴포넌트 역할 기반 토큰. 기존 atomic 팔레트(colors.ts) 및 NudgeEAP semantic
- * 토큰을 alias로 참조하며, Figma에서만 등장하는 값은 hex literal로 직접 지정.
+ * 8 roles · 68 tokens. atomic palette(colors.ts) 및 palette-semantic 토큰을
+ * alias 로 참조한다. CSS emit 시 `--semantic-{group}-{role}-{variant}`
+ * namespace 로 노출됨 (구 `--eap-*` 에서 통합).
  *
- * - 출처: figma.com/design/MqR7O3uvBvH5tVngwzbqGH (node 222:2 + Input 섹션 294:12)
- * - CSS 변수 컨벤션: `--eap-{group}-{role}-{variant}` 또는 `--eap-{group}-{variant}`
- *   (예: `--eap-bg-brand-default`, `--eap-button-bg-pressed`, `--eap-input-bg`)
- * - 적용 범위: NudgeEAP 브랜드 한정. Trost/Moneple은 자체 brand CSS만 사용.
+ * JS 측 참조는 `cv` (cssVar.ts) 에서 일원화. 외부 코드는 이 파일을 직접
+ * import 하지 않는다 — 빌드 파이프라인(generate-css.js) 전용.
  */
 
 import { neutral, coolGray, blue, yellow, red, green, semantic } from "./colors.js";
@@ -160,138 +158,4 @@ export const eap = {
   },
 } as const;
 
-/** `var(--eap-*)` 참조 헬퍼 — runtime에서 CSS 변수로 컴포넌트에 주입 */
-const v = (name: string) => `var(${name})`;
-
-export const eapVar = {
-  bg: {
-    page: { default: v("--eap-bg-page-default") },
-    surface: {
-      default: v("--eap-bg-surface-default"),
-      subtle: v("--eap-bg-surface-subtle"),
-    },
-    section: { default: v("--eap-bg-section-default") },
-    brand: {
-      default: v("--eap-bg-brand-default"),
-      subtle: v("--eap-bg-brand-subtle"),
-    },
-    inverse: { default: v("--eap-bg-inverse-default") },
-    status: {
-      error: v("--eap-bg-status-error"),
-      success: v("--eap-bg-status-success"),
-      info: v("--eap-bg-status-info"),
-      caution: v("--eap-bg-status-caution"),
-    },
-  },
-  text: {
-    strong: { default: v("--eap-text-strong-default") },
-    normal: { default: v("--eap-text-normal-default") },
-    subtle: { default: v("--eap-text-subtle-default") },
-    muted: { default: v("--eap-text-muted-default") },
-    disabled: { default: v("--eap-text-disabled-default") },
-    inverse: { default: v("--eap-text-inverse-default") },
-    brand: {
-      default: v("--eap-text-brand-default"),
-      strong: v("--eap-text-brand-strong"),
-    },
-    status: {
-      success: v("--eap-text-status-success"),
-      error: v("--eap-text-status-error"),
-      caution: v("--eap-text-status-caution"),
-      info: v("--eap-text-status-info"),
-    },
-  },
-  buttonBg: {
-    default: v("--eap-button-bg-default"),
-    hover: v("--eap-button-bg-hover"),
-    pressed: v("--eap-button-bg-pressed"),
-    disabled: v("--eap-button-bg-disabled"),
-    secondary: {
-      default: v("--eap-button-bg-secondary-default"),
-      hover: v("--eap-button-bg-secondary-hover"),
-      disabled: v("--eap-button-bg-secondary-disabled"),
-    },
-    outlined: {
-      default: v("--eap-button-bg-outlined-default"),
-      hover: v("--eap-button-bg-outlined-hover"),
-      disabled: v("--eap-button-bg-outlined-disabled"),
-    },
-  },
-  buttonText: {
-    default: v("--eap-button-text-default"),
-    brand: v("--eap-button-text-brand"),
-    disabled: v("--eap-button-text-disabled"),
-  },
-  buttonBorder: {
-    outlined: {
-      default: v("--eap-button-border-outlined-default"),
-      hover: v("--eap-button-border-outlined-hover"),
-      disabled: v("--eap-button-border-outlined-disabled"),
-    },
-    assistive: {
-      default: v("--eap-button-border-assistive-default"),
-      disabled: v("--eap-button-border-assistive-disabled"),
-    },
-  },
-  icon: {
-    strong: { default: v("--eap-icon-strong-default") },
-    normal: { default: v("--eap-icon-normal-default") },
-    disabled: { default: v("--eap-icon-disabled-default") },
-    inverse: { default: v("--eap-icon-inverse-default") },
-    brand: { default: v("--eap-icon-brand-default") },
-    status: {
-      success: v("--eap-icon-status-success"),
-      error: v("--eap-icon-status-error"),
-      caution: v("--eap-icon-status-caution"),
-    },
-  },
-  border: {
-    normal: { default: v("--eap-border-normal-default") },
-    strong: { default: v("--eap-border-strong-default") },
-    subtle: { default: v("--eap-border-subtle-default") },
-    focus: { default: v("--eap-border-focus-default") },
-    brand: {
-      default: v("--eap-border-brand-default"),
-      disabled: v("--eap-border-brand-disabled"),
-    },
-    disabled: { default: v("--eap-border-disabled-default") },
-    status: {
-      error: v("--eap-border-status-error"),
-      caution: v("--eap-border-status-caution"),
-    },
-  },
-  fill: {
-    brand: {
-      default: v("--eap-fill-brand-default"),
-      hover: v("--eap-fill-brand-hover"),
-      pressed: v("--eap-fill-brand-pressed"),
-      disabled: v("--eap-fill-brand-disabled"),
-    },
-    neutral: {
-      default: v("--eap-fill-neutral-default"),
-      subtle: v("--eap-fill-neutral-subtle"),
-    },
-    inverse: { default: v("--eap-fill-inverse-default") },
-    status: {
-      error: v("--eap-fill-status-error"),
-      caution: v("--eap-fill-status-caution"),
-    },
-  },
-  input: {
-    bg: v("--eap-input-bg"),
-    bgDisabled: v("--eap-input-bg-disabled"),
-    borderDefault: v("--eap-input-border-default"),
-    borderHover: v("--eap-input-border-hover"),
-    borderFocus: v("--eap-input-border-focus"),
-    borderError: v("--eap-input-border-error"),
-    borderDisabled: v("--eap-input-border-disabled"),
-    placeholder: v("--eap-input-placeholder"),
-    helpertextDefault: v("--eap-input-helpertext-default"),
-    helpertextSuccess: v("--eap-input-helpertext-success"),
-    helpertextError: v("--eap-input-helpertext-error"),
-    helpertextDisabled: v("--eap-input-helpertext-disabled"),
-  },
-} as const;
-
 export type EapTokens = typeof eap;
-export type EapVarRef = typeof eapVar;

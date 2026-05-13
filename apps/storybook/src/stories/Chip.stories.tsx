@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Chip, type ChipProps } from "@nudge-eap/react";
+import { Chip, chipGuide, type ChipProps, type ChipVariantKey } from "@nudge-eap/react";
 import { PinIcon, TelephoneIcon } from "@nudge-eap/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
+import { DesignGuideBadge } from "../components/DesignGuideBadge";
 
 const meta: Meta<ChipProps> = {
   title: "Components/Chip",
@@ -198,7 +199,7 @@ export const HomePageStyles: Story = {
             shape="square"
             size="sm"
             className="h-6 px-[5px] bg-[#f3f4f6] text-[#4b5563]"
-            icon={<PinIcon size={12} color="var(--eap-icon-normal-default)" />}
+            icon={<PinIcon size={12} color="var(--semantic-icon-normal-default)" />}
           />
           <Chip
             label="전화"
@@ -206,7 +207,7 @@ export const HomePageStyles: Story = {
             shape="square"
             size="sm"
             className="h-6 px-[5px] bg-[#f3f4f6] text-[#4b5563]"
-            icon={<TelephoneIcon size={12} color="var(--eap-icon-normal-default)" />}
+            icon={<TelephoneIcon size={12} color="var(--semantic-icon-normal-default)" />}
           />
         </div>
       </div>
@@ -319,5 +320,39 @@ export const SelectedStateToggleBackInteraction: Story = {
     // 다시 클릭으로 선택
     await user.click(stressChip);
     await expect(stressChip).toHaveAttribute("aria-pressed", "true");
+  },
+};
+
+export const DesignGuideOverview: Story = {
+  name: "Design Guide/Overview",
+  parameters: {
+    docs: {
+      description: {
+        story: "각 variant 가 Figma 가이드에 등재되었는지(core/experimental) 한눈에 확인.",
+      },
+    },
+  },
+  render: () => {
+    const variants: ChipVariantKey[] = ["outlined", "filled", "soft", "strong"];
+    return (
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 16 }}>
+        {variants.map((variant) => (
+          <div
+            key={variant}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              padding: 12,
+              border: "1px solid #ECECEC",
+              borderRadius: 8,
+            }}
+          >
+            <Chip label={variant} variant={variant} />
+            <DesignGuideBadge meta={chipGuide[variant]} />
+          </div>
+        ))}
+      </div>
+    );
   },
 };

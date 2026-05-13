@@ -330,27 +330,9 @@ function generateMotion() {
   return lines.join("\n");
 }
 
-// ── Generate cssVar.ts ─────────────────────────────────────
-
-function generateCssVar() {
-  const lines = [HEADER];
-
-  lines.push("const v = (name: string) => `var(${name})`;\n");
-
-  lines.push("export const cv = {");
-  for (const [group, entries] of Object.entries(tokens.colors)) {
-    lines.push(`  ${group}: {`);
-    for (const key of Object.keys(entries)) {
-      lines.push(`    ${fmtKey(key)}: v("--color-semantic-${group}-${key}"),`);
-    }
-    lines.push("  },");
-  }
-  lines.push("} as const;\n");
-
-  lines.push("export type CssVarRef = typeof cv;\n");
-
-  return lines.join("\n");
-}
+// cssVar.ts 는 더 이상 DESIGN.md 에서 자동 생성하지 않는다.
+// 시멘틱 토큰이 단일 `--semantic-*` namespace 로 통일되면서, palette-style 그룹과
+// role-based 그룹(구 `--eap-*`)을 함께 노출해야 해 수동 관리한다.
 
 // ── Orchestrate ────────────────────────────────────────────
 
@@ -360,7 +342,6 @@ const FILES = {
   "typography.ts": generateTypography,
   "elevation.ts": generateElevation,
   "motion.ts": generateMotion,
-  "cssVar.ts": generateCssVar,
 };
 
 let hasError = false;

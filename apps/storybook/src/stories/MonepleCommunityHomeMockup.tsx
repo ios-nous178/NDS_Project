@@ -259,8 +259,8 @@ function MonepleCommunityStyles() {
     <style>{`
       .moneple-community {
         min-height: 100%;
-        background: var(--color-semantic-bg-white, #FFFFFF);
-        color: var(--color-semantic-text-default, #333333);
+        background: var(--semantic-bg-white, #FFFFFF);
+        color: var(--semantic-text-default, #333333);
         font-family: var(--font-web);
       }
 
@@ -284,8 +284,8 @@ function MonepleCommunityStyles() {
       .moneple-side-best,
       .moneple-best-strip,
       .moneple-board {
-        background: var(--color-semantic-bg-white, #FFFFFF);
-        border: 1px solid var(--color-semantic-border-default, #EDEDED);
+        background: var(--semantic-bg-white, #FFFFFF);
+        border: 1px solid var(--semantic-border-default, #EDEDED);
         border-radius: 8px;
       }
 
@@ -301,7 +301,7 @@ function MonepleCommunityStyles() {
 
       .moneple-login p {
         margin: 6px 0 14px;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 13px;
         line-height: 19px;
       }
@@ -313,15 +313,15 @@ function MonepleCommunityStyles() {
       }
 
       .moneple-menu-section + .moneple-menu-section {
-        border-top: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border-top: 1px solid var(--semantic-border-default, #EDEDED);
       }
 
       .moneple-menu h2,
       .moneple-side-best h2 {
         margin: 0;
         padding: 14px 16px;
-        border-bottom: 1px solid var(--color-semantic-border-default, #EDEDED);
-        color: var(--color-semantic-text-default, #333333);
+        border-bottom: 1px solid var(--semantic-border-default, #EDEDED);
+        color: var(--semantic-text-default, #333333);
         font-size: 15px;
         line-height: 22px;
       }
@@ -332,7 +332,7 @@ function MonepleCommunityStyles() {
         padding: 9px 16px;
         border: 0;
         background: transparent;
-        color: var(--color-semantic-text-subtle, #666666);
+        color: var(--semantic-text-subtle, #666666);
         font-family: inherit;
         font-size: 14px;
         line-height: 20px;
@@ -341,11 +341,11 @@ function MonepleCommunityStyles() {
       }
 
       .moneple-menu button:hover {
-        background: var(--color-semantic-bg-light, #F5F5F5);
+        background: var(--semantic-bg-light, #F5F5F5);
       }
 
       .moneple-menu button.is-active {
-        color: var(--color-semantic-caution-text, #FF9D00);
+        color: var(--semantic-caution-text, #FF9D00);
         font-weight: 700;
       }
 
@@ -368,13 +368,13 @@ function MonepleCommunityStyles() {
       .moneple-side-best p {
         margin: 0;
         overflow: hidden;
-        color: var(--color-semantic-text-default, #333333);
+        color: var(--semantic-text-default, #333333);
         text-overflow: ellipsis;
         white-space: nowrap;
       }
 
       .moneple-side-best span {
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-weight: 700;
       }
 
@@ -382,7 +382,7 @@ function MonepleCommunityStyles() {
       .moneple-post-title strong,
       .moneple-strip-list strong,
       .moneple-mobile-post strong {
-        color: var(--color-semantic-error-main, #FF4111);
+        color: var(--semantic-error-main, #FF4111);
         margin-left: 4px;
       }
 
@@ -397,12 +397,12 @@ function MonepleCommunityStyles() {
         align-items: flex-end;
         gap: 16px;
         padding-bottom: 16px;
-        border-bottom: 2px solid var(--color-semantic-text-strong, #151515);
+        border-bottom: 2px solid var(--semantic-text-strong, #151515);
       }
 
       .moneple-board-header h1 {
         margin: 0;
-        color: var(--color-semantic-text-strong, #151515);
+        color: var(--semantic-text-strong, #151515);
         font-size: 24px;
         line-height: 34px;
         letter-spacing: 0;
@@ -410,7 +410,7 @@ function MonepleCommunityStyles() {
 
       .moneple-board-header p {
         margin: 3px 0 0;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 13px;
         line-height: 18px;
       }
@@ -449,7 +449,7 @@ function MonepleCommunityStyles() {
       }
 
       .moneple-strip-list a {
-        color: var(--color-semantic-text-default, #333333);
+        color: var(--semantic-text-default, #333333);
         font-size: 13px;
         line-height: 18px;
         text-decoration: none;
@@ -459,7 +459,7 @@ function MonepleCommunityStyles() {
       }
 
       .moneple-strip-list span {
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-weight: 700;
       }
 
@@ -480,34 +480,34 @@ function MonepleCommunityStyles() {
       }
 
       .moneple-table-head {
-        background: var(--color-semantic-bg-light, #F5F5F5);
-        color: var(--color-semantic-text-placeholder, #999999);
+        background: var(--semantic-bg-light, #F5F5F5);
+        color: var(--semantic-text-placeholder, #999999);
         font-weight: 700;
       }
 
       .moneple-row {
-        border-top: 1px solid var(--color-semantic-border-default, #EDEDED);
-        color: var(--color-semantic-text-placeholder, #999999);
+        border-top: 1px solid var(--semantic-border-default, #EDEDED);
+        color: var(--semantic-text-placeholder, #999999);
         text-decoration: none;
       }
 
       .moneple-row:hover {
-        background: var(--color-semantic-bg-light, #F5F5F5);
+        background: var(--semantic-bg-light, #F5F5F5);
       }
 
       .moneple-row.is-notice {
-        background: var(--color-semantic-primary-bg, #FFFCE4);
+        background: var(--semantic-primary-bg, #FFFCE4);
       }
 
       .moneple-board-name {
-        color: var(--color-semantic-text-subtle, #666666);
+        color: var(--semantic-text-subtle, #666666);
         font-weight: 600;
       }
 
       .moneple-post-title {
         min-width: 0;
         overflow: hidden;
-        color: var(--color-semantic-text-default, #333333);
+        color: var(--semantic-text-default, #333333);
         font-weight: 500;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -529,16 +529,16 @@ function MonepleCommunityStyles() {
       .moneple-pages button {
         width: 32px;
         height: 32px;
-        border: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border: 1px solid var(--semantic-border-default, #EDEDED);
         border-radius: 4px;
-        background: var(--color-semantic-bg-white, #FFFFFF);
-        color: var(--color-semantic-text-subtle, #666666);
+        background: var(--semantic-bg-white, #FFFFFF);
+        color: var(--semantic-text-subtle, #666666);
         font-family: inherit;
       }
 
       .moneple-pages button:first-child {
-        border-color: var(--color-semantic-text-default, #333333);
-        color: var(--color-semantic-text-default, #333333);
+        border-color: var(--semantic-text-default, #333333);
+        color: var(--semantic-text-default, #333333);
         font-weight: 700;
       }
 
@@ -546,7 +546,7 @@ function MonepleCommunityStyles() {
         display: flex;
         align-items: center;
         gap: 8px;
-        color: var(--color-semantic-text-placeholder, #999999);
+        color: var(--semantic-text-placeholder, #999999);
         font-size: 13px;
       }
 
@@ -554,10 +554,10 @@ function MonepleCommunityStyles() {
         width: 190px;
         height: 34px;
         padding: 0 12px;
-        border: 1px solid var(--color-semantic-border-default, #EDEDED);
+        border: 1px solid var(--semantic-border-default, #EDEDED);
         border-radius: 4px;
-        background: var(--color-semantic-bg-white, #FFFFFF);
-        color: var(--color-semantic-text-default, #333333);
+        background: var(--semantic-bg-white, #FFFFFF);
+        color: var(--semantic-text-default, #333333);
         font-family: inherit;
         font-size: 13px;
       }
@@ -598,14 +598,14 @@ function MonepleCommunityStyles() {
           display: grid;
           gap: 0;
           overflow: hidden;
-          border: 1px solid var(--color-semantic-border-default, #EDEDED);
+          border: 1px solid var(--semantic-border-default, #EDEDED);
           border-radius: 8px;
-          background: var(--color-semantic-bg-white, #FFFFFF);
+          background: var(--semantic-bg-white, #FFFFFF);
         }
 
         .moneple-mobile-post {
           padding: 14px 16px;
-          border-top: 1px solid var(--color-semantic-border-default, #EDEDED);
+          border-top: 1px solid var(--semantic-border-default, #EDEDED);
           color: inherit;
           text-decoration: none;
         }
@@ -615,26 +615,26 @@ function MonepleCommunityStyles() {
         }
 
         .moneple-mobile-post.is-notice {
-          background: var(--color-semantic-primary-bg, #FFFCE4);
+          background: var(--semantic-primary-bg, #FFFCE4);
         }
 
         .moneple-mobile-post div {
           display: flex;
           justify-content: space-between;
           gap: 12px;
-          color: var(--color-semantic-text-placeholder, #999999);
+          color: var(--semantic-text-placeholder, #999999);
           font-size: 12px;
           line-height: 16px;
         }
 
         .moneple-mobile-post span {
-          color: var(--color-semantic-text-subtle, #666666);
+          color: var(--semantic-text-subtle, #666666);
           font-weight: 700;
         }
 
         .moneple-mobile-post h2 {
           margin: 7px 0 0;
-          color: var(--color-semantic-text-default, #333333);
+          color: var(--semantic-text-default, #333333);
           font-size: 15px;
           line-height: 22px;
           letter-spacing: 0;
@@ -642,7 +642,7 @@ function MonepleCommunityStyles() {
 
         .moneple-mobile-post p {
           margin: 8px 0 0;
-          color: var(--color-semantic-text-placeholder, #999999);
+          color: var(--semantic-text-placeholder, #999999);
           font-size: 12px;
           line-height: 16px;
         }

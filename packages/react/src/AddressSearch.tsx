@@ -110,7 +110,7 @@ const asStyles = `
     transition: border-color ${transition.default};
   }
   :where(.${AS_INPUT_CLASS}:focus) { outline: none; border-color: ${cv.primary.main}; }
-  :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: var(--color-semantic-error-main); }
+  :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
 
   :where(.${AS_BTN_CLASS}) {
     height: ${sizing.input.default}px;
@@ -198,7 +198,7 @@ const asStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     color: ${cv.text.subtle};
   }
-  :where(.${AS_HELPER_CLASS}[data-error="true"]) { color: var(--color-semantic-error-main); }
+  :where(.${AS_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

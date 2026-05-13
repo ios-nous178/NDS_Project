@@ -84,7 +84,7 @@ const miStyles = `
     transition: border-color ${transition.default};
   }
   :where(.${MI_FIELD_CLASS}:focus-within) { border-color: ${cv.primary.main}; }
-  :where(.${MI_FIELD_CLASS}[data-error="true"]) { border-color: var(--color-semantic-error-main); }
+  :where(.${MI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
 
   :where(.${MI_TEXTAREA_CLASS}) {
     width: 100%;
@@ -147,7 +147,7 @@ const miStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     color: ${cv.text.subtle};
   }
-  :where(.${MI_HELPER_CLASS}[data-error="true"]) { color: var(--color-semantic-error-main); }
+  :where(.${MI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

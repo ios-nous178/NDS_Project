@@ -110,7 +110,7 @@ const phoneInputStyles = `
 
   :where(.${PI_FIELD_CLASS}:focus-within) { border-color: ${cv.primary.main}; }
 
-  :where(.${PI_FIELD_CLASS}[data-error="true"]) { border-color: var(--color-semantic-error-main); }
+  :where(.${PI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
 
   :where(.${PI_DIAL_CLASS}) {
     display: inline-flex;
@@ -234,7 +234,7 @@ const phoneInputStyles = `
     color: ${cv.text.subtle};
   }
 
-  :where(.${PI_HELPER_CLASS}[data-error="true"]) { color: var(--color-semantic-error-main); }
+  :where(.${PI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

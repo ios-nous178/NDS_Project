@@ -90,7 +90,7 @@ const osStyles = `
   }
 
   :where(.${OS_VALUE_CLASS}[data-emphasis="discount"]) {
-    color: var(--color-semantic-error-main, #E04D4D);
+    color: var(--semantic-error-main, #E04D4D);
     font-weight: ${fontWeight.semibold};
   }
 

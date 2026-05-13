@@ -58,7 +58,7 @@ export const InCard: Story = {
           kind="area"
           width={120}
           height={48}
-          color="var(--color-semantic-success-main, #2BAA48)"
+          color="var(--semantic-success-main, #2BAA48)"
         />
       </div>
     </div>

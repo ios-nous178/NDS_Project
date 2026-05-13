@@ -5,7 +5,7 @@ import { StarIcon } from "@nudge-eap/icons";
 
 const RatingFooter = ({ children }: { children: React.ReactNode }) => (
   <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-    <StarIcon size={12} color="var(--eap-icon-status-caution)" />
+    <StarIcon size={12} color="var(--semantic-icon-status-caution)" />
     {children}
   </span>
 );

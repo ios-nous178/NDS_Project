@@ -209,9 +209,7 @@ export const ReviewCard = React.forwardRef<HTMLDivElement, ReviewCardProps>(
               <strong>
                 {author}
                 {verified && (
-                  <span
-                    style={{ marginLeft: 4, color: "var(--color-semantic-success-main, #2BAA48)" }}
-                  >
+                  <span style={{ marginLeft: 4, color: "var(--semantic-success-main, #2BAA48)" }}>
                     ✓
                   </span>
                 )}

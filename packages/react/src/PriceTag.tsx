@@ -51,7 +51,7 @@ const ptStyles = `
   }
 
   :where(.${PT_DISCOUNT_CLASS}) {
-    color: var(--color-semantic-error-main, #E04D4D);
+    color: var(--semantic-error-main, #E04D4D);
     font-size: var(--nds-price-amount-size, 18px);
     font-weight: ${fontWeight.bold};
   }
@@ -64,7 +64,7 @@ const ptStyles = `
   }
 
   :where(.${PT_AMOUNT_CLASS}[data-free="true"]) {
-    color: var(--color-semantic-success-main, #2BAA48);
+    color: var(--semantic-success-main, #2BAA48);
   }
 
   :where(.${PT_UNIT_CLASS}) {

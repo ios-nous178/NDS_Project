@@ -80,7 +80,7 @@ export const AppDownload: Story = {
             }}
           >
             앱 다운로드 하기
-            <ChevronRightIcon size={20} color="var(--eap-icon-inverse-default)" aria-hidden />
+            <ChevronRightIcon size={20} color="var(--semantic-icon-inverse-default)" aria-hidden />
           </a>
         </div>
         <img

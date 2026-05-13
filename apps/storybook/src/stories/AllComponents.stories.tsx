@@ -353,7 +353,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
         <div style={mockModalHeaderSpacer} aria-hidden />
         <div style={mockModalHeaderTitle}>알림</div>
         <span style={mockModalClose} aria-hidden>
-          <CloseIcon size={16} color="var(--eap-icon-normal-default)" />
+          <CloseIcon size={16} color="var(--semantic-icon-normal-default)" />
         </span>
       </div>
       <div style={mockModalBody}>저장된 변경사항을 적용할까요?</div>
@@ -1022,7 +1022,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
           justifyContent: "center",
         }}
       >
-        <MicrophoneIcon size={20} color="var(--eap-icon-normal-default)" />
+        <MicrophoneIcon size={20} color="var(--semantic-icon-normal-default)" />
       </span>
       <span
         style={{
@@ -1035,7 +1035,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
           justifyContent: "center",
         }}
       >
-        <VideocameraIcon size={20} color="var(--eap-icon-normal-default)" />
+        <VideocameraIcon size={20} color="var(--semantic-icon-normal-default)" />
       </span>
       <span
         style={{
@@ -1049,7 +1049,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
           justifyContent: "center",
         }}
       >
-        <TelephoneIcon size={20} color="var(--eap-icon-inverse-default)" />
+        <TelephoneIcon size={20} color="var(--semantic-icon-inverse-default)" />
       </span>
     </div>
   ),
@@ -1212,7 +1212,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
         <div style={mockDrawerHeader}>
           <div style={mockDrawerTitle}>필터</div>
           <span style={mockDrawerClose} aria-hidden>
-            <CloseIcon size={12} color="var(--eap-icon-normal-default)" />
+            <CloseIcon size={12} color="var(--semantic-icon-normal-default)" />
           </span>
         </div>
         <div style={mockDrawerBody}>
@@ -1226,7 +1226,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
   DropdownMenu: () => (
     <div style={mockDropdownWrap}>
       <div style={mockDropdownTrigger}>
-        <MoreIcon size={18} color="var(--eap-icon-normal-default)" />
+        <MoreIcon size={18} color="var(--semantic-icon-normal-default)" />
       </div>
       <div style={mockDropdownPanel}>
         <div style={mockDropdownItem}>편집</div>
@@ -1256,8 +1256,8 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <AppBar
         position="static"
         title="페이지 제목"
-        leftSlot={<ChevronLeftIcon size={20} color="var(--eap-icon-normal-default)" />}
-        rightSlot={<SearchIcon size={18} color="var(--eap-icon-normal-default)" />}
+        leftSlot={<ChevronLeftIcon size={20} color="var(--semantic-icon-normal-default)" />}
+        rightSlot={<SearchIcon size={18} color="var(--semantic-icon-normal-default)" />}
       />
       <div style={mockPhoneBody}>본문 영역</div>
     </div>
@@ -1338,17 +1338,17 @@ const PREVIEWS: Record<string, PreviewRender> = {
         <ListItem
           title="알림 설정"
           description="푸시 · 이메일"
-          trailing={<ChevronRightIcon size={16} color="var(--eap-icon-normal-default)" />}
+          trailing={<ChevronRightIcon size={16} color="var(--semantic-icon-normal-default)" />}
           onSelect={() => {}}
         />
         <ListItem
           title="결제 수단"
-          trailing={<ChevronRightIcon size={16} color="var(--eap-icon-normal-default)" />}
+          trailing={<ChevronRightIcon size={16} color="var(--semantic-icon-normal-default)" />}
           onSelect={() => {}}
         />
         <ListItem
           title="로그아웃"
-          trailing={<ChevronRightIcon size={16} color="var(--eap-icon-normal-default)" />}
+          trailing={<ChevronRightIcon size={16} color="var(--semantic-icon-normal-default)" />}
         />
       </List>
     </div>

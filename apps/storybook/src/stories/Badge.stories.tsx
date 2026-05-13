@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Badge } from "@nudge-eap/react";
+import { Badge, badgeGuide, type BadgeVariantKey } from "@nudge-eap/react";
 import { getComponentDocsDescription } from "../componentDocs";
+import { DesignGuideBadge } from "../components/DesignGuideBadge";
 
 const meta: Meta<typeof Badge> = {
   title: "Components/Badge",
@@ -184,5 +185,46 @@ export const SizeContractInteraction: Story = {
 
     const md = canvas.getByText("Medium").closest('[data-slot="root"]');
     await expect(md).toHaveAttribute("data-size", "md");
+  },
+};
+
+export const DesignGuideOverview: Story = {
+  name: "Design Guide/Overview",
+  parameters: {
+    docs: {
+      description: {
+        story: "각 variant 가 Figma 가이드에 등재되었는지(core/experimental) 한눈에 확인.",
+      },
+    },
+  },
+  render: () => {
+    const variants: BadgeVariantKey[] = [
+      "primary",
+      "secondary",
+      "success",
+      "caution",
+      "error",
+      "neutral",
+    ];
+    return (
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 220px)", gap: 16 }}>
+        {variants.map((variant) => (
+          <div
+            key={variant}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              padding: 12,
+              border: "1px solid #ECECEC",
+              borderRadius: 8,
+            }}
+          >
+            <Badge variant={variant}>{variant}</Badge>
+            <DesignGuideBadge meta={badgeGuide[variant]} />
+          </div>
+        ))}
+      </div>
+    );
   },
 };

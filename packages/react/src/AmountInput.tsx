@@ -89,7 +89,7 @@ const aiStyles = `
     transition: border-color ${transition.default};
   }
   :where(.${AI_FIELD_CLASS}:focus-within) { border-color: ${cv.primary.main}; }
-  :where(.${AI_FIELD_CLASS}[data-error="true"]) { border-color: var(--color-semantic-error-main); }
+  :where(.${AI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
 
   :where(.${AI_PREFIX_CLASS}),
   :where(.${AI_UNIT_CLASS}) {
@@ -145,7 +145,7 @@ const aiStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     color: ${cv.text.subtle};
   }
-  :where(.${AI_HELPER_CLASS}[data-error="true"]) { color: var(--color-semantic-error-main); }
+  :where(.${AI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

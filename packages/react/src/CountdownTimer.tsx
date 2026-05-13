@@ -41,7 +41,7 @@ const ctStyles = `
   }
 
   :where(.${CT_CLASS}[data-urgent="true"]) {
-    color: var(--color-semantic-error-main, #E04D4D);
+    color: var(--semantic-error-main, #E04D4D);
   }
 
   :where(.${CT_CLASS}[data-expired="true"]) {

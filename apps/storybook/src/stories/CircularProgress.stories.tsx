@@ -40,19 +40,19 @@ export const Colors: Story = {
       <CircularProgress
         value={50}
         size={80}
-        color="var(--color-semantic-caution-main, #F0A030)"
+        color="var(--semantic-caution-main, #F0A030)"
         caption="주의"
       />
       <CircularProgress
         value={20}
         size={80}
-        color="var(--color-semantic-error-main, #E04D4D)"
+        color="var(--semantic-error-main, #E04D4D)"
         caption="낮음"
       />
       <CircularProgress
         value={95}
         size={80}
-        color="var(--color-semantic-success-main, #2BAA48)"
+        color="var(--semantic-success-main, #2BAA48)"
         caption="달성"
       />
     </div>

@@ -1,7 +1,6 @@
 import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import {
   cv,
-  eapVar,
   fontFamily,
   fontWeight,
   radius,
@@ -176,20 +175,20 @@ const inputStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${eapVar.input.helpertextDefault};
+    color: ${cv.input.helpertextDefault};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-variant="error"]) {
-    color: ${eapVar.input.helpertextError};
+    color: ${cv.input.helpertextError};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-variant="success"]) {
-    color: ${eapVar.input.helpertextSuccess};
+    color: ${cv.input.helpertextSuccess};
   }
 
   :where(.${INPUT_HELPER_CLASS}[data-variant="disabled"]),
   :where(.${INPUT_ROOT_CLASS}[data-disabled="true"]) :where(.${INPUT_HELPER_CLASS}) {
-    color: ${eapVar.input.helpertextDisabled};
+    color: ${cv.input.helpertextDisabled};
   }
 
   /* Helper icon 은 부모 helper 의 color 를 currentColor 로 상속받는다 —

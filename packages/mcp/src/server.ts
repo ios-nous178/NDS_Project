@@ -586,7 +586,7 @@ function validateMockupSource(source: string): Violation[] {
         line,
         detail: block.split("\n")[0].trim(),
         suggestion:
-          "단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시하세요. 예: color='var(--color-semantic-primary-main)' 또는 부모 style color. get_pattern_guide('icon-color') 참조.",
+          "단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시하세요. 예: color='var(--semantic-primary-main)' 또는 부모 style color. get_pattern_guide('icon-color') 참조.",
       });
     }
   }
@@ -597,7 +597,7 @@ function validateMockupSource(source: string): Violation[] {
     { name: "badge", matched: /<\s*Badge\b/.test(source) },
     {
       name: "semantic-background",
-      matched: /background(?:Color)?\s*:\s*["']var\(--color-semantic-/.test(source),
+      matched: /background(?:Color)?\s*:\s*["']var\(--semantic-/.test(source),
     },
     { name: "icon", matched: /<\s*\w+Icon\b/.test(source) },
   ].filter((signal) => signal.matched);
@@ -851,8 +851,8 @@ const MINIMAL_RESET_CSS = `/* nudge-eap-ds minimal reset
   font-family: var(--font-family-default);
   font-size: var(--font-size-body-2);
   line-height: var(--line-height-body-2);
-  color: var(--color-semantic-text-default);
-  background: var(--color-semantic-bg-white);
+  color: var(--semantic-text-default);
+  background: var(--semantic-bg-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -1124,6 +1124,13 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
   if (args.intent === "admin-cms") {
     return `${title}
 
+## 역할 경계 (먼저 읽을 것)
+
+- 이 프로젝트의 역할은 **별도 목업 프로젝트 빌드 + 목업 생성**이다.
+- **하지 말 것**: NudgeEAP DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
+- 사용자가 "DS 컴포넌트를 고쳐줘 / 레포에 푸시해줘 / PR 만들어줘" 같이 요청하면, **이 프로젝트의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내**할 것.
+- 이 프로젝트는 DS를 '소비'하는 쪽이고, DS 레포는 별도로 관리된다.
+
 ## 분기 — 이 프로젝트는 어드민/CMS 목업이다
 
 - 사용 라이브러리: **antd v5** (NudgeEAPCMS 기준 5.5.1) + @ant-design/icons + dayjs(ko)
@@ -1173,6 +1180,13 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
   }
 
   return `${title}
+
+## 역할 경계 (먼저 읽을 것)
+
+- 이 프로젝트의 역할은 **별도 목업 프로젝트 빌드 + 목업 생성**이다.
+- **하지 말 것**: NudgeEAP DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
+- 사용자가 "DS 컴포넌트를 고쳐줘 / 레포에 푸시해줘 / PR 만들어줘" 같이 요청하면, **이 프로젝트의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내**할 것.
+- 이 프로젝트는 DS를 '소비'하는 쪽이고, DS 레포는 별도로 관리된다.
 
 ## 분기 (먼저 확인)
 
@@ -1271,6 +1285,9 @@ function createClaudeMd(args: {
 /* ───────────── 가이드 / 디자인 원칙 ───────────── */
 
 const ENTRY_TOOL_ADVISORY =
+  "이 MCP의 역할은 '별도 외부 목업 프로젝트를 빌드하고 목업을 생성하는 것'입니다. " +
+  "DS 레포 소스 수정, git commit/push, GitHub 레포 변경, npm publish 같은 작업은 이 MCP의 역할이 아닙니다. " +
+  "사용자가 그런 작업을 요청하면 DS 레포에서 직접 작업하라고 안내하세요. " +
   "이 MCP는 사용자 앱(Trost / Geniet / NudgeEAP) 컴포넌트만 노출합니다. " +
   "어드민/CMS/운영툴/백오피스 화면이라면 antd v5를 쓰고 get_admin_cms_guide를 호출하세요. " +
   "두 디자인시스템을 한 화면에서 섞어쓰지 마세요.";
@@ -1958,7 +1975,7 @@ const TOOLS = [
   {
     name: "get_scope_advisory",
     description:
-      "Return scope of this MCP and the user-app vs admin-cms branching rule. Call this first if there's any ambiguity about which design system to use. Cheap one-shot rule of thumb without loading full component data.",
+      "Return the role of this MCP (external mockup project builder + mockup generator — NOT a DS repo editor and NOT a GitHub pusher) and the user-app vs admin-cms branching rule. Call this first if there's any ambiguity about scope or which design system to use. Cheap one-shot rule of thumb without loading full component data.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {

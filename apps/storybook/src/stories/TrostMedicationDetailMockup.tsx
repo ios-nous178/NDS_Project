@@ -73,8 +73,8 @@ function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
           size={size}
           color={
             i <= Math.round(rating)
-              ? "var(--eap-icon-status-caution)"
-              : "var(--eap-icon-disabled-default)"
+              ? "var(--semantic-icon-status-caution)"
+              : "var(--semantic-icon-disabled-default)"
           }
         />
       ))}
@@ -1207,7 +1207,7 @@ function SimilarDrugCard({
         </div>
         <div style={{ textAlign: "right" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <StarIcon size={14} color="var(--eap-icon-status-caution)" />
+            <StarIcon size={14} color="var(--semantic-icon-status-caution)" />
             <span style={{ fontSize: 14, fontWeight: 700, color: T.black }}>
               {drug.avgRating.toFixed(1)}
             </span>
@@ -1407,7 +1407,7 @@ function CounselorCard({ counselor, isMobile }: { counselor: Counselor; isMobile
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <StarIcon size={13} color="var(--eap-icon-status-caution)" />
+              <StarIcon size={13} color="var(--semantic-icon-status-caution)" />
               <span style={{ fontSize: 13, fontWeight: 700, color: T.black }}>
                 {counselor.rating}
               </span>
@@ -1597,8 +1597,8 @@ function ReviewForm({ drugName, onClose }: { drugName: string; onClose: () => vo
                 size={32}
                 color={
                   star <= (hoverRating || rating)
-                    ? "var(--eap-icon-status-caution)"
-                    : "var(--eap-icon-disabled-default)"
+                    ? "var(--semantic-icon-status-caution)"
+                    : "var(--semantic-icon-disabled-default)"
                 }
                 style={{ transition: "color 0.1s" }}
               />

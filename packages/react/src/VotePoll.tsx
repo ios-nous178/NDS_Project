@@ -113,14 +113,14 @@ const vpStyles = `
   :where(.${VP_BAR_CLASS}) {
     position: absolute;
     inset: 0;
-    background: var(--color-semantic-primary-bg, #EBF1FF);
+    background: var(--semantic-primary-bg, #EBF1FF);
     width: var(--nds-vote-pct, 0%);
     transition: width 480ms ease;
     z-index: 0;
   }
 
   :where(.${VP_OPTION_CLASS}[data-voted="true"]) .${VP_BAR_CLASS} {
-    background: var(--color-semantic-primary-bg-hover, #DDE7FF);
+    background: var(--semantic-primary-bg-hover, #DDE7FF);
   }
 
   :where(.${VP_LABEL_CLASS}),

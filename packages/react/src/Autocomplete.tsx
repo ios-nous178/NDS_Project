@@ -116,7 +116,7 @@ const autocompleteStyles = `
   }
 
   :where(.${AC_INPUT_CLASS}[data-error="true"]) {
-    border-color: var(--color-semantic-error-main);
+    border-color: var(--semantic-error-main);
   }
 
   :where(.${AC_INPUT_CLASS}[disabled]) {

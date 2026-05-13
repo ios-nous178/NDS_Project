@@ -54,13 +54,10 @@ const tokenEval = new Function(`
 
 const tokens = tokenEval();
 
-// cv (CSS variable references) — 빌드된 JS에서 import (TypeScript 구문 포함이라 eval 불가)
+// cv (CSS variable references) — 빌드된 JS에서 import (TypeScript 구문 포함이라 eval 불가).
+// 구 `eapVar` 도 `cv.input.*` / `cv.surface.*` 등으로 통합됨.
 const { cv } = await import(path.join(tokensDistDir, "cssVar.js"));
 tokens.cv = cv;
-
-// eapVar (Figma SemanticColorGuide CSS variable references) — 마찬가지로 빌드된 JS에서 import
-const { eapVar } = await import(path.join(tokensDistDir, "eap.js"));
-tokens.eapVar = eapVar;
 
 /* ─── 컴포넌트 CSS 추출 ─── */
 

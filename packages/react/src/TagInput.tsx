@@ -83,11 +83,11 @@ const tiStyles = `
 
   :where(.${TI_FIELD_CLASS}:focus-within) {
     border-color: ${cv.primary.main};
-    box-shadow: 0 0 0 3px var(--color-semantic-primary-bg, rgba(64, 128, 240, 0.15));
+    box-shadow: 0 0 0 3px var(--semantic-primary-bg, rgba(64, 128, 240, 0.15));
   }
-  :where(.${TI_FIELD_CLASS}[data-error="true"]) { border-color: var(--color-semantic-error-main); }
+  :where(.${TI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
   :where(.${TI_FIELD_CLASS}[data-error="true"]:focus-within) {
-    box-shadow: 0 0 0 3px var(--color-semantic-error-bg, rgba(224, 77, 77, 0.15));
+    box-shadow: 0 0 0 3px var(--semantic-error-bg, rgba(224, 77, 77, 0.15));
   }
   :where(.${TI_FIELD_CLASS}[data-disabled="true"]) {
     background: ${cv.bg.coolGrayLighter};
@@ -101,7 +101,7 @@ const tiStyles = `
     height: 26px;
     padding: 0 ${spacing[4]}px 0 ${spacing[10]}px;
     border-radius: 9999px;
-    background: var(--color-semantic-primary-bg, #EBF1FF);
+    background: var(--semantic-primary-bg, #EBF1FF);
     color: ${cv.primary.main};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: 1;
@@ -150,7 +150,7 @@ const tiStyles = `
     color: ${cv.text.subtle};
   }
 
-  :where(.${TI_HELPER_CLASS}[data-error="true"]) { color: var(--color-semantic-error-main); }
+  :where(.${TI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

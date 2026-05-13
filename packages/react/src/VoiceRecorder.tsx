@@ -61,7 +61,7 @@ const vrStyles = `
     height: 80px;
     border-radius: 9999px;
     border: none;
-    background: var(--color-semantic-error-main, #E04D4D);
+    background: var(--semantic-error-main, #E04D4D);
     color: #fff;
     cursor: pointer;
     display: inline-flex;
@@ -98,7 +98,7 @@ const vrStyles = `
     display: inline-flex;
     align-items: center;
     gap: ${spacing[4]}px;
-    color: var(--color-semantic-error-main, #E04D4D);
+    color: var(--semantic-error-main, #E04D4D);
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
   }

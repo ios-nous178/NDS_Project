@@ -21,7 +21,7 @@ export default meta;
 type Story = StoryObj;
 
 const Chevron = () => (
-  <ChevronRightIcon size={16} color="var(--eap-icon-normal-default)" aria-hidden="true" />
+  <ChevronRightIcon size={16} color="var(--semantic-icon-normal-default)" aria-hidden="true" />
 );
 
 function CardExample() {

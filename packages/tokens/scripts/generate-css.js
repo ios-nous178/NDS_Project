@@ -27,13 +27,39 @@ const { fontFamily, fontWeight, typeScale } = require("../dist/typography");
 
 // ─── Helper ─────────────────────────────────────────────
 
-function flattenToVars(obj, prefix, lines) {
+/** atomic palette → `--color-{group}-{stop}` */
+function flattenPaletteVars(obj, prefix, lines) {
   for (const [key, value] of Object.entries(obj)) {
     const varName = prefix ? `${prefix}-${key}` : key;
     if (typeof value === "string") {
       lines.push(`  --color-${varName}: ${value};`);
     } else if (typeof value === "object" && value !== null) {
-      flattenToVars(value, varName, lines);
+      flattenPaletteVars(value, varName, lines);
+    }
+  }
+}
+
+/** palette-semantic 트리(`colors.semantic`) → `--semantic-{group}-{role}` (camelCase 유지) */
+function flattenPaletteSemanticVars(obj, prefix, lines) {
+  for (const [key, value] of Object.entries(obj)) {
+    const varName = prefix ? `${prefix}-${key}` : key;
+    if (typeof value === "string") {
+      lines.push(`  --semantic-${varName}: ${value};`);
+    } else if (typeof value === "object" && value !== null) {
+      flattenPaletteSemanticVars(value, varName, lines);
+    }
+  }
+}
+
+/** role-based 트리(`eap`) → `--semantic-{group}-{role}-{variant}` (camelCase → kebab-case) */
+function flattenRoleSemanticVars(obj, prefix, lines) {
+  for (const [key, value] of Object.entries(obj)) {
+    const part = camelToKebab(key);
+    const varName = prefix ? `${prefix}-${part}` : part;
+    if (typeof value === "string") {
+      lines.push(`  --semantic-${varName}: ${value};`);
+    } else if (typeof value === "object" && value !== null) {
+      flattenRoleSemanticVars(value, varName, lines);
     }
   }
 }
@@ -71,43 +97,31 @@ function fontFamilyKeyToFigma(key) {
   return key;
 }
 
-function flattenEapVars(obj, prefix, lines) {
-  for (const [key, value] of Object.entries(obj)) {
-    const part = camelToKebab(key);
-    const varName = prefix ? `${prefix}-${part}` : part;
-    if (typeof value === "string") {
-      lines.push(`  --eap-${varName}: ${value};`);
-    } else if (typeof value === "object" && value !== null) {
-      flattenEapVars(value, varName, lines);
-    }
-  }
-}
-
-// ─── NudgeEAP tokens.css (기존) ─────────────────────────
+// ─── NudgeEAP tokens.css ────────────────────────────────
 
 function generateBaseTokens() {
   const lines = [":root {"];
 
-  // Colors
-  flattenToVars(colors, "", lines);
+  // Atomic palette → `--color-{group}-{stop}` (semantic 은 별도 emit 하므로 제외)
+  const { semantic, ...palette } = colors;
+  flattenPaletteVars(palette, "", lines);
 
-  // EAP semantic mapping (Figma SemanticColorGuide · NudgeEAP 한정)
+  // Semantic (palette aliases) → `--semantic-{group}-{role}` (camelCase 유지)
   lines.push("");
-  lines.push("  /* ── EAP Semantic (Figma 222:2) ── */");
-  flattenEapVars(eap, "", lines);
+  lines.push("  /* ── Semantic (palette aliases) ── */");
+  flattenPaletteSemanticVars(semantic, "", lines);
+
+  // Semantic (role-based, Figma SemanticColorGuide 222:2 + Input 294:12)
+  // 구 `--eap-*` 트리를 동일 `--semantic-*` namespace 로 흡수 (kebab-case)
+  lines.push("");
+  lines.push("  /* ── Semantic (role-based, Figma 222:2 + 294:12) ── */");
+  flattenRoleSemanticVars(eap, "", lines);
 
   // Spacing — Primitive Scale (Figma · SpacingGuide, 4pt grid)
-  // 기존 --spacing-N 유지 + Figma 가이드 명칭과 매칭되는 --eap-space-N alias 도 emit
   lines.push("");
   lines.push("  /* ── Spacing (Primitive, Figma · SpacingGuide) ── */");
   for (const [key, value] of Object.entries(spacing)) {
     lines.push(`  --spacing-${key}: ${value}px;`);
-  }
-  lines.push("");
-  lines.push("  /* Figma 가이드 alias (--eap-space-N, 16 primitives) */");
-  const figmaSpacePrimitive = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40];
-  for (const n of figmaSpacePrimitive) {
-    lines.push(`  --eap-space-${n}: ${n}px;`);
   }
 
   // Gap — Semantic (Figma · SpacingGuide / Gap)
@@ -115,7 +129,6 @@ function generateBaseTokens() {
   lines.push("  /* ── Gap (Semantic, Figma · SpacingGuide / Gap) ── */");
   for (const [key, value] of Object.entries(gap)) {
     lines.push(`  --gap-${key}: ${value}px;`);
-    lines.push(`  --eap-gap-${key}: ${value}px;`);
   }
 
   // Padding — Semantic (Figma · SpacingGuide / Padding)
@@ -123,7 +136,6 @@ function generateBaseTokens() {
   lines.push("  /* ── Padding (Semantic, Figma · SpacingGuide / Padding) ── */");
   for (const [key, value] of Object.entries(padding)) {
     lines.push(`  --padding-${key}: ${value}px;`);
-    lines.push(`  --eap-padding-${key}: ${value}px;`);
   }
 
   // Grid — 거터·마진 (Figma · SpacingGuide / Grid)
@@ -136,10 +148,6 @@ function generateBaseTokens() {
   lines.push(`  --grid-margin-pc-min: ${grid.desktop.minMargin}px;`);
   lines.push(`  --grid-content-mobile: ${grid.mobile.contentWidth}px;`);
   lines.push(`  --grid-content-pc: ${grid.desktop.contentWidth}px;`);
-  lines.push(`  --eap-grid-gutter-mo: ${grid.mobile.gutter}px;`);
-  lines.push(`  --eap-grid-gutter-pc: ${grid.desktop.gutter}px;`);
-  lines.push(`  --eap-grid-margin-mo: ${grid.mobile.margin}px;`);
-  lines.push(`  --eap-grid-margin-pc: ${grid.desktop.margin}px;`);
 
   // Radius — Primitive (Figma · RadiusGuide)
   lines.push("");
@@ -147,20 +155,12 @@ function generateBaseTokens() {
   for (const [key, value] of Object.entries(radius)) {
     lines.push(`  --radius-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
   }
-  lines.push("");
-  lines.push("  /* Figma 가이드 alias (--eap-radius-N / full) */");
-  const figmaRadiusPrimitive = [0, 2, 4, 6, 8, 12, 16, 24];
-  for (const n of figmaRadiusPrimitive) {
-    lines.push(`  --eap-radius-${n}: ${n}px;`);
-  }
-  lines.push(`  --eap-radius-full: 9999px;`);
 
   // Shape — Semantic (Figma · RadiusGuide / Semantic)
   lines.push("");
   lines.push("  /* ── Shape (Semantic, Figma · RadiusGuide / Semantic) ── */");
   for (const [key, value] of Object.entries(shape)) {
     lines.push(`  --shape-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
-    lines.push(`  --eap-shape-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
   }
 
   // Border Width — Primitive (Figma · BorderGuide)
@@ -169,16 +169,12 @@ function generateBaseTokens() {
   for (const [key, value] of Object.entries(borderWidth)) {
     lines.push(`  --border-${key}: ${value}px;`);
   }
-  lines.push(`  --eap-border-width-0: 0px;`);
-  lines.push(`  --eap-border-width-1: 1px;`);
-  lines.push(`  --eap-border-width-2: 2px;`);
 
   // Stroke — Semantic (Figma · BorderGuide / Semantic)
   lines.push("");
   lines.push("  /* ── Stroke (Semantic, Figma · BorderGuide / Semantic) ── */");
   for (const [key, value] of Object.entries(stroke)) {
     lines.push(`  --stroke-${key}: ${value}px;`);
-    lines.push(`  --eap-stroke-${key}: ${value}px;`);
   }
 
   // Sizing
@@ -238,10 +234,10 @@ function generateBrandTokens({ theme, title, cssImport }) {
     }
   }
 
-  // Semantic colors
+  // Semantic colors → `--semantic-{group}-{role}` (camelCase 유지)
   lines.push("");
   lines.push("  /* ── Semantic ── */");
-  flattenToVars(semantic, "semantic", lines);
+  flattenPaletteSemanticVars(semantic, "", lines);
 
   // Typography
   if (typography) {

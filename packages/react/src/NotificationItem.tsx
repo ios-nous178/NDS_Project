@@ -42,18 +42,18 @@ export interface NotificationItemProps extends Omit<React.HTMLAttributes<HTMLDiv
 /* ─── Styles ─── */
 
 const KIND_BG: Record<NotificationKind, string> = {
-  info: "var(--color-semantic-info-bg, #EBF1FF)",
-  success: "var(--color-semantic-success-bg, #E5F8E9)",
-  warning: "var(--color-semantic-caution-bg, #FFF4E0)",
-  error: "var(--color-semantic-error-bg, #FFE9E9)",
+  info: "var(--semantic-info-bg, #EBF1FF)",
+  success: "var(--semantic-success-bg, #E5F8E9)",
+  warning: "var(--semantic-caution-bg, #FFF4E0)",
+  error: "var(--semantic-error-bg, #FFE9E9)",
   system: "#F2F4F6",
 };
 
 const KIND_FG: Record<NotificationKind, string> = {
-  info: "var(--color-semantic-info-main, #4080F0)",
-  success: "var(--color-semantic-success-main, #2BAA48)",
-  warning: "var(--color-semantic-caution-main, #F0A030)",
-  error: "var(--color-semantic-error-main, #E04D4D)",
+  info: "var(--semantic-info-main, #4080F0)",
+  success: "var(--semantic-success-main, #2BAA48)",
+  warning: "var(--semantic-caution-main, #F0A030)",
+  error: "var(--semantic-error-main, #E04D4D)",
   system: "#666",
 };
 
@@ -84,11 +84,11 @@ const niStyles = `
   :where(.${NI_CLASS}[data-clickable="true"]:hover) { background: ${cv.bg.coolGray}; }
 
   :where(.${NI_CLASS}[data-unread="true"]) {
-    background: var(--color-semantic-primary-bg, #EBF1FF);
+    background: var(--semantic-primary-bg, #EBF1FF);
   }
 
   :where(.${NI_CLASS}[data-unread="true"][data-clickable="true"]:hover) {
-    background: var(--color-semantic-primary-bg-hover, #DDE7FF);
+    background: var(--semantic-primary-bg-hover, #DDE7FF);
   }
 
   :where(.${NI_DOT_CLASS}) {
@@ -98,7 +98,7 @@ const niStyles = `
     width: 6px;
     height: 6px;
     border-radius: 9999px;
-    background: var(--color-semantic-error-main, #E04D4D);
+    background: var(--semantic-error-main, #E04D4D);
   }
 
   :where(.${NI_ICON_CLASS}) {
