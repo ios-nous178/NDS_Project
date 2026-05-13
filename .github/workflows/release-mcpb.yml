@@ -151,16 +151,44 @@ jobs:
         run: |
           set -euo pipefail
 
-          # files.uploadV2 응답에서 채널 공유 메시지의 ts 를 뽑는다.
-          # 공개 채널이면 shares.public, 비공개 채널이면 shares.private 에 들어있다.
+          # slack-github-action v2 의 files.uploadV2 응답은 한 단계 더 감싸져
+          # 실제 파일이 .files[0].files[0] 에 들어있다 (구버전 호환을 위해
+          # .files[0] / .file 경로도 같이 시도).
+          # 또한 V2 업로드의 채널 공유는 약간 비동기여서 즉시 응답의 .shares 가
+          # 비어 있는 케이스가 있다 → 그럴 때는 file.id 로 files.info 를
+          # 짧게 폴링해서 채널 공유 ts 가 채워질 때까지 기다린다.
+          FILE_ID=$(printf '%s' "$UPLOAD_RESPONSE" | jq -r '
+            (.files[0].files[0] // .files[0] // .file // empty).id // empty
+          ')
           THREAD_TS=$(printf '%s' "$UPLOAD_RESPONSE" | jq -r --arg ch "$CHANNEL_ID" '
-            .files[0].shares.public[$ch][0].ts //
-            .files[0].shares.private[$ch][0].ts //
+            (.files[0].files[0] // .files[0] // .file // empty) as $f |
+            $f.shares.public[$ch][0].ts //
+            $f.shares.private[$ch][0].ts //
             empty
           ')
+
+          INFO=""
+          if [ -z "$THREAD_TS" ] && [ -n "$FILE_ID" ]; then
+            for attempt in 1 2 3 4 5; do
+              sleep 2
+              INFO=$(curl -sS "https://slack.com/api/files.info?file=$FILE_ID" \
+                -H "Authorization: Bearer $BOT_TOKEN")
+              THREAD_TS=$(printf '%s' "$INFO" | jq -r --arg ch "$CHANNEL_ID" '
+                .file.shares.public[$ch][0].ts //
+                .file.shares.private[$ch][0].ts //
+                empty
+              ')
+              [ -n "$THREAD_TS" ] && break
+            done
+          fi
+
           if [ -z "$THREAD_TS" ]; then
-            echo "::error::헤드 메시지 ts 추출 실패. files.uploadV2 응답:"
+            echo "::error::헤드 메시지 ts 추출 실패. 업로드 응답:"
             echo "$UPLOAD_RESPONSE"
+            if [ -n "$INFO" ]; then
+              echo "마지막 files.info 응답:"
+              echo "$INFO"
+            fi
             exit 1
           fi
           echo "thread_ts=$THREAD_TS" >> "$GITHUB_OUTPUT"
