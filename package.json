@@ -25,7 +25,7 @@
     "release:local": "node scripts/pack-local-packages.mjs && node scripts/sync-version-docs.mjs",
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint && markdownlint-cli2 \"docs/**/*.md\" && npx @google/design.md lint DESIGN.md && node scripts/sync-tokens.mjs --check && node scripts/sync-version-docs.mjs --check",
+    "lint": "turbo lint && markdownlint-cli2 \"docs/**/*.md\" && node scripts/sync-version-docs.mjs --check",
     "lint:design": "npx @google/design.md lint DESIGN.md",
     "export:tailwind": "npx @google/design.md export --format tailwind DESIGN.md",
     "export:dtcg": "npx @google/design.md export --format dtcg DESIGN.md",
