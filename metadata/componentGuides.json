@@ -174,10 +174,15 @@
     },
     "Tabs": {
       "name": "Tabs",
-      "summary": "line/pill/square 3가지 variant. items + activeKey + onTabChange.",
+      "summary": "Line · Chip · Segment 3가지 variant. size=mobile/pc, tone=neutral/color 지원. items + activeKey + onTabChange.",
       "pitfalls": [
         "items 형식은 {key, title}[]. label 같은 다른 키 이름 사용 시 렌더 실패.",
-        "변경 핸들러는 onTabChange (onChange 아님)."
+        "변경 핸들러는 onTabChange (onChange 아님).",
+        "variant='segment'는 PC CMS 전용 — size/tone 옵션은 무시되고 PC·Neutral로 고정됨.",
+        "Mobile 컨텍스트에서는 size='mobile'을 명시적으로 전달 — 기본값은 'pc'.",
+        "이전 variant 'pill'·'square'은 각각 'chip'·'segment'로 이름이 바뀜.",
+        "variant='chip'은 콘텐츠 전환(단일 선택). 다중 선택 / 카운트 / 초기화가 필요하면 FilterBar 사용.",
+        "variant='segment'(56px, page-level nav, slate active)와 SegmentedControl(32–36px, form value selector, white-pill active)은 별개 컴포넌트. 페이지 분할이면 Tabs, 폼 내부 토글이면 SegmentedControl."
       ]
     },
     "Select": {
@@ -1189,9 +1194,25 @@
       "pitfalls": [
         "single은 라디오와 다름 — 같은 칩 다시 누르면 해제됨.",
         "옵션 8개 이상이면 가로 스크롤. 데스크톱은 Tabs/Drawer 필터 검토.",
-        "Tabs는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터."
+        "Tabs는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터.",
+        "Mobile에서 Tabs variant='chip'과 시각 유사 — 단일 선택으로 콘텐츠를 바꾼다면 Tabs, 같은 리스트를 다중/단일 필터링한다면 FilterBar. count·초기화 버튼이 있으면 FilterBar."
       ],
       "recommended": ["콘텐츠 리스트: 다중 선택 + count", "상담사 분야: single"]
+    },
+    "SegmentedControl": {
+      "name": "SegmentedControl",
+      "summary": "폼 컨트롤. 2~4개 옵션 단일 선택 토글. value + onValueChange. sm(32px) / md(36px).",
+      "pitfalls": [
+        "변경 핸들러는 onValueChange (onChange 아님).",
+        "옵션 5개 이상이거나 가로 스크롤이 필요하면 사용 금지 — Tabs / FilterBar로 검토.",
+        "Tabs variant='segment'(56px, page-level CMS nav, slate active bg + 흰 텍스트)와 별개. SegmentedControl은 inline form control(white-pill active + shadow)이다. 페이지/뷰 분할이면 Tabs, 폼 내부 토글이면 SegmentedControl.",
+        "라벨에 아이콘이 필요하면 Tabs segment 또는 IconButton 그룹을 검토 — SegmentedControl은 텍스트 라벨 전용."
+      ],
+      "recommended": [
+        "뷰 토글: 일/주/월",
+        "정렬 옵션: 최신순/인기순",
+        "보조 필터: 모바일 한 줄 토글"
+      ]
     },
     "UserCard": {
       "name": "UserCard",
