@@ -1,13 +1,5 @@
 import React, { useCallback, useId } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -19,7 +11,7 @@ const TG_LABEL_CLASS = `${TG_CLASS}__label`;
 /* ─── Sizes ─── */
 
 const sizeConfig = {
-  md: { trackW: 44, trackH: 24, thumbSize: 20, thumbOffset: 2 },
+  md: { trackW: 44, trackH: 24, thumbSize: 18, thumbOffset: 3 },
   sm: { trackW: 36, trackH: 20, thumbSize: 16, thumbOffset: 2 },
 } as const;
 
@@ -38,7 +30,6 @@ const toggleStyles = `
 
   :where(.${TG_CLASS}[data-disabled="true"]) {
     cursor: not-allowed;
-    opacity: 0.5;
   }
 
   :where(.${TG_CLASS}) input {
@@ -53,34 +44,50 @@ const toggleStyles = `
     border-width: 0;
   }
 
+  :where(.${TG_CLASS}) input:focus-visible + .${TG_TRACK_CLASS} {
+    box-shadow: 0 0 0 2px ${cv.bg.white}, 0 0 0 4px ${cv.borderRole.focus};
+  }
+
   :where(.${TG_TRACK_CLASS}) {
     position: relative;
     width: var(--nds-toggle-track-w, 44px);
     height: var(--nds-toggle-track-h, 24px);
     border-radius: ${radius.pill}px;
-    background: var(--nds-toggle-track-bg, ${cv.border.default});
-    transition: background-color ${transition.default};
+    background: var(--nds-toggle-track-bg, ${cv.borderRole.normal});
+    transition: background-color 0.2s ease;
     flex-shrink: 0;
   }
 
   :where(.${TG_TRACK_CLASS}[data-checked="true"]) {
-    background: var(--nds-toggle-track-active-bg, ${cv.primary.main});
+    background: var(--nds-toggle-track-active-bg, ${cv.fill.brand});
+  }
+
+  :where(.${TG_CLASS}[data-disabled="true"] .${TG_TRACK_CLASS}) {
+    background: ${cv.borderRole.disabled};
+  }
+
+  :where(.${TG_CLASS}[data-disabled="true"] .${TG_TRACK_CLASS}[data-checked="true"]) {
+    background: ${cv.borderRole.disabled};
   }
 
   :where(.${TG_THUMB_CLASS}) {
     position: absolute;
-    top: var(--nds-toggle-thumb-offset, 2px);
-    left: var(--nds-toggle-thumb-offset, 2px);
-    width: var(--nds-toggle-thumb-size, 20px);
-    height: var(--nds-toggle-thumb-size, 20px);
+    top: var(--nds-toggle-thumb-offset, 3px);
+    left: var(--nds-toggle-thumb-offset, 3px);
+    width: var(--nds-toggle-thumb-size, 18px);
+    height: var(--nds-toggle-thumb-size, 18px);
     border-radius: ${radius.pill}px;
     background: ${cv.bg.white};
     box-shadow: var(--nds-toggle-thumb-shadow, 0 1px 3px rgba(0, 0, 0, 0.15));
-    transition: transform ${transition.default};
+    transition: transform 0.2s ease;
   }
 
   :where(.${TG_TRACK_CLASS}[data-checked="true"]) .${TG_THUMB_CLASS} {
     transform: translateX(var(--nds-toggle-thumb-travel, 20px));
+  }
+
+  :where(.${TG_CLASS}[data-disabled="true"] .${TG_THUMB_CLASS}) {
+    background: ${cv.bg.light};
   }
 
   :where(.${TG_LABEL_CLASS}) {
@@ -89,6 +96,10 @@ const toggleStyles = `
     line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.text.default};
     user-select: none;
+  }
+
+  :where(.${TG_CLASS}[data-disabled="true"] .${TG_LABEL_CLASS}) {
+    color: ${cv.textRole.disabled};
   }
 `;
 

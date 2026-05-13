@@ -242,17 +242,52 @@
     },
     "Radio": {
       "name": "Radio",
-      "summary": "단일 선택 입력. 단독으로 쓸 일은 거의 없고, RadioGroup + RadioGroupItem 조합으로 사용.",
+      "summary": "단일 선택 입력 (Figma 171:9904). 20×20px, 2px borderNormal, 선택 시 10px 내부 원(fillBrand). RadioGroup + RadioGroupItem 조합 권장.",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904",
       "pitfalls": [
         "Radio를 단독으로 여러 개 두고 same name만 맞추는 패턴은 동기화 버그가 잦음. 무조건 RadioGroup으로 감쌀 것.",
         "RadioGroupItem은 RadioGroupContext 안에서만 동작. throw가 나면 RadioGroup으로 감싸지지 않은 것.",
-        "value prop은 string. 숫자/객체 쓸 거면 String(value)로 직렬화하고 onValueChange에서 다시 파싱."
+        "value prop은 string. 숫자/객체 쓸 거면 String(value)로 직렬화하고 onValueChange에서 다시 파싱.",
+        "그룹에 항목이 1개뿐이면 Radio가 아닌 Toggle을 검토. 2개라도 'On/Off' 의미이면 Toggle이 맞음.",
+        "Radio 그룹은 기본 선택 없이 빈 상태로 두지 말 것 — 반드시 하나를 초기값으로 설정."
       ],
       "recommended": [
         "<RadioGroup name=\"freq\" value={v} onValueChange={setV}> <RadioGroupItem value=\"daily\" label=\"매일\" /> ... </RadioGroup>",
         "horizontal 옵션 3개 이하일 때만 layout=\"horizontal\". 그 이상이면 vertical이 스캔 쉬움."
       ],
       "interactivePattern": "그룹 단위로 onValueChange 한 번만 부착. 개별 Radio에 onCheckedChange 부착하지 말 것."
+    },
+    "Checkbox": {
+      "name": "Checkbox",
+      "summary": "다중/독립 항목 토글 (Figma 171:9904). 20×20px, 4px radius, 2px borderNormal. checked + indeterminate 두 상태로 부모/자식 부분 선택까지 표현.",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904",
+      "pitfalls": [
+        "변경 핸들러는 onCheckedChange (onChange 아님).",
+        "indeterminate 와 checked 동시에 true이면 indeterminate 가 우선 표시됨. 부모 체크박스를 만들 때 자식 일부만 체크된 상태를 indeterminate 로 표현.",
+        "단일 선택(예: 성별)에 Checkbox를 쓰지 말 것 — Radio를 사용하세요.",
+        "On/Off 즉시 반영 의도이면 Checkbox 대신 Toggle. Checkbox는 폼 제출 시점에 확정되는 옵션용."
+      ],
+      "recommended": [
+        "약관 동의: CheckboxGroup vertical + label",
+        "부모/자식 전체선택: 부모는 indeterminate prop 사용",
+        "필터 다중 선택은 FilterBar(가로 칩) 검토 — Checkbox는 폼 컨텍스트용"
+      ]
+    },
+    "Toggle": {
+      "name": "Toggle",
+      "summary": "즉시 반영 On/Off 스위치 (Figma 171:9904). md=44×24 track + 18px thumb, On=fillBrand, Off=borderNormal. 0.2s 슬라이드 애니메이션.",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904",
+      "pitfalls": [
+        "변경 핸들러는 onCheckedChange (onChange 아님). aria-checked + role=switch 가 자동으로 붙음.",
+        "Toggle은 즉시 반영 의도 — 폼 제출 시점에 확정되는 옵션이라면 Checkbox 사용.",
+        "두 가지 중 하나를 '선택'하는 경우라도 Toggle로 대체하지 말 것. Toggle은 켜기/끄기 전용.",
+        "민감한 기능(결제, 데이터 공개 등)의 즉시 토글은 변경 전 확인 Dialog를 추가하세요."
+      ],
+      "recommended": [
+        "알림 설정: 푸시/이메일/마케팅 각각 Toggle",
+        "CMS 기능 활성화: 단일 항목 즉시 On/Off",
+        "변경 즉시 서버 반영하는 설정 항목"
+      ]
     },
     "Slider": {
       "name": "Slider",

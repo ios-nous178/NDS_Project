@@ -26,6 +26,18 @@ export const Disabled: Story = {
   render: () => <Radio checked label="선택 불가" disabled />,
 };
 
+export const AllStates: Story = {
+  name: "State/All States",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <Radio checked={false} onCheckedChange={() => undefined} label="Default (Unselected)" />
+      <Radio checked onCheckedChange={() => undefined} label="Selected" />
+      <Radio checked={false} disabled label="Disabled (Unselected)" />
+      <Radio checked disabled label="Disabled (Selected)" />
+    </div>
+  ),
+};
+
 export const VerticalGroup: Story = {
   name: "Group/Vertical",
   render: () => {

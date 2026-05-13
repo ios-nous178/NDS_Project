@@ -49,3 +49,15 @@ export const Disabled: Story = {
     </div>
   ),
 };
+
+export const AllStates: Story = {
+  name: "State/All States",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <Toggle checked={false} onCheckedChange={() => undefined} label="Off" />
+      <Toggle checked onCheckedChange={() => undefined} label="On" />
+      <Toggle checked={false} disabled label="Disabled (Off)" />
+      <Toggle checked disabled label="Disabled (On)" />
+    </div>
+  ),
+};
