@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T03:25:17.252Z",
+  "generatedAt": "2026-05-13T05:15:18.107Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -631,6 +631,11 @@
           "name": "variant",
           "optional": true,
           "type": "BadgeVariant"
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "BadgeColor"
         },
         {
           "name": "size",
@@ -1337,19 +1342,14 @@
           "type": "ChipVariant"
         },
         {
+          "name": "color",
+          "optional": true,
+          "type": "ChipColor"
+        },
+        {
           "name": "size",
           "optional": true,
           "type": "ChipSize"
-        },
-        {
-          "name": "shape",
-          "optional": true,
-          "type": "ChipShape"
-        },
-        {
-          "name": "selected",
-          "optional": true,
-          "type": "boolean"
         },
         {
           "name": "disabled",
@@ -4758,6 +4758,16 @@
           "type": "TabsVariant"
         },
         {
+          "name": "size",
+          "optional": true,
+          "type": "TabsSize"
+        },
+        {
+          "name": "tone",
+          "optional": true,
+          "type": "TabsTone"
+        },
+        {
           "name": "fullWidth",
           "optional": true,
           "type": "boolean"
@@ -6825,18 +6835,28 @@
       "group": "size"
     },
     {
-      "name": "--size-tabs-line",
+      "name": "--size-tabs-chip-mobile",
+      "value": "36px",
+      "group": "size"
+    },
+    {
+      "name": "--size-tabs-chip-pc",
+      "value": "44px",
+      "group": "size"
+    },
+    {
+      "name": "--size-tabs-line-mobile",
       "value": "50px",
       "group": "size"
     },
     {
-      "name": "--size-tabs-pill",
-      "value": "35px",
+      "name": "--size-tabs-line-pc",
+      "value": "56px",
       "group": "size"
     },
     {
-      "name": "--size-tabs-square",
-      "value": "36px",
+      "name": "--size-tabs-segment-pc",
+      "value": "56px",
       "group": "size"
     },
     {

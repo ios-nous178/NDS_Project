@@ -97,9 +97,17 @@ export const sizing = {
     field: 48,
   },
   tabs: {
-    line: 50,
-    pill: 35,
-    square: 36,
+    line: {
+      mobile: 50,
+      pc: 56,
+    },
+    chip: {
+      mobile: 36,
+      pc: 44,
+    },
+    segment: {
+      pc: 56,
+    },
   },
   appBar: {
     height: 52,

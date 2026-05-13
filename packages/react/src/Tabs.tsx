@@ -4,7 +4,6 @@ import {
   fontFamily,
   fontWeight,
   radius,
-  shadow,
   sizing,
   spacing,
   transition,
@@ -18,12 +17,35 @@ const TABS_CLASS = "nds-tabs";
 const TABS_ROOT_CLASS = `${TABS_CLASS}__root`;
 const TABS_LIST_CLASS = `${TABS_CLASS}__list`;
 const TABS_TRIGGER_CLASS = `${TABS_CLASS}__trigger`;
+const TABS_TRIGGER_INNER_CLASS = `${TABS_CLASS}__trigger-inner`;
+const TABS_TRIGGER_ICON_CLASS = `${TABS_CLASS}__trigger-icon`;
 const TABS_INDICATOR_CLASS = `${TABS_CLASS}__indicator`;
 const TABS_PANEL_CLASS = `${TABS_CLASS}__panel`;
 
 /* ─── Types ─── */
 
-export type TabsVariant = "line" | "pill" | "square";
+/**
+ * Tabs 변형.
+ * - `line` : 하단 밑줄(언더라인) 탭. Mobile · PC 지원.
+ * - `chip` : 알약(Pill) 탭. Mobile · PC 지원.
+ * - `segment` : 균등 분할 세그먼트 탭. **PC 전용** (CMS).
+ */
+export type TabsVariant = "line" | "chip" | "segment";
+
+/**
+ * 사이즈 컨텍스트 (Mobile / PC).
+ * 높이, 패딩, 폰트가 사이즈별로 다르게 적용된다.
+ * Segment 변형은 PC만 지원하므로 size를 무시한다.
+ */
+export type TabsSize = "mobile" | "pc";
+
+/**
+ * 톤 (활성 상태 강조 컬러).
+ * - `neutral` : 검정 텍스트/슬레이트 배경 강조.
+ * - `color`   : 브랜드 컬러(primary) 강조.
+ * Segment 변형은 항상 `neutral` 톤이다.
+ */
+export type TabsTone = "neutral" | "color";
 
 /* ─── Styles ─── */
 
@@ -48,6 +70,36 @@ const tabsStyles = `
     box-sizing: border-box;
   }
 
+  :where(.${TABS_TRIGGER_CLASS}) {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: color ${transition.default}, background-color ${transition.default}, font-weight ${transition.default};
+  }
+
+  :where(.${TABS_TRIGGER_CLASS}[data-disabled="true"]) {
+    cursor: not-allowed;
+    color: ${cv.text.disabled};
+    pointer-events: none;
+  }
+
+  :where(.${TABS_TRIGGER_INNER_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: ${spacing[8]}px;
+  }
+
+  :where(.${TABS_TRIGGER_ICON_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+  }
+
   /* ─── line variant ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"]) {
@@ -60,23 +112,38 @@ const tabsStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    height: ${sizing.tabs.line}px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: ${typeScale.body1.fontSize}px;
-    line-height: ${typeScale.body1.lineHeight}px;
+    color: ${cv.text.subtle};
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.disabled};
     padding: 0;
-    transition: color ${transition.default}, font-weight ${transition.default};
     position: relative;
   }
 
+  :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="mobile"] .${TABS_TRIGGER_CLASS}) {
+    height: ${sizing.tabs.line.mobile}px;
+    padding: 0 ${spacing[16]}px;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
+    height: ${sizing.tabs.line.pc}px;
+    padding: 0 ${spacing[20]}px;
+  }
+
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    color: ${cv.text.default};
-    font-weight: ${fontWeight.medium};
+    color: ${cv.text.strong};
+    font-weight: ${fontWeight.bold};
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
+    color: ${cv.primary.main};
+  }
+
+  @media (hover: hover) {
+    :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
+      color: ${cv.text.normal};
+      background: ${cv.bg.light};
+    }
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_INDICATOR_CLASS}) {
@@ -84,82 +151,113 @@ const tabsStyles = `
     bottom: 0;
     left: 0;
     height: 3px;
-    background: ${cv.text.default};
-    transition: transform ${transition.slow}, width ${transition.slow};
+    background: ${cv.text.strong};
+    transition: transform ${transition.slow}, width ${transition.slow}, background ${transition.default};
   }
 
-  /* ─── pill variant ─── */
+  :where(.${TABS_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TABS_INDICATOR_CLASS}) {
+    background: ${cv.primary.main};
+  }
 
-  :where(.${TABS_LIST_CLASS}[data-variant="pill"]) {
+  /* ─── chip variant ─── */
+
+  :where(.${TABS_LIST_CLASS}[data-variant="chip"]) {
     background: ${cv.bg.white};
-    padding: ${spacing[16]}px ${spacing[16]}px 0;
     gap: ${spacing[8]}px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
-  :where(.${TABS_LIST_CLASS}[data-variant="pill"]::-webkit-scrollbar) {
+  :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="mobile"]) {
+    padding: 0 ${spacing[16]}px;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="chip"]::-webkit-scrollbar) {
     display: none;
   }
 
-  :where(.${TABS_LIST_CLASS}[data-variant="pill"] .${TABS_TRIGGER_CLASS}) {
-    display: flex;
+  :where(.${TABS_LIST_CLASS}[data-variant="chip"] .${TABS_TRIGGER_CLASS}) {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: ${sizing.tabs.pill}px;
-    padding: 0 ${spacing[16]}px;
-    background: ${cv.bg.light};
-    border: none;
     border-radius: ${radius.pill}px;
-    cursor: pointer;
-    font-family: inherit;
+    background: ${cv.bg.light};
+    color: ${cv.text.subtle};
+    white-space: nowrap;
+    font-weight: ${fontWeight.regular};
+    flex: 0 0 auto;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="mobile"] .${TABS_TRIGGER_CLASS}) {
+    height: ${sizing.tabs.chip.mobile}px;
+    padding: 0 ${spacing[12]}px;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
+    height: ${sizing.tabs.chip.pc}px;
+    padding: 0 ${spacing[16]}px;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.regular};
-    color: ${cv.text.disabled};
-    white-space: nowrap;
-    transition: background-color ${transition.default}, color ${transition.default};
   }
 
-  :where(.${TABS_LIST_CLASS}[data-variant="pill"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
+  :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-tone="color"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
     background: ${cv.primary.main};
     color: ${cv.primary.fg};
+    font-weight: ${fontWeight.bold};
   }
 
-  /* ─── square variant ─── */
-
-  :where(.${TABS_LIST_CLASS}[data-variant="square"]) {
-    background: ${cv.bg.light};
-    border-radius: ${radius.md}px;
-    padding: ${spacing[4]}px;
-    gap: ${spacing[4]}px;
+  :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-tone="neutral"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
+    background: ${cv.fill.neutral};
+    color: ${cv.textRole.inverse};
+    font-weight: ${fontWeight.bold};
   }
 
-  :where(.${TABS_LIST_CLASS}[data-variant="square"] .${TABS_TRIGGER_CLASS}) {
+  @media (hover: hover) {
+    :where(.${TABS_LIST_CLASS}[data-variant="chip"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
+      background: ${cv.bg.coolGray};
+      color: ${cv.text.normal};
+    }
+  }
+
+  /* ─── segment variant (PC only) ─── */
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"]) {
+    background: ${cv.bg.white};
+    gap: 0;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}) {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: ${sizing.tabs.square}px;
-    background: transparent;
-    border: none;
-    border-radius: ${radius.sm}px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    height: ${sizing.tabs.segment.pc}px;
+    padding: 0 ${spacing[16]}px;
+    background: ${cv.bg.coolGrayLighter};
+    color: ${cv.text.subtle};
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.disabled};
-    padding: 0 ${spacing[12]}px;
-    transition: background-color ${transition.default}, color ${transition.default};
   }
 
-  :where(.${TABS_LIST_CLASS}[data-variant="square"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
-    font-weight: ${fontWeight.medium};
-    box-shadow: ${shadow.sm};
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
+    background: ${cv.fill.neutral};
+    color: ${cv.textRole.inverse};
+    font-weight: ${fontWeight.bold};
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}[data-active="true"] .${TABS_TRIGGER_ICON_CLASS}) {
+    color: ${cv.iconRole.inverse};
+  }
+
+  @media (hover: hover) {
+    :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
+      background: ${cv.bg.light};
+      color: ${cv.text.normal};
+    }
   }
 
   /* ─── Panel ─── */
@@ -178,12 +276,20 @@ const tabsStyles = `
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
+const resolveSize = (variant: TabsVariant, size: TabsSize): TabsSize =>
+  variant === "segment" ? "pc" : size;
+
+const resolveTone = (variant: TabsVariant, tone: TabsTone): TabsTone =>
+  variant === "segment" ? "neutral" : tone;
+
 /* ─── Context ─── */
 
 interface TabsContextValue {
   activeKey: string;
   onTabChange: (key: string) => void;
   variant: TabsVariant;
+  size: TabsSize;
+  tone: TabsTone;
   baseId: string;
 }
 
@@ -202,8 +308,12 @@ export interface TabsRootProps extends React.HTMLAttributes<HTMLDivElement> {
   activeKey: string;
   /** 탭 변경 콜백 */
   onTabChange: (key: string) => void;
-  /** 탭 스타일 변형 */
+  /** 탭 스타일 변형 (`line` | `chip` | `segment`). 기본 `line` */
   variant?: TabsVariant;
+  /** 사이즈 (Mobile / PC). 기본 `pc`. Segment는 항상 `pc` */
+  size?: TabsSize;
+  /** 톤 (활성 강조 색). 기본 `neutral`. Segment는 항상 `neutral` */
+  tone?: TabsTone;
   /** 전체 너비 */
   fullWidth?: boolean;
   /** Root 내부 콘텐츠 (List, Panel 등) */
@@ -214,6 +324,8 @@ export const TabsRoot: React.FC<TabsRootProps> = ({
   activeKey,
   onTabChange,
   variant = "line",
+  size = "pc",
+  tone = "neutral",
   fullWidth = true,
   children,
   className,
@@ -221,9 +333,13 @@ export const TabsRoot: React.FC<TabsRootProps> = ({
   ...rest
 }) => {
   const baseId = useId();
+  const resolvedSize = resolveSize(variant, size);
+  const resolvedTone = resolveTone(variant, tone);
 
   return (
-    <TabsContext.Provider value={{ activeKey, onTabChange, variant, baseId }}>
+    <TabsContext.Provider
+      value={{ activeKey, onTabChange, variant, size: resolvedSize, tone: resolvedTone, baseId }}
+    >
       <div
         data-slot="root"
         className={cx(TABS_ROOT_CLASS, className)}
@@ -249,7 +365,7 @@ export interface TabsListProps extends React.HTMLAttributes<HTMLUListElement> {
 }
 
 export const TabsList: React.FC<TabsListProps> = ({ children, className, style, ...rest }) => {
-  const { variant, activeKey } = useTabsContext();
+  const { variant, size, tone, activeKey } = useTabsContext();
   const listRef = useRef<HTMLUListElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
 
@@ -257,13 +373,15 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className, style, 
     if (variant !== "line" || !listRef.current) return;
     const activeEl = listRef.current.querySelector<HTMLElement>(`[data-active="true"]`);
     setIndicatorStyle(getMeasuredIndicatorStyle(activeEl));
-  }, [activeKey, variant]);
+  }, [activeKey, variant, size]);
 
   return (
     <ul
       ref={listRef}
       data-slot="list"
       data-variant={variant}
+      data-size={size}
+      data-tone={tone}
       role="tablist"
       className={cx(TABS_LIST_CLASS, className)}
       style={style}
@@ -289,11 +407,17 @@ export interface TabsTriggerProps extends React.LiHTMLAttributes<HTMLLIElement> 
   tabKey: string;
   /** 탭 버튼에 표시할 콘텐츠 */
   children: React.ReactNode;
+  /** Segment 변형에서 텍스트 앞에 표시할 아이콘 노드 */
+  icon?: React.ReactNode;
+  /** 비활성화 여부 */
+  disabled?: boolean;
 }
 
 export const TabsTrigger: React.FC<TabsTriggerProps> = ({
   tabKey,
   children,
+  icon,
+  disabled,
   className,
   onClick,
   ...rest
@@ -307,18 +431,22 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
     <li
       data-slot="trigger"
       data-active={isActive ? "true" : "false"}
+      data-disabled={disabled ? "true" : "false"}
       data-tab-key={tabKey}
       id={triggerId}
       role="tab"
       aria-selected={isActive}
       aria-controls={panelId}
-      tabIndex={isActive ? 0 : -1}
+      aria-disabled={disabled || undefined}
+      tabIndex={disabled ? -1 : isActive ? 0 : -1}
       className={cx(TABS_TRIGGER_CLASS, className)}
       onClick={(e) => {
+        if (disabled) return;
         onTabChange(tabKey);
         onClick?.(e);
       }}
       onKeyDown={(e) => {
+        if (disabled) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onTabChange(tabKey);
@@ -327,7 +455,9 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
           e.preventDefault();
           const list = (e.currentTarget as HTMLElement).closest('[role="tablist"]');
           if (!list) return;
-          const tabs = Array.from(list.querySelectorAll<HTMLElement>('[role="tab"]'));
+          const tabs = Array.from(list.querySelectorAll<HTMLElement>('[role="tab"]')).filter(
+            (el) => el.getAttribute("aria-disabled") !== "true",
+          );
           const idx = tabs.indexOf(e.currentTarget as HTMLElement);
           const next =
             e.key === "ArrowRight"
@@ -340,7 +470,9 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
         if (e.key === "Home") {
           e.preventDefault();
           const list = (e.currentTarget as HTMLElement).closest('[role="tablist"]');
-          const first = list?.querySelector<HTMLElement>('[role="tab"]');
+          const first = list?.querySelector<HTMLElement>(
+            '[role="tab"]:not([aria-disabled="true"])',
+          );
           first?.focus();
           const firstKey = first?.dataset.tabKey;
           if (firstKey) onTabChange(firstKey);
@@ -348,7 +480,9 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
         if (e.key === "End") {
           e.preventDefault();
           const list = (e.currentTarget as HTMLElement).closest('[role="tablist"]');
-          const tabs = list?.querySelectorAll<HTMLElement>('[role="tab"]');
+          const tabs = list?.querySelectorAll<HTMLElement>(
+            '[role="tab"]:not([aria-disabled="true"])',
+          );
           const last = tabs?.[tabs.length - 1];
           last?.focus();
           const lastKey = last?.dataset.tabKey;
@@ -357,7 +491,14 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
       }}
       {...rest}
     >
-      <span>{children}</span>
+      <span className={TABS_TRIGGER_INNER_CLASS}>
+        {icon && (
+          <span className={TABS_TRIGGER_ICON_CLASS} aria-hidden="true">
+            {icon}
+          </span>
+        )}
+        <span>{children}</span>
+      </span>
     </li>
   );
 };
@@ -402,15 +543,22 @@ export interface TabItem {
   title: React.ReactNode;
   /** 탭 패널에 표시할 콘텐츠 */
   content?: React.ReactNode;
+  /** Segment 변형에서 텍스트 앞에 표시할 아이콘 */
+  icon?: React.ReactNode;
+  /** 비활성화 여부 */
+  disabled?: boolean;
 }
 
 export interface TabsSlotProps {
   /** 루트 `<div>`에 전달할 추가 props */
-  root?: Omit<TabsRootProps, "activeKey" | "onTabChange" | "variant" | "children">;
+  root?: Omit<
+    TabsRootProps,
+    "activeKey" | "onTabChange" | "variant" | "size" | "tone" | "children"
+  >;
   /** 탭 리스트 `<ul>`에 전달할 추가 props */
   list?: Omit<TabsListProps, "children">;
   /** 각 탭 트리거 `<li>`에 공통으로 전달할 추가 props */
-  trigger?: Omit<TabsTriggerProps, "tabKey" | "children">;
+  trigger?: Omit<TabsTriggerProps, "tabKey" | "children" | "icon" | "disabled">;
   /** 각 탭 패널 `<div>`에 공통으로 전달할 추가 props */
   panel?: Omit<TabsPanelProps, "tabKey" | "children">;
 }
@@ -422,8 +570,12 @@ export interface TabsProps {
   activeKey: string;
   /** 탭 변경 콜백 */
   onTabChange: (key: string) => void;
-  /** 스타일 변형 */
+  /** 스타일 변형 (`line` | `chip` | `segment`). 기본 `line` */
   variant?: TabsVariant;
+  /** 사이즈 (Mobile / PC). 기본 `pc`. Segment는 무시되고 `pc`로 고정 */
+  size?: TabsSize;
+  /** 톤 (활성 강조 색). 기본 `neutral`. Segment는 무시되고 `neutral`로 고정 */
+  tone?: TabsTone;
   /** 전체 너비 */
   fullWidth?: boolean;
   /** 루트 className */
@@ -439,6 +591,8 @@ const TabsComponent: React.FC<TabsProps> = ({
   activeKey,
   onTabChange,
   variant = "line",
+  size = "pc",
+  tone = "neutral",
   fullWidth = true,
   className,
   style,
@@ -448,6 +602,8 @@ const TabsComponent: React.FC<TabsProps> = ({
     activeKey={activeKey}
     onTabChange={onTabChange}
     variant={variant}
+    size={size}
+    tone={tone}
     fullWidth={fullWidth}
     className={cx(slotProps?.root?.className, className)}
     style={{ ...slotProps?.root?.style, ...style }}
@@ -457,6 +613,8 @@ const TabsComponent: React.FC<TabsProps> = ({
         <TabsTrigger
           key={item.key}
           tabKey={item.key}
+          icon={item.icon}
+          disabled={item.disabled}
           className={slotProps?.trigger?.className}
           style={slotProps?.trigger?.style}
         >
