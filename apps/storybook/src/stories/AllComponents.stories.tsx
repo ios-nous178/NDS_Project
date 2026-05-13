@@ -2195,7 +2195,18 @@ function toStoryId(title: string) {
 
 function ComponentCard({ entry }: { entry: InventoryEntry }) {
   const render = PREVIEWS[entry.name];
-  const storybookHref = `/?path=/docs/${toStoryId(entry.storybookTitle)}--docs`;
+  const storybookHref = useMemo(() => {
+    const storyId = toStoryId(entry.storybookTitle);
+    const suffix = `/?path=/docs/${storyId}--docs`;
+    if (typeof window === "undefined") return suffix;
+    try {
+      const top = window.top ?? window;
+      const prefix = top.location.pathname.startsWith("/storybook") ? "/storybook" : "";
+      return `${prefix}${suffix}`;
+    } catch {
+      return suffix;
+    }
+  }, [entry.storybookTitle]);
   const guide = GUIDES[entry.name];
   const figmaHref = guide?.figmaNodeUrl ?? entry.figmaUrl;
   const [guideOpen, setGuideOpen] = useState(false);
