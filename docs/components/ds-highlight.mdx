@@ -5,24 +5,113 @@ description: 디자인시스템 사용 영역/컴포넌트 시각화 도구. OFF
 
 # DSHighlight
 
-디자인시스템 사용 영역과 컴포넌트를 시각적으로 표시하는 개발용 도구. `OFF` / `영역` / `개별` / `전체` 4모드.
-
-## 사용법
+디자인시스템 사용 영역과 컴포넌트를 시각적으로 표시하는 **개발용 디버깅 도구**입니다. 화면 위에 오버레이 박스와 라벨을 그려, 현재 화면의 어느 부분이 DS로 만들어졌는지를 한눈에 검증할 수 있게 합니다. `OFF` → `영역` → `개별` → `전체` 4모드를 순환합니다.
 
 ```tsx
-import { DSHighlightProvider, DSMark } from "@nudge-eap/react";
-
-<DSHighlightProvider>
-  <DSMark id="hero">홈 히어로</DSMark>
-  <DSMark id="program-list">프로그램 리스트</DSMark>
-</DSHighlightProvider>
-
-// 키보드 단축키 또는 화면 우상단 토글로 4모드 순환
+import { DSHighlightProvider, DSMark, useDSHighlight } from "@nudge-eap/react";
 ```
 
+---
 
-> 프로덕션에서는 비활성. DSHighlightProvider + DSMark 조합.
+## 사용 가이드
 
-## 인벤토리
+### 이럴 때 사용하세요
 
-전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/DSHighlight](http://localhost:6006/?path=/docs/components-d-s-highlight--docs)로 진입할 수 있습니다.
+- DS 적용 범위를 시각적으로 **QA / 리뷰**할 때
+- 화면 위에서 **NDS 컴포넌트 인스턴스를 라벨**과 함께 확인하고 싶을 때
+- 디자인 검수 시 **DS 교체 후보 영역**을 비개발자에게 보여줄 때
+
+### 이럴 때 사용하지 마세요
+
+- 프로덕션 사용자에게 노출 → 개발 모드 전용입니다. 프로덕션 빌드에서는 마운트하지 마세요
+- 일반 콘텐츠 강조 → `Banner` / `Card` / `Callout` 계열을 사용하세요
+
+---
+
+## 기본 사용
+
+루트(예: `App`)에 `DSHighlightProvider`를 감싸고, 표시하고 싶은 영역을 `DSMark`로 래핑합니다.
+
+```tsx
+<DSHighlightProvider>
+  <DSMark label="hero">
+    <HomeHero />
+  </DSMark>
+  <DSMark label="program-list">
+    <ProgramList />
+  </DSMark>
+</DSHighlightProvider>
+```
+
+### 활성화 방법
+
+- URL 파라미터: `?ds=1` — 진입 시 자동으로 `전체` 모드 + 토글 버튼 표시
+- 키보드 단축키: `Ctrl/Cmd + Shift + D` — 토글 버튼이 표시되며 모드를 순환
+- 화면 우하단의 드래그 가능한 토글 버튼을 눌러 모드 순환
+
+### 모드
+
+| 모드      | 표시 대상                                                       | 색상      |
+| --------- | --------------------------------------------------------------- | --------- |
+| `off`     | 오버레이 없음                                                   | —         |
+| `area`    | `DSMark`로 래핑된 영역                                          | 파랑 점선 |
+| `component` | 클래스가 `*__root`로 끝나는 모든 NDS 컴포넌트 인스턴스         | 빨강 점선 |
+| `all`     | 영역 + 컴포넌트 동시 표시                                       | 둘 다     |
+
+NDS 컴포넌트는 클래스명 `nds-{name}__root` 규약에서 자동 탐지됩니다. 라벨에는 PascalCase로 변환된 컴포넌트명(`nds-icon-button__root` → `IconButton`)이 노출됩니다.
+
+---
+
+## Props
+
+### DSHighlightProvider
+
+| Prop          | 타입                | 기본값  | 설명                                |
+| ------------- | ------------------- | ------- | ----------------------------------- |
+| `children`    | `ReactNode`         | —       | 앱 콘텐츠                           |
+| `defaultMode` | `HighlightMode`     | `"off"` | 초기 모드 (`off` / `area` / `component` / `all`) |
+
+### DSMark
+
+| Prop        | 타입        | 기본값 | 설명                              |
+| ----------- | ----------- | ------ | --------------------------------- |
+| `label`     | `string`    | —      | 오버레이에 표시될 영역 라벨 (필수) |
+| `children`  | `ReactNode` | —      | 래핑할 콘텐츠                     |
+| `className` | `string`    | `""`   | 래퍼 div className                |
+
+### useDSHighlight()
+
+`{ mode, cycle, registerArea }` 컨텍스트 값을 반환합니다. 커스텀 토글 UI를 만들 때 사용합니다.
+
+---
+
+## data-slot 구조
+
+```
+DSHighlightProvider
+├── { children }
+├── (Portal) button   ← 우하단 드래그 가능한 토글 (devMode일 때)
+└── (Portal) div      ← 측정된 rect 위에 박스 + 라벨
+
+DSMark
+└── div [data-ds-mark="{label}"]
+    └── { children }
+```
+
+오버레이 박스는 `border: 2px dashed`, 라벨은 박스 좌상단에 작은 칩으로 그려집니다 (`requestAnimationFrame` 루프로 위치 측정).
+
+---
+
+## CSS 변수
+
+이 컴포넌트는 CSS 변수를 노출하지 않습니다. 오버레이 스타일은 컴포넌트 내부의 인라인 스타일(`AREA_COLOR = #2b96ed`, `COMPONENT_COLOR = rgba(237,46,119,0.8)`)로 고정되어 있습니다.
+
+---
+
+## 접근성
+
+- 토글 버튼은 `<button type="button">` 네이티브 시맨틱
+- 오버레이는 `pointer-events: none`이라 사용자 인터랙션을 방해하지 않음
+- 개발 도구이므로 스크린 리더 노출은 필수가 아니며, 프로덕션에서는 마운트하지 않는 것을 권장
+
+> **주의**: NDS 컴포넌트는 클래스명 패턴(`nds-{name}__root`)으로 자동 탐지되므로, 컴포넌트가 해당 규약을 따르는지 확인하세요. `DSMark`는 별도 라벨이 필요한 비-DS 영역에만 사용합니다.

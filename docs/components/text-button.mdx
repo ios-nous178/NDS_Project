@@ -1,25 +1,92 @@
 ---
 title: TextButton
-description: 텍스트 링크 형식의 보조 버튼. large/medium, underline/none variant
+description: 텍스트 링크 형식의 보조 버튼. large/medium 사이즈, leftIcon/rightIcon 지원
 ---
 
 # TextButton
 
-텍스트 링크 형식의 보조 버튼. `large` · `medium` 두 가지 사이즈를 지원합니다. 주요 CTA에는 `Button` 사용.
-
-## 사용법
+텍스트 링크 형식의 보조 버튼입니다. 배경/테두리 없이 텍스트만 표시되며, 비중이 낮은 보조 액션에 사용합니다.
 
 ```tsx
 import { TextButton } from "@nudge-eap/react";
+```
 
-<TextButton size="medium" onClick={() => navigate("/more")}>
-  더보기
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- "더보기", "전체 보기", "취소" 같은 **비중이 낮은 보조 액션**일 때
+- 카드 헤더 우측의 "전체 보기" 같은 인라인 액션일 때
+- 텍스트 옆에 미니 액션(편집·삭제·복사 등) 아이콘 버튼이 필요할 때
+
+### 이럴 때 사용하지 마세요
+
+- 화면의 주요 CTA → [Button](/docs/components/button)을 사용하세요
+- 다른 페이지로 단순 이동만 → `<a>` 또는 라우터의 Link를 사용하세요
+
+---
+
+## 기본 사용
+
+```tsx
+<TextButton onClick={() => navigate("/more")}>더보기</TextButton>
+
+<TextButton size="large" rightIcon={<ChevronRightIcon />}>
+  전체 보기
 </TextButton>
 ```
 
+---
 
-> 주요 CTA는 Button 사용. TextButton은 비중이 낮은 보조 액션 전용.
+## Props
 
-## 인벤토리
+| Prop        | 타입                    | 기본값     | 설명                  |
+| ----------- | ----------------------- | ---------- | --------------------- |
+| `size`      | `"large" \| "medium"`   | `"medium"` | 버튼 크기             |
+| `leftIcon`  | `ReactNode`             | —          | 라벨 왼쪽 아이콘      |
+| `rightIcon` | `ReactNode`             | —          | 라벨 오른쪽 아이콘    |
+| `children`  | `ReactNode`             | —          | 라벨 텍스트           |
+| `className` | `string`                | —          | 루트 className        |
 
-전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/TextButton](http://localhost:6006/?path=/docs/components-text-button--docs)로 진입할 수 있습니다.
+`<button>` HTML 속성을 모두 지원합니다 (`onClick`, `type`, `disabled`, `form` 등). `type`은 기본값 `"button"`.
+
+### 사이즈
+
+| Size     | 폰트 / 라인 | 아이콘 | Gap |
+| -------- | ----------- | ------ | --- |
+| `large`  | 16 / 24px   | 16px   | 2px |
+| `medium` | 14 / 20px   | 16px   | 2px |
+
+---
+
+## data-slot 구조
+
+```
+button [data-slot="root"] [data-size]
+├── span [data-slot="left-icon"]    (leftIcon이 있을 때)
+├── span [data-slot="label"]
+└── span [data-slot="right-icon"]   (rightIcon이 있을 때)
+```
+
+---
+
+## CSS 변수
+
+| 변수                              | 기본값         | 설명                |
+| --------------------------------- | -------------- | ------------------- |
+| `--nds-text-button-gap`           | `2px`          | 아이콘-라벨 간격    |
+| `--nds-text-button-color`         | `text.subtle`  | 텍스트 색상         |
+| `--nds-text-button-hover-color`   | `primary.main` | 호버 시 텍스트 색상 |
+| `--nds-text-button-font-size`     | size별         | 폰트 크기           |
+| `--nds-text-button-line-height`   | size별         | 줄 높이             |
+| `--nds-text-button-icon-size`     | `16px`         | 아이콘 크기         |
+
+---
+
+## 접근성
+
+- `<button type="button">` 기본 — form 내부에서 의도치 않은 submit 방지
+- `:disabled` 시 호버 컬러 미적용 + 커서 default
+- `ref` 전달 지원 (`React.forwardRef`)

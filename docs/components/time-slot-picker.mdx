@@ -1,17 +1,38 @@
 ---
 title: TimeSlotPicker
-description: 예약 가능한 시간대를 그룹별 슬롯으로 선택. 오전/오후/저녁 그룹화, 비활성 슬롯
+description: 예약 가능한 시간대를 그룹별 슬롯으로 선택. 그룹화(오전/오후/저녁), 비활성 슬롯, 컬럼 수 조절
 ---
 
 # TimeSlotPicker
 
-예약 가능한 시간대를 슬롯 그리드로 선택. 그룹화(오전/오후/저녁) 지원. 자유 시간 입력은 `TimePicker`.
-
-## 사용법
+예약 가능한 시간대를 슬롯 그리드로 선택하는 컴포넌트입니다. 그룹화(오전/오후/저녁)와 개별 슬롯 비활성을 지원합니다.
 
 ```tsx
 import { TimeSlotPicker } from "@nudge-eap/react";
+```
 
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 상담/예약처럼 **정해진 시간 슬롯 중 하나**를 선택할 때
+- 오전/오후/저녁 등 그룹으로 묶어 보여주고 싶을 때
+- 이미 예약된 슬롯을 비활성(취소선) 처리해 함께 보여주고 싶을 때
+
+### 이럴 때 사용하지 마세요
+
+- 자유 시간 입력 → TimePicker를 사용하세요
+- 날짜만 선택 → [Calendar](/docs/components/calendar) / [DatePicker](/docs/components/date-picker)를 사용하세요
+
+---
+
+## 기본 사용
+
+### 평면(slots) 모드
+
+```tsx
 const [slot, setSlot] = useState<string>();
 
 <TimeSlotPicker
@@ -24,12 +45,82 @@ const [slot, setSlot] = useState<string>();
     { value: "14:00" },
     { value: "14:30" },
   ]}
+/>;
+```
+
+### 그룹(groups) 모드
+
+```tsx
+<TimeSlotPicker
+  value={slot}
+  onValueChange={setSlot}
+  groups={[
+    { key: "am", label: "오전", slots: [{ value: "10:00" }, { value: "11:00" }] },
+    { key: "pm", label: "오후", slots: [{ value: "14:00" }, { value: "15:00", unavailable: true }] },
+  ]}
 />
 ```
 
+`slots` / `groups`가 모두 비어 있으면 `emptyText`가 표시됩니다.
 
-> TimePicker(자유 입력) / Calendar(날짜만)와 분리. 정해진 슬롯 리스트 전용.
+---
 
-## 인벤토리
+## Props
 
-전체 컴포넌트 카탈로그는 [컴포넌트 인벤토리](/docs/components/inventory)에서 확인하세요. Storybook에서는 [Components/TimeSlotPicker](http://localhost:6006/?path=/docs/components-time-slot-picker--docs)로 진입할 수 있습니다.
+| Prop            | 타입                            | 기본값                                | 설명                                |
+| --------------- | ------------------------------- | ------------------------------------- | ----------------------------------- |
+| `slots`         | `TimeSlot[]`                    | —                                     | 평면 슬롯 목록                      |
+| `groups`        | `TimeSlotGroup[]`               | —                                     | 그룹화된 슬롯 (groups가 있으면 우선) |
+| `value`         | `string`                        | —                                     | 선택된 슬롯 값                      |
+| `onValueChange` | `(value: string) => void`       | —                                     | 변경 콜백                           |
+| `columns`       | `number`                        | `4`                                   | 한 줄당 슬롯 개수                   |
+| `disabled`      | `boolean`                       | `false`                               | 전체 비활성화                       |
+| `emptyText`     | `ReactNode`                     | `"예약 가능한 시간이 없습니다"`       | 빈 상태 메시지                      |
+| `className`     | `string`                        | —                                     | 루트 className                      |
+
+`<div>` HTML 속성을 모두 지원합니다 (`onChange` 제외).
+
+### TimeSlot
+
+| 속성          | 타입        | 설명                              |
+| ------------- | ----------- | --------------------------------- |
+| `value`       | `string`    | 슬롯 키 (보통 `"HH:MM"`)          |
+| `label`       | `ReactNode` | 표시 라벨 (없으면 value 그대로)   |
+| `unavailable` | `boolean`   | 예약 불가 (취소선 + 비활성)       |
+
+### TimeSlotGroup
+
+| 속성    | 타입          | 설명                              |
+| ------- | ------------- | --------------------------------- |
+| `key`   | `string`      | 그룹 키                           |
+| `label` | `ReactNode`   | 그룹 라벨 (예: "오전")            |
+| `slots` | `TimeSlot[]`  | 그룹 내 슬롯들                    |
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]                              (role="radiogroup")
+├── div [data-slot="group"]
+│   ├── span [data-slot="group-label"]              (group.label이 있을 때)
+│   └── div [data-slot="grid"]
+│       └── button [data-slot="slot"] [data-selected] [data-unavailable]  (role="radio")
+└── div [data-slot="empty"]                          (slots/groups가 비어있을 때)
+```
+
+---
+
+## CSS 변수
+
+| 변수                    | 기본값 | 설명                  |
+| ----------------------- | ------ | --------------------- |
+| `--nds-time-slot-cols`  | `4`    | 그리드 컬럼 수 (columns prop으로 설정) |
+
+---
+
+## 접근성
+
+- 루트 `role="radiogroup"`, 각 슬롯 `role="radio"` + `aria-checked`
+- `unavailable` 슬롯은 `<button disabled>` + 시각적 취소선
+- `:focus-visible`로 키보드 포커스 인디케이터 표시

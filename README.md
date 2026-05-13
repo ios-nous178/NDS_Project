@@ -15,8 +15,8 @@
 | 패키지                       | 설명                                                                     |
 | ---------------------------- | ------------------------------------------------------------------------ |
 | `@nudge-eap/tokens`          | 색상, 타이포그래피, spacing, radius 토큰. TS export + CSS 변수 파일 생성 |
-| `@nudge-eap/react`           | React 컴포넌트 28종 (Button, Card, Modal, Tabs, Toast, Avatar 등)        |
-| `@nudge-eap/icons`           | Figma 기준 85종 아이콘. `currentColor` 기반, `size`/`color` prop 지원    |
+| `@nudge-eap/react`           | React 컴포넌트 120종 (Button, Card, Modal, Tabs, Toast, Avatar 등)       |
+| `@nudge-eap/icons`           | Figma 기준 84종 아이콘. `currentColor` 기반, `size`/`color` prop 지원    |
 | `@nudge-eap/tailwind-preset` | 토큰 기반 Tailwind theme preset                                          |
 
 ## 프로젝트 구조
