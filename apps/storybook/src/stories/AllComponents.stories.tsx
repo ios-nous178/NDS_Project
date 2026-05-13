@@ -208,19 +208,25 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
   Toggle: () => (
     <div style={previewRow}>
-      <Toggle defaultChecked />
-      <Toggle />
+      <Toggle checked onCheckedChange={() => undefined} />
+      <Toggle checked={false} onCheckedChange={() => undefined} />
+      <Toggle checked disabled onCheckedChange={() => undefined} />
     </div>
   ),
   Checkbox: () => (
     <div style={previewRow}>
-      <Checkbox defaultChecked label="동의" />
+      <Checkbox checked onCheckedChange={() => undefined} />
+      <Checkbox indeterminate onCheckedChange={() => undefined} />
+      <Checkbox checked={false} onCheckedChange={() => undefined} />
+      <Checkbox checked disabled onCheckedChange={() => undefined} />
     </div>
   ),
   Radio: () => (
     <div style={previewRow}>
-      <Radio name="demo" defaultChecked label="A" />
-      <Radio name="demo" label="B" />
+      <Radio checked onCheckedChange={() => undefined} />
+      <Radio checked={false} onCheckedChange={() => undefined} />
+      <Radio checked disabled onCheckedChange={() => undefined} />
+      <Radio checked={false} disabled onCheckedChange={() => undefined} />
     </div>
   ),
   StarRating: () => (
@@ -1608,7 +1614,7 @@ const mockModalSurface: React.CSSProperties = {
   border: `1px solid ${cv.border.light}`,
   borderRadius: radius.lg,
   padding: "18px 18px 14px",
-  boxShadow: shadow.lg,
+  boxShadow: shadow["3"],
   display: "flex",
   flexDirection: "column",
   gap: 10,
@@ -1685,7 +1691,7 @@ const mockPopupSurface: React.CSSProperties = {
   background: cv.bg.white,
   borderRadius: radius.radius16,
   padding: "20px 20px 14px",
-  boxShadow: shadow.lg,
+  boxShadow: shadow["3"],
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -1837,7 +1843,7 @@ const mockToastFloating: React.CSSProperties = {
   borderRadius: radius.pill,
   fontSize: 11,
   fontWeight: 600,
-  boxShadow: shadow.md,
+  boxShadow: shadow["2"],
 };
 
 const mockGrabber: React.CSSProperties = {
@@ -1992,7 +1998,7 @@ const mockCoachCard: React.CSSProperties = {
   background: cv.text.default,
   color: cv.text.inverse,
   borderRadius: radius.lg,
-  boxShadow: shadow.md,
+  boxShadow: shadow["2"],
 };
 
 const mockCoachArrow: React.CSSProperties = {
@@ -2052,7 +2058,7 @@ const mockDrawerPanel: React.CSSProperties = {
   bottom: 0,
   width: 132,
   background: cv.bg.white,
-  boxShadow: shadow.lg,
+  boxShadow: shadow["3"],
   display: "flex",
   flexDirection: "column",
 };
@@ -2125,7 +2131,7 @@ const mockDropdownPanel: React.CSSProperties = {
   background: cv.bg.white,
   border: `1px solid ${cv.border.light}`,
   borderRadius: radius.md,
-  boxShadow: shadow.md,
+  boxShadow: shadow["2"],
   padding: "6px 0",
   display: "flex",
   flexDirection: "column",

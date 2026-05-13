@@ -22,9 +22,10 @@ const RADIO_GROUP_CLASS = `${RADIO_CLASS}-group`;
 // eslint-disable-next-line unused-imports/no-unused-vars
 const radioStyles = `
   :where(.${RADIO_ROOT_CLASS}) {
+    position: relative;
     display: inline-flex;
     align-items: flex-start;
-    gap: ${spacing[8]}px;
+    gap: ${spacing[12]}px;
     cursor: pointer;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -32,7 +33,6 @@ const radioStyles = `
 
   :where(.${RADIO_ROOT_CLASS}[data-disabled="true"]) {
     cursor: not-allowed;
-    opacity: 0.5;
   }
 
   :where(.${RADIO_INPUT_CLASS}) {
@@ -47,6 +47,10 @@ const radioStyles = `
     border-width: 0;
   }
 
+  :where(.${RADIO_INPUT_CLASS}:focus-visible + .${RADIO_INDICATOR_CLASS}) {
+    box-shadow: 0 0 0 2px ${cv.bg.white}, 0 0 0 4px ${cv.borderRole.focus};
+  }
+
   :where(.${RADIO_INDICATOR_CLASS}) {
     display: inline-flex;
     align-items: center;
@@ -55,14 +59,23 @@ const radioStyles = `
     width: 20px;
     height: 20px;
     margin-top: 1px;
-    border: 1.5px solid ${cv.border.default};
+    border: 2px solid ${cv.borderRole.normal};
     border-radius: ${radius.pill}px;
     background: ${cv.bg.white};
-    transition: border-color ${transition.default};
+    transition: border-color ${transition.default}, background-color ${transition.default};
   }
 
   :where(.${RADIO_INDICATOR_CLASS}[data-checked="true"]) {
-    border-color: ${cv.primary.main};
+    border-color: ${cv.fill.brand};
+  }
+
+  :where(.${RADIO_ROOT_CLASS}[data-disabled="true"] .${RADIO_INDICATOR_CLASS}) {
+    border-color: ${cv.borderRole.disabled};
+    background: ${cv.bg.disabled};
+  }
+
+  :where(.${RADIO_ROOT_CLASS}[data-disabled="true"] .${RADIO_INDICATOR_CLASS}[data-checked="true"]) {
+    border-color: ${cv.borderRole.disabled};
   }
 
   :where(.${RADIO_CLASS}__dot) {
@@ -70,15 +83,20 @@ const radioStyles = `
     width: 10px;
     height: 10px;
     border-radius: ${radius.pill}px;
-    background: ${cv.primary.main};
+    background: ${cv.fill.brand};
     opacity: 0;
     transform: scale(0);
-    transition: opacity ${transition.default}, transform ${transition.default};
+    transition: opacity ${transition.default}, transform ${transition.default},
+      background-color ${transition.default};
   }
 
   :where(.${RADIO_INDICATOR_CLASS}[data-checked="true"] .${RADIO_CLASS}__dot) {
     opacity: 1;
     transform: scale(1);
+  }
+
+  :where(.${RADIO_ROOT_CLASS}[data-disabled="true"] .${RADIO_CLASS}__dot) {
+    background: ${cv.borderRole.disabled};
   }
 
   :where(.${RADIO_LABEL_CLASS}) {
@@ -89,12 +107,16 @@ const radioStyles = `
     user-select: none;
   }
 
+  :where(.${RADIO_ROOT_CLASS}[data-disabled="true"] .${RADIO_LABEL_CLASS}) {
+    color: ${cv.textRole.disabled};
+  }
+
   :where(.${RADIO_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.text.disabled};
-    margin-left: 28px;
+    margin-left: 32px;
   }
 
   :where(.${RADIO_HELPER_CLASS}[data-error="true"]) {
