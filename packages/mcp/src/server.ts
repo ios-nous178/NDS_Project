@@ -39,14 +39,49 @@ import { parseMockupUsage, appendUsageToLog, postUsageToWebhook } from "./usage-
 import type { MockupUsage } from "./types/usage.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const manifestPath = path.resolve(__dirname, "../manifest.json");
+const catalogPath = path.resolve(__dirname, "../catalog.json");
+const mcpbManifestPath = path.resolve(__dirname, "../manifest.json");
+
+interface McpbManifest {
+  name: string;
+  version: string;
+  repository?: { type?: string; url?: string };
+}
+
+function loadMcpbManifest(): McpbManifest | null {
+  try {
+    if (!fs.existsSync(mcpbManifestPath)) return null;
+    return JSON.parse(fs.readFileSync(mcpbManifestPath, "utf-8")) as McpbManifest;
+  } catch {
+    return null;
+  }
+}
+
+const mcpbManifest = loadMcpbManifest();
+
+// MCP가 실행되는 형태에 따라 "외부 자산이 어디 있느냐"가 달라진다.
+// 1) 개발 모드 (모노레포에서 직접 실행): 레포 루트가 있고 local-packages/*.tgz, brands/* 등을 참조 가능
+// 2) mcpb 번들 (Claude Desktop이 압축을 풀어 실행): 같은 디렉터리 안에 local-packages/만 동봉되어 있고
+//    leleos 레포 자체는 없다. install/update 안내가 달라야 한다.
+const installMode: "dev" | "mcpb" = (() => {
+  const env = process.env.NUDGE_EAP_DS_INSTALL_MODE;
+  if (env === "mcpb" || env === "dev") return env;
+  // dev 추정: packages/tokens 같은 모노레포 디렉터리가 보이면 dev
+  const guessedRoot = path.resolve(__dirname, "../../..");
+  if (fs.existsSync(path.join(guessedRoot, "packages/tokens/package.json"))) return "dev";
+  return "mcpb";
+})();
+
 const repoRoot = process.env.NUDGE_EAP_DS_REPO_ROOT
   ? path.resolve(process.env.NUDGE_EAP_DS_REPO_ROOT)
-  : path.resolve(__dirname, "../../..");
+  : installMode === "dev"
+    ? path.resolve(__dirname, "../../..")
+    : path.resolve(__dirname, ".."); // mcpb 번들 루트 = packages/mcp/
 
-function checkManifestFreshness() {
-  if (!fs.existsSync(manifestPath)) return;
-  const manifestMtime = fs.statSync(manifestPath).mtimeMs;
+function checkCatalogFreshness() {
+  if (installMode !== "dev") return; // mcpb 번들은 외부 dist 가 없음
+  if (!fs.existsSync(catalogPath)) return;
+  const catalogMtime = fs.statSync(catalogPath).mtimeMs;
   const sources = [
     "packages/tokens/dist/tokens.css",
     "packages/react/dist/index.d.ts",
@@ -54,9 +89,9 @@ function checkManifestFreshness() {
   ];
   for (const rel of sources) {
     const p = path.join(repoRoot, rel);
-    if (fs.existsSync(p) && fs.statSync(p).mtimeMs > manifestMtime) {
+    if (fs.existsSync(p) && fs.statSync(p).mtimeMs > catalogMtime) {
       console.error(
-        `[nudge-eap-mcp] WARN: manifest may be stale (${rel} is newer). ` +
+        `[nudge-eap-mcp] WARN: catalog may be stale (${rel} is newer). ` +
           `Run 'pnpm build --filter @nudge-eap/mcp' in DS repo to refresh.`,
       );
       return;
@@ -107,9 +142,8 @@ interface BrandDef {
   jsExport: string | null;
   ready: boolean;
 }
-interface Manifest {
+interface Catalog {
   generatedAt: string;
-  repoRoot: string;
   packages: PackageMeta[];
   components: ComponentDef[];
   icons: string[];
@@ -117,17 +151,22 @@ interface Manifest {
   brands: BrandDef[];
 }
 
+interface Manifest extends Catalog {
+  /** 런타임에 결정되는 값. 카탈로그 파일에는 들어가지 않는다. */
+  repoRoot: string;
+}
+
 function loadManifest(): Manifest {
-  if (!fs.existsSync(manifestPath)) {
+  if (!fs.existsSync(catalogPath)) {
     throw new Error(
-      `manifest.json not found at ${manifestPath}. Run 'pnpm --filter @nudge-eap/mcp build:manifest' first.`,
+      `catalog.json not found at ${catalogPath}. Run 'pnpm --filter @nudge-eap/mcp build:manifest' first.`,
     );
   }
-  const parsed = JSON.parse(fs.readFileSync(manifestPath, "utf-8")) as Manifest;
+  const parsed = JSON.parse(fs.readFileSync(catalogPath, "utf-8")) as Catalog;
   return { ...parsed, repoRoot };
 }
 
-checkManifestFreshness();
+checkCatalogFreshness();
 const manifest = loadManifest();
 const componentByName = new Map(manifest.components.map((c) => [c.name, c]));
 const iconSet = new Set(manifest.icons);
@@ -686,7 +725,11 @@ function suggestReplacement(args: { snippet: string; rule?: string }) {
 
 const REQUIRED_PACKAGES = ["@nudge-eap/tokens", "@nudge-eap/react", "@nudge-eap/icons"];
 const OPTIONAL_PACKAGES = ["@nudge-eap/tailwind-preset"];
-const TGZ_DIR_DEFAULT = path.join(manifest.repoRoot, "local-packages");
+// mcpb 번들은 packages/mcp/ 옆에 local-packages/ 를 동봉, dev 모드는 레포 루트 아래.
+const TGZ_DIR_DEFAULT =
+  installMode === "mcpb"
+    ? path.resolve(__dirname, "../local-packages")
+    : path.join(manifest.repoRoot, "local-packages");
 
 function getPkg(name: string): PackageMeta | undefined {
   return manifest.packages.find((p) => p.name === name);
@@ -731,7 +774,182 @@ function getInstallCommand(args: { tgzDir?: string; includeTailwind?: boolean })
   };
 }
 
+/**
+ * SemVer 단순 비교. "0.1.10" > "0.1.9" 처럼 숫자 부분만 비교 (pre-release 무시).
+ * a > b 이면 1, a < b 이면 -1, 같으면 0.
+ */
+function compareSemver(a: string, b: string): number {
+  const parse = (v: string) =>
+    v
+      .replace(/^v/, "")
+      .split(/[.-]/)
+      .map((n) => Number.parseInt(n, 10))
+      .filter((n) => !Number.isNaN(n));
+  const ap = parse(a);
+  const bp = parse(b);
+  const len = Math.max(ap.length, bp.length);
+  for (let i = 0; i < len; i++) {
+    const ai = ap[i] ?? 0;
+    const bi = bp[i] ?? 0;
+    if (ai > bi) return 1;
+    if (ai < bi) return -1;
+  }
+  return 0;
+}
+
+/**
+ * GitHub Releases API 를 직접 찔러서 새 mcpb 가 나왔는지 확인.
+ * Claude Desktop 의 자동 polling 이 동작하지 않더라도, 사용자가 채팅에서
+ * "최신 버전 있어?" 라고 물으면 이 도구가 결과를 돌려준다.
+ */
+async function checkMcpUpdate(): Promise<{
+  installed: string | null;
+  latest: string | null;
+  upToDate: boolean;
+  repositoryUrl: string | null;
+  downloadUrl: string | null;
+  releaseUrl: string | null;
+  howToUpdate: string[];
+  error?: string;
+}> {
+  const installed = mcpbManifest?.version ?? null;
+  const repoUrl = mcpbManifest?.repository?.url ?? null;
+
+  if (!repoUrl) {
+    return {
+      installed,
+      latest: null,
+      upToDate: false,
+      repositoryUrl: null,
+      downloadUrl: null,
+      releaseUrl: null,
+      howToUpdate: [],
+      error:
+        "manifest.json 에 repository.url 이 없어 최신 버전을 확인할 수 없습니다. dev 모드 설치라면 이 도구 대신 git pull 을 사용하세요.",
+    };
+  }
+
+  // "https://github.com/owner/repo" 또는 "...repo.git" 모두 허용
+  const match = repoUrl.match(/github\.com[/:]([^/]+)\/([^/.]+)(?:\.git)?\/?$/);
+  if (!match) {
+    return {
+      installed,
+      latest: null,
+      upToDate: false,
+      repositoryUrl: repoUrl,
+      downloadUrl: null,
+      releaseUrl: null,
+      howToUpdate: [],
+      error: `repository.url 형식을 해석할 수 없습니다: ${repoUrl}`,
+    };
+  }
+  const [, owner, repo] = match;
+
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
+  try {
+    const res = await fetch(apiUrl, {
+      headers: { Accept: "application/vnd.github+json", "User-Agent": "nudge-eap-mcp" },
+    });
+    if (!res.ok) {
+      return {
+        installed,
+        latest: null,
+        upToDate: false,
+        repositoryUrl: repoUrl,
+        downloadUrl: null,
+        releaseUrl: null,
+        howToUpdate: [],
+        error: `GitHub API ${res.status}: ${res.statusText}. private repo 이거나 아직 Release 가 없을 수 있습니다.`,
+      };
+    }
+    const data = (await res.json()) as {
+      tag_name?: string;
+      name?: string;
+      html_url?: string;
+      assets?: Array<{ name?: string; browser_download_url?: string }>;
+    };
+    const latest = (data.tag_name ?? data.name ?? "").replace(/^v/, "") || null;
+    const releaseUrl = data.html_url ?? `${repoUrl}/releases/latest`;
+    const mcpbAsset = data.assets?.find((a) => a.name?.endsWith(".mcpb"));
+    const downloadUrl =
+      mcpbAsset?.browser_download_url ??
+      `${repoUrl}/releases/latest/download/${mcpbManifest?.name ?? "nudge-eap-ds"}.mcpb`;
+
+    if (!latest) {
+      return {
+        installed,
+        latest: null,
+        upToDate: false,
+        repositoryUrl: repoUrl,
+        downloadUrl,
+        releaseUrl,
+        howToUpdate: [],
+        error: "최신 Release 의 버전 태그를 읽지 못했습니다.",
+      };
+    }
+
+    const upToDate = installed ? compareSemver(installed, latest) >= 0 : false;
+    const howToUpdate = upToDate
+      ? []
+      : [
+          "1. Claude Desktop → Settings → Extensions 에서 nudge-eap-ds 옆 Update 버튼이 활성화되어 있으면 클릭하세요.",
+          "2. Update 버튼이 안 보이면 아래 링크에서 .mcpb 를 직접 받아 더블클릭하세요:",
+          `   ${downloadUrl}`,
+          "3. Claude Desktop 을 ⌘Q 로 완전 종료 후 다시 켜야 새 MCP 가 적용됩니다.",
+        ];
+
+    return {
+      installed,
+      latest,
+      upToDate,
+      repositoryUrl: repoUrl,
+      downloadUrl,
+      releaseUrl,
+      howToUpdate,
+    };
+  } catch (err) {
+    return {
+      installed,
+      latest: null,
+      upToDate: false,
+      repositoryUrl: repoUrl,
+      downloadUrl: null,
+      releaseUrl: null,
+      howToUpdate: [],
+      error: `네트워크 오류: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}
+
 function getUpdateInstructions(args: { source?: string; includeLocalPackages?: boolean }) {
+  if (installMode === "mcpb") {
+    return {
+      mode: "mcpb",
+      summary:
+        "이 MCP는 Claude Desktop의 Desktop Extension(.mcpb) 으로 설치되어 있어 자동 업데이트됩니다. " +
+        "별도의 git pull/build 가 필요하지 않습니다.",
+      steps: [
+        {
+          step: 1,
+          title: "Claude Desktop 의 업데이트 알림 확인",
+          note: "Settings → Extensions 에서 'nudge-eap-ds' 항목에 새 버전이 떠 있으면 'Update' 버튼을 누릅니다.",
+        },
+        {
+          step: 2,
+          title: "Claude Desktop 재시작",
+          note: "업데이트 후에 세션을 재시작해야 새 MCP 가 반영됩니다.",
+        },
+        {
+          step: 3,
+          title: "외부 목업 프로젝트 DS 패키지 갱신 (필요할 때)",
+          commands: ["get_install_command 도구 호출 → 반환된 npm install 명령 실행"],
+          note: "React 컴포넌트/토큰/아이콘 변경이 함께 들어왔으면 외부 프로젝트의 .tgz도 갱신해야 합니다.",
+        },
+      ],
+      afterUpdate: ["list_packages 로 새 버전 확인"],
+    };
+  }
+
   const source = args.source ?? "github";
   const steps = [
     {
@@ -752,7 +970,7 @@ function getUpdateInstructions(args: { source?: string; includeLocalPackages?: b
       step: 3,
       title: "MCP 재빌드",
       commands: ["pnpm build --filter @nudge-eap/mcp"],
-      note: "manifest.json 재생성 + dist/server.js 갱신. 이후 Claude/Codex 세션을 재시작하면 새 MCP가 반영됩니다.",
+      note: "catalog.json 재생성 + dist/server.js 갱신. 이후 Claude/Codex 세션을 재시작하면 새 MCP가 반영됩니다.",
     },
   ];
 
@@ -766,6 +984,7 @@ function getUpdateInstructions(args: { source?: string; includeLocalPackages?: b
   }
 
   return {
+    mode: "dev",
     source,
     repoRoot: manifest.repoRoot,
     summary: "GitHub에서 받은 NudgeEAPDesignSystem 레포지토리의 MCP 업데이트 절차.",
@@ -773,7 +992,7 @@ function getUpdateInstructions(args: { source?: string; includeLocalPackages?: b
     steps,
     afterUpdate: [
       "Claude/Codex MCP 세션 재시작",
-      "필요하면 list_packages 또는 list_brands로 새 manifest 반영 확인",
+      "필요하면 list_packages 또는 list_brands로 새 카탈로그 반영 확인",
     ],
   };
 }
@@ -1078,14 +1297,24 @@ function getSetupInstructions(args: {
     commands: ["mkdir -p src/mockups prds docs"],
   });
 
-  steps.push({
-    step: 7,
-    title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
-    commands: [
-      `claude mcp add nudge-eap-ds --scope project -- node ${path.join(manifest.repoRoot, "packages/mcp/dist/server.js")}`,
-    ],
-    note: "프로젝트 루트에서 실행하면 .mcp.json이 생성되어 팀과 공유 가능.",
-  });
+  if (installMode === "mcpb") {
+    steps.push({
+      step: 7,
+      title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
+      note:
+        "Claude Desktop 에서 nudge-eap-ds.mcpb 를 더블클릭해 한 번 설치하면 이후 모든 프로젝트에서 자동 활성화됩니다. " +
+        "이 워크스페이스의 .mcp.json 을 따로 만들 필요가 없습니다.",
+    });
+  } else {
+    steps.push({
+      step: 7,
+      title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
+      commands: [
+        `claude mcp add nudge-eap-ds --scope project -- node ${path.join(manifest.repoRoot, "packages/mcp/dist/server.js")}`,
+      ],
+      note: "프로젝트 루트에서 실행하면 .mcp.json이 생성되어 팀과 공유 가능.",
+    });
+  }
 
   steps.push({
     step: 8,
@@ -2134,6 +2363,12 @@ const TOOLS = [
     },
   },
   {
+    name: "check_mcp_update",
+    description:
+      "Check whether a newer version of this MCP (.mcpb) is available on GitHub Releases. Compares installed manifest.json version with the latest release. Use this when the user asks: '최신 버전 있어?', 'MCP 업데이트 있어?', 'check for updates'. Returns installed/latest version, download URL, and step-by-step update instructions if outdated.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+  {
     name: "get_update_instructions",
     description:
       "Return commands for planners/non-developers to update this NudgeEAPDesignSystem repository from GitHub and rebuild the MCP server. Typical request: 'git pull origin main 후 pnpm build --filter @nudge-eap/mcp 해줘'.",
@@ -2491,6 +2726,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "get_install_command":
         result = getInstallCommand(args as { tgzDir?: string; includeTailwind?: boolean });
+        break;
+      case "check_mcp_update":
+        result = await checkMcpUpdate();
         break;
       case "get_update_instructions":
         result = getUpdateInstructions(args as { source?: string; includeLocalPackages?: boolean });

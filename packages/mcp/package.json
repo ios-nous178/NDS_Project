@@ -10,7 +10,9 @@
   "types": "./dist/server.d.ts",
   "files": [
     "dist",
-    "scripts"
+    "scripts",
+    "manifest.json",
+    "catalog.json"
   ],
   "scripts": {
     "build:manifest": "node scripts/emit-manifest.mjs",
