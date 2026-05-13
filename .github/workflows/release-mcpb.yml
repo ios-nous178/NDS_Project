@@ -152,3 +152,56 @@ jobs:
             file: "./dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
             filename: "nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
             title: "NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}"
+
+      # 3단계: 같은 스레드에 릴리즈 본문(자동 생성된 release notes) 요약 댓글
+      - name: Post release notes to Slack thread
+        if: steps.tag_check.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          THREAD_TS: ${{ fromJson(steps.slack_head.outputs.response).ts }}
+          TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          # softprops/action-gh-release 가 generate_release_notes: true 로 만든 본문
+          BODY=$(gh release view "$TAG" --json body --jq '.body')
+
+          # GitHub MD → Slack mrkdwn 최소 변환
+          #   - **굵게**          → *굵게*
+          #   - 헤딩(#, ##, ###)  → *굵게* 한 줄
+          #   - " by @user in https://.../pull/N" → " (#N)"  (간결화)
+          #   - "**Full Changelog**: ..." 줄 제거 (릴리즈 페이지 링크 이미 위에 있음)
+          NOTES=$(echo "$BODY" \
+            | sed -E 's/\*\*([^*]+)\*\*/*\1*/g' \
+            | sed -E 's/^#+ (.*)/*\1*/g' \
+            | sed -E 's| by @[A-Za-z0-9_-]+ in https?://github\.com/[^ ]*pull/([0-9]+)| (#\1)|g' \
+            | sed -E '/^\*Full Changelog\*:/d' \
+            | sed -E '/^Full Changelog:/d')
+
+          # Slack chat.postMessage text 한도 4000자, 여유 두고 3000자에서 자른다
+          if [ ${#NOTES} -gt 3000 ]; then
+            NOTES="${NOTES:0:3000}
+
+_(이하 생략 — 릴리즈 페이지에서 전체 확인)_"
+          fi
+
+          # 본문 비었으면 스킵
+          if [ -z "$(echo "$NOTES" | tr -d '[:space:]')" ]; then
+            echo "릴리즈 본문 비어있음 — 노트 댓글 스킵"
+            exit 0
+          fi
+
+          # jq 로 안전하게 JSON 페이로드 생성 (임의 문자열 escape 처리)
+          PAYLOAD=$(jq -n \
+            --arg channel "${{ secrets.SLACK_CHANNEL_ID }}" \
+            --arg thread "$THREAD_TS" \
+            --arg text "*릴리즈 내용*
+$NOTES" \
+            '{channel: $channel, thread_ts: $thread, text: $text, unfurl_links: false, unfurl_media: false}')
+
+          RESP=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            --data "$PAYLOAD")
+          echo "Slack response: $RESP"
+          echo "$RESP" | jq -e '.ok' >/dev/null
