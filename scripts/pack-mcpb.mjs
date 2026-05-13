@@ -87,16 +87,10 @@ const mcpPkg = readJson(path.join(ROOT, "packages/mcp/package.json"));
 const mcpManifest = readJson(path.join(ROOT, "packages/mcp/manifest.json"));
 const deps = Object.fromEntries(runtimeDeps.map((name) => [name, mcpPkg.dependencies[name]]));
 
-// manifest.version 은 mcp 패키지 버전으로 동기화
-if (mcpManifest.version !== mcpPkg.version) {
-  mcpManifest.version = mcpPkg.version;
-  fs.writeFileSync(
-    path.join(ROOT, "packages/mcp/manifest.json"),
-    `${JSON.stringify(mcpManifest, null, 2)}\n`,
-    "utf-8",
-  );
-  console.log(`[pack-mcpb] manifest.version → ${mcpPkg.version}`);
-}
+// manifest.json 의 version 이 mcpb 버전의 정의(SSOT)다.
+// 과거에는 packages/mcp/package.json 으로 덮어쓰는 로직이 있었으나, manifest 를
+// 손으로 올린 의도를 빌드가 되돌려 놓는 부작용이 있어 제거함.
+console.log(`[pack-mcpb] manifest.version = ${mcpManifest.version}`);
 
 removeIfExists(BUNDLE_DIR);
 ensureDir(BUNDLE_DIR);
