@@ -23,16 +23,42 @@ app.get("/", (_req, res) => {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>넛지 디자인시스템</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
     <style>
+      /* Pretendard load 동안 swap CLS 방지 — local 폴백을 Pretendard 메트릭에 맞춰 정렬 */
+      @font-face {
+        font-family: "PretendardFallback";
+        src: local("Apple SD Gothic Neo"), local("Malgun Gothic"), local("Segoe UI"),
+          local("Helvetica Neue");
+        size-adjust: 100%;
+        ascent-override: 92%;
+        descent-override: 23%;
+        line-gap-override: 0%;
+      }
       * { box-sizing: border-box; }
-      html, body { height: 100%; }
+      html {
+        /* 콘텐츠 높이 변화로 인한 수평 wobble 방지 */
+        overflow-y: scroll;
+      }
       body {
         margin: 0;
-        font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-height: 100vh;
+        font-family: "Pretendard Variable", Pretendard, PretendardFallback,
+          -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background: #ffffff;
         color: #0f172a;
-        display: grid;
-        place-items: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         -webkit-font-smoothing: antialiased;
       }
       .wrap { text-align: center; padding: 48px 32px; width: 100%; max-width: 560px; }
