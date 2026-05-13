@@ -110,8 +110,8 @@ Storybook 하단 패널에서 사용할 수 있는 도구:
 
 | 문서                                                            | 설명                               |
 | --------------------------------------------------------------- | ---------------------------------- |
-| [DESIGN_SYSTEM_PLAN.md](./docs/DESIGN_SYSTEM_PLAN.md)           | 디자인 시스템 구축 방향과 아키텍처 |
 | [TOKENS.md](./docs/TOKENS.md)                                   | Figma 기준 토큰 정의               |
+| [semantic-tokens.md](./docs/semantic-tokens.md)                 | 시멘틱 토큰 카탈로그 (자동 생성)   |
 | [FIGMA_TO_REACT_WORKFLOW.md](./docs/FIGMA_TO_REACT_WORKFLOW.md) | Figma -> React 반자동화 워크플로우 |
 | [STYLING_STRUCTURE_GUIDE.md](./docs/STYLING_STRUCTURE_GUIDE.md) | 스타일 확장 구조 가이드            |
 | [components/inventory.md](./docs/components/inventory.md)       | 컴포넌트 인벤토리                  |
