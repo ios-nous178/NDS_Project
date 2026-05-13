@@ -1,3 +1,8 @@
+---
+title: 시멘틱 토큰
+sidebar_position: 4
+---
+
 # 시멘틱 토큰 카탈로그
 
 NudgeEAP 디자인 시스템에서 컴포넌트가 사용하는 시멘틱 토큰 전체 목록. 모든 변수는 단일 `--semantic-*` namespace 로 통합됨.

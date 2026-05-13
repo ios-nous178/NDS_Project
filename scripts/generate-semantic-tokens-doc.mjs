@@ -152,6 +152,11 @@ function swatch(hex) {
 }
 
 const lines = [];
+lines.push("---");
+lines.push("title: 시멘틱 토큰");
+lines.push("sidebar_position: 4");
+lines.push("---");
+lines.push("");
 lines.push("# 시멘틱 토큰 카탈로그");
 lines.push("");
 lines.push(

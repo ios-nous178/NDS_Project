@@ -614,9 +614,7 @@ NudgeEAPDesignSystem/
   apps/
     storybook/
   docs/
-    DESIGN_SYSTEM_PLAN.md
     TOKENS.md
-    AI_PROMPTS.md
     FIGMA_TO_REACT_WORKFLOW.md
   workflows/
     figma-to-react/
