@@ -919,7 +919,7 @@
     "status": "implemented",
     "description": "단일 선택 라디오 버튼. 20×20px, 2px borderNormal, 10px 내부 원(fillBrand). RadioGroup vertical/horizontal 레이아웃.",
     "storybookTitle": "Components/Radio",
-    "docsPath": "/docs/components/radio",
+    "docsPath": "/docs/components/checkbox-radio",
     "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904",
     "figmaNodeId": "171:9904",
     "figmaSynced": true,
