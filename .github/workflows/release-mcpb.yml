@@ -145,8 +145,8 @@ jobs:
           set -euo pipefail
 
           TEXT=$(printf '%s\n\n%s' \
-            "📦 *NudgeEAP DS MCPB v${VERSION} 업데이트* 📦" \
-            "설치 방법 / 문서 링크 / 변경 사항은 스레드에서 확인 부탁드립니다 🧵")
+            "📦 *NudgeEAP DS MCPB v${VERSION} Update*" \
+            "→  설치 파일 / 설치 방법 / 문서 링크 / 변경 사항은 스레드에서 확인 부탁드립니다")
 
           PAYLOAD=$(jq -n \
             --arg channel "$CHANNEL_ID" \
