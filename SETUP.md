@@ -71,6 +71,9 @@ AI 어시스턴트입니다. 코드를 대신 작성하고 실행해줍니다. (
 1. https://claude.ai/download 접속
 2. 본인 OS에 맞는 앱 다운로드 → 설치
 3. Anthropic 계정으로 로그인
+4. **NudgeEAP DS MCP 설치** — https://github.com/cashwalk/NudgeEAPDesignSystem/releases/latest 에서
+   `nudge-eap-ds.mcpb` 파일을 받아 더블클릭하면 끝. Claude Desktop 이 알아서 풀고 등록하고,
+   이후 새 버전이 올라오면 알림으로 알려줍니다. **Mac/Windows 모두 동일**, Node.js 설치 불필요.
 
 ### 방법 B: VS Code 확장
 
