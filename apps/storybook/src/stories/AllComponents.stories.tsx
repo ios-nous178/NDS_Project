@@ -2292,7 +2292,7 @@ function ComponentCard({ entry }: { entry: InventoryEntry }) {
             Figma 가이드 →
           </a>
         )}
-        <a href={storybookHref} style={footLink}>
+        <a href={storybookHref} target="_top" style={footLink}>
           Storybook →
         </a>
       </div>
