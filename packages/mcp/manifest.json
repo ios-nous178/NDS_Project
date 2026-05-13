@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T05:48:58.845Z",
+  "generatedAt": "2026-05-13T06:10:19.925Z",
   "repoRoot": "/Users/nudge_133/Desktop/03_NudgeTest/NudgeEAPDesignSystem",
   "packages": [
     {
@@ -1302,6 +1302,11 @@
       "props": [
         {
           "name": "checked",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "indeterminate",
           "optional": true,
           "type": "boolean"
         },
@@ -6730,6 +6735,26 @@
       "group": "semantic"
     },
     {
+      "name": "--shadow-0",
+      "value": "none",
+      "group": "shadow"
+    },
+    {
+      "name": "--shadow-1",
+      "value": "0px 1px 4px rgba(0, 0, 0, 0.08)",
+      "group": "shadow"
+    },
+    {
+      "name": "--shadow-2",
+      "value": "0px 4px 12px rgba(0, 0, 0, 0.10)",
+      "group": "shadow"
+    },
+    {
+      "name": "--shadow-3",
+      "value": "0px 8px 24px rgba(0, 0, 0, 0.12)",
+      "group": "shadow"
+    },
+    {
       "name": "--shape-2xl",
       "value": "24px",
       "group": "shape"
@@ -6998,6 +7023,41 @@
       "name": "--stroke-none",
       "value": "0px",
       "group": "stroke"
+    },
+    {
+      "name": "--z-appBar",
+      "value": "300",
+      "group": "z"
+    },
+    {
+      "name": "--z-base",
+      "value": "0",
+      "group": "z"
+    },
+    {
+      "name": "--z-dropdown",
+      "value": "100",
+      "group": "z"
+    },
+    {
+      "name": "--z-modal",
+      "value": "1000",
+      "group": "z"
+    },
+    {
+      "name": "--z-popup",
+      "value": "1100",
+      "group": "z"
+    },
+    {
+      "name": "--z-sticky",
+      "value": "200",
+      "group": "z"
+    },
+    {
+      "name": "--z-toast",
+      "value": "1200",
+      "group": "z"
     }
   ],
   "brands": [

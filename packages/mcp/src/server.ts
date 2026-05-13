@@ -327,8 +327,38 @@ function validateMockupSource(source: string): Violation[] {
         rule: "inline-svg",
         line: ln,
         detail: line.trim(),
-        suggestion: "@nudge-eap/icons 사용. find_icon으로 후보 검색.",
+        suggestion:
+          "먼저 find_icon으로 @nudge-eap/icons에 적합한 아이콘이 있는지 확인하세요. 없을 때만 인라인 SVG로 새로 그리는 것이 허용됩니다 (텍스트/이모지는 금지).",
       });
+    }
+    // 4-bis. 텍스트/이모지 아이콘 금지
+    // 이모지(범위)와 흔한 아이콘용 기호(→ ← ↑ ↓ › ‹ » « ▶ ◀ ▲ ▼ ✓ ✗ ✘ × ✕ ★ ☆ ♥ ♡ ❤ • · ＋ －)를 JSX/문자열에서 검출
+    {
+      // 4-bis-1. 이모지 (Unicode emoji ranges + variation selector)
+      const emojiPattern =
+        /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2300}-\u{23FF}\u{2B00}-\u{2BFF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F1FF}\u{1F200}-\u{1F2FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}]️?/u;
+      if (emojiPattern.test(line)) {
+        violations.push({
+          rule: "text-icon-banned",
+          line: ln,
+          detail: line.trim(),
+          suggestion:
+            "이모지를 아이콘처럼 사용하지 마세요. find_icon으로 @nudge-eap/icons에서 적합한 아이콘을 찾고, 없으면 인라인 SVG로 새로 그리세요.",
+        });
+      }
+      // 4-bis-2. 기호 아이콘 — JSX 텍스트 노드나 단독 문자열로 쓰인 경우만 (의미 문자 보호)
+      // 패턴: `>‹`, `<span>→</span>`, `{"›"}`, `'×'` 식으로 1글자가 노출된 경우
+      const symbolIconPattern =
+        /(?:>\s*|{\s*["']|=\s*["'])([→←↑↓›‹»«▶◀▲▼✓✗✘×✕★☆⭐♥♡❤])\s*(?:["']\s*}|<\/|["'])/;
+      if (symbolIconPattern.test(line)) {
+        violations.push({
+          rule: "text-icon-banned",
+          line: ln,
+          detail: line.trim(),
+          suggestion:
+            "→ ← ✓ × ★ 같은 기호 문자를 아이콘 대용으로 쓰지 마세요. find_icon으로 적합한 아이콘을 찾고, 없으면 인라인 SVG로 새로 그리세요.",
+        });
+      }
     }
     // 4-2. 그라데이션 (DESIGN.md 금지)
     if (/(linear|radial|conic)-gradient\s*\(/.test(line)) {
