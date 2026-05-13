@@ -1,22 +1,11 @@
 /**
  * [GENIET-NUTRITION-DETAIL] 지니어트 식품 영양 백과 상세 페이지 목업
  *
- * DS 컴포넌트: Button, Card, Badge, Chip, Tabs, ProgressBar, Avatar, Divider, Breadcrumb
+ * DS 컴포넌트: Button, Card, Badge, Chip, Tabs, ProgressBar, Avatar, Divider, Breadcrumb,
+ *              StarRating, DataTable
  * Layout: MockupLayout (AppBar + AppFooter) — from mockup-layout
- * Missing (임시 구현): StarRating, NutrientBar, ComparisonChart
- *
- * SEO 전략:
- * - 식품별 개별 URL → 수만 개 랜딩 페이지 자동 생성
- * - 구조화 데이터 (영양 정보, 리뷰, 레시피) → 리치 스니펫
- * - 내부 링크 (관련 식품, 레시피, 헬시딜) → 크롤링 깊이 확보
- * - 롱테일 키워드 (아보카도 칼로리, 아보카도 효능 등) → 검색 유입
- *
- * 체류시간 전략:
- * - 영양소 시각화 → 탐색 유도
- * - 식품 비교 차트 → 인터랙션
- * - 관련 레시피·헬시딜·리뷰 → 서비스 순환
- * - FAQ → 정보성 콘텐츠 소비
- * - 유사 식품 추천 → 추가 페이지 탐색
+ * Inline SVG: ChefHatIcon, CartIcon, HelpIcon, FlameIcon, CheckMarkIcon — DS 아이콘에 없어 신규 생성
+ * Missing (임시 구현): NutrientBar
  */
 import React, { useState } from "react";
 import {
@@ -29,8 +18,10 @@ import {
   Avatar,
   Divider,
   Breadcrumb,
+  StarRating,
+  DataTable,
 } from "@nudge-eap/react";
-import { StarIcon } from "@nudge-eap/icons";
+import { CalendarIcon, CommentIcon, RefreshIcon, SearchIcon, ThumbUpIcon } from "@nudge-eap/icons";
 import { MockupLayout, useIsMobile, Accordion } from "./mockup-layout";
 import {
   currentFood,
@@ -65,28 +56,93 @@ const G = {
 } as const;
 
 /* ────────────────────────────────────────────
- * [Missing] StarRating — 별점 표시
+ * 인라인 SVG 아이콘 — @nudge-eap/icons 에 없어 신규 생성.
+ * currentColor 기반이라 부모 color 또는 color prop으로 톤 제어 가능.
  * ──────────────────────────────────────────── */
-function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <StarIcon
-          key={i}
-          size={size}
-          color={
-            i <= Math.round(rating)
-              ? "var(--semantic-icon-status-caution)"
-              : "var(--semantic-icon-disabled-default)"
-          }
-        />
-      ))}
-      <span style={{ marginLeft: 4, fontSize: size - 2, color: G.subtle, fontWeight: 600 }}>
-        {rating}
-      </span>
-    </span>
-  );
-}
+type SvgIconProps = { size?: number; color?: string };
+
+const SvgWrap = ({
+  size = 20,
+  color = "currentColor",
+  children,
+}: SvgIconProps & { children: React.ReactNode }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    style={{ color, flexShrink: 0 }}
+  >
+    {children}
+  </svg>
+);
+
+const ChefHatIcon = (p: SvgIconProps) => (
+  <SvgWrap {...p}>
+    <path
+      d="M7 11.5c-2.2 0-4-1.8-4-4 0-1.9 1.4-3.5 3.2-3.9C7 2.6 8.4 2 10 2c1.4 0 2.6.5 3.5 1.3C14.3 2.5 15.4 2 16.7 2c2.4 0 4.3 1.9 4.3 4.3 0 2-1.4 3.7-3.3 4.1V19a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-7.5Z"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+    />
+    <path d="M9 15h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </SvgWrap>
+);
+
+const CartIcon = (p: SvgIconProps) => (
+  <SvgWrap {...p}>
+    <path
+      d="M3 4h2.2l2 11.2A2 2 0 0 0 9.2 17h8.4a2 2 0 0 0 2-1.6L21 8H7"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="9.5" cy="20" r="1.5" fill="currentColor" />
+    <circle cx="17" cy="20" r="1.5" fill="currentColor" />
+  </SvgWrap>
+);
+
+const HelpIcon = (p: SvgIconProps) => (
+  <SvgWrap {...p}>
+    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+    <path
+      d="M9.5 9.2a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4V14"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+    <circle cx="12" cy="17" r="1" fill="currentColor" />
+  </SvgWrap>
+);
+
+const FlameIcon = (p: SvgIconProps) => (
+  <SvgWrap {...p}>
+    <path
+      d="M12 3c1 3 4 4.5 4 8a4 4 0 0 1-8 0c0-1.5.7-2.5 1.5-3.5C10.4 6.2 11 4.6 12 3Z"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 11c.4 1 1.5 1.7 1.5 3a1.5 1.5 0 0 1-3 0c0-.8.4-1.3.9-1.8.3-.3.5-.7.6-1.2Z"
+      fill="currentColor"
+    />
+  </SvgWrap>
+);
+
+const CheckMarkIcon = (p: SvgIconProps) => (
+  <SvgWrap {...p}>
+    <path
+      d="M5 12.5 10 17.5 19 7.5"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </SvgWrap>
+);
 
 /* ────────────────────────────────────────────
  * [Missing] NutrientBar — 영양소 바 (일일 권장량 대비)
@@ -161,7 +217,17 @@ export default function GenietNutritionDetailMockup() {
 
   const SectionTitle = ({ children, sub }: { children: React.ReactNode; sub?: string }) => (
     <div style={{ marginBottom: isMobile ? 16 : 24 }}>
-      <h2 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: G.black, margin: 0 }}>
+      <h2
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          fontSize: isMobile ? 20 : 24,
+          fontWeight: 700,
+          color: G.black,
+          margin: 0,
+        }}
+      >
         {children}
       </h2>
       {sub && <p style={{ fontSize: 14, color: G.subtle, marginTop: 4 }}>{sub}</p>}
@@ -244,7 +310,7 @@ export default function GenietNutritionDetailMockup() {
             </h1>
             <p style={{ fontSize: 15, color: G.muted, margin: "0 0 12px" }}>{food.nameEn}</p>
 
-            <StarRating rating={food.rating} size={18} />
+            <StarRating value={food.rating} size={18} showValue />
             <span style={{ marginLeft: 8, fontSize: 14, color: G.subtle }}>
               리뷰 {food.reviewCount.toLocaleString()}개
             </span>
@@ -283,8 +349,18 @@ export default function GenietNutritionDetailMockup() {
             </div>
 
             {/* 제철 정보 */}
-            <div style={{ marginTop: 12, fontSize: 13, color: G.subtle }}>
-              🗓️ 제철: {seasonalInfo.season} · {seasonalInfo.description}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                marginTop: 12,
+                fontSize: 13,
+                color: G.subtle,
+              }}
+            >
+              <CalendarIcon size={16} color={G.subtle} />
+              제철: {seasonalInfo.season} · {seasonalInfo.description}
             </div>
 
             {/* 태그 */}
@@ -382,7 +458,7 @@ export default function GenietNutritionDetailMockup() {
                   background: G.tealBgLight,
                 }}
               >
-                <span style={{ color: G.teal, fontWeight: 700, flexShrink: 0 }}>✓</span>
+                <CheckMarkIcon size={20} color={G.teal} />
                 <span style={{ fontSize: 14, color: G.black, lineHeight: 1.6 }}>{b}</span>
               </div>
             ))}
@@ -413,136 +489,37 @@ export default function GenietNutritionDetailMockup() {
       {activeTab === "comparison" && (
         <Section>
           <SectionTitle sub="100g 기준 영양소 비교">비슷한 과일과 비교</SectionTitle>
-          {/* 비교 테이블 — 데스크탑 */}
-          {!isMobile ? (
-            <div style={{ borderRadius: 12, border: `1px solid ${G.border}`, overflow: "hidden" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
-                <thead>
-                  <tr style={{ background: G.bgCool }}>
-                    <th
-                      style={{
-                        padding: "14px 16px",
-                        textAlign: "left",
-                        fontWeight: 600,
-                        color: G.black,
-                      }}
-                    >
-                      식품
-                    </th>
-                    <th
-                      style={{
-                        padding: "14px 16px",
-                        textAlign: "right",
-                        fontWeight: 600,
-                        color: G.black,
-                      }}
-                    >
-                      칼로리
-                    </th>
-                    <th
-                      style={{
-                        padding: "14px 16px",
-                        textAlign: "right",
-                        fontWeight: 600,
-                        color: G.black,
-                      }}
-                    >
-                      지방
-                    </th>
-                    <th
-                      style={{
-                        padding: "14px 16px",
-                        textAlign: "right",
-                        fontWeight: 600,
-                        color: G.black,
-                      }}
-                    >
-                      단백질
-                    </th>
-                    <th
-                      style={{
-                        padding: "14px 16px",
-                        textAlign: "right",
-                        fontWeight: 600,
-                        color: G.black,
-                      }}
-                    >
-                      식이섬유
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparisonFoods.map((f, i) => (
-                    <tr
-                      key={f.name}
-                      style={{
-                        background: i === 0 ? G.tealBgLight : G.white,
-                        borderTop: `1px solid ${G.border}`,
-                      }}
-                    >
-                      <td
-                        style={{
-                          padding: "14px 16px",
-                          fontWeight: i === 0 ? 700 : 400,
-                          color: G.black,
-                        }}
-                      >
-                        {f.emoji} {f.name}
-                      </td>
-                      <td style={{ padding: "14px 16px", textAlign: "right", color: G.subtle }}>
-                        {f.calories}kcal
-                      </td>
-                      <td style={{ padding: "14px 16px", textAlign: "right", color: G.subtle }}>
-                        {f.fat}g
-                      </td>
-                      <td style={{ padding: "14px 16px", textAlign: "right", color: G.subtle }}>
-                        {f.protein}g
-                      </td>
-                      <td style={{ padding: "14px 16px", textAlign: "right", color: G.subtle }}>
-                        {f.fiber}g
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            /* 비교 카드 — 모바일 */
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {comparisonFoods.map((f, i) => (
-                <div
-                  key={f.name}
-                  style={{
-                    padding: 16,
-                    borderRadius: 12,
-                    background: i === 0 ? G.tealBgLight : G.bgCool,
-                    border: i === 0 ? `2px solid ${G.teal}` : "none",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 8,
-                    }}
-                  >
-                    <span style={{ fontSize: 16, fontWeight: i === 0 ? 700 : 500 }}>
-                      {f.emoji} {f.name}
-                    </span>
-                    <span style={{ fontSize: 14, color: G.teal, fontWeight: 700 }}>
-                      {f.calories}kcal
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", gap: 16, fontSize: 13, color: G.subtle }}>
-                    <span>지방 {f.fat}g</span>
-                    <span>단백질 {f.protein}g</span>
-                    <span>식이섬유 {f.fiber}g</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <DataTable
+            data={comparisonFoods}
+            rowKey={(f) => f.name}
+            size="md"
+            responsive="cards"
+            columns={[
+              {
+                key: "name",
+                title: "식품",
+                render: (f, idx) => (
+                  <span style={{ fontWeight: idx === 0 ? 700 : 400, color: G.black }}>
+                    {f.emoji} {f.name}
+                    {idx === 0 && (
+                      <Badge variant="ghost" color="brand" size="sm" style={{ marginLeft: 8 }}>
+                        현재
+                      </Badge>
+                    )}
+                  </span>
+                ),
+              },
+              {
+                key: "calories",
+                title: "칼로리",
+                align: "right",
+                render: (f) => `${f.calories}kcal`,
+              },
+              { key: "fat", title: "지방", align: "right", render: (f) => `${f.fat}g` },
+              { key: "protein", title: "단백질", align: "right", render: (f) => `${f.protein}g` },
+              { key: "fiber", title: "식이섬유", align: "right", render: (f) => `${f.fiber}g` },
+            ]}
+          />
         </Section>
       )}
 
@@ -550,7 +527,9 @@ export default function GenietNutritionDetailMockup() {
 
       {/* ═══ 4. 관련 레시피 ═══ */}
       <Section bg={G.bgCool}>
-        <SectionTitle sub={`${food.name}로 만들 수 있는 건강 레시피`}>🍳 관련 레시피</SectionTitle>
+        <SectionTitle sub={`${food.name}로 만들 수 있는 건강 레시피`}>
+          <ChefHatIcon size={24} color={G.teal} /> 관련 레시피
+        </SectionTitle>
         <div
           style={{
             display: "grid",
@@ -592,7 +571,7 @@ export default function GenietNutritionDetailMockup() {
               }
               footer={
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <StarRating rating={recipe.rating} size={12} />
+                  <StarRating value={recipe.rating} size={12} showValue />
                   <span style={{ fontSize: 12, color: G.muted }}>({recipe.reviewCount})</span>
                 </div>
               }
@@ -613,7 +592,9 @@ export default function GenietNutritionDetailMockup() {
 
       {/* ═══ 5. 헬시딜 연동 ═══ */}
       <Section>
-        <SectionTitle sub={`${food.name} 관련 특가 상품`}>🛒 헬시딜</SectionTitle>
+        <SectionTitle sub={`${food.name} 관련 특가 상품`}>
+          <CartIcon size={24} color={G.teal} /> 헬시딜
+        </SectionTitle>
         <div
           style={{
             display: "grid",
@@ -664,7 +645,7 @@ export default function GenietNutritionDetailMockup() {
                 {formatPrice(deal.originalPrice)}
               </span>
               <div style={{ marginTop: 6 }}>
-                <StarRating rating={deal.rating} size={11} />
+                <StarRating value={deal.rating} size={11} showValue />
                 <span style={{ fontSize: 11, color: G.muted, marginLeft: 2 }}>
                   ({deal.reviewCount})
                 </span>
@@ -686,7 +667,9 @@ export default function GenietNutritionDetailMockup() {
             marginBottom: isMobile ? 16 : 24,
           }}
         >
-          <SectionTitle sub={`${food.reviewCount.toLocaleString()}개의 리뷰`}>💬 리뷰</SectionTitle>
+          <SectionTitle sub={`${food.reviewCount.toLocaleString()}개의 리뷰`}>
+            <CommentIcon size={24} color={G.teal} /> 리뷰
+          </SectionTitle>
           <Button variant="outlined" size="sm" style={{ borderColor: G.teal, color: G.teal }}>
             리뷰 작성
           </Button>
@@ -709,7 +692,7 @@ export default function GenietNutritionDetailMockup() {
             <div style={{ fontSize: isMobile ? 36 : 48, fontWeight: 700, color: G.teal }}>
               {food.rating}
             </div>
-            <StarRating rating={food.rating} size={20} />
+            <StarRating value={food.rating} size={20} showValue />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -737,7 +720,7 @@ export default function GenietNutritionDetailMockup() {
                       {review.userName}
                     </span>
                     <div style={{ marginTop: 2 }}>
-                      <StarRating rating={review.rating} size={12} />
+                      <StarRating value={review.rating} size={12} showValue />
                     </div>
                   </div>
                 </div>
@@ -764,8 +747,17 @@ export default function GenietNutritionDetailMockup() {
                       <Chip key={tag} label={tag} variant="outlined" color="brand" size="sm" />
                     ))}
                   </div>
-                  <span style={{ fontSize: 12, color: G.muted }}>
-                    👍 {review.helpful}명에게 도움됨
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      fontSize: 12,
+                      color: G.muted,
+                    }}
+                  >
+                    <ThumbUpIcon size={14} color={G.muted} />
+                    {review.helpful}명에게 도움됨
                   </span>
                 </div>
               </Card.Footer>
@@ -781,7 +773,9 @@ export default function GenietNutritionDetailMockup() {
 
       {/* ═══ 7. 유사 식품 추천 (SEO 내부 링크 + 체류시간) ═══ */}
       <Section bg={G.bgCool}>
-        <SectionTitle sub="비슷한 영양 프로필을 가진 식품">🔄 이런 식품도 살펴보세요</SectionTitle>
+        <SectionTitle sub="비슷한 영양 프로필을 가진 식품">
+          <RefreshIcon size={24} color={G.teal} /> 이런 식품도 살펴보세요
+        </SectionTitle>
         <div
           style={{
             display: "grid",
@@ -826,13 +820,17 @@ export default function GenietNutritionDetailMockup() {
 
       {/* ═══ 8. FAQ (SEO 구조화 데이터) ═══ */}
       <Section>
-        <SectionTitle sub="자주 묻는 질문">❓ FAQ</SectionTitle>
+        <SectionTitle sub="자주 묻는 질문">
+          <HelpIcon size={24} color={G.teal} /> FAQ
+        </SectionTitle>
         <Accordion items={nutritionFaqs} />
       </Section>
 
       {/* ═══ 9. 인기 검색 식품 (사이드 콘텐츠 → 체류시간) ═══ */}
       <Section bg={G.tealBgLight}>
-        <SectionTitle sub="지금 가장 많이 찾아보는 식품">🔥 인기 검색 식품</SectionTitle>
+        <SectionTitle sub="지금 가장 많이 찾아보는 식품">
+          <FlameIcon size={24} color={G.error} /> 인기 검색 식품
+        </SectionTitle>
         <div
           style={{
             display: "grid",
@@ -869,7 +867,9 @@ export default function GenietNutritionDetailMockup() {
 
       {/* ═══ 10. 관련 검색 태그 (SEO 내부 링크 허브) ═══ */}
       <Section>
-        <SectionTitle sub="관련 검색어로 더 많은 영양 정보를 찾아보세요">🔍 관련 검색</SectionTitle>
+        <SectionTitle sub="관련 검색어로 더 많은 영양 정보를 찾아보세요">
+          <SearchIcon size={24} color={G.teal} /> 관련 검색
+        </SectionTitle>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {relatedSearchTags.map((tag) => (
             <Chip
