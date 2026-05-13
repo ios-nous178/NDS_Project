@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /**
- * DS의 빌드된 dist를 읽어서 MCP가 사용할 manifest.json을 생성한다.
- * 출력: packages/mcp/manifest.json
+ * DS의 빌드된 dist를 읽어서 MCP가 사용할 컴포넌트 카탈로그를 생성한다.
+ * 출력: packages/mcp/catalog.json
+ *
+ * (참고) packages/mcp/manifest.json 은 mcpb(Desktop Extension) 번들 스펙용으로
+ * 별도 관리한다. 컴포넌트/토큰/아이콘 메타데이터는 catalog.json 에만 들어간다.
  *
  * 실행 전 packages/{tokens,react,icons}가 빌드되어 있어야 한다.
  */
@@ -290,9 +293,8 @@ if (fs.existsSync(tokensCssPath)) {
 
 const brands = collectBrands();
 
-const manifest = {
+const catalog = {
   generatedAt: new Date().toISOString(),
-  repoRoot,
   packages: packagesMeta,
   components: components.sort((a, b) => a.name.localeCompare(b.name)),
   icons: icons.sort(),
@@ -300,11 +302,26 @@ const manifest = {
   brands: brands.sort((a, b) => a.slug.localeCompare(b.slug)),
 };
 
-const outPath = path.resolve(__dirname, "../manifest.json");
-fs.writeFileSync(outPath, JSON.stringify(manifest, null, 2));
+const outPath = path.resolve(__dirname, "../catalog.json");
+fs.writeFileSync(outPath, JSON.stringify(catalog, null, 2));
+
+// 기존 manifest.json (컴포넌트 카탈로그 자리) 은 mcpb 번들 스펙용으로 자리를 비워야 한다.
+// 과거 빌드 산출물이 남아 있으면 제거하여 헷갈리는 일을 막는다.
+const legacyManifestPath = path.resolve(__dirname, "../manifest.json");
+if (fs.existsSync(legacyManifestPath)) {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(legacyManifestPath, "utf-8"));
+    if (parsed && (parsed.components || parsed.repoRoot)) {
+      fs.unlinkSync(legacyManifestPath);
+      console.log("[mcp] removed legacy manifest.json (catalog moved to catalog.json)");
+    }
+  } catch {
+    // mcpb manifest 가 들어가 있으면 JSON parse 후 components 없음 → 그대로 둠
+  }
+}
 
 console.log(
-  `[mcp] manifest written: ${path.relative(repoRoot, outPath)} ` +
-    `(components=${manifest.components.length}, icons=${manifest.icons.length}, ` +
-    `tokens=${manifest.tokens.length}, brands=${manifest.brands.length})`,
+  `[mcp] catalog written: ${path.relative(repoRoot, outPath)} ` +
+    `(components=${catalog.components.length}, icons=${catalog.icons.length}, ` +
+    `tokens=${catalog.tokens.length}, brands=${catalog.brands.length})`,
 );

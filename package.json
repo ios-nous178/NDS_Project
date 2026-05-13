@@ -20,6 +20,8 @@
     "lint:docs": "node scripts/sync-version-docs.mjs --check",
     "pack:local": "node scripts/pack-local-packages.mjs",
     "pack:local:no-build": "node scripts/pack-local-packages.mjs --no-build",
+    "pack:mcpb": "node scripts/pack-mcpb.mjs",
+    "pack:mcpb:no-build": "node scripts/pack-mcpb.mjs --no-build",
     "release:local": "node scripts/pack-local-packages.mjs && node scripts/sync-version-docs.mjs",
     "build": "turbo build",
     "dev": "turbo dev",

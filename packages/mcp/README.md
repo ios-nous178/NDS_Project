@@ -6,7 +6,68 @@ NudgeEAP Design System용 MCP(Model Context Protocol) 서버.
 
 ---
 
-## 빠른 시작
+## 설치 방법 두 가지
+
+### A. Claude Desktop 에 `.mcpb` 더블클릭 설치 (권장)
+
+비개발자에게 가장 쉬운 방법입니다. **Node.js 설치 필요 없습니다.**
+Claude Desktop 이 자체 Node 런타임을 내장하고, GitHub Release 의 새 버전이 나오면 자동으로
+업데이트 알림을 띄워줍니다.
+
+1. GitHub Releases 에서 `nudge-eap-ds.mcpb` 를 받습니다
+   → https://github.com/cashwalk/NudgeEAPDesignSystem/releases/latest
+2. 파일을 더블클릭하거나, Claude Desktop → Settings → Extensions → "Install from file" 로
+   불러옵니다.
+3. 이후 모든 워크스페이스에서 `nudge-eap-ds` MCP 가 자동 활성화됩니다.
+
+이 모드에서는 `get_update_instructions` 가 "Settings → Extensions 에서 Update 버튼을 누르세요"
+안내를 반환합니다.
+
+### B. 개발 모드 (DS 레포를 클론해 직접 빌드)
+
+DS 자체를 수정/개발할 때 사용합니다.
+
+```bash
+# DS 모노레포 루트에서
+pnpm install
+pnpm build --filter @nudge-eap/mcp   # tokens/react/icons 빌드까지 자동 트리거됨
+```
+
+빌드하면 `packages/mcp/dist/server.js` 와 `packages/mcp/catalog.json` 이 생성됩니다.
+
+외부 목업 프로젝트의 `.mcp.json` 에 등록:
+
+```json
+{
+  "mcpServers": {
+    "nudge-eap-ds": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/TO/NudgeEAPDesignSystem/packages/mcp/dist/server.js"]
+    }
+  }
+}
+```
+
+> 절대 경로를 써야 합니다. `claude mcp add nudge-eap-ds --scope project -- node <abs>` 명령으로도
+> 동일한 `.mcp.json` 이 생성됩니다.
+
+---
+
+## .mcpb 번들 직접 만들기
+
+릴리즈 전 로컬 검증이나 사내 배포용으로 직접 패킹할 때:
+
+```bash
+pnpm pack:mcpb              # release:local + mcp build + pack
+pnpm pack:mcpb:no-build     # 이미 빌드된 상태라면 패킹만
+```
+
+산출물: `dist-mcpb/nudge-eap-ds.mcpb` (zip 파일). 더블클릭해 Claude Desktop 에 설치 가능.
+`mcpb` CLI 가 설치되어 있으면 그쪽을 우선 사용하고, 없으면 시스템 `zip` 으로 폴백합니다.
+
+---
+
+## 빠른 시작 (개발 모드 상세)
 
 ### 1) DS 패키지 빌드 (의존)
 
@@ -25,7 +86,9 @@ pnpm install --filter @nudge-eap/mcp
 pnpm build --filter @nudge-eap/mcp
 ```
 
-이 과정에서 `packages/mcp/manifest.json`이 자동 생성됩니다 (DS의 빌드 산출물에서 추출).
+이 과정에서 `packages/mcp/catalog.json`이 자동 생성됩니다 (DS의 빌드 산출물에서 추출).
+mcpb 번들 스펙 `packages/mcp/manifest.json` 은 손으로 관리합니다 — DS 토큰/컴포넌트만 바뀐
+경우엔 굳이 manifest.version 을 올리지 않아도 됩니다.
 
 ### 3) Claude Code에 등록
 
@@ -178,7 +241,7 @@ claude
 ## 개발
 
 ```bash
-# manifest 재생성 (DS 빌드 후)
+# catalog 재생성 (DS 빌드 후)
 pnpm --filter @nudge-eap/mcp build:manifest
 
 # watch 모드
@@ -186,6 +249,9 @@ pnpm --filter @nudge-eap/mcp dev
 
 # 수동 실행 (디버그용 — 실제로는 Claude가 stdio로 띄움)
 node packages/mcp/dist/server.js
+
+# mcpb 모드로 강제 실행 (설치 안내/업데이트 안내가 mcpb 흐름으로 바뀌는지 확인)
+NUDGE_EAP_DS_INSTALL_MODE=mcpb node packages/mcp/dist/server.js
 ```
 
 `check_preview`는 외부 목업 프로젝트에 Playwright가 설치되어 있어야 런타임 렌더링을 검사할 수 있습니다.
@@ -198,5 +264,9 @@ npx playwright install chromium
 DS를 수정한 뒤에는 다음 순서로:
 
 1. `pnpm build --filter @nudge-eap/{tokens,react,icons}` (DS 재빌드)
-2. `pnpm build --filter @nudge-eap/mcp` (manifest 재생성 + MCP 재빌드)
-3. Claude Code 재시작 (MCP 서버는 시작 시 manifest 로드)
+2. `pnpm build --filter @nudge-eap/mcp` (catalog 재생성 + MCP 재빌드)
+3. Claude Code 재시작 (MCP 서버는 시작 시 catalog 로드)
+
+mcpb 배포까지 갱신하려면 `packages/mcp/manifest.json` 의 `version` 을 올린 뒤 main 에 푸시
+하세요. `.github/workflows/release-mcpb.yml` 이 새 `.mcpb` 를 빌드해 GitHub Release 에 첨부하고,
+Claude Desktop 사용자는 며칠 안에 자동 업데이트 알림을 받습니다.
