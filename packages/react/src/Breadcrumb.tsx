@@ -51,7 +51,7 @@ const breadcrumbStyles = `
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
-/* ���── Default separator ─── */
+/* ─── Default separator ─── */
 
 const ChevronSeparator = () => (
   <svg
@@ -72,7 +72,7 @@ const ChevronSeparator = () => (
   </svg>
 );
 
-/* ─��─ Types ─── */
+/* ─── Types ─── */
 
 export interface BreadcrumbItem {
   /** 텍스트 라벨 */
