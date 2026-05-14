@@ -1,6 +1,6 @@
 {
   "name": "@nudge-eap/mcp",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "MCP server exposing the NudgeEAP Design System (components, icons, tokens, mockup validator)",
   "type": "module",
   "bin": {

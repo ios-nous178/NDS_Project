@@ -1,6 +1,6 @@
 {
   "name": "@nudge-eap/storybook",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "clean-cache": "rm -rf node_modules/.cache/storybook node_modules/.cache/sb-vite-plugin-externals ../../node_modules/.cache/storybook",
