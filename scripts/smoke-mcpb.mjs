@@ -6,13 +6,25 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
-const bundleDir = path.resolve(process.argv[2] ?? path.join(ROOT, "dist-mcpb/nudge-eap-ds"));
+
+// --source 모드: 패킹된 .mcpb 번들이 아니라 packages/mcp 소스 빌드 산출물
+// (packages/mcp/dist/server.js) 을 직접 실행한다. pre-push 훅에서 패킹 비용 없이
+// 서버 부팅 + tool dispatch 만 빠르게 검증하려는 용도. tgz 가 들어있는 번들이
+// 아니므로 get_install_command 의 ready 플래그는 검사하지 않는다.
+const positional = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
+const sourceMode = process.argv.includes("--source");
+const defaultBundleDir = sourceMode
+  ? path.join(ROOT, "packages/mcp")
+  : path.join(ROOT, "dist-mcpb/nudge-eap-ds");
+const bundleDir = path.resolve(positional[0] ?? defaultBundleDir);
 const serverPath = path.join(bundleDir, "dist/server.js");
 
 if (!fs.existsSync(serverPath)) {
   console.error(`[smoke-mcpb] server not found: ${serverPath}`);
   process.exit(1);
 }
+
+console.log(`[smoke-mcpb] mode=${sourceMode ? "source" : "bundle"} dir=${bundleDir}`);
 
 const child = spawn(process.execPath, [serverPath], {
   cwd: bundleDir,
@@ -75,7 +87,10 @@ try {
   });
   const text = call.content?.[0]?.text;
   const result = text ? JSON.parse(text) : null;
-  if (!result?.ready || !Array.isArray(result.files) || result.files.length === 0) {
+  // source 모드는 packed bundle 이 아니라 dev tree 를 가리키므로 ready 는 false 일 수 있다.
+  // 핵심은 tool 이 정상 응답을 만들었는지 — files 가 비어있지 않은지만 확인.
+  const readyOk = sourceMode ? true : result?.ready === true;
+  if (!readyOk || !Array.isArray(result?.files) || result.files.length === 0) {
     throw new Error(`get_install_command returned unexpected result: ${text}`);
   }
 
