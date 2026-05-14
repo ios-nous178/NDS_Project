@@ -1,15 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
+import { parseMockupUsage } from "./usage/parser.js";
 import {
   appendUsageToLog,
   postUsageToWebhook,
   scanPendingMockupReports,
   enqueueUsageWebhook,
   flushUsageWebhookQueue,
-  parseMockupUsage,
   type UsageWebhookQueueFlushResult,
-} from "../usage-tracker.js";
+} from "./usage/tracker.js";
 import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
 
 const USAGE_WEBHOOK_URL =
