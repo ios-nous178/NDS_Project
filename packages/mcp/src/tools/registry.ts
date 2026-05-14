@@ -17,12 +17,6 @@ export interface RegisterToolHandlersOptions {
 
 const TOOLS = [
   {
-    name: "get_scope_advisory",
-    description:
-      "Return the role of this MCP (external mockup project builder + mockup generator — NOT a DS repo editor and NOT a GitHub pusher) and the user-app vs admin-cms branching rule. Call this first if there's any ambiguity about scope or which design system to use. Cheap one-shot rule of thumb without loading full component data.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
     name: "list_brands",
     description:
       "List all sub-brands available in this design system (auto-discovered from brands/ folder + tokens dist). Each brand has slug, name, primary color, css import path, and 'ready' flag (false = token CSS export not yet wired up). Use this whenever the user picks or references a brand.",
@@ -45,25 +39,9 @@ const TOOLS = [
     },
   },
   {
-    name: "get_admin_cms_guide",
-    description:
-      "Return the visual / structural conventions for admin / CMS / 운영툴 / 백오피스 mockups (sider, page header, search form, table, status tags, modal, color tokens). Source: NudgeEAPCMS (antd 5.5.1) actual operating code. Use this INSTEAD of get_design_principles when building admin screens — admin uses antd v5, not @nudge-eap/react.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        intent: {
-          type: "string",
-          description:
-            "Optional natural-language intent string (e.g. user prompt) to confirm admin-cms detection. Not required.",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
     name: "list_components",
     description:
-      "Return all available DS React components (user-app: Trost / Geniet / NudgeEAP). For admin / CMS screens, do NOT use these — call get_admin_cms_guide instead.",
+      "Return all available DS React components (user-app: Trost / Geniet / NudgeEAP). For admin / CMS screens, do NOT use these — call get_guide({ topic: 'admin-cms' }) instead.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
@@ -91,7 +69,7 @@ const TOOLS = [
   {
     name: "list_icons",
     description:
-      "Return all icons in @nudge-eap/icons with Figma Iconography(379:490) category and Line/Filled/Color style metadata. Response also includes `byCategory` index. Always pair with get_pattern_guide('iconography') for size/touch/style rules and get_pattern_guide('icon-color') for token mapping.",
+      "Return all icons in @nudge-eap/icons with Figma Iconography(379:490) category and Line/Filled/Color style metadata. Response also includes `byCategory` index. Always pair with get_guide({ topic: 'pattern:iconography' }) for size/touch/style rules and get_guide({ topic: 'pattern:icon-color' }) for token mapping.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
@@ -165,116 +143,9 @@ const TOOLS = [
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
-    name: "get_install_command",
-    description:
-      "Return a ready-to-run 'npm install ./...tgz' command for the external project. Verifies that all required .tgz files exist in tgzDir (default: <DS_repo>/local-packages).",
-    inputSchema: {
-      type: "object",
-      properties: {
-        tgzDir: {
-          type: "string",
-          description: "Directory containing the .tgz files. Default: <DS_repo>/local-packages",
-        },
-        includeTailwind: {
-          type: "boolean",
-          description: "Include @nudge-eap/tailwind-preset (default: false).",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
     name: "check_mcp_update",
     description:
       "Check whether a newer version of this MCP (.mcpb) is available on GitHub Releases. Compares installed manifest.json version with the latest release. Use this when the user asks: '최신 버전 있어?', 'MCP 업데이트 있어?', 'check for updates'. Returns installed/latest version, download URL, and step-by-step update instructions if outdated.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
-    name: "get_update_instructions",
-    description:
-      "Return commands for planners/non-developers to update this NudgeEAPDesignSystem repository from GitHub and rebuild the MCP server. Typical request: 'git pull origin main 후 pnpm build --filter @nudge-eap/mcp 해줘'.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        source: {
-          type: "string",
-          description: "Where the repo came from. Default: 'github'.",
-        },
-        includeLocalPackages: {
-          type: "boolean",
-          description: "Also include pnpm release:local for .tgz package refresh. Default: false.",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "get_main_tsx_imports",
-    description:
-      "Return the CSS import lines that must be added to src/main.tsx. Pass an optional 'brand' slug — validated against the dynamic brand list (list_brands). If a brand has no CSS export yet, the response notes that and falls back gracefully.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        brand: {
-          type: "string",
-          description:
-            "Brand slug (see list_brands). If omitted, the first 'ready' brand is used as default.",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "create_claude_md",
-    description:
-      "Create a CLAUDE.md file in an external mockup project with usage rules, validation loop, and preview-check workflow. Pass intent='admin-cms' for admin/CMS projects (antd-based) or intent='user-app' for user app projects (default).",
-    inputSchema: {
-      type: "object",
-      properties: {
-        cwd: {
-          type: "string",
-          description:
-            "Project root where CLAUDE.md will be created. Defaults to the MCP process cwd.",
-        },
-        projectName: {
-          type: "string",
-          description: "Optional title for the generated CLAUDE.md.",
-        },
-        overwrite: {
-          type: "boolean",
-          description: "Replace an existing CLAUDE.md. Default: false.",
-        },
-        intent: {
-          type: "string",
-          description:
-            "Workspace intent. 'admin-cms' generates an antd-based admin guide; 'user-app' (default) generates the DS-based user-app guide. Free-text strings are scanned for admin keywords (어드민/CMS/운영툴/백오피스/admin/cms/backoffice).",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "get_design_principles",
-    description:
-      "Return DESIGN.md-derived principles: brand tone, color semantics, typography rules, spacing scale, elevation rules, shape scale, do's/don'ts, banned patterns. Call this at the start of any mockup task.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
-    name: "get_dos_and_donts",
-    description:
-      "Return short Do/Don't rules (subset of get_design_principles). Useful as a final sanity check before finishing a mockup.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
-    name: "get_export_html_instructions",
-    description:
-      "Return instructions to export a mockup as a dependency-free, fully interactive single HTML file (Vite + vite-plugin-singlefile). Interactions, hover transitions, hash routing all preserved. Use this whenever the user (or you, as a follow-up) wants a shareable single .html artifact.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
-    name: "get_inspector_setup",
-    description:
-      "Return setup instructions for the DsInspector runtime overlay (@nudge-eap/react/inspector). Adds a floating button in the dev preview that toggles outline + counts for DS / antd / native elements (Ctrl/Cmd+Shift+D). Use during initial workspace setup or when the user wants to visually verify DS adoption. Pairs with validate_mockup (static) — Inspector is runtime DOM-based.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
@@ -414,32 +285,18 @@ const TOOLS = [
     },
   },
   {
-    name: "get_component_guide",
+    name: "build_singlefile_html",
     description:
-      "Return curated usage guide for a specific component (pitfalls, color/size/state matrix, accessibility, interactive pattern, figmaNodeUrl). Always call this before using Button/Card/Chip/IconButton/Tabs/Select for the first time in a mockup.",
+      "Action tool: build the current Vite mockup project as a single self-contained .html (interactivity, nds-* classes, onClick all preserved). Idempotently installs vite-plugin-singlefile, patches vite.config to register the plugin, runs `npx vite build`, and returns the dist/index.html path + size. Use this whenever the user asks for a shareable HTML file or 'HTML 으로 뽑아줘'. Replaces the old get_guide({ topic: 'export-html' }) instructions — those were guidance only, this actually builds. Detects BrowserRouter usage and warns (file:// needs HashRouter).",
     inputSchema: {
       type: "object",
       properties: {
-        name: { type: "string", description: "Component name, e.g. 'Button'" },
-      },
-      required: ["name"],
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "get_pattern_guide",
-    description:
-      "Return UX pattern guidance for mockup layout decisions: CTA groups, icon color, full iconography spec (size/touch/style), visual antipatterns, notice/callout emphasis, dropdown option density, and dense lists. Use whenever visual hierarchy, icon usage, or information density is ambiguous.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        name: {
+        cwd: {
           type: "string",
           description:
-            "Pattern name: 'cta-group', 'icon-color', 'iconography', 'visual-antipatterns', 'notice', 'dropdown', or 'dense-list'.",
+            "Project root that contains package.json + vite.config. Defaults to the MCP process cwd.",
         },
       },
-      required: ["name"],
       additionalProperties: false,
     },
   },
@@ -454,37 +311,88 @@ const TOOLS = [
     },
   },
   {
-    name: "get_setup_instructions",
+    name: "get_guide",
     description:
-      "Return a step-by-step setup guide for a fresh external mockup project. Pass intent='admin-cms' for admin/CMS projects (antd-based setup with NudgeEAPCMS conventions) or omit / pass 'user-app' for the default user-app DS setup (Vite + .tgz install + CSS imports + MCP registration).",
+      "Consolidated guide router. Pass a 'topic' string to fetch one of: design principles, dos/donts, admin-cms conventions, scope advisory, runtime DS inspector setup, or per-component / per-pattern guides. Use this for every guidance lookup — it replaces the old get_design_principles / get_dos_and_donts / get_admin_cms_guide / get_scope_advisory / get_inspector_setup / get_component_guide / get_pattern_guide tools. (Note: single-file HTML export is now an action tool — call build_singlefile_html directly instead of asking for instructions.)",
     inputSchema: {
       type: "object",
       properties: {
+        topic: {
+          type: "string",
+          description:
+            "Guide topic. Fixed values: 'principles' | 'dos-donts' | 'admin-cms' | 'scope-advisory' | 'inspector-setup'. Component guides use 'component:<Name>' (e.g. 'component:Button'). Pattern guides use 'pattern:<name>' (cta-group, icon-color, iconography, visual-antipatterns, notice, dropdown, dense-list). For HTML export, call build_singlefile_html instead — that's an action tool, not a guide.",
+        },
         intent: {
           type: "string",
           description:
-            "Workspace intent. 'admin-cms' returns antd-based setup steps; 'user-app' (default) returns DS-based setup. Free-text strings are scanned for admin keywords (어드민/CMS/운영툴/백오피스/admin/cms/backoffice).",
+            "Optional free-text intent passed through to topic='admin-cms' for confirmation. Ignored for other topics.",
+        },
+      },
+      required: ["topic"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "get_setup",
+    description:
+      "Consolidated external-project setup router. Pass a 'step' to run one of: install command, main.tsx CSS imports, DS update instructions, CLAUDE.md generation, or the full step-by-step setup guide. Replaces the old get_install_command / get_main_tsx_imports / get_update_instructions / create_claude_md / get_setup_instructions tools.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        step: {
+          type: "string",
+          enum: ["install", "imports", "update", "claude-md", "inspector", "full"],
+          description:
+            "Which setup sub-action to run. 'install' → ready-to-run 'npm install ./*.tgz' command. 'imports' → main.tsx CSS import lines. 'update' → DS update instructions. 'claude-md' → write CLAUDE.md to cwd. 'inspector' → **directly patch src/main.tsx to mount the dev-only DsInspector overlay** (idempotent — safe to re-run). 'full' → comprehensive setup guide for a fresh project.",
         },
         tgzDir: {
           type: "string",
           description:
-            "[user-app only] Where the .tgz files live. Default: <DS_repo>/local-packages",
+            "[step=install|full] Directory containing the .tgz files. Default: <DS_repo>/local-packages",
         },
         brand: {
           type: "string",
           description:
-            "[user-app only] Brand slug (see list_brands). If omitted, the first 'ready' brand is used as default.",
+            "[step=imports|full] Brand slug (see list_brands). If omitted, the first 'ready' brand is used as default.",
         },
         withRouter: {
           type: "boolean",
-          description: "Include the react-router-dom install step (default: true).",
+          description: "[step=full] Include the react-router-dom install step (default: true).",
         },
         includeTailwind: {
           type: "boolean",
           description:
-            "[user-app only] Include @nudge-eap/tailwind-preset install (default: false).",
+            "[step=install|full] Include @nudge-eap/tailwind-preset install (default: false).",
+        },
+        intent: {
+          type: "string",
+          description:
+            "[step=claude-md|full] Workspace intent. 'admin-cms' generates an antd-based admin guide; 'user-app' (default) generates the DS-based user-app guide. Free-text strings are scanned for admin keywords (어드민/CMS/운영툴/백오피스/admin/cms/backoffice).",
+        },
+        source: {
+          type: "string",
+          description: "[step=update] Where the repo came from. Default: 'github'.",
+        },
+        includeLocalPackages: {
+          type: "boolean",
+          description:
+            "[step=update] Also include pnpm release:local for .tgz package refresh. Default: false.",
+        },
+        cwd: {
+          type: "string",
+          description:
+            "[step=claude-md|inspector] Project root. For claude-md, where CLAUDE.md will be created. For inspector, where src/main.tsx will be patched. Defaults to the MCP process cwd.",
+        },
+        projectName: {
+          type: "string",
+          description: "[step=claude-md] Optional title for the generated CLAUDE.md.",
+        },
+        overwrite: {
+          type: "boolean",
+          description: "[step=claude-md] Replace an existing CLAUDE.md. Default: false.",
         },
       },
+      required: ["step"],
       additionalProperties: false,
     },
   },
@@ -493,6 +401,31 @@ const TOOLS = [
 const CONTEXT_VALUES = ["user-app", "admin-cms", "unknown"] as const;
 const MOCKUP_INTENT_VALUES = ["user-app", "admin-cms"] as const;
 const BRAND_VALUES = ["trost", "geniet", "nudge-eap"] as const;
+const SETUP_STEP_VALUES = [
+  "install",
+  "imports",
+  "update",
+  "claude-md",
+  "inspector",
+  "full",
+] as const;
+
+const DEPRECATED_TOOL_HINTS: Record<string, string> = {
+  get_design_principles: "get_guide({ topic: 'principles' })",
+  get_dos_and_donts: "get_guide({ topic: 'dos-donts' })",
+  get_admin_cms_guide: "get_guide({ topic: 'admin-cms' })",
+  get_scope_advisory: "get_guide({ topic: 'scope-advisory' })",
+  get_export_html_instructions:
+    "build_singlefile_html({}) — this is now an action tool that runs the build",
+  get_inspector_setup: "get_guide({ topic: 'inspector-setup' })",
+  get_component_guide: "get_guide({ topic: 'component:<Name>' })",
+  get_pattern_guide: "get_guide({ topic: 'pattern:<name>' })",
+  get_install_command: "get_setup({ step: 'install' })",
+  get_main_tsx_imports: "get_setup({ step: 'imports' })",
+  get_update_instructions: "get_setup({ step: 'update' })",
+  create_claude_md: "get_setup({ step: 'claude-md' })",
+  get_setup_instructions: "get_setup({ step: 'full' })",
+};
 
 function readArgs(toolName: string, args: unknown): ToolArgs {
   if (args === undefined || args === null) return {};
@@ -584,11 +517,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
   switch (toolName) {
     case "get_brand_info":
       return { brand: requireString(args, "brand", toolName) };
-    case "get_admin_cms_guide":
-      return { intent: optionalString(args, "intent", toolName) };
     case "get_component":
-    case "get_component_guide":
-    case "get_pattern_guide":
       return { name: requireString(args, "name", toolName) };
     case "search_component":
     case "find_icon":
@@ -607,32 +536,28 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         snippet: requireString(args, "snippet", toolName),
         rule: optionalString(args, "rule", toolName),
       };
-    case "get_install_command":
+    case "get_guide":
       return {
-        tgzDir: optionalString(args, "tgzDir", toolName),
-        includeTailwind: optionalBoolean(args, "includeTailwind", toolName),
-      };
-    case "get_update_instructions":
-      return {
-        source: optionalString(args, "source", toolName),
-        includeLocalPackages: optionalBoolean(args, "includeLocalPackages", toolName),
-      };
-    case "get_main_tsx_imports":
-      return { brand: optionalEnum(args, "brand", BRAND_VALUES, toolName) };
-    case "create_claude_md":
-      return {
-        cwd: optionalString(args, "cwd", toolName),
-        projectName: optionalString(args, "projectName", toolName),
-        overwrite: optionalBoolean(args, "overwrite", toolName),
+        topic: requireString(args, "topic", toolName),
         intent: optionalString(args, "intent", toolName),
       };
-    case "get_setup_instructions":
+    case "get_setup":
       return {
+        step:
+          optionalEnum(args, "step", SETUP_STEP_VALUES, toolName) ??
+          (() => {
+            throw new Error(`${toolName}: 'step' is required.`);
+          })(),
         tgzDir: optionalString(args, "tgzDir", toolName),
         brand: optionalString(args, "brand", toolName),
         withRouter: optionalBoolean(args, "withRouter", toolName),
         includeTailwind: optionalBoolean(args, "includeTailwind", toolName),
         intent: optionalString(args, "intent", toolName),
+        source: optionalString(args, "source", toolName),
+        includeLocalPackages: optionalBoolean(args, "includeLocalPackages", toolName),
+        cwd: optionalString(args, "cwd", toolName),
+        projectName: optionalString(args, "projectName", toolName),
+        overwrite: optionalBoolean(args, "overwrite", toolName),
       };
     case "report_mockup_usage":
       return {
@@ -664,6 +589,8 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       };
     case "stop_dev_server":
       return { sessionId: optionalString(args, "sessionId", toolName) };
+    case "build_singlefile_html":
+      return { cwd: optionalString(args, "cwd", toolName) };
     default:
       return args;
   }
@@ -680,7 +607,14 @@ export function registerToolHandlers(
     try {
       const validatedArgs = validateToolArgs(name, args);
       const handler = handlers[name];
-      if (!handler) throw new Error(`Unknown tool: ${name}`);
+      if (!handler) {
+        const hint = DEPRECATED_TOOL_HINTS[name];
+        throw new Error(
+          hint
+            ? `Tool '${name}' has been consolidated. Use ${hint} instead.`
+            : `Unknown tool: ${name}`,
+        );
+      }
       let result = await handler(validatedArgs);
       const afterResult = await options.afterCall?.({ name, args: validatedArgs, result });
       if (afterResult !== undefined) result = afterResult;

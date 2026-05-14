@@ -117,12 +117,12 @@ export async function reportMockupUsage(args: {
     ? ` · queue retry ${webhook.flushedQueue.succeeded}/${webhook.flushedQueue.attempted}`
     : "";
   const humanReadable =
-    `📊 ${usage.mockupName} (${usage.brand ?? "?"}): ` +
+    `[usage] ${usage.mockupName} (${usage.brand ?? "?"}): ` +
     `DS ${totalDs} (${dsRatio}%) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}${queueStatus}`;
 
   const _nextSuggestion =
     "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). 그리고 마지막으로 사용자에게 다음을 물어보세요: " +
-    "(1) 인터랙티브 가능한 단일 HTML 파일 산출물을 만들어 드릴까요? (원하면 get_export_html_instructions 호출) " +
+    "(1) 인터랙티브 가능한 단일 HTML 파일 산출물을 만들어 드릴까요? (원하면 build_singlefile_html 호출 — 실제 빌드까지 자동 실행됨. 손으로 HTML 작성하지 말 것.) " +
     "(2) 현재 띄워둔 dev 서버 URL 을 보여드리고, 사용자가 직접 확인을 마치면 stop_dev_server 호출하세요. " +
     "두 가지를 사용자가 모를 수 있으므로 명시적으로 안내해야 합니다.";
 
@@ -143,7 +143,7 @@ const POST_CREATION_TOOLS = new Set<string>([
   "validate_mockup",
   "check_preview",
   "stop_dev_server",
-  "get_export_html_instructions",
+  "build_singlefile_html",
 ]);
 
 const MAX_AUTO_REPORTS_PER_CALL = 5;
@@ -212,6 +212,14 @@ interface UsageGuardOutcome {
 
 export async function runUsageGuards(toolName: string, args: unknown): Promise<UsageGuardOutcome> {
   if (!POST_CREATION_TOOLS.has(toolName)) return {};
+  // get_guide 는 다양한 topic 을 라우팅하므로 "export-html" 일 때만 트리거
+  if (toolName === "get_guide") {
+    const topic =
+      args && typeof args === "object" && !Array.isArray(args)
+        ? (args as { topic?: unknown }).topic
+        : undefined;
+    if (topic !== "export-html") return {};
+  }
 
   const cwd = extractCwdFromArgs(args) ?? process.cwd();
   let pending: PendingMockupReport[];
