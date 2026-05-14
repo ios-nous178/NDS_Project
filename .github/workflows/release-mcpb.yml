@@ -95,6 +95,62 @@ jobs:
              dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb
           ls -lh dist-mcpb/
 
+      # git log 기반 변경사항을 한 번 추출해 두고 GitHub Release body 와 Slack
+      # changelog 댓글이 같은 결과를 재사용한다. GitHub 의 generate-release-notes
+      # API 는 PR 머지 워크플로우 가정이라 direct-push 인 이 레포에서는 거의 비어
+      # 나와 의미있는 변경사항을 못 채운다 — 그래서 본문에 직접 박는다.
+      - name: Build changelog
+        id: changelog
+        if: steps.tag_check.outputs.exists == 'false'
+        env:
+          TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          # action-gh-release 가 새 tag 를 remote 에만 만들기 때문에 local 에는
+          # 아직 그 tag 가 없을 수 있다. 새 tag commit == 현재 HEAD 이므로
+          # RANGE 의 종점은 HEAD 로 잡는다.
+          PREV_TAG=$(git tag --sort=-v:refname | grep -v "^${TAG}$" | head -n 1 || true)
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="${PREV_TAG}..HEAD"
+            RANGE_LABEL="\`${PREV_TAG}\` → \`${TAG}\`"
+          else
+            RANGE="HEAD"
+            RANGE_LABEL="최초 릴리즈"
+          fi
+          echo "::notice::changelog range = ${RANGE} (prev=${PREV_TAG:-<none>}, head=$(git rev-parse --short HEAD))"
+
+          # ── changelog 정제 ─────────────────────────────────────
+          # 1) 노이즈 커밋 제거 (외부 사용자에게 의미 없는 내부 변경)
+          #    - chore: rebuild local-packages         → release 마다 자동 커밋되는 산출물
+          #    - Merge branch                          → 머지 자체
+          #    - any-type(release-mcpb)                → 릴리즈 워크플로우 내부 (prefix 무관)
+          #    - any-type(docs-page)                   → docs 페이지 자체 수정 (prefix 무관)
+          #    - chore(mcp): bump …                    → 버전 bump (릴리즈 자체가 이미 그 정보)
+          # 2) Conventional Commits prefix 제거 — feat(scope)/fix/docs/chore… 의
+          #    "feat(scope): " 부분을 떼고 본문만 남겨 가독성을 높인다.
+          # 3) 앞에 "- " 붙여 markdown bullet 형태로 통일
+          COMMITS=$(git log --no-merges --pretty='format:%s' "$RANGE" \
+            | grep -Ev '^chore: rebuild local-packages' \
+            | grep -Ev '^Merge branch ' \
+            | grep -Ev '^[a-z]+(\([^)]*\))?!?:\s*bump\s+mcpb' \
+            | grep -Ev '^[a-z]+\(release-mcpb\)' \
+            | grep -Ev '^[a-z]+\(docs-page\)' \
+            | sed -E 's/^(feat|fix|docs|chore|refactor|perf|test|style|build|ci)(\([^)]*\))?!?: ?//' \
+            | sed 's/^/- /' \
+            || true)
+
+          if [ -z "$(printf '%s' "$COMMITS" | tr -d '[:space:]')" ]; then
+            COMMITS="_사용자에게 영향있는 변경 사항 없음 (내부 작업만 있음)_"
+          fi
+
+          {
+            echo "range_label=${RANGE_LABEL}"
+            echo "commits<<COMMITS_EOF"
+            printf '%s\n' "$COMMITS"
+            echo "COMMITS_EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Create GitHub Release
         if: steps.tag_check.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
@@ -110,15 +166,33 @@ jobs:
           body: |
             ## NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}
 
-            **설치 방법**
-            - `nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb` 를 다운받아 Claude Desktop 에서 더블클릭 (또는 Settings → Extensions → Install from file)
-            - Mac/Windows 공통, Node.js 설치 불필요
+            ### 처음 설치하시는 분
+            1. 아래 `nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb` 를 다운로드
+            2. Claude Desktop → Settings → Extensions → **Install from file** 선택 (또는 .mcpb 더블클릭)
+            3. `⌘Q` 로 Claude Desktop 완전 종료 후 다시 실행
+
+            ### 업데이트하시는 분
+            1. Claude Desktop → Settings → Extensions → `nudge-eap-ds` 옆 **Update** 버튼
+            2. Update 버튼이 안 보이면 위의 "처음 설치" 와 동일하게 .mcpb 재설치
+            3. `⌘Q` 로 Claude Desktop 완전 종료 후 다시 실행
+
+            ### 외부 mockup 프로젝트 사용자
+            DS 패키지 (`@nudge-eap/*`) 가 갱신되었으면 mockup 프로젝트 루트에서 클린 재설치하세요. MCP 의 `get_install_command` 도구가 정확한 .tgz 경로를 알려줍니다.
+            ```bash
+            rm -rf node_modules/@nudge-eap* && npm install <.tgz 경로들>
+            ```
+
+            ### 변경 사항 (${{ steps.changelog.outputs.range_label }})
+            ${{ steps.changelog.outputs.commits }}
+
+            ---
+            **디자인시스템 문서**: ${{ env.DOCS_URL }}
 
             **최신 버전 직링크 (항상 최신을 가리킴)**
             ```
             https://github.com/${{ github.repository }}/releases/latest/download/nudge-eap-ds.mcpb
             ```
-          generate_release_notes: true
+          generate_release_notes: false
           fail_on_unmatched_files: true
 
       # ─── Slack 알림 ───────────────────────────────────────────
@@ -216,41 +290,22 @@ jobs:
           echo "Slack response: $RESP"
           echo "$RESP" | jq -e '.ok' >/dev/null
 
-      # git log 기반 변경사항. PR 워크플로우가 아니라 직접 push 하는 팀이라
-      # GitHub generate-notes API 대신 git log 로 직접 커밋 메시지를 뽑는다.
-      # 빌드 산출물 자동 커밋(chore: rebuild local-packages…) 은 노이즈라 제외.
+      # Build changelog step 에서 뽑은 결과를 그대로 재사용한다.
+      # (이전에는 여기서 git log 를 다시 돌렸는데, 같은 RANGE 로직을 두 군데
+      #  유지하면 한 쪽만 깨질 위험이 있어 한 step 에 모았다.)
       - name: Post changelog to Slack thread
         if: steps.tag_check.outputs.exists == 'false' && steps.head.outputs.thread_ts != ''
         env:
           CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
           BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           THREAD_TS: ${{ steps.head.outputs.thread_ts }}
-          TAG: ${{ steps.meta.outputs.tag }}
+          RANGE_LABEL: ${{ steps.changelog.outputs.range_label }}
+          COMMITS: ${{ steps.changelog.outputs.commits }}
         run: |
           set -euo pipefail
 
-          # 새로 만든 태그(TAG) 직전의 가장 최근 태그를 찾는다.
-          # (없으면 = 최초 릴리즈, 전체 히스토리에서 뽑는다.)
-          PREV_TAG=$(git tag --sort=-v:refname | grep -v "^${TAG}$" | head -n 1 || true)
-          if [ -n "$PREV_TAG" ]; then
-            RANGE="${PREV_TAG}..${TAG}"
-            HEADER="*변경 사항* (\`${PREV_TAG}\` → \`${TAG}\`)"
-          else
-            RANGE="${TAG}"
-            HEADER="*변경 사항* (최초 릴리즈)"
-          fi
-
-          # 노이즈 커밋 필터: rebuild local-packages / Merge branch
-          COMMITS=$(git log --no-merges --pretty='format:- %s' "$RANGE" \
-            | grep -Ev '^- chore: rebuild local-packages' \
-            | grep -Ev '^- Merge branch ' \
-            || true)
-
-          if [ -z "$(echo "$COMMITS" | tr -d '[:space:]')" ]; then
-            BODY=$(printf '%s\n\n%s' "$HEADER" '_변경 사항 없음 (노이즈 커밋만 존재)_')
-          else
-            BODY=$(printf '%s\n\n%s' "$HEADER" "$COMMITS")
-          fi
+          HEADER="*변경 사항* (${RANGE_LABEL})"
+          BODY=$(printf '%s\n\n%s' "$HEADER" "$COMMITS")
 
           # Slack text 한도 4000자, 여유 두고 3500자에서 자른다
           if [ ${#BODY} -gt 3500 ]; then
