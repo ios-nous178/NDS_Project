@@ -85,7 +85,8 @@ const TOOLS = [
   },
   {
     name: "list_tokens",
-    description: "List design tokens, optionally filtered by group ('color', 'spacing', etc.).",
+    description:
+      "List design tokens for one group. Without `group`, returns a summary (counts per group) only — pass `group` ('color' | 'spacing' | 'semantic' | 'font' | 'radius' | 'size' | 'line' | 'gap' | 'padding' | 'border' | 'grid' | 'shadow' | 'shape' | 'stroke' | 'z') for actual tokens. Prefer `lookup_token` for search.",
     inputSchema: {
       type: "object",
       properties: { group: { type: "string" } },
@@ -106,7 +107,7 @@ const TOOLS = [
   {
     name: "validate_mockup",
     description:
-      "Validate a mockup .tsx source against DS rules. Catches inline color/spacing/native elements/inline SVG/emoji-as-icon/gradient + pattern-level anti-patterns (primary CTA overuse, arrow-icon repeat, Chip overuse/missing-label, nested Card, Card 당 Badge·Chip 3+ 과다, Card.Footer 버튼 3+, primary 컬러 역할 과적, tone-on-tone, default icon color, 강조 장치 4+ 동시 사용 등) + user-app 목업에 antd import 잔존 검출. Provide either 'source' (string) or 'filePath' (absolute). Returns { ok, violationCount, summary: { byRule, topRules, humanReadable }, violations }. **사용자에게 violationCount + humanReadable 을 항상 보여주세요 — 안 보여주면 사용자가 위반이 얼마나 남았는지 모름.**",
+      "Validate a mockup .tsx against DS rules — inline color/spacing, native elements, inline SVG, emoji, gradient, and pattern-level anti-patterns (CTA/Chip/Card/icon overuse, antd leftover, etc.). Provide `source` or `filePath`. Returns `{ ok, violationCount, summary: { humanReadable }, violations }`. Always surface `violationCount` + `humanReadable` to the user.",
     inputSchema: {
       type: "object",
       properties: {
@@ -151,7 +152,7 @@ const TOOLS = [
   {
     name: "report_mockup_usage",
     description:
-      "REQUIRED final step after generating or modifying a mockup .tsx (and also after exporting HTML). Parse a mockup TSX file with AST and aggregate Design System usage; classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Always appends to .ds-usage-log.jsonl at the project root AND POSTs to the shared Google Sheets usage webhook (URL hardcoded in the MCP — no auth, no env var, works in any external project without setup). The webhook POST uses timeout/retry and queues failed payloads in .ds-usage-webhook-queue.jsonl for retry on later calls. Skipping this leaves the central usage sheet empty for this mockup. Returns the aggregated usage object plus webhook ok/status/queue info.",
+      "REQUIRED final step after generating/modifying a mockup .tsx (or HTML export). Parses with AST and classifies each JSX element as ds / adminCms / customNative / external, appends to `.ds-usage-log.jsonl`, and posts to a shared usage webhook (no auth/setup needed). Skipping leaves central usage stats empty for this mockup. Returns the aggregated usage + webhook status.",
     inputSchema: {
       type: "object",
       properties: {
@@ -287,7 +288,7 @@ const TOOLS = [
   {
     name: "build_singlefile_html",
     description:
-      "Action tool: build the current Vite mockup project as a single self-contained .html (interactivity, nds-* classes, onClick all preserved). Idempotently installs vite-plugin-singlefile, patches vite.config to register the plugin, runs `npx vite build`, and returns the dist/index.html path + size. Use this whenever the user asks for a shareable HTML file or 'HTML 으로 뽑아줘'. Replaces the old get_guide({ topic: 'export-html' }) instructions — those were guidance only, this actually builds. Detects BrowserRouter usage and warns (file:// needs HashRouter).",
+      "Build the current Vite mockup as a single self-contained .html (interactivity + nds-* classes + onClick preserved). Auto-installs vite-plugin-singlefile, patches vite.config, runs `vite build`, returns dist/index.html path + size. Call when the user asks for HTML output ('HTML 으로 뽑아줘', '단일 파일로'). Never hand-write .html — loses nds-* tokens and React interactivity. Warns if BrowserRouter is used (file:// needs HashRouter).",
     inputSchema: {
       type: "object",
       properties: {
@@ -415,8 +416,6 @@ const DEPRECATED_TOOL_HINTS: Record<string, string> = {
   get_dos_and_donts: "get_guide({ topic: 'dos-donts' })",
   get_admin_cms_guide: "get_guide({ topic: 'admin-cms' })",
   get_scope_advisory: "get_guide({ topic: 'scope-advisory' })",
-  get_export_html_instructions:
-    "build_singlefile_html({}) — this is now an action tool that runs the build",
   get_inspector_setup: "get_guide({ topic: 'inspector-setup' })",
   get_component_guide: "get_guide({ topic: 'component:<Name>' })",
   get_pattern_guide: "get_guide({ topic: 'pattern:<name>' })",
