@@ -51,3 +51,60 @@ packages/mcp/src/       ← MCP 서버 (외부 프로젝트가 받는 가이드 
 apps/storybook/         ← 스토리북 (DS 컴포넌트 데모용)
 DESIGN.md               ← 디자인 토큰 YAML 정의
 ```
+
+## DS 자체에 기여하기
+
+변경이 **외부 프로젝트까지 전파되려면** MCP 가이드와 MCPB 릴리즈까지 같이 손대야 합니다.
+자주 누락되는 항목은 ★.
+
+### 신규 컴포넌트 추가
+
+| 단계                          | 위치 / 명령                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------- |
+| 구현                          | `packages/react/src/{Component}.tsx`                                                        |
+| Export                        | `packages/react/src/index.ts`                                                               |
+| Storybook 스토리              | `apps/storybook/src/stories/{Component}.stories.tsx`                                        |
+| ★ 카탈로그                    | `apps/storybook/src/stories/AllComponents.stories.tsx` — import + 엔트리 추가               |
+| ★ MCP 가이드 (외부 전파 핵심) | `packages/mcp/src/guides.ts` 의 `COMPONENT_GUIDES` — props 함정 · 매트릭스 · `figmaNodeUrl` |
+| (선택) 컴포넌트 로컬 가이드   | `packages/react/src/{Component}.guide.ts` (`Badge.guide.ts` / `Chip.guide.ts` 패턴 참고)    |
+| 타입체크                      | `npx tsc --noEmit --project apps/storybook/tsconfig.json`                                   |
+
+### 신규 / 수정 토큰
+
+1. `packages/tokens/src/{colors|spacing|typography|elevation|motion|...}.ts` 수정
+2. 시멘틱은 `--semantic-*` 네임스페이스로 — raw hex / `--eap-*` / `--color-semantic-*` 신규 추가 금지
+3. 토큰 정의 의도는 `DESIGN.md` YAML 에도 동기화
+4. `pnpm build --filter @nudge-eap/tokens` (의존 패키지가 import 하므로 필수)
+
+### 가이드 · 패턴 · 원칙만 추가
+
+- 본문: `packages/mcp/src/guides.ts` 의 `COMPONENT_GUIDES` / `PATTERN_GUIDES` / `DESIGN_PRINCIPLES`
+- 컴포넌트 가이드에는 가능하면 `figmaNodeUrl` 까지 — `list_figma_sync_status` 로 sync 누락 점검
+
+### ★ 외부 전파 (MCPB 릴리즈)
+
+DS 패키지는 **Changesets** 로 버저닝합니다. 자동화는 `release-mcpb.yml` 이 처리하지만, 변경 기록은 사람이 남겨야 합니다.
+
+```bash
+# 1. DS 소스 수정 후 변경 기록 (대화형)
+pnpm changeset
+#    어떤 패키지가 영향받는지, major/minor/patch, 한 줄 요약 입력
+#    → .changeset/{auto-name}.md 생성
+
+# 2. 누적 changeset 일괄 반영
+pnpm version-packages
+#    → @nudge-eap/{react,tokens,icons,tailwind-preset} 의 package.json version bump
+#    → CHANGELOG.md 갱신
+#    → 후속 스크립트가 자동 실행:
+#       · sync-mcpb-version.mjs  : packages/mcp/manifest.json 도 최대 DS 버전으로 맞춤
+#       · sync-version-docs.mjs  : docs 버전 표 동기화
+
+# 3. 변경 커밋 + main push → release-mcpb.yml 가 빌드/태그/슬랙 알림까지 자동
+```
+
+워크플로우 트리거 경로: `packages/mcp/src/**`, `packages/tokens/src/**`, `packages/react/src/**`, `packages/icons/svg/**`, `packages/mcp/manifest.json`. 그러나 **`manifest.json` version 이 기존 tag 와 같으면 release skip** 이므로 step 2 의 자동 동기화가 핵심.
+
+CI 의 `pnpm lint` 가 `sync-mcpb-version --check` 로 drift 를 막아 줍니다 — 손으로 어긋나게 만들면 빨갛게 뜸.
+
+- 가이드/원칙만 추가했어도 외부 전파 필요하면 `pnpm changeset` 으로 영향받는 패키지 골라 patch bump.
+- `@nudge-eap/mcp` (내부) 는 의도적으로 분리. 함께 bump 하려면 changeset 에 명시.

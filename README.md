@@ -56,13 +56,25 @@ pnpm docs:dev         # Docs 실행 (localhost:3001)
 ```bash
 pnpm build                          # 전체 빌드
 pnpm dev                            # 전체 dev
-pnpm lint                           # 전체 lint
+pnpm lint                           # 전체 lint (sync-mcpb-version --check 포함)
 pnpm typecheck                      # 전체 타입 체크
 pnpm test                           # 전체 테스트
 pnpm --filter @nudge-eap/tokens build   # 토큰만 빌드
 pnpm --filter @nudge-eap/icons build    # 아이콘 생성 + 빌드
 pnpm generate:component-inventory       # 컴포넌트 인벤토리 재생성
 ```
+
+### 버전 / 릴리즈 (Changesets)
+
+DS 패키지 (`@nudge-eap/{react,tokens,icons,tailwind-preset}`) 변경은 Changesets 로 관리합니다.
+
+```bash
+pnpm changeset           # 변경 기록 작성 (영향받는 패키지 + bump 레벨 + 요약)
+pnpm version-packages    # 누적 changeset 일괄 반영 + manifest.json/docs 버전표 자동 동기화
+# → 커밋 + main push 만 하면 release-mcpb.yml 가 .mcpb 빌드/릴리즈/슬랙 알림까지 자동 처리
+```
+
+상세 흐름은 [`packages/mcp/README.md` — 버전 / 외부 배포 흐름](./packages/mcp/README.md#버전--외부-배포-흐름) 참조.
 
 ## 사용 예시
 
@@ -105,6 +117,7 @@ Storybook 하단 패널에서 사용할 수 있는 도구:
 - `get_component_guide`: Button/Chip/Select 등 컴포넌트별 사용 함정 확인
 - `get_pattern_guide`: CTA 그룹, 안내문 강조, 드롭다운, 고밀도 리스트 배치 기준 확인
 - `validate_mockup`: 토큰 위반뿐 아니라 화살표 CTA 남발, primary CTA 과다, Chip/Badge 장식 사용, 강조 과잉까지 검증
+- **사용량 추적 가드레일**: `report_mockup_usage` 호출 누락을 dispatch 레벨에서 자동 보완 — `validate_mockup` / `check_preview` / `stop_dev_server` / `get_export_html_instructions` 호출 시 펜딩 mockup 파일을 자동으로 webhook 에 POST 하고, 그 외 도구는 응답에 펜딩 목록 경고를 인젝션 (`packages/mcp/README.md` 의 "사용량 추적 가드레일" 참조)
 
 ## 문서
 

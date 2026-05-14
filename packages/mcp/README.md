@@ -87,8 +87,8 @@ pnpm build --filter @nudge-eap/mcp
 ```
 
 이 과정에서 `packages/mcp/catalog.json`이 자동 생성됩니다 (DS의 빌드 산출물에서 추출).
-mcpb 번들 스펙 `packages/mcp/manifest.json` 은 손으로 관리합니다 — DS 토큰/컴포넌트만 바뀐
-경우엔 굳이 manifest.version 을 올리지 않아도 됩니다.
+`packages/mcp/manifest.json` 의 version 은 **Changesets 로 자동 관리**됩니다 — 자세한 흐름은
+아래 [버전 / 외부 배포 흐름](#버전--외부-배포-흐름) 참조.
 
 ### 3) Claude Code에 등록
 
@@ -261,12 +261,59 @@ npm install --save-dev playwright
 npx playwright install chromium
 ```
 
-DS를 수정한 뒤에는 다음 순서로:
+DS를 수정한 뒤 로컬 검증:
 
 1. `pnpm build --filter @nudge-eap/{tokens,react,icons}` (DS 재빌드)
 2. `pnpm build --filter @nudge-eap/mcp` (catalog 재생성 + MCP 재빌드)
 3. Claude Code 재시작 (MCP 서버는 시작 시 catalog 로드)
 
-mcpb 배포까지 갱신하려면 `packages/mcp/manifest.json` 의 `version` 을 올린 뒤 main 에 푸시
-하세요. `.github/workflows/release-mcpb.yml` 이 새 `.mcpb` 를 빌드해 GitHub Release 에 첨부하고,
-Claude Desktop 사용자는 며칠 안에 자동 업데이트 알림을 받습니다.
+---
+
+## 버전 / 외부 배포 흐름
+
+DS 패키지는 **Changesets** 로 버저닝합니다. 손으로 `manifest.json` 을 건드릴 일은 없습니다.
+
+```bash
+# 1. DS 소스 수정 후 변경 기록 (대화형)
+pnpm changeset
+#    어떤 패키지가 영향받는지, major/minor/patch, 한 줄 요약 입력
+#    → .changeset/{auto-name}.md 생성
+
+# 2. 누적 changeset 일괄 반영
+pnpm version-packages
+#    → @nudge-eap/{react,tokens,icons,tailwind-preset} 의 package.json version bump
+#    → CHANGELOG.md 갱신
+#    → 후속 스크립트가 자동 실행:
+#       · sync-mcpb-version.mjs  : packages/mcp/manifest.json 도 최대 DS 버전으로 맞춤
+#       · sync-version-docs.mjs  : docs 의 버전 표 동기화
+
+# 3. 커밋 + main push
+#    → release-mcpb.yml 가 빌드/태그/.mcpb 첨부/Slack 알림까지 자동
+#    → Claude Desktop 사용자는 며칠 안에 업데이트 알림 받음
+```
+
+`pnpm lint` 가 `sync-mcpb-version --check` 로 drift 를 검출하므로, 손으로 어긋나게 만들면
+CI 가 빨갛게 뜹니다. `@nudge-eap/mcp` 패키지 자체는 의도적으로 분리 — 함께 bump 하고 싶으면
+`pnpm changeset` 에서 직접 선택하세요.
+
+---
+
+## 사용량 추적 가드레일
+
+`report_mockup_usage` 는 mockup `.tsx` 수정/생성 직후 호출돼야 하는데, LLM 이 호출을 빠뜨리는
+사고가 반복돼서 MCP dispatch 레벨에 다층 방어를 깔아 두었습니다. 외부 프로젝트에서도 동일하게
+동작합니다.
+
+작동 방식:
+
+1. 매 도구 호출 끝에 `cwd` 의 `**/*Mockup.tsx` 를 스캔, `.ds-usage-log.jsonl` 의 `loggedAt`
+   타임스탬프와 mtime 을 비교해 펜딩 파일 추출.
+2. **post-creation 도구** (`validate_mockup` / `check_preview` / `stop_dev_server` /
+   `get_export_html_instructions`): 펜딩 파일 최대 5건에 대해 `report_mockup_usage` 를
+   자동 실행 → 결과를 응답의 `_autoReportedUsage` 필드에 노출.
+3. **그 외 도구**: 응답에 `_pendingMockupReports` 경고를 인젝션 → LLM 이 무시하기 어렵게.
+
+관련 코드:
+
+- `packages/mcp/src/usage-tracker.ts` — `scanPendingMockupReports`, `loggedAt` 직렬화
+- `packages/mcp/src/server.ts` — `POST_CREATION_TOOLS`, `runUsageGuards`, dispatch wrapper
