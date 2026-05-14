@@ -6,6 +6,7 @@ import {
   appendUsageToLog,
   postUsageToWebhook,
   scanPendingMockupReports,
+  scanMockupsForBuildEvent,
   enqueueUsageWebhook,
   flushUsageWebhookQueue,
   type UsageWebhookQueueFlushResult,
@@ -121,10 +122,10 @@ export async function reportMockupUsage(args: {
     `DS ${totalDs} (${dsRatio}%) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}${queueStatus}`;
 
   const _nextSuggestion =
-    "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). 그리고 마지막으로 사용자에게 다음을 물어보세요: " +
-    "(1) 인터랙티브 가능한 단일 HTML 파일 산출물을 만들어 드릴까요? (원하면 build_singlefile_html 호출 — 실제 빌드까지 자동 실행됨. 손으로 HTML 작성하지 말 것.) " +
-    "(2) 현재 띄워둔 dev 서버 URL 을 보여드리고, 사용자가 직접 확인을 마치면 stop_dev_server 호출하세요. " +
-    "두 가지를 사용자가 모를 수 있으므로 명시적으로 안내해야 합니다.";
+    "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). 그 다음 단계는 다음 두 가지이며 **물어보지 말고 그냥 실행**합니다 — 이 워크스페이스의 표준 산출물 형식은 단일 HTML 파일입니다: " +
+    "(1) **반드시 `build_singlefile_html({})` 를 호출**해서 단일 HTML 산출물을 만든다. 손으로 .html 작성, vite build 직접 실행, esbuild/parcel/webpack 등 다른 빌드 도구 사용 모두 금지(nds-* 클래스와 onClick 손실됨). 사용자가 명시적으로 '빌드하지 마' / 'TSX 만 줘' 같은 거부 의사를 표현한 경우에만 생략. " +
+    "(2) dev 서버 URL 을 보여주고, 사용자가 직접 확인을 마치면 stop_dev_server 호출. " +
+    "build_singlefile_html 결과의 dist/index.html 경로와 파일 크기를 사용자에게 보여줄 것 — 이게 공유용 최종 산출물입니다.";
 
   return { usage, logPath, webhook, humanReadable, _nextSuggestion };
 }
@@ -212,29 +213,45 @@ interface UsageGuardOutcome {
 
 export async function runUsageGuards(toolName: string, args: unknown): Promise<UsageGuardOutcome> {
   if (!POST_CREATION_TOOLS.has(toolName)) return {};
-  // get_guide 는 다양한 topic 을 라우팅하므로 "export-html" 일 때만 트리거
-  if (toolName === "get_guide") {
-    const topic =
-      args && typeof args === "object" && !Array.isArray(args)
-        ? (args as { topic?: unknown }).topic
-        : undefined;
-    if (topic !== "export-html") return {};
-  }
 
   const cwd = extractCwdFromArgs(args) ?? process.cwd();
+  const isBuildEvent = toolName === "build_singlefile_html";
+
   let pending: PendingMockupReport[];
   try {
     pending = scanPendingMockupReports(cwd);
   } catch {
     return {};
   }
+
+  // Build event = "ship moment" → webhook 은 무조건 1건 이상 발사한다.
+  // mtime 기반 pending 이 비어 있어도 가장 최근 mockup 을 force-report.
+  if (isBuildEvent) {
+    const reported = new Set(pending.map((p) => p.filePath));
+    let forced: PendingMockupReport[] = [];
+    try {
+      forced = scanMockupsForBuildEvent(cwd);
+    } catch {
+      forced = [];
+    }
+    for (const f of forced) {
+      if (!reported.has(f.filePath)) pending.unshift(f);
+    }
+  }
+
   if (pending.length === 0) return {};
 
   const outcomes = await autoReportPendingMockups(cwd, pending);
   const leftover = pending.slice(outcomes.length);
+  const builtEntries = outcomes.filter((o) => o.reason === "build-event");
+  const noticePrefix = isBuildEvent
+    ? builtEntries.length > 0
+      ? `build_singlefile_html 직후 ${builtEntries.length}건을 webhook 으로 강제 전송했습니다 (build 이벤트 = 시트 적재 필수). `
+      : `build_singlefile_html 직후 ${outcomes.length}건을 webhook 으로 전송했습니다. `
+    : `자동으로 ${outcomes.length}건의 mockup 사용량을 webhook으로 전송했습니다. ` +
+      `(빠뜨릴 뻔한 report_mockup_usage 호출을 MCP 가드레일이 대신 수행함) `;
   const notice =
-    `자동으로 ${outcomes.length}건의 mockup 사용량을 webhook으로 전송했습니다. ` +
-    `(빠뜨릴 뻔한 report_mockup_usage 호출을 MCP 가드레일이 대신 수행함) ` +
+    noticePrefix +
     (leftover.length > 0
       ? `남은 ${leftover.length}건은 cap을 초과해 보류 — 다음 호출 때 처리됩니다.`
       : "사용자에게 한 줄로 알려주세요.");

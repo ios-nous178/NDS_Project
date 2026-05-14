@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import path from "node:path";
+import { checkInspectorInstalledForCwd } from "./inspector-installer.js";
 
 export interface MockupValidationContext {
   tokenSet: Set<string>;
@@ -151,32 +153,34 @@ export function validateMockupSource(
           "먼저 find_icon으로 @nudge-eap/icons에 적합한 아이콘이 있는지 확인하세요. 없을 때만 인라인 SVG로 새로 그리는 것이 허용됩니다 (텍스트/이모지는 금지).",
       });
     }
-    // 4-bis. 텍스트/이모지 아이콘 금지
-    // 이모지(범위)와 흔한 아이콘용 기호(→ ← ↑ ↓ › ‹ » « ▶ ◀ ▲ ▼ ✓ ✗ ✘ × ✕ ★ ☆ ♥ ♡ ❤ • · ＋ －)를 JSX/문자열에서 검출
+    // 4-bis. 이모지 / 텍스트 기호 절대 금지
+    // 사용자 정책: AI 가 생성한 화면에 이모지·기호 텍스트가 절대로 들어가면 안 됨.
+    // 어떤 위치에 있어도 (라벨 / 버튼 안 / 헤더 / placeholder / 주석 외 문자열) 위반.
     {
       // 4-bis-1. 이모지 (Unicode emoji ranges + variation selector)
       const emojiPattern =
         /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2300}-\u{23FF}\u{2B00}-\u{2BFF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F1FF}\u{1F200}-\u{1F2FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}]️?/u;
-      if (emojiPattern.test(line)) {
+      // 라인 코멘트(//) 안의 이모지는 봐주지만, JSX/문자열 내부는 무조건 잡는다.
+      const codeOnly = line.replace(/\/\/.*$/, "");
+      if (emojiPattern.test(codeOnly)) {
         violations.push({
-          rule: "text-icon-banned",
+          rule: "emoji-banned",
           line: ln,
           detail: line.trim(),
           suggestion:
-            "이모지를 아이콘처럼 사용하지 마세요. find_icon으로 @nudge-eap/icons에서 적합한 아이콘을 찾고, 없으면 인라인 SVG로 새로 그리세요.",
+            "이모지는 사용 금지입니다. 아이콘이 필요하면 find_icon 으로 @nudge-eap/icons 에서 찾고, 라벨이면 평문으로 작성하세요.",
         });
       }
-      // 4-bis-2. 기호 아이콘 — JSX 텍스트 노드나 단독 문자열로 쓰인 경우만 (의미 문자 보호)
-      // 패턴: `>‹`, `<span>→</span>`, `{"›"}`, `'×'` 식으로 1글자가 노출된 경우
-      const symbolIconPattern =
-        /(?:>\s*|{\s*["']|=\s*["'])([→←↑↓›‹»«▶◀▲▼✓✗✘×✕★☆⭐♥♡❤])\s*(?:["']\s*}|<\/|["'])/;
-      if (symbolIconPattern.test(line)) {
+      // 4-bis-2. 텍스트 기호 — 아이콘 대용 / 장식 / rating 표현 전부 금지.
+      // × ＋ －처럼 수학 연산자로 흔히 쓰이는 문자는 제외해 false-positive 회피.
+      const STRICT_SYMBOL = /[→←↑↓↔↕➜➔⮕›‹»«▶◀▲▼◆◇✓✗✘✕☑☒★☆⭐♥♡❤•]/;
+      if (STRICT_SYMBOL.test(codeOnly)) {
         violations.push({
-          rule: "text-icon-banned",
+          rule: "text-symbol-banned",
           line: ln,
           detail: line.trim(),
           suggestion:
-            "→ ← ✓ × ★ 같은 기호 문자를 아이콘 대용으로 쓰지 마세요. find_icon으로 적합한 아이콘을 찾고, 없으면 인라인 SVG로 새로 그리세요.",
+            "→ ← ✓ ★ • 같은 기호 텍스트 사용 금지. 아이콘이 필요하면 find_icon, 진행/카운트 표시면 DS 컴포넌트(StatusTimeline/StepIndicator/Rating 등)를 사용하세요.",
         });
       }
     }
@@ -187,7 +191,7 @@ export function validateMockupSource(
         line: ln,
         detail: line.trim(),
         suggestion:
-          "그라데이션 금지. 단색 토큰(var(--color-*))만 사용. get_design_principles 참조.",
+          "그라데이션 금지. 단색 토큰(var(--color-*))만 사용. get_guide({ topic: 'principles' }) 참조.",
       });
     }
     // 4-3. Button color='assistive' variant='solid' 또는 default(solid)
@@ -201,7 +205,7 @@ export function validateMockupSource(
           line: ln,
           detail: line.trim(),
           suggestion:
-            "Button color='assistive' + solid는 cool-gray 배경이라 비활성처럼 보임. 활성 CTA면 'primary' 또는 'secondary' 사용. get_component_guide('Button') 참조.",
+            "Button color='assistive' + solid는 cool-gray 배경이라 비활성처럼 보임. 활성 CTA면 'primary' 또는 'secondary' 사용. get_guide({ topic: 'component:Button' }) 참조.",
         });
       }
     }
@@ -215,7 +219,7 @@ export function validateMockupSource(
         line: ln,
         detail: line.trim(),
         suggestion:
-          "Card.Header/Body/Footer는 자체 padding을 가짐. 외곽 padding을 또 주면 이중 패딩으로 어긋남. get_component_guide('Card') 참조.",
+          "Card.Header/Body/Footer는 자체 padding을 가짐. 외곽 padding을 또 주면 이중 패딩으로 어긋남. get_guide({ topic: 'component:Card' }) 참조.",
       });
     }
     // 5. 알 수 없는 토큰
@@ -290,7 +294,7 @@ export function validateMockupSource(
       line: arrowButtonBlocks[1].line,
       detail: `Arrow/Chevron CTA가 ${arrowButtonBlocks.length}개 발견됨.`,
       suggestion:
-        "우측 화살표는 대표 전진 CTA 1개에만 남기고 반복/보조 CTA에서는 제거. get_pattern_guide('cta-group') 참조.",
+        "우측 화살표는 대표 전진 CTA 1개에만 남기고 반복/보조 CTA에서는 제거. get_guide({ topic: 'pattern:cta-group' }) 참조.",
     });
   }
   for (const { block, line } of arrowButtonBlocks) {
@@ -376,7 +380,7 @@ export function validateMockupSource(
       line: 1,
       detail: `primary 계열 색상이 여러 역할로 과다 사용됨: ${primaryRoleSignals.map((s) => s.name).join(", ") || `${primaryTokenRefs.length} token refs`}`,
       suggestion:
-        "Primary color는 CTA/interactive/highlight 중 제한된 역할에만 사용하세요. 배경/태그/카드/포커스까지 모두 primary로 처리하지 말고 neutral surface와 텍스트 위계로 낮추세요. get_pattern_guide('visual-antipatterns') 참조.",
+        "Primary color는 CTA/interactive/highlight 중 제한된 역할에만 사용하세요. 배경/태그/카드/포커스까지 모두 primary로 처리하지 말고 neutral surface와 텍스트 위계로 낮추세요. get_guide({ topic: 'pattern:visual-antipatterns' }) 참조.",
     });
   }
 
@@ -393,7 +397,7 @@ export function validateMockupSource(
       line: 1,
       detail: "연한 primary/blue 배경과 같은 계열 filled/soft 라벨이 함께 사용됨.",
       suggestion:
-        "같은 톤 위 같은 톤 filled component는 강조 계층이 약합니다. 배경은 neutral로 낮추거나 라벨을 outlined/text 계열로 바꾸세요. get_pattern_guide('visual-antipatterns') 참조.",
+        "같은 톤 위 같은 톤 filled component는 강조 계층이 약합니다. 배경은 neutral로 낮추거나 라벨을 outlined/text 계열로 바꾸세요. get_guide({ topic: 'pattern:visual-antipatterns' }) 참조.",
     });
   }
 
@@ -406,7 +410,7 @@ export function validateMockupSource(
       line: 1,
       detail: "gradient/accent 색상이 UI surface나 강조 요소로 사용된 정황.",
       suggestion:
-        "브랜드 로고 컬러는 UI accent color가 아닙니다. 로고 표현 용도로만 두고 UI는 DS semantic token을 사용하세요. get_pattern_guide('visual-antipatterns') 참조.",
+        "브랜드 로고 컬러는 UI accent color가 아닙니다. 로고 표현 용도로만 두고 UI는 DS semantic token을 사용하세요. get_guide({ topic: 'pattern:visual-antipatterns' }) 참조.",
     });
   }
 
@@ -417,7 +421,7 @@ export function validateMockupSource(
       line: chipBlocks[8].line,
       detail: `Chip이 ${chipBlocks.length}개 발견됨.`,
       suggestion:
-        "Chip은 상태/분류/짧은 속성에만 제한적으로 사용하세요. 섹션 장식이나 모든 카드 반복 강조는 피하세요. get_component_guide('Chip') 참조.",
+        "Chip은 상태/분류/짧은 속성에만 제한적으로 사용하세요. 섹션 장식이나 모든 카드 반복 강조는 피하세요. get_guide({ topic: 'component:Chip' }) 참조.",
     });
   }
   for (const { block, line } of chipBlocks) {
@@ -427,7 +431,7 @@ export function validateMockupSource(
         line,
         detail: block.split("\n")[0].trim(),
         suggestion:
-          "Chip 은 label prop 이 필수입니다. children 대신 label='...' 형태로 전달하세요. get_component_guide('Chip') 참조.",
+          "Chip 은 label prop 이 필수입니다. children 대신 label='...' 형태로 전달하세요. get_guide({ topic: 'component:Chip' }) 참조.",
       });
     }
     const label = block.match(/label\s*=\s*["']([^"']+)["']/)?.[1];
@@ -453,7 +457,7 @@ export function validateMockupSource(
         line,
         detail: `Card.Root 안에 Card.Root 가 ${cardOpenCount - 1}회 중첩됨.`,
         suggestion:
-          "Card 안에 Card 중첩 금지 — 시각 레이어 3단계 이상은 정보 계층을 무너뜨립니다. 내부 구획은 Section Divider 또는 배경색으로 구분하세요. get_component_guide('Card') 참조.",
+          "Card 안에 Card 중첩 금지 — 시각 레이어 3단계 이상은 정보 계층을 무너뜨립니다. 내부 구획은 Section Divider 또는 배경색으로 구분하세요. get_guide({ topic: 'component:Card' }) 참조.",
       });
     }
     const chipCount = (block.match(/<\s*Chip\b/g) || []).length;
@@ -465,7 +469,7 @@ export function validateMockupSource(
         line,
         detail: `Card 1개에 Badge/Chip 이 ${labelTotal}개 발견됨 (Chip=${chipCount}, Badge=${badgeCount}).`,
         suggestion:
-          "Card 당 Badge/Chip 최대 2개 — 가장 중요한 상태만 남기고 나머지는 Footer 메타텍스트로 처리하세요. get_component_guide('Card') 참조.",
+          "Card 당 Badge/Chip 최대 2개 — 가장 중요한 상태만 남기고 나머지는 Footer 메타텍스트로 처리하세요. get_guide({ topic: 'component:Card' }) 참조.",
       });
     }
   }
@@ -478,7 +482,7 @@ export function validateMockupSource(
         line,
         detail: `Card.Footer 안에 Button 이 ${footerButtonCount}개 발견됨.`,
         suggestion:
-          "Card Footer 는 Primary 1개 + Secondary 1개까지. 더 필요하면 Card 구조가 아니라 Modal/BottomSheet 형태가 맞는지 검토하세요. get_component_guide('Card') 참조.",
+          "Card Footer 는 Primary 1개 + Secondary 1개까지. 더 필요하면 Card 구조가 아니라 Modal/BottomSheet 형태가 맞는지 검토하세요. get_guide({ topic: 'component:Card' }) 참조.",
       });
     }
   }
@@ -501,7 +505,7 @@ export function validateMockupSource(
         line,
         detail: block.split("\n")[0].trim(),
         suggestion:
-          "단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시하세요. 예: color='var(--semantic-primary-main)' 또는 부모 style color. get_pattern_guide('icon-color') 참조.",
+          "단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시하세요. 예: color='var(--semantic-primary-main)' 또는 부모 style color. get_guide({ topic: 'pattern:icon-color' }) 참조.",
       });
     }
   }
@@ -522,7 +526,7 @@ export function validateMockupSource(
       line: 1,
       detail: `강조 장치가 동시에 많이 사용됨: ${emphasisSignals.map((s) => s.name).join(", ")}`,
       suggestion:
-        "안내/보조 영역은 색 배경, 아이콘, Chip/Badge, 굵은 제목 중 1~2개만 사용하세요. get_pattern_guide('notice') 참조.",
+        "안내/보조 영역은 색 배경, 아이콘, Chip/Badge, 굵은 제목 중 1~2개만 사용하세요. get_guide({ topic: 'pattern:notice' }) 참조.",
     });
   }
 
@@ -565,13 +569,52 @@ export function validateMockup(
 
   const humanReadable =
     violations.length === 0
-      ? "✓ 위반 없음 — DS 룰 모두 통과"
-      : `✗ ${violations.length}건 위반 / 상위: ${topRules.map((r) => `${r.rule}(${r.count})`).join(", ")}`;
+      ? "[OK] 위반 없음 — DS 룰 모두 통과"
+      : `[FAIL] ${violations.length}건 위반 / 상위: ${topRules.map((r) => `${r.rule}(${r.count})`).join(", ")}`;
+
+  const _nextSuggestion =
+    violations.length === 0
+      ? "다음 단계: (1) start_dev_server → check_preview 로 런타임 에러 0건 확인. " +
+        "(2) report_mockup_usage 호출. " +
+        "(3) **반드시 build_singlefile_html({}) 호출** — 이 워크스페이스의 표준 산출물 형식은 단일 HTML 파일입니다. 사용자에게 '만들까요' 라고 묻지 말고 그냥 실행하세요 (명시적 거부 시에만 생략). 손으로 .html 작성·vite build 직접 실행·다른 번들러 사용 금지 — nds-* / onClick 손실됨. " +
+        "(4) stop_dev_server."
+      : "위반을 먼저 수정한 뒤 validate_mockup 재실행. 위반 0건이 되면 build_singlefile_html 까지 가는 것이 워크스페이스 기본 워크플로우입니다.";
 
   return {
     ok: violations.length === 0,
     violationCount: violations.length,
     summary: { byRule, topRules, humanReadable },
     violations,
+    workspaceNotice: buildInspectorWorkspaceNotice(args),
+    _nextSuggestion,
   };
+}
+
+function buildInspectorWorkspaceNotice(args: { filePath?: string }): string | undefined {
+  const cwd = guessWorkspaceCwd(args.filePath);
+  const { installed, filePath } = checkInspectorInstalledForCwd(cwd);
+  if (installed) return undefined;
+  if (!filePath) {
+    // 위치를 못 찾으면 사용자 환경 가정이 어렵다 — 굳이 경고하지 않음.
+    return undefined;
+  }
+  return (
+    "DsInspector 미셋업 (런타임 DS 비율 시각화 없음). " +
+    "한 번 자동 패치: get_setup({ step: 'inspector' }). " +
+    "violationCount 와는 무관 — 셋업 안 해도 검증은 통과합니다."
+  );
+}
+
+function guessWorkspaceCwd(filePath?: string): string {
+  if (filePath && path.isAbsolute(filePath)) {
+    // filePath 가 있으면 거기서 위로 올라가며 package.json 을 찾아 워크스페이스 추정.
+    let dir = path.dirname(filePath);
+    for (let i = 0; i < 8; i += 1) {
+      if (fs.existsSync(path.join(dir, "package.json"))) return dir;
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+  }
+  return process.cwd();
 }

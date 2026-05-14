@@ -56,5 +56,5 @@ export interface PendingMockupReport {
   mtimeMs: number;
   /** Last loggedAt timestamp in ms, or null if never reported. */
   lastLoggedAtMs: number | null;
-  reason: "never-reported" | "modified-since-last-report";
+  reason: "never-reported" | "modified-since-last-report" | "build-event";
 }
