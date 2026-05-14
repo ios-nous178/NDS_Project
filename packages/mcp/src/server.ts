@@ -913,10 +913,11 @@ function getInstallCommand(args: { tgzDir?: string; includeTailwind?: boolean })
 
   const quoted = tgzFiles.map((p) => `"${p}"`).join(" ");
   const installCmd = `npm install ${quoted}`;
-  // 패키지 버전이 0.1.0 고정인 채로 .tgz 내용만 바뀌면 npm 이 cache 의 옛 버전을
-  // 재사용해 새 export(예: @nudge-eap/react/inspector subpath)가 안 보이는 사고가
-  // 반복적으로 발생. node_modules/@nudge-eap-* 만 지우고 다시 설치하면 cache miss
-  // 가 강제되어 .tgz 가 매번 재추출됨.
+  // 일반적으로는 tarball 파일명에 manifest.version 이 박혀 매 릴리즈마다
+  // 달라지므로 npm cache miss 가 자동 발생한다(pack-local-packages.mjs 가 sync).
+  // 다만 사용자가 같은 버전을 강제로 재패킹하거나 로컬 캐시가 꼬인 드문 케이스
+  // 에 대비해, node_modules 의 @nudge-eap-* 만 비우고 재설치하는 안전 명령을
+  // 기본 권장으로 노출한다.
   const reinstallCmd = `rm -rf node_modules/@nudge-eap* && ${installCmd}`;
 
   return {
@@ -926,12 +927,12 @@ function getInstallCommand(args: { tgzDir?: string; includeTailwind?: boolean })
     ready: missing.length === 0,
     // 첫 설치든 재설치든 안전한 권장 명령. Claude 는 기본적으로 이 명령을 사용하세요.
     recommendedCommand: reinstallCmd,
-    // 첫 설치 전용 (cache 무관). 거의 안 씁니다.
+    // 첫 설치 전용. 보통은 recommendedCommand 를 그대로 사용해도 동일하게 동작합니다.
     installCommand: installCmd,
     // MCP/.mcpb 업데이트 직후, 또는 inspector 같은 새 subpath/export 가 안 보일 때
     reinstallCommand: reinstallCmd,
     _advisory:
-      "MCP/.mcpb 업데이트 직후나 '새 컴포넌트/subpath 가 안 보임' 증상이면 반드시 recommendedCommand 사용. 패키지 버전이 0.1.0 으로 고정이라 npm cache 가 옛 .tgz 를 재사용하는 사고가 반복됨 — node_modules 의 @nudge-eap-* 만 비우면 됨.",
+      "MCP/.mcpb 업데이트 직후나 '새 컴포넌트/subpath 가 안 보임' 증상이면 recommendedCommand 사용. tarball 파일명에 버전이 박혀 보통은 cache miss 가 자동 발생하지만, 동일 버전 재패킹/로컬 캐시 이상 대비 안전망입니다.",
     note:
       missing.length > 0
         ? "일부 .tgz가 없습니다. DS 레포에서 'pnpm build && (cd packages/<name> && pnpm pack --pack-destination ../../local-packages)' 실행 필요."
@@ -1062,7 +1063,7 @@ async function checkMcpUpdate(): Promise<{
           "2. Update 버튼이 안 보이면 아래 링크에서 .mcpb 를 직접 받아 더블클릭하세요:",
           `   ${downloadUrl}`,
           "3. Claude Desktop 을 ⌘Q 로 완전 종료 후 다시 켜야 새 MCP 가 적용됩니다.",
-          "4. **외부 mockup 프로젝트도 DS 패키지를 클린 재설치하세요** — 패키지 버전이 0.1.0 고정이라 npm cache 가 옛 .tgz 를 재사용해 새 export(예: inspector subpath)가 안 보이는 사고가 반복됨. get_install_command 호출 후 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install ...) 를 그대로 실행.",
+          "4. **외부 mockup 프로젝트도 DS 패키지를 재설치하세요** — tarball 파일명에 버전이 박혀 보통은 npm cache miss 가 자동 발생하지만, 안전을 위해 get_install_command 호출 후 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install ...) 를 그대로 실행하세요.",
         ];
 
     return {
@@ -1115,7 +1116,7 @@ function getUpdateInstructions(args: { source?: string; includeLocalPackages?: b
           commands: [
             "get_install_command 도구 호출 → 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install …) 를 그대로 실행",
           ],
-          note: "패키지 버전이 0.1.0 으로 고정이라 단순 `npm install` 만 하면 npm cache 가 옛 .tgz 를 재사용해 새 export/컴포넌트가 안 보입니다. node_modules 의 @nudge-eap-* 만 비우는 게 가장 안전.",
+          note: "tarball 파일명에 버전이 박혀 보통은 npm cache miss 가 자동 발생합니다. 다만 동일 버전 재패킹/로컬 캐시 이상에 대비해 node_modules 의 @nudge-eap-* 만 비우고 재설치하는 게 가장 안전.",
         },
       ],
       afterUpdate: ["list_packages 로 새 버전 확인"],

@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-14T02:38:03.935Z",
+  "generatedAt": "2026-05-14T05:08:02.885Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
-      "version": "0.1.0",
+      "version": "0.1.4",
       "dependencies": {},
       "peerDependencies": {},
       "cssExports": [
@@ -14,7 +14,7 @@
     },
     {
       "name": "@nudge-eap/react",
-      "version": "0.1.0",
+      "version": "0.1.4",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/tokens": "workspace:*"
@@ -27,7 +27,7 @@
     },
     {
       "name": "@nudge-eap/icons",
-      "version": "0.1.0",
+      "version": "0.1.4",
       "dependencies": {},
       "peerDependencies": {
         "react": ">=18.0.0"
@@ -36,7 +36,7 @@
     },
     {
       "name": "@nudge-eap/tailwind-preset",
-      "version": "0.1.0",
+      "version": "0.1.4",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
