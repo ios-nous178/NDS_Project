@@ -7,7 +7,7 @@ export default defineConfig({
     setupFiles: ["./test/setup.ts"],
     include: ["test/**/*.test.ts", "test/**/*.test.tsx"],
     coverage: {
-      enabled: true,
+      enabled: process.env.COVERAGE === "true",
       provider: "v8",
       reporter: ["text", "text-summary", "html"],
       reportsDirectory: "./coverage",

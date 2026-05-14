@@ -41,7 +41,14 @@
       "mcp__figma__get_screenshot",
       "mcp__figma__get_metadata",
       "Bash(claude --version)",
-      "Bash(curl -sI \"https://www.figma.com/api/mcp/asset/24cb8e12-cabb-46ce-bc15-5e6ebb94f82b\")"
+      "Bash(curl -sI \"https://www.figma.com/api/mcp/asset/24cb8e12-cabb-46ce-bc15-5e6ebb94f82b\")",
+      "WebFetch(domain:cashwalkinc.slack.com)",
+      "mcp__plugin_slack_slack__slack_read_channel",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(git fetch *)",
+      "Bash(git check-ignore *)",
+      "Bash(gh release *)",
+      "Bash(git *)"
     ]
   },
   "enabledMcpjsonServers": ["nudge-design-system", "apps-in-toss", "nudge-eap-ds"]

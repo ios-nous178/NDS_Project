@@ -79,6 +79,31 @@ try {
     throw new Error(`get_install_command returned unexpected result: ${text}`);
   }
 
+  const brands = await callTool("list_brands", {});
+  if (!Array.isArray(brands?.brands) || brands.brands.length === 0) {
+    throw new Error(`list_brands returned unexpected result: ${JSON.stringify(brands)}`);
+  }
+
+  const imports = await callTool("get_main_tsx_imports", { brand: "trost" });
+  if (typeof imports?.code !== "string" || !imports.code.includes("@nudge-eap/react/styles.css")) {
+    throw new Error(`get_main_tsx_imports returned unexpected result: ${JSON.stringify(imports)}`);
+  }
+
+  const validation = await callTool("validate_mockup", {
+    source: `import { Button } from "@nudge-eap/react";
+export function Demo() {
+  return <Button color="primary">Start</Button>;
+}`,
+  });
+  if (typeof validation?.ok !== "boolean" || typeof validation?.violationCount !== "number") {
+    throw new Error(`validate_mockup returned unexpected result: ${JSON.stringify(validation)}`);
+  }
+
+  const update = await callTool("check_mcp_update", {});
+  if (typeof update?.installed !== "string" || typeof update?.upToDate !== "boolean") {
+    throw new Error(`check_mcp_update returned unexpected result: ${JSON.stringify(update)}`);
+  }
+
   clearTimeout(timeout);
   child.kill();
   console.log("[smoke-mcpb] ok");
@@ -97,6 +122,16 @@ function request(method, params) {
 
 function notify(method, params) {
   child.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", method, params })}\n`);
+}
+
+async function callTool(name, args) {
+  const call = await request("tools/call", {
+    name,
+    arguments: args,
+  });
+  const text = call.content?.[0]?.text;
+  if (!text) throw new Error(`${name} returned no text content`);
+  return JSON.parse(text);
 }
 
 function handleMessage(line) {

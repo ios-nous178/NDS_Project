@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateMockupSource } from "../src/server";
+import { validateMockupSource } from "../src/tools/mockup-validator";
 
 function rulesFor(source: string, intent: "user-app" | "admin-cms" = "user-app") {
   return validateMockupSource(source, { intent }).map((violation) => violation.rule);
