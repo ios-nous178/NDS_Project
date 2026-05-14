@@ -118,10 +118,22 @@ const componentByName = new Map(manifest.components.map((c) => [c.name, c]));
 const iconSet = new Set(manifest.icons);
 const tokenSet = new Set(manifest.tokens.map((t) => t.name));
 
+// 컴포넌트별 prop union 허용값 맵. 카탈로그에서 allowedValues 가 있는 prop 만 채워서
+// validate_mockup 이 invalid-prop-value 룰로 검출할 수 있게 한다.
+const propAllowedValues = new Map<string, Map<string, string[]>>();
+for (const comp of manifest.components) {
+  const propMap = new Map<string, string[]>();
+  for (const p of comp.props) {
+    if (p.allowedValues && p.allowedValues.length > 0) propMap.set(p.name, p.allowedValues);
+  }
+  if (propMap.size > 0) propAllowedValues.set(comp.name, propMap);
+}
+
 configureMockupValidator({
   tokenSet,
   componentNames: new Set(componentByName.keys()),
   iconSet,
+  propAllowedValues,
 });
 
 // mcpb 번들은 packages/mcp/ 옆에 local-packages/ 를 동봉, dev 모드는 레포 루트 아래.

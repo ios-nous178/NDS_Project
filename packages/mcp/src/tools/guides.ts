@@ -328,6 +328,7 @@ export function getClaudeMdTemplate(args: {
 - 워크스페이스 첫 셋업 시 **\`get_setup({ step: "inspector" })\` 한 번 호출** — MCP 가 src/main.tsx 를 직접 패치해 DsInspector 를 dev-only 로 마운트합니다 (idempotent). 성공 후 dev 서버 재시작하면 우하단 floating 버튼으로 DS / antd / native 비율을 실시간 확인 가능 (Ctrl/Cmd+Shift+D 토글). 별도 코드 수정 불필요.
 - 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
 - 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
+- **\`validate_mockup\` 통과 후 반드시 \`npx tsc --noEmit\` 실행** — validate_mockup 은 패턴 검사만 하므로 잘못된 prop union 값(\`IconButton size="md"\` → 유효: x-large/large/medium/small, \`Card variant="content"\` → 유효: outlined/elevated/flat 등)은 못 잡습니다. Vite dev 서버도 esbuild 변환이라 타입 에러를 무시함. tsc 가 0 errors 되어야 다음 단계로.
 - 구현 후 \`start_dev_server\`로 dev 서버 실행
 - dev URL이 응답하면 \`check_preview\`로 런타임 에러, Vite overlay, 빈 화면 여부 확인
 - \`check_preview.ok === false\`이면 에러를 수정하고 다시 \`check_preview\`
@@ -359,6 +360,7 @@ export function getClaudeMdTemplate(args: {
 3. 필요한 UX 패턴 확인: \`get_guide({ topic: "pattern:<name>" })\`
 4. 목업 구현
 5. \`validate_mockup\` 실행 — **응답의 \`summary.humanReadable\` 을 사용자에게 보여줄 것**. 위반이 있으면 수정 후 재실행.
+5.5. **\`npx tsc --noEmit\` 실행** — invalid prop union(예: \`size="md"\` while only x-large|large|medium|small) 등 validate_mockup 이 못 잡는 타입 에러를 여기서 차단. 0 errors 가 되어야 다음 단계.
 6. \`start_dev_server\` 실행
 7. \`check_preview\` 실행 및 런타임 오류 수정
 8. (선택) Inspector 가 셋업돼 있으면 화면 우하단 패널에서 DS 비율 / antd·native 잔존 여부 확인. 미셋업이면 \`get_setup({ step: "inspector" })\` 한 번 호출(자동 패치).
