@@ -27,6 +27,8 @@ export interface ExternalEntry {
 }
 
 export interface MockupUsage {
+  /** Stable idempotency key for webhook consumers. */
+  usageId?: string;
   date: string;
   /** Full ISO timestamp at which this usage entry was logged. Used by the pending-report scanner. */
   loggedAt?: string;

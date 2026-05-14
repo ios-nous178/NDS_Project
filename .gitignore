@@ -12,3 +12,4 @@ chromatic.log
 .DS_Store
 *.tgz
 .ds-usage-log.jsonl
+.ds-usage-webhook-queue.jsonl

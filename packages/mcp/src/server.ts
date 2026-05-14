@@ -19,6 +19,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -2052,6 +2053,7 @@ async function reportMockupUsage(args: {
   // Stamp full ISO timestamp so the pending-report scanner can detect same-day edits
   // that happen after a prior report.
   usage.loggedAt = new Date().toISOString();
+  usage.usageId = createUsageId(usage);
 
   const dryRun = args.dryRun === true;
   let logPath: string | null = null;
@@ -2127,12 +2129,11 @@ async function reportMockupUsage(args: {
 /* ───────────── 사용량 보고 자동화 가드레일 ─────────────
  *
  * Claude가 mockup .tsx를 수정/생성한 뒤 `report_mockup_usage` 호출을 빠뜨리는
- * 사고가 반복돼서, 이를 다른 MCP 도구 호출 시점에 자동 트리거하거나 강하게
- * 경고하도록 dispatch wrapper로 강제한다.
+ * 사고가 반복돼서, 목업 생성 직후 자주 호출되는 도구에서만 자동 트리거한다.
+ * 일반 조회 도구에서는 외부 대형 프로젝트를 매번 스캔하지 않는다.
  *
  *  - POST_CREATION_TOOLS: mockup 생성/수정 직후 자연스럽게 호출되는 도구.
  *    응답 직전에 펜딩 파일들에 대해 reportMockupUsage 자동 발화.
- *  - 그 외 도구: 펜딩 파일이 있으면 응답에 `_pendingMockupReports` 경고 인젝션.
  */
 
 const POST_CREATION_TOOLS = new Set<string>([
@@ -2143,6 +2144,13 @@ const POST_CREATION_TOOLS = new Set<string>([
 ]);
 
 const MAX_AUTO_REPORTS_PER_CALL = 5;
+
+function createUsageId(usage: MockupUsage): string {
+  return createHash("sha256")
+    .update(`${usage.mockupFile}\n${usage.loggedAt ?? usage.date}`)
+    .digest("hex")
+    .slice(0, 24);
+}
 
 function extractCwdFromArgs(args: unknown): string | undefined {
   if (!args || typeof args !== "object") return undefined;
@@ -2200,6 +2208,8 @@ interface UsageGuardOutcome {
 }
 
 async function runUsageGuards(toolName: string, args: unknown): Promise<UsageGuardOutcome> {
+  if (!POST_CREATION_TOOLS.has(toolName)) return {};
+
   const cwd = extractCwdFromArgs(args) ?? process.cwd();
   let pending: PendingMockupReport[];
   try {
@@ -2209,28 +2219,18 @@ async function runUsageGuards(toolName: string, args: unknown): Promise<UsageGua
   }
   if (pending.length === 0) return {};
 
-  if (POST_CREATION_TOOLS.has(toolName)) {
-    const outcomes = await autoReportPendingMockups(cwd, pending);
-    const leftover = pending.slice(outcomes.length);
-    const notice =
-      `자동으로 ${outcomes.length}건의 mockup 사용량을 webhook으로 전송했습니다. ` +
-      `(빠뜨릴 뻔한 report_mockup_usage 호출을 MCP 가드레일이 대신 수행함) ` +
-      (leftover.length > 0
-        ? `남은 ${leftover.length}건은 cap을 초과해 보류 — 다음 호출 때 처리됩니다.`
-        : "사용자에게 한 줄로 알려주세요.");
-    return {
-      autoReported: outcomes,
-      pendingNotReported: leftover.length > 0 ? leftover : undefined,
-      notice,
-    };
-  }
-
+  const outcomes = await autoReportPendingMockups(cwd, pending);
+  const leftover = pending.slice(outcomes.length);
+  const notice =
+    `자동으로 ${outcomes.length}건의 mockup 사용량을 webhook으로 전송했습니다. ` +
+    `(빠뜨릴 뻔한 report_mockup_usage 호출을 MCP 가드레일이 대신 수행함) ` +
+    (leftover.length > 0
+      ? `남은 ${leftover.length}건은 cap을 초과해 보류 — 다음 호출 때 처리됩니다.`
+      : "사용자에게 한 줄로 알려주세요.");
   return {
-    pendingNotReported: pending,
-    notice:
-      `⚠️ 보고되지 않은 mockup ${pending.length}건이 감지됨. ` +
-      `각 파일에 대해 즉시 \`report_mockup_usage({ filePath })\`를 호출하세요. ` +
-      `(이 도구는 자동 발화 대상이 아니라서 MCP가 대신 처리하지 않습니다.)`,
+    autoReported: outcomes,
+    pendingNotReported: leftover.length > 0 ? leftover : undefined,
+    notice,
   };
 }
 
@@ -3041,10 +3041,192 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: TOOLS,
 }));
 
+type ToolArgs = Record<string, unknown>;
+
+const CONTEXT_VALUES = ["user-app", "admin-cms", "unknown"] as const;
+const MOCKUP_INTENT_VALUES = ["user-app", "admin-cms"] as const;
+const BRAND_VALUES = ["trost", "geniet", "nudge-eap"] as const;
+
+function readArgs(toolName: string, args: unknown): ToolArgs {
+  if (args === undefined || args === null) return {};
+  if (typeof args === "object" && !Array.isArray(args)) return args as ToolArgs;
+  throw new Error(`${toolName}: arguments must be an object.`);
+}
+
+function requireString(args: ToolArgs, key: string, toolName: string): string {
+  const value = args[key];
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`${toolName}: '${key}' must be a non-empty string.`);
+  }
+  return value;
+}
+
+function optionalString(args: ToolArgs, key: string, toolName: string): string | undefined {
+  const value = args[key];
+  if (value === undefined) return undefined;
+  if (typeof value !== "string") throw new Error(`${toolName}: '${key}' must be a string.`);
+  return value;
+}
+
+function optionalBoolean(args: ToolArgs, key: string, toolName: string): boolean | undefined {
+  const value = args[key];
+  if (value === undefined) return undefined;
+  if (typeof value !== "boolean") throw new Error(`${toolName}: '${key}' must be a boolean.`);
+  return value;
+}
+
+function optionalNumber(
+  args: ToolArgs,
+  key: string,
+  toolName: string,
+  opts: { min?: number } = {},
+): number | undefined {
+  const value = args[key];
+  if (value === undefined) return undefined;
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new Error(`${toolName}: '${key}' must be a finite number.`);
+  }
+  if (opts.min !== undefined && value < opts.min) {
+    throw new Error(`${toolName}: '${key}' must be >= ${opts.min}.`);
+  }
+  return value;
+}
+
+function optionalStringArray(args: ToolArgs, key: string, toolName: string): string[] | undefined {
+  const value = args[key];
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
+    throw new Error(`${toolName}: '${key}' must be an array of strings.`);
+  }
+  return value;
+}
+
+function optionalEnum<T extends readonly string[]>(
+  args: ToolArgs,
+  key: string,
+  values: T,
+  toolName: string,
+): T[number] | undefined {
+  const value = args[key];
+  if (value === undefined) return undefined;
+  if (typeof value !== "string" || !values.includes(value)) {
+    throw new Error(`${toolName}: '${key}' must be one of: ${values.join(", ")}.`);
+  }
+  return value;
+}
+
+function optionalViewport(
+  args: ToolArgs,
+  key: string,
+  toolName: string,
+): { width?: number; height?: number } | undefined {
+  const value = args[key];
+  if (value === undefined) return undefined;
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`${toolName}: '${key}' must be an object.`);
+  }
+  const viewport = value as ToolArgs;
+  return {
+    width: optionalNumber(viewport, "width", `${toolName}.${key}`, { min: 1 }),
+    height: optionalNumber(viewport, "height", `${toolName}.${key}`, { min: 1 }),
+  };
+}
+
+function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
+  const args = readArgs(toolName, rawArgs);
+  switch (toolName) {
+    case "get_brand_info":
+      return { brand: requireString(args, "brand", toolName) };
+    case "get_admin_cms_guide":
+      return { intent: optionalString(args, "intent", toolName) };
+    case "get_component":
+    case "get_component_guide":
+    case "get_pattern_guide":
+      return { name: requireString(args, "name", toolName) };
+    case "search_component":
+    case "find_icon":
+    case "lookup_token":
+      return { query: requireString(args, "query", toolName) };
+    case "list_tokens":
+      return { group: optionalString(args, "group", toolName) };
+    case "validate_mockup":
+      return {
+        source: optionalString(args, "source", toolName),
+        filePath: optionalString(args, "filePath", toolName),
+        intent: optionalEnum(args, "intent", MOCKUP_INTENT_VALUES, toolName),
+      };
+    case "suggest_replacement":
+      return {
+        snippet: requireString(args, "snippet", toolName),
+        rule: optionalString(args, "rule", toolName),
+      };
+    case "get_install_command":
+      return {
+        tgzDir: optionalString(args, "tgzDir", toolName),
+        includeTailwind: optionalBoolean(args, "includeTailwind", toolName),
+      };
+    case "get_update_instructions":
+      return {
+        source: optionalString(args, "source", toolName),
+        includeLocalPackages: optionalBoolean(args, "includeLocalPackages", toolName),
+      };
+    case "get_main_tsx_imports":
+      return { brand: optionalEnum(args, "brand", BRAND_VALUES, toolName) };
+    case "create_claude_md":
+      return {
+        cwd: optionalString(args, "cwd", toolName),
+        projectName: optionalString(args, "projectName", toolName),
+        overwrite: optionalBoolean(args, "overwrite", toolName),
+        intent: optionalString(args, "intent", toolName),
+      };
+    case "get_setup_instructions":
+      return {
+        tgzDir: optionalString(args, "tgzDir", toolName),
+        brand: optionalString(args, "brand", toolName),
+        withRouter: optionalBoolean(args, "withRouter", toolName),
+        includeTailwind: optionalBoolean(args, "includeTailwind", toolName),
+        intent: optionalString(args, "intent", toolName),
+      };
+    case "report_mockup_usage":
+      return {
+        filePath: requireString(args, "filePath", toolName),
+        mockupName: optionalString(args, "mockupName", toolName),
+        context: optionalEnum(args, "context", CONTEXT_VALUES, toolName),
+        brand: optionalEnum(args, "brand", BRAND_VALUES, toolName),
+        cwd: optionalString(args, "cwd", toolName),
+        dryRun: optionalBoolean(args, "dryRun", toolName),
+      };
+    case "start_dev_server":
+      return {
+        cwd: optionalString(args, "cwd", toolName),
+        command: optionalString(args, "command", toolName),
+        args: optionalStringArray(args, "args", toolName),
+        url: optionalString(args, "url", toolName),
+        port: optionalNumber(args, "port", toolName, { min: 1 }),
+        timeoutMs: optionalNumber(args, "timeoutMs", toolName, { min: 1 }),
+      };
+    case "check_preview":
+      return {
+        url: optionalString(args, "url", toolName),
+        routePath: optionalString(args, "routePath", toolName),
+        cwd: optionalString(args, "cwd", toolName),
+        sessionId: optionalString(args, "sessionId", toolName),
+        timeoutMs: optionalNumber(args, "timeoutMs", toolName, { min: 1 }),
+        minTextLength: optionalNumber(args, "minTextLength", toolName, { min: 0 }),
+        viewport: optionalViewport(args, "viewport", toolName),
+      };
+    case "stop_dev_server":
+      return { sessionId: optionalString(args, "sessionId", toolName) };
+    default:
+      return args;
+  }
+}
+
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
   let result: unknown;
   try {
+    const validatedArgs = validateToolArgs(name, args);
     switch (name) {
       case "get_scope_advisory":
         result = getScopeAdvisory();
@@ -3053,63 +3235,74 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = listBrands();
         break;
       case "get_brand_info":
-        result = getBrandInfo(args as { brand: string });
+        result = getBrandInfo(validatedArgs as { brand: string });
         break;
       case "get_admin_cms_guide":
-        result = getAdminCmsGuide(args as { intent?: string });
+        result = getAdminCmsGuide(validatedArgs as { intent?: string });
         break;
       case "list_components":
         result = listComponents();
         break;
       case "get_component":
-        result = getComponent((args as { name: string }).name);
+        result = getComponent((validatedArgs as { name: string }).name);
         break;
       case "search_component":
-        result = searchComponent((args as { query: string }).query);
+        result = searchComponent((validatedArgs as { query: string }).query);
         break;
       case "list_icons":
         result = listIcons();
         break;
       case "find_icon":
-        result = findIcon((args as { query: string }).query);
+        result = findIcon((validatedArgs as { query: string }).query);
         break;
       case "list_tokens":
-        result = listTokens((args as { group?: string }).group);
+        result = listTokens((validatedArgs as { group?: string }).group);
         break;
       case "lookup_token":
-        result = lookupToken((args as { query: string }).query);
+        result = lookupToken((validatedArgs as { query: string }).query);
         break;
       case "validate_mockup":
         result = validateMockup(
-          args as { source?: string; filePath?: string; intent?: "user-app" | "admin-cms" },
+          validatedArgs as {
+            source?: string;
+            filePath?: string;
+            intent?: "user-app" | "admin-cms";
+          },
         );
         break;
       case "suggest_replacement":
-        result = suggestReplacement(args as { snippet: string; rule?: string });
+        result = suggestReplacement(validatedArgs as { snippet: string; rule?: string });
         break;
       case "list_packages":
         result = listPackages();
         break;
       case "get_install_command":
-        result = getInstallCommand(args as { tgzDir?: string; includeTailwind?: boolean });
+        result = getInstallCommand(validatedArgs as { tgzDir?: string; includeTailwind?: boolean });
         break;
       case "check_mcp_update":
         result = await checkMcpUpdate();
         break;
       case "get_update_instructions":
-        result = getUpdateInstructions(args as { source?: string; includeLocalPackages?: boolean });
+        result = getUpdateInstructions(
+          validatedArgs as { source?: string; includeLocalPackages?: boolean },
+        );
         break;
       case "get_main_tsx_imports":
-        result = getMainTsxImports(args as { brand?: string });
+        result = getMainTsxImports(validatedArgs as { brand?: string });
         break;
       case "create_claude_md":
         result = createClaudeMd(
-          args as { cwd?: string; projectName?: string; overwrite?: boolean; intent?: string },
+          validatedArgs as {
+            cwd?: string;
+            projectName?: string;
+            overwrite?: boolean;
+            intent?: string;
+          },
         );
         break;
       case "get_setup_instructions":
         result = getSetupInstructions(
-          args as {
+          validatedArgs as {
             tgzDir?: string;
             brand?: string;
             withRouter?: boolean;
@@ -3125,10 +3318,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = getDosAndDonts();
         break;
       case "get_component_guide":
-        result = getComponentGuide((args as { name: string }).name);
+        result = getComponentGuide((validatedArgs as { name: string }).name);
         break;
       case "get_pattern_guide":
-        result = getPatternGuide((args as { name: string }).name);
+        result = getPatternGuide((validatedArgs as { name: string }).name);
         break;
       case "list_figma_sync_status":
         result = listFigmaSyncStatus();
@@ -3141,7 +3334,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "report_mockup_usage":
         result = await reportMockupUsage(
-          args as {
+          validatedArgs as {
             filePath: string;
             mockupName?: string;
             context?: "user-app" | "admin-cms" | "unknown";
@@ -3153,7 +3346,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "start_dev_server":
         result = await startDevServer(
-          args as {
+          validatedArgs as {
             cwd?: string;
             command?: string;
             args?: string[];
@@ -3165,7 +3358,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "check_preview":
         result = await checkPreview(
-          args as {
+          validatedArgs as {
             url?: string;
             routePath?: string;
             cwd?: string;
@@ -3177,17 +3370,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         );
         break;
       case "stop_dev_server":
-        result = stopDevServer(args as { sessionId?: string });
+        result = stopDevServer(validatedArgs as { sessionId?: string });
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
-    // Usage-tracking guardrail — runs after every successful tool dispatch so missed
-    // `report_mockup_usage` calls get auto-fired (post-creation tools) or surfaced as a
-    // structured warning in the response (everything else). Skip for the tool itself.
+    // Usage-tracking guardrail — only scan after post-creation tools so normal MCP
+    // lookups stay fast in large external projects. Skip for the report tool itself.
     if (name !== "report_mockup_usage") {
       try {
-        const guard = await runUsageGuards(name, args);
+        const guard = await runUsageGuards(name, validatedArgs);
         result = attachUsageGuardOutcome(result, guard);
       } catch {
         // never let the guardrail break the original tool response
