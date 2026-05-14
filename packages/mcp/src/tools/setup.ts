@@ -10,6 +10,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { ADMIN_CMS_GUIDE, detectIntentFromText } from "../guides.js";
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
+import { createClaudeMd } from "./guides.js";
+import { ensureInspectorInMainTsx } from "./inspector-installer.js";
 
 export interface SetupContext {
   manifest: Manifest;
@@ -223,7 +225,7 @@ export async function checkMcpUpdate(): Promise<{
           "2. Update 버튼이 안 보이면 아래 링크에서 .mcpb 를 직접 받아 더블클릭하세요:",
           `   ${downloadUrl}`,
           "3. Claude Desktop 을 ⌘Q 로 완전 종료 후 다시 켜야 새 MCP 가 적용됩니다.",
-          "4. **외부 mockup 프로젝트도 DS 패키지를 재설치하세요** — tarball 파일명에 버전이 박혀 보통은 npm cache miss 가 자동 발생하지만, 안전을 위해 get_install_command 호출 후 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install ...) 를 그대로 실행하세요.",
+          "4. **외부 mockup 프로젝트도 DS 패키지를 재설치하세요** — tarball 파일명에 버전이 박혀 보통은 npm cache miss 가 자동 발생하지만, 안전을 위해 get_setup({ step: 'install' }) 호출 후 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install ...) 를 그대로 실행하세요.",
         ];
 
     return {
@@ -236,7 +238,7 @@ export async function checkMcpUpdate(): Promise<{
       howToUpdate,
       _nextSuggestion: upToDate
         ? undefined
-        : "사용자가 Claude Desktop 재시작을 마친 직후에 **반드시** get_install_command 를 호출해서 recommendedCommand 를 사용자에게 안내하세요. 이 단계 빠지면 새 .mcpb 의 컴포넌트/Inspector 가 외부 프로젝트에 안 반영됨.",
+        : "사용자가 Claude Desktop 재시작을 마친 직후에 **반드시** get_setup({ step: 'install' }) 를 호출해서 recommendedCommand 를 사용자에게 안내하세요. 이 단계 빠지면 새 .mcpb 의 컴포넌트/Inspector 가 외부 프로젝트에 안 반영됨.",
     };
   } catch (err) {
     return {
@@ -275,7 +277,7 @@ export function getUpdateInstructions(args: { source?: string; includeLocalPacka
           step: 3,
           title: "외부 목업 프로젝트 DS 패키지 **클린 재설치** (생략 금지)",
           commands: [
-            "get_install_command 도구 호출 → 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install …) 를 그대로 실행",
+            "get_setup({ step: 'install' }) 도구 호출 → 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install …) 를 그대로 실행",
           ],
           note: "tarball 파일명에 버전이 박혀 보통은 npm cache miss 가 자동 발생합니다. 다만 동일 버전 재패킹/로컬 캐시 이상에 대비해 node_modules 의 @nudge-eap-* 만 비우고 재설치하는 게 가장 안전.",
         },
@@ -533,7 +535,7 @@ const theme = {
     step: 5,
     title: "AdminLayout / HeaderSubject / SideSetting / TinyHeader 컴포넌트 작성",
     note:
-      "구체적 패턴은 get_admin_cms_guide 호출 결과 참고. " +
+      "구체적 패턴은 get_guide({ topic: 'admin-cms' }) 호출 결과 참고. " +
       "사이더 240px 라이트 + 6px 톱 액센트 + INFO/CMS MENU/SETTING 블록, " +
       "본문 padding 40 60 200, 푸터 'Copyright © Nudge EAP. All Rights Reserved.'",
   });
@@ -556,10 +558,10 @@ const theme = {
     intent: "admin-cms",
     rationale:
       "어드민/CMS 화면은 NudgeEAP DS가 아니라 antd v5 + NudgeEAPCMS 시각 컨벤션을 따릅니다. " +
-      "이 셋업은 그 컨벤션과 1:1로 맞춥니다. 시각 디테일은 get_admin_cms_guide 참고.",
+      "이 셋업은 그 컨벤션과 1:1로 맞춥니다. 시각 디테일은 get_guide({ topic: 'admin-cms' }) 참고.",
     techStack: ADMIN_CMS_GUIDE.techStack,
     steps,
-    nextTools: ["get_admin_cms_guide"],
+    nextTools: ["get_guide({ topic: 'admin-cms' })"],
   };
 }
 
@@ -657,6 +659,16 @@ export function getSetupInstructions(args: {
 
   steps.push({
     step: 8,
+    title: "DsInspector 자동 마운트 (한 번만, 강력 권장)",
+    commands: ["get_setup({ step: 'inspector', cwd: '<프로젝트 루트>' })"],
+    note:
+      "이 MCP 도구가 src/main.tsx 끝에 dev-only 자기-마운트 블록을 직접 append 합니다 (idempotent — 다시 호출해도 안전). " +
+      "성공 시 dev 서버 우하단에 'DS Inspector' floating 버튼이 떠 DS/antd/native 비율을 실시간 확인 가능. " +
+      "프로덕션 번들에선 import.meta.env.DEV 게이트로 자동 제거됨.",
+  });
+
+  steps.push({
+    step: 9,
     title: "동작 확인",
     commands: [
       "npm install --save-dev playwright",
@@ -780,4 +792,77 @@ function resolveBrand(input?: string): {
     availableBrands,
     error: `Unknown brand: '${input}'. Available: ${brandsList.map((b) => b.slug).join(", ")}.`,
   };
+}
+
+/* ───────────── get_setup 라우터 ─────────────
+ *
+ * 외부 프로젝트 셋업 관련 5개 도구를 단일 진입점으로 통합.
+ *   step:
+ *     - "install"   → getInstallCommand({ tgzDir?, includeTailwind? })
+ *     - "imports"   → getMainTsxImports({ brand? })
+ *     - "update"    → getUpdateInstructions({ source?, includeLocalPackages? })
+ *     - "claude-md" → createClaudeMd({ cwd?, projectName?, overwrite?, intent? })
+ *     - "full"      → getSetupInstructions({ ...all }) — 외부 mockup 프로젝트 셋업 전 과정
+ *
+ * 모든 추가 args 는 top-level optional. step 별로 사용하는 필드만 적용된다.
+ */
+export const SETUP_STEPS = [
+  "install",
+  "imports",
+  "update",
+  "claude-md",
+  "inspector",
+  "full",
+] as const;
+export type SetupStep = (typeof SETUP_STEPS)[number];
+
+export function getSetup(args: {
+  step: string;
+  tgzDir?: string;
+  brand?: string;
+  withRouter?: boolean;
+  includeTailwind?: boolean;
+  intent?: string;
+  source?: string;
+  includeLocalPackages?: boolean;
+  cwd?: string;
+  projectName?: string;
+  overwrite?: boolean;
+}) {
+  const step = args.step;
+  switch (step) {
+    case "install":
+      return getInstallCommand({ tgzDir: args.tgzDir, includeTailwind: args.includeTailwind });
+    case "imports":
+      return getMainTsxImports({ brand: args.brand });
+    case "update":
+      return getUpdateInstructions({
+        source: args.source,
+        includeLocalPackages: args.includeLocalPackages,
+      });
+    case "claude-md":
+      return createClaudeMd({
+        cwd: args.cwd,
+        projectName: args.projectName,
+        overwrite: args.overwrite,
+        intent: args.intent,
+      });
+    case "inspector": {
+      const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
+      return { cwd, ...ensureInspectorInMainTsx(cwd) };
+    }
+    case "full":
+      return getSetupInstructions({
+        tgzDir: args.tgzDir,
+        brand: args.brand,
+        withRouter: args.withRouter,
+        includeTailwind: args.includeTailwind,
+        intent: args.intent,
+      });
+    default:
+      return {
+        error: `Unknown setup step: '${step}'.`,
+        availableSteps: [...SETUP_STEPS],
+      };
+  }
 }
