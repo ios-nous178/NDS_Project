@@ -8,6 +8,7 @@
     "design-system-ui-v4-4*.md",
     "harness/**",
     "mockups/**",
+    "**/CHANGELOG.md",
   ],
   "config": {
     "default": true,
