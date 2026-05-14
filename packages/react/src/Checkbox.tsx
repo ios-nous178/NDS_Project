@@ -130,7 +130,7 @@ const checkboxStyles = `
   :where(.${CB_GROUP_CLASS}) {
     display: flex;
     flex-direction: var(--nds-checkbox-group-direction, column);
-    gap: var(--nds-checkbox-group-gap, ${spacing[12]}px);
+    gap: var(--nds-checkbox-group-gap, var(--nds-choice-group-gap, ${spacing[12]}px));
     font-family: ${fontFamily.web};
   }
 
@@ -208,6 +208,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         <span
           data-slot="indicator"
           data-state={state}
+          data-checked={checked ? "true" : "false"}
           className={CB_INDICATOR_CLASS}
           aria-hidden="true"
         >
@@ -261,7 +262,10 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = React.memo(
       className={cx(CB_GROUP_CLASS, className)}
       style={{
         ...(gap !== undefined &&
-          ({ "--nds-checkbox-group-gap": `${gap}px` } as React.CSSProperties)),
+          ({
+            "--nds-checkbox-group-gap": `${gap}px`,
+            "--nds-choice-group-gap": `${gap}px`,
+          } as React.CSSProperties)),
         ...style,
       }}
       {...rest}

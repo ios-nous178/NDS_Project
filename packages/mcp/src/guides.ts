@@ -552,7 +552,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Chip: {
     name: "Chip",
-    summary: "pill 형태 라벨. variant: outlined/filled/soft. label prop 필수.",
+    summary: "pill 형태 라벨. variant: fill/outlined/ghost. label prop 필수.",
     pitfalls: [
       "label prop을 빠뜨리고 children을 넣지 말 것 — DS API와 어긋남.",
       "Chip은 상태/분류/짧은 속성 표시용이다. 새 섹션을 강조하거나 일반 안내문을 꾸미는 장식으로 쓰지 말 것.",
@@ -561,7 +561,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "표준 variant에 없는 톤(예: caution, success)이 필요해도 raw <span>/<div>로 대체 금지. style prop으로 background/color/font-weight를 토큰 변수로 override + icon prop으로 좌측 도트 주입이 정공법.",
     ],
     recommended: [
-      "주의 톤: <Chip label='주의 필요' variant='filled' shape='pill' size='sm' icon={<span style={{width:6,height:6,borderRadius:9999,background:'var(--semantic-caution-main)'}}/>} style={{background:'var(--semantic-caution-bg)',color:'var(--semantic-caution-text)',fontWeight:600}} />",
+      "주의 톤: <Chip label='주의 필요' variant='ghost' size='sm' icon={<span style={{width:6,height:6,borderRadius:9999,background:'var(--semantic-caution-main)'}}/>} style={{background:'var(--semantic-caution-bg)',color:'var(--semantic-caution-text)',fontWeight:600}} />",
       "성공/에러도 같은 패턴으로 토큰 var()만 교체",
     ],
     usagePolicy: {

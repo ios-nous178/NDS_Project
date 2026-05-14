@@ -126,7 +126,7 @@ const radioStyles = `
   :where(.${RADIO_GROUP_CLASS}) {
     display: flex;
     flex-direction: var(--nds-radio-group-direction, column);
-    gap: var(--nds-radio-group-gap, ${spacing[12]}px);
+    gap: var(--nds-radio-group-gap, var(--nds-choice-group-gap, ${spacing[12]}px));
     font-family: ${fontFamily.web};
   }
 
@@ -267,7 +267,11 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
       role="radiogroup"
       className={cx(RADIO_GROUP_CLASS, className)}
       style={{
-        ...(gap !== undefined && ({ "--nds-radio-group-gap": `${gap}px` } as React.CSSProperties)),
+        ...(gap !== undefined &&
+          ({
+            "--nds-radio-group-gap": `${gap}px`,
+            "--nds-choice-group-gap": `${gap}px`,
+          } as React.CSSProperties)),
         ...style,
       }}
       {...rest}
