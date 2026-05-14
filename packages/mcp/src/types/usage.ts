@@ -28,6 +28,8 @@ export interface ExternalEntry {
 
 export interface MockupUsage {
   date: string;
+  /** Full ISO timestamp at which this usage entry was logged. Used by the pending-report scanner. */
+  loggedAt?: string;
   mockupFile: string;
   mockupName: string;
   context: Context;
@@ -43,4 +45,14 @@ export interface MockupUsage {
     totalExternal: number;
     parserWarnings: string[];
   };
+}
+
+export interface PendingMockupReport {
+  /** Path relative to cwd. */
+  filePath: string;
+  /** File mtime in ms. */
+  mtimeMs: number;
+  /** Last loggedAt timestamp in ms, or null if never reported. */
+  lastLoggedAtMs: number | null;
+  reason: "never-reported" | "modified-since-last-report";
 }
