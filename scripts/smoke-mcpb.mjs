@@ -10,7 +10,7 @@ const ROOT = path.join(__dirname, "..");
 // --source 모드: 패킹된 .mcpb 번들이 아니라 packages/mcp 소스 빌드 산출물
 // (packages/mcp/dist/server.js) 을 직접 실행한다. pre-push 훅에서 패킹 비용 없이
 // 서버 부팅 + tool dispatch 만 빠르게 검증하려는 용도. tgz 가 들어있는 번들이
-// 아니므로 get_install_command 의 ready 플래그는 검사하지 않는다.
+// 아니므로 get_setup({step:'install'}) 의 ready 플래그는 검사하지 않는다.
 const positional = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
 const sourceMode = process.argv.includes("--source");
 const defaultBundleDir = sourceMode
@@ -77,13 +77,13 @@ try {
 
   const tools = await request("tools/list", {});
   const toolNames = tools.tools?.map((tool) => tool.name) ?? [];
-  if (!toolNames.includes("get_install_command")) {
-    throw new Error(`get_install_command not found in tools/list: ${toolNames.join(", ")}`);
+  if (!toolNames.includes("get_setup")) {
+    throw new Error(`get_setup not found in tools/list: ${toolNames.join(", ")}`);
   }
 
   const call = await request("tools/call", {
-    name: "get_install_command",
-    arguments: {},
+    name: "get_setup",
+    arguments: { step: "install" },
   });
   const text = call.content?.[0]?.text;
   const result = text ? JSON.parse(text) : null;
@@ -91,7 +91,7 @@ try {
   // 핵심은 tool 이 정상 응답을 만들었는지 — files 가 비어있지 않은지만 확인.
   const readyOk = sourceMode ? true : result?.ready === true;
   if (!readyOk || !Array.isArray(result?.files) || result.files.length === 0) {
-    throw new Error(`get_install_command returned unexpected result: ${text}`);
+    throw new Error(`get_setup({step:'install'}) returned unexpected result: ${text}`);
   }
 
   const brands = await callTool("list_brands", {});
@@ -99,9 +99,11 @@ try {
     throw new Error(`list_brands returned unexpected result: ${JSON.stringify(brands)}`);
   }
 
-  const imports = await callTool("get_main_tsx_imports", { brand: "trost" });
+  const imports = await callTool("get_setup", { step: "imports", brand: "trost" });
   if (typeof imports?.code !== "string" || !imports.code.includes("@nudge-eap/react/styles.css")) {
-    throw new Error(`get_main_tsx_imports returned unexpected result: ${JSON.stringify(imports)}`);
+    throw new Error(
+      `get_setup({step:'imports'}) returned unexpected result: ${JSON.stringify(imports)}`,
+    );
   }
 
   const validation = await callTool("validate_mockup", {
