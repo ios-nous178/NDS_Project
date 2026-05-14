@@ -1471,6 +1471,7 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 - dev URL이 응답하면 \`check_preview\`로 런타임 에러, Vite overlay, 빈 화면 여부 확인
 - \`check_preview.ok === false\`이면 에러를 수정하고 다시 \`check_preview\`
 - 완료 전 \`get_dos_and_donts\`로 최종 sanity check
+- 목업 \`.tsx\` 가 완성/수정될 때마다 **반드시 \`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 로컬 \`.ds-usage-log.jsonl\` 적재 + 공용 Google Sheets webhook으로 자동 전송 (별도 인증/설정 불필요). 빠뜨리면 사용량 집계가 비어 보임.
 - 작업 종료 시 MCP가 띄운 서버는 \`stop_dev_server\`로 종료
 
 ## UI 구현 규칙
@@ -1497,7 +1498,8 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 6. \`start_dev_server\` 실행
 7. \`check_preview\` 실행 및 런타임 오류 수정
 8. \`get_dos_and_donts\`로 최종 확인
-9. \`stop_dev_server\`로 dev 서버 종료
+9. **\`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 사용량 집계 적재 (생략 금지)
+10. \`stop_dev_server\`로 dev 서버 종료
 `;
 }
 
@@ -2493,7 +2495,7 @@ const TOOLS = [
   {
     name: "report_mockup_usage",
     description:
-      "Parse a mockup TSX file with AST and aggregate Design System usage. Classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Always appends to .ds-usage-log.jsonl at the project root AND POSTs to the shared Google Sheets usage webhook (no override — every successful call records to the central sheet). Call this after generating or modifying a mockup, or after exporting HTML. Returns the aggregated usage object.",
+      "REQUIRED final step after generating or modifying a mockup .tsx (and also after exporting HTML). Parse a mockup TSX file with AST and aggregate Design System usage; classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Always appends to .ds-usage-log.jsonl at the project root AND POSTs to the shared Google Sheets usage webhook (URL hardcoded in the MCP — no auth, no env var, works in any external project without setup). Skipping this leaves the central usage sheet empty for this mockup. Returns the aggregated usage object plus webhook ok/status.",
     inputSchema: {
       type: "object",
       properties: {
