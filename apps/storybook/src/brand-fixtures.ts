@@ -185,69 +185,6 @@ const trost: BrandFixture = {
   },
 };
 
-/* ─── Moneple ─── */
-
-const moneple: BrandFixture = {
-  logo: {
-    headerPc: { src: trostLogo, width: 90, height: 36 },
-    headerMobile: { src: trostLogoMobile, width: 80, height: 28 },
-    footer: { src: trostLogo, width: 72, height: 28 },
-  },
-  header: {
-    pcMaxWidth: 1080,
-    mainBarPaddingY: "16px",
-    mobileHeight: 52,
-    webviewTitle: "커뮤니티",
-    layout: "double",
-    searchBar: {
-      width: 530,
-      height: 44,
-      placeholder: "궁금한 내용을 검색해 보세요.",
-    },
-    gnb: {
-      items: [
-        { key: "home", label: "홈", href: "/" },
-        { key: "community", label: "커뮤니티", href: "/community" },
-        { key: "best", label: "인기글", href: "/best" },
-        { key: "topic", label: "토픽", href: "/topic" },
-      ],
-      navHeight: 56,
-    },
-    auth: {
-      items: [
-        { key: "login", label: "로그인" },
-        { key: "signup", label: "회원가입" },
-      ],
-      separator: "none",
-    },
-    trending: [
-      { rank: 1, trend: "new", keyword: "오늘의 고민" },
-      { rank: 2, trend: "up", keyword: "직장생활" },
-      { rank: 3, trend: "same", keyword: "건강관리" },
-      { rank: 4, trend: "up", keyword: "재테크" },
-      { rank: 5, trend: "down", keyword: "취미생활" },
-    ],
-  },
-  footer: {
-    links: [
-      { label: "이용약관", href: "#" },
-      { label: "개인정보처리방침", href: "#", bold: true },
-      { label: "고객센터", href: "#" },
-    ],
-    company: {
-      name: "Moneple",
-      address: "서울특별시 강남구",
-      bizNumber: "000-00-00000",
-      email: "support@moneple.example",
-      copyright: "© Moneple. All Rights Reserved",
-    },
-  },
-  tabBar: {
-    tabLabels: ["홈", "커뮤니티", "알림", "마이"],
-    defaultActive: 1,
-  },
-};
-
 /* ─── Geniet ─── */
 
 const geniet: BrandFixture = {
@@ -323,7 +260,6 @@ const geniet: BrandFixture = {
 export const brandFixtures: Record<string, BrandFixture> = {
   "nudge-eap": nudgeEap,
   trost,
-  moneple,
   geniet,
 };
 

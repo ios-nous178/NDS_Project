@@ -2,7 +2,7 @@
 /**
  * generate-semantic-tokens-doc.mjs
  *
- * `packages/tokens/dist/{tokens,trost,moneple}.css` 와 cssVar.ts/guide.ts 를
+ * `packages/tokens/dist/{tokens,trost}.css` 와 cssVar.ts/guide.ts 를
  * 합쳐 `docs/semantic-tokens.md` 를 생성한다. 컴포넌트에서 사용하는 시멘틱
  * 토큰 전체 카탈로그.
  *
@@ -112,7 +112,6 @@ function guidePath(cvPath) {
 
 const base = parseCssVars(path.join(TOKENS_DIST, "tokens.css"));
 const trost = parseCssVars(path.join(TOKENS_DIST, "trost.css"));
-const moneple = parseCssVars(path.join(TOKENS_DIST, "moneple.css"));
 const cvMap = parseCvReferences(CSSVAR_SRC);
 const guide = parseGuide(GUIDE_SRC);
 
@@ -128,7 +127,6 @@ for (const [varName, value] of base) {
     cvPath: cvPath ?? "—",
     base: value,
     trost: trost.get(varName) ?? "",
-    moneple: moneple.get(varName) ?? "",
     guide: meta,
   });
 }
@@ -171,7 +169,7 @@ lines.push(
   "- **가이드**: 🟦 core = Figma 가이드에 정식 등재 / ⬜ experimental = 합의 전 (Figma 노드 표기는 `MqR7O3uvBvH5tVngwzbqGH` 파일 기준)",
 );
 lines.push(
-  "- **값**: NudgeEAP 기본값. Trost/Moneple 칸은 해당 브랜드에서 override 한 값 (빈 칸 = 기본값 상속)",
+  "- **값**: NudgeEAP 기본값. Trost 칸은 해당 브랜드에서 override 한 값 (빈 칸 = 기본값 상속)",
 );
 lines.push("");
 lines.push("자동 생성: `node scripts/generate-semantic-tokens-doc.mjs`");
@@ -185,11 +183,11 @@ for (const [groupKey, groupTitle] of GROUPS) {
 
   lines.push(`## ${groupTitle}`);
   lines.push("");
-  lines.push("| CSS 변수 | JS 참조 | NudgeEAP | Trost | Moneple | 가이드 |");
-  lines.push("| --- | --- | --- | --- | --- | --- |");
+  lines.push("| CSS 변수 | JS 참조 | NudgeEAP | Trost | 가이드 |");
+  lines.push("| --- | --- | --- | --- | --- |");
   for (const r of rows) {
     lines.push(
-      `| \`${r.varName}\` | \`${r.cvPath}\` | ${swatch(r.base)} | ${swatch(r.trost)} | ${swatch(r.moneple)} | ${escape(badge(r.guide))} |`,
+      `| \`${r.varName}\` | \`${r.cvPath}\` | ${swatch(r.base)} | ${swatch(r.trost)} | ${escape(badge(r.guide))} |`,
     );
   }
   lines.push("");
@@ -203,12 +201,10 @@ if (unmapped && unmapped.length > 0) {
     "아래 CSS 변수는 generate-css.js 가 emit 하지만 `cv` 객체에는 노출되지 않음 (직접 `var(...)` 로만 사용).",
   );
   lines.push("");
-  lines.push("| CSS 변수 | NudgeEAP | Trost | Moneple |");
-  lines.push("| --- | --- | --- | --- |");
+  lines.push("| CSS 변수 | NudgeEAP | Trost |");
+  lines.push("| --- | --- | --- |");
   for (const r of unmapped) {
-    lines.push(
-      `| \`${r.varName}\` | ${swatch(r.base)} | ${swatch(r.trost)} | ${swatch(r.moneple)} |`,
-    );
+    lines.push(`| \`${r.varName}\` | ${swatch(r.base)} | ${swatch(r.trost)} |`);
   }
   lines.push("");
   totalCount += unmapped.length;

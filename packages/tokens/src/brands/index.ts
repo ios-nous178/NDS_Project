@@ -8,15 +8,6 @@ export type {
 } from "./types";
 
 export { nudgeEapTheme } from "./nudge-eap";
-export {
-  monepleTheme,
-  monepleYellow,
-  monepleCobalt,
-  moneplePink,
-  monepleNeutral,
-  monepleStatus,
-  monepleSemantic,
-} from "./moneple";
 
 export {
   trostTheme,
