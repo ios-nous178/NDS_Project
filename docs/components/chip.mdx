@@ -107,6 +107,7 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
 <Chip
   label="스트레스"
   variant={isSelected ? "fill" : "outlined"}
+  selected={isSelected}
   color="brand"
   onClick={() => toggle()}
 />
@@ -145,6 +146,7 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
 | `variant`  | `ChipVariant`   | `"outlined"` | Figma Style (fill/outlined/ghost)   |
 | `color`    | `ChipColor`     | `"brand"`    | Figma Color                         |
 | `size`     | `ChipSize`      | `"md"`       | 사이즈 (`sm` / `md`)                |
+| `selected` | `boolean`       | `false`      | 선택 상태 (`onClick`이 있으면 `aria-pressed` 반영) |
 | `disabled` | `boolean`       | `false`      | 비활성화                            |
 | `onClick`  | `() => void`    | —            | 클릭 콜백 (있으면 interactive)      |
 | `onRemove` | `() => void`    | —            | 삭제 콜백 (있으면 삭제 버튼 표시)   |

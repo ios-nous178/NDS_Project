@@ -209,6 +209,8 @@ export interface ChipProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
   color?: ChipColor;
   /** 크기 */
   size?: ChipSize;
+  /** 선택 상태. onClick과 함께 쓰면 aria-pressed로 노출된다. */
+  selected?: boolean;
   /** 비활성화 */
   disabled?: boolean;
   /** 클릭 콜백 */
@@ -224,6 +226,7 @@ export const Chip: React.FC<ChipProps> = ({
   variant = "outlined",
   color = "brand",
   size = "md",
+  selected = false,
   disabled = false,
   onClick,
   onRemove,
@@ -234,6 +237,14 @@ export const Chip: React.FC<ChipProps> = ({
 }) => {
   const isInteractive = !!onClick;
   const colorTokens = COLORS_BY_VARIANT[variant][color];
+  const selectedColorTokens = FILL_COLORS[color];
+  const visualTokens = selected
+    ? {
+        background: `var(--nds-chip-selected-background, ${selectedColorTokens.background})`,
+        text: `var(--nds-chip-selected-text, ${selectedColorTokens.text})`,
+        border: `var(--nds-chip-selected-border, ${selectedColorTokens.border})`,
+      }
+    : colorTokens;
   const sizeTokens = SIZE_TOKENS[size];
 
   const hasRemove = !!onRemove && !disabled;
@@ -246,9 +257,9 @@ export const Chip: React.FC<ChipProps> = ({
     height: sizeTokens.height,
     padding: `${sizeTokens.paddingY}px ${paddingRight}px ${sizeTokens.paddingY}px ${sizeTokens.paddingX}px`,
     borderRadius: radius.pill,
-    background: colorTokens.background,
-    color: colorTokens.text,
-    border: `1px solid ${colorTokens.border}`,
+    background: visualTokens.background,
+    color: visualTokens.text,
+    border: `1px solid ${visualTokens.border}`,
     fontFamily: fontFamily.web,
     fontSize: sizeTokens.fontSize,
     lineHeight: `${sizeTokens.lineHeight}px`,
@@ -267,10 +278,12 @@ export const Chip: React.FC<ChipProps> = ({
         data-variant={variant}
         data-color={color}
         data-size={size}
+        data-selected={selected ? "true" : "false"}
         data-interactive={isInteractive ? "true" : "false"}
         data-disabled={disabled ? "true" : "false"}
         role={isInteractive ? "button" : undefined}
         tabIndex={isInteractive && !disabled ? 0 : undefined}
+        aria-pressed={isInteractive ? selected : undefined}
         aria-disabled={disabled || undefined}
         className={cx(CHIP_ROOT_CLASS, className)}
         style={rootStyle}

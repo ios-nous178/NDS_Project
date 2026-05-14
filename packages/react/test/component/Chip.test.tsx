@@ -175,9 +175,8 @@ describe("Chip 접근성", () => {
 });
 
 describe("Chip variant × size × shape 조합", () => {
-  const variants = ["outlined", "filled", "soft", "strong"] as const;
-  const sizes = ["sm", "md", "lg"] as const;
-  const shapes = ["pill", "square"] as const;
+  const variants = ["fill", "outlined", "ghost"] as const;
+  const sizes = ["sm", "md"] as const;
 
   it.each(variants)("variant=%s 가 data-variant로 적용된다", (variant) => {
     const { container } = render(<Chip label={variant} variant={variant} />);
@@ -191,18 +190,11 @@ describe("Chip variant × size × shape 조합", () => {
     expect(root).toHaveAttribute("data-size", size);
   });
 
-  it.each(shapes)("shape=%s 가 data-shape로 적용된다", (shape) => {
-    const { container } = render(<Chip label={shape} shape={shape} />);
-    const root = container.querySelector("[data-slot='root']")!;
-    expect(root).toHaveAttribute("data-shape", shape);
-  });
-
-  it("기본값: variant=outlined, size=md, shape=pill", () => {
+  it("기본값: variant=outlined, size=md", () => {
     const { container } = render(<Chip label="기본" />);
     const root = container.querySelector("[data-slot='root']")!;
     expect(root).toHaveAttribute("data-variant", "outlined");
     expect(root).toHaveAttribute("data-size", "md");
-    expect(root).toHaveAttribute("data-shape", "pill");
   });
 
   it("selected 상태가 data-selected로 반영된다", () => {
@@ -214,21 +206,17 @@ describe("Chip variant × size × shape 조합", () => {
     expect(root).toHaveAttribute("data-selected", "true");
   });
 
-  it("variant=filled + selected는 다른 스타일 토큰을 사용한다 (크래시 없음)", () => {
-    const { container } = render(
-      <Chip label="필터" variant="filled" selected onClick={() => {}} />,
-    );
+  it("variant=fill + selected 조합이 크래시 없이 렌더링된다", () => {
+    const { container } = render(<Chip label="필터" variant="fill" selected onClick={() => {}} />);
     const root = container.querySelector("[data-slot='root']")!;
-    expect(root).toHaveAttribute("data-variant", "filled");
+    expect(root).toHaveAttribute("data-variant", "fill");
     expect(root).toHaveAttribute("data-selected", "true");
   });
 
-  it("variant=strong + selected 조합이 크래시 없이 렌더링된다", () => {
-    const { container } = render(
-      <Chip label="강조" variant="strong" selected onClick={() => {}} />,
-    );
+  it("variant=ghost + selected 조합이 크래시 없이 렌더링된다", () => {
+    const { container } = render(<Chip label="강조" variant="ghost" selected onClick={() => {}} />);
     const root = container.querySelector("[data-slot='root']")!;
-    expect(root).toHaveAttribute("data-variant", "strong");
+    expect(root).toHaveAttribute("data-variant", "ghost");
     expect(root).toHaveAttribute("data-selected", "true");
   });
 });

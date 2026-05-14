@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Checkbox, Radio, CheckboxGroup, RadioGroup, RadioGroupItem } from "../../src/Checkbox";
+import { Checkbox, CheckboxGroup } from "../../src/Checkbox";
+import { Radio, RadioGroup, RadioGroupItem } from "../../src/Radio";
 
 describe("Checkbox", () => {
   it("toggles checked state on click", async () => {
