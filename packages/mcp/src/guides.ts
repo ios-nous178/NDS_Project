@@ -475,19 +475,80 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Card: {
     name: "Card",
-    summary: "Compound 컴포넌트. Card.Root / Header / Body / Footer / Thumbnail 슬롯 구성.",
+    summary:
+      "독립된 콘텐츠 단위를 시각적으로 그룹화하는 컨테이너. Compound 구조: Card.Root / Thumbnail / Header / Body / Footer (순서 고정). " +
+      "4가지 Variant — Content(범용) / Summary(CMS 대시보드 KPI) / Banner(앱 홈 프로모션) / Profile(상담사·마이페이지). " +
+      "사용 기준 3축이 모두 충족될 때만 Card 사용: ① 독립성(개별 탐색·선택 단위), ② 이종 콘텐츠 결합(이미지+텍스트+메타 등 2종 이상), ③ 비선형 탐색(그리드·캐러셀·수평스크롤). " +
+      "하나라도 미충족이면 List / Table / Feed / Chip 으로 대체.",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=604-2",
     pitfalls: [
-      "Card.Header / Card.Body / Card.Footer는 styles.css에서 자체 padding을 가짐(대략 16/16/0, 12/16, 0/16/16). 외곽에 padding을 또 주면 이중 패딩으로 어긋남.",
-      "Card.Title / Card.Subtitle의 기본 폰트 크기가 작음. Hero 카드에서 큰 점수 표시 등에는 슬롯 대신 div + 토큰으로 직접 구성이 가독성 ↑.",
-      "그림자(elevation)와 보더를 동시에 적용하면 이중 계층 (DESIGN.md Don'ts).",
+      "Card Overuse — 단순 텍스트 목록(상담 내역, 예약 리스트, 알림)을 Card로 감싸는 패턴. 정보 밀도 ↓ + 스크롤 효율 ↓. 텍스트+상태+날짜만이면 List Row 로 변경.",
+      "Nested Card — Card 안에 또 다른 Card 삽입 금지. 시각 레이어 3단계 이상 발생 → 정보 계층 붕괴. 내부 영역은 Section Divider 또는 배경색으로 구분.",
+      "Shadow 경쟁(Visual Noise) — 동일 화면에 elevation Level 0~3 혼재 금지. Default 는 Shadow 없이 1px Border 만, Hover 에서만 shadow-sm. 한 화면에 Shadow 레벨 최대 2종.",
+      "Badge/Tag/Chip 4개 이상 한 카드에 배치 금지 — 카드 내 Badge 최대 2개(가장 중요한 상태만), 나머지는 Footer 메타텍스트로 처리.",
+      "Radius 불일치(Frankenstein UI) — 한 화면에 4/8/12/16/24px 혼재 금지. 플랫폼별 단일값만: Web 8px · App 12px · CMS·Admin 6px (Banner Card 전체너비일 때만 0px 예외 허용).",
+      "Footer 버튼 3개 이상 금지 — Primary 1개 + Secondary 1개까지. 더 필요하면 Card 구조가 아님 (Modal / BottomSheet 검토).",
+      "Card.Header / Card.Body / Card.Footer 는 styles.css 에서 자체 padding 보유. 외곽에 padding 을 또 주면 이중 패딩.",
+      "그림자와 보더를 동시 적용해 '떠있고 + 갇혀있는' 이중 계층 만들지 말 것 — DESIGN.md Don'ts.",
+      "그리드 없이 카드 간격을 8/12/16/20px 임의 혼합 금지. Auto Layout 필수: Mobile 16px, Web·CMS 24px.",
     ],
     recommended: [
-      "단순 정보 카드: <Card.Root><Card.Header><Card.Title>...</Card.Title></Card.Header><Card.Body>...</Card.Body></Card.Root>",
-      "클릭 가능 카드: <Card.Root clickable onClick={...}> — DS의 hover 효과가 자동 적용됨.",
-      "큰 시각 강조가 필요한 Hero 카드는 슬롯 대신 div로 본문 직접 구성하고 토큰으로 typography 세팅.",
+      "Content Card (PC·Mobile·CMS 범용): 썸네일(선택) + 제목 + 설명 + 하단 메타·액션. <Card.Root><Card.Thumbnail.../><Card.Header><Card.Title>...</Card.Title></Card.Header><Card.Body>...</Card.Body><Card.Footer>...</Card.Footer></Card.Root>",
+      "Summary Card (CMS·Admin 전용): 주요 KPI 수치 + 보조지표 + 트렌드. 슬롯 대신 div + 토큰으로 typography 직접 구성이 가독성 ↑.",
+      "Banner Card (App·Mobile): 배경 이미지 + Bottom-up Gradient Overlay(rgba(0,0,0,0) → rgba(0,0,0,0.6)) 필수 + 제목 + CTA. 저조도 이미지에서 텍스트 가독성 확보.",
+      "Profile Card (PC·Mobile): 아바타 + 이름 + 자격 + Tag(최대 2) + CTA. 상담사·사용자 프로필 전용.",
+      "클릭 가능 카드: <Card.Root clickable onClick={...}> — DS hover 효과 자동 적용. 카드 내부에 또 별도 button 두면 이벤트 버블링 주의.",
+    ],
+    usagePolicy: {
+      useFor: [
+        "이미지/썸네일 포함, 시각 탐색이 필요한 콘텐츠 (사운드테라피, 소식/뉴스, 프로그램 목록)",
+        "개별 오브젝트를 선택·비교 (상담사 선택, 상품 카드)",
+        "2열 이상 그리드에 동등한 비중으로 나열",
+        "KPI·통계 수치 + 보조지표 + 트렌드 표시 (Summary Card)",
+        "배경 이미지 + 오버레이 + CTA 조합 프로모션 (Banner Card)",
+      ],
+      doNotUseFor: [
+        "텍스트+날짜+상태만으로 구성된 단순 데이터 (상담 내역·예약·알림) → List Row",
+        "10개 이상 항목의 수직 스크롤 탐색 → List",
+        "컬럼별 비교가 핵심인 데이터 → Table",
+        "알림·채팅처럼 시간순 소비되는 연속 정보 → Feed / List",
+        "탭·필터·내비게이션 역할 → Chip / Navigation",
+      ],
+      limits: {
+        maxBadgePerCard: 2,
+        maxFooterButtons: 2,
+        titleMaxLines: 2,
+        contentMaxLines: 3,
+        minHeight: "120px",
+        primaryButtonPerCard: 1,
+      },
+    },
+    sizeMatrix: {
+      paddingPC: "20-24px",
+      paddingMobile: "16px",
+      thumbnailPC: "200×120 (16:9) 또는 1:1 정사각형 고정",
+      thumbnailMobile: "전체 너비 × 160 (16:9)",
+      gridGapMobile: "16px",
+      gridGapWebCMS: "24px",
+      radiusWeb: "8px",
+      radiusApp: "12px",
+      radiusCMSAdmin: "6px",
+    },
+    stateMatrix: {
+      default: "Shadow 없음 (Level 0) + Border 1px #E0E0E0 — 일반 콘텐츠 카드, 대시보드 위젯",
+      hover: "shadow-sm = 0 2px 8px rgba(0,0,0,0.08) + Border 1px Brand Color — 마우스 진입 피드백",
+      activeSelected:
+        "shadow-md = 0 4px 16px rgba(0,0,0,0.12) + Border 2px Brand Color — 선택된 상담사 카드, 클릭 상태",
+      raised:
+        "shadow-lg = 0 8px 24px rgba(0,0,0,0.16), Border 없음 — 모달 진입 전 강조 카드(예외적 사용, 최소화)",
+    },
+    accessibility: [
+      "clickable Card 는 <Card.Root clickable onClick> 으로 키보드 포커스/Enter 핸들링이 자동 들어옴. raw <div onClick> 대체 금지.",
+      "Banner Card 의 텍스트는 Gradient Overlay 위에 얹어야 WCAG AA 대비비 확보. 배경 이미지 위에 직접 텍스트 금지.",
+      "썸네일 <img> 에는 alt 필수 (장식이면 alt=''). 카드 제목과 중복되는 alt 는 비우기.",
     ],
     interactivePattern:
-      "Card.Root는 'clickable' prop과 onClick으로 인터랙티브화. 카드 내부에 또 별도 button을 두면 이벤트 버블링 주의.",
+      "Card.Root 의 clickable + onClick 으로 인터랙티브화. 카드 내부에 별도 Button 이 있으면 그 Button 의 onClick 에서 e.stopPropagation() 호출해 카드 전체 클릭과 분리. 모든 Card 에 최소 hover 피드백(shadow-sm 또는 배경색) 정의 — 클릭 가능 여부 모호함 방지.",
   },
   Chip: {
     name: "Chip",
