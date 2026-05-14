@@ -1586,6 +1586,7 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 - 컴포넌트/아이콘/토큰 사용 전 \`search_component\` / \`find_icon\` / \`lookup_token\` 호출
 - 처음 쓰는 주요 컴포넌트는 \`get_component_guide\` 호출
 - CTA 그룹, 아이콘 컬러, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_pattern_guide\` 호출
+- 워크스페이스 첫 셋업 시 **\`get_inspector_setup\` 한 번 호출** — main.tsx 에 DsInspector 를 dev-only 로 마운트하면, dev 화면 우하단에서 DS / antd / native 비율을 실시간 확인 가능 (Ctrl/Cmd+Shift+D 토글).
 - 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
 - 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
 - 구현 후 \`start_dev_server\`로 dev 서버 실행
@@ -1619,12 +1620,13 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 5. \`validate_mockup\` 실행 — **응답의 \`summary.humanReadable\` 을 사용자에게 보여줄 것**. 위반이 있으면 수정 후 재실행.
 6. \`start_dev_server\` 실행
 7. \`check_preview\` 실행 및 런타임 오류 수정
-8. \`get_dos_and_donts\` 로 최종 확인
-9. **\`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 사용량 집계 적재 (생략 금지). 응답의 \`humanReadable\` 한 줄을 **사용자에게 반드시 보여줄 것**.
-10. **사용자에게 안내** (응답의 \`_nextSuggestion\` 참고):
+8. (선택) Inspector 가 셋업돼 있으면 화면 우하단 패널에서 DS 비율 / antd·native 잔존 여부 확인. 미셋업이면 \`get_inspector_setup\` 안내.
+9. \`get_dos_and_donts\` 로 최종 확인
+10. **\`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 사용량 집계 적재 (생략 금지). 응답의 \`humanReadable\` 한 줄을 **사용자에게 반드시 보여줄 것**.
+11. **사용자에게 안내** (응답의 \`_nextSuggestion\` 참고):
     - dev 서버 미리보기 URL 을 명확히 보여주고 직접 확인 권유 (Claude 가 URL 전달을 종종 빠뜨림 — 이 단계 생략 금지).
     - "인터랙티브 가능한 단일 HTML 산출물을 만들어 드릴까요?" 라고 사용자에게 물어보기 — 사용자가 기능 존재 자체를 모를 수 있음. 원하면 \`get_export_html_instructions\` 호출.
-11. 사용자가 검토를 마치면 \`stop_dev_server\` 로 종료.
+12. 사용자가 검토를 마치면 \`stop_dev_server\` 로 종료.
 `;
 }
 
@@ -1925,6 +1927,48 @@ console.log(\`✓ \${outFile}\`);`,
     },
     _staticOnlyAlternative:
       "정적 HTML(인터랙션 X, 이메일/PDF 첨부 등) 가 꼭 필요한 드문 경우에는 Playwright 로 헤드리스 캡처하는 별도 방식이 있지만, 인터랙티브가 손실되고 Chromium ~200MB 의존이 추가되므로 권장하지 않습니다.",
+  };
+}
+
+/* ───────────── DS Inspector (런타임 DS-vs-not 토글 오버레이) ───────────── */
+
+function getInspectorSetup() {
+  return {
+    summary:
+      "외부 mockup 프로젝트의 dev 화면 우하단에 floating 버튼을 띄워, DS / antd / native 요소를 색깔별로 outline + 카운트로 시각화. Ctrl/Cmd+Shift+D 토글. dev-only.",
+    rationale:
+      "AI 생성 화면이 'DS 적용처럼 보이지만 실은 antd/native 잔존' 인지 사용자가 한눈에 검증할 수 있게 함. validate_mockup 의 정적 검증과 보완 — 정적 검증은 코드를, Inspector 는 런타임 DOM 을 봄.",
+    package: "@nudge-eap/react",
+    subpath: "@nudge-eap/react/inspector",
+    install:
+      "이미 @nudge-eap/react 가 설치돼 있다면 추가 설치 불필요. subpath export 로 inspector 만 분리되어 있어 tree-shake 가능.",
+    setup: {
+      file: "src/main.tsx (또는 App.tsx 의 최상단 레벨)",
+      action: "DsInspector 를 import 해서 dev 모드에서만 렌더. production 빌드에는 자동 제외.",
+      code: `import { DsInspector } from "@nudge-eap/react/inspector";
+
+// 기존 App 옆에 dev-only 로 렌더
+function Root() {
+  return (
+    <>
+      <App />
+      {import.meta.env.DEV ? <DsInspector /> : null}
+    </>
+  );
+}`,
+    },
+    usage: [
+      "dev 화면 우하단 '🔍 DS Inspector' 버튼 클릭 (또는 Ctrl/Cmd+Shift+D)",
+      "Inspector 패널 펼침: DS(초록) / antd(주황) / native(빨강) 카운트 + 총합 + DS 비율 (%) 표시",
+      "'outline 표시' 체크박스 켜면 각 요소에 분류별 outline 표시 (DS=실선 초록, antd=실선 주황, native=점선 빨강)",
+      "DS 비율 낮거나 antd/native 가 보이면 → validate_mockup 으로 정적 검증 + 코드 재구성",
+    ],
+    classification: {
+      ds: "className 에 `nds-` prefix → @nudge-eap/react 컴포넌트",
+      antd: "className 에 `ant-` prefix → antd 컴포넌트 (user-app 에서는 변환 미완료 신호)",
+      native: "<button>, <input>, <select>, <textarea>, <form>, <label> 등 raw HTML primitive",
+    },
+    note: "분류는 DOM className 기반이라 React 컴포넌트 트리가 아니라 *렌더된 결과* 기준입니다. styled-components / emotion 으로 nds-* 클래스를 덮어쓰면 DS 로 인식 안 될 수 있어요.",
   };
 }
 
@@ -2580,6 +2624,12 @@ const TOOLS = [
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
+    name: "get_inspector_setup",
+    description:
+      "Return setup instructions for the DsInspector runtime overlay (@nudge-eap/react/inspector). Adds a floating button in the dev preview that toggles outline + counts for DS / antd / native elements (Ctrl/Cmd+Shift+D). Use during initial workspace setup or when the user wants to visually verify DS adoption. Pairs with validate_mockup (static) — Inspector is runtime DOM-based.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+  {
     name: "report_mockup_usage",
     description:
       "REQUIRED final step after generating or modifying a mockup .tsx (and also after exporting HTML). Parse a mockup TSX file with AST and aggregate Design System usage; classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Always appends to .ds-usage-log.jsonl at the project root AND POSTs to the shared Google Sheets usage webhook (URL hardcoded in the MCP — no auth, no env var, works in any external project without setup). Skipping this leaves the central usage sheet empty for this mockup. Returns the aggregated usage object plus webhook ok/status.",
@@ -2890,6 +2940,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "get_export_html_instructions":
         result = getExportHtmlInstructions();
+        break;
+      case "get_inspector_setup":
+        result = getInspectorSetup();
         break;
       case "report_mockup_usage":
         result = await reportMockupUsage(
