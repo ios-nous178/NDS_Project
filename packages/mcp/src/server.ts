@@ -32,26 +32,13 @@ import {
   stopDevServer,
 } from "./tools/preview.js";
 import { attachUsageGuardOutcome, reportMockupUsage, runUsageGuards } from "./tools/usage.js";
-import {
-  createClaudeMd,
-  getAdminCmsGuide,
-  getComponentGuide,
-  getDesignPrinciples,
-  getDosAndDonts,
-  getExportHtmlInstructions,
-  getInspectorSetup,
-  getPatternGuide,
-  getScopeAdvisory,
-  listFigmaSyncStatus,
-} from "./tools/guides.js";
+import { buildSinglefileHtml } from "./tools/build-html.js";
+import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
 import {
   checkMcpUpdate,
   configureSetup,
   getBrandInfo,
-  getInstallCommand,
-  getMainTsxImports,
-  getSetupInstructions,
-  getUpdateInstructions,
+  getSetup,
   listBrands,
   listPackages,
 } from "./tools/setup.js";
@@ -165,7 +152,7 @@ function listComponents() {
   return {
     _advisory:
       "이 목록은 사용자 앱(Trost/Geniet/NudgeEAP) 컴포넌트입니다. " +
-      "어드민/CMS 화면이라면 antd v5를 쓰고 get_admin_cms_guide를 먼저 호출하세요.",
+      "어드민/CMS 화면이라면 antd v5를 쓰고 get_guide({ topic: 'admin-cms' })를 먼저 호출하세요.",
     components: manifest.components.map((c) => ({
       name: c.name,
       propCount: c.props.length,
@@ -216,7 +203,7 @@ function listIcons() {
   const categoryIndex = getIconCategoryIndex();
   return {
     _advisory:
-      "사이즈/터치 영역/Line·Filled 스타일 정책은 get_pattern_guide('iconography'), 컬러 토큰은 get_pattern_guide('icon-color') 호출. 새 아이콘은 packages/icons/svg/에 kebab-case SVG로 추가.",
+      "사이즈/터치 영역/Line·Filled 스타일 정책은 get_guide({ topic: 'pattern:iconography' }), 컬러 토큰은 get_guide({ topic: 'pattern:icon-color' }) 호출. 새 아이콘은 packages/icons/svg/에 kebab-case SVG로 추가.",
     icons: manifest.icons.map(decorateIcon),
     byCategory: Object.fromEntries(
       Object.entries(categoryIndex).map(([cat, names]) => [
@@ -299,10 +286,8 @@ const server = new Server(
 );
 
 const toolHandlers = {
-  get_scope_advisory: () => getScopeAdvisory(),
   list_brands: () => listBrands(),
   get_brand_info: (args: ToolArgs) => getBrandInfo(args as { brand: string }),
-  get_admin_cms_guide: (args: ToolArgs) => getAdminCmsGuide(args as { intent?: string }),
   list_components: () => listComponents(),
   get_component: (args: ToolArgs) => getComponent((args as { name: string }).name),
   search_component: (args: ToolArgs) => searchComponent((args as { query: string }).query),
@@ -321,38 +306,25 @@ const toolHandlers = {
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
   list_packages: () => listPackages(),
-  get_install_command: (args: ToolArgs) =>
-    getInstallCommand(args as { tgzDir?: string; includeTailwind?: boolean }),
   check_mcp_update: () => checkMcpUpdate(),
-  get_update_instructions: (args: ToolArgs) =>
-    getUpdateInstructions(args as { source?: string; includeLocalPackages?: boolean }),
-  get_main_tsx_imports: (args: ToolArgs) => getMainTsxImports(args as { brand?: string }),
-  create_claude_md: (args: ToolArgs) =>
-    createClaudeMd(
+  get_guide: (args: ToolArgs) => getGuide(args as { topic: string; intent?: string }),
+  get_setup: (args: ToolArgs) =>
+    getSetup(
       args as {
-        cwd?: string;
-        projectName?: string;
-        overwrite?: boolean;
-        intent?: string;
-      },
-    ),
-  get_setup_instructions: (args: ToolArgs) =>
-    getSetupInstructions(
-      args as {
+        step: string;
         tgzDir?: string;
         brand?: string;
         withRouter?: boolean;
         includeTailwind?: boolean;
         intent?: string;
+        source?: string;
+        includeLocalPackages?: boolean;
+        cwd?: string;
+        projectName?: string;
+        overwrite?: boolean;
       },
     ),
-  get_design_principles: () => getDesignPrinciples(),
-  get_dos_and_donts: () => getDosAndDonts(),
-  get_component_guide: (args: ToolArgs) => getComponentGuide((args as { name: string }).name),
-  get_pattern_guide: (args: ToolArgs) => getPatternGuide((args as { name: string }).name),
   list_figma_sync_status: () => listFigmaSyncStatus(),
-  get_export_html_instructions: () => getExportHtmlInstructions(),
-  get_inspector_setup: () => getInspectorSetup(),
   report_mockup_usage: (args: ToolArgs) =>
     reportMockupUsage(
       args as {
@@ -388,6 +360,7 @@ const toolHandlers = {
       },
     ),
   stop_dev_server: (args: ToolArgs) => stopDevServer(args as { sessionId?: string }),
+  build_singlefile_html: (args: ToolArgs) => buildSinglefileHtml(args as { cwd?: string }),
 } satisfies ToolHandlers;
 
 registerDevServerCleanup();

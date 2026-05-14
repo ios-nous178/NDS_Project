@@ -22,7 +22,7 @@ export const ENTRY_TOOL_ADVISORY =
   "DS 레포 소스 수정, git commit/push, GitHub 레포 변경, npm publish 같은 작업은 이 MCP의 역할이 아닙니다. " +
   "사용자가 그런 작업을 요청하면 DS 레포에서 직접 작업하라고 안내하세요. " +
   "이 MCP는 사용자 앱(Trost / Geniet / NudgeEAP) 컴포넌트만 노출합니다. " +
-  "어드민/CMS/운영툴/백오피스 화면이라면 antd v5를 쓰고 get_admin_cms_guide를 호출하세요. " +
+  "어드민/CMS/운영툴/백오피스 화면이라면 antd v5를 쓰고 get_guide({ topic: 'admin-cms' })를 호출하세요. " +
   "두 디자인시스템을 한 화면에서 섞어쓰지 마세요.";
 
 export function getScopeAdvisory() {
@@ -45,7 +45,7 @@ export function getComponentGuide(name: string) {
   const guide = COMPONENT_GUIDES[name];
   if (!guide) {
     return {
-      error: `No curated guide for '${name}'. Falls back to get_component for raw props.`,
+      error: `No curated guide for '${name}'. Falls back to get_component(name) for raw props.`,
       knownGuides: Object.keys(COMPONENT_GUIDES),
     };
   }
@@ -86,7 +86,7 @@ export function listFigmaSyncStatus() {
   return {
     _advisory:
       "Figma Library(MqR7O3uvBvH5tVngwzbqGH) 와 sync 된 컴포넌트 목록. " +
-      "hasFigmaUrl=true 인 항목은 get_component_guide 응답에서 figmaNodeUrl 을 바로 클릭할 수 있습니다.",
+      "hasFigmaUrl=true 인 항목은 get_guide({ topic: 'component:<Name>' }) 응답에서 figmaNodeUrl 을 바로 클릭할 수 있습니다.",
     total: entries.length,
     syncedCount: synced.length,
     pendingCount: entries.length - synced.length,
@@ -108,83 +108,97 @@ export function getAdminCmsGuide(args: { intent?: string }) {
   };
 }
 
-export function getExportHtmlInstructions() {
-  return {
-    mode: "singlefile",
-    summary:
-      "Vite 빌드를 vite-plugin-singlefile로 묶어 HTML/CSS/JS/asset을 단일 .html에 인라인. 인터랙션 보존하면서도 외부 의존성 0.",
-    tradeoffs: [
-      "✅ 인터랙션 살아있음 (onClick, hash router, hover transition 모두 OK)",
-      "✅ 추가 의존성 한 개(vite-plugin-singlefile)만 dev 의존",
-      "✅ 결과물 1개 .html 파일 — 더블클릭으로 어떤 브라우저든 열림. 이메일 첨부/Slack 공유 가능",
-      "⚠️ 파일 크기 ~수백 KB (React + DS 번들 포함). 시안 공유엔 충분.",
-      "⚠️ BrowserRouter 사용 중이면 HashRouter로 교체 권장 (file:// 에서 history API 안 됨)",
-    ],
-    install: ["npm install --save-dev vite-plugin-singlefile"],
-    files: [
-      {
-        path: "vite.config.ts",
-        action: "수정",
-        content: `import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { viteSingleFile } from "vite-plugin-singlefile";
+/* ───────────── get_guide 라우터 ─────────────
+ *
+ * 8개로 흩어져 있던 가이드 도구를 단일 진입점으로 통합.
+ * topic 포맷:
+ *   - "principles" | "dos-donts" | "admin-cms" | "scope-advisory" | "inspector-setup"
+ *   - "component:<Name>" — 예: "component:Button"
+ *   - "pattern:<name>"   — 예: "pattern:cta-group"
+ *
+ * 알 수 없는 topic 은 사용 가능한 목록을 함께 돌려준다.
+ * (export-html 은 액션 툴 build_singlefile_html 로 옮겨감 — 지시문 반환 가이드 아님.)
+ */
 
-export default defineConfig({
-  plugins: [react(), viteSingleFile()],
-  build: {
-    cssCodeSplit: false,
-    assetsInlineLimit: 100_000_000,
-    rollupOptions: { output: { inlineDynamicImports: true } },
-  },
-});`,
-      },
-      {
-        path: "src/App.tsx",
-        action: "BrowserRouter → HashRouter 교체",
-        content: `import { HashRouter, Routes, Route, Link } from "react-router-dom";
-// ... 기존 BrowserRouter를 HashRouter로 교체. 라우트 정의는 그대로`,
-      },
-    ],
-    npmScripts: {
-      "build:html": "vite build && echo '✓ dist/index.html (single-file)'",
-    },
-    runFlow: [
-      "npm run build:html",
-      "결과: dist/index.html  (단일 파일, 의존성 없음)",
-      "공유: 그 파일 하나만 전달. 받는 사람은 더블클릭으로 열기. 라우팅은 #/trost/list 같은 hash로 동작.",
-      "마지막: MCP `report_mockup_usage` 툴로 원본 .tsx 경로를 넘겨 사용량 자동 적재. singlefile은 HTML body가 빈 shell이라 정적 파싱 불가하므로 *.tsx 소스 기반 집계가 유일한 방법.",
-    ],
-    tracking: {
-      summary:
-        "singlefile 산출물은 inline JS 번들이라 정적 HTML 파싱 0건. 사용량은 원본 .tsx AST로 집계함 → mode 무관 동일 결과.",
-      tool: "report_mockup_usage",
-      example: "report_mockup_usage({ filePath: 'src/mockups/TrostCounseling.tsx' })",
-      storage: ".ds-usage-log.jsonl (프로젝트 루트, gitignored)",
-      sheets: "성공 호출마다 Google Sheets 공용 webhook으로 자동 POST (override 불가).",
-    },
-    perMockupExport: {
-      summary:
-        "단일 목업만 빌드해서 깔끔히 뽑고 싶을 때 — 임시로 App을 그 라우트만 렌더하도록 바꾸고 빌드.",
-      script: `// scripts/export-mockup.mjs
-// 사용: node scripts/export-mockup.mjs TrostCounselingList out/trost-counseling.html
-import fs from "node:fs"; import path from "node:path"; import { execSync } from "node:child_process";
-const [, , mockupName, outFile] = process.argv;
-const tmpEntry = "src/_tmp-export-entry.tsx";
-fs.writeFileSync(tmpEntry, \`
-import React from "react"; import ReactDOM from "react-dom/client";
-import "@nudge-eap/tokens/css"; import "@nudge-eap/tokens/css/trost"; import "@nudge-eap/react/styles.css";
-import { \${mockupName} } from "./mockups/\${mockupName}";
-ReactDOM.createRoot(document.getElementById("root")!).render(<\${mockupName}/>);
-\`);
-execSync(\`npx vite build --emptyOutDir false\`, { stdio: "inherit", env: { ...process.env, VITE_ENTRY: tmpEntry } });
-fs.copyFileSync("dist/index.html", outFile);
-fs.unlinkSync(tmpEntry);
-console.log(\`✓ \${outFile}\`);`,
-      note: "이 방식은 vite.config의 build.rollupOptions.input을 환경변수에서 받도록 살짝 수정 필요.",
-    },
-    _staticOnlyAlternative:
-      "정적 HTML(인터랙션 X, 이메일/PDF 첨부 등) 가 꼭 필요한 드문 경우에는 Playwright 로 헤드리스 캡처하는 별도 방식이 있지만, 인터랙티브가 손실되고 Chromium ~200MB 의존이 추가되므로 권장하지 않습니다.",
+export const GUIDE_FIXED_TOPICS = [
+  "principles",
+  "dos-donts",
+  "admin-cms",
+  "scope-advisory",
+  "inspector-setup",
+] as const;
+
+export type GuideTopic =
+  | (typeof GUIDE_FIXED_TOPICS)[number]
+  | `component:${string}`
+  | `pattern:${string}`;
+
+function listGuideTopics() {
+  return {
+    fixed: [...GUIDE_FIXED_TOPICS],
+    componentExamples: Object.keys(COMPONENT_GUIDES)
+      .slice(0, 6)
+      .map((n) => `component:${n}`),
+    patternExamples: Object.keys(PATTERN_GUIDES).map((n) => `pattern:${n}`),
+    componentTopics: Object.keys(COMPONENT_GUIDES).map((n) => `component:${n}`),
+    patternTopics: Object.keys(PATTERN_GUIDES).map((n) => `pattern:${n}`),
   };
+}
+
+export function getGuide(args: { topic: string; intent?: string }) {
+  const topic = args.topic;
+  if (typeof topic !== "string" || topic.length === 0) {
+    return {
+      error: "get_guide: 'topic' must be a non-empty string.",
+      availableTopics: listGuideTopics(),
+    };
+  }
+
+  if (topic.startsWith("component:")) {
+    const name = topic.slice("component:".length);
+    if (!name) {
+      return {
+        error: "component:<Name> 형식이어야 합니다. 예: component:Button",
+        availableTopics: listGuideTopics(),
+      };
+    }
+    return getComponentGuide(name);
+  }
+  if (topic.startsWith("pattern:")) {
+    const name = topic.slice("pattern:".length);
+    if (!name) {
+      return {
+        error: "pattern:<name> 형식이어야 합니다. 예: pattern:cta-group",
+        availableTopics: listGuideTopics(),
+      };
+    }
+    return getPatternGuide(name);
+  }
+
+  switch (topic) {
+    case "principles":
+      return getDesignPrinciples();
+    case "dos-donts":
+      return getDosAndDonts();
+    case "admin-cms":
+      return getAdminCmsGuide({ intent: args.intent });
+    case "scope-advisory":
+      return getScopeAdvisory();
+    case "inspector-setup":
+      return getInspectorSetup();
+    default:
+      if (topic === "export-html") {
+        return {
+          error:
+            "export-html 토픽은 액션 툴로 옮겨졌습니다. `build_singlefile_html` 를 직접 호출하세요 — 실제 vite 빌드까지 자동 실행됩니다.",
+          replacement: "build_singlefile_html({})",
+        };
+      }
+      return {
+        error: `Unknown guide topic: '${topic}'.`,
+        availableTopics: listGuideTopics(),
+      };
+  }
 }
 
 export function getInspectorSetup() {
@@ -213,7 +227,7 @@ function Root() {
 }`,
     },
     usage: [
-      "dev 화면 우하단 '🔍 DS Inspector' 버튼 클릭 (또는 Ctrl/Cmd+Shift+D)",
+      "dev 화면 우하단 'DS Inspector' 버튼 클릭 (또는 Ctrl/Cmd+Shift+D)",
       "Inspector 패널 펼침: DS(초록) / antd(주황) / native(빨강) 카운트 + 총합 + DS 비율 (%) 표시",
       "'outline 표시' 체크박스 켜면 각 요소에 분류별 outline 표시 (DS=실선 초록, antd=실선 주황, native=점선 빨강)",
       "DS 비율 낮거나 antd/native 가 보이면 → validate_mockup 으로 정적 검증 + 코드 재구성",
@@ -248,7 +262,7 @@ export function getClaudeMdTemplate(args: {
 - 사용 라이브러리: **antd v5** (NudgeEAPCMS 기준 5.5.1) + @ant-design/icons + dayjs(ko)
 - **금지**: \`@nudge-eap/react\`, \`@nudge-eap/tokens\`, \`@nudge-eap/icons\` 어떤 형태로도 import하지 말 것
 - nudge-eap-ds MCP는 두 가지 도구만 사용:
-  - \`get_admin_cms_guide\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
+  - \`get_guide({ topic: "admin-cms" })\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
   - \`start_dev_server\` / \`check_preview\` / \`stop_dev_server\` — 어드민에서도 동일하게 사용 가능
 
 ## 작업 원칙
@@ -270,11 +284,11 @@ export function getClaudeMdTemplate(args: {
 - **Status Tag**: \`width: 60px; text-align: center;\` (TagAdminRole 컨벤션)
 - **푸터**: \`Copyright © Nudge EAP. All Rights Reserved.\` (12px / #b1b1b1 / border-top #ececec)
 
-자세한 코드 예시는 \`get_admin_cms_guide\`를 호출해 가져오세요.
+자세한 코드 예시는 \`get_guide({ topic: "admin-cms" })\`를 호출해 가져오세요.
 
 ## 검증 루프
 
-1. \`get_admin_cms_guide\` 호출해 컨벤션 재확인
+1. \`get_guide({ topic: "admin-cms" })\` 호출해 컨벤션 재확인
 2. AdminLayout(Sider+Content+Footer) → 페이지 작성
 3. \`tsc --noEmit\` 통과
 4. \`start_dev_server\` → \`check_preview\` → 에러 0건 확인
@@ -303,8 +317,8 @@ export function getClaudeMdTemplate(args: {
 ## 분기 (먼저 확인)
 
 - **어드민/CMS/운영툴/백오피스 화면이라면 이 CLAUDE.md를 따르지 말 것.**
-  \`create_claude_md\` 도구를 \`intent: "admin-cms"\`로 다시 호출해 어드민용 가이드를 받으세요.
-  어드민에는 antd v5를 사용하고 \`get_admin_cms_guide\`로 컨벤션을 확인합니다.
+  \`get_setup({ step: "claude-md", intent: "admin-cms" })\` 도구로 다시 호출해 어드민용 가이드를 받으세요.
+  어드민에는 antd v5를 사용하고 \`get_guide({ topic: "admin-cms" })\`로 컨벤션을 확인합니다.
 - 이 가이드는 사용자 앱(Trost/Geniet/NudgeEAP) 화면용입니다.
 
 ## 작업 원칙
@@ -315,17 +329,17 @@ export function getClaudeMdTemplate(args: {
 
 ## 도구 사용 규칙
 
-- **목업 작업을 시작하기 전 반드시 \`get_design_principles\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴을 한 번에 로드. 브랜드를 바꾸면 재호출.
+- **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴을 한 번에 로드. 브랜드를 바꾸면 재호출.
 - 컴포넌트/아이콘/토큰 사용 전 \`search_component\` / \`find_icon\` / \`lookup_token\` 호출
-- 처음 쓰는 주요 컴포넌트는 \`get_component_guide\` 호출
-- CTA 그룹, 아이콘 컬러, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_pattern_guide\` 호출
-- 워크스페이스 첫 셋업 시 **\`get_inspector_setup\` 한 번 호출** — main.tsx 에 DsInspector 를 dev-only 로 마운트하면, dev 화면 우하단에서 DS / antd / native 비율을 실시간 확인 가능 (Ctrl/Cmd+Shift+D 토글).
+- 처음 쓰는 주요 컴포넌트는 \`get_guide({ topic: "component:Button" })\` 형식으로 호출
+- CTA 그룹, 아이콘 컬러, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_guide({ topic: "pattern:cta-group" })\` 형식으로 호출
+- 워크스페이스 첫 셋업 시 **\`get_setup({ step: "inspector" })\` 한 번 호출** — MCP 가 src/main.tsx 를 직접 패치해 DsInspector 를 dev-only 로 마운트합니다 (idempotent). 성공 후 dev 서버 재시작하면 우하단 floating 버튼으로 DS / antd / native 비율을 실시간 확인 가능 (Ctrl/Cmd+Shift+D 토글). 별도 코드 수정 불필요.
 - 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
 - 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
 - 구현 후 \`start_dev_server\`로 dev 서버 실행
 - dev URL이 응답하면 \`check_preview\`로 런타임 에러, Vite overlay, 빈 화면 여부 확인
 - \`check_preview.ok === false\`이면 에러를 수정하고 다시 \`check_preview\`
-- 완료 전 \`get_dos_and_donts\`로 최종 sanity check
+- 완료 전 \`get_guide({ topic: "dos-donts" })\`로 최종 sanity check
 - 목업 \`.tsx\` 가 완성/수정될 때마다 **반드시 \`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 로컬 \`.ds-usage-log.jsonl\` 적재 + 공용 Google Sheets webhook으로 자동 전송 (별도 인증/설정 불필요). 빠뜨리면 사용량 집계가 비어 보임.
 - 작업 종료 시 MCP가 띄운 서버는 \`stop_dev_server\`로 종료
 
@@ -334,6 +348,7 @@ export function getClaudeMdTemplate(args: {
 - 가능한 한 DS 컴포넌트를 우선 사용한다.
 - **기존 antd/HTML 코드를 받았을 때 변수명만 치환하지 말 것**. 색상값을 \`var(--...)\` 로 바꾸는 것만으론 "DS 적용"이 아니다. antd \`<Table>\` → DS \`<DataTable>\`, antd \`<Form>\` → DS \`Input\`/\`Select\` 조합 식으로 **컴포넌트 구조를 처음부터 재구성**한다. 한 줄이라도 antd import 가 남아 있으면 변환 미완료로 본다 (validate_mockup 의 \`antd-import-in-user-app\` 으로 자동 검출됨).
 - raw \`button\`, \`input\`, \`select\`, \`textarea\`는 특별한 이유가 없으면 사용하지 않는다.
+- **이모지·텍스트 기호 절대 금지**. 라벨/버튼/제목/placeholder/empty state 어디에도 이모지(😀 🔥 ⭐ 💡 ✅ ⚠️ 등) 박지 말 것. → ← ✓ ★ • 같은 기호 텍스트도 금지. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-eap/icons\` 에서 찾고, 없으면 인라인 SVG. 진행/별점/불릿은 DS 컴포넌트 사용. \`validate_mockup\` 의 \`emoji-banned\` / \`text-symbol-banned\` 룰로 자동 위반 카운트됨.
 - 색상/간격은 인라인 hex, rgb, px 값보다 DS 토큰을 우선 사용한다.
 - 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
@@ -346,19 +361,19 @@ export function getClaudeMdTemplate(args: {
 
 ## 검증 루프
 
-1. DS 원칙 확인: \`get_design_principles\`
+1. DS 원칙 확인: \`get_guide({ topic: "principles" })\`
 2. 필요한 컴포넌트/아이콘/토큰 검색
-3. 필요한 UX 패턴 확인: \`get_pattern_guide\`
+3. 필요한 UX 패턴 확인: \`get_guide({ topic: "pattern:<name>" })\`
 4. 목업 구현
 5. \`validate_mockup\` 실행 — **응답의 \`summary.humanReadable\` 을 사용자에게 보여줄 것**. 위반이 있으면 수정 후 재실행.
 6. \`start_dev_server\` 실행
 7. \`check_preview\` 실행 및 런타임 오류 수정
-8. (선택) Inspector 가 셋업돼 있으면 화면 우하단 패널에서 DS 비율 / antd·native 잔존 여부 확인. 미셋업이면 \`get_inspector_setup\` 안내.
-9. \`get_dos_and_donts\` 로 최종 확인
+8. (선택) Inspector 가 셋업돼 있으면 화면 우하단 패널에서 DS 비율 / antd·native 잔존 여부 확인. 미셋업이면 \`get_setup({ step: "inspector" })\` 한 번 호출(자동 패치).
+9. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인
 10. **\`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 사용량 집계 적재 (생략 금지). 응답의 \`humanReadable\` 한 줄을 **사용자에게 반드시 보여줄 것**.
 11. **사용자에게 안내** (응답의 \`_nextSuggestion\` 참고):
     - dev 서버 미리보기 URL 을 명확히 보여주고 직접 확인 권유 (Claude 가 URL 전달을 종종 빠뜨림 — 이 단계 생략 금지).
-    - "인터랙티브 가능한 단일 HTML 산출물을 만들어 드릴까요?" 라고 사용자에게 물어보기 — 사용자가 기능 존재 자체를 모를 수 있음. 원하면 \`get_export_html_instructions\` 호출.
+    - "인터랙티브 가능한 단일 HTML 산출물을 만들어 드릴까요?" 라고 사용자에게 물어보기 — 사용자가 기능 존재 자체를 모를 수 있음. 원하면 \`build_singlefile_html({})\` 호출 (액션 툴 — vite-plugin-singlefile 자동 설치/패치 + vite build 까지 실행. **손으로 HTML 작성 절대 금지** — nds-* 클래스와 onClick 다 날아감).
 12. 사용자가 검토를 마치면 \`stop_dev_server\` 로 종료.
 `;
 }
