@@ -16,7 +16,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /* ─── tokens 소스에서 직접 값 로드 ─── */
 
 const tokensDir = path.resolve(__dirname, "../../tokens/src");
-const tokensDistDir = path.resolve(__dirname, "../../tokens/dist");
 
 function loadTokenModule(filename) {
   let src = fs.readFileSync(path.join(tokensDir, filename), "utf-8");
@@ -29,6 +28,24 @@ function loadTokenModule(filename) {
     .replace(/export\s+/g, "") // export 키워드
     .replace(/\s+as\s+const/g, ""); // as const
   return src;
+}
+
+function loadCssVarRefs() {
+  let src = fs.readFileSync(path.join(tokensDir, "cssVar.ts"), "utf-8");
+  src = src
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^\/\/.*$/gm, "")
+    .replace(/export\s+type\s+.*$/gm, "")
+    .replace(/export\s+const\s+cv\s*=/, "const cv =")
+    .replace(/\(name:\s*string\)/g, "(name)")
+    .replace(/\s+as\s+const/g, "");
+
+  const evalCv = new Function(`
+    ${src}
+    return cv;
+  `);
+
+  return evalCv();
 }
 
 // tokens를 하나의 스코프로 합쳐서 eval
@@ -46,7 +63,7 @@ const tokenEval = new Function(`
   return {
     colors, neutral, coolGray, blue, magenta, yellow, red, green, semantic,
     fontFamily, fontWeight, typeScale,
-    spacing, radius, borderWidth, sizing,
+    spacing, radius, borderWidth, sizing, grid,
     shadow, zIndex,
     transition, duration, easing,
   };
@@ -54,9 +71,9 @@ const tokenEval = new Function(`
 
 const tokens = tokenEval();
 
-// cv (CSS variable references) — 빌드된 JS에서 import (TypeScript 구문 포함이라 eval 불가).
-// 구 `eapVar` 도 `cv.input.*` / `cv.surface.*` 등으로 통합됨.
-const { cv } = await import(path.join(tokensDistDir, "cssVar.js"));
+// cv (CSS variable references). Read source directly to avoid Node module-type
+// warnings from importing dist ESM inside a package without "type": "module".
+const cv = loadCssVarRefs();
 tokens.cv = cv;
 
 /* ─── 컴포넌트 CSS 추출 ─── */
@@ -74,9 +91,31 @@ const header = `/* NDS Design System — Auto-generated styles */\n/* Do not edi
 const styleVarPattern = /const\s+(\w+Styles)\s*=\s*`([\s\S]*?)`;/g;
 const classConstPattern =
   /const\s+(\w+(?:CLASS|_CLASS))\s*=\s*(?:`([^`]*)`|"([^"]*)"|'([^']*)')\s*;/g;
+const simpleConstPattern = /const\s+(\w+)\s*(?::[^=]+)?=\s*([{[][\s\S]*?[\]}])\s*;/g;
+
+function collectSimpleConstants(content, localVars) {
+  simpleConstPattern.lastIndex = 0;
+  let match;
+  while ((match = simpleConstPattern.exec(content)) !== null) {
+    const [, name, expression] = match;
+    if (name in localVars) continue;
+
+    try {
+      const fn = new Function(...Object.keys(localVars), `return (${expression})`);
+      const value = fn(...Object.values(localVars));
+
+      if (Array.isArray(value) || (value && typeof value === "object")) {
+        localVars[name] = value;
+      }
+    } catch {
+      // Ignore non-serializable constants such as ReactNode maps with JSX.
+    }
+  }
+}
 
 let cssOutput = header;
 let count = 0;
+const unresolvedExpressions = [];
 
 for (const file of srcFiles) {
   const content = fs.readFileSync(path.join(srcDir, file), "utf-8");
@@ -93,6 +132,10 @@ for (const file of srcFiles) {
     localVars[name] = resolved;
   }
 
+  // Collect local serializable arrays/objects used as CSS fallbacks
+  // e.g. DEFAULT_COLORS[0], KIND_BG.info, TONE_FG.info.
+  collectSimpleConstants(content, localVars);
+
   // 2) 스타일 템플릿 리터럴 추출 및 평가
   styleVarPattern.lastIndex = 0;
   let match;
@@ -106,7 +149,7 @@ for (const file of srcFiles) {
           const fn = new Function(...Object.keys(localVars), `return (${expr})`);
           return fn(...Object.values(localVars));
         } catch (e) {
-          console.warn(`  ⚠ ${file}:${varName} — ${expr}: ${e.message}`);
+          unresolvedExpressions.push(`${file}:${varName} — ${expr}: ${e.message}`);
           return `/* ${expr} */`;
         }
       });
@@ -115,9 +158,17 @@ for (const file of srcFiles) {
       cssOutput += evaluated.trim() + "\n\n";
       count++;
     } catch (e) {
-      console.warn(`  ⚠ ${file}:${varName} — ${e.message}`);
+      unresolvedExpressions.push(`${file}:${varName} — ${e.message}`);
     }
   }
+}
+
+if (unresolvedExpressions.length > 0) {
+  console.error("✗ Failed to extract component styles. Unresolved template expressions:");
+  for (const message of unresolvedExpressions) {
+    console.error(`  - ${message}`);
+  }
+  process.exit(1);
 }
 
 fs.mkdirSync(distDir, { recursive: true });
