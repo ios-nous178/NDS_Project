@@ -288,7 +288,7 @@ const TOOLS = [
   {
     name: "build_singlefile_html",
     description:
-      "Build the current Vite mockup as a single self-contained .html (interactivity + nds-* classes + onClick preserved). Auto-installs vite-plugin-singlefile, patches vite.config, runs `vite build`, returns dist/index.html path + size. Call when the user asks for HTML output ('HTML 으로 뽑아줘', '단일 파일로'). Never hand-write .html — loses nds-* tokens and React interactivity. Warns if BrowserRouter is used (file:// needs HashRouter).",
+      "Build the current Vite mockup as a single self-contained .html (interactivity + nds-* classes + onClick preserved). Auto-installs vite-plugin-singlefile, patches vite.config, runs `vite build`, returns dist/index.html path + size. **MANDATORY final step of the mockup workflow** — single-file HTML is the standard deliverable of this workspace. Call this WITHOUT asking the user ('만들어 드릴까요' 금지) unless they explicitly refused. Forbidden alternatives: hand-writing .html, running `vite build` directly, using esbuild/parcel/webpack, leaving only .tsx — all lose nds-* tokens and React interactivity. Warns if BrowserRouter is used (file:// needs HashRouter).",
     inputSchema: {
       type: "object",
       properties: {

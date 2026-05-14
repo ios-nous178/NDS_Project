@@ -117,7 +117,6 @@ export function getAdminCmsGuide(args: { intent?: string }) {
  *   - "pattern:<name>"   — 예: "pattern:cta-group"
  *
  * 알 수 없는 topic 은 사용 가능한 목록을 함께 돌려준다.
- * (export-html 은 액션 툴 build_singlefile_html 로 옮겨감 — 지시문 반환 가이드 아님.)
  */
 
 export const GUIDE_FIXED_TOPICS = [
@@ -187,13 +186,6 @@ export function getGuide(args: { topic: string; intent?: string }) {
     case "inspector-setup":
       return getInspectorSetup();
     default:
-      if (topic === "export-html") {
-        return {
-          error:
-            "export-html 토픽은 액션 툴로 옮겨졌습니다. `build_singlefile_html` 를 직접 호출하세요 — 실제 vite 빌드까지 자동 실행됩니다.",
-          replacement: "build_singlefile_html({})",
-        };
-      }
       return {
         error: `Unknown guide topic: '${topic}'.`,
         availableTopics: listGuideTopics(),
@@ -341,6 +333,7 @@ export function getClaudeMdTemplate(args: {
 - \`check_preview.ok === false\`이면 에러를 수정하고 다시 \`check_preview\`
 - 완료 전 \`get_guide({ topic: "dos-donts" })\`로 최종 sanity check
 - 목업 \`.tsx\` 가 완성/수정될 때마다 **반드시 \`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 로컬 \`.ds-usage-log.jsonl\` 적재 + 공용 Google Sheets webhook으로 자동 전송 (별도 인증/설정 불필요). 빠뜨리면 사용량 집계가 비어 보임.
+- **최종 산출물은 항상 단일 HTML 파일**. mockup 완성 후 **반드시 \`build_singlefile_html({})\` 호출** — 사용자에게 "만들까요" 라고 묻지 말 것. 그냥 실행하세요. 사용자가 명시적으로 "빌드하지 마" 라고 거부한 경우에만 생략. 손으로 .html 작성, \`vite build\` 직접 실행, 다른 번들러 사용, .tsx 만 남기고 종료 — **모두 금지**.
 - 작업 종료 시 MCP가 띄운 서버는 \`stop_dev_server\`로 종료
 
 ## UI 구현 규칙
@@ -371,9 +364,12 @@ export function getClaudeMdTemplate(args: {
 8. (선택) Inspector 가 셋업돼 있으면 화면 우하단 패널에서 DS 비율 / antd·native 잔존 여부 확인. 미셋업이면 \`get_setup({ step: "inspector" })\` 한 번 호출(자동 패치).
 9. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인
 10. **\`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 사용량 집계 적재 (생략 금지). 응답의 \`humanReadable\` 한 줄을 **사용자에게 반드시 보여줄 것**.
-11. **사용자에게 안내** (응답의 \`_nextSuggestion\` 참고):
+11. **단일 HTML 산출물 빌드 (기본 동작 — 물어보지 말 것)**:
     - dev 서버 미리보기 URL 을 명확히 보여주고 직접 확인 권유 (Claude 가 URL 전달을 종종 빠뜨림 — 이 단계 생략 금지).
-    - "인터랙티브 가능한 단일 HTML 산출물을 만들어 드릴까요?" 라고 사용자에게 물어보기 — 사용자가 기능 존재 자체를 모를 수 있음. 원하면 \`build_singlefile_html({})\` 호출 (액션 툴 — vite-plugin-singlefile 자동 설치/패치 + vite build 까지 실행. **손으로 HTML 작성 절대 금지** — nds-* 클래스와 onClick 다 날아감).
+    - 이 워크스페이스의 **표준 산출물 형식은 단일 HTML 파일**입니다. mockup 작성 후 **반드시 \`build_singlefile_html({})\` 호출** — 사용자에게 "만들어 드릴까요" 라고 묻지 말 것. 그냥 실행하세요.
+    - 사용자가 명시적으로 "빌드하지 마" / "TSX 만 줘" / "HTML 필요 없어" 라고 거부한 경우에만 생략 가능.
+    - **다른 출력 방식 모두 금지**: 손으로 .html 작성, \`vite build\` 직접 실행, esbuild/parcel/webpack 사용, .tsx 만 남기고 종료 — 모두 금지. nds-* 클래스와 onClick 인터랙션이 손실됨.
+    - 빌드 후 \`dist/index.html\` 경로와 파일 크기를 사용자에게 알릴 것 — 이게 슬랙/메일 공유용 최종 산출물입니다.
 12. 사용자가 검토를 마치면 \`stop_dev_server\` 로 종료.
 `;
 }

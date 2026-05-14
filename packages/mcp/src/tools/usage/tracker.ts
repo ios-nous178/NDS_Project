@@ -231,6 +231,36 @@ export function scanPendingMockupReports(
   return pending;
 }
 
+/**
+ * Build event variant: return the most-recently-modified mockup regardless of log state.
+ * Used by build_singlefile_html — every build is a "ship moment" that must be logged
+ * to the webhook even if the mockup was already reported by an earlier validate/check.
+ */
+export function scanMockupsForBuildEvent(
+  cwd: string,
+  opts: ScanOptions = {},
+): PendingMockupReport[] {
+  const candidates = findMockupCandidates(cwd, opts);
+  const reports: PendingMockupReport[] = [];
+  for (const abs of candidates) {
+    let mtimeMs: number;
+    try {
+      mtimeMs = statSync(abs).mtimeMs;
+    } catch {
+      continue;
+    }
+    reports.push({
+      filePath: relativeSafe(abs, cwd),
+      mtimeMs,
+      lastLoggedAtMs: null,
+      reason: "build-event",
+    });
+  }
+  reports.sort((a, b) => b.mtimeMs - a.mtimeMs);
+  // Only the most recently modified mockup — that's the one being shipped.
+  return reports.slice(0, 1);
+}
+
 function readLastLoggedMap(logPath: string): Map<string, number> {
   const map = new Map<string, number>();
   if (!existsSync(logPath)) return map;
