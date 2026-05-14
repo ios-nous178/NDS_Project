@@ -911,12 +911,27 @@ function getInstallCommand(args: { tgzDir?: string; includeTailwind?: boolean })
   const tgzFiles = wanted.map((n) => tgzPath(tgzDir, n));
   const missing = tgzFiles.filter((p) => !fs.existsSync(p));
 
+  const quoted = tgzFiles.map((p) => `"${p}"`).join(" ");
+  const installCmd = `npm install ${quoted}`;
+  // 패키지 버전이 0.1.0 고정인 채로 .tgz 내용만 바뀌면 npm 이 cache 의 옛 버전을
+  // 재사용해 새 export(예: @nudge-eap/react/inspector subpath)가 안 보이는 사고가
+  // 반복적으로 발생. node_modules/@nudge-eap-* 만 지우고 다시 설치하면 cache miss
+  // 가 강제되어 .tgz 가 매번 재추출됨.
+  const reinstallCmd = `rm -rf node_modules/@nudge-eap* && ${installCmd}`;
+
   return {
     tgzDir,
     files: tgzFiles,
     missing,
     ready: missing.length === 0,
-    command: `npm install ${tgzFiles.map((p) => `"${p}"`).join(" ")}`,
+    // 첫 설치든 재설치든 안전한 권장 명령. Claude 는 기본적으로 이 명령을 사용하세요.
+    recommendedCommand: reinstallCmd,
+    // 첫 설치 전용 (cache 무관). 거의 안 씁니다.
+    installCommand: installCmd,
+    // MCP/.mcpb 업데이트 직후, 또는 inspector 같은 새 subpath/export 가 안 보일 때
+    reinstallCommand: reinstallCmd,
+    _advisory:
+      "MCP/.mcpb 업데이트 직후나 '새 컴포넌트/subpath 가 안 보임' 증상이면 반드시 recommendedCommand 사용. 패키지 버전이 0.1.0 으로 고정이라 npm cache 가 옛 .tgz 를 재사용하는 사고가 반복됨 — node_modules 의 @nudge-eap-* 만 비우면 됨.",
     note:
       missing.length > 0
         ? "일부 .tgz가 없습니다. DS 레포에서 'pnpm build && (cd packages/<name> && pnpm pack --pack-destination ../../local-packages)' 실행 필요."
@@ -960,6 +975,7 @@ async function checkMcpUpdate(): Promise<{
   downloadUrl: string | null;
   releaseUrl: string | null;
   howToUpdate: string[];
+  _nextSuggestion?: string;
   error?: string;
 }> {
   const installed = mcpbManifest?.version ?? null;
@@ -1046,6 +1062,7 @@ async function checkMcpUpdate(): Promise<{
           "2. Update 버튼이 안 보이면 아래 링크에서 .mcpb 를 직접 받아 더블클릭하세요:",
           `   ${downloadUrl}`,
           "3. Claude Desktop 을 ⌘Q 로 완전 종료 후 다시 켜야 새 MCP 가 적용됩니다.",
+          "4. **외부 mockup 프로젝트도 DS 패키지를 클린 재설치하세요** — 패키지 버전이 0.1.0 고정이라 npm cache 가 옛 .tgz 를 재사용해 새 export(예: inspector subpath)가 안 보이는 사고가 반복됨. get_install_command 호출 후 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install ...) 를 그대로 실행.",
         ];
 
     return {
@@ -1056,6 +1073,9 @@ async function checkMcpUpdate(): Promise<{
       downloadUrl,
       releaseUrl,
       howToUpdate,
+      _nextSuggestion: upToDate
+        ? undefined
+        : "사용자가 Claude Desktop 재시작을 마친 직후에 **반드시** get_install_command 를 호출해서 recommendedCommand 를 사용자에게 안내하세요. 이 단계 빠지면 새 .mcpb 의 컴포넌트/Inspector 가 외부 프로젝트에 안 반영됨.",
     };
   } catch (err) {
     return {
@@ -1091,9 +1111,11 @@ function getUpdateInstructions(args: { source?: string; includeLocalPackages?: b
         },
         {
           step: 3,
-          title: "외부 목업 프로젝트 DS 패키지 갱신 (필요할 때)",
-          commands: ["get_install_command 도구 호출 → 반환된 npm install 명령 실행"],
-          note: "React 컴포넌트/토큰/아이콘 변경이 함께 들어왔으면 외부 프로젝트의 .tgz도 갱신해야 합니다.",
+          title: "외부 목업 프로젝트 DS 패키지 **클린 재설치** (생략 금지)",
+          commands: [
+            "get_install_command 도구 호출 → 응답의 `recommendedCommand` (rm -rf node_modules/@nudge-eap* && npm install …) 를 그대로 실행",
+          ],
+          note: "패키지 버전이 0.1.0 으로 고정이라 단순 `npm install` 만 하면 npm cache 가 옛 .tgz 를 재사용해 새 export/컴포넌트가 안 보입니다. node_modules 의 @nudge-eap-* 만 비우는 게 가장 안전.",
         },
       ],
       afterUpdate: ["list_packages 로 새 버전 확인"],
@@ -1412,7 +1434,7 @@ function getSetupInstructions(args: {
   steps.push({
     step: 2,
     title: "DS 패키지 설치 (peer로 react>=18 필요 — Vite 템플릿이 이미 만족)",
-    commands: [install.command],
+    commands: [install.recommendedCommand],
     note: install.note,
   });
 
