@@ -150,13 +150,8 @@ function scoreMatch(query: string, name: string): number {
 
 function listComponents() {
   return {
-    _advisory:
-      "이 목록은 사용자 앱(Trost/Geniet/NudgeEAP) 컴포넌트입니다. " +
-      "어드민/CMS 화면이라면 antd v5를 쓰고 get_guide({ topic: 'admin-cms' })를 먼저 호출하세요.",
-    components: manifest.components.map((c) => ({
-      name: c.name,
-      propCount: c.props.length,
-    })),
+    _advisory: "User-app components. For admin/CMS use get_guide({topic:'admin-cms'}).",
+    components: manifest.components.map((c) => c.name),
   };
 }
 
@@ -202,8 +197,7 @@ function findIcon(query: string) {
 function listIcons() {
   const categoryIndex = getIconCategoryIndex();
   return {
-    _advisory:
-      "사이즈/터치 영역/Line·Filled 스타일 정책은 get_guide({ topic: 'pattern:iconography' }), 컬러 토큰은 get_guide({ topic: 'pattern:icon-color' }) 호출. 새 아이콘은 packages/icons/svg/에 kebab-case SVG로 추가.",
+    _advisory: "Style/color rules: get_guide({topic:'pattern:iconography'|'pattern:icon-color'}).",
     icons: manifest.icons.map(decorateIcon),
     byCategory: Object.fromEntries(
       Object.entries(categoryIndex).map(([cat, names]) => [
@@ -218,7 +212,16 @@ function listIcons() {
 }
 
 function listTokens(group?: string) {
-  if (!group) return manifest.tokens;
+  if (!group) {
+    const groups: Record<string, number> = {};
+    for (const t of manifest.tokens) groups[t.group] = (groups[t.group] ?? 0) + 1;
+    return {
+      _hint:
+        "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or use lookup_token for search. No-arg call returns only the summary to save tokens.",
+      total: manifest.tokens.length,
+      groups,
+    };
+  }
   return manifest.tokens.filter((t) => t.group === group);
 }
 
@@ -281,7 +284,7 @@ function suggestReplacement(args: { snippet: string; rule?: string }) {
 /* ───────────── MCP 서버 등록 ───────────── */
 
 const server = new Server(
-  { name: "nudge-eap-ds", version: "0.1.4" },
+  { name: "nudge-eap-ds", version: mcpbManifest?.version ?? "0.1.6" },
   { capabilities: { tools: {} } },
 );
 
