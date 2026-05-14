@@ -14,8 +14,7 @@
       "import": "./dist/brands/index.js"
     },
     "./css": "./dist/tokens.css",
-    "./css/trost": "./dist/trost.css",
-    "./css/moneple": "./dist/moneple.css"
+    "./css/trost": "./dist/trost.css"
   },
   "files": [
     "dist"

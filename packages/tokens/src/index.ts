@@ -21,14 +21,8 @@ export type {
   SpacingOverrides,
   ElevationOverrides,
 } from "./brands";
-export { nudgeEapTheme, monepleTheme, trostTheme } from "./brands";
+export { nudgeEapTheme, trostTheme } from "./brands";
 export {
-  monepleYellow,
-  monepleCobalt,
-  moneplePink,
-  monepleNeutral,
-  monepleStatus,
-  monepleSemantic,
   trostYellow,
   trostCobalt,
   trostPink,

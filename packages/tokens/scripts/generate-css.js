@@ -5,7 +5,6 @@
  * Outputs:
  *   dist/tokens.css  — NudgeEAP 기본 토큰
  *   dist/trost.css   — Trost 브랜드 오버라이드 토큰
- *   dist/moneple.css — Moneple 브랜드 오버라이드 토큰
  */
 const fs = require("fs");
 const path = require("path");
@@ -319,11 +318,3 @@ fs.writeFileSync(
   generateBrandTokens({ theme: trostTheme, title: "trost", cssImport: "trost" }),
 );
 console.log(`Generated ${trostPath}`);
-
-const moneplePath = path.join(distDir, "moneple.css");
-const { monepleTheme } = require("../dist/brands/moneple");
-fs.writeFileSync(
-  moneplePath,
-  generateBrandTokens({ theme: monepleTheme, title: "moneple", cssImport: "moneple" }),
-);
-console.log(`Generated ${moneplePath}`);

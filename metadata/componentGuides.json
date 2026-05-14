@@ -801,7 +801,7 @@
       "pitfalls": [
         "AppBar 와 혼동 금지 — AppBar 는 모바일 상단 바(52px, 뒤로가기/타이틀). WebHeader 는 데스크탑 헤더(80px, 1200px max-width, GNB).",
         "클라이언트 로고는 per-tenant 이미지라 src/href 를 prop 으로 주입. DS 가 로고 이미지를 갖고 있지 않다.",
-        "브랜드(NudgeEAP / Trost / Moneple) 별 색은 tokens.css 로 자동 정렬 — primary main 이 한 군데 들어가 있어 별도 색 prop 불필요. 인라인 컬러로 덮어쓰지 말 것.",
+        "브랜드(NudgeEAP / Trost / Geniet) 별 색은 tokens.css 로 자동 정렬 — primary main 이 한 군데 들어가 있어 별도 색 prop 불필요. 인라인 컬러로 덮어쓰지 말 것.",
         "메뉴 아이템에 활성 표시: activeKey 또는 MenuItem 의 active prop 사용 — 직접 border-bottom 인라인으로 그리지 말 것."
       ],
       "recommended": [
