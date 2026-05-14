@@ -7,8 +7,12 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const catalogPath = path.join(ROOT, "packages/mcp/catalog.json");
+const manifestPath = path.join(ROOT, "packages/mcp/manifest.json");
 
-const previousCatalog = readHeadCatalog() ?? readWorkingTreeCatalog();
+const previousCatalog = readWorkingTreeCatalog();
+const previousManifestText = fs.existsSync(manifestPath)
+  ? fs.readFileSync(manifestPath, "utf8")
+  : "";
 
 execFileSync("pnpm", ["--filter", "@nudge-eap/mcp", "build:manifest"], {
   cwd: ROOT,
@@ -21,34 +25,18 @@ if (previousCatalog?.generatedAt && fs.existsSync(catalogPath)) {
   fs.writeFileSync(catalogPath, `${JSON.stringify(nextCatalog, null, 2)}\n`, "utf8");
 }
 
-try {
-  execFileSync(
-    "git",
-    ["diff", "--exit-code", "packages/mcp/catalog.json", "packages/mcp/manifest.json"],
-    {
-      cwd: ROOT,
-      stdio: "inherit",
-    },
-  );
-} catch {
+const nextCatalog = readWorkingTreeCatalog();
+const nextManifestText = fs.existsSync(manifestPath) ? fs.readFileSync(manifestPath, "utf8") : "";
+
+const previousCatalogText = previousCatalog ? `${JSON.stringify(previousCatalog, null, 2)}\n` : "";
+const nextCatalogText = nextCatalog ? `${JSON.stringify(nextCatalog, null, 2)}\n` : "";
+
+if (previousCatalogText !== nextCatalogText || previousManifestText !== nextManifestText) {
   console.error(
     "\n[check-mcp-catalog] packages/mcp/catalog.json is stale. " +
-      "Run `pnpm --filter @nudge-eap/mcp build:manifest` after building DS packages and commit the result.",
+      "Run `pnpm --filter @nudge-eap/mcp build:manifest` after building DS packages.",
   );
   process.exit(1);
-}
-
-function readHeadCatalog() {
-  try {
-    return JSON.parse(
-      execFileSync("git", ["show", "HEAD:packages/mcp/catalog.json"], {
-        cwd: ROOT,
-        encoding: "utf8",
-      }),
-    );
-  } catch {
-    return null;
-  }
 }
 
 function readWorkingTreeCatalog() {

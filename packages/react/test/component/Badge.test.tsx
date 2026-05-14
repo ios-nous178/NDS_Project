@@ -37,13 +37,20 @@ describe("Badge 접근성", () => {
 });
 
 describe("Badge variant 조합", () => {
-  const variants = ["primary", "secondary", "success", "caution", "error", "neutral"] as const;
-  const sizes = ["sm", "md"] as const;
+  const variants = ["fill", "ghost", "line"] as const;
+  const colors = ["brand", "neutral", "success", "caution", "error", "info"] as const;
+  const sizes = ["sm", "md", "lg"] as const;
 
   it.each(variants)("variant=%s 가 크래시 없이 렌더링된다", (variant) => {
     render(<Badge variant={variant}>{variant}</Badge>);
     const root = screen.getByText(variant).closest("[data-slot='root']")!;
     expect(root).toHaveAttribute("data-variant", variant);
+  });
+
+  it.each(colors)("color=%s 가 크래시 없이 렌더링된다", (color) => {
+    render(<Badge color={color}>{color}</Badge>);
+    const root = screen.getByText(color).closest("[data-slot='root']")!;
+    expect(root).toHaveAttribute("data-color", color);
   });
 
   it.each(sizes)("size=%s 가 크래시 없이 렌더링된다", (size) => {
@@ -52,10 +59,11 @@ describe("Badge variant 조합", () => {
     expect(root).toHaveAttribute("data-size", size);
   });
 
-  it("기본 variant=neutral, size=md 가 적용된다", () => {
+  it("기본 variant=fill, color=neutral, size=md 가 적용된다", () => {
     render(<Badge>기본</Badge>);
     const root = screen.getByText("기본").closest("[data-slot='root']")!;
-    expect(root).toHaveAttribute("data-variant", "neutral");
+    expect(root).toHaveAttribute("data-variant", "fill");
+    expect(root).toHaveAttribute("data-color", "neutral");
     expect(root).toHaveAttribute("data-size", "md");
   });
 });

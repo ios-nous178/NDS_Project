@@ -277,11 +277,12 @@ describe("Input 브랜치 커버리지: slotProps & 엣지 케이스", () => {
     expect(container.querySelector("[data-slot='field']")!.className).toContain("field-cls");
   });
 
-  it("errorMessage가 있으면 helper에 error 속성이 적용된다", () => {
+  it("errorMessage가 있으면 helper에 error variant가 적용된다", () => {
     const { container } = render(<Input label="이름" errorMessage="필수 항목입니다" />);
 
     const helper = container.querySelector("[data-slot='helper']")!;
-    expect(helper).toHaveAttribute("data-error", "true");
+    expect(helper).toHaveAttribute("data-variant", "error");
+    expect(helper).toHaveAttribute("role", "alert");
   });
 
   it("label 없이도 정상 렌더링된다", () => {
