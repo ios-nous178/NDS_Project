@@ -31,6 +31,65 @@ function readDtsExports(dir) {
  * - `extends ...` 가 있어도 본문 `{ ... }` 만 캡처
  * - 중첩 제네릭(`Record<string, X<Y>>`) 까지 한 prop 라인으로 읽도록 라인 분할 후 파싱
  */
+/**
+ * 같은 .d.ts (또는 다른 컴포넌트 .d.ts) 안의
+ *   `(export )?type <Name> = "a" | "b" | "c";`
+ * 류 string-literal union 선언을 수집해 typeName → string[] 맵을 만든다.
+ * 이걸 갖고 prop.type 이 named union (e.g. IconButtonSize) 일 때 실제 멤버를 풀어준다.
+ */
+function collectStringLiteralUnions(dirs) {
+  const result = {};
+  // type Name = "a" | "b" ...;  (한 줄 또는 여러 줄, 우측은 string-literal | 만)
+  const re = /(?:export\s+)?(?:declare\s+)?type\s+(\w+)\s*=\s*((?:\s*"[^"]*"\s*(?:\|\s*)?)+);/g;
+  for (const dir of dirs) {
+    if (!fs.existsSync(dir)) continue;
+    const files = fs.readdirSync(dir).filter((f) => f.endsWith(".d.ts"));
+    for (const f of files) {
+      const src = fs.readFileSync(path.join(dir, f), "utf-8");
+      let m;
+      while ((m = re.exec(src)) !== null) {
+        const name = m[1];
+        const values = [...m[2].matchAll(/"([^"]*)"/g)].map((x) => x[1]);
+        if (values.length > 0) result[name] = values;
+      }
+    }
+  }
+  return result;
+}
+
+/**
+ * prop.type 문자열에서 허용값(string[])을 추출.
+ *   - "a" | "b" 인라인 union → ["a", "b"]
+ *   - 명명된 union (IconButtonSize) → unionMap 조회
+ *   - 위 두 가지 외 (boolean / number / 객체 / 함수 / 미해석 타입 등) → null
+ * `| undefined` / `| null` 은 무시.
+ */
+function resolvePropAllowedValues(typeStr, unionMap) {
+  if (!typeStr) return null;
+  // 파이프로 잘라 옵셔널 키워드를 제거
+  const parts = typeStr
+    .split("|")
+    .map((p) => p.trim())
+    .filter((p) => p && p !== "undefined" && p !== "null");
+  if (parts.length === 0) return null;
+
+  const collected = [];
+  for (const part of parts) {
+    const lit = part.match(/^"([^"]*)"$/);
+    if (lit) {
+      collected.push(lit[1]);
+      continue;
+    }
+    if (/^[A-Za-z_][\w]*$/.test(part) && unionMap[part]) {
+      collected.push(...unionMap[part]);
+      continue;
+    }
+    // 이 prop 은 string-literal union 형태가 아님 → 검증 대상 아님
+    return null;
+  }
+  return collected.length > 0 ? [...new Set(collected)] : null;
+}
+
 function extractPropsFromDts(dtsPath) {
   if (!fs.existsSync(dtsPath)) return null;
   const src = fs.readFileSync(dtsPath, "utf-8");
@@ -264,12 +323,17 @@ const packagesMeta = [
 ].filter(Boolean);
 
 const componentNames = readDtsExports(reactDist);
+const unionMap = collectStringLiteralUnions([reactDist]);
 const components = componentNames.map((name) => {
   const dtsPath = path.join(reactDist, `${name}.d.ts`);
   const propsInfo = extractPropsFromDts(dtsPath);
+  const props = (propsInfo?.props ?? []).map((p) => {
+    const allowedValues = resolvePropAllowedValues(p.type, unionMap);
+    return allowedValues ? { ...p, allowedValues } : p;
+  });
   return {
     name,
-    props: propsInfo?.props ?? [],
+    props,
     dtsRelPath: `packages/react/dist/${name}.d.ts`,
   };
 });

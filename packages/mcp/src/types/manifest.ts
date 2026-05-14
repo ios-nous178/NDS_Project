@@ -10,6 +10,8 @@ export interface PropDef {
   name: string;
   optional: boolean;
   type: string;
+  /** string-literal union 인 경우의 허용값. 검출 가능할 때만 채워진다. */
+  allowedValues?: string[];
 }
 
 export interface ComponentDef {

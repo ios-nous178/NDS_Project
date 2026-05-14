@@ -6,12 +6,19 @@ export interface MockupValidationContext {
   tokenSet: Set<string>;
   componentNames: Set<string>;
   iconSet: Set<string>;
+  /**
+   * DS 컴포넌트별 prop union 허용값.
+   *   propAllowedValues.get("IconButton")?.get("size") === ["x-large","large","medium","small"]
+   * 카탈로그에서 추출 가능한 prop 만 채워진다.
+   */
+  propAllowedValues?: Map<string, Map<string, string[]>>;
 }
 
 const EMPTY_VALIDATION_CONTEXT: MockupValidationContext = {
   tokenSet: new Set(),
   componentNames: new Set(),
   iconSet: new Set(),
+  propAllowedValues: new Map(),
 };
 
 let configuredContext: MockupValidationContext = EMPTY_VALIDATION_CONTEXT;
@@ -81,6 +88,34 @@ function getBalancedJsxBlocks(
     }
   }
   return blocks;
+}
+
+/**
+ * JSX 여는 태그의 끝 위치를 찾는다.
+ *   <ComponentName ... > 의 첫 번째 unmatched `>` 까지를 슬라이스해서 반환.
+ * 문자열 / `{...}` expression 안의 `>` 는 건너뛴다 (예: arrow fn 의 `>`).
+ *
+ * children 영역까지 끌어와서 검증하면 nested JSX 의 prop 값을 부모 컴포넌트의
+ * 허용값 표와 잘못 매칭할 수 있기 때문에, 여는 태그만 정확히 잘라낸다.
+ */
+function extractOpenTag(block: string, startOfName: number): string {
+  let depth = 0;
+  let quote: '"' | "'" | null = null;
+  for (let i = startOfName; i < block.length; i++) {
+    const ch = block[i];
+    if (quote) {
+      if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      continue;
+    }
+    if (ch === "{") depth++;
+    else if (ch === "}") depth--;
+    else if (ch === ">" && depth === 0) return block.slice(0, i + 1);
+  }
+  return block;
 }
 
 function getIconBlocks(source: string): Array<{ block: string; line: number; index: number }> {
@@ -278,6 +313,36 @@ export function validateMockupSource(
               ? `search_component('${name}')으로 유사 컴포넌트 확인.`
               : `find_icon('${name.replace(/Icon$/, "")}')으로 유사 아이콘 확인.`,
         });
+      }
+    }
+  }
+
+  // 6.5. invalid-prop-value — string-literal union prop 의 잘못된 값 검출.
+  // 예: <IconButton size="md"> (유효: x-large/large/medium/small),
+  //     <Card variant="content"> (유효: outlined/elevated/flat)
+  // validate_mockup 은 패턴 검사이므로 tsc 가 잡는 타입 오류를 자체 룰로 흉내낸다.
+  if (context.propAllowedValues && context.propAllowedValues.size > 0) {
+    for (const [compName, propMap] of context.propAllowedValues) {
+      // `<CompName ` 또는 `<CompName/` 또는 `<CompName>` 만 매칭 — `<CompName.Sub` namespace 제외
+      const openRe = new RegExp(`<\\s*${compName}(?=[\\s/>])`, "g");
+      let m: RegExpExecArray | null;
+      while ((m = openRe.exec(source)) !== null) {
+        const openTag = extractOpenTag(source.slice(m.index), `<${compName}`.length);
+        const attrRe = /\b(\w+)\s*=\s*"([^"]*)"/g;
+        let am: RegExpExecArray | null;
+        while ((am = attrRe.exec(openTag)) !== null) {
+          const propName = am[1];
+          const propValue = am[2];
+          const allowed = propMap.get(propName);
+          if (!allowed) continue;
+          if (allowed.includes(propValue)) continue;
+          violations.push({
+            rule: "invalid-prop-value",
+            line: lineNumberAt(source, m.index + am.index),
+            detail: `<${compName} ${propName}="${propValue}"> — 허용값 아님.`,
+            suggestion: `${compName}.${propName} 허용값: ${allowed.map((v) => `"${v}"`).join(", ")}. get_component('${compName}') 로 prop 명세 확인.`,
+          });
+        }
       }
     }
   }
