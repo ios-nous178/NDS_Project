@@ -348,9 +348,13 @@ function getIconBlocks(source: string): Array<{ block: string; line: number; ind
   return blocks;
 }
 
-function validateMockupSource(source: string): Violation[] {
+function validateMockupSource(
+  source: string,
+  options?: { intent?: "user-app" | "admin-cms" },
+): Violation[] {
   const violations: Violation[] = [];
   const lines = source.split("\n");
+  const intent = options?.intent ?? "user-app";
 
   lines.forEach((line, i) => {
     const ln = i + 1;
@@ -483,6 +487,20 @@ function validateMockupSource(source: string): Violation[] {
       }
     }
   });
+
+  // user-app intent 일 때 antd 임포트는 변환 미완료 신호 (admin-cms 의도면 정상이라 skip)
+  if (intent === "user-app") {
+    const antdImportRe = /import\s+(?:[\w*{}\s,]+\s+from\s+)?["']antd(?:\/[^"']+)?["']/g;
+    for (const m of source.matchAll(antdImportRe)) {
+      violations.push({
+        rule: "antd-import-in-user-app",
+        line: lineNumberAt(source, m.index ?? 0),
+        detail: m[0].trim(),
+        suggestion:
+          "user-app 목업에 antd 임포트가 남아 있습니다. 변수명 치환이 아니라 DS 컴포넌트 구조로 *처음부터 재구성* 하세요 — `antd.Table` → `DataTable`, `antd.Button` → DS `Button`, `antd.Form` → DS `Input`/`Select` 조합. 한 임포트라도 남아 있으면 변환 미완료로 간주.",
+      });
+    }
+  }
 
   // 6. import 검증 — 한 번만
   const importMatches = source.matchAll(
@@ -766,7 +784,11 @@ function validateMockupSource(source: string): Violation[] {
   return violations;
 }
 
-function validateMockup(args: { source?: string; filePath?: string }) {
+function validateMockup(args: {
+  source?: string;
+  filePath?: string;
+  intent?: "user-app" | "admin-cms";
+}) {
   let source = args.source;
   if (!source && args.filePath) {
     if (!fs.existsSync(args.filePath)) {
@@ -783,10 +805,25 @@ function validateMockup(args: { source?: string; filePath?: string }) {
       error: "Provide either 'source' or 'filePath'.",
     };
   }
-  const violations = validateMockupSource(source);
+  const violations = validateMockupSource(source, { intent: args.intent });
+
+  // 사용자가 한눈에 볼 수 있도록 요약 정보 동봉.
+  const byRule: Record<string, number> = {};
+  for (const v of violations) byRule[v.rule] = (byRule[v.rule] ?? 0) + 1;
+  const topRules = Object.entries(byRule)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([rule, count]) => ({ rule, count }));
+
+  const humanReadable =
+    violations.length === 0
+      ? "✓ 위반 없음 — DS 룰 모두 통과"
+      : `✗ ${violations.length}건 위반 / 상위: ${topRules.map((r) => `${r.rule}(${r.count})`).join(", ")}`;
+
   return {
     ok: violations.length === 0,
     violationCount: violations.length,
+    summary: { byRule, topRules, humanReadable },
     violations,
   };
 }
@@ -1561,6 +1598,7 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 ## UI 구현 규칙
 
 - 가능한 한 DS 컴포넌트를 우선 사용한다.
+- **기존 antd/HTML 코드를 받았을 때 변수명만 치환하지 말 것**. 색상값을 \`var(--...)\` 로 바꾸는 것만으론 "DS 적용"이 아니다. antd \`<Table>\` → DS \`<DataTable>\`, antd \`<Form>\` → DS \`Input\`/\`Select\` 조합 식으로 **컴포넌트 구조를 처음부터 재구성**한다. 한 줄이라도 antd import 가 남아 있으면 변환 미완료로 본다 (validate_mockup 의 \`antd-import-in-user-app\` 으로 자동 검출됨).
 - raw \`button\`, \`input\`, \`select\`, \`textarea\`는 특별한 이유가 없으면 사용하지 않는다.
 - 색상/간격은 인라인 hex, rgb, px 값보다 DS 토큰을 우선 사용한다.
 - 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
@@ -1578,12 +1616,15 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 2. 필요한 컴포넌트/아이콘/토큰 검색
 3. 필요한 UX 패턴 확인: \`get_pattern_guide\`
 4. 목업 구현
-5. \`validate_mockup\` 실행 및 수정
+5. \`validate_mockup\` 실행 — **응답의 \`summary.humanReadable\` 을 사용자에게 보여줄 것**. 위반이 있으면 수정 후 재실행.
 6. \`start_dev_server\` 실행
 7. \`check_preview\` 실행 및 런타임 오류 수정
-8. \`get_dos_and_donts\`로 최종 확인
-9. **\`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 사용량 집계 적재 (생략 금지)
-10. \`stop_dev_server\`로 dev 서버 종료
+8. \`get_dos_and_donts\` 로 최종 확인
+9. **\`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 사용량 집계 적재 (생략 금지). 응답의 \`humanReadable\` 한 줄을 **사용자에게 반드시 보여줄 것**.
+10. **사용자에게 안내** (응답의 \`_nextSuggestion\` 참고):
+    - dev 서버 미리보기 URL 을 명확히 보여주고 직접 확인 권유 (Claude 가 URL 전달을 종종 빠뜨림 — 이 단계 생략 금지).
+    - "인터랙티브 가능한 단일 HTML 산출물을 만들어 드릴까요?" 라고 사용자에게 물어보기 — 사용자가 기능 존재 자체를 모를 수 있음. 원하면 \`get_export_html_instructions\` 호출.
+11. 사용자가 검토를 마치면 \`stop_dev_server\` 로 종료.
 `;
 }
 
@@ -1808,66 +1849,9 @@ function getAdminCmsGuide(args: { intent?: string }) {
 
 /* ───────────── HTML 단일 파일 추출 ───────────── */
 
-function getExportHtmlInstructions(args: { mode?: "singlefile" | "snapshot" }) {
-  const mode = args.mode ?? "singlefile";
-
-  if (mode === "snapshot") {
-    return {
-      mode,
-      summary:
-        "실행 중인 dev 서버의 특정 라우트를 헤드리스 브라우저로 열고, 렌더된 HTML + computed CSS를 단일 .html로 캡처. JS 없이 정적 결과만 필요하면 이 방식.",
-      tradeoffs: [
-        "✅ 의존성 0 — 결과는 HTML + 인라인 <style>만. 어떤 브라우저로도 열림.",
-        "✅ DS의 모든 시각적 결과(폰트/토큰/elevation/hover 직전 상태)가 그대로 보존",
-        "❌ 인터랙션 죽음 (onClick, hover transition, route 변경 모두 정지)",
-        "❌ Puppeteer/Playwright(약 200MB Chromium) 의존",
-      ],
-      install: ["npm install --save-dev playwright", "npx playwright install chromium"],
-      scriptPath: "scripts/export-html-snapshot.mjs",
-      scriptContent: `// 사용: node scripts/export-html-snapshot.mjs <mockupPath> <outFile>
-// 예시: node scripts/export-html-snapshot.mjs /trost/list out/trost-list.html
-import { chromium } from "playwright";
-import fs from "node:fs";
-
-const [, , routePath = "/", outFile = "out/snapshot.html"] = process.argv;
-const baseUrl = process.env.MOCKUP_URL ?? "http://localhost:5173";
-
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-await page.goto(\`\${baseUrl}\${routePath}\`, { waitUntil: "networkidle" });
-
-// 모든 stylesheet를 inline <style>로 변환 + body HTML 추출
-const html = await page.evaluate(() => {
-  const styles = [...document.styleSheets].flatMap((s) => {
-    try { return [...s.cssRules].map((r) => r.cssText); } catch { return []; }
-  }).join("\\n");
-  return \`<!doctype html><html><head><meta charset="utf-8"><style>\${styles}</style></head><body>\${document.body.outerHTML}</body></html>\`;
-});
-
-fs.mkdirSync(outFile.replace(/\\/[^/]+$/, ""), { recursive: true });
-fs.writeFileSync(outFile, html);
-console.log(\`✓ \${outFile} (\${(html.length/1024).toFixed(1)} KB)\`);
-await browser.close();`,
-      runFlow: [
-        "터미널 1: npm run dev  # Vite dev 서버 5173 띄우기",
-        "터미널 2: node scripts/export-html-snapshot.mjs /trost/counseling out/trost-counseling.html",
-        "→ out/trost-counseling.html 한 파일만 더블클릭해서 브라우저로 열면 동일하게 보임",
-        "마지막: MCP `report_mockup_usage` 툴로 원본 .tsx 경로를 넘겨 사용량 자동 적재. 예) report_mockup_usage({ filePath: 'src/mockups/TrostCounseling.tsx' }). HTML이 아니라 *.tsx 소스를 넘기는 이유: AST 기반이라 custom 구현·variant까지 정확히 집계됨.",
-      ],
-      tracking: {
-        summary:
-          "export 산출물(.html)은 공유용. 사용량 집계는 *원본 .tsx* 를 AST 파싱하므로 export mode와 무관하게 동작.",
-        tool: "report_mockup_usage",
-        example: "report_mockup_usage({ filePath: 'src/mockups/TrostCounseling.tsx' })",
-        storage: ".ds-usage-log.jsonl (프로젝트 루트, gitignored)",
-        sheets: "성공 호출마다 Google Sheets 공용 webhook으로 자동 POST (override 불가).",
-      },
-    };
-  }
-
-  // singlefile (기본)
+function getExportHtmlInstructions() {
   return {
-    mode,
+    mode: "singlefile",
     summary:
       "Vite 빌드를 vite-plugin-singlefile로 묶어 HTML/CSS/JS/asset을 단일 .html에 인라인. 인터랙션 보존하면서도 외부 의존성 0.",
     tradeoffs: [
@@ -1939,6 +1923,8 @@ fs.unlinkSync(tmpEntry);
 console.log(\`✓ \${outFile}\`);`,
       note: "이 방식은 vite.config의 build.rollupOptions.input을 환경변수에서 받도록 살짝 수정 필요.",
     },
+    _staticOnlyAlternative:
+      "정적 HTML(인터랙션 X, 이메일/PDF 첨부 등) 가 꼭 필요한 드문 경우에는 Playwright 로 헤드리스 캡처하는 별도 방식이 있지만, 인터랙티브가 손실되고 Chromium ~200MB 의존이 추가되므로 권장하지 않습니다.",
   };
 }
 
@@ -1958,6 +1944,8 @@ async function reportMockupUsage(args: {
   usage: MockupUsage;
   logPath: string | null;
   webhook: { attempted: boolean; ok?: boolean; status?: number; error?: string };
+  humanReadable: string;
+  _nextSuggestion: string;
 }> {
   const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
   const filePath = path.isAbsolute(args.filePath)
@@ -1997,7 +1985,26 @@ async function reportMockupUsage(args: {
     }
   }
 
-  return { usage, logPath, webhook };
+  // 사람이 보기 좋게 한 줄 요약 (사용자에게 보여줘야 의미 있음)
+  const { totalDs, totalAdminCms, totalCustomNative, totalExternal } = usage.meta;
+  const total = totalDs + totalAdminCms + totalCustomNative + totalExternal;
+  const dsRatio = total === 0 ? 0 : Math.round((totalDs / total) * 100);
+  const webhookStatus = !webhook.attempted
+    ? "skipped"
+    : webhook.ok
+      ? "ok"
+      : `failed(${webhook.status ?? "err"})`;
+  const humanReadable =
+    `📊 ${usage.mockupName} (${usage.brand ?? "?"}): ` +
+    `DS ${totalDs} (${dsRatio}%) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}`;
+
+  const _nextSuggestion =
+    "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). 그리고 마지막으로 사용자에게 다음을 물어보세요: " +
+    "(1) 인터랙티브 가능한 단일 HTML 파일 산출물을 만들어 드릴까요? (원하면 get_export_html_instructions 호출) " +
+    "(2) 현재 띄워둔 dev 서버 URL 을 보여드리고, 사용자가 직접 확인을 마치면 stop_dev_server 호출하세요. " +
+    "두 가지를 사용자가 모를 수 있으므로 명시적으로 안내해야 합니다.";
+
+  return { usage, logPath, webhook, humanReadable, _nextSuggestion };
 }
 
 /* ───────────── 목업 dev 서버 / 화면 체크 ───────────── */
@@ -2429,12 +2436,18 @@ const TOOLS = [
   {
     name: "validate_mockup",
     description:
-      "Validate a mockup .tsx source against DS rules. Catches inline color/spacing/native elements/inline SVG/emoji-as-icon/gradient + pattern-level anti-patterns (primary CTA overuse, arrow-icon repeat, Chip overuse/missing-label, nested Card, Card 당 Badge·Chip 3+ 과다, Card.Footer 버튼 3+, primary 컬러 역할 과적, tone-on-tone, default icon color, 강조 장치 4+ 동시 사용 등). Provide either 'source' (string) or 'filePath' (absolute). Returns violations with rule, line, detail, suggestion.",
+      "Validate a mockup .tsx source against DS rules. Catches inline color/spacing/native elements/inline SVG/emoji-as-icon/gradient + pattern-level anti-patterns (primary CTA overuse, arrow-icon repeat, Chip overuse/missing-label, nested Card, Card 당 Badge·Chip 3+ 과다, Card.Footer 버튼 3+, primary 컬러 역할 과적, tone-on-tone, default icon color, 강조 장치 4+ 동시 사용 등) + user-app 목업에 antd import 잔존 검출. Provide either 'source' (string) or 'filePath' (absolute). Returns { ok, violationCount, summary: { byRule, topRules, humanReadable }, violations }. **사용자에게 violationCount + humanReadable 을 항상 보여주세요 — 안 보여주면 사용자가 위반이 얼마나 남았는지 모름.**",
     inputSchema: {
       type: "object",
       properties: {
         source: { type: "string" },
         filePath: { type: "string" },
+        intent: {
+          type: "string",
+          enum: ["user-app", "admin-cms"],
+          description:
+            "Workspace intent. 'admin-cms' 일 때만 antd 임포트가 정상으로 간주됩니다 (admin-cms 룰은 향후 추가). 기본 'user-app'.",
+        },
       },
       additionalProperties: false,
     },
@@ -2563,18 +2576,8 @@ const TOOLS = [
   {
     name: "get_export_html_instructions",
     description:
-      "Return instructions to export a mockup (or all mockups) as a dependency-free single HTML file. Two modes: 'singlefile' (Vite + vite-plugin-singlefile, interactions preserved, recommended) or 'snapshot' (Playwright captures rendered DOM+CSS, no JS, static only).",
-    inputSchema: {
-      type: "object",
-      properties: {
-        mode: {
-          type: "string",
-          enum: ["singlefile", "snapshot"],
-          description: "Default: 'singlefile'. Use 'snapshot' for static-only output without JS.",
-        },
-      },
-      additionalProperties: false,
-    },
+      "Return instructions to export a mockup as a dependency-free, fully interactive single HTML file (Vite + vite-plugin-singlefile). Interactions, hover transitions, hash routing all preserved. Use this whenever the user (or you, as a follow-up) wants a shareable single .html artifact.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
     name: "report_mockup_usage",
@@ -2832,7 +2835,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = lookupToken((args as { query: string }).query);
         break;
       case "validate_mockup":
-        result = validateMockup(args as { source?: string; filePath?: string });
+        result = validateMockup(
+          args as { source?: string; filePath?: string; intent?: "user-app" | "admin-cms" },
+        );
         break;
       case "suggest_replacement":
         result = suggestReplacement(args as { snippet: string; rule?: string });
@@ -2884,7 +2889,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = listFigmaSyncStatus();
         break;
       case "get_export_html_instructions":
-        result = getExportHtmlInstructions(args as { mode?: "singlefile" | "snapshot" });
+        result = getExportHtmlInstructions();
         break;
       case "report_mockup_usage":
         result = await reportMockupUsage(
