@@ -21,7 +21,7 @@ EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 3개 브랜드: **T
 ## 환경 세팅
 
 ```bash
-node -v                                 # 22.x 필요
+node -v                                 # 24.x 필요
 pnpm -v || npm install -g pnpm@9
 pnpm install
 pnpm build --filter @nudge-eap/tokens   # 컴포넌트가 의존

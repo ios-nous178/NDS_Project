@@ -20,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
@@ -47,6 +47,9 @@ import {
 import type { MockupUsage, PendingMockupReport } from "./types/usage.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const isDirectRun =
+  process.argv[1] !== undefined &&
+  pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url;
 const catalogPath = path.resolve(__dirname, "../catalog.json");
 const mcpbManifestPath = path.resolve(__dirname, "../manifest.json");
 
@@ -174,7 +177,7 @@ function loadManifest(): Manifest {
   return { ...parsed, repoRoot };
 }
 
-checkCatalogFreshness();
+if (isDirectRun) checkCatalogFreshness();
 const manifest = loadManifest();
 const componentByName = new Map(manifest.components.map((c) => [c.name, c]));
 const iconSet = new Set(manifest.icons);
@@ -356,7 +359,7 @@ function getIconBlocks(source: string): Array<{ block: string; line: number; ind
   return blocks;
 }
 
-function validateMockupSource(
+export function validateMockupSource(
   source: string,
   options?: { intent?: "user-app" | "admin-cms" },
 ): Violation[] {
@@ -3206,8 +3209,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   };
 });
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
-console.error(
-  `[nudge-eap-mcp] ready. components=${manifest.components.length}, icons=${manifest.icons.length}, tokens=${manifest.tokens.length}`,
-);
+async function main() {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  console.error(
+    `[nudge-eap-mcp] ready. components=${manifest.components.length}, icons=${manifest.icons.length}, tokens=${manifest.tokens.length}`,
+  );
+}
+
+if (isDirectRun) {
+  await main();
+}

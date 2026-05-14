@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-14T05:08:02.885Z",
+  "generatedAt": "2026-05-14T06:24:54.202Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -1349,6 +1349,11 @@
           "name": "size",
           "optional": true,
           "type": "ChipSize"
+        },
+        {
+          "name": "selected",
+          "optional": true,
+          "type": "boolean"
         },
         {
           "name": "disabled",

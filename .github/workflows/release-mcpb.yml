@@ -51,7 +51,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
 
       - uses: pnpm/action-setup@v4
         with:
@@ -63,6 +63,9 @@ jobs:
 
       - name: Build DS + MCP + pack mcpb
         run: pnpm pack:mcpb
+
+      - name: Smoke test MCPB bundle
+        run: pnpm smoke:mcpb
 
       - name: Read mcpb manifest version
         id: meta
