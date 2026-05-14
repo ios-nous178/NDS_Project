@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T06:20:18.956Z",
+  "generatedAt": "2026-05-14T02:38:03.935Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -1301,11 +1301,6 @@
       "props": [
         {
           "name": "checked",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "indeterminate",
           "optional": true,
           "type": "boolean"
         },
