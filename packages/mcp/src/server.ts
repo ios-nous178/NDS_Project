@@ -35,8 +35,16 @@ import {
   getIconCategoryIndex,
   detectIntentFromText,
 } from "./guides.js";
-import { parseMockupUsage, appendUsageToLog, postUsageToWebhook } from "./usage-tracker.js";
-import type { MockupUsage } from "./types/usage.js";
+import {
+  parseMockupUsage,
+  appendUsageToLog,
+  postUsageToWebhook,
+  scanPendingMockupReports,
+  enqueueUsageWebhook,
+  flushUsageWebhookQueue,
+  type UsageWebhookQueueFlushResult,
+} from "./usage-tracker.js";
+import type { MockupUsage, PendingMockupReport } from "./types/usage.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const catalogPath = path.resolve(__dirname, "../catalog.json");
@@ -2010,7 +2018,16 @@ async function reportMockupUsage(args: {
 }): Promise<{
   usage: MockupUsage;
   logPath: string | null;
-  webhook: { attempted: boolean; ok?: boolean; status?: number; error?: string };
+  webhook: {
+    attempted: boolean;
+    ok?: boolean;
+    status?: number;
+    attempts?: number;
+    error?: string;
+    queued?: boolean;
+    queuePath?: string;
+    flushedQueue?: UsageWebhookQueueFlushResult;
+  };
   humanReadable: string;
   _nextSuggestion: string;
 }> {
@@ -2029,6 +2046,9 @@ async function reportMockupUsage(args: {
     contextHint: args.context,
     brandHint: args.brand,
   });
+  // Stamp full ISO timestamp so the pending-report scanner can detect same-day edits
+  // that happen after a prior report.
+  usage.loggedAt = new Date().toISOString();
 
   const dryRun = args.dryRun === true;
   let logPath: string | null = null;
@@ -2037,18 +2057,42 @@ async function reportMockupUsage(args: {
     appendUsageToLog(usage, logPath);
   }
 
-  const webhook: { attempted: boolean; ok?: boolean; status?: number; error?: string } = {
+  const webhook: {
+    attempted: boolean;
+    ok?: boolean;
+    status?: number;
+    attempts?: number;
+    error?: string;
+    queued?: boolean;
+    queuePath?: string;
+    flushedQueue?: UsageWebhookQueueFlushResult;
+  } = {
     attempted: false,
   };
   if (!dryRun) {
+    const queuePath = path.join(cwd, ".ds-usage-webhook-queue.jsonl");
+    const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
+    if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
+      webhook.flushedQueue = flushedQueue;
+    }
+
     webhook.attempted = true;
     try {
       const res = await postUsageToWebhook(usage, USAGE_WEBHOOK_URL);
       webhook.ok = res.ok;
       webhook.status = res.status;
+      webhook.attempts = res.attempts;
+      if (!res.ok) {
+        enqueueUsageWebhook(usage, queuePath);
+        webhook.queued = true;
+        webhook.queuePath = queuePath;
+      }
     } catch (err) {
       webhook.ok = false;
       webhook.error = (err as Error).message;
+      enqueueUsageWebhook(usage, queuePath);
+      webhook.queued = true;
+      webhook.queuePath = queuePath;
     }
   }
 
@@ -2060,10 +2104,13 @@ async function reportMockupUsage(args: {
     ? "skipped"
     : webhook.ok
       ? "ok"
-      : `failed(${webhook.status ?? "err"})`;
+      : `queued(${webhook.status ?? "err"})`;
+  const queueStatus = webhook.flushedQueue
+    ? ` · queue retry ${webhook.flushedQueue.succeeded}/${webhook.flushedQueue.attempted}`
+    : "";
   const humanReadable =
     `📊 ${usage.mockupName} (${usage.brand ?? "?"}): ` +
-    `DS ${totalDs} (${dsRatio}%) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}`;
+    `DS ${totalDs} (${dsRatio}%) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}${queueStatus}`;
 
   const _nextSuggestion =
     "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). 그리고 마지막으로 사용자에게 다음을 물어보세요: " +
@@ -2072,6 +2119,128 @@ async function reportMockupUsage(args: {
     "두 가지를 사용자가 모를 수 있으므로 명시적으로 안내해야 합니다.";
 
   return { usage, logPath, webhook, humanReadable, _nextSuggestion };
+}
+
+/* ───────────── 사용량 보고 자동화 가드레일 ─────────────
+ *
+ * Claude가 mockup .tsx를 수정/생성한 뒤 `report_mockup_usage` 호출을 빠뜨리는
+ * 사고가 반복돼서, 이를 다른 MCP 도구 호출 시점에 자동 트리거하거나 강하게
+ * 경고하도록 dispatch wrapper로 강제한다.
+ *
+ *  - POST_CREATION_TOOLS: mockup 생성/수정 직후 자연스럽게 호출되는 도구.
+ *    응답 직전에 펜딩 파일들에 대해 reportMockupUsage 자동 발화.
+ *  - 그 외 도구: 펜딩 파일이 있으면 응답에 `_pendingMockupReports` 경고 인젝션.
+ */
+
+const POST_CREATION_TOOLS = new Set<string>([
+  "validate_mockup",
+  "check_preview",
+  "stop_dev_server",
+  "get_export_html_instructions",
+]);
+
+const MAX_AUTO_REPORTS_PER_CALL = 5;
+
+function extractCwdFromArgs(args: unknown): string | undefined {
+  if (!args || typeof args !== "object") return undefined;
+  const cwd = (args as { cwd?: unknown }).cwd;
+  return typeof cwd === "string" && cwd.length > 0 ? cwd : undefined;
+}
+
+interface AutoReportOutcome {
+  filePath: string;
+  ok: boolean;
+  webhookStatus?: number;
+  webhookAttempts?: number;
+  webhookError?: string;
+  queued?: boolean;
+  totalDs?: number;
+  reason: PendingMockupReport["reason"];
+}
+
+async function autoReportPendingMockups(
+  cwd: string,
+  pending: PendingMockupReport[],
+): Promise<AutoReportOutcome[]> {
+  const slice = pending.slice(0, MAX_AUTO_REPORTS_PER_CALL);
+  const outcomes: AutoReportOutcome[] = [];
+  // serialize POSTs to keep the shared Apps Script webhook happy
+  for (const p of slice) {
+    try {
+      const res = await reportMockupUsage({ filePath: p.filePath, cwd });
+      outcomes.push({
+        filePath: p.filePath,
+        ok: res.webhook.ok === true,
+        webhookStatus: res.webhook.status,
+        webhookAttempts: res.webhook.attempts,
+        webhookError: res.webhook.error,
+        queued: res.webhook.queued,
+        totalDs: res.usage.meta.totalDs,
+        reason: p.reason,
+      });
+    } catch (err) {
+      outcomes.push({
+        filePath: p.filePath,
+        ok: false,
+        webhookError: (err as Error).message,
+        reason: p.reason,
+      });
+    }
+  }
+  return outcomes;
+}
+
+interface UsageGuardOutcome {
+  autoReported?: AutoReportOutcome[];
+  pendingNotReported?: PendingMockupReport[];
+  notice?: string;
+}
+
+async function runUsageGuards(toolName: string, args: unknown): Promise<UsageGuardOutcome> {
+  const cwd = extractCwdFromArgs(args) ?? process.cwd();
+  let pending: PendingMockupReport[];
+  try {
+    pending = scanPendingMockupReports(cwd);
+  } catch {
+    return {};
+  }
+  if (pending.length === 0) return {};
+
+  if (POST_CREATION_TOOLS.has(toolName)) {
+    const outcomes = await autoReportPendingMockups(cwd, pending);
+    const leftover = pending.slice(outcomes.length);
+    const notice =
+      `자동으로 ${outcomes.length}건의 mockup 사용량을 webhook으로 전송했습니다. ` +
+      `(빠뜨릴 뻔한 report_mockup_usage 호출을 MCP 가드레일이 대신 수행함) ` +
+      (leftover.length > 0
+        ? `남은 ${leftover.length}건은 cap을 초과해 보류 — 다음 호출 때 처리됩니다.`
+        : "사용자에게 한 줄로 알려주세요.");
+    return {
+      autoReported: outcomes,
+      pendingNotReported: leftover.length > 0 ? leftover : undefined,
+      notice,
+    };
+  }
+
+  return {
+    pendingNotReported: pending,
+    notice:
+      `⚠️ 보고되지 않은 mockup ${pending.length}건이 감지됨. ` +
+      `각 파일에 대해 즉시 \`report_mockup_usage({ filePath })\`를 호출하세요. ` +
+      `(이 도구는 자동 발화 대상이 아니라서 MCP가 대신 처리하지 않습니다.)`,
+  };
+}
+
+function attachUsageGuardOutcome(result: unknown, guard: UsageGuardOutcome): unknown {
+  if (!guard.autoReported && !guard.pendingNotReported && !guard.notice) return result;
+  const base: Record<string, unknown> =
+    result && typeof result === "object" && !Array.isArray(result)
+      ? { ...(result as Record<string, unknown>) }
+      : { result };
+  if (guard.autoReported) base._autoReportedUsage = guard.autoReported;
+  if (guard.pendingNotReported) base._pendingMockupReports = guard.pendingNotReported;
+  if (guard.notice) base._usageGuardNotice = guard.notice;
+  return base;
 }
 
 /* ───────────── 목업 dev 서버 / 화면 체크 ───────────── */
@@ -2655,7 +2824,7 @@ const TOOLS = [
   {
     name: "report_mockup_usage",
     description:
-      "REQUIRED final step after generating or modifying a mockup .tsx (and also after exporting HTML). Parse a mockup TSX file with AST and aggregate Design System usage; classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Always appends to .ds-usage-log.jsonl at the project root AND POSTs to the shared Google Sheets usage webhook (URL hardcoded in the MCP — no auth, no env var, works in any external project without setup). Skipping this leaves the central usage sheet empty for this mockup. Returns the aggregated usage object plus webhook ok/status.",
+      "REQUIRED final step after generating or modifying a mockup .tsx (and also after exporting HTML). Parse a mockup TSX file with AST and aggregate Design System usage; classifies each JSX element as ds (@nudge-eap/react), adminCms (antd), customNative (raw HTML primitives like <button>/<input>), or external. Always appends to .ds-usage-log.jsonl at the project root AND POSTs to the shared Google Sheets usage webhook (URL hardcoded in the MCP — no auth, no env var, works in any external project without setup). The webhook POST uses timeout/retry and queues failed payloads in .ds-usage-webhook-queue.jsonl for retry on later calls. Skipping this leaves the central usage sheet empty for this mockup. Returns the aggregated usage object plus webhook ok/status/queue info.",
     inputSchema: {
       type: "object",
       properties: {
@@ -3009,6 +3178,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);
+    }
+    // Usage-tracking guardrail — runs after every successful tool dispatch so missed
+    // `report_mockup_usage` calls get auto-fired (post-creation tools) or surfaced as a
+    // structured warning in the response (everything else). Skip for the tool itself.
+    if (name !== "report_mockup_usage") {
+      try {
+        const guard = await runUsageGuards(name, args);
+        result = attachUsageGuardOutcome(result, guard);
+      } catch {
+        // never let the guardrail break the original tool response
+      }
     }
   } catch (e) {
     return {
