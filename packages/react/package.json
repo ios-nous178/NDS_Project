@@ -10,6 +10,11 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./inspector": {
+      "types": "./dist/inspector/index.d.ts",
+      "import": "./dist/inspector/index.js",
+      "default": "./dist/inspector/index.js"
+    },
     "./styles.css": "./dist/styles.css"
   },
   "scripts": {
