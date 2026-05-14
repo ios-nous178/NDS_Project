@@ -305,6 +305,39 @@ function getJsxBlocks(
   return blocks;
 }
 
+// Container 컴포넌트(Card.Root, Card.Footer 같이 자식 안에 self-closing JSX 가 많은 케이스)는
+// 비탐욕 정규식이 자식의 `/>` 에서 끊겨 잘못된 블록을 잡는다. 같은 태그명만 LIFO 스택으로 페어링.
+function getBalancedJsxBlocks(
+  source: string,
+  componentName: string,
+): Array<{ block: string; line: number }> {
+  const blocks: Array<{ block: string; line: number }> = [];
+  const tagRe = new RegExp(`<(\\/?)\\s*${componentName}\\b[^>]*?(\\/?)>`, "g");
+  const openStack: number[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = tagRe.exec(source)) !== null) {
+    const isClose = m[1] === "/";
+    const isSelfClose = m[2] === "/";
+    if (isClose) {
+      const start = openStack.pop();
+      if (start !== undefined) {
+        blocks.push({
+          block: source.slice(start, tagRe.lastIndex),
+          line: lineNumberAt(source, start),
+        });
+      }
+    } else if (isSelfClose) {
+      blocks.push({
+        block: source.slice(m.index, tagRe.lastIndex),
+        line: lineNumberAt(source, m.index),
+      });
+    } else {
+      openStack.push(m.index);
+    }
+  }
+  return blocks;
+}
+
 function getIconBlocks(source: string): Array<{ block: string; line: number; index: number }> {
   const blocks: Array<{ block: string; line: number; index: number }> = [];
   const pattern = /<\s*\w+Icon\b[\s\S]*?(?:\/>|>\s*<\/\s*\w+Icon\s*>)/g;
@@ -625,6 +658,15 @@ function validateMockupSource(source: string): Violation[] {
     });
   }
   for (const { block, line } of chipBlocks) {
+    if (!/\blabel\s*=/.test(block)) {
+      violations.push({
+        rule: "chip-missing-label",
+        line,
+        detail: block.split("\n")[0].trim(),
+        suggestion:
+          "Chip 은 label prop 이 필수입니다. children 대신 label='...' 형태로 전달하세요. get_component_guide('Chip') 참조.",
+      });
+    }
     const label = block.match(/label\s*=\s*["']([^"']+)["']/)?.[1];
     if (label && (label.length > 8 || /^(안내|확인|추천|혜택|중요|필독|NEW|신규)$/i.test(label))) {
       violations.push({
@@ -633,6 +675,47 @@ function validateMockupSource(source: string): Violation[] {
         detail: `Chip label='${label}'`,
         suggestion:
           "Chip은 장식성 섹션 라벨보다 상태/분류/속성 표시용으로 사용하세요. 일반 안내 강조는 텍스트 위계나 neutral notice로 처리하세요.",
+      });
+    }
+  }
+
+  // Card 구조 관련 블록 검사 (nested / Badge·Chip overuse per Card / Footer 버튼 과다)
+  // 컨테이너 안에 self-closing JSX 가 많으니 비탐욕 정규식 대신 depth-counted balanced 블록 사용.
+  const cardRootBlocks = getBalancedJsxBlocks(source, "Card\\.Root");
+  for (const { block, line } of cardRootBlocks) {
+    const cardOpenCount = (block.match(/<\s*Card\.Root\b/g) || []).length;
+    if (cardOpenCount > 1) {
+      violations.push({
+        rule: "nested-card",
+        line,
+        detail: `Card.Root 안에 Card.Root 가 ${cardOpenCount - 1}회 중첩됨.`,
+        suggestion:
+          "Card 안에 Card 중첩 금지 — 시각 레이어 3단계 이상은 정보 계층을 무너뜨립니다. 내부 구획은 Section Divider 또는 배경색으로 구분하세요. get_component_guide('Card') 참조.",
+      });
+    }
+    const chipCount = (block.match(/<\s*Chip\b/g) || []).length;
+    const badgeCount = (block.match(/<\s*Badge\b/g) || []).length;
+    const labelTotal = chipCount + badgeCount;
+    if (labelTotal >= 3) {
+      violations.push({
+        rule: "card-badge-overuse",
+        line,
+        detail: `Card 1개에 Badge/Chip 이 ${labelTotal}개 발견됨 (Chip=${chipCount}, Badge=${badgeCount}).`,
+        suggestion:
+          "Card 당 Badge/Chip 최대 2개 — 가장 중요한 상태만 남기고 나머지는 Footer 메타텍스트로 처리하세요. get_component_guide('Card') 참조.",
+      });
+    }
+  }
+  const cardFooterBlocks = getBalancedJsxBlocks(source, "Card\\.Footer");
+  for (const { block, line } of cardFooterBlocks) {
+    const footerButtonCount = (block.match(/<\s*Button\b/g) || []).length;
+    if (footerButtonCount >= 3) {
+      violations.push({
+        rule: "card-footer-button-overuse",
+        line,
+        detail: `Card.Footer 안에 Button 이 ${footerButtonCount}개 발견됨.`,
+        suggestion:
+          "Card Footer 는 Primary 1개 + Secondary 1개까지. 더 필요하면 Card 구조가 아니라 Modal/BottomSheet 형태가 맞는지 검토하세요. get_component_guide('Card') 참조.",
       });
     }
   }
@@ -1462,6 +1545,7 @@ function getClaudeMdTemplate(args: { projectName?: string; intent?: "user-app" |
 
 ## 도구 사용 규칙
 
+- **목업 작업을 시작하기 전 반드시 \`get_design_principles\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴을 한 번에 로드. 브랜드를 바꾸면 재호출.
 - 컴포넌트/아이콘/토큰 사용 전 \`search_component\` / \`find_icon\` / \`lookup_token\` 호출
 - 처음 쓰는 주요 컴포넌트는 \`get_component_guide\` 호출
 - CTA 그룹, 아이콘 컬러, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_pattern_guide\` 호출
@@ -2345,7 +2429,7 @@ const TOOLS = [
   {
     name: "validate_mockup",
     description:
-      "Validate a mockup .tsx source against DS rules. Provide either 'source' (string) or 'filePath' (absolute). Returns violations with rule, line, detail, suggestion.",
+      "Validate a mockup .tsx source against DS rules. Catches inline color/spacing/native elements/inline SVG/emoji-as-icon/gradient + pattern-level anti-patterns (primary CTA overuse, arrow-icon repeat, Chip overuse/missing-label, nested Card, Card 당 Badge·Chip 3+ 과다, Card.Footer 버튼 3+, primary 컬러 역할 과적, tone-on-tone, default icon color, 강조 장치 4+ 동시 사용 등). Provide either 'source' (string) or 'filePath' (absolute). Returns violations with rule, line, detail, suggestion.",
     inputSchema: {
       type: "object",
       properties: {
