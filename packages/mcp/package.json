@@ -19,7 +19,8 @@
     "build": "pnpm run build:manifest && tsc",
     "start": "node dist/server.js",
     "dev": "pnpm run build:manifest && tsc --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@babel/parser": "^7.25.0",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "@types/babel__traverse": "^7.20.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.9"
   }
 }

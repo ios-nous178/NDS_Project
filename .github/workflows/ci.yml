@@ -41,6 +41,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Check MCP catalog freshness
+        run: pnpm lint:mcp-catalog
+
       - name: Build Docs
         run: pnpm docs:build
 
