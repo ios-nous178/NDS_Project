@@ -1,4 +1,21 @@
-# NudgeEAP Design System
+# NudgeEAP Design System (모노레포 작업용)
+
+## 이 문서의 범위
+
+이 CLAUDE.md 는 **DS 모노레포 안에서 storybook 목업/DS 코드 작업할 때**만 적용됩니다.
+외부 프로젝트(DS 를 npm으로 소비하는 쪽)의 작업 규칙은 모두
+`mcp__nudge-eap-ds__create_claude_md` 가 깔아주는 CLAUDE.md 가 SSOT 입니다.
+DS 사용 규칙(컴포넌트 props 함정, CTA UX, Self-Check, 검증 루프, antd 분기 등)을
+여기에 중복 작성하지 않습니다. 변경이 필요하면 `packages/mcp/src/server.ts`의
+`getClaudeMdTemplate` 과 `packages/mcp/src/guides.ts` 를 수정하세요.
+
+작업 중 DS 규칙을 확인해야 하면 MCP 도구를 직접 호출:
+
+- `get_design_principles` / `get_dos_and_donts` — 브랜드 톤, 시멘틱, 금지 패턴
+- `get_component_guide(name)` — props 함정 포함 (Chip.label, Select.onValueChange, Tabs.onTabChange 등)
+- `get_pattern_guide(name)` — cta-group / icon-color / notice / dropdown / dense-list
+- `search_component` / `find_icon` / `lookup_token` — 추측 없이 조회
+- `get_admin_cms_guide` — CMS/어드민 화면일 때
 
 ## 프로젝트 개요
 
@@ -38,143 +55,56 @@ pnpm --filter storybook dev
 
 > 브라우저에서 http://localhost:6006 을 열어주세요. (포트가 다를 수 있어요)
 
-## 목업 작성
+## 모노레포 전용: storybook 목업 작성
 
-### 디자인시스템 분기 (중요)
+DS 사용 규칙·CTA UX·검증 루프·Self-Check 본문은 MCP 가이드를 따릅니다 (위 "문서의 범위" 참조).
+여기서는 **모노레포 안에서만 의미 있는 추가 규약**만 정의합니다.
 
-목업 종류에 따라 사용하는 디자인시스템이 다릅니다. 작업 시작 전에 어느 쪽인지 먼저 확인하세요.
+### 사용자 앱 목업 — MockupLayout 헬퍼 필수
 
-| 목업 종류            | 디자인시스템       | 출처                                                                  |
-| -------------------- | ------------------ | --------------------------------------------------------------------- |
-| 사용자 앱 / Trost 앱 | `@nudge-eap/react` | 자체 DS — `nudge-eap-ds` MCP로 조회                                   |
-| CMS / 어드민         | `antd`             | npm 패키지 (apps/storybook에 설치됨), MCP 없음 — 학습된 지식으로 사용 |
-
-- 사용자가 "어드민", "CMS", "운영툴", "백오피스" 등을 언급하면 CMS 규칙을 따르세요.
-- 그 외(앱, 사용자 화면, Trost, Geniet, NudgeEAP)는 사용자 앱 규칙을 따르세요.
-- **사용자 앱 작업 시**: `mcp__nudge-eap-ds__*` 도구를 적극 활용하세요 (`get_design_principles`, `get_component_guide`, `get_pattern_guide`, `search_component`, `find_icon`, `lookup_token`, `validate_mockup` 등).
-- **CMS 작업 시**: `import { Button, Form, Table, ... } from "antd"` 형태로 직접 import. 별도 MCP 없이 작성 → 모르는 props는 추측하지 말고 [https://ant.design/components/overview](https://ant.design/components/overview) 문서를 확인하세요.
-- 두 디자인시스템을 한 화면에서 섞어 쓰지 마세요. 화면 종류에 맞는 한 쪽만 사용합니다.
-
-### 사용자가 "OO 페이지 목업 만들어줘"라고 하면
-
-1. **어떤 종류의 목업인지 확인** (사용자 앱 vs CMS)
-2. 스토리북이 실행 중인지 확인 (아니면 먼저 실행)
-3. 종류에 맞는 규칙에 따라 목업 생성
-4. `npx tsc --noEmit --project apps/storybook/tsconfig.json` 으로 타입 체크
-5. 사용자에게 스토리북에서 확인하라고 안내
-
-### 사용자/Trost 앱 목업 - 필수 규칙
-
-#### 1. MockupLayout 필수
+외부 프로젝트와 달리 storybook 워크스페이스에는 헤더/푸터/StickyBar/Accordion 을 제공하는
+공용 헬퍼가 있습니다. 직접 구현하지 말고 이걸 import하세요.
 
 ```tsx
 import { MockupLayout, useIsMobile, Accordion } from "./mockup-layout";
 
 <MockupLayout brand="trost" activeGnbKey="medicine" disclaimer="면책 고지" stickyBottom={<Button>CTA</Button>}>
   {페이지 내용}
-</MockupLayout>
+</MockupLayout>;
 ```
 
-- 헤더/푸터/StickyBar를 직접 구현 금지
-- brand: "trost" | "geniet" | "nudge-eap"
-- 레이아웃 헬퍼 파일: `apps/storybook/src/stories/mockup-layout.tsx`
+- 헤더/푸터/StickyBar 를 직접 구현 금지
+- brand: `"trost" | "geniet" | "nudge-eap"`
+- 헬퍼 파일: `apps/storybook/src/stories/mockup-layout.tsx`
+- 모바일 분기: `useIsMobile()` (테이블→카드, 필터→가로스크롤, CTA→세로배치)
 
-**2. DS 컴포넌트 강제 사용**
-아래 기능이 필요하면 반드시 `@nudge-eap/react`에서 import:
-
-| 기능         | 컴포넌트    | 주의사항                                          |
-| ------------ | ----------- | ------------------------------------------------- |
-| 탭           | Tabs        | items: {key, title}[], activeKey, onTabChange     |
-| 페이지네이션 | Pagination  | page, totalPages, onPageChange                    |
-| 브레드크럼   | Breadcrumb  | items: {label, href?}[]                           |
-| 프로그레스바 | ProgressBar | value, max                                        |
-| 아바타       | Avatar      | name (이니셜 자동), size                          |
-| 드롭다운     | Select      | options, value, **onValueChange** (onChange 아님) |
-| 칩           | Chip        | **label** prop 필수 (children 아님)               |
-| 카드         | Card        | Compound: Card.Header, Card.Body, Card.Footer     |
-| 구분선       | Divider     |                                                   |
-| 빈 상태      | EmptyState  |                                                   |
-
-DS에 없는 것 (임시 구현 허용): Accordion(`mockup-layout`에 있음), StarRating, PillImage
-
-**3. 반응형**
-`useIsMobile()` 훅 사용. 모바일: 테이블→카드, 필터→가로스크롤, CTA→세로배치
-
-#### 3-1. CTA / 강조 UX 규칙
-
-- CTA가 여러 개여도 우측 화살표 아이콘은 대표 전진 액션 1개에만 사용합니다.
-- 반복 카드/리스트의 "자세히 보기" 버튼에는 화살표를 반복하지 않습니다.
-- primary solid 버튼은 한 화면의 가장 중요한 액션 1개만 사용합니다.
-- Chip/Badge는 상태, 분류, 짧은 속성 표시용입니다. 섹션 제목 장식이나 일반 안내문 강조 용도로 남발하지 않습니다.
-- 안내 영역은 기본적으로 neutral surface를 사용하고, 색 배경/아이콘/Chip/Badge/굵은 제목 중 1~2개만 조합합니다.
-- 단독 아이콘은 기본 currentColor에 기대지 말고 주변 텍스트/배경에 맞는 토큰 컬러를 명시합니다.
-- CTA 그룹, 아이콘 컬러, 안내문, 옵션 많은 드롭다운, 정보 과밀 리스트를 만들 때는 `get_pattern_guide("cta-group" | "icon-color" | "notice" | "dropdown" | "dense-list")`를 확인합니다.
-
-#### 4. 파일 구조
+### 파일 구조 (사용자 앱)
 
 ```
 apps/storybook/src/stories/
   {Brand}{Page}Mockup.tsx           ← 목업
   {brand}-{page}-mock-data.ts       ← 데이터
-  {Brand}{Page}Mockup.stories.tsx   ← 스토리 (Default + Mobile)
+  {Brand}{Page}Mockup.stories.tsx   ← 스토리 (Default + Mobile 둘 다)
 ```
 
-**5. Self-Check**
-생성 후 반드시 확인:
+### CMS/어드민 목업
 
-- [ ] MockupLayout 사용했는가
-- [ ] DS 컴포넌트를 인라인으로 만들지 않았는가
-- [ ] Chip은 label prop, Select는 onValueChange 사용했는가
-- [ ] 화살표 CTA는 대표 액션 1개에만 있는가
-- [ ] primary solid 버튼이 한 화면에 1개 이하인가
-- [ ] Chip/Badge가 장식이 아니라 상태/분류/속성 표시로 쓰였는가
-- [ ] 안내 영역 강조 장치가 과하지 않은가
-- [ ] 단독 아이콘이 주변 UI에 맞는 토큰 컬러를 갖는가
-- [ ] useIsMobile()로 모바일 분기했는가
-- [ ] 스토리에 Default + Mobile 있는가
-- [ ] tsc --noEmit 통과하는가
-- [ ] `report_mockup_usage` 로 사용량 집계 적재했는가 (e.g., `mcp__nudge-eap-ds__report_mockup_usage({ filePath: 'apps/storybook/src/stories/{Brand}{Page}Mockup.tsx' })`)
+화면 종류가 어드민/CMS/운영툴/백오피스 이면 antd v5 (apps/storybook 에 설치됨)를 사용합니다.
+구체 규칙은 `get_admin_cms_guide` 호출로 받으세요 — antd props 가 헷갈리면 추측 금지,
+[공식 문서](https://ant.design/components/overview) 또는 `node_modules/antd/lib/{component}/index.d.ts`
+타입을 확인합니다.
 
-### CMS/어드민 목업 - 필수 규칙
+### 작업 흐름
 
-CMS/어드민 화면을 만들 때는 NudgeEAP 디자인시스템 대신 **Ant Design(antd)** 을 기준 UI 라이브러리로 사용합니다.
-
-#### 1. 기술 스택
-
-- React + TypeScript 기준으로 작성
-- antd 컴포넌트를 **우선** 사용 (직접 만들지 않음)
-- 다음 컴포넌트는 **절대 직접 구현 금지**, 무조건 antd 사용:
-  `Button`, `Form`, `Input`, `Select`, `DatePicker`, `Table`, `Modal`, `Drawer`, `Tabs`, `Tag`, `Space`, `Card`, `Pagination`
-
-#### 2. 스타일 원칙
-
-- **AntD 기본 스타일 유지**. 색·타이포·컴포넌트 외형은 건드리지 않음
-- 레이아웃 여백과 정보 구조만 조정 (`Space`, `Row/Col`, `gap` 등)
-- CSS는 최소화. 인라인 스타일이나 styled-components 남발 금지
-- NudgeEAP 토큰(`@nudge-eap/tokens`) 사용하지 말 것 — antd 기본값에 맡김
-
-#### 3. 레이아웃 톤
-
-- 운영툴 화면답게 **조밀하고 스캔하기 쉬운** 레이아웃
-- 마케팅 페이지처럼 큰 히어로, 장식 카드, 과한 비주얼 사용 금지
-- 한 화면에 정보 밀도를 높이고, 액션은 우측 상단/하단 고정 영역에 배치
-- 모바일 반응형 신경 쓰지 않아도 됨 (데스크톱 기준)
-
-#### 4. 추측 금지
-
-- antd MCP는 사용하지 않습니다. 컴포넌트 props가 헷갈리면 추측하지 말고 [공식 문서](https://ant.design/components/overview) 또는 `node_modules/antd/lib/{component}/index.d.ts` 타입 정의를 직접 확인
-- antd v5 기준으로 작성 (`pnpm --filter storybook list antd`로 버전 확인 가능)
-
-#### 5. Self-Check
-
-CMS 목업 생성 후 반드시 확인:
-
-- [ ] antd에서 import 했는가 (직접 구현하지 않았는가)
-- [ ] NudgeEAP DS 컴포넌트를 섞어 쓰지 않았는가
-- [ ] CSS/스타일을 최소화했는가 (antd 기본값 유지)
-- [ ] 마케팅 톤이 아닌 운영툴 톤인가 (조밀, 정보 위주)
-- [ ] tsc --noEmit 통과하는가
-- [ ] `report_mockup_usage` 로 사용량 집계 적재했는가 (context: "admin-cms")
+1. 사용자 앱 vs CMS 어느 쪽인지 확인
+2. 스토리북이 실행 중인지 확인 (아니면 먼저 실행)
+3. 사용자 앱이면 `get_design_principles` 부터 호출, CMS 면 `get_admin_cms_guide`
+4. 목업 생성 — 사용자 앱은 `MockupLayout` 필수, 스토리에 Default + Mobile 둘 다
+5. `npx tsc --noEmit --project apps/storybook/tsconfig.json` 타입체크
+6. `validate_mockup` → 위반이 있으면 `suggest_replacement` 로 수정 후 재검증
+7. `report_mockup_usage({ filePath: 'apps/storybook/src/stories/{Brand}{Page}Mockup.tsx' })` 호출
+   (CMS 면 `context: "admin-cms"`)
+8. 사용자에게 스토리북에서 확인하라고 안내
 
 ### 하네스 파이프라인 (상세)
 
@@ -194,8 +124,11 @@ CMS 목업 생성 후 반드시 확인:
 ```
 packages/react/src/     ← DS 컴포넌트 (.tsx) — Props는 여기서 확인
 packages/tokens/src/    ← 디자인 토큰
+packages/mcp/src/       ← MCP 서버 (외부 프로젝트가 받는 가이드 SSOT)
+  server.ts             ← getClaudeMdTemplate (create_claude_md 본문)
+  guides.ts             ← 컴포넌트/패턴/원칙/어드민 가이드
 apps/storybook/         ← 스토리북
-  src/stories/          ← 스토리 + 목업 파일
+  src/stories/          ← 스토리 + 목업 파일 + mockup-layout.tsx
   src/brand-fixtures.ts ← 브랜드별 헤더/푸터 데이터
 harness/                ← 하네스 파이프라인 프롬프트
 DESIGN.md               ← 디자인 토큰 YAML 정의
