@@ -321,7 +321,7 @@ const TOOLS = [
         topic: {
           type: "string",
           description:
-            "Guide topic. Fixed values: 'principles' | 'dos-donts' | 'admin-cms' | 'scope-advisory' | 'inspector-setup'. Component guides use 'component:<Name>' (e.g. 'component:Button'). Pattern guides use 'pattern:<name>' (cta-group, icon-color, iconography, visual-antipatterns, notice, dropdown, dense-list). For HTML export, call build_singlefile_html instead — that's an action tool, not a guide.",
+            "Guide topic. Fixed values: 'principles' | 'dos-donts' | 'admin-cms' | 'scope-advisory' | 'inspector-setup'. Component guides use 'component:<Name>' (e.g. 'component:Button'). Pattern guides use 'pattern:<name>' (cta-group, icon-color, iconography, visual-reference, visual-antipatterns, notice, dropdown, dense-list). For HTML export, call build_singlefile_html instead — that's an action tool, not a guide.",
         },
         intent: {
           type: "string",

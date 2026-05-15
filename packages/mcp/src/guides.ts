@@ -2012,6 +2012,17 @@ export interface PatternGuide {
   rules: string[];
   avoid: string[];
   metrics?: Record<string, string | number>;
+  referenceInputs?: {
+    accepted: string[];
+    minimum: string;
+    format: string;
+    fallbackQuestion: string;
+  };
+  examples?: Array<{
+    verdict: "good" | "bad";
+    source: string;
+    caption: string;
+  }>;
 }
 
 /**
@@ -2276,6 +2287,57 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       maxPrimaryTintSurfacesPerSection: 1,
       logoColorAsUiAccent: "forbidden",
       toneOnToneFilled: "forbidden",
+    },
+  },
+  "visual-reference": {
+    name: "visual-reference",
+    summary:
+      "목업 생성 전에 정답/오답 시각 레퍼런스를 수집하고, 1줄 캡션으로 톤 판단 기준을 고정하는 패턴.",
+    rules: [
+      "프롬프트에 이미지, 스크린샷, Figma 링크, figmaNodeUrl 이 있으면 그것을 우선 시각 기준으로 사용한다.",
+      "시각 레퍼런스가 없으면 목업 작성 전에 사용자에게 Figma 링크 또는 정답/오답 스크린샷을 요청한다.",
+      "권장 세트는 정답 3~5장 + 오답 3~5장. 각 레퍼런스는 '왜 맞는지/틀린지' 1줄 캡션을 붙인다.",
+      "레퍼런스를 받은 뒤에는 brandTone 문장보다 레퍼런스 캡션을 우선한다.",
+    ],
+    avoid: [
+      "레퍼런스 없이 '차분한/전문적인/친근한' 같은 형용사만 보고 화면 생성",
+      "정답 이미지만 받고 오답 기준 없이 작업",
+      "이미지의 색감만 따라 하고 정보 밀도, 강조 장치 수, CTA 위계를 무시",
+    ],
+    referenceInputs: {
+      accepted: [
+        "Figma design URL 또는 figmaNodeUrl",
+        "정답 스크린샷 이미지",
+        "오답 스크린샷 이미지",
+        "프롬프트에 첨부된 이미지/링크",
+      ],
+      minimum: "최소 정답 1장 + 오답 1장. 가능하면 총 6~10장.",
+      format: "[good|bad] source=<figma-url|image-name> caption=<1-line reason>",
+      fallbackQuestion:
+        "시각 기준으로 쓸 Figma 링크나 스크린샷을 받을 수 있을까요? 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요. 이미 프롬프트에 이미지나 Figma 링크가 있다면 그 자료를 기준으로 진행하겠습니다.",
+    },
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma node or approved screenshot",
+        caption:
+          "Neutral surface와 텍스트 위계로 정보 우선순위가 분리되고 primary CTA가 1개만 남아 있음.",
+      },
+      {
+        verdict: "bad",
+        source: "Rejected AI mockup screenshot",
+        caption:
+          "한 화면에 primary CTA, blue tint card, chip, icon 강조가 동시에 많아 모든 영역이 강조처럼 보임.",
+      },
+    ],
+    metrics: {
+      recommendedReferenceCount: "6~10",
+      minGoodReferences: 1,
+      minBadReferences: 1,
+      recommendedGoodReferences: "3~5",
+      recommendedBadReferences: "3~5",
+      captionLength: "1 line",
+      preferFigmaNodeUrl: "true",
     },
   },
   notice: {
