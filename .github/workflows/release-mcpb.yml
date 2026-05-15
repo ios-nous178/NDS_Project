@@ -297,10 +297,14 @@ jobs:
           echo "$RESP" | jq -e '.ok' >/dev/null
 
       # Slack 변경사항 본문 선택:
-      # 1순위) .release-notes/pending.md  — 로컬에서 `pnpm release-notes` 로 미리
-      #         만들어 둔 "비개발자용" 톤의 변경사항 (Claude haiku 가 재작성한 결과).
-      #         릴리즈 직전 커밋에 같이 포함시키면 CI 가 그대로 슬랙에 박는다.
-      # 2순위) Build changelog step 의 git log 결과 (기존 동작, 안전한 fallback).
+      # 1순위) .release-notes/pending.md  — 사람(보통 Claude CLI 통해)이 commit 한
+      #         "비개발자용" 톤의 변경사항. 릴리즈 commit 에 포함되어 들어온다.
+      # 2순위) Build changelog step 의 git log 결과 (개발자용 raw, 안전한 fallback).
+      #
+      # ★ CI 불변 규칙: 이 워크플로우는 .release-notes/pending.md 를
+      #   READ-ONLY 로만 사용한다. 절대 수정 / 재생성 / 삭제하지 않는다.
+      #   외부 LLM 호출 일체 없음 — 사람이 commit 한 본문이 그대로 슬랙으로 나간다.
+      #   (자동 재작성이 필요하면 로컬에서 `pnpm release-notes` 를 돌리고 검토 후 commit)
       # GitHub Release body 는 손대지 않는다 — 개발자는 거기서 raw 커밋을 본다.
       - name: Post changelog to Slack thread
         if: steps.tag_check.outputs.exists == 'false' && steps.head.outputs.thread_ts != ''
@@ -314,6 +318,17 @@ jobs:
           set -euo pipefail
 
           FRIENDLY_FILE=".release-notes/pending.md"
+          # immutability assert: checkout 이후 어떤 step 도 이 파일을 건드리지
+          # 않았는지 확인. 누군가 워크플로우에 가공 step 을 끼워넣으면 즉시 실패해서
+          # "사람이 commit 한 본문 그대로 나간다" 약속을 깨지 않게 한다.
+          if [ -e "$FRIENDLY_FILE" ]; then
+            if ! git diff --quiet -- "$FRIENDLY_FILE" 2>/dev/null; then
+              echo "::error::$FRIENDLY_FILE was modified during the CI run — refuse to send to Slack."
+              git --no-pager diff -- "$FRIENDLY_FILE" || true
+              exit 1
+            fi
+          fi
+
           if [ -s "$FRIENDLY_FILE" ]; then
             echo "::notice::Using friendly changelog from $FRIENDLY_FILE"
             CONTENT=$(cat "$FRIENDLY_FILE")
