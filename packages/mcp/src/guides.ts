@@ -1927,7 +1927,7 @@ export interface DesignPrinciples {
 
 export const DESIGN_PRINCIPLES: DesignPrinciples = {
   brandTone:
-    "신뢰감과 접근성. 차분하고 전문적이면서도 친근한 블루 기반. 진입 장벽 낮추는 것이 최우선. 깔끔한 라인, 충분한 여백, 명확한 위계, 과도한 장식 배제.",
+    "낮은 진입 장벽과 전문적 신뢰감을 주되, 흔한 SaaS/헬스케어 클리셰처럼 보이면 안 됩니다. Linear/Notion식 회색 카드 그리드, 스톡사진+파스텔 그라데이션, 모든 카드에 아이콘을 꽂는 대시보드 톤, 과한 감성 카피/일러스트 장식은 금지. Neutral surface와 텍스트 위계를 기본으로 두고 primary blue는 대표 CTA와 핵심 인터랙션에만 제한합니다.",
   colors: {
     primary: "#2B96ED — CTA, 활성, 핵심 인터랙티브. 화면당 가장 중요한 1개 액션만.",
     secondary: "#ED2E77 — 마젠타 포인트. 프로모션, 감정 표현, 보조 강조.",

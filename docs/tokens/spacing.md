@@ -49,7 +49,6 @@ import { spacing, radius, sizing, borderWidth } from "@nudge-eap/tokens";
 
 | 토큰          | 값     | 용도                              |
 | ------------- | ------ | --------------------------------- |
-| `radius.none` | 0px    | 둥글기 없음                       |
 | `radius.sm`   | 4px    | Badge SM                          |
 | `radius.md`   | 8px    | **기본값** — Button, Input, Popup |
 | `radius.lg`   | 12px   | Modal                             |

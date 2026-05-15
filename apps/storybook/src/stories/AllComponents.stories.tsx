@@ -1689,7 +1689,7 @@ const mockModalConfirmBtn: React.CSSProperties = {
 const mockPopupSurface: React.CSSProperties = {
   width: 224,
   background: cv.bg.white,
-  borderRadius: radius.radius16,
+  borderRadius: radius.md,
   padding: "20px 20px 14px",
   boxShadow: shadow["3"],
   display: "flex",
@@ -1754,7 +1754,7 @@ const mockTooltipBubble: React.CSSProperties = {
   padding: "6px 10px",
   background: cv.text.default,
   color: cv.text.inverse,
-  borderRadius: radius.xs,
+  borderRadius: radius.sm,
   fontSize: 11,
   fontWeight: 500,
   whiteSpace: "nowrap",
@@ -1942,7 +1942,7 @@ const mockLightboxImageNew: React.CSSProperties = {
   transform: "translate(-50%, -50%)",
   width: 130,
   height: 80,
-  borderRadius: radius.xs,
+  borderRadius: radius.sm,
   background: cv.bg.coolGray,
 };
 
@@ -2097,7 +2097,7 @@ const mockDrawerRow: React.CSSProperties = {
   fontWeight: 500,
   color: cv.text.subtle,
   padding: "4px 6px",
-  borderRadius: radius.xs,
+  borderRadius: radius.sm,
   background: cv.bg.coolGrayLighter,
 };
 
