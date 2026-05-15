@@ -235,7 +235,7 @@ app.get("/", (_req, res) => {
             </svg>
           </span>
           <span class="resource-text">
-            <span class="resource-title">디자인시스템 활용 설치 / 업데이트 가이드</span>
+            <span class="resource-title">디자인시스템 설치 / 업데이트 가이드</span>
             <span class="resource-sub">Notion · 비개발자용 셋업 문서</span>
           </span>
           <span class="resource-arrow" aria-hidden="true">↗</span>
