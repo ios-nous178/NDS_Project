@@ -246,30 +246,21 @@ padding:
   lg: 20px # 섹션·모달 내부 여백
   xl: 24px # 대형 컨테이너 여백
 
-# ── Rounded / Radius (Primitive Scale) ─────────────────────
-# Figma · RadiusGuide · 17 Variables · Primitive / Semantic Shape
+# ── Rounded / Radius (Policy Scale) ────────────────────────
+# 공개 export는 승인된 UI radius 세트로 제한한다.
+# 예외가 필요하면 ad-hoc radius 토큰을 추가하지 말고 컴포넌트 prop/CSS var로 처리한다.
 rounded:
-  none: 0px # 모서리 없음 (직각)
-  radius2: 2px # 최소 곡률 (인풋·태그)
   sm: 4px # 소형 버튼·칩 모서리
-  xs: 6px # 중소형 컴포넌트 모서리 (legacy 이름 유지)
   md: 8px # 기본 카드·컨테이너 (가장 많이 사용)
   lg: 12px # 중형 카드·패널
-  radius16: 16px # 대형 카드·모달
-  radius24: 24px # 바텀시트·오버레이
-  full: 9999px # 완전 원형 (아바타·뱃지·FAB)
-  pill: 9999px # 별칭: 칩·토글 (full 과 동일)
+  pill: 9999px # 칩·토글·원형 요소
 
-# ── Shape (Semantic — 컴포넌트 형태 별칭) ──────────────────
+# ── Shape (Semantic — radius 정책 별칭) ────────────────────
 shape:
-  none: 0px # 경계 없는 플랫 컴포넌트
-  xs: 2px # 소형 인라인 요소
   sm: 4px # 버튼·칩
   md: 8px # 기본 카드 (표준값)
   lg: 12px # 중형 패널·리스트
-  xl: 16px # 대형 모달·카드
-  2xl: 24px # 바텀시트·오버레이
-  full: 9999px # 아바타·뱃지·토글
+  pill: 9999px # 아바타·뱃지·토글
 
 # ── Border Width (Primitive Scale) ─────────────────────────
 # Figma · BorderGuide · 6 Variables · Primitive / Semantic Stroke

@@ -85,7 +85,7 @@ export const nudgeEapPreset = {
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
       borderRadius: {
-        none: `${radius.none}px`,
+        none: "0px",
         sm: `${radius.sm}px`,
         DEFAULT: `${radius.md}px`,
         md: `${radius.md}px`,

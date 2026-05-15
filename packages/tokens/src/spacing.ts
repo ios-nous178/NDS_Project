@@ -47,27 +47,17 @@ export const padding = {
 } as const;
 
 export const radius = {
-  none: 0,
-  radius2: 2,
   sm: 4,
-  xs: 6,
   md: 8,
   lg: 12,
-  radius16: 16,
-  radius24: 24,
-  full: 9999,
   pill: 9999,
 } as const;
 
 export const shape = {
-  none: 0,
-  xs: 2,
   sm: 4,
   md: 8,
   lg: 12,
-  xl: 16,
-  "2xl": 24,
-  full: 9999,
+  pill: 9999,
 } as const;
 
 export const borderWidth = {

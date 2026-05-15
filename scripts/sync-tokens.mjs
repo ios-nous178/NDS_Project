@@ -138,14 +138,14 @@ function generateSpacing() {
     lines.push("} as const;\n");
   }
 
-  // radius (Figma · RadiusGuide · Primitive)
+  // radius (public policy scale)
   lines.push("export const radius = {");
   for (const [k, v] of Object.entries(tokens.rounded)) {
     lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
   }
   lines.push("} as const;\n");
 
-  // shape (Figma · RadiusGuide · Semantic Shape)
+  // shape (semantic alias of the public radius policy)
   if (tokens.shape) {
     lines.push("export const shape = {");
     for (const [k, v] of Object.entries(tokens.shape)) {

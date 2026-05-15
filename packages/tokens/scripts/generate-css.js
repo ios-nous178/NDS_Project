@@ -149,16 +149,16 @@ function generateBaseTokens() {
   lines.push(`  --grid-content-mobile: ${grid.mobile.contentWidth}px;`);
   lines.push(`  --grid-content-pc: ${grid.desktop.contentWidth}px;`);
 
-  // Radius — Primitive (Figma · RadiusGuide)
+  // Radius — Policy scale
   lines.push("");
-  lines.push("  /* ── Radius (Primitive, Figma · RadiusGuide) ── */");
+  lines.push("  /* ── Radius (Policy Scale) ── */");
   for (const [key, value] of Object.entries(radius)) {
     lines.push(`  --radius-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
   }
 
-  // Shape — Semantic (Figma · RadiusGuide / Semantic)
+  // Shape — Semantic policy alias
   lines.push("");
-  lines.push("  /* ── Shape (Semantic, Figma · RadiusGuide / Semantic) ── */");
+  lines.push("  /* ── Shape (Semantic Policy Alias) ── */");
   for (const [key, value] of Object.entries(shape)) {
     lines.push(`  --shape-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
   }

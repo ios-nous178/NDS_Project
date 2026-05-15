@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T01:13:45.950Z",
+  "generatedAt": "2026-05-15T01:24:02.802Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -6159,11 +6159,6 @@
       "group": "padding"
     },
     {
-      "name": "--radius-full",
-      "value": "9999px",
-      "group": "radius"
-    },
-    {
       "name": "--radius-lg",
       "value": "12px",
       "group": "radius"
@@ -6174,38 +6169,13 @@
       "group": "radius"
     },
     {
-      "name": "--radius-none",
-      "value": "0px",
-      "group": "radius"
-    },
-    {
       "name": "--radius-pill",
       "value": "9999px",
       "group": "radius"
     },
     {
-      "name": "--radius-radius16",
-      "value": "16px",
-      "group": "radius"
-    },
-    {
-      "name": "--radius-radius2",
-      "value": "2px",
-      "group": "radius"
-    },
-    {
-      "name": "--radius-radius24",
-      "value": "24px",
-      "group": "radius"
-    },
-    {
       "name": "--radius-sm",
       "value": "4px",
-      "group": "radius"
-    },
-    {
-      "name": "--radius-xs",
-      "value": "6px",
       "group": "radius"
     },
     {
@@ -6829,16 +6799,6 @@
       "group": "shadow"
     },
     {
-      "name": "--shape-2xl",
-      "value": "24px",
-      "group": "shape"
-    },
-    {
-      "name": "--shape-full",
-      "value": "9999px",
-      "group": "shape"
-    },
-    {
       "name": "--shape-lg",
       "value": "12px",
       "group": "shape"
@@ -6849,23 +6809,13 @@
       "group": "shape"
     },
     {
-      "name": "--shape-none",
-      "value": "0px",
+      "name": "--shape-pill",
+      "value": "9999px",
       "group": "shape"
     },
     {
       "name": "--shape-sm",
       "value": "4px",
-      "group": "shape"
-    },
-    {
-      "name": "--shape-xl",
-      "value": "16px",
-      "group": "shape"
-    },
-    {
-      "name": "--shape-xs",
-      "value": "2px",
       "group": "shape"
     },
     {
