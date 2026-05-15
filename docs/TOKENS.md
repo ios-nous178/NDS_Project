@@ -566,7 +566,7 @@ img-[컴포넌트명]-type-state/color/style
 
 - [x] ~~Border Radius 토큰 체계~~ → **8px 기본**, Toggle은 pill, Radio는 원형
 - [x] ~~Spacing 토큰 체계~~ → 섹션 3에 실측 정리 완료
-- [ ] Shadow / Elevation 토큰 — Figma에서 shadow가 적용된 컴포넌트 미발견. 실제 프로젝트 코드에서 확인 필요
+- [x] ~~Shadow / Elevation 토큰~~ → **E0~E3 4단계** 정의 완료. 상세: [Elevation 가이드](./tokens/elevation.md) (Figma 556:2 정합)
 - [x] ~~Text Input 상세 variant~~ → Default / Readonly / Filled / Typing(Focus) 4가지 상태 확인
 - [x] ~~Modal 상세 variant~~ → 4가지 유형 (Title+Desc+2Btn, Title+Desc+1Btn, Desc+2Btn, Desc+1Btn)
 - [x] ~~List 상세 variant~~ → header / text+icon 확인
@@ -579,7 +579,6 @@ img-[컴포넌트명]-type-state/color/style
 
 # 9. 향후 보강 사항
 
-- [ ] Shadow / Elevation 토큰 — 실제 프로젝트 코드에서 box-shadow 패턴 추출 후 토큰화
 - [ ] Checkbox 컴포넌트 상세 실측 (size, border, check mark style, color)
 - [ ] BottomSheet 컴포넌트 — Figma 내 다른 페이지에 존재할 수 있음
 - [ ] Toast / Snackbar 컴포넌트 — 현재 Design Guide 페이지에 미포함
