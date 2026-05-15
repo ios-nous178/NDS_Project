@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 /**
- * sync-mcpb-version.mjs — DS 패키지 버전 → packages/mcp/manifest.json 동기화
+ * sync-mcpb-version.mjs — DS 패키지 버전 → 파생 버전 미러 동기화
  *
- * `pnpm version-packages` (changeset version) 가 DS 패키지의 package.json
- * version 을 bump 한 뒤에도 MCPB manifest.json 은 그대로 남는다. release-mcpb
- * 워크플로우는 manifest.json 의 version 을 release tag 로 쓰므로, 이걸 자동
- * 동기화해 줘야 한 PR 안에서 외부 전파까지 마무리된다.
+ * DS 패키지(@nudge-eap/{react,tokens,icons,tailwind-preset}) 의 package.json
+ * version 이 SSOT 이고, 다음 두 파생 미러를 같은 버전으로 맞춘다.
  *
- * 동기화 규칙: DS 패키지(@nudge-eap/{react,tokens,icons,tailwind-preset}) 중
- * semver 최댓값을 manifest.json 의 version 으로 채택한다.
+ *   1. packages/mcp/manifest.json   — release-mcpb 워크플로우가 release tag 로 사용
+ *   2. 루트 package.json            — pack-local-packages.mjs 가 tarball 파일명에 박는 값
+ *
+ * `pnpm version-packages` (changeset version) 가 DS 패키지의 package.json 만
+ * bump 하므로, 이 스크립트가 후속으로 미러들을 끌어올린다. 루트 미러까지 같이
+ * 처리하지 않으면 pack-local-packages.mjs 가 stale 루트 version 으로 DS 4개
+ * 패키지를 다운그레이드하는 사고가 재발한다.
+ *
+ * 동기화 규칙: 4개 DS 패키지 중 semver 최댓값을 두 미러의 version 으로 채택.
  *
  * Usage:
  *   node scripts/sync-mcpb-version.mjs           # write (default)
@@ -30,6 +35,7 @@ const DS_PACKAGE_DIRS = [
 ];
 const MANIFEST_PATH = path.join(ROOT, "packages/mcp/manifest.json");
 const MCP_PKG_PATH = path.join(ROOT, "packages/mcp/package.json");
+const ROOT_PKG_PATH = path.join(ROOT, "package.json");
 
 const mode = process.argv.includes("--check") ? "check" : "write";
 
@@ -76,28 +82,41 @@ const maxEntry = dsVersions.reduce((best, cur) =>
 const targetVersion = maxEntry.version.raw;
 
 const manifest = readJson(MANIFEST_PATH);
-const currentVersion = manifest.version;
+const rootPkg = readJson(ROOT_PKG_PATH);
 
-if (currentVersion === targetVersion) {
+const mirrors = [
+  { label: "packages/mcp/manifest.json", path: MANIFEST_PATH, obj: manifest },
+  { label: "package.json (root)", path: ROOT_PKG_PATH, obj: rootPkg },
+];
+
+const drift = mirrors.filter((m) => m.obj.version !== targetVersion);
+
+if (drift.length === 0) {
   console.log(
-    `[sync-mcpb-version] manifest.json already at ${targetVersion} (max DS package = ${maxEntry.name})`,
+    `[sync-mcpb-version] all mirrors already at ${targetVersion} (max DS package = ${maxEntry.name})`,
   );
   process.exit(0);
 }
 
 if (mode === "check") {
   console.error(
-    `[sync-mcpb-version] manifest.json out of sync: have ${currentVersion}, expected ${targetVersion} (max DS package = ${maxEntry.name})\n` +
-      `  Run \`pnpm sync:mcpb-version\` to fix.`,
+    `[sync-mcpb-version] mirror(s) out of sync (max DS package = ${maxEntry.name}@${targetVersion}):`,
   );
+  for (const m of drift) {
+    console.error(`  - ${m.label}: have ${m.obj.version}, expected ${targetVersion}`);
+  }
+  console.error(`  Run \`pnpm sync:mcpb-version\` to fix.`);
   process.exit(1);
 }
 
-manifest.version = targetVersion;
-writeJson(MANIFEST_PATH, manifest);
-console.log(
-  `[sync-mcpb-version] manifest.json ${currentVersion} → ${targetVersion} (anchor: ${maxEntry.name}@${targetVersion})`,
-);
+for (const m of drift) {
+  const before = m.obj.version;
+  m.obj.version = targetVersion;
+  writeJson(m.path, m.obj);
+  console.log(
+    `[sync-mcpb-version] ${m.label} ${before} → ${targetVersion} (anchor: ${maxEntry.name}@${targetVersion})`,
+  );
+}
 
 // `@nudge-eap/mcp` (내부 패키지) 의 package.json version 도 같이 맞춰주면
 // 외부 의존성/로그에서 일관성이 생기지만, 사용자가 의도적으로 분리해 두었으면

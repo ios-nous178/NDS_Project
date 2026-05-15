@@ -96,15 +96,17 @@ pnpm version-packages
 #    → @nudge-eap/{react,tokens,icons,tailwind-preset} 의 package.json version bump
 #    → CHANGELOG.md 갱신
 #    → 후속 스크립트가 자동 실행:
-#       · sync-mcpb-version.mjs  : packages/mcp/manifest.json 도 최대 DS 버전으로 맞춤
+#       · sync-mcpb-version.mjs  : 루트 package.json + packages/mcp/manifest.json 을 최대 DS 버전으로 sync
 #       · sync-version-docs.mjs  : docs 버전 표 동기화
 
 # 3. 변경 커밋 + main push → release-mcpb.yml 가 빌드/태그/슬랙 알림까지 자동
 ```
 
+DS 4개 패키지(@nudge-eap/{react,tokens,icons,tailwind-preset}) 의 package.json version 이 SSOT 이고, 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 미러입니다. `sync-mcpb-version.mjs` 한 번 실행으로 둘 다 최대 DS 버전으로 끌어올립니다. 루트 미러는 `pack-local-packages.mjs` 가 tarball 파일명에 박는 값이라 자동 sync 가 빠지면 `pack` 이 의도치 않은 다운그레이드를 만들 위험이 있으므로 빠뜨리지 마세요.
+
 워크플로우 트리거 경로: `packages/mcp/src/**`, `packages/tokens/src/**`, `packages/react/src/**`, `packages/icons/svg/**`, `packages/mcp/manifest.json`. 그러나 **`manifest.json` version 이 기존 tag 와 같으면 release skip** 이므로 step 2 의 자동 동기화가 핵심.
 
-CI 의 `pnpm lint` 가 `sync-mcpb-version --check` 로 drift 를 막아 줍니다 — 손으로 어긋나게 만들면 빨갛게 뜸.
+CI 의 `pnpm lint` 가 `sync-mcpb-version --check` 로 루트/manifest 양쪽 drift 를 막아 줍니다 — 손으로 어긋나게 만들면 빨갛게 뜸. `pack-local-packages.mjs` 도 실행 시 root ↔ DS 4개 일치를 assert 하므로 stale 루트로 다운그레이드되는 사고는 더 이상 발생하지 않습니다.
 
 - 가이드/원칙만 추가했어도 외부 전파 필요하면 `pnpm changeset` 으로 영향받는 패키지 골라 patch bump.
 - `@nudge-eap/mcp` (내부) 는 의도적으로 분리. 함께 bump 하려면 changeset 에 명시.
