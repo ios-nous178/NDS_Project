@@ -60,17 +60,6 @@ export const Outlined: Story = {
   ),
 };
 
-export const Elevated: Story = {
-  name: "State/Elevated",
-  render: () => (
-    <div style={{ width: 300 }}>
-      <Card variant="elevated" title="스트레스 관리 프로그램" subtitle="4주 과정 · 주 1회">
-        직장인을 위한 스트레스 관리 프로그램입니다. 전문 상담사와 함께 자신만의 관리법을 찾아보세요.
-      </Card>
-    </div>
-  ),
-};
-
 export const Clickable: Story = {
   name: "State/Clickable",
   args: {

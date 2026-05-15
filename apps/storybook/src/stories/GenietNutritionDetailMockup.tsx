@@ -540,7 +540,7 @@ export default function GenietNutritionDetailMockup() {
           {relatedRecipes.slice(0, isMobile ? 3 : 6).map((recipe) => (
             <Card
               key={recipe.id}
-              variant="elevated"
+              variant="outlined"
               clickable
               thumbnail={
                 <div
@@ -786,7 +786,7 @@ export default function GenietNutritionDetailMockup() {
           {similarFoods.map((sf) => (
             <Card
               key={sf.id}
-              variant="elevated"
+              variant="outlined"
               clickable
               thumbnail={
                 <div

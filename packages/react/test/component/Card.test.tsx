@@ -108,7 +108,7 @@ describe("Card 접근성", () => {
 });
 
 describe("Card variant 조합 & 엣지 케이스", () => {
-  const variants = ["outlined", "elevated", "flat"] as const;
+  const variants = ["outlined", "flat"] as const;
 
   it.each(variants)("variant=%s 가 data-variant로 적용된다", (variant) => {
     const { container } = render(<Card variant={variant} title={variant} />);
