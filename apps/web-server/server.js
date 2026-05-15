@@ -13,6 +13,14 @@ const staticOptions = {
 
 app.get("/health", (_req, res) => res.status(200).send("ok"));
 
+const faviconSvg = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="16" fill="#0f172a"/><path d="M17 46V18H25L42 37.5V18H49V46H41L24 26.5V46H17Z" fill="#ffffff"/></svg>`;
+app.get("/favicon.svg", (_req, res) => {
+  res.set("Content-Type", "image/svg+xml");
+  res.set("Cache-Control", "public, max-age=86400");
+  res.send(faviconSvg);
+});
+app.get("/favicon.ico", (_req, res) => res.redirect(301, "/favicon.svg"));
+
 app.use("/storybook", express.static(path.join(publicDir, "storybook"), staticOptions));
 app.use("/docs", express.static(path.join(publicDir, "docs"), staticOptions));
 
@@ -23,6 +31,7 @@ app.get("/", (_req, res) => {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>넛지 디자인시스템</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link
       rel="preload"
@@ -202,21 +211,21 @@ app.get("/", (_req, res) => {
       <h1>넛지 디자인시스템</h1>
       <p class="lead">토큰, 컴포넌트, 문서를 한곳에서 관리합니다.</p>
       <div class="links">
-        <a class="btn primary" href="/docs/">Docs</a>
-        <a class="btn secondary" href="/storybook/">Storybook</a>
+        <a class="btn primary" href="/docs/" target="_blank" rel="noopener noreferrer">Docs</a>
+        <a class="btn secondary" href="/storybook/" target="_blank" rel="noopener noreferrer">Storybook</a>
       </div>
 
       <section class="shortcuts">
         <div class="shortcuts-label">바로 가기</div>
         <div class="shortcuts-grid">
-          <a class="shortcut" href="/storybook/?path=/story/foundations-all-components--catalog-all">
+          <a class="shortcut" href="/storybook/?path=/story/foundations-all-components--catalog-all" target="_blank" rel="noopener noreferrer">
             <span class="shortcut-text">
               <span class="shortcut-title">전체 컴포넌트</span>
               <span class="shortcut-sub">Foundations · All Components</span>
             </span>
             <span class="shortcut-arrow" aria-hidden="true">→</span>
           </a>
-          <a class="shortcut" href="/storybook/?path=/story/foundations-icons--all">
+          <a class="shortcut" href="/storybook/?path=/story/foundations-icons--all" target="_blank" rel="noopener noreferrer">
             <span class="shortcut-text">
               <span class="shortcut-title">아이콘</span>
               <span class="shortcut-sub">Foundations · Icons</span>
@@ -239,6 +248,24 @@ app.get("/", (_req, res) => {
             <span class="resource-sub">Notion · 비개발자용 셋업 문서</span>
           </span>
           <span class="resource-arrow" aria-hidden="true">↗</span>
+        </a>
+      </section>
+
+      <section class="resources">
+        <div class="resources-label">목업 작성 가이드</div>
+        <a class="resource" href="http://nudge-eap-design-system.eba-afhh232q.ap-northeast-2.elasticbeanstalk.com/docs/NUDGE_EAP_DS_MCP_USAGE" target="_blank" rel="noopener noreferrer">
+          <span class="resource-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M14 2v6h6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="resource-text">
+            <span class="resource-title">디자인시스템 MCP 활용 가이드</span>
+            <span class="resource-sub">Docs · 목업 작성 규칙 및 MCP 사용법</span>
+          </span>
+          <span class="resource-arrow" aria-hidden="true">→</span>
         </a>
       </section>
     </main>
