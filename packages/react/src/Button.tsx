@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  coolGray,
   cv,
   fontFamily,
   fontWeight,
@@ -175,10 +174,10 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.primary.main,
       },
       disabled: {
-        // Figma --semantic-button-bg-disabled = #9CA2AE (cool-gray/400)
-        background: coolGray[400],
+        // Figma --semantic-button-bg-disabled = #9CA2AE.
+        background: cv.button.bgDisabled,
         text: cv.bg.white,
-        border: coolGray[400],
+        border: cv.button.bgDisabled,
       },
       hover: {
         background: cv.primary.hover,
@@ -248,7 +247,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     // Figma: Solid/Secondary (eap-button-bg-secondary-*)
     //   default = #F1F8FD (primary.bgLighter)
     //   hover   = #E3F2FC (primary.bg)
-    //   disabled bg = #E6E7EB (cool-gray/200), text = #9CA2AE (cool-gray/400)
+    //   disabled bg/text use semantic button disabled tokens.
     solid: {
       enabled: {
         background: cv.primary.bgLighter,
@@ -256,9 +255,9 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.primary.bgLighter,
       },
       disabled: {
-        background: coolGray[200],
-        text: coolGray[400],
-        border: coolGray[200],
+        background: cv.button.bgSecondaryDisabled,
+        text: cv.button.textDisabled,
+        border: cv.button.bgSecondaryDisabled,
       },
       hover: {
         background: cv.primary.bg,
@@ -274,9 +273,9 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.primary.bgLighter,
       },
       disabled: {
-        background: coolGray[200],
-        text: coolGray[400],
-        border: coolGray[200],
+        background: cv.button.bgSecondaryDisabled,
+        text: cv.button.textDisabled,
+        border: cv.button.bgSecondaryDisabled,
       },
       hover: {
         background: cv.primary.bg,

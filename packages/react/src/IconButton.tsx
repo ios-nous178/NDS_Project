@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, neutral, radius, transition } from "@nudge-eap/tokens";
+import { cv, radius, transition } from "@nudge-eap/tokens";
 
 export type IconButtonSize = "x-large" | "large" | "medium" | "small";
 
@@ -30,8 +30,7 @@ const iconButtonStyles = `
   }
 
   :where(.${ICON_BUTTON_CLASS}:not(:disabled):hover) {
-    /* Figma 171:8590 — hover bg = #F5F5F5 (neutral/100) */
-    background: var(--nds-icon-button-hover-bg, ${neutral[100]});
+    background: var(--nds-icon-button-hover-bg, ${cv.bg.light});
   }
 
   :where(.${ICON_BUTTON_CLASS}:focus) {
