@@ -81,14 +81,17 @@ export const SCOPE_ADVISORY = {
       keywords: ADMIN_KEYWORDS,
       action:
         "어드민/CMS/운영툴/백오피스 화면이라면 이 DS(@nudge-eap/react)를 쓰지 말 것. " +
-        "antd v5를 사용하고, 시각/구조 컨벤션은 get_admin_cms_guide를 호출해 확인할 것. " +
+        "antd v5를 사용하고, 시각/구조 컨벤션은 get_guide({ topic: 'admin-cms' })를 호출해 확인할 것. " +
         "두 라이브러리를 한 화면에서 섞어쓰지 말 것.",
-      tools: ["get_admin_cms_guide", "get_setup_instructions(intent='admin-cms')"],
+      tools: [
+        "get_guide({ topic: 'admin-cms' })",
+        "get_setup({ step: 'full', intent: 'admin-cms' })",
+      ],
     },
     "user-app": {
       action:
         "사용자 앱 화면(B2C, 멘탈케어 사용자 플로우)이라면 이 MCP의 도구들을 적극 사용. " +
-        "get_design_principles → search_component → get_component_guide/get_pattern_guide → 작성 → validate_mockup.",
+        "get_guide({ topic: 'principles' }) → search_component → get_guide({ topic: 'component:<Name>' }) / get_guide({ topic: 'pattern:<name>' }) → 작성 → validate_mockup.",
     },
   },
   hardRule: "두 디자인시스템을 한 화면에서 혼용 금지.",
@@ -476,79 +479,104 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Card: {
     name: "Card",
     summary:
-      "독립된 콘텐츠 단위를 시각적으로 그룹화하는 컨테이너. Compound 구조: Card.Root / Thumbnail / Header / Body / Footer (순서 고정). " +
-      "4가지 Variant — Content(범용) / Summary(CMS 대시보드 KPI) / Banner(앱 홈 프로모션) / Profile(상담사·마이페이지). " +
-      "사용 기준 3축이 모두 충족될 때만 Card 사용: ① 독립성(개별 탐색·선택 단위), ② 이종 콘텐츠 결합(이미지+텍스트+메타 등 2종 이상), ③ 비선형 탐색(그리드·캐러셀·수평스크롤). " +
-      "하나라도 미충족이면 List / Table / Feed / Chip 으로 대체.",
-    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=604-2",
+      "독립된 콘텐츠 단위를 시각적으로 그룹화하는 컨테이너. Variant 카탈로그가 아니라 '내부 구조 + 생성 규칙' 표준 — 임의 스타일 변형 차단이 목적. " +
+      "Compound 구조(순서 고정): Card.Root / Thumbnail / Header / Body / Footer. " +
+      "Anatomy 요소(필수/선택): Title(Required, 정확히 1개) · Thumbnail · Avatar · Badge/Chip · Description · Metadata · CTA · Footer (모두 Optional). " +
+      "사용 기준 3축 모두 충족시에만 Card: ① 독립성(개별 탐색·선택), ② 이종 콘텐츠(이미지+텍스트+메타 2종+), ③ 비선형 탐색(그리드·캐러셀). 하나라도 미충족 → List/Table/Feed/Chip.",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=713-2",
     pitfalls: [
-      "Card Overuse — 단순 텍스트 목록(상담 내역, 예약 리스트, 알림)을 Card로 감싸는 패턴. 정보 밀도 ↓ + 스크롤 효율 ↓. 텍스트+상태+날짜만이면 List Row 로 변경.",
-      "Nested Card — Card 안에 또 다른 Card 삽입 금지. 시각 레이어 3단계 이상 발생 → 정보 계층 붕괴. 내부 영역은 Section Divider 또는 배경색으로 구분.",
-      "Shadow 경쟁(Visual Noise) — 동일 화면에 elevation Level 0~3 혼재 금지. Default 는 Shadow 없이 1px Border 만, Hover 에서만 shadow-sm. 한 화면에 Shadow 레벨 최대 2종.",
-      "Badge/Tag/Chip 4개 이상 한 카드에 배치 금지 — 카드 내 Badge 최대 2개(가장 중요한 상태만), 나머지는 Footer 메타텍스트로 처리.",
-      "Radius 불일치(Frankenstein UI) — 한 화면에 4/8/12/16/24px 혼재 금지. 플랫폼별 단일값만: Web 8px · App 12px · CMS·Admin 6px (Banner Card 전체너비일 때만 0px 예외 허용).",
-      "Footer 버튼 3개 이상 금지 — Primary 1개 + Secondary 1개까지. 더 필요하면 Card 구조가 아님 (Modal / BottomSheet 검토).",
-      "Card.Header / Card.Body / Card.Footer 는 styles.css 에서 자체 padding 보유. 외곽에 padding 을 또 주면 이중 패딩.",
-      "그림자와 보더를 동시 적용해 '떠있고 + 갇혀있는' 이중 계층 만들지 말 것 — DESIGN.md Don'ts.",
-      "그리드 없이 카드 간격을 8/12/16/20px 임의 혼합 금지. Auto Layout 필수: Mobile 16px, Web·CMS 24px.",
+      "[Figma 권위 룰] 카드 shadow 전면 금지 — 카드 구분은 border 1px 로만. box-shadow / drop-shadow / elevation 임의 적용 모두 위반. 이전 가이드의 hover→shadow-sm 권장은 deprecated.",
+      "[Figma 권위 룰] 임의 pastel/gradient/opacity 배경 금지 — White 또는 정의된 Surface 토큰 외 배경색 생성 불가. linear-gradient(), rgba 투명도, #E8F4FD 류 임의 hex 모두 차단.",
+      "[Figma 권위 룰] Title 생략 금지 — 카드당 정확히 1개, 항상 가장 높은 시각적 위계. Description/Metadata/CTA 가 Title 자리를 대신할 수 없음.",
+      "Nested Card 금지 — Card 안에 또 다른 Card 삽입 X. 중첩이 필요하면 List 또는 Table 로 대체. bordered 박스를 카드처럼 흉내내는 것도 위반.",
+      "Decorative Card 금지 — 콘텐츠 위계가 없는 장식용 카드 생성 금지. 사용 기준 3축(독립성·이종·비선형) 미충족이면 Card 가 아님.",
+      "Avatar + Thumbnail 동시 사용 불가 — 둘 중 하나만 (Avatar max 1개).",
+      "Badge/Chip 한 카드 max 2개. CTA·Metadata 합쳐 3개 초과 동시 사용 금지.",
+      "CTA max 1개 (Primary CTA 1개 원칙) — 항상 카드 최하단. CTA 가 Title 보다 강조되면 안 됨.",
+      "Footer 버튼 3개 이상 금지 — Primary 1 + Secondary 1 까지. 더 필요하면 Modal/BottomSheet 검토.",
+      "Card.Header / Card.Body / Card.Footer 는 styles.css 에 자체 padding 보유. 외곽에 padding 또 주면 이중 패딩.",
+      "Description max 3줄 (line-clamp 적용 권장). Metadata max 2개 항목.",
+      "그리드 카드 간격 임의 혼합(8/12/16/20px) 금지. Auto Layout: Mobile 16px, Web·CMS 24px.",
+      "Card Overuse — 단순 텍스트+상태+날짜 목록(상담 내역·예약·알림)을 Card 로 감싸는 패턴. 정보 밀도 ↓, List Row 로 변경.",
     ],
     recommended: [
-      "Content Card (PC·Mobile·CMS 범용): 썸네일(선택) + 제목 + 설명 + 하단 메타·액션. <Card.Root><Card.Thumbnail.../><Card.Header><Card.Title>...</Card.Title></Card.Header><Card.Body>...</Card.Body><Card.Footer>...</Card.Footer></Card.Root>",
-      "Summary Card (CMS·Admin 전용): 주요 KPI 수치 + 보조지표 + 트렌드. 슬롯 대신 div + 토큰으로 typography 직접 구성이 가독성 ↑.",
-      "Banner Card (App·Mobile): 배경 이미지 + Bottom-up Gradient Overlay(rgba(0,0,0,0) → rgba(0,0,0,0.6)) 필수 + 제목 + CTA. 저조도 이미지에서 텍스트 가독성 확보.",
-      "Profile Card (PC·Mobile): 아바타 + 이름 + 자격 + Tag(최대 2) + CTA. 상담사·사용자 프로필 전용.",
-      "클릭 가능 카드: <Card.Root clickable onClick={...}> — DS hover 효과 자동 적용. 카드 내부에 또 별도 button 두면 이벤트 버블링 주의.",
+      "Content Card (범용): 썸네일(선택) + Title + Description + Metadata + CTA. <Card.Root><Card.Thumbnail/><Card.Header><Card.Title>…</Card.Title></Card.Header><Card.Body>…</Card.Body><Card.Footer>…</Card.Footer></Card.Root>",
+      "Summary Card (CMS·Admin): KPI 수치 + 보조지표 + 트렌드. 슬롯 대신 div + 토큰으로 typography 직접 구성.",
+      "Banner Card (App·Mobile): 배경 이미지 + Bottom-up Gradient Overlay(rgba(0,0,0,0) → rgba(0,0,0,0.6)) + Title + CTA.",
+      "Profile Card: 아바타 + 이름 + 자격 + Tag(max 2) + CTA.",
+      "클릭 가능 카드: <Card.Root clickable onClick={…}>. 내부 별도 button 두면 이벤트 버블링 주의.",
+      "CTA 4 유형(레이아웃에 따라 택1, 임의 크기 변형 금지): " +
+        "Full-width 48px(Btn Large, 카드 100% width) — Mobile/App 콘텐츠/프로그램 카드, Solid Primary, label Body3 Medium 14px. " +
+        "Compact 40px(Btn Small, auto min 80px) — Summary/수치/공간 제약 카드, Outlined 또는 Solid Primary, label Caption1 Medium 13px. " +
+        "Ghost/Link(auto text-width, Text Button) — underline 또는 chevron, Brand Color 텍스트, label Body3 Medium 14px. " +
+        "Icon+Text 44px(Btn Medium, auto min 88px) — PC 상담 예약/전문가/퀵 액션, icon 16px + text, Solid 또는 Outlined Primary.",
     ],
     usagePolicy: {
       useFor: [
-        "이미지/썸네일 포함, 시각 탐색이 필요한 콘텐츠 (사운드테라피, 소식/뉴스, 프로그램 목록)",
-        "개별 오브젝트를 선택·비교 (상담사 선택, 상품 카드)",
-        "2열 이상 그리드에 동등한 비중으로 나열",
-        "KPI·통계 수치 + 보조지표 + 트렌드 표시 (Summary Card)",
-        "배경 이미지 + 오버레이 + CTA 조합 프로모션 (Banner Card)",
+        "이미지/썸네일 포함 시각 탐색 콘텐츠 (사운드테라피, 소식, 프로그램)",
+        "개별 오브젝트 선택·비교 (상담사 선택, 상품)",
+        "2열 이상 그리드에 동등 비중 나열",
+        "KPI·통계 수치 + 보조지표 + 트렌드 (Summary Card)",
+        "배경 이미지 + 오버레이 + CTA 프로모션 (Banner Card)",
       ],
       doNotUseFor: [
-        "텍스트+날짜+상태만으로 구성된 단순 데이터 (상담 내역·예약·알림) → List Row",
-        "10개 이상 항목의 수직 스크롤 탐색 → List",
+        "텍스트+날짜+상태만의 단순 데이터 (상담 내역·예약·알림) → List Row",
+        "10개 이상 항목의 수직 스크롤 → List",
         "컬럼별 비교가 핵심인 데이터 → Table",
-        "알림·채팅처럼 시간순 소비되는 연속 정보 → Feed / List",
+        "시간순 연속 정보 (알림·채팅) → Feed / List",
         "탭·필터·내비게이션 역할 → Chip / Navigation",
+        "장식용 (Decorative card) — 사용 기준 3축 미충족이면 Card 가 아님",
       ],
       limits: {
+        titleRequired: 1,
+        maxAvatarPerCard: 1,
         maxBadgePerCard: 2,
+        maxBadgePlusChipPlusCtaPlusMetadata: 3,
+        maxDescriptionLines: 3,
+        maxMetadataItems: 2,
+        maxCtaPerCard: 1,
         maxFooterButtons: 2,
-        titleMaxLines: 2,
-        contentMaxLines: 3,
-        minHeight: "120px",
         primaryButtonPerCard: 1,
       },
     },
     sizeMatrix: {
-      paddingPC: "20-24px",
-      paddingMobile: "16px",
-      thumbnailPC: "200×120 (16:9) 또는 1:1 정사각형 고정",
-      thumbnailMobile: "전체 너비 × 160 (16:9)",
-      gridGapMobile: "16px",
-      gridGapWebCMS: "24px",
+      paddingMin: "16px (모든 방향 동일)",
+      paddingMax: "24px (모든 방향 동일)",
+      cardGapMin: "8px",
+      cardGapMax: "16px",
+      elementGapTitleDescription: "4px",
+      elementGapDescriptionMetadata: "8px",
+      elementGapMetadataCta: "16px",
+      footerSeparator: "border-top 1px · padding-top 16px",
+      typoTitle: "Pretendard Headline 5 Bold 18px / LH 26px — var(--font-size-headline-5)",
+      typoDescription: "Pretendard Body 3 Regular 14px / LH 20px — var(--font-size-body-3)",
+      typoMetadata: "Pretendard Caption 1 Regular 13px / LH 18px — var(--font-size-caption-1)",
+      typoCta: "Pretendard Body 3 Medium 14px / LH 20px — var(--font-size-body-3)",
+      ctaFullWidth: "48px height (Btn Large) · 카드 100% width · Mobile/App 콘텐츠 카드",
+      ctaCompact: "40px height (Btn Small) · auto min 80px · Summary/수치/공간 제약 카드",
+      ctaGhost: "auto (Text Button) · auto text-width · underline 또는 chevron",
+      ctaIconText: "44px height (Btn Medium) · auto min 88px · PC 상담 예약/전문가 카드",
       radiusWeb: "8px",
       radiusApp: "12px",
       radiusCMSAdmin: "6px",
+      thumbnailPC: "200×120 (16:9) 또는 1:1 정사각형",
+      thumbnailMobile: "전체 너비 × 160 (16:9)",
     },
     stateMatrix: {
-      default: "Shadow 없음 (Level 0) + Border 1px #E0E0E0 — 일반 콘텐츠 카드, 대시보드 위젯",
-      hover: "shadow-sm = 0 2px 8px rgba(0,0,0,0.08) + Border 1px Brand Color — 마우스 진입 피드백",
-      activeSelected:
-        "shadow-md = 0 4px 16px rgba(0,0,0,0.12) + Border 2px Brand Color — 선택된 상담사 카드, 클릭 상태",
-      raised:
-        "shadow-lg = 0 8px 24px rgba(0,0,0,0.16), Border 없음 — 모달 진입 전 강조 카드(예외적 사용, 최소화)",
+      default: "Border 1px #E0E0E0 + bg white(또는 Surface 토큰). Shadow 없음.",
+      hover:
+        "Border 1px Brand Color (또는 미세한 bg tint). Shadow 금지 — 'shadow-sm 적용' deprecated.",
+      activeSelected: "Border 2px Brand Color. Shadow 금지.",
+      note: "[Figma 권위 룰] 모든 카드 state 에서 box-shadow / drop-shadow 사용 금지. 구분은 오직 border + color.",
     },
     accessibility: [
-      "clickable Card 는 <Card.Root clickable onClick> 으로 키보드 포커스/Enter 핸들링이 자동 들어옴. raw <div onClick> 대체 금지.",
-      "Banner Card 의 텍스트는 Gradient Overlay 위에 얹어야 WCAG AA 대비비 확보. 배경 이미지 위에 직접 텍스트 금지.",
-      "썸네일 <img> 에는 alt 필수 (장식이면 alt=''). 카드 제목과 중복되는 alt 는 비우기.",
+      "clickable Card 는 <Card.Root clickable onClick> — 키보드 포커스/Enter 자동. raw <div onClick> 대체 금지.",
+      "Banner Card 텍스트는 Gradient Overlay 위에 얹어 WCAG AA 대비비 확보. 배경 이미지 위 직접 텍스트 금지.",
+      "썸네일 <img> alt 필수 (장식이면 alt=''). 카드 제목과 중복되는 alt 는 비우기.",
     ],
     interactivePattern:
-      "Card.Root 의 clickable + onClick 으로 인터랙티브화. 카드 내부에 별도 Button 이 있으면 그 Button 의 onClick 에서 e.stopPropagation() 호출해 카드 전체 클릭과 분리. 모든 Card 에 최소 hover 피드백(shadow-sm 또는 배경색) 정의 — 클릭 가능 여부 모호함 방지.",
+      "Card.Root 의 clickable + onClick 으로 인터랙티브화. 내부 별도 Button 의 onClick 에서 e.stopPropagation() 호출해 카드 전체 클릭과 분리. " +
+      "Hover 피드백은 shadow 가 아니라 Border 색 변경 또는 미세한 bg tint 로 표시 — 클릭 가능 여부 모호함 방지하되 Figma 권위 룰(shadow 금지) 준수.",
   },
   Chip: {
     name: "Chip",
@@ -1041,7 +1069,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: [
       "감정 기록 7일: days=[{date,label:'일',done}, ...] 7개",
-      "복약 트래킹: icon='💊', 숫자만 강조 (days 생략)",
+      "복약 트래킹: icon prop 에는 @nudge-eap/icons 컴포넌트(예: PillIcon — find_icon('pill') 로 확인) 를 넘기고 숫자만 강조 (days 생략). icon prop 에 이모지 문자열 절대 금지.",
       "끊긴 후 재시작: footer로 '작은 시작' 같은 격려 문구",
     ],
   },
@@ -1876,6 +1904,8 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "연한 primary 배경 위에 연한 primary filled tag/box를 반복하지 마세요 — 같은 톤 위 같은 톤 강조는 위계를 만들지 못함",
     "로고의 gradient/accent 컬러를 UI 배경/태그/CTA 컬러처럼 사용하지 마세요 — 로고 표현과 UI 시스템 컬러는 분리",
     "DS 컴포넌트에 정확히 매칭되는 쓰임이 있는데 raw <button>/<input>/<span>으로 대체 금지",
+    "이모지 절대 사용 금지 — 어떤 위치에서도(라벨/버튼/제목/placeholder/empty state) 이모지를 텍스트로 박지 마세요. 아이콘이 필요하면 find_icon. validate_mockup 의 emoji-banned 룰로 자동 검출됨.",
+    "→ ← ✓ ★ • 같은 텍스트 기호 사용 금지 — 화살표/체크/별점/불릿을 문자로 표현하지 마세요. 아이콘은 find_icon, 진행/별점/리스트는 DS 컴포넌트(StatusTimeline/Rating/Dense list) 사용. validate_mockup 의 text-symbol-banned 룰로 자동 검출됨.",
   ],
   bannedPatterns: [
     {
@@ -2073,7 +2103,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "icon-color": {
     name: "icon-color",
     summary:
-      "아이콘 컬러 매핑 기준. Figma Iconography(379:490)의 Color Usage 표와 `--semantic-icon-*` 시맨틱 토큰을 단일 진실 소스로 사용. 사이즈/스타일/터치 영역 기준은 get_pattern_guide('iconography')를 함께 확인.",
+      "아이콘 컬러 매핑 기준. Figma Iconography(379:490)의 Color Usage 표와 `--semantic-icon-*` 시맨틱 토큰을 단일 진실 소스로 사용. 사이즈/스타일/터치 영역 기준은 get_guide({ topic: 'pattern:iconography' })를 함께 확인.",
     rules: [
       "아이콘 컴포넌트의 기본값은 currentColor다. 단독 배치 시 부모 color가 명시되어 있지 않으면 본문색/검정으로 보여 어색할 수 있다.",
       "Button, IconButton, Chip, Select 등 DS 컴포넌트 슬롯 안의 아이콘은 컴포넌트가 정한 텍스트 컬러를 상속하게 두는 것이 기본이다.",
@@ -2100,7 +2130,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   iconography: {
     name: "iconography",
     summary:
-      "Figma Iconography(379:490) 라이브러리 기준 아이콘 사이즈·터치 영역·Line/Filled 스타일·카테고리 전반 가이드. 컬러 토큰은 get_pattern_guide('icon-color')와 함께 본다.",
+      "Figma Iconography(379:490) 라이브러리 기준 아이콘 사이즈·터치 영역·Line/Filled 스타일·카테고리 전반 가이드. 컬러 토큰은 get_guide({ topic: 'pattern:icon-color' })와 함께 본다.",
     rules: [
       "기본 사이즈는 24px. 인터페이스 용도에 맞춰 12 / 16 / 20 / 24 / 32 / 48 px의 6단계만 사용한다. 최소 사이즈는 12px.",
       "15px 이하의 작은 사이즈에서는 시각 복잡도를 낮추기 위해 Fill(Filled) 스타일을 우선 사용한다. (Line은 얇은 선이 손상되어 보임)",
