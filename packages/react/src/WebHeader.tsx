@@ -4,7 +4,6 @@ import {
   fontFamily,
   fontWeight,
   grid,
-  neutral,
   radius,
   sizing,
   spacing,
@@ -155,7 +154,7 @@ const webHeaderStyles = `
     justify-content: center;
     min-height: ${sizing.button.sm}px;
     padding: 0 ${spacing[14]}px;
-    background: ${neutral[100]};
+    background: ${cv.bg.light};
     color: ${cv.primary.main};
     font-family: inherit;
     font-size: ${typeScale.body1.fontSize}px;
@@ -171,7 +170,7 @@ const webHeaderStyles = `
   }
 
   :where(.${WH_DOWNLOAD_CLASS}:hover) {
-    background: ${neutral[200]};
+    background: ${cv.bg.disabled};
   }
 
   /* 로그인 / 로그아웃 — white bg + primary border

@@ -238,14 +238,69 @@ function listTokens(group?: string) {
 }
 
 function lookupToken(query: string) {
+  const normalizedQuery = query.trim().toLowerCase();
   return manifest.tokens
     .map((t) => ({
       ...t,
-      score: Math.max(scoreMatch(query, t.name), scoreMatch(query, t.value)),
+      policy: getTokenLookupPolicy(t),
+      score: getTokenLookupScore(t, normalizedQuery),
     }))
     .filter((t) => t.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 10);
+}
+
+function getTokenLookupScore(token: Manifest["tokens"][number], query: string): number {
+  const baseScore = Math.max(scoreMatch(query, token.name), scoreMatch(query, token.value));
+  if (baseScore <= 0) return 0;
+
+  let score = baseScore;
+  if (token.group === "semantic") score += 45;
+  if (isPolicyRadiusOrShapeToken(token)) score += 30;
+  if (isRawPaletteToken(token)) score -= 35;
+  if (isRawPaletteToken(token) && isRawPaletteQuery(query)) score += 20;
+
+  return score;
+}
+
+function getTokenLookupPolicy(token: Manifest["tokens"][number]) {
+  if (token.group === "semantic") {
+    return {
+      safeForMockup: true,
+      note: "Preferred semantic token. Use this before raw palette tokens.",
+    };
+  }
+  if (isPolicyRadiusOrShapeToken(token)) {
+    return {
+      safeForMockup: true,
+      note: "Approved radius/shape policy token.",
+    };
+  }
+  if (isRawPaletteToken(token)) {
+    return {
+      safeForMockup: false,
+      note: "Raw palette token. Avoid in mockups unless you are implementing the DS itself; prefer --semantic-* tokens.",
+    };
+  }
+  return {
+    safeForMockup: true,
+    note: "Policy-safe design token.",
+  };
+}
+
+function isPolicyRadiusOrShapeToken(token: Manifest["tokens"][number]) {
+  return (
+    (token.group === "radius" || token.group === "shape") &&
+    /--(?:radius|shape)-(?:sm|md|lg|pill)$/.test(token.name)
+  );
+}
+
+function isRawPaletteToken(token: Manifest["tokens"][number]) {
+  return /^--color-(?:neutral|coolGray|blue|magenta|yellow|red|green)-/.test(token.name);
+}
+
+function isRawPaletteQuery(query: string) {
+  return /\b(?:neutral|coolgray|cool-gray|blue|magenta|yellow|red|green)\b/.test(query);
 }
 
 /* ───────────── validate_mockup ───────────── */
