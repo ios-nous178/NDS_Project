@@ -27,12 +27,12 @@ import { shadow, elevationLevel } from "@nudge-eap/tokens";
 
 ## Level별 정의
 
-| Level | Key           | Alias                    | 역할              | CSS Token         | 사용 컴포넌트                          |
-| ----- | ------------- | ------------------------ | ----------------- | ----------------- | -------------------------------------- |
-| E0    | `shadow["0"]` | `elevationLevel.none`    | 기본 (Base)       | `var(--shadow-0)` | 페이지, Section, 기본 Card             |
-| E1    | `shadow["1"]` | `elevationLevel.subtle`  | 부유 (Subtle)     | `var(--shadow-1)` | Card Hover, Sticky Header, Pinned Row  |
-| E2    | `shadow["2"]` | `elevationLevel.overlay` | 오버레이(Overlay) | `var(--shadow-2)` | Dropdown, Popover, Tooltip, Datepicker |
-| E3    | `shadow["3"]` | `elevationLevel.modal`   | 최상위 (Modal)    | `var(--shadow-3)` | Modal, Dialog, Bottom Sheet, Toast     |
+| Level | Key           | Alias                    | 역할              | CSS Token         | 사용 컴포넌트                              |
+| ----- | ------------- | ------------------------ | ----------------- | ----------------- | ------------------------------------------ |
+| E0    | `shadow["0"]` | `elevationLevel.none`    | 기본 (Base)       | `var(--shadow-0)` | 페이지, Section, 기본 Card                 |
+| E1    | `shadow["1"]` | `elevationLevel.subtle`  | 부유 (Subtle)     | `var(--shadow-1)` | Sticky Header, Pinned Row (Card 사용 금지) |
+| E2    | `shadow["2"]` | `elevationLevel.overlay` | 오버레이(Overlay) | `var(--shadow-2)` | Dropdown, Popover, Tooltip, Datepicker     |
+| E3    | `shadow["3"]` | `elevationLevel.modal`   | 최상위 (Modal)    | `var(--shadow-3)` | Modal, Dialog, Bottom Sheet, Toast         |
 
 ### CSS 값
 

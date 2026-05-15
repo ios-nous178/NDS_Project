@@ -4,7 +4,6 @@ import {
   fontFamily,
   fontWeight,
   radius,
-  shadow,
   spacing,
   transition,
   typeScale,
@@ -40,10 +39,6 @@ const cardStyles = `
 
   :where(.${CARD_ROOT_CLASS}[data-variant="outlined"]) {
     border: 1px solid var(--nds-card-border-color, ${cv.border.light});
-  }
-
-  :where(.${CARD_ROOT_CLASS}[data-variant="elevated"]) {
-    box-shadow: ${shadow["1"]};
   }
 
   :where(.${CARD_ROOT_CLASS}[data-clickable="true"]) {
@@ -134,7 +129,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /* ─── Types ─── */
 
-export type CardVariant = "outlined" | "elevated" | "flat";
+export type CardVariant = "outlined" | "flat";
 
 /* ─── Compound: Root ─── */
 

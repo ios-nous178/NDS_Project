@@ -251,9 +251,7 @@ Noto Sans KR을 메인 폰트로 사용합니다. 구글 폰트로 한국어 최
 플랫 디자인 기반. 모달/플로팅 요소에만 그림자를 사용합니다.
 
 - **Subtle**: `0 0 6px rgba(0,0,0,0.04)` — 미세 구분
-- **Light**: `0 1px 4px rgba(0,0,0,0.1)` — 카드
 - **Float**: `0 2px 6px rgba(0,0,0,0.15)` — 플로팅 버튼
-- **Card**: `0 3px 10px #DDD` — 카드 그림자
 - **Modal**: `0 11px 15px -7px rgba(0,0,0,0.2), 0 9px 46px 8px rgba(0,0,0,0.12), 0 24px 38px 3px rgba(0,0,0,0.14)` — Material Design 스타일 모달
 - **Top shadow**: `0 -2px 10px rgba(17,17,17,0.05)` — 하단 고정 요소 상단 그림자
 
