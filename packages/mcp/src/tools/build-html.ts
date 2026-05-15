@@ -15,6 +15,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import fs from "node:fs";
 import path from "node:path";
+import { getAugmentedPath, getToolProcessEnv } from "./process-env.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -89,12 +90,14 @@ export async function buildSinglefileHtml(
     try {
       await execFileAsync("npm", ["install", "--save-dev", "vite-plugin-singlefile"], {
         cwd,
+        env: getToolProcessEnv(),
         timeout: NPM_INSTALL_TIMEOUT_MS,
       });
       installedSinglefile = true;
     } catch (err) {
       return fail(
         `Failed to install vite-plugin-singlefile: ${(err as Error).message}. ` +
+          `MCP tried with PATH=${getAugmentedPath()}. ` +
           `Try running 'npm install --save-dev vite-plugin-singlefile' manually.`,
       );
     }
@@ -124,6 +127,7 @@ export async function buildSinglefileHtml(
   try {
     const result = await execFileAsync("npx", ["vite", "build"], {
       cwd,
+      env: getToolProcessEnv(),
       timeout: VITE_BUILD_TIMEOUT_MS,
       maxBuffer: BUILD_MAX_BUFFER,
     });
@@ -133,6 +137,7 @@ export async function buildSinglefileHtml(
     const e = err as { stdout?: string; stderr?: string; message?: string };
     return fail(
       `vite build failed: ${e.message ?? "unknown error"}\n` +
+        `PATH used by MCP: ${getAugmentedPath()}\n` +
         tailLines(`${e.stdout ?? ""}\n${e.stderr ?? ""}`.trim(), 20),
     );
   }
