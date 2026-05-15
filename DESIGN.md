@@ -308,9 +308,14 @@ sizing:
     xs: 38px
     field: 48px
   tabs:
-    line: 50px
-    pill: 35px
-    square: 36px
+    line:
+      mobile: 50px
+      pc: 56px
+    chip:
+      mobile: 36px
+      pc: 44px
+    segment:
+      pc: 56px
   appBar:
     height: 52px
   bottomBar:
@@ -322,11 +327,10 @@ sizing:
 # ── Elevation ───────────────────────────────────────────────
 elevation:
   shadow:
-    sm: "0 1px 3px rgba(0,0,0,0.1)"
-    md: "0 4px 12px rgba(0,0,0,0.15)"
-    lg: "0 11px 15px -7px rgba(0,0,0,0.2)"
-    up: "0 -4px 12px rgba(0,0,0,0.1)"
-    none: "none"
+    0: "none"
+    1: "0px 1px 4px rgba(0, 0, 0, 0.08)"
+    2: "0px 4px 12px rgba(0, 0, 0, 0.10)"
+    3: "0px 8px 24px rgba(0, 0, 0, 0.12)"
   zIndex:
     base: 0
     dropdown: 100

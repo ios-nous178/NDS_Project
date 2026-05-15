@@ -10,6 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import prettier from "prettier";
 import { parse as parseYaml } from "yaml";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,7 +34,7 @@ const tokens = parseFrontmatter(raw);
 // ── Helpers ────────────────────────────────────────────────
 
 const HEADER =
-  "// Auto-generated from DESIGN.md — do not edit manually\n// Run `pnpm generate:tokens` to regenerate\n\n";
+  "// Auto-generated from DESIGN.md — do not edit manually\n// Run `pnpm generate:tokens` to regenerate\n";
 
 function stripUnit(val) {
   if (typeof val === "string" && val.endsWith("px")) return Number(val.replace("px", ""));
@@ -175,7 +176,15 @@ function generateSpacing() {
   for (const [group, entries] of Object.entries(tokens.sizing)) {
     lines.push(`  ${group}: {`);
     for (const [k, v] of Object.entries(entries)) {
-      lines.push(`    ${fmtKey(k)}: ${stripUnit(v)},`);
+      if (typeof v === "object" && v !== null) {
+        lines.push(`    ${fmtKey(k)}: {`);
+        for (const [nestedKey, nestedValue] of Object.entries(v)) {
+          lines.push(`      ${fmtKey(nestedKey)}: ${stripUnit(nestedValue)},`);
+        }
+        lines.push("    },");
+      } else {
+        lines.push(`    ${fmtKey(k)}: ${stripUnit(v)},`);
+      }
     }
     lines.push("  },");
   }
@@ -264,6 +273,24 @@ function generateElevation() {
   }
   lines.push("} as const;\n");
 
+  const shadowKeys = Object.keys(elev.shadow);
+  if (
+    shadowKeys.includes("0") &&
+    shadowKeys.includes("1") &&
+    shadowKeys.includes("2") &&
+    shadowKeys.includes("3")
+  ) {
+    lines.push("export const elevationLevel = {");
+    lines.push('  none: shadow["0"],');
+    lines.push('  subtle: shadow["1"],');
+    lines.push('  overlay: shadow["2"],');
+    lines.push('  modal: shadow["3"],');
+    lines.push("} as const;\n");
+
+    lines.push("export type ShadowLevel = keyof typeof shadow;");
+    lines.push("export type ElevationLevelName = keyof typeof elevationLevel;\n");
+  }
+
   // zIndex
   lines.push("export const zIndex = {");
   for (const [k, v] of Object.entries(elev.zIndex)) {
@@ -348,7 +375,7 @@ let hasError = false;
 
 for (const [filename, generator] of Object.entries(FILES)) {
   const filePath = path.join(TOKENS_SRC, filename);
-  const generated = generator();
+  const generated = await prettier.format(generator(), { filepath: filePath });
 
   if (mode === "write") {
     fs.writeFileSync(filePath, generated);
