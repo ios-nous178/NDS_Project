@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { createRequire } from "node:module";
+import { getToolProcessEnv } from "./process-env.js";
 
 interface DevServerSession {
   id: string;
@@ -102,7 +103,7 @@ export async function startDevServer(args: {
 
   const child = spawn(command, commandArgs, {
     cwd,
-    env: { ...process.env, BROWSER: "none" },
+    env: getToolProcessEnv({ BROWSER: "none" }),
     stdio: "pipe",
   });
 
