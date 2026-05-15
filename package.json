@@ -28,6 +28,8 @@
     "smoke:mcpb": "node scripts/smoke-mcpb.mjs",
     "smoke:mcp-source": "pnpm --filter @nudge-eap/mcp build && node scripts/smoke-mcpb.mjs --source",
     "release:local": "node scripts/pack-local-packages.mjs && node scripts/sync-version-docs.mjs",
+    "release-notes": "node scripts/generate-friendly-changelog.mjs",
+    "release-notes:dry": "node scripts/generate-friendly-changelog.mjs --dry-run",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint && markdownlint-cli2 \"docs/**/*.md\" && node scripts/sync-version-docs.mjs --check && node scripts/sync-mcpb-version.mjs --check",
