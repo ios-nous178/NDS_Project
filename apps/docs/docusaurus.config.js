@@ -50,6 +50,7 @@ const config = {
         theme: {
           customCss: [
             require.resolve("./src/css/custom.css"),
+            require.resolve("../../packages/tokens/dist/tokens.css"),
             require.resolve("../../packages/react/dist/styles.css"),
           ],
         },

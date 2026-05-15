@@ -832,3 +832,241 @@ html[data-theme="dark"] .mcpSection {
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Docs shell tone: does not touch component previews or nds-* styles ─── */
+
+.hero {
+  padding: 112px 0 72px;
+  background: #ffffff;
+}
+
+html[data-theme="dark"] .hero {
+  background: #0b1120;
+}
+
+.heroGrid {
+  opacity: 0.35;
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 65% 54% at 50% 22%, #000 18%, transparent 72%);
+}
+
+.heroEyebrow {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+html[data-theme="dark"] .heroEyebrow {
+  color: #94a3b8;
+}
+
+.heroEyebrowDot {
+  display: none;
+}
+
+.heroTitle {
+  font-size: clamp(2.4rem, 5vw, 3.45rem);
+  font-weight: 760;
+  letter-spacing: -0.032em;
+  line-height: 1.12;
+}
+
+.heroGradient {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: inherit;
+}
+
+.heroDesc {
+  color: #475569;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+html[data-theme="dark"] .heroDesc {
+  color: #cbd5e1;
+}
+
+.btnPrimary,
+.btnSecondary,
+.mcpLinkPrimary,
+.mcpLinkSecondary {
+  border-radius: 8px;
+  box-shadow: none;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.btnPrimary {
+  background: #0f172a;
+  color: #ffffff !important;
+}
+
+.btnPrimary:hover {
+  background: #1e293b;
+  box-shadow: none;
+  transform: none;
+}
+
+.btnSecondary {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #0f172a !important;
+}
+
+.btnSecondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: none;
+  transform: none;
+}
+
+html[data-theme="dark"] .btnPrimary {
+  background: #f8fafc;
+  color: #0f172a !important;
+}
+
+html[data-theme="dark"] .btnPrimary:hover {
+  background: #e2e8f0;
+}
+
+html[data-theme="dark"] .btnSecondary {
+  background: #0f172a;
+  border-color: #1e293b;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .btnSecondary:hover {
+  background: #111827;
+  border-color: #334155;
+}
+
+.heroChips li,
+.featureCard,
+.codeCard,
+.roleCard {
+  border-color: #e2e8f0;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .heroChips li,
+html[data-theme="dark"] .featureCard,
+html[data-theme="dark"] .codeCard,
+html[data-theme="dark"] .roleCard {
+  border-color: #1e293b;
+}
+
+.featureCard,
+.roleCard {
+  padding: 24px 22px 22px;
+}
+
+.featureCard:hover,
+.roleCard:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: none;
+  transform: none;
+}
+
+html[data-theme="dark"] .featureCard:hover,
+html[data-theme="dark"] .roleCard:hover {
+  background: #111827;
+  border-color: #334155;
+}
+
+.featureEyebrow,
+.roleLabel,
+.codeBadge {
+  color: #64748b;
+  letter-spacing: 0.08em;
+}
+
+html[data-theme="dark"] .featureEyebrow,
+html[data-theme="dark"] .roleLabel,
+html[data-theme="dark"] .codeBadge {
+  color: #94a3b8;
+}
+
+.roleLabel,
+.codeBadge {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+html[data-theme="dark"] .roleLabel,
+html[data-theme="dark"] .codeBadge {
+  background: #111827;
+  border-color: #1e293b;
+}
+
+.featureLink,
+.roleCta,
+.codeShowcaseLink {
+  color: #0f172a;
+}
+
+html[data-theme="dark"] .featureLink,
+html[data-theme="dark"] .roleCta,
+html[data-theme="dark"] .codeShowcaseLink {
+  color: #f8fafc;
+}
+
+.codeCard {
+  background: #ffffff;
+}
+
+html[data-theme="dark"] .codeCard {
+  background: #0f172a;
+}
+
+.mcpSection {
+  background: #0f172a;
+}
+
+html[data-theme="dark"] .mcpSection {
+  background: #020617;
+}
+
+.mcpChatCard {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.mcpLinkPrimary {
+  background: #ffffff;
+  color: #0f172a !important;
+}
+
+.mcpLinkPrimary:hover {
+  background: #e2e8f0;
+  transform: none;
+}
+
+.mcpLinkSecondary {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #f8fafc !important;
+}
+
+.mcpLinkSecondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 72px 0 52px;
+  }
+}
