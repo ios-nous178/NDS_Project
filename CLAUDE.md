@@ -99,7 +99,17 @@ pnpm version-packages
 #       · sync-mcpb-version.mjs  : 루트 package.json + packages/mcp/manifest.json 을 최대 DS 버전으로 sync
 #       · sync-version-docs.mjs  : docs 버전 표 동기화
 
-# 3. 변경 커밋 + main push → release-mcpb.yml 가 빌드/태그/슬랙 알림까지 자동
+# 3. (권장) Slack 알림용 비개발자 톤 변경사항 미리 생성
+pnpm release-notes
+#    → 직전 tag~HEAD 커밋을 Claude(haiku-4-5) 가 디자이너/PM 톤으로 재작성
+#    → .release-notes/pending.md 에 저장 (로컬 ANTHROPIC_API_KEY 필요)
+#    → 결과를 직접 한 번 검토/수정 후 같이 commit
+#    → CI 가 이 파일을 발견하면 Slack "이번 업데이트에서 달라진 점" 섹션에 그대로 사용
+#    → 파일이 없으면 기존 git log fallback (개발자용)
+#    · 미리보기만 보기: pnpm release-notes:dry
+#    · GitHub Release body 는 손대지 않음 (개발자용 raw 커밋 로그는 그대로)
+
+# 4. 변경 커밋 + main push → release-mcpb.yml 가 빌드/태그/슬랙 알림까지 자동
 ```
 
 DS 4개 패키지(@nudge-eap/{react,tokens,icons,tailwind-preset}) 의 package.json version 이 SSOT 이고, 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 미러입니다. `sync-mcpb-version.mjs` 한 번 실행으로 둘 다 최대 DS 버전으로 끌어올립니다. 루트 미러는 `pack-local-packages.mjs` 가 tarball 파일명에 박는 값이라 자동 sync 가 빠지면 `pack` 이 의도치 않은 다운그레이드를 만들 위험이 있으므로 빠뜨리지 마세요.
