@@ -41,21 +41,21 @@ const TONE_BG: Record<TipCardTone, string> = {
   info: "var(--semantic-bg-status-info)",
   success: "var(--semantic-bg-status-success)",
   warning: "var(--semantic-bg-status-caution)",
-  neutral: "#F2F4F6",
+  neutral: "var(--semantic-bg-section-default)",
 };
 
 const TONE_FG: Record<TipCardTone, string> = {
   info: "var(--semantic-text-status-info)",
   success: "var(--semantic-text-status-success)",
   warning: "var(--semantic-text-status-caution)",
-  neutral: "#444",
+  neutral: "var(--semantic-text-subtle-default)",
 };
 
 const TONE_ICON_BG: Record<TipCardTone, string> = {
   info: "var(--semantic-fill-brand-default)",
   success: "var(--semantic-icon-status-success)",
   warning: "var(--semantic-icon-status-caution)",
-  neutral: "#888",
+  neutral: "var(--semantic-text-muted-default)",
 };
 
 const TONE_DEFAULT_ICON: Record<TipCardTone, React.ReactNode> = {

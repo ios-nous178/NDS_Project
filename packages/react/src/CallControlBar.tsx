@@ -98,8 +98,8 @@ const cbStyles = `
   :where(.${CB_BTN_CLASS}:hover) { background: rgba(255, 255, 255, 0.28); }
 
   :where(.${CB_BTN_CLASS}[data-active="true"]) {
-    background: #fff;
-    color: #1A1A1A;
+    background: ${cv.surface.default};
+    color: ${cv.textRole.strong};
   }
 
   :where(.${CB_BTN_CLASS}:focus-visible) {

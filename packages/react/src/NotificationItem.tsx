@@ -46,7 +46,7 @@ const KIND_BG: Record<NotificationKind, string> = {
   success: "var(--semantic-bg-status-success)",
   warning: "var(--semantic-bg-status-caution)",
   error: "var(--semantic-bg-status-error)",
-  system: "#F2F4F6",
+  system: "var(--semantic-bg-section-default)",
 };
 
 const KIND_FG: Record<NotificationKind, string> = {
@@ -54,7 +54,7 @@ const KIND_FG: Record<NotificationKind, string> = {
   success: "var(--semantic-icon-status-success)",
   warning: "var(--semantic-icon-status-caution)",
   error: "var(--semantic-icon-status-error)",
-  system: "#666",
+  system: "var(--semantic-text-subtle-default)",
 };
 
 const KIND_ICON: Record<NotificationKind, React.ReactNode> = {

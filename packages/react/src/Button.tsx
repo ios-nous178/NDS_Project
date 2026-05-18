@@ -198,6 +198,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.borderRole.subtle,
       },
       hover: {
+        // bespoke "primary lighter" — Figma SSOT 미정의, 인라인 유지
         background: "#91CAF6",
         text: cv.textRole.brand,
         border: "#91CAF6",
@@ -227,19 +228,19 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         background: cv.surface.default,
         text: cv.textRole.normal,
         border: cv.borderRole.normal,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
       disabled: {
         background: cv.surface.default,
         text: cv.textRole.muted,
         border: cv.borderRole.subtle,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
       hover: {
         background: cv.surface.subtle,
         text: cv.textRole.normal,
         border: cv.borderRole.normal,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
     },
   },
@@ -306,29 +307,31 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         background: cv.surface.default,
         text: cv.textRole.normal,
         border: cv.borderRole.normal,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
       disabled: {
         background: cv.surface.default,
         text: cv.textRole.muted,
         border: cv.borderRole.subtle,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
       hover: {
         background: cv.surface.subtle,
         text: cv.textRole.normal,
         border: cv.borderRole.normal,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
     },
   },
   assistive: {
-    // Figma: Solid/Assistive — cool gray filled
+    // Figma: Solid/Assistive — cool gray filled (Figma SSOT 미정의, DS extension)
     solid: {
       enabled: {
-        background: "#9CA2AE",
+        // cv.borderRole.brandDisabled 도 같은 #9CA2AE — Figma 가 같은 값을
+        // border-brand-disabled 로 정의해둔 걸 의미적으로 재활용.
+        background: cv.borderRole.brandDisabled,
         text: cv.surface.default,
-        border: "#9CA2AE",
+        border: cv.borderRole.brandDisabled,
       },
       disabled: {
         background: cv.borderRole.subtle,
@@ -336,6 +339,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.borderRole.subtle,
       },
       hover: {
+        // bespoke "darker cool gray" — Figma SSOT 미정의, 인라인 유지
         background: "#7E8593",
         text: cv.surface.default,
         border: "#7E8593",
@@ -364,19 +368,19 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         background: cv.surface.default,
         text: cv.textRole.normal,
         border: cv.borderRole.normal,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
       disabled: {
         background: cv.surface.default,
         text: cv.textRole.muted,
         border: cv.borderRole.subtle,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
       hover: {
         background: cv.surface.subtle,
         text: cv.textRole.normal,
         border: cv.borderRole.normal,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
     },
     "outlined-sub": {
@@ -384,19 +388,19 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         background: cv.surface.default,
         text: cv.textRole.normal,
         border: cv.borderRole.normal,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
       disabled: {
         background: cv.surface.default,
         text: cv.textRole.muted,
         border: cv.borderRole.subtle,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
       hover: {
         background: cv.surface.subtle,
         text: cv.textRole.normal,
         border: cv.borderRole.normal,
-        fontWeight: 500,
+        fontWeight: fontWeight.medium,
       },
     },
   },

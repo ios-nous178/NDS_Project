@@ -211,7 +211,12 @@ export const VoiceRecorder = React.forwardRef<HTMLDivElement, VoiceRecorderProps
             {formatTime(seconds)}
             {maxSeconds ? (
               <span
-                style={{ fontSize: 14, color: cv.textRole.subtle, marginLeft: 6, fontWeight: 500 }}
+                style={{
+                  fontSize: 14,
+                  color: cv.textRole.subtle,
+                  marginLeft: 6,
+                  fontWeight: fontWeight.medium,
+                }}
               >
                 / {formatTime(maxSeconds)}
               </span>

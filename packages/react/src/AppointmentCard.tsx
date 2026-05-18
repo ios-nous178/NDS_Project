@@ -88,8 +88,8 @@ const STATUS_COLORS: Record<AppointmentStatus, { bg: string; fg: string }> = {
     fg: "var(--semantic-text-status-caution)",
   },
   completed: {
-    bg: "#F2F4F6",
-    fg: "#666",
+    bg: "var(--semantic-bg-section-default)",
+    fg: "var(--semantic-text-subtle-default)",
   },
   canceled: {
     bg: "var(--semantic-bg-status-error)",
@@ -221,7 +221,7 @@ const apptStyles = `
     border-radius: 9999px;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
-    background: var(--nds-appt-status-bg, #F2F4F6);
+    background: var(--nds-appt-status-bg, var(--semantic-bg-section-default));
     color: var(--nds-appt-status-fg, #666);
   }
 
