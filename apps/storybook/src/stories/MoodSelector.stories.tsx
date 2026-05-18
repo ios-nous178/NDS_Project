@@ -47,9 +47,9 @@ export const CustomOptions: Story = {
           value={v}
           onValueChange={setV}
           options={[
-            { value: "bad", emoji: "😟", label: "별로" },
-            { value: "ok", emoji: "🙂", label: "괜찮아요" },
-            { value: "great", emoji: "😀", label: "좋아요" },
+            { value: "bad", face: "😟", label: "별로" },
+            { value: "ok", face: "🙂", label: "괜찮아요" },
+            { value: "great", face: "😀", label: "좋아요" },
           ]}
         />
       </div>

@@ -78,7 +78,7 @@ const modalStyles = `
     display: flex;
     flex-direction: column;
     gap: ${spacing[8]}px;
-    padding: ${spacing[28]}px ${spacing[16]}px ${spacing[16]}px;
+    padding: ${spacing[28]}px var(--inset-card) var(--inset-card);
     overflow: hidden;
     border-radius: var(--nds-modal-radius, ${radius.md}px);
     background-color: ${cv.surface.default};
