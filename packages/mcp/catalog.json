@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-05-15T02:05:30.868Z",
+  "generatedAt": "2026-05-18T02:31:52.176Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "dependencies": {},
       "peerDependencies": {},
       "cssExports": ["@nudge-eap/tokens/css", "@nudge-eap/tokens/css/trost"]
     },
     {
       "name": "@nudge-eap/react",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/tokens": "workspace:*"
@@ -23,7 +23,7 @@
     },
     {
       "name": "@nudge-eap/icons",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "dependencies": {},
       "peerDependencies": {
         "react": ">=18.0.0"
@@ -32,7 +32,7 @@
     },
     {
       "name": "@nudge-eap/tailwind-preset",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
@@ -5999,33 +5999,28 @@
       "group": "font"
     },
     {
-      "name": "--gap-base",
-      "value": "16px",
-      "group": "gap"
-    },
-    {
-      "name": "--gap-lg",
-      "value": "20px",
-      "group": "gap"
-    },
-    {
-      "name": "--gap-md",
+      "name": "--gap-comfortable",
       "value": "12px",
       "group": "gap"
     },
     {
-      "name": "--gap-sm",
-      "value": "8px",
+      "name": "--gap-default",
+      "value": "10px",
       "group": "gap"
     },
     {
-      "name": "--gap-xl",
-      "value": "24px",
+      "name": "--gap-loose",
+      "value": "16px",
       "group": "gap"
     },
     {
-      "name": "--gap-xs",
+      "name": "--gap-tight",
       "value": "4px",
+      "group": "gap"
+    },
+    {
+      "name": "--gap-wide",
+      "value": "24px",
       "group": "gap"
     },
     {
@@ -6062,6 +6057,31 @@
       "name": "--grid-margin-pc-min",
       "value": "40px",
       "group": "grid"
+    },
+    {
+      "name": "--inset-card",
+      "value": "16px",
+      "group": "inset"
+    },
+    {
+      "name": "--inset-card-large",
+      "value": "20px",
+      "group": "inset"
+    },
+    {
+      "name": "--inset-chip",
+      "value": "8px",
+      "group": "inset"
+    },
+    {
+      "name": "--inset-input",
+      "value": "12px",
+      "group": "inset"
+    },
+    {
+      "name": "--inset-modal",
+      "value": "24px",
+      "group": "inset"
     },
     {
       "name": "--line-height-body-1",
@@ -6134,31 +6154,6 @@
       "group": "line"
     },
     {
-      "name": "--padding-lg",
-      "value": "20px",
-      "group": "padding"
-    },
-    {
-      "name": "--padding-md",
-      "value": "16px",
-      "group": "padding"
-    },
-    {
-      "name": "--padding-sm",
-      "value": "10px",
-      "group": "padding"
-    },
-    {
-      "name": "--padding-xl",
-      "value": "24px",
-      "group": "padding"
-    },
-    {
-      "name": "--padding-xs",
-      "value": "6px",
-      "group": "padding"
-    },
-    {
       "name": "--radius-lg",
       "value": "12px",
       "group": "radius"
@@ -6189,16 +6184,6 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-bg-coolGray",
-      "value": "#F3F4F6",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-bg-coolGrayLighter",
-      "value": "#F8F9FB",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-bg-disabled",
       "value": "#ECECEC",
       "group": "semantic"
@@ -6209,13 +6194,8 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-bg-light",
-      "value": "#FAFAFA",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-bg-overlay",
-      "value": "rgba(0,0,0,0.5)",
+      "value": "rgba(0,0,0,0.4)",
       "group": "semantic"
     },
     {
@@ -6259,11 +6239,6 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-bg-white",
-      "value": "#FFFFFF",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-border-brand-default",
       "value": "#2B96ED",
       "group": "semantic"
@@ -6274,33 +6249,13 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-border-default",
-      "value": "#D8D8D8",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-border-disabled",
-      "value": "#ECECEC",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-border-disabled-default",
       "value": "#ECECEC",
       "group": "semantic"
     },
     {
-      "name": "--semantic-border-focus",
-      "value": "#2B96ED",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-border-focus-default",
       "value": "#2B96ED",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-border-light",
-      "value": "#ECECEC",
       "group": "semantic"
     },
     {
@@ -6335,7 +6290,7 @@
     },
     {
       "name": "--semantic-button-bg-disabled",
-      "value": "#D8D8D8",
+      "value": "#9CA2AE",
       "group": "semantic"
     },
     {
@@ -6415,32 +6370,7 @@
     },
     {
       "name": "--semantic-button-text-disabled",
-      "value": "#999999",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-caution-bg",
-      "value": "#FFFAE8",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-caution-main",
-      "value": "#FFC303",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-caution-text",
-      "value": "#FFA100",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-error-bg",
-      "value": "#FEE9E6",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-error-main",
-      "value": "#F13F00",
+      "value": "#9CA2AE",
       "group": "semantic"
     },
     {
@@ -6494,18 +6424,8 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-icon-default",
-      "value": "#383838",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-icon-disabled-default",
       "value": "#C7C7C7",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-icon-inverse",
-      "value": "#FFFFFF",
       "group": "semantic"
     },
     {
@@ -6536,11 +6456,6 @@
     {
       "name": "--semantic-icon-strong-default",
       "value": "#383838",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-icon-subtle",
-      "value": "#999999",
       "group": "semantic"
     },
     {
@@ -6604,86 +6519,6 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-primary-bg",
-      "value": "#E3F2FC",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-primary-bgLighter",
-      "value": "#F1F8FD",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-primary-fg",
-      "value": "#FFFFFF",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-primary-hover",
-      "value": "#017EE4",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-primary-lighter",
-      "value": "#91CAF6",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-primary-main",
-      "value": "#2B96ED",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-primary-pressed",
-      "value": "#1B65BA",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-secondary-bg",
-      "value": "#FCE3EC",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-secondary-bgLighter",
-      "value": "#FDF1F5",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-secondary-lighter",
-      "value": "#F8B8CF",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-secondary-sub",
-      "value": "#ED2E77",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-status-default",
-      "value": "#999999",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-status-error",
-      "value": "#F13F00",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-status-success",
-      "value": "#2B96ED",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-success-bg",
-      "value": "#E5F7F4",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-success-main",
-      "value": "#13BFA2",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-text-brand-default",
       "value": "#2B96ED",
       "group": "semantic"
@@ -6694,23 +6529,8 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-text-default",
-      "value": "#383838",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-text-disabled",
-      "value": "#999999",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-text-disabled-default",
       "value": "#C7C7C7",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-text-inverse",
-      "value": "#FFFFFF",
       "group": "semantic"
     },
     {
@@ -6724,18 +6544,8 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-text-normal",
-      "value": "#111111",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-text-normal-default",
       "value": "#383838",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-text-placeholder",
-      "value": "#999999",
       "group": "semantic"
     },
     {
@@ -6759,18 +6569,8 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-text-strong",
-      "value": "#000000",
-      "group": "semantic"
-    },
-    {
       "name": "--semantic-text-strong-default",
       "value": "#111111",
-      "group": "semantic"
-    },
-    {
-      "name": "--semantic-text-subtle",
-      "value": "#666666",
       "group": "semantic"
     },
     {

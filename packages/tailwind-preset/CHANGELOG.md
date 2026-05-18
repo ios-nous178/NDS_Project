@@ -1,5 +1,23 @@
 # @nudge-eap/tailwind-preset
 
+## 0.1.8
+
+### Patch Changes
+
+- DS 0.1.8 — MCP 가이드 SSOT 갱신에 따른 외부 전파.
+
+  이번 릴리즈는 코드 변경이 아닌 MCP 가이드 본문 보강이 핵심이며, 외부 프로젝트가 MCPB 로 받을 수 있도록 DS 4개 패키지를 함께 patch bump 합니다. 비개발자용 변경 사항은 `.release-notes/pending.md` 참조 (Slack 알림에 그대로 노출).
+
+  주요 변경 (자세한 내용은 `@nudge-eap/mcp` CHANGELOG):
+  - 노션 "AI UI 생성 원칙" 정합 — Badge / Tabs / Segment / Modal 사용 시점 룰 신규 명시. Tone-on-Tone 금지·Brand Background 제한 글로벌 dos/donts 보강.
+  - UX 라이팅 가이드 신규 (`get_guide({ topic: "ux-writing" })`).
+  - 다크패턴 5종 차단 (`get_guide({ topic: "pattern:dark-patterns" })`) + DESIGN_PRINCIPLES.bannedPatterns.
+  - CTA 그룹 라벨 명료성 룰 강화.
+  - 컴포넌트 인벤토리 문서가 Figma 정합 여부로 2 섹션 분리.
+
+- Updated dependencies
+  - @nudge-eap/tokens@0.1.8
+
 ## 0.1.7
 
 ### Patch Changes
