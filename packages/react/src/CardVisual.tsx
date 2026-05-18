@@ -84,7 +84,7 @@ const cvStyles = `
     position: relative;
     width: 320px;
     aspect-ratio: 1.586;
-    padding: ${spacing[20]}px;
+    padding: var(--inset-card-large);
     border-radius: ${radius.lg}px;
     color: var(--nds-card-fg, #fff);
     font-family: ${fontFamily.web};
@@ -126,7 +126,7 @@ const cvStyles = `
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${CV_HOLDER_CLASS}) {

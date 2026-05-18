@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -35,7 +35,7 @@ const ctStyles = `
   :where(.${CT_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
     color: ${cv.textRole.normal};
   }

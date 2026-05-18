@@ -1,5 +1,5 @@
 import React, { useCallback, useId, useRef, useState } from "react";
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale, zIndex } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, typeScale, zIndex } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -31,7 +31,7 @@ const tooltipStyles = `
   :where(.${TT_CONTENT_CLASS}) {
     position: absolute;
     z-index: ${zIndex.popup};
-    padding: ${spacing[8]}px ${spacing[12]}px;
+    padding: var(--inset-chip) var(--inset-input);
     background: ${cv.textRole.strong};
     color: ${cv.textRole.inverse};
     font-size: ${typeScale.caption1.fontSize}px;

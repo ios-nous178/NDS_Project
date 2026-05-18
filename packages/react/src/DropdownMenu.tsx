@@ -103,7 +103,7 @@ const dropdownMenuStyles = `
   }
 
   :where(.${DM_GROUP_LABEL_CLASS}) {
-    padding: ${spacing[8]}px ${spacing[12]}px ${spacing[4]}px;
+    padding: var(--inset-chip) var(--inset-input) ${spacing[4]}px;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
@@ -120,8 +120,8 @@ const dropdownMenuStyles = `
   :where(.${DM_ITEM_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
-    padding: ${spacing[10]}px ${spacing[12]}px;
+    gap: var(--gap-default);
+    padding: ${spacing[10]}px var(--inset-input);
     border: none;
     background: transparent;
     border-radius: ${radius.sm}px;

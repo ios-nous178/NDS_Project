@@ -41,7 +41,7 @@ const appBarStyles = `
     justify-content: space-between;
     width: 100%;
     min-height: var(--nds-app-bar-height, ${sizing.appBar.height}px);
-    padding: 0 var(--nds-app-bar-padding-x, ${spacing[16]}px);
+    padding: 0 var(--nds-app-bar-padding-x, var(--inset-card));
     background: var(--nds-app-bar-background, ${cv.surface.default});
     border-bottom: var(--nds-app-bar-border-bottom, 1px solid ${cv.borderRole.subtle});
     box-shadow: var(--nds-app-bar-shadow, none);
@@ -56,7 +56,7 @@ const appBarStyles = `
   :where(.${APP_BAR_LEFT_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     flex-shrink: 0;
   }
 
@@ -81,7 +81,7 @@ const appBarStyles = `
   :where(.${APP_BAR_RIGHT_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     flex-shrink: 0;
     margin-left: auto;
   }
@@ -95,7 +95,7 @@ const appBarStyles = `
     width: 100%;
     max-width: var(--nds-app-bar-main-max-width, none);
     margin: 0 auto;
-    padding: var(--nds-app-bar-main-py, 0) ${spacing[16]}px;
+    padding: var(--nds-app-bar-main-py, 0) var(--inset-card);
     box-sizing: border-box;
   }
 
@@ -106,7 +106,7 @@ const appBarStyles = `
     max-width: var(--nds-app-bar-nav-max-width, none);
     height: var(--nds-app-bar-nav-height, 56px);
     margin: 0 auto;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     box-sizing: border-box;
   }
 
@@ -125,7 +125,7 @@ const appBarStyles = `
     height: var(--nds-app-bar-search-height, 48px);
     border: var(--nds-app-bar-search-border-width, 2px) solid var(--nds-app-bar-search-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-app-bar-search-radius, 24px);
-    padding: 0 var(--nds-app-bar-search-pr, 36px) 0 var(--nds-app-bar-search-pl, 20px);
+    padding: 0 var(--nds-app-bar-search-pr, 36px) 0 var(--nds-app-bar-search-pl, var(--inset-card-large));
     font-size: var(--nds-app-bar-search-font-size, ${typeScale.body2.fontSize}px);
     color: ${cv.textRole.muted};
     box-sizing: border-box;
@@ -159,7 +159,7 @@ const appBarStyles = `
     display: flex;
     align-items: center;
     height: 100%;
-    gap: var(--nds-app-bar-gnb-gap, ${spacing[24]}px);
+    gap: var(--nds-app-bar-gnb-gap, var(--gap-wide));
   }
 
   :where(.${APP_BAR_GNB_ITEM_CLASS}) {
@@ -650,7 +650,7 @@ const AppBarAuthMenu = React.memo(
               <button
                 className={APP_BAR_AUTH_ITEM_CLASS}
                 style={{
-                  padding: separator === "divider" ? `0 ${spacing[8]}px` : "0",
+                  padding: separator === "divider" ? `0 var(--inset-chip)` : "0",
                   marginRight: separator !== "divider" && i < items.length - 1 ? spacing[20] : 0,
                 }}
                 onClick={onItemClick ? (e) => onItemClick(item, e) : undefined}

@@ -100,7 +100,7 @@ const dataTableStyles = `
 
   :where(.${DT_TH_CLASS}) {
     text-align: left;
-    padding: ${spacing[10]}px ${spacing[12]}px;
+    padding: ${spacing[10]}px var(--inset-input);
     background: ${cv.surface.page};
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
@@ -124,7 +124,7 @@ const dataTableStyles = `
   :where(.${DT_TH_INNER_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${DT_SORT_ICON_CLASS}) {
@@ -156,7 +156,7 @@ const dataTableStyles = `
   }
 
   :where(.${DT_TD_CLASS}) {
-    padding: ${spacing[12]}px;
+    padding: var(--inset-input);
     color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -167,13 +167,13 @@ const dataTableStyles = `
 
   :where(.${DT_CLASS}[data-size="sm"]) .${DT_TH_CLASS},
   :where(.${DT_CLASS}[data-size="sm"]) .${DT_TD_CLASS} {
-    padding: ${spacing[8]}px ${spacing[10]}px;
+    padding: var(--inset-chip) ${spacing[10]}px;
   }
 
   :where(.${DT_EMPTY_CLASS}),
   :where(.${DT_LOADING_CLASS}) {
     text-align: center;
-    padding: ${spacing[36]}px ${spacing[20]}px;
+    padding: ${spacing[36]}px var(--inset-card-large);
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -195,13 +195,13 @@ const dataTableStyles = `
   :where(.${DT_CARD_CLASS}) {
     display: none;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
   :where(.${DT_CARD_CLASS}) > article {
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    padding: var(--inset-input) var(--inset-card);
     display: flex;
     flex-direction: column;
     gap: ${spacing[6]}px;
@@ -218,7 +218,7 @@ const dataTableStyles = `
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
   :where(.${DT_CARD_LABEL_CLASS}) {
     flex-shrink: 0;

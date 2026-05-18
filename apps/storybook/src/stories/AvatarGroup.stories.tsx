@@ -33,7 +33,7 @@ export const Playground: Story = {
 export const Sizes: Story = {
   name: "Size/모든 크기",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
       {(["xs", "sm", "md", "lg", "xl"] as const).map((s) => (
         <AvatarGroup key={s} items={PEOPLE} size={s} />
       ))}

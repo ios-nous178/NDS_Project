@@ -317,7 +317,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: 10,
+            gap: "var(--gap-default)",
           }}
         >
           <div style={{ width: "100%", maxWidth: 240 }}>
@@ -868,7 +868,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
   MultiStepForm: () => (
     <div style={{ width: "100%", maxWidth: 240, fontSize: 12 }}>
-      <div style={{ display: "flex", gap: 4, alignItems: "center", marginBottom: 8 }}>
+      <div
+        style={{ display: "flex", gap: "var(--gap-tight)", alignItems: "center", marginBottom: 8 }}
+      >
         <div style={{ flex: 1, height: 4, background: "#2B96ED", borderRadius: 2 }} />
         <div style={{ flex: 1, height: 4, background: "#2B96ED", borderRadius: 2 }} />
         <div style={{ flex: 1, height: 4, background: "#E6E7EB", borderRadius: 2 }} />
@@ -891,7 +893,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     <div
       style={{
         width: 180,
-        padding: "16px 12px",
+        padding: "var(--inset-card) var(--inset-input)",
         border: "1px dashed #D8D8D8",
         borderRadius: 8,
         textAlign: "center",
@@ -941,7 +943,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   OnlineIndicator: () => (
-    <div style={{ ...previewRow, gap: 16 }}>
+    <div style={{ ...previewRow, gap: "var(--gap-loose)" }}>
       <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12 }}>
         <OnlineIndicator status="online" /> online
       </span>
@@ -1037,7 +1039,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
         display: "flex",
         alignItems: "center",
         gap: 6,
-        padding: "10px 12px",
+        padding: "10px var(--inset-input)",
         background: "#F8F9FB",
         borderRadius: 24,
       }}
@@ -1060,7 +1062,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   VoiceRecorder: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-default)" }}>
       <span
         style={{
           width: 36,
@@ -1080,7 +1082,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   CallControlBar: () => (
-    <div style={{ display: "flex", gap: 8 }}>
+    <div style={{ display: "flex", gap: "var(--gap-default)" }}>
       <span
         style={{
           width: 36,
@@ -1599,7 +1601,7 @@ const previewRow: React.CSSProperties = {
   display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
-  gap: 8,
+  gap: "var(--gap-default)",
 };
 
 /* ──────────────────────────────────────────
@@ -1617,7 +1619,7 @@ const mockModalSurface: React.CSSProperties = {
   boxShadow: shadow["3"],
   display: "flex",
   flexDirection: "column",
-  gap: 10,
+  gap: "var(--gap-default)",
 };
 
 const mockModalHeader: React.CSSProperties = {
@@ -1654,12 +1656,12 @@ const mockModalBody: React.CSSProperties = {
   lineHeight: 1.55,
   color: cv.textRole.normal,
   textAlign: "center",
-  padding: "4px 4px 8px",
+  padding: "4px 4px var(--inset-chip)",
 };
 
 const mockModalFooter: React.CSSProperties = {
   display: "flex",
-  gap: 8,
+  gap: "var(--gap-default)",
 };
 
 const mockModalCancelBtn: React.CSSProperties = {
@@ -1690,7 +1692,7 @@ const mockPopupSurface: React.CSSProperties = {
   width: 224,
   background: cv.surface.default,
   borderRadius: radius.md,
-  padding: "20px 20px 14px",
+  padding: "var(--inset-card-large) var(--inset-card-large) 14px",
   boxShadow: shadow["3"],
   display: "flex",
   flexDirection: "column",
@@ -1715,7 +1717,7 @@ const mockPopupDesc: React.CSSProperties = {
 
 const mockPopupActions: React.CSSProperties = {
   display: "flex",
-  gap: 8,
+  gap: "var(--gap-default)",
   width: "100%",
 };
 
@@ -1802,7 +1804,7 @@ const mockBottomSheetPanel: React.CSSProperties = {
   background: cv.surface.default,
   borderTopLeftRadius: radius.lg,
   borderTopRightRadius: radius.lg,
-  padding: "8px 14px 14px",
+  padding: "var(--inset-chip) 14px 14px",
   display: "flex",
   flexDirection: "column",
   gap: 6,
@@ -1816,7 +1818,7 @@ const mockShareSheetPanel: React.CSSProperties = {
   background: cv.surface.default,
   borderTopLeftRadius: radius.lg,
   borderTopRightRadius: radius.lg,
-  padding: "8px 12px 12px",
+  padding: "var(--inset-chip) var(--inset-input) var(--inset-input)",
   display: "flex",
   flexDirection: "column",
   gap: 6,
@@ -1826,7 +1828,7 @@ const mockShareSheetRow: React.CSSProperties = {
   display: "flex",
   justifyContent: "space-around",
   alignItems: "center",
-  gap: 8,
+  gap: "var(--gap-default)",
 };
 
 const mockToastFloating: React.CSSProperties = {
@@ -1837,7 +1839,7 @@ const mockToastFloating: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
-  padding: "6px 12px",
+  padding: "6px var(--inset-input)",
   background: cv.textRole.normal,
   color: cv.textRole.inverse,
   borderRadius: radius.pill,
@@ -1994,7 +1996,7 @@ const mockCoachCard: React.CSSProperties = {
   left: "50%",
   transform: "translateX(-50%)",
   width: 200,
-  padding: "10px 12px",
+  padding: "10px var(--inset-input)",
   background: cv.textRole.normal,
   color: cv.textRole.inverse,
   borderRadius: radius.lg,
@@ -2067,7 +2069,7 @@ const mockDrawerHeader: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "8px 10px",
+  padding: "var(--inset-chip) 10px",
   borderBottom: `1px solid ${cv.borderRole.subtle}`,
 };
 
@@ -2086,10 +2088,10 @@ const mockDrawerClose: React.CSSProperties = {
 };
 
 const mockDrawerBody: React.CSSProperties = {
-  padding: "8px 10px",
+  padding: "var(--inset-chip) 10px",
   display: "flex",
   flexDirection: "column",
-  gap: 4,
+  gap: "var(--gap-tight)",
 };
 
 const mockDrawerRow: React.CSSProperties = {
@@ -2153,7 +2155,7 @@ const mockDropdownDivider: React.CSSProperties = {
 const dsHighlightFrame: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: 8,
+  gap: "var(--gap-default)",
   padding: "10px 14px",
   border: `1px dashed ${cv.borderRole.brand}`,
   borderRadius: radius.md,
@@ -2169,7 +2171,7 @@ const dsHighlightLabel: React.CSSProperties = {
 const dsHighlightMode: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 600,
-  padding: "3px 8px",
+  padding: "3px var(--inset-chip)",
   borderRadius: radius.pill,
   background: cv.surface.default,
   border: `1px solid ${cv.borderRole.normal}`,
@@ -2218,7 +2220,7 @@ const mockDesktopScaler: React.CSSProperties = {
 };
 
 const mockDesktopBody: React.CSSProperties = {
-  padding: "16px 24px",
+  padding: "var(--inset-card) var(--inset-modal)",
   fontSize: 18,
   fontWeight: 500,
   color: cv.textRole.muted,
@@ -2531,8 +2533,8 @@ const controlsRow: React.CSSProperties = {
   display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
-  gap: 12,
-  padding: "12px 16px",
+  gap: "var(--gap-comfortable)",
+  padding: "var(--inset-input) var(--inset-card)",
   background: "#FAFAFA",
   border: "1px solid #ECECEC",
   borderRadius: 10,
@@ -2544,7 +2546,7 @@ const controlsRow: React.CSSProperties = {
 const searchInput: React.CSSProperties = {
   flex: "1 1 240px",
   height: 36,
-  padding: "0 12px",
+  padding: "0 var(--inset-input)",
   border: "1px solid #D8D8D8",
   borderRadius: 8,
   fontSize: 13,
@@ -2559,7 +2561,7 @@ const categoryRow: React.CSSProperties = {
 };
 
 const categoryChip: React.CSSProperties = {
-  padding: "5px 12px",
+  padding: "5px var(--inset-input)",
   background: "#FFFFFF",
   border: "1px solid #D8D8D8",
   borderRadius: 100,
@@ -2580,7 +2582,7 @@ const syncedToggle: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
-  padding: "5px 12px",
+  padding: "5px var(--inset-input)",
   background: "#FFFFFF",
   border: "1px solid #D8D8D8",
   borderRadius: 100,
@@ -2622,7 +2624,7 @@ const categoryHeader: React.CSSProperties = {
   letterSpacing: "-0.01em",
   display: "flex",
   alignItems: "baseline",
-  gap: 8,
+  gap: "var(--gap-default)",
 };
 
 const categoryHeaderCount: React.CSSProperties = {
@@ -2634,7 +2636,7 @@ const categoryHeaderCount: React.CSSProperties = {
 const grid: React.CSSProperties = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-  gap: 16,
+  gap: "var(--gap-loose)",
 };
 
 const card: React.CSSProperties = {
@@ -2651,7 +2653,7 @@ const cardHead: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "space-between",
   padding: "14px 18px",
-  gap: 8,
+  gap: "var(--gap-default)",
   borderBottom: "1px solid #F2F2F2",
 };
 
@@ -2664,7 +2666,7 @@ const cardName: React.CSSProperties = {
 
 const cardTags: React.CSSProperties = {
   display: "flex",
-  gap: 4,
+  gap: "var(--gap-tight)",
   flexWrap: "wrap",
 };
 
@@ -2673,7 +2675,7 @@ const categoryTag: React.CSSProperties = {
   fontWeight: 700,
   color: "#666",
   background: "#F4F4F4",
-  padding: "3px 8px",
+  padding: "3px var(--inset-chip)",
   borderRadius: 5,
 };
 
@@ -2682,7 +2684,7 @@ const syncedTag: React.CSSProperties = {
   fontWeight: 700,
   color: "#00A07C",
   background: "rgba(0,160,124,0.1)",
-  padding: "3px 8px",
+  padding: "3px var(--inset-chip)",
   borderRadius: 5,
 };
 
@@ -2693,7 +2695,7 @@ const cardPreview: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   minHeight: 180,
-  padding: 24,
+  padding: "var(--inset-modal)",
   background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(43,150,237,0.03), transparent 80%)",
   overflow: "hidden",
 };
@@ -2702,7 +2704,7 @@ const previewPlaceholder: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "10px 16px",
+  padding: "10px var(--inset-card)",
   background: "#F4F4F4",
   border: "1px dashed #D8D8D8",
   borderRadius: 8,
@@ -2726,7 +2728,7 @@ const cardDesc: React.CSSProperties = {
 
 const cardMeta: React.CSSProperties = {
   margin: 0,
-  padding: "8px 18px 4px",
+  padding: "var(--inset-chip) 18px 4px",
   display: "flex",
   flexDirection: "column",
   gap: 6,
@@ -2735,7 +2737,7 @@ const cardMeta: React.CSSProperties = {
 const cardMetaRow: React.CSSProperties = {
   display: "grid",
   gridTemplateColumns: "44px 1fr",
-  gap: 10,
+  gap: "var(--gap-default)",
   alignItems: "baseline",
 };
 
@@ -2763,7 +2765,7 @@ const cardFoot: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
-  gap: 8,
+  gap: "var(--gap-default)",
   padding: "10px 18px 14px",
   borderTop: "1px solid #F2F2F2",
   marginTop: 8,
@@ -2778,7 +2780,7 @@ const footLink: React.CSSProperties = {
 };
 
 const guideBlock: React.CSSProperties = {
-  padding: "8px 18px 0",
+  padding: "var(--inset-chip) 18px 0",
   borderTop: "1px solid #F2F2F2",
   marginTop: 8,
 };
@@ -2789,7 +2791,7 @@ const guideToggle: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "space-between",
   width: "100%",
-  padding: "8px 0",
+  padding: "var(--inset-chip) 0",
   fontSize: 12,
   fontWeight: 700,
   color: "#333",
@@ -2806,8 +2808,8 @@ const guideToggleChevron: React.CSSProperties = {
 const guideBody: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: 10,
-  padding: "4px 0 12px",
+  gap: "var(--gap-default)",
+  padding: "4px 0 var(--inset-input)",
 };
 
 const guideSummary: React.CSSProperties = {
@@ -2816,7 +2818,7 @@ const guideSummary: React.CSSProperties = {
   lineHeight: 1.55,
   color: "#475569",
   background: "#F8FAFC",
-  padding: "8px 10px",
+  padding: "var(--inset-chip) 10px",
   borderRadius: 6,
   border: "1px solid #E2E8F0",
 };
@@ -2824,7 +2826,7 @@ const guideSummary: React.CSSProperties = {
 const guideListBlock: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: 4,
+  gap: "var(--gap-tight)",
 };
 
 const guideListTitle: React.CSSProperties = {

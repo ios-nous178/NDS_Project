@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -13,7 +13,7 @@ const breadcrumbStyles = `
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-family: ${fontFamily.web};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;

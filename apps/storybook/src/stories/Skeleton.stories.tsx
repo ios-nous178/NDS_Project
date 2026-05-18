@@ -37,11 +37,18 @@ export const Text: Story = {
 export const CardSkeleton: Story = {
   name: "Example/카드 로딩",
   render: () => (
-    <div style={{ width: 280, display: "flex", flexDirection: "column", gap: 12 }}>
+    <div
+      style={{
+        width: 280,
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+      }}
+    >
       <Skeleton width={280} height={160} />
       <Skeleton variant="text" width="60%" />
       <Skeleton variant="text" width="90%" />
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--gap-default)", alignItems: "center" }}>
         <Skeleton variant="circular" width={32} />
         <Skeleton variant="text" width={100} />
       </div>

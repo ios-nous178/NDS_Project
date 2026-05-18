@@ -67,7 +67,7 @@ const cardStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     padding: var(--inset-card) var(--inset-card) 0;
   }
 
@@ -90,7 +90,7 @@ const cardStyles = `
   :where(.${CARD_META_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     flex-shrink: 0;
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.medium};
@@ -99,7 +99,7 @@ const cardStyles = `
   }
 
   :where(.${CARD_BODY_CLASS}) {
-    padding: ${spacing[12]}px var(--inset-card);
+    padding: var(--inset-input) var(--inset-card);
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
@@ -109,11 +109,11 @@ const cardStyles = `
   :where(.${CARD_FOOTER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     padding: 0 var(--inset-card) var(--inset-card);
     border-top: 1px solid ${cv.borderRole.subtle};
     margin-top: auto;
-    padding-top: ${spacing[12]}px;
+    padding-top: var(--inset-input);
   }
 
   :where(.${CARD_FOOTER_CLASS}[data-no-border="true"]) {

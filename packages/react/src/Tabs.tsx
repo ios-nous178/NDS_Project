@@ -5,7 +5,6 @@ import {
   fontWeight,
   radius,
   sizing,
-  spacing,
   transition,
   typeScale,
 } from "@nudge-eap/tokens";
@@ -89,7 +88,7 @@ const tabsStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${TABS_TRIGGER_ICON_CLASS}) {
@@ -122,12 +121,12 @@ const tabsStyles = `
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="mobile"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.line.mobile}px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.line.pc}px;
-    padding: 0 ${spacing[20]}px;
+    padding: 0 var(--inset-card-large);
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
@@ -163,14 +162,14 @@ const tabsStyles = `
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"]) {
     background: ${cv.surface.default};
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="mobile"]) {
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"]::-webkit-scrollbar) {
@@ -191,14 +190,14 @@ const tabsStyles = `
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="mobile"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.chip.mobile}px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.chip.pc}px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
   }
@@ -235,7 +234,7 @@ const tabsStyles = `
     align-items: center;
     justify-content: center;
     height: ${sizing.tabs.segment.pc}px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     background: ${cv.surface.page};
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;

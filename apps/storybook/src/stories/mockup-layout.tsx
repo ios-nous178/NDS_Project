@@ -250,13 +250,15 @@ export function StickyBottomBar({ children }: { children: React.ReactNode }) {
         right: 0,
         background: "#fff",
         borderTop: "1px solid #E5E5E5",
-        padding: "12px 16px",
+        padding: "var(--inset-input) var(--inset-card)",
         paddingBottom: "calc(12px + env(safe-area-inset-bottom))",
         zIndex: 50,
         boxShadow: "0 -4px 16px rgba(0,0,0,0.08)",
       }}
     >
-      <div style={{ maxWidth: 768, margin: "0 auto", display: "flex", gap: 8 }}>{children}</div>
+      <div style={{ maxWidth: 768, margin: "0 auto", display: "flex", gap: "var(--gap-default)" }}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -268,14 +270,14 @@ export function StickyBottomBar({ children }: { children: React.ReactNode }) {
 export function Accordion({ items }: { items: { question: string; answer: string }[] }) {
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
       {items.map((item, i) => (
         <div key={i} style={{ border: "1px solid #E5E5E5", borderRadius: 12, overflow: "hidden" }}>
           <button
             style={{
               width: "100%",
               textAlign: "left",
-              padding: "16px 20px",
+              padding: "var(--inset-card) var(--inset-card-large)",
               fontWeight: 600,
               fontSize: 15,
               display: "flex",
@@ -305,7 +307,7 @@ export function Accordion({ items }: { items: { question: string; answer: string
           {open === i && (
             <div
               style={{
-                padding: "0 20px 16px",
+                padding: "0 var(--inset-card-large) var(--inset-card)",
                 color: "#606060",
                 fontSize: 14,
                 lineHeight: 1.7,

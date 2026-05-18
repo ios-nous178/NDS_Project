@@ -89,7 +89,7 @@ const cmStyles = `
     position: absolute;
     width: 320px;
     max-width: calc(100vw - ${spacing[32]}px);
-    padding: ${spacing[20]}px;
+    padding: var(--inset-card-large);
     background: ${cv.surface.default};
     border-radius: ${radius.lg}px;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
@@ -101,7 +101,7 @@ const cmStyles = `
   :where(.${CM_STEP_CLASS}) {
     display: inline-flex;
     align-items: center;
-    padding: 2px ${spacing[8]}px;
+    padding: 2px var(--inset-chip);
     border-radius: 9999px;
     background: ${"#91CAF6"};
     color: ${cv.textRole.brand};
@@ -130,7 +130,7 @@ const cmStyles = `
     justify-content: space-between;
     align-items: center;
     margin-top: ${spacing[20]}px;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${CM_DOTS_CLASS}) {
@@ -155,12 +155,12 @@ const cmStyles = `
   :where(.${CM_ACTIONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${CM_SKIP_CLASS}) {
     height: 36px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border: none;
     background: transparent;
     color: ${cv.textRole.subtle};
@@ -178,7 +178,7 @@ const cmStyles = `
 
   :where(.${CM_BTN_CLASS}) {
     height: 36px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border-radius: ${radius.md}px;
     border: none;
     background: ${cv.surface.brand};

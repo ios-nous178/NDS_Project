@@ -39,7 +39,14 @@ export const Playground: Story = {
 export const HalfStar: Story = {
   name: "Edge/0.5점 단위",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 480 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+        width: 480,
+      }}
+    >
       {[5, 4.5, 4, 3.5, 3].map((r) => (
         <ReviewCard
           key={r}

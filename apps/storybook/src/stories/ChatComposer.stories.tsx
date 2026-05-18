@@ -21,11 +21,11 @@ export const Playground: Story = {
         <div
           style={{
             minHeight: 200,
-            padding: 16,
+            padding: "var(--inset-card)",
             background: "#FAFBFC",
             display: "flex",
             flexDirection: "column",
-            gap: 8,
+            gap: "var(--gap-default)",
           }}
         >
           {history.map((m, i) => (
@@ -35,7 +35,7 @@ export const Playground: Story = {
                 alignSelf: "flex-end",
                 background: "var(--semantic-bg-brand-default)",
                 color: "#fff",
-                padding: "8px 12px",
+                padding: "var(--inset-chip) var(--inset-input)",
                 borderRadius: 12,
                 maxWidth: "70%",
               }}
@@ -44,7 +44,7 @@ export const Playground: Story = {
             </div>
           ))}
           {history.length === 0 && (
-            <div style={{ color: "#999", textAlign: "center", padding: 24 }}>
+            <div style={{ color: "#999", textAlign: "center", padding: "var(--inset-modal)" }}>
               아직 메시지가 없어요
             </div>
           )}

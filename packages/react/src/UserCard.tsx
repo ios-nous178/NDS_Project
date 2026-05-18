@@ -74,8 +74,8 @@ export interface UserCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 const ucStyles = `
   :where(.${UC_CLASS}) {
     display: flex;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-input) var(--inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -92,7 +92,7 @@ const ucStyles = `
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: ${spacing[20]}px;
+    padding: var(--inset-card-large);
   }
 
   :where(.${UC_AVATAR_CLASS}) {
@@ -145,7 +145,7 @@ const ucStyles = `
   :where(.${UC_META_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-size: ${typeScale.caption1.fontSize}px;
     color: ${cv.textRole.subtle};
     margin-top: ${spacing[4]}px;

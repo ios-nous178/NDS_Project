@@ -29,7 +29,9 @@ export const Playground: Story = { render: (args) => <CardVisual {...args} /> };
 export const Brands: Story = {
   name: "Variant/모든 브랜드",
   render: () => (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
+    <div
+      style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--gap-loose)" }}
+    >
       {(
         [
           "visa",

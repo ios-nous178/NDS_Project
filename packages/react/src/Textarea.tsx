@@ -26,7 +26,7 @@ const textareaStyles = `
   :where(.${TA_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     width: var(--nds-textarea-width, 100%);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -44,7 +44,7 @@ const textareaStyles = `
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    padding: var(--inset-input) var(--inset-card);
     border: 1px solid var(--nds-textarea-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-textarea-radius, ${radius.md}px);
     background: var(--nds-textarea-background, ${cv.surface.default});

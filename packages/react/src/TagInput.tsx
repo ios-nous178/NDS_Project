@@ -54,7 +54,7 @@ const tiStyles = `
   :where(.${TI_ROOT_CLASS}) {
     display: inline-flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -73,7 +73,7 @@ const tiStyles = `
     align-items: center;
     gap: ${spacing[6]}px;
     min-height: 48px;
-    padding: ${spacing[8]}px ${spacing[12]}px;
+    padding: var(--inset-chip) var(--inset-input);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -97,7 +97,7 @@ const tiStyles = `
   :where(.${TI_TAG_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     height: 26px;
     padding: 0 ${spacing[4]}px 0 ${spacing[10]}px;
     border-radius: 9999px;

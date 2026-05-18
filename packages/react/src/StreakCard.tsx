@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -48,8 +48,8 @@ const streakStyles = `
   :where(.${SK_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[16]}px;
-    padding: ${spacing[20]}px;
+    gap: var(--gap-loose);
+    padding: var(--inset-card-large);
     background: var(--nds-streak-bg, ${cv.surface.default});
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -60,7 +60,7 @@ const streakStyles = `
   :where(.${SK_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${SK_HEADER_CLASS}) .${SK_CLASS}__icon {
@@ -87,7 +87,7 @@ const streakStyles = `
   :where(.${SK_VALUE_CLASS}) {
     display: flex;
     align-items: baseline;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${SK_NUMBER_CLASS}) {
@@ -106,7 +106,7 @@ const streakStyles = `
 
   :where(.${SK_GRID_CLASS}) {
     display: flex;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     width: 100%;
   }
 
@@ -115,7 +115,7 @@ const streakStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${SK_DAY_LABEL_CLASS}) {

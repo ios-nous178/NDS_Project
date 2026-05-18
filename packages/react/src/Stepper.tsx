@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -60,7 +52,7 @@ const stepperStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     min-width: 0;
   }
 

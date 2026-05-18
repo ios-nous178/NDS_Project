@@ -45,7 +45,7 @@ const osStyles = `
   :where(.${OS_CLASS}) {
     display: flex;
     flex-direction: column;
-    padding: ${spacing[20]}px;
+    padding: var(--inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -67,14 +67,14 @@ const osStyles = `
   :where(.${OS_LIST_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${OS_ROW_CLASS}) {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${OS_LABEL_CLASS}) {
@@ -108,7 +108,7 @@ const osStyles = `
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${OS_TOTAL_CLASS}) > span:first-child {

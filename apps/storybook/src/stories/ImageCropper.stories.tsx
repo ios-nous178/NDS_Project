@@ -24,7 +24,14 @@ export const Playground: Story = {
           shape="circle"
           label="프로필 사진을 자르세요"
         />
-        <div style={{ display: "flex", gap: 8, marginTop: 12, justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "var(--gap-default)",
+            marginTop: 12,
+            justifyContent: "center",
+          }}
+        >
           <button
             onClick={() => setOut(ref.current?.toDataURL(200) ?? null)}
             style={{ padding: "8px 16px" }}

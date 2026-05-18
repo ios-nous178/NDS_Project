@@ -70,8 +70,8 @@ const tcStyles = `
   :where(.${TC_CLASS}) {
     display: flex;
     align-items: flex-start;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card);
     background: var(--nds-tip-bg, ${TONE_BG.info});
     color: var(--nds-tip-fg, ${TONE_FG.info});
     border-radius: ${radius.lg}px;

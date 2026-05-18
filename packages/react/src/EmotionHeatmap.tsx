@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -59,8 +59,8 @@ const heatmapStyles = `
   :where(.${HM_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[16]}px;
-    padding: ${spacing[20]}px;
+    gap: var(--gap-loose);
+    padding: var(--inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -72,7 +72,7 @@ const heatmapStyles = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${HM_TITLE_CLASS}) {
@@ -86,7 +86,7 @@ const heatmapStyles = `
   :where(.${HM_LEGEND_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-size: ${typeScale.caption2.fontSize}px;
     color: ${cv.textRole.subtle};
   }
@@ -100,14 +100,14 @@ const heatmapStyles = `
   :where(.${HM_GRID_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${HM_WEEKDAYS_CLASS}),
   :where(.${HM_CELLS_CLASS}) {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${HM_WEEKDAY_CLASS}) {

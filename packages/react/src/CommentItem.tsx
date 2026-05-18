@@ -47,13 +47,13 @@ export interface CommentItemProps extends Omit<React.HTMLAttributes<HTMLDivEleme
 const ciStyles = `
   :where(.${CI_CLASS}) {
     display: flex;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[12]}px 0;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-input) 0;
     font-family: ${fontFamily.web};
   }
 
   :where(.${CI_CLASS}[data-reply="true"]) {
-    padding-left: ${spacing[24]}px;
+    padding-left: var(--inset-modal);
   }
 
   :where(.${CI_AVATAR_CLASS}) {
@@ -65,13 +65,13 @@ const ciStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${CI_HEAD_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     flex-wrap: wrap;
   }
 
@@ -98,7 +98,7 @@ const ciStyles = `
   :where(.${CI_ACTIONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     margin-top: ${spacing[4]}px;
   }
 
@@ -119,7 +119,7 @@ const ciStyles = `
   :where(.${CI_REPLIES_CLASS}) {
     margin-top: ${spacing[8]}px;
     border-left: 2px solid ${cv.borderRole.subtle};
-    padding-left: ${spacing[12]}px;
+    padding-left: var(--inset-input);
   }
 `;
 

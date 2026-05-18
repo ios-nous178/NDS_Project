@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T02:31:52.176Z",
+  "generatedAt": "2026-05-18T02:54:52.998Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -5614,63 +5614,103 @@
       "group": "border"
     },
     {
-      "name": "--color-blue-10",
-      "value": "#F8FCFE",
+      "name": "--color-amber-100",
+      "value": "#FFFAE5",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-200",
+      "value": "#FFF0AC",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-300",
+      "value": "#FFE673",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-400",
+      "value": "#FFDC39",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-50",
+      "value": "#FFFEF5",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-500",
+      "value": "#FFD200",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-600",
+      "value": "#FFC400",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-700",
+      "value": "#FEAF01",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-800",
+      "value": "#FD9B02",
+      "group": "color"
+    },
+    {
+      "name": "--color-amber-900",
+      "value": "#FC8703",
       "group": "color"
     },
     {
       "name": "--color-blue-100",
-      "value": "#B6DDF9",
+      "value": "#E3F2FC",
       "group": "color"
     },
     {
       "name": "--color-blue-200",
-      "value": "#87C9F6",
-      "group": "color"
-    },
-    {
-      "name": "--color-blue-25",
-      "value": "#EAF6FD",
+      "value": "#91CAF6",
       "group": "color"
     },
     {
       "name": "--color-blue-300",
-      "value": "#53B2F3",
+      "value": "#67B5F2",
       "group": "color"
     },
     {
       "name": "--color-blue-400",
-      "value": "#1AA3F2",
+      "value": "#47A5F0",
       "group": "color"
     },
     {
       "name": "--color-blue-50",
-      "value": "#E1F2FC",
+      "value": "#F1F8FD",
       "group": "color"
     },
     {
       "name": "--color-blue-500",
-      "value": "#0094F0",
+      "value": "#2B96ED",
       "group": "color"
     },
     {
       "name": "--color-blue-600",
-      "value": "#0086E3",
+      "value": "#017EE4",
       "group": "color"
     },
     {
       "name": "--color-blue-700",
-      "value": "#0074D0",
+      "value": "#0E71CF",
       "group": "color"
     },
     {
       "name": "--color-blue-800",
-      "value": "#0063BF",
+      "value": "#1B65BA",
       "group": "color"
     },
     {
       "name": "--color-blue-900",
-      "value": "#0046A0",
+      "value": "#0F52A0",
       "group": "color"
     },
     {
@@ -5709,6 +5749,71 @@
       "group": "color"
     },
     {
+      "name": "--color-coolGray-700",
+      "value": "#374151",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-800",
+      "value": "#1F2937",
+      "group": "color"
+    },
+    {
+      "name": "--color-coolGray-900",
+      "value": "#111827",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-100",
+      "value": "#FFECEC",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-200",
+      "value": "#FFCDCD",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-300",
+      "value": "#FF9A9A",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-400",
+      "value": "#FF7070",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-50",
+      "value": "#FFF5F5",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-500",
+      "value": "#FF4141",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-600",
+      "value": "#E83030",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-700",
+      "value": "#C42020",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-800",
+      "value": "#A01414",
+      "group": "color"
+    },
+    {
+      "name": "--color-coralRed-900",
+      "value": "#7A0A0A",
+      "group": "color"
+    },
+    {
       "name": "--color-green-100",
       "value": "#AAE3D7",
       "group": "color"
@@ -5739,6 +5844,26 @@
       "group": "color"
     },
     {
+      "name": "--color-green-600",
+      "value": "#006B50",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-700",
+      "value": "#005640",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-800",
+      "value": "#003F2E",
+      "group": "color"
+    },
+    {
+      "name": "--color-green-900",
+      "value": "#002B1E",
+      "group": "color"
+    },
+    {
       "name": "--color-magenta-100",
       "value": "#FCE3EC",
       "group": "color"
@@ -5751,6 +5876,11 @@
     {
       "name": "--color-magenta-300",
       "value": "#F15890",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-400",
+      "value": "#EF4384",
       "group": "color"
     },
     {
@@ -5769,8 +5899,18 @@
       "group": "color"
     },
     {
+      "name": "--color-magenta-700",
+      "value": "#CE005A",
+      "group": "color"
+    },
+    {
       "name": "--color-magenta-800",
       "value": "#C30058",
+      "group": "color"
+    },
+    {
+      "name": "--color-magenta-900",
+      "value": "#910041",
       "group": "color"
     },
     {
@@ -5844,6 +5984,11 @@
       "group": "color"
     },
     {
+      "name": "--color-red-300",
+      "value": "#FF6B35",
+      "group": "color"
+    },
+    {
       "name": "--color-red-400",
       "value": "#FF4E0C",
       "group": "color"
@@ -5859,6 +6004,11 @@
       "group": "color"
     },
     {
+      "name": "--color-red-600",
+      "value": "#EA3C00",
+      "group": "color"
+    },
+    {
       "name": "--color-red-700",
       "value": "#E33800",
       "group": "color"
@@ -5866,6 +6016,11 @@
     {
       "name": "--color-red-800",
       "value": "#CB2700",
+      "group": "color"
+    },
+    {
+      "name": "--color-red-900",
+      "value": "#A01C00",
       "group": "color"
     },
     {
@@ -5896,6 +6051,26 @@
     {
       "name": "--color-yellow-500",
       "value": "#FFC303",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-600",
+      "value": "#FFA100",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-700",
+      "value": "#E08200",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-800",
+      "value": "#C06800",
+      "group": "color"
+    },
+    {
+      "name": "--color-yellow-900",
+      "value": "#9B5000",
       "group": "color"
     },
     {

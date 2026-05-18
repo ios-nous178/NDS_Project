@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -68,12 +68,12 @@ const stStyles = `
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${ST_CLASS}[data-direction="vertical"]) .${ST_ITEM_CLASS} {
     flex-direction: row;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     flex: none;
     align-items: stretch;
   }
@@ -157,7 +157,7 @@ const stStyles = `
   }
 
   :where(.${ST_CLASS}[data-direction="vertical"]) .${ST_BODY_CLASS} {
-    padding-bottom: ${spacing[16]}px;
+    padding-bottom: var(--inset-card);
   }
 
   :where(.${ST_LABEL_CLASS}) {

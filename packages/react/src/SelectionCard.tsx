@@ -1,13 +1,5 @@
 import React, { createContext, useContext, useId } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -83,7 +75,7 @@ const selectionCardStyles = `
   :where(.${SC_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
   }
@@ -97,8 +89,8 @@ const selectionCardStyles = `
     position: relative;
     display: flex;
     align-items: flex-start;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.lg}px;

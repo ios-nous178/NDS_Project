@@ -80,7 +80,7 @@ const asStyles = `
   :where(.${AS_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
   }
@@ -93,14 +93,14 @@ const asStyles = `
 
   :where(.${AS_FIELD_ROW_CLASS}) {
     display: flex;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${AS_INPUT_CLASS}) {
     flex: 1;
     min-width: 0;
     height: ${sizing.input.default}px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -114,7 +114,7 @@ const asStyles = `
 
   :where(.${AS_BTN_CLASS}) {
     height: ${sizing.input.default}px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border-radius: ${radius.md}px;
     border: none;
     background: ${cv.textRole.normal};
@@ -142,7 +142,7 @@ const asStyles = `
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    padding: var(--inset-input) var(--inset-card);
     border-bottom: 1px solid ${cv.borderRole.subtle};
     cursor: pointer;
     transition: background-color ${transition.default};
@@ -161,7 +161,7 @@ const asStyles = `
   }
 
   :where(.${AS_RESULT_CLASS}[data-empty="true"]) {
-    padding: ${spacing[16]}px;
+    padding: var(--inset-card);
     color: ${cv.textRole.subtle};
     text-align: center;
     border: 1px solid ${cv.borderRole.subtle};
@@ -172,8 +172,8 @@ const asStyles = `
   :where(.${AS_DETAIL_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
-    padding: ${spacing[12]}px;
+    gap: var(--gap-tight);
+    padding: var(--inset-input);
     background: ${cv.surface.section};
     border-radius: ${radius.md}px;
   }
@@ -185,7 +185,7 @@ const asStyles = `
 
   :where(.${AS_DETAIL_CLASS}) input {
     height: 40px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};

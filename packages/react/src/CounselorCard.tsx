@@ -31,8 +31,8 @@ const CN_CTA_CLASS = `${CN_CLASS}__cta`;
 const counselorCardStyles = `
   :where(.${CN_CLASS}) {
     display: flex;
-    gap: ${spacing[16]}px;
-    padding: ${spacing[20]}px;
+    gap: var(--gap-loose);
+    padding: var(--inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -77,7 +77,7 @@ const counselorCardStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${CN_HEADER_CLASS}) {
@@ -103,7 +103,7 @@ const counselorCardStyles = `
   :where(.${CN_RATING_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${CN_RATING_VALUE_CLASS}) {
@@ -128,7 +128,7 @@ const counselorCardStyles = `
   :where(.${CN_TAG_CLASS}) {
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[2]}px ${spacing[8]}px;
+    padding: ${spacing[2]}px var(--inset-chip);
     background: ${cv.surface.page};
     color: ${cv.textRole.strong};
     border-radius: ${radius.pill}px;
@@ -158,7 +158,7 @@ const counselorCardStyles = `
     all: unset;
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[8]}px ${spacing[16]}px;
+    padding: var(--inset-chip) var(--inset-card);
     background: ${cv.surface.brand};
     color: ${cv.textRole.inverse};
     border-radius: ${radius.pill}px;

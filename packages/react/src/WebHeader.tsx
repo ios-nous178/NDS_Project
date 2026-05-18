@@ -111,7 +111,7 @@ const webHeaderStyles = `
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 0 ${spacing[20]}px;
+    padding: 0 var(--inset-card-large);
     font-size: ${typeScale.headline5.fontSize}px;
     line-height: ${typeScale.headline5.lineHeight}px;
     font-weight: ${fontWeight.bold};
@@ -141,7 +141,7 @@ const webHeaderStyles = `
   :where(.${WH_ACTIONS_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
     margin-left: auto;
     flex-shrink: 0;
   }

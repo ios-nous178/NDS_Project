@@ -103,10 +103,10 @@ const datePickerStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     min-height: ${sizing.input.default}px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -159,7 +159,7 @@ const datePickerStyles = `
     border-radius: ${radius.md}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
-    padding: ${spacing[12]}px;
+    padding: var(--inset-input);
     box-sizing: border-box;
     font-family: ${fontFamily.web};
     animation: nds-date-picker-fade-in ${transition.default};
@@ -286,7 +286,7 @@ const datePickerStyles = `
     display: flex;
     justify-content: flex-end;
     margin-top: ${spacing[8]}px;
-    padding-top: ${spacing[8]}px;
+    padding-top: var(--inset-chip);
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 

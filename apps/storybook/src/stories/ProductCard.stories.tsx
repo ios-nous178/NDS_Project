@@ -4,7 +4,7 @@ import { ProductCard, PriceTag } from "@nudge-eap/react";
 import { StarIcon } from "@nudge-eap/icons";
 
 const RatingFooter = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+  <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--gap-tight)" }}>
     <StarIcon size={12} color="var(--semantic-icon-status-caution)" />
     {children}
   </span>
@@ -38,7 +38,14 @@ export const Playground: Story = {
 export const Grid: Story = {
   name: "Recipe/2칸 그리드",
   render: () => (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, width: 480 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        gap: "var(--gap-comfortable)",
+        width: 480,
+      }}
+    >
       {[1, 2, 3, 4].map((i) => (
         <ProductCard
           key={i}

@@ -51,7 +51,7 @@ const assessmentResultStyles = `
     display: flex;
     flex-direction: column;
     gap: ${spacing[20]}px;
-    padding: ${spacing[20]}px ${spacing[24]}px;
+    padding: var(--inset-card-large) var(--inset-modal);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-left: 4px solid var(--nds-ar-level-color);
@@ -86,7 +86,7 @@ const assessmentResultStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${AR_TITLE_CLASS}) {
@@ -102,7 +102,7 @@ const assessmentResultStyles = `
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[4]}px ${spacing[12]}px;
+    padding: ${spacing[4]}px var(--inset-input);
     border-radius: ${radius.pill}px;
     background: var(--nds-ar-level-bg);
     color: var(--nds-ar-level-text);
@@ -114,7 +114,7 @@ const assessmentResultStyles = `
   :where(.${AR_BODY_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
   }
 
   :where(.${AR_SCORE_CLASS}) {
@@ -154,7 +154,7 @@ const assessmentResultStyles = `
 
   :where(.${AR_GAUGE_BAR_CLASS}) {
     display: flex;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${AR_GAUGE_SEG_CLASS}) {
@@ -180,7 +180,7 @@ const assessmentResultStyles = `
 
   :where(.${AR_GAUGE_LABELS_CLASS}) {
     display: flex;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${AR_GAUGE_LABEL_CLASS}) {
@@ -205,7 +205,7 @@ const assessmentResultStyles = `
 
   :where(.${AR_FOOTER_CLASS}) {
     margin-top: ${spacing[4]}px;
-    padding-top: ${spacing[12]}px;
+    padding-top: var(--inset-input);
     border-top: 1px solid ${cv.borderRole.subtle};
     display: flex;
     justify-content: flex-end;
@@ -215,7 +215,7 @@ const assessmentResultStyles = `
     all: unset;
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;

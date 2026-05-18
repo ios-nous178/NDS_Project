@@ -40,8 +40,8 @@ const phStyles = `
   :where(.${PH_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[20]}px ${spacing[24]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card-large) var(--inset-modal);
     background: var(--nds-page-header-bg, ${cv.surface.default});
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -54,7 +54,7 @@ const phStyles = `
   :where(.${PH_TOP_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     min-height: 24px;
   }
 
@@ -90,7 +90,7 @@ const phStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
   }
 
   :where(.${PH_TITLE_AREA_CLASS}) {
@@ -98,7 +98,7 @@ const phStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${PH_TITLE_CLASS}) {
@@ -119,7 +119,7 @@ const phStyles = `
   :where(.${PH_ACTIONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     flex-shrink: 0;
   }
 

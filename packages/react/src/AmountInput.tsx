@@ -67,7 +67,7 @@ const aiStyles = `
   :where(.${AI_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
   }
@@ -82,7 +82,7 @@ const aiStyles = `
     display: flex;
     align-items: center;
     height: 56px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -123,12 +123,12 @@ const aiStyles = `
   :where(.${AI_PRESETS_CLASS}) {
     display: flex;
     flex-wrap: wrap;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${AI_PRESET_CLASS}) {
     height: 36px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: 9999px;
     background: ${cv.surface.default};

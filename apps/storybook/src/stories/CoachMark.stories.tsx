@@ -22,7 +22,13 @@ export const Playground: Story = {
           온보딩 시작
         </button>
         <div
-          style={{ display: "flex", gap: 24, padding: 24, background: "#FAFBFC", borderRadius: 12 }}
+          style={{
+            display: "flex",
+            gap: "var(--gap-wide)",
+            padding: "var(--inset-modal)",
+            background: "#FAFBFC",
+            borderRadius: 12,
+          }}
         >
           <button
             id="t-record"

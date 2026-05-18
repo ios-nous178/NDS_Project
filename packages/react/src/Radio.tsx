@@ -1,13 +1,5 @@
 import React, { createContext, useCallback, useContext, useId } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -25,7 +17,7 @@ const radioStyles = `
     position: relative;
     display: inline-flex;
     align-items: flex-start;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     cursor: pointer;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -126,7 +118,7 @@ const radioStyles = `
   :where(.${RADIO_GROUP_CLASS}) {
     display: flex;
     flex-direction: var(--nds-radio-group-direction, column);
-    gap: var(--nds-radio-group-gap, var(--nds-choice-group-gap, ${spacing[12]}px));
+    gap: var(--nds-radio-group-gap, var(--nds-choice-group-gap, var(--gap-comfortable)));
     font-family: ${fontFamily.web};
   }
 

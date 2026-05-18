@@ -39,7 +39,7 @@ function SpacingItem({ token, value }: { token: string; value: number }) {
     <Row>
       <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>spacing.{token}</div>
       <div style={{ fontSize: 13, color: "#666666" }}>{value}px</div>
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-loose)" }}>
         <div
           style={{
             width: value,
@@ -166,7 +166,7 @@ function SpacingTokensPage() {
     <div
       style={{
         fontFamily: "'Pretendard', sans-serif",
-        padding: 24,
+        padding: "var(--inset-modal)",
         backgroundColor: "#FFFFFF",
       }}
     >

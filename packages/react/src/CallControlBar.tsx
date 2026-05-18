@@ -8,15 +8,7 @@ const MicrophoneIcon = NDSIcons.MicrophoneIcon as unknown as IconComp;
 const VideocameraIcon = NDSIcons.VideocameraIcon as unknown as IconComp;
 const MymusicIcon = NDSIcons.MymusicIcon as unknown as IconComp;
 const TelephoneIcon = NDSIcons.TelephoneIcon as unknown as IconComp;
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -58,8 +50,8 @@ const cbStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[16]}px;
-    padding: ${spacing[20]}px;
+    gap: var(--gap-loose);
+    padding: var(--inset-card-large);
     background: var(--nds-call-bar-bg, rgba(0, 0, 0, 0.85));
     color: #fff;
     border-radius: var(--nds-call-bar-radius, ${radius.lg}px);
@@ -77,7 +69,7 @@ const cbStyles = `
   :where(.${CB_BUTTONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
   }
 
   :where(.${CB_BTN_CLASS}) {
@@ -117,7 +109,7 @@ const cbStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-tight);
     font-size: ${typeScale.caption2.fontSize}px;
     color: rgba(255, 255, 255, 0.7);
   }

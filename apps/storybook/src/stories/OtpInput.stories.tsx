@@ -43,7 +43,14 @@ export const OnComplete: Story = {
     const [v, setV] = useState("");
     const [done, setDone] = useState<string | null>(null);
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "var(--gap-comfortable)",
+        }}
+      >
         <OtpInput value={v} onValueChange={setV} onComplete={(value) => setDone(value)} />
         {done && (
           <span style={{ fontSize: 13, color: "var(--semantic-text-status-success)" }}>

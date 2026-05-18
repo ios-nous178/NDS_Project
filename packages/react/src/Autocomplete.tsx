@@ -75,7 +75,7 @@ const autocompleteStyles = `
     position: relative;
     display: inline-flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
     width: var(--nds-autocomplete-width, auto);
     box-sizing: border-box;
@@ -94,7 +94,7 @@ const autocompleteStyles = `
   :where(.${AC_INPUT_CLASS}) {
     width: 100%;
     height: ${sizing.input.default}px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -146,8 +146,8 @@ const autocompleteStyles = `
   :where(.${AC_OPTION_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-input) var(--inset-card);
     cursor: pointer;
     color: ${cv.textRole.normal};
     font-size: ${typeScale.body2.fontSize}px;
@@ -179,7 +179,7 @@ const autocompleteStyles = `
 
   :where(.${AC_EMPTY_CLASS}),
   :where(.${AC_LOADING_CLASS}) {
-    padding: ${spacing[16]}px;
+    padding: var(--inset-card);
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     text-align: center;

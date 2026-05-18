@@ -20,7 +20,7 @@ const paginationStyles = `
   :where(.${PG_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }

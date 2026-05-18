@@ -83,8 +83,8 @@ const listStyles = `
   :where(.${LIST_ITEM_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-input) var(--inset-card);
     background: transparent;
     border: none;
     width: 100%;
@@ -94,13 +94,13 @@ const listStyles = `
   }
 
   :where(.${LIST_ITEM_CLASS}[data-size="sm"]) {
-    padding: ${spacing[8]}px ${spacing[12]}px;
-    gap: ${spacing[8]}px;
+    padding: var(--inset-chip) var(--inset-input);
+    gap: var(--gap-default);
   }
 
   :where(.${LIST_ITEM_CLASS}[data-size="lg"]) {
-    padding: ${spacing[16]}px ${spacing[16]}px;
-    gap: ${spacing[16]}px;
+    padding: var(--inset-card) var(--inset-card);
+    gap: var(--gap-loose);
   }
 
   :where(.${LIST_ITEM_CLASS}[data-interactive="true"]) {

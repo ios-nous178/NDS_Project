@@ -48,7 +48,9 @@ export const Stacked: Story = {
 export const List: Story = {
   name: "Recipe/팔로우 리스트",
   render: () => (
-    <div style={{ width: 480, display: "flex", flexDirection: "column", gap: 8 }}>
+    <div
+      style={{ width: 480, display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}
+    >
       {[
         { name: "김민지", handle: "@minji" },
         { name: "이수영", handle: "@suyoung" },

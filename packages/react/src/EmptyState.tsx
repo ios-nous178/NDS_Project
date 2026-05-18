@@ -21,7 +21,7 @@ const emptyStateStyles = `
     justify-content: center;
     text-align: center;
     min-height: var(--nds-empty-state-min-height, 200px);
-    padding: ${spacing[48]}px ${spacing[20]}px;
+    padding: ${spacing[48]}px var(--inset-card-large);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }

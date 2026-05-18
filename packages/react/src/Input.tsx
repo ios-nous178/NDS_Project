@@ -77,10 +77,10 @@ const inputStyles = `
     position: relative;
     display: flex;
     align-items: center;
-    gap: ${spacing[10]}px;
+    gap: var(--gap-default);
     width: 100%;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: var(--nds-input-background, ${cv.surface.default});

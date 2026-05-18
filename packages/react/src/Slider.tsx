@@ -5,7 +5,6 @@ import {
   fontWeight,
   radius,
   shadow,
-  spacing,
   transition,
   typeScale,
 } from "@nudge-eap/tokens";
@@ -26,7 +25,7 @@ const sliderStyles = `
   :where(.${SL_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;

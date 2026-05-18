@@ -51,7 +51,7 @@ export interface QuickActionGridProps extends React.HTMLAttributes<HTMLDivElemen
 const qaStyles = `
   :where(.${QA_CLASS}) {
     display: grid;
-    gap: var(--nds-quick-action-gap, ${spacing[12]}px);
+    gap: var(--nds-quick-action-gap, var(--gap-comfortable));
     grid-template-columns: repeat(var(--nds-quick-action-cols, 4), 1fr);
     width: 100%;
     font-family: ${fontFamily.web};
@@ -62,8 +62,8 @@ const qaStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[8]}px;
-    padding: ${spacing[12]}px ${spacing[4]}px;
+    gap: var(--gap-default);
+    padding: var(--inset-input) ${spacing[4]}px;
     border: none;
     background: transparent;
     cursor: pointer;

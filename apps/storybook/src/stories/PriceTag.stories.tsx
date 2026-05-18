@@ -21,7 +21,7 @@ export const Playground: Story = { render: (args) => <PriceTag {...args} /> };
 export const Sizes: Story = {
   name: "Size/sm md lg",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
       <PriceTag size="sm" amount={39000} originalAmount={45000} />
       <PriceTag size="md" amount={39000} originalAmount={45000} />
       <PriceTag size="lg" amount={39000} originalAmount={45000} />
@@ -37,7 +37,7 @@ export const NoDiscount: Story = {
 export const Free: Story = {
   name: "Edge/무료",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
       <PriceTag amount={0} />
       <PriceTag amount={0} freeLabel="무료 체험" />
     </div>
@@ -55,7 +55,7 @@ export const InCardContext: Story = {
     <div
       style={{
         width: 240,
-        padding: 16,
+        padding: "var(--inset-card)",
         border: "1px solid #ddd",
         borderRadius: 12,
       }}

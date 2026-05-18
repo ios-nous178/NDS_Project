@@ -24,10 +24,10 @@ const buttonStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--nds-button-gap, ${spacing[8]}px);
+    gap: var(--nds-button-gap, var(--gap-default));
     width: var(--nds-button-width, auto);
     min-height: var(--nds-button-height, 48px);
-    padding: 0 var(--nds-button-padding-x, ${spacing[16]}px);
+    padding: 0 var(--nds-button-padding-x, var(--inset-card));
     border-radius: var(--nds-button-radius, ${radius.md}px);
     border: 1px solid var(--nds-button-border-color, transparent);
     background: var(--nds-button-background, ${cv.surface.brand});

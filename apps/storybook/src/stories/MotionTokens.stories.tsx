@@ -12,13 +12,13 @@ function DurationItem({ token, value }: { token: string; value: number }) {
         gridTemplateColumns: "160px 80px 1fr",
         alignItems: "center",
         gap: 20,
-        padding: "16px 0",
+        padding: "var(--inset-card) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
       <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>duration.{token}</div>
       <div style={{ fontSize: 13, color: "#666666" }}>{value}ms</div>
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-loose)" }}>
         <div
           style={{
             width: 48,
@@ -47,13 +47,13 @@ function EasingItem({ token, value }: { token: string; value: string }) {
         gridTemplateColumns: "160px 120px 1fr",
         alignItems: "center",
         gap: 20,
-        padding: "16px 0",
+        padding: "var(--inset-card) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
       <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>easing.{token}</div>
       <div style={{ fontSize: 13, color: "#666666" }}>{value}</div>
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-loose)" }}>
         <div
           style={{
             width: 48,
@@ -81,7 +81,7 @@ function TransitionItem({ token, value }: { token: string; value: string }) {
         gridTemplateColumns: "160px 1fr",
         alignItems: "center",
         gap: 20,
-        padding: "16px 0",
+        padding: "var(--inset-card) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
@@ -94,7 +94,11 @@ function TransitionItem({ token, value }: { token: string; value: string }) {
 function MotionTokensPage() {
   return (
     <div
-      style={{ fontFamily: "'Pretendard', sans-serif", padding: 24, backgroundColor: "#FFFFFF" }}
+      style={{
+        fontFamily: "'Pretendard', sans-serif",
+        padding: "var(--inset-modal)",
+        backgroundColor: "#FFFFFF",
+      }}
     >
       <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: "#111111" }}>
         Motion Tokens

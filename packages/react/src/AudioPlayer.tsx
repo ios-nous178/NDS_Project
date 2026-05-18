@@ -29,9 +29,9 @@ const audioPlayerStyles = `
   :where(.${AP_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     width: 100%;
-    padding: ${spacing[16]}px ${spacing[20]}px;
+    padding: var(--inset-card) var(--inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -136,7 +136,7 @@ const audioPlayerStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
   }
 
   :where(.${AP_BUTTON_CLASS}) {

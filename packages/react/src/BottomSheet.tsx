@@ -66,7 +66,7 @@ const bottomSheetStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[12]}px 0 ${spacing[4]}px;
+    padding: var(--inset-input) 0 ${spacing[4]}px;
     cursor: grab;
   }
 
@@ -82,8 +82,8 @@ const bottomSheetStyles = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px ${spacing[20]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card) var(--inset-card-large);
   }
 
   :where(.${BS_HEADER_CLASS}[data-has-title="true"]) {
@@ -112,7 +112,7 @@ const bottomSheetStyles = `
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: ${spacing[20]}px;
+    padding: var(--inset-card-large);
     font-size: ${typeScale.body2.fontSize}px;
     line-height: 1.5;
     color: ${cv.textRole.subtle};
@@ -120,8 +120,8 @@ const bottomSheetStyles = `
 
   :where(.${BS_FOOTER_CLASS}) {
     display: flex;
-    gap: ${spacing[8]}px;
-    padding: ${spacing[12]}px ${spacing[20]}px;
+    gap: var(--gap-default);
+    padding: var(--inset-input) var(--inset-card-large);
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 

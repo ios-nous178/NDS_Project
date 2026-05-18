@@ -62,7 +62,7 @@ const SPEC_ROWS: Array<{
     font: "16 / 24px",
     paddingX: "16px",
     icon: "20px",
-    gap: "8px",
+    gap: "var(--gap-default)",
   },
   { size: "md", height: "44px", font: "15 / 22px", paddingX: "24px", icon: "20px", gap: "8px" },
   { size: "sm", height: "42px", font: "14 / 20px", paddingX: "16px", icon: "20px", gap: "8px" },
@@ -81,7 +81,9 @@ export const FigmaSpec: Story = {
     },
   },
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 520 }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)", minWidth: 520 }}
+    >
       <table
         style={{
           borderCollapse: "collapse",
@@ -139,11 +141,11 @@ export const FigmaSpec: Story = {
 export const ColorMatrix: Story = {
   name: "Spec/Color × Variant Matrix",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-wide)" }}>
       {(["primary", "secondary", "assistive"] as const).map((color) => (
         <div key={color}>
           <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>{color}</p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "var(--gap-comfortable)", flexWrap: "wrap" }}>
             <Button color={color} variant="solid">
               Solid
             </Button>
@@ -225,10 +227,10 @@ export const FullWidth: Story = {
 export const VariantMatrix: Story = {
   name: "State/Variant Color Matrix",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-wide)" }}>
       <div>
         <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>Solid</p>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "var(--gap-comfortable)", alignItems: "center" }}>
           <Button variant="solid" color="primary">
             Primary
           </Button>
@@ -245,7 +247,7 @@ export const VariantMatrix: Story = {
       </div>
       <div>
         <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>Soft</p>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "var(--gap-comfortable)", alignItems: "center" }}>
           <Button variant="soft" color="primary">
             Primary
           </Button>
@@ -256,7 +258,7 @@ export const VariantMatrix: Story = {
       </div>
       <div>
         <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>Outlined</p>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "var(--gap-comfortable)", alignItems: "center" }}>
           <Button variant="outlined" color="primary">
             Primary
           </Button>
@@ -269,7 +271,7 @@ export const VariantMatrix: Story = {
         <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>
           Outlined-sub (Medium weight)
         </p>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "var(--gap-comfortable)", alignItems: "center" }}>
           <Button variant="outlined-sub" color="primary">
             Primary
           </Button>
@@ -287,7 +289,14 @@ export const VariantMatrix: Story = {
 export const SizeScale: Story = {
   name: "State/Size Scale",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+        alignItems: "flex-start",
+      }}
+    >
       <Button size="xl">XL (56px)</Button>
       <Button size="lg">LG (48px)</Button>
       <Button size="md">MD (44px)</Button>
@@ -303,18 +312,18 @@ export const SizeScale: Story = {
 export const StateComparison: Story = {
   name: "State/Comparison",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+      <div style={{ display: "flex", gap: "var(--gap-comfortable)", alignItems: "center" }}>
         <Button>Enabled</Button>
         <Button disabled>Disabled</Button>
       </div>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--gap-comfortable)", alignItems: "center" }}>
         <Button color="secondary">Enabled</Button>
         <Button color="secondary" disabled>
           Disabled
         </Button>
       </div>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--gap-comfortable)", alignItems: "center" }}>
         <Button variant="outlined">Enabled</Button>
         <Button variant="outlined" disabled>
           Disabled
@@ -329,7 +338,7 @@ export const StateComparison: Story = {
 export const HomePageActionButtons: Story = {
   name: "Recipe/Homepage Action Buttons",
   render: () => (
-    <div style={{ display: "flex", width: 480, gap: 12 }}>
+    <div style={{ display: "flex", width: 480, gap: "var(--gap-comfortable)" }}>
       <Button size="xl" fullWidth>
         상담 예약하기
       </Button>
@@ -343,7 +352,14 @@ export const HomePageActionButtons: Story = {
 export const WebviewChallengeButtons: Story = {
   name: "Recipe/WebView Challenge Buttons",
   render: () => (
-    <div style={{ display: "flex", width: 360, flexDirection: "column", gap: 12 }}>
+    <div
+      style={{
+        display: "flex",
+        width: 360,
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+      }}
+    >
       <Button color="primary" fullWidth>
         참여하기
       </Button>
@@ -370,7 +386,7 @@ export const WebviewChallengeButtons: Story = {
 export const HeaderAndUtilityButtons: Story = {
   name: "Recipe/Header And Utility Buttons",
   render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}>
       <Button size="xs">로그인</Button>
       <Button size="sm" variant="outlined">
         필터 초기화
@@ -388,7 +404,14 @@ export const HeaderAndUtilityButtons: Story = {
 export const WithIconsAndSlots: Story = {
   name: "Recipe/With Icons And Slots",
   render: () => (
-    <div style={{ display: "flex", width: 360, flexDirection: "column", gap: 12 }}>
+    <div
+      style={{
+        display: "flex",
+        width: 360,
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+      }}
+    >
       <Button
         leftIcon={<CommentIcon size={18} color="var(--semantic-icon-inverse-default)" />}
         fullWidth
@@ -413,14 +436,14 @@ export const WithIconsAndSlots: Story = {
 export const InputWithFieldButton: Story = {
   name: "Recipe/Input With Field Button",
   render: () => (
-    <div style={{ display: "flex", gap: 8, alignItems: "center", width: 328 }}>
+    <div style={{ display: "flex", gap: "var(--gap-default)", alignItems: "center", width: 328 }}>
       <div
         style={{
           flex: 1,
           height: 48,
           border: "1px solid #D8D8D8",
           borderRadius: 8,
-          padding: "0 16px",
+          padding: "0 var(--inset-card)",
           display: "flex",
           alignItems: "center",
           fontSize: 15,

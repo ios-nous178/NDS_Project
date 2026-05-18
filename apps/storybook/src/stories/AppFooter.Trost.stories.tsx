@@ -61,7 +61,7 @@ const snsLinks = [
 /* ─── Sub-components ─── */
 
 const AppStoreButtons = () => (
-  <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+  <div style={{ display: "flex", gap: "var(--gap-default)", marginBottom: 20 }}>
     {appStoreLinks.map((s) => (
       <a key={s.alt} href={s.href} target="_blank" rel="noopener noreferrer">
         <img src={s.img} alt={s.alt} width={145} height={48} style={{ display: "block" }} />
@@ -71,7 +71,7 @@ const AppStoreButtons = () => (
 );
 
 const SNSIcons = () => (
-  <div style={{ display: "flex", gap: 12 }}>
+  <div style={{ display: "flex", gap: "var(--gap-comfortable)" }}>
     {snsLinks.map((s) => (
       <a key={s.alt} href={s.href} target="_blank" rel="noopener noreferrer">
         <img
@@ -163,7 +163,7 @@ export const DesktopFooter: Story = {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-end",
-              gap: 16,
+              gap: "var(--gap-loose)",
               flexShrink: 0,
             }}
           >

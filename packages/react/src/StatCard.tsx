@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -46,8 +46,8 @@ const stStyles = `
   :where(.${ST_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px ${spacing[20]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card) var(--inset-card-large);
     background: var(--nds-stat-card-bg, ${cv.surface.default});
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -62,7 +62,7 @@ const stStyles = `
   :where(.${ST_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     color: ${cv.textRole.subtle};
   }
 
@@ -85,13 +85,13 @@ const stStyles = `
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
   }
 
   :where(.${ST_VALUE_CLASS}) {
     display: inline-flex;
     align-items: baseline;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${ST_VALUE_CLASS}) > strong {
@@ -112,7 +112,7 @@ const stStyles = `
     display: inline-flex;
     align-items: center;
     gap: 2px;
-    padding: 2px 8px;
+    padding: 2px var(--inset-chip);
     border-radius: 9999px;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};

@@ -30,7 +30,7 @@ const appFooterStyles = `
   /* ─── Info footer (홈페이지 하단) ─── */
   :where(.${FOOTER_CLASS}[data-variant="info"]) {
     width: 100%;
-    padding: var(--nds-footer-padding, ${spacing[16]}px);
+    padding: var(--nds-footer-padding, var(--inset-card));
     background: var(--nds-footer-background, ${cv.surface.subtle});
     font-family: var(--nds-footer-font-family, ${fontFamily.web});
     box-sizing: border-box;
@@ -40,7 +40,7 @@ const appFooterStyles = `
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     margin-bottom: ${spacing[16]}px;
   }
 
@@ -140,7 +140,7 @@ const appFooterStyles = `
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: ${spacing[24]}px;
+    gap: var(--gap-wide);
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: 1.6;
     color: var(--nds-footer-company-color, ${cv.textRole.subtle});

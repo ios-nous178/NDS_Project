@@ -65,8 +65,8 @@ const composerStyles = `
   :where(.${CC_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
-    padding: ${spacing[12]}px;
+    gap: var(--gap-default);
+    padding: var(--inset-input);
     background: ${cv.surface.default};
     border-top: 1px solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};
@@ -75,7 +75,7 @@ const composerStyles = `
 
   :where(.${CC_QUICK_CLASS}) {
     display: flex;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     overflow-x: auto;
     padding-bottom: ${spacing[4]}px;
     scrollbar-width: none;
@@ -85,7 +85,7 @@ const composerStyles = `
   :where(.${CC_QUICK_ITEM_CLASS}) {
     flex-shrink: 0;
     height: 32px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border-radius: 9999px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};
@@ -103,16 +103,16 @@ const composerStyles = `
   :where(.${CC_INPUT_AREA_CLASS}) {
     display: flex;
     align-items: flex-end;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     background: ${cv.surface.section};
     border-radius: ${radius.lg}px;
-    padding: ${spacing[8]}px;
+    padding: var(--inset-chip);
   }
 
   :where(.${CC_LEFT_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${CC_BTN_CLASS}) {
@@ -148,7 +148,7 @@ const composerStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.textRole.normal};
-    padding: 8px 4px;
+    padding: var(--inset-chip) 4px;
     max-height: var(--nds-chat-composer-max, 120px);
     overflow-y: auto;
     box-sizing: border-box;

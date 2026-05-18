@@ -64,7 +64,9 @@ export const Error: Story = {
 export const List: Story = {
   name: "Recipe/Multiple Attachments",
   render: () => (
-    <div style={{ width: 480, display: "flex", flexDirection: "column", gap: 8 }}>
+    <div
+      style={{ width: 480, display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}
+    >
       <AttachmentItem name="검사결과.pdf" size={245760} href="#" onRemove={() => {}} />
       <AttachmentItem name="처방전.png" size={1024000} href="#" onRemove={() => {}} />
       <AttachmentItem name="진단서.docx" size={51200} href="#" onRemove={() => {}} />

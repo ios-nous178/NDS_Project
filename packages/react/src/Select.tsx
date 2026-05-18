@@ -32,7 +32,7 @@ const selectStyles = `
   :where(.${SELECT_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--nds-select-label-gap, ${spacing[12]}px);
+    gap: var(--nds-select-label-gap, var(--gap-comfortable));
     width: var(--nds-select-width, 100%);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -52,7 +52,7 @@ const selectStyles = `
     justify-content: space-between;
     width: 100%;
     min-height: var(--nds-select-height, ${sizing.input.default}px);
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border: 1px solid var(--nds-select-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-select-radius, ${radius.md}px);
     background: var(--nds-select-background, ${cv.surface.default});
@@ -128,7 +128,7 @@ const selectStyles = `
   :where(.${SELECT_OPTION_CLASS}) {
     display: flex;
     align-items: center;
-    padding: ${spacing[12]}px;
+    padding: var(--inset-input);
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};

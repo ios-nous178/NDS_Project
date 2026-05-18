@@ -67,7 +67,7 @@ const breathingStyles = `
     flex-direction: column;
     align-items: center;
     gap: ${spacing[20]}px;
-    padding: ${spacing[24]}px;
+    padding: var(--inset-modal);
     background: var(--nds-breathing-bg, ${cv.surface.section});
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
@@ -105,7 +105,7 @@ const breathingStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${BG_LABEL_CLASS}) {
@@ -129,12 +129,12 @@ const breathingStyles = `
   :where(.${BG_CONTROLS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${BG_BTN_CLASS}) {
     height: 40px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border-radius: 9999px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};

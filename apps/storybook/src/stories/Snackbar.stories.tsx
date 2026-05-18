@@ -30,7 +30,7 @@ export const WithAction: Story = {
   render: function Render() {
     const [count, setCount] = useState(0);
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
         <Snackbar
           title="감정 기록을 삭제했어요"
           actionLabel="되돌리기"
@@ -45,7 +45,14 @@ export const WithAction: Story = {
 export const Variants: Story = {
   name: "Variant/info success warning error",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 480 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+        width: 480,
+      }}
+    >
       <Snackbar variant="info" title="알려드려요" description="상담사 일정이 변경됐어요." />
       <Snackbar variant="success" title="저장 완료" description="다음 단계로 이동합니다." />
       <Snackbar variant="warning" title="주의" description="네트워크 연결이 불안정해요." />

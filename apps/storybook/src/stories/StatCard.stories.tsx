@@ -23,7 +23,14 @@ export const Playground: Story = {
 export const Grid: Story = {
   name: "Recipe/대시보드 4-up 그리드",
   render: () => (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, width: 600 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        gap: "var(--gap-comfortable)",
+        width: 600,
+      }}
+    >
       <StatCard
         label="감정 기록"
         value="14"

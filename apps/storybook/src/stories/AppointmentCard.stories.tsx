@@ -34,7 +34,14 @@ export const Playground: Story = {
 export const Statuses: Story = {
   name: "State/모든 상태",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 480 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+        width: 480,
+      }}
+    >
       <AppointmentCard
         date="2026-05-10"
         startTime="10:00"

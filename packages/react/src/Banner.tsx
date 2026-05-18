@@ -30,7 +30,7 @@ const bannerStyles = `
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: var(--nds-banner-padding, ${spacing[20]}px ${spacing[24]}px);
+    padding: var(--nds-banner-padding, var(--inset-card-large) var(--inset-modal));
     background: var(--nds-banner-background, ${cv.surface.section});
     border-radius: var(--nds-banner-radius, ${radius.lg}px);
     font-family: ${fontFamily.web};
@@ -62,7 +62,7 @@ const bannerStyles = `
   :where(.${BN_CONTENT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     min-width: 0;
     flex: 1;
   }
@@ -83,7 +83,7 @@ const bannerStyles = `
   :where(.${BN_ACTION_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     margin-top: ${spacing[8]}px;
     font-size: var(--nds-banner-action-font-size, ${typeScale.body1.fontSize}px);
     font-weight: ${fontWeight.bold};

@@ -5,7 +5,6 @@ import {
   fontWeight,
   radius,
   sizing,
-  spacing,
   transition,
   typeScale,
 } from "@nudge-eap/tokens";
@@ -51,7 +50,7 @@ const tpStyles = `
   :where(.${TP_ROOT_CLASS}) {
     display: inline-flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
   }
 
@@ -67,7 +66,7 @@ const tpStyles = `
     display: flex;
     align-items: center;
     height: ${sizing.input.default}px;
-    padding: 0 ${spacing[16]}px;
+    padding: 0 var(--inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
