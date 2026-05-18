@@ -7,8 +7,9 @@
  *
  * 입력: packages/mcp/dist/guides.js — pnpm build --filter @nudge-eap/mcp 가 선행되어야 함.
  * 출력:
- *   - docs/guide/ux-writing.md     (UX_WRITING_GUIDE)
- *   - docs/guide/dark-patterns.md  (PATTERN_GUIDES['dark-patterns'])
+ *   - docs/guide/ux-writing.md           (UX_WRITING_GUIDE)
+ *   - docs/guide/dark-patterns.md        (PATTERN_GUIDES['dark-patterns'])
+ *   - docs/guide/visual-antipatterns.md  (PATTERN_GUIDES['visual-antipatterns'])
  */
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -32,6 +33,17 @@ try {
 
 const { UX_WRITING_GUIDE, PATTERN_GUIDES } = await import(mcpDist);
 
+// MDX 는 `{...}` 를 JSX expression 으로 해석한다. SSOT 본문에 raw `{명사}`,
+// `get_guide({ topic: ... })` 같은 표현이 들어가면 docusaurus build 가 깨지므로
+// 백틱(inline code) 바깥의 `{` `}` 만 escape 한다. 백틱 안은 MDX 가 raw 로 두므로
+// 건드리지 않는다.
+function esc(text) {
+  return String(text)
+    .split(/(`[^`]*`)/)
+    .map((part, i) => (i % 2 === 1 ? part : part.replace(/[{}]/g, "\\$&")))
+    .join("");
+}
+
 function renderUxWriting() {
   const g = UX_WRITING_GUIDE;
   const lines = [
@@ -50,28 +62,28 @@ function renderUxWriting() {
     "",
     "## 보이스톤",
     "",
-    g.voiceTone,
+    esc(g.voiceTone),
     "",
     "## 문장 원칙",
     "",
   ];
   for (const p of g.principles) {
-    lines.push(`### ${p.name}`, "", p.summary, "");
+    lines.push(`### ${esc(p.name)}`, "", esc(p.summary), "");
     lines.push("**Do**", "");
-    for (const x of p.do) lines.push(`- ${x}`);
+    for (const x of p.do) lines.push(`- ${esc(x)}`);
     lines.push("", "**Don't**", "");
-    for (const x of p.dont) lines.push(`- ${x}`);
+    for (const x of p.dont) lines.push(`- ${esc(x)}`);
     lines.push("");
   }
   lines.push("## 마이크로카피", "");
   for (const m of g.microcopy) {
-    lines.push(`### ${m.context}`, "", m.rule, "");
+    lines.push(`### ${esc(m.context)}`, "", esc(m.rule), "");
     if (m.example) {
       lines.push("```", m.example, "```", "");
     }
   }
   lines.push("## EAP 멘탈케어 도메인 룰", "");
-  for (const r of g.eapDomain) lines.push(`- ${r}`);
+  for (const r of g.eapDomain) lines.push(`- ${esc(r)}`);
   lines.push("");
   return `${lines.join("\n").trimEnd()}\n`;
 }
@@ -94,14 +106,51 @@ function renderDarkPatterns() {
     "",
     "## 요약",
     "",
-    g.summary,
+    esc(g.summary),
     "",
     "## 규칙",
     "",
   ];
-  for (const r of g.rules) lines.push(`- ${r}`);
+  for (const r of g.rules) lines.push(`- ${esc(r)}`);
   lines.push("", "## 피해야 할 패턴", "");
-  for (const a of g.avoid) lines.push(`- ${a}`);
+  for (const a of g.avoid) lines.push(`- ${esc(a)}`);
+  if (g.metrics && Object.keys(g.metrics).length > 0) {
+    lines.push("", "## Metrics", "");
+    lines.push("| Key | Value |", "|---|---|");
+    for (const [k, v] of Object.entries(g.metrics)) {
+      lines.push(`| \`${k}\` | ${v} |`);
+    }
+  }
+  lines.push("");
+  return `${lines.join("\n").trimEnd()}\n`;
+}
+
+function renderVisualAntipatterns() {
+  const g = PATTERN_GUIDES["visual-antipatterns"];
+  if (!g) throw new Error("PATTERN_GUIDES['visual-antipatterns'] 가 비어 있습니다.");
+  const lines = [
+    "---",
+    "sidebar_position: 12",
+    "title: 시각 안티패턴",
+    "---",
+    "",
+    "<!-- AUTO-GENERATED FILE. SSOT: packages/mcp/src/guides.ts (PATTERN_GUIDES['visual-antipatterns']). Run `pnpm generate:guide-docs` after editing the source. -->",
+    "",
+    "# 시각 안티패턴",
+    "",
+    '1차 목업에서 퀄리티를 떨어뜨리는 대표 시각 안티패턴. 외부 mockup 프로젝트에서는 `get_guide({ topic: "pattern:visual-antipatterns" })` MCP 호출로 동일 본문을 받습니다.',
+    "다크패턴(`dark-patterns`) 이 진입·뒤로가기·CTA 라벨 같은 **플로우·사용성** 차원을 다룬다면, 이 문서는 색·강조·반복 같은 **시각·스타일** 차원의 안티패턴을 다룹니다.",
+    "",
+    "## 요약",
+    "",
+    esc(g.summary),
+    "",
+    "## 규칙",
+    "",
+  ];
+  for (const r of g.rules) lines.push(`- ${esc(r)}`);
+  lines.push("", "## 피해야 할 패턴", "");
+  for (const a of g.avoid) lines.push(`- ${esc(a)}`);
   if (g.metrics && Object.keys(g.metrics).length > 0) {
     lines.push("", "## Metrics", "");
     lines.push("| Key | Value |", "|---|---|");
@@ -122,3 +171,7 @@ console.log(`Generated ${path.relative(rootDir, uxOut)}`);
 const dpOut = path.join(outDir, "dark-patterns.md");
 await fs.writeFile(dpOut, renderDarkPatterns(), "utf8");
 console.log(`Generated ${path.relative(rootDir, dpOut)}`);
+
+const vaOut = path.join(outDir, "visual-antipatterns.md");
+await fs.writeFile(vaOut, renderVisualAntipatterns(), "utf8");
+console.log(`Generated ${path.relative(rootDir, vaOut)}`);

@@ -13,18 +13,6 @@
 
 import { neutral, coolGray, blue, yellow, red, green } from "../colors.js";
 
-// blue는 atomic 스케일이 Figma와 디커플링되어 사용하지 않지만, 미래 참조용으로 import 유지
-void blue;
-
-/** Atomic Bright Blue · 500 — Figma `--*-brand-default` */
-const brightBlue500 = "#2B96ED";
-/** Atomic Bright Blue · 600 — Figma `--fill-brand-hover` / `--button-bg-hover` */
-const brightBlue600 = "#017EE4";
-/** Atomic Bright Blue · 700 — Figma `--fill-brand-pressed` / `--button-bg-pressed` */
-const brightBlue700 = "#0E71CF";
-/** Atomic Bright Blue · 800 — Figma `--text-brand-strong` */
-const brightBlue800 = "#1B65BA";
-
 export const nudgeEapSemantic = {
   bg: {
     page: { default: coolGray[50] }, // #F8F9FB
@@ -34,14 +22,14 @@ export const nudgeEapSemantic = {
     },
     section: { default: coolGray[100] }, // #F3F4F6
     brand: {
-      default: brightBlue500, // #2B96ED
-      subtle: "#F1F8FD", // Figma `--bg-brand-subtle` (Bright Blue 50)
+      default: blue[500], // #2B96ED
+      subtle: blue[50], // #F1F8FD — Figma `--bg-brand-subtle`
     },
     inverse: { default: neutral[900] }, // #111111
     status: {
       error: red[50], // #FEE9E6
       success: green[50], // #E5F7F4
-      info: "#E3F2FC", // Figma `--bg-status-info` (Bright Blue 100)
+      info: blue[100], // #E3F2FC — Figma `--bg-status-info`
       caution: yellow[50], // #FFFAE8
     },
     // Figma `--bg-overlay` (flat, no /default suffix) — emits `--semantic-bg-overlay`
@@ -58,45 +46,45 @@ export const nudgeEapSemantic = {
     disabled: { default: neutral[400] }, // #C7C7C7
     inverse: { default: neutral["00"] }, // #FFFFFF
     brand: {
-      default: brightBlue500, // #2B96ED
-      strong: brightBlue800, // #1B65BA — Figma `--text-brand-strong` (Bright Blue 800)
+      default: blue[500], // #2B96ED
+      strong: blue[800], // #1B65BA — Figma `--text-brand-strong`
     },
     status: {
       success: green[400], // #00A07C
       error: red[500], // #F13F00
-      caution: "#FFA100", // Figma `--text-status-caution` (Golden Yellow 600)
-      info: brightBlue600, // #017EE4 — Figma `--text-status-info` (Bright Blue 600)
+      caution: yellow[600], // #FFA100 — Figma `--text-status-caution`
+      info: blue[600], // #017EE4 — Figma `--text-status-info`
     },
   },
   buttonBg: {
-    default: brightBlue500, // #2B96ED
-    hover: brightBlue600, // #017EE4
-    pressed: brightBlue700, // #0E71CF
+    default: blue[500], // #2B96ED
+    hover: blue[600], // #017EE4
+    pressed: blue[700], // #0E71CF
     // Figma 실 Button 컴포넌트 (171:8410) 가 cool-gray/400 사용 — SemanticColorGuide
     // 섹션의 "Neutral 200" 라벨과는 어긋나지만 designer mockup 의 실제 색이 SSOT.
     disabled: coolGray[400], // #9CA2AE
     secondary: {
-      default: "#F1F8FD", // Bright Blue 50
-      hover: "#E3F2FC", // Bright Blue 100
+      default: blue[50], // #F1F8FD
+      hover: blue[100], // #E3F2FC
       disabled: coolGray[200], // #E6E7EB
     },
     outlined: {
       default: neutral["00"], // #FFFFFF
-      hover: "#F1F8FD", // Bright Blue 50
+      hover: blue[50], // #F1F8FD
       disabled: neutral["00"], // #FFFFFF
     },
   },
   buttonText: {
     default: neutral["00"], // #FFFFFF
-    brand: brightBlue500, // #2B96ED
+    brand: blue[500], // #2B96ED
     // Figma 실 Button (171:8480) → `--eap-button-text-disabled: #9ca2ae` 으로
     // SemanticColorGuide 의 "Neutral 400" 라벨과 어긋나지만 실 컴포넌트가 SSOT.
     disabled: coolGray[400], // #9CA2AE
   },
   buttonBorder: {
     outlined: {
-      default: brightBlue500, // #2B96ED
-      hover: brightBlue500, // #2B96ED
+      default: blue[500], // #2B96ED
+      hover: blue[500], // #2B96ED
       disabled: coolGray[400], // #9CA2AE
     },
     assistive: {
@@ -113,7 +101,7 @@ export const nudgeEapSemantic = {
     normal: { default: neutral[700] }, // #666666 ← Figma Neutral · 600
     disabled: { default: neutral[400] }, // #C7C7C7 ← Figma Neutral · 200
     inverse: { default: neutral["00"] }, // #FFFFFF ← Neutral · 00 (white)
-    brand: { default: brightBlue500 }, // #2B96ED ← Atomic/Bright Blue · 500
+    brand: { default: blue[500] }, // #2B96ED ← Atomic/Bright Blue · 500
     status: {
       success: green[300], // #13BFA2 ← Atomic/Green · 500
       error: red[500], // #F13F00 ← Atomic/Orange Red · 500
@@ -124,9 +112,9 @@ export const nudgeEapSemantic = {
     normal: { default: neutral[300] }, // #D8D8D8
     strong: { default: neutral[500] }, // #999999
     subtle: { default: neutral[200] }, // #ECECEC
-    focus: { default: brightBlue500 }, // #2B96ED
+    focus: { default: blue[500] }, // #2B96ED
     brand: {
-      default: brightBlue500, // #2B96ED
+      default: blue[500], // #2B96ED
       disabled: coolGray[400], // #9CA2AE
     },
     disabled: { default: neutral[200] }, // #ECECEC
@@ -137,9 +125,9 @@ export const nudgeEapSemantic = {
   },
   fill: {
     brand: {
-      default: brightBlue500, // #2B96ED
-      hover: brightBlue600, // #017EE4
-      pressed: brightBlue700, // #0E71CF
+      default: blue[500], // #2B96ED
+      hover: blue[600], // #017EE4
+      pressed: blue[700], // #0E71CF
       disabled: neutral[300], // #D8D8D8
     },
     neutral: {
@@ -164,12 +152,12 @@ export const nudgeEapSemantic = {
     bgDisabled: neutral[50], // #FAFAFA — --semantic-input-bg-disabled
     borderDefault: neutral[300], // #D8D8D8
     borderHover: neutral[400], // #C7C7C7
-    borderFocus: brightBlue500, // #2B96ED
+    borderFocus: blue[500], // #2B96ED
     borderError: red[500], // #F13F00
     borderDisabled: neutral[300], // #D8D8D8
     placeholder: neutral[500], // #999999
     helpertextDefault: neutral[500], // #999999 ← Text/Muted/Default
-    helpertextSuccess: brightBlue500, // #2B96ED ← Text/Brand/Default
+    helpertextSuccess: blue[500], // #2B96ED ← Text/Brand/Default
     helpertextError: red[500], // #F13F00 ← Text/Status/Error
     helpertextDisabled: neutral[400], // #C7C7C7 ← Text/Disabled/Default
   },
