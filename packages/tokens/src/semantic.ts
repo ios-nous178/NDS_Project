@@ -25,7 +25,7 @@ const brightBlue700 = "#0E71CF";
 /** Atomic Bright Blue · 800 — Figma `--text-brand-strong` */
 const brightBlue800 = "#1B65BA";
 
-export const eap = {
+export const semantic = {
   bg: {
     page: { default: coolGray[50] }, // #F8F9FB
     surface: {
@@ -175,4 +175,4 @@ export const eap = {
   },
 } as const;
 
-export type EapTokens = typeof eap;
+export type SemanticTokens = typeof semantic;

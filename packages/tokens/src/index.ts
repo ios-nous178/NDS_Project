@@ -1,13 +1,13 @@
 export { colors, neutral, coolGray, blue, magenta, yellow, red, green } from "./colors";
 export { cv } from "./cssVar";
 export type { CssVarRef } from "./cssVar";
-export { eap } from "./eap";
-export type { EapTokens } from "./eap";
+export { semantic } from "./semantic";
+export type { SemanticTokens } from "./semantic";
 export { semanticGuide, getSemanticGuide } from "./guide";
 export type { GuideStatus, GuideMeta } from "./guide";
 export { typography, fontFamily, fontWeight, typeScale } from "./typography";
 export type { TypeStyle } from "./typography";
-export { spacing, gap, padding, radius, shape, borderWidth, stroke, sizing, grid } from "./spacing";
+export { spacing, gap, inset, radius, shape, borderWidth, stroke, sizing, grid } from "./spacing";
 export { elevation, shadow, zIndex, elevationLevel } from "./elevation";
 export type { ShadowLevel, ElevationLevelName } from "./elevation";
 export { motion, duration, easing, transition } from "./motion";

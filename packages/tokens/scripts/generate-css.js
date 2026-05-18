@@ -10,11 +10,11 @@ const fs = require("fs");
 const path = require("path");
 
 const { colors } = require("../dist/colors");
-const { eap } = require("../dist/eap");
+const { semantic } = require("../dist/semantic");
 const {
   spacing,
   gap,
-  padding,
+  inset,
   radius,
   shape,
   borderWidth,
@@ -39,7 +39,7 @@ function flattenPaletteVars(obj, prefix, lines) {
   }
 }
 
-/** role-based 트리(`eap`) → `--semantic-{group}-{role}-{variant}` (camelCase → kebab-case) */
+/** role-based 트리(`semantic`) → `--semantic-{group}-{role}-{variant}` (camelCase → kebab-case) */
 function flattenRoleSemanticVars(obj, prefix, lines) {
   for (const [key, value] of Object.entries(obj)) {
     const part = camelToKebab(key);
@@ -98,7 +98,7 @@ function generateBaseTokens() {
   // DS extension (bg-disabled). emit: `--semantic-{group}-{role}-{variant}` (kebab).
   lines.push("");
   lines.push("  /* ── Semantic (role-based, Figma SemanticColorGuide 171:6675) ── */");
-  flattenRoleSemanticVars(eap, "", lines);
+  flattenRoleSemanticVars(semantic, "", lines);
 
   // Spacing — Primitive Scale (Figma · SpacingGuide, 4pt grid)
   lines.push("");
@@ -114,11 +114,11 @@ function generateBaseTokens() {
     lines.push(`  --gap-${key}: ${value}px;`);
   }
 
-  // Padding — Semantic (Figma · SpacingGuide / Padding)
+  // Inset — Semantic (Figma · SpacingGuide / Inset) — 사용처 기반 컨테이너 내부 여백
   lines.push("");
-  lines.push("  /* ── Padding (Semantic, Figma · SpacingGuide / Padding) ── */");
-  for (const [key, value] of Object.entries(padding)) {
-    lines.push(`  --padding-${key}: ${value}px;`);
+  lines.push("  /* ── Inset (Semantic, Figma · SpacingGuide / Inset) ── */");
+  for (const [key, value] of Object.entries(inset)) {
+    lines.push(`  --inset-${key}: ${value}px;`);
   }
 
   // Grid — 거터·마진 (Figma · SpacingGuide / Grid)
