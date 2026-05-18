@@ -81,29 +81,14 @@ function generateColors() {
     lines.push("} as const;\n");
   }
 
-  // Semantic colors — nested object referencing primitives
-  const sem = tokens.colors;
-  lines.push("export const semantic = {");
-  for (const [group, entries] of Object.entries(sem)) {
-    lines.push(`  ${group}: {`);
-    for (const [key, val] of Object.entries(entries)) {
-      const ref = parseRef(val);
-      if (ref) {
-        lines.push(`    ${fmtKey(key)}: ${ref.expr},`);
-      } else {
-        lines.push(`    ${fmtKey(key)}: ${JSON.stringify(val)},`);
-      }
-    }
-    lines.push("  },");
-  }
-  lines.push("} as const;\n");
-
-  // Aggregate
+  // Aggregate — primitive palette only.
+  // Role-based semantic tokens live in packages/tokens/src/semantic.ts (hand-edited,
+  // Figma SemanticColorGuide 1:1 mirror). DESIGN.md 의 `colors:` legacy block 은 더
+  // 이상 사용하지 않는다.
   lines.push("export const colors = {");
   for (const name of primitiveNames) {
     lines.push(`  ${name},`);
   }
-  lines.push("  semantic,");
   lines.push("} as const;\n");
 
   return lines.join("\n");
@@ -134,6 +119,15 @@ function generateSpacing() {
   if (tokens.padding) {
     lines.push("export const padding = {");
     for (const [k, v] of Object.entries(tokens.padding)) {
+      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+    }
+    lines.push("} as const;\n");
+  }
+
+  // inset (Figma · SpacingGuide · Semantic Inset — 컨테이너 내부 여백, 사용처 기반)
+  if (tokens.inset) {
+    lines.push("export const inset = {");
+    for (const [k, v] of Object.entries(tokens.inset)) {
       lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
     }
     lines.push("} as const;\n");

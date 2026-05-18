@@ -7,7 +7,7 @@ import {
   yellow,
   red,
   green,
-  eap,
+  semantic,
   getSemanticGuide,
 } from "@nudge-eap/tokens";
 import React from "react";
@@ -58,8 +58,8 @@ function PaletteGroup({ title, palette }: { title: string; palette: Record<strin
   );
 }
 
-/** Flatten role-based eap subtree to dotted-path → hex map */
-function flattenEap(
+/** Flatten role-based semantic subtree to dotted-path → hex map */
+function flattenSemantic(
   obj: Record<string, unknown>,
   prefix = "",
 ): Array<{ path: string; hex: string }> {
@@ -69,17 +69,17 @@ function flattenEap(
     if (typeof value === "string") {
       out.push({ path: p, hex: value });
     } else if (typeof value === "object" && value !== null) {
-      out.push(...flattenEap(value as Record<string, unknown>, p));
+      out.push(...flattenSemantic(value as Record<string, unknown>, p));
     }
   }
   return out;
 }
 
-function RoleGroup({ title, group }: { title: string; group: keyof typeof eap }) {
-  const tokens = flattenEap(eap[group] as Record<string, unknown>);
+function RoleGroup({ title, group }: { title: string; group: keyof typeof semantic }) {
+  const tokens = flattenSemantic(semantic[group] as Record<string, unknown>);
   // Map dotted-path key inside the group → guide path used by semanticGuide.
   // Guide keys use cv dotted paths (surface.brand / textRole.brand etc.) which
-  // differ from eap field paths (bg.brand.default / text.brand.default).
+  // differ from semantic field paths (bg.brand.default / text.brand.default).
   const guideGroupOf = (g: string): string => {
     if (g === "bg") return "surface";
     if (g === "text") return "textRole";
@@ -94,7 +94,7 @@ function RoleGroup({ title, group }: { title: string; group: keyof typeof eap })
       <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>{title}</h3>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 240px)", gap: 8 }}>
         {tokens.map(({ path, hex }) => {
-          // Convert eap path `brand.default` → cv key `brand` (drop `.default`)
+          // Convert semantic path `brand.default` → cv key `brand` (drop `.default`)
           // and `status.error` → `statusError` (camelCase).
           const cvKey = path
             .replace(/\.default$/, "")

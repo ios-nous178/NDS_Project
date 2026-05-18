@@ -71,63 +71,14 @@ primitives:
     50: "#E5F7F4"
 
 # ── Semantic Colors ─────────────────────────────────────────
-colors:
-  primary:
-    main: "#2B96ED" # 팔레트 blue 스케일 변경으로 디커플링
-    hover: "#017EE4"
-    pressed: "#1B65BA"
-    lighter: "#91CAF6"
-    bg: "#E3F2FC"
-    bgLighter: "#F1F8FD"
-    fg: "{neutral.00}" # primary 배경 위 텍스트 (NudgeEAP=흰색)
-  secondary:
-    sub: "{magenta.500}" # #ED2E77
-    lighter: "{magenta.200}" # #F8B8CF
-    bg: "{magenta.100}" # #FCE3EC
-    bgLighter: "{magenta.50}" # #FDF1F5
-  error:
-    main: "{red.500}" # #F13F00
-    bg: "{red.50}" # #FEE9E6
-  caution:
-    main: "{yellow.500}" # #FFC303
-    text: "#FFA100" # yellow.600 제거됨, 값 직접 지정
-    bg: "{yellow.50}" # #FFFAE8
-  success:
-    main: "{green.300}" # #13BFA2
-    bg: "{green.50}" # #E5F7F4
-  text:
-    strong: "{neutral.1000}" # #000000
-    normal: "{neutral.900}" # #111111
-    default: "{neutral.800}" # #383838
-    subtle: "{neutral.700}" # #666666
-    disabled: "{neutral.500}" # #999999
-    placeholder: "{neutral.500}" # #999999
-    inverse: "{neutral.00}" # #FFFFFF
-  bg:
-    white: "{neutral.00}" # #FFFFFF
-    light: "{neutral.50}" # #FAFAFA
-    coolGray: "{coolGray.100}" # #F3F4F6
-    coolGrayLighter: "{coolGray.50}" # #F8F9FB
-    disabled: "{neutral.200}" # #ECECEC
-    overlay: "rgba(0,0,0,0.5)"
-  border:
-    default: "{neutral.300}" # #D8D8D8
-    light: "{neutral.200}" # #ECECEC
-    focus: "#2B96ED" # 팔레트 디커플링
-    disabled: "{neutral.200}" # #ECECEC
-  icon:
-    default: "{neutral.800}" # #383838
-    subtle: "{neutral.500}" # #999999
-    inverse: "{neutral.00}" # #FFFFFF
-  # 폼 필드 상태(input helper text, validation state) 전용 색.
-  # 일반적인 "성공" 의미의 `colors.success.main`(녹색)과 다르다:
-  #   - status.success = primary 색 — 폼 검증 통과 / "complete" 시각화 (Figma Input "Success" 셀)
-  #   - status.default = neutral 회색 — helper 기본 hint 색
-  #   - status.error   = error 색   — 폼 오류 (Figma `--color-status-error`)
-  status:
-    default: "{neutral.500}" # #999999 — helper default
-    success: "#2B96ED" # primary.main — 폼 "complete" (Figma 의도)
-    error: "{red.500}" # #F13F00 — 폼 오류 (alias of error.main)
+# 시멘틱 컬러 토큰의 SSOT 는 `packages/tokens/src/semantic.ts` (Figma SemanticColorGuide
+# 171:6675 의 1:1 미러). DESIGN.md 는 atomic palette(primitives) 와 비-컬러 토큰만
+# 정의한다. 새 시멘틱 컬러를 추가/수정하려면 semantic.ts 를 직접 편집.
+#
+# 구 legacy `colors:` 블록 (primary/secondary/text/bg/border/icon × 의미별) 은
+# role-based 시스템(`semantic.ts` 의 bg/text/icon/border/fill/button/input)으로
+# 대체되어 제거되었다. cv 헬퍼(`packages/tokens/src/cssVar.ts`)도 새 그룹만
+# 노출한다 (surface/textRole/iconRole/borderRole/button/fill/input).
 
 # ── Typography ──────────────────────────────────────────────
 typography:
@@ -229,22 +180,24 @@ spacing:
   64: 64px # legacy / 큰 여백
   80: 80px # legacy / 페이지 단위 여백
 
-# ── Gap (Semantic — 컴포넌트 간 간격) ──────────────────────
+# ── Gap (Semantic — 요소 간 거리, 의도 기반) ──────────────
+# 4pt grid · Figma SpacingGuide / Gap
 gap:
-  xs: 4px # 최소 아이템 간격
-  sm: 8px # 기본 아이템 간격
-  md: 12px # 중형 컴포넌트 간격
-  base: 16px # 표준 레이아웃 간격
-  lg: 20px # 섹션 내부 간격
-  xl: 24px # 대형 컴포넌트 간격
+  tight: 4px # Chip · Badge 그룹
+  default: 10px # ★ 표준 컴포넌트 gap
+  comfortable: 12px # 폼 필드 · 세그먼트
+  loose: 16px # 컴포넌트 ↔ 컴포넌트
+  wide: 24px # 큰 영역 ↔ 큰 영역
 
-# ── Padding (Semantic — 컨테이너 내부 여백) ────────────────
-padding:
-  xs: 6px # 소형 뱃지·뱃지 내부 여백
-  sm: 10px # 버튼·칩 내부 여백
-  md: 16px # 카드·패널 기본 여백
-  lg: 20px # 섹션·모달 내부 여백
-  xl: 24px # 대형 컨테이너 여백
+# ── Inset (Semantic — 컨테이너 내부 여백, 사용처 기반) ────
+# 4pt grid · Figma SpacingGuide / Inset
+# Gap(요소 간 거리)과 명확히 구분. 카드 padding 은 `--inset-card`.
+inset:
+  chip: 8px # Chip · Badge 내부
+  input: 12px # Input · 작은 컨테이너
+  card: 16px # ★ 카드 표준 padding
+  card-large: 20px # 큰 카드
+  modal: 24px # Modal · 통계 박스
 
 # ── Rounded / Radius (Policy Scale) ────────────────────────
 # 공개 export는 승인된 UI radius 세트로 제한한다.

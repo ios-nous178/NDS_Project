@@ -30,20 +30,19 @@ export const spacing = {
 } as const;
 
 export const gap = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  base: 16,
-  lg: 20,
-  xl: 24,
+  tight: 4,
+  default: 10,
+  comfortable: 12,
+  loose: 16,
+  wide: 24,
 } as const;
 
-export const padding = {
-  xs: 6,
-  sm: 10,
-  md: 16,
-  lg: 20,
-  xl: 24,
+export const inset = {
+  chip: 8,
+  input: 12,
+  card: 16,
+  "card-large": 20,
+  modal: 24,
 } as const;
 
 export const radius = {
