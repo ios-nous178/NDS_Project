@@ -6,3 +6,7 @@ build
 storybook-static
 coverage
 pnpm-lock.yaml
+
+# 슬랙 mrkdwn 호환 본문 — prettier 가 `*Bold*` 를 `_Italic_` 으로 자동 변환하면
+# 슬랙에서 bold 가 아니라 italic 으로 렌더되어 의도가 깨진다.
+.release-notes/pending.md
