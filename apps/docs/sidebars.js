@@ -141,6 +141,7 @@ module.exports = {
         "guide/design-principles",
         "guide/ux-writing",
         "guide/dark-patterns",
+        "guide/visual-antipatterns",
         "guide/design-token-principles",
         "guide/token-review-checklist",
         "guide/page-migration-priority",

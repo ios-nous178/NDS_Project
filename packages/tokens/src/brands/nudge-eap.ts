@@ -12,7 +12,7 @@
  */
 
 import type { BrandTheme } from "./types";
-import { neutral, coolGray, blue, magenta, yellow, red, green } from "../colors";
+import { neutral, coolGray, blue, magenta, yellow, red, coralRed, green, amber } from "../colors";
 import { fontFamily, typeScale } from "../typography";
 import { radius } from "../spacing";
 import { shadow, zIndex } from "../elevation";
@@ -30,7 +30,9 @@ export const nudgeEapTheme: BrandTheme = {
     magenta,
     yellow,
     red,
+    coralRed,
     green,
+    amber,
   },
   semantic: nudgeEapSemantic,
   typography: {
