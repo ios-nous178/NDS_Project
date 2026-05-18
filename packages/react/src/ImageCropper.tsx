@@ -59,7 +59,7 @@ const icStyles = `
     position: relative;
     width: var(--nds-cropper-size, 240px);
     height: var(--nds-cropper-size, 240px);
-    background: #1a1a1a;
+    background: ${cv.textRole.strong};
     border-radius: ${radius.md}px;
     overflow: hidden;
     user-select: none;

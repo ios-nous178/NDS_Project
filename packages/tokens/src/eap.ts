@@ -72,7 +72,9 @@ export const eap = {
     default: brightBlue500, // #2B96ED
     hover: brightBlue600, // #017EE4
     pressed: brightBlue700, // #0E71CF
-    disabled: neutral[300], // #D8D8D8
+    // Figma 실 Button 컴포넌트 (171:8410) 가 cool-gray/400 사용 — SemanticColorGuide
+    // 섹션의 "Neutral 200" 라벨과는 어긋나지만 designer mockup 의 실제 색이 SSOT.
+    disabled: coolGray[400], // #9CA2AE
     secondary: {
       default: "#F1F8FD", // Bright Blue 50
       hover: "#E3F2FC", // Bright Blue 100
@@ -87,7 +89,9 @@ export const eap = {
   buttonText: {
     default: neutral["00"], // #FFFFFF
     brand: brightBlue500, // #2B96ED
-    disabled: neutral[500], // #999999
+    // Figma 실 Button (171:8480) → `--eap-button-text-disabled: #9ca2ae` 으로
+    // SemanticColorGuide 의 "Neutral 400" 라벨과 어긋나지만 실 컴포넌트가 SSOT.
+    disabled: coolGray[400], // #9CA2AE
   },
   buttonBorder: {
     outlined: {

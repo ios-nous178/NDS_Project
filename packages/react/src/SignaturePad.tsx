@@ -134,7 +134,9 @@ export const SignaturePad = React.forwardRef<SignaturePadHandle, SignaturePadPro
       label,
       placeholder = "여기에 서명해주세요",
       height = 180,
-      penColor = "#1A1A1A",
+      // Neutral 900 (#111111) — Figma SSOT text/strong/default 값과 같지만
+      // canvas API 가 `var(--semantic-*)` 를 못 해석해서 raw hex 직접 사용.
+      penColor = "#111111",
       penWidth = 2.4,
       onChange,
       disabled = false,
