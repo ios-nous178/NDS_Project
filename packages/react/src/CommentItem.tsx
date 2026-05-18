@@ -78,18 +78,18 @@ const ciStyles = `
   :where(.${CI_AUTHOR_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${CI_TIME_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${CI_TEXT_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
     word-break: break-word;
     white-space: pre-wrap;
@@ -106,7 +106,7 @@ const ciStyles = `
     border: none;
     background: transparent;
     padding: 0;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
@@ -114,11 +114,11 @@ const ciStyles = `
     transition: color ${transition.default};
   }
 
-  :where(.${CI_ACTION_CLASS}:hover) { color: ${cv.text.default}; }
+  :where(.${CI_ACTION_CLASS}:hover) { color: ${cv.textRole.normal}; }
 
   :where(.${CI_REPLIES_CLASS}) {
     margin-top: ${spacing[8]}px;
-    border-left: 2px solid ${cv.border.light};
+    border-left: 2px solid ${cv.borderRole.subtle};
     padding-left: ${spacing[12]}px;
   }
 `;

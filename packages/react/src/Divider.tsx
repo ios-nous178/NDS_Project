@@ -13,7 +13,7 @@ const dividerStyles = `
     border: none;
     margin: 0;
     flex-shrink: 0;
-    background: var(--nds-divider-color, ${cv.border.light});
+    background: var(--nds-divider-color, ${cv.borderRole.subtle});
   }
 
   :where(.${DIV_CLASS}[data-orientation="horizontal"]) {

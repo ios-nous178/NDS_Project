@@ -68,7 +68,7 @@ const breathingStyles = `
     align-items: center;
     gap: ${spacing[20]}px;
     padding: ${spacing[24]}px;
-    background: var(--nds-breathing-bg, ${cv.bg.coolGray});
+    background: var(--nds-breathing-bg, ${cv.surface.section});
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -87,7 +87,7 @@ const breathingStyles = `
     position: absolute;
     inset: 0;
     border-radius: 9999px;
-    background: var(--nds-breathing-color, ${cv.primary.main});
+    background: var(--nds-breathing-color, ${cv.surface.brand});
     opacity: 0.3;
     transform: scale(var(--nds-breathing-scale, 0.5));
     transition: transform var(--nds-breathing-duration, 4s) ease-in-out,
@@ -112,7 +112,7 @@ const breathingStyles = `
     font-size: ${typeScale.headline4.fontSize}px;
     line-height: ${typeScale.headline4.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
     text-align: center;
   }
@@ -121,7 +121,7 @@ const breathingStyles = `
     font-size: 36px;
     line-height: 1;
     font-weight: ${fontWeight.bold};
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
     margin: 0;
     font-variant-numeric: tabular-nums;
   }
@@ -136,9 +136,9 @@ const breathingStyles = `
     height: 40px;
     padding: 0 ${spacing[16]}px;
     border-radius: 9999px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
@@ -146,7 +146,7 @@ const breathingStyles = `
   }
 
   :where(.${BG_BTN_CLASS}[data-primary="true"]) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     color: #fff;
     border-color: transparent;
   }
@@ -251,7 +251,7 @@ export const BreathingGuide = React.forwardRef<HTMLDivElement, BreathingGuidePro
             <p className={BG_LABEL_CLASS}>{label}</p>
             {showCount && playing && <p className={BG_COUNT_CLASS}>{secondsLeft}</p>}
             {!playing && cycles ? (
-              <small style={{ color: "var(--semantic-text-subtle, #888)" }}>
+              <small style={{ color: "var(--semantic-text-subtle-default)" }}>
                 {cycleCount} / {cycles} 사이클
               </small>
             ) : null}

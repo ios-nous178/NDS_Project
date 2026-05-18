@@ -30,9 +30,9 @@ export const WithMarkers: Story = {
     const today = new Date();
     const ym = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
     const markers = [
-      { date: `${ym}-05`, color: "var(--semantic-primary-main)" },
-      { date: `${ym}-12`, color: "var(--semantic-success-main)" },
-      { date: `${ym}-19`, color: "var(--semantic-caution-main)" },
+      { date: `${ym}-05`, color: "var(--semantic-text-brand-default)" },
+      { date: `${ym}-12`, color: "var(--semantic-text-status-success)" },
+      { date: `${ym}-19`, color: "var(--semantic-text-status-caution)" },
       { date: `${ym}-22` },
     ];
     return (

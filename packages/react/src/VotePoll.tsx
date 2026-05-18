@@ -57,8 +57,8 @@ const vpStyles = `
     flex-direction: column;
     gap: ${spacing[12]}px;
     padding: ${spacing[16]}px ${spacing[20]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -67,7 +67,7 @@ const vpStyles = `
   :where(.${VP_QUESTION_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
@@ -83,10 +83,10 @@ const vpStyles = `
     align-items: center;
     height: 44px;
     padding: 0 ${spacing[12]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     cursor: pointer;
@@ -96,12 +96,12 @@ const vpStyles = `
   }
 
   :where(.${VP_OPTION_CLASS}:hover:not([disabled])) {
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
   }
 
   :where(.${VP_OPTION_CLASS}[data-voted="true"]) {
-    border-color: ${cv.primary.main};
-    color: ${cv.primary.main};
+    border-color: ${cv.borderRole.brand};
+    color: ${cv.textRole.brand};
     font-weight: ${fontWeight.semibold};
   }
 
@@ -113,14 +113,14 @@ const vpStyles = `
   :where(.${VP_BAR_CLASS}) {
     position: absolute;
     inset: 0;
-    background: var(--semantic-primary-bg, #EBF1FF);
+    background: var(--semantic-bg-status-info);
     width: var(--nds-vote-pct, 0%);
     transition: width 480ms ease;
     z-index: 0;
   }
 
   :where(.${VP_OPTION_CLASS}[data-voted="true"]) .${VP_BAR_CLASS} {
-    background: var(--semantic-primary-bg-hover, #DDE7FF);
+    background: var(--semantic-bg-brand-subtle);
   }
 
   :where(.${VP_LABEL_CLASS}),
@@ -133,18 +133,18 @@ const vpStyles = `
 
   :where(.${VP_PCT_CLASS}) {
     margin-left: ${spacing[8]}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-variant-numeric: tabular-nums;
   }
 
   :where(.${VP_OPTION_CLASS}[data-voted="true"]) .${VP_PCT_CLASS} {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
     font-weight: ${fontWeight.semibold};
   }
 
   :where(.${VP_FOOTER_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 `;
 

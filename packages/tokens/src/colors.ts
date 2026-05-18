@@ -79,70 +79,6 @@ export const green = {
   500: "#008260",
 } as const;
 
-export const semantic = {
-  primary: {
-    main: "#2B96ED",
-    hover: "#017EE4",
-    pressed: "#1B65BA",
-    lighter: "#91CAF6",
-    bg: "#E3F2FC",
-    bgLighter: "#F1F8FD",
-    fg: neutral["00"],
-  },
-  secondary: {
-    sub: magenta[500],
-    lighter: magenta[200],
-    bg: magenta[100],
-    bgLighter: magenta[50],
-  },
-  error: {
-    main: red[500],
-    bg: red[50],
-  },
-  caution: {
-    main: yellow[500],
-    text: "#FFA100",
-    bg: yellow[50],
-  },
-  success: {
-    main: green[300],
-    bg: green[50],
-  },
-  text: {
-    strong: neutral[1000],
-    normal: neutral[900],
-    default: neutral[800],
-    subtle: neutral[700],
-    disabled: neutral[500],
-    placeholder: neutral[500],
-    inverse: neutral["00"],
-  },
-  bg: {
-    white: neutral["00"],
-    light: neutral[50],
-    coolGray: coolGray[100],
-    coolGrayLighter: coolGray[50],
-    disabled: neutral[200],
-    overlay: "rgba(0,0,0,0.5)",
-  },
-  border: {
-    default: neutral[300],
-    light: neutral[200],
-    focus: "#2B96ED",
-    disabled: neutral[200],
-  },
-  icon: {
-    default: neutral[800],
-    subtle: neutral[500],
-    inverse: neutral["00"],
-  },
-  status: {
-    default: neutral[500],
-    success: "#2B96ED",
-    error: red[500],
-  },
-} as const;
-
 export const colors = {
   neutral,
   coolGray,
@@ -151,5 +87,4 @@ export const colors = {
   yellow,
   red,
   green,
-  semantic,
 } as const;

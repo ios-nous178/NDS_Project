@@ -82,19 +82,19 @@ const carouselStyles = `
     height: 6px;
     border-radius: 9999px;
     border: none;
-    background: ${cv.border.default};
+    background: ${cv.borderRole.normal};
     padding: 0;
     cursor: pointer;
     transition: background-color ${transition.default}, width ${transition.default};
   }
 
   :where(.${CR_DOT_CLASS}[data-active="true"]) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     width: 18px;
   }
 
   :where(.${CR_DOT_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
@@ -112,7 +112,7 @@ const carouselStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     z-index: 1;
     opacity: 0;
     transition: opacity ${transition.default};
@@ -127,7 +127,7 @@ const carouselStyles = `
 
   :where(.${CR_NAV_CLASS}:focus-visible) {
     opacity: 1;
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 

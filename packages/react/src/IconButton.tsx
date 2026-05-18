@@ -17,7 +17,7 @@ const iconButtonStyles = `
     border: none;
     border-radius: ${radius.sm}px;
     background: transparent;
-    color: var(--nds-icon-button-color, ${cv.icon.default});
+    color: var(--nds-icon-button-color, ${cv.iconRole.strong});
     cursor: pointer;
     transition:
       background-color ${transition.default},
@@ -26,11 +26,11 @@ const iconButtonStyles = `
 
   :where(.${ICON_BUTTON_CLASS}:disabled) {
     cursor: default;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${ICON_BUTTON_CLASS}:not(:disabled):hover) {
-    background: var(--nds-icon-button-hover-bg, ${cv.bg.light});
+    background: var(--nds-icon-button-hover-bg, ${cv.surface.subtle});
   }
 
   :where(.${ICON_BUTTON_CLASS}:focus) {
@@ -38,7 +38,7 @@ const iconButtonStyles = `
   }
 
   :where(.${ICON_BUTTON_CLASS}:focus-visible) {
-    outline: 2px solid var(--nds-icon-button-focus-ring-color, ${cv.primary.main});
+    outline: 2px solid var(--nds-icon-button-focus-ring-color, ${cv.borderRole.focus});
     outline-offset: var(--nds-icon-button-focus-ring-offset, 2px);
   }
 

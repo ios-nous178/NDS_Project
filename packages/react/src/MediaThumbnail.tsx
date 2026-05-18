@@ -26,7 +26,7 @@ const mediaThumbnailStyles = `
     position: relative;
     display: block;
     overflow: hidden;
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
     box-sizing: border-box;
     line-height: 0;
   }
@@ -50,9 +50,9 @@ const mediaThumbnailStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     pointer-events: none;
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
   }
 `;
 

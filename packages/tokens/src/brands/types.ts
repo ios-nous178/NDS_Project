@@ -1,8 +1,9 @@
 /**
  * Brand Theme — 브랜드별 토큰 오버라이드 타입 정의
  *
- * 각 브랜드(NudgeEAP, Trost 등)는 이 인터페이스를 구현하여
- * 시맨틱 토큰만 교체하면 동일한 컴포넌트를 브랜드에 맞게 렌더링할 수 있다.
+ * 시멘틱 트리는 Figma SemanticColorGuide(171:6675) role-based 구조의 Partial.
+ * 브랜드는 자기 정체성에 영향을 주는 그룹만 골라 override 한다 — 누락된 키는
+ * base(NudgeEAP) 값이 그대로 cascade 된다.
  */
 
 import type { TypeStyle } from "../typography";
@@ -10,64 +11,89 @@ import type { TypeStyle } from "../typography";
 /** 팔레트 컬러 — 브랜드 고유 색상 스케일 */
 export type ColorScale = Record<string | number, string>;
 
-/** 시맨틱 컬러 — 컴포넌트가 실제 참조하는 의미 기반 토큰 */
+/** 시멘틱 컬러 — Figma role-based 트리의 Partial */
 export interface SemanticColors {
-  primary: {
-    main: string;
-    hover: string;
-    pressed: string;
-    lighter: string;
-    bg: string;
-    bgLighter: string;
-    /** primary 배경 위 텍스트 색상 (NudgeEAP: white, Trost: black) */
-    fg: string;
+  bg?: {
+    page?: { default?: string };
+    surface?: { default?: string; subtle?: string };
+    section?: { default?: string };
+    brand?: { default?: string; subtle?: string };
+    inverse?: { default?: string };
+    status?: {
+      error?: string;
+      success?: string;
+      info?: string;
+      caution?: string;
+    };
+    /** Figma `--bg-overlay` */
+    overlay?: string;
+    /** DS extension — disabled bg */
+    disabled?: string;
   };
-  secondary: {
-    sub: string;
-    lighter: string;
-    bg: string;
-    bgLighter: string;
+  text?: {
+    strong?: { default?: string };
+    normal?: { default?: string };
+    subtle?: { default?: string };
+    muted?: { default?: string };
+    disabled?: { default?: string };
+    inverse?: { default?: string };
+    brand?: { default?: string; strong?: string };
+    status?: {
+      success?: string;
+      error?: string;
+      caution?: string;
+      info?: string;
+    };
   };
-  error: {
-    main: string;
-    bg: string;
+  buttonBg?: {
+    default?: string;
+    hover?: string;
+    pressed?: string;
+    disabled?: string;
+    secondary?: { default?: string; hover?: string; disabled?: string };
+    outlined?: { default?: string; hover?: string; disabled?: string };
   };
-  caution: {
-    main: string;
-    text: string;
-    bg: string;
+  buttonText?: { default?: string; brand?: string; disabled?: string };
+  buttonBorder?: {
+    outlined?: { default?: string; hover?: string; disabled?: string };
+    assistive?: { default?: string; disabled?: string };
   };
-  success: {
-    main: string;
-    bg: string;
+  icon?: {
+    strong?: { default?: string };
+    normal?: { default?: string };
+    disabled?: { default?: string };
+    inverse?: { default?: string };
+    brand?: { default?: string };
+    status?: { success?: string; error?: string; caution?: string };
   };
-  text: {
-    strong: string;
-    normal: string;
-    default: string;
-    disabled: string;
-    placeholder: string;
-    subtle: string;
-    inverse: string;
+  border?: {
+    normal?: { default?: string };
+    strong?: { default?: string };
+    subtle?: { default?: string };
+    focus?: { default?: string };
+    brand?: { default?: string; disabled?: string };
+    disabled?: { default?: string };
+    status?: { error?: string; caution?: string };
   };
-  bg: {
-    white: string;
-    light: string;
-    coolGray: string;
-    coolGrayLighter: string;
-    disabled: string;
-    overlay: string;
+  fill?: {
+    brand?: { default?: string; hover?: string; pressed?: string; disabled?: string };
+    neutral?: { default?: string; subtle?: string };
+    inverse?: { default?: string };
+    status?: { error?: string; caution?: string };
   };
-  border: {
-    default: string;
-    light: string;
-    focus: string;
-    disabled: string;
-  };
-  icon: {
-    default: string;
-    subtle: string;
-    inverse: string;
+  input?: {
+    bg?: string;
+    bgDisabled?: string;
+    borderDefault?: string;
+    borderHover?: string;
+    borderFocus?: string;
+    borderError?: string;
+    borderDisabled?: string;
+    placeholder?: string;
+    helpertextDefault?: string;
+    helpertextSuccess?: string;
+    helpertextError?: string;
+    helpertextDisabled?: string;
   };
 }
 
@@ -96,7 +122,7 @@ export interface BrandTheme {
   name: string;
   /** 브랜드 고유 팔레트 컬러 */
   palette: Record<string, ColorScale>;
-  /** 시맨틱 컬러 매핑 */
+  /** 시맨틱 컬러 오버라이드 (Figma role-based 트리의 Partial) */
   semantic: SemanticColors;
   /** 타이포그래피 오버라이드 (미지정 시 기본값 사용) */
   typography?: Partial<TypographyOverrides>;

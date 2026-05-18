@@ -50,7 +50,7 @@ const bottomSheetStyles = `
     flex-direction: column;
     overflow: hidden;
     border-radius: var(--nds-bottom-sheet-radius, ${radius.lg}px) var(--nds-bottom-sheet-radius, ${radius.lg}px) 0 0;
-    background-color: ${cv.bg.white};
+    background-color: ${cv.surface.default};
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
     animation: nds-bs-slide-up 0.2s ease-out;
     font-family: ${fontFamily.web};
@@ -74,7 +74,7 @@ const bottomSheetStyles = `
     width: var(--nds-bottom-sheet-handle-width, 36px);
     height: var(--nds-bottom-sheet-handle-height, 4px);
     border-radius: ${radius.pill}px;
-    background: var(--nds-bottom-sheet-handle-color, ${cv.border.default});
+    background: var(--nds-bottom-sheet-handle-color, ${cv.borderRole.normal});
   }
 
   :where(.${BS_HEADER_CLASS}) {
@@ -86,7 +86,7 @@ const bottomSheetStyles = `
   }
 
   :where(.${BS_HEADER_CLASS}[data-has-title="true"]) {
-    border-bottom: 1px solid ${cv.border.light};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${BS_HEADER_TITLE_CLASS}) {
@@ -94,7 +94,7 @@ const bottomSheetStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     font-weight: 700;
     line-height: ${typeScale.headline5.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${BS_CLOSE_CLASS}) {
@@ -104,7 +104,7 @@ const bottomSheetStyles = `
     padding: 4px;
     font-size: 20px;
     line-height: 1;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${BS_BODY_CLASS}) {
@@ -114,14 +114,14 @@ const bottomSheetStyles = `
     padding: ${spacing[20]}px;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: 1.5;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${BS_FOOTER_CLASS}) {
     display: flex;
     gap: ${spacing[8]}px;
     padding: ${spacing[12]}px ${spacing[20]}px;
-    border-top: 1px solid ${cv.border.light};
+    border-top: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${BS_FOOTER_CLASS} > *) {

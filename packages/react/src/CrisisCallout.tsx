@@ -27,16 +27,16 @@ const crisisCalloutStyles = `
     gap: ${spacing[12]}px;
     width: 100%;
     padding: ${spacing[16]}px ${spacing[20]}px;
-    background: ${cv.error.bg};
-    border: 1px solid ${cv.error.main};
+    background: ${cv.surface.statusError};
+    border: 1px solid ${cv.borderRole.statusError};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
 
   :where(.${CC_CLASS}[data-tone="caution"]) {
-    background: ${cv.caution.bg};
-    border-color: ${cv.caution.main};
+    background: ${cv.surface.statusCaution};
+    border-color: ${cv.borderRole.statusCaution};
   }
 
   :where(.${CC_ICON_CLASS}) {
@@ -46,11 +46,11 @@ const crisisCalloutStyles = `
     flex-shrink: 0;
     width: 24px;
     height: 24px;
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${CC_CLASS}[data-tone="caution"]) .${CC_ICON_CLASS} {
-    color: ${cv.caution.text};
+    color: ${cv.textRole.statusCaution};
   }
 
   :where(.${CC_CONTENT_CLASS}) {
@@ -65,18 +65,18 @@ const crisisCalloutStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
     margin: 0;
   }
 
   :where(.${CC_CLASS}[data-tone="caution"]) .${CC_TITLE_CLASS} {
-    color: ${cv.caution.text};
+    color: ${cv.textRole.statusCaution};
   }
 
   :where(.${CC_DESC_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.normal};
+    color: ${cv.textRole.strong};
     margin: 0;
   }
 
@@ -93,8 +93,8 @@ const crisisCalloutStyles = `
     align-items: center;
     gap: ${spacing[6]}px;
     padding: ${spacing[8]}px ${spacing[12]}px;
-    background: ${cv.error.main};
-    color: ${cv.text.inverse};
+    background: ${cv.fill.statusError};
+    color: ${cv.textRole.inverse};
     border-radius: ${radius.md}px;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
@@ -106,7 +106,7 @@ const crisisCalloutStyles = `
   }
 
   :where(.${CC_CLASS}[data-tone="caution"]) .${CC_ACTION_CLASS} {
-    background: ${cv.caution.main};
+    background: ${cv.fill.statusCaution};
   }
 
   :where(.${CC_ACTION_CLASS}:hover) {
@@ -115,13 +115,13 @@ const crisisCalloutStyles = `
 
   :where(.${CC_ACTION_CLASS}[data-variant="outlined"]) {
     background: transparent;
-    color: ${cv.error.main};
-    border: 1px solid ${cv.error.main};
+    color: ${cv.textRole.statusError};
+    border: 1px solid ${cv.borderRole.statusError};
   }
 
   :where(.${CC_CLASS}[data-tone="caution"]) .${CC_ACTION_CLASS}[data-variant="outlined"] {
-    color: ${cv.caution.text};
-    border-color: ${cv.caution.main};
+    color: ${cv.textRole.statusCaution};
+    border-color: ${cv.borderRole.statusCaution};
   }
 `;
 

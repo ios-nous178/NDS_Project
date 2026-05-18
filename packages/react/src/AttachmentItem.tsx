@@ -61,8 +61,8 @@ const attachmentItemStyles = `
     align-items: center;
     gap: ${spacing[12]}px;
     padding: ${spacing[10]}px ${spacing[12]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -71,8 +71,8 @@ const attachmentItemStyles = `
   }
 
   :where(.${AT_CLASS}[data-status="error"]) {
-    border-color: ${cv.error.main};
-    background: ${cv.error.bg};
+    border-color: ${cv.borderRole.statusError};
+    background: ${cv.surface.statusError};
   }
 
   :where(.${AT_ICON_CLASS}) {
@@ -80,28 +80,28 @@ const attachmentItemStyles = `
     width: 36px;
     height: 36px;
     border-radius: ${radius.sm}px;
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.icon.subtle};
+    background: ${cv.surface.page};
+    color: ${cv.iconRole.normal};
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
   :where(.${AT_ICON_CLASS}[data-type="pdf"]) {
-    background: ${cv.error.bg};
-    color: ${cv.error.main};
+    background: ${cv.surface.statusError};
+    color: ${cv.textRole.statusError};
   }
   :where(.${AT_ICON_CLASS}[data-type="image"]) {
-    background: ${cv.primary.bgLighter};
-    color: ${cv.primary.main};
+    background: ${cv.surface.brandSubtle};
+    color: ${cv.textRole.brand};
   }
   :where(.${AT_ICON_CLASS}[data-type="video"]),
   :where(.${AT_ICON_CLASS}[data-type="audio"]) {
-    background: ${cv.caution.bg};
-    color: ${cv.caution.text};
+    background: ${cv.surface.statusCaution};
+    color: ${cv.textRole.statusCaution};
   }
   :where(.${AT_ICON_CLASS}[data-type="document"]) {
-    background: ${cv.success.bg};
-    color: ${cv.success.main};
+    background: ${cv.surface.statusSuccess};
+    color: ${cv.iconRole.statusSuccess};
   }
 
   :where(.${AT_BODY_CLASS}) {
@@ -113,7 +113,7 @@ const attachmentItemStyles = `
   }
 
   :where(.${AT_NAME_CLASS}) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
@@ -128,28 +128,28 @@ const attachmentItemStyles = `
     gap: ${spacing[6]}px;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-variant-numeric: tabular-nums;
   }
 
   :where(.${AT_STATUS_CLASS}) {
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
-  :where(.${AT_STATUS_CLASS}[data-status="uploading"]) { color: ${cv.primary.main}; }
-  :where(.${AT_STATUS_CLASS}[data-status="error"])     { color: ${cv.error.main}; }
-  :where(.${AT_STATUS_CLASS}[data-status="done"])      { color: ${cv.success.main}; }
+  :where(.${AT_STATUS_CLASS}[data-status="uploading"]) { color: ${cv.textRole.brand}; }
+  :where(.${AT_STATUS_CLASS}[data-status="error"])     { color: ${cv.textRole.statusError}; }
+  :where(.${AT_STATUS_CLASS}[data-status="done"])      { color: ${cv.iconRole.statusSuccess}; }
 
   :where(.${AT_PROGRESS_CLASS}) {
     width: 100%;
     height: 3px;
     margin-top: ${spacing[4]}px;
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
     border-radius: ${radius.pill}px;
     overflow: hidden;
   }
   :where(.${AT_PROGRESS_FILL_CLASS}) {
     height: 100%;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     border-radius: inherit;
     transition: width ${transition.default};
   }
@@ -169,17 +169,17 @@ const attachmentItemStyles = `
     width: 28px;
     height: 28px;
     border-radius: ${radius.pill}px;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default}, color ${transition.default};
   }
   :where(.${AT_BTN_CLASS}:hover) {
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.default};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${AT_ERROR_CLASS}) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
   }

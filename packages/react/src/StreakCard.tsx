@@ -50,8 +50,8 @@ const streakStyles = `
     flex-direction: column;
     gap: ${spacing[16]}px;
     padding: ${spacing[20]}px;
-    background: var(--nds-streak-bg, ${cv.bg.white});
-    border: 1px solid ${cv.border.light};
+    background: var(--nds-streak-bg, ${cv.surface.default});
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -67,8 +67,8 @@ const streakStyles = `
     width: 36px;
     height: 36px;
     border-radius: 9999px;
-    background: var(--semantic-caution-bg, #FFF4E0);
-    color: var(--semantic-caution-main, #F0A030);
+    background: var(--semantic-bg-status-caution);
+    color: var(--semantic-text-status-caution);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -80,7 +80,7 @@ const streakStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
@@ -94,13 +94,13 @@ const streakStyles = `
     font-size: 32px;
     line-height: 1;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
   }
 
   :where(.${SK_UNIT_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-weight: ${fontWeight.medium};
   }
 
@@ -121,7 +121,7 @@ const streakStyles = `
   :where(.${SK_DAY_LABEL_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${SK_DAY_DOT_CLASS}) {
@@ -129,24 +129,24 @@ const streakStyles = `
     aspect-ratio: 1;
     max-width: 32px;
     border-radius: ${radius.sm}px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     border: 1px solid transparent;
   }
 
   :where(.${SK_DAY_DOT_CLASS}[data-done="true"]) {
-    background: var(--semantic-caution-main, #F0A030);
-    border-color: var(--semantic-caution-main, #F0A030);
+    background: var(--semantic-fill-status-caution);
+    border-color: var(--semantic-border-status-caution);
   }
 
   :where(.${SK_DAY_DOT_CLASS}[data-today="true"]:not([data-done="true"])) {
-    border: 2px dashed var(--semantic-caution-main, #F0A030);
-    background: ${cv.bg.white};
+    border: 2px dashed var(--semantic-border-status-caution);
+    background: ${cv.surface.default};
   }
 
   :where(.${SK_FOOTER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: 0;
   }
 `;

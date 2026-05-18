@@ -48,8 +48,8 @@ const stStyles = `
     flex-direction: column;
     gap: ${spacing[12]}px;
     padding: ${spacing[16]}px ${spacing[20]}px;
-    background: var(--nds-stat-card-bg, ${cv.bg.white});
-    border: 1px solid ${cv.border.light};
+    background: var(--nds-stat-card-bg, ${cv.surface.default});
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -57,13 +57,13 @@ const stStyles = `
   }
 
   :where(.${ST_CLASS}[data-clickable="true"]) { cursor: pointer; }
-  :where(.${ST_CLASS}[data-clickable="true"]:hover) { border-color: ${cv.primary.main}; }
+  :where(.${ST_CLASS}[data-clickable="true"]:hover) { border-color: ${cv.borderRole.brand}; }
 
   :where(.${ST_HEADER_CLASS}) {
     display: flex;
     align-items: center;
     gap: ${spacing[8]}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${ST_ICON_CLASS}) {
@@ -98,13 +98,13 @@ const stStyles = `
     font-size: 28px;
     line-height: 1;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
   }
 
   :where(.${ST_UNIT_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-weight: ${fontWeight.medium};
   }
 
@@ -117,21 +117,21 @@ const stStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
     background: var(--nds-stat-delta-bg, transparent);
-    color: var(--nds-stat-delta-fg, ${cv.text.subtle});
+    color: var(--nds-stat-delta-fg, ${cv.textRole.subtle});
   }
 
   :where(.${ST_DELTA_CLASS}[data-trend="up"]) {
-    background: var(--semantic-success-bg, #E5F8E9);
-    color: var(--semantic-success-text, #1A6D2C);
+    background: var(--semantic-bg-status-success);
+    color: var(--semantic-text-status-success);
   }
 
   :where(.${ST_DELTA_CLASS}[data-trend="down"]) {
-    background: var(--semantic-error-bg, #FFE9E9);
-    color: var(--semantic-error-text, #B83333);
+    background: var(--semantic-bg-status-error);
+    color: var(--semantic-text-status-error);
   }
 
   :where(.${ST_FOOTER_CLASS}) {
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
   }
 

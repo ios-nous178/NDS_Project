@@ -48,7 +48,7 @@ const prStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     pointer-events: none;
     overflow: hidden;
@@ -62,8 +62,8 @@ const prStyles = `
   :where(.${PR_SPINNER_CLASS}) {
     width: 18px;
     height: 18px;
-    border: 2px solid ${cv.border.default};
-    border-top-color: ${cv.primary.main};
+    border: 2px solid ${cv.borderRole.normal};
+    border-top-color: ${cv.borderRole.brand};
     border-radius: 9999px;
     animation: nds-ptr-spin 0.8s linear infinite;
     margin-right: ${spacing[8]}px;

@@ -81,7 +81,7 @@ export const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
     ref,
   ) => {
     const gradId = useId();
-    const stroke = color ?? cv.primary.main;
+    const stroke = color ?? cv.iconRole.brand;
     const pad = 2;
     const { points, midY } = useMemo(
       () => normalize(data, width, height, pad),

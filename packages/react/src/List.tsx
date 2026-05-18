@@ -69,15 +69,15 @@ const listStyles = `
   }
 
   :where(.${LIST_ROOT_CLASS}[data-variant="card"]) {
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     overflow: hidden;
   }
 
   :where(.${LIST_ROOT_CLASS}[data-variant="card"] .${LIST_ITEM_CLASS} + .${LIST_ITEM_CLASS}),
   :where(.${LIST_ROOT_CLASS}[data-variant="divided"] .${LIST_ITEM_CLASS} + .${LIST_ITEM_CLASS}) {
-    border-top: 1px solid ${cv.border.light};
+    border-top: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${LIST_ITEM_CLASS}) {
@@ -110,7 +110,7 @@ const listStyles = `
 
   :where(.${LIST_ITEM_CLASS}[data-interactive="true"]:hover),
   :where(.${LIST_ITEM_CLASS}[data-active="true"]) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${LIST_ITEM_CLASS}[data-disabled="true"]) {
@@ -120,7 +120,7 @@ const listStyles = `
   }
 
   :where(.${LIST_ITEM_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: -2px;
   }
 
@@ -132,11 +132,11 @@ const listStyles = `
   }
 
   :where(.${LIST_ITEM_LEADING_CLASS}) {
-    color: ${cv.icon.default};
+    color: ${cv.iconRole.strong};
   }
 
   :where(.${LIST_ITEM_TRAILING_CLASS}) {
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     margin-left: auto;
   }
 
@@ -152,7 +152,7 @@ const listStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -162,7 +162,7 @@ const listStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

@@ -51,7 +51,7 @@ const checkboxStyles = `
   }
 
   :where(.${CB_INPUT_CLASS}:focus-visible + .${CB_INDICATOR_CLASS}) {
-    box-shadow: 0 0 0 2px ${cv.bg.white}, 0 0 0 4px ${cv.borderRole.focus};
+    box-shadow: 0 0 0 2px ${cv.surface.default}, 0 0 0 4px ${cv.borderRole.focus};
   }
 
   :where(.${CB_INDICATOR_CLASS}) {
@@ -65,7 +65,7 @@ const checkboxStyles = `
     margin-top: 2px;
     border: 1.5px solid ${cv.borderRole.normal};
     border-radius: ${radius.sm}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};
   }
 
@@ -76,11 +76,11 @@ const checkboxStyles = `
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}) {
     border-color: ${cv.borderRole.disabled};
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
   }
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}[data-state="checked"]) {
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
     border-color: ${cv.borderRole.disabled};
   }
 
@@ -92,7 +92,7 @@ const checkboxStyles = `
     height: 14px;
     opacity: 0;
     transition: opacity ${transition.default};
-    color: ${cv.bg.white};
+    color: ${cv.surface.default};
   }
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_CHECK_ICON_CLASS}) {
@@ -107,7 +107,7 @@ const checkboxStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     user-select: none;
   }
 
@@ -119,12 +119,12 @@ const checkboxStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     margin-left: 32px;
   }
 
   :where(.${CB_HELPER_CLASS}[data-error="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${CB_GROUP_CLASS}) {

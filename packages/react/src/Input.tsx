@@ -70,7 +70,7 @@ const inputStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}) {
@@ -81,9 +81,9 @@ const inputStyles = `
     width: 100%;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 ${spacing[16]}px;
-    border: 1px solid var(--nds-input-border-color, ${cv.border.default});
+    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: var(--nds-input-background, ${cv.bg.white});
+    background: var(--nds-input-background, ${cv.surface.default});
     box-sizing: border-box;
     transition:
       border-color ${transition.default},
@@ -95,20 +95,20 @@ const inputStyles = `
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-focused="true"]) {
-    border-color: ${cv.border.focus};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-error="true"]) {
-    border-color: ${cv.error.main};
+    border-color: ${cv.borderRole.statusError};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-disabled="true"]) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
     cursor: default;
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-readonly="true"]) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${INPUT_FIELD_CLASS}) {
@@ -122,16 +122,16 @@ const inputStyles = `
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
     /* Figma --color-label-normal = #111 (neutral/900) */
-    color: ${cv.text.normal};
+    color: ${cv.textRole.strong};
     padding: 0;
   }
 
   :where(.${INPUT_FIELD_CLASS}::placeholder) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${INPUT_FIELD_CLASS}:disabled) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     cursor: default;
   }
 
@@ -141,7 +141,7 @@ const inputStyles = `
     align-items: center;
     flex-shrink: 0;
     line-height: 1;
-    color: ${cv.icon.default};
+    color: ${cv.iconRole.strong};
   }
 
   :where(.${INPUT_CLEAR_CLASS}) {
@@ -153,7 +153,7 @@ const inputStyles = `
     background: none;
     cursor: pointer;
     padding: 0;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     line-height: 1;
   }
 
@@ -440,7 +440,7 @@ export const InputClearButton: React.FC<InputClearButtonProps> = React.memo(
       {...rest}
     >
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="10" fill={cv.border.default} /> {/* clear 버튼 원형 배경 */}
+        <circle cx="12" cy="12" r="10" fill={cv.borderRole.normal} /> {/* clear 버튼 원형 배경 */}
         <path d="M8 8L16 16M16 8L8 16" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </button>

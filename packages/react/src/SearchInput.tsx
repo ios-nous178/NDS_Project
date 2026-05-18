@@ -38,7 +38,7 @@ const searchInputStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}) {
@@ -48,9 +48,9 @@ const searchInputStyles = `
     width: 100%;
     min-height: var(--nds-search-input-height, 48px);
     padding: 0 ${spacing[16]}px;
-    border: 1px solid var(--nds-search-input-border-color, ${cv.border.default});
+    border: 1px solid var(--nds-search-input-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-search-input-radius, ${radius.md}px);
-    background: var(--nds-search-input-background, ${cv.bg.white});
+    background: var(--nds-search-input-background, ${cv.surface.default});
     box-sizing: border-box;
     transition:
       border-color ${transition.default},
@@ -58,16 +58,16 @@ const searchInputStyles = `
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-focused="true"]) {
-    border-color: ${cv.border.focus};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-variant="filled"]) {
     border-color: transparent;
-    background: var(--nds-search-input-background, ${cv.bg.coolGray});
+    background: var(--nds-search-input-background, ${cv.surface.section});
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-variant="filled"][data-focused="true"]) {
-    border-color: ${cv.border.focus};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${SEARCH_FIELD_CLASS}) {
@@ -80,12 +80,12 @@ const searchInputStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     padding: 0;
   }
 
   :where(.${SEARCH_FIELD_CLASS}::placeholder) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${SEARCH_FIELD_CLASS}[type="search"]) {
@@ -111,7 +111,7 @@ const searchInputStyles = `
     cursor: pointer;
     padding: 0;
     margin-left: ${spacing[8]}px;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     line-height: 1;
   }
 
@@ -130,7 +130,7 @@ const searchInputStyles = `
     cursor: pointer;
     padding: 0;
     margin-left: ${spacing[8]}px;
-    color: ${cv.icon.default};
+    color: ${cv.iconRole.strong};
     line-height: 1;
   }
 
@@ -143,11 +143,11 @@ const searchInputStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${SEARCH_HELPER_CLASS}[data-error="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 `;
 
@@ -320,7 +320,7 @@ export const SearchInputClearButton: React.FC<SearchInputClearButtonProps> = Rea
       {...rest}
     >
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="10" fill={cv.border.default} />
+        <circle cx="12" cy="12" r="10" fill={cv.borderRole.normal} />
         <path d="M8 8L16 16M16 8L8 16" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </button>

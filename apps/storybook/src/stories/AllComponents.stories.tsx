@@ -1302,7 +1302,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
         <div style={mockDropdownItem}>편집</div>
         <div style={mockDropdownItem}>공유</div>
         <div style={mockDropdownDivider} aria-hidden />
-        <div style={{ ...mockDropdownItem, color: cv.error.main }}>삭제</div>
+        <div style={{ ...mockDropdownItem, color: cv.textRole.statusError }}>삭제</div>
       </div>
     </div>
   ),
@@ -1610,8 +1610,8 @@ const previewRow: React.CSSProperties = {
 /* Modal — 헤더(타이틀 + ×) + 본문 + 분할 푸터 (Modal.tsx 토큰 정합) */
 const mockModalSurface: React.CSSProperties = {
   width: 244,
-  background: cv.bg.white,
-  border: `1px solid ${cv.border.light}`,
+  background: cv.surface.default,
+  border: `1px solid ${cv.borderRole.subtle}`,
   borderRadius: radius.lg,
   padding: "18px 18px 14px",
   boxShadow: shadow["3"],
@@ -1636,7 +1636,7 @@ const mockModalHeaderTitle: React.CSSProperties = {
   textAlign: "center",
   fontSize: 14,
   fontWeight: 700,
-  color: cv.text.default,
+  color: cv.textRole.normal,
 };
 
 const mockModalClose: React.CSSProperties = {
@@ -1645,14 +1645,14 @@ const mockModalClose: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  color: cv.text.disabled,
+  color: cv.textRole.muted,
   fontSize: 14,
 };
 
 const mockModalBody: React.CSSProperties = {
   fontSize: 12,
   lineHeight: 1.55,
-  color: cv.text.default,
+  color: cv.textRole.normal,
   textAlign: "center",
   padding: "4px 4px 8px",
 };
@@ -1666,9 +1666,9 @@ const mockModalCancelBtn: React.CSSProperties = {
   flex: 1,
   padding: "9px 0",
   borderRadius: radius.md,
-  border: `1px solid ${cv.border.default}`,
-  background: cv.bg.white,
-  color: cv.text.default,
+  border: `1px solid ${cv.borderRole.normal}`,
+  background: cv.surface.default,
+  color: cv.textRole.normal,
   fontSize: 12,
   fontWeight: 500,
   textAlign: "center",
@@ -1678,8 +1678,8 @@ const mockModalConfirmBtn: React.CSSProperties = {
   flex: 1,
   padding: "10px 0",
   borderRadius: radius.md,
-  background: cv.primary.main,
-  color: cv.text.inverse,
+  background: cv.surface.brand,
+  color: cv.textRole.inverse,
   fontSize: 12,
   fontWeight: 700,
   textAlign: "center",
@@ -1688,7 +1688,7 @@ const mockModalConfirmBtn: React.CSSProperties = {
 /* Popup — alert 톤. 닫기 없음, 컴팩트, disabled-gray cancel + primary confirm (Popup.tsx 토큰 정합) */
 const mockPopupSurface: React.CSSProperties = {
   width: 224,
-  background: cv.bg.white,
+  background: cv.surface.default,
   borderRadius: radius.md,
   padding: "20px 20px 14px",
   boxShadow: shadow["3"],
@@ -1701,14 +1701,14 @@ const mockPopupSurface: React.CSSProperties = {
 const mockPopupTitle: React.CSSProperties = {
   fontSize: 14,
   fontWeight: 700,
-  color: cv.text.default,
+  color: cv.textRole.normal,
   textAlign: "center",
 };
 
 const mockPopupDesc: React.CSSProperties = {
   fontSize: 12,
   lineHeight: 1.55,
-  color: cv.text.subtle,
+  color: cv.textRole.subtle,
   textAlign: "center",
   marginBottom: 8,
 };
@@ -1723,8 +1723,8 @@ const mockPopupCancelBtn: React.CSSProperties = {
   flex: 1,
   padding: "10px 0",
   borderRadius: radius.md,
-  background: cv.text.disabled,
-  color: cv.bg.white,
+  background: cv.textRole.muted,
+  color: cv.surface.default,
   fontSize: 12,
   fontWeight: 700,
   textAlign: "center",
@@ -1734,8 +1734,8 @@ const mockPopupConfirmBtn: React.CSSProperties = {
   flex: 1,
   padding: "10px 0",
   borderRadius: radius.md,
-  background: cv.primary.main,
-  color: cv.primary.fg,
+  background: cv.surface.brand,
+  color: cv.textRole.inverse,
   fontSize: 12,
   fontWeight: 700,
   textAlign: "center",
@@ -1752,8 +1752,8 @@ const mockTooltipBubble: React.CSSProperties = {
   left: "50%",
   transform: "translateX(-50%)",
   padding: "6px 10px",
-  background: cv.text.default,
-  color: cv.text.inverse,
+  background: cv.textRole.normal,
+  color: cv.textRole.inverse,
   borderRadius: radius.sm,
   fontSize: 11,
   fontWeight: 500,
@@ -1767,7 +1767,7 @@ const mockTooltipArrow: React.CSSProperties = {
   transform: "translateX(-50%) rotate(45deg)",
   width: 8,
   height: 8,
-  background: cv.text.default,
+  background: cv.textRole.normal,
 };
 
 /* BottomSheet / ShareSheet / Toast — 화면 안 dim + 하단 시트 */
@@ -1775,9 +1775,9 @@ const mockOverlayStage: React.CSSProperties = {
   position: "relative",
   width: 220,
   height: 160,
-  border: `1px solid ${cv.border.light}`,
+  border: `1px solid ${cv.borderRole.subtle}`,
   borderRadius: radius.lg,
-  background: cv.bg.coolGrayLighter,
+  background: cv.surface.page,
   overflow: "hidden",
 };
 
@@ -1785,7 +1785,7 @@ const mockStageBody: React.CSSProperties = {
   padding: "10px 14px",
   fontSize: 11,
   fontWeight: 500,
-  color: cv.text.placeholder,
+  color: cv.textRole.muted,
 };
 
 const mockStageScrim: React.CSSProperties = {
@@ -1799,7 +1799,7 @@ const mockBottomSheetPanel: React.CSSProperties = {
   left: 0,
   right: 0,
   bottom: 0,
-  background: cv.bg.white,
+  background: cv.surface.default,
   borderTopLeftRadius: radius.lg,
   borderTopRightRadius: radius.lg,
   padding: "8px 14px 14px",
@@ -1813,7 +1813,7 @@ const mockShareSheetPanel: React.CSSProperties = {
   left: 0,
   right: 0,
   bottom: 0,
-  background: cv.bg.white,
+  background: cv.surface.default,
   borderTopLeftRadius: radius.lg,
   borderTopRightRadius: radius.lg,
   padding: "8px 12px 12px",
@@ -1838,8 +1838,8 @@ const mockToastFloating: React.CSSProperties = {
   alignItems: "center",
   gap: 6,
   padding: "6px 12px",
-  background: cv.text.default,
-  color: cv.text.inverse,
+  background: cv.textRole.normal,
+  color: cv.textRole.inverse,
   borderRadius: radius.pill,
   fontSize: 11,
   fontWeight: 600,
@@ -1850,7 +1850,7 @@ const mockGrabber: React.CSSProperties = {
   width: 32,
   height: 4,
   borderRadius: radius.pill,
-  background: cv.border.default,
+  background: cv.borderRole.normal,
   alignSelf: "center",
   marginBottom: 4,
 };
@@ -1858,13 +1858,13 @@ const mockGrabber: React.CSSProperties = {
 const mockSheetTitle: React.CSSProperties = {
   fontSize: 13,
   fontWeight: 700,
-  color: cv.text.default,
+  color: cv.textRole.normal,
 };
 
 const mockSheetBody: React.CSSProperties = {
   fontSize: 11,
   lineHeight: 1.55,
-  color: cv.text.subtle,
+  color: cv.textRole.subtle,
 };
 
 const mockToastIcon: React.CSSProperties = {
@@ -1874,8 +1874,8 @@ const mockToastIcon: React.CSSProperties = {
   width: 16,
   height: 16,
   borderRadius: radius.pill,
-  background: cv.success.main,
-  color: cv.text.inverse,
+  background: cv.iconRole.statusSuccess,
+  color: cv.textRole.inverse,
   fontSize: 10,
   fontWeight: 800,
 };
@@ -1943,7 +1943,7 @@ const mockLightboxImageNew: React.CSSProperties = {
   width: 130,
   height: 80,
   borderRadius: radius.sm,
-  background: cv.bg.coolGray,
+  background: cv.surface.section,
 };
 
 const mockLightboxCounter: React.CSSProperties = {
@@ -1973,14 +1973,14 @@ const mockShareIcon: React.CSSProperties = {
   width: 36,
   height: 36,
   borderRadius: radius.pill,
-  background: cv.bg.coolGrayLighter,
-  color: cv.text.default,
+  background: cv.surface.page,
+  color: cv.textRole.normal,
 };
 
 const mockShareLabel: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 600,
-  color: cv.text.subtle,
+  color: cv.textRole.subtle,
 };
 
 const mockCoachWrap: React.CSSProperties = {
@@ -1995,8 +1995,8 @@ const mockCoachCard: React.CSSProperties = {
   transform: "translateX(-50%)",
   width: 200,
   padding: "10px 12px",
-  background: cv.text.default,
-  color: cv.text.inverse,
+  background: cv.textRole.normal,
+  color: cv.textRole.inverse,
   borderRadius: radius.lg,
   boxShadow: shadow["2"],
 };
@@ -2008,7 +2008,7 @@ const mockCoachArrow: React.CSSProperties = {
   transform: "translateX(-50%) rotate(45deg)",
   width: 10,
   height: 10,
-  background: cv.text.default,
+  background: cv.textRole.normal,
 };
 
 const mockCoachTitle: React.CSSProperties = {
@@ -2019,7 +2019,7 @@ const mockCoachTitle: React.CSSProperties = {
 
 const mockCoachDesc: React.CSSProperties = {
   fontSize: 11,
-  color: cv.text.placeholder,
+  color: cv.textRole.muted,
   lineHeight: 1.5,
 };
 
@@ -2030,8 +2030,8 @@ const mockDrawerStage: React.CSSProperties = {
   position: "relative",
   width: 220,
   height: 130,
-  background: cv.bg.coolGrayLighter,
-  border: `1px solid ${cv.border.light}`,
+  background: cv.surface.page,
+  border: `1px solid ${cv.borderRole.subtle}`,
   borderRadius: radius.md,
   overflow: "hidden",
 };
@@ -2042,7 +2042,7 @@ const mockDrawerPageHint: React.CSSProperties = {
   left: 12,
   fontSize: 11,
   fontWeight: 600,
-  color: cv.text.placeholder,
+  color: cv.textRole.muted,
 };
 
 const mockDrawerScrim: React.CSSProperties = {
@@ -2057,7 +2057,7 @@ const mockDrawerPanel: React.CSSProperties = {
   right: 0,
   bottom: 0,
   width: 132,
-  background: cv.bg.white,
+  background: cv.surface.default,
   boxShadow: shadow["3"],
   display: "flex",
   flexDirection: "column",
@@ -2068,13 +2068,13 @@ const mockDrawerHeader: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "space-between",
   padding: "8px 10px",
-  borderBottom: `1px solid ${cv.border.light}`,
+  borderBottom: `1px solid ${cv.borderRole.subtle}`,
 };
 
 const mockDrawerTitle: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 700,
-  color: cv.text.default,
+  color: cv.textRole.normal,
 };
 
 const mockDrawerClose: React.CSSProperties = {
@@ -2095,10 +2095,10 @@ const mockDrawerBody: React.CSSProperties = {
 const mockDrawerRow: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 500,
-  color: cv.text.subtle,
+  color: cv.textRole.subtle,
   padding: "4px 6px",
   borderRadius: radius.sm,
-  background: cv.bg.coolGrayLighter,
+  background: cv.surface.page,
 };
 
 const mockDropdownWrap: React.CSSProperties = {
@@ -2116,7 +2116,7 @@ const mockDropdownTrigger: React.CSSProperties = {
   width: 32,
   height: 32,
   borderRadius: radius.pill,
-  background: cv.bg.coolGrayLighter,
+  background: cv.surface.page,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -2128,8 +2128,8 @@ const mockDropdownPanel: React.CSSProperties = {
   left: "50%",
   transform: "translateX(-50%)",
   width: 140,
-  background: cv.bg.white,
-  border: `1px solid ${cv.border.light}`,
+  background: cv.surface.default,
+  border: `1px solid ${cv.borderRole.subtle}`,
   borderRadius: radius.md,
   boxShadow: shadow["2"],
   padding: "6px 0",
@@ -2141,12 +2141,12 @@ const mockDropdownItem: React.CSSProperties = {
   padding: "6px 14px",
   fontSize: 12,
   fontWeight: 500,
-  color: cv.text.default,
+  color: cv.textRole.normal,
 };
 
 const mockDropdownDivider: React.CSSProperties = {
   height: 1,
-  background: cv.border.light,
+  background: cv.borderRole.subtle,
   margin: "4px 0",
 };
 
@@ -2155,7 +2155,7 @@ const dsHighlightFrame: React.CSSProperties = {
   flexDirection: "column",
   gap: 8,
   padding: "10px 14px",
-  border: `1px dashed ${cv.primary.main}`,
+  border: `1px dashed ${cv.borderRole.brand}`,
   borderRadius: radius.md,
   background: "rgba(43,150,237,0.06)",
 };
@@ -2163,7 +2163,7 @@ const dsHighlightFrame: React.CSSProperties = {
 const dsHighlightLabel: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 600,
-  color: cv.text.subtle,
+  color: cv.textRole.subtle,
 };
 
 const dsHighlightMode: React.CSSProperties = {
@@ -2171,25 +2171,25 @@ const dsHighlightMode: React.CSSProperties = {
   fontWeight: 600,
   padding: "3px 8px",
   borderRadius: radius.pill,
-  background: cv.bg.white,
-  border: `1px solid ${cv.border.default}`,
-  color: cv.text.subtle,
+  background: cv.surface.default,
+  border: `1px solid ${cv.borderRole.normal}`,
+  color: cv.textRole.subtle,
 };
 
 const dsHighlightModeActive: React.CSSProperties = {
   ...dsHighlightMode,
-  background: cv.primary.main,
-  borderColor: cv.primary.main,
-  color: cv.primary.fg,
+  background: cv.surface.brand,
+  borderColor: cv.borderRole.brand,
+  color: cv.textRole.inverse,
 };
 
 /* AppBar / AppFooter / WebHeader — 화면 프레임 안에 배치해야 비례가 맞다 */
 const mockPhoneShell: React.CSSProperties = {
   width: 220,
   height: 160,
-  border: `1px solid ${cv.border.light}`,
+  border: `1px solid ${cv.borderRole.subtle}`,
   borderRadius: radius.lg,
-  background: cv.bg.coolGrayLighter,
+  background: cv.surface.page,
   display: "flex",
   flexDirection: "column",
   overflow: "hidden",
@@ -2199,15 +2199,15 @@ const mockPhoneBody: React.CSSProperties = {
   padding: "10px 14px",
   fontSize: 11,
   fontWeight: 500,
-  color: cv.text.placeholder,
+  color: cv.textRole.muted,
 };
 
 const mockDesktopShell: React.CSSProperties = {
   width: 250,
   height: 130,
-  border: `1px solid ${cv.border.light}`,
+  border: `1px solid ${cv.borderRole.subtle}`,
   borderRadius: radius.md,
-  background: cv.bg.coolGrayLighter,
+  background: cv.surface.page,
   overflow: "hidden",
 };
 
@@ -2221,7 +2221,7 @@ const mockDesktopBody: React.CSSProperties = {
   padding: "16px 24px",
   fontSize: 18,
   fontWeight: 500,
-  color: cv.text.placeholder,
+  color: cv.textRole.muted,
 };
 
 /* ──────────────────────────────────────────

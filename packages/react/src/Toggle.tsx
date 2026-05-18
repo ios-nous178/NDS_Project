@@ -45,7 +45,7 @@ const toggleStyles = `
   }
 
   :where(.${TG_CLASS}) input:focus-visible + .${TG_TRACK_CLASS} {
-    box-shadow: 0 0 0 2px ${cv.bg.white}, 0 0 0 4px ${cv.borderRole.focus};
+    box-shadow: 0 0 0 2px ${cv.surface.default}, 0 0 0 4px ${cv.borderRole.focus};
   }
 
   :where(.${TG_TRACK_CLASS}) {
@@ -77,7 +77,7 @@ const toggleStyles = `
     width: var(--nds-toggle-thumb-size, 18px);
     height: var(--nds-toggle-thumb-size, 18px);
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     box-shadow: var(--nds-toggle-thumb-shadow, 0 1px 3px rgba(0, 0, 0, 0.15));
     transition: transform 0.2s ease;
   }
@@ -87,14 +87,14 @@ const toggleStyles = `
   }
 
   :where(.${TG_CLASS}[data-disabled="true"] .${TG_THUMB_CLASS}) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${TG_LABEL_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     user-select: none;
   }
 

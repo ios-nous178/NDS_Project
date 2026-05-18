@@ -23,9 +23,9 @@ export interface OnlineIndicatorProps extends Omit<React.HTMLAttributes<HTMLSpan
 }
 
 const STATUS_COLOR: Record<PresenceStatus, string> = {
-  online: "var(--semantic-success-main, #2BAA48)",
-  away: "var(--semantic-caution-main, #F0A030)",
-  busy: "var(--semantic-error-main, #E04D4D)",
+  online: "var(--semantic-icon-status-success)",
+  away: "var(--semantic-icon-status-caution)",
+  busy: "var(--semantic-icon-status-error)",
   offline: "#A0A4AC",
 };
 
@@ -68,7 +68,7 @@ const oiStyles = `
   :where(.${OI_LABEL_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 `;
 

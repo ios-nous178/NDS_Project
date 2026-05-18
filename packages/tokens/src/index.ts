@@ -1,4 +1,4 @@
-export { colors, neutral, coolGray, blue, magenta, yellow, red, green, semantic } from "./colors";
+export { colors, neutral, coolGray, blue, magenta, yellow, red, green } from "./colors";
 export { cv } from "./cssVar";
 export type { CssVarRef } from "./cssVar";
 export { eap } from "./eap";

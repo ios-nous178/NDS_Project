@@ -64,7 +64,7 @@ const tiStyles = `
   :where(.${TI_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${TI_FIELD_CLASS}) {
@@ -74,23 +74,23 @@ const tiStyles = `
     gap: ${spacing[6]}px;
     min-height: 48px;
     padding: ${spacing[8]}px ${spacing[12]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     transition: border-color ${transition.default}, box-shadow ${transition.default};
     cursor: text;
   }
 
   :where(.${TI_FIELD_CLASS}:focus-within) {
-    border-color: ${cv.primary.main};
-    box-shadow: 0 0 0 3px var(--semantic-primary-bg, rgba(64, 128, 240, 0.15));
+    border-color: ${cv.borderRole.brand};
+    box-shadow: 0 0 0 3px var(--semantic-bg-status-info));
   }
-  :where(.${TI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
+  :where(.${TI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
   :where(.${TI_FIELD_CLASS}[data-error="true"]:focus-within) {
-    box-shadow: 0 0 0 3px var(--semantic-error-bg, rgba(224, 77, 77, 0.15));
+    box-shadow: 0 0 0 3px var(--semantic-bg-status-error));
   }
   :where(.${TI_FIELD_CLASS}[data-disabled="true"]) {
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
     cursor: not-allowed;
   }
 
@@ -101,8 +101,8 @@ const tiStyles = `
     height: 26px;
     padding: 0 ${spacing[4]}px 0 ${spacing[10]}px;
     border-radius: 9999px;
-    background: var(--semantic-primary-bg, #EBF1FF);
-    color: ${cv.primary.main};
+    background: var(--semantic-bg-status-info);
+    color: ${cv.textRole.brand};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: 1;
     font-weight: ${fontWeight.semibold};
@@ -140,17 +140,17 @@ const tiStyles = `
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: 26px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
-  :where(.${TI_INPUT_CLASS}::placeholder) { color: ${cv.text.placeholder}; }
+  :where(.${TI_INPUT_CLASS}::placeholder) { color: ${cv.textRole.muted}; }
 
   :where(.${TI_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
-  :where(.${TI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
+  :where(.${TI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

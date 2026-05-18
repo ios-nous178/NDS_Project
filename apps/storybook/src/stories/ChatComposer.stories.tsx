@@ -33,7 +33,7 @@ export const Playground: Story = {
               key={i}
               style={{
                 alignSelf: "flex-end",
-                background: "var(--semantic-primary-main, #4080F0)",
+                background: "var(--semantic-bg-brand-default)",
                 color: "#fff",
                 padding: "8px 12px",
                 borderRadius: 12,

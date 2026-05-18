@@ -61,7 +61,7 @@ const tokensSrc = [
 const tokenEval = new Function(`
   ${tokensSrc}
   return {
-    colors, neutral, coolGray, blue, magenta, yellow, red, green, semantic,
+    colors, neutral, coolGray, blue, magenta, yellow, red, green,
     fontFamily, fontWeight, typeScale,
     spacing, radius, borderWidth, sizing, grid,
     shadow, zIndex,

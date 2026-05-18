@@ -60,7 +60,7 @@ const tpStyles = `
   :where(.${TP_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${TP_FIELD_CLASS}) {
@@ -68,16 +68,16 @@ const tpStyles = `
     align-items: center;
     height: ${sizing.input.default}px;
     padding: 0 ${spacing[16]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     transition: border-color ${transition.default};
   }
 
-  :where(.${TP_FIELD_CLASS}:focus-within) { border-color: ${cv.primary.main}; }
-  :where(.${TP_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
+  :where(.${TP_FIELD_CLASS}:focus-within) { border-color: ${cv.borderRole.brand}; }
+  :where(.${TP_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
   :where(.${TP_FIELD_CLASS}[data-disabled="true"]) {
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     cursor: not-allowed;
   }
 
@@ -88,16 +88,16 @@ const tpStyles = `
     outline: none;
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
   }
 
   :where(.${TP_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
-  :where(.${TP_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
+  :where(.${TP_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

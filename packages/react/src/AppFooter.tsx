@@ -31,7 +31,7 @@ const appFooterStyles = `
   :where(.${FOOTER_CLASS}[data-variant="info"]) {
     width: 100%;
     padding: var(--nds-footer-padding, ${spacing[16]}px);
-    background: var(--nds-footer-background, ${cv.bg.light});
+    background: var(--nds-footer-background, ${cv.surface.subtle});
     font-family: var(--nds-footer-font-family, ${fontFamily.web});
     box-sizing: border-box;
   }
@@ -48,7 +48,7 @@ const appFooterStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-decoration: none;
     cursor: pointer;
     transition: color ${transition.default};
@@ -66,7 +66,7 @@ const appFooterStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   /* ─── Tab-bar footer (앱 하단 네비게이션) ─── */
@@ -80,8 +80,8 @@ const appFooterStyles = `
     align-items: stretch;
     width: 100%;
     height: var(--nds-footer-height, ${sizing.bottomBar.height}px);
-    background: var(--nds-footer-background, ${cv.bg.white});
-    border-top: 1px solid var(--nds-footer-border-color, ${cv.border.light});
+    background: var(--nds-footer-background, ${cv.surface.default});
+    border-top: 1px solid var(--nds-footer-border-color, ${cv.borderRole.subtle});
     font-family: var(--nds-footer-font-family, ${fontFamily.web});
     box-sizing: border-box;
     z-index: var(--nds-footer-z-index, ${zIndex.sticky});
@@ -98,7 +98,7 @@ const appFooterStyles = `
     text-decoration: none;
     cursor: pointer;
     opacity: 0.9;
-    color: var(--nds-footer-nav-color, ${cv.text.subtle});
+    color: var(--nds-footer-nav-color, ${cv.textRole.subtle});
     transition:
       opacity ${transition.default},
       color ${transition.default};
@@ -106,7 +106,7 @@ const appFooterStyles = `
 
   :where(.${FOOTER_NAV_ITEM_CLASS}[data-active="true"]) {
     opacity: 1;
-    color: var(--nds-footer-nav-active-color, ${cv.text.default});
+    color: var(--nds-footer-nav-active-color, ${cv.textRole.normal});
   }
 
   :where(.${FOOTER_NAV_ITEM_CLASS}[aria-disabled="true"]) {
@@ -131,7 +131,7 @@ const appFooterStyles = `
   }
 
   :where(.${FOOTER_NAV_ITEM_CLASS}[data-active="true"]) .nds-app-footer__nav-label {
-    color: var(--nds-footer-nav-active-color, ${cv.text.default});
+    color: var(--nds-footer-nav-active-color, ${cv.textRole.normal});
   }
 
   /* ─── CompanyInfo ─── */
@@ -143,7 +143,7 @@ const appFooterStyles = `
     gap: ${spacing[24]}px;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: 1.6;
-    color: var(--nds-footer-company-color, ${cv.text.subtle});
+    color: var(--nds-footer-company-color, ${cv.textRole.subtle});
   }
 
   :where(.${FOOTER_COMPANY_CLASS}) .${FOOTER_CLASS}__company-name {
@@ -153,7 +153,7 @@ const appFooterStyles = `
 
   :where(.${FOOTER_COMPANY_CLASS}) .${FOOTER_CLASS}__company-copyright {
     margin-top: ${spacing[12]}px;
-    color: var(--nds-footer-muted-color, ${cv.text.disabled});
+    color: var(--nds-footer-muted-color, ${cv.textRole.muted});
   }
 
   :where(.${FOOTER_COMPANY_CLASS}) .${FOOTER_CLASS}__company-logo {
@@ -165,7 +165,7 @@ const appFooterStyles = `
     display: inline-block;
     width: 1px;
     height: 10px;
-    background: var(--nds-footer-muted-color, ${cv.text.disabled});
+    background: var(--nds-footer-muted-color, ${cv.textRole.muted});
     margin: 0 ${spacing[8]}px;
     vertical-align: middle;
   }
@@ -175,7 +175,7 @@ const appFooterStyles = `
   :where(.${FOOTER_EXTRA_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: 1.6;
-    color: var(--nds-footer-extra-color, ${cv.text.subtle});
+    color: var(--nds-footer-extra-color, ${cv.textRole.subtle});
     margin-bottom: ${spacing[12]}px;
   }
 `;
@@ -192,7 +192,7 @@ const FooterDivider = () => (
     style={{
       width: 1,
       height: 10,
-      background: cv.border.default,
+      background: cv.borderRole.normal,
       margin: `0 ${spacing[8]}px`,
       flexShrink: 0,
     }}
@@ -249,7 +249,7 @@ export const AppFooterInfo = React.forwardRef<HTMLElement, AppFooterInfoProps>(
         style={
           {
             "--nds-footer-padding": `${spacing[16]}px`,
-            "--nds-footer-background": cv.bg.light,
+            "--nds-footer-background": cv.surface.subtle,
             ...style,
           } as React.CSSProperties
         }
@@ -315,8 +315,8 @@ export const AppFooterTabBar = React.forwardRef<HTMLElement, AppFooterTabBarProp
         style={
           {
             "--nds-footer-height": `${sizing.bottomBar.height}px`,
-            "--nds-footer-background": cv.bg.white,
-            "--nds-footer-border-color": cv.border.light,
+            "--nds-footer-background": cv.surface.default,
+            "--nds-footer-border-color": cv.borderRole.subtle,
             ...style,
           } as React.CSSProperties
         }

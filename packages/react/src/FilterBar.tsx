@@ -67,9 +67,9 @@ const fbStyles = `
     height: 32px;
     padding: 0 ${spacing[12]}px;
     border-radius: 9999px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.medium};
@@ -79,17 +79,17 @@ const fbStyles = `
   }
 
   :where(.${FB_CHIP_CLASS}:hover:not([disabled])) {
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
   }
 
   :where(.${FB_CHIP_CLASS}[data-active="true"]) {
-    background: ${cv.text.default};
-    border-color: ${cv.text.default};
-    color: ${cv.bg.white};
+    background: ${cv.textRole.normal};
+    border-color: ${cv.textRole.normal};
+    color: ${cv.surface.default};
   }
 
   :where(.${FB_CHIP_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
@@ -107,13 +107,13 @@ const fbStyles = `
     padding: 0 ${spacing[12]}px;
     border: none;
     background: transparent;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
   }
-  :where(.${FB_RESET_CLASS}:hover) { color: ${cv.text.default}; }
+  :where(.${FB_RESET_CLASS}:hover) { color: ${cv.textRole.normal}; }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

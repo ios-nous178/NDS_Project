@@ -38,23 +38,23 @@ export interface TipCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
 /* ─── Styles ─── */
 
 const TONE_BG: Record<TipCardTone, string> = {
-  info: "var(--semantic-info-bg, #EBF1FF)",
-  success: "var(--semantic-success-bg, #E5F8E9)",
-  warning: "var(--semantic-caution-bg, #FFF4E0)",
+  info: "var(--semantic-bg-status-info)",
+  success: "var(--semantic-bg-status-success)",
+  warning: "var(--semantic-bg-status-caution)",
   neutral: "#F2F4F6",
 };
 
 const TONE_FG: Record<TipCardTone, string> = {
-  info: "var(--semantic-info-text, #1F4FB8)",
-  success: "var(--semantic-success-text, #1A6D2C)",
-  warning: "var(--semantic-caution-text, #8C5B00)",
+  info: "var(--semantic-text-status-info)",
+  success: "var(--semantic-text-status-success)",
+  warning: "var(--semantic-text-status-caution)",
   neutral: "#444",
 };
 
 const TONE_ICON_BG: Record<TipCardTone, string> = {
-  info: "var(--semantic-info-main, #4080F0)",
-  success: "var(--semantic-success-main, #2BAA48)",
-  warning: "var(--semantic-caution-main, #F0A030)",
+  info: "var(--semantic-fill-brand-default)",
+  success: "var(--semantic-icon-status-success)",
+  warning: "var(--semantic-icon-status-caution)",
   neutral: "#888",
 };
 

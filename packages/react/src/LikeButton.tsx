@@ -46,7 +46,7 @@ const lbStyles = `
     padding: 0;
     border: none;
     background: transparent;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     cursor: pointer;
     font-family: ${fontFamily.web};
     font-weight: ${fontWeight.semibold};
@@ -55,15 +55,15 @@ const lbStyles = `
   }
 
   :where(.${LB_CLASS}[data-liked="true"]) {
-    color: var(--nds-like-color, var(--semantic-error-main, #E04D4D));
+    color: var(--nds-like-color, var(--semantic-text-status-error));
   }
 
   :where(.${LB_CLASS}:hover) {
-    color: var(--nds-like-color, var(--semantic-error-main, #E04D4D));
+    color: var(--nds-like-color, var(--semantic-text-status-error));
   }
 
   :where(.${LB_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
     border-radius: 4px;
   }

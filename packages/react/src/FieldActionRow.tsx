@@ -47,14 +47,14 @@ const fieldActionRowStyles = `
     width: 100%;
     height: 48px;
     padding: 0 ${spacing[16]}px;
-    border: 1px solid var(--nds-far-border-color, ${cv.border.default});
+    border: 1px solid var(--nds-far-border-color, ${cv.borderRole.normal});
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     outline: none;
     box-sizing: border-box;
     transition: border-color ${transition.default};
@@ -68,20 +68,20 @@ const fieldActionRowStyles = `
   }
 
   :where(.${FAR_FIELD_CLASS} input::placeholder) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
     font-size: ${typeScale.body2.fontSize}px;
   }
 
   :where(.${FAR_FIELD_CLASS} input:focus) {
-    border-color: ${cv.border.focus};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${FAR_FIELD_CLASS}[data-error="true"] input) {
-    border-color: ${cv.error.main};
+    border-color: ${cv.borderRole.statusError};
   }
 
   :where(.${FAR_FIELD_CLASS}[data-success="true"] input) {
-    border-color: ${cv.success.main};
+    border-color: ${cv.iconRole.statusSuccess};
   }
 
   :where(.${FAR_TIMER_CLASS}) {
@@ -91,11 +91,11 @@ const fieldActionRowStyles = `
     transform: translateY(-50%);
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
   }
 
   :where(.${FAR_TIMER_CLASS}[data-expired="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${FAR_ACTION_CLASS}) {
@@ -123,54 +123,54 @@ const fieldActionRowStyles = `
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="outline"] button) {
-    border: 1px solid ${cv.primary.main};
-    background: ${cv.bg.white};
-    color: ${cv.primary.main};
+    border: 1px solid ${cv.borderRole.brand};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.brand};
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="outline"] button:hover:not(:disabled)) {
-    border-color: ${cv.primary.hover};
-    color: ${cv.primary.hover};
+    border-color: ${cv.fill.brandHover};
+    color: ${cv.fill.brandHover};
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button) {
-    border: 1px solid ${cv.primary.main};
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    border: 1px solid ${cv.borderRole.brand};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:hover:not(:disabled)) {
-    background: ${cv.primary.hover};
-    border-color: ${cv.primary.hover};
+    background: ${cv.fill.brandHover};
+    border-color: ${cv.fill.brandHover};
   }
 
   :where(.${FAR_ACTION_CLASS} button:disabled) {
-    border-color: ${cv.border.disabled};
-    background: ${cv.bg.disabled};
-    color: ${cv.text.disabled};
+    border-color: ${cv.borderRole.disabled};
+    background: ${cv.surface.disabled};
+    color: ${cv.textRole.muted};
     cursor: not-allowed;
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:disabled) {
     border-color: transparent;
-    background: ${cv.bg.disabled};
-    color: ${cv.text.disabled};
+    background: ${cv.surface.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${FAR_HELPER_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     transition: color ${transition.default};
   }
 
   :where(.${FAR_HELPER_CLASS}[data-error="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${FAR_HELPER_CLASS}[data-success="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 `;
 

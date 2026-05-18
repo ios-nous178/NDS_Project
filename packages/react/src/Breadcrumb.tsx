@@ -21,25 +21,25 @@ const breadcrumbStyles = `
   }
 
   :where(.${BC_ITEM_CLASS}) {
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-weight: ${fontWeight.regular};
     text-decoration: none;
     transition: color ${transition.default};
   }
 
   :where(a.${BC_ITEM_CLASS}:hover) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     text-decoration: underline;
   }
 
   :where(.${BC_ITEM_CLASS}[data-current="true"]) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
     pointer-events: none;
   }
 
   :where(.${BC_SEPARATOR_CLASS}) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     font-size: ${typeScale.caption1.fontSize}px;
     user-select: none;
     flex-shrink: 0;

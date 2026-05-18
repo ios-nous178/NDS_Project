@@ -31,7 +31,7 @@ const bannerStyles = `
     justify-content: space-between;
     width: 100%;
     padding: var(--nds-banner-padding, ${spacing[20]}px ${spacing[24]}px);
-    background: var(--nds-banner-background, ${cv.bg.coolGray});
+    background: var(--nds-banner-background, ${cv.surface.section});
     border-radius: var(--nds-banner-radius, ${radius.lg}px);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -41,8 +41,8 @@ const bannerStyles = `
   }
 
   :where(.${BN_CLASS}[data-variant="outlined"]) {
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${BN_CLASS}[data-variant="image"]) {
@@ -71,13 +71,13 @@ const bannerStyles = `
     font-size: var(--nds-banner-title-font-size, ${typeScale.headline5.fontSize}px);
     font-weight: var(--nds-banner-title-font-weight, ${fontWeight.bold});
     line-height: var(--nds-banner-title-line-height, 1.36);
-    color: var(--nds-banner-title-color, ${cv.text.default});
+    color: var(--nds-banner-title-color, ${cv.textRole.normal});
   }
 
   :where(.${BN_DESC_CLASS}) {
     font-size: var(--nds-banner-desc-font-size, ${typeScale.body2.fontSize}px);
     line-height: 1.47;
-    color: var(--nds-banner-desc-color, ${cv.text.subtle});
+    color: var(--nds-banner-desc-color, ${cv.textRole.subtle});
   }
 
   :where(.${BN_ACTION_CLASS}) {
@@ -87,7 +87,7 @@ const bannerStyles = `
     margin-top: ${spacing[8]}px;
     font-size: var(--nds-banner-action-font-size, ${typeScale.body1.fontSize}px);
     font-weight: ${fontWeight.bold};
-    color: var(--nds-banner-action-color, ${cv.primary.main});
+    color: var(--nds-banner-action-color, ${cv.textRole.brand});
     cursor: pointer;
     text-decoration: none;
     background: none;
@@ -122,13 +122,13 @@ const bannerStyles = `
     width: 24px;
     height: 24px;
     cursor: pointer;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     border-radius: ${radius.pill}px;
     transition: background-color ${transition.default};
   }
 
   :where(.${BN_CLOSE_CLASS}:hover) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 `;
 

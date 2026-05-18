@@ -36,10 +36,10 @@ const DEFAULT_SEGMENTS = (max: number): GaugeSegment[] => [
 ];
 
 const LEVEL_COLOR_VAR: Record<GaugeLevel, string> = {
-  normal: cv.success.main,
-  mild: cv.caution.main,
-  moderate: cv.caution.text,
-  severe: cv.error.main,
+  normal: cv.iconRole.statusSuccess,
+  mild: cv.iconRole.statusCaution,
+  moderate: cv.textRole.statusCaution,
+  severe: cv.iconRole.statusError,
 };
 
 // eslint-disable-next-line unused-imports/no-unused-vars
@@ -84,13 +84,13 @@ const scoreGaugeStyles = `
     font-size: ${typeScale.headline2.fontSize}px;
     line-height: ${typeScale.headline2.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${SG_VALUE_MAX_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${SG_LABEL_CLASS}) {
@@ -99,10 +99,10 @@ const scoreGaugeStyles = `
     font-weight: ${fontWeight.bold};
   }
 
-  :where(.${SG_LABEL_CLASS}[data-level="normal"]) { color: ${cv.success.main}; }
-  :where(.${SG_LABEL_CLASS}[data-level="mild"]) { color: ${cv.caution.main}; }
-  :where(.${SG_LABEL_CLASS}[data-level="moderate"]) { color: ${cv.caution.text}; }
-  :where(.${SG_LABEL_CLASS}[data-level="severe"]) { color: ${cv.error.main}; }
+  :where(.${SG_LABEL_CLASS}[data-level="normal"]) { color: ${cv.iconRole.statusSuccess}; }
+  :where(.${SG_LABEL_CLASS}[data-level="mild"]) { color: ${cv.textRole.statusCaution}; }
+  :where(.${SG_LABEL_CLASS}[data-level="moderate"]) { color: ${cv.textRole.statusCaution}; }
+  :where(.${SG_LABEL_CLASS}[data-level="severe"]) { color: ${cv.textRole.statusError}; }
 
   :where(.${SG_LEGEND_CLASS}) {
     display: flex;
@@ -117,7 +117,7 @@ const scoreGaugeStyles = `
     gap: ${spacing[4]}px;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${SG_LEGEND_ITEM_CLASS})::before {
@@ -221,12 +221,12 @@ export const ScoreGauge = React.forwardRef<HTMLDivElement, ScoreGaugeProps>(
                 y1="100"
                 x2="100"
                 y2="22"
-                stroke={cv.text.default}
+                stroke={cv.textRole.normal}
                 strokeWidth="3"
                 strokeLinecap="round"
               />
-              <circle cx="100" cy="100" r="6" fill={cv.text.default} />
-              <circle cx="100" cy="100" r="3" fill={cv.bg.white} />
+              <circle cx="100" cy="100" r="6" fill={cv.textRole.normal} />
+              <circle cx="100" cy="100" r="3" fill={cv.surface.default} />
             </g>
           </svg>
         </div>

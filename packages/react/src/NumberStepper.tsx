@@ -65,9 +65,9 @@ const numberStepperStyles = `
     width: var(--nds-stepper-btn, 36px);
     height: var(--nds-stepper-btn, 36px);
     border-radius: ${radius.md}px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -78,11 +78,11 @@ const numberStepperStyles = `
   }
 
   :where(.${NS_BTN_CLASS}:hover:not([disabled])) {
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
   }
 
   :where(.${NS_BTN_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
@@ -96,7 +96,7 @@ const numberStepperStyles = `
     text-align: center;
     font-size: var(--nds-stepper-font, 15px);
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     line-height: ${typeScale.body2.lineHeight}px;
     user-select: none;
   }
@@ -105,10 +105,10 @@ const numberStepperStyles = `
     width: var(--nds-stepper-value-w, 48px);
     height: var(--nds-stepper-btn, 36px);
     text-align: center;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: var(--nds-stepper-font, 15px);
     font-weight: ${fontWeight.semibold};
@@ -124,9 +124,9 @@ const numberStepperStyles = `
   }
 
   :where(.${NS_INPUT_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 0;
-    border-color: ${cv.primary.main};
+    border-color: ${cv.borderRole.brand};
   }
 `;
 

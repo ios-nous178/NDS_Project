@@ -33,7 +33,7 @@ const popupStyles = `
   :where(.${POPUP_OVERLAY_CLASS}) {
     position: fixed;
     inset: 0;
-    background-color: ${cv.bg.overlay};
+    background-color: ${cv.surface.overlay};
     animation: nds-popup-fade-in 0.2s ease-out;
   }
 
@@ -46,7 +46,7 @@ const popupStyles = `
     gap: ${spacing[24]}px;
     padding: ${spacing[28]}px ${spacing[16]}px ${spacing[16]}px;
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     box-shadow: ${shadow["3"]};
     animation: nds-popup-scale-in 0.2s ease-out;
   }
@@ -57,7 +57,7 @@ const popupStyles = `
     align-items: center;
     gap: ${spacing[8]}px;
     text-align: center;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-family: ${fontFamily.web};
   }
 
@@ -66,7 +66,7 @@ const popupStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     font-weight: 700;
     line-height: ${typeScale.body1.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${POPUP_DESC_CLASS}) {
@@ -74,7 +74,7 @@ const popupStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: 400;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${POPUP_ACTIONS_CLASS}) {
@@ -110,13 +110,13 @@ const popupStyles = `
   }
 
   :where(.${POPUP_BTN_CANCEL_CLASS}) {
-    background: ${cv.text.disabled};
-    color: ${cv.bg.white};
+    background: ${cv.textRole.muted};
+    color: ${cv.surface.default};
   }
 
   :where(.${POPUP_BTN_CONFIRM_CLASS}) {
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
   }
 
   @keyframes nds-popup-fade-in {

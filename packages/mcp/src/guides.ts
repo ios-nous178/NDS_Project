@@ -702,15 +702,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dividerInsetTextOnly: "16px (좌측 padding 만)",
     },
     stateMatrix: {
-      default: "BG var(--eap-bg-surface-default) · Text Strong/Default · Border Normal/Default",
+      default:
+        "BG var(--semantic-bg-surface-default) · Text Strong/Default · Border Normal/Default",
       hover:
-        "BG var(--eap-fill-neutral-subtle) · Border Normal/Default · ※ PC only (모바일 미지원)",
-      active: "BG var(--eap-bg-surface-subtle) · Text Strong/Default · Border Normal/Default",
+        "BG var(--semantic-fill-neutral-subtle) · Border Normal/Default · ※ PC only (모바일 미지원)",
+      active: "BG var(--semantic-bg-surface-subtle) · Text Strong/Default · Border Normal/Default",
       selected:
-        "BG var(--eap-bg-brand-subtle) · Text var(--eap-text-brand-default) · Border var(--eap-border-brand-default) 2px",
+        "BG var(--semantic-bg-brand-subtle) · Text var(--semantic-text-brand-default) · Border var(--semantic-border-brand-default) 2px",
       disabled:
-        "BG Surface/Default · Text var(--eap-text-disabled-default) · Leading(Avatar 등) opacity 35%",
-      focus: "BG Surface/Default · Border var(--eap-border-focus-default) 2px",
+        "BG Surface/Default · Text var(--semantic-text-disabled-default) · Leading(Avatar 등) opacity 35%",
+      focus: "BG Surface/Default · Border var(--semantic-border-focus-default) 2px",
       note: "총 6 상태. 시멘틱 컬러 토큰만 사용 — raw hex/임의 색 금지.",
     },
     accessibility: [

@@ -64,7 +64,7 @@ const modalStyles = `
   :where(.${OVERLAY_CLASS}) {
     position: fixed;
     inset: 0;
-    background-color: ${cv.bg.overlay};
+    background-color: ${cv.surface.overlay};
     animation: nds-modal-fade-in 0.2s ease-out;
   }
 
@@ -81,7 +81,7 @@ const modalStyles = `
     padding: ${spacing[28]}px ${spacing[16]}px ${spacing[16]}px;
     overflow: hidden;
     border-radius: var(--nds-modal-radius, ${radius.md}px);
-    background-color: ${cv.bg.white};
+    background-color: ${cv.surface.default};
     box-shadow: ${shadow["3"]};
     animation: nds-modal-slide-up 0.2s ease-out;
     box-sizing: border-box;
@@ -110,7 +110,7 @@ const modalStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     font-weight: 700;
     line-height: ${typeScale.body1.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${CLOSE_CLASS}) {
@@ -125,14 +125,14 @@ const modalStyles = `
     padding: 4px;
     font-size: 20px;
     line-height: 1;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${BODY_CLASS}) {
     padding: 0;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     text-align: center;
   }
 
@@ -192,31 +192,31 @@ const modalStyles = `
   }
 
   :where(.${FOOTER_CANCEL_CLASS}) {
-    background-color: ${cv.bg.white};
-    border-color: ${cv.border.default};
-    color: ${cv.text.default};
+    background-color: ${cv.surface.default};
+    border-color: ${cv.borderRole.normal};
+    color: ${cv.textRole.normal};
     font-weight: 500;
   }
 
   :where(.${FOOTER_CANCEL_CLASS}:hover) {
-    background-color: ${cv.bg.light};
+    background-color: ${cv.surface.subtle};
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}) {
-    background-color: ${cv.primary.main};
-    border-color: ${cv.primary.main};
-    color: ${cv.text.inverse};
+    background-color: ${cv.surface.brand};
+    border-color: ${cv.borderRole.brand};
+    color: ${cv.textRole.inverse};
     font-weight: 700;
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}:hover) {
-    background-color: ${cv.primary.hover};
-    border-color: ${cv.primary.hover};
+    background-color: ${cv.fill.brandHover};
+    border-color: ${cv.fill.brandHover};
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}:active) {
-    background-color: ${cv.primary.pressed};
-    border-color: ${cv.primary.pressed};
+    background-color: ${cv.textRole.brandStrong};
+    border-color: ${cv.textRole.brandStrong};
   }
 
   @keyframes nds-modal-fade-in {

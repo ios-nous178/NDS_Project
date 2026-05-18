@@ -75,7 +75,7 @@ const aiStyles = `
   :where(.${AI_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${AI_FIELD_CLASS}) {
@@ -83,19 +83,19 @@ const aiStyles = `
     align-items: center;
     height: 56px;
     padding: 0 ${spacing[16]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     transition: border-color ${transition.default};
   }
-  :where(.${AI_FIELD_CLASS}:focus-within) { border-color: ${cv.primary.main}; }
-  :where(.${AI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
+  :where(.${AI_FIELD_CLASS}:focus-within) { border-color: ${cv.borderRole.brand}; }
+  :where(.${AI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
 
   :where(.${AI_PREFIX_CLASS}),
   :where(.${AI_UNIT_CLASS}) {
     font-size: 22px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${AI_PREFIX_CLASS}) { margin-right: ${spacing[4]}px; }
@@ -109,14 +109,14 @@ const aiStyles = `
     font-family: inherit;
     font-size: 24px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     text-align: right;
     font-variant-numeric: tabular-nums;
     min-width: 0;
   }
 
   :where(.${AI_INPUT_CLASS}::placeholder) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
     font-weight: ${fontWeight.medium};
   }
 
@@ -129,23 +129,23 @@ const aiStyles = `
   :where(.${AI_PRESET_CLASS}) {
     height: 36px;
     padding: 0 ${spacing[12]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: 9999px;
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
     cursor: pointer;
     transition: background-color ${transition.default};
   }
-  :where(.${AI_PRESET_CLASS}:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${AI_PRESET_CLASS}:hover) { background: ${cv.surface.section}; }
 
   :where(.${AI_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
-  :where(.${AI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
+  :where(.${AI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

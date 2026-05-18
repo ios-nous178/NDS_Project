@@ -97,7 +97,7 @@ const msStyles = `
 
   :where(.${MS_INDICATOR_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-weight: ${fontWeight.medium};
   }
 
@@ -105,14 +105,14 @@ const msStyles = `
     font-size: ${typeScale.headline3.fontSize}px;
     line-height: ${typeScale.headline3.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${MS_DESC_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: 0;
   }
 
@@ -123,14 +123,14 @@ const msStyles = `
 
   :where(.${MS_PROGRESS_CLASS}) {
     height: 4px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     border-radius: 9999px;
     overflow: hidden;
   }
 
   :where(.${MS_PROGRESS_FILL_CLASS}) {
     height: 100%;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     border-radius: 9999px;
     transition: width 320ms ease;
   }
@@ -146,9 +146,9 @@ const msStyles = `
     height: 48px;
     padding: 0 ${spacing[20]}px;
     border-radius: ${radius.md}px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
@@ -162,7 +162,7 @@ const msStyles = `
   }
 
   :where(.${MS_BTN_CLASS}[data-primary="true"]) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     color: #fff;
     border-color: transparent;
     flex: 1;

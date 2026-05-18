@@ -58,7 +58,7 @@ const agStyles = `
 
   :where(.${AG_ITEM_CLASS}) {
     margin-left: calc(-1 * var(--nds-avatar-group-overlap, 12px));
-    border: 2px solid ${cv.bg.white};
+    border: 2px solid ${cv.surface.default};
     border-radius: 9999px;
     box-sizing: content-box;
   }
@@ -70,9 +70,9 @@ const agStyles = `
     width: var(--nds-avatar-group-more-size, 40px);
     height: var(--nds-avatar-group-more-size, 40px);
     border-radius: 9999px;
-    background: ${cv.bg.coolGray};
-    color: ${cv.text.subtle};
-    border: 2px solid ${cv.bg.white};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.subtle};
+    border: 2px solid ${cv.surface.default};
     display: inline-flex;
     align-items: center;
     justify-content: center;

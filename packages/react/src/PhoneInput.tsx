@@ -90,7 +90,7 @@ const phoneInputStyles = `
   :where(.${PI_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${PI_FIELD_WRAP_CLASS}) {
@@ -101,16 +101,16 @@ const phoneInputStyles = `
     display: flex;
     align-items: stretch;
     height: ${sizing.input.default}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     overflow: hidden;
     transition: border-color ${transition.default};
   }
 
-  :where(.${PI_FIELD_CLASS}:focus-within) { border-color: ${cv.primary.main}; }
+  :where(.${PI_FIELD_CLASS}:focus-within) { border-color: ${cv.borderRole.brand}; }
 
-  :where(.${PI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
+  :where(.${PI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
 
   :where(.${PI_DIAL_CLASS}) {
     display: inline-flex;
@@ -119,7 +119,7 @@ const phoneInputStyles = `
     padding: 0 ${spacing[12]}px;
     border: none;
     background: transparent;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.medium};
@@ -129,11 +129,11 @@ const phoneInputStyles = `
   }
 
   :where(.${PI_DIAL_CLASS}:hover:not(:disabled)) {
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
   }
 
   :where(.${PI_DIAL_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: -2px;
   }
 
@@ -145,7 +145,7 @@ const phoneInputStyles = `
   }
 
   :where(.${PI_CHEVRON_CLASS}) {
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     transition: transform ${transition.default};
     display: inline-flex;
   }
@@ -163,8 +163,8 @@ const phoneInputStyles = `
     max-height: 280px;
     overflow-y: auto;
     padding: ${spacing[4]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     box-shadow: ${shadow["2"]};
     list-style: none;
@@ -183,14 +183,14 @@ const phoneInputStyles = `
     border-radius: ${radius.sm}px;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     text-align: left;
     transition: background-color ${transition.default};
   }
 
   :where(.${PI_MENU_ITEM_CLASS}:hover),
   :where(.${PI_MENU_ITEM_CLASS}[data-selected="true"]) {
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
   }
 
   :where(.${PI_MENU_NAME_CLASS}) {
@@ -202,14 +202,14 @@ const phoneInputStyles = `
   }
 
   :where(.${PI_MENU_DIAL_CLASS}) {
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
   }
 
   :where(.${PI_DIVIDER_CLASS}) {
     width: 1px;
-    background: ${cv.border.default};
+    background: ${cv.borderRole.normal};
     flex-shrink: 0;
   }
 
@@ -223,18 +223,18 @@ const phoneInputStyles = `
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
-  :where(.${PI_INPUT_CLASS}::placeholder) { color: ${cv.text.placeholder}; }
+  :where(.${PI_INPUT_CLASS}::placeholder) { color: ${cv.textRole.muted}; }
 
   :where(.${PI_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
-  :where(.${PI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
+  :where(.${PI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

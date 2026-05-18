@@ -139,7 +139,7 @@ const videoPlayerStyles = `
   }
 
   :where(.${VP_PLAY_BTN_CLASS}:focus-visible) {
-    outline: 3px solid ${cv.primary.main};
+    outline: 3px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 

@@ -37,7 +37,7 @@ const starRatingStyles = `
     font-size: var(--nds-star-value-font-size, ${typeScale.body3.fontSize}px);
     font-weight: ${fontWeight.bold};
     line-height: 1;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 `;
 

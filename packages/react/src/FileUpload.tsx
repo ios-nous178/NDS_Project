@@ -44,8 +44,8 @@ const fileUploadStyles = `
     justify-content: center;
     gap: ${spacing[8]}px;
     padding: ${spacing[24]}px ${spacing[20]}px;
-    background: ${cv.bg.coolGrayLighter};
-    border: 1.5px dashed ${cv.border.default};
+    background: ${cv.surface.page};
+    border: 1.5px dashed ${cv.borderRole.normal};
     border-radius: ${radius.lg}px;
     cursor: pointer;
     transition: background-color ${transition.default}, border-color ${transition.default};
@@ -53,13 +53,13 @@ const fileUploadStyles = `
   }
 
   :where(.${FU_DROP_CLASS}:hover) {
-    background: ${cv.primary.bgLighter};
-    border-color: ${cv.primary.lighter};
+    background: ${cv.surface.brandSubtle};
+    border-color: ${"#91CAF6"};
   }
 
   :where(.${FU_DROP_CLASS}[data-dragover="true"]) {
-    background: ${cv.primary.bgLighter};
-    border-color: ${cv.primary.main};
+    background: ${cv.surface.brandSubtle};
+    border-color: ${cv.borderRole.brand};
   }
 
   :where(.${FU_DROP_CLASS}[data-disabled="true"]) {
@@ -78,25 +78,25 @@ const fileUploadStyles = `
   }
 
   :where(.${FU_ICON_CLASS}) {
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
   }
 
   :where(.${FU_TEXT_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${FU_TEXT_CLASS}) strong {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
   }
 
   :where(.${FU_HINT_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${FU_LIST_CLASS}) {
@@ -113,8 +113,8 @@ const fileUploadStyles = `
     align-items: center;
     gap: ${spacing[10]}px;
     padding: ${spacing[8]}px ${spacing[12]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
   }
 
@@ -123,7 +123,7 @@ const fileUploadStyles = `
     min-width: 0;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -133,7 +133,7 @@ const fileUploadStyles = `
     flex-shrink: 0;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-variant-numeric: tabular-nums;
   }
 
@@ -146,20 +146,20 @@ const fileUploadStyles = `
     width: 24px;
     height: 24px;
     border-radius: ${radius.pill}px;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default};
   }
 
   :where(.${FU_REMOVE_CLASS}:hover) {
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.default};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${FU_ERROR_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 `;
 

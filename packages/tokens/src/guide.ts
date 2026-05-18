@@ -1,12 +1,14 @@
 /**
  * Design Guide 확정 메타데이터
  *
- * 시멘틱 토큰·컴포넌트 variant 중 "디자인 가이드로 명시적으로 확정된" 것을
- * 별도 표기하기 위한 메타. Storybook DesignGuideBadge 가 이 정보를 읽어
- * 카탈로그·variant 카드 옆에 가이드 출처(파일+노드)를 시각화한다.
+ * Figma SemanticColorGuide(171:6675) 에 등재된 role-based 시멘틱 토큰 메타.
+ * Storybook DesignGuideBadge 가 이 정보를 읽어 카탈로그·variant 카드 옆에
+ * 가이드 출처(파일+노드)를 시각화한다.
  *
- * - `core`: 가이드 문서에 정식 등재된 토큰/조합
- * - `experimental`: 코드에는 있으나 가이드에 미반영(추후 합의 대상)
+ * 키는 `cv` dotted path (예: "surface.brand", "iconRole.statusError").
+ *
+ * - `core`: Figma 가이드에 정식 등재된 토큰
+ * - `experimental`: 코드에는 있으나 가이드에 미반영
  *
  * 등록되지 않은 토큰/variant 는 미분류 — 자유롭게 사용 가능하나, 가이드
  * 진입 후보로 검토 필요.
@@ -24,46 +26,104 @@ export interface GuideMeta {
 
 /**
  * 시멘틱 토큰 키 → GuideMeta.
- * 키는 `cv`/`--semantic-*` 의 dotted path (예: "primary.main", "surface.brand").
+ * 키는 `cv` dotted path (예: "surface.brand", "iconRole.brand").
  *
- * 가이드 확정 토큰만 등록한다. role-based 그룹(surface/iconRole/...)은
- * Figma SemanticColorGuide 222:2 에서 1차 확정되었으므로 core 로 표기.
+ * Figma 171:6675 SemanticColorGuide 의 9개 섹션(BG/Text/ButtonBG/ButtonText/
+ * ButtonBorder/Input/Icon/Border/Fill) 전체가 core 다.
  */
 export const semanticGuide: Record<string, GuideMeta> = {
-  // ── Palette semantic (legacy cv) ──
-  "primary.main": { status: "core", figmaNode: "222:2" },
-  "primary.hover": { status: "core", figmaNode: "222:2" },
-  "primary.pressed": { status: "core", figmaNode: "222:2" },
-  "primary.bg": { status: "core", figmaNode: "222:2" },
-  "primary.bgLighter": { status: "core", figmaNode: "222:2" },
-  "secondary.sub": { status: "core", figmaNode: "222:2" },
-  "error.main": { status: "core", figmaNode: "222:2" },
-  "error.bg": { status: "core", figmaNode: "222:2" },
-  "caution.main": { status: "core", figmaNode: "222:2" },
-  "caution.bg": { status: "core", figmaNode: "222:2" },
-  "success.main": { status: "core", figmaNode: "222:2" },
-  "success.bg": { status: "core", figmaNode: "222:2" },
+  // ── BG (Section_BG 258:2) ──
+  "surface.page": { status: "core", figmaNode: "258:2" },
+  "surface.default": { status: "core", figmaNode: "258:2" },
+  "surface.subtle": { status: "core", figmaNode: "258:2" },
+  "surface.section": { status: "core", figmaNode: "258:2" },
+  "surface.brand": { status: "core", figmaNode: "258:2" },
+  "surface.brandSubtle": { status: "core", figmaNode: "258:2" },
+  "surface.inverse": { status: "core", figmaNode: "258:2" },
+  "surface.statusError": { status: "core", figmaNode: "258:2" },
+  "surface.statusSuccess": { status: "core", figmaNode: "258:2" },
+  "surface.statusInfo": { status: "core", figmaNode: "258:2" },
+  "surface.statusCaution": { status: "core", figmaNode: "258:2" },
+  "surface.overlay": { status: "core", figmaNode: "258:2" },
+  "surface.disabled": {
+    status: "experimental",
+    note: "DS extension — Figma 미정의. 비활성 컨트롤 bg 용도.",
+  },
 
-  // ── Role-based (merged from --eap-*) ──
-  "surface.page": { status: "core", figmaNode: "222:2" },
-  "surface.default": { status: "core", figmaNode: "222:2" },
-  "surface.brand": { status: "core", figmaNode: "222:2" },
-  "surface.brandSubtle": { status: "core", figmaNode: "222:2" },
-  "textRole.strong": { status: "core", figmaNode: "222:2" },
-  "textRole.normal": { status: "core", figmaNode: "222:2" },
-  "textRole.subtle": { status: "core", figmaNode: "222:2" },
-  "textRole.muted": { status: "core", figmaNode: "222:2" },
-  "textRole.brand": { status: "core", figmaNode: "222:2" },
+  // ── Text (Section_Text 259:2) ──
+  "textRole.strong": { status: "core", figmaNode: "259:2" },
+  "textRole.normal": { status: "core", figmaNode: "259:2" },
+  "textRole.subtle": { status: "core", figmaNode: "259:2" },
+  "textRole.muted": { status: "core", figmaNode: "259:2" },
+  "textRole.disabled": { status: "core", figmaNode: "259:2" },
+  "textRole.inverse": { status: "core", figmaNode: "259:2" },
+  "textRole.brand": { status: "core", figmaNode: "259:2" },
+  "textRole.brandStrong": { status: "core", figmaNode: "259:2" },
+  "textRole.statusSuccess": { status: "core", figmaNode: "259:2" },
+  "textRole.statusError": { status: "core", figmaNode: "259:2" },
+  "textRole.statusCaution": { status: "core", figmaNode: "259:2" },
+  "textRole.statusInfo": { status: "core", figmaNode: "259:2" },
+
+  // ── Icon (Section_Icon 227:2) ──
   "iconRole.strong": { status: "core", figmaNode: "227:2" },
   "iconRole.normal": { status: "core", figmaNode: "227:2" },
-  "iconRole.brand": { status: "core", figmaNode: "227:2" },
   "iconRole.disabled": { status: "core", figmaNode: "227:2" },
   "iconRole.inverse": { status: "core", figmaNode: "227:2" },
-  "borderRole.normal": { status: "core", figmaNode: "222:2" },
-  "borderRole.focus": { status: "core", figmaNode: "222:2" },
+  "iconRole.brand": { status: "core", figmaNode: "227:2" },
+  "iconRole.statusSuccess": { status: "core", figmaNode: "227:2" },
+  "iconRole.statusError": { status: "core", figmaNode: "227:2" },
+  "iconRole.statusCaution": { status: "core", figmaNode: "227:2" },
+
+  // ── Border (Section_Border 227:86) ──
+  "borderRole.normal": { status: "core", figmaNode: "227:86" },
+  "borderRole.strong": { status: "core", figmaNode: "227:86" },
+  "borderRole.subtle": { status: "core", figmaNode: "227:86" },
+  "borderRole.focus": { status: "core", figmaNode: "227:86" },
+  "borderRole.brand": { status: "core", figmaNode: "227:86" },
+  "borderRole.brandDisabled": { status: "core", figmaNode: "227:86" },
+  "borderRole.disabled": { status: "core", figmaNode: "227:86" },
+  "borderRole.statusError": { status: "core", figmaNode: "227:86" },
+  "borderRole.statusCaution": { status: "core", figmaNode: "227:86" },
+
+  // ── Fill (Section_Fill 227:160) ──
+  "fill.brand": { status: "core", figmaNode: "227:160" },
+  "fill.brandHover": { status: "core", figmaNode: "227:160" },
+  "fill.brandPressed": { status: "core", figmaNode: "227:160" },
+  "fill.brandDisabled": { status: "core", figmaNode: "227:160" },
+  "fill.neutral": { status: "core", figmaNode: "227:160" },
+  "fill.neutralSubtle": { status: "core", figmaNode: "227:160" },
+  "fill.inverse": { status: "core", figmaNode: "227:160" },
+  "fill.statusError": { status: "core", figmaNode: "227:160" },
+  "fill.statusCaution": { status: "core", figmaNode: "227:160" },
+
+  // ── Button (Section_ButtonBG/Text/Border 231:2 / 231:46 / 261:32) ──
+  "button.bgDefault": { status: "core", figmaNode: "231:2" },
+  "button.bgHover": { status: "core", figmaNode: "231:2" },
+  "button.bgPressed": { status: "core", figmaNode: "231:2" },
+  "button.bgDisabled": { status: "core", figmaNode: "231:2" },
+  "button.bgSecondary": { status: "core", figmaNode: "231:2" },
+  "button.bgSecondaryHover": { status: "core", figmaNode: "231:2" },
+  "button.bgSecondaryDisabled": { status: "core", figmaNode: "231:2" },
+  "button.bgOutlined": { status: "core", figmaNode: "231:2" },
+  "button.bgOutlinedHover": { status: "core", figmaNode: "231:2" },
+  "button.bgOutlinedDisabled": { status: "core", figmaNode: "231:2" },
+  "button.textDefault": { status: "core", figmaNode: "231:46" },
+  "button.textBrand": { status: "core", figmaNode: "231:46" },
+  "button.textDisabled": { status: "core", figmaNode: "231:46" },
+  "button.borderOutlined": { status: "core", figmaNode: "261:32" },
+  "button.borderOutlinedHover": { status: "core", figmaNode: "261:32" },
+  "button.borderOutlinedDisabled": { status: "core", figmaNode: "261:32" },
+  "button.borderAssistive": { status: "core", figmaNode: "261:32" },
+  "button.borderAssistiveDisabled": { status: "core", figmaNode: "261:32" },
+
+  // ── Input (Section_Input 294:12) ──
   "input.bg": { status: "core", figmaNode: "294:12" },
+  "input.bgDisabled": { status: "core", figmaNode: "294:12" },
+  "input.borderDefault": { status: "core", figmaNode: "294:12" },
+  "input.borderHover": { status: "core", figmaNode: "294:12" },
   "input.borderFocus": { status: "core", figmaNode: "294:12" },
   "input.borderError": { status: "core", figmaNode: "294:12" },
+  "input.borderDisabled": { status: "core", figmaNode: "294:12" },
   "input.placeholder": { status: "core", figmaNode: "294:12" },
   "input.helpertextDefault": { status: "core", figmaNode: "294:12" },
   "input.helpertextSuccess": { status: "core", figmaNode: "294:12" },

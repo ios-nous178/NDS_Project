@@ -39,18 +39,6 @@ function flattenPaletteVars(obj, prefix, lines) {
   }
 }
 
-/** palette-semantic 트리(`colors.semantic`) → `--semantic-{group}-{role}` (camelCase 유지) */
-function flattenPaletteSemanticVars(obj, prefix, lines) {
-  for (const [key, value] of Object.entries(obj)) {
-    const varName = prefix ? `${prefix}-${key}` : key;
-    if (typeof value === "string") {
-      lines.push(`  --semantic-${varName}: ${value};`);
-    } else if (typeof value === "object" && value !== null) {
-      flattenPaletteSemanticVars(value, varName, lines);
-    }
-  }
-}
-
 /** role-based 트리(`eap`) → `--semantic-{group}-{role}-{variant}` (camelCase → kebab-case) */
 function flattenRoleSemanticVars(obj, prefix, lines) {
   for (const [key, value] of Object.entries(obj)) {
@@ -102,19 +90,14 @@ function fontFamilyKeyToFigma(key) {
 function generateBaseTokens() {
   const lines = [":root {"];
 
-  // Atomic palette → `--color-{group}-{stop}` (semantic 은 별도 emit 하므로 제외)
-  const { semantic, ...palette } = colors;
-  flattenPaletteVars(palette, "", lines);
+  // Atomic palette → `--color-{group}-{stop}`
+  flattenPaletteVars(colors, "", lines);
 
-  // Semantic (palette aliases) → `--semantic-{group}-{role}` (camelCase 유지)
+  // Semantic — 1:1 Figma SemanticColorGuide (171:6675) mirror.
+  // BG / Text / Button{BG,Text,Border} / Input / Icon / Border / Fill +
+  // DS extension (bg-disabled). emit: `--semantic-{group}-{role}-{variant}` (kebab).
   lines.push("");
-  lines.push("  /* ── Semantic (palette aliases) ── */");
-  flattenPaletteSemanticVars(semantic, "", lines);
-
-  // Semantic (role-based, Figma SemanticColorGuide 222:2 + Input 294:12)
-  // 구 `--eap-*` 트리를 동일 `--semantic-*` namespace 로 흡수 (kebab-case)
-  lines.push("");
-  lines.push("  /* ── Semantic (role-based, Figma 222:2 + 294:12) ── */");
+  lines.push("  /* ── Semantic (role-based, Figma SemanticColorGuide 171:6675) ── */");
   flattenRoleSemanticVars(eap, "", lines);
 
   // Spacing — Primitive Scale (Figma · SpacingGuide, 4pt grid)
@@ -248,10 +231,10 @@ function generateBrandTokens({ theme, title, cssImport }) {
     }
   }
 
-  // Semantic colors → `--semantic-{group}-{role}` (camelCase 유지)
+  // Semantic colors — Figma role-based 트리 Partial 만 override
   lines.push("");
-  lines.push("  /* ── Semantic ── */");
-  flattenPaletteSemanticVars(semantic, "", lines);
+  lines.push("  /* ── Semantic (Figma role-based) ── */");
+  flattenRoleSemanticVars(semantic, "", lines);
 
   // Typography
   if (typography) {

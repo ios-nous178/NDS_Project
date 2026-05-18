@@ -45,15 +45,15 @@ const LEVEL_DEFAULT_TEXT: Record<AssessmentLevel, string> = {
 // eslint-disable-next-line unused-imports/no-unused-vars
 const assessmentResultStyles = `
   :where(.${AR_CLASS}) {
-    --nds-ar-level-color: ${cv.text.subtle};
-    --nds-ar-level-bg: ${cv.bg.coolGrayLighter};
-    --nds-ar-level-text: ${cv.text.subtle};
+    --nds-ar-level-color: ${cv.textRole.subtle};
+    --nds-ar-level-bg: ${cv.surface.page};
+    --nds-ar-level-text: ${cv.textRole.subtle};
     display: flex;
     flex-direction: column;
     gap: ${spacing[20]}px;
     padding: ${spacing[20]}px ${spacing[24]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-left: 4px solid var(--nds-ar-level-color);
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
@@ -62,24 +62,24 @@ const assessmentResultStyles = `
   }
 
   :where(.${AR_CLASS}[data-level="normal"]) {
-    --nds-ar-level-color: ${cv.success.main};
-    --nds-ar-level-bg: ${cv.success.bg};
-    --nds-ar-level-text: ${cv.success.main};
+    --nds-ar-level-color: ${cv.iconRole.statusSuccess};
+    --nds-ar-level-bg: ${cv.surface.statusSuccess};
+    --nds-ar-level-text: ${cv.iconRole.statusSuccess};
   }
   :where(.${AR_CLASS}[data-level="mild"]) {
-    --nds-ar-level-color: ${cv.caution.main};
-    --nds-ar-level-bg: ${cv.caution.bg};
-    --nds-ar-level-text: ${cv.caution.text};
+    --nds-ar-level-color: ${cv.iconRole.statusCaution};
+    --nds-ar-level-bg: ${cv.surface.statusCaution};
+    --nds-ar-level-text: ${cv.textRole.statusCaution};
   }
   :where(.${AR_CLASS}[data-level="moderate"]) {
-    --nds-ar-level-color: ${cv.caution.text};
-    --nds-ar-level-bg: ${cv.caution.bg};
-    --nds-ar-level-text: ${cv.caution.text};
+    --nds-ar-level-color: ${cv.textRole.statusCaution};
+    --nds-ar-level-bg: ${cv.surface.statusCaution};
+    --nds-ar-level-text: ${cv.textRole.statusCaution};
   }
   :where(.${AR_CLASS}[data-level="severe"]) {
-    --nds-ar-level-color: ${cv.error.main};
-    --nds-ar-level-bg: ${cv.error.bg};
-    --nds-ar-level-text: ${cv.error.main};
+    --nds-ar-level-color: ${cv.iconRole.statusError};
+    --nds-ar-level-bg: ${cv.surface.statusError};
+    --nds-ar-level-text: ${cv.textRole.statusError};
   }
 
   :where(.${AR_HEADER_CLASS}) {
@@ -94,7 +94,7 @@ const assessmentResultStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     letter-spacing: -0.01em;
   }
 
@@ -143,7 +143,7 @@ const assessmentResultStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${AR_GAUGE_CLASS}) {
@@ -161,14 +161,14 @@ const assessmentResultStyles = `
     flex: 1;
     height: 6px;
     border-radius: 3px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     transition: height ${transition.default}, background ${transition.default}, opacity ${transition.default};
   }
 
-  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="normal"]) { background: ${cv.success.main}; }
-  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="mild"]) { background: ${cv.caution.main}; }
-  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="moderate"]) { background: ${cv.caution.text}; }
-  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="severe"]) { background: ${cv.error.main}; }
+  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="normal"]) { background: ${cv.iconRole.statusSuccess}; }
+  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="mild"]) { background: ${cv.fill.statusCaution}; }
+  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="moderate"]) { background: ${cv.textRole.statusCaution}; }
+  :where(.${AR_GAUGE_SEG_CLASS}[data-seg="severe"]) { background: ${cv.fill.statusError}; }
 
   :where(.${AR_GAUGE_SEG_CLASS}[data-active="false"]) {
     opacity: 0.25;
@@ -189,7 +189,7 @@ const assessmentResultStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
   }
   :where(.${AR_GAUGE_LABEL_CLASS}[data-active="true"]) {
     color: var(--nds-ar-level-text);
@@ -200,13 +200,13 @@ const assessmentResultStyles = `
     margin: 0;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${AR_FOOTER_CLASS}) {
     margin-top: ${spacing[4]}px;
     padding-top: ${spacing[12]}px;
-    border-top: 1px solid ${cv.border.light};
+    border-top: 1px solid ${cv.borderRole.subtle};
     display: flex;
     justify-content: flex-end;
   }
@@ -220,7 +220,7 @@ const assessmentResultStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
     cursor: pointer;
   }
 

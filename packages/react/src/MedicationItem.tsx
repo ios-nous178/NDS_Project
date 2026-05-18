@@ -43,8 +43,8 @@ const medicationItemStyles = `
     align-items: flex-start;
     gap: ${spacing[12]}px;
     padding: ${spacing[12]}px ${spacing[16]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -52,11 +52,11 @@ const medicationItemStyles = `
   }
 
   :where(.${MI_CLASS}[data-taken="true"]) {
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
   }
 
   :where(.${MI_CLASS}[data-taken="true"]) .${MI_NAME_CLASS} {
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-decoration: line-through;
   }
 
@@ -65,8 +65,8 @@ const medicationItemStyles = `
     width: 40px;
     height: 40px;
     border-radius: ${radius.md}px;
-    background: ${cv.primary.bgLighter};
-    color: ${cv.primary.main};
+    background: ${cv.surface.brandSubtle};
+    color: ${cv.textRole.brand};
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -91,13 +91,13 @@ const medicationItemStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${MI_DOSAGE_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${MI_META_CLASS}) {
@@ -117,8 +117,8 @@ const medicationItemStyles = `
     display: inline-flex;
     align-items: center;
     padding: ${spacing[2]}px ${spacing[8]}px;
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.normal};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.strong};
     border-radius: ${radius.pill}px;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
@@ -128,7 +128,7 @@ const medicationItemStyles = `
   :where(.${MI_NOTE_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${MI_CHECK_CLASS}) {
@@ -156,16 +156,16 @@ const medicationItemStyles = `
     justify-content: center;
     width: 28px;
     height: 28px;
-    border: 1.5px solid ${cv.border.default};
+    border: 1.5px solid ${cv.borderRole.normal};
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.white};
-    color: ${cv.bg.white};
+    background: ${cv.surface.default};
+    color: ${cv.surface.default};
     transition: background-color ${transition.default}, border-color ${transition.default};
   }
 
   :where(.${MI_CHECK_BOX_CLASS}[data-checked="true"]) {
-    background: ${cv.primary.main};
-    border-color: ${cv.primary.main};
+    background: ${cv.surface.brand};
+    border-color: ${cv.borderRole.brand};
   }
 `;
 

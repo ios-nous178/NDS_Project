@@ -46,8 +46,8 @@ const osStyles = `
     display: flex;
     flex-direction: column;
     padding: ${spacing[20]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -60,7 +60,7 @@ const osStyles = `
   :where(.${OS_TITLE_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
@@ -79,28 +79,28 @@ const osStyles = `
 
   :where(.${OS_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${OS_VALUE_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
     text-align: right;
   }
 
   :where(.${OS_VALUE_CLASS}[data-emphasis="discount"]) {
-    color: var(--semantic-error-main, #E04D4D);
+    color: var(--semantic-text-status-error);
     font-weight: ${fontWeight.semibold};
   }
 
   :where(.${OS_VALUE_CLASS}[data-emphasis="info"]) {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
   }
 
   :where(.${OS_DIVIDER_CLASS}) {
     height: 1px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     margin: ${spacing[16]}px 0;
   }
 
@@ -114,13 +114,13 @@ const osStyles = `
   :where(.${OS_TOTAL_CLASS}) > span:first-child {
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${OS_TOTAL_VALUE_CLASS}) {
     font-size: 22px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
   }
 `;

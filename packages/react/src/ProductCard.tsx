@@ -51,8 +51,8 @@ const pcStyles = `
   :where(.${PC_CLASS}) {
     display: flex;
     flex-direction: column;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     overflow: hidden;
     font-family: ${fontFamily.web};
@@ -61,12 +61,12 @@ const pcStyles = `
   }
 
   :where(.${PC_CLASS}[data-clickable="true"]) { cursor: pointer; }
-  :where(.${PC_CLASS}[data-clickable="true"]:hover) { border-color: ${cv.primary.main}; }
+  :where(.${PC_CLASS}[data-clickable="true"]:hover) { border-color: ${cv.borderRole.brand}; }
 
   :where(.${PC_THUMB_CLASS}) {
     position: relative;
     aspect-ratio: 1;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     overflow: hidden;
   }
 
@@ -83,7 +83,7 @@ const pcStyles = `
     left: ${spacing[8]}px;
     padding: 2px 8px;
     border-radius: 9999px;
-    background: var(--semantic-error-main, #E04D4D);
+    background: var(--semantic-fill-status-error);
     color: #fff;
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.bold};
@@ -97,7 +97,7 @@ const pcStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.bold};
   }
@@ -111,13 +111,13 @@ const pcStyles = `
 
   :where(.${PC_DESC_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${PC_TITLE_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
     overflow: hidden;
     display: -webkit-box;
@@ -132,7 +132,7 @@ const pcStyles = `
   :where(.${PC_FOOTER_CLASS}) {
     margin-top: ${spacing[4]}px;
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     display: inline-flex;
     align-items: center;
     gap: ${spacing[4]}px;

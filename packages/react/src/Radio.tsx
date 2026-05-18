@@ -48,7 +48,7 @@ const radioStyles = `
   }
 
   :where(.${RADIO_INPUT_CLASS}:focus-visible + .${RADIO_INDICATOR_CLASS}) {
-    box-shadow: 0 0 0 2px ${cv.bg.white}, 0 0 0 4px ${cv.borderRole.focus};
+    box-shadow: 0 0 0 2px ${cv.surface.default}, 0 0 0 4px ${cv.borderRole.focus};
   }
 
   :where(.${RADIO_INDICATOR_CLASS}) {
@@ -61,7 +61,7 @@ const radioStyles = `
     margin-top: 1px;
     border: 2px solid ${cv.borderRole.normal};
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};
   }
 
@@ -71,7 +71,7 @@ const radioStyles = `
 
   :where(.${RADIO_ROOT_CLASS}[data-disabled="true"] .${RADIO_INDICATOR_CLASS}) {
     border-color: ${cv.borderRole.disabled};
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
   }
 
   :where(.${RADIO_ROOT_CLASS}[data-disabled="true"] .${RADIO_INDICATOR_CLASS}[data-checked="true"]) {
@@ -103,7 +103,7 @@ const radioStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     user-select: none;
   }
 
@@ -115,12 +115,12 @@ const radioStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     margin-left: 32px;
   }
 
   :where(.${RADIO_HELPER_CLASS}[data-error="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${RADIO_GROUP_CLASS}) {

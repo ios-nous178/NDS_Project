@@ -32,8 +32,8 @@ const audioPlayerStyles = `
     gap: ${spacing[12]}px;
     width: 100%;
     padding: ${spacing[16]}px ${spacing[20]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -49,14 +49,14 @@ const audioPlayerStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${AP_SUBTITLE_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${AP_TRACK_CLASS}) {
@@ -74,7 +74,7 @@ const audioPlayerStyles = `
     right: 0;
     height: 4px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
   }
 
   :where(.${AP_FILL_CLASS}) {
@@ -82,7 +82,7 @@ const audioPlayerStyles = `
     left: 0;
     height: 4px;
     border-radius: ${radius.pill}px;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     pointer-events: none;
     transition: width ${transition.default};
   }
@@ -104,7 +104,7 @@ const audioPlayerStyles = `
     width: 14px;
     height: 14px;
     border-radius: ${radius.pill}px;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     border: none;
     cursor: pointer;
   }
@@ -113,7 +113,7 @@ const audioPlayerStyles = `
     width: 14px;
     height: 14px;
     border-radius: ${radius.pill}px;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     border: none;
     cursor: pointer;
   }
@@ -128,7 +128,7 @@ const audioPlayerStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-variant-numeric: tabular-nums;
   }
 
@@ -147,13 +147,13 @@ const audioPlayerStyles = `
     width: 40px;
     height: 40px;
     border-radius: ${radius.pill}px;
-    color: ${cv.icon.default};
+    color: ${cv.iconRole.strong};
     cursor: pointer;
     transition: background-color ${transition.default};
   }
 
   :where(.${AP_BUTTON_CLASS}:hover) {
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
   }
 
   :where(.${AP_PLAY_CLASS}) {
@@ -164,14 +164,14 @@ const audioPlayerStyles = `
     width: 56px;
     height: 56px;
     border-radius: ${radius.pill}px;
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
     cursor: pointer;
     transition: background-color ${transition.default};
   }
 
   :where(.${AP_PLAY_CLASS}:hover) {
-    background: ${cv.primary.hover};
+    background: ${cv.fill.brandHover};
   }
 `;
 

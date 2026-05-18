@@ -103,15 +103,15 @@ const cbStyles = `
   }
 
   :where(.${CB_BTN_CLASS}:focus-visible) {
-    outline: 3px solid ${cv.primary.main};
+    outline: 3px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
   :where(.${CB_END_CLASS}) {
-    background: var(--semantic-error-main, #E04D4D);
+    background: var(--semantic-fill-status-error);
   }
 
-  :where(.${CB_END_CLASS}:hover) { background: var(--semantic-error-text, #B83333); }
+  :where(.${CB_END_CLASS}:hover) { background: var(--semantic-text-status-error); }
 
   :where(.${CB_LABEL_CLASS}) {
     display: flex;
