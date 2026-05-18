@@ -291,7 +291,7 @@ export const AddressSearch = React.forwardRef<HTMLDivElement, AddressSearchProps
           <div className={AS_DETAIL_CLASS} data-slot="detail">
             <strong>{value.address.roadAddress}</strong>
             {value.address.postalCode && (
-              <span style={{ fontSize: 12, color: "#888" }}>
+              <span style={{ fontSize: 12, color: cv.textRole.subtle }}>
                 우편번호 {value.address.postalCode}
               </span>
             )}

@@ -7,7 +7,28 @@ const RC_CLASS = "nds-review-card";
 const RC_HEADER_CLASS = `${RC_CLASS}__header`;
 const RC_AUTHOR_AREA_CLASS = `${RC_CLASS}__author-area`;
 const RC_AUTHOR_CLASS = `${RC_CLASS}__author`;
+const RC_VERIFIED_CLASS = `${RC_CLASS}__verified`;
 const RC_META_CLASS = `${RC_CLASS}__meta`;
+
+const VerifiedCheckIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    aria-hidden="true"
+    role="img"
+    aria-label="인증됨"
+  >
+    <path
+      d="M3 7L6 10L11 4"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 const RC_RATING_CLASS = `${RC_CLASS}__rating`;
 const RC_BODY_CLASS = `${RC_CLASS}__body`;
 const RC_TAGS_CLASS = `${RC_CLASS}__tags`;
@@ -82,6 +103,13 @@ const rcStyles = `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  :where(.${RC_VERIFIED_CLASS}) {
+    display: inline-flex;
+    margin-left: ${spacing[4]}px;
+    color: ${cv.textRole.statusSuccess};
+    vertical-align: middle;
   }
 
   :where(.${RC_META_CLASS}) {
@@ -209,8 +237,8 @@ export const ReviewCard = React.forwardRef<HTMLDivElement, ReviewCardProps>(
               <strong>
                 {author}
                 {verified && (
-                  <span style={{ marginLeft: 4, color: "var(--semantic-text-status-success)" }}>
-                    ✓
+                  <span className={RC_VERIFIED_CLASS}>
+                    <VerifiedCheckIcon />
                   </span>
                 )}
               </strong>

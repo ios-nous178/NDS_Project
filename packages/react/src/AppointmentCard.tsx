@@ -8,6 +8,13 @@ import {
   transition,
   typeScale,
 } from "@nudge-eap/tokens";
+import {
+  VideocameraIcon,
+  TelephoneIcon,
+  CounselingChatIcon,
+  PinIcon,
+  TimeIcon,
+} from "@nudge-eap/icons";
 
 /* ─── Constants ─── */
 
@@ -104,11 +111,11 @@ const MODE_LABEL: Record<AppointmentMode, string> = {
   "in-person": "방문 상담",
 };
 
-const MODE_ICONS: Record<AppointmentMode, string> = {
-  video: "📹",
-  phone: "📞",
-  chat: "💬",
-  "in-person": "📍",
+const MODE_ICONS: Record<AppointmentMode, React.ElementType> = {
+  video: VideocameraIcon,
+  phone: TelephoneIcon,
+  chat: CounselingChatIcon,
+  "in-person": PinIcon,
 };
 
 /* ─── Styles ─── */
@@ -316,21 +323,25 @@ export const AppointmentCard = React.forwardRef<HTMLDivElement, AppointmentCardP
           <h3 className={AC_TITLE_CLASS}>{title}</h3>
           <div className={AC_META_CLASS}>
             <div className={AC_META_ROW_CLASS}>
-              <span aria-hidden>🕐</span>
+              <TimeIcon size={14} aria-hidden />
               <span>
                 {startTime}
                 {endTime ? ` - ${endTime}` : ""}
               </span>
             </div>
-            {mode && (
-              <div className={AC_META_ROW_CLASS}>
-                <span aria-hidden>{MODE_ICONS[mode]}</span>
-                <span>{MODE_LABEL[mode]}</span>
-              </div>
-            )}
+            {mode &&
+              (() => {
+                const ModeIcon = MODE_ICONS[mode];
+                return (
+                  <div className={AC_META_ROW_CLASS}>
+                    <ModeIcon size={14} aria-hidden />
+                    <span>{MODE_LABEL[mode]}</span>
+                  </div>
+                );
+              })()}
             {location && (
               <div className={AC_META_ROW_CLASS}>
-                <span aria-hidden>📍</span>
+                <PinIcon size={14} aria-hidden />
                 <span>{location}</span>
               </div>
             )}

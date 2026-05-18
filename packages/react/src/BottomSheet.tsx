@@ -51,6 +51,7 @@ const bottomSheetStyles = `
     overflow: hidden;
     border-radius: var(--nds-bottom-sheet-radius, ${radius.lg}px) var(--nds-bottom-sheet-radius, ${radius.lg}px) 0 0;
     background-color: ${cv.surface.default};
+    /* upward shadow — DS shadow 토큰은 모두 아래 방향이라 의도적으로 raw 사용 */
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
     animation: nds-bs-slide-up 0.2s ease-out;
     font-family: ${fontFamily.web};

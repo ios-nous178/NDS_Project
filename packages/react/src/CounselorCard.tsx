@@ -4,6 +4,7 @@ import {
   fontFamily,
   fontWeight,
   radius,
+  shadow,
   spacing,
   transition,
   typeScale,
@@ -46,7 +47,7 @@ const counselorCardStyles = `
 
   :where(.${CN_CLASS}[data-clickable="true"]:hover) {
     border-color: ${"#91CAF6"};
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    box-shadow: ${shadow["1"]};
   }
 
   :where(.${CN_AVATAR_CLASS}) {

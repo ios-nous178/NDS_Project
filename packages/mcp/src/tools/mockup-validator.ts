@@ -595,6 +595,92 @@ export function validateMockupSource(
     });
   }
 
+  // ─── Card Everything Syndrome ────────────────────────────
+  // 한 mockup 에 Card.Root 5개 초과 → 모든 영역을 카드로 감싸는 패턴
+  const cardRootTotal = (source.match(/<\s*Card\.Root\b/g) || []).length;
+  if (cardRootTotal >= 5) {
+    violations.push({
+      rule: "card-everything",
+      line: 1,
+      detail: `한 mockup 에 Card.Root 가 ${cardRootTotal}개 — 모든 정보 단위를 카드로 감싸는 패턴.`,
+      suggestion:
+        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--gap-loose) + heading + Divider 로 위계를 표현하세요. bannedPatterns: card-everything 참조.",
+    });
+  }
+
+  // ─── Decorative Shadow ──────────────────────────────────
+  // 자체 box-shadow 를 가진 요소가 4개 이상 → shadow-heavy / decorative shadow
+  const inlineShadowMatches = source.match(/box-shadow\s*:\s*[^;}\n]+/g) || [];
+  // floating UI 컴포넌트(Modal/Popup/Dropdown/BottomSheet/Drawer/Toast)는 정당
+  // → 인라인 box-shadow 만 카운트 (DS 컴포넌트 사용은 OK)
+  const decorativeShadowCount = inlineShadowMatches.filter(
+    (s) => !/var\(--shadow-/.test(s) && !/0\s+0\s+0\s+\d+px/.test(s), // focus ring 제외
+  ).length;
+  if (decorativeShadowCount >= 4) {
+    violations.push({
+      rule: "decorative-shadow",
+      line: 1,
+      detail: `인라인 box-shadow 가 ${decorativeShadowCount}곳 — shadow-heavy layout.`,
+      suggestion:
+        "Shadow 는 floating UI(Modal/Popup/Dropdown/BottomSheet)에만. 일반 카드/리스트는 border 또는 surface tone 으로 구분. bannedPatterns: decorative-shadow 참조.",
+    });
+  }
+
+  // ─── 헤딩 반복 (h1/h2 다중) ──────────────────────────────
+  const h1Count = (source.match(/<\s*h1\b/g) || []).length;
+  const h2Count = (source.match(/<\s*h2\b/g) || []).length;
+  if (h1Count >= 2) {
+    violations.push({
+      rule: "repeated-h1",
+      line: 1,
+      detail: `<h1> 이 ${h1Count}개 — 페이지 최상위 헤딩은 1개여야 합니다.`,
+      suggestion:
+        "한 mockup 에 h1 은 1개. 보조 섹션은 h3 이하 사용. bannedPatterns: repeated-h1 참조.",
+    });
+  }
+  if (h2Count >= 4) {
+    violations.push({
+      rule: "repeated-h2",
+      line: 1,
+      detail: `<h2> 가 ${h2Count}개 — 같은 화면에 큰 제목이 너무 많습니다.`,
+      suggestion:
+        "h2 는 화면당 2~3개 이내. 더 세분화가 필요하면 h3/h4 로 위계 표현. bannedPatterns: repeated-h1 참조.",
+    });
+  }
+
+  // ─── Bold 남발 ───────────────────────────────────────────
+  const boldMatches =
+    (source.match(/font-?weight\s*:\s*(?:bold|700|800|900)\b/gi) || []).length +
+    (source.match(/\bfontWeight\s*:\s*(?:["']?bold["']?|700|800|900)\b/gi) || []).length;
+  if (boldMatches >= 5) {
+    violations.push({
+      rule: "bold-overuse",
+      line: 1,
+      detail: `Bold(700+) 텍스트 선언이 ${boldMatches}곳 — Bold 남발.`,
+      suggestion:
+        "Bold 는 화면당 1~2개 핵심 텍스트에만. 본문은 Regular(400)/Medium(500), 보조 제목은 Semibold(600). bannedPatterns: bold-overuse 참조.",
+    });
+  }
+
+  // ─── 아이콘 스타일 혼용 ──────────────────────────────────
+  // @nudge-eap/icons 가 아닌 외부 라이브러리 아이콘 import 검출
+  const externalIconLibs = [
+    { name: "lucide-react", re: /from\s+["']lucide-react["']/ },
+    { name: "react-icons", re: /from\s+["']react-icons\// },
+    { name: "@heroicons", re: /from\s+["']@heroicons\// },
+    { name: "@radix-ui icons", re: /from\s+["']@radix-ui\/react-icons["']/ },
+    { name: "@ant-design/icons", re: /from\s+["']@ant-design\/icons["']/ },
+  ].filter((lib) => lib.re.test(source));
+  if (externalIconLibs.length > 0) {
+    violations.push({
+      rule: "mixed-icon-style",
+      line: 1,
+      detail: `외부 아이콘 라이브러리 사용: ${externalIconLibs.map((l) => l.name).join(", ")}`,
+      suggestion:
+        "DS 는 `@nudge-eap/icons` 단일 셋만. 필요 아이콘이 없으면 find_icon 으로 확인 후 그래도 없으면 인라인 SVG. bannedPatterns: mixed-icon-style 참조.",
+    });
+  }
+
   return violations;
 }
 
