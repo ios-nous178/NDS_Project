@@ -1,8 +1,6 @@
 export { colors, neutral, coolGray, blue, magenta, yellow, red, green } from "./colors";
 export { cv } from "./cssVar";
 export type { CssVarRef } from "./cssVar";
-export { semantic } from "./semantic";
-export type { SemanticTokens } from "./semantic";
 export { semanticGuide, getSemanticGuide } from "./guide";
 export type { GuideStatus, GuideMeta } from "./guide";
 export { typography, fontFamily, fontWeight, typeScale } from "./typography";
@@ -21,7 +19,8 @@ export type {
   SpacingOverrides,
   ElevationOverrides,
 } from "./brands";
-export { nudgeEapTheme, trostTheme } from "./brands";
+export { nudgeEapTheme, nudgeEapSemantic, trostTheme } from "./brands";
+export type { NudgeEapSemanticTokens, TrostSemanticTokens } from "./brands";
 export {
   trostYellow,
   trostCobalt,

@@ -6,7 +6,6 @@ import {
   yellow,
   red,
   green,
-  semantic,
   fontFamily,
   fontWeight,
   typeScale,
@@ -216,9 +215,8 @@ export const trostPreset = {
   },
 };
 
-// trostSemantic / semantic / trostStatus 등은 prop 미사용 import 회피 위해 명시적 참조
+// trostSemantic / trostStatus 등은 prop 미사용 import 회피 위해 명시적 참조
 void trostSemantic;
-void semantic;
 void magenta;
 
 /** Pass-through: tokens are already string hex values */

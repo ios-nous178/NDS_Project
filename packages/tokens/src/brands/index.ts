@@ -7,7 +7,8 @@ export type {
   ElevationOverrides,
 } from "./types";
 
-export { nudgeEapTheme } from "./nudge-eap";
+export { nudgeEapTheme, nudgeEapSemantic } from "./nudge-eap";
+export type { NudgeEapSemanticTokens } from "./nudge-eap";
 
 export {
   trostTheme,
@@ -19,3 +20,4 @@ export {
   trostSemantic,
   trostEapBanner,
 } from "./trost";
+export type { TrostSemanticTokens } from "./trost";

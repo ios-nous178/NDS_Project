@@ -11,7 +11,7 @@
  * import 하지 않는다 — 빌드 파이프라인(generate-css.js) 전용.
  */
 
-import { neutral, coolGray, blue, yellow, red, green } from "./colors.js";
+import { neutral, coolGray, blue, yellow, red, green } from "../colors.js";
 
 // blue는 atomic 스케일이 Figma와 디커플링되어 사용하지 않지만, 미래 참조용으로 import 유지
 void blue;
@@ -25,7 +25,7 @@ const brightBlue700 = "#0E71CF";
 /** Atomic Bright Blue · 800 — Figma `--text-brand-strong` */
 const brightBlue800 = "#1B65BA";
 
-export const semantic = {
+export const nudgeEapSemantic = {
   bg: {
     page: { default: coolGray[50] }, // #F8F9FB
     surface: {
@@ -175,4 +175,4 @@ export const semantic = {
   },
 } as const;
 
-export type SemanticTokens = typeof semantic;
+export type NudgeEapSemanticTokens = typeof nudgeEapSemantic;

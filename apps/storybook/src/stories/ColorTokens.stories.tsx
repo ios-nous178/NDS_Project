@@ -7,7 +7,7 @@ import {
   yellow,
   red,
   green,
-  semantic,
+  nudgeEapSemantic,
   getSemanticGuide,
 } from "@nudge-eap/tokens";
 import React from "react";
@@ -75,8 +75,14 @@ function flattenSemantic(
   return out;
 }
 
-function RoleGroup({ title, group }: { title: string; group: keyof typeof semantic }) {
-  const tokens = flattenSemantic(semantic[group] as Record<string, unknown>);
+function RoleGroup({
+  title,
+  group,
+}: {
+  title: string;
+  group: keyof typeof nudgeEapSemantic & string;
+}) {
+  const tokens = flattenSemantic(nudgeEapSemantic[group] as Record<string, unknown>);
   // Map dotted-path key inside the group → guide path used by semanticGuide.
   // Guide keys use cv dotted paths (surface.brand / textRole.brand etc.) which
   // differ from semantic field paths (bg.brand.default / text.brand.default).
