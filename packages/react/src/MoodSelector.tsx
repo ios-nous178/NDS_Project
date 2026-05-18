@@ -21,12 +21,16 @@ const MD_LABEL_CLASS = `${MD_CLASS}__label`;
 
 /* ─── Default options ─── */
 
+// 예외: MoodSelector 는 사용자 감정 표현 자체가 콘텐츠 데이터다 — DS 의 "이모지
+// 금지" 룰은 라벨/장식 위치를 대상으로 하며, 감정 선택지의 face glyph 는
+// 그 자체가 의미를 가진다. 도메인 아이콘으로 교체하려면 `options` prop 으로
+// `face: <Icon />` 를 직접 주입해 ReactNode 로 렌더되도록 한다.
 const DEFAULT_OPTIONS: MoodOption[] = [
-  { value: "very-bad", emoji: "😢", label: "매우 나쁨" },
-  { value: "bad", emoji: "😟", label: "나쁨" },
-  { value: "neutral", emoji: "😐", label: "보통" },
-  { value: "good", emoji: "🙂", label: "좋음" },
-  { value: "very-good", emoji: "😀", label: "매우 좋음" },
+  { value: "very-bad", face: "😢", label: "매우 나쁨" },
+  { value: "bad", face: "😟", label: "나쁨" },
+  { value: "neutral", face: "😐", label: "보통" },
+  { value: "good", face: "🙂", label: "좋음" },
+  { value: "very-good", face: "😀", label: "매우 좋음" },
 ];
 
 // eslint-disable-next-line unused-imports/no-unused-vars
@@ -128,8 +132,11 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 export interface MoodOption {
   /** 선택값 */
   value: string;
-  /** 표시할 이모지 */
-  emoji: string;
+  /**
+   * 감정 표현 콘텐츠. 이모지 문자열이나 React 노드(아이콘 컴포넌트) 둘 다 허용.
+   * 도메인이 의료/임상이라 이모지가 부적절하다면 커스텀 SVG/Icon 컴포넌트를 주입.
+   */
+  face: React.ReactNode;
   /** 라벨 (예: "매우 좋음") */
   label?: React.ReactNode;
 }
@@ -190,7 +197,7 @@ export const MoodSelector: React.FC<MoodSelectorProps> = ({
                 className={MD_INPUT_CLASS}
               />
               <span data-slot="face" className={MD_FACE_CLASS} aria-hidden="true">
-                {opt.emoji}
+                {opt.face}
               </span>
               {showLabels && opt.label !== undefined && (
                 <span data-slot="label" className={MD_LABEL_CLASS}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useRef } from "react";
-import { cv, fontFamily, fontWeight, spacing, typeScale, zIndex } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, shadow, spacing, typeScale, zIndex } from "@nudge-eap/tokens";
 import { WebPortal } from "./internal/web";
 
 /* ─── Class names ─── */
@@ -94,7 +94,7 @@ const drawerStyles = `
     max-width: 100vw;
     height: 100%;
     background: ${cv.surface.default};
-    box-shadow: 0 0 24px rgba(0, 0, 0, 0.12);
+    box-shadow: ${shadow["3"]};
     box-sizing: border-box;
   }
 

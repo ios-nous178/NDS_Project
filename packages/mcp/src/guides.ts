@@ -337,6 +337,12 @@ export interface ComponentGuide {
     useFor?: string[];
     doNotUseFor?: string[];
     limits?: Record<string, string | number>;
+    /** color 별 사용 정책 (Badge 등) */
+    colorPolicy?: Record<string, string>;
+    /** variant 별 사용 정책 (Badge / Tabs 등) */
+    variantPolicy?: Record<string, string>;
+    /** 추가 룰 한 줄 (Modal emphasisRule 등) */
+    emphasisRule?: string;
   };
   examples?: {
     do: string;
@@ -578,6 +584,53 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Card.Root 의 clickable + onClick 으로 인터랙티브화. 내부 별도 Button 의 onClick 에서 e.stopPropagation() 호출해 카드 전체 클릭과 분리. " +
       "Hover 피드백은 shadow 가 아니라 Border 색 변경 또는 미세한 bg tint 로 표시 — 클릭 가능 여부 모호함 방지하되 Figma 권위 룰(shadow 금지) 준수.",
   },
+  Badge: {
+    name: "Badge",
+    summary:
+      "상태/속성을 한눈에 알려주는 보조 라벨. variant: fill/ghost/line · color: brand/neutral/success/error/caution/info. " +
+      "Figma 171:10856. label prop 필수. 콘텐츠가 아니라 콘텐츠를 보조하는 메타 정보만 담는다.",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-10856",
+    pitfalls: [
+      "Badge 는 강조 요소가 아니라 보조 정보 — 본문 텍스트보다 시선을 끌면 안 된다.",
+      "Fill Badge 남용 금지 — 한 카드/리스트 Row 에 Fill Badge 가 2개 이상 보이면 위계가 무너진다. 일반 카테고리는 ghost/line 우선.",
+      "Brand color 는 '현재 선택 / 핵심 강조' 에만 사용. 일반 카테고리·상태 표시에는 neutral 우선.",
+      "상태 색(success/error/caution/info) 은 의미 전달 목적에만 사용 — 단순 강조용 컬러로 쓰지 말 것.",
+      "Tone-on-Tone 금지: 연한 Blue 배경 위에 Blue Fill Badge, 연한 Mint Surface 위 Mint Badge 같은 동일 계열 중첩 금지.",
+      "Badge 안에 긴 문장/CTA 보조 문구 금지 — 8자 안팎 짧은 라벨만.",
+      "Chip 과 혼용 금지 — Chip 은 '선택/필터/분류 액션', Badge 는 '상태/속성 표시(비액션)'.",
+    ],
+    usagePolicy: {
+      useFor: [
+        "상태 표시 (진행중 / 완료 / 마감)",
+        "속성 라벨 (신규 / 추천 / 필수)",
+        "리스트 Row 의 보조 메타 정보",
+      ],
+      doNotUseFor: [
+        "버튼 / CTA 대체",
+        "섹션 제목 장식",
+        "본문 강조용 컬러 칩",
+        "모든 카드에 반복되는 시각 장식",
+      ],
+      colorPolicy: {
+        brand: "현재 선택 · 핵심 강조에만",
+        neutral: "일반 카테고리 · 기본 속성 (기본값)",
+        success: "성공/완료 의미",
+        error: "오류/실패 의미",
+        caution: "주의/경고 의미",
+        info: "정보/안내 의미",
+      },
+      variantPolicy: {
+        fill: "강한 상태 표시 — 카드당 최대 1개",
+        ghost: "일반 카테고리 · 기본 보조 정보 (권장 기본값)",
+        line: "비활성/완료 상태",
+      },
+      limits: {
+        maxLabelLength: 8,
+        maxFillPerCard: 1,
+        maxPerCard: 2,
+      },
+    },
+  },
   Chip: {
     name: "Chip",
     summary: "pill 형태 라벨. variant: fill/outlined/ghost. label prop 필수.",
@@ -623,15 +676,56 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "버튼은 최대 2개까지만 사용. 3개 이상이 필요하면 BottomSheet 검토.",
       "maxWidth 미지정 시 기본 332px(PC). 모바일 화면이면 device='mobile' 로 294px 지정.",
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
+      "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
+      "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
     ],
+    usagePolicy: {
+      useFor: [
+        "즉각적 판단/응답이 필요한 확인 (삭제 확인, 결제 확인)",
+        "현재 흐름 중단이 정당화되는 중요한 결정",
+        "추가 입력 없이 한 화면에서 결정을 마쳐야 하는 짧은 폼",
+      ],
+      doNotUseFor: [
+        "단순 정보 전달 — inline Notice / Banner / section 안내 사용",
+        "긴 콘텐츠/스크롤 페이지 — 별도 페이지나 BottomSheet 검토",
+        "여러 단계 분기 — Wizard / 별도 페이지",
+        "에러 메시지 — Toast 또는 inline error 사용",
+      ],
+      emphasisRule:
+        "핵심 action 1 + 보조 action 1 구조가 기본. Modal 안에 또 다른 강조 영역을 쌓지 말 것.",
+    },
   },
   Tabs: {
     name: "Tabs",
-    summary: "line/pill/square 3가지 variant. items + activeKey + onTabChange.",
+    summary:
+      "line/pill/square 3가지 variant. items + activeKey + onTabChange. " +
+      "동일 depth 콘텐츠 전환 · category navigation · section switching 전용. CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지.",
     pitfalls: [
       "items 형식은 {key, title}[]. label 같은 다른 키 이름 사용 시 렌더 실패.",
       "변경 핸들러는 onTabChange (onChange 아님).",
+      "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 보기 전환만.",
+      "같은 리스트의 '필터' 는 FilterBar, Tab 은 '뷰/카테고리/섹션 전환' — 둘을 섞어 쓰지 말 것.",
+      "Segment(variant='square') 는 PC CMS · 주요 기능 전환에만 사용. 모바일 일반 화면에서는 line / pill 사용.",
+      "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.",
     ],
+    usagePolicy: {
+      useFor: [
+        "동일 depth 콘텐츠 전환 (예: 내 상담 / 받은 추천)",
+        "category navigation (예: 전체 / 진행중 / 완료)",
+        "section switching (한 페이지 내 영역 전환)",
+      ],
+      doNotUseFor: [
+        "CTA 대체 (저장/신청/다음 단계)",
+        "필터 컨트롤 (FilterBar 사용)",
+        "페이지 단위 라우팅 (좌측 메뉴 · Breadcrumb 사용)",
+        "모바일 일반 화면에서 Segment(variant='square')",
+      ],
+      variantPolicy: {
+        line: "기본 — 모바일/PC 공통, 콘텐츠 전환",
+        pill: "강조형 — 모바일 카드 헤더 안쪽",
+        square: "Segment — PC CMS · 주요 기능 전환 전용, 모바일 일반 화면 금지",
+      },
+    },
   },
   List: {
     name: "List",
@@ -1981,10 +2075,15 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "강조 장치는 화면당 우선순위가 가장 높은 영역에 집중하고, 안내/보조 영역은 기본적으로 neutral surface를 사용",
     "텍스트 대비비 WCAG AA (4.5:1) 이상 유지",
     "터치 타겟은 최소 44px 보장",
-    "8px 그리드에 맞춰 간격 설정",
+    "4pt 그리드에 맞춰 간격 설정. Gap(요소 간)과 Inset(컨테이너 내부)을 구분해 항상 semantic 토큰(--gap-* / --inset-*) 사용",
+    "Brand background(--semantic-bg-brand-*)는 주의/안내/하이라이트 의미 전달이 필요할 때만, 한 화면당 1개 이내로 사용 — 자세히는 get_guide({ topic: 'pattern:surface-layer' })",
     "인터랙티브 요소(Button/IconButton/Card.Root clickable/Tabs)에는 onClick 등 핸들러를 반드시 부착",
     "표준 variant에 없는 톤이 필요하면 컴포넌트의 style/icon 같은 확장 슬롯을 활용 (raw 요소로 대체 금지)",
     "단독 아이콘은 주변 텍스트/배경과 어울리는 토큰 컬러를 명시하거나 부모 color를 토큰으로 지정해 currentColor가 의도한 색을 상속하게 함",
+    "아이콘은 행동/상태/affordance 전달 목적에만 사용 — 화이트리스트와 검증 룰은 get_guide({ topic: 'pattern:icon-usage' })",
+    "Tab 은 동일 depth 콘텐츠 전환·category navigation·section switching 에만 사용 — 필터/CTA/라우팅 대체용 금지",
+    "Modal 은 즉각적 판단/응답이 필요할 때만 사용 — 단순 정보는 inline Notice/Banner, 에러는 Toast/inline error 사용",
+    "Badge 는 보조 정보 — 일반 카테고리는 ghost/line + neutral 우선, Brand color 는 '현재 선택·핵심 강조' 에만",
   ],
   donts: [
     "한 화면에 3개 이상의 폰트 웨이트를 혼용하지 마세요",
@@ -2002,6 +2101,42 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "DS 컴포넌트에 정확히 매칭되는 쓰임이 있는데 raw <button>/<input>/<span>으로 대체 금지",
     "이모지 절대 사용 금지 — 어떤 위치에서도(라벨/버튼/제목/placeholder/empty state) 이모지를 텍스트로 박지 마세요. 아이콘이 필요하면 find_icon. validate_mockup 의 emoji-banned 룰로 자동 검출됨.",
     "→ ← ✓ ★ • 같은 텍스트 기호 사용 금지 — 화살표/체크/별점/불릿을 문자로 표현하지 마세요. 아이콘은 find_icon, 진행/별점/리스트는 DS 컴포넌트(StatusTimeline/Rating/Dense list) 사용. validate_mockup 의 text-symbol-banned 룰로 자동 검출됨.",
+    "Primitive spacing(--spacing-N) / 임의 px (5/7/9/11/13/15) 사용 금지 — 반드시 --gap-* / --inset-* semantic 토큰으로 표현",
+    "Inset(내부 여백) 자리에 Gap 토큰 사용 금지 (또는 그 반대) — padding 자리에 --gap-*, gap 자리에 --inset-* 쓰지 않기",
+    "Brand background 를 단순 시각 구분·decorative section·KPI 카드·summary 카드 배경으로 사용 금지 — 의미 전달 없는 색 배경은 위계를 망가뜨림",
+    "한 화면 안에서 카드마다 다른 pastel background 를 사용해 영역을 색으로 구분하지 마세요 — 구분은 spacing/border/text 위계로",
+    "서브타이틀(h3/h4) 앞 장식 아이콘 · Form Label 앞 장식 아이콘 · 본문 텍스트 앞 decorative icon 금지 — 한 화면에서 일부 헤딩에만 아이콘을 붙이면 hierarchy 가 깨짐",
+    "헤딩 앞 아이콘 5개 이상 사용 시 자동 위반 — 아이콘을 hierarchy 표현 수단으로 쓰지 마세요",
+    "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 동일 depth 콘텐츠 전환 전용",
+    "Segment Tab(variant='square') 을 모바일 일반 화면에 사용 금지 — PC CMS · 주요 기능 전환에만 사용",
+    "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 즉각적 판단/응답이 필요할 때만",
+    "Modal 내부에 또 다른 강조(Card·Brand BG·Chip 그룹)를 쌓지 마세요 — 핵심 action 1 + 보조 action 1 구조가 기본",
+    "Fill Badge 를 한 카드/Row 안에 2개 이상 두지 마세요 — 일반 카테고리는 ghost/line 우선, Fill 은 카드당 최대 1개",
+    // ── Card Everything Syndrome ──
+    "모든 영역을 카드로 감싸지 마세요 — 카드는 '독립된 정보 단위' 일 때만. 단순 group/section 은 spacing + h3 + Divider 로 위계를 만드세요",
+    "카드 안에 카드를 중첩하지 마세요 — 카드 안에는 Header/Body/Footer 슬롯과 Chip/Badge 같은 inline 요소만. 내부 영역 강조가 필요하면 surface.section bg 한 단계로",
+    "카드를 hierarchy 구분 도구로 남용하지 마세요 — 위계는 typography(headline/body/caption) 와 spacing 으로 표현. '카드 = 강조' 는 안티패턴",
+    // ── Floating UI Everywhere ──
+    "떠 있지 않아야 할 요소(인라인 리스트·일반 카드·기본 입력 필드)에 elevation/shadow 를 적용하지 마세요 — shadow 는 floating UI(Modal/Popup/Dropdown/BottomSheet)에만",
+    "한 화면에 floating panel(Modal/Drawer/Popup/Toast) 을 2개 이상 동시에 띄우지 마세요 — 사용자 주의 분산",
+    "shadow-heavy layout 금지 — 한 화면에 그림자 있는 요소가 3개를 넘으면 floating 의미를 잃습니다. Border 또는 surface tone 으로 대체",
+    "detached card(공중에 떠 있는 카드) 를 의미 없이 만들지 마세요 — 카드는 페이지 흐름 안에 자연스럽게 위치",
+    // ── Typography Chaos ──
+    "Bold 를 한 화면에서 5곳 이상 남발하지 마세요 — Bold 는 '가장 중요한 1~2 곳' 에만",
+    "같은 화면에 h1 / h2 같은 큰 제목을 2개 이상 두지 마세요 — 한 화면당 최상위 헤딩은 1개. 보조 섹션은 h3 이하",
+    "hierarchy 가 불명확한 텍스트 위계를 만들지 마세요 — 인접한 두 영역의 텍스트가 같은 fontSize × fontWeight 이면 위계가 무너짐",
+    // ── Decorative Surface Abuse ──
+    "section 구분을 색상만으로 해결하지 마세요 — 1차는 spacing(--gap-loose/wide), 2차는 Divider/Border, 마지막에 surface tone. 색으로만 나누면 색맹/저시력 사용자가 길을 잃습니다",
+    "decorative background(임의 pastel/tinted surface)를 만들지 마세요 — 모든 bg 는 `--semantic-bg-*` 토큰 안에서. 분위기를 위해 옅은 색을 깔지 마세요",
+    // ── Fake Dashboard Disease ──
+    "의미 없는 KPI 카드/메트릭 그리드를 만들지 마세요 — 숫자 표시는 사용자가 의사결정에 쓸 때만",
+    "장식용 chart/graph 를 추가하지 마세요 — 데이터가 실제 인사이트를 주지 않으면 Sparkline 한 줄로 충분. Generic SaaS dashboard 톤 피하세요",
+    "장식 중심 hero section(큰 일러스트 + 큰 카피 + gradient 배경)을 만들지 마세요 — EAP 도메인은 사용자 상태/액션을 직접 보여주는 것이 우선",
+    // ── Everything Has an Icon ──
+    "한 화면에 여러 icon 스타일(선/면/colorful)을 혼용하지 마세요 — `@nudge-eap/icons` 단일 셋만",
+    "colorful/멀티컬러 아이콘을 본문 UI 에 과다 사용하지 마세요 — DS icon 은 currentColor monochrome 이 원칙. brand color icon 은 진입점 1~2 개에만",
+    // ── Spacing Randomness 보강 ──
+    "같은 depth(부모 컨테이너 안의 형제 요소들) 에 서로 다른 spacing 을 적용하지 마세요 — 형제는 같은 --gap-* 으로 통일",
   ],
   bannedPatterns: [
     {
@@ -2027,6 +2162,38 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     {
       name: "ambiguous-cta-label",
       rule: "CTA 라벨 모호성 금지 — 버튼만 보고 다음 화면/행동을 예측할 수 있어야 합니다. 위 카피의 가치 제안을 그대로 반복한 버튼('지금 시작'·'확인' 등)은 결과를 숨겨 사용자가 클릭을 망설입니다.",
+    },
+    {
+      name: "card-everything",
+      rule: "Card Everything Syndrome 금지 — 모든 정보 단위를 카드로 감싸면 위계가 사라집니다. 한 화면에 카드가 5개를 넘으면 80% 이상 안티패턴. 단순 group/section 은 spacing + Divider + heading 으로 표현.",
+    },
+    {
+      name: "nested-card",
+      rule: "카드 안 카드 중첩 금지 — 카드 내부 영역 강조는 surface.section tone 한 단계 또는 inline Chip/Badge 로. nested Card 는 위계 표현 도구가 아닙니다.",
+    },
+    {
+      name: "decorative-shadow",
+      rule: "떠 있지 않아야 할 요소(인라인 리스트·일반 카드·기본 입력)에 shadow 적용 금지. Shadow 는 floating UI (Modal/Popup/Dropdown/BottomSheet) 와 'hover 시 floating 표현' 에만.",
+    },
+    {
+      name: "fake-dashboard",
+      rule: "Fake Dashboard 금지 — 의미 없는 KPI 카드/장식용 chart/장식 hero. EAP 도메인은 사용자 상태/액션 위주. Generic SaaS dashboard 패턴 회피.",
+    },
+    {
+      name: "section-color-only",
+      rule: "section 구분을 색상으로만 해결 금지 — 1차 spacing → 2차 Divider/Border → 3차 surface tone. 색맹/저시력 접근성을 위해 색 단독 구분은 불가.",
+    },
+    {
+      name: "repeated-h1",
+      rule: "한 화면에 h1/h2 같은 최상위 헤딩 2개 이상 금지 — 페이지 제목은 1개. 보조 섹션은 h3 이하.",
+    },
+    {
+      name: "bold-overuse",
+      rule: "한 화면에 Bold 텍스트 5곳 이상 사용 금지 — Bold 는 화면당 1~2개 핵심에만. 본문은 Regular/Medium.",
+    },
+    {
+      name: "mixed-icon-style",
+      rule: "한 화면에 여러 icon 스타일(선/면/colorful) 혼용 금지 — `@nudge-eap/icons` 단일 셋만. 외부 콜렉션·이모지·multi-color SVG 섞지 마세요.",
     },
   ],
 };
@@ -2554,6 +2721,91 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       maxPrimaryFactsPerCard: 3,
       maxSecondaryFactsPerCard: 5,
       maxCtaPerRepeatedCard: 1,
+    },
+  },
+  "semantic-spacing": {
+    name: "semantic-spacing",
+    summary:
+      "Spacing 은 정보 관계와 위계를 표현하는 구조 시스템이다. 4pt grid · Figma SpacingGuide 실측 기반. Gap(요소 간 거리, 의도 기반) 과 Inset(컨테이너 내부 여백, 사용처 기반) 을 명확히 구분하고, 같은 의미의 간격은 같은 semantic 토큰만 사용한다.",
+    rules: [
+      "Gap (요소 간 거리) — 의도 기반 5단계만 사용:\n  · `--gap-tight` (4px) → Chip · Badge 그룹\n  · `--gap-default` (10px) ★ 표준 컴포넌트 gap\n  · `--gap-comfortable` (12px) → 폼 필드 · 세그먼트\n  · `--gap-loose` (16px) → 컴포넌트 ↔ 컴포넌트\n  · `--gap-wide` (24px) → 큰 영역 ↔ 큰 영역",
+      "Inset (컨테이너 내부 여백) — 사용처 기반 5단계만 사용:\n  · `--inset-chip` (8px) → Chip · Badge 내부 padding\n  · `--inset-input` (12px) → Input · 작은 컨테이너 padding\n  · `--inset-card` (16px) ★ 카드 표준 padding\n  · `--inset-card-large` (20px) → 큰 카드 padding\n  · `--inset-modal` (24px) → Modal · 통계 박스 padding",
+      "결정 트리 — 내부 여백(padding)인지 요소 간격(gap)인지 먼저 판단한 뒤 위 토큰 중 하나로 매핑한다. 모호하면 표준값(`--gap-default` 10px / `--inset-card` 16px)을 우선.",
+      "같은 깊이·같은 의도의 간격은 항상 같은 토큰을 쓴다 — 한 화면 내 카드들이 모두 16px padding 이면 모두 `--inset-card` 로.",
+      "Primitive(--spacing-N) 는 토큰 정의용. UI 코드에서는 직접 사용 금지 — 반드시 `--gap-*` / `--inset-*` 를 거친다.",
+      "임의 px 사용 금지: 5 / 7 / 9 / 11 / 13 / 15px 는 4pt 위반이므로 토큰으로 대체할 것.",
+      "Inset 자리에 Gap 토큰 사용 / Gap 자리에 Inset 토큰 사용 금지 — padding 에 `--gap-*`, flex/grid gap 에 `--inset-*` 쓰지 않는다.",
+    ],
+    avoid: [
+      "padding: 14px / margin: 11px 같은 raw px 직접 사용",
+      "padding 에 `--gap-default` 사용 / gap 에 `--inset-card` 사용 (역할 혼동)",
+      "한 화면에 카드마다 다른 padding 토큰 사용 (일관성 손상)",
+      "spacing 대신 색 배경 / border 만으로 영역 구분",
+      "var(--spacing-12) 같은 primitive 토큰을 UI 코드에서 직접 사용",
+    ],
+    metrics: {
+      gridBase: "4pt",
+      gapDefault: "--gap-default (10px)",
+      insetDefault: "--inset-card (16px)",
+      allowedGapTokens: "tight(4) / default(10) / comfortable(12) / loose(16) / wide(24)",
+      allowedInsetTokens: "chip(8) / input(12) / card(16) / card-large(20) / modal(24)",
+      figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=SpacingGuide",
+    },
+  },
+  "surface-layer": {
+    name: "surface-layer",
+    summary:
+      "Surface / Background 의 4단계 레이어 정의와 Brand background 사용 원칙. Brand background 는 시각 장식이 아니라 '의미 전달'(주의·안내·강조) 목적으로만 사용한다. notice 패턴과 짝.",
+    rules: [
+      "Layer 정의 (낮은 → 높은 위계):\n  · L0 기본 surface → `--semantic-bg-surface-default` (#FFFFFF) — 기본 카드/박스 (Card, Info Box)\n  · L1 페이지 배경 → `--semantic-bg-page-default` (≈#F8F9FB) — body, 페이지 전체 배경\n  · L2 Subtle BG → `--semantic-bg-surface-subtle` / `--semantic-bg-section-default` — 비활성 영역, 표 헤더, 섹션 분리\n  · L3 Notice (의미 전달) → `--semantic-bg-brand-subtle` 또는 `--semantic-bg-status-*` — CrisisCallout, 핵심 Notice, 상태성 안내",
+      "Brand background (`--semantic-bg-brand-*`) 는 다음 모두를 만족할 때만 사용:\n  1) 사용자에게 주의 / 안내 / 하이라이트 의미 전달이 필요한가?\n  2) 현재 화면에 이미 사용 중인 brand background 가 없는가?\n  3) 단순 decoration 목적이 아닌가?\n  → 셋 모두 YES 일 때만. 하나라도 NO 면 `--semantic-bg-surface-default` 로 처리.",
+      "한 화면당 brand background 최대 1개. 같은 영역에 brand bg + brand chip + brand icon 을 동시에 쌓지 않는다 (tone-on-tone).",
+      "상태 의미가 명확할 때만 status 배경(`--semantic-bg-status-error|success|caution|info`) 사용. 일반 안내문은 neutral 우선.",
+      "섹션 구분은 spacing / border / text 위계로 먼저 해결. 색 배경으로만 영역을 구분하지 않는다.",
+    ],
+    avoid: [
+      "KPI 카드 / summary 카드 / 일반 정보 카드에 brand background 사용",
+      "section 구분을 색상으로만 해결 (spacing 없이 색만)",
+      "한 화면에서 카드마다 다른 pastel background 를 깔아 모든 영역이 강조되어 보이는 구성",
+      "decorative 목적의 색 배경 (의미 전달 없는 단순 시각 분리)",
+      "Brand bg 위에 다시 brand chip / brand icon / brand button 을 중첩 (tone-on-tone)",
+      "안내문에 gradient + icon + badge + bold headline 을 동시에 적용",
+    ],
+    metrics: {
+      maxBrandBgPerScreen: 1,
+      maxEmphasisDevicesPerNotice: 2,
+      layers:
+        "L0 surface-default / L1 page-default / L2 surface-subtle | section-default / L3 brand-subtle | status-*",
+      decisionRule: "의미 전달 + 화면 내 brand bg 없음 + decoration 아님 — 셋 모두 YES",
+    },
+  },
+  "icon-usage": {
+    name: "icon-usage",
+    summary:
+      "아이콘은 장식이 아니라 행동 / 상태 / affordance 전달 목적에만 사용한다. 어디에 써도 되고 어디에 쓰면 안 되는지를 정의하는 화이트리스트 / 블랙리스트. 아이콘 컬러는 get_guide({ topic: 'pattern:icon-color' }), 사이즈/스타일은 get_guide({ topic: 'pattern:iconography' }) 참고.",
+    rules: [
+      "허용 위치 (화이트리스트):\n  · AppBar / Header 기능 버튼 (검색 · 알림 · 뒤로가기 · 메뉴)\n  · Bottom Tab Navigation\n  · IconButton\n  · 동일 위계의 카테고리 그룹 (Concern Grid · Category Grid)\n  · 상태 아이콘 (Success · Warning · Error)\n  · Form Field affordance (검색 · 캘린더 · 드롭다운 토글)",
+      "동일 위계의 텍스트는 아이콘 사용 여부가 일관되어야 한다 — 같은 GNB / 같은 카드 리스트 / 같은 헤딩 그룹 안에서 일부에만 아이콘이 붙으면 hierarchy 가 깨진다.",
+      "헤딩 앞 아이콘 5개 이상 사용 시 자동 위반 — 아이콘을 hierarchy 표현 수단으로 쓰지 않는다.",
+      "아이콘이 필요한지 판단 기준: 액션을 호출하는가? 상태를 전달하는가? affordance(입력 가능/스크롤 가능 등)를 알리는가? 셋 중 하나도 아니면 아이콘 없이 텍스트만.",
+      "스타일 혼용 금지 — 한 화면에서 Line(stroke) 과 Filled 를 같은 의미 그룹에서 섞지 않는다 (iconography 패턴 참고).",
+    ],
+    avoid: [
+      "서브타이틀(h3/h4) 앞 장식 아이콘",
+      "Form Label 앞 장식 아이콘",
+      "본문 텍스트 앞 decorative icon",
+      "일부 헤딩에만 icon 사용 (한 화면 안에서 불일치)",
+      "hierarchy 와 무관한 icon 추가 (강조용으로 색만 다른 아이콘 끼우기)",
+      "모든 텍스트 앞에 icon 사용 — affordance 가 없는 장식",
+      "colorful icon 과다 사용 / 의미 없는 emoji",
+      "아이콘 스타일 혼용 (Line + Filled 가 같은 그룹에서 공존)",
+    ],
+    metrics: {
+      maxHeadingIconsPerScreen: 4,
+      allowedLocations:
+        "AppBar buttons / Bottom Tab / IconButton / 카테고리 그룹 / 상태 아이콘 / Form field affordance",
+      consistencyRule: "same-hierarchy-text → same-icon-decision",
+      relatedPatterns: "icon-color, iconography",
     },
   },
 };

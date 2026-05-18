@@ -90,6 +90,7 @@ const icStyles = `
   :where(.${IC_CIRCLE_CLASS}) {
     position: absolute;
     inset: 0;
+    /* backdrop vignette 트릭 — 그림자가 아니라 4-방향 fill 용도라 raw 사용 */
     box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
     border: 1.5px solid rgba(255, 255, 255, 0.9);
   }

@@ -1,6 +1,6 @@
 import React from "react";
 import { fontFamily, fontWeight, radius, spacing, transition, typeScale } from "@nudge-eap/tokens";
-import { InfoIcon, ThumbUpIcon, TestresultWarningIcon } from "@nudge-eap/icons";
+import { InfoIcon, ThumbUpIcon, TestresultWarningIcon, ChevronRightIcon } from "@nudge-eap/icons";
 
 /* ─── Constants ─── */
 
@@ -214,7 +214,8 @@ export const TipCard = React.forwardRef<HTMLDivElement, TipCardProps>(
               onAction?.();
             }}
           >
-            {actionLabel} →
+            <span>{actionLabel}</span>
+            <ChevronRightIcon size={14} aria-hidden />
           </button>
         )}
       </div>

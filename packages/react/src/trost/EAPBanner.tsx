@@ -1,3 +1,7 @@
+/**
+ * Trost EAPBanner — Trost 웹 실측값(colors_and_type.css) 기반.
+ * 4pt 그리드 예외 정책은 `trost/index.ts` 헤더 코멘트 참조.
+ */
 import React from "react";
 import { trostEapBanner, trostNeutral } from "@nudge-eap/tokens";
 

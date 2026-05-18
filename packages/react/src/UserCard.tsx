@@ -15,10 +15,33 @@ const UC_CLASS = "nds-user-card";
 const UC_AVATAR_CLASS = `${UC_CLASS}__avatar`;
 const UC_BODY_CLASS = `${UC_CLASS}__body`;
 const UC_NAME_CLASS = `${UC_CLASS}__name`;
+const UC_VERIFIED_CLASS = `${UC_CLASS}__verified`;
 const UC_HANDLE_CLASS = `${UC_CLASS}__handle`;
 const UC_BIO_CLASS = `${UC_CLASS}__bio`;
 const UC_META_CLASS = `${UC_CLASS}__meta`;
 const UC_ACTION_CLASS = `${UC_CLASS}__action`;
+
+/* ─── Inline icons ─── */
+
+const VerifiedCheckIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    aria-hidden="true"
+    role="img"
+    aria-label="인증됨"
+  >
+    <path
+      d="M3 7L6 10L11 4"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 /* ─── Types ─── */
 
@@ -92,6 +115,13 @@ const ucStyles = `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  :where(.${UC_VERIFIED_CLASS}) {
+    display: inline-flex;
+    margin-left: ${spacing[4]}px;
+    color: ${cv.textRole.brand};
+    vertical-align: middle;
   }
 
   :where(.${UC_HANDLE_CLASS}) {
@@ -176,7 +206,9 @@ export const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
           <p className={UC_NAME_CLASS}>
             {name}
             {verified && (
-              <span style={{ marginLeft: 4, color: "var(--semantic-text-brand-default)" }}>✓</span>
+              <span className={UC_VERIFIED_CLASS}>
+                <VerifiedCheckIcon />
+              </span>
             )}
           </p>
           {handle && <span className={UC_HANDLE_CLASS}>{handle}</span>}

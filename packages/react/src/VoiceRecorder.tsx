@@ -68,6 +68,7 @@ const vrStyles = `
     align-items: center;
     justify-content: center;
     transition: transform ${transition.default}, box-shadow ${transition.default};
+    /* red-tinted glow — recording 강조용 의도된 brand-error shadow, raw 사용 */
     box-shadow: 0 4px 12px rgba(224, 77, 77, 0.32);
   }
 

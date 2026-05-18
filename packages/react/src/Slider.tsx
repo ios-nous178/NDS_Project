@@ -4,6 +4,7 @@ import {
   fontFamily,
   fontWeight,
   radius,
+  shadow,
   spacing,
   transition,
   typeScale,
@@ -84,7 +85,7 @@ const sliderStyles = `
     border-radius: ${radius.pill}px;
     background: ${cv.surface.default};
     border: 2px solid ${cv.borderRole.brand};
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    box-shadow: ${shadow["1"]};
     cursor: pointer;
     transition: transform ${transition.default};
   }
@@ -95,7 +96,7 @@ const sliderStyles = `
     border-radius: ${radius.pill}px;
     background: ${cv.surface.default};
     border: 2px solid ${cv.borderRole.brand};
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    box-shadow: ${shadow["1"]};
     cursor: pointer;
   }
 
