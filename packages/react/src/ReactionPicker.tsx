@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -46,16 +46,16 @@ const rpStyles = `
   :where(.${RP_CLASS}) {
     display: inline-flex;
     flex-wrap: wrap;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-family: ${fontFamily.web};
   }
 
   :where(.${RP_ITEM_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     height: 32px;
-    padding: 0 ${spacing[8]}px;
+    padding: 0 var(--inset-chip);
     border-radius: 9999px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};

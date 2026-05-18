@@ -43,7 +43,7 @@ const fbStyles = `
   :where(.${FB_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     overflow-x: auto;
@@ -55,7 +55,7 @@ const fbStyles = `
   :where(.${FB_LIST_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     flex: 1;
   }
 
@@ -63,9 +63,9 @@ const fbStyles = `
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     height: 32px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border-radius: 9999px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};
@@ -102,9 +102,9 @@ const fbStyles = `
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     height: 32px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border: none;
     background: transparent;
     color: ${cv.textRole.subtle};

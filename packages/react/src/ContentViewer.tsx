@@ -44,7 +44,7 @@ const contentViewerStyles = `
 
   :where(.${CV_CLASS}) blockquote {
     margin: ${spacing[12]}px 0;
-    padding: ${spacing[10]}px ${spacing[16]}px;
+    padding: ${spacing[10]}px var(--inset-card);
     border-left: 3px solid ${cv.borderRole.brand};
     background: ${cv.surface.brandSubtle};
     color: ${cv.textRole.strong};
@@ -61,7 +61,7 @@ const contentViewerStyles = `
 
   :where(.${CV_CLASS}) pre {
     margin: ${spacing[12]}px 0;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    padding: var(--inset-input) var(--inset-card);
     background: ${cv.surface.page};
     border-radius: ${radius.md}px;
     overflow-x: auto;
@@ -96,7 +96,7 @@ const contentViewerStyles = `
   }
   :where(.${CV_CLASS}) th,
   :where(.${CV_CLASS}) td {
-    padding: ${spacing[8]}px ${spacing[10]}px;
+    padding: var(--inset-chip) ${spacing[10]}px;
     border: 1px solid ${cv.borderRole.subtle};
     text-align: left;
   }

@@ -39,8 +39,8 @@ const consentStyles = `
   :where(.${CL_ALL_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[10]}px;
-    padding: ${spacing[12]}px 0;
+    gap: var(--gap-default);
+    padding: var(--inset-input) 0;
     cursor: pointer;
   }
 
@@ -54,7 +54,7 @@ const consentStyles = `
     display: flex;
     flex-direction: column;
     gap: ${spacing[2]}px;
-    padding: ${spacing[8]}px 0;
+    padding: var(--inset-chip) 0;
   }
 
   :where(.${CL_ITEM_CLASS}) {
@@ -65,14 +65,14 @@ const consentStyles = `
   :where(.${CL_ITEM_HEAD_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[10]}px;
-    padding: ${spacing[8]}px 0;
+    gap: var(--gap-default);
+    padding: var(--inset-chip) 0;
   }
 
   :where(.${CL_LABEL_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[10]}px;
+    gap: var(--gap-default);
     flex: 1;
     cursor: pointer;
     min-width: 0;
@@ -160,7 +160,7 @@ const consentStyles = `
 
   :where(.${CL_DETAIL_CLASS}) {
     margin: ${spacing[4]}px 0 ${spacing[8]}px 32px;
-    padding: ${spacing[12]}px ${spacing[12]}px;
+    padding: var(--inset-input) var(--inset-input);
     background: ${cv.surface.page};
     border-radius: ${radius.md}px;
     font-size: ${typeScale.caption1.fontSize}px;

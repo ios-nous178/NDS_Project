@@ -46,7 +46,7 @@ function GridSpec({
         style={{
           display: "grid",
           gridTemplateColumns: "140px 1fr",
-          gap: "8px 24px",
+          gap: "var(--gap-default) var(--gap-wide)",
           marginBottom: 24,
           fontSize: 14,
         }}
@@ -75,7 +75,7 @@ function GridSpec({
             display: "grid",
             gridTemplateColumns: `repeat(${spec.columns}, 1fr)`,
             gap: spec.gutter,
-            padding: 16,
+            padding: "var(--inset-card)",
           }}
         >
           {Array.from({ length: spec.columns }, (_, i) => (
@@ -85,7 +85,7 @@ function GridSpec({
         <div
           style={{
             textAlign: "center",
-            padding: "8px 0 12px",
+            padding: "var(--inset-chip) 0 var(--inset-input)",
             fontSize: 12,
             color: "#999999",
           }}
@@ -103,7 +103,7 @@ function GridTokensPage() {
     <div
       style={{
         fontFamily: "'Pretendard', sans-serif",
-        padding: 24,
+        padding: "var(--inset-modal)",
         backgroundColor: "#FFFFFF",
       }}
     >

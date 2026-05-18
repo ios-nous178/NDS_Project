@@ -32,7 +32,7 @@ export const Sizes: Story = {
     const [b, setB] = useState(2);
     const [c, setC] = useState(3);
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
         <NumberStepper size="sm" value={a} onValueChange={setA} max={10} />
         <NumberStepper size="md" value={b} onValueChange={setB} max={10} />
         <NumberStepper size="lg" value={c} onValueChange={setC} max={10} />
@@ -71,7 +71,7 @@ export const AtLimits: Story = {
   render: function Render() {
     const [n, setN] = useState(0);
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
         <NumberStepper value={n} onValueChange={setN} min={0} max={3} />
         <small>min: -버튼 비활성, max: +버튼 비활성</small>
       </div>

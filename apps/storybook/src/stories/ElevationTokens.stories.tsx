@@ -60,7 +60,7 @@ function LevelCard({ def }: { def: LevelDef }) {
         gridTemplateColumns: "64px 140px 1fr 220px 120px",
         alignItems: "center",
         gap: 20,
-        padding: "20px 0",
+        padding: "var(--inset-card-large) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
@@ -90,7 +90,7 @@ function LevelCard({ def }: { def: LevelDef }) {
           fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
           color: "#555",
           background: "#FAFAFA",
-          padding: "4px 8px",
+          padding: "4px var(--inset-chip)",
           borderRadius: 4,
         }}
       >
@@ -142,7 +142,7 @@ function GuideBanner() {
       style={{
         background: "var(--semantic-bg-status-info, #E3F2FC)",
         color: "var(--semantic-text-status-info, #017EE4)",
-        padding: "12px 16px",
+        padding: "var(--inset-input) var(--inset-card)",
         borderRadius: 8,
         fontSize: 13,
         lineHeight: 1.5,
@@ -169,7 +169,7 @@ function PrinciplesBlock() {
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
-        gap: 16,
+        gap: "var(--gap-loose)",
         marginBottom: 32,
       }}
     >
@@ -195,7 +195,7 @@ function PrinciplesBlock() {
           style={{
             border: "1px solid #ECECEC",
             borderRadius: 12,
-            padding: "16px 20px",
+            padding: "var(--inset-card) var(--inset-card-large)",
           }}
         >
           <div
@@ -220,8 +220,21 @@ function PrinciplesBlock() {
 
 function DoDontBlock() {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 32 }}>
-      <div style={{ border: "1px solid #ECECEC", borderRadius: 12, padding: 20 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "var(--gap-loose)",
+        marginBottom: 32,
+      }}
+    >
+      <div
+        style={{
+          border: "1px solid #ECECEC",
+          borderRadius: 12,
+          padding: "var(--inset-card-large)",
+        }}
+      >
         <div style={{ fontSize: 14, fontWeight: 700, color: "#00A07C", marginBottom: 12 }}>
           ● DO
         </div>
@@ -234,7 +247,13 @@ function DoDontBlock() {
           <li>Sticky Header는 스크롤 시에만 var(--shadow-1) 활성화</li>
         </ul>
       </div>
-      <div style={{ border: "1px solid #ECECEC", borderRadius: 12, padding: 20 }}>
+      <div
+        style={{
+          border: "1px solid #ECECEC",
+          borderRadius: 12,
+          padding: "var(--inset-card-large)",
+        }}
+      >
         <div style={{ fontSize: 14, fontWeight: 700, color: "#F13F00", marginBottom: 12 }}>
           ● Don&apos;t
         </div>
@@ -254,7 +273,11 @@ function DoDontBlock() {
 function ElevationTokensPage() {
   return (
     <div
-      style={{ fontFamily: "'Pretendard', sans-serif", padding: 24, backgroundColor: "#FFFFFF" }}
+      style={{
+        fontFamily: "'Pretendard', sans-serif",
+        padding: "var(--inset-modal)",
+        backgroundColor: "#FFFFFF",
+      }}
     >
       <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: "#111111" }}>
         Elevation Tokens

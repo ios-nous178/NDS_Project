@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -33,8 +33,8 @@ const wpStyles = `
   :where(.${WP_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[8]}px ${spacing[12]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-chip) var(--inset-input);
     background: ${cv.surface.section};
     border-radius: 9999px;
     font-family: ${fontFamily.web};

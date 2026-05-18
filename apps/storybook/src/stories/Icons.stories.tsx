@@ -65,8 +65,8 @@ function IconCard({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 8,
-        padding: "16px 8px",
+        gap: "var(--gap-default)",
+        padding: "var(--inset-card) var(--inset-chip)",
         border: "1px solid #ECECEC",
         borderRadius: 8,
         background: bg,
@@ -120,8 +120,8 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
   }, [query]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}>
         <input
           type="search"
           value={query}
@@ -130,7 +130,7 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
           style={{
             flex: 1,
             height: 40,
-            padding: "0 12px",
+            padding: "0 var(--inset-input)",
             border: "1px solid #D8D8D8",
             borderRadius: 8,
             fontSize: 14,
@@ -146,7 +146,7 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-          gap: 12,
+          gap: "var(--gap-comfortable)",
         }}
       >
         {filtered.map(({ name, Component }) => (
@@ -231,9 +231,9 @@ export const UsageExamples: Story = {
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: 8,
+            gap: "var(--gap-default)",
             height: 48,
-            padding: "0 16px",
+            padding: "0 var(--inset-card)",
             borderRadius: 8,
             background: "#2B96ED",
             color: "#FFFFFF",
@@ -293,7 +293,7 @@ function Block({
       style={{
         border: `1px solid ${bad ? "#F4C8B8" : "#D6E4F0"}`,
         borderRadius: 8,
-        padding: 16,
+        padding: "var(--inset-card)",
         background: bad ? "#FFF7F4" : "#F8FBFE",
       }}
     >
@@ -311,7 +311,7 @@ function Block({
       <pre
         style={{
           margin: 0,
-          padding: 12,
+          padding: "var(--inset-input)",
           background: "#0F1B2C",
           color: "#E6EEF8",
           borderRadius: 6,

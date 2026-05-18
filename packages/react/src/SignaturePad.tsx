@@ -1,13 +1,5 @@
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -56,7 +48,7 @@ const sigStyles = `
   :where(.${SP_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -103,12 +95,12 @@ const sigStyles = `
   :where(.${SP_CONTROLS_CLASS}) {
     display: flex;
     justify-content: flex-end;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${SP_BTN_CLASS}) {
     height: 32px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border-radius: ${radius.md}px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};

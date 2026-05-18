@@ -41,7 +41,7 @@ export const Extended: Story = {
 export const Sizes: Story = {
   name: "Size/md vs lg",
   render: () => (
-    <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+    <div style={{ display: "flex", gap: "var(--gap-loose)", alignItems: "center" }}>
       <FAB icon={plusIconNode} aria-label="md" size="md" position="static" />
       <FAB icon={plusIconNode} aria-label="lg" size="lg" position="static" />
     </div>
@@ -51,7 +51,15 @@ export const Sizes: Story = {
 export const Colors: Story = {
   name: "Color/primary secondary neutral",
   render: () => (
-    <div style={{ display: "flex", gap: 16, padding: 24, background: "#F5F6F8", borderRadius: 12 }}>
+    <div
+      style={{
+        display: "flex",
+        gap: "var(--gap-loose)",
+        padding: "var(--inset-modal)",
+        background: "#F5F6F8",
+        borderRadius: 12,
+      }}
+    >
       <FAB icon={plusIconNode} aria-label="primary" color="primary" position="static" />
       <FAB icon={plusIconNode} aria-label="secondary" color="secondary" position="static" />
       <FAB icon={plusIconNode} aria-label="neutral" color="neutral" position="static" />
@@ -71,7 +79,9 @@ export const FixedBottomRight: Story = {
         overflow: "hidden",
       }}
     >
-      <p style={{ padding: 24 }}>스크롤 가능한 콘텐츠. 우측 하단에 글쓰기 FAB가 떠 있습니다.</p>
+      <p style={{ padding: "var(--inset-modal)" }}>
+        스크롤 가능한 콘텐츠. 우측 하단에 글쓰기 FAB가 떠 있습니다.
+      </p>
       <div
         style={{
           position: "absolute",

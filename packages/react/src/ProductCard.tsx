@@ -81,7 +81,7 @@ const pcStyles = `
     position: absolute;
     top: ${spacing[8]}px;
     left: ${spacing[8]}px;
-    padding: 2px 8px;
+    padding: 2px var(--inset-chip);
     border-radius: 9999px;
     background: var(--semantic-fill-status-error);
     color: #fff;
@@ -106,7 +106,7 @@ const pcStyles = `
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    padding: var(--inset-input) var(--inset-card);
   }
 
   :where(.${PC_DESC_CLASS}) {
@@ -135,7 +135,7 @@ const pcStyles = `
     color: ${cv.textRole.subtle};
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 `;
 

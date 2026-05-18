@@ -1,5 +1,5 @@
 import React, { useId } from "react";
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -46,7 +46,7 @@ const formFieldStyles = `
   :where(.${FF_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -55,13 +55,13 @@ const formFieldStyles = `
   :where(.${FF_LABEL_ROW_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${FF_LABEL_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
@@ -93,7 +93,7 @@ const formFieldStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${FF_HELPER_CLASS}) {

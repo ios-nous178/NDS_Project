@@ -45,7 +45,7 @@ const moodStyles = `
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
   }
 
@@ -59,7 +59,7 @@ const moodStyles = `
     flex: 1 1 0;
     min-width: 0;
     cursor: pointer;
-    padding: ${spacing[8]}px ${spacing[4]}px;
+    padding: var(--inset-chip) ${spacing[4]}px;
     border-radius: ${radius.lg}px;
     transition: background-color ${transition.default};
   }

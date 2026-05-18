@@ -1,13 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  spacing,
-  transition,
-  typeScale,
-  zIndex,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, transition, typeScale, zIndex } from "@nudge-eap/tokens";
 import { WebPortal } from "./internal/web";
 
 /* ─── Class names ─── */
@@ -50,8 +42,8 @@ const toastStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[8]}px;
-    padding: ${spacing[16]}px;
+    gap: var(--gap-default);
+    padding: var(--inset-card);
     z-index: ${zIndex.toast};
     pointer-events: none;
     box-sizing: border-box;
@@ -68,9 +60,9 @@ const toastStyles = `
   :where(.${TOAST_ITEM_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     max-width: var(--nds-toast-max-width, 400px);
-    padding: var(--nds-toast-padding, ${spacing[12]}px ${spacing[20]}px);
+    padding: var(--nds-toast-padding, var(--inset-input) var(--inset-card-large));
     border-radius: var(--nds-toast-radius, 22px);
     font-family: ${fontFamily.web};
     font-size: var(--nds-toast-font-size, ${typeScale.body3.fontSize}px);

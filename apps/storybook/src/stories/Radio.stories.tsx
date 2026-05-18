@@ -29,7 +29,7 @@ export const Disabled: Story = {
 export const AllStates: Story = {
   name: "State/All States",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
       <Radio checked={false} onCheckedChange={() => undefined} label="Default (Unselected)" />
       <Radio checked onCheckedChange={() => undefined} label="Selected" />
       <Radio checked={false} disabled label="Disabled (Unselected)" />

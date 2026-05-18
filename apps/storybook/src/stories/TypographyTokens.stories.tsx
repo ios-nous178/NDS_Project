@@ -25,8 +25,8 @@ function TypeRow({
       style={{
         display: "grid",
         gridTemplateColumns: "minmax(180px, 220px) 1fr",
-        gap: 24,
-        padding: "20px 0",
+        gap: "var(--gap-wide)",
+        padding: "var(--inset-card-large) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
@@ -42,7 +42,7 @@ function TypeRow({
         </div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
         {WEIGHT_VARIANTS.map((w) => (
           <div key={w.value}>
             <div style={{ fontSize: 11, color: "#999999", marginBottom: 4 }}>{w.label}</div>
@@ -67,7 +67,13 @@ function TypeRow({
 
 function TypographyTokensPage() {
   return (
-    <div style={{ fontFamily: fontFamily.web, padding: 24, backgroundColor: "#FFFFFF" }}>
+    <div
+      style={{
+        fontFamily: fontFamily.web,
+        padding: "var(--inset-modal)",
+        backgroundColor: "#FFFFFF",
+      }}
+    >
       <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: "#111111" }}>
         Typography Tokens
       </h2>
@@ -79,15 +85,15 @@ function TypographyTokensPage() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: 12,
+          gap: "var(--gap-comfortable)",
           marginBottom: 32,
         }}
       >
-        <div style={{ padding: 16, borderRadius: 12, backgroundColor: "#F8F9FB" }}>
+        <div style={{ padding: "var(--inset-card)", borderRadius: 12, backgroundColor: "#F8F9FB" }}>
           <div style={{ fontSize: 12, color: "#777777", marginBottom: 6 }}>Font Family</div>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>{fontFamily.web}</div>
         </div>
-        <div style={{ padding: 16, borderRadius: 12, backgroundColor: "#F8F9FB" }}>
+        <div style={{ padding: "var(--inset-card)", borderRadius: 12, backgroundColor: "#F8F9FB" }}>
           <div style={{ fontSize: 12, color: "#777777", marginBottom: 6 }}>Font Weights</div>
           <div style={{ fontSize: 14, color: "#111111", lineHeight: "22px" }}>
             Regular {fontWeight.regular} / Medium {fontWeight.medium} / Bold {fontWeight.bold}

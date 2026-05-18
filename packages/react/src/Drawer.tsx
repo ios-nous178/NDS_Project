@@ -118,8 +118,8 @@ const drawerStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[20]}px ${spacing[20]}px ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card-large) var(--inset-card-large) var(--inset-card);
     border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
@@ -171,14 +171,14 @@ const drawerStyles = `
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: ${spacing[20]}px;
+    padding: var(--inset-card-large);
     box-sizing: border-box;
   }
 
   :where(.${DR_FOOTER_CLASS}) {
     display: flex;
-    gap: ${spacing[8]}px;
-    padding: ${spacing[16]}px ${spacing[20]}px;
+    gap: var(--gap-default);
+    padding: var(--inset-card) var(--inset-card-large);
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 

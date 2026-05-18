@@ -100,7 +100,14 @@ function WithSearchCallbackExample() {
   const [result, setResult] = useState("");
 
   return (
-    <div style={{ width: 360, display: "flex", flexDirection: "column", gap: 12 }}>
+    <div
+      style={{
+        width: 360,
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+      }}
+    >
       <SearchInput
         label="검색"
         value={value}
@@ -212,7 +219,14 @@ function SearchCallbackInteractionDemo() {
   const [result, setResult] = useState("");
 
   return (
-    <div style={{ width: 360, display: "flex", flexDirection: "column", gap: 12 }}>
+    <div
+      style={{
+        width: 360,
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+      }}
+    >
       <SearchInput
         label="검색"
         value={value}

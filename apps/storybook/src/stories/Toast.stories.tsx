@@ -49,7 +49,7 @@ function VariantsExample() {
   const { toast } = useToast();
 
   return (
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", gap: "var(--gap-default)", flexWrap: "wrap" }}>
       <Button onClick={() => toast("기본 메시지입니다")}>Default</Button>
       <Button variant="soft" onClick={() => toast("저장이 완료되었습니다", { variant: "success" })}>
         Success
@@ -92,7 +92,7 @@ function CustomDurationExample() {
   const { toast } = useToast();
 
   return (
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", gap: "var(--gap-default)", flexWrap: "wrap" }}>
       <Button onClick={() => toast("1초 후 사라집니다", { duration: 1000 })}>1초</Button>
       <Button onClick={() => toast("5초 후 사라집니다", { duration: 5000 })}>5초</Button>
       <Button onClick={() => toast("10초 후 사라집니다", { duration: 10000 })}>10초</Button>
@@ -134,7 +134,7 @@ function StackingExample() {
   let count = 0;
 
   return (
-    <div style={{ display: "flex", gap: 8 }}>
+    <div style={{ display: "flex", gap: "var(--gap-default)" }}>
       <Button
         onClick={() => {
           count++;
@@ -217,7 +217,7 @@ function SuccessFlowExample() {
   const { toast } = useToast();
 
   return (
-    <div style={{ display: "flex", gap: 8 }}>
+    <div style={{ display: "flex", gap: "var(--gap-default)" }}>
       <Button onClick={() => toast("프로필이 저장되었습니다", { variant: "success" })}>
         프로필 저장
       </Button>

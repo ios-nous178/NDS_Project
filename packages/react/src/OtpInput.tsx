@@ -1,13 +1,5 @@
 import React, { useCallback, useId, useRef } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -21,7 +13,7 @@ const otpStyles = `
   :where(.${OTP_ROOT_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }

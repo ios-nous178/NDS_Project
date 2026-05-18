@@ -55,7 +55,14 @@ export const WithThumbnail: Story = {
 export const ListExample: Story = {
   name: "Recipe/리스트 (클릭 가능)",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 480 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+        width: 480,
+      }}
+    >
       {[
         {
           date: "2026-05-08",

@@ -1,13 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -85,7 +77,7 @@ const videoPlayerStyles = `
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: ${spacing[16]}px;
+    padding: var(--inset-card);
     color: #fff;
     background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.5) 100%);
     pointer-events: none;
@@ -111,7 +103,7 @@ const videoPlayerStyles = `
     font-size: 12px;
     line-height: 16px;
     background: rgba(0,0,0,0.55);
-    padding: 4px 8px;
+    padding: 4px var(--inset-chip);
     border-radius: ${radius.sm}px;
     font-weight: ${fontWeight.medium};
   }
@@ -146,7 +138,7 @@ const videoPlayerStyles = `
   :where(.${VP_CONTROLS_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
   }
 

@@ -1,13 +1,5 @@
 import React, { createContext, useCallback, useContext, useId, useState } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -24,7 +16,7 @@ const accordionStyles = `
   :where(.${ACC_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -41,7 +33,7 @@ const accordionStyles = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: ${spacing[16]}px ${spacing[20]}px;
+    padding: var(--inset-card) var(--inset-card-large);
     border: none;
     background: transparent;
     cursor: pointer;
@@ -75,7 +67,7 @@ const accordionStyles = `
   }
 
   :where(.${ACC_CONTENT_CLASS}) {
-    padding: 0 ${spacing[20]}px ${spacing[16]}px;
+    padding: 0 var(--inset-card-large) var(--inset-card);
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     color: ${cv.textRole.subtle};

@@ -177,7 +177,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      gap: 4,
+      gap: "var(--gap-tight)",
       height: sizeTokens.height,
       padding: `${sizeTokens.paddingY}px ${sizeTokens.paddingX}px`,
       borderRadius: sizeTokens.radius,

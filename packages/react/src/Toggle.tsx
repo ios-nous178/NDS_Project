@@ -1,5 +1,5 @@
 import React, { useCallback, useId } from "react";
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -22,7 +22,7 @@ const toggleStyles = `
   :where(.${TG_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     cursor: pointer;
     font-family: ${fontFamily.web};
     box-sizing: border-box;

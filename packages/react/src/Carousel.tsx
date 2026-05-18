@@ -73,7 +73,7 @@ const carouselStyles = `
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     margin-top: ${spacing[16]}px;
   }
 

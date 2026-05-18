@@ -70,8 +70,8 @@ const niStyles = `
   :where(.${NI_CLASS}) {
     display: flex;
     align-items: flex-start;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card);
     background: ${cv.surface.default};
     border-bottom: 1px solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};

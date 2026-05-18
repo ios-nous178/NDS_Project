@@ -67,8 +67,8 @@ const rcStyles = `
   :where(.${RC_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px ${spacing[20]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card) var(--inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -79,14 +79,14 @@ const rcStyles = `
   :where(.${RC_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     justify-content: space-between;
   }
 
   :where(.${RC_AUTHOR_AREA_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     min-width: 0;
   }
 
@@ -115,7 +115,7 @@ const rcStyles = `
   :where(.${RC_META_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-size: ${typeScale.caption2.fontSize}px;
     color: ${cv.textRole.subtle};
   }
@@ -123,7 +123,7 @@ const rcStyles = `
   :where(.${RC_RATING_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     flex-shrink: 0;
     color: #FFD54F;
     font-size: ${typeScale.body3.fontSize}px;
@@ -153,11 +153,11 @@ const rcStyles = `
   :where(.${RC_TAGS_CLASS}) {
     display: flex;
     flex-wrap: wrap;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${RC_TAG_CLASS}) {
-    padding: 2px 8px;
+    padding: 2px var(--inset-chip);
     border-radius: 9999px;
     background: ${cv.surface.section};
     color: ${cv.textRole.subtle};

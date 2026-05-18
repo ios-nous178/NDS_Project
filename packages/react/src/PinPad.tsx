@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -39,8 +39,8 @@ const ppStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[24]}px;
-    padding: ${spacing[20]}px;
+    gap: var(--gap-wide);
+    padding: var(--inset-card-large);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -54,7 +54,7 @@ const ppStyles = `
   :where(.${PP_DOTS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${PP_DOTS_CLASS}[data-error="true"]) {
@@ -89,7 +89,7 @@ const ppStyles = `
   :where(.${PP_GRID_CLASS}) {
     display: grid;
     grid-template-columns: repeat(3, 72px);
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${PP_KEY_CLASS}) {

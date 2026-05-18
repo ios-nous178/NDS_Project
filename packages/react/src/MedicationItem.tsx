@@ -41,8 +41,8 @@ const medicationItemStyles = `
   :where(.${MI_CLASS}) {
     display: flex;
     align-items: flex-start;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-input) var(--inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
@@ -77,7 +77,7 @@ const medicationItemStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${MI_HEAD_CLASS}) {
@@ -104,19 +104,19 @@ const medicationItemStyles = `
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${MI_TIMES_CLASS}) {
     display: inline-flex;
     flex-wrap: wrap;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${MI_TIME_CLASS}) {
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[2]}px ${spacing[8]}px;
+    padding: ${spacing[2]}px var(--inset-chip);
     background: ${cv.surface.page};
     color: ${cv.textRole.strong};
     border-radius: ${radius.pill}px;

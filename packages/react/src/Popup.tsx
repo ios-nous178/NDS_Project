@@ -43,8 +43,8 @@ const popupStyles = `
     max-width: var(--nds-popup-max-width, 400px);
     display: flex;
     flex-direction: column;
-    gap: ${spacing[24]}px;
-    padding: ${spacing[28]}px ${spacing[16]}px ${spacing[16]}px;
+    gap: var(--gap-wide);
+    padding: ${spacing[28]}px var(--inset-card) var(--inset-card);
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
     box-shadow: ${shadow["3"]};
@@ -55,7 +55,7 @@ const popupStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     text-align: center;
     color: ${cv.textRole.normal};
     font-family: ${fontFamily.web};
@@ -79,7 +79,7 @@ const popupStyles = `
 
   :where(.${POPUP_ACTIONS_CLASS}) {
     display: flex;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
   }
 
@@ -93,7 +93,7 @@ const popupStyles = `
     align-items: center;
     justify-content: center;
     min-height: 44px;
-    padding: ${spacing[10]}px ${spacing[16]}px;
+    padding: ${spacing[10]}px var(--inset-card);
     border: none;
     border-radius: ${radius.md}px;
     font-family: ${fontFamily.web};

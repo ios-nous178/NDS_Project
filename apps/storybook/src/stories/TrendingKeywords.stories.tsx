@@ -112,7 +112,7 @@ function TrendingKeywordsWithClickHandler() {
   const [clicked, setClicked] = useState<TrendingKeywordItem | null>(null);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-wide)" }}>
       <TrendingKeywords
         items={sampleItems}
         title="인기 검색어"
@@ -122,7 +122,7 @@ function TrendingKeywordsWithClickHandler() {
       {clicked && (
         <div
           style={{
-            padding: 16,
+            padding: "var(--inset-card)",
             borderRadius: 8,
             background: "#f5f5f5",
             fontFamily: "'Pretendard', sans-serif",

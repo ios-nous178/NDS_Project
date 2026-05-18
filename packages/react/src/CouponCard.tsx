@@ -67,12 +67,12 @@ const ccStyles = `
   :where(.${CC_LEFT_CLASS}) {
     flex-shrink: 0;
     width: 110px;
-    padding: ${spacing[16]}px ${spacing[12]}px;
+    padding: var(--inset-card) var(--inset-input);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${CC_DISCOUNT_CLASS}) {
@@ -121,8 +121,8 @@ const ccStyles = `
     flex: 1;
     display: flex;
     align-items: center;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px ${spacing[20]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card) var(--inset-card-large);
     color: ${cv.textRole.normal};
     background: ${cv.surface.default};
   }
@@ -159,7 +159,7 @@ const ccStyles = `
   :where(.${CC_ACTION_CLASS}) {
     flex-shrink: 0;
     height: 32px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border: none;
     border-radius: 9999px;
     background: var(--semantic-bg-brand-default);

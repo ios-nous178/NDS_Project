@@ -95,7 +95,7 @@ function StandaloneRadioExample() {
   const [selected, setSelected] = useState("a");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
       <Radio
         name="standalone"
         checked={selected === "a"}

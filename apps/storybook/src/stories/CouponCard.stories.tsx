@@ -61,7 +61,14 @@ export const Disabled: Story = {
 export const List: Story = {
   name: "Recipe/쿠폰 리스트",
   render: () => (
-    <div style={{ width: 480, display: "flex", flexDirection: "column", gap: 12 }}>
+    <div
+      style={{
+        width: 480,
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+      }}
+    >
       <CouponCard
         discount="30%"
         title="첫 구매 30% 할인"

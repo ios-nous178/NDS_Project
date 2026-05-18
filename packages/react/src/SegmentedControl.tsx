@@ -57,7 +57,7 @@ const segmentedStyles = `
     background: ${cv.surface.subtle};
     border-radius: ${radius.md}px;
     padding: ${spacing[4]}px;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -74,7 +74,7 @@ const segmentedStyles = `
     justify-content: center;
     min-width: 0;
     height: 32px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     background: transparent;
     border: none;
     border-radius: ${radius.sm}px;

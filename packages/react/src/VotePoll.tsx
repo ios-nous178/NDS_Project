@@ -55,8 +55,8 @@ const vpStyles = `
   :where(.${VP_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px ${spacing[20]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card) var(--inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -74,7 +74,7 @@ const vpStyles = `
   :where(.${VP_OPTIONS_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${VP_OPTION_CLASS}) {
@@ -82,7 +82,7 @@ const vpStyles = `
     display: flex;
     align-items: center;
     height: 44px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};

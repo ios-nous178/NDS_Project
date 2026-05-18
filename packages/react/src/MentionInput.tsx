@@ -66,7 +66,7 @@ const miStyles = `
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
   }
 
@@ -93,7 +93,7 @@ const miStyles = `
     background: transparent;
     outline: none;
     resize: vertical;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    padding: var(--inset-input) var(--inset-card);
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
@@ -120,8 +120,8 @@ const miStyles = `
   :where(.${MI_ITEM_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[8]}px ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-chip) var(--inset-card);
     cursor: pointer;
     color: ${cv.textRole.normal};
     transition: background-color ${transition.default};

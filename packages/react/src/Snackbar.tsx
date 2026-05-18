@@ -70,8 +70,8 @@ const snackbarStyles = `
   :where(.${SB_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-input) var(--inset-card);
     border-radius: var(--nds-snackbar-radius, ${radius.md}px);
     background: var(--nds-snackbar-bg, var(--semantic-bg-section-default));
     color: var(--nds-snackbar-fg, var(--semantic-text-normal-default));
@@ -130,7 +130,7 @@ const snackbarStyles = `
 
   :where(.${SB_ACTION_CLASS}) {
     height: 28px;
-    padding: 0 ${spacing[8]}px;
+    padding: 0 var(--inset-chip);
     border: none;
     background: rgba(255, 255, 255, 0.12);
     color: inherit;

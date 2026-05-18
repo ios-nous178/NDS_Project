@@ -61,12 +61,12 @@ const calendarStyles = `
   :where(.${CL_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
     width: 100%;
     font-family: ${fontFamily.web};
     color: ${cv.textRole.normal};
     background: var(--nds-calendar-bg, ${cv.surface.default});
-    padding: var(--nds-calendar-padding, ${spacing[16]}px);
+    padding: var(--nds-calendar-padding, var(--inset-card));
     border-radius: var(--nds-calendar-radius, ${radius.lg}px);
     box-sizing: border-box;
   }
@@ -87,7 +87,7 @@ const calendarStyles = `
   :where(.${CL_NAV_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${CL_NAV_BTN_CLASS}) {
@@ -121,14 +121,14 @@ const calendarStyles = `
   :where(.${CL_GRID_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${CL_WEEKDAYS_CLASS}),
   :where(.${CL_DAYS_CLASS}) {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${CL_WEEKDAY_CLASS}) {

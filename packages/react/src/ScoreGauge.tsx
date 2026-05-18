@@ -48,7 +48,7 @@ const scoreGaugeStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -108,13 +108,13 @@ const scoreGaugeStyles = `
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${SG_LEGEND_ITEM_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.subtle};

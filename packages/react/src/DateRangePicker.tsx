@@ -17,7 +17,7 @@ const dateRangeStyles = `
   :where(.${DR_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -26,7 +26,7 @@ const dateRangeStyles = `
   :where(.${DR_FIELD_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     flex-wrap: wrap;
   }
 

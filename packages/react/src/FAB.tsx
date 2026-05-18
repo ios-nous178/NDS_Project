@@ -67,7 +67,7 @@ const fabStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};

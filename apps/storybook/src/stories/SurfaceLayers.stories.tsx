@@ -43,7 +43,7 @@ function LayerSwatch({
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 240px",
-        gap: 16,
+        gap: "var(--gap-loose)",
         alignItems: "stretch",
         marginBottom: 12,
       }}
@@ -135,7 +135,7 @@ function SurfacePage() {
     <div
       style={{
         fontFamily: "'Pretendard', sans-serif",
-        padding: 24,
+        padding: "var(--inset-modal)",
         background: "var(--semantic-bg-page-default)",
       }}
     >
@@ -182,7 +182,7 @@ function SurfacePage() {
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: 24,
+          gap: "var(--gap-wide)",
         }}
       >
         <div>
@@ -197,7 +197,9 @@ function SurfacePage() {
           <p style={{ fontSize: 13, color: "#666", marginBottom: 12 }}>
             KPI/summary 카드를 brand bg 로 도배 — 위계가 평탄해진다.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--gap-default)" }}
+          >
             <DontCard label="이번 주 상담" body="3회" />
             <DontCard label="다음 일정" body="목 14:00" />
             <DontCard label="평균 만족도" body="4.8 / 5" />

@@ -54,7 +54,7 @@ const timelineStyles = `
 
   :where(.${TL_ITEM_CLASS}) {
     display: flex;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     align-items: stretch;
   }
 
@@ -109,7 +109,7 @@ const timelineStyles = `
   :where(.${TL_BODY_CLASS}) {
     flex: 1;
     min-width: 0;
-    padding-bottom: ${spacing[20]}px;
+    padding-bottom: var(--inset-card-large);
     display: flex;
     flex-direction: column;
     gap: ${spacing[2]}px;
@@ -128,7 +128,7 @@ const timelineStyles = `
   :where(.${TL_TITLE_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.bold};
@@ -145,7 +145,7 @@ const timelineStyles = `
   :where(.${TL_BADGE_CLASS}) {
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[2]}px ${spacing[8]}px;
+    padding: ${spacing[2]}px var(--inset-chip);
     border-radius: ${radius.pill}px;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;

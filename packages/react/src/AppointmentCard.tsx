@@ -125,8 +125,8 @@ const apptStyles = `
   :where(.${AC_CLASS}) {
     display: flex;
     align-items: stretch;
-    gap: ${spacing[16]}px;
-    padding: ${spacing[16]}px;
+    gap: var(--gap-loose);
+    padding: var(--inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -153,7 +153,7 @@ const apptStyles = `
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[8]}px;
+    padding: var(--inset-chip);
     gap: 2px;
   }
 
@@ -183,7 +183,7 @@ const apptStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${AC_TITLE_CLASS}) {
@@ -210,7 +210,7 @@ const apptStyles = `
     color: ${cv.textRole.subtle};
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${AC_FOOTER_CLASS}) {
@@ -218,7 +218,7 @@ const apptStyles = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${AC_STATUS_CLASS}) {
@@ -235,12 +235,12 @@ const apptStyles = `
   :where(.${AC_ACTIONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${AC_ACTION_CLASS}) {
     height: 32px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border-radius: ${radius.md}px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};

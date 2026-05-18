@@ -35,8 +35,8 @@ const ghStyles = `
   :where(.${GH_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[16]}px;
-    padding: ${spacing[24]}px;
+    gap: var(--gap-loose);
+    padding: var(--inset-modal);
     background: ${cv.surface.default};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
@@ -51,7 +51,7 @@ const ghStyles = `
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
   }
 
   :where(.${GH_GREETING_CLASS}) {

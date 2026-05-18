@@ -30,7 +30,7 @@ const fileUploadStyles = `
   :where(.${FU_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -42,8 +42,8 @@ const fileUploadStyles = `
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: ${spacing[8]}px;
-    padding: ${spacing[24]}px ${spacing[20]}px;
+    gap: var(--gap-default);
+    padding: var(--inset-modal) var(--inset-card-large);
     background: ${cv.surface.page};
     border: 1.5px dashed ${cv.borderRole.normal};
     border-radius: ${radius.lg}px;
@@ -111,8 +111,8 @@ const fileUploadStyles = `
   :where(.${FU_ITEM_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[10]}px;
-    padding: ${spacing[8]}px ${spacing[12]}px;
+    gap: var(--gap-default);
+    padding: var(--inset-chip) var(--inset-input);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;

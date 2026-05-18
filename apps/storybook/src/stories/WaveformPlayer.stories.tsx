@@ -49,7 +49,9 @@ export const CustomColor: Story = {
 export const InChat: Story = {
   name: "Recipe/채팅 음성 메시지",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, width: 320 }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)", width: 320 }}
+    >
       <div style={{ alignSelf: "flex-end" }}>
         <WaveformPlayer src={SAMPLE_AUDIO} />
       </div>

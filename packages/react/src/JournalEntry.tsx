@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -51,8 +43,8 @@ export interface JournalEntryProps extends Omit<React.HTMLAttributes<HTMLDivElem
 const journalStyles = `
   :where(.${JE_CLASS}) {
     display: flex;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[16]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -69,13 +61,13 @@ const journalStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${JE_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${JE_MOOD_CLASS}) {
@@ -123,11 +115,11 @@ const journalStyles = `
   :where(.${JE_TAGS_CLASS}) {
     display: flex;
     flex-wrap: wrap;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${JE_TAG_CLASS}) {
-    padding: 2px 8px;
+    padding: 2px var(--inset-chip);
     border-radius: 9999px;
     background: ${cv.surface.section};
     color: ${cv.textRole.subtle};

@@ -86,7 +86,7 @@ const ssStyles = `
     max-width: 480px;
     background: ${cv.surface.default};
     border-radius: ${radius.lg}px ${radius.lg}px 0 0;
-    padding: ${spacing[24]}px ${spacing[20]}px ${spacing[20]}px;
+    padding: var(--inset-modal) var(--inset-card-large) var(--inset-card-large);
     box-sizing: border-box;
     animation: nds-share-slide 240ms ease;
   }
@@ -99,7 +99,7 @@ const ssStyles = `
   :where(.${SS_HEADER_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     margin-bottom: ${spacing[20]}px;
   }
 
@@ -119,15 +119,15 @@ const ssStyles = `
   :where(.${SS_GRID_CLASS}) {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${SS_ITEM_CLASS}) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[8]}px;
-    padding: ${spacing[8]}px;
+    gap: var(--gap-default);
+    padding: var(--inset-chip);
     border: none;
     background: transparent;
     cursor: pointer;
@@ -159,9 +159,9 @@ const ssStyles = `
   :where(.${SS_LINK_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     margin-top: ${spacing[16]}px;
-    padding: ${spacing[8]}px ${spacing[12]}px;
+    padding: var(--inset-chip) var(--inset-input);
     background: ${cv.surface.section};
     border-radius: ${radius.md}px;
   }
@@ -179,7 +179,7 @@ const ssStyles = `
 
   :where(.${SS_COPY_BTN_CLASS}) {
     height: 32px;
-    padding: 0 ${spacing[12]}px;
+    padding: 0 var(--inset-input);
     border: none;
     border-radius: 9999px;
     background: ${cv.textRole.normal};

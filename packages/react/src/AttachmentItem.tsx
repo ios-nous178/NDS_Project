@@ -59,8 +59,8 @@ const attachmentItemStyles = `
   :where(.${AT_CLASS}) {
     display: flex;
     align-items: center;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[10]}px ${spacing[12]}px;
+    gap: var(--gap-comfortable);
+    padding: ${spacing[10]}px var(--inset-input);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
@@ -158,7 +158,7 @@ const attachmentItemStyles = `
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
   }
 
   :where(.${AT_BTN_CLASS}) {

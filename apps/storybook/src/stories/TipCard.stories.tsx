@@ -34,7 +34,14 @@ export const Playground: Story = {
 export const Tones: Story = {
   name: "Variant/모든 톤",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 480 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+        width: 480,
+      }}
+    >
       <TipCard
         tone="info"
         label="정보"

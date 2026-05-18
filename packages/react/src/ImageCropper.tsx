@@ -1,5 +1,5 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -45,7 +45,7 @@ const icStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     font-family: ${fontFamily.web};
   }
 
@@ -114,7 +114,7 @@ const icStyles = `
     max-width: 320px;
     display: flex;
     align-items: center;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
   }
 
   :where(.${IC_ZOOM_BTN_CLASS}) {

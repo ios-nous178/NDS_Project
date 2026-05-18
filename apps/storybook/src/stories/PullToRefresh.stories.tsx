@@ -22,12 +22,22 @@ export const Playground: Story = {
     return (
       <div style={{ width: 360, height: 400, border: "1px solid #ddd", borderRadius: 8 }}>
         <PullToRefresh onRefresh={refresh} style={{ height: "100%" }}>
-          <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div
+            style={{
+              padding: "var(--inset-card)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--gap-default)",
+            }}
+          >
             <p style={{ margin: 0, color: "#888", fontSize: 13 }}>
               위로 끌어내려서 새로고침해보세요.
             </p>
             {items.map((it, i) => (
-              <div key={i} style={{ padding: 12, background: "#FAFBFC", borderRadius: 8 }}>
+              <div
+                key={i}
+                style={{ padding: "var(--inset-input)", background: "#FAFBFC", borderRadius: 8 }}
+              >
                 {it}
               </div>
             ))}
@@ -49,7 +59,7 @@ export const CustomLabels: Story = {
         refreshingLabel="동기화 중..."
         style={{ height: "100%" }}
       >
-        <div style={{ padding: 16 }}>
+        <div style={{ padding: "var(--inset-card)" }}>
           <p style={{ margin: 0 }}>일기 콘텐츠 영역</p>
         </div>
       </PullToRefresh>

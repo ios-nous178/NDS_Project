@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -43,7 +43,7 @@ const oiStyles = `
   :where(.${OI_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-family: ${fontFamily.web};
   }
 

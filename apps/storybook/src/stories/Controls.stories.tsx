@@ -42,8 +42,8 @@ function GuideSection({
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: 16,
-        padding: "24px 0",
+        gap: "var(--gap-loose)",
+        padding: "var(--inset-modal) 0",
         borderTop: `1px solid ${colors.neutral[100]}`,
       }}
     >
@@ -69,7 +69,14 @@ function GuideSection({
 
 function StateRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 28 }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "var(--gap-comfortable)",
+        minHeight: 28,
+      }}
+    >
       <div style={{ width: 36, display: "flex", justifyContent: "center" }}>{children}</div>
       <span style={{ fontSize: 14, color: colors.neutral[800] }}>{label}</span>
     </div>
@@ -100,7 +107,7 @@ function SpecTable({ rows }: { rows: { key: string; value: string }[] }) {
           >
             <td
               style={{
-                padding: "8px 12px",
+                padding: "var(--inset-chip) var(--inset-input)",
                 color: colors.neutral[700],
                 fontWeight: 500,
                 width: 160,
@@ -129,12 +136,12 @@ function OverviewCard({
     <div
       style={{
         flex: 1,
-        padding: 20,
+        padding: "var(--inset-card-large)",
         background: colors.neutral[50],
         borderRadius: 12,
         display: "flex",
         flexDirection: "column",
-        gap: 8,
+        gap: "var(--gap-default)",
       }}
     >
       <h4 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{title}</h4>
@@ -166,7 +173,7 @@ export const TypeOverview: Story = {
       title="Type Overview"
       description="Radio · Checkbox · Toggle 세 가지 선택 컨트롤 컴포넌트입니다. 각각 단일 선택, 다중 선택, 기능 켜기/끄기 용도에 맞게 사용합니다."
     >
-      <div style={{ display: "flex", gap: 16, width: "100%", maxWidth: 1300 }}>
+      <div style={{ display: "flex", gap: "var(--gap-loose)", width: "100%", maxWidth: 1300 }}>
         <OverviewCard
           title="Radio Button"
           description="여러 옵션 중 단 하나만 선택. 상담 신청서의 성별, 상담 유형 선택에 사용."
@@ -194,7 +201,9 @@ export const TypeOverview: Story = {
 function RadioExampleGender() {
   const [value, setValue] = useState("self");
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 420 }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)", maxWidth: 420 }}
+    >
       <strong style={{ fontSize: 14 }}>성별*</strong>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
         {[
@@ -224,7 +233,14 @@ export const RadioStates: Story = {
       description="여러 옵션 중 반드시 하나만 선택해야 할 때 사용합니다. 같은 그룹 내에서는 하나를 선택하면 나머지는 자동으로 해제됩니다."
     >
       <div style={{ display: "flex", gap: 64, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 220 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--gap-comfortable)",
+            minWidth: 220,
+          }}
+        >
           <strong style={{ fontSize: 14 }}>States</strong>
           <StateRow label="Default (Unselected)">
             <Radio checked={false} onCheckedChange={() => undefined} />
@@ -279,7 +295,14 @@ function CheckboxExampleAgreement() {
   const [b, setB] = useState(true);
   const [c, setC] = useState(false);
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 320 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--gap-comfortable)",
+        maxWidth: 320,
+      }}
+    >
       <Checkbox checked={a} onCheckedChange={setA} label="[필수] 서비스 이용약관 동의" />
       <Checkbox checked={b} onCheckedChange={setB} label="[필수] 개인정보 처리방침 동의" />
       <Checkbox checked={c} onCheckedChange={setC} label="[선택] 마케팅 정보 수신 동의" />
@@ -295,7 +318,14 @@ export const CheckboxStates: Story = {
       description="독립적인 항목을 선택하거나 해제할 때 사용합니다. 여러 항목을 동시에 선택할 수 있으며, 각 항목은 서로 독립적입니다."
     >
       <div style={{ display: "flex", gap: 64, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 220 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--gap-comfortable)",
+            minWidth: 220,
+          }}
+        >
           <strong style={{ fontSize: 14 }}>States</strong>
           <StateRow label="Unchecked">
             <Checkbox checked={false} onCheckedChange={() => undefined} />
@@ -530,13 +560,20 @@ function GuideCard({
     <div
       style={{
         flex: 1,
-        padding: 20,
+        padding: "var(--inset-card-large)",
         borderRadius: 12,
         background: isDo ? "#EAF8F0" : "#FCEEEE",
         border: `1px solid ${isDo ? "#9BD9B3" : "#F0B1B1"}`,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "var(--gap-default)",
+          marginBottom: 12,
+        }}
+      >
         <span
           style={{
             display: "inline-flex",
@@ -570,7 +607,7 @@ export const DoDont: Story = {
   name: "Guide/DO & Don't",
   render: () => (
     <GuideSection title="DO / Don't">
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "var(--gap-loose)", flexWrap: "wrap" }}>
         <GuideCard
           variant="do"
           title="DO"

@@ -245,7 +245,7 @@ function FilterSelectExample() {
   ];
 
   return (
-    <div style={{ width: 360, display: "flex", gap: 8 }}>
+    <div style={{ width: 360, display: "flex", gap: "var(--gap-default)" }}>
       <Select options={regions} value={region} onValueChange={setRegion} placeholder="지역" />
       <Select options={counselTypes} value={type} onValueChange={setType} placeholder="유형" />
     </div>
@@ -266,7 +266,7 @@ function FormValidationExample() {
   const hasError = submitted && !value;
 
   return (
-    <div style={{ width: 320, display: "flex", flexDirection: "column", gap: 16 }}>
+    <div style={{ width: 320, display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
       <Select
         label="상담 유형 (필수)"
         options={counselTypes}
@@ -283,7 +283,7 @@ function FormValidationExample() {
         type="button"
         onClick={() => setSubmitted(true)}
         style={{
-          padding: "10px 16px",
+          padding: "10px var(--inset-card)",
           border: "none",
           borderRadius: 8,
           background: "#2B96ED",

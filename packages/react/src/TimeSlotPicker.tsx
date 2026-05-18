@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -66,7 +58,7 @@ const timeSlotPickerStyles = `
   :where(.${TS_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[16]}px;
+    gap: var(--gap-loose);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -75,7 +67,7 @@ const timeSlotPickerStyles = `
   :where(.${TS_GROUP_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${TS_GROUP_LABEL_CLASS}) {
@@ -88,7 +80,7 @@ const timeSlotPickerStyles = `
   :where(.${TS_GRID_CLASS}) {
     display: grid;
     grid-template-columns: repeat(var(--nds-time-slot-cols, 4), 1fr);
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
   }
 
   :where(.${TS_SLOT_CLASS}) {
@@ -96,7 +88,7 @@ const timeSlotPickerStyles = `
     align-items: center;
     justify-content: center;
     height: 40px;
-    padding: 0 ${spacing[8]}px;
+    padding: 0 var(--inset-chip);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.sm}px;
     background: ${cv.surface.default};
@@ -140,7 +132,7 @@ const timeSlotPickerStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[24]}px;
+    padding: var(--inset-modal);
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;

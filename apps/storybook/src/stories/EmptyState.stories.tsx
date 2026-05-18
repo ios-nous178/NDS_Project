@@ -143,7 +143,7 @@ export const FlatVsCompoundParity: Story = {
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(2, minmax(0, 360px))",
-        gap: 24,
+        gap: "var(--gap-wide)",
         alignItems: "start",
       }}
     >
@@ -234,7 +234,7 @@ export const AccessibilityStructureReview: Story = {
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(2, minmax(0, 360px))",
-        gap: 24,
+        gap: "var(--gap-wide)",
         alignItems: "start",
       }}
     >

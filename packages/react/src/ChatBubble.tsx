@@ -23,7 +23,7 @@ const chatBubbleStyles = `
   :where(.${CB_ROW_CLASS}) {
     display: flex;
     align-items: flex-end;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -61,7 +61,7 @@ const chatBubbleStyles = `
   :where(.${CB_BODY_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     max-width: 70%;
     min-width: 0;
   }
@@ -78,7 +78,7 @@ const chatBubbleStyles = `
   }
 
   :where(.${CB_BUBBLE_CLASS}) {
-    padding: ${spacing[10]}px ${spacing[12]}px;
+    padding: ${spacing[10]}px var(--inset-input);
     background: ${cv.surface.page};
     color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
@@ -120,7 +120,7 @@ const chatBubbleStyles = `
   :where(.${CB_META_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     padding: 0 ${spacing[4]}px;
   }
 

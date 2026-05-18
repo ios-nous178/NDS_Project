@@ -35,7 +35,7 @@ export const Playground: Story = {
                   style={{
                     width: "100%",
                     height: 48,
-                    padding: "0 16px",
+                    padding: "0 var(--inset-card)",
                     borderRadius: 8,
                     border: "1px solid #ddd",
                     fontSize: 15,
@@ -56,7 +56,7 @@ export const Playground: Story = {
                   style={{
                     width: "100%",
                     height: 48,
-                    padding: "0 16px",
+                    padding: "0 var(--inset-card)",
                     borderRadius: 8,
                     border: "1px solid #ddd",
                     fontSize: 15,
@@ -70,7 +70,7 @@ export const Playground: Story = {
               description: "필수 약관 동의 후 가입을 마칠 수 있어요.",
               canProceed: agree,
               content: (
-                <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <label style={{ display: "flex", gap: "var(--gap-default)", alignItems: "center" }}>
                   <input
                     type="checkbox"
                     checked={agree}
@@ -98,7 +98,7 @@ export const ProgressIndicator: Story = {
           key: `step-${i}`,
           title: `${i}단계 제목`,
           content: (
-            <div style={{ padding: 24, background: "#FAFBFC", borderRadius: 8 }}>
+            <div style={{ padding: "var(--inset-modal)", background: "#FAFBFC", borderRadius: 8 }}>
               {i}단계 콘텐츠
             </div>
           ),

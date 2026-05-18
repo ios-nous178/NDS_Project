@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -36,7 +36,7 @@ const etStyles = `
   :where(.${ET_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     font-family: ${fontFamily.web};
     color: ${cv.textRole.normal};
   }

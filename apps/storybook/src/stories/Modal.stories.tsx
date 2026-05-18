@@ -45,7 +45,7 @@ export function Example() {
           <Modal.Header
             style={{
               justifyContent: "flex-start",
-              gap: 8,
+              gap: "var(--gap-default)",
               borderBottom: "1px solid #ECECEC",
             }}
           >
@@ -92,7 +92,7 @@ export function Example() {
           },
           body: {
             style: {
-              padding: "24px 16px 20px",
+              padding: "var(--inset-modal) var(--inset-card) var(--inset-card-large)",
               textAlign: "left",
             },
           },
@@ -150,7 +150,7 @@ export function Example() {
         <Modal.Overlay />
         <Modal.Content maxWidth={296}>
           <Modal.Body style={{ padding: "32px 24px 20px" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
               <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>
                 상담은 앱에서만 진행할 수 있습니다.
               </h2>
@@ -159,7 +159,7 @@ export function Example() {
               </p>
             </div>
           </Modal.Body>
-          <Modal.Footer style={{ padding: 16 }}>
+          <Modal.Footer style={{ padding: "var(--inset-card)" }}>
             <Button fullWidth>앱에서 상담하기</Button>
           </Modal.Footer>
         </Modal.Content>
@@ -235,7 +235,7 @@ function CompoundModalExample() {
           <Modal.Header
             style={{
               justifyContent: "flex-start",
-              gap: 8,
+              gap: "var(--gap-default)",
               borderBottom: "1px solid #ECECEC",
             }}
           >
@@ -315,14 +315,14 @@ function PlaylistEditModalUIExample() {
                 height: 48,
                 borderRadius: 8,
                 border: "1px solid #D1D5DB",
-                padding: 12,
+                padding: "var(--inset-input)",
                 fontSize: 14,
                 outline: "none",
                 boxSizing: "border-box",
               }}
             />
 
-            <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
+            <div style={{ display: "flex", gap: "var(--gap-default)", marginTop: 20 }}>
               <Button
                 variant="solid"
                 size="md"
@@ -362,7 +362,7 @@ function PlaylistEditModalSlotPropsExample() {
           },
           body: {
             style: {
-              padding: "24px 16px 20px",
+              padding: "var(--inset-modal) var(--inset-card) var(--inset-card-large)",
               textAlign: "left",
             },
           },
@@ -402,14 +402,14 @@ function PlaylistEditModalSlotPropsExample() {
             height: 48,
             borderRadius: 8,
             border: "1px solid #D1D5DB",
-            padding: 12,
+            padding: "var(--inset-input)",
             fontSize: 14,
             outline: "none",
             boxSizing: "border-box",
           }}
         />
 
-        <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
+        <div style={{ display: "flex", gap: "var(--gap-default)", marginTop: 20 }}>
           <Button
             variant="solid"
             size="md"
@@ -478,14 +478,14 @@ function PlaylistEditModalClassNameExample() {
             height: 48,
             borderRadius: 8,
             border: "1px solid #D1D5DB",
-            padding: 12,
+            padding: "var(--inset-input)",
             fontSize: 14,
             outline: "none",
             boxSizing: "border-box",
           }}
         />
 
-        <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
+        <div style={{ display: "flex", gap: "var(--gap-default)", marginTop: 20 }}>
           <Button
             variant="solid"
             size="md"
@@ -520,7 +520,7 @@ function CounselingAppDownloadModalExample() {
         <Modal.Overlay />
         <Modal.Content maxWidth={296}>
           <Modal.Body style={{ padding: "32px 24px 20px" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
               <h2
                 style={{
                   margin: 0,
@@ -544,7 +544,7 @@ function CounselingAppDownloadModalExample() {
               </p>
             </div>
           </Modal.Body>
-          <Modal.Footer style={{ padding: 16 }}>
+          <Modal.Footer style={{ padding: "var(--inset-card)" }}>
             <Button fullWidth>앱에서 상담하기</Button>
           </Modal.Footer>
         </Modal.Content>
@@ -570,21 +570,28 @@ function ParticipateRewardModalExample() {
         isMaskClose={false}
         title="챌린지 참여 보상 지급 완료!"
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, textAlign: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--gap-comfortable)",
+            textAlign: "center",
+          }}
+        >
           <p style={{ margin: 0, fontSize: 14, color: "#999999" }}>
             지급된 쿠폰은 팀워크 쿠폰함에서
             <br />
             확인하실 수 있습니다.
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
             {participateRewards.map((reward) => (
               <div
                 key={reward.title}
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
-                  padding: "8px 0",
+                  gap: "var(--gap-default)",
+                  padding: "var(--inset-chip) 0",
                   textAlign: "left",
                 }}
               >

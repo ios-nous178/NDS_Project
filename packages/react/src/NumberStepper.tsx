@@ -1,13 +1,5 @@
 import React, { useCallback } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -56,7 +48,7 @@ const numberStepperStyles = `
   :where(.${NS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }

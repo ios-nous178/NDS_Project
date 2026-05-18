@@ -58,9 +58,9 @@ function InteractiveExample() {
   const [current, setCurrent] = useState(0);
   const total = COUNSEL_STEPS.length;
   return (
-    <div style={{ width: 480, display: "flex", flexDirection: "column", gap: 24 }}>
+    <div style={{ width: 480, display: "flex", flexDirection: "column", gap: "var(--gap-wide)" }}>
       <Stepper steps={COUNSEL_STEPS} current={current} />
-      <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+      <div style={{ display: "flex", gap: "var(--gap-default)", justifyContent: "center" }}>
         <Button
           variant="outlined"
           onClick={() => setCurrent((p) => Math.max(0, p - 1))}

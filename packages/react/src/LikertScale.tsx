@@ -30,7 +30,7 @@ const likertStyles = `
   :where(.${LK_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -60,7 +60,7 @@ const likertStyles = `
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     cursor: pointer;
     flex: 1 1 0;
     min-width: 0;

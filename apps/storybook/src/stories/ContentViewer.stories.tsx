@@ -67,7 +67,7 @@ export const Sanitized: Story = {
         <pre
           style={{
             background: "#F4F5F7",
-            padding: 12,
+            padding: "var(--inset-input)",
             fontSize: 12,
             marginBottom: 16,
             whiteSpace: "pre-wrap",

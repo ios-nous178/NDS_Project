@@ -28,7 +28,7 @@ export const Playground: Story = {
     const [idx, setIdx] = useState(0);
     return (
       <div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: "var(--gap-default)" }}>
           {PHOTOS.map((p, i) => (
             <img
               key={i}

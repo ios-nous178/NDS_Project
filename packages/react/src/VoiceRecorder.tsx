@@ -1,13 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -47,8 +39,8 @@ const vrStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacing[12]}px;
-    padding: ${spacing[20]}px;
+    gap: var(--gap-comfortable);
+    padding: var(--inset-card-large);
     background: ${cv.surface.section};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
@@ -98,7 +90,7 @@ const vrStyles = `
   :where(.${VR_INDICATOR_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: ${spacing[4]}px;
+    gap: var(--gap-tight);
     color: var(--semantic-text-status-error);
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
@@ -127,7 +119,7 @@ const vrStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-tight);
   }
 `;
 

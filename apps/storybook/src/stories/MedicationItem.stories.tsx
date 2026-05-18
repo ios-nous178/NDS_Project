@@ -57,7 +57,9 @@ export const List: Story = {
   render: () => {
     const [t, setT] = useState<Record<string, boolean>>({ a: true, b: false, c: false });
     return (
-      <div style={{ width: 420, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div
+        style={{ width: 420, display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}
+      >
         <MedicationItem
           name="졸로프트"
           dosage="50mg"

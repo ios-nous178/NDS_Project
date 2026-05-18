@@ -58,7 +58,7 @@ const modalStyles = `
     align-items: center;
     justify-content: center;
     z-index: ${zIndex.modal};
-    padding: ${spacing[20]}px;
+    padding: var(--inset-card-large);
   }
 
   :where(.${OVERLAY_CLASS}) {
@@ -77,7 +77,7 @@ const modalStyles = `
     max-width: var(--nds-modal-max-width, 332px);
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     padding: ${spacing[28]}px var(--inset-card) var(--inset-card);
     overflow: hidden;
     border-radius: var(--nds-modal-radius, ${radius.md}px);
@@ -93,7 +93,7 @@ const modalStyles = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: ${spacing[12]}px;
+    gap: var(--gap-comfortable);
     padding: 0;
   }
 
@@ -161,13 +161,13 @@ const modalStyles = `
   :where(.${FOOTER_CLASS}) {
     display: flex;
     width: 100%;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     box-sizing: border-box;
   }
 
   :where(.${FOOTER_CLASS}[data-layout="custom"]) {
     padding: 0;
-    gap: ${spacing[8]}px;
+    gap: var(--gap-default);
     justify-content: center;
   }
 
@@ -181,7 +181,7 @@ const modalStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[11]}px ${spacing[24]}px;
+    padding: ${spacing[11]}px var(--inset-modal);
     border-radius: ${radius.md}px;
     border: 1px solid transparent;
     cursor: pointer;

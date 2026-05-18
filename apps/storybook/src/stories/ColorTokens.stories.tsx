@@ -26,7 +26,7 @@ function Swatch({
 }) {
   const guide = group && tokenKey ? getSemanticGuide(`${group}.${tokenKey}`) : undefined;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}>
       <div
         style={{
           width: 48,
@@ -36,7 +36,7 @@ function Swatch({
           border: hex === "#FFFFFF" ? "1px solid #ECECEC" : undefined,
         }}
       />
-      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-tight)" }}>
         <div style={{ fontSize: 14, fontWeight: 500 }}>{name}</div>
         <div style={{ fontSize: 12, color: "#999" }}>{hex}</div>
         {guide && <DesignGuideBadge meta={guide} />}
@@ -49,7 +49,13 @@ function PaletteGroup({ title, palette }: { title: string; palette: Record<strin
   return (
     <div style={{ marginBottom: 32 }}>
       <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>{title}</h3>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 200px)", gap: 8 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, 200px)",
+          gap: "var(--gap-default)",
+        }}
+      >
         {Object.entries(palette).map(([key, hex]) => (
           <Swatch key={key} name={`${key}`} hex={hex} />
         ))}
@@ -98,7 +104,13 @@ function RoleGroup({
   return (
     <div style={{ marginBottom: 32 }}>
       <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>{title}</h3>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 240px)", gap: 8 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, 240px)",
+          gap: "var(--gap-default)",
+        }}
+      >
         {tokens.map(({ path, hex }) => {
           // Convert semantic path `brand.default` → cv key `brand` (drop `.default`)
           // and `status.error` → `statusError` (camelCase).
@@ -114,7 +126,7 @@ function RoleGroup({
 
 function ColorTokensPage() {
   return (
-    <div style={{ fontFamily: "'Pretendard', sans-serif", padding: 24 }}>
+    <div style={{ fontFamily: "'Pretendard', sans-serif", padding: "var(--inset-modal)" }}>
       <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Color Tokens</h2>
 
       <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16, color: "#111111" }}>
