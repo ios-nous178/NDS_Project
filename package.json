@@ -14,6 +14,7 @@
   "scripts": {
     "generate:component-inventory": "node scripts/generate-component-inventory.mjs",
     "generate:component-guides": "node scripts/generate-component-guides.mjs",
+    "generate:guide-docs": "node scripts/generate-guide-docs.mjs",
     "generate:tokens": "node scripts/sync-tokens.mjs --write && pnpm --filter=@nudge-eap/tokens build",
     "lint:tokens": "node scripts/sync-tokens.mjs --check",
     "sync:docs": "node scripts/sync-version-docs.mjs",

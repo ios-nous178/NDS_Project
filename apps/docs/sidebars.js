@@ -139,6 +139,8 @@ module.exports = {
       collapsed: false,
       items: [
         "guide/design-principles",
+        "guide/ux-writing",
+        "guide/dark-patterns",
         "guide/design-token-principles",
         "guide/token-review-checklist",
         "guide/page-migration-priority",
