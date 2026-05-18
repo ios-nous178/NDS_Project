@@ -49,12 +49,17 @@ function getDocsUrl(entry) {
   return `${docsBaseUrl}${entry.docsPath}`;
 }
 
-const groupedEntries = inventory.reduce((acc, entry) => {
-  const category = entry.category || "기타";
-  acc[category] ??= [];
-  acc[category].push(entry);
-  return acc;
-}, {});
+function groupByCategory(entries) {
+  return entries.reduce((acc, entry) => {
+    const category = entry.category || "기타";
+    acc[category] ??= [];
+    acc[category].push(entry);
+    return acc;
+  }, {});
+}
+
+const syncedEntries = inventory.filter((e) => e.figmaSynced === true);
+const pendingEntries = inventory.filter((e) => e.figmaSynced !== true);
 
 const lines = [
   "---",
@@ -63,36 +68,51 @@ const lines = [
   "---",
   "",
   "<!-- AUTO-GENERATED FILE. Run `pnpm generate:component-inventory` after updating metadata/componentInventory.json. -->",
+  "<!-- markdownlint-disable MD024 -->",
   "",
   "# 컴포넌트 인벤토리",
   "",
   "이 문서는 `metadata/componentInventory.json`을 기준으로 자동 생성됩니다.",
   "기획자, 디자이너, 개발자가 같은 기준으로 Figma, Storybook, 구현 상태를 확인할 수 있도록 만든 연결표입니다.",
   "",
-  "메타데이터에 Figma 링크를 넣으면 이 문서와 Storybook Docs에 함께 반영됩니다.",
+  "Figma 라이브러리와 정합 완료된 컴포넌트를 상단에, 아직 정합되지 않은 컴포넌트를 하단에 분리해서 노출합니다.",
+  "정합 여부는 `metadata/componentInventory.json` 의 `figmaSynced` 필드를 단일 진리원천으로 사용합니다.",
   "",
 ];
 
-for (const [category, entries] of Object.entries(groupedEntries)) {
-  lines.push(`## ${category}`, "");
-  lines.push("| 컴포넌트 | 설명 | 상태 | Figma | Storybook | Docs | 활용 범위 |");
-  lines.push("|---|---|---|---|---|---|---|");
+function renderSection(headline, entries) {
+  lines.push(`## ${headline} (${entries.length})`, "");
 
-  for (const entry of entries) {
-    lines.push(
-      `| **${entry.name}** | ${entry.description} | ${getStatusMark(entry.status)} ${getStatusLabel(entry.status)} | ${getFigmaCell(entry)} | [열기](${getStorybookUrl(entry)}) | [열기](${getDocsUrl(entry)}) | ${entry.usageSummary} |`,
-    );
+  if (entries.length === 0) {
+    lines.push("_없음_", "");
+    return;
   }
 
-  lines.push("");
+  const grouped = groupByCategory(entries);
+  for (const [category, rows] of Object.entries(grouped)) {
+    lines.push(`### ${category}`, "");
+    lines.push("| 컴포넌트 | 설명 | 상태 | Figma | Storybook | Docs | 활용 범위 |");
+    lines.push("|---|---|---|---|---|---|---|");
 
-  for (const entry of entries) {
-    if (!entry.notes) continue;
-    lines.push(`- **${entry.name}**: ${entry.notes}`);
+    for (const entry of rows) {
+      lines.push(
+        `| **${entry.name}** | ${entry.description} | ${getStatusMark(entry.status)} ${getStatusLabel(entry.status)} | ${getFigmaCell(entry)} | [열기](${getStorybookUrl(entry)}) | [열기](${getDocsUrl(entry)}) | ${entry.usageSummary} |`,
+      );
+    }
+
+    lines.push("");
+
+    for (const entry of rows) {
+      if (!entry.notes) continue;
+      lines.push(`- **${entry.name}**: ${entry.notes}`);
+    }
+
+    lines.push("");
   }
-
-  lines.push("");
 }
+
+renderSection("Figma 정합 완료", syncedEntries);
+renderSection("Figma 미정합", pendingEntries);
 
 await fs.writeFile(outputPath, `${lines.join("\n").trimEnd()}\n`, "utf8");
 console.log(`Generated ${path.relative(rootDir, outputPath)}`);
