@@ -68,7 +68,7 @@ const cardStyles = `
     align-items: flex-start;
     justify-content: space-between;
     gap: ${spacing[8]}px;
-    padding: ${spacing[16]}px ${spacing[16]}px 0;
+    padding: var(--inset-card) var(--inset-card) 0;
   }
 
   :where(.${CARD_TITLE_CLASS}) {
@@ -99,7 +99,7 @@ const cardStyles = `
   }
 
   :where(.${CARD_BODY_CLASS}) {
-    padding: ${spacing[12]}px ${spacing[16]}px;
+    padding: ${spacing[12]}px var(--inset-card);
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
@@ -110,7 +110,7 @@ const cardStyles = `
     display: flex;
     align-items: center;
     gap: ${spacing[8]}px;
-    padding: 0 ${spacing[16]}px ${spacing[16]}px;
+    padding: 0 var(--inset-card) var(--inset-card);
     border-top: 1px solid ${cv.borderRole.subtle};
     margin-top: auto;
     padding-top: ${spacing[12]}px;
