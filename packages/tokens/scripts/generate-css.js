@@ -10,7 +10,7 @@ const fs = require("fs");
 const path = require("path");
 
 const { colors } = require("../dist/colors");
-const { semantic } = require("../dist/semantic");
+const { nudgeEapSemantic } = require("../dist/brands/nudge-eap.semantic.js");
 const {
   spacing,
   gap,
@@ -39,7 +39,7 @@ function flattenPaletteVars(obj, prefix, lines) {
   }
 }
 
-/** role-based 트리(`semantic`) → `--semantic-{group}-{role}-{variant}` (camelCase → kebab-case) */
+/** role-based 트리(`nudgeEapSemantic` / `trostSemantic` 등) → `--semantic-{group}-{role}-{variant}` (camelCase → kebab-case) */
 function flattenRoleSemanticVars(obj, prefix, lines) {
   for (const [key, value] of Object.entries(obj)) {
     const part = camelToKebab(key);
@@ -98,7 +98,7 @@ function generateBaseTokens() {
   // DS extension (bg-disabled). emit: `--semantic-{group}-{role}-{variant}` (kebab).
   lines.push("");
   lines.push("  /* ── Semantic (role-based, Figma SemanticColorGuide 171:6675) ── */");
-  flattenRoleSemanticVars(semantic, "", lines);
+  flattenRoleSemanticVars(nudgeEapSemantic, "", lines);
 
   // Spacing — Primitive Scale (Figma · SpacingGuide, 4pt grid)
   lines.push("");

@@ -1,8 +1,14 @@
 /**
- * NudgeEAP Brand Theme
+ * NudgeEAP Brand Theme — base brand.
  *
- * 기본 브랜드. base tokens.css 가 NudgeEAP 값으로 emit 되므로 brand override
- * 는 비어 있다. (다른 브랜드가 override 할 때만 필요)
+ * NudgeEAP 는 DS 의 default. `dist/tokens.css` (브랜드 무관 base CSS) 가
+ * 이 theme 의 `semantic` 으로 emit 된다. 다른 브랜드(Trost / Geniet) 는
+ * brands/{brand}.semantic.ts 에서 partial override 를 명시하고,
+ * `dist/{brand}.css` cascade 로 base 변수를 덮어쓴다.
+ *
+ * 구성:
+ *   - nudge-eap.semantic.ts : Figma SemanticColorGuide 1:1 미러 (full definition)
+ *   - nudge-eap.ts (이 파일): palette + semantic + typography/spacing/elevation 묶음
  */
 
 import type { BrandTheme } from "./types";
@@ -10,6 +16,10 @@ import { neutral, coolGray, blue, magenta, yellow, red, green } from "../colors"
 import { fontFamily, typeScale } from "../typography";
 import { radius } from "../spacing";
 import { shadow, zIndex } from "../elevation";
+import { nudgeEapSemantic } from "./nudge-eap.semantic.js";
+
+export { nudgeEapSemantic };
+export type { NudgeEapSemanticTokens } from "./nudge-eap.semantic.js";
 
 export const nudgeEapTheme: BrandTheme = {
   name: "nudge-eap",
@@ -22,7 +32,7 @@ export const nudgeEapTheme: BrandTheme = {
     red,
     green,
   },
-  semantic: {}, // base tokens.css 가 곧 NudgeEAP 정의
+  semantic: nudgeEapSemantic,
   typography: {
     fontFamily,
     typeScale,
