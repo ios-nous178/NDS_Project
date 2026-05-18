@@ -37,15 +37,15 @@ const ctStyles = `
     align-items: center;
     gap: ${spacing[8]}px;
     font-family: ${fontFamily.web};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${CT_CLASS}[data-urgent="true"]) {
-    color: var(--semantic-error-main, #E04D4D);
+    color: var(--semantic-text-status-error);
   }
 
   :where(.${CT_CLASS}[data-expired="true"]) {
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${CT_TIME_CLASS}) {
@@ -56,7 +56,7 @@ const ctStyles = `
 
   :where(.${CT_LABEL_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 `;
 

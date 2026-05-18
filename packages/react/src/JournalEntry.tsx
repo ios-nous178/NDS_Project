@@ -53,8 +53,8 @@ const journalStyles = `
     display: flex;
     gap: ${spacing[12]}px;
     padding: ${spacing[16]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     transition: border-color ${transition.default};
@@ -62,7 +62,7 @@ const journalStyles = `
   }
 
   :where(.${JE_CLASS}[data-clickable="true"]) { cursor: pointer; }
-  :where(.${JE_CLASS}[data-clickable="true"]:hover) { border-color: ${cv.primary.main}; }
+  :where(.${JE_CLASS}[data-clickable="true"]:hover) { border-color: ${cv.borderRole.brand}; }
 
   :where(.${JE_CLASS}__main) {
     flex: 1;
@@ -82,7 +82,7 @@ const journalStyles = `
     width: 28px;
     height: 28px;
     border-radius: 9999px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -93,7 +93,7 @@ const journalStyles = `
   :where(.${JE_DATE_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-weight: ${fontWeight.medium};
   }
 
@@ -101,7 +101,7 @@ const journalStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -111,7 +111,7 @@ const journalStyles = `
   :where(.${JE_BODY_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: var(--nds-journal-lines, 3);
@@ -129,8 +129,8 @@ const journalStyles = `
   :where(.${JE_TAG_CLASS}) {
     padding: 2px 8px;
     border-radius: 9999px;
-    background: ${cv.bg.coolGray};
-    color: ${cv.text.subtle};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     font-weight: ${fontWeight.medium};
@@ -139,7 +139,7 @@ const journalStyles = `
   :where(.${JE_FOOTER_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${JE_THUMB_CLASS}) {
@@ -148,7 +148,7 @@ const journalStyles = `
     height: 64px;
     border-radius: ${radius.md}px;
     object-fit: cover;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
   }
 `;
 

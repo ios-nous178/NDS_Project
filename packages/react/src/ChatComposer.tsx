@@ -67,8 +67,8 @@ const composerStyles = `
     flex-direction: column;
     gap: ${spacing[8]}px;
     padding: ${spacing[12]}px;
-    background: ${cv.bg.white};
-    border-top: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border-top: 1px solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -87,9 +87,9 @@ const composerStyles = `
     height: 32px;
     padding: 0 ${spacing[12]}px;
     border-radius: 9999px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
@@ -98,13 +98,13 @@ const composerStyles = `
     transition: background-color ${transition.default};
   }
 
-  :where(.${CC_QUICK_ITEM_CLASS}:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${CC_QUICK_ITEM_CLASS}:hover) { background: ${cv.surface.section}; }
 
   :where(.${CC_INPUT_AREA_CLASS}) {
     display: flex;
     align-items: flex-end;
     gap: ${spacing[8]}px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     border-radius: ${radius.lg}px;
     padding: ${spacing[8]}px;
   }
@@ -121,7 +121,7 @@ const composerStyles = `
     border-radius: 9999px;
     border: none;
     background: transparent;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -130,7 +130,7 @@ const composerStyles = `
     transition: background-color ${transition.default};
   }
 
-  :where(.${CC_BTN_CLASS}:hover:not([disabled])) { background: ${cv.bg.white}; }
+  :where(.${CC_BTN_CLASS}:hover:not([disabled])) { background: ${cv.surface.default}; }
 
   :where(.${CC_BTN_CLASS}[disabled]) {
     opacity: 0.4;
@@ -147,20 +147,20 @@ const composerStyles = `
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     padding: 8px 4px;
     max-height: var(--nds-chat-composer-max, 120px);
     overflow-y: auto;
     box-sizing: border-box;
   }
 
-  :where(.${CC_TEXTAREA_CLASS}::placeholder) { color: ${cv.text.placeholder}; }
+  :where(.${CC_TEXTAREA_CLASS}::placeholder) { color: ${cv.textRole.muted}; }
 
   :where(.${CC_SEND_CLASS}) {
     width: 36px;
     height: 36px;
     border-radius: 9999px;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     color: #fff;
     border: none;
     cursor: pointer;
@@ -179,7 +179,7 @@ const composerStyles = `
   :where(.${CC_COUNT_CLASS}) {
     text-align: right;
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 `;
 

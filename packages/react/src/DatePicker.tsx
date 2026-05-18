@@ -107,29 +107,29 @@ const datePickerStyles = `
     width: 100%;
     min-height: ${sizing.input.default}px;
     padding: 0 ${spacing[16]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     transition: border-color ${transition.default};
     box-sizing: border-box;
   }
 
   :where(.${DP_TRIGGER_CLASS}[data-open="true"]) {
-    border-color: ${cv.border.focus};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${DP_TRIGGER_CLASS}[data-error="true"]) {
-    border-color: ${cv.error.main};
+    border-color: ${cv.borderRole.statusError};
   }
 
   :where(.${DP_TRIGGER_CLASS}:disabled) {
-    background: ${cv.bg.disabled};
-    color: ${cv.text.disabled};
+    background: ${cv.surface.disabled};
+    color: ${cv.textRole.muted};
     cursor: not-allowed;
   }
 
@@ -142,20 +142,20 @@ const datePickerStyles = `
   }
 
   :where(.${DP_TRIGGER_TEXT_CLASS}[data-placeholder="true"]) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${DP_ICON_CLASS}) {
     display: inline-flex;
     flex-shrink: 0;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
   }
 
   :where(.${DP_PANEL_CLASS}) {
     position: fixed;
     width: 296px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
@@ -182,16 +182,16 @@ const datePickerStyles = `
     border-radius: ${radius.sm}px;
     background: transparent;
     cursor: pointer;
-    color: ${cv.icon.default};
+    color: ${cv.iconRole.strong};
     transition: background-color ${transition.default};
   }
 
   :where(.${DP_NAV_BTN_CLASS}:hover) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${DP_NAV_BTN_CLASS}:disabled) {
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     cursor: not-allowed;
     opacity: 0.4;
   }
@@ -205,7 +205,7 @@ const datePickerStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${DP_DOW_CLASS}) {
@@ -222,11 +222,11 @@ const datePickerStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${DP_DOW_CELL_CLASS}[data-day="0"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${DP_GRID_CLASS}) {
@@ -247,37 +247,37 @@ const datePickerStyles = `
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: 1;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     transition: background-color ${transition.default}, color ${transition.default};
   }
 
   :where(.${DP_DAY_CLASS}[data-outside="true"]) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${DP_DAY_CLASS}[data-day="0"]:not([data-disabled="true"])) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${DP_DAY_CLASS}:hover:not(:disabled):not([data-selected="true"])) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${DP_DAY_CLASS}[data-today="true"]:not([data-selected="true"])) {
     font-weight: ${fontWeight.bold};
-    outline: 1px solid ${cv.border.default};
+    outline: 1px solid ${cv.borderRole.normal};
     outline-offset: -1px;
   }
 
   :where(.${DP_DAY_CLASS}[data-selected="true"]) {
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
     font-weight: ${fontWeight.medium};
   }
 
   :where(.${DP_DAY_CLASS}:disabled),
   :where(.${DP_DAY_CLASS}[data-disabled="true"]) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     cursor: not-allowed;
     background: transparent;
   }
@@ -287,7 +287,7 @@ const datePickerStyles = `
     justify-content: flex-end;
     margin-top: ${spacing[8]}px;
     padding-top: ${spacing[8]}px;
-    border-top: 1px solid ${cv.border.light};
+    border-top: 1px solid ${cv.borderRole.subtle};
   }
 
   @keyframes nds-date-picker-fade-in {

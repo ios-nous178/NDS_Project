@@ -51,8 +51,8 @@ const ccStyles = `
   :where(.${CC_CLASS}) {
     display: flex;
     align-items: stretch;
-    background: var(--nds-coupon-bg, var(--semantic-primary-bg, #EBF1FF));
-    color: var(--nds-coupon-fg, var(--semantic-primary-main, #4080F0));
+    background: var(--nds-coupon-bg, var(--semantic-bg-status-info));
+    color: var(--nds-coupon-fg, var(--semantic-text-brand-default));
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     overflow: hidden;
@@ -60,8 +60,8 @@ const ccStyles = `
   }
 
   :where(.${CC_CLASS}[data-disabled="true"]) {
-    background: ${cv.bg.coolGray};
-    color: ${cv.text.subtle};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${CC_LEFT_CLASS}) {
@@ -111,7 +111,7 @@ const ccStyles = `
     width: 16px;
     height: 16px;
     border-radius: 9999px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     left: -8px;
   }
   :where(.${CC_DIVIDER_CLASS})::before { top: -8px; }
@@ -123,12 +123,12 @@ const ccStyles = `
     align-items: center;
     gap: ${spacing[12]}px;
     padding: ${spacing[16]}px ${spacing[20]}px;
-    color: ${cv.text.default};
-    background: ${cv.bg.white};
+    color: ${cv.textRole.normal};
+    background: ${cv.surface.default};
   }
 
   :where(.${CC_CLASS}[data-disabled="true"]) .${CC_RIGHT_CLASS} {
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${CC_RIGHT_CLASS}) > div {
@@ -147,12 +147,12 @@ const ccStyles = `
 
   :where(.${CC_DESC_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${CC_EXPIRY_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin-top: ${spacing[4]}px;
   }
 
@@ -162,7 +162,7 @@ const ccStyles = `
     padding: 0 ${spacing[12]}px;
     border: none;
     border-radius: 9999px;
-    background: var(--semantic-primary-main, #4080F0);
+    background: var(--semantic-bg-brand-default);
     color: #fff;
     cursor: pointer;
     font-family: inherit;
@@ -174,7 +174,7 @@ const ccStyles = `
   :where(.${CC_ACTION_CLASS}:hover) { opacity: 0.85; }
 
   :where(.${CC_ACTION_CLASS}[disabled]) {
-    background: ${cv.border.default};
+    background: ${cv.borderRole.normal};
     cursor: not-allowed;
   }
 `;

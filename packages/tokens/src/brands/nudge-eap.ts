@@ -1,12 +1,12 @@
 /**
  * NudgeEAP Brand Theme
  *
- * 기존 NudgeEAP 디자인 시스템의 기본 브랜드 토큰.
- * 기존 colors.ts, typography.ts 등의 값을 BrandTheme 형태로 재구성.
+ * 기본 브랜드. base tokens.css 가 NudgeEAP 값으로 emit 되므로 brand override
+ * 는 비어 있다. (다른 브랜드가 override 할 때만 필요)
  */
 
 import type { BrandTheme } from "./types";
-import { neutral, coolGray, blue, magenta, yellow, red, green, semantic } from "../colors";
+import { neutral, coolGray, blue, magenta, yellow, red, green } from "../colors";
 import { fontFamily, typeScale } from "../typography";
 import { radius } from "../spacing";
 import { shadow, zIndex } from "../elevation";
@@ -22,13 +22,7 @@ export const nudgeEapTheme: BrandTheme = {
     red,
     green,
   },
-  semantic: {
-    ...semantic,
-    primary: {
-      ...semantic.primary,
-      fg: semantic.text.inverse, // 파란 배경 → 흰색 텍스트
-    },
-  },
+  semantic: {}, // base tokens.css 가 곧 NudgeEAP 정의
   typography: {
     fontFamily,
     typeScale,

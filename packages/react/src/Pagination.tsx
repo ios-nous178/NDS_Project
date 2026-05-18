@@ -35,7 +35,7 @@ const paginationStyles = `
     border: none;
     border-radius: ${radius.md}px;
     background: transparent;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body3.lineHeight}px;
@@ -47,17 +47,17 @@ const paginationStyles = `
   }
 
   :where(.${PG_ITEM_CLASS}:hover:not(:disabled)) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${PG_ITEM_CLASS}[data-active="true"]) {
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
     font-weight: ${fontWeight.bold};
   }
 
   :where(.${PG_ITEM_CLASS}[data-active="true"]:hover) {
-    background: ${cv.primary.hover};
+    background: ${cv.fill.brandHover};
   }
 
   :where(.${PG_ITEM_CLASS}:disabled) {
@@ -71,7 +71,7 @@ const paginationStyles = `
     justify-content: center;
     min-width: 32px;
     height: 32px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     user-select: none;
   }

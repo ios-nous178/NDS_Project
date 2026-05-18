@@ -28,14 +28,14 @@ const progressBarStyles = `
     width: 100%;
     height: var(--nds-progress-height, 8px);
     border-radius: var(--nds-progress-radius, ${radius.pill}px);
-    background: var(--nds-progress-track-bg, ${cv.bg.disabled});
+    background: var(--nds-progress-track-bg, ${cv.surface.disabled});
     overflow: hidden;
   }
 
   :where(.${PB_FILL_CLASS}) {
     height: 100%;
     border-radius: inherit;
-    background: var(--nds-progress-fill-bg, ${cv.primary.main});
+    background: var(--nds-progress-fill-bg, ${cv.surface.brand});
     transition: width ${transition.default};
   }
 `;

@@ -73,11 +73,11 @@ const qaStyles = `
   }
 
   :where(.${QA_ITEM_CLASS}:hover:not([disabled])) {
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
   }
 
   :where(.${QA_ITEM_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
@@ -90,8 +90,8 @@ const qaStyles = `
     width: 48px;
     height: 48px;
     border-radius: ${radius.md}px;
-    background: var(--nds-quick-action-icon-bg, var(--semantic-primary-bg, #EBF1FF));
-    color: ${cv.primary.main};
+    background: var(--nds-quick-action-icon-bg, var(--semantic-bg-status-info));
+    color: ${cv.textRole.brand};
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -102,7 +102,7 @@ const qaStyles = `
   :where(.${QA_LABEL_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
     text-align: center;
     word-break: keep-all;
@@ -116,7 +116,7 @@ const qaStyles = `
     min-width: 18px;
     height: 18px;
     border-radius: 9999px;
-    background: var(--semantic-error-main, #E04D4D);
+    background: var(--semantic-fill-status-error);
     color: #fff;
     font-size: 10px;
     line-height: 14px;

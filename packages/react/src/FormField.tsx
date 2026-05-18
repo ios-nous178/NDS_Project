@@ -65,16 +65,16 @@ const formFieldStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${FF_REQUIRED_CLASS}) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
     font-weight: ${fontWeight.medium};
   }
 
   :where(.${FF_OPTIONAL_CLASS}) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     font-weight: ${fontWeight.regular};
   }
 
@@ -82,7 +82,7 @@ const formFieldStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${FF_CONTROL_CLASS}) {
@@ -100,21 +100,21 @@ const formFieldStyles = `
     flex: 1 1 auto;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${FF_ERROR_CLASS}) {
     flex: 1 1 auto;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${FF_COUNTER_CLASS}) {
     flex-shrink: 0;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     text-align: right;
   }
 `;

@@ -30,8 +30,8 @@ const buttonStyles = `
     padding: 0 var(--nds-button-padding-x, ${spacing[16]}px);
     border-radius: var(--nds-button-radius, ${radius.md}px);
     border: 1px solid var(--nds-button-border-color, transparent);
-    background: var(--nds-button-background, ${cv.primary.main});
-    color: var(--nds-button-text-color, ${cv.primary.fg});
+    background: var(--nds-button-background, ${cv.surface.brand});
+    color: var(--nds-button-text-color, ${cv.textRole.inverse});
     font-family: var(--nds-button-font-family, ${fontFamily.web});
     font-size: var(--nds-button-font-size, ${typeScale.body1.fontSize}px);
     line-height: var(--nds-button-line-height, ${typeScale.body1.lineHeight}px);
@@ -60,7 +60,7 @@ const buttonStyles = `
   }
 
   :where(.${BUTTON_CLASS}:focus-visible) {
-    outline: 2px solid var(--nds-button-focus-ring-color, ${cv.primary.main});
+    outline: 2px solid var(--nds-button-focus-ring-color, ${cv.borderRole.focus});
     outline-offset: var(--nds-button-focus-ring-offset, 2px);
   }
 
@@ -169,76 +169,76 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     // Figma: Solid/Primary (eap-button-bg-*)
     solid: {
       enabled: {
-        background: cv.primary.main,
-        text: cv.primary.fg,
-        border: cv.primary.main,
+        background: cv.surface.brand,
+        text: cv.textRole.inverse,
+        border: cv.borderRole.brand,
       },
       disabled: {
         // Figma --semantic-button-bg-disabled = #9CA2AE.
         background: cv.button.bgDisabled,
-        text: cv.bg.white,
+        text: cv.surface.default,
         border: cv.button.bgDisabled,
       },
       hover: {
-        background: cv.primary.hover,
-        text: cv.primary.fg,
-        border: cv.primary.hover,
+        background: cv.fill.brandHover,
+        text: cv.textRole.inverse,
+        border: cv.fill.brandHover,
       },
     },
     // Figma: Solid + first의 soft 표현 (primary soft)
     soft: {
       enabled: {
-        background: cv.primary.bg,
-        text: cv.primary.main,
-        border: cv.primary.bg,
+        background: cv.surface.statusInfo,
+        text: cv.textRole.brand,
+        border: cv.surface.statusInfo,
       },
       disabled: {
-        background: cv.border.light,
-        text: cv.text.disabled,
-        border: cv.border.light,
+        background: cv.borderRole.subtle,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
       },
       hover: {
-        background: cv.primary.lighter,
-        text: cv.primary.main,
-        border: cv.primary.lighter,
+        background: "#91CAF6",
+        text: cv.textRole.brand,
+        border: "#91CAF6",
       },
     },
     // Figma: Outlined
     outlined: {
       enabled: {
-        background: cv.bg.white,
-        text: cv.primary.main,
-        border: cv.primary.main,
+        background: cv.surface.default,
+        text: cv.textRole.brand,
+        border: cv.borderRole.brand,
       },
       disabled: {
-        background: cv.bg.white,
-        text: cv.text.disabled,
-        border: cv.border.default,
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.normal,
       },
       hover: {
-        background: cv.primary.bgLighter,
-        text: cv.primary.main,
-        border: cv.primary.main,
+        background: cv.surface.brandSubtle,
+        text: cv.textRole.brand,
+        border: cv.borderRole.brand,
       },
     },
     // Figma: Outlined_sub — neutral border, medium weight
     "outlined-sub": {
       enabled: {
-        background: cv.bg.white,
-        text: cv.text.default,
-        border: cv.border.default,
+        background: cv.surface.default,
+        text: cv.textRole.normal,
+        border: cv.borderRole.normal,
         fontWeight: 500,
       },
       disabled: {
-        background: cv.bg.white,
-        text: cv.text.disabled,
-        border: cv.border.light,
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
         fontWeight: 500,
       },
       hover: {
-        background: cv.bg.light,
-        text: cv.text.default,
-        border: cv.border.default,
+        background: cv.surface.subtle,
+        text: cv.textRole.normal,
+        border: cv.borderRole.normal,
         fontWeight: 500,
       },
     },
@@ -250,9 +250,9 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     //   disabled bg/text use semantic button disabled tokens.
     solid: {
       enabled: {
-        background: cv.primary.bgLighter,
-        text: cv.primary.main,
-        border: cv.primary.bgLighter,
+        background: cv.surface.brandSubtle,
+        text: cv.textRole.brand,
+        border: cv.surface.brandSubtle,
       },
       disabled: {
         background: cv.button.bgSecondaryDisabled,
@@ -260,17 +260,17 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.button.bgSecondaryDisabled,
       },
       hover: {
-        background: cv.primary.bg,
-        text: cv.primary.main,
-        border: cv.primary.bg,
+        background: cv.surface.statusInfo,
+        text: cv.textRole.brand,
+        border: cv.surface.statusInfo,
       },
     },
     // secondary soft = solid과 동일 (Figma에 별도 soft variant 없음)
     soft: {
       enabled: {
-        background: cv.primary.bgLighter,
-        text: cv.primary.main,
-        border: cv.primary.bgLighter,
+        background: cv.surface.brandSubtle,
+        text: cv.textRole.brand,
+        border: cv.surface.brandSubtle,
       },
       disabled: {
         background: cv.button.bgSecondaryDisabled,
@@ -278,46 +278,46 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.button.bgSecondaryDisabled,
       },
       hover: {
-        background: cv.primary.bg,
-        text: cv.primary.main,
-        border: cv.primary.bg,
+        background: cv.surface.statusInfo,
+        text: cv.textRole.brand,
+        border: cv.surface.statusInfo,
       },
     },
     // Outlined은 primary와 동일 (피그마에 secondary outlined 없음)
     outlined: {
       enabled: {
-        background: cv.bg.white,
-        text: cv.primary.main,
-        border: cv.primary.main,
+        background: cv.surface.default,
+        text: cv.textRole.brand,
+        border: cv.borderRole.brand,
       },
       disabled: {
-        background: cv.bg.white,
-        text: cv.text.disabled,
-        border: cv.border.default,
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.normal,
       },
       hover: {
-        background: cv.primary.bgLighter,
-        text: cv.primary.main,
-        border: cv.primary.main,
+        background: cv.surface.brandSubtle,
+        text: cv.textRole.brand,
+        border: cv.borderRole.brand,
       },
     },
     "outlined-sub": {
       enabled: {
-        background: cv.bg.white,
-        text: cv.text.default,
-        border: cv.border.default,
+        background: cv.surface.default,
+        text: cv.textRole.normal,
+        border: cv.borderRole.normal,
         fontWeight: 500,
       },
       disabled: {
-        background: cv.bg.white,
-        text: cv.text.disabled,
-        border: cv.border.light,
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
         fontWeight: 500,
       },
       hover: {
-        background: cv.bg.light,
-        text: cv.text.default,
-        border: cv.border.default,
+        background: cv.surface.subtle,
+        text: cv.textRole.normal,
+        border: cv.borderRole.normal,
         fontWeight: 500,
       },
     },
@@ -327,75 +327,75 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     solid: {
       enabled: {
         background: "#9CA2AE",
-        text: cv.bg.white,
+        text: cv.surface.default,
         border: "#9CA2AE",
       },
       disabled: {
-        background: cv.border.light,
-        text: cv.text.disabled,
-        border: cv.border.light,
+        background: cv.borderRole.subtle,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
       },
       hover: {
         background: "#7E8593",
-        text: cv.bg.white,
+        text: cv.surface.default,
         border: "#7E8593",
       },
     },
     soft: {
       enabled: {
-        background: cv.bg.light,
-        text: cv.text.default,
-        border: cv.bg.light,
+        background: cv.surface.subtle,
+        text: cv.textRole.normal,
+        border: cv.surface.subtle,
       },
       disabled: {
-        background: cv.border.light,
-        text: cv.text.disabled,
-        border: cv.border.light,
+        background: cv.borderRole.subtle,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
       },
       hover: {
-        background: cv.border.light,
-        text: cv.text.default,
-        border: cv.border.light,
+        background: cv.borderRole.subtle,
+        text: cv.textRole.normal,
+        border: cv.borderRole.subtle,
       },
     },
     // Figma: Outlined/Assistive — neutral border, default text
     outlined: {
       enabled: {
-        background: cv.bg.white,
-        text: cv.text.default,
-        border: cv.border.default,
+        background: cv.surface.default,
+        text: cv.textRole.normal,
+        border: cv.borderRole.normal,
         fontWeight: 500,
       },
       disabled: {
-        background: cv.bg.white,
-        text: cv.text.disabled,
-        border: cv.border.light,
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
         fontWeight: 500,
       },
       hover: {
-        background: cv.bg.light,
-        text: cv.text.default,
-        border: cv.border.default,
+        background: cv.surface.subtle,
+        text: cv.textRole.normal,
+        border: cv.borderRole.normal,
         fontWeight: 500,
       },
     },
     "outlined-sub": {
       enabled: {
-        background: cv.bg.white,
-        text: cv.text.default,
-        border: cv.border.default,
+        background: cv.surface.default,
+        text: cv.textRole.normal,
+        border: cv.borderRole.normal,
         fontWeight: 500,
       },
       disabled: {
-        background: cv.bg.white,
-        text: cv.text.disabled,
-        border: cv.border.light,
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
         fontWeight: 500,
       },
       hover: {
-        background: cv.bg.light,
-        text: cv.text.default,
-        border: cv.border.default,
+        background: cv.surface.subtle,
+        text: cv.textRole.normal,
+        border: cv.borderRole.normal,
         fontWeight: 500,
       },
     },

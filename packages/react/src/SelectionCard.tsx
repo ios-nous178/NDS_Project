@@ -99,8 +99,8 @@ const selectionCardStyles = `
     align-items: flex-start;
     gap: ${spacing[12]}px;
     padding: ${spacing[16]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.default};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.lg}px;
     cursor: pointer;
     transition: border-color ${transition.default}, background-color ${transition.default};
@@ -110,17 +110,17 @@ const selectionCardStyles = `
   }
 
   :where(.${SC_ITEM_CLASS}:hover:not([data-disabled="true"])) {
-    border-color: ${cv.primary.main};
+    border-color: ${cv.borderRole.brand};
   }
 
   :where(.${SC_ITEM_CLASS}:has(:focus-visible)) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
   :where(.${SC_ITEM_CLASS}[data-checked="true"]) {
-    border-color: ${cv.primary.main};
-    background: var(--semantic-primary-bg, ${cv.bg.coolGray});
+    border-color: ${cv.borderRole.brand};
+    background: var(--semantic-bg-status-info);
   }
 
   :where(.${SC_ITEM_CLASS}[data-disabled="true"]) {
@@ -147,8 +147,8 @@ const selectionCardStyles = `
     width: 20px;
     height: 20px;
     border-radius: var(--nds-selection-card-indicator-radius, 9999px);
-    border: 2px solid ${cv.border.default};
-    background: ${cv.bg.white};
+    border: 2px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
     flex-shrink: 0;
     margin-top: 2px;
     display: inline-flex;
@@ -162,8 +162,8 @@ const selectionCardStyles = `
   }
 
   :where(.${SC_ITEM_CLASS}[data-checked="true"]) .${SC_INDICATOR_CLASS} {
-    border-color: ${cv.primary.main};
-    background: ${cv.primary.main};
+    border-color: ${cv.borderRole.brand};
+    background: ${cv.surface.brand};
   }
 
   :where(.${SC_INDICATOR_CLASS}) svg {
@@ -183,7 +183,7 @@ const selectionCardStyles = `
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${SC_BODY_CLASS}) {
@@ -198,14 +198,14 @@ const selectionCardStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${SC_DESCRIPTION_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: 0;
   }
 `;

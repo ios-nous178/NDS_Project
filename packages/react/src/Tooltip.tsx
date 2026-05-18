@@ -32,8 +32,8 @@ const tooltipStyles = `
     position: absolute;
     z-index: ${zIndex.popup};
     padding: ${spacing[8]}px ${spacing[12]}px;
-    background: ${cv.text.normal};
-    color: ${cv.text.inverse};
+    background: ${cv.textRole.strong};
+    color: ${cv.textRole.inverse};
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
@@ -73,7 +73,7 @@ const tooltipStyles = `
     position: absolute;
     width: 8px;
     height: 8px;
-    background: ${cv.text.normal};
+    background: ${cv.textRole.strong};
     transform: rotate(45deg);
   }
 

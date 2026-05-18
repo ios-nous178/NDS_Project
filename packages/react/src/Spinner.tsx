@@ -19,7 +19,7 @@ const spinnerStyles = `
     display: inline-block;
     width: var(--nds-spinner-size, 24px);
     height: var(--nds-spinner-size, 24px);
-    color: var(--nds-spinner-color, ${cv.primary.main});
+    color: var(--nds-spinner-color, ${cv.textRole.brand});
     flex-shrink: 0;
   }
 

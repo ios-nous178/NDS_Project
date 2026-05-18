@@ -53,8 +53,8 @@ const ucStyles = `
     display: flex;
     gap: ${spacing[12]}px;
     padding: ${spacing[12]}px ${spacing[16]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     transition: border-color ${transition.default};
@@ -63,7 +63,7 @@ const ucStyles = `
   }
 
   :where(.${UC_CLASS}[data-clickable="true"]) { cursor: pointer; }
-  :where(.${UC_CLASS}[data-clickable="true"]:hover) { border-color: ${cv.primary.main}; }
+  :where(.${UC_CLASS}[data-clickable="true"]:hover) { border-color: ${cv.borderRole.brand}; }
 
   :where(.${UC_CLASS}[data-layout="stacked"]) {
     flex-direction: column;
@@ -87,7 +87,7 @@ const ucStyles = `
   :where(.${UC_NAME_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -96,7 +96,7 @@ const ucStyles = `
 
   :where(.${UC_HANDLE_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -104,7 +104,7 @@ const ucStyles = `
 
   :where(.${UC_BIO_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin-top: ${spacing[4]}px;
     overflow: hidden;
     display: -webkit-box;
@@ -117,7 +117,7 @@ const ucStyles = `
     align-items: center;
     gap: ${spacing[8]}px;
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin-top: ${spacing[4]}px;
   }
 
@@ -176,9 +176,7 @@ export const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
           <p className={UC_NAME_CLASS}>
             {name}
             {verified && (
-              <span style={{ marginLeft: 4, color: "var(--semantic-primary-main, #4080F0)" }}>
-                ✓
-              </span>
+              <span style={{ marginLeft: 4, color: "var(--semantic-text-brand-default)" }}>✓</span>
             )}
           </p>
           {handle && <span className={UC_HANDLE_CLASS}>{handle}</span>}

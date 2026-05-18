@@ -37,14 +37,14 @@ const ghStyles = `
     flex-direction: column;
     gap: ${spacing[16]}px;
     padding: ${spacing[24]}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
 
   :where(.${GH_CLASS}[data-tone="primary"]) {
-    background: var(--semantic-primary-bg, #EBF1FF);
+    background: var(--semantic-bg-status-info);
   }
 
   :where(.${GH_TOP_CLASS}) {
@@ -56,7 +56,7 @@ const ghStyles = `
 
   :where(.${GH_GREETING_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: 0 0 ${spacing[4]}px 0;
   }
 
@@ -64,14 +64,14 @@ const ghStyles = `
     font-size: ${typeScale.headline2.fontSize}px;
     line-height: ${typeScale.headline2.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${GH_QUESTION_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: ${spacing[8]}px 0 0 0;
   }
 

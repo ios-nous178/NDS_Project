@@ -77,7 +77,7 @@ function buildTokenMap(): Map<string, string> {
                 // 컬러는 HEX로 정규화해서 매칭
                 const normalized = val.startsWith("#") ? val.toUpperCase() : val;
                 const tokenName = prop
-                  .replace("--color-semantic-", "")
+                  .replace("--semantic-", "")
                   .replace("--nds-", "")
                   .replace("--", "");
                 map.set(normalized, tokenName);
@@ -105,10 +105,7 @@ function buildTokenMap(): Map<string, string> {
       const val = rootEl.style.getPropertyValue(prop).trim();
       if (val) {
         const normalized = val.startsWith("#") ? val.toUpperCase() : val;
-        const tokenName = prop
-          .replace("--color-semantic-", "")
-          .replace("--nds-", "")
-          .replace("--", "");
+        const tokenName = prop.replace("--semantic-", "").replace("--nds-", "").replace("--", "");
         map.set(normalized, tokenName);
         if (val.startsWith("#") && val.length === 7) {
           const rr = parseInt(val.slice(1, 3), 16);

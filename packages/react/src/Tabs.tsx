@@ -81,7 +81,7 @@ const tabsStyles = `
 
   :where(.${TABS_TRIGGER_CLASS}[data-disabled="true"]) {
     cursor: not-allowed;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     pointer-events: none;
   }
 
@@ -103,8 +103,8 @@ const tabsStyles = `
   /* ─── line variant ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"]) {
-    background: ${cv.bg.white};
-    border-bottom: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}) {
@@ -112,7 +112,7 @@ const tabsStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
@@ -131,18 +131,18 @@ const tabsStyles = `
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    color: ${cv.text.strong};
+    color: ${cv.textRole.strong};
     font-weight: ${fontWeight.bold};
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
   }
 
   @media (hover: hover) {
     :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
-      color: ${cv.text.normal};
-      background: ${cv.bg.light};
+      color: ${cv.textRole.strong};
+      background: ${cv.surface.subtle};
     }
   }
 
@@ -151,18 +151,18 @@ const tabsStyles = `
     bottom: 0;
     left: 0;
     height: 3px;
-    background: ${cv.text.strong};
+    background: ${cv.textRole.strong};
     transition: transform ${transition.slow}, width ${transition.slow}, background ${transition.default};
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TABS_INDICATOR_CLASS}) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
   }
 
   /* ─── chip variant ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"]) {
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     gap: ${spacing[8]}px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -182,8 +182,8 @@ const tabsStyles = `
     align-items: center;
     justify-content: center;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.light};
-    color: ${cv.text.subtle};
+    background: ${cv.surface.subtle};
+    color: ${cv.textRole.subtle};
     white-space: nowrap;
     font-weight: ${fontWeight.regular};
     flex: 0 0 auto;
@@ -204,8 +204,8 @@ const tabsStyles = `
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-tone="color"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
     font-weight: ${fontWeight.bold};
   }
 
@@ -217,15 +217,15 @@ const tabsStyles = `
 
   @media (hover: hover) {
     :where(.${TABS_LIST_CLASS}[data-variant="chip"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
-      background: ${cv.bg.coolGray};
-      color: ${cv.text.normal};
+      background: ${cv.surface.section};
+      color: ${cv.textRole.strong};
     }
   }
 
   /* ─── segment variant (PC only) ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="segment"]) {
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     gap: 0;
   }
 
@@ -236,8 +236,8 @@ const tabsStyles = `
     justify-content: center;
     height: ${sizing.tabs.segment.pc}px;
     padding: 0 ${spacing[16]}px;
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.subtle};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.regular};
@@ -255,8 +255,8 @@ const tabsStyles = `
 
   @media (hover: hover) {
     :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
-      background: ${cv.bg.light};
-      color: ${cv.text.normal};
+      background: ${cv.surface.subtle};
+      color: ${cv.textRole.strong};
     }
   }
 

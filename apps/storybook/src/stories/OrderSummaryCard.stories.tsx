@@ -60,7 +60,7 @@ export const FreeOrder: Story = {
           { label: "EAP 지원", value: "-80,000원", emphasis: "discount" },
           { label: "회사 부담", value: "100% 지원", emphasis: "info" },
         ]}
-        total={<span style={{ color: "var(--semantic-success-main, #2BAA48)" }}>0원</span>}
+        total={<span style={{ color: "var(--semantic-text-status-success)" }}>0원</span>}
         footer={<Button fullWidth>무료 상담 신청하기</Button>}
       />
     </div>

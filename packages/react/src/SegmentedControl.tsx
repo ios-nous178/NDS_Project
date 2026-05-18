@@ -54,7 +54,7 @@ const segmentedStyles = `
   :where(.${SC_ROOT_CLASS}) {
     display: inline-flex;
     align-items: stretch;
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
     border-radius: ${radius.md}px;
     padding: ${spacing[4]}px;
     gap: ${spacing[4]}px;
@@ -83,7 +83,7 @@ const segmentedStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     white-space: nowrap;
     transition: background-color ${transition.default}, color ${transition.default}, box-shadow ${transition.default};
   }
@@ -95,8 +95,8 @@ const segmentedStyles = `
   }
 
   :where(.${SC_ITEM_CLASS}[data-active="true"]) {
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
     box-shadow: ${shadow["1"]};
   }
@@ -107,7 +107,7 @@ const segmentedStyles = `
   }
 
   :where(.${SC_ITEM_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 `;

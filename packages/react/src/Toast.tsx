@@ -83,22 +83,22 @@ const toastStyles = `
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="default"]) {
     background: var(--nds-toast-background, rgba(17, 17, 17, 0.8));
-    color: ${cv.text.inverse};
+    color: ${cv.textRole.inverse};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="success"]) {
-    background: ${cv.success.bg};
-    color: ${cv.success.main};
+    background: ${cv.surface.statusSuccess};
+    color: ${cv.iconRole.statusSuccess};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="error"]) {
-    background: ${cv.error.bg};
-    color: ${cv.error.main};
+    background: ${cv.surface.statusError};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="info"]) {
-    background: ${cv.primary.bg};
-    color: ${cv.primary.main};
+    background: ${cv.surface.statusInfo};
+    color: ${cv.textRole.brand};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-entering="true"]) {

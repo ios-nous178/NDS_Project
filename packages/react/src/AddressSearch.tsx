@@ -88,7 +88,7 @@ const asStyles = `
   :where(.${AS_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${AS_FIELD_ROW_CLASS}) {
@@ -101,24 +101,24 @@ const asStyles = `
     min-width: 0;
     height: ${sizing.input.default}px;
     padding: 0 ${spacing[16]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     transition: border-color ${transition.default};
   }
-  :where(.${AS_INPUT_CLASS}:focus) { outline: none; border-color: ${cv.primary.main}; }
-  :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
+  :where(.${AS_INPUT_CLASS}:focus) { outline: none; border-color: ${cv.borderRole.brand}; }
+  :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
 
   :where(.${AS_BTN_CLASS}) {
     height: ${sizing.input.default}px;
     padding: 0 ${spacing[16]}px;
     border-radius: ${radius.md}px;
     border: none;
-    background: ${cv.text.default};
-    color: ${cv.bg.white};
+    background: ${cv.textRole.normal};
+    color: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
@@ -131,7 +131,7 @@ const asStyles = `
     list-style: none;
     margin: 0;
     padding: 0;
-    border: 1px solid ${cv.border.light};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     overflow: hidden;
     max-height: 240px;
@@ -143,28 +143,28 @@ const asStyles = `
     flex-direction: column;
     gap: 2px;
     padding: ${spacing[12]}px ${spacing[16]}px;
-    border-bottom: 1px solid ${cv.border.light};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
     cursor: pointer;
     transition: background-color ${transition.default};
   }
   :where(.${AS_RESULT_ITEM_CLASS}:last-child) { border-bottom: 0; }
-  :where(.${AS_RESULT_ITEM_CLASS}:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${AS_RESULT_ITEM_CLASS}:hover) { background: ${cv.surface.section}; }
 
   :where(.${AS_RESULT_ITEM_CLASS}) > strong {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
   :where(.${AS_RESULT_ITEM_CLASS}) > span {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${AS_RESULT_CLASS}[data-empty="true"]) {
     padding: ${spacing[16]}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-align: center;
-    border: 1px solid ${cv.border.light};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     font-size: ${typeScale.body3.fontSize}px;
   }
@@ -174,7 +174,7 @@ const asStyles = `
     flex-direction: column;
     gap: ${spacing[4]}px;
     padding: ${spacing[12]}px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     border-radius: ${radius.md}px;
   }
 
@@ -186,9 +186,9 @@ const asStyles = `
   :where(.${AS_DETAIL_CLASS}) input {
     height: 40px;
     padding: 0 ${spacing[12]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     margin-top: ${spacing[4]}px;
@@ -196,9 +196,9 @@ const asStyles = `
 
   :where(.${AS_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
-  :where(.${AS_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
+  :where(.${AS_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

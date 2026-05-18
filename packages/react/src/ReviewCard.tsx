@@ -48,8 +48,8 @@ const rcStyles = `
     flex-direction: column;
     gap: ${spacing[12]}px;
     padding: ${spacing[16]}px ${spacing[20]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -78,7 +78,7 @@ const rcStyles = `
   :where(.${RC_AUTHOR_CLASS}) > strong {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -89,7 +89,7 @@ const rcStyles = `
     align-items: center;
     gap: ${spacing[4]}px;
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${RC_RATING_CLASS}) {
@@ -103,13 +103,13 @@ const rcStyles = `
   }
 
   :where(.${RC_RATING_CLASS}) .${RC_RATING_CLASS}__label {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${RC_BODY_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
     word-break: break-word;
     white-space: pre-wrap;
@@ -118,7 +118,7 @@ const rcStyles = `
   :where(.${RC_BODY_CLASS}) > h4 {
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0 0 ${spacing[4]}px 0;
   }
 
@@ -131,8 +131,8 @@ const rcStyles = `
   :where(.${RC_TAG_CLASS}) {
     padding: 2px 8px;
     border-radius: 9999px;
-    background: ${cv.bg.coolGray};
-    color: ${cv.text.subtle};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.medium};
   }
@@ -209,7 +209,7 @@ export const ReviewCard = React.forwardRef<HTMLDivElement, ReviewCardProps>(
               <strong>
                 {author}
                 {verified && (
-                  <span style={{ marginLeft: 4, color: "var(--semantic-success-main, #2BAA48)" }}>
+                  <span style={{ marginLeft: 4, color: "var(--semantic-text-status-success)" }}>
                     ✓
                   </span>
                 )}

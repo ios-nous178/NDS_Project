@@ -46,7 +46,7 @@ const consentStyles = `
 
   :where(.${CL_DIVIDER_CLASS}) {
     height: 1px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     margin: ${spacing[4]}px 0;
   }
 
@@ -98,13 +98,13 @@ const consentStyles = `
     width: 22px;
     height: 22px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.disabled};
-    color: ${cv.bg.white};
+    background: ${cv.surface.disabled};
+    color: ${cv.surface.default};
     transition: background-color ${transition.default};
   }
 
   :where(.${CL_BOX_CLASS}[data-checked="true"]) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
   }
 
   :where(.${CL_BOX_CLASS}) svg {
@@ -116,7 +116,7 @@ const consentStyles = `
     flex: 1;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     user-select: none;
     min-width: 0;
   }
@@ -129,7 +129,7 @@ const consentStyles = `
 
   :where(.${CL_REQUIRED_CLASS}) {
     flex-shrink: 0;
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
@@ -137,7 +137,7 @@ const consentStyles = `
 
   :where(.${CL_OPTIONAL_CLASS}) {
     flex-shrink: 0;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
   }
@@ -147,7 +147,7 @@ const consentStyles = `
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     cursor: pointer;
     padding: ${spacing[4]}px;
     border-radius: ${radius.sm}px;
@@ -161,11 +161,11 @@ const consentStyles = `
   :where(.${CL_DETAIL_CLASS}) {
     margin: ${spacing[4]}px 0 ${spacing[8]}px 32px;
     padding: ${spacing[12]}px ${spacing[12]}px;
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
     border-radius: ${radius.md}px;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.normal};
+    color: ${cv.textRole.strong};
     white-space: pre-wrap;
   }
 `;

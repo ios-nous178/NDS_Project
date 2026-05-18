@@ -57,9 +57,9 @@ const rpStyles = `
     height: 32px;
     padding: 0 ${spacing[8]}px;
     border-radius: 9999px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.medium};
@@ -67,16 +67,16 @@ const rpStyles = `
     transition: background-color ${transition.default}, border-color ${transition.default};
   }
 
-  :where(.${RP_ITEM_CLASS}:hover:not([disabled])) { background: ${cv.bg.coolGray}; }
+  :where(.${RP_ITEM_CLASS}:hover:not([disabled])) { background: ${cv.surface.section}; }
 
   :where(.${RP_ITEM_CLASS}[data-active="true"]) {
-    background: var(--semantic-primary-bg, #EBF1FF);
-    border-color: ${cv.primary.main};
-    color: ${cv.primary.main};
+    background: var(--semantic-bg-status-info);
+    border-color: ${cv.borderRole.brand};
+    color: ${cv.textRole.brand};
   }
 
   :where(.${RP_ITEM_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 

@@ -42,7 +42,7 @@ const selectStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${SELECT_TRIGGER_CLASS}) {
@@ -53,9 +53,9 @@ const selectStyles = `
     width: 100%;
     min-height: var(--nds-select-height, ${sizing.input.default}px);
     padding: 0 ${spacing[12]}px;
-    border: 1px solid var(--nds-select-border-color, ${cv.border.default});
+    border: 1px solid var(--nds-select-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-select-radius, ${radius.md}px);
-    background: var(--nds-select-background, ${cv.bg.white});
+    background: var(--nds-select-background, ${cv.surface.default});
     cursor: pointer;
     font-family: inherit;
     box-sizing: border-box;
@@ -63,15 +63,15 @@ const selectStyles = `
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-open="true"]) {
-    border-color: ${cv.border.focus};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-error="true"]) {
-    border-color: ${cv.error.main};
+    border-color: ${cv.borderRole.statusError};
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-disabled="true"]) {
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
     cursor: not-allowed;
     opacity: 0.6;
   }
@@ -82,7 +82,7 @@ const selectStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -90,7 +90,7 @@ const selectStyles = `
   }
 
   :where(.${SELECT_TRIGGER_TEXT_CLASS}[data-placeholder="true"]) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${SELECT_CHEVRON_CLASS}) {
@@ -99,7 +99,7 @@ const selectStyles = `
     justify-content: center;
     flex-shrink: 0;
     margin-left: ${spacing[4]}px;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     transition: transform ${transition.default};
   }
 
@@ -116,8 +116,8 @@ const selectStyles = `
     position: fixed;
     max-height: var(--nds-select-dropdown-max-height, 200px);
     overflow-y: auto;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
@@ -133,27 +133,27 @@ const selectStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default};
   }
 
   :where(.${SELECT_OPTION_CLASS}:hover) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-selected="true"]) {
-    color: ${cv.primary.main};
-    background: ${cv.primary.bgLighter};
+    color: ${cv.textRole.brand};
+    background: ${cv.surface.brandSubtle};
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-active="true"]) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
     outline: none;
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-disabled="true"]) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     cursor: not-allowed;
   }
 
@@ -161,11 +161,11 @@ const selectStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${SELECT_HELPER_CLASS}[data-error="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   @keyframes nds-select-fade-in {

@@ -31,7 +31,7 @@ const emptyStateStyles = `
     align-items: center;
     justify-content: center;
     margin-bottom: ${spacing[16]}px;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
   }
 
   :where(.${EMPTY_ICON_CLASS} svg) {
@@ -50,7 +50,7 @@ const emptyStateStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body1.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${EMPTY_DESC_CLASS}) {
@@ -58,7 +58,7 @@ const emptyStateStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     white-space: pre-line;
     word-break: keep-all;
   }

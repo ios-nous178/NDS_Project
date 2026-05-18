@@ -76,24 +76,24 @@ const STATUS_LABEL: Record<AppointmentStatus, string> = {
 
 const STATUS_COLORS: Record<AppointmentStatus, { bg: string; fg: string }> = {
   scheduled: {
-    bg: "var(--semantic-info-bg, #EBF1FF)",
-    fg: "var(--semantic-info-text, #1F4FB8)",
+    bg: "var(--semantic-bg-status-info)",
+    fg: "var(--semantic-text-status-info)",
   },
   confirmed: {
-    bg: "var(--semantic-success-bg, #E5F8E9)",
-    fg: "var(--semantic-success-text, #1A6D2C)",
+    bg: "var(--semantic-bg-status-success)",
+    fg: "var(--semantic-text-status-success)",
   },
   "in-progress": {
-    bg: "var(--semantic-caution-bg, #FFF4E0)",
-    fg: "var(--semantic-caution-text, #8C5B00)",
+    bg: "var(--semantic-bg-status-caution)",
+    fg: "var(--semantic-text-status-caution)",
   },
   completed: {
     bg: "#F2F4F6",
     fg: "#666",
   },
   canceled: {
-    bg: "var(--semantic-error-bg, #FFE9E9)",
-    fg: "var(--semantic-error-text, #B83333)",
+    bg: "var(--semantic-bg-status-error)",
+    fg: "var(--semantic-text-status-error)",
   },
 };
 
@@ -120,8 +120,8 @@ const apptStyles = `
     align-items: stretch;
     gap: ${spacing[16]}px;
     padding: ${spacing[16]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     transition: border-color ${transition.default}, box-shadow ${transition.default};
@@ -130,7 +130,7 @@ const apptStyles = `
 
   :where(.${AC_CLASS}[data-clickable="true"]) { cursor: pointer; }
   :where(.${AC_CLASS}[data-clickable="true"]:hover) {
-    border-color: ${cv.primary.main};
+    border-color: ${cv.borderRole.brand};
   }
 
   :where(.${AC_CLASS}[data-status="canceled"]) {
@@ -140,7 +140,7 @@ const apptStyles = `
   :where(.${AC_DATE_CLASS}) {
     flex-shrink: 0;
     width: 56px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     border-radius: ${radius.md}px;
     display: flex;
     flex-direction: column;
@@ -154,20 +154,20 @@ const apptStyles = `
     font-size: 22px;
     line-height: 1;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${AC_DATE_MONTH_CLASS}) {
     font-size: 11px;
     line-height: 1;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-transform: uppercase;
   }
 
   :where(.${AC_DATE_WEEKDAY_CLASS}) {
     font-size: 11px;
     line-height: 1;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin-top: 2px;
   }
 
@@ -183,7 +183,7 @@ const apptStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -200,7 +200,7 @@ const apptStyles = `
   :where(.${AC_META_ROW_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     display: inline-flex;
     align-items: center;
     gap: ${spacing[4]}px;
@@ -235,9 +235,9 @@ const apptStyles = `
     height: 32px;
     padding: 0 ${spacing[12]}px;
     border-radius: ${radius.md}px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
@@ -245,7 +245,7 @@ const apptStyles = `
   }
 
   :where(.${AC_ACTION_CLASS}[data-primary="true"]) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     color: #fff;
     border-color: transparent;
   }

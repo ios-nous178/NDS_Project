@@ -30,10 +30,10 @@ const accordionStyles = `
   }
 
   :where(.${ACC_ITEM_CLASS}) {
-    border: 1px solid ${cv.border.light};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     overflow: hidden;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
   }
 
   :where(.${ACC_TRIGGER_CLASS}) {
@@ -50,23 +50,23 @@ const accordionStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.semibold};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     transition: background ${transition.default};
   }
 
   :where(.${ACC_TRIGGER_CLASS}:hover) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${ACC_TRIGGER_CLASS}[data-state="open"]) {
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
   }
 
   :where(.${ACC_CHEVRON_CLASS}) {
     flex-shrink: 0;
     width: 20px;
     height: 20px;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     transition: transform ${transition.default};
   }
 
@@ -78,8 +78,8 @@ const accordionStyles = `
     padding: 0 ${spacing[20]}px ${spacing[16]}px;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.subtle};
-    background: ${cv.bg.coolGray};
+    color: ${cv.textRole.subtle};
+    background: ${cv.surface.section};
   }
 `;
 

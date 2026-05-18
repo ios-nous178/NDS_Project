@@ -90,11 +90,11 @@ const cmStyles = `
     width: 320px;
     max-width: calc(100vw - ${spacing[32]}px);
     padding: ${spacing[20]}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     border-radius: ${radius.lg}px;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
     font-family: ${fontFamily.web};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     z-index: 1;
   }
 
@@ -103,8 +103,8 @@ const cmStyles = `
     align-items: center;
     padding: 2px ${spacing[8]}px;
     border-radius: 9999px;
-    background: ${cv.primary.lighter};
-    color: ${cv.primary.main};
+    background: ${"#91CAF6"};
+    color: ${cv.textRole.brand};
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.semibold};
     margin-bottom: ${spacing[12]}px;
@@ -114,14 +114,14 @@ const cmStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0 0 ${spacing[6]}px 0;
   }
 
   :where(.${CM_DESC_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: 0;
   }
 
@@ -143,13 +143,13 @@ const cmStyles = `
     width: 6px;
     height: 6px;
     border-radius: 9999px;
-    background: ${cv.border.default};
+    background: ${cv.borderRole.normal};
     transition: all ${transition.default};
   }
 
   :where(.${CM_DOT_CLASS}[data-active="true"]) {
     width: 18px;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
   }
 
   :where(.${CM_ACTIONS_CLASS}) {
@@ -163,7 +163,7 @@ const cmStyles = `
     padding: 0 ${spacing[12]}px;
     border: none;
     background: transparent;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
@@ -172,8 +172,8 @@ const cmStyles = `
   }
 
   :where(.${CM_SKIP_CLASS}:hover) {
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.default};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${CM_BTN_CLASS}) {
@@ -181,7 +181,7 @@ const cmStyles = `
     padding: 0 ${spacing[16]}px;
     border-radius: ${radius.md}px;
     border: none;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     color: #fff;
     cursor: pointer;
     font-family: inherit;
@@ -191,7 +191,7 @@ const cmStyles = `
   }
 
   :where(.${CM_BTN_CLASS}:hover) {
-    background: ${cv.primary.hover};
+    background: ${cv.fill.brandHover};
   }
 `;
 

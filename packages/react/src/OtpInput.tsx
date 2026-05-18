@@ -44,9 +44,9 @@ const otpStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     font-weight: ${fontWeight.bold};
     line-height: ${typeScale.headline5.lineHeight}px;
-    color: ${cv.text.default};
-    background: ${cv.bg.white};
-    border: 1.5px solid ${cv.border.default};
+    color: ${cv.textRole.normal};
+    background: ${cv.surface.default};
+    border: 1.5px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     outline: none;
     box-sizing: border-box;
@@ -62,12 +62,12 @@ const otpStyles = `
   }
 
   :where(.${OTP_INPUT_CLASS}:focus) {
-    border-color: ${cv.primary.main};
-    background: ${cv.primary.bgLighter};
+    border-color: ${cv.borderRole.brand};
+    background: ${cv.surface.brandSubtle};
   }
 
   :where(.${OTP_ROOT_CLASS}[data-error="true"]) .${OTP_INPUT_CLASS} {
-    border-color: ${cv.error.main};
+    border-color: ${cv.borderRole.statusError};
   }
 `;
 

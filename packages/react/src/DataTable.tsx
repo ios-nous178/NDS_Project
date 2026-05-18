@@ -87,9 +87,9 @@ const dataTableStyles = `
   :where(.${DT_SCROLL_CLASS}) {
     width: 100%;
     overflow-x: auto;
-    border: 1px solid ${cv.border.light};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
   }
 
   :where(.${DT_TABLE_CLASS}) {
@@ -101,12 +101,12 @@ const dataTableStyles = `
   :where(.${DT_TH_CLASS}) {
     text-align: left;
     padding: ${spacing[10]}px ${spacing[12]}px;
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.subtle};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    border-bottom: 1px solid ${cv.border.light};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
     white-space: nowrap;
     user-select: none;
   }
@@ -118,7 +118,7 @@ const dataTableStyles = `
     cursor: pointer;
   }
   :where(.${DT_TH_CLASS}[data-sortable="true"]:hover) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${DT_TH_INNER_CLASS}) {
@@ -132,11 +132,11 @@ const dataTableStyles = `
     align-items: center;
     justify-content: center;
     line-height: 0;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     transition: color ${transition.default}, transform ${transition.default};
   }
   :where(.${DT_SORT_ICON_CLASS}[data-active="true"]) {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
   }
   :where(.${DT_SORT_ICON_CLASS}[data-direction="desc"]) {
     transform: rotate(180deg);
@@ -149,15 +149,15 @@ const dataTableStyles = `
     cursor: pointer;
   }
   :where(.${DT_TR_CLASS}[data-clickable="true"]:hover) {
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
   }
   :where(.${DT_TR_CLASS}:not(:last-child)) > .${DT_TD_CLASS} {
-    border-bottom: 1px solid ${cv.border.light};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${DT_TD_CLASS}) {
     padding: ${spacing[12]}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     vertical-align: middle;
@@ -174,7 +174,7 @@ const dataTableStyles = `
   :where(.${DT_LOADING_CLASS}) {
     text-align: center;
     padding: ${spacing[36]}px ${spacing[20]}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
   }
@@ -198,8 +198,8 @@ const dataTableStyles = `
     gap: ${spacing[8]}px;
   }
   :where(.${DT_CARD_CLASS}) > article {
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     padding: ${spacing[12]}px ${spacing[16]}px;
     display: flex;
@@ -211,7 +211,7 @@ const dataTableStyles = `
     cursor: pointer;
   }
   :where(.${DT_CARD_CLASS}) > article[data-clickable="true"]:hover {
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
   }
 
   :where(.${DT_CARD_ROW_CLASS}) {
@@ -222,14 +222,14 @@ const dataTableStyles = `
   }
   :where(.${DT_CARD_LABEL_CLASS}) {
     flex-shrink: 0;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
   }
   :where(.${DT_CARD_VALUE_CLASS}) {
     flex: 1;
     text-align: right;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     word-break: break-word;

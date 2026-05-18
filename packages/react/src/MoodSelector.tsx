@@ -61,11 +61,11 @@ const moodStyles = `
   }
 
   :where(.${MD_ITEM_CLASS}:hover) {
-    background: ${cv.bg.coolGrayLighter};
+    background: ${cv.surface.page};
   }
 
   :where(.${MD_ITEM_CLASS}[data-checked="true"]) {
-    background: ${cv.primary.bgLighter};
+    background: ${cv.surface.brandSubtle};
   }
 
   :where(.${MD_ITEM_CLASS}[data-disabled="true"]) {
@@ -100,19 +100,19 @@ const moodStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-align: center;
     user-select: none;
     word-break: keep-all;
   }
 
   :where(.${MD_ITEM_CLASS}[data-checked="true"] .${MD_LABEL_CLASS}) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
   }
 
   :where(.${MD_INPUT_CLASS}:focus-visible + .${MD_FACE_CLASS}) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 4px;
     border-radius: ${radius.pill}px;
   }

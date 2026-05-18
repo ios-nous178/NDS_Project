@@ -50,7 +50,7 @@ const likertStyles = `
     left: 12px;
     right: 12px;
     height: 2px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     border-radius: ${radius.pill}px;
     pointer-events: none;
   }
@@ -89,20 +89,20 @@ const likertStyles = `
     justify-content: center;
     width: 24px;
     height: 24px;
-    border: 1.5px solid ${cv.border.default};
+    border: 1.5px solid ${cv.borderRole.normal};
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};
     box-sizing: border-box;
   }
 
   :where(.${LK_ITEM_CLASS}:hover .${LK_DOT_CLASS}) {
-    border-color: ${cv.primary.lighter};
+    border-color: ${"#91CAF6"};
   }
 
   :where(.${LK_DOT_CLASS}[data-checked="true"]) {
-    border-color: ${cv.primary.main};
-    background: ${cv.primary.main};
+    border-color: ${cv.borderRole.brand};
+    background: ${cv.surface.brand};
   }
 
   :where(.${LK_DOT_INNER_CLASS}) {
@@ -110,7 +110,7 @@ const likertStyles = `
     width: 8px;
     height: 8px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     opacity: 0;
     transform: scale(0.5);
     transition: opacity ${transition.default}, transform ${transition.default};
@@ -122,7 +122,7 @@ const likertStyles = `
   }
 
   :where(.${LK_INPUT_CLASS}:focus-visible + .${LK_DOT_CLASS}) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
@@ -130,14 +130,14 @@ const likertStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-align: center;
     user-select: none;
     word-break: keep-all;
   }
 
   :where(.${LK_ITEM_CLASS}[data-checked="true"] .${LK_ITEM_LABEL_CLASS}) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
   }
 
@@ -152,7 +152,7 @@ const likertStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     user-select: none;
   }
 `;

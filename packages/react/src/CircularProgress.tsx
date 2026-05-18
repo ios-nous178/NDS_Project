@@ -55,12 +55,12 @@ const cpStyles = `
 
   :where(.${CP_TRACK_CLASS}) {
     fill: none;
-    stroke: var(--nds-cp-track, ${cv.bg.coolGray});
+    stroke: var(--nds-cp-track, ${cv.surface.section});
   }
 
   :where(.${CP_FILL_CLASS}) {
     fill: none;
-    stroke: var(--nds-cp-fill, ${cv.primary.main});
+    stroke: var(--nds-cp-fill, ${cv.iconRole.brand});
     stroke-linecap: round;
     transition: stroke-dashoffset 480ms ease, stroke ${transition.default};
   }
@@ -79,14 +79,14 @@ const cpStyles = `
     font-size: var(--nds-cp-value-size, 16px);
     line-height: 1;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
   }
 
   :where(.${CP_CAPTION_CLASS}) {
     font-size: 11px;
     line-height: 1;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 `;
 

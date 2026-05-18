@@ -298,7 +298,7 @@ function PlaylistEditModalUIExample() {
                   margin: 0,
                   fontSize: 12,
                   letterSpacing: "-0.6px",
-                  color: cv.text.subtle,
+                  color: cv.textRole.subtle,
                 }}
               >
                 {playlistName.length}/25 자
@@ -327,7 +327,7 @@ function PlaylistEditModalUIExample() {
                 variant="solid"
                 size="md"
                 fullWidth
-                style={{ backgroundColor: cv.text.disabled, borderColor: cv.text.disabled }}
+                style={{ backgroundColor: cv.textRole.muted, borderColor: cv.textRole.muted }}
                 onClick={() => setOpen(false)}
               >
                 취소
@@ -385,7 +385,7 @@ function PlaylistEditModalSlotPropsExample() {
               margin: 0,
               fontSize: 12,
               letterSpacing: "-0.6px",
-              color: cv.text.subtle,
+              color: cv.textRole.subtle,
             }}
           >
             {playlistName.length}/25 자
@@ -414,7 +414,7 @@ function PlaylistEditModalSlotPropsExample() {
             variant="solid"
             size="md"
             fullWidth
-            style={{ backgroundColor: cv.text.disabled, borderColor: cv.text.disabled }}
+            style={{ backgroundColor: cv.textRole.muted, borderColor: cv.textRole.muted }}
             onClick={() => setOpen(false)}
           >
             취소
@@ -461,7 +461,7 @@ function PlaylistEditModalClassNameExample() {
               margin: 0,
               fontSize: 12,
               letterSpacing: "-0.6px",
-              color: cv.text.subtle,
+              color: cv.textRole.subtle,
             }}
           >
             {playlistName.length}/25 자
@@ -490,7 +490,7 @@ function PlaylistEditModalClassNameExample() {
             variant="solid"
             size="md"
             fullWidth
-            style={{ backgroundColor: cv.text.disabled, borderColor: cv.text.disabled }}
+            style={{ backgroundColor: cv.textRole.muted, borderColor: cv.textRole.muted }}
             onClick={() => setOpen(false)}
           >
             취소

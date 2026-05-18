@@ -46,7 +46,9 @@ export const OnComplete: Story = {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
         <OtpInput value={v} onValueChange={setV} onComplete={(value) => setDone(value)} />
         {done && (
-          <span style={{ fontSize: 13, color: "var(--semantic-success-main)" }}>완성 → {done}</span>
+          <span style={{ fontSize: 13, color: "var(--semantic-text-status-success)" }}>
+            완성 → {done}
+          </span>
         )}
       </div>
     );

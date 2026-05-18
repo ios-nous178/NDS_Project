@@ -42,18 +42,18 @@ export interface NotificationItemProps extends Omit<React.HTMLAttributes<HTMLDiv
 /* ─── Styles ─── */
 
 const KIND_BG: Record<NotificationKind, string> = {
-  info: "var(--semantic-info-bg, #EBF1FF)",
-  success: "var(--semantic-success-bg, #E5F8E9)",
-  warning: "var(--semantic-caution-bg, #FFF4E0)",
-  error: "var(--semantic-error-bg, #FFE9E9)",
+  info: "var(--semantic-bg-status-info)",
+  success: "var(--semantic-bg-status-success)",
+  warning: "var(--semantic-bg-status-caution)",
+  error: "var(--semantic-bg-status-error)",
   system: "#F2F4F6",
 };
 
 const KIND_FG: Record<NotificationKind, string> = {
-  info: "var(--semantic-info-main, #4080F0)",
-  success: "var(--semantic-success-main, #2BAA48)",
-  warning: "var(--semantic-caution-main, #F0A030)",
-  error: "var(--semantic-error-main, #E04D4D)",
+  info: "var(--semantic-fill-brand-default)",
+  success: "var(--semantic-icon-status-success)",
+  warning: "var(--semantic-icon-status-caution)",
+  error: "var(--semantic-icon-status-error)",
   system: "#666",
 };
 
@@ -72,8 +72,8 @@ const niStyles = `
     align-items: flex-start;
     gap: ${spacing[12]}px;
     padding: ${spacing[16]}px;
-    background: ${cv.bg.white};
-    border-bottom: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};
     transition: background-color ${transition.default};
     box-sizing: border-box;
@@ -81,14 +81,14 @@ const niStyles = `
   }
 
   :where(.${NI_CLASS}[data-clickable="true"]) { cursor: pointer; }
-  :where(.${NI_CLASS}[data-clickable="true"]:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${NI_CLASS}[data-clickable="true"]:hover) { background: ${cv.surface.section}; }
 
   :where(.${NI_CLASS}[data-unread="true"]) {
-    background: var(--semantic-primary-bg, #EBF1FF);
+    background: var(--semantic-bg-status-info);
   }
 
   :where(.${NI_CLASS}[data-unread="true"][data-clickable="true"]:hover) {
-    background: var(--semantic-primary-bg-hover, #DDE7FF);
+    background: var(--semantic-bg-brand-subtle);
   }
 
   :where(.${NI_DOT_CLASS}) {
@@ -98,7 +98,7 @@ const niStyles = `
     width: 6px;
     height: 6px;
     border-radius: 9999px;
-    background: var(--semantic-error-main, #E04D4D);
+    background: var(--semantic-fill-status-error);
   }
 
   :where(.${NI_ICON_CLASS}) {
@@ -126,14 +126,14 @@ const niStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${NI_DESC_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: 0;
     overflow: hidden;
     display: -webkit-box;
@@ -143,7 +143,7 @@ const niStyles = `
 
   :where(.${NI_TIME_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin-top: ${spacing[4]}px;
   }
 `;

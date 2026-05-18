@@ -39,16 +39,16 @@ export interface FABProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 
 const colorConfig: Record<FABColor, { bg: string; fg: string }> = {
   primary: {
-    bg: "var(--semantic-primary-main, #4080F0)",
-    fg: "var(--semantic-primary-fg, #fff)",
+    bg: "var(--semantic-bg-brand-default)",
+    fg: "var(--semantic-text-inverse-default)",
   },
   secondary: {
-    bg: "var(--semantic-secondary-main, #1A1A1A)",
-    fg: "#fff",
+    bg: "var(--semantic-fill-neutral-default)",
+    fg: "var(--semantic-text-inverse-default)",
   },
   neutral: {
-    bg: "var(--semantic-bg-white, #fff)",
-    fg: "var(--semantic-text-default, #1A1A1A)",
+    bg: "var(--semantic-bg-surface-default)",
+    fg: "var(--semantic-text-normal-default)",
   },
 };
 
@@ -60,7 +60,7 @@ const fabStyles = `
     padding: 0 var(--nds-fab-padding, 0);
     border: none;
     border-radius: 9999px;
-    background: var(--nds-fab-bg, ${cv.primary.main});
+    background: var(--nds-fab-bg, ${cv.surface.brand});
     color: var(--nds-fab-fg, #fff);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18), 0 2px 4px rgba(0, 0, 0, 0.08);
     cursor: pointer;
@@ -86,7 +86,7 @@ const fabStyles = `
   }
 
   :where(.${FB_CLASS}:focus-visible) {
-    outline: 3px solid ${cv.primary.main};
+    outline: 3px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 

@@ -1,81 +1,16 @@
 // Semantic color CSS variable references.
-// `--semantic-*` 단일 namespace로 통일된 시멘틱 토큰 진입점.
 //
-// 1) Palette-style 그룹 (primary/secondary/error/caution/success/text/bg/border/icon/status)
-//    - DESIGN.md `colors` 섹션의 값을 alias.
-// 2) Role-based 그룹 (surface/bgRole/textRole/iconRole/borderRole/button/fill/input)
-//    - 구 `--eap-*` 트리를 흡수. 컴포넌트 역할 기반 시멘틱.
+// Single `--semantic-*` namespace, 1:1 mirroring Figma SemanticColorGuide
+// (171:6675 / 222:2 + 227:2 + 227:86 + 227:160 + 231:2 + 231:46 + 261:32 + 294:12).
 //
-// 두 그룹 모두 같은 CSS namespace(`--semantic-*`)에 emit 된다.
-// generate-css.js 가 `colors.semantic` + role 트리(`./eap.ts`의 `eap` 객체)를 합쳐 출력.
+// 8 role groups + bg extension. Legacy palette aliases (cv.primary/secondary/
+// error/caution/success/text/bg/border/icon/status) have been removed —
+// migrate to the corresponding role group below.
 
 const v = (name: string) => `var(${name})`;
 
 export const cv = {
-  // ── Palette groups (legacy cv shape) ─────────────────────
-  primary: {
-    main: v("--semantic-primary-main"),
-    hover: v("--semantic-primary-hover"),
-    pressed: v("--semantic-primary-pressed"),
-    lighter: v("--semantic-primary-lighter"),
-    bg: v("--semantic-primary-bg"),
-    bgLighter: v("--semantic-primary-bgLighter"),
-    fg: v("--semantic-primary-fg"),
-  },
-  secondary: {
-    sub: v("--semantic-secondary-sub"),
-    lighter: v("--semantic-secondary-lighter"),
-    bg: v("--semantic-secondary-bg"),
-    bgLighter: v("--semantic-secondary-bgLighter"),
-  },
-  error: {
-    main: v("--semantic-error-main"),
-    bg: v("--semantic-error-bg"),
-  },
-  caution: {
-    main: v("--semantic-caution-main"),
-    text: v("--semantic-caution-text"),
-    bg: v("--semantic-caution-bg"),
-  },
-  success: {
-    main: v("--semantic-success-main"),
-    bg: v("--semantic-success-bg"),
-  },
-  text: {
-    strong: v("--semantic-text-strong"),
-    normal: v("--semantic-text-normal"),
-    default: v("--semantic-text-default"),
-    subtle: v("--semantic-text-subtle"),
-    disabled: v("--semantic-text-disabled"),
-    placeholder: v("--semantic-text-placeholder"),
-    inverse: v("--semantic-text-inverse"),
-  },
-  bg: {
-    white: v("--semantic-bg-white"),
-    light: v("--semantic-bg-light"),
-    coolGray: v("--semantic-bg-coolGray"),
-    coolGrayLighter: v("--semantic-bg-coolGrayLighter"),
-    disabled: v("--semantic-bg-disabled"),
-    overlay: v("--semantic-bg-overlay"),
-  },
-  border: {
-    default: v("--semantic-border-default"),
-    light: v("--semantic-border-light"),
-    focus: v("--semantic-border-focus"),
-    disabled: v("--semantic-border-disabled"),
-  },
-  icon: {
-    default: v("--semantic-icon-default"),
-    subtle: v("--semantic-icon-subtle"),
-    inverse: v("--semantic-icon-inverse"),
-  },
-  status: {
-    default: v("--semantic-status-default"),
-    success: v("--semantic-status-success"),
-    error: v("--semantic-status-error"),
-  },
-
-  // ── Role groups (merged from former --eap-* tree) ────────
+  // ── BG (Figma `Section_BG` 258:2) ─────────────────────────
   surface: {
     page: v("--semantic-bg-page-default"),
     default: v("--semantic-bg-surface-default"),
@@ -88,7 +23,11 @@ export const cv = {
     statusSuccess: v("--semantic-bg-status-success"),
     statusInfo: v("--semantic-bg-status-info"),
     statusCaution: v("--semantic-bg-status-caution"),
+    overlay: v("--semantic-bg-overlay"),
+    // DS extension — Figma has no `bg-disabled` role; needed for disabled controls.
+    disabled: v("--semantic-bg-disabled"),
   },
+  // ── Text (Figma `Section_Text` 259:2) ─────────────────────
   textRole: {
     strong: v("--semantic-text-strong-default"),
     normal: v("--semantic-text-normal-default"),
@@ -103,6 +42,7 @@ export const cv = {
     statusCaution: v("--semantic-text-status-caution"),
     statusInfo: v("--semantic-text-status-info"),
   },
+  // ── Icon (Figma `Section_Icon` 227:2) ─────────────────────
   iconRole: {
     strong: v("--semantic-icon-strong-default"),
     normal: v("--semantic-icon-normal-default"),
@@ -113,6 +53,7 @@ export const cv = {
     statusError: v("--semantic-icon-status-error"),
     statusCaution: v("--semantic-icon-status-caution"),
   },
+  // ── Border (Figma `Section_Border` 227:86) ────────────────
   borderRole: {
     normal: v("--semantic-border-normal-default"),
     strong: v("--semantic-border-strong-default"),
@@ -124,6 +65,7 @@ export const cv = {
     statusError: v("--semantic-border-status-error"),
     statusCaution: v("--semantic-border-status-caution"),
   },
+  // ── Button (Figma `Section_Button{BG,Text,Border}` 231:2 / 231:46 / 261:32) ─
   button: {
     bgDefault: v("--semantic-button-bg-default"),
     bgHover: v("--semantic-button-bg-hover"),
@@ -144,6 +86,7 @@ export const cv = {
     borderAssistive: v("--semantic-button-border-assistive-default"),
     borderAssistiveDisabled: v("--semantic-button-border-assistive-disabled"),
   },
+  // ── Fill (Figma `Section_Fill` 227:160) ───────────────────
   fill: {
     brand: v("--semantic-fill-brand-default"),
     brandHover: v("--semantic-fill-brand-hover"),
@@ -155,6 +98,7 @@ export const cv = {
     statusError: v("--semantic-fill-status-error"),
     statusCaution: v("--semantic-fill-status-caution"),
   },
+  // ── Input (Figma `Section_Input` 294:12) ──────────────────
   input: {
     bg: v("--semantic-input-bg"),
     bgDisabled: v("--semantic-input-bg-disabled"),

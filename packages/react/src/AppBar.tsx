@@ -42,8 +42,8 @@ const appBarStyles = `
     width: 100%;
     min-height: var(--nds-app-bar-height, ${sizing.appBar.height}px);
     padding: 0 var(--nds-app-bar-padding-x, ${spacing[16]}px);
-    background: var(--nds-app-bar-background, ${cv.bg.white});
-    border-bottom: var(--nds-app-bar-border-bottom, 1px solid ${cv.border.light});
+    background: var(--nds-app-bar-background, ${cv.surface.default});
+    border-bottom: var(--nds-app-bar-border-bottom, 1px solid ${cv.borderRole.subtle});
     box-shadow: var(--nds-app-bar-shadow, none);
     font-family: var(--nds-app-bar-font-family, ${fontFamily.web});
     box-sizing: border-box;
@@ -64,7 +64,7 @@ const appBarStyles = `
     font-size: var(--nds-app-bar-title-font-size, ${typeScale.body1.fontSize}px);
     line-height: var(--nds-app-bar-title-line-height, ${typeScale.body1.lineHeight}px);
     font-weight: var(--nds-app-bar-title-font-weight, ${fontWeight.bold});
-    color: var(--nds-app-bar-title-color, ${cv.text.default});
+    color: var(--nds-app-bar-title-color, ${cv.textRole.normal});
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -123,26 +123,26 @@ const appBarStyles = `
     align-items: center;
     width: var(--nds-app-bar-search-width, 400px);
     height: var(--nds-app-bar-search-height, 48px);
-    border: var(--nds-app-bar-search-border-width, 2px) solid var(--nds-app-bar-search-border-color, ${cv.border.default});
+    border: var(--nds-app-bar-search-border-width, 2px) solid var(--nds-app-bar-search-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-app-bar-search-radius, 24px);
     padding: 0 var(--nds-app-bar-search-pr, 36px) 0 var(--nds-app-bar-search-pl, 20px);
     font-size: var(--nds-app-bar-search-font-size, ${typeScale.body2.fontSize}px);
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
     box-sizing: border-box;
     flex-shrink: 0;
     font-family: inherit;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
   }
 
   :where(.${APP_BAR_SEARCH_CLASS} input) {
     all: unset;
     width: 100%;
     font: inherit;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${APP_BAR_SEARCH_CLASS} input::placeholder) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${APP_BAR_SEARCH_CLASS}) .${APP_BAR_CLASS}__search-icon {
@@ -169,7 +169,7 @@ const appBarStyles = `
     padding: 0 var(--nds-app-bar-gnb-px, 0);
     font-size: var(--nds-app-bar-gnb-font-size, ${typeScale.headline5.fontSize}px);
     font-weight: var(--nds-app-bar-gnb-inactive-font-weight, ${fontWeight.bold});
-    color: var(--nds-app-bar-gnb-inactive-color, ${cv.text.subtle});
+    color: var(--nds-app-bar-gnb-inactive-color, ${cv.textRole.subtle});
     text-decoration: none;
     white-space: nowrap;
     border-bottom: var(--nds-app-bar-gnb-active-border-width, 3px) solid transparent;
@@ -178,13 +178,13 @@ const appBarStyles = `
   }
 
   :where(.${APP_BAR_GNB_ITEM_CLASS}:hover) {
-    color: var(--nds-app-bar-gnb-active-color, ${cv.text.default});
+    color: var(--nds-app-bar-gnb-active-color, ${cv.textRole.normal});
   }
 
   :where(.${APP_BAR_GNB_ITEM_CLASS}[data-active="true"]) {
     font-weight: var(--nds-app-bar-gnb-active-font-weight, ${fontWeight.bold});
-    color: var(--nds-app-bar-gnb-active-color, ${cv.text.default});
-    border-bottom-color: var(--nds-app-bar-gnb-active-color, ${cv.text.default});
+    color: var(--nds-app-bar-gnb-active-color, ${cv.textRole.normal});
+    border-bottom-color: var(--nds-app-bar-gnb-active-color, ${cv.textRole.normal});
   }
 
   :where(.${APP_BAR_AUTH_CLASS}) {
@@ -197,7 +197,7 @@ const appBarStyles = `
     all: unset;
     font-size: var(--nds-app-bar-auth-font-size, ${typeScale.body2.fontSize}px);
     font-weight: var(--nds-app-bar-auth-font-weight, ${fontWeight.bold});
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     white-space: nowrap;
     font-family: inherit;
@@ -206,14 +206,14 @@ const appBarStyles = `
   :where(.${APP_BAR_AUTH_CLASS}) .${APP_BAR_CLASS}__auth-divider {
     width: 1px;
     height: 13px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     flex-shrink: 0;
   }
 
   :where(.${APP_BAR_DIVIDER_CLASS}) {
     width: 100%;
     height: 1px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     flex-shrink: 0;
   }
 
@@ -225,7 +225,7 @@ const appBarStyles = `
     width: ${sizing.icon.default}px;
     height: ${sizing.icon.default}px;
     cursor: pointer;
-    color: ${cv.icon.default};
+    color: ${cv.iconRole.strong};
     flex-shrink: 0;
   }
 
@@ -248,15 +248,15 @@ interface VariantStyle {
 
 const variantConfig: Record<AppBarVariant, VariantStyle> = {
   default: {
-    background: cv.bg.white,
-    borderBottom: `1px solid ${cv.border.light}`,
+    background: cv.surface.default,
+    borderBottom: `1px solid ${cv.borderRole.subtle}`,
     shadow: "none",
     titleFontSize: typeScale.body1.fontSize,
     titleLineHeight: typeScale.body1.lineHeight,
     titleFontWeight: fontWeight.bold,
   },
   webview: {
-    background: cv.bg.white,
+    background: cv.surface.default,
     borderBottom: "none",
     shadow: "none",
     titleFontSize: typeScale.body1.fontSize,

@@ -35,10 +35,10 @@ const wpStyles = `
     align-items: center;
     gap: ${spacing[12]}px;
     padding: ${spacing[8]}px ${spacing[12]}px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     border-radius: 9999px;
     font-family: ${fontFamily.web};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     box-sizing: border-box;
   }
 
@@ -47,7 +47,7 @@ const wpStyles = `
     height: 32px;
     border-radius: 9999px;
     border: none;
-    background: var(--nds-waveform-color, ${cv.primary.main});
+    background: var(--nds-waveform-color, ${cv.surface.brand});
     color: #fff;
     cursor: pointer;
     display: inline-flex;
@@ -73,19 +73,19 @@ const wpStyles = `
     height: var(--bar-h, 50%);
     min-width: 2px;
     max-width: 4px;
-    background: ${cv.border.default};
+    background: ${cv.borderRole.normal};
     border-radius: 2px;
     transition: background-color ${transition.default};
   }
 
   :where(.${WP_BAR_CLASS}[data-played="true"]) {
-    background: var(--nds-waveform-color, ${cv.primary.main});
+    background: var(--nds-waveform-color, ${cv.surface.brand});
   }
 
   :where(.${WP_TIME_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
   }

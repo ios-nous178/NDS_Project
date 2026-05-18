@@ -67,7 +67,7 @@ export const CustomColor: Story = {
         liked={v}
         count={88}
         onChange={setV}
-        activeColor="var(--semantic-primary-main, #4080F0)"
+        activeColor="var(--semantic-text-brand-default)"
       />
     );
   },

@@ -64,14 +64,14 @@ const sigStyles = `
   :where(.${SP_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${SP_CANVAS_WRAP_CLASS}) {
     position: relative;
     width: 100%;
-    background: ${cv.bg.coolGray};
-    border: 1px dashed ${cv.border.default};
+    background: ${cv.surface.section};
+    border: 1px dashed ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     overflow: hidden;
     touch-action: none;
@@ -95,7 +95,7 @@ const sigStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
     font-size: ${typeScale.body3.fontSize}px;
     pointer-events: none;
   }
@@ -110,9 +110,9 @@ const sigStyles = `
     height: 32px;
     padding: 0 ${spacing[12]}px;
     border-radius: ${radius.md}px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
@@ -120,7 +120,7 @@ const sigStyles = `
     transition: background-color ${transition.default};
   }
 
-  :where(.${SP_BTN_CLASS}:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${SP_BTN_CLASS}:hover) { background: ${cv.surface.section}; }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

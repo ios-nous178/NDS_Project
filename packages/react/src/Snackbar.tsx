@@ -44,24 +44,24 @@ export interface SnackbarProps extends Omit<React.HTMLAttributes<HTMLDivElement>
  */
 const variantConfig: Record<SnackbarVariant, { bg: string; fg: string; icon: string }> = {
   info: {
-    bg: "var(--semantic-primary-bg)",
-    fg: "var(--semantic-text-default)",
-    icon: "var(--semantic-primary-main)",
+    bg: "var(--semantic-bg-status-info)",
+    fg: "var(--semantic-text-normal-default)",
+    icon: "var(--semantic-icon-brand-default)",
   },
   success: {
-    bg: "var(--semantic-success-bg)",
-    fg: "var(--semantic-text-default)",
-    icon: "var(--semantic-success-main)",
+    bg: "var(--semantic-bg-status-success)",
+    fg: "var(--semantic-text-normal-default)",
+    icon: "var(--semantic-icon-status-success)",
   },
   warning: {
-    bg: "var(--semantic-caution-bg)",
-    fg: "var(--semantic-text-default)",
-    icon: "var(--semantic-caution-text)",
+    bg: "var(--semantic-bg-status-caution)",
+    fg: "var(--semantic-text-normal-default)",
+    icon: "var(--semantic-text-status-caution)",
   },
   error: {
-    bg: "var(--semantic-error-bg)",
-    fg: "var(--semantic-text-default)",
-    icon: "var(--semantic-error-main)",
+    bg: "var(--semantic-bg-status-error)",
+    fg: "var(--semantic-text-normal-default)",
+    icon: "var(--semantic-icon-status-error)",
   },
 };
 
@@ -73,8 +73,8 @@ const snackbarStyles = `
     gap: ${spacing[12]}px;
     padding: ${spacing[12]}px ${spacing[16]}px;
     border-radius: var(--nds-snackbar-radius, ${radius.md}px);
-    background: var(--nds-snackbar-bg, var(--semantic-bg-coolGray));
-    color: var(--nds-snackbar-fg, var(--semantic-text-default));
+    background: var(--nds-snackbar-bg, var(--semantic-bg-section-default));
+    color: var(--nds-snackbar-fg, var(--semantic-text-normal-default));
     border: 1px solid var(--nds-snackbar-border, transparent);
     font-family: ${fontFamily.web};
     width: var(--nds-snackbar-width, auto);

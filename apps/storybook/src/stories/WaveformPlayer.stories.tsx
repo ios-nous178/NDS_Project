@@ -41,7 +41,7 @@ export const CustomColor: Story = {
   name: "Variant/사용자 컬러",
   render: () => (
     <div style={{ width: 320 }}>
-      <WaveformPlayer src={SAMPLE_AUDIO} color="var(--semantic-success-main, #2BAA48)" />
+      <WaveformPlayer src={SAMPLE_AUDIO} color="var(--semantic-text-status-success)" />
     </div>
   ),
 };

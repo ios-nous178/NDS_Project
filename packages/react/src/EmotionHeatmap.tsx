@@ -61,8 +61,8 @@ const heatmapStyles = `
     flex-direction: column;
     gap: ${spacing[16]}px;
     padding: ${spacing[20]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -79,7 +79,7 @@ const heatmapStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
@@ -88,7 +88,7 @@ const heatmapStyles = `
     align-items: center;
     gap: ${spacing[4]}px;
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${HM_LEGEND_ITEM_CLASS}) {
@@ -113,7 +113,7 @@ const heatmapStyles = `
   :where(.${HM_WEEKDAY_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-align: center;
   }
 
@@ -130,7 +130,7 @@ const heatmapStyles = `
 
   :where(.${HM_CELL_CLASS}[data-empty="true"]) {
     background: transparent;
-    border: 1px dashed ${cv.border.light};
+    border: 1px dashed ${cv.borderRole.subtle};
     cursor: default;
   }
 
@@ -143,7 +143,7 @@ const heatmapStyles = `
   }
 
   :where(.${HM_CELL_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 `;

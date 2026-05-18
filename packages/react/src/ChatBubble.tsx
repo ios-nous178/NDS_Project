@@ -38,12 +38,12 @@ const chatBubbleStyles = `
     width: 32px;
     height: 32px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.bold};
   }
@@ -73,14 +73,14 @@ const chatBubbleStyles = `
   :where(.${CB_NAME_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     padding: 0 ${spacing[4]}px;
   }
 
   :where(.${CB_BUBBLE_CLASS}) {
     padding: ${spacing[10]}px ${spacing[12]}px;
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.default};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     word-break: break-word;
@@ -89,8 +89,8 @@ const chatBubbleStyles = `
   }
 
   :where(.${CB_ROW_CLASS}[data-role="me"]) .${CB_BUBBLE_CLASS} {
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
   }
 
   /* group corners — them */
@@ -127,13 +127,13 @@ const chatBubbleStyles = `
   :where(.${CB_TIME_CLASS}) {
     font-size: ${typeScale.label.fontSize}px;
     line-height: ${typeScale.label.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${CB_READ_CLASS}) {
     font-size: ${typeScale.label.fontSize}px;
     line-height: ${typeScale.label.lineHeight}px;
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
     font-weight: ${fontWeight.medium};
   }
 `;

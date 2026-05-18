@@ -49,7 +49,7 @@ const vrStyles = `
     align-items: center;
     gap: ${spacing[12]}px;
     padding: ${spacing[20]}px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -61,7 +61,7 @@ const vrStyles = `
     height: 80px;
     border-radius: 9999px;
     border: none;
-    background: var(--semantic-error-main, #E04D4D);
+    background: var(--semantic-fill-status-error);
     color: #fff;
     cursor: pointer;
     display: inline-flex;
@@ -74,7 +74,7 @@ const vrStyles = `
   :where(.${VR_BTN_CLASS}:hover) { transform: scale(1.04); }
 
   :where(.${VR_BTN_CLASS}:focus-visible) {
-    outline: 3px solid ${cv.primary.main};
+    outline: 3px solid ${cv.borderRole.brand};
     outline-offset: 4px;
   }
 
@@ -90,7 +90,7 @@ const vrStyles = `
   :where(.${VR_TIMER_CLASS}) {
     font-size: 28px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
   }
 
@@ -98,7 +98,7 @@ const vrStyles = `
     display: inline-flex;
     align-items: center;
     gap: ${spacing[4]}px;
-    color: var(--semantic-error-main, #E04D4D);
+    color: var(--semantic-text-status-error);
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
   }
@@ -119,7 +119,7 @@ const vrStyles = `
 
   :where(.${VR_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${VR_INFO_CLASS}) {
@@ -210,7 +210,9 @@ export const VoiceRecorder = React.forwardRef<HTMLDivElement, VoiceRecorderProps
           <span className={VR_TIMER_CLASS}>
             {formatTime(seconds)}
             {maxSeconds ? (
-              <span style={{ fontSize: 14, color: cv.text.subtle, marginLeft: 6, fontWeight: 500 }}>
+              <span
+                style={{ fontSize: 14, color: cv.textRole.subtle, marginLeft: 6, fontWeight: 500 }}
+              >
                 / {formatTime(maxSeconds)}
               </span>
             ) : null}

@@ -36,7 +36,7 @@ const textareaStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${TA_WRAPPER_CLASS}) {
@@ -45,9 +45,9 @@ const textareaStyles = `
     flex-direction: column;
     width: 100%;
     padding: ${spacing[12]}px ${spacing[16]}px;
-    border: 1px solid var(--nds-textarea-border-color, ${cv.border.default});
+    border: 1px solid var(--nds-textarea-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-textarea-radius, ${radius.md}px);
-    background: var(--nds-textarea-background, ${cv.bg.white});
+    background: var(--nds-textarea-background, ${cv.surface.default});
     box-sizing: border-box;
     transition:
       border-color ${transition.default},
@@ -55,20 +55,20 @@ const textareaStyles = `
   }
 
   :where(.${TA_WRAPPER_CLASS}[data-focused="true"]) {
-    border-color: ${cv.border.focus};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${TA_WRAPPER_CLASS}[data-error="true"]) {
-    border-color: ${cv.error.main};
+    border-color: ${cv.borderRole.statusError};
   }
 
   :where(.${TA_WRAPPER_CLASS}[data-disabled="true"]) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
     cursor: default;
   }
 
   :where(.${TA_WRAPPER_CLASS}[data-readonly="true"]) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${TA_FIELD_CLASS}) {
@@ -81,18 +81,18 @@ const textareaStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     padding: 0;
     resize: var(--nds-textarea-resize, vertical);
     min-height: var(--nds-textarea-min-height, 80px);
   }
 
   :where(.${TA_FIELD_CLASS}::placeholder) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${TA_FIELD_CLASS}:disabled) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     cursor: default;
     resize: none;
   }
@@ -104,23 +104,23 @@ const textareaStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: var(--nds-textarea-helper-color, ${cv.text.subtle});
+    color: var(--nds-textarea-helper-color, ${cv.textRole.subtle});
   }
 
   :where(.${TA_HELPER_CLASS}[data-error="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${TA_COUNT_CLASS}) {
     text-align: right;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     margin-top: ${spacing[4]}px;
   }
 
   :where(.${TA_COUNT_CLASS}[data-over="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 `;
 

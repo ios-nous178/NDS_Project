@@ -80,8 +80,8 @@ const dropdownMenuStyles = `
     min-width: var(--nds-dropdown-min-width, 160px);
     max-height: 320px;
     overflow-y: auto;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
@@ -97,7 +97,7 @@ const dropdownMenuStyles = `
   }
 
   :where(.${DM_GROUP_CLASS} + .${DM_GROUP_CLASS}) {
-    border-top: 1px solid ${cv.border.light};
+    border-top: 1px solid ${cv.borderRole.subtle};
     margin-top: ${spacing[4]}px;
     padding-top: ${spacing[4]}px;
   }
@@ -107,13 +107,13 @@ const dropdownMenuStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     user-select: none;
   }
 
   :where(.${DM_DIVIDER_CLASS}) {
     height: 1px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     margin: ${spacing[4]}px 0;
   }
 
@@ -130,7 +130,7 @@ const dropdownMenuStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     text-align: left;
     width: 100%;
     transition: background-color ${transition.default};
@@ -139,21 +139,21 @@ const dropdownMenuStyles = `
 
   :where(.${DM_ITEM_CLASS}:hover),
   :where(.${DM_ITEM_CLASS}[data-active="true"]) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   :where(.${DM_ITEM_CLASS}[data-danger="true"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${DM_ITEM_CLASS}[data-danger="true"]:hover),
   :where(.${DM_ITEM_CLASS}[data-danger="true"][data-active="true"]) {
-    background: ${cv.error.bg};
+    background: ${cv.surface.statusError};
   }
 
   :where(.${DM_ITEM_CLASS}:disabled),
   :where(.${DM_ITEM_CLASS}[data-disabled="true"]) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     cursor: not-allowed;
     background: transparent;
   }
@@ -171,17 +171,17 @@ const dropdownMenuStyles = `
     display: inline-flex;
     align-items: center;
     flex-shrink: 0;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
   }
 
   :where(.${DM_ITEM_TRAILING_CLASS}) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
   }
 
   :where(.${DM_ITEM_CLASS}[data-danger="true"] .${DM_ITEM_LEADING_CLASS}) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
 
   @keyframes nds-dropdown-fade-in {

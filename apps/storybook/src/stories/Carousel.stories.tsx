@@ -94,7 +94,7 @@ export const ContentCarousel: Story = {
             key={n}
             style={{
               padding: 24,
-              background: "var(--semantic-bg-coolGray, #F2F4F6)",
+              background: "var(--semantic-bg-section-default)",
               borderRadius: 12,
             }}
           >

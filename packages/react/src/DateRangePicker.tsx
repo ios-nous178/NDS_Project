@@ -33,13 +33,13 @@ const dateRangeStyles = `
   :where(.${DR_LABEL_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     flex-shrink: 0;
   }
 
   :where(.${DR_SEPARATOR_CLASS}) {
     flex-shrink: 0;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
   }
 
@@ -54,8 +54,8 @@ const dateRangeStyles = `
     display: inline-flex;
     align-items: center;
     padding: ${spacing[4]}px ${spacing[10]}px;
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.normal};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.strong};
     border-radius: 999px;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
@@ -65,8 +65,8 @@ const dateRangeStyles = `
   }
 
   :where(.${DR_PRESET_CLASS}[data-active="true"]) {
-    background: ${cv.primary.bgLighter};
-    color: ${cv.primary.main};
+    background: ${cv.surface.brandSubtle};
+    color: ${cv.textRole.brand};
   }
 `;
 

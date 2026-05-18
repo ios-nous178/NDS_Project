@@ -26,7 +26,7 @@ const textButtonStyles = `
     border: none;
     background: transparent;
     /* Figma node 171:8538/171:8550 — geniet/gray/700 = #777 (neutral/600) */
-    color: var(--nds-text-button-color, ${cv.text.subtle});
+    color: var(--nds-text-button-color, ${cv.textRole.subtle});
     font-family: ${fontFamily.web};
     font-size: var(--nds-text-button-font-size, ${typeScale.body2.fontSize}px);
     line-height: var(--nds-text-button-line-height, ${typeScale.body2.lineHeight}px);
@@ -37,11 +37,11 @@ const textButtonStyles = `
 
   :where(.${TEXT_BUTTON_CLASS}:disabled) {
     cursor: default;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${TEXT_BUTTON_CLASS}:not(:disabled):hover) {
-    color: var(--nds-text-button-hover-color, ${cv.primary.main});
+    color: var(--nds-text-button-hover-color, ${cv.textRole.brand});
   }
 
   :where(.${TEXT_BUTTON_LABEL_CLASS}) {

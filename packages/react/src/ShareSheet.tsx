@@ -84,7 +84,7 @@ const ssStyles = `
   :where(.${SS_PANEL_CLASS}) {
     width: 100%;
     max-width: 480px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     border-radius: ${radius.lg}px ${radius.lg}px 0 0;
     padding: ${spacing[24]}px ${spacing[20]}px ${spacing[20]}px;
     box-sizing: border-box;
@@ -106,13 +106,13 @@ const ssStyles = `
   :where(.${SS_TITLE_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${SS_DESC_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: 0;
   }
 
@@ -136,14 +136,14 @@ const ssStyles = `
     font-family: inherit;
   }
 
-  :where(.${SS_ITEM_CLASS}:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${SS_ITEM_CLASS}:hover) { background: ${cv.surface.section}; }
 
   :where(.${SS_ICON_CLASS}) {
     width: 48px;
     height: 48px;
     border-radius: 9999px;
-    background: var(--nds-share-icon-bg, ${cv.bg.coolGray});
-    color: ${cv.text.default};
+    background: var(--nds-share-icon-bg, ${cv.surface.section});
+    color: ${cv.textRole.normal};
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -152,7 +152,7 @@ const ssStyles = `
 
   :where(.${SS_LABEL_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     text-align: center;
   }
 
@@ -162,7 +162,7 @@ const ssStyles = `
     gap: ${spacing[8]}px;
     margin-top: ${spacing[16]}px;
     padding: ${spacing[8]}px ${spacing[12]}px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     border-radius: ${radius.md}px;
   }
 
@@ -173,7 +173,7 @@ const ssStyles = `
     outline: none;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     min-width: 0;
   }
 
@@ -182,8 +182,8 @@ const ssStyles = `
     padding: 0 ${spacing[12]}px;
     border: none;
     border-radius: 9999px;
-    background: ${cv.text.default};
-    color: ${cv.bg.white};
+    background: ${cv.textRole.normal};
+    color: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;

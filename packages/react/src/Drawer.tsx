@@ -93,7 +93,7 @@ const drawerStyles = `
     width: var(--nds-drawer-width, 400px);
     max-width: 100vw;
     height: 100%;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     box-shadow: 0 0 24px rgba(0, 0, 0, 0.12);
     box-sizing: border-box;
   }
@@ -120,7 +120,7 @@ const drawerStyles = `
     justify-content: space-between;
     gap: ${spacing[12]}px;
     padding: ${spacing[20]}px ${spacing[20]}px ${spacing[16]}px;
-    border-bottom: 1px solid ${cv.border.light};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${DR_HEADER_CLASS}[data-empty="true"]) {
@@ -133,14 +133,14 @@ const drawerStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     line-height: ${typeScale.headline5.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${DR_HEADER_DESC_CLASS}) {
     margin-top: ${spacing[4]}px;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${DR_CLOSE_CLASS}) {
@@ -153,13 +153,13 @@ const drawerStyles = `
     border: none;
     background: transparent;
     cursor: pointer;
-    color: ${cv.icon.subtle};
+    color: ${cv.iconRole.normal};
     border-radius: 6px;
   }
 
   :where(.${DR_CLOSE_CLASS}:hover) {
-    background: ${cv.bg.light};
-    color: ${cv.icon.default};
+    background: ${cv.surface.subtle};
+    color: ${cv.iconRole.strong};
   }
 
   :where(.${DR_CLOSE_CLASS} svg) {
@@ -179,7 +179,7 @@ const drawerStyles = `
     display: flex;
     gap: ${spacing[8]}px;
     padding: ${spacing[16]}px ${spacing[20]}px;
-    border-top: 1px solid ${cv.border.light};
+    border-top: 1px solid ${cv.borderRole.subtle};
   }
 
   @keyframes nds-drawer-fade-in {

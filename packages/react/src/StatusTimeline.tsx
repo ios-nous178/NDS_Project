@@ -98,9 +98,9 @@ const stStyles = `
     width: 24px;
     height: 24px;
     border-radius: 9999px;
-    background: ${cv.bg.coolGray};
-    color: ${cv.text.subtle};
-    border: 2px solid ${cv.border.default};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.subtle};
+    border: 2px solid ${cv.borderRole.normal};
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -112,25 +112,25 @@ const stStyles = `
   }
 
   :where(.${ST_DOT_CLASS}[data-state="done"]) {
-    background: ${cv.primary.main};
-    border-color: ${cv.primary.main};
+    background: ${cv.surface.brand};
+    border-color: ${cv.borderRole.brand};
     color: #fff;
   }
 
   :where(.${ST_DOT_CLASS}[data-state="current"]) {
-    background: ${cv.bg.white};
-    border-color: ${cv.primary.main};
-    color: ${cv.primary.main};
-    box-shadow: 0 0 0 4px var(--semantic-primary-bg, rgba(64, 128, 240, 0.18));
+    background: ${cv.surface.default};
+    border-color: ${cv.borderRole.brand};
+    color: ${cv.textRole.brand};
+    box-shadow: 0 0 0 4px var(--semantic-bg-status-info));
   }
 
   :where(.${ST_LINE_CLASS}) {
-    background: ${cv.border.default};
+    background: ${cv.borderRole.normal};
     transition: background-color 200ms;
   }
 
   :where(.${ST_LINE_CLASS}[data-state="done"]) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
   }
 
   :where(.${ST_LINE_CLASS}[data-state="hidden"]) {
@@ -163,21 +163,21 @@ const stStyles = `
   :where(.${ST_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
   :where(.${ST_LABEL_CLASS}[data-state="done"]),
   :where(.${ST_LABEL_CLASS}[data-state="current"]) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${ST_DESC_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${ST_TIME_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-variant-numeric: tabular-nums;
   }
 `;

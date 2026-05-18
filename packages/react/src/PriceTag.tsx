@@ -47,11 +47,11 @@ const ptStyles = `
     align-items: baseline;
     gap: var(--nds-price-gap, 6px);
     font-family: ${fontFamily.web};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${PT_DISCOUNT_CLASS}) {
-    color: var(--semantic-error-main, #E04D4D);
+    color: var(--semantic-text-status-error);
     font-size: var(--nds-price-amount-size, 18px);
     font-weight: ${fontWeight.bold};
   }
@@ -59,23 +59,23 @@ const ptStyles = `
   :where(.${PT_AMOUNT_CLASS}) {
     font-size: var(--nds-price-amount-size, 18px);
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
   }
 
   :where(.${PT_AMOUNT_CLASS}[data-free="true"]) {
-    color: var(--semantic-success-main, #2BAA48);
+    color: var(--semantic-text-status-success);
   }
 
   :where(.${PT_UNIT_CLASS}) {
     font-size: var(--nds-price-amount-size, 18px);
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${PT_ORIGINAL_CLASS}) {
     font-size: var(--nds-price-original-size, 13px);
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-decoration: line-through;
     font-weight: ${fontWeight.medium};
     font-variant-numeric: tabular-nums;

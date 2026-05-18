@@ -89,7 +89,7 @@ const trendingKeywordsStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.bold};
     line-height: 22px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     text-align: center;
     margin-right: ${spacing[4]}px;
   }
@@ -109,22 +109,22 @@ const trendingKeywordsStyles = `
   }
 
   :where(.${TK_TREND_CLASS}[data-trend="new"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
   :where(.${TK_TREND_CLASS}[data-trend="up"]) {
-    color: ${cv.error.main};
+    color: ${cv.textRole.statusError};
   }
   :where(.${TK_TREND_CLASS}[data-trend="down"]) {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
   }
   :where(.${TK_TREND_CLASS}[data-trend="same"]) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${TK_KEYWORD_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
     line-height: 1.47;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -134,7 +134,7 @@ const trendingKeywordsStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     transition: transform ${transition.default};
   }
   :where(.${TK_CHEVRON_CLASS}[data-open="true"]) {
@@ -149,7 +149,7 @@ const trendingKeywordsStyles = `
     right: -40px;
     width: 280px;
     padding: ${spacing[24]}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     border-radius: ${radius.lg}px;
     box-shadow: ${shadow["1"]};
     z-index: 100;
@@ -179,14 +179,14 @@ const trendingKeywordsStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     font-weight: ${fontWeight.bold};
     line-height: 1.44;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${TK_DROPDOWN_CLASS_TIME_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: 1.38;
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     margin-left: ${spacing[6]}px;
   }
 
@@ -198,7 +198,7 @@ const trendingKeywordsStyles = `
     border: none;
     background: none;
     cursor: pointer;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${TK_DROPDOWN_CLASS_LIST_CLASS}) {
@@ -217,7 +217,7 @@ const trendingKeywordsStyles = `
     transition: background-color ${transition.default};
   }
   :where(.${TK_DROPDOWN_CLASS_ITEM_CLASS}:hover) {
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
   }
 
   @keyframes nds-tk-slide-up {

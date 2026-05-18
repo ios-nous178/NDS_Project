@@ -51,8 +51,8 @@ const webHeaderStyles = `
     display: block;
     width: 100%;
     height: var(--nds-web-header-height, 80px);
-    background: ${cv.bg.white};
-    border-bottom: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};
     box-sizing: border-box;
     z-index: var(--nds-web-header-z-index, ${zIndex.appBar});
@@ -115,7 +115,7 @@ const webHeaderStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     line-height: ${typeScale.headline5.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.normal};
+    color: ${cv.textRole.strong};
     text-decoration: none;
     background: transparent;
     border: none;
@@ -129,12 +129,12 @@ const webHeaderStyles = `
   }
 
   :where(.${WH_MENU_ITEM_CLASS}:hover) {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
   }
 
   :where(.${WH_MENU_ITEM_CLASS}[data-active="true"]) {
-    color: ${cv.primary.main};
-    border-bottom-color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
+    border-bottom-color: ${cv.borderRole.brand};
   }
 
   /* Actions — 우측 정렬, 항목 간 16px gap */
@@ -154,8 +154,8 @@ const webHeaderStyles = `
     justify-content: center;
     min-height: ${sizing.button.sm}px;
     padding: 0 ${spacing[14]}px;
-    background: ${cv.bg.light};
-    color: ${cv.primary.main};
+    background: ${cv.surface.subtle};
+    color: ${cv.textRole.brand};
     font-family: inherit;
     font-size: ${typeScale.body1.fontSize}px;
     line-height: ${typeScale.body1.lineHeight}px;
@@ -170,7 +170,7 @@ const webHeaderStyles = `
   }
 
   :where(.${WH_DOWNLOAD_CLASS}:hover) {
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
   }
 
   /* 로그인 / 로그아웃 — white bg + primary border
@@ -181,13 +181,13 @@ const webHeaderStyles = `
     justify-content: center;
     min-height: ${sizing.button.md}px;
     padding: 0 ${spacing[18]}px;
-    background: ${cv.bg.white};
-    color: ${cv.primary.main};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.brand};
     font-family: inherit;
     font-size: ${typeScale.body1.fontSize}px;
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    border: 1px solid ${cv.primary.main};
+    border: 1px solid ${cv.borderRole.brand};
     border-radius: ${radius.md}px;
     cursor: pointer;
     text-decoration: none;
@@ -199,7 +199,7 @@ const webHeaderStyles = `
   }
 
   :where(.${WH_AUTH_CLASS}:hover) {
-    background: ${cv.primary.bgLighter};
+    background: ${cv.surface.brandSubtle};
   }
 `;
 

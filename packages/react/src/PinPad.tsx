@@ -47,7 +47,7 @@ const ppStyles = `
 
   :where(.${PP_LABEL_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
   }
 
@@ -71,19 +71,19 @@ const ppStyles = `
     width: 12px;
     height: 12px;
     border-radius: 9999px;
-    border: 2px solid ${cv.border.default};
+    border: 2px solid ${cv.borderRole.normal};
     background: transparent;
     transition: background-color ${transition.default}, border-color ${transition.default};
   }
 
   :where(.${PP_DOT_CLASS}[data-filled="true"]) {
-    background: ${cv.text.default};
-    border-color: ${cv.text.default};
+    background: ${cv.textRole.normal};
+    border-color: ${cv.textRole.normal};
   }
 
   :where(.${PP_DOTS_CLASS}[data-error="true"]) .${PP_DOT_CLASS}[data-filled="true"] {
-    background: var(--semantic-error-main, #E04D4D);
-    border-color: var(--semantic-error-main, #E04D4D);
+    background: var(--semantic-fill-status-error);
+    border-color: var(--semantic-border-status-error);
   }
 
   :where(.${PP_GRID_CLASS}) {
@@ -97,8 +97,8 @@ const ppStyles = `
     height: 72px;
     border-radius: 9999px;
     border: none;
-    background: ${cv.bg.coolGray};
-    color: ${cv.text.default};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: 28px;
     font-weight: ${fontWeight.semibold};
@@ -106,26 +106,26 @@ const ppStyles = `
     transition: background-color ${transition.default}, transform ${transition.default};
   }
 
-  :where(.${PP_KEY_CLASS}:hover) { background: ${cv.border.light}; }
+  :where(.${PP_KEY_CLASS}:hover) { background: ${cv.borderRole.subtle}; }
   :where(.${PP_KEY_CLASS}:active) { transform: scale(0.96); }
 
   :where(.${PP_KEY_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
   :where(.${PP_KEY_CLASS}[data-action="true"]) {
     background: transparent;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
 
-  :where(.${PP_KEY_CLASS}[data-action="true"]:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${PP_KEY_CLASS}[data-action="true"]:hover) { background: ${cv.surface.section}; }
 
   :where(.${PP_KEY_CLASS}[data-action="true"]:disabled) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     cursor: not-allowed;
   }
   :where(.${PP_KEY_CLASS}[data-action="true"]:disabled:hover) { background: transparent; }

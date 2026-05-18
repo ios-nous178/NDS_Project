@@ -75,8 +75,8 @@ const stepperStyles = `
     width: 28px;
     height: 28px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.disabled};
-    color: ${cv.text.disabled};
+    background: ${cv.surface.disabled};
+    color: ${cv.textRole.muted};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: 1;
     font-weight: ${fontWeight.medium};
@@ -86,24 +86,24 @@ const stepperStyles = `
   }
 
   :where(.${ST_ITEM_CLASS}[data-state="current"] .${ST_INDICATOR_CLASS}) {
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
   }
 
   :where(.${ST_ITEM_CLASS}[data-state="completed"] .${ST_INDICATOR_CLASS}) {
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
   }
 
   :where(.${ST_INDICATOR_CLASS}[data-variant="dots"]) {
     width: 12px;
     height: 12px;
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
   }
 
   :where(.${ST_ITEM_CLASS}[data-state="current"] .${ST_INDICATOR_CLASS}[data-variant="dots"]),
   :where(.${ST_ITEM_CLASS}[data-state="completed"] .${ST_INDICATOR_CLASS}[data-variant="dots"]) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
   }
 
   :where(.${ST_CHECK_CLASS}) {
@@ -115,19 +115,19 @@ const stepperStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     text-align: center;
     user-select: none;
     word-break: keep-all;
   }
 
   :where(.${ST_ITEM_CLASS}[data-state="current"] .${ST_LABEL_CLASS}) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
   }
 
   :where(.${ST_ITEM_CLASS}[data-state="completed"] .${ST_LABEL_CLASS}) {
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${ST_CONNECTOR_CLASS}) {
@@ -136,7 +136,7 @@ const stepperStyles = `
     left: calc(50% + 18px);
     right: calc(-50% + 18px);
     height: 2px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     border-radius: ${radius.pill}px;
     transition: background-color ${transition.default};
   }
@@ -148,7 +148,7 @@ const stepperStyles = `
   }
 
   :where(.${ST_ITEM_CLASS}[data-state="completed"] .${ST_CONNECTOR_CLASS}) {
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
   }
 `;
 

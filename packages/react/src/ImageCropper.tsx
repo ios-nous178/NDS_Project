@@ -52,7 +52,7 @@ const icStyles = `
   :where(.${IC_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${IC_VIEWPORT_CLASS}) {
@@ -105,7 +105,7 @@ const icStyles = `
   :where(.${IC_HINT_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${IC_CONTROLS_CLASS}) {
@@ -120,9 +120,9 @@ const icStyles = `
     width: 28px;
     height: 28px;
     border-radius: 9999px;
-    border: 1px solid ${cv.border.default};
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    border: 1px solid ${cv.borderRole.normal};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -132,12 +132,12 @@ const icStyles = `
   }
 
   :where(.${IC_ZOOM_BTN_CLASS}:hover:not(:disabled)) {
-    background: ${cv.bg.coolGrayLighter};
-    border-color: ${cv.border.focus};
+    background: ${cv.surface.page};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${IC_ZOOM_BTN_CLASS}:disabled) {
-    color: ${cv.text.disabled};
+    color: ${cv.textRole.muted};
     cursor: not-allowed;
   }
 
@@ -146,13 +146,13 @@ const icStyles = `
     text-align: center;
     font-size: ${typeScale.caption1.fontSize}px;
     font-variant-numeric: tabular-nums;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-weight: ${fontWeight.medium};
   }
 
   :where(.${IC_SLIDER_CLASS}) {
     flex: 1;
-    accent-color: ${cv.primary.main};
+    accent-color: ${cv.textRole.brand};
     cursor: pointer;
   }
 `;

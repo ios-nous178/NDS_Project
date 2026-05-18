@@ -17,7 +17,7 @@ const skeletonStyles = `
 
   :where(.${SK_CLASS}) {
     display: block;
-    background: var(--nds-skeleton-bg, ${cv.bg.disabled});
+    background: var(--nds-skeleton-bg, ${cv.surface.disabled});
     animation: nds-skeleton-pulse 1.5s ease-in-out infinite;
     border-radius: var(--nds-skeleton-radius, ${radius.md}px);
     font-family: ${fontFamily.web};

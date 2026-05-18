@@ -61,64 +61,118 @@ export const trostStatus = {
   orange: "#FF9D00",
 } as const;
 
-// ─── Semantic ───────────────────────────────────────────
+// ─── Semantic (Figma role-based) ────────────────────────
+//
+// 브랜드 정체성에 영향을 주는 그룹만 override. 누락된 키는 base(NudgeEAP)
+// 가 cascade 된다.
 
 export const trostSemantic = {
-  primary: {
-    main: trostYellow.primary,
-    hover: "#FFE600",
-    pressed: "#E6D200",
-    lighter: trostYellow.light,
-    bg: trostYellow.light,
-    bgLighter: "#FFFCE6",
-    fg: "#000000", // 노란 배경 → 검정 텍스트
-  },
-  secondary: {
-    sub: trostCobalt[500],
-    lighter: trostCobalt[300],
-    bg: trostCobalt[100],
-    bgLighter: trostCobalt[50],
-  },
-  error: {
-    main: trostStatus.error,
-    bg: "#FEE9E6",
-  },
-  caution: {
-    main: trostStatus.orange,
-    text: trostStatus.orange,
-    bg: "#FFF8E6",
-  },
-  success: {
-    main: trostStatus.green,
-    bg: "#E6F9F2",
+  bg: {
+    page: { default: trostNeutral[150] }, // #F2F2F2
+    surface: { default: trostNeutral["00"], subtle: trostNeutral[100] },
+    section: { default: trostNeutral["cool-100"] },
+    brand: { default: trostYellow.primary, subtle: trostYellow.light },
+    status: {
+      error: "#FEE9E6",
+      success: "#E6F9F2",
+      info: trostCobalt[100],
+      caution: "#FFF8E6",
+    },
+    overlay: "rgba(0, 0, 0, 0.7)", // Trost 70% scrim (NudgeEAP base 40%)
+    disabled: trostNeutral[200],
   },
   text: {
-    strong: trostNeutral[1000], // #000000
-    normal: trostNeutral[800], // #333333
-    default: trostNeutral[800],
+    strong: { default: trostNeutral[1000] }, // #000000 — Trost 강세
+    normal: { default: trostNeutral[800] }, // #333333
+    subtle: { default: trostNeutral[700] }, // #606060
+    muted: { default: trostNeutral[500] }, // #979797
+    disabled: { default: trostNeutral[400] }, // #C7C7C7
+    inverse: { default: trostNeutral["00"] },
+    // 노란 배경에 brand-default 텍스트를 쓰면 가독성이 떨어지므로 Trost 는
+    // brand-default 를 어두운 노랑(#E6D200)으로, brand-strong 을 더 어두운
+    // 노랑으로 둔다.
+    brand: { default: "#E6D200", strong: "#A39200" },
+    status: {
+      success: trostStatus.green,
+      error: trostStatus.error,
+      caution: trostStatus.orange,
+      info: trostCobalt[500],
+    },
+  },
+  buttonBg: {
+    default: trostYellow.primary, // #FFF42E
+    hover: "#FFE600",
+    pressed: "#E6D200",
+    disabled: trostNeutral[200],
+    secondary: {
+      default: trostCobalt[50],
+      hover: trostCobalt[100],
+      disabled: trostNeutral[200],
+    },
+    outlined: {
+      default: trostNeutral["00"],
+      hover: trostYellow.light,
+      disabled: trostNeutral["00"],
+    },
+  },
+  buttonText: {
+    default: "#000000", // 노란 배경 → 검정 텍스트 (Trost 특성)
+    brand: "#E6D200",
     disabled: trostNeutral[500],
-    placeholder: trostNeutral[500],
-    subtle: trostNeutral[700],
-    inverse: trostNeutral["00"],
   },
-  bg: {
-    white: trostNeutral["00"],
-    light: trostNeutral[100],
-    coolGray: trostNeutral["cool-100"],
-    coolGrayLighter: trostNeutral[150],
-    disabled: trostNeutral[200],
-    overlay: "rgba(0, 0, 0, 0.7)", // Trost는 70% scrim
-  },
-  border: {
-    default: trostNeutral[200],
-    light: trostNeutral[150],
-    focus: trostCobalt[500],
-    disabled: trostNeutral[200],
+  buttonBorder: {
+    outlined: {
+      default: trostYellow.border, // #FFE600
+      hover: trostYellow.border,
+      disabled: trostNeutral[300],
+    },
+    assistive: { default: trostNeutral[200], disabled: trostNeutral[200] },
   },
   icon: {
-    default: trostNeutral[800],
-    subtle: trostNeutral[500],
-    inverse: trostNeutral["00"],
+    strong: { default: trostNeutral[800] },
+    normal: { default: trostNeutral[700] },
+    disabled: { default: trostNeutral[400] },
+    inverse: { default: trostNeutral["00"] },
+    brand: { default: "#E6D200" }, // 노랑은 아이콘 자체로는 잘 안 보이므로 짙은 톤
+    status: {
+      success: trostStatus.green,
+      error: trostStatus.error,
+      caution: trostStatus.orange,
+    },
+  },
+  border: {
+    normal: { default: trostNeutral[200] },
+    strong: { default: trostNeutral[500] },
+    subtle: { default: trostNeutral[150] },
+    focus: { default: trostCobalt[500] }, // Trost focus = cobalt (브랜드 정체성)
+    brand: { default: trostYellow.border, disabled: trostNeutral[300] },
+    disabled: { default: trostNeutral[200] },
+    status: { error: trostStatus.error, caution: trostStatus.orange },
+  },
+  fill: {
+    brand: {
+      default: trostYellow.primary,
+      hover: "#FFE600",
+      pressed: "#E6D200",
+      disabled: trostNeutral[300],
+    },
+    neutral: { default: trostNeutral[800], subtle: trostNeutral[100] },
+    inverse: { default: trostNeutral["00"] },
+    status: { error: trostStatus.error, caution: trostStatus.orange },
+  },
+  input: {
+    bg: trostNeutral["00"],
+    bgDisabled: trostNeutral[100],
+    borderDefault: trostNeutral[200],
+    borderHover: trostNeutral[400],
+    borderFocus: trostCobalt[500],
+    borderError: trostStatus.error,
+    borderDisabled: trostNeutral[200],
+    placeholder: trostNeutral[500],
+    helpertextDefault: trostNeutral[500],
+    helpertextSuccess: trostCobalt[500],
+    helpertextError: trostStatus.error,
+    helpertextDisabled: trostNeutral[400],
   },
 } as const;
 

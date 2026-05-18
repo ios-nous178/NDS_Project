@@ -74,23 +74,23 @@ const timelineStyles = `
     width: 16px;
     height: 16px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.coolGray};
-    color: ${cv.text.inverse};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.inverse};
     flex-shrink: 0;
   }
 
   :where(.${TL_DOT_CLASS}[data-status="completed"]) {
-    background: ${cv.success.main};
+    background: ${cv.iconRole.statusSuccess};
   }
   :where(.${TL_DOT_CLASS}[data-status="ongoing"]) {
-    background: ${cv.primary.main};
-    box-shadow: 0 0 0 4px ${cv.primary.bgLighter};
+    background: ${cv.surface.brand};
+    box-shadow: 0 0 0 4px ${cv.surface.brandSubtle};
   }
   :where(.${TL_DOT_CLASS}[data-status="warning"]) {
-    background: ${cv.caution.main};
+    background: ${cv.fill.statusCaution};
   }
   :where(.${TL_DOT_CLASS}[data-status="error"]) {
-    background: ${cv.error.main};
+    background: ${cv.fill.statusError};
   }
 
   :where(.${TL_DOT_CLASS}) svg {
@@ -101,7 +101,7 @@ const timelineStyles = `
   :where(.${TL_LINE_CLASS}) {
     flex: 1;
     width: 2px;
-    background: ${cv.border.light};
+    background: ${cv.borderRole.subtle};
     margin-top: ${spacing[2]}px;
     min-height: ${spacing[16]}px;
   }
@@ -122,7 +122,7 @@ const timelineStyles = `
   :where(.${TL_DATE_CLASS}) {
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${TL_TITLE_CLASS}) {
@@ -132,13 +132,13 @@ const timelineStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${TL_DESC_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.normal};
+    color: ${cv.textRole.strong};
     margin: 0;
   }
 
@@ -150,25 +150,25 @@ const timelineStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.normal};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.strong};
   }
 
   :where(.${TL_BADGE_CLASS}[data-status="completed"]) {
-    background: ${cv.success.bg};
-    color: ${cv.success.main};
+    background: ${cv.surface.statusSuccess};
+    color: ${cv.iconRole.statusSuccess};
   }
   :where(.${TL_BADGE_CLASS}[data-status="ongoing"]) {
-    background: ${cv.primary.bgLighter};
-    color: ${cv.primary.main};
+    background: ${cv.surface.brandSubtle};
+    color: ${cv.textRole.brand};
   }
   :where(.${TL_BADGE_CLASS}[data-status="warning"]) {
-    background: ${cv.caution.bg};
-    color: ${cv.caution.text};
+    background: ${cv.surface.statusCaution};
+    color: ${cv.textRole.statusCaution};
   }
   :where(.${TL_BADGE_CLASS}[data-status="error"]) {
-    background: ${cv.error.bg};
-    color: ${cv.error.main};
+    background: ${cv.surface.statusError};
+    color: ${cv.textRole.statusError};
   }
 `;
 

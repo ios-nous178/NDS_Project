@@ -38,7 +38,7 @@ const etStyles = `
     flex-direction: column;
     gap: ${spacing[8]}px;
     font-family: ${fontFamily.web};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${ET_BODY_CLASS}) {
@@ -59,7 +59,7 @@ const etStyles = `
     align-self: flex-start;
     border: none;
     background: transparent;
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};
@@ -71,7 +71,7 @@ const etStyles = `
   :where(.${ET_TOGGLE_CLASS}:hover) { opacity: 0.75; }
 
   :where(.${ET_TOGGLE_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
     border-radius: 4px;
   }

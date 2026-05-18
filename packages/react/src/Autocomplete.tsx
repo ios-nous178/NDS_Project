@@ -88,17 +88,17 @@ const autocompleteStyles = `
   :where(.${AC_ROOT_CLASS}) > label {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${AC_INPUT_CLASS}) {
     width: 100%;
     height: ${sizing.input.default}px;
     padding: 0 ${spacing[16]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
-    color: ${cv.text.default};
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
@@ -107,21 +107,21 @@ const autocompleteStyles = `
   }
 
   :where(.${AC_INPUT_CLASS}::placeholder) {
-    color: ${cv.text.placeholder};
+    color: ${cv.textRole.muted};
   }
 
   :where(.${AC_INPUT_CLASS}:focus-visible) {
     outline: none;
-    border-color: ${cv.primary.main};
+    border-color: ${cv.borderRole.brand};
   }
 
   :where(.${AC_INPUT_CLASS}[data-error="true"]) {
-    border-color: var(--semantic-error-main);
+    border-color: var(--semantic-border-status-error);
   }
 
   :where(.${AC_INPUT_CLASS}[disabled]) {
-    background: ${cv.bg.coolGray};
-    color: ${cv.text.disabled};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.muted};
     cursor: not-allowed;
   }
 
@@ -131,8 +131,8 @@ const autocompleteStyles = `
     left: 0;
     right: 0;
     margin-top: ${spacing[4]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     max-height: 280px;
@@ -149,7 +149,7 @@ const autocompleteStyles = `
     gap: ${spacing[12]}px;
     padding: ${spacing[12]}px ${spacing[16]}px;
     cursor: pointer;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     transition: background-color ${transition.default};
@@ -157,30 +157,30 @@ const autocompleteStyles = `
 
   :where(.${AC_OPTION_CLASS}[data-active="true"]),
   :where(.${AC_OPTION_CLASS}:hover) {
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
   }
 
   :where(.${AC_OPTION_CLASS}[aria-selected="true"]) {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
     font-weight: ${fontWeight.semibold};
   }
 
   :where(.${AC_HIGHLIGHT_CLASS}) {
-    color: ${cv.primary.main};
+    color: ${cv.textRole.brand};
     font-weight: ${fontWeight.semibold};
   }
 
   :where(.${AC_DESCRIPTION_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin-top: 2px;
   }
 
   :where(.${AC_EMPTY_CLASS}),
   :where(.${AC_LOADING_CLASS}) {
     padding: ${spacing[16]}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     text-align: center;
   }

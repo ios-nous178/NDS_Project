@@ -42,13 +42,13 @@ const phStyles = `
     flex-direction: column;
     gap: ${spacing[12]}px;
     padding: ${spacing[20]}px ${spacing[24]}px;
-    background: var(--nds-page-header-bg, ${cv.bg.white});
+    background: var(--nds-page-header-bg, ${cv.surface.default});
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
 
   :where(.${PH_CLASS}[data-bordered="true"]) {
-    border-bottom: 1px solid ${cv.border.light};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${PH_TOP_CLASS}) {
@@ -63,7 +63,7 @@ const phStyles = `
     height: 32px;
     border: none;
     background: transparent;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     border-radius: 9999px;
     cursor: pointer;
     display: inline-flex;
@@ -74,10 +74,10 @@ const phStyles = `
     margin-left: -${spacing[8]}px;
   }
 
-  :where(.${PH_BACK_CLASS}:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${PH_BACK_CLASS}:hover) { background: ${cv.surface.section}; }
 
   :where(.${PH_BACK_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
@@ -105,14 +105,14 @@ const phStyles = `
     font-size: ${typeScale.headline2.fontSize}px;
     line-height: ${typeScale.headline2.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${PH_SUBTITLE_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     margin: 0;
   }
 

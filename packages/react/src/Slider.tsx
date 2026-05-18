@@ -51,7 +51,7 @@ const sliderStyles = `
     right: 0;
     height: 4px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.disabled};
+    background: ${cv.surface.disabled};
   }
 
   :where(.${SL_FILL_CLASS}) {
@@ -59,7 +59,7 @@ const sliderStyles = `
     left: 0;
     height: 4px;
     border-radius: ${radius.pill}px;
-    background: ${cv.primary.main};
+    background: ${cv.surface.brand};
     pointer-events: none;
     transition: width ${transition.default};
   }
@@ -82,8 +82,8 @@ const sliderStyles = `
     width: 24px;
     height: 24px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.white};
-    border: 2px solid ${cv.primary.main};
+    background: ${cv.surface.default};
+    border: 2px solid ${cv.borderRole.brand};
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     transition: transform ${transition.default};
@@ -93,8 +93,8 @@ const sliderStyles = `
     width: 24px;
     height: 24px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.white};
-    border: 2px solid ${cv.primary.main};
+    background: ${cv.surface.default};
+    border: 2px solid ${cv.borderRole.brand};
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     cursor: pointer;
   }
@@ -104,7 +104,7 @@ const sliderStyles = `
   }
 
   :where(.${SL_INPUT_CLASS}:focus-visible)::-webkit-slider-thumb {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
@@ -117,7 +117,7 @@ const sliderStyles = `
   :where(.${SL_LABEL_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     user-select: none;
   }
 
@@ -125,7 +125,7 @@ const sliderStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     user-select: none;
   }
 `;

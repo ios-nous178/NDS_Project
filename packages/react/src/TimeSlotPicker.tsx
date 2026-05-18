@@ -82,7 +82,7 @@ const timeSlotPickerStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${TS_GRID_CLASS}) {
@@ -97,42 +97,42 @@ const timeSlotPickerStyles = `
     justify-content: center;
     height: 40px;
     padding: 0 ${spacing[8]}px;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.sm}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     transition: background-color ${transition.default}, border-color ${transition.default}, color ${transition.default};
     box-sizing: border-box;
   }
 
   :where(.${TS_SLOT_CLASS}:hover:not(:disabled):not([data-selected="true"])) {
-    border-color: ${cv.primary.lighter};
-    background: ${cv.primary.bgLighter};
+    border-color: ${"#91CAF6"};
+    background: ${cv.surface.brandSubtle};
   }
 
   :where(.${TS_SLOT_CLASS}[data-selected="true"]) {
-    background: ${cv.primary.main};
-    border-color: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    border-color: ${cv.borderRole.brand};
+    color: ${cv.textRole.inverse};
     font-weight: ${fontWeight.medium};
   }
 
   :where(.${TS_SLOT_CLASS}:disabled),
   :where(.${TS_SLOT_CLASS}[data-unavailable="true"]) {
-    background: ${cv.bg.disabled};
-    color: ${cv.text.disabled};
-    border-color: ${cv.border.light};
+    background: ${cv.surface.disabled};
+    color: ${cv.textRole.muted};
+    border-color: ${cv.borderRole.subtle};
     cursor: not-allowed;
     text-decoration: line-through;
   }
 
   :where(.${TS_SLOT_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.primary.main};
+    outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
   }
 
@@ -141,10 +141,10 @@ const timeSlotPickerStyles = `
     align-items: center;
     justify-content: center;
     padding: ${spacing[24]}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    background: ${cv.bg.light};
+    background: ${cv.surface.subtle};
     border-radius: ${radius.md}px;
   }
 `;

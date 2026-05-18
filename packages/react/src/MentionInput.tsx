@@ -73,18 +73,18 @@ const miStyles = `
   :where(.${MI_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${MI_FIELD_CLASS}) {
     position: relative;
-    border: 1px solid ${cv.border.default};
+    border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
-    background: ${cv.bg.white};
+    background: ${cv.surface.default};
     transition: border-color ${transition.default};
   }
-  :where(.${MI_FIELD_CLASS}:focus-within) { border-color: ${cv.primary.main}; }
-  :where(.${MI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-error-main); }
+  :where(.${MI_FIELD_CLASS}:focus-within) { border-color: ${cv.borderRole.brand}; }
+  :where(.${MI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
 
   :where(.${MI_TEXTAREA_CLASS}) {
     width: 100%;
@@ -97,18 +97,18 @@ const miStyles = `
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     box-sizing: border-box;
   }
-  :where(.${MI_TEXTAREA_CLASS}::placeholder) { color: ${cv.text.placeholder}; }
+  :where(.${MI_TEXTAREA_CLASS}::placeholder) { color: ${cv.textRole.muted}; }
 
   :where(.${MI_LIST_CLASS}) {
     position: absolute;
     list-style: none;
     margin: 0;
     padding: ${spacing[4]}px 0;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     z-index: 10;
@@ -123,11 +123,11 @@ const miStyles = `
     gap: ${spacing[12]}px;
     padding: ${spacing[8]}px ${spacing[16]}px;
     cursor: pointer;
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     transition: background-color ${transition.default};
   }
   :where(.${MI_ITEM_CLASS}[data-active="true"]),
-  :where(.${MI_ITEM_CLASS}:hover) { background: ${cv.bg.coolGray}; }
+  :where(.${MI_ITEM_CLASS}:hover) { background: ${cv.surface.section}; }
 
   :where(.${MI_ITEM_CLASS}) > div {
     display: flex;
@@ -140,14 +140,14 @@ const miStyles = `
   }
   :where(.${MI_ITEM_CLASS}) span {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${MI_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
-  :where(.${MI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-error-main); }
+  :where(.${MI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
 `;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

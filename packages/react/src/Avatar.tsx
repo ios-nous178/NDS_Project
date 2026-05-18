@@ -29,7 +29,7 @@ const avatarStyles = `
     width: var(--nds-avatar-size, 40px);
     height: var(--nds-avatar-size, 40px);
     border-radius: ${radius.pill}px;
-    background: var(--nds-avatar-bg, ${cv.bg.coolGray});
+    background: var(--nds-avatar-bg, ${cv.surface.section});
     overflow: hidden;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -49,7 +49,7 @@ const avatarStyles = `
     height: 100%;
     font-size: var(--nds-avatar-font-size, ${typeScale.body3.fontSize}px);
     font-weight: ${fontWeight.medium};
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     user-select: none;
   }
 

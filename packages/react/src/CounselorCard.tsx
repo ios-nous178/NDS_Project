@@ -32,8 +32,8 @@ const counselorCardStyles = `
     display: flex;
     gap: ${spacing[16]}px;
     padding: ${spacing[20]}px;
-    background: ${cv.bg.white};
-    border: 1px solid ${cv.border.light};
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -45,7 +45,7 @@ const counselorCardStyles = `
   }
 
   :where(.${CN_CLASS}[data-clickable="true"]:hover) {
-    border-color: ${cv.primary.lighter};
+    border-color: ${"#91CAF6"};
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   }
 
@@ -54,13 +54,13 @@ const counselorCardStyles = `
     width: 72px;
     height: 72px;
     border-radius: ${radius.pill}px;
-    background: ${cv.bg.coolGray};
+    background: ${cv.surface.section};
     object-fit: cover;
     overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
     font-size: ${typeScale.headline4.fontSize}px;
     font-weight: ${fontWeight.bold};
   }
@@ -89,14 +89,14 @@ const counselorCardStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     line-height: ${typeScale.headline5.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
     margin: 0;
   }
 
   :where(.${CN_TITLE_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${CN_RATING_CLASS}) {
@@ -109,13 +109,13 @@ const counselorCardStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    color: ${cv.text.default};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${CN_RATING_COUNT_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.text.subtle};
+    color: ${cv.textRole.subtle};
   }
 
   :where(.${CN_TAGS_CLASS}) {
@@ -128,8 +128,8 @@ const counselorCardStyles = `
     display: inline-flex;
     align-items: center;
     padding: ${spacing[2]}px ${spacing[8]}px;
-    background: ${cv.bg.coolGrayLighter};
-    color: ${cv.text.normal};
+    background: ${cv.surface.page};
+    color: ${cv.textRole.strong};
     border-radius: ${radius.pill}px;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
@@ -139,7 +139,7 @@ const counselorCardStyles = `
   :where(.${CN_BIO_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.text.normal};
+    color: ${cv.textRole.strong};
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -158,8 +158,8 @@ const counselorCardStyles = `
     display: inline-flex;
     align-items: center;
     padding: ${spacing[8]}px ${spacing[16]}px;
-    background: ${cv.primary.main};
-    color: ${cv.primary.fg};
+    background: ${cv.surface.brand};
+    color: ${cv.textRole.inverse};
     border-radius: ${radius.pill}px;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
@@ -170,7 +170,7 @@ const counselorCardStyles = `
   }
 
   :where(.${CN_CTA_CLASS}:hover) {
-    background: ${cv.primary.hover};
+    background: ${cv.fill.brandHover};
   }
 `;
 
