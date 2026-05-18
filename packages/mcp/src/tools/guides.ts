@@ -14,6 +14,7 @@ import {
   PATTERN_GUIDES,
   ADMIN_CMS_GUIDE,
   SCOPE_ADVISORY,
+  UX_WRITING_GUIDE,
   detectIntentFromText,
 } from "../guides.js";
 
@@ -38,6 +39,14 @@ export function getDosAndDonts() {
     _advisory: ENTRY_TOOL_ADVISORY,
     dos: DESIGN_PRINCIPLES.dos,
     donts: DESIGN_PRINCIPLES.donts,
+  };
+}
+
+export function getUxWritingGuide() {
+  return {
+    _advisory:
+      "사용자에게 노출되는 모든 텍스트(버튼·라벨·placeholder·empty state·에러·다이얼로그)에 적용되는 보이스톤·문장 룰. EAP 멘탈케어 도메인 규칙은 eapDomain 섹션을 함께 보세요. CTA 라벨 규칙은 get_guide({ topic: 'pattern:cta-group' }) 와도 일관.",
+    ...UX_WRITING_GUIDE,
   };
 }
 
@@ -122,6 +131,7 @@ export function getAdminCmsGuide(args: { intent?: string }) {
 export const GUIDE_FIXED_TOPICS = [
   "principles",
   "dos-donts",
+  "ux-writing",
   "admin-cms",
   "scope-advisory",
   "inspector-setup",
@@ -179,6 +189,8 @@ export function getGuide(args: { topic: string; intent?: string }) {
       return getDesignPrinciples();
     case "dos-donts":
       return getDosAndDonts();
+    case "ux-writing":
+      return getUxWritingGuide();
     case "admin-cms":
       return getAdminCmsGuide({ intent: args.intent });
     case "scope-advisory":
@@ -325,7 +337,8 @@ export function getClaudeMdTemplate(args: {
 - 시각 기준이 중요한 화면은 \`get_guide({ topic: "pattern:visual-reference" })\` 호출. 프롬프트에 이미지/Figma 링크가 있으면 그것을 기준으로 쓰고, 없으면 사용자에게 정답/오답 스크린샷 또는 Figma 링크를 요청한다.
 - 컴포넌트/아이콘/토큰 사용 전 \`search_component\` / \`find_icon\` / \`lookup_token\` 호출
 - 처음 쓰는 주요 컴포넌트는 \`get_guide({ topic: "component:Button" })\` 형식으로 호출
-- CTA 그룹, 아이콘 컬러, 시각 레퍼런스, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트는 \`get_guide({ topic: "pattern:cta-group" })\` 형식으로 호출
+- CTA 그룹, 아이콘 컬러, 시각 레퍼런스, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트, 다크패턴(진입 직후 시트·뒤로가기 인터럽트·거절 불가 CTA·중간 광고·라벨 모호성)은 \`get_guide({ topic: "pattern:cta-group" })\` / \`get_guide({ topic: "pattern:dark-patterns" })\` 형식으로 호출
+- **사용자 노출 텍스트(버튼·라벨·placeholder·empty state·에러·다이얼로그)는 작성 전 \`get_guide({ topic: "ux-writing" })\` 호출** — 해요체·능동형·긍정형·캐주얼 경어·"닫기 vs 취소" 같은 마이크로카피 규칙 + EAP 멘탈케어 도메인 규칙(위기·자해·진단 표현 톤)을 한 번에 로드.
 - 워크스페이스 첫 셋업 시 **\`get_setup({ step: "inspector" })\` 한 번 호출** — MCP 가 src/main.tsx 를 직접 패치해 DsInspector 를 dev-only 로 마운트합니다 (idempotent). 성공 후 dev 서버 재시작하면 우하단 floating 버튼으로 DS / antd / native 비율을 실시간 확인 가능 (Ctrl/Cmd+Shift+D 토글). 별도 코드 수정 불필요.
 - 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
 - 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
