@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { AppBar, TrendingKeywords } from "@nudge-eap/react";
-import { GenietMenuIcon } from "@nudge-eap/icons";
+import { GenietMenuIcon, GenietSearchIcon, GenietAlarmIcon } from "@nudge-eap/icons";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("geniet");
@@ -70,6 +70,7 @@ export const Desktop: Story = {
         />
         <AppBar.SearchBar
           placeholder={b.header.searchBar!.placeholder}
+          icon={<GenietSearchIcon size={24} />}
           style={
             {
               "--nds-app-bar-search-width": `${b.header.searchBar!.width}px`,
@@ -97,7 +98,15 @@ export const Desktop: Story = {
 };
 
 export const Mobile: Story = {
-  name: "Mobile/모바일 헤더",
+  name: "Mobile/모바일 헤더 (logo + 검색 + 알림)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Figma 207:2578 (header/mo type=homeapp) 기준. 좌측 로고, 우측 검색·알림 아이콘. brand prefix 아이콘(GenietSearchIcon / GenietAlarmIcon) 명시 전달.",
+      },
+    },
+  },
   render: () => (
     <div style={{ maxWidth: 480 }}>
       <AppBar
@@ -111,7 +120,44 @@ export const Mobile: Story = {
             href="/"
             style={{ height: b.logo.headerMobile.height, width: "auto" }}
           />
-          <AppBar.AuthMenu items={[b.header.auth.items[0]]} separator="none" />
+          <div
+            style={{
+              marginLeft: "auto",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 12,
+              color: "var(--semantic-icon-strong-default, #111)",
+            }}
+          >
+            <button
+              type="button"
+              aria-label="검색"
+              style={{
+                background: "transparent",
+                border: "none",
+                padding: 4,
+                cursor: "pointer",
+                color: "inherit",
+                display: "inline-flex",
+              }}
+            >
+              <GenietSearchIcon size={24} />
+            </button>
+            <button
+              type="button"
+              aria-label="알림"
+              style={{
+                background: "transparent",
+                border: "none",
+                padding: 4,
+                cursor: "pointer",
+                color: "inherit",
+                display: "inline-flex",
+              }}
+            >
+              <GenietAlarmIcon size={24} />
+            </button>
+          </div>
         </AppBar.MainBar>
       </AppBar>
     </div>

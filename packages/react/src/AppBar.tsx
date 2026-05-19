@@ -493,9 +493,14 @@ export interface AppBarSearchBarProps extends Omit<
   value?: string;
   onChange?: (value: string) => void;
   onSearch?: (value: string) => void;
+  /**
+   * 검색 아이콘 슬롯. 미전달 시 기본 인라인 SVG 사용.
+   * 브랜드 화면에서 brand prefix 아이콘(예: `<GenietSearchIcon />`)을 명시 전달 가능.
+   */
+  icon?: React.ReactNode;
 }
 
-const SearchIcon = () => (
+const DefaultSearchIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.5" />
     <path d="M13 13L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -504,7 +509,7 @@ const SearchIcon = () => (
 
 const AppBarSearchBar = React.memo(
   React.forwardRef<HTMLDivElement, AppBarSearchBarProps>(
-    ({ placeholder, value, onChange, onSearch, className, style, ...rest }, ref) => {
+    ({ placeholder, value, onChange, onSearch, icon, className, style, ...rest }, ref) => {
       const [internal, setInternal] = React.useState("");
       const val = value ?? internal;
 
@@ -537,7 +542,7 @@ const AppBarSearchBar = React.memo(
             role="button"
             aria-label="검색"
           >
-            <SearchIcon />
+            {icon ?? <DefaultSearchIcon />}
           </span>
         </div>
       );
