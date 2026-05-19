@@ -7,12 +7,13 @@ title: 다크패턴
 
 # 다크패턴
 
-사용성을 해치는 5 가지 다크패턴. 외부 mockup 프로젝트에서는 `get_guide({ topic: "pattern:dark-patterns" })` MCP 호출로 동일 본문을 받습니다.
+사용성·자율성을 해치는 다크패턴. 외부 mockup 프로젝트에서는 `get_guide({ topic: "pattern:dark-patterns" })` MCP 호출로 동일 본문을 받습니다.
 시각 안티패턴(`visual-antipatterns`) 이 색·강조·반복 같은 스타일을 다룬다면, 이 문서는 진입·뒤로가기·CTA 라벨 같은 **플로우·사용성** 차원의 안티패턴을 다룹니다.
+어느 하나라도 적용되면 사용자 신뢰가 크게 떨어지고 재방문·전환이 무너집니다.
 
 ## 요약
 
-사용성을 해치는 다크패턴 5건. 어느 것 하나라도 적용되면 신뢰가 크게 떨어지고, 외부(앱인토스 등) 검수에서는 출시 거절 사유가 된다. visual-antipatterns(시각/스타일)와 별개로 플로우/사용성 차원의 안티패턴이다.
+사용성·자율성을 해치는 다크패턴 5건. 어느 것 하나라도 적용되면 사용자 신뢰가 크게 떨어지고 재방문·전환이 무너진다. 시각·스타일 차원은 별도 — get_guide(\{ topic: 'pattern:visual-antipatterns' \}) 참고.
 
 ## 규칙
 
@@ -33,11 +34,11 @@ title: 다크패턴
 
 ## Metrics
 
-| Key                          | Value    |
-| ---------------------------- | -------- |
-| `maxAutoSheetsOnEntry`       | 0        |
-| `maxInterruptsOnBackPress`   | 0        |
-| `minDeclineOptionsPerDialog` | 1        |
-| `maxInterstitialsMidFlow`    | 0        |
-| `ctaLabelClarity`            | required |
-| `maxPrimarySolidPerScreen`   | 1        |
+| Key | Value |
+|---|---|
+| `maxAutoSheetsOnEntry` | 0 |
+| `maxInterruptsOnBackPress` | 0 |
+| `minDeclineOptionsPerDialog` | 1 |
+| `maxInterstitialsMidFlow` | 0 |
+| `ctaLabelClarity` | required |
+| `maxPrimarySolidPerScreen` | 1 |

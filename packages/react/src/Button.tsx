@@ -20,10 +20,14 @@ const BUTTON_ICON_CLASS = `${BUTTON_CLASS}__icon`;
 
 // eslint-disable-next-line unused-imports/no-unused-vars
 const buttonStyles = `
-  :where(.${BUTTON_CLASS}) {
+  /* Base rule uses .nds-button (not :where()) so that browser/host
+   * user-agent and theme rules on the bare \`button\` element
+   * (e.g. Docusaurus' Infima theme) don't override our alignment/typography. */
+  .${BUTTON_CLASS} {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    vertical-align: middle;
     gap: var(--nds-button-gap, var(--gap-default));
     width: var(--nds-button-width, auto);
     min-height: var(--nds-button-height, 48px);
@@ -43,6 +47,12 @@ const buttonStyles = `
       border-color ${transition.default},
       color ${transition.default},
       opacity ${transition.default};
+  }
+
+  .${BUTTON_CLASS}:disabled {
+    /* Host themes often set their own disabled opacity — pin to 1 so our
+     * semantic disabled colors carry the full intended contrast. */
+    opacity: 1;
   }
 
   :where(.${BUTTON_CLASS}:disabled) {
