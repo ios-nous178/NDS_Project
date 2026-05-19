@@ -88,6 +88,34 @@ function renderUxWriting() {
   return `${lines.join("\n").trimEnd()}\n`;
 }
 
+/**
+ * rules / avoid 섹션을 출력한다. ruleGroups/avoidGroups 가 있으면 `### {heading}` 로 묶고,
+ * 없으면 flat bullet 리스트로 폴백한다.
+ */
+function pushRuleSection(lines, sectionTitle, groups, flatList) {
+  lines.push(`## ${sectionTitle}`, "");
+  if (Array.isArray(groups) && groups.length > 0) {
+    for (const group of groups) {
+      lines.push(`### ${esc(group.heading)}`, "");
+      for (const item of group.items) lines.push(`- ${esc(item)}`);
+      lines.push("");
+    }
+  } else {
+    for (const r of flatList) lines.push(`- ${esc(r)}`);
+    lines.push("");
+  }
+}
+
+function pushMetrics(lines, metrics) {
+  if (!metrics || Object.keys(metrics).length === 0) return;
+  lines.push("## Metrics", "");
+  lines.push("| Key | Value |", "|---|---|");
+  for (const [k, v] of Object.entries(metrics)) {
+    lines.push(`| \`${k}\` | ${v} |`);
+  }
+  lines.push("");
+}
+
 function renderDarkPatterns() {
   const g = PATTERN_GUIDES["dark-patterns"];
   if (!g) throw new Error("PATTERN_GUIDES['dark-patterns'] 가 비어 있습니다.");
@@ -101,27 +129,18 @@ function renderDarkPatterns() {
     "",
     "# 다크패턴",
     "",
-    '사용성을 해치는 5 가지 다크패턴. 외부 mockup 프로젝트에서는 `get_guide({ topic: "pattern:dark-patterns" })` MCP 호출로 동일 본문을 받습니다.',
+    '사용성·자율성을 해치는 다크패턴. 외부 mockup 프로젝트에서는 `get_guide({ topic: "pattern:dark-patterns" })` MCP 호출로 동일 본문을 받습니다.',
     "시각 안티패턴(`visual-antipatterns`) 이 색·강조·반복 같은 스타일을 다룬다면, 이 문서는 진입·뒤로가기·CTA 라벨 같은 **플로우·사용성** 차원의 안티패턴을 다룹니다.",
+    "어느 하나라도 적용되면 사용자 신뢰가 크게 떨어지고 재방문·전환이 무너집니다.",
     "",
     "## 요약",
     "",
     esc(g.summary),
     "",
-    "## 규칙",
-    "",
   ];
-  for (const r of g.rules) lines.push(`- ${esc(r)}`);
-  lines.push("", "## 피해야 할 패턴", "");
-  for (const a of g.avoid) lines.push(`- ${esc(a)}`);
-  if (g.metrics && Object.keys(g.metrics).length > 0) {
-    lines.push("", "## Metrics", "");
-    lines.push("| Key | Value |", "|---|---|");
-    for (const [k, v] of Object.entries(g.metrics)) {
-      lines.push(`| \`${k}\` | ${v} |`);
-    }
-  }
-  lines.push("");
+  pushRuleSection(lines, "규칙", g.ruleGroups, g.rules);
+  pushRuleSection(lines, "피해야 할 패턴", g.avoidGroups, g.avoid);
+  pushMetrics(lines, g.metrics);
   return `${lines.join("\n").trimEnd()}\n`;
 }
 
@@ -139,26 +158,16 @@ function renderVisualAntipatterns() {
     "# 시각 안티패턴",
     "",
     '1차 목업에서 퀄리티를 떨어뜨리는 대표 시각 안티패턴. 외부 mockup 프로젝트에서는 `get_guide({ topic: "pattern:visual-antipatterns" })` MCP 호출로 동일 본문을 받습니다.',
-    "다크패턴(`dark-patterns`) 이 진입·뒤로가기·CTA 라벨 같은 **플로우·사용성** 차원을 다룬다면, 이 문서는 색·강조·반복 같은 **시각·스타일** 차원의 안티패턴을 다룹니다.",
+    "다크패턴(`dark-patterns`) 이 진입·뒤로가기·CTA 라벨 같은 **플로우·사용성** 차원을 다룬다면, 이 문서는 색·표면·타이포·아이콘·대시보드 톤 같은 **시각·스타일** 차원의 안티패턴을 다룹니다.",
     "",
     "## 요약",
     "",
     esc(g.summary),
     "",
-    "## 규칙",
-    "",
   ];
-  for (const r of g.rules) lines.push(`- ${esc(r)}`);
-  lines.push("", "## 피해야 할 패턴", "");
-  for (const a of g.avoid) lines.push(`- ${esc(a)}`);
-  if (g.metrics && Object.keys(g.metrics).length > 0) {
-    lines.push("", "## Metrics", "");
-    lines.push("| Key | Value |", "|---|---|");
-    for (const [k, v] of Object.entries(g.metrics)) {
-      lines.push(`| \`${k}\` | ${v} |`);
-    }
-  }
-  lines.push("");
+  pushRuleSection(lines, "규칙", g.ruleGroups, g.rules);
+  pushRuleSection(lines, "피해야 할 패턴", g.avoidGroups, g.avoid);
+  pushMetrics(lines, g.metrics);
   return `${lines.join("\n").trimEnd()}\n`;
 }
 

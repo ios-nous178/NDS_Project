@@ -60,8 +60,9 @@ export const nudgeEapSemantic = {
     default: blue[500], // #2B96ED
     hover: blue[600], // #017EE4
     pressed: blue[700], // #0E71CF
-    // Figma 실 Button 컴포넌트 (171:8410) 가 cool-gray/400 사용 — SemanticColorGuide
-    // 섹션의 "Neutral 200" 라벨과는 어긋나지만 designer mockup 의 실제 색이 SSOT.
+    // Figma 실 Button 컴포넌트 (171:8410) 가 cool-gray/400 (#9CA2AE) 사용 — 이게 SSOT.
+    // Figma SemanticColorGuide(222:2) 의 ButtonBG/Disabled 가 #D8D8D8 로 잘못 그려져 있어
+    // 디자이너가 가이드 쪽 값을 #9CA2AE 로 정정해야 함 (코드는 변경 없음).
     disabled: coolGray[400], // #9CA2AE
     secondary: {
       default: blue[50], // #F1F8FD
