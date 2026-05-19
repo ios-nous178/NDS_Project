@@ -503,11 +503,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const hover = variantSet.hover;
 
     // Brand-aware 경고: process.env.NODE_ENV !== "production" 에서만, document 가 있을 때.
-    if (
-      typeof process !== "undefined" &&
-      process.env?.NODE_ENV !== "production" &&
-      typeof document !== "undefined"
-    ) {
+    // @types/node 의존 없이 process 를 안전하게 참조하기 위해 globalThis 캐스팅 사용.
+    const proc = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process;
+    if (proc && proc.env?.NODE_ENV !== "production" && typeof document !== "undefined") {
       const brand = document.documentElement.getAttribute("data-brand");
       warnIfBrandRestricted(brand, variant, color);
     }
