@@ -354,6 +354,8 @@ export interface ComponentGuide {
   sizeMatrix?: Record<string, string>;
   /** state(active/hover/disabled) 별 토큰/배경 매핑 */
   stateMatrix?: Record<string, string>;
+  /** 브랜드별 허용 variant / 패턴 차이 — Figma 라이브러리가 브랜드별로 다른 컴포넌트(Button 등)에서 사용. */
+  brandMatrix?: Record<string, string>;
   /** 출처 Figma 노드 URL (Library 파일) */
   figmaNodeUrl?: string;
   /** 접근성 가이드 (aria/대비/타겟 사이즈 등) */
@@ -369,6 +371,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
     pitfalls: [
       "color='assistive' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
+      "Geniet 브랜드에서 variant='soft' 또는 variant='outlined-sub' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
+      "Geniet Solid/Secondary 는 #333333(gray-900) dark inverse 패턴 + 흰 텍스트 — 다른 브랜드의 옅은 톤 secondary 와 다름. 'dark fill' 이 의도된 결과.",
       "primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
       "다른 페이지로 이동하는 CTA라고 해서 모든 Button에 화살표 아이콘을 붙이지 말 것. ArrowNext/ChevronRight 류 아이콘은 대표 전진 액션 1개에만 사용.",
       "카드 리스트/섹션 리스트에서 반복되는 '자세히 보기 →' 버튼은 시각 소음이 큼. 반복 CTA는 아이콘 없이 텍스트만 쓰거나 카드 전체 클릭 패턴을 검토.",
@@ -416,6 +420,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "assistive/outlined":
         "흰 배경 + #D8D8D8 보더 + #383838 medium weight 텍스트 — 중립 액션. Figma는 M/S/XS 만 지원, disabled 없음",
       "error/solid": "error fill + 흰 텍스트 — 파괴 액션 한정",
+    },
+    brandMatrix: {
+      "nudge-eap":
+        "variant=solid/outlined/soft/outlined-sub 전부 사용 가능. secondary/solid 는 옅은 blue.",
+      trost:
+        "variant=solid/outlined/soft/outlined-sub 사용 가능. secondary/solid 는 cobalt-50 배경 + cobalt 텍스트.",
+      geniet:
+        "variant=solid/outlined 만 허용 (Figma 207:1853 가이드). soft/outlined-sub 는 dev console 경고 — 사용 금지. " +
+        "secondary/solid 는 #333333(gray-900) dark inverse + 흰 텍스트 — Geniet 고유 패턴.",
     },
     sizeMatrix: {
       xl: "height 52 / px 16 / py 14 / 16·24 bold / icon 20 / gap 8",
@@ -2700,39 +2713,39 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       },
     ];
     return {
-    name: "visual-antipatterns",
-    summary:
-      "1차 목업에서 퀄리티를 떨어뜨리는 대표 시각 안티패턴. 색·표면·타이포·아이콘·대시보드 톤 다섯 영역으로 묶었다. 플로우/사용성 차원은 별도 — get_guide({ topic: 'pattern:dark-patterns' }) 참고.",
-    rules: flattenGroups(ruleGroups),
-    avoid: flattenGroups(avoidGroups),
-    ruleGroups,
-    avoidGroups,
-    metrics: {
-      // 색·강조
-      maxPrimaryRolesPerScreen: 2,
-      maxPrimaryTintSurfacesPerSection: 1,
-      logoColorAsUiAccent: "forbidden",
-      toneOnToneFilled: "forbidden",
-      gradientBackground: "forbidden",
-      sectionColorOnly: "forbidden",
-      // 표면
-      maxCardsPerScreen: 5,
-      nestedCard: "forbidden",
-      decorativeShadow: "forbidden",
-      maxShadowedElementsPerScreen: 3,
-      maxFloatingPanelsConcurrent: 1,
-      // 타이포
-      maxBoldOccurrencesPerScreen: 4,
-      maxTopLevelHeadingsPerScreen: 1,
-      maxFontWeightsPerScreen: 3,
-      // 아이콘
-      mixedIconStyles: "forbidden",
-      maxDecorativeIconsBeforeHeading: 0,
-      // 대시보드
-      decorativeKpiGrid: "forbidden",
-      decorativeChart: "forbidden",
-      decorativeHero: "forbidden",
-    },
+      name: "visual-antipatterns",
+      summary:
+        "1차 목업에서 퀄리티를 떨어뜨리는 대표 시각 안티패턴. 색·표면·타이포·아이콘·대시보드 톤 다섯 영역으로 묶었다. 플로우/사용성 차원은 별도 — get_guide({ topic: 'pattern:dark-patterns' }) 참고.",
+      rules: flattenGroups(ruleGroups),
+      avoid: flattenGroups(avoidGroups),
+      ruleGroups,
+      avoidGroups,
+      metrics: {
+        // 색·강조
+        maxPrimaryRolesPerScreen: 2,
+        maxPrimaryTintSurfacesPerSection: 1,
+        logoColorAsUiAccent: "forbidden",
+        toneOnToneFilled: "forbidden",
+        gradientBackground: "forbidden",
+        sectionColorOnly: "forbidden",
+        // 표면
+        maxCardsPerScreen: 5,
+        nestedCard: "forbidden",
+        decorativeShadow: "forbidden",
+        maxShadowedElementsPerScreen: 3,
+        maxFloatingPanelsConcurrent: 1,
+        // 타이포
+        maxBoldOccurrencesPerScreen: 4,
+        maxTopLevelHeadingsPerScreen: 1,
+        maxFontWeightsPerScreen: 3,
+        // 아이콘
+        mixedIconStyles: "forbidden",
+        maxDecorativeIconsBeforeHeading: 0,
+        // 대시보드
+        decorativeKpiGrid: "forbidden",
+        decorativeChart: "forbidden",
+        decorativeHero: "forbidden",
+      },
     };
   })(),
   "visual-reference": {
