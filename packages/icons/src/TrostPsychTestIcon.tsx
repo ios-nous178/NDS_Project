@@ -1,0 +1,28 @@
+import React from "react";
+
+export interface TrostPsychTestIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostPsychTestIcon = React.forwardRef<SVGSVGElement, TrostPsychTestIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M20 15V5C20 3.89543 19.1046 3 18 3H6C4.89543 3 4 3.89543 4 5V19C4 20.1046 4.89543 21 6 21H16.2353" stroke="currentColor" strokeWidth="1.5"/>
+<path d="M8 8H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+<path d="M8 12H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+<path d="M8 16H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+<path d="M14.6965 15.698C13.7936 16.6283 13.7424 17.8746 14.6965 19.0682C15.6506 20.2618 18.5128 23 18.5128 23C18.5128 23 21.4432 20.2618 22.3292 19.0682C23.2151 17.8746 23.2321 16.6283 22.3292 15.698C22.1144 15.4767 21.8594 15.3012 21.5788 15.1814C21.2981 15.0616 20.9973 15 20.6936 15C20.3898 15 20.089 15.0616 19.8084 15.1814C19.5278 15.3012 19.2728 15.4767 19.058 15.698L18.5128 16.2597L17.9676 15.698C17.7529 15.4767 17.4979 15.3012 17.2172 15.1814C16.9366 15.0616 16.6358 15 16.3321 15C16.0283 15 15.7275 15.0616 15.4469 15.1814C15.1663 15.3012 14.9113 15.4767 14.6965 15.698Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+    </svg>
+  )
+);
+
+TrostPsychTestIcon.displayName = "TrostPsychTestIcon";

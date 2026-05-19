@@ -1,0 +1,36 @@
+import React from "react";
+
+export interface TrostMentalSelfesteemIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostMentalSelfesteemIcon = React.forwardRef<SVGSVGElement, TrostMentalSelfesteemIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="scale(0.75 0.75)">
+<g fill="none" fillRule="evenodd">
+<path d="M21.267 1c-3.29.032-4.204 2.184-5.267 3.96-1.063-1.776-1.977-3.928-5.267-3.96-4.674.144-6.36 3.97-6.226 7.28 0 4.025 4.584 8.421 8.428 11.402 1.772 1.376 4.358 1.376 6.13 0 3.844-2.98 8.428-7.377 8.428-11.403C27.628 4.97 25.94 1.144 21.267 1z" fill="currentColor" fillRule="nonzero"/>
+        <g transform="translate(0 12.5)">
+            <path d="M4.732 15.462v-.78c0-.953-1.32-1.968-2.181-2.762C1.69 11.126 0 9.637 0 8.493V1.529C0 .66.583 0 1.3 0c.716 0 1.362.66 1.362 1.53v4.623c.464-.264.82-.396 1.066-.396.37 0 .704.122 1.004.396.2.183 1.571 1.53 4.115 4.041.55.484.825 1.562.825 3.233v2.035" fill="currentColor"/>
+            <rect fill="currentColor" x="3.6" y="15.5" width="7" height="3" rx="1"/>
+        </g>
+        <g transform="matrix(-1 0 0 1 32 12.5)">
+            <path d="M4.732 15.462v-.78c0-.953-1.32-1.968-2.181-2.762C1.69 11.126 0 9.637 0 8.493V1.529C0 .66.583 0 1.3 0c.716 0 1.362.66 1.362 1.53v4.623c.464-.264.82-.396 1.066-.396.37 0 .704.122 1.004.396.2.183 1.571 1.53 4.115 4.041.55.484.825 1.562.825 3.233v2.035" fill="currentColor"/>
+            <rect fill="currentColor" x="3.6" y="15.5" width="7" height="3" rx="1"/>
+        </g>
+    </g>
+</g>
+    </svg>
+  )
+);
+
+TrostMentalSelfesteemIcon.displayName = "TrostMentalSelfesteemIcon";
