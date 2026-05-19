@@ -1,0 +1,27 @@
+import React from "react";
+
+export interface TrostTestresultDangerIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostTestresultDangerIcon = React.forwardRef<SVGSVGElement, TrostTestresultDangerIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="scale(1.333333 1.333333)">
+<path d="M14.1225 10.6777C14.2138 11.2947 13.7452 11.7999 13.0819 11.7999H4.91915C4.25586 11.7999 3.78725 11.2947 3.87856 10.6777L4.92604 3.58869C5.01735 2.97176 5.63412 2.46655 6.29741 2.46655H11.7036C12.3669 2.46655 12.9837 2.97176 13.075 3.58869L14.1225 10.6761V10.6777Z" fill="currentColor"/>
+<path d="M3.15799 10.405H14.8438C15.4828 10.405 16.0018 10.9318 16.0018 11.5805V14.3579C16.0018 15.0066 15.4828 15.5334 14.8438 15.5334H3.15799C2.51898 15.5334 2 15.0066 2 14.3579V11.5805C2 10.9318 2.51898 10.405 3.15799 10.405Z" fill="currentColor"/>
+</g>
+    </svg>
+  )
+);
+
+TrostTestresultDangerIcon.displayName = "TrostTestresultDangerIcon";

@@ -1,0 +1,43 @@
+import React from "react";
+
+export interface TrostMindkeySymbolIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostMindkeySymbolIcon = React.forwardRef<SVGSVGElement, TrostMindkeySymbolIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="scale(0.857143 0.857143)">
+<defs>
+        <path id="o0f318hgya" d="M0 0h3.459v3.459H0z"/>
+        <path id="9thrncfx8c" d="M0 0h22.417v19.445H0z"/>
+    </defs>
+    <g fill="none" fillRule="evenodd">
+<g transform="translate(12.279 2.8)">
+            <mask id="90x692gyrb" fill="#fff">
+                <use xlink:href="#o0f318hgya"/>
+            </mask>
+            <path d="M1.73 3.459A1.73 1.73 0 1 0 1.73 0a1.73 1.73 0 0 0 0 3.459" fill="currentColor" mask="url(#90x692gyrb)"/>
+        </g>
+        <g transform="translate(2.8 5.988)">
+            <mask id="4yax9ewbtd" fill="#fff">
+                <use xlink:href="#9thrncfx8c"/>
+            </mask>
+            <path d="M12.557 14.11a.26.26 0 0 1-.26.278H10.12a.26.26 0 0 1-.26-.278l.392-5.346a.577.577 0 0 0-.193-.46c-.501-.466-.719-1.233-.364-2.014a1.49 1.49 0 0 1 .738-.737c1.25-.567 2.466.332 2.466 1.515 0 .488-.208.928-.54 1.236a.577.577 0 0 0-.192.46l.39 5.346zm7.997-12.247a6.36 6.36 0 0 0-8.977-.018l.794 1.53-1.163-1.162-.35-.35a6.36 6.36 0 1 0-8.995 8.995l.35.35 7.7 7.7a1.83 1.83 0 0 0 2.59 0l7.7-7.7.35-.35a6.36 6.36 0 0 0 0-8.995z" fill="currentColor" mask="url(#4yax9ewbtd)"/>
+        </g>
+    </g>
+</g>
+    </svg>
+  )
+);
+
+TrostMindkeySymbolIcon.displayName = "TrostMindkeySymbolIcon";
