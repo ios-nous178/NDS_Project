@@ -369,7 +369,7 @@ const DSHighlightToggle: React.FC = () => {
         padding: "10px var(--inset-card)",
         borderRadius: 999,
         border: "none",
-        background: mode === "off" ? "#383838" : "#2b96ed",
+        background: mode === "off" ? "#383838" : "var(--semantic-icon-brand-default)",
         color: "#fff",
         fontSize: 13,
         fontWeight: 700,

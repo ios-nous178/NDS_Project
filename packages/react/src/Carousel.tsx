@@ -89,7 +89,7 @@ const carouselStyles = `
   }
 
   :where(.${CR_DOT_CLASS}[data-active="true"]) {
-    background: ${cv.surface.brand};
+    background: ${cv.iconRole.brand};
     width: 18px;
   }
 

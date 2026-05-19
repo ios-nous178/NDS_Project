@@ -83,8 +83,8 @@ const fbStyles = `
   }
 
   :where(.${FB_CHIP_CLASS}[data-active="true"]) {
-    background: ${cv.textRole.normal};
-    border-color: ${cv.textRole.normal};
+    background: ${cv.surface.inverse};
+    border-color: ${cv.surface.inverse};
     color: ${cv.surface.default};
   }
 

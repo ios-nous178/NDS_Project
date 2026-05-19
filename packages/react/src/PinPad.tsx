@@ -77,8 +77,8 @@ const ppStyles = `
   }
 
   :where(.${PP_DOT_CLASS}[data-filled="true"]) {
-    background: ${cv.textRole.normal};
-    border-color: ${cv.textRole.normal};
+    background: ${cv.iconRole.strong};
+    border-color: ${cv.iconRole.strong};
   }
 
   :where(.${PP_DOTS_CLASS}[data-error="true"]) .${PP_DOT_CLASS}[data-filled="true"] {

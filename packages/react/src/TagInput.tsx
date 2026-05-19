@@ -83,14 +83,14 @@ const tiStyles = `
 
   :where(.${TI_FIELD_CLASS}:focus-within) {
     border-color: ${cv.borderRole.brand};
-    box-shadow: 0 0 0 3px var(--semantic-bg-status-info));
+    box-shadow: 0 0 0 3px ${cv.surface.brandSubtle};
   }
   :where(.${TI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
   :where(.${TI_FIELD_CLASS}[data-error="true"]:focus-within) {
-    box-shadow: 0 0 0 3px var(--semantic-bg-status-error));
+    box-shadow: 0 0 0 3px var(--semantic-bg-status-error);
   }
   :where(.${TI_FIELD_CLASS}[data-disabled="true"]) {
-    background: ${cv.surface.page};
+    background: var(--semantic-input-bg-disabled);
     cursor: not-allowed;
   }
 
@@ -101,7 +101,7 @@ const tiStyles = `
     height: 26px;
     padding: 0 ${spacing[4]}px 0 ${spacing[10]}px;
     border-radius: 9999px;
-    background: var(--semantic-bg-status-info);
+    background: ${cv.surface.brandSubtle};
     color: ${cv.textRole.brand};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: 1;

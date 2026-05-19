@@ -182,7 +182,7 @@ const ssStyles = `
     padding: 0 var(--inset-input);
     border: none;
     border-radius: 9999px;
-    background: ${cv.textRole.normal};
+    background: ${cv.surface.inverse};
     color: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
