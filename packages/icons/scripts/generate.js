@@ -42,6 +42,7 @@ function svgToComponent(svgContent, componentName) {
     .replace(/clip-path/g, "clipPath")
     .replace(/mask-type/g, "maskType")
     .replace(/xmlns:xlink/g, "xmlnsXlink")
+    .replace(/xlink:href/g, "xlinkHref")
     // Strip plain string style attrs — JSX requires style={{...}}, not style="..."
     .replace(/\s+style="[^"]*"/g, "");
 
