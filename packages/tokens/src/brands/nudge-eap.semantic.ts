@@ -78,6 +78,11 @@ export const nudgeEapSemantic = {
   buttonText: {
     default: neutral["00"], // #FFFFFF
     brand: blue[500], // #2B96ED
+    // Solid/Secondary 텍스트 — 옅은 blue 배경 위에 brand blue 텍스트 (가독성 OK).
+    secondary: {
+      default: blue[500], // #2B96ED
+      disabled: coolGray[400], // #9CA2AE
+    },
     // Figma 실 Button (171:8480) → `--eap-button-text-disabled: #9ca2ae` 으로
     // SemanticColorGuide 의 "Neutral 400" 라벨과 어긋나지만 실 컴포넌트가 SSOT.
     disabled: coolGray[400], // #9CA2AE

@@ -255,43 +255,44 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
   },
   secondary: {
-    // Figma: Solid/Secondary (eap-button-bg-secondary-*)
-    //   default = #F1F8FD (primary.bgLighter)
-    //   hover   = #E3F2FC (primary.bg)
-    //   disabled bg/text use semantic button disabled tokens.
+    // Figma: Solid/Secondary — 브랜드별 의도가 다른 슬롯.
+    //   · NudgeEAP : 옅은 파랑 bg (#F1F8FD) + brand blue 텍스트
+    //   · Trost    : 옅은 cobalt bg (#EFF1FA) + cobalt 텍스트
+    //   · Geniet   : 검정 bg (#333333) + 흰 텍스트  ← dark inverse 패턴
+    // 슬롯 자체가 브랜드별 override 를 받으므로 컴포넌트는 슬롯만 박는다.
     solid: {
       enabled: {
-        background: cv.surface.brandSubtle,
-        text: cv.textRole.brand,
-        border: cv.surface.brandSubtle,
+        background: cv.button.bgSecondary,
+        text: cv.button.textSecondary,
+        border: cv.button.bgSecondary,
       },
       disabled: {
         background: cv.button.bgSecondaryDisabled,
-        text: cv.button.textDisabled,
+        text: cv.button.textSecondaryDisabled,
         border: cv.button.bgSecondaryDisabled,
       },
       hover: {
-        background: cv.surface.statusInfo,
-        text: cv.textRole.brand,
-        border: cv.surface.statusInfo,
+        background: cv.button.bgSecondaryHover,
+        text: cv.button.textSecondary,
+        border: cv.button.bgSecondaryHover,
       },
     },
     // secondary soft = solid과 동일 (Figma에 별도 soft variant 없음)
     soft: {
       enabled: {
-        background: cv.surface.brandSubtle,
-        text: cv.textRole.brand,
-        border: cv.surface.brandSubtle,
+        background: cv.button.bgSecondary,
+        text: cv.button.textSecondary,
+        border: cv.button.bgSecondary,
       },
       disabled: {
         background: cv.button.bgSecondaryDisabled,
-        text: cv.button.textDisabled,
+        text: cv.button.textSecondaryDisabled,
         border: cv.button.bgSecondaryDisabled,
       },
       hover: {
-        background: cv.surface.statusInfo,
-        text: cv.textRole.brand,
-        border: cv.surface.statusInfo,
+        background: cv.button.bgSecondaryHover,
+        text: cv.button.textSecondary,
+        border: cv.button.bgSecondaryHover,
       },
     },
     // Outlined은 primary와 동일 (피그마에 secondary outlined 없음)
@@ -416,6 +417,31 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
   },
 };
 
+/* ─── Brand-restricted variants ───
+ * 각 브랜드의 Figma 라이브러리에 존재하는 variant 만 화이트리스트로 명시.
+ * 누락 키는 "제약 없음" 으로 간주한다. 런타임 영향 없음 — dev-only console.warn 만.
+ *
+ *   Geniet 207:1853 → Solid / Stroke(=Outlined) 두 스타일만 있음.
+ *     soft / outlined-sub 는 Geniet Figma 에 없음 → 사용 시 경고.
+ */
+const BRAND_VARIANT_WHITELIST: Record<string, ReadonlyArray<ButtonVariant>> = {
+  geniet: ["solid", "outlined"],
+};
+
+const warnedKeys = new Set<string>();
+function warnIfBrandRestricted(brand: string | null, variant: ButtonVariant, color: ButtonColor) {
+  if (!brand) return;
+  const allow = BRAND_VARIANT_WHITELIST[brand];
+  if (!allow || allow.includes(variant)) return;
+  const key = `${brand}:${variant}:${color}`;
+  if (warnedKeys.has(key)) return;
+  warnedKeys.add(key);
+  console.warn(
+    `[nds/Button] variant="${variant}" 는 brand="${brand}" Figma 가이드에 없음 — ` +
+      `허용된 variant: [${allow.join(", ")}]. 디자인 인텐트가 어긋날 수 있어요.`,
+  );
+}
+
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -475,6 +501,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const variantSet = styleMap[color][variant];
     const state = disabled ? variantSet.disabled : variantSet.enabled;
     const hover = variantSet.hover;
+
+    // Brand-aware 경고: process.env.NODE_ENV !== "production" 에서만, document 가 있을 때.
+    if (
+      typeof process !== "undefined" &&
+      process.env?.NODE_ENV !== "production" &&
+      typeof document !== "undefined"
+    ) {
+      const brand = document.documentElement.getAttribute("data-brand");
+      warnIfBrandRestricted(brand, variant, color);
+    }
 
     return (
       <button

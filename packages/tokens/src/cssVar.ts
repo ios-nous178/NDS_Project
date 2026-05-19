@@ -79,6 +79,9 @@ export const cv = {
     bgOutlinedDisabled: v("--semantic-button-bg-outlined-disabled"),
     textDefault: v("--semantic-button-text-default"),
     textBrand: v("--semantic-button-text-brand"),
+    // Solid/Secondary 텍스트 — 브랜드별 의도가 갈리는 슬롯 (Geniet=white on dark, 다른 브랜드=brand on tint).
+    textSecondary: v("--semantic-button-text-secondary-default"),
+    textSecondaryDisabled: v("--semantic-button-text-secondary-disabled"),
     textDisabled: v("--semantic-button-text-disabled"),
     borderOutlined: v("--semantic-button-border-outlined-default"),
     borderOutlinedHover: v("--semantic-button-border-outlined-hover"),

@@ -63,6 +63,11 @@ export const trostSemantic = {
   buttonText: {
     default: "#000000", // 노란 배경 → 검정 텍스트 (Trost 특성)
     brand: "#E6D200",
+    // Solid/Secondary 텍스트 — cobalt-50 배경 위에 cobalt 텍스트.
+    secondary: {
+      default: trostCobalt[500],
+      disabled: trostNeutral[500],
+    },
     disabled: trostNeutral[500],
   },
   buttonBorder: {

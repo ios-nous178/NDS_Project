@@ -53,7 +53,18 @@ export interface SemanticColors {
     secondary?: { default?: string; hover?: string; disabled?: string };
     outlined?: { default?: string; hover?: string; disabled?: string };
   };
-  buttonText?: { default?: string; brand?: string; disabled?: string };
+  /**
+   * `secondary` — Solid/Secondary 텍스트 색. 브랜드별로 의도가 달라 분리:
+   *   · NudgeEAP: brand blue (light blue bg 위)
+   *   · Trost: cobalt brand (cobalt-50 bg 위)
+   *   · Geniet: white (dark inverse bg 위) — Geniet 고유 패턴
+   */
+  buttonText?: {
+    default?: string;
+    brand?: string;
+    secondary?: { default?: string; disabled?: string };
+    disabled?: string;
+  };
   buttonBorder?: {
     outlined?: { default?: string; hover?: string; disabled?: string };
     assistive?: { default?: string; disabled?: string };

@@ -27,6 +27,9 @@ const withBrandTheme: Decorator = (Story, context) => {
       root.style.setProperty(key, value);
     }
 
+    // Brand-aware 컴포넌트 가드용 hook — DS 컴포넌트가 `useBrand()` / data-brand selector 로 읽음.
+    root.setAttribute("data-brand", brandKey);
+
     try {
       const raw = sessionStorage.getItem(`${TOKEN_OVERRIDE_KEY}:${brandKey}`);
       if (raw) {
