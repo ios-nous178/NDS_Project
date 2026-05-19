@@ -48,26 +48,31 @@ const assessmentResultStyles = `
     --nds-ar-level-color: ${cv.textRole.subtle};
     --nds-ar-level-bg: ${cv.surface.page};
     --nds-ar-level-text: ${cv.textRole.subtle};
+    --nds-ar-card-bg: ${cv.surface.default};
+    --nds-ar-border-width: 4px;
     display: flex;
     flex-direction: column;
     gap: ${spacing[20]}px;
     padding: var(--inset-card-large) var(--inset-modal);
-    background: ${cv.surface.default};
+    background: var(--nds-ar-card-bg);
     border: 1px solid ${cv.borderRole.subtle};
-    border-left: 4px solid var(--nds-ar-level-color);
+    border-left: var(--nds-ar-border-width) solid var(--nds-ar-level-color);
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
-    transition: border-color ${transition.default};
+    transition: border-color ${transition.default}, background ${transition.default};
   }
 
+  /* 단계별 색 분리 — mild(노랑)·moderate(주황 톤)·severe(빨강) 가 한눈에 구분되도록.
+     mild=fill.statusCaution(노랑), moderate=textRole.statusCaution(진한 주황),
+     severe=fill.statusError(빨강) 로 채도 단계화. */
   :where(.${AR_CLASS}[data-level="normal"]) {
     --nds-ar-level-color: ${cv.iconRole.statusSuccess};
     --nds-ar-level-bg: ${cv.surface.statusSuccess};
     --nds-ar-level-text: ${cv.iconRole.statusSuccess};
   }
   :where(.${AR_CLASS}[data-level="mild"]) {
-    --nds-ar-level-color: ${cv.iconRole.statusCaution};
+    --nds-ar-level-color: ${cv.fill.statusCaution};
     --nds-ar-level-bg: ${cv.surface.statusCaution};
     --nds-ar-level-text: ${cv.textRole.statusCaution};
   }
@@ -76,10 +81,14 @@ const assessmentResultStyles = `
     --nds-ar-level-bg: ${cv.surface.statusCaution};
     --nds-ar-level-text: ${cv.textRole.statusCaution};
   }
+  /* severe 만 시각 위급도를 한 단계 더 — 좌 border 두께 + 카드 배경 옅게.
+     EAP 도메인: '즉시 도움' 신호가 raw 점수보다 먼저 인지되도록. */
   :where(.${AR_CLASS}[data-level="severe"]) {
-    --nds-ar-level-color: ${cv.iconRole.statusError};
+    --nds-ar-level-color: ${cv.fill.statusError};
     --nds-ar-level-bg: ${cv.surface.statusError};
     --nds-ar-level-text: ${cv.textRole.statusError};
+    --nds-ar-card-bg: ${cv.surface.statusError};
+    --nds-ar-border-width: 6px;
   }
 
   :where(.${AR_HEADER_CLASS}) {
@@ -102,12 +111,13 @@ const assessmentResultStyles = `
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[4]}px var(--inset-input);
+    /* 단계 칩은 단순 보조 아닌 카드의 평가 핵심 — body3 톤으로 가독성·접근성 확보. */
+    padding: ${spacing[6]}px var(--inset-input);
     border-radius: ${radius.pill}px;
     background: var(--nds-ar-level-bg);
     color: var(--nds-ar-level-text);
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.bold};
   }
 
@@ -159,23 +169,26 @@ const assessmentResultStyles = `
 
   :where(.${AR_GAUGE_SEG_CLASS}) {
     flex: 1;
-    height: 6px;
-    border-radius: 3px;
+    height: 8px;
+    border-radius: 4px;
     background: ${cv.borderRole.subtle};
-    transition: height ${transition.default}, background ${transition.default}, opacity ${transition.default};
+    transition: height ${transition.default}, background ${transition.default}, opacity ${transition.default}, transform ${transition.default};
   }
 
+  /* 단계별 색은 ICON_METADATA 와 동일 채도 단계 — mild(노랑) < moderate(주황) < severe(빨강). */
   :where(.${AR_GAUGE_SEG_CLASS}[data-seg="normal"]) { background: ${cv.iconRole.statusSuccess}; }
   :where(.${AR_GAUGE_SEG_CLASS}[data-seg="mild"]) { background: ${cv.fill.statusCaution}; }
   :where(.${AR_GAUGE_SEG_CLASS}[data-seg="moderate"]) { background: ${cv.textRole.statusCaution}; }
   :where(.${AR_GAUGE_SEG_CLASS}[data-seg="severe"]) { background: ${cv.fill.statusError}; }
 
   :where(.${AR_GAUGE_SEG_CLASS}[data-active="false"]) {
-    opacity: 0.25;
+    opacity: 0.2;
   }
+  /* active 단계 강조를 두 단계로 — 높이 + 약간의 부푸름(scale)로 사용자가 자기 위치를 즉시 인지. */
   :where(.${AR_GAUGE_SEG_CLASS}[data-active="true"]) {
-    height: 10px;
-    border-radius: 5px;
+    height: 12px;
+    border-radius: 6px;
+    transform: translateY(-1px);
   }
 
   :where(.${AR_GAUGE_LABELS_CLASS}) {
@@ -196,11 +209,14 @@ const assessmentResultStyles = `
     font-weight: ${fontWeight.bold};
   }
 
+  /* description 은 검사 결과의 *주 메시지* — caption1(보조 톤) → body3 medium 으로 격상.
+     점수보다 해석을 먼저 읽히게 하는 EAP UX 라이팅 원칙 (raw 수치는 보조). */
   :where(.${AR_DESC_CLASS}) {
     margin: 0;
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.subtle};
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    font-weight: ${fontWeight.medium};
+    color: ${cv.textRole.normal};
   }
 
   :where(.${AR_FOOTER_CLASS}) {
@@ -216,16 +232,31 @@ const assessmentResultStyles = `
     display: inline-flex;
     align-items: center;
     gap: var(--gap-tight);
+    padding: ${spacing[6]}px ${spacing[10]}px;
+    border-radius: ${radius.sm}px;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.bold};
     color: ${cv.textRole.brand};
     cursor: pointer;
+    transition: background ${transition.default};
   }
 
   :where(.${AR_ACTION_CLASS}:hover) {
-    text-decoration: underline;
+    background: ${cv.surface.statusInfo};
+  }
+  :where(.${AR_ACTION_CLASS}:focus-visible) {
+    outline: 2px solid ${cv.borderRole.focus};
+    outline-offset: 2px;
+  }
+  /* severe 일 때는 action 도 위급도에 맞게 강조 — 흰 글자 + 빨간 fill solid. */
+  :where(.${AR_CLASS}[data-level="severe"]) .${AR_ACTION_CLASS} {
+    background: ${cv.fill.statusError};
+    color: ${cv.textRole.inverse};
+  }
+  :where(.${AR_CLASS}[data-level="severe"]) .${AR_ACTION_CLASS}:hover {
+    opacity: 0.92;
   }
 `;
 

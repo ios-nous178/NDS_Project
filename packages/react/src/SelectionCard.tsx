@@ -112,7 +112,7 @@ const selectionCardStyles = `
 
   :where(.${SC_ITEM_CLASS}[data-checked="true"]) {
     border-color: ${cv.borderRole.brand};
-    background: var(--semantic-bg-status-info);
+    background: ${cv.surface.brandSubtle};
   }
 
   :where(.${SC_ITEM_CLASS}[data-disabled="true"]) {

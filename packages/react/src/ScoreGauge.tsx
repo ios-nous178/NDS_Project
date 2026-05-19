@@ -221,11 +221,11 @@ export const ScoreGauge = React.forwardRef<HTMLDivElement, ScoreGaugeProps>(
                 y1="100"
                 x2="100"
                 y2="22"
-                stroke={cv.textRole.normal}
+                stroke={cv.iconRole.strong}
                 strokeWidth="3"
                 strokeLinecap="round"
               />
-              <circle cx="100" cy="100" r="6" fill={cv.textRole.normal} />
+              <circle cx="100" cy="100" r="6" fill={cv.iconRole.strong} />
               <circle cx="100" cy="100" r="3" fill={cv.surface.default} />
             </g>
           </svg>

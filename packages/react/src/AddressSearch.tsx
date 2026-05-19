@@ -117,7 +117,7 @@ const asStyles = `
     padding: 0 var(--inset-card);
     border-radius: ${radius.md}px;
     border: none;
-    background: ${cv.textRole.normal};
+    background: ${cv.surface.inverse};
     color: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
