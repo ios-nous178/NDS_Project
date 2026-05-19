@@ -154,17 +154,46 @@ export function validateMockupSource(
     // 2. 인라인 px/rem (transform 류 제외, var(...) 안의 fallback 제외)
     {
       const stripped = line.replace(/var\([^)]*\)/g, "");
-      if (
-        /\b\d+(\.\d+)?(px|rem)\b/.test(stripped) &&
-        !/transform|translate|scale|rotate|matrix/.test(stripped)
-      ) {
-        violations.push({
-          rule: "inline-spacing",
-          line: ln,
-          detail: line.trim(),
-          suggestion: "spacing 토큰으로 교체. lookup_token('spacing') 사용.",
-        });
+      const isMotion = /transform|translate|scale|rotate|matrix/.test(stripped);
+      if (!isMotion) {
+        const pxMatches = [...stripped.matchAll(/\b(\d+(?:\.\d+)?)(px|rem)\b/g)];
+        if (pxMatches.length > 0) {
+          violations.push({
+            rule: "inline-spacing",
+            line: ln,
+            detail: line.trim(),
+            suggestion: "spacing 토큰으로 교체. lookup_token('spacing') 사용.",
+          });
+        }
+        // 2-bis. 4pt grid 위반 (5/7/9/11/13/14/15/18/22/26/30 등) — px 한정
+        for (const m of pxMatches) {
+          const value = parseFloat(m[1]);
+          if (m[2] !== "px" || value <= 0) continue;
+          if (value % 4 !== 0) {
+            violations.push({
+              rule: "non-4pt-spacing",
+              line: ln,
+              detail: `${value}px (4 의 배수 아님)`,
+              suggestion:
+                "4pt grid 위반. 4 의 배수(4/8/12/16/20/24…) 로 보정하거나 var(--gap-*|--inset-*) semantic 토큰 사용.",
+            });
+          }
+        }
       }
+    }
+    // 2-2. padding/margin/gap 에 primitive --spacing-* 직접 사용 금지 — semantic 만 허용
+    if (
+      /\b(padding(?:-?(?:top|right|bottom|left))?|margin(?:-?(?:top|right|bottom|left))?|gap|columnGap|column-gap|rowGap|row-gap)\s*:\s*["']?\s*var\(--spacing-[\w-]+/i.test(
+        line,
+      )
+    ) {
+      violations.push({
+        rule: "non-semantic-spacing",
+        line: ln,
+        detail: line.trim(),
+        suggestion:
+          "padding/margin/gap 은 primitive var(--spacing-*) 가 아니라 semantic var(--gap-*|--inset-*) 만 사용하세요. lookup_token('gap') / lookup_token('inset') 참조.",
+      });
     }
     // 3. native button/input/select
     if (
@@ -662,6 +691,61 @@ export function validateMockupSource(
     });
   }
 
+  // ─── Brand BG 한 화면 1곳 ─────────────────────────────
+  // --semantic-bg-brand-default / --semantic-bg-brand-subtle 가 2회 이상이면 위반.
+  const brandBgMatches = source.match(/var\(--semantic-bg-brand-(?:default|subtle)\)/g) || [];
+  if (brandBgMatches.length >= 2) {
+    violations.push({
+      rule: "brand-bg-overuse",
+      line: 1,
+      detail: `Brand background 토큰이 ${brandBgMatches.length}회 사용됨 (한 화면에 최대 1곳).`,
+      suggestion:
+        "Brand BG 는 의미 있는 notice / 핵심 강조 1곳에만. 나머지는 var(--semantic-bg-surface*) 또는 elevated 사용. get_guide({ topic: 'pattern:visual-antipatterns' }) 참조.",
+    });
+  }
+
+  // ─── 헤딩 안 장식 아이콘 금지 ─────────────────────────
+  // <h3>/<h4> balanced block 안에 *Icon / <svg / 이모지가 있으면 위반.
+  for (const tag of ["h3", "h4"] as const) {
+    for (const { block, line } of getBalancedJsxBlocks(source, tag)) {
+      if (/<\s*\w+Icon\b/.test(block) || /<\s*svg\b/.test(block)) {
+        violations.push({
+          rule: "heading-decorative-icon",
+          line,
+          detail: block.split("\n")[0].trim(),
+          suggestion: `<${tag}> 안에 SVG / *Icon 사용 금지 — 헤딩은 텍스트만. 강조가 필요하면 별도 라인 또는 Section header 컴포넌트 사용.`,
+        });
+      }
+    }
+  }
+
+  // ─── 영역별 Primary CTA 단일성 ────────────────────────
+  // Card.Root / <section> / Modal / BottomSheet 각 컨테이너 안 primary solid Button > 1 이면 위반.
+  const ctaContainers = [
+    { pattern: "Card\\.Root", label: "Card" },
+    { pattern: "section", label: "<section>" },
+    { pattern: "Modal", label: "Modal" },
+    { pattern: "BottomSheet", label: "BottomSheet" },
+  ];
+  for (const { pattern, label } of ctaContainers) {
+    for (const { block, line } of getBalancedJsxBlocks(source, pattern)) {
+      const buttonBlocksIn = getJsxBlocks(block, "Button");
+      const primarySolidInside = buttonBlocksIn.filter(({ block: b }) => {
+        const hasPrimary = /color\s*=\s*["']primary["']/.test(b) || !/color\s*=/.test(b);
+        const nonSolid = /variant\s*=\s*["'](outlined|outlined-sub|soft|text|ghost)["']/.test(b);
+        return hasPrimary && !nonSolid;
+      });
+      if (primarySolidInside.length > 1) {
+        violations.push({
+          rule: "primary-cta-per-container",
+          line,
+          detail: `${label} 1개 안에 primary solid Button 이 ${primarySolidInside.length}개.`,
+          suggestion: `한 영역(${label}) 안 Primary Button 은 최대 1개. 보조 액션은 variant="outlined" / color="assistive" / variant="text" 로 낮추세요. get_guide({ topic: 'pattern:cta-group' }) 참조.`,
+        });
+      }
+    }
+  }
+
   // ─── 아이콘 스타일 혼용 ──────────────────────────────────
   // @nudge-eap/icons 가 아닌 외부 라이브러리 아이콘 import 검출
   const externalIconLibs = [
@@ -718,6 +802,9 @@ export function validateMockup(
     .slice(0, 5)
     .map(([rule, count]) => ({ rule, count }));
 
+  const checklist = buildSelfCheckChecklist(byRule);
+  const checklistReport = renderChecklistReport(checklist);
+
   const humanReadable =
     violations.length === 0
       ? "[OK] 위반 없음 — DS 룰 모두 통과"
@@ -725,20 +812,70 @@ export function validateMockup(
 
   const _nextSuggestion =
     violations.length === 0
-      ? "다음 단계: (1) start_dev_server → check_preview 로 런타임 에러 0건 확인. " +
+      ? "Self-Check 1차 통과. **반드시 한 번 더 validate_mockup 을 호출해 2차 확인** (총 2회 self-check 가 워크스페이스 룰). " +
+        "2차도 통과면: (1) start_dev_server → check_preview 로 런타임 에러 0건 확인. " +
         "(2) report_mockup_usage 호출. " +
         "(3) **반드시 build_singlefile_html({}) 호출** — 이 워크스페이스의 표준 산출물 형식은 단일 HTML 파일입니다. 사용자에게 '만들까요' 라고 묻지 말고 그냥 실행하세요 (명시적 거부 시에만 생략). 손으로 .html 작성·vite build 직접 실행·다른 번들러 사용 금지 — nds-* / onClick 손실됨. " +
         "(4) stop_dev_server."
-      : "위반을 먼저 수정한 뒤 validate_mockup 재실행. 위반 0건이 되면 build_singlefile_html 까지 가는 것이 워크스페이스 기본 워크플로우입니다.";
+      : "위반을 수정한 뒤 validate_mockup 재실행. **위반 0건이 될 때까지 반복 (최소 2회 self-check)** — 1회차 위반 수정 후 2회차 확인까지 통과해야 산출 가능. 위반을 인지하고 그대로 제출하는 것은 금지됩니다.";
 
   return {
     ok: violations.length === 0,
     violationCount: violations.length,
-    summary: { byRule, topRules, humanReadable },
+    summary: { byRule, topRules, humanReadable, checklist, checklistReport },
     violations,
     workspaceNotice: buildInspectorWorkspaceNotice(args),
     _nextSuggestion,
   };
+}
+
+// ─── Self-Check 체크리스트 (사용자가 정의한 5개 분류) ───
+// 룰 ID 다수 → 분류 1개로 매핑한다. byRule 카운트만 받아서 violations / pass 도출.
+interface ChecklistItem {
+  id: string;
+  label: string;
+  pass: boolean;
+  violations: number;
+  ruleIds: string[];
+}
+const CHECKLIST_SPEC: Array<{ id: string; label: string; ruleIds: string[] }> = [
+  {
+    id: "semantic-spacing",
+    label: "Spacing 토큰 사용 (raw px 없음, --spacing-* 직접 사용 없음)",
+    ruleIds: ["inline-spacing", "non-semantic-spacing"],
+  },
+  {
+    id: "4pt-grid",
+    label: "4pt Grid 준수",
+    ruleIds: ["non-4pt-spacing"],
+  },
+  {
+    id: "brand-bg-single",
+    label: "Brand BG 1개 이하",
+    ruleIds: ["brand-bg-overuse"],
+  },
+  {
+    id: "heading-no-icon",
+    label: "헤딩 장식 아이콘 없음",
+    ruleIds: ["heading-decorative-icon"],
+  },
+  {
+    id: "primary-cta-single",
+    label: "Primary Button 단일성 (영역별)",
+    ruleIds: ["primary-cta-per-container", "primary-cta-overuse"],
+  },
+];
+
+function buildSelfCheckChecklist(byRule: Record<string, number>): ChecklistItem[] {
+  return CHECKLIST_SPEC.map(({ id, label, ruleIds }) => {
+    const violations = ruleIds.reduce((sum, rid) => sum + (byRule[rid] ?? 0), 0);
+    return { id, label, ruleIds, violations, pass: violations === 0 };
+  });
+}
+
+function renderChecklistReport(items: ChecklistItem[]): string {
+  const lines = items.map((i) => `- ${i.label}: ${i.pass ? "통과" : `위반 ${i.violations}건`}`);
+  return ["[Self-Check 결과]", ...lines].join("\n");
 }
 
 function buildInspectorWorkspaceNotice(args: { filePath?: string }): string | undefined {

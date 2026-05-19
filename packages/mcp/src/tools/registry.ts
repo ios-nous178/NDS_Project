@@ -107,7 +107,7 @@ const TOOLS = [
   {
     name: "validate_mockup",
     description:
-      'Validate a mockup .tsx against DS rules — inline color/spacing, native elements, inline SVG, emoji, gradient, invalid-prop-value (wrong union literal e.g. IconButton size="md"), and pattern-level anti-patterns (CTA/Chip/Card/icon overuse, antd leftover, etc.). Provide `source` or `filePath`. Returns `{ ok, violationCount, summary: { humanReadable }, violations }`. Always surface `violationCount` + `humanReadable` to the user.',
+      'Validate a mockup .tsx against DS rules — inline color/spacing, native elements, inline SVG, emoji, gradient, invalid-prop-value (wrong union literal e.g. IconButton size="md"), and pattern-level anti-patterns (CTA/Chip/Card/icon overuse, antd leftover, etc.). Also runs a 5-item Self-Check: ① Spacing 토큰 사용 (raw px / --spacing-* 직접 사용 없음) ② 4pt Grid 준수 ③ Brand BG 1개 이하 ④ 헤딩 장식 아이콘 없음 ⑤ Primary Button 영역별 단일성. Provide `source` or `filePath`. Returns `{ ok, violationCount, summary: { humanReadable, checklist, checklistReport }, violations }`. **MUST surface `summary.checklistReport` to the user verbatim, and run validate_mockup TWICE — after fixing 1차 violations, re-run for 2차 confirmation before delivering. Submitting with known violations is forbidden.**',
     inputSchema: {
       type: "object",
       properties: {
