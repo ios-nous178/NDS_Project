@@ -23,6 +23,8 @@ const meta: Meta = {
           "",
           `총 **${ICON_ENTRIES.length}개** 아이콘. 클릭하면 컴포넌트 이름이 클립보드에 복사됩니다.`,
           "",
+          "브랜드별 아이콘은 prefix 로 구분됩니다 — `Geniet*Icon` 은 Geniet 전용. 검색창에 `geniet` 입력으로 일괄 필터.",
+          "",
           "패키지: `@nudge-eap/icons` · 카테고리·사용 가이드는 [Docs · Icons](http://localhost:3001/docs/components/icons)를 참고하세요.",
         ].join("\n"),
       },
@@ -166,7 +168,9 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
 
 export const All: Story = {
   name: "Catalog/All Icons",
-  render: () => <Catalog size={24} color="#111111" bg="#FFFFFF" />,
+  render: () => (
+    <Catalog size={24} color="var(--semantic-icon-strong-default, #111111)" bg="#FFFFFF" />
+  ),
 };
 
 export const Size20: Story = {
@@ -178,7 +182,9 @@ export const Size20: Story = {
       },
     },
   },
-  render: () => <Catalog size={20} color="#111111" bg="#FFFFFF" />,
+  render: () => (
+    <Catalog size={20} color="var(--semantic-icon-strong-default, #111111)" bg="#FFFFFF" />
+  ),
 };
 
 export const OnDarkSurface: Story = {

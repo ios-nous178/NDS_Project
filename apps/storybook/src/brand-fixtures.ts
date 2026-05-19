@@ -249,7 +249,8 @@ const geniet: BrandFixture = {
       "지니어트는 통신판매중개자이며 통신판매의 당사자가 아닙니다. 따라서 지니어트는 상품 거래정보 및 거래에 대하여 책임을 지지 않습니다.",
   },
   tabBar: {
-    tabLabels: ["홈", "커뮤니티", "헬시딜", "음식 리뷰"],
+    // Figma 207:3204 (platform=app(geniet)) — 5탭 구성. "기록" 은 Geniet 만의 핵심 탭.
+    tabLabels: ["홈", "기록", "혜택", "리뷰", "커뮤니티"],
     defaultActive: 0,
     useShadow: true,
   },

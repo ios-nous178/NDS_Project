@@ -1,6 +1,7 @@
 import { addons, types } from "storybook/manager-api";
 import React from "react";
 import { ICON_NAMES, ICON_SVGS } from "./icon-registry";
+import { brandThemes } from "../src/brand-themes";
 
 const ADDON_ID = "nds-token-editor";
 const PANEL_ID = `${ADDON_ID}/panel`;
@@ -39,87 +40,12 @@ function groupTokens(vars: Record<string, string>) {
   return groups;
 }
 
-/* ─── 브랜드 데이터 ─── */
+/* ─── 브랜드 데이터 (brand-themes.ts SSOT 사용) ─── */
 
-const BRANDS: Record<string, { label: string; cssVars: Record<string, string> }> = {
-  "nudge-eap": {
-    label: "NudgeEAP",
-    cssVars: {
-      "--semantic-bg-brand-default": "#2B96ED",
-      "--semantic-fill-brand-hover": "#017EE4",
-      "--semantic-fill-brand-pressed": "#0E71CF",
-      "--semantic-bg-status-info": "#E3F2FC",
-      "--semantic-bg-brand-subtle": "#F1F8FD",
-      "--semantic-text-inverse-default": "#FFFFFF",
-      "--semantic-fill-status-error": "#F13F00",
-      "--semantic-icon-status-success": "#13BFA2",
-      "--semantic-text-normal-default": "#383838",
-      "--semantic-text-subtle-default": "#666666",
-      "--semantic-border-normal-default": "#D8D8D8",
-      "--semantic-border-focus-default": "#2B96ED",
-      "--semantic-bg-section-default": "#F3F4F6",
-    },
-  },
-  trost: {
-    label: "Trost (트로스트)",
-    cssVars: {
-      "--semantic-bg-brand-default": "#FFF42E",
-      "--semantic-fill-brand-hover": "#FFE600",
-      "--semantic-fill-brand-pressed": "#E6D200",
-      "--semantic-text-inverse-default": "#000000",
-      "--semantic-fill-status-error": "#FF4111",
-      "--semantic-icon-status-success": "#00BC78",
-      "--semantic-text-normal-default": "#333333",
-      "--semantic-text-subtle-default": "#606060",
-      "--semantic-border-normal-default": "#E5E5E5",
-      "--semantic-border-focus-default": "#4968FF",
-      "--semantic-bg-section-default": "#F4F5F7",
-      "--nds-button-background": "#FFF42E",
-      "--nds-button-text-color": "#000000",
-      "--nds-button-radius": "9999px",
-      "--nds-button-hover-background": "#FFE600",
-      "--nds-card-radius": "12px",
-      "--nds-card-border-color": "#E0E0E0",
-      "--nds-chip-selected-background": "#333333",
-      "--nds-chip-selected-text": "#FFFFFF",
-      "--nds-chip-border": "#ECECEC",
-      "--nds-chip-text": "#606060",
-      "--nds-toggle-track-bg": "#EEEEEE",
-      "--nds-toggle-track-active-bg": "#333333",
-      "--nds-toast-background": "#000000",
-      "--nds-toast-radius": "12px",
-      "--nds-modal-radius": "12px",
-      "--nds-bottom-sheet-radius": "16px",
-      "--nds-app-bar-search-border-color": "#FFD92E",
-      "--nds-app-bar-gnb-active-color": "#000000",
-      "--nds-app-bar-gnb-inactive-color": "#999999",
-      "--radius-sm": "6px",
-      "--radius-xl": "20px",
-    },
-  },
-  geniet: {
-    label: "Geniet (지니어트)",
-    cssVars: {
-      "--semantic-bg-brand-default": "#48C2C5",
-      "--semantic-fill-brand-hover": "#00A8AC",
-      "--semantic-text-inverse-default": "#FFFFFF",
-      "--semantic-text-normal-default": "#111111",
-      "--semantic-text-subtle-default": "#666666",
-      "--semantic-border-normal-default": "#ECECEC",
-      "--semantic-border-focus-default": "#48C2C5",
-      "--semantic-bg-section-default": "#F5F5F5",
-      "--nds-button-background": "#48C2C5",
-      "--nds-button-text-color": "#FFFFFF",
-      "--nds-button-radius": "8px",
-      "--nds-button-hover-background": "#00A8AC",
-      "--nds-card-radius": "8px",
-      "--nds-app-bar-search-border-color": "#48C2C5",
-      "--nds-app-bar-gnb-active-color": "#48C2C5",
-      "--nds-app-bar-gnb-inactive-color": "#111111",
-      "--radius-sm": "6px",
-    },
-  },
-};
+const BRANDS: Record<string, { label: string; cssVars: Record<string, string> }> =
+  Object.fromEntries(
+    Object.entries(brandThemes).map(([key, t]) => [key, { label: t.label, cssVars: t.cssVars }]),
+  );
 
 /* ─── 유틸: preview iframe의 브랜드 읽기 ─── */
 

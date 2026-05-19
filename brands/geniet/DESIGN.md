@@ -1,21 +1,38 @@
 ---
 version: alpha
 name: Geniet
-status: legacy
 description: "다이어트 정보, 식품 칼로리 검증, 건강식품 구매를 한곳에서. 캐시워크 연동 건강 관리 + 리워드 커머스 플랫폼. 틸(Teal) 컬러 기반 모바일 퍼스트 UI."
 note: |
-  현재 활성 브랜드 라인업은 NudgeEAP / Trost / Geniet 입니다.
-  Geniet (Teal) 브랜드 스펙은 Storybook 목업과 MCP catalog 호환을 위해 유지됩니다.
+  컬러 SSOT 는 Figma 지니어트-Dev / Colors (207:1484). 본 DESIGN.md 의 colors
+  블록은 Figma 차트의 평탄 미러이며, 토큰 코드는 packages/tokens/src/brands/
+  geniet.palette.ts / geniet.semantic.ts 에 정의된다.
 colors:
+  # Primary (Mint)
   primary: "#48C2C5"
   primary-light: "#7ED4D6"
-  primary-bg: "#E4F6F7"
   primary-surface: "#ECF8F9"
   accent: "#00A8AC"
+  # Mint scale
+  mint-100: "#ECF8F9"
+  mint-400: "#7ED4D6"
+  mint-500: "#48C2C5"
+  mint-600: "#00A8AC"
+  # Surface / Gray
   surface: "#FFFFFF"
   surface-100: "#FAFAFA"
   surface-150: "#F5F5F5"
   surface-200: "#ECECEC"
+  gray-50: "#FAFAFA"
+  gray-100: "#F5F5F5"
+  gray-200: "#ECECEC"
+  gray-300: "#DDDDDD"
+  gray-400: "#CCCCCC"
+  gray-500: "#BBBBBB"
+  gray-600: "#999999"
+  gray-700: "#777777"
+  gray-800: "#666666"
+  gray-900: "#333333"
+  # Text
   on-surface: "#111111"
   on-surface-dark: "#333333"
   on-surface-secondary: "#666666"
@@ -23,91 +40,109 @@ colors:
   on-surface-disabled: "#999999"
   on-surface-muted: "#BBBBBB"
   on-surface-inverse: "#FFFFFF"
+  # Border
   border-default: "#ECECEC"
   border-medium: "#DDDDDD"
   border-strong: "#CCCCCC"
+  # Status — error (Red)
   error: "#FF3258"
   error-light: "#FF8192"
   error-bg: "#FFEBEE"
-  success: "#55D695"
-  success-dark: "#49CA89"
+  red-100: "#FFEBEE"
+  red-400: "#FF8192"
+  red-500: "#FF6177"
+  red-600: "#FF3258"
+  # Status — success (Green)
+  success: "#49CA89"
+  success-light: "#55D695"
+  success-dark: "#18B264"
   success-bg: "#F1FBF6"
+  green-100: "#F1FBF6"
+  green-200: "#DBF8EA"
+  green-300: "#80E9B4"
+  green-400: "#55D695"
+  green-500: "#49CA89"
+  green-600: "#18B264"
+  # Status — caution (Yellow)
   caution: "#FFB700"
   caution-light: "#FFD54C"
+  caution-strong: "#FFA500"
   caution-bg: "#FFF8DF"
+  yellow-100: "#FFF8DF"
+  yellow-400: "#FFD54C"
+  yellow-500: "#FFB700"
+  yellow-600: "#FFA500"
+  # Status — info (Blue)
   info: "#1FA3F9"
   info-light: "#62BEFA"
   info-bg: "#E4F5FF"
-  red-700: "#FF6177"
-  red-800: "#FF3258"
-  green-400: "#55D695"
-  green-700: "#49CA89"
-  blue-700: "#1FA3F9"
-  purple-700: "#546EFD"
+  blue-100: "#E4F5FF"
+  blue-400: "#62BEFA"
+  blue-500: "#1FA3F9"
+  # Accent — purple
+  purple-100: "#E6EAFF"
+  purple-400: "#7A8EFF"
+  purple-500: "#546EFD"
   purple-bg: "#E6EAFF"
-  yellow-700: "#FFB700"
+  # Misc (legacy 커머스 랭킹 배지 — Figma 차트 외)
   badge-orange: "#F16D4D"
 typography:
-  headline-1:
-    fontFamily: Noto Sans KR
-    fontSize: 26px
-    fontWeight: 700
-    lineHeight: 1.14
-  headline-2:
-    fontFamily: Noto Sans KR
+  # SSOT: Figma 지니어트-Dev / Typography (207:1735)
+  # 시스템 폰트 기본 + 디자인 baseline = Pretendard
+  title-1:
+    fontFamily: Pretendard
     fontSize: 22px
     fontWeight: 700
-    lineHeight: 1.18
-  headline-3:
-    fontFamily: Noto Sans KR
-    fontSize: 20px
-    fontWeight: 700
-    lineHeight: 1.2
-  headline-4:
-    fontFamily: Noto Sans KR
+    lineHeight: 28px
+    usage: "주요 페이지 타이틀"
+  title-2:
+    fontFamily: Pretendard
     fontSize: 18px
     fontWeight: 700
-    lineHeight: 1.22
-  headline-5:
-    fontFamily: Noto Sans KR
-    fontSize: 17px
-    fontWeight: 700
-    lineHeight: 1.23
-  body-1:
-    fontFamily: Noto Sans KR
+    lineHeight: 26px
+    usage: "카드 타이틀, 리스트 그룹명"
+  subtitle-1:
+    fontFamily: Pretendard
     fontSize: 16px
-    fontWeight: 500
-    lineHeight: 1.5
-  body-2:
-    fontFamily: Noto Sans KR
-    fontSize: 15px
-    fontWeight: 500
-    lineHeight: 1.47
-  body-3:
-    fontFamily: Noto Sans KR
+    fontWeight: 400
+    lineHeight: 24px
+    usage: "부제목, 강조 문장, 카드 내부 제목"
+  subtitle-2:
+    fontFamily: Pretendard
     fontSize: 14px
     fontWeight: 400
-    lineHeight: 1.43
-  caption-1:
-    fontFamily: Noto Sans KR
+    lineHeight: 20px
+    usage: "섹션 부제목, 설명문"
+  body-1:
+    fontFamily: Pretendard
+    fontSize: 15px
+    fontWeight: 400
+    lineHeight: 22px
+    usage: "리스트형 텍스트, 카드 내 본문 등"
+  body-2:
+    fontFamily: Pretendard
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 20px
+    usage: "일반 본문, 설명 텍스트 (가장 기본 사이즈)"
+  body-3:
+    fontFamily: Pretendard
     fontSize: 13px
     fontWeight: 400
-    lineHeight: 1.38
-  caption-2:
-    fontFamily: Noto Sans KR
+    lineHeight: 18px
+    usage: "날짜, 단위, 부가 정보 등 작은 영역"
+  caption:
+    fontFamily: Pretendard
     fontSize: 12px
     fontWeight: 400
-    lineHeight: 1.5
+    lineHeight: 16px
+    usage: "부가 텍스트, 캡션, 작은 설명"
   label:
-    fontFamily: Noto Sans KR
+    fontFamily: Pretendard
     fontSize: 11px
-    fontWeight: 400
-    lineHeight: 1.45
-  micro:
-    fontFamily: Noto Sans KR
-    fontSize: 10px
-    fontWeight: 400
-    lineHeight: 1.4
+    fontWeight: 700
+    lineHeight: 14px
+    usage: "버튼 라벨, 입력필드 타이틀"
 rounded:
   none: 0px
   xs: 4px
@@ -197,13 +232,35 @@ components:
 
 ## Colors
 
+SSOT 는 **Figma 지니어트-Dev / Colors (207:1484)**. 명명 규칙은 `geniet/{category}/{color}/{level}` (예: `geniet/primary/mint/500`).
+
 틸(Teal) 기반 단일 브랜드 컬러에 데이터 시각화용 다색 팔레트를 더한 구성입니다. 건강 기록 차트에서 상태별 색상 구분이 핵심입니다.
 
+**Primary — Mint:**
+
+- mint600 #00A8AC · mint500 #48C2C5 · mint400 #7ED4D6 · mint100 #ECF8F9
+
+**Secondary (status & accent):**
+
+- Red: 600 #FF3258 · 500 #FF6177 · 400 #FF8192 · 100 #FFEBEE
+- Yellow: 600 #FFA500 · 500 #FFB700 · 400 #FFD54C · 100 #FFF8DF
+- Blue: 500 #1FA3F9 · 400 #62BEFA · 100 #E4F5FF
+- Purple: 500 #546EFD · 400 #7A8EFF · 100 #E6EAFF
+- Green: 600 #18B264 · 500 #49CA89 · 400 #55D695 · 300 #80E9B4 · 200 #DBF8EA · 100 #F1FBF6
+
+**Grayscale (10 steps):**
+
+- 900 #333333 · 800 #666666 · 700 #777777 · 600 #999999 · 500 #BBBBBB · 400 #CCCCCC · 300 #DDDDDD · 200 #ECECEC · 100 #F5F5F5 · 50 #FAFAFA
+
+**Black & White:** #111111 (Black) / #FFFFFF (White)
+
+**시멘틱 매핑:**
+
 - **Primary (#48C2C5)**: 틸. CTA, 활성 상태, 차트 메인 컬러. 건강함과 신선함
-- **Accent (#00A8AC)**: 진한 틸. 페이지네이션, 보조 강조
-- **Primary-bg (#E4F6F7)**: 연한 틸 배경. 선택된 항목, 하이라이트 영역
+- **Accent (#00A8AC)**: 진한 틸. 페이지네이션, 보조 강조, 호버
+- **Primary-surface (#ECF8F9)**: 연한 틸 배경. 선택된 항목, 하이라이트 영역
 - **Error (#FF3258)**: 위험/높음 상태. 혈압 높음, 유효성 오류
-- **Success (#55D695)**: 정상 상태. 혈압 정상, 완료
+- **Success (#49CA89)**: 정상 상태. 혈압 정상, 완료
 - **Info (#1FA3F9)**: 정보/낮음 상태. 혈압 낮음, 링크
 - **Caution (#FFB700)**: 주의. 오렌지 하이라이트
 - **Surface (#FFFFFF)**: 페이지 배경
@@ -211,25 +268,61 @@ components:
 
 **건강 데이터 시각화 색상:**
 
-- 혈압 높음: #FF6177 (Red) / 정상: #55D695 (Green) / 낮음: #1FA3F9 (Blue)
-- 탄수화물: #1FA3F9 / 단백질: #FF627E / 지방: #00D67C
-- 칼로리 양호: #00A8AC / 초과: #FF3258 / 부족: #1FA3F9
-
-**중립 계열:** #111(Black) → #333 → #666 → #777 → #999 → #BBB → #CCC → #DDD → #ECE → #F5F → #FAF → #FFF
+- 혈압 높음: #FF6177 (Red·500) / 정상: #49CA89 (Green·500) / 낮음: #1FA3F9 (Blue·500)
+- 칼로리 양호: #00A8AC (Mint·600) / 초과: #FF3258 (Red·600) / 부족: #1FA3F9 (Blue·500)
 
 ## Typography
 
-Noto Sans KR을 메인 폰트로 사용합니다. 구글 폰트로 한국어 최적화되어 있으며, 데이터 밀도가 높은 화면에서의 가독성을 우선합니다.
+SSOT 는 **Figma 지니어트-Dev / Typography (207:1735)**.
 
-- **Headlines**: Noto Sans KR Bold (700), 17~26px — 페이지/섹션 타이틀
-- **Body**: Noto Sans KR Medium~Regular (400~500), 14~16px — 본문, 설명
-- **Caption**: Noto Sans KR Regular (400), 12~13px — 보조 정보, 차트 라벨
-- **Label/Micro**: Noto Sans KR Regular (400), 10~11px — 배지, 미세 텍스트
+본 프로젝트에서는 **시스템 폰트를 기본**으로 사용하며, 디자인 시에는 **Pretendard** 폰트를 기준으로 작업합니다. 특별한 경우를 제외하고는 시스템 폰트 사용을 권장하며, 신규 폰트가 필요할 경우 팀 내 논의를 거쳐 추가합니다.
 
-폰트 웨이트: Regular(400), Medium(500), Semibold(600), Bold(700), Black(900).
-15px가 가장 높은 빈도로 사용되며, 13px가 그 다음으로 빈번합니다.
+텍스트 스타일은 화면의 정보 위계를 명확하게 전달하기 위해 사용되며, 용도에 따라 **Title / Subtitle / Body / Caption / Label** 5개 카테고리로 구분됩니다. 각 스타일은 크기, 행간(line-height), 두께(weight)를 기준으로 정의됩니다.
+
+| Style     | Size | line-height | Weight  | 사용 예시                                 |
+| --------- | ---- | ----------- | ------- | ----------------------------------------- |
+| Title1    | 22px | 28px        | Bold    | 주요 페이지 타이틀                        |
+| Title2    | 18px | 26px        | Bold    | 카드 타이틀, 리스트 그룹명                |
+| Subtitle1 | 16px | 24px        | Regular | 부제목, 강조 문장, 카드 내부 제목         |
+| Subtitle2 | 14px | 20px        | Regular | 섹션 부제목, 설명문                       |
+| Body1     | 15px | 22px        | Regular | 리스트형 텍스트, 카드 내 본문 등          |
+| Body2     | 14px | 20px        | Regular | 일반 본문, 설명 텍스트 (가장 기본 사이즈) |
+| Body3     | 13px | 18px        | Regular | 날짜, 단위, 부가 정보 등 작은 영역        |
+| Caption   | 12px | 16px        | Regular | 부가 텍스트, 캡션, 작은 설명              |
+| Label     | 11px | 14px        | Bold    | 버튼 라벨, 입력필드 타이틀                |
+
+폰트 웨이트: Regular(400), Medium(500), SemiBold(600), Bold(700).
 
 **특수 폰트:** JalnanOTF — 이벤트/프로모션용 디스플레이 폰트 (일반 UI에 사용 금지)
+
+## Principles
+
+SSOT 는 **Figma 지니어트-Dev / Principle (207:1610)**.
+
+### (1) Platform
+
+지니어트 앱은 **iOS / Android** 플랫폼을 지원합니다. 디자인 표준 가이드는 **iOS 375 / Android 360** 해상도를 기준으로 작성되며, iPhone SE 및 갤럭시 Z Fold 기기 대응을 위해 **320 가로 해상도**도 함께 고려하여 디자인합니다.
+
+| 분류            | 기준 해상도 |
+| --------------- | ----------- |
+| iOS             | 375 × 812   |
+| Android         | 360 × 640   |
+| iOS_SE          | 320 × 568   |
+| Z Fold 접힌화면 | 320 × 842   |
+
+### (2) Unit
+
+효율적인 커뮤니케이션을 위해 단위를 통일하여 사용합니다.
+
+`1 = 1px (WEB) = 1dp (AOS) = 1px (iOS)`
+
+### (3) Guide line
+
+레이아웃 구성 시 유연한 그리드와 터치 영역 기준을 준수합니다.
+
+- **Flexible**: 반응형 요소, 화면 크기에 따라 가변
+- **Fixed**: 고정 값으로 유지되는 영역
+- **Touch area**: 터치 가능한 최소 영역 — 모바일 표준 44 × 44
 
 ## Layout
 

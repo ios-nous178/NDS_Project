@@ -2097,6 +2097,8 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "Tab 은 동일 depth 콘텐츠 전환·category navigation·section switching 에만 사용 — 필터/CTA/라우팅 대체용 금지",
     "Modal 은 즉각적 판단/응답이 필요할 때만 사용 — 단순 정보는 inline Notice/Banner, 에러는 Toast/inline error 사용",
     "Badge 는 보조 정보 — 일반 카테고리는 ghost/line + neutral 우선, Brand color 는 '현재 선택·핵심 강조' 에만",
+    "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordOnIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 사용 가능한 브랜드 아이콘 목록은 get_brand_info(slug).brandIcons 로 조회.",
+    "브랜드 분기는 공통 컴포넌트 구현이 아니라 **브랜드 전용 화면/스토리** 에서 처리 — 브랜드 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<AppFooter tabs={[{ icon: <GenietRecordOnIcon /> }]} />`)",
   ],
   donts: [
     "한 화면에 3개 이상의 폰트 웨이트를 혼용하지 마세요",
@@ -2150,6 +2152,9 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "colorful/멀티컬러 아이콘을 본문 UI 에 과다 사용하지 마세요 — DS icon 은 currentColor monochrome 이 원칙. brand color icon 은 진입점 1~2 개에만",
     // ── Spacing Randomness 보강 ──
     "같은 depth(부모 컨테이너 안의 형제 요소들) 에 서로 다른 spacing 을 적용하지 마세요 — 형제는 같은 --gap-* 으로 통일",
+    // ── Brand Icon ──
+    "공통 컴포넌트(AppFooter/BottomNav/AppBar 등) 의 *구현* 안에 brand 분기 로직(`if (brand === 'geniet') return <GenietRecordOnIcon />`)을 넣지 마세요 — DS 컴포넌트는 brand-agnostic 으로 유지. 분기는 사용처(브랜드 전용 화면)에서 명시적 icon prop 으로 표현.",
+    "브랜드 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 brand prefix 아이콘이 있으면 그게 우선. get_brand_info(slug).brandIcons 로 매칭 확인.",
   ],
   bannedPatterns: [
     {
@@ -2336,6 +2341,21 @@ function flattenGroups(groups: Array<{ items: string[] }>): string[] {
  * Figma Iconography(379:490) 라이브러리 분류와 스타일 메타데이터.
  * 카테고리: basic / navigation / action / media / state-reaction / location / eap-service / color
  * 스타일:   line(기본) / filled(강조·활성·소형) / color(다색 일러스트성 아이콘)
+ *
+ * ── 브랜드 아이콘 사용 정책 ──────────────────────────────────────────────
+ * `Geniet*Icon`, `Trost*Icon` 같은 brand prefix 아이콘은 해당 브랜드 디자인을 그대로 옮긴
+ * 변종이라 공용 아이콘과 시각이 다릅니다.
+ *
+ * **브랜드 모드(brand='geniet' / 'trost' 등) 작업 시:**
+ *   - 같은 의미의 brand prefix 아이콘이 존재하면 **반드시 그쪽을 우선 사용**.
+ *     (예: Geniet bottom nav → `GenietRecordOnIcon`/`GenietRecordOffIcon`, 공용 PushActiveIcon X)
+ *   - 사용 가능한 brand 아이콘 목록은 `get_brand_info(slug).brandIcons` 로 조회.
+ *   - 매칭이 없으면 공용 아이콘 fallback 으로 사용 (예: `LikeIcon` 은 Geniet 매칭 없음 → 공용 OK).
+ *
+ * **컴포넌트 구현(공통 DS) 에서는:**
+ *   - brand 분기 로직(`if (brand === 'geniet')`)을 컴포넌트 안에 박지 않는다.
+ *   - DS 컴포넌트는 brand-agnostic 유지, 브랜드 전용 화면이 명시적으로 icon prop 으로 전달.
+ *     예: `<AppFooter tabs={[{ key: 'record', icon: <GenietRecordOnIcon /> }]} />`
  */
 export type IconCategory =
   | "basic"
@@ -2467,6 +2487,37 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   TestresultWarningIcon: { category: "color", style: "color" },
   TestresultDangerIcon: { category: "color", style: "color" },
   SirenIcon: { category: "color", style: "color" },
+
+  // ── Geniet 브랜드 ─ Geniet 홈페이지에서 가져온 브랜드 전용 아이콘. NudgeEAP 공용과 디자인이 달라 prefix 로 분리.
+  GenietAlarmIcon: { category: "state-reaction", style: "filled" },
+  GenietArrowBackIcon: { category: "navigation", style: "line" },
+  GenietArrowDownIcon: { category: "navigation", style: "line" },
+  GenietArrowUpIcon: { category: "navigation", style: "line" },
+  GenietArrowRightIcon: { category: "navigation", style: "line" },
+  GenietArrowRightStepperIcon: { category: "navigation", style: "line" },
+  GenietMenuIcon: { category: "navigation", style: "line" },
+  GenietMypageIcon: { category: "navigation", style: "line" },
+  GenietCopyIcon: { category: "action", style: "line" },
+  GenietLoginIcon: { category: "action", style: "line" },
+  GenietLogoutIcon: { category: "action", style: "line" },
+  GenietRecordOnIcon: { category: "action", style: "filled", pair: "GenietRecordOffIcon" },
+  GenietRecordOffIcon: { category: "action", style: "line", pair: "GenietRecordOnIcon" },
+  GenietPlayIcon: { category: "media", style: "filled" },
+  GenietCheckcircleIcon: { category: "state-reaction", style: "filled" },
+  GenietConfettiIcon: { category: "state-reaction", style: "filled" },
+  GenietCouponIcon: { category: "location", style: "line" },
+  GenietCashreviewIcon: { category: "eap-service", style: "filled" },
+  GenietGpointIcon: { category: "eap-service", style: "filled" },
+
+  // ── Geniet bottomnavi / header (Figma 지니어트-Dev 207:3204 / 207:2483) ──
+  GenietHomeOnIcon: { category: "navigation", style: "filled" },
+  GenietWriteOffIcon: { category: "action", style: "line" },
+  GenietBenefitOnIcon: { category: "eap-service", style: "filled", pair: "GenietBenefitOffIcon" },
+  GenietBenefitOffIcon: { category: "eap-service", style: "line", pair: "GenietBenefitOnIcon" },
+  GenietReviewOnIcon: { category: "eap-service", style: "filled", pair: "GenietReviewOffIcon" },
+  GenietReviewOffIcon: { category: "eap-service", style: "line", pair: "GenietReviewOnIcon" },
+  GenietCommunityIcon: { category: "navigation", style: "line" },
+  GenietSearchIcon: { category: "navigation", style: "line" },
 };
 
 /** 카테고리별로 아이콘 이름을 묶은 인덱스. find_icon / list_icons 응답 보강용. */

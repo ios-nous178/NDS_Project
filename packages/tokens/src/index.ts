@@ -30,8 +30,8 @@ export type {
   SpacingOverrides,
   ElevationOverrides,
 } from "./brands";
-export { nudgeEapTheme, nudgeEapSemantic, trostTheme } from "./brands";
-export type { NudgeEapSemanticTokens, TrostSemanticTokens } from "./brands";
+export { nudgeEapTheme, nudgeEapSemantic, trostTheme, genietTheme } from "./brands";
+export type { NudgeEapSemanticTokens, TrostSemanticTokens, GenietSemanticTokens } from "./brands";
 export {
   trostYellow,
   trostCobalt,
@@ -40,4 +40,16 @@ export {
   trostStatus,
   trostSemantic,
   trostEapBanner,
+} from "./brands";
+export {
+  genietMint,
+  genietRed,
+  genietYellow,
+  genietBlue,
+  genietPurple,
+  genietGreen,
+  genietGray,
+  genietNeutral,
+  genietStatus,
+  genietSemantic,
 } from "./brands";

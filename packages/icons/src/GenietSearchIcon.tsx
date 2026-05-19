@@ -1,0 +1,29 @@
+import React from "react";
+
+export interface GenietSearchIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietSearchIcon = React.forwardRef<SVGSVGElement, GenietSearchIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="scale(1.395373 1.395373)">
+<g id="ic_search">
+<path id="Oval (Stroke)" d="M12.4443 7.07227C12.4443 4.10541 10.0391 1.69945 7.07227 1.69922C4.10527 1.69922 1.69922 4.10527 1.69922 7.07227C1.69945 10.0391 4.10541 12.4443 7.07227 12.4443C10.0389 12.4441 12.4441 10.0389 12.4443 7.07227ZM14.1445 7.07227C14.1443 10.9778 10.9778 14.1443 7.07227 14.1445C3.16653 14.1445 0.000234511 10.9779 0 7.07227C0 3.16638 3.16638 0 7.07227 0C10.9779 0.000234514 14.1445 3.16653 14.1445 7.07227Z" fill="currentColor"/>
+<path id="Path-8 (Stroke)" d="M10.9098 10.9098C11.2417 10.5778 11.779 10.5778 12.1109 10.9098L16.9508 15.7486C17.2826 16.0806 17.2827 16.6189 16.9508 16.9508C16.6189 17.2827 16.0806 17.2826 15.7486 16.9508L10.9098 12.1109C10.5778 11.779 10.5778 11.2417 10.9098 10.9098Z" fill="currentColor"/>
+</g>
+</g>
+    </svg>
+  )
+);
+
+GenietSearchIcon.displayName = "GenietSearchIcon";
