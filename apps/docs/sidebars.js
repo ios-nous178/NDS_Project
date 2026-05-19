@@ -1,3 +1,35 @@
+// 개별 컴포넌트 목록은 metadata/componentInventory.json 의 figmaSynced 필드를 기준으로
+// "Figma 정합" / "Figma 미정합" 두 섹션으로 자동 분리한다. 새 컴포넌트 추가 시
+// inventory 만 갱신하면 사이드바도 자동 반영됨.
+
+const fs = require("node:fs");
+const path = require("node:path");
+
+const inventory = require("../../metadata/componentInventory.json");
+const docsRoot = path.join(__dirname, "..", "..", "docs");
+
+function docExists(slug) {
+  return (
+    fs.existsSync(path.join(docsRoot, "components", `${slug}.md`)) ||
+    fs.existsSync(path.join(docsRoot, "components", `${slug}.mdx`))
+  );
+}
+
+const seen = new Set();
+const synced = [];
+const unsynced = [];
+for (const entry of inventory) {
+  if (!entry.docsPath || !entry.docsPath.startsWith("/docs/components/")) continue;
+  const slug = entry.docsPath.replace("/docs/components/", "");
+  if (seen.has(slug)) continue;
+  seen.add(slug);
+  if (!docExists(slug)) continue;
+  const id = `components/${slug}`;
+  (entry.figmaSynced ? synced : unsynced).push(id);
+}
+synced.sort();
+unsynced.sort();
+
 module.exports = {
   docs: [
     "intro",
@@ -13,111 +45,15 @@ module.exports = {
         "components/icons",
         {
           type: "category",
-          label: "개별 컴포넌트",
+          label: `Figma 정합 (${synced.length})`,
+          collapsed: false,
+          items: synced,
+        },
+        {
+          type: "category",
+          label: `Figma 미정합 (${unsynced.length})`,
           collapsed: true,
-          items: [
-            "components/button",
-            "components/badge",
-            "components/card",
-            "components/input",
-            "components/search-input",
-            "components/select",
-            "components/checkbox-radio",
-            "components/chip",
-            "components/field-action-row",
-            "components/tabs",
-            "components/modal",
-            "components/popup",
-            "components/bottom-sheet",
-            "components/toast",
-            "components/empty-state",
-            "components/app-bar",
-            "components/app-footer",
-            "components/skeleton",
-            "components/toggle",
-            "components/divider",
-            "components/avatar",
-            "components/progress-bar",
-            "components/pagination",
-            "components/breadcrumb",
-            "components/banner",
-            "components/slider",
-            "components/spinner",
-            "components/mood-selector",
-            "components/assessment-result-card",
-            "components/crisis-callout",
-            "components/counselor-card",
-            "components/chat-bubble",
-            "components/consent-checklist",
-            "components/score-gauge",
-            "components/medication-item",
-            "components/audio-player",
-            "components/activity-timeline",
-            "components/otp-input",
-            "components/file-upload",
-            "components/date-range-picker",
-            "components/calendar",
-            "components/carousel",
-            "components/video-player",
-            "components/number-stepper",
-            "components/autocomplete",
-            "components/selection-card",
-            "components/snackbar",
-            "components/fab",
-            "components/breathing-guide",
-            "components/streak-card",
-            "components/emotion-heatmap",
-            "components/appointment-card",
-            "components/journal-entry",
-            "components/chat-composer",
-            "components/phone-input",
-            "components/signature-pad",
-            "components/coach-mark",
-            "components/sparkline",
-            "components/circular-progress",
-            "components/multi-step-form",
-            "components/expandable-text",
-            "components/page-header",
-            "components/stat-card",
-            "components/quick-action-grid",
-            "components/tag-input",
-            "components/lightbox",
-            "components/avatar-group",
-            "components/call-control-bar",
-            "components/voice-recorder",
-            "components/notification-item",
-            "components/countdown-timer",
-            "components/online-indicator",
-            "components/reaction-picker",
-            "components/greeting-header",
-            "components/tip-card",
-            "components/pin-pad",
-            "components/time-picker",
-            "components/address-search",
-            "components/image-cropper",
-            "components/pull-to-refresh",
-            "components/waveform-player",
-            "components/mention-input",
-            "components/confetti",
-            "components/comment-item",
-            "components/like-button",
-            "components/share-sheet",
-            "components/review-card",
-            "components/vote-poll",
-            "components/price-tag",
-            "components/amount-input",
-            "components/status-timeline",
-            "components/filter-bar",
-            "components/user-card",
-            "components/product-card",
-            "components/coupon-card",
-            "components/order-summary-card",
-            "components/card-visual",
-            "components/data-table",
-            "components/content-viewer",
-            "components/attachment-item",
-            "components/media-thumbnail",
-          ],
+          items: unsynced,
         },
       ],
     },
