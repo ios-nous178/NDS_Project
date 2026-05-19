@@ -72,9 +72,11 @@ export const trostTheme: BrandTheme = {
   },
   elevation: {
     // Figma 가이드(556:2) — 4 Levels (E0 ~ E3). 기본 UI는 Border, Shadow는 떠있는 요소에만.
+    // shadow.1 은 트로스트 코드 실측에서 가장 자주 쓰는 floating-card 패턴
+    // `0_2px_16px_0_rgba(0,0,0,0.12)` 와 일치하도록 opacity 0.12 로 맞춤.
     shadow: {
       "0": "none",
-      "1": "0px 2px 16px rgba(0, 0, 0, 0.10)", // Trost: 약간 더 부드러운 카드 호버 shadow
+      "1": "0px 2px 16px rgba(0, 0, 0, 0.12)",
       "2": "0px 4px 12px rgba(0, 0, 0, 0.10)",
       "3": "0px 8px 24px rgba(0, 0, 0, 0.12)",
     },
