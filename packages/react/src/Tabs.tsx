@@ -107,7 +107,8 @@ const tabsStyles = `
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}) {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -117,11 +118,16 @@ const tabsStyles = `
     font-weight: ${fontWeight.regular};
     padding: 0;
     position: relative;
+    white-space: nowrap;
   }
 
+  /* Mobile line tabs: 4글자 라벨이 ~360px 뷰포트에서 잘리지 않도록 좌우 padding
+   * 을 inset-input(12) 으로 축소. 글자 수가 더 많으면 ellipsis 로 잘린다. */
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="mobile"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.line.mobile}px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--inset-input);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
