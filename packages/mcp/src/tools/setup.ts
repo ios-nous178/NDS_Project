@@ -8,7 +8,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { ADMIN_CMS_GUIDE, detectIntentFromText } from "../guides.js";
+import { ADMIN_CMS_GUIDE, ICON_METADATA, detectIntentFromText } from "../guides.js";
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
 import { createClaudeMd } from "./guides.js";
 import { ensureInspectorInMainTsx } from "./inspector-installer.js";
@@ -740,9 +740,26 @@ export function getBrandInfo(args: { brand: string }) {
       hint: "list_brands로 사용 가능한 브랜드를 확인하세요.",
     };
   }
+  // ICON_METADATA 에서 이 브랜드 prefix 를 가진 아이콘 추출.
+  // PascalCase: 'geniet' → 'Geniet', 'nudge-eap' → 'NudgeEap'
+  const brandComponentPrefix = slug
+    .split("-")
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join("");
+  const brandIcons = Object.keys(ICON_METADATA)
+    .filter((name) => name.startsWith(brandComponentPrefix) && name !== brandComponentPrefix)
+    // nudge-eap 은 prefix 가 공용 = 모든 아이콘이라 노출 X (공용 아이콘 = 기본 = 무 prefix)
+    .filter(() => slug !== "nudge-eap")
+    .sort();
+
   return {
     ok: true,
     ...brand,
+    brandIcons,
+    iconPolicy:
+      brandIcons.length > 0
+        ? `이 브랜드 모드(brand='${slug}') 로 작업 시 위 ${brandIcons.length}개 아이콘은 같은 의미의 공용 아이콘보다 **우선 사용**. 매칭이 없는 의미만 공용 fallback. 공통 컴포넌트(AppFooter/BottomNav 등) 의 *구현* 에는 brand 분기 로직을 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.`
+        : `이 브랜드 전용 prefix 아이콘은 아직 없습니다. 공용 @nudge-eap/icons 의 아이콘을 그대로 사용하세요.`,
     usage: {
       cssImport: brand.cssImport
         ? `import "${brand.cssImport}";`

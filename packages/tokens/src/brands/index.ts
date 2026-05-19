@@ -21,3 +21,18 @@ export {
   trostEapBanner,
 } from "./trost";
 export type { TrostSemanticTokens } from "./trost";
+
+export {
+  genietTheme,
+  genietMint,
+  genietRed,
+  genietYellow,
+  genietBlue,
+  genietPurple,
+  genietGreen,
+  genietGray,
+  genietNeutral,
+  genietStatus,
+  genietSemantic,
+} from "./geniet";
+export type { GenietSemanticTokens } from "./geniet";

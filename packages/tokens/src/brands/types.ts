@@ -52,17 +52,26 @@ export interface SemanticColors {
     disabled?: string;
     secondary?: { default?: string; hover?: string; disabled?: string };
     outlined?: { default?: string; hover?: string; disabled?: string };
+    /**
+     * Filled neutral 톤. Geniet 의 "Solid Assistive" 처럼 primary/secondary 보다
+     * 낮은 위계에서 사용되는 채워진 회색 버튼 패턴. NudgeEAP base / Trost 는
+     * 기본 사용 안 함 (해당 브랜드는 outlined 로 같은 위계를 표현).
+     */
+    assistive?: { default?: string; hover?: string; disabled?: string };
   };
   /**
    * `secondary` — Solid/Secondary 텍스트 색. 브랜드별로 의도가 달라 분리:
    *   · NudgeEAP: brand blue (light blue bg 위)
    *   · Trost: cobalt brand (cobalt-50 bg 위)
    *   · Geniet: white (dark inverse bg 위) — Geniet 고유 패턴
+   * `assistive` — Geniet 의 assistive/outlined-assistive 버튼 텍스트 색
+   * (보통 gray/strong). 다른 브랜드는 미사용.
    */
   buttonText?: {
     default?: string;
     brand?: string;
     secondary?: { default?: string; disabled?: string };
+    assistive?: string;
     disabled?: string;
   };
   buttonBorder?: {

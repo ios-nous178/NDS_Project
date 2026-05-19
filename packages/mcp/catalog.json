@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T01:26:58.238Z",
+  "generatedAt": "2026-05-19T05:42:21.109Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -8,7 +8,8 @@
       "peerDependencies": {},
       "cssExports": [
         "@nudge-eap/tokens/css",
-        "@nudge-eap/tokens/css/trost"
+        "@nudge-eap/tokens/css/trost",
+        "@nudge-eap/tokens/css/geniet"
       ]
     },
     {
@@ -22,9 +23,7 @@
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0"
       },
-      "cssExports": [
-        "@nudge-eap/react/styles.css"
-      ]
+      "cssExports": ["@nudge-eap/react/styles.css"]
     },
     {
       "name": "@nudge-eap/icons",
@@ -53,10 +52,7 @@
           "name": "type",
           "optional": true,
           "type": "AccordionType",
-          "allowedValues": [
-            "single",
-            "multiple"
-          ]
+          "allowedValues": ["single", "multiple"]
         },
         {
           "name": "value",
@@ -226,21 +222,13 @@
           "name": "variant",
           "optional": true,
           "type": "AppBarVariant",
-          "allowedValues": [
-            "default",
-            "webview",
-            "transparent"
-          ]
+          "allowedValues": ["default", "webview", "transparent"]
         },
         {
           "name": "position",
           "optional": true,
           "type": "AppBarPosition",
-          "allowedValues": [
-            "sticky",
-            "fixed",
-            "static"
-          ]
+          "allowedValues": ["sticky", "fixed", "static"]
         },
         {
           "name": "title",
@@ -318,12 +306,7 @@
           "name": "mode",
           "optional": true,
           "type": "AppointmentMode",
-          "allowedValues": [
-            "video",
-            "phone",
-            "chat",
-            "in-person"
-          ]
+          "allowedValues": ["video", "phone", "chat", "in-person"]
         },
         {
           "name": "location",
@@ -334,13 +317,7 @@
           "name": "status",
           "optional": true,
           "type": "AppointmentStatus",
-          "allowedValues": [
-            "scheduled",
-            "confirmed",
-            "in-progress",
-            "completed",
-            "canceled"
-          ]
+          "allowedValues": ["scheduled", "confirmed", "in-progress", "completed", "canceled"]
         },
         {
           "name": "actions",
@@ -377,12 +354,7 @@
           "name": "level",
           "optional": false,
           "type": "AssessmentLevel",
-          "allowedValues": [
-            "normal",
-            "mild",
-            "moderate",
-            "severe"
-          ]
+          "allowedValues": ["normal", "mild", "moderate", "severe"]
         },
         {
           "name": "levelText",
@@ -439,25 +411,13 @@
           "name": "fileType",
           "optional": true,
           "type": "AttachmentFileType",
-          "allowedValues": [
-            "pdf",
-            "image",
-            "video",
-            "audio",
-            "document",
-            "archive",
-            "other"
-          ]
+          "allowedValues": ["pdf", "image", "video", "audio", "document", "archive", "other"]
         },
         {
           "name": "status",
           "optional": true,
           "type": "AttachmentStatus",
-          "allowedValues": [
-            "uploading",
-            "done",
-            "error"
-          ]
+          "allowedValues": ["uploading", "done", "error"]
         },
         {
           "name": "progress",
@@ -678,34 +638,19 @@
           "name": "variant",
           "optional": true,
           "type": "BadgeVariant",
-          "allowedValues": [
-            "fill",
-            "ghost",
-            "line"
-          ]
+          "allowedValues": ["fill", "ghost", "line"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "BadgeColor",
-          "allowedValues": [
-            "brand",
-            "neutral",
-            "success",
-            "error",
-            "caution",
-            "info"
-          ]
+          "allowedValues": ["brand", "neutral", "success", "error", "caution", "info"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "BadgeSize",
-          "allowedValues": [
-            "sm",
-            "md",
-            "lg"
-          ]
+          "allowedValues": ["sm", "md", "lg"]
         },
         {
           "name": "labelClassName",
@@ -732,11 +677,7 @@
           "name": "variant",
           "optional": true,
           "type": "BannerVariant",
-          "allowedValues": [
-            "filled",
-            "outlined",
-            "image"
-          ]
+          "allowedValues": ["filled", "outlined", "image"]
         },
         {
           "name": "title",
@@ -961,35 +902,19 @@
           "name": "variant",
           "optional": true,
           "type": "ButtonVariant",
-          "allowedValues": [
-            "solid",
-            "outlined",
-            "soft",
-            "outlined-sub"
-          ]
+          "allowedValues": ["solid", "outlined", "soft", "outlined-sub"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "ButtonSize",
-          "allowedValues": [
-            "xl",
-            "lg",
-            "md",
-            "sm",
-            "xs",
-            "field"
-          ]
+          "allowedValues": ["xl", "lg", "md", "sm", "xs", "field"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "ButtonColor",
-          "allowedValues": [
-            "primary",
-            "secondary",
-            "assistive"
-          ]
+          "allowedValues": ["primary", "secondary", "assistive"]
         },
         {
           "name": "fullWidth",
@@ -1123,10 +1048,7 @@
           "name": "variant",
           "optional": true,
           "type": "CardVariant",
-          "allowedValues": [
-            "outlined",
-            "flat"
-          ]
+          "allowedValues": ["outlined", "flat"]
         },
         {
           "name": "clickable",
@@ -1280,11 +1202,7 @@
           "name": "indicator",
           "optional": true,
           "type": "CarouselIndicator",
-          "allowedValues": [
-            "dots",
-            "counter",
-            "none"
-          ]
+          "allowedValues": ["dots", "counter", "none"]
         },
         {
           "name": "showArrows",
@@ -1311,10 +1229,7 @@
           "name": "role",
           "optional": false,
           "type": "ChatRole",
-          "allowedValues": [
-            "me",
-            "them"
-          ]
+          "allowedValues": ["me", "them"]
         },
         {
           "name": "children",
@@ -1340,12 +1255,7 @@
           "name": "group",
           "optional": true,
           "type": "ChatGroupPosition",
-          "allowedValues": [
-            "single",
-            "first",
-            "middle",
-            "last"
-          ]
+          "allowedValues": ["single", "first", "middle", "last"]
         },
         {
           "name": "read",
@@ -1459,32 +1369,19 @@
           "name": "variant",
           "optional": true,
           "type": "ChipVariant",
-          "allowedValues": [
-            "fill",
-            "outlined",
-            "ghost"
-          ]
+          "allowedValues": ["fill", "outlined", "ghost"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "ChipColor",
-          "allowedValues": [
-            "brand",
-            "neutral",
-            "success",
-            "error",
-            "caution"
-          ]
+          "allowedValues": ["brand", "neutral", "success", "error", "caution"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "ChipSize",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "selected",
@@ -1843,11 +1740,7 @@
           "name": "format",
           "optional": true,
           "type": "CountdownFormat",
-          "allowedValues": [
-            "mm:ss",
-            "hh:mm:ss",
-            "remaining"
-          ]
+          "allowedValues": ["mm:ss", "hh:mm:ss", "remaining"]
         },
         {
           "name": "onComplete",
@@ -1935,10 +1828,7 @@
           "name": "tone",
           "optional": true,
           "type": "CrisisTone",
-          "allowedValues": [
-            "danger",
-            "caution"
-          ]
+          "allowedValues": ["danger", "caution"]
         },
         {
           "name": "title",
@@ -1995,10 +1885,7 @@
           "name": "sortDirection",
           "optional": true,
           "type": "SortDirection",
-          "allowedValues": [
-            "asc",
-            "desc"
-          ]
+          "allowedValues": ["asc", "desc"]
         },
         {
           "name": "onSort",
@@ -2019,19 +1906,13 @@
           "name": "size",
           "optional": true,
           "type": "\"sm\" | \"md\"",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "responsive",
           "optional": true,
           "type": "\"scroll\" | \"cards\"",
-          "allowedValues": [
-            "scroll",
-            "cards"
-          ]
+          "allowedValues": ["scroll", "cards"]
         },
         {
           "name": "className",
@@ -2160,10 +2041,7 @@
           "name": "orientation",
           "optional": true,
           "type": "DividerOrientation",
-          "allowedValues": [
-            "horizontal",
-            "vertical"
-          ]
+          "allowedValues": ["horizontal", "vertical"]
         },
         {
           "name": "thickness",
@@ -2200,20 +2078,13 @@
           "name": "side",
           "optional": true,
           "type": "DrawerSide",
-          "allowedValues": [
-            "left",
-            "right"
-          ]
+          "allowedValues": ["left", "right"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "DrawerSize",
-          "allowedValues": [
-            "sm",
-            "md",
-            "lg"
-          ]
+          "allowedValues": ["sm", "md", "lg"]
         },
         {
           "name": "width",
@@ -2285,10 +2156,7 @@
           "name": "align",
           "optional": true,
           "type": "DropdownAlign",
-          "allowedValues": [
-            "start",
-            "end"
-          ]
+          "allowedValues": ["start", "end"]
         },
         {
           "name": "minWidth",
@@ -2320,12 +2188,7 @@
           "name": "defaultMode",
           "optional": true,
           "type": "HighlightMode",
-          "allowedValues": [
-            "off",
-            "area",
-            "component",
-            "all"
-          ]
+          "allowedValues": ["off", "area", "component", "all"]
         }
       ],
       "dtsRelPath": "packages/react/dist/DSHighlight.d.ts"
@@ -2485,11 +2348,7 @@
           "name": "color",
           "optional": true,
           "type": "FABColor",
-          "allowedValues": [
-            "primary",
-            "neutral",
-            "secondary"
-          ]
+          "allowedValues": ["primary", "neutral", "secondary"]
         },
         {
           "name": "size",
@@ -2500,12 +2359,7 @@
           "name": "position",
           "optional": true,
           "type": "FABPosition",
-          "allowedValues": [
-            "bottom-right",
-            "bottom-left",
-            "bottom-center",
-            "static"
-          ]
+          "allowedValues": ["bottom-right", "bottom-left", "bottom-center", "static"]
         },
         {
           "name": "offset",
@@ -2537,10 +2391,7 @@
           "name": "actionTone",
           "optional": true,
           "type": "\"outline\" | \"solid\"",
-          "allowedValues": [
-            "outline",
-            "solid"
-          ]
+          "allowedValues": ["outline", "solid"]
         },
         {
           "name": "timer",
@@ -2760,10 +2611,7 @@
           "name": "tone",
           "optional": true,
           "type": "\"default\" | \"primary\"",
-          "allowedValues": [
-            "default",
-            "primary"
-          ]
+          "allowedValues": ["default", "primary"]
         }
       ],
       "dtsRelPath": "packages/react/dist/GreetingHeader.d.ts"
@@ -2775,12 +2623,7 @@
           "name": "size",
           "optional": true,
           "type": "IconButtonSize",
-          "allowedValues": [
-            "x-large",
-            "large",
-            "medium",
-            "small"
-          ]
+          "allowedValues": ["x-large", "large", "medium", "small"]
         },
         {
           "name": "icon",
@@ -2807,10 +2650,7 @@
           "name": "shape",
           "optional": true,
           "type": "\"circle\" | \"square\"",
-          "allowedValues": [
-            "circle",
-            "square"
-          ]
+          "allowedValues": ["circle", "square"]
         },
         {
           "name": "size",
@@ -2907,10 +2747,7 @@
           "name": "size",
           "optional": true,
           "type": "InputSize",
-          "allowedValues": [
-            "default",
-            "field"
-          ]
+          "allowedValues": ["default", "field"]
         },
         {
           "name": "slotProps",
@@ -3096,11 +2933,7 @@
           "name": "variant",
           "optional": true,
           "type": "ListVariant",
-          "allowedValues": [
-            "plain",
-            "card",
-            "divided"
-          ]
+          "allowedValues": ["plain", "card", "divided"]
         },
         {
           "name": "children",
@@ -3137,22 +2970,13 @@
           "name": "fit",
           "optional": true,
           "type": "MediaFit",
-          "allowedValues": [
-            "cover",
-            "contain"
-          ]
+          "allowedValues": ["cover", "contain"]
         },
         {
           "name": "rounded",
           "optional": true,
           "type": "MediaRounded",
-          "allowedValues": [
-            "none",
-            "sm",
-            "md",
-            "lg",
-            "pill"
-          ]
+          "allowedValues": ["none", "sm", "md", "lg", "pill"]
         },
         {
           "name": "fallbackSrc",
@@ -3321,10 +3145,7 @@
           "name": "device",
           "optional": true,
           "type": "ModalDevice",
-          "allowedValues": [
-            "pc",
-            "mobile"
-          ]
+          "allowedValues": ["pc", "mobile"]
         },
         {
           "name": "children",
@@ -3487,11 +3308,7 @@
           "name": "indicator",
           "optional": true,
           "type": "MultiStepFormIndicator",
-          "allowedValues": [
-            "progress",
-            "steps",
-            "none"
-          ]
+          "allowedValues": ["progress", "steps", "none"]
         },
         {
           "name": "nextLabel",
@@ -3523,13 +3340,7 @@
           "name": "kind",
           "optional": true,
           "type": "NotificationKind",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "error",
-            "system"
-          ]
+          "allowedValues": ["info", "success", "warning", "error", "system"]
         },
         {
           "name": "icon",
@@ -3627,12 +3438,7 @@
           "name": "status",
           "optional": false,
           "type": "PresenceStatus",
-          "allowedValues": [
-            "online",
-            "away",
-            "busy",
-            "offline"
-          ]
+          "allowedValues": ["online", "away", "busy", "offline"]
         },
         {
           "name": "showLabel",
@@ -3996,10 +3802,7 @@
           "name": "discountPosition",
           "optional": true,
           "type": "\"before\" | \"none\"",
-          "allowedValues": [
-            "before",
-            "none"
-          ]
+          "allowedValues": ["before", "none"]
         },
         {
           "name": "formatThousands",
@@ -4334,10 +4137,7 @@
           "name": "variant",
           "optional": true,
           "type": "SearchInputVariant",
-          "allowedValues": [
-            "outlined",
-            "filled"
-          ]
+          "allowedValues": ["outlined", "filled"]
         },
         {
           "name": "clearable",
@@ -4399,10 +4199,7 @@
           "name": "size",
           "optional": true,
           "type": "SegmentedControlSize",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "fullWidth",
@@ -4500,10 +4297,7 @@
           "name": "mode",
           "optional": true,
           "type": "SelectionCardMode",
-          "allowedValues": [
-            "single",
-            "multiple"
-          ]
+          "allowedValues": ["single", "multiple"]
         },
         {
           "name": "value",
@@ -4529,10 +4323,7 @@
           "name": "layout",
           "optional": true,
           "type": "SelectionCardLayout",
-          "allowedValues": [
-            "vertical",
-            "horizontal"
-          ]
+          "allowedValues": ["vertical", "horizontal"]
         },
         {
           "name": "name",
@@ -4646,11 +4437,7 @@
           "name": "variant",
           "optional": true,
           "type": "SkeletonVariant",
-          "allowedValues": [
-            "rectangular",
-            "circular",
-            "text"
-          ]
+          "allowedValues": ["rectangular", "circular", "text"]
         },
         {
           "name": "width",
@@ -4738,12 +4525,7 @@
           "name": "variant",
           "optional": true,
           "type": "SnackbarVariant",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "error"
-          ]
+          "allowedValues": ["info", "success", "warning", "error"]
         },
         {
           "name": "icon",
@@ -4795,11 +4577,7 @@
           "name": "kind",
           "optional": true,
           "type": "SparklineKind",
-          "allowedValues": [
-            "line",
-            "area",
-            "bar"
-          ]
+          "allowedValues": ["line", "area", "bar"]
         },
         {
           "name": "color",
@@ -4928,11 +4706,7 @@
           "name": "trend",
           "optional": true,
           "type": "StatCardTrend",
-          "allowedValues": [
-            "up",
-            "down",
-            "flat"
-          ]
+          "allowedValues": ["up", "down", "flat"]
         },
         {
           "name": "trailing",
@@ -4969,10 +4743,7 @@
           "name": "direction",
           "optional": true,
           "type": "StatusTimelineDirection",
-          "allowedValues": [
-            "horizontal",
-            "vertical"
-          ]
+          "allowedValues": ["horizontal", "vertical"]
         }
       ],
       "dtsRelPath": "packages/react/dist/StatusTimeline.d.ts"
@@ -4994,10 +4765,7 @@
           "name": "variant",
           "optional": true,
           "type": "StepperVariant",
-          "allowedValues": [
-            "numbered",
-            "dots"
-          ]
+          "allowedValues": ["numbered", "dots"]
         }
       ],
       "dtsRelPath": "packages/react/dist/Stepper.d.ts"
@@ -5060,29 +4828,19 @@
           "name": "variant",
           "optional": true,
           "type": "TabsVariant",
-          "allowedValues": [
-            "line",
-            "chip",
-            "segment"
-          ]
+          "allowedValues": ["line", "chip", "segment"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "TabsSize",
-          "allowedValues": [
-            "mobile",
-            "pc"
-          ]
+          "allowedValues": ["mobile", "pc"]
         },
         {
           "name": "tone",
           "optional": true,
           "type": "TabsTone",
-          "allowedValues": [
-            "neutral",
-            "color"
-          ]
+          "allowedValues": ["neutral", "color"]
         },
         {
           "name": "fullWidth",
@@ -5200,12 +4958,7 @@
           "name": "resize",
           "optional": true,
           "type": "\"none\" | \"vertical\" | \"horizontal\" | \"both\"",
-          "allowedValues": [
-            "none",
-            "vertical",
-            "horizontal",
-            "both"
-          ]
+          "allowedValues": ["none", "vertical", "horizontal", "both"]
         },
         {
           "name": "className",
@@ -5222,10 +4975,7 @@
           "name": "size",
           "optional": true,
           "type": "TextButtonSize",
-          "allowedValues": [
-            "large",
-            "medium"
-          ]
+          "allowedValues": ["large", "medium"]
         },
         {
           "name": "leftIcon",
@@ -5349,12 +5099,7 @@
           "name": "tone",
           "optional": true,
           "type": "TipCardTone",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "neutral"
-          ]
+          "allowedValues": ["info", "success", "warning", "neutral"]
         },
         {
           "name": "label",
@@ -5396,10 +5141,7 @@
           "name": "position",
           "optional": true,
           "type": "ToastPosition",
-          "allowedValues": [
-            "top",
-            "bottom"
-          ]
+          "allowedValues": ["top", "bottom"]
         },
         {
           "name": "duration",
@@ -5472,12 +5214,7 @@
           "name": "placement",
           "optional": true,
           "type": "TooltipPlacement",
-          "allowedValues": [
-            "top",
-            "bottom",
-            "left",
-            "right"
-          ]
+          "allowedValues": ["top", "bottom", "left", "right"]
         },
         {
           "name": "delay",
@@ -5575,10 +5312,7 @@
           "name": "layout",
           "optional": true,
           "type": "UserCardLayout",
-          "allowedValues": [
-            "row",
-            "stacked"
-          ]
+          "allowedValues": ["row", "stacked"]
         },
         {
           "name": "onClick",
@@ -5651,11 +5385,7 @@
           "name": "state",
           "optional": false,
           "type": "VoiceRecorderState",
-          "allowedValues": [
-            "idle",
-            "recording",
-            "paused"
-          ]
+          "allowedValues": ["idle", "recording", "paused"]
         },
         {
           "name": "onStateChange",
@@ -5774,11 +5504,7 @@
           "name": "position",
           "optional": true,
           "type": "WebHeaderPosition",
-          "allowedValues": [
-            "sticky",
-            "fixed",
-            "static"
-          ]
+          "allowedValues": ["sticky", "fixed", "static"]
         },
         {
           "name": "maxWidth",
@@ -5823,6 +5549,33 @@
     "FavoriteActiveIcon",
     "FavoriteIcon",
     "FilterIcon",
+    "GenietAlarmIcon",
+    "GenietArrowBackIcon",
+    "GenietArrowDownIcon",
+    "GenietArrowRightIcon",
+    "GenietArrowRightStepperIcon",
+    "GenietArrowUpIcon",
+    "GenietBenefitOffIcon",
+    "GenietBenefitOnIcon",
+    "GenietCashreviewIcon",
+    "GenietCheckcircleIcon",
+    "GenietCommunityIcon",
+    "GenietConfettiIcon",
+    "GenietCopyIcon",
+    "GenietCouponIcon",
+    "GenietGpointIcon",
+    "GenietHomeOnIcon",
+    "GenietLoginIcon",
+    "GenietLogoutIcon",
+    "GenietMenuIcon",
+    "GenietMypageIcon",
+    "GenietPlayIcon",
+    "GenietRecordOffIcon",
+    "GenietRecordOnIcon",
+    "GenietReviewOffIcon",
+    "GenietReviewOnIcon",
+    "GenietSearchIcon",
+    "GenietWriteOffIcon",
     "HamburgerIcon",
     "HomeActiveIcon",
     "HomeIcon",
@@ -6827,6 +6580,16 @@
       "group": "semantic"
     },
     {
+      "name": "--semantic-button-text-secondary-default",
+      "value": "#2B96ED",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-button-text-secondary-disabled",
+      "value": "#9CA2AE",
+      "group": "semantic"
+    },
+    {
       "name": "--semantic-fill-brand-default",
       "value": "#2B96ED",
       "group": "semantic"
@@ -7349,17 +7112,15 @@
         "secondary": null,
         "error": "#FF3258",
         "caution": "#FFB700",
-        "success": "#55D695",
+        "success": "#49CA89",
         "surface": "#FFFFFF",
         "onSurface": "#111111"
       },
-      "fontFamilies": [
-        "Noto Sans KR"
-      ],
+      "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/geniet/DESIGN.md",
-      "cssImport": null,
-      "jsExport": null,
-      "ready": false
+      "cssImport": "@nudge-eap/tokens/css/geniet",
+      "jsExport": "@nudge-eap/tokens/brands",
+      "ready": true
     },
     {
       "slug": "nudge-eap",
@@ -7376,9 +7137,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#383838"
       },
-      "fontFamilies": [
-        "Pretendard"
-      ],
+      "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/nudge-eap/DESIGN.md",
       "cssImport": "@nudge-eap/tokens/css",
       "jsExport": "@nudge-eap/tokens/brands",
@@ -7399,9 +7158,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#333333"
       },
-      "fontFamilies": [
-        "Pretendard Variable"
-      ],
+      "fontFamilies": ["Pretendard Variable"],
       "designMdRelPath": "brands/trost/DESIGN.md",
       "cssImport": "@nudge-eap/tokens/css/trost",
       "jsExport": "@nudge-eap/tokens/brands",
