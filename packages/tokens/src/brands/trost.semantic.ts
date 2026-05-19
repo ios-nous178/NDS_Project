@@ -13,7 +13,9 @@ import { trostCobalt, trostNeutral, trostStatus, trostYellow } from "./trost.pal
 
 export const trostSemantic = {
   bg: {
-    page: { default: trostNeutral[150] }, // #F2F2F2
+    // 페이지 bg 는 흰색 — UtilityHeader / TabNav / 일반 본문 모두 #fff.
+    // (trostNeutral[150] = #F2F2F2 는 section divider 색으로 border.subtle 에 매핑됨.)
+    page: { default: trostNeutral["00"] },
     surface: { default: trostNeutral["00"], subtle: trostNeutral[100] },
     section: { default: trostNeutral["cool-100"] },
     brand: { default: trostYellow.primary, subtle: trostYellow.light },
@@ -23,7 +25,8 @@ export const trostSemantic = {
       info: trostCobalt[100],
       caution: "#FFF8E6",
     },
-    overlay: "rgba(0, 0, 0, 0.7)", // Trost 70% scrim (NudgeEAP base 40%)
+    // Bible 카드 등 실측 overlay 는 60% (`bg-black/60`). NudgeEAP base 는 40%.
+    overlay: "rgba(0, 0, 0, 0.6)",
     disabled: trostNeutral[200],
   },
   text: {
@@ -33,10 +36,11 @@ export const trostSemantic = {
     muted: { default: trostNeutral[500] }, // #979797
     disabled: { default: trostNeutral[400] }, // #C7C7C7
     inverse: { default: trostNeutral["00"] },
-    // 노란 배경에 brand-default 텍스트를 쓰면 가독성이 떨어지므로 Trost 는
-    // brand-default 를 어두운 노랑(#E6D200)으로, brand-strong 을 더 어두운
-    // 노랑으로 둔다.
-    brand: { default: "#E6D200", strong: "#A39200" },
+    // 트로스트의 "활성 / 선택 / 자사 강조" 텍스트는 코드 실측상 모두 orange
+    // (#FF9D00) — 활성 카테고리 / 인용 멘션 / 댓글 멘션 prefix / 활성 sub-tab /
+    // EAP 다운로드 툴팁의 "트로스트" 강조 등. 노랑 primary 는 면적이 큰 button bg
+    // 용이지 텍스트로는 가독성 때문에 안 쓰이므로 brand-as-text 는 orange 가 맞다.
+    brand: { default: trostStatus.orange, strong: trostStatus.orange },
     status: {
       success: trostStatus.green,
       error: trostStatus.error,
@@ -83,7 +87,9 @@ export const trostSemantic = {
     normal: { default: trostNeutral[700] },
     disabled: { default: trostNeutral[400] },
     inverse: { default: trostNeutral["00"] },
-    brand: { default: "#E6D200" }, // 노랑은 아이콘 자체로는 잘 안 보이므로 짙은 톤
+    // text.brand 와 동일하게 brand-as-icon 도 orange. 노랑은 면적이 큰 button bg /
+    // banner bg 용이지 작은 아이콘으로는 가독성이 떨어진다.
+    brand: { default: trostStatus.orange },
     status: {
       success: trostStatus.green,
       error: trostStatus.error,
