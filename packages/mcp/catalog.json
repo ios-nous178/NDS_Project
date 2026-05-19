@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T10:16:47.465Z",
+  "generatedAt": "2026-05-19T00:51:27.248Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -7133,7 +7133,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#111111"
       },
-      "fontFamilies": ["Pretendard"],
+      "fontFamilies": ["Noto Sans KR"],
       "designMdRelPath": "brands/geniet/DESIGN.md",
       "cssImport": "@nudge-eap/tokens/css/geniet",
       "jsExport": "@nudge-eap/tokens/brands",
