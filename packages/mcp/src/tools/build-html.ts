@@ -43,7 +43,8 @@ export type WorkspaceAuditRule =
   | "raw-html-in-src"
   | "raw-html-in-root"
   | "inline-root-tokens"
-  | "no-tsx-found";
+  | "no-tsx-found"
+  | "missing-visual-references";
 
 export interface WorkspaceAuditViolation {
   rule: WorkspaceAuditRule;
@@ -320,15 +321,19 @@ function findMatchingBracket(source: string, openIdx: number): number {
  * 빌드 직전 워크스페이스 audit — CLAUDE.md "산출물 형식 강제 (MUST)" 룰 위반 자동 감지.
  *
  * 감지하는 우회 패턴:
- *  - raw-html-in-src    : src/ 하위에 손으로 작성한 .html 파일
- *  - raw-html-in-root   : 프로젝트 루트의 index.html (vite entry) 외 추가 .html
- *  - inline-root-tokens : .css/.scss 의 :root { ... } 블록에 시멘틱 토큰 인라인 재정의
- *  - no-tsx-found       : src/ 에 .tsx 파일이 하나도 없음 (HTML-only 워크플로우)
+ *  - raw-html-in-src          : src/ 하위에 손으로 작성한 .html 파일
+ *  - raw-html-in-root         : 프로젝트 루트의 index.html (vite entry) 외 추가 .html
+ *  - inline-root-tokens       : .css/.scss 의 :root { ... } 블록에 시멘틱 토큰 인라인 재정의
+ *  - no-tsx-found             : src/ 에 .tsx 파일이 하나도 없음 (HTML-only 워크플로우)
+ *  - missing-visual-references: 시각 기준 (references.md / .references/) 미수집 — 톤 판단 근거 부재
  */
 export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
   const violations: WorkspaceAuditViolation[] = [];
   const srcDir = path.join(cwd, "src");
   const srcExists = fs.existsSync(srcDir);
+
+  const refsViolation = auditVisualReferences(cwd);
+  if (refsViolation) violations.push(refsViolation);
 
   if (srcExists) {
     const htmlInSrc = walkFiles(srcDir, /\.html?$/i, 20);
@@ -402,6 +407,88 @@ export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
   }
 
   return violations;
+}
+
+/**
+ * 시각 레퍼런스 수집 여부 검사.
+ * 통과 조건: 워크스페이스 루트에 `references.md` (case-insensitive) 또는 `.references/` 폴더가
+ * 존재하고, 파일이면 trim 후 20자 이상 / 폴더면 비어있지 않아야 한다.
+ *
+ * 형식 권장: `[good|bad] source=<figma-url|image-name> caption=<1-line reason>`
+ * (pattern:visual-reference 가이드의 fallbackQuestion 참고)
+ */
+function auditVisualReferences(cwd: string): WorkspaceAuditViolation | null {
+  const fallbackQuestion =
+    "시각 기준으로 쓸 Figma 링크나 스크린샷을 받을 수 있을까요? " +
+    "가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요. " +
+    "이미 프롬프트에 이미지나 Figma 링크가 있다면 그 자료를 기준으로 진행하겠습니다.";
+  const fixHint =
+    "응답을 받으면 references.md 에 다음 형식으로 저장: " +
+    "'[good|bad] source=<figma-url|image-name> caption=<1-line reason>'. " +
+    "자세한 룰은 get_guide({ topic: 'pattern:visual-reference' }) 참조.";
+
+  const refsDir = path.join(cwd, ".references");
+  const dirExists = fs.existsSync(refsDir) && fs.statSync(refsDir).isDirectory();
+  if (dirExists) {
+    let entries: string[] = [];
+    try {
+      entries = fs.readdirSync(refsDir).filter((n) => !n.startsWith("."));
+    } catch {
+      entries = [];
+    }
+    if (entries.length === 0) {
+      return {
+        rule: "missing-visual-references",
+        files: [".references/"],
+        detail:
+          ".references/ 폴더가 비어 있습니다. 정답 1장 + 오답 1장 이상의 시각 기준 (스크린샷/Figma 링크 메모) 을 넣으세요.\n" +
+          `사용자에게 물어보세요: "${fallbackQuestion}"\n${fixHint}`,
+      };
+    }
+    return null;
+  }
+
+  let refsMdName: string | null = null;
+  try {
+    for (const entry of fs.readdirSync(cwd, { withFileTypes: true })) {
+      if (entry.isFile() && /^references\.md$/i.test(entry.name)) {
+        refsMdName = entry.name;
+        break;
+      }
+    }
+  } catch {
+    // ignore
+  }
+
+  if (!refsMdName) {
+    return {
+      rule: "missing-visual-references",
+      files: [],
+      detail:
+        "시각 레퍼런스가 워크스페이스에 없습니다 (references.md / .references/ 둘 다 없음). " +
+        "톤 판단 근거 없이 mockup 을 빌드하면 brandTone 형용사만 보고 화면을 만들게 됩니다.\n" +
+        `사용자에게 물어보세요: "${fallbackQuestion}"\n${fixHint}`,
+    };
+  }
+
+  let content = "";
+  try {
+    content = fs.readFileSync(path.join(cwd, refsMdName), "utf-8").trim();
+  } catch {
+    content = "";
+  }
+  if (content.length < 20) {
+    return {
+      rule: "missing-visual-references",
+      files: [refsMdName],
+      detail:
+        `${refsMdName} 가 비어 있거나 너무 짧습니다 (20자 미만). ` +
+        "정답 1장 + 오답 1장 이상의 시각 기준을 캡션과 함께 적어 주세요.\n" +
+        fixHint,
+    };
+  }
+
+  return null;
 }
 
 function walkFiles(dir: string, pattern: RegExp, maxFiles: number): string[] {
