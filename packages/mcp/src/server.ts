@@ -430,7 +430,8 @@ const toolHandlers = {
       },
     ),
   stop_dev_server: (args: ToolArgs) => stopDevServer(args as { sessionId?: string }),
-  build_singlefile_html: (args: ToolArgs) => buildSinglefileHtml(args as { cwd?: string }),
+  build_singlefile_html: (args: ToolArgs) =>
+    buildSinglefileHtml(args as { cwd?: string; skipAudit?: boolean }),
 } satisfies ToolHandlers;
 
 registerDevServerCleanup();
