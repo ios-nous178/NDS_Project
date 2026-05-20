@@ -1,0 +1,262 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 16px 0 40px;
+}
+
+/* ── Toolbar ── */
+
+.toolbar {
+  position: sticky;
+  top: calc(var(--ifm-navbar-height, 60px) + 8px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--ifm-background-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+}
+
+.searchWrap {
+  position: relative;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ifm-color-content-secondary);
+  pointer-events: none;
+}
+
+.search {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px 0 38px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-color-content);
+  outline: none;
+  font-family: inherit;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.search::placeholder {
+  color: var(--ifm-color-content-secondary);
+}
+
+.search:focus {
+  border-color: #18181b;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme="dark"] .search:focus {
+  border-color: #fafafa;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+}
+
+.count {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ifm-color-content-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── Palette ── */
+
+.palette {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.paletteHead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.paletteTitle {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ifm-color-content);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.paletteCount {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ifm-color-content-secondary);
+  background: var(--ifm-color-emphasis-100);
+  padding: 2px 8px;
+  border-radius: 100px;
+  letter-spacing: 0;
+}
+
+.paletteCaption {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ifm-color-content-secondary);
+}
+
+/* ── Strip ── */
+
+.strip {
+  display: flex;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--ifm-color-emphasis-100);
+}
+
+.block {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  border: 0;
+  padding: 12px 8px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease;
+}
+
+.block:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  z-index: 1;
+}
+
+.block:active {
+  transform: translateY(0);
+}
+
+.block:focus-visible {
+  outline: none;
+  z-index: 2;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.9),
+    inset 0 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.blockLight {
+  color: rgba(15, 23, 42, 0.78);
+}
+
+.blockLight .hex {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.blockDark {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.blockDark .hex {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.shade {
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.hex {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+/* Copied flash */
+
+.copied {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(24, 24, 27, 0.92);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  animation: copiedIn 0.18s ease-out;
+}
+
+@keyframes copiedIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ifm-color-content-secondary);
+  font-size: 14px;
+  background: var(--ifm-background-surface-color);
+  border: 1px dashed var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+}
+
+/* ── Responsive ── */
+/* shade 10~13 개를 한 줄에 못 담을 때 가로 스크롤. wrap 시키면 좌→우 ramp 가
+ * 끊겨서 한 눈에 비교가 안 되므로 의도적으로 nowrap + overflow-x. */
+@media (max-width: 900px) {
+  .strip {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .block {
+    flex: 0 0 84px;
+    height: 88px;
+  }
+}
+
+@media (max-width: 640px) {
+  .toolbar {
+    position: static;
+  }
+  .block {
+    flex: 0 0 72px;
+    height: 80px;
+    padding: 10px 6px 8px;
+  }
+}
