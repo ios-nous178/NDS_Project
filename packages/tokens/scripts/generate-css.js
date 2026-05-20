@@ -15,6 +15,7 @@ const { nudgeEapSemantic } = require("../dist/brands/nudge-eap.semantic.js");
 const {
   spacing,
   gap,
+  gapTitle,
   inset,
   radius,
   shape,
@@ -113,6 +114,13 @@ function generateBaseTokens() {
   lines.push("  /* ── Gap (Semantic, Figma · SpacingGuide / Gap) ── */");
   for (const [key, value] of Object.entries(gap)) {
     lines.push(`  --gap-${key}: ${value}px;`);
+  }
+
+  // Gap/Title — 헤딩 ↔ 서브타이틀 간격 (Figma TitleGapGuide 859:5614)
+  lines.push("");
+  lines.push("  /* ── Gap/Title (Figma · TitleGapGuide 859:5614) ── */");
+  for (const [key, value] of Object.entries(gapTitle)) {
+    lines.push(`  --gap-title-${key}: ${value}px;`);
   }
 
   // Inset — Semantic (Figma · SpacingGuide / Inset) — 사용처 기반 컨테이너 내부 여백

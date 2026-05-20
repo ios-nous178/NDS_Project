@@ -2061,6 +2061,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     rules: [
       "4pt grid 기반. Gap(요소 간 거리)과 Inset(컨테이너 내부 여백)을 명확히 구분한다.",
       "Gap 은 의도 기반 시멘틱 토큰만 사용: --gap-tight(4) / --gap-default(10, 표준) / --gap-comfortable(12) / --gap-loose(16) / --gap-wide(24).",
+      "헤딩 ↔ 서브타이틀 간격은 level 기반 토큰 사용: --gap-title-h1(12) / -h2(12) / -h3(12) / -h4(6, ★ 카드 헤딩) / -h5(8, ★ 서브 헤딩). 임의 margin/spacing 직접 지정 금지.",
       "Inset 은 사용처 기반 시멘틱 토큰만 사용: --inset-chip(8) / --inset-input(12) / --inset-card(16, 표준) / --inset-card-large(20) / --inset-modal(24).",
       "임의 px (5/7/9/11/13/15) 사용 금지. Primitive(--spacing-N) 직접 사용 금지 — 반드시 semantic 토큰 거치기.",
       "AppBar 52px / BottomBar 56px",

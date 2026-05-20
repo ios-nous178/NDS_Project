@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T00:51:27.248Z",
+  "generatedAt": "2026-05-20T01:55:21.819Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -6242,6 +6242,31 @@
       "group": "gap"
     },
     {
+      "name": "--gap-title-h1",
+      "value": "12px",
+      "group": "gap"
+    },
+    {
+      "name": "--gap-title-h2",
+      "value": "12px",
+      "group": "gap"
+    },
+    {
+      "name": "--gap-title-h3",
+      "value": "12px",
+      "group": "gap"
+    },
+    {
+      "name": "--gap-title-h4",
+      "value": "6px",
+      "group": "gap"
+    },
+    {
+      "name": "--gap-title-h5",
+      "value": "8px",
+      "group": "gap"
+    },
+    {
       "name": "--gap-wide",
       "value": "24px",
       "group": "gap"
@@ -6483,7 +6508,7 @@
     },
     {
       "name": "--semantic-border-normal-default",
-      "value": "#D8D8D8",
+      "value": "#ECECEC",
       "group": "semantic"
     },
     {
@@ -6503,7 +6528,7 @@
     },
     {
       "name": "--semantic-border-subtle-default",
-      "value": "#ECECEC",
+      "value": "#F5F5F5",
       "group": "semantic"
     },
     {
@@ -7133,7 +7158,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#111111"
       },
-      "fontFamilies": ["Noto Sans KR"],
+      "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/geniet/DESIGN.md",
       "cssImport": "@nudge-eap/tokens/css/geniet",
       "jsExport": "@nudge-eap/tokens/brands",

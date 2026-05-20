@@ -16,7 +16,18 @@ export { semanticGuide, getSemanticGuide } from "./guide";
 export type { GuideStatus, GuideMeta } from "./guide";
 export { typography, fontFamily, fontWeight, typeScale } from "./typography";
 export type { TypeStyle } from "./typography";
-export { spacing, gap, inset, radius, shape, borderWidth, stroke, sizing, grid } from "./spacing";
+export {
+  spacing,
+  gap,
+  gapTitle,
+  inset,
+  radius,
+  shape,
+  borderWidth,
+  stroke,
+  sizing,
+  grid,
+} from "./spacing";
 export { elevation, shadow, zIndex, elevationLevel } from "./elevation";
 export type { ShadowLevel, ElevationLevelName } from "./elevation";
 export { motion, duration, easing, transition } from "./motion";
