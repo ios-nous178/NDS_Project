@@ -14,24 +14,41 @@ import {
 const CARD_CLASS = "nds-card";
 const CARD_ROOT_CLASS = `${CARD_CLASS}__root`;
 const CARD_THUMBNAIL_CLASS = `${CARD_CLASS}__thumbnail`;
+const CARD_AVATAR_CLASS = `${CARD_CLASS}__avatar`;
+const CARD_CHIPS_CLASS = `${CARD_CLASS}__chips`;
 const CARD_HEADER_CLASS = `${CARD_CLASS}__header`;
+const CARD_TEXT_CONTENT_CLASS = `${CARD_CLASS}__text-content`;
+const CARD_TITLE_DESC_CLASS = `${CARD_CLASS}__title-desc`;
 const CARD_BODY_CLASS = `${CARD_CLASS}__body`;
 const CARD_FOOTER_CLASS = `${CARD_CLASS}__footer`;
 const CARD_TITLE_CLASS = `${CARD_CLASS}__title`;
 const CARD_SUBTITLE_CLASS = `${CARD_CLASS}__subtitle`;
+const CARD_DESCRIPTION_CLASS = `${CARD_CLASS}__description`;
 const CARD_META_CLASS = `${CARD_CLASS}__meta`;
+const CARD_METADATA_CLASS = `${CARD_CLASS}__metadata`;
+const CARD_DIVIDER_CLASS = `${CARD_CLASS}__divider`;
+const CARD_CTA_CLASS = `${CARD_CLASS}__cta`;
+const CARD_FOOTER_TEXT_CLASS = `${CARD_CLASS}__footer-text`;
 
 /* ─── Styles ─── */
+// Figma 171:9363 (Card 마스터) 사양에 맞춤:
+//   - 균등 padding(--inset-card, 16px) + gap(--nds-card-gap, 12px) 의 수직 스택
+//   - corner radius lg(12), thumbnail radius 10
+//   - 타이포: title=Headline 5/Bold, description=Caption 1/Regular,
+//             metadata/footerText=Caption 2/Regular (muted)
 
 // eslint-disable-next-line unused-imports/no-unused-vars
 const cardStyles = `
   :where(.${CARD_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    gap: var(--nds-card-gap, ${spacing[12]}px);
     width: var(--nds-card-width, 100%);
+    padding: var(--nds-card-padding, var(--inset-card, 16px));
     font-family: ${fontFamily.web};
     box-sizing: border-box;
-    border-radius: var(--nds-card-radius, ${radius.md}px);
+    border-radius: var(--nds-card-radius, ${radius.lg}px);
     background: var(--nds-card-background, ${cv.surface.default});
     overflow: hidden;
     transition: background-color ${transition.default}, box-shadow ${transition.default};
@@ -49,12 +66,20 @@ const cardStyles = `
     background: var(--nds-card-hover-background, ${cv.surface.page});
   }
 
+  /* Thumbnail — Figma 고정 height (기본 160px), aspectRatio 도 옵션 유지 */
   :where(.${CARD_THUMBNAIL_CLASS}) {
     position: relative;
     width: 100%;
-    aspect-ratio: var(--nds-card-thumbnail-ratio, 16 / 10);
+    height: var(--nds-card-thumbnail-height, 160px);
     overflow: hidden;
     background: ${cv.surface.subtle};
+    border-radius: var(--nds-card-thumbnail-radius, 10px);
+    flex-shrink: 0;
+  }
+
+  :where(.${CARD_THUMBNAIL_CLASS}[data-ratio="true"]) {
+    height: auto;
+    aspect-ratio: var(--nds-card-thumbnail-ratio, 16 / 10);
   }
 
   :where(.${CARD_THUMBNAIL_CLASS} img) {
@@ -63,62 +88,141 @@ const cardStyles = `
     object-fit: cover;
   }
 
-  :where(.${CARD_HEADER_CLASS}) {
+  /* Avatar — 40px circle */
+  :where(.${CARD_AVATAR_CLASS}) {
+    position: relative;
+    width: var(--nds-card-avatar-size, 40px);
+    height: var(--nds-card-avatar-size, 40px);
+    border-radius: 50%;
+    overflow: hidden;
+    background: ${cv.surface.subtle};
     display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  :where(.${CARD_AVATAR_CLASS} img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Chips / BadgeGroup */
+  :where(.${CARD_CHIPS_CLASS}) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-tight, ${spacing[4]}px);
     align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--gap-default);
-    padding: var(--inset-card) var(--inset-card) 0;
+  }
+
+  /* Text content (Title + Description + Metadata stack) */
+  :where(.${CARD_TEXT_CONTENT_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[6]}px;
+    width: 100%;
+  }
+
+  :where(.${CARD_TITLE_DESC_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[8]}px;
+    width: 100%;
   }
 
   :where(.${CARD_TITLE_CLASS}) {
     margin: 0;
-    font-size: ${typeScale.body1.fontSize}px;
+    font-size: ${typeScale.headline5.fontSize}px;
     font-weight: ${fontWeight.bold};
-    line-height: ${typeScale.body1.lineHeight}px;
-    color: ${cv.textRole.normal};
+    line-height: ${typeScale.headline5.lineHeight}px;
+    color: ${cv.textRole.strong};
+    word-break: break-word;
   }
 
-  :where(.${CARD_SUBTITLE_CLASS}) {
-    margin: ${spacing[4]}px 0 0;
-    font-size: ${typeScale.body3.fontSize}px;
+  /* Subtitle / Description — 동일 시각 (Caption 1, subtle) */
+  :where(.${CARD_SUBTITLE_CLASS}),
+  :where(.${CARD_DESCRIPTION_CLASS}) {
+    margin: 0;
+    font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body3.lineHeight}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.subtle};
+    word-break: break-word;
   }
 
+  /* Metadata (caption2, muted) */
+  :where(.${CARD_METADATA_CLASS}) {
+    margin: 0;
+    font-size: ${typeScale.caption2.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.caption2.lineHeight}px;
+    color: ${cv.textRole.muted};
+  }
+
+  /* Meta (legacy ReactNode slot) — 동일 톤 */
   :where(.${CARD_META_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-tight);
-    flex-shrink: 0;
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.textRole.normal};
+    gap: var(--gap-tight, ${spacing[4]}px);
+    font-size: ${typeScale.caption2.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.caption2.lineHeight}px;
+    color: ${cv.textRole.muted};
   }
 
+  /* Body (자유 ReactNode 콘텐츠) */
   :where(.${CARD_BODY_CLASS}) {
-    padding: var(--inset-input) var(--inset-card);
+    width: 100%;
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
     color: ${cv.textRole.subtle};
   }
 
+  /* Divider (옵션 토글) */
+  :where(.${CARD_DIVIDER_CLASS}) {
+    width: 100%;
+    height: 1px;
+    background: ${cv.borderRole.subtle};
+    margin: 0;
+    border: 0;
+    flex-shrink: 0;
+  }
+
+  /* CTA (액션 버튼 영역) */
+  :where(.${CARD_CTA_CLASS}) {
+    width: 100%;
+  }
+
+  /* Footer text (Caption 2, muted) */
+  :where(.${CARD_FOOTER_TEXT_CLASS}) {
+    margin: 0;
+    font-size: ${typeScale.caption2.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.caption2.lineHeight}px;
+    color: ${cv.textRole.muted};
+  }
+
+  /* Legacy CardHeader / CardFooter — 새 레이아웃에서도 자연스럽게 */
+  :where(.${CARD_HEADER_CLASS}) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-default, ${spacing[8]}px);
+    width: 100%;
+  }
+
   :where(.${CARD_FOOTER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
-    padding: 0 var(--inset-card) var(--inset-card);
-    border-top: 1px solid ${cv.borderRole.subtle};
-    margin-top: auto;
-    padding-top: var(--inset-input);
+    gap: var(--gap-default, ${spacing[8]}px);
+    width: 100%;
   }
 
-  :where(.${CARD_FOOTER_CLASS}[data-no-border="true"]) {
-    border-top: none;
-    padding-top: 0;
+  :where(.${CARD_FOOTER_CLASS}[data-divider="true"]) {
+    padding-top: var(--inset-input, 12px);
+    border-top: 1px solid ${cv.borderRole.subtle};
   }
 `;
 
@@ -161,19 +265,25 @@ CardRoot.displayName = "CardRoot";
 /* ─── Compound: Thumbnail ─── */
 
 export interface CardThumbnailProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** CSS aspect-ratio 값 (예: "16/9", "4/3") */
+  /** 고정 height (px). 기본 160. aspectRatio 가 있으면 무시. */
+  height?: number;
+  /** CSS aspect-ratio (예: "16/9"). 지정하면 height 대신 비율로 렌더. */
   aspectRatio?: string;
   /** 썸네일로 표시할 이미지 등 콘텐츠 */
   children: React.ReactNode;
 }
 
 export const CardThumbnail: React.FC<CardThumbnailProps> = React.memo(
-  ({ aspectRatio, children, className, style, ...rest }) => (
+  ({ height, aspectRatio, children, className, style, ...rest }) => (
     <div
       data-slot="thumbnail"
+      data-ratio={aspectRatio ? "true" : "false"}
       className={cx(CARD_THUMBNAIL_CLASS, className)}
       style={{
         ...(aspectRatio && ({ "--nds-card-thumbnail-ratio": aspectRatio } as React.CSSProperties)),
+        ...(height && !aspectRatio
+          ? ({ "--nds-card-thumbnail-height": `${height}px` } as React.CSSProperties)
+          : null),
         ...style,
       }}
       {...rest}
@@ -184,10 +294,49 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = React.memo(
 );
 CardThumbnail.displayName = "CardThumbnail";
 
-/* ─── Compound: Header ─── */
+/* ─── Compound: Avatar ─── */
+
+export interface CardAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** 정사각형 size (px). 기본 40. */
+  size?: number;
+  children?: React.ReactNode;
+}
+
+export const CardAvatar: React.FC<CardAvatarProps> = React.memo(
+  ({ size, children, className, style, ...rest }) => (
+    <div
+      data-slot="avatar"
+      className={cx(CARD_AVATAR_CLASS, className)}
+      style={{
+        ...(size ? ({ "--nds-card-avatar-size": `${size}px` } as React.CSSProperties) : null),
+        ...style,
+      }}
+      {...rest}
+    >
+      {children}
+    </div>
+  ),
+);
+CardAvatar.displayName = "CardAvatar";
+
+/* ─── Compound: Chips (BadgeGroup) ─── */
+
+export interface CardChipsProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+export const CardChips: React.FC<CardChipsProps> = React.memo(
+  ({ children, className, ...rest }) => (
+    <div data-slot="chips" className={cx(CARD_CHIPS_CLASS, className)} {...rest}>
+      {children}
+    </div>
+  ),
+);
+CardChips.displayName = "CardChips";
+
+/* ─── Compound: Header (legacy — title+meta 좌우 분할) ─── */
 
 export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 헤더 영역 콘텐츠 (Title, Subtitle, Meta 등) */
   children: React.ReactNode;
 }
 
@@ -203,7 +352,6 @@ CardHeader.displayName = "CardHeader";
 /* ─── Compound: Title ─── */
 
 export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  /** 카드 제목 텍스트 (`<h3>`으로 렌더링) */
   children: React.ReactNode;
 }
 
@@ -216,10 +364,9 @@ export const CardTitle: React.FC<CardTitleProps> = React.memo(
 );
 CardTitle.displayName = "CardTitle";
 
-/* ─── Compound: Subtitle ─── */
+/* ─── Compound: Subtitle (legacy alias of Description) ─── */
 
 export interface CardSubtitleProps extends React.HTMLAttributes<HTMLParagraphElement> {
-  /** 카드 부제목 텍스트 */
   children: React.ReactNode;
 }
 
@@ -232,10 +379,24 @@ export const CardSubtitle: React.FC<CardSubtitleProps> = React.memo(
 );
 CardSubtitle.displayName = "CardSubtitle";
 
-/* ─── Compound: Meta ─── */
+/* ─── Compound: Description ─── */
+
+export interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  children: React.ReactNode;
+}
+
+export const CardDescription: React.FC<CardDescriptionProps> = React.memo(
+  ({ children, className, ...rest }) => (
+    <p data-slot="description" className={cx(CARD_DESCRIPTION_CLASS, className)} {...rest}>
+      {children}
+    </p>
+  ),
+);
+CardDescription.displayName = "CardDescription";
+
+/* ─── Compound: Meta (legacy — ReactNode) ─── */
 
 export interface CardMetaProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 메타 정보 콘텐츠 (날짜, 태그 등 — 헤더 우측에 배치) */
   children: React.ReactNode;
 }
 
@@ -246,10 +407,24 @@ export const CardMeta: React.FC<CardMetaProps> = React.memo(({ children, classNa
 ));
 CardMeta.displayName = "CardMeta";
 
+/* ─── Compound: Metadata (string) ─── */
+
+export interface CardMetadataProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  children: React.ReactNode;
+}
+
+export const CardMetadata: React.FC<CardMetadataProps> = React.memo(
+  ({ children, className, ...rest }) => (
+    <p data-slot="metadata" className={cx(CARD_METADATA_CLASS, className)} {...rest}>
+      {children}
+    </p>
+  ),
+);
+CardMetadata.displayName = "CardMetadata";
+
 /* ─── Compound: Body ─── */
 
 export interface CardBodyProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 카드 본문 콘텐츠 */
   children: React.ReactNode;
 }
 
@@ -260,48 +435,88 @@ export const CardBody: React.FC<CardBodyProps> = React.memo(({ children, classNa
 ));
 CardBody.displayName = "CardBody";
 
-/* ─── Compound: Footer ─── */
+/* ─── Compound: Divider ─── */
+
+export const CardDivider: React.FC<React.HTMLAttributes<HTMLHRElement>> = React.memo(
+  ({ className, ...rest }) => (
+    <hr data-slot="divider" className={cx(CARD_DIVIDER_CLASS, className)} {...rest} />
+  ),
+);
+CardDivider.displayName = "CardDivider";
+
+/* ─── Compound: CTA ─── */
+
+export interface CardCtaProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+export const CardCta: React.FC<CardCtaProps> = React.memo(({ children, className, ...rest }) => (
+  <div data-slot="cta" className={cx(CARD_CTA_CLASS, className)} {...rest}>
+    {children}
+  </div>
+));
+CardCta.displayName = "CardCta";
+
+/* ─── Compound: Footer (legacy — ReactNode 가로 정렬) ─── */
 
 export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** true이면 푸터 상단 테두리를 숨김 */
+  /** true 이면 footer 위에 divider 표시 (legacy). */
+  divider?: boolean;
+  /** legacy alias: noBorder=true 이면 divider 숨김 (= divider=false) */
   noBorder?: boolean;
-  /** 푸터 콘텐츠 (액션 버튼 등) */
   children: React.ReactNode;
 }
 
 export const CardFooter: React.FC<CardFooterProps> = React.memo(
-  ({ noBorder = false, children, className, ...rest }) => (
-    <div
-      data-slot="footer"
-      data-no-border={noBorder ? "true" : "false"}
-      className={cx(CARD_FOOTER_CLASS, className)}
-      {...rest}
-    >
-      {children}
-    </div>
-  ),
+  ({ divider, noBorder = false, children, className, ...rest }) => {
+    const showDivider = divider ?? !noBorder;
+    return (
+      <div
+        data-slot="footer"
+        data-divider={showDivider ? "true" : "false"}
+        className={cx(CARD_FOOTER_CLASS, className)}
+        {...rest}
+      >
+        {children}
+      </div>
+    );
+  },
 );
 CardFooter.displayName = "CardFooter";
+
+/* ─── Compound: FooterText (caption 2, muted) ─── */
+
+export interface CardFooterTextProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  children: React.ReactNode;
+}
+
+export const CardFooterText: React.FC<CardFooterTextProps> = React.memo(
+  ({ children, className, ...rest }) => (
+    <p data-slot="footer-text" className={cx(CARD_FOOTER_TEXT_CLASS, className)} {...rest}>
+      {children}
+    </p>
+  ),
+);
+CardFooterText.displayName = "CardFooterText";
 
 /* ─── Flat API ─── */
 
 export interface CardSlotProps {
-  /** 루트 컨테이너 `<div>`에 전달할 추가 props */
   root?: Omit<CardRootProps, "children" | "variant" | "clickable">;
-  /** 썸네일 `<div>`에 전달할 추가 props */
   thumbnail?: Omit<CardThumbnailProps, "children">;
-  /** 헤더 `<div>`에 전달할 추가 props */
+  avatar?: Omit<CardAvatarProps, "children">;
+  chips?: Omit<CardChipsProps, "children">;
   header?: Omit<CardHeaderProps, "children">;
-  /** 타이틀 `<h3>`에 전달할 추가 props */
   title?: Omit<CardTitleProps, "children">;
-  /** 서브타이틀 `<p>`에 전달할 추가 props */
   subtitle?: Omit<CardSubtitleProps, "children">;
-  /** 메타 `<div>`에 전달할 추가 props */
+  description?: Omit<CardDescriptionProps, "children">;
   meta?: Omit<CardMetaProps, "children">;
-  /** 본문 `<div>`에 전달할 추가 props */
+  metadata?: Omit<CardMetadataProps, "children">;
   body?: Omit<CardBodyProps, "children">;
-  /** 푸터 `<div>`에 전달할 추가 props */
+  divider?: React.HTMLAttributes<HTMLHRElement>;
+  cta?: Omit<CardCtaProps, "children">;
   footer?: Omit<CardFooterProps, "children">;
+  footerText?: Omit<CardFooterTextProps, "children">;
 }
 
 export interface CardProps {
@@ -309,29 +524,41 @@ export interface CardProps {
   variant?: CardVariant;
   /** 클릭 가능 여부 */
   clickable?: boolean;
-  /** 썸네일 콘텐츠 (이미지 등) */
+  /** 썸네일 콘텐츠 (이미지 등) — Figma 기본 160px 고정 height */
   thumbnail?: React.ReactNode;
-  /** 썸네일 비율 */
+  /** 썸네일 고정 height (px). 기본 160. thumbnailRatio 가 있으면 무시 */
+  thumbnailHeight?: number;
+  /** 썸네일 비율 (지정하면 height 무시하고 비율로 렌더) */
   thumbnailRatio?: string;
+  /** 아바타 콘텐츠 (40px circle 슬롯) */
+  avatar?: React.ReactNode;
+  /** Chip / Badge 그룹 (가로 정렬) */
+  chips?: React.ReactNode;
   /** 제목 */
   title?: string;
-  /** 부제목 */
+  /** 설명 (Figma: description, Caption 1, subtle). subtitle 도 동일 슬롯. */
+  description?: string;
+  /** @deprecated description 사용 권장 — 같은 슬롯에 렌더됨 */
   subtitle?: string;
-  /** 메타 정보 (우상단) */
+  /** 메타 텍스트 (Caption 2, muted) — Title/Description 아래 단독 줄 */
+  metadata?: string;
+  /** @deprecated metadata (string) 또는 자유로운 ReactNode 가 필요하면 그대로 사용 */
   meta?: React.ReactNode;
-  /** 본문 콘텐츠 */
+  /** 자유 본문 콘텐츠 (text-content 와 divider 사이에 렌더) */
   children?: React.ReactNode;
-  /** 푸터 콘텐츠 */
+  /** 구분선 표시 여부 (CTA / footerText 위에 가로선) */
+  divider?: boolean;
+  /** CTA 슬롯 (버튼 등 액션 영역) */
+  cta?: React.ReactNode;
+  /** Footer 텍스트 (Caption 2, muted) */
+  footerText?: string;
+  /** @deprecated footer ReactNode — cta 슬롯에 렌더됨 (cta 가 없을 때만) */
   footer?: React.ReactNode;
-  /** 푸터 테두리 숨김 */
+  /** @deprecated divider=false 와 동일 */
   footerNoBorder?: boolean;
-  /** 루트 className */
   className?: string;
-  /** 루트 style */
   style?: React.CSSProperties;
-  /** 클릭 핸들러 */
   onClick?: React.MouseEventHandler<HTMLDivElement>;
-  /** 슬롯 프롭 */
   slotProps?: CardSlotProps;
 }
 
@@ -339,74 +566,121 @@ const CardComponent: React.FC<CardProps> = ({
   variant = "outlined",
   clickable = false,
   thumbnail,
+  thumbnailHeight,
   thumbnailRatio,
+  avatar,
+  chips,
   title,
+  description,
   subtitle,
+  metadata,
   meta,
   children,
+  divider,
+  cta,
+  footerText,
   footer,
   footerNoBorder = false,
   className,
   style,
   onClick,
   slotProps,
-}) => (
-  <CardRoot
-    variant={variant}
-    clickable={clickable || !!onClick}
-    className={cx(slotProps?.root?.className, className)}
-    style={{ ...slotProps?.root?.style, ...style }}
-    onClick={onClick}
-  >
-    {thumbnail && (
-      <CardThumbnail
-        aspectRatio={thumbnailRatio}
-        className={slotProps?.thumbnail?.className}
-        style={slotProps?.thumbnail?.style}
-      >
-        {thumbnail}
-      </CardThumbnail>
-    )}
-    {(title || meta) && (
-      <CardHeader className={slotProps?.header?.className} style={slotProps?.header?.style}>
-        <div>
-          {title && (
-            <CardTitle className={slotProps?.title?.className} style={slotProps?.title?.style}>
-              {title}
-            </CardTitle>
+}) => {
+  const effectiveDescription = description ?? subtitle;
+  // legacy: footer(ReactNode) 가 단독 사용되면 cta 슬롯으로 매핑
+  const effectiveCta = cta ?? footer;
+  // legacy: footerNoBorder=true 이면 divider=false (명시적으로 divider 지정한 게 우선)
+  const showDivider = divider ?? !footerNoBorder;
+
+  const hasTextContent = !!(title || effectiveDescription || metadata || meta);
+  const hasDivider = showDivider && (effectiveCta || footerText);
+
+  return (
+    <CardRoot
+      variant={variant}
+      clickable={clickable || !!onClick}
+      className={cx(slotProps?.root?.className, className)}
+      style={{ ...slotProps?.root?.style, ...style }}
+      onClick={onClick}
+    >
+      {thumbnail && (
+        <CardThumbnail
+          height={thumbnailHeight}
+          aspectRatio={thumbnailRatio}
+          className={slotProps?.thumbnail?.className}
+          style={slotProps?.thumbnail?.style}
+        >
+          {thumbnail}
+        </CardThumbnail>
+      )}
+      {avatar && (
+        <CardAvatar className={slotProps?.avatar?.className} style={slotProps?.avatar?.style}>
+          {avatar}
+        </CardAvatar>
+      )}
+      {chips && (
+        <CardChips className={slotProps?.chips?.className} style={slotProps?.chips?.style}>
+          {chips}
+        </CardChips>
+      )}
+      {hasTextContent && (
+        <div className={CARD_TEXT_CONTENT_CLASS}>
+          {(title || effectiveDescription) && (
+            <div className={CARD_TITLE_DESC_CLASS}>
+              {title && (
+                <CardTitle className={slotProps?.title?.className} style={slotProps?.title?.style}>
+                  {title}
+                </CardTitle>
+              )}
+              {effectiveDescription && (
+                <CardDescription
+                  className={slotProps?.description?.className}
+                  style={slotProps?.description?.style}
+                >
+                  {effectiveDescription}
+                </CardDescription>
+              )}
+            </div>
           )}
-          {subtitle && (
-            <CardSubtitle
-              className={slotProps?.subtitle?.className}
-              style={slotProps?.subtitle?.style}
+          {metadata && (
+            <CardMetadata
+              className={slotProps?.metadata?.className}
+              style={slotProps?.metadata?.style}
             >
-              {subtitle}
-            </CardSubtitle>
+              {metadata}
+            </CardMetadata>
+          )}
+          {!metadata && meta && (
+            <CardMeta className={slotProps?.meta?.className} style={slotProps?.meta?.style}>
+              {meta}
+            </CardMeta>
           )}
         </div>
-        {meta && (
-          <CardMeta className={slotProps?.meta?.className} style={slotProps?.meta?.style}>
-            {meta}
-          </CardMeta>
-        )}
-      </CardHeader>
-    )}
-    {children && (
-      <CardBody className={slotProps?.body?.className} style={slotProps?.body?.style}>
-        {children}
-      </CardBody>
-    )}
-    {footer && (
-      <CardFooter
-        noBorder={footerNoBorder}
-        className={slotProps?.footer?.className}
-        style={slotProps?.footer?.style}
-      >
-        {footer}
-      </CardFooter>
-    )}
-  </CardRoot>
-);
+      )}
+      {children && (
+        <CardBody className={slotProps?.body?.className} style={slotProps?.body?.style}>
+          {children}
+        </CardBody>
+      )}
+      {hasDivider && (
+        <CardDivider className={slotProps?.divider?.className} style={slotProps?.divider?.style} />
+      )}
+      {effectiveCta && (
+        <CardCta className={slotProps?.cta?.className} style={slotProps?.cta?.style}>
+          {effectiveCta}
+        </CardCta>
+      )}
+      {footerText && (
+        <CardFooterText
+          className={slotProps?.footerText?.className}
+          style={slotProps?.footerText?.style}
+        >
+          {footerText}
+        </CardFooterText>
+      )}
+    </CardRoot>
+  );
+};
 
 CardComponent.displayName = "Card";
 
@@ -415,10 +689,17 @@ CardComponent.displayName = "Card";
 export const Card = Object.assign(CardComponent, {
   Root: CardRoot,
   Thumbnail: CardThumbnail,
+  Avatar: CardAvatar,
+  Chips: CardChips,
   Header: CardHeader,
   Title: CardTitle,
   Subtitle: CardSubtitle,
+  Description: CardDescription,
   Meta: CardMeta,
+  Metadata: CardMetadata,
   Body: CardBody,
+  Divider: CardDivider,
+  Cta: CardCta,
   Footer: CardFooter,
+  FooterText: CardFooterText,
 });

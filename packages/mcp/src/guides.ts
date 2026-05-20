@@ -499,10 +499,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "Card",
     summary:
       "독립된 콘텐츠 단위를 시각적으로 그룹화하는 컨테이너. Variant 카탈로그가 아니라 '내부 구조 + 생성 규칙' 표준 — 임의 스타일 변형 차단이 목적. " +
-      "Compound 구조(순서 고정): Card.Root / Thumbnail / Header / Body / Footer. " +
+      "Compound 슬롯(순서 고정, 모두 Optional): Card.Root / Thumbnail / Avatar / Chips / Title / Description / Metadata / Divider / Cta / FooterText. (legacy: Header / Body / Footer 도 유지). " +
+      "Flat API props: thumbnail, avatar, chips, title, description, metadata, divider, cta, footerText, children. " +
       "Anatomy 요소(필수/선택): Title(Required, 정확히 1개) · Thumbnail · Avatar · Badge/Chip · Description · Metadata · CTA · Footer (모두 Optional). " +
       "사용 기준 3축 모두 충족시에만 Card: ① 독립성(개별 탐색·선택), ② 이종 콘텐츠(이미지+텍스트+메타 2종+), ③ 비선형 탐색(그리드·캐러셀). 하나라도 미충족 → List/Table/Feed/Chip.",
-    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=713-2",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=888-23",
     pitfalls: [
       "[Figma 권위 룰] 카드 shadow 전면 금지 — 카드 구분은 border 1px 로만. box-shadow / drop-shadow / elevation 임의 적용 모두 위반. 이전 가이드의 hover→shadow-sm 권장은 deprecated.",
       "[Figma 권위 룰] 임의 pastel/gradient/opacity 배경 금지 — White 또는 정의된 Surface 토큰 외 배경색 생성 불가. linear-gradient(), rgba 투명도, #E8F4FD 류 임의 hex 모두 차단.",
