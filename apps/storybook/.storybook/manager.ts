@@ -7,6 +7,11 @@ const ADDON_ID = "nds-token-editor";
 const PANEL_ID = `${ADDON_ID}/panel`;
 const TOKEN_OVERRIDE_KEY = "nds-token-overrides";
 
+addons.setConfig({
+  brandTitle: "NUDGE Design",
+  brandImage: "./favicon.svg",
+});
+
 /* ─── 토큰 분류 ─── */
 
 function classifyToken(_key: string, value: string): "color" | "size" | "text" {
