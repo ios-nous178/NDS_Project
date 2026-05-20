@@ -1,5 +1,13 @@
 # @nudge-eap/tailwind-preset
 
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [368b9ba]
+- Updated dependencies [8a22a9e]
+  - @nudge-eap/tokens@0.1.9
+
 ## 0.1.8
 
 ### Patch Changes
