@@ -1,13 +1,13 @@
 /* ─── Theme Colors ─── */
 
 :root {
-  --ifm-color-primary: #2b96ed;
-  --ifm-color-primary-dark: #158be9;
-  --ifm-color-primary-darker: #017ee4;
-  --ifm-color-primary-darkest: #1b65ba;
-  --ifm-color-primary-light: #47a5f0;
-  --ifm-color-primary-lighter: #67b5f2;
-  --ifm-color-primary-lightest: #91caf6;
+  --ifm-color-primary: #18181b;
+  --ifm-color-primary-dark: #0c0c0d;
+  --ifm-color-primary-darker: #000000;
+  --ifm-color-primary-darkest: #000000;
+  --ifm-color-primary-light: #2e2e33;
+  --ifm-color-primary-lighter: #45454b;
+  --ifm-color-primary-lightest: #6c7280;
 
   --ifm-background-color: #ffffff;
   --ifm-background-surface-color: #ffffff;
@@ -39,6 +39,14 @@
 }
 
 html[data-theme="dark"] {
+  --ifm-color-primary: #fafafa;
+  --ifm-color-primary-dark: #e4e4e7;
+  --ifm-color-primary-darker: #d4d4d8;
+  --ifm-color-primary-darkest: #a1a1aa;
+  --ifm-color-primary-light: #ffffff;
+  --ifm-color-primary-lighter: #ffffff;
+  --ifm-color-primary-lightest: #ffffff;
+
   --ifm-background-color: #111111;
   --ifm-background-surface-color: #1a1a1a;
   --ifm-toc-border-color: #2a2a2a;
@@ -54,12 +62,27 @@ html[data-theme="dark"] {
   padding: 0 24px;
 }
 
+.navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  margin-right: 32px;
+}
+
 .navbar__logo {
-  height: 1.5rem;
+  height: 22px;
+  width: 22px;
+  margin-right: 2px;
+}
+
+.navbar__logo img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 }
 
 .navbar__title {
-  font-weight: 800;
+  font-weight: 700;
   font-size: 16px;
   letter-spacing: -0.01em;
 }
@@ -71,6 +94,39 @@ html[data-theme="dark"] {
 
 .navbar__link--active {
   font-weight: 700;
+}
+
+/* GitHub navbar icon link — clean stroke Lucide variant */
+.header-github-link {
+  font-size: 0;
+  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  color: var(--ifm-color-content);
+}
+
+.header-github-link::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22'/></svg>")
+    no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22'/></svg>")
+    no-repeat center / contain;
+  transition: opacity 0.15s ease;
+}
+
+.header-github-link:hover::before {
+  opacity: 0.55;
+}
+
+/* Docusaurus 외부 링크 ↗ 글리프 제거 (헤더 nav link 한정) */
+.navbar__link
+  svg.iconExternalLink_node_modules-\@docusaurus-theme-classic-lib-theme-Icon-ExternalLink-styles-module,
+.navbar__items svg[class*="iconExternalLink"] {
+  display: none;
 }
 
 /* ─── Sidebar ─── */
@@ -92,9 +148,14 @@ html[data-theme="dark"] {
 }
 
 .menu__link--active:not(.menu__link--sublist) {
-  background: rgba(43, 150, 237, 0.08);
-  color: var(--ifm-color-primary-darker);
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ifm-color-primary);
   font-weight: 600;
+}
+
+html[data-theme="dark"] .menu__link--active:not(.menu__link--sublist) {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ifm-color-primary);
 }
 
 .menu__list-item-collapsible .menu__link {
@@ -191,8 +252,13 @@ code {
   padding: 2px 7px;
   font-size: 0.88em;
   background: #f3f4f6;
-  color: #017ee4;
+  color: #18181b;
   border: none;
+}
+
+html[data-theme="dark"] code {
+  background: #1f1f22;
+  color: #fafafa;
 }
 
 div[class*="codeBlockContainer"] {
@@ -288,10 +354,15 @@ table code {
 
 blockquote {
   border-left: 3px solid var(--ifm-color-primary);
-  background: rgba(43, 150, 237, 0.04);
+  background: rgba(0, 0, 0, 0.04);
   border-radius: 0 8px 8px 0;
   padding: 12px 16px;
   color: #4e5462;
+}
+
+html[data-theme="dark"] blockquote {
+  background: rgba(255, 255, 255, 0.04);
+  color: #d4d4d8;
 }
 
 /* ─── Admonitions ─── */
@@ -399,7 +470,11 @@ blockquote {
 /* ─── Selection ─── */
 
 ::selection {
-  background: rgba(43, 150, 237, 0.15);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme="dark"] ::selection {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 /* ─── Smooth transitions ─── */

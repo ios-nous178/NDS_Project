@@ -36,8 +36,8 @@
 }
 
 .search:focus {
-  border-color: #2b96ed;
-  box-shadow: 0 0 0 3px rgba(43, 150, 237, 0.18);
+  border-color: #18181b;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
 }
 
 .toggleLabel {

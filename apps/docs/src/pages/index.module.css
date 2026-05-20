@@ -1,8 +1,8 @@
 /* ─── Page palette ─── */
 
 .page {
-  --c-primary: #2b96ed;
-  --c-primary-dark: #017ee4;
+  --c-primary: #18181b;
+  --c-primary-dark: #000000;
   --c-accent: #ed2e77;
   --c-mint: #00a07c;
   --c-purple: #9061f9;
@@ -48,16 +48,16 @@ html[data-theme="dark"] .page {
   padding: 120px 0 80px;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(43, 150, 237, 0.12), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 85% 0%, rgba(237, 46, 119, 0.08), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 15% 20%, rgba(0, 160, 124, 0.06), transparent 70%);
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(15, 23, 42, 0.08), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 0%, rgba(15, 23, 42, 0.05), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 15% 20%, rgba(15, 23, 42, 0.04), transparent 70%);
 }
 
 html[data-theme="dark"] .hero {
   background:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(43, 150, 237, 0.18), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 85% 0%, rgba(237, 46, 119, 0.12), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 15% 20%, rgba(0, 160, 124, 0.1), transparent 70%);
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255, 255, 255, 0.08), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 0%, rgba(255, 255, 255, 0.05), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 15% 20%, rgba(255, 255, 255, 0.04), transparent 70%);
 }
 
 .heroGrid {
@@ -130,7 +130,14 @@ html[data-theme="dark"] .heroGrid {
 }
 
 .heroGradient {
-  background: linear-gradient(135deg, #2b96ed 0%, #017ee4 40%, #9061f9 75%, #ed2e77 100%);
+  background: linear-gradient(135deg, #18181b 0%, #45454b 45%, #6c7280 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+html[data-theme="dark"] .heroGradient {
+  background: linear-gradient(135deg, #ffffff 0%, #c4c4c8 45%, #8a8a90 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -226,6 +233,7 @@ html[data-theme="dark"] .heroGrid {
   width: 6px;
   height: 6px;
   border-radius: 50%;
+  background: var(--c-text);
 }
 
 /* ─── Section base ─── */
