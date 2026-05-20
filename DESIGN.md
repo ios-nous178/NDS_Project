@@ -231,6 +231,16 @@ gap:
   loose: 16px # 컴포넌트 ↔ 컴포넌트
   wide: 24px # 큰 영역 ↔ 큰 영역
 
+# ── Gap/Title (헤딩 ↔ 서브타이틀, 의도 기반) ──────────────
+# Figma TitleGapGuide 859:5614 · 6 페이지 58건 실측 기반
+# level 만 결정하면 헤딩 폰트와 함께 자동 적용되는 표준 간격
+gap-title:
+  h1: 12px # 36px Bold · Hero
+  h2: 12px # 28px Bold · 큰 섹션 · 다이얼로그 헤더
+  h3: 12px # 24px Bold · 페이지 헤더
+  h4: 6px # 20px Bold · ★ 카드 헤딩 (가장 자주)
+  h5: 8px # 18px Bold · ★ 서브 헤딩 (가장 자주)
+
 # ── Inset (Semantic — 컨테이너 내부 여백, 사용처 기반) ────
 # 4pt grid · Figma SpacingGuide / Inset
 # Gap(요소 간 거리)과 명확히 구분. 카드 padding 은 `--inset-card`.
