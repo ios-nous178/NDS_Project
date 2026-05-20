@@ -75,7 +75,7 @@ const config = {
         href: "/",
       },
       items: [
-        { to: "/getting-started", label: "시작하기", position: "left" },
+        { to: "/intro", label: "소개", position: "left" },
         { to: "/components/overview", label: "컴포넌트", position: "left" },
         { to: "/tokens/colors", label: "토큰", position: "left" },
         { to: "/guide/design-principles", label: "가이드", position: "left" },
