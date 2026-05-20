@@ -9,144 +9,66 @@
 -->
 <!-- markdownlint-disable MD036 -->
 
-*Card / List 컴포넌트가 Figma 마스터에 맞게 정렬됐어요*
+*Card / List 가 Figma 마스터와 같은 모양이 됐어요*
 
-Card (171:9363) 와 List (933:80) 의 Figma 정의가 코드와 미묘하게 어긋나 있었어요. 이제 디자이너가 Figma 에서 그린 카드 모양과 AI 가 만드는 카드 모양이 같은 토큰을 씁니다.
+Figma 의 Card(171:9363) / List(933:80) 정의가 그동안 코드와 미묘하게 어긋나 있었어요. 이제 디자이너가 Figma 에서 그리는 카드·리스트와 AI 가 만드는 결과물이 같은 타이포·간격·radius 를 씁니다.
 
-*Card*
+• *Card* 신규 슬롯 — Avatar(40 원형), Chips(브랜드 chip 그룹), Divider, Cta(액션 버튼 영역), FooterText. 기존 props 그대로 동작 (외부 사용처 영향 없음).
+• *Card 레이아웃* — 균등 padding 16 + slot 간 gap 12 의 수직 스택. corner radius 8 → *12*. Thumbnail 기본 고정 height 160px.
+• *List* — Title 14 Medium → *16 Bold*. Description 13 → *14*. Metadata prop 신설.
 
-• 신규 슬롯: *Avatar*(40px 원형), *Chips*(브랜드 chip 그룹), *Divider*(가로 구분선 토글), *Cta*(액션 버튼 영역), *FooterText*(작은 footer 텍스트). 기존 props(`subtitle` `meta` `footer` 등) 는 그대로 동작 — 외부 사용처 영향 없어요.
-• 레이아웃이 균등 padding 16 + 슬롯 간 gap 12 의 수직 스택으로 단순화. 이전엔 header / body / footer 가 각자 padding 을 갖고 있어 Figma 와 미묘하게 어긋났어요.
-• Title 18px Bold (Headline 5), Description 14px Regular (Body 3), Metadata · FooterText 13px Regular (Caption 1).
-• Thumbnail 기본 고정 height *160px* (필요하면 `thumbnailRatio` 로 비율 모드).
-• Corner radius 8 → *12*.
+*Trost · Geniet 브랜드 아이콘 44종이 추가됐어요*
 
-*List*
+각 브랜드 운영 사이트의 SVG 를 DS 표준(24×24, currentColor) 으로 정제해서 가져왔어요. `brand='trost'` / `brand='geniet'` 모드에서 `TrostMentalDepressionIcon`, `GenietAlarmIcon` 처럼 prefix 로 import.
 
-• Title 타이포 14px Medium → *16px Bold* + textRole.strong.
-• Description 13px → *14px*.
-• *Metadata* prop 신설 (Title / Description 아래 작은 보조 텍스트).
+• *Trost 17종* — 멘탈 카테고리 9 (우울/감정/일상/MBTI/약/루틴/자존감/사운드/병원) · 심리검사 결과 3 (safe/warning/danger) · 서비스 5 (SNS 공유·코인·심볼 등).
+• *Geniet 27종* — 알람·메뉴·마이페이지·복사 등 공용 12 + 바텀네비 5탭 on/off + 헤더 검색.
+• 공통 컴포넌트는 brand-agnostic 유지 — 브랜드 전용 화면이 명시적으로 import 해서 전달하는 패턴.
 
-컴포넌트 가이드(`get_component_guide("Card")` / `List`) 와 Storybook 의 *List/WithMetadata* 스토리도 갱신했어요. 이번 정렬 덕분에 AI 가 만든 카드·리스트가 Figma 마스터와 톤이 더 일치해요.
+*Trost 시멘틱 토큰이 실제 트로스트 디자인에 맞게 정정됐어요*
+
+기존엔 일부 토큰이 트로스트 실측과 어긋나서 brand='trost' 모드 결과물이 진짜 트로스트와 미묘하게 달라 보였어요. 8개 컴포넌트와 실측 grep 으로 5개 슬롯 정정.
+
+• *페이지 배경* 회색(#F2F2F2) → *흰색* (트로스트 본문은 다 흰색 위).
+• *모달·카드 overlay* 70% → *60%*.
+• *브랜드 강조 텍스트·아이콘·버튼 텍스트* 노랑(#E6D200) → *오렌지(#FF9D00)*. 노란색은 면적 큰 버튼 / 배너 배경 전용.
+• *떠 있는 카드 그림자* opacity 0.10 → *0.12*.
 
 *AI 가 만드는 UI 가 한층 더 일관돼져요*
 
-노션 "AI UI 생성 원칙" 페이지(디자인팀 → Anti Pattern → UI 생성 원칙 / 안티패턴) 의 룰을 디자인 시스템에 직접 정합. 이제 AI 가 목업을 만들 때 이 룰이 자동으로 적용돼요.
+노션 "AI UI 생성 원칙" 의 룰을 디자인 시스템에 직접 정합. 이제 목업 생성 시 자동 적용.
 
-*컴포넌트별 사용 시점 룰*
-
-• *Badge* — 보조 정보용. Fill Badge 는 카드당 최대 1개. 일반 카테고리에는 ghost / line + neutral. Brand color 는 "현재 선택 / 핵심 강조" 에만.
-• *Tabs* — 동일 depth 콘텐츠 전환·카테고리 내비·섹션 전환 전용. 저장 / 신청 같은 액션 대체 금지, 리스트 필터 대체 금지.
-• *Segment* (Tabs variant=square) — PC CMS · 주요 기능 전환 전용. 모바일 일반 화면에서는 line / pill 만.
-• *Modal* — 즉각적인 판단·응답이 필요할 때만. 단순 안내는 inline Notice / Banner / Toast 로. 모달 안에 또 다른 강조(Card · Brand BG · Chip 그룹) 를 쌓지 않기.
-
-*컬러 위계 룰*
-
-• *Tone-on-Tone 금지* — 연한 Blue 배경 위에 Blue Fill Badge, 연한 Mint Surface 위 Mint Badge 같은 동일 계열 위 동일 계열 강조는 위계를 만들지 못해요.
-• *Brand Background* 는 의미 전달(주의 / 안내 / 하이라이트) 목적에만. KPI 카드 / Summary 카드 / 단순 시각 구분 배경으로는 사용 금지.
-
-기존에 이미 반영돼 있던 Surface Layer(L0~L3) · Spacing semantic 토큰 · 아이콘 화이트리스트 룰은 그대로 유지되고, 이번에 누락돼 있던 *Badge · Tabs · Segment · Modal* 사용 시점이 보강됐어요.
-
-*UX 라이팅 가이드가 디자인 시스템에 들어왔어요*
-
-버튼 / 라벨 / 에러 메시지 / placeholder / empty state 처럼 사용자에게 보이는 모든 텍스트를 어떻게 쓸지 가이드가 생겼어요.
-
-• 해요체로 통일 — "저장되었습니다" 보다 "저장했어요"
-• 부정형보다 긍정형 — "받을 수 없어요" 보다 "조건을 충족하면 받을 수 있어요"
-• 다이얼로그 왼쪽 버튼은 항상 *닫기*. "취소" 는 사용자가 작업이 취소된다고 오해할 수 있어 쓰지 않아요.
-
-EAP 멘탈케어 도메인용 추가 룰도 함께 들어 있어요.
-
-• 위기·자해 표현은 자극적 단어 없이 사실 중심으로
-• "정상 / 비정상" 처럼 사용자를 평가하는 어휘 금지
-• "진단" · "처방" · "치료" 는 실제 의료진 행위에만. 자가검사는 "점검" · "관리" 로
-• "회사에 공유되지 않아요" 처럼 익명성 · 프라이버시 안내는 명시적으로
-
-작업할 때 AI 에게 "UX 라이팅 가이드 따라줘" 라고 하면 자동으로 이 룰을 불러옵니다.
+• *컴포넌트별 사용 시점 룰* — Badge(보조 정보, Fill 카드당 1개, 카테고리는 ghost/line) · Tabs(동일 depth 콘텐츠 전환만, 액션 대체 금지) · Segment(PC CMS 주요 기능 전환 전용) · Modal(즉각적 판단 필요할 때만, 단순 안내는 Notice/Banner/Toast).
+• *컬러 위계 룰* — Tone-on-Tone 금지(연한 Blue 위 Blue Fill Badge 같은 동일 계열 강조 X). Brand Background 는 의미 전달 목적(주의·안내·하이라이트)에만, KPI/Summary 카드 배경으로는 금지.
+• *CTA 라벨 명료성* — 결과 동사 포함(보기·신청·저장·삭제). 다이얼로그는 항상 거절 가능한 옵션(닫기·나중에) 최소 1개.
 
 *다크패턴 5 가지가 차단돼요*
 
-사용성을 해치는 5 가지 패턴을 이제 디자인 시스템 차원에서 막아요.
+사용성을 해치는 패턴을 DS 차원에서 막아요. `validate_mockup` 단계에서 발견 시 경고.
 
-1. *진입 직후 자동 시트* — 화면 들어가자마자 알림 동의 / 프로모션 바텀시트 자동 노출
-2. *뒤로가기 인터럽트* — 닫기 누르는 순간 만류·재구매·추가 동의 다이얼로그
-3. *거절 불가 CTA* — 닫기 / 나중에 없이 "확인" 한 개 버튼만 있는 다이얼로그
-4. *플로우 중간 광고* — 메뉴 눌렀더니 의도한 화면 대신 전면 광고가 먼저 뜨는 흐름
-5. *모호한 CTA 라벨* — 버튼만 보고 다음 행동을 예측할 수 없는 라벨 ("지금 시작" / "확인" 단독 사용 등)
+1. 진입 직후 자동 시트(알림 동의·프로모션 바텀시트)
+2. 뒤로가기 인터럽트(닫기 누르는 순간 만류·재구매 다이얼로그)
+3. 거절 불가 CTA (확인 한 개 버튼만 있는 다이얼로그)
+4. 플로우 중간 광고
+5. 모호한 CTA 라벨 ("지금 시작" / "확인" 단독)
 
-목업 검증(`validate_mockup`) 단계에서 이 패턴을 발견하면 경고가 나와요.
+*UX 라이팅 가이드가 디자인 시스템에 들어왔어요*
 
-*CTA 그룹 라벨 명료성 룰이 강화됐어요*
+버튼·라벨·에러·placeholder·empty state 처럼 사용자에게 보이는 모든 텍스트 가이드.
 
-기존 "Primary 버튼은 화면당 1개" 룰에 더해, 라벨 자체의 명료성 룰이 추가됐어요.
+• 해요체로 통일 — "저장되었습니다" 보다 *"저장했어요"*
+• 부정형보다 긍정형 — "받을 수 없어요" 보다 *"조건을 충족하면 받을 수 있어요"*
+• 다이얼로그 왼쪽 버튼은 항상 *"닫기"*. "취소" 는 사용자가 작업 취소로 오해할 수 있어 안 씁니다.
+• *EAP 멘탈케어 도메인* 추가 룰 — 위기·자해는 사실 중심으로 / "정상·비정상" 평가 어휘 금지 / "진단·처방·치료" 는 실제 의료진 행위에만 / "회사에 공유되지 않아요" 같은 익명성 안내는 명시적으로.
 
-• 버튼 라벨에는 결과 동사 (보기 / 신청 / 저장 / 삭제) 를 포함
-• 버튼 위 보조 설명이 버튼 라벨과 같은 의미로 중복되지 않게
-• 다이얼로그에는 항상 거절 가능한 옵션 (닫기 / 나중에) 최소 1개
+AI 에게 "UX 라이팅 가이드 따라줘" 라고 하면 자동으로 룰을 불러옵니다.
 
-*Spacing 토큰이 4pt 그리드로 정리됐어요*
+*Spacing · 시멘틱 토큰 · 인벤토리가 정리됐어요*
 
-Figma SpacingGuide 와 1:1 정합. 의도 기반 *Gap* (요소 간 거리) 과 사용처 기반 *Inset* (컨테이너 내부 여백) 으로 명확히 분리됐어요.
-
-• *Gap* — tight (4px) / default (10px, 표준) / comfortable (12px) / loose (16px) / wide (24px)
-• *Inset* — chip (8px) / input (12px) / card (16px, 표준) / card-large (20px) / modal (24px)
-
-이제 "카드 padding 은 뭐 쓰지?" 같은 헷갈림 없이 `--inset-card` 하나로 통일돼요.
-
-*브랜드별 시멘틱 토큰 위치가 대칭이 됐어요*
-
-NudgeEAP / Trost / Geniet 가 각자 자기 시멘틱 정의 파일을 동등한 위치에 가질 수 있도록 정리. 기본값은 여전히 NudgeEAP — 다른 브랜드는 필요한 부분만 override 하면 돼요. (디자이너 / 개발자 모두 영향 없음 — 내부 정리)
-
-*Geniet 브랜드 아이콘 27종이 추가됐어요*
-
-Geniet 홈페이지 운영 SVG 와 Figma 지니어트-Dev 라이브러리에서 헤더·바텀네비·알림 같은 브랜드 전용 아이콘을 DS 표준(24×24, currentColor) 에 맞춰 가져왔어요. `<GenietAlarmIcon />` `<GenietRecordOnIcon />` 처럼 기존 아이콘과 동일한 방식으로 쓸 수 있고, 스토리북의 *Brands / Geniet / Icons* 페이지에서 전체 27개를 한 번에 볼 수 있어요. 공용 아이콘과 디자인이 다른 게 본질이라 `Geniet*` prefix 로 분리.
-
-추가된 아이콘:
-
-• *공용*: 알람 / 화살표(↑↓←→) / 메뉴 / 마이페이지 / 복사 / 로그인·로그아웃 / 재생 / 체크서클 / 컨페티 / 쿠폰 / 캐시리뷰 / G포인트
-• *바텀네비(Figma 207:3204)*: 홈 on / 기록 off(write) / 혜택 on·off / 리뷰 on·off / 커뮤니티
-• *헤더(Figma 207:2483)*: 검색
-
-*Geniet 스토리들이 Figma 정합으로 업데이트됐어요*
-
-• *AppFooter / 하단 탭바* — 4탭 → *5탭* (홈 / 기록 / 혜택 / 리뷰 / 커뮤니티). 모든 탭이 Geniet 브랜드 아이콘 사용.
-• *AppBar / Desktop* — PC 헤더 좌측에 *"음식 카테고리"* 메뉴 박스 추가 (`GenietMenuIcon` + 텍스트, mint border).
-
-*브랜드 아이콘 사용 정책이 명문화됐어요*
-
-이제 AI 가 브랜드 모드(brand='geniet'/'trost')로 작업할 때 자동으로 해당 브랜드 prefix 아이콘을 우선 사용합니다. 공통 컴포넌트 안에 brand 분기 로직을 박지 않고 브랜드 전용 화면이 명시적으로 import 해서 전달하는 패턴.
-
-• `get_brand_info("geniet")` 응답에 사용 가능한 brandIcons 27개 자동 노출
-• 공통 컴포넌트는 brand-agnostic 으로 유지 — Figma 디자인이 달라도 컴포넌트 구현은 한 벌
+• *Spacing 4pt 그리드* — 의도 기반 *Gap*(요소 간 거리: tight 4 / default 10 / comfortable 12 / loose 16 / wide 24) 과 사용처 기반 *Inset*(컨테이너 내부 여백: chip 8 / input 12 / *card 16* / card-large 20 / modal 24) 으로 명확히 분리. "카드 padding 뭐 쓰지?" 없이 `--inset-card` 로 통일.
+• *브랜드별 시멘틱 토큰 위치 대칭* — NudgeEAP / Trost / Geniet 가 동등한 위치에 자기 정의 파일을 갖도록 정리. (디자이너·개발자 영향 없음 — 내부 정리)
+• *컴포넌트 인벤토리* — `docs/components/inventory.md` 가 *Figma 정합 완료* 컴포넌트를 상단에 모아 보여줘요. "지금 바로 써도 되는 컴포넌트" 가 한 눈에 보임. docs 사이트 *가이드* 카테고리에 *UX 라이팅* / *다크패턴* 페이지도 신규 노출.
 
 *Storybook 브랜드 토글이 깔끔하게 동작해요*
 
-기존엔 brand 토글 시 radius·spacing 은 변하는데 *컬러는 안 변하는* 이슈가 있었어요. `brand-themes.ts` 가 컴포넌트의 inline style 이 참조하는 `--semantic-bg-brand-default` 같은 토큰을 갖고 있지 않아서였습니다.
-
-• Storybook 의 brand 토글이 `packages/tokens/dist/{trost,geniet}.css` 의 :root 토큰을 *자동으로 가져오게* 통합 — palette/semantic.ts 가 SSOT, brand-themes.ts 는 컴포넌트 미세 조정만 담당.
-• preview 와 manager (토큰 에디터 패널) 가 같은 brand 데이터를 보도록 SSOT 통합.
-
-*컴포넌트 인벤토리 문서가 정리됐어요*
-
-`docs/components/inventory.md` 가 이제 Figma 정합 완료 컴포넌트를 상단에 모아 보여줍니다. 정합되지 않은 컴포넌트는 그 아래 따로 분리해서 노출돼요. 디자이너 / PM 이 "지금 바로 써도 되는 컴포넌트" 를 한 눈에 보기 쉬워졌어요.
-
-또한 docs 사이트의 *가이드* 카테고리에 *UX 라이팅* 과 *다크패턴* 페이지가 새로 들어왔어요 — 브라우저에서 바로 읽을 수 있어요.
-
-*Trost 브랜드 아이콘 17종이 추가됐어요*
-
-트로스트 홈페이지에서 쓰이던 브랜드 전용 아이콘을 디자인 시스템 표준(24×24, currentColor) 으로 정제해서 넣었어요. 이제 브랜드 모드(brand='trost')에서 `TrostMentalDepressionIcon` 같은 prefix 아이콘을 바로 가져다 쓸 수 있어요.
-
-• *멘탈 카테고리 9종* — 우울 / 감정 / 일상 / MBTI / 약 / 루틴 / 자존감 / 사운드 / 병원 위치
-• *심리검사 결과 3종* — 안전 / 주의 / 위험 (safe / warning / danger)
-• *서비스/기타 5종* — SNS 공유, 추가, 에너지 코인, 심리검사 카테고리, 마인드키 심볼
-
-*Trost 시멘틱 토큰이 실제 트로스트 디자인에 더 맞게 정정됐어요*
-
-기존엔 시멘틱 토큰이 일부 트로스트 실측과 어긋나서 브랜드 모드 결과물이 진짜 트로스트와 미묘하게 달라 보였어요. 코드 8개 컴포넌트와 실측 grep 으로 5개 슬롯을 정정했습니다.
-
-• *페이지 배경* 이 회색(#F2F2F2)에서 *흰색* 으로 — 트로스트 본문은 모두 흰색 위라서.
-• *모달 / 카드 overlay* 가 70% → *60%* 로 — Bible 카드 등 실제 사용된 `bg-black/60` 에 맞춤.
-• *브랜드 강조 텍스트 / 아이콘 색* 이 노랑(#E6D200)에서 *오렌지(#FF9D00)* 로 — 트로스트 코드에서 활성 카테고리 / 인용 멘션 / 댓글 멘션 / 활성 sub-tab / 트로스트 자사 강조는 모두 오렌지였어요. 노란색은 면적 큰 버튼 / 배너 배경 전용이고 텍스트로는 가독성 때문에 거의 안 씁니다.
-• *떠 있는 카드 그림자* opacity 가 0.10 → *0.12* 로 — 트로스트 코드의 1위 floating-card 패턴(`shadow-[0_2px_16px_0_rgba(0,0,0,0.12)]`) 와 일치.
-
-이번 정정 덕분에 AI 가 브랜드 모드(brand='trost') 로 만든 화면이 실제 트로스트 디자인과 톤이 더 가까워져요.
+기존엔 brand 토글 시 radius·spacing 은 변하는데 *컬러는 안 변하는* 이슈가 있었어요. brand-themes 가 `--semantic-bg-brand-default` 같은 토큰을 자체적으로 갖고 있지 않아 발생. Storybook 토글이 이제 `packages/tokens/dist/{trost,geniet}.css` 의 :root 토큰을 자동으로 가져옵니다.
