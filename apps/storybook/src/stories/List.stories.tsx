@@ -113,6 +113,31 @@ function PlainNavExample() {
   );
 }
 
+function MetadataExample() {
+  return (
+    <div style={{ width: 360 }}>
+      <List variant="divided">
+        <ListItem
+          leading={<Avatar name="김민지" size="sm" />}
+          title="김민지 상담사"
+          description="가족 / 대인관계 전문"
+          metadata="2026.05.20 · 상담 완료"
+          trailing={<Chevron />}
+          onSelect={() => {}}
+        />
+        <ListItem
+          leading={<Avatar name="박서연" size="sm" />}
+          title="박서연 상담사"
+          description="우울 / 불안 전문"
+          metadata="2026.05.18 · 상담 예약"
+          trailing={<Chevron />}
+          onSelect={() => {}}
+        />
+      </List>
+    </div>
+  );
+}
+
 function DividedExample() {
   return (
     <div style={{ width: 360 }}>
@@ -137,3 +162,7 @@ export const SettingsList: Story = {
 };
 export const PlainNav: Story = { name: "Plain (네비게이션)", render: () => <PlainNavExample /> };
 export const Divided: Story = { name: "Divided (메뉴)", render: () => <DividedExample /> };
+export const WithMetadata: Story = {
+  name: "Metadata 포함 (Title + Description + Metadata)",
+  render: () => <MetadataExample />,
+};
