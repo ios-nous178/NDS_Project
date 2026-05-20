@@ -14,8 +14,7 @@ import type {
 } from "@nudge-eap/react";
 
 /* ─── Logo asset imports (Vite resolves base path automatically) ─── */
-import nudgeEapLogo from "../public/brand-logos/nudge-eap-logo.png";
-import nudgeEapLogoFooter from "../public/brand-logos/nudge-eap-logo-footer.png";
+import nudgeEapLogo from "../public/brand-logos/nudge-eap-logo.svg";
 import trostLogo from "../public/brand-logos/trost-logo.svg";
 import trostLogoMobile from "../public/brand-logos/trost-logo-mobile.webp";
 import genietLogoPc from "../public/brand-logos/geniet-logo-pc.webp";
@@ -71,9 +70,9 @@ export interface BrandFixture {
 
 const nudgeEap: BrandFixture = {
   logo: {
-    headerPc: { src: nudgeEapLogo, width: 200, height: 80 },
-    headerMobile: { src: nudgeEapLogo, width: 120, height: 24 },
-    footer: { src: nudgeEapLogoFooter, width: 99, height: 30 },
+    headerPc: { src: nudgeEapLogo, width: 42, height: 40 },
+    headerMobile: { src: nudgeEapLogo, width: 28, height: 27 },
+    footer: { src: nudgeEapLogo, width: 32, height: 30 },
   },
   header: {
     pcMaxWidth: 1200,
