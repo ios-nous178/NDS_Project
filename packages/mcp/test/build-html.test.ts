@@ -110,12 +110,16 @@ describe("auditMockupWorkspace", () => {
     fs.rmSync(tmp, { recursive: true, force: true });
   });
 
-  it("clean workspace (.tsx only, no css token redef) → 0 violations", () => {
+  it("clean workspace (.tsx only, no css token redef, refs present) → 0 violations", () => {
     fs.writeFileSync(
       path.join(tmp, "src", "App.tsx"),
       `import { Button } from "@nudge-eap/react";\nexport default () => <Button>ok</Button>;`,
     );
     fs.writeFileSync(path.join(tmp, "index.html"), `<!doctype html><div id="root"></div>`);
+    fs.writeFileSync(
+      path.join(tmp, "references.md"),
+      `[good] source=figma.com/example caption=clean primary CTA only\n[bad] source=rejected.png caption=too many emphasis colors`,
+    );
     const violations = auditMockupWorkspace(tmp);
     expect(violations).toEqual([]);
   });
@@ -183,11 +187,69 @@ describe("auditMockupWorkspace", () => {
 
   it("ignores node_modules / dist / dot directories", () => {
     fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
+    fs.writeFileSync(
+      path.join(tmp, "references.md"),
+      `[good] source=figma.com caption=ok\n[bad] source=x.png caption=no`,
+    );
     fs.mkdirSync(path.join(tmp, "src", "node_modules", "x"), { recursive: true });
     fs.writeFileSync(path.join(tmp, "src", "node_modules", "x", "y.html"), `<div></div>`);
     fs.mkdirSync(path.join(tmp, "dist"), { recursive: true });
     fs.writeFileSync(path.join(tmp, "dist", "index.html"), `<!doctype html>`);
     const violations = auditMockupWorkspace(tmp);
     expect(violations).toEqual([]);
+  });
+
+  describe("missing-visual-references", () => {
+    it("flags workspace with no references.md or .references/", () => {
+      fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
+      fs.writeFileSync(path.join(tmp, "index.html"), `<!doctype html>`);
+      const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
+      expect(v).toBeTruthy();
+      expect(v?.detail).toContain("시각 기준으로 쓸 Figma 링크나 스크린샷");
+    });
+
+    it("flags references.md that is empty / too short", () => {
+      fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
+      fs.writeFileSync(path.join(tmp, "references.md"), `   \n`);
+      const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
+      expect(v).toBeTruthy();
+      expect(v?.files).toContain("references.md");
+    });
+
+    it("flags empty .references/ folder", () => {
+      fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
+      fs.mkdirSync(path.join(tmp, ".references"));
+      const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
+      expect(v).toBeTruthy();
+      expect(v?.files).toContain(".references/");
+    });
+
+    it("passes when references.md has real content", () => {
+      fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
+      fs.writeFileSync(
+        path.join(tmp, "references.md"),
+        `[good] source=figma.com/x caption=clean hero only\n[bad] source=loud.png caption=too many CTAs`,
+      );
+      const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
+      expect(v).toBeUndefined();
+    });
+
+    it("passes when .references/ folder has at least one file", () => {
+      fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
+      fs.mkdirSync(path.join(tmp, ".references"));
+      fs.writeFileSync(path.join(tmp, ".references", "good-1.png"), `binary`);
+      const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
+      expect(v).toBeUndefined();
+    });
+
+    it("accepts REFERENCES.md (case-insensitive)", () => {
+      fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
+      fs.writeFileSync(
+        path.join(tmp, "REFERENCES.md"),
+        `[good] source=figma caption=ok hero with single CTA emphasis`,
+      );
+      const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
+      expect(v).toBeUndefined();
+    });
   });
 });
