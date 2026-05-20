@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T01:55:21.819Z",
+  "generatedAt": "2026-05-20T02:31:16.189Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -5133,6 +5133,27 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/TipCard.d.ts"
+    },
+    {
+      "name": "TitleBlock",
+      "props": [
+        {
+          "name": "level",
+          "optional": false,
+          "type": "TitleBlockLevel"
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "subtitle",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/TitleBlock.d.ts"
     },
     {
       "name": "Toast",
