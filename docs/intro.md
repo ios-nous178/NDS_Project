@@ -3,7 +3,7 @@ sidebar_position: 1
 title: 소개
 ---
 
-# 넛지 디자인시스템
+# NUDGE Design
 
 NudgeEAP Design System은 여러 플랫폼에서 일관된 사용자 경험을 만들기 위한 **공통 인터페이스 시스템**입니다.<br />
 Web, App, WebView, Admin 등 각 플랫폼은 동일한 원칙과 구조를 기반으로 동작합니다.
