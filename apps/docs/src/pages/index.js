@@ -50,19 +50,19 @@ function Hero() {
           </div>
           <ul className={styles.heroChips}>
             <li>
-              <span className={styles.heroChipDot} style={{ background: "#2B96ED" }} />
+              <span className={styles.heroChipDot} />
               Figma Synced
             </li>
             <li>
-              <span className={styles.heroChipDot} style={{ background: "#00A07C" }} />
+              <span className={styles.heroChipDot} />
               Type-safe React
             </li>
             <li>
-              <span className={styles.heroChipDot} style={{ background: "#9061F9" }} />
+              <span className={styles.heroChipDot} />
               MCP for Claude
             </li>
             <li>
-              <span className={styles.heroChipDot} style={{ background: "#FFA100" }} />
+              <span className={styles.heroChipDot} />
               Trost · Geniet · NudgeEAP
             </li>
           </ul>

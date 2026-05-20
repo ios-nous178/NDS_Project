@@ -88,14 +88,14 @@
 }
 
 .selectBtnActive {
-  background: #017ee4;
-  border-color: #017ee4;
+  background: #18181b;
+  border-color: #18181b;
   color: #ffffff;
 }
 
 .selectBtnActive:hover {
-  background: #1b65ba;
-  border-color: #1b65ba;
+  background: #000000;
+  border-color: #000000;
 }
 
 /* Toggle */
@@ -112,7 +112,7 @@
 }
 
 .toggleOn {
-  background: #2b96ed;
+  background: #18181b;
 }
 
 .toggleThumb {
@@ -145,7 +145,7 @@
 }
 
 .textInput:focus {
-  border-color: #2b96ed;
+  border-color: #18181b;
 }
 
 /* Code bar */
