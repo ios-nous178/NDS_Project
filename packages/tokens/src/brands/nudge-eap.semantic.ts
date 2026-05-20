@@ -115,9 +115,9 @@ export const nudgeEapSemantic = {
     },
   },
   border: {
-    normal: { default: neutral[300] }, // #D8D8D8
+    normal: { default: neutral[200] }, // #ECECEC
     strong: { default: neutral[500] }, // #999999
-    subtle: { default: neutral[200] }, // #ECECEC
+    subtle: { default: neutral[100] }, // #F5F5F5
     focus: { default: blue[500] }, // #2B96ED
     brand: {
       default: blue[500], // #2B96ED
