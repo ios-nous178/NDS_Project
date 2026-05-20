@@ -173,6 +173,34 @@ export async function startDevServer(args: {
   };
 }
 
+/**
+ * dev_server 통합 라우터 — 옛 start_dev_server + stop_dev_server 진입점.
+ *   { action: 'start', ... } → startDevServer
+ *   { action: 'stop', sessionId? } → stopDevServer
+ */
+export async function devServer(args: {
+  action: "start" | "stop";
+  cwd?: string;
+  command?: string;
+  args?: string[];
+  url?: string;
+  port?: number;
+  timeoutMs?: number;
+  sessionId?: string;
+}) {
+  if (args.action === "start") {
+    return startDevServer({
+      cwd: args.cwd,
+      command: args.command,
+      args: args.args,
+      url: args.url,
+      port: args.port,
+      timeoutMs: args.timeoutMs,
+    });
+  }
+  return stopDevServer({ sessionId: args.sessionId });
+}
+
 export function stopDevServer(args: { sessionId?: string }) {
   const ids = args.sessionId ? [args.sessionId] : [...devServerSessions.keys()];
   const stopped: Array<{ sessionId: string; ok: boolean; note: string }> = [];

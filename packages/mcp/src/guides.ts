@@ -91,7 +91,7 @@ export const SCOPE_ADVISORY = {
     "user-app": {
       action:
         "사용자 앱 화면(B2C, 멘탈케어 사용자 플로우)이라면 이 MCP의 도구들을 적극 사용. " +
-        "get_guide({ topic: 'principles' }) → search_component → get_guide({ topic: 'component:<Name>' }) / get_guide({ topic: 'pattern:<name>' }) → 작성 → validate_mockup.",
+        "get_guide({ topic: 'principles' }) → find_component({ query }) → get_guide({ topic: 'component:<Name>' }) / get_guide({ topic: 'pattern:<name>' }) → 작성 → validate_mockup.",
     },
   },
   hardRule: "두 디자인시스템을 한 화면에서 혼용 금지.",
@@ -2119,7 +2119,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "Tab 은 동일 depth 콘텐츠 전환·category navigation·section switching 에만 사용 — 필터/CTA/라우팅 대체용 금지",
     "Modal 은 즉각적 판단/응답이 필요할 때만 사용 — 단순 정보는 inline Notice/Banner, 에러는 Toast/inline error 사용",
     "Badge 는 보조 정보 — 일반 카테고리는 ghost/line + neutral 우선, Brand color 는 '현재 선택·핵심 강조' 에만",
-    "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordOnIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 사용 가능한 브랜드 아이콘 목록은 get_brand_info(slug).brandIcons 로 조회.",
+    "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordOnIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 사용 가능한 브랜드 아이콘 목록은 get_brand({ brand: '<slug>' }).detail.brandIcons 로 조회.",
     "브랜드 분기는 공통 컴포넌트 구현이 아니라 **브랜드 전용 화면/스토리** 에서 처리 — 브랜드 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<AppFooter tabs={[{ icon: <GenietRecordOnIcon /> }]} />`)",
   ],
   donts: [
@@ -2176,7 +2176,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "같은 depth(부모 컨테이너 안의 형제 요소들) 에 서로 다른 spacing 을 적용하지 마세요 — 형제는 같은 --gap-* 으로 통일",
     // ── Brand Icon ──
     "공통 컴포넌트(AppFooter/BottomNav/AppBar 등) 의 *구현* 안에 brand 분기 로직(`if (brand === 'geniet') return <GenietRecordOnIcon />`)을 넣지 마세요 — DS 컴포넌트는 brand-agnostic 으로 유지. 분기는 사용처(브랜드 전용 화면)에서 명시적 icon prop 으로 표현.",
-    "브랜드 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 brand prefix 아이콘이 있으면 그게 우선. get_brand_info(slug).brandIcons 로 매칭 확인.",
+    "브랜드 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 brand prefix 아이콘이 있으면 그게 우선. get_brand({ brand: '<slug>' }).detail.brandIcons 로 매칭 확인.",
   ],
   bannedPatterns: [
     {
@@ -2371,7 +2371,7 @@ function flattenGroups(groups: Array<{ items: string[] }>): string[] {
  * **브랜드 모드(brand='geniet' / 'trost' 등) 작업 시:**
  *   - 같은 의미의 brand prefix 아이콘이 존재하면 **반드시 그쪽을 우선 사용**.
  *     (예: Geniet bottom nav → `GenietRecordOnIcon`/`GenietRecordOffIcon`, 공용 PushActiveIcon X)
- *   - 사용 가능한 brand 아이콘 목록은 `get_brand_info(slug).brandIcons` 로 조회.
+ *   - 사용 가능한 brand 아이콘 목록은 `get_brand({ brand: '<slug>' }).detail.brandIcons` 로 조회.
  *   - 매칭이 없으면 공용 아이콘 fallback 으로 사용 (예: `LikeIcon` 은 Geniet 매칭 없음 → 공용 OK).
  *
  * **컴포넌트 구현(공통 DS) 에서는:**
@@ -2542,7 +2542,7 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   GenietSearchIcon: { category: "navigation", style: "line" },
 };
 
-/** 카테고리별로 아이콘 이름을 묶은 인덱스. find_icon / list_icons 응답 보강용. */
+/** 카테고리별로 아이콘 이름을 묶은 인덱스. find_icon 응답 보강용. */
 export function getIconCategoryIndex(): Record<IconCategory, string[]> {
   const index: Record<IconCategory, string[]> = {
     basic: [],

@@ -12,11 +12,11 @@ EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 3개 브랜드: **T
 
 작업 중 규칙을 직접 확인해야 하면 MCP 도구 호출:
 
-- `get_design_principles` / `get_dos_and_donts` — 브랜드 톤, 시멘틱, 금지 패턴
-- `get_component_guide(name)` — props 함정 포함 (Chip.label, Select.onValueChange, Tabs.onTabChange 등)
-- `get_pattern_guide(name)` — cta-group / icon-color / notice / dropdown / dense-list
-- `get_admin_cms_guide` — CMS / 어드민 화면 규칙
-- `search_component` / `find_icon` / `lookup_token` — 추측 없이 조회
+- `get_guide({ topic: 'principles' })` / `get_guide({ topic: 'dos-donts' })` — 브랜드 톤, 시멘틱, 금지 패턴
+- `get_guide({ topic: 'component:<Name>' })` — props 함정 포함 (Chip.label, Select.onValueChange, Tabs.onTabChange 등)
+- `get_guide({ topic: 'pattern:<name>' })` — cta-group / icon-color / notice / dropdown / dense-list
+- `get_guide({ topic: 'admin-cms' })` — CMS / 어드민 화면 규칙
+- `find_component` / `find_icon` / `find_token` — 추측 없이 조회 (인자 없으면 전체, `{ query }` fuzzy, `{ name }` 정확 매치)
 
 ## 환경 세팅
 
@@ -46,7 +46,7 @@ Windows: PowerShell 권장. `pnpm` 설치 시 실행 정책 문제가 나면
 packages/react/src/     ← DS 컴포넌트 (.tsx) — Props 는 여기서 확인
 packages/tokens/src/    ← 디자인 토큰
 packages/mcp/src/       ← MCP 서버 (외부 프로젝트가 받는 가이드 SSOT)
-  server.ts             ← getClaudeMdTemplate (create_claude_md 본문)
+  server.ts             ← getClaudeMdTemplate (get_setup({ step: 'claude-md' }) 본문)
   guides.ts             ← 컴포넌트 / 패턴 / 원칙 / 어드민 가이드
 apps/storybook/         ← 스토리북 (DS 컴포넌트 데모용)
 DESIGN.md               ← 디자인 토큰 YAML 정의

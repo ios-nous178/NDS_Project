@@ -124,7 +124,7 @@ export async function reportMockupUsage(args: {
   const _nextSuggestion =
     "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). 그 다음 단계는 다음 두 가지이며 **물어보지 말고 그냥 실행**합니다 — 이 워크스페이스의 표준 산출물 형식은 단일 HTML 파일입니다: " +
     "(1) **반드시 `build_singlefile_html({})` 를 호출**해서 단일 HTML 산출물을 만든다. 손으로 .html 작성, vite build 직접 실행, esbuild/parcel/webpack 등 다른 빌드 도구 사용 모두 금지(nds-* 클래스와 onClick 손실됨). 사용자가 명시적으로 '빌드하지 마' / 'TSX 만 줘' 같은 거부 의사를 표현한 경우에만 생략. " +
-    "(2) dev 서버 URL 을 보여주고, 사용자가 직접 확인을 마치면 stop_dev_server 호출. " +
+    "(2) dev 서버 URL 을 보여주고, 사용자가 직접 확인을 마치면 dev_server({ action: 'stop' }) 호출. " +
     "build_singlefile_html 결과의 dist/index.html 경로와 파일 크기를 사용자에게 보여줄 것 — 이게 공유용 최종 산출물입니다.";
 
   return { usage, logPath, webhook, humanReadable, _nextSuggestion };
@@ -143,7 +143,7 @@ export async function reportMockupUsage(args: {
 const POST_CREATION_TOOLS = new Set<string>([
   "validate_mockup",
   "check_preview",
-  "stop_dev_server",
+  "dev_server",
   "build_singlefile_html",
 ]);
 
