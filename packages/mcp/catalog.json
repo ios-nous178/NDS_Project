@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-20T02:31:16.189Z",
+  "generatedAt": "2026-05-20T09:01:42.682Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
-      "version": "0.1.8",
+      "version": "0.1.9",
       "dependencies": {},
       "peerDependencies": {},
       "cssExports": [
@@ -14,7 +14,7 @@
     },
     {
       "name": "@nudge-eap/react",
-      "version": "0.1.8",
+      "version": "0.1.9",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/tokens": "workspace:*"
@@ -27,7 +27,7 @@
     },
     {
       "name": "@nudge-eap/icons",
-      "version": "0.1.8",
+      "version": "0.1.9",
       "dependencies": {},
       "peerDependencies": {
         "react": ">=18.0.0"
@@ -36,7 +36,7 @@
     },
     {
       "name": "@nudge-eap/tailwind-preset",
-      "version": "0.1.8",
+      "version": "0.1.9",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
@@ -1061,9 +1061,24 @@
           "type": "React.ReactNode"
         },
         {
+          "name": "thumbnailHeight",
+          "optional": true,
+          "type": "number"
+        },
+        {
           "name": "thumbnailRatio",
           "optional": true,
           "type": "string"
+        },
+        {
+          "name": "avatar",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "chips",
+          "optional": true,
+          "type": "React.ReactNode"
         },
         {
           "name": "title",
@@ -1071,7 +1086,17 @@
           "type": "string"
         },
         {
+          "name": "description",
+          "optional": true,
+          "type": "string"
+        },
+        {
           "name": "subtitle",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "metadata",
           "optional": true,
           "type": "string"
         },
@@ -1084,6 +1109,21 @@
           "name": "children",
           "optional": true,
           "type": "React.ReactNode"
+        },
+        {
+          "name": "divider",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "cta",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "footerText",
+          "optional": true,
+          "type": "string"
         },
         {
           "name": "footer",

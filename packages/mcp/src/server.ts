@@ -25,23 +25,11 @@ import { ICON_METADATA, ICON_CATEGORY_LABELS, getIconCategoryIndex } from "./gui
 import type { Catalog, Manifest, McpbManifest } from "./types/manifest.js";
 import { configureMockupValidator, validateMockup } from "./tools/mockup-validator.js";
 export { validateMockupSource } from "./tools/mockup-validator.js";
-import {
-  checkPreview,
-  registerDevServerCleanup,
-  startDevServer,
-  stopDevServer,
-} from "./tools/preview.js";
+import { checkPreview, devServer, registerDevServerCleanup } from "./tools/preview.js";
 import { attachUsageGuardOutcome, reportMockupUsage, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "./tools/build-html.js";
 import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
-import {
-  checkMcpUpdate,
-  configureSetup,
-  getBrandInfo,
-  getSetup,
-  listBrands,
-  listPackages,
-} from "./tools/setup.js";
+import { checkMcpUpdate, configureSetup, getBrand, getSetup, listPackages } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -160,30 +148,37 @@ function scoreMatch(query: string, name: string): number {
 
 /* ───────────── Tool 핸들러 ───────────── */
 
-function listComponents() {
-  return {
-    _advisory: "User-app components. For admin/CMS use get_guide({topic:'admin-cms'}).",
-    components: manifest.components.map((c) => c.name),
-  };
-}
-
-function getComponent(name: string) {
-  const c = componentByName.get(name);
-  if (!c) {
-    return {
-      error: `Component '${name}' not found. Use search_component or list_components.`,
-      suggestions: searchComponent(name).slice(0, 3),
-    };
-  }
-  return c;
-}
-
 function searchComponent(query: string) {
   return manifest.components
     .map((c) => ({ name: c.name, score: scoreMatch(query, c.name) }))
     .filter((c) => c.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 10);
+}
+
+/**
+ * find_component 통합 라우터.
+ *  - 인자 없음 → 전체 컴포넌트 목록
+ *  - { name } → 풀 props 스펙 (없으면 search suggestions 동봉)
+ *  - { query } → fuzzy 점수 매치
+ *  - 둘 다 → name 우선
+ */
+function findComponent(args: { name?: string; query?: string }) {
+  if (args.name) {
+    const c = componentByName.get(args.name);
+    if (!c) {
+      return {
+        error: `Component '${args.name}' not found. Try find_component({ query: '${args.name}' }) or call with no args to list all.`,
+        suggestions: searchComponent(args.name).slice(0, 3),
+      };
+    }
+    return c;
+  }
+  if (args.query) return searchComponent(args.query);
+  return {
+    _advisory: "User-app components. For admin/CMS use get_guide({topic:'admin-cms'}).",
+    components: manifest.components.map((c) => c.name),
+  };
 }
 
 function decorateIcon(name: string) {
@@ -198,15 +193,19 @@ function decorateIcon(name: string) {
   };
 }
 
-function findIcon(query: string) {
-  return manifest.icons
-    .map((name) => ({ ...decorateIcon(name), score: scoreMatch(query, name) }))
-    .filter((c) => c.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
-}
-
-function listIcons() {
+/**
+ * find_icon 통합 라우터.
+ *  - 인자 없음 → 전체 아이콘 + byCategory 인덱스
+ *  - { query } → top 10 점수 매치
+ */
+function findIcon(args: { query?: string }) {
+  if (args.query) {
+    return manifest.icons
+      .map((name) => ({ ...decorateIcon(name), score: scoreMatch(args.query as string, name) }))
+      .filter((c) => c.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
+  }
   const categoryIndex = getIconCategoryIndex();
   return {
     _advisory: "Style/color rules: get_guide({topic:'pattern:iconography'|'pattern:icon-color'}).",
@@ -223,31 +222,35 @@ function listIcons() {
   };
 }
 
-function listTokens(group?: string) {
-  if (!group) {
-    const groups: Record<string, number> = {};
-    for (const t of manifest.tokens) groups[t.group] = (groups[t.group] ?? 0) + 1;
-    return {
-      _hint:
-        "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or use lookup_token for search. No-arg call returns only the summary to save tokens.",
-      total: manifest.tokens.length,
-      groups,
-    };
+/**
+ * find_token 통합 라우터.
+ *  - 인자 없음 → 그룹별 카운트 summary
+ *  - { group } → 그룹 전체
+ *  - { query } → 점수 기반 매치 (semantic 우선, raw palette deprioritize)
+ *  - 둘 다 → query 우선
+ */
+function findToken(args: { group?: string; query?: string }) {
+  if (args.query) {
+    const normalizedQuery = args.query.trim().toLowerCase();
+    return manifest.tokens
+      .map((t) => ({
+        ...t,
+        policy: getTokenLookupPolicy(t),
+        score: getTokenLookupScore(t, normalizedQuery),
+      }))
+      .filter((t) => t.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
   }
-  return manifest.tokens.filter((t) => t.group === group);
-}
-
-function lookupToken(query: string) {
-  const normalizedQuery = query.trim().toLowerCase();
-  return manifest.tokens
-    .map((t) => ({
-      ...t,
-      policy: getTokenLookupPolicy(t),
-      score: getTokenLookupScore(t, normalizedQuery),
-    }))
-    .filter((t) => t.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+  if (args.group) return manifest.tokens.filter((t) => t.group === args.group);
+  const groups: Record<string, number> = {};
+  for (const t of manifest.tokens) groups[t.group] = (groups[t.group] ?? 0) + 1;
+  return {
+    _hint:
+      "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. No-arg call returns only the summary to save tokens.",
+    total: manifest.tokens.length,
+    groups,
+  };
 }
 
 function getTokenLookupScore(token: Manifest["tokens"][number], query: string): number {
@@ -324,7 +327,7 @@ function suggestReplacement(args: { snippet: string; rule?: string }) {
       suggestions.push({
         before: m[0],
         after: "var(--color-...)",
-        note: "정확한 매칭 토큰 없음. lookup_token 사용해 가까운 색상 찾기.",
+        note: "정확한 매칭 토큰 없음. find_token({ query: ... }) 사용해 가까운 색상 찾기.",
       });
     }
   }
@@ -356,15 +359,10 @@ const server = new Server(
 );
 
 const toolHandlers = {
-  list_brands: () => listBrands(),
-  get_brand_info: (args: ToolArgs) => getBrandInfo(args as { brand: string }),
-  list_components: () => listComponents(),
-  get_component: (args: ToolArgs) => getComponent((args as { name: string }).name),
-  search_component: (args: ToolArgs) => searchComponent((args as { query: string }).query),
-  list_icons: () => listIcons(),
-  find_icon: (args: ToolArgs) => findIcon((args as { query: string }).query),
-  list_tokens: (args: ToolArgs) => listTokens((args as { group?: string }).group),
-  lookup_token: (args: ToolArgs) => lookupToken((args as { query: string }).query),
+  get_brand: (args: ToolArgs) => getBrand(args as { brand?: string }),
+  find_component: (args: ToolArgs) => findComponent(args as { name?: string; query?: string }),
+  find_icon: (args: ToolArgs) => findIcon(args as { query?: string }),
+  find_token: (args: ToolArgs) => findToken(args as { group?: string; query?: string }),
   validate_mockup: (args: ToolArgs) =>
     validateMockup(
       args as {
@@ -406,15 +404,17 @@ const toolHandlers = {
         dryRun?: boolean;
       },
     ),
-  start_dev_server: (args: ToolArgs) =>
-    startDevServer(
+  dev_server: (args: ToolArgs) =>
+    devServer(
       args as {
+        action: "start" | "stop";
         cwd?: string;
         command?: string;
         args?: string[];
         url?: string;
         port?: number;
         timeoutMs?: number;
+        sessionId?: string;
       },
     ),
   check_preview: (args: ToolArgs) =>
@@ -429,7 +429,6 @@ const toolHandlers = {
         viewport?: { width?: number; height?: number };
       },
     ),
-  stop_dev_server: (args: ToolArgs) => stopDevServer(args as { sessionId?: string }),
   build_singlefile_html: (args: ToolArgs) =>
     buildSinglefileHtml(args as { cwd?: string; skipAudit?: boolean }),
 } satisfies ToolHandlers;

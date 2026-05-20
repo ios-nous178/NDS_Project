@@ -17,90 +17,59 @@ export interface RegisterToolHandlersOptions {
 
 const TOOLS = [
   {
-    name: "list_brands",
+    name: "get_brand",
     description:
-      "List all sub-brands available in this design system (auto-discovered from brands/ folder + tokens dist). Each brand has slug, name, primary color, css import path, and 'ready' flag (false = token CSS export not yet wired up). Use this whenever the user picks or references a brand.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
-    name: "get_brand_info",
-    description:
-      "Return full info for one brand: name, version, description, key semantic colors (primary/secondary/error/caution/success/surface/onSurface), font families, css/js import paths, and main.tsx import order. Use after list_brands to drill into a specific brand.",
+      "Look up sub-brands. No args → list every brand (slug, name, primary color, css import path, 'ready' flag). `{ brand: '<slug>' }` → full info for that brand (semantic colors, font families, css/js import paths, main.tsx import order, brand-prefixed icons). Auto-discovered from brands/ folder + tokens dist.",
     inputSchema: {
       type: "object",
       properties: {
         brand: {
           type: "string",
-          description: "Brand slug (e.g. 'trost', 'nudge-eap', 'geniet'). See list_brands.",
+          description:
+            "Optional brand slug (e.g. 'trost', 'nudge-eap', 'geniet'). Omit to list all.",
         },
       },
-      required: ["brand"],
       additionalProperties: false,
     },
   },
   {
-    name: "list_components",
+    name: "find_component",
     description:
-      "Return all available DS React components (user-app: Trost / Geniet / NudgeEAP). For admin / CMS screens, do NOT use these — call get_guide({ topic: 'admin-cms' }) instead.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
-    name: "get_component",
-    description: "Get props detail of a specific DS component by exact name.",
+      "Look up DS React components (user-app: Trost / Geniet / NudgeEAP). No args → full list of component names. `{ query: '<text>' }` → fuzzy match, scored. `{ name: '<exact>' }` → full props detail with allowed values. `name` takes precedence over `query`. For admin / CMS screens, call get_guide({ topic: 'admin-cms' }) instead.",
     inputSchema: {
       type: "object",
       properties: {
-        name: { type: "string", description: "Component name (case-sensitive, e.g. 'Button')" },
+        query: { type: "string", description: "Optional fuzzy search query." },
+        name: {
+          type: "string",
+          description: "Optional exact component name (case-sensitive). Returns full props.",
+        },
       },
-      required: ["name"],
       additionalProperties: false,
     },
-  },
-  {
-    name: "search_component",
-    description: "Search components by natural language query (e.g. 'tab', 'avatar').",
-    inputSchema: {
-      type: "object",
-      properties: { query: { type: "string" } },
-      required: ["query"],
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "list_icons",
-    description:
-      "Return all icons in @nudge-eap/icons with Figma Iconography(379:490) category and Line/Filled/Color style metadata. Response also includes `byCategory` index. Always pair with get_guide({ topic: 'pattern:iconography' }) for size/touch/style rules and get_guide({ topic: 'pattern:icon-color' }) for token mapping.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
     name: "find_icon",
     description:
-      "Find icons by natural language query (e.g. 'search', 'arrow back'). Result entries include category/style/pair fields so callers can pick the right Line vs Filled variant.",
+      "Look up icons in @nudge-eap/icons (Figma Iconography 379:490). No args → all icons with category/style/pair metadata + `byCategory` index. `{ query: '<text>' }` → top scored matches. Always pair with get_guide({ topic: 'pattern:iconography' }) for size/touch/style rules and get_guide({ topic: 'pattern:icon-color' }) for token mapping.",
     inputSchema: {
       type: "object",
-      properties: { query: { type: "string" } },
-      required: ["query"],
+      properties: {
+        query: { type: "string", description: "Optional natural-language search query." },
+      },
       additionalProperties: false,
     },
   },
   {
-    name: "list_tokens",
+    name: "find_token",
     description:
-      "List design tokens for one group. Without `group`, returns a summary (counts per group) only — pass `group` ('color' | 'spacing' | 'semantic' | 'font' | 'radius' | 'size' | 'line' | 'gap' | 'padding' | 'border' | 'grid' | 'shadow' | 'shape' | 'stroke' | 'z') for actual tokens. Prefer `lookup_token` for search.",
+      "Look up design tokens. No args → summary (counts per group) only. `{ group: '<g>' }` → all tokens in that group ('color' | 'spacing' | 'semantic' | 'font' | 'radius' | 'size' | 'line' | 'gap' | 'padding' | 'border' | 'grid' | 'shadow' | 'shape' | 'stroke' | 'z'). `{ query: '<text or #hex>' }` → scored matches against name and value, semantic tokens promoted, raw palette deprioritized. `query` takes precedence over `group` when both are passed.",
     inputSchema: {
       type: "object",
-      properties: { group: { type: "string" } },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "lookup_token",
-    description:
-      "Find tokens by query (matches against name and value, e.g. '#FF5722' or 'primary').",
-    inputSchema: {
-      type: "object",
-      properties: { query: { type: "string" } },
-      required: ["query"],
+      properties: {
+        group: { type: "string", description: "Optional token group filter." },
+        query: { type: "string", description: "Optional name/value query (e.g. '#FF5722')." },
+      },
       additionalProperties: false,
     },
   },
@@ -190,39 +159,50 @@ const TOOLS = [
     },
   },
   {
-    name: "start_dev_server",
+    name: "dev_server",
     description:
-      "Start a local mockup development server from the project root and wait until its URL responds. Use before visual/runtime preview checks.",
+      "Manage the local mockup dev server. `{ action: 'start' }` spawns `npm run dev` (or custom command) in cwd, waits for the URL to respond, returns sessionId/url. `{ action: 'stop', sessionId? }` stops the named session, or all sessions if sessionId is omitted. Use start before visual/runtime preview checks, stop when the user is done.",
     inputSchema: {
       type: "object",
       properties: {
+        action: {
+          type: "string",
+          enum: ["start", "stop"],
+          description: "'start' to launch dev server, 'stop' to terminate.",
+        },
         cwd: {
           type: "string",
-          description: "Project root. Defaults to the MCP process cwd.",
+          description: "[start] Project root. Defaults to the MCP process cwd.",
         },
         command: {
           type: "string",
-          description: "Executable to run. Default: npm.",
+          description: "[start] Executable to run. Default: npm.",
         },
         args: {
           type: "array",
           items: { type: "string" },
-          description: "Command args. Default: ['run', 'dev', '--', '--host', '127.0.0.1'].",
+          description:
+            "[start] Command args. Default: ['run', 'dev', '--', '--host', '127.0.0.1'].",
         },
         url: {
           type: "string",
           description:
-            "Expected dev server URL. If omitted, parsed from logs or falls back to http://127.0.0.1:5173.",
+            "[start] Expected dev server URL. If omitted, parsed from logs or falls back to http://127.0.0.1:5173.",
         },
         port: {
           type: "number",
-          description: "Convenience fallback for url, e.g. 5173.",
+          description: "[start] Convenience fallback for url, e.g. 5173.",
         },
         timeoutMs: {
           type: "number",
-          description: "Wait timeout. Default: 20000.",
+          description: "[start] Wait timeout. Default: 20000.",
+        },
+        sessionId: {
+          type: "string",
+          description: "[stop] Session id returned by start. Omit to stop all sessions.",
         },
       },
+      required: ["action"],
       additionalProperties: false,
     },
   },
@@ -236,7 +216,7 @@ const TOOLS = [
         url: {
           type: "string",
           description:
-            "Base URL to check. Defaults to start_dev_server session URL or http://127.0.0.1:5173.",
+            "Base URL to check. Defaults to dev_server session URL or http://127.0.0.1:5173.",
         },
         routePath: {
           type: "string",
@@ -250,7 +230,7 @@ const TOOLS = [
         },
         sessionId: {
           type: "string",
-          description: "Session id returned by start_dev_server.",
+          description: "Session id returned by dev_server({ action: 'start' }).",
         },
         timeoutMs: {
           type: "number",
@@ -269,18 +249,6 @@ const TOOLS = [
           },
           additionalProperties: false,
         },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "stop_dev_server",
-    description:
-      "Stop a dev server started by start_dev_server. If sessionId is omitted, stops all dev server sessions owned by this MCP process.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        sessionId: { type: "string" },
       },
       additionalProperties: false,
     },
@@ -359,7 +327,7 @@ const TOOLS = [
         brand: {
           type: "string",
           description:
-            "[step=imports|full] Brand slug (see list_brands). If omitted, the first 'ready' brand is used as default.",
+            "[step=imports|full] Brand slug (see get_brand). If omitted, the first 'ready' brand is used as default.",
         },
         withRouter: {
           type: "boolean",
@@ -415,21 +383,9 @@ const SETUP_STEP_VALUES = [
   "inspector",
   "full",
 ] as const;
+const DEV_SERVER_ACTION_VALUES = ["start", "stop"] as const;
 
-const DEPRECATED_TOOL_HINTS: Record<string, string> = {
-  get_design_principles: "get_guide({ topic: 'principles' })",
-  get_dos_and_donts: "get_guide({ topic: 'dos-donts' })",
-  get_admin_cms_guide: "get_guide({ topic: 'admin-cms' })",
-  get_scope_advisory: "get_guide({ topic: 'scope-advisory' })",
-  get_inspector_setup: "get_guide({ topic: 'inspector-setup' })",
-  get_component_guide: "get_guide({ topic: 'component:<Name>' })",
-  get_pattern_guide: "get_guide({ topic: 'pattern:<name>' })",
-  get_install_command: "get_setup({ step: 'install' })",
-  get_main_tsx_imports: "get_setup({ step: 'imports' })",
-  get_update_instructions: "get_setup({ step: 'update' })",
-  create_claude_md: "get_setup({ step: 'claude-md' })",
-  get_setup_instructions: "get_setup({ step: 'full' })",
-};
+// 옛 도구 이름은 즉시 제거되어 Unknown tool 에러로 떨어진다. hint 는 유지하지 않는다.
 
 function readArgs(toolName: string, args: unknown): ToolArgs {
   if (args === undefined || args === null) return {};
@@ -519,16 +475,20 @@ function optionalViewport(
 function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
   const args = readArgs(toolName, rawArgs);
   switch (toolName) {
-    case "get_brand_info":
-      return { brand: requireString(args, "brand", toolName) };
-    case "get_component":
-      return { name: requireString(args, "name", toolName) };
-    case "search_component":
+    case "get_brand":
+      return { brand: optionalString(args, "brand", toolName) };
+    case "find_component":
+      return {
+        query: optionalString(args, "query", toolName),
+        name: optionalString(args, "name", toolName),
+      };
     case "find_icon":
-    case "lookup_token":
-      return { query: requireString(args, "query", toolName) };
-    case "list_tokens":
-      return { group: optionalString(args, "group", toolName) };
+      return { query: optionalString(args, "query", toolName) };
+    case "find_token":
+      return {
+        group: optionalString(args, "group", toolName),
+        query: optionalString(args, "query", toolName),
+      };
     case "validate_mockup":
       return {
         source: optionalString(args, "source", toolName),
@@ -572,14 +532,20 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         cwd: optionalString(args, "cwd", toolName),
         dryRun: optionalBoolean(args, "dryRun", toolName),
       };
-    case "start_dev_server":
+    case "dev_server":
       return {
+        action:
+          optionalEnum(args, "action", DEV_SERVER_ACTION_VALUES, toolName) ??
+          (() => {
+            throw new Error(`${toolName}: 'action' is required.`);
+          })(),
         cwd: optionalString(args, "cwd", toolName),
         command: optionalString(args, "command", toolName),
         args: optionalStringArray(args, "args", toolName),
         url: optionalString(args, "url", toolName),
         port: optionalNumber(args, "port", toolName, { min: 1 }),
         timeoutMs: optionalNumber(args, "timeoutMs", toolName, { min: 1 }),
+        sessionId: optionalString(args, "sessionId", toolName),
       };
     case "check_preview":
       return {
@@ -591,8 +557,6 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         minTextLength: optionalNumber(args, "minTextLength", toolName, { min: 0 }),
         viewport: optionalViewport(args, "viewport", toolName),
       };
-    case "stop_dev_server":
-      return { sessionId: optionalString(args, "sessionId", toolName) };
     case "build_singlefile_html":
       return { cwd: optionalString(args, "cwd", toolName) };
     default:
@@ -612,12 +576,7 @@ export function registerToolHandlers(
       const validatedArgs = validateToolArgs(name, args);
       const handler = handlers[name];
       if (!handler) {
-        const hint = DEPRECATED_TOOL_HINTS[name];
-        throw new Error(
-          hint
-            ? `Tool '${name}' has been consolidated. Use ${hint} instead.`
-            : `Unknown tool: ${name}`,
-        );
+        throw new Error(`Unknown tool: ${name}`);
       }
       let result = await handler(validatedArgs);
       const afterResult = await options.afterCall?.({ name, args: validatedArgs, result });

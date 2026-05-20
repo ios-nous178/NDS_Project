@@ -148,7 +148,8 @@ export function validateMockupSource(
         rule: "inline-color",
         line: ln,
         detail: line.trim(),
-        suggestion: "토큰 CSS 변수(--color-*)로 교체. lookup_token 사용.",
+        suggestion:
+          "토큰 CSS 변수(--color-*)로 교체. find_token({ query: '<text or #hex>' }) 사용.",
       });
     }
     // 2. 인라인 px/rem (transform 류 제외, var(...) 안의 fallback 제외)
@@ -162,7 +163,7 @@ export function validateMockupSource(
             rule: "inline-spacing",
             line: ln,
             detail: line.trim(),
-            suggestion: "spacing 토큰으로 교체. lookup_token('spacing') 사용.",
+            suggestion: "spacing 토큰으로 교체. find_token({ group: 'spacing' }) 사용.",
           });
         }
         // 2-bis. 4pt grid 위반 (5/7/9/11/13/14/15/18/22/26/30 등) — px 한정
@@ -192,7 +193,7 @@ export function validateMockupSource(
         line: ln,
         detail: line.trim(),
         suggestion:
-          "padding/margin/gap 은 primitive var(--spacing-*) 가 아니라 semantic var(--gap-*|--inset-*) 만 사용하세요. lookup_token('gap') / lookup_token('inset') 참조.",
+          "padding/margin/gap 은 primitive var(--spacing-*) 가 아니라 semantic var(--gap-*|--inset-*) 만 사용하세요. find_token({ group: 'gap' }) / find_token({ group: 'inset' }) 참조.",
       });
     }
     // 3. native button/input/select
@@ -294,7 +295,7 @@ export function validateMockupSource(
           rule: "unknown-token",
           line: ln,
           detail: m[1],
-          suggestion: "lookup_token으로 올바른 토큰 검색.",
+          suggestion: "find_token({ query: ... }) 으로 올바른 토큰 검색.",
         });
       }
     }
@@ -339,8 +340,8 @@ export function validateMockupSource(
           detail: name,
           suggestion:
             pkg === "react"
-              ? `search_component('${name}')으로 유사 컴포넌트 확인.`
-              : `find_icon('${name.replace(/Icon$/, "")}')으로 유사 아이콘 확인.`,
+              ? `find_component({ query: '${name}' }) 으로 유사 컴포넌트 확인.`
+              : `find_icon({ query: '${name.replace(/Icon$/, "")}' }) 으로 유사 아이콘 확인.`,
         });
       }
     }
@@ -369,7 +370,7 @@ export function validateMockupSource(
             rule: "invalid-prop-value",
             line: lineNumberAt(source, m.index + am.index),
             detail: `<${compName} ${propName}="${propValue}"> — 허용값 아님.`,
-            suggestion: `${compName}.${propName} 허용값: ${allowed.map((v) => `"${v}"`).join(", ")}. get_component('${compName}') 로 prop 명세 확인.`,
+            suggestion: `${compName}.${propName} 허용값: ${allowed.map((v) => `"${v}"`).join(", ")}. find_component({ name: '${compName}' }) 로 prop 명세 확인.`,
           });
         }
       }
@@ -813,10 +814,10 @@ export function validateMockup(
   const _nextSuggestion =
     violations.length === 0
       ? "Self-Check 1차 통과. **반드시 한 번 더 validate_mockup 을 호출해 2차 확인** (총 2회 self-check 가 워크스페이스 룰). " +
-        "2차도 통과면: (1) start_dev_server → check_preview 로 런타임 에러 0건 확인. " +
+        "2차도 통과면: (1) dev_server({ action: 'start' }) → check_preview 로 런타임 에러 0건 확인. " +
         "(2) report_mockup_usage 호출. " +
         "(3) **반드시 build_singlefile_html({}) 호출** — 이 워크스페이스의 표준 산출물 형식은 단일 HTML 파일입니다. 사용자에게 '만들까요' 라고 묻지 말고 그냥 실행하세요 (명시적 거부 시에만 생략). 손으로 .html 작성·vite build 직접 실행·다른 번들러 사용 금지 — nds-* / onClick 손실됨. " +
-        "(4) stop_dev_server."
+        "(4) dev_server({ action: 'stop' })."
       : "위반을 수정한 뒤 validate_mockup 재실행. **위반 0건이 될 때까지 반복 (최소 2회 self-check)** — 1회차 위반 수정 후 2회차 확인까지 통과해야 산출 가능. 위반을 인지하고 그대로 제출하는 것은 금지됩니다.";
 
   return {

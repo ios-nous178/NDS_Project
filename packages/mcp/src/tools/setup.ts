@@ -328,7 +328,7 @@ export function getUpdateInstructions(args: { source?: string; includeLocalPacka
     steps,
     afterUpdate: [
       "Claude/Codex MCP 세션 재시작",
-      "필요하면 list_packages 또는 list_brands로 새 카탈로그 반영 확인",
+      "필요하면 list_packages 또는 get_brand로 새 카탈로그 반영 확인",
     ],
   };
 }
@@ -358,12 +358,12 @@ export function getMainTsxImports(args: { brand?: string }) {
     } else if (resolved.ok && resolved.brand && !resolved.brand.cssImport) {
       lines.push(`// '${resolved.brand.slug}' 브랜드는 토큰 CSS export가 준비되지 않았습니다.`);
       notes.push(
-        `브랜드 '${resolved.brand.slug}' 의 CSS export 미준비. list_brands로 ready: true 브랜드 확인.`,
+        `브랜드 '${resolved.brand.slug}' 의 CSS export 미준비. get_brand 로 ready: true 브랜드 확인.`,
       );
     } else if (!resolved.ok) {
       const available = resolved.availableBrands.join(" | ");
       lines.push(`// 브랜드 미지정 또는 알 수 없음. 사용 가능: ${available}`);
-      notes.push(resolved.error ?? "list_brands로 사용 가능한 브랜드 확인.");
+      notes.push(resolved.error ?? "get_brand 로 사용 가능한 브랜드 확인.");
     }
   }
   if (reactPkg) {
@@ -544,14 +544,14 @@ const theme = {
     step: 6,
     title: "(선택) Playwright 설치 — 미리보기 자동 검증",
     commands: ["npm install --save-dev playwright", "npx playwright install chromium"],
-    note: "MCP의 start_dev_server / check_preview가 어드민 화면도 똑같이 검증할 수 있습니다.",
+    note: "MCP의 dev_server({ action: 'start' }) / check_preview 가 어드민 화면도 똑같이 검증할 수 있습니다.",
   });
 
   steps.push({
     step: 7,
     title: "동작 확인",
     commands: ["npm run dev"],
-    note: "기본 5173 포트. start_dev_server / check_preview 사용 가능.",
+    note: "기본 5173 포트. dev_server({ action: 'start' }) / check_preview 사용 가능.",
   });
 
   return {
@@ -675,7 +675,7 @@ export function getSetupInstructions(args: {
       "npx playwright install chromium",
       "npm run dev",
     ],
-    note: "MCP의 start_dev_server/check_preview가 dev URL을 열어 런타임 에러와 빈 화면 여부를 확인할 수 있습니다. 이후 prds/*.md를 작성하고 Claude에게 목업 생성을 요청하세요.",
+    note: "MCP의 dev_server({ action: 'start' }) / check_preview 가 dev URL을 열어 런타임 에러와 빈 화면 여부를 확인할 수 있습니다. 이후 prds/*.md를 작성하고 Claude에게 목업 생성을 요청하세요.",
   });
 
   return {
@@ -722,8 +722,20 @@ export function listBrands() {
     })),
     note:
       "한 화면에 한 브랜드만 사용 (브랜드별 토큰 CSS는 덮어쓰기됨). " +
-      "상세 정보가 필요하면 get_brand_info(slug) 호출.",
+      "상세 정보가 필요하면 get_brand({ brand: '<slug>' }) 호출.",
   };
+}
+
+/**
+ * get_brand 통합 라우터 — 옛 list_brands + get_brand_info 진입점.
+ *  - 인자 없음 → 모든 브랜드 목록
+ *  - { brand: '<slug>' } → 해당 브랜드 풀 정보 + 목록도 함께
+ */
+export function getBrand(args: { brand?: string }) {
+  const list = listBrands();
+  if (!args.brand) return list;
+  const detail = getBrandInfo({ brand: args.brand });
+  return { ...list, detail };
 }
 
 export function getBrandInfo(args: { brand: string }) {
@@ -737,7 +749,7 @@ export function getBrandInfo(args: { brand: string }) {
       ok: false,
       error: `Unknown brand: '${slug}'.`,
       availableBrands,
-      hint: "list_brands로 사용 가능한 브랜드를 확인하세요.",
+      hint: "get_brand 로 사용 가능한 브랜드를 확인하세요.",
     };
   }
   // ICON_METADATA 에서 이 브랜드 prefix 를 가진 아이콘 추출.
