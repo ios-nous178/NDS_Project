@@ -104,5 +104,15 @@ module.exports = {
         "COMPONENT_DOC_TEMPLATE",
       ],
     },
+    {
+      type: "category",
+      label: "초안 (검토중)",
+      collapsed: false,
+      items: [
+        "drafts/mcp-announcement-slack",
+        "drafts/mcp-usage-intro-rewrite",
+        "drafts/mcp-usage-friendly-full",
+      ],
+    },
   ],
 };

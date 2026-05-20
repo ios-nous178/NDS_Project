@@ -239,6 +239,16 @@ html[data-theme="dark"] {
   margin-bottom: 16px;
 }
 
+/* MDX 가 JSX 자식 텍스트를 줄바꿈하면 <p> 로 감싸서 렌더링한다.
+ * DS 컴포넌트의 라벨/슬롯 span 안에 그 <p> 가 들어가면
+ * 마크다운 기본 margin 이 박혀 flex 수직정렬이 어긋남.
+ * outdoor <p> 인 경우(=오직 그 슬롯의 유일 자식) 만 layout 에서 제거. */
+.theme-doc-markdown [class*="nds-"] > p:only-child,
+.theme-doc-markdown [class*="nds-"] span > p:only-child {
+  display: contents;
+  margin: 0;
+}
+
 /* ─── Code Blocks ─── */
 
 .prism-code {

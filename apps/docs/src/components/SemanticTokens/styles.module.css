@@ -1,0 +1,309 @@
+/* ─── Section quick nav ─── */
+.sectionNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 32px;
+  padding: 14px 16px;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 12px;
+}
+
+.sectionNavItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ifm-color-emphasis-800);
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 999px;
+  text-decoration: none;
+  transition:
+    border-color 0.12s,
+    color 0.12s;
+}
+
+.sectionNavItem:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary-darker);
+  text-decoration: none;
+}
+
+.sectionCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-600);
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 999px;
+}
+
+/* ─── List container ─── */
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 16px 0 36px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Header (열 라벨) */
+.listHeader,
+.row {
+  display: grid;
+  grid-template-columns: 56px 200px minmax(110px, 140px) minmax(0, 1fr) auto auto 32px;
+  align-items: stretch;
+  gap: 12px;
+  padding-right: 12px;
+}
+
+.listHeader {
+  align-items: center;
+  padding: 8px 12px 8px 0;
+  background: var(--ifm-color-emphasis-100);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.listHeader > span {
+  padding-left: 0;
+}
+
+/* 첫 열(swatch) 좌측 여백 제거 (full-bleed) */
+.listHeader > span:first-child,
+.row > .colSwatch {
+  padding-left: 0;
+}
+
+/* Row */
+.row {
+  align-items: center;
+  min-height: 48px;
+  border-bottom: 1px solid var(--ifm-color-emphasis-100);
+  transition: background 0.1s;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+/* ─── 컬러 strip (full-bleed left, row 높이만큼 확장) ─── */
+.colSwatch {
+  /* grid column */
+}
+
+.swatch {
+  align-self: stretch;
+  min-height: 48px;
+  border-right: 1px solid var(--ifm-color-emphasis-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* 반투명 — 패턴 위에 색 덧칠 */
+.swatchTranslucent {
+  background-image:
+    linear-gradient(var(--swatch-fill, transparent), var(--swatch-fill, transparent)),
+    linear-gradient(45deg, var(--ifm-color-emphasis-200) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--ifm-color-emphasis-200) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--ifm-color-emphasis-200) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--ifm-color-emphasis-200) 75%);
+  background-size:
+    auto,
+    12px 12px,
+    12px 12px,
+    12px 12px,
+    12px 12px;
+  background-position:
+    0 0,
+    0 0,
+    0 6px,
+    6px -6px,
+    -6px 0;
+}
+
+.swatchFallback {
+  font-size: 14px;
+  color: var(--ifm-color-emphasis-500);
+}
+
+/* ─── Columns ─── */
+.colName,
+.name {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-900);
+  background: transparent;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.colHex,
+.hex {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+  color: var(--ifm-color-emphasis-700);
+  background: transparent;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.colCssVar,
+.cssVar {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  color: var(--ifm-color-emphasis-600);
+  background: transparent;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── 브랜드 dots ─── */
+.colBrands,
+.brands {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 64px;
+  justify-content: flex-start;
+}
+
+.brandWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-600);
+  cursor: help;
+}
+
+.brandLabel {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.brandDot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── Meta (가이드 배지 + Figma) ─── */
+.colMeta,
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.guidePill {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 3px;
+}
+
+.guideCore {
+  background: rgba(43, 150, 237, 0.12);
+  color: var(--ifm-color-primary-darker);
+}
+
+.guideExp {
+  background: var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-emphasis-700);
+}
+
+.figmaNote {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  color: var(--ifm-color-emphasis-500);
+}
+
+/* ─── Copy button ─── */
+.colAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  font-size: 13px;
+  color: var(--ifm-color-emphasis-500);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.row:hover .copyBtn {
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+.copyBtn:hover {
+  color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary) !important;
+  background: rgba(43, 150, 237, 0.08);
+}
+
+/* ─── Responsive — 좁은 viewport 에서 CSS 변수 열 숨김 ─── */
+@media (max-width: 996px) {
+  .listHeader,
+  .row {
+    grid-template-columns: 48px 1fr auto auto auto 32px;
+  }
+
+  .listHeader > span:nth-child(4),
+  .colCssVar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .listHeader,
+  .row {
+    grid-template-columns: 44px 1fr auto 32px;
+  }
+
+  .listHeader > span:nth-child(3),
+  .listHeader > span:nth-child(5),
+  .colHex,
+  .colMeta {
+    display: none;
+  }
+}
