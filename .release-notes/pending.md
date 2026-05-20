@@ -9,6 +9,26 @@
 -->
 <!-- markdownlint-disable MD036 -->
 
+*Card / List 컴포넌트가 Figma 마스터에 맞게 정렬됐어요*
+
+Card (171:9363) 와 List (933:80) 의 Figma 정의가 코드와 미묘하게 어긋나 있었어요. 이제 디자이너가 Figma 에서 그린 카드 모양과 AI 가 만드는 카드 모양이 같은 토큰을 씁니다.
+
+*Card*
+
+• 신규 슬롯: *Avatar*(40px 원형), *Chips*(브랜드 chip 그룹), *Divider*(가로 구분선 토글), *Cta*(액션 버튼 영역), *FooterText*(작은 footer 텍스트). 기존 props(`subtitle` `meta` `footer` 등) 는 그대로 동작 — 외부 사용처 영향 없어요.
+• 레이아웃이 균등 padding 16 + 슬롯 간 gap 12 의 수직 스택으로 단순화. 이전엔 header / body / footer 가 각자 padding 을 갖고 있어 Figma 와 미묘하게 어긋났어요.
+• Title 18px Bold (Headline 5), Description 14px Regular (Body 3), Metadata · FooterText 13px Regular (Caption 1).
+• Thumbnail 기본 고정 height *160px* (필요하면 `thumbnailRatio` 로 비율 모드).
+• Corner radius 8 → *12*.
+
+*List*
+
+• Title 타이포 14px Medium → *16px Bold* + textRole.strong.
+• Description 13px → *14px*.
+• *Metadata* prop 신설 (Title / Description 아래 작은 보조 텍스트).
+
+컴포넌트 가이드(`get_component_guide("Card")` / `List`) 와 Storybook 의 *List/WithMetadata* 스토리도 갱신했어요. 이번 정렬 덕분에 AI 가 만든 카드·리스트가 Figma 마스터와 톤이 더 일치해요.
+
 *AI 가 만드는 UI 가 한층 더 일관돼져요*
 
 노션 "AI UI 생성 원칙" 페이지(디자인팀 → Anti Pattern → UI 생성 원칙 / 안티패턴) 의 룰을 디자인 시스템에 직접 정합. 이제 AI 가 목업을 만들 때 이 룰이 자동으로 적용돼요.

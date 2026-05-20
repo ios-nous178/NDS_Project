@@ -1,5 +1,34 @@
 # @nudge-eap/react
 
+## 0.1.9
+
+### Patch Changes
+
+- Card / List 컴포넌트 Figma 마스터 (Card 888-23 · 171-9363, List 933-80) 사양 동기화.
+
+  **Card**
+  - 신규 슬롯: Avatar(40 circle) · Chips(BadgeGroup) · Divider(토글) · Cta(액션 영역) · FooterText. Flat API + Compound 둘 다.
+  - 레이아웃: 균등 padding(--inset-card 16) + gap(12) 의 수직 스택. 이전 header/body/footer 중첩 padding 폐기.
+  - 타이포: Title body1 → headline5(18/26 bold), Description → body3, Metadata/FooterText → caption1.
+  - 본문 갭: Title↔Description 4px, Description↔Metadata 8px. Footer divider padding-top 12 → 16(--inset-card).
+  - Thumbnail 기본 height 160px (aspectRatio 지정 시 비율 모드). Corner radius md → lg(12).
+  - 백워드 호환: subtitle/meta/footer/footerNoBorder 유지.
+
+  **List**
+  - Title typo: body3/medium → body1/bold + textRole.strong.
+  - Description: caption1 → body3.
+  - Metadata prop 신설 (caption2 muted).
+  - Description↔Metadata gap 2px.
+
+  MCP 가이드 (Card / List) + Card.figmaNodeUrl + Storybook WithMetadata 스토리 갱신.
+
+- Updated dependencies [0718ff5]
+- Updated dependencies [7528bb7]
+- Updated dependencies [368b9ba]
+- Updated dependencies [8a22a9e]
+  - @nudge-eap/icons@0.1.9
+  - @nudge-eap/tokens@0.1.9
+
 ## 0.1.8
 
 ### Patch Changes
