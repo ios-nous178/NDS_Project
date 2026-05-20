@@ -32,6 +32,23 @@ const BUILD_MAX_BUFFER = 32 * 1024 * 1024;
 
 export interface BuildSinglefileHtmlArgs {
   cwd?: string;
+  /**
+   * 워크스페이스 사전 검사 (raw HTML / inline 토큰 정의 / no-tsx 등) 를 건너뛴다.
+   * 사용자가 명시적으로 우회를 허용한 경우에만 사용. 기본 false.
+   */
+  skipAudit?: boolean;
+}
+
+export type WorkspaceAuditRule =
+  | "raw-html-in-src"
+  | "raw-html-in-root"
+  | "inline-root-tokens"
+  | "no-tsx-found";
+
+export interface WorkspaceAuditViolation {
+  rule: WorkspaceAuditRule;
+  files: string[];
+  detail: string;
 }
 
 export interface BuildSinglefileHtmlResult {
@@ -45,6 +62,7 @@ export interface BuildSinglefileHtmlResult {
   installedSinglefile?: boolean;
   routerWarning?: string;
   buildLogTail?: string;
+  auditViolations?: WorkspaceAuditViolation[];
   humanReadable: string;
   error?: string;
   _nextSuggestion?: string;
@@ -58,6 +76,32 @@ export async function buildSinglefileHtml(
   const pkgJsonPath = path.join(cwd, "package.json");
   if (!fs.existsSync(pkgJsonPath)) {
     return fail("package.json not found in cwd. Run this in your mockup project root.");
+  }
+
+  if (!args.skipAudit) {
+    const violations = auditMockupWorkspace(cwd);
+    if (violations.length > 0) {
+      const lines = violations.map((v) => {
+        const fileList =
+          v.files.length > 0
+            ? "\n  파일: " +
+              v.files.slice(0, 5).join(", ") +
+              (v.files.length > 5 ? ` (외 ${v.files.length - 5}개)` : "")
+            : "";
+        return `[${v.rule}]\n  ${v.detail}${fileList}`;
+      });
+      const msg =
+        `워크스페이스 사전 검사 실패 (${violations.length}건). ` +
+        `CLAUDE.md "산출물 형식 강제 (MUST — 우회 절대 금지)" 섹션 위반:\n\n` +
+        lines.join("\n\n") +
+        `\n\n해결: 위반 파일을 폐기하고 .tsx 기반으로 다시 작성하세요. ` +
+        `사용자가 명시적으로 우회를 허용한 경우에만 build_singlefile_html({ skipAudit: true }) 로 재호출하세요 — ` +
+        `이 경우 MCP 검증 파이프라인(validate_mockup·report_mockup_usage)이 무력화됨을 사용자에게 먼저 경고할 것.`;
+      return {
+        ...fail(msg),
+        auditViolations: violations,
+      };
+    }
   }
 
   let pkg: Record<string, unknown>;
@@ -270,6 +314,115 @@ function findMatchingBracket(source: string, openIdx: number): number {
     }
   }
   return -1;
+}
+
+/**
+ * 빌드 직전 워크스페이스 audit — CLAUDE.md "산출물 형식 강제 (MUST)" 룰 위반 자동 감지.
+ *
+ * 감지하는 우회 패턴:
+ *  - raw-html-in-src    : src/ 하위에 손으로 작성한 .html 파일
+ *  - raw-html-in-root   : 프로젝트 루트의 index.html (vite entry) 외 추가 .html
+ *  - inline-root-tokens : .css/.scss 의 :root { ... } 블록에 시멘틱 토큰 인라인 재정의
+ *  - no-tsx-found       : src/ 에 .tsx 파일이 하나도 없음 (HTML-only 워크플로우)
+ */
+export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
+  const violations: WorkspaceAuditViolation[] = [];
+  const srcDir = path.join(cwd, "src");
+  const srcExists = fs.existsSync(srcDir);
+
+  if (srcExists) {
+    const htmlInSrc = walkFiles(srcDir, /\.html?$/i, 20);
+    if (htmlInSrc.length > 0) {
+      violations.push({
+        rule: "raw-html-in-src",
+        files: htmlInSrc.map((f) => path.relative(cwd, f)),
+        detail:
+          "src/ 하위에 손으로 작성한 .html 파일이 있습니다. dist/index.html 외에는 .html 직접 작성 금지 — " +
+          "DS prop API · validate_mockup AST · report_mockup_usage 집계가 모두 무력화됩니다.",
+      });
+    }
+  }
+
+  const rootHtmlExtras: string[] = [];
+  try {
+    for (const entry of fs.readdirSync(cwd, { withFileTypes: true })) {
+      if (entry.isFile() && /\.html?$/i.test(entry.name) && entry.name !== "index.html") {
+        rootHtmlExtras.push(entry.name);
+      }
+    }
+  } catch {
+    // ignore
+  }
+  if (rootHtmlExtras.length > 0) {
+    violations.push({
+      rule: "raw-html-in-root",
+      files: rootHtmlExtras,
+      detail:
+        "프로젝트 루트에 index.html(vite entry) 외에 손으로 작성한 .html 파일이 있습니다. " +
+        "스탠드얼론 HTML 우회 — .tsx 기반으로 재작성하세요.",
+    });
+  }
+
+  if (srcExists) {
+    const TOKEN_REDEF_RE = /:root\s*\{[\s\S]{0,2000}?(--color-|--nds-|--eap-|--gap-|--inset-)/;
+    const cssFiles = walkFiles(srcDir, /\.(css|scss)$/i, 50);
+    const inlineTokenHits: string[] = [];
+    for (const f of cssFiles) {
+      try {
+        const content = fs.readFileSync(f, "utf-8");
+        if (TOKEN_REDEF_RE.test(content)) {
+          inlineTokenHits.push(path.relative(cwd, f));
+        }
+      } catch {
+        // ignore
+      }
+    }
+    if (inlineTokenHits.length > 0) {
+      violations.push({
+        rule: "inline-root-tokens",
+        files: inlineTokenHits,
+        detail:
+          ".css/.scss 의 :root 블록에 시멘틱 토큰(--color-*, --nds-*, --eap-*, --gap-*, --inset-*) 을 인라인 재정의했습니다. " +
+          '@nudge-eap/tokens/css 단일 진리원천을 깨는 우회입니다. main.tsx 에서 `import "@nudge-eap/tokens/css"` 한 줄로만 토큰을 가져오세요.',
+      });
+    }
+  }
+
+  if (srcExists) {
+    const tsxFiles = walkFiles(srcDir, /\.tsx$/i, 1);
+    if (tsxFiles.length === 0) {
+      violations.push({
+        rule: "no-tsx-found",
+        files: [],
+        detail:
+          "src/ 에 .tsx 파일이 하나도 없습니다. 이 워크스페이스의 입력 형식은 .tsx 입니다 — " +
+          "HTML/CSS 만으로 빌드하는 것은 우회입니다.",
+      });
+    }
+  }
+
+  return violations;
+}
+
+function walkFiles(dir: string, pattern: RegExp, maxFiles: number): string[] {
+  const out: string[] = [];
+  const stack: string[] = [dir];
+  while (stack.length > 0 && out.length < maxFiles) {
+    const cur = stack.pop()!;
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(cur, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const e of entries) {
+      if (e.name.startsWith(".") || e.name === "node_modules" || e.name === "dist") continue;
+      const p = path.join(cur, e.name);
+      if (e.isDirectory()) stack.push(p);
+      else if (e.isFile() && pattern.test(e.name)) out.push(p);
+    }
+  }
+  return out;
 }
 
 function detectBrowserRouter(cwd: string): string | undefined {

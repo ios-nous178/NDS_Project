@@ -269,6 +269,28 @@ export function getClaudeMdTemplate(args: {
   - \`get_guide({ topic: "admin-cms" })\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
   - \`start_dev_server\` / \`check_preview\` / \`stop_dev_server\` — 어드민에서도 동일하게 사용 가능
 
+## 산출물 형식 강제 (MUST — 우회 절대 금지)
+
+어드민/CMS 목업도 **유일하게 허용된 작업 흐름은 동일**:
+
+  \`.tsx\` 작성 (antd v5) → \`tsc --noEmit\` 통과 → \`build_singlefile_html({})\` → \`dist/index.html\` (한 파일)
+
+**아래는 발견 즉시 작업 중단 + 사용자에게 보고 사유. 어떤 변명으로도 우회 금지:**
+
+1. **\`src/\` 하위에 손으로 작성한 \`.html\` 파일 금지.** "스탠드얼론 HTML 로 빠르게 보여드릴게요" 식 우회 X. \`dist/index.html\` 은 \`build_singlefile_html\` 산출물이므로 예외.
+2. **antd 컴포넌트를 HTML/CSS 로 "시각만 흉내" 금지.** \`<button className="fake-antd-btn">\`, \`<div className="my-table">\` 식으로 antd Button/Table 모양만 따라 그리지 말 것. 반드시 \`import { Button, Table, Form, ... } from "antd"\` 의 **실제 JSX** 를 쓸 것.
+3. **\`.css\` 안에 antd 토큰을 인라인 재정의 금지.** 색·폰트·라디우스가 필요하면 \`ConfigProvider\` 의 \`theme.token\` 으로만 조정. \`.ant-* { ... }\` 강제 override 도 최소화 — 컴포넌트 구조부터 antd 컨벤션에 맞춘다.
+4. **\`vite build\` / esbuild / webpack / parcel / rollup 직접 호출 금지.** 단일 HTML 산출은 **오직 \`build_singlefile_html({})\` 로만**.
+
+**우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
+
+- [ ] \`src/\` 에 손으로 작성한 \`.html\` 파일이 없다 (\`dist/index.html\` 은 빌드 산출물이라 예외).
+- [ ] 모든 UI 사용처는 antd v5 의 실제 JSX import 다 (className 으로 시각 모사한 raw HTML 없음).
+- [ ] 색·폰트·라디우스 커스텀은 \`ConfigProvider.theme.token\` 으로만 — \`:root\` 인라인 재정의 / 광범위한 \`.ant-*\` override 없음.
+- [ ] 산출물은 \`build_singlefile_html({})\` 결과의 \`dist/index.html\` **한 파일** 이다.
+
+위 4개 중 하나라도 어긋나면 **HTML/CSS 를 폐기하고 \`.tsx\` 기반으로 즉시 다시 작성**. 사용자가 명시적으로 허용한 경우에만 예외이며, 이 경우에도 "MCP 검증 파이프라인이 무력화됩니다" 라고 먼저 경고.
+
 ## 작업 원칙
 
 - 어드민은 정보 밀도가 높고 스캔하기 쉬운 레이아웃이 우선. 마케팅/장식 톤 금지.
@@ -306,6 +328,9 @@ export function getClaudeMdTemplate(args: {
 - [ ] HeaderSubject + 검색 폼(Select+Input.Search+초기화) + Table(align center+Button.link) 패턴 일관
 - [ ] body \`#f4f4f4\` + 본문 \`padding: 40 60 200\` + 푸터 카피 있음
 - [ ] tsc --noEmit 통과
+- [ ] \`src/\` 에 손으로 작성한 \`.html\` 파일이 없다 (\`dist/index.html\` 은 빌드 산출물 — 예외)
+- [ ] \`.css\` 어디에도 \`:root { ... }\` 토큰 인라인 재정의 없음 / 광범위한 \`.ant-*\` override 없음
+- [ ] 산출물은 \`build_singlefile_html({})\` 가 만든 \`dist/index.html\` 한 파일이다
 `;
   }
 
@@ -324,6 +349,29 @@ export function getClaudeMdTemplate(args: {
   \`get_setup({ step: "claude-md", intent: "admin-cms" })\` 도구로 다시 호출해 어드민용 가이드를 받으세요.
   어드민에는 antd v5를 사용하고 \`get_guide({ topic: "admin-cms" })\`로 컨벤션을 확인합니다.
 - 이 가이드는 사용자 앱(Trost/Geniet/NudgeEAP) 화면용입니다.
+
+## 산출물 형식 강제 (MUST — 우회 절대 금지)
+
+이 워크스페이스의 **유일하게 허용된 작업 흐름**:
+
+  \`.tsx\` 작성 → \`validate_mockup\` 통과 → \`build_singlefile_html({})\` → \`dist/index.html\` (한 파일)
+
+**아래는 발견 즉시 작업 중단 + 사용자에게 보고 사유. 어떤 변명으로도 우회 금지:**
+
+1. **\`src/\` 하위에 손으로 작성한 \`.html\` 파일 금지.** "스탠드얼론 HTML 로 빠르게 보여드릴게요" / "그냥 한 파일로 끝내고 싶어요" / "HTML 이 더 단순해요" 식 우회 X. 결과적으로 DS prop API 검증·\`validate_mockup\` AST 검사·\`report_mockup_usage\` 집계가 **전부 무력화**된다. \`dist/index.html\` 은 \`build_singlefile_html\` 산출물이므로 예외.
+2. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-eap/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-eap/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
+3. **DS 컴포넌트를 HTML/CSS 로 "시각만 흉내" 금지.** \`<button className="my-btn">\` 으로 Button 모양만 따라 그리기, \`<div className="chip">\` 으로 Chip 흉내 X. 반드시 \`import { Button, Chip, IconButton, ... } from "@nudge-eap/react"\` 의 **실제 JSX** 를 쓸 것 — prop API · 토큰 · a11y 가 자동으로 보장된다.
+4. **\`vite build\` / esbuild / webpack / parcel / rollup 직접 호출 금지.** 단일 HTML 산출은 **오직 \`build_singlefile_html({})\` 로만**. 다른 번들러 / 손수 inline 화는 \`nds-*\` 클래스 · onClick 인터랙션 · 토큰 변수 해석이 손실됨.
+
+**우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
+
+- [ ] \`src/\` 에 손으로 작성한 \`.html\` 파일이 없다 (\`dist/index.html\` 은 빌드 산출물이라 예외).
+- [ ] \`src/\` 의 \`.css\` / \`.scss\` 어디에도 \`:root { --color-* / --nds-* / --eap-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
+- [ ] 시멘틱 토큰은 \`main.tsx\` 의 \`import "@nudge-eap/tokens/css"\` 한 줄로만 들어온다.
+- [ ] 모든 DS 컴포넌트 사용처는 \`@nudge-eap/react\` 의 실제 JSX import 다 (className 으로 시각 모사한 raw HTML 없음).
+- [ ] 산출물은 \`build_singlefile_html({})\` 결과의 \`dist/index.html\` **한 파일** 이다.
+
+위 5개 중 하나라도 어긋나면 **HTML/CSS 를 폐기하고 \`.tsx\` 기반으로 즉시 다시 작성**. 사용자가 명시적으로 "HTML 직접 작성 허용" / "토큰 인라인 정의 허용" 이라고 지시한 경우에만 예외이며, 이 경우에도 사용자에게 "MCP 검증 파이프라인(validate_mockup·report_mockup_usage)이 무력화됩니다" 라고 먼저 경고할 것.
 
 ## 작업 원칙
 

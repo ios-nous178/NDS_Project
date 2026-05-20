@@ -288,7 +288,7 @@ const TOOLS = [
   {
     name: "build_singlefile_html",
     description:
-      "Build the current Vite mockup as a single self-contained .html (interactivity + nds-* classes + onClick preserved). Auto-installs vite-plugin-singlefile, patches vite.config, runs `vite build`, returns dist/index.html path + size. **MANDATORY final step of the mockup workflow** — single-file HTML is the standard deliverable of this workspace. Call this WITHOUT asking the user ('만들어 드릴까요' 금지) unless they explicitly refused. Forbidden alternatives: hand-writing .html, running `vite build` directly, using esbuild/parcel/webpack, leaving only .tsx — all lose nds-* tokens and React interactivity. Warns if BrowserRouter is used (file:// needs HashRouter).",
+      "Build the current Vite mockup as a single self-contained .html (interactivity + nds-* classes + onClick preserved). Auto-installs vite-plugin-singlefile, patches vite.config, runs `vite build`, returns dist/index.html path + size. **MANDATORY final step of the mockup workflow** — single-file HTML is the standard deliverable of this workspace. Call this WITHOUT asking the user ('만들어 드릴까요' 금지) unless they explicitly refused. **Pre-flight workspace audit**: refuses to build if it detects raw .html in src/, raw .html at project root (besides index.html), :root token redefinitions in src/*.css/scss, or zero .tsx files in src/ — these are the CLAUDE.md 'MUST — 우회 절대 금지' violations. Pass `skipAudit: true` ONLY when user explicitly overrides; warn user that validate_mockup / report_mockup_usage are bypassed. Forbidden alternatives: hand-writing .html, running `vite build` directly, using esbuild/parcel/webpack, leaving only .tsx — all lose nds-* tokens and React interactivity. Warns if BrowserRouter is used (file:// needs HashRouter).",
     inputSchema: {
       type: "object",
       properties: {
@@ -296,6 +296,11 @@ const TOOLS = [
           type: "string",
           description:
             "Project root that contains package.json + vite.config. Defaults to the MCP process cwd.",
+        },
+        skipAudit: {
+          type: "boolean",
+          description:
+            "Skip the workspace audit (raw HTML / inline :root tokens / no-tsx). Use ONLY when the user has explicitly approved a bypass; warn the user that the MCP validation pipeline is disabled in that case. Defaults to false.",
         },
       },
       additionalProperties: false,
