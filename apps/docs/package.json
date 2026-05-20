@@ -12,10 +12,12 @@
   "dependencies": {
     "@docusaurus/core": "latest",
     "@docusaurus/faster": "latest",
+    "@docusaurus/plugin-content-docs": "^3.10.1",
     "@docusaurus/preset-classic": "latest",
+    "@docusaurus/theme-common": "^3.10.1",
     "@docusaurus/theme-live-codeblock": "latest",
-    "@nudge-eap/react": "workspace:*",
     "@nudge-eap/icons": "workspace:*",
+    "@nudge-eap/react": "workspace:*",
     "@nudge-eap/tokens": "workspace:*",
     "clsx": "^2.1.1",
     "react": "^18.3.1",

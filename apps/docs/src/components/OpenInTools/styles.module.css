@@ -1,0 +1,122 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ifm-color-emphasis-800);
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.trigger:hover {
+  background: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 50;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-900);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.option:hover,
+.option:focus-visible {
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-emphasis-900);
+  text-decoration: none;
+  outline: none;
+}
+
+.option span {
+  flex: 1;
+}
+
+.option svg:last-child {
+  color: var(--ifm-color-emphasis-500);
+}
+
+.divider {
+  height: 1px;
+  margin: 4px 6px;
+  background: var(--ifm-color-emphasis-200);
+}
+
+.notice {
+  margin-top: 4px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-700);
+  background: var(--ifm-color-warning-contrast-background, rgba(255, 196, 0, 0.08));
+  border-radius: 6px;
+}
+
+.toast {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 51;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
+  color: white;
+  background: var(--ifm-color-success-dark, #2e7d32);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  animation: toast-in 0.18s ease;
+}
+
+.toastError {
+  background: var(--ifm-color-danger-dark, #c62828);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

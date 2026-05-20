@@ -1,0 +1,18 @@
+/* Ejected from @docusaurus/theme-classic@3.10.1 — kept identical, plus .pageActions */
+
+.docItemContainer header + *,
+.docItemContainer article > *:first-child {
+  margin-top: 0;
+}
+
+@media (min-width: 997px) {
+  .docItemCol {
+    max-width: 75% !important;
+  }
+}
+
+.pageActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}

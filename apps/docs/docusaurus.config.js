@@ -3,7 +3,7 @@
 const storybookUrl = process.env.STORYBOOK_BASE_URL || "http://localhost:6006";
 
 const config = {
-  title: "넛지 디자인시스템",
+  title: "NUDGE Design",
   tagline: "기획, 디자인, 개발이 같은 언어로 소통하는 디자인 시스템",
   favicon: "img/favicon.svg",
 
@@ -14,6 +14,14 @@ const config = {
   projectName: "design-system",
   customFields: {
     storybookUrl,
+    // "다른 도구로 열기" 드롭다운이 raw.githubusercontent.com / GitHub blob URL 을 만들 때 사용.
+    // 레포가 비공개일 때 마크다운 복사·AI 링크는 fetch 가 401/404 로 실패할 수 있지만
+    // (toast 안내), 공개 전환 시 코드 수정 없이 자동 작동.
+    repo: {
+      owner: "cashwalk",
+      name: "NudgeEAPDesignSystem",
+      branch: "main",
+    },
   },
 
   onBrokenLinks: "throw",
@@ -60,9 +68,9 @@ const config = {
 
   themeConfig: {
     navbar: {
-      title: "넛지 디자인시스템",
+      title: "NUDGE Design",
       logo: {
-        alt: "넛지 디자인시스템",
+        alt: "NUDGE Design",
         src: "img/logo.svg",
         href: "/",
       },
@@ -72,6 +80,11 @@ const config = {
         { to: "/tokens/colors", label: "토큰", position: "left" },
         { to: "/guide/design-principles", label: "가이드", position: "left" },
         { href: storybookUrl, label: "스토리북", position: "right" },
+        {
+          href: "https://github.com/cashwalk/NudgeEAPDesignSystem",
+          label: "GitHub",
+          position: "right",
+        },
       ],
     },
     footer: {
@@ -110,7 +123,7 @@ const config = {
           ],
         },
       ],
-      copyright: `${new Date().getFullYear()} 넛지 디자인시스템`,
+      copyright: `${new Date().getFullYear()} NUDGE Design`,
     },
   },
 };
