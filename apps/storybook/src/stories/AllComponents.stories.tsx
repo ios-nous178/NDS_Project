@@ -102,6 +102,7 @@ import {
   TimePicker,
   TimeSlotPicker,
   TipCard,
+  TitleBlock,
   Toggle,
   TrendingKeywords,
   UserCard,
@@ -633,6 +634,11 @@ const PREVIEWS: Record<string, PreviewRender> = {
   TipCard: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <TipCard tone="info" title="작은 팁" description="천천히 호흡해보세요." />
+    </div>
+  ),
+  TitleBlock: () => (
+    <div style={{ width: "100%", maxWidth: 280 }}>
+      <TitleBlock level="h4" title="바로 상담하기" subtitle="급한 문제는 5분 내 바로 상담" />
     </div>
   ),
   NotificationItem: () => (

@@ -83,6 +83,7 @@ export * from "./CircularProgress";
 export * from "./MultiStepForm";
 export * from "./ExpandableText";
 export * from "./PageHeader";
+export * from "./TitleBlock";
 export * from "./StatCard";
 export * from "./QuickActionGrid";
 export * from "./TagInput";
