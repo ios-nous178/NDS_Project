@@ -18,6 +18,7 @@ const LIST_ITEM_LEADING_CLASS = `${LIST_ITEM_CLASS}__leading`;
 const LIST_ITEM_BODY_CLASS = `${LIST_ITEM_CLASS}__body`;
 const LIST_ITEM_TITLE_CLASS = `${LIST_ITEM_CLASS}__title`;
 const LIST_ITEM_DESC_CLASS = `${LIST_ITEM_CLASS}__description`;
+const LIST_ITEM_META_CLASS = `${LIST_ITEM_CLASS}__metadata`;
 const LIST_ITEM_TRAILING_CLASS = `${LIST_ITEM_CLASS}__trailing`;
 
 /* ─── Types ─── */
@@ -39,6 +40,8 @@ export interface ListItemProps extends Omit<React.LiHTMLAttributes<HTMLLIElement
   title?: React.ReactNode;
   /** 보조 설명 */
   description?: React.ReactNode;
+  /** 부가 정보 (날짜·태그·상태 등 — description 아래 작게 표시) */
+  metadata?: React.ReactNode;
   /** 우측 슬롯 (chevron, badge, switch, 액션 버튼 등) */
   trailing?: React.ReactNode;
   /** 클릭 시 호출 (있으면 button 역할) */
@@ -145,24 +148,35 @@ const listStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: ${spacing[2]}px;
   }
 
   :where(.${LIST_ITEM_TITLE_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.medium};
-    color: ${cv.textRole.normal};
+    font-size: ${typeScale.body1.fontSize}px;
+    line-height: ${typeScale.body1.lineHeight}px;
+    font-weight: ${fontWeight.bold};
+    color: ${cv.textRole.strong};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   :where(.${LIST_ITEM_DESC_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
+    margin-top: ${spacing[4]}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.regular};
     color: ${cv.textRole.subtle};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :where(.${LIST_ITEM_META_CLASS}) {
+    margin-top: ${spacing[2]}px;
+    font-size: ${typeScale.caption2.fontSize}px;
+    line-height: ${typeScale.caption2.lineHeight}px;
+    font-weight: ${fontWeight.regular};
+    color: ${cv.textRole.muted};
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -196,6 +210,7 @@ export const ListItem = React.forwardRef<HTMLLIElement, ListItemProps>(
       leading,
       title,
       description,
+      metadata,
       trailing,
       onSelect,
       disabled = false,
@@ -247,7 +262,7 @@ export const ListItem = React.forwardRef<HTMLLIElement, ListItemProps>(
             {children}
           </span>
         ) : (
-          (title !== undefined || description !== undefined) && (
+          (title !== undefined || description !== undefined || metadata !== undefined) && (
             <span data-slot="body" className={LIST_ITEM_BODY_CLASS}>
               {title !== undefined && (
                 <span data-slot="title" className={LIST_ITEM_TITLE_CLASS}>
@@ -257,6 +272,11 @@ export const ListItem = React.forwardRef<HTMLLIElement, ListItemProps>(
               {description !== undefined && (
                 <span data-slot="description" className={LIST_ITEM_DESC_CLASS}>
                   {description}
+                </span>
+              )}
+              {metadata !== undefined && (
+                <span data-slot="metadata" className={LIST_ITEM_META_CLASS}>
+                  {metadata}
                 </span>
               )}
             </span>

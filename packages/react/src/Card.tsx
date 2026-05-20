@@ -34,8 +34,10 @@ const CARD_FOOTER_TEXT_CLASS = `${CARD_CLASS}__footer-text`;
 // Figma 171:9363 (Card 마스터) 사양에 맞춤:
 //   - 균등 padding(--inset-card, 16px) + gap(--nds-card-gap, 12px) 의 수직 스택
 //   - corner radius lg(12), thumbnail radius 10
-//   - 타이포: title=Headline 5/Bold, description=Caption 1/Regular,
-//             metadata/footerText=Caption 2/Regular (muted)
+//   - 타이포: title=Headline 5/Bold(18/26 strong), description=Body 3/Regular(14/20 subtle),
+//             metadata/footerText=Caption 1/Regular(13/18 muted)
+//   - 본문 갭: Title↔Description 4px · Description↔Metadata 8px
+//   - Footer divider: border-top 1px + padding-top --inset-card(16)
 
 // eslint-disable-next-line unused-imports/no-unused-vars
 const cardStyles = `
@@ -120,14 +122,14 @@ const cardStyles = `
   :where(.${CARD_TEXT_CONTENT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[6]}px;
+    gap: ${spacing[8]}px;
     width: 100%;
   }
 
   :where(.${CARD_TITLE_DESC_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: ${spacing[4]}px;
     width: 100%;
   }
 
@@ -140,34 +142,34 @@ const cardStyles = `
     word-break: break-word;
   }
 
-  /* Subtitle / Description — 동일 시각 (Caption 1, subtle) */
+  /* Subtitle / Description — Figma Body 3/Regular, subtle */
   :where(.${CARD_SUBTITLE_CLASS}),
   :where(.${CARD_DESCRIPTION_CLASS}) {
     margin: 0;
-    font-size: ${typeScale.caption1.fontSize}px;
+    font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption1.lineHeight}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     color: ${cv.textRole.subtle};
     word-break: break-word;
   }
 
-  /* Metadata (caption2, muted) */
+  /* Metadata — Figma Caption 1/Regular, muted */
   :where(.${CARD_METADATA_CLASS}) {
     margin: 0;
-    font-size: ${typeScale.caption2.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption2.lineHeight}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.muted};
   }
 
-  /* Meta (legacy ReactNode slot) — 동일 톤 */
+  /* Meta (legacy ReactNode slot) — 동일 톤 (Caption 1, muted) */
   :where(.${CARD_META_CLASS}) {
     display: flex;
     align-items: center;
     gap: var(--gap-tight, ${spacing[4]}px);
-    font-size: ${typeScale.caption2.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption2.lineHeight}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.muted};
   }
 
@@ -195,12 +197,12 @@ const cardStyles = `
     width: 100%;
   }
 
-  /* Footer text (Caption 2, muted) */
+  /* Footer text — Figma Caption 1, muted */
   :where(.${CARD_FOOTER_TEXT_CLASS}) {
     margin: 0;
-    font-size: ${typeScale.caption2.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption2.lineHeight}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.muted};
   }
 
@@ -221,7 +223,7 @@ const cardStyles = `
   }
 
   :where(.${CARD_FOOTER_CLASS}[data-divider="true"]) {
-    padding-top: var(--inset-input, 12px);
+    padding-top: var(--inset-card, 16px);
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 `;
