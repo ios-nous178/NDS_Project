@@ -1,5 +1,29 @@
 # @nudge-eap/tailwind-preset
 
+## 0.1.10
+
+### Patch Changes
+
+- MCP 목업 워크플로우 가드 강화 (외부 전파).
+  - `build_singlefile_html` pre-flight audit 신설 — raw .html / :root 토큰 인라인 재정의 / DS 컴포넌트 시각 흉내 / .tsx 0개 같은 우회 패턴이 발견되면 빌드 거부.
+  - 시각 레퍼런스(`references.md` 또는 `.references/`) 미수집 시 빌드 차단 — CLAUDE.md MUST 섹션 Rule 1 로 박혀 모델이 첫 응답에서 사용자에게 자동 질문.
+  - `validate_mockup` 무한 루프 가드 — 같은 위반 3회 연속이면 멈추고 사용자에게 보고.
+
+  외부 프로젝트는 MCP 업데이트 후 `get_setup({ step: 'claude-md', overwrite: true })` 로 새 가드가 박힌 CLAUDE.md 를 다시 받으면 됩니다.
+
+- 60af459: MCP 도구 21 → 15 개로 통합 (외부 전파).
+  - `find_component` ← list_components + get_component + search_component
+  - `find_icon` ← list_icons + find_icon
+  - `find_token` ← list_tokens + lookup_token
+  - `get_brand` ← list_brands + get_brand_info
+  - `dev_server` ← start_dev_server + stop_dev_server (`action: 'start' | 'stop'`)
+
+  옛 도구 이름은 즉시 제거 — 호출 시 `Unknown tool` 에러. 외부 프로젝트는 MCP 업데이트 후 CLAUDE.md 를 `get_setup({ step: 'claude-md', overwrite: true })` 로 갱신하면 새 이름이 박힌 가이드를 받습니다.
+
+- Updated dependencies
+- Updated dependencies [60af459]
+  - @nudge-eap/tokens@0.1.10
+
 ## 0.1.9
 
 ### Patch Changes

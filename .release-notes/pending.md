@@ -9,66 +9,55 @@
 -->
 <!-- markdownlint-disable MD036 -->
 
-*Card / List 가 Figma 마스터와 같은 모양이 됐어요*
+*AI 가 목업을 "코드 우회"로 만드는 길이 막혔어요*
 
-Figma 의 Card(171:9363) / List(933:80) 정의가 그동안 코드와 미묘하게 어긋나 있었어요. 이제 디자이너가 Figma 에서 그리는 카드·리스트와 AI 가 만드는 결과물이 같은 타이포·간격·radius 를 씁니다.
+이전엔 모델이 시안을 빨리 보여주려고 .tsx 워크플로우를 우회해서 raw HTML/CSS 로 시각만 흉내내는 경우가 있었어요. 이러면 DS 컴포넌트 검증·다크패턴 검증이 전부 무력화되는데, 이제 빌드 단계에서 자동으로 막힙니다.
 
-• *Card* 신규 슬롯 — Avatar(40 원형), Chips(브랜드 chip 그룹), Divider, Cta(액션 버튼 영역), FooterText. 기존 props 그대로 동작 (외부 사용처 영향 없음).
-• *Card 레이아웃* — 균등 padding 16 + slot 간 gap 12 의 수직 스택. corner radius 8 → *12*. Thumbnail 기본 고정 height 160px.
-• *List* — Title 14 Medium → *16 Bold*. Description 13 → *14*. Metadata prop 신설.
+• *4가지 우회 패턴 자동 차단* — 손글씨 .html / `:root` 토큰 인라인 재정의 / DS 컴포넌트 시각 흉내 / .tsx 0개. 빌드 직전 워크스페이스를 스캔해서 하나라도 발견되면 빌드 거부.
+• *시각 레퍼런스 미수집도 차단* — Figma 캡처 / 스샷 같은 시각 자료가 없으면 빌드 안 됩니다. 모델이 첫 응답에서 자동으로 "참고할 시안 있어요?" 라고 물어보도록 가드.
+• *같은 위반 3회 반복되면 멈춤* — 모델이 같은 룰을 계속 못 지키며 무한 루프 도는 케이스 가드. 멈추고 사용자에게 보고합니다.
 
-*Trost · Geniet 브랜드 아이콘 44종이 추가됐어요*
+*MCP 도구 이름이 21개 → 15개로 정리됐어요*
 
-각 브랜드 운영 사이트의 SVG 를 DS 표준(24×24, currentColor) 으로 정제해서 가져왔어요. `brand='trost'` / `brand='geniet'` 모드에서 `TrostMentalDepressionIcon`, `GenietAlarmIcon` 처럼 prefix 로 import.
+비슷한 이름이 너무 많아 AI 가 잘못된 도구를 고르는 일이 잦았어요. 같은 일을 하는 도구들을 하나로 합쳤어요.
 
-• *Trost 17종* — 멘탈 카테고리 9 (우울/감정/일상/MBTI/약/루틴/자존감/사운드/병원) · 심리검사 결과 3 (safe/warning/danger) · 서비스 5 (SNS 공유·코인·심볼 등).
-• *Geniet 27종* — 알람·메뉴·마이페이지·복사 등 공용 12 + 바텀네비 5탭 on/off + 헤더 검색.
-• 공통 컴포넌트는 brand-agnostic 유지 — 브랜드 전용 화면이 명시적으로 import 해서 전달하는 패턴.
+• `find_component` — 예전 list_components / get_component / search_component
+• `find_icon` — 예전 list_icons / find_icon
+• `find_token` — 예전 list_tokens / lookup_token
+• `get_brand` — 예전 list_brands / get_brand_info
+• `dev_server({ action: 'start' | 'stop' })` — 예전 start_dev_server / stop_dev_server
 
-*Trost 시멘틱 토큰이 실제 트로스트 디자인에 맞게 정정됐어요*
+옛 이름은 즉시 제거됐어요. MCP 업데이트 후 Claude 에게 *"CLAUDE.md 갱신해줘"* 라고 하면 새 도구 이름이 박힌 가이드를 다시 받습니다.
 
-기존엔 일부 토큰이 트로스트 실측과 어긋나서 brand='trost' 모드 결과물이 진짜 트로스트와 미묘하게 달라 보였어요. 8개 컴포넌트와 실측 grep 으로 5개 슬롯 정정.
+*Mockup 아이콘 1786종이 fallback 으로 들어왔어요*
 
-• *페이지 배경* 회색(#F2F2F2) → *흰색* (트로스트 본문은 다 흰색 위).
-• *모달·카드 overlay* 70% → *60%*.
-• *브랜드 강조 텍스트·아이콘·버튼 텍스트* 노랑(#E6D200) → *오렌지(#FF9D00)*. 노란색은 면적 큰 버튼 / 배너 배경 전용.
-• *떠 있는 카드 그림자* opacity 0.10 → *0.12*.
+목업 단계에서 DS 표준 아이콘셋에 없는 시각을 임시로 채울 때 쓰는 fallback. iconsax bold 스타일을 24×24 / currentColor 로 정제해서 가져왔어요.
 
-*AI 가 만드는 UI 가 한층 더 일관돼져요*
+• `MockupBoldAlarmIcon`, `MockupBoldActivityIcon` 처럼 *`MockupBold` prefix* 로 import — 정식 인하우스 아이콘이 들어오면 한눈에 찾아서 교체할 수 있도록 prefix 가 명시적.
+• 목업·임시 시안 전용 — production 시안엔 DS 표준 아이콘만 사용하세요.
 
-노션 "AI UI 생성 원칙" 의 룰을 디자인 시스템에 직접 정합. 이제 목업 생성 시 자동 적용.
+*docs 사이트 컬러 페이지가 살아있는 카탈로그가 됐어요*
 
-• *컴포넌트별 사용 시점 룰* — Badge(보조 정보, Fill 카드당 1개, 카테고리는 ghost/line) · Tabs(동일 depth 콘텐츠 전환만, 액션 대체 금지) · Segment(PC CMS 주요 기능 전환 전용) · Modal(즉각적 판단 필요할 때만, 단순 안내는 Notice/Banner/Toast).
-• *컬러 위계 룰* — Tone-on-Tone 금지(연한 Blue 위 Blue Fill Badge 같은 동일 계열 강조 X). Brand Background 는 의미 전달 목적(주의·안내·하이라이트)에만, KPI/Summary 카드 배경으로는 금지.
-• *CTA 라벨 명료성* — 결과 동사 포함(보기·신청·저장·삭제). 다이얼로그는 항상 거절 가능한 옵션(닫기·나중에) 최소 1개.
+기존 손글씨 테이블(palette 12개) 을 라이브 ColorCatalog 컴포넌트로 교체. `@nudge-eap/tokens` 의 colors 객체를 직접 import 해서 렌더하기 때문에 새 shade / 팔레트 추가 시 자동 반영돼요.
 
-*다크패턴 5 가지가 차단돼요*
+• Tailwind / Vercel 문서 스타일의 가로 strip 레이아웃.
+• 검색 — 그룹명 매치 시 팔레트 전체, shade·hex·path 매치 시 해당 shade 만.
+• 클릭 시 `colors.blue[500]` 경로 클립보드 복사.
+• 시멘틱 토큰은 별도 `/semantic-tokens` SSOT 페이지로 분리.
 
-사용성을 해치는 패턴을 DS 차원에서 막아요. `validate_mockup` 단계에서 발견 시 경고.
+*세 진입점의 NUDGE 마크가 통일됐어요*
 
-1. 진입 직후 자동 시트(알림 동의·프로모션 바텀시트)
-2. 뒤로가기 인터럽트(닫기 누르는 순간 만류·재구매 다이얼로그)
-3. 거절 불가 CTA (확인 한 개 버튼만 있는 다이얼로그)
-4. 플로우 중간 광고
-5. 모호한 CTA 라벨 ("지금 시작" / "확인" 단독)
+기존엔 docs 사이트에만 NUDGE favicon 이 적용돼 있었어요. 이제 *루트(`/`) · docs · storybook* 세 진입점의 탭 favicon · 로고가 모두 NUDGE 마크로 동기화.
 
-*UX 라이팅 가이드가 디자인 시스템에 들어왔어요*
+• storybook manager 헤더 로고도 NUDGE 로 교체.
+• 루트 페이지(web-server) 의 placeholder 였던 "N" 글자 favicon → currentColor NUDGE 마크.
 
-버튼·라벨·에러·placeholder·empty state 처럼 사용자에게 보이는 모든 텍스트 가이드.
+*docs 소개 페이지가 슬림해졌어요*
 
-• 해요체로 통일 — "저장되었습니다" 보다 *"저장했어요"*
-• 부정형보다 긍정형 — "받을 수 없어요" 보다 *"조건을 충족하면 받을 수 있어요"*
-• 다이얼로그 왼쪽 버튼은 항상 *"닫기"*. "취소" 는 사용자가 작업 취소로 오해할 수 있어 안 씁니다.
-• *EAP 멘탈케어 도메인* 추가 룰 — 위기·자해는 사실 중심으로 / "정상·비정상" 평가 어휘 금지 / "진단·처방·치료" 는 실제 의료진 행위에만 / "회사에 공유되지 않아요" 같은 익명성 안내는 명시적으로.
+처음 docs 사이트에 들어왔을 때 보이는 페이지를 가볍게 정리. 헤더 라벨도 *"시작하기" → "소개"* 로 변경. H1 도 *"넛지 디자인시스템" → "NUDGE Design"* 로 통일.
 
-AI 에게 "UX 라이팅 가이드 따라줘" 라고 하면 자동으로 룰을 불러옵니다.
+*잡 수정*
 
-*Spacing · 시멘틱 토큰 · 인벤토리가 정리됐어요*
-
-• *Spacing 4pt 그리드* — 의도 기반 *Gap*(요소 간 거리: tight 4 / default 10 / comfortable 12 / loose 16 / wide 24) 과 사용처 기반 *Inset*(컨테이너 내부 여백: chip 8 / input 12 / *card 16* / card-large 20 / modal 24) 으로 명확히 분리. "카드 padding 뭐 쓰지?" 없이 `--inset-card` 로 통일.
-• *브랜드별 시멘틱 토큰 위치 대칭* — NudgeEAP / Trost / Geniet 가 동등한 위치에 자기 정의 파일을 갖도록 정리. (디자이너·개발자 영향 없음 — 내부 정리)
-• *컴포넌트 인벤토리* — `docs/components/inventory.md` 가 *Figma 정합 완료* 컴포넌트를 상단에 모아 보여줘요. "지금 바로 써도 되는 컴포넌트" 가 한 눈에 보임. docs 사이트 *가이드* 카테고리에 *UX 라이팅* / *다크패턴* 페이지도 신규 노출.
-
-*Storybook 브랜드 토글이 깔끔하게 동작해요*
-
-기존엔 brand 토글 시 radius·spacing 은 변하는데 *컬러는 안 변하는* 이슈가 있었어요. brand-themes 가 `--semantic-bg-brand-default` 같은 토큰을 자체적으로 갖고 있지 않아 발생. Storybook 토글이 이제 `packages/tokens/dist/{trost,geniet}.css` 의 :root 토큰을 자동으로 가져옵니다.
+• MCP 도구 통합 이후 깨졌던 pre-push 훅 (`list_brands` 호출) 을 `get_brand` 로 교체.
+• docs 사이드바에 잘못 노출되던 `drafts/` 카테고리 제거 (CI 빌드 실패 fix).
+• 테이블 셀 코드 스팬 안 `|` 이스케이프 + stale anchor — MDX 빌드 실패 fix.

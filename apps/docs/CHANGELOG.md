@@ -1,5 +1,16 @@
 # @nudge-eap/docs
 
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies [60af459]
+  - @nudge-eap/icons@0.1.10
+  - @nudge-eap/react@0.1.10
+  - @nudge-eap/tokens@0.1.10
+
 ## 0.1.6
 
 ### Patch Changes
