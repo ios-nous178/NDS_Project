@@ -64,7 +64,7 @@ import { SearchIcon } from "@nudge-eap/icons";
 ```
 
 :::warning 단독 아이콘은 명시적 토큰 컬러 지정
-주변 텍스트 없이 단독으로 배치되는 아이콘(예: 빈 영역의 안내 아이콘)은 `currentColor` 만 믿지 말고 주변 배경에 맞는 토큰 컬러를 명시하세요. 패턴 가이드는 MCP 의 `get_pattern_guide("icon-color")` 로 확인할 수 있습니다.
+주변 텍스트 없이 단독으로 배치되는 아이콘(예: 빈 영역의 안내 아이콘)은 `currentColor` 만 믿지 말고 주변 배경에 맞는 토큰 컬러를 명시하세요. 패턴 가이드는 MCP 의 `get_guide({ topic: "pattern:icon-color" })` 로 확인할 수 있습니다.
 :::
 
 ---
@@ -98,10 +98,10 @@ import { SearchIcon } from "@nudge-eap/icons";
 용도/키워드만 알고 정확한 이름은 모를 때 `nudge-eap-ds` MCP 도구로 검색하세요.
 
 ```
-list_icons            # 전체 아이콘 목록 (브랜드 prefix 포함)
-find_icon("검색")      # 키워드/한국어 별칭으로 후보 추출
-find_icon("플레이")    # → play, play-active 등
-find_icon("위치")      # → locate, pin
+find_icon                       # 인자 없으면 전체 아이콘 목록 (브랜드 prefix 포함)
+find_icon({ query: "검색" })     # 키워드/한국어 별칭으로 후보 추출
+find_icon({ query: "플레이" })   # → play, play-active 등
+find_icon({ query: "위치" })     # → locate, pin
 ```
 
 Claude 에게는 한국어로 그대로 부탁하면 됩니다:

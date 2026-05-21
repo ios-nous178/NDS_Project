@@ -75,6 +75,17 @@
 
 ---
 
+## 꿀팁 — DS Inspector 켜기
+
+dev 서버를 띄우면 우하단에 작은 floating 버튼이 뜹니다. 누르면 화면에 쓰인 컴포넌트가 DS(`@nudge-eap/react`) / antd / native(`<button>` 등) 어디서 왔는지 실시간으로 보입니다. **단축키 Ctrl/Cmd + Shift + D** 로도 토글.
+
+- "어드민인데 antd 만 써야 하는데 DS 가 섞였나?" — 한 번 누르면 보임
+- "서비스인데 raw `<button>` 이 남아 있나?" — 빨갛게 표시됨
+
+처음 시안 폴더를 셋업할 때 Claude 가 자동으로 마운트합니다 (production 빌드에는 자동 제외). 안 보이면 "DsInspector 켜줘" 한 줄이면 됩니다.
+
+---
+
 ## 부탁하기 전에 — 서비스 vs 어드민
 
 만들 화면 종류에 따라 사용 라이브러리 / 톤이 다릅니다. 부탁할 때 반드시 명시.
@@ -111,16 +122,17 @@
 
 ## 시안 만드는 흐름
 
-큰 흐름은 6단계입니다. Claude 가 여러 단계를 묶어서 처리하기도 하니, 안 묶이면 한 단계씩 부탁하세요.
+큰 흐름은 7단계입니다. Claude 가 여러 단계를 묶어서 처리하기도 하니, 안 묶이면 한 단계씩 부탁하세요.
 
-1. **조사** — "이런 화면 만들 건데 어떤 DS 컴포넌트 / 아이콘 쓰면 좋아?"
-2. **스캐폴드** — (시안 폴더 처음 쓸 때만) "이 폴더에 NudgeEAP 시안 프로젝트 세팅해줘"
-3. **작성** — 아래 "부탁 잘 하는 공식" 대로 PRD + 5요소 정리해서 부탁
-4. **검증** — "validate_mockup 으로 점검 + 위반 자동 수정"
-5. **HTML 빌드 + 사용 리포트** — "넛지 DS 써서 HTML 한 파일 빌드 + report_mockup_usage"
-6. **회고** — "DS 원칙에 맞는지 한 번 더 봐줘. 참고한 가이드도"
+1. **시각 레퍼런스 준비** — 만들고 싶은 화면의 정답/오답 스크린샷 또는 Figma 링크 1-2장을 시안 폴더에 둡니다. `references.md` 한 파일에 메모로 적거나, `.references/` 폴더에 이미지로 넣어도 됩니다. **빠뜨리면 마지막 HTML 빌드가 차단됩니다** (톤 판단 근거 부재).
+2. **조사** — "이런 화면 만들 건데 어떤 DS 컴포넌트 / 아이콘 쓰면 좋아?"
+3. **스캐폴드** — (시안 폴더 처음 쓸 때만) "이 폴더에 NudgeEAP 시안 프로젝트 세팅해줘"
+4. **작성** — 아래 "부탁 잘 하는 공식" 대로 PRD + 5요소 정리해서 부탁
+5. **검증** — "validate_mockup 으로 점검 + 위반 자동 수정". **1차 통과해도 반드시 한 번 더** 돌려서 0건 확인 (워크스페이스 룰 — Self-Check 2회 의무)
+6. **HTML 빌드 + 사용 리포트** — "넛지 DS 써서 HTML 한 파일 빌드 + report_mockup_usage"
+7. **회고** — "DS 원칙에 맞는지 한 번 더 봐줘. 참고한 가이드도"
 
-체크리스트: ☑ 조사 → ☑ 스캐폴드 → ☑ 작성 → ☑ 검증 → ☑ HTML + 리포트 → ☑ 회고
+체크리스트: ☑ 레퍼런스 → ☑ 조사 → ☑ 스캐폴드 → ☑ 작성 → ☑ 검증(2회) → ☑ HTML + 리포트 → ☑ 회고
 
 ---
 
@@ -191,7 +203,7 @@ PRD 없이 빠르게 만들 때도 아래 5개는 채우세요:
 
 ### 검증 — MCP 한 마디 꼭
 
-- "넛지 DS 의 validate_mockup 으로 점검 + 위반은 suggest_replacement 로 자동 수정."
+- "넛지 DS 의 validate_mockup 으로 점검 + 위반은 suggest_replacement 로 자동 수정. **0건 될 때까지 2회 이상** 돌려줘."
 - "DS MCP 써서 이 코드 hex → 토큰으로 바꿔줘."
 - "넛지 DS 의 CTA 그룹 패턴 가이드 다시 보고 위계 봐줘. 대표 액션 1개만 강조."
 - "DS 의 안내 영역 강조 가이드 확인하고 이 박스가 너무 튀는지 봐줘."
@@ -224,6 +236,15 @@ DS MCP 의 `build_singlefile_html` 도구가 vite-plugin-singlefile 로 클릭 /
 
 처음 한 번은 시안 폴더에 `vite-plugin-singlefile` 패키지가 자동 설치되고 vite 설정도 Claude 가 손봐줍니다. 두 번째부터는 빠릅니다.
 
+### 빌드가 거부될 수 있는 경우 (pre-flight audit)
+
+`build_singlefile_html` 은 워크스페이스 상태를 먼저 검사합니다. 아래 조건 중 하나라도 걸리면 빌드를 거부합니다 — 안전장치이므로 우회하지 마세요.
+
+- **시각 레퍼런스 없음** — `references.md` 도 없고 `.references/` 폴더도 비어 있을 때. Claude 가 "어떤 화면을 참고했냐" 물어보면 답해 주거나, 시안 1-2장 직접 넣어 주세요.
+- **src 에 raw .html 이 있음** — DS 토큰이 빠진 손 HTML 이 섞인 상태. .tsx 로 옮겨 달라고 부탁.
+- **.tsx 가 0개** — 시안 코드가 비어 있음. 작성부터.
+- **`:root` 토큰 재정의** — `src/*.css` 안에서 DS 토큰을 덮어쓴 상태. 토큰을 직접 갈아엎지 말고 시멘틱 토큰을 가져다 쓰는 방향으로.
+
 정적 PNG / PDF 캡처 도구는 현재 없습니다. 한 장면만 그림으로 필요하면 브라우저에서 `dist/index.html` 열고 직접 스크린샷을 찍으세요.
 
 ---
@@ -234,13 +255,16 @@ DS MCP 의 `build_singlefile_html` 도구가 vite-plugin-singlefile 로 클릭 /
 
 - hex / rgb → 토큰
 - 인라인 픽셀 값 → 토큰 권장
+- 4pt grid 위반 (5/7/9/11px 같은 어중간한 값) → 4 의 배수로 보정
 - DS 에 없는 컴포넌트 / 아이콘 import → 차단
 - 그라데이션 → DS 금지
 - 잘못된 prop 값 (예: `size="md"` 오타) → 경고
 - 이모지 / 기호 (😀 → ✓ ★ •) → 차단 → 정식 아이콘
 - 회색 버튼을 활성 CTA 로 → 경고
 - 여러 CTA 에 화살표 중복 → 1개만
-- primary 버튼 남용 → 위계 조정
+- 한 영역 안 Primary Button 2개 이상 → 1개만 / 나머지는 outlined·text 로
+- 헤딩(`<h1>`-`<h3>`) 안에 장식 아이콘 → 텍스트만
+- Brand BG 두 곳 이상 → 의미 있는 1곳에만, 나머지는 surface
 - Chip / Badge 장식 남용 → 상태 / 분류만
 - 안내 영역 강조 중복 (배경 + 아이콘 + 배지 + 그라데이션) → 줄이기
 - 서비스인데 antd 가 섞임 / 어드민인데 DS 가 섞임 → 자동 분리
@@ -250,25 +274,32 @@ DS MCP 의 `build_singlefile_html` 도구가 vite-plugin-singlefile 로 클릭 /
 
 → "이런 화면 만들어줘" 만 던지면 디테일은 Claude.
 
+> 검증은 **2회 반복이 워크스페이스 룰** 입니다. 1회만 돌리고 끝내면 안 됩니다. Claude 가 "Self-Check 1차 통과" 라고만 말하면 "한 번 더 돌려" 라고 해주세요.
+
 ---
 
 ## 막힐 때
 
 설치 단계 문제 → [Notion 가이드 · 막힐 때](https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272).
 
-| 증상                                            | 어떻게                                                                                                                          |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Claude 가 새 컴포넌트를 모름                    | [Notion · 업데이트](https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272) + ⌘Q 재시작 |
-| 서비스인데 antd 가 섞이거나, 어드민인데 DS 섞임 | "이 화면은 [서비스/어드민]이야. 라이브러리 다시 맞춰줘."                                                                        |
-| HTML 더블클릭했는데 빈 화면                     | "HTML 더블클릭했더니 빈 화면이야. 라우팅 다시 잡아줘."                                                                          |
-| dev 서버 띄웠는데 화면 비어있음                 | "방금 만든 페이지 화면 검증해줘" → Playwright 로 콘솔 에러 잡아냄                                                               |
-| HTML 추출 실패                                  | "넛지 DS 써서 필요한 패키지(vite-plugin-singlefile)부터 깔고 다시"                                                              |
-| 어드민 화면이 마케팅 톤처럼 화려함              | "운영툴 톤으로 조밀하게. antd 기본 스타일 유지하고 외형 건드리지 마."                                                           |
-| 폴더 못 본다고 함                               | 작업 디렉토리 잘못 열림. ⌘+O 로 시안 폴더 다시                                                                                  |
-| 새 버전인데 옛 컴포넌트로 나옴                  | Claude Code 완전 종료(⌘Q) 했는지. `/mcp` 로 버전 확인                                                                           |
-| 영어로 답함                                     | "한국어로." 한 번이면 됨                                                                                                        |
-| 결과가 마음에 안 듦                             | 화면 캡처 + 구체적 표현: "이 부분이 ~한데, ~로 바꿔줘."                                                                         |
-| 이상한 증상                                     | [노션 백업](https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272) → 개발자에게 캡처   |
+| 증상                                               | 어떻게                                                                                                                            |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Claude 가 새 컴포넌트를 모름                       | [Notion · 업데이트](https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272) + ⌘Q 재시작   |
+| 서비스인데 antd 가 섞이거나, 어드민인데 DS 섞임    | "이 화면은 [서비스/어드민]이야. 라이브러리 다시 맞춰줘."                                                                          |
+| HTML 빌드가 "시각 레퍼런스 없음" 으로 거부됨       | 시안 1-2장(스크린샷 or Figma 링크) 을 시안 폴더의 `references.md` 또는 `.references/` 에 넣어달라고 부탁                          |
+| HTML 빌드가 "raw .html / `:root` 재정의" 로 거부됨 | "src/ 의 .html 을 .tsx 로 옮기고, `:root` 토큰 재정의는 시멘틱 토큰으로 바꿔줘"                                                   |
+| HTML 더블클릭했는데 빈 화면                        | "HTML 더블클릭했더니 빈 화면이야. 라우팅 다시 잡아줘."                                                                            |
+| dev 서버 띄웠는데 화면 비어있음                    | "방금 만든 페이지 화면 검증해줘" → Playwright 로 콘솔 에러 잡아냄                                                                 |
+| HTML 추출 실패                                     | "넛지 DS 써서 필요한 패키지(vite-plugin-singlefile)부터 깔고 다시"                                                                |
+| 어드민 화면이 마케팅 톤처럼 화려함                 | "운영툴 톤으로 조밀하게. antd 기본 스타일 유지하고 외형 건드리지 마."                                                             |
+| DsInspector 가 안 보임                             | "DsInspector 마운트 다시 잡아줘" (`get_setup({ step: "inspector" })` 자동 호출 + dev 서버 재시작)                                 |
+| 검증을 한 번만 돌리고 끝냄                         | "validate_mockup 한 번 더 돌려서 0건 확인하고 끝내줘"                                                                             |
+| 폴더 못 본다고 함                                  | 작업 디렉토리 잘못 열림. ⌘+O 로 시안 폴더 다시                                                                                    |
+| 새 버전인데 옛 컴포넌트로 나옴                     | Claude Code 완전 종료(⌘Q) 했는지. `/mcp` 로 버전 확인                                                                             |
+| `Unknown tool: list_brands` 등 옛 이름 에러        | "MCP 도구 이름 통합됐어. 새 이름(`get_brand` / `find_component` / `find_token` / `dev_server` / `get_guide` / `get_setup`) 으로." |
+| 영어로 답함                                        | "한국어로." 한 번이면 됨                                                                                                          |
+| 결과가 마음에 안 듦                                | 화면 캡처 + 구체적 표현: "이 부분이 ~한데, ~로 바꿔줘."                                                                           |
+| 이상한 증상                                        | [노션 백업](https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272) → 개발자에게 캡처     |
 
 만능 질문:
 
@@ -280,10 +311,11 @@ DS MCP 의 `build_singlefile_html` 도구가 vite-plugin-singlefile 로 클릭 /
 
 1. 시안 폴더를 Claude Code 에서 열고 30초 체크 (작업 폴더 + `/mcp`)
 2. (선택) 권한 건너뛰기 모드 ON
-3. "넛지 DS 써서 [서비스/어드민] 페이지 만들어줘 — PRD 첨부 또는 인라인" 한 줄
-4. dev 서버 띄워 브라우저 확인 → "넛지 DS 써서 ~ 수정해줘" 한두 줄씩
-5. "넛지 DS 써서 HTML 한 파일로 뽑아줘" → `dist/index.html`
-6. `dist/index.html` 을 슬랙 / 메일에 첨부 → 끝
+3. 참고할 시안 1-2장을 `references.md` 또는 `.references/` 에 넣어두기
+4. "넛지 DS 써서 [서비스/어드민] 페이지 만들어줘 — PRD 첨부 또는 인라인" 한 줄
+5. dev 서버 띄워 브라우저 확인 (DsInspector 토글 Ctrl/Cmd+Shift+D 로 라이브러리 비율 점검) → "넛지 DS 써서 ~ 수정해줘" 한두 줄씩
+6. "넛지 DS 써서 validate_mockup 2회 돌려서 위반 0건 만들고 → HTML 한 파일로 뽑아줘 → report_mockup_usage 까지" → `dist/index.html`
+7. `dist/index.html` 을 슬랙 / 메일에 첨부 → 끝
 
 5분 ~ 30분이면 한 페이지 시안 완성. 매 턴 MCP 한 마디 잊지 마세요.
 
@@ -293,7 +325,7 @@ DS MCP 의 `build_singlefile_html` 도구가 vite-plugin-singlefile 로 클릭 /
 
 - 설치 / 업데이트 (Notion): https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272
 - 컴포넌트 한눈에: [컴포넌트 인벤토리](/docs/components/inventory)
-- MCP 도구 21 개 전체: [/docs/guide/mcp-tools-reference](/docs/guide/mcp-tools-reference)
+- MCP 도구 15 개 전체: [/docs/guide/mcp-tools-reference](/docs/guide/mcp-tools-reference)
 - GitHub: https://github.com/cashwalk/NudgeEAPDesignSystem
 - 노션 백업: https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272
 - 개발자용 README: https://github.com/cashwalk/NudgeEAPDesignSystem/blob/main/packages/mcp/README.md
