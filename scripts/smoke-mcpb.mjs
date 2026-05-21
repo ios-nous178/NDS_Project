@@ -94,9 +94,9 @@ try {
     throw new Error(`get_setup({step:'install'}) returned unexpected result: ${text}`);
   }
 
-  const brands = await callTool("list_brands", {});
+  const brands = await callTool("get_brand", {});
   if (!Array.isArray(brands?.brands) || brands.brands.length === 0) {
-    throw new Error(`list_brands returned unexpected result: ${JSON.stringify(brands)}`);
+    throw new Error(`get_brand returned unexpected result: ${JSON.stringify(brands)}`);
   }
 
   const imports = await callTool("get_setup", { step: "imports", brand: "trost" });
