@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "nudge-eap-ds",
   "display_name": "NudgeEAP Design System",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "NudgeEAP Design System MCP — 컴포넌트/아이콘/토큰 조회, 목업 .tsx 검증, dev 서버/Playwright 미리보기 검사를 제공합니다.",
   "long_description": "Trost/Geniet/NudgeEAP 3개 브랜드 디자인시스템 메타데이터를 Claude에게 노출하고, 작성된 mockup .tsx 의 인라인 컬러/스페이싱/금지 패턴을 자동 검증합니다. Vite 외부 목업 프로젝트의 dev 서버를 시작하고 브라우저 콘솔 에러까지 잡아냅니다.",
   "author": {
