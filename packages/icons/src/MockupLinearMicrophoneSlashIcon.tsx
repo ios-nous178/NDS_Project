@@ -1,0 +1,24 @@
+import React from "react";
+
+export interface MockupLinearMicrophoneSlashIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const MockupLinearMicrophoneSlashIcon = React.forwardRef<SVGSVGElement, MockupLinearMicrophoneSlashIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M16 6.3V6c0-2.21-1.79-4-4-4S8 3.79 8 6v5M9.04 14.19c.73.81 1.79 1.31 2.96 1.31 2.21 0 4-1.79 4-4V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M6.78 16.95a7.656 7.656 0 0 0 12.87-5.6v-1.7M4.35 9.65v1.7c0 1.06.21 2.06.6 2.98M20.07 2.84 3.93 18.99M11 3v3M12 19v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+    </svg>
+  )
+);
+
+MockupLinearMicrophoneSlashIcon.displayName = "MockupLinearMicrophoneSlashIcon";

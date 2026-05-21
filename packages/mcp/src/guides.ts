@@ -2116,10 +2116,12 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "표준 variant에 없는 톤이 필요하면 컴포넌트의 style/icon 같은 확장 슬롯을 활용 (raw 요소로 대체 금지)",
     "단독 아이콘은 주변 텍스트/배경과 어울리는 토큰 컬러를 명시하거나 부모 color를 토큰으로 지정해 currentColor가 의도한 색을 상속하게 함",
     "아이콘은 행동/상태/affordance 전달 목적에만 사용 — 화이트리스트와 검증 룰은 get_guide({ topic: 'pattern:icon-usage' })",
+    "아이콘 선택 필수 우선순위: 1) 현재 브랜드 전용 아이콘(예: Geniet*/Trost*) 2) NudgeEAP 기본 브랜드 아이콘 3) 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) 4) 자체 생성 SVG. 이 순서를 건너뛰지 말 것.",
     "Tab 은 동일 depth 콘텐츠 전환·category navigation·section switching 에만 사용 — 필터/CTA/라우팅 대체용 금지",
     "Modal 은 즉각적 판단/응답이 필요할 때만 사용 — 단순 정보는 inline Notice/Banner, 에러는 Toast/inline error 사용",
     "Badge 는 보조 정보 — 일반 카테고리는 ghost/line + neutral 우선, Brand color 는 '현재 선택·핵심 강조' 에만",
     "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordOnIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 사용 가능한 브랜드 아이콘 목록은 get_brand({ brand: '<slug>' }).detail.brandIcons 로 조회.",
+    "브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(`HomeIcon`, `SearchIcon` 등)을 먼저 찾고, 그 다음에만 목업용 기본 아이콘(`MockupLinear*Icon`, `MockupBold*Icon`)을 사용. 자체 생성 SVG는 마지막 수단.",
     "브랜드 분기는 공통 컴포넌트 구현이 아니라 **브랜드 전용 화면/스토리** 에서 처리 — 브랜드 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<AppFooter tabs={[{ icon: <GenietRecordOnIcon /> }]} />`)",
   ],
   donts: [
@@ -2177,6 +2179,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     // ── Brand Icon ──
     "공통 컴포넌트(AppFooter/BottomNav/AppBar 등) 의 *구현* 안에 brand 분기 로직(`if (brand === 'geniet') return <GenietRecordOnIcon />`)을 넣지 마세요 — DS 컴포넌트는 brand-agnostic 으로 유지. 분기는 사용처(브랜드 전용 화면)에서 명시적 icon prop 으로 표현.",
     "브랜드 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 brand prefix 아이콘이 있으면 그게 우선. get_brand({ brand: '<slug>' }).detail.brandIcons 로 매칭 확인.",
+    "NudgeEAP 기본 아이콘이나 MockupLinear*/MockupBold* 아이콘을 확인하지 않고 인라인 SVG/직접 생성 아이콘으로 넘어가지 마세요 — 자체 생성은 마지막 수단.",
   ],
   bannedPatterns: [
     {
@@ -2652,6 +2655,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     summary:
       "Figma Iconography(379:490) 라이브러리 기준 아이콘 사이즈·터치 영역·Line/Filled 스타일·카테고리 전반 가이드. 컬러 토큰은 get_guide({ topic: 'pattern:icon-color' })와 함께 본다.",
     rules: [
+      "**아이콘 선택 필수 우선순위**: 브랜드 전용 아이콘(Geniet*/Trost* 등) → NudgeEAP 기본 브랜드 아이콘 → 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) → 자체 생성 SVG. 앞 단계에서 의미가 맞는 아이콘을 찾을 수 있으면 뒤 단계로 내려가지 않는다.",
+      "목업용 기본 아이콘은 Figma 5000+ Icon Set 의 linear/bold 계열을 `MockupLinear*Icon`, `MockupBold*Icon` 으로 등록한 fallback 패키지다. 기본 액션/내비게이션은 MockupLinear, 활성/강조/작은 크기에는 MockupBold 를 우선 검토한다.",
       "기본 사이즈는 24px. 인터페이스 용도에 맞춰 12 / 16 / 20 / 24 / 32 / 48 px의 6단계만 사용한다. 최소 사이즈는 12px.",
       "15px 이하의 작은 사이즈에서는 시각 복잡도를 낮추기 위해 Fill(Filled) 스타일을 우선 사용한다. (Line은 얇은 선이 손상되어 보임)",
       "기본 액션·내비게이션 아이콘은 Line(Stroke) 스타일을 우선한다. 현재 활성 상태(GNB 활성 탭, 좋아요 ON 등)와 강조용 단일 아이콘은 Filled를 사용한다.",
@@ -2661,9 +2666,12 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "네이밍 컨벤션: 기본 Line = `XIcon`, Filled 짝 = `XActiveIcon` 또는 `XOnIcon` (예: HomeIcon ↔ HomeActiveIcon, SleepmodeOffIcon ↔ SleepmodeOnIcon). 짝 정보는 ICON_METADATA[name].pair 로 확인.",
       "카테고리 8종(basic / navigation / action / media / state-reaction / location / eap-service / color)은 의미 분류일 뿐 강제 import 경로 분리가 아니다. find_icon 결과의 카테고리는 유사 의미 후보를 찾는 힌트로 사용.",
       "컬러(다색) 카테고리 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger, Siren) 전용이다. 일반 UI 강조에 색 아이콘을 끼워 넣지 않는다.",
-      "필요한 아이콘이 없으면 인라인 `<svg>`를 만들지 말고 `packages/icons/svg/`에 kebab-case 로 SVG 를 추가한 뒤 `pnpm --filter @nudge-eap/icons build` 로 컴포넌트를 재생성한다. viewBox 는 0 0 24 24, stroke/fill 은 `currentColor` 로 유지.",
+      "필요한 아이콘이 브랜드/NudgeEAP/Mockup 패키지 어디에도 없을 때만 인라인 `<svg>` 또는 신규 SVG 추가를 검토한다. 신규 추가 시 `packages/icons/svg/`에 kebab-case 로 저장한 뒤 `pnpm --filter @nudge-eap/icons build` 로 컴포넌트를 재생성한다. viewBox 는 0 0 24 24, stroke/fill 은 `currentColor` 로 유지.",
     ],
     avoid: [
+      "브랜드 전용 아이콘이 있는데 NudgeEAP/Mockup 아이콘으로 대체",
+      "NudgeEAP 기본 아이콘이 있는데 Mockup 아이콘으로 대체",
+      "MockupLinear*/MockupBold* 검색 없이 자체 생성 SVG 사용",
       "12 / 16 / 20 / 24 / 32 / 48 외의 임의 사이즈 (예: 18px, 22px) 사용",
       "12px 미만 아이콘",
       "15px 이하에서 가는 Line 스타일을 그대로 사용 — Filled 로 교체",
@@ -2680,6 +2688,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       minTouchArea: "40px",
       touchAreaIcon20: "40px",
       touchAreaIcon24: "44px",
+      selectionPriority:
+        "brand-specific icon → NudgeEAP default icon → mockup default icon package(MockupLinear*/MockupBold*) → generated custom SVG",
       figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=379-490",
       categories: "basic, navigation, action, media, state-reaction, location, eap-service, color",
     },
@@ -2995,6 +3005,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     summary:
       "아이콘은 장식이 아니라 행동 / 상태 / affordance 전달 목적에만 사용한다. 어디에 써도 되고 어디에 쓰면 안 되는지를 정의하는 화이트리스트 / 블랙리스트. 아이콘 컬러는 get_guide({ topic: 'pattern:icon-color' }), 사이즈/스타일은 get_guide({ topic: 'pattern:iconography' }) 참고.",
     rules: [
+      "**필수 선택 순서**: 브랜드 전용 아이콘 → NudgeEAP 기본 아이콘 → MockupLinear*/MockupBold* 목업 기본 아이콘 → 자체 생성 SVG. find_icon 으로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 이동.",
       "허용 위치 (화이트리스트):\n  · AppBar / Header 기능 버튼 (검색 · 알림 · 뒤로가기 · 메뉴)\n  · Bottom Tab Navigation\n  · IconButton\n  · 동일 위계의 카테고리 그룹 (Concern Grid · Category Grid)\n  · 상태 아이콘 (Success · Warning · Error)\n  · Form Field affordance (검색 · 캘린더 · 드롭다운 토글)",
       "동일 위계의 텍스트는 아이콘 사용 여부가 일관되어야 한다 — 같은 GNB / 같은 카드 리스트 / 같은 헤딩 그룹 안에서 일부에만 아이콘이 붙으면 hierarchy 가 깨진다.",
       "헤딩 앞 아이콘 5개 이상 사용 시 자동 위반 — 아이콘을 hierarchy 표현 수단으로 쓰지 않는다.",
@@ -3010,12 +3021,15 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "모든 텍스트 앞에 icon 사용 — affordance 가 없는 장식",
       "colorful icon 과다 사용 / 의미 없는 emoji",
       "아이콘 스타일 혼용 (Line + Filled 가 같은 그룹에서 공존)",
+      "앞 우선순위의 아이콘을 확인하지 않고 자체 SVG 생성",
     ],
     metrics: {
       maxHeadingIconsPerScreen: 4,
       allowedLocations:
         "AppBar buttons / Bottom Tab / IconButton / 카테고리 그룹 / 상태 아이콘 / Form field affordance",
       consistencyRule: "same-hierarchy-text → same-icon-decision",
+      selectionPriority:
+        "brand-specific → nudge-eap-default → mockup-default(MockupLinear/MockupBold) → generated-custom",
       relatedPatterns: "icon-color, iconography",
     },
   },

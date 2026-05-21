@@ -51,7 +51,7 @@ const TOOLS = [
   {
     name: "find_icon",
     description:
-      "Look up icons in @nudge-eap/icons (Figma Iconography 379:490). No args → all icons with category/style/pair metadata + `byCategory` index. `{ query: '<text>' }` → top scored matches. Always pair with get_guide({ topic: 'pattern:iconography' }) for size/touch/style rules and get_guide({ topic: 'pattern:icon-color' }) for token mapping.",
+      "Look up icons in @nudge-eap/icons (Figma Iconography 379:490). No args → all icons with category/style/pair metadata + `byCategory` index. `{ query: '<text>' }` → top scored matches. Mandatory selection priority: brand-specific icons → NudgeEAP default icons → mockup default icons (MockupLinear*/MockupBold*) → generated custom SVG. Always pair with get_guide({ topic: 'pattern:iconography' }) for size/touch/style/priority rules and get_guide({ topic: 'pattern:icon-color' }) for token mapping.",
     inputSchema: {
       type: "object",
       properties: {
@@ -294,7 +294,7 @@ const TOOLS = [
         topic: {
           type: "string",
           description:
-            "Guide topic. Fixed values: 'principles' | 'dos-donts' | 'ux-writing' | 'admin-cms' | 'scope-advisory' | 'inspector-setup'. Component guides use 'component:<Name>' (e.g. 'component:Button'). Pattern guides use 'pattern:<name>' (cta-group, dark-patterns, icon-color, iconography, visual-reference, visual-antipatterns, notice, dropdown, dense-list). For HTML export, call build_singlefile_html instead — that's an action tool, not a guide.",
+            "Guide topic. Fixed values: 'principles' | 'dos-donts' | 'ux-writing' | 'admin-cms' | 'scope-advisory' | 'inspector-setup'. Component guides use 'component:<Name>' (e.g. 'component:Button'). Pattern guides use 'pattern:<name>' (cta-group, dark-patterns, icon-color, iconography, icon-usage, visual-reference, visual-antipatterns, notice, dropdown, dense-list). For icon fallback priority, call pattern:iconography or pattern:icon-usage. For HTML export, call build_singlefile_html instead — that's an action tool, not a guide.",
         },
         intent: {
           type: "string",
