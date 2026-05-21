@@ -409,10 +409,12 @@ export function getClaudeMdTemplate(args: {
 - **이모지·텍스트 기호 절대 금지**. 라벨/버튼/제목/placeholder/empty state 어디에도 이모지(😀 🔥 ⭐ 💡 ✅ ⚠️ 등) 박지 말 것. → ← ✓ ★ • 같은 기호 텍스트도 금지. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-eap/icons\` 에서 찾고, 없으면 인라인 SVG. 진행/별점/불릿은 DS 컴포넌트 사용. \`validate_mockup\` 의 \`emoji-banned\` / \`text-symbol-banned\` 룰로 자동 위반 카운트됨.
 - 색상/간격은 인라인 hex, rgb, px 값보다 DS 토큰을 우선 사용한다.
 - 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
+- **아이콘 선택 필수 우선순위**: 브랜드 전용 아이콘(Geniet*/Trost* 등) > NudgeEAP 기본 브랜드 아이콘 > 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) > 자체 생성 SVG. \`find_icon\` 과 \`get_brand({ brand })\` 로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 내려간다.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
 - 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA에는 붙이지 않는다.
 - 단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시한다.
 - 브랜드 모드(\`brand='geniet'\`/\`'trost'\`)에서 작업할 때는 해당 브랜드 prefix 아이콘(예: \`GenietRecordOnIcon\`, \`GenietGpointIcon\`)을 공용 아이콘보다 **우선 사용**. 매칭 가능한 brand 아이콘 목록은 \`get_brand({ brand: '<slug>' }).detail.brandIcons\` 로 조회. 공통 컴포넌트(AppFooter/BottomNav 등)의 *구현* 안에 \`if (brand === ...)\` 분기를 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.
+- 브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(\`HomeIcon\`, \`SearchIcon\` 등)을 먼저 사용하고, 그 다음에만 \`MockupLinear*Icon\` / \`MockupBold*Icon\` 을 fallback 으로 사용한다. 자체 생성 SVG는 마지막 수단이다.
 - primary solid 버튼은 한 화면의 대표 액션 1개만 사용한다.
 - Chip/Badge는 상태, 분류, 짧은 속성 표시용으로만 사용하고 안내문/섹션 장식으로 남발하지 않는다.
 - 안내 영역은 neutral surface를 기본으로 하고 색 배경/아이콘/Chip/Badge/굵은 제목 중 1~2개만 조합한다.

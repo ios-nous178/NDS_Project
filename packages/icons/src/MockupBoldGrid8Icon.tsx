@@ -1,0 +1,24 @@
+import React from "react";
+
+export interface MockupBoldGrid8IconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const MockupBoldGrid8Icon = React.forwardRef<SVGSVGElement, MockupBoldGrid8IconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M22 7.811v3.44h-5.25v-9.22c3.3.2 5.25 2.33 5.25 5.78ZM22 12.75v3.44c0 3.45-1.95 5.58-5.25 5.78v-9.22H22ZM7.25 12.75v9.22C3.95 21.77 2 19.64 2 16.19v-3.44h5.25ZM7.25 2.031v9.22H2v-3.44c0-3.45 1.95-5.58 5.25-5.78ZM15.25 2h-6.5v9.25h6.5V2ZM15.25 12.75h-6.5V22h6.5v-9.25Z" fill="currentColor"></path>
+    </svg>
+  )
+);
+
+MockupBoldGrid8Icon.displayName = "MockupBoldGrid8Icon";

@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "generate": "node scripts/generate.js",
+    "import:mockup": "node scripts/import-iconsax-mockup.mjs",
     "build": "node scripts/generate.js && tsc",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"

@@ -1,0 +1,24 @@
+import React from "react";
+
+export interface MockupLinearTicketIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const MockupLinearTicketIcon = React.forwardRef<SVGSVGElement, MockupLinearTicketIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M19.5 12.5A2.5 2.5 0 0 1 22 10V9c0-4-1-5-5-5H7C3 4 2 5 2 9v.5a2.5 2.5 0 0 1 0 5v.5c0 4 1 5 5 5h10c4 0 5-1 5-5a2.5 2.5 0 0 1-2.5-2.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M10 4v16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="5 5"></path>
+    </svg>
+  )
+);
+
+MockupLinearTicketIcon.displayName = "MockupLinearTicketIcon";
