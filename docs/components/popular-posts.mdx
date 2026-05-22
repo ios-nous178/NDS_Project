@@ -1,0 +1,94 @@
+---
+title: PopularPosts
+description: 사이드바용 커뮤니티 인기글 랭킹 모듈 — Header + Tabs + 10개 행 리스트
+---
+
+# PopularPosts
+
+커뮤니티/포럼의 **인기글 랭킹**을 사이드바 한 칸으로 보여주는 모듈입니다.
+Header(제목 + 더보기) → Tabs(기간/정렬) → 10행 리스트의 3단 레이어입니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 커뮤니티/포럼 페이지의 **우측 사이드바 랭킹 모듈**
+- 실시간/주간/월간 같은 **기간·정렬 탭이 함께 필요한** 랭킹
+- 사이드 카드 폭(약 320~360px) 안에서 표 형태로 나열할 때
+
+### 자주 하는 실수
+
+- `count` 를 string 으로 넘기지 말 것 — `number` 만 받고 999 초과는 자동 `+999` 로 캡됩니다.
+- 탭이 5개 넘게 들어가면 좁은 사이드 폭에서 줄바꿈/잘림 발생 — 5개 이하 권장.
+- Rank 는 두 자리 zero-padded(`01`~`10`) 로 항상 표시되므로 별도 prefix 를 `title` 에 박지 마세요.
+- `onMoreClick` 을 안 넘기면 "더보기" 자체가 숨겨집니다(랭킹만 보여줄 때 의도된 동작).
+
+## 사용법
+
+```tsx
+import { PopularPosts } from "@nudge-eap/react";
+import type { PopularPostsItem, PopularPostsTab } from "@nudge-eap/react";
+import { useState } from "react";
+
+const tabs: PopularPostsTab[] = [
+  { key: "realtime", label: "실시간" },
+  { key: "weekly", label: "주간" },
+  { key: "monthly", label: "월간" },
+];
+
+const items: PopularPostsItem[] = [
+  { id: 1, title: "아침대용으로 간단한 오트밀라떼", count: 1024 },
+  { id: 2, title: "근육 이완에 폼롤러 추천합니다", count: 23 },
+  // ...최대 10개
+];
+
+function Sidebar() {
+  const [active, setActive] = useState("realtime");
+  return (
+    <PopularPosts
+      tabs={tabs}
+      activeTabKey={active}
+      onTabChange={setActive}
+      items={items}
+      onMoreClick={() => router.push("/community/best")}
+      onItemClick={(item, rank) => router.push(`/posts/${item.id}`)}
+    />
+  );
+}
+```
+
+탭 없이 단순 랭킹만:
+
+```tsx
+<PopularPosts items={items} onMoreClick={() => {}} />
+```
+
+## Props
+
+| Prop            | 타입                                              | 기본값                 | 설명                                                  |
+| --------------- | ------------------------------------------------- | ---------------------- | ----------------------------------------------------- |
+| `title`         | `ReactNode`                                       | `"커뮤니티 BEST 인기글"` | 모듈 제목                                             |
+| `tabs`          | `PopularPostsTab[]`                               | —                      | 탭 목록 (비우면 탭 영역 숨김, 5개 이하 권장)          |
+| `activeTabKey`  | `string`                                          | —                      | 활성 탭 키                                            |
+| `onTabChange`   | `(key: string) => void`                           | —                      | 탭 변경 콜백                                          |
+| `items`         | `PopularPostsItem[]`                              | **required**           | 인기글 목록 (최대 10개 권장)                          |
+| `onItemClick`   | `(item, rank: number) => void`                    | —                      | 행 클릭 콜백                                          |
+| `onMoreClick`   | `() => void`                                      | —                      | 더보기 클릭 콜백. 지정 시에만 더보기 노출             |
+| `moreLabel`     | `ReactNode`                                       | `"더보기"`             | 더보기 버튼 라벨                                      |
+| `className`     | `string`                                          | —                      | 추가 className                                        |
+| `style`         | `CSSProperties`                                   | —                      | 추가 style                                            |
+
+### `PopularPostsTab`
+
+| Prop    | 타입        | 설명           |
+| ------- | ----------- | -------------- |
+| `key`   | `string`    | 탭 고유 키     |
+| `label` | `ReactNode` | 탭 라벨        |
+
+### `PopularPostsItem`
+
+| Prop    | 타입               | 설명                                       |
+| ------- | ------------------ | ------------------------------------------ |
+| `id`    | `string \| number` | 글 ID (React key)                          |
+| `title` | `ReactNode`        | 글 제목 (한 줄 truncate)                   |
+| `count` | `number`           | 댓글 수. 0 도 표시되며 999 초과는 자동 `+999` |

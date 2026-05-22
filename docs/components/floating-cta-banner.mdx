@@ -1,0 +1,79 @@
+---
+title: FloatingCtaBanner
+description: 페이지 하단에 떠 있는(또는 인라인) pill 형태 CTA 배너 — 좌측 아이콘 + 캡션 + 강조 CTA + 화살표
+---
+
+# FloatingCtaBanner
+
+화면 하단에 떠 있는 **pill 형태 CTA 배너**입니다.
+좌측 아이콘 → 캡션 + 강조 CTA 텍스트 → 우측 화살표 로 구성되며,
+전체 영역이 하나의 `button` 으로 동작합니다.
+
+기본은 `position: fixed` 로 화면 하단 중앙 floating, `floating={false}` 로 인라인 배치도 가능합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 검색 결과 없음 화면에서 **"직접 등록하러 가기"** 같은 보조 액션
+- 콘텐츠 페이지를 떠나지 않고 자연스럽게 부르는 **2차 전환 CTA**
+- 모바일/PC 양쪽에서 같은 의미의 floating action 이 필요할 때 (`size` 로 토글)
+
+### 자주 하는 실수
+
+- `caption` 과 `ctaText` 를 한 prop 에 합쳐서 넣지 마세요 — 두 줄 위계가 깨집니다.
+- 화면 하단에 다른 sticky bar(BottomTab, FixedInput 등)가 이미 있을 때 같이 띄우지 마세요 — `floating={false}` 로 인라인 배치하거나 다른 컴포넌트 사용.
+- `leadingIcon` 은 PC 48px / Mobile 32px 박스에 맞춰 렌더되므로, SVG 자체 viewBox 가 다르면 사이즈를 직접 조정해서 넘기세요.
+- 전체 배너가 button 이므로 내부에 또 다른 `<button>` / `<a>` 를 넣지 마세요 (중첩 interactive).
+
+## 사용법
+
+```tsx
+import { FloatingCtaBanner } from "@nudge-eap/react";
+
+// 기본 — 화면 하단 floating
+<FloatingCtaBanner
+  caption="찾는 음식이 없으신가요?"
+  ctaText="음식 직접 등록하러 가기"
+  leadingIcon={<FoodIllustration />}
+  onClick={() => router.push("/foods/new")}
+/>;
+
+// 모바일 사이즈
+<FloatingCtaBanner
+  size="mobile"
+  caption="원하는 결과를 못 찾으셨나요?"
+  ctaText="문의하러 가기"
+  onClick={openInquiry}
+/>;
+
+// 인라인 배치 (검색 결과 영역 안에)
+<FloatingCtaBanner
+  floating={false}
+  caption="찾는 음식이 없으신가요?"
+  ctaText="음식 직접 등록하러 가기"
+  onClick={() => router.push("/foods/new")}
+/>;
+```
+
+## Props
+
+| Prop           | 타입                                | 기본값      | 설명                                                                                                                          |
+| -------------- | ----------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `caption`      | `ReactNode`                         | **required** | 보조 캡션 (예: "찾는 음식이 없으신가요?")                                                                                     |
+| `ctaText`      | `ReactNode`                         | **required** | 강조 CTA 텍스트 (예: "음식 직접 등록하러 가기")                                                                               |
+| `leadingIcon`  | `ReactNode`                         | —           | 좌측 아이콘/일러스트 (PC 48 / Mobile 32 권장)                                                                                 |
+| `onClick`      | `() => void`                        | —           | 클릭 콜백 (전체 배너가 button)                                                                                                |
+| `size`         | `"pc" \| "mobile"`                  | `"pc"`      | 사이즈 토큰                                                                                                                   |
+| `floating`     | `boolean`                           | `true`      | `true`: `position: fixed` 로 하단 중앙 고정. `false`: 인라인 배치 — 부모 컨테이너에 맞춰 표시                                  |
+| `showArrow`    | `boolean`                           | `true`      | 우측 화살표 표시 여부                                                                                                         |
+| `bottomOffset` | `number`                            | PC 32 / Mobile 16 | floating 모드의 하단 offset(px)                                                                                               |
+| `ariaLabel`    | `string`                            | `ctaText`   | aria-label (미지정 시 `ctaText` 사용)                                                                                         |
+| `className`    | `string`                            | —           | 추가 className                                                                                                                |
+| `style`        | `CSSProperties`                     | —           | 추가 style (floating 모드의 position 관련 값은 internal 이 우선)                                                              |
+
+### 디자인 토큰
+
+- 배경: `surface.default` 위 `border.brand` 1px + `shadow/2` (hover `shadow/3`, active `shadow/1`)
+- Radius: `pill` (완전 둥근 형태) — Card 와 시각적으로 구분됨
+- Floating offset 기본값: PC `32px` / Mobile `16px` — `bottomOffset` 으로 override
