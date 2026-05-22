@@ -55,11 +55,11 @@ const textareaStyles = `
   }
 
   :where(.${TA_WRAPPER_CLASS}[data-focused="true"]) {
-    border-color: ${cv.borderRole.focus};
+    border-color: ${cv.input.borderFocus};
   }
 
   :where(.${TA_WRAPPER_CLASS}[data-error="true"]) {
-    border-color: ${cv.borderRole.statusError};
+    border-color: ${cv.input.borderError};
   }
 
   :where(.${TA_WRAPPER_CLASS}[data-disabled="true"]) {

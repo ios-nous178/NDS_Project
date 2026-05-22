@@ -121,11 +121,11 @@ const datePickerStyles = `
   }
 
   :where(.${DP_TRIGGER_CLASS}[data-open="true"]) {
-    border-color: ${cv.borderRole.focus};
+    border-color: ${cv.input.borderFocus};
   }
 
   :where(.${DP_TRIGGER_CLASS}[data-error="true"]) {
-    border-color: ${cv.borderRole.statusError};
+    border-color: ${cv.input.borderError};
   }
 
   :where(.${DP_TRIGGER_CLASS}:disabled) {

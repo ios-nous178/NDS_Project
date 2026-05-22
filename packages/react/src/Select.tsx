@@ -63,11 +63,11 @@ const selectStyles = `
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-open="true"]) {
-    border-color: ${cv.borderRole.focus};
+    border-color: ${cv.input.borderFocus};
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-error="true"]) {
-    border-color: ${cv.borderRole.statusError};
+    border-color: ${cv.input.borderError};
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-disabled="true"]) {
