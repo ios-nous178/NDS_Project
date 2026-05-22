@@ -95,11 +95,11 @@ const inputStyles = `
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-focused="true"]) {
-    border-color: ${cv.borderRole.focus};
+    border-color: ${cv.input.borderFocus};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-error="true"]) {
-    border-color: ${cv.borderRole.statusError};
+    border-color: ${cv.input.borderError};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-disabled="true"]) {
