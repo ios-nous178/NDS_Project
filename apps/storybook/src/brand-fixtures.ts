@@ -14,12 +14,23 @@ import type {
 } from "@nudge-eap/react";
 
 /* ─── Logo asset imports (Vite resolves base path automatically) ─── */
-import nudgeEapLogo from "../public/brand-logos/nudge-eap-logo.svg";
+/**
+ * Figma 698:87 (NudgeEAP Library) Logo Guide 에서 추출한 Symbol + KO+EN horizontal (대표 로고).
+ * 자체 원본 124×28 PNG. 헤더는 200×60 비율 영역 안에서 height auto 로 배치.
+ */
+import nudgeEapHeaderLogo from "../public/brand-logos/nudge-eap/nudge-eap-koen.png";
 import trostLogo from "../public/brand-logos/trost-logo.svg";
 import trostLogoMobile from "../public/brand-logos/trost-logo-mobile.webp";
 import genietLogoPc from "../public/brand-logos/geniet-logo-pc.webp";
 import genietLogoMobile from "../public/brand-logos/geniet-logo-mobile.webp";
 import genietLogoFooter from "../public/brand-logos/geniet-logo-footer.webp";
+import cashwalkVertical from "../public/brand-logos/cashpobi/cashwalk-vertical.png";
+/**
+ * Figma 9lJ9XCwVYFSoZGcmRuJtI4 / 98:1082 — 캐포비 admin GNB 의 logo_cfb_horizontal.
+ * cashwalk wordmark + 'for business' 텍스트 + 신발 마스코트가 합쳐진 헤더 전용 lockup (106.667 × 32).
+ * 라이브러리 horizontal(cashwalk only) 과는 별개 — 헤더용 lockup 으로 신규 등록.
+ */
+import cashwalkForBusinessHorizontal from "../public/brand-logos/cashpobi/cashwalk-for-business-horizontal.svg";
 
 /* ─── Types ─── */
 
@@ -70,9 +81,10 @@ export interface BrandFixture {
 
 const nudgeEap: BrandFixture = {
   logo: {
-    headerPc: { src: nudgeEapLogo, width: 42, height: 40 },
-    headerMobile: { src: nudgeEapLogo, width: 28, height: 27 },
-    footer: { src: nudgeEapLogo, width: 32, height: 30 },
+    /* Figma 698:87 — KO+EN horizontal 대표 로고 (Symbol + 한글 + 영문, 124×28 자체 비율). */
+    headerPc: { src: nudgeEapHeaderLogo, width: 200, height: 60 },
+    headerMobile: { src: nudgeEapHeaderLogo, width: 124, height: 28 },
+    footer: { src: nudgeEapHeaderLogo, width: 100, height: 28 },
   },
   header: {
     pcMaxWidth: 1200,
@@ -80,18 +92,24 @@ const nudgeEap: BrandFixture = {
     mobileHeight: 52,
     webviewTitle: "심리검사 결과",
     layout: "single",
+    /**
+     * Figma 39:5751 (NudgeEAP Dev — PC 헤더): 좌측 로고 + 중앙 6탭 GNB + 우측 앱다운로드/로그인.
+     */
     gnb: {
       items: [
-        { key: "home", label: "홈", href: "/" },
+        { key: "counsel", label: "상담하기", href: "/counsel" },
         { key: "test", label: "심리검사", href: "/test" },
-        { key: "counsel", label: "상담신청", href: "/counsel" },
+        { key: "therapy", label: "심리치료", href: "/therapy" },
+        { key: "letter", label: "주간레터", href: "/letter" },
+        { key: "news", label: "소식", href: "/news" },
         { key: "my", label: "마이페이지", href: "/my" },
       ],
-      navHeight: 80,
+      navHeight: 79,
     },
     auth: {
       items: [{ key: "login", label: "로그인" }],
       separator: "none",
+      hasAppDownload: true,
     },
   },
   footer: {
@@ -110,8 +128,12 @@ const nudgeEap: BrandFixture = {
       copyright: "© 2023 Dain Co.Ltd., All Rights Reserved",
     },
   },
+  /**
+   * Figma 20:3331 (NudgeEAP Dev — 앱 BottomNav): 5탭 (홈/챌린지/상담/멘탈케어/내 공간).
+   * 기존 3탭 (홈/심리샵/마이) 가이드는 deprecated.
+   */
   tabBar: {
-    tabLabels: ["홈", "심리샵", "마이"],
+    tabLabels: ["홈", "챌린지", "상담", "멘탈케어", "내 공간"],
     defaultActive: 0,
   },
 };
@@ -133,7 +155,7 @@ const trost: BrandFixture = {
     searchBar: {
       width: 530,
       height: 48,
-      placeholder: "상담사, 상황, 증상 등 지금 내 고민을 검색해 보세요.",
+      placeholder: "전문가, 상황, 증상 등을 검색해 보세요",
     },
     gnb: {
       items: [
@@ -189,19 +211,23 @@ const trost: BrandFixture = {
 const geniet: BrandFixture = {
   logo: {
     headerPc: { src: genietLogoPc, width: 165, height: 54 },
-    headerMobile: { src: genietLogoMobile, width: 97, height: 28 },
+    headerMobile: { src: genietLogoMobile, width: 97, height: 32 },
     footer: { src: genietLogoFooter, width: 166, height: 48 },
   },
   header: {
+    /* Figma 77:2 — Geniet_TopHeader_Guide
+     *   Desktop 1920 × 172 (pad-top 40 + Search 54 + gap 20 + Menu 58)
+     *   Mobile  360  × 102 (Row1 50 + Row2 52)
+     */
     pcMaxWidth: 1280,
-    mainBarPaddingY: "40px 0 20px",
-    mobileHeight: 50,
+    mainBarPaddingY: "40px 0 0",
+    mobileHeight: 102,
     webviewTitle: "건강 기록",
     layout: "double",
     searchBar: {
-      width: 540,
+      width: 500,
       height: 54,
-      placeholder: "음식, 식당, 레시피를 검색해 보세요",
+      placeholder: "궁금한 음식 칼로리, 다이어트 후기 등을 검색해 보세요",
     },
     gnb: {
       items: [
@@ -209,16 +235,15 @@ const geniet: BrandFixture = {
         { key: "community", label: "커뮤니티", href: "/community" },
         { key: "deal", label: "헬시딜", href: "/cashdeal" },
         { key: "review", label: "음식 리뷰", href: "/reviews" },
-        { key: "invite", label: "친구초대", href: "/friend-invite" },
-        { key: "coupon", label: "쿠폰상점", href: "/coupon-shop" },
+        { key: "record", label: "기록", href: "/record" },
       ],
-      navHeight: 56,
+      navHeight: 58,
     },
     auth: {
       items: [
+        { key: "coupon", label: "쿠폰상점" },
+        { key: "mypage", label: "마이페이지" },
         { key: "login", label: "로그인" },
-        { key: "signup", label: "회원가입" },
-        { key: "my", label: "마이페이지" },
       ],
       separator: "divider",
     },
@@ -256,24 +281,30 @@ const geniet: BrandFixture = {
 };
 
 /**
- * Cashpobi (캐포비 · 캐시워크 포 비지니스)
+ * Cashpobi (캐포비 · 캐시워크 for Business)
  *
- * Admin 데스크톱 위주이지만 BrandFixture 의 logo/header/footer 슬롯은 모바일/유저앱 베이스라
- * 임시로 NudgeEAP 자산을 placeholder 로 사용. 실 로고/푸터가 도착하면 교체.
+ * 로고 가이드: 캐포비 Library 3154:550 — 2 lockups (Vertical / Horizontal) · Brown #5E5050.
+ * - Horizontal: GNB / 컴팩트 헤더 / 이메일 / 문서·인쇄용 헤더
+ * - Vertical: 로그인·스플래시 / 운영 페이지 푸터
+ *
+ * Admin 데스크톱 위주이지만 BrandFixture 의 모바일 슬롯도 horizontal lockup 으로 통일.
  */
 const cashpobi: BrandFixture = {
   logo: {
-    headerPc: { src: nudgeEapLogo, width: 100, height: 24 },
-    headerMobile: { src: nudgeEapLogo, width: 80, height: 24 },
-    footer: { src: nudgeEapLogo, width: 100, height: 24 },
+    /* Figma 9lJ9XCwVYFSoZGcmRuJtI4: PC GNB 98:1082 의 logo_cfb_horizontal = 107 × 32,
+     * Mobile GNB 380:1121 의 logo_cfb_horizontal = 80 × 24 (정확 실측). */
+    headerPc: { src: cashwalkForBusinessHorizontal, width: 107, height: 32 },
+    headerMobile: { src: cashwalkForBusinessHorizontal, width: 80, height: 24 },
+    footer: { src: cashwalkVertical, width: 117, height: 60 },
   },
   header: {
     pcMaxWidth: 1600, // Layout/MaxContent (캐포비 admin 콘텐츠 max-width)
     mainBarPaddingY: "16px 0",
-    mobileHeight: 56,
+    /* Figma 380:1119 — Mobile GNB 360 × 54 (status bar 24 제외, padding-x 16). */
+    mobileHeight: 54,
     webviewTitle: "캐시워크 for Business",
     layout: "single",
-    gnb: { items: [], navHeight: 56 },
+    gnb: { items: [], navHeight: 54 },
     auth: { items: [], separator: "divider" },
   },
   footer: {
