@@ -45,15 +45,15 @@ jobs:
       # 에서 DOCS_URL 을 설정하면 그 값을 쓰고, 미설정 시 아래 기본값을 쓴다.
       DOCS_URL: ${{ vars.DOCS_URL || 'http://nudge-eap-design-system.eba-afhh232q.ap-northeast-2.elasticbeanstalk.com/' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: "24"
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 9.6.0
           run_install: false
@@ -156,7 +156,7 @@ jobs:
 
       - name: Create GitHub Release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
           name: NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}
@@ -246,7 +246,7 @@ jobs:
 
       - name: Upload mcpb to Slack thread
         if: steps.tag_check.outputs.exists == 'false' && steps.head.outputs.thread_ts != ''
-        uses: slackapi/slack-github-action@v2.0.0
+        uses: slackapi/slack-github-action@v3.0.1
         with:
           method: files.uploadV2
           token: ${{ secrets.SLACK_BOT_TOKEN }}
