@@ -37,6 +37,8 @@ export * from "./Banner";
 export * from "./Textarea";
 export * from "./Tooltip";
 export * from "./TrendingKeywords";
+export * from "./PopularPosts";
+export * from "./FloatingCtaBanner";
 export * from "./LikertScale";
 export * from "./Stepper";
 export * from "./SegmentedControl";
