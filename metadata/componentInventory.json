@@ -1244,13 +1244,13 @@
     "name": "ProductCard",
     "category": "도메인",
     "status": "implemented",
-    "description": "상품 카드. 썸네일 1:1 + 뱃지 + 제목 + 가격(PriceTag) + 품절",
+    "description": "캐시딜 상품 카드 (140w). 정사각 썸네일 + 제목(2줄) + 할인율/가격/단위 가로 row",
     "storybookTitle": "Components/ProductCard",
     "docsPath": "/docs/components/product-card",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "굿즈/콘텐츠 그리드, 검색 결과, 추천 캐러셀",
-    "notes": "가격은 PriceTag 슬롯. 품절은 soldOut(오버레이), 라벨은 badge."
+    "figmaUrl": "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=53-2",
+    "figmaNodeId": "53:2",
+    "usageSummary": "Geniet 헬시딜 상품 진열용 카드. 가로 스크롤 행 / 그리드. 할인율% + 가격 + '원' 단위",
+    "notes": "price 는 number(KRW). 숫자 폰트는 Lato(할인 Medium 18 / 가격 Black 18). badge·soldOut 동시 노출 금지."
   },
   {
     "name": "CouponCard",
@@ -1455,5 +1455,29 @@
     "figmaNodeId": "",
     "usageSummary": "검색 진입 화면, 콘텐츠 검색 인기 키워드, 트렌드 위젯",
     "notes": "value/onChange 패턴 아님 — 클릭 시 검색 트리거하도록 외부에서 라우팅."
+  },
+  {
+    "name": "PopularPosts",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "커뮤니티 BEST 인기글 모듈. 제목 + 더보기 + 5탭(기간/정렬) + 최대 10개 ranked row",
+    "storybookTitle": "Components/PopularPosts",
+    "docsPath": "/docs/components/popular-posts",
+    "figmaUrl": "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=148-68",
+    "figmaNodeId": "148:68",
+    "usageSummary": "PC 사이드바 커뮤니티 인기글 랭킹. 메인/카테고리/리스트 페이지 공통 사이드바 모듈",
+    "notes": "Rank 는 두 자리 zero-padded(01~10), Count 는 [N] / 999 초과는 [+999]. 10개 초과 row 는 별도 페이지로 분기."
+  },
+  {
+    "name": "FloatingCtaBanner",
+    "category": "도메인",
+    "status": "implemented",
+    "description": "페이지 하단 sticky CTA 배너. pill + brand border + shadow. 일러스트 + 캡션 + CTA + chevron",
+    "storybookTitle": "Components/FloatingCtaBanner",
+    "docsPath": "/docs/components/floating-cta-banner",
+    "figmaUrl": "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=91-3",
+    "figmaNodeId": "91:3",
+    "usageSummary": "음식 카테고리 / 검색 결과 페이지 하단 floating 진입 배너. 단일 메시지 + 단일 액션",
+    "notes": "PC 440×68 / Mobile 288×60. floating=true 시 position:fixed 자동. Chevron 은 텍스트 '>' 가 아닌 ChevronRightIcon 아이콘."
   }
 ]

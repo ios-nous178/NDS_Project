@@ -105,6 +105,8 @@ import {
   TitleBlock,
   Toggle,
   TrendingKeywords,
+  PopularPosts,
+  FloatingCtaBanner,
   UserCard,
   VotePoll,
   WebHeader,
@@ -652,13 +654,12 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   ProductCard: () => (
-    <div style={{ width: 160 }}>
-      <ProductCard
-        thumbnail="https://placehold.co/160x160"
-        title="5회권 상담 패키지"
-        price={<>29,000원</>}
-      />
-    </div>
+    <ProductCard
+      thumbnail="https://picsum.photos/seed/cashdeal/300/300"
+      title="허닭X캐시딜단독 베스트 닭가슴살 패키지 모음전"
+      discountPercent={31}
+      price={13900}
+    />
   ),
   CouponCard: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
@@ -1598,6 +1599,46 @@ const PREVIEWS: Record<string, PreviewRender> = {
           { rank: 2, trend: "same", keyword: "불안" },
           { rank: 3, trend: "new", keyword: "수면" },
         ]}
+      />
+    </div>
+  ),
+  PopularPosts: () => (
+    <div style={{ width: 353 }}>
+      <PopularPosts
+        tabs={[
+          { key: "realtime", label: "실시간" },
+          { key: "weekly", label: "주간" },
+          { key: "monthly", label: "월간" },
+          { key: "comments", label: "댓글순" },
+          { key: "likes", label: "추천순" },
+        ]}
+        activeTabKey="realtime"
+        onMoreClick={() => {}}
+        items={[
+          { id: 1, title: "아침대용으로 간단한 오트밀라떼", count: 1024 },
+          { id: 2, title: "근육 이완이나 자극에 폼롤러 추천합니다", count: 2 },
+          { id: 3, title: "체중이 저절로 감량되는 핸드 메이드 요거…", count: 23 },
+          { id: 4, title: "아침식사 에그토마토", count: 342 },
+          { id: 5, title: "만보 걷기 하고 들어가는 길 비오네요", count: 23 },
+        ]}
+      />
+    </div>
+  ),
+  FloatingCtaBanner: () => (
+    <div style={{ padding: "12px 0" }}>
+      <FloatingCtaBanner
+        caption="찾는 음식이 없으신가요?"
+        ctaText="음식 직접 등록하러 가기"
+        size="mobile"
+        floating={false}
+        leadingIcon={
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <ellipse cx="16" cy="22" rx="14" ry="4" fill="#FFD58A" />
+            <circle cx="10" cy="18" r="4" fill="#7BC96F" />
+            <circle cx="16" cy="16" r="5" fill="#F76A6A" />
+            <circle cx="22" cy="19" r="4" fill="#5BB0F7" />
+          </svg>
+        }
       />
     </div>
   ),
