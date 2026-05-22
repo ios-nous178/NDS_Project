@@ -1931,7 +1931,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   ProductCard: {
     name: "ProductCard",
     summary:
-      "캐시딜 상품 카드 (140w). 정사각 1:1 썸네일 + 상품명(2줄 ellipsis) + 가격 row(할인율% + 가격 + 단위). " +
+      "상품 카드 (140w). 정사각 1:1 썸네일 + 상품명(2줄 ellipsis) + 가격 row(할인율% + 가격 + 단위). " +
       "가격 숫자는 Lato Black 18 / 할인율은 Lato Medium 18 + statusError — 한글은 Pretendard, 숫자는 Lato 로 폰트 분리.",
     figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=53-2",
     pitfalls: [
@@ -1979,7 +1979,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     usagePolicy: {
       useFor: [
-        "Geniet 헬시딜/캐시딜 상품 카드 (가로 스크롤 행, 그리드)",
+        "상품 진열 카드 (가로 스크롤 행, 그리드)",
         "할인율 + 가격 + 단위가 핵심인 진열 카드",
       ],
       doNotUseFor: [

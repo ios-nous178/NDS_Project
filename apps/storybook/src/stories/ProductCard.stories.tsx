@@ -11,7 +11,7 @@ const meta: Meta<typeof ProductCard> = {
     docs: {
       description: {
         component:
-          "캐시딜 상품 카드 (140w). 정사각 썸네일 + 상품명(2줄 ellipsis) + 할인율/가격/단위 가로 row. " +
+          "상품 카드 (140w). 정사각 썸네일 + 상품명(2줄 ellipsis) + 할인율/가격/단위 가로 row. " +
           "가격은 Lato Black 18 / 할인율은 Lato Medium 18 + statusError — 자릿수가 늘어도 시각 무게 일정.",
       },
     },
@@ -27,8 +27,8 @@ export const Default: Story = {
   name: "State/Default",
   render: () => (
     <ProductCard
-      thumbnail="https://picsum.photos/seed/cashdeal-1/300/300"
-      title="허닭X캐시딜단독 베스트 닭가슴살 패키지 모음전"
+      thumbnail="https://picsum.photos/seed/product-1/300/300"
+      title="베스트 닭가슴살 패키지 모음전 — 단독 상품"
       discountPercent={31}
       price={13900}
       onClick={() => undefined}
@@ -124,7 +124,7 @@ export const HorizontalRow: Story = {
       {[
         {
           id: 1,
-          title: "허닭X캐시딜단독 베스트 닭가슴살 패키지 모음전",
+          title: "베스트 닭가슴살 패키지 모음전 — 단독 상품",
           discount: 31,
           price: 13900,
         },

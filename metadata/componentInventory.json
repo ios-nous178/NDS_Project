@@ -1244,12 +1244,12 @@
     "name": "ProductCard",
     "category": "도메인",
     "status": "implemented",
-    "description": "캐시딜 상품 카드 (140w). 정사각 썸네일 + 제목(2줄) + 할인율/가격/단위 가로 row",
+    "description": "상품 카드 (140w). 정사각 썸네일 + 제목(2줄) + 할인율/가격/단위 가로 row",
     "storybookTitle": "Components/ProductCard",
     "docsPath": "/docs/components/product-card",
     "figmaUrl": "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=53-2",
     "figmaNodeId": "53:2",
-    "usageSummary": "Geniet 헬시딜 상품 진열용 카드. 가로 스크롤 행 / 그리드. 할인율% + 가격 + '원' 단위",
+    "usageSummary": "상품 진열용 카드. 가로 스크롤 행 / 그리드. 할인율% + 가격 + '원' 단위",
     "notes": "price 는 number(KRW). 숫자 폰트는 Lato(할인 Medium 18 / 가격 Black 18). badge·soldOut 동시 노출 금지."
   },
   {
