@@ -51,25 +51,28 @@ const buttonStyles = `
 
   .${BUTTON_CLASS}:disabled {
     /* Host themes often set their own disabled opacity — pin to 1 so our
-     * semantic disabled colors carry the full intended contrast. */
+     * semantic disabled colors carry the full intended contrast.
+     * cursor: default 는 base 의 cursor: pointer 를 같은 selector 에서 덮어쓰기 위해 같이 둔다.
+     */
     opacity: 1;
-  }
-
-  :where(.${BUTTON_CLASS}:disabled) {
     cursor: default;
   }
 
-  :where(.${BUTTON_CLASS}:not(:disabled):hover) {
+  /* hover/focus 룰은 :where() 로 감싸지 않는다 — :where() 는 specificity 를 0 으로
+   * 만들어버려 base .nds-button(0,0,1,0) 룰이 늘 이기고 hover bg/color/border 가
+   * 화면에 안 보이는 버그가 났었음. .nds-button:...:hover 로 두면 (0,0,2,0) 가
+   * 확보돼 정상 override. */
+  .${BUTTON_CLASS}:not(:disabled):hover {
     background: var(--nds-button-hover-background, var(--nds-button-background));
     border-color: var(--nds-button-hover-border-color, var(--nds-button-border-color));
     color: var(--nds-button-hover-text-color, var(--nds-button-text-color));
   }
 
-  :where(.${BUTTON_CLASS}:focus) {
+  .${BUTTON_CLASS}:focus {
     outline: none;
   }
 
-  :where(.${BUTTON_CLASS}:focus-visible) {
+  .${BUTTON_CLASS}:focus-visible {
     outline: 2px solid var(--nds-button-focus-ring-color, ${cv.borderRole.focus});
     outline-offset: var(--nds-button-focus-ring-offset, 2px);
   }
@@ -300,22 +303,26 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.button.bgSecondaryHover,
       },
     },
-    // Outlined은 primary와 동일 (피그마에 secondary outlined 없음)
+    // secondary outlined — Figma Outlined/Neutral 패턴 (white bg + neutral border + strong text).
+    // dark-inverse 그룹(Cashpobi/Geniet) 에서 secondary.solid 가 검정/짙은 그레이 fill 이라
+    // outlined 도 같은 위계의 "neutral 강조" 로 통일. light-subtle 그룹에서도 "primary 가 아닌
+    // 2차 outlined CTA" 로 자연스러운 해석. (이전엔 primary.outlined 와 동일해 Cashpobi 에서
+    // 노란 보더로 잘못 표시됐음.)
     outlined: {
       enabled: {
         background: cv.surface.default,
-        text: cv.textRole.brand,
-        border: cv.borderRole.brand,
+        text: cv.textRole.strong,
+        border: cv.borderRole.normal,
       },
       disabled: {
         background: cv.surface.default,
         text: cv.textRole.muted,
-        border: cv.borderRole.normal,
+        border: cv.borderRole.subtle,
       },
       hover: {
-        background: cv.surface.brandSubtle,
-        text: cv.textRole.brand,
-        border: cv.borderRole.brand,
+        background: cv.surface.subtle,
+        text: cv.textRole.strong,
+        border: cv.borderRole.normal,
       },
     },
     "outlined-sub": {
