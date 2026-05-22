@@ -32,6 +32,9 @@ const STYLE = `
     position: relative;
   }
   .nds-trost-tabnav__list {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -40,7 +43,6 @@ const STYLE = `
     padding: 0;
     list-style: none;
     cursor: pointer;
-    margin-right: 92px;
     height: 100%;
   }
   .nds-trost-tabnav__item {

@@ -1,21 +1,22 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { NudgeEAPAppFooter, NudgeEAPBottomNav } from "@nudge-eap/react";
+import { NudgeEAPFooter, NudgeEAPBottomNav } from "@nudge-eap/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("nudge-eap");
 
 const meta: Meta = {
-  title: "Components/AppFooter",
+  title: "Components/Footer",
   parameters: { layout: "fullscreen" },
 };
 export default meta;
 type Story = StoryObj;
 
-export const NudgeEAPInfoFooter: Story = {
-  name: "NudgeEAP/회사정보 푸터",
+export const NudgeEAPApp: Story = {
+  name: "NudgeEAP/회사정보 푸터 (surface='app')",
   render: () => (
-    <NudgeEAPAppFooter
+    <NudgeEAPFooter
+      surface="app"
       links={b.footer.links}
       company={b.footer.company}
       logo={{

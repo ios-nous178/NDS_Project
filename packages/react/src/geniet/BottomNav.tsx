@@ -1,6 +1,6 @@
 import React from "react";
-import { AppFooterTabBar } from "../AppFooter";
-import type { FooterTabItem } from "../AppFooter";
+import { FooterTabBar } from "../Footer";
+import type { FooterTabItem } from "../Footer";
 import {
   HomeIcon,
   GenietHomeIcon,
@@ -79,7 +79,7 @@ export const GenietBottomNav = React.forwardRef<HTMLElement, GenietBottomNavProp
     if (shadow) (style as Record<string, string>).boxShadow = "0 -2px 10px 0 rgba(17,17,17,0.05)";
 
     return (
-      <AppFooterTabBar
+      <FooterTabBar
         ref={ref}
         tabs={resolved}
         activeTab={activeTab}

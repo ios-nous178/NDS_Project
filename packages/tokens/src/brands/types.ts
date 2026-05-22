@@ -205,7 +205,7 @@ export interface ComponentOverrides {
   textarea?: { radius?: ComponentValue; paddingX?: ComponentValue; paddingY?: ComponentValue };
   datepicker?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
   /**
-   * AppFooter.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,
+   * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,
    * label Pretendard 10/12. 다른 브랜드는 fallback (active=textRole.normal #333, label 11/14).
    */
   footer?: {

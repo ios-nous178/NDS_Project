@@ -1,6 +1,6 @@
 import React from "react";
-import { WebHeader } from "../WebHeader";
-import type { WebHeaderMenuItem } from "../WebHeader";
+import { Header } from "../Header";
+import type { HeaderMenuItemData as WebHeaderMenuItem } from "../Header";
 import { NudgeEAPLogo } from "./Logo";
 import type { NudgeEAPLogoVariant } from "./Logo";
 
@@ -10,7 +10,7 @@ import type { NudgeEAPLogoVariant } from "./Logo";
  * 사양:
  *   - height 80, bg white, border-bottom 1px #ECECEC (neutral/200)
  *   - max-width 1200 (1920 viewport 좌우 360 margin)
- *   - 로고: 200×60 (Symbol + Korean+English horizontal — Figma 672:2098, 대표 로고)
+ *   - 로고: 내장 vector KO+EN lockup (기본 height 32, 124×28 비율 유지)
  *   - 메뉴: 6탭 (상담하기/심리검사/심리치료/주간레터/소식/마이페이지)
  *     · h79·px20·py18, Pretendard Bold 18/26, color #111, 활성 시 primary 색 + 3px bottom
  *   - 우측 액션: 앱 다운로드(bg #F5F5F5 · 16/24 bold primary) + 로그인/로그아웃(1px primary border)
@@ -85,7 +85,7 @@ export const NudgeEAPWebHeader = React.forwardRef<HTMLElement, NudgeEAPWebHeader
 
     /* 로고: logo.src 가 명시되면 <img>, 아니면 SVG-based NudgeEAPLogo (선명함 보장). */
     const logoNode = logo?.src ? (
-      <WebHeader.Logo
+      <Header.Logo
         href={logo.href ?? logoHref}
         src={logo.src}
         alt={logo.alt ?? "NudgeEAP"}
@@ -94,26 +94,35 @@ export const NudgeEAPWebHeader = React.forwardRef<HTMLElement, NudgeEAPWebHeader
         style={{ width: "auto", height: `${logo.height ?? logoHeight}px` }}
       />
     ) : (
-      <WebHeader.Logo href={logoHref}>
+      <Header.Logo href={logoHref}>
         <NudgeEAPLogo variant={logoVariant} size={logoHeight} />
-      </WebHeader.Logo>
+      </Header.Logo>
     );
 
     return (
-      <WebHeader ref={ref} position="static" maxWidth={maxWidth}>
+      <Header ref={ref} variant="web" position="static" maxWidth={maxWidth}>
         {logoNode}
         {menuItems && menuItems.length > 0 && (
-          <WebHeader.Menu items={menuItems} activeKey={activeKey} onItemClick={onMenuItemClick} />
+          <Header.Menu
+            items={menuItems}
+            activeKey={activeKey}
+            onItemClick={onMenuItemClick}
+            style={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          />
         )}
-        <WebHeader.Actions>
+        <Header.Actions>
           {showAppDownload && (
-            <WebHeader.AppDownloadButton href={appDownloadHref}>
+            <Header.AppDownloadButton href={appDownloadHref}>
               {appDownloadLabel}
-            </WebHeader.AppDownloadButton>
+            </Header.AppDownloadButton>
           )}
-          <WebHeader.AuthButton authState={authState} href={authHref} onClick={onAuthClick} />
-        </WebHeader.Actions>
-      </WebHeader>
+          <Header.AuthButton authState={authState} href={authHref} onClick={onAuthClick} />
+        </Header.Actions>
+      </Header>
     );
   },
 );

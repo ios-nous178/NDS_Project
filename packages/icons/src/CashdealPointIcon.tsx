@@ -1,0 +1,35 @@
+import React from "react";
+
+export interface CashdealPointIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashdealPointIcon = React.forwardRef<SVGSVGElement, CashdealPointIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="scale(1.714)">
+<circle cx="7" cy="7" r="7" fill="#F24015"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M6.29954 10.2534H4.94027V3.91493H7.27792C8.86124 3.91493 9.78733 4.79025 9.78733 6.12549C9.78733 7.47556 8.86124 8.35088 7.27792 8.35088H6.29954V10.2534ZM6.29954 5.10923V7.15659H7.21817C7.97249 7.15659 8.42807 6.80053 8.42807 6.12549C8.42807 5.45787 7.97249 5.10923 7.21817 5.10923H6.29954Z" fill="white"/>
+<path d="M7 0C10.866 0 14 3.13401 14 7C14 10.866 10.866 14 7 14C3.13401 14 0 10.866 0 7C1.12745e-07 3.13401 3.13401 1.12749e-07 7 0ZM7 1.86621C4.16494 1.86621 1.86621 4.16494 1.86621 7C1.86621 9.83506 4.16494 12.1338 7 12.1338C9.83506 12.1338 12.1338 9.83506 12.1338 7C12.1338 4.16494 9.83506 1.86621 7 1.86621Z" fill="url(#cashdeal_point_grad)"/>
+<ellipse opacity="0.5" cx="2.99885" cy="2.43858" rx="0.9409" ry="1.61327" transform="rotate(47 2.99885 2.43858)" fill="white"/>
+</g>
+<defs>
+<linearGradient id="cashdeal_point_grad" x1="-3.9674" y1="5.48148" x2="5.24024" y2="16.5755" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF7F60"/>
+<stop offset="1" stop-color="#E53000"/>
+</linearGradient>
+</defs>
+    </svg>
+  )
+);
+
+CashdealPointIcon.displayName = "CashdealPointIcon";

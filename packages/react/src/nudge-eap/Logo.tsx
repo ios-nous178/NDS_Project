@@ -1,5 +1,5 @@
 import React from "react";
-import { koLogoData, en_darkLogoData, symbolLogoData } from "./assets/nudge-eap";
+import { en_darkLogoData, symbolLogoData } from "./assets/nudge-eap";
 import {
   koen_symbolSvg,
   koen_textSvg,
@@ -51,14 +51,15 @@ const VARIANT_ALT: Record<NudgeEAPLogoVariant, string> = {
   dain: "DAIN",
 };
 
-/* 2-layer SVG layout (Figma inset 값 1:1 정합). */
 const LAYOUT_KOEN = {
-  symbol: { top: "15.16%", bottom: "15.16%", left: "0", right: "80.28%" },
-  text: { top: "14.29%", bottom: "14.29%", left: "25.22%", right: "1.02%" },
+  symbol: { w: 24.4489, h: 19.5109 },
+  text: { w: 91.4696, h: 20 },
+  gap: 6.82,
 } as const;
 const LAYOUT_KO = {
-  symbol: { top: "18.68%", bottom: "21.36%", left: "0", right: "83.03%" },
-  text: { top: "17.86%", bottom: "20.55%", left: "21.68%", right: "1.02%" },
+  symbol: { w: 21.0367, h: 16.7881 },
+  text: { w: 95.8605, h: 17.2453 },
+  gap: 5.84,
 } as const;
 
 export interface NudgeEAPLogoProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
@@ -77,44 +78,38 @@ const layered = (
   alt: string,
   width: number,
   height: number,
-) => (
-  <div
-    role="img"
-    aria-label={alt}
-    style={{
-      position: "relative",
-      display: "inline-block",
-      width,
-      height,
-      flexShrink: 0,
-    }}
-  >
-    <img
-      src={symbolSvg}
-      alt=""
+) => {
+  const scale = height / 28;
+  return (
+    <div
+      role="img"
+      aria-label={alt}
       style={{
-        position: "absolute",
-        top: layout.symbol.top,
-        bottom: layout.symbol.bottom,
-        left: layout.symbol.left,
-        right: layout.symbol.right,
-        objectFit: "contain",
+        display: "inline-flex",
+        alignItems: "center",
+        width,
+        height,
+        gap: layout.gap * scale,
+        flexShrink: 0,
       }}
-    />
-    <img
-      src={textSvg}
-      alt=""
-      style={{
-        position: "absolute",
-        top: layout.text.top,
-        bottom: layout.text.bottom,
-        left: layout.text.left,
-        right: layout.text.right,
-        objectFit: "contain",
-      }}
-    />
-  </div>
-);
+    >
+      <img
+        src={symbolSvg}
+        alt=""
+        width={layout.symbol.w * scale}
+        height={layout.symbol.h * scale}
+        style={{ display: "block", objectFit: "contain", flexShrink: 0 }}
+      />
+      <img
+        src={textSvg}
+        alt=""
+        width={layout.text.w * scale}
+        height={layout.text.h * scale}
+        style={{ display: "block", objectFit: "contain", flexShrink: 0 }}
+      />
+    </div>
+  );
+};
 
 export const NudgeEAPLogo = React.forwardRef<HTMLDivElement, NudgeEAPLogoProps>(
   ({ variant = "koen", size, alt, style, ...rest }, ref) => {
@@ -176,7 +171,6 @@ export const NudgeEAPLogo = React.forwardRef<HTMLDivElement, NudgeEAPLogoProps>(
 
     /* PNG fallback — en-dark / symbol (multi-part 복잡 구조, 추후 SVG 교체 권장) */
     const fallbackSrc = variant === "en-dark" ? en_darkLogoData : symbolLogoData;
-    void koLogoData;
     return (
       <img
         ref={ref as unknown as React.Ref<HTMLImageElement>}

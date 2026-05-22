@@ -1,12 +1,12 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { NudgeEAPWebFooter } from "@nudge-eap/react";
+import { NudgeEAPFooter } from "@nudge-eap/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("nudge-eap");
 
 const meta: Meta = {
-  title: "Components/WebFooter",
+  title: "Components/Footer",
   parameters: { layout: "fullscreen" },
 };
 export default meta;
@@ -44,8 +44,8 @@ function OneStoreIcon() {
   );
 }
 
-export const NudgeEAPDesktop: Story = {
-  name: "NudgeEAP/Desktop (Figma 20:13799)",
+export const NudgeEAPWeb: Story = {
+  name: "NudgeEAP/Web Desktop (surface='web', Figma 20:13799)",
   parameters: {
     docs: {
       description: {
@@ -55,7 +55,8 @@ export const NudgeEAPDesktop: Story = {
     },
   },
   render: () => (
-    <NudgeEAPWebFooter
+    <NudgeEAPFooter
+      surface="web"
       links={[
         { label: "고객센터", href: "#" },
         { label: "개인정보 처리방침", href: "#", bold: true },

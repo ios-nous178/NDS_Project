@@ -6,22 +6,17 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("nudge-eap");
 
 const meta: Meta = {
-  title: "Components/AppBar",
+  title: "Components/Header",
   parameters: { layout: "fullscreen" },
 };
 export default meta;
 type Story = StoryObj;
 
 export const NudgeEAPDesktop: Story = {
-  name: "NudgeEAP/Desktop (1단)",
+  name: "NudgeEAPAppBar/Desktop (1단)",
   render: () => (
     <NudgeEAPAppBar
       variant="desktop"
-      logo={{
-        src: b.logo.headerPc.src,
-        alt: "NudgeEAP",
-        href: "/",
-      }}
       pcMaxWidth={b.header.pcMaxWidth}
       gnbItems={b.header.gnb.items}
       activeKey="home"
@@ -31,17 +26,11 @@ export const NudgeEAPDesktop: Story = {
 };
 
 export const NudgeEAPMobile: Story = {
-  name: "NudgeEAP/Mobile",
+  name: "NudgeEAPAppBar/Mobile",
   render: () => (
     <div style={{ maxWidth: 480 }}>
       <NudgeEAPAppBar
         variant="mobile"
-        logo={{
-          src: b.logo.headerMobile.src,
-          alt: "NudgeEAP",
-          href: "/",
-          height: b.logo.headerMobile.height,
-        }}
         mobileHeight={b.header.mobileHeight}
         authItems={b.header.auth.items}
       />
@@ -50,11 +39,10 @@ export const NudgeEAPMobile: Story = {
 };
 
 export const NudgeEAPWebview: Story = {
-  name: "NudgeEAP/Webview",
+  name: "NudgeEAPAppBar/Webview",
   render: () => (
     <NudgeEAPAppBar
       variant="webview"
-      logo={{ src: b.logo.headerMobile.src }}
       webviewTitle={b.header.webviewTitle}
       mobileHeight={b.header.mobileHeight}
     />

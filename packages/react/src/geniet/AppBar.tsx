@@ -9,8 +9,8 @@ import {
   typeScale,
   zIndex,
 } from "@nudge-eap/tokens";
-import { AppBar } from "../AppBar";
-import type { AppBarGNBItem } from "../AppBar";
+import { Header } from "../Header";
+import type { HeaderMenuItemData as AppBarGNBItem } from "../Header";
 import { TrendingKeywords } from "../TrendingKeywords";
 import type { TrendingKeywordItem } from "../TrendingKeywords";
 import { GenietMenuIcon, GenietSearchIcon, GenietGpointIcon } from "@nudge-eap/icons";
@@ -610,13 +610,13 @@ export const GenietAppBar = React.forwardRef<HTMLElement, GenietAppBarProps>((pr
 
   if (variant === "webview") {
     return (
-      <AppBar
+      <Header
         ref={ref}
         variant="webview"
         position="static"
         title={webviewTitle}
-        leftSlot={<AppBar.BackButton onClick={onBack} />}
-        style={{ "--nds-app-bar-height": `${MO_ROW1_HEIGHT}px` } as React.CSSProperties}
+        leftSlot={<Header.BackButton onClick={onBack} />}
+        style={{ "--nds-header-height": `${MO_ROW1_HEIGHT}px` } as React.CSSProperties}
       />
     );
   }

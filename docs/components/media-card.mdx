@@ -1,0 +1,113 @@
+---
+title: MediaCard
+description: 이미지 위 / 콘텐츠 아래 세로형 미디어 카드. 콘텐츠·리뷰·강의·상담사 카드 등에 재사용.
+---
+
+# MediaCard
+
+상단에 이미지를, 하단에 메타(eyebrow·title·body·footer)를 배치하는 **세로형 미디어 카드**.
+콘텐츠 카드, 후기 카드, 강의 카드, 상담사 카드처럼 "미디어 + 메타" 패턴 전반에 사용합니다.
+가로 스크롤(모바일) · 그리드(데스크탑) 모두 같은 컴포넌트로 처리합니다.
+
+## 사용법
+
+```tsx
+import { MediaCard, Avatar } from "@nudge-eap/react";
+
+<MediaCard
+  image={<img src="/foods/dak-muchim.jpg" alt="" />}
+  imageOverlay="999+"
+  eyebrow="아임닭"
+  title="닭 무침"
+  body="아침 다이어트 식단으로 자주 먹어요. 잡내가 거의 없고 담백해서 부담 없이 먹기 좋아요."
+  rating={4.5}
+  footer={
+    <>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+        <Avatar name="가나다라" size="xs" />
+        <span>가나다라</span>
+      </span>
+      <span style={{ fontSize: 12, color: "var(--nds-text-subtle)" }}>
+        조회수 999.9만 · 26.01.28
+      </span>
+    </>
+  }
+  onCardClick={() => router.push("/reviews/123")}
+/>;
+```
+
+## Props
+
+| Prop                | 타입         | 기본값  | 설명                                                          |
+| ------------------- | ------------ | ------- | ------------------------------------------------------------- |
+| `image`             | `ReactNode`  | —       | 상단 미디어 (`<img>` / `<video>` / placeholder)               |
+| `imageOverlay`      | `ReactNode`  | —       | 미디어 우하단 라벨 (예: `"999+"`, `"02:13"`)                  |
+| `imageAspectRatio`  | `string`     | `4 / 3` | CSS `aspect-ratio` 문법. 영상 `16 / 9`, 정사각 `1 / 1`        |
+| `eyebrow`           | `ReactNode`  | —       | 제목 위 보조 라벨 (브랜드 / 카테고리 / 회차 등)               |
+| `title`             | `ReactNode`  | —       | 제목 (자동 2줄 클램프)                                        |
+| `body`              | `ReactNode`  | —       | 본문 (자동 2줄 클램프)                                        |
+| `rating`            | `number`     | —       | 0~5. 지정 시 푸터 영역에 별 5개 자동 렌더 (0.25 단위 반올림)  |
+| `footer`            | `ReactNode`  | —       | 푸터 슬롯 — 작성자·메타·CTA 등 자유 조립                      |
+| `onCardClick`       | `() => void` | —       | 카드 전체 클릭 (`role="button"` + Enter/Space 핸들링 자동)    |
+
+## 레이아웃 패턴
+
+### 가로 스크롤 (모바일)
+
+```tsx
+<div style={{ display: "flex", gap: 12, overflowX: "auto" }}>
+  {items.map((it) => (
+    <div key={it.id} style={{ flex: "0 0 160px" }}>
+      <MediaCard {...it} imageAspectRatio="5 / 6" />
+    </div>
+  ))}
+</div>
+```
+
+### 그리드 4-up (데스크탑)
+
+```tsx
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)",
+    gap: 16,
+  }}
+>
+  {items.map((it) => (
+    <MediaCard key={it.id} {...it} />
+  ))}
+</div>
+```
+
+### 영상 썸네일 (16:9)
+
+```tsx
+<MediaCard
+  imageAspectRatio="16 / 9"
+  imageOverlay="02:13"
+  image={<img src="/videos/breath-5min/thumb.jpg" alt="" />}
+  eyebrow="명상 가이드"
+  title="5분 호흡으로 긴장 풀기"
+  body="자기 전 짧게 따라할 수 있는 호흡 가이드. 입문자에게 추천합니다."
+/>
+```
+
+## 가이드
+
+- **이미지 비율은 `imageAspectRatio`로만** 조절 — `<img>` 의 width/height inline 지정 금지.
+- **`title` / `body`는 자동 2줄 클램프** — 외부에서 슬라이스 가공 불필요.
+- **`imageOverlay`는 우하단 단일 라벨용** — 좌상단 배지/랭킹이 필요하면 `ProductCard` 의 `rankingNumber` 사용 또는 `image` 슬롯에서 직접 그릴 것.
+- **별점은 헬퍼** — `rating` prop 하나로 별 5개 자동. 0.5 단위 정밀 표현은 `ReviewCard` 사용.
+- **푸터는 자유 슬롯** — 작성자/메타 row 를 자유 조합. DS가 `author/meta` props 를 박지 않은 이유.
+- **`onCardClick`** 지정 시 키보드 접근성 자동 — 별도 `tabIndex`/`role` 불필요.
+
+## 분리 기준
+
+| 패턴                                | 사용 컴포넌트       |
+| ----------------------------------- | ------------------- |
+| 미디어 hero + 짧은 메타 진열        | **MediaCard**       |
+| 장문 본문 / 리치 콘텐츠             | `Card`              |
+| 가격·할인·적립이 핵심인 상품 진열   | `ProductCard`       |
+| 본문 중심 후기 (별점·태그·인증)     | `ReviewCard`        |
+| 상담사 프로필 (자격·예약 CTA)       | `CounselorCard`     |

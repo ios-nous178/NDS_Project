@@ -8,9 +8,8 @@ import {
   ActivityTimeline,
   AddressSearch,
   AmountInput,
-  AppBar,
-  AppFooter,
   AppointmentCard,
+  Footer,
   AssessmentResultCard,
   AttachmentItem,
   AudioPlayer,
@@ -53,6 +52,7 @@ import {
   FilterBar,
   FormField,
   GreetingHeader,
+  Header,
   IconButton,
   Input,
   JournalEntry,
@@ -60,6 +60,7 @@ import {
   LikertScale,
   List,
   ListItem,
+  MediaCard,
   MediaThumbnail,
   MedicationItem,
   MentionInput,
@@ -111,7 +112,6 @@ import {
   ActionChip,
   UserCard,
   VotePoll,
-  WebHeader,
 } from "@nudge-eap/react";
 import {
   CalendarIcon,
@@ -1331,10 +1331,11 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
 
-  /* 레이아웃 */
-  AppBar: () => (
+  /* 레이아웃 — Header 통합 base (옛 AppBar / WebHeader) */
+  HeaderCompact: () => (
     <div style={mockPhoneShell}>
-      <AppBar
+      <Header
+        variant="compact"
         position="static"
         title="페이지 제목"
         leftSlot={<ChevronLeftIcon size={20} color="var(--semantic-icon-normal-default)" />}
@@ -1343,10 +1344,10 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <div style={mockPhoneBody}>본문 영역</div>
     </div>
   ),
-  AppFooter: () => (
+  Footer: () => (
     <div style={mockPhoneShell}>
       <div style={{ ...mockPhoneBody, flex: 1 }}>본문 영역</div>
-      <AppFooter.TabBar
+      <Footer.TabBar
         activeTab="home"
         onTabClick={() => {}}
         style={
@@ -1382,19 +1383,19 @@ const PREVIEWS: Record<string, PreviewRender> = {
       />
     </div>
   ),
-  WebHeader: () => (
+  HeaderWeb: () => (
     <div style={mockDesktopShell}>
       <div style={mockDesktopScaler}>
-        <WebHeader position="static" maxWidth={480}>
-          <WebHeader.Logo alt="Brand" src="https://placehold.co/72x20/2B96ED/FFFFFF?text=Brand" />
-          <WebHeader.Menu>
-            <WebHeader.MenuItem href="#" active>
+        <Header variant="web" position="static" maxWidth={480}>
+          <Header.Logo alt="Brand" src="https://placehold.co/72x20/2B96ED/FFFFFF?text=Brand" />
+          <Header.Menu>
+            <Header.MenuItem href="#" active>
               홈
-            </WebHeader.MenuItem>
-            <WebHeader.MenuItem href="#">콘텐츠</WebHeader.MenuItem>
-            <WebHeader.MenuItem href="#">상담</WebHeader.MenuItem>
-          </WebHeader.Menu>
-        </WebHeader>
+            </Header.MenuItem>
+            <Header.MenuItem href="#">콘텐츠</Header.MenuItem>
+            <Header.MenuItem href="#">상담</Header.MenuItem>
+          </Header.Menu>
+        </Header>
         <div style={mockDesktopBody}>본문 영역</div>
       </div>
     </div>
@@ -1560,6 +1561,18 @@ const PREVIEWS: Record<string, PreviewRender> = {
         alt="썸네일"
         aspectRatio="16/9"
         rounded="md"
+      />
+    </div>
+  ),
+  MediaCard: () => (
+    <div style={{ width: 200 }}>
+      <MediaCard
+        image={<img src="https://placehold.co/200x150" alt="" />}
+        imageOverlay="999+"
+        eyebrow="카테고리"
+        title="미디어 카드 제목"
+        body="이미지 위, 메타 아래 세로형 카드. 콘텐츠/리뷰/상담사 카드 등에 재사용."
+        rating={4.5}
       />
     </div>
   ),
@@ -2242,7 +2255,7 @@ const dsHighlightModeActive: React.CSSProperties = {
   color: cv.textRole.inverse,
 };
 
-/* AppBar / AppFooter / WebHeader — 화면 프레임 안에 배치해야 비례가 맞다 */
+/* Header / Footer — 화면 프레임 안에 배치해야 비례가 맞다 */
 const mockPhoneShell: React.CSSProperties = {
   width: 220,
   height: 160,

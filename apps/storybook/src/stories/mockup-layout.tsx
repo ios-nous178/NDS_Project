@@ -12,7 +12,7 @@
  *   </MockupLayout>
  */
 import React, { useState } from "react";
-import { AppBar, AppFooter, Button, TrendingKeywords } from "@nudge-eap/react";
+import { Header, Footer, Button, TrendingKeywords } from "@nudge-eap/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 /* ═══════════════════════════════════════
@@ -61,12 +61,12 @@ export function MockupHeader({
   // 모바일 웹뷰
   if (isMobile && webview) {
     return (
-      <AppBar
+      <Header
         variant="webview"
         position="sticky"
         title={webviewTitle || b.header.webviewTitle}
-        leftSlot={<AppBar.BackButton onClick={() => console.log("back")} />}
-        style={{ "--nds-app-bar-height": `${b.header.mobileHeight}px` } as React.CSSProperties}
+        leftSlot={<Header.BackButton onClick={() => console.log("back")} />}
+        style={{ "--nds-header-height": `${b.header.mobileHeight}px` } as React.CSSProperties}
       />
     );
   }
@@ -74,60 +74,61 @@ export function MockupHeader({
   // 모바일 기본
   if (isMobile) {
     return (
-      <AppBar
+      <Header
+        variant="compact"
         position="sticky"
-        style={{ "--nds-app-bar-height": `${b.header.mobileHeight}px` } as React.CSSProperties}
+        style={{ "--nds-header-height": `${b.header.mobileHeight}px` } as React.CSSProperties}
       >
-        <AppBar.MainBar>
-          <AppBar.Logo
+        <Header.MainBar>
+          <Header.Logo
             src={b.logo.headerMobile.src}
             alt={brand}
             href="/"
             style={{ height: b.logo.headerMobile.height, width: "auto" }}
           />
-          <AppBar.AuthMenu items={[b.header.auth.items[0]]} separator="none" />
-        </AppBar.MainBar>
-      </AppBar>
+          <Header.AuthMenu items={[b.header.auth.items[0]]} separator="none" />
+        </Header.MainBar>
+      </Header>
     );
   }
 
   // 데스크탑 — single (1단)
   if (b.header.layout === "single") {
     return (
-      <AppBar position="sticky">
-        <AppBar.MainBar maxWidth={b.header.pcMaxWidth}>
-          <AppBar.Logo
+      <Header position="sticky">
+        <Header.MainBar maxWidth={b.header.pcMaxWidth}>
+          <Header.Logo
             src={b.logo.headerPc.src}
             alt={brand}
             href="/"
             width={b.logo.headerPc.width}
             height={b.logo.headerPc.height}
           />
-          <AppBar.GNB items={b.header.gnb.items} activeKey={activeGnbKey} />
-          <AppBar.AuthMenu items={b.header.auth.items} separator={b.header.auth.separator} />
-        </AppBar.MainBar>
-      </AppBar>
+          <Header.Menu items={b.header.gnb.items} activeKey={activeGnbKey} />
+          <Header.AuthMenu items={b.header.auth.items} separator={b.header.auth.separator} />
+        </Header.MainBar>
+      </Header>
     );
   }
 
   // 데스크탑 — double (2단)
   return (
-    <AppBar
+    <Header
       position="sticky"
       style={
         {
-          "--nds-app-bar-height": "auto",
-          "--nds-app-bar-padding-x": "0",
-          "--nds-app-bar-border-bottom": "none",
+          "--nds-header-height": "auto",
+          "--nds-header-padding-x": "0",
+          "--nds-header-border-bottom": "none",
           flexDirection: "column",
         } as React.CSSProperties
       }
     >
-      <AppBar.MainBar
+      <Header.MainBar
         maxWidth={b.header.pcMaxWidth}
         style={{ padding: b.header.mainBarPaddingY + " 16px" }}
       >
-        <AppBar.Logo
+        <Header.Logo
           src={b.logo.headerPc.src}
           alt={brand}
           href="/"
@@ -135,18 +136,18 @@ export function MockupHeader({
           height={b.logo.headerPc.height}
         />
         {b.header.searchBar && (
-          <AppBar.SearchBar
+          <Header.SearchBar
             placeholder={b.header.searchBar.placeholder}
             onSearch={onSearch}
             style={
               {
-                "--nds-app-bar-search-width": `${b.header.searchBar.width}px`,
-                "--nds-app-bar-search-height": `${b.header.searchBar.height}px`,
+                "--nds-header-search-width": `${b.header.searchBar.width}px`,
+                "--nds-header-search-height": `${b.header.searchBar.height}px`,
               } as React.CSSProperties
             }
           />
         )}
-        <AppBar.AuthMenu
+        <Header.AuthMenu
           items={b.header.auth.items}
           separator={b.header.auth.separator}
           extra={
@@ -157,18 +158,18 @@ export function MockupHeader({
             ) : undefined
           }
         />
-      </AppBar.MainBar>
-      <AppBar.Divider />
-      <AppBar.NavBar
+      </Header.MainBar>
+      <Header.Divider />
+      <Header.NavBar
         maxWidth={b.header.pcMaxWidth}
         height={b.header.gnb.navHeight}
         style={{ justifyContent: "space-between" }}
       >
-        <AppBar.GNB items={b.header.gnb.items} activeKey={activeGnbKey} />
+        <Header.Menu items={b.header.gnb.items} activeKey={activeGnbKey} />
         {b.header.trending && <TrendingKeywords items={b.header.trending} timestamp="09:00 기준" />}
-      </AppBar.NavBar>
-      <AppBar.Divider />
-    </AppBar>
+      </Header.NavBar>
+      <Header.Divider />
+    </Header>
   );
 }
 
@@ -189,7 +190,7 @@ export function MockupFooter({ brand, disclaimer }: MockupFooterProps) {
   const dark = b.footer.darkBg;
 
   return (
-    <AppFooter.Info
+    <Footer.Info
       style={
         {
           "--nds-footer-background": dark ? "#333" : undefined,
@@ -206,11 +207,11 @@ export function MockupFooter({ brand, disclaimer }: MockupFooterProps) {
             marginBottom: isMobile ? 16 : 20,
           }}
         >
-          <AppFooter.Links links={b.footer.links} />
+          <Footer.Links links={b.footer.links} />
         </div>
         <div>
-          {b.footer.extra && <AppFooter.Extra>{b.footer.extra}</AppFooter.Extra>}
-          <AppFooter.CompanyInfo
+          {b.footer.extra && <Footer.Extra>{b.footer.extra}</Footer.Extra>}
+          <Footer.CompanyInfo
             data={b.footer.company}
             logoSrc={isMobile ? undefined : b.logo.footer.src}
             logoWidth={b.logo.footer.width}
@@ -218,7 +219,7 @@ export function MockupFooter({ brand, disclaimer }: MockupFooterProps) {
           />
         </div>
         {disclaimer && (
-          <AppFooter.Extra>
+          <Footer.Extra>
             <p
               style={{
                 marginTop: isMobile ? 12 : 20,
@@ -229,10 +230,10 @@ export function MockupFooter({ brand, disclaimer }: MockupFooterProps) {
             >
               {disclaimer}
             </p>
-          </AppFooter.Extra>
+          </Footer.Extra>
         )}
       </div>
-    </AppFooter.Info>
+    </Footer.Info>
   );
 }
 

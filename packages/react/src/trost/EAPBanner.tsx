@@ -21,7 +21,7 @@ const STYLE = `
   .nds-trost-eap-banner {
     width: 100%;
     height: 50px;
-    background: ${trostEapBanner.bg};
+    background: #d5eafb;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -45,9 +45,10 @@ const STYLE = `
     justify-content: center;
     align-items: center;
     height: 34px;
-    background: ${trostEapBanner.ctaBg};
+    background: #eaf5fd;
     border-radius: 8px;
-    padding: 11px;
+    padding: 0 11px;
+    box-sizing: border-box;
     cursor: pointer;
     text-decoration: none;
   }

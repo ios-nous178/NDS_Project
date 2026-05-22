@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T07:12:46.206Z",
+  "generatedAt": "2026-05-22T09:24:34.372Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -240,37 +240,6 @@
           "optional": true,
           "type": "AppBarVariant",
           "allowedValues": ["default", "webview", "transparent"]
-        },
-        {
-          "name": "position",
-          "optional": true,
-          "type": "AppBarPosition",
-          "allowedValues": ["sticky", "fixed", "static"]
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "leftSlot",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "rightSlot",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "elevated",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "slotProps",
-          "optional": true,
-          "type": "AppBarSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/AppBar.d.ts"
@@ -2648,6 +2617,27 @@
       "dtsRelPath": "packages/react/dist/FloatingCtaBanner.d.ts"
     },
     {
+      "name": "Footer",
+      "props": [
+        {
+          "name": "links",
+          "optional": true,
+          "type": "FooterLinkItem[]"
+        },
+        {
+          "name": "companyInfo",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onLinkClick",
+          "optional": true,
+          "type": "(link: FooterLinkItem, e: React.MouseEvent) => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Footer.d.ts"
+    },
+    {
       "name": "FormField",
       "props": [
         {
@@ -2734,6 +2724,54 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/GreetingHeader.d.ts"
+    },
+    {
+      "name": "Header",
+      "props": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "HeaderVariant",
+          "allowedValues": ["compact", "webview", "transparent", "web"]
+        },
+        {
+          "name": "position",
+          "optional": true,
+          "type": "HeaderPosition",
+          "allowedValues": ["sticky", "fixed", "static"]
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "leftSlot",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "rightSlot",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "elevated",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "maxWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "HeaderSlotProps"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Header.d.ts"
     },
     {
       "name": "IconButton",
@@ -3138,6 +3176,57 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/List.d.ts"
+    },
+    {
+      "name": "MediaCard",
+      "props": [
+        {
+          "name": "image",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "imageOverlay",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "imageAspectRatio",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "eyebrow",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "body",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "rating",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onCardClick",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/MediaCard.d.ts"
     },
     {
       "name": "MediaThumbnail",
@@ -4073,6 +4162,12 @@
       "name": "ProductCard",
       "props": [
         {
+          "name": "size",
+          "optional": true,
+          "type": "ProductCardSize",
+          "allowedValues": ["sm", "md"]
+        },
+        {
           "name": "thumbnail",
           "optional": true,
           "type": "string"
@@ -4088,9 +4183,19 @@
           "type": "React.ReactNode"
         },
         {
+          "name": "rankingNumber",
+          "optional": true,
+          "type": "number"
+        },
+        {
           "name": "title",
           "optional": false,
           "type": "React.ReactNode"
+        },
+        {
+          "name": "originalPrice",
+          "optional": true,
+          "type": "number"
         },
         {
           "name": "discountPercent",
@@ -4106,6 +4211,36 @@
           "name": "currency",
           "optional": true,
           "type": "React.ReactNode"
+        },
+        {
+          "name": "reward",
+          "optional": true,
+          "type": "ProductCardReward"
+        },
+        {
+          "name": "freeShipping",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "pointDiscount",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "buyersCount",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "rating",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "reviewCount",
+          "optional": true,
+          "type": "number"
         },
         {
           "name": "soldOut",
@@ -5877,6 +6012,7 @@
     "BluetoothIcon",
     "CalendarIcon",
     "CameraIcon",
+    "CashdealPointIcon",
     "CashpobiArrowDownIcon",
     "CashpobiArrowRightIcon",
     "CashpobiArrowUpIcon",
@@ -7781,6 +7917,7 @@
     "SkipForwardIcon",
     "SleepmodeOffIcon",
     "SleepmodeOnIcon",
+    "StarFilledIcon",
     "StarIcon",
     "SubwayIcon",
     "TelephoneIcon",

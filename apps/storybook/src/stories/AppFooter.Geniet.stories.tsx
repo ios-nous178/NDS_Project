@@ -1,12 +1,12 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { GenietAppFooter, GenietBottomNav } from "@nudge-eap/react";
+import { GenietFooter, GenietBottomNav } from "@nudge-eap/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("geniet");
 
 const meta: Meta = {
-  title: "Components/AppFooter",
+  title: "Components/Footer",
   parameters: { layout: "fullscreen" },
   globals: { brand: "geniet" },
 };
@@ -14,9 +14,9 @@ export default meta;
 type Story = StoryObj;
 
 export const GenietInfoFooter: Story = {
-  name: "Geniet/커머스 고지 푸터",
+  name: "Geniet/커머스 고지 푸터 (surface='app')",
   render: () => (
-    <GenietAppFooter
+    <GenietFooter
       links={b.footer.links}
       company={b.footer.company}
       extra={b.footer.extra}

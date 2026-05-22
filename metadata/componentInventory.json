@@ -686,16 +686,16 @@
     "notes": "페이지 단위 컨텍스트는 PageHeader. AppBar는 글로벌 내비게이션."
   },
   {
-    "name": "AppFooter",
+    "name": "Footer",
     "category": "레이아웃",
     "status": "implemented",
-    "description": "하단 푸터 컴포넌트. Compound — AppFooter.Info(회사 정보) / AppFooter.TabBar(앱 탭바)",
-    "storybookTitle": "Components/AppFooter",
+    "description": "하단 푸터 base compound — Footer.Info(회사 정보) / Footer.TabBar(앱 탭바) / Footer.Web(데스크톱 PC 푸터 골격)",
+    "storybookTitle": "Components/Footer",
     "docsPath": "/docs/components/app-footer",
     "figmaUrl": "",
     "figmaNodeId": "",
-    "usageSummary": "홈페이지 회사정보 푸터, 모바일 앱 하단 탭바",
-    "notes": "Info는 데스크톱 웹, TabBar는 모바일 앱. 같은 화면에서 둘 다 쓰지 않는다."
+    "usageSummary": "{Brand}Footer 의 빌딩 블록 — base 직접 호출은 커스텀 푸터 구성 시에만.",
+    "notes": "Info는 데스크톱 웹, TabBar는 모바일 앱, Web 은 PC 풍부 푸터 골격. 브랜드 화면에서는 {Brand}Footer 사용."
   },
   {
     "name": "WebHeader",
@@ -1517,16 +1517,16 @@
     "notes": "DS 가 카테고리 박스(음식 카테고리, GenietMenuIcon), 검색 아이콘(GenietSearchIcon), Pretendard 700/17/24 같은 구조·토큰을 들고있음. 콘텐츠만 외부 주입."
   },
   {
-    "name": "GenietAppFooter",
+    "name": "GenietFooter",
     "category": "레이아웃",
     "status": "implemented",
-    "description": "Geniet 커머스 고지 푸터. AppFooter.Info 표준 형태에 통신판매중개자 안내(extra) 슬롯 표준화",
-    "storybookTitle": "Components/AppFooter",
-    "docsPath": "/docs/components/geniet-app-footer",
+    "description": "Geniet 통합 푸터. Geniet 은 app 환경 전용이라 surface='app' (default) 만 지원 — web 푸터 없음",
+    "storybookTitle": "Components/Footer",
+    "docsPath": "/docs/components/geniet-footer",
     "figmaUrl": "",
     "figmaNodeId": "",
-    "usageSummary": "Geniet 데스크톱 회사정보 + 통신판매중개자 고지 푸터",
-    "notes": "links / company / extra / logo 만 props. AppFooter.Info 래퍼라 외부에서 다른 fixture 만 갈아끼우면 됨."
+    "usageSummary": "Geniet 회사정보 + 통신판매중개자 고지 푸터. surface prop 통일된 호출 표면",
+    "notes": "GenietAppFooter 를 흡수. links / company / extra / logo 만 props. surface prop 은 타입 단에서 'app' 만 허용."
   },
   {
     "name": "GenietBottomNav",
@@ -1553,16 +1553,16 @@
     "notes": "showAppDownload prop 으로 우측 CTA 토글. AppBar.AuthMenu separator='none' 패턴."
   },
   {
-    "name": "TrostAppFooter",
+    "name": "TrostFooter",
     "category": "레이아웃",
     "status": "implemented",
-    "description": "Trost 다크 푸터 (Info variant 래퍼). desktop(2영역: 약관/앱·회사/SNS) / mobile variant",
-    "storybookTitle": "Components/AppFooter",
-    "docsPath": "/docs/components/trost-app-footer",
+    "description": "Trost 통합 푸터. surface='web' 은 데스크톱 dark PC 푸터, surface='app' (default) 은 dark 앱 푸터. 기존 variant='desktop'|'mobile' 은 layout 으로 rename",
+    "storybookTitle": "Components/Footer",
+    "docsPath": "/docs/components/trost-footer",
     "figmaUrl": "",
     "figmaNodeId": "",
-    "usageSummary": "Trost 앱·웹 화면 푸터. appStoreLinks / snsLinks 가 Trost 표준 CDN 자산으로 기본 세팅됨 (override 가능)",
-    "notes": "DS 가 Trost 표준 앱스토어/SNS 자산 URL 을 들고있음. appStoreLinks / snsLinks prop 으로 override."
+    "usageSummary": "Trost 모든 화면 푸터 진입점. surface prop 으로 web/app 분기, layout 으로 desktop/mobile 분기",
+    "notes": "TrostAppFooter + TrostDesktopFooter(=TrostWebFooter) 를 통합. surface axis 와 layout axis 명시적 분리."
   },
   {
     "name": "TrostBottomNav",
@@ -1577,18 +1577,6 @@
     "notes": "색 토큰: --semantic-icon-brand-default (active) / --semantic-icon-normal-default (inactive)."
   },
   {
-    "name": "TrostWebFooter",
-    "category": "레이아웃",
-    "status": "implemented",
-    "description": "Trost 데스크톱 dark 푸터 (≥1024). SNS / 앱 다운로드 / 약관 / 회사정보 슬롯",
-    "storybookTitle": "Components/WebFooter",
-    "docsPath": "/docs/components/trost-web-footer",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "Trost humart 마케팅 사이트 / Trost 데스크톱 푸터. 480px 다크 컨테이너 + SNS 우측 정렬",
-    "notes": "TrostDesktopFooter 의 alias — brand chrome 슬롯 5개(AppBar/AppFooter/BottomNav/WebHeader/WebFooter) 중 WebFooter 자리."
-  },
-  {
     "name": "NudgeEAPAppBar",
     "category": "레이아웃",
     "status": "implemented",
@@ -1601,16 +1589,16 @@
     "notes": "Figma SSOT: PC 39:5751 / 앱 20:3235 (NudgeEAP Dev). 로고 가이드 698:87 (NudgeEAP Library). Geniet/Trost 대비 가장 단순한 헤더 — 검색바/카테고리/Trending 없음."
   },
   {
-    "name": "NudgeEAPAppFooter",
+    "name": "NudgeEAPFooter",
     "category": "레이아웃",
     "status": "implemented",
-    "description": "NudgeEAP 회사 정보 푸터 (AppFooter.Info 표준 형태)",
-    "storybookTitle": "Components/AppFooter",
-    "docsPath": "/docs/components/nudge-eap-app-footer",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "NudgeEAP 데스크톱 푸터. 약관 링크 + (주)다인 회사정보 + 로고",
-    "notes": "토큰만 자동 적용. dark 푸터 / SNS 모듈 없음."
+    "description": "NudgeEAP 통합 푸터. surface='web' (Figma 20:13799) 은 약관+앱다운로드+ISO+DAIN+powered by 풍부 슬롯, surface='app' (default) 은 회사 정보 표준 푸터",
+    "storybookTitle": "Components/Footer",
+    "docsPath": "/docs/components/nudge-eap-footer",
+    "figmaUrl": "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-13799",
+    "figmaNodeId": "20:13799",
+    "usageSummary": "NudgeEAP 모든 화면 푸터 진입점. surface prop 으로 web/app 분기",
+    "notes": "NudgeEAPAppFooter + NudgeEAPWebFooter 를 통합. web surface 의 appDownloads/iso/dain/poweredBy 풍부 슬롯은 wrapper 내부 전용 (base 흡수 안 함)."
   },
   {
     "name": "NudgeEAPBottomNav",
@@ -1637,18 +1625,6 @@
     "notes": "NudgeEAPAppBar 와 분리. AppBar 는 앱(모바일/웹뷰) 전용, WebHeader 는 데스크톱 1920 viewport / max-width 1200. 로고는 Figma 698:87 (NudgeEAP Library) 의 KO+EN horizontal 대표 로고."
   },
   {
-    "name": "NudgeEAPWebFooter",
-    "category": "레이아웃",
-    "status": "implemented",
-    "description": "NudgeEAP 데스크톱 웹 푸터 (AppFooter wrapper, max-width 1200). AppFooter 와 별개로 웹 사이트 전용",
-    "storybookTitle": "Components/WebFooter",
-    "docsPath": "/docs/components/nudge-eap-web-footer",
-    "figmaUrl": "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-13799",
-    "figmaNodeId": "20:13799",
-    "usageSummary": "NudgeEAP 홈페이지 (PC) 푸터 — 약관 / 회사정보 / 로고",
-    "notes": "Figma SSOT: 20:13799 (NudgeEAP Dev). 토큰 자동 적용. dark 푸터 / SNS 모듈 없음."
-  },
-  {
     "name": "CashpobiWebHeader",
     "category": "레이아웃",
     "status": "implemented",
@@ -1658,18 +1634,18 @@
     "figmaUrl": "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-1739",
     "figmaNodeId": "380:1739",
     "usageSummary": "캐시워크 한국 웹 (한국 캐시워크 WEB Dev) 상단 헤더 — PC 1600 max-width, Mobile 햄버거",
-    "notes": "캐포비는 *웹 전용* — AppBar/AppFooter/BottomNav 슬롯이 없고 WebHeader/WebFooter 만 제공. 시그니처 Yellow/200 + Neutral/900 텍스트는 토큰 cascade 자동."
+    "notes": "캐포비는 *웹 전용* — AppBar/BottomNav 슬롯이 없고 WebHeader/Footer 만 제공. 시그니처 Yellow/200 + Neutral/900 텍스트는 토큰 cascade 자동."
   },
   {
-    "name": "CashpobiWebFooter",
+    "name": "CashpobiFooter",
     "category": "레이아웃",
     "status": "implemented",
-    "description": "캐포비 웹 푸터. PC / Mobile variant. light 패턴 (dark 푸터 아님)",
-    "storybookTitle": "Components/WebFooter",
-    "docsPath": "/docs/components/cashpobi-web-footer",
+    "description": "캐포비 통합 푸터. 캐포비는 웹 전용이라 surface='web' (default) 만 지원. layout='desktop'|'mobile' 으로 반응형 분기",
+    "storybookTitle": "Components/Footer",
+    "docsPath": "/docs/components/cashpobi-footer",
     "figmaUrl": "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-2208",
     "figmaNodeId": "380:2208",
-    "usageSummary": "캐시워크 한국 웹 푸터 — 약관 / 회사정보 / (선택) 안내문",
-    "notes": "Trost 처럼 다크 푸터 아님 — light 톤 + Neutral 텍스트. 시그니처 노란색은 헤더에서만."
+    "usageSummary": "캐시워크 한국 웹 푸터. surface prop 통일된 호출 표면, layout 으로 desktop/mobile 분기",
+    "notes": "CashpobiWebFooter 를 흡수. surface prop 은 타입 단에서 'web' 만 허용. variant → layout 으로 rename."
   }
 ]

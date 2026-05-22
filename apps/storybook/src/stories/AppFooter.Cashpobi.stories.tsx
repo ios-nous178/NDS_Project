@@ -1,9 +1,9 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CashpobiWebFooter } from "@nudge-eap/react";
+import { CashpobiFooter } from "@nudge-eap/react";
 
 const meta: Meta = {
-  title: "Components/AppFooter",
+  title: "Components/Footer",
   parameters: { layout: "fullscreen" },
   globals: { brand: "cashpobi" },
 };
@@ -26,18 +26,18 @@ const placeholderCompany = {
 };
 
 export const CashpobiDesktop: Story = {
-  name: "Cashpobi/Desktop (PC)",
+  name: "Cashpobi/Web Desktop (layout='desktop')",
   parameters: {
     docs: {
       description: {
         story:
-          "Figma 380:2208 (한국 캐시워크 WEB Dev). 캐포비는 dark 푸터 아닌 light 패턴 — Neutral 톤 + 캐포비 시그니처는 헤더에서만.",
+          "Figma 380:2208 (한국 캐시워크 WEB Dev). 캐포비는 dark 푸터 아닌 light 패턴 — Neutral 톤 + 캐포비 시그니처는 헤더에서만. surface='web' 만 지원 (App 없음).",
       },
     },
   },
   render: () => (
-    <CashpobiWebFooter
-      variant="desktop"
+    <CashpobiFooter
+      layout="desktop"
       links={placeholderLinks}
       company={placeholderCompany}
       maxWidth={1600}
@@ -46,13 +46,13 @@ export const CashpobiDesktop: Story = {
 };
 
 export const CashpobiMobile: Story = {
-  name: "Cashpobi/Mobile",
+  name: "Cashpobi/Web Mobile (layout='mobile')",
   parameters: {
     docs: { story: "Figma 98:1267 — mobile light 푸터." },
   },
   render: () => (
     <div style={{ maxWidth: 480 }}>
-      <CashpobiWebFooter variant="mobile" links={placeholderLinks} company={placeholderCompany} />
+      <CashpobiFooter layout="mobile" links={placeholderLinks} company={placeholderCompany} />
     </div>
   ),
 };

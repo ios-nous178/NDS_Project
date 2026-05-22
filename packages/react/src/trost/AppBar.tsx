@@ -9,8 +9,11 @@ import {
   typeScale,
   zIndex,
 } from "@nudge-eap/tokens";
-import { AppBar } from "../AppBar";
-import type { AppBarGNBItem, AppBarAuthMenuItem } from "../AppBar";
+import { Header } from "../Header";
+import type {
+  HeaderMenuItemData as AppBarGNBItem,
+  HeaderAuthMenuItem as AppBarAuthMenuItem,
+} from "../Header";
 import { Button } from "../Button";
 import { TrendingKeywords } from "../TrendingKeywords";
 import type { TrendingKeywordItem } from "../TrendingKeywords";
@@ -316,13 +319,13 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
 
   if (variant === "webview") {
     return (
-      <AppBar
+      <Header
         ref={ref}
         variant="webview"
         position="static"
         title={webviewTitle}
-        leftSlot={<AppBar.BackButton onClick={onBack} />}
-        style={{ "--nds-app-bar-height": `${mobileHeight ?? 56}px` } as React.CSSProperties}
+        leftSlot={<Header.BackButton onClick={onBack} />}
+        style={{ "--nds-header-height": `${mobileHeight ?? 56}px` } as React.CSSProperties}
       />
     );
   }
@@ -333,14 +336,15 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
     const isRichMobile = Boolean(pointChip || mobileSearchPlaceholder);
     if (!isRichMobile) {
       return (
-        <AppBar
+        <Header
           ref={ref}
+          variant="compact"
           position="static"
-          style={{ "--nds-app-bar-height": `${mobileHeight ?? 56}px` } as React.CSSProperties}
+          style={{ "--nds-header-height": `${mobileHeight ?? 56}px` } as React.CSSProperties}
         >
-          <AppBar.MainBar>
+          <Header.MainBar>
             {logo && (
-              <AppBar.Logo
+              <Header.Logo
                 src={logo.src}
                 alt={logo.alt ?? "Trost"}
                 href={logo.href ?? "/"}
@@ -348,10 +352,10 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
               />
             )}
             {authItems && authItems.length > 0 && (
-              <AppBar.AuthMenu items={[authItems[0]]} separator="none" />
+              <Header.AuthMenu items={[authItems[0]]} separator="none" />
             )}
-          </AppBar.MainBar>
-        </AppBar>
+          </Header.MainBar>
+        </Header>
       );
     }
 
@@ -429,21 +433,22 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
 
   /* desktop */
   return (
-    <AppBar
+    <Header
       ref={ref}
+      variant="compact"
       position="static"
       style={
         {
-          "--nds-app-bar-height": "auto",
-          "--nds-app-bar-padding-x": "0",
-          "--nds-app-bar-border-bottom": "none",
+          "--nds-header-height": "auto",
+          "--nds-header-padding-x": "0",
+          "--nds-header-border-bottom": "none",
           flexDirection: "column",
         } as React.CSSProperties
       }
     >
-      <AppBar.MainBar maxWidth={pcMaxWidth} style={{ padding: `${mainBarPaddingY} 16px` }}>
+      <Header.MainBar maxWidth={pcMaxWidth} style={{ padding: `${mainBarPaddingY} 16px` }}>
         {logo && (
-          <AppBar.Logo
+          <Header.Logo
             src={logo.src}
             alt={logo.alt ?? "Trost"}
             href={logo.href ?? "/"}
@@ -452,18 +457,18 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
           />
         )}
         {searchPlaceholder && (
-          <AppBar.SearchBar
+          <Header.SearchBar
             placeholder={searchPlaceholder}
             style={
               {
-                "--nds-app-bar-search-width": `${searchWidth}px`,
-                "--nds-app-bar-search-height": `${searchHeight}px`,
+                "--nds-header-search-width": `${searchWidth}px`,
+                "--nds-header-search-height": `${searchHeight}px`,
               } as React.CSSProperties
             }
           />
         )}
         {authItems && authItems.length > 0 && (
-          <AppBar.AuthMenu
+          <Header.AuthMenu
             items={authItems}
             separator="none"
             extra={
@@ -480,20 +485,20 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
             }
           />
         )}
-      </AppBar.MainBar>
-      <AppBar.Divider />
-      <AppBar.NavBar
+      </Header.MainBar>
+      <Header.Divider />
+      <Header.NavBar
         maxWidth={pcMaxWidth}
         height={navHeight}
         style={{ justifyContent: "space-between" }}
       >
-        {gnbItems && gnbItems.length > 0 && <AppBar.GNB items={gnbItems} activeKey={activeKey} />}
+        {gnbItems && gnbItems.length > 0 && <Header.Menu items={gnbItems} activeKey={activeKey} />}
         {trendingKeywords && trendingKeywords.length > 0 && (
           <TrendingKeywords items={trendingKeywords} timestamp={trendingTimestamp} />
         )}
-      </AppBar.NavBar>
-      <AppBar.Divider />
-    </AppBar>
+      </Header.NavBar>
+      <Header.Divider />
+    </Header>
   );
 });
 
