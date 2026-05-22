@@ -1,0 +1,28 @@
+import React from "react";
+
+export interface CashpobiCalendarIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashpobiCalendarIcon = React.forwardRef<SVGSVGElement, CashpobiCalendarIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="scale(1.2 1.2)">
+<g id="calendar">
+<path id="Shape" fillRule="evenodd" clipRule="evenodd" d="M17 2H16V1C16 0.447715 15.5523 0 15 0C14.4477 0 14 0.447715 14 1V2H6V1C6 0.447715 5.55228 0 5 0C4.44772 0 4 0.447715 4 1V2H3C1.34315 2 0 3.34315 0 5V17C0 18.6569 1.34315 20 3 20H17C18.6569 20 20 18.6569 20 17V5C20 3.34315 18.6569 2 17 2ZM6 11C6 11.5523 5.55228 12 5 12C4.44772 12 4 11.5523 4 11C4 10.4477 4.44772 10 5 10C5.55228 10 6 10.4477 6 11ZM10 12C10.5523 12 11 11.5523 11 11C11 10.4477 10.5523 10 10 10C9.44771 10 9 10.4477 9 11C9 11.5523 9.44771 12 10 12ZM15 12C15.5523 12 16 11.5523 16 11C16 10.4477 15.5523 10 15 10C14.4477 10 14 10.4477 14 11C14 11.5523 14.4477 12 15 12ZM11 15C11 15.5523 10.5523 16 10 16C9.44771 16 9 15.5523 9 15C9 14.4477 9.44771 14 10 14C10.5523 14 11 14.4477 11 15ZM15 16C15.5523 16 16 15.5523 16 15C16 14.4477 15.5523 14 15 14C14.4477 14 14 14.4477 14 15C14 15.5523 14.4477 16 15 16ZM17 18C17.5523 18 18 17.5523 18 17V8H2V17C2 17.5523 2.44772 18 3 18H17ZM18 6H2V5C2 4.44772 2.44772 4 3 4H17C17.5523 4 18 4.44772 18 5V6ZM6 15C6 15.5523 5.55228 16 5 16C4.44772 16 4 15.5523 4 15C4 14.4477 4.44772 14 5 14C5.55228 14 6 14.4477 6 15Z" fill="currentColor"/>
+</g>
+</g>
+    </svg>
+  )
+);
+
+CashpobiCalendarIcon.displayName = "CashpobiCalendarIcon";
