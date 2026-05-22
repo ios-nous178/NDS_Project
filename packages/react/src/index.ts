@@ -127,3 +127,12 @@ export * from "./ProductCard";
 export * from "./CouponCard";
 export * from "./OrderSummaryCard";
 export * from "./CardVisual";
+export * from "./Sidebar";
+
+/* ────────────────────────────────────
+   Brand chrome (header / footer / bottom-nav)
+   ──────────────────────────────────── */
+export * from "./geniet";
+export * from "./trost";
+export * from "./nudge-eap";
+export * from "./cashpobi";

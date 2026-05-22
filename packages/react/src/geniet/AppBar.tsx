@@ -679,7 +679,7 @@ export const GenietAppBar = React.forwardRef<HTMLElement, GenietAppBarProps>((pr
             <div className={MO_SEARCH_INPUT_CLASS}>
               <input type="text" placeholder={mobileSearchPlaceholder} autoComplete="off" />
               <span className={`${ROOT}__search-icon`} role="button" aria-label="검색">
-                <GenietSearchIcon size={24} />
+                <GenietSearchIcon size={20} />
               </span>
             </div>
           </div>

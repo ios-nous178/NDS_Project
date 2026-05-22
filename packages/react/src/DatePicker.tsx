@@ -11,8 +11,9 @@ import {
   typeScale,
   zIndex,
 } from "@nudge-eap/tokens";
-import { CalendarIcon } from "@nudge-eap/icons";
+import { CalendarIcon, CashpobiCalendarIcon } from "@nudge-eap/icons";
 import { addDismissableLayerListeners, WebPortal } from "./internal/web";
+import { useBrand } from "./internal/useBrand";
 
 /* ─── Class names ─── */
 
@@ -369,6 +370,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const grid = useMemo(() => buildMonthGrid(viewDate), [viewDate]);
 
+  // brand 별 트리거 아이콘 swap — Cashpobi 는 자체 캘린더 글리프(filled + dot grid).
+  // 다른 브랜드는 공용 CalendarIcon. 향후 brand glyph 추가 시 같은 분기에 더하면 됨.
+  const brand = useBrand();
+  const TriggerCalendarIcon = brand === "cashpobi" ? CashpobiCalendarIcon : CalendarIcon;
+
   return (
     <div
       data-slot="root"
@@ -396,7 +402,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           {value ? formatValue(value) : placeholder}
         </span>
         <span aria-hidden="true" className={DP_ICON_CLASS}>
-          <CalendarIcon width={20} height={20} />
+          <TriggerCalendarIcon width={20} height={20} />
         </span>
       </button>
       {open && (
