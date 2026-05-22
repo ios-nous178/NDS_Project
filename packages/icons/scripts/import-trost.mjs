@@ -15,6 +15,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const SVG_DIR = join(__dirname, "..", "svg");
 const TROST_ROOT = "/Users/nudge_133/Desktop/00_Trost/TrostAstroHomepage/public/images";
 
+/**
+ * 색상 sanitization 예외 — 단색 currentColor 가 아니라 2-color 브랜드 마크로
+ * 보존해야 하는 파일들. (이 목록의 SVG 는 hex fill 을 그대로 유지한다.)
+ *   - trost-energy-coin: 다크 코인(#333) + 노란 번개(#FFF42E) 2-color 브랜드 마크.
+ */
+const PRESERVE_BRAND_COLORS = new Set(["trost-energy-coin"]);
+
 // [원본 상대경로, 신규 파일명]
 // 정사각형 viewBox 만 선별 (rank 26×18 은 비례 왜곡 우려로 제외).
 const MAPPING = [
@@ -55,7 +62,7 @@ function replaceColorAttr(svg, attr) {
   });
 }
 
-function transform(svgText) {
+function transform(svgText, name) {
   const svgTag = svgText.match(/<svg([^>]*)>/);
   if (!svgTag) throw new Error("no <svg> tag");
   const viewBoxMatch = svgTag[1].match(/viewBox="([^"]+)"/);
@@ -70,9 +77,11 @@ function transform(svgText) {
   // 빈 placeholder bbox path 제거 (`<path d="M0 0h32v32H0z"/>` 류 — 부모가 currentColor 가 되면 검정 사각형으로 보임)
   inner = inner.replace(/\s*<path[^>]*\sd="M0 0h\d+v\d+H0z"[^>]*\/>\s*/g, "\n");
 
-  // 색상 치환
-  inner = replaceColorAttr(inner, "fill");
-  inner = replaceColorAttr(inner, "stroke");
+  // 색상 치환 — 2-color 브랜드 마크는 hex 보존
+  if (!PRESERVE_BRAND_COLORS.has(name)) {
+    inner = replaceColorAttr(inner, "fill");
+    inner = replaceColorAttr(inner, "stroke");
+  }
 
   // 인라인 style 제거 (generate.js 도 strip 하지만 일관성 위해)
   inner = inner.replace(/\s+style="[^"]*"/g, "");
@@ -97,7 +106,7 @@ function main() {
       continue;
     }
     const raw = readFileSync(srcPath, "utf-8");
-    const out = transform(raw);
+    const out = transform(raw, name);
     const outPath = join(SVG_DIR, `${name}.svg`);
     writeFileSync(outPath, out);
     console.log(`  ✓ ${src} → ${name}.svg`);
