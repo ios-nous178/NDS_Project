@@ -187,5 +187,20 @@ export const cashpobiTheme: BrandTheme = {
     // Textarea 는 원래 padding 이 var(--inset-input) var(--inset-card) 직참조 — 캐포비 cascade 동일.
     textarea: { radius: 4 },
     datepicker: { radius: 4, height: 40, paddingX: "var(--inset-input)" },
+    // Figma 캐포비 CheckboxGuide (3082:899):
+    //   box 15×15 / 1.25px border / radius 2px / unchecked border #DDD (border.strong)
+    //   disabled = 색 변경 없이 단순 opacity 0.4
+    checkbox: {
+      size: 15,
+      borderWidth: 1.25,
+      radius: 2,
+      borderColor: "var(--semantic-border-strong-default)",
+      disabledOpacity: "0.4",
+      // disabled 색 변경 무력화 — default 와 동일하게 emit
+      disabledBg: "var(--semantic-bg-surface-default)",
+      disabledBorderColor: "var(--semantic-border-strong-default)",
+      disabledCheckedBg: "var(--semantic-fill-brand-default)",
+      disabledCheckedBorderColor: "var(--semantic-fill-brand-default)",
+    },
   },
 };

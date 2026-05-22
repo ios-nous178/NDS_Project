@@ -204,6 +204,21 @@ export interface ComponentOverrides {
   select?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
   textarea?: { radius?: ComponentValue; paddingX?: ComponentValue; paddingY?: ComponentValue };
   datepicker?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
+  /**
+   * Checkbox 시각 변형. 캐포비 가이드(3082:899)는 box 15×15 / 1.25px border / radius 2px /
+   * unchecked border #DDD / disabled = 색 변경 없이 opacity 0.4. 다른 브랜드는 fallback 유지.
+   */
+  checkbox?: {
+    size?: ComponentValue;
+    borderWidth?: ComponentValue;
+    radius?: ComponentValue;
+    borderColor?: ComponentValue;
+    disabledOpacity?: ComponentValue;
+    disabledBg?: ComponentValue;
+    disabledBorderColor?: ComponentValue;
+    disabledCheckedBg?: ComponentValue;
+    disabledCheckedBorderColor?: ComponentValue;
+  };
 }
 
 /** 브랜드 테마 전체 정의 */
