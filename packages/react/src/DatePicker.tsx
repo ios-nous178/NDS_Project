@@ -106,10 +106,10 @@ const datePickerStyles = `
     justify-content: space-between;
     gap: var(--gap-default);
     width: 100%;
-    min-height: ${sizing.input.default}px;
-    padding: 0 var(--inset-card);
+    min-height: var(--nds-datepicker-height, ${sizing.input.default}px);
+    padding: 0 var(--nds-datepicker-padding-x, var(--inset-card));
     border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
+    border-radius: var(--nds-datepicker-radius, ${radius.md}px);
     background: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;

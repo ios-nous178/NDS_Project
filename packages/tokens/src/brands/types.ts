@@ -189,6 +189,23 @@ export interface ElevationOverrides {
   zIndex?: Record<string, number>;
 }
 
+/**
+ * 컴포넌트 단위 오버라이드 — primitive 토큰(`radius.md` 등)을 손대지 않고
+ * 특정 컴포넌트만 브랜드 가이드에 맞게 보정할 때 사용.
+ * emit: `--nds-{component}-{prop}` CSS var. 컴포넌트는 이 var 를 fallback 패턴으로 읽어 cascade.
+ * (오버라이드를 안 정의한 브랜드는 컴포넌트의 fallback 값이 그대로 적용 — 기존 동작 유지)
+ * 예) Cashpobi admin 은 input radius 4px / height 40px / padding-x = inset-input (base 8/48/inset-card).
+ *
+ * value 가 number 면 `${value}px` 로 emit, string 이면 그대로 (`var(--inset-input)` 같은 CSS var 참조 가능).
+ */
+type ComponentValue = number | string;
+export interface ComponentOverrides {
+  input?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
+  select?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
+  textarea?: { radius?: ComponentValue; paddingX?: ComponentValue; paddingY?: ComponentValue };
+  datepicker?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
+}
+
 /** 브랜드 테마 전체 정의 */
 export interface BrandTheme {
   name: string;
@@ -202,4 +219,6 @@ export interface BrandTheme {
   spacing?: SpacingOverrides;
   /** 엘리베이션 오버라이드 (미지정 시 기본값 사용) */
   elevation?: ElevationOverrides;
+  /** 컴포넌트 단위 오버라이드 (input / select / textarea / datepicker 등) */
+  components?: ComponentOverrides;
 }
