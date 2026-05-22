@@ -23,7 +23,7 @@ const meta: Meta = {
           "",
           `총 **${ICON_ENTRIES.length}개** 아이콘. 클릭하면 컴포넌트 이름이 클립보드에 복사됩니다.`,
           "",
-          "브랜드별 아이콘은 prefix 로 구분됩니다 — `Geniet*Icon` 은 Geniet 전용. 검색창에 `geniet` 입력으로 일괄 필터.",
+          "브랜드별 아이콘은 prefix 로 구분됩니다 — prefix 없는 base 셋은 **NudgeEAP**, `Cashpobi*` / `Geniet*` / `Trost*` 는 각 브랜드 전용, `Mockup*` (Bold/Linear) 는 mockup 전용 IconSax 셋입니다.",
           "",
           "패키지: `@nudge-eap/icons` · 카테고리·사용 가이드는 [Docs · Icons](http://localhost:3001/docs/components/icons)를 참고하세요.",
         ].join("\n"),
@@ -113,13 +113,31 @@ function IconCard({
   );
 }
 
+type BrandFilter = "all" | "nudge-eap" | "cashpobi" | "geniet" | "trost" | "mockup";
+
+// 컴포넌트 이름 prefix → 어느 브랜드 그룹에 속하는지.
+// 'nudge-eap' 은 prefix 가 없는 base DS 아이콘 (NudgeEAP brand 의 default set).
+// 'mockup' 은 MockupBold / MockupLinear 등 Mockup* prefix 전체 (IconSax 셋).
+function brandOf(componentName: string): Exclude<BrandFilter, "all"> {
+  if (componentName.startsWith("Cashpobi")) return "cashpobi";
+  if (componentName.startsWith("Geniet")) return "geniet";
+  if (componentName.startsWith("Trost")) return "trost";
+  if (componentName.startsWith("Mockup")) return "mockup";
+  return "nudge-eap";
+}
+
 function Catalog({ size, color, bg }: { size: number; color: string; bg: string }) {
   const [query, setQuery] = useState("");
+  const [brand, setBrand] = useState<BrandFilter>("all");
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return ICON_ENTRIES;
-    return ICON_ENTRIES.filter((entry) => entry.name.toLowerCase().includes(q));
-  }, [query]);
+    return ICON_ENTRIES.filter((entry) => {
+      if (brand !== "all" && brandOf(entry.name) !== brand) return false;
+      if (!q) return true;
+      return entry.name.toLowerCase().includes(q);
+    });
+  }, [query, brand]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
@@ -144,6 +162,7 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
           {filtered.length} / {ICON_ENTRIES.length}
         </span>
       </div>
+      <BrandChips value={brand} onChange={setBrand} entries={ICON_ENTRIES} />
       <div
         style={{
           display: "grid",
@@ -162,6 +181,79 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
           />
         ))}
       </div>
+    </div>
+  );
+}
+
+function BrandChips({
+  value,
+  onChange,
+  entries,
+}: {
+  value: BrandFilter;
+  onChange: (v: BrandFilter) => void;
+  entries: typeof ICON_ENTRIES;
+}) {
+  // 각 그룹별 카운트 — 활성 칩에 작게 표시.
+  const counts = useMemo(() => {
+    const c: Record<BrandFilter, number> = {
+      all: entries.length,
+      "nudge-eap": 0,
+      cashpobi: 0,
+      geniet: 0,
+      trost: 0,
+      mockup: 0,
+    };
+    for (const e of entries) c[brandOf(e.name)]++;
+    return c;
+  }, [entries]);
+
+  const options: { v: BrandFilter; label: string }[] = [
+    { v: "all", label: "All" },
+    { v: "nudge-eap", label: "NudgeEAP" },
+    { v: "cashpobi", label: "Cashpobi" },
+    { v: "geniet", label: "Geniet" },
+    { v: "trost", label: "Trost" },
+    { v: "mockup", label: "Mockup (IconSax)" },
+  ];
+
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+      {options.map((o) => {
+        const active = value === o.v;
+        return (
+          <button
+            key={o.v}
+            type="button"
+            onClick={() => onChange(o.v)}
+            style={{
+              padding: "6px 12px",
+              fontSize: 12,
+              fontWeight: 600,
+              borderRadius: 999,
+              border: "1px solid #D8D8D8",
+              background: active ? "#111111" : "#FFFFFF",
+              color: active ? "#FFFFFF" : "#333",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            {o.label}
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 500,
+                opacity: 0.75,
+              }}
+            >
+              {counts[o.v]}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
