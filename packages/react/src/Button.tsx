@@ -195,12 +195,16 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.fill.brandHover,
       },
     },
-    // Figma: Solid + first의 soft 표현 (primary soft)
+    // Primary Soft — "brand-tinted soft" 버튼.
+    // bg = surface.brandSubtle (브랜드별 옅은 brand 톤) + text = textRole.brand (brand 색).
+    // 모든 브랜드에서 일관: NudgeEAP=Blue/50, Trost=Cobalt subtle, Geniet=Mint subtle, Cashpobi=Yellow/100.
+    // (이전 statusInfo bg + brand text 조합은 Cashpobi 처럼 brand/info hue 가 다른 브랜드에서
+    //  파랑 bg + 노랑 text 같은 부조화가 발생.)
     soft: {
       enabled: {
-        background: cv.surface.statusInfo,
+        background: cv.surface.brandSubtle,
         text: cv.textRole.brand,
-        border: cv.surface.statusInfo,
+        border: cv.surface.brandSubtle,
       },
       disabled: {
         background: cv.borderRole.subtle,
@@ -208,10 +212,11 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.borderRole.subtle,
       },
       hover: {
-        // bespoke "primary lighter" — Figma SSOT 미정의, 인라인 유지
-        background: "#91CAF6",
+        // brandSubtle 에 대응하는 "한 단계 진한" 시멘틱 슬롯이 없어 default 와 동일 유지.
+        // hover feedback 이 필요하면 향후 surface.brandSubtleHover 슬롯 신설 검토.
+        background: cv.surface.brandSubtle,
         text: cv.textRole.brand,
-        border: "#91CAF6",
+        border: cv.surface.brandSubtle,
       },
     },
     // Figma: Outlined

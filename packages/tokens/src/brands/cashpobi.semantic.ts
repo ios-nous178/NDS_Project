@@ -14,8 +14,10 @@
  *   3. **Brand/Logo 그룹 신규** — 캐시워크 로고용 Brown 톤 3종.
  *      types.ts 의 `brandLogo?` 슬롯 (캐포비 전용 확장).
  *   4. **Text/Link 그룹 신규** — Blue/500 (#007AFF). types.ts 의 `text.link?` 슬롯.
- *   5. ButtonBG/Secondary, ButtonBG/Outlined 슬롯은 가이드에 미정의 →
- *      Yellow subtle 톤으로 명시 (NudgeEAP base 의 blue cascade 회피).
+ *   5. **ButtonBG/Secondary = 검정 (#000000)** — Figma "Solid / Neutral" 패턴
+ *      (3098:1032 ButtonGuide). Geniet 의 dark inverse 와 동일한 슬롯 운용:
+ *      color=secondary, variant=solid 가 캐포비 시그니처 검정 버튼으로 렌더.
+ *      ButtonBG/Outlined 슬롯은 Figma 미정의 → 흰 배경 유지.
  */
 
 import {
@@ -110,11 +112,12 @@ export const cashpobiSemantic = {
     hover: cashpobiYellow[600], // #FFC400 — ButtonBG/Hover
     pressed: cashpobiYellow[700], // #FEAF01 — ButtonBG/Pressed
     disabled: cashpobiYellow[100], // #FFFAE5 — ButtonBG/Disabled (★ 노란 톤)
-    // 가이드 미정의 — Yellow subtle 톤으로 base blue cascade 회피.
+    // Figma "Solid / Neutral" (3098:1032) — 검정 fill + 흰 텍스트.
+    // Geniet 와 동일하게 secondary 슬롯이 dark inverse 패턴을 담당.
     secondary: {
-      default: cashpobiYellow[50], // #FFFEF5
-      hover: cashpobiYellow[100], // #FFFAE5
-      disabled: cashpobiNeutral[200], // #EEEEEE
+      default: cashpobiCommon[1000], // #000000 — Solid/Neutral Default
+      hover: cashpobiNeutral[800], // #333333 — Solid/Neutral Hover (살짝 옅은 톤)
+      disabled: cashpobiNeutral[200], // #EEEEEE — Solid/Neutral Disabled
     },
     outlined: {
       default: cashpobiCommon["00"], // #FFFFFF
@@ -123,11 +126,12 @@ export const cashpobiSemantic = {
     },
   },
   buttonText: {
-    default: cashpobiCommon[1000], // #000000 — ButtonText/Default (Black)
+    default: cashpobiCommon[1000], // #000000 — ButtonText/Default (Black on Yellow)
     brand: cashpobiYellow[700], // #FEAF01 — ButtonText/Outlined
+    // Solid/Neutral (검정 bg) 위 흰 텍스트. Geniet 패턴과 동일.
     secondary: {
-      default: cashpobiYellow[700], // #FEAF01 — 연한 노랑 bg 위 진한 노랑
-      disabled: cashpobiNeutral[400], // #DDDDDD — buttonText.disabled 와 정합
+      default: cashpobiCommon["00"], // #FFFFFF — 검정 bg 위 흰 텍스트
+      disabled: cashpobiNeutral[400], // #DDDDDD — disabled bg 위 회색
     },
     disabled: cashpobiNeutral[400], // #DDDDDD — ButtonText/Disabled (★ 400)
   },
