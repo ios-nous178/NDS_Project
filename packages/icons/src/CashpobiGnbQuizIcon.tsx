@@ -1,0 +1,31 @@
+import React from "react";
+
+export interface CashpobiGnbQuizIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashpobiGnbQuizIcon = React.forwardRef<SVGSVGElement, CashpobiGnbQuizIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="scale(1 1.069934)">
+<g id="Group">
+<g id="Rectangle">
+</g>
+<path id="bg" d="M17.6757 0.75H6.32432C3.93607 0.75 2 2.98858 2 5.75V15.75C2 18.5114 3.93607 20.75 6.32432 20.75H17.6757C20.0639 20.75 22 18.5114 22 15.75V5.75C22 2.98858 20.0639 0.75 17.6757 0.75Z" stroke="currentColor" strokeWidth="1.5"/>
+<path id="Shape" d="M8.49166 8.94741C8.92285 6.52179 11.118 5.75 12.7644 5.75C14.4108 5.75 16.3707 6.55854 15.9395 8.98416L15.5475 11.2995C15.4324 12.0615 15.0617 12.7694 14.4892 13.3209L15.0771 14.1294C15.4691 14.6439 15.1163 15.2687 14.6068 15.5627C14.0972 15.8567 13.3132 15.82 12.9996 15.3422L12.3724 14.3867C11.9982 14.4579 11.6175 14.4949 11.2356 14.4969C9.58924 14.4969 7.62928 13.6884 8.06047 11.2628L8.49166 8.94741ZM13.7052 8.91065C13.793 8.57051 13.7033 8.21149 13.4636 7.94323C13.2239 7.67498 12.8626 7.52935 12.49 7.55084C11.6398 7.53309 10.9125 8.11985 10.8044 8.91065L10.3732 11.3363C10.308 11.6735 10.4061 12.0205 10.6409 12.2832C10.8757 12.5459 11.2228 12.6972 11.5884 12.6961C12.4164 12.6589 13.1113 12.0984 13.274 11.3363L13.7052 8.91065Z" fill="currentColor"/>
+</g>
+</g>
+    </svg>
+  )
+);
+
+CashpobiGnbQuizIcon.displayName = "CashpobiGnbQuizIcon";
