@@ -24,50 +24,31 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-// Figma 207:3204 (platform=app(geniet))
-//   active   = #000000 (text-strong)
-//   inactive = #999999 (gray-600 → semantic-text-disabled)
-// DS 토큰으로 매핑.
-const TAB_ICON_COLOR = "var(--semantic-icon-disabled-default, #999999)";
-const TAB_ICON_ACTIVE_COLOR = "var(--semantic-icon-strong-default, #111111)";
-
 /**
- * Geniet 브랜드 탭 아이콘 매핑 — Figma 지니어트-Dev 207:3204 (bottomnavi platform=app(geniet)).
- * 모든 아이콘이 Geniet 디자인 라이브러리에서 추출한 brand prefix 아이콘.
- * (DS 컴포넌트에 brand 분기 박지 않고, 사용처에서 명시적으로 icon prop 으로 전달.)
+ * Geniet 브랜드 탭 아이콘 매핑 — Figma 90:2 (BottomNav Guide, app(geniet) 5탭).
+ *
+ * 색상은 BottomNav cascade (--nds-footer-nav-{active,inactive}-color) 가 nav-item 의
+ * `color` 로 적용되고, 각 SVG 가 currentColor 로 받으므로 따로 inject 하지 않는다.
+ * Geniet 브랜드 시멘틱:
+ *   - active   = #00A8AC (mint600 = --semantic-text-brand-default)
+ *   - inactive = #999    (gray500 = --semantic-text-muted-default)
  */
 const tabIconFor = (label: string, active?: boolean) => {
-  const color = active ? TAB_ICON_ACTIVE_COLOR : TAB_ICON_COLOR;
   switch (label) {
     case "홈":
-      return active ? (
-        <GenietHomeOnIcon size={24} color={color} />
-      ) : (
-        <HomeIcon size={24} color={color} />
-      );
+      // home-off SVG 가 별도 추출되어 있지 않아 on 그래픽 재사용 (currentColor 색만 바뀜).
+      return <GenietHomeOnIcon size={24} />;
     case "기록":
-      // active: GenietHomePage 추출본(검정 연필 fill), inactive: Figma 추출본(회색 outline)
-      return active ? (
-        <GenietRecordOnIcon size={24} color={color} />
-      ) : (
-        <GenietWriteOffIcon size={24} color={color} />
-      );
+      return active ? <GenietRecordOnIcon size={24} /> : <GenietWriteOffIcon size={24} />;
     case "혜택":
-      return active ? (
-        <GenietBenefitOnIcon size={24} color={color} />
-      ) : (
-        <GenietBenefitOffIcon size={24} color={color} />
-      );
+      return active ? <GenietBenefitOnIcon size={24} /> : <GenietBenefitOffIcon size={24} />;
     case "리뷰":
-      return active ? (
-        <GenietReviewOnIcon size={24} color={color} />
-      ) : (
-        <GenietReviewOffIcon size={24} color={color} />
-      );
+      return active ? <GenietReviewOnIcon size={24} /> : <GenietReviewOffIcon size={24} />;
     case "커뮤니티":
-      return <GenietCommunityIcon size={24} color={color} />;
+      // community on/off 가 동일 그래픽 (Figma 단일 노드) — color 만 cascade 로 토글.
+      return <GenietCommunityIcon size={24} />;
     default:
-      return <HomeIcon size={24} color={color} />;
+      return <HomeIcon size={24} />;
   }
 };
 
@@ -88,7 +69,7 @@ export const InfoFooter: Story = {
 };
 
 export const TabBar: Story = {
-  name: "하단 탭바 (4탭, 그림자)",
+  name: "하단 탭바 (5탭, Figma 90:2)",
   render: () => {
     const tabs = b.tabBar.tabLabels.map((l, i) => ({
       key: `tab-${i}`,
@@ -98,16 +79,51 @@ export const TabBar: Story = {
       activeIcon: tabIconFor(l, true),
     }));
     return (
-      <div style={{ height: 120, background: "#f9f9f9", display: "flex", alignItems: "flex-end" }}>
+      <div
+        style={{
+          height: 120,
+          background: "#f9f9f9",
+          display: "flex",
+          alignItems: "flex-end",
+          width: 375,
+          margin: "0 auto",
+        }}
+      >
         <AppFooterTabBar
           tabs={tabs}
           activeTab="tab-0"
           style={{
             position: "static",
-            borderTop: "none",
             boxShadow: "0 -2px 10px 0 rgba(17,17,17,0.05)",
           }}
         />
+      </div>
+    );
+  },
+};
+
+export const TabBarCommunityActive: Story = {
+  name: "하단 탭바 — 커뮤니티 활성",
+  render: () => {
+    const tabs = b.tabBar.tabLabels.map((l, i) => ({
+      key: `tab-${i}`,
+      label: l,
+      href: "#",
+      icon: tabIconFor(l),
+      activeIcon: tabIconFor(l, true),
+    }));
+    return (
+      <div
+        style={{
+          height: 120,
+          background: "#f9f9f9",
+          display: "flex",
+          alignItems: "flex-end",
+          width: 375,
+          margin: "0 auto",
+        }}
+      >
+        <AppFooterTabBar tabs={tabs} activeTab="tab-4" style={{ position: "static" }} />
       </div>
     );
   },
