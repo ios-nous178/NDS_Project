@@ -12,10 +12,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nudge-eap/tokens": "workspace:*",
-    "@nudge-eap/tailwind-preset": "workspace:*",
-    "@nudge-eap/react": "workspace:*",
     "@nudge-eap/icons": "workspace:*",
+    "@nudge-eap/react": "workspace:*",
+    "@nudge-eap/tailwind-preset": "workspace:*",
+    "@nudge-eap/tokens": "workspace:*",
     "antd": "^5.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
@@ -24,17 +24,22 @@
     "@chromatic-com/storybook": "^5.1.2",
     "@storybook/addon-a11y": "10.3.6",
     "@storybook/addon-docs": "10.3.6",
+    "@storybook/addon-vitest": "10.3.6",
     "@storybook/react": "10.3.6",
     "@storybook/react-vite": "10.3.6",
     "@storybook/test-runner": "^0.24.3",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
     "axe-playwright": "^2.1.0",
     "chromatic": "^11.28.2",
     "storybook": "10.3.6",
     "tailwindcss": "^4.0.0",
-    "@tailwindcss/vite": "^4.0.0",
     "typescript": "^5.7.0",
-    "@types/react": "^19.1.0",
-    "@types/react-dom": "^19.1.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "vitest": "^4.1.7",
+    "playwright": "^1.60.0",
+    "@vitest/browser-playwright": "^4.1.7",
+    "@vitest/coverage-v8": "^4.1.7"
   }
 }
