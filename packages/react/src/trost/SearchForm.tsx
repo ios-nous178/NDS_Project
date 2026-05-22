@@ -54,7 +54,7 @@ const STYLE = `
 `;
 
 export function TrostSearchForm({
-  placeholder = "상담사, 상황, 증상 등 지금 내 고민을 검색해 보세요.",
+  placeholder = "전문가, 상황, 증상 등을 검색해 보세요",
   defaultValue = "",
   onSearch,
   searchIconSrc,
