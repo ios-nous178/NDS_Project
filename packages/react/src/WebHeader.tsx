@@ -46,7 +46,8 @@ export type WebHeaderPosition = "sticky" | "fixed" | "static";
 /* ─── Styles ─── */
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const webHeaderStyles = `
+const webHeaderStyles =
+  `
   :where(.${WH_CLASS}) {
     display: block;
     width: 100%;
@@ -58,8 +59,11 @@ const webHeaderStyles = `
     z-index: var(--nds-web-header-z-index, ${zIndex.appBar});
   }
 
+  /* Layout: grid 3 columns (logo / menu / actions) — Menu 가 항상 정중앙.
+     Logo width 가 늘거나 줄어도 1fr 양쪽이 균등하게 차지해서 Menu 가 가운데 고정. */
   :where(.${WH_INNER_CLASS}) {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     width: 100%;
     max-width: var(--nds-web-header-max-width, ${grid.desktop.contentWidth}px);
@@ -82,9 +86,14 @@ const webHeaderStyles = `
     align-items: center;
     flex-shrink: 0;
     height: 100%;
+    justify-self: start;
   }
 
-  :where(.${WH_LOGO_CLASS} img) {
+  /* img 사이즈 cascade — direct child 만. children 모드(NudgeEAPLogo 같은 wrapper 컴포넌트)
+     안쪽 img 까지 침범하지 않도록 ` >
+  ` selector 로 1단 깊이만. */
+  :where(.${WH_LOGO_CLASS} > img),
+  :where(.${WH_LOGO_CLASS} > a > img) {
     display: block;
     height: var(--nds-web-header-logo-height, 60px);
     width: auto;
@@ -97,13 +106,13 @@ const webHeaderStyles = `
     align-items: center;
   }
 
-  /* Menu (GNB) — items 사이 gap 없이 각자 px-20 으로 간격 형성 */
+  /* Menu (GNB) — items 사이 gap 없이 각자 px-20 으로 간격 형성.
+     grid 가운데 column 에 위치 (auto width) → Menu 자체가 inner 정중앙. */
   :where(.${WH_MENU_CLASS}) {
     display: flex;
     align-items: center;
     height: 100%;
-    flex: 1;
-    min-width: 0;
+    justify-self: center;
   }
 
   :where(.${WH_MENU_ITEM_CLASS}) {
@@ -137,13 +146,13 @@ const webHeaderStyles = `
     border-bottom-color: ${cv.borderRole.brand};
   }
 
-  /* Actions — 우측 정렬, 항목 간 16px gap */
+  /* Actions — 우측 정렬, 항목 간 16px gap. grid 우측 column 끝에 정렬. */
   :where(.${WH_ACTIONS_CLASS}) {
     display: flex;
     align-items: center;
     gap: var(--gap-loose);
-    margin-left: auto;
     flex-shrink: 0;
+    justify-self: end;
   }
 
   /* 앱 다운로드 (회색 배경 + primary 텍스트)
@@ -250,20 +259,25 @@ export interface WebHeaderLogoProps extends React.ImgHTMLAttributes<HTMLImageEle
   href?: string;
   /** 클릭 핸들러 (href 와 함께 쓰면 anchor 클릭) */
   onLogoClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  /**
+   * 로고 자체를 React 노드로 제공 (예: SVG 컴포넌트 / 2-layer 로고).
+   * 지정 시 `src` 기반 `<img>` 대신 children 노드를 렌더 — img 스타일 cascade 미적용.
+   */
+  children?: React.ReactNode;
 }
 
 const WebHeaderLogo = React.memo(
   React.forwardRef<HTMLImageElement, WebHeaderLogoProps>(
-    ({ href, onLogoClick, className, alt = "", ...rest }, ref) => {
-      const img = <img ref={ref} alt={alt} {...rest} />;
+    ({ href, onLogoClick, className, alt = "", children, ...rest }, ref) => {
+      const content = children ?? <img ref={ref} alt={alt} {...rest} />;
       return (
         <div data-slot="logo" className={cx(WH_LOGO_CLASS, className)}>
           {href ? (
             <a href={href} onClick={onLogoClick}>
-              {img}
+              {content}
             </a>
           ) : (
-            img
+            content
           )}
         </div>
       );

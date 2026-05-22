@@ -11,6 +11,7 @@
   "files": [
     "dist",
     "scripts",
+    "references",
     "manifest.json",
     "catalog.json"
   ],
