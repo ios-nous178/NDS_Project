@@ -210,6 +210,8 @@ function detectBrand(absPath: string): Brand {
   const lower = absPath.toLowerCase();
   if (/(trost)/i.test(lower)) return "trost";
   if (/(geniet)/i.test(lower)) return "geniet";
+  if (/(cashpobi|cashwalk[-_ ]for[-_ ]business|캐포비|캐시워크[-_ ]포[-_ ]비지니스)/i.test(lower))
+    return "cashpobi";
   if (/(nudge[-_]?eap)/i.test(lower)) return "nudge-eap";
   return null;
 }

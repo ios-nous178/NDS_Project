@@ -1,5 +1,5 @@
 export type Context = "user-app" | "admin-cms" | "unknown";
-export type Brand = "trost" | "geniet" | "nudge-eap" | null;
+export type Brand = "trost" | "geniet" | "nudge-eap" | "cashpobi" | null;
 
 export interface DsUsageEntry {
   component: string;

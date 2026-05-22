@@ -19,6 +19,16 @@ import {
   trostStatus,
   trostSemantic,
   trostTheme,
+  cashpobiCommon,
+  cashpobiNeutral,
+  cashpobiYellow,
+  cashpobiCoralRed,
+  cashpobiBlue,
+  cashpobiGreen,
+  cashpobiBrown,
+  cashpobiStatus,
+  cashpobiSemantic,
+  cashpobiTheme,
 } from "@nudge-eap/tokens";
 
 /**
@@ -215,13 +225,78 @@ export const trostPreset = {
   },
 };
 
-// trostSemantic / trostStatus 등은 prop 미사용 import 회피 위해 명시적 참조
+// trostSemantic / cashpobiSemantic 등은 prop 미사용 import 회피 위해 명시적 참조
 void trostSemantic;
+void cashpobiSemantic;
 void magenta;
 
 /** Pass-through: tokens are already string hex values */
 function objectToPx(obj: Record<string, string | number>): Record<string, string> {
   return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, String(v)]));
 }
+
+/**
+ * Cashpobi Tailwind preset.
+ *
+ * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 cashpobi.css 가 var 를
+ * 노란 톤으로 redefine 하므로 자동 캐포비 색상. 별도 색상 alias 만 추가:
+ *   - `bg-cashpobi-yellow-500` 같은 brand-prefixed
+ *   - `bg-brown-500` 같은 캐시워크 로고용
+ *
+ * Typography / radius / spacing 은 cashpobi 가이드에 맞춘 별도 매핑.
+ */
+export const cashpobiPreset = {
+  theme: {
+    extend: {
+      colors: {
+        // 캐포비 고유 atomic palette
+        "cashpobi-neutral": objectToPx(cashpobiNeutral),
+        "cashpobi-yellow": objectToPx(cashpobiYellow),
+        "cashpobi-blue": objectToPx(cashpobiBlue),
+        "cashpobi-green": objectToPx(cashpobiGreen),
+        "cashpobi-coral-red": objectToPx(cashpobiCoralRed),
+        brown: objectToPx(cashpobiBrown),
+        common: objectToPx(cashpobiCommon),
+        status: objectToPx(cashpobiStatus),
+
+        // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashpobi.css 가 자동 redefine
+        ...nudgeEapPreset.theme.extend.colors,
+      },
+      fontFamily: {
+        sans: cashpobiTheme.typography!.fontFamily!.web.split(", "),
+      },
+      fontWeight: {
+        regular: String(fontWeight.regular),
+        medium: String(fontWeight.medium),
+        semibold: String(fontWeight.semibold),
+        bold: String(fontWeight.bold),
+      },
+      fontSize: Object.fromEntries(
+        Object.entries(cashpobiTheme.typography!.typeScale!).map(([key, val]) => [
+          key,
+          [`${val.fontSize}px`, { lineHeight: `${val.lineHeight}px` }],
+        ]),
+      ),
+      spacing: cashpobiTheme.spacing?.spacing
+        ? Object.fromEntries(
+            Object.entries(cashpobiTheme.spacing.spacing).map(([k, v]) => [k, `${v}px`]),
+          )
+        : undefined,
+      borderRadius: cashpobiTheme.spacing?.radius
+        ? Object.fromEntries(
+            Object.entries(cashpobiTheme.spacing.radius).map(([k, v]) => [
+              k,
+              v === 9999 ? "9999px" : `${v}px`,
+            ]),
+          )
+        : undefined,
+      borderWidth: cashpobiTheme.spacing?.borderWidth
+        ? Object.fromEntries(
+            Object.entries(cashpobiTheme.spacing.borderWidth).map(([k, v]) => [k, `${v}px`]),
+          )
+        : undefined,
+    },
+  },
+};
 
 export default nudgeEapPreset;

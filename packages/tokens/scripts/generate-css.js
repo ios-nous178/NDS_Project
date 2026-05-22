@@ -3,9 +3,10 @@
  * Run after tsc: node scripts/generate-css.js
  *
  * Outputs:
- *   dist/tokens.css  — NudgeEAP 기본 토큰
- *   dist/trost.css   — Trost 브랜드 오버라이드 토큰
- *   dist/geniet.css  — Geniet 브랜드 오버라이드 토큰
+ *   dist/tokens.css   — NudgeEAP 기본 토큰
+ *   dist/trost.css    — Trost 브랜드 오버라이드 토큰
+ *   dist/geniet.css   — Geniet 브랜드 오버라이드 토큰
+ *   dist/cashpobi.css — Cashpobi 브랜드 오버라이드 토큰
  */
 const fs = require("fs");
 const path = require("path");
@@ -264,12 +265,106 @@ function generateBrandTokens({ theme, title, cssImport }) {
     }
   }
 
+  // Atomic spacing scale — `--spacing-{key}`
+  if (spacingOverrides && spacingOverrides.spacing) {
+    lines.push("");
+    lines.push("  /* ── Spacing ── */");
+    for (const [key, value] of Object.entries(spacingOverrides.spacing)) {
+      lines.push(`  --spacing-${key}: ${value}px;`);
+    }
+  }
+
+  // Gap — `--gap-{key}`
+  if (spacingOverrides && spacingOverrides.gap) {
+    lines.push("");
+    lines.push("  /* ── Gap ── */");
+    for (const [key, value] of Object.entries(spacingOverrides.gap)) {
+      lines.push(`  --gap-${key}: ${value}px;`);
+    }
+  }
+
+  // Gap/Title — `--gap-title-{key}`
+  if (spacingOverrides && spacingOverrides.gapTitle) {
+    lines.push("");
+    lines.push("  /* ── Gap/Title ── */");
+    for (const [key, value] of Object.entries(spacingOverrides.gapTitle)) {
+      lines.push(`  --gap-title-${key}: ${value}px;`);
+    }
+  }
+
+  // Inset — `--inset-{key}`
+  if (spacingOverrides && spacingOverrides.inset) {
+    lines.push("");
+    lines.push("  /* ── Inset ── */");
+    for (const [key, value] of Object.entries(spacingOverrides.inset)) {
+      lines.push(`  --inset-${key}: ${value}px;`);
+    }
+  }
+
   // Radius
   if (spacingOverrides && spacingOverrides.radius) {
     lines.push("");
     lines.push("  /* ── Radius ── */");
     for (const [key, value] of Object.entries(spacingOverrides.radius)) {
       lines.push(`  --radius-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
+    }
+  }
+
+  // Shape — `--shape-{key}`
+  if (spacingOverrides && spacingOverrides.shape) {
+    lines.push("");
+    lines.push("  /* ── Shape ── */");
+    for (const [key, value] of Object.entries(spacingOverrides.shape)) {
+      lines.push(`  --shape-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
+    }
+  }
+
+  // Border Width — `--border-{key}`
+  if (spacingOverrides && spacingOverrides.borderWidth) {
+    lines.push("");
+    lines.push("  /* ── Border Width ── */");
+    for (const [key, value] of Object.entries(spacingOverrides.borderWidth)) {
+      lines.push(`  --border-${key}: ${value}px;`);
+    }
+  }
+
+  // Stroke — `--stroke-{key}`
+  if (spacingOverrides && spacingOverrides.stroke) {
+    lines.push("");
+    lines.push("  /* ── Stroke ── */");
+    for (const [key, value] of Object.entries(spacingOverrides.stroke)) {
+      lines.push(`  --stroke-${key}: ${value}px;`);
+    }
+  }
+
+  // Grid — `--grid-{gutter|margin}-{mobile|pc}` / content width
+  if (spacingOverrides && spacingOverrides.grid) {
+    lines.push("");
+    lines.push("  /* ── Grid ── */");
+    const g = spacingOverrides.grid;
+    if (g.mobile) {
+      if (g.mobile.gutter != null) lines.push(`  --grid-gutter-mobile: ${g.mobile.gutter}px;`);
+      if (g.mobile.margin != null) lines.push(`  --grid-margin-mobile: ${g.mobile.margin}px;`);
+      if (g.mobile.contentWidth != null)
+        lines.push(`  --grid-content-mobile: ${g.mobile.contentWidth}px;`);
+    }
+    if (g.desktop) {
+      if (g.desktop.gutter != null) lines.push(`  --grid-gutter-pc: ${g.desktop.gutter}px;`);
+      if (g.desktop.margin != null) lines.push(`  --grid-margin-pc: ${g.desktop.margin}px;`);
+      if (g.desktop.minMargin != null)
+        lines.push(`  --grid-margin-pc-min: ${g.desktop.minMargin}px;`);
+      if (g.desktop.contentWidth != null)
+        lines.push(`  --grid-content-pc: ${g.desktop.contentWidth}px;`);
+    }
+  }
+
+  // Layout (캐포비 전용 admin 너비 토큰) — `--layout-{key}`
+  if (spacingOverrides && spacingOverrides.layout) {
+    lines.push("");
+    lines.push("  /* ── Layout (admin) ── */");
+    for (const [key, value] of Object.entries(spacingOverrides.layout)) {
+      const kebab = camelToKebab(key);
+      lines.push(`  --layout-${kebab}: ${value}px;`);
     }
   }
 
@@ -318,3 +413,11 @@ fs.writeFileSync(
   generateBrandTokens({ theme: genietTheme, title: "geniet", cssImport: "geniet" }),
 );
 console.log(`Generated ${genietPath}`);
+
+const cashpobiPath = path.join(distDir, "cashpobi.css");
+const { cashpobiTheme } = require("../dist/brands/cashpobi");
+fs.writeFileSync(
+  cashpobiPath,
+  generateBrandTokens({ theme: cashpobiTheme, title: "cashpobi", cssImport: "cashpobi" }),
+);
+console.log(`Generated ${cashpobiPath}`);

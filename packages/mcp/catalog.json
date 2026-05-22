@@ -1,20 +1,21 @@
 {
-  "generatedAt": "2026-05-21T04:11:18.106Z",
+  "generatedAt": "2026-05-22T03:38:15.076Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "dependencies": {},
       "peerDependencies": {},
       "cssExports": [
         "@nudge-eap/tokens/css",
         "@nudge-eap/tokens/css/trost",
-        "@nudge-eap/tokens/css/geniet"
+        "@nudge-eap/tokens/css/geniet",
+        "@nudge-eap/tokens/css/cashpobi"
       ]
     },
     {
       "name": "@nudge-eap/react",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/tokens": "workspace:*"
@@ -27,7 +28,7 @@
     },
     {
       "name": "@nudge-eap/icons",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "dependencies": {},
       "peerDependencies": {
         "react": ">=18.0.0"
@@ -36,7 +37,7 @@
     },
     {
       "name": "@nudge-eap/tailwind-preset",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
@@ -2569,6 +2570,68 @@
       "dtsRelPath": "packages/react/dist/FilterBar.d.ts"
     },
     {
+      "name": "FloatingCtaBanner",
+      "props": [
+        {
+          "name": "caption",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "ctaText",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "leadingIcon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "FloatingCtaBannerSize",
+          "allowedValues": ["pc", "mobile"]
+        },
+        {
+          "name": "floating",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "showArrow",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "bottomOffset",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "ariaLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/FloatingCtaBanner.d.ts"
+    },
+    {
       "name": "FormField",
       "props": [
         {
@@ -3740,6 +3803,62 @@
       "dtsRelPath": "packages/react/dist/PinPad.d.ts"
     },
     {
+      "name": "PopularPosts",
+      "props": [
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onMoreClick",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "moreLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "tabs",
+          "optional": true,
+          "type": "PopularPostsTab[]"
+        },
+        {
+          "name": "activeTabKey",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onTabChange",
+          "optional": true,
+          "type": "(key: string) => void"
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "PopularPostsItem[]"
+        },
+        {
+          "name": "onItemClick",
+          "optional": true,
+          "type": "(item: PopularPostsItem, rank: number) => void"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/PopularPosts.d.ts"
+    },
+    {
       "name": "Popup",
       "props": [
         {
@@ -3881,17 +4000,17 @@
           "type": "React.ReactNode"
         },
         {
-          "name": "description",
+          "name": "discountPercent",
           "optional": true,
-          "type": "React.ReactNode"
+          "type": "number"
         },
         {
           "name": "price",
           "optional": false,
-          "type": "React.ReactNode"
+          "type": "number"
         },
         {
-          "name": "footer",
+          "name": "currency",
           "optional": true,
           "type": "React.ReactNode"
         },

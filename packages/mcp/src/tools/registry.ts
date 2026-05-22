@@ -26,7 +26,7 @@ const TOOLS = [
         brand: {
           type: "string",
           description:
-            "Optional brand slug (e.g. 'trost', 'nudge-eap', 'geniet'). Omit to list all.",
+            "Optional brand slug (e.g. 'trost', 'nudge-eap', 'geniet', 'cashpobi'). Omit to list all.",
         },
       },
       additionalProperties: false,
@@ -140,7 +140,7 @@ const TOOLS = [
         },
         brand: {
           type: "string",
-          enum: ["trost", "geniet", "nudge-eap"],
+          enum: ["trost", "geniet", "nudge-eap", "cashpobi"],
           description: "Override brand detection. Default: auto-detected from filename/path.",
         },
         cwd: {
@@ -374,7 +374,7 @@ const TOOLS = [
 
 const CONTEXT_VALUES = ["user-app", "admin-cms", "unknown"] as const;
 const MOCKUP_INTENT_VALUES = ["user-app", "admin-cms"] as const;
-const BRAND_VALUES = ["trost", "geniet", "nudge-eap"] as const;
+const BRAND_VALUES = ["trost", "geniet", "nudge-eap", "cashpobi"] as const;
 const SETUP_STEP_VALUES = [
   "install",
   "imports",

@@ -255,12 +255,52 @@ const geniet: BrandFixture = {
   },
 };
 
+/**
+ * Cashpobi (캐포비 · 캐시워크 포 비지니스)
+ *
+ * Admin 데스크톱 위주이지만 BrandFixture 의 logo/header/footer 슬롯은 모바일/유저앱 베이스라
+ * 임시로 NudgeEAP 자산을 placeholder 로 사용. 실 로고/푸터가 도착하면 교체.
+ */
+const cashpobi: BrandFixture = {
+  logo: {
+    headerPc: { src: nudgeEapLogo, width: 100, height: 24 },
+    headerMobile: { src: nudgeEapLogo, width: 80, height: 24 },
+    footer: { src: nudgeEapLogo, width: 100, height: 24 },
+  },
+  header: {
+    pcMaxWidth: 1600, // Layout/MaxContent (캐포비 admin 콘텐츠 max-width)
+    mainBarPaddingY: "16px 0",
+    mobileHeight: 56,
+    webviewTitle: "캐시워크 for Business",
+    layout: "single",
+    gnb: { items: [], navHeight: 56 },
+    auth: { items: [], separator: "divider" },
+  },
+  footer: {
+    links: [{ label: "이용약관", href: "#" }],
+    company: {
+      name: "캐시워크 주식회사",
+      ceo: "",
+      address: "",
+      bizNumber: "",
+      email: "",
+      copyright: "Copyright Cashwalk Inc. ALL Rights Reserved",
+    },
+  },
+  tabBar: {
+    tabLabels: ["홈"],
+    defaultActive: 0,
+    useShadow: false,
+  },
+};
+
 /* ─── Export ─── */
 
 export const brandFixtures: Record<string, BrandFixture> = {
   "nudge-eap": nudgeEap,
   trost,
   geniet,
+  cashpobi,
 };
 
 export function getBrandFixture(brandKey: string): BrandFixture {

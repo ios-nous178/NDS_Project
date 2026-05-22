@@ -15,7 +15,8 @@
     },
     "./css": "./dist/tokens.css",
     "./css/trost": "./dist/trost.css",
-    "./css/geniet": "./dist/geniet.css"
+    "./css/geniet": "./dist/geniet.css",
+    "./css/cashpobi": "./dist/cashpobi.css"
   },
   "files": [
     "dist"
