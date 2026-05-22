@@ -52,11 +52,11 @@ const checkboxStyles = `
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 18px;
-    height: 18px;
+    width: var(--nds-checkbox-size, 18px);
+    height: var(--nds-checkbox-size, 18px);
     margin-top: 2px;
-    border: 1.5px solid ${cv.borderRole.normal};
-    border-radius: ${radius.sm}px;
+    border: var(--nds-checkbox-border-width, 1.5px) solid var(--nds-checkbox-border-color, ${cv.borderRole.normal});
+    border-radius: var(--nds-checkbox-radius, ${radius.sm}px);
     background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};
   }
@@ -66,14 +66,18 @@ const checkboxStyles = `
     background: ${cv.fill.brand};
   }
 
+  :where(.${CB_ROOT_CLASS}[data-disabled="true"]) {
+    opacity: var(--nds-checkbox-disabled-opacity, 1);
+  }
+
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}) {
-    border-color: ${cv.borderRole.disabled};
-    background: ${cv.surface.disabled};
+    border-color: var(--nds-checkbox-disabled-border-color, ${cv.borderRole.disabled});
+    background: var(--nds-checkbox-disabled-bg, ${cv.surface.disabled});
   }
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_INDICATOR_CLASS}[data-state="checked"]) {
-    background: ${cv.surface.disabled};
-    border-color: ${cv.borderRole.disabled};
+    background: var(--nds-checkbox-disabled-checked-bg, ${cv.surface.disabled});
+    border-color: var(--nds-checkbox-disabled-checked-border-color, var(--nds-checkbox-disabled-border-color, ${cv.borderRole.disabled}));
   }
 
   :where(.${CB_CHECK_ICON_CLASS}) {
