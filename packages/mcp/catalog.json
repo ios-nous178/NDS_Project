@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T03:38:15.076Z",
+  "generatedAt": "2026-05-22T04:41:46.698Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -77,6 +77,22 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Accordion.d.ts"
+    },
+    {
+      "name": "ActionChip",
+      "props": [
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ActionChip.d.ts"
     },
     {
       "name": "ActivityTimeline",
@@ -2777,6 +2793,83 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ImageCropper.d.ts"
+    },
+    {
+      "name": "ImageUpload",
+      "props": [
+        {
+          "name": "state",
+          "optional": true,
+          "type": "ImageUploadState",
+          "allowedValues": ["empty", "uploaded", "error"]
+        },
+        {
+          "name": "imageUrl",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "imageAlt",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "accept",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "multiple",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onFileSelect",
+          "optional": true,
+          "type": "(files: FileList) => void"
+        },
+        {
+          "name": "onUploadClick",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "onRemove",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "uploadLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "sizeHint",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "helperText",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "errorText",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ImageUpload.d.ts"
     },
     {
       "name": "Input",

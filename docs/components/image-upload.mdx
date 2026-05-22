@@ -1,0 +1,95 @@
+---
+title: ImageUpload
+description: 캐포비 admin 표준 이미지 업로드 컴포넌트. 150×150 preview + 업로드 버튼 + 사이즈 안내. 3 states (empty / uploaded / error)
+---
+
+# ImageUpload
+
+캐포비 admin 페이지에서 사용하는 **표준 이미지 업로드 위젯**입니다.
+좌측 150×150 preview + 우측 업로드 버튼 + 사이즈 안내의 가로 레이아웃이고,
+`state` 로 빈 상태 / 업로드됨 / 에러 3개 시각 분기를 제공합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 캐포비 admin 의 콘텐츠/상품/배너 등록 폼에서 **단일 이미지 한 장** 받기
+- 권장 사이즈가 명시되어야 하는 경우 (예: 200×200, 4:3 등)
+- 에러를 helper 텍스트로 표현하고 박스 자체로는 색만 살짝 바꾸고 싶을 때
+
+### 자주 하는 실수
+
+- Error 상태에서 박스 전체를 빨갛게 칠하지 말고 **dashed red border + soft red bg** 로만 표현하세요 (가이드 명시).
+- `state="uploaded"` 인데 `imageUrl` 을 안 넘기면 placeholder 가 그대로 보입니다 — 항상 둘을 묶어 관리.
+- 다중 업로드가 필요하면 이 컴포넌트를 여러 개 두지 말고 별도 갤러리/멀티 업로드 컴포넌트를 만드세요.
+- "이미지 업로드" 버튼은 내부에서 `<input type="file">` 을 `click()` 으로 트리거합니다 — 별도 file picker 를 마운트하지 마세요.
+
+## 사용법
+
+```tsx
+import { ImageUpload } from "@nudge-eap/react";
+import { useState } from "react";
+
+function ProductForm() {
+  const [imageUrl, setImageUrl] = useState<string | undefined>();
+  const [state, setState] = useState<"empty" | "uploaded" | "error">("empty");
+
+  return (
+    <ImageUpload
+      state={state}
+      imageUrl={imageUrl}
+      onFileSelect={(files) => {
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImageUrl(reader.result as string);
+          setState("uploaded");
+        };
+        reader.readAsDataURL(file);
+      }}
+      onRemove={() => {
+        setImageUrl(undefined);
+        setState("empty");
+      }}
+      sizeHint="사이즈: 200*200 px 권장"
+    />
+  );
+}
+```
+
+### Error 상태
+
+```tsx
+<ImageUpload
+  state="error"
+  errorText="이미지를 등록해 주세요."
+  onFileSelect={handleFile}
+/>
+```
+
+## Props
+
+| Prop            | 타입                                                            | 기본값                          | 설명                                                            |
+| --------------- | --------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------- |
+| `state`         | `"empty" \| "uploaded" \| "error"`                              | `"empty"`                       | 현재 시각 상태                                                  |
+| `imageUrl`      | `string`                                                        | —                               | `state="uploaded"` 일 때 표시할 이미지 URL                      |
+| `imageAlt`      | `string`                                                        | `""`                            | preview 이미지 alt                                              |
+| `accept`        | `string`                                                        | `"image/*"`                     | `<input type="file">` 의 accept                                 |
+| `multiple`      | `boolean`                                                       | `false`                         | 다중 선택 허용                                                  |
+| `onFileSelect`  | `(files: FileList) => void`                                     | —                               | 파일 선택 콜백                                                  |
+| `onUploadClick` | `() => void`                                                    | —                               | 업로드 버튼 클릭 콜백 (file picker 트리거 전 후크)              |
+| `onRemove`      | `() => void`                                                    | —                               | 우상단 X 버튼 — uploaded 상태에서만 표시                        |
+| `uploadLabel`   | `ReactNode`                                                     | `"이미지 업로드"`               | 업로드 버튼 라벨                                                |
+| `sizeHint`      | `ReactNode`                                                     | `"사이즈 : 200*200 px 권장"`    | 사이즈 안내 텍스트                                              |
+| `helperText`    | `ReactNode`                                                     | `"이미지를 업로드해 주세요."`   | empty/uploaded helper 텍스트                                    |
+| `errorText`     | `ReactNode`                                                     | `"이미지를 등록해 주세요."`     | error helper 텍스트 (아이콘 자동 부착)                          |
+| `className`     | `string`                                                        | —                               | 추가 className                                                  |
+| `style`         | `CSSProperties`                                                 | —                               | 추가 style                                                      |
+
+### 디자인 토큰
+
+- Preview box: 150×150, radius `md` (8px)
+- Empty: `surface.subtle` bg + dashed `border.normal`
+- Uploaded: `surface.subtle` bg + solid `border.normal`
+- Error: `surface.statusError` bg + dashed `fill.statusError`
+- Upload button: 135×44, `fill.neutralSubtle` bg + `text.normal`
