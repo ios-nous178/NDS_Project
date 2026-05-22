@@ -1,0 +1,73 @@
+---
+title: ActionChip
+description: TextField helper/description 영역 옆에 붙는 작은 보조 액션 chip. 아이콘 + 라벨.
+---
+
+# ActionChip
+
+TextField 의 helper/description 옆에 inline 으로 붙는 **작은 보조 액션 chip** 입니다.
+"예시 이미지", "수정", "다운로드" 같은 **빠른 액션 trigger** 역할.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- TextField · ImageUpload 같은 입력 컴포넌트의 helper 영역 옆에서 **예시 보기 / 수정 / 다운로드** 같은 보조 액션
+- Button 보다 가볍게, Tag 보다 클릭 의도를 명확히 하고 싶을 때
+- 한 폼 안에서 여러 inline 액션을 가로로 묶고 싶을 때
+
+### 자주 하는 실수
+
+- 주요 CTA 자리에 쓰지 말 것 — 시각 위계가 낮습니다 (캡션 톤). 주요 액션은 `Button` 사용.
+- 별도 row 로 떨어뜨리지 마세요 — TextField 의 helper text 영역과 **inline** 으로 같은 줄에 두는 게 캐포비 가이드.
+- 아이콘 사이즈는 14px 기준 — 큰 아이콘을 그대로 넘기면 chip 이 부푸니 `width={14} height={14}` 로 강제.
+
+## 사용법
+
+```tsx
+import { ActionChip } from "@nudge-eap/react";
+import { DownloadIcon, EditIcon, InfoIcon } from "@nudge-eap/icons";
+
+// 단일
+<ActionChip
+  icon={<DownloadIcon width={14} height={14} />}
+  label="다운로드"
+  onClick={handleDownload}
+/>;
+
+// 여러 개 묶기 (helper 영역에 inline)
+<div style={{ display: "inline-flex", gap: 8 }}>
+  <ActionChip
+    icon={<InfoIcon width={14} height={14} />}
+    label="예시 이미지"
+    onClick={openExampleModal}
+  />
+  <ActionChip
+    icon={<EditIcon width={14} height={14} />}
+    label="수정"
+    onClick={openEditor}
+  />
+</div>;
+
+// 아이콘 없이 텍스트만
+<ActionChip label="안내 보기" onClick={openGuide} />;
+```
+
+## Props
+
+상속: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "children">` (즉 `onClick`, `disabled`, `aria-*` 등 모두 사용 가능)
+
+| Prop        | 타입            | 기본값  | 설명                              |
+| ----------- | --------------- | ------- | --------------------------------- |
+| `icon`      | `ReactNode`     | —       | 좌측 아이콘 (14px box 권장)       |
+| `label`     | `ReactNode`     | **required** | 라벨 텍스트                  |
+| `className` | `string`        | —       | 추가 className                    |
+| `disabled`  | `boolean`       | —       | 비활성화                          |
+| `onClick`   | `() => void`    | —       | 클릭 핸들러                       |
+
+### 디자인 토큰
+
+- bg `fill.neutralSubtle`, text `text.subtle`, icon `icon.normal`
+- Hover: bg `surface.section`
+- Radius `sm` (6px), padding `2/6`
+- Font: `caption1` (12px / 16px) Medium
