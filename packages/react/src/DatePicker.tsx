@@ -11,6 +11,7 @@ import {
   typeScale,
   zIndex,
 } from "@nudge-eap/tokens";
+import { CalendarIcon } from "@nudge-eap/icons";
 import { addDismissableLayerListeners, WebPortal } from "./internal/web";
 
 /* ─── Class names ─── */
@@ -43,7 +44,7 @@ const isSameDay = (a: Date, b: Date) =>
   a.getDate() === b.getDate();
 const formatYM = (d: Date) => `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
 const formatYMD = (d: Date) =>
-  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 function buildMonthGrid(viewDate: Date): Date[] {
   const first = startOfMonth(viewDate);
@@ -68,7 +69,7 @@ export interface DatePickerProps {
   minDate?: Date;
   /** 선택 가능한 최대 날짜 (포함) */
   maxDate?: Date;
-  /** placeholder 텍스트 */
+  /** placeholder 텍스트 (기본 `"YYYY-MM-DD"`) */
   placeholder?: string;
   /** 비활성화 */
   disabled?: boolean;
@@ -80,7 +81,7 @@ export interface DatePickerProps {
   className?: string;
   /** 포털 컨테이너 */
   portalContainer?: HTMLElement | null;
-  /** 날짜 포맷 함수 (트리거 표시용, 기본: "YYYY.MM.DD") */
+  /** 날짜 포맷 함수 (트리거 표시용, 기본: ISO `"YYYY-MM-DD"` — 캐포비 admin / 일반 ISO 정합) */
   formatValue?: (d: Date) => string;
 }
 
@@ -308,7 +309,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   onChange,
   minDate,
   maxDate,
-  placeholder = "날짜 선택",
+  placeholder = "YYYY-MM-DD",
   disabled = false,
   error = false,
   fullWidth = false,
@@ -395,24 +396,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           {value ? formatValue(value) : placeholder}
         </span>
         <span aria-hidden="true" className={DP_ICON_CLASS}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect
-              x="2"
-              y="3"
-              width="12"
-              height="11"
-              rx="1.5"
-              stroke="currentColor"
-              strokeWidth="1.3"
-            />
-            <path d="M2 6.5h12" stroke="currentColor" strokeWidth="1.3" />
-            <path
-              d="M5.5 1.5v3M10.5 1.5v3"
-              stroke="currentColor"
-              strokeWidth="1.3"
-              strokeLinecap="round"
-            />
-          </svg>
+          <CalendarIcon width={20} height={20} />
         </span>
       </button>
       {open && (
