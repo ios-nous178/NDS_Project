@@ -26,6 +26,19 @@ export interface ExternalEntry {
   count: number;
 }
 
+/**
+ * Installed @nudge-eap/* package versions in the consuming project. Always reported
+ * alongside mockup usage so the analytics row carries both the DS adoption ratio
+ * AND the DS version that produced it — required for tracking per-version drift.
+ *
+ * `primary` is the version we display in the one-line summary (defaults to `@nudge-eap/react`).
+ */
+export interface DsVersions {
+  primary: string | null;
+  packages: Record<string, string | null>;
+  source: "node_modules" | "package.json" | "unknown";
+}
+
 export interface MockupUsage {
   /** Stable idempotency key for webhook consumers. */
   usageId?: string;
@@ -36,6 +49,8 @@ export interface MockupUsage {
   mockupName: string;
   context: Context;
   brand: Brand;
+  /** Installed DS package versions (must be reported — see DsVersions). */
+  dsVersions?: DsVersions;
   ds: DsUsageEntry[];
   adminCms: AdminCmsEntry[];
   customNative: CustomNativeEntry[];
@@ -45,6 +60,8 @@ export interface MockupUsage {
     totalAdminCms: number;
     totalCustomNative: number;
     totalExternal: number;
+    /** Pre-computed DS adoption ratio (% of tracked JSX that came from @nudge-eap/react). */
+    dsRatio: number;
     parserWarnings: string[];
   };
 }

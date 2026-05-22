@@ -142,6 +142,13 @@ export function parseMockupSource(
   const brand: Brand = opts.brandHint ?? detectBrand(absPath);
   const mockupName = opts.mockupNameHint ?? defaultMockupName(absPath);
 
+  const totalDs = sumCount(ds);
+  const totalAdminCms = sumCount(adminCms);
+  const totalCustomNative = customNative.reduce((acc, n) => acc + n.count, 0);
+  const totalExternal = sumCount(external);
+  const totalTracked = totalDs + totalAdminCms + totalCustomNative + totalExternal;
+  const dsRatio = totalTracked === 0 ? 0 : Math.round((totalDs / totalTracked) * 100);
+
   return {
     date: new Date().toISOString().slice(0, 10),
     mockupFile: relativeSafe(absPath, cwd),
@@ -153,10 +160,11 @@ export function parseMockupSource(
     customNative,
     external,
     meta: {
-      totalDs: sumCount(ds),
-      totalAdminCms: sumCount(adminCms),
-      totalCustomNative: customNative.reduce((acc, n) => acc + n.count, 0),
-      totalExternal: sumCount(external),
+      totalDs,
+      totalAdminCms,
+      totalCustomNative,
+      totalExternal,
+      dsRatio,
       parserWarnings: warnings,
     },
   };
@@ -197,6 +205,7 @@ function emptyUsage(
       totalAdminCms: 0,
       totalCustomNative: 0,
       totalExternal: 0,
+      dsRatio: 0,
       parserWarnings: warnings,
     },
   };

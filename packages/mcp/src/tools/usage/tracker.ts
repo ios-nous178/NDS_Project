@@ -23,8 +23,101 @@ import {
   type Dirent,
 } from "node:fs";
 import { dirname, join } from "node:path";
-import type { MockupUsage, PendingMockupReport } from "../../types/usage.js";
+import type { DsVersions, MockupUsage, PendingMockupReport } from "../../types/usage.js";
 import { relativeSafe, serializeUsage } from "./parser.js";
+
+/* ───────────── DS version detector ─────────────
+ *
+ * Each mockup usage row must carry the DS version that produced it (alongside the DS
+ * adoption ratio). Prefer the resolved version from `node_modules/<pkg>/package.json`
+ * — that's the version actually compiled into the mockup. Fall back to the range in
+ * the consuming project's `package.json` so we still record *something* if the user
+ * forgot to `pnpm install`.
+ */
+
+const TRACKED_DS_PACKAGES = [
+  "@nudge-eap/react",
+  "@nudge-eap/tokens",
+  "@nudge-eap/icons",
+  "@nudge-eap/tailwind-preset",
+] as const;
+const DS_VERSION_PRIMARY = "@nudge-eap/react";
+
+export function detectDsVersions(cwd: string): DsVersions {
+  const installed: Record<string, string | null> = {};
+  let sawInstalled = false;
+  for (const pkg of TRACKED_DS_PACKAGES) {
+    const v = readInstalledPackageVersion(cwd, pkg);
+    installed[pkg] = v;
+    if (v != null) sawInstalled = true;
+  }
+  if (sawInstalled) {
+    return {
+      primary: installed[DS_VERSION_PRIMARY] ?? firstNonNull(installed),
+      packages: installed,
+      source: "node_modules",
+    };
+  }
+
+  const declared = readDeclaredDsVersions(cwd);
+  if (declared) {
+    return {
+      primary: declared[DS_VERSION_PRIMARY] ?? firstNonNull(declared),
+      packages: declared,
+      source: "package.json",
+    };
+  }
+
+  const empty: Record<string, string | null> = {};
+  for (const pkg of TRACKED_DS_PACKAGES) empty[pkg] = null;
+  return { primary: null, packages: empty, source: "unknown" };
+}
+
+function readInstalledPackageVersion(cwd: string, pkg: string): string | null {
+  const candidate = join(cwd, "node_modules", ...pkg.split("/"), "package.json");
+  if (!existsSync(candidate)) return null;
+  try {
+    const raw = readFileSync(candidate, "utf8");
+    const parsed = JSON.parse(raw) as { version?: unknown };
+    return typeof parsed.version === "string" ? parsed.version : null;
+  } catch {
+    return null;
+  }
+}
+
+function readDeclaredDsVersions(cwd: string): Record<string, string | null> | null {
+  const pkgPath = join(cwd, "package.json");
+  if (!existsSync(pkgPath)) return null;
+  let parsed: { dependencies?: unknown; devDependencies?: unknown };
+  try {
+    parsed = JSON.parse(readFileSync(pkgPath, "utf8")) as typeof parsed;
+  } catch {
+    return null;
+  }
+  const deps = (parsed.dependencies ?? {}) as Record<string, unknown>;
+  const devDeps = (parsed.devDependencies ?? {}) as Record<string, unknown>;
+  const merged = { ...devDeps, ...deps };
+  const out: Record<string, string | null> = {};
+  let any = false;
+  for (const pkg of TRACKED_DS_PACKAGES) {
+    const v = merged[pkg];
+    if (typeof v === "string" && v.length > 0) {
+      out[pkg] = v;
+      any = true;
+    } else {
+      out[pkg] = null;
+    }
+  }
+  return any ? out : null;
+}
+
+function firstNonNull(m: Record<string, string | null>): string | null {
+  for (const pkg of TRACKED_DS_PACKAGES) {
+    const v = m[pkg];
+    if (v != null) return v;
+  }
+  return null;
+}
 
 export function appendUsageToLog(usage: MockupUsage, logPath: string): void {
   mkdirSync(dirname(logPath), { recursive: true });
