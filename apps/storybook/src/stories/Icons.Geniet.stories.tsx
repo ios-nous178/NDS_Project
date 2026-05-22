@@ -33,7 +33,7 @@ const meta: Meta = {
           "공용 아이콘(`HomeIcon`/`CouponIcon` 등) 과 별개로 Geniet 디자인 그대로 가져온 변종입니다.",
           "브랜드 모드(brand='geniet')에서 같은 의미의 prefix 아이콘이 있으면 **반드시 이쪽을 우선** 사용.",
           "",
-          "사용 예: `<GenietRecordOnIcon size={24} color='var(--semantic-icon-strong-default)' />`",
+          "사용 예: `<GenietRecordIcon size={24} />` — color 는 부모(예: AppFooter nav-item) 의 cascade 따라감.",
           "",
           "공통 컴포넌트(AppFooter/BottomNav) 안에 `if (brand === 'geniet')` 분기를 박지 않습니다.",
           "사용처(Brands/Geniet/AppFooter 스토리 같은 곳)에서 명시적으로 import 해 icon prop 으로 전달.",

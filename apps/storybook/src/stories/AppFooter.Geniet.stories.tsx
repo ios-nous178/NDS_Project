@@ -3,13 +3,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AppFooter, AppFooterTabBar } from "@nudge-eap/react";
 import {
   HomeIcon,
-  GenietHomeOnIcon,
-  GenietRecordOnIcon,
-  GenietWriteOffIcon,
-  GenietBenefitOnIcon,
-  GenietBenefitOffIcon,
-  GenietReviewOnIcon,
-  GenietReviewOffIcon,
+  GenietHomeIcon,
+  GenietRecordIcon,
+  GenietBenefitIcon,
+  GenietReviewIcon,
   GenietCommunityIcon,
 } from "@nudge-eap/icons";
 import { getBrandFixture } from "../brand-fixtures";
@@ -27,25 +24,25 @@ type Story = StoryObj;
 /**
  * Geniet 브랜드 탭 아이콘 매핑 — Figma 90:2 (BottomNav Guide, app(geniet) 5탭).
  *
- * 색상은 BottomNav cascade (--nds-footer-nav-{active,inactive}-color) 가 nav-item 의
- * `color` 로 적용되고, 각 SVG 가 currentColor 로 받으므로 따로 inject 하지 않는다.
- * Geniet 브랜드 시멘틱:
+ * 정책: 단일 그래픽 + color cascade. 모든 아이콘이 currentColor 로 정제돼 있어,
+ * BottomNav cascade (--nds-footer-nav-{active,inactive}-color) 가 nav-item `color` 로
+ * 적용되고 SVG 가 그대로 따라간다. 별도 -on/-off 매핑 불필요.
+ *
+ * Geniet 시멘틱:
  *   - active   = #00A8AC (mint600 = --semantic-text-brand-default)
  *   - inactive = #999    (gray500 = --semantic-text-muted-default)
  */
-const tabIconFor = (label: string, active?: boolean) => {
+const tabIconFor = (label: string) => {
   switch (label) {
     case "홈":
-      // home-off SVG 가 별도 추출되어 있지 않아 on 그래픽 재사용 (currentColor 색만 바뀜).
-      return <GenietHomeOnIcon size={24} />;
+      return <GenietHomeIcon size={24} />;
     case "기록":
-      return active ? <GenietRecordOnIcon size={24} /> : <GenietWriteOffIcon size={24} />;
+      return <GenietRecordIcon size={24} />;
     case "혜택":
-      return active ? <GenietBenefitOnIcon size={24} /> : <GenietBenefitOffIcon size={24} />;
+      return <GenietBenefitIcon size={24} />;
     case "리뷰":
-      return active ? <GenietReviewOnIcon size={24} /> : <GenietReviewOffIcon size={24} />;
+      return <GenietReviewIcon size={24} />;
     case "커뮤니티":
-      // community on/off 가 동일 그래픽 (Figma 단일 노드) — color 만 cascade 로 토글.
       return <GenietCommunityIcon size={24} />;
     default:
       return <HomeIcon size={24} />;
@@ -76,7 +73,7 @@ export const TabBar: Story = {
       label: l,
       href: "#",
       icon: tabIconFor(l),
-      activeIcon: tabIconFor(l, true),
+      activeIcon: tabIconFor(l),
     }));
     return (
       <div
@@ -110,7 +107,7 @@ export const TabBarCommunityActive: Story = {
       label: l,
       href: "#",
       icon: tabIconFor(l),
-      activeIcon: tabIconFor(l, true),
+      activeIcon: tabIconFor(l),
     }));
     return (
       <div

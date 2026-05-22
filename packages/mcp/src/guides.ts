@@ -507,105 +507,126 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Card: {
     name: "Card",
     summary:
-      "독립된 콘텐츠 단위를 시각적으로 그룹화하는 컨테이너. Variant 카탈로그가 아니라 '내부 구조 + 생성 규칙' 표준 — 임의 스타일 변형 차단이 목적. " +
+      "동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. " +
+      "Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1~2종만 함께 사용. " +
+      "List = 이미지 없이 텍스트+메타데이터로 나열 (한 페이지 10개 이상, 분류별 식품 리스트), " +
+      "Thumb = 썸네일 + 보조 정보 가로형 (식품 카드, 영양 코칭), " +
+      "Cover = 큰 이미지가 콘텐츠의 핵심 (4-up 그리드, 커뮤니티 콘텐츠). " +
       "Compound 슬롯(순서 고정, 모두 Optional): Card.Root / Thumbnail / Avatar / Chips / Title / Description / Metadata / Divider / Cta / FooterText. (legacy: Header / Body / Footer 도 유지). " +
       "Flat API props: thumbnail, avatar, chips, title, description, metadata, divider, cta, footerText, children. " +
-      "Anatomy 요소(필수/선택): Title(Required, 정확히 1개) · Thumbnail · Avatar · Badge/Chip · Description · Metadata · CTA · Footer (모두 Optional). " +
-      "사용 기준 3축 모두 충족시에만 Card: ① 독립성(개별 탐색·선택), ② 이종 콘텐츠(이미지+텍스트+메타 2종+), ③ 비선형 탐색(그리드·캐러셀). 하나라도 미충족 → List/Table/Feed/Chip.",
-    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=888-23",
+      "Anatomy 슬롯 (Figma SSOT): Media · Title(필수) · Meta · Status · Action — 한 카드 안에서 동일 위치의 정보는 항상 같은 의미. " +
+      "도메인 카드(헬시딜·식품 검색·커뮤니티 등)는 새 variant 를 만들지 말고 Base variant 위에 Composition 슬롯(kcal chip / star rating / promotion badge / nutrition tag row)을 얹어 표현.",
+    figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=131-1769",
     pitfalls: [
-      "[Figma 권위 룰] 카드 shadow 전면 금지 — 카드 구분은 border 1px 로만. box-shadow / drop-shadow / elevation 임의 적용 모두 위반. 이전 가이드의 hover→shadow-sm 권장은 deprecated.",
+      "[Figma 권위 룰] Variant 혼용 금지 — 한 그리드 안에서 List/Thumb/Cover 를 섞으면 위계가 충돌. 한 화면에 1~2종만, 그리드 내부는 1종만.",
+      "[Figma 권위 룰] Card 위에 별도 CTA 버튼 추가 금지 — Action 은 카드 전체 클릭이 기본. 카드 내부에 Solid/Outlined 버튼을 두면 카드 전체 클릭 영역과 충돌. 섹션 하단 '더보기' 같은 CTA 는 Card 가 아니라 Section 의 것.",
+      "[Figma 권위 룰] Elevation 은 0(border) 또는 1(shadow) 중 택1 — border 1px 와 box-shadow 를 동시에 걸면 위반. 한 화면에서는 한 종류만 일관되게.",
       "[Figma 권위 룰] 임의 pastel/gradient/opacity 배경 금지 — White 또는 정의된 Surface 토큰 외 배경색 생성 불가. linear-gradient(), rgba 투명도, #E8F4FD 류 임의 hex 모두 차단.",
-      "[Figma 권위 룰] Title 생략 금지 — 카드당 정확히 1개, 항상 가장 높은 시각적 위계. Description/Metadata/CTA 가 Title 자리를 대신할 수 없음.",
-      "Nested Card 금지 — Card 안에 또 다른 Card 삽입 X. 중첩이 필요하면 List 또는 Table 로 대체. bordered 박스를 카드처럼 흉내내는 것도 위반.",
-      "Decorative Card 금지 — 콘텐츠 위계가 없는 장식용 카드 생성 금지. 사용 기준 3축(독립성·이종·비선형) 미충족이면 Card 가 아님.",
+      "[Figma 권위 룰] Title 생략 금지 — 카드당 정확히 1개, 항상 가장 높은 시각적 위계. 최대 2줄 + ellipsis. Description/Metadata 가 Title 자리를 대신할 수 없음.",
+      "[Figma 권위 룰] Status Badge 2개 이상 동시 노출 금지 — Success/Caution/Error 중 하나만 강조.",
+      "[Figma 권위 룰] Cover 이미지 비율 임의 변경 금지 — 1:1 / 4:3 / 16:9 외 비율은 DS 에서 먼저 정의 후 사용.",
+      "[Figma 권위 룰] Thumb 이미지 원형(circle) 금지 — Thumb 슬롯은 Radius 토큰 적용된 사각. 원형은 Avatar 슬롯 전용.",
+      "[Figma 권위 룰] 한 리스트 내 Radius 토큰은 1종만 — 일부 카드만 Radius 가 다른 케이스는 위반.",
+      "[Figma 권위 룰] Cover 본문 텍스트 3줄 이상 금지 — Cover 는 큰 이미지가 주, 본문은 짧게.",
+      "[Figma 권위 룰] Meta 구분자는 ' · ' 통일 — '/', '|', '-', 줄바꿈 등 다른 구분자 금지. Caption / Regular 1줄.",
+      "[Figma 권위 룰] Nested Card 금지 — Card 안에 또 다른 Card 삽입 X. 그룹은 Section / Divider 로 표현. bordered 박스를 카드처럼 흉내내는 것도 위반.",
+      "[Figma 권위 룰] 광고/프로모션과 동일한 카드 스타일로 콘텐츠 카드 생성 금지 — Promo Card 는 별도 토큰 사용. 사용자 혼동 방지.",
       "Avatar + Thumbnail 동시 사용 불가 — 둘 중 하나만 (Avatar max 1개).",
-      "Badge/Chip 한 카드 max 2개. CTA·Metadata 합쳐 3개 초과 동시 사용 금지.",
-      "CTA max 1개 (Primary CTA 1개 원칙) — 항상 카드 최하단. CTA 가 Title 보다 강조되면 안 됨.",
-      "Footer 버튼 3개 이상 금지 — Primary 1 + Secondary 1 까지. 더 필요하면 Modal/BottomSheet 검토.",
-      "Card.Header / Card.Body / Card.Footer 는 styles.css 에 자체 padding 보유. 외곽에 padding 또 주면 이중 패딩.",
-      "Description max 3줄 (line-clamp 적용 권장). Metadata max 2개 항목.",
+      "Title 슬롯은 항상 Media 다음, 좌측 정렬 — 카드마다 다른 위치에 두면 안 됨.",
+      "Thumb 이미지가 없을 때는 Brand Soft 단색 폴백 사용 — 빈 회색 박스 / placeholder 이미지 금지.",
+      "Decorative Card 금지 — 콘텐츠 위계가 없는 장식용 카드 생성 금지. 동일 형식 반복이 아니면 Banner/Section 사용.",
       "그리드 카드 간격 임의 혼합(8/12/16/20px) 금지. Auto Layout: Mobile 16px, Web·CMS 24px.",
+      "Card.Header / Card.Body / Card.Footer 는 styles.css 에 자체 padding 보유. 외곽에 padding 또 주면 이중 패딩.",
       "Card Overuse — 단순 텍스트+상태+날짜 목록(상담 내역·예약·알림)을 Card 로 감싸는 패턴. 정보 밀도 ↓, List Row 로 변경.",
     ],
     recommended: [
-      "Content Card (범용): 썸네일(선택) + Title + Description + Metadata + CTA. <Card.Root><Card.Thumbnail/><Card.Header><Card.Title>…</Card.Title></Card.Header><Card.Body>…</Card.Body><Card.Footer>…</Card.Footer></Card.Root>",
-      "Summary Card (CMS·Admin): KPI 수치 + 보조지표 + 트렌드. 슬롯 대신 div + 토큰으로 typography 직접 구성.",
-      "Banner Card (App·Mobile): 배경 이미지 + Bottom-up Gradient Overlay(rgba(0,0,0,0) → rgba(0,0,0,0.6)) + Title + CTA.",
-      "Profile Card: 아바타 + 이름 + 자격 + Tag(max 2) + CTA.",
-      "클릭 가능 카드: <Card.Root clickable onClick={…}>. 내부 별도 button 두면 이벤트 버블링 주의.",
-      "CTA 4 유형(레이아웃에 따라 택1, 임의 크기 변형 금지): " +
-        "Full-width 48px(Btn Large, 카드 100% width) — Mobile/App 콘텐츠/프로그램 카드, Solid Primary, label Body3 Medium 14px. " +
-        "Compact 40px(Btn Small, auto min 80px) — Summary/수치/공간 제약 카드, Outlined 또는 Solid Primary, label Caption1 Medium 13px. " +
-        "Ghost/Link(auto text-width, Text Button) — underline 또는 chevron, Brand Color 텍스트, label Body3 Medium 14px. " +
-        "Icon+Text 44px(Btn Medium, auto min 88px) — PC 상담 예약/전문가/퀵 액션, icon 16px + text, Solid 또는 Outlined Primary.",
+      "List variant — 이미지 없이 Title + Meta. 분류된 항목을 좁은 간격으로 노출, 시각 가중치 최저. <Card.Root variant='list'><Card.Title>…</Card.Title><Card.Metadata>…</Card.Metadata></Card.Root>",
+      "Thumb variant — 좌측 정사각 썸네일 + 우측 Title/Meta. 카테고리/식품 목록의 기본 카드. <Card.Root variant='thumb'><Card.Thumbnail/><Card.Title>…</Card.Title><Card.Metadata>…</Card.Metadata></Card.Root>",
+      "Cover variant — 상단 큰 이미지(1:1 또는 4:3) + 하단 Title/Meta. 4-up / 2-up 그리드용. <Card.Root variant='cover'><Card.Thumbnail aspect='1:1'/><Card.Title>…</Card.Title><Card.Metadata>…</Card.Metadata></Card.Root>",
+      "Composition Patterns (도메인 카드) — Base variant 선택 후 슬롯을 얹는다. variant 를 새로 만들지 않음. 예: Food Browse Card = Card.List · no-media + Slot1 kcal chip(chip tinted brand xs) + Slot2 star rating + 리뷰수 + 식단기록(Bold #FF3258) + Slot3 promotion badge(top-right absolute, 리뷰 없는 카드만) + Slot4 nutrition tag row(chip/nutrition/* 0~3개, success/info/warning/critical 톤).",
+      "Action 패턴 — 카드 전체가 클릭 영역. <Card.Root clickable onClick={…}>. 내부에 Solid/Outlined CTA 버튼 두지 않음. 섹션 하단 '더보기' 는 Card 가 아니라 Section 의 CTA.",
+      "Thumb 폴백 — 이미지가 없을 때 Brand Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘.",
     ],
     usagePolicy: {
       useFor: [
-        "이미지/썸네일 포함 시각 탐색 콘텐츠 (사운드테라피, 소식, 프로그램)",
+        "분류된 식품·콘텐츠 텍스트 나열 (List · 10개 이상 / 페이지)",
+        "썸네일 + 보조 정보로 식별하는 식품/카테고리 카드 (Thumb)",
+        "큰 이미지가 주인공인 식단/커뮤니티 4-up·2-up 그리드 (Cover)",
+        "도메인 카드 (헬시딜 / 음식 검색 / 음식 리뷰 등) — Base variant + Composition 슬롯",
         "개별 오브젝트 선택·비교 (상담사 선택, 상품)",
-        "2열 이상 그리드에 동등 비중 나열",
-        "KPI·통계 수치 + 보조지표 + 트렌드 (Summary Card)",
-        "배경 이미지 + 오버레이 + CTA 프로모션 (Banner Card)",
       ],
       doNotUseFor: [
+        "단일 메시지 / 1회성 프로모션 → Banner",
         "텍스트+날짜+상태만의 단순 데이터 (상담 내역·예약·알림) → List Row",
-        "10개 이상 항목의 수직 스크롤 → List",
         "컬럼별 비교가 핵심인 데이터 → Table",
         "시간순 연속 정보 (알림·채팅) → Feed / List",
         "탭·필터·내비게이션 역할 → Chip / Navigation",
-        "장식용 (Decorative card) — 사용 기준 3축 미충족이면 Card 가 아님",
+        "장식용 — 동일 형식 반복이 아니면 Card 가 아님",
       ],
       limits: {
+        variantUsageList:
+          "이미지 없이 텍스트·메타데이터로 짧게 나열할 때. 한 페이지 10개 이상. 분류별 식품 리스트.",
+        variantUsageThumb:
+          "썸네일 + 보조 정보 가로형. 콘텐츠 식별이 텍스트만으로 부족할 때. 식품·영양 코칭.",
+        variantUsageCover:
+          "큰 이미지가 콘텐츠의 핵심. 4-up·2-up 그리드로 시각적 임팩트. 식단 사진·커뮤니티.",
         titleRequired: 1,
+        variantsPerScreen: "1~2종",
+        variantsPerGrid: 1,
         maxAvatarPerCard: 1,
         maxBadgePerCard: 2,
-        maxBadgePlusChipPlusCtaPlusMetadata: 3,
+        maxStatusBadgePerCard: 1,
         maxDescriptionLines: 3,
+        maxCoverDescriptionLines: 2,
         maxMetadataItems: 2,
-        maxCtaPerCard: 1,
-        maxFooterButtons: 2,
-        primaryButtonPerCard: 1,
+        maxCtaButtonsInsideCard: 0,
+        maxNutritionTagsInComposition: 3,
+        radiusPerList: 1,
       },
     },
     sizeMatrix: {
-      paddingMin: "16px (모든 방향 동일)",
-      paddingMax: "24px (모든 방향 동일)",
-      cardGapMin: "8px",
-      cardGapMax: "16px",
-      elementGapTitleDescription: "4px",
-      elementGapDescriptionMetadata: "8px",
-      elementGapMetadataCta: "16px",
-      footerSeparator: "border-top 1px · padding-top 16px",
-      typoTitle: "Pretendard Headline 5 Bold 18px / LH 26px — var(--font-size-headline-5)",
-      typoDescription: "Pretendard Body 3 Regular 14px / LH 20px — var(--font-size-body-3)",
-      typoMetadata: "Pretendard Caption 1 Regular 13px / LH 18px — var(--font-size-caption-1)",
-      typoCta: "Pretendard Body 3 Medium 14px / LH 20px — var(--font-size-body-3)",
-      ctaFullWidth: "48px height (Btn Large) · 카드 100% width · Mobile/App 콘텐츠 카드",
-      ctaCompact: "40px height (Btn Small) · auto min 80px · Summary/수치/공간 제약 카드",
-      ctaGhost: "auto (Text Button) · auto text-width · underline 또는 chevron",
-      ctaIconText: "44px height (Btn Medium) · auto min 88px · PC 상담 예약/전문가 카드",
-      radiusWeb: "8px",
-      radiusApp: "12px",
-      radiusCMSAdmin: "6px",
-      thumbnailPC: "200×120 (16:9) 또는 1:1 정사각형",
-      thumbnailMobile: "전체 너비 × 160 (16:9)",
+      "anatomy.media":
+        "썸네일 또는 커버 이미지. Thumb=정사각, Cover=4:3(PC)/1:1(Mobile). 단색 폴백 허용.",
+      "anatomy.title": "카드 식별 핵심 라벨. 최대 2줄 + ellipsis. Body 2 ~ H4 / Bold.",
+      "anatomy.meta": "수치·시간·단위 등 보조 정보. 1줄, ' · ' 구분자. Caption / Regular.",
+      "anatomy.status": "상태 Badge. Success / Caution / Error 중 1개만.",
+      "anatomy.action": "탭/이동 트리거. 카드 전체 클릭이 기본. 내부 CTA 버튼 사용하지 않음.",
+      "anatomy.composition":
+        "(optional) 도메인 카드가 Base 위에 얹는 슬롯 — kcal chip · star rating · promotion badge · nutrition tag row.",
+      "mobile.list": "Width Fill · Padding 16/12 · Image — · Radius 8 · Title Body 3 Bold",
+      "mobile.thumb": "Width Fill · Padding 16/12 · Image 56×56 · Radius 10 · Title Body 3 Bold",
+      "mobile.cover": "Width Fill · Padding 16/12 · Image AR 1:1 · Radius 12 · Title Body 2 Bold",
+      "pc.list": "Width Fill · Padding 20/16 · Image — · Radius 10 · Title Body 2 Bold",
+      "pc.thumb": "Width Fill · Padding 24/20 · Image 72×72 · Radius 12 · Title Body 2 Bold",
+      "pc.cover": "Width Fill · Padding 0/16 · Image AR 4:3 · Radius 14 · Title H4 Bold",
+      cardGapMobile: "16px",
+      cardGapWebCMS: "24px",
+      elementGapTitleMeta: "4px",
+      footerSeparator: "border-top 1px · padding-top 16px (Footer 슬롯 사용 시)",
+      typoMeta: "Pretendard Caption 1 Regular 13px / LH 18px — var(--font-size-caption-1)",
+      compositionNote:
+        "Composition 슬롯은 Base variant 의 padding 안쪽에 위치. promotion badge 만 top-right absolute 허용.",
     },
     stateMatrix: {
-      default: "Border 1px #E0E0E0 + bg white(또는 Surface 토큰). Shadow 없음.",
+      default:
+        "Elevation 0(border 1px · neutral border 토큰) 또는 Elevation 1(box-shadow 토큰) 중 화면 단위로 택1. bg = white 또는 Surface 토큰. 두 elevation 을 동시에 걸지 않음.",
       hover:
-        "Border 1px Brand Color (또는 미세한 bg tint). Shadow 금지 — 'shadow-sm 적용' deprecated.",
-      activeSelected: "Border 2px Brand Color. Shadow 금지.",
-      note: "[Figma 권위 룰] 모든 카드 state 에서 box-shadow / drop-shadow 사용 금지. 구분은 오직 border + color.",
+        "Border 색 변경 또는 미세한 bg tint. Elevation 1 화면에서는 shadow 한 단계 강조 가능. border+shadow 동시 강화 금지.",
+      activeSelected:
+        "Border 2px Brand Color 또는 Surface tint. Elevation 1 화면이라도 selected 표시는 색으로.",
+      pressed: "transition 100ms — bg tint 또는 scale(0.99). shadow 깜빡임 금지.",
+      note: "[Figma 권위 룰] 같은 화면 안에서 카드마다 elevation 종류가 다르면 안 됨. 한 리스트 = 한 elevation.",
     },
     accessibility: [
       "clickable Card 는 <Card.Root clickable onClick> — 키보드 포커스/Enter 자동. raw <div onClick> 대체 금지.",
-      "Banner Card 텍스트는 Gradient Overlay 위에 얹어 WCAG AA 대비비 확보. 배경 이미지 위 직접 텍스트 금지.",
+      "Cover 카드 이미지 위에 텍스트를 얹는 디자인이라면 Gradient Overlay 위에서 WCAG AA 대비비 확보 — 단, 이건 Banner 영역. Card 의 Cover 변형은 텍스트가 이미지 하단 별도 영역에 위치.",
       "썸네일 <img> alt 필수 (장식이면 alt=''). 카드 제목과 중복되는 alt 는 비우기.",
+      "Status Badge 는 색 + 텍스트 라벨 동시 노출 — 색맹 대응.",
     ],
     interactivePattern:
-      "Card.Root 의 clickable + onClick 으로 인터랙티브화. 내부 별도 Button 의 onClick 에서 e.stopPropagation() 호출해 카드 전체 클릭과 분리. " +
-      "Hover 피드백은 shadow 가 아니라 Border 색 변경 또는 미세한 bg tint 로 표시 — 클릭 가능 여부 모호함 방지하되 Figma 권위 룰(shadow 금지) 준수.",
+      "Card.Root 의 clickable + onClick 으로 인터랙티브화 — 카드 전체가 클릭 영역이고 내부에 별도 CTA 버튼을 두지 않는 것이 기본. " +
+      "Composition 슬롯의 promotion badge 처럼 시각만 강조하는 요소는 클릭 핸들러 없이 절대 위치만 잡고, 클릭은 Card.Root 가 받는다. " +
+      "Hover 피드백은 화면 elevation 정책에 맞춰 — Elevation 0 화면은 border 색 변경, Elevation 1 화면은 shadow 강조. 두 elevation 을 한 화면에서 섞지 않음.",
   },
   Badge: {
     name: "Badge",
@@ -2449,9 +2470,9 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "Tab 은 동일 depth 콘텐츠 전환·category navigation·section switching 에만 사용 — 필터/CTA/라우팅 대체용 금지",
     "Modal 은 즉각적 판단/응답이 필요할 때만 사용 — 단순 정보는 inline Notice/Banner, 에러는 Toast/inline error 사용",
     "Badge 는 보조 정보 — 일반 카테고리는 ghost/line + neutral 우선, Brand color 는 '현재 선택·핵심 강조' 에만",
-    "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordOnIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 사용 가능한 브랜드 아이콘 목록은 get_brand({ brand: '<slug>' }).detail.brandIcons 로 조회.",
+    "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 사용 가능한 브랜드 아이콘 목록은 get_brand({ brand: '<slug>' }).detail.brandIcons 로 조회.",
     "브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(`HomeIcon`, `SearchIcon` 등)을 먼저 찾고, 그 다음에만 목업용 기본 아이콘(`MockupLinear*Icon`, `MockupBold*Icon`)을 사용. 자체 생성 SVG는 마지막 수단.",
-    "브랜드 분기는 공통 컴포넌트 구현이 아니라 **브랜드 전용 화면/스토리** 에서 처리 — 브랜드 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<AppFooter tabs={[{ icon: <GenietRecordOnIcon /> }]} />`)",
+    "브랜드 분기는 공통 컴포넌트 구현이 아니라 **브랜드 전용 화면/스토리** 에서 처리 — 브랜드 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<AppFooter tabs={[{ icon: <GenietRecordIcon /> }]} />`)",
   ],
   donts: [
     "한 화면에 3개 이상의 폰트 웨이트를 혼용하지 마세요",
@@ -2506,7 +2527,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     // ── Spacing Randomness 보강 ──
     "같은 depth(부모 컨테이너 안의 형제 요소들) 에 서로 다른 spacing 을 적용하지 마세요 — 형제는 같은 --gap-* 으로 통일",
     // ── Brand Icon ──
-    "공통 컴포넌트(AppFooter/BottomNav/AppBar 등) 의 *구현* 안에 brand 분기 로직(`if (brand === 'geniet') return <GenietRecordOnIcon />`)을 넣지 마세요 — DS 컴포넌트는 brand-agnostic 으로 유지. 분기는 사용처(브랜드 전용 화면)에서 명시적 icon prop 으로 표현.",
+    "공통 컴포넌트(AppFooter/BottomNav/AppBar 등) 의 *구현* 안에 brand 분기 로직(`if (brand === 'geniet') return <GenietRecordIcon />`)을 넣지 마세요 — DS 컴포넌트는 brand-agnostic 으로 유지. 분기는 사용처(브랜드 전용 화면)에서 명시적 icon prop 으로 표현.",
     "브랜드 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 brand prefix 아이콘이 있으면 그게 우선. get_brand({ brand: '<slug>' }).detail.brandIcons 로 매칭 확인.",
     "NudgeEAP 기본 아이콘이나 MockupLinear*/MockupBold* 아이콘을 확인하지 않고 인라인 SVG/직접 생성 아이콘으로 넘어가지 마세요 — 자체 생성은 마지막 수단.",
   ],
@@ -2702,14 +2723,14 @@ function flattenGroups(groups: Array<{ items: string[] }>): string[] {
  *
  * **브랜드 모드(brand='geniet' / 'trost' 등) 작업 시:**
  *   - 같은 의미의 brand prefix 아이콘이 존재하면 **반드시 그쪽을 우선 사용**.
- *     (예: Geniet bottom nav → `GenietRecordOnIcon`/`GenietRecordOffIcon`, 공용 PushActiveIcon X)
+ *     (예: Geniet bottom nav → `GenietRecordIcon` (단일 그래픽 + color cascade), 공용 PushActiveIcon X)
  *   - 사용 가능한 brand 아이콘 목록은 `get_brand({ brand: '<slug>' }).detail.brandIcons` 로 조회.
  *   - 매칭이 없으면 공용 아이콘 fallback 으로 사용 (예: `LikeIcon` 은 Geniet 매칭 없음 → 공용 OK).
  *
  * **컴포넌트 구현(공통 DS) 에서는:**
  *   - brand 분기 로직(`if (brand === 'geniet')`)을 컴포넌트 안에 박지 않는다.
  *   - DS 컴포넌트는 brand-agnostic 유지, 브랜드 전용 화면이 명시적으로 icon prop 으로 전달.
- *     예: `<AppFooter tabs={[{ key: 'record', icon: <GenietRecordOnIcon /> }]} />`
+ *     예: `<AppFooter tabs={[{ key: 'record', icon: <GenietRecordIcon /> }]} />`
  */
 export type IconCategory =
   | "basic"
@@ -2854,8 +2875,7 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   GenietCopyIcon: { category: "action", style: "line" },
   GenietLoginIcon: { category: "action", style: "line" },
   GenietLogoutIcon: { category: "action", style: "line" },
-  GenietRecordOnIcon: { category: "action", style: "filled", pair: "GenietRecordOffIcon" },
-  GenietRecordOffIcon: { category: "action", style: "line", pair: "GenietRecordOnIcon" },
+  GenietRecordIcon: { category: "action", style: "filled" },
   GenietPlayIcon: { category: "media", style: "filled" },
   GenietCheckcircleIcon: { category: "state-reaction", style: "filled" },
   GenietConfettiIcon: { category: "state-reaction", style: "filled" },
@@ -2863,13 +2883,12 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   GenietCashreviewIcon: { category: "eap-service", style: "filled" },
   GenietGpointIcon: { category: "eap-service", style: "filled" },
 
-  // ── Geniet bottomnavi / header (Figma 지니어트-Dev 207:3204 / 207:2483) ──
-  GenietHomeOnIcon: { category: "navigation", style: "filled" },
-  GenietWriteOffIcon: { category: "action", style: "line" },
-  GenietBenefitOnIcon: { category: "eap-service", style: "filled", pair: "GenietBenefitOffIcon" },
-  GenietBenefitOffIcon: { category: "eap-service", style: "line", pair: "GenietBenefitOnIcon" },
-  GenietReviewOnIcon: { category: "eap-service", style: "filled", pair: "GenietReviewOffIcon" },
-  GenietReviewOffIcon: { category: "eap-service", style: "line", pair: "GenietReviewOnIcon" },
+  // ── Geniet bottomnavi / header (Figma 90:2 — 단일 그래픽 + color cascade) ──
+  // on/off 별 그래픽이 동일해 단일 컴포넌트로 통합. active/inactive 는 사용처(BottomNav 등)
+  // 의 color cascade(--nds-footer-nav-{active,inactive}-color)로 토글.
+  GenietHomeIcon: { category: "navigation", style: "filled" },
+  GenietBenefitIcon: { category: "eap-service", style: "filled" },
+  GenietReviewIcon: { category: "eap-service", style: "filled" },
   GenietCommunityIcon: { category: "navigation", style: "line" },
   GenietSearchIcon: { category: "navigation", style: "line" },
 };
