@@ -205,6 +205,18 @@ export interface ComponentOverrides {
   textarea?: { radius?: ComponentValue; paddingX?: ComponentValue; paddingY?: ComponentValue };
   datepicker?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
   /**
+   * AppFooter.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,
+   * label Pretendard 10/12. 다른 브랜드는 fallback (active=textRole.normal #333, label 11/14).
+   */
+  footer?: {
+    navActiveColor?: ComponentValue;
+    navInactiveColor?: ComponentValue;
+    navLabelFontSize?: ComponentValue;
+    navLabelLineHeight?: ComponentValue;
+    navLabelWeight?: ComponentValue;
+    navActiveLabelWeight?: ComponentValue;
+  };
+  /**
    * Checkbox 시각 변형. 캐포비 가이드(3082:899)는 box 15×15 / 1.25px border / radius 2px /
    * unchecked border #DDD / disabled = 색 변경 없이 opacity 0.4. 다른 브랜드는 fallback 유지.
    */

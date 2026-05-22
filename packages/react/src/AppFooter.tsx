@@ -98,7 +98,7 @@ const appFooterStyles = `
     text-decoration: none;
     cursor: pointer;
     opacity: 0.9;
-    color: var(--nds-footer-nav-color, ${cv.textRole.subtle});
+    color: var(--nds-footer-nav-inactive-color, ${cv.textRole.subtle});
     transition:
       opacity ${transition.default},
       color ${transition.default};
@@ -122,9 +122,9 @@ const appFooterStyles = `
   }
 
   :where(.${FOOTER_NAV_ITEM_CLASS}) .nds-app-footer__nav-label {
-    font-size: ${typeScale.label.fontSize}px;
-    line-height: ${typeScale.label.lineHeight}px;
-    font-weight: ${fontWeight.regular};
+    font-size: var(--nds-footer-nav-label-font-size, ${typeScale.label.fontSize}px);
+    line-height: var(--nds-footer-nav-label-line-height, ${typeScale.label.lineHeight}px);
+    font-weight: var(--nds-footer-nav-label-weight, ${fontWeight.regular});
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -132,6 +132,7 @@ const appFooterStyles = `
 
   :where(.${FOOTER_NAV_ITEM_CLASS}[data-active="true"]) .nds-app-footer__nav-label {
     color: var(--nds-footer-nav-active-color, ${cv.textRole.normal});
+    font-weight: var(--nds-footer-nav-active-label-weight, var(--nds-footer-nav-label-weight, ${fontWeight.regular}));
   }
 
   /* ─── CompanyInfo ─── */

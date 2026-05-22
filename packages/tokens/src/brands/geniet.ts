@@ -108,4 +108,16 @@ export const genietTheme: BrandTheme = {
       toast: 400,
     },
   },
+  // Component overrides — Figma 지니어트 BottomNav 가이드 (90:2).
+  //   active = mint600 #00A8AC + bold, inactive = gray500 #999.
+  //   label = Pretendard 10/12 (base 11/14 보다 컴팩트).
+  components: {
+    footer: {
+      navActiveColor: "var(--semantic-text-brand-default)", // #00A8AC
+      navInactiveColor: "var(--semantic-text-muted-default)", // #999
+      navLabelFontSize: 10,
+      navLabelLineHeight: 12,
+      navActiveLabelWeight: "700",
+    },
+  },
 };
