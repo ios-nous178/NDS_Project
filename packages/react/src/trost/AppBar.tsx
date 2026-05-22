@@ -1,0 +1,500 @@
+import React from "react";
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  radius,
+  spacing,
+  transition,
+  typeScale,
+  zIndex,
+} from "@nudge-eap/tokens";
+import { AppBar } from "../AppBar";
+import type { AppBarGNBItem, AppBarAuthMenuItem } from "../AppBar";
+import { Button } from "../Button";
+import { TrendingKeywords } from "../TrendingKeywords";
+import type { TrendingKeywordItem } from "../TrendingKeywords";
+import { TrostEnergyCoinIcon } from "@nudge-eap/icons";
+
+/* ─── Constants (Trost 웹사이트 실측 스펙 + 모바일 홈 헤더 2단 가이드) ─── */
+
+const PC_MAX_WIDTH_DEFAULT = 1080;
+const MAIN_BAR_PADDING_Y_DEFAULT = "20px";
+const NAV_HEIGHT_DEFAULT = 70;
+const MOBILE_HEIGHT_DEFAULT = 108; // Row1 56 + Row2 52
+const MOBILE_ROW1_HEIGHT = 56;
+const MOBILE_ROW2_HEIGHT = 52;
+const MOBILE_SEARCH_HEIGHT = 44;
+const SEARCH_WIDTH_DEFAULT = 530;
+const SEARCH_HEIGHT_DEFAULT = 48;
+
+const ROOT = "nds-trost-app-bar";
+const MOBILE = `${ROOT}--mobile`;
+const MO_ROW1 = `${ROOT}__mo-row1`;
+const MO_ROW2 = `${ROOT}__mo-row2`;
+const MO_RIGHT = `${ROOT}__mo-right`;
+const MO_POINT_CHIP = `${ROOT}__point-chip`;
+const MO_BELL_BTN = `${ROOT}__bell-btn`;
+const MO_SEARCH = `${ROOT}__mo-search`;
+
+/* ─── Styles (서브디렉토리 — extract-styles 스캔 범위 밖이라 <style> 로 inject) ─── */
+
+const trostAppBarStyles = `
+  :where(.${ROOT}) {
+    display: block;
+    width: 100%;
+    background: ${cv.surface.default};
+    font-family: ${fontFamily.web};
+    box-sizing: border-box;
+    z-index: var(--nds-trost-app-bar-z-index, ${zIndex.appBar});
+  }
+
+  :where(.${MOBILE}) {
+    height: var(--nds-trost-app-bar-mobile-height, ${MOBILE_HEIGHT_DEFAULT}px);
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid ${cv.borderRole.subtle};
+  }
+
+  :where(.${MO_ROW1}) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: ${MOBILE_ROW1_HEIGHT}px;
+    padding: 0 ${spacing[16]}px;
+    flex-shrink: 0;
+  }
+
+  :where(.${MO_ROW2}) {
+    display: flex;
+    align-items: center;
+    height: ${MOBILE_ROW2_HEIGHT}px;
+    padding: 0 ${spacing[16]}px ${spacing[8]}px;
+    flex-shrink: 0;
+  }
+
+  :where(.${MO_RIGHT}) {
+    display: inline-flex;
+    align-items: center;
+    gap: ${spacing[10]}px;
+    flex-shrink: 0;
+  }
+
+  /* Point chip: TrostEnergyCoin + 잔액 + "P". 배경/보더 없는 inline text chip. */
+  :where(.${MO_POINT_CHIP}) {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    gap: ${spacing[4]}px;
+    color: ${cv.textRole.strong};
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
+    font-weight: ${fontWeight.bold};
+    cursor: pointer;
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+
+  :where(.${MO_BELL_BTN}) {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: ${cv.iconRole.strong};
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  :where(.${MO_BELL_BTN}[data-has-badge="true"])::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${cv.fill.brand};
+    box-shadow: 0 0 0 2px ${cv.surface.default};
+  }
+
+  /* Search input: full-width 라운드, 우측 아이콘 in-line. */
+  :where(.${MO_SEARCH}) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: ${MOBILE_SEARCH_HEIGHT}px;
+    border: 1px solid ${cv.borderRole.subtle};
+    border-radius: ${radius.lg}px;
+    padding: 0 ${spacing[40]}px 0 ${spacing[16]}px;
+    background: ${cv.surface.default};
+    box-sizing: border-box;
+    transition: border-color ${transition.default};
+  }
+
+  :where(.${MO_SEARCH}:focus-within) {
+    border-color: ${cv.borderRole.normal};
+  }
+
+  :where(.${MO_SEARCH} input) {
+    all: unset;
+    width: 100%;
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
+    color: ${cv.textRole.normal};
+    font-family: inherit;
+  }
+
+  :where(.${MO_SEARCH} input::placeholder) {
+    color: ${cv.textRole.muted};
+  }
+
+  :where(.${MO_SEARCH} .${ROOT}__search-icon) {
+    position: absolute;
+    right: ${spacing[12]}px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: ${cv.iconRole.strong};
+    display: flex;
+    cursor: pointer;
+  }
+`;
+
+/* ─── Types ─── */
+
+export type TrostAppBarVariant = "desktop" | "mobile" | "webview";
+
+export interface TrostAppBarLogo {
+  src: string;
+  alt?: string;
+  href?: string;
+  width?: number;
+  height?: number;
+}
+
+/** 모바일 Row1 우측 — 포인트(에너지 코인) chip. icon + amount + 단위 P. */
+export interface TrostAppBarPointChip {
+  /** 잔액 표시 텍스트 (예: "123,990"). */
+  amount: string;
+  /** 단위 라벨. 기본 "P". */
+  unit?: string;
+  /** 아이콘 override. 미지정 시 TrostEnergyCoinIcon. */
+  icon?: React.ReactNode;
+  href?: string;
+  onClick?: React.MouseEventHandler;
+  /** aria-label override. */
+  ariaLabel?: string;
+}
+
+export interface TrostAppBarProps {
+  variant?: TrostAppBarVariant;
+  /** 로고 — desktop/mobile variant 에서 사용 (webview 는 불필요). */
+  logo?: TrostAppBarLogo;
+  pcMaxWidth?: number;
+  mainBarPaddingY?: string;
+  navHeight?: number;
+  mobileHeight?: number;
+  gnbItems?: AppBarGNBItem[];
+  activeKey?: string;
+  authItems?: AppBarAuthMenuItem[];
+  /** 앱 다운로드 버튼 노출 여부 (desktop variant). 기본 true. */
+  showAppDownload?: boolean;
+  /** 앱 다운로드 버튼 라벨. 기본 "앱 다운로드". */
+  appDownloadLabel?: string;
+  /** 앱 다운로드 클릭 핸들러. */
+  onAppDownload?: () => void;
+  searchPlaceholder?: string;
+  searchWidth?: number;
+  searchHeight?: number;
+  trendingKeywords?: TrendingKeywordItem[];
+  trendingTimestamp?: string;
+  webviewTitle?: string;
+  onBack?: () => void;
+  /* ─── Mobile 전용 (2단 홈 헤더) ─── */
+  /** Row1 우측 포인트 chip — 미지정 시 미노출. */
+  pointChip?: TrostAppBarPointChip;
+  /** Row1 우측 알림 bell 노출 여부. 기본 true. */
+  showNotificationBell?: boolean;
+  /** Bell 옆 미확인 알림 점 표시 (단순 boolean — 카운트가 필요해지면 별도 props 로 확장). */
+  hasNotification?: boolean;
+  /** Bell 클릭 핸들러. */
+  onNotificationClick?: React.MouseEventHandler;
+  /** Bell 아이콘 override. 미지정 시 기본 inline bell svg. */
+  notificationIcon?: React.ReactNode;
+  /** Row2 검색 input placeholder. 미지정 시 Row2 미노출 (단단 헤더로 fallback). */
+  mobileSearchPlaceholder?: string;
+  /** Row2 검색 input value (controlled). */
+  mobileSearchValue?: string;
+  onMobileSearchChange?: (value: string) => void;
+  onMobileSearch?: (value: string) => void;
+}
+
+/* ─── Inline SVGs ─── */
+
+function DefaultBellIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 3.5a6 6 0 0 0-6 6v3.4l-1.6 2.6a.8.8 0 0 0 .68 1.2h13.84a.8.8 0 0 0 .68-1.2L18 12.9V9.5a6 6 0 0 0-6-6Zm0 17a2.5 2.5 0 0 1-2.45-2h4.9A2.5 2.5 0 0 1 12 20.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function DefaultSearchIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M13 13L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/* ─── Sub-components ─── */
+
+function PointChip({ chip }: { chip: TrostAppBarPointChip }) {
+  const unit = chip.unit ?? "P";
+  const Tag = chip.href ? "a" : "button";
+  const tagProps: Record<string, unknown> = chip.href ? { href: chip.href } : { type: "button" };
+  return React.createElement(
+    Tag,
+    {
+      className: MO_POINT_CHIP,
+      "aria-label": chip.ariaLabel ?? `포인트 ${chip.amount}${unit}`,
+      onClick: chip.onClick,
+      ...tagProps,
+    },
+    <>
+      <span style={{ display: "inline-flex" }}>
+        {chip.icon ?? <TrostEnergyCoinIcon size={20} />}
+      </span>
+      <span>
+        {chip.amount}
+        {unit ? ` ${unit}` : ""}
+      </span>
+    </>,
+  );
+}
+
+/* ─── Component ─── */
+
+export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((props, ref) => {
+  const {
+    variant = "desktop",
+    logo,
+    pcMaxWidth = PC_MAX_WIDTH_DEFAULT,
+    mainBarPaddingY = MAIN_BAR_PADDING_Y_DEFAULT,
+    navHeight = NAV_HEIGHT_DEFAULT,
+    mobileHeight,
+    gnbItems,
+    activeKey,
+    authItems,
+    showAppDownload = true,
+    appDownloadLabel = "앱 다운로드",
+    onAppDownload,
+    searchPlaceholder,
+    searchWidth = SEARCH_WIDTH_DEFAULT,
+    searchHeight = SEARCH_HEIGHT_DEFAULT,
+    trendingKeywords,
+    trendingTimestamp = "09:00 기준",
+    webviewTitle,
+    onBack,
+    pointChip,
+    showNotificationBell = true,
+    hasNotification,
+    onNotificationClick,
+    notificationIcon,
+    mobileSearchPlaceholder,
+    mobileSearchValue,
+    onMobileSearchChange,
+    onMobileSearch,
+  } = props;
+
+  if (variant === "webview") {
+    return (
+      <AppBar
+        ref={ref}
+        variant="webview"
+        position="static"
+        title={webviewTitle}
+        leftSlot={<AppBar.BackButton onClick={onBack} />}
+        style={{ "--nds-app-bar-height": `${mobileHeight ?? 56}px` } as React.CSSProperties}
+      />
+    );
+  }
+
+  if (variant === "mobile") {
+    /* Rich 2단(포인트/검색) 레이아웃은 pointChip 이나 mobileSearchPlaceholder 가 있을 때만.
+     * 외부 호출자가 단순 logo+auth 만 쓰던 케이스(기존 TrostMobile 스토리)는 그대로 보존. */
+    const isRichMobile = Boolean(pointChip || mobileSearchPlaceholder);
+    if (!isRichMobile) {
+      return (
+        <AppBar
+          ref={ref}
+          position="static"
+          style={{ "--nds-app-bar-height": `${mobileHeight ?? 56}px` } as React.CSSProperties}
+        >
+          <AppBar.MainBar>
+            {logo && (
+              <AppBar.Logo
+                src={logo.src}
+                alt={logo.alt ?? "Trost"}
+                href={logo.href ?? "/"}
+                style={{ height: logo.height, width: "auto" }}
+              />
+            )}
+            {authItems && authItems.length > 0 && (
+              <AppBar.AuthMenu items={[authItems[0]]} separator="none" />
+            )}
+          </AppBar.MainBar>
+        </AppBar>
+      );
+    }
+
+    const resolvedHeight =
+      mobileHeight ?? (mobileSearchPlaceholder ? MOBILE_HEIGHT_DEFAULT : MOBILE_ROW1_HEIGHT);
+
+    return (
+      <header
+        ref={ref}
+        data-slot="root"
+        className={`${ROOT} ${MOBILE}`}
+        style={
+          { "--nds-trost-app-bar-mobile-height": `${resolvedHeight}px` } as React.CSSProperties
+        }
+      >
+        <style>{trostAppBarStyles}</style>
+        <div className={MO_ROW1}>
+          {logo ? (
+            <a href={logo.href ?? "/"} style={{ display: "inline-flex", flexShrink: 0 }}>
+              <img
+                src={logo.src}
+                alt={logo.alt ?? "Trost"}
+                width={logo.width}
+                height={logo.height}
+                style={{ display: "block", height: logo.height, width: "auto" }}
+              />
+            </a>
+          ) : (
+            <span />
+          )}
+          <div className={MO_RIGHT}>
+            {pointChip && <PointChip chip={pointChip} />}
+            {showNotificationBell && (
+              <button
+                type="button"
+                aria-label="알림"
+                className={MO_BELL_BTN}
+                data-has-badge={hasNotification ? "true" : undefined}
+                onClick={onNotificationClick}
+              >
+                {notificationIcon ?? <DefaultBellIcon />}
+              </button>
+            )}
+          </div>
+        </div>
+        {mobileSearchPlaceholder && (
+          <div className={MO_ROW2}>
+            <div className={MO_SEARCH}>
+              <input
+                type="text"
+                placeholder={mobileSearchPlaceholder}
+                value={mobileSearchValue}
+                onChange={(e) => onMobileSearchChange?.(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && onMobileSearch) {
+                    onMobileSearch((e.target as HTMLInputElement).value);
+                  }
+                }}
+                autoComplete="off"
+              />
+              <span
+                className={`${ROOT}__search-icon`}
+                role="button"
+                aria-label="검색"
+                onClick={() => onMobileSearch?.(mobileSearchValue ?? "")}
+              >
+                <DefaultSearchIcon />
+              </span>
+            </div>
+          </div>
+        )}
+      </header>
+    );
+  }
+
+  /* desktop */
+  return (
+    <AppBar
+      ref={ref}
+      position="static"
+      style={
+        {
+          "--nds-app-bar-height": "auto",
+          "--nds-app-bar-padding-x": "0",
+          "--nds-app-bar-border-bottom": "none",
+          flexDirection: "column",
+        } as React.CSSProperties
+      }
+    >
+      <AppBar.MainBar maxWidth={pcMaxWidth} style={{ padding: `${mainBarPaddingY} 16px` }}>
+        {logo && (
+          <AppBar.Logo
+            src={logo.src}
+            alt={logo.alt ?? "Trost"}
+            href={logo.href ?? "/"}
+            width={logo.width}
+            height={logo.height}
+          />
+        )}
+        {searchPlaceholder && (
+          <AppBar.SearchBar
+            placeholder={searchPlaceholder}
+            style={
+              {
+                "--nds-app-bar-search-width": `${searchWidth}px`,
+                "--nds-app-bar-search-height": `${searchHeight}px`,
+              } as React.CSSProperties
+            }
+          />
+        )}
+        {authItems && authItems.length > 0 && (
+          <AppBar.AuthMenu
+            items={authItems}
+            separator="none"
+            extra={
+              showAppDownload && (
+                <Button
+                  size="sm"
+                  variant="outlined-sub"
+                  style={{ marginLeft: 16 }}
+                  onClick={onAppDownload}
+                >
+                  {appDownloadLabel}
+                </Button>
+              )
+            }
+          />
+        )}
+      </AppBar.MainBar>
+      <AppBar.Divider />
+      <AppBar.NavBar
+        maxWidth={pcMaxWidth}
+        height={navHeight}
+        style={{ justifyContent: "space-between" }}
+      >
+        {gnbItems && gnbItems.length > 0 && <AppBar.GNB items={gnbItems} activeKey={activeKey} />}
+        {trendingKeywords && trendingKeywords.length > 0 && (
+          <TrendingKeywords items={trendingKeywords} timestamp={trendingTimestamp} />
+        )}
+      </AppBar.NavBar>
+      <AppBar.Divider />
+    </AppBar>
+  );
+});
+
+TrostAppBar.displayName = "TrostAppBar";
