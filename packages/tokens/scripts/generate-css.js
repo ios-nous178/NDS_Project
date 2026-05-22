@@ -231,7 +231,7 @@ function generateBrandTokens({ theme, title, cssImport }) {
     ":root {",
   ];
 
-  const { palette, semantic, typography, spacing: spacingOverrides, elevation } = theme;
+  const { palette, semantic, typography, spacing: spacingOverrides, elevation, components } = theme;
 
   // Palette colors
   lines.push("  /* ── Palette ── */");
@@ -365,6 +365,28 @@ function generateBrandTokens({ theme, title, cssImport }) {
     for (const [key, value] of Object.entries(spacingOverrides.layout)) {
       const kebab = camelToKebab(key);
       lines.push(`  --layout-${kebab}: ${value}px;`);
+    }
+  }
+
+  // Component overrides — `--nds-{component}-{prop}`
+  //   number → `${n}px`, string → 그대로 (`var(--inset-input)` 같은 CSS var 참조 허용).
+  //   컴포넌트가 fallback 패턴(`var(--nds-input-padding-x, var(--inset-card))`)으로 읽어 cascade.
+  if (components) {
+    const componentBlocks = [];
+    for (const [component, props] of Object.entries(components)) {
+      if (!props) continue;
+      for (const [prop, value] of Object.entries(props)) {
+        let cssValue;
+        if (typeof value === "number") cssValue = `${value}px`;
+        else if (typeof value === "string") cssValue = value;
+        else continue;
+        componentBlocks.push(`  --nds-${component}-${camelToKebab(prop)}: ${cssValue};`);
+      }
+    }
+    if (componentBlocks.length > 0) {
+      lines.push("");
+      lines.push("  /* ── Components (component-level overrides) ── */");
+      lines.push(...componentBlocks);
     }
   }
 

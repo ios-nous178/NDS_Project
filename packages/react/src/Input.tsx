@@ -80,7 +80,7 @@ const inputStyles = `
     gap: var(--gap-default);
     width: 100%;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
-    padding: 0 var(--inset-card);
+    padding: 0 var(--nds-input-padding-x, var(--inset-card));
     border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: var(--nds-input-background, ${cv.surface.default});
