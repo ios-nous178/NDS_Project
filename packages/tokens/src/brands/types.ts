@@ -38,6 +38,11 @@ export interface SemanticColors {
     disabled?: { default?: string };
     inverse?: { default?: string };
     brand?: { default?: string; strong?: string };
+    /**
+     * Inline 링크 텍스트. Cashpobi 가이드에 명시된 `Text/Link/Default` 슬롯.
+     * NudgeEAP base 에는 없고, brand 가이드가 link 를 별도 컬러로 분리할 때 사용.
+     */
+    link?: { default?: string };
     status?: {
       success?: string;
       error?: string;
@@ -115,6 +120,16 @@ export interface SemanticColors {
     helpertextError?: string;
     helpertextDisabled?: string;
   };
+  /**
+   * 캐시워크 로고 등 brand identity asset 전용 색상 슬롯.
+   * Cashpobi 가이드의 `Brand/Logo/{Default,Subtle,Strong}` (Brown 톤).
+   * NudgeEAP base / Trost / Geniet 는 사용하지 않음 — 로고 raw hex 또는 별도 자산 사용.
+   */
+  brandLogo?: {
+    default?: string;
+    subtle?: string;
+    strong?: string;
+  };
 }
 
 /** 타이포그래피 오버라이드 */
@@ -126,9 +141,46 @@ export interface TypographyOverrides {
   typeScale: Record<string, TypeStyle>;
 }
 
-/** 스페이싱/라디어스 오버라이드 */
+/** 스페이싱/라디어스 오버라이드 — 모두 partial, 누락 키는 base cascade */
 export interface SpacingOverrides {
+  /** Atomic spacing scale — `--spacing-{key}` */
+  spacing?: Record<string | number, number>;
+  /** Semantic gap — `--gap-{key}` (tight/default/comfortable/loose/wide 등) */
+  gap?: Record<string, number>;
+  /** Heading 별 다음 요소 간격 — `--gap-title-{key}` */
+  gapTitle?: Record<string, number>;
+  /** 컨테이너 내부 padding — `--inset-{key}` (chip/input/card/modal/section/page 등) */
+  inset?: Record<string, number>;
   radius?: Record<string, number>;
+  shape?: Record<string, number>;
+  borderWidth?: Record<string, number>;
+  stroke?: Record<string, number>;
+  /** Grid system — gutter / margin / contentWidth 등 */
+  grid?: {
+    mobile?: {
+      columns?: number;
+      margin?: number;
+      gutter?: number;
+      contentWidth?: number;
+    };
+    desktop?: {
+      columns?: number;
+      margin?: number;
+      minMargin?: number;
+      gutter?: number;
+      contentWidth?: number;
+    };
+  };
+  /**
+   * Admin/page layout 토큰 — Cashpobi 가이드의 Layout/Page · Sidebar · Content · MaxContent.
+   * NudgeEAP base / Trost / Geniet 는 미사용. emit: `--layout-{key}` (px).
+   */
+  layout?: {
+    page?: number;
+    sidebar?: number;
+    content?: number;
+    maxContent?: number;
+  };
 }
 
 /** 엘리베이션 오버라이드 */

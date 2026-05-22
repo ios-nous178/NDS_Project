@@ -399,7 +399,7 @@ const toolHandlers = {
         filePath: string;
         mockupName?: string;
         context?: "user-app" | "admin-cms" | "unknown";
-        brand?: "trost" | "geniet" | "nudge-eap";
+        brand?: "trost" | "geniet" | "nudge-eap" | "cashpobi";
         cwd?: string;
         dryRun?: boolean;
       },

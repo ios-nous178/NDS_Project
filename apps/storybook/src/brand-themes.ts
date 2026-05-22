@@ -19,6 +19,7 @@
 // dist/{brand}.css 의 :root 블록을 ?raw 로 가져와서 토큰 자동 sync.
 import trostDistCss from "../../../packages/tokens/dist/trost.css?raw";
 import genietDistCss from "../../../packages/tokens/dist/geniet.css?raw";
+import cashpobiDistCss from "../../../packages/tokens/dist/cashpobi.css?raw";
 
 function parseCssRootVars(raw: string): Record<string, string> {
   const rootBlock = raw.match(/:root\s*\{([\s\S]*?)\}/);
@@ -34,6 +35,7 @@ function parseCssRootVars(raw: string): Record<string, string> {
 const distVars: Record<string, Record<string, string>> = {
   trost: parseCssRootVars(trostDistCss),
   geniet: parseCssRootVars(genietDistCss),
+  cashpobi: parseCssRootVars(cashpobiDistCss),
 };
 
 export interface BrandTheme {
@@ -299,6 +301,25 @@ const _rawBrandThemes: Record<string, BrandTheme> = {
       "--nds-footer-company-color": "#999999",
       "--nds-footer-muted-color": "#777777",
       "--nds-footer-extra-color": "#999999",
+    },
+  },
+  cashpobi: {
+    name: "cashpobi",
+    label: "Cashpobi (캐포비)",
+    description: "캐시워크 포 비지니스 admin · 노란 brand + 검정 high-contrast",
+    cssImport: "cashpobi",
+    // 대부분의 토큰은 dist/cashpobi.css 에서 자동 sync.
+    // 여기서는 storybook 에서 추가 보정이 필요한 컴포넌트 레벨(--nds-*) 토큰만 명시.
+    cssVars: {
+      // Button — 노란 brand bg + 검정 텍스트 (캐포비 시그니처)
+      "--nds-button-background": "#FFD200",
+      "--nds-button-text-color": "#000000",
+      "--nds-button-border-color": "#FFD200",
+      "--nds-button-hover-background": "#FFC400",
+      "--nds-button-pressed-background": "#FEAF01",
+
+      // BottomSheet — 가이드 명시 top radius 20px
+      "--nds-bottom-sheet-radius": "20px",
     },
   },
 };

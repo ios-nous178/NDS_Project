@@ -336,7 +336,7 @@ export interface ComponentGuide {
   usagePolicy?: {
     useFor?: string[];
     doNotUseFor?: string[];
-    limits?: Record<string, string | number>;
+    limits?: Record<string, string | number | boolean>;
     /** color 별 사용 정책 (Badge 등) */
     colorPolicy?: Record<string, string>;
     /** variant 별 사용 정책 (Badge / Tabs 등) */
@@ -429,6 +429,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       geniet:
         "variant=solid/outlined 만 허용 (Figma 207:1853 가이드). soft/outlined-sub 는 dev console 경고 — 사용 금지. " +
         "secondary/solid 는 #333333(gray-900) dark inverse + 흰 텍스트 — Geniet 고유 패턴.",
+      cashpobi:
+        "Solid/Primary(#FFD200 + 검정), Solid/Neutral(gray), Weak/Neutral, Outlined/Primary(노란 보더), Outlined/Neutral 5 스타일. " +
+        "Solid Primary 의 텍스트는 항상 검정 (#000) — high-contrast 시그니처. " +
+        "ButtonBG/Disabled 는 Yellow/100(#FFFAE5) 노란 톤 (gray 아님). " +
+        "사이즈: X-Large(52) / Large(48) / Medium(44) / Small(40) / Mini(36). " +
+        "추가 컴포넌트: TextButton(Large 38 / Medium 32), IconButton(48/44/40/32).",
     },
     sizeMatrix: {
       xl: "height 52 / px 16 / py 14 / 16·24 bold / icon 20 / gap 8",
@@ -1924,16 +1930,71 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ProductCard: {
     name: "ProductCard",
-    summary: "상품 그리드 한 칸. 썸네일 1:1 + 뱃지 + 제목 + 가격 슬롯(PriceTag) + 품절 오버레이.",
+    summary:
+      "캐시딜 상품 카드 (140w). 정사각 1:1 썸네일 + 상품명(2줄 ellipsis) + 가격 row(할인율% + 가격 + 단위). " +
+      "가격 숫자는 Lato Black 18 / 할인율은 Lato Medium 18 + statusError — 한글은 Pretendard, 숫자는 Lato 로 폰트 분리.",
+    figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=53-2",
     pitfalls: [
-      "가격은 price 슬롯에 <PriceTag /> 직접 — 문자열 넣으면 포맷 일관성 깨짐.",
-      "품절은 soldOut. badge(좌상단 NEW/BEST)와 다른 오버레이.",
-      "title은 자동 2줄 클램프. 더 길게 보여주려면 디테일 화면.",
+      "`price` 는 KRW 단위 number — 자동으로 천단위 콤마 포맷. 외부에서 '13,900' 문자열로 가공해서 넘기지 말 것.",
+      "`discountPercent` 는 number (예: 31). 0 또는 undefined 면 자동 숨김 — '0%' 표시 X.",
+      "할인율 색은 `cv.textRole.statusError` 시멘틱 — 브랜드별 자동 매핑. raw hex(#ED3E14 등) 로 override 금지.",
+      "썸네일 위 `badge` 와 `soldOut` 동시 노출 금지 — soldOut 이 true 면 badge 자동 숨김 (구현 차원에서 가드).",
+      "title 은 자동 2줄 ellipsis. 그 이상 보여주려면 디테일 화면.",
+      "가격 단위('원')는 절대 Bold 로 키우지 말 것 — 가격 본문(Black)과 시각 무게 같아짐. Pretendard Regular 12 고정.",
+      "할인 전 원가(취소선)는 이 컴포넌트에 슬롯 없음 — 별도 디자인 토큰/컴포넌트로. 한 줄에 4개 정보 압축 금지.",
+      "카드 width 는 기본 140 고정 — 그리드/캐러셀 안에서 일정 폭 유지가 가이드 핵심. 변경하려면 className/style 로 override 가능하지만 비권장.",
     ],
     recommended: [
-      "굿즈 그리드: 2칸/3칸, PriceTag size='sm'",
-      "추천 캐러셀: ProductCard + Carousel 결합",
+      '기본: <ProductCard thumbnail={url} title="…" discountPercent={31} price={13900} onClick={…} />',
+      "가로 스크롤 행: flex container + overflow-x:auto + gap 16 (Mobile 캐러셀 패턴).",
+      "그리드 (2칸/3칸): grid-template-columns:repeat(N,140px) + gap.",
+      "할인이 없으면 `discountPercent` 생략 — 가격만 단독 렌더 (예: 정상가 상품).",
+      "품절: `soldOut` + thumbnail — 자동 오버레이 (badge 와 동시 노출 차단).",
     ],
+    sizeMatrix: {
+      cardWidth: "140px (fixed default)",
+      thumbnail: "140 × 140 (1:1) · border subtle 1px · radius md(8) · object-cover",
+      gapThumbnailToMeta: "8px (spacing[8])",
+      gapMeta: "6px (spacing[6]) — title ↔ price-row",
+      gapPriceRow: "2px (spacing[2]) — discount ↔ price ↔ currency",
+      title: "Body3 14/20 Regular · cv.textRole.strong · 2줄 ellipsis",
+      discount: "Lato Medium 18/24 · cv.textRole.statusError · letter-spacing -0.3px",
+      price: "Lato Black 900 18/24 · cv.textRole.strong · letter-spacing -0.3px",
+      currency: "Caption2 12/16 Regular Pretendard · cv.textRole.strong",
+      badge: "label 11/14 Bold · cv.fill.statusError bg · cv.textRole.inverse · radius sm(4)",
+      soldOutOverlay: "rgba(255,255,255,0.85) · cv.textRole.subtle · Body3 Bold '품절'",
+      fontStack:
+        "숫자(할인율/가격)는 'Lato', Pretendard, sans-serif — Lato 미로드 시 Pretendard Bold 로 graceful fallback (Lato Black 900 → Pretendard 700).",
+    },
+    stateMatrix: {
+      default: "썸네일 + 메타. card border 없음 — 썸네일에만 border-subtle.",
+      hover: "opacity 0.85 (clickable 일 때만, PC only).",
+      soldOut: "썸네일에 화이트 오버레이 + '품절' 텍스트. badge 자동 숨김.",
+      noDiscount: "discountPercent 미지정/0 → discount span 자체 렌더 X.",
+    },
+    accessibility: [
+      "onClick 있으면 role='button' + tabIndex + Enter/Space 핸들링 자동.",
+      "thumbnailAlt 지정 권장 — 장식 이미지면 빈 문자열.",
+      "price 숫자는 시각 강조를 위해 Lato 폰트지만 일반 텍스트 — screen reader 가 그대로 읽음.",
+    ],
+    usagePolicy: {
+      useFor: [
+        "Geniet 헬시딜/캐시딜 상품 카드 (가로 스크롤 행, 그리드)",
+        "할인율 + 가격 + 단위가 핵심인 진열 카드",
+      ],
+      doNotUseFor: [
+        "장문 설명이 핵심인 콘텐츠 → Card",
+        "사용자 프로필 / 상담사 → UserCard / CounselorCard",
+        "쿠폰 진열 → CouponCard",
+        "할인 전 원가/취소선 등 4개 이상 가격 메타가 필요한 경우 (가이드 위반)",
+      ],
+      limits: {
+        titleLines: 2,
+        badgeAndSoldOutMutuallyExclusive: true,
+        fixedWidth: "140px (변경 비권장)",
+        priceFontFamily: "Lato (숫자 전용)",
+      },
+    },
   },
   CouponCard: {
     name: "CouponCard",
@@ -2037,6 +2098,162 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       '리스트 썸네일: aspectRatio="1/1" rounded="md" width=64',
       '프로필성 이미지지만 Avatar로 처리 어려운 케이스: aspectRatio="1/1" rounded="pill"',
     ],
+  },
+  PopularPosts: {
+    name: "PopularPosts",
+    summary:
+      "사이드바용 커뮤니티 인기글 랭킹 모듈. Header(제목 + 더보기) + Tabs(기간/정렬 pill 5개) + ranked row 리스트 의 3단 레이어. " +
+      "Row = Rank(Bold) + Title(truncate) + Count(red, `[N]` / 999 초과 `[+999]`). " +
+      "PC 사이드바 폭(≈353w) 가정 — 모바일은 별도 모듈로 분기.",
+    figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=148-68",
+    pitfalls: [
+      "Rank 는 컴포넌트 내부에서 두 자리 zero-padded 로 자동 변환 — `items` 에 별도 rank 필드 넘기지 말 것. 배열 순서가 곧 순위.",
+      "Count 는 컴포넌트가 자동 포맷 (`[N]` / 999 초과 `[+999]`) — 외부에서 문자열로 가공해서 넘기지 말 것.",
+      "최대 10개 row 까지만 노출하는 것이 디자인 가이드. 초과분은 시각적으로는 잘리지 않지만, `onMoreClick` 으로 별도 페이지/모달로 분기할 것.",
+      "Active 탭은 한 그룹에 하나만 — `activeTabKey` 단일 키 prop 사용. 자동으로 brand-subtle pill + brand text 톤 적용.",
+      "탭 active 톤은 브랜드 시멘틱(`cv.surface.brandSubtle` + `cv.textRole.brand`)으로 자동 매핑 — raw hex 로 override 금지. 브랜드별 실제 색은 `packages/tokens/src/brands/{geniet,nudge-eap,trost}.semantic.ts` SSOT 참조.",
+      "Rank 색을 강조색(red/brand 등)으로 변경 금지 — Rank 는 보조 정렬 지표일 뿐, Count(red) 와 시각 위계 충돌.",
+      "Count 를 title 왼쪽에 두는 등 순서 변경 금지 — 항상 rank → title → count.",
+      "Title 은 한 줄 truncate 고정 (CSS `text-overflow: ellipsis`). 두 줄 wrap 시 시각적 그리드 깨짐.",
+      "`onMoreClick` 미지정 시 더보기 영역이 숨겨짐 — '더보기' 가 필요한 화면이면 콜백 필수.",
+      "`tabs` 없이도 동작 (탭 없는 단일 랭킹) — 빈 배열/undefined 면 탭 영역 자체 숨김.",
+    ],
+    recommended: [
+      "기본 사이드바 (5탭 + 더보기 + 클릭): <PopularPosts tabs={tabs} activeTabKey={key} onTabChange={setKey} items={items} onMoreClick={goList} onItemClick={(item)=>nav(item.id)} />",
+      "탭 없는 단일 랭킹 (단일 기간): <PopularPosts items={items} onMoreClick={goList} />",
+      "items 길이는 10 이하로 유지 — 11번째 row 부터는 별도 페이지/모달로 분기 (가이드 준수).",
+    ],
+    sizeMatrix: {
+      containerWidth: "353px (PC 사이드바 폭 가정)",
+      containerPadding: "20px (--inset-card-large)",
+      containerRadius: "8px (--radius-md)",
+      containerBorder: "1px var(--semantic-border-subtle-default)",
+      gapBetweenSections: "16px (header ↔ tabs ↔ list) — gap-loose",
+      tabHeight: "32px (pill)",
+      tabPadding: "6px 12px",
+      tabRadius: "pill (height/2 = 16px) — radius.pill 토큰",
+      tabGap: "8px",
+      tabFontActive: "Body3 14/20 Bold",
+      tabFontInactive: "Body3 14/20 Medium",
+      rowHeight: "32px (min) · py 6",
+      rowGap: "4px (rank ↔ title ↔ count)",
+      rankWidth: "21px (두 자리 고정폭)",
+      titleType: "Body3 14/20 Regular · cv.textRole.strong · 한 줄 truncate",
+      countType: "Body3 14/20 Medium · cv.textRole.statusError · whitespace-nowrap",
+      headerTitleType: "Headline5 18/26 Bold · cv.textRole.strong",
+      moreType: "Body3 14/20 Regular · cv.textRole.subtle + 16px chevron",
+    },
+    stateMatrix: {
+      tabDefault: "bg cv.surface.section · text cv.textRole.subtle · Medium",
+      tabHover: "bg cv.surface.subtle · text cv.textRole.strong (PC only)",
+      tabActive: "bg cv.surface.brandSubtle · text cv.textRole.brand · Bold",
+      rowDefault: "static row (button 시멘틱은 onItemClick 있을 때만)",
+      rowHover: "opacity 0.7 (button 일 때만, PC only)",
+      moreHover: "text cv.textRole.strong",
+      note: "탭 active 톤은 시멘틱 토큰 참조이므로 브랜드 theme(`brands/*.semantic.ts`)에 따라 자동 적용. 브랜드별 raw 매핑은 토큰 파일이 SSOT.",
+    },
+    accessibility: [
+      "탭은 role='tab' + aria-selected, 그룹은 role='tablist' 자동 부여 — 외부에서 role 덮어쓰지 말 것.",
+      "Row 클릭이 필요하면 onItemClick 사용 — 자동으로 <button> 으로 렌더되어 키보드 Enter/Space 인터랙션 보장.",
+      "더보기 버튼은 <button type='button'> — form 내부에 두어도 submit 안 됨.",
+    ],
+    usagePolicy: {
+      useFor: [
+        "PC 사이드바 커뮤니티 인기글 랭킹 (메인·카테고리·리스트 페이지 공통)",
+        "기간/정렬 탭으로 전환되는 ranked Top-N 위젯",
+      ],
+      doNotUseFor: [
+        "모바일 화면 (별도 모듈로 분기 — 사이드바 폭 가정)",
+        "11개 이상의 동일 리스트 (별도 페이지·모달로)",
+        "이미지/썸네일 포함 카드형 리스트 → Card 또는 List + ListItem",
+        "텍스트 검색 키워드 트렌드 → TrendingKeywords",
+      ],
+      limits: {
+        maxItems: 10,
+        maxTabs: "5 권장 (스크롤 가능하지만 가독성 저하)",
+        countCap: "999 초과 시 자동 '+999' 캡",
+        rankWidth: "21px 고정 — 두 자리 zero-padded",
+      },
+    },
+  },
+  FloatingCtaBanner: {
+    name: "FloatingCtaBanner",
+    summary:
+      "페이지 하단 sticky CTA 배너. pill (radius 100) + brand border 1px + shadow. " +
+      "좌측 일러스트(leadingIcon) + 캡션(보조) + 강조 CTA 텍스트 + 우측 chevron 아이콘. " +
+      "기본 `floating=true` 시 position:fixed 로 화면 하단 중앙 자동 고정.",
+    figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=91-3",
+    pitfalls: [
+      "Chevron 은 텍스트 '>' 로 그리지 말 것 — 내부에서 `<ChevronRightIcon>` 아이콘으로 자동 렌더. showArrow=false 로 숨김만 가능.",
+      "Border / CTA / Arrow 색은 모두 시멘틱(`cv.borderRole.brand`, `cv.textRole.brand`) 참조 — raw hex override 금지. 브랜드별 실제 매핑(예: Geniet mint, NudgeEAP blue)은 `packages/tokens/src/brands/*.semantic.ts` 에 정의.",
+      "CTA 텍스트 색은 `cv.textRole.brand` 고정 — underline / weight 변경 / 다른 강조색 적용 금지.",
+      "radius 는 항상 pill (`radius.pill`) — 직사각형 radius 8/12 변형 금지 (Figma DO/Don't 룰).",
+      "floating=true 시 부모에 `position: relative` 가 있어도 화면 fixed — 컨테이너 내부 sticky 가 필요하면 floating=false + 부모에서 직접 position:sticky 처리.",
+      "캡션은 1줄 ellipsis 고정 — 두 줄 wrap 금지. 메시지 길면 ctaText 로 옮기거나 캡션 자체를 줄일 것 (단일 메시지 + 단일 액션 원칙).",
+      "다중 CTA(버튼 2개 이상) 사용 금지 — 이 컴포넌트는 단일 액션 floating 진입 배너 전용.",
+      "PC size 는 height 68 / Mobile size 는 height 60 — 두 사이즈 외에 커스텀 height 금지 (specs 표 기준).",
+    ],
+    recommended: [
+      '검색 결과 0건 또는 카테고리 진입 시: <FloatingCtaBanner caption="찾는 음식이 없으신가요?" ctaText="음식 직접 등록하러 가기" leadingIcon={<SaladIcon/>} onClick={…} />',
+      '반응형: 모바일 < 768px 에서 size="mobile" 로 분기 (자동 분기 없음 — 외부 미디어쿼리/JS 로 결정).',
+      "Bottom Nav / Safe Area 가 있으면 `bottomOffset` 을 그 만큼 더해 겹침 방지.",
+      "인라인 배치가 필요하면 floating=false — 부모 폭에 맞춰 inline-flex 로 렌더.",
+    ],
+    sizeMatrix: {
+      pcWidth: "440px (min-width) — fixed 추천",
+      pcHeight: "68px",
+      pcPadding: "14px 24px 14px 16px",
+      pcIcon: "48 × 48",
+      pcCaption: "Body3 14/20 Regular · cv.textRole.subtle",
+      pcCtaText: "Body1 16/24 Bold · cv.textRole.brand",
+      pcArrow: "20 × 20 · ChevronRightIcon · currentColor (brand)",
+      pcBottomOffset: "32px (기본)",
+      pcGap: "12px (icon ↔ text)",
+      mobileWidth: "288px (min-width)",
+      mobileHeight: "60px",
+      mobilePadding: "12px 16px 12px 12px",
+      mobileIcon: "32 × 32",
+      mobileCaption: "Caption2 12/16 Regular · cv.textRole.subtle",
+      mobileCtaText: "Caption1 13/18 Bold · cv.textRole.brand",
+      mobileArrow: "16 × 16 · ChevronRightIcon",
+      mobileBottomOffset: "16px (기본)",
+      mobileGap: "8px",
+      radius: "pill (radius.pill = 9999) — 완전 캡슐형",
+      border: "1px solid cv.borderRole.brand",
+      background: "cv.surface.default (#FFFFFF 고정)",
+      shadow: "shadow[2] = 0 4px 12px rgba(0,0,0,0.10) (가이드의 0.08 와 가장 가까운 토큰)",
+    },
+    stateMatrix: {
+      default: "border brand · shadow overlay (shadow[2])",
+      hover: "translateY(-1px) · shadow[3] — PC only",
+      active: "translateY(0) · shadow[1]",
+      floating:
+        "position:fixed · left:50% · translateX(-50%) · z-index sticky(200) · bottom=bottomOffset",
+      note: "Disabled 상태는 정의하지 않음 — CTA 진입 트리거이므로 항상 active.",
+    },
+    accessibility: [
+      "전체가 <button type='button'>. ariaLabel 미지정 시 ctaText 가 string 이면 그걸 그대로 사용.",
+      "leadingIcon / arrow 는 aria-hidden — 음성 인식 시 ctaText 만 읽힘.",
+      "ctaText 가 ReactNode(아이콘 포함 등) 면 ariaLabel 명시적으로 넘길 것.",
+    ],
+    usagePolicy: {
+      useFor: [
+        "음식/검색 결과 0건 페이지 하단 floating 진입 배너 (Geniet 식단 도메인 패턴)",
+        "단일 메시지 + 단일 액션의 하단 sticky CTA 모듈",
+      ],
+      doNotUseFor: [
+        "다중 액션 (버튼 2개 이상) — Bottom Sheet 또는 Modal",
+        "긴 안내문 + 액션 — Banner (페이지 상단 띠) 또는 CrisisCallout",
+        "토스트성 일시 알림 → Toast / Snackbar",
+        "사이드바 카드형 진입 → Card",
+      ],
+      limits: {
+        captionLines: 1,
+        ctaTextLines: 1,
+        actionsPerBanner: 1,
+        radiusVariants: "pill 만 (직사각형 금지)",
+      },
+    },
   },
 };
 
@@ -2343,7 +2560,7 @@ export interface PatternGuide {
   ruleGroups?: Array<{ heading: string; items: string[] }>;
   /** docs 사이트의 회피 패턴 subheading 용. */
   avoidGroups?: Array<{ heading: string; items: string[] }>;
-  metrics?: Record<string, string | number>;
+  metrics?: Record<string, string | number | boolean>;
   referenceInputs?: {
     accepted: string[];
     minimum: string;
@@ -3031,6 +3248,88 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       selectionPriority:
         "brand-specific → nudge-eap-default → mockup-default(MockupLinear/MockupBold) → generated-custom",
       relatedPatterns: "icon-color, iconography",
+    },
+  },
+
+  "cashpobi-icon-library": {
+    name: "cashpobi-icon-library",
+    summary:
+      "캐포비(캐시워크 for Business) admin 전용 아이콘 라이브러리. 46 icons · 6 categories (Navigation / Action / Status / Social / GNB / Selection). " +
+      "현재는 카탈로그 메타데이터만 등록되어 있고 SVG 자산은 미동기화 — 디자인팀에서 SVG export 받기 전까지 공용 @nudge-eap/icons 의 매칭 아이콘으로 fallback.",
+    rules: [
+      "Navigation (7): chevron-up/down/left/right, arrow-up/down/right.",
+      "Action (9): close, plus, search, delete, edit, delete-circle, refresh, filter, search-delete.",
+      "Status (8): info, question, caution, error, check, check-circle-on, check-circle-off, open.",
+      "Social (8): like, comment, share, ripple, bubble, message-quiz, banner, calendar.",
+      "GNB (8): gnb-banner, gnb-channel, gnb-chat, gnb-quiz, gnb-member, gnb-setting, gnb-cash, download.",
+      "Selection (6): radio-off/on, checkbox-off/on/error/on-green. Checkbox 의 'on-green' 은 success 표시용 별도 variant.",
+      "캐포비 모드에서 brand prefix 아이콘이 별도 제공되기 전까지는 공용 아이콘을 사용하되, 의미가 같은 캐포비 카탈로그 항목을 우선 fallback 후보로 본다.",
+      "동일 카테고리(Action / Status 등) 내 아이콘은 동일 weight / stroke 로 통일.",
+      "Checkbox 의 error / on-green 분기는 가이드에 명시된 의미(에러 표시 / 성공 표시) 그대로 사용.",
+    ],
+    avoid: [
+      "SVG 가 도착하기 전 임의로 다른 출처(아이콘셋, lucide 등) 아이콘을 캐포비 화면에 섞지 말 것.",
+      "공용 아이콘과 캐포비 아이콘 의미가 충돌하면 캐포비 admin 화면에서는 캐포비 우선.",
+    ],
+    metrics: {
+      totalIcons: 46,
+      categories: 6,
+      svgSyncStatus: "pending — 디자인팀에서 export 받기 전까지 공용 아이콘 fallback",
+      relatedPatterns: "iconography, cashpobi-button, cashpobi-input",
+    },
+  },
+
+  "cashpobi-button": {
+    name: "cashpobi-button",
+    summary:
+      "캐포비 admin 의 Button 카탈로그 — 5 스타일 × 5 사이즈 × 3 상태 + TextButton + IconButton.",
+    rules: [
+      "5 스타일: Solid/Primary · Solid/Neutral · Weak/Neutral · Outlined/Primary · Outlined/Neutral.",
+      "5 사이즈: X-Large 52px · Large 48px · Medium 44px · Small 40px · Mini 36px.",
+      "Solid/Primary 는 #FFD200 배경 + 검정 텍스트(high-contrast) — 캐포비 시그니처. 텍스트 색을 흰색으로 바꾸지 않는다.",
+      "Disabled bg 는 노란 톤(Yellow/100 #FFFAE5). gray 톤(neutral/300) 으로 바꾸지 않는다 — 시각 위계 가이드.",
+      "TextButton: Large(38px) / Medium(32px) × Default/Hover/Disabled.",
+      "IconButton: X-Large(48) / Large(44) / Medium(40) / Small(32) × Default/Hover/Disabled. (총 12 variants)",
+      "터치/마우스 타겟 ≥ 36px (Mini) — admin 데스크톱은 그래도 Medium(44) 이상 권장.",
+      "Outlined/Primary 텍스트는 Yellow/700 (#FEAF01) — Outlined 텍스트가 그린 색이면 안 됨 (가이드 명시).",
+    ],
+    avoid: [
+      "Solid/Primary 의 텍스트를 흰색으로 바꾸지 말 것 — 가이드 위반 + 가독성 저하.",
+      "Mini 사이즈를 본문 CTA 로 사용하지 말 것 — table row inline action 같은 좁은 영역 한정.",
+    ],
+    metrics: {
+      sizes: "X-Large=52 · Large=48 · Medium=44 · Small=40 · Mini=36 (px)",
+      styles: 5,
+      states: "default / hover / disabled",
+      textButtonSizes: "Large=38 / Medium=32 (px)",
+      iconButtonSizes: "X-Large=48 / Large=44 / Medium=40 / Small=32 (px)",
+      relatedPatterns: "cta-group, cashpobi-input",
+    },
+  },
+
+  "cashpobi-input": {
+    name: "cashpobi-input",
+    summary:
+      "캐포비 admin 의 Input/Form 컴포넌트 카탈로그. 8 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
+    rules: [
+      "TextInput (5 states), TextField (Label+Input+Helper, 5 states), Dropdown (Default/Hover/Active/Error/Disabled), DateInput (5 states), Textarea (5 states), Checkbox (4 variants), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션).",
+      "Input/Border/Focus 는 ★ Neutral/900 (#111111) 검정 — 다른 브랜드(brand 색 focus) 와 달리 캐포비 admin 은 검정 outline.",
+      "Input/BG/Disabled = Neutral/50 (#FAFAFA), Input/Border/Default = Neutral/200 (#EEEEEE).",
+      "Checkbox 의 'on-green' SVG 가 별도 — success 표시(이미 처리 완료) 의미. 일반 checked 와 구분.",
+      "ImageUpload 는 캐포비 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.",
+      "Input focus 는 brand 색(노랑) 이 아니라 검정 outline. 가이드 명시.",
+      "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline.",
+    ],
+    avoid: [
+      "Input focus 를 노란색으로 바꾸지 말 것 — 가이드 위반.",
+      "ImageUpload Error 상태에서 박스 자체를 빨갛게 칠하지 말 것 — border + helper text 로만 표현.",
+    ],
+    metrics: {
+      components:
+        "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · ImageUpload · ActionChip",
+      defaultStates: "default / typing / error / disabled / complete",
+      focusBorder: "#111111 (Neutral/900, 검정)",
+      relatedPatterns: "cashpobi-button, dropdown",
     },
   },
 };

@@ -41,8 +41,13 @@ export type {
   SpacingOverrides,
   ElevationOverrides,
 } from "./brands";
-export { nudgeEapTheme, nudgeEapSemantic, trostTheme, genietTheme } from "./brands";
-export type { NudgeEapSemanticTokens, TrostSemanticTokens, GenietSemanticTokens } from "./brands";
+export { nudgeEapTheme, nudgeEapSemantic, trostTheme, genietTheme, cashpobiTheme } from "./brands";
+export type {
+  NudgeEapSemanticTokens,
+  TrostSemanticTokens,
+  GenietSemanticTokens,
+  CashpobiSemanticTokens,
+} from "./brands";
 export {
   trostYellow,
   trostCobalt,
@@ -63,4 +68,15 @@ export {
   genietNeutral,
   genietStatus,
   genietSemantic,
+} from "./brands";
+export {
+  cashpobiCommon,
+  cashpobiNeutral,
+  cashpobiYellow,
+  cashpobiCoralRed,
+  cashpobiBlue,
+  cashpobiGreen,
+  cashpobiBrown,
+  cashpobiStatus,
+  cashpobiSemantic,
 } from "./brands";

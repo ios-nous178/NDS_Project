@@ -12,7 +12,7 @@ interface ComponentEntry {
   description: string;
   hasStory: boolean;
   /** 브랜드별 토큰 오버라이드 존재 여부 */
-  brands: { "nudge-eap": boolean; trost: boolean; geniet: boolean };
+  brands: { "nudge-eap": boolean; trost: boolean; geniet: boolean; cashpobi: boolean };
 }
 
 const components: ComponentEntry[] = [
@@ -23,7 +23,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "CTA, 액션 버튼",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: true },
+    brands: { "nudge-eap": true, trost: true, geniet: true, cashpobi: false },
   },
   {
     name: "Badge",
@@ -31,7 +31,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "상태/카테고리 라벨",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: true },
+    brands: { "nudge-eap": true, trost: true, geniet: true, cashpobi: false },
   },
   {
     name: "Chip",
@@ -39,7 +39,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "필터, 태그 선택",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: false },
+    brands: { "nudge-eap": true, trost: true, geniet: false, cashpobi: false },
   },
   {
     name: "Card",
@@ -47,7 +47,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "콘텐츠 카드 (Compound)",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: true },
+    brands: { "nudge-eap": true, trost: true, geniet: true, cashpobi: false },
   },
   {
     name: "Avatar",
@@ -55,7 +55,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "프로필 이미지/이니셜",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "Divider",
@@ -63,7 +63,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "구분선",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "Banner",
@@ -71,7 +71,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "알림/공지 배너",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: true },
+    brands: { "nudge-eap": true, trost: true, geniet: true, cashpobi: false },
   },
   {
     name: "Skeleton",
@@ -79,7 +79,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "로딩 플레이스홀더",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "DSHighlight",
@@ -87,7 +87,7 @@ const components: ComponentEntry[] = [
     status: "beta",
     description: "DS 강조 유틸",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
 
   // ── 입력 ──
@@ -97,7 +97,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "텍스트 입력 필드",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: true },
+    brands: { "nudge-eap": true, trost: true, geniet: true, cashpobi: false },
   },
   {
     name: "SearchInput",
@@ -105,7 +105,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "검색 입력 (Compound)",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "Select",
@@ -113,7 +113,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "드롭다운 선택",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "Checkbox",
@@ -121,7 +121,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "체크박스",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "Toggle",
@@ -129,7 +129,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "온/오프 토글",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: false },
+    brands: { "nudge-eap": true, trost: true, geniet: false, cashpobi: false },
   },
   {
     name: "FieldActionRow",
@@ -137,7 +137,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "필드+액션 행",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
 
   // ── 네비게이션 ──
@@ -147,7 +147,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "탭 전환 (line/pill/square)",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "Pagination",
@@ -155,7 +155,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "페이지 네비게이션",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "Breadcrumb",
@@ -163,7 +163,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "경로 표시",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
 
   // ── 레이아웃 ──
@@ -173,7 +173,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "헤더 (Compound, 1단/2단)",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: true },
+    brands: { "nudge-eap": true, trost: true, geniet: true, cashpobi: false },
   },
   {
     name: "AppFooter",
@@ -181,7 +181,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "푸터 (Info/TabBar)",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: true },
+    brands: { "nudge-eap": true, trost: true, geniet: true, cashpobi: false },
   },
   {
     name: "TrendingKeywords",
@@ -189,7 +189,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "인기 검색어",
     hasStory: true,
-    brands: { "nudge-eap": false, trost: true, geniet: false },
+    brands: { "nudge-eap": false, trost: true, geniet: false, cashpobi: false },
   },
 
   // ── 피드백 ──
@@ -199,7 +199,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "모달 다이얼로그",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: false },
+    brands: { "nudge-eap": true, trost: true, geniet: false, cashpobi: false },
   },
   {
     name: "BottomSheet",
@@ -207,7 +207,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "하단 시트",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: false },
+    brands: { "nudge-eap": true, trost: true, geniet: false, cashpobi: false },
   },
   {
     name: "Popup",
@@ -215,7 +215,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "확인/취소 팝업",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "Toast",
@@ -223,7 +223,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "토스트 알림",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: true, geniet: false },
+    brands: { "nudge-eap": true, trost: true, geniet: false, cashpobi: false },
   },
   {
     name: "EmptyState",
@@ -231,7 +231,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "빈 상태 안내",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "ProgressBar",
@@ -239,7 +239,7 @@ const components: ComponentEntry[] = [
     status: "stable",
     description: "진행률 표시",
     hasStory: true,
-    brands: { "nudge-eap": true, trost: false, geniet: false },
+    brands: { "nudge-eap": true, trost: false, geniet: false, cashpobi: false },
   },
 
   // ── 계획/미구현 ──
@@ -249,7 +249,7 @@ const components: ComponentEntry[] = [
     status: "planned",
     description: "접기/펼치기 (FAQ 등)",
     hasStory: false,
-    brands: { "nudge-eap": false, trost: false, geniet: false },
+    brands: { "nudge-eap": false, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "StarRating",
@@ -257,7 +257,7 @@ const components: ComponentEntry[] = [
     status: "planned",
     description: "별점 입력/표시",
     hasStory: false,
-    brands: { "nudge-eap": false, trost: false, geniet: false },
+    brands: { "nudge-eap": false, trost: false, geniet: false, cashpobi: false },
   },
   {
     name: "StickyBottomBar",
@@ -265,7 +265,7 @@ const components: ComponentEntry[] = [
     status: "planned",
     description: "하단 고정 CTA 바",
     hasStory: false,
-    brands: { "nudge-eap": false, trost: false, geniet: false },
+    brands: { "nudge-eap": false, trost: false, geniet: false, cashpobi: false },
   },
 ];
 
