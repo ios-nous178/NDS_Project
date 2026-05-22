@@ -1479,5 +1479,29 @@
     "figmaNodeId": "91:3",
     "usageSummary": "음식 카테고리 / 검색 결과 페이지 하단 floating 진입 배너. 단일 메시지 + 단일 액션",
     "notes": "PC 440×68 / Mobile 288×60. floating=true 시 position:fixed 자동. Chevron 은 텍스트 '>' 가 아닌 ChevronRightIcon 아이콘."
+  },
+  {
+    "name": "ImageUpload",
+    "category": "입력",
+    "status": "implemented",
+    "description": "150×150 preview + 업로드 버튼(135×44) + 사이즈 안내. state 별 시각 분기 (empty/uploaded/error)",
+    "storybookTitle": "Components/ImageUpload",
+    "docsPath": "/docs/components/image-upload",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3078-617",
+    "figmaNodeId": "3078:617",
+    "usageSummary": "캐포비 admin 의 단일 이미지 업로드 — 콘텐츠/상품/배너 등록 폼. 권장 사이즈 명시 패턴 (200×200 등)",
+    "notes": "Error 는 dashed red border + soft red bg, 박스 전체를 빨갛게 칠하지 않음. <input type=file> 은 internal trigger — 별도 file picker 마운트 금지. uploaded 상태에서만 우상단 X(InputdeleteIcon) 노출."
+  },
+  {
+    "name": "ActionChip",
+    "category": "입력",
+    "status": "implemented",
+    "description": "TextField helper/description 영역 옆 inline 보조 액션 chip. 아이콘(14px) + 라벨(12px Medium)",
+    "storybookTitle": "Components/ActionChip",
+    "docsPath": "/docs/components/action-chip",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3082-976",
+    "figmaNodeId": "3082:976",
+    "usageSummary": "캐포비 admin 폼의 보조 액션 (예시 이미지 / 수정 / 다운로드). TextField helper 영역과 inline 으로 같은 줄.",
+    "notes": "별도 row 로 떨어뜨리지 말고 helper 와 inline. 주요 CTA 자리에는 사용 금지 (시각 위계 캡션 톤). 아이콘은 14px 강제(`width={14} height={14}`)."
   }
 ]

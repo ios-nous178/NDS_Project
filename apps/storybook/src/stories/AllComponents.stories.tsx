@@ -107,6 +107,8 @@ import {
   TrendingKeywords,
   PopularPosts,
   FloatingCtaBanner,
+  ImageUpload,
+  ActionChip,
   UserCard,
   VotePoll,
   WebHeader,
@@ -1640,6 +1642,14 @@ const PREVIEWS: Record<string, PreviewRender> = {
           </svg>
         }
       />
+    </div>
+  ),
+  ImageUpload: () => <ImageUpload state="empty" />,
+  ActionChip: () => (
+    <div style={{ display: "inline-flex", gap: 8 }}>
+      <ActionChip label="예시 이미지" />
+      <ActionChip label="수정" />
+      <ActionChip label="다운로드" />
     </div>
   ),
 };

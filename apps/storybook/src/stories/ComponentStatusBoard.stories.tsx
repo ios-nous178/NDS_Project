@@ -267,6 +267,22 @@ const components: ComponentEntry[] = [
     hasStory: false,
     brands: { "nudge-eap": false, trost: false, geniet: false, cashpobi: false },
   },
+  {
+    name: "ImageUpload",
+    category: "입력",
+    status: "stable",
+    description: "150×150 preview + 업로드 버튼 + 사이즈 안내 (캐포비 admin 표준)",
+    hasStory: true,
+    brands: { "nudge-eap": false, trost: false, geniet: false, cashpobi: true },
+  },
+  {
+    name: "ActionChip",
+    category: "입력",
+    status: "stable",
+    description: "TextField helper 옆 보조 액션 chip (예시/수정/다운로드)",
+    hasStory: true,
+    brands: { "nudge-eap": false, trost: false, geniet: false, cashpobi: true },
+  },
 ];
 
 /* ─── 스타일 상수 ─── */
