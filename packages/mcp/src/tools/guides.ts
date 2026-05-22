@@ -8,6 +8,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   COMPONENT_GUIDES,
   DESIGN_PRINCIPLES,
@@ -17,6 +18,28 @@ import {
   UX_WRITING_GUIDE,
   detectIntentFromText,
 } from "../guides.js";
+
+/**
+ * MCP 패키지 루트. references/*.png 같은 상대경로를 절대경로로 풀어 응답에 함께
+ * 노출하기 위해 사용한다. dist/tools/ 에서 두 단계 올라간 위치가 패키지 루트.
+ */
+const MCP_PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+/** references[].image (패키지 루트 상대경로) 를 절대경로로 풀고, 존재 여부 확인.
+ * ComponentGuide / PatternGuide 양쪽이 동일한 형태의 references 를 갖는다. */
+function resolvePatternReferenceImages(
+  refs: NonNullable<(typeof PATTERN_GUIDES)[string]["references"]>,
+) {
+  return refs.map((r) => {
+    if (!r.image) return r;
+    const absolute = path.resolve(MCP_PACKAGE_ROOT, r.image);
+    return {
+      ...r,
+      imageAbsolutePath: absolute,
+      imageExists: fs.existsSync(absolute),
+    };
+  });
+}
 
 export const ENTRY_TOOL_ADVISORY =
   "이 MCP의 역할은 '별도 외부 목업 프로젝트를 빌드하고 목업을 생성하는 것'입니다. " +
@@ -58,11 +81,16 @@ export function getComponentGuide(name: string) {
       knownGuides: Object.keys(COMPONENT_GUIDES),
     };
   }
+  const resolvedReferences = guide.references
+    ? resolvePatternReferenceImages(guide.references)
+    : undefined;
+  const hasRef = Boolean(guide.figmaNodeUrl) || Boolean(resolvedReferences?.length);
   return {
-    _advisory: guide.figmaNodeUrl
-      ? "Figma 원본 노드 URL이 포함되어 있습니다. 픽셀/색/매트릭스가 의심되면 figmaNodeUrl 을 확인하세요."
+    _advisory: hasRef
+      ? "Figma 원본 노드 URL · 추가 레퍼런스(references[]) 가 포함되어 있습니다. 픽셀/색/매트릭스가 의심되면 figmaNodeUrl · references[].imageAbsolutePath 를 우선 확인하세요."
       : "이 가이드는 아직 Figma 노드와 연결되지 않았습니다. list_figma_sync_status 로 다른 컴포넌트의 sync 상태를 확인할 수 있습니다.",
     ...guide,
+    references: resolvedReferences ?? guide.references,
   };
 }
 
@@ -74,10 +102,18 @@ export function getPatternGuide(name: string) {
       knownGuides: Object.keys(PATTERN_GUIDES),
     };
   }
+  const resolvedReferences = guide.references
+    ? resolvePatternReferenceImages(guide.references)
+    : undefined;
+  const hasRef = Boolean(guide.figmaNodeUrl) || Boolean(resolvedReferences?.length);
   return {
     _advisory:
-      "컴포넌트 API가 아니라 배치/위계/강조 사용량 기준입니다. 목업 작성 전 또는 validate_mockup 경고 수정 시 참고하세요.",
+      "컴포넌트 API가 아니라 배치/위계/강조 사용량 기준입니다. 목업 작성 전 또는 validate_mockup 경고 수정 시 참고하세요." +
+      (hasRef
+        ? " references[].image 는 MCP 패키지 루트 기준 상대 경로 (실제 절대경로는 references[].imageAbsolutePath). 픽셀·여백·상태가 의심되면 이 스크린샷을 우선 확인하세요."
+        : ""),
     ...guide,
+    references: resolvedReferences ?? guide.references,
   };
 }
 

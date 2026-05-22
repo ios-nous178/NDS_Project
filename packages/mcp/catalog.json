@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T05:35:21.237Z",
+  "generatedAt": "2026-05-22T07:12:46.206Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -4635,6 +4635,87 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ShareSheet.d.ts"
+    },
+    {
+      "name": "Sidebar",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "SidebarItem[] | SidebarSection[]"
+        },
+        {
+          "name": "activeKey",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onItemClick",
+          "optional": true,
+          "type": "(item: SidebarItem) => void"
+        },
+        {
+          "name": "width",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "collapsedWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "collapsed",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onToggleCollapse",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "logo",
+          "optional": true,
+          "type": "SidebarLogo"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "subtitle",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "header",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "user",
+          "optional": true,
+          "type": "SidebarUser"
+        },
+        {
+          "name": "fullHeight",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "as",
+          "optional": true,
+          "type": "keyof React.JSX.IntrinsicElements"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Sidebar.d.ts"
     },
     {
       "name": "SignaturePad",

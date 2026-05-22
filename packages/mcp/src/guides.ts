@@ -358,6 +358,16 @@ export interface ComponentGuide {
   brandMatrix?: Record<string, string>;
   /** 출처 Figma 노드 URL (Library 파일) */
   figmaNodeUrl?: string;
+  /** 추가 레퍼런스 (스크린샷 URL · Figma/Zeplin 다중 노드 등). PatternGuide.references 와 동일 형태. */
+  references?: Array<{
+    label: string;
+    /** Figma/Zeplin 또는 외부 URL. image 와 둘 중 하나는 있어야 의미가 있음. */
+    url?: string;
+    /** 패키지 내 상대경로 (`references/...`) — MCP server 가 절대경로로 풀어준다. */
+    image?: string;
+    caption?: string;
+    brand?: "trost" | "geniet" | "cashpobi" | "nudge-eap";
+  }>;
   /** 접근성 가이드 (aria/대비/타겟 사이즈 등) */
   accessibility?: string[];
   interactivePattern?: string;
@@ -508,14 +518,17 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "Card",
     summary:
       "동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. " +
+      "Figma 헤더 제약 4종: 3 Variants · PC & Mobile (반응형) · Image Optional (이미지 없는 변형 허용) · Semantic Token (raw hex / 임의 색 금지). " +
       "Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1~2종만 함께 사용. " +
-      "List = 이미지 없이 텍스트+메타데이터로 나열 (한 페이지 10개 이상, 분류별 식품 리스트), " +
-      "Thumb = 썸네일 + 보조 정보 가로형 (식품 카드, 영양 코칭), " +
-      "Cover = 큰 이미지가 콘텐츠의 핵심 (4-up 그리드, 커뮤니티 콘텐츠). " +
+      "List = 이미지 없이 텍스트+메타데이터로 나열 (트리거: 한 페이지 10개 이상 / 분류별 식품 리스트), " +
+      "Thumb = 썸네일 + 보조 정보 가로형 (트리거: 콘텐츠 식별이 텍스트만으로 부족 / 식품 카드·영양 코칭), " +
+      "Cover = 큰 이미지가 콘텐츠의 핵심 (트리거: 그리드로 시각적 임팩트 필요 / 4-up·2-up 그리드·커뮤니티). " +
+      "도메인 출처: 지니어트(Geniet) 칼로리계산기 허브 페이지의 식품 리스트·영양 토픽·커뮤니티 카드. " +
       "Compound 슬롯(순서 고정, 모두 Optional): Card.Root / Thumbnail / Avatar / Chips / Title / Description / Metadata / Divider / Cta / FooterText. (legacy: Header / Body / Footer 도 유지). " +
       "Flat API props: thumbnail, avatar, chips, title, description, metadata, divider, cta, footerText, children. " +
-      "Anatomy 슬롯 (Figma SSOT): Media · Title(필수) · Meta · Status · Action — 한 카드 안에서 동일 위치의 정보는 항상 같은 의미. " +
-      "도메인 카드(헬시딜·식품 검색·커뮤니티 등)는 새 variant 를 만들지 말고 Base variant 위에 Composition 슬롯(kcal chip / star rating / promotion badge / nutrition tag row)을 얹어 표현.",
+      "Anatomy 슬롯 (Figma SSOT, 한 카드 안에서 동일 위치 = 항상 같은 의미): Media(썸네일/커버, Thumb=정사각·Cover=4:3·단색 폴백 허용) · Title(필수, 카드 식별 핵심 라벨, 최대 2줄 + ellipsis, Body 2~H4 Bold) · Meta(보조 정보, 1줄, ' · ' 구분자, Caption Regular) · Status(상태 Badge, Success/Caution/Error 중 1개만) · Action(탭/이동 트리거 — 카드 전체 클릭이 기본, 내부 CTA 버튼 X) · Composition(optional, 도메인 카드가 Base 위에 얹는 슬롯). " +
+      "도메인 카드(헬시딜·식품 검색·커뮤니티·랭킹·리뷰·식단 추천 등)는 새 variant 를 만들지 말고 Base variant 위에 Composition 슬롯을 얹어 표현 — 슬롯 카탈로그 16종(kcal chip · star rating · promotion badge · nutrition tag row · like overlay · author meta · discount badge · strikethrough price · shipping chip · certification chip · ranking leading · macro nutrition bar · category banner header · friend social proof · trending count · forum meta row)은 `get_guide({ topic: 'pattern:card-composition' })` 에서 슬롯별 사용 룰·위치·한도·금지 조합을 확인. " +
+      "Section/Group Card(카드 안에 list rows 를 담는 컨테이너 — '루테인 포함 영양제 · 총 84개 제품' 같은 묶음)는 단일 Card 가 아닌 별도 패턴 — `get_guide({ topic: 'pattern:card-section' })` 참고.",
     figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=131-1769",
     pitfalls: [
       "[Figma 권위 룰] Variant 혼용 금지 — 한 그리드 안에서 List/Thumb/Cover 를 섞으면 위계가 충돌. 한 화면에 1~2종만, 그리드 내부는 1종만.",
@@ -543,7 +556,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "List variant — 이미지 없이 Title + Meta. 분류된 항목을 좁은 간격으로 노출, 시각 가중치 최저. <Card.Root variant='list'><Card.Title>…</Card.Title><Card.Metadata>…</Card.Metadata></Card.Root>",
       "Thumb variant — 좌측 정사각 썸네일 + 우측 Title/Meta. 카테고리/식품 목록의 기본 카드. <Card.Root variant='thumb'><Card.Thumbnail/><Card.Title>…</Card.Title><Card.Metadata>…</Card.Metadata></Card.Root>",
       "Cover variant — 상단 큰 이미지(1:1 또는 4:3) + 하단 Title/Meta. 4-up / 2-up 그리드용. <Card.Root variant='cover'><Card.Thumbnail aspect='1:1'/><Card.Title>…</Card.Title><Card.Metadata>…</Card.Metadata></Card.Root>",
-      "Composition Patterns (도메인 카드) — Base variant 선택 후 슬롯을 얹는다. variant 를 새로 만들지 않음. 예: Food Browse Card = Card.List · no-media + Slot1 kcal chip(chip tinted brand xs) + Slot2 star rating + 리뷰수 + 식단기록(Bold #FF3258) + Slot3 promotion badge(top-right absolute, 리뷰 없는 카드만) + Slot4 nutrition tag row(chip/nutrition/* 0~3개, success/info/warning/critical 톤).",
+      "Composition Patterns (도메인 카드) — Base variant 선택 후 Composition 슬롯을 얹는다. variant 를 새로 만들지 않음. 슬롯 16종 전체 카탈로그·위치·한도·금지 조합은 `get_guide({ topic: 'pattern:card-composition' })`.",
+      "도메인 카드 예시 매핑 (Figma SSOT) — 헬시딜 랭킹 카드 = Cover + Slot7(discount badge) + Slot8(strikethrough+sale price) + Slot2(star rating) + Slot9(shipping chip) + Slot10(certification chip). 음식 리뷰 카드 = Cover + Slot5(like overlay) + Slot6(author meta) + Slot2(star rating). 다이어트·혈당 추천 카드 = Cover + Slot13(category banner header) + Slot4(nutrition tag row) + Slot12(macro nutrition bar) + Slot14(friend social proof). 지금 뜨는 한식 = List + Slot11(ranking leading) + Slot1(kcal chip) + Slot15(trending count). 커뮤니티 게시글 = List + Slot16(forum meta row).",
+      "Section/Group Card (카드 안에 list rows 묶음 — 예: '루테인 포함 영양제 · 총 84개 제품') — 단일 Card 의 variant 가 아니라 별도 컨테이너 패턴. 룰·메트릭은 `get_guide({ topic: 'pattern:card-section' })`.",
       "Action 패턴 — 카드 전체가 클릭 영역. <Card.Root clickable onClick={…}>. 내부에 Solid/Outlined CTA 버튼 두지 않음. 섹션 하단 '더보기' 는 Card 가 아니라 Section 의 CTA.",
       "Thumb 폴백 — 이미지가 없을 때 Brand Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘.",
     ],
@@ -561,15 +576,17 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "컬럼별 비교가 핵심인 데이터 → Table",
         "시간순 연속 정보 (알림·채팅) → Feed / List",
         "탭·필터·내비게이션 역할 → Chip / Navigation",
+        "주의/경고/안내 메시지 + bullet list + expand/collapse (예: '⚠ 섭취 주의사항') → Notice / Banner (caution tone) — Brand soft bg + caution icon + expand/collapse 패턴은 Card 가 아님",
+        "관련 row 묶음을 외곽 보더로 포장한 컨테이너 (예: '루테인 포함 영양제 · 총 84개 제품') → Card 가 아니라 Section Card 별도 패턴 `get_guide({ topic: 'pattern:card-section' })`",
         "장식용 — 동일 형식 반복이 아니면 Card 가 아님",
       ],
       limits: {
         variantUsageList:
-          "이미지 없이 텍스트·메타데이터로 짧게 나열할 때. 한 페이지 10개 이상. 분류별 식품 리스트.",
+          "사용 시점: 이미지 없이 텍스트와 메타데이터로 짧게 나열할 때 (분류별 식품 리스트). 트리거: 한 페이지에 10개 이상 노출될 때.",
         variantUsageThumb:
-          "썸네일 + 보조 정보 가로형. 콘텐츠 식별이 텍스트만으로 부족할 때. 식품·영양 코칭.",
+          "사용 시점: 썸네일과 보조 정보를 함께 보여줘야 할 때 (식품 카드, 영양 코칭 가로형). 트리거: 콘텐츠 식별이 텍스트만으로 부족할 때.",
         variantUsageCover:
-          "큰 이미지가 콘텐츠의 핵심. 4-up·2-up 그리드로 시각적 임팩트. 식단 사진·커뮤니티.",
+          "사용 시점: 큰 이미지가 콘텐츠의 핵심일 때 (식단 사진 4-up 그리드, 커뮤니티 콘텐츠). 트리거: 그리드 형태로 시각적 임팩트가 필요할 때.",
         titleRequired: 1,
         variantsPerScreen: "1~2종",
         variantsPerGrid: 1,
@@ -936,6 +953,35 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     interactivePattern:
       "그룹 단위로 onValueChange 한 번만 부착. 개별 Radio에 onCheckedChange 부착하지 말 것.",
+  },
+  Sidebar: {
+    name: "Sidebar",
+    summary:
+      "어드민/CMS용 좌측 수직 내비게이션. 캐포비(Cashpobi) Figma 168:1250 / 290:1593 기준으로 정합. " +
+      "flat items 배열 또는 SidebarSection[] (라벨 그룹) 둘 다 지원, 1단계 서브메뉴 + 뱃지 + collapsed(64px) 가능.",
+    figmaNodeUrl:
+      "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B5%AD-%EC%BA%90%EC%8B%9C%EC%9B%8C%ED%81%AC_WEB-Dev?node-id=168-1250",
+    pitfalls: [
+      "items prop 은 flat SidebarItem[] 또는 SidebarSection[] 둘 다 받지만, **섹션 라벨이 필요하면** SidebarSection[] 으로 넘길 것. flat 배열 안에 빈 객체로 'spacer' 만들지 말 것.",
+      "활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.",
+      "캐포비 브랜드는 `data-brand='cashpobi'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
+      "GNB 아이콘은 brand-specific 우선 — 캐포비에서는 `CashpobiGnbBannerIcon`/`CashpobiGnbCashIcon`/`CashpobiGnbChannelIcon`/`CashpobiGnbChatIcon`/`CashpobiGnbMemberIcon`/`CashpobiGnbQuizIcon`/`CashpobiGnbSettingIcon` 7종 사용.",
+      "서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).",
+      "collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).",
+      "footer 와 user 를 동시에 주면 footer 가 우선. user 는 'avatar + 이름 + 역할' 정형 패턴 단축이라 footer 가 있으면 무시.",
+    ],
+    recommended: [
+      "<Sidebar items={items} activeKey={key} onItemClick={(it) => navigate(it.key)} user={{ name, role }} />",
+      "섹션 그룹: items={[{ key: 'content', label: '콘텐츠 운영', items: [...] }, { key: 'system', label: '시스템', items: [...] }]}",
+      "icon-only 사이드바: collapsed + onToggleCollapse 페어로 controlled. 토글 버튼은 헤더에 자동 노출.",
+      "뱃지: item.badge=12 (숫자) 또는 ReactNode. 빨간 dot 만 보이면 NotificationItem 의 dot 패턴을 참고.",
+    ],
+    interactivePattern:
+      "활성 키 관리는 호스트 라우터에서 결정 (activeKey={location.pathname}). onItemClick 은 navigation 트리거용.",
+    accessibility: [
+      "활성 아이템에 aria-current='page' 가 자동 부착됨 — 추가로 박지 말 것.",
+      "각 item 의 label 이 string 이면 title 도 자동 — collapsed 상태에서 tooltip 역할.",
+    ],
   },
   Slider: {
     name: "Slider",
@@ -1505,6 +1551,233 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     interactivePattern:
       "Logo / Menu / Actions 안의 모든 버튼·링크에 onClick 또는 href 부착 필수. position='sticky' 로 스크롤 시 상단 고정도 가능 (z-index 자동).",
+  },
+  /* ────────────────────────────────────
+     Brand chrome (header / footer / bottom-nav)
+     base AppBar/AppFooter 대신 brand 별 화면에서는 이걸 사용.
+     ──────────────────────────────────── */
+  GenietAppBar: {
+    name: "GenietAppBar",
+    summary:
+      "Geniet 브랜드 상단 헤더 (Figma 77:2 개편판). desktop = 2단(Search Header 54h + Menu Header 58h, 전체 172h) / mobile = 2단(Row1 50h + Row2 52h, 전체 102h) / webview variant. base AppBar 대신 Geniet 화면에서는 이걸 사용.",
+    figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=77-2",
+    pitfalls: [
+      "Geniet 화면이면 base `<AppBar>` 가 아니라 `<GenietAppBar>` 사용. 검색 pill, '음식 카테고리' 박스, login_area action button(icon 28 + 11px 라벨), CTA mint pill 같은 구조는 DS 가 들고있다 — 인라인 손코딩 금지.",
+      "Search Header 우측은 `actionButtons` (icon+label vertical, 52×46). 단순 텍스트 link 면 `actionButtons` 가 잘못 — 이건 vertical 액션 버튼 슬롯. 예전 `authItems` / `mobileActions` 슬롯은 제거됨.",
+      "Search Header 의 trendingKeywords 는 검색 pill 바로 옆 (gap 24). Menu Header 안에 두지 말 것 (이전 구조와 다름).",
+      "Menu Header 우측 CTA 는 `ctaButtons` 에 tone='outline'(캐시리뷰) / 'tinted'(친구초대) / 'filled' 로 분류. 톤 임의 금지.",
+      "Mobile 검색 placeholder 는 PC와 카피가 다름 — `mobileSearchPlaceholder` 별도 지정. (PC: '궁금한 음식 칼로리...' / Mobile: '음식명, 칼로리, 영양성분, 음식 리뷰 검색')",
+      "Mobile Row1 우측 포인트 chip 은 `pointChip={{ amount: '34,300' }}` — gpoint 아이콘 기본, 텍스트 Medium 14. 사용자 아이콘은 `showUserIcon=true` (기본).",
+      "variant='webview' 일 때 logo 무시 (안 보임). webviewTitle / onBack 만 의미.",
+    ],
+    recommended: [
+      "Desktop: `<GenietAppBar variant='desktop' logo={...} gnbItems={...} activeKey='home' actionButtons={[{ key:'coupon', label:'쿠폰상점', icon:<GenietCouponIcon size={28} /> }, { key:'mypage', label:'마이페이지', icon:<GenietMypageIcon size={28} />, dividerBefore:true }, { key:'login', label:'로그인', icon:<GenietLoginIcon size={28} /> }]} searchPlaceholder='궁금한 음식 칼로리...' trendingKeywords={...} ctaButtons={[{ key:'cashreview', label:'캐시리뷰', icon:<GenietCashreviewIcon size={14} />, tone:'outline' }, { key:'invite', label:'친구초대 이벤트', icon:<GenietConfettiIcon size={14} />, tone:'tinted' }]} />`",
+      "Mobile: `<GenietAppBar variant='mobile' logo={...} mobileSearchPlaceholder='음식명, 칼로리...' pointChip={{ amount:'34,300' }} />` — Row1 logo + 포인트/유저, Row2 햄버거 + 검색.",
+      "Webview: `<GenietAppBar variant='webview' webviewTitle='건강 기록' onBack={...} />` — BackButton 자동.",
+      "카테고리 박스 라벨/링크 변경: `category={{ label: '카테고리', href: '/cat' }}`. 숨기려면 `category={false}`.",
+      "GNB 5탭 기본: 홈 / 커뮤니티 / 헬시딜 / 음식 리뷰 / 기록 (Pretendard Bold 17).",
+    ],
+  },
+  GenietAppFooter: {
+    name: "GenietAppFooter",
+    summary:
+      "Geniet 커머스 고지 푸터 (AppFooter.Info 표준 형태). links / company / extra(통신판매중개자 안내) / logo 슬롯.",
+    pitfalls: [
+      "탭바는 별도 컴포넌트 GenietBottomNav. AppFooter 이름이지만 하단 탭바 아님.",
+      "extra 슬롯은 통신판매중개자 안내 같은 부가 고지 전용 — 일반 콘텐츠 넣지 말 것.",
+    ],
+    recommended: [
+      "`<GenietAppFooter links={...} company={{ name, ceo, address, bizNumber, email, copyright }} extra='지니어트는 통신판매중개자이며...' logo={{ src, width, height }} />`",
+    ],
+  },
+  GenietBottomNav: {
+    name: "GenietBottomNav",
+    summary:
+      "Geniet 5탭 BottomNav (Figma 90:2 — 홈/기록/혜택/리뷰/커뮤니티). 단일 그래픽 + color cascade. label 만 받으면 자동 아이콘 매핑.",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=90-2",
+    pitfalls: [
+      "label 이 '홈/기록/혜택/리뷰/커뮤니티' 중 하나가 아니면 fallback HomeIcon 으로 렌더 — 커스텀 라벨이면 tabs[i].icon 직접 지정.",
+      "active/inactive 그래픽 별도 매핑 금지 — Geniet 정책은 단일 그래픽 + color cascade (currentColor).",
+      "Trost/NudgeEAP 가 쓰는 active/inactive split 아이콘 패턴 (HomeActiveIcon 등) 을 여기 쓰지 말 것.",
+    ],
+    recommended: [
+      "`<GenietBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
+      "스크롤 컨테이너 안: `position='static'` 으로 fixed 빠져나가는 것 방지.",
+      "그림자 끄기: `shadow={false}` (기본 true — Figma 90:2 의 살짝 떠 보이는 가이드)",
+    ],
+  },
+  TrostAppBar: {
+    name: "TrostAppBar",
+    summary:
+      "Trost 상단 헤더. desktop(2단, 1080 max-width, 앱다운로드 CTA + TrendingKeywords) / mobile / webview variant. base AppBar 대신 Trost 화면에서는 이걸 사용.",
+    pitfalls: [
+      "Trost 화면이면 base `<AppBar>` 가 아니라 `<TrostAppBar>` 사용.",
+      "앱 다운로드 버튼 노출 토글: `showAppDownload`. 라벨: `appDownloadLabel`. 핸들러: `onAppDownload`.",
+      "Trost 의 AuthMenu separator 는 'none' (디바이더 없음). Geniet 의 'divider' 패턴과 다름.",
+    ],
+    recommended: [
+      "Desktop: `<TrostAppBar variant='desktop' logo={...} gnbItems={...} activeKey='home' authItems={...} searchPlaceholder='...' trendingKeywords={...} showAppDownload onAppDownload={...} />`",
+      "Mobile: `<TrostAppBar variant='mobile' logo={...} authItems={[{ key:'login', label:'로그인' }]} />`",
+      "Webview: `<TrostAppBar variant='webview' webviewTitle='마음건강 검사' onBack={...} />`",
+    ],
+  },
+  TrostAppFooter: {
+    name: "TrostAppFooter",
+    summary:
+      "Trost 다크 푸터. desktop(2영역: 약관/앱 + 회사정보/SNS, 1080 max-width) / mobile variant. DS 가 Trost 표준 앱스토어/SNS 자산을 기본 세팅하고 있음.",
+    pitfalls: [
+      "appStoreLinks / snsLinks 는 기본값 (Trost humart CDN) 이 들어있어서 안 넘겨도 됨. 커스텀이 필요할 때만 override.",
+      "다크 배경 (#333 / #464646) 은 DS 가 자동 적용 — 인라인 background 로 덮어쓰지 말 것.",
+    ],
+    recommended: [
+      "Desktop: `<TrostAppFooter variant='desktop' links={...} company={...} extra='긴급 위기상담 ...' logo={...} />`",
+      "Mobile: `<TrostAppFooter variant='mobile' links={...} company={...} />`",
+    ],
+  },
+  TrostBottomNav: {
+    name: "TrostBottomNav",
+    summary:
+      "Trost 5탭 BottomNav (홈/사운드/내음악/커뮤니티/마이페이지). 일부 탭(홈/마이페이지)은 active/inactive 그래픽 분리, 나머지는 color cascade.",
+    pitfalls: [
+      "label 매핑은 '홈/사운드/내음악/커뮤니티/마이페이지' 기준. 다른 라벨이면 fallback HomeIcon.",
+      "Trost 는 active/inactive split 아이콘 (HomeActiveIcon 등) 을 일부 탭에서 쓰는 게 정책 — Geniet 의 단일 그래픽 정책과 다름.",
+    ],
+    recommended: [
+      "`<TrostBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
+    ],
+  },
+  TrostWebFooter: {
+    name: "TrostWebFooter",
+    summary:
+      "Trost 데스크톱(≥1024) dark 푸터. SNS / 앱 다운로드 / 약관 / 회사정보 슬롯. `TrostDesktopFooter` 의 alias — brand chrome 5개 슬롯 중 WebFooter 자리.",
+    pitfalls: [
+      "<1024 viewport 에서는 display:none. 모바일에는 `TrostAppFooter variant='mobile'` 또는 `AppFooter.Info` 사용.",
+      "기본 약관/SNS/앱 링크가 Trost humart 자산으로 세팅되어 있음 — prop 으로 override 가능.",
+    ],
+    recommended: [
+      "기본: `<TrostWebFooter />`",
+      "커스텀 약관: `<TrostWebFooter termsHref='...' locationTermsHref='...' />`",
+      "회사정보 라인 교체: `<TrostWebFooter companyInfo={{ lines: ['...'] }} />`",
+    ],
+  },
+  TrostWebHeader: {
+    name: "TrostWebHeader",
+    summary:
+      "Trost 데스크톱(≥1024) 웹 헤더. 3슬롯 컴파운드 — EAP 배너 (Rectangle 2613) + 유틸리티 헤더 (로고 Path / 검색 Rectangle 2522 / 로그인 / 앱 다운로드) + 탭 네비게이션. `TrostDesktopHeader` 의 alias — brand chrome 5개 슬롯 중 WebHeader 자리.",
+    pitfalls: [
+      "<1024 viewport 에서는 display:none. 모바일에는 `TrostAppBar variant='mobile'` 사용.",
+      "3슬롯 (banner / utility / tabs) 모두 ReactNode — 호스트 앱이 `TrostEAPBanner` / `TrostUtilityHeader` / `TrostTabNavigation` 을 직접 컴포지션. 단일 prop 으로 데이터 주입하는 형태 아님.",
+      "검색 placeholder 는 `TrostSearchForm` 기본값 '전문가, 상황, 증상 등을 검색해 보세요' — 원본 디자인(Zeplin Dp775xl) 정합. 다른 카피로 덮으려면 placeholder prop 명시.",
+      "EAP 배너의 building/eap-logo/chevron 아이콘은 호스트 앱이 SVG src 를 주입 (DS 가 자산을 들고 있지 않음).",
+    ],
+    recommended: [
+      "기본: `<TrostWebHeader banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbolSrc} />} utility={<TrostUtilityHeader logoSrc={trostLogo} searchSlot={<TrostSearchForm onSearch={...} />} loginSlot={<TrostLoginSection ... />} appDownloadSlot={<TrostAppDownloadButton />} />} tabs={<TrostTabNavigation tabs={TROST_TABS} currentPath={pathname} />} />`",
+      "EAP 배너 숨기기: `banner` prop 비워두면 됨.",
+      "sticky 끄기: `<TrostWebHeader sticky={false} ... />` (기본 true).",
+    ],
+    figmaNodeUrl: "https://zpl.io/Dp775xl",
+    references: [
+      {
+        label: "Trost 데스크톱 홈 SSOT — 웹 PC 홈 (Zeplin Dp775xl)",
+        image: "references/trost-web-home.png",
+        caption:
+          "Trost 데스크톱 홈 풀 캡처. Rectangle 2613 = TrostEAPBanner / Path = TrostUtilityHeader 로고 / Rectangle 2522 = TrostSearchForm 입력 / 하단 탭 = TrostTabNavigation.",
+        brand: "trost",
+      },
+    ],
+  },
+  NudgeEAPAppBar: {
+    name: "NudgeEAPAppBar",
+    summary:
+      "NudgeEAP 상단 헤더. 1단 (logo + GNB + AuthMenu), 80px h / 1200 max-width. desktop / mobile / webview variant.",
+    figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=39-5751",
+    pitfalls: [
+      "Geniet/Trost 와 달리 NudgeEAP 는 1단 헤더 — 검색바/카테고리/TrendingKeywords 없음.",
+      "AuthMenu separator='none' 패턴.",
+      "Figma SSOT: PC 웹 헤더 39:5751 / 앱 헤더 20:3235 (NudgeEAP Dev). 로고 가이드 698:87 (NudgeEAP Library).",
+    ],
+    recommended: [
+      "Desktop: `<NudgeEAPAppBar variant='desktop' logo={...} gnbItems={...} activeKey='home' authItems={[{ key:'login', label:'로그인' }]} />`",
+      "Mobile: `<NudgeEAPAppBar variant='mobile' logo={...} authItems={...} />`",
+      "Webview: `<NudgeEAPAppBar variant='webview' webviewTitle='심리검사 결과' onBack={...} />`",
+    ],
+  },
+  NudgeEAPAppFooter: {
+    name: "NudgeEAPAppFooter",
+    summary:
+      "NudgeEAP 회사 정보 푸터 (AppFooter.Info 표준 형태). 약관 링크 + (주)다인 회사정보 + 로고.",
+    pitfalls: ["탭바는 별도 컴포넌트 NudgeEAPBottomNav. AppFooter 이름이지만 하단 탭바 아님."],
+    recommended: [
+      "`<NudgeEAPAppFooter links={...} company={{ name:'(주)다인', address:'...', bizNumber:'...', copyright:'...' }} logo={{ src, width, height }} />`",
+    ],
+  },
+  NudgeEAPBottomNav: {
+    name: "NudgeEAPBottomNav",
+    summary: "NudgeEAP 3탭 BottomNav (홈/심리샵/마이). 홈/마이 active 분기, 심리샵은 단일 그래픽.",
+    figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-3331",
+    pitfalls: [
+      "label 매핑은 '홈/심리샵/마이' 기준. 다른 라벨이면 fallback HomeIcon.",
+      "Figma SSOT: 20:3331 (NudgeEAP Dev — 앱 네비게이션).",
+    ],
+    recommended: [
+      "`<NudgeEAPBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
+    ],
+  },
+  NudgeEAPWebHeader: {
+    name: "NudgeEAPWebHeader",
+    summary:
+      "NudgeEAP 웹 헤더 (PC) — base WebHeader wrapper. 로고 200×60 (Symbol + KO+EN horizontal) + GNB 6탭 (상담하기/심리검사/심리치료/주간레터/소식/마이페이지) + 우측 앱다운로드 + 로그인/로그아웃.",
+    figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=39-5751",
+    pitfalls: [
+      "NudgeEAPAppBar 와 분리 — AppBar 는 앱(모바일/웹뷰) 전용 (Figma 20:3235), WebHeader 는 데스크톱 (39:5751).",
+      "로고는 Figma 698:87 (NudgeEAP Library) 의 *Symbol + KO+EN horizontal* (대표 로고) 사용 — 124×28 원본 PNG, 헤더에서 height auto 로 200×60 영역에 배치.",
+      "base `<WebHeader>` 대신 NudgeEAP 화면에서는 이 컴포넌트를 사용해야 fixture/스토리/Figma 가 일치.",
+    ],
+    recommended: [
+      "`<NudgeEAPWebHeader logo={{ src, alt:'NudgeEAP', href:'/' }} menuItems={GNB} activeKey={current} showAppDownload appDownloadHref='/download' authState={isLoggedIn ? 'logout' : 'login'} authHref='/auth' />`",
+    ],
+  },
+  NudgeEAPWebFooter: {
+    name: "NudgeEAPWebFooter",
+    summary:
+      "NudgeEAP 데스크톱 웹 푸터. AppFooter wrapper, max-width 1200. 약관 + (주)다인 회사정보 + 로고.",
+    figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-13799",
+    pitfalls: [
+      "Figma SSOT: 20:13799 (NudgeEAP Dev). NudgeEAPAppFooter (앱·범용) 와 별개 — *데스크톱 웹 사이트* 전용 푸터.",
+      "Trost 처럼 다크 푸터 아님 — light + neutral 토큰.",
+    ],
+    recommended: [
+      "`<NudgeEAPWebFooter links={...} company={...} logo={{ src, width, height }} maxWidth={1200} />`",
+    ],
+  },
+  CashpobiWebHeader: {
+    name: "CashpobiWebHeader",
+    summary:
+      "캐포비(캐시워크 for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐포비는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공.",
+    figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-1739",
+    pitfalls: [
+      "캐포비 화면에는 base `<AppBar>` / `<WebHeader>` 가 아니라 `<CashpobiWebHeader>` 사용.",
+      "캐포비 시그니처 (Yellow/200 + Neutral/900) 는 토큰 cascade 가 자동 적용 — 인라인 background 로 덮어쓰지 말 것.",
+      "캐포비는 *AppBar / AppFooter / BottomNav 컴포넌트 없음* (앱 없으니 필요 없음). 모바일 헤더도 CashpobiWebHeader variant='mobile'.",
+    ],
+    recommended: [
+      "Desktop: `<CashpobiWebHeader variant='desktop' logo={{...}} menuItems={...} activeKey='home' actions={[{ key:'login', label:'로그인', href:'#' }]} />`",
+      "Mobile: `<CashpobiWebHeader variant='mobile' logo={{...}} onMobileMenu={() => openDrawer()} />`",
+    ],
+  },
+  CashpobiWebFooter: {
+    name: "CashpobiWebFooter",
+    summary:
+      "캐포비 웹 푸터. PC / Mobile variant. light 톤 (dark 푸터 아님) + Neutral 텍스트. 시그니처 노란색은 헤더에서만 노출되고 푸터는 brand-agnostic 톤.",
+    figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-2208",
+    pitfalls: [
+      "Trost 처럼 다크 푸터로 바꾸지 말 것 — 캐포비 가이드는 light + neutral 텍스트.",
+      "캐포비는 AppFooter 없음 — mobile 도 CashpobiWebFooter variant='mobile' 사용.",
+    ],
+    recommended: [
+      "Desktop: `<CashpobiWebFooter variant='desktop' links={...} company={{ name:'캐시워크 주식회사', address:..., bizNumber:..., copyright:... }} maxWidth={1600} />`",
+      "Mobile: `<CashpobiWebFooter variant='mobile' links={...} company={...} />`",
+    ],
   },
   PageHeader: {
     name: "PageHeader",
@@ -2705,6 +2978,18 @@ export interface PatternGuide {
     source: string;
     caption: string;
   }>;
+  /** 대표 Figma 노드 URL — 단일 레퍼런스 (브랜드 가이드 / 어드민 표준 등). */
+  figmaNodeUrl?: string;
+  /** 추가 레퍼런스 (스크린샷 URL · Figma 다중 노드 등). label/caption 으로 무엇을 보여주는지 식별. */
+  references?: Array<{
+    label: string;
+    /** Figma 또는 외부 URL. image 와 둘 중 하나는 있어야 의미가 있음. */
+    url?: string;
+    /** 로컬 이미지 경로 (`apps/storybook/public/...` 등). */
+    image?: string;
+    caption?: string;
+    brand?: "trost" | "geniet" | "cashpobi" | "nudge-eap";
+  }>;
 }
 
 /** ruleGroups / avoidGroups 를 flat 배열로 펼친다. SSOT 인 flat rules/avoid 에 일관되게 채우기 위한 헬퍼. */
@@ -3438,6 +3723,336 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     },
   },
 
+  "cashpobi-form-layout": {
+    name: "cashpobi-form-layout",
+    summary:
+      "캐포비 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → 페이지 끝 inline 센터 [취소][저장] 알약(rounded-28) cluster' 표준. " +
+      "Figma 290:1197 (퀴즈 등록하기) 실측. 필드 단위 컴포넌트 정책은 pattern:cashpobi-input, CTA 정책은 pattern:cashpobi-button 과 함께 본다.",
+    rules: [
+      "**페이지 컨테이너**: 사이드바(좌 300px) 우측 본문. 페이지 bg `#FAFAFA`, 콘텐츠 컬럼 폭 1491px (실측), 좌측 padding 32px.",
+      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838. 타이틀 아래 76px 후 **1px hairline divider #D8D8D8** 풀폭. 우측에는 액션 두지 말 것.",
+      "**섹션 헤딩 (카드 위 분리 노출)**: 헤딩(예: '기본 정보') 은 카드 **밖** 위에 위치 — Pretendard **Bold 24 / lh 30** #383838. 헤딩 아래 ~54px 후 카드 시작.",
+      "**섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.",
+      "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**, 필드 우측 ~684px (long) 또는 ~228px (date/short). 라벨은 row 중앙 정렬.",
+      "**라벨 타이포**: Pretendard **Medium 16 / lh 24, #666** (text.subtle). 'strong' 색을 쓰지 않는다 — 빽빽한 폼에서 라벨은 subtle 로 둬도 위계가 명확.",
+      "**필드 컴포넌트**: 높이 **48px**, `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border 는 `pattern:cashpobi-input` 참조.",
+      "**행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.",
+      "**Helper text**: Pretendard Regular **14 / lh 20, #666**. 글자 수 카운터(`0/30`) 는 14 Medium #999 우측 정렬.",
+      "**필수 마커**: 라벨 옆 ` *` color **`#FC3500`** (Coral Red-Orange). 'optional' 표기 X.",
+      "**액션바**: NOT sticky. 페이지 끝 inline + **센터 정렬 cluster** — [취소] + [저장], 각 **w-160 h-56 rounded-28 (알약)**. Cancel: white + 1px #D8D8D8 + #666. Primary: bg `#FFD200` + 검정 텍스트. Disabled: bg `#D8D8D8` + 흰 텍스트.",
+      "**액션 위계**: primary solid CTA 1개. 파괴(삭제) 액션은 별도 위치(헤더 우측 또는 카드 우측 상단) 분리.",
+      "**선택 chip / 활성 토큰**: `bg #FFFAE2 + border #FFD200` (옅은 노란 + 노란 보더) + Bold #111. 강조 숫자/카운트는 `#FD9B02` (amber).",
+      "**우측 보조 사이드 카드 (선택)**: 메인 필드 우측에 요약 카드 (border #ECECEC rounded-16 padding 25×32 w-406) — 미리보기/도움말.",
+      "**유효성 검사**: 입력 중 에러 표시 X (onBlur/submit). 글자 수 카운터만 실시간.",
+    ],
+    avoid: [
+      "라벨을 필드 위에 배치 (label-above 2단 흐름) — 캐포비 admin 은 인라인-좌측 (172px 라벨 컬럼) 패턴.",
+      "페이지 헤더 우측에 [저장] 버튼 — 하단 센터 액션바와 중복.",
+      "필수 마커 색을 `#FF4141` 으로 — 캐포비 폼은 `#FC3500` (Coral Red-Orange).",
+      "Disabled CTA 를 Yellow/100 (#FFFAE5) 로 — 폼 액션바 disabled 는 `#D8D8D8` neutral gray.",
+      "액션바를 우측 정렬 또는 sticky bottom — 캐포비 폼은 페이지 끝 inline 센터.",
+      "CTA 모양을 8px rounded 사각형 — Figma 는 56h rounded-28 알약 (pill).",
+      "필드 border-radius 를 8px 로 — Figma 는 10px.",
+      "필수 라벨을 brand yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.",
+      "한 폼 안에 카드 간격 일정한 24px — Figma 는 의미 단위 64-80px 가변.",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 290:1197 캐포비 admin form (퀴즈 등록하기)",
+        caption:
+          "PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-48 rounded-10 → 페이지 끝 [취소][저장] 알약 cluster 센터.",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 admin form 레이아웃",
+        caption:
+          "라벨-위 흐름 + 우측 정렬 sticky 액션바 + rounded-8 사각 CTA + #FF4141 필수마커 — 모두 캐포비 admin 컨벤션 위반.",
+      },
+    ],
+    metrics: {
+      pageBg: "#FAFAFA",
+      pageTitle: "Pretendard Bold 32/60 #383838",
+      titleToDivider: "76px (then 1px hairline #D8D8D8)",
+      sectionHeading: "Pretendard Bold 24/30 #383838 (카드 밖 위)",
+      sectionHeadingToCardGap: "~54px",
+      cardPadding: "48px × 36px (px × py)",
+      cardRadius: "16px",
+      cardBorder: "1px #ECECEC",
+      cardShadow: "0 10px 20px rgba(102,102,102,0.05)",
+      interCardGap: "~64–80px (의미 단위 가변)",
+      labelColumnWidth: "172px",
+      labelTypography: "Pretendard Medium 16/24 #666",
+      requiredMarker: "라벨 옆 ' *' #FC3500",
+      fieldHeight: "48px",
+      fieldRadius: "10px",
+      fieldBorder: "1px #D8D8D8",
+      fieldBg: "white",
+      placeholderColor: "#999",
+      helperTypography: "Pretendard Regular 14/20 #666 (counter #999)",
+      actionBarPosition: "inline at page-end (NOT sticky)",
+      actionBarAlignment: "center cluster",
+      ctaSize: "w-160 h-56 rounded-28 (pill)",
+      ctaPrimary: "bg #FFD200 + 검정",
+      ctaCancel: "white + 1px #D8D8D8 + #666",
+      ctaDisabled: "bg #D8D8D8 + 흰 텍스트",
+      maxPrimarySolidPerScreen: 1,
+      validationTiming: "onBlur or submit",
+      relatedPatterns: "cashpobi-input, cashpobi-button, cta-group",
+    },
+    figmaNodeUrl:
+      "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B5%AD-%EC%BA%90%EC%8B%9C%EC%9B%8C%ED%81%AC_WEB-Dev?node-id=290-1197",
+    references: [
+      {
+        label: "캐포비 admin 폼 SSOT — 퀴즈 등록하기 (Figma 290:1197)",
+        image: "references/cashpobi-form-290-1197.png",
+        caption: "캐포비 admin 폼 페이지 SSOT 스크린샷. 본 가이드 metrics 는 이 노드 실측 기준.",
+        brand: "cashpobi",
+      },
+      {
+        label: "캐포비 사이드바 — 광고/운영/관리 3섹션 (Figma 168:1250)",
+        image: "references/cashpobi-sidebar-168-1250.png",
+        caption: "본문 좌측 LNB. 폼 페이지의 사이드바 컨텍스트.",
+        brand: "cashpobi",
+      },
+      {
+        label: "캐포비 사이드바 — 서브메뉴 펼침 변형 (Figma 290:1593)",
+        image: "references/cashpobi-sidebar-290-1593.png",
+        caption: "퀴즈 관리 sub-item 펼친 상태 (등록하기/목록/통계). 폼 진입 경로.",
+        brand: "cashpobi",
+      },
+    ],
+  },
+
+  "nudge-eap-form-layout": {
+    name: "nudge-eap-form-layout",
+    summary:
+      "NudgeEAP 고객사용(B2B EAP customer) 폼 페이지 레이아웃 — 'WebHeader 80 + 800px rail → 28 Bold PageTitle → 라벨-위 단일 컬럼 → soft #FAFAFA 필드 h-48 rounded-8 → 비밀유지 안내 타일 → inline 센터 CTA w-328 rounded-8 #2b96ed' 표준. " +
+      "Figma 39:6004 (PC_상담신청서) 실측. **데스크탑 전용** — 모바일은 별도.",
+    rules: [
+      "**뷰포트**: 데스크탑 1920px, 본문 rail **800px** 센터. 모바일 폼은 이 가이드 적용 X (별도 시안 필요).",
+      "**WebHeader**: 80h 풀폭 white + bottom border `#ECECEC`. 좌측 로고 + 센터 6 nav (`Bold 18/26 #111`) + 우측 [로그인 #2b96ed]/[앱 다운로드 #F5F5F5 + blue 텍스트].",
+      "**페이지 헤더**: 타이틀 Pretendard **Bold 28/38** (Headline 2) #111. step/progress indicator 없음.",
+      "**필드 레이아웃 = 라벨-위 (label-above) 단일 컬럼** — 캐포비 admin (인라인-좌측) 과 정반대. 800px rail 안 세로 흐름.",
+      "**라벨 타이포**: Pretendard **Medium 16/24 #383838**. 필수 마커: 별표 `*` **`#F13F00`** (Coral Red) 라벨 뒤 인라인.",
+      "**필드 컴포넌트**: 높이 **48px**, `radius 8px`, border 1px `#D8D8D8`, **bg `#FAFAFA`** (soft off-white — 멘탈케어 톤. 캐포비 pure white 와 차이). padding 16×14.",
+      "**그룹 간격**: 그룹↔그룹 **36px**, 라벨↔필드 **12px**, helper↔라벨 **4px**.",
+      "**Helper 텍스트**: Pretendard Regular **13/18 #383838** 또는 14/20 #666.",
+      "**CTA**: 페이지 끝 inline + 센터. 단일 primary 버튼 (`신청서 제출하기`) **w-328 h-48 rounded-8 padding 12**, Bold 16/24 white. 활성 `#2b96ed`, disabled `#9CA2AE` + 흰.",
+      "**비밀유지 안내 타일**: CTA 위 형제로 — bg `#FAFAFA`, `rounded-8 p-16 w-800`, InfoIcon + Medium 14/20 #666. 멘탈케어 폼의 시그니처 (e.g. '기관에서 연락드린 후 상담사가 최종 확정됩니다. 상담 신청 내용은 비밀이 보장되며, 회사에는 전달되지 않습니다.').",
+      "**Mood slider (마음체크)**: 5점 horizontal color bar — 선택 `#2b96ed`, 미선택 `#13BFA2` (green/300), 셀 gap 2px, 양끝 라벨 Medium 14.",
+      "**시간대/옵션 chip**: 동일 폭 inline 라디오 — white + border #D8D8D8 + rounded-8 + padding 16×12 + gap 12 + Medium 16 #666. RadioGroup 아닌 segmented selector 패턴.",
+      "**약관 동의 타일**: 폼 끝 직전 full-width rounded-8 row, 라운드 체크박스 + Regular **14/20 #111** (다른 라벨 16 스케일과 차별).",
+      "**플로팅 UI**: 우측 하단 scroll-to-top 56×56 circle shadow `0 1px 10px rgba(0,0,0,0.1)` + 채널톡 (`left-calc(100%-320px)`).",
+      "**유효성 검사**: onBlur/submit (실시간 빨간 메시지 금지 — 멘탈케어 컨텍스트 거부감).",
+    ],
+    avoid: [
+      "라벨을 인라인-좌측 컬럼으로 정렬 — NudgeEAP 고객 폼은 label-above. (캐포비 admin 패턴 혼동 적용 X).",
+      "필드 bg pure white — 멘탈케어 컨텍스트는 soft off-white(`#FAFAFA`) 시그니처.",
+      "필수 마커를 `#FF4141` 로 — NudgeEAP 는 `#F13F00` Coral Red.",
+      "비밀유지 안내 누락 — 검사/상담 폼은 신뢰 확보 타일이 거의 필수.",
+      "CTA 알약 (rounded-28+) — NudgeEAP 폼 CTA 는 rounded-8 정사각형.",
+      "Brand 블루 #2b96ed 를 disabled 톤으로 — disabled 는 cool-gray #9CA2AE.",
+      "Mood slider 를 라디오 5개로 — NudgeEAP 는 horizontal color-bar.",
+      "모바일 변형에 800px rail 적용 — 모바일 시안 확보 후 별도.",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 39:6004 PC_상담신청서",
+        caption:
+          "WebHeader 80 → 28 Bold 타이틀 → 800px rail → 라벨-위 + soft #FAFAFA 필드 h-48 rounded-8 → 비밀유지 타일 → 센터 inline CTA w-328 h-48 rounded-8 #2b96ed.",
+      },
+    ],
+    metrics: {
+      viewport: "desktop 1920px, content rail 800px center",
+      webHeaderHeight: "80px",
+      pageTitle: "Pretendard Bold 28/38 #111",
+      labelLayout: "label-above (single column 800px)",
+      labelTypography: "Pretendard Medium 16/24 #383838",
+      requiredMarker: "라벨 옆 ' *' #F13F00",
+      fieldHeight: "48px",
+      fieldRadius: "8px",
+      fieldBorder: "1px #D8D8D8",
+      fieldBg: "#FAFAFA (soft off-white)",
+      fieldPadding: "16×14",
+      interFieldGap: "36px",
+      labelToFieldGap: "12px",
+      helperToLabelGap: "4px",
+      helperTypography: "Pretendard Regular 13/18 #383838 or 14/20 #666",
+      ctaPosition: "inline at page-end, center",
+      ctaSize: "w-328 h-48 rounded-8",
+      ctaPrimary: "#2b96ed + white Bold 16/24",
+      ctaDisabled: "#9CA2AE + white",
+      confidentialityTile: "bg #FAFAFA rounded-8 p-16 w-800 + InfoIcon + Medium 14/20 #666",
+      moodSliderColors: "selected #2b96ed, unselected #13BFA2, gap 2px",
+      maxPrimarySolidPerScreen: 1,
+      validationTiming: "onBlur or submit",
+      relatedPatterns: "cta-group, nudge-eap-home-layout",
+    },
+    figmaNodeUrl:
+      "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/%F0%9F%8C%88-%EB%84%9B%EC%A7%80EAP---Dev?node-id=39-6004",
+    references: [
+      {
+        label: "NudgeEAP 고객 폼 SSOT — PC_상담신청서 (Figma 39:6004)",
+        image: "references/nudge-eap-form-39-6004.png",
+        caption:
+          "NudgeEAP 고객사용 폼 페이지 SSOT 스크린샷 (desktop 1920, rail 800). 본 가이드 metrics 는 이 노드 실측 기준.",
+        brand: "nudge-eap",
+      },
+    ],
+  },
+
+  "nudge-eap-home-layout": {
+    name: "nudge-eap-home-layout",
+    summary:
+      "NudgeEAP 고객사용(B2B EAP customer) 홈 페이지 레이아웃 — 'WebHeader 80 + CMS 스트립 + 1200 rail → cream 히어로 812×400 → blue-50 3카드 빠른 액션 → 캐러셀 (240w 표준 + 440w featured) → 주간레터 그리드 → 공지 list → 채널톡 FAB' 표준. " +
+      "Figma 20:7250 실측. 데스크탑 전용 1920w, B2B 화이트라벨.",
+    rules: [
+      "**뷰포트**: 데스크탑 1920px 풀폭, 본문 rail **1200px** (gutter 360). bg pure white.",
+      "**WebHeader**: 80h, 좌측 고객사 로고 200×60, 센터 6 nav (`Bold 18/26 #111`), 우측 [로그인 #2b96ed]/[앱 다운로드 #F5F5F5 + blue]. notification/profile icon 없음.",
+      "**CMS 스트립**: 헤더 아래 풀폭, bg `#FAFAFA`, `py-14 px-360`. 고객사 인사말 Medium 16/24 + 보조 Regular 14/20.",
+      "**히어로 배너**: 단일 카드 **812×400 rounded-20 bg #FFEDD0 (cream)** — 마음치유 톤. 타이틀 36 Bold 검정 + 16/24 Regular + 우측 하단 'rolling' pagination chip. 우측엔 banner 선택 그리드 (w-364, gap 16-18).",
+      "**3-카드 빠른 액션**: 히어로 아래 3개 가로 CTA 카드, **385×128 rounded-12 bg #F1F8FD (blue/50) padding 28×24 gap 23**. 내부: 20/28 Bold 타이틀 + 16/24 #666 보조 + 80px 일러스트. 라벨: 바로 상담하기 / 상담사 찾기 / 상담 센터 찾기.",
+      "**섹션 헤딩**: **28/38 Bold 검정** + 우측 '더보기' (18/26 Bold #666 + ChevronRight). 검사/주간레터/회사소식 반복 적용.",
+      "**심리검사 캐러셀**: h-280, 카드 rounded-16 gap 24. 표준 **240w bg #FAFAFA**, featured **440w bg #FFF7E6 + 'GO' 원형 pill (#FFA411)**. 양 끝 chevron 버튼 68×68 원형 border #D8D8D8. 좌우 white gradient fade.",
+      "**주간레터 그리드**: 3 × 385w 카드, 썸네일 **250h rounded-8 bg #EBEBEB** + 타이틀 20/28 Medium. gap 24.",
+      "**공지 list (회사소식)**: border `#ECECEC rounded-8` 카드, `pt-24 pb-16 px-24`. 52px 행, divider #EEE. 배지 공지 `#DFF1FF / #007EE4`, 이벤트 `#FCE3EC / #ED2E77` rounded-13 Bold 14.",
+      "**보조 배너 띠**: 1200×110-120 풀폭. brown `#67544D` + white pill (생활상담), blue `#2B96ED` + white pill (앱 다운로드).",
+      "**채널톡 FAB**: 우측 하단 56×56 원형. desktop 이므로 BottomNav 없음.",
+      "**AppFooter**: 1920×198 bg `#F5F5F5`. 주소/사업자번호/연락처 14/20 Regular #383838 + ISO 27001 로고 우측.",
+      "**컬러 토큰**: page bg #fff, section bg #FAFAFA, primary card #F1F8FD, featured #FFF7E6, thumb #EBEBEB, brand #2B96ED, magenta #ED2E77 (이벤트 한정).",
+      "**B2B 화이트라벨**: 좌측 상단 로고가 고객사 (e.g. 아모레퍼시픽). NudgeEAP 자체 브랜딩은 footer 에만.",
+    ],
+    avoid: [
+      "모바일 BottomNav 추가 — 데스크탑 홈은 채널톡 FAB 만.",
+      "Greeting/Notification icon 을 헤더 우측에 — NudgeEAP B2B 헤더는 [로그인][앱 다운로드] 페어.",
+      "Magenta `#ED2E77` 을 일반 강조에 — 이벤트 배지 한정.",
+      "Hero 배경을 brand blue 로 — cream/warm 톤 (`#FFEDD0`) 이 멘탈케어 시그니처.",
+      "3-카드 빠른 액션을 4개 이상으로 — 3개가 위계 한계.",
+      "심리검사 캐러셀 카드 색 다양화 — 표준 #FAFAFA + featured #FFF7E6 두 톤만.",
+      "Banner strip 을 페이지 상단 추가 — hero 1개 + 중간 strip 1-2개가 한계.",
+      "한 페이지에 primary `#2B96ED` solid CTA 2개 이상.",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 20:7250 NudgeEAP 고객 홈 (B2B 아모레퍼시픽)",
+        caption:
+          "1920 + 1200 rail + WebHeader 80 + cream 히어로 812×400 + 3 blue-50 카드 + 24/32/16/8 radius 패밀리 + 채널톡 FAB.",
+      },
+    ],
+    metrics: {
+      viewport: "desktop 1920px, content rail 1200px (gutter 360)",
+      pageBg: "#fff",
+      sectionBg: "#FAFAFA",
+      webHeaderHeight: "80px",
+      heroSize: "812×400 rounded-20 bg #FFEDD0",
+      heroTitle: "Bold 36 검정",
+      quickActionCard: "385×128 rounded-12 bg #F1F8FD padding 28×24 gap 23",
+      sectionHeading: "Bold 28/38 + 더보기 Bold 18/26 #666",
+      carouselCardStd: "240w rounded-16 bg #FAFAFA gap 24",
+      carouselCardFeatured: "440w rounded-16 bg #FFF7E6 + GO pill #FFA411",
+      letterCard: "385w + thumb 250h rounded-8 bg #EBEBEB",
+      noticeList: "border #ECECEC rounded-8 pt-24 pb-16 px-24, 52px rows, divider #EEE",
+      noticeBadgeNotice: "#DFF1FF / #007EE4 rounded-13 Bold 14",
+      noticeBadgeEvent: "#FCE3EC / #ED2E77",
+      bannerBrown: "#67544D + white pill CTA",
+      bannerBlue: "#2B96ED + white pill CTA",
+      fabSize: "56×56 채널톡",
+      footerHeight: "1920×198 bg #F5F5F5",
+      brandPrimary: "#2B96ED",
+      magentaAccent: "#ED2E77 (이벤트 한정)",
+      maxPrimarySolidPerScreen: 1,
+      whitelabel: "true (고객사 로고/명 + CMS 스트립 인사말)",
+      relatedPatterns: "nudge-eap-form-layout, nudge-eap-landing-layout, cta-group",
+    },
+    figmaNodeUrl:
+      "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/%F0%9F%8C%88-%EB%84%9B%EC%A7%80EAP---Dev?node-id=20-7250",
+    references: [
+      {
+        label: "NudgeEAP 고객 홈 SSOT — 홈 1404 (Figma 20:7250)",
+        image: "references/nudge-eap-home-20-7250.png",
+        caption:
+          "NudgeEAP 고객사용 홈 페이지 SSOT 스크린샷 (desktop 1920, 1200 rail, B2B 화이트라벨).",
+        brand: "nudge-eap",
+      },
+    ],
+  },
+
+  "nudge-eap-landing-layout": {
+    name: "nudge-eap-landing-layout",
+    summary:
+      "NudgeEAP 홍보용 (B2B 도입 유치) 랜딩 페이지 레이아웃 — 'WebHeader 80 + 1400 rail → 1920×480 split 히어로 (CTA 없음) → 8 섹션 (gap 0, bg 교차) → 80h pill CTA → 510h dark footer + lead form' 표준. " +
+      "Figma 323:939 (PC_법정의무교육) 실측. 데스크탑 전용, 코퍼레이트 B2B HR SaaS 톤.",
+    rules: [
+      "**뷰포트**: 데스크탑 1920px. outer rail **1400 (gutter 260)**, inner **1264 (gutter 328)**.",
+      "**WebHeader**: 80h 풀폭 pinned. 디테일은 nudge-eap-home-layout 헤더 컨벤션 재사용.",
+      "**히어로**: 1920×**480** 풀폭. **Split layout** — 텍스트 좌 (`left-260 top-216 w-520 h-208`) + 비주얼 우 (`left-920 800×400`). 헤드라인 ~60-62 Bold + 서브 ~28-32. **히어로 내 CTA 없음**.",
+      "**섹션 블럭 패턴**: 8 섹션 모두 풀폭 stack. **gap 0** (butt against), 구분은 bg color 교차. 안 패딩: top 100 → 타이틀 74h → 122-138 gap → body → 100 bottom.",
+      "**섹션 타이틀 심볼**: 1400×74 (`타이틀_pc`), 디스플레이 ~40-44 Bold.",
+      "**카드 그리드**:\n  · CMS 기능 (2×2): 620×455 (image 620×303 + 텍스트 620×152, padding 25×24) col-gap 24\n  · 법정의무교육 4종 (4-col): 300×350, 아이콘 110×110 center top, gap 16\n  · EAP/웰니스 비교 (3-col): 270×302, 아이콘 120×120, gap 24\n  · 4단계 진행 (2×2): 612×405 + step badge `1단계` 72×44 pill, col-gap 40 row-gap 64",
+      "**CTA 패턴**: 모든 CTA 는 **80h pill** (rounded-full), label hug + 54 horizontal padding. emoji prefix 허용 (⬇️ 👉) + 라벨 ~20-22 Bold. **히어로엔 없고 섹션 끝에만**.",
+      "**중복 CTA OK**: 코퍼레이트 랜딩이라 같은 의도 CTA 가 섹션별로 반복 가능. 단, primary action 한 종류로 통일.",
+      "**비교 표 (기존 vs 넛지EAP)**: 가로 비교 컬럼 + 체크/X 아이콘.",
+      "**Lead form (도입 문의)**: 8번째 섹션 — 회사명/담당자/연락처/EAP 도입 여부 라디오. nudge-eap-form-layout 인풋 컨벤션 재사용 (label-above + #FAFAFA fill).",
+      "**AppFooter**: 1920×**510** (dark corporate). 회사 정보/링크/문의/언어. home-layout 의 198h 라이트 footer 보다 키워 코퍼레이트 톤.",
+      "**타이포 패밀리**: hero ~60-62, section title ~40-44, sub ~24-28, card title ~24, body ~16/1.6, CTA ~20-22 Bold.",
+      "**톤**: 코퍼레이트 B2B HR SaaS — 정보 밀도 높음, 비교/스크린샷/단계별 중심. 'cream + soft' 톤은 아이콘/일러스트 한정.",
+    ],
+    avoid: [
+      "히어로 안에 primary CTA — NudgeEAP 랜딩은 hero CTA 없음.",
+      "섹션 간 gap 24/32/40 px — gap 0 butting + bg 교차가 표준.",
+      "CTA 를 8h rounded-8 사각형 — 모든 CTA 가 80h pill.",
+      "랜딩에 멘탈케어 soft 톤 (cream #FFEDD0) 을 헤드라인 배경으로 — soft 톤은 카드/아이콘 한정.",
+      "단일 contact form 만 두고 섹션 CTA 누락 — 랜딩은 결과별 CTA 다회 노출.",
+      "Lead form 을 별도 페이지로 분리 — 동일 페이지 마지막 섹션에 inline.",
+      "Footer 를 200h 미만 라이트로 — 코퍼레이트 랜딩은 dark/dense.",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 323:939 NudgeEAP 랜딩 (PC_법정의무교육)",
+        caption:
+          "1920/1400 rail + 80h header + 1920×480 split hero (no CTA) + 8 stacked sections gap=0 + 80h pill CTA + 510h dark footer + lead form 섹션.",
+      },
+    ],
+    metrics: {
+      viewport: "desktop 1920px",
+      contentRailOuter: "1400px (gutter 260)",
+      contentRailInner: "1264px (gutter 328)",
+      webHeaderHeight: "80px",
+      heroSize: "1920×480 (split: text 520w + visual 800×400)",
+      heroHeadline: "~60-62 Bold (Display)",
+      heroCta: "none",
+      sectionGap: "0 (butt against, bg alternation)",
+      sectionTitleSymbol: "타이틀_pc 1400×74 (~40-44 Bold)",
+      cmsGrid: "2×2 card 620×455 col-gap 24",
+      eduGrid: "4-col card 300×350 icon 110 gap 16",
+      compareGrid: "3-col card 270×302 icon 120 gap 24",
+      stepGrid: "2×2 card 612×405 step-badge 72×44 col-gap 40 row-gap 64",
+      ctaPillHeight: "80px",
+      ctaPillRadius: "rounded-full",
+      ctaLabel: "~20-22 Bold (emoji prefix allowed)",
+      footerHeight: "1920×510 (dark corporate)",
+      tone: "corporate B2B HR SaaS",
+      leadFormReusesPattern: "nudge-eap-form-layout",
+      maxPrimarySolidPerScreen: "여러 (섹션별 반복 OK, 의도 통일)",
+      relatedPatterns: "nudge-eap-home-layout, nudge-eap-form-layout, cta-group",
+    },
+    figmaNodeUrl:
+      "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/%F0%9F%8C%88-%EB%84%9B%EC%A7%80EAP---Dev?node-id=323-939",
+    references: [
+      {
+        label: "NudgeEAP 랜딩 SSOT — PC_법정의무교육 (Figma 323:939)",
+        image: "references/nudge-eap-landing-323-939.png",
+        caption:
+          "NudgeEAP 홍보/랜딩 페이지 SSOT 스크린샷 (B2B 도입 유치, 1920/1400 rail, 80h pill CTA, 8 stacked sections).",
+        brand: "nudge-eap",
+      },
+    ],
+  },
+
   "cashpobi-input": {
     name: "cashpobi-input",
     summary:
@@ -3461,6 +4076,96 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       defaultStates: "default / typing / error / disabled / complete",
       focusBorder: "#111111 (Neutral/900, 검정)",
       relatedPatterns: "cashpobi-button, dropdown",
+    },
+  },
+
+  "card-composition": {
+    name: "card-composition",
+    summary:
+      "Card 의 List/Thumb/Cover 3 base variant 위에 얹는 도메인 Composition 슬롯 카탈로그. " +
+      "도메인 카드(헬시딜·식품 검색·식단 추천·랭킹·리뷰·커뮤니티 등)는 새 variant 를 만들지 말고 base variant + Composition 슬롯 조합으로 표현한다. " +
+      "Figma 출처: Zenirit Card 가이드 옆 도메인 예시 — 헬시딜 랭킹 / 음식 리뷰 / 다이어트·혈당 추천 / 지금 뜨는 한식 / 커뮤니티 게시글 / Product Panel. " +
+      "Card 본문 룰은 get_guide({ topic: 'component:Card' }) 와 함께 본다.",
+    rules: [
+      "**Slot 1 — kcal chip**: 식품 칼로리 표시 (예: 109 kcal). Chip tinted brand xs · Body 4. base variant 의 padding 안쪽, Title 직후 또는 Metadata 라인 인라인.",
+      "**Slot 2 — star rating + review count**: ★ + 평점 + (리뷰 N개). Metadata 라인 좌측. 리뷰 없는 카드는 '리뷰 없음' 으로 fallback (mute color).",
+      "**Slot 3 — promotion badge**: top-right absolute (Card.Root 기준). 리뷰가 없는 카드에만 노출. 같은 그리드 안에서 promotion + review 동시 노출 금지.",
+      "**Slot 4 — nutrition tag chip row**: 0~3개 chip (고단백/저탄수/저지방/고나트륨/고식이섬유/저당 등). chip/nutrition/* 토큰 (success/info/warning/critical 톤). 위치는 Title 위 또는 Description 직후. 4개 이상 노출 금지.",
+      "**Slot 5 — like overlay**: top-right absolute, Media 슬롯 위 (이미지 over). 'heart 아이콘 + 999+' 형태. Cover variant 의 Media 위에만, Thumb/List 사용 X.",
+      "**Slot 6 — author meta**: avatar(xs 20~24) + 작성자 이름 + 작성일. Metadata 라인 또는 Description 하단. 한 카드 최대 1개.",
+      "**Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale brand (Cashpobi 빨강 / Geniet mint600). 1줄에 1개.",
+      "**Slot 8 — strikethrough price + sale price**: 정가(취소선 + mute) + 할인가(Bold + Strong). discount badge 와 같은 라인에 정렬. 가격 표시는 카드당 1쌍.",
+      "**Slot 9 — shipping chip**: '무료배송' 같은 정책 라벨. ghost/line variant · neutral color. Metadata 라인 우측 또는 가격 라인 하단.",
+      "**Slot 10 — certification chip**: '식약처 인증 제품' 같은 신뢰성 라벨. success/info color · ghost variant · check icon prefix. Status 슬롯 또는 Metadata 라인 하단.",
+      "**Slot 11 — ranking leading**: 1/2/3 등은 gold/silver/bronze medal 아이콘, 4+ 는 큰 숫자 + neutral subtle bg. Leading 슬롯 (List variant 의 좌측). 트렌딩/랭킹 카드 전용.",
+      "**Slot 12 — macro nutrition bar**: 탄/단/지 비율 가로 progress bar (3색 분할: 탄=brand info, 단=brand success, 지=brand caution). 라벨은 % 와 함께. Cover/Thumb 의 Description 하단 또는 Footer.",
+      "**Slot 13 — category banner header**: Card 상단 4px 색 라인 + 카테고리 라벨 (다이어트/혈당/저당 등). 같은 그리드 안에서 카테고리별로 색이 다름 (info/caution/critical). Cover/Thumb 의 Media 위 또는 별도 헤더 라인.",
+      "**Slot 14 — friend social proof**: avatar(xs) + 'N명이 먹어봤어요' 같은 카운트 라벨. Footer 슬롯 또는 Description 하단. 신뢰감/추천 의도 카드에만.",
+      "**Slot 15 — trending count**: '최근 7일간 100만+' 같은 시계열 활동 카운트. Caption · Strong. Metadata 라인 하단. 랭킹 카드의 핵심 정보로 사용.",
+      "**Slot 16 — forum meta row**: 조회 N · 댓글 N · 시간 (' · ' 구분자). Caption · Mute. 커뮤니티/게시글 카드의 Metadata 라인 전용.",
+      "**조합 규칙**: 한 카드의 Composition slot 총합 최대 4개. 5개 이상은 위계 무너짐 → base variant 자체를 바꾸거나 정보 우선순위 재고.",
+      "**한 그리드 룰**: 한 그리드(예: 4-up Cover) 안의 모든 카드는 같은 Composition 슬롯 조합을 사용. 일부만 슬롯이 다른 카드는 위반 (정보 누락처럼 보임). 슬롯이 비면 visually hidden 으로 자리만 유지.",
+    ],
+    avoid: [
+      "Composition 슬롯 추가를 이유로 새 variant 생성 — variant 는 항상 3종(List/Thumb/Cover) 유지, 도메인 차이는 슬롯 조합으로",
+      "Slot 5(like) + Slot 3(promotion) 동시 노출 — 둘 다 top-right absolute 라 겹침",
+      "Slot 4(nutrition tag) 4개 이상 — 위계 붕괴",
+      "Slot 8(price) strikethrough 없이 sale price 만 — 할인 컨텍스트 누락",
+      "Slot 11(ranking leading) 을 1~3 medal 없이 number 로만 표시 — 시각 위계가 안 잡힘",
+      "한 그리드에서 카드마다 다른 Composition 조합 사용 — 정보 누락처럼 보이는 안티패턴",
+      "Composition 슬롯 안에 별도 CTA 버튼 두기 — Card.Root clickable 만 사용",
+      "promotion badge 위치를 top-right 외에 두기 — 절대 위치 규칙 위반",
+      "Slot 13(category banner)을 같은 카테고리 카드에 다른 색으로 적용 — 의미 매핑이 일관되지 않음",
+    ],
+    metrics: {
+      maxSlotsPerCard: 4,
+      maxNutritionTagChipsInSlot4: 3,
+      maxLikeOverlayPerCard: 1,
+      maxAuthorMetaPerCard: 1,
+      maxPricePairPerCard: 1,
+      promotionBadgePosition: "top-right absolute (Card.Root)",
+      likeOverlayPosition: "top-right absolute (Media slot, image overlay)",
+      rankingLeadingMedalRange: "1~3 (gold/silver/bronze) · 4+ (number + neutral subtle bg)",
+      macroBarColors: "탄=info · 단=success · 지=caution",
+      figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=131-1769",
+    },
+  },
+
+  "card-section": {
+    name: "card-section",
+    summary:
+      "Section/Group Card 패턴 — 카드 안에 list rows 를 담는 컨테이너 카드. " +
+      "단일 Card 가 아니라 '관련 row 묶음 + 섹션 제목 + 페이지네이션' 을 한 번에 포장하는 구조. " +
+      "Figma 출처: Zenirit Card 가이드의 'Background+Border+Shadow' 명세 (예: '루테인 포함 영양제 · 총 84개 제품').",
+    rules: [
+      "**구조**: 외곽 컨테이너(border 1px + radius 12~16 + bg surface) → 헤더(섹션 타이틀 + 보조 정보, 예: '총 84개 제품') → 내부 row 리스트(보통 Thumb variant ListItem 5~6개) → 페이지네이션 (선택).",
+      "**컨테이너 vs 단일 Card**: Section Card 는 Card 가 아니라 'Card-of-Cards' 컨테이너. variant prop 으로 표현하지 말고, 별도 `<Card.Root variant='section'>` 또는 `<Section bordered>` 형태로 분리.",
+      "**내부 row 제약**: 내부에 들어가는 row 는 Thumb variant 의 단순 형태만 (썸네일 + Title + Meta). 다른 variant 혼용 금지.",
+      "**Composition 제약**: Section Card 안의 row 는 Composition 슬롯을 4개 모두 사용하지 않음. Title + Star rating + Review count 정도까지만. 위계 충돌 방지.",
+      "**헤더 라인**: 섹션 타이틀(H4 Bold) + 보조 정보(Caption Regular Muted, 우측 정렬). 헤더 line-height 24px 고정.",
+      "**페이지네이션**: 6개 이상이면 하단 페이지네이션 추가. 6개 이하면 페이지네이션 없이 그대로.",
+      "**중첩 금지**: Section Card 안에 또 다른 Section Card 금지. 카테고리 그룹이 필요하면 Section Card 를 형제 노드로 나란히 둠.",
+      "**Card 가이드 권위 룰과 정합**: Card 단일 가이드의 'Nested Card 금지' 룰을 Section 컨테이너만 예외 — Section 은 row 를 담는 컨테이너지 row 자체가 Card 가 아님 (그래서 위반 아님).",
+    ],
+    avoid: [
+      "Section Card 안에 또 다른 Section Card (3중 중첩)",
+      "내부 row 마다 elevation/border 추가 — Section 컨테이너가 이미 경계 표시",
+      "내부에 List/Cover variant row 혼합 — Thumb only",
+      "Section 헤더에 CTA 버튼 추가 — '더보기' 가 필요하면 페이지네이션 또는 별도 하단 TextButton",
+      "내부 row 가 1~2개뿐인 Section Card — 컨테이너 의미 없음, 직접 row 노출",
+      "단일 1회성 메시지 그룹을 Section Card 로 포장 — Banner/Notice 가 적절",
+    ],
+    metrics: {
+      containerBorder: "1px (semantic-border-normal-default)",
+      containerRadius: "12~16px (--shape-md / --shape-lg)",
+      containerBgToken: "var(--semantic-bg-surface-default)",
+      headerTitleType: "H4 Bold (또는 Body 1 Bold)",
+      headerSubType: "Caption Regular Muted (우측 정렬)",
+      innerRowVariant: "thumb only",
+      innerRowMaxCount: "10 (이상은 페이지네이션 필수)",
+      paginationThreshold: 6,
+      maxNestingLevel: 1,
+      figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=337-1506",
     },
   },
 };
