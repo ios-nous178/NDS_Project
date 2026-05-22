@@ -49,23 +49,21 @@ const assessmentResultStyles = `
     --nds-ar-level-bg: ${cv.surface.page};
     --nds-ar-level-text: ${cv.textRole.subtle};
     --nds-ar-card-bg: ${cv.surface.default};
-    --nds-ar-border-width: 4px;
     display: flex;
     flex-direction: column;
     gap: ${spacing[20]}px;
     padding: var(--inset-card-large) var(--inset-modal);
     background: var(--nds-ar-card-bg);
     border: 1px solid ${cv.borderRole.subtle};
-    border-left: var(--nds-ar-border-width) solid var(--nds-ar-level-color);
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
-    transition: border-color ${transition.default}, background ${transition.default};
+    transition: background ${transition.default};
   }
 
-  /* 단계별 색 분리 — mild(노랑)·moderate(주황 톤)·severe(빨강) 가 한눈에 구분되도록.
-     mild=fill.statusCaution(노랑), moderate=textRole.statusCaution(진한 주황),
-     severe=fill.statusError(빨강) 로 채도 단계화. */
+  /* 단계별 색은 배지·점수·게이지·액션 으로만 전달.
+     좌측 컬러 보더(border-left) 패턴은 금지 — 카드 형태가 어그러지고,
+     스크롤 리스트에서 시각 잡음이 누적된다. (anti-pattern, DO NOT add back) */
   :where(.${AR_CLASS}[data-level="normal"]) {
     --nds-ar-level-color: ${cv.iconRole.statusSuccess};
     --nds-ar-level-bg: ${cv.surface.statusSuccess};
@@ -81,14 +79,12 @@ const assessmentResultStyles = `
     --nds-ar-level-bg: ${cv.surface.statusCaution};
     --nds-ar-level-text: ${cv.textRole.statusCaution};
   }
-  /* severe 만 시각 위급도를 한 단계 더 — 좌 border 두께 + 카드 배경 옅게.
-     EAP 도메인: '즉시 도움' 신호가 raw 점수보다 먼저 인지되도록. */
+  /* severe 위급도는 카드 배경 톤 + 점수·배지·액션 색으로만 강조 (좌 보더 사용 X). */
   :where(.${AR_CLASS}[data-level="severe"]) {
     --nds-ar-level-color: ${cv.fill.statusError};
     --nds-ar-level-bg: ${cv.surface.statusError};
     --nds-ar-level-text: ${cv.textRole.statusError};
     --nds-ar-card-bg: ${cv.surface.statusError};
-    --nds-ar-border-width: 6px;
   }
 
   :where(.${AR_HEADER_CLASS}) {

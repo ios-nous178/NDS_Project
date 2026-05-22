@@ -16,7 +16,7 @@ export const MypageActiveIcon = React.forwardRef<SVGSVGElement, MypageActiveIcon
       color={color}
       {...props}
     >
-      <mask maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+      <mask id="mask0_0_4" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
 <rect width="24" height="24" fill="currentColor"/>
 </mask>
 <g mask="url(#mask0_0_4)">

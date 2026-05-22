@@ -7,8 +7,8 @@
 
 import type {
   FooterLinkItem,
-  AppBarGNBItem,
-  AppBarAuthMenuItem,
+  HeaderMenuItemData,
+  HeaderAuthMenuItem,
   CompanyInfoData,
   TrendingKeywordItem,
 } from "@nudge-eap/react";
@@ -16,7 +16,8 @@ import type {
 /* ─── Logo asset imports (Vite resolves base path automatically) ─── */
 /**
  * Figma 698:87 (NudgeEAP Library) Logo Guide 에서 추출한 Symbol + KO+EN horizontal (대표 로고).
- * 자체 원본 124×28 PNG. 헤더는 200×60 비율 영역 안에서 height auto 로 배치.
+ * 자체 원본 124×28 PNG. NudgeEAP 헤더 컴포넌트는 내장 vector 로고를 기본 사용하고,
+ * 이 fixture PNG 는 목업/푸터 fallback 용으로 원본 크기 이하에서만 사용한다.
  */
 import nudgeEapHeaderLogo from "../public/brand-logos/nudge-eap/nudge-eap-koen.png";
 import trostLogo from "../public/brand-logos/trost-logo.svg";
@@ -53,13 +54,13 @@ export interface BrandFixture {
       placeholder: string;
     };
     gnb: {
-      items: AppBarGNBItem[];
+      items: HeaderMenuItemData[];
       navHeight: number;
     };
     /** 인기검색어 (NavBar 우측에 표시) */
     trending?: TrendingKeywordItem[];
     auth: {
-      items: AppBarAuthMenuItem[];
+      items: HeaderAuthMenuItem[];
       separator: "divider" | "none";
       hasAppDownload?: boolean;
     };
@@ -82,9 +83,9 @@ export interface BrandFixture {
 const nudgeEap: BrandFixture = {
   logo: {
     /* Figma 698:87 — KO+EN horizontal 대표 로고 (Symbol + 한글 + 영문, 124×28 자체 비율). */
-    headerPc: { src: nudgeEapHeaderLogo, width: 200, height: 60 },
+    headerPc: { src: nudgeEapHeaderLogo, width: 124, height: 28 },
     headerMobile: { src: nudgeEapHeaderLogo, width: 124, height: 28 },
-    footer: { src: nudgeEapHeaderLogo, width: 100, height: 28 },
+    footer: { src: nudgeEapHeaderLogo, width: 100, height: 23 },
   },
   header: {
     pcMaxWidth: 1200,

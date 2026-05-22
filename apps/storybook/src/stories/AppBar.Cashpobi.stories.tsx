@@ -6,7 +6,7 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("cashpobi");
 
 const meta: Meta = {
-  title: "Components/AppBar",
+  title: "Components/Header",
   parameters: { layout: "fullscreen" },
   globals: { brand: "cashpobi" },
 };
@@ -22,7 +22,7 @@ const placeholderMenu = [
 ];
 
 export const CashpobiDesktop: Story = {
-  name: "Cashpobi/Desktop (PC)",
+  name: "CashpobiWebHeader/Desktop (PC)",
   parameters: {
     docs: {
       description: {
@@ -50,7 +50,7 @@ export const CashpobiDesktop: Story = {
 };
 
 export const CashpobiMobile: Story = {
-  name: "Cashpobi/Mobile",
+  name: "CashpobiWebHeader/Mobile",
   parameters: {
     docs: {
       description: { story: "Figma 380:1119 (한국 캐시워크 WEB Dev). 로고 + 햄버거." },

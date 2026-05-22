@@ -449,7 +449,7 @@ export function getClaudeMdTemplate(args: {
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
 - 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA에는 붙이지 않는다.
 - 단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시한다.
-- 브랜드 모드(\`brand='geniet'\`/\`'trost'\`)에서 작업할 때는 해당 브랜드 prefix 아이콘(예: \`GenietRecordIcon\`, \`GenietGpointIcon\`)을 공용 아이콘보다 **우선 사용**. 매칭 가능한 brand 아이콘 목록은 \`get_brand({ brand: '<slug>' }).detail.brandIcons\` 로 조회. 공통 컴포넌트(AppFooter/BottomNav 등)의 *구현* 안에 \`if (brand === ...)\` 분기를 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.
+- 브랜드 모드(\`brand='geniet'\`/\`'trost'\`)에서 작업할 때는 해당 브랜드 prefix 아이콘(예: \`GenietRecordIcon\`, \`GenietGpointIcon\`)을 공용 아이콘보다 **우선 사용**. 매칭 가능한 brand 아이콘 목록은 \`get_brand({ brand: '<slug>' }).detail.brandIcons\` 로 조회. 공통 컴포넌트(Footer/BottomNav 등)의 *구현* 안에 \`if (brand === ...)\` 분기를 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.
 - 브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(\`HomeIcon\`, \`SearchIcon\` 등)을 먼저 사용하고, 그 다음에만 \`MockupLinear*Icon\` / \`MockupBold*Icon\` 을 fallback 으로 사용한다. 자체 생성 SVG는 마지막 수단이다.
 - primary solid 버튼은 한 화면의 대표 액션 1개만 사용한다.
 - Chip/Badge는 상태, 분류, 짧은 속성 표시용으로만 사용하고 안내문/섹션 장식으로 남발하지 않는다.

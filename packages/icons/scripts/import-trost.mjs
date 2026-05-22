@@ -74,8 +74,13 @@ function transform(svgText, name) {
   const innerMatch = svgText.match(/<svg[^>]*>([\s\S]*?)<\/svg>/);
   let inner = innerMatch[1];
 
-  // 빈 placeholder bbox path 제거 (`<path d="M0 0h32v32H0z"/>` 류 — 부모가 currentColor 가 되면 검정 사각형으로 보임)
-  inner = inner.replace(/\s*<path[^>]*\sd="M0 0h\d+v\d+H0z"[^>]*\/>\s*/g, "\n");
+  // 빈 placeholder bbox path 제거 (`<path d="M0 0h32v32H0z"/>` 류 — 부모가 currentColor 가 되면 검정 사각형으로 보임).
+  // 단, <clipPath>/<mask> 내부의 동일 path 는 클리핑 영역 정의이므로 보존해야 한다.
+  // (보존 안 하면 trost-energy-coin 처럼 clipPath 가 비어 전체가 잘려 보이지 않는다.)
+  inner = inner.replace(
+    /<(clipPath|mask)\b[\s\S]*?<\/\1>|\s*<path[^>]*\sd="M0 0h\d+v\d+H0z"[^>]*\/>\s*/g,
+    (match) => (match.startsWith("<") ? match : "\n"),
+  );
 
   // 색상 치환 — 2-color 브랜드 마크는 hex 보존
   if (!PRESERVE_BRAND_COLORS.has(name)) {

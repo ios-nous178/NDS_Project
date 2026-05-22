@@ -27,7 +27,7 @@ import nudgeEapSymbol from "../../public/brand-logos/nudge-eap/nudge-eap-symbol.
  *   (MCP 외부 노출 — get_guide({ topic: 'component:TrostWebHeader' }).references)
  */
 const meta: Meta = {
-  title: "Components/WebHeader",
+  title: "Components/Header",
   component: TrostWebHeader,
   parameters: { layout: "fullscreen" },
   globals: { brand: "trost" },
@@ -46,8 +46,8 @@ const TROST_TABS = [
   { tabName: "약물치료", tabUrl: "/medicine" },
 ];
 
-export const TrostDesktop: Story = {
-  name: "Trost/Desktop (Zeplin Dp775xl)",
+export const TrostWebHeaderDesktop: Story = {
+  name: "TrostWebHeader/Desktop (Zeplin Dp775xl)",
   parameters: {
     docs: {
       description: {
@@ -86,8 +86,8 @@ export const TrostDesktop: Story = {
   ),
 };
 
-export const TrostLoggedIn: Story = {
-  name: "Trost/Desktop — Logged in",
+export const TrostWebHeaderLoggedIn: Story = {
+  name: "TrostWebHeader/Desktop — Logged in",
   render: () => (
     <TrostWebHeader
       banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbol} />}

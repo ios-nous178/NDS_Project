@@ -6,14 +6,14 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("nudge-eap");
 
 const meta: Meta = {
-  title: "Components/WebHeader",
+  title: "Components/Header",
   parameters: { layout: "fullscreen" },
 };
 export default meta;
 type Story = StoryObj;
 
-export const NudgeEAPDesktop: Story = {
-  name: "NudgeEAP/Desktop (Figma 39:5751)",
+export const NudgeEAPWebHeaderDesktop: Story = {
+  name: "NudgeEAPWebHeader/Desktop (Figma 39:5751)",
   parameters: {
     docs: {
       description: {
@@ -24,13 +24,6 @@ export const NudgeEAPDesktop: Story = {
   },
   render: () => (
     <NudgeEAPWebHeader
-      logo={{
-        src: b.logo.headerPc.src,
-        alt: "NudgeEAP",
-        href: "/",
-        width: 200,
-        height: 60,
-      }}
       maxWidth={b.header.pcMaxWidth}
       menuItems={b.header.gnb.items}
       activeKey="counsel"
@@ -42,17 +35,10 @@ export const NudgeEAPDesktop: Story = {
   ),
 };
 
-export const NudgeEAPLoggedIn: Story = {
-  name: "NudgeEAP/Desktop — Logged in",
+export const NudgeEAPWebHeaderLoggedIn: Story = {
+  name: "NudgeEAPWebHeader/Desktop — Logged in",
   render: () => (
     <NudgeEAPWebHeader
-      logo={{
-        src: b.logo.headerPc.src,
-        alt: "NudgeEAP",
-        href: "/",
-        width: 200,
-        height: 60,
-      }}
       maxWidth={b.header.pcMaxWidth}
       menuItems={b.header.gnb.items}
       activeKey="my"

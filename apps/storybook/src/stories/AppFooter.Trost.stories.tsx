@@ -1,23 +1,24 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TrostAppFooter, TrostBottomNav } from "@nudge-eap/react";
+import { TrostFooter, TrostBottomNav } from "@nudge-eap/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("trost");
 
 const meta: Meta = {
-  title: "Components/AppFooter",
+  title: "Components/Footer",
   parameters: { layout: "fullscreen" },
   globals: { brand: "trost" },
 };
 export default meta;
 type Story = StoryObj;
 
-export const TrostDesktopFooter: Story = {
-  name: "Trost/Desktop (다크 푸터 전체)",
+export const TrostAppDesktop: Story = {
+  name: "Trost/App Desktop (surface='app' layout='desktop')",
   render: () => (
-    <TrostAppFooter
-      variant="desktop"
+    <TrostFooter
+      surface="app"
+      layout="desktop"
       links={b.footer.links}
       company={b.footer.company}
       extra={b.footer.extra}
@@ -30,12 +31,13 @@ export const TrostDesktopFooter: Story = {
   ),
 };
 
-export const TrostMobileFooter: Story = {
-  name: "Trost/Mobile (다크 푸터)",
+export const TrostAppMobile: Story = {
+  name: "Trost/App Mobile (surface='app' layout='mobile')",
   render: () => (
     <div style={{ maxWidth: 480 }}>
-      <TrostAppFooter
-        variant="mobile"
+      <TrostFooter
+        surface="app"
+        layout="mobile"
         links={b.footer.links}
         company={b.footer.company}
         extra={b.footer.extra}

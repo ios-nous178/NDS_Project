@@ -47,7 +47,7 @@ const ctaButtons: GenietAppBarCta[] = [
 ];
 
 const meta: Meta = {
-  title: "Components/AppBar",
+  title: "Components/Header",
   parameters: { layout: "fullscreen" },
   globals: { brand: "geniet" },
 };
@@ -55,12 +55,12 @@ export default meta;
 type Story = StoryObj;
 
 export const GenietDesktop: Story = {
-  name: "Geniet/Desktop (Figma 77:2 — Search/Menu 2단)",
+  name: "GenietWebHeader/Desktop (Figma 77:2 — Search/Menu 2단)",
   parameters: {
     docs: {
       description: {
         story:
-          "Figma 77:2 — 1920 × 172. Search Header(54h, logo + 검색 pill + NEW chip + 쿠폰상점·마이페이지·로그인 액션) + Menu Header(58h, 음식 카테고리 + GNB + 캐시리뷰/친구초대 CTA).",
+          "Geniet 데스크탑 웹 헤더. Figma 77:2 — 1920 × 172. Search Header(54h, logo + 검색 pill + NEW chip + 쿠폰상점·마이페이지·로그인 액션) + Menu Header(58h, 음식 카테고리 + GNB + 캐시리뷰/친구초대 CTA).",
       },
     },
   },
@@ -87,7 +87,7 @@ export const GenietDesktop: Story = {
 };
 
 export const GenietMobile: Story = {
-  name: "Geniet/Mobile (Figma 77:2 — Row1+Row2 102h)",
+  name: "GenietAppBar/Mobile (Figma 77:2 — Row1+Row2 102h)",
   parameters: {
     docs: {
       description: {
@@ -115,7 +115,7 @@ export const GenietMobile: Story = {
 };
 
 export const GenietWebview: Story = {
-  name: "Geniet/Webview",
+  name: "GenietAppBar/Webview",
   render: () => (
     <GenietAppBar
       variant="webview"

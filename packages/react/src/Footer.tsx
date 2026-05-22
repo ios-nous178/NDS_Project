@@ -12,7 +12,7 @@ import {
 
 /* ─── Constants ─── */
 
-const FOOTER_CLASS = "nds-app-footer";
+const FOOTER_CLASS = "nds-footer";
 const FOOTER_LINKS_CLASS = `${FOOTER_CLASS}__links`;
 const FOOTER_LINK_CLASS = `${FOOTER_CLASS}__link`;
 const FOOTER_INFO_CLASS = `${FOOTER_CLASS}__info`;
@@ -23,10 +23,11 @@ const FOOTER_EXTRA_CLASS = `${FOOTER_CLASS}__extra`;
 
 /* ─── Variant ─── */
 
-export type AppFooterVariant = "info" | "tab-bar";
+export type FooterVariant = "info" | "tab-bar" | "web";
+export type FooterWebTone = "light" | "dark";
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const appFooterStyles = `
+const footerStyles = `
   /* ─── Info footer (홈페이지 하단) ─── */
   :where(.${FOOTER_CLASS}[data-variant="info"]) {
     width: 100%;
@@ -113,7 +114,7 @@ const appFooterStyles = `
     pointer-events: none;
   }
 
-  :where(.${FOOTER_NAV_ITEM_CLASS}) .nds-app-footer__nav-icon {
+  :where(.${FOOTER_NAV_ITEM_CLASS}) .${FOOTER_CLASS}__nav-icon {
     width: ${sizing.icon.default}px;
     height: ${sizing.icon.default}px;
     display: flex;
@@ -121,7 +122,7 @@ const appFooterStyles = `
     justify-content: center;
   }
 
-  :where(.${FOOTER_NAV_ITEM_CLASS}) .nds-app-footer__nav-label {
+  :where(.${FOOTER_NAV_ITEM_CLASS}) .${FOOTER_CLASS}__nav-label {
     font-size: var(--nds-footer-nav-label-font-size, ${typeScale.label.fontSize}px);
     line-height: var(--nds-footer-nav-label-line-height, ${typeScale.label.lineHeight}px);
     font-weight: var(--nds-footer-nav-label-weight, ${fontWeight.regular});
@@ -130,7 +131,7 @@ const appFooterStyles = `
     text-overflow: ellipsis;
   }
 
-  :where(.${FOOTER_NAV_ITEM_CLASS}[data-active="true"]) .nds-app-footer__nav-label {
+  :where(.${FOOTER_NAV_ITEM_CLASS}[data-active="true"]) .${FOOTER_CLASS}__nav-label {
     color: var(--nds-footer-nav-active-color, ${cv.textRole.normal});
     font-weight: var(--nds-footer-nav-active-label-weight, var(--nds-footer-nav-label-weight, ${fontWeight.regular}));
   }
@@ -179,6 +180,44 @@ const appFooterStyles = `
     color: var(--nds-footer-extra-color, ${cv.textRole.subtle});
     margin-bottom: ${spacing[12]}px;
   }
+
+  /* ─── Web variant (rich PC footer skeleton — base 는 골격만 제공) ─── */
+  :where(.${FOOTER_CLASS}[data-variant="web"]) {
+    width: 100%;
+    font-family: ${fontFamily.web};
+    background: var(--nds-footer-background, ${cv.surface.subtle});
+    color: var(--nds-footer-color, ${cv.textRole.normal});
+    box-sizing: border-box;
+  }
+  :where(.${FOOTER_CLASS}[data-variant="web"][data-tone="dark"]) {
+    --nds-footer-background: ${cv.textRole.normal};
+    --nds-footer-color: #fff;
+    --nds-footer-divider-color: rgba(255, 255, 255, 0.16);
+  }
+  :where(.${FOOTER_CLASS}[data-variant="web"]) .${FOOTER_CLASS}__web-inner {
+    max-width: var(--nds-footer-web-max-width, 1200px);
+    margin: 0 auto;
+    padding: 0 ${spacing[16]}px;
+    box-sizing: border-box;
+  }
+  :where(.${FOOTER_CLASS}__web-row) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--gap-wide);
+    padding: ${spacing[24]}px 0;
+  }
+  :where(.${FOOTER_CLASS}__web-row[data-align="start"]) { justify-content: flex-start; }
+  :where(.${FOOTER_CLASS}__web-row[data-align="end"]) { justify-content: flex-end; }
+  :where(.${FOOTER_CLASS}__web-row[data-align="center"]) { justify-content: center; }
+  :where(.${FOOTER_CLASS}__web-row[data-align="top"]) { align-items: flex-start; }
+  :where(.${FOOTER_CLASS}__web-divider) {
+    height: 1px;
+    background: var(--nds-footer-divider-color, ${cv.borderRole.subtle});
+  }
+  :where(.${FOOTER_CLASS}__web-section) {
+    display: block;
+  }
 `;
 
 /* ─── Utils ─── */
@@ -188,7 +227,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /* ─── Divider (info variant 내부 구분자) ─── */
 
-const FooterDivider = () => (
+const InfoDivider = () => (
   <span
     style={{
       width: 1,
@@ -230,7 +269,7 @@ export interface FooterTabItem {
 
 /* ─── Info Footer ─── */
 
-export interface AppFooterInfoProps extends React.HTMLAttributes<HTMLElement> {
+export interface FooterInfoProps extends React.HTMLAttributes<HTMLElement> {
   /** 약관 등 링크 목록 */
   links?: FooterLinkItem[];
   /** 회사 정보 (주소, 사업자번호 등) */
@@ -239,7 +278,7 @@ export interface AppFooterInfoProps extends React.HTMLAttributes<HTMLElement> {
   onLinkClick?: (link: FooterLinkItem, e: React.MouseEvent) => void;
 }
 
-export const AppFooterInfo = React.forwardRef<HTMLElement, AppFooterInfoProps>(
+export const FooterInfo = React.forwardRef<HTMLElement, FooterInfoProps>(
   ({ links, companyInfo, onLinkClick, className, style, children, ...rest }, ref) => {
     return (
       <footer
@@ -262,7 +301,7 @@ export const AppFooterInfo = React.forwardRef<HTMLElement, AppFooterInfoProps>(
               <nav data-slot="links" className={FOOTER_LINKS_CLASS}>
                 {links.map((link, i) => (
                   <React.Fragment key={link.href}>
-                    {i > 0 && <FooterDivider />}
+                    {i > 0 && <InfoDivider />}
                     <a
                       href={link.href}
                       target={link.external !== false ? "_blank" : undefined}
@@ -289,11 +328,11 @@ export const AppFooterInfo = React.forwardRef<HTMLElement, AppFooterInfoProps>(
   },
 );
 
-AppFooterInfo.displayName = "AppFooterInfo";
+FooterInfo.displayName = "Footer.Info";
 
 /* ─── Tab Bar Footer ─── */
 
-export interface AppFooterTabBarProps extends React.HTMLAttributes<HTMLElement> {
+export interface FooterTabBarProps extends React.HTMLAttributes<HTMLElement> {
   /** 탭 목록 */
   tabs: FooterTabItem[];
   /** 현재 활성 탭 key */
@@ -304,7 +343,7 @@ export interface AppFooterTabBarProps extends React.HTMLAttributes<HTMLElement> 
   renderTab?: (tab: FooterTabItem, isActive: boolean, children: React.ReactNode) => React.ReactNode;
 }
 
-export const AppFooterTabBar = React.forwardRef<HTMLElement, AppFooterTabBarProps>(
+export const FooterTabBar = React.forwardRef<HTMLElement, FooterTabBarProps>(
   ({ tabs, activeTab, onTabClick, renderTab, className, style, children, ...rest }, ref) => {
     return (
       <nav
@@ -328,10 +367,10 @@ export const AppFooterTabBar = React.forwardRef<HTMLElement, AppFooterTabBarProp
             const isActive = activeTab === tab.key;
             const content = (
               <>
-                <span className="nds-app-footer__nav-icon">
+                <span className={`${FOOTER_CLASS}__nav-icon`}>
                   {isActive ? tab.activeIcon : tab.icon}
                 </span>
-                <span className="nds-app-footer__nav-label">{tab.label}</span>
+                <span className={`${FOOTER_CLASS}__nav-label`}>{tab.label}</span>
               </>
             );
 
@@ -361,7 +400,7 @@ export const AppFooterTabBar = React.forwardRef<HTMLElement, AppFooterTabBarProp
   },
 );
 
-AppFooterTabBar.displayName = "AppFooterTabBar";
+FooterTabBar.displayName = "Footer.TabBar";
 
 /* ────────────────────────────────────
    Sub-components (Compound pattern)
@@ -369,18 +408,18 @@ AppFooterTabBar.displayName = "AppFooterTabBar";
 
 /* ─── Links (extracted from Info internal) ─── */
 
-export interface AppFooterLinksProps extends React.HTMLAttributes<HTMLElement> {
+export interface FooterLinksProps extends React.HTMLAttributes<HTMLElement> {
   links: FooterLinkItem[];
   onLinkClick?: (link: FooterLinkItem, e: React.MouseEvent) => void;
 }
 
-export const AppFooterLinks = React.memo(
-  React.forwardRef<HTMLElement, AppFooterLinksProps>(
+export const FooterLinks = React.memo(
+  React.forwardRef<HTMLElement, FooterLinksProps>(
     ({ links, onLinkClick, className, ...rest }, ref) => (
       <nav ref={ref} data-slot="links" className={cx(FOOTER_LINKS_CLASS, className)} {...rest}>
         {links.map((link, i) => (
           <React.Fragment key={link.label}>
-            {i > 0 && <FooterDivider />}
+            {i > 0 && <InfoDivider />}
             <a
               href={link.href}
               target={link.external !== false ? "_blank" : undefined}
@@ -397,7 +436,7 @@ export const AppFooterLinks = React.memo(
     ),
   ),
 );
-AppFooterLinks.displayName = "AppFooter.Links";
+FooterLinks.displayName = "Footer.Links";
 
 /* ─── CompanyInfo ─── */
 
@@ -411,7 +450,7 @@ export interface CompanyInfoData {
   copyright: string;
 }
 
-export interface AppFooterCompanyInfoProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface FooterCompanyInfoProps extends React.HTMLAttributes<HTMLDivElement> {
   data: CompanyInfoData;
   /** 푸터 로고 src */
   logoSrc?: string;
@@ -421,8 +460,8 @@ export interface AppFooterCompanyInfoProps extends React.HTMLAttributes<HTMLDivE
 
 const Separator = () => <span className={`${FOOTER_CLASS}__company-sep`} />;
 
-export const AppFooterCompanyInfo = React.memo(
-  React.forwardRef<HTMLDivElement, AppFooterCompanyInfoProps>(
+export const FooterCompanyInfo = React.memo(
+  React.forwardRef<HTMLDivElement, FooterCompanyInfoProps>(
     ({ data, logoSrc, logoWidth, logoHeight, className, ...rest }, ref) => (
       <div ref={ref} data-slot="company" className={cx(FOOTER_COMPANY_CLASS, className)} {...rest}>
         <div style={{ minWidth: 0 }}>
@@ -461,36 +500,136 @@ export const AppFooterCompanyInfo = React.memo(
     ),
   ),
 );
-AppFooterCompanyInfo.displayName = "AppFooter.CompanyInfo";
+FooterCompanyInfo.displayName = "Footer.CompanyInfo";
 
 /* ─── Extra (고지사항/긴급연락처) ─── */
 
-export type AppFooterExtraProps = React.HTMLAttributes<HTMLDivElement>;
+export type FooterExtraProps = React.HTMLAttributes<HTMLDivElement>;
 
-export const AppFooterExtra = React.memo(
-  React.forwardRef<HTMLDivElement, AppFooterExtraProps>(({ className, children, ...rest }, ref) => (
+export const FooterExtra = React.memo(
+  React.forwardRef<HTMLDivElement, FooterExtraProps>(({ className, children, ...rest }, ref) => (
     <div ref={ref} data-slot="extra" className={cx(FOOTER_EXTRA_CLASS, className)} {...rest}>
       {children}
     </div>
   )),
 );
-AppFooterExtra.displayName = "AppFooter.Extra";
+FooterExtra.displayName = "Footer.Extra";
+
+/* ─── Web variant (rich PC footer skeleton — compound) ─── */
+
+export interface FooterWebProps extends React.HTMLAttributes<HTMLElement> {
+  /** 콘텐츠 max-width (px). 기본 1200. */
+  maxWidth?: number;
+  /** 톤 — 토큰 swap. 기본 'light'. dark 는 흰 텍스트 + 어두운 배경. */
+  tone?: FooterWebTone;
+}
+
+export const FooterWeb = React.forwardRef<HTMLElement, FooterWebProps>(
+  ({ maxWidth, tone = "light", className, style, children, ...rest }, ref) => {
+    return (
+      <footer
+        ref={ref}
+        data-slot="root"
+        data-variant="web"
+        data-tone={tone}
+        className={cx(FOOTER_CLASS, className)}
+        style={
+          {
+            ...(maxWidth ? { "--nds-footer-web-max-width": `${maxWidth}px` } : {}),
+            ...style,
+          } as React.CSSProperties
+        }
+        {...rest}
+      >
+        <div className={`${FOOTER_CLASS}__web-inner`}>{children}</div>
+      </footer>
+    );
+  },
+);
+FooterWeb.displayName = "Footer.Web";
+
+export interface FooterWebRowProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** flex 정렬. 기본 between. */
+  align?: "between" | "start" | "end" | "center" | "top";
+}
+
+export const FooterWebRow = React.forwardRef<HTMLDivElement, FooterWebRowProps>(
+  ({ align = "between", className, ...rest }, ref) => (
+    <div
+      ref={ref}
+      data-slot="web-row"
+      data-align={align}
+      className={cx(`${FOOTER_CLASS}__web-row`, className)}
+      {...rest}
+    />
+  ),
+);
+FooterWebRow.displayName = "Footer.Web.Row";
+
+export const FooterWebDivider = React.memo(
+  React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+    ({ className, ...rest }, ref) => (
+      <div
+        ref={ref}
+        aria-hidden="true"
+        data-slot="web-divider"
+        className={cx(`${FOOTER_CLASS}__web-divider`, className)}
+        {...rest}
+      />
+    ),
+  ),
+);
+FooterWebDivider.displayName = "Footer.Web.Divider";
+
+export type FooterWebSectionProps = React.HTMLAttributes<HTMLElement>;
+
+export const FooterWebSection = React.forwardRef<HTMLElement, FooterWebSectionProps>(
+  ({ className, ...rest }, ref) => (
+    <section
+      ref={ref}
+      data-slot="web-section"
+      className={cx(`${FOOTER_CLASS}__web-section`, className)}
+      {...rest}
+    />
+  ),
+);
+FooterWebSection.displayName = "Footer.Web.Section";
 
 /* ─── Compound export ─── */
 
-export const AppFooter = Object.assign(
+const FooterWebCompound = Object.assign(FooterWeb, {
+  Row: FooterWebRow,
+  Divider: FooterWebDivider,
+  Section: FooterWebSection,
+});
+
+/**
+ * Base `Footer` compound — `{Brand}Footer` (`NudgeEAPFooter` / `TrostFooter` /
+ * `CashpobiFooter` / `GenietFooter`) 의 빌딩 블록.
+ *
+ *   - `.Info` — 회사 정보 푸터 (홈페이지 하단)
+ *   - `.TabBar` — 하단 탭 네비게이션 (앱)
+ *   - `.Web` — 데스크톱 PC 푸터 골격 (`.Web.Row` / `.Web.Divider` / `.Web.Section`)
+ *   - `.Links` / `.CompanyInfo` / `.Extra` — 컴포지션 슬롯
+ *
+ * 브랜드 화면에서는 `{Brand}Footer` 를 사용하고, 베이스는 커스텀 푸터 구성 시에만 직접
+ * 호출.
+ */
+export const Footer = Object.assign(
   {} as {
-    Info: typeof AppFooterInfo;
-    TabBar: typeof AppFooterTabBar;
-    Links: typeof AppFooterLinks;
-    CompanyInfo: typeof AppFooterCompanyInfo;
-    Extra: typeof AppFooterExtra;
+    Info: typeof FooterInfo;
+    TabBar: typeof FooterTabBar;
+    Web: typeof FooterWebCompound;
+    Links: typeof FooterLinks;
+    CompanyInfo: typeof FooterCompanyInfo;
+    Extra: typeof FooterExtra;
   },
   {
-    Info: AppFooterInfo,
-    TabBar: AppFooterTabBar,
-    Links: AppFooterLinks,
-    CompanyInfo: AppFooterCompanyInfo,
-    Extra: AppFooterExtra,
+    Info: FooterInfo,
+    TabBar: FooterTabBar,
+    Web: FooterWebCompound,
+    Links: FooterLinks,
+    CompanyInfo: FooterCompanyInfo,
+    Extra: FooterExtra,
   },
 );

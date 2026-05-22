@@ -1,6 +1,6 @@
 import React from "react";
-import { AppFooterTabBar } from "../AppFooter";
-import type { FooterTabItem } from "../AppFooter";
+import { FooterTabBar } from "../Footer";
+import type { FooterTabItem } from "../Footer";
 import {
   HomeIcon,
   HomeActiveIcon,
@@ -77,7 +77,7 @@ export const TrostBottomNav = React.forwardRef<HTMLElement, TrostBottomNavProps>
     const style: React.CSSProperties = position === "static" ? { position: "static" } : {};
 
     return (
-      <AppFooterTabBar
+      <FooterTabBar
         ref={ref}
         tabs={resolved}
         activeTab={activeTab}

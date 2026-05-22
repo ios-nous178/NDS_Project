@@ -101,7 +101,7 @@ const _rawBrandThemes: Record<string, BrandTheme> = {
       "--semantic-text-subtle": "#606060",
       "--semantic-icon-strong-default": "#333333",
       "--semantic-icon-normal-default": "#606060",
-      "--semantic-icon-brand-default": "#4968FF",
+      "--semantic-icon-brand-default": "#FF9D00",
       "--semantic-border-default": "#E5E5E5",
       "--semantic-border-focus": "#4968FF",
       "--semantic-bg-coolGray": "#F4F5F7",

@@ -1,7 +1,10 @@
 import React from "react";
-import { AppBar } from "../AppBar";
-import type { AppBarGNBItem, AppBarAuthMenuItem } from "../AppBar";
-import { koenLogoData } from "./assets/nudge-eap";
+import { Header } from "../Header";
+import type {
+  HeaderMenuItemData as AppBarGNBItem,
+  HeaderAuthMenuItem as AppBarAuthMenuItem,
+} from "../Header";
+import { NudgeEAPLogo } from "./Logo";
 
 /**
  * NudgeEAP 상단 헤더.
@@ -59,66 +62,79 @@ export const NudgeEAPAppBar = React.forwardRef<HTMLElement, NudgeEAPAppBarProps>
 
   if (variant === "webview") {
     return (
-      <AppBar
+      <Header
         ref={ref}
         variant="webview"
         position="static"
         title={webviewTitle}
-        leftSlot={<AppBar.BackButton onClick={onBack} />}
-        style={{ "--nds-app-bar-height": `${mobileHeight}px` } as React.CSSProperties}
+        leftSlot={<Header.BackButton onClick={onBack} />}
+        style={{ "--nds-header-height": `${mobileHeight}px` } as React.CSSProperties}
       />
     );
   }
 
   if (variant === "mobile") {
-    const mobileLogo = logo ?? { src: koenLogoData, alt: "NudgeEAP", href: "/", height: 28 };
+    const mobileLogoHeight = logo?.height ?? 28;
     return (
-      <AppBar
+      <Header
         ref={ref}
+        variant="compact"
         position="static"
-        style={{ "--nds-app-bar-height": `${mobileHeight}px` } as React.CSSProperties}
+        style={{ "--nds-header-height": `${mobileHeight}px` } as React.CSSProperties}
       >
-        <AppBar.MainBar>
-          <AppBar.Logo
-            src={mobileLogo.src}
-            alt={mobileLogo.alt ?? "NudgeEAP"}
-            href={mobileLogo.href ?? "/"}
-            style={{ height: mobileLogo.height ?? 28, width: "auto" }}
-          />
-          {authItems && authItems.length > 0 && (
-            <AppBar.AuthMenu items={authItems} separator="none" />
+        <Header.MainBar>
+          {logo?.src ? (
+            <Header.Logo
+              src={logo.src}
+              alt={logo.alt ?? "NudgeEAP"}
+              href={logo.href ?? "/"}
+              style={{ height: mobileLogoHeight, width: "auto" }}
+            />
+          ) : (
+            <Header.Logo href={logo?.href ?? "/"}>
+              <NudgeEAPLogo variant="koen" size={mobileLogoHeight} alt={logo?.alt ?? "NudgeEAP"} />
+            </Header.Logo>
           )}
-        </AppBar.MainBar>
-      </AppBar>
+          {authItems && authItems.length > 0 && (
+            <Header.AuthMenu items={authItems} separator="none" />
+          )}
+        </Header.MainBar>
+      </Header>
     );
   }
 
-  /* desktop — 1단 헤더 (logo + GNB + auth) */
-  const desktopLogo = logo ?? { src: koenLogoData, alt: "NudgeEAP", href: "/" };
+  /* desktop — 1단 헤더 (logo + GNB + auth)
+   * Header variant="web" (3-col grid: 1fr | auto | 1fr) → 메뉴가 로고/우측 액션 너비와
+   * 무관하게 항상 헤더 정중앙. 로고 미지정 시 vector NudgeEAPLogo 사용 (PNG 자산은
+   * 자체 회색 배경이 있어 화이트 헤더 위에서 box artifact 가 보이는 문제 회피). */
+  const logoNode = logo?.src ? (
+    <Header.Logo
+      src={logo.src}
+      alt={logo.alt ?? "NudgeEAP"}
+      href={logo.href ?? "/"}
+      style={{ height: 40, width: "auto" }}
+    />
+  ) : (
+    <Header.Logo href={logo?.href ?? "/"}>
+      <NudgeEAPLogo variant="koen" size={40} alt={logo?.alt ?? "NudgeEAP"} />
+    </Header.Logo>
+  );
   return (
-    <AppBar
+    <Header
       ref={ref}
+      variant="web"
       position="static"
-      style={
-        {
-          "--nds-app-bar-height": `${pcHeight}px`,
-          "--nds-app-bar-border-bottom": "none",
-        } as React.CSSProperties
-      }
+      maxWidth={pcMaxWidth}
+      style={{ "--nds-header-height": `${pcHeight}px` } as React.CSSProperties}
     >
-      <AppBar.MainBar maxWidth={pcMaxWidth}>
-        <AppBar.Logo
-          src={desktopLogo.src}
-          alt={desktopLogo.alt ?? "NudgeEAP"}
-          href={desktopLogo.href ?? "/"}
-          style={{ height: 40, width: "auto" }}
-        />
-        {gnbItems && gnbItems.length > 0 && <AppBar.GNB items={gnbItems} activeKey={activeKey} />}
-        {authItems && authItems.length > 0 && (
-          <AppBar.AuthMenu items={authItems} separator="none" />
-        )}
-      </AppBar.MainBar>
-    </AppBar>
+      {logoNode}
+      {gnbItems && gnbItems.length > 0 && <Header.Menu items={gnbItems} activeKey={activeKey} />}
+      {authItems && authItems.length > 0 && (
+        <Header.Actions>
+          <Header.AuthMenu items={authItems} separator="none" />
+        </Header.Actions>
+      )}
+    </Header>
   );
 });
 

@@ -1,18 +1,17 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TrostWebFooter } from "@nudge-eap/react";
+import { TrostFooter } from "@nudge-eap/react";
 
 const meta: Meta = {
-  title: "Components/WebFooter",
-  component: TrostWebFooter,
+  title: "Components/Footer",
   parameters: { layout: "fullscreen" },
   globals: { brand: "trost" },
 };
 export default meta;
 type Story = StoryObj;
 
-export const TrostDesktop: Story = {
-  name: "Trost/Desktop (다크 푸터)",
+export const TrostWeb: Story = {
+  name: "Trost/Web Desktop (surface='web', 다크 푸터)",
   parameters: {
     docs: {
       description: {
@@ -21,5 +20,5 @@ export const TrostDesktop: Story = {
       },
     },
   },
-  render: () => <TrostWebFooter />,
+  render: () => <TrostFooter surface="web" />,
 };

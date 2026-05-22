@@ -1,12 +1,11 @@
 /**
  * NudgeEAP brand chrome — header / footer / bottom-nav.
  *
- * NudgeEAP 화면은 `<NudgeEAPAppBar />` / `<NudgeEAPAppFooter />` / `<NudgeEAPBottomNav />`
- * 만 사용. 1단 헤더 · 3탭 BottomNav 가 기본.
+ * NudgeEAP 화면은 `<NudgeEAPAppBar />` / `<NudgeEAPFooter />` / `<NudgeEAPBottomNav />`
+ * / `<NudgeEAPWebHeader />` 만 사용. 푸터는 `surface='web'|'app'` 로 분기.
  */
 export * from "./Logo";
 export * from "./AppBar";
-export * from "./AppFooter";
+export * from "./Footer";
 export * from "./BottomNav";
 export * from "./WebHeader";
-export * from "./WebFooter";

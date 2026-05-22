@@ -1,6 +1,6 @@
 import React from "react";
-import { WebHeader } from "../WebHeader";
-import type { WebHeaderMenuItem } from "../WebHeader";
+import { Header } from "../Header";
+import type { HeaderMenuItemData as WebHeaderMenuItem } from "../Header";
 
 /**
  * Cashpobi (캐포비 · 캐시워크 for Business) 웹 헤더.
@@ -84,7 +84,7 @@ export const CashpobiWebHeader = React.forwardRef<HTMLElement, CashpobiWebHeader
 
     const resolvedPaddingX = paddingX ?? (variant === "mobile" ? 16 : 60);
     const containerStyle = {
-      "--nds-web-header-padding-x": `${resolvedPaddingX}px`,
+      "--nds-header-padding-x": `${resolvedPaddingX}px`,
     } as React.CSSProperties;
 
     const primaryCtaStyle: React.CSSProperties = {
@@ -119,17 +119,32 @@ export const CashpobiWebHeader = React.forwardRef<HTMLElement, CashpobiWebHeader
       );
 
     if (variant === "mobile") {
+      /* Figma 380:1119 — Mobile GNB. 메뉴 없는 모바일 헤더는 web grid 대신
+       * compact flex 로 구성해야 로고와 햄버거가 양끝에 안정적으로 배치된다. */
+      const mobileLogoHeight = Math.min(logo.height ?? 22, 22);
+      const mobileLogoWidth = Math.min(logo.width ?? 74, 74);
+      const mobileContainerStyle = {
+        ...containerStyle,
+        "--nds-header-height": "56px",
+        "--nds-header-padding-x": `${paddingX ?? 20}px`,
+      } as React.CSSProperties;
       return (
-        <WebHeader ref={ref} position="static" maxWidth={maxWidth} style={containerStyle}>
-          <WebHeader.Logo
-            href={logo.href ?? "/"}
-            src={logo.src}
-            alt={logo.alt ?? "Cashpobi"}
-            width={logo.width}
-            height={logo.height}
-          />
-          {onMobileMenu && (
-            <WebHeader.Actions>
+        <Header
+          ref={ref}
+          variant="compact"
+          position="static"
+          style={mobileContainerStyle}
+          leftSlot={
+            <Header.Logo
+              href={logo.href ?? "/"}
+              src={logo.src}
+              alt={logo.alt ?? "Cashpobi"}
+              width={mobileLogoWidth}
+              height={mobileLogoHeight}
+            />
+          }
+          rightSlot={
+            onMobileMenu ? (
               <button
                 type="button"
                 aria-label="메뉴"
@@ -137,10 +152,14 @@ export const CashpobiWebHeader = React.forwardRef<HTMLElement, CashpobiWebHeader
                 style={{
                   background: "transparent",
                   border: "none",
-                  padding: 8,
+                  width: 44,
+                  height: 44,
+                  padding: 10,
                   cursor: "pointer",
                   color: "var(--semantic-icon-strong-default, #111)",
                   display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -152,16 +171,16 @@ export const CashpobiWebHeader = React.forwardRef<HTMLElement, CashpobiWebHeader
                   />
                 </svg>
               </button>
-            </WebHeader.Actions>
-          )}
-        </WebHeader>
+            ) : null
+          }
+        />
       );
     }
 
     /* desktop */
     return (
-      <WebHeader ref={ref} position="static" maxWidth={maxWidth} style={containerStyle}>
-        <WebHeader.Logo
+      <Header ref={ref} variant="web" position="static" maxWidth={maxWidth} style={containerStyle}>
+        <Header.Logo
           href={logo.href ?? "/"}
           src={logo.src}
           alt={logo.alt ?? "Cashpobi"}
@@ -169,21 +188,21 @@ export const CashpobiWebHeader = React.forwardRef<HTMLElement, CashpobiWebHeader
           height={logo.height}
         />
         {menuItems && menuItems.length > 0 && (
-          <WebHeader.Menu items={menuItems} activeKey={activeKey} />
+          <Header.Menu items={menuItems} activeKey={activeKey} />
         )}
         {((actions && actions.length > 0) || primaryCta) && (
-          <WebHeader.Actions>
+          <Header.Actions>
             {actions?.map((a) =>
               a.href ? (
-                <WebHeader.AuthButton key={a.key} href={a.href} label={a.label} />
+                <Header.AuthButton key={a.key} href={a.href} label={a.label} />
               ) : (
-                <WebHeader.AuthButton key={a.key} label={a.label} onClick={a.onClick} />
+                <Header.AuthButton key={a.key} label={a.label} onClick={a.onClick} />
               ),
             )}
             {primaryCta && renderPrimaryCta(primaryCta)}
-          </WebHeader.Actions>
+          </Header.Actions>
         )}
-      </WebHeader>
+      </Header>
     );
   },
 );

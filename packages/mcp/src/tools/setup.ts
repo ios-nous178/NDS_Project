@@ -770,7 +770,7 @@ export function getBrandInfo(args: { brand: string }) {
     brandIcons,
     iconPolicy:
       brandIcons.length > 0
-        ? `이 브랜드 모드(brand='${slug}') 로 작업 시 위 ${brandIcons.length}개 아이콘은 같은 의미의 공용 아이콘보다 **우선 사용**. 매칭이 없는 의미만 공용 fallback. 공통 컴포넌트(AppFooter/BottomNav 등) 의 *구현* 에는 brand 분기 로직을 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.`
+        ? `이 브랜드 모드(brand='${slug}') 로 작업 시 위 ${brandIcons.length}개 아이콘은 같은 의미의 공용 아이콘보다 **우선 사용**. 매칭이 없는 의미만 공용 fallback. 공통 컴포넌트(Footer/BottomNav 등) 의 *구현* 에는 brand 분기 로직을 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.`
         : `이 브랜드 전용 prefix 아이콘은 아직 없습니다. 공용 @nudge-eap/icons 의 아이콘을 그대로 사용하세요.`,
     usage: {
       cssImport: brand.cssImport
