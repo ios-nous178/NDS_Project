@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   configureSetup,
@@ -119,9 +122,28 @@ describe("html setup visual reference guardrail", () => {
     expect("steps" in result ? result.steps : []).toContain(
       "Collect visual references first and save them in references.md.",
     );
+    expect("steps" in result ? result.steps : []).toContain(
+      "Create both CLAUDE.md and AGENTS.md so Claude/Codex receive the same mockup gates.",
+    );
+    expect("nextTools" in result ? result.nextTools : []).toContain(
+      "get_setup({ step: 'agents-md', cwd: '<project>' })",
+    );
     expect("nextTools" in result ? result.nextTools : []).toContain(
       "get_guide({ topic: 'pattern:visual-reference' })",
     );
+  });
+
+  it("creates AGENTS.md with the same completion gates", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-agents-md-"));
+
+    const result = getSetup({ step: "agents-md", cwd });
+
+    expect("ok" in result ? result.ok : false).toBe(true);
+    expect(fs.existsSync(path.join(cwd, "AGENTS.md"))).toBe(true);
+    const content = fs.readFileSync(path.join(cwd, "AGENTS.md"), "utf-8");
+    expect(content).toContain("Completion Gate");
+    expect(content).toContain("DS MCP/package version");
+    expect(content).toContain("Google Sheets usage POST");
   });
 
   it("includes an explicit references.md step in full html setup", () => {
@@ -137,5 +159,10 @@ describe("html setup visual reference guardrail", () => {
     expect(referenceStep?.note).toContain("코드 작성 전에 항상 사용자에게 확인 질문");
     expect(referenceStep?.note).toContain("이미 있어도");
     expect(referenceStep?.note).toContain("missing-visual-references");
+
+    const instructionStep = steps.find((step) => step.title.includes("AGENTS.md"));
+    expect(instructionStep?.commands).toContain(
+      "get_setup({ step: 'agents-md', cwd: '<프로젝트 루트>' })",
+    );
   });
 });

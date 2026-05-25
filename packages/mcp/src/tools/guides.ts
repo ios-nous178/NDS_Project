@@ -799,26 +799,27 @@ export function getClaudeMdTemplate(args: {
 `;
 }
 
-export function createClaudeMd(args: {
+function createInstructionMd(args: {
   cwd?: string;
   projectName?: string;
   overwrite?: boolean;
   intent?: string;
   template?: ClaudeMdTemplateVariant;
+  fileName: "CLAUDE.md" | "AGENTS.md";
 }) {
   const cwd = path.resolve(args.cwd ?? process.cwd());
   if (!fs.existsSync(cwd)) {
     return { ok: false, error: `cwd not found: ${cwd}` };
   }
 
-  const filePath = path.join(cwd, "CLAUDE.md");
+  const filePath = path.join(cwd, args.fileName);
   const exists = fs.existsSync(filePath);
   if (exists && !args.overwrite) {
     return {
       ok: false,
       filePath,
       exists: true,
-      error: "CLAUDE.md already exists. Pass overwrite: true to replace it.",
+      error: `${args.fileName} already exists. Pass overwrite: true to replace it.`,
       preview: fs.readFileSync(filePath, "utf-8").slice(0, 1200),
     };
   }
@@ -840,6 +841,29 @@ export function createClaudeMd(args: {
     bytes: Buffer.byteLength(content, "utf-8"),
     intent,
     template,
-    next: "Restart or reload Claude Code in this project so the new CLAUDE.md instructions are picked up.",
+    next:
+      args.fileName === "AGENTS.md"
+        ? "Restart or reload Codex/agent sessions in this project so the new AGENTS.md instructions are picked up."
+        : "Restart or reload Claude Code in this project so the new CLAUDE.md instructions are picked up.",
   };
+}
+
+export function createClaudeMd(args: {
+  cwd?: string;
+  projectName?: string;
+  overwrite?: boolean;
+  intent?: string;
+  template?: ClaudeMdTemplateVariant;
+}) {
+  return createInstructionMd({ ...args, fileName: "CLAUDE.md" });
+}
+
+export function createAgentsMd(args: {
+  cwd?: string;
+  projectName?: string;
+  overwrite?: boolean;
+  intent?: string;
+  template?: ClaudeMdTemplateVariant;
+}) {
+  return createInstructionMd({ ...args, fileName: "AGENTS.md" });
 }
