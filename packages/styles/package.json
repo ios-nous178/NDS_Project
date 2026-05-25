@@ -1,6 +1,6 @@
 {
   "name": "@nudge-eap/styles",
-  "version": "0.0.1",
+  "version": "0.1.12",
   "description": "Framework-agnostic CSS bundle for NudgeEAP Design System — consumed by @nudge-eap/react and @nudge-eap/html.",
   "exports": {
     "./styles.css": "./dist/styles.css"

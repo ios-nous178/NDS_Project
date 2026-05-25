@@ -717,9 +717,9 @@ export function auditMockupWorkspace(
  */
 function auditVisualReferences(cwd: string): WorkspaceAuditViolation | null {
   const fallbackQuestion =
-    "시각 기준으로 쓸 Figma 링크나 스크린샷을 받을 수 있을까요? " +
-    "가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요. " +
-    "이미 프롬프트에 이미지나 Figma 링크가 있다면 그 자료를 기준으로 진행하겠습니다.";
+    "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? " +
+    "이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. " +
+    "가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요.";
   const fixHint =
     "응답을 받으면 references.md 에 다음 형식으로 저장: " +
     "'[good|bad] source=<figma-url|image-name> caption=<1-line reason>'. " +
