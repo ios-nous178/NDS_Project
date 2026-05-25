@@ -92,16 +92,6 @@ const TOOLS = [
     },
   },
   {
-    name: "list_packages",
-    description: "List DS packages, versions, dependencies, and CSS exports.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
-    name: "check_mcp_update",
-    description: "Check GitHub Releases for a newer .mcpb and return update instructions.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
     name: "dev_server",
     description: "Start or stop a local mockup dev server and return the preview URL/session id.",
     inputSchema: {
@@ -296,15 +286,6 @@ const TOOLS = [
           description: "Default false — log/write and try webhook. Set true to inspect only.",
         },
       },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "list_figma_sync_status",
-    description: "List curated component guides and their Figma sync status.",
-    inputSchema: {
-      type: "object",
-      properties: {},
       additionalProperties: false,
     },
   },

@@ -1331,11 +1331,14 @@ export function getSetup(args: {
       return isHtmlIntent
         ? getHtmlEntryImports({ brand: args.brand })
         : getMainTsxImports({ brand: args.brand });
-    case "update":
-      return getUpdateInstructions({
+    case "update": {
+      // 옛 check_mcp_update 도구 흡수 — 업데이트 안내와 GitHub Releases 의 최신 .mcpb 정보를 한 번에.
+      const instructions = getUpdateInstructions({
         source: args.source,
         includeLocalPackages: args.includeLocalPackages,
       });
+      return checkMcpUpdate().then((releaseCheck) => ({ ...instructions, releaseCheck }));
+    }
     case "claude-md":
       return createClaudeMd({
         cwd: args.cwd,
@@ -1351,7 +1354,7 @@ export function getSetup(args: {
           error:
             "intent='html' 워크플로우는 DsInspector 를 사용하지 않습니다. " +
             "DsInspector 는 React (.tsx) 트리에 마운트되는 dev-only 패널이며, vanilla HTML 에는 적용되지 않습니다. " +
-            "<nds-*> 채택 비율은 analyze_html_mockup({ filePath }) 로 확인하세요.",
+            "<nds-*> 채택 비율은 validate_html_mockup({ filePath, withStats: true }) 로 확인하세요.",
           intent: "html",
         };
       }
