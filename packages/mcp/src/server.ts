@@ -43,7 +43,8 @@ import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDirectRun =
   process.argv[1] !== undefined &&
-  pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url;
+  pathToFileURL(fs.realpathSync(path.resolve(process.argv[1]))).href ===
+    pathToFileURL(fs.realpathSync(fileURLToPath(import.meta.url))).href;
 const catalogPath = path.resolve(__dirname, "../catalog.json");
 const mcpbManifestPath = path.resolve(__dirname, "../manifest.json");
 

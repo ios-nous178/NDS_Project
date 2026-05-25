@@ -90,9 +90,11 @@ console.log(`🔖 DS version verified: ${rootVersion} (root ↔ all DS packages 
 const ALL_PACKAGES = [...PACKAGES, ...EXTRA_PACKAGES];
 
 if (!skipBuild) {
-  const filterArgs = ALL_PACKAGES.map((n) => `--filter @nudge-eap/${n}`).join(" ");
   console.log(`📦 Building: ${ALL_PACKAGES.map((n) => `@nudge-eap/${n}`).join(", ")}`);
-  execSync(`pnpm build ${filterArgs}`, { cwd: ROOT, stdio: "inherit" });
+  for (const name of ALL_PACKAGES) {
+    console.log(`  → building @nudge-eap/${name}`);
+    execSync(`pnpm --filter @nudge-eap/${name} build`, { cwd: ROOT, stdio: "inherit" });
+  }
   console.log("");
 }
 

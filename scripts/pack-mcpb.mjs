@@ -39,6 +39,7 @@ const runtimeDeps = [
   "@babel/traverse",
   "@babel/types",
   "@modelcontextprotocol/sdk",
+  "cheerio",
 ];
 
 function readJson(file) {
