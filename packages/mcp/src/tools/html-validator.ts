@@ -52,12 +52,15 @@ export interface HtmlValidationContext {
   tokenSet: Set<string>;
   ndsTagSet: Set<string>;
   ndsClassPrefixSet: Set<string>;
+  /** 각 nds-* 의 attribute enum. tag → attrName → 허용값 배열. */
+  ndsAttrEnums?: Map<string, Map<string, string[]>>;
 }
 
 const EMPTY: HtmlValidationContext = {
   tokenSet: new Set(),
   ndsTagSet: new Set(),
   ndsClassPrefixSet: new Set(),
+  ndsAttrEnums: new Map(),
 };
 
 let configured: HtmlValidationContext = EMPTY;
@@ -243,6 +246,23 @@ export function validateHtmlSource(
         detail: `<${tag}> 는 @nudge-eap/html 에 없는 custom element`,
         suggestion: "find_component({ query }) 으로 유사한 React 컴포넌트 확인.",
       });
+    }
+
+    // 4-bis. nds-* 의 attribute enum 검사 (예: <nds-button color="weird">)
+    if (tag.startsWith("nds-") && ctx.ndsAttrEnums && ctx.ndsAttrEnums.has(tag)) {
+      const attrEnumMap = ctx.ndsAttrEnums.get(tag)!;
+      for (const [attrName, allowed] of attrEnumMap) {
+        const value = attrs[attrName];
+        if (value === undefined) continue; // 미지정 = 컴포넌트 기본값 → 통과
+        if (allowed.includes(value)) continue;
+        violations.push({
+          rule: "invalid-nds-attr-value",
+          line,
+          selector,
+          detail: `<${tag} ${attrName}="${value}"> — 허용값 아님.`,
+          suggestion: `${tag}.${attrName} 허용값: ${allowed.map((v) => `"${v}"`).join(", ")}.`,
+        });
+      }
     }
 
     // 5. unknown nds-* 클래스 (베이스 클래스 prefix 단위로 검사)

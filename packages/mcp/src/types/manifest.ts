@@ -65,6 +65,13 @@ export interface Catalog {
   brands: BrandDef[];
   /** @nudge-eap/html custom element 태그 목록 (예: "nds-button", "nds-input"). */
   ndsHtmlTags?: string[];
+  /** 각 nds-* 의 attribute enum (예: { tag: "nds-button", attrs: { color: ["primary", ...] } }). */
+  ndsHtmlElements?: NdsHtmlElementDef[];
+}
+
+export interface NdsHtmlElementDef {
+  tag: string;
+  attrs: Record<string, string[]>;
 }
 
 export interface Manifest extends Catalog {

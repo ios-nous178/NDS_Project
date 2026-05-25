@@ -27,7 +27,13 @@ export { NdsCheckbox } from "./components/nds-checkbox.js";
 
 export { NdsRadio } from "./components/nds-radio.js";
 
-export { NdsCard } from "./components/nds-card.js";
+export {
+  NdsCard,
+  NdsCardHeader,
+  NdsCardBody,
+  NdsCardFooter,
+  NdsCardThumbnail,
+} from "./components/nds-card.js";
 export type { CardVariant } from "./components/nds-card.js";
 
 export { NdsList, NdsListItem } from "./components/nds-list.js";
@@ -59,3 +65,39 @@ export type { ProgressBarSize } from "./components/nds-progress-bar.js";
 
 export { NdsSkeleton } from "./components/nds-skeleton.js";
 export type { SkeletonVariant } from "./components/nds-skeleton.js";
+
+export { NdsTitleBlock } from "./components/nds-title-block.js";
+export type { TitleBlockLevel } from "./components/nds-title-block.js";
+
+export { NdsAvatarGroup } from "./components/nds-avatar-group.js";
+
+export { NdsSegmented } from "./components/nds-segmented.js";
+export type { SegmentedSize } from "./components/nds-segmented.js";
+
+export { NdsActionChip } from "./components/nds-action-chip.js";
+
+export { NdsCountdownTimer } from "./components/nds-countdown-timer.js";
+export type { CountdownFormat } from "./components/nds-countdown-timer.js";
+
+export { NdsExpandableText } from "./components/nds-expandable-text.js";
+
+export { NdsCardVisual } from "./components/nds-card-visual.js";
+export type { CardVisualBrand } from "./components/nds-card-visual.js";
+
+export { NdsOrderSummaryCard } from "./components/nds-order-summary-card.js";
+
+export { NdsStreakCard } from "./components/nds-streak-card.js";
+
+export { NdsChatBubble } from "./components/nds-chat-bubble.js";
+export type { ChatRole, ChatGroupPosition } from "./components/nds-chat-bubble.js";
+
+export { NdsJournalEntry } from "./components/nds-journal-entry.js";
+
+export { NdsContentViewer } from "./components/nds-content-viewer.js";
+
+export { NdsBreathingGuide } from "./components/nds-breathing-guide.js";
+export type { BreathingPhaseKind } from "./components/nds-breathing-guide.js";
+
+export { NdsQuickActionGrid } from "./components/nds-quick-action-grid.js";
+
+export { NdsLikertScale } from "./components/nds-likert-scale.js";

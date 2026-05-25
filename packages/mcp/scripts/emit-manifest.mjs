@@ -375,6 +375,61 @@ function collectNdsHtmlTags() {
 }
 const ndsHtmlTags = collectNdsHtmlTags();
 
+/**
+ * 각 nds-* 컴포넌트의 attribute enum 추출.
+ *
+ * 패턴 (컨벤션):
+ *   const VARIANTS: readonly XxxVariant[] = ["a", "b", ...];
+ *   const SIZES:    readonly XxxSize[]    = [...];
+ *   const COLORS:   readonly XxxColor[]   = [...];
+ *   const TONES:    readonly XxxTone[]    = [...];
+ *   const ORIENTATIONS: readonly XxxOrientation[] = [...];
+ *
+ * BUTTON_VARIANTS 처럼 prefix 가 있어도 잡는다.
+ * sibling .styles.ts 파일도 같이 본다 (nds-button 만 styles 분리).
+ *
+ * 결과: { tag: "nds-button", attrs: { variant: [...], size: [...], color: [...] } }
+ */
+function collectNdsHtmlElements() {
+  const dir = path.join(repoRoot, "packages/html/src/components");
+  if (!fs.existsSync(dir)) return [];
+
+  const ATTR_KEYS = {
+    VARIANTS: "variant",
+    SIZES: "size",
+    COLORS: "color",
+    TONES: "tone",
+    ORIENTATIONS: "orientation",
+  };
+
+  const elementFiles = fs
+    .readdirSync(dir)
+    .filter((f) => f.startsWith("nds-") && f.endsWith(".ts") && !f.endsWith(".styles.ts"))
+    .sort();
+
+  const out = [];
+  for (const file of elementFiles) {
+    const tag = file.replace(/\.ts$/, "");
+    const mainSrc = fs.readFileSync(path.join(dir, file), "utf-8");
+    const stylesPath = path.join(dir, file.replace(/\.ts$/, ".styles.ts"));
+    const stylesSrc = fs.existsSync(stylesPath) ? fs.readFileSync(stylesPath, "utf-8") : "";
+    const combined = mainSrc + "\n" + stylesSrc;
+
+    const attrs = {};
+    for (const [marker, attrName] of Object.entries(ATTR_KEYS)) {
+      // 정규식: `const <prefix?>VARIANTS<:type>? = ["a", "b", ...]`
+      const re = new RegExp(`const\\s+(?:[A-Z_]+_)?${marker}\\b[^=]*=\\s*\\[([^\\]]+)\\]`, "m");
+      const m = combined.match(re);
+      if (!m) continue;
+      const values = [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
+      if (values.length > 0) attrs[attrName] = values;
+    }
+    out.push({ tag, attrs });
+  }
+  return out;
+}
+const ndsHtmlElements = collectNdsHtmlElements();
+
 const catalog = {
   generatedAt: new Date().toISOString(),
   packages: packagesMeta,
@@ -383,6 +438,7 @@ const catalog = {
   tokens: tokens.sort((a, b) => a.name.localeCompare(b.name)),
   brands: brands.sort((a, b) => a.slug.localeCompare(b.slug)),
   ndsHtmlTags,
+  ndsHtmlElements,
 };
 
 const outPath = path.resolve(__dirname, "../catalog.json");

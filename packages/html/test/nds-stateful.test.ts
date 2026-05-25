@@ -251,8 +251,10 @@ describe("nds-select", () => {
     await twice();
     expect(sel.hasAttribute("open")).toBe(true);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
-    const dropdown = sel.querySelector(".nds-select__dropdown") as HTMLDivElement;
+    // dropdown 은 open 시 document.body 로 portal 되므로 document 전체에서 검색.
+    const dropdown = document.querySelector(".nds-select__dropdown") as HTMLDivElement;
     expect(dropdown.style.display).not.toBe("none");
+    expect(dropdown.parentElement).toBe(document.body); // portal 검증
   });
 
   it("option click sets value + dispatches select-change + closes", async () => {
@@ -271,7 +273,8 @@ describe("nds-select", () => {
 
     (sel.querySelector("button") as HTMLButtonElement).click();
     await twice();
-    const optJp = sel.querySelector('nds-select-option[value="jp"]') as HTMLElement;
+    // option 들은 dropdown 과 함께 body 로 portal 됨 — document 에서 찾는다.
+    const optJp = document.querySelector('nds-select-option[value="jp"]') as HTMLElement;
     optJp.click();
     await twice();
 
@@ -291,6 +294,36 @@ describe("nds-select", () => {
     const text = document.querySelector(".nds-select__trigger-text")!;
     expect(text.textContent).toBe("일본");
     expect((text as HTMLElement).dataset.placeholder).toBe("false");
+  });
+
+  it("dropdown portals to body on open and returns on close", async () => {
+    document.body.innerHTML = `
+      <div style="overflow:hidden; height:100px">
+        <nds-select placeholder="x">
+          <nds-select-option value="a">A</nds-select-option>
+        </nds-select>
+      </div>
+    `;
+    await twice();
+    const sel = document.querySelector("nds-select") as NdsSelect;
+    const dropdown = sel.querySelector(".nds-select__dropdown") as HTMLDivElement;
+    // closed: dropdown stays inside root
+    expect(dropdown.parentElement).toBe(sel.querySelector(".nds-select__root"));
+
+    (sel.querySelector("button") as HTMLButtonElement).click();
+    await twice();
+    // open: portal to body
+    expect((document.querySelector(".nds-select__dropdown") as HTMLDivElement).parentElement).toBe(
+      document.body,
+    );
+
+    // close again (ESC)
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    await twice();
+    // back inside root
+    expect((sel.querySelector(".nds-select__dropdown") as HTMLDivElement).parentElement).toBe(
+      sel.querySelector(".nds-select__root"),
+    );
   });
 
   it("disabled option not selectable + cant become active", async () => {

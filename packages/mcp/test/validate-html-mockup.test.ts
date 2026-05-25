@@ -12,6 +12,15 @@ configureHtmlValidator({
   ]),
   ndsTagSet: new Set(["nds-button", "nds-input", "nds-select", "nds-card"]),
   ndsClassPrefixSet: new Set(["nds-button", "nds-input", "nds-card", "nds-chip"]),
+  ndsAttrEnums: new Map([
+    [
+      "nds-button",
+      new Map([
+        ["color", ["primary", "secondary", "assistive"]],
+        ["variant", ["solid", "outlined", "soft", "outlined-sub"]],
+      ]),
+    ],
+  ]),
 });
 
 function rulesFor(html: string): string[] {
@@ -105,5 +114,24 @@ describe("validateHtmlSource", () => {
   it("does NOT flag known nds-* class with __sub or --modifier", () => {
     const r = rulesFor(`<div class="nds-button__label">x</div>`);
     expect(r).not.toContain("unknown-nds-class");
+  });
+
+  it("flags invalid attribute value on nds-* tag", () => {
+    expect(rulesFor(`<nds-button color="weird">x</nds-button>`)).toContain(
+      "invalid-nds-attr-value",
+    );
+    expect(rulesFor(`<nds-button variant="huge">x</nds-button>`)).toContain(
+      "invalid-nds-attr-value",
+    );
+  });
+
+  it("does NOT flag valid enum values", () => {
+    const r = rulesFor(`<nds-button color="primary" variant="solid">x</nds-button>`);
+    expect(r).not.toContain("invalid-nds-attr-value");
+  });
+
+  it("missing attribute (= default) does NOT trigger invalid-nds-attr-value", () => {
+    const r = rulesFor(`<nds-button>no color attr</nds-button>`);
+    expect(r).not.toContain("invalid-nds-attr-value");
   });
 });
