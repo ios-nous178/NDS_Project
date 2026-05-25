@@ -220,11 +220,15 @@ function searchComponent(query: string, limit = 10) {
 /**
  * find_component 통합 라우터.
  *  - 인자 없음 → 전체 컴포넌트 목록
- *  - { name } → 풀 props 스펙 (없으면 search suggestions 동봉)
+ *  - { name } → 슬림 응답 (name, htmlTag, props 개수, prop name 만). verbose:true 면 full 스펙.
  *  - { query } → fuzzy 점수 매치
  *  - 둘 다 → name 우선
+ *
+ * verbose default false 인 이유: 컴포넌트 한 개의 full props 가 type/allowedValues 까지
+ * 펼치면 수 KB. 한 번에 9개씩 병렬 호출하던 사용 패턴에서 토큰을 크게 잡아먹었다.
+ * 슬림 응답이면 prop 존재 여부 확인엔 충분하고, 시그니처 까지 필요하면 verbose:true 로 명시.
  */
-function findComponent(args: { name?: string; query?: string; limit?: number }) {
+function findComponent(args: { name?: string; query?: string; limit?: number; verbose?: boolean }) {
   const limit = clampLimit(args.limit, 20, 100);
   if (args.name) {
     const c = componentByName.get(args.name);
@@ -234,7 +238,20 @@ function findComponent(args: { name?: string; query?: string; limit?: number }) 
         suggestions: searchComponent(args.name, 3),
       };
     }
-    return c;
+    if (args.verbose) return c;
+    // Slim: prop name / optional 만. 시그니처(type/allowedValues) 가 필요하면 verbose:true.
+    return {
+      name: c.name,
+      htmlTag: c.htmlTag,
+      dtsRelPath: c.dtsRelPath,
+      propsCount: c.props?.length ?? 0,
+      props: (c.props ?? []).map((p) => ({
+        name: p.name,
+        ...(p.optional === false ? { required: true } : {}),
+      })),
+      _hint:
+        "Slim response — prop names only. Pass verbose:true for full signatures (type/allowedValues/etc). For usage examples + guidance, prefer get_guide({ topic: `component:${c.name}` }).",
+    };
   }
   if (args.query) return searchComponent(args.query, clampLimit(args.limit, 10, 50));
   return {
@@ -441,14 +458,21 @@ const server = new Server(
 const toolHandlers = {
   get_brand: (args: ToolArgs) => getBrand(args as { brand?: string }),
   find_component: (args: ToolArgs) =>
-    findComponent(args as { name?: string; query?: string; limit?: number }),
+    findComponent(args as { name?: string; query?: string; limit?: number; verbose?: boolean }),
   find_icon: (args: ToolArgs) =>
     findIcon(args as { query?: string; category?: string; limit?: number }),
   find_token: (args: ToolArgs) => findToken(args as { group?: string; query?: string }),
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
   get_guide: (args: ToolArgs) =>
-    getGuide(args as { topic: string; intent?: string; target?: "react" | "html" }),
+    getGuide(
+      args as {
+        topic: string;
+        intent?: string;
+        target?: "react" | "html";
+        sections?: string[];
+      },
+    ),
   get_setup: (args: ToolArgs) =>
     getSetup(
       args as {
@@ -547,7 +571,8 @@ const toolHandlers = {
 
     const result = validateHtmlMockup({ source: effectiveSource, filePath: effectiveFilePath });
     let extras: {
-      stats?: AnalyzeHtmlMockupResult;
+      // root 의 violations[] / violationsByRule 와 동일하므로 stats 에서는 둘 다 제외해 응답 크기 절약.
+      stats?: Omit<AnalyzeHtmlMockupResult, "violations" | "violationsByRule">;
       report?: unknown;
       snapshot?: { url: string; byteLength: number; snapshotPath?: string };
     } | null = null;
@@ -564,15 +589,26 @@ const toolHandlers = {
 
     // withStats:true → analyzeHtmlMockup 결과(stats / grouped / recommendations) 를 함께 반환.
     // 옛 analyze_html_mockup 도구의 호출자가 그대로 옮겨올 수 있도록 필드를 분리해 노출.
+    // violations[] 은 root 의 result.violations 와 동일하므로 응답 크기 절약을 위해 제거 — 카운트만 violationsByRule 로 남긴다.
     if (typed.withStats) {
+      const {
+        violations: _dupViolations,
+        violationsByRule: _dupByRule,
+        ...statsRest
+      } = analyzeHtmlMockup({
+        source: effectiveSource,
+        filePath: effectiveFilePath,
+      });
       extras = {
         ...(extras ?? {}),
-        stats: analyzeHtmlMockup({ source: effectiveSource, filePath: effectiveFilePath }),
+        stats: statsRest,
       };
     }
-    // report:true → reportHtmlMockupUsage 호출 (JSONL + Sheets webhook). 옛 report_html_mockup_usage 흡수.
+    // report → reportHtmlMockupUsage 호출 (JSONL + Sheets webhook). 옛 report_html_mockup_usage 흡수.
+    // **기본 true** — 호출자가 매번 `report: true` 를 명시하다 누락하는 사고가 잦아서 default 를 뒤집음.
+    // 명시적으로 `report: false` 를 주면 끌 수 있다 (반복 검증 중 시트 노이즈를 막고 싶을 때).
     // 렌더드 DOM 을 캡처했으면 그 source 로 report — 정적 shell 의 0% 가 시트에 적재되는 사고 방지.
-    if (typed.report) {
+    if (typed.report !== false) {
       const report = await reportHtmlMockupUsage({
         source: effectiveSource,
         filePath: effectiveFilePath,

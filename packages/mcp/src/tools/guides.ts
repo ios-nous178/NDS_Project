@@ -233,7 +233,42 @@ function listGuideTopics() {
   };
 }
 
-export function getGuide(args: { topic: string; intent?: string; target?: GuideTarget }) {
+/**
+ * 응답에서 sections 로 지정한 top-level 키만 골라 반환한다.
+ * - `_advisory` 같은 메타 키는 항상 유지 (sections 가 무엇이든)
+ * - 매칭 키가 0개면 availableSections 와 함께 error 반환 (오타 디버깅용)
+ *
+ * 큰 가이드 (principles 30k+ tokens, admin-cms 등) 를 호출할 때 dos-donts / colors 한 가지만
+ * 필요한데 전체를 받게 되던 토큰 사고를 막기 위함.
+ */
+function pickSections<T extends Record<string, unknown>>(
+  full: T,
+  sections: string[] | undefined,
+): T | { error: string; availableSections: string[] } {
+  if (!sections || sections.length === 0) return full;
+  const META_KEYS = new Set(["_advisory", "_htmlAdvisory", "_nextSuggestion", "intent", "scope"]);
+  const allKeys = Object.keys(full);
+  const matched = sections.filter((s) => allKeys.includes(s));
+  if (matched.length === 0) {
+    return {
+      error: `get_guide: sections ${JSON.stringify(sections)} 가 매칭되지 않습니다.`,
+      availableSections: allKeys.filter((k) => !META_KEYS.has(k)),
+    };
+  }
+  const picked: Record<string, unknown> = {};
+  for (const k of allKeys) {
+    if (META_KEYS.has(k) || matched.includes(k)) picked[k] = full[k];
+  }
+  picked._sectionsAppliedFrom = allKeys.filter((k) => !META_KEYS.has(k));
+  return picked as T;
+}
+
+export function getGuide(args: {
+  topic: string;
+  intent?: string;
+  target?: GuideTarget;
+  sections?: string[];
+}) {
   const topic = args.topic;
   if (typeof topic !== "string" || topic.length === 0) {
     return {
@@ -243,6 +278,7 @@ export function getGuide(args: { topic: string; intent?: string; target?: GuideT
   }
 
   const target: GuideTarget = args.target === "react" ? "react" : "html";
+  const sections = Array.isArray(args.sections) ? args.sections : undefined;
 
   if (topic.startsWith("component:")) {
     const name = topic.slice("component:".length);
@@ -252,7 +288,7 @@ export function getGuide(args: { topic: string; intent?: string; target?: GuideT
         availableTopics: listGuideTopics(),
       };
     }
-    return getComponentGuide(name, target);
+    return pickSections(getComponentGuide(name, target) as Record<string, unknown>, sections);
   }
   if (topic.startsWith("pattern:")) {
     const name = topic.slice("pattern:".length);
@@ -262,24 +298,27 @@ export function getGuide(args: { topic: string; intent?: string; target?: GuideT
         availableTopics: listGuideTopics(),
       };
     }
-    return getPatternGuide(name);
+    return pickSections(getPatternGuide(name) as Record<string, unknown>, sections);
   }
 
   switch (topic) {
     case "principles":
-      return getDesignPrinciples();
+      return pickSections(getDesignPrinciples() as Record<string, unknown>, sections);
     case "dos-donts":
-      return getDosAndDonts();
+      return pickSections(getDosAndDonts() as Record<string, unknown>, sections);
     case "ux-writing":
-      return getUxWritingGuide();
+      return pickSections(getUxWritingGuide() as Record<string, unknown>, sections);
     case "admin-cms":
-      return getAdminCmsGuide({ intent: args.intent });
+      return pickSections(
+        getAdminCmsGuide({ intent: args.intent }) as Record<string, unknown>,
+        sections,
+      );
     case "scope-advisory":
-      return getScopeAdvisory();
+      return pickSections(getScopeAdvisory() as unknown as Record<string, unknown>, sections);
     case "inspector-setup":
-      return getInspectorSetup();
+      return pickSections(getInspectorSetup() as Record<string, unknown>, sections);
     case "figma-sync":
-      return listFigmaSyncStatus();
+      return pickSections(listFigmaSyncStatus() as Record<string, unknown>, sections);
     default:
       return {
         error: `Unknown guide topic: '${topic}'.`,
