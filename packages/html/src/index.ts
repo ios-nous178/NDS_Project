@@ -69,6 +69,8 @@ export {
 } from "./components/nds-footer.js";
 export type { FooterVariant, FooterWebTone } from "./components/nds-footer.js";
 
+export { NdsBrandHeader, NdsBrandFooter } from "./components/nds-brand-chrome.js";
+
 export { NdsList, NdsListItem } from "./components/nds-list.js";
 export type { ListItemSize, ListVariant } from "./components/nds-list.js";
 
