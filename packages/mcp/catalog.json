@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-25T03:33:49.563Z",
+  "generatedAt": "2026-05-25T04:41:41.994Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -15,9 +15,10 @@
     },
     {
       "name": "@nudge-eap/react",
-      "version": "0.1.11",
+      "version": "0.1.10",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
+        "@nudge-eap/styles": "workspace:*",
         "@nudge-eap/tokens": "workspace:*"
       },
       "peerDependencies": {
@@ -45,10 +46,20 @@
       "cssExports": []
     },
     {
+      "name": "@nudge-eap/styles",
+      "version": "0.0.1",
+      "dependencies": {
+        "@nudge-eap/tokens": "workspace:*"
+      },
+      "peerDependencies": {},
+      "cssExports": ["@nudge-eap/styles/styles.css"]
+    },
+    {
       "name": "@nudge-eap/html",
       "version": "0.0.1",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
+        "@nudge-eap/styles": "workspace:*",
         "@nudge-eap/tokens": "workspace:*"
       },
       "peerDependencies": {},
@@ -102,7 +113,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ActionChip.d.ts"
+      "dtsRelPath": "packages/react/dist/ActionChip.d.ts",
+      "htmlTag": "nds-action-chip"
     },
     {
       "name": "ActivityTimeline",
@@ -179,7 +191,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/AddressSearch.d.ts"
+      "dtsRelPath": "packages/react/dist/AddressSearch.d.ts",
+      "htmlTag": "nds-address-search"
     },
     {
       "name": "AmountInput",
@@ -240,7 +253,8 @@
           "type": "number"
         }
       ],
-      "dtsRelPath": "packages/react/dist/AmountInput.d.ts"
+      "dtsRelPath": "packages/react/dist/AmountInput.d.ts",
+      "htmlTag": "nds-amount-input"
     },
     {
       "name": "AppBar",
@@ -630,7 +644,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Avatar.d.ts"
+      "dtsRelPath": "packages/react/dist/Avatar.d.ts",
+      "htmlTag": "nds-avatar"
     },
     {
       "name": "AvatarGroup",
@@ -656,7 +671,11 @@
           "type": "number"
         }
       ],
-      "dtsRelPath": "packages/react/dist/AvatarGroup.d.ts"
+      "dtsRelPath": "packages/react/dist/AvatarGroup.d.ts",
+      "htmlTag": "nds-avatar-group",
+      "htmlAttrs": {
+        "size": ["xs", "sm", "md", "lg", "xl"]
+      }
     },
     {
       "name": "Badge",
@@ -690,7 +709,13 @@
           "type": "BadgeSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Badge.d.ts"
+      "dtsRelPath": "packages/react/dist/Badge.d.ts",
+      "htmlTag": "nds-badge",
+      "htmlAttrs": {
+        "variant": ["fill", "ghost", "line"],
+        "size": ["sm", "md", "lg"],
+        "color": ["brand", "neutral", "success", "error", "caution", "info"]
+      }
     },
     {
       "name": "Badge.guide",
@@ -777,7 +802,11 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Banner.d.ts"
+      "dtsRelPath": "packages/react/dist/Banner.d.ts",
+      "htmlTag": "nds-banner",
+      "htmlAttrs": {
+        "variant": ["filled", "outlined", "image"]
+      }
     },
     {
       "name": "BottomSheet",
@@ -874,7 +903,8 @@
           "type": "(item: BreadcrumbItem, index: number, e: React.MouseEvent) => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Breadcrumb.d.ts"
+      "dtsRelPath": "packages/react/dist/Breadcrumb.d.ts",
+      "htmlTag": "nds-breadcrumb"
     },
     {
       "name": "BreathingGuide",
@@ -920,7 +950,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/BreathingGuide.d.ts"
+      "dtsRelPath": "packages/react/dist/BreathingGuide.d.ts",
+      "htmlTag": "nds-breathing-guide"
     },
     {
       "name": "Button",
@@ -969,7 +1000,13 @@
           "type": "ButtonSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Button.d.ts"
+      "dtsRelPath": "packages/react/dist/Button.d.ts",
+      "htmlTag": "nds-button",
+      "htmlAttrs": {
+        "variant": ["solid", "outlined", "soft", "outlined-sub"],
+        "size": ["xl", "lg", "md", "sm", "xs", "field"],
+        "color": ["primary", "secondary", "assistive"]
+      }
     },
     {
       "name": "Calendar",
@@ -1183,7 +1220,11 @@
           "type": "CardSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Card.d.ts"
+      "dtsRelPath": "packages/react/dist/Card.d.ts",
+      "htmlTag": "nds-card",
+      "htmlAttrs": {
+        "variant": ["outlined", "flat"]
+      }
     },
     {
       "name": "CardVisual",
@@ -1235,7 +1276,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CardVisual.d.ts"
+      "dtsRelPath": "packages/react/dist/CardVisual.d.ts",
+      "htmlTag": "nds-card-visual"
     },
     {
       "name": "Carousel",
@@ -1330,7 +1372,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ChatBubble.d.ts"
+      "dtsRelPath": "packages/react/dist/ChatBubble.d.ts",
+      "htmlTag": "nds-chat-bubble"
     },
     {
       "name": "ChatComposer",
@@ -1422,7 +1465,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Checkbox.d.ts"
+      "dtsRelPath": "packages/react/dist/Checkbox.d.ts",
+      "htmlTag": "nds-checkbox"
     },
     {
       "name": "Chip",
@@ -1476,7 +1520,13 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Chip.d.ts"
+      "dtsRelPath": "packages/react/dist/Chip.d.ts",
+      "htmlTag": "nds-chip",
+      "htmlAttrs": {
+        "variant": ["fill", "outlined", "ghost"],
+        "size": ["sm", "md"],
+        "color": ["brand", "neutral", "success", "error", "caution"]
+      }
     },
     {
       "name": "Chip.guide",
@@ -1537,7 +1587,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CircularProgress.d.ts"
+      "dtsRelPath": "packages/react/dist/CircularProgress.d.ts",
+      "htmlTag": "nds-circular-progress"
     },
     {
       "name": "CoachMark",
@@ -1588,7 +1639,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CoachMark.d.ts"
+      "dtsRelPath": "packages/react/dist/CoachMark.d.ts",
+      "htmlTag": "nds-coach-mark"
     },
     {
       "name": "CommentItem",
@@ -1737,7 +1789,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ContentViewer.d.ts"
+      "dtsRelPath": "packages/react/dist/ContentViewer.d.ts",
+      "htmlTag": "nds-content-viewer"
     },
     {
       "name": "CounselorCard",
@@ -1835,7 +1888,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CountdownTimer.d.ts"
+      "dtsRelPath": "packages/react/dist/CountdownTimer.d.ts",
+      "htmlTag": "nds-countdown-timer"
     },
     {
       "name": "CouponCard",
@@ -2126,7 +2180,11 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Divider.d.ts"
+      "dtsRelPath": "packages/react/dist/Divider.d.ts",
+      "htmlTag": "nds-divider",
+      "htmlAttrs": {
+        "orientation": ["horizontal", "vertical"]
+      }
     },
     {
       "name": "Drawer",
@@ -2355,7 +2413,8 @@
           "type": "EmptyStateSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/EmptyState.d.ts"
+      "dtsRelPath": "packages/react/dist/EmptyState.d.ts",
+      "htmlTag": "nds-empty-state"
     },
     {
       "name": "ExpandableText",
@@ -2396,7 +2455,8 @@
           "type": "(v: boolean) => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ExpandableText.d.ts"
+      "dtsRelPath": "packages/react/dist/ExpandableText.d.ts",
+      "htmlTag": "nds-expandable-text"
     },
     {
       "name": "FAB",
@@ -2439,7 +2499,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/FAB.d.ts"
+      "dtsRelPath": "packages/react/dist/FAB.d.ts",
+      "htmlTag": "nds-fab"
     },
     {
       "name": "FieldActionRow",
@@ -2834,7 +2895,11 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/IconButton.d.ts"
+      "dtsRelPath": "packages/react/dist/IconButton.d.ts",
+      "htmlTag": "nds-icon-button",
+      "htmlAttrs": {
+        "size": ["x-large", "large", "medium", "small"]
+      }
     },
     {
       "name": "ImageCropper",
@@ -3040,7 +3105,11 @@
           "type": "React.CSSProperties"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Input.d.ts"
+      "dtsRelPath": "packages/react/dist/Input.d.ts",
+      "htmlTag": "nds-input",
+      "htmlAttrs": {
+        "size": ["default", "field"]
+      }
     },
     {
       "name": "JournalEntry",
@@ -3091,7 +3160,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/JournalEntry.d.ts"
+      "dtsRelPath": "packages/react/dist/JournalEntry.d.ts",
+      "htmlTag": "nds-journal-entry"
     },
     {
       "name": "Lightbox",
@@ -3199,7 +3269,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/LikertScale.d.ts"
+      "dtsRelPath": "packages/react/dist/LikertScale.d.ts",
+      "htmlTag": "nds-likert-scale"
     },
     {
       "name": "List",
@@ -3216,7 +3287,12 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/List.d.ts"
+      "dtsRelPath": "packages/react/dist/List.d.ts",
+      "htmlTag": "nds-list",
+      "htmlAttrs": {
+        "variant": ["plain", "card", "divided"],
+        "size": ["sm", "md", "lg"]
+      }
     },
     {
       "name": "MediaCard",
@@ -3569,7 +3645,8 @@
           "type": "ModalSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Modal.d.ts"
+      "dtsRelPath": "packages/react/dist/Modal.d.ts",
+      "htmlTag": "nds-modal"
     },
     {
       "name": "MoodSelector",
@@ -3782,7 +3859,8 @@
           "type": "number"
         }
       ],
-      "dtsRelPath": "packages/react/dist/OnlineIndicator.d.ts"
+      "dtsRelPath": "packages/react/dist/OnlineIndicator.d.ts",
+      "htmlTag": "nds-online-indicator"
     },
     {
       "name": "OrderSummaryCard",
@@ -3813,7 +3891,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/OrderSummaryCard.d.ts"
+      "dtsRelPath": "packages/react/dist/OrderSummaryCard.d.ts",
+      "htmlTag": "nds-order-summary-card"
     },
     {
       "name": "OtpInput",
@@ -3854,7 +3933,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/OtpInput.d.ts"
+      "dtsRelPath": "packages/react/dist/OtpInput.d.ts",
+      "htmlTag": "nds-otp-input"
     },
     {
       "name": "PageHeader",
@@ -3926,7 +4006,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Pagination.d.ts"
+      "dtsRelPath": "packages/react/dist/Pagination.d.ts",
+      "htmlTag": "nds-pagination"
     },
     {
       "name": "PhoneInput",
@@ -4150,7 +4231,8 @@
           "type": "PopupSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Popup.d.ts"
+      "dtsRelPath": "packages/react/dist/Popup.d.ts",
+      "htmlTag": "nds-popup"
     },
     {
       "name": "PriceTag",
@@ -4197,7 +4279,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/PriceTag.d.ts"
+      "dtsRelPath": "packages/react/dist/PriceTag.d.ts",
+      "htmlTag": "nds-price-tag"
     },
     {
       "name": "ProductCard",
@@ -4320,7 +4403,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ProgressBar.d.ts"
+      "dtsRelPath": "packages/react/dist/ProgressBar.d.ts",
+      "htmlTag": "nds-progress-bar"
     },
     {
       "name": "PullToRefresh",
@@ -4382,7 +4466,8 @@
           "type": "number"
         }
       ],
-      "dtsRelPath": "packages/react/dist/QuickActionGrid.d.ts"
+      "dtsRelPath": "packages/react/dist/QuickActionGrid.d.ts",
+      "htmlTag": "nds-quick-action-grid"
     },
     {
       "name": "Radio",
@@ -4413,7 +4498,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Radio.d.ts"
+      "dtsRelPath": "packages/react/dist/Radio.d.ts",
+      "htmlTag": "nds-radio"
     },
     {
       "name": "ReactionPicker",
@@ -4640,7 +4726,11 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/SegmentedControl.d.ts"
+      "dtsRelPath": "packages/react/dist/SegmentedControl.d.ts",
+      "htmlTag": "nds-segmented",
+      "htmlAttrs": {
+        "size": ["sm", "md"]
+      }
     },
     {
       "name": "Select",
@@ -4716,7 +4806,8 @@
           "type": "SelectSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Select.d.ts"
+      "dtsRelPath": "packages/react/dist/Select.d.ts",
+      "htmlTag": "nds-select"
     },
     {
       "name": "SelectionCard",
@@ -4964,7 +5055,11 @@
           "type": "number"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Skeleton.d.ts"
+      "dtsRelPath": "packages/react/dist/Skeleton.d.ts",
+      "htmlTag": "nds-skeleton",
+      "htmlAttrs": {
+        "variant": ["rectangular", "circular", "text"]
+      }
     },
     {
       "name": "Slider",
@@ -5072,7 +5167,11 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Snackbar.d.ts"
+      "dtsRelPath": "packages/react/dist/Snackbar.d.ts",
+      "htmlTag": "nds-snackbar",
+      "htmlAttrs": {
+        "variant": ["info", "success", "warning", "error"]
+      }
     },
     {
       "name": "Sparkline",
@@ -5124,7 +5223,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Sparkline.d.ts"
+      "dtsRelPath": "packages/react/dist/Sparkline.d.ts",
+      "htmlTag": "nds-sparkline"
     },
     {
       "name": "Spinner",
@@ -5145,7 +5245,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Spinner.d.ts"
+      "dtsRelPath": "packages/react/dist/Spinner.d.ts",
+      "htmlTag": "nds-spinner"
     },
     {
       "name": "StarRating",
@@ -5233,7 +5334,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/StatCard.d.ts"
+      "dtsRelPath": "packages/react/dist/StatCard.d.ts",
+      "htmlTag": "nds-stat-card"
     },
     {
       "name": "StatusTimeline",
@@ -5277,7 +5379,11 @@
           "allowedValues": ["numbered", "dots"]
         }
       ],
-      "dtsRelPath": "packages/react/dist/Stepper.d.ts"
+      "dtsRelPath": "packages/react/dist/Stepper.d.ts",
+      "htmlTag": "nds-stepper",
+      "htmlAttrs": {
+        "variant": ["numbered", "dots"]
+      }
     },
     {
       "name": "StreakCard",
@@ -5313,7 +5419,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/StreakCard.d.ts"
+      "dtsRelPath": "packages/react/dist/StreakCard.d.ts",
+      "htmlTag": "nds-streak-card"
     },
     {
       "name": "Tabs",
@@ -5372,7 +5479,13 @@
           "type": "TabsSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Tabs.d.ts"
+      "dtsRelPath": "packages/react/dist/Tabs.d.ts",
+      "htmlTag": "nds-tabs",
+      "htmlAttrs": {
+        "variant": ["line", "chip", "segment"],
+        "size": ["mobile", "pc"],
+        "tone": ["neutral", "color"]
+      }
     },
     {
       "name": "TagInput",
@@ -5475,7 +5588,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Textarea.d.ts"
+      "dtsRelPath": "packages/react/dist/Textarea.d.ts",
+      "htmlTag": "nds-textarea"
     },
     {
       "name": "TextButton",
@@ -5497,7 +5611,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/TextButton.d.ts"
+      "dtsRelPath": "packages/react/dist/TextButton.d.ts",
+      "htmlTag": "nds-text-button"
     },
     {
       "name": "TimePicker",
@@ -5641,7 +5756,11 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/TipCard.d.ts"
+      "dtsRelPath": "packages/react/dist/TipCard.d.ts",
+      "htmlTag": "nds-tip-card",
+      "htmlAttrs": {
+        "tone": ["info", "success", "warning", "neutral"]
+      }
     },
     {
       "name": "TitleBlock",
@@ -5662,7 +5781,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/TitleBlock.d.ts"
+      "dtsRelPath": "packages/react/dist/TitleBlock.d.ts",
+      "htmlTag": "nds-title-block"
     },
     {
       "name": "Toast",
@@ -5694,7 +5814,11 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Toast.d.ts"
+      "dtsRelPath": "packages/react/dist/Toast.d.ts",
+      "htmlTag": "nds-toast",
+      "htmlAttrs": {
+        "variant": ["default", "success", "error", "info"]
+      }
     },
     {
       "name": "Toggle",
@@ -5730,7 +5854,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Toggle.d.ts"
+      "dtsRelPath": "packages/react/dist/Toggle.d.ts",
+      "htmlTag": "nds-toggle"
     },
     {
       "name": "Tooltip",
@@ -5762,7 +5887,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Tooltip.d.ts"
+      "dtsRelPath": "packages/react/dist/Tooltip.d.ts",
+      "htmlTag": "nds-tooltip"
     },
     {
       "name": "TrendingKeywords",
@@ -9553,40 +9679,73 @@
   ],
   "ndsHtmlTags": [
     "nds-action-chip",
+    "nds-address-search",
+    "nds-amount-input",
     "nds-avatar",
     "nds-avatar-group",
     "nds-badge",
+    "nds-banner",
     "nds-breadcrumb",
+    "nds-breathing-guide",
     "nds-button",
     "nds-card",
+    "nds-card-visual",
+    "nds-chat-bubble",
     "nds-checkbox",
     "nds-chip",
     "nds-circular-progress",
+    "nds-coach-mark",
+    "nds-content-viewer",
     "nds-countdown-timer",
     "nds-divider",
     "nds-empty-state",
+    "nds-expandable-text",
+    "nds-fab",
     "nds-icon-button",
     "nds-input",
+    "nds-inspector",
+    "nds-journal-entry",
+    "nds-likert-scale",
     "nds-list",
     "nds-modal",
     "nds-online-indicator",
+    "nds-order-summary-card",
+    "nds-otp-input",
+    "nds-pagination",
+    "nds-popup",
     "nds-price-tag",
     "nds-progress-bar",
+    "nds-quick-action-grid",
     "nds-radio",
     "nds-segmented",
     "nds-select",
     "nds-skeleton",
+    "nds-snackbar",
+    "nds-sparkline",
     "nds-spinner",
     "nds-stat-card",
+    "nds-stepper",
+    "nds-streak-card",
     "nds-tabs",
+    "nds-text-button",
     "nds-textarea",
     "nds-tip-card",
     "nds-title-block",
-    "nds-toggle"
+    "nds-toast",
+    "nds-toggle",
+    "nds-tooltip"
   ],
   "ndsHtmlElements": [
     {
       "tag": "nds-action-chip",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-address-search",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-amount-input",
       "attrs": {}
     },
     {
@@ -9608,7 +9767,17 @@
       }
     },
     {
+      "tag": "nds-banner",
+      "attrs": {
+        "variant": ["filled", "outlined", "image"]
+      }
+    },
+    {
       "tag": "nds-breadcrumb",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-breathing-guide",
       "attrs": {}
     },
     {
@@ -9620,10 +9789,18 @@
       }
     },
     {
+      "tag": "nds-card-visual",
+      "attrs": {}
+    },
+    {
       "tag": "nds-card",
       "attrs": {
         "variant": ["outlined", "flat"]
       }
+    },
+    {
+      "tag": "nds-chat-bubble",
+      "attrs": {}
     },
     {
       "tag": "nds-checkbox",
@@ -9642,6 +9819,14 @@
       "attrs": {}
     },
     {
+      "tag": "nds-coach-mark",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-content-viewer",
+      "attrs": {}
+    },
+    {
       "tag": "nds-countdown-timer",
       "attrs": {}
     },
@@ -9656,6 +9841,14 @@
       "attrs": {}
     },
     {
+      "tag": "nds-expandable-text",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-fab",
+      "attrs": {}
+    },
+    {
       "tag": "nds-icon-button",
       "attrs": {
         "size": ["x-large", "large", "medium", "small"]
@@ -9666,6 +9859,18 @@
       "attrs": {
         "size": ["default", "field"]
       }
+    },
+    {
+      "tag": "nds-inspector",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-journal-entry",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-likert-scale",
+      "attrs": {}
     },
     {
       "tag": "nds-list",
@@ -9683,11 +9888,31 @@
       "attrs": {}
     },
     {
+      "tag": "nds-order-summary-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-otp-input",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-pagination",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-popup",
+      "attrs": {}
+    },
+    {
       "tag": "nds-price-tag",
       "attrs": {}
     },
     {
       "tag": "nds-progress-bar",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-quick-action-grid",
       "attrs": {}
     },
     {
@@ -9711,11 +9936,31 @@
       }
     },
     {
+      "tag": "nds-snackbar",
+      "attrs": {
+        "variant": ["info", "success", "warning", "error"]
+      }
+    },
+    {
+      "tag": "nds-sparkline",
+      "attrs": {}
+    },
+    {
       "tag": "nds-spinner",
       "attrs": {}
     },
     {
       "tag": "nds-stat-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-stepper",
+      "attrs": {
+        "variant": ["numbered", "dots"]
+      }
+    },
+    {
+      "tag": "nds-streak-card",
       "attrs": {}
     },
     {
@@ -9725,6 +9970,10 @@
         "size": ["mobile", "pc"],
         "tone": ["neutral", "color"]
       }
+    },
+    {
+      "tag": "nds-text-button",
+      "attrs": {}
     },
     {
       "tag": "nds-textarea",
@@ -9741,7 +9990,17 @@
       "attrs": {}
     },
     {
+      "tag": "nds-toast",
+      "attrs": {
+        "variant": ["default", "success", "error", "info"]
+      }
+    },
+    {
       "tag": "nds-toggle",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-tooltip",
       "attrs": {}
     }
   ]

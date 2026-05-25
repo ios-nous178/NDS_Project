@@ -18,6 +18,17 @@ export interface ComponentDef {
   name: string;
   props: PropDef[];
   dtsRelPath: string;
+  /**
+   * 같은 의미의 @nudge-eap/html Web Component tag 가 있으면 채워진다 (예: "nds-button").
+   * 외부 mockup 이 React 대신 vanilla/Astro 로 작성될 때 MCP `find_component` 가
+   * "이 컴포넌트는 <nds-button> 으로도 쓸 수 있다" 를 함께 안내할 수 있게 한다.
+   */
+  htmlTag?: string;
+  /**
+   * 매핑된 nds-* tag 의 attribute enum (예: `{ color: ["primary", "secondary", ...] }`).
+   * React props 의 allowedValues 와 동일한 의미지만, kebab-case attribute 기준이라 별도 필드.
+   */
+  htmlAttrs?: Record<string, string[]>;
 }
 
 export interface TokenDef {

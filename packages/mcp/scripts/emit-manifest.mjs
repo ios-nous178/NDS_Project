@@ -6,7 +6,7 @@
  * (참고) packages/mcp/manifest.json 은 mcpb(Desktop Extension) 번들 스펙용으로
  * 별도 관리한다. 컴포넌트/토큰/아이콘 메타데이터는 catalog.json 에만 들어간다.
  *
- * 실행 전 packages/{tokens,react,icons}가 빌드되어 있어야 한다.
+ * 실행 전 packages/{tokens,react,icons,styles}가 빌드되어 있어야 한다.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -320,6 +320,10 @@ const packagesMeta = [
   readPkg("packages/react"),
   readPkg("packages/icons"),
   readPkg("packages/tailwind-preset"),
+  // @nudge-eap/styles: framework-agnostic CSS bundle. @nudge-eap/react 가
+  // 빌드 시 이 CSS 를 미러해 자기 dist/styles.css 로 노출하므로 외부 React
+  // 프로젝트는 여전히 @nudge-eap/react/styles.css 를 import 하면 된다.
+  readPkg("packages/styles"),
   // @nudge-eap/html: vanilla Web Components (experimental, 별도 라이프사이클).
   // .mcpb 에 동봉되며 외부 mockup 프로젝트에서 install 가능.
   readPkg("packages/html"),
@@ -327,6 +331,28 @@ const packagesMeta = [
 
 const componentNames = readDtsExports(reactDist);
 const unionMap = collectStringLiteralUnions([reactDist]);
+
+/**
+ * `nds-icon-button` → `IconButton`. emit-manifest 가 components 와 nds-* 메타를
+ * cross-link 할 때 사용. parser.ts 의 ndsTagToComponentName 과 동일 컨벤션.
+ *
+ * 일부 React 명명이 PascalCase 단순 변환과 다른 경우 (FAB 약어, SegmentedControl 풀네임)
+ * 는 NDS_TAG_TO_REACT_ALIAS 로 보정한다 — 둘은 의미적으로 동일 컴포넌트라 한 엔트리에 합치는 게 맞음.
+ */
+const NDS_TAG_TO_REACT_ALIAS = {
+  "nds-fab": "FAB",
+  "nds-segmented": "SegmentedControl",
+};
+function ndsTagToPascal(tag) {
+  if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];
+  const m = /^nds-([a-z][a-z0-9-]*)$/.exec(tag);
+  if (!m) return null;
+  return m[1]
+    .split("-")
+    .map((p) => (p.length === 0 ? "" : p[0].toUpperCase() + p.slice(1)))
+    .join("");
+}
+
 const components = componentNames.map((name) => {
   const dtsPath = path.join(reactDist, `${name}.d.ts`);
   const propsInfo = extractPropsFromDts(dtsPath);
@@ -429,6 +455,40 @@ function collectNdsHtmlElements() {
   return out;
 }
 const ndsHtmlElements = collectNdsHtmlElements();
+
+// UI 컴포넌트가 아니라 개발 도구 / 오버레이로 분류되는 nds-* 태그.
+// catalog 의 components 리스트에는 노출하지 않는다 (find_component / list_components 가
+// 이걸 진짜 UI primitive 로 오해하지 않도록). validate 용 태그 목록에는 그대로 남아 있다.
+const DEV_ONLY_NDS_TAGS = new Set(["nds-inspector"]);
+
+// nds-* 메타를 components 엔트리에 cross-link.
+// PascalCase 로 매칭되는 React 컴포넌트가 있으면 htmlTag / htmlAttrs 를 채워준다.
+// React 쪽에 같은 이름이 없는 nds-* 는 (html 전용 컴포넌트로 신규 추가된 경우)
+// components 에 합류시킨다 — 이러면 외부 mockup 이 html 만 써도 find_component 가 잡아냄.
+{
+  const componentIndex = new Map(components.map((c) => [c.name, c]));
+  for (const el of ndsHtmlElements) {
+    if (DEV_ONLY_NDS_TAGS.has(el.tag)) continue;
+    const pascal = ndsTagToPascal(el.tag);
+    if (!pascal) continue;
+    const existing = componentIndex.get(pascal);
+    if (existing) {
+      existing.htmlTag = el.tag;
+      if (Object.keys(el.attrs).length > 0) existing.htmlAttrs = el.attrs;
+      continue;
+    }
+    // React 에 짝이 없는 html-only 컴포넌트 — props 는 없지만 htmlAttrs 가 곧 prop 스펙 역할.
+    const entry = {
+      name: pascal,
+      props: [],
+      dtsRelPath: `packages/html/src/components/${el.tag}.ts`,
+      htmlTag: el.tag,
+    };
+    if (Object.keys(el.attrs).length > 0) entry.htmlAttrs = el.attrs;
+    components.push(entry);
+    componentIndex.set(pascal, entry);
+  }
+}
 
 const catalog = {
   generatedAt: new Date().toISOString(),
