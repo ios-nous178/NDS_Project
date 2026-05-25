@@ -47,6 +47,25 @@ const config = {
 
   themes: ["@docusaurus/theme-live-codeblock"],
 
+  plugins: [
+    // /storybook/ 는 같은 도메인의 정적 폴더(apps/docs/static/storybook/) 로 서빙되며
+    // Docusaurus 라우트가 아니다. inventory.md 등에서 [열기](/storybook/?path=…) 로
+    // 링크하면 broken-link checker 가 매번 throw 하므로, 빈 stub 라우트만 하나 등록해
+    // pathname '/storybook/' 만 통과시킨다. 실제 콘텐츠는 정적 파일이 그대로 서빙됨.
+    function storybookRouteStubPlugin() {
+      return {
+        name: "storybook-route-stub",
+        async contentLoaded({ actions }) {
+          actions.addRoute({
+            path: "/storybook/",
+            component: require.resolve("./src/components/StorybookStub.js"),
+            exact: true,
+          });
+        },
+      };
+    },
+  ],
+
   presets: [
     [
       "classic",
@@ -81,7 +100,14 @@ const config = {
         { to: "/components/overview", label: "컴포넌트", position: "left" },
         { to: "/tokens/colors", label: "토큰", position: "left" },
         { to: "/guide/design-principles", label: "가이드", position: "left" },
-        { href: storybookUrl, label: "스토리북", position: "right" },
+        // 스토리북은 같은 도메인의 정적 폴더(/storybook/)로 배포되므로 Docusaurus 라우트가 아니다.
+        // Link 컴포넌트로 두면 onBrokenLinks 가 모든 페이지에서 broken 으로 잡으므로,
+        // 라우트 등록 없이도 안전한 raw <a> (html 타입) 로 노출한다.
+        {
+          type: "html",
+          position: "right",
+          value: `<a class="navbar__item navbar__link" href="${storybookUrl}" target="_self" rel="noopener">스토리북</a>`,
+        },
         {
           href: "https://github.com/cashwalk/NudgeEAPDesignSystem",
           position: "right",
