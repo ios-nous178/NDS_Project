@@ -10,7 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { ADMIN_CMS_GUIDE, ICON_METADATA, detectIntentFromText } from "../guides.js";
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
-import { createClaudeMd } from "./guides.js";
+import { createAgentsMd, createClaudeMd } from "./guides.js";
 import { ensureInspectorInMainTsx } from "./inspector-installer.js";
 
 export interface SetupContext {
@@ -709,9 +709,21 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
       "추가 entry 가 필요하면 vite.config.ts 의 rollupOptions.input 에 등록.",
   });
 
+  steps.push({
+    step: 8,
+    title: "에이전트 지침 파일 생성 — CLAUDE.md + AGENTS.md",
+    commands: [
+      "get_setup({ step: 'claude-md', cwd: '<프로젝트 루트>' })",
+      "get_setup({ step: 'agents-md', cwd: '<프로젝트 루트>' })",
+    ],
+    note:
+      "두 파일은 같은 템플릿을 사용합니다. Claude Code 는 CLAUDE.md, Codex/일반 에이전트는 AGENTS.md 를 읽으므로 " +
+      "DS 버전/사용량 뱃지, Google Sheets POST 상태, 간격/텍스트기호/누락 항목 보고 게이트가 양쪽에 모두 들어가야 합니다.",
+  });
+
   if (installMode === "mcpb") {
     steps.push({
-      step: 8,
+      step: 9,
       title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
       note:
         "Claude Desktop 에서 nudge-eap-ds.mcpb 를 더블클릭해 한 번 설치하면 이후 모든 프로젝트에서 자동 활성화됩니다. " +
@@ -719,7 +731,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     });
   } else {
     steps.push({
-      step: 8,
+      step: 9,
       title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
       commands: [
         `claude mcp add nudge-eap-ds --scope project -- node ${path.join(manifest.repoRoot, "packages/mcp/dist/server.js")}`,
@@ -729,7 +741,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   }
 
   steps.push({
-    step: 9,
+    step: 10,
     title: "동작 확인 (dev 서버 + check_preview)",
     commands: [
       "npm install --save-dev playwright",
@@ -742,7 +754,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   });
 
   steps.push({
-    step: 10,
+    step: 11,
     title: "정적 검증 루프 — validate_html_mockup / analyze_html_mockup",
     commands: [
       "// .html 작성/수정 직후마다 호출:",
@@ -757,7 +769,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   });
 
   steps.push({
-    step: 11,
+    step: 12,
     title: "최종 산출물 빌드 — 단일 dist/index.html",
     commands: [
       "// JS · CSS · @nudge-eap/html runtime 까지 전부 inline 된 1개 파일:",
@@ -828,12 +840,15 @@ function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: strin
       "Create or open a Vite vanilla-ts mockup project.",
       "Install @nudge-eap/html + tokens + icons using `command`.",
       "Use the returned importCode in src/main.ts.",
+      "Create both CLAUDE.md and AGENTS.md so Claude/Codex receive the same mockup gates.",
       "Collect visual references first and save them in references.md.",
       "Write root index.html with real <nds-*> elements.",
       "Validate/analyze, preview, then build_singlefile_html.",
     ],
     nextTools: [
       "get_guide({ topic: 'principles' })",
+      "get_setup({ step: 'claude-md', cwd: '<project>' })",
+      "get_setup({ step: 'agents-md', cwd: '<project>' })",
       "get_guide({ topic: 'pattern:visual-reference' })",
       "get_guide({ topic: 'component:Button', target: 'html' })",
       "validate_html_mockup({ filePath: 'index.html' })",
@@ -1301,6 +1316,7 @@ function resolveBrand(input?: string): {
  *     - "imports"   → getMainTsxImports({ brand? })
  *     - "update"    → getUpdateInstructions({ source?, includeLocalPackages? })
  *     - "claude-md" → createClaudeMd({ cwd?, projectName?, overwrite?, intent? })
+ *     - "agents-md" → createAgentsMd({ cwd?, projectName?, overwrite?, intent? })
  *     - "full"      → getSetupInstructions({ ...all }) — 외부 mockup 프로젝트 셋업 전 과정
  *
  * 모든 추가 args 는 top-level optional. step 별로 사용하는 필드만 적용된다.
@@ -1310,6 +1326,7 @@ export const SETUP_STEPS = [
   "imports",
   "update",
   "claude-md",
+  "agents-md",
   "inspector",
   "full",
 ] as const;
@@ -1356,6 +1373,14 @@ export function getSetup(args: {
     }
     case "claude-md":
       return createClaudeMd({
+        cwd: args.cwd,
+        projectName: args.projectName,
+        overwrite: args.overwrite,
+        intent: args.intent,
+        template: args.template,
+      });
+    case "agents-md":
+      return createAgentsMd({
         cwd: args.cwd,
         projectName: args.projectName,
         overwrite: args.overwrite,

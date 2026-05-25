@@ -350,14 +350,14 @@ const TOOLS = [
   {
     name: "get_setup",
     description:
-      "Setup router for install/import/update/CLAUDE.md/full instructions. Defaults to HTML/<nds-*>.",
+      "Setup router for install/import/update/CLAUDE.md/AGENTS.md/full instructions. Defaults to HTML/<nds-*>.",
     inputSchema: {
       type: "object",
       properties: {
         step: {
           type: "string",
-          enum: ["install", "imports", "update", "claude-md", "inspector", "full"],
-          description: "install | imports | update | claude-md | inspector | full.",
+          enum: ["install", "imports", "update", "claude-md", "agents-md", "inspector", "full"],
+          description: "install | imports | update | claude-md | agents-md | inspector | full.",
         },
         tgzDir: {
           type: "string",
@@ -387,7 +387,7 @@ const TOOLS = [
         template: {
           type: "string",
           enum: ["slim", "default"],
-          description: "[step=claude-md] CLAUDE.md template size. Default: slim.",
+          description: "[step=claude-md|agents-md] Instruction template size. Default: slim.",
         },
         mode: {
           type: "string",
@@ -407,15 +407,17 @@ const TOOLS = [
         cwd: {
           type: "string",
           description:
-            "[step=claude-md|inspector] Project root. For claude-md, where CLAUDE.md will be created. For inspector, where src/main.tsx will be patched. Defaults to the MCP process cwd.",
+            "[step=claude-md|agents-md|inspector] Project root. For claude-md/agents-md, where the instruction file will be created. For inspector, where src/main.tsx will be patched. Defaults to the MCP process cwd.",
         },
         projectName: {
           type: "string",
-          description: "[step=claude-md] Optional title for the generated CLAUDE.md.",
+          description:
+            "[step=claude-md|agents-md] Optional title for the generated instruction file.",
         },
         overwrite: {
           type: "boolean",
-          description: "[step=claude-md] Replace an existing CLAUDE.md. Default: false.",
+          description:
+            "[step=claude-md|agents-md] Replace an existing instruction file. Default: false.",
         },
       },
       required: ["step"],
@@ -429,6 +431,7 @@ const SETUP_STEP_VALUES = [
   "imports",
   "update",
   "claude-md",
+  "agents-md",
   "inspector",
   "full",
 ] as const;
