@@ -1,0 +1,124 @@
+/**
+ * <nds-star-rating> — DS StarRating 의 vanilla Web Component 버전.
+ *
+ * 사용 예:
+ *   <nds-star-rating value="4" size="24" show-value></nds-star-rating>
+ *
+ * 이벤트:
+ *   star-rating-change (detail: { value }) -> 별 클릭 시 발생
+ */
+
+import { NdsElement, define } from "../base/nds-element.js";
+
+const SR_CLASS = "nds-star-rating";
+const SR_STAR_CLASS = `${SR_CLASS}__star`;
+const SR_VALUE_CLASS = `${SR_CLASS}__value`;
+
+const STAR_PATH = "M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z";
+const FILLED_COLOR = "#FFD54F";
+const EMPTY_COLOR = "#E0E0E0";
+
+export class NdsStarRating extends NdsElement {
+  static elementName = "nds-star-rating";
+
+  static get observedAttributes(): readonly string[] {
+    return ["value", "size", "max", "show-value", "disabled", "readonly"];
+  }
+
+  private _root: HTMLDivElement | null = null;
+  private _hovered: number | null = null;
+
+  override connectedCallback(): void {
+    if (!this._root) this._mount();
+    super.connectedCallback();
+  }
+
+  private _mount(): void {
+    const root = document.createElement("div");
+    root.dataset.slot = "root";
+    root.className = SR_CLASS;
+
+    root.addEventListener("mouseleave", () => {
+      this._hovered = null;
+      this.scheduleUpdate();
+    });
+
+    this.appendChild(root);
+    this._root = root;
+  }
+
+  protected update(): void {
+    if (!this._root) return;
+    if (this.style.display !== "contents") this.style.display = "contents";
+
+    const value = parseFloat(this.attr("value", "0"));
+    const size = parseInt(this.attr("size", "16"), 10);
+    const max = parseInt(this.attr("max", "5"), 10);
+    const showValue = this.boolAttr("show-value");
+    const disabled = this.boolAttr("disabled");
+    const readonly = this.boolAttr("readonly") || !this.hasAttribute("on-change"); // or some other flag
+
+    const interactive = !disabled && !readonly;
+    const displayValue = this._hovered !== null ? this._hovered : Math.round(value);
+
+    this._root.dataset.interactive = String(interactive);
+    this._root.setAttribute("role", interactive ? "radiogroup" : "img");
+    this._root.setAttribute("aria-label", `${value} out of ${max} stars`);
+
+    this._root.innerHTML = "";
+
+    for (let i = 1; i <= max; i++) {
+      const starValue = i;
+      const filled = starValue <= displayValue;
+
+      const span = document.createElement("span");
+      span.className = SR_STAR_CLASS;
+      span.dataset.slot = "star";
+      span.dataset.filled = String(filled);
+      if (interactive) {
+        span.setAttribute("role", "radio");
+        span.setAttribute("aria-checked", String(starValue === Math.round(value)));
+        span.setAttribute("aria-label", `${starValue} star${starValue > 1 ? "s" : ""}`);
+
+        span.addEventListener("click", () => {
+          this.setAttribute("value", String(starValue));
+          this.dispatchEvent(
+            new CustomEvent("star-rating-change", {
+              detail: { value: starValue },
+              bubbles: true,
+              composed: true,
+            }),
+          );
+        });
+
+        span.addEventListener("mouseenter", () => {
+          this._hovered = starValue;
+          this.scheduleUpdate();
+        });
+      }
+
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", String(size));
+      svg.setAttribute("height", String(size));
+      svg.setAttribute("viewBox", "0 0 16 16");
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", STAR_PATH);
+      path.setAttribute("fill", filled ? FILLED_COLOR : EMPTY_COLOR);
+
+      svg.appendChild(path);
+      span.appendChild(svg);
+      this._root.appendChild(span);
+    }
+
+    if (showValue) {
+      const valSpan = document.createElement("span");
+      valSpan.className = SR_VALUE_CLASS;
+      valSpan.dataset.slot = "value";
+      valSpan.textContent = value.toFixed(1);
+      this._root.appendChild(valSpan);
+    }
+  }
+}
+
+define(NdsStarRating);
