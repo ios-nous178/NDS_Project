@@ -394,14 +394,22 @@ export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
   }
 
   if (srcExists) {
+    // 입력 형식은 .tsx 가 가장 일반적이지만, @nudge-eap/html 패키지의 Web Component 기반 워크플로우에선
+    // .html / .astro 도 1급 입력. 셋 중 *하나라도* 있으면 통과. raw .html 직접 작성을 막는 룰
+    // (raw-html-in-src) 는 src/ 안의 손글씨 .html 위반을 별도로 잡으므로, 여기선
+    // "워크스페이스에 의도된 입력 파일이 존재하는가" 만 검사한다.
     const tsxFiles = walkFiles(srcDir, /\.tsx$/i, 1);
-    if (tsxFiles.length === 0) {
+    const astroFiles = walkFiles(srcDir, /\.astro$/i, 1);
+    // .html 은 src 안에서는 보통 nds-* Web Component 데모/엔트리로 쓰임. raw-html-in-src 가
+    // 본격적으로 따로 위반을 잡고 있으니, 이 룰의 목적은 어디까지나 *입력 형식 존재 여부*.
+    const htmlFiles = walkFiles(srcDir, /\.html?$/i, 1);
+    if (tsxFiles.length === 0 && astroFiles.length === 0 && htmlFiles.length === 0) {
       violations.push({
         rule: "no-tsx-found",
         files: [],
         detail:
-          "src/ 에 .tsx 파일이 하나도 없습니다. 이 워크스페이스의 입력 형식은 .tsx 입니다 — " +
-          "HTML/CSS 만으로 빌드하는 것은 우회입니다.",
+          "src/ 에 인식되는 입력 파일(.tsx / .astro / .html)이 하나도 없습니다. " +
+          "이 워크스페이스의 입력 형식은 React(.tsx) · Astro(.astro) · vanilla(.html) 중 하나여야 합니다.",
       });
     }
   }

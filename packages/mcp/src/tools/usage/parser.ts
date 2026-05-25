@@ -29,7 +29,13 @@ import type {
   ExternalEntry,
 } from "../../types/usage.js";
 
-const DS_PACKAGE_PREFIX = "@nudge-eap/react";
+/**
+ * DS 패키지로 인정하는 import source prefix 들.
+ * `@nudge-eap/html` 도 DS 로 카운트한다 — html 패키지의 Web Component (`<nds-button>` 등) 는
+ * lowercase JSX 태그로 등장하므로 import 출처보다 태그 이름으로 판별한다 (NDS_HTML_TAG_RE 참고).
+ * 다만 클래스 단위로 import 해서 직접 register 하는 경우도 있으니, import source 도 함께 인정.
+ */
+const DS_PACKAGE_PREFIXES = ["@nudge-eap/react", "@nudge-eap/html"] as const;
 const ADMIN_CMS_PACKAGE = "antd";
 const TRACKED_NATIVE_TAGS = new Set([
   "button",
@@ -41,6 +47,8 @@ const TRACKED_NATIVE_TAGS = new Set([
   "form",
   "fieldset",
 ]);
+/** `nds-button`, `nds-icon-button` 같은 DS Web Component tag — kebab → PascalCase 매핑용. */
+const NDS_HTML_TAG_RE = /^nds-([a-z][a-z0-9-]*)$/;
 
 const TRACKED_VARIANT_PROPS = ["variant", "size", "color", "tone", "kind"] as const;
 
@@ -107,6 +115,13 @@ export function parseMockupSource(
     const { rootName, slot, isMemberExpression: _ignore } = nameInfo;
 
     if (isLowerCaseTag(rootName) && !slot) {
+      // DS Web Component (<nds-button> 등) — PascalCase 컴포넌트명으로 매핑해서 dsCounts 합산.
+      const ndsName = ndsTagToComponentName(rootName);
+      if (ndsName) {
+        const props = readVariantProps(opening);
+        incrementDs(dsCounts, ndsName, undefined, props);
+        return;
+      }
       // native HTML element
       if (!TRACKED_NATIVE_TAGS.has(rootName)) return;
       incrementNative(nativeCounts, rootName);
@@ -236,11 +251,35 @@ function detectContext(importMap: Map<string, ImportInfo>): Context {
 }
 
 function isDsSource(source: string): boolean {
-  return source === DS_PACKAGE_PREFIX || source.startsWith(`${DS_PACKAGE_PREFIX}/`);
+  for (const prefix of DS_PACKAGE_PREFIXES) {
+    if (source === prefix || source.startsWith(`${prefix}/`)) return true;
+  }
+  return false;
 }
 
 function isLowerCaseTag(name: string): boolean {
   return /^[a-z]/.test(name);
+}
+
+/**
+ * `nds-button` → `Button`, `nds-icon-button` → `IconButton`.
+ * 모르는 tag (NDS prefix 가 아닌 다른 kebab custom element) 는 null.
+ *
+ * 일부 React 명명이 단순 PascalCase 변환과 다른 경우 (FAB 약어, SegmentedControl 풀네임)
+ * 는 NDS_TAG_TO_REACT_ALIAS 로 보정. 카탈로그 (scripts/emit-manifest.mjs) 와 동일한 alias 셋.
+ */
+const NDS_TAG_TO_REACT_ALIAS: Record<string, string> = {
+  "nds-fab": "FAB",
+  "nds-segmented": "SegmentedControl",
+};
+function ndsTagToComponentName(tag: string): string | null {
+  if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];
+  const m = NDS_HTML_TAG_RE.exec(tag);
+  if (!m) return null;
+  return m[1]
+    .split("-")
+    .map((part) => (part.length === 0 ? "" : part[0].toUpperCase() + part.slice(1)))
+    .join("");
 }
 
 function collectImports(root: Node, into: Map<string, ImportInfo>): void {
