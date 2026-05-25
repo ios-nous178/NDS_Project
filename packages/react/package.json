@@ -1,6 +1,6 @@
 {
   "name": "@nudge-eap/react",
-  "version": "0.1.12",
+  "version": "0.1.10",
   "description": "React components for NudgeEAP Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
