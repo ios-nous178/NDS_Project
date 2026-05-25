@@ -679,6 +679,19 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 
   steps.push({
     step: 5,
+    title: "시각 레퍼런스 수집 — references.md 작성",
+    code:
+      "# references.md\n" +
+      "[good] source=<figma-url-or-image-name> caption=<why this is the target tone>\n" +
+      "[bad] source=<figma-url-or-image-name> caption=<what to avoid>\n",
+    note:
+      "프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 코드 작성 전에 항상 사용자에게 확인 질문: " +
+      '"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요." ' +
+      "references.md 또는 .references/ 가 없으면 build_singlefile_html 이 missing-visual-references 로 빌드를 차단한다.",
+  });
+
+  steps.push({
+    step: 6,
     title: "index.html 을 <nds-*> 직접 작성으로 교체",
     code: HTML_INDEX_HTML_TEMPLATE,
     note:
@@ -688,7 +701,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   });
 
   steps.push({
-    step: 6,
+    step: 7,
     title: "기본 폴더 구조 생성",
     commands: ["mkdir -p src/mockups prds docs"],
     note:
@@ -698,7 +711,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 
   if (installMode === "mcpb") {
     steps.push({
-      step: 7,
+      step: 8,
       title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
       note:
         "Claude Desktop 에서 nudge-eap-ds.mcpb 를 더블클릭해 한 번 설치하면 이후 모든 프로젝트에서 자동 활성화됩니다. " +
@@ -706,7 +719,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     });
   } else {
     steps.push({
-      step: 7,
+      step: 8,
       title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
       commands: [
         `claude mcp add nudge-eap-ds --scope project -- node ${path.join(manifest.repoRoot, "packages/mcp/dist/server.js")}`,
@@ -716,7 +729,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   }
 
   steps.push({
-    step: 8,
+    step: 9,
     title: "동작 확인 (dev 서버 + check_preview)",
     commands: [
       "npm install --save-dev playwright",
@@ -729,7 +742,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   });
 
   steps.push({
-    step: 9,
+    step: 10,
     title: "정적 검증 루프 — validate_html_mockup / analyze_html_mockup",
     commands: [
       "// .html 작성/수정 직후마다 호출:",
@@ -744,7 +757,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   });
 
   steps.push({
-    step: 10,
+    step: 11,
     title: "최종 산출물 빌드 — 단일 dist/index.html",
     commands: [
       "// JS · CSS · @nudge-eap/html runtime 까지 전부 inline 된 1개 파일:",
@@ -815,11 +828,13 @@ function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: strin
       "Create or open a Vite vanilla-ts mockup project.",
       "Install @nudge-eap/html + tokens + icons using `command`.",
       "Use the returned importCode in src/main.ts.",
+      "Collect visual references first and save them in references.md.",
       "Write root index.html with real <nds-*> elements.",
       "Validate/analyze, preview, then build_singlefile_html.",
     ],
     nextTools: [
       "get_guide({ topic: 'principles' })",
+      "get_guide({ topic: 'pattern:visual-reference' })",
       "get_guide({ topic: 'component:Button', target: 'html' })",
       "validate_html_mockup({ filePath: 'index.html' })",
       "analyze_html_mockup({ filePath: 'index.html' })",

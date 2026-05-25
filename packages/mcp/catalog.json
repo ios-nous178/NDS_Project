@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-25T04:41:41.994Z",
+  "generatedAt": "2026-05-25T13:49:20.594Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
-      "version": "0.1.11",
+      "version": "0.1.12",
       "dependencies": {},
       "peerDependencies": {},
       "cssExports": [
@@ -15,7 +15,7 @@
     },
     {
       "name": "@nudge-eap/react",
-      "version": "0.1.10",
+      "version": "0.1.12",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/styles": "workspace:*",
@@ -29,7 +29,7 @@
     },
     {
       "name": "@nudge-eap/icons",
-      "version": "0.1.11",
+      "version": "0.1.12",
       "dependencies": {},
       "peerDependencies": {
         "react": ">=18.0.0"
@@ -38,7 +38,7 @@
     },
     {
       "name": "@nudge-eap/tailwind-preset",
-      "version": "0.1.11",
+      "version": "0.1.12",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
@@ -47,7 +47,7 @@
     },
     {
       "name": "@nudge-eap/styles",
-      "version": "0.0.1",
+      "version": "0.1.12",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
@@ -56,7 +56,7 @@
     },
     {
       "name": "@nudge-eap/html",
-      "version": "0.0.1",
+      "version": "0.1.12",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/styles": "workspace:*",
@@ -97,7 +97,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Accordion.d.ts"
+      "dtsRelPath": "packages/react/dist/Accordion.d.ts",
+      "htmlTag": "nds-accordion"
     },
     {
       "name": "ActionChip",
@@ -125,7 +126,8 @@
           "type": "TimelineItem[]"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ActivityTimeline.d.ts"
+      "dtsRelPath": "packages/react/dist/ActivityTimeline.d.ts",
+      "htmlTag": "nds-activity-timeline"
     },
     {
       "name": "AddressSearch",
@@ -371,7 +373,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/AppointmentCard.d.ts"
+      "dtsRelPath": "packages/react/dist/AppointmentCard.d.ts",
+      "htmlTag": "nds-appointment-card"
     },
     {
       "name": "AssessmentResultCard",
@@ -433,7 +436,8 @@
           "type": "Partial<Record<AssessmentLevel, React.ReactNode>>"
         }
       ],
-      "dtsRelPath": "packages/react/dist/AssessmentResultCard.d.ts"
+      "dtsRelPath": "packages/react/dist/AssessmentResultCard.d.ts",
+      "htmlTag": "nds-assessment-result-card"
     },
     {
       "name": "AttachmentItem",
@@ -491,7 +495,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/AttachmentItem.d.ts"
+      "dtsRelPath": "packages/react/dist/AttachmentItem.d.ts",
+      "htmlTag": "nds-attachment-item"
     },
     {
       "name": "AudioPlayer",
@@ -542,7 +547,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/AudioPlayer.d.ts"
+      "dtsRelPath": "packages/react/dist/AudioPlayer.d.ts",
+      "htmlTag": "nds-audio-player"
     },
     {
       "name": "Autocomplete",
@@ -613,7 +619,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Autocomplete.d.ts"
+      "dtsRelPath": "packages/react/dist/Autocomplete.d.ts",
+      "htmlTag": "nds-autocomplete"
     },
     {
       "name": "Avatar",
@@ -803,10 +810,7 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Banner.d.ts",
-      "htmlTag": "nds-banner",
-      "htmlAttrs": {
-        "variant": ["filled", "outlined", "image"]
-      }
+      "htmlTag": "nds-banner"
     },
     {
       "name": "BottomSheet",
@@ -882,7 +886,8 @@
           "type": "BottomSheetSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/BottomSheet.d.ts"
+      "dtsRelPath": "packages/react/dist/BottomSheet.d.ts",
+      "htmlTag": "nds-bottom-sheet"
     },
     {
       "name": "Breadcrumb",
@@ -1052,7 +1057,8 @@
           "type": "0 | 1"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Calendar.d.ts"
+      "dtsRelPath": "packages/react/dist/Calendar.d.ts",
+      "htmlTag": "nds-calendar"
     },
     {
       "name": "CallControlBar",
@@ -1103,7 +1109,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CallControlBar.d.ts"
+      "dtsRelPath": "packages/react/dist/CallControlBar.d.ts",
+      "htmlTag": "nds-call-control-bar"
     },
     {
       "name": "Card",
@@ -1329,7 +1336,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Carousel.d.ts"
+      "dtsRelPath": "packages/react/dist/Carousel.d.ts",
+      "htmlTag": "nds-carousel"
     },
     {
       "name": "ChatBubble",
@@ -1434,7 +1442,8 @@
           "type": "number"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ChatComposer.d.ts"
+      "dtsRelPath": "packages/react/dist/ChatComposer.d.ts",
+      "htmlTag": "nds-chat-composer"
     },
     {
       "name": "Checkbox",
@@ -1701,7 +1710,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CommentItem.d.ts"
+      "dtsRelPath": "packages/react/dist/CommentItem.d.ts",
+      "htmlTag": "nds-comment-item"
     },
     {
       "name": "Confetti",
@@ -1732,7 +1742,11 @@
           "type": "number"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Confetti.d.ts"
+      "dtsRelPath": "packages/react/dist/Confetti.d.ts",
+      "htmlTag": "nds-confetti",
+      "htmlAttrs": {
+        "color": ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"]
+      }
     },
     {
       "name": "ConsentChecklist",
@@ -1763,7 +1777,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ConsentChecklist.d.ts"
+      "dtsRelPath": "packages/react/dist/ConsentChecklist.d.ts",
+      "htmlTag": "nds-consent-checklist"
     },
     {
       "name": "ContentViewer",
@@ -1846,7 +1861,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CounselorCard.d.ts"
+      "dtsRelPath": "packages/react/dist/CounselorCard.d.ts",
+      "htmlTag": "nds-counselor-card"
     },
     {
       "name": "CountdownTimer",
@@ -1940,7 +1956,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CouponCard.d.ts"
+      "dtsRelPath": "packages/react/dist/CouponCard.d.ts",
+      "htmlTag": "nds-coupon-card"
     },
     {
       "name": "CrisisCallout",
@@ -1972,7 +1989,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/CrisisCallout.d.ts"
+      "dtsRelPath": "packages/react/dist/CrisisCallout.d.ts",
+      "htmlTag": "nds-crisis-callout"
     },
     {
       "name": "DataTable",
@@ -2041,7 +2059,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/DataTable.d.ts"
+      "dtsRelPath": "packages/react/dist/DataTable.d.ts",
+      "htmlTag": "nds-data-table"
     },
     {
       "name": "DatePicker",
@@ -2102,7 +2121,8 @@
           "type": "(d: Date) => string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/DatePicker.d.ts"
+      "dtsRelPath": "packages/react/dist/DatePicker.d.ts",
+      "htmlTag": "nds-date-picker"
     },
     {
       "name": "DateRangePicker",
@@ -2153,7 +2173,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/DateRangePicker.d.ts"
+      "dtsRelPath": "packages/react/dist/DateRangePicker.d.ts",
+      "htmlTag": "nds-date-range-picker"
     },
     {
       "name": "Divider",
@@ -2257,7 +2278,8 @@
           "type": "HTMLElement | null"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Drawer.d.ts"
+      "dtsRelPath": "packages/react/dist/Drawer.d.ts",
+      "htmlTag": "nds-drawer"
     },
     {
       "name": "DropdownMenu",
@@ -2299,7 +2321,14 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/DropdownMenu.d.ts"
+      "dtsRelPath": "packages/react/dist/DropdownMenu.d.ts",
+      "htmlTag": "nds-dropdown-menu"
+    },
+    {
+      "name": "DsHighlight",
+      "props": [],
+      "dtsRelPath": "packages/html/src/components/nds-ds-highlight.ts",
+      "htmlTag": "nds-ds-highlight"
     },
     {
       "name": "DSHighlight",
@@ -2367,7 +2396,11 @@
           "type": "0 | 1"
         }
       ],
-      "dtsRelPath": "packages/react/dist/EmotionHeatmap.d.ts"
+      "dtsRelPath": "packages/react/dist/EmotionHeatmap.d.ts",
+      "htmlTag": "nds-emotion-heatmap",
+      "htmlAttrs": {
+        "color": ["#ECECF0", "#C9DBFF", "#92BBFF", "#5C97F2", "#2563DB"]
+      }
     },
     {
       "name": "EmptyState",
@@ -2562,7 +2595,8 @@
           "type": "FieldActionRowSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts"
+      "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts",
+      "htmlTag": "nds-field-action-row"
     },
     {
       "name": "FileUpload",
@@ -2618,7 +2652,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/FileUpload.d.ts"
+      "dtsRelPath": "packages/react/dist/FileUpload.d.ts",
+      "htmlTag": "nds-file-upload"
     },
     {
       "name": "FilterBar",
@@ -2654,7 +2689,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/FilterBar.d.ts"
+      "dtsRelPath": "packages/react/dist/FilterBar.d.ts",
+      "htmlTag": "nds-filter-bar"
     },
     {
       "name": "FloatingCtaBanner",
@@ -2716,7 +2752,8 @@
           "type": "React.CSSProperties"
         }
       ],
-      "dtsRelPath": "packages/react/dist/FloatingCtaBanner.d.ts"
+      "dtsRelPath": "packages/react/dist/FloatingCtaBanner.d.ts",
+      "htmlTag": "nds-floating-cta-banner"
     },
     {
       "name": "Footer",
@@ -2737,7 +2774,8 @@
           "type": "(link: FooterLinkItem, e: React.MouseEvent) => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Footer.d.ts"
+      "dtsRelPath": "packages/react/dist/Footer.d.ts",
+      "htmlTag": "nds-footer"
     },
     {
       "name": "FormField",
@@ -2788,7 +2826,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/FormField.d.ts"
+      "dtsRelPath": "packages/react/dist/FormField.d.ts",
+      "htmlTag": "nds-form-field"
     },
     {
       "name": "GreetingHeader",
@@ -2825,7 +2864,8 @@
           "allowedValues": ["default", "primary"]
         }
       ],
-      "dtsRelPath": "packages/react/dist/GreetingHeader.d.ts"
+      "dtsRelPath": "packages/react/dist/GreetingHeader.d.ts",
+      "htmlTag": "nds-greeting-header"
     },
     {
       "name": "Header",
@@ -2873,7 +2913,8 @@
           "type": "HeaderSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Header.d.ts"
+      "dtsRelPath": "packages/react/dist/Header.d.ts",
+      "htmlTag": "nds-header"
     },
     {
       "name": "IconButton",
@@ -2936,7 +2977,8 @@
           "type": "(zoom: number) => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ImageCropper.d.ts"
+      "dtsRelPath": "packages/react/dist/ImageCropper.d.ts",
+      "htmlTag": "nds-image-cropper"
     },
     {
       "name": "ImageUpload",
@@ -3013,7 +3055,8 @@
           "type": "React.CSSProperties"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ImageUpload.d.ts"
+      "dtsRelPath": "packages/react/dist/ImageUpload.d.ts",
+      "htmlTag": "nds-image-upload"
     },
     {
       "name": "Input",
@@ -3192,7 +3235,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Lightbox.d.ts"
+      "dtsRelPath": "packages/react/dist/Lightbox.d.ts",
+      "htmlTag": "nds-lightbox"
     },
     {
       "name": "LikeButton",
@@ -3228,7 +3272,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/LikeButton.d.ts"
+      "dtsRelPath": "packages/react/dist/LikeButton.d.ts",
+      "htmlTag": "nds-like-button"
     },
     {
       "name": "LikertScale",
@@ -3343,7 +3388,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/MediaCard.d.ts"
+      "dtsRelPath": "packages/react/dist/MediaCard.d.ts",
+      "htmlTag": "nds-media-card"
     },
     {
       "name": "MediaThumbnail",
@@ -3406,7 +3452,8 @@
           "type": "React.CSSProperties"
         }
       ],
-      "dtsRelPath": "packages/react/dist/MediaThumbnail.d.ts"
+      "dtsRelPath": "packages/react/dist/MediaThumbnail.d.ts",
+      "htmlTag": "nds-media-thumbnail"
     },
     {
       "name": "MedicationItem",
@@ -3447,7 +3494,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/MedicationItem.d.ts"
+      "dtsRelPath": "packages/react/dist/MedicationItem.d.ts",
+      "htmlTag": "nds-medication-item"
     },
     {
       "name": "MentionInput",
@@ -3503,7 +3551,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/MentionInput.d.ts"
+      "dtsRelPath": "packages/react/dist/MentionInput.d.ts",
+      "htmlTag": "nds-mention-input"
     },
     {
       "name": "Modal",
@@ -3682,7 +3731,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/MoodSelector.d.ts"
+      "dtsRelPath": "packages/react/dist/MoodSelector.d.ts",
+      "htmlTag": "nds-mood-selector"
     },
     {
       "name": "MultiStepForm",
@@ -3734,7 +3784,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/MultiStepForm.d.ts"
+      "dtsRelPath": "packages/react/dist/MultiStepForm.d.ts",
+      "htmlTag": "nds-multi-step-form"
     },
     {
       "name": "NotificationItem",
@@ -3776,7 +3827,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/NotificationItem.d.ts"
+      "dtsRelPath": "packages/react/dist/NotificationItem.d.ts",
+      "htmlTag": "nds-notification-item"
     },
     {
       "name": "NumberStepper",
@@ -3832,7 +3884,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/NumberStepper.d.ts"
+      "dtsRelPath": "packages/react/dist/NumberStepper.d.ts",
+      "htmlTag": "nds-number-stepper"
     },
     {
       "name": "OnlineIndicator",
@@ -3975,7 +4028,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/PageHeader.d.ts"
+      "dtsRelPath": "packages/react/dist/PageHeader.d.ts",
+      "htmlTag": "nds-page-header"
     },
     {
       "name": "Pagination",
@@ -4058,7 +4112,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/PhoneInput.d.ts"
+      "dtsRelPath": "packages/react/dist/PhoneInput.d.ts",
+      "htmlTag": "nds-phone-input"
     },
     {
       "name": "PinPad",
@@ -4104,7 +4159,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/PinPad.d.ts"
+      "dtsRelPath": "packages/react/dist/PinPad.d.ts",
+      "htmlTag": "nds-pin-pad"
     },
     {
       "name": "PopularPosts",
@@ -4160,7 +4216,8 @@
           "type": "React.CSSProperties"
         }
       ],
-      "dtsRelPath": "packages/react/dist/PopularPosts.d.ts"
+      "dtsRelPath": "packages/react/dist/PopularPosts.d.ts",
+      "htmlTag": "nds-popular-posts"
     },
     {
       "name": "Popup",
@@ -4377,7 +4434,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ProductCard.d.ts"
+      "dtsRelPath": "packages/react/dist/ProductCard.d.ts",
+      "htmlTag": "nds-product-card"
     },
     {
       "name": "ProgressBar",
@@ -4445,7 +4503,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/PullToRefresh.d.ts"
+      "dtsRelPath": "packages/react/dist/PullToRefresh.d.ts",
+      "htmlTag": "nds-pull-to-refresh"
     },
     {
       "name": "QuickActionGrid",
@@ -4535,7 +4594,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ReactionPicker.d.ts"
+      "dtsRelPath": "packages/react/dist/ReactionPicker.d.ts",
+      "htmlTag": "nds-reaction-picker"
     },
     {
       "name": "ReviewCard",
@@ -4591,7 +4651,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ReviewCard.d.ts"
+      "dtsRelPath": "packages/react/dist/ReviewCard.d.ts",
+      "htmlTag": "nds-review-card"
     },
     {
       "name": "ScoreGauge",
@@ -4622,7 +4683,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ScoreGauge.d.ts"
+      "dtsRelPath": "packages/react/dist/ScoreGauge.d.ts",
+      "htmlTag": "nds-score-gauge"
     },
     {
       "name": "SearchInput",
@@ -4689,7 +4751,8 @@
           "type": "SearchInputSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/SearchInput.d.ts"
+      "dtsRelPath": "packages/react/dist/SearchInput.d.ts",
+      "htmlTag": "nds-search-input"
     },
     {
       "name": "SegmentedControl",
@@ -4855,7 +4918,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/SelectionCard.d.ts"
+      "dtsRelPath": "packages/react/dist/SelectionCard.d.ts",
+      "htmlTag": "nds-selection-card"
     },
     {
       "name": "ShareSheet",
@@ -4901,7 +4965,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ShareSheet.d.ts"
+      "dtsRelPath": "packages/react/dist/ShareSheet.d.ts",
+      "htmlTag": "nds-share-sheet"
     },
     {
       "name": "Sidebar",
@@ -4982,7 +5047,8 @@
           "type": "keyof React.JSX.IntrinsicElements"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Sidebar.d.ts"
+      "dtsRelPath": "packages/react/dist/Sidebar.d.ts",
+      "htmlTag": "nds-sidebar"
     },
     {
       "name": "SignaturePad",
@@ -5028,7 +5094,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/SignaturePad.d.ts"
+      "dtsRelPath": "packages/react/dist/SignaturePad.d.ts",
+      "htmlTag": "nds-signature-pad"
     },
     {
       "name": "Skeleton",
@@ -5120,7 +5187,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Slider.d.ts"
+      "dtsRelPath": "packages/react/dist/Slider.d.ts",
+      "htmlTag": "nds-slider"
     },
     {
       "name": "Snackbar",
@@ -5282,7 +5350,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/StarRating.d.ts"
+      "dtsRelPath": "packages/react/dist/StarRating.d.ts",
+      "htmlTag": "nds-star-rating"
     },
     {
       "name": "StatCard",
@@ -5357,7 +5426,8 @@
           "allowedValues": ["horizontal", "vertical"]
         }
       ],
-      "dtsRelPath": "packages/react/dist/StatusTimeline.d.ts"
+      "dtsRelPath": "packages/react/dist/StatusTimeline.d.ts",
+      "htmlTag": "nds-status-timeline"
     },
     {
       "name": "Stepper",
@@ -5546,7 +5616,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/TagInput.d.ts"
+      "dtsRelPath": "packages/react/dist/TagInput.d.ts",
+      "htmlTag": "nds-tag-input"
     },
     {
       "name": "Textarea",
@@ -5615,6 +5686,12 @@
       "htmlTag": "nds-text-button"
     },
     {
+      "name": "Timeline",
+      "props": [],
+      "dtsRelPath": "packages/html/src/components/nds-timeline.ts",
+      "htmlTag": "nds-timeline"
+    },
+    {
       "name": "TimePicker",
       "props": [
         {
@@ -5668,7 +5745,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/TimePicker.d.ts"
+      "dtsRelPath": "packages/react/dist/TimePicker.d.ts",
+      "htmlTag": "nds-time-picker"
     },
     {
       "name": "TimeSlotPicker",
@@ -5709,7 +5787,8 @@
           "type": "React.ReactNode"
         }
       ],
-      "dtsRelPath": "packages/react/dist/TimeSlotPicker.d.ts"
+      "dtsRelPath": "packages/react/dist/TimeSlotPicker.d.ts",
+      "htmlTag": "nds-time-slot-picker"
     },
     {
       "name": "TipCard",
@@ -5924,7 +6003,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/TrendingKeywords.d.ts"
+      "dtsRelPath": "packages/react/dist/TrendingKeywords.d.ts",
+      "htmlTag": "nds-trending-keywords"
     },
     {
       "name": "UserCard",
@@ -5976,7 +6056,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/UserCard.d.ts"
+      "dtsRelPath": "packages/react/dist/UserCard.d.ts",
+      "htmlTag": "nds-user-card"
     },
     {
       "name": "VideoPlayer",
@@ -6032,7 +6113,8 @@
           "type": "() => void"
         }
       ],
-      "dtsRelPath": "packages/react/dist/VideoPlayer.d.ts"
+      "dtsRelPath": "packages/react/dist/VideoPlayer.d.ts",
+      "htmlTag": "nds-video-player"
     },
     {
       "name": "VoiceRecorder",
@@ -6074,7 +6156,8 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/VoiceRecorder.d.ts"
+      "dtsRelPath": "packages/react/dist/VoiceRecorder.d.ts",
+      "htmlTag": "nds-voice-recorder"
     },
     {
       "name": "VotePoll",
@@ -6115,7 +6198,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/VotePoll.d.ts"
+      "dtsRelPath": "packages/react/dist/VotePoll.d.ts",
+      "htmlTag": "nds-vote-poll"
     },
     {
       "name": "WaveformPlayer",
@@ -6151,7 +6235,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/WaveformPlayer.d.ts"
+      "dtsRelPath": "packages/react/dist/WaveformPlayer.d.ts",
+      "htmlTag": "nds-waveform-player"
     },
     {
       "name": "WebHeader",
@@ -9614,6 +9699,25 @@
   ],
   "brands": [
     {
+      "slug": "cashpobi",
+      "name": "cashpobi",
+      "primaryColor": null,
+      "keyColors": {
+        "primary": null,
+        "secondary": null,
+        "error": null,
+        "caution": null,
+        "success": null,
+        "surface": null,
+        "onSurface": null
+      },
+      "fontFamilies": [],
+      "designMdRelPath": "",
+      "cssImport": "@nudge-eap/tokens/css/cashpobi",
+      "jsExport": "@nudge-eap/tokens/brands",
+      "ready": true
+    },
+    {
       "slug": "geniet",
       "name": "Geniet",
       "version": "alpha",
@@ -9633,6 +9737,25 @@
       "cssImport": "@nudge-eap/tokens/css/geniet",
       "jsExport": "@nudge-eap/tokens/brands",
       "ready": true
+    },
+    {
+      "slug": "moneple",
+      "name": "moneple",
+      "primaryColor": null,
+      "keyColors": {
+        "primary": null,
+        "secondary": null,
+        "error": null,
+        "caution": null,
+        "success": null,
+        "surface": null,
+        "onSurface": null
+      },
+      "fontFamilies": [],
+      "designMdRelPath": "",
+      "cssImport": null,
+      "jsExport": "@nudge-eap/tokens/brands",
+      "ready": false
     },
     {
       "slug": "nudge-eap",
@@ -9678,66 +9801,178 @@
     }
   ],
   "ndsHtmlTags": [
+    "nds-accordion",
+    "nds-accordion-content",
+    "nds-accordion-item",
+    "nds-accordion-trigger",
     "nds-action-chip",
+    "nds-activity-timeline",
     "nds-address-search",
     "nds-amount-input",
+    "nds-appointment-card",
+    "nds-assessment-result-card",
+    "nds-attachment-item",
+    "nds-audio-player",
+    "nds-autocomplete",
     "nds-avatar",
     "nds-avatar-group",
     "nds-badge",
     "nds-banner",
+    "nds-bottom-sheet",
     "nds-breadcrumb",
+    "nds-breadcrumb-item",
     "nds-breathing-guide",
     "nds-button",
+    "nds-calendar",
+    "nds-call-control-bar",
     "nds-card",
+    "nds-card-body",
+    "nds-card-footer",
+    "nds-card-header",
+    "nds-card-thumbnail",
     "nds-card-visual",
+    "nds-carousel",
     "nds-chat-bubble",
+    "nds-chat-composer",
     "nds-checkbox",
     "nds-chip",
     "nds-circular-progress",
     "nds-coach-mark",
+    "nds-comment-item",
+    "nds-confetti",
+    "nds-consent-checklist",
     "nds-content-viewer",
+    "nds-counselor-card",
     "nds-countdown-timer",
+    "nds-coupon-card",
+    "nds-crisis-callout",
+    "nds-crisis-callout-action",
+    "nds-data-table",
+    "nds-date-picker",
+    "nds-date-range-picker",
     "nds-divider",
+    "nds-drawer",
+    "nds-dropdown-menu",
+    "nds-ds-highlight",
+    "nds-emotion-heatmap",
     "nds-empty-state",
     "nds-expandable-text",
     "nds-fab",
+    "nds-field-action-row",
+    "nds-file-upload",
+    "nds-filter-bar",
+    "nds-floating-cta-banner",
+    "nds-footer",
+    "nds-footer-company-info",
+    "nds-footer-info",
+    "nds-footer-tab-bar",
+    "nds-footer-tab-item",
+    "nds-footer-web",
+    "nds-footer-web-row",
+    "nds-footer-web-section",
+    "nds-form-field",
+    "nds-greeting-header",
+    "nds-header",
+    "nds-header-actions",
+    "nds-header-auth-button",
+    "nds-header-logo",
+    "nds-header-main-bar",
+    "nds-header-menu",
+    "nds-header-menu-item",
+    "nds-header-nav-bar",
+    "nds-header-search",
     "nds-icon-button",
+    "nds-image-cropper",
+    "nds-image-upload",
     "nds-input",
     "nds-inspector",
     "nds-journal-entry",
+    "nds-lightbox",
+    "nds-like-button",
     "nds-likert-scale",
     "nds-list",
+    "nds-list-item",
+    "nds-media-card",
+    "nds-media-thumbnail",
+    "nds-medication-item",
+    "nds-mention-input",
     "nds-modal",
+    "nds-mood-selector",
+    "nds-multi-step-form",
+    "nds-notification-item",
+    "nds-number-stepper",
     "nds-online-indicator",
     "nds-order-summary-card",
     "nds-otp-input",
+    "nds-page-header",
     "nds-pagination",
+    "nds-phone-input",
+    "nds-pin-pad",
+    "nds-popular-posts",
     "nds-popup",
     "nds-price-tag",
+    "nds-product-card",
     "nds-progress-bar",
+    "nds-pull-to-refresh",
     "nds-quick-action-grid",
     "nds-radio",
+    "nds-reaction-picker",
+    "nds-review-card",
+    "nds-score-gauge",
+    "nds-search-input",
     "nds-segmented",
+    "nds-segmented-control",
     "nds-select",
+    "nds-select-option",
+    "nds-selection-card",
+    "nds-selection-card-item",
+    "nds-share-sheet",
+    "nds-sidebar",
+    "nds-signature-pad",
     "nds-skeleton",
+    "nds-slider",
     "nds-snackbar",
     "nds-sparkline",
     "nds-spinner",
+    "nds-star-rating",
     "nds-stat-card",
+    "nds-status-timeline",
     "nds-stepper",
     "nds-streak-card",
     "nds-tabs",
+    "nds-tabs-list",
+    "nds-tabs-panel",
+    "nds-tabs-trigger",
+    "nds-tag-input",
     "nds-text-button",
     "nds-textarea",
+    "nds-time-picker",
+    "nds-time-slot-picker",
+    "nds-timeline",
+    "nds-timeline-item",
     "nds-tip-card",
     "nds-title-block",
     "nds-toast",
     "nds-toggle",
-    "nds-tooltip"
+    "nds-tooltip",
+    "nds-trending-keywords",
+    "nds-user-card",
+    "nds-video-player",
+    "nds-voice-recorder",
+    "nds-vote-poll",
+    "nds-waveform-player"
   ],
   "ndsHtmlElements": [
     {
+      "tag": "nds-accordion",
+      "attrs": {}
+    },
+    {
       "tag": "nds-action-chip",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-activity-timeline",
       "attrs": {}
     },
     {
@@ -9746,6 +9981,26 @@
     },
     {
       "tag": "nds-amount-input",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-appointment-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-assessment-result-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-attachment-item",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-audio-player",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-autocomplete",
       "attrs": {}
     },
     {
@@ -9768,9 +10023,11 @@
     },
     {
       "tag": "nds-banner",
-      "attrs": {
-        "variant": ["filled", "outlined", "image"]
-      }
+      "attrs": {}
+    },
+    {
+      "tag": "nds-bottom-sheet",
+      "attrs": {}
     },
     {
       "tag": "nds-breadcrumb",
@@ -9789,6 +10046,14 @@
       }
     },
     {
+      "tag": "nds-calendar",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-call-control-bar",
+      "attrs": {}
+    },
+    {
       "tag": "nds-card-visual",
       "attrs": {}
     },
@@ -9799,7 +10064,15 @@
       }
     },
     {
+      "tag": "nds-carousel",
+      "attrs": {}
+    },
+    {
       "tag": "nds-chat-bubble",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-chat-composer",
       "attrs": {}
     },
     {
@@ -9823,7 +10096,25 @@
       "attrs": {}
     },
     {
+      "tag": "nds-comment-item",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-confetti",
+      "attrs": {
+        "color": ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"]
+      }
+    },
+    {
+      "tag": "nds-consent-checklist",
+      "attrs": {}
+    },
+    {
       "tag": "nds-content-viewer",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-counselor-card",
       "attrs": {}
     },
     {
@@ -9831,9 +10122,47 @@
       "attrs": {}
     },
     {
+      "tag": "nds-coupon-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-crisis-callout",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-data-table",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-date-picker",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-date-range-picker",
+      "attrs": {}
+    },
+    {
       "tag": "nds-divider",
       "attrs": {
         "orientation": ["horizontal", "vertical"]
+      }
+    },
+    {
+      "tag": "nds-drawer",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-dropdown-menu",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-ds-highlight",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-emotion-heatmap",
+      "attrs": {
+        "color": ["#ECECF0", "#C9DBFF", "#92BBFF", "#5C97F2", "#2563DB"]
       }
     },
     {
@@ -9849,10 +10178,50 @@
       "attrs": {}
     },
     {
+      "tag": "nds-field-action-row",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-file-upload",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-filter-bar",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-floating-cta-banner",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-footer",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-form-field",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-greeting-header",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-header",
+      "attrs": {}
+    },
+    {
       "tag": "nds-icon-button",
       "attrs": {
         "size": ["x-large", "large", "medium", "small"]
       }
+    },
+    {
+      "tag": "nds-image-cropper",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-image-upload",
+      "attrs": {}
     },
     {
       "tag": "nds-input",
@@ -9869,6 +10238,14 @@
       "attrs": {}
     },
     {
+      "tag": "nds-lightbox",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-like-button",
+      "attrs": {}
+    },
+    {
       "tag": "nds-likert-scale",
       "attrs": {}
     },
@@ -9880,7 +10257,39 @@
       }
     },
     {
+      "tag": "nds-media-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-media-thumbnail",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-medication-item",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-mention-input",
+      "attrs": {}
+    },
+    {
       "tag": "nds-modal",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-mood-selector",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-multi-step-form",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-notification-item",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-number-stepper",
       "attrs": {}
     },
     {
@@ -9896,7 +10305,23 @@
       "attrs": {}
     },
     {
+      "tag": "nds-page-header",
+      "attrs": {}
+    },
+    {
       "tag": "nds-pagination",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-phone-input",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-pin-pad",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-popular-posts",
       "attrs": {}
     },
     {
@@ -9908,7 +10333,15 @@
       "attrs": {}
     },
     {
+      "tag": "nds-product-card",
+      "attrs": {}
+    },
+    {
       "tag": "nds-progress-bar",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-pull-to-refresh",
       "attrs": {}
     },
     {
@@ -9918,6 +10351,28 @@
     {
       "tag": "nds-radio",
       "attrs": {}
+    },
+    {
+      "tag": "nds-reaction-picker",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-review-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-score-gauge",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-search-input",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-segmented-control",
+      "attrs": {
+        "size": ["sm", "md"]
+      }
     },
     {
       "tag": "nds-segmented",
@@ -9930,10 +10385,30 @@
       "attrs": {}
     },
     {
+      "tag": "nds-selection-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-share-sheet",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-sidebar",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-signature-pad",
+      "attrs": {}
+    },
+    {
       "tag": "nds-skeleton",
       "attrs": {
         "variant": ["rectangular", "circular", "text"]
       }
+    },
+    {
+      "tag": "nds-slider",
+      "attrs": {}
     },
     {
       "tag": "nds-snackbar",
@@ -9950,7 +10425,15 @@
       "attrs": {}
     },
     {
+      "tag": "nds-star-rating",
+      "attrs": {}
+    },
+    {
       "tag": "nds-stat-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-status-timeline",
       "attrs": {}
     },
     {
@@ -9972,11 +10455,27 @@
       }
     },
     {
+      "tag": "nds-tag-input",
+      "attrs": {}
+    },
+    {
       "tag": "nds-text-button",
       "attrs": {}
     },
     {
       "tag": "nds-textarea",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-time-picker",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-time-slot-picker",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-timeline",
       "attrs": {}
     },
     {
@@ -10001,6 +10500,30 @@
     },
     {
       "tag": "nds-tooltip",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-trending-keywords",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-user-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-video-player",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-voice-recorder",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-vote-poll",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-waveform-player",
       "attrs": {}
     }
   ]
