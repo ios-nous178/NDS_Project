@@ -223,14 +223,48 @@ export function stopDevServer(args: { sessionId?: string }) {
   return { stopped };
 }
 
-async function loadPlaywright(cwd: string) {
-  try {
-    const requireFromProject = createRequire(path.join(cwd, "package.json"));
-    const resolved = requireFromProject.resolve("playwright");
-    return await import(resolved);
-  } catch {
-    return null;
+// playwright 는 외부 mockup 프로젝트의 optional runtime dep — MCP 자체에는 dep 아님.
+// 타입을 import 하면 빌드가 깨지므로 any 로 둔다 (실제 동작은 시점별 module shape 에 의존).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type PlaywrightLike = any;
+
+async function loadPlaywright(cwd: string): Promise<{
+  module: PlaywrightLike | null;
+  diagnostics: { triedPaths: string[]; lastError: string | null };
+}> {
+  const triedPaths: string[] = [];
+  let lastError: string | null = null;
+  const tryResolve = async (anchor: string) => {
+    try {
+      triedPaths.push(anchor);
+      const requireFromAnchor = createRequire(anchor);
+      const resolved = requireFromAnchor.resolve("playwright");
+      const mod = (await import(resolved)) as PlaywrightLike;
+      return mod;
+    } catch (err) {
+      lastError = (err as Error).message;
+      return null;
+    }
+  };
+  let mod = await tryResolve(path.join(cwd, "package.json"));
+  // 2) MCP 자체 모듈에서 resolve — pnpm workspace 등에서 hoist 된 경우 fallback
+  if (!mod) mod = await tryResolve(import.meta.url);
+  // 3) cwd 의 모든 상위 디렉토리에서 resolve — monorepo 루트에 install 한 경우
+  if (!mod) {
+    let dir = path.resolve(cwd);
+    const seen = new Set<string>();
+    while (!seen.has(dir)) {
+      seen.add(dir);
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+      const anchor = path.join(dir, "package.json");
+      if (!fs.existsSync(anchor)) continue;
+      mod = await tryResolve(anchor);
+      if (mod) break;
+    }
   }
+  return { module: mod, diagnostics: { triedPaths, lastError } };
 }
 
 /**
@@ -276,16 +310,20 @@ export async function snapshotRenderedHtml(args: {
     };
   }
 
-  const playwright = await loadPlaywright(cwd);
+  const { module: playwright, diagnostics: pwDiag } = await loadPlaywright(cwd);
   if (!playwright) {
     return {
       ok: false as const,
       url,
       phase: "browser",
-      error: "Playwright is not installed in the mockup project.",
+      error:
+        "Playwright module not resolvable from this project. " +
+        `Tried: ${pwDiag.triedPaths.join(", ")}. Last resolve error: ${pwDiag.lastError ?? "n/a"}.`,
       install: ["npm install --save-dev playwright", "npx playwright install chromium"],
       httpStatus: reachable.status,
-      note: "HTTP responded, but capturing the rendered DOM needs a real browser. Install Playwright then re-run.",
+      note:
+        "MCP looked in (1) <cwd>/node_modules, (2) MCP's own node_modules, (3) every ancestor dir. " +
+        "If you installed Playwright in a different scope (global, sibling pkg) — install it into THIS mockup project's package.json so Node module resolution finds it.",
     };
   }
 
@@ -360,16 +398,20 @@ export async function checkPreview(args: {
     };
   }
 
-  const playwright = await loadPlaywright(cwd);
+  const { module: playwright, diagnostics: pwDiag } = await loadPlaywright(cwd);
   if (!playwright) {
     return {
       ok: false,
       url,
       phase: "browser",
-      error: "Playwright is not installed in the mockup project.",
+      error:
+        "Playwright module not resolvable from this project. " +
+        `Tried: ${pwDiag.triedPaths.join(", ")}. Last resolve error: ${pwDiag.lastError ?? "n/a"}.`,
       install: ["npm install --save-dev playwright", "npx playwright install chromium"],
       httpStatus: reachable.status,
-      note: "HTTP responded, but runtime render errors and blank-screen checks need a real browser. Install Playwright in the mockup project, then call check_preview again.",
+      note:
+        "MCP looked in (1) <cwd>/node_modules, (2) MCP's own node_modules, (3) every ancestor dir. " +
+        "If you installed Playwright in a different scope (global, sibling pkg) — install it into THIS mockup project's package.json so Node module resolution finds it.",
     };
   }
 

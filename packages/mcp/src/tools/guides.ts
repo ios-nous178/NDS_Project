@@ -460,6 +460,46 @@ export function getClaudeMdTemplate(args: {
   if (args.intent === "html") {
     return `${title}
 
+## ⛔ FIRST RESPONSE GATE — 모든 작업 이전에 (예외 없음)
+
+**이 워크스페이스에서 사용자의 첫 화면-만들기 요청을 받은 직후, 다른 어떤 행동보다 먼저:**
+
+### Step 1. 첫 응답에 반드시 이 질문을 그대로 포함하고 응답을 종료한다
+
+> "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 가능하면 **정답 3-5장**, **피해야 할 오답 3-5장**에 각각 1줄 캡션을 붙여 주세요. 이미 첨부하신 자료를 기준으로 진행해도 될지도 함께 알려 주세요."
+
+### Step 2. 사용자 답변을 받기 전까지 다음을 절대 하지 않는다
+
+- ❌ \`find_component\` / \`find_icon\` / \`find_token\` / \`get_guide(topic:component:*)\` / \`get_guide(topic:pattern:*)\` 호출
+- ❌ 어떤 \`.html\` / \`.ts\` / \`.tsx\` / \`.css\` 파일 작성 또는 edit
+- ❌ 코드 outline, pseudo-code, 컴포넌트 트리 스케치 — 머릿속 설계도 글로 풀어내지 말 것
+- ❌ "일단 골격만 만들고 나중에 디테일 맞추겠다" / "PRD 에 디자인 톤이 있으니 그걸 기준으로" / "auto-mode 니까 빠르게" — 전부 거부 사유
+
+### Step 3. 답변을 받으면 \`references.md\` (워크스페이스 루트) 에 즉시 기록
+
+\`\`\`
+# references.md
+[good] source=<figma-url|image-name> caption=<1줄 reason>
+[good] ...
+[bad] source=... caption=...
+\`\`\`
+
+### 예외 (3 가지만)
+
+1. 사용자가 첫 메시지에 Figma 링크/스크린샷을 **명시적으로** 첨부했고, **추가 레퍼런스가 필요 없다고 명시**한 경우 → 그 자료만으로 \`references.md\` 작성하고 진행.
+2. 화면-만들기 요청이 아닌 경우 (e.g., 코드 리뷰, 버그 수정, 설정 변경). 이 경우 일반 흐름으로 진행.
+3. 사용자가 명시적으로 "레퍼런스 없이 진행" 이라고 지시 → 사용자에게 "MCP 의 visual-reference 가드가 무력화되며, 톤/디테일이 어긋날 가능성이 있다" 라고 먼저 경고 후 진행.
+
+### 왜 이 게이트가 필요한가 (반복 사고 사례)
+
+- PRD 본문만 보고 바로 코드 → 톤·픽셀 디테일 (별점 크기, 카드 간격, 헤더 위계) 불일치 → 5+ 라운드 재작업
+- Auto-mode 는 **clarifying question 을 줄이는 룰**이지, **절차를 건너뛰는 룰이 아님**
+- 빌드 타임의 \`missing-visual-references\` audit 는 이미 일이 다 끝난 후라 너무 늦음 — 이 게이트가 작업 시작 시점의 안전망
+
+**이 게이트를 어기고 작업한 결과물은 사용자가 거절할 수 있으며, MCP 가이드 모든 룰 위반 중 가장 자주 발생하는 위반이다.**
+
+---
+
 ## 역할 경계 (먼저 읽을 것)
 
 - 이 프로젝트의 역할은 **별도 vanilla HTML 목업 프로젝트 빌드 + <nds-*> 목업 생성**이다.
@@ -564,7 +604,7 @@ export function getClaudeMdTemplate(args: {
 3. 필요한 UX 패턴 확인: \`get_guide({ topic: "pattern:<name>" })\`.
 4. \`get_guide({ topic: "component:<Name>", target: "html" })\` 로 do/dont 예시 확보.
 5. 목업 \`.html\` 작성 (\`src/mockups/<이름>.html\` 또는 \`index.html\`).
-6. \`validate_html_mockup({ filePath })\` 실행. 위반 0건 될 때까지 수정 후 재실행. **응답의 violations[] 와 rule 별 카운트를 사용자에게 그대로 보여줄 것.**
+6. \`validate_html_mockup({ filePath })\` 실행. 위반 0건 될 때까지 수정 후 재실행. **응답의 violations[] 와 rule 별 카운트를 사용자에게 그대로 보여줄 것.** **한 라운드에서 잡힌 violation 은 반드시 한 번에 모아서 fix** — 1건 fix → 재실행 → 또 1건 잡힘 패턴 금지 (불필요한 라운드 + 토큰 낭비). 단 validation 호출 자체를 줄여서 라운드 수를 인위적으로 깎지는 말 것 — 최종 clean pass 는 무조건 확인.
 6-bis. **2회 self-check 강제** — 위반이 0건이 됐어도 \`validate_html_mockup\` 을 한 번 더 호출해 새로 들어온 위반이 없는지 확인.
 7. \`analyze_html_mockup({ filePath })\` 실행. \`dsRatio\` 와 \`recommendations[]\` 를 사용자에게 보여주고, native 잔존이 있으면 \`convert_html_to_ds_html\` 호출.
 8. \`dev_server({ action: "start" })\` 실행.
@@ -585,6 +625,7 @@ export function getClaudeMdTemplate(args: {
 - [ ] \`validate_html_mockup\` 위반 0건 (2회 self-check 통과).
 - [ ] \`analyze_html_mockup.dsRatio\` 가 충분히 높고 native 잔존이 0/최소.
 - [ ] 이모지·텍스트 기호 (→ ✓ ★ • 등) 사용 없음.
+- [ ] **브랜드 헤더/푸터 사용 여부 점검**: 사용자 앱 화면이면 해당 브랜드(trost/geniet/nudge-eap)의 표준 헤더/푸터 (또는 GNB·BottomNav) 가 적용됐는가? 인라인으로 손수 그리지 않고 브랜드 별 fixtures 사용. 랜딩/스플래시/모달-only 같은 의도적 예외라면 응답에 "헤더/푸터 의도적으로 생략" 명시.
 - [ ] 목업에 DS MCP/Package 버전 및 DS 컴포넌트 사용량/적용 현황이 visible 하게 포함됨. 풋터 뱃지는 \`<span data-ds-badge>DS@x.y.z · DS N (M%)</span>\` 형태를 기본으로 하되, MCP/package 버전까지 함께 보이게 한다. 주석만으로는 부족.
 - [ ] \`build_singlefile_html\` 호출 후 \`validate_html_mockup({ filePath, report: true })\` 까지 실행 완료 (구글시트 적재 + 마지막 위반 검사).
 - [ ] 최종 응답에 Google Sheets POST 상태를 명시함: \`webhook ok\` / \`webhook queued(...)\` / \`webhook skipped\`.
@@ -679,6 +720,46 @@ export function getClaudeMdTemplate(args: {
 
   return `${title}
 
+## ⛔ FIRST RESPONSE GATE — 모든 작업 이전에 (예외 없음)
+
+**이 워크스페이스에서 사용자의 첫 화면-만들기 요청을 받은 직후, 다른 어떤 행동보다 먼저:**
+
+### Step 1. 첫 응답에 반드시 이 질문을 그대로 포함하고 응답을 종료한다
+
+> "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 가능하면 **정답 3-5장**, **피해야 할 오답 3-5장**에 각각 1줄 캡션을 붙여 주세요. 이미 첨부하신 자료를 기준으로 진행해도 될지도 함께 알려 주세요."
+
+### Step 2. 사용자 답변을 받기 전까지 다음을 절대 하지 않는다
+
+- ❌ \`find_component\` / \`find_icon\` / \`find_token\` / \`get_guide(topic:component:*)\` / \`get_guide(topic:pattern:*)\` 호출
+- ❌ 어떤 \`.tsx\` / \`.ts\` / \`.html\` / \`.css\` 파일 작성 또는 edit
+- ❌ 코드 outline, pseudo-code, 컴포넌트 트리 스케치 — 머릿속 설계도 글로 풀어내지 말 것
+- ❌ "일단 골격만 만들고 나중에 디테일 맞추겠다" / "PRD 에 디자인 톤이 있으니 그걸 기준으로" / "auto-mode 니까 빠르게" — 전부 거부 사유
+
+### Step 3. 답변을 받으면 \`references.md\` (워크스페이스 루트) 에 즉시 기록
+
+\`\`\`
+# references.md
+[good] source=<figma-url|image-name> caption=<1줄 reason>
+[good] ...
+[bad] source=... caption=...
+\`\`\`
+
+### 예외 (3 가지만)
+
+1. 사용자가 첫 메시지에 Figma 링크/스크린샷을 **명시적으로** 첨부했고, **추가 레퍼런스가 필요 없다고 명시**한 경우 → 그 자료만으로 \`references.md\` 작성하고 진행.
+2. 화면-만들기 요청이 아닌 경우 (e.g., 코드 리뷰, 버그 수정, 설정 변경). 이 경우 일반 흐름으로 진행.
+3. 사용자가 명시적으로 "레퍼런스 없이 진행" 이라고 지시 → 사용자에게 "MCP 의 visual-reference 가드가 무력화되며, 톤/디테일이 어긋날 가능성이 있다" 라고 먼저 경고 후 진행.
+
+### 왜 이 게이트가 필요한가 (반복 사고 사례)
+
+- PRD 본문만 보고 바로 코드 → 톤·픽셀 디테일 (별점 크기, 카드 간격, 헤더 위계) 불일치 → 5+ 라운드 재작업
+- Auto-mode 는 **clarifying question 을 줄이는 룰**이지, **절차를 건너뛰는 룰이 아님**
+- 빌드 타임의 \`missing-visual-references\` audit 는 이미 일이 다 끝난 후라 너무 늦음 — 이 게이트가 작업 시작 시점의 안전망
+
+**이 게이트를 어기고 작업한 결과물은 사용자가 거절할 수 있으며, MCP 가이드 모든 룰 위반 중 가장 자주 발생하는 위반이다.**
+
+---
+
 ## 역할 경계 (먼저 읽을 것)
 
 - 이 프로젝트의 역할은 **별도 목업 프로젝트 빌드 + 목업 생성**이다.
@@ -747,6 +828,7 @@ export function getClaudeMdTemplate(args: {
 ## 완료 게이트 (반복 지시 — 기존 검증/가이드와 중복되어도 생략 금지)
 
 - 목업에는 DS MCP/Package 버전 및 DS 컴포넌트 사용량/적용 현황을 반드시 visible 하게 포함한다. \`report_mockup_usage\` / \`validate_html_mockup(report:true)\` / \`build_singlefile_html\` 응답의 \`humanReadable\` 또는 \`dsUsageSummary\` 를 SSOT 로 사용하고, 직접 카운트하지 않는다.
+- **브랜드 헤더/푸터 사용 여부 점검** — 사용자 앱 화면이면 해당 브랜드의 표준 헤더/푸터 (또는 GNB·BottomNav) 가 적용됐는지 마지막에 한 번 더 확인. brand prop 하나로 자동 분기되는 MockupLayout (\`mockup-layout.tsx\`) 또는 동등 헬퍼를 우선 사용 — 인라인 손수 그리기 금지. 랜딩/스플래시/모달-only 같은 의도적 예외라면 최종 응답에 "헤더/푸터 의도적으로 생략" 명시.
 - 최종 응답에는 Google Sheets POST 상태를 반드시 쓴다: \`webhook ok\`, \`webhook queued(...)\`, \`webhook skipped\` 중 하나.
 - 최종 응답에는 간격 점검 결과, 텍스트 기호를 아이콘처럼 사용한 곳의 잔존 여부, 요청 범위에서 빠진 항목을 짧게 보고한다.
 - 위 항목은 이미 검증 로직이나 다른 가이드에 있어도 반복 확인한다. 확인하지 못한 항목은 확인하지 못했다고 쓴다.
@@ -776,7 +858,7 @@ export function getClaudeMdTemplate(args: {
 2. 필요한 컴포넌트/아이콘/토큰 검색
 3. 필요한 UX 패턴 확인: \`get_guide({ topic: "pattern:<name>" })\`
 4. 목업 구현
-5. \`validate_mockup\` 실행 — **응답의 \`summary.checklistReport\` (Self-Check 5항목 결과) 를 코드 아래에 그대로 사용자에게 보여줄 것**. 5항목: ① Spacing 토큰 사용 ② 4pt Grid 준수 ③ Brand BG 1개 이하 ④ 헤딩 장식 아이콘 없음 ⑤ Primary Button 단일성 (영역별). 위반이 1건이라도 있으면 수정 후 재실행.
+5. \`validate_mockup\` 실행 — **응답의 \`summary.checklistReport\` (Self-Check 5항목 결과) 를 코드 아래에 그대로 사용자에게 보여줄 것**. 5항목: ① Spacing 토큰 사용 ② 4pt Grid 준수 ③ Brand BG 1개 이하 ④ 헤딩 장식 아이콘 없음 ⑤ Primary Button 단일성 (영역별). 위반이 1건이라도 있으면 수정 후 재실행. **한 라운드에서 잡힌 violation 은 반드시 한 번에 모아서 fix** — 1건 fix → 재실행 → 또 1건 잡힘 패턴 금지 (불필요한 라운드 + 토큰 낭비). 단 validation 호출 자체를 줄여서 라운드 수를 인위적으로 깎지는 말 것 — 최종 clean pass 는 무조건 확인.
 5-bis. **2회 self-check 강제** — 1회차에서 위반이 없었거나 수정해서 0건이 됐어도, \`validate_mockup\` 을 **반드시 한 번 더** 호출해 2회차 결과까지 0건임을 확인. 1회차 통과만 보고 다음 단계로 넘어가는 것 금지 (수정 과정에서 새 위반이 들어올 수 있음). 위반을 인지하고 그대로 제출하는 것도 금지.
 5.5. **\`npx tsc --noEmit\` 실행** — invalid prop union(예: \`size="md"\` while only x-large|large|medium|small) 등 validate_mockup 이 못 잡는 타입 에러를 여기서 차단. 0 errors 가 되어야 다음 단계.
 6. \`dev_server({ action: "start" })\` 실행

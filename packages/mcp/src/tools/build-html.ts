@@ -225,6 +225,7 @@ export async function buildSinglefileHtml(
 
   const configBefore = fs.readFileSync(configPath, "utf-8");
   let configPatched = false;
+  let configCurrent = configBefore;
   if (!configBefore.includes("vite-plugin-singlefile")) {
     const patched = patchViteConfig(configBefore);
     if (patched === null) {
@@ -235,8 +236,18 @@ export async function buildSinglefileHtml(
           `Then run build_singlefile_html again.`,
       );
     }
-    fs.writeFileSync(configPath, patched, "utf-8");
+    configCurrent = patched;
     configPatched = true;
+  }
+  // DS CSS 의 box-shadow `... ));` 가 lightningcss 파서를 깨는 사례가 있어 (Vite ≥ 5.x 의 cssMinify 기본값이
+  // lightningcss 인 환경에서 발생). singlefile 패치가 skip 된 경우에도 cssMinify:false 만큼은 강제 보장.
+  const withMinify = ensureCssMinifyDisabled(configCurrent);
+  if (withMinify !== configCurrent) {
+    configCurrent = withMinify;
+    configPatched = true;
+  }
+  if (configPatched) {
+    fs.writeFileSync(configPath, configCurrent, "utf-8");
   }
 
   // BrowserRouter 경고는 React 트리에만 의미가 있다 (HashRouter 권장). HTML 워크플로우에선 skip.
@@ -410,7 +421,7 @@ export function patchViteConfig(source: string): string | null {
   return ensureCssMinifyDisabled(next);
 }
 
-function ensureCssMinifyDisabled(source: string): string {
+export function ensureCssMinifyDisabled(source: string): string {
   if (/\bcssMinify\s*:/.test(source)) return source;
 
   const buildMatch = /\bbuild\s*:\s*\{/.exec(source);
