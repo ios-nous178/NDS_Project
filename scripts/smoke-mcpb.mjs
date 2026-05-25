@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -17,17 +18,34 @@ const defaultBundleDir = sourceMode
   ? path.join(ROOT, "packages/mcp")
   : path.join(ROOT, "dist-mcpb/nudge-eap-ds");
 const bundleDir = path.resolve(positional[0] ?? defaultBundleDir);
-const serverPath = path.join(bundleDir, "dist/server.js");
+let runtimeDir = bundleDir;
+let tempRoot = null;
+
+if (!sourceMode) {
+  tempRoot = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-mcpb-smoke-")));
+  runtimeDir = path.join(tempRoot, "bundle");
+  fs.cpSync(bundleDir, runtimeDir, {
+    recursive: true,
+    force: true,
+    verbatimSymlinks: true,
+    filter: (src) => path.basename(src) !== ".DS_Store",
+  });
+}
+
+const serverPath = path.join(runtimeDir, "dist/server.js");
 
 if (!fs.existsSync(serverPath)) {
   console.error(`[smoke-mcpb] server not found: ${serverPath}`);
   process.exit(1);
 }
 
-console.log(`[smoke-mcpb] mode=${sourceMode ? "source" : "bundle"} dir=${bundleDir}`);
+console.log(
+  `[smoke-mcpb] mode=${sourceMode ? "source" : "bundle"} dir=${bundleDir}` +
+    (tempRoot ? ` isolated=${runtimeDir}` : ""),
+);
 
 const child = spawn(process.execPath, [serverPath], {
-  cwd: bundleDir,
+  cwd: runtimeDir,
   env: {
     ...process.env,
     NUDGE_EAP_DS_INSTALL_MODE: "mcpb",
@@ -100,7 +118,11 @@ try {
   }
 
   const imports = await callTool("get_setup", { step: "imports", brand: "trost" });
-  if (typeof imports?.code !== "string" || !imports.code.includes("@nudge-eap/react/styles.css")) {
+  const hasDsStyleImport =
+    typeof imports?.code === "string" &&
+    (imports.code.includes("@nudge-eap/react/styles.css") ||
+      imports.code.includes("@nudge-eap/html/styles.css"));
+  if (!hasDsStyleImport) {
     throw new Error(
       `get_setup({step:'imports'}) returned unexpected result: ${JSON.stringify(imports)}`,
     );
@@ -123,6 +145,7 @@ export function Demo() {
 
   clearTimeout(timeout);
   child.kill();
+  cleanup();
   console.log("[smoke-mcpb] ok");
 } catch (error) {
   fail(error instanceof Error ? error.message : String(error));
@@ -178,10 +201,17 @@ function fail(message) {
   }
   pending.clear();
   child.kill();
+  cleanup();
   console.error(`[smoke-mcpb] ${message}`);
   if (stderrBuffer.trim()) {
     console.error("[smoke-mcpb] server stderr:");
     console.error(stderrBuffer.trim());
   }
   process.exit(1);
+}
+
+function cleanup() {
+  if (!tempRoot) return;
+  fs.rmSync(tempRoot, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+  tempRoot = null;
 }
