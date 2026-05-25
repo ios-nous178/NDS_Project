@@ -11,12 +11,12 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 
 ## 사용 가능한 컴포넌트
 
-| Brand | Header | Footer | BottomNav |
-| --- | --- | --- | --- |
-| Geniet | `GenietAppBar` | `GenietFooter` | `GenietBottomNav` |
-| Trost | `TrostAppBar` | `TrostFooter` | `TrostBottomNav` |
+| Brand    | Header                                | Footer           | BottomNav           |
+| -------- | ------------------------------------- | ---------------- | ------------------- |
+| Geniet   | `GenietAppBar`                        | `GenietFooter`   | `GenietBottomNav`   |
+| Trost    | `TrostAppBar`                         | `TrostFooter`    | `TrostBottomNav`    |
 | NudgeEAP | `NudgeEAPAppBar`, `NudgeEAPWebHeader` | `NudgeEAPFooter` | `NudgeEAPBottomNav` |
-| Cashpobi | `CashpobiWebHeader` | `CashpobiFooter` | 웹 전용 |
+| Cashpobi | `CashpobiWebHeader`                   | `CashpobiFooter` | 웹 전용             |
 
 ## 호출 기준
 
@@ -25,6 +25,25 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 - 푸터는 `{Brand}Footer` 한 이름으로 호출하고, 필요한 경우 `surface="web"` 또는 `surface="app"` 으로 분기합니다.
 - Cashpobi 는 웹 전용 브랜드라 AppBar / BottomNav 를 제공하지 않습니다.
 - Geniet 은 앱 전용 푸터만 제공하므로 `GenietFooter` 는 app surface 만 사용합니다.
+
+## HTML 목업
+
+`@nudge-eap/html`에서는 브랜드별 완성형 header/footer wrapper 를 제공합니다. 로고 asset 은 기본적으로 `/brand-logos` 아래에서 찾고, 공유용 HTML처럼 경로가 다른 경우 `asset-base-url`만 바꿉니다.
+
+```html
+<nds-brand-header brand="nudge-eap" surface="web"></nds-brand-header>
+<nds-brand-footer brand="nudge-eap"></nds-brand-footer>
+
+<nds-trost-header></nds-trost-header>
+<nds-trost-footer></nds-trost-footer>
+
+<nds-brand-header
+  brand="geniet"
+  asset-base-url="https://cdn.example.com/nds/brand-logos"
+></nds-brand-header>
+```
+
+브랜드 alias 는 `nds-nudge-eap-*`, `nds-trost-*`, `nds-geniet-*`, `nds-cashpobi-*` 형식을 사용합니다.
 
 ## 마이그레이션
 

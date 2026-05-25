@@ -21,6 +21,7 @@ import "./components/nds-card.js";
 import "./components/nds-review-card.js";
 import "./components/nds-header.js";
 import "./components/nds-footer.js";
+import "./components/nds-brand-chrome.js";
 import "./components/nds-circular-progress.js";
 import "./components/nds-list.js";
 import "./components/nds-divider.js";
