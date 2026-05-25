@@ -32,7 +32,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "local-packages");
 
-const PACKAGES = ["tokens", "react", "icons", "tailwind-preset"];
+const PACKAGES = ["tokens", "react", "icons", "tailwind-preset", "styles"];
 
 // SSOT version 검증 대상 외에 mcpb 와 함께 배포하는 부가 패키지.
 // MCP 처럼 별도 라이프사이클로 — html 만 변경된 릴리즈에서 DS 4개를 같이

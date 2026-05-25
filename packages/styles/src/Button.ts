@@ -1,0 +1,93 @@
+/* Auto-generated from packages/react/src/Button.tsx during the @nudge-eap/styles split. */
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  radius,
+  sizing,
+  transition,
+  typeScale,
+} from "@nudge-eap/tokens";
+
+const BUTTON_CLASS = "nds-button";
+const BUTTON_LABEL_CLASS = `${BUTTON_CLASS}__label`;
+const BUTTON_ICON_CLASS = `${BUTTON_CLASS}__icon`;
+
+export const buttonStyles = `
+  /* Base rule uses .nds-button (not :where()) so that browser/host
+   * user-agent and theme rules on the bare \`button\` element
+   * (e.g. Docusaurus' Infima theme) don't override our alignment/typography. */
+  .${BUTTON_CLASS} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    gap: var(--nds-button-gap, var(--gap-default));
+    width: var(--nds-button-width, auto);
+    min-height: var(--nds-button-height, 48px);
+    padding: 0 var(--nds-button-padding-x, var(--inset-card));
+    border-radius: var(--nds-button-radius, ${radius.md}px);
+    border: 1px solid var(--nds-button-border-color, transparent);
+    background: var(--nds-button-background, ${cv.surface.brand});
+    color: var(--nds-button-text-color, ${cv.textRole.inverse});
+    font-family: var(--nds-button-font-family, ${fontFamily.web});
+    font-size: var(--nds-button-font-size, ${typeScale.body1.fontSize}px);
+    line-height: var(--nds-button-line-height, ${typeScale.body1.lineHeight}px);
+    font-weight: var(--nds-button-font-weight, ${fontWeight.bold});
+    cursor: pointer;
+    box-sizing: border-box;
+    transition:
+      background-color ${transition.default},
+      border-color ${transition.default},
+      color ${transition.default},
+      opacity ${transition.default};
+  }
+
+  .${BUTTON_CLASS}:disabled {
+    /* Host themes often set their own disabled opacity — pin to 1 so our
+     * semantic disabled colors carry the full intended contrast.
+     * cursor: default 는 base 의 cursor: pointer 를 같은 selector 에서 덮어쓰기 위해 같이 둔다.
+     */
+    opacity: 1;
+    cursor: default;
+  }
+
+  /* hover/focus 룰은 :where() 로 감싸지 않는다 — :where() 는 specificity 를 0 으로
+   * 만들어버려 base .nds-button(0,0,1,0) 룰이 늘 이기고 hover bg/color/border 가
+   * 화면에 안 보이는 버그가 났었음. .nds-button:...:hover 로 두면 (0,0,2,0) 가
+   * 확보돼 정상 override. */
+  .${BUTTON_CLASS}:not(:disabled):hover {
+    background: var(--nds-button-hover-background, var(--nds-button-background));
+    border-color: var(--nds-button-hover-border-color, var(--nds-button-border-color));
+    color: var(--nds-button-hover-text-color, var(--nds-button-text-color));
+  }
+
+  .${BUTTON_CLASS}:focus {
+    outline: none;
+  }
+
+  .${BUTTON_CLASS}:focus-visible {
+    outline: 2px solid var(--nds-button-focus-ring-color, ${cv.borderRole.focus});
+    outline-offset: var(--nds-button-focus-ring-offset, 2px);
+  }
+
+  :where(.${BUTTON_LABEL_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :where(.${BUTTON_ICON_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: var(--nds-button-icon-size, ${sizing.icon.default}px);
+    line-height: 1;
+  }
+
+  :where(.${BUTTON_ICON_CLASS} svg) {
+    width: var(--nds-button-icon-size, ${sizing.icon.default}px);
+    height: var(--nds-button-icon-size, ${sizing.icon.default}px);
+  }
+`;

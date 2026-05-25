@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -27,39 +26,6 @@ export interface CountdownTimerProps extends Omit<React.HTMLAttributes<HTMLSpanE
   /** 시간이 0 이하일 때 표시할 노드 */
   expiredText?: React.ReactNode;
 }
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const ctStyles = `
-  :where(.${CT_CLASS}) {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-default);
-    font-family: ${fontFamily.web};
-    color: ${cv.textRole.normal};
-  }
-
-  :where(.${CT_CLASS}[data-urgent="true"]) {
-    color: var(--semantic-text-status-error);
-  }
-
-  :where(.${CT_CLASS}[data-expired="true"]) {
-    color: ${cv.textRole.subtle};
-  }
-
-  :where(.${CT_TIME_CLASS}) {
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.bold};
-    font-variant-numeric: tabular-nums;
-  }
-
-  :where(.${CT_LABEL_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.textRole.subtle};
-  }
-`;
-
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 

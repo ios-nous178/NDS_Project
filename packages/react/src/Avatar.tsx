@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -18,47 +17,6 @@ const sizeConfig = {
 } as const;
 
 export type AvatarSize = keyof typeof sizeConfig;
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const avatarStyles = `
-  :where(.${AV_CLASS}) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: var(--nds-avatar-size, 40px);
-    height: var(--nds-avatar-size, 40px);
-    border-radius: ${radius.pill}px;
-    background: var(--nds-avatar-bg, ${cv.surface.section});
-    overflow: hidden;
-    font-family: ${fontFamily.web};
-    box-sizing: border-box;
-  }
-
-  :where(.${AV_IMAGE_CLASS}) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  :where(.${AV_FALLBACK_CLASS}) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    font-size: var(--nds-avatar-font-size, ${typeScale.body3.fontSize}px);
-    font-weight: ${fontWeight.medium};
-    color: ${cv.textRole.subtle};
-    user-select: none;
-  }
-
-  :where(.${AV_FALLBACK_CLASS} svg) {
-    width: 60%;
-    height: 60%;
-  }
-`;
-
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

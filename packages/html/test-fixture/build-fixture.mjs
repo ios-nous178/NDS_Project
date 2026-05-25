@@ -2,7 +2,7 @@
 /**
  * Self-contained fixture 빌더.
  *
- * @nudge-eap/tokens 의 tokens.css 와 @nudge-eap/react 의 styles.css 를
+ * @nudge-eap/tokens 의 tokens.css 와 @nudge-eap/styles 의 styles.css 를
  * fixture HTML 안에 <style> 로 인라인해서, 어느 디렉터리에서 정적 서버를
  * 돌리든 (또는 file:// 로 열어도) 토큰/스타일이 항상 로드되게 만든다.
  *
@@ -19,7 +19,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "../../..");
 
 const tokensCss = fs.readFileSync(path.join(root, "packages/tokens/dist/tokens.css"), "utf-8");
-const stylesCss = fs.readFileSync(path.join(root, "packages/react/dist/styles.css"), "utf-8");
+const stylesCss = fs.readFileSync(path.join(root, "packages/styles/dist/styles.css"), "utf-8");
 // runtime.js 가 base/nds-element.js, components/nds-button.styles.js,
 // components/nds-button.js 를 import 한다. tsc 결과는 native ESM 이라
 // 그대로 import 못 박힘 (확장자 없는 @nudge-eap/tokens import 가 들어가서).

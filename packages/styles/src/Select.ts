@@ -1,0 +1,169 @@
+/* Auto-generated from packages/react/src/Select.tsx during the @nudge-eap/styles split. */
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  radius,
+  shadow,
+  sizing,
+  spacing,
+  transition,
+  typeScale,
+  zIndex,
+} from "@nudge-eap/tokens";
+
+const SELECT_CLASS = "nds-select";
+const SELECT_ROOT_CLASS = `${SELECT_CLASS}__root`;
+const SELECT_LABEL_CLASS = `${SELECT_CLASS}__label`;
+const SELECT_TRIGGER_CLASS = `${SELECT_CLASS}__trigger`;
+const SELECT_TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
+const SELECT_CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
+const SELECT_DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
+const SELECT_OPTION_CLASS = `${SELECT_CLASS}__option`;
+const SELECT_HELPER_CLASS = `${SELECT_CLASS}__helper`;
+
+export const selectStyles = `
+  :where(.${SELECT_ROOT_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nds-select-label-gap, var(--gap-comfortable));
+    width: var(--nds-select-width, 100%);
+    font-family: ${fontFamily.web};
+    box-sizing: border-box;
+  }
+
+  :where(.${SELECT_LABEL_CLASS}) {
+    font-size: ${typeScale.body3.fontSize}px;
+    font-weight: ${fontWeight.medium};
+    line-height: ${typeScale.body3.lineHeight}px;
+    color: ${cv.textRole.normal};
+  }
+
+  :where(.${SELECT_TRIGGER_CLASS}) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: var(--nds-select-height, ${sizing.input.default}px);
+    padding: 0 var(--inset-input);
+    border: 1px solid var(--nds-select-border-color, ${cv.borderRole.normal});
+    border-radius: var(--nds-select-radius, ${radius.md}px);
+    background: var(--nds-select-background, ${cv.surface.default});
+    cursor: pointer;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color ${transition.default}, background-color ${transition.default};
+  }
+
+  :where(.${SELECT_TRIGGER_CLASS}[data-open="true"]) {
+    border-color: ${cv.input.borderFocus};
+  }
+
+  :where(.${SELECT_TRIGGER_CLASS}[data-error="true"]) {
+    border-color: ${cv.input.borderError};
+  }
+
+  :where(.${SELECT_TRIGGER_CLASS}[data-disabled="true"]) {
+    background: ${cv.surface.disabled};
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  :where(.${SELECT_TRIGGER_TEXT_CLASS}) {
+    flex: 1;
+    min-width: 0;
+    font-size: ${typeScale.body3.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.body3.lineHeight}px;
+    color: ${cv.textRole.normal};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+  }
+
+  :where(.${SELECT_TRIGGER_TEXT_CLASS}[data-placeholder="true"]) {
+    color: ${cv.textRole.muted};
+  }
+
+  :where(.${SELECT_CHEVRON_CLASS}) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: ${spacing[4]}px;
+    color: ${cv.iconRole.normal};
+    transition: transform ${transition.default};
+  }
+
+  :where(.${SELECT_CHEVRON_CLASS}[data-open="true"]) {
+    transform: rotate(180deg);
+  }
+
+  :where(.${SELECT_CHEVRON_CLASS} svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  :where(.${SELECT_DROPDOWN_CLASS}) {
+    position: fixed;
+    max-height: var(--nds-select-dropdown-max-height, 200px);
+    overflow-y: auto;
+    background: ${cv.surface.default};
+    border: 1px solid ${cv.borderRole.subtle};
+    border-radius: ${radius.md}px;
+    box-shadow: ${shadow["2"]};
+    z-index: ${zIndex.dropdown};
+    box-sizing: border-box;
+    animation: nds-select-fade-in ${transition.default};
+  }
+
+  :where(.${SELECT_OPTION_CLASS}) {
+    display: flex;
+    align-items: center;
+    padding: var(--inset-input);
+    font-family: ${fontFamily.web};
+    font-size: ${typeScale.body3.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.body3.lineHeight}px;
+    color: ${cv.textRole.normal};
+    cursor: pointer;
+    transition: background-color ${transition.default};
+  }
+
+  :where(.${SELECT_OPTION_CLASS}:hover) {
+    background: ${cv.surface.subtle};
+  }
+
+  :where(.${SELECT_OPTION_CLASS}[data-selected="true"]) {
+    color: ${cv.textRole.brand};
+    background: ${cv.surface.brandSubtle};
+  }
+
+  :where(.${SELECT_OPTION_CLASS}[data-active="true"]) {
+    background: ${cv.surface.subtle};
+    outline: none;
+  }
+
+  :where(.${SELECT_OPTION_CLASS}[data-disabled="true"]) {
+    color: ${cv.textRole.muted};
+    cursor: not-allowed;
+  }
+
+  :where(.${SELECT_HELPER_CLASS}) {
+    font-size: ${typeScale.caption1.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.caption1.lineHeight}px;
+    color: ${cv.textRole.muted};
+  }
+
+  :where(.${SELECT_HELPER_CLASS}[data-error="true"]) {
+    color: ${cv.textRole.statusError};
+  }
+
+  @keyframes nds-select-fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`;

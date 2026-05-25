@@ -1,7 +1,7 @@
 {
   "name": "@nudge-eap/html",
   "version": "0.0.1",
-  "description": "Vanilla Web Components for NudgeEAP Design System — framework-agnostic DOM elements that pair with @nudge-eap/react styles.",
+  "description": "Vanilla Web Components for NudgeEAP Design System — framework-agnostic DOM elements that pair with @nudge-eap/styles.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -34,10 +34,11 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@nudge-eap/icons": "workspace:*",
+    "@nudge-eap/styles": "workspace:*",
     "@nudge-eap/tokens": "workspace:*"
   },
   "devDependencies": {
-    "@nudge-eap/react": "workspace:*",
     "esbuild": "^0.24.0",
     "jsdom": "^25.0.1",
     "typescript": "^5.7.0",

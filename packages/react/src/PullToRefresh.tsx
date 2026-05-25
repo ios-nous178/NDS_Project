@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import { cv, fontFamily, spacing, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -27,57 +26,6 @@ export interface PullToRefreshProps extends React.HTMLAttributes<HTMLDivElement>
   /** 비활성화 (스크롤 중 등) */
   disabled?: boolean;
 }
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const prStyles = `
-  :where(.${PR_CLASS}) {
-    position: relative;
-    overflow: hidden;
-    overscroll-behavior-y: contain;
-    font-family: ${fontFamily.web};
-  }
-
-  :where(.${PR_INDICATOR_CLASS}) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--nds-ptr-pull, 0px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: ${cv.textRole.subtle};
-    font-size: ${typeScale.caption1.fontSize}px;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  :where(.${PR_CONTENT_CLASS}) {
-    transform: translateY(var(--nds-ptr-pull, 0px));
-    transition: transform var(--nds-ptr-anim, 0ms) ease;
-  }
-
-  :where(.${PR_SPINNER_CLASS}) {
-    width: 18px;
-    height: 18px;
-    border: 2px solid ${cv.borderRole.normal};
-    border-top-color: ${cv.borderRole.brand};
-    border-radius: 9999px;
-    animation: nds-ptr-spin 0.8s linear infinite;
-    margin-right: ${spacing[8]}px;
-  }
-
-  @keyframes nds-ptr-spin {
-    to { transform: rotate(360deg); }
-  }
-
-  :where(.${PR_LABEL_CLASS}) {
-    transition: opacity ${transition.default};
-  }
-`;
-
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 

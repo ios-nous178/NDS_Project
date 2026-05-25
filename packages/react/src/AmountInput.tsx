@@ -1,13 +1,4 @@
 import React, { useId, useRef } from "react";
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -59,95 +50,6 @@ export interface AmountPreset {
   /** 누적이 아닌 설정 모드 */
   set?: boolean;
 }
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const aiStyles = `
-  :where(.${AI_CLASS}) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-default);
-    width: 100%;
-    font-family: ${fontFamily.web};
-  }
-
-  :where(.${AI_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    color: ${cv.textRole.normal};
-  }
-
-  :where(.${AI_FIELD_CLASS}) {
-    display: flex;
-    align-items: center;
-    height: 56px;
-    padding: 0 var(--inset-card);
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
-    background: ${cv.surface.default};
-    transition: border-color ${transition.default};
-  }
-  :where(.${AI_FIELD_CLASS}:focus-within) { border-color: ${cv.borderRole.brand}; }
-  :where(.${AI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
-
-  :where(.${AI_PREFIX_CLASS}),
-  :where(.${AI_UNIT_CLASS}) {
-    font-size: 22px;
-    font-weight: ${fontWeight.bold};
-    color: ${cv.textRole.normal};
-  }
-
-  :where(.${AI_PREFIX_CLASS}) { margin-right: ${spacing[4]}px; }
-  :where(.${AI_UNIT_CLASS}) { margin-left: ${spacing[4]}px; }
-
-  :where(.${AI_INPUT_CLASS}) {
-    flex: 1;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-family: inherit;
-    font-size: 24px;
-    font-weight: ${fontWeight.bold};
-    color: ${cv.textRole.normal};
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    min-width: 0;
-  }
-
-  :where(.${AI_INPUT_CLASS}::placeholder) {
-    color: ${cv.textRole.muted};
-    font-weight: ${fontWeight.medium};
-  }
-
-  :where(.${AI_PRESETS_CLASS}) {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--gap-default);
-  }
-
-  :where(.${AI_PRESET_CLASS}) {
-    height: 36px;
-    padding: 0 var(--inset-input);
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: 9999px;
-    background: ${cv.surface.default};
-    color: ${cv.textRole.normal};
-    font-family: inherit;
-    font-size: ${typeScale.caption1.fontSize}px;
-    font-weight: ${fontWeight.semibold};
-    cursor: pointer;
-    transition: background-color ${transition.default};
-  }
-  :where(.${AI_PRESET_CLASS}:hover) { background: ${cv.surface.section}; }
-
-  :where(.${AI_HELPER_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.textRole.subtle};
-  }
-  :where(.${AI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
-`;
-
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 

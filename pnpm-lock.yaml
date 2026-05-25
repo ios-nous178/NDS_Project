@@ -189,13 +189,16 @@ importers:
 
   packages/html:
     dependencies:
+      '@nudge-eap/icons':
+        specifier: workspace:*
+        version: link:../icons
+      '@nudge-eap/styles':
+        specifier: workspace:*
+        version: link:../styles
       '@nudge-eap/tokens':
         specifier: workspace:*
         version: link:../tokens
     devDependencies:
-      '@nudge-eap/react':
-        specifier: workspace:*
-        version: link:../react
       esbuild:
         specifier: ^0.24.0
         version: 0.24.2
@@ -266,6 +269,9 @@ importers:
       '@nudge-eap/icons':
         specifier: workspace:*
         version: link:../icons
+      '@nudge-eap/styles':
+        specifier: workspace:*
+        version: link:../styles
       '@nudge-eap/tokens':
         specifier: workspace:*
         version: link:../tokens
@@ -306,6 +312,16 @@ importers:
       vitest:
         specifier: ^2.1.9
         version: 2.1.9(@types/node@25.5.2)(jsdom@25.0.1)(lightningcss@1.32.0)(msw@2.13.2(@types/node@25.5.2)(typescript@5.9.3))(terser@5.46.1)
+
+  packages/styles:
+    dependencies:
+      '@nudge-eap/tokens':
+        specifier: workspace:*
+        version: link:../tokens
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
 
   packages/tailwind-preset:
     dependencies:

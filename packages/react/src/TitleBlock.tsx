@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
+import { typeScale } from "@nudge-eap/tokens";
 
 /**
  * TitleBlock — 헤딩 + 서브타이틀 표준 블록.
@@ -28,30 +28,6 @@ const LEVEL_CONFIG = {
 } as const;
 
 export type TitleBlockLevel = keyof typeof LEVEL_CONFIG;
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const titleBlockStyles = `
-  :where(.${TB_CLASS}) {
-    display: flex;
-    flex-direction: column;
-    font-family: ${fontFamily.web};
-  }
-
-  :where(.${TB_TITLE_CLASS}) {
-    margin: 0;
-    font-weight: ${fontWeight.bold};
-    color: ${cv.textRole.strong};
-  }
-
-  :where(.${TB_SUBTITLE_CLASS}) {
-    margin: 0;
-    font-weight: ${fontWeight.regular};
-    color: ${cv.textRole.subtle};
-  }
-`;
-
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

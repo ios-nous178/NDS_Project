@@ -1,5 +1,4 @@
 import React, { useId } from "react";
-import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Class names ─── */
 
@@ -38,87 +37,6 @@ export interface FormFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 폼 컨트롤 (Input/Textarea/Select/Radio 등) */
   children: React.ReactNode;
 }
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const formFieldStyles = `
-  :where(.${FF_ROOT_CLASS}) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-default);
-    width: 100%;
-    font-family: ${fontFamily.web};
-    box-sizing: border-box;
-  }
-
-  :where(.${FF_LABEL_ROW_CLASS}) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-tight);
-  }
-
-  :where(.${FF_LABEL_CLASS}) {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-tight);
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.medium};
-    color: ${cv.textRole.normal};
-  }
-
-  :where(.${FF_REQUIRED_CLASS}) {
-    color: ${cv.textRole.statusError};
-    font-weight: ${fontWeight.medium};
-  }
-
-  :where(.${FF_OPTIONAL_CLASS}) {
-    color: ${cv.textRole.muted};
-    font-weight: ${fontWeight.regular};
-  }
-
-  :where(.${FF_DESC_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.regular};
-    color: ${cv.textRole.subtle};
-  }
-
-  :where(.${FF_CONTROL_CLASS}) {
-    display: contents;
-  }
-
-  :where(.${FF_FOOTER_CLASS}) {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--gap-default);
-  }
-
-  :where(.${FF_HELPER_CLASS}) {
-    flex: 1 1 auto;
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.subtle};
-  }
-
-  :where(.${FF_ERROR_CLASS}) {
-    flex: 1 1 auto;
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.statusError};
-  }
-
-  :where(.${FF_COUNTER_CLASS}) {
-    flex-shrink: 0;
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.muted};
-    text-align: right;
-  }
-`;
-
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
