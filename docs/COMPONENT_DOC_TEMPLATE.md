@@ -91,13 +91,13 @@ related: [{ 유사 컴포넌트 배열 }]
 
 - 2~4개 항목
 - 반드시 **대안 컴포넌트 링크**를 함께 제시
-- 형식: `조건 → [대안](/docs/components/대안)을 사용하세요`
+- 형식: `조건 → [대안](/components/대안)을 사용하세요`
 
 ```markdown
 ### 이럴 때 사용하지 마세요
 
-- 검색 전용 입력 → [SearchInput](/docs/components/search-input)을 사용하세요
-- 미리 정해진 옵션에서 선택 → [Select](/docs/components/select)를 사용하세요
+- 검색 전용 입력 → [SearchInput](/components/search-input)을 사용하세요
+- 미리 정해진 옵션에서 선택 → [Select](/components/select)를 사용하세요
 ```
 
 ### 자주 하는 실수
@@ -167,7 +167,7 @@ import { ComponentName } from "@nudge-eap/react";
 
 ### 이럴 때 사용하지 마세요
 
-- ... → [대안](/docs/components/대안)을 사용하세요
+- ... → [대안](/components/대안)을 사용하세요
 
 ### 자주 하는 실수
 

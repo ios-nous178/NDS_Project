@@ -80,6 +80,23 @@ const lines = [
   "",
 ];
 
+// MDX 가 메모 안 raw HTML 토큰 (<input type=file>) 이나 expression placeholder
+// ({Brand}Footer 같은 문구) 를 JSX 로 해석하지 않도록 안전한 텍스트로 escape.
+function escapeMdx(value) {
+  if (!value) return value;
+  return String(value)
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\{/g, "\\{")
+    .replace(/\}/g, "\\}");
+}
+
+// 테이블 셀 안에서는 `|` 가 컬럼 구분자라 추가 escape 필요.
+function escapeCell(value) {
+  if (!value) return value;
+  return escapeMdx(value).replace(/\|/g, "\\|");
+}
+
 function renderSection(headline, entries) {
   lines.push(`## ${headline} (${entries.length})`, "");
 
@@ -96,7 +113,7 @@ function renderSection(headline, entries) {
 
     for (const entry of rows) {
       lines.push(
-        `| **${entry.name}** | ${entry.description} | ${getStatusMark(entry.status)} ${getStatusLabel(entry.status)} | ${getFigmaCell(entry)} | [열기](${getStorybookUrl(entry)}) | [열기](${getDocsUrl(entry)}) | ${entry.usageSummary} |`,
+        `| **${entry.name}** | ${escapeCell(entry.description)} | ${getStatusMark(entry.status)} ${getStatusLabel(entry.status)} | ${getFigmaCell(entry)} | [열기](${getStorybookUrl(entry)}) | [열기](${getDocsUrl(entry)}) | ${escapeCell(entry.usageSummary)} |`,
       );
     }
 
@@ -104,7 +121,7 @@ function renderSection(headline, entries) {
 
     for (const entry of rows) {
       if (!entry.notes) continue;
-      lines.push(`- **${entry.name}**: ${entry.notes}`);
+      lines.push(`- **${entry.name}**: ${escapeMdx(entry.notes)}`);
     }
 
     lines.push("");
