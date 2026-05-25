@@ -33,6 +33,11 @@ jobs:
           node-version: 24
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
+          # setup-node v5 의 packageManager 자동 감지 캐시를 끔.
+          # actions/setup-node#1357 — packageManager 필드(pnpm@9.6.0) 를 보고
+          # pnpm 을 호출하는데, 자동 감지가 PATH 준비 전에 돌아 죽음.
+          # 명시적인 `cache: pnpm` 은 그대로 유지 (별개 경로).
+          package-manager-cache: false
 
       - name: Install
         run: pnpm install --frozen-lockfile
