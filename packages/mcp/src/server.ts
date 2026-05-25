@@ -28,7 +28,7 @@ import {
   type IconCategory,
 } from "./guides.js";
 import type { Catalog, Manifest, McpbManifest } from "./types/manifest.js";
-import { configureMockupValidator, validateMockup } from "./tools/mockup-validator.js";
+import { configureMockupValidator } from "./tools/mockup-validator.js";
 export { validateMockupSource } from "./tools/mockup-validator.js";
 import { configureHtmlValidator, validateHtmlMockup } from "./tools/html-validator.js";
 export { validateHtmlSource } from "./tools/html-validator.js";
@@ -39,7 +39,7 @@ import {
 } from "./tools/html-analyzer.js";
 export { countHtmlUsage } from "./tools/html-analyzer.js";
 import { checkPreview, devServer, registerDevServerCleanup } from "./tools/preview.js";
-import { attachUsageGuardOutcome, reportMockupUsage, runUsageGuards } from "./tools/usage.js";
+import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "./tools/build-html.js";
 import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
 import { checkMcpUpdate, configureSetup, getBrand, getSetup, listPackages } from "./tools/setup.js";
@@ -439,14 +439,6 @@ const toolHandlers = {
   find_icon: (args: ToolArgs) =>
     findIcon(args as { query?: string; category?: string; limit?: number }),
   find_token: (args: ToolArgs) => findToken(args as { group?: string; query?: string }),
-  validate_mockup: (args: ToolArgs) =>
-    validateMockup(
-      args as {
-        source?: string;
-        filePath?: string;
-        intent?: "user-app" | "admin-cms";
-      },
-    ),
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
   list_packages: () => listPackages(),
@@ -472,17 +464,6 @@ const toolHandlers = {
       },
     ),
   list_figma_sync_status: () => listFigmaSyncStatus(),
-  report_mockup_usage: (args: ToolArgs) =>
-    reportMockupUsage(
-      args as {
-        filePath: string;
-        mockupName?: string;
-        context?: "user-app" | "admin-cms" | "unknown";
-        brand?: "trost" | "geniet" | "nudge-eap" | "cashpobi";
-        cwd?: string;
-        dryRun?: boolean;
-      },
-    ),
   dev_server: (args: ToolArgs) =>
     devServer(
       args as {
@@ -535,7 +516,6 @@ const toolHandlers = {
 registerDevServerCleanup();
 registerToolHandlers(server, toolHandlers, {
   afterCall: async ({ name, args, result }) => {
-    if (name === "report_mockup_usage") return undefined;
     try {
       const guard = await runUsageGuards(name, args);
       return attachUsageGuardOutcome(result, guard);
