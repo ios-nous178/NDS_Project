@@ -1,0 +1,26 @@
+{
+  "theme.SearchBar.label": {
+    "message": "검색",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "theme.SearchPage.inputPlaceholder": {
+    "message": "검색어를 입력하세요",
+    "description": "The placeholder for search page input"
+  },
+  "theme.SearchPage.inputLabel": {
+    "message": "검색",
+    "description": "The ARIA label for search page input"
+  },
+  "theme.SearchPage.algoliaLabel": {
+    "message": "검색 결과",
+    "description": "The ARIA label for search results"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "검색 결과가 없습니다",
+    "description": "The text for no search results"
+  },
+  "theme.SearchPage.fetchingNewResults": {
+    "message": "새로운 결과를 가져오는 중...",
+    "description": "The text while fetching new search results"
+  }
+}

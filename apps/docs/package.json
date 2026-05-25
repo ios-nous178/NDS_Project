@@ -16,6 +16,7 @@
     "@docusaurus/preset-classic": "latest",
     "@docusaurus/theme-common": "^3.10.1",
     "@docusaurus/theme-live-codeblock": "latest",
+    "@easyops-cn/docusaurus-search-local": "^0.55.1",
     "@nudge-eap/icons": "workspace:*",
     "@nudge-eap/react": "workspace:*",
     "@nudge-eap/tokens": "workspace:*",
