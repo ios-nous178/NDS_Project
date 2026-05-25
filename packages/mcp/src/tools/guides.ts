@@ -213,6 +213,7 @@ export const GUIDE_FIXED_TOPICS = [
   "admin-cms",
   "scope-advisory",
   "inspector-setup",
+  "figma-sync",
 ] as const;
 
 export type GuideTopic =
@@ -277,6 +278,8 @@ export function getGuide(args: { topic: string; intent?: string; target?: GuideT
       return getScopeAdvisory();
     case "inspector-setup":
       return getInspectorSetup();
+    case "figma-sync":
+      return listFigmaSyncStatus();
     default:
       return {
         error: `Unknown guide topic: '${topic}'.`,

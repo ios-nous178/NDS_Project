@@ -42,8 +42,8 @@ export { countHtmlUsage } from "./tools/html-analyzer.js";
 import { checkPreview, devServer, registerDevServerCleanup } from "./tools/preview.js";
 import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "./tools/build-html.js";
-import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
-import { checkMcpUpdate, configureSetup, getBrand, getSetup, listPackages } from "./tools/setup.js";
+import { getGuide } from "./tools/guides.js";
+import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -442,8 +442,6 @@ const toolHandlers = {
   find_token: (args: ToolArgs) => findToken(args as { group?: string; query?: string }),
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
-  list_packages: () => listPackages(),
-  check_mcp_update: () => checkMcpUpdate(),
   get_guide: (args: ToolArgs) =>
     getGuide(args as { topic: string; intent?: string; target?: "react" | "html" }),
   get_setup: (args: ToolArgs) =>
@@ -464,7 +462,6 @@ const toolHandlers = {
         mode?: "summary" | "full";
       },
     ),
-  list_figma_sync_status: () => listFigmaSyncStatus(),
   dev_server: (args: ToolArgs) =>
     devServer(
       args as {
