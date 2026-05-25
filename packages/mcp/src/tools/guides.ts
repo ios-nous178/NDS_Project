@@ -665,15 +665,12 @@ export function createClaudeMd(args: {
     };
   }
 
+  // 정책 (2026-05-25): admin-cms 가 아니면 모두 html 템플릿. 신규 CLAUDE.md 는 더 이상
+  // user-app(.tsx + React) 워크플로우로 생성하지 않는다. user-app 템플릿 함수는 아직
+  // getClaudeMdTemplate 에 남아 있지만 이 라우터에서 호출되지 않는다 — 호환을 위해 함수만 유지.
   const detected = detectIntentFromText(args.intent);
-  let intent: "user-app" | "admin-cms" | "html";
-  if (args.intent === "admin-cms" || detected === "admin-cms") {
-    intent = "admin-cms";
-  } else if (args.intent === "html" || detected === "html") {
-    intent = "html";
-  } else {
-    intent = "user-app";
-  }
+  const intent: "admin-cms" | "html" =
+    args.intent === "admin-cms" || detected === "admin-cms" ? "admin-cms" : "html";
 
   const content = getClaudeMdTemplate({ projectName: args.projectName, intent });
   fs.writeFileSync(filePath, content, "utf-8");

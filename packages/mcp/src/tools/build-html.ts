@@ -84,12 +84,15 @@ export interface BuildSinglefileHtmlResult {
 /**
  * 워크스페이스가 React (.tsx) 인지 vanilla HTML (<nds-*>) 인지 판별.
  *
- * 우선순위:
- *   1. package.json deps 에 @nudge-eap/html 만 있고 react 가 없으면 → html
- *   2. package.json deps 에 @nudge-eap/react 가 있으면 → react
- *   3. src/main.tsx 가 있으면 → react
- *   4. src/main.ts 만 있고 .tsx 가 src/ 전체에 없으면 → html
- *   5. fallback → react (기존 동작 유지)
+ * 우선순위 (React 신호가 강한 경우에만 React 로, 그 외는 모두 html):
+ *   1. package.json deps 에 @nudge-eap/react 가 있으면 → react (기존 React mockup 백워드 호환)
+ *   2. src/main.tsx 가 있으면 → react (기존 React mockup 백워드 호환)
+ *   3. src/ 에 .tsx 가 1개라도 있으면 → react
+ *   4. 그 외 (신규 워크스페이스 / 비어 있는 디렉터리 / @nudge-eap/html only 등) → html
+ *
+ * 정책 (2026-05-25): default 가 react → html 로 변경. 신규 mockup 워크스페이스는
+ * vanilla HTML 워크플로우로 진입한다. 기존 React mockup 은 위 React 신호 셋에서
+ * 명시적으로 인식되므로 회귀 없음.
  */
 export function detectWorkspaceIntent(cwd: string): WorkspaceIntent {
   const pkgJsonPath = path.join(cwd, "package.json");
@@ -100,10 +103,7 @@ export function detectWorkspaceIntent(cwd: string): WorkspaceIntent {
         devDependencies?: Record<string, string>;
       };
       const all = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
-      const hasHtml = "@nudge-eap/html" in all;
-      const hasReact = "@nudge-eap/react" in all;
-      if (hasHtml && !hasReact) return "html";
-      if (hasReact) return "react";
+      if ("@nudge-eap/react" in all) return "react";
     } catch {
       // ignore, fall through to file-based detection
     }
@@ -111,14 +111,11 @@ export function detectWorkspaceIntent(cwd: string): WorkspaceIntent {
 
   const srcDir = path.join(cwd, "src");
   if (fs.existsSync(srcDir)) {
-    const mainTsx = fs.existsSync(path.join(srcDir, "main.tsx"));
-    if (mainTsx) return "react";
-    const mainTs = fs.existsSync(path.join(srcDir, "main.ts"));
-    const anyTsx = walkFiles(srcDir, /\.tsx$/i, 1).length > 0;
-    if (mainTs && !anyTsx) return "html";
+    if (fs.existsSync(path.join(srcDir, "main.tsx"))) return "react";
+    if (walkFiles(srcDir, /\.tsx$/i, 1).length > 0) return "react";
   }
 
-  return "react";
+  return "html";
 }
 
 export async function buildSinglefileHtml(

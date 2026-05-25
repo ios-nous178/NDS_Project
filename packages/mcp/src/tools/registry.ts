@@ -390,7 +390,7 @@ const TOOLS = [
   {
     name: "get_setup",
     description:
-      "Consolidated external-project setup router. Pass a 'step' to run one of: install command, entry CSS/JS imports, DS update instructions, CLAUDE.md generation, or the full step-by-step setup guide. Replaces the old get_install_command / get_main_tsx_imports / get_update_instructions / create_claude_md / get_setup_instructions tools. Pass `intent: 'html'` to switch all steps to the vanilla HTML / Web Component workflow (Vite vanilla-ts + @nudge-eap/html, no React/.tsx, validate_html_mockup-based verification).",
+      "Consolidated external-project setup router. Pass a 'step' to run one of: install command, entry CSS/JS imports, DS update instructions, CLAUDE.md generation, or the full step-by-step setup guide. Replaces the old get_install_command / get_main_tsx_imports / get_update_instructions / create_claude_md / get_setup_instructions tools. **Default for new workspaces is the vanilla HTML / Web Component workflow** (Vite vanilla-ts + @nudge-eap/html, no React/.tsx, validate_html_mockup-based verification). Pass `intent: 'admin-cms'` only for antd-based admin/CMS workspaces. `intent: 'user-app'` is deprecated and routed to html — existing React mockup workspaces are still supported via build_singlefile_html's automatic detectWorkspaceIntent.",
     inputSchema: {
       type: "object",
       properties: {
@@ -398,7 +398,7 @@ const TOOLS = [
           type: "string",
           enum: ["install", "imports", "update", "claude-md", "inspector", "full"],
           description:
-            "Which setup sub-action to run. 'install' → ready-to-run 'npm install ./*.tgz' command (intent='html' swaps in @nudge-eap/html + tokens + icons, omits @nudge-eap/react). 'imports' → entry import lines (main.tsx for React, main.ts for intent='html'). 'update' → DS update instructions. 'claude-md' → write CLAUDE.md to cwd (template branches on intent). 'inspector' → patch src/main.tsx to mount the dev-only DsInspector overlay (idempotent; refused when intent='html' — Inspector is React-only). 'full' → comprehensive setup guide for a fresh project.",
+            "Which setup sub-action to run. 'install' → ready-to-run 'npm install ./*.tgz' command (default html: @nudge-eap/html + tokens + icons; admin-cms / explicit user-app: React). 'imports' → entry import lines (main.ts for html default, main.tsx for React workspaces). 'update' → DS update instructions. 'claude-md' → write CLAUDE.md to cwd (html default; admin-cms only branches). 'inspector' → patch src/main.tsx to mount the dev-only DsInspector overlay (idempotent; refused when intent='html' — Inspector is React-only). 'full' → comprehensive setup guide for a fresh project (default: Vite vanilla-ts + @nudge-eap/html).",
         },
         tgzDir: {
           type: "string",
@@ -423,7 +423,7 @@ const TOOLS = [
           type: "string",
           enum: ["user-app", "admin-cms", "html"],
           description:
-            "[step=install|imports|claude-md|inspector|full] Workspace intent. 'user-app' (default): React/.tsx + @nudge-eap/react + Vite react-ts + validate_mockup + build_singlefile_html. 'admin-cms': antd v5 + Vite react-ts (NudgeEAPCMS conventions). 'html': vanilla Web Components (<nds-*>) + Vite vanilla-ts + @nudge-eap/html + validate_html_mockup / analyze_html_mockup (no React, no .tsx). Free-text strings are scanned: admin keywords (어드민/CMS/운영툴/백오피스/admin/cms/backoffice) → admin-cms; html keywords (web component, custom element, vanilla html, react 없이, <nds-) → html.",
+            "[step=install|imports|claude-md|inspector|full] Workspace intent. **'html' (default)**: vanilla Web Components (<nds-*>) + Vite vanilla-ts + @nudge-eap/html + validate_html_mockup / analyze_html_mockup + build_singlefile_html. No React, no .tsx. 'admin-cms': antd v5 + Vite react-ts (NudgeEAPCMS conventions) — the only intent that still uses React. **'user-app' is deprecated** (React/.tsx + @nudge-eap/react) and is routed to 'html' for new setups; existing React mockup workspaces still work because build_singlefile_html auto-detects intent from package.json / src structure. Free-text strings are scanned: admin keywords (어드민/CMS/운영툴/백오피스/admin/cms/backoffice) → admin-cms; everything else → html.",
         },
         source: {
           type: "string",

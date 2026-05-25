@@ -88,16 +88,30 @@ const HTML_KEYWORDS = [
   "리액트 없",
 ];
 
-export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | "html" | "unknown" {
-  if (!text) return "unknown";
+/**
+ * 발화 → 워크스페이스 intent 분류.
+ *
+ * 정책 변경 (2026-05-25): admin-cms 가 아니면 무조건 **html** 로 라우팅.
+ * 더 이상 user-app(.tsx + React) 을 default 로 안내하지 않는다 — 신규 mockup
+ * 워크스페이스는 모두 vanilla HTML (@nudge-eap/html + Vite vanilla-ts) 로 셋업.
+ * 기존 React mockup 워크스페이스는 detectWorkspaceIntent (build-html.ts) 가
+ * package.json / src 구조로 회귀 없이 react 로 인식하므로 백워드 호환.
+ *
+ * 반환에 "user-app" 이 포함된 건 호출처가 분기를 유지하기 위한 백워드 호환 — 신규
+ * 발화는 "user-app" 으로 떨어지지 않는다.
+ */
+export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | "html" {
+  if (!text) return "html";
   const normalized = text.toLowerCase();
   for (const k of ADMIN_KEYWORDS) {
     if (normalized.includes(k.toLowerCase())) return "admin-cms";
   }
+  // HTML_KEYWORDS 매칭은 명시적 신호 — html 분기를 강하게 표현하기 위해 남겨두지만
+  // 매칭 안 되는 발화도 default 가 html 이므로 결과는 동일하다.
   for (const k of HTML_KEYWORDS) {
     if (normalized.includes(k.toLowerCase())) return "html";
   }
-  return "unknown";
+  return "html";
 }
 
 export const SCOPE_ADVISORY = {
@@ -136,8 +150,10 @@ export const SCOPE_ADVISORY = {
     },
     "user-app": {
       action:
-        "사용자 앱 화면(B2C, 멘탈케어 사용자 플로우)이라면 이 MCP의 도구들을 적극 사용. " +
-        "get_guide({ topic: 'principles' }) → find_component({ query }) → get_guide({ topic: 'component:<Name>' }) / get_guide({ topic: 'pattern:<name>' }) → 작성 → validate_mockup.",
+        "[deprecated] React/.tsx + @nudge-eap/react 워크플로우. 신규 mockup 워크스페이스는 " +
+        "'html' 분기로 진입하세요 (Vite vanilla-ts + @nudge-eap/html). 기존 React mockup 을 " +
+        "유지보수하는 경우에만 이 분기로 들어옵니다 — build-html / usage 도구가 " +
+        "package.json 의 @nudge-eap/react 또는 src/main.tsx 를 감지하면 자동으로 React 룰을 적용합니다.",
     },
     html: {
       keywords: HTML_KEYWORDS,
