@@ -16,7 +16,12 @@ import { promisify } from "node:util";
 import fs from "node:fs";
 import path from "node:path";
 import { getAugmentedPath, getToolProcessEnv } from "./process-env.js";
-import { countHtmlUsage } from "./html-analyzer.js";
+import {
+  countHtmlUsage,
+  reportHtmlMockupUsage,
+  type ReportHtmlMockupUsageResult,
+} from "./html-analyzer.js";
+import { validateHtmlMockup, type ValidateHtmlMockupResult } from "./html-validator.js";
 import { detectDsVersions } from "./usage/tracker.js";
 
 const execFileAsync = promisify(execFile);
@@ -79,6 +84,14 @@ export interface BuildSinglefileHtmlResult {
   auditViolations?: WorkspaceAuditViolation[];
   /** 감지/지정된 워크스페이스 intent. audit 룰과 next-step 안내가 갈라지는 기준. */
   intent?: WorkspaceIntent;
+  /**
+   * html intent 한정: 빌드 직후 산출물에 대해 자동으로 실행한 검증/리포트 결과.
+   * 예전엔 사용자(=Claude)가 별도로 validate_html_mockup({report:true}) 를 호출해야 했고
+   * 자주 누락 → 구글시트 적재가 끊겼다. 이제 build 가 끝나면 같은 호출 안에서 끝낸다.
+   * react intent 는 dist/index.html 이 shell 뿐이라 dev_server + url 캡처가 필요해서 여기서는 자동화하지 않는다.
+   */
+  validation?: ValidateHtmlMockupResult;
+  report?: ReportHtmlMockupUsageResult;
   humanReadable: string;
   /** 다음에 호출해야 하는 도구 한 줄 — 응답 첫 줄(humanReadable) NEXT STEP 과 중복 강조용. */
   nextStep?: string;
@@ -264,39 +277,76 @@ export async function buildSinglefileHtml(
   const elapsedSec = Math.round((Date.now() - startMs) / 1000);
 
   const relOutput = path.relative(cwd, outputPath);
+
+  // html intent — dist/index.html 이 곧 렌더 결과이므로 build 직후 validate+report 자동 실행.
+  // react intent 는 shell 만 있어 dev_server 없이는 렌더드 DOM 을 못 잡으므로 NEXT STEP 안내로 위임.
+  let validation: ValidateHtmlMockupResult | undefined;
+  let report: ReportHtmlMockupUsageResult | undefined;
+  let reportError: string | undefined;
+  if (intent === "html") {
+    try {
+      validation = validateHtmlMockup({ filePath: outputPath });
+    } catch (err) {
+      // build 자체는 성공했으므로 검증 실패는 응답에 노트만 남기고 ok 는 유지.
+      validation = {
+        ok: false,
+        violations: [],
+        violationsByRule: [],
+        jsxOnlyNotice: `validate auto-call failed: ${(err as Error).message}`,
+      };
+    }
+    try {
+      report = await reportHtmlMockupUsage({ filePath: outputPath, cwd });
+    } catch (err) {
+      // Sheets webhook 실패는 reportHtmlMockupUsage 안에서 큐 적재로 처리되지만
+      // throw 가 빠져나오는 경우 (예: fs 쓰기 실패) 도 사용자에게 보이도록 표시만.
+      reportError = (err as Error).message;
+    }
+  }
+
   const annotations: string[] = [];
   if (configPatched) annotations.push(`vite.config patched`);
   if (dsUsageSummary) annotations.push(dsUsageSummary);
   if (installedSinglefile) annotations.push(`installed vite-plugin-singlefile`);
   if (routerWarning) annotations.push(`[!] ${routerWarning}`);
+  if (validation) {
+    annotations.push(`validate ${validation.ok ? "ok" : `${validation.violations.length}건 위반`}`);
+  }
+  if (report?.webhook) {
+    const w = report.webhook;
+    annotations.push(
+      `webhook ${!w.attempted ? "skipped" : w.ok ? "ok" : `queued(${w.status ?? "err"})`}`,
+    );
+  }
+  if (reportError) annotations.push(`[!] report error: ${reportError}`);
   const tail = annotations.length > 0 ? ` · ${annotations.join(" · ")}` : "";
 
-  // NEXT STEP prefix — humanReadable 의 첫 줄에 다음 강제 호출을 박는다.
-  // 빌드 자체는 통과해도 validate_html_mockup({ report: true }) 가 누락되면
-  // 구글시트 적재가 끊겨 운영팀이 채택 비율을 추적할 수 없음.
-  //
-  // 통계 함정 — dist/index.html 정적 파일을 그대로 validate 하면 React/Vite 처럼 런타임에
-  // <nds-*> 가 주입되는 워크스페이스에서 DS 0% 가 시트로 적재된다. 그래서 react intent 에서는
-  // url 기반 (dev_server 띄우고 → 렌더드 DOM 캡처) 흐름을 강제 권고한다.
+  // react intent 는 dev_server + url 기반 렌더드 DOM 캡처가 필요해서 여전히 후속 호출 권고.
+  // html intent 는 이 응답으로 워크플로우 종료.
   const nextCall =
-    intent === "html"
-      ? `validate_html_mockup({ filePath: '${relOutput}', report: true })`
-      : "dev_server({ action:'start' }) → validate_html_mockup({ url, sessionId, report: true })";
+    intent === "react"
+      ? "dev_server({ action:'start' }) → validate_html_mockup({ url, sessionId })"
+      : undefined;
   const humanReadable =
-    `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
-    `NEXT STEP → ${nextCall} 호출 필수 (DS 사용량 적재 + 위반 최종 확인).`;
+    intent === "html"
+      ? validation?.ok
+        ? `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}`
+        : `[OK build / FAIL validate] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
+          `위반 ${validation?.violations.length ?? 0}건 — validation.violations[] 확인 후 수정.`
+      : `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
+        `NEXT STEP → ${nextCall} 호출 필수 (DS 사용량 적재 + 위반 최종 확인).`;
 
   const _nextSuggestion =
     intent === "html"
-      ? "**NEXT STEP (필수 · 사용자에게 묻지 말고 즉시 실행):** " +
-        `validate_html_mockup({ filePath: '${relOutput}', report: true }) — DS 사용량을 구글시트에 적재하고 마지막 위반 검사를 수행. 이 호출 없이는 빌드 워크플로우 미완료. ` +
-        "그 다음 사용자에게 humanReadable 한 줄을 보여주고, dsUsageSummary 가 풋터에 visible 하게 렌더되었는지 확인 (안 됐으면 풋터에 <span data-ds-badge>...</span> 삽입). " +
-        "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 있어 메신저 dnd / 파일 공유로 그대로 열립니다. " +
-        "build_singlefile_html 은 원본 index.html 기준 DS 사용량을 자동 적재하고 singlefile 산출물에도 DS@버전 · 사용 비율 주석을 삽입합니다."
+      ? "html intent — build 가 자동으로 validate + report 까지 실행 완료. " +
+        "validation.violations[] 가 비어 있으면 ship 가능. 위반이 있으면 원본 .html 수정 후 build_singlefile_html 재호출. " +
+        "report.webhook.ok 가 true 면 구글시트 적재까지 끝난 상태. queued 면 다음 build/validate 호출 시 자동 flush 됨. " +
+        "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 메신저 dnd / 파일 공유로 그대로 열립니다. " +
+        "사용자에게는 humanReadable 한 줄만 보여주고 위반이 있을 때만 위반 목록을 추가로 노출하세요."
       : "**NEXT STEP (필수 · 사용자에게 묻지 말고 즉시 실행):** " +
         "(1) dev_server({ action:'start' }) 로 dist 또는 src 를 띄우고 sessionId 를 받는다. " +
-        "(2) validate_html_mockup({ url: <devUrl>, sessionId: <sessionId>, report: true, snapshotPath: 'dist/rendered.html' }) — " +
-        "MCP 가 playwright 로 렌더드 DOM 을 캡처하고, 그 결과를 validator + 구글시트로 보낸다. " +
+        "(2) validate_html_mockup({ url: <devUrl>, sessionId: <sessionId>, snapshotPath: 'dist/rendered.html' }) — " +
+        "MCP 가 playwright 로 렌더드 DOM 을 캡처하고, 그 결과를 validator + 구글시트로 보낸다 (report 는 default true). " +
         "정적 dist/index.html (filePath) 만 넣으면 DS 0% 가 시트에 적재되는 함정. " +
         "validate 응답의 dsUsageSummary 를 풋터에 <span data-ds-badge>…</span> 형태로 렌더했는지 확인. " +
         "(3) dev_server({ action:'stop' }).";
@@ -314,6 +364,8 @@ export async function buildSinglefileHtml(
     buildLogTail,
     dsUsageSummary,
     intent,
+    validation,
+    report,
     humanReadable,
     nextStep: nextCall,
     _nextSuggestion,

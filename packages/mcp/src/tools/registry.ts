@@ -35,14 +35,19 @@ const TOOLS = [
   {
     name: "find_component",
     description:
-      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns full prop metadata.",
+      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only). Pass `verbose:true` to get full prop signatures (type/allowedValues) — the slim default keeps batched lookups cheap.",
     inputSchema: {
       type: "object",
       properties: {
         query: { type: "string", description: "Optional fuzzy search query." },
         name: {
           type: "string",
-          description: "Optional exact component name (case-sensitive). Returns full props.",
+          description: "Optional exact component name (case-sensitive).",
+        },
+        verbose: {
+          type: "boolean",
+          description:
+            "[name-lookup only] If true, response includes full prop signatures (type, allowedValues, optional flags). Default false — slim shape with prop names only.",
         },
         limit: { type: "number", description: "Max results for list/search calls." },
       },
@@ -196,7 +201,7 @@ const TOOLS = [
   {
     name: "build_singlefile_html",
     description:
-      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true.",
+      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true. **For html intent (vanilla <nds-*>), the build automatically runs validate_html_mockup + usage report (Sheets webhook) on the built artifact** — no separate call needed; results are in `validation` and `report` fields. For react intent, you must still call dev_server + validate_html_mockup({url}) afterward (Playwright snapshot of rendered DOM).",
     inputSchema: {
       type: "object",
       properties: {
@@ -221,7 +226,7 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. Pass `url` (or `sessionId`) to validate the **rendered DOM** (mandatory for React/Vite mockups where <nds-*> are injected at runtime — static dist/index.html shells show DS 0%). `withStats:true` adds DS adoption stats; `report:true` writes a usage report (Sheets webhook).",
+      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. Pass `url` (or `sessionId`) to validate the **rendered DOM** (mandatory for React/Vite mockups where <nds-*> are injected at runtime — static dist/index.html shells show DS 0%). `withStats:true` adds DS adoption stats. **Usage report (Sheets webhook + JSONL) is auto-enabled** — pass `report:false` only to suppress (e.g. noisy iteration cycles).",
     inputSchema: {
       type: "object",
       properties: {
@@ -267,7 +272,7 @@ const TOOLS = [
         report: {
           type: "boolean",
           description:
-            "If true, also write DS usage report (JSONL + Sheets webhook) — replaces legacy report_html_mockup_usage. Combine with `url`/`sessionId` so the rendered (not static-shell) stats reach the sheet. Default false.",
+            "Write DS usage report (JSONL + Sheets webhook) — replaces legacy report_html_mockup_usage. **Default true** (auto-sends every call). Pass `false` to suppress (e.g. fast iteration loops where intermediate states would clutter the sheet). Combine with `url`/`sessionId` so the rendered (not static-shell) stats reach the sheet.",
         },
         mockupName: {
           type: "string",
@@ -312,7 +317,8 @@ const TOOLS = [
   },
   {
     name: "get_guide",
-    description: "Fetch DS guidance by topic. Use `target: 'html'` for <nds-*> component examples.",
+    description:
+      "Fetch DS guidance by topic. Use `target: 'html'` for <nds-*> component examples. **For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys — avoids 30k+ token responses when you only need a slice.** First call without sections to discover available keys (response keys ARE the available sections); subsequent calls can narrow.",
     inputSchema: {
       type: "object",
       properties: {
@@ -329,6 +335,12 @@ const TOOLS = [
           type: "string",
           enum: ["react", "html"],
           description: "Component example format. Use 'html' for new <nds-*> mockups.",
+        },
+        sections: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Optional. Pick only these top-level keys from the response (e.g. ['dos', 'donts'] on `principles`, or ['colorMatrix', 'sizeMatrix'] on a component guide). Meta keys (_advisory, _htmlAdvisory) are always preserved. If none match, response is an error with availableSections listed.",
         },
       },
       required: ["topic"],

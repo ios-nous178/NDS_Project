@@ -68,7 +68,11 @@ export interface HtmlViolation {
   rule: string;
   line: number;
   selector?: string;
-  detail: string;
+  /**
+   * 위반 설명. 응답 트림 시 같은 rule 의 N+1 번째부터 생략 — 동일 rule 의 첫 sample 에서 같은 텍스트 확인 가능.
+   * 내부 validateHtmlSource() 가 반환할 때는 항상 채워짐.
+   */
+  detail?: string;
   suggestion?: string;
 }
 
@@ -905,8 +909,51 @@ export interface ValidateHtmlMockupArgs {
 
 export interface ValidateHtmlMockupResult {
   ok: boolean;
+  /** 각 violation. 동일 rule 의 6번째 위반부터는 detail/suggestion 생략 (line 만 보존). */
   violations: HtmlViolation[];
+  /** rule 별 총 카운트 + 발생 line 목록. 트림된 violations[] 와 무관하게 정확한 집계. */
+  violationsByRule: Array<{ rule: string; count: number; lines: number[] }>;
   jsxOnlyNotice: string;
+}
+
+/**
+ * 응답 크기 cap. 같은 rule 이 N건씩 터지면 detail/suggestion 텍스트가 누적돼 응답이 폭주한다.
+ * - selector 는 HTML 한 줄 통째로 들어올 수 있어 길이만 cap
+ * - 룰별 첫 N개는 full 객체로, 그 뒤는 line 만 (rule/detail/suggestion 은 첫 객체와 동일하므로 생략)
+ * 결과적으로 응답 토큰을 절반 이하로 줄이면서도 위반 위치/패턴 식별에는 충분.
+ */
+const SELECTOR_MAX_LENGTH = 120;
+const FULL_SAMPLES_PER_RULE = 5;
+
+function trimViolationsForResponse(violations: HtmlViolation[]): HtmlViolation[] {
+  const seenPerRule = new Map<string, number>();
+  return violations.map((v) => {
+    const count = seenPerRule.get(v.rule) ?? 0;
+    seenPerRule.set(v.rule, count + 1);
+    const selector =
+      v.selector && v.selector.length > SELECTOR_MAX_LENGTH
+        ? v.selector.slice(0, SELECTOR_MAX_LENGTH) + "…"
+        : v.selector;
+    if (count < FULL_SAMPLES_PER_RULE) {
+      return { ...v, selector };
+    }
+    // 같은 rule 의 N+1 번째부터는 line 만 (detail/suggestion 은 sample 과 동일).
+    return { rule: v.rule, line: v.line, ...(selector ? { selector } : {}) };
+  });
+}
+
+function summarizeByRule(
+  violations: HtmlViolation[],
+): Array<{ rule: string; count: number; lines: number[] }> {
+  const byRule = new Map<string, number[]>();
+  for (const v of violations) {
+    const arr = byRule.get(v.rule) ?? [];
+    arr.push(v.line);
+    byRule.set(v.rule, arr);
+  }
+  return Array.from(byRule.entries())
+    .map(([rule, lines]) => ({ rule, count: lines.length, lines }))
+    .sort((a, b) => b.count - a.count);
 }
 
 export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMockupResult {
@@ -919,13 +966,19 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
   if (!source) {
     throw new Error("Provide either `source` (HTML string) or `filePath`.");
   }
-  const violations = validateHtmlSource(source);
+  const rawViolations = validateHtmlSource(source);
+  const violations = trimViolationsForResponse(rawViolations);
+  const violationsByRule = summarizeByRule(rawViolations);
   return {
-    ok: violations.length === 0,
+    ok: rawViolations.length === 0,
     violations,
+    violationsByRule,
     jsxOnlyNotice:
       "validate_html_mockup 은 토큰·간격·아이콘·nds-* 태그/클래스·컨테이너 패턴 (Card 중첩 / Footer 버튼 과다 / 영역별 primary CTA / heading 장식 / brand BG / bold 남발 등) 까지 검사합니다. " +
       "다만 JSX 전용 룰 — antd import 잔존 / 외부 아이콘 라이브러리 import / Chip.label 속성 / 화살표 아이콘 식별 (HTML 에서는 익명 <svg>) — 은 .tsx 시점에서만 검출됩니다. " +
-      "prop 의미 검증 (IconButton size union 등) 도 .tsx 의 validate_mockup 을 사용하세요.",
+      "prop 의미 검증 (IconButton size union 등) 도 .tsx 의 validate_mockup 을 사용하세요. " +
+      "응답 크기 cap: 같은 rule 의 첫 " +
+      FULL_SAMPLES_PER_RULE +
+      "건은 detail/suggestion full, 그 뒤는 line 만. 룰별 총 카운트는 violationsByRule 참고.",
   };
 }
