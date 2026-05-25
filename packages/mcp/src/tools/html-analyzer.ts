@@ -258,7 +258,7 @@ export async function reportHtmlMockupUsage(
   const { source, filePath } = readSourceArgs(args);
   const counts = countHtmlUsage(source);
   const loggedAt = new Date().toISOString();
-  const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
+  const cwd = resolveUsageCwd(args.cwd, filePath);
   const mockupName =
     args.mockupName ??
     (filePath ? path.basename(filePath) : `html-snippet-${loggedAt.replace(/[:.]/g, "-")}`);
@@ -336,6 +336,13 @@ export async function reportHtmlMockupUsage(
     humanReadable,
     _nextSuggestion,
   };
+}
+
+function resolveUsageCwd(cwd: string | undefined, filePath: string | null): string {
+  if (cwd) return path.resolve(cwd);
+  if (filePath) return path.dirname(filePath);
+  const processCwd = process.cwd();
+  return processCwd === path.parse(processCwd).root ? (process.env.HOME ?? processCwd) : processCwd;
 }
 
 interface BuildUsageArgs {

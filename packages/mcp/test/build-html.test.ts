@@ -21,6 +21,7 @@ export default defineConfig({
     expect(out).not.toBeNull();
     expect(out).toContain(`import { viteSingleFile } from "vite-plugin-singlefile";`);
     expect(out).toMatch(/plugins:\s*\[react\(\), viteSingleFile\(\)\]/);
+    expect(out).toContain("build: { cssMinify: false }");
   });
 
   it("handles plugins array with trailing comma", () => {
@@ -99,6 +100,21 @@ export default defineConfig({
     const input = `export default { plugins: [] };\n`;
     const out = patchViteConfig(input);
     expect(out).toBeNull();
+  });
+
+  it("adds cssMinify false to an existing build block", () => {
+    const input = `import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [],
+  build: {
+    sourcemap: true,
+  },
+});
+`;
+    const out = patchViteConfig(input);
+    expect(out).not.toBeNull();
+    expect(out).toMatch(/build:\s*\{\s*cssMinify:\s*false,\s*sourcemap:\s*true,/);
   });
 });
 

@@ -14,6 +14,8 @@
  *  - text-symbol-banned   : → ✓ ★ • 같은 기호 텍스트
  *  - inline-svg           : <svg> (DS 아이콘 화이트리스트와 대조)
  *  - native-interactive   : <button>/<input>/<select> 가 nds-* 클래스/태그 없이 사용됨
+ *  - raw-landmark         : sidebar/footer/header 를 raw landmark 로 구현했지만 nds-* 대체재가 있음
+ *  - text-icon-substitute : x/× 같은 텍스트를 아이콘 대체로 사용
  *  - unknown-token        : var(--xxx) 의 --xxx 가 카탈로그에 없음
  *  - unknown-nds-tag      : <nds-foo> 가 카탈로그(@nudge-eap/html) 에 없는 태그
  *  - unknown-nds-class    : class="nds-foo" 가 React DS stylesheet 에 없는 클래스
@@ -246,6 +248,39 @@ export function validateHtmlSource(
                   : "<nds-textarea> 사용.",
         });
       }
+    }
+
+    if (
+      (tag === "aside" && ctx.ndsTagSet.has("nds-sidebar")) ||
+      (tag === "footer" &&
+        (ctx.ndsTagSet.has("nds-footer") || ctx.ndsTagSet.has("nds-footer-info"))) ||
+      (tag === "header" && ctx.ndsTagSet.has("nds-header"))
+    ) {
+      violations.push({
+        rule: "raw-landmark",
+        line,
+        selector,
+        detail: `<${tag}> 를 raw landmark 로 구현함`,
+        suggestion:
+          tag === "aside"
+            ? "사이드바는 <nds-sidebar> 우선 사용. get_guide({ topic: 'component:Sidebar', target: 'html' }) 참조."
+            : tag === "footer"
+              ? "푸터는 <nds-footer-info> / <nds-footer-web> 우선 사용. get_guide({ topic: 'component:Footer', target: 'html' }) 참조."
+              : "헤더는 <nds-header> 우선 사용. get_guide({ topic: 'component:Header', target: 'html' }) 참조.",
+      });
+    }
+
+    const text = $(el).text().trim();
+    const classOrAria = `${attrs.class ?? ""} ${attrs["aria-label"] ?? ""}`.toLowerCase();
+    if (/^(x|×)$/i.test(text) && /close|delete|remove|clear|삭제|닫기|제거/.test(classOrAria)) {
+      violations.push({
+        rule: "text-icon-substitute",
+        line,
+        selector,
+        detail: `"${text}" 텍스트를 아이콘처럼 사용함`,
+        suggestion:
+          "텍스트 기호 대신 find_icon({ query: 'close' }) / 브랜드 전용 아이콘을 사용하세요.",
+      });
     }
 
     // 3. inline svg — DS 아이콘 사용 권장

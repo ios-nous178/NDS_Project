@@ -78,14 +78,14 @@ export type GuideTarget = "react" | "html";
 /**
  * target='html' 호출 시:
  *   - examplesHtml 가 있으면 그 do/dont 를 examples 자리에 매핑하고 examplesHtml 필드는 제거.
- *   - examplesHtml 가 없는 react-only 컴포넌트(_htmlStatus='no-html-equivalent') 는
- *     react examples 를 그대로 두고 _htmlAdvisory 로 안내문 첨부.
- *   - 그 외(examplesHtml 도 _htmlStatus 도 없음) 는 examples 가 react JSX 임을 명시.
+ *   - examplesHtml 가 없는 legacy React-only 컴포넌트(_htmlStatus='no-html-equivalent') 는
+ *     기존 examples 를 그대로 두고 _htmlAdvisory 로 안내문 첨부.
+ *   - 그 외(examplesHtml 도 _htmlStatus 도 없음) 는 examples 가 JSX 임을 명시.
  *
- * target='react' (기본) 호출 시 examplesHtml / _htmlStatus 필드는 그대로 응답에 포함된다
+ * target='react' 호출 시 examplesHtml / _htmlStatus 필드는 그대로 응답에 포함된다
  * (디버깅 / 라이브러리 sync 상태 확인용).
  */
-export function getComponentGuide(name: string, target: GuideTarget = "react") {
+export function getComponentGuide(name: string, target: GuideTarget = "html") {
   const guide = COMPONENT_GUIDES[name];
   if (!guide) {
     return {
@@ -113,13 +113,12 @@ export function getComponentGuide(name: string, target: GuideTarget = "react") {
     } else if (_htmlStatus === "no-html-equivalent") {
       htmlAdvisory =
         "target=html 호출됐지만 이 컴포넌트는 @nudge-eap/html 패키지에 1:1 대응되는 nds-* element 가 아직 없습니다. " +
-        "JSX/React 워크플로우(validate_mockup + build_singlefile_html) 로 작업하거나, " +
-        "find_component({ query }) 로 대체 가능한 다른 DS 컴포넌트를 검토하세요. " +
-        "examples 는 React 형태 그대로 노출됩니다.";
+        "find_component({ query }) 로 대체 가능한 다른 HTML 지원 컴포넌트를 검토하세요. " +
+        "examples 는 기존 JSX 형태 그대로 노출됩니다.";
     } else {
       htmlAdvisory =
         "target=html 호출됐지만 이 가이드에는 아직 examplesHtml 가 큐레이션되어 있지 않습니다. " +
-        "examples 는 React JSX 형태입니다 — 동일 prop 을 kebab-case attribute 로 변환해 <nds-*> 로 작성하세요.";
+        "examples 는 JSX 형태입니다 — 동일 prop 을 kebab-case attribute 로 변환해 <nds-*> 로 작성하세요.";
     }
     return {
       _advisory: baseAdvisory,
@@ -242,7 +241,7 @@ export function getGuide(args: { topic: string; intent?: string; target?: GuideT
     };
   }
 
-  const target: GuideTarget = args.target === "html" ? "html" : "react";
+  const target: GuideTarget = args.target === "react" ? "react" : "html";
 
   if (topic.startsWith("component:")) {
     const name = topic.slice("component:".length);
@@ -326,10 +325,87 @@ function Root() {
   };
 }
 
-export function getClaudeMdTemplate(args: {
+export type ClaudeMdTemplateVariant = "slim" | "default";
+
+function getSlimClaudeMdTemplate(args: {
   projectName?: string;
   intent?: "user-app" | "admin-cms" | "html";
 }) {
+  const title = args.projectName ? `# ${args.projectName}` : "# NudgeEAP Mockup Workspace";
+  if (args.intent === "admin-cms") {
+    return `${title}
+
+## Role
+
+- Build admin/CMS mockups in this external project.
+- Do not modify the NudgeEAP Design System repo, publish packages, push git changes, or open DS PRs from here.
+
+## Stack
+
+- Use antd v5 for admin/CMS screens.
+- Do not use @nudge-eap/react, @nudge-eap/html, @nudge-eap/tokens, or @nudge-eap/icons in admin/CMS mockups.
+- Check conventions with \`get_guide({ topic: "admin-cms" })\`.
+
+## Workflow
+
+1. Read \`get_guide({ topic: "admin-cms" })\`.
+2. Implement with real antd components, not raw HTML/CSS lookalikes.
+3. Run typecheck and preview with \`dev_server\` + \`check_preview\`.
+4. Build the shareable file with \`build_singlefile_html({})\`.
+
+## Hard Rules
+
+- No hand-written HTML deliverables.
+- No direct \`vite build\` as the final export.
+- Final deliverable is the single \`dist/index.html\` produced by \`build_singlefile_html\`.
+`;
+  }
+
+  return `${title}
+
+## Role
+
+- Build vanilla HTML mockups with NudgeEAP DS Web Components in this external project.
+- Do not modify the NudgeEAP Design System repo, publish packages, push git changes, or open DS PRs from here.
+
+## Stack
+
+- Use \`@nudge-eap/html\` custom elements: \`<nds-*>\`.
+- Do not create React/.tsx files and do not import \`@nudge-eap/react\`.
+- Import tokens/styles/runtime from the HTML setup returned by \`get_setup({ step: "imports", intent: "html" })\`.
+- Use shipped DS/component styles first. Custom CSS is only layout glue; do not recreate component visuals that \`@nudge-eap/html\` / \`@nudge-eap/styles\` already provides.
+
+## Workflow
+
+1. Collect visual references. If none were provided, ask for Figma links or screenshots first.
+2. Use \`get_guide({ topic: "principles" })\` and relevant \`pattern:<name>\` guides only as needed.
+3. For component examples, call \`get_guide({ topic: "component:<Name>", target: "html" })\`.
+4. Write root \`index.html\` with real \`<nds-*>\` elements.
+5. Run \`validate_html_mockup({ filePath: "index.html" })\`; fix until violation count is 0.
+6. Run \`analyze_html_mockup({ filePath: "index.html" })\` for DS adoption stats.
+7. Run \`dev_server({ action: "start" })\` and \`check_preview\`.
+8. Build the shareable file with \`build_singlefile_html({})\`.
+
+## Hard Rules
+
+- Do not hand-write a standalone export. The final deliverable is \`dist/index.html\` from \`build_singlefile_html\`.
+- Do not use raw \`button\`, \`input\`, \`select\`, or \`textarea\` unless intentionally wrapped/allowed.
+- Do not hand-build sidebar/footer/header with raw landmarks when \`<nds-sidebar>\`, \`<nds-footer-*>\`, or \`<nds-header>\` can represent it.
+- Do not use inline emoji, decorative text symbols, gradients, raw hex/rgb colors, or arbitrary spacing.
+- Do not use text like \`x\` / \`×\` as an icon. Use \`find_icon\` and prefer brand-specific icons first.
+- Bind interactions in JS with \`addEventListener\`; avoid inline \`onclick\`.
+- For \`nds-input\`, \`nds-textarea\`, and \`nds-select\`, read change event detail or the inner native control value; do not assume the host attribute is live during typing.
+- Keep detailed rules out of this file. Fetch them on demand with \`get_guide\`.
+`;
+}
+
+export function getClaudeMdTemplate(args: {
+  projectName?: string;
+  intent?: "user-app" | "admin-cms" | "html";
+  template?: ClaudeMdTemplateVariant;
+}) {
+  if (args.template !== "default") return getSlimClaudeMdTemplate(args);
+
   const title = args.projectName ? `# ${args.projectName}` : "# NudgeEAP Mockup Workspace";
 
   if (args.intent === "html") {
@@ -647,6 +723,7 @@ export function createClaudeMd(args: {
   projectName?: string;
   overwrite?: boolean;
   intent?: string;
+  template?: ClaudeMdTemplateVariant;
 }) {
   const cwd = path.resolve(args.cwd ?? process.cwd());
   if (!fs.existsSync(cwd)) {
@@ -665,14 +742,14 @@ export function createClaudeMd(args: {
     };
   }
 
-  // 정책 (2026-05-25): admin-cms 가 아니면 모두 html 템플릿. 신규 CLAUDE.md 는 더 이상
-  // user-app(.tsx + React) 워크플로우로 생성하지 않는다. user-app 템플릿 함수는 아직
-  // getClaudeMdTemplate 에 남아 있지만 이 라우터에서 호출되지 않는다 — 호환을 위해 함수만 유지.
+  // 정책 (2026-05-25): admin-cms 가 아니면 모두 html 템플릿. 신규 CLAUDE.md 는 slim 이 기본이고,
+  // 기존 장문 템플릿은 template: "default" 를 명시했을 때만 생성한다.
   const detected = detectIntentFromText(args.intent);
   const intent: "admin-cms" | "html" =
     args.intent === "admin-cms" || detected === "admin-cms" ? "admin-cms" : "html";
 
-  const content = getClaudeMdTemplate({ projectName: args.projectName, intent });
+  const template = args.template === "default" ? "default" : "slim";
+  const content = getClaudeMdTemplate({ projectName: args.projectName, intent, template });
   fs.writeFileSync(filePath, content, "utf-8");
 
   return {
@@ -681,6 +758,7 @@ export function createClaudeMd(args: {
     overwritten: exists,
     bytes: Buffer.byteLength(content, "utf-8"),
     intent,
+    template,
     next: "Restart or reload Claude Code in this project so the new CLAUDE.md instructions are picked up.",
   };
 }
