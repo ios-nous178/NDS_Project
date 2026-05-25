@@ -35,7 +35,9 @@ function getCtx(): SetupContext {
 }
 
 const REQUIRED_PACKAGES = ["@nudge-eap/tokens", "@nudge-eap/react", "@nudge-eap/icons"];
-const OPTIONAL_PACKAGES = ["@nudge-eap/tailwind-preset"];
+// @nudge-eap/html: vanilla Web Components — Astro / plain HTML / React 어디서나
+// <nds-button> 처럼 사용 가능. .mcpb 에 동봉되어 있어 install 만 하면 된다.
+const OPTIONAL_PACKAGES = ["@nudge-eap/tailwind-preset", "@nudge-eap/html"];
 
 /* ───────────── 패키지 조회 ───────────── */
 

@@ -25,6 +25,8 @@ import { ICON_METADATA, ICON_CATEGORY_LABELS, getIconCategoryIndex } from "./gui
 import type { Catalog, Manifest, McpbManifest } from "./types/manifest.js";
 import { configureMockupValidator, validateMockup } from "./tools/mockup-validator.js";
 export { validateMockupSource } from "./tools/mockup-validator.js";
+import { configureHtmlValidator, validateHtmlMockup } from "./tools/html-validator.js";
+export { validateHtmlSource } from "./tools/html-validator.js";
 import { checkPreview, devServer, registerDevServerCleanup } from "./tools/preview.js";
 import { attachUsageGuardOutcome, reportMockupUsage, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "./tools/build-html.js";
@@ -122,6 +124,23 @@ configureMockupValidator({
   componentNames: new Set(componentByName.keys()),
   iconSet,
   propAllowedValues,
+});
+
+// validate_html_mockup 용 context. nds-* 태그/클래스 prefix 셋.
+const ndsHtmlTagSet = new Set(manifest.ndsHtmlTags ?? []);
+// React 컴포넌트 이름 → BEM-ish 베이스 클래스 prefix.
+// 예: "Button" → "nds-button", "IconButton" → "nds-icon-button".
+// stylesheet 룰은 대개 .nds-button { ... } 또는 .nds-card__root { ... } 라
+// __sub / --modifier 는 잘라낸 base prefix 만 비교한다.
+const ndsClassPrefixSet = new Set<string>();
+for (const c of manifest.components) {
+  const kebab = c.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+  ndsClassPrefixSet.add(`nds-${kebab}`);
+}
+configureHtmlValidator({
+  tokenSet,
+  ndsTagSet: ndsHtmlTagSet,
+  ndsClassPrefixSet,
 });
 
 // mcpb 번들은 packages/mcp/ 옆에 local-packages/ 를 동봉, dev 모드는 레포 루트 아래.
@@ -431,6 +450,8 @@ const toolHandlers = {
     ),
   build_singlefile_html: (args: ToolArgs) =>
     buildSinglefileHtml(args as { cwd?: string; skipAudit?: boolean }),
+  validate_html_mockup: (args: ToolArgs) =>
+    validateHtmlMockup(args as { source?: string; filePath?: string }),
 } satisfies ToolHandlers;
 
 registerDevServerCleanup();

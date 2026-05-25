@@ -63,6 +63,8 @@ export interface Catalog {
   icons: string[];
   tokens: TokenDef[];
   brands: BrandDef[];
+  /** @nudge-eap/html custom element 태그 목록 (예: "nds-button", "nds-input"). */
+  ndsHtmlTags?: string[];
 }
 
 export interface Manifest extends Catalog {

@@ -275,6 +275,25 @@ const TOOLS = [
     },
   },
   {
+    name: "validate_html_mockup",
+    description:
+      "Validate an HTML mockup string or file against DS rules. Catches format-agnostic violations: inline color/spacing (hex/px/rem without var(--)), non-4pt-grid px, primitive --spacing-* in padding/margin/gap (semantic --gap-*/--inset-* required), gradient-banned, emoji and decorative text symbols (→ ✓ ★ •), inline <svg>, native <button>/<input>/<select>/<textarea> without an nds-* class/wrapper, unknown var(--*) tokens, unknown <nds-*> custom-element tags, unknown nds-* class prefixes. Returns `violations[]` (rule + line + selector + suggestion) and a `jsxOnlyNotice` reminding that prop-union checks (e.g. Card.Header double padding, IconButton size union) only run in .tsx via validate_mockup. Pair with build_singlefile_html — call validate_html_mockup on the produced index.html before shipping, or on hand-written HTML before suggesting edits. Pass either `source` (HTML string) or `filePath` (absolute path).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source: {
+          type: "string",
+          description: "HTML source string. Either this or `filePath` is required.",
+        },
+        filePath: {
+          type: "string",
+          description: "Absolute path to an .html file. Either this or `source` is required.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "list_figma_sync_status",
     description:
       "List all curated component guides and whether each is synced with a Figma node (figmaNodeUrl/sizeMatrix/stateMatrix). Useful for design QA — see which components still need a Figma-spec audit.",
@@ -559,6 +578,11 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       };
     case "build_singlefile_html":
       return { cwd: optionalString(args, "cwd", toolName) };
+    case "validate_html_mockup":
+      return {
+        source: optionalString(args, "source", toolName),
+        filePath: optionalString(args, "filePath", toolName),
+      };
     default:
       return args;
   }

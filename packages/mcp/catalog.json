@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-22T09:24:34.372Z",
+  "generatedAt": "2026-05-25T03:21:06.743Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
-      "version": "0.1.10",
+      "version": "0.1.11",
       "dependencies": {},
       "peerDependencies": {},
       "cssExports": [
@@ -15,7 +15,7 @@
     },
     {
       "name": "@nudge-eap/react",
-      "version": "0.1.10",
+      "version": "0.1.11",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/tokens": "workspace:*"
@@ -28,7 +28,7 @@
     },
     {
       "name": "@nudge-eap/icons",
-      "version": "0.1.10",
+      "version": "0.1.11",
       "dependencies": {},
       "peerDependencies": {
         "react": ">=18.0.0"
@@ -37,12 +37,22 @@
     },
     {
       "name": "@nudge-eap/tailwind-preset",
-      "version": "0.1.10",
+      "version": "0.1.11",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
       "peerDependencies": {},
       "cssExports": []
+    },
+    {
+      "name": "@nudge-eap/html",
+      "version": "0.0.1",
+      "dependencies": {
+        "@nudge-eap/icons": "workspace:*",
+        "@nudge-eap/tokens": "workspace:*"
+      },
+      "peerDependencies": {},
+      "cssExports": ["@nudge-eap/html/styles.css"]
     }
   ],
   "components": [
@@ -240,6 +250,37 @@
           "optional": true,
           "type": "AppBarVariant",
           "allowedValues": ["default", "webview", "transparent"]
+        },
+        {
+          "name": "position",
+          "optional": true,
+          "type": "AppBarPosition",
+          "allowedValues": ["sticky", "fixed", "static"]
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "leftSlot",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "rightSlot",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "elevated",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "AppBarSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/AppBar.d.ts"
@@ -9509,5 +9550,33 @@
       "jsExport": "@nudge-eap/tokens/brands",
       "ready": true
     }
+  ],
+  "ndsHtmlTags": [
+    "nds-avatar",
+    "nds-badge",
+    "nds-breadcrumb",
+    "nds-button",
+    "nds-card",
+    "nds-checkbox",
+    "nds-chip",
+    "nds-circular-progress",
+    "nds-divider",
+    "nds-empty-state",
+    "nds-icon-button",
+    "nds-input",
+    "nds-list",
+    "nds-modal",
+    "nds-online-indicator",
+    "nds-price-tag",
+    "nds-progress-bar",
+    "nds-radio",
+    "nds-select",
+    "nds-skeleton",
+    "nds-spinner",
+    "nds-stat-card",
+    "nds-tabs",
+    "nds-textarea",
+    "nds-tip-card",
+    "nds-toggle"
   ]
 }

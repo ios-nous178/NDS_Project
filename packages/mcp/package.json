@@ -1,6 +1,6 @@
 {
   "name": "@nudge-eap/mcp",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "MCP server exposing the NudgeEAP Design System (components, icons, tokens, mockup validator)",
   "type": "module",
   "bin": {
@@ -30,7 +30,8 @@
     "@modelcontextprotocol/sdk": "^1.0.4",
     "@nudge-eap/tokens": "workspace:*",
     "@nudge-eap/react": "workspace:*",
-    "@nudge-eap/icons": "workspace:*"
+    "@nudge-eap/icons": "workspace:*",
+    "cheerio": "^1.0.0"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.20.0",

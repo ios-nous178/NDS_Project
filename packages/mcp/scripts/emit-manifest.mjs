@@ -320,6 +320,9 @@ const packagesMeta = [
   readPkg("packages/react"),
   readPkg("packages/icons"),
   readPkg("packages/tailwind-preset"),
+  // @nudge-eap/html: vanilla Web Components (experimental, 별도 라이프사이클).
+  // .mcpb 에 동봉되며 외부 mockup 프로젝트에서 install 가능.
+  readPkg("packages/html"),
 ].filter(Boolean);
 
 const componentNames = readDtsExports(reactDist);
@@ -357,6 +360,21 @@ if (fs.existsSync(tokensCssPath)) {
 
 const brands = collectBrands();
 
+// @nudge-eap/html 의 custom element 태그 목록 — validate_html_mockup 이
+// "이 <nds-foo> 태그가 진짜 존재하나?" 를 알기 위해 catalog 에 박아둔다.
+// packages/html/src/components/nds-*.ts 의 파일 이름이 곧 elementName 이다
+// (NdsElement.elementName 정적 필드와 1:1 — 컨벤션으로 보장).
+function collectNdsHtmlTags() {
+  const dir = path.join(repoRoot, "packages/html/src/components");
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.startsWith("nds-") && f.endsWith(".ts") && !f.endsWith(".styles.ts"))
+    .map((f) => f.replace(/\.ts$/, ""))
+    .sort();
+}
+const ndsHtmlTags = collectNdsHtmlTags();
+
 const catalog = {
   generatedAt: new Date().toISOString(),
   packages: packagesMeta,
@@ -364,6 +382,7 @@ const catalog = {
   icons: icons.sort(),
   tokens: tokens.sort((a, b) => a.name.localeCompare(b.name)),
   brands: brands.sort((a, b) => a.slug.localeCompare(b.slug)),
+  ndsHtmlTags,
 };
 
 const outPath = path.resolve(__dirname, "../catalog.json");
