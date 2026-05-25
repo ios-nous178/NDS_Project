@@ -274,8 +274,8 @@ export async function buildSinglefileHtml(
     intent === "html"
       ? "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). " +
         "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 있어 " +
-        "메신저 dnd / 파일 공유로 그대로 열립니다. 그 다음 report_html_mockup_usage({ filePath: 'index.html' }) " +
-        "또는 analyze_html_mockup({ filePath: 'index.html' }) 로 nds-* 채택 비율을 적재하세요 " +
+        "메신저 dnd / 파일 공유로 그대로 열립니다. build_singlefile_html 은 원본 index.html 기준 DS 사용량을 자동 적재하고 " +
+        "singlefile 산출물에도 DS@버전 · 사용 비율 주석을 삽입합니다. 추가 확인이 필요할 때만 analyze_html_mockup({ filePath: 'index.html' }) 를 호출하세요 " +
         "(singlefile 산출물 자체는 inline JS 라 정적 파싱 불가하므로 원본 index.html 기반 집계만 유효)."
       : "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). " +
         "그 다음 report_mockup_usage 를 호출해 원본 .tsx 사용량을 적재하세요 " +

@@ -29,7 +29,7 @@
  *  - card-badge-overuse         : 1 nds-card 안 nds-chip + nds-badge ≥ 3
  *  - card-footer-button-overuse : nds-card-footer 안 nds-button ≥ 3
  *  - primary-cta-per-container  : 영역 1개 안 primary solid nds-button > 1
- *  - primary-cta-overuse        : 전체 primary solid nds-button > 1
+ *  - primary-cta-overuse        : 페이지 레벨 primary solid nds-button > 1
  *  - chip-overuse               : nds-chip > 8
  *  - card-everything            : nds-card ≥ 5
  *  - repeated-h1                : <h1> ≥ 2
@@ -301,7 +301,8 @@ export function validateHtmlSource(
         line,
         selector,
         detail: `<${tag}> 는 @nudge-eap/html 에 없는 custom element`,
-        suggestion: "find_component({ query }) 으로 유사한 React 컴포넌트 확인.",
+        suggestion:
+          "find_component({ query }) 또는 get_guide({ target: 'html', topic: 'component:<name>' }) 로 실제 nds-* 태그명을 확인.",
       });
     }
 
@@ -449,7 +450,7 @@ export function validateHtmlSource(
  *  - nested-card                : <nds-card> 후손에 <nds-card>
  *  - card-badge-overuse         : 1 카드 안 chip+badge ≥ 3
  *  - card-footer-button-overuse : nds-card-footer 안 button ≥ 3
- *  - primary-cta-per-container  : 영역 (Card / section / Modal / BottomSheet) 안 primary solid nds-button > 1
+ *  - primary-cta-per-container  : 영역 (Card / section / Modal / BottomSheet / Drawer) 안 primary solid nds-button > 1
  */
 function collectContainerViolations(
   source: string,
@@ -516,6 +517,8 @@ function collectContainerViolations(
     { selector: "section", label: "<section>" },
     { selector: "nds-modal", label: "nds-modal" },
     { selector: "nds-bottom-sheet", label: "nds-bottom-sheet" },
+    { selector: "nds-drawer", label: "nds-drawer" },
+    { selector: "dialog, [role='dialog']", label: "dialog" },
   ];
   for (const { selector: sel, label } of ctaContainers) {
     $(sel).each((_i, el) => {
@@ -577,17 +580,21 @@ function collectDocumentLevelViolations(
     });
   }
 
-  // 전체 primary solid nds-button 카운트
-  const primarySolidTotal = $("nds-button")
+  // 페이지 레벨 primary solid nds-button 카운트.
+  // Modal/BottomSheet/Drawer/dialog 안의 primary action은 해당 surface의 apply/confirm이라
+  // 전역 "화면 CTA 1개" 규칙과 별도로 본다. 같은 surface 안 중복은
+  // collectContainerViolations 의 primary-cta-per-container 가 잡는다.
+  const pagePrimarySolidTotal = $("nds-button")
     .toArray()
-    .filter((b) => isPrimarySolidButton(b as unknown as DomElement)).length;
-  if (primarySolidTotal > 1) {
+    .filter((b) => isPrimarySolidButton(b as unknown as DomElement))
+    .filter((b) => !isInsideSecondaryActionContext(b as unknown as DomElement)).length;
+  if (pagePrimarySolidTotal > 1) {
     out.push({
       rule: "primary-cta-overuse",
       line: 1,
-      detail: `primary solid 로 보이는 nds-button 이 ${primarySolidTotal}개.`,
+      detail: `페이지 레벨 primary solid nds-button 이 ${pagePrimarySolidTotal}개.`,
       suggestion:
-        "primary solid 는 화면의 가장 중요한 액션 1개만. 나머지는 outlined / assistive / text 계열로 낮추세요.",
+        "페이지 primary solid 는 가장 중요한 액션 1개만. 모달/드로어 내부 확인 액션은 별도 surface CTA 로 허용되지만, 페이지의 나머지 액션은 outlined / assistive / text 계열로 낮추세요.",
     });
   }
 
@@ -763,6 +770,27 @@ function isPrimarySolidButton(el: DomElement): boolean {
   const isPrimary = !attrs.color || attrs.color === "primary";
   const isNonSolid = !!attrs.variant && NON_SOLID_VARIANTS.has(attrs.variant);
   return isPrimary && !isNonSolid;
+}
+
+function isInsideSecondaryActionContext(el: DomElement): boolean {
+  let cur: DomElement | null = (el as unknown as { parent?: DomElement }).parent ?? null;
+  while (cur) {
+    if (cur.type === "tag") {
+      const tag = cur.tagName?.toLowerCase();
+      const role = cur.attribs?.role?.toLowerCase();
+      if (
+        tag === "nds-modal" ||
+        tag === "nds-bottom-sheet" ||
+        tag === "nds-drawer" ||
+        tag === "dialog" ||
+        role === "dialog"
+      ) {
+        return true;
+      }
+    }
+    cur = (cur as unknown as { parent?: DomElement }).parent ?? null;
+  }
+  return false;
 }
 
 function hasAncestorNdsTag(el: DomElement): boolean {

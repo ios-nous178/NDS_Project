@@ -342,7 +342,8 @@ const TOOLS = [
   },
   {
     name: "report_html_mockup_usage",
-    description: "Report HTML mockup DS usage stats. Defaults to dryRun unless dryRun is false.",
+    description:
+      "Report HTML mockup DS usage stats. Writes/posts by default; pass dryRun:true to skip.",
     inputSchema: {
       type: "object",
       properties: {
@@ -359,7 +360,7 @@ const TOOLS = [
         },
         dryRun: {
           type: "boolean",
-          description: "Default true — no file write. Set false to log.",
+          description: "Default false — log/write and try webhook. Set true to inspect only.",
         },
       },
       additionalProperties: false,
