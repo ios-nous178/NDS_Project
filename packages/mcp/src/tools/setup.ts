@@ -696,7 +696,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   });
 
   steps.push({
-    step: 8,
+    step: 10,
     title: "최종 산출물 빌드 — 단일 dist/index.html",
     commands: [
       "// JS · CSS · @nudge-eap/html runtime 까지 전부 inline 된 1개 파일:",
@@ -711,7 +711,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     intent: "html",
     _advisory:
       "이 셋업은 vanilla HTML / Web Component (<nds-*>) 워크플로우용입니다. " +
-      "사용자 앱(React/.tsx) 화면이면 intent 를 빼거나 'user-app' 으로, 어드민이면 'admin-cms' 로 지정하세요.",
+      "일반 목업은 intent 를 생략하거나 'html' 로 두고, 어드민이면 'admin-cms' 로 지정하세요.",
     summary: {
       tgzDir,
       requiredPackages: HTML_REQUIRED_PACKAGES,
@@ -725,6 +725,60 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
       dependsOn: Object.keys(p.dependencies).filter((d) => d.startsWith("@nudge-eap/")),
     })),
     steps,
+  };
+}
+
+function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: string }) {
+  const detected = detectIntentFromText(args.intent);
+  if (args.intent === "admin-cms" || detected === "admin-cms") {
+    return {
+      intent: "admin-cms",
+      mode: "summary",
+      stack: ["antd v5", "@ant-design/icons", "dayjs"],
+      commands: [
+        "npm create vite@latest my-admin-mockup -- --template react-ts",
+        "npm install antd@5 @ant-design/icons dayjs",
+      ],
+      nextTools: [
+        "get_guide({ topic: 'admin-cms' })",
+        "dev_server({ action: 'start' })",
+        "check_preview({})",
+        "build_singlefile_html({})",
+      ],
+      _hint:
+        "Call get_setup({ step: 'full', intent: 'admin-cms', mode: 'full' }) for detailed setup.",
+    };
+  }
+
+  const { tgzDirDefault } = getCtx();
+  const tgzDir = args.tgzDir ? path.resolve(args.tgzDir) : tgzDirDefault;
+  const install = getInstallCommandHtml({ tgzDir });
+  const imports = getHtmlEntryImports({ brand: args.brand });
+  return {
+    intent: "html",
+    mode: "summary",
+    tgzDir,
+    installReady: install.ready,
+    command: install.recommendedCommand,
+    resolvedBrand: imports.resolvedBrand,
+    importTarget: imports.targetFile,
+    importCode: imports.code,
+    steps: [
+      "Create or open a Vite vanilla-ts mockup project.",
+      "Install @nudge-eap/html + tokens + icons using `command`.",
+      "Use the returned importCode in src/main.ts.",
+      "Write root index.html with real <nds-*> elements.",
+      "Validate/analyze, preview, then build_singlefile_html.",
+    ],
+    nextTools: [
+      "get_guide({ topic: 'principles' })",
+      "get_guide({ topic: 'component:Button', target: 'html' })",
+      "validate_html_mockup({ filePath: 'index.html' })",
+      "analyze_html_mockup({ filePath: 'index.html' })",
+      "build_singlefile_html({})",
+    ],
+    _hint:
+      "Call get_setup({ step: 'full', intent: 'html', mode: 'full' }) for detailed setup with templates.",
   };
 }
 
@@ -1212,6 +1266,8 @@ export function getSetup(args: {
   cwd?: string;
   projectName?: string;
   overwrite?: boolean;
+  template?: "slim" | "default";
+  mode?: "summary" | "full";
 }) {
   const step = args.step;
   // 정책 (2026-05-25): admin-cms 가 아니면 모두 html. 'user-app' 명시도 deprecated 로
@@ -1240,6 +1296,7 @@ export function getSetup(args: {
         projectName: args.projectName,
         overwrite: args.overwrite,
         intent: args.intent,
+        template: args.template,
       });
     case "inspector": {
       if (isHtmlIntent) {
@@ -1256,6 +1313,13 @@ export function getSetup(args: {
       return { cwd, ...ensureInspectorInMainTsx(cwd) };
     }
     case "full":
+      if (args.mode !== "full") {
+        return getSetupSummary({
+          tgzDir: args.tgzDir,
+          brand: args.brand,
+          intent: args.intent,
+        });
+      }
       return getSetupInstructions({
         tgzDir: args.tgzDir,
         brand: args.brand,

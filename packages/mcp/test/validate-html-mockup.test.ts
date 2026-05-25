@@ -18,6 +18,7 @@ configureHtmlValidator({
     "nds-button",
     "nds-input",
     "nds-select",
+    "nds-select-option",
     "nds-card",
     "nds-card-header",
     "nds-card-body",
@@ -26,6 +27,9 @@ configureHtmlValidator({
     "nds-badge",
     "nds-modal",
     "nds-bottom-sheet",
+    "nds-sidebar",
+    "nds-footer-info",
+    "nds-header",
   ]),
   ndsClassPrefixSet: new Set(["nds-button", "nds-input", "nds-card", "nds-chip", "nds-badge"]),
   ndsAttrEnums: new Map([
@@ -123,8 +127,24 @@ describe("validateHtmlSource", () => {
     expect(rulesFor(`<nds-button>OK</nds-button>`)).not.toContain("unknown-nds-tag");
   });
 
+  it("does NOT flag nds-select-option as unknown", () => {
+    expect(
+      rulesFor(`<nds-select><nds-select-option value="a">A</nds-select-option></nds-select>`),
+    ).not.toContain("unknown-nds-tag");
+  });
+
   it("flags unknown nds-* class prefix", () => {
     expect(rulesFor(`<div class="nds-bogus__root">x</div>`)).toContain("unknown-nds-class");
+  });
+
+  it("flags raw landmarks when DS web components exist", () => {
+    expect(rulesFor(`<aside>menu</aside>`)).toContain("raw-landmark");
+    expect(rulesFor(`<footer>company</footer>`)).toContain("raw-landmark");
+    expect(rulesFor(`<header>title</header>`)).toContain("raw-landmark");
+  });
+
+  it("flags x text used as an icon substitute", () => {
+    expect(rulesFor(`<button class="delete-button">x</button>`)).toContain("text-icon-substitute");
   });
 
   it("does NOT flag known nds-* class with __sub or --modifier", () => {

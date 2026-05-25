@@ -16,6 +16,8 @@ import { promisify } from "node:util";
 import fs from "node:fs";
 import path from "node:path";
 import { getAugmentedPath, getToolProcessEnv } from "./process-env.js";
+import { countHtmlUsage } from "./html-analyzer.js";
+import { detectDsVersions } from "./usage/tracker.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -73,6 +75,7 @@ export interface BuildSinglefileHtmlResult {
   installedSinglefile?: boolean;
   routerWarning?: string;
   buildLogTail?: string;
+  dsUsageSummary?: string;
   auditViolations?: WorkspaceAuditViolation[];
   /** 감지/지정된 워크스페이스 intent. audit 룰과 next-step 안내가 갈라지는 기준. */
   intent?: WorkspaceIntent;
@@ -253,6 +256,7 @@ export async function buildSinglefileHtml(
         `Build log tail:\n${buildLogTail}`,
     );
   }
+  const dsUsageSummary = intent === "html" ? injectHtmlUsageSummary(cwd, outputPath) : undefined;
   const sizeBytes = fs.statSync(outputPath).size;
   const sizeKb = Math.round(sizeBytes / 1024);
   const elapsedSec = Math.round((Date.now() - startMs) / 1000);
@@ -260,6 +264,7 @@ export async function buildSinglefileHtml(
   const relOutput = path.relative(cwd, outputPath);
   const annotations: string[] = [];
   if (configPatched) annotations.push(`vite.config patched`);
+  if (dsUsageSummary) annotations.push(dsUsageSummary);
   if (installedSinglefile) annotations.push(`installed vite-plugin-singlefile`);
   if (routerWarning) annotations.push(`[!] ${routerWarning}`);
   const tail = annotations.length > 0 ? ` · ${annotations.join(" · ")}` : "";
@@ -287,6 +292,7 @@ export async function buildSinglefileHtml(
     installedSinglefile,
     routerWarning,
     buildLogTail,
+    dsUsageSummary,
     intent,
     humanReadable,
     _nextSuggestion,
@@ -328,7 +334,54 @@ export function patchViteConfig(source: string): string | null {
     insertion = `, viteSingleFile()`;
   }
   next = next.slice(0, closeBracketIdx) + insertion + next.slice(closeBracketIdx);
-  return next;
+  return ensureCssMinifyDisabled(next);
+}
+
+function ensureCssMinifyDisabled(source: string): string {
+  if (/\bcssMinify\s*:/.test(source)) return source;
+
+  const buildMatch = /\bbuild\s*:\s*\{/.exec(source);
+  if (buildMatch?.index !== undefined) {
+    const openBraceIdx = buildMatch.index + buildMatch[0].length - 1;
+    const indent = detectLineIndent(source, buildMatch.index) + "  ";
+    return (
+      source.slice(0, openBraceIdx + 1) +
+      `\n${indent}cssMinify: false,` +
+      source.slice(openBraceIdx + 1)
+    );
+  }
+
+  const configMatch = /defineConfig\s*\(\s*\{/.exec(source);
+  if (configMatch?.index === undefined) return source;
+  const openBraceIdx = source.indexOf("{", configMatch.index);
+  const closeBraceIdx = findMatchingBrace(source, openBraceIdx);
+  if (closeBraceIdx === -1) return source;
+  const indent = detectLineIndent(source, closeBraceIdx);
+  const insertion = `${source[closeBraceIdx - 1] === "\n" ? "" : ","}\n${indent}  build: { cssMinify: false },`;
+  return source.slice(0, closeBraceIdx) + insertion + source.slice(closeBraceIdx);
+}
+
+function injectHtmlUsageSummary(cwd: string, outputPath: string): string | undefined {
+  const sourcePath = path.join(cwd, "index.html");
+  if (!fs.existsSync(sourcePath)) return undefined;
+  try {
+    const source = fs.readFileSync(sourcePath, "utf-8");
+    const counts = countHtmlUsage(source);
+    const version = detectDsVersions(cwd).primary ?? "unknown";
+    const summary =
+      `NudgeEAP DS usage: DS@${version} · DS ${counts.ndsTags.total} (${counts.dsRatio}%) · ` +
+      `nds-class ${counts.ndsClassed.total} · native ${counts.nativeUnwrapped.total}`;
+    const html = fs.readFileSync(outputPath, "utf-8");
+    if (html.includes("NudgeEAP DS usage:")) return summary;
+    fs.writeFileSync(
+      outputPath,
+      html.replace(/(<html\b[^>]*>)/i, `$1\n<!-- ${summary} -->`),
+      "utf-8",
+    );
+    return summary;
+  } catch {
+    return undefined;
+  }
 }
 
 function findMatchingBracket(source: string, openIdx: number): number {
@@ -380,6 +433,63 @@ function findMatchingBracket(source: string, openIdx: number): number {
     }
   }
   return -1;
+}
+
+function findMatchingBrace(source: string, openIdx: number): number {
+  if (source[openIdx] !== "{") return -1;
+  let depth = 0;
+  let inString: false | '"' | "'" | "`" = false;
+  let inLineComment = false;
+  let inBlockComment = false;
+  for (let i = openIdx; i < source.length; i++) {
+    const c = source[i];
+    const next = source[i + 1];
+    if (inLineComment) {
+      if (c === "\n") inLineComment = false;
+      continue;
+    }
+    if (inBlockComment) {
+      if (c === "*" && next === "/") {
+        inBlockComment = false;
+        i++;
+      }
+      continue;
+    }
+    if (inString) {
+      if (c === "\\") {
+        i++;
+        continue;
+      }
+      if (c === inString) inString = false;
+      continue;
+    }
+    if (c === "/" && next === "/") {
+      inLineComment = true;
+      i++;
+      continue;
+    }
+    if (c === "/" && next === "*") {
+      inBlockComment = true;
+      i++;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === "`") {
+      inString = c as '"' | "'" | "`";
+      continue;
+    }
+    if (c === "{") depth++;
+    else if (c === "}") {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
+function detectLineIndent(source: string, index: number): string {
+  const lineStart = source.lastIndexOf("\n", index) + 1;
+  const match = /^[ \t]*/.exec(source.slice(lineStart, index));
+  return match?.[0] ?? "";
 }
 
 /**

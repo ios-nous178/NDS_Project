@@ -19,7 +19,7 @@ const TOOLS = [
   {
     name: "get_brand",
     description:
-      "Look up sub-brands. No args → list every brand (slug, name, primary color, css import path, 'ready' flag). `{ brand: '<slug>' }` → full info for that brand (semantic colors, font families, css/js import paths, main.tsx import order, brand-prefixed icons). Auto-discovered from brands/ folder + tokens dist.",
+      "Look up brand metadata. No args lists brands; `{ brand }` returns imports, colors, fonts, and icons.",
     inputSchema: {
       type: "object",
       properties: {
@@ -35,7 +35,7 @@ const TOOLS = [
   {
     name: "find_component",
     description:
-      "Look up DS React components (user-app: Trost / Geniet / NudgeEAP). No args → full list of component names. `{ query: '<text>' }` → fuzzy match, scored. `{ name: '<exact>' }` → full props detail with allowed values. `name` takes precedence over `query`. For admin / CMS screens, call get_guide({ topic: 'admin-cms' }) instead.",
+      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns full prop metadata.",
     inputSchema: {
       type: "object",
       properties: {
@@ -44,18 +44,23 @@ const TOOLS = [
           type: "string",
           description: "Optional exact component name (case-sensitive). Returns full props.",
         },
+        limit: { type: "number", description: "Max results for list/search calls." },
       },
       additionalProperties: false,
     },
   },
   {
     name: "find_icon",
-    description:
-      "Look up icons in @nudge-eap/icons (Figma Iconography 379:490). No args → all icons with category/style/pair metadata + `byCategory` index. `{ query: '<text>' }` → top scored matches. Mandatory selection priority: brand-specific icons → NudgeEAP default icons → mockup default icons (MockupLinear*/MockupBold*) → generated custom SVG. Always pair with get_guide({ topic: 'pattern:iconography' }) for size/touch/style/priority rules and get_guide({ topic: 'pattern:icon-color' }) for token mapping.",
+    description: "Search @nudge-eap/icons. Prefer `{ query }`; no args returns the icon index.",
     inputSchema: {
       type: "object",
       properties: {
         query: { type: "string", description: "Optional natural-language search query." },
+        category: {
+          type: "string",
+          description: "Optional icon category from the no-arg summary.",
+        },
+        limit: { type: "number", description: "Max icons returned for query/category calls." },
       },
       additionalProperties: false,
     },
@@ -63,7 +68,7 @@ const TOOLS = [
   {
     name: "find_token",
     description:
-      "Look up design tokens. No args → summary (counts per group) only. `{ group: '<g>' }` → all tokens in that group ('color' | 'spacing' | 'semantic' | 'font' | 'radius' | 'size' | 'line' | 'gap' | 'padding' | 'border' | 'grid' | 'shadow' | 'shape' | 'stroke' | 'z'). `{ query: '<text or #hex>' }` → scored matches against name and value, semantic tokens promoted, raw palette deprioritized. `query` takes precedence over `group` when both are passed.",
+      "Look up design tokens. No args returns group counts; `{ group }` lists a group; `{ query }` searches.",
     inputSchema: {
       type: "object",
       properties: {
@@ -76,7 +81,7 @@ const TOOLS = [
   {
     name: "validate_mockup",
     description:
-      'Validate a mockup .tsx against DS rules — inline color/spacing, native elements, inline SVG, emoji, gradient, invalid-prop-value (wrong union literal e.g. IconButton size="md"), and pattern-level anti-patterns (CTA/Chip/Card/icon overuse, antd leftover, etc.). Also runs a 5-item Self-Check: ① Spacing 토큰 사용 (raw px / --spacing-* 직접 사용 없음) ② 4pt Grid 준수 ③ Brand BG 1개 이하 ④ 헤딩 장식 아이콘 없음 ⑤ Primary Button 영역별 단일성. Provide `source` or `filePath`. Returns `{ ok, violationCount, summary: { humanReadable, checklist, checklistReport }, violations }`. **MUST surface `summary.checklistReport` to the user verbatim, and run validate_mockup TWICE — after fixing 1차 violations, re-run for 2차 confirmation before delivering. Submitting with known violations is forbidden.**',
+      "Legacy React/.tsx validator for existing mockups. Prefer validate_html_mockup for new HTML workspaces.",
     inputSchema: {
       type: "object",
       properties: {
@@ -94,8 +99,7 @@ const TOOLS = [
   },
   {
     name: "suggest_replacement",
-    description:
-      "Given a code snippet containing inline color/spacing, suggest token replacements.",
+    description: "Suggest token replacements for inline color/spacing snippets.",
     inputSchema: {
       type: "object",
       properties: {
@@ -108,20 +112,18 @@ const TOOLS = [
   },
   {
     name: "list_packages",
-    description:
-      "List DS packages with version, required/optional, inter-package dependencies, peer deps, and CSS exports. Use this to understand what to install in an external project.",
+    description: "List DS packages, versions, dependencies, and CSS exports.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
     name: "check_mcp_update",
-    description:
-      "Check whether a newer version of this MCP (.mcpb) is available on GitHub Releases. Compares installed manifest.json version with the latest release. Use this when the user asks: '최신 버전 있어?', 'MCP 업데이트 있어?', 'check for updates'. Returns installed/latest version, download URL, and step-by-step update instructions if outdated.",
+    description: "Check GitHub Releases for a newer .mcpb and return update instructions.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
     name: "report_mockup_usage",
     description:
-      "REQUIRED final step after generating/modifying a mockup .tsx (or HTML export). Parses with AST and classifies each JSX element as ds / adminCms / customNative / external, appends to `.ds-usage-log.jsonl`, and posts to a shared usage webhook (no auth/setup needed). Skipping leaves central usage stats empty for this mockup. Returns the aggregated usage + webhook status.",
+      "Legacy React/.tsx usage reporter. New HTML workspaces should use report_html_mockup_usage.",
     inputSchema: {
       type: "object",
       properties: {
@@ -160,8 +162,7 @@ const TOOLS = [
   },
   {
     name: "dev_server",
-    description:
-      "Manage the local mockup dev server. `{ action: 'start' }` spawns `npm run dev` (or custom command) in cwd, waits for the URL to respond, returns sessionId/url. `{ action: 'stop', sessionId? }` stops the named session, or all sessions if sessionId is omitted. Use start before visual/runtime preview checks, stop when the user is done.",
+    description: "Start or stop a local mockup dev server and return the preview URL/session id.",
     inputSchema: {
       type: "object",
       properties: {
@@ -197,6 +198,10 @@ const TOOLS = [
           type: "number",
           description: "[start] Wait timeout. Default: 20000.",
         },
+        autoReport: {
+          type: "boolean",
+          description: "If true, run pending usage auto-report after this call. Default false.",
+        },
         sessionId: {
           type: "string",
           description: "[stop] Session id returned by start. Omit to stop all sessions.",
@@ -209,7 +214,7 @@ const TOOLS = [
   {
     name: "check_preview",
     description:
-      "Open a dev-server URL in Playwright and detect runtime errors, Vite error overlays, failed requests, and likely blank screens. Requires playwright installed in the mockup project.",
+      "Use Playwright to detect runtime errors, Vite overlays, failed requests, and blank screens.",
     inputSchema: {
       type: "object",
       properties: {
@@ -249,6 +254,10 @@ const TOOLS = [
           },
           additionalProperties: false,
         },
+        autoReport: {
+          type: "boolean",
+          description: "If true, run pending usage auto-report after this call. Default false.",
+        },
       },
       additionalProperties: false,
     },
@@ -256,7 +265,7 @@ const TOOLS = [
   {
     name: "build_singlefile_html",
     description:
-      "Build the current Vite mockup as a single self-contained .html (interactivity + nds-* classes + onClick preserved). Auto-installs vite-plugin-singlefile, patches vite.config, runs `vite build`, returns dist/index.html path + size. **MANDATORY final step of the mockup workflow** — single-file HTML is the standard deliverable of this workspace. Call this WITHOUT asking the user ('만들어 드릴까요' 금지) unless they explicitly refused. **Pre-flight workspace audit**: refuses to build if it detects raw .html in src/, raw .html at project root (besides index.html), :root token redefinitions in src/*.css/scss, zero .tsx files in src/, or missing visual references (references.md / .references/) — these are the CLAUDE.md 'MUST — 우회 절대 금지' violations. For the visual-references rule, prompt the user with the fallbackQuestion from the violation detail BEFORE re-running the build (don't auto-write a fake references.md to bypass it). Pass `skipAudit: true` ONLY when user explicitly overrides; warn user that validate_mockup / report_mockup_usage are bypassed. Forbidden alternatives: hand-writing .html, running `vite build` directly, using esbuild/parcel/webpack, leaving only .tsx — all lose nds-* tokens and React interactivity. Warns if BrowserRouter is used (file:// needs HashRouter).",
+      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true.",
     inputSchema: {
       type: "object",
       properties: {
@@ -267,8 +276,12 @@ const TOOLS = [
         },
         skipAudit: {
           type: "boolean",
-          description:
-            "Skip the workspace audit (raw HTML / inline :root tokens / no-tsx). Use ONLY when the user has explicitly approved a bypass; warn the user that the MCP validation pipeline is disabled in that case. Defaults to false.",
+          description: "Skip workspace audit only after explicit user approval. Defaults to false.",
+        },
+        intent: {
+          type: "string",
+          enum: ["react", "html"],
+          description: "Force workspace intent. Defaults to auto-detect.",
         },
       },
       additionalProperties: false,
@@ -277,7 +290,7 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate an HTML mockup string or file against DS rules. Catches format-agnostic violations: inline color/spacing (hex/px/rem without var(--)), non-4pt-grid px, primitive --spacing-* in padding/margin/gap (semantic --gap-*/--inset-* required), gradient-banned, emoji and decorative text symbols (→ ✓ ★ •), inline <svg>, native <button>/<input>/<select>/<textarea> without an nds-* class/wrapper, unknown var(--*) tokens, unknown <nds-*> custom-element tags, unknown nds-* class prefixes. Returns `violations[]` (rule + line + selector + suggestion) and a `jsxOnlyNotice` reminding that prop-union checks (e.g. Card.Header double padding, IconButton size union) only run in .tsx via validate_mockup. Pair with build_singlefile_html — call validate_html_mockup on the produced index.html before shipping, or on hand-written HTML before suggesting edits. Pass either `source` (HTML string) or `filePath` (absolute path).",
+      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations.",
     inputSchema: {
       type: "object",
       properties: {
@@ -289,6 +302,10 @@ const TOOLS = [
           type: "string",
           description: "Absolute path to an .html file. Either this or `source` is required.",
         },
+        autoReport: {
+          type: "boolean",
+          description: "If true, run pending usage auto-report after validation. Default false.",
+        },
       },
       additionalProperties: false,
     },
@@ -296,7 +313,7 @@ const TOOLS = [
   {
     name: "analyze_html_mockup",
     description:
-      "Run validate_html_mockup and add DS-adoption stats. Returns counts (nds-* custom-element instances, native button/input/select/textarea WITHOUT an nds-* wrapper, dsRatio %) plus the same violations[] grouped by rule, plus a `recommendations[]` of next actions (convert_html_to_ds_html, find_token swaps, 4pt grid fixes). Pair with build_singlefile_html: validate is the gatekeeper, analyze is the dashboard view. Pass `source` (HTML string) or `filePath` (absolute path).",
+      "Validate HTML and return DS adoption stats, grouped violations, and next-action recommendations.",
     inputSchema: {
       type: "object",
       properties: {
@@ -309,7 +326,7 @@ const TOOLS = [
   {
     name: "convert_html_to_ds_html",
     description:
-      "Rewrite raw HTML to nds-* dialect: <button> → <nds-button>, <input> → <nds-input>, <textarea> → <nds-textarea>, <select> with <option> → <nds-select> with <nds-select-option>. Leaves attributes intact. Drops redundant button.type. Skips elements that are already inside an <nds-*> wrapper (avoids double-wrapping the inner element rendered by the web component). Also rewrites a small set of well-known hex colors to their semantic token (#ffffff → var(--semantic-bg-surface-default), #000 → var(--semantic-text-strong-default)) when `rewriteInlineColors` is not false. **Does NOT infer variant/color** from inline styles — call find_token + edit by hand for ambiguous cases. Returns the modified HTML, a changes[] log, and an unchanged[] list of things the converter couldn't touch (e.g. hex values that didn't match any known token).",
+      "Rewrite common native HTML controls to <nds-*> elements and optionally replace known colors.",
     inputSchema: {
       type: "object",
       properties: {
@@ -325,8 +342,7 @@ const TOOLS = [
   },
   {
     name: "report_html_mockup_usage",
-    description:
-      "Log local HTML mockup usage stats (nds-tag / nds-class / native counts + dsRatio). Default `dryRun: true` — pass `dryRun: false` to append to .ds-html-usage-log.jsonl at `cwd`. v0 limitation: does NOT post to the analytics webhook; the schema is being unified with .tsx report_mockup_usage in v0.1. For .tsx mockups continue to use report_mockup_usage.",
+    description: "Report HTML mockup DS usage stats. Defaults to dryRun unless dryRun is false.",
     inputSchema: {
       type: "object",
       properties: {
@@ -351,8 +367,7 @@ const TOOLS = [
   },
   {
     name: "list_figma_sync_status",
-    description:
-      "List all curated component guides and whether each is synced with a Figma node (figmaNodeUrl/sizeMatrix/stateMatrix). Useful for design QA — see which components still need a Figma-spec audit.",
+    description: "List curated component guides and their Figma sync status.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -361,15 +376,13 @@ const TOOLS = [
   },
   {
     name: "get_guide",
-    description:
-      "Consolidated guide router. Pass a 'topic' string to fetch one of: design principles, dos/donts, admin-cms conventions, scope advisory, runtime DS inspector setup, or per-component / per-pattern guides. Use this for every guidance lookup — it replaces the old get_design_principles / get_dos_and_donts / get_admin_cms_guide / get_scope_advisory / get_inspector_setup / get_component_guide / get_pattern_guide tools. (Note: single-file HTML export is now an action tool — call build_singlefile_html directly instead of asking for instructions.) For component guides, pass `target: 'html'` to get vanilla <nds-*> examples (kebab-case attrs, addEventListener events); default is React JSX.",
+    description: "Fetch DS guidance by topic. Use `target: 'html'` for <nds-*> component examples.",
     inputSchema: {
       type: "object",
       properties: {
         topic: {
           type: "string",
-          description:
-            "Guide topic. Fixed values: 'principles' | 'dos-donts' | 'ux-writing' | 'admin-cms' | 'scope-advisory' | 'inspector-setup'. Component guides use 'component:<Name>' (e.g. 'component:Button'). Pattern guides use 'pattern:<name>' (cta-group, dark-patterns, icon-color, iconography, icon-usage, visual-reference, visual-antipatterns, notice, dropdown, dense-list). For icon fallback priority, call pattern:iconography or pattern:icon-usage. For HTML export, call build_singlefile_html instead — that's an action tool, not a guide.",
+          description: "Fixed topic, `component:<Name>`, or `pattern:<name>`.",
         },
         intent: {
           type: "string",
@@ -379,8 +392,7 @@ const TOOLS = [
         target: {
           type: "string",
           enum: ["react", "html"],
-          description:
-            "Output format for component example snippets. 'react' (default): keep examples as React JSX, useful for validate_mockup / build_singlefile_html (.tsx) workflow. 'html': swap examples for vanilla <nds-*> Web Component form, useful for analyze_html_mockup / validate_html_mockup workflow. For guides where the html package has no 1:1 equivalent, the response includes `_htmlAdvisory` instead of replacing examples.",
+          description: "Component example format. Use 'html' for new <nds-*> mockups.",
         },
       },
       required: ["topic"],
@@ -390,15 +402,14 @@ const TOOLS = [
   {
     name: "get_setup",
     description:
-      "Consolidated external-project setup router. Pass a 'step' to run one of: install command, entry CSS/JS imports, DS update instructions, CLAUDE.md generation, or the full step-by-step setup guide. Replaces the old get_install_command / get_main_tsx_imports / get_update_instructions / create_claude_md / get_setup_instructions tools. **Default for new workspaces is the vanilla HTML / Web Component workflow** (Vite vanilla-ts + @nudge-eap/html, no React/.tsx, validate_html_mockup-based verification). Pass `intent: 'admin-cms'` only for antd-based admin/CMS workspaces. `intent: 'user-app'` is deprecated and routed to html — existing React mockup workspaces are still supported via build_singlefile_html's automatic detectWorkspaceIntent.",
+      "Setup router for install/import/update/CLAUDE.md/full instructions. Defaults to HTML/<nds-*>.",
     inputSchema: {
       type: "object",
       properties: {
         step: {
           type: "string",
           enum: ["install", "imports", "update", "claude-md", "inspector", "full"],
-          description:
-            "Which setup sub-action to run. 'install' → ready-to-run 'npm install ./*.tgz' command (default html: @nudge-eap/html + tokens + icons; admin-cms / explicit user-app: React). 'imports' → entry import lines (main.ts for html default, main.tsx for React workspaces). 'update' → DS update instructions. 'claude-md' → write CLAUDE.md to cwd (html default; admin-cms only branches). 'inspector' → patch src/main.tsx to mount the dev-only DsInspector overlay (idempotent; refused when intent='html' — Inspector is React-only). 'full' → comprehensive setup guide for a fresh project (default: Vite vanilla-ts + @nudge-eap/html).",
+          description: "install | imports | update | claude-md | inspector | full.",
         },
         tgzDir: {
           type: "string",
@@ -421,9 +432,20 @@ const TOOLS = [
         },
         intent: {
           type: "string",
-          enum: ["user-app", "admin-cms", "html"],
+          enum: ["admin-cms", "html"],
           description:
-            "[step=install|imports|claude-md|inspector|full] Workspace intent. **'html' (default)**: vanilla Web Components (<nds-*>) + Vite vanilla-ts + @nudge-eap/html + validate_html_mockup / analyze_html_mockup + build_singlefile_html. No React, no .tsx. 'admin-cms': antd v5 + Vite react-ts (NudgeEAPCMS conventions) — the only intent that still uses React. **'user-app' is deprecated** (React/.tsx + @nudge-eap/react) and is routed to 'html' for new setups; existing React mockup workspaces still work because build_singlefile_html auto-detects intent from package.json / src structure. Free-text strings are scanned: admin keywords (어드민/CMS/운영툴/백오피스/admin/cms/backoffice) → admin-cms; everything else → html.",
+            "Workspace intent. Default/html uses vanilla <nds-*>; admin-cms uses antd conventions.",
+        },
+        template: {
+          type: "string",
+          enum: ["slim", "default"],
+          description: "[step=claude-md] CLAUDE.md template size. Default: slim.",
+        },
+        mode: {
+          type: "string",
+          enum: ["summary", "full"],
+          description:
+            "[step=full] Response size. Default: summary; use full for all setup details.",
         },
         source: {
           type: "string",
@@ -466,6 +488,9 @@ const SETUP_STEP_VALUES = [
   "full",
 ] as const;
 const DEV_SERVER_ACTION_VALUES = ["start", "stop"] as const;
+const GUIDE_TARGET_VALUES = ["react", "html"] as const;
+const BUILD_INTENT_VALUES = ["react", "html"] as const;
+const CLAUDE_MD_TEMPLATE_VALUES = ["slim", "default"] as const;
 
 // 옛 도구 이름은 즉시 제거되어 Unknown tool 에러로 떨어진다. hint 는 유지하지 않는다.
 
@@ -563,9 +588,14 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       return {
         query: optionalString(args, "query", toolName),
         name: optionalString(args, "name", toolName),
+        limit: optionalNumber(args, "limit", toolName, { min: 1 }),
       };
     case "find_icon":
-      return { query: optionalString(args, "query", toolName) };
+      return {
+        query: optionalString(args, "query", toolName),
+        category: optionalString(args, "category", toolName),
+        limit: optionalNumber(args, "limit", toolName, { min: 1 }),
+      };
     case "find_token":
       return {
         group: optionalString(args, "group", toolName),
@@ -586,6 +616,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       return {
         topic: requireString(args, "topic", toolName),
         intent: optionalString(args, "intent", toolName),
+        target: optionalEnum(args, "target", GUIDE_TARGET_VALUES, toolName),
       };
     case "get_setup":
       return {
@@ -604,6 +635,8 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         cwd: optionalString(args, "cwd", toolName),
         projectName: optionalString(args, "projectName", toolName),
         overwrite: optionalBoolean(args, "overwrite", toolName),
+        template: optionalEnum(args, "template", CLAUDE_MD_TEMPLATE_VALUES, toolName),
+        mode: optionalEnum(args, "mode", ["summary", "full"] as const, toolName),
       };
     case "report_mockup_usage":
       return {
@@ -627,6 +660,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         url: optionalString(args, "url", toolName),
         port: optionalNumber(args, "port", toolName, { min: 1 }),
         timeoutMs: optionalNumber(args, "timeoutMs", toolName, { min: 1 }),
+        autoReport: optionalBoolean(args, "autoReport", toolName),
         sessionId: optionalString(args, "sessionId", toolName),
       };
     case "check_preview":
@@ -638,14 +672,20 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         timeoutMs: optionalNumber(args, "timeoutMs", toolName, { min: 1 }),
         minTextLength: optionalNumber(args, "minTextLength", toolName, { min: 0 }),
         viewport: optionalViewport(args, "viewport", toolName),
+        autoReport: optionalBoolean(args, "autoReport", toolName),
       };
     case "build_singlefile_html":
-      return { cwd: optionalString(args, "cwd", toolName) };
+      return {
+        cwd: optionalString(args, "cwd", toolName),
+        skipAudit: optionalBoolean(args, "skipAudit", toolName),
+        intent: optionalEnum(args, "intent", BUILD_INTENT_VALUES, toolName),
+      };
     case "validate_html_mockup":
     case "analyze_html_mockup":
       return {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),
+        autoReport: optionalBoolean(args, "autoReport", toolName),
       };
     case "convert_html_to_ds_html":
       return {

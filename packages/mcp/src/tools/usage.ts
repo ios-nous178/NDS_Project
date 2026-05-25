@@ -253,6 +253,13 @@ export async function runUsageGuards(toolName: string, args: unknown): Promise<U
 
   const cwd = extractCwdFromArgs(args) ?? process.cwd();
   const isBuildEvent = toolName === "build_singlefile_html";
+  const shouldAutoReport =
+    isBuildEvent ||
+    (args !== null &&
+      typeof args === "object" &&
+      (args as { autoReport?: unknown }).autoReport === true);
+  if (!shouldAutoReport) return {};
+
   // 워크스페이스 intent 자동 감지 — scanner 가 .tsx vs .html 후보를 다르게 산출하도록.
   // validate_html_mockup 처럼 HTML 명시 도구는 항상 html, build_singlefile_html 은 detect 결과 사용.
   const intent: "react" | "html" =

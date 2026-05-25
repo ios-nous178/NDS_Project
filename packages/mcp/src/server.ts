@@ -21,7 +21,12 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { ICON_METADATA, ICON_CATEGORY_LABELS, getIconCategoryIndex } from "./guides.js";
+import {
+  ICON_METADATA,
+  ICON_CATEGORY_LABELS,
+  getIconCategoryIndex,
+  type IconCategory,
+} from "./guides.js";
 import type { Catalog, Manifest, McpbManifest } from "./types/manifest.js";
 import { configureMockupValidator, validateMockup } from "./tools/mockup-validator.js";
 export { validateMockupSource } from "./tools/mockup-validator.js";
@@ -135,6 +140,16 @@ configureMockupValidator({
 
 // validate_html_mockup 용 context. nds-* 태그/클래스 prefix 셋.
 const ndsHtmlTagSet = new Set(manifest.ndsHtmlTags ?? []);
+[
+  "nds-select-option",
+  "nds-footer-info",
+  "nds-footer-tab-bar",
+  "nds-footer-tab-item",
+  "nds-footer-company-info",
+  "nds-footer-web",
+  "nds-footer-web-row",
+  "nds-footer-web-section",
+].forEach((tag) => ndsHtmlTagSet.add(tag));
 // React 컴포넌트 이름 → BEM-ish 베이스 클래스 prefix.
 // 예: "Button" → "nds-button", "IconButton" → "nds-icon-button".
 // stylesheet 룰은 대개 .nds-button { ... } 또는 .nds-card__root { ... } 라
@@ -182,12 +197,18 @@ function scoreMatch(query: string, name: string): number {
 
 /* ───────────── Tool 핸들러 ───────────── */
 
-function searchComponent(query: string) {
+function clampLimit(value: unknown, fallback: number, max: number): number {
+  return typeof value === "number" && Number.isFinite(value)
+    ? Math.max(1, Math.min(Math.floor(value), max))
+    : fallback;
+}
+
+function searchComponent(query: string, limit = 10) {
   return manifest.components
     .map((c) => ({ name: c.name, score: scoreMatch(query, c.name) }))
     .filter((c) => c.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+    .slice(0, limit);
 }
 
 /**
@@ -197,21 +218,25 @@ function searchComponent(query: string) {
  *  - { query } → fuzzy 점수 매치
  *  - 둘 다 → name 우선
  */
-function findComponent(args: { name?: string; query?: string }) {
+function findComponent(args: { name?: string; query?: string; limit?: number }) {
+  const limit = clampLimit(args.limit, 20, 100);
   if (args.name) {
     const c = componentByName.get(args.name);
     if (!c) {
       return {
         error: `Component '${args.name}' not found. Try find_component({ query: '${args.name}' }) or call with no args to list all.`,
-        suggestions: searchComponent(args.name).slice(0, 3),
+        suggestions: searchComponent(args.name, 3),
       };
     }
     return c;
   }
-  if (args.query) return searchComponent(args.query);
+  if (args.query) return searchComponent(args.query, clampLimit(args.limit, 10, 50));
   return {
-    _advisory: "User-app components. For admin/CMS use get_guide({topic:'admin-cms'}).",
-    components: manifest.components.map((c) => c.name),
+    _hint:
+      "No-arg call returns a capped component name list. Use `{ query }` or `{ name }` for details.",
+    total: manifest.components.length,
+    limit,
+    components: manifest.components.map((c) => c.name).slice(0, limit),
   };
 }
 
@@ -229,27 +254,42 @@ function decorateIcon(name: string) {
 
 /**
  * find_icon 통합 라우터.
- *  - 인자 없음 → 전체 아이콘 + byCategory 인덱스
+ *  - 인자 없음 → 카테고리별 count summary
  *  - { query } → top 10 점수 매치
+ *  - { category } → 해당 카테고리 아이콘 목록
  */
-function findIcon(args: { query?: string }) {
+function findIcon(args: { query?: string; category?: string; limit?: number }) {
+  const categoryIndex = getIconCategoryIndex();
+  const limit = clampLimit(args.limit, 20, 100);
   if (args.query) {
     return manifest.icons
       .map((name) => ({ ...decorateIcon(name), score: scoreMatch(args.query as string, name) }))
       .filter((c) => c.score > 0)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
+      .slice(0, clampLimit(args.limit, 10, 50));
   }
-  const categoryIndex = getIconCategoryIndex();
+  if (args.category) {
+    const category = args.category as IconCategory;
+    const names = categoryIndex[category] ?? [];
+    return {
+      category: args.category,
+      label: ICON_CATEGORY_LABELS[category],
+      total: names.length,
+      limit,
+      icons: names.slice(0, limit).map(decorateIcon),
+    };
+  }
   return {
-    _advisory: "Style/color rules: get_guide({topic:'pattern:iconography'|'pattern:icon-color'}).",
-    icons: manifest.icons.map(decorateIcon),
-    byCategory: Object.fromEntries(
+    _hint:
+      "No-arg call returns only summary to save tokens. Use `{ query }` or `{ category }` for icons.",
+    total: manifest.icons.length,
+    categories: Object.fromEntries(
       Object.entries(categoryIndex).map(([cat, names]) => [
         cat,
         {
           label: ICON_CATEGORY_LABELS[cat as keyof typeof ICON_CATEGORY_LABELS],
-          icons: names,
+          count: names.length,
+          sample: names.slice(0, 5),
         },
       ]),
     ),
@@ -394,8 +434,10 @@ const server = new Server(
 
 const toolHandlers = {
   get_brand: (args: ToolArgs) => getBrand(args as { brand?: string }),
-  find_component: (args: ToolArgs) => findComponent(args as { name?: string; query?: string }),
-  find_icon: (args: ToolArgs) => findIcon(args as { query?: string }),
+  find_component: (args: ToolArgs) =>
+    findComponent(args as { name?: string; query?: string; limit?: number }),
+  find_icon: (args: ToolArgs) =>
+    findIcon(args as { query?: string; category?: string; limit?: number }),
   find_token: (args: ToolArgs) => findToken(args as { group?: string; query?: string }),
   validate_mockup: (args: ToolArgs) =>
     validateMockup(
@@ -425,6 +467,8 @@ const toolHandlers = {
         cwd?: string;
         projectName?: string;
         overwrite?: boolean;
+        template?: "slim" | "default";
+        mode?: "summary" | "full";
       },
     ),
   list_figma_sync_status: () => listFigmaSyncStatus(),
