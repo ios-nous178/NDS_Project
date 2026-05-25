@@ -45,7 +45,23 @@ const config = {
     },
   },
 
-  themes: ["@docusaurus/theme-live-codeblock"],
+  themes: [
+    "@docusaurus/theme-live-codeblock",
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      {
+        hashed: true,
+        language: ["en", "ko"],
+        indexDocs: true,
+        indexBlog: false,
+        docsDir: "../../docs",
+        docsRouteBasePath: "/",
+        highlightSearchTermsOnTargetPage: true,
+        explicitSearchResultPath: true,
+        searchBarPosition: "right",
+      },
+    ],
+  ],
 
   plugins: [
     // /storybook/ 는 같은 도메인의 정적 폴더(apps/docs/static/storybook/) 로 서빙되며

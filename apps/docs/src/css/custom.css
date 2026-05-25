@@ -666,3 +666,138 @@ article {
 html[data-theme="dark"] .theme-doc-markdown > header + p {
   color: #cfcac6;
 }
+
+/* ─── Search (easyops-cn/docusaurus-search-local) ─── */
+
+:root {
+  /* 드롭다운 모달 */
+  --search-local-modal-background: #ffffff;
+  --search-local-modal-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --search-local-modal-width: 480px;
+  --search-local-spacing: 8px;
+
+  /* 결과 한 행(suggestion) */
+  --search-local-hit-background: transparent;
+  --search-local-hit-shadow: none;
+  --search-local-hit-color: #383838;
+  --search-local-hit-height: 44px;
+  --search-local-hit-active-color: #ffffff;
+
+  /* 강조 / 활성 */
+  --search-local-highlight-color: var(--ifm-color-primary);
+  --search-local-muted-color: #9ca2ae;
+
+  /* 인풋 포커스 outline (플러그인 기본은 2px solid var(--ifm-color-primary)) */
+  --search-local-input-active-border-color: transparent;
+}
+
+html[data-theme="dark"] {
+  --search-local-modal-background: #1c1917;
+  --search-local-modal-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --search-local-hit-color: #e7e5e4;
+  --search-local-hit-active-color: #18181b;
+  --search-local-muted-color: #a8a29e;
+}
+
+/* 검색 인풋(navbar 의 검색 버튼) 톤을 우리 stone 팔레트로 */
+.navbar__search-input {
+  background-color: #f3f4f6;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  height: 36px;
+  /* 좌측 아이콘(12+14+6=32) ↔ 우측 cmd+K 힌트 영역(약 44) 을 시각적으로 균형 */
+  padding: 0 44px 0 32px;
+  font-size: 13px;
+  color: var(--ifm-color-content);
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+  background-position: 12px center;
+  background-size: 14px;
+  min-width: 220px;
+}
+
+.navbar__search-input::placeholder {
+  color: #9ca2ae;
+}
+
+.navbar__search-input:hover {
+  background-color: #ebecef;
+}
+
+.navbar__search-input:focus {
+  outline: none !important;
+  background-color: #ffffff;
+  border-color: #d2d5d9;
+  /* 두꺼운 outline 대신 얇은 soft ring */
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+html[data-theme="dark"] .navbar__search-input {
+  background-color: #292524;
+  color: #fafaf9;
+}
+
+html[data-theme="dark"] .navbar__search-input::placeholder {
+  color: #78716c;
+}
+
+html[data-theme="dark"] .navbar__search-input:hover {
+  background-color: #353230;
+}
+
+html[data-theme="dark"] .navbar__search-input:focus {
+  background-color: #1c1917;
+  border-color: #44403c;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+}
+
+/* 검색 키보드 힌트 (cmd+K) — 인풋 위에 떠 있어 별도 배경/보더를 모두 제거하고
+   인풋과 같은 톤으로 흡수, plain 텍스트처럼 처리 */
+[class*="searchHint"] {
+  font-size: 11px;
+  font-family: var(--ifm-font-family-monospace);
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #9ca2ae !important;
+}
+
+html[data-theme="dark"] [class*="searchHint"] {
+  color: #78716c !important;
+}
+
+/* 드롭다운 컨테이너 — 4면 동일 패딩 */
+[class*="searchBar"] [class*="dropdownMenu"] {
+  border-radius: 12px !important;
+  padding: 8px !important;
+  margin-top: 6px !important;
+}
+
+/* 각 결과 행 — hover/active 톤 부드럽게, 좌우 동일 패딩 */
+[class*="searchBar"] [class*="dropdownMenu"] [class*="suggestion"] {
+  border-radius: 8px !important;
+  padding: 0 12px !important;
+  box-shadow: none !important;
+}
+
+/* hitWrapper(중앙 텍스트) 좌우 마진 균등 */
+[class*="searchBar"] [class*="dropdownMenu"] [class*="hitWrapper"] {
+  margin: 0 10px !important;
+}
+
+[class*="searchBar"] [class*="dropdownMenu"] [class*="suggestion"]:hover {
+  background-color: #f3f4f6 !important;
+}
+
+html[data-theme="dark"] [class*="searchBar"] [class*="dropdownMenu"] [class*="suggestion"]:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 키보드 포커스(.cursor) 행 — 우리 primary 톤 그대로 */
+[class*="searchBar"] [class*="dropdownMenu"] [class*="suggestion"][class*="cursor"] {
+  background-color: var(--ifm-color-primary) !important;
+}
