@@ -221,7 +221,7 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. Pass `withStats: true` to also get DS adoption stats, grouped violations, and next-action recommendations.",
+      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. `withStats:true` adds DS adoption stats; `report:true` writes a usage report (replaces legacy report_html_mockup_usage).",
     inputSchema: {
       type: "object",
       properties: {
@@ -238,9 +238,30 @@ const TOOLS = [
           description:
             "If true, response also includes DS adoption stats, grouped violations, and recommendations (legacy analyze_html_mockup output). Default false.",
         },
+        report: {
+          type: "boolean",
+          description:
+            "If true, also write DS usage report (JSONL + Sheets webhook) — replaces legacy report_html_mockup_usage. Default false.",
+        },
+        mockupName: {
+          type: "string",
+          description:
+            "[report:true] Optional friendly name. Defaults to file basename or a timestamp.",
+        },
+        cwd: {
+          type: "string",
+          description:
+            "[report:true] Working directory where .ds-html-usage-log.jsonl is appended (when not dryRun).",
+        },
+        dryRun: {
+          type: "boolean",
+          description:
+            "[report:true] If true, inspect only — skip JSONL/webhook write. Default false.",
+        },
         autoReport: {
           type: "boolean",
-          description: "If true, run pending usage auto-report after validation. Default false.",
+          description:
+            "If true, run pending usage-guard auto-report after validation. Default false.",
         },
       },
       additionalProperties: false,
@@ -258,32 +279,6 @@ const TOOLS = [
         rewriteInlineColors: {
           type: "boolean",
           description: "Default true. Set false to leave inline hex colors alone.",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "report_html_mockup_usage",
-    description:
-      "Report HTML mockup DS usage stats. Writes/posts by default; pass dryRun:true to skip.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        source: { type: "string", description: "HTML source string." },
-        filePath: { type: "string", description: "Absolute path to an .html file." },
-        mockupName: {
-          type: "string",
-          description: "Optional friendly name. Defaults to file basename or a timestamp.",
-        },
-        cwd: {
-          type: "string",
-          description:
-            "Working directory where .ds-html-usage-log.jsonl is appended (when not dryRun).",
-        },
-        dryRun: {
-          type: "boolean",
-          description: "Default false — log/write and try webhook. Set true to inspect only.",
         },
       },
       additionalProperties: false,
@@ -582,6 +577,10 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),
         withStats: optionalBoolean(args, "withStats", toolName),
+        report: optionalBoolean(args, "report", toolName),
+        mockupName: optionalString(args, "mockupName", toolName),
+        cwd: optionalString(args, "cwd", toolName),
+        dryRun: optionalBoolean(args, "dryRun", toolName),
         autoReport: optionalBoolean(args, "autoReport", toolName),
       };
     case "convert_html_to_ds_html":
@@ -589,14 +588,6 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),
         rewriteInlineColors: optionalBoolean(args, "rewriteInlineColors", toolName),
-      };
-    case "report_html_mockup_usage":
-      return {
-        source: optionalString(args, "source", toolName),
-        filePath: optionalString(args, "filePath", toolName),
-        mockupName: optionalString(args, "mockupName", toolName),
-        cwd: optionalString(args, "cwd", toolName),
-        dryRun: optionalBoolean(args, "dryRun", toolName),
       };
     default:
       return args;
