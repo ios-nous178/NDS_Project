@@ -1,0 +1,186 @@
+/**
+ * <nds-button> — DS Button 의 vanilla Web Component 버전.
+ *
+ * DOM 구조 (React Button.tsx 와 동일):
+ *   <nds-button color="primary" size="lg">상담 예약</nds-button>
+ *     └─ <button class="nds-button" data-slot="root" data-variant="solid" data-size="lg"
+ *                data-color="primary" style="--nds-button-*: ...">
+ *          └─ <span class="nds-button__label" data-slot="label">상담 예약</span>
+ *        </button>
+ *
+ * 호스트 (<nds-button>) 는 `display: contents` 로 layout 에 영향을 주지 않는다.
+ * 실제 .nds-button 클래스는 내부 <button> 에만 박혀서 React DS stylesheet
+ * (.nds-button { ... }, .nds-button:disabled { ... }, .nds-button:focus-visible { ... }) 가
+ * 그대로 매칭된다 — stylesheet 한 글자도 안 바꾼다.
+ *
+ * children 처리:
+ *   첫 connectedCallback 때 light DOM children 을 모두 <span class="nds-button__label">
+ *   안으로 이동. 사용자가 작성한 markup 은 그대로 보존된다.
+ *
+ * leftIcon / rightIcon 슬롯은 v0.0.1 에서 미구현 — children 단일 슬롯만 지원.
+ * 향후 `<nds-icon slot="left">` 패턴 또는 attribute 기반 아이콘으로 확장.
+ */
+
+import { NdsElement, define } from "../base/nds-element.js";
+import {
+  BUTTON_COLORS,
+  BUTTON_SIZES,
+  BUTTON_VARIANTS,
+  type ButtonColor,
+  type ButtonSize,
+  type ButtonVariant,
+  sizeConfig,
+  styleMap,
+} from "./nds-button.styles.js";
+
+const BUTTON_CLASS = "nds-button";
+const BUTTON_LABEL_CLASS = `${BUTTON_CLASS}__label`;
+
+type ButtonType = "button" | "submit" | "reset";
+
+/**
+ * inner <button> 으로 그대로 mirror 할 attribute 화이트리스트.
+ * a11y · form · 의미론적 attribute 만 — DS 의 visual prop (variant/size/color) 은 제외.
+ */
+const FORWARDED_ATTRS = [
+  "aria-label",
+  "aria-labelledby",
+  "aria-describedby",
+  "aria-pressed",
+  "aria-expanded",
+  "aria-controls",
+  "aria-haspopup",
+  "name",
+  "value",
+  "form",
+  "formaction",
+  "formmethod",
+  "formnovalidate",
+  "formtarget",
+  "title",
+  "autofocus",
+  "tabindex",
+] as const;
+
+export class NdsButton extends NdsElement {
+  static elementName = "nds-button";
+
+  static get observedAttributes(): readonly string[] {
+    return ["variant", "size", "color", "disabled", "full-width", "type", ...FORWARDED_ATTRS];
+  }
+
+  private _inner: HTMLButtonElement | null = null;
+  private _label: HTMLSpanElement | null = null;
+
+  override connectedCallback(): void {
+    if (!this._inner) this._mount();
+    super.connectedCallback();
+  }
+
+  /**
+   * children 을 inner <button> > <span.label> 안으로 이동.
+   * 한 번만 실행 — 이후 update() 는 inner 의 속성/스타일만 갱신한다.
+   */
+  private _mount(): void {
+    const inner = document.createElement("button");
+    const label = document.createElement("span");
+
+    inner.className = BUTTON_CLASS;
+    inner.dataset.slot = "root";
+
+    label.className = BUTTON_LABEL_CLASS;
+    label.dataset.slot = "label";
+
+    // 기존 children 을 label 로 이동 (Text node 포함)
+    while (this.firstChild) {
+      label.appendChild(this.firstChild);
+    }
+
+    inner.appendChild(label);
+    this.appendChild(inner);
+
+    this._inner = inner;
+    this._label = label;
+  }
+
+  protected update(): void {
+    if (!this._inner) return;
+
+    // host 자신은 layout 에 영향 안 주도록 contents 로 빠진다.
+    if (this.style.display !== "contents") {
+      this.style.display = "contents";
+    }
+
+    const variant = this._normalizedVariant();
+    const size = this._normalizedSize();
+    const color = this._normalizedColor();
+    const disabled = this.boolAttr("disabled");
+    const fullWidth = this.boolAttr("full-width");
+    const type = this._normalizedType();
+
+    const cfg = sizeConfig[size];
+    const set = styleMap[color][variant];
+    const state = disabled ? set.disabled : set.enabled;
+    const hover = set.hover;
+
+    const inner = this._inner;
+    inner.type = type;
+    inner.disabled = disabled;
+    inner.dataset.variant = variant;
+    inner.dataset.size = size;
+    inner.dataset.color = color;
+
+    // a11y / form attribute forwarding — host 에 적힌 값을 inner button 으로 mirror.
+    // 호스트에서 attribute 가 제거되면 inner 에서도 제거.
+    for (const name of FORWARDED_ATTRS) {
+      const v = this.getAttribute(name);
+      if (v === null) inner.removeAttribute(name);
+      else inner.setAttribute(name, v);
+    }
+
+    // React Button.tsx 의 인라인 CSS 변수 키와 1:1 동일
+    const vars: Record<string, string | number> = {
+      "--nds-button-height": `${cfg.height}px`,
+      "--nds-button-padding-x": `${cfg.px}px`,
+      "--nds-button-gap": `${cfg.gap}px`,
+      "--nds-button-font-size": `${cfg.fontSize}px`,
+      "--nds-button-line-height": `${cfg.lineHeight}px`,
+      "--nds-button-icon-size": `${cfg.iconSize}px`,
+      "--nds-button-font-weight": state.fontWeight ?? 700,
+      "--nds-button-width": fullWidth ? "100%" : "auto",
+      "--nds-button-background": state.background,
+      "--nds-button-text-color": state.text,
+      "--nds-button-border-color": state.border,
+      "--nds-button-hover-background": hover.background,
+      "--nds-button-hover-text-color": hover.text,
+      "--nds-button-hover-border-color": hover.border,
+    };
+    for (const [k, v] of Object.entries(vars)) {
+      inner.style.setProperty(k, String(v));
+    }
+  }
+
+  /* ─── attribute 정규화 (잘못된 값 → 기본값으로 fallback) ─── */
+
+  private _normalizedVariant(): ButtonVariant {
+    const v = this.attr("variant", "solid");
+    return (BUTTON_VARIANTS as readonly string[]).includes(v) ? (v as ButtonVariant) : "solid";
+  }
+
+  private _normalizedSize(): ButtonSize {
+    const v = this.attr("size", "lg");
+    return (BUTTON_SIZES as readonly string[]).includes(v) ? (v as ButtonSize) : "lg";
+  }
+
+  private _normalizedColor(): ButtonColor {
+    const v = this.attr("color", "primary");
+    return (BUTTON_COLORS as readonly string[]).includes(v) ? (v as ButtonColor) : "primary";
+  }
+
+  private _normalizedType(): ButtonType {
+    const v = this.attr("type", "button");
+    return v === "submit" || v === "reset" ? v : "button";
+  }
+}
+
+define(NdsButton);
