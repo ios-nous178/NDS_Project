@@ -1895,6 +1895,22 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "카테고리 박스 라벨/링크 변경: `category={{ label: '카테고리', href: '/cat' }}`. 숨기려면 `category={false}`.",
       "GNB 5탭 기본: 홈 / 커뮤니티 / 헬시딜 / 음식 리뷰 / 기록 (Pretendard Bold 17).",
     ],
+    references: [
+      {
+        label: "Geniet 데스크톱 홈 SSOT — 웹 PC 홈 풀 캡처",
+        image: "references/geniet-web-home.png",
+        caption:
+          "Geniet 데스크톱 홈. 상단 Search Header(로고 + 검색 pill + 포인트/마이페이지/로그아웃 action) + Menu Header('음식 카테고리' 박스 + GNB 5탭 + 캐시리뷰/친구초대 CTA pill) 의 2단 구조. 본문은 헬시딜 배너 / 커뮤니티 BEST / 유저 리뷰 / 판매랭킹 / 매거진 / GenietFooter.",
+        brand: "geniet",
+      },
+      {
+        label: "Geniet 데스크톱 — 리뷰 작성 모달 오버레이",
+        image: "references/geniet-web-review-modal.png",
+        caption:
+          "Geniet 데스크톱 음식 리뷰 페이지 위에 리뷰 작성 모달이 떠 있는 상태. 배경에 GenietAppBar Menu Header(음식 카테고리/홈/커뮤니티 GNB + 카테고리 chip row + 리뷰쓰기 mint CTA) 가 보임. 모달 자체는 별도 Dialog 컴포넌트 — AppBar 와 함께 등장하는 전형적 패턴.",
+        brand: "geniet",
+      },
+    ],
   },
   GenietFooter: {
     name: "GenietFooter",
@@ -1925,6 +1941,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "`<GenietBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
       "스크롤 컨테이너 안: `position='static'` 으로 fixed 빠져나가는 것 방지.",
       "그림자 끄기: `shadow={false}` (기본 true — Figma 90:2 의 살짝 떠 보이는 가이드)",
+    ],
+    references: [
+      {
+        label: "Geniet 앱 — 음식 리뷰 상세 화면",
+        image: "references/geniet-app-review-detail.png",
+        caption:
+          "Geniet 모바일 앱 음식 리뷰 상세 (포도향기님 아임닭 닭가슴살). 상단 webview 헤더 + 리뷰 본문 + '닭가슴살 먹은 유저들의 다른 리뷰' 그리드 + 커뮤니티 게시글 리스트 + 하단 5탭 GenietBottomNav (홈/기록/혜택/리뷰/커뮤니티) 가 함께 보이는 전형 화면.",
+        brand: "geniet",
+      },
     ],
   },
   TrostAppBar: {
