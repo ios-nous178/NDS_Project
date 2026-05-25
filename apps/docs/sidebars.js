@@ -19,8 +19,8 @@ const seen = new Set();
 const synced = [];
 const unsynced = [];
 for (const entry of inventory) {
-  if (!entry.docsPath || !entry.docsPath.startsWith("/docs/components/")) continue;
-  const slug = entry.docsPath.replace("/docs/components/", "");
+  if (!entry.docsPath || !entry.docsPath.startsWith("/components/")) continue;
+  const slug = entry.docsPath.replace("/components/", "");
   if (seen.has(slug)) continue;
   seen.add(slug);
   if (!docExists(slug)) continue;

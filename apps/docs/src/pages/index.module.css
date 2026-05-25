@@ -23,14 +23,23 @@
 }
 
 html[data-theme="dark"] .page {
-  --c-bg: #0c0f15;
-  --c-bg-alt: #11151c;
-  --c-card: #151a23;
-  --c-text: #e7ecf3;
-  --c-text-sub: #aab1bd;
-  --c-text-muted: #7b8392;
-  --c-border: #1f2530;
-  --c-border-strong: #2a3140;
+  --c-primary: #fafaf9;
+  /* 라이트의 #000000 그대로 두면 다크 배경에서 코드 텍스트/eyebrow 가 사라진다. */
+  --c-primary-dark: #fafaf9;
+  --c-accent: #f472b6;
+  --c-mint: #34d399;
+  --c-purple: #c4b5fd;
+  --c-amber: #fbbf24;
+
+  /* stone 팔레트 — 살짝 따뜻한 그레이, 너무 까맣지 않게 한 톤 밝게 */
+  --c-bg: #1c1917;
+  --c-bg-alt: #232020;
+  --c-card: #292524;
+  --c-text: #fafaf9;
+  --c-text-sub: #d6d3d1;
+  --c-text-muted: #a8a29e;
+  --c-border: #3d3936;
+  --c-border-strong: #57534e;
   --c-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2);
   --c-shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.4), 0 16px 40px rgba(0, 0, 0, 0.35);
 }
@@ -82,6 +91,17 @@ html[data-theme="dark"] .heroGrid {
   text-align: center;
   max-width: 760px;
   margin: 0 auto;
+}
+
+.heroLogo {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+}
+
+html[data-theme="dark"] .heroLogo {
+  filter: invert(1);
 }
 
 .heroEyebrow {
@@ -246,6 +266,107 @@ html[data-theme="dark"] .heroGradient {
   background: var(--c-bg-alt);
 }
 
+.sectionTight {
+  padding: 16px 0 48px;
+}
+
+/* ─── Resources: 카드 대신 가볍게 row 형태 리스트 ─── */
+.linkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--c-border);
+}
+
+.linkList li {
+  border-bottom: 1px solid var(--c-border);
+}
+
+.linkRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 4px;
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: background 0.12s ease;
+}
+
+.linkRow:hover {
+  background: var(--c-bg-alt);
+}
+
+.linkChip {
+  flex-shrink: 0;
+  min-width: 96px;
+  padding: 4px 10px;
+  background: var(--c-bg-alt);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  color: var(--c-text-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.linkBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.linkTitle {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--c-text);
+  letter-spacing: -0.01em;
+}
+
+.linkDesc {
+  font-size: 13.5px;
+  color: var(--c-text-muted);
+  line-height: 1.55;
+}
+
+.linkCta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--c-text-muted);
+  transition: color 0.12s ease;
+}
+
+.linkRow:hover .linkCta {
+  color: var(--c-text);
+}
+
+@media (max-width: 640px) {
+  .linkChip {
+    width: auto;
+  }
+  .linkRow {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .linkBody {
+    flex-basis: 100%;
+    order: 3;
+  }
+  .linkCta {
+    order: 2;
+    margin-left: auto;
+  }
+}
+
 .sectionHeader {
   margin-bottom: 44px;
   max-width: 640px;
@@ -263,7 +384,7 @@ html[data-theme="dark"] .heroGradient {
 
 .eyebrowOnDark {
   display: inline-block;
-  color: #7dd3fc;
+  color: #94a3b8;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -285,6 +406,9 @@ html[data-theme="dark"] .heroGradient {
   font-size: 15.5px;
   margin: 0;
   line-height: 1.65;
+  /* 한국어 어절 단위로 줄바꿈 + 긴 영문 토큰(@nudge-eap/react) 은 필요 시만 분리 */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .sectionHeader code,
@@ -296,6 +420,12 @@ html[data-theme="dark"] .heroGradient {
   padding: 1px 6px;
   border-radius: 4px;
   font-size: 0.9em;
+}
+
+html[data-theme="dark"] .sectionHeader code,
+html[data-theme="dark"] .codeShowcaseDesc code {
+  background: rgba(125, 211, 252, 0.12);
+  color: #7dd3fc;
 }
 
 /* ─── Feature pills ─── */
@@ -420,8 +550,17 @@ html[data-theme="dark"] .heroGradient {
   color: var(--c-text-sub);
 }
 
+html[data-theme="dark"] .previewBadge {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .previewBadgeSynced {
   background: rgba(0, 160, 124, 0.1);
+  color: var(--c-mint);
+}
+
+html[data-theme="dark"] .previewBadgeSynced {
+  background: rgba(52, 211, 153, 0.18);
   color: var(--c-mint);
 }
 
@@ -436,6 +575,14 @@ html[data-theme="dark"] .heroGradient {
   background: radial-gradient(
     ellipse 80% 60% at 50% 50%,
     rgba(43, 150, 237, 0.04),
+    transparent 80%
+  );
+}
+
+html[data-theme="dark"] .previewBody {
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 50%,
+    rgba(125, 211, 252, 0.06),
     transparent 80%
   );
 }
@@ -590,11 +737,11 @@ html[data-theme="dark"] .mcpSection {
 }
 
 .mcpText {
-  color: #e7ecf3;
+  color: #fafaf9;
 }
 
 .mcpTitle {
-  color: #f5f7fb;
+  color: #fafaf9;
   font-size: clamp(1.7rem, 3vw, 2.3rem);
   font-weight: 800;
   letter-spacing: -0.035em;
@@ -603,15 +750,15 @@ html[data-theme="dark"] .mcpSection {
 }
 
 .mcpDesc {
-  color: #aab1bd;
+  color: #a8a29e;
   font-size: 15.5px;
   line-height: 1.7;
   margin: 0 0 24px;
 }
 
 .mcpDesc code {
-  background: rgba(125, 211, 252, 0.12);
-  color: #7dd3fc;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
 }
 
 .mcpLinks {
@@ -625,8 +772,8 @@ html[data-theme="dark"] .mcpSection {
   align-items: center;
   gap: 6px;
   padding: 12px 22px;
-  background: #ffffff;
-  color: #0c111a !important;
+  background: #fafaf9;
+  color: #1c1917 !important;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 700;
@@ -642,9 +789,9 @@ html[data-theme="dark"] .mcpSection {
   display: inline-flex;
   align-items: center;
   padding: 12px 22px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #e7ecf3 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(250, 250, 249, 0.06);
+  color: #fafaf9 !important;
+  border: 1px solid rgba(250, 250, 249, 0.12);
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
@@ -677,8 +824,8 @@ html[data-theme="dark"] .mcpSection {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(125, 211, 252, 0.15);
-  color: #7dd3fc;
+  background: rgba(250, 250, 249, 0.08);
+  color: #d6d3d1;
   font-size: 11px;
   font-weight: 800;
   display: inline-flex;
@@ -687,31 +834,31 @@ html[data-theme="dark"] .mcpSection {
 }
 
 .mcpAvatarAi {
-  background: rgba(144, 97, 249, 0.18);
-  color: #c4b5fd;
+  background: rgba(52, 211, 153, 0.18);
+  color: #34d399;
 }
 
 .mcpBubble {
   flex: 1;
   margin: 0;
   padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(250, 250, 249, 0.06);
   border-radius: 10px;
-  color: #e7ecf3;
+  color: #fafaf9;
   font-size: 14px;
   line-height: 1.55;
 }
 
 .mcpBubbleAi {
-  background: rgba(125, 211, 252, 0.08);
-  color: #d6e4f0;
+  background: rgba(250, 250, 249, 0.04);
+  color: #d6d3d1;
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 13px;
 }
 
 .mcpBubbleAi code {
-  background: rgba(125, 211, 252, 0.18);
-  color: #7dd3fc;
+  background: rgba(250, 250, 249, 0.1);
+  color: #fafaf9;
   padding: 1px 6px;
   border-radius: 4px;
   font-size: 0.95em;
@@ -849,7 +996,7 @@ html[data-theme="dark"] .mcpSection {
 }
 
 html[data-theme="dark"] .hero {
-  background: #0b1120;
+  background: #1c1917;
 }
 
 .heroGrid {
@@ -1035,15 +1182,15 @@ html[data-theme="dark"] .codeShowcaseLink {
 }
 
 html[data-theme="dark"] .codeCard {
-  background: #0f172a;
+  background: #292524;
 }
 
 .mcpSection {
-  background: #0f172a;
+  background: #292524;
 }
 
 html[data-theme="dark"] .mcpSection {
-  background: #020617;
+  background: #1c1917;
 }
 
 .mcpChatCard {

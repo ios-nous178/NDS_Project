@@ -55,7 +55,7 @@ import { SearchIcon, CloseIcon, ChevronRightIcon } from "@nudge-eap/icons";
 <CloseIcon className="my-icon" aria-hidden="true" />
 ```
 
-84종의 아이콘을 제공합니다. 전체 목록은 [Icons 문서](/docs/components/icons)를 참고하세요.
+84종의 아이콘을 제공합니다. 전체 목록은 [Icons 문서](/components/icons)를 참고하세요.
 
 ---
 
@@ -184,10 +184,10 @@ NDS 컴포넌트는 세 가지 방식으로 스타일을 확장할 수 있습니
 
 ## 다음 단계
 
-- [컴포넌트 한눈에 보기](/docs/components/overview) — 전체 컴포넌트 목록
-- [컴포넌트 인벤토리](/docs/components/inventory) — Figma, Storybook, Docs 연결표
-- [디자인 토큰](/docs/tokens/colors) — 색상, 타이포그래피, 간격
-- [디자인 원칙](/docs/guide/design-principles) — NDS의 핵심 원칙
+- [컴포넌트 한눈에 보기](/components/overview) — 전체 컴포넌트 목록
+- [컴포넌트 인벤토리](/components/inventory) — Figma, Storybook, Docs 연결표
+- [디자인 토큰](/tokens/colors) — 색상, 타이포그래피, 간격
+- [디자인 원칙](/guide/design-principles) — NDS의 핵심 원칙
 
 ---
 
@@ -201,7 +201,7 @@ NDS 컴포넌트는 세 가지 방식으로 스타일을 확장할 수 있습니
 {
   "name": "Input",
   "storybookTitle": "Components/Input",
-  "docsPath": "/docs/components/input",
+  "docsPath": "/components/input",
   "figmaUrl": "https://www.figma.com/design/FILE_KEY/Design-System?node-id=430-4212",
   "figmaNodeId": "430:4212",
   "status": "implemented",
@@ -221,7 +221,7 @@ pnpm generate:component-inventory
 ### 3. 반영 위치 확인
 
 - Storybook Docs: 각 컴포넌트 문서 상단 설명 영역
-- Docusaurus Docs: `/docs/components/inventory`
+- Docusaurus Docs: `/components/inventory`
 - 메타데이터 원본: `metadata/componentInventory.json`
 
 ### 4. 운영 팁

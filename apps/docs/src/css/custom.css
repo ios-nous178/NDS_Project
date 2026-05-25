@@ -26,10 +26,12 @@
   --ifm-navbar-shadow: none;
   --ifm-navbar-height: 60px;
 
-  --ifm-footer-background-color: #111111;
-  --ifm-footer-color: rgba(255, 255, 255, 0.7);
-  --ifm-footer-link-color: rgba(255, 255, 255, 0.7);
-  --ifm-footer-title-color: #ffffff;
+  /* 라이트/다크 모두 따뜻한 stone-800 푸터로 통일 */
+  --ifm-footer-background-color: #292524;
+  --ifm-footer-color: rgba(250, 250, 249, 0.7);
+  --ifm-footer-link-color: rgba(250, 250, 249, 0.75);
+  --ifm-footer-link-hover-color: #fafaf9;
+  --ifm-footer-title-color: #fafaf9;
 
   --ifm-toc-border-color: #f3f4f6;
 
@@ -47,10 +49,17 @@ html[data-theme="dark"] {
   --ifm-color-primary-lighter: #ffffff;
   --ifm-color-primary-lightest: #ffffff;
 
-  --ifm-background-color: #111111;
-  --ifm-background-surface-color: #1a1a1a;
-  --ifm-toc-border-color: #2a2a2a;
-  --ifm-hr-border-color: #2a2a2a;
+  /* stone (따뜻한 그레이) 팔레트로 통일 — 한 톤 밝게 */
+  --ifm-background-color: #1c1917;
+  --ifm-background-surface-color: #292524;
+  --ifm-toc-border-color: #3d3936;
+  --ifm-hr-border-color: #3d3936;
+
+  /* 라이트 모드의 rgba(255,255,255,.85) 가 그대로 새서 글자가 흰 배경 위 흰 글자로 사라지던 문제 fix */
+  --ifm-navbar-background-color: rgba(28, 25, 23, 0.85);
+  --ifm-navbar-link-color: #fafaf9;
+  --ifm-navbar-link-hover-color: #ffffff;
+  --ifm-menu-color: #d6d3d1;
 }
 
 /* ─── Navbar ─── */
@@ -60,6 +69,14 @@ html[data-theme="dark"] {
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-bottom: 1px solid rgba(230, 231, 235, 0.6);
   padding: 0 24px;
+}
+
+html[data-theme="dark"] .navbar {
+  border-bottom-color: rgba(42, 42, 42, 0.6);
+}
+
+html[data-theme="dark"] .navbar__title {
+  color: #f1f5f9;
 }
 
 .navbar__brand {
@@ -81,6 +98,10 @@ html[data-theme="dark"] {
   object-fit: contain;
 }
 
+html[data-theme="dark"] .navbar__logo img {
+  filter: invert(1);
+}
+
 .navbar__title {
   font-weight: 700;
   font-size: 16px;
@@ -96,7 +117,7 @@ html[data-theme="dark"] {
   font-weight: 700;
 }
 
-/* GitHub navbar icon link — clean stroke Lucide variant */
+/* GitHub navbar icon link — filled octocat (Simple Icons) */
 .header-github-link {
   font-size: 0;
   padding: 0.25rem 0.5rem;
@@ -108,12 +129,12 @@ html[data-theme="dark"] {
 .header-github-link::before {
   content: "";
   display: inline-block;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background-color: currentColor;
-  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22'/></svg>")
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/></svg>")
     no-repeat center / contain;
-  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22'/></svg>")
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/></svg>")
     no-repeat center / contain;
   transition: opacity 0.15s ease;
 }
@@ -126,6 +147,66 @@ html[data-theme="dark"] {
 .navbar__link
   svg.iconExternalLink_node_modules-\@docusaurus-theme-classic-lib-theme-Icon-ExternalLink-styles-module,
 .navbar__items svg[class*="iconExternalLink"] {
+  display: none;
+}
+
+/* ─── 컬러 모드 토글: 스위치 형태 + thumb 안에 sun/moon 아이콘 ─── */
+.navbar [class*="colorModeToggle"] {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+}
+
+.navbar [class*="colorModeToggle"] button {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  padding: 0;
+  border-radius: 999px;
+  background: #d4d4d8;
+  border: none;
+  transition: background 0.18s ease;
+  cursor: pointer;
+}
+
+.navbar [class*="colorModeToggle"] button:hover {
+  background: #a1a1aa;
+}
+
+html[data-theme="dark"] .navbar [class*="colorModeToggle"] button {
+  background: #3f3f46;
+}
+
+html[data-theme="dark"] .navbar [class*="colorModeToggle"] button:hover {
+  background: #52525b;
+}
+
+/* sun/moon SVG 를 thumb 처럼 좌/우 슬롯에 박는다 — 활성 모드의 아이콘만 보임 (Docusaurus 가 비활성 SVG 를 display:none 처리). */
+.navbar [class*="colorModeToggle"] button svg {
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #475569;
+  transform: translateY(-50%);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.2);
+}
+
+.navbar [class*="colorModeToggle"] button svg[class*="lightToggleIcon"] {
+  left: 2px;
+}
+
+.navbar [class*="colorModeToggle"] button svg[class*="darkToggleIcon"] {
+  left: calc(100% - 22px);
+  background: #fafafa;
+  color: #18181b;
+}
+
+/* 시스템 모드 아이콘 — config 에서 끄지만 fallback 으로 숨김 */
+.navbar [class*="colorModeToggle"] button svg[class*="systemToggleIcon"] {
   display: none;
 }
 
@@ -401,6 +482,15 @@ html[data-theme="dark"] blockquote {
   padding: 48px 0 36px;
 }
 
+/* Infima 의 .footer--dark 가 자기 스코프에서 var 를 #303846 등으로 다시 덮어쓰므로
+   여기서 한 번 더 풀어 stone-800 톤이 살게 한다. */
+.footer.footer--dark {
+  --ifm-footer-background-color: #292524;
+  --ifm-footer-color: rgba(250, 250, 249, 0.7);
+  --ifm-footer-link-color: rgba(250, 250, 249, 0.75);
+  --ifm-footer-title-color: #fafaf9;
+}
+
 .footer__title {
   font-size: 13px;
   font-weight: 700;
@@ -416,10 +506,10 @@ html[data-theme="dark"] blockquote {
 
 .footer__copyright {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(250, 250, 249, 0.4);
   margin-top: 32px;
   padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(250, 250, 249, 0.08);
 }
 
 /* ─── Breadcrumbs ─── */

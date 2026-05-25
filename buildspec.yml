@@ -28,7 +28,8 @@ phases:
   build:
     commands:
       - pnpm build
-      - pnpm docs:build
+      # docs 가 / 에서 서빙되므로 navbar 의 Storybook 링크는 동일 오리진의 /storybook/ 으로 둔다.
+      - STORYBOOK_BASE_URL=/storybook/ pnpm docs:build
       - pnpm --filter @nudge-eap/storybook build
 
   post_build:

@@ -305,8 +305,8 @@ DS MCP 의 `build_singlefile_html` 도구가 vite-plugin-singlefile 로 클릭 /
 ## :books: 더 보기
 
 - 설치 / 업데이트 (Notion): https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272
-- 컴포넌트 한눈에: [컴포넌트 인벤토리](/docs/components/inventory)
-- MCP 도구 21 개 전체: [/docs/guide/mcp-tools-reference](/docs/guide/mcp-tools-reference)
+- 컴포넌트 한눈에: [컴포넌트 인벤토리](/components/inventory)
+- MCP 도구 21 개 전체: [/guide/mcp-tools-reference](/guide/mcp-tools-reference)
 - GitHub: https://github.com/cashwalk/NudgeEAPDesignSystem
 - 노션 백업: https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272
 - 개발자용 README: https://github.com/cashwalk/NudgeEAPDesignSystem/blob/main/packages/mcp/README.md
