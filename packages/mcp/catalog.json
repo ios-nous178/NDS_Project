@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "@nudge-eap/tokens",
-      "version": "0.1.12",
+      "version": "0.1.10",
       "dependencies": {},
       "peerDependencies": {},
       "cssExports": [
@@ -15,7 +15,7 @@
     },
     {
       "name": "@nudge-eap/react",
-      "version": "0.1.12",
+      "version": "0.1.10",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/styles": "workspace:*",
@@ -29,7 +29,7 @@
     },
     {
       "name": "@nudge-eap/icons",
-      "version": "0.1.12",
+      "version": "0.1.10",
       "dependencies": {},
       "peerDependencies": {
         "react": ">=18.0.0"
@@ -38,7 +38,7 @@
     },
     {
       "name": "@nudge-eap/tailwind-preset",
-      "version": "0.1.12",
+      "version": "0.1.10",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
@@ -47,7 +47,7 @@
     },
     {
       "name": "@nudge-eap/styles",
-      "version": "0.1.12",
+      "version": "0.1.10",
       "dependencies": {
         "@nudge-eap/tokens": "workspace:*"
       },
@@ -56,7 +56,7 @@
     },
     {
       "name": "@nudge-eap/html",
-      "version": "0.1.12",
+      "version": "0.1.10",
       "dependencies": {
         "@nudge-eap/icons": "workspace:*",
         "@nudge-eap/styles": "workspace:*",

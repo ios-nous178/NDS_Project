@@ -1,6 +1,6 @@
 {
   "name": "@nudge-eap/html",
-  "version": "0.0.1",
+  "version": "0.1.10",
   "description": "Vanilla Web Components for NudgeEAP Design System — framework-agnostic DOM elements that pair with @nudge-eap/styles.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

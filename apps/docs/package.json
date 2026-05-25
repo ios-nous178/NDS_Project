@@ -1,6 +1,6 @@
 {
   "name": "@nudge-eap/docs",
-  "version": "0.1.7",
+  "version": "0.1.10",
   "private": true,
   "scripts": {
     "dev": "docusaurus start --port 3001",
