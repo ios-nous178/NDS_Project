@@ -428,6 +428,13 @@ function getSlimClaudeMdTemplate(args: {
 7. Run \`dev_server({ action: "start" })\` and \`check_preview\`.
 8. Build the shareable file with \`build_singlefile_html({})\`.
 
+## Completion Gate
+
+- Mockups must visibly include DS MCP/package version and DS component usage/adoption status. Use the MCP-reported \`dsUsageSummary\` / \`humanReadable\` value as the source of truth; do not hand-count components.
+- Before final response, report spacing status, remaining text-symbol-as-icon issues, and any requested scope left unfinished.
+- Before final response, confirm whether the Google Sheets usage POST was sent: \`webhook ok\`, \`webhook queued(...)\`, or \`webhook skipped\`.
+- These checks intentionally repeat validator/tool rules. Do not omit them because similar guidance already exists elsewhere.
+
 ## Hard Rules
 
 - Do not hand-write a standalone export. The final deliverable is \`dist/index.html\` from \`build_singlefile_html\`.
@@ -578,8 +585,10 @@ export function getClaudeMdTemplate(args: {
 - [ ] \`validate_html_mockup\` 위반 0건 (2회 self-check 통과).
 - [ ] \`analyze_html_mockup.dsRatio\` 가 충분히 높고 native 잔존이 0/최소.
 - [ ] 이모지·텍스트 기호 (→ ✓ ★ • 등) 사용 없음.
-- [ ] 풋터에 DS 버전·사용량 뱃지가 visible (\`<span data-ds-badge>DS@x.y.z · DS N (M%)</span>\` 형태 — 주석만으로는 부족).
+- [ ] 목업에 DS MCP/Package 버전 및 DS 컴포넌트 사용량/적용 현황이 visible 하게 포함됨. 풋터 뱃지는 \`<span data-ds-badge>DS@x.y.z · DS N (M%)</span>\` 형태를 기본으로 하되, MCP/package 버전까지 함께 보이게 한다. 주석만으로는 부족.
 - [ ] \`build_singlefile_html\` 호출 후 \`validate_html_mockup({ filePath, report: true })\` 까지 실행 완료 (구글시트 적재 + 마지막 위반 검사).
+- [ ] 최종 응답에 Google Sheets POST 상태를 명시함: \`webhook ok\` / \`webhook queued(...)\` / \`webhook skipped\`.
+- [ ] 최종 응답에 간격 점검 결과, 텍스트 기호 아이콘 잔존 여부, 요청 범위 누락 항목을 명시함.
 - [ ] 가이드 호출은 단계별로만 — 시작 시점에 12개씩 병렬 fetch 하지 않음.
 - [ ] 최종 산출물은 \`build_singlefile_html\` 이 만든 단일 \`dist/index.html\` 이다 (raw \`vite build\` 결과의 다중파일 dist/ 가 아님).
 `;
@@ -734,6 +743,13 @@ export function getClaudeMdTemplate(args: {
 - 목업 \`.tsx\` 가 완성/수정될 때마다 **반드시 \`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 로컬 \`.ds-usage-log.jsonl\` 적재 + 공용 Google Sheets webhook으로 자동 전송 (별도 인증/설정 불필요). 빠뜨리면 사용량 집계가 비어 보임.
 - **최종 산출물은 항상 단일 HTML 파일**. mockup 완성 후 **반드시 \`build_singlefile_html({})\` 호출** — 사용자에게 "만들까요" 라고 묻지 말 것. 그냥 실행하세요. 사용자가 명시적으로 "빌드하지 마" 라고 거부한 경우에만 생략. 손으로 .html 작성, \`vite build\` 직접 실행, 다른 번들러 사용, .tsx 만 남기고 종료 — **모두 금지**.
 - 작업 종료 시 MCP가 띄운 서버는 \`dev_server({ action: "stop" })\` 로 종료
+
+## 완료 게이트 (반복 지시 — 기존 검증/가이드와 중복되어도 생략 금지)
+
+- 목업에는 DS MCP/Package 버전 및 DS 컴포넌트 사용량/적용 현황을 반드시 visible 하게 포함한다. \`report_mockup_usage\` / \`validate_html_mockup(report:true)\` / \`build_singlefile_html\` 응답의 \`humanReadable\` 또는 \`dsUsageSummary\` 를 SSOT 로 사용하고, 직접 카운트하지 않는다.
+- 최종 응답에는 Google Sheets POST 상태를 반드시 쓴다: \`webhook ok\`, \`webhook queued(...)\`, \`webhook skipped\` 중 하나.
+- 최종 응답에는 간격 점검 결과, 텍스트 기호를 아이콘처럼 사용한 곳의 잔존 여부, 요청 범위에서 빠진 항목을 짧게 보고한다.
+- 위 항목은 이미 검증 로직이나 다른 가이드에 있어도 반복 확인한다. 확인하지 못한 항목은 확인하지 못했다고 쓴다.
 
 ## UI 구현 규칙
 

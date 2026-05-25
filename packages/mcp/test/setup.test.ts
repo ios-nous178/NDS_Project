@@ -6,6 +6,7 @@ import {
   getSetup,
   getSetupInstructions,
 } from "../src/tools/setup.js";
+import { getClaudeMdTemplate } from "../src/tools/guides.js";
 import type { Manifest } from "../src/types/manifest.js";
 
 function configureWithManifest(manifest: Partial<Manifest>) {
@@ -85,6 +86,30 @@ describe("setup brand registry", () => {
 });
 
 describe("html setup visual reference guardrail", () => {
+  it("keeps repeated completion reporting gates in generated slim CLAUDE.md", () => {
+    const template = getClaudeMdTemplate({ intent: "html" });
+
+    expect(template).toContain("DS MCP/package version");
+    expect(template).toContain("DS component usage/adoption status");
+    expect(template).toContain("Google Sheets usage POST");
+    expect(template).toContain("webhook ok");
+    expect(template).toContain("webhook queued");
+    expect(template).toContain("webhook skipped");
+    expect(template).toContain("text-symbol-as-icon");
+  });
+
+  it("keeps repeated completion reporting gates in generated default CLAUDE.md", () => {
+    const htmlTemplate = getClaudeMdTemplate({ intent: "html", template: "default" });
+    const reactTemplate = getClaudeMdTemplate({ intent: "user-app", template: "default" });
+
+    expect(htmlTemplate).toContain("DS MCP/Package 버전");
+    expect(htmlTemplate).toContain("Google Sheets POST 상태");
+    expect(htmlTemplate).toContain("텍스트 기호 아이콘 잔존 여부");
+    expect(reactTemplate).toContain("DS MCP/Package 버전");
+    expect(reactTemplate).toContain("Google Sheets POST 상태");
+    expect(reactTemplate).toContain("텍스트 기호를 아이콘처럼 사용한 곳");
+  });
+
   it("surfaces visual reference collection in summary flow", () => {
     configureWithManifest({
       packages: htmlSetupPackages(),
