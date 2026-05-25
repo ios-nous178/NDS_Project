@@ -272,7 +272,7 @@ const NDS_TAG_TO_REACT_ALIAS: Record<string, string> = {
   "nds-fab": "FAB",
   "nds-segmented": "SegmentedControl",
 };
-function ndsTagToComponentName(tag: string): string | null {
+export function ndsTagToComponentName(tag: string): string | null {
   if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];
   const m = NDS_HTML_TAG_RE.exec(tag);
   if (!m) return null;

@@ -10,8 +10,22 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import * as cheerio from "cheerio";
 import { validateHtmlSource, type HtmlViolation } from "./html-validator.js";
+import { ndsTagToComponentName } from "./usage/parser.js";
+import {
+  appendUsageToLog,
+  detectDsVersions,
+  enqueueUsageWebhook,
+  flushUsageWebhookQueue,
+  postUsageToWebhook,
+  type UsageWebhookQueueFlushResult,
+} from "./usage/tracker.js";
+import type { Brand, Context, DsUsageEntry, MockupUsage } from "../types/usage.js";
+
+const USAGE_WEBHOOK_URL =
+  "https://script.google.com/macros/s/AKfycbzgWCu2Y5BygcMakF9qItU3d-bvducUD3mFkryqLQ5RiSRPF1ExzUnkyYDimsTb7d74/exec";
 
 interface DomElement {
   type: string;
@@ -198,8 +212,10 @@ export interface ReportHtmlMockupUsageArgs {
   source?: string;
   filePath?: string;
   mockupName?: string;
+  context?: Context;
+  brand?: Exclude<Brand, null>;
   cwd?: string;
-  /** 기본 true. false 로 두면 .ds-html-usage-log.jsonl 에 기록. */
+  /** 기본 false (.tsx report 와 동일). true 면 로그/webhook 모두 생략. */
   dryRun?: boolean;
 }
 
@@ -207,53 +223,181 @@ export interface ReportHtmlMockupUsageResult {
   filePath: string | null;
   mockupName: string;
   counts: HtmlUsageCounts;
+  /** webhook payload 로 사용된 MockupUsage (.tsx report 와 동일 스키마). */
+  usage: MockupUsage;
   loggedAt: string;
   logPath: string | null;
+  webhook: {
+    attempted: boolean;
+    ok?: boolean;
+    status?: number;
+    attempts?: number;
+    error?: string;
+    queued?: boolean;
+    queuePath?: string;
+    flushedQueue?: UsageWebhookQueueFlushResult;
+  };
   humanReadable: string;
-  webhookNote: string;
+  _nextSuggestion: string;
 }
 
-export function reportHtmlMockupUsage(
+/**
+ * HTML mockup 의 nds-* / native 사용 카운트를 .tsx report 와 동일한 webhook 으로 적재.
+ *
+ * - nds-* tag → DsUsageEntry (component 명은 ndsTagToComponentName 로 PascalCase 변환)
+ * - nds-className 흉내 → CustomNativeEntry 에 `nds-imitation:<class>` 로 분리 적재
+ *   (시트에서 "흉내" vs "실 native" 를 구분할 수 있도록)
+ * - native unwrapped → CustomNativeEntry
+ *
+ * 같은 `.ds-usage-log.jsonl` 와 같은 Google Apps Script webhook 으로 보내므로 시트에서
+ * .tsx · .html 양쪽 mockup 이 한 줄씩 누적된다.
+ */
+export async function reportHtmlMockupUsage(
   args: ReportHtmlMockupUsageArgs,
-): ReportHtmlMockupUsageResult {
+): Promise<ReportHtmlMockupUsageResult> {
   const { source, filePath } = readSourceArgs(args);
   const counts = countHtmlUsage(source);
   const loggedAt = new Date().toISOString();
+  const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
   const mockupName =
     args.mockupName ??
     (filePath ? path.basename(filePath) : `html-snippet-${loggedAt.replace(/[:.]/g, "-")}`);
 
-  const dryRun = args.dryRun !== false; // 기본 true — .tsx report 와 달리 HTML 은 옵트인
+  const usage = buildMockupUsageFromHtmlCounts({
+    counts,
+    filePath,
+    mockupName,
+    cwd,
+    context: args.context ?? "user-app",
+    brand: args.brand ?? null,
+    loggedAt,
+  });
+
+  const dryRun = args.dryRun === true;
+
   let logPath: string | null = null;
   if (!dryRun) {
-    const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
-    logPath = path.join(cwd, ".ds-html-usage-log.jsonl");
-    const entry = JSON.stringify({
-      mockupName,
-      mockupFile: filePath ?? null,
-      loggedAt,
-      counts,
-    });
-    fs.appendFileSync(logPath, entry + "\n");
+    logPath = path.join(cwd, ".ds-usage-log.jsonl");
+    appendUsageToLog(usage, logPath);
   }
 
+  const webhook: ReportHtmlMockupUsageResult["webhook"] = { attempted: false };
+  if (!dryRun) {
+    const queuePath = path.join(cwd, ".ds-usage-webhook-queue.jsonl");
+    const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
+    if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
+      webhook.flushedQueue = flushedQueue;
+    }
+    webhook.attempted = true;
+    try {
+      const res = await postUsageToWebhook(usage, USAGE_WEBHOOK_URL);
+      webhook.ok = res.ok;
+      webhook.status = res.status;
+      webhook.attempts = res.attempts;
+      if (!res.ok) {
+        enqueueUsageWebhook(usage, queuePath);
+        webhook.queued = true;
+        webhook.queuePath = queuePath;
+      }
+    } catch (err) {
+      webhook.ok = false;
+      webhook.error = (err as Error).message;
+      enqueueUsageWebhook(usage, queuePath);
+      webhook.queued = true;
+      webhook.queuePath = queuePath;
+    }
+  }
+
+  const webhookStatus = !webhook.attempted
+    ? "skipped"
+    : webhook.ok
+      ? "ok"
+      : `queued(${webhook.status ?? "err"})`;
+  const dsVersionLabel = usage.dsVersions?.primary ?? "unknown";
   const humanReadable =
-    `[html-usage] ${mockupName} · DS ratio ${counts.dsRatio}% · ` +
-    `nds-tag ${counts.ndsTags.total} · nds-class ${counts.ndsClassed.total} · ` +
-    `native ${counts.nativeUnwrapped.total}` +
-    (logPath ? ` · logged to ${path.basename(logPath)}` : " · dryRun");
+    `[html-usage] ${mockupName} (${usage.brand ?? "?"}) · DS@${dsVersionLabel} · ` +
+    `DS ${counts.ndsTags.total} (${counts.dsRatio}%) · ` +
+    `nds-class ${counts.ndsClassed.total} · native ${counts.nativeUnwrapped.total} · ` +
+    `webhook ${webhookStatus}`;
+
+  const _nextSuggestion =
+    "⚠️ MUST: 사용자에게 보여줄 한 줄 요약(humanReadable)에는 **DS 사용 비율(%) 과 DS 버전** 이 항상 함께 들어가야 합니다. " +
+    "기본 형식 예: '[html-usage] <name> (<brand>) · DS@<version> · DS <n> (<ratio>%) · ...'. " +
+    "이 결과를 사용자에게 한 줄로 보여준 다음, build_singlefile_html 로 dist/index.html 단일 산출물을 만드세요.";
 
   return {
     filePath,
     mockupName,
     counts,
+    usage,
     loggedAt,
     logPath,
+    webhook,
     humanReadable,
-    webhookNote:
-      "v0 한계: HTML usage 는 로컬 JSONL 만 기록합니다. webhook 전송은 .tsx report_mockup_usage 와 " +
-      "스키마 통합 후 v0.1 에서 활성화 예정 (현재는 dryRun 기본 true).",
+    _nextSuggestion,
   };
+}
+
+interface BuildUsageArgs {
+  counts: HtmlUsageCounts;
+  filePath: string | null;
+  mockupName: string;
+  cwd: string;
+  context: Context;
+  brand: Brand;
+  loggedAt: string;
+}
+
+function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
+  const { counts, filePath, mockupName, cwd, context, brand, loggedAt } = args;
+
+  const ds: DsUsageEntry[] = [];
+  for (const [tag, count] of Object.entries(counts.ndsTags.byTag)) {
+    const component = ndsTagToComponentName(tag) ?? tag.replace(/^nds-/, "");
+    ds.push({ component, count });
+  }
+  ds.sort((a, b) => b.count - a.count);
+
+  // nds-* className 흉내는 실제 DS 사용이 아니므로 customNative 에 별도 prefix 로 분리.
+  // 시트에서 "흉내" vs "raw native" 를 구분할 수 있다.
+  const customNative: { tag: string; count: number }[] = [];
+  for (const [cls, count] of Object.entries(counts.ndsClassed.byClass)) {
+    customNative.push({ tag: `nds-imitation:${cls}`, count });
+  }
+  for (const [tag, count] of Object.entries(counts.nativeUnwrapped.byTag)) {
+    customNative.push({ tag, count });
+  }
+  customNative.sort((a, b) => b.count - a.count);
+
+  const dsVersions = detectDsVersions(cwd);
+  const mockupFile = filePath ? path.relative(cwd, filePath) : `inline:${mockupName}`;
+
+  const usage: MockupUsage = {
+    date: loggedAt.slice(0, 10),
+    loggedAt,
+    mockupFile,
+    mockupName,
+    context,
+    brand,
+    dsVersions,
+    ds,
+    adminCms: [],
+    customNative,
+    external: [],
+    meta: {
+      totalDs: counts.ndsTags.total,
+      totalAdminCms: 0,
+      totalCustomNative: counts.nativeUnwrapped.total + counts.ndsClassed.total,
+      totalExternal: 0,
+      dsRatio: counts.dsRatio,
+      parserWarnings: [],
+    },
+  };
+  usage.usageId = createHash("sha256")
+    .update(`${usage.mockupFile}\n${usage.loggedAt}`)
+    .digest("hex")
+    .slice(0, 24);
+  return usage;
 }
 
 /* ───────── convert_html_to_ds_html ───────── */

@@ -12,6 +12,8 @@ import {
   flushUsageWebhookQueue,
   type UsageWebhookQueueFlushResult,
 } from "./usage/tracker.js";
+import { detectWorkspaceIntent } from "./build-html.js";
+import { reportHtmlMockupUsage } from "./html-analyzer.js";
 import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
 
 const USAGE_WEBHOOK_URL =
@@ -147,6 +149,7 @@ export async function reportMockupUsage(args: {
 
 const POST_CREATION_TOOLS = new Set<string>([
   "validate_mockup",
+  "validate_html_mockup",
   "check_preview",
   "dev_server",
   "build_singlefile_html",
@@ -210,8 +213,11 @@ async function autoReportPendingMockups(
   const outcomes: AutoReportOutcome[] = [];
   // serialize POSTs to keep the shared Apps Script webhook happy
   for (const p of slice) {
+    const isHtml = /\.html?$/i.test(p.filePath);
     try {
-      const res = await reportMockupUsage({ filePath: p.filePath, cwd });
+      const res = isHtml
+        ? await reportHtmlMockupUsage({ filePath: p.filePath, cwd })
+        : await reportMockupUsage({ filePath: p.filePath, cwd });
       outcomes.push({
         filePath: p.filePath,
         ok: res.webhook.ok === true,
@@ -247,10 +253,14 @@ export async function runUsageGuards(toolName: string, args: unknown): Promise<U
 
   const cwd = extractCwdFromArgs(args) ?? process.cwd();
   const isBuildEvent = toolName === "build_singlefile_html";
+  // 워크스페이스 intent 자동 감지 — scanner 가 .tsx vs .html 후보를 다르게 산출하도록.
+  // validate_html_mockup 처럼 HTML 명시 도구는 항상 html, build_singlefile_html 은 detect 결과 사용.
+  const intent: "react" | "html" =
+    toolName === "validate_html_mockup" ? "html" : detectWorkspaceIntent(cwd);
 
   let pending: PendingMockupReport[];
   try {
-    pending = scanPendingMockupReports(cwd);
+    pending = scanPendingMockupReports(cwd, intent);
   } catch {
     return {};
   }
@@ -261,7 +271,7 @@ export async function runUsageGuards(toolName: string, args: unknown): Promise<U
     const reported = new Set(pending.map((p) => p.filePath));
     let forced: PendingMockupReport[] = [];
     try {
-      forced = scanMockupsForBuildEvent(cwd);
+      forced = scanMockupsForBuildEvent(cwd, intent);
     } catch {
       forced = [];
     }
