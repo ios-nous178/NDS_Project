@@ -80,6 +80,8 @@ export interface BuildSinglefileHtmlResult {
   /** 감지/지정된 워크스페이스 intent. audit 룰과 next-step 안내가 갈라지는 기준. */
   intent?: WorkspaceIntent;
   humanReadable: string;
+  /** 다음에 호출해야 하는 도구 한 줄 — 응답 첫 줄(humanReadable) NEXT STEP 과 중복 강조용. */
+  nextStep?: string;
   error?: string;
   _nextSuggestion?: string;
 }
@@ -268,18 +270,28 @@ export async function buildSinglefileHtml(
   if (installedSinglefile) annotations.push(`installed vite-plugin-singlefile`);
   if (routerWarning) annotations.push(`[!] ${routerWarning}`);
   const tail = annotations.length > 0 ? ` · ${annotations.join(" · ")}` : "";
-  const humanReadable = `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}`;
+
+  // NEXT STEP prefix — humanReadable 의 첫 줄에 다음 강제 호출을 박는다.
+  // 빌드 자체는 통과해도 validate_html_mockup({ report: true }) 가 누락되면
+  // 구글시트 적재가 끊겨 운영팀이 채택 비율을 추적할 수 없음.
+  const nextCall =
+    intent === "html"
+      ? `validate_html_mockup({ filePath: '${relOutput}', report: true })`
+      : "report_mockup_usage(...)";
+  const humanReadable =
+    `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
+    `NEXT STEP → ${nextCall} 호출 필수 (DS 사용량 적재 + 위반 최종 확인).`;
 
   const _nextSuggestion =
     intent === "html"
-      ? "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). " +
-        "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 있어 " +
-        "메신저 dnd / 파일 공유로 그대로 열립니다. build_singlefile_html 은 원본 index.html 기준 DS 사용량을 자동 적재하고 " +
-        "singlefile 산출물에도 DS@버전 · 사용 비율 주석을 삽입합니다. 추가 확인이 필요할 때만 analyze_html_mockup({ filePath: 'index.html' }) 를 호출하세요 " +
-        "(singlefile 산출물 자체는 inline JS 라 정적 파싱 불가하므로 원본 index.html 기반 집계만 유효)."
-      : "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). " +
-        "그 다음 report_mockup_usage 를 호출해 원본 .tsx 사용량을 적재하세요 " +
-        "(singlefile 산출물은 inline JS 라 정적 파싱 불가하므로 *.tsx 기반 집계만 유효).";
+      ? "**NEXT STEP (필수 · 사용자에게 묻지 말고 즉시 실행):** " +
+        `validate_html_mockup({ filePath: '${relOutput}', report: true }) — DS 사용량을 구글시트에 적재하고 마지막 위반 검사를 수행. 이 호출 없이는 빌드 워크플로우 미완료. ` +
+        "그 다음 사용자에게 humanReadable 한 줄을 보여주고, dsUsageSummary 가 풋터에 visible 하게 렌더되었는지 확인 (안 됐으면 풋터에 <span data-ds-badge>...</span> 삽입). " +
+        "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 있어 메신저 dnd / 파일 공유로 그대로 열립니다. " +
+        "build_singlefile_html 은 원본 index.html 기준 DS 사용량을 자동 적재하고 singlefile 산출물에도 DS@버전 · 사용 비율 주석을 삽입합니다."
+      : "**NEXT STEP (필수):** report_mockup_usage 를 호출해 원본 .tsx 사용량을 적재 " +
+        "(singlefile 산출물은 inline JS 라 정적 파싱 불가하므로 *.tsx 기반 집계만 유효). " +
+        "그 다음 사용자에게 humanReadable 한 줄을 보여주세요.";
 
   return {
     ok: true,
@@ -295,6 +307,7 @@ export async function buildSinglefileHtml(
     dsUsageSummary,
     intent,
     humanReadable,
+    nextStep: nextCall,
     _nextSuggestion,
   };
 }

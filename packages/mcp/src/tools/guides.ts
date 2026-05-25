@@ -471,6 +471,20 @@ export function getClaudeMdTemplate(args: {
 
 ## 도구 사용 규칙
 
+### 가이드 호출 순서 (토큰 절약 — 절대 한꺼번에 풀-fetch 하지 말 것)
+
+가이드를 12개씩 병렬로 미리 받지 말 것. 컨텍스트 윈도우가 빨리 차서 후반 작업이 막힘.
+다음 단계별 호출만 허용:
+
+1. **§1 작업 시작 (필수 2개)**: \`get_guide({ topic: "principles" })\` + \`get_guide({ topic: "pattern:visual-reference" })\`. 이것만 받고 outline 작성.
+2. **§2 outline 작성 중 (사용 컴포넌트가 정해질 때마다 1개씩)**: \`get_guide({ topic: "component:<Name>", target: "html" })\` — outline 에서 실제로 쓸 컴포넌트만, 한 번에 1개.
+3. **§3 outline 의 특정 패턴이 모호할 때만**: \`get_guide({ topic: "pattern:<name>" })\` — \`cta-group\` / \`notice\` / \`action-row\` 등 정말 필요한 패턴만.
+4. **§4 작성 후 검증 직전 (필수 1개)**: \`get_guide({ topic: "dos-donts" })\`.
+
+가이드를 더 받기 전에 항상 자문: "지금 outline 의 어느 줄을 막고 있길래 이 가이드가 필요한가?" 답이 안 나오면 호출하지 말 것.
+
+### 기본 도구 사용
+
 - **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴 로드.
 - **모든 mockup 작업은 시각 레퍼런스 수집부터 시작.** \`get_guide({ topic: "pattern:visual-reference" })\` 로 룰 확인.
 - 컴포넌트 사용 전 \`find_component({ query })\` → \`get_guide({ topic: "component:<Name>", target: "html" })\` 호출. \`target: "html"\` 을 반드시 명시 — examples.do / examples.dont 가 \`<nds-*>\` form 으로 교체된다. 빠뜨리면 React JSX 예시가 반환됨 (이 워크플로우에선 무용지물).
@@ -510,8 +524,9 @@ export function getClaudeMdTemplate(args: {
 8. \`dev_server({ action: "start" })\` 실행.
 9. \`check_preview\` 실행 및 런타임 오류 수정. unknown custom-element 경고는 main.ts 의 runtime import 누락 신호.
 10. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인.
-11. **\`build_singlefile_html\` 호출 → \`dist/index.html\` 1개 파일 산출**. 결과 humanReadable 을 사용자에게 그대로 보여줄 것 (\`[OK] dist/index.html (NN KB, Ms)\`). MCP 가 intent='html' 을 자동 감지해 \`vite-plugin-singlefile\` 설치 + vite.config 패치 + 빌드까지 수행. 산출물 1개 파일이 메신저 dnd / 첨부로 공유 가능.
-12. 사용자에게 dev 서버 URL 또는 \`dist/index.html\` 경로를 명확히 전달. 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
+11. **\`build_singlefile_html\` 호출 → \`dist/index.html\` 1개 파일 산출**. 결과 humanReadable 을 사용자에게 그대로 보여줄 것 (\`[OK] dist/index.html (NN KB, Ms)\`). MCP 가 intent='html' 을 자동 감지해 \`vite-plugin-singlefile\` 설치 + vite.config 패치 + 빌드까지 수행. 산출물 1개 파일이 메신저 dnd / 첨부로 공유 가능. 응답의 \`dsUsageSummary\` (예: \`DS@0.1.10 · DS 12 (45%)\`) 를 \`<footer>\` 안에 visible 하게 렌더 — \`<span data-ds-badge>...</span>\` 형태. (HTML 주석만으로는 디자이너/PM 이 어떤 DS 버전인지 확인 불가)
+12. **반드시 \`validate_html_mockup({ filePath: 'dist/index.html', report: true })\` 호출** — build 응답의 \`humanReadable\` 첫 줄 NEXT STEP 라인을 따라 즉시 실행. 사용자에게 묻지 말고 그냥 실행. 이 호출은 (a) DS 사용량을 구글시트에 적재하고 (b) 마지막 위반 검사를 수행. 빠뜨리면 운영팀이 채택 비율 추적 불가 + ds-badge-missing / emoji-banned 같은 마지막 위반이 산출물에 그대로 남음.
+13. 사용자에게 dev 서버 URL 또는 \`dist/index.html\` 경로를 명확히 전달. 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
 
 ## Self-Check
 
@@ -524,6 +539,9 @@ export function getClaudeMdTemplate(args: {
 - [ ] \`validate_html_mockup\` 위반 0건 (2회 self-check 통과).
 - [ ] \`analyze_html_mockup.dsRatio\` 가 충분히 높고 native 잔존이 0/최소.
 - [ ] 이모지·텍스트 기호 (→ ✓ ★ • 등) 사용 없음.
+- [ ] 풋터에 DS 버전·사용량 뱃지가 visible (\`<span data-ds-badge>DS@x.y.z · DS N (M%)</span>\` 형태 — 주석만으로는 부족).
+- [ ] \`build_singlefile_html\` 호출 후 \`validate_html_mockup({ filePath, report: true })\` 까지 실행 완료 (구글시트 적재 + 마지막 위반 검사).
+- [ ] 가이드 호출은 단계별로만 — 시작 시점에 12개씩 병렬 fetch 하지 않음.
 - [ ] 최종 산출물은 \`build_singlefile_html\` 이 만든 단일 \`dist/index.html\` 이다 (raw \`vite build\` 결과의 다중파일 dist/ 가 아님).
 `;
   }

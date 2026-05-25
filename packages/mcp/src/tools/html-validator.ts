@@ -380,38 +380,91 @@ export function validateHtmlSource(
     }
   });
 
-  // 8. text 노드의 emoji / strict symbol
+  // 8. text 노드 + attribute 값 + <style> 안의 emoji / strict symbol
+  //    (attribute: placeholder / title / alt / aria-label / label / content 등 사용자 노출 텍스트)
+  const TEXT_ATTR_KEYS = [
+    "placeholder",
+    "title",
+    "alt",
+    "aria-label",
+    "label",
+    "data-label",
+    "content",
+    "value",
+  ];
   $("*").each((_idx, el) => {
     if (el.type !== "tag") return;
     const tag = el.tagName.toLowerCase();
-    if (tag === "script" || tag === "style") return;
+    if (tag === "script") return;
     const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
     const line = lineNumberAt(source, offset);
     const selector = describeElement(el);
-    const text = $(el)
-      .contents()
-      .filter((_i, c) => c.type === "text")
-      .text();
-    if (!text) return;
-    if (EMOJI_RE.test(text)) {
-      violations.push({
-        rule: "emoji-banned",
-        line,
-        selector,
-        detail: text.trim().slice(0, 60),
-        suggestion: "이모지 금지. 아이콘은 find_icon 으로 DS 아이콘 사용.",
-      });
-    }
-    if (STRICT_SYMBOL_RE.test(text)) {
-      violations.push({
-        rule: "text-symbol-banned",
-        line,
-        selector,
-        detail: text.trim().slice(0, 60),
-        suggestion: "→ ← ✓ ★ • 같은 기호 텍스트 금지. 의미 컴포넌트 또는 DS 아이콘 사용.",
-      });
+
+    if (tag !== "style") {
+      const text = $(el)
+        .contents()
+        .filter((_i, c) => c.type === "text")
+        .text();
+      if (text) {
+        if (EMOJI_RE.test(text)) {
+          violations.push({
+            rule: "emoji-banned",
+            line,
+            selector,
+            detail: text.trim().slice(0, 60),
+            suggestion:
+              "이모지 금지. 아이콘이 필요하면 find_icon({ query }) → @nudge-eap/icons 인라인 SVG. 차선책으로 MockupLinear*/MockupBold* 패키지.",
+          });
+        }
+        if (STRICT_SYMBOL_RE.test(text)) {
+          violations.push({
+            rule: "text-symbol-banned",
+            line,
+            selector,
+            detail: text.trim().slice(0, 60),
+            suggestion: "→ ← ✓ ★ • 같은 기호 텍스트 금지. 의미 컴포넌트 또는 DS 아이콘 사용.",
+          });
+        }
+      }
+
+      const attrs = el.attribs ?? {};
+      for (const key of TEXT_ATTR_KEYS) {
+        const v = attrs[key];
+        if (!v) continue;
+        if (EMOJI_RE.test(v)) {
+          violations.push({
+            rule: "emoji-banned",
+            line,
+            selector,
+            detail: `${key}="${v.slice(0, 60)}"`,
+            suggestion: `${key} 속성에 이모지 사용 금지. 평문으로 작성하거나 아이콘은 find_icon 으로 DS 아이콘 사용.`,
+          });
+        }
+      }
     }
   });
+
+  // <style> 블록 안의 content: '😀' 류 — cheerio 의 element 순회에서는 style 자식
+  // 텍스트가 일관되게 노출되지 않으므로 source 문자열을 직접 스캔한다.
+  const styleBlockRe = /<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi;
+  for (const styleMatch of source.matchAll(styleBlockRe)) {
+    const cssBody = styleMatch[1] ?? "";
+    const blockStart = styleMatch.index ?? 0;
+    const blockLine = lineNumberAt(source, blockStart);
+    for (const m of cssBody.matchAll(/content\s*:\s*(["'])((?:(?!\1).)*)\1/g)) {
+      const v = m[2];
+      if (EMOJI_RE.test(v) || STRICT_SYMBOL_RE.test(v)) {
+        violations.push({
+          rule: "emoji-banned",
+          line: blockLine,
+          selector: "<style>",
+          detail: `content: "${v.slice(0, 40)}"`,
+          suggestion:
+            "CSS content 속성 안 이모지/기호 사용 금지. ::before / ::after 장식은 텍스트가 아니라 SVG mask / 배경 또는 DS 아이콘 컴포넌트로 표현.",
+        });
+      }
+    }
+  }
 
   // ─── 컨테이너 패스 (Card / Footer / 영역별 CTA) ───
   //
@@ -760,6 +813,47 @@ function collectDocumentLevelViolations(
       suggestion:
         "Primary color 는 CTA/interactive/highlight 중 제한된 역할에만. 배경/태그/카드/포커스까지 모두 primary 로 처리하지 말고 neutral surface 와 텍스트 위계로 낮추세요.",
     });
+  }
+
+  // ─── DS 뱃지 풋터 노출 ─────────────────────────────────
+  // 풋터(<footer> / <nds-footer-info> / <nds-footer-web>) 안에 DS 버전·사용량 뱃지가
+  // 시각적으로 보여야 함. 뱃지는 다음 중 하나로 인식:
+  //   - data-ds-badge 속성을 가진 요소
+  //   - "DS@<version>" 또는 "DS@버전" 텍스트
+  // build_singlefile_html 이 응답으로 dsUsageSummary 를 돌려주는데, 그 값을
+  // 풋터에 visible 하게 렌더해야 한다. (HTML 주석으로만 박혀 있으면 디자이너/PM 이
+  // 산출물을 받았을 때 어떤 DS 버전인지·DS 사용 비율이 얼마인지 알 수 없다.)
+  const footerSelectors = ["footer", "nds-footer-info", "nds-footer-web", "nds-footer-app"];
+  const footers = $(footerSelectors.join(", "));
+  if (footers.length > 0) {
+    let badgeFound = false;
+    footers.each((_i, el) => {
+      if (badgeFound) return;
+      const $el = $(el);
+      if ($el.find("[data-ds-badge]").length > 0 || $el.is("[data-ds-badge]")) {
+        badgeFound = true;
+        return;
+      }
+      // 풋터 후손 전체 텍스트를 합쳐 검사 (DS@0.1.10 형태 또는 DS@버전 자리표시자)
+      const allText = $el.text();
+      if (/\bDS\s*@\s*[\w.-]+/i.test(allText)) {
+        badgeFound = true;
+      }
+    });
+    if (!badgeFound) {
+      const firstFooter = footers.get(0) as DomElement | undefined;
+      const line = firstFooter
+        ? lineNumberAt(source, (firstFooter as unknown as { startIndex?: number }).startIndex ?? 0)
+        : 1;
+      out.push({
+        rule: "ds-badge-missing",
+        line,
+        selector: firstFooter ? describeElement(firstFooter) : undefined,
+        detail: "풋터에 DS 버전·사용량 뱃지가 없음.",
+        suggestion:
+          "build_singlefile_html 응답의 dsUsageSummary(예: 'DS@0.1.10 · DS 12 (45%)') 를 풋터 안에 visible 하게 렌더하세요. 인식 패턴: data-ds-badge 속성 또는 'DS@<version>' 텍스트. 예: <span data-ds-badge style=\"font-size:12px;color:var(--semantic-text-tertiary)\">DS@0.1.10 · DS 12 (45%)</span>",
+      });
+    }
   }
 }
 

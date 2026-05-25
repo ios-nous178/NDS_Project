@@ -88,6 +88,37 @@ describe("validateHtmlSource", () => {
     expect(rulesFor(`<p>안녕 🎉</p>`)).toContain("emoji-banned");
   });
 
+  it("flags emoji in attribute value (placeholder)", () => {
+    expect(rulesFor(`<nds-input placeholder="검색 🔍"></nds-input>`)).toContain("emoji-banned");
+  });
+
+  it("flags emoji in attribute value (aria-label)", () => {
+    expect(rulesFor(`<button aria-label="닫기 ❌">x</button>`)).toContain("emoji-banned");
+  });
+
+  it("flags emoji in <style> content property", () => {
+    expect(rulesFor(`<style>.icon::before { content: '📊'; }</style>`)).toContain("emoji-banned");
+  });
+
+  it("flags ds-badge-missing when footer has no DS badge", () => {
+    expect(rulesFor(`<footer><p>회사 정보</p></footer>`)).toContain("ds-badge-missing");
+  });
+
+  it("accepts data-ds-badge attribute as DS badge", () => {
+    const r = rulesFor(`<footer><span data-ds-badge>DS@0.1.10 · DS 12 (45%)</span></footer>`);
+    expect(r).not.toContain("ds-badge-missing");
+  });
+
+  it("accepts 'DS@<version>' text as DS badge", () => {
+    const r = rulesFor(`<footer><small>Built with DS@0.1.10</small></footer>`);
+    expect(r).not.toContain("ds-badge-missing");
+  });
+
+  it("does not flag ds-badge-missing when document has no footer", () => {
+    const r = rulesFor(`<main><h1>홈</h1></main>`);
+    expect(r).not.toContain("ds-badge-missing");
+  });
+
   it("flags decorative arrow / check symbols", () => {
     expect(rulesFor(`<button>다음 →</button>`)).toContain("text-symbol-banned");
   });
