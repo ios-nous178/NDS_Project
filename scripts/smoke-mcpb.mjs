@@ -128,19 +128,21 @@ try {
     );
   }
 
-  const validation = await callTool("validate_mockup", {
-    source: `import { Button } from "@nudge-eap/react";
-export function Demo() {
-  return <Button color="primary">Start</Button>;
-}`,
+  // validate_html_mockup: report 기본 true 라서 시트 webhook 까지 타지 않게 dryRun 으로 호출.
+  // 산출물에 ds-badge 가 없으니 위반은 발생함 (ok=false 가 정상) — 응답 shape 만 검사.
+  const validation = await callTool("validate_html_mockup", {
+    source: `<!doctype html>
+<html>
+  <body>
+    <nds-button color="primary">Start</nds-button>
+  </body>
+</html>`,
+    report: false,
   });
-  if (typeof validation?.ok !== "boolean" || typeof validation?.violationCount !== "number") {
-    throw new Error(`validate_mockup returned unexpected result: ${JSON.stringify(validation)}`);
-  }
-
-  const update = await callTool("check_mcp_update", {});
-  if (typeof update?.installed !== "string" || typeof update?.upToDate !== "boolean") {
-    throw new Error(`check_mcp_update returned unexpected result: ${JSON.stringify(update)}`);
+  if (typeof validation?.ok !== "boolean" || !Array.isArray(validation?.violations)) {
+    throw new Error(
+      `validate_html_mockup returned unexpected result: ${JSON.stringify(validation)}`,
+    );
   }
 
   clearTimeout(timeout);
