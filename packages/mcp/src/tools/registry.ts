@@ -79,25 +79,6 @@ const TOOLS = [
     },
   },
   {
-    name: "validate_mockup",
-    description:
-      "Legacy React/.tsx validator for existing mockups. Prefer validate_html_mockup for new HTML workspaces.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        source: { type: "string" },
-        filePath: { type: "string" },
-        intent: {
-          type: "string",
-          enum: ["user-app", "admin-cms"],
-          description:
-            "Workspace intent. 'admin-cms' 일 때만 antd 임포트가 정상으로 간주됩니다 (admin-cms 룰은 향후 추가). 기본 'user-app'.",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
     name: "suggest_replacement",
     description: "Suggest token replacements for inline color/spacing snippets.",
     inputSchema: {
@@ -119,46 +100,6 @@ const TOOLS = [
     name: "check_mcp_update",
     description: "Check GitHub Releases for a newer .mcpb and return update instructions.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
-  },
-  {
-    name: "report_mockup_usage",
-    description:
-      "Legacy React/.tsx usage reporter. New HTML workspaces should use report_html_mockup_usage.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        filePath: {
-          type: "string",
-          description: "Absolute or repo-relative path to the mockup .tsx file to analyze.",
-        },
-        mockupName: {
-          type: "string",
-          description: "Optional display name. Defaults to the filename without extension.",
-        },
-        context: {
-          type: "string",
-          enum: ["user-app", "admin-cms", "unknown"],
-          description: "Override context detection. Default: auto-detected from imports.",
-        },
-        brand: {
-          type: "string",
-          enum: ["trost", "geniet", "nudge-eap", "cashpobi"],
-          description: "Override brand detection. Default: auto-detected from filename/path.",
-        },
-        cwd: {
-          type: "string",
-          description:
-            "Project root used to relativize file paths and place the log file. Defaults to MCP process cwd.",
-        },
-        dryRun: {
-          type: "boolean",
-          description:
-            "If true, return usage but do NOT write to JSONL or POST to the Sheets webhook. Default: false.",
-        },
-      },
-      required: ["filePath"],
-      additionalProperties: false,
-    },
   },
   {
     name: "dev_server",
@@ -477,9 +418,6 @@ const TOOLS = [
   },
 ];
 
-const CONTEXT_VALUES = ["user-app", "admin-cms", "unknown"] as const;
-const MOCKUP_INTENT_VALUES = ["user-app", "admin-cms"] as const;
-const BRAND_VALUES = ["trost", "geniet", "nudge-eap", "cashpobi"] as const;
 const SETUP_STEP_VALUES = [
   "install",
   "imports",
@@ -602,12 +540,6 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         group: optionalString(args, "group", toolName),
         query: optionalString(args, "query", toolName),
       };
-    case "validate_mockup":
-      return {
-        source: optionalString(args, "source", toolName),
-        filePath: optionalString(args, "filePath", toolName),
-        intent: optionalEnum(args, "intent", MOCKUP_INTENT_VALUES, toolName),
-      };
     case "suggest_replacement":
       return {
         snippet: requireString(args, "snippet", toolName),
@@ -638,15 +570,6 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         overwrite: optionalBoolean(args, "overwrite", toolName),
         template: optionalEnum(args, "template", CLAUDE_MD_TEMPLATE_VALUES, toolName),
         mode: optionalEnum(args, "mode", ["summary", "full"] as const, toolName),
-      };
-    case "report_mockup_usage":
-      return {
-        filePath: requireString(args, "filePath", toolName),
-        mockupName: optionalString(args, "mockupName", toolName),
-        context: optionalEnum(args, "context", CONTEXT_VALUES, toolName),
-        brand: optionalEnum(args, "brand", BRAND_VALUES, toolName),
-        cwd: optionalString(args, "cwd", toolName),
-        dryRun: optionalBoolean(args, "dryRun", toolName),
       };
     case "dev_server":
       return {
