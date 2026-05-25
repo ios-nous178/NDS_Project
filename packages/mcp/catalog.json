@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-25T13:49:20.594Z",
+  "generatedAt": "2026-05-25T17:30:25.538Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -888,6 +888,12 @@
       ],
       "dtsRelPath": "packages/react/dist/BottomSheet.d.ts",
       "htmlTag": "nds-bottom-sheet"
+    },
+    {
+      "name": "BrandChrome",
+      "props": [],
+      "dtsRelPath": "packages/html/src/components/nds-brand-chrome.ts",
+      "htmlTag": "nds-brand-chrome"
     },
     {
       "name": "Breadcrumb",
@@ -9819,6 +9825,9 @@
     "nds-badge",
     "nds-banner",
     "nds-bottom-sheet",
+    "nds-brand-chrome",
+    "nds-brand-footer",
+    "nds-brand-header",
     "nds-breadcrumb",
     "nds-breadcrumb-item",
     "nds-breathing-guide",
@@ -10027,6 +10036,10 @@
     },
     {
       "tag": "nds-bottom-sheet",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-brand-chrome",
       "attrs": {}
     },
     {
