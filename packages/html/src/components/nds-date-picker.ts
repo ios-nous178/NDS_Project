@@ -75,17 +75,6 @@ const NavSvg = (dir: "left" | "right") => {
   return svg;
 };
 
-const CalendarIcon = () => {
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("width", "20");
-  svg.setAttribute("height", "20");
-  svg.setAttribute("viewBox", "0 0 20 20");
-  svg.setAttribute("fill", "none");
-  svg.setAttribute("aria-hidden", "true");
-  svg.innerHTML = `<rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 8h14M7 2v3M13 2v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`;
-  return svg;
-};
-
 export class NdsDatePicker extends NdsElement {
   static elementName = "nds-date-picker";
 
@@ -155,10 +144,11 @@ export class NdsDatePicker extends NdsElement {
     triggerText.dataset.slot = "trigger-text";
     triggerText.className = DP_TRIGGER_TEXT_CLASS;
 
+    // Calendar 글리프는 CSS mask 로 그린다 (packages/styles/src/DatePicker.ts 의 :empty 규칙).
+    // 비어 있는 wrapper 를 두면 [data-brand="..."] cascade 가 brand 별 SVG 를 mask-image 로 swap 한다.
     const iconWrap = document.createElement("span");
     iconWrap.setAttribute("aria-hidden", "true");
     iconWrap.className = DP_ICON_CLASS;
-    iconWrap.appendChild(CalendarIcon());
 
     trigger.append(triggerText, iconWrap);
     root.appendChild(trigger);
