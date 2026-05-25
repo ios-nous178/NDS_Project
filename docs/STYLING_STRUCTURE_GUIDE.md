@@ -16,6 +16,58 @@
 
 이 구조를 가져가야 Storybook, 디자인시스템 패키지, 실제 서비스 프로젝트가 서로 다른 책임을 가지면서도 안정적으로 같이 운영될 수 있습니다.
 
+## 패키지 책임 구조
+
+NDS는 목업 생성과 프레임워크 독립 사용성을 위해 `@nudge-eap/html`을 기본 런타임으로 보고, `@nudge-eap/react`는 React 제품에서 선택적으로 사용하는 어댑터로 둡니다.
+
+```mermaid
+flowchart TB
+  subgraph Core["Core"]
+    Tokens["@nudge-eap/tokens\n디자인 값"]
+    Icons["@nudge-eap/icons\n아이콘 자산"]
+    Styles["@nudge-eap/styles\n공통 CSS"]
+  end
+
+  subgraph Runtime["Primary Runtime"]
+    Html["@nudge-eap/html\nWeb Components / Mockup 기준"]
+  end
+
+  subgraph Optional["Optional Adapters"]
+    React["@nudge-eap/react\nReact 앱용 선택 어댑터"]
+    Tailwind["@nudge-eap/tailwind-preset\nTailwind preset"]
+  end
+
+  subgraph Tools["Tools"]
+    MCP["@nudge-eap/mcp\n목업 생성/검증"]
+    Storybook["Storybook\n시각 검증"]
+    Docs["Docs\n가이드"]
+  end
+
+  Tokens --> Styles
+  Tokens --> Html
+  Icons --> Html
+  Styles --> Html
+
+  Tokens --> React
+  Icons --> React
+  Styles --> React
+  Tokens --> Tailwind
+
+  Html --> MCP
+  Html --> Storybook
+  Html --> Docs
+  React -. optional .-> Storybook
+  React -. optional .-> Docs
+```
+
+핵심 책임은 아래처럼 유지합니다.
+
+- `tokens`: 디자인 값의 원천
+- `styles`: 시각 규칙의 원천
+- `icons`: 공통 그래픽 자산
+- `html`: 목업과 프레임워크 독립 사용의 기준 구현
+- `react`: React 앱에서 필요한 선택 구현
+
 ## 왜 필요한가
 
 서비스 프로젝트에서는 같은 컴포넌트라도 아래처럼 요구가 달라집니다.

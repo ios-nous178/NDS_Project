@@ -111,12 +111,14 @@ import "@nudge-eap/tokens/css";
 
 ## 패키지 구성
 
-| 패키지                       | 설명                                     | 상태    |
-| ---------------------------- | ---------------------------------------- | ------- |
-| `@nudge-eap/tokens`          | 디자인 토큰 (색상, 타이포, 간격)         | ✅ 안정 |
-| `@nudge-eap/react`           | React 컴포넌트 (Button, Badge, Modal 등) | ✅ 안정 |
-| `@nudge-eap/icons`           | SVG 아이콘 React 컴포넌트 (84종)         | ✅ 안정 |
-| `@nudge-eap/tailwind-preset` | Tailwind CSS 프리셋                      | ✅ 안정 |
+| 패키지                       | 설명                                   | 상태    |
+| ---------------------------- | -------------------------------------- | ------- |
+| `@nudge-eap/tokens`          | 디자인 토큰 (색상, 타이포, 간격)       | ✅ 안정 |
+| `@nudge-eap/styles`          | 공통 CSS 번들                          | ✅ 안정 |
+| `@nudge-eap/html`            | Web Components / HTML 목업 기준 런타임 | ✅ 안정 |
+| `@nudge-eap/react`           | React 앱용 선택 어댑터                 | ✅ 안정 |
+| `@nudge-eap/icons`           | SVG 아이콘 컴포넌트                    | ✅ 안정 |
+| `@nudge-eap/tailwind-preset` | Tailwind CSS 프리셋                    | ✅ 안정 |
 
 ---
 
