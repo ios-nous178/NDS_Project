@@ -95,4 +95,76 @@ export class NdsCard extends NdsElement {
   }
 }
 
+/* ──────────────── compound sub-elements ──────────────── */
+/**
+ * <nds-card-header> / <nds-card-body> / <nds-card-footer> / <nds-card-thumbnail>
+ *
+ * 모두 단순 div wrapper — host 안에 <div class="nds-card__{slot}"> 만 만든다.
+ * React Card 의 stylesheet 룰 (.nds-card__header { ... } 등) 이 그대로 매칭.
+ * children 은 그대로 보존. thumbnail 만 ratio attribute 지원.
+ */
+
+abstract class CardSlot extends NdsElement {
+  protected abstract slotClass: string;
+  protected abstract slotName: string;
+
+  protected _inner: HTMLDivElement | null = null;
+
+  override connectedCallback(): void {
+    if (!this._inner) {
+      const inner = document.createElement("div");
+      inner.className = this.slotClass;
+      inner.dataset.slot = this.slotName;
+      while (this.firstChild) inner.appendChild(this.firstChild);
+      this.appendChild(inner);
+      this._inner = inner;
+    }
+    super.connectedCallback();
+  }
+
+  protected update(): void {
+    if (!this._inner) return;
+    if (this.style.display !== "contents") this.style.display = "contents";
+  }
+}
+
+export class NdsCardHeader extends CardSlot {
+  static elementName = "nds-card-header";
+  protected slotClass = "nds-card__header";
+  protected slotName = "header";
+}
+
+export class NdsCardBody extends CardSlot {
+  static elementName = "nds-card-body";
+  protected slotClass = "nds-card__body";
+  protected slotName = "body";
+}
+
+export class NdsCardFooter extends CardSlot {
+  static elementName = "nds-card-footer";
+  protected slotClass = "nds-card__footer";
+  protected slotName = "footer";
+}
+
+export class NdsCardThumbnail extends CardSlot {
+  static elementName = "nds-card-thumbnail";
+  protected slotClass = "nds-card__thumbnail";
+  protected slotName = "thumbnail";
+
+  static get observedAttributes(): readonly string[] {
+    return ["ratio"];
+  }
+
+  protected override update(): void {
+    super.update();
+    if (!this._inner) return;
+    if (this.boolAttr("ratio")) this._inner.dataset.ratio = "true";
+    else delete this._inner.dataset.ratio;
+  }
+}
+
 define(NdsCard);
+define(NdsCardHeader);
+define(NdsCardBody);
+define(NdsCardFooter);
+define(NdsCardThumbnail);

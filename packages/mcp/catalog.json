@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-25T03:21:06.743Z",
+  "generatedAt": "2026-05-25T03:33:49.563Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -9552,7 +9552,9 @@
     }
   ],
   "ndsHtmlTags": [
+    "nds-action-chip",
     "nds-avatar",
+    "nds-avatar-group",
     "nds-badge",
     "nds-breadcrumb",
     "nds-button",
@@ -9560,6 +9562,7 @@
     "nds-checkbox",
     "nds-chip",
     "nds-circular-progress",
+    "nds-countdown-timer",
     "nds-divider",
     "nds-empty-state",
     "nds-icon-button",
@@ -9570,6 +9573,7 @@
     "nds-price-tag",
     "nds-progress-bar",
     "nds-radio",
+    "nds-segmented",
     "nds-select",
     "nds-skeleton",
     "nds-spinner",
@@ -9577,6 +9581,168 @@
     "nds-tabs",
     "nds-textarea",
     "nds-tip-card",
+    "nds-title-block",
     "nds-toggle"
+  ],
+  "ndsHtmlElements": [
+    {
+      "tag": "nds-action-chip",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-avatar-group",
+      "attrs": {
+        "size": ["xs", "sm", "md", "lg", "xl"]
+      }
+    },
+    {
+      "tag": "nds-avatar",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-badge",
+      "attrs": {
+        "variant": ["fill", "ghost", "line"],
+        "size": ["sm", "md", "lg"],
+        "color": ["brand", "neutral", "success", "error", "caution", "info"]
+      }
+    },
+    {
+      "tag": "nds-breadcrumb",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-button",
+      "attrs": {
+        "variant": ["solid", "outlined", "soft", "outlined-sub"],
+        "size": ["xl", "lg", "md", "sm", "xs", "field"],
+        "color": ["primary", "secondary", "assistive"]
+      }
+    },
+    {
+      "tag": "nds-card",
+      "attrs": {
+        "variant": ["outlined", "flat"]
+      }
+    },
+    {
+      "tag": "nds-checkbox",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-chip",
+      "attrs": {
+        "variant": ["fill", "outlined", "ghost"],
+        "size": ["sm", "md"],
+        "color": ["brand", "neutral", "success", "error", "caution"]
+      }
+    },
+    {
+      "tag": "nds-circular-progress",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-countdown-timer",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-divider",
+      "attrs": {
+        "orientation": ["horizontal", "vertical"]
+      }
+    },
+    {
+      "tag": "nds-empty-state",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-icon-button",
+      "attrs": {
+        "size": ["x-large", "large", "medium", "small"]
+      }
+    },
+    {
+      "tag": "nds-input",
+      "attrs": {
+        "size": ["default", "field"]
+      }
+    },
+    {
+      "tag": "nds-list",
+      "attrs": {
+        "variant": ["plain", "card", "divided"],
+        "size": ["sm", "md", "lg"]
+      }
+    },
+    {
+      "tag": "nds-modal",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-online-indicator",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-price-tag",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-progress-bar",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-radio",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-segmented",
+      "attrs": {
+        "size": ["sm", "md"]
+      }
+    },
+    {
+      "tag": "nds-select",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-skeleton",
+      "attrs": {
+        "variant": ["rectangular", "circular", "text"]
+      }
+    },
+    {
+      "tag": "nds-spinner",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-stat-card",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-tabs",
+      "attrs": {
+        "variant": ["line", "chip", "segment"],
+        "size": ["mobile", "pc"],
+        "tone": ["neutral", "color"]
+      }
+    },
+    {
+      "tag": "nds-textarea",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-tip-card",
+      "attrs": {
+        "tone": ["info", "success", "warning", "neutral"]
+      }
+    },
+    {
+      "tag": "nds-title-block",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-toggle",
+      "attrs": {}
+    }
   ]
 }

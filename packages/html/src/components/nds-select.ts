@@ -64,9 +64,14 @@ export class NdsSelect extends NdsElement {
   private _activeValue: string | null = null;
   private _outsideClick = (e: MouseEvent) => {
     if (!this._root) return;
-    if (!this._root.contains(e.target as Node)) this._setOpen(false);
+    // trigger 또는 dropdown 내부 클릭은 무시. dropdown 은 portal 되어 _root 밖에 있음.
+    const target = e.target as Node;
+    if (this._root.contains(target)) return;
+    if (this._dropdown && this._dropdown.contains(target)) return;
+    this._setOpen(false);
   };
   private _onKey = (e: KeyboardEvent) => this._handleKey(e);
+  private _onReposition = () => this._positionDropdown();
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
@@ -76,6 +81,12 @@ export class NdsSelect extends NdsElement {
   override disconnectedCallback(): void {
     document.removeEventListener("click", this._outsideClick, true);
     document.removeEventListener("keydown", this._onKey, true);
+    window.removeEventListener("scroll", this._onReposition, true);
+    window.removeEventListener("resize", this._onReposition);
+    // portal 된 dropdown 도 정리.
+    if (this._dropdown && this._dropdown.parentElement === document.body) {
+      this._dropdown.remove();
+    }
   }
 
   private _mount(): void {
@@ -122,12 +133,31 @@ export class NdsSelect extends NdsElement {
     dropdown.className = DROPDOWN_CLASS;
     dropdown.dataset.slot = "dropdown";
     dropdown.setAttribute("role", "listbox");
-    dropdown.style.position = "absolute";
-    dropdown.style.top = "100%";
-    dropdown.style.left = "0";
-    dropdown.style.right = "0";
+    // Portal: document.body 로 옮길 때 fixed positioning 으로 동작.
+    // 닫혀있을 땐 display:none — 위치 계산 자체를 안 함.
+    dropdown.style.position = "fixed";
     dropdown.style.zIndex = "1000";
-    for (const opt of options) dropdown.appendChild(opt);
+    dropdown.style.display = "none";
+    // Click delegation — 옵션 자체에 listener 박지 않고 dropdown 에서 위임.
+    // portal 후 옵션의 listener 가 안 잡히는 jsdom 케이스를 피하고,
+    // 동적으로 옵션을 추가하는 경우에도 자동 대응.
+    dropdown.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement | null;
+      const opt = target?.closest("nds-select-option") as HTMLElement | null;
+      if (!opt || !dropdown.contains(opt)) return;
+      if (opt.hasAttribute("disabled")) return;
+      const value = opt.getAttribute("value") ?? "";
+      this.pickValue(value);
+    });
+    for (const opt of options) {
+      dropdown.appendChild(opt);
+      // innerHTML 으로 children 이 박힐 때 부모 (nds-select) 의 connectedCallback 이
+      // 자식 (nds-select-option) 보다 먼저 호출되어 자식이 아직 upgrade 전일 수 있음.
+      // 명시적으로 upgrade 후 setOwner — option 은 portal 후 closest("nds-select")
+      // 가 부모를 못 찾으므로 owner ref 필수.
+      customElements.upgrade(opt);
+      (opt as NdsSelectOption).setOwner(this);
+    }
 
     root.append(trigger, dropdown);
     this.appendChild(root);
@@ -170,7 +200,19 @@ export class NdsSelect extends NdsElement {
     this._chevron!.dataset.open = String(open);
 
     this._dropdown.id = `${this._selectId}-listbox`;
-    this._dropdown.style.display = open ? "" : "none";
+    // Portal: open 이면 body 로, close 면 root 안으로 복귀. dropdown DOM 자체는 유지.
+    if (open) {
+      if (this._dropdown.parentElement !== document.body) {
+        document.body.appendChild(this._dropdown);
+      }
+      this._dropdown.style.display = "";
+      this._positionDropdown();
+    } else {
+      this._dropdown.style.display = "none";
+      if (this._dropdown.parentElement === document.body && this._root) {
+        this._root.appendChild(this._dropdown);
+      }
+    }
 
     // trigger 텍스트 — 선택값 있으면 해당 option label, 없으면 placeholder
     if (this._triggerText) {
@@ -195,11 +237,44 @@ export class NdsSelect extends NdsElement {
     this._syncLabel(labelText);
     this._syncHelper(helperText, error);
 
-    if (open) document.addEventListener("click", this._outsideClick, true);
-    else document.removeEventListener("click", this._outsideClick, true);
+    if (open) {
+      document.addEventListener("click", this._outsideClick, true);
+      document.addEventListener("keydown", this._onKey, true);
+      // scroll/resize 시 trigger 위치가 바뀌므로 reposition. capture: true 로
+      // overflow:auto 안 부모 스크롤까지 잡는다 (capture phase 만 bubble 됨).
+      window.addEventListener("scroll", this._onReposition, true);
+      window.addEventListener("resize", this._onReposition);
+    } else {
+      document.removeEventListener("click", this._outsideClick, true);
+      document.removeEventListener("keydown", this._onKey, true);
+      window.removeEventListener("scroll", this._onReposition, true);
+      window.removeEventListener("resize", this._onReposition);
+    }
+  }
 
-    if (open) document.addEventListener("keydown", this._onKey, true);
-    else document.removeEventListener("keydown", this._onKey, true);
+  /**
+   * trigger 위치 기준으로 dropdown fixed position 설정.
+   * 화면 하단 공간이 부족하면 trigger 위로 띄운다.
+   */
+  private _positionDropdown(): void {
+    if (!this._dropdown || !this._trigger) return;
+    if (!this.boolAttr("open")) return;
+    const rect = this._trigger.getBoundingClientRect();
+    const viewportH = window.innerHeight;
+    const dropdownH = this._dropdown.offsetHeight || 240;
+    const spaceBelow = viewportH - rect.bottom;
+    const spaceAbove = rect.top;
+    const placeAbove = spaceBelow < dropdownH && spaceAbove > spaceBelow;
+
+    this._dropdown.style.left = `${rect.left}px`;
+    this._dropdown.style.width = `${rect.width}px`;
+    if (placeAbove) {
+      this._dropdown.style.top = "";
+      this._dropdown.style.bottom = `${viewportH - rect.top}px`;
+    } else {
+      this._dropdown.style.bottom = "";
+      this._dropdown.style.top = `${rect.bottom}px`;
+    }
   }
 
   private _syncLabel(text: string | null): void {
@@ -321,28 +396,26 @@ export class NdsSelectOption extends NdsElement {
   }
 
   private _wrapped = false;
-  private _onClick = (_e: MouseEvent) => {
-    if (this.hasAttribute("disabled")) return;
-    const value = this.getAttribute("value") ?? "";
-    const parent = this.closest<NdsSelect>("nds-select");
-    parent?.pickValue(value);
-  };
+
+  setOwner(_owner: NdsSelect): void {
+    // 옵션은 dropdown 에서 click delegation 으로 처리하므로 owner ref 필요 없음.
+    // setOwner 는 backward-compat 차원에서 노출만 — 호출돼도 안전.
+    if (!this._wrapped) this._mount();
+  }
 
   override connectedCallback(): void {
     if (!this._wrapped) this._mount();
     super.connectedCallback();
   }
 
-  override disconnectedCallback(): void {
-    this.removeEventListener("click", this._onClick);
-  }
-
   private _mount(): void {
+    if (this._wrapped) return;
     // host element 자체에 option 클래스/role 박는다 (자식 wrapping 없음 — 단순 leaf)
     this.classList.add(OPTION_CLASS);
     this.dataset.slot = "option";
     this.setAttribute("role", "option");
-    this.addEventListener("click", this._onClick);
+    // 클릭 처리는 dropdown delegation 으로 옮김 — portal 후 jsdom 에서
+    // 옵션 자체의 listener 가 안 잡히는 케이스를 피한다.
     this._wrapped = true;
   }
 

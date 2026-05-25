@@ -143,10 +143,18 @@ for (const c of manifest.components) {
   const kebab = c.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
   ndsClassPrefixSet.add(`nds-${kebab}`);
 }
+// nds-* tag 별 attribute enum (예: nds-button.color = primary|secondary|assistive)
+const ndsAttrEnums = new Map<string, Map<string, string[]>>();
+for (const el of manifest.ndsHtmlElements ?? []) {
+  const attrMap = new Map<string, string[]>();
+  for (const [k, v] of Object.entries(el.attrs)) attrMap.set(k, v);
+  if (attrMap.size > 0) ndsAttrEnums.set(el.tag, attrMap);
+}
 configureHtmlValidator({
   tokenSet,
   ndsTagSet: ndsHtmlTagSet,
   ndsClassPrefixSet,
+  ndsAttrEnums,
 });
 
 // mcpb 번들은 packages/mcp/ 옆에 local-packages/ 를 동봉, dev 모드는 레포 루트 아래.
