@@ -408,7 +408,8 @@ const toolHandlers = {
     suggestReplacement(args as { snippet: string; rule?: string }),
   list_packages: () => listPackages(),
   check_mcp_update: () => checkMcpUpdate(),
-  get_guide: (args: ToolArgs) => getGuide(args as { topic: string; intent?: string }),
+  get_guide: (args: ToolArgs) =>
+    getGuide(args as { topic: string; intent?: string; target?: "react" | "html" }),
   get_setup: (args: ToolArgs) =>
     getSetup(
       args as {
@@ -463,7 +464,7 @@ const toolHandlers = {
       },
     ),
   build_singlefile_html: (args: ToolArgs) =>
-    buildSinglefileHtml(args as { cwd?: string; skipAudit?: boolean }),
+    buildSinglefileHtml(args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" }),
   validate_html_mockup: (args: ToolArgs) =>
     validateHtmlMockup(args as { source?: string; filePath?: string }),
   analyze_html_mockup: (args: ToolArgs) =>

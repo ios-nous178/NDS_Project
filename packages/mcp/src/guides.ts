@@ -45,11 +45,57 @@ const ADMIN_KEYWORDS = [
   "감사 로그",
 ];
 
-export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | "unknown" {
+/**
+ * vanilla HTML / Web Component 워크플로우를 의미하는 키워드.
+ * 사용자가 'HTML 로 작업', '바닐라', '<nds-button>', 'Web Component', 'react 없이' 등을
+ * 언급하면 .tsx + Vite + React 워크플로우 대신 @nudge-eap/html 셋업으로 분기시킨다.
+ */
+const HTML_KEYWORDS = [
+  "vanilla html",
+  "vanilla-html",
+  "바닐라 html",
+  "vanilla js",
+  "vanilla-js",
+  "vanilla javascript",
+  "vanilla-javascript",
+  "vanilla ts",
+  "vanilla-ts",
+  "vanilla typescript",
+  "vanilla-typescript",
+  "바닐라 js",
+  "바닐라 자바스크립트",
+  "바닐라 ts",
+  "바닐라 타입스크립트",
+  "plain html",
+  "정적 html",
+  "static html",
+  "static site",
+  "static-site",
+  "web component",
+  "web-component",
+  "webcomponent",
+  "custom element",
+  "custom-element",
+  "<nds-",
+  "@nudge-eap/html",
+  "html-only",
+  "html only",
+  "no-react",
+  "no react",
+  "without react",
+  "react 없이",
+  "리액트 없이",
+  "리액트 없",
+];
+
+export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | "html" | "unknown" {
   if (!text) return "unknown";
   const normalized = text.toLowerCase();
   for (const k of ADMIN_KEYWORDS) {
     if (normalized.includes(k.toLowerCase())) return "admin-cms";
+  }
+  for (const k of HTML_KEYWORDS) {
+    if (normalized.includes(k.toLowerCase())) return "html";
   }
   return "unknown";
 }
@@ -92,6 +138,23 @@ export const SCOPE_ADVISORY = {
       action:
         "사용자 앱 화면(B2C, 멘탈케어 사용자 플로우)이라면 이 MCP의 도구들을 적극 사용. " +
         "get_guide({ topic: 'principles' }) → find_component({ query }) → get_guide({ topic: 'component:<Name>' }) / get_guide({ topic: 'pattern:<name>' }) → 작성 → validate_mockup.",
+    },
+    html: {
+      keywords: HTML_KEYWORDS,
+      action:
+        "vanilla HTML / Web Component 워크플로우(react 없이 <nds-*> 직접 작성) 라면 " +
+        "@nudge-eap/html 패키지를 사용한다. .tsx 가 아니라 root index.html 을 직접 작성하고 " +
+        "validate_html_mockup / analyze_html_mockup 으로 검증, " +
+        "최종 산출물은 build_singlefile_html 로 dist/index.html (단일 파일) 만든다 — 디자이너/PM 에게 dnd 공유 가능. " +
+        "get_setup({ step: 'full', intent: 'html' }) 로 Vite vanilla-ts 셋업, " +
+        "get_guide({ topic: 'component:<Name>', target: 'html' }) 로 <nds-*> 예시를 가져와 작성.",
+      tools: [
+        "get_setup({ step: 'full', intent: 'html' })",
+        "get_guide({ topic: 'component:<Name>', target: 'html' })",
+        "validate_html_mockup({ filePath })",
+        "analyze_html_mockup({ filePath })",
+        "build_singlefile_html({ cwd })",
+      ],
     },
   },
   hardRule: "두 디자인시스템을 한 화면에서 혼용 금지.",
@@ -348,6 +411,28 @@ export interface ComponentGuide {
     do: string;
     dont: string;
   };
+  /**
+   * vanilla HTML / Web Component(<nds-*>) 형태의 do/dont 예시.
+   * `get_guide({ topic: 'component:<Name>', target: 'html' })` 호출 시
+   * 라우터가 이 값을 `examples` 자리에 끼워 응답한다.
+   *
+   * 작성 규칙:
+   * - 태그는 kebab-case `<nds-button>` 형태.
+   * - attribute 도 kebab-case (`full-width`, `right-icon`).
+   * - 이벤트는 attribute (`onclick="..."`) 가 아니라 `addEventListener("nds-...", ...)` 패턴으로 설명.
+   * - JSON-encoded attribute 값 (예: `<nds-segmented options='[...]' />`) 은 적절한 따옴표 escape 로 표기.
+   * - children 콜백/compound 패턴 등 React 전용 표현은 단순화하거나 `slot=` 으로 표현.
+   */
+  examplesHtml?: {
+    do: string;
+    dont: string;
+  };
+  /**
+   * `target: 'html'` 호출 시 examplesHtml 가 비어 있는 react-only 컴포넌트임을 명시.
+   * 값은 'no-html-equivalent' 만 허용 (현재 정의된 마커).
+   * 라우터는 이 값이 있으면 `_htmlAdvisory` 한 줄을 응답에 첨부하고 react examples 를 그대로 노출.
+   */
+  _htmlStatus?: "no-html-equivalent";
   /** color × variant 별 표시 톤 요약 */
   colorMatrix?: Record<string, string>;
   /** size 값 × 픽셀 스펙 (Figma 실측 기준) */
@@ -376,6 +461,10 @@ export interface ComponentGuide {
 export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Button: {
     name: "Button",
+    examplesHtml: {
+      do: '<nds-button color="primary" variant="solid">상담 신청하기</nds-button>\n<nds-button color="primary" variant="outlined">검사 시작하기</nds-button>\n<nds-button color="assistive" variant="outlined">자세히 보기</nds-button>',
+      dont: '<!-- raw <button> + className 흉내. nds-button 룰/토큰이 전혀 적용 안 됨 -->\n<button class="nds-button" onclick="handle()">상담 신청하기</button>\n<!-- assistive + solid 조합은 Figma 라이브러리에 없음 (disabled 와 톤이 겹침) -->\n<nds-button color="assistive" variant="solid">자세히 보기</nds-button>',
+    },
     summary:
       "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
@@ -472,6 +561,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   IconButton: {
     name: "IconButton",
+    examplesHtml: {
+      do: '<nds-icon-button size="md" aria-label="알림">\n  <svg viewBox="0 0 24 24" fill="currentColor">…</svg>\n</nds-icon-button>',
+      dont: '<!-- aria-label 없는 아이콘 단독 버튼: 스크린리더가 "button" 만 읽음 -->\n<nds-icon-button size="md"><svg>…</svg></nds-icon-button>\n<!-- raw <button> 으로 아이콘 버튼 흉내. 토큰/사이즈 룰 적용 안 됨 -->\n<button class="icon-btn"><svg>…</svg></button>',
+    },
     summary:
       "아이콘만 있는 버튼 (Figma Library node 171:8560 기준). 접근성을 위해 aria-label 필수.",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8560",
@@ -497,6 +590,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TextButton: {
     name: "TextButton",
+    examplesHtml: {
+      do: '<nds-text-button size="md" label="더보기" right-icon="arrow-next"></nds-text-button>',
+      dont: '<!-- 파괴 액션을 text-button 으로 — 위계/색이 부족. nds-button color="error" 권장 -->\n<nds-text-button label="계정 삭제하기" right-icon="arrow-next"></nds-text-button>',
+    },
     summary:
       "텍스트만으로 된 액션 — '전체보기' 같은 인라인 링크에 적합 (Figma Library node 171:8522).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8522",
@@ -516,6 +613,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Card: {
     name: "Card",
+    examplesHtml: {
+      do: '<nds-card variant="outlined" clickable>\n  <nds-card-thumbnail ratio><img src="/cover.jpg" alt="" /></nds-card-thumbnail>\n  <nds-card-body>\n    <h3>제목</h3>\n    <p>설명 텍스트</p>\n  </nds-card-body>\n</nds-card>\n<script>card.addEventListener("card-click", () => navigate("/detail"));</script>',
+      dont: '<!-- clickable 카드 내부에 또 다른 클릭 가능한 nds-button -> 중복 핸들러 -->\n<nds-card clickable>\n  <nds-card-body>제목</nds-card-body>\n  <nds-button color="primary">자세히 보기</nds-button>\n</nds-card>\n<!-- raw <div class="nds-card"> 로 모양만 흉내. 키보드/포커스 룰 사라짐 -->\n<div class="nds-card" onclick="…">…</div>',
+    },
     summary:
       "동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. " +
       "Figma 헤더 제약 4종: 3 Variants · PC & Mobile (반응형) · Image Optional (이미지 없는 변형 허용) · Semantic Token (raw hex / 임의 색 금지). " +
@@ -647,6 +748,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Badge: {
     name: "Badge",
+    examplesHtml: {
+      do: '<nds-badge variant="fill" color="brand" size="md">NEW</nds-badge>\n<nds-badge variant="ghost" color="success" size="sm">완료</nds-badge>',
+      dont: '<!-- hex 인라인. 시멘틱 컬러 토큰을 잃음 -->\n<nds-badge style="background:#FFD400;color:#000">NEW</nds-badge>\n<!-- 안내문/섹션 제목에 Badge 도배 — Badge 는 상태/짧은 속성용 -->\n<nds-badge color="brand">오늘의 미션</nds-badge>',
+    },
     summary:
       "상태/속성을 한눈에 알려주는 보조 라벨. variant: fill/ghost/line · color: brand/neutral/success/error/caution/info. " +
       "Figma 171:10856. label prop 필수. 콘텐츠가 아니라 콘텐츠를 보조하는 메타 정보만 담는다.",
@@ -694,6 +799,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Chip: {
     name: "Chip",
+    examplesHtml: {
+      do: '<nds-chip variant="outlined" color="brand" interactive>전체</nds-chip>\n<nds-chip variant="ghost" color="caution" size="sm" removable>주의 필요</nds-chip>',
+      dont: '<!-- disabled 와 removable 동시 사용 — 누가 X 버튼을 누를 수 있는지 모호 -->\n<nds-chip disabled removable>태그</nds-chip>\n<!-- interactive 없이 클릭 핸들러만 — 키보드 포커스가 안 잡힘 -->\n<nds-chip onclick="…">필터</nds-chip>',
+    },
     summary: "pill 형태 라벨. variant: fill/outlined/ghost. label prop 필수.",
     pitfalls: [
       "label prop을 빠뜨리고 children을 넣지 말 것 — DS API와 어긋남.",
@@ -724,6 +833,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Modal: {
     name: "Modal",
+    examplesHtml: {
+      do: '<nds-modal open title="신청을 취소할까요?" max-width="400" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot="footer">\n    <nds-button color="assistive" variant="outlined">닫기</nds-button>\n    <nds-button color="error" variant="solid">취소하기</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener("modal-close", () => modal.removeAttribute("open"));</script>',
+      dont: "<!-- closable + max-width 누락 + 본문 없음 — 의도/구조가 부족 -->\n<nds-modal open></nds-modal>\n<!-- raw <dialog> 로 모달 흉내 — focus trap / 토큰이 적용 안 됨 -->\n<dialog open><p>알림</p></dialog>",
+    },
     summary:
       "사용자의 현재 흐름을 일시적으로 중단하고 중요한 결정/응답을 받기 위한 오버레이 UI. " +
       "Radius 8px (shape.md), 카드 padding 비대칭 (top 28 / x 16 / bottom 16), " +
@@ -758,6 +871,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Tabs: {
     name: "Tabs",
+    examplesHtml: {
+      do: '<nds-tabs active-key="home" variant="line" size="mobile">\n  <nds-tabs-list>\n    <nds-tabs-trigger key="home">홈</nds-tabs-trigger>\n    <nds-tabs-trigger key="profile">프로필</nds-tabs-trigger>\n  </nds-tabs-list>\n  <nds-tabs-panel key="home">홈 콘텐츠</nds-tabs-panel>\n  <nds-tabs-panel key="profile">프로필 콘텐츠</nds-tabs-panel>\n</nds-tabs>\n<script>tabs.addEventListener("tabs-change", e => console.log(e.detail.activeKey));</script>',
+      dont: '<!-- panel 의 key 가 trigger 의 key 와 불일치 — 빈 화면이 노출됨 -->\n<nds-tabs active-key="home">\n  <nds-tabs-list><nds-tabs-trigger key="home">홈</nds-tabs-trigger></nds-tabs-list>\n  <nds-tabs-panel key="HOME">홈 콘텐츠</nds-tabs-panel>\n</nds-tabs>',
+    },
     summary:
       "line/pill/square 3가지 variant. items + activeKey + onTabChange. " +
       "동일 depth 콘텐츠 전환 · category navigation · section switching 전용. CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지.",
@@ -790,6 +907,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   List: {
     name: "List",
+    examplesHtml: {
+      do: '<nds-list>\n  <nds-list-item interactive>설정 항목 1</nds-list-item>\n  <nds-list-item interactive active>설정 항목 2</nds-list-item>\n</nds-list>\n<script>list.addEventListener("list-item-select", e => …);</script>',
+      dont: "<!-- nds-list-item 가 아닌 raw <li> 를 직접 넣음 — 위계/사이즈가 깨짐 -->\n<nds-list><li>설정 1</li></nds-list>",
+    },
     summary:
       "수직 정렬된 동질 항목의 컨테이너. <List variant='plain|card|divided'> + <ListItem leading title description metadata trailing onSelect />. " +
       "Row Anatomy 3 zone: Leading(Optional · Avatar/Thumbnail/Icon/Checkbox/Radio) + Content(Required · Title 최소 1행) + Trailing(Optional · IconButton/Badge/Toggle/Chevron/TextButton, 항상 우측 정렬). " +
@@ -883,11 +1004,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Select: {
     name: "Select",
+    examplesHtml: {
+      do: '<nds-select value="kr" label="국가" placeholder="선택하세요">\n  <nds-select-option value="kr">대한민국</nds-select-option>\n  <nds-select-option value="jp" disabled>일본</nds-select-option>\n</nds-select>\n<script>sel.addEventListener("select-change", e => setCountry(e.detail.value));</script>',
+      dont: '<!-- nds-select 안에 raw <option> -> 드롭다운이 렌더 안 됨 -->\n<nds-select value="kr"><option value="kr">대한민국</option></nds-select>',
+    },
     summary: "드롭다운. options + value + onValueChange.",
     pitfalls: ["변경 핸들러는 **onValueChange** (onChange 아님). React 표준이 아닌 DS 컨벤션."],
   },
   Banner: {
     name: "Banner",
+    examplesHtml: {
+      do: '<nds-banner variant="filled" banner-title="신규 기능 안내"\n  description="이번 주부터 음성 기록을 지원해요"\n  action-label="자세히" action-href="/news/voice" closable></nds-banner>',
+      dont: '<!-- variant="image" 일 때 full-image-src 가 아니라 banner-src 로 잘못 명시 -->\n<nds-banner variant="image" banner-src="/hero.jpg" banner-title="…"></nds-banner>\n<!-- description 없이 closable 만 — 닫고 나면 의도가 사라짐 -->\n<nds-banner closable></nds-banner>',
+    },
     summary: "페이지 상단 알림 띠. 그라데이션 배경 사용 금지.",
     pitfalls: [
       "Banner의 배경에 linear-gradient 사용하지 말 것. 단색 토큰만 (semantic-info-bg 등).",
@@ -895,6 +1024,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Input: {
     name: "Input",
+    examplesHtml: {
+      do: '<nds-input label="이메일" placeholder="example@nudge.kr" clearable></nds-input>\n<script>el.addEventListener("input", e => setValue(e.target.value));</script>',
+      dont: '<!-- value 와 default-value 를 동시에 설정 — controlled / uncontrolled 가 섞임 -->\n<nds-input label="이메일" value="a@b" default-value="x@y"></nds-input>\n<!-- raw <input> + className 으로 모양만 흉내 -->\n<input class="nds-input" />',
+    },
     summary:
       "1px 보더, 흰 배경, 48px 높이. label/wrapper(field+addon)/helper 의 compound 구조 (Figma Library node 171:9903 기준).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9903",
@@ -933,6 +1066,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ProgressBar: {
     name: "ProgressBar",
+    examplesHtml: {
+      do: '<nds-progress-bar value="65" max="100" size="md" aria-label="작성 65%"></nds-progress-bar>',
+      dont: '<!-- 결정적이지 않은 작업(=언제 끝날지 모름)에 진행률 -->\n<nds-progress-bar value="32"></nds-progress-bar> <!-- 차라리 spinner 사용 -->',
+    },
     summary: "value/max 기반 진행도.",
     pitfalls: [
       "상태(주의/에러/성공)를 표현할 때는 color prop에 semantic 토큰 var(--semantic-*-main)을 넘겨 시각적 의미를 통일.",
@@ -940,6 +1077,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Radio: {
     name: "Radio",
+    examplesHtml: {
+      do: '<form>\n  <nds-radio name="freq" value="daily" label="매일" checked></nds-radio>\n  <nds-radio name="freq" value="weekly" label="주 1회"></nds-radio>\n</form>',
+      dont: '<!-- 같은 그룹인데 name 이 서로 다름 — 둘 다 선택 가능해짐 -->\n<nds-radio name="freq-a" value="daily" label="매일"></nds-radio>\n<nds-radio name="freq-b" value="weekly" label="주 1회"></nds-radio>',
+    },
     summary:
       "단일 선택 입력. 단독으로 쓸 일은 거의 없고, RadioGroup + RadioGroupItem 조합으로 사용.",
     pitfalls: [
@@ -956,6 +1097,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Sidebar: {
     name: "Sidebar",
+    examplesHtml: {
+      do: '<nds-sidebar active-key="home" width="240"\n  items=\'[{"key":"home","label":"홈","icon":"home"},{"key":"chat","label":"상담","icon":"chat"}]\'\n  title="NudgeEAP"></nds-sidebar>\n<script>el.addEventListener("item-click", e => navigate(e.detail.key));</script>',
+      dont: "<!-- 어드민에 nds-sidebar 사용 — 어드민은 antd Layout.Sider -->\n<nds-sidebar items='...'></nds-sidebar>",
+    },
     summary:
       "어드민/CMS용 좌측 수직 내비게이션. 캐포비(Cashpobi) Figma 168:1250 / 290:1593 기준으로 정합. " +
       "flat items 배열 또는 SidebarSection[] (라벨 그룹) 둘 다 지원, 1단계 서브메뉴 + 뱃지 + collapsed(64px) 가능.",
@@ -985,6 +1130,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Slider: {
     name: "Slider",
+    examplesHtml: {
+      do: '<nds-slider value="3" min="0" max="10" start-label="약함" end-label="강함" show-value></nds-slider>\n<script>el.addEventListener("slider-change", e => setLevel(e.detail.value));</script>',
+      dont: '<!-- 표시할 단계가 적은데 슬라이더 사용 — segmented 가 맞음 -->\n<nds-slider value="2" min="1" max="3"></nds-slider>',
+    },
     summary: "연속값 입력 (통증·스트레스 강도 등). LikertScale은 고정 N단계, Slider는 연속.",
     pitfalls: [
       "5단계 같은 이산형 평가는 LikertScale을 쓸 것. Slider step=1 max=4로 흉내내지 말 것 — 시각적 의미가 다름.",
@@ -998,6 +1147,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Spinner: {
     name: "Spinner",
+    examplesHtml: {
+      do: '<nds-button disabled>\n  <nds-spinner size="sm" label="처리 중"></nds-spinner> 처리 중…\n</nds-button>\n<nds-spinner size="md" aria-label="목록 불러오는 중"></nds-spinner>',
+      dont: '<!-- label/aria-label 둘 다 없는 단독 스피너 — 스크린리더에 안내가 없음 -->\n<nds-spinner size="md"></nds-spinner>',
+    },
     summary: "인라인 회전 로더. 짧은 fetch (<2s)에 사용. 긴 로딩은 Skeleton.",
     pitfalls: [
       "전체 페이지 로딩에 Spinner를 가운데 띄우지 말 것 — 빈 화면 인상이 강함. Skeleton(레이아웃 유지)이 UX 더 좋음.",
@@ -1011,6 +1164,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   MoodSelector: {
     name: "MoodSelector",
+    examplesHtml: {
+      do: '<nds-mood-selector value="calm" name="today-mood"></nds-mood-selector>',
+      dont: "<!-- 5개 nds-icon-button 으로 직접 조립 — 단일 선택/포커스 룰 모두 손실 -->\n<nds-icon-button>😀</nds-icon-button><nds-icon-button>😐</nds-icon-button>…",
+    },
     summary: "5단계 기분 선택. EAP 앱 첫 화면 핵심 인터랙션. 기본 5개 옵션이 내장됨.",
     pitfalls: [
       "options를 직접 넘길 때 5개를 벗어나면 가로 폭 문제 — 4~6개가 권장 범위.",
@@ -1026,6 +1183,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   AssessmentResultCard: {
     name: "AssessmentResultCard",
+    examplesHtml: {
+      do: '<nds-assessment-result-card title="우울감 자가검사 결과"\n  score="12" max-score="27" level="caution" level-text="중간 수준"\n  description="가벼운 우울감을 보일 수 있어요"></nds-assessment-result-card>',
+      dont: '<!-- level 만 있고 level-text/description 누락 — 사용자에게 의미가 전달되지 않음 -->\n<nds-assessment-result-card score="12" max-score="27" level="caution"></nds-assessment-result-card>',
+    },
     summary:
       "심리검사 결과 카드. score/maxScore + level(normal/mild/moderate/severe) + 색 자동 매핑.",
     pitfalls: [
@@ -1046,6 +1207,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CrisisCallout: {
     name: "CrisisCallout",
+    examplesHtml: {
+      do: '<nds-crisis-callout tone="error" title="위기 상황이세요?"\n  description="언제든 1577-0199 로 전화하실 수 있어요"></nds-crisis-callout>',
+      dont: '<!-- crisis-callout 을 마케팅/홍보 톤에 사용 — 강한 시그널이 오염됨 -->\n<nds-crisis-callout tone="info" title="신규 이벤트" description="…"></nds-crisis-callout>',
+    },
     summary: "위기 신호 시 1393/119 등 즉시 연결 박스. dismiss 불가능. EAP의 안전 책임 영역.",
     pitfalls: [
       "Banner와 외형이 비슷하지만 절대 closable 만들지 말 것 — 위기 안내는 dismiss 되면 안 됨.",
@@ -1059,6 +1224,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CounselorCard: {
     name: "CounselorCard",
+    examplesHtml: {
+      do: '<nds-counselor-card name="이정민 상담사" job-title="심리 상담사"\n  image-src="/dr.jpg" rating="4.8" review-count="124"\n  tags=\'["불안","번아웃"]\' cta-label="상담 신청"></nds-counselor-card>\n<script>el.addEventListener("nds-counselor-cta", () => navigate("/apply"));</script>',
+      dont: '<!-- rating 6 (max 5 초과) — 표시 깨짐 -->\n<nds-counselor-card name="A" rating="6"></nds-counselor-card>',
+    },
     summary: "상담사 프로필 카드. 이름/자격/평점/태그/소개/예약 CTA. 1~2열 그리드에 잘 어울림.",
     pitfalls: [
       "imageSrc 없을 때 자동으로 이름 이니셜 표기. 빈 div를 imageSrc로 우회하지 말 것.",
@@ -1071,6 +1240,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ChatBubble: {
     name: "ChatBubble",
+    examplesHtml: {
+      do: '<nds-chat-bubble role="assistant" name="상담사" time="오후 2:31"\n  message="요즘 잠은 어떠세요?"></nds-chat-bubble>\n<nds-chat-bubble role="user" group time="오후 2:32" message="잘 못 자고 있어요"></nds-chat-bubble>',
+      dont: '<!-- raw <div class="bubble"> 로 시각만 흉내 — 좌/우 정렬/꼬리/그룹 룰이 사라짐 -->\n<div class="bubble user">잘 못 자고 있어요</div>',
+    },
     summary: "1:1 상담/챗봇 말풍선. role=me|them, group으로 코너 정리.",
     pitfalls: [
       "group prop을 안 넘기면 매 메시지가 둥근 모서리로 떠서 그룹감이 없음. 같은 발신자 연속 메시지면 first/middle/last 명시.",
@@ -1085,6 +1258,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ConsentChecklist: {
     name: "ConsentChecklist",
+    examplesHtml: {
+      do: '<nds-consent-checklist\n  items=\'[\n    {"key":"terms","label":"이용약관 동의","required":true},\n    {"key":"privacy","label":"개인정보 처리방침","required":true},\n    {"key":"marketing","label":"마케팅 정보 수신 (선택)"}\n  ]\'\n  all-label="전체 동의"></nds-consent-checklist>\n<script>el.addEventListener("nds-consent-change", e => setConsent(e.detail.value));</script>',
+      dont: '<!-- 개별 nds-checkbox 여러 개로 흉내 — 전체 동의 / required 가드 사라짐 -->\n<nds-checkbox label="약관 동의" required></nds-checkbox>\n<nds-checkbox label="개인정보 동의" required></nds-checkbox>',
+    },
     summary: "전체동의 + 항목별 체크 + 펼치기. 회원가입/민감정보 동의에 표준화.",
     pitfalls: [
       "items[].required=true인데 체크 안 됐을 때의 검증은 호출부 책임. 컴포넌트 자체에서 막지 않음.",
@@ -1096,6 +1273,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ScoreGauge: {
     name: "ScoreGauge",
+    examplesHtml: {
+      do: '<nds-score-gauge value="22" max="27"\n  segments=\'[\n    {"level":"normal","label":"정상","from":0,"to":9},\n    {"level":"mild","label":"경미","from":10,"to":18},\n    {"level":"moderate","label":"중간","from":19,"to":27}\n  ]\'\n  show-label show-legend value-suffix="점"></nds-score-gauge>',
+      dont: '<!-- segments 의 level 이 정의된 enum 외 값 — 색이 fallback -->\n<nds-score-gauge value="5" segments=\'[{"level":"good","from":0,"to":10}]\'></nds-score-gauge>',
+    },
     summary: "점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑.",
     pitfalls: [
       "단계 경계는 검사마다 다름. segments prop으로 직접 넘겨 결과 해석을 통일.",
@@ -1109,6 +1290,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   MedicationItem: {
     name: "MedicationItem",
+    examplesHtml: {
+      do: '<nds-medication-item med-name="우울증 약" dosage="50mg"\n  times=\'[{"time":"08:00"},{"time":"20:00"}]\'\n  note="식후 복용" show-check></nds-medication-item>\n<script>el.addEventListener("nds-medication-taken-change", e => save(e.detail));</script>',
+      dont: '<!-- 복용량/시간 정보 누락 — 환자에게 핵심 정보가 빠짐 -->\n<nds-medication-item med-name="약"></nds-medication-item>',
+    },
     summary: "복용약 한 줄 표시. 이름/용량/시기/노트 + 체크.",
     pitfalls: [
       "리스트로 쌓을 때는 부모에 gap 8~12px. MedicationItem은 자체 margin 없음.",
@@ -1120,6 +1305,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   AudioPlayer: {
     name: "AudioPlayer",
+    examplesHtml: {
+      do: '<nds-audio-player title="3분 호흡 명상" subtitle="저녁용" duration="180"></nds-audio-player>\n<script>el.addEventListener("audio-play", play);</script>',
+      dont: '<!-- raw <audio controls> -> DS 스킨 / 진행도 라벨이 적용 안 됨 -->\n<audio controls src="/m.mp3"></audio>',
+    },
     summary: "명상/이완 가이드 플레이어. 재생/일시정지/시크/이전/다음.",
     pitfalls: [
       "playing/currentTime/duration은 외부 상태 — useState + audio ref + timeupdate 이벤트로 동기화. DS는 UI만 제공.",
@@ -1131,6 +1320,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ActivityTimeline: {
     name: "ActivityTimeline",
+    examplesHtml: {
+      do: '<nds-activity-timeline items=\'[\n  {"key":"1","date":"2026.05.25","title":"상담 예약 완료","status":"completed"},\n  {"key":"2","date":"2026.05.28","title":"자가검사","status":"ongoing","statusLabel":"진행 중"}\n]\'></nds-activity-timeline>',
+      dont: '<!-- 자식 element 를 직접 쓰면 nds-timeline 사용 (이 가이드는 flat items API) -->\n<nds-activity-timeline>\n  <nds-timeline-item title="…"></nds-timeline-item>\n</nds-activity-timeline>',
+    },
     summary: "상담/검사 이력 타임라인. dot + line + 날짜/제목/상태 배지.",
     pitfalls: [
       "마지막 항목의 line은 자동으로 안 그려짐(:last-child). 중간에 splice해서 추가/삭제할 때 key 유지 잘 할 것.",
@@ -1143,6 +1336,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   OtpInput: {
     name: "OtpInput",
+    examplesHtml: {
+      do: '<nds-otp-input length="6" auto-focus></nds-otp-input>\n<script>el.addEventListener("otp-complete", e => verify(e.detail.value));</script>',
+      dont: '<!-- raw <input> 6개로 OTP 흉내 — 자동 포커스 이동/붙여넣기/접근성 모두 손실 -->\n<input maxlength="1"/><input maxlength="1"/>…',
+    },
     summary: "N자리 인증코드 입력. 자동 포커스 이동, 붙여넣기 분배, 숫자 전용.",
     pitfalls: [
       "value는 string. length만큼 채워지면 onComplete 발화 — 그 안에서 자동 제출 처리하면 사용자 경험 좋음.",
@@ -1159,6 +1356,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   FileUpload: {
     name: "FileUpload",
+    examplesHtml: {
+      do: '<nds-file-upload accept=".pdf,.jpg,.png" max-size="5242880"\n  description="PDF, JPG, PNG · 5MB 이하"></nds-file-upload>\n<script>\nel.addEventListener("files-change", e => upload(e.detail.files));\nel.addEventListener("files-reject", e => alert(e.detail.reason));\n</script>',
+      dont: '<!-- max-size 를 MB 단위로 입력 — bytes 가 정답 (5242880 = 5MB) -->\n<nds-file-upload max-size="5"></nds-file-upload>',
+    },
     summary: "Drag&drop + 클릭 업로드. multiple/accept/maxSize 지원. 제어 컴포넌트.",
     pitfalls: [
       "value가 File[] 제어 컴포넌트 — 내부 상태 안 가짐. 부모에서 useState로 관리.",
@@ -1175,6 +1376,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   DateRangePicker: {
     name: "DateRangePicker",
+    examplesHtml: {
+      do: '<nds-date-range-picker from="2026-05-01" to="2026-05-31"\n  presets=\'[{"label":"최근 7일","days":7},{"label":"이번 달","days":30}]\'></nds-date-range-picker>\n<script>el.addEventListener("nds-date-range-change", e => apply(e.detail));</script>',
+      dont: '<!-- to < from — 의미 없는 범위. min-date / max-date 로 가드 권장 -->\n<nds-date-range-picker from="2026-05-31" to="2026-05-01"></nds-date-range-picker>',
+    },
     summary: "시작/끝 날짜 한 쌍 선택. DatePicker 두 개 + 빠른 프리셋(최근 7일 등).",
     pitfalls: [
       "value는 { from?, to? } — 부분 선택 가능 (시작만 있을 수 있음). 폼 검증 시 둘 다 있는지 체크.",
@@ -1189,6 +1394,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Calendar: {
     name: "Calendar",
+    examplesHtml: {
+      do: '<nds-calendar value="2026-05-25" markers=\'[{"date":"2026-05-25","color":"red"}]\'></nds-calendar>\n<script>el.addEventListener("nds-calendar-change", e => setDate(e.detail.value));</script>',
+      dont: '<!-- month / value 형식 위반 (YYYY-MM, YYYY-MM-DD 필수) -->\n<nds-calendar value="2026/5/25"></nds-calendar>',
+    },
     summary:
       "인라인 월간 캘린더 그리드. DatePicker(popover 입력)와 다르게 화면에 펼쳐져 있는 콘텐츠형 캘린더.",
     pitfalls: [
@@ -1207,6 +1416,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Carousel: {
     name: "Carousel",
+    examplesHtml: {
+      do: '<nds-carousel autoplay="3000" indicator="dots" loop>\n  <img src="/banner1.jpg" alt="" />\n  <img src="/banner2.jpg" alt="" />\n</nds-carousel>',
+      dont: '<!-- 슬라이드가 1장인데 loop + autoplay — 같은 이미지가 깜빡임 -->\n<nds-carousel autoplay="3000" loop><img src="/only.jpg" /></nds-carousel>',
+    },
     summary:
       "가로 스와이프 슬라이더. 홈 배너, 콘텐츠 추천, 온보딩에 사용. drag/dots/autoplay/loop 내장.",
     pitfalls: [
@@ -1225,6 +1438,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   VideoPlayer: {
     name: "VideoPlayer",
+    examplesHtml: {
+      do: '<nds-video-player src="/intro.mp4" poster="/cover.jpg"\n  title="첫 회기 안내" duration-label="3:42" muted></nds-video-player>',
+      dont: '<!-- aspect-ratio 형식 위반 (CSS aspect-ratio 형식: "16 / 9") -->\n<nds-video-player src="/v.mp4" aspect-ratio="16:9"></nds-video-player>',
+    },
     summary: "HTML5 video 래퍼. 포스터/제목/길이 오버레이 + 커스텀 재생 UI 또는 nativeControls.",
     pitfalls: [
       "autoPlay는 muted=true와 함께가 아니면 브라우저가 차단. autoPlay만 단독으로 켜지 말 것.",
@@ -1240,6 +1457,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   NumberStepper: {
     name: "NumberStepper",
+    examplesHtml: {
+      do: '<nds-number-stepper value="1" min="1" max="9" step="1" unit="명"></nds-number-stepper>\n<script>el.addEventListener("number-change", e => setQty(e.detail.value));</script>',
+      dont: '<!-- 자유 입력을 nds-input 으로 받고 stepper 흉내 — 범위/단위 룰이 빠짐 -->\n<nds-input type="number" />',
+    },
     summary:
       "수량 조절 +/- 버튼 입력. Stepper(과정 인디케이터)와 이름은 비슷하지만 전혀 다른 용도.",
     pitfalls: [
@@ -1256,6 +1477,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Autocomplete: {
     name: "Autocomplete",
+    examplesHtml: {
+      do: '<nds-autocomplete placeholder="회사 검색"\n  options=\'[{"value":"1","label":"카카오"},{"value":"2","label":"네이버"}]\'\n  min-query-length="1" highlight></nds-autocomplete>\n<script>el.addEventListener("autocomplete-select", e => pick(e.detail.value));</script>',
+      dont: "<!-- options 를 단일 따옴표 없이 JSON.stringify 결과 그대로 — 따옴표 escape 가 깨짐 -->\n<nds-autocomplete options=\"[{value:'1',label:'A'}]\"></nds-autocomplete>",
+    },
     summary:
       "입력 + 드롭다운 추천. SearchInput(자유 검색)과 Select(고정 목록)의 중간. 키보드 ↓↑/Enter/Esc 내장.",
     pitfalls: [
@@ -1272,6 +1497,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   SelectionCard: {
     name: "SelectionCard",
+    examplesHtml: {
+      do: '<nds-selection-card mode="single" value="chat">\n  <nds-selection-card-item value="chat" item-title="채팅 상담" description="텍스트로 편하게"></nds-selection-card-item>\n  <nds-selection-card-item value="video" item-title="영상 상담" description="얼굴 보며 깊이 있게"></nds-selection-card-item>\n</nds-selection-card>\n<script>el.addEventListener("nds-selection-change", e => setMode(e.detail.value));</script>',
+      dont: '<!-- mode=\'multiple\' 인데 value 속성 사용 — values (배열) 사용 -->\n<nds-selection-card mode="multiple" value="chat">…</nds-selection-card>',
+    },
     summary: "카드형 단일/다중 선택지 (RadioCard/CheckboxCard 통합). compound — Group + Item.",
     pitfalls: [
       "라벨만 있는 단순 선택은 Radio/Checkbox를 쓸 것 — SelectionCard는 카드 단위(타이틀+설명+아이콘) 전제.",
@@ -1289,6 +1518,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Snackbar: {
     name: "Snackbar",
+    examplesHtml: {
+      do: '<nds-snackbar variant="success" snackbar-title="저장 완료"\n  action-label="되돌리기" duration="4000" open></nds-snackbar>\n<script>bar.addEventListener("snackbar-action", undo);</script>',
+      dont: '<!-- 단순 알림에 위계 강한 Modal 사용 — 흐름을 끊음 -->\n<nds-modal open title="저장 완료"></nds-modal>',
+    },
     summary:
       "inline 알림. 액션(되돌리기) / 닫기 버튼 / 시맨틱 variant 지원. Toast(자동 사라짐)와 분리된 컴포넌트.",
     pitfalls: [
@@ -1307,6 +1540,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   FAB: {
     name: "FAB",
+    examplesHtml: {
+      do: '<nds-fab icon="plus" label="기록 추가" color="primary" position="bottom-right"></nds-fab>',
+      dont: '<!-- 화면에 FAB 와 primary nds-button 양쪽 — 대표 액션이 둘이 됨 -->\n<nds-button color="primary">기록 추가</nds-button>\n<nds-fab icon="plus" label="기록 추가"></nds-fab>',
+    },
     summary:
       "Floating Action Button. 화면 하단에 떠 있는 가장 중요한 단일 액션. position 기본 bottom-right (fixed).",
     pitfalls: [
@@ -1324,6 +1561,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   BreathingGuide: {
     name: "BreathingGuide",
+    examplesHtml: {
+      do: '<nds-breathing-guide cycles="5" auto-start></nds-breathing-guide>',
+      dont: '<!-- raw CSS @keyframes 로 호흡 시각만 흉내 — 카운트/단계 음성이 없음 -->\n<div class="breath-anim"></div>',
+    },
     summary:
       "호흡 가이드 애니메이션. 원이 커지고 작아지면서 들숨/멈춤/날숨/쉼을 시각화. phases로 사이클 자유 정의.",
     pitfalls: [
@@ -1340,6 +1581,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   StreakCard: {
     name: "StreakCard",
+    examplesHtml: {
+      do: '<nds-streak-card title="연속 기록" streak="15" unit="일" days="30">\n  <svg slot="icon" viewBox="0 0 24 24">…</svg>\n</nds-streak-card>',
+      dont: '<!-- streak 만 있고 단위(unit)/총합(days) 누락 — 진행도가 모호 -->\n<nds-streak-card streak="15"></nds-streak-card>',
+    },
     summary: "연속 기록 트래커 카드. streak 숫자 + 최근 7~14일 점 그리드. 챌린지/습관 강화 화면.",
     pitfalls: [
       "days는 최근 7~14일이 시각적으로 적절. 30일 이상이면 EmotionHeatmap 사용 검토.",
@@ -1354,6 +1599,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   EmotionHeatmap: {
     name: "EmotionHeatmap",
+    examplesHtml: {
+      do: '<nds-emotion-heatmap month="2026-05"\n  entries=\'[{"date":"2026-05-25","level":4}]\'\n  colors=\'["#fff","#fee","#f99","#f00","#900"]\'\n  low-label="낮음" high-label="높음"></nds-emotion-heatmap>',
+      dont: '<!-- colors 가 5개가 아니면 cell 색이 깨짐 -->\n<nds-emotion-heatmap month="2026-05" colors=\'["#fff","#000"]\'></nds-emotion-heatmap>',
+    },
     summary: "월간 감정 히트맵. 5단계(0~4)를 색 강도로 시각화. 셀 클릭으로 그 날 상세 화면 진입.",
     pitfalls: [
       "entries에 없는 날짜는 자동으로 빈 셀(점선). 0 단계로 채우지 말 것 — treatZeroAsEmpty 기본 true.",
@@ -1368,6 +1617,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   AppointmentCard: {
     name: "AppointmentCard",
+    examplesHtml: {
+      do: '<nds-appointment-card date="2026-06-01" start-time="14:00" end-time="14:50"\n  title="첫 회기" mode="video" location="원격(Zoom)"></nds-appointment-card>',
+      dont: '<!-- mode 만 있고 date/start-time 누락 — 핵심 정보가 빠짐 -->\n<nds-appointment-card mode="video"></nds-appointment-card>',
+    },
     summary: "잡힌 상담 예약 한 건. 날짜 블록 + 제목/시간/방식/장소/상태 배지 + 액션 버튼들.",
     pitfalls: [
       "상담사 선택 화면에 쓰지 말 것. 그건 CounselorCard 영역. AppointmentCard는 '잡힌 일정' 표시 전용.",
@@ -1383,6 +1636,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   JournalEntry: {
     name: "JournalEntry",
+    examplesHtml: {
+      do: '<nds-journal-entry date="2026-05-25" mood="calm" title="좋은 산책"\n  body="아침에 30분 걸으니 머리가 맑아졌다" max-lines="3" clickable></nds-journal-entry>',
+      dont: '<!-- body 가 길어 max-lines 가 필요한데 누락 — 카드가 늘어남 -->\n<nds-journal-entry title="…" body="… 매우 긴 텍스트 …"></nds-journal-entry>',
+    },
     summary:
       "감정 일기 한 건 카드. 무드(이모지) + 날짜 + 제목 + 본문 클램프 + 태그 + 썸네일 + 푸터.",
     pitfalls: [
@@ -1398,6 +1655,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ChatComposer: {
     name: "ChatComposer",
+    examplesHtml: {
+      do: '<nds-chat-composer placeholder="메시지를 입력하세요" max-length="500"\n  quick-replies=\'[{"text":"네"},{"text":"아니요"}]\'></nds-chat-composer>\n<script>el.addEventListener("nds-chat-submit", e => send(e.detail.value));</script>',
+      dont: '<!-- raw <input> + <button> 으로 채팅 입력 흉내 — 자동 grow / quick-replies / 첨부 등 미적용 -->\n<input type="text" /><button>전송</button>',
+    },
     summary: "채팅 입력바. ChatBubble의 짝. 자동 확장 textarea + 빠른 응답 + 첨부/마이크 + 글자수.",
     pitfalls: [
       "value/onValueChange/onSubmit 모두 controlled — 내부 state 없음.",
@@ -1413,6 +1674,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   PhoneInput: {
     name: "PhoneInput",
+    examplesHtml: {
+      do: '<nds-phone-input country-code="KR" value="01012345678" label="휴대폰 번호"></nds-phone-input>\n<script>el.addEventListener("nds-phone-change", e => setPhone(e.detail.value));</script>',
+      dont: '<!-- 다이얼 코드(+82) 를 country-code 로 — ISO 코드 사용 -->\n<nds-phone-input country-code="+82"></nds-phone-input>',
+    },
     summary:
       "국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드/국기는 countries 데이터에서 조회.",
     pitfalls: [
@@ -1428,6 +1693,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   SignaturePad: {
     name: "SignaturePad",
+    examplesHtml: {
+      do: '<nds-signature-pad label="여기에 서명해주세요" height="200" pen-width="2"></nds-signature-pad>\n<script>\n// 제출 시:\nconst dataUrl = await document.querySelector("nds-signature-pad").toDataURL();\n</script>',
+      dont: '<!-- 짧은 동의 체크에 SignaturePad — 과한 UI. nds-checkbox 가 맞음 -->\n<nds-signature-pad label="약관 동의"></nds-signature-pad>',
+    },
     summary:
       "전자 서명 캔버스. 동의서/가입 서명 추출. ref(SignaturePadHandle)로 clear/toDataURL/isEmpty.",
     pitfalls: [
@@ -1442,6 +1711,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CoachMark: {
     name: "CoachMark",
+    examplesHtml: {
+      do: '<nds-coach-mark open step="0"\n  steps=\'[{"title":"여기서 시작","description":"홈 탭에서 검사를 시작하세요"}]\'\n  finish-label="완료" skip-label="건너뛰기"></nds-coach-mark>',
+      dont: '<!-- steps 가 1개인데 skip 노출 + finish-label 누락 — UX 가 어색 -->\n<nds-coach-mark open steps=\'[{"title":"…"}]\'></nds-coach-mark>',
+    },
     summary: "온보딩 dim 툴팁. 특정 DOM 영역을 강조 + 단계별 안내. Tooltip과 분리(가벼운 hover용).",
     pitfalls: [
       "단순 hover 설명용은 Tooltip을 쓸 것. CoachMark는 화면 전체 dim + 강제 가이드.",
@@ -1457,6 +1730,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Sparkline: {
     name: "Sparkline",
+    examplesHtml: {
+      do: '<nds-sparkline kind="line" color="primary" data="[12,15,11,18,22,20,25]" width="200" height="60"></nds-sparkline>',
+      dont: '<!-- 한 점만 -> 라인이 그려지지 않음. 의미 없는 단일값엔 stat-card 사용 -->\n<nds-sparkline data="[42]"></nds-sparkline>',
+    },
     summary: "미니 추이 차트 (line/area/bar). 축/레이블 없음 — 카드 안 시각 신호용.",
     pitfalls: [
       "정확한 비교가 필요한 본격 차트가 아님. 50개 이상 데이터 포인트는 가독성 저하.",
@@ -1471,6 +1748,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CircularProgress: {
     name: "CircularProgress",
+    examplesHtml: {
+      do: '<nds-circular-progress value="75" max="100" size="lg" label="저장 진행"></nds-circular-progress>',
+      dont: '<!-- max 가 음수/0 — 0으로 나눠 표시 깨짐 -->\n<nds-circular-progress value="50" max="0"></nds-circular-progress>',
+    },
     summary:
       "원형 진행도. 단순 value/max 비율 표시. ScoreGauge(단계 분류 결과)와 분리, ProgressBar(가로)와 분리.",
     pitfalls: [
@@ -1486,6 +1767,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   MultiStepForm: {
     name: "MultiStepForm",
+    examplesHtml: {
+      do: '<nds-multi-step-form\n  steps=\'[{"key":"info","title":"기본 정보"},{"key":"confirm","title":"확인"}]\'\n  current="0">\n  <div data-step="info">기본 정보 form…</div>\n  <div data-step="confirm">최종 확인…</div>\n</nds-multi-step-form>\n<script>el.addEventListener("step-submit", e => save(e.detail.current));</script>',
+      dont: "<!-- 자식 element 가 data-step 없음 — 어느 step 인지 매칭 불가 -->\n<nds-multi-step-form steps='...'><div>step 1</div><div>step 2</div></nds-multi-step-form>",
+    },
     summary:
       "다단계 폼 컨테이너. 단계별 검증/진행/제출을 한 컴포넌트에서 관리. Stepper(인디케이터만)와 분리.",
     pitfalls: [
@@ -1502,6 +1787,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ExpandableText: {
     name: "ExpandableText",
+    examplesHtml: {
+      do: '<nds-expandable-text lines="3" expand-label="더보기" collapse-label="접기">\n  긴 설명 텍스트… (스크롤 없이 너무 길어질 때만)\n</nds-expandable-text>',
+      dont: '<!-- 한 줄짜리 짧은 텍스트에 expandable 사용 — 더보기 버튼이 더 큼 -->\n<nds-expandable-text lines="3">간단한 안내</nds-expandable-text>',
+    },
     summary: "긴 텍스트 줄 수 클램프 + '더보기/접기' 자동. 짧은 텍스트면 토글 자동 숨김.",
     pitfalls: [
       "본문 안에 폰트 사이즈가 섞이면 line-height 측정 정확도 떨어짐 — 단일 톤 텍스트에만 사용.",
@@ -1516,6 +1805,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Header: {
     name: "Header",
+    examplesHtml: {
+      do: '<nds-header variant="solid" position="fixed" elevated>\n  <nds-header-main-bar>\n    <nds-header-logo>NudgeEAP</nds-header-logo>\n    <nds-header-actions>\n      <nds-icon-button aria-label="알림"><svg>…</svg></nds-icon-button>\n    </nds-header-actions>\n  </nds-header-main-bar>\n</nds-header>',
+      dont: '<!-- raw <header> 에 인라인 스타일로 흉내 — 토큰/elevated 그림자가 안 들어감 -->\n<header style="position:fixed;background:#fff">…</header>',
+    },
     summary:
       "base 헤더. variant 로 분기: compact(모바일 56px flex) / webview(56px, title 중앙 + back) / transparent(56px, 배경 투명) / web(데스크탑 80px grid 3열, max-width 1200). 브랜드 화면이면 base Header 가 아니라 brand chrome (TrostAppBar / NudgeEAPWebHeader / CashpobiWebHeader 등) 사용.",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=96-25918",
@@ -1566,6 +1859,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
      ──────────────────────────────────── */
   GenietAppBar: {
     name: "GenietAppBar",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "Geniet 브랜드 상단 헤더 (Figma 77:2 개편판). desktop = 2단(Search Header 54h + Menu Header 58h, 전체 172h) / mobile = 2단(Row1 50h + Row2 52h, 전체 102h) / webview variant. base Header 대신 Geniet 화면에서는 이걸 사용.",
     figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=77-2",
@@ -1588,6 +1882,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   GenietFooter: {
     name: "GenietFooter",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "Geniet 통합 푸터. Geniet 은 앱 환경 전용이라 surface='app' (default) 만 지원 — web 푸터 없음. Footer.Info 베이스 위 wrapper — links / company / extra(통신판매중개자 안내) / logo 슬롯.",
     pitfalls: [
@@ -1601,6 +1896,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   GenietBottomNav: {
     name: "GenietBottomNav",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "Geniet 5탭 BottomNav (Figma 90:2 — 홈/기록/혜택/리뷰/커뮤니티). 단일 그래픽 + color cascade. label 만 받으면 자동 아이콘 매핑.",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=90-2",
@@ -1617,6 +1913,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TrostAppBar: {
     name: "TrostAppBar",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "Trost 상단 헤더. desktop(2단, 1080 max-width, 앱다운로드 CTA + TrendingKeywords) / mobile / webview variant. 모바일 홈은 2단(로고+포인트칩+벨 / 검색) — 모바일 웹 / 앱 인-웹뷰 홈 양쪽에서 동일 컴포넌트를 사용한다. base Header 대신 Trost 화면에서는 이걸 사용.",
     pitfalls: [
@@ -1636,6 +1933,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TrostFooter: {
     name: "TrostFooter",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "Trost 통합 푸터. surface='web' 은 데스크톱(≥1024) dark PC 푸터, surface='app' (default) 은 dark 앱 푸터. 기존 variant='desktop'|'mobile' 은 layout 으로 이름 변경 (surface axis 와 분리).",
     pitfalls: [
@@ -1653,6 +1951,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TrostBottomNav: {
     name: "TrostBottomNav",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "Trost 5탭 BottomNav (홈/사운드/내음악/커뮤니티/마이페이지). 일부 탭(홈/마이페이지)은 active/inactive 그래픽 분리, 나머지는 color cascade.",
     pitfalls: [
@@ -1665,6 +1964,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TrostWebHeader: {
     name: "TrostWebHeader",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "Trost 데스크톱(≥1024) 웹 헤더. 3슬롯 컴파운드 — EAP 배너 (Rectangle 2613) + 유틸리티 헤더 (로고 Path / 검색 Rectangle 2522 / 로그인 / 앱 다운로드) + 탭 네비게이션. `TrostDesktopHeader` 의 alias — brand chrome 5개 슬롯 중 WebHeader 자리.",
     pitfalls: [
@@ -1691,6 +1991,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   NudgeEAPAppBar: {
     name: "NudgeEAPAppBar",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "NudgeEAP 상단 헤더. 1단 (logo + GNB + AuthMenu), 80px h / 1200 max-width. desktop / mobile / webview variant.",
     figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=39-5751",
@@ -1707,6 +2008,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   NudgeEAPFooter: {
     name: "NudgeEAPFooter",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "NudgeEAP 통합 푸터. surface='web' (Figma 20:13799) 은 약관+앱다운로드+ISO+DAIN+powered by 풍부 슬롯의 PC 푸터, surface='app' (default) 은 회사 정보 표준 푸터.",
     figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-13799",
@@ -1723,6 +2025,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   NudgeEAPBottomNav: {
     name: "NudgeEAPBottomNav",
+    _htmlStatus: "no-html-equivalent",
     summary: "NudgeEAP 3탭 BottomNav (홈/심리샵/마이). 홈/마이 active 분기, 심리샵은 단일 그래픽.",
     figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-3331",
     pitfalls: [
@@ -1735,6 +2038,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   NudgeEAPWebHeader: {
     name: "NudgeEAPWebHeader",
+    _htmlStatus: "no-html-equivalent",
     summary:
       'NudgeEAP 웹 헤더 (PC) — base Header (variant="web") wrapper. 로고 200×60 (Symbol + KO+EN horizontal) + GNB 6탭 (상담하기/심리검사/심리치료/주간레터/소식/마이페이지) + 우측 앱다운로드 + 로그인/로그아웃.',
     figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=39-5751",
@@ -1749,6 +2053,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CashpobiWebHeader: {
     name: "CashpobiWebHeader",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "캐포비(캐시워크 for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐포비는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공.",
     figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-1739",
@@ -1764,6 +2069,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CashpobiFooter: {
     name: "CashpobiFooter",
+    _htmlStatus: "no-html-equivalent",
     summary:
       "캐포비 통합 푸터. 캐포비는 웹 전용이라 surface='web' (default) 만 지원. layout='desktop'|'mobile' 으로 반응형 분기. light 톤 + Neutral 텍스트.",
     figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-2208",
@@ -1779,6 +2085,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   PageHeader: {
     name: "PageHeader",
+    examplesHtml: {
+      do: '<nds-page-header page-title="설정" subtitle="계정과 알림을 관리하세요" show-back bordered>\n  <nds-breadcrumb slot="breadcrumb" items=\'[{"label":"홈","href":"/"}]\'></nds-breadcrumb>\n  <nds-button slot="actions" color="primary">저장</nds-button>\n</nds-page-header>\n<script>el.addEventListener("nds-page-header-back", () => history.back());</script>',
+      dont: '<!-- show-back 만 — 뒤로가기 이벤트 처리 없음 -->\n<nds-page-header page-title="설정" show-back></nds-page-header>',
+    },
     summary:
       "페이지 단위 헤더. 제목 + 서브타이틀 + 우측 액션 + 하단 탭 슬롯. AppBar(글로벌 네비)와 분리.",
     pitfalls: [
@@ -1795,6 +2105,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TitleBlock: {
     name: "TitleBlock",
+    examplesHtml: {
+      do: '<nds-title-block level="h2" title="이번 주 미션" subtitle="작은 변화부터 시작해요"></nds-title-block>',
+      dont: '<!-- level 누락 -> 기본값이 적용돼 페이지 위계가 무너짐 -->\n<nds-title-block title="…"></nds-title-block>',
+    },
     summary:
       "헤딩 + 서브타이틀 표준 블록. level (h1~h5) 만 결정하면 헤딩 폰트와 Gap/Title 토큰이 자동 적용 — Figma TitleGapGuide 859:5614 (6 페이지 58건 실측) 기반.",
     pitfalls: [
@@ -1814,6 +2128,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   StatCard: {
     name: "StatCard",
+    examplesHtml: {
+      do: '<nds-stat-card label="이번 주 기록" value="5" unit="일" trend="up" compare="지난주 +2일"></nds-stat-card>',
+      dont: '<!-- 트렌드/단위 없이 숫자만 — 사용자가 의미를 추측해야 함 -->\n<nds-stat-card label="…" value="5"></nds-stat-card>',
+    },
     summary: "메트릭 강조 카드. 라벨 + 큰 숫자/단위 + delta(변화량) + Sparkline 슬롯(trailing).",
     pitfalls: [
       "trend만 주고 delta를 빼면 trend 색이 의미 없어짐. 둘 다 함께 사용.",
@@ -1828,6 +2146,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   QuickActionGrid: {
     name: "QuickActionGrid",
+    examplesHtml: {
+      do: '<nds-quick-action-grid columns="3" gap="12"\n  actions=\'[{"label":"홈","icon":"home","href":"/"},{"label":"기록","icon":"book","href":"/log"}]\'></nds-quick-action-grid>',
+      dont: '<!-- actions JSON 에 onClick 함수 박음 — WC attribute 는 함수 못 받음. href 로 -->\n<nds-quick-action-grid actions=\'[{"label":"홈","onClick":"go()"}]\'></nds-quick-action-grid>',
+    },
     summary: "홈 빠른 액션 그리드. 4~6칸 아이콘+라벨, 배지 지원. 4칸이 기본 균형.",
     pitfalls: [
       "라벨이 길면 줄바꿈됨. 4글자 이하 권장.",
@@ -1843,6 +2165,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TagInput: {
     name: "TagInput",
+    examplesHtml: {
+      do: '<nds-tag-input value=\'["불안","수면"]\' label="관심 주제"\n  placeholder="태그 입력 후 Enter" max-tags="5" helper-text="최대 5개"></nds-tag-input>\n<script>el.addEventListener("nds-tag-change", e => save(e.detail.value));</script>',
+      dont: '<!-- max-tags 누락 + helper 없음 — 무한정 입력 가능 -->\n<nds-tag-input placeholder="태그"></nds-tag-input>',
+    },
     summary:
       "태그 자유 입력. Enter/쉼표로 추가, Backspace로 마지막 삭제. Chip 표시(읽기 전용)와 분리.",
     pitfalls: [
@@ -1857,6 +2183,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Lightbox: {
     name: "Lightbox",
+    examplesHtml: {
+      do: '<nds-lightbox open index="0"\n  images=\'[{"src":"/p1.jpg","alt":"사진 1","caption":"…"},{"src":"/p2.jpg","alt":"사진 2"}]\'></nds-lightbox>\n<script>el.addEventListener("lightbox-close", () => el.removeAttribute("open"));</script>',
+      dont: '<!-- alt 누락 — 이미지 의미 전달 실패 -->\n<nds-lightbox open images=\'[{"src":"/p.jpg"}]\'></nds-lightbox>',
+    },
     summary: "이미지 풀스크린 확대 모달. 키보드(Esc/←/→) + 좌우 버튼 + 카운터 + 캡션.",
     pitfalls: [
       "body.overflow 잠금이 자동 처리. 외부에서 또 잠그지 말 것.",
@@ -1870,6 +2200,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   AvatarGroup: {
     name: "AvatarGroup",
+    examplesHtml: {
+      do: '<nds-avatar-group max="3" size="md"\n  items=\'[{"src":"/a.jpg","alt":"A"},{"src":"/b.jpg","alt":"B"},{"src":"/c.jpg","alt":"C"},{"src":"/d.jpg","alt":"D"}]\'></nds-avatar-group>',
+      dont: "<!-- max 누락 — 5명 이상이면 가로로 무한히 늘어남 -->\n<nds-avatar-group items='[…아주 많음…]'></nds-avatar-group>",
+    },
     summary: "여러 아바타를 겹쳐 표시 + 초과 +N. 단체 상담/챌린지 참가자 같은 시각 신호용.",
     pitfalls: [
       "정확한 명단이 목적이면 List가 더 적절. AvatarGroup은 'N명이 함께'라는 시각 신호.",
@@ -1884,6 +2218,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CallControlBar: {
     name: "CallControlBar",
+    examplesHtml: {
+      do: '<nds-call-control-bar duration="00:05:30" camera-on></nds-call-control-bar>\n<script>\nel.addEventListener("nds-call-mute-change", e => setMute(e.detail.muted));\nel.addEventListener("nds-call-end", endCall);\n</script>',
+      dont: '<!-- duration 포맷이 HH:MM:SS 아님 -->\n<nds-call-control-bar duration="5:30"></nds-call-control-bar>',
+    },
     summary:
       "통화 컨트롤. 음소거/카메라/스피커/종료 + duration 표시. 화상은 카메라, 음성은 스피커만 노출.",
     pitfalls: [
@@ -1899,6 +2237,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   VoiceRecorder: {
     name: "VoiceRecorder",
+    examplesHtml: {
+      do: '<nds-voice-recorder state="idle" seconds="0" max-seconds="180"></nds-voice-recorder>\n<script>\n// host 가 timer 와 state 를 controlled 로 관리:\nel.addEventListener("state-change", e => { el.setAttribute("state", e.detail.state); /* setInterval 로 seconds */ });\nel.addEventListener("complete", e => save(e.detail.seconds));\n</script>',
+      dont: '<!-- seconds 를 자체 증가시키지 않음 — host 가 timer 책임 -->\n<nds-voice-recorder state="recording" seconds="0"></nds-voice-recorder>  <!-- 영원히 0 -->',
+    },
     summary:
       "음성 메모 녹음 UI. 큰 녹음 버튼 + 타이머 + 펄스 인디케이터. 마이크 접근/저장은 외부 처리.",
     pitfalls: [
@@ -1913,6 +2255,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   NotificationItem: {
     name: "NotificationItem",
+    examplesHtml: {
+      do: '<nds-notification-item kind="success" item-title="결제 완료"\n  description="6/1 14:00 첫 상담" time="방금 전" unread clickable></nds-notification-item>\n<script>el.addEventListener("nds-notification-click", () => navigate("/notice/1"));</script>',
+      dont: '<!-- kind 누락 — 색/아이콘이 의미 없는 default -->\n<nds-notification-item item-title="알림"></nds-notification-item>',
+    },
     summary: "알림 리스트 한 건. kind별 아이콘 톤, 미읽음 점, 시간 라벨, 본문 2줄 클램프.",
     pitfalls: [
       "Toast/Snackbar와 다름 — 알림 센터(히스토리) 한 건 표현용.",
@@ -1926,6 +2272,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CountdownTimer: {
     name: "CountdownTimer",
+    examplesHtml: {
+      do: '<nds-countdown-timer ends-at="2026-12-31T23:59:59+09:00"\n  label="이벤트 종료까지" expired-text="이벤트가 종료되었어요"></nds-countdown-timer>',
+      dont: "<!-- ends-at 이 과거값이고 expired-text 누락 — '0초' 가 영원히 표시됨 -->\n<nds-countdown-timer ends-at=\"2020-01-01T00:00:00Z\"></nds-countdown-timer>",
+    },
     summary:
       "종료 시각까지 자동 카운트다운. 1초 단위 갱신, 10초 이하 빨강 강조, mm:ss/hh:mm:ss/remaining 포맷.",
     pitfalls: [
@@ -1941,6 +2291,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   OnlineIndicator: {
     name: "OnlineIndicator",
+    examplesHtml: {
+      do: '<nds-avatar src="/u.jpg" alt="홍길동" size="md"></nds-avatar>\n<nds-online-indicator status="online" show-label aria-label="온라인"></nds-online-indicator>',
+      dont: '<!-- 색 점 하나로 상태 모사 — 4 상태 (online/idle/offline/dnd) 구분 못함 -->\n<span style="background:#0a0;width:8px;height:8px"></span>',
+    },
     summary: "presence 점 (online/away/busy/offline). online은 자동 펄스 애니메이션.",
     pitfalls: [
       "online에 별도 강조 효과 추가하지 말 것 — 자동 펄스 있음.",
@@ -1950,6 +2304,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ReactionPicker: {
     name: "ReactionPicker",
+    examplesHtml: {
+      do: '<nds-reaction-picker\n  options=\'[{"key":"like","emoji":"👍","label":"좋아요","count":5},{"key":"care","emoji":"💙","label":"공감","count":12}]\'\n  value=\'["like"]\'></nds-reaction-picker>\n<script>el.addEventListener("nds-reaction-change", e => save(e.detail.value));</script>',
+      dont: '<!-- options 의 emoji / label 누락 — 의미 전달 실패 -->\n<nds-reaction-picker options=\'[{"key":"like"}]\'></nds-reaction-picker>',
+    },
     summary: "콘텐츠 반응 칩 그룹. 이모지 + 카운트, 다중 또는 단일 선택, hideCount 옵션.",
     pitfalls: [
       "value는 single이어도 string[] (길이 0~1) — 일관된 형태로 처리.",
@@ -1963,6 +2321,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   GreetingHeader: {
     name: "GreetingHeader",
+    examplesHtml: {
+      do: '<nds-greeting-header name="이정민" greeting="좋은 아침이에요"\n  question="오늘 기분은 어떠세요?"></nds-greeting-header>',
+      dont: '<!-- greeting / question 을 slot 으로 — 둘 다 attribute 사용 -->\n<nds-greeting-header name="A"><span slot="greeting">좋은 아침</span></nds-greeting-header>',
+    },
     summary:
       "홈 인삿말 카드. 사용자 호칭({name}님 자동) + 인삿말 + 질문 + 액션 슬롯(MoodSelector 등).",
     pitfalls: [
@@ -1977,6 +2339,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TipCard: {
     name: "TipCard",
+    examplesHtml: {
+      do: '<nds-tip-card tone="info" label="팁" tip-title="더 잘 자려면"\n  description="자기 1시간 전엔 화면을 멀리해보세요"></nds-tip-card>',
+      dont: '<!-- TipCard 를 위기/긴급 안내에 사용 — 시그널 강도가 부족 -->\n<nds-tip-card tone="info" tip-title="자해 충동이 든다면"></nds-tip-card>',
+    },
     summary:
       "한 줄 인사이트/팁 카드. info/success/warning/neutral 톤. 위기는 CrisisCallout, 페이지 띠는 Banner.",
     pitfalls: [
@@ -1992,6 +2358,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   PinPad: {
     name: "PinPad",
+    examplesHtml: {
+      do: '<nds-pin-pad pin-length="6" label="인증 번호 입력" shuffle></nds-pin-pad>\n<script>el.addEventListener("nds-pin-complete", e => verify(e.detail.value));</script>',
+      dont: '<!-- OTP / SMS 인증을 PinPad 로 — OtpInput 가 맞음 (자동 채움 / 붙여넣기) -->\n<nds-pin-pad pin-length="6" label="SMS 인증"></nds-pin-pad>',
+    },
     summary: "PIN 키패드. 점 인디케이터 + 숫자 그리드. SMS 인증은 OtpInput, 일반 입력은 Input.",
     pitfalls: [
       "shuffleSeed를 매 렌더 새로 계산하면 키 배치 흔들림 — useMemo로 진입 시점에 고정.",
@@ -2006,6 +2376,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TimePicker: {
     name: "TimePicker",
+    examplesHtml: {
+      do: '<nds-time-picker value="14:30" step="600"\n  label="상담 시간 선택" min="09:00" max="18:00"></nds-time-picker>\n<script>el.addEventListener("nds-time-change", e => setTime(e.detail.value));</script>',
+      dont: '<!-- step 0 — 분/초 단위 무제한 — 예약 정확도 깨짐 -->\n<nds-time-picker value="14:30" step="0"></nds-time-picker>',
+    },
     summary: "시간만 선택 (HH:mm). step(초 단위)/min/max 지원. 날짜+시간은 DatePicker와 조합.",
     pitfalls: [
       "step은 초 단위 — 5분이면 300, 15분이면 900.",
@@ -2016,6 +2390,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   AddressSearch: {
     name: "AddressSearch",
+    examplesHtml: {
+      do: '<nds-address-search label="주소" search-label="주소 검색"\n  empty-message="검색 결과가 없어요" helper-text="도로명/지번 모두 가능"></nds-address-search>\n<script>el.addEventListener("address-query", e => search(e.detail.query));</script>',
+      dont: '<!-- results 를 string 으로 그대로 박음 — JSON 배열이어야 렌더 가능 -->\n<nds-address-search results="결과 없음"></nds-address-search>',
+    },
     summary:
       "주소 검색 + 상세 주소 입력. 검색 자체는 외부 API(카카오/네이버)로 처리, results만 전달.",
     pitfalls: [
@@ -2030,6 +2408,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ImageCropper: {
     name: "ImageCropper",
+    examplesHtml: {
+      do: '<nds-image-cropper src="/photo.jpg" shape="circle" output-size="512x512"\n  label="프로필 사진 자르기"></nds-image-cropper>\n<script>\n// 적용 버튼에서 직접 호출:\nconst dataUrl = await document.querySelector("nds-image-cropper").toDataURL();\n</script>',
+      dont: '<!-- src 없이 즉시 노출 — 빈 영역만 보임 -->\n<nds-image-cropper shape="circle"></nds-image-cropper>',
+    },
     summary: "이미지 자르기 (circle/square). 드래그+줌, ref.toDataURL()로 PNG 추출.",
     pitfalls: [
       "외부 이미지(https) 자르기는 CORS 헤더 필요 — 서버 응답에 Access-Control-Allow-Origin 없으면 dataURL이 비어나옴.",
@@ -2040,6 +2422,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   PullToRefresh: {
     name: "PullToRefresh",
+    examplesHtml: {
+      do: '<nds-pull-to-refresh threshold="80">\n  <div slot="default">스크롤 콘텐츠…</div>\n</nds-pull-to-refresh>\n<script>\nel.addEventListener("refresh", async () => {\n  await reload();\n  el.endRefresh();\n});\n</script>',
+      dont: '<!-- endRefresh() 호출 안 함 — 스피너가 영원히 돌아감 -->\n<nds-pull-to-refresh><div slot="default">…</div></nds-pull-to-refresh>',
+    },
     summary: "모바일 풀 투 리프레시. 화면 최상단에서 당기면 onRefresh, Promise 종료 자동 처리.",
     pitfalls: [
       "scrollTop > 0이면 트리거 X — 항상 최상단에서만 동작 (의도적).",
@@ -2053,6 +2439,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   WaveformPlayer: {
     name: "WaveformPlayer",
+    examplesHtml: {
+      do: '<nds-waveform-player src="/voice.mp3" bars="36"\n  peaks="[0.3,0.5,0.7,0.4,0.6,0.8]"></nds-waveform-player>',
+      dont: '<!-- raw <audio controls> 로 음성 메모 표시 — 파형/색/진행도 토큰 미적용 -->\n<audio controls src="/voice.mp3"></audio>',
+    },
     summary:
       "음성 메시지 재생 (파형 시각화). AudioPlayer가 트랙바 형태라면 WaveformPlayer는 컴팩트 메시지용.",
     pitfalls: [
@@ -2067,6 +2457,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   MentionInput: {
     name: "MentionInput",
+    examplesHtml: {
+      do: '<nds-mention-input label="댓글" placeholder="@로 멘션 가능"\n  users=\'[{"key":"alice","name":"앨리스","description":"엔지니어"}]\'></nds-mention-input>\n<script>el.addEventListener("mention", e => track(e.detail.user));</script>',
+      dont: '<!-- users 누락 — @ 입력 시 후보가 안 뜸 -->\n<nds-mention-input placeholder="@로 멘션"></nds-mention-input>',
+    },
     summary: "@멘션 입력. 자동완성 드롭다운 + 키보드 네비. 트리거 커스텀 (#로 해시태그도 가능).",
     pitfalls: [
       "users는 전체 목록 — 컴포넌트가 자동 필터. 외부에서 미리 필터링하지 말 것.",
@@ -2077,6 +2471,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Confetti: {
     name: "Confetti",
+    examplesHtml: {
+      do: '<nds-confetti active count="50" duration="2000"\n  colors=\'["#FF5722","#FFC107","#4CAF50"]\'></nds-confetti>',
+      dont: '<!-- 자해/위기 톤 화면 / 부정적 액션 후에 confetti — 시그널 충돌 -->\n<nds-confetti active></nds-confetti>  <!-- after "계정 삭제 완료" -->',
+    },
     summary:
       "축하 이펙트 (canvas 기반). active=true가 되는 순간 한 번 발사, onComplete에서 false로 리셋.",
     pitfalls: [
@@ -2089,6 +2487,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CommentItem: {
     name: "CommentItem",
+    examplesHtml: {
+      do: '<nds-comment-item author="이정민" time="2시간 전" text="공감해요!" show-reply>\n  <img slot="avatar" src="/u.jpg" alt="" />\n</nds-comment-item>\n<script>el.addEventListener("nds-comment-reply", e => focusReply(e.detail.author));</script>',
+      dont: '<!-- text 를 slot 으로 — text 는 attribute 사용 -->\n<nds-comment-item author="A"><p>본문</p></nds-comment-item>',
+    },
     summary:
       "댓글 한 건. 작성자/시간/본문 + 좋아요/답글 슬롯 + 답글 트리(replies). 본문 줄바꿈 자동 보존.",
     pitfalls: [
@@ -2104,6 +2506,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   LikeButton: {
     name: "LikeButton",
+    examplesHtml: {
+      do: '<nds-like-button liked count="42" size="md"></nds-like-button>\n<script>el.addEventListener("nds-like-change", e => persist(e.detail));</script>',
+      dont: '<!-- count 를 사용자가 변경한 후 서버에 반영하지 않음 — 새로고침 시 사라짐 -->\n<nds-like-button count="42"></nds-like-button>  <!-- listener 없음 -->',
+    },
     summary:
       "좋아요 토글 + 카운트. 클릭 펑 애니메이션, 1000+는 자동 K 변환. ReactionPicker(여러 이모지)와 분리.",
     pitfalls: [
@@ -2119,6 +2525,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ShareSheet: {
     name: "ShareSheet",
+    examplesHtml: {
+      do: '<nds-share-sheet open sheet-title="공유하기"\n  targets=\'[{"key":"kakao","label":"카카오톡","emoji":"💬"},{"key":"sms","label":"문자","emoji":"✉️"}]\'\n  link="https://nudge.kr/p/1"></nds-share-sheet>\n<script>el.addEventListener("nds-share-target", e => share(e.detail.target));</script>',
+      dont: "<!-- targets 누락 — 시트가 비어 보임. 최소 1개 -->\n<nds-share-sheet open></nds-share-sheet>",
+    },
     summary:
       "BottomSheet 형태 공유 모달. 4칸 그리드 + 선택적 링크 복사. 외부 SDK(카카오/메시지)는 onClick에서 직접 호출.",
     pitfalls: [
@@ -2133,6 +2543,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ReviewCard: {
     name: "ReviewCard",
+    examplesHtml: {
+      do: '<nds-review-card author="홍길동" meta="2025.05.20 · 1회기"\n  rating="5" card-title="정말 좋았어요"\n  body="처음엔 망설였는데 지금은 매주 기다려져요" verified></nds-review-card>',
+      dont: '<!-- rating="6" — max(5) 초과로 표시가 깨짐 -->\n<nds-review-card author="…" rating="6"></nds-review-card>',
+    },
     summary: "별점 후기 카드 (0.5 단위). 작성자/별점/본문/태그/푸터 슬롯, verified 인증 마크.",
     pitfalls: [
       "rating은 0~5, 0.5 단위. 범위 밖이면 시각적으로 깨짐.",
@@ -2146,6 +2560,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   MediaCard: {
     name: "MediaCard",
+    examplesHtml: {
+      do: '<nds-media-card image-src="/cover.jpg" eyebrow="추천"\n  card-title="명상 시작하기" body="3분짜리 호흡 명상" rating="4.6" clickable></nds-media-card>\n<script>el.addEventListener("nds-media-card-click", () => navigate("/media/1"));</script>',
+      dont: '<!-- body 를 slot 으로 — attribute 사용 -->\n<nds-media-card image-src="/c.jpg" card-title="A"><p slot="body">…</p></nds-media-card>',
+    },
     summary:
       "이미지 위 / 콘텐츠 아래 세로형 카드. 슬롯 기반 (image · imageOverlay · eyebrow · title · body · footer) + 별점 헬퍼. " +
       "콘텐츠/리뷰/강의/상담사 카드처럼 '미디어 + 메타' 패턴 전반에 사용. 가로 스크롤(모바일) · 그리드(데스크탑) 모두 같은 컴포넌트.",
@@ -2170,6 +2588,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   VotePoll: {
     name: "VotePoll",
+    examplesHtml: {
+      do: '<nds-vote-poll question="어느 시간대가 좋으세요?"\n  options=\'[\n    {"key":"am","label":"오전","count":24},\n    {"key":"pm","label":"오후","count":48}\n  ]\'\n  voted-key=""></nds-vote-poll>\n<script>el.addEventListener("nds-vote", e => castVote(e.detail.key));</script>',
+      dont: "<!-- voted-key 미사용 — 사용자가 매번 다시 투표 가능 -->\n<nds-vote-poll question=\"?\" options='[...]'></nds-vote-poll>",
+    },
     summary: "짧은 투표 카드. 옵션 + 결과 바, 투표 후 자동 결과 노출. 본격 설문은 LikertScale.",
     pitfalls: [
       "count는 외부 state — 컴포넌트가 자체로 카운트 추적 안 함. 서버 응답으로 갱신.",
@@ -2180,6 +2602,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   PriceTag: {
     name: "PriceTag",
+    examplesHtml: {
+      do: '<nds-price-tag amount="50000" original-amount="100000" prefix="₩" unit="원" size="md" format-thousands></nds-price-tag>',
+      dont: "<!-- 할인 표시를 strikethrough 텍스트로 직접 작성 — original-amount 권장 -->\n<span>₩100,000</span> <strong>₩50,000</strong>",
+    },
     summary:
       "가격 + 할인율 + 원가. amount/originalAmount 모두 number일 때만 할인율 자동 계산. 0원은 freeLabel.",
     pitfalls: [
@@ -2195,6 +2621,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   AmountInput: {
     name: "AmountInput",
+    examplesHtml: {
+      do: '<nds-amount-input value="10000" prefix="₩" unit="원" label="후원 금액"\n  presets=\'[{"label":"+1만","amount":10000},{"label":"+5만","amount":50000}]\'></nds-amount-input>\n<script>el.addEventListener("amount-change", e => setAmount(e.detail.value));</script>',
+      dont: '<!-- 값에 통화기호와 쉼표 직접 박음 — number 파싱이 깨짐 -->\n<nds-amount-input value="₩10,000"></nds-amount-input>',
+    },
     summary:
       "큰 금액 입력. 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프. NumberStepper(작은 정수)와 분리.",
     pitfalls: [
@@ -2209,6 +2639,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   StatusTimeline: {
     name: "StatusTimeline",
+    examplesHtml: {
+      do: '<nds-status-timeline current="1" direction="vertical"\n  steps=\'[\n    {"key":"received","label":"접수","time":"05/20"},\n    {"key":"processing","label":"처리 중","time":"05/22"},\n    {"key":"done","label":"완료"}\n  ]\'></nds-status-timeline>',
+      dont: '<!-- 이벤트 로그를 status-timeline 으로 — nds-timeline 또는 nds-activity-timeline 사용 -->\n<nds-status-timeline steps=\'[{"key":"e1","label":"5/20 신청"},{"key":"e2","label":"5/21 검사"}]\'></nds-status-timeline>',
+    },
     summary:
       "단계 진행 트래커 (가로/세로). current 이전은 완료, 이후는 todo. ActivityTimeline(시간순 로그)과 분리.",
     pitfalls: [
@@ -2224,6 +2658,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   FilterBar: {
     name: "FilterBar",
+    examplesHtml: {
+      do: '<nds-filter-bar\n  options=\'[{"key":"new","label":"신규","count":5},{"key":"hot","label":"인기","count":12}]\'\n  value=\'["new"]\' show-reset></nds-filter-bar>\n<script>el.addEventListener("nds-filter-change", e => apply(e.detail.value));</script>',
+      dont: '<!-- options.key 누락 — change event 의 value 가 의미 없는 string -->\n<nds-filter-bar options=\'[{"label":"신규"}]\'></nds-filter-bar>',
+    },
     summary:
       "가로 필터 칩 그룹. 다중/단일 선택, 카운트, 자동 초기화. Tabs(라우팅)와 분리 — FilterBar는 list 필터.",
     pitfalls: [
@@ -2235,6 +2673,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   UserCard: {
     name: "UserCard",
+    examplesHtml: {
+      do: '<nds-user-card name="이정민" handle="@jeongmin" bio="디자이너" verified layout="row" clickable>\n  <img slot="avatar" src="/u.jpg" alt="" />\n  <nds-button slot="action" color="primary" variant="outlined">팔로우</nds-button>\n</nds-user-card>',
+      dont: '<!-- avatar / action 을 slot 없이 children 으로 — 레이아웃이 깨짐 -->\n<nds-user-card name="A"><img src="/u.jpg"><button>팔로우</button></nds-user-card>',
+    },
     summary:
       "범용 프로필 미니카드. row/stacked, verified, action 슬롯. CounselorCard(EAP 특화)와 분리.",
     pitfalls: [
@@ -2249,6 +2691,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ProductCard: {
     name: "ProductCard",
+    examplesHtml: {
+      do: '<nds-product-card thumbnail="/p.jpg" product-title="명상 콘텐츠 1년 이용권"\n  price="120000" original-price="180000" discount-percent="33"\n  rating="4.7" review-count="124" clickable></nds-product-card>',
+      dont: "<!-- 가격을 숫자 타입으로 넘김 (attribute 는 string) — 표시 깨짐 -->\n<nds-product-card price={120000}></nds-product-card>",
+    },
     summary:
       "상품 카드. `size='sm'`(140w 모바일) / `size='md'`(236w 데스크탑) 두 사이즈. " +
       "정사각 썸네일 + 제목(2줄 ellipsis) + 가격 row(할인율% + 가격 + 단위) 가 골격. " +
@@ -2351,6 +2797,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CouponCard: {
     name: "CouponCard",
+    examplesHtml: {
+      do: '<nds-coupon-card discount="30%" coupon-title="첫 상담 30% 할인"\n  expiry="2026-06-30 까지" action-label="사용하기"></nds-coupon-card>\n<script>el.addEventListener("nds-coupon-action", () => useCoupon());</script>',
+      dont: '<!-- expiry 누락 — 사용자가 유효기간을 모름 -->\n<nds-coupon-card discount="30%" coupon-title="할인"></nds-coupon-card>',
+    },
     summary: "쿠폰 카드. 좌측 할인율(큰 숫자) + 우측 정보·사용 버튼. 점선 + 반원 컷아웃 자동.",
     pitfalls: [
       "discount와 discountSuffix는 분리 — '30%할인'이 아니라 '30%' + '할인'.",
@@ -2365,6 +2815,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   OrderSummaryCard: {
     name: "OrderSummaryCard",
+    examplesHtml: {
+      do: '<nds-order-summary-card title="결제 요약"\n  rows=\'[{"label":"상품 가격","value":"50,000원"},{"label":"할인","value":"-5,000원"}]\'\n  total-label="합계" total="45,000원"></nds-order-summary-card>',
+      dont: '<!-- rows 를 string 으로 — 줄이 렌더되지 않음. 반드시 JSON 배열 -->\n<nds-order-summary-card rows="상품 50000"></nds-order-summary-card>',
+    },
     summary: "결제/예약 요약 카드. 라벨:값 행 + 합계 + CTA 슬롯. emphasis로 할인/안내 강조.",
     pitfalls: [
       "할인은 emphasis='discount' (빨간색). 음수 금액에 직접 색칠하지 말 것.",
@@ -2378,6 +2832,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   CardVisual: {
     name: "CardVisual",
+    examplesHtml: {
+      do: '<nds-card-visual brand="nudge-eap" number="1234 56•• •••• 7890" holder="홍길동" expiry="12/29"></nds-card-visual>',
+      dont: '<!-- 카드 번호/만료일을 자체 HTML 로 픽셀 흉내 — 토큰/브랜드 룰이 적용 안 됨 -->\n<div class="fake-card"><span>1234…</span></div>',
+    },
     summary: "신용/체크카드 비주얼. 8개 브랜드 톤 내장. 마지막 4자리만 표시 (자동 마스킹).",
     pitfalls: [
       "전체 카드번호 넣어도 마지막 4자리만 표시 — 보안 위해 의도적.",
@@ -2388,6 +2846,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   DataTable: {
     name: "DataTable",
+    examplesHtml: {
+      do: '<nds-data-table\n  columns=\'[{"key":"name","title":"이름","sortable":true},{"key":"age","title":"나이"}]\'\n  data=\'[{"name":"홍길동","age":30}]\'\n  size="md" responsive="cards" row-clickable></nds-data-table>\n<script>\nel.addEventListener("nds-data-table-sort", e => sort(e.detail));\nel.addEventListener("nds-data-table-row-click", e => openRow(e.detail.row));\n</script>',
+      dont: "<!-- 어드민/CMS 페이지에 DataTable 사용 — 어드민은 antd Table -->\n<nds-data-table columns='...'></nds-data-table>",
+    },
     summary:
       "정렬·클릭·빈 상태·로딩·모바일 카드 변환을 모두 갖춘 표. 사용자 앱(약 복용 이력 등)과 운영툴 양쪽에 사용.",
     pitfalls: [
@@ -2406,6 +2868,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ContentViewer: {
     name: "ContentViewer",
+    examplesHtml: {
+      do: '<nds-content-viewer html="&lt;p&gt;안전한 본문&lt;/p&gt;"></nds-content-viewer>',
+      dont: '<!-- 사용자 입력 HTML 을 no-sanitize 로 그대로 — XSS 위험 -->\n<nds-content-viewer no-sanitize html="…사용자 HTML…"></nds-content-viewer>',
+    },
     summary:
       "HTML/리치 텍스트 본문 렌더러. 위험 태그 자동 정리 + 이미지 lazy + 외부 링크 noopener 자동.",
     pitfalls: [
@@ -2421,6 +2887,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   AttachmentItem: {
     name: "AttachmentItem",
+    examplesHtml: {
+      do: '<nds-attachment-item name="report.pdf" size="2.4MB" file-type="pdf" status="done" href="/files/report.pdf"></nds-attachment-item>\n<nds-attachment-item name="audio.m4a" status="uploading" progress="42"></nds-attachment-item>',
+      dont: '<!-- status 없이 progress 만 — 업로드/완료/에러 어느 상태인지 모호 -->\n<nds-attachment-item name="x.pdf" progress="42"></nds-attachment-item>',
+    },
     summary:
       "이미 첨부된 파일을 보여주는 행 — FileUpload(업로드 영역)와 역할 분리. 진단서/처방전 등 EAP 의료 파일 표시.",
     pitfalls: [
@@ -2437,6 +2907,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   MediaThumbnail: {
     name: "MediaThumbnail",
+    examplesHtml: {
+      do: '<nds-media-thumbnail src="/thumb.jpg" alt="썸네일"\n  width="120" fit="cover" rounded="md"></nds-media-thumbnail>',
+      dont: '<!-- alt 누락 + fallback 없음 — 로드 실패 시 빈 박스 -->\n<nds-media-thumbnail src="/thumb.jpg"></nds-media-thumbnail>',
+    },
     summary:
       "일반 이미지 표준 — aspectRatio + fit + rounded + lazy + fallback + placeholder. Avatar(사람 얼굴)와 다른 콘텐츠 이미지용.",
     pitfalls: [
@@ -2454,6 +2928,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   PopularPosts: {
     name: "PopularPosts",
+    examplesHtml: {
+      do: '<nds-popular-posts module-title="요즘 인기 글" show-more\n  tabs=\'[{"key":"day","label":"오늘"},{"key":"week","label":"이번 주"}]\'\n  active-tab="day"\n  items=\'[{"id":"1","title":"불안 다스리는 법","count":1024}]\'\n  item-clickable></nds-popular-posts>\n<script>el.addEventListener("nds-popular-item-click", e => navigate(`/post/${e.detail.item.id}`));</script>',
+      dont: "<!-- active-tab 을 index 로 — key 가 정답 -->\n<nds-popular-posts tabs='[...]' active-tab=\"0\"></nds-popular-posts>",
+    },
     summary:
       "사이드바용 커뮤니티 인기글 랭킹 모듈. Header(제목 + 더보기) + Tabs(기간/정렬 pill 5개) + ranked row 리스트 의 3단 레이어. " +
       "Row = Rank(Bold) + Title(truncate) + Count(red, `[N]` / 999 초과 `[+999]`). " +
@@ -2531,6 +3009,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   FloatingCtaBanner: {
     name: "FloatingCtaBanner",
+    examplesHtml: {
+      do: '<nds-floating-cta-banner caption="상담사 매칭이 완료됐어요"\n  cta-text="확인하기" floating size="mobile" bottom-offset="80"></nds-floating-cta-banner>\n<script>el.addEventListener("nds-floating-cta-click", () => navigate("/match"));</script>',
+      dont: '<!-- floating + bottom-offset 0 — 하단 탭바를 가림 -->\n<nds-floating-cta-banner floating bottom-offset="0"></nds-floating-cta-banner>',
+    },
     summary:
       "페이지 하단 sticky CTA 배너. pill (radius 100) + brand border 1px + shadow. " +
       "좌측 일러스트(leadingIcon) + 캡션(보조) + 강조 CTA 텍스트 + 우측 chevron 아이콘. " +
@@ -2610,6 +3092,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ImageUpload: {
     name: "ImageUpload",
+    examplesHtml: {
+      do: '<nds-image-upload state="empty" accept="image/*"\n  upload-label="사진 추가" size-hint="JPG/PNG · 최대 5MB"></nds-image-upload>\n<script>el.addEventListener("file-select", e => upload(e.detail.files));</script>',
+      dont: "<!-- state 를 자동으로 'uploaded' 로 바꾸지 않음 — 호스트에서 명시적 갱신 필요 -->\n<nds-image-upload state=\"empty\"></nds-image-upload>  <!-- upload 끝나도 그대로 -->",
+    },
     summary:
       "캐포비 admin 의 단일 이미지 업로드 위젯. 150×150 preview + 우측 업로드 버튼(135×44) + 사이즈 안내 가로 레이아웃. state(empty/uploaded/error) 별 시각 분기.",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3078-617",
@@ -2666,6 +3152,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   ActionChip: {
     name: "ActionChip",
+    examplesHtml: {
+      do: '<nds-action-chip label="필터 추가">\n  <svg slot="icon" viewBox="0 0 24 24">…</svg>\n</nds-action-chip>',
+      dont: '<!-- nds-action-chip 대신 nds-chip + onclick 으로 액션 트리거 흉내 -->\n<nds-chip onclick="addFilter()">+ 필터</nds-chip>',
+    },
     summary:
       "TextField helper/description 영역 옆에 붙는 작은 보조 액션 chip. 아이콘(14px) + 라벨(caption1 Medium). bg fill.neutralSubtle, radius sm(6), padding 2/6.",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3082-976",
@@ -2715,6 +3205,406 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         labelTypography: "caption1 12/16 Medium",
         maxInRow: "권장 4 이하 (helper 영역 폭 제한)",
       },
+    },
+  },
+  Accordion: {
+    name: "Accordion",
+    summary:
+      "수직 펼침/접힘 그룹. FAQ, 약관, 다단 설정처럼 정보 밀도가 높지만 한 번에 다 보여줄 필요 없는 곳에 사용.",
+    pitfalls: [
+      "type='single' 인데 value 를 배열로 넘기지 말 것. 단일 모드는 string, multiple 모드만 배열.",
+      "trigger 안에 nds-button / a / 클릭 가능한 자식 element 를 또 두면 nested interactive — 키보드/포커스 동작이 깨짐. trigger 자체가 button 임.",
+      "Accordion 안에 form / 입력 폼을 깊게 두지 말 것. 접힘 상태에서 validation 실패가 보이지 않아 사용자가 혼란.",
+    ],
+    examplesHtml: {
+      do: '<nds-accordion type="single" value="terms">\n  <nds-accordion-item value="terms">\n    <nds-accordion-trigger>이용약관</nds-accordion-trigger>\n    <nds-accordion-content>본문…</nds-accordion-content>\n  </nds-accordion-item>\n  <nds-accordion-item value="privacy">\n    <nds-accordion-trigger>개인정보 처리방침</nds-accordion-trigger>\n    <nds-accordion-content>본문…</nds-accordion-content>\n  </nds-accordion-item>\n</nds-accordion>\n<script>el.addEventListener("accordion-change", e => console.log(e.detail.value));</script>',
+      dont: '<!-- accordion-trigger 안에 또 다른 클릭 가능한 element — nested interactive -->\n<nds-accordion-item value="x">\n  <nds-accordion-trigger><nds-button>열기</nds-button></nds-accordion-trigger>\n  <nds-accordion-content>본문</nds-accordion-content>\n</nds-accordion-item>',
+    },
+  },
+  Avatar: {
+    name: "Avatar",
+    summary:
+      "사용자 / 상담사 / 브랜드 식별을 위한 원형 이미지 + fallback. 이름 이니셜 / 기본 아이콘으로 graceful degrade.",
+    pitfalls: [
+      "src 만 있고 alt 누락 — 이미지 로드 실패 시 비어 보임 + 스크린리더 무용지물. alt 또는 name (fallback initials 자동 생성) 둘 중 하나는 필수.",
+      "size 를 px 인라인으로 강제하지 말 것. xs/sm/md/lg/xl 매트릭스가 toked 사이즈/폰트 비율 보장.",
+      "Avatar 위에 OnlineIndicator 를 직접 absolute 로 얹지 말고, AvatarGroup / 부모 컨테이너에서 layout 결정.",
+    ],
+    examplesHtml: {
+      do: '<nds-avatar src="/u.jpg" alt="홍길동" size="md"></nds-avatar>\n<nds-avatar name="이정민" size="lg"></nds-avatar> <!-- src 실패 시 \'이\' 이니셜 표시 -->',
+      dont: '<!-- alt / name 둘 다 없음 — 로드 실패 시 ghost 박스 -->\n<nds-avatar src="/u.jpg" size="md"></nds-avatar>\n<!-- 인라인 px 로 강제 사이즈 — sizeMatrix 와 불일치 -->\n<nds-avatar src="/u.jpg" alt="A" style="width:33px;height:33px"></nds-avatar>',
+    },
+  },
+  Breadcrumb: {
+    name: "Breadcrumb",
+    summary:
+      "현재 화면이 정보 계층 어디에 있는지 보여주는 경로. 3 depth 이상의 카탈로그 / 설정 / CMS 페이지에서 의미 있음.",
+    pitfalls: [
+      "1~2 depth 페이지에 Breadcrumb 강제 표기 — 화면 위에 차지하는 노이즈 대비 정보가 적음.",
+      "마지막 segment 를 링크로 만들지 말 것 (현재 위치). active=true 표시.",
+      "separator 를 이모지나 텍스트 기호(→ / >)로 인라인 입력 금지 — separator attribute 또는 토큰 사용.",
+    ],
+    examplesHtml: {
+      do: '<nds-breadcrumb items=\'[{"label":"홈","href":"/"},{"label":"상담","href":"/counseling"},{"label":"신청 내역","active":true}]\'></nds-breadcrumb>',
+      dont: '<!-- 마지막 segment 가 링크로 — 사용자가 자기 자신을 다시 클릭 -->\n<nds-breadcrumb items=\'[{"label":"홈","href":"/"},{"label":"현재 화면","href":"/now"}]\'></nds-breadcrumb>',
+    },
+  },
+  Checkbox: {
+    name: "Checkbox",
+    summary:
+      "다중 선택 / on-off / 약관 동의 체크. 라벨이 함께 와야 의미가 전달되고, 단일 선택 그룹은 Radio 가 맞음.",
+    pitfalls: [
+      "약관/필수 동의에 disabled 로 잠가두면 시각 위계가 모호 — required 또는 별도 안내문으로 명시.",
+      "checked 와 default-checked 동시 사용 — controlled / uncontrolled 가 섞임.",
+      "label 없이 단독으로 던지지 말 것 — 한 줄 안내문이라도 aria-label 로 제공.",
+    ],
+    examplesHtml: {
+      do: '<nds-checkbox name="agree-terms" label="이용약관에 동의합니다" required></nds-checkbox>\n<nds-checkbox name="optional-marketing" label="마케팅 정보 수신 (선택)"></nds-checkbox>',
+      dont: '<!-- 라벨 없는 단독 체크박스 — 의미 전달 실패 -->\n<nds-checkbox name="x" checked></nds-checkbox>\n<!-- 라디오로 충분한 단일 선택을 체크박스로 -->\n<nds-checkbox name="payment" value="card">카드</nds-checkbox>\n<nds-checkbox name="payment" value="cash">현금</nds-checkbox>',
+    },
+  },
+  Divider: {
+    name: "Divider",
+    summary:
+      "섹션 사이의 시각적 분리선. 카드 안 내부 분할에 남발하지 말고, 한 화면당 의미 있는 분리에만 사용.",
+    pitfalls: [
+      "Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — TitleBlock + spacing 토큰이 우선.",
+      "List 의 항목 사이에 Divider 를 직접 박지 말 것. nds-list variant='divided' 가 책임짐.",
+      "orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임.",
+    ],
+    examplesHtml: {
+      do: '<section>섹션 A</section>\n<nds-divider orientation="horizontal" spacing="24"></nds-divider>\n<section>섹션 B</section>',
+      dont: "<!-- list 항목 사이마다 divider 직접 — list variant 가 책임 -->\n<nds-list-item>항목 1</nds-list-item>\n<nds-divider></nds-divider>\n<nds-list-item>항목 2</nds-list-item>",
+    },
+  },
+  Drawer: {
+    name: "Drawer",
+    summary:
+      "측면(left/right) 슬라이드 패널. 모달보다 가벼운 컨텍스트(필터, 보조 정보, 빠른 작업)에 적합. 모달과 동시에 열지 말 것.",
+    pitfalls: [
+      "open attribute 만 토글하고 nds-drawer-close 이벤트를 처리 안 함 — overlay 클릭 / ESC 가 끄지 못함.",
+      "Drawer 안에서 또 Drawer / Modal 을 열지 말 것 (overlay z-index 충돌).",
+      "size='lg' 로 viewport 의 80% 이상을 덮으면 사실상 Modal — Modal 사용을 검토.",
+    ],
+    examplesHtml: {
+      do: '<nds-drawer side="right" size="md" drawer-title="필터">\n  <p>필터 UI…</p>\n  <div slot="footer"><nds-button color="primary">적용</nds-button></div>\n</nds-drawer>\n<script>el.addEventListener("nds-drawer-close", () => el.removeAttribute("open"));</script>',
+      dont: '<!-- close 이벤트 처리 없음 — overlay 클릭이 닫지 못함 -->\n<nds-drawer open side="right" size="md">필터…</nds-drawer>',
+    },
+  },
+  DropdownMenu: {
+    name: "DropdownMenu",
+    summary:
+      "버튼 / 아이콘 트리거에서 펼쳐지는 짧은 액션 메뉴. 옵션 5개 이하 권장 — 그 이상은 Select 또는 별도 화면.",
+    pitfalls: [
+      "옵션이 많아서 스크롤이 필요한 경우 DropdownMenu 가 아님 (Select / 검색형 UI 사용).",
+      "destructive 액션은 별도 group 으로 분리하거나 최하단에 배치 — 다른 일반 액션 사이에 끼우지 말 것.",
+      "메뉴 항목에 disabled 가 많으면 차라리 그 항목들을 빼고 권한 설명을 별도 영역에 노출.",
+    ],
+    examplesHtml: {
+      do: '<nds-dropdown-menu items=\'[{"label":"편집","value":"edit"},{"label":"공유","value":"share"},{"label":"삭제","value":"delete","destructive":true}]\'></nds-dropdown-menu>\n<script>el.addEventListener("dropdown-select", e => handle(e.detail.value));</script>',
+      dont: '<!-- 옵션이 너무 많고 destructive 가 일반 액션 사이 -->\n<nds-dropdown-menu items=\'[{"label":"1"},{"label":"2"},{"label":"삭제"},{"label":"4"},{"label":"5"},...]\'></nds-dropdown-menu>',
+    },
+  },
+  EmptyState: {
+    name: "EmptyState",
+    summary:
+      "데이터/검색 결과/기록 없음 표시. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 추천 보기)을 제안.",
+    pitfalls: [
+      "title 만 있고 description / action 누락 — 사용자에게 다음 행동을 안내하지 않음.",
+      "EmptyState 를 페이지 전체 height 로 채우면 안 — 영역 안에서만 표시, footer / nav 가 가려지지 않도록.",
+      "에러 상황(네트워크 / 권한)에 EmptyState 를 재활용 — 시그널이 약함. ErrorState / Banner 사용.",
+    ],
+    examplesHtml: {
+      do: '<nds-empty-state title="아직 작성한 일기가 없어요" description="오늘의 감정을 기록해 보세요" action="작성하기"></nds-empty-state>\n<script>el.addEventListener("empty-state-action", () => navigate("/journal/new"));</script>',
+      dont: '<!-- title 만 있고 다음 액션 없음 — 사용자가 막힘 -->\n<nds-empty-state title="결과 없음"></nds-empty-state>',
+    },
+  },
+  Footer: {
+    name: "Footer",
+    summary:
+      "페이지 최하단 사이트맵 / 약관 / 운영주체 정보. 모바일/웹 모두 컴포지션 자식(nds-footer-tab-bar / nds-footer-company-info / nds-footer-web) 으로 구성.",
+    pitfalls: [
+      "raw <footer> + 인라인 스타일로 시각만 흉내 — 브랜드별 콘텐츠 구조가 통일되지 않음.",
+      "Footer 안에 마케팅 CTA 큰 카드를 박지 말 것 — Footer 는 정보/법적 영역.",
+      "사용자 앱과 어드민에서 같은 Footer 컴포넌트 사용 금지 — 어드민은 antd + 자체 Copyright 카피.",
+    ],
+    examplesHtml: {
+      do: '<nds-footer-info active-tab="home">\n  <nds-footer-tab-bar>\n    <nds-footer-tab-item key="home" label="홈" href="/"></nds-footer-tab-item>\n    <nds-footer-tab-item key="journal" label="일기" href="/journal"></nds-footer-tab-item>\n  </nds-footer-tab-bar>\n  <nds-footer-company-info>(주)넛지이에이피 · 사업자 …</nds-footer-company-info>\n</nds-footer-info>',
+      dont: '<!-- raw <footer> 로 모양만 흉내 — 브랜드 사양에서 벗어남 -->\n<footer style="background:#f5f5f5;padding:24px"><p>회사정보</p></footer>',
+    },
+  },
+  FormField: {
+    name: "FormField",
+    summary:
+      "Input / Textarea / Select 같은 form control 의 label / helper / error / counter 슬롯을 묶는 래퍼.",
+    pitfalls: [
+      "label 또는 html-for 누락 — Form 안의 input id 와 라벨이 끊겨 접근성이 깨짐.",
+      "error 와 helper 를 동시에 표시 — 사용자는 어떤 메시지를 우선해야 할지 혼란. error 모드에서는 helper 숨김.",
+      "counter 는 max-length 가 명확한 textarea / input 에서만 사용.",
+    ],
+    examplesHtml: {
+      do: '<nds-form-field label="이름" helper="실명을 입력해주세요" html-for="name-input" required>\n  <nds-input id="name-input" name="name"></nds-input>\n</nds-form-field>',
+      dont: '<!-- htmlFor (React 표기) — vanilla HTML 에선 html-for 만 동작 -->\n<nds-form-field label="이름" htmlFor="x"><nds-input id="x"></nds-input></nds-form-field>',
+    },
+  },
+  LikertScale: {
+    name: "LikertScale",
+    summary:
+      "1~5 / 1~7 단계 만족도 / 동의 정도 측정. 자가검사(우울/불안), 후기, 설문에 사용. 단계당 텍스트 라벨은 최소화하고 양 끝 anchor 만.",
+    pitfalls: [
+      "양 끝 anchor(start-label / end-label) 누락 — 1/5 가 좋음/나쁨 어느 쪽인지 모호.",
+      "11점 이상 단계는 슬라이더(nds-slider) 가 더 적합. Likert 는 3/5/7 단계 권장.",
+      "Likert 결과를 평균 점수로만 노출하지 말 것 — 분포(히스토그램) 가 의미 있는 경우가 많음.",
+    ],
+    examplesHtml: {
+      do: '<nds-likert-scale name="satisfaction" options="[1,2,3,4,5]" start-label="매우 불만족" end-label="매우 만족"></nds-likert-scale>\n<script>el.addEventListener("likert-change", e => setValue(e.detail.value));</script>',
+      dont: '<!-- anchor 라벨 누락 — 의미 해석 불가 -->\n<nds-likert-scale name="x" options="[1,2,3,4,5]"></nds-likert-scale>',
+    },
+  },
+  Pagination: {
+    name: "Pagination",
+    summary:
+      "리스트가 한 화면을 넘을 때 페이지 단위로 끊어 보기. 무한 스크롤이 적절한 경우(피드/리뷰) 에는 사용 안 함.",
+    pitfalls: [
+      "전체 페이지 수 5 이하 / 항목 30 이하면 Pagination 자체가 과한 UI — 한 페이지로 노출.",
+      "show-arrows 와 siblings 를 둘 다 끄면 현재 페이지 ±1 만 보여 탐색이 끊김.",
+      "PaginationChange 이벤트 처리 없이 page attribute 만 바꿔도 데이터 fetch 가 안 일어남 — 이벤트 핸들러에서 fetch 호출.",
+    ],
+    examplesHtml: {
+      do: '<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>\n<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>',
+      dont: '<!-- siblings 0 + arrows 없음 — 옆 페이지가 보이지 않음 -->\n<nds-pagination page="1" total-pages="10" siblings="0"></nds-pagination>',
+    },
+  },
+  Popup: {
+    name: "Popup",
+    summary:
+      "단순 확인/거부(취소·삭제·종료) 1-액션 다이얼로그. 본문이 긴 경우엔 Modal, 비차단 알림은 Snackbar.",
+    pitfalls: [
+      "Popup 본문에 form / 멀티 입력을 두지 말 것 — Modal 이 맞음.",
+      "destructive 액션의 confirm-text 가 '확인' 처럼 일반 — 'X 삭제하기' / 'X 종료' 처럼 결과 명시.",
+      "show-cancel 끄고 confirm 만 — 사용자에게 거부권을 주지 않음 (info popup 외에는 비권장).",
+    ],
+    examplesHtml: {
+      do: '<nds-popup open title="신청을 취소할까요?" description="입력한 내용은 저장되지 않아요"\n  confirm-text="신청 취소하기" cancel-text="계속 작성" show-cancel></nds-popup>\n<script>el.addEventListener("popup-confirm", cancel); el.addEventListener("popup-cancel", () => el.removeAttribute("open"));</script>',
+      dont: '<!-- show-cancel 없음 + confirm 일반 — 사용자 거부 불가 -->\n<nds-popup open title="저장됨" confirm-text="확인"></nds-popup>',
+    },
+  },
+  SearchInput: {
+    name: "SearchInput",
+    summary:
+      "검색어 입력 + debounce + clear. dropdown suggestion 이 필요하면 nds-autocomplete 사용.",
+    pitfalls: [
+      "debounce 0 으로 매 keystroke 마다 fetch — 백엔드 부하 / UI flicker. 200~400ms 권장.",
+      "min-query-length 미설정 — 1글자 입력에 즉시 fetch 가 일어남.",
+      "검색 결과 dropdown 이 필요한데 nds-input + 자체 panel 로 흉내 — nds-autocomplete 로 일원화.",
+    ],
+    examplesHtml: {
+      do: '<nds-search-input placeholder="검색어 입력" label="상담사 찾기" debounce="300" min-query-length="2" clearable></nds-search-input>\n<script>el.addEventListener("search-input", e => fetch(e.detail.value));</script>',
+      dont: '<!-- debounce 없음 + min-query-length 없음 — 매 keystroke fetch -->\n<nds-search-input placeholder="검색"></nds-search-input>',
+    },
+  },
+  SegmentedControl: {
+    name: "SegmentedControl",
+    summary: "2~5 개의 평행 옵션 중 단일 선택 (탭의 가벼운 대체). 4개 초과면 Select / Tabs.",
+    pitfalls: [
+      "옵션이 6개 이상 — 가로 폭 부족으로 라벨 truncate. Select 사용.",
+      "Segmented 와 Tabs 를 같은 화면에서 동시 사용 — 위계가 모호.",
+      "full-width 가 아닌데 화면 가운데 정렬로 옆 여백이 큰 모바일 화면 — 부모 컨테이너 폭 점검.",
+    ],
+    examplesHtml: {
+      do: '<nds-segmented value="week" size="md" options=\'[{"label":"주","value":"week"},{"label":"월","value":"month"},{"label":"연","value":"year"}]\'></nds-segmented>\n<script>el.addEventListener("segmented-change", e => setPeriod(e.detail.value));</script>',
+      dont: '<!-- 6개 옵션 — segmented 의 시각 위계 깨짐 -->\n<nds-segmented options=\'[{"label":"1","value":"1"},{"label":"2","value":"2"},{"label":"3","value":"3"},{"label":"4","value":"4"},{"label":"5","value":"5"},{"label":"6","value":"6"}]\'></nds-segmented>',
+    },
+  },
+  Skeleton: {
+    name: "Skeleton",
+    summary:
+      "데이터 로드 중 placeholder. 실제 콘텐츠의 box 모델을 그대로 흉내 — 스피너보다 인지된 속도가 빠름.",
+    pitfalls: [
+      "긴 작업(>3초) 에 Skeleton 만 — 진척 표시 없으면 사용자가 멈췄다고 인식. ProgressBar / 안내문 병행.",
+      "Skeleton 의 width/height 가 실제 콘텐츠와 크게 다르면 로드 후 layout shift — CLS 악화.",
+      "variant='text' 를 짧은 카드/카운트 자리에 사용 — 시각적 비율이 어색. rect 권장.",
+    ],
+    examplesHtml: {
+      do: '<nds-skeleton variant="text" width="60%"></nds-skeleton>\n<nds-skeleton variant="rect" width="100%" height="200"></nds-skeleton>',
+      dont: '<!-- 실제 콘텐츠보다 한참 작은 사이즈 — 로드 후 layout shift -->\n<nds-skeleton variant="rect" width="40" height="20"></nds-skeleton> <!-- 실제로는 폭 100% -->',
+    },
+  },
+  StarRating: {
+    name: "StarRating",
+    summary: "1~5 / 1~10 별 점수. 후기 입력 + 후기 표시 양쪽에 사용. readonly 와 disabled 구분.",
+    pitfalls: [
+      "0.5 / 부분 별 채움이 필요한데 정수만 받는 input 으로 사용 — 디자인은 0.5 단위 표시 지원.",
+      "readonly 와 disabled 혼동 — disabled 는 폼 비활성, readonly 는 보기 전용 (clickable 아님).",
+      "max 가 5 인데 value 6 — 표시가 깨짐.",
+    ],
+    examplesHtml: {
+      do: '<nds-star-rating value="4" size="lg" max="5" show-value></nds-star-rating>\n<nds-star-rating value="4.5" size="md" max="5" readonly></nds-star-rating>\n<script>el.addEventListener("star-rating-change", e => setRating(e.detail.value));</script>',
+      dont: '<!-- value 가 max 초과 -->\n<nds-star-rating value="6" max="5"></nds-star-rating>',
+    },
+  },
+  Stepper: {
+    name: "Stepper",
+    summary: "다단계 작업(가입/결제/온보딩) 의 현재 진척 표시. 단계 5개 이상은 사용자 인지 부담.",
+    pitfalls: [
+      "completed 단계 라벨에 description 누락 — 사용자가 이전 단계에서 뭘 했는지 떠올리기 어려움.",
+      "vertical / horizontal 혼용 — 한 화면 안에선 한 방향 통일.",
+      "현재 단계가 마지막인데 'current' status 유지 — 'completed' 로 갱신해야 완료 신호.",
+    ],
+    examplesHtml: {
+      do: '<nds-stepper current="1" variant="horizontal" steps=\'[{"label":"기본 정보","status":"completed"},{"label":"결제","status":"current"},{"label":"확인"}]\'></nds-stepper>',
+      dont: '<!-- step status 모두 누락 — 진척이 시각화 안 됨 -->\n<nds-stepper current="1" steps=\'[{"label":"1단계"},{"label":"2단계"},{"label":"3단계"}]\'></nds-stepper>',
+    },
+  },
+  Textarea: {
+    name: "Textarea",
+    summary: "여러 줄 자유 입력. 일기 / 후기 / 메모. 자체 max-length / min-height 가이드 있음.",
+    pitfalls: [
+      "raw <textarea> 직접 사용 — placeholder/스타일/포커스 ring 토큰 미적용.",
+      "resize='none' + 짧은 min-height — 긴 본문 입력 시 답답함. min-height 120 이상 권장.",
+      "max-length 만 두고 counter (FormField.counter) 안 보여줌 — 사용자는 글자 수를 모름.",
+    ],
+    examplesHtml: {
+      do: '<nds-textarea label="오늘 기록" placeholder="자유롭게 입력해주세요" max-length="500" min-height="180" resize="vertical"></nds-textarea>',
+      dont: '<!-- raw textarea — DS 스타일 적용 안 됨 -->\n<textarea placeholder="…" maxlength="500"></textarea>',
+    },
+  },
+  Toast: {
+    name: "Toast",
+    summary:
+      "비차단 알림 (저장 완료 / 네트워크 에러 등). Snackbar 와 거의 동일 기능이지만 multi-stack 가능.",
+    pitfalls: [
+      "duration 0 으로 영구 표시 — 차단 의도면 Modal/Popup, 영구 알림이면 Banner.",
+      "변형(default/success/error/warning) 없이 모두 default — 시각 위계가 사라짐.",
+      "Toast 안에 input/form 두지 말 것 — interactive 영역이면 Drawer/Modal.",
+    ],
+    examplesHtml: {
+      do: '<nds-toast message="저장되었습니다" variant="success" position="bottom" duration="2500" open></nds-toast>\n<script>el.addEventListener("toast-close", () => el.removeAttribute("open"));</script>',
+      dont: '<!-- duration 0 + form 포함 — Toast 가 아니라 Modal/Drawer 사용 -->\n<nds-toast open duration="0" message="<input />" variant="default"></nds-toast>',
+    },
+  },
+  Toggle: {
+    name: "Toggle",
+    summary:
+      "즉시 적용되는 on/off 스위치. 설정 페이지 / 알림 토글에 사용. 폼 제출 후 적용되는 binary 는 Checkbox 가 맞음.",
+    pitfalls: [
+      "label 없는 단독 Toggle — 무엇을 켜고 끄는지 시각만으론 불명확.",
+      "Toggle 변경 후 별도 '저장' 버튼이 필요한 UI 라면 Checkbox 가 맞음 — Toggle 은 즉시 반영 시그널.",
+      "size='sm' 을 본문 안 inline 텍스트와 함께 — 시각 위계 부족, baseline 어색.",
+    ],
+    examplesHtml: {
+      do: '<nds-toggle name="push-notification" label="푸시 알림 받기" checked></nds-toggle>\n<script>el.addEventListener("change", e => savePref(e.target.checked));</script>',
+      dont: '<!-- 라벨 없는 단독 토글 -->\n<nds-toggle></nds-toggle>\n<!-- 즉시 반영 안 되는 form -->\n<form>\n  <nds-toggle name="x" label="설정 A"></nds-toggle>\n  <nds-button color="primary" type="submit">저장</nds-button> <!-- Checkbox 가 맞음 -->\n</form>',
+    },
+  },
+  Tooltip: {
+    name: "Tooltip",
+    summary:
+      "trigger 에 마우스 hover / focus 시 보조 설명. 모바일에선 사실상 보이지 않으므로 핵심 정보는 본문에 둘 것.",
+    pitfalls: [
+      "Tooltip 안에 인터랙티브 요소(링크/버튼) — 모바일/터치에서는 도달 불가.",
+      "trigger 가 aria-label 만 갖고 visible 텍스트가 없는 아이콘 버튼인데 Tooltip 도 같은 내용 — 중복.",
+      "Tooltip 텍스트가 한 문장 초과로 길어짐 — Popover / Modal 사용.",
+    ],
+    examplesHtml: {
+      do: '<nds-tooltip content="삭제하면 복구할 수 없어요" placement="top" trigger-label="?"></nds-tooltip>',
+      dont: '<!-- 모바일에서 보이지 않는 본질 정보 -->\n<nds-tooltip content="이용약관 동의가 필수입니다" trigger-label="?"></nds-tooltip>',
+    },
+  },
+  BottomSheet: {
+    name: "BottomSheet",
+    examplesHtml: {
+      do: '<nds-bottom-sheet open sheet-title="옵션 선택">\n  <div slot="body">옵션 본문…</div>\n  <div slot="footer"><nds-button color="primary">확인</nds-button></div>\n</nds-bottom-sheet>\n<script>el.addEventListener("nds-bottom-sheet-close", () => el.removeAttribute("open"));</script>',
+      dont: '<!-- nds-bottom-sheet-close 미처리 — overlay/ESC 가 닫지 못함 -->\n<nds-bottom-sheet open sheet-title="선택"></nds-bottom-sheet>',
+    },
+    summary:
+      "모바일에서 화면 하단에서 올라오는 시트. 옵션 선택 / 짧은 작업에 적합. 데스크탑에선 Drawer 가 자연스러움.",
+    pitfalls: [
+      "BottomSheet 안에 깊은 nested form / 멀티 탭 — 사용자가 컨텍스트를 잃음. 별도 화면 또는 Modal 사용.",
+      "open 상태에서 뒤 페이지 scroll 잠그지 않으면 body scroll 충돌.",
+      "트리거 버튼 없이 자동 open — 사용자 의도 없는 시트는 다크 패턴.",
+    ],
+  },
+  DSHighlight: {
+    name: "DSHighlight",
+    examplesHtml: {
+      do: '<nds-ds-highlight mode="component"></nds-ds-highlight>\n<!-- 강조 대상에 data-ds-mark="<영역>" 부여 -->',
+      dont: '<!-- production 빌드에 그대로 두면 안 됨. import.meta.env.DEV 게이트 적용 -->\n<nds-ds-highlight mode="all"></nds-ds-highlight>',
+    },
+    summary:
+      "DS 적용 영역을 시각적으로 강조하는 dev-only 디버깅 컴포넌트. production 빌드에서 자동 제거.",
+    pitfalls: [
+      "DSHighlight 를 일반 화면 강조에 재활용 — 그 용도는 Banner / Card 가 맞음.",
+      "production 환경에서 import 가 남아 있으면 번들 크기 증가 — import.meta.env.DEV 게이트로 감쌀 것.",
+    ],
+  },
+  DatePicker: {
+    name: "DatePicker",
+    examplesHtml: {
+      do: '<nds-date-picker value="2026-05-25" min-date="2026-05-01" max-date="2026-12-31"\n  placeholder="날짜 선택"></nds-date-picker>\n<script>el.addEventListener("nds-date-change", e => setDate(e.detail.value));</script>',
+      dont: '<!-- min-date / max-date 누락 — 사용자가 과거/먼 미래 선택 가능 -->\n<nds-date-picker placeholder="날짜"></nds-date-picker>',
+    },
+    summary:
+      "단일 날짜 선택. 캘린더 팝업 + 키보드 입력. 시간까지 필요하면 별도 TimePicker 또는 DateTimePicker 조합.",
+    pitfalls: [
+      "min/max 누락 — 사용자가 과거/먼 미래 날짜를 선택해 데이터 검증 실패.",
+      "한국어 로케일 누락 — '월/일/연도' 영문 형식 노출.",
+      "Calendar 컴포넌트로 month/year 보기 + 직접 select 흉내내지 말 것 — 컨트롤 일관성 깨짐.",
+    ],
+  },
+  FieldActionRow: {
+    name: "FieldActionRow",
+    examplesHtml: {
+      do: '<nds-field-action-row helper-text="이메일로 인증 코드를 보냈어요">\n  <nds-input slot="field" label="인증 코드"></nds-input>\n  <nds-button slot="action" color="primary">재전송</nds-button>\n</nds-field-action-row>',
+      dont: "<!-- slot 미지정 — 위치/스타일이 적용 안 됨 -->\n<nds-field-action-row>\n  <nds-input></nds-input>\n  <nds-button>재전송</nds-button>\n</nds-field-action-row>",
+    },
+    summary:
+      "Form field 옆에 inline action(다시 보내기 / 자동 채우기 / 외부 링크) 을 배치하는 보조 row.",
+    pitfalls: [
+      "Action 이 핵심 폼 동작(검색 / 제출) 이면 row 안이 아니라 별도 CTA 영역.",
+      "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1~2 단어로 유지.",
+    ],
+  },
+  TimeSlotPicker: {
+    name: "TimeSlotPicker",
+    examplesHtml: {
+      do: '<nds-time-slot-picker columns="3"\n  groups=\'[\n    {"key":"am","label":"오전","slots":[{"value":"09:00"},{"value":"10:00","disabled":true}]},\n    {"key":"pm","label":"오후","slots":[{"value":"14:00"},{"value":"15:00"}]}\n  ]\'></nds-time-slot-picker>\n<script>el.addEventListener("nds-time-slot-change", e => pick(e.detail.value));</script>',
+      dont: "<!-- slots 와 groups 동시 — 둘 중 하나만 -->\n<nds-time-slot-picker slots='[...]' groups='[...]'></nds-time-slot-picker>",
+    },
+    summary:
+      "예약 가능한 시간 slot 그리드. 상담 / 예약 / 클래스 일정에 사용. 가용 / 비가용 / 만석 상태 시각화.",
+    pitfalls: [
+      "한 화면에 30분 단위 24시간 = 48 slot 다 보여주기 — 너무 많아 선택 부담. AM/PM 또는 시간대 필터로 분할.",
+      "비가용 slot 을 단순 회색으로만 — 이유(예약 마감 / 휴무) 미명시.",
+      "선택 후 즉시 다음 step 으로 자동 이동 — 사용자의 confirm 단계를 우회.",
+    ],
+  },
+  TrendingKeywords: {
+    name: "TrendingKeywords",
+    examplesHtml: {
+      do: '<nds-trending-keywords\n  items=\'[{"rank":1,"trend":"up","keyword":"불면증"},{"rank":2,"trend":"new","keyword":"번아웃"}]\'\n  header-title="인기 검색어" timestamp="오늘 09:00 기준"></nds-trending-keywords>\n<script>el.addEventListener("nds-trending-keyword-click", e => search(e.detail.keyword));</script>',
+      dont: '<!-- 자해 / 위기 도메인에서 사용 — 검색어 자체가 트리거 가능 -->\n<nds-trending-keywords items=\'[{"rank":1,"keyword":"자해"}]\'></nds-trending-keywords>',
+    },
+    summary:
+      "급상승 검색어 / 핫 키워드 표시. 마케팅/검색 화면에서 사용. 정량 데이터 기반인지 확인 후 사용.",
+    pitfalls: [
+      "큐레이션된 키워드를 'TRENDING' 으로 노출 — 사용자가 알고리즘 결과로 오해.",
+      "키워드 10개 초과 — 시각 노이즈. top 5 권장.",
+      "공감/안전 도메인(자해/우울)에선 사용 금지 — 검색어 자체가 트리거가 될 수 있음.",
+    ],
+  },
+  Timeline: {
+    name: "Timeline",
+    summary:
+      "상담/검사 이력 타임라인 — compound API. flat JSON 으로 받으려면 ActivityTimeline 사용.",
+    pitfalls: [
+      "ActivityTimeline 과 시각/DOM 은 동일 — items 가 정적이고 자식 markup 으로 표현하기 편한 곳에만 사용. 동적 데이터는 ActivityTimeline.",
+      "status='ongoing' 은 box-shadow ring 효과 — 한 화면에 여럿 두면 시각 잡음. 보통 1개만.",
+      "items 20+ 면 페이지네이션 / 가상화 권장. 한 번에 노출하면 스크롤 부담.",
+    ],
+    examplesHtml: {
+      do: '<nds-timeline>\n  <nds-timeline-item date="2026.05.25" title="상담 예약 완료" status="completed"></nds-timeline-item>\n  <nds-timeline-item date="2026.05.28" title="자가검사 진행" status="ongoing" status-label="진행 중"></nds-timeline-item>\n</nds-timeline>',
+      dont: "<!-- items 를 JSON 으로 넘기려면 nds-activity-timeline -->\n<nds-timeline items='[...]'></nds-timeline>",
     },
   },
 };

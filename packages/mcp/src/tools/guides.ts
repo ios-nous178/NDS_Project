@@ -73,7 +73,19 @@ export function getUxWritingGuide() {
   };
 }
 
-export function getComponentGuide(name: string) {
+export type GuideTarget = "react" | "html";
+
+/**
+ * target='html' 호출 시:
+ *   - examplesHtml 가 있으면 그 do/dont 를 examples 자리에 매핑하고 examplesHtml 필드는 제거.
+ *   - examplesHtml 가 없는 react-only 컴포넌트(_htmlStatus='no-html-equivalent') 는
+ *     react examples 를 그대로 두고 _htmlAdvisory 로 안내문 첨부.
+ *   - 그 외(examplesHtml 도 _htmlStatus 도 없음) 는 examples 가 react JSX 임을 명시.
+ *
+ * target='react' (기본) 호출 시 examplesHtml / _htmlStatus 필드는 그대로 응답에 포함된다
+ * (디버깅 / 라이브러리 sync 상태 확인용).
+ */
+export function getComponentGuide(name: string, target: GuideTarget = "react") {
   const guide = COMPONENT_GUIDES[name];
   if (!guide) {
     return {
@@ -85,10 +97,41 @@ export function getComponentGuide(name: string) {
     ? resolvePatternReferenceImages(guide.references)
     : undefined;
   const hasRef = Boolean(guide.figmaNodeUrl) || Boolean(resolvedReferences?.length);
+  const baseAdvisory = hasRef
+    ? "Figma 원본 노드 URL · 추가 레퍼런스(references[]) 가 포함되어 있습니다. 픽셀/색/매트릭스가 의심되면 figmaNodeUrl · references[].imageAbsolutePath 를 우선 확인하세요."
+    : "이 가이드는 아직 Figma 노드와 연결되지 않았습니다. list_figma_sync_status 로 다른 컴포넌트의 sync 상태를 확인할 수 있습니다.";
+
+  if (target === "html") {
+    const { examplesHtml, _htmlStatus, ...rest } = guide;
+    let htmlAdvisory: string;
+    let examples = guide.examples;
+    if (examplesHtml) {
+      examples = examplesHtml;
+      htmlAdvisory =
+        "target=html — examples 필드가 vanilla HTML (<nds-*>) 형태로 교체됐습니다. " +
+        "attribute 는 kebab-case, 이벤트는 addEventListener('nds-...', handler) 로 바인딩하세요.";
+    } else if (_htmlStatus === "no-html-equivalent") {
+      htmlAdvisory =
+        "target=html 호출됐지만 이 컴포넌트는 @nudge-eap/html 패키지에 1:1 대응되는 nds-* element 가 아직 없습니다. " +
+        "JSX/React 워크플로우(validate_mockup + build_singlefile_html) 로 작업하거나, " +
+        "find_component({ query }) 로 대체 가능한 다른 DS 컴포넌트를 검토하세요. " +
+        "examples 는 React 형태 그대로 노출됩니다.";
+    } else {
+      htmlAdvisory =
+        "target=html 호출됐지만 이 가이드에는 아직 examplesHtml 가 큐레이션되어 있지 않습니다. " +
+        "examples 는 React JSX 형태입니다 — 동일 prop 을 kebab-case attribute 로 변환해 <nds-*> 로 작성하세요.";
+    }
+    return {
+      _advisory: baseAdvisory,
+      _htmlAdvisory: htmlAdvisory,
+      ...rest,
+      examples,
+      references: resolvedReferences ?? guide.references,
+    };
+  }
+
   return {
-    _advisory: hasRef
-      ? "Figma 원본 노드 URL · 추가 레퍼런스(references[]) 가 포함되어 있습니다. 픽셀/색/매트릭스가 의심되면 figmaNodeUrl · references[].imageAbsolutePath 를 우선 확인하세요."
-      : "이 가이드는 아직 Figma 노드와 연결되지 않았습니다. list_figma_sync_status 로 다른 컴포넌트의 sync 상태를 확인할 수 있습니다.",
+    _advisory: baseAdvisory,
     ...guide,
     references: resolvedReferences ?? guide.references,
   };
@@ -190,7 +233,7 @@ function listGuideTopics() {
   };
 }
 
-export function getGuide(args: { topic: string; intent?: string }) {
+export function getGuide(args: { topic: string; intent?: string; target?: GuideTarget }) {
   const topic = args.topic;
   if (typeof topic !== "string" || topic.length === 0) {
     return {
@@ -198,6 +241,8 @@ export function getGuide(args: { topic: string; intent?: string }) {
       availableTopics: listGuideTopics(),
     };
   }
+
+  const target: GuideTarget = args.target === "html" ? "html" : "react";
 
   if (topic.startsWith("component:")) {
     const name = topic.slice("component:".length);
@@ -207,7 +252,7 @@ export function getGuide(args: { topic: string; intent?: string }) {
         availableTopics: listGuideTopics(),
       };
     }
-    return getComponentGuide(name);
+    return getComponentGuide(name, target);
   }
   if (topic.startsWith("pattern:")) {
     const name = topic.slice("pattern:".length);
@@ -283,9 +328,126 @@ function Root() {
 
 export function getClaudeMdTemplate(args: {
   projectName?: string;
-  intent?: "user-app" | "admin-cms";
+  intent?: "user-app" | "admin-cms" | "html";
 }) {
   const title = args.projectName ? `# ${args.projectName}` : "# NudgeEAP Mockup Workspace";
+
+  if (args.intent === "html") {
+    return `${title}
+
+## 역할 경계 (먼저 읽을 것)
+
+- 이 프로젝트의 역할은 **별도 vanilla HTML 목업 프로젝트 빌드 + <nds-*> 목업 생성**이다.
+- **하지 말 것**: NudgeEAP DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
+- 사용자가 "DS 컴포넌트를 고쳐줘 / 레포에 푸시해줘 / PR 만들어줘" 같이 요청하면, **이 프로젝트의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내**할 것.
+
+## 분기 — 이 프로젝트는 vanilla HTML / Web Component 목업이다
+
+- 사용 라이브러리: **@nudge-eap/html** (vanilla Web Components) + @nudge-eap/tokens + @nudge-eap/icons
+- 템플릿: **Vite vanilla-ts** (\`npm create vite@latest -- --template vanilla-ts\`). React 의존성 없음.
+- **금지**: \`@nudge-eap/react\` 어떤 형태로도 import 하지 말 것. .tsx 파일 작성 금지.
+- nudge-eap-ds MCP는 이 도구들로 작업:
+  - \`get_guide({ topic: "principles" })\` / \`get_guide({ topic: "dos-donts" })\` — DS 원칙
+  - \`get_guide({ topic: "component:<Name>", target: "html" })\` — <nds-*> form 의 do/dont 예시
+  - \`get_guide({ topic: "pattern:<name>" })\` — 패턴 가이드 (cta-group, dark-patterns 등)
+  - \`find_component\` / \`find_icon\` / \`find_token\` — DS 자산 조회
+  - \`validate_html_mockup({ filePath })\` — HTML 정적 검증
+  - \`analyze_html_mockup({ filePath })\` — DS 채택 비율 / native 잔존 측정
+  - \`dev_server({ action: "start" })\` / \`check_preview\` / \`dev_server({ action: "stop" })\` — dev 서버 검증
+  - \`build_singlefile_html\` — vanilla HTML 워크플로우도 1급 지원. inline 산출물 1개 \`.html\` (JS · CSS · nds-* runtime 전부 inline) 로 디자이너/PM 에게 dnd 전달 가능.
+
+## 산출물 형식 강제 (MUST — 우회 절대 금지)
+
+이 워크스페이스의 **유일하게 허용된 작업 흐름**:
+
+  시각 레퍼런스 수집 → root \`index.html\` 에 \`<nds-*>\` 작성 → \`validate_html_mockup\` 통과 → \`build_singlefile_html\` → \`dist/index.html\` (단일 파일)
+
+**아래는 발견 즉시 작업 중단 + 사용자에게 보고 사유. 어떤 변명으로도 우회 금지:**
+
+1. **시각 레퍼런스 미수집 상태로 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있으면 그것을 기준으로 사용. 없으면 **첫 응답에서 무조건 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷을 받을 수 있을까요? 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요."* 받은 응답은 \`references.md\` 에 저장. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
+2. **\`.tsx\` 파일 작성 금지.** 이 워크플로우는 React 가 없다. JSX 가 필요하면 intent 를 'user-app' 으로 바꿔 다른 워크스페이스에서 작업하라고 안내. \`<Button color="primary">\` 처럼 PascalCase + JSX 컨테이너 prop 패턴이 나타나면 즉시 \`<nds-button color="primary">\` (kebab-case attribute) 로 교체.
+3. **\`<nds-*>\` 흉내 금지 — raw \`<button class="nds-button">\` 으로 시각만 따라 그리기 X.** 반드시 \`<nds-button>\` 같은 실제 custom-element 를 쓸 것. main.ts 의 \`import "@nudge-eap/html/runtime"\` 한 줄로 모든 element 가 등록된다.
+4. **이벤트는 inline \`onclick="..."\` 대신 \`addEventListener\`.** \`document.querySelector("nds-select").addEventListener("select-change", e => …)\` 패턴. WC 가 dispatch 하는 커스텀 이벤트(\`nds-*-change\`, \`select-change\`, \`tabs-change\` 등) 사용. 자세한 이벤트명은 \`get_guide({ topic: "component:<Name>", target: "html" })\` 응답의 examples.do/dont 참고.
+5. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-eap/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-eap/tokens/css"\` 한 줄로만 가져온다.
+6. **산출물은 반드시 \`build_singlefile_html\`.** raw \`vite build\` 결과의 다중 파일 \`dist/\` 폴더로 끝내지 말 것. 디자이너/PM 에게 공유 가능한 표준 산출물은 \`vite-plugin-singlefile\` 로 inline 된 \`dist/index.html\` 1개 파일이다. MCP 가 vite.config 패치 + 빌드까지 자동 수행한다.
+
+**우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
+
+- [ ] 워크스페이스 루트에 \`references.md\` 가 존재하고, 정답/오답 시각 기준이 캡션과 함께 적혀 있다.
+- [ ] root \`index.html\` 이 존재하고 \`<nds-*>\` custom-element 를 1개 이상 사용한다.
+- [ ] \`src/\` 에 \`.tsx\` 파일이 없다 (\`.ts\` + 필요 시 \`.css\` 만).
+- [ ] \`@nudge-eap/react\` 가 어떤 \`.ts\` / \`.html\` 에서도 import / 참조되지 않는다.
+- [ ] \`src/\` 의 \`.css\` 어디에도 \`:root { --color-* / --nds-* / --eap-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
+- [ ] 모든 DS 사용처는 \`<nds-*>\` custom-element 이다 (\`<button class="nds-button">\` 같은 className 흉내 없음).
+- [ ] main.ts 가 \`import "@nudge-eap/html/runtime"\` 을 포함한다.
+
+위 항목 중 하나라도 어긋나면 **HTML 을 폐기하고 처음부터 다시 작성**. 사용자가 명시적으로 허용한 경우에만 예외이며, 이 경우에도 "validate_html_mockup · analyze_html_mockup 가 무력화됩니다" 라고 먼저 경고할 것.
+
+## 작업 원칙
+
+- 이 프로젝트는 NudgeEAP Design System 의 vanilla HTML 패키지(@nudge-eap/html) 기반 목업 워크스페이스다.
+- DS 컴포넌트/아이콘/토큰을 추측해서 사용하지 말고, MCP 도구로 확인한 뒤 사용한다.
+- 구현 완료의 기준은 코드 작성이 아니라 실제 dev 화면이 에러 없이 렌더링되는 것이다.
+- raw \`button\`, \`input\`, \`select\`, \`textarea\` 는 특별한 이유가 없으면 사용하지 않는다 — 대신 \`<nds-button>\` / \`<nds-input>\` / \`<nds-select>\` / \`<nds-textarea>\` 사용.
+
+## 도구 사용 규칙
+
+- **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴 로드.
+- **모든 mockup 작업은 시각 레퍼런스 수집부터 시작.** \`get_guide({ topic: "pattern:visual-reference" })\` 로 룰 확인.
+- 컴포넌트 사용 전 \`find_component({ query })\` → \`get_guide({ topic: "component:<Name>", target: "html" })\` 호출. \`target: "html"\` 을 반드시 명시 — examples.do / examples.dont 가 \`<nds-*>\` form 으로 교체된다. 빠뜨리면 React JSX 예시가 반환됨 (이 워크플로우에선 무용지물).
+- 아이콘은 \`find_icon({ query })\` 로 검색 후 \`@nudge-eap/icons\` 의 인라인 SVG 사용. 이모지·텍스트 기호 금지 (\`validate_html_mockup\` 의 emoji-banned / text-symbol-banned 룰).
+- **사용자 노출 텍스트는 작성 전 \`get_guide({ topic: "ux-writing" })\` 호출** — 해요체·능동형·EAP 도메인 톤.
+- 목업 \`.html\` 작성 직후 반드시 \`validate_html_mockup({ filePath })\` 호출. 위반 0건 될 때까지 수정 후 재실행.
+- 위반이 해소된 뒤 \`analyze_html_mockup({ filePath })\` 로 채택 비율 확인. \`dsRatio\` 가 낮거나 native(\`<button>\` 등) 잔존이 있으면 \`convert_html_to_ds_html\` 호출 또는 손으로 교체.
+- 구현 후 \`dev_server({ action: "start" })\` 로 dev 서버 실행.
+- dev URL 응답하면 \`check_preview\` 로 런타임 에러, unknown custom-element 경고, 빈 화면 여부 확인.
+- 완료 전 \`get_guide({ topic: "dos-donts" })\` 로 최종 sanity check.
+- 작업 종료 시 \`dev_server({ action: "stop" })\` 로 종료.
+
+## UI 구현 규칙
+
+- 가능한 한 DS 컴포넌트(\`<nds-*>\`) 를 우선 사용한다.
+- **기존 antd/HTML 코드를 받았을 때 className 만 치환하지 말 것**. \`<button class="nds-button">\` 은 nds-button 흉내일 뿐 실제 Web Component 가 아님 — 반드시 \`<nds-button>\` 으로 element 자체를 바꾼다.
+- raw \`button\`, \`input\`, \`select\`, \`textarea\` 는 특별한 이유 없으면 사용하지 않는다. \`validate_html_mockup\` 의 \`native-form-element-without-nds-wrapper\` 룰로 자동 검출됨.
+- **이모지·텍스트 기호 절대 금지**. 라벨/제목/empty state 어디에도 이모지(😀 🔥 ⭐ ✅ ⚠️) / 기호(→ ← ✓ ★ •) 박지 말 것. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-eap/icons\` 에서 찾고, 없으면 인라인 SVG.
+- 색상/간격은 인라인 hex, rgb, px 보다 DS 토큰(\`var(--semantic-* )\` / \`var(--gap-* )\` / \`var(--inset-* )\`) 을 우선 사용.
+- 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
+- **아이콘 선택 필수 우선순위**: 브랜드 전용 > NudgeEAP 기본 > MockupLinear/Bold > 자체 SVG.
+- 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
+- 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA 에 붙이지 않는다.
+- primary solid 버튼은 한 화면에 1개만.
+- 모든 클릭 가능한 \`<nds-*>\` 는 main.ts 의 \`addEventListener\` 로 동작을 갖는다 — 단순 시각 데모라도 빈 핸들러 OK.
+
+## 검증 루프
+
+1. DS 원칙 확인: \`get_guide({ topic: "principles" })\`.
+2. 필요한 컴포넌트/아이콘/토큰 검색 (\`find_component\` / \`find_icon\` / \`find_token\`).
+3. 필요한 UX 패턴 확인: \`get_guide({ topic: "pattern:<name>" })\`.
+4. \`get_guide({ topic: "component:<Name>", target: "html" })\` 로 do/dont 예시 확보.
+5. 목업 \`.html\` 작성 (\`src/mockups/<이름>.html\` 또는 \`index.html\`).
+6. \`validate_html_mockup({ filePath })\` 실행. 위반 0건 될 때까지 수정 후 재실행. **응답의 violations[] 와 rule 별 카운트를 사용자에게 그대로 보여줄 것.**
+6-bis. **2회 self-check 강제** — 위반이 0건이 됐어도 \`validate_html_mockup\` 을 한 번 더 호출해 새로 들어온 위반이 없는지 확인.
+7. \`analyze_html_mockup({ filePath })\` 실행. \`dsRatio\` 와 \`recommendations[]\` 를 사용자에게 보여주고, native 잔존이 있으면 \`convert_html_to_ds_html\` 호출.
+8. \`dev_server({ action: "start" })\` 실행.
+9. \`check_preview\` 실행 및 런타임 오류 수정. unknown custom-element 경고는 main.ts 의 runtime import 누락 신호.
+10. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인.
+11. **\`build_singlefile_html\` 호출 → \`dist/index.html\` 1개 파일 산출**. 결과 humanReadable 을 사용자에게 그대로 보여줄 것 (\`[OK] dist/index.html (NN KB, Ms)\`). MCP 가 intent='html' 을 자동 감지해 \`vite-plugin-singlefile\` 설치 + vite.config 패치 + 빌드까지 수행. 산출물 1개 파일이 메신저 dnd / 첨부로 공유 가능.
+12. 사용자에게 dev 서버 URL 또는 \`dist/index.html\` 경로를 명확히 전달. 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
+
+## Self-Check
+
+- [ ] \`@nudge-eap/html/runtime\` 이 main.ts 에서 import 되어 있다.
+- [ ] \`@nudge-eap/react\` / \`@nudge-eap/tokens\` 의 React-only entry 를 import 한 곳이 없다.
+- [ ] \`.tsx\` 파일이 \`src/\` 에 없다 (\`.ts\` + 필요 시 \`.css\` 만).
+- [ ] 모든 DS 사용처는 \`<nds-*>\` custom-element 다 (\`<button class="nds-button">\` 같은 흉내 없음).
+- [ ] 이벤트는 \`addEventListener\` 로 — \`onclick=\` 인라인 없음.
+- [ ] 토큰은 \`@nudge-eap/tokens/css\` 한 줄로만 들어온다 (\`:root\` 인라인 재정의 없음).
+- [ ] \`validate_html_mockup\` 위반 0건 (2회 self-check 통과).
+- [ ] \`analyze_html_mockup.dsRatio\` 가 충분히 높고 native 잔존이 0/최소.
+- [ ] 이모지·텍스트 기호 (→ ✓ ★ • 등) 사용 없음.
+- [ ] 최종 산출물은 \`build_singlefile_html\` 이 만든 단일 \`dist/index.html\` 이다 (raw \`vite build\` 결과의 다중파일 dist/ 가 아님).
+`;
+  }
 
   if (args.intent === "admin-cms") {
     return `${title}
@@ -504,8 +666,14 @@ export function createClaudeMd(args: {
   }
 
   const detected = detectIntentFromText(args.intent);
-  const intent: "user-app" | "admin-cms" =
-    args.intent === "admin-cms" || detected === "admin-cms" ? "admin-cms" : "user-app";
+  let intent: "user-app" | "admin-cms" | "html";
+  if (args.intent === "admin-cms" || detected === "admin-cms") {
+    intent = "admin-cms";
+  } else if (args.intent === "html" || detected === "html") {
+    intent = "html";
+  } else {
+    intent = "user-app";
+  }
 
   const content = getClaudeMdTemplate({ projectName: args.projectName, intent });
   fs.writeFileSync(filePath, content, "utf-8");

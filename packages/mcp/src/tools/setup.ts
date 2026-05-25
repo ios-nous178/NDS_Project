@@ -39,6 +39,16 @@ const REQUIRED_PACKAGES = ["@nudge-eap/tokens", "@nudge-eap/react", "@nudge-eap/
 // <nds-button> 처럼 사용 가능. .mcpb 에 동봉되어 있어 install 만 하면 된다.
 const OPTIONAL_PACKAGES = ["@nudge-eap/tailwind-preset", "@nudge-eap/html"];
 
+/**
+ * intent: 'html' 셋업에서 필요한 최소 패키지 셋.
+ * - @nudge-eap/html: 모든 <nds-*> Web Component 정의 + side-effect runtime
+ * - @nudge-eap/tokens: 시멘틱 CSS 변수 (--semantic-* / --gap-* / --inset-* 등)
+ * - @nudge-eap/icons: <nds-*> 안에서 사용하는 인라인 SVG 모음 (선택이지만 권장)
+ *
+ * @nudge-eap/react 는 의도적으로 제외 — 이 워크플로우는 .tsx 를 쓰지 않는다.
+ */
+const HTML_REQUIRED_PACKAGES = ["@nudge-eap/tokens", "@nudge-eap/html", "@nudge-eap/icons"];
+
 /* ───────────── 패키지 조회 ───────────── */
 
 function getPkg(name: string): PackageMeta | undefined {
@@ -382,6 +392,342 @@ export function getMainTsxImports(args: { brand?: string }) {
   };
 }
 
+/* ───────────── intent: 'html' — Vite vanilla-ts 워크플로우 ─────────────
+ *
+ * @nudge-eap/html 은 bare import (`@nudge-eap/tokens` 등) 를 사용하므로 browser 단독으로
+ * 못 돌리고, Vite 처럼 ESM resolver 가 있는 dev server / bundler 가 필요하다.
+ * Vite vanilla-ts 템플릿을 권장한다 — React 의존성 없이 가볍고,
+ * dev_server / check_preview / validate_html_mockup 흐름이 그대로 동작한다.
+ *
+ * 산출물: root index.html 작성 → build_singlefile_html → dist/index.html (단일 파일).
+ * build_singlefile_html 은 워크스페이스 intent 를 자동 감지해 React/.tsx 와 HTML/.html 둘 다 처리한다 —
+ * HTML 인 경우 vite-plugin-singlefile 만 패치 + 빌드해서 inline 1개 파일을 만든다.
+ * ────────────────────────────────────────────────────────────────────── */
+
+/**
+ * intent='html' 셋업 시 .tgz 설치 명령. React 패키지는 빼고 @nudge-eap/html 을 포함한다.
+ */
+export function getInstallCommandHtml(args: { tgzDir?: string }) {
+  const { tgzDirDefault } = getCtx();
+  const tgzDir = args.tgzDir ? path.resolve(args.tgzDir) : tgzDirDefault;
+
+  const tgzFiles = HTML_REQUIRED_PACKAGES.map((n) => tgzPath(tgzDir, n));
+  const missing = tgzFiles.filter((p) => !fs.existsSync(p));
+  const quoted = tgzFiles.map((p) => `"${p}"`).join(" ");
+  const installCmd = `npm install ${quoted}`;
+  const reinstallCmd = `rm -rf node_modules/@nudge-eap* && ${installCmd}`;
+
+  return {
+    intent: "html",
+    tgzDir,
+    files: tgzFiles,
+    missing,
+    ready: missing.length === 0,
+    recommendedCommand: reinstallCmd,
+    installCommand: installCmd,
+    reinstallCommand: reinstallCmd,
+    _advisory:
+      "intent='html' 은 @nudge-eap/html + tokens + icons 만 설치합니다 (@nudge-eap/react 없음). " +
+      "Vite vanilla-ts (`npm create vite@latest -- --template vanilla-ts`) 위에서 동작합니다.",
+    note:
+      missing.length > 0
+        ? "일부 .tgz가 없습니다. DS 레포에서 'pnpm build && pnpm pack' 으로 다시 만들어 주세요."
+        : "이 명령을 외부 vanilla-ts 프로젝트 루트에서 실행하세요.",
+  };
+}
+
+/**
+ * vanilla-ts 프로젝트의 src/main.ts 최상단에 들어갈 side-effect import 묶음.
+ * - tokens CSS: --semantic-* / --gap-* 등 시멘틱 변수 주입
+ * - html/styles.css: nds-* 컴포넌트 스타일
+ * - html/runtime: 모든 <nds-*> custom element 정의 (side-effect)
+ */
+export function getHtmlEntryImports(args: { brand?: string }) {
+  const tokensPkg = getPkg("@nudge-eap/tokens");
+  const htmlPkg = getPkg("@nudge-eap/html");
+  const resolved = resolveBrand(args.brand);
+
+  const lines: string[] = [];
+  const notes: string[] = [
+    "import 순서: tokens.css → 브랜드 CSS(있다면) → html/styles.css → ./index.css(reset) → html/runtime",
+    "html/runtime 은 side-effect import — 모든 <nds-*> custom element 가 한 번에 등록된다.",
+    "main.ts 한 곳에서만 import 하면 index.html 의 모든 <nds-*> 가 동작.",
+  ];
+
+  if (tokensPkg) {
+    lines.push(`import "@nudge-eap/tokens/css";  // 공통 토큰`);
+    if (resolved.ok && resolved.brand?.cssImport === "@nudge-eap/tokens/css") {
+      notes.push(
+        `브랜드 '${resolved.brand.slug}' 는 공통 토큰 CSS가 기본값입니다. 별도 브랜드 CSS import가 필요 없습니다.`,
+      );
+    } else if (resolved.ok && resolved.brand?.cssImport) {
+      lines.push(`import "${resolved.brand.cssImport}";  // 브랜드 토큰 (${resolved.brand.slug})`);
+    } else if (resolved.ok && resolved.brand && !resolved.brand.cssImport) {
+      lines.push(`// '${resolved.brand.slug}' 브랜드는 토큰 CSS export가 준비되지 않았습니다.`);
+      notes.push(
+        `브랜드 '${resolved.brand.slug}' 의 CSS export 미준비. get_brand 로 ready: true 브랜드 확인.`,
+      );
+    } else if (!resolved.ok) {
+      const available = resolved.availableBrands.join(" | ");
+      lines.push(`// 브랜드 미지정 또는 알 수 없음. 사용 가능: ${available}`);
+      notes.push(resolved.error ?? "get_brand 로 사용 가능한 브랜드 확인.");
+    }
+  }
+  if (htmlPkg) {
+    lines.push(`import "@nudge-eap/html/styles.css";  // nds-* 컴포넌트 스타일`);
+    lines.push(`import "./index.css";  // 프로젝트 minimal reset`);
+    lines.push(`import "@nudge-eap/html/runtime";  // <nds-*> custom element 등록 (side-effect)`);
+  }
+  return {
+    targetFile: "src/main.ts",
+    placement: "최상단 (다른 import보다 먼저)",
+    resolvedBrand: resolved.brand?.slug,
+    availableBrands: resolved.availableBrands,
+    code: lines.join("\n"),
+    notes,
+  };
+}
+
+/**
+ * Vite vanilla-ts 템플릿이 만드는 기본 style.css 를 덮어쓰는 minimal reset.
+ * React 워크플로우의 MINIMAL_RESET_CSS 와 동일 — DS 컴포넌트 스타일을
+ * :where(.nds-*) 가 직접 책임지므로 그대로 재사용해도 안전하다.
+ */
+const HTML_MINIMAL_RESET_CSS = `/* nudge-eap-ds minimal reset — vanilla HTML 워크플로우
+ * tokens.css 이후 import 되어야 var(--font-family-default) 등이 적용된다.
+ * @nudge-eap/html/styles.css 이전 import 되어야 DS 컴포넌트 룰이 reset을 이긴다.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:where(html, body) {
+  margin: 0;
+  padding: 0;
+}
+
+:where(body) {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-body-2);
+  line-height: var(--line-height-body-2);
+  color: var(--semantic-text-default);
+  background: var(--semantic-bg-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
+  margin: 0;
+}
+
+:where(a) {
+  color: inherit;
+  text-decoration: none;
+}
+
+:where(img, svg, video, canvas, audio, iframe) {
+  display: block;
+  max-width: 100%;
+}
+
+:where(ul, ol) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+`;
+
+/** Vite vanilla-ts 템플릿의 src/main.ts 자리에 들어갈 최소 entry. */
+const HTML_MAIN_TS_TEMPLATE = `// nudge-eap-ds vanilla HTML entry — DS 토큰 + 스타일 + runtime 등록
+// 자세한 작업 흐름은 CLAUDE.md 의 "산출물 형식 강제" 섹션 참고.
+
+// 1) 토큰 / 스타일 / reset — import 순서 중요
+import "@nudge-eap/tokens/css";
+import "@nudge-eap/html/styles.css";
+import "./index.css";
+
+// 2) <nds-*> custom element 등록 (side-effect)
+import "@nudge-eap/html/runtime";
+
+// 3) 동적 코드는 여기에. <nds-*> 이벤트 바인딩 예시:
+//    document.querySelector("nds-button")?.addEventListener("click", () => {
+//      console.log("clicked");
+//    });
+`;
+
+/** Vite vanilla-ts 템플릿의 index.html 출발점 — <nds-*> 사용처. */
+const HTML_INDEX_HTML_TEMPLATE = `<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NudgeEAP Mockup</title>
+  </head>
+  <body>
+    <main id="app" style="max-width: 720px; margin: 0 auto; padding: var(--inset-screen);">
+      <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 vanilla HTML 목업입니다"></nds-title-block>
+
+      <div style="display: flex; gap: var(--gap-md); margin-top: var(--gap-lg);">
+        <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
+        <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
+      </div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+`;
+
+function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
+  const { installMode, manifest, tgzDirDefault } = getCtx();
+  const tgzDir = args.tgzDir ? path.resolve(args.tgzDir) : tgzDirDefault;
+  const install = getInstallCommandHtml({ tgzDir });
+  // brand 별로 다른 토큰 CSS import 라인을 얻어 응답에 함께 노출한다.
+  const imports = getHtmlEntryImports({ brand: args.brand });
+
+  const steps: Array<{
+    step: number;
+    title: string;
+    commands?: string[];
+    code?: string;
+    note?: string;
+  }> = [];
+
+  steps.push({
+    step: 1,
+    title: "Vite vanilla-ts 프로젝트 생성 (이미 있으면 건너뛰기)",
+    commands: [
+      "npm create vite@latest my-html-mockups -- --template vanilla-ts",
+      "cd my-html-mockups",
+    ],
+    note: "react-ts 가 아니라 vanilla-ts 템플릿을 사용한다. React 의존성이 없고 .ts + .html 만으로 충분.",
+  });
+
+  steps.push({
+    step: 2,
+    title: "DS html 패키지 설치 (@nudge-eap/html + tokens + icons)",
+    commands: [install.recommendedCommand],
+    note: install.note,
+  });
+
+  steps.push({
+    step: 3,
+    title: "src/main.ts 를 DS entry 로 교체",
+    code: HTML_MAIN_TS_TEMPLATE,
+    note: "Vite 템플릿이 만든 main.ts 를 덮어쓰기. import 순서가 중요 — tokens → styles → reset → runtime.",
+  });
+
+  steps.push({
+    step: 4,
+    title: "src/index.css 에 minimal reset 작성 (Vite 템플릿 기본 style.css 를 덮어쓰기)",
+    code: HTML_MINIMAL_RESET_CSS,
+    note:
+      "main.ts 가 './index.css' 를 import 하므로 파일명은 index.css 로 통일. " +
+      "DS 컴포넌트 스타일은 :where(.nds-*) 가 책임지므로 추가 reset 불필요.",
+  });
+
+  steps.push({
+    step: 5,
+    title: "index.html 을 <nds-*> 직접 작성으로 교체",
+    code: HTML_INDEX_HTML_TEMPLATE,
+    note:
+      "index.html 의 <body> 안에 <nds-*> 를 그대로 사용. " +
+      "이벤트는 addEventListener('nds-*-change' 등) 로 main.ts 에서 바인딩. " +
+      "코드 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져온다.",
+  });
+
+  steps.push({
+    step: 6,
+    title: "기본 폴더 구조 생성",
+    commands: ["mkdir -p src/mockups prds docs"],
+    note:
+      "src/mockups/ 하위에 각 화면별 .html 을 두고, index.html 에서 link 하거나 별도 entry 로 빌드. " +
+      "추가 entry 가 필요하면 vite.config.ts 의 rollupOptions.input 에 등록.",
+  });
+
+  if (installMode === "mcpb") {
+    steps.push({
+      step: 7,
+      title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
+      note:
+        "Claude Desktop 에서 nudge-eap-ds.mcpb 를 더블클릭해 한 번 설치하면 이후 모든 프로젝트에서 자동 활성화됩니다. " +
+        "이 워크스페이스의 .mcp.json 을 따로 만들 필요가 없습니다.",
+    });
+  } else {
+    steps.push({
+      step: 7,
+      title: "MCP 서버 등록 (이미 했으면 건너뛰기)",
+      commands: [
+        `claude mcp add nudge-eap-ds --scope project -- node ${path.join(manifest.repoRoot, "packages/mcp/dist/server.js")}`,
+      ],
+      note: "프로젝트 루트에서 실행하면 .mcp.json이 생성되어 팀과 공유 가능.",
+    });
+  }
+
+  steps.push({
+    step: 8,
+    title: "동작 확인 (dev 서버 + check_preview)",
+    commands: [
+      "npm install --save-dev playwright",
+      "npx playwright install chromium",
+      "npm run dev",
+    ],
+    note:
+      "MCP 의 dev_server({ action: 'start' }) / check_preview 가 vanilla 프로젝트도 동일하게 동작. " +
+      "런타임 에러 / 빈 화면 / unknown custom-element 경고 여부 확인.",
+  });
+
+  steps.push({
+    step: 9,
+    title: "정적 검증 루프 — validate_html_mockup / analyze_html_mockup",
+    commands: [
+      "// .html 작성/수정 직후마다 호출:",
+      "validate_html_mockup({ filePath: '<프로젝트>/src/mockups/<이름>.html' })",
+      "// 채택 비율 / native 잔존 확인:",
+      "analyze_html_mockup({ filePath: '<프로젝트>/src/mockups/<이름>.html' })",
+    ],
+    note:
+      "validate_html_mockup 위반 0건 + analyze_html_mockup.dsRatio 충분히 높은 상태를 ship 기준으로 사용. " +
+      "최종 산출물은 build_singlefile_html 이 만든 단일 dist/index.html — intent='html' 자동 감지로 " +
+      "vite-plugin-singlefile 만 패치/설치되며 React 도구는 안 끌어들인다.",
+  });
+
+  steps.push({
+    step: 8,
+    title: "최종 산출물 빌드 — 단일 dist/index.html",
+    commands: [
+      "// JS · CSS · @nudge-eap/html runtime 까지 전부 inline 된 1개 파일:",
+      "build_singlefile_html({ cwd: '<프로젝트>' })",
+    ],
+    note:
+      "결과 humanReadable 을 사용자에게 그대로 전달 — 디자이너/PM 에게 메신저 dnd / 첨부로 공유 가능합니다. " +
+      "MCP 가 vite-plugin-singlefile 자동 설치 + vite.config 패치까지 처리합니다.",
+  });
+
+  return {
+    intent: "html",
+    _advisory:
+      "이 셋업은 vanilla HTML / Web Component (<nds-*>) 워크플로우용입니다. " +
+      "사용자 앱(React/.tsx) 화면이면 intent 를 빼거나 'user-app' 으로, 어드민이면 'admin-cms' 로 지정하세요.",
+    summary: {
+      tgzDir,
+      requiredPackages: HTML_REQUIRED_PACKAGES,
+      optionalPackages: ["@nudge-eap/tailwind-preset"],
+      installReady: install.ready,
+      resolvedBrand: imports.resolvedBrand,
+      brandResolvedImports: imports.code,
+    },
+    dependencyGraph: manifest.packages.map((p) => ({
+      name: p.name,
+      dependsOn: Object.keys(p.dependencies).filter((d) => d.startsWith("@nudge-eap/")),
+    })),
+    steps,
+  };
+}
+
 /**
  * Vite react-ts 템플릿이 만드는 기본 index.css 를 덮어쓰는 minimal reset.
  * - DS 토큰을 참조하므로 tokens.css import 이후에 와야 한다 (getMainTsxImports 참고).
@@ -577,6 +923,9 @@ export function getSetupInstructions(args: {
   const detected = detectIntentFromText(args.intent);
   if (args.intent === "admin-cms" || detected === "admin-cms") {
     return getSetupInstructionsAdminCms({ withRouter: args.withRouter });
+  }
+  if (args.intent === "html" || detected === "html") {
+    return getSetupInstructionsHtml({ brand: args.brand, tgzDir: args.tgzDir });
   }
 
   const { installMode, manifest, tgzDirDefault } = getCtx();
@@ -861,11 +1210,17 @@ export function getSetup(args: {
   overwrite?: boolean;
 }) {
   const step = args.step;
+  // intent='html' 명시 또는 자유 텍스트에서 감지된 경우 html-specific 핸들러로 분기.
+  const isHtmlIntent = args.intent === "html" || detectIntentFromText(args.intent) === "html";
   switch (step) {
     case "install":
-      return getInstallCommand({ tgzDir: args.tgzDir, includeTailwind: args.includeTailwind });
+      return isHtmlIntent
+        ? getInstallCommandHtml({ tgzDir: args.tgzDir })
+        : getInstallCommand({ tgzDir: args.tgzDir, includeTailwind: args.includeTailwind });
     case "imports":
-      return getMainTsxImports({ brand: args.brand });
+      return isHtmlIntent
+        ? getHtmlEntryImports({ brand: args.brand })
+        : getMainTsxImports({ brand: args.brand });
     case "update":
       return getUpdateInstructions({
         source: args.source,
@@ -879,6 +1234,16 @@ export function getSetup(args: {
         intent: args.intent,
       });
     case "inspector": {
+      if (isHtmlIntent) {
+        return {
+          ok: false,
+          error:
+            "intent='html' 워크플로우는 DsInspector 를 사용하지 않습니다. " +
+            "DsInspector 는 React (.tsx) 트리에 마운트되는 dev-only 패널이며, vanilla HTML 에는 적용되지 않습니다. " +
+            "<nds-*> 채택 비율은 analyze_html_mockup({ filePath }) 로 확인하세요.",
+          intent: "html",
+        };
+      }
       const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
       return { cwd, ...ensureInspectorInMainTsx(cwd) };
     }

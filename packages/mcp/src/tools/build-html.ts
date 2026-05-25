@@ -37,14 +37,24 @@ export interface BuildSinglefileHtmlArgs {
    * 사용자가 명시적으로 우회를 허용한 경우에만 사용. 기본 false.
    */
   skipAudit?: boolean;
+  /**
+   * 강제로 워크스페이스 intent 를 지정. 생략 시 package.json + src/ 구조로 자동 감지.
+   * - "react": React + JSX (.tsx) 워크플로우 — 기존 audit 룰 적용.
+   * - "html": vanilla HTML / Web Component (<nds-*>) 워크플로우 — html-친화 audit 적용.
+   */
+  intent?: "react" | "html";
 }
+
+export type WorkspaceIntent = "react" | "html";
 
 export type WorkspaceAuditRule =
   | "raw-html-in-src"
   | "raw-html-in-root"
   | "inline-root-tokens"
   | "no-tsx-found"
-  | "missing-visual-references";
+  | "missing-visual-references"
+  | "no-html-entry-found"
+  | "html-entry-has-no-nds-tag";
 
 export interface WorkspaceAuditViolation {
   rule: WorkspaceAuditRule;
@@ -64,9 +74,51 @@ export interface BuildSinglefileHtmlResult {
   routerWarning?: string;
   buildLogTail?: string;
   auditViolations?: WorkspaceAuditViolation[];
+  /** 감지/지정된 워크스페이스 intent. audit 룰과 next-step 안내가 갈라지는 기준. */
+  intent?: WorkspaceIntent;
   humanReadable: string;
   error?: string;
   _nextSuggestion?: string;
+}
+
+/**
+ * 워크스페이스가 React (.tsx) 인지 vanilla HTML (<nds-*>) 인지 판별.
+ *
+ * 우선순위:
+ *   1. package.json deps 에 @nudge-eap/html 만 있고 react 가 없으면 → html
+ *   2. package.json deps 에 @nudge-eap/react 가 있으면 → react
+ *   3. src/main.tsx 가 있으면 → react
+ *   4. src/main.ts 만 있고 .tsx 가 src/ 전체에 없으면 → html
+ *   5. fallback → react (기존 동작 유지)
+ */
+export function detectWorkspaceIntent(cwd: string): WorkspaceIntent {
+  const pkgJsonPath = path.join(cwd, "package.json");
+  if (fs.existsSync(pkgJsonPath)) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8")) as {
+        dependencies?: Record<string, string>;
+        devDependencies?: Record<string, string>;
+      };
+      const all = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
+      const hasHtml = "@nudge-eap/html" in all;
+      const hasReact = "@nudge-eap/react" in all;
+      if (hasHtml && !hasReact) return "html";
+      if (hasReact) return "react";
+    } catch {
+      // ignore, fall through to file-based detection
+    }
+  }
+
+  const srcDir = path.join(cwd, "src");
+  if (fs.existsSync(srcDir)) {
+    const mainTsx = fs.existsSync(path.join(srcDir, "main.tsx"));
+    if (mainTsx) return "react";
+    const mainTs = fs.existsSync(path.join(srcDir, "main.ts"));
+    const anyTsx = walkFiles(srcDir, /\.tsx$/i, 1).length > 0;
+    if (mainTs && !anyTsx) return "html";
+  }
+
+  return "react";
 }
 
 export async function buildSinglefileHtml(
@@ -79,8 +131,10 @@ export async function buildSinglefileHtml(
     return fail("package.json not found in cwd. Run this in your mockup project root.");
   }
 
+  const intent: WorkspaceIntent = args.intent ?? detectWorkspaceIntent(cwd);
+
   if (!args.skipAudit) {
-    const violations = auditMockupWorkspace(cwd);
+    const violations = auditMockupWorkspace(cwd, intent);
     if (violations.length > 0) {
       const lines = violations.map((v) => {
         const fileList =
@@ -91,15 +145,21 @@ export async function buildSinglefileHtml(
             : "";
         return `[${v.rule}]\n  ${v.detail}${fileList}`;
       });
+      const fixHint =
+        intent === "html"
+          ? "위반 파일을 폐기하고 <nds-*> Web Component 기반으로 다시 작성하세요. " +
+            "get_setup({ step: 'full', intent: 'html' }) 로 템플릿을 받을 수 있습니다."
+          : "위반 파일을 폐기하고 .tsx 기반으로 다시 작성하세요.";
       const msg =
-        `워크스페이스 사전 검사 실패 (${violations.length}건). ` +
+        `워크스페이스 사전 검사 실패 (${violations.length}건, intent=${intent}). ` +
         `CLAUDE.md "산출물 형식 강제 (MUST — 우회 절대 금지)" 섹션 위반:\n\n` +
         lines.join("\n\n") +
-        `\n\n해결: 위반 파일을 폐기하고 .tsx 기반으로 다시 작성하세요. ` +
+        `\n\n해결: ${fixHint} ` +
         `사용자가 명시적으로 우회를 허용한 경우에만 build_singlefile_html({ skipAudit: true }) 로 재호출하세요 — ` +
         `이 경우 MCP 검증 파이프라인(validate_mockup·report_mockup_usage)이 무력화됨을 사용자에게 먼저 경고할 것.`;
       return {
         ...fail(msg),
+        intent,
         auditViolations: violations,
       };
     }
@@ -164,7 +224,8 @@ export async function buildSinglefileHtml(
     configPatched = true;
   }
 
-  const routerWarning = detectBrowserRouter(cwd);
+  // BrowserRouter 경고는 React 트리에만 의미가 있다 (HashRouter 권장). HTML 워크플로우에선 skip.
+  const routerWarning = intent === "react" ? detectBrowserRouter(cwd) : undefined;
 
   const startMs = Date.now();
   let buildStdout = "";
@@ -208,9 +269,15 @@ export async function buildSinglefileHtml(
   const humanReadable = `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}`;
 
   const _nextSuggestion =
-    "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). " +
-    "그 다음 report_mockup_usage 를 호출해 원본 .tsx 사용량을 적재하세요 " +
-    "(singlefile 산출물은 inline JS 라 정적 파싱 불가하므로 *.tsx 기반 집계만 유효).";
+    intent === "html"
+      ? "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). " +
+        "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 있어 " +
+        "메신저 dnd / 파일 공유로 그대로 열립니다. 그 다음 report_html_mockup_usage({ filePath: 'index.html' }) " +
+        "또는 analyze_html_mockup({ filePath: 'index.html' }) 로 nds-* 채택 비율을 적재하세요 " +
+        "(singlefile 산출물 자체는 inline JS 라 정적 파싱 불가하므로 원본 index.html 기반 집계만 유효)."
+      : "이 결과를 사용자에게 한 줄로 보여주세요 (humanReadable 필드). " +
+        "그 다음 report_mockup_usage 를 호출해 원본 .tsx 사용량을 적재하세요 " +
+        "(singlefile 산출물은 inline JS 라 정적 파싱 불가하므로 *.tsx 기반 집계만 유효).";
 
   return {
     ok: true,
@@ -223,6 +290,7 @@ export async function buildSinglefileHtml(
     installedSinglefile,
     routerWarning,
     buildLogTail,
+    intent,
     humanReadable,
     _nextSuggestion,
   };
@@ -320,14 +388,18 @@ function findMatchingBracket(source: string, openIdx: number): number {
 /**
  * 빌드 직전 워크스페이스 audit — CLAUDE.md "산출물 형식 강제 (MUST)" 룰 위반 자동 감지.
  *
- * 감지하는 우회 패턴:
- *  - raw-html-in-src          : src/ 하위에 손으로 작성한 .html 파일
- *  - raw-html-in-root         : 프로젝트 루트의 index.html (vite entry) 외 추가 .html
- *  - inline-root-tokens       : .css/.scss 의 :root { ... } 블록에 시멘틱 토큰 인라인 재정의
- *  - no-tsx-found             : src/ 에 .tsx 파일이 하나도 없음 (HTML-only 워크플로우)
- *  - missing-visual-references: 시각 기준 (references.md / .references/) 미수집 — 톤 판단 근거 부재
+ * Intent 별 룰셋:
+ *  - react (.tsx + JSX 워크플로우): raw-html-in-src / raw-html-in-root / no-tsx-found 적용
+ *  - html  (vanilla <nds-*> 워크플로우): no-html-entry-found / html-entry-has-no-nds-tag 적용
+ *  - 공통: inline-root-tokens / missing-visual-references
+ *
+ * @param intent 생략 시 detectWorkspaceIntent(cwd) 로 자동 감지.
  */
-export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
+export function auditMockupWorkspace(
+  cwd: string,
+  intent?: WorkspaceIntent,
+): WorkspaceAuditViolation[] {
+  const resolvedIntent = intent ?? detectWorkspaceIntent(cwd);
   const violations: WorkspaceAuditViolation[] = [];
   const srcDir = path.join(cwd, "src");
   const srcExists = fs.existsSync(srcDir);
@@ -335,7 +407,9 @@ export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
   const refsViolation = auditVisualReferences(cwd);
   if (refsViolation) violations.push(refsViolation);
 
-  if (srcExists) {
+  // React 워크플로우에서는 손글씨 .html 이 우회 패턴 — 차단.
+  // HTML 워크플로우에서는 .html 이 1급 입력이므로 이 룰을 건너뛴다 (대신 no-html-entry-found 가 책임).
+  if (resolvedIntent === "react" && srcExists) {
     const htmlInSrc = walkFiles(srcDir, /\.html?$/i, 20);
     if (htmlInSrc.length > 0) {
       violations.push({
@@ -348,24 +422,26 @@ export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
     }
   }
 
-  const rootHtmlExtras: string[] = [];
-  try {
-    for (const entry of fs.readdirSync(cwd, { withFileTypes: true })) {
-      if (entry.isFile() && /\.html?$/i.test(entry.name) && entry.name !== "index.html") {
-        rootHtmlExtras.push(entry.name);
+  if (resolvedIntent === "react") {
+    const rootHtmlExtras: string[] = [];
+    try {
+      for (const entry of fs.readdirSync(cwd, { withFileTypes: true })) {
+        if (entry.isFile() && /\.html?$/i.test(entry.name) && entry.name !== "index.html") {
+          rootHtmlExtras.push(entry.name);
+        }
       }
+    } catch {
+      // ignore
     }
-  } catch {
-    // ignore
-  }
-  if (rootHtmlExtras.length > 0) {
-    violations.push({
-      rule: "raw-html-in-root",
-      files: rootHtmlExtras,
-      detail:
-        "프로젝트 루트에 index.html(vite entry) 외에 손으로 작성한 .html 파일이 있습니다. " +
-        "스탠드얼론 HTML 우회 — .tsx 기반으로 재작성하세요.",
-    });
+    if (rootHtmlExtras.length > 0) {
+      violations.push({
+        rule: "raw-html-in-root",
+        files: rootHtmlExtras,
+        detail:
+          "프로젝트 루트에 index.html(vite entry) 외에 손으로 작성한 .html 파일이 있습니다. " +
+          "스탠드얼론 HTML 우회 — .tsx 기반으로 재작성하세요.",
+      });
+    }
   }
 
   if (srcExists) {
@@ -383,17 +459,18 @@ export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
       }
     }
     if (inlineTokenHits.length > 0) {
+      const entryFile = resolvedIntent === "html" ? "main.ts" : "main.tsx";
       violations.push({
         rule: "inline-root-tokens",
         files: inlineTokenHits,
         detail:
           ".css/.scss 의 :root 블록에 시멘틱 토큰(--color-*, --nds-*, --eap-*, --gap-*, --inset-*) 을 인라인 재정의했습니다. " +
-          '@nudge-eap/tokens/css 단일 진리원천을 깨는 우회입니다. main.tsx 에서 `import "@nudge-eap/tokens/css"` 한 줄로만 토큰을 가져오세요.',
+          `@nudge-eap/tokens/css 단일 진리원천을 깨는 우회입니다. ${entryFile} 에서 \`import "@nudge-eap/tokens/css"\` 한 줄로만 토큰을 가져오세요.`,
       });
     }
   }
 
-  if (srcExists) {
+  if (resolvedIntent === "react" && srcExists) {
     // 입력 형식은 .tsx 가 가장 일반적이지만, @nudge-eap/html 패키지의 Web Component 기반 워크플로우에선
     // .html / .astro 도 1급 입력. 셋 중 *하나라도* 있으면 통과. raw .html 직접 작성을 막는 룰
     // (raw-html-in-src) 는 src/ 안의 손글씨 .html 위반을 별도로 잡으므로, 여기선
@@ -411,6 +488,39 @@ export function auditMockupWorkspace(cwd: string): WorkspaceAuditViolation[] {
           "src/ 에 인식되는 입력 파일(.tsx / .astro / .html)이 하나도 없습니다. " +
           "이 워크스페이스의 입력 형식은 React(.tsx) · Astro(.astro) · vanilla(.html) 중 하나여야 합니다.",
       });
+    }
+  }
+
+  if (resolvedIntent === "html") {
+    // HTML 워크플로우에서는 root index.html 이 mockup 본체 (Vite vanilla-ts entry).
+    // 존재 + <nds-*> tag 한 개 이상 사용을 요구한다 — DS 컴포넌트 미사용 단순 vanilla 템플릿 차단.
+    const rootIndex = path.join(cwd, "index.html");
+    if (!fs.existsSync(rootIndex)) {
+      violations.push({
+        rule: "no-html-entry-found",
+        files: [],
+        detail:
+          "프로젝트 루트에 index.html 이 없습니다. vanilla HTML 워크플로우의 진입점은 " +
+          "Vite vanilla-ts 의 root index.html 입니다 — `npm create vite@latest -- --template vanilla-ts` 후 " +
+          "index.html 에 <nds-*> 직접 작성하세요. " +
+          "get_setup({ step: 'full', intent: 'html' }) 로 템플릿을 받을 수 있습니다.",
+      });
+    } else {
+      try {
+        const content = fs.readFileSync(rootIndex, "utf-8");
+        if (!/<nds-[a-z][a-z0-9-]*/i.test(content)) {
+          violations.push({
+            rule: "html-entry-has-no-nds-tag",
+            files: ["index.html"],
+            detail:
+              "index.html 에 <nds-*> custom element 가 하나도 없습니다. " +
+              "vanilla HTML 워크플로우의 산출물은 nds-* 컴포넌트 사용이 전제입니다. " +
+              "get_guide({ topic: 'component:<Name>', target: 'html' }) 로 예시를 가져와 적용하세요.",
+          });
+        }
+      } catch {
+        // 읽기 실패는 무시 — vite build 단계에서 어차피 실패함
+      }
     }
   }
 
