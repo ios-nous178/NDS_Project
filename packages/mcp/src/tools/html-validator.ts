@@ -4,6 +4,7 @@
  * nds-* dialect 인식.
  *
  * 검출 룰:
+ * 검출 룰 (format-agnostic — 토큰 / 색상 / 스페이싱):
  *  - inline-color         : style="" 의 hex / rgb (var(--..) 없을 때)
  *  - inline-spacing       : style="" 의 px/rem (transform 류 제외)
  *  - non-4pt-spacing      : 4 의 배수 아닌 px 값
@@ -16,11 +17,32 @@
  *  - unknown-token        : var(--xxx) 의 --xxx 가 카탈로그에 없음
  *  - unknown-nds-tag      : <nds-foo> 가 카탈로그(@nudge-eap/html) 에 없는 태그
  *  - unknown-nds-class    : class="nds-foo" 가 React DS stylesheet 에 없는 클래스
+ *  - invalid-nds-attr-value : nds-* attribute enum 위반
  *
- * v0 한계 (정직하게 응답에 명시):
- *  - prop union 검사 (예: nds-button color="weird") 는 @nudge-eap/html 의 attribute
- *    enum 카탈로그 export 가 깔린 후에 추가. 현재는 화이트리스트 외 값 통과.
- *  - JSX-only 룰 (Card.Header 이중 padding 등) 은 .tsx 로 가야 함을 응답에 명시.
+ * 검출 룰 (JSX 에서 포팅 — 컨테이너 / 카운팅 / 시각 위계):
+ *  - card-slot-double-padding   : <nds-card-header|body|footer> 에 외곽 padding
+ *  - assistive-solid-cta        : <nds-button color="assistive"> 가 solid (variant 미지정)
+ *  - heading-decorative-icon    : <h3>/<h4> 안에 <svg> / icon 들어감
+ *  - nested-card                : <nds-card> 안에 <nds-card>
+ *  - card-badge-overuse         : 1 nds-card 안 nds-chip + nds-badge ≥ 3
+ *  - card-footer-button-overuse : nds-card-footer 안 nds-button ≥ 3
+ *  - primary-cta-per-container  : 영역 1개 안 primary solid nds-button > 1
+ *  - primary-cta-overuse        : 전체 primary solid nds-button > 1
+ *  - chip-overuse               : nds-chip > 8
+ *  - card-everything            : nds-card ≥ 5
+ *  - repeated-h1                : <h1> ≥ 2
+ *  - repeated-h2                : <h2> ≥ 4
+ *  - bold-overuse               : inline font-weight bold/700+ ≥ 5
+ *  - brand-bg-overuse           : --semantic-bg-brand-* 사용 ≥ 2
+ *  - decorative-shadow          : inline box-shadow (focus ring 제외) ≥ 4
+ *  - tone-on-tone-filled        : 연한 primary bg + filled/soft chip/badge
+ *  - visual-emphasis-overload   : gradient / chip / badge / brand-bg / icon 동시 ≥ 4
+ *  - primary-color-role-overload: primary 계열 색상이 여러 역할로 과다 사용
+ *
+ * 의도적으로 포팅하지 않은 JSX 룰:
+ *  - antd-import / mixed-icon-style / unknown-react-export — HTML 에는 import 가 없다.
+ *  - chip-missing-label / chip-decorative-use — HTML 의 <nds-chip> 은 children 텍스트라 label attr 검사 무의미.
+ *  - icon-default-color / button-arrow-overuse — HTML 의 아이콘은 익명 <svg> 라 식별 불가.
  */
 
 import fs from "node:fs";
@@ -281,9 +303,48 @@ export function validateHtmlSource(
         }
       }
     }
+
+    // 6. card slot 이중 padding — nds-card-header/body/footer 는 자체 padding 보유.
+    //    외곽 style 로 padding 을 또 주면 이중 패딩으로 어긋남.
+    if (
+      (tag === "nds-card-header" || tag === "nds-card-body" || tag === "nds-card-footer") &&
+      attrs.style &&
+      /\bpadding(?:-(?:top|right|bottom|left))?\s*:/i.test(attrs.style)
+    ) {
+      violations.push({
+        rule: "card-slot-double-padding",
+        line,
+        selector,
+        detail: attrs.style.trim(),
+        suggestion:
+          "nds-card-header/body/footer 는 자체 padding 을 가짐. 외곽 padding 을 또 주면 이중 패딩. get_guide({ topic: 'component:Card' }) 참조.",
+      });
+    }
+
+    // 7. nds-button color="assistive" + solid(default) — cool-gray 배경이라 비활성처럼 보임.
+    //    명시적으로 variant 가 outlined/soft/text 계열이면 OK.
+    if (tag === "nds-button" && attrs.color === "assistive") {
+      const variant = attrs.variant;
+      const isNonSolid =
+        variant === "outlined" ||
+        variant === "outlined-sub" ||
+        variant === "soft" ||
+        variant === "text" ||
+        variant === "ghost";
+      if (!isNonSolid) {
+        violations.push({
+          rule: "assistive-solid-cta",
+          line,
+          selector,
+          detail: `<nds-button color="assistive">${variant ? ` variant="${variant}"` : ""}`,
+          suggestion:
+            'nds-button color="assistive" + solid 는 비활성처럼 보임. 활성 CTA 면 color="primary"/"secondary", 보조면 variant="outlined" 또는 "text". get_guide({ topic: \'component:Button\' }) 참조.',
+        });
+      }
+    }
   });
 
-  // 6. text 노드의 emoji / strict symbol
+  // 8. text 노드의 emoji / strict symbol
   $("*").each((_idx, el) => {
     if (el.type !== "tag") return;
     const tag = el.tagName.toLowerCase();
@@ -316,7 +377,357 @@ export function validateHtmlSource(
     }
   });
 
+  // ─── 컨테이너 패스 (Card / Footer / 영역별 CTA) ───
+  //
+  // cheerio 의 .find() 는 후손 전체를 검색하므로 중첩 카드 카운팅에 그대로 활용.
+  // 카드별 / Footer별 / 영역별 카운트를 도출해 패턴 위반을 잡는다.
+  collectContainerViolations(source, $, violations);
+
+  // ─── 헤딩 안 장식 아이콘 (descendant scan) ───
+  for (const headingTag of ["h3", "h4"] as const) {
+    $(headingTag).each((_i, el) => {
+      if (el.type !== "tag") return;
+      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+      const line = lineNumberAt(source, offset);
+      const selector = describeElement(el);
+      const hasSvg = $(el).find("svg").length > 0;
+      if (hasSvg) {
+        violations.push({
+          rule: "heading-decorative-icon",
+          line,
+          selector,
+          detail: `<${headingTag}> 안에 <svg> 발견`,
+          suggestion: `<${headingTag}> 안에 SVG / 아이콘 사용 금지 — 헤딩은 텍스트만.`,
+        });
+      }
+    });
+  }
+
+  // ─── 문서-레벨 카운트 룰 ───
+  collectDocumentLevelViolations(source, $, violations);
+
   return violations;
+}
+
+/**
+ * Card / Footer / 영역별 CTA — cheerio 후손 검색으로 컨테이너 안 카운트.
+ *  - nested-card                : <nds-card> 후손에 <nds-card>
+ *  - card-badge-overuse         : 1 카드 안 chip+badge ≥ 3
+ *  - card-footer-button-overuse : nds-card-footer 안 button ≥ 3
+ *  - primary-cta-per-container  : 영역 (Card / section / Modal / BottomSheet) 안 primary solid nds-button > 1
+ */
+function collectContainerViolations(
+  source: string,
+  $: cheerio.CheerioAPI,
+  out: HtmlViolation[],
+): void {
+  // Card 단위 검사
+  $("nds-card").each((_i, el) => {
+    if (el.type !== "tag") return;
+    const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+    const line = lineNumberAt(source, offset);
+    const selector = describeElement(el);
+    const $el = $(el);
+
+    const nestedCount = $el.find("nds-card").length;
+    if (nestedCount > 0) {
+      out.push({
+        rule: "nested-card",
+        line,
+        selector,
+        detail: `nds-card 안에 nds-card 가 ${nestedCount}회 중첩됨.`,
+        suggestion:
+          "Card 안에 Card 중첩 금지 — 시각 레이어가 깊어지면 정보 계층이 무너짐. 내부 구획은 Divider 또는 surface 배경으로 구분. get_guide({ topic: 'component:Card' }) 참조.",
+      });
+    }
+
+    const chipCount = $el.find("nds-chip").length;
+    const badgeCount = $el.find("nds-badge").length;
+    const labelTotal = chipCount + badgeCount;
+    if (labelTotal >= 3) {
+      out.push({
+        rule: "card-badge-overuse",
+        line,
+        selector,
+        detail: `Card 1개에 Badge/Chip 이 ${labelTotal}개 (Chip=${chipCount}, Badge=${badgeCount}).`,
+        suggestion:
+          "Card 당 Badge/Chip 최대 2개 — 가장 중요한 상태만 남기고 나머지는 Footer 메타텍스트로 처리. get_guide({ topic: 'component:Card' }) 참조.",
+      });
+    }
+  });
+
+  // Card Footer — Button 과다
+  $("nds-card-footer").each((_i, el) => {
+    if (el.type !== "tag") return;
+    const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+    const line = lineNumberAt(source, offset);
+    const selector = describeElement(el);
+    const buttonCount = $(el).find("nds-button").length;
+    if (buttonCount >= 3) {
+      out.push({
+        rule: "card-footer-button-overuse",
+        line,
+        selector,
+        detail: `nds-card-footer 안에 nds-button 이 ${buttonCount}개.`,
+        suggestion:
+          "Card Footer 는 Primary 1개 + Secondary 1개까지. 더 필요하면 Modal/BottomSheet 형태 검토. get_guide({ topic: 'component:Card' }) 참조.",
+      });
+    }
+  });
+
+  // 영역별 Primary CTA 단일성
+  const ctaContainers: Array<{ selector: string; label: string }> = [
+    { selector: "nds-card", label: "nds-card" },
+    { selector: "section", label: "<section>" },
+    { selector: "nds-modal", label: "nds-modal" },
+    { selector: "nds-bottom-sheet", label: "nds-bottom-sheet" },
+  ];
+  for (const { selector: sel, label } of ctaContainers) {
+    $(sel).each((_i, el) => {
+      if (el.type !== "tag") return;
+      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+      const line = lineNumberAt(source, offset);
+      const elementSelector = describeElement(el);
+      const primarySolid = $(el)
+        .find("nds-button")
+        .toArray()
+        .filter((b) => isPrimarySolidButton(b as unknown as DomElement));
+      if (primarySolid.length > 1) {
+        out.push({
+          rule: "primary-cta-per-container",
+          line,
+          selector: elementSelector,
+          detail: `${label} 1개 안에 primary solid nds-button 이 ${primarySolid.length}개.`,
+          suggestion: `한 영역(${label}) 안 Primary Button 은 최대 1개. 보조 액션은 variant="outlined" / color="assistive" / variant="text" 로 낮추세요. get_guide({ topic: 'pattern:cta-group' }) 참조.`,
+        });
+      }
+    });
+  }
+}
+
+/**
+ * 문서 전체 카운트 룰 — 전역 totals 기반.
+ *  - chip-overuse / card-everything / primary-cta-overuse
+ *  - repeated-h1 / repeated-h2 / bold-overuse / brand-bg-overuse / decorative-shadow
+ *  - tone-on-tone-filled / visual-emphasis-overload / primary-color-role-overload
+ */
+function collectDocumentLevelViolations(
+  source: string,
+  $: cheerio.CheerioAPI,
+  out: HtmlViolation[],
+): void {
+  const chipTotal = $("nds-chip").length;
+  if (chipTotal > 8) {
+    const ninth = $("nds-chip").eq(8).get(0) as DomElement | undefined;
+    const line = ninth
+      ? lineNumberAt(source, (ninth as unknown as { startIndex?: number }).startIndex ?? 0)
+      : 1;
+    out.push({
+      rule: "chip-overuse",
+      line,
+      detail: `nds-chip 이 ${chipTotal}개 발견됨.`,
+      suggestion:
+        "Chip 은 상태/분류/짧은 속성에만 제한적으로. 섹션 장식이나 모든 카드 반복 강조는 피하세요. get_guide({ topic: 'component:Chip' }) 참조.",
+    });
+  }
+
+  const cardTotal = $("nds-card").length;
+  if (cardTotal >= 5) {
+    out.push({
+      rule: "card-everything",
+      line: 1,
+      detail: `한 mockup 에 nds-card 가 ${cardTotal}개 — 모든 정보 단위를 카드로 감싸는 패턴.`,
+      suggestion:
+        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--gap-loose) + heading + Divider 로 위계를 표현하세요.",
+    });
+  }
+
+  // 전체 primary solid nds-button 카운트
+  const primarySolidTotal = $("nds-button")
+    .toArray()
+    .filter((b) => isPrimarySolidButton(b as unknown as DomElement)).length;
+  if (primarySolidTotal > 1) {
+    out.push({
+      rule: "primary-cta-overuse",
+      line: 1,
+      detail: `primary solid 로 보이는 nds-button 이 ${primarySolidTotal}개.`,
+      suggestion:
+        "primary solid 는 화면의 가장 중요한 액션 1개만. 나머지는 outlined / assistive / text 계열로 낮추세요.",
+    });
+  }
+
+  const h1Count = $("h1").length;
+  if (h1Count >= 2) {
+    out.push({
+      rule: "repeated-h1",
+      line: 1,
+      detail: `<h1> 이 ${h1Count}개 — 페이지 최상위 헤딩은 1개여야 합니다.`,
+      suggestion: "한 mockup 에 h1 은 1개. 보조 섹션은 h3 이하 사용.",
+    });
+  }
+  const h2Count = $("h2").length;
+  if (h2Count >= 4) {
+    out.push({
+      rule: "repeated-h2",
+      line: 1,
+      detail: `<h2> 가 ${h2Count}개 — 같은 화면에 큰 제목이 너무 많습니다.`,
+      suggestion: "h2 는 화면당 2~3개 이내. 더 세분화는 h3/h4 로 표현.",
+    });
+  }
+
+  // Bold 남발 — style="font-weight: bold | 700+" 카운트
+  let boldCount = 0;
+  $("[style]").each((_i, el) => {
+    const style = ((el as unknown as DomElement).attribs?.style ?? "").trim();
+    if (/font-weight\s*:\s*(?:bold|700|800|900)\b/i.test(style)) boldCount += 1;
+  });
+  if (boldCount >= 5) {
+    out.push({
+      rule: "bold-overuse",
+      line: 1,
+      detail: `Bold(700+) inline 텍스트 선언이 ${boldCount}곳.`,
+      suggestion: "Bold 는 화면당 1~2개 핵심 텍스트에만. 본문은 Regular(400)/Medium(500).",
+    });
+  }
+
+  // Brand BG 한 화면 1곳 — --semantic-bg-brand-default | subtle 2회 이상이면 위반
+  const brandBgMatches = source.match(/var\(--semantic-bg-brand-(?:default|subtle)\)/g) ?? [];
+  if (brandBgMatches.length >= 2) {
+    out.push({
+      rule: "brand-bg-overuse",
+      line: 1,
+      detail: `Brand background 토큰이 ${brandBgMatches.length}회 사용됨 (한 화면 최대 1곳).`,
+      suggestion:
+        "Brand BG 는 의미 있는 notice / 핵심 강조 1곳에만. 나머지는 var(--semantic-bg-surface*) 또는 elevated 사용.",
+    });
+  }
+
+  // Decorative Shadow — inline box-shadow 4곳 이상 (focus ring 제외)
+  let decorativeShadowCount = 0;
+  $("[style]").each((_i, el) => {
+    const style = ((el as unknown as DomElement).attribs?.style ?? "").trim();
+    const shadows = style.match(/box-shadow\s*:\s*[^;]+/gi) ?? [];
+    for (const s of shadows) {
+      if (/var\(--shadow-/.test(s)) continue;
+      if (/0\s+0\s+0\s+\d+px/.test(s)) continue; // focus ring 류
+      decorativeShadowCount += 1;
+    }
+  });
+  if (decorativeShadowCount >= 4) {
+    out.push({
+      rule: "decorative-shadow",
+      line: 1,
+      detail: `인라인 box-shadow 가 ${decorativeShadowCount}곳 — shadow-heavy layout.`,
+      suggestion:
+        "Shadow 는 floating UI(Modal/Popup/Dropdown/BottomSheet) 에만. 일반 카드/리스트는 border 또는 surface tone 으로 구분.",
+    });
+  }
+
+  // tone-on-tone-filled — 연한 primary bg + 같은 톤 filled/soft chip/badge
+  const lightPrimaryBgRe =
+    /background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|cobalt-(?:50|100))/;
+  const filledChipOrBadgeRe =
+    /<\s*nds-(?:chip|badge)\b[^>]*?(?:variant\s*=\s*["'](?:filled|soft)["']|style\s*=\s*["'][^"']*background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|cobalt-(?:50|100)))/i;
+  if (lightPrimaryBgRe.test(source) && filledChipOrBadgeRe.test(source)) {
+    out.push({
+      rule: "tone-on-tone-filled",
+      line: 1,
+      detail: "연한 primary/blue 배경과 같은 계열 filled/soft 라벨이 함께 사용됨.",
+      suggestion:
+        "같은 톤 위 같은 톤 filled 컴포넌트는 강조 계층이 약합니다. 배경은 neutral 로 낮추거나 라벨을 outlined/text 계열로.",
+    });
+  }
+
+  // visual-emphasis-overload — 강조 장치가 동시에 4개 이상 사용
+  const emphasisSignals = [
+    { name: "gradient", matched: /(linear|radial|conic)-gradient\s*\(/.test(source) },
+    { name: "chip", matched: $("nds-chip").length > 0 },
+    { name: "badge", matched: $("nds-badge").length > 0 },
+    {
+      name: "semantic-background",
+      matched: /background(?:-color)?\s*:\s*var\(--semantic-/.test(source),
+    },
+    { name: "icon", matched: $("svg").length > 0 },
+  ].filter((s) => s.matched);
+  if (emphasisSignals.length >= 4) {
+    out.push({
+      rule: "visual-emphasis-overload",
+      line: 1,
+      detail: `강조 장치가 동시에 많이 사용됨: ${emphasisSignals.map((s) => s.name).join(", ")}`,
+      suggestion:
+        "안내/보조 영역은 색 배경, 아이콘, Chip/Badge, 굵은 제목 중 1~2개만 사용하세요. get_guide({ topic: 'pattern:notice' }) 참조.",
+    });
+  }
+
+  // primary-color-role-overload — primary 계열 색이 여러 역할로 과다 사용
+  const primaryTokenRefs =
+    source.match(
+      /var\(--color-(?:semantic-primary|blue|cobalt|trostEapBanner|yellow-primary)[\w-]*\)/g,
+    ) ?? [];
+  const primaryRoleSignals = [
+    {
+      name: "button",
+      matched: $("nds-button")
+        .toArray()
+        .some((b) => {
+          const a = (b as unknown as DomElement).attribs ?? {};
+          return a.color === "primary" || a.variant === "solid";
+        }),
+    },
+    {
+      name: "chip",
+      matched:
+        $("nds-chip[variant='filled'], nds-chip[color], nds-chip[style*='background']").length > 0,
+    },
+    {
+      name: "badge",
+      matched:
+        $("nds-badge[variant='filled'], nds-badge[color], nds-badge[style*='background']").length >
+        0,
+    },
+    {
+      name: "background",
+      matched:
+        /background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+          source,
+        ),
+    },
+    {
+      name: "border",
+      matched:
+        /border(?:-color)?\s*:\s*[^;]*var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+          source,
+        ),
+    },
+    {
+      name: "icon",
+      matched:
+        /<\s*svg\b[^>]*?color\s*=\s*["']var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+          source,
+        ),
+    },
+  ].filter((s) => s.matched);
+
+  if (primaryTokenRefs.length >= 8 || primaryRoleSignals.length >= 4) {
+    out.push({
+      rule: "primary-color-role-overload",
+      line: 1,
+      detail: `primary 계열 색상이 여러 역할로 과다 사용됨: ${
+        primaryRoleSignals.map((s) => s.name).join(", ") || `${primaryTokenRefs.length} token refs`
+      }`,
+      suggestion:
+        "Primary color 는 CTA/interactive/highlight 중 제한된 역할에만. 배경/태그/카드/포커스까지 모두 primary 로 처리하지 말고 neutral surface 와 텍스트 위계로 낮추세요.",
+    });
+  }
+}
+
+const NON_SOLID_VARIANTS = new Set(["outlined", "outlined-sub", "soft", "text", "ghost"]);
+function isPrimarySolidButton(el: DomElement): boolean {
+  if (el.type !== "tag" || el.tagName?.toLowerCase() !== "nds-button") return false;
+  const attrs = el.attribs ?? {};
+  const isPrimary = !attrs.color || attrs.color === "primary";
+  const isNonSolid = !!attrs.variant && NON_SOLID_VARIANTS.has(attrs.variant);
+  return isPrimary && !isNonSolid;
 }
 
 function hasAncestorNdsTag(el: DomElement): boolean {
@@ -356,8 +767,8 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
     ok: violations.length === 0,
     violations,
     jsxOnlyNotice:
-      "이 검사는 토큰·간격·아이콘·nds-* 태그/클래스까지 (format-agnostic 룰) 입니다. " +
-      "prop 의미 검증 (Card.Header 이중 padding, IconButton size union 등) 은 .tsx 시점에서만 가능합니다 — " +
-      "수정이 prop 의미와 관련되면 .tsx 로 돌아가서 validate_mockup 을 사용하세요.",
+      "validate_html_mockup 은 토큰·간격·아이콘·nds-* 태그/클래스·컨테이너 패턴 (Card 중첩 / Footer 버튼 과다 / 영역별 primary CTA / heading 장식 / brand BG / bold 남발 등) 까지 검사합니다. " +
+      "다만 JSX 전용 룰 — antd import 잔존 / 외부 아이콘 라이브러리 import / Chip.label 속성 / 화살표 아이콘 식별 (HTML 에서는 익명 <svg>) — 은 .tsx 시점에서만 검출됩니다. " +
+      "prop 의미 검증 (IconButton size union 등) 도 .tsx 의 validate_mockup 을 사용하세요.",
   };
 }
