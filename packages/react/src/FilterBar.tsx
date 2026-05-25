@@ -1,5 +1,4 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -35,87 +34,6 @@ export interface FilterBarProps extends Omit<React.HTMLAttributes<HTMLDivElement
   /** 초기화 라벨 */
   resetLabel?: string;
 }
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const fbStyles = `
-  :where(.${FB_CLASS}) {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-default);
-    width: 100%;
-    font-family: ${fontFamily.web};
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: ${spacing[4]}px;
-  }
-  :where(.${FB_CLASS})::-webkit-scrollbar { display: none; }
-
-  :where(.${FB_LIST_CLASS}) {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-default);
-    flex: 1;
-  }
-
-  :where(.${FB_CHIP_CLASS}) {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-tight);
-    height: 32px;
-    padding: 0 var(--inset-input);
-    border-radius: 9999px;
-    border: 1px solid ${cv.borderRole.normal};
-    background: ${cv.surface.default};
-    color: ${cv.textRole.normal};
-    font-family: inherit;
-    font-size: ${typeScale.caption1.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background-color ${transition.default}, border-color ${transition.default}, color ${transition.default};
-  }
-
-  :where(.${FB_CHIP_CLASS}:hover:not([disabled])) {
-    background: ${cv.surface.section};
-  }
-
-  :where(.${FB_CHIP_CLASS}[data-active="true"]) {
-    background: ${cv.surface.inverse};
-    border-color: ${cv.surface.inverse};
-    color: ${cv.surface.default};
-  }
-
-  :where(.${FB_CHIP_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.borderRole.brand};
-    outline-offset: 2px;
-  }
-
-  :where(.${FB_CHIP_CLASS}[disabled]) {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  :where(.${FB_RESET_CLASS}) {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-tight);
-    height: 32px;
-    padding: 0 var(--inset-input);
-    border: none;
-    background: transparent;
-    color: ${cv.textRole.subtle};
-    cursor: pointer;
-    font-family: inherit;
-    font-size: ${typeScale.caption1.fontSize}px;
-    font-weight: ${fontWeight.semibold};
-  }
-  :where(.${FB_RESET_CLASS}:hover) { color: ${cv.textRole.normal}; }
-`;
-
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 

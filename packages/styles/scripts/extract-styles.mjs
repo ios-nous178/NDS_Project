@@ -1,15 +1,20 @@
 /**
- * NDS 컴포넌트 CSS 추출 스크립트
+ * @nudge-eap/styles — bundle every per-component xxxStyles literal in src/ into
+ * a single dist/styles.css. This used to live in @nudge-eap/react but was split
+ * out so @nudge-eap/html (and any other framework adapter) can depend on the
+ * CSS bundle without dragging in React.
  *
- * src/*.tsx에서 xxxStyles 템플릿 리터럴을 추출하고,
- * tokens 소스 파일의 값으로 평가하여 dist/styles.css를 생성합니다.
+ * Pipeline: read every .ts file in src/, regex out the `xxxStyles` template
+ * literal, evaluate the ${...} interpolations against tokens loaded directly
+ * from @nudge-eap/tokens source files (no compiled artifact needed), write the
+ * concatenated result to dist/styles.css.
  *
- * 실행: node scripts/extract-styles.mjs
+ * Run: node scripts/extract-styles.mjs
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -19,14 +24,13 @@ const tokensDir = path.resolve(__dirname, "../../tokens/src");
 
 function loadTokenModule(filename) {
   let src = fs.readFileSync(path.join(tokensDir, filename), "utf-8");
-  // TypeScript 구문 제거
   src = src
-    .replace(/\/\*[\s\S]*?\*\//g, "") // 블록 주석
-    .replace(/^\/\/.*$/gm, "") // 라인 주석
-    .replace(/export\s+type\s+\w+\s*=\s*\{[^}]*\};?/gs, "") // export type X = { ... };
-    .replace(/export\s+type\s+.*$/gm, "") // export type (한 줄)
-    .replace(/export\s+/g, "") // export 키워드
-    .replace(/\s+as\s+const/g, ""); // as const
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^\/\/.*$/gm, "")
+    .replace(/export\s+type\s+\w+\s*=\s*\{[^}]*\};?/gs, "")
+    .replace(/export\s+type\s+.*$/gm, "")
+    .replace(/export\s+/g, "")
+    .replace(/\s+as\s+const/g, "");
   return src;
 }
 
@@ -48,7 +52,6 @@ function loadCssVarRefs() {
   return evalCv();
 }
 
-// tokens를 하나의 스코프로 합쳐서 eval
 const tokensSrc = [
   loadTokenModule("colors.ts"),
   loadTokenModule("typography.ts"),
@@ -57,7 +60,6 @@ const tokensSrc = [
   loadTokenModule("motion.ts"),
 ].join("\n");
 
-// eval 스코프에서 모든 토큰 변수를 정의
 const tokenEval = new Function(`
   ${tokensSrc}
   return {
@@ -70,11 +72,7 @@ const tokenEval = new Function(`
 `);
 
 const tokens = tokenEval();
-
-// cv (CSS variable references). Read source directly to avoid Node module-type
-// warnings from importing dist ESM inside a package without "type": "module".
-const cv = loadCssVarRefs();
-tokens.cv = cv;
+tokens.cv = loadCssVarRefs();
 
 /* ─── 컴포넌트 CSS 추출 ─── */
 
@@ -84,11 +82,11 @@ const outFile = path.resolve(distDir, "styles.css");
 
 const srcFiles = fs
   .readdirSync(srcDir)
-  .filter((f) => f.endsWith(".tsx"))
+  .filter((f) => f.endsWith(".ts"))
   .sort();
 
-const header = `/* NDS Design System — Auto-generated styles */\n/* Do not edit. Regenerate: pnpm build */\n\n`;
-const styleVarPattern = /const\s+(\w+Styles)\s*=\s*`([\s\S]*?)`;/g;
+const header = `/* NDS Design System — Auto-generated styles */\n/* Do not edit. Regenerate: pnpm --filter @nudge-eap/styles build */\n\n`;
+const styleVarPattern = /(?:export\s+)?const\s+(\w+Styles)\s*=\s*`([\s\S]*?)`;/g;
 const classConstPattern =
   /const\s+(\w+(?:CLASS|_CLASS))\s*=\s*(?:`([^`]*)`|"([^"]*)"|'([^']*)')\s*;/g;
 const simpleConstPattern = /const\s+(\w+)\s*(?::[^=]+)?=\s*([{[][\s\S]*?[\]}])\s*;/g;
@@ -99,16 +97,14 @@ function collectSimpleConstants(content, localVars) {
   while ((match = simpleConstPattern.exec(content)) !== null) {
     const [, name, expression] = match;
     if (name in localVars) continue;
-
     try {
       const fn = new Function(...Object.keys(localVars), `return (${expression})`);
       const value = fn(...Object.values(localVars));
-
       if (Array.isArray(value) || (value && typeof value === "object")) {
         localVars[name] = value;
       }
     } catch {
-      // Ignore non-serializable constants such as ReactNode maps with JSX.
+      // Ignore non-serializable constants.
     }
   }
 }
@@ -120,23 +116,19 @@ const unresolvedExpressions = [];
 for (const file of srcFiles) {
   const content = fs.readFileSync(path.join(srcDir, file), "utf-8");
 
-  // 1) 해당 파일의 클래스명 상수를 먼저 수집
   const localVars = { ...tokens };
+
   classConstPattern.lastIndex = 0;
   let cm;
   while ((cm = classConstPattern.exec(content)) !== null) {
     const name = cm[1];
     const val = cm[2] ?? cm[3] ?? cm[4];
-    // 템플릿 리터럴 내 ${...} 해석 (e.g. `${INPUT_CLASS}__root`)
     const resolved = val.replace(/\$\{(\w+)\}/g, (_, ref) => localVars[ref] ?? "");
     localVars[name] = resolved;
   }
 
-  // Collect local serializable arrays/objects used as CSS fallbacks
-  // e.g. DEFAULT_COLORS[0], KIND_BG.info, TONE_FG.info.
   collectSimpleConstants(content, localVars);
 
-  // 2) 스타일 템플릿 리터럴 추출 및 평가
   styleVarPattern.lastIndex = 0;
   let match;
   while ((match = styleVarPattern.exec(content)) !== null) {
@@ -154,7 +146,7 @@ for (const file of srcFiles) {
         }
       });
 
-      cssOutput += `/* ── ${file.replace(".tsx", "")} ── */\n`;
+      cssOutput += `/* ── ${file.replace(".ts", "")} ── */\n`;
       cssOutput += evaluated.trim() + "\n\n";
       count++;
     } catch (e) {

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -40,81 +39,6 @@ export interface SignaturePadProps extends Omit<React.HTMLAttributes<HTMLDivElem
   /** 컨트롤 숨김 */
   hideControls?: boolean;
 }
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const sigStyles = `
-  :where(.${SP_CLASS}) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-default);
-    font-family: ${fontFamily.web};
-    box-sizing: border-box;
-  }
-
-  :where(.${SP_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    color: ${cv.textRole.normal};
-  }
-
-  :where(.${SP_CANVAS_WRAP_CLASS}) {
-    position: relative;
-    width: 100%;
-    background: ${cv.surface.section};
-    border: 1px dashed ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
-    overflow: hidden;
-    touch-action: none;
-  }
-
-  :where(.${SP_CANVAS_WRAP_CLASS}[data-disabled="true"]) {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-
-  :where(.${SP_CANVAS_CLASS}) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    cursor: crosshair;
-  }
-
-  :where(.${SP_PLACEHOLDER_CLASS}) {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: ${cv.textRole.muted};
-    font-size: ${typeScale.body3.fontSize}px;
-    pointer-events: none;
-  }
-
-  :where(.${SP_CONTROLS_CLASS}) {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--gap-default);
-  }
-
-  :where(.${SP_BTN_CLASS}) {
-    height: 32px;
-    padding: 0 var(--inset-input);
-    border-radius: ${radius.md}px;
-    border: 1px solid ${cv.borderRole.normal};
-    background: ${cv.surface.default};
-    color: ${cv.textRole.normal};
-    cursor: pointer;
-    font-family: inherit;
-    font-size: ${typeScale.caption1.fontSize}px;
-    font-weight: ${fontWeight.semibold};
-    transition: background-color ${transition.default};
-  }
-
-  :where(.${SP_BTN_CLASS}:hover) { background: ${cv.surface.section}; }
-`;
-
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 

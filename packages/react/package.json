@@ -18,7 +18,7 @@
     "./styles.css": "./dist/styles.css"
   },
   "scripts": {
-    "build": "tsc && node scripts/extract-styles.mjs",
+    "build": "tsc && node scripts/copy-styles.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@nudge-eap/icons": "workspace:*",
+    "@nudge-eap/styles": "workspace:*",
     "@nudge-eap/tokens": "workspace:*"
   },
   "peerDependencies": {

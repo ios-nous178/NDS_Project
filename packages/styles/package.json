@@ -1,0 +1,22 @@
+{
+  "name": "@nudge-eap/styles",
+  "version": "0.0.1",
+  "description": "Framework-agnostic CSS bundle for NudgeEAP Design System — consumed by @nudge-eap/react and @nudge-eap/html.",
+  "exports": {
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node scripts/extract-styles.mjs",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nudge-eap/tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

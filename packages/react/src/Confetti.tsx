@@ -18,19 +18,6 @@ export interface ConfettiProps extends Omit<React.HTMLAttributes<HTMLCanvasEleme
   /** 지속 시간(ms, 기본 2200) */
   duration?: number;
 }
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const cfStyles = `
-  :where(.${CF_CLASS}) {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-  }
-`;
-
 const DEFAULT_COLORS = ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"];
 
 /* ─── Component ─── */

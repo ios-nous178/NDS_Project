@@ -32,6 +32,7 @@ const DS_PACKAGE_DIRS = [
   "packages/tokens",
   "packages/icons",
   "packages/tailwind-preset",
+  "packages/styles",
 ];
 const MANIFEST_PATH = path.join(ROOT, "packages/mcp/manifest.json");
 const MCP_PKG_PATH = path.join(ROOT, "packages/mcp/package.json");

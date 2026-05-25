@@ -15,7 +15,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "../../..");
 
 const tokensCss = fs.readFileSync(path.join(root, "packages/tokens/dist/tokens.css"), "utf-8");
-const stylesCss = fs.readFileSync(path.join(root, "packages/react/dist/styles.css"), "utf-8");
+const stylesCss = fs.readFileSync(path.join(root, "packages/styles/dist/styles.css"), "utf-8");
 
 const result = await build({
   entryPoints: [path.join(__dirname, "../dist/runtime.js")],

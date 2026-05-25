@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+import { spacing } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -37,94 +37,6 @@ export interface OrderSummaryCardProps extends Omit<React.HTMLAttributes<HTMLDiv
   /** 푸터 슬롯 (CTA 버튼 등) */
   footer?: React.ReactNode;
 }
-
-/* ─── Styles ─── */
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const osStyles = `
-  :where(.${OS_CLASS}) {
-    display: flex;
-    flex-direction: column;
-    padding: var(--inset-card-large);
-    background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.lg}px;
-    font-family: ${fontFamily.web};
-    box-sizing: border-box;
-  }
-
-  :where(.${OS_HEADER_CLASS}) {
-    margin-bottom: ${spacing[16]}px;
-  }
-
-  :where(.${OS_TITLE_CLASS}) {
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.bold};
-    color: ${cv.textRole.normal};
-    margin: 0;
-  }
-
-  :where(.${OS_LIST_CLASS}) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-default);
-  }
-
-  :where(.${OS_ROW_CLASS}) {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--gap-comfortable);
-  }
-
-  :where(.${OS_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.textRole.subtle};
-  }
-
-  :where(.${OS_VALUE_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    color: ${cv.textRole.normal};
-    font-variant-numeric: tabular-nums;
-    text-align: right;
-  }
-
-  :where(.${OS_VALUE_CLASS}[data-emphasis="discount"]) {
-    color: var(--semantic-text-status-error);
-    font-weight: ${fontWeight.semibold};
-  }
-
-  :where(.${OS_VALUE_CLASS}[data-emphasis="info"]) {
-    color: ${cv.textRole.brand};
-  }
-
-  :where(.${OS_DIVIDER_CLASS}) {
-    height: 1px;
-    background: ${cv.borderRole.subtle};
-    margin: ${spacing[16]}px 0;
-  }
-
-  :where(.${OS_TOTAL_CLASS}) {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--gap-comfortable);
-  }
-
-  :where(.${OS_TOTAL_CLASS}) > span:first-child {
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.semibold};
-    color: ${cv.textRole.normal};
-  }
-
-  :where(.${OS_TOTAL_VALUE_CLASS}) {
-    font-size: 22px;
-    font-weight: ${fontWeight.bold};
-    color: ${cv.textRole.normal};
-    font-variant-numeric: tabular-nums;
-  }
-`;
-
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 

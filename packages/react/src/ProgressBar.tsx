@@ -1,5 +1,4 @@
 import React from "react";
-import { cv, radius, transition } from "@nudge-eap/tokens";
 
 /* ─── Constants ─── */
 
@@ -16,30 +15,6 @@ const sizeConfig = {
 } as const;
 
 export type ProgressBarSize = keyof typeof sizeConfig;
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const progressBarStyles = `
-  :where(.${PB_CLASS}) {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  :where(.${PB_TRACK_CLASS}) {
-    width: 100%;
-    height: var(--nds-progress-height, 8px);
-    border-radius: var(--nds-progress-radius, ${radius.pill}px);
-    background: var(--nds-progress-track-bg, ${cv.surface.disabled});
-    overflow: hidden;
-  }
-
-  :where(.${PB_FILL_CLASS}) {
-    height: 100%;
-    border-radius: inherit;
-    background: var(--nds-progress-fill-bg, ${cv.surface.brand});
-    transition: width ${transition.default};
-  }
-`;
-
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
