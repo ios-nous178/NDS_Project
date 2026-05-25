@@ -5,13 +5,29 @@ import { configureHtmlValidator, validateHtmlSource } from "../src/tools/html-va
 configureHtmlValidator({
   tokenSet: new Set([
     "--color-blue-500",
+    "--color-semantic-primary-bg",
+    "--color-blue-50",
     "--semantic-bg-brand-default",
+    "--semantic-bg-brand-subtle",
     "--gap-default",
     "--inset-card",
     "--spacing-16",
+    "--shadow-card",
   ]),
-  ndsTagSet: new Set(["nds-button", "nds-input", "nds-select", "nds-card"]),
-  ndsClassPrefixSet: new Set(["nds-button", "nds-input", "nds-card", "nds-chip"]),
+  ndsTagSet: new Set([
+    "nds-button",
+    "nds-input",
+    "nds-select",
+    "nds-card",
+    "nds-card-header",
+    "nds-card-body",
+    "nds-card-footer",
+    "nds-chip",
+    "nds-badge",
+    "nds-modal",
+    "nds-bottom-sheet",
+  ]),
+  ndsClassPrefixSet: new Set(["nds-button", "nds-input", "nds-card", "nds-chip", "nds-badge"]),
   ndsAttrEnums: new Map([
     [
       "nds-button",
@@ -133,5 +149,125 @@ describe("validateHtmlSource", () => {
   it("missing attribute (= default) does NOT trigger invalid-nds-attr-value", () => {
     const r = rulesFor(`<nds-button>no color attr</nds-button>`);
     expect(r).not.toContain("invalid-nds-attr-value");
+  });
+});
+
+// ─── JSX 에서 포팅한 컨테이너 / 카운팅 룰 ───
+describe("validateHtmlSource — ported JSX patterns", () => {
+  it("flags card-slot-double-padding when nds-card-header has inline padding", () => {
+    const r = rulesFor(`<nds-card-header style="padding: 16px">제목</nds-card-header>`);
+    expect(r).toContain("card-slot-double-padding");
+  });
+
+  it("does NOT flag card slot without padding style", () => {
+    const r = rulesFor(`<nds-card-header>제목</nds-card-header>`);
+    expect(r).not.toContain("card-slot-double-padding");
+  });
+
+  it("flags assistive-solid-cta when nds-button color=assistive without variant", () => {
+    const r = rulesFor(`<nds-button color="assistive">취소</nds-button>`);
+    expect(r).toContain("assistive-solid-cta");
+  });
+
+  it("does NOT flag assistive button when variant=outlined", () => {
+    const r = rulesFor(`<nds-button color="assistive" variant="outlined">취소</nds-button>`);
+    expect(r).not.toContain("assistive-solid-cta");
+  });
+
+  it("flags nested-card when nds-card is inside nds-card", () => {
+    const html = `<nds-card><nds-card-body><nds-card>inner</nds-card></nds-card-body></nds-card>`;
+    expect(rulesFor(html)).toContain("nested-card");
+  });
+
+  it("flags card-badge-overuse when 3+ chip/badge in one card", () => {
+    const html = `<nds-card><nds-chip>A</nds-chip><nds-chip>B</nds-chip><nds-badge>C</nds-badge></nds-card>`;
+    expect(rulesFor(html)).toContain("card-badge-overuse");
+  });
+
+  it("flags card-footer-button-overuse when 3+ buttons in footer", () => {
+    const html = `<nds-card-footer>
+      <nds-button>1</nds-button><nds-button>2</nds-button><nds-button>3</nds-button>
+    </nds-card-footer>`;
+    expect(rulesFor(html)).toContain("card-footer-button-overuse");
+  });
+
+  it("flags primary-cta-per-container when 2 primary solid buttons in one card", () => {
+    const html = `<nds-card>
+      <nds-button>A</nds-button>
+      <nds-button color="primary">B</nds-button>
+    </nds-card>`;
+    expect(rulesFor(html)).toContain("primary-cta-per-container");
+  });
+
+  it("flags primary-cta-overuse when total primary solid > 1", () => {
+    const html = `<nds-button>A</nds-button><nds-button color="primary">B</nds-button>`;
+    expect(rulesFor(html)).toContain("primary-cta-overuse");
+  });
+
+  it("does NOT flag primary-cta-overuse when secondary buttons are non-solid", () => {
+    const html = `<nds-button>A</nds-button><nds-button variant="outlined">B</nds-button>`;
+    expect(rulesFor(html)).not.toContain("primary-cta-overuse");
+  });
+
+  it("flags chip-overuse when > 8 chips", () => {
+    const chips = Array.from({ length: 9 }, (_, i) => `<nds-chip>${i}</nds-chip>`).join("");
+    expect(rulesFor(chips)).toContain("chip-overuse");
+  });
+
+  it("flags card-everything when 5+ nds-card", () => {
+    const cards = Array.from({ length: 5 }, () => `<nds-card>x</nds-card>`).join("");
+    expect(rulesFor(cards)).toContain("card-everything");
+  });
+
+  it("flags repeated-h1 when 2+ h1", () => {
+    expect(rulesFor(`<h1>A</h1><h1>B</h1>`)).toContain("repeated-h1");
+  });
+
+  it("flags repeated-h2 when 4+ h2", () => {
+    const html = `<h2>A</h2><h2>B</h2><h2>C</h2><h2>D</h2>`;
+    expect(rulesFor(html)).toContain("repeated-h2");
+  });
+
+  it("flags bold-overuse when 5+ inline font-weight bold", () => {
+    const html = Array.from({ length: 5 }, () => `<span style="font-weight: bold">x</span>`).join(
+      "",
+    );
+    expect(rulesFor(html)).toContain("bold-overuse");
+  });
+
+  it("flags brand-bg-overuse when --semantic-bg-brand-* used 2+ times", () => {
+    const html = `<div style="background: var(--semantic-bg-brand-default)">a</div>
+                  <div style="background: var(--semantic-bg-brand-subtle)">b</div>`;
+    expect(rulesFor(html)).toContain("brand-bg-overuse");
+  });
+
+  it("does NOT flag brand-bg-overuse when used once", () => {
+    const html = `<div style="background: var(--semantic-bg-brand-default)">a</div>`;
+    expect(rulesFor(html)).not.toContain("brand-bg-overuse");
+  });
+
+  it("flags decorative-shadow when 4+ inline box-shadow", () => {
+    const html = Array.from(
+      { length: 4 },
+      () => `<div style="box-shadow: 0 2px 8px rgba(0,0,0,0.1)">x</div>`,
+    ).join("");
+    expect(rulesFor(html)).toContain("decorative-shadow");
+  });
+
+  it("does NOT flag focus ring shadows as decorative", () => {
+    const html = Array.from(
+      { length: 5 },
+      () => `<div style="box-shadow: 0 0 0 2px var(--color-blue-500)">x</div>`,
+    ).join("");
+    expect(rulesFor(html)).not.toContain("decorative-shadow");
+  });
+
+  it("flags heading-decorative-icon when <h3> contains <svg>", () => {
+    const html = `<h3><svg viewBox="0 0 10 10"></svg> 제목</h3>`;
+    expect(rulesFor(html)).toContain("heading-decorative-icon");
+  });
+
+  it("does NOT flag heading without icon", () => {
+    expect(rulesFor(`<h3>제목</h3>`)).not.toContain("heading-decorative-icon");
   });
 });
