@@ -101,3 +101,11 @@ export type { BreathingPhaseKind } from "./components/nds-breathing-guide.js";
 export { NdsQuickActionGrid } from "./components/nds-quick-action-grid.js";
 
 export { NdsLikertScale } from "./components/nds-likert-scale.js";
+
+export { NdsAmountInput } from "./components/nds-amount-input.js";
+
+export { NdsOtpInput } from "./components/nds-otp-input.js";
+
+export { NdsAddressSearch } from "./components/nds-address-search.js";
+
+export { NdsInspector } from "./components/nds-inspector.js";

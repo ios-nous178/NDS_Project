@@ -42,3 +42,7 @@ import "./components/nds-content-viewer.js";
 import "./components/nds-breathing-guide.js";
 import "./components/nds-quick-action-grid.js";
 import "./components/nds-likert-scale.js";
+import "./components/nds-amount-input.js";
+import "./components/nds-otp-input.js";
+import "./components/nds-address-search.js";
+import "./components/nds-inspector.js";
