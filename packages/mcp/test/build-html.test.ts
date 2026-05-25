@@ -2,7 +2,11 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { auditMockupWorkspace, patchViteConfig } from "../src/tools/build-html.js";
+import {
+  auditMockupWorkspace,
+  detectWorkspaceIntent,
+  patchViteConfig,
+} from "../src/tools/build-html.js";
 
 describe("patchViteConfig", () => {
   it("inserts import + viteSingleFile() into a typical vite.config", () => {
@@ -281,5 +285,167 @@ describe("auditMockupWorkspace", () => {
       const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
       expect(v).toBeUndefined();
     });
+  });
+});
+
+describe("detectWorkspaceIntent", () => {
+  let tmp: string;
+
+  beforeEach(() => {
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), "intent-ws-"));
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  });
+
+  it("returns 'html' when package.json has @nudge-eap/html without @nudge-eap/react", () => {
+    fs.writeFileSync(
+      path.join(tmp, "package.json"),
+      JSON.stringify({ dependencies: { "@nudge-eap/html": "1.0.0" } }),
+    );
+    expect(detectWorkspaceIntent(tmp)).toBe("html");
+  });
+
+  it("returns 'react' when package.json has @nudge-eap/react (even if html is also present)", () => {
+    fs.writeFileSync(
+      path.join(tmp, "package.json"),
+      JSON.stringify({
+        dependencies: { "@nudge-eap/react": "1.0.0", "@nudge-eap/html": "1.0.0" },
+      }),
+    );
+    expect(detectWorkspaceIntent(tmp)).toBe("react");
+  });
+
+  it("falls back to src/main.tsx → react", () => {
+    fs.writeFileSync(path.join(tmp, "package.json"), JSON.stringify({}));
+    fs.mkdirSync(path.join(tmp, "src"));
+    fs.writeFileSync(path.join(tmp, "src", "main.tsx"), `export default null;`);
+    expect(detectWorkspaceIntent(tmp)).toBe("react");
+  });
+
+  it("falls back to src/main.ts (no .tsx anywhere) → html", () => {
+    fs.writeFileSync(path.join(tmp, "package.json"), JSON.stringify({}));
+    fs.mkdirSync(path.join(tmp, "src"));
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-eap/html/runtime";`);
+    expect(detectWorkspaceIntent(tmp)).toBe("html");
+  });
+
+  it("defaults to 'react' when nothing else matches (preserves legacy behavior)", () => {
+    expect(detectWorkspaceIntent(tmp)).toBe("react");
+  });
+});
+
+describe("auditMockupWorkspace — html intent", () => {
+  let tmp: string;
+
+  beforeEach(() => {
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), "audit-html-"));
+    fs.mkdirSync(path.join(tmp, "src"));
+    fs.writeFileSync(
+      path.join(tmp, "references.md"),
+      `[good] source=figma caption=clean hero with single CTA`,
+    );
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  });
+
+  it("clean html workspace (root index.html with <nds-*>, main.ts) → 0 violations", () => {
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><nds-button color="primary">상담 신청</nds-button><script type="module" src="/src/main.ts"></script></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-eap/html/runtime";`);
+    expect(auditMockupWorkspace(tmp, "html")).toEqual([]);
+  });
+
+  it("flags missing root index.html (no-html-entry-found)", () => {
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-eap/html/runtime";`);
+    const v = auditMockupWorkspace(tmp, "html").find((x) => x.rule === "no-html-entry-found");
+    expect(v).toBeTruthy();
+    expect(v?.detail).toContain("index.html");
+  });
+
+  it("flags index.html with no <nds-*> tags (html-entry-has-no-nds-tag)", () => {
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><button class="nds-button">fake</button></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-eap/html/runtime";`);
+    const v = auditMockupWorkspace(tmp, "html").find((x) => x.rule === "html-entry-has-no-nds-tag");
+    expect(v).toBeTruthy();
+    expect(v?.files).toContain("index.html");
+  });
+
+  it("does NOT fire raw-html-in-src for html intent (vanilla can have multi-page demos)", () => {
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><nds-button>x</nds-button></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `// entry`);
+    fs.writeFileSync(
+      path.join(tmp, "src", "screen2.html"),
+      `<nds-button>second screen</nds-button>`,
+    );
+    const violations = auditMockupWorkspace(tmp, "html");
+    expect(violations.find((x) => x.rule === "raw-html-in-src")).toBeUndefined();
+  });
+
+  it("does NOT fire raw-html-in-root for html intent (multi-page entry points OK)", () => {
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><nds-button>x</nds-button></body>`,
+    );
+    fs.writeFileSync(
+      path.join(tmp, "about.html"),
+      `<!doctype html><body><nds-button>about</nds-button></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `// entry`);
+    const violations = auditMockupWorkspace(tmp, "html");
+    expect(violations.find((x) => x.rule === "raw-html-in-root")).toBeUndefined();
+  });
+
+  it("does NOT fire no-tsx-found for html intent (html workspace has only .ts in src/)", () => {
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><nds-button>x</nds-button></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `// entry`);
+    const violations = auditMockupWorkspace(tmp, "html");
+    expect(violations.find((x) => x.rule === "no-tsx-found")).toBeUndefined();
+  });
+
+  it("STILL fires inline-root-tokens for html intent (token SSOT is intent-agnostic)", () => {
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><nds-button>x</nds-button></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `// entry`);
+    fs.writeFileSync(
+      path.join(tmp, "src", "index.css"),
+      `:root { --color-semantic-bg-primary: #fff; }`,
+    );
+    const v = auditMockupWorkspace(tmp, "html").find((x) => x.rule === "inline-root-tokens");
+    expect(v).toBeTruthy();
+    expect(v?.detail).toContain("main.ts");
+  });
+
+  it("auto-detects html intent from package.json when not passed explicitly", () => {
+    fs.writeFileSync(
+      path.join(tmp, "package.json"),
+      JSON.stringify({ dependencies: { "@nudge-eap/html": "1.0.0" } }),
+    );
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><nds-button>x</nds-button></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `// entry`);
+    // src/foo.html 은 react 라면 raw-html-in-src 위반이지만, html 자동감지로 통과해야 한다.
+    fs.writeFileSync(path.join(tmp, "src", "foo.html"), `<nds-button>x</nds-button>`);
+    const violations = auditMockupWorkspace(tmp);
+    expect(violations.find((x) => x.rule === "raw-html-in-src")).toBeUndefined();
+    expect(violations.find((x) => x.rule === "no-tsx-found")).toBeUndefined();
   });
 });
