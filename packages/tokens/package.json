@@ -1,6 +1,6 @@
 {
   "name": "@nudge-eap/tokens",
-  "version": "0.1.12",
+  "version": "0.1.10",
   "description": "Design tokens for NudgeEAP Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
