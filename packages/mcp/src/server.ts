@@ -27,6 +27,12 @@ import { configureMockupValidator, validateMockup } from "./tools/mockup-validat
 export { validateMockupSource } from "./tools/mockup-validator.js";
 import { configureHtmlValidator, validateHtmlMockup } from "./tools/html-validator.js";
 export { validateHtmlSource } from "./tools/html-validator.js";
+import {
+  analyzeHtmlMockup,
+  convertHtmlToDsHtml,
+  reportHtmlMockupUsage,
+} from "./tools/html-analyzer.js";
+export { countHtmlUsage } from "./tools/html-analyzer.js";
 import { checkPreview, devServer, registerDevServerCleanup } from "./tools/preview.js";
 import { attachUsageGuardOutcome, reportMockupUsage, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "./tools/build-html.js";
@@ -452,6 +458,22 @@ const toolHandlers = {
     buildSinglefileHtml(args as { cwd?: string; skipAudit?: boolean }),
   validate_html_mockup: (args: ToolArgs) =>
     validateHtmlMockup(args as { source?: string; filePath?: string }),
+  analyze_html_mockup: (args: ToolArgs) =>
+    analyzeHtmlMockup(args as { source?: string; filePath?: string }),
+  convert_html_to_ds_html: (args: ToolArgs) =>
+    convertHtmlToDsHtml(
+      args as { source?: string; filePath?: string; rewriteInlineColors?: boolean },
+    ),
+  report_html_mockup_usage: (args: ToolArgs) =>
+    reportHtmlMockupUsage(
+      args as {
+        source?: string;
+        filePath?: string;
+        mockupName?: string;
+        cwd?: string;
+        dryRun?: boolean;
+      },
+    ),
 } satisfies ToolHandlers;
 
 registerDevServerCleanup();

@@ -294,6 +294,62 @@ const TOOLS = [
     },
   },
   {
+    name: "analyze_html_mockup",
+    description:
+      "Run validate_html_mockup and add DS-adoption stats. Returns counts (nds-* custom-element instances, native button/input/select/textarea WITHOUT an nds-* wrapper, dsRatio %) plus the same violations[] grouped by rule, plus a `recommendations[]` of next actions (convert_html_to_ds_html, find_token swaps, 4pt grid fixes). Pair with build_singlefile_html: validate is the gatekeeper, analyze is the dashboard view. Pass `source` (HTML string) or `filePath` (absolute path).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source: { type: "string", description: "HTML source string." },
+        filePath: { type: "string", description: "Absolute path to an .html file." },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "convert_html_to_ds_html",
+    description:
+      "Rewrite raw HTML to nds-* dialect: <button> → <nds-button>, <input> → <nds-input>, <textarea> → <nds-textarea>, <select> with <option> → <nds-select> with <nds-select-option>. Leaves attributes intact. Drops redundant button.type. Skips elements that are already inside an <nds-*> wrapper (avoids double-wrapping the inner element rendered by the web component). Also rewrites a small set of well-known hex colors to their semantic token (#ffffff → var(--semantic-bg-surface-default), #000 → var(--semantic-text-strong-default)) when `rewriteInlineColors` is not false. **Does NOT infer variant/color** from inline styles — call find_token + edit by hand for ambiguous cases. Returns the modified HTML, a changes[] log, and an unchanged[] list of things the converter couldn't touch (e.g. hex values that didn't match any known token).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source: { type: "string", description: "HTML source string." },
+        filePath: { type: "string", description: "Absolute path to an .html file." },
+        rewriteInlineColors: {
+          type: "boolean",
+          description: "Default true. Set false to leave inline hex colors alone.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "report_html_mockup_usage",
+    description:
+      "Log local HTML mockup usage stats (nds-tag / nds-class / native counts + dsRatio). Default `dryRun: true` — pass `dryRun: false` to append to .ds-html-usage-log.jsonl at `cwd`. v0 limitation: does NOT post to the analytics webhook; the schema is being unified with .tsx report_mockup_usage in v0.1. For .tsx mockups continue to use report_mockup_usage.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source: { type: "string", description: "HTML source string." },
+        filePath: { type: "string", description: "Absolute path to an .html file." },
+        mockupName: {
+          type: "string",
+          description: "Optional friendly name. Defaults to file basename or a timestamp.",
+        },
+        cwd: {
+          type: "string",
+          description:
+            "Working directory where .ds-html-usage-log.jsonl is appended (when not dryRun).",
+        },
+        dryRun: {
+          type: "boolean",
+          description: "Default true — no file write. Set false to log.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "list_figma_sync_status",
     description:
       "List all curated component guides and whether each is synced with a Figma node (figmaNodeUrl/sizeMatrix/stateMatrix). Useful for design QA — see which components still need a Figma-spec audit.",
@@ -579,9 +635,24 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
     case "build_singlefile_html":
       return { cwd: optionalString(args, "cwd", toolName) };
     case "validate_html_mockup":
+    case "analyze_html_mockup":
       return {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),
+      };
+    case "convert_html_to_ds_html":
+      return {
+        source: optionalString(args, "source", toolName),
+        filePath: optionalString(args, "filePath", toolName),
+        rewriteInlineColors: optionalBoolean(args, "rewriteInlineColors", toolName),
+      };
+    case "report_html_mockup_usage":
+      return {
+        source: optionalString(args, "source", toolName),
+        filePath: optionalString(args, "filePath", toolName),
+        mockupName: optionalString(args, "mockupName", toolName),
+        cwd: optionalString(args, "cwd", toolName),
+        dryRun: optionalBoolean(args, "dryRun", toolName),
       };
     default:
       return args;
