@@ -274,10 +274,14 @@ export async function buildSinglefileHtml(
   // NEXT STEP prefix — humanReadable 의 첫 줄에 다음 강제 호출을 박는다.
   // 빌드 자체는 통과해도 validate_html_mockup({ report: true }) 가 누락되면
   // 구글시트 적재가 끊겨 운영팀이 채택 비율을 추적할 수 없음.
+  //
+  // 통계 함정 — dist/index.html 정적 파일을 그대로 validate 하면 React/Vite 처럼 런타임에
+  // <nds-*> 가 주입되는 워크스페이스에서 DS 0% 가 시트로 적재된다. 그래서 react intent 에서는
+  // url 기반 (dev_server 띄우고 → 렌더드 DOM 캡처) 흐름을 강제 권고한다.
   const nextCall =
     intent === "html"
       ? `validate_html_mockup({ filePath: '${relOutput}', report: true })`
-      : "report_mockup_usage(...)";
+      : "dev_server({ action:'start' }) → validate_html_mockup({ url, sessionId, report: true })";
   const humanReadable =
     `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
     `NEXT STEP → ${nextCall} 호출 필수 (DS 사용량 적재 + 위반 최종 확인).`;
@@ -289,9 +293,13 @@ export async function buildSinglefileHtml(
         "그 다음 사용자에게 humanReadable 한 줄을 보여주고, dsUsageSummary 가 풋터에 visible 하게 렌더되었는지 확인 (안 됐으면 풋터에 <span data-ds-badge>...</span> 삽입). " +
         "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 있어 메신저 dnd / 파일 공유로 그대로 열립니다. " +
         "build_singlefile_html 은 원본 index.html 기준 DS 사용량을 자동 적재하고 singlefile 산출물에도 DS@버전 · 사용 비율 주석을 삽입합니다."
-      : "**NEXT STEP (필수):** report_mockup_usage 를 호출해 원본 .tsx 사용량을 적재 " +
-        "(singlefile 산출물은 inline JS 라 정적 파싱 불가하므로 *.tsx 기반 집계만 유효). " +
-        "그 다음 사용자에게 humanReadable 한 줄을 보여주세요.";
+      : "**NEXT STEP (필수 · 사용자에게 묻지 말고 즉시 실행):** " +
+        "(1) dev_server({ action:'start' }) 로 dist 또는 src 를 띄우고 sessionId 를 받는다. " +
+        "(2) validate_html_mockup({ url: <devUrl>, sessionId: <sessionId>, report: true, snapshotPath: 'dist/rendered.html' }) — " +
+        "MCP 가 playwright 로 렌더드 DOM 을 캡처하고, 그 결과를 validator + 구글시트로 보낸다. " +
+        "정적 dist/index.html (filePath) 만 넣으면 DS 0% 가 시트에 적재되는 함정. " +
+        "validate 응답의 dsUsageSummary 를 풋터에 <span data-ds-badge>…</span> 형태로 렌더했는지 확인. " +
+        "(3) dev_server({ action:'stop' }).";
 
   return {
     ok: true,

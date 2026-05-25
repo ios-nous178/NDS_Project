@@ -233,6 +233,98 @@ async function loadPlaywright(cwd: string) {
   }
 }
 
+/**
+ * 렌더드 DOM 을 캡처해 HTML 문자열로 돌려준다.
+ * Vite/React 처럼 런타임에 nds-* 가 주입되는 워크스페이스에서 dist/index.html (정적 shell)
+ * 을 그대로 validate 하면 DS 0% 가 나오는 문제를 풀기 위한 공용 헬퍼.
+ *
+ *  - sessionId 가 있으면 dev_server 의 URL/cwd 를 자동 사용
+ *  - waitForSelector 가 지정되면 그 셀렉터가 등장할 때까지 대기 (단순 networkidle 보다 안정)
+ *  - 출력: 성공 시 outerHTML 전체. 실패 시 phase/error 만.
+ */
+export async function snapshotRenderedHtml(args: {
+  url?: string;
+  routePath?: string;
+  cwd?: string;
+  sessionId?: string;
+  timeoutMs?: number;
+  viewport?: { width?: number; height?: number };
+  waitForSelector?: string;
+}) {
+  const session = args.sessionId ? devServerSessions.get(args.sessionId) : undefined;
+  const cwd = path.resolve(args.cwd ?? session?.cwd ?? process.cwd());
+  const baseUrl = args.url ?? session?.url;
+  if (!baseUrl) {
+    return {
+      ok: false as const,
+      phase: "input",
+      error:
+        "snapshot_rendered_html 호출에 url 또는 sessionId 가 필요. dev_server({ action: 'start' }) 로 띄운 sessionId 를 전달하거나 url 을 직접 지정.",
+    };
+  }
+  const url = joinUrl(baseUrl, args.routePath);
+  const timeoutMs = args.timeoutMs ?? 15_000;
+
+  const reachable = await waitForUrl(url, timeoutMs);
+  if (!reachable.ok) {
+    return {
+      ok: false as const,
+      url,
+      phase: "http",
+      error: reachable.error,
+      devServerLogs: session?.logs.slice(-40),
+    };
+  }
+
+  const playwright = await loadPlaywright(cwd);
+  if (!playwright) {
+    return {
+      ok: false as const,
+      url,
+      phase: "browser",
+      error: "Playwright is not installed in the mockup project.",
+      install: ["npm install --save-dev playwright", "npx playwright install chromium"],
+      httpStatus: reachable.status,
+      note: "HTTP responded, but capturing the rendered DOM needs a real browser. Install Playwright then re-run.",
+    };
+  }
+
+  const browser = await playwright.chromium.launch({ headless: true });
+  try {
+    const page = await browser.newPage({
+      viewport: {
+        width: args.viewport?.width ?? 1440,
+        height: args.viewport?.height ?? 900,
+      },
+    });
+    await page.goto(url, { waitUntil: "networkidle", timeout: timeoutMs });
+    if (args.waitForSelector) {
+      try {
+        await page.waitForSelector(args.waitForSelector, { timeout: timeoutMs });
+      } catch (e) {
+        return {
+          ok: false as const,
+          url,
+          phase: "wait-for-selector",
+          error: `waitForSelector('${args.waitForSelector}') timed out: ${(e as Error).message}`,
+        };
+      }
+    } else {
+      await page.waitForTimeout(300);
+    }
+    const html = await page.evaluate(() => document.documentElement.outerHTML);
+    return {
+      ok: true as const,
+      url,
+      html,
+      byteLength: Buffer.byteLength(html, "utf-8"),
+      devServerLogs: session?.logs.slice(-20),
+    };
+  } finally {
+    await browser.close();
+  }
+}
+
 function joinUrl(baseUrl: string, routePath?: string) {
   if (!routePath) return baseUrl;
   const base = baseUrl.replace(/\/$/, "");

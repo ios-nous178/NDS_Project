@@ -525,7 +525,7 @@ export function getClaudeMdTemplate(args: {
 9. \`check_preview\` 실행 및 런타임 오류 수정. unknown custom-element 경고는 main.ts 의 runtime import 누락 신호.
 10. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인.
 11. **\`build_singlefile_html\` 호출 → \`dist/index.html\` 1개 파일 산출**. 결과 humanReadable 을 사용자에게 그대로 보여줄 것 (\`[OK] dist/index.html (NN KB, Ms)\`). MCP 가 intent='html' 을 자동 감지해 \`vite-plugin-singlefile\` 설치 + vite.config 패치 + 빌드까지 수행. 산출물 1개 파일이 메신저 dnd / 첨부로 공유 가능. 응답의 \`dsUsageSummary\` (예: \`DS@0.1.10 · DS 12 (45%)\`) 를 \`<footer>\` 안에 visible 하게 렌더 — \`<span data-ds-badge>...</span>\` 형태. (HTML 주석만으로는 디자이너/PM 이 어떤 DS 버전인지 확인 불가)
-12. **반드시 \`validate_html_mockup({ filePath: 'dist/index.html', report: true })\` 호출** — build 응답의 \`humanReadable\` 첫 줄 NEXT STEP 라인을 따라 즉시 실행. 사용자에게 묻지 말고 그냥 실행. 이 호출은 (a) DS 사용량을 구글시트에 적재하고 (b) 마지막 위반 검사를 수행. 빠뜨리면 운영팀이 채택 비율 추적 불가 + ds-badge-missing / emoji-banned 같은 마지막 위반이 산출물에 그대로 남음.
+12. **반드시 \`validate_html_mockup({ filePath: 'dist/index.html', report: true })\` 호출** — build 응답의 \`humanReadable\` 첫 줄 NEXT STEP 라인을 따라 즉시 실행. (vanilla HTML 워크스페이스는 정적 파일이 곧 렌더 결과라 \`filePath\` 그대로 OK.) 사용자에게 묻지 말고 그냥 실행. 이 호출은 (a) DS 사용량을 구글시트에 적재하고 (b) 마지막 위반 검사를 수행. 빠뜨리면 운영팀이 채택 비율 추적 불가 + ds-badge-missing / emoji-banned 같은 마지막 위반이 산출물에 그대로 남음.
 13. 사용자에게 dev 서버 URL 또는 \`dist/index.html\` 경로를 명확히 전달. 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
 
 ## Self-Check
@@ -735,7 +735,12 @@ export function getClaudeMdTemplate(args: {
     - 사용자가 명시적으로 "빌드하지 마" / "TSX 만 줘" / "HTML 필요 없어" 라고 거부한 경우에만 생략 가능.
     - **다른 출력 방식 모두 금지**: 손으로 .html 작성, \`vite build\` 직접 실행, esbuild/parcel/webpack 사용, .tsx 만 남기고 종료 — 모두 금지. nds-* 클래스와 onClick 인터랙션이 손실됨.
     - 빌드 후 \`dist/index.html\` 경로와 파일 크기를 사용자에게 알릴 것 — 이게 슬랙/메일 공유용 최종 산출물입니다.
-12. 사용자가 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
+12. **렌더드 DOM 기반 최종 검증 + 시트 적재 (필수 · 묻지 말고 즉시 실행)**:
+    - React/Vite 워크스페이스는 \`<nds-*>\` 가 런타임에 주입되므로 \`dist/index.html\` (정적 shell) 만 그대로 validate 하면 DS 0% 가 시트에 적재되는 함정.
+    - \`dev_server({ action:'start' })\` 가 떠 있는 상태에서 (없으면 다시 띄움) **\`validate_html_mockup({ url: <devUrl>, sessionId: <sessionId>, report: true, snapshotPath: 'dist/rendered.html' })\` 호출**.
+    - MCP 가 playwright 로 렌더드 DOM 을 캡처해 validator + 구글시트 양쪽 모두 그 결과로 처리. \`snapshotPath\` 가 dist 아래 떨궈져 디버깅·재검증에 재사용 가능.
+    - 응답의 \`dsUsageSummary\` (예: \`DS@0.1.10 · DS 12 (45%)\`) 를 받아 \`<footer>\` 안에 visible 하게 렌더 — \`<span data-ds-badge>DS@0.1.10 · DS 12 (45%)</span>\` 형태. 풋터에 없으면 validator 가 \`ds-badge-missing\` 으로 막음. 통계는 본인이 직접 \`<div>/<span>\` 카운트하지 말 것 — validator 가 단일 SSOT.
+13. 사용자가 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
 `;
 }
 

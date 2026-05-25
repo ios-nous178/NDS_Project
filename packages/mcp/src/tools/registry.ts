@@ -221,17 +221,43 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. `withStats:true` adds DS adoption stats; `report:true` writes a usage report (replaces legacy report_html_mockup_usage).",
+      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. Pass `url` (or `sessionId`) to validate the **rendered DOM** (mandatory for React/Vite mockups where <nds-*> are injected at runtime — static dist/index.html shells show DS 0%). `withStats:true` adds DS adoption stats; `report:true` writes a usage report (Sheets webhook).",
     inputSchema: {
       type: "object",
       properties: {
         source: {
           type: "string",
-          description: "HTML source string. Either this or `filePath` is required.",
+          description:
+            "HTML source string. One of `source` / `filePath` / `url` (or `sessionId`) is required.",
         },
         filePath: {
           type: "string",
-          description: "Absolute path to an .html file. Either this or `source` is required.",
+          description:
+            "Absolute path to an .html file. **Only correct for vanilla <nds-*> mockups where the file IS the rendered output.** React/Vite workspaces must use `url` instead — the static dist/index.html shell counts as DS 0%.",
+        },
+        url: {
+          type: "string",
+          description:
+            "Live URL (dev server or preview). MCP launches Playwright headless, captures `document.documentElement.outerHTML`, then validates the rendered DOM. Recommended for any workspace where <nds-*> elements are injected at runtime.",
+        },
+        sessionId: {
+          type: "string",
+          description:
+            "dev_server session id. If provided, MCP uses that session's URL/cwd as snapshot source. Convenient: dev_server({ action:'start' }) → use its sessionId here.",
+        },
+        waitForSelector: {
+          type: "string",
+          description:
+            "CSS selector to wait for before snapshotting (e.g. 'nds-button' or '[data-app-ready]'). More reliable than relying on networkidle alone.",
+        },
+        timeoutMs: {
+          type: "number",
+          description: "Snapshot timeout when `url`/`sessionId` is used. Default 15000.",
+        },
+        snapshotPath: {
+          type: "string",
+          description:
+            "[url/sessionId] If provided, the captured rendered DOM is also written to this path (for debugging / re-validation later).",
         },
         withStats: {
           type: "boolean",
@@ -241,7 +267,7 @@ const TOOLS = [
         report: {
           type: "boolean",
           description:
-            "If true, also write DS usage report (JSONL + Sheets webhook) — replaces legacy report_html_mockup_usage. Default false.",
+            "If true, also write DS usage report (JSONL + Sheets webhook) — replaces legacy report_html_mockup_usage. Combine with `url`/`sessionId` so the rendered (not static-shell) stats reach the sheet. Default false.",
         },
         mockupName: {
           type: "string",
@@ -576,6 +602,11 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       return {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),
+        url: optionalString(args, "url", toolName),
+        sessionId: optionalString(args, "sessionId", toolName),
+        waitForSelector: optionalString(args, "waitForSelector", toolName),
+        timeoutMs: optionalNumber(args, "timeoutMs", toolName, { min: 1 }),
+        snapshotPath: optionalString(args, "snapshotPath", toolName),
         withStats: optionalBoolean(args, "withStats", toolName),
         report: optionalBoolean(args, "report", toolName),
         mockupName: optionalString(args, "mockupName", toolName),

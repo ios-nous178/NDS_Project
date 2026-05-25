@@ -39,7 +39,12 @@ import {
 } from "./tools/html-analyzer.js";
 import type { AnalyzeHtmlMockupResult } from "./tools/html-analyzer.js";
 export { countHtmlUsage } from "./tools/html-analyzer.js";
-import { checkPreview, devServer, registerDevServerCleanup } from "./tools/preview.js";
+import {
+  checkPreview,
+  devServer,
+  registerDevServerCleanup,
+  snapshotRenderedHtml,
+} from "./tools/preview.js";
 import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "./tools/build-html.js";
 import { getGuide } from "./tools/guides.js";
@@ -493,26 +498,84 @@ const toolHandlers = {
     const typed = args as {
       source?: string;
       filePath?: string;
+      url?: string;
+      sessionId?: string;
+      waitForSelector?: string;
+      timeoutMs?: number;
+      snapshotPath?: string;
       withStats?: boolean;
       report?: boolean;
       mockupName?: string;
       cwd?: string;
       dryRun?: boolean;
     };
-    const result = validateHtmlMockup({ source: typed.source, filePath: typed.filePath });
-    let extras: { stats?: AnalyzeHtmlMockupResult; report?: unknown } | null = null;
+
+    // url 또는 sessionId 가 있으면 렌더드 DOM 캡처 후 그 결과로 validation.
+    // React/Vite 처럼 런타임에 <nds-*> 가 주입되는 워크스페이스에서 dist/index.html 만
+    // 그대로 검증하면 DS 0% 가 나오는 함정을 자동으로 회피한다.
+    let effectiveSource = typed.source;
+    let effectiveFilePath = typed.filePath;
+    let snapshot: Awaited<ReturnType<typeof snapshotRenderedHtml>> | null = null;
+    if (!effectiveSource && (typed.url || typed.sessionId)) {
+      snapshot = await snapshotRenderedHtml({
+        url: typed.url,
+        sessionId: typed.sessionId,
+        cwd: typed.cwd,
+        waitForSelector: typed.waitForSelector,
+        timeoutMs: typed.timeoutMs,
+      });
+      if (!snapshot.ok) {
+        return {
+          ok: false,
+          phase: "snapshot",
+          snapshot,
+          suggestion:
+            "렌더드 DOM 캡처 실패. dev_server({ action:'start' }) 가 살아있는지, url 이 정확한지, playwright 가 설치되어 있는지 확인. 그래도 안 되면 filePath 로 정적 검증 fallback.",
+        };
+      }
+      effectiveSource = snapshot.html;
+      // snapshotPath 가 지정되면 디스크에 떨궈서 downstream 도구가 재사용 가능하게.
+      if (typed.snapshotPath) {
+        const abs = path.isAbsolute(typed.snapshotPath)
+          ? typed.snapshotPath
+          : path.join(typed.cwd ?? process.cwd(), typed.snapshotPath);
+        fs.mkdirSync(path.dirname(abs), { recursive: true });
+        fs.writeFileSync(abs, snapshot.html, "utf-8");
+        effectiveFilePath = abs;
+      }
+    }
+
+    const result = validateHtmlMockup({ source: effectiveSource, filePath: effectiveFilePath });
+    let extras: {
+      stats?: AnalyzeHtmlMockupResult;
+      report?: unknown;
+      snapshot?: { url: string; byteLength: number; snapshotPath?: string };
+    } | null = null;
+
+    if (snapshot?.ok) {
+      extras = {
+        snapshot: {
+          url: snapshot.url,
+          byteLength: snapshot.byteLength,
+          snapshotPath: typed.snapshotPath ? (effectiveFilePath ?? undefined) : undefined,
+        },
+      };
+    }
+
     // withStats:true → analyzeHtmlMockup 결과(stats / grouped / recommendations) 를 함께 반환.
     // 옛 analyze_html_mockup 도구의 호출자가 그대로 옮겨올 수 있도록 필드를 분리해 노출.
     if (typed.withStats) {
       extras = {
-        stats: analyzeHtmlMockup({ source: typed.source, filePath: typed.filePath }),
+        ...(extras ?? {}),
+        stats: analyzeHtmlMockup({ source: effectiveSource, filePath: effectiveFilePath }),
       };
     }
     // report:true → reportHtmlMockupUsage 호출 (JSONL + Sheets webhook). 옛 report_html_mockup_usage 흡수.
+    // 렌더드 DOM 을 캡처했으면 그 source 로 report — 정적 shell 의 0% 가 시트에 적재되는 사고 방지.
     if (typed.report) {
       const report = await reportHtmlMockupUsage({
-        source: typed.source,
-        filePath: typed.filePath,
+        source: effectiveSource,
+        filePath: effectiveFilePath,
         mockupName: typed.mockupName,
         cwd: typed.cwd,
         dryRun: typed.dryRun,
