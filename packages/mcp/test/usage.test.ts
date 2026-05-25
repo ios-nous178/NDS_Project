@@ -4,6 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { reportMockupUsage } from "../src/tools/usage";
 import { parseMockupSource } from "../src/tools/usage/parser";
+import { scanMockupsForBuildEvent, scanPendingMockupReports } from "../src/tools/usage/tracker";
 
 const tmpDirs: string[] = [];
 
@@ -177,5 +178,69 @@ export function Demo() {
     const usage = parseMockupSource(source, fakePath);
     expect(usage.context).toBe("unknown");
     expect(usage.meta.totalDs).toBe(1);
+  });
+});
+
+describe("scanner — intent='html'", () => {
+  it("finds root index.html when it uses <nds-*>", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "scan-html-root-"));
+    tmpDirs.push(cwd);
+    fs.writeFileSync(
+      path.join(cwd, "index.html"),
+      `<!doctype html><body><nds-button>x</nds-button></body>`,
+    );
+    const pending = scanPendingMockupReports(cwd, "html");
+    expect(pending.map((p) => p.filePath)).toContain("index.html");
+  });
+
+  it("skips index.html with no <nds-*> tags (Vite stub for React workflow)", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "scan-html-stub-"));
+    tmpDirs.push(cwd);
+    fs.writeFileSync(
+      path.join(cwd, "index.html"),
+      `<!doctype html><body><div id="root"></div></body>`,
+    );
+    const pending = scanPendingMockupReports(cwd, "html");
+    expect(pending).toEqual([]);
+  });
+
+  it("finds nested .html files in src/ that use <nds-*>", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "scan-html-nested-"));
+    tmpDirs.push(cwd);
+    fs.mkdirSync(path.join(cwd, "src", "mockups"), { recursive: true });
+    fs.writeFileSync(path.join(cwd, "src", "mockups", "page-a.html"), `<nds-button>x</nds-button>`);
+    const pending = scanPendingMockupReports(cwd, "html");
+    expect(pending.map((p) => p.filePath)).toContain(path.join("src", "mockups", "page-a.html"));
+  });
+
+  it("default intent='react' still finds only *Mockup.tsx (back-compat)", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "scan-react-default-"));
+    tmpDirs.push(cwd);
+    fs.writeFileSync(path.join(cwd, "FooMockup.tsx"), `export default () => null;`);
+    fs.writeFileSync(
+      path.join(cwd, "index.html"),
+      `<!doctype html><body><nds-button>x</nds-button></body>`,
+    );
+    // react intent → finds .tsx, ignores .html
+    const reactPending = scanPendingMockupReports(cwd, "react");
+    expect(reactPending.map((p) => p.filePath)).toContain("FooMockup.tsx");
+    expect(reactPending.map((p) => p.filePath)).not.toContain("index.html");
+    // html intent → finds .html, ignores .tsx
+    const htmlPending = scanPendingMockupReports(cwd, "html");
+    expect(htmlPending.map((p) => p.filePath)).toContain("index.html");
+    expect(htmlPending.map((p) => p.filePath)).not.toContain("FooMockup.tsx");
+  });
+
+  it("scanMockupsForBuildEvent (html) returns most-recent .html as ship moment", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "scan-html-build-"));
+    tmpDirs.push(cwd);
+    fs.writeFileSync(
+      path.join(cwd, "index.html"),
+      `<!doctype html><body><nds-button>x</nds-button></body>`,
+    );
+    const forced = scanMockupsForBuildEvent(cwd, "html");
+    expect(forced.length).toBe(1);
+    expect(forced[0].filePath).toBe("index.html");
+    expect(forced[0].reason).toBe("build-event");
   });
 });

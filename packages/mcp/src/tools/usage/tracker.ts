@@ -261,6 +261,9 @@ export async function flushUsageWebhookQueue(
 /* ───────────── pending-report scanner ───────────── */
 
 const MOCKUP_FILENAME_RE = /Mockup\.tsx$/i;
+const HTML_FILENAME_RE = /\.html?$/i;
+/** HTML 파일이 mockup 후보인지 — <nds-*> tag 1개 이상 사용해야 카운트. */
+const HTML_NDS_USE_RE = /<nds-[a-z][a-z0-9-]*/i;
 const SKIP_DIRS = new Set([
   "node_modules",
   "dist",
@@ -279,25 +282,32 @@ const DEFAULT_SCAN_MAX_DEPTH = 8;
 const DEFAULT_SCAN_MAX_FILES = 200;
 
 interface ScanOptions {
-  /** Hard cap on number of `*Mockup.tsx` files to consider. Default 200. */
+  /** Hard cap on number of mockup files to consider. Default 200. */
   maxFiles?: number;
   /** Max directory depth from cwd. Default 8. */
   maxDepth?: number;
 }
 
+export type ScanIntent = "react" | "html";
+
 /**
- * Scan `cwd` for mockup `.tsx` files whose mtime is newer than the most recent entry
+ * Scan `cwd` for mockup files whose mtime is newer than the most recent entry
  * in `.ds-usage-log.jsonl` (or that have never been reported). Used by the MCP
- * dispatch wrapper to auto-fire `report_mockup_usage` when downstream tools run.
+ * dispatch wrapper to auto-fire `report_mockup_usage` (`.tsx`) or
+ * `report_html_mockup_usage` (`.html`) when downstream tools run.
+ *
+ * `intent` 가 `"html"` 면 `<nds-*>` 가 사용된 `.html` 파일을 후보로 산출 (root index.html + src/).
+ * 기본값 `"react"` 는 기존 `*Mockup.tsx` 컨벤션 유지.
  */
 export function scanPendingMockupReports(
   cwd: string,
+  intent: ScanIntent = "react",
   opts: ScanOptions = {},
 ): PendingMockupReport[] {
   const logPath = join(cwd, ".ds-usage-log.jsonl");
   const lastLogged = readLastLoggedMap(logPath);
 
-  const candidates = findMockupCandidates(cwd, opts);
+  const candidates = findMockupCandidates(cwd, intent, opts);
   const pending: PendingMockupReport[] = [];
   for (const abs of candidates) {
     let mtimeMs: number;
@@ -331,9 +341,10 @@ export function scanPendingMockupReports(
  */
 export function scanMockupsForBuildEvent(
   cwd: string,
+  intent: ScanIntent = "react",
   opts: ScanOptions = {},
 ): PendingMockupReport[] {
-  const candidates = findMockupCandidates(cwd, opts);
+  const candidates = findMockupCandidates(cwd, intent, opts);
   const reports: PendingMockupReport[] = [];
   for (const abs of candidates) {
     let mtimeMs: number;
@@ -385,7 +396,7 @@ function readLastLoggedMap(logPath: string): Map<string, number> {
   return map;
 }
 
-function findMockupCandidates(cwd: string, opts: ScanOptions): string[] {
+function findMockupCandidates(cwd: string, intent: ScanIntent, opts: ScanOptions): string[] {
   const maxFiles = opts.maxFiles ?? DEFAULT_SCAN_MAX_FILES;
   const maxDepth = opts.maxDepth ?? DEFAULT_SCAN_MAX_DEPTH;
   const out: string[] = [];
@@ -404,15 +415,33 @@ function findMockupCandidates(cwd: string, opts: ScanOptions): string[] {
         if (e.name.startsWith(".") || SKIP_DIRS.has(e.name)) continue;
         if (!walk(join(dir, e.name), depth + 1)) return false;
       } else if (e.isFile()) {
-        if (!MOCKUP_FILENAME_RE.test(e.name)) continue;
-        if (e.name.endsWith(".stories.tsx") || e.name.endsWith(".test.tsx")) continue;
-        out.push(join(dir, e.name));
+        if (intent === "react") {
+          if (!MOCKUP_FILENAME_RE.test(e.name)) continue;
+          if (e.name.endsWith(".stories.tsx") || e.name.endsWith(".test.tsx")) continue;
+          out.push(join(dir, e.name));
+        } else {
+          // intent === "html" — root index.html + any *.html that actually uses <nds-*>.
+          if (!HTML_FILENAME_RE.test(e.name)) continue;
+          const fullPath = join(dir, e.name);
+          if (!htmlUsesNds(fullPath)) continue;
+          out.push(fullPath);
+        }
       }
     }
     return true;
   };
   walk(cwd, 0);
   return out;
+}
+
+/** Quick byte-level grep — opens the file, returns true on first <nds-*> match. */
+function htmlUsesNds(absPath: string): boolean {
+  try {
+    const buf = readFileSync(absPath, "utf8");
+    return HTML_NDS_USE_RE.test(buf);
+  } catch {
+    return false;
+  }
 }
 
 function isRetryableStatus(status: number): boolean {

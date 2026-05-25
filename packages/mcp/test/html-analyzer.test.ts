@@ -148,14 +148,42 @@ describe("convertHtmlToDsHtml", () => {
 });
 
 describe("reportHtmlMockupUsage", () => {
-  it("returns counts + dryRun by default + does NOT write file", () => {
-    const r = reportHtmlMockupUsage({
+  it("dryRun=true skips log + webhook + returns counts + builds MockupUsage payload", async () => {
+    const r = await reportHtmlMockupUsage({
       source: `<nds-button>a</nds-button><button>plain</button>`,
       mockupName: "test",
+      dryRun: true,
     });
     expect(r.logPath).toBeNull();
+    expect(r.webhook.attempted).toBe(false);
     expect(r.counts.ndsTags.total).toBe(1);
     expect(r.counts.nativeUnwrapped.total).toBe(1);
-    expect(r.humanReadable).toContain("dryRun");
+    // MockupUsage payload — same schema as reportMockupUsage (so the webhook can ingest it).
+    expect(r.usage.ds.find((d) => d.component === "Button")?.count).toBe(1);
+    expect(r.usage.customNative.find((c) => c.tag === "button")?.count).toBe(1);
+    expect(r.usage.meta.dsRatio).toBe(r.counts.dsRatio);
+    expect(r.humanReadable).toContain("webhook skipped");
+    expect(r.usage.usageId).toBeTruthy();
+  });
+
+  it("maps nds-* tags to React component names (PascalCase + alias)", async () => {
+    const r = await reportHtmlMockupUsage({
+      source: `<nds-icon-button>a</nds-icon-button><nds-fab>b</nds-fab><nds-segmented>c</nds-segmented>`,
+      mockupName: "alias-test",
+      dryRun: true,
+    });
+    const names = r.usage.ds.map((d) => d.component).sort();
+    expect(names).toEqual(["FAB", "IconButton", "SegmentedControl"]);
+  });
+
+  it("classifies nds-* className imitations as customNative with nds-imitation: prefix", async () => {
+    const r = await reportHtmlMockupUsage({
+      source: `<button class="nds-button">fake</button>`,
+      mockupName: "imitation-test",
+      dryRun: true,
+    });
+    // Real DS usage = 0 because <button class="nds-button"> is NOT a custom element.
+    expect(r.usage.ds.length).toBe(0);
+    expect(r.usage.customNative.find((c) => c.tag === "nds-imitation:nds-button")?.count).toBe(1);
   });
 });
