@@ -19,7 +19,7 @@ function toStoryId(title) {
     .replace(/^-+|-+$/g, "");
 }
 
-export default function ComponentGallery({ storybookBaseUrl = "http://localhost:6006" }) {
+export default function ComponentGallery({ storybookBaseUrl = "/storybook" }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("전체");
   const [onlySynced, setOnlySynced] = useState(false);

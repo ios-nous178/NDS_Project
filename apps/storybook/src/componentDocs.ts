@@ -7,8 +7,8 @@ type InventoryEntry = (typeof inventory)[number] & {
   figmaSyncedAt?: string;
 };
 
-const DOCS_BASE_URL = "http://localhost:3001";
-const STORYBOOK_BASE_URL = "http://localhost:6006";
+const DOCS_BASE_URL = "";
+const STORYBOOK_BASE_URL = "/storybook";
 
 function toStoryId(title: string) {
   return title
