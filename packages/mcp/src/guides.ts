@@ -3656,6 +3656,89 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- items 를 JSON 으로 넘기려면 nds-activity-timeline -->\n<nds-timeline items='[...]'></nds-timeline>",
     },
   },
+  BrandHeader: {
+    name: "BrandHeader",
+    summary:
+      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashpobi' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
+    pitfalls: [
+      "**손수 조립 금지** — nds-header / nds-header-logo / nds-header-menu / nds-header-menu-item / nds-header-actions / nds-header-auth-button 를 직접 박지 말 것. 메뉴 라벨/href/순서를 손으로 적으면 브랜드 일관성이 깨지고 다음 브랜드 화면에서 또 적게 됨. BrandHeader 한 줄이 BRAND_DATA 에서 전부 자동.",
+      "**asset-base-url 안 주면 `/brand-logos` 가 default** — 워크스페이스에 그 폴더가 없으면 로고가 깨짐. `public/brand-logos/` 디렉토리 만들고 브랜드별 파일 배치 필요 (아래 recommended 참고).",
+      "**surface 별 출력 다름** — `web` (PC GNB · 로고+메뉴+auth), `mobile` (compact 헤더 · 로고+auth), `webview` (뒤로가기 + 타이틀만). 모바일 화면이면 surface='mobile' 명시.",
+      "active-key 는 BRAND_DATA[brand].webMenu 의 key 와 매칭. 잘못 적으면 활성 메뉴 표시가 안 됨. 각 브랜드 key 목록은 nds-brand-chrome.ts BRAND_DATA 또는 아래 recommended 참고.",
+    ],
+    recommended: [
+      "Trost: `<nds-brand-header brand='trost' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/trost-logo.svg` · webMenu keys: home / counsel / test / care / center",
+      "Geniet: `<nds-brand-header brand='geniet' surface='web' active-key='deal' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/geniet-logo-pc.webp` + `geniet-logo-footer.webp` · webMenu keys: home / community / deal / review",
+      "NudgeEAP: `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/nudge-eap-logo.png` + `nudge-eap-logo-footer.png` · webMenu keys: counsel / test / therapy / letter / news / my",
+      "Cashpobi: `<nds-brand-header brand='cashpobi' surface='web' active-key='campaign' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/cashpobi/cashwalk-for-business-horizontal.svg` · webMenu keys: home / campaign / member / channel / setting",
+      "Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashpobi-header>` — brand attribute 안 써도 동일 동작.",
+    ],
+    examplesHtml: {
+      do: '<nds-brand-header brand="geniet" surface="web" active-key="deal" asset-base-url="/brand-logos"></nds-brand-header>',
+      dont:
+        "<!-- 손수 조립 안티패턴 — 메뉴 라벨/href 를 인라인으로 적으면 브랜드 데이터와 분리되어 다음 화면에서 또 적게 됨 -->\n" +
+        '<nds-header variant="web" position="static" max-width="1200">\n' +
+        '  <nds-header-logo href="/"><img src="..." /></nds-header-logo>\n' +
+        "  <nds-header-menu>\n" +
+        '    <nds-header-menu-item href="/community">커뮤니티</nds-header-menu-item>\n' +
+        '    <nds-header-menu-item href="/cashdeal" active>헬시딜</nds-header-menu-item>\n' +
+        "  </nds-header-menu>\n" +
+        "</nds-header>",
+    },
+    usagePolicy: {
+      useFor: [
+        "사용자 앱 (Trost/Geniet/NudgeEAP/Cashpobi) PC GNB",
+        "사용자 앱 모바일 compact 헤더 (surface='mobile')",
+        "webview 페이지 뒤로가기/타이틀 헤더 (surface='webview')",
+      ],
+      doNotUseFor: [
+        "어드민/CMS — antd Layout.Sider 사용",
+        "단일 시연용 임시 화면이라 브랜드 정체성이 무의미한 경우",
+      ],
+      emphasisRule:
+        "헤더/푸터를 손수 조립한 흔적이 발견되면 즉시 BrandHeader/BrandFooter 한 줄로 교체. 메뉴 라벨이나 로고를 페이지마다 적는 건 SSOT 위반.",
+    },
+  },
+  BrandFooter: {
+    name: "BrandFooter",
+    summary:
+      "**브랜드 글로벌 푸터 — 손수 조립하지 말 것.** `<nds-brand-footer brand='...' surface='web|app' asset-base-url='/brand-logos'>` 한 줄로 이용약관/개인정보처리방침/사업자정보/copyright/푸터 로고가 BRAND_DATA 에서 자동 렌더. nds-footer + nds-footer-links + nds-footer-company 직접 조립 = 안티패턴.",
+    pitfalls: [
+      "**손수 조립 금지** — 이용약관/개인정보 링크, 사업자번호, CEO 이름 등을 매번 입력하지 말 것. 한 번 잘못 적으면 법적 표기 누락 위험.",
+      "**asset-base-url 일관성** — BrandHeader 와 같은 asset-base-url 사용. 푸터 로고 파일이 따로 있는 브랜드(nudge-eap: `*-logo-footer.png`, geniet: `geniet-logo-footer.webp`) 는 그 파일도 같이 배치.",
+      "**surface 차이** — `web` (PC 전용 wide 푸터 · 로고+링크+회사정보), `app` (모바일 앱 footer · 압축형). 사용자 앱 모바일 화면이면 surface='app'.",
+      "footerTone 은 브랜드별 고정 (trost=dark / 나머지=light) — 임의 override 시도 시 디자인 인텐트 어긋남.",
+    ],
+    recommended: [
+      "Trost (dark): `<nds-brand-footer brand='trost' surface='app' asset-base-url='/brand-logos' />`",
+      "Geniet (light): `<nds-brand-footer brand='geniet' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `geniet-logo-footer.webp`",
+      "NudgeEAP (light): `<nds-brand-footer brand='nudge-eap' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `nudge-eap-logo-footer.png`",
+      "Cashpobi (light): `<nds-brand-footer brand='cashpobi' surface='web' asset-base-url='/brand-logos' />`",
+      "Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashpobi-footer>`",
+    ],
+    examplesHtml: {
+      do: '<nds-brand-footer brand="geniet" surface="web" asset-base-url="/brand-logos"></nds-brand-footer>',
+      dont:
+        "<!-- 손수 조립 안티패턴 — 사업자 정보/copyright/링크를 인라인으로 적으면 법적 표기 누락/잘못된 정보가 SSOT 깨고 페이지 간 불일치 -->\n" +
+        '<footer class="my-footer">\n' +
+        '  <a href="/terms">이용약관</a> | <a href="/privacy"><b>개인정보처리방침</b></a>\n' +
+        "  <p>넛지모바일 주식회사 · 사업자번호 ...</p>\n" +
+        "</footer>",
+    },
+  },
+  BrandChrome: {
+    name: "BrandChrome",
+    summary:
+      "Brand chrome wrappers — BrandHeader + BrandFooter 의 umbrella. **개별 BrandHeader / BrandFooter 가이드를 우선 참고.** `nds-brand-chrome.ts` 한 파일에 4개 브랜드 (nudge-eap / trost / geniet / cashpobi) 의 BRAND_DATA (로고/메뉴/사업자정보/footer 링크) 가 모두 정의돼 있다. 손수 조립한 헤더/푸터가 발견되면 BrandHeader/BrandFooter 한 줄로 즉시 교체.",
+    pitfalls: [
+      "이 컴포넌트는 wrapper — 실제 사용 시 `<nds-brand-header>` 와 `<nds-brand-footer>` 를 호출. `<nds-brand-chrome>` 단독 사용은 없음.",
+      "BRAND_DATA 를 수정하려면 DS 레포의 `packages/html/src/components/nds-brand-chrome.ts` 직접 편집 (외부 mockup 프로젝트에서는 불가능).",
+    ],
+    examplesHtml: {
+      do: '<nds-brand-header brand="trost" surface="web" active-key="counsel" asset-base-url="/brand-logos"></nds-brand-header>\n<!-- ...page content... -->\n<nds-brand-footer brand="trost" surface="app" asset-base-url="/brand-logos"></nds-brand-footer>',
+      dont: '<!-- nds-brand-chrome 단독 사용 — wrapper 라 의미 없음 -->\n<nds-brand-chrome brand="trost"></nds-brand-chrome>',
+    },
+  },
 };
 
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
