@@ -1,0 +1,346 @@
+/**
+ * <nds-phone-input> — DS PhoneInput 의 vanilla Web Component 버전.
+ *
+ * 사용 예:
+ *   <nds-phone-input
+ *     label="휴대전화"
+ *     country-code="KR"
+ *     value="01012345678"
+ *     helper-text="인증번호가 발송됩니다"
+ *   ></nds-phone-input>
+ *
+ * 이벤트:
+ *   nds-phone-change (detail: { value }) -> 번호 입력 변경
+ *   nds-phone-country-change (detail: { code }) -> 국가 변경
+ *
+ * 속성:
+ *   country-code: ISO 코드 (KR/US/JP/CN/GB)
+ *   value: 번호 (국가 코드 제외)
+ *   label / placeholder / helper-text
+ *   error
+ *   countries: JSON 배열 ({ code, name, dialCode, flag })
+ *   full-width
+ *   disabled
+ */
+
+import { NdsElement, define } from "../base/nds-element.js";
+
+const PI_CLASS = "nds-phone-input";
+const PI_ROOT_CLASS = `${PI_CLASS}__root`;
+const PI_LABEL_CLASS = `${PI_CLASS}__label`;
+const PI_FIELD_CLASS = `${PI_CLASS}__field`;
+const PI_FIELD_WRAP_CLASS = `${PI_CLASS}__field-wrap`;
+const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
+const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
+const PI_FLAG_CLASS = `${PI_CLASS}__flag`;
+const PI_DIVIDER_CLASS = `${PI_CLASS}__divider`;
+const PI_INPUT_CLASS = `${PI_CLASS}__input`;
+const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
+const PI_MENU_CLASS = `${PI_CLASS}__menu`;
+const PI_MENU_ITEM_CLASS = `${PI_CLASS}__menu-item`;
+const PI_MENU_NAME_CLASS = `${PI_CLASS}__menu-name`;
+const PI_MENU_DIAL_CLASS = `${PI_CLASS}__menu-dial`;
+
+interface PhoneCountry {
+  code: string;
+  name: string;
+  dialCode: string;
+  flag: string;
+}
+
+const DEFAULT_COUNTRIES: PhoneCountry[] = [
+  { code: "KR", name: "대한민국", dialCode: "+82", flag: "🇰🇷" },
+  { code: "US", name: "United States", dialCode: "+1", flag: "🇺🇸" },
+  { code: "JP", name: "日本", dialCode: "+81", flag: "🇯🇵" },
+  { code: "CN", name: "中国", dialCode: "+86", flag: "🇨🇳" },
+  { code: "GB", name: "United Kingdom", dialCode: "+44", flag: "🇬🇧" },
+];
+
+let nextId = 0;
+
+const ChevronDown = () => {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("width", "12");
+  svg.setAttribute("height", "12");
+  svg.setAttribute("viewBox", "0 0 12 12");
+  svg.setAttribute("fill", "none");
+  svg.innerHTML = `<path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return svg;
+};
+
+export class NdsPhoneInput extends NdsElement {
+  static elementName = "nds-phone-input";
+
+  static get observedAttributes(): readonly string[] {
+    return [
+      "country-code",
+      "value",
+      "label",
+      "placeholder",
+      "helper-text",
+      "error",
+      "countries",
+      "full-width",
+      "disabled",
+    ];
+  }
+
+  private _root: HTMLDivElement | null = null;
+  private _labelEl: HTMLLabelElement | null = null;
+  private _fieldWrap: HTMLDivElement | null = null;
+  private _field: HTMLDivElement | null = null;
+  private _dialBtn: HTMLButtonElement | null = null;
+  private _dialFlag: HTMLSpanElement | null = null;
+  private _dialText: HTMLSpanElement | null = null;
+  private _input: HTMLInputElement | null = null;
+  private _helperEl: HTMLParagraphElement | null = null;
+  private _menu: HTMLUListElement | null = null;
+  private _open = false;
+  private _inputId = `nds-phone-input-${++nextId}`;
+  private _menuId = `nds-phone-menu-${nextId}`;
+
+  private _onDocClick = (e: MouseEvent) => {
+    if (!this._open) return;
+    if (this._fieldWrap && !this._fieldWrap.contains(e.target as Node)) {
+      this._open = false;
+      this.scheduleUpdate();
+    }
+  };
+  private _onEsc = (e: KeyboardEvent) => {
+    if (this._open && e.key === "Escape") {
+      this._open = false;
+      this.scheduleUpdate();
+    }
+  };
+
+  override connectedCallback(): void {
+    if (!this._root) this._mount();
+    super.connectedCallback();
+    document.addEventListener("mousedown", this._onDocClick);
+    document.addEventListener("keydown", this._onEsc);
+  }
+
+  override disconnectedCallback(): void {
+    document.removeEventListener("mousedown", this._onDocClick);
+    document.removeEventListener("keydown", this._onEsc);
+  }
+
+  private _parseCountries(): PhoneCountry[] {
+    const raw = this.getAttribute("countries");
+    if (!raw) return DEFAULT_COUNTRIES;
+    try {
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return DEFAULT_COUNTRIES;
+      const valid = parsed
+        .filter(
+          (c) =>
+            c &&
+            typeof c.code === "string" &&
+            typeof c.name === "string" &&
+            typeof c.dialCode === "string",
+        )
+        .map((c) => ({
+          code: String(c.code),
+          name: String(c.name),
+          dialCode: String(c.dialCode),
+          flag: typeof c.flag === "string" ? c.flag : "",
+        }));
+      return valid.length > 0 ? valid : DEFAULT_COUNTRIES;
+    } catch {
+      return DEFAULT_COUNTRIES;
+    }
+  }
+
+  private _mount(): void {
+    const root = document.createElement("div");
+    root.dataset.slot = "root";
+    root.className = PI_ROOT_CLASS;
+
+    const labelEl = document.createElement("label");
+    labelEl.className = PI_LABEL_CLASS;
+    labelEl.setAttribute("for", this._inputId);
+
+    const fieldWrap = document.createElement("div");
+    fieldWrap.className = PI_FIELD_WRAP_CLASS;
+
+    const field = document.createElement("div");
+    field.className = PI_FIELD_CLASS;
+
+    const dialBtn = document.createElement("button");
+    dialBtn.type = "button";
+    dialBtn.className = PI_DIAL_CLASS;
+    dialBtn.setAttribute("aria-haspopup", "listbox");
+    dialBtn.setAttribute("aria-controls", this._menuId);
+    dialBtn.addEventListener("click", () => {
+      if (this.boolAttr("disabled")) return;
+      this._open = !this._open;
+      this.scheduleUpdate();
+    });
+
+    const dialFlag = document.createElement("span");
+    dialFlag.className = PI_FLAG_CLASS;
+    dialFlag.setAttribute("aria-hidden", "true");
+
+    const dialText = document.createElement("span");
+
+    const chevron = document.createElement("span");
+    chevron.className = PI_CHEVRON_CLASS;
+    chevron.setAttribute("aria-hidden", "true");
+    chevron.appendChild(ChevronDown());
+
+    dialBtn.append(dialFlag, dialText, chevron);
+
+    const divider = document.createElement("span");
+    divider.className = PI_DIVIDER_CLASS;
+    divider.setAttribute("aria-hidden", "true");
+
+    const input = document.createElement("input");
+    input.id = this._inputId;
+    input.type = "tel";
+    input.inputMode = "tel";
+    input.autocomplete = "tel-national";
+    input.className = PI_INPUT_CLASS;
+    input.addEventListener("input", () => {
+      this.setAttribute("value", input.value);
+      this.dispatchEvent(
+        new CustomEvent("nds-phone-change", {
+          detail: { value: input.value },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
+
+    field.append(dialBtn, divider, input);
+    fieldWrap.appendChild(field);
+
+    const menu = document.createElement("ul");
+    menu.id = this._menuId;
+    menu.setAttribute("role", "listbox");
+    menu.className = PI_MENU_CLASS;
+    fieldWrap.appendChild(menu);
+
+    const helperEl = document.createElement("p");
+    helperEl.className = PI_HELPER_CLASS;
+
+    root.append(labelEl, fieldWrap, helperEl);
+    this.appendChild(root);
+
+    this._root = root;
+    this._labelEl = labelEl;
+    this._fieldWrap = fieldWrap;
+    this._field = field;
+    this._dialBtn = dialBtn;
+    this._dialFlag = dialFlag;
+    this._dialText = dialText;
+    this._input = input;
+    this._helperEl = helperEl;
+    this._menu = menu;
+  }
+
+  protected update(): void {
+    if (
+      !this._root ||
+      !this._labelEl ||
+      !this._field ||
+      !this._dialBtn ||
+      !this._dialFlag ||
+      !this._dialText ||
+      !this._input ||
+      !this._helperEl ||
+      !this._menu
+    ) {
+      return;
+    }
+    if (this.style.display !== "contents") this.style.display = "contents";
+
+    const countries = this._parseCountries();
+    const countryCode = this.getAttribute("country-code") || countries[0].code;
+    const country = countries.find((c) => c.code === countryCode) ?? countries[0];
+    const value = this.getAttribute("value") || "";
+    const label = this.getAttribute("label");
+    const placeholder = this.getAttribute("placeholder") || "01012345678";
+    const helperText = this.getAttribute("helper-text");
+    const error = this.boolAttr("error");
+    const fullWidth = this.boolAttr("full-width");
+    const disabled = this.boolAttr("disabled");
+
+    this._root.dataset.fullWidth = fullWidth ? "true" : "false";
+
+    if (label) {
+      this._labelEl.textContent = label;
+      this._labelEl.style.display = "";
+    } else {
+      this._labelEl.style.display = "none";
+    }
+
+    this._field.dataset.error = error ? "true" : "false";
+    this._dialBtn.disabled = disabled;
+    this._dialBtn.setAttribute("aria-label", `국가 코드: ${country.name} ${country.dialCode}`);
+    this._dialBtn.setAttribute("aria-expanded", String(this._open));
+    this._dialFlag.textContent = country.flag;
+    this._dialText.textContent = country.dialCode;
+
+    this._input.placeholder = placeholder;
+    this._input.disabled = disabled;
+    if (this._input.value !== value) this._input.value = value;
+
+    this._menu.innerHTML = "";
+    if (this._open) {
+      this._menu.style.display = "";
+      countries.forEach((c) => {
+        const li = document.createElement("li");
+        li.setAttribute("role", "presentation");
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.setAttribute("role", "option");
+        const selected = c.code === country.code;
+        btn.setAttribute("aria-selected", String(selected));
+        btn.dataset.selected = selected ? "true" : "false";
+        btn.className = PI_MENU_ITEM_CLASS;
+        btn.addEventListener("click", () => {
+          this.setAttribute("country-code", c.code);
+          this._open = false;
+          this.dispatchEvent(
+            new CustomEvent("nds-phone-country-change", {
+              detail: { code: c.code },
+              bubbles: true,
+              composed: true,
+            }),
+          );
+          this.scheduleUpdate();
+        });
+
+        const flag = document.createElement("span");
+        flag.className = PI_FLAG_CLASS;
+        flag.setAttribute("aria-hidden", "true");
+        flag.textContent = c.flag;
+
+        const name = document.createElement("span");
+        name.className = PI_MENU_NAME_CLASS;
+        name.textContent = c.name;
+
+        const dial = document.createElement("span");
+        dial.className = PI_MENU_DIAL_CLASS;
+        dial.textContent = c.dialCode;
+
+        btn.append(flag, name, dial);
+        li.appendChild(btn);
+        this._menu!.appendChild(li);
+      });
+    } else {
+      this._menu.style.display = "none";
+    }
+
+    if (helperText) {
+      this._helperEl.textContent = helperText;
+      this._helperEl.dataset.error = error ? "true" : "false";
+      this._helperEl.style.display = "";
+    } else {
+      this._helperEl.style.display = "none";
+    }
+  }
+}
+
+define(NdsPhoneInput);
