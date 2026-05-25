@@ -62,11 +62,12 @@ function ComponentPreviewGrid() {
       <div className={styles.container}>
         <div className={styles.sectionHeader}>
           <span className={styles.eyebrow}>Components</span>
-          <h2>실제 동작하는 컴포넌트</h2>
+          <h2>컴포넌트 미리보기</h2>
           <p>
-            이 페이지에 보이는 모든 미리보기는 <code>@nudge-eap/react</code>의 실제 컴포넌트입니다.
+            이 섹션에 보이는 미리보기는 모두 <code>@nudge-eap/react</code>로 렌더링한 실제
+            컴포넌트입니다.
             <br />
-            카드를 클릭하면 각 문서로 이동해 props와 사용 가이드를 볼 수 있어요.
+            카드를 클릭하면 각 문서로 이동해 props와 사용 가이드를 바로 확인할 수 있어요.
           </p>
         </div>
 

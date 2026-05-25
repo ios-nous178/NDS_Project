@@ -1,6 +1,6 @@
 // @ts-check
 
-const storybookUrl = process.env.STORYBOOK_BASE_URL || "http://localhost:6006";
+const storybookUrl = process.env.STORYBOOK_BASE_URL || "/storybook/";
 const dsVersion = require("../../packages/react/package.json").version;
 
 const config = {

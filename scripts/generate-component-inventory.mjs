@@ -10,8 +10,8 @@ const outputPath = path.join(rootDir, "docs", "components", "inventory.md");
 
 const inventory = JSON.parse(await fs.readFile(metadataPath, "utf8"));
 
-const docsBaseUrl = "http://localhost:3001";
-const storybookBaseUrl = "http://localhost:6006";
+const docsBaseUrl = "";
+const storybookBaseUrl = "/storybook";
 
 function toStoryId(title) {
   return title

@@ -228,6 +228,11 @@ html[data-theme="dark"] .navbar [class*="colorModeToggle"] button:hover {
   background: #f3f4f6;
 }
 
+html[data-theme="dark"] .menu__link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fafaf9;
+}
+
 .menu__link--active:not(.menu__link--sublist) {
   background: rgba(0, 0, 0, 0.06);
   color: var(--ifm-color-primary);
@@ -245,6 +250,10 @@ html[data-theme="dark"] .menu__link--active:not(.menu__link--sublist) {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #6c7280;
+}
+
+html[data-theme="dark"] .menu__list-item-collapsible .menu__link {
+  color: #a8a29e;
 }
 
 .menu__list-item-collapsible:hover {
@@ -287,6 +296,10 @@ html[data-theme="dark"] {
   color: #383838;
 }
 
+html[data-theme="dark"] .theme-doc-markdown {
+  color: #e7e5e4;
+}
+
 .theme-doc-markdown header h1 {
   font-size: 2rem;
   font-weight: 800;
@@ -301,6 +314,17 @@ html[data-theme="dark"] {
   margin-top: 48px;
   padding-bottom: 10px;
   border-bottom: 1px solid #e6e7eb;
+}
+
+html[data-theme="dark"] .theme-doc-markdown h1,
+html[data-theme="dark"] .theme-doc-markdown h2,
+html[data-theme="dark"] .theme-doc-markdown h3,
+html[data-theme="dark"] .theme-doc-markdown h4 {
+  color: #fafaf9;
+}
+
+html[data-theme="dark"] .theme-doc-markdown h2 {
+  border-bottom-color: #44403c;
 }
 
 .theme-doc-markdown h3 {
@@ -360,12 +384,22 @@ div[class*="codeBlockContainer"] {
   margin-bottom: 20px;
 }
 
+html[data-theme="dark"] div[class*="codeBlockContainer"] {
+  border-color: #44403c;
+}
+
 div[class*="codeBlockTitle"] {
   background: #f8f9fb !important;
   border-bottom: 1px solid #e6e7eb;
   font-size: 12px;
   font-weight: 600;
   padding: 8px 16px !important;
+}
+
+html[data-theme="dark"] div[class*="codeBlockTitle"] {
+  background: #292524 !important;
+  border-bottom-color: #44403c;
+  color: #e7e5e4;
 }
 
 /* ─── Tables ─── */
@@ -389,8 +423,16 @@ table {
   margin-bottom: 20px;
 }
 
+html[data-theme="dark"] table {
+  border-color: #44403c;
+}
+
 table thead tr {
   background: #f8f9fb;
+}
+
+html[data-theme="dark"] table thead tr {
+  background: #292524;
 }
 
 table thead th {
@@ -404,12 +446,22 @@ table thead th {
   white-space: nowrap;
 }
 
+html[data-theme="dark"] table thead th {
+  color: #d6d3d1;
+  border-bottom-color: #44403c;
+}
+
 table tbody td {
   padding: 10px 14px;
   border-bottom: 1px solid #f3f4f6;
   border-right: none;
   color: #383838;
   vertical-align: top;
+}
+
+html[data-theme="dark"] table tbody td {
+  border-bottom-color: #3f3a37;
+  color: #e7e5e4;
 }
 
 /* Props 테이블의 타입 칼럼: 줄바꿈 허용 */
@@ -434,6 +486,10 @@ table tbody tr:last-child td {
 
 table tbody tr:hover {
   background: #fafafa;
+}
+
+html[data-theme="dark"] table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 table code {
@@ -468,6 +524,10 @@ html[data-theme="dark"] blockquote {
 .table-of-contents__link {
   font-size: 13px;
   color: #6c7280;
+}
+
+html[data-theme="dark"] .table-of-contents__link {
+  color: #a8a29e;
 }
 
 .table-of-contents__link--active {
@@ -601,4 +661,8 @@ article {
   font-size: 16px;
   color: #4e5462;
   line-height: 1.7;
+}
+
+html[data-theme="dark"] .theme-doc-markdown > header + p {
+  color: #cfcac6;
 }
