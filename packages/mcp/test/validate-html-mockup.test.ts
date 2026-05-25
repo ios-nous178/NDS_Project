@@ -224,6 +224,19 @@ describe("validateHtmlSource — ported JSX patterns", () => {
     expect(rulesFor(html)).toContain("primary-cta-overuse");
   });
 
+  it("does NOT flag primary-cta-overuse for one page primary plus one modal primary", () => {
+    const html = `<nds-button>Save</nds-button>
+      <nds-modal><nds-button>Apply</nds-button></nds-modal>`;
+    expect(rulesFor(html)).not.toContain("primary-cta-overuse");
+  });
+
+  it("still flags primary-cta-per-container for duplicate modal primary actions", () => {
+    const html = `<nds-button>Save</nds-button>
+      <nds-modal><nds-button>Apply</nds-button><nds-button>Confirm</nds-button></nds-modal>`;
+    expect(rulesFor(html)).toContain("primary-cta-per-container");
+    expect(rulesFor(html)).not.toContain("primary-cta-overuse");
+  });
+
   it("does NOT flag primary-cta-overuse when secondary buttons are non-solid", () => {
     const html = `<nds-button>A</nds-button><nds-button variant="outlined">B</nds-button>`;
     expect(rulesFor(html)).not.toContain("primary-cta-overuse");

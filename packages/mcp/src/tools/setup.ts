@@ -34,6 +34,27 @@ function getCtx(): SetupContext {
   return ctx;
 }
 
+const FALLBACK_BRAND_META: Record<
+  string,
+  Pick<BrandDef, "name" | "description" | "primaryColor" | "keyColors" | "fontFamilies">
+> = {
+  cashpobi: {
+    name: "Cashwalk for Business",
+    description: "Cashwalk for Business brand tokens.",
+    primaryColor: null,
+    keyColors: {
+      primary: null,
+      secondary: null,
+      error: null,
+      caution: null,
+      success: null,
+      surface: null,
+      onSurface: null,
+    },
+    fontFamilies: [],
+  },
+};
+
 const REQUIRED_PACKAGES = ["@nudge-eap/tokens", "@nudge-eap/react", "@nudge-eap/icons"];
 // @nudge-eap/html: vanilla Web Components — Astro / plain HTML / React 어디서나
 // <nds-button> 처럼 사용 가능. .mcpb 에 동봉되어 있어 install 만 하면 된다.
@@ -53,6 +74,33 @@ const HTML_REQUIRED_PACKAGES = ["@nudge-eap/tokens", "@nudge-eap/html", "@nudge-
 
 function getPkg(name: string): PackageMeta | undefined {
   return getCtx().manifest.packages.find((p) => p.name === name);
+}
+
+function getManifestBrands(): BrandDef[] {
+  const { manifest } = getCtx();
+  const brands = manifest.brands ?? [];
+  const seen = new Set(brands.map((b) => b.slug));
+  const tokensPkg = getPkg("@nudge-eap/tokens");
+  const extraBrands: BrandDef[] = [];
+
+  for (const [slug, meta] of Object.entries(FALLBACK_BRAND_META)) {
+    if (seen.has(slug)) continue;
+    const cssImport = tokensPkg?.cssExports.includes(`@nudge-eap/tokens/css/${slug}`)
+      ? `@nudge-eap/tokens/css/${slug}`
+      : null;
+    if (!cssImport) continue;
+    extraBrands.push({
+      slug,
+      ...meta,
+      version: tokensPkg?.version,
+      designMdRelPath: "",
+      cssImport,
+      jsExport: "@nudge-eap/tokens/brands",
+      ready: true,
+    });
+  }
+
+  return extraBrands.length > 0 ? [...brands, ...extraBrands] : brands;
 }
 
 function tgzPath(tgzDir: string, pkgName: string): string {
@@ -1113,8 +1161,7 @@ export function getSetupInstructions(args: {
  * pnpm --filter @nudge-eap/mcp build:manifest 만 다시 돌리면 된다. */
 
 export function listBrands() {
-  const { manifest } = getCtx();
-  const brandsList = manifest.brands ?? [];
+  const brandsList = getManifestBrands();
   return {
     _advisory:
       "사용자 앱 브랜드 목록입니다. 어드민/CMS는 브랜드 무관 (antd 기본). " +
@@ -1148,9 +1195,8 @@ export function getBrand(args: { brand?: string }) {
 }
 
 export function getBrandInfo(args: { brand: string }) {
-  const { manifest } = getCtx();
   const slug = args.brand;
-  const brandsList = manifest.brands ?? [];
+  const brandsList = getManifestBrands();
   const brand = brandsList.find((b) => b.slug === slug);
   const availableBrands = brandsList.map((b) => b.slug);
   if (!brand) {
@@ -1195,7 +1241,8 @@ export function getBrandInfo(args: { brand: string }) {
           : brand.cssImport === "@nudge-eap/tokens/css"
             ? "// nudge-eap은 공통 토큰 CSS가 기본 브랜드 CSS"
             : "// 브랜드 CSS 미준비",
-        `import "@nudge-eap/react/styles.css";  // 컴포넌트 스타일`,
+        `import "@nudge-eap/html/styles.css";  // nds-* 컴포넌트 스타일`,
+        `import "@nudge-eap/html/runtime";  // <nds-*> custom element 등록`,
       ],
     },
   };
@@ -1207,8 +1254,7 @@ function resolveBrand(input?: string): {
   error?: string;
   availableBrands: string[];
 } {
-  const { manifest } = getCtx();
-  const brandsList = manifest.brands ?? [];
+  const brandsList = getManifestBrands();
   const availableBrands = brandsList.map((b) => b.slug);
   if (!input) {
     // 기본값 — nudge-eap base CSS, 없으면 첫 번째 'ready' 브랜드 또는 첫 브랜드

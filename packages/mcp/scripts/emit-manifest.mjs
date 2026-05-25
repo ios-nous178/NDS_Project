@@ -235,8 +235,6 @@ function stripQuotes(s) {
 }
 
 function collectBrands() {
-  if (!fs.existsSync(brandsRoot)) return [];
-
   const tokensPkg = fs.existsSync(tokensPkgPath)
     ? JSON.parse(fs.readFileSync(tokensPkgPath, "utf-8"))
     : { exports: {} };
@@ -253,12 +251,20 @@ function collectBrands() {
         .filter((n) => n !== "index" && n !== "types")
     : [];
 
-  const dirs = fs
-    .readdirSync(brandsRoot, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => d.name);
+  const dirs = fs.existsSync(brandsRoot)
+    ? fs
+        .readdirSync(brandsRoot, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => d.name)
+    : [];
 
-  return dirs.map((slug) => {
+  const slugs = new Set([
+    ...dirs,
+    ...cssExports,
+    ...jsThemes.filter((name) => !name.includes(".")),
+  ]);
+
+  return [...slugs].map((slug) => {
     const designMd = path.join(brandsRoot, slug, "DESIGN.md");
     const fm = readBrandFrontmatter(designMd) ?? {
       version: undefined,
@@ -291,7 +297,7 @@ function collectBrands() {
         onSurface: fm.colors["on-surface"] ?? null,
       },
       fontFamilies: fm.fontFamilies,
-      designMdRelPath: `brands/${slug}/DESIGN.md`,
+      designMdRelPath: fs.existsSync(designMd) ? `brands/${slug}/DESIGN.md` : "",
       cssImport,
       jsExport,
       ready: Boolean(cssImport),
@@ -310,7 +316,7 @@ function readPkg(relDir) {
     dependencies: pkg.dependencies ?? {},
     peerDependencies: pkg.peerDependencies ?? {},
     cssExports: Object.entries(pkg.exports ?? {})
-      .filter(([k, v]) => typeof v === "string" && v.endsWith(".css"))
+      .filter(([_k, v]) => typeof v === "string" && v.endsWith(".css"))
       .map(([k]) => `${pkg.name}${k.replace(/^\./, "")}`),
   };
 }
@@ -388,16 +394,23 @@ const brands = collectBrands();
 
 // @nudge-eap/html 의 custom element 태그 목록 — validate_html_mockup 이
 // "이 <nds-foo> 태그가 진짜 존재하나?" 를 알기 위해 catalog 에 박아둔다.
-// packages/html/src/components/nds-*.ts 의 파일 이름이 곧 elementName 이다
-// (NdsElement.elementName 정적 필드와 1:1 — 컨벤션으로 보장).
+// packages/html/src/components/nds-*.ts 파일의 static elementName 을 우선 읽는다.
+// 한 파일에 nds-select-option / nds-footer-* 같은 보조 엘리먼트가 같이 등록될 수
+// 있으므로 파일명만 보면 validator false positive 가 생긴다.
 function collectNdsHtmlTags() {
   const dir = path.join(repoRoot, "packages/html/src/components");
   if (!fs.existsSync(dir)) return [];
-  return fs
+  const tags = new Set();
+  for (const file of fs
     .readdirSync(dir)
-    .filter((f) => f.startsWith("nds-") && f.endsWith(".ts") && !f.endsWith(".styles.ts"))
-    .map((f) => f.replace(/\.ts$/, ""))
-    .sort();
+    .filter((f) => f.startsWith("nds-") && f.endsWith(".ts") && !f.endsWith(".styles.ts"))) {
+    const src = fs.readFileSync(path.join(dir, file), "utf-8");
+    tags.add(file.replace(/\.ts$/, ""));
+    for (const match of src.matchAll(/static\s+elementName\s*=\s*["'](nds-[a-z0-9-]+)["']/g)) {
+      tags.add(match[1]);
+    }
+  }
+  return [...tags].sort();
 }
 const ndsHtmlTags = collectNdsHtmlTags();
 
