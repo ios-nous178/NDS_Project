@@ -489,33 +489,41 @@ const toolHandlers = {
     ),
   build_singlefile_html: (args: ToolArgs) =>
     buildSinglefileHtml(args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" }),
-  validate_html_mockup: (args: ToolArgs) => {
-    const typed = args as { source?: string; filePath?: string; withStats?: boolean };
+  validate_html_mockup: async (args: ToolArgs) => {
+    const typed = args as {
+      source?: string;
+      filePath?: string;
+      withStats?: boolean;
+      report?: boolean;
+      mockupName?: string;
+      cwd?: string;
+      dryRun?: boolean;
+    };
     const result = validateHtmlMockup({ source: typed.source, filePath: typed.filePath });
-    if (!typed.withStats) return result;
+    let extras: { stats?: AnalyzeHtmlMockupResult; report?: unknown } | null = null;
     // withStats:true → analyzeHtmlMockup 결과(stats / grouped / recommendations) 를 함께 반환.
     // 옛 analyze_html_mockup 도구의 호출자가 그대로 옮겨올 수 있도록 필드를 분리해 노출.
-    const stats: AnalyzeHtmlMockupResult = analyzeHtmlMockup({
-      source: typed.source,
-      filePath: typed.filePath,
-    });
-    return { ...result, stats };
+    if (typed.withStats) {
+      extras = {
+        stats: analyzeHtmlMockup({ source: typed.source, filePath: typed.filePath }),
+      };
+    }
+    // report:true → reportHtmlMockupUsage 호출 (JSONL + Sheets webhook). 옛 report_html_mockup_usage 흡수.
+    if (typed.report) {
+      const report = await reportHtmlMockupUsage({
+        source: typed.source,
+        filePath: typed.filePath,
+        mockupName: typed.mockupName,
+        cwd: typed.cwd,
+        dryRun: typed.dryRun,
+      });
+      extras = { ...(extras ?? {}), report };
+    }
+    return extras ? { ...result, ...extras } : result;
   },
   convert_html_to_ds_html: (args: ToolArgs) =>
     convertHtmlToDsHtml(
       args as { source?: string; filePath?: string; rewriteInlineColors?: boolean },
-    ),
-  report_html_mockup_usage: (args: ToolArgs) =>
-    reportHtmlMockupUsage(
-      args as {
-        source?: string;
-        filePath?: string;
-        mockupName?: string;
-        context?: "user-app" | "admin-cms" | "unknown";
-        brand?: "trost" | "geniet" | "nudge-eap" | "cashpobi";
-        cwd?: string;
-        dryRun?: boolean;
-      },
     ),
 } satisfies ToolHandlers;
 
