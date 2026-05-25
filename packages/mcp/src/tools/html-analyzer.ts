@@ -15,13 +15,13 @@ import * as cheerio from "cheerio";
 import { validateHtmlSource, type HtmlViolation } from "./html-validator.js";
 import { ndsTagToComponentName } from "./usage/parser.js";
 import {
-  appendUsageToLog,
   detectDsVersions,
   enqueueUsageWebhook,
   flushUsageWebhookQueue,
   postUsageToWebhook,
   type UsageWebhookQueueFlushResult,
 } from "./usage/tracker.js";
+import { resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
 import type { Brand, Context, DsUsageEntry, MockupUsage } from "../types/usage.js";
 
 const USAGE_WEBHOOK_URL =
@@ -227,6 +227,7 @@ export interface ReportHtmlMockupUsageResult {
   usage: MockupUsage;
   loggedAt: string;
   logPath: string | null;
+  logError?: string;
   webhook: {
     attempted: boolean;
     ok?: boolean;
@@ -259,6 +260,8 @@ export async function reportHtmlMockupUsage(
   const counts = countHtmlUsage(source);
   const loggedAt = new Date().toISOString();
   const cwd = resolveUsageCwd(args.cwd, filePath);
+  // 로그/큐는 cwd 와 별도로 쓰기 가능한 디렉토리 사용 (cwd 가 / 인 환경 보호).
+  const logDir = resolveWritableLogDir({ cwd: args.cwd, filePath });
   const mockupName =
     args.mockupName ??
     (filePath ? path.basename(filePath) : `html-snippet-${loggedAt.replace(/[:.]/g, "-")}`);
@@ -276,14 +279,17 @@ export async function reportHtmlMockupUsage(
   const dryRun = args.dryRun === true;
 
   let logPath: string | null = null;
+  let logError: string | undefined;
   if (!dryRun) {
-    logPath = path.join(cwd, ".ds-usage-log.jsonl");
-    appendUsageToLog(usage, logPath);
+    const candidate = path.join(logDir, ".ds-usage-log.jsonl");
+    const appended = safeAppendUsageToLog(usage, candidate);
+    logPath = appended.logPath;
+    logError = appended.logError;
   }
 
   const webhook: ReportHtmlMockupUsageResult["webhook"] = { attempted: false };
   if (!dryRun) {
-    const queuePath = path.join(cwd, ".ds-usage-webhook-queue.jsonl");
+    const queuePath = path.join(logDir, ".ds-usage-webhook-queue.jsonl");
     const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
     if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
       webhook.flushedQueue = flushedQueue;
@@ -332,6 +338,7 @@ export async function reportHtmlMockupUsage(
     usage,
     loggedAt,
     logPath,
+    logError,
     webhook,
     humanReadable,
     _nextSuggestion,

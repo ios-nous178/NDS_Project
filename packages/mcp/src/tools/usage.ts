@@ -3,7 +3,6 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { parseMockupUsage } from "./usage/parser.js";
 import {
-  appendUsageToLog,
   detectDsVersions,
   postUsageToWebhook,
   scanPendingMockupReports,
@@ -12,6 +11,7 @@ import {
   flushUsageWebhookQueue,
   type UsageWebhookQueueFlushResult,
 } from "./usage/tracker.js";
+import { isFilesystemRoot, resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
 import { detectWorkspaceIntent } from "./build-html.js";
 import { reportHtmlMockupUsage } from "./html-analyzer.js";
 import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
@@ -29,6 +29,7 @@ export async function reportMockupUsage(args: {
 }): Promise<{
   usage: MockupUsage;
   logPath: string | null;
+  logError?: string;
   webhook: {
     attempted: boolean;
     ok?: boolean;
@@ -46,6 +47,8 @@ export async function reportMockupUsage(args: {
   const filePath = path.isAbsolute(args.filePath)
     ? args.filePath
     : path.resolve(cwd, args.filePath);
+  // 로그/큐 디렉토리는 EROFS 안전: 호출자 cwd 가 / 면 HOME/tmp 로 폴백.
+  const logDir = resolveWritableLogDir({ cwd: args.cwd, filePath });
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`File not found: ${filePath}`);
@@ -66,9 +69,12 @@ export async function reportMockupUsage(args: {
 
   const dryRun = args.dryRun === true;
   let logPath: string | null = null;
+  let logError: string | undefined;
   if (!dryRun) {
-    logPath = path.join(cwd, ".ds-usage-log.jsonl");
-    appendUsageToLog(usage, logPath);
+    const candidate = path.join(logDir, ".ds-usage-log.jsonl");
+    const appended = safeAppendUsageToLog(usage, candidate);
+    logPath = appended.logPath;
+    logError = appended.logError;
   }
 
   const webhook: {
@@ -84,7 +90,7 @@ export async function reportMockupUsage(args: {
     attempted: false,
   };
   if (!dryRun) {
-    const queuePath = path.join(cwd, ".ds-usage-webhook-queue.jsonl");
+    const queuePath = path.join(logDir, ".ds-usage-webhook-queue.jsonl");
     const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
     if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
       webhook.flushedQueue = flushedQueue;
@@ -134,7 +140,7 @@ export async function reportMockupUsage(args: {
     "(2) dev 서버 URL 을 보여주고, 사용자가 직접 확인을 마치면 dev_server({ action: 'stop' }) 호출. " +
     "build_singlefile_html 결과의 dist/index.html 경로와 파일 크기를 사용자에게 보여줄 것 — 이게 공유용 최종 산출물입니다.";
 
-  return { usage, logPath, webhook, humanReadable, _nextSuggestion };
+  return { usage, logPath, logError, webhook, humanReadable, _nextSuggestion };
 }
 
 /* ───────────── 사용량 보고 자동화 가드레일 ─────────────
@@ -252,6 +258,10 @@ export async function runUsageGuards(toolName: string, args: unknown): Promise<U
   if (!POST_CREATION_TOOLS.has(toolName)) return {};
 
   const cwd = extractCwdFromArgs(args) ?? process.cwd();
+  // Claude Desktop 환경에서는 process.cwd() 가 '/' 인 경우가 있다. 루트에서 mockup 후보를
+  // 스캔하는 것 자체가 무의미하고 .ds-usage-log.jsonl 쓰기도 EROFS 로 실패하므로 조용히 스킵.
+  // 사용자가 명시적으로 cwd 를 넘기거나 DS_USAGE_LOG_DIR env 를 설정해야 가드가 동작.
+  if (isFilesystemRoot(cwd)) return {};
   const isBuildEvent = toolName === "build_singlefile_html";
   const shouldAutoReport =
     isBuildEvent ||
