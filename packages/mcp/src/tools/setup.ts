@@ -924,7 +924,11 @@ export function getSetupInstructions(args: {
   if (args.intent === "admin-cms" || detected === "admin-cms") {
     return getSetupInstructionsAdminCms({ withRouter: args.withRouter });
   }
-  if (args.intent === "html" || detected === "html") {
+  // 정책 (2026-05-25): admin-cms 가 아니면 모두 html 워크플로우로 안내한다.
+  // user-app(.tsx + React) 신규 셋업은 더 이상 노출하지 않는다 — detectIntentFromText 가
+  // 발화 매칭이 안 되는 경우에도 default 가 'html' 이라 여기까지 admin-cms 외에는 도달하지 않지만,
+  // 호출자가 명시적으로 intent='user-app' 을 넘긴 경우에도 안전하게 html 로 보낸다.
+  if (args.intent === "html" || detected === "html" || args.intent === "user-app" || !args.intent) {
     return getSetupInstructionsHtml({ brand: args.brand, tgzDir: args.tgzDir });
   }
 
@@ -1210,8 +1214,12 @@ export function getSetup(args: {
   overwrite?: boolean;
 }) {
   const step = args.step;
-  // intent='html' 명시 또는 자유 텍스트에서 감지된 경우 html-specific 핸들러로 분기.
-  const isHtmlIntent = args.intent === "html" || detectIntentFromText(args.intent) === "html";
+  // 정책 (2026-05-25): admin-cms 가 아니면 모두 html. 'user-app' 명시도 deprecated 로
+  // 보고 html 로 라우팅 — 신규 mockup 워크스페이스는 React 트랙을 권장하지 않는다.
+  // detectIntentFromText 도 default 가 'html' 이므로 이 boolean 은 사실상 "admin-cms 아님"
+  // 과 동의어이지만, 가독성을 위해 명시적으로 둔다.
+  const isHtmlIntent =
+    args.intent !== "admin-cms" && detectIntentFromText(args.intent) !== "admin-cms";
   switch (step) {
     case "install":
       return isHtmlIntent

@@ -170,10 +170,12 @@ describe("auditMockupWorkspace", () => {
     expect(violations.find((x) => x.rule === "inline-root-tokens")).toBeUndefined();
   });
 
-  it("detects no .tsx/.astro/.html in src/", () => {
+  it("detects no .tsx/.astro/.html in src/ (react intent)", () => {
     fs.writeFileSync(path.join(tmp, "src", "App.jsx"), `export default () => null;`);
     fs.writeFileSync(path.join(tmp, "index.html"), `<!doctype html>`);
-    const violations = auditMockupWorkspace(tmp);
+    // no-tsx-found 는 react 워크플로우 전용 룰. 정책 변경 후 detectWorkspaceIntent 의 default 가
+    // html 이라 intent 명시 없이는 fire 되지 않는다 — 의도된 react 룰 검증을 위해 intent='react' 지정.
+    const violations = auditMockupWorkspace(tmp, "react");
     const v = violations.find((x) => x.rule === "no-tsx-found");
     expect(v).toBeTruthy();
     expect(v?.detail).toContain(".tsx / .astro / .html");
@@ -193,27 +195,27 @@ describe("auditMockupWorkspace", () => {
     expect(violations.find((x) => x.rule === "no-tsx-found")).toBeUndefined();
   });
 
-  it("passes no-tsx-found when src/ has only .html (vanilla nds-* workflow), even though raw-html-in-src still fires", () => {
+  it("react intent: passes no-tsx-found when src/ has only .html (.html is a valid input), but raw-html-in-src still fires", () => {
     fs.writeFileSync(path.join(tmp, "src", "page.html"), `<nds-button>x</nds-button>`);
     fs.writeFileSync(path.join(tmp, "index.html"), `<!doctype html>`);
     fs.writeFileSync(
       path.join(tmp, "references.md"),
       `[good] source=figma caption=clean primary CTA only`,
     );
-    const violations = auditMockupWorkspace(tmp);
+    // raw-html-in-src / no-tsx-found 는 react 워크플로우 룰. intent='react' 명시.
+    const violations = auditMockupWorkspace(tmp, "react");
     // no-tsx-found 는 더 이상 안 뜬다 — .html 도 인식 가능한 입력 형식.
     expect(violations.find((x) => x.rule === "no-tsx-found")).toBeUndefined();
     // raw-html-in-src 는 별개 룰로 여전히 작동 (손글씨 HTML 가드는 그대로 유지).
     expect(violations.find((x) => x.rule === "raw-html-in-src")).toBeTruthy();
   });
 
-  it("reports multiple violations simultaneously", () => {
-    // src/ 가 비어 있어야 no-tsx-found 가 뜨므로, src/fake.html 같은 .html 은 두지 않는다.
-    // 대신 다른 위반들을 한꺼번에 발생시킨다: raw-html-in-root (preview.html),
-    // inline-root-tokens (tokens.css), no-tsx-found (src/ 에 .tsx/.astro/.html 모두 없음).
+  it("react intent: reports multiple violations simultaneously", () => {
+    // react 룰셋 검증: raw-html-in-root (preview.html), inline-root-tokens (tokens.css),
+    // no-tsx-found (src/ 에 .tsx/.astro/.html 모두 없음). intent='react' 로 명시한다.
     fs.writeFileSync(path.join(tmp, "src", "tokens.css"), `:root { --nds-color-primary: #000; }`);
     fs.writeFileSync(path.join(tmp, "preview.html"), `<div>x</div>`);
-    const rules = auditMockupWorkspace(tmp).map((v) => v.rule);
+    const rules = auditMockupWorkspace(tmp, "react").map((v) => v.rule);
     expect(rules).toContain("raw-html-in-root");
     expect(rules).toContain("inline-root-tokens");
     expect(rules).toContain("no-tsx-found");
@@ -331,7 +333,15 @@ describe("detectWorkspaceIntent", () => {
     expect(detectWorkspaceIntent(tmp)).toBe("html");
   });
 
-  it("defaults to 'react' when nothing else matches (preserves legacy behavior)", () => {
+  it("defaults to 'html' for empty / brand-new workspaces (policy: html-first)", () => {
+    // 2026-05-25 정책: React 신호 (package.json deps 의 @nudge-eap/react,
+    // src/main.tsx, src/ 안의 .tsx) 가 없으면 모두 html. 빈 디렉터리도 html 로 분류.
+    expect(detectWorkspaceIntent(tmp)).toBe("html");
+  });
+
+  it("returns 'react' when src/ has any .tsx file (legacy React mockup back-compat)", () => {
+    fs.mkdirSync(path.join(tmp, "src"));
+    fs.writeFileSync(path.join(tmp, "src", "Demo.tsx"), `export default () => null;`);
     expect(detectWorkspaceIntent(tmp)).toBe("react");
   });
 });
