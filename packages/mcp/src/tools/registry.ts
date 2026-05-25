@@ -231,7 +231,7 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations.",
+      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. Pass `withStats: true` to also get DS adoption stats, grouped violations, and next-action recommendations.",
     inputSchema: {
       type: "object",
       properties: {
@@ -243,23 +243,15 @@ const TOOLS = [
           type: "string",
           description: "Absolute path to an .html file. Either this or `source` is required.",
         },
+        withStats: {
+          type: "boolean",
+          description:
+            "If true, response also includes DS adoption stats, grouped violations, and recommendations (legacy analyze_html_mockup output). Default false.",
+        },
         autoReport: {
           type: "boolean",
           description: "If true, run pending usage auto-report after validation. Default false.",
         },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "analyze_html_mockup",
-    description:
-      "Validate HTML and return DS adoption stats, grouped violations, and next-action recommendations.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        source: { type: "string", description: "HTML source string." },
-        filePath: { type: "string", description: "Absolute path to an .html file." },
       },
       additionalProperties: false,
     },
@@ -605,10 +597,10 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         intent: optionalEnum(args, "intent", BUILD_INTENT_VALUES, toolName),
       };
     case "validate_html_mockup":
-    case "analyze_html_mockup":
       return {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),
+        withStats: optionalBoolean(args, "withStats", toolName),
         autoReport: optionalBoolean(args, "autoReport", toolName),
       };
     case "convert_html_to_ds_html":

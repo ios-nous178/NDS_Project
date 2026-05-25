@@ -37,6 +37,7 @@ import {
   convertHtmlToDsHtml,
   reportHtmlMockupUsage,
 } from "./tools/html-analyzer.js";
+import type { AnalyzeHtmlMockupResult } from "./tools/html-analyzer.js";
 export { countHtmlUsage } from "./tools/html-analyzer.js";
 import { checkPreview, devServer, registerDevServerCleanup } from "./tools/preview.js";
 import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
@@ -491,10 +492,18 @@ const toolHandlers = {
     ),
   build_singlefile_html: (args: ToolArgs) =>
     buildSinglefileHtml(args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" }),
-  validate_html_mockup: (args: ToolArgs) =>
-    validateHtmlMockup(args as { source?: string; filePath?: string }),
-  analyze_html_mockup: (args: ToolArgs) =>
-    analyzeHtmlMockup(args as { source?: string; filePath?: string }),
+  validate_html_mockup: (args: ToolArgs) => {
+    const typed = args as { source?: string; filePath?: string; withStats?: boolean };
+    const result = validateHtmlMockup({ source: typed.source, filePath: typed.filePath });
+    if (!typed.withStats) return result;
+    // withStats:true → analyzeHtmlMockup 결과(stats / grouped / recommendations) 를 함께 반환.
+    // 옛 analyze_html_mockup 도구의 호출자가 그대로 옮겨올 수 있도록 필드를 분리해 노출.
+    const stats: AnalyzeHtmlMockupResult = analyzeHtmlMockup({
+      source: typed.source,
+      filePath: typed.filePath,
+    });
+    return { ...result, stats };
+  },
   convert_html_to_ds_html: (args: ToolArgs) =>
     convertHtmlToDsHtml(
       args as { source?: string; filePath?: string; rewriteInlineColors?: boolean },
