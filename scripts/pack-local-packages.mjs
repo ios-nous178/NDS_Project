@@ -34,6 +34,11 @@ const OUT_DIR = path.join(ROOT, "local-packages");
 
 const PACKAGES = ["tokens", "react", "icons", "tailwind-preset"];
 
+// SSOT version 검증 대상 외에 mcpb 와 함께 배포하는 부가 패키지.
+// MCP 처럼 별도 라이프사이클로 — html 만 변경된 릴리즈에서 DS 4개를 같이
+// 끌어올리지 않는다. 외부 mockup 프로젝트는 .tgz 를 같이 받는다.
+const EXTRA_PACKAGES = ["html"];
+
 const skipBuild = process.argv.includes("--no-build");
 
 if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -82,9 +87,11 @@ console.log(`🔖 DS version verified: ${rootVersion} (root ↔ all DS packages 
 
 // ── Build (optional) ────────────────────────────────────────
 
+const ALL_PACKAGES = [...PACKAGES, ...EXTRA_PACKAGES];
+
 if (!skipBuild) {
-  const filterArgs = PACKAGES.map((n) => `--filter @nudge-eap/${n}`).join(" ");
-  console.log(`📦 Building: ${PACKAGES.map((n) => `@nudge-eap/${n}`).join(", ")}`);
+  const filterArgs = ALL_PACKAGES.map((n) => `--filter @nudge-eap/${n}`).join(" ");
+  console.log(`📦 Building: ${ALL_PACKAGES.map((n) => `@nudge-eap/${n}`).join(", ")}`);
   execSync(`pnpm build ${filterArgs}`, { cwd: ROOT, stdio: "inherit" });
   console.log("");
 }
@@ -93,7 +100,7 @@ if (!skipBuild) {
 
 const summary = [];
 
-for (const name of PACKAGES) {
+for (const name of ALL_PACKAGES) {
   const pkgDir = path.join(ROOT, "packages", name);
   const pkgJson = JSON.parse(fs.readFileSync(path.join(pkgDir, "package.json"), "utf-8"));
   const version = pkgJson.version;
