@@ -1,5 +1,98 @@
 # @nudge-eap/react
 
+## 0.2.0
+
+### Minor Changes
+
+- 0.2.0 — 캐포비 브랜드 합류 + 신규 컴포넌트 5종 + 브랜드 헤더/푸터 한 줄 호출 + MCP 가드레일 강화
+
+### Breaking Changes (treated as minor under 0.x)
+
+- 5968807: base 푸터 단일화 — `AppFooter` 와 brand `{Brand}AppFooter` / `{Brand}WebFooter` named export 제거, 단일 `<Footer>` + `<{Brand}Footer>` 로 통합.
+
+  ## Breaking changes
+  - `AppFooter` / `AppFooterInfo` / `AppFooterTabBar` / `AppFooterLinks` / `AppFooterCompanyInfo` / `AppFooterExtra` 및 그 props 타입 (`AppFooterVariant`, `AppFooter*Props`) 모두 삭제. `<Footer variant="info|tab-bar|web">` + 컴파운드 (`Footer.Info` / `Footer.TabBar` / `Footer.Web` / `Footer.Links` / `Footer.CompanyInfo` / `Footer.Extra`) 로 마이그레이션.
+    - `<AppFooter.Info>` → `<Footer.Info>`
+    - `<AppFooter.TabBar>` → `<Footer.TabBar>`
+    - `<AppFooterTabBar>` (standalone) → `<FooterTabBar>` 또는 `<Footer.TabBar>`
+  - 브랜드 푸터 named export 삭제 — 단일 `{Brand}Footer` 로 통일:
+    - `GenietAppFooter` → `<GenietFooter>` (surface='app' only)
+    - `TrostAppFooter` / `TrostDesktopFooter` / `TrostWebFooter` → `<TrostFooter surface="web"|"app">`. 기존 `variant='desktop'|'mobile'` 은 `layout` 으로 rename.
+    - `NudgeEAPAppFooter` / `NudgeEAPWebFooter` → `<NudgeEAPFooter surface="web"|"app">`
+    - `CashpobiWebFooter` → `<CashpobiFooter>` (surface='web' only). 기존 `variant='desktop'|'mobile'` 은 `layout` 으로 rename.
+  - 옛 className prefix `nds-app-footer` 제거 → 단일 `nds-footer` 로 통일.
+  - 한쪽 surface 가 없는 브랜드 (Cashpobi=app 없음, Geniet=web 없음) 는 discriminated union 으로 타입 단에서 차단 — `<CashpobiFooter surface="app" />` / `<GenietFooter surface="web" />` 는 컴파일 에러.
+
+  ## Non-breaking additions
+  - `Footer.Web` compound 신설 — `.Web` / `.Web.Row` / `.Web.Divider` / `.Web.Section`. `tone='light'|'dark'` 로 토큰 swap.
+  - 브랜드 wrapper (`{Brand}Footer`) 는 단일 진입점 — surface prop 으로 web/app 분기, 풍부 슬롯 (NudgeEAPFooter 의 `appDownloads`/`iso`/`dain`/`poweredBy`) 은 wrapper 내부에 유지.
+  - MCP 가이드: `Footer` 키 + 4개 `{Brand}Footer` 키 신설, 옛 `AppFooter` / `{Brand}AppFooter` / `{Brand}WebFooter` / `TrostWebFooter` / `CashpobiWebFooter` / `GenietAppFooter` / `NudgeEAPAppFooter` / `NudgeEAPWebFooter` / `TrostAppFooter` 키 제거.
+  - 스토리북 카탈로그: `Components/AppFooter` + `Components/WebFooter` → 단일 `Components/Footer` 통합.
+
+- 5968807: base 헤더 단일화 — `AppBar` 와 `WebHeader` named export 제거, 단일 `<Header>` 로 통합.
+
+  ## Breaking changes
+  - `AppBar` / `WebHeader` named export 삭제. `<Header variant="compact|webview|transparent|web" />` 로 마이그레이션 필요.
+    - `<AppBar variant="default">` → `<Header variant="compact">`
+    - `<AppBar variant="webview">` → `<Header variant="webview">`
+    - `<AppBar variant="transparent">` → `<Header variant="transparent">`
+    - `<WebHeader>` → `<Header variant="web">`
+    - `AppBar.GNB` → `Header.Menu`
+    - 그 외 subcomponents (`AppBar.MainBar` / `NavBar` / `Logo` / `SearchBar` / `AuthMenu` / `BackButton` / `Divider`, `WebHeader.Logo` / `Menu` / `MenuItem` / `Actions` / `AppDownloadButton` / `AuthButton`) 는 모두 `Header.*` 로 1:1 rename.
+  - 옛 className prefix `nds-app-bar` / `nds-web-header` 제거 → 단일 `nds-header` 로 통일.
+  - 옛 CSS variable `--nds-app-bar-*` / `--nds-web-header-*` 제거 → `--nds-header-*` 단일. 외부에서 옛 변수로 override 하던 케이스는 새 이름으로 교체 필요.
+
+  ## Non-breaking
+  - 브랜드 chrome (`TrostAppBar` / `GenietAppBar` / `NudgeEAPAppBar` / `NudgeEAPWebHeader` / `CashpobiWebHeader`) named export 와 props 는 그대로. 내부에서만 새 base Header 사용.
+  - 슬롯 통합 결정:
+    - Logo / Menu — `WebHeader` 쪽 API 채택 (children 지원, items 배열 + children 양쪽 다 가능). `renderItem` 콜백은 `Header.Menu` 에 흡수.
+    - Auth — `Header.AuthMenu` (배열형) + `Header.AuthButton` (단일형) 둘 다 공존.
+  - MCP 가이드: `Header` 키 신설, 옛 `WebHeader` / `AppBar` 키 제거.
+
+### Minor Changes
+
+- ea692d7: 브랜드 chrome (헤더/푸터/바텀네비/웹헤더/웹푸터) 을 named export 로 승격.
+
+  신규 export:
+  - Geniet: GenietAppBar / GenietAppFooter / GenietBottomNav
+  - Trost: TrostAppBar / TrostAppFooter / TrostBottomNav / TrostWebFooter
+  - NudgeEAP: NudgeEAPAppBar / NudgeEAPAppFooter / NudgeEAPBottomNav / NudgeEAPWebHeader / NudgeEAPWebFooter
+  - Cashpobi (웹 전용): CashpobiWebHeader / CashpobiWebFooter
+
+  외부 프로젝트는 각 브랜드의 화면에서 단일 컴포넌트 호출 (`<GenietAppBar variant="desktop" ... />`) 만으로 표준 chrome 을 부를 수 있다 — 카테고리 박스, 검색·알림 아이콘, 다크 푸터, 5탭/3탭 BottomNav 같은 구조는 DS 가 책임지고, 콘텐츠 (메뉴 항목·로고·회사정보) 만 props 로 주입.
+
+  MCP 가이드 (`COMPONENT_GUIDES`) 에 12개 brand chrome 항목 추가 — base AppBar 대신 brand 별 화면에서는 이쪽을 사용하도록 안내. 캐포비는 _웹 전용_ 이라 AppBar/BottomNav 없음 명시.
+
+  스토리북 카탈로그 (`Components/AppBar` / `Components/AppFooter` / `Components/WebHeader` / `Components/WebFooter`) 에 브랜드 변형이 형제로 줄지어 보이도록 title 통합 — 더 이상 `Brands/Geniet/AppBar` 식 brand 폴더로 분리되지 않음.
+
+- 2fd35b4: `GenietAppBar` — Figma 77:2 (Geniet_TopHeader_Guide) 개편판 반영.
+
+  **Desktop (1920 × 172)**: 단일 MainBar+NavBar 구조에서 _Search Header(54h) + Menu Header(58h)_ 2단으로 재정렬.
+  - Search Header: logo(165×54) + search frame(pill 500 + 인기검색어 NEW chip, gap 24) + login*area(쿠폰상점·마이페이지·로그인 \_header action button* — icon 28 + Pretendard 11px label, 52×46 vertical).
+  - Menu Header: 음식 카테고리(160×58) + GNB(_홈/커뮤니티/헬시딜/음식 리뷰/기록_, Pretendard Bold 17, gap 20) + 우측 CTA pill(_캐시리뷰_ outline · _친구초대 이벤트_ tinted).
+
+  **Mobile (360 × 102)**: 단일 row + 검색·알림 액션 구조에서 _Row1(50h) + Row2(52h)_ 2단으로 변경.
+  - Row1: logo(97×32 mint) + outlined point chip(gpoint icon + amount) + user icon.
+  - Row2: hamburger 24 + search input(292×38, radius 8, gray fill).
+
+  **Props 변경**:
+  - 신규: `actionButtons: GenietAppBarAction[]` (login_area), `ctaButtons: GenietAppBarCta[]` (Menu Header 우측), `pointChip: GenietAppBarPointChip` (mobile Row1), `showUserIcon` / `onUserClick` / `onMobileMenuClick` / `mobileSearchPlaceholder` / `pcTopPadding` / `pcGap` / `pcSearchHeight` / `pcMenuHeight` / `searchWidth`.
+  - 제거: `authItems` (`actionButtons` 로 대체), `mobileActions` (mobile 구조가 고정), `mainBarPaddingY` / `navHeight`.
+
+  **MCP 가이드** (`COMPONENT_GUIDES.GenietAppBar`) 갱신 — 새 figmaNodeUrl(77:2), 새 props snippet, pitfall 7개.
+
+  **브랜드 fixture** (`apps/storybook/src/brand-fixtures.ts` geniet 블록) 갱신 — GNB items / auth items / searchBar 카피 / mobileHeight 102 / logo mobile height 32 등 새 spec 반영.
+
+- 0.2.0 — 캐포비 브랜드 합류 + 신규 컴포넌트 5종 + 브랜드 헤더/푸터 한 줄 호출 + MCP 가드레일 강화
+
+### Patch Changes
+
+- Updated dependencies [721b500]
+- Updated dependencies
+  - @nudge-eap/styles@0.1.11
+  - @nudge-eap/tokens@0.2.0
+  - @nudge-eap/icons@0.2.0
+
 ## 0.1.10
 
 ### Patch Changes

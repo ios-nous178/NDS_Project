@@ -1,7 +1,7 @@
 {
   "name": "nudge-eap-design-system",
   "private": true,
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "NudgeEAP Design System monorepo",
   "packageManager": "pnpm@9.6.0",
   "engines": {
