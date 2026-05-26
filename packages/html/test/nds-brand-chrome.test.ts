@@ -30,9 +30,8 @@ describe("nds-brand-header / nds-brand-footer", () => {
     const header = el.querySelector(".nds-brand-cashpobi") as HTMLElement;
     const logo = el.querySelector('img[alt="Cashwalk for Business"]');
     expect(header).toBeTruthy();
-    expect(logo?.getAttribute("src")).toBe(
-      "/brand-logos/cashpobi/cashwalk-for-business-horizontal.svg",
-    );
+    /* 로고는 self-contained data URI (cashpobi 는 svg 원본). */
+    expect(logo?.getAttribute("src")).toMatch(/^data:image\/svg\+xml;base64,/);
     expect(el.textContent).toContain("캠페인");
     const activeMenu = el.querySelector(
       '.nds-brand-cashpobi__menu-item[data-active="true"]',
@@ -83,9 +82,10 @@ describe("nds-brand-header / nds-brand-footer", () => {
 
     const root = el.querySelector(".nds-brand-geniet--mobile") as HTMLElement;
     expect(root).toBeTruthy();
-    /* mobile 전용 로고로 떨어져야 함 (PC 로고가 아니라) */
-    expect(el.querySelector('img[alt="Geniet"]')?.getAttribute("src")).toBe(
-      "/brand-logos/geniet-logo-mobile.webp",
+    /* mobile 전용 로고로 떨어져야 함 (PC 로고가 아니라). src 는 외부 hosting 없이도
+     * 깨지지 않게 base64 data URI 로 self-contained. */
+    expect(el.querySelector('img[alt="Geniet"]')?.getAttribute("src")).toMatch(
+      /^data:image\/webp;base64,/,
     );
     expect(el.querySelector(".nds-brand-geniet__mo-row1")).toBeTruthy();
     expect(el.querySelector(".nds-brand-geniet__mo-row2")).toBeTruthy();
@@ -149,7 +149,7 @@ describe("nds-brand-header / nds-brand-footer", () => {
     expect(footer).toBeTruthy();
     expect(el.textContent).toContain("개인정보처리방침");
     expect(el.textContent).toContain("휴마트컴퍼니");
-    expect(companyInfo?.getAttribute("logo-src")).toBe("/brand-logos/trost-logo.svg");
+    expect(companyInfo?.getAttribute("logo-src")).toMatch(/^data:image\/svg\+xml;base64,/);
   });
 
   it("brand aliases use their fixed brand fallback", async () => {
@@ -158,21 +158,22 @@ describe("nds-brand-header / nds-brand-footer", () => {
     await flush();
 
     expect(el.getAttribute("data-brand")).toBe("geniet");
-    expect(el.querySelector("nds-footer-company-info")?.getAttribute("logo-src")).toBe(
-      "/brand-logos/geniet-logo-footer.webp",
+    expect(el.querySelector("nds-footer-company-info")?.getAttribute("logo-src")).toMatch(
+      /^data:image\/webp;base64,/,
     );
     expect(el.textContent).toContain("넛지모바일");
   });
 
-  it("allows overriding the asset base url for shared html mockups", async () => {
+  it("BRAND_DATA 로고는 data URI 라 asset-base-url 이 와도 그대로 통과", async () => {
+    /* resolveAssetUrl 은 data: 시작 src 를 prefix 적용 없이 통과시킨다. 즉
+     * asset-base-url 을 줘도 기본 로고(data URI) 는 영향을 받지 않고 그대로 렌더된다.
+     * BRAND_DATA 외 별도 자산을 쓸 때만 asset-base-url 이 prefix 로 적용. */
     const el = document.createElement("nds-brand-header");
     el.setAttribute("brand", "nudge-eap");
     el.setAttribute("asset-base-url", "https://cdn.example.com/nds/brand-logos/");
     document.body.appendChild(el);
     await flush();
 
-    expect(el.querySelector("img")?.getAttribute("src")).toBe(
-      "https://cdn.example.com/nds/brand-logos/nudge-eap-logo.png",
-    );
+    expect(el.querySelector("img")?.getAttribute("src")).toMatch(/^data:image\/png;base64,/);
   });
 });

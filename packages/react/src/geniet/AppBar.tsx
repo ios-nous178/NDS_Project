@@ -14,6 +14,7 @@ import type { HeaderMenuItemData as AppBarGNBItem } from "../Header";
 import { TrendingKeywords } from "../TrendingKeywords";
 import type { TrendingKeywordItem } from "../TrendingKeywords";
 import { GenietMenuIcon, GenietSearchIcon, GenietGpointIcon } from "@nudge-eap/icons";
+import { GENIET_LOGO_PC_DATA_URI, GENIET_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults";
 
 /* ─── Constants (Figma 77:2 — Geniet_TopHeader_Guide) ───
  *   Desktop: 1920 × 172 (pad-top 40 + Search Header 54 + gap 20 + Menu Header 58)
@@ -42,6 +43,9 @@ const ROOT = "nds-geniet-app-bar";
 const DESKTOP = `${ROOT}--desktop`;
 const MOBILE = `${ROOT}--mobile`;
 const SEARCH_HEADER = `${ROOT}__search-header`;
+/* MENU_HEADER 는 inner row (1280 max-width); MENU_HEADER_RAIL 은 viewport 전체 폭을
+ * 차지하는 outer wrapper 로 위/아래 1px border 를 화면 끝까지 긋는다. (디자인 요청) */
+const MENU_HEADER_RAIL = `${ROOT}__menu-header-rail`;
 const MENU_HEADER = `${ROOT}__menu-header`;
 const SEARCH_FRAME = `${ROOT}__search-frame`;
 const SEARCH_INPUT = `${ROOT}__search-input`;
@@ -94,16 +98,25 @@ const genietAppBarStyles = `
     gap: ${spacing[24]}px;
   }
 
+  /* Rail: 100% viewport width — 위/아래 border 가 화면 끝까지 그어지도록 outer wrap.
+   * border 가 콘텐츠 max-width(1280) 안쪽에서만 끊기지 않게 분리한다. */
+  :where(.${MENU_HEADER_RAIL}) {
+    width: 100%;
+    margin-top: var(--nds-geniet-app-bar-gap, ${PC_GAP_DEFAULT}px);
+    border-top: 1px solid ${cv.borderRole.subtle};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
+    background: ${cv.surface.default};
+    box-sizing: border-box;
+  }
+
   :where(.${MENU_HEADER}) {
     display: flex;
     align-items: stretch;
     width: 100%;
     max-width: var(--nds-geniet-app-bar-max-width, ${PC_MAX_WIDTH_DEFAULT}px);
     height: var(--nds-geniet-app-bar-menu-height, ${PC_MENU_HEIGHT_DEFAULT}px);
-    margin: var(--nds-geniet-app-bar-gap, ${PC_GAP_DEFAULT}px) auto 0;
+    margin: 0 auto;
     padding: 0 ${spacing[16]}px;
-    border-top: 1px solid ${cv.borderRole.subtle};
-    border-bottom: 1px solid ${cv.borderRole.subtle};
     box-sizing: border-box;
   }
 
@@ -280,15 +293,19 @@ const genietAppBarStyles = `
     transition: background-color ${transition.default};
   }
 
+  /* 캐시리뷰 — 흰 배경 + 연한 파란 보더 + 토스 블루 아이콘/텍스트 (Geniet 디자인 스펙).
+   * 토큰화하지 않고 hex literal 로 못박은 이유: 이 두 pill 은 브랜드 mint 와 분리된
+   * accent 컬러(토스 블루 #1677ff / #0093f1) 라 시멘틱 토큰의 brand 슬롯과 충돌. */
   :where(.${CTA_PILL}[data-tone="outline"]) {
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
-    color: ${cv.textRole.brand};
+    border: 1px solid #dce9ff;
+    color: #1677ff;
   }
 
+  /* 친구초대 이벤트 — 연한 하늘 배경 + 파란 텍스트. 위와 동일하게 hex 고정. */
   :where(.${CTA_PILL}[data-tone="tinted"]) {
-    background: ${cv.surface.brandSubtle};
-    color: ${cv.textRole.brand};
+    background: #e9f7ff;
+    color: #0093f1;
   }
 
   :where(.${CTA_PILL}[data-tone="filled"]) {
@@ -582,7 +599,7 @@ function PointChip({ chip }: { chip: GenietAppBarPointChip }) {
 export const GenietAppBar = React.forwardRef<HTMLElement, GenietAppBarProps>((props, ref) => {
   const {
     variant = "desktop",
-    logo,
+    logo: logoProp,
     pcMaxWidth = PC_MAX_WIDTH_DEFAULT,
     pcTopPadding = PC_TOP_PAD_DEFAULT,
     pcGap = PC_GAP_DEFAULT,
@@ -607,6 +624,15 @@ export const GenietAppBar = React.forwardRef<HTMLElement, GenietAppBarProps>((pr
     webviewTitle,
     onBack,
   } = props;
+
+  /* 외부 소비자가 logo prop 을 안 줘도, npm 으로 받은 그 자리에서 깨지지 않고
+   * Geniet 로고가 렌더되어야 한다 — base64 data URI 로 self-contained 기본값 제공.
+   * 호스트가 자체 자산을 쓰고 싶으면 logo prop 으로 override. */
+  const logo: GenietAppBarLogo =
+    logoProp ??
+    (variant === "mobile"
+      ? { src: GENIET_LOGO_MOBILE_DATA_URI, alt: "Geniet", width: 97, height: 32 }
+      : { src: GENIET_LOGO_PC_DATA_URI, alt: "Geniet", width: 165, height: 54 });
 
   if (variant === "webview") {
     return (
@@ -746,31 +772,34 @@ export const GenietAppBar = React.forwardRef<HTMLElement, GenietAppBarProps>((pr
         )}
       </div>
 
-      {/* Row 2 — Menu Header (58h) */}
-      <nav className={MENU_HEADER} data-slot="menu-header">
-        {category && <CategoryBox label={category.label} href={category.href} />}
-        {gnbItems && gnbItems.length > 0 && (
-          <div className={GNB} data-slot="gnb">
-            {gnbItems.map((item) => (
-              <a
-                key={item.key}
-                href={item.href}
-                data-active={activeKey === item.key || undefined}
-                className={GNB_ITEM}
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-        )}
-        {ctaButtons && ctaButtons.length > 0 && (
-          <div className={CTA_GROUP} data-slot="cta-group">
-            {ctaButtons.map((cta) => (
-              <CtaPill key={cta.key} cta={cta} />
-            ))}
-          </div>
-        )}
-      </nav>
+      {/* Row 2 — Menu Header (58h). 외부 rail 이 viewport 전체 폭을 차지하며
+       * 위/아래 border 를 화면 끝까지 긋는다. 내부 <nav> 는 max-width 유지. */}
+      <div className={MENU_HEADER_RAIL} data-slot="menu-header-rail">
+        <nav className={MENU_HEADER} data-slot="menu-header">
+          {category && <CategoryBox label={category.label} href={category.href} />}
+          {gnbItems && gnbItems.length > 0 && (
+            <div className={GNB} data-slot="gnb">
+              {gnbItems.map((item) => (
+                <a
+                  key={item.key}
+                  href={item.href}
+                  data-active={activeKey === item.key || undefined}
+                  className={GNB_ITEM}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          )}
+          {ctaButtons && ctaButtons.length > 0 && (
+            <div className={CTA_GROUP} data-slot="cta-group">
+              {ctaButtons.map((cta) => (
+                <CtaPill key={cta.key} cta={cta} />
+              ))}
+            </div>
+          )}
+        </nav>
+      </div>
     </header>
   );
 });

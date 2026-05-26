@@ -1,6 +1,7 @@
 import React from "react";
 import { Header } from "../Header";
 import type { HeaderMenuItemData as WebHeaderMenuItem } from "../Header";
+import { CASHPOBI_LOGO_DATA_URI } from "../brand-logo-defaults";
 
 /**
  * Cashpobi (캐포비 · 캐시워크 for Business) 웹 헤더.
@@ -46,7 +47,9 @@ export interface CashpobiWebHeaderPrimaryCta {
 
 export interface CashpobiWebHeaderProps {
   variant?: CashpobiWebHeaderVariant;
-  logo: CashpobiWebHeaderLogo;
+  /** 로고 자산. 미지정 시 캐포비 기본 로고 (data URI) 가 들어가 외부 소비자가
+   *  자산 hosting 없이도 깨지지 않게 렌더. */
+  logo?: CashpobiWebHeaderLogo;
   /** 콘텐츠 max-width. 기본 1600 (캐포비 Layout/MaxContent). */
   maxWidth?: number;
   /**
@@ -72,7 +75,7 @@ export const CashpobiWebHeader = React.forwardRef<HTMLElement, CashpobiWebHeader
   (props, ref) => {
     const {
       variant = "desktop",
-      logo,
+      logo: logoProp,
       maxWidth = 1600,
       paddingX,
       menuItems,
@@ -81,6 +84,14 @@ export const CashpobiWebHeader = React.forwardRef<HTMLElement, CashpobiWebHeader
       primaryCta,
       onMobileMenu,
     } = props;
+
+    /* logo prop 미지정 시 self-contained 기본 로고로 fallback (npm 소비자가 자산
+     * hosting 없이도 항상 렌더되도록). 호스트가 자체 자산을 쓰면 prop 으로 override. */
+    const logo: CashpobiWebHeaderLogo =
+      logoProp ??
+      (variant === "mobile"
+        ? { src: CASHPOBI_LOGO_DATA_URI, alt: "Cashwalk for Business", width: 80, height: 24 }
+        : { src: CASHPOBI_LOGO_DATA_URI, alt: "Cashwalk for Business", width: 107, height: 32 });
 
     const resolvedPaddingX = paddingX ?? (variant === "mobile" ? 16 : 60);
     const containerStyle = {

@@ -55,9 +55,10 @@ describe("Geniet desktop ↔ React GenietAppBar variant='desktop'", () => {
 
   it("search row: logo + search input(placeholder) + trending top + 3 action buttons + 1 divider", async () => {
     const el = await mount({ brand: "geniet", "active-key": "home" });
-    /* logo — PC 로고 (165×54) */
+    /* logo — PC 로고 (165×54). src 는 외부 소비처가 별도 hosting 안 해도 깨지지
+     * 않도록 base64 data URI 로 self-contained. */
     const logo = el.querySelector('.nds-brand-geniet__logo img[alt="Geniet"]') as HTMLImageElement;
-    expect(logo?.getAttribute("src")).toBe("/brand-logos/geniet-logo-pc.webp");
+    expect(logo?.getAttribute("src")).toMatch(/^data:image\/webp;base64,/);
     expect(logo?.getAttribute("width")).toBe("165");
     /* search input — fixture placeholder */
     const input = el.querySelector(".nds-brand-geniet__search-input input") as HTMLInputElement;
@@ -118,9 +119,9 @@ describe("Geniet mobile ↔ React GenietAppBar variant='mobile'", () => {
     expect(el.querySelector(".nds-brand-geniet--mobile")).toBeTruthy();
     expect(el.querySelector(".nds-brand-geniet__mo-row1")).toBeTruthy();
     expect(el.querySelector(".nds-brand-geniet__mo-row2")).toBeTruthy();
-    /* mobile logo (97×32) — PC 로고와 다름 */
+    /* mobile logo (97×32) — PC 로고와 다름. self-contained data URI. */
     const logo = el.querySelector(".nds-brand-geniet__mo-row1 img") as HTMLImageElement;
-    expect(logo?.getAttribute("src")).toBe("/brand-logos/geniet-logo-mobile.webp");
+    expect(logo?.getAttribute("src")).toMatch(/^data:image\/webp;base64,/);
     expect(logo?.getAttribute("width")).toBe("97");
   });
 
@@ -167,11 +168,11 @@ describe("Trost web ↔ React TrostWebHeader (compound)", () => {
 
   it("utility header: logo + yellow-border search input (530w) + login(+상담사회원가입) + app-dl", async () => {
     const el = await mount({ brand: "trost" });
-    /* logo */
+    /* logo — self-contained data URI (SVG base64). */
     const logo = el.querySelector(
       '.nds-brand-trost-web__utility-logo img[alt="Trost"]',
     ) as HTMLImageElement;
-    expect(logo?.getAttribute("src")).toBe("/brand-logos/trost-logo.svg");
+    expect(logo?.getAttribute("src")).toMatch(/^data:image\/svg\+xml;base64,/);
     /* search input */
     const search = el.querySelector(".nds-brand-trost-web__search input") as HTMLInputElement;
     expect(search?.placeholder).toBe("전문가, 상황, 증상 등을 검색해 보세요");
