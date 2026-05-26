@@ -93,7 +93,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     solid: {
       enabled: {
         background: cv.surface.brand,
-        text: cv.textRole.inverse,
+        text: cv.button.textDefault,
         border: cv.borderRole.brand,
       },
       disabled: {
@@ -104,7 +104,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
       },
       hover: {
         background: cv.fill.brandHover,
-        text: cv.textRole.inverse,
+        text: cv.button.textDefault,
         border: cv.fill.brandHover,
       },
     },
