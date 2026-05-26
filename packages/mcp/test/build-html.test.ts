@@ -5,6 +5,7 @@ import path from "node:path";
 import {
   auditMockupWorkspace,
   detectWorkspaceIntent,
+  injectHtmlUsageSummary,
   patchViteConfig,
 } from "../src/tools/build-html.js";
 
@@ -115,6 +116,45 @@ export default defineConfig({
     const out = patchViteConfig(input);
     expect(out).not.toBeNull();
     expect(out).toMatch(/build:\s*\{\s*cssMinify:\s*false,\s*sourcemap:\s*true,/);
+  });
+});
+
+describe("injectHtmlUsageSummary", () => {
+  it("uses built dist/index.html counts and replaces stale visible DS badge text", () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "ds-summary-"));
+    try {
+      fs.writeFileSync(
+        path.join(tmp, "package.json"),
+        JSON.stringify({
+          dependencies: {
+            "@nudge-eap/tokens": "0.1.10",
+          },
+        }),
+      );
+      fs.mkdirSync(path.join(tmp, "dist"), { recursive: true });
+      const outputPath = path.join(tmp, "dist", "index.html");
+      fs.writeFileSync(
+        outputPath,
+        `<html><body>
+          <main>
+            <nds-brand-header></nds-brand-header>
+            <nds-button>구매</nds-button>
+            <nds-card><nds-chip>혜택</nds-chip></nds-card>
+          </main>
+          <footer><span data-ds-badge>DS@0.1.10 · DS 14 (94%)</span></footer>
+        </body></html>`,
+      );
+
+      const summary = injectHtmlUsageSummary(tmp, outputPath);
+      const html = fs.readFileSync(outputPath, "utf-8");
+
+      expect(summary).toBe("DS@0.1.10 · DS 4 (100%)");
+      expect(html).toContain(`<span data-ds-badge>DS@0.1.10 · DS 4 (100%)</span>`);
+      expect(html).toContain("NudgeEAP DS usage: DS@0.1.10 · DS 4 (100%)");
+      expect(html).not.toContain("DS 14 (94%)");
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
   });
 });
 

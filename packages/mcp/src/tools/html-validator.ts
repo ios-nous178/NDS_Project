@@ -257,9 +257,14 @@ export function validateHtmlSource(
     if (
       (tag === "aside" && ctx.ndsTagSet.has("nds-sidebar")) ||
       (tag === "footer" &&
-        (ctx.ndsTagSet.has("nds-footer") || ctx.ndsTagSet.has("nds-footer-info"))) ||
-      (tag === "header" && ctx.ndsTagSet.has("nds-header"))
+        (ctx.ndsTagSet.has("nds-brand-footer") ||
+          ctx.ndsTagSet.has("nds-footer") ||
+          ctx.ndsTagSet.has("nds-footer-info"))) ||
+      (tag === "header" &&
+        (ctx.ndsTagSet.has("nds-brand-header") || ctx.ndsTagSet.has("nds-header")))
     ) {
+      const hasBrandHeader = ctx.ndsTagSet.has("nds-brand-header");
+      const hasBrandFooter = ctx.ndsTagSet.has("nds-brand-footer");
       violations.push({
         rule: "raw-landmark",
         line,
@@ -269,8 +274,12 @@ export function validateHtmlSource(
           tag === "aside"
             ? "사이드바는 <nds-sidebar> 우선 사용. get_guide({ topic: 'component:Sidebar', target: 'html' }) 참조."
             : tag === "footer"
-              ? "푸터는 <nds-footer-info> / <nds-footer-web> 우선 사용. get_guide({ topic: 'component:Footer', target: 'html' }) 참조."
-              : "헤더는 <nds-header> 우선 사용. get_guide({ topic: 'component:Header', target: 'html' }) 참조.",
+              ? hasBrandFooter
+                ? "사용자 앱/브랜드 화면의 푸터는 raw <footer> 금지. <nds-brand-footer brand='geniet|trost|nudge-eap|cashpobi' surface='web|app' asset-base-url='/brand-logos'> 로 교체. get_guide({ topic: 'component:BrandFooter', target: 'html' }) 참조."
+                : "푸터는 <nds-footer-info> / <nds-footer-web> 우선 사용. get_guide({ topic: 'component:Footer', target: 'html' }) 참조."
+              : hasBrandHeader
+                ? "사용자 앱/브랜드 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-brand-header brand='geniet|trost|nudge-eap|cashpobi' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 로 교체. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조."
+                : "헤더는 <nds-header> 우선 사용. get_guide({ topic: 'component:Header', target: 'html' }) 참조.",
       });
     }
 

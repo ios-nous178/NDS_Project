@@ -51,6 +51,9 @@ import { getGuide } from "./tools/guides.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
 
+const VISUAL_REFERENCE_QUESTION =
+  "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요.";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDirectRun =
   process.argv[1] !== undefined &&
@@ -211,10 +214,29 @@ function clampLimit(value: unknown, fallback: number, max: number): number {
 
 function searchComponent(query: string, limit = 10) {
   return manifest.components
-    .map((c) => ({ name: c.name, score: scoreMatch(query, c.name) }))
+    .map((c) => ({
+      name: c.name,
+      htmlTag: c.htmlTag,
+      propsCount: c.props?.length ?? 0,
+      guideHint: getComponentGuideHint(c.name),
+      score: scoreMatch(query, c.name),
+    }))
     .filter((c) => c.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
+}
+
+function getComponentGuideHint(name: string): string | undefined {
+  if (name === "BrandHeader") {
+    return "브랜드 웹/앱 헤더는 직접 조립하지 말고 get_guide({ topic: 'component:BrandHeader', target: 'html' }) 확인 후 <nds-brand-header> 사용.";
+  }
+  if (name === "BrandFooter") {
+    return "브랜드 웹/앱 푸터는 직접 조립하지 말고 get_guide({ topic: 'component:BrandFooter', target: 'html' }) 확인 후 <nds-brand-footer> 사용.";
+  }
+  if (name === "BrandChrome") {
+    return "Wrapper/umbrella 항목입니다. 실제 목업에서는 BrandHeader + BrandFooter 가이드를 우선 호출하세요.";
+  }
+  return undefined;
 }
 
 /**
@@ -249,6 +271,7 @@ function findComponent(args: { name?: string; query?: string; limit?: number; ve
         name: p.name,
         ...(p.optional === false ? { required: true } : {}),
       })),
+      ...(getComponentGuideHint(c.name) ? { guideHint: getComponentGuideHint(c.name) } : {}),
       _hint:
         "Slim response — prop names only. Pass verbose:true for full signatures (type/allowedValues/etc). For usage examples + guidance, prefer get_guide({ topic: `component:${c.name}` }).",
     };
@@ -347,6 +370,43 @@ function findToken(args: { group?: string; query?: string }) {
       "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. No-arg call returns only the summary to save tokens.",
     total: manifest.tokens.length,
     groups,
+  };
+}
+
+function visualReferencePrompt(toolName: string) {
+  return {
+    rule: "visual-reference-first-response",
+    tool: toolName,
+    requiredFirstResponseQuestion: VISUAL_REFERENCE_QUESTION,
+    repeatPolicy:
+      "Ask this at most once per mockup task. If the user already answered in the current conversation or references.md/.references exists for this workspace, do not ask again; read the references and proceed.",
+    instruction:
+      "For any mockup/screen/page creation request, ask this before implementation. If the user already provided references, ask whether to use those as the visual source of truth and whether there are additional good/bad references.",
+    afterAnswer:
+      "Create references.md in the mockup workspace root with lines like: [good] source=<figma-url|image-name> caption=<1-line reason> and [bad] source=<figma-url|image-name> caption=<1-line reason>.",
+    useReferences:
+      "Use MCP-bundled component/pattern references from get_guide responses first as the DS baseline (figmaNodeUrl, references[], imageAbsolutePath). Then read task-specific references.md and write a short visual plan that maps good references to concrete layout/spacing/typography/color decisions and bad references to explicit avoid rules. In the final response, summarize both MCP reference cues and task reference cues that were applied.",
+    note: "This is a soft prompt, not a hard block. Continue only after surfacing the question to the user.",
+  };
+}
+
+function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
+  const prompt = visualReferencePrompt(toolName);
+  if (Array.isArray(result)) {
+    return {
+      _visualReferenceFirstResponse: prompt,
+      results: result,
+    };
+  }
+  if (result && typeof result === "object") {
+    return {
+      _visualReferenceFirstResponse: prompt,
+      ...(result as Record<string, unknown>),
+    };
+  }
+  return {
+    _visualReferenceFirstResponse: prompt,
+    result,
   };
 }
 
@@ -456,40 +516,54 @@ const server = new Server(
 );
 
 const toolHandlers = {
-  get_brand: (args: ToolArgs) => getBrand(args as { brand?: string }),
+  get_brand: (args: ToolArgs) =>
+    withVisualReferencePrompt("get_brand", getBrand(args as { brand?: string })),
   find_component: (args: ToolArgs) =>
-    findComponent(args as { name?: string; query?: string; limit?: number; verbose?: boolean }),
+    withVisualReferencePrompt(
+      "find_component",
+      findComponent(args as { name?: string; query?: string; limit?: number; verbose?: boolean }),
+    ),
   find_icon: (args: ToolArgs) =>
-    findIcon(args as { query?: string; category?: string; limit?: number }),
-  find_token: (args: ToolArgs) => findToken(args as { group?: string; query?: string }),
+    withVisualReferencePrompt(
+      "find_icon",
+      findIcon(args as { query?: string; category?: string; limit?: number }),
+    ),
+  find_token: (args: ToolArgs) =>
+    withVisualReferencePrompt("find_token", findToken(args as { group?: string; query?: string })),
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
   get_guide: (args: ToolArgs) =>
-    getGuide(
-      args as {
-        topic: string;
-        intent?: string;
-        target?: "react" | "html";
-        sections?: string[];
-      },
+    withVisualReferencePrompt(
+      "get_guide",
+      getGuide(
+        args as {
+          topic: string;
+          intent?: string;
+          target?: "react" | "html";
+          sections?: string[];
+        },
+      ),
     ),
   get_setup: (args: ToolArgs) =>
-    getSetup(
-      args as {
-        step: string;
-        tgzDir?: string;
-        brand?: string;
-        withRouter?: boolean;
-        includeTailwind?: boolean;
-        intent?: string;
-        source?: string;
-        includeLocalPackages?: boolean;
-        cwd?: string;
-        projectName?: string;
-        overwrite?: boolean;
-        template?: "slim" | "default";
-        mode?: "summary" | "full";
-      },
+    withVisualReferencePrompt(
+      "get_setup",
+      getSetup(
+        args as {
+          step: string;
+          tgzDir?: string;
+          brand?: string;
+          withRouter?: boolean;
+          includeTailwind?: boolean;
+          intent?: string;
+          source?: string;
+          includeLocalPackages?: boolean;
+          cwd?: string;
+          projectName?: string;
+          overwrite?: boolean;
+          template?: "slim" | "default";
+          mode?: "summary" | "full";
+        },
+      ),
     ),
   dev_server: (args: ToolArgs) =>
     devServer(
@@ -630,7 +704,28 @@ registerDevServerCleanup();
 registerToolHandlers(server, toolHandlers, {
   afterCall: async ({ name, args, result }) => {
     try {
-      const guard = await runUsageGuards(name, args);
+      if (
+        name === "build_singlefile_html" &&
+        result &&
+        typeof result === "object" &&
+        !Array.isArray(result) &&
+        (result as { intent?: unknown }).intent === "html"
+      ) {
+        return undefined;
+      }
+      const guardArgs =
+        name === "build_singlefile_html" &&
+        !args.cwd &&
+        result &&
+        typeof result === "object" &&
+        !Array.isArray(result) &&
+        typeof (result as { outputPath?: unknown }).outputPath === "string"
+          ? {
+              ...args,
+              cwd: path.dirname(path.dirname((result as { outputPath: string }).outputPath)),
+            }
+          : args;
+      const guard = await runUsageGuards(name, guardArgs);
       return attachUsageGuardOutcome(result, guard);
     } catch {
       return undefined;

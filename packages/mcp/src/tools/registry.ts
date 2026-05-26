@@ -19,7 +19,7 @@ const TOOLS = [
   {
     name: "get_brand",
     description:
-      "Look up brand metadata. No args lists brands; `{ brand }` returns imports, colors, fonts, and icons.",
+      "Look up brand metadata. No args lists brands; `{ brand }` returns imports, colors, fonts, and icons. Mockup/screen work must start by asking the user for visual references before this lookup.",
     inputSchema: {
       type: "object",
       properties: {
@@ -35,7 +35,7 @@ const TOOLS = [
   {
     name: "find_component",
     description:
-      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only). Pass `verbose:true` to get full prop signatures (type/allowedValues) — the slim default keeps batched lookups cheap.",
+      "Look up DS components. For mockup/screen work, do not call this until the user has answered the visual-reference question and references.md is ready. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only). Pass `verbose:true` to get full prop signatures (type/allowedValues) — the slim default keeps batched lookups cheap.",
     inputSchema: {
       type: "object",
       properties: {
@@ -56,7 +56,8 @@ const TOOLS = [
   },
   {
     name: "find_icon",
-    description: "Search @nudge-eap/icons. Prefer `{ query }`; no args returns the icon index.",
+    description:
+      "Search @nudge-eap/icons. For mockup/screen work, do not call this until visual references are collected. Prefer `{ query }`; no args returns the icon index.",
     inputSchema: {
       type: "object",
       properties: {
@@ -73,7 +74,7 @@ const TOOLS = [
   {
     name: "find_token",
     description:
-      "Look up design tokens. No args returns group counts; `{ group }` lists a group; `{ query }` searches.",
+      "Look up design tokens. For mockup/screen work, do not call this until visual references are collected. No args returns group counts; `{ group }` lists a group; `{ query }` searches.",
     inputSchema: {
       type: "object",
       properties: {
@@ -318,7 +319,7 @@ const TOOLS = [
   {
     name: "get_guide",
     description:
-      "Fetch DS guidance by topic. Use `target: 'html'` for <nds-*> component examples. **For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys — avoids 30k+ token responses when you only need a slice.** First call without sections to discover available keys (response keys ARE the available sections); subsequent calls can narrow.",
+      "Fetch DS guidance by topic. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys.",
     inputSchema: {
       type: "object",
       properties: {
@@ -350,7 +351,7 @@ const TOOLS = [
   {
     name: "get_setup",
     description:
-      "Setup router for install/import/update/CLAUDE.md/AGENTS.md/full instructions. Defaults to HTML/<nds-*>.",
+      "Setup router for install/import/update/CLAUDE.md/AGENTS.md/full instructions. Defaults to HTML/<nds-*>. Generated mockup instructions enforce a first-response visual-reference question before code or DS lookups.",
     inputSchema: {
       type: "object",
       properties: {
@@ -559,6 +560,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         topic: requireString(args, "topic", toolName),
         intent: optionalString(args, "intent", toolName),
         target: optionalEnum(args, "target", GUIDE_TARGET_VALUES, toolName),
+        sections: optionalStringArray(args, "sections", toolName),
       };
     case "get_setup":
       return {

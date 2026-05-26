@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { configureHtmlValidator, validateHtmlSource } from "../src/tools/html-validator";
+import {
+  configureHtmlValidator,
+  validateHtmlMockup,
+  validateHtmlSource,
+} from "../src/tools/html-validator";
 
 // 테스트 환경에서는 token set / nds tag set 을 직접 박는다 (server.ts 의 manifest 로딩 우회).
 configureHtmlValidator({
@@ -28,6 +32,8 @@ configureHtmlValidator({
     "nds-modal",
     "nds-bottom-sheet",
     "nds-sidebar",
+    "nds-brand-header",
+    "nds-brand-footer",
     "nds-footer-info",
     "nds-header",
   ]),
@@ -172,6 +178,16 @@ describe("validateHtmlSource", () => {
     expect(rulesFor(`<aside>menu</aside>`)).toContain("raw-landmark");
     expect(rulesFor(`<footer>company</footer>`)).toContain("raw-landmark");
     expect(rulesFor(`<header>title</header>`)).toContain("raw-landmark");
+  });
+
+  it("directs raw brand header/footer to BrandHeader and BrandFooter", () => {
+    const result = validateHtmlMockup({
+      source: `<header>직접 만든 GNB</header><footer>직접 만든 푸터</footer>`,
+    });
+    const raw = result.violations.filter((v) => v.rule === "raw-landmark");
+
+    expect(raw.some((v) => v.suggestion.includes("component:BrandHeader"))).toBe(true);
+    expect(raw.some((v) => v.suggestion.includes("component:BrandFooter"))).toBe(true);
   });
 
   it("flags x text used as an icon substitute", () => {
