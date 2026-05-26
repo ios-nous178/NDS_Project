@@ -64,6 +64,8 @@ interface DomElement {
   startIndex?: number | null;
 }
 
+export type HtmlViolationSeverity = "error" | "warn" | "info";
+
 export interface HtmlViolation {
   rule: string;
   line: number;
@@ -74,6 +76,16 @@ export interface HtmlViolation {
    */
   detail?: string;
   suggestion?: string;
+  /**
+   * 사용자가 우선순위를 정할 수 있도록 violation 의 무게를 표시.
+   *  - error : DS 컨트랙트 위반. 디자이너/PM 이 받았을 때 명백한 결함 (DS 컴포넌트 미사용, native landmark, 알 수 없는 토큰 등).
+   *  - warn  : 시각 위계 / 패턴 가이드 위반. 케이스에 따라 의도된 trade-off 일 수 있음 (chip-overuse 등).
+   *  - info  : 정보성 권고.
+   *
+   * 미지정으로 push 된 violation 은 finalizeViolations() 에서 RULE_SEVERITY 기반 기본값으로 채워진다.
+   * (raw-landmark 처럼 컨텍스트에 따라 severity 가 달라지는 룰은 push 시점에 명시.)
+   */
+  severity?: HtmlViolationSeverity;
 }
 
 export interface HtmlValidationContext {
@@ -94,6 +106,61 @@ const EMPTY: HtmlValidationContext = {
 let configured: HtmlValidationContext = EMPTY;
 export function configureHtmlValidator(ctx: HtmlValidationContext) {
   configured = ctx;
+}
+
+/**
+ * 룰별 기본 severity. push 시점에 명시되지 않은 violation 은 이 맵에서 채워진다.
+ *
+ *  error : DS 컨트랙트 위반. 디자이너/PM 이 산출물을 봤을 때 명백한 결함.
+ *  warn  : 시각 위계 / 패턴 가이드 위반. 의도된 trade-off 일 수 있음.
+ *  info  : 정보성 권고.
+ *
+ * raw-landmark 는 컨텍스트에 따라 (brand 변형 가용 vs 아님) 달라지므로 push 시점에 명시.
+ */
+const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
+  // contract / DS 미사용
+  "native-interactive": "error",
+  "raw-landmark": "warn",
+  "unknown-nds-tag": "error",
+  "unknown-nds-class": "error",
+  "invalid-nds-attr-value": "error",
+  "unknown-token": "error",
+  "ds-badge-missing": "error",
+  // 토큰 / 시멘틱
+  "inline-color": "error",
+  "inline-spacing": "warn",
+  "non-4pt-spacing": "warn",
+  "non-semantic-spacing": "warn",
+  // 금지 패턴
+  "gradient-banned": "error",
+  "emoji-banned": "error",
+  "text-symbol-banned": "error",
+  "text-icon-substitute": "error",
+  // 아이콘 / 시각
+  "inline-svg": "warn",
+  "heading-decorative-icon": "warn",
+  // 컨테이너 / 카운팅
+  "card-slot-double-padding": "warn",
+  "assistive-solid-cta": "warn",
+  "nested-card": "warn",
+  "card-badge-overuse": "warn",
+  "card-footer-button-overuse": "warn",
+  "primary-cta-per-container": "warn",
+  "primary-cta-overuse": "warn",
+  "chip-overuse": "warn",
+  "card-everything": "warn",
+  "repeated-h1": "error",
+  "repeated-h2": "warn",
+  "bold-overuse": "warn",
+  "brand-bg-overuse": "warn",
+  "decorative-shadow": "warn",
+  "tone-on-tone-filled": "warn",
+  "visual-emphasis-overload": "warn",
+  "primary-color-role-overload": "warn",
+};
+
+function severityFor(rule: string): HtmlViolationSeverity {
+  return RULE_SEVERITY[rule] ?? "warn";
 }
 
 const STRICT_SYMBOL_RE = /[→←↑↓↔↕➜➔⮕›‹»«▶◀▲▼◆◇✓✗✘✕☑☒★☆⭐♥♡❤•]/;
@@ -265,20 +332,26 @@ export function validateHtmlSource(
     ) {
       const hasBrandHeader = ctx.ndsTagSet.has("nds-brand-header");
       const hasBrandFooter = ctx.ndsTagSet.has("nds-brand-footer");
+      // brand-header/footer 가 있는데도 raw <header>/<footer> 를 쓰는 건 contract 위반에 가까움.
+      // (회고: validator 추천을 "soft suggestion" 으로 오해해 reference 스크린샷 fidelity 우선)
+      // 이 경우엔 error 로 승격, brand 변형이 없는 일반 landmark 대체는 warn.
+      const isBrandReplaceable =
+        (tag === "footer" && hasBrandFooter) || (tag === "header" && hasBrandHeader);
       violations.push({
         rule: "raw-landmark",
         line,
         selector,
+        severity: isBrandReplaceable ? "error" : "warn",
         detail: `<${tag}> 를 raw landmark 로 구현함`,
         suggestion:
           tag === "aside"
             ? "사이드바는 <nds-sidebar> 우선 사용. get_guide({ topic: 'component:Sidebar', target: 'html' }) 참조."
             : tag === "footer"
               ? hasBrandFooter
-                ? "사용자 앱/브랜드 화면의 푸터는 raw <footer> 금지. <nds-brand-footer brand='geniet|trost|nudge-eap|cashpobi' surface='web|app' asset-base-url='/brand-logos'> 로 교체. get_guide({ topic: 'component:BrandFooter', target: 'html' }) 참조."
+                ? "[error] 사용자 앱/브랜드 화면의 푸터는 raw <footer> 금지. <nds-brand-footer brand='geniet|trost|nudge-eap|cashpobi' surface='web|app' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandFooter', target: 'html' }) 참조."
                 : "푸터는 <nds-footer-info> / <nds-footer-web> 우선 사용. get_guide({ topic: 'component:Footer', target: 'html' }) 참조."
               : hasBrandHeader
-                ? "사용자 앱/브랜드 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-brand-header brand='geniet|trost|nudge-eap|cashpobi' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 로 교체. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조."
+                ? "[error] 사용자 앱/브랜드 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-brand-header brand='geniet|trost|nudge-eap|cashpobi' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조."
                 : "헤더는 <nds-header> 우선 사용. get_guide({ topic: 'component:Header', target: 'html' }) 참조.",
       });
     }
@@ -508,6 +581,10 @@ export function validateHtmlSource(
   // ─── 문서-레벨 카운트 룰 ───
   collectDocumentLevelViolations(source, $, violations);
 
+  // push 시점에 severity 를 명시하지 않은 violation 은 RULE_SEVERITY 에서 채운다.
+  for (const v of violations) {
+    if (!v.severity) v.severity = severityFor(v.rule);
+  }
   return violations;
 }
 
@@ -921,7 +998,20 @@ export interface ValidateHtmlMockupResult {
   /** 각 violation. 동일 rule 의 6번째 위반부터는 detail/suggestion 생략 (line 만 보존). */
   violations: HtmlViolation[];
   /** rule 별 총 카운트 + 발생 line 목록. 트림된 violations[] 와 무관하게 정확한 집계. */
-  violationsByRule: Array<{ rule: string; count: number; lines: number[] }>;
+  violationsByRule: Array<{
+    rule: string;
+    count: number;
+    severity: HtmlViolationSeverity;
+    lines: number[];
+  }>;
+  /** severity 별 집계. 사용자가 error 부터 우선 처리할 수 있도록 응답 상단에 노출. */
+  severitySummary: {
+    error: number;
+    warn: number;
+    info: number;
+    /** error 가 1개 이상이면 true — ship 차단 권장. */
+    hasErrors: boolean;
+  };
   jsxOnlyNotice: string;
 }
 
@@ -946,23 +1036,51 @@ function trimViolationsForResponse(violations: HtmlViolation[]): HtmlViolation[]
     if (count < FULL_SAMPLES_PER_RULE) {
       return { ...v, selector };
     }
-    // 같은 rule 의 N+1 번째부터는 line 만 (detail/suggestion 은 sample 과 동일).
-    return { rule: v.rule, line: v.line, ...(selector ? { selector } : {}) };
+    // 같은 rule 의 N+1 번째부터는 line 만 (severity / detail / suggestion 은 sample 과 동일).
+    return {
+      rule: v.rule,
+      line: v.line,
+      ...(v.severity ? { severity: v.severity } : {}),
+      ...(selector ? { selector } : {}),
+    };
   });
 }
 
 function summarizeByRule(
   violations: HtmlViolation[],
-): Array<{ rule: string; count: number; lines: number[] }> {
-  const byRule = new Map<string, number[]>();
+): ValidateHtmlMockupResult["violationsByRule"] {
+  const byRule = new Map<string, { severity: HtmlViolationSeverity; lines: number[] }>();
   for (const v of violations) {
-    const arr = byRule.get(v.rule) ?? [];
-    arr.push(v.line);
-    byRule.set(v.rule, arr);
+    const entry = byRule.get(v.rule) ?? {
+      severity: v.severity ?? severityFor(v.rule),
+      lines: [],
+    };
+    entry.lines.push(v.line);
+    byRule.set(v.rule, entry);
   }
+  const SEVERITY_ORDER: Record<HtmlViolationSeverity, number> = { error: 0, warn: 1, info: 2 };
   return Array.from(byRule.entries())
-    .map(([rule, lines]) => ({ rule, count: lines.length, lines }))
-    .sort((a, b) => b.count - a.count);
+    .map(([rule, { severity, lines }]) => ({ rule, severity, count: lines.length, lines }))
+    .sort((a, b) => {
+      const sev = SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity];
+      if (sev !== 0) return sev;
+      return b.count - a.count;
+    });
+}
+
+function summarizeSeverity(
+  violations: HtmlViolation[],
+): ValidateHtmlMockupResult["severitySummary"] {
+  let error = 0;
+  let warn = 0;
+  let info = 0;
+  for (const v of violations) {
+    const sev = v.severity ?? severityFor(v.rule);
+    if (sev === "error") error += 1;
+    else if (sev === "warn") warn += 1;
+    else info += 1;
+  }
+  return { error, warn, info, hasErrors: error > 0 };
 }
 
 export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMockupResult {
@@ -978,10 +1096,12 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
   const rawViolations = validateHtmlSource(source);
   const violations = trimViolationsForResponse(rawViolations);
   const violationsByRule = summarizeByRule(rawViolations);
+  const severitySummary = summarizeSeverity(rawViolations);
   return {
     ok: rawViolations.length === 0,
     violations,
     violationsByRule,
+    severitySummary,
     jsxOnlyNotice:
       "validate_html_mockup 은 토큰·간격·아이콘·nds-* 태그/클래스·컨테이너 패턴 (Card 중첩 / Footer 버튼 과다 / 영역별 primary CTA / heading 장식 / brand BG / bold 남발 등) 까지 검사합니다. " +
       "다만 JSX 전용 룰 — antd import 잔존 / 외부 아이콘 라이브러리 import / Chip.label 속성 / 화살표 아이콘 식별 (HTML 에서는 익명 <svg>) — 은 .tsx 시점에서만 검출됩니다. " +

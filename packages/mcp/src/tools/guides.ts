@@ -18,6 +18,7 @@ import {
   UX_WRITING_GUIDE,
   detectIntentFromText,
 } from "../guides.js";
+import { markPrinciplesCalled } from "./session-state.js";
 
 /**
  * MCP 패키지 루트. references/*.png 같은 상대경로를 절대경로로 풀어 응답에 함께
@@ -305,6 +306,7 @@ export function getGuide(args: {
 
   switch (topic) {
     case "principles":
+      markPrinciplesCalled();
       return pickSections(getDesignPrinciples() as Record<string, unknown>, sections);
     case "dos-donts":
       return pickSections(getDosAndDonts() as Record<string, unknown>, sections);

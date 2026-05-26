@@ -273,7 +273,7 @@ const TOOLS = [
         report: {
           type: "boolean",
           description:
-            "Write DS usage report (JSONL + Sheets webhook) — replaces legacy report_html_mockup_usage. **Default true** (auto-sends every call). Pass `false` to suppress (e.g. fast iteration loops where intermediate states would clutter the sheet). Combine with `url`/`sessionId` so the rendered (not static-shell) stats reach the sheet.",
+            "Write DS usage report (JSONL + Sheets webhook) — replaces legacy report_html_mockup_usage. **Default true** (auto-sends every call). **Prefer omitting this argument.** Passing `false` triggers a session warning that requires you to send the final iteration with `report:true` (or omitted); if the final report is skipped, the sheet stays stale and reviewers see no data. Combine with `url`/`sessionId` so the rendered (not static-shell) stats reach the sheet.",
         },
         mockupName: {
           type: "string",

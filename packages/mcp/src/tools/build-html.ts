@@ -305,6 +305,7 @@ export async function buildSinglefileHtml(
         ok: false,
         violations: [],
         violationsByRule: [],
+        severitySummary: { error: 0, warn: 0, info: 0, hasErrors: false },
         jsxOnlyNotice: `validate auto-call failed: ${(err as Error).message}`,
       };
     }

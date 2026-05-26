@@ -351,3 +351,58 @@ describe("validateHtmlSource — ported JSX patterns", () => {
     expect(rulesFor(`<h3>제목</h3>`)).not.toContain("heading-decorative-icon");
   });
 });
+
+describe("violation severity", () => {
+  it("populates severity from rule defaults", () => {
+    const raw = validateHtmlSource(`<div style="color: #ff0000">x</div>`);
+    const v = raw.find((x) => x.rule === "inline-color");
+    expect(v?.severity).toBe("error");
+  });
+
+  it("raw <header>/<footer> with brand variant available is error", () => {
+    const result = validateHtmlMockup({
+      source: `<header>직접 만든 GNB</header><footer>직접 만든 푸터</footer>`,
+    });
+    const raw = result.violations.filter((v) => v.rule === "raw-landmark");
+    expect(raw.every((v) => v.severity === "error")).toBe(true);
+  });
+
+  it("raw <aside> falls back to warn (no brand variant)", () => {
+    const result = validateHtmlMockup({ source: `<aside>menu</aside>` });
+    const aside = result.violations.find(
+      (v) => v.rule === "raw-landmark" && v.selector?.includes("aside"),
+    );
+    expect(aside?.severity).toBe("warn");
+  });
+
+  it("severitySummary aggregates counts", () => {
+    const result = validateHtmlMockup({
+      source: `
+        <header>raw</header>
+        <div style="color: #f00">inline color</div>
+        <div style="padding: 13px">non-4pt</div>
+      `,
+    });
+    expect(result.severitySummary.error).toBeGreaterThan(0);
+    expect(result.severitySummary.hasErrors).toBe(true);
+    expect(result.severitySummary.warn).toBeGreaterThan(0);
+  });
+
+  it("violationsByRule entries include severity, errors sort first", () => {
+    const result = validateHtmlMockup({
+      source: `
+        <header>raw</header>
+        <p>가벼운 warn 만 — chip 8개 넘김</p>
+        ${Array.from({ length: 9 }, () => `<nds-chip>x</nds-chip>`).join("")}
+      `,
+    });
+    const errorEntry = result.violationsByRule.find((r) => r.severity === "error");
+    const warnEntry = result.violationsByRule.find((r) => r.severity === "warn");
+    expect(errorEntry).toBeDefined();
+    expect(warnEntry).toBeDefined();
+    // error 가 warn 보다 앞에 정렬되어야 함
+    const errorIdx = result.violationsByRule.findIndex((r) => r.severity === "error");
+    const warnIdx = result.violationsByRule.findIndex((r) => r.severity === "warn");
+    expect(errorIdx).toBeLessThan(warnIdx);
+  });
+});
