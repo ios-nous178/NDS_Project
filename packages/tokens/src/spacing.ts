@@ -117,6 +117,7 @@ export const sizing = {
   input: {
     default: 48,
     field: 44,
+    compact: 40,
   },
 } as const;
 

@@ -33,6 +33,7 @@ import "./components/nds-drawer.js";
 import "./components/nds-dropdown-menu.js";
 import "./components/nds-carousel.js";
 import "./components/nds-form-field.js";
+import "./components/nds-input-group.js";
 import "./components/nds-modal.js";
 import "./components/nds-select.js";
 import "./components/nds-toggle.js";

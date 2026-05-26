@@ -17,6 +17,9 @@ const FF_COUNTER_CLASS = `${FF_CLASS}__counter`;
 
 /* ─── Types ─── */
 
+export type FormFieldLabelPosition = "top" | "left";
+export type FormFieldDensity = "default" | "admin";
+
 export interface FormFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 필드 라벨 */
   label?: React.ReactNode;
@@ -34,6 +37,26 @@ export interface FormFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   counter?: React.ReactNode;
   /** 라벨이 가리킬 컨트롤 id (없으면 자동 생성) */
   htmlFor?: string;
+  /**
+   * 라벨 위치. `"top"` 이 모바일/일반 폼 기본. `"left"` 는 캐포비 admin 표준
+   * (라벨 좌측 고정 + 컴팩트 인풋과 짝). description 이 있으면 자동으로 top 으로 폴백된다.
+   * @default "top"
+   */
+  labelPosition?: FormFieldLabelPosition;
+  /**
+   * `labelPosition="left"` 일 때 라벨 컬럼 너비 (px). Figma admin 표준 180.
+   * 좁은 라벨에서는 120, 긴 라벨에서는 200~240 사용.
+   * @default 180
+   */
+  labelWidth?: number;
+  /**
+   * 폼 밀도. 캐포비 admin / Cashwalk for Business 어드민 폼은 `"admin"` 표준.
+   * - `"default"`: label body3 13/18, helper caption 12/16, row 간 별도 gap 없음 (부모 stack 이 결정).
+   * - `"admin"`: label Subtitle1 16/24, helper Body2 14/20, **FormField 자체 py-24** —
+   *   stack 시 자동으로 시각 48px 간격 형성 (Figma FormSection 3387:871 표준).
+   * @default "default"
+   */
+  density?: FormFieldDensity;
   /** 폼 컨트롤 (Input/Textarea/Select/Radio 등) */
   children: React.ReactNode;
 }
@@ -53,8 +76,12 @@ export const FormField: React.FC<FormFieldProps> = ({
   optional = false,
   counter,
   htmlFor: htmlForProp,
+  labelPosition = "top",
+  labelWidth = 180,
+  density = "default",
   children,
   className,
+  style,
   ...rest
 }) => {
   const generatedId = useId();
@@ -63,9 +90,23 @@ export const FormField: React.FC<FormFieldProps> = ({
   const errorId = `${fieldId}-error`;
 
   const showFooter = helper !== undefined || error !== undefined || counter !== undefined;
+  // description 은 라벨 아래 줄(top) 에서만 의미가 있음 — left 모드에서는 자동으로 top 으로 폴백.
+  const resolvedPosition: FormFieldLabelPosition =
+    labelPosition === "left" && description === undefined ? "left" : "top";
 
   return (
-    <div data-slot="root" className={cx(FF_ROOT_CLASS, className)} {...rest}>
+    <div
+      data-slot="root"
+      data-label-position={resolvedPosition}
+      data-density={density}
+      className={cx(FF_ROOT_CLASS, className)}
+      style={
+        resolvedPosition === "left"
+          ? ({ "--nds-form-field-label-width": `${labelWidth}px`, ...style } as React.CSSProperties)
+          : style
+      }
+      {...rest}
+    >
       {(label !== undefined || description !== undefined) && (
         <div data-slot="label-row" className={FF_LABEL_ROW_CLASS}>
           {label !== undefined && (
@@ -92,27 +133,27 @@ export const FormField: React.FC<FormFieldProps> = ({
       )}
       <div data-slot="control" className={FF_CONTROL_CLASS}>
         {children}
+        {showFooter && (
+          <div data-slot="footer" className={FF_FOOTER_CLASS}>
+            {error !== undefined ? (
+              <span data-slot="error" id={errorId} role="alert" className={FF_ERROR_CLASS}>
+                {error}
+              </span>
+            ) : helper !== undefined ? (
+              <span data-slot="helper" id={helperId} className={FF_HELPER_CLASS}>
+                {helper}
+              </span>
+            ) : (
+              <span aria-hidden="true" />
+            )}
+            {counter !== undefined && (
+              <span data-slot="counter" className={FF_COUNTER_CLASS}>
+                {counter}
+              </span>
+            )}
+          </div>
+        )}
       </div>
-      {showFooter && (
-        <div data-slot="footer" className={FF_FOOTER_CLASS}>
-          {error !== undefined ? (
-            <span data-slot="error" id={errorId} role="alert" className={FF_ERROR_CLASS}>
-              {error}
-            </span>
-          ) : helper !== undefined ? (
-            <span data-slot="helper" id={helperId} className={FF_HELPER_CLASS}>
-              {helper}
-            </span>
-          ) : (
-            <span aria-hidden="true" />
-          )}
-          {counter !== undefined && (
-            <span data-slot="counter" className={FF_COUNTER_CLASS}>
-              {counter}
-            </span>
-          )}
-        </div>
-      )}
     </div>
   );
 };
