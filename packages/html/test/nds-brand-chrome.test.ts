@@ -20,35 +20,122 @@ describe("nds-brand-header / nds-brand-footer", () => {
     expect(customElements.get("nds-cashpobi-footer")).toBeTruthy();
   });
 
-  it("renders a web header from brand defaults", async () => {
+  it("renders a Cashpobi web header with brand-specific yellow primary CTA", async () => {
     const el = document.createElement("nds-brand-header");
     el.setAttribute("brand", "cashpobi");
     el.setAttribute("active-key", "campaign");
     document.body.appendChild(el);
     await flush();
 
-    const header = el.querySelector(".nds-header") as HTMLElement;
-    const logo = el.querySelector('nds-header-logo img[alt="Cashwalk for Business"]');
+    const header = el.querySelector(".nds-brand-cashpobi") as HTMLElement;
+    const logo = el.querySelector('img[alt="Cashwalk for Business"]');
     expect(header).toBeTruthy();
-    expect(header.dataset.variant).toBe("web");
     expect(logo?.getAttribute("src")).toBe(
       "/brand-logos/cashpobi/cashwalk-for-business-horizontal.svg",
     );
     expect(el.textContent).toContain("캠페인");
-    expect(el.querySelector("nds-header-menu-item[active]")?.textContent).toContain("캠페인");
+    const activeMenu = el.querySelector(
+      '.nds-brand-cashpobi__menu-item[data-active="true"]',
+    ) as HTMLElement | null;
+    expect(activeMenu?.textContent).toContain("캠페인");
+    const cta = el.querySelector(".nds-brand-cashpobi__primary-cta") as HTMLAnchorElement | null;
+    expect(cta?.textContent).toContain("광고 시작하기");
   });
 
-  it("renders a mobile header surface", async () => {
+  it("renders Geniet 2-tier desktop web header (search header + menu header)", async () => {
+    const el = document.createElement("nds-brand-header");
+    el.setAttribute("brand", "geniet");
+    el.setAttribute("active-key", "home");
+    document.body.appendChild(el);
+    await flush();
+
+    const root = el.querySelector(".nds-brand-geniet--desktop") as HTMLElement;
+    expect(root).toBeTruthy();
+    expect(el.querySelector(".nds-brand-geniet__search-header")).toBeTruthy();
+    expect(el.querySelector(".nds-brand-geniet__menu-header")).toBeTruthy();
+    expect(
+      el.querySelector(".nds-brand-geniet__search-input input")?.getAttribute("placeholder"),
+    ).toContain("음식 칼로리");
+    /* action buttons (쿠폰상점 / 마이페이지 / 로그인) */
+    expect(el.querySelectorAll(".nds-brand-geniet__action-btn").length).toBe(3);
+    /* divider 가 마이페이지 앞에만 (1개) */
+    expect(el.querySelectorAll(".nds-brand-geniet__action-divider").length).toBe(1);
+    /* CTA pills (캐시리뷰 outline + 친구초대 tinted) */
+    expect(el.querySelectorAll(".nds-brand-geniet__cta-pill").length).toBe(2);
+    expect(
+      el.querySelector('.nds-brand-geniet__cta-pill[data-tone="outline"]')?.textContent,
+    ).toContain("캐시리뷰");
+    /* 음식 카테고리 박스 */
+    expect(el.querySelector(".nds-brand-geniet__category")?.textContent).toContain("음식 카테고리");
+    /* 활성 GNB 강조 */
+    const activeGnb = el.querySelector(
+      '.nds-brand-geniet__gnb-item[data-active="true"]',
+    ) as HTMLElement | null;
+    expect(activeGnb?.textContent).toContain("홈");
+  });
+
+  it("renders Geniet 2-tier mobile header (logo+chip+user / hamburger+search)", async () => {
     const el = document.createElement("nds-brand-header");
     el.setAttribute("brand", "geniet");
     el.setAttribute("surface", "mobile");
     document.body.appendChild(el);
     await flush();
 
-    const header = el.querySelector(".nds-header") as HTMLElement;
-    const logo = el.querySelector('nds-header-logo img[alt="Geniet"]');
-    expect(header.dataset.variant).toBe("compact");
-    expect(logo?.getAttribute("src")).toBe("/brand-logos/geniet-logo-pc.webp");
+    const root = el.querySelector(".nds-brand-geniet--mobile") as HTMLElement;
+    expect(root).toBeTruthy();
+    /* mobile 전용 로고로 떨어져야 함 (PC 로고가 아니라) */
+    expect(el.querySelector('img[alt="Geniet"]')?.getAttribute("src")).toBe(
+      "/brand-logos/geniet-logo-mobile.webp",
+    );
+    expect(el.querySelector(".nds-brand-geniet__mo-row1")).toBeTruthy();
+    expect(el.querySelector(".nds-brand-geniet__mo-row2")).toBeTruthy();
+    expect(el.querySelector(".nds-brand-geniet__point-chip")?.textContent).toContain("34,300");
+    expect(
+      el.querySelector(".nds-brand-geniet__mo-search input")?.getAttribute("placeholder"),
+    ).toContain("음식명");
+  });
+
+  it("renders Trost desktop web header compound (EAP banner + utility + tab navigation)", async () => {
+    const el = document.createElement("nds-brand-header");
+    el.setAttribute("brand", "trost");
+    document.body.appendChild(el);
+    await flush();
+
+    expect(el.querySelector(".nds-brand-trost-web__banner")).toBeTruthy();
+    expect(el.querySelector(".nds-brand-trost-web__banner-text")?.textContent).toContain(
+      "기업 전용 멘탈케어",
+    );
+    expect(el.querySelector(".nds-brand-trost-web__utility")).toBeTruthy();
+    expect(
+      el.querySelector(".nds-brand-trost-web__search input")?.getAttribute("placeholder"),
+    ).toContain("전문가");
+    expect(el.querySelector(".nds-brand-trost-web__app-dl")?.textContent).toContain("앱 다운로드");
+    /* tab navigation — 6 tabs */
+    expect(el.querySelectorAll(".nds-brand-trost-web__tabnav-link").length).toBe(6);
+    /* 활성 탭 = "/" → "홈" */
+    const activeTab = el.querySelector(
+      '.nds-brand-trost-web__tabnav-link[data-active="true"]',
+    ) as HTMLElement | null;
+    expect(activeTab?.textContent).toContain("홈");
+  });
+
+  it("renders NudgeEAP desktop web header with centered menu + app-download + auth", async () => {
+    const el = document.createElement("nds-brand-header");
+    el.setAttribute("brand", "nudge-eap");
+    el.setAttribute("active-key", "counsel");
+    document.body.appendChild(el);
+    await flush();
+
+    expect(el.querySelector(".nds-brand-nudge-eap-web")).toBeTruthy();
+    expect(el.querySelectorAll(".nds-brand-nudge-eap-web__menu-item").length).toBe(6);
+    const active = el.querySelector(
+      '.nds-brand-nudge-eap-web__menu-item[data-active="true"]',
+    ) as HTMLElement | null;
+    expect(active?.textContent).toContain("상담하기");
+    expect(el.querySelector(".nds-brand-nudge-eap-web__app-dl")?.textContent).toContain(
+      "앱 다운로드",
+    );
+    expect(el.querySelector(".nds-brand-nudge-eap-web__auth")?.textContent).toContain("로그인");
   });
 
   it("renders a footer from brand defaults", async () => {

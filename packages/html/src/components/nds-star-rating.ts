@@ -17,6 +17,23 @@ const SR_VALUE_CLASS = `${SR_CLASS}__value`;
 const STAR_PATH = "M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z";
 const FILLED_COLOR = "#FFD54F";
 const EMPTY_COLOR = "#E0E0E0";
+const DEFAULT_STAR_SIZE = 16;
+const STAR_SIZE_BY_NAME = {
+  sm: 14,
+  md: 16,
+  lg: 20,
+  xl: 24,
+} as const;
+
+const resolveStarSize = (rawSize: string | null): number => {
+  const raw = (rawSize ?? String(DEFAULT_STAR_SIZE)).trim().toLowerCase();
+  if (raw in STAR_SIZE_BY_NAME) return STAR_SIZE_BY_NAME[raw as keyof typeof STAR_SIZE_BY_NAME];
+
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_STAR_SIZE;
+
+  return Math.min(Math.max(parsed, 8), 48);
+};
 
 export class NdsStarRating extends NdsElement {
   static elementName = "nds-star-rating";
@@ -52,7 +69,7 @@ export class NdsStarRating extends NdsElement {
     if (this.style.display !== "contents") this.style.display = "contents";
 
     const value = parseFloat(this.attr("value", "0"));
-    const size = parseInt(this.attr("size", "16"), 10);
+    const size = resolveStarSize(this.getAttribute("size"));
     const max = parseInt(this.attr("max", "5"), 10);
     const showValue = this.boolAttr("show-value");
     const disabled = this.boolAttr("disabled");
