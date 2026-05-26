@@ -319,13 +319,20 @@ const TOOLS = [
   {
     name: "get_guide",
     description:
-      "Fetch DS guidance by topic. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys.",
+      "Fetch DS guidance by topic. Pass `topics: [...]` to batch multiple guides in one call. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. Component guides include a short `_principlesDigest`; still call `get_guide({ topic: 'principles' })` once per session. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys.",
     inputSchema: {
       type: "object",
       properties: {
         topic: {
           type: "string",
-          description: "Fixed topic, `component:<Name>`, or `pattern:<name>`.",
+          description:
+            "Single fixed topic, `component:<Name>`, or `pattern:<name>`. Omit when using `topics`.",
+        },
+        topics: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Batch mode. Multiple fixed/component/pattern topics returned as `{ topics: { [topic]: result } }`. Use this to avoid 5-10 repeated get_guide calls.",
         },
         intent: {
           type: "string",
@@ -344,7 +351,6 @@ const TOOLS = [
             "Optional. Pick only these top-level keys from the response (e.g. ['dos', 'donts'] on `principles`, or ['colorMatrix', 'sizeMatrix'] on a component guide). Meta keys (_advisory, _htmlAdvisory) are always preserved. If none match, response is an error with availableSections listed.",
         },
       },
-      required: ["topic"],
       additionalProperties: false,
     },
   },
@@ -557,7 +563,8 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       };
     case "get_guide":
       return {
-        topic: requireString(args, "topic", toolName),
+        topic: optionalString(args, "topic", toolName),
+        topics: optionalStringArray(args, "topics", toolName),
         intent: optionalString(args, "intent", toolName),
         target: optionalEnum(args, "target", GUIDE_TARGET_VALUES, toolName),
         sections: optionalStringArray(args, "sections", toolName),

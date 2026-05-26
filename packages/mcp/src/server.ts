@@ -50,7 +50,12 @@ import { buildSinglefileHtml } from "./tools/build-html.js";
 import { getGuide } from "./tools/guides.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
-import { noteReportSent, noteReportSuppressed, principlesAcked } from "./tools/session-state.js";
+import {
+  noteReportSent,
+  noteReportSuppressed,
+  principlesAcked,
+  principlesCalledAt,
+} from "./tools/session-state.js";
 
 const VISUAL_REFERENCE_QUESTION =
   "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요.";
@@ -412,31 +417,31 @@ function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
 }
 
 /**
- * 세션 동안 get_guide({ topic: 'principles' }) 가 한 번도 안 불렸으면 강한 reminder 부착.
+ * 세션 동안 get_guide({ topic: 'principles' }) 호출 여부를 응답 상단에 부착.
  * principles 를 먼저 읽지 않고 작업하면 emoji / native landmark / raw <header> / 시멘틱 토큰
  * 위반을 사후에 패치하느라 토큰을 25~30% 더 쓰게 된다는 회고 데이터에 근거.
  *
  * validate_html_mockup / build_singlefile_html 응답에 부착한다 — 둘 다 mockup 작업
  * 후반부에 호출되므로, 이 시점에 "principles 안 봤네?" 가 뜨면 다음 작업 사이클에서 챙김.
  */
-function attachPrinciplesReminder<T>(result: T): T | object {
-  if (principlesAcked()) return result;
-  const reminder = {
+function attachPrinciplesAck<T>(result: T): T | object {
+  const principlesCalled = principlesAcked();
+  const ack = {
     rule: "principles-first",
-    status: "missing",
-    impact:
-      "principles 미호출 — emoji/native/raw-landmark/시멘틱 토큰 위반을 사전에 못 막아 평균 25~30% 추가 토큰 소비 (회고 데이터).",
-    nextCall: "get_guide({ topic: 'principles' })",
-    alsoConsider:
-      "브랜드 작업이면 get_brand({ brand }) + get_guide({ topic: 'dos-donts' }) 도 같은 세션 안에서 호출.",
+    required: !principlesCalled,
+    principlesCalled,
+    calledAt: principlesCalledAt() ?? null,
+    question: "이번 세션에 get_guide({ topic:'principles' }) 호출 기록 있나요?",
+    shortcut:
+      "없으면 지금 호출 — 평균 25~30% 토큰 절약 (회고 데이터). 배치 호출 예: get_guide({ topics:['principles','dos-donts'] }).",
   };
   if (Array.isArray(result)) {
-    return { _principlesReminder: reminder, results: result };
+    return { _principlesAck: ack, results: result };
   }
   if (result && typeof result === "object") {
-    return { _principlesReminder: reminder, ...(result as Record<string, unknown>) };
+    return { _principlesAck: ack, ...(result as Record<string, unknown>) };
   }
-  return { _principlesReminder: reminder, result };
+  return { _principlesAck: ack, result };
 }
 
 function getTokenLookupScore(token: Manifest["tokens"][number], query: string): number {
@@ -566,7 +571,8 @@ const toolHandlers = {
       "get_guide",
       getGuide(
         args as {
-          topic: string;
+          topic?: string;
+          topics?: string[];
           intent?: string;
           target?: "react" | "html";
           sections?: string[];
@@ -624,8 +630,8 @@ const toolHandlers = {
       args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" },
     );
     // html intent 빌드는 내부에서 validate + report 까지 자동 실행하므로 report-suppress 카운터에도
-    // 영향을 미친다. 이 시점에 principles 안 봤으면 reminder 부착.
-    return attachPrinciplesReminder(result);
+    // 영향을 미친다. 이 시점에 principles 호출 여부를 함께 노출한다.
+    return attachPrinciplesAck(result);
   },
   validate_html_mockup: async (args: ToolArgs) => {
     const typed = args as {
@@ -684,6 +690,12 @@ const toolHandlers = {
       stats?: Omit<AnalyzeHtmlMockupResult, "violations" | "violationsByRule">;
       report?: unknown;
       snapshot?: { url: string; byteLength: number; snapshotPath?: string };
+      _reportSuppressedWarning?: {
+        rule: string;
+        suppressedCallCount: number;
+        message: string;
+        howToFlush: string;
+      };
     } | null = null;
 
     if (snapshot?.ok) {
@@ -745,7 +757,7 @@ const toolHandlers = {
         },
       };
     }
-    return attachPrinciplesReminder(extras ? { ...result, ...extras } : result);
+    return attachPrinciplesAck(extras ? { ...result, ...extras } : result);
   },
   convert_html_to_ds_html: (args: ToolArgs) =>
     convertHtmlToDsHtml(

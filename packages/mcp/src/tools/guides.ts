@@ -78,6 +78,14 @@ export function getUxWritingGuide() {
 
 export type GuideTarget = "react" | "html";
 
+const PRINCIPLES_DIGEST = [
+  "get_guide({ topic: 'principles' }) first for mockup work.",
+  "No emoji/text-symbol icons; use find_icon + @nudge-eap/icons.",
+  "No raw <header>/<footer>/<main>/<nav> when nds/brand components fit.",
+  "Use semantic tokens; avoid raw hex/rgb and raw palette tokens.",
+  "Use <nds-*> components before custom native controls/CSS lookalikes.",
+];
+
 /**
  * target='html' 호출 시:
  *   - examplesHtml 가 있으면 그 do/dont 를 examples 자리에 매핑하고 examplesHtml 필드는 제거.
@@ -126,6 +134,7 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
     return {
       _advisory: baseAdvisory,
       _htmlAdvisory: htmlAdvisory,
+      _principlesDigest: PRINCIPLES_DIGEST,
       ...rest,
       examples,
       references: resolvedReferences ?? guide.references,
@@ -134,6 +143,7 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
 
   return {
     _advisory: baseAdvisory,
+    _principlesDigest: PRINCIPLES_DIGEST,
     ...guide,
     references: resolvedReferences ?? guide.references,
   };
@@ -267,15 +277,38 @@ function pickSections<T extends Record<string, unknown>>(
 }
 
 export function getGuide(args: {
-  topic: string;
+  topic?: string;
+  topics?: string[];
   intent?: string;
   target?: GuideTarget;
   sections?: string[];
-}) {
+}): Record<string, unknown> {
+  const topics = Array.isArray(args.topics)
+    ? args.topics.filter((topic): topic is string => typeof topic === "string" && topic.length > 0)
+    : undefined;
+  if (topics && topics.length > 0) {
+    return {
+      _advisory:
+        "Batch get_guide response. Use topics[] to avoid repeated MCP calls; each key contains the same result shape as a single topic call.",
+      topics: Object.fromEntries(
+        topics.map((topic) => [
+          topic,
+          getGuide({
+            topic,
+            intent: args.intent,
+            target: args.target,
+            sections: args.sections,
+          }),
+        ]),
+      ),
+    };
+  }
+
   const topic = args.topic;
   if (typeof topic !== "string" || topic.length === 0) {
     return {
-      error: "get_guide: 'topic' must be a non-empty string.",
+      error:
+        "get_guide: pass either 'topic' as a non-empty string or 'topics' as a non-empty string array.",
       availableTopics: listGuideTopics(),
     };
   }
