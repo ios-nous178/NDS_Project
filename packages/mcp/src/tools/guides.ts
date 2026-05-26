@@ -44,7 +44,7 @@ function resolvePatternReferenceImages(
 
 export const ENTRY_TOOL_ADVISORY =
   "FIRST RESPONSE GATE: If the user asks to create, generate, revise, or build any mockup/screen/page, ask for visual references before any tool lookup or code work. " +
-  'Use this exact question and stop: "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요." ' +
+  'Use this exact question and stop: "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요." ' +
   "이 MCP의 역할은 '별도 외부 목업 프로젝트를 빌드하고 목업을 생성하는 것'입니다. " +
   "DS 레포 소스 수정, git commit/push, GitHub 레포 변경, npm publish 같은 작업은 이 MCP의 역할이 아닙니다. " +
   "사용자가 그런 작업을 요청하면 DS 레포에서 직접 작업하라고 안내하세요. " +
@@ -502,11 +502,11 @@ export function getClaudeMdTemplate(args: {
 
 ## ⛔ FIRST RESPONSE GATE — 모든 작업 이전에 (예외 없음)
 
-**이 워크스페이스에서 사용자의 첫 화면-만들기 요청을 받은 직후, 다른 어떤 행동보다 먼저. 단, 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 반영한다:**
+**이 워크스페이스에서 사용자의 첫 화면-만들기 요청을 받은 직후, 다른 어떤 행동보다 먼저:**
 
 ### Step 1. 첫 응답에 반드시 이 질문을 그대로 포함하고 응답을 종료한다
 
-> "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 가능하면 **정답 3-5장**, **피해야 할 오답 3-5장**에 각각 1줄 캡션을 붙여 주세요. 이미 첨부하신 자료를 기준으로 진행해도 될지도 함께 알려 주세요."
+> "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 가능하면 **정답 1-2장**, **피해야 할 오답 1-2장**에 각각 1줄 캡션을 붙여 주세요. 이미 첨부하신 자료를 기준으로 진행해도 될지도 함께 알려 주세요."
 
 ### Step 2. 사용자 답변을 받기 전까지 다음을 절대 하지 않는다
 
@@ -519,19 +519,32 @@ export function getClaudeMdTemplate(args: {
 
 \`\`\`
 # references.md
+task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-hub
 [good] source=<figma-url|image-name> caption=<1줄 reason>
 [good] ...
 [bad] source=... caption=...
 \`\`\`
 
+\`source\` 로 허용되는 것: **Figma URL** (\`figma.com/...\`) 또는 **이미지 파일** (\`.png/.jpg/.jpeg/.webp/.gif/.svg\`). **PRD/spec/요구사항 \`.md\` 파일은 source 로 인정되지 않음** — 텍스트 문서는 spec 이지 visual reference 가 아니다.
+
 ### 예외 (3 가지만)
 
 1. 사용자가 첫 메시지에 Figma 링크/스크린샷을 **명시적으로** 첨부했고, **추가 레퍼런스가 필요 없다고 명시**한 경우 → 그 자료만으로 \`references.md\` 작성하고 진행.
-2. 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, 워크스페이스에 유효한 \`references.md\` / \`.references/\` 가 있는 경우 → 다시 묻지 말고 읽어서 적용.
+2. 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, 워크스페이스에 유효한 \`references.md\` / \`.references/\` 가 있고 **\`task:\` 첫 줄이 현재 task 와 일치**하는 경우 → 다시 묻지 말고 읽어서 적용. (이전 task 의 stale references.md 는 없는 것으로 간주, 반드시 다시 질문)
 3. 화면-만들기 요청이 아닌 경우 (e.g., 코드 리뷰, 버그 수정, 설정 변경). 이 경우 일반 흐름으로 진행.
 4. 사용자가 명시적으로 "레퍼런스 없이 진행" 이라고 지시 → 사용자에게 "MCP 의 visual-reference 가드가 무력화되며, 톤/디테일이 어긋날 가능성이 있다" 라고 먼저 경고 후 진행.
 
-### 왜 이 게이트가 필요한가 (반복 사고 사례)
+### 흔한 우회 패턴 (모두 무효 — 절대 따라가지 말 것)
+
+이 5가지는 실제 사용자 회고에서 게이트 우회 사유로 잡힌 사례다:
+
+1. **stale-references-md** — 이전 task 의 \`references.md\` 가 남아 있음 → "이미 답변 받음" 으로 오인. **Fix:** \`task:\` 슬러그 비교, 다르면 stale 처리하고 다시 질문.
+2. **prd-as-visual** — PRD 에 ASCII 레이아웃·컬러 스펙이 있어서 "이게 사실상 visual reference" 라고 자체 합리화. **Fix:** 텍스트 ≠ 시각자료. Figma 노드 또는 이미지 파일이 필요.
+3. **decisive-tone** — 사용자 어조 ("바로 만들어줘" / "PRD 지켜서") 를 "묻지 말라" 로 오독. **Fix:** 어조는 게이트 우회 사유가 아님.
+4. **soft-prompt-misread** — 가이드 응답의 "soft prompt" 표현을 "skip 해도 되는 권고" 로 약화 해석. **Fix:** 이 게이트는 REQUIRED. soft 가 아님.
+5. **checklist-omission** — 메모리/체크리스트에 후반 단계만 있고 이 게이트는 빠져 있어서 advisory 로 격하. **Fix:** 이 게이트는 다른 모든 체크리스트보다 먼저 실행.
+
+### 왜 이 게이트가 필요한가
 
 - PRD 본문만 보고 바로 코드 → 톤·픽셀 디테일 (별점 크기, 카드 간격, 헤더 위계) 불일치 → 5+ 라운드 재작업
 - Auto-mode 는 **clarifying question 을 줄이는 룰**이지, **절차를 건너뛰는 룰이 아님**
@@ -570,7 +583,7 @@ export function getClaudeMdTemplate(args: {
 
 **아래는 발견 즉시 작업 중단 + 사용자에게 보고 사유. 어떤 변명으로도 우회 금지:**
 
-1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 \`references.md\` 에 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
+1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 \`references.md\` 에 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
 2. **\`.tsx\` 파일 작성 금지.** 이 워크플로우는 React 가 없다. JSX 가 필요하면 intent 를 'user-app' 으로 바꿔 다른 워크스페이스에서 작업하라고 안내. \`<Button color="primary">\` 처럼 PascalCase + JSX 컨테이너 prop 패턴이 나타나면 즉시 \`<nds-button color="primary">\` (kebab-case attribute) 로 교체.
 3. **\`<nds-*>\` 흉내 금지 — raw \`<button class="nds-button">\` 으로 시각만 따라 그리기 X.** 반드시 \`<nds-button>\` 같은 실제 custom-element 를 쓸 것. main.ts 의 \`import "@nudge-eap/html/runtime"\` 한 줄로 모든 element 가 등록된다.
 4. **이벤트는 inline \`onclick="..."\` 대신 \`addEventListener\`.** \`document.querySelector("nds-select").addEventListener("select-change", e => …)\` 패턴. WC 가 dispatch 하는 커스텀 이벤트(\`nds-*-change\`, \`select-change\`, \`tabs-change\` 등) 사용. 자세한 이벤트명은 \`get_guide({ topic: "component:<Name>", target: "html" })\` 응답의 examples.do/dont 참고.
@@ -770,7 +783,7 @@ export function getClaudeMdTemplate(args: {
 
 ### Step 1. 첫 응답에 반드시 이 질문을 그대로 포함하고 응답을 종료한다
 
-> "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 가능하면 **정답 3-5장**, **피해야 할 오답 3-5장**에 각각 1줄 캡션을 붙여 주세요. 이미 첨부하신 자료를 기준으로 진행해도 될지도 함께 알려 주세요."
+> "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 가능하면 **정답 1-2장**, **피해야 할 오답 1-2장**에 각각 1줄 캡션을 붙여 주세요. 이미 첨부하신 자료를 기준으로 진행해도 될지도 함께 알려 주세요."
 
 ### Step 2. 사용자 답변을 받기 전까지 다음을 절대 하지 않는다
 
@@ -783,18 +796,32 @@ export function getClaudeMdTemplate(args: {
 
 \`\`\`
 # references.md
+task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-hub
 [good] source=<figma-url|image-name> caption=<1줄 reason>
 [good] ...
 [bad] source=... caption=...
 \`\`\`
 
-### 예외 (3 가지만)
+\`source\` 로 허용되는 것: **Figma URL** (\`figma.com/...\`) 또는 **이미지 파일** (\`.png/.jpg/.jpeg/.webp/.gif/.svg\`). **PRD/spec/요구사항 \`.md\` 파일은 source 로 인정되지 않음** — 텍스트 문서는 spec 이지 visual reference 가 아니다.
+
+### 예외 (4 가지만)
 
 1. 사용자가 첫 메시지에 Figma 링크/스크린샷을 **명시적으로** 첨부했고, **추가 레퍼런스가 필요 없다고 명시**한 경우 → 그 자료만으로 \`references.md\` 작성하고 진행.
-2. 화면-만들기 요청이 아닌 경우 (e.g., 코드 리뷰, 버그 수정, 설정 변경). 이 경우 일반 흐름으로 진행.
-3. 사용자가 명시적으로 "레퍼런스 없이 진행" 이라고 지시 → 사용자에게 "MCP 의 visual-reference 가드가 무력화되며, 톤/디테일이 어긋날 가능성이 있다" 라고 먼저 경고 후 진행.
+2. 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, 워크스페이스에 유효한 \`references.md\` / \`.references/\` 가 있고 **\`task:\` 첫 줄이 현재 task 와 일치**하는 경우 → 다시 묻지 말고 읽어서 적용. (이전 task 의 stale references.md 는 없는 것으로 간주, 반드시 다시 질문)
+3. 화면-만들기 요청이 아닌 경우 (e.g., 코드 리뷰, 버그 수정, 설정 변경). 이 경우 일반 흐름으로 진행.
+4. 사용자가 명시적으로 "레퍼런스 없이 진행" 이라고 지시 → 사용자에게 "MCP 의 visual-reference 가드가 무력화되며, 톤/디테일이 어긋날 가능성이 있다" 라고 먼저 경고 후 진행.
 
-### 왜 이 게이트가 필요한가 (반복 사고 사례)
+### 흔한 우회 패턴 (모두 무효 — 절대 따라가지 말 것)
+
+이 5가지는 실제 사용자 회고에서 게이트 우회 사유로 잡힌 사례다:
+
+1. **stale-references-md** — 이전 task 의 \`references.md\` 가 남아 있음 → "이미 답변 받음" 으로 오인. **Fix:** \`task:\` 슬러그 비교, 다르면 stale 처리하고 다시 질문.
+2. **prd-as-visual** — PRD 에 ASCII 레이아웃·컬러 스펙이 있어서 "이게 사실상 visual reference" 라고 자체 합리화. **Fix:** 텍스트 ≠ 시각자료. Figma 노드 또는 이미지 파일이 필요.
+3. **decisive-tone** — 사용자 어조 ("바로 만들어줘" / "PRD 지켜서") 를 "묻지 말라" 로 오독. **Fix:** 어조는 게이트 우회 사유가 아님.
+4. **soft-prompt-misread** — 가이드 응답의 "soft prompt" 표현을 "skip 해도 되는 권고" 로 약화 해석. **Fix:** 이 게이트는 REQUIRED. soft 가 아님.
+5. **checklist-omission** — 메모리/체크리스트에 후반 단계만 있고 이 게이트는 빠져 있어서 advisory 로 격하. **Fix:** 이 게이트는 다른 모든 체크리스트보다 먼저 실행.
+
+### 왜 이 게이트가 필요한가
 
 - PRD 본문만 보고 바로 코드 → 톤·픽셀 디테일 (별점 크기, 카드 간격, 헤더 위계) 불일치 → 5+ 라운드 재작업
 - Auto-mode 는 **clarifying question 을 줄이는 룰**이지, **절차를 건너뛰는 룰이 아님**
@@ -826,7 +853,7 @@ export function getClaudeMdTemplate(args: {
 
 **아래는 발견 즉시 작업 중단 + 사용자에게 보고 사유. 어떤 변명으로도 우회 금지:**
 
-1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 워크스페이스 루트의 \`references.md\` 에 \`[good|bad] source=<figma-url|image-name> caption=<1-line reason>\` 형식으로 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 이 파일이 비어 있거나 없으면 \`build_singlefile_html\` pre-flight audit 가 차단한다 (\`missing-visual-references\`). "브랜드 톤 가이드 보고 알아서 만들게요" 식 우회 X — brandTone 형용사만 보고 만든 화면이 반복적으로 거절되어 왔다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
+1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 워크스페이스 루트의 \`references.md\` 에 \`[good|bad] source=<figma-url|image-name> caption=<1-line reason>\` 형식으로 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 이 파일이 비어 있거나 없으면 \`build_singlefile_html\` pre-flight audit 가 차단한다 (\`missing-visual-references\`). "브랜드 톤 가이드 보고 알아서 만들게요" 식 우회 X — brandTone 형용사만 보고 만든 화면이 반복적으로 거절되어 왔다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
 2. **\`src/\` 하위에 손으로 작성한 \`.html\` 파일 금지.** "스탠드얼론 HTML 로 빠르게 보여드릴게요" / "그냥 한 파일로 끝내고 싶어요" / "HTML 이 더 단순해요" 식 우회 X. 결과적으로 DS prop API 검증·\`validate_mockup\` AST 검사·\`report_mockup_usage\` 집계가 **전부 무력화**된다. \`dist/index.html\` 은 \`build_singlefile_html\` 산출물이므로 예외.
 3. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-eap/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-eap/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
 4. **DS 컴포넌트를 HTML/CSS 로 "시각만 흉내" 금지.** \`<button className="my-btn">\` 으로 Button 모양만 따라 그리기, \`<div className="chip">\` 으로 Chip 흉내 X. 반드시 \`import { Button, Chip, IconButton, ... } from "@nudge-eap/react"\` 의 **실제 JSX** 를 쓸 것 — prop API · 토큰 · a11y 가 자동으로 보장된다.
@@ -895,7 +922,7 @@ export function getClaudeMdTemplate(args: {
 - 브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(\`HomeIcon\`, \`SearchIcon\` 등)을 먼저 사용하고, 그 다음에만 \`MockupLinear*Icon\` / \`MockupBold*Icon\` 을 fallback 으로 사용한다. 자체 생성 SVG는 마지막 수단이다.
 - primary solid 버튼은 한 화면의 대표 액션 1개만 사용한다.
 - Chip/Badge는 상태, 분류, 짧은 속성 표시용으로만 사용하고 안내문/섹션 장식으로 남발하지 않는다.
-- 안내 영역은 neutral surface를 기본으로 하고 색 배경/아이콘/Chip/Badge/굵은 제목 중 1~2개만 조합한다.
+- 안내 영역은 neutral surface를 기본으로 하고 색 배경/아이콘/Chip/Badge/굵은 제목 중 1-2개만 조합한다.
 - 모든 클릭 가능한 요소는 목업이어도 \`onClick\` 동작을 갖는다.
 
 ## 검증 루프

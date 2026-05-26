@@ -646,7 +646,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary:
       "동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. " +
       "Figma 헤더 제약 4종: 3 Variants · PC & Mobile (반응형) · Image Optional (이미지 없는 변형 허용) · Semantic Token (raw hex / 임의 색 금지). " +
-      "Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1~2종만 함께 사용. " +
+      "Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1-2종만 함께 사용. " +
       "List = 이미지 없이 텍스트+메타데이터로 나열 (트리거: 한 페이지 10개 이상 / 분류별 식품 리스트), " +
       "Thumb = 썸네일 + 보조 정보 가로형 (트리거: 콘텐츠 식별이 텍스트만으로 부족 / 식품 카드·영양 코칭), " +
       "Cover = 큰 이미지가 콘텐츠의 핵심 (트리거: 그리드로 시각적 임팩트 필요 / 4-up·2-up 그리드·커뮤니티). " +
@@ -658,7 +658,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Section/Group Card(카드 안에 list rows 를 담는 컨테이너 — '루테인 포함 영양제 · 총 84개 제품' 같은 묶음)는 단일 Card 가 아닌 별도 패턴 — `get_guide({ topic: 'pattern:card-section' })` 참고.",
     figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=131-1769",
     pitfalls: [
-      "[Figma 권위 룰] Variant 혼용 금지 — 한 그리드 안에서 List/Thumb/Cover 를 섞으면 위계가 충돌. 한 화면에 1~2종만, 그리드 내부는 1종만.",
+      "[Figma 권위 룰] Variant 혼용 금지 — 한 그리드 안에서 List/Thumb/Cover 를 섞으면 위계가 충돌. 한 화면에 1-2종만, 그리드 내부는 1종만.",
       "[Figma 권위 룰] Card 위에 별도 CTA 버튼 추가 금지 — Action 은 카드 전체 클릭이 기본. 카드 내부에 Solid/Outlined 버튼을 두면 카드 전체 클릭 영역과 충돌. 섹션 하단 '더보기' 같은 CTA 는 Card 가 아니라 Section 의 것.",
       "[Figma 권위 룰] Elevation 은 0(border) 또는 1(shadow) 중 택1 — border 1px 와 box-shadow 를 동시에 걸면 위반. 한 화면에서는 한 종류만 일관되게.",
       "[Figma 권위 룰] 임의 pastel/gradient/opacity 배경 금지 — White 또는 정의된 Surface 토큰 외 배경색 생성 불가. linear-gradient(), rgba 투명도, #E8F4FD 류 임의 hex 모두 차단.",
@@ -715,7 +715,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         variantUsageCover:
           "사용 시점: 큰 이미지가 콘텐츠의 핵심일 때 (식단 사진 4-up 그리드, 커뮤니티 콘텐츠). 트리거: 그리드 형태로 시각적 임팩트가 필요할 때.",
         titleRequired: 1,
-        variantsPerScreen: "1~2종",
+        variantsPerScreen: "1-2종",
         variantsPerGrid: 1,
         maxAvatarPerCard: 1,
         maxBadgePerCard: 2,
@@ -835,7 +835,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**React 한정** — `<Chip>{children}</Chip>` 으로 children 넣지 말 것. 반드시 `<Chip label='...' />`. 함정: HTML 예시(`<nds-chip>라벨</nds-chip>`)를 보고 React 에도 children 쓰면 API 어긋남.",
       "**HTML 한정** — `<nds-chip label='...' />` 처럼 label attribute 쓰지 말 것. nds-chip 은 label attribute 가 없고 children/text content 만 받음 (nds-chip.ts L189: `while (this.firstChild) label.appendChild(this.firstChild)`).",
       "Chip은 상태/분류/짧은 속성 표시용이다. 새 섹션을 강조하거나 일반 안내문을 꾸미는 장식으로 쓰지 말 것.",
-      "모든 카드/섹션 제목 앞에 Chip을 붙이면 위계가 무너진다. 카드당 최대 1~2개, 섹션당 최대 2개 수준으로 제한.",
+      "모든 카드/섹션 제목 앞에 Chip을 붙이면 위계가 무너진다. 카드당 최대 1-2개, 섹션당 최대 2개 수준으로 제한.",
       "긴 문장이나 CTA 보조 문구를 Chip에 넣지 말 것. 8자 안팎의 짧은 라벨만 자연스럽다.",
       "표준 variant에 없는 톤(예: caution, success)이 필요해도 raw <span>/<div>로 대체 금지. style prop으로 background/color/font-weight를 토큰 변수로 override + icon prop으로 좌측 도트 주입이 정공법.",
     ],
@@ -1066,7 +1066,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "변경 핸들러는 **onValueChange** (onChange 아님). React 표준이 아닌 DS 컨벤션.",
       "**드롭다운 흉내 금지** — `<nds-button>` / raw `<button>` + ChevronRight/ChevronDown 아이콘 조합으로 드롭다운 모양만 따라 그리지 말 것. 키보드 탐색·focus trap·옵션 list a11y 가 전부 빠짐. 옵션이 1개라도 있으면 무조건 `<nds-select>` 또는 React `<Select>`. 'scope switcher / sort / filter' 같이 옵션이 동적이면 더더욱 raw button 금지.",
-      "옵션이 2~3 개의 토글성 선택지면 Tabs / Segment 도 고려 — Select 는 옵션 수가 많거나 라벨이 긴 경우.",
+      "옵션이 2-3 개의 토글성 선택지면 Tabs / Segment 도 고려 — Select 는 옵션 수가 많거나 라벨이 긴 경우.",
     ],
   },
   Banner: {
@@ -1230,7 +1230,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     summary: "5단계 기분 선택. EAP 앱 첫 화면 핵심 인터랙션. 기본 5개 옵션이 내장됨.",
     pitfalls: [
-      "options를 직접 넘길 때 5개를 벗어나면 가로 폭 문제 — 4~6개가 권장 범위.",
+      "options를 직접 넘길 때 5개를 벗어나면 가로 폭 문제 — 4-6개가 권장 범위.",
       "이모지 대신 아이콘 컴포넌트를 emoji 자리에 넘기지 말 것. emoji는 string 필드.",
       "value 미선택 상태가 default이므로 폼 제출 전 검증 필수.",
     ],
@@ -1288,7 +1288,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       do: '<nds-counselor-card name="이정민 상담사" job-title="심리 상담사"\n  image-src="/dr.jpg" rating="4.8" review-count="124"\n  tags=\'["불안","번아웃"]\' cta-label="상담 신청"></nds-counselor-card>\n<script>el.addEventListener("nds-counselor-cta", () => navigate("/apply"));</script>',
       dont: '<!-- rating 6 (max 5 초과) — 표시 깨짐 -->\n<nds-counselor-card name="A" rating="6"></nds-counselor-card>',
     },
-    summary: "상담사 프로필 카드. 이름/자격/평점/태그/소개/예약 CTA. 1~2열 그리드에 잘 어울림.",
+    summary: "상담사 프로필 카드. 이름/자격/평점/태그/소개/예약 CTA. 1-2열 그리드에 잘 어울림.",
     pitfalls: [
       "imageSrc 없을 때 자동으로 이름 이니셜 표기. 빈 div를 imageSrc로 우회하지 말 것.",
       'tags는 5개 이하 권장 (그 이상은 시각 잡음). 정말 많이 보여줘야 하면 "+3" 더보기 패턴.',
@@ -1356,7 +1356,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     summary: "복용약 한 줄 표시. 이름/용량/시기/노트 + 체크.",
     pitfalls: [
-      "리스트로 쌓을 때는 부모에 gap 8~12px. MedicationItem은 자체 margin 없음.",
+      "리스트로 쌓을 때는 부모에 gap 8-12px. MedicationItem은 자체 margin 없음.",
       "onTakenChange를 안 넘기면 체크박스가 안 보임 — 표시 전용으로 쓸 수 있음.",
       'times는 morning/noon/evening/bedtime 4개 enum만. 복약 시간을 분 단위로 보여주려면 note에 "식후 30분" 같이 텍스트로.',
     ],
@@ -1485,13 +1485,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "정보 위계가 동등한 항목 N개를 보여주는 용도라면 캐러셀 대신 가로 스크롤 리스트가 더 나음 — 캐러셀은 한 번에 1개만 보임.",
       "autoplay만 켜고 loop를 안 켜면 마지막 슬라이드에서 멈춤. 둘 다 함께 사용.",
-      "슬라이드 1~2장이면 캐러셀 의미 없음. 그냥 카드/배너로.",
+      "슬라이드 1-2장이면 캐러셀 의미 없음. 그냥 카드/배너로.",
       "슬라이드 안에 자체 가로 스크롤(예: 가로 리스트)을 넣으면 드래그 충돌. 세로 스크롤만 허용.",
     ],
     recommended: [
       "홈 배너: <Carousel autoplay={3000} loop indicator='dots'>",
       "이미지 갤러리: indicator='counter' (현재 N/M 표시)",
-      "온보딩 3~5장: showArrows=false, indicator='dots'",
+      "온보딩 3-5장: showArrows=false, indicator='dots'",
     ],
     interactivePattern:
       "activeIndex/onActiveIndexChange로 외부 동기화 가능. 드래그 임계값은 viewport 폭의 15%.",
@@ -1645,9 +1645,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       do: '<nds-streak-card title="연속 기록" streak="15" unit="일" days="30">\n  <svg slot="icon" viewBox="0 0 24 24">…</svg>\n</nds-streak-card>',
       dont: '<!-- streak 만 있고 단위(unit)/총합(days) 누락 — 진행도가 모호 -->\n<nds-streak-card streak="15"></nds-streak-card>',
     },
-    summary: "연속 기록 트래커 카드. streak 숫자 + 최근 7~14일 점 그리드. 챌린지/습관 강화 화면.",
+    summary: "연속 기록 트래커 카드. streak 숫자 + 최근 7-14일 점 그리드. 챌린지/습관 강화 화면.",
     pitfalls: [
-      "days는 최근 7~14일이 시각적으로 적절. 30일 이상이면 EmotionHeatmap 사용 검토.",
+      "days는 최근 7-14일이 시각적으로 적절. 30일 이상이면 EmotionHeatmap 사용 검토.",
       "streak=0 상태로 풀 너비 카드를 노출하면 동기 부여 효과가 약함 — 시작 단계에는 더 작은 EmptyState 안내가 좋음.",
       "오늘 데이터가 미완료일 때는 자동으로 점선 테두리(today)로 표시. 'today' 표시를 직접 만들지 말 것.",
     ],
@@ -1663,11 +1663,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       do: '<nds-emotion-heatmap month="2026-05"\n  entries=\'[{"date":"2026-05-25","level":4}]\'\n  colors=\'["#fff","#fee","#f99","#f00","#900"]\'\n  low-label="낮음" high-label="높음"></nds-emotion-heatmap>',
       dont: '<!-- colors 가 5개가 아니면 cell 색이 깨짐 -->\n<nds-emotion-heatmap month="2026-05" colors=\'["#fff","#000"]\'></nds-emotion-heatmap>',
     },
-    summary: "월간 감정 히트맵. 5단계(0~4)를 색 강도로 시각화. 셀 클릭으로 그 날 상세 화면 진입.",
+    summary: "월간 감정 히트맵. 5단계(0-4)를 색 강도로 시각화. 셀 클릭으로 그 날 상세 화면 진입.",
     pitfalls: [
       "entries에 없는 날짜는 자동으로 빈 셀(점선). 0 단계로 채우지 말 것 — treatZeroAsEmpty 기본 true.",
       "colors는 5개 필수 + 옅음→짙음 순서. 4개나 6개 넘기면 인덱스 어긋남.",
-      "30일 미만 기록(7~14일)은 StreakCard가 더 적절 — 히트맵은 한 달 단위.",
+      "30일 미만 기록(7-14일)은 StreakCard가 더 적절 — 히트맵은 한 달 단위.",
     ],
     recommended: [
       "기분 트렌드: 기본 푸른 5단계, onCellClick으로 일기 화면 이동",
@@ -1783,7 +1783,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "한 화면에 매번 띄우지 말 것 — 첫 진입/새 기능 출시 등 명시적 트리거에만.",
     ],
     recommended: [
-      "첫 진입: steps 3~5개, 마지막 단계 후 onClose에서 localStorage 플래그 저장",
+      "첫 진입: steps 3-5개, 마지막 단계 후 onClose에서 localStorage 플래그 저장",
       "단일 안내: hideSkip + steps 1개",
       "도움말 재생: ref로 외부에서 step 제어",
     ],
@@ -2221,7 +2221,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "trend만 주고 delta를 빼면 trend 색이 의미 없어짐. 둘 다 함께 사용.",
       "그리드에서 카드마다 value 자릿수 차이가 크면 baseline이 흔들림 — 동일 단위로 통일.",
-      "trailing에 Sparkline을 넣을 때 width 100~120, height 36~48 정도가 적절. 그 이상은 카드 균형 깨짐.",
+      "trailing에 Sparkline을 넣을 때 width 100-120, height 36-48 정도가 적절. 그 이상은 카드 균형 깨짐.",
     ],
     recommended: [
       "대시보드 4-up 그리드: <StatCard label, value, unit, delta, trend>",
@@ -2235,7 +2235,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       do: '<nds-quick-action-grid columns="3" gap="12"\n  actions=\'[{"label":"홈","icon":"home","href":"/"},{"label":"기록","icon":"book","href":"/log"}]\'></nds-quick-action-grid>',
       dont: '<!-- actions JSON 에 onClick 함수 박음 — WC attribute 는 함수 못 받음. href 로 -->\n<nds-quick-action-grid actions=\'[{"label":"홈","onClick":"go()"}]\'></nds-quick-action-grid>',
     },
-    summary: "홈 빠른 액션 그리드. 4~6칸 아이콘+라벨, 배지 지원. 4칸이 기본 균형.",
+    summary: "홈 빠른 액션 그리드. 4-6칸 아이콘+라벨, 배지 지원. 4칸이 기본 균형.",
     pitfalls: [
       "라벨이 길면 줄바꿈됨. 4글자 이하 권장.",
       "5칸은 배치가 어색 — columns=4 + 8개(2행) 또는 columns=3 사용.",
@@ -2395,9 +2395,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     summary: "콘텐츠 반응 칩 그룹. 이모지 + 카운트, 다중 또는 단일 선택, hideCount 옵션.",
     pitfalls: [
-      "value는 single이어도 string[] (길이 0~1) — 일관된 형태로 처리.",
+      "value는 single이어도 string[] (길이 0-1) — 일관된 형태로 처리.",
       "options.count가 undefined면 자동 숨김. 0은 표시됨.",
-      "옵션 4~6개 권장. 8개 이상이면 가로 폭 부담.",
+      "옵션 4-6개 권장. 8개 이상이면 가로 폭 부담.",
     ],
     recommended: [
       "콘텐츠 좋아요/응원: 다중 선택 + 카운트 표시",
@@ -2500,7 +2500,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary: "이미지 자르기 (circle/square). 드래그+줌, ref.toDataURL()로 PNG 추출.",
     pitfalls: [
       "외부 이미지(https) 자르기는 CORS 헤더 필요 — 서버 응답에 Access-Control-Allow-Origin 없으면 dataURL이 비어나옴.",
-      "outputSize는 보통 200~400 — 너무 작으면 화질 저하.",
+      "outputSize는 보통 200-400 — 너무 작으면 화질 저하.",
       "CSS transform 기반 변환이라 매우 큰 이미지(>4000px)는 모바일에서 끊길 수 있음.",
     ],
     recommended: ["프로필 사진: shape='circle' outputSize=200", "커버: shape='square' size=320"],
@@ -2515,7 +2515,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "scrollTop > 0이면 트리거 X — 항상 최상단에서만 동작 (의도적).",
       "데스크톱에서 패턴이 어색 — 모바일 우선 화면에만.",
-      "threshold가 너무 작으면 일반 스크롤도 잘못 인식. 64~96 권장.",
+      "threshold가 너무 작으면 일반 스크롤도 잘못 인식. 64-96 권장.",
     ],
     recommended: [
       "리스트 새로고침: onRefresh={async () => { await refetch(); }}",
@@ -2533,7 +2533,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "peaks 미지정 시 src 기반 의사 랜덤 — 정확한 파형이 필요하면 서버 메타데이터로 전달.",
       "긴 콘텐츠(>5분)는 AudioPlayer가 더 적합.",
-      "막대 개수(bars)는 32~48 권장. 너무 많으면 모바일에서 막대가 1px 미만으로 줄어듦.",
+      "막대 개수(bars)는 32-48 권장. 너무 많으면 모바일에서 막대가 1px 미만으로 줄어듦.",
     ],
     recommended: [
       "채팅 음성 메시지: 기본 사용",
@@ -2634,7 +2634,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     summary: "별점 후기 카드 (0.5 단위). 작성자/별점/본문/태그/푸터 슬롯, verified 인증 마크.",
     pitfalls: [
-      "rating은 0~5, 0.5 단위. 범위 밖이면 시각적으로 깨짐.",
+      "rating은 0-5, 0.5 단위. 범위 밖이면 시각적으로 깨짐.",
       "본문 줄바꿈은 white-space: pre-wrap 자동 — body에 \\n 그대로 사용.",
       "footer는 보통 LikeButton/도움됨 버튼. 자유 슬롯이라 텍스트도 가능.",
     ],
@@ -2656,7 +2656,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "이미지 비율은 imageAspectRatio 로만 조절 — 기본 '4 / 3'. 영상 썸네일은 '16 / 9', 정사각 그리드는 '1 / 1'.",
       "title 은 자동 2줄 클램프, body 도 자동 2줄 클램프 — 외부에서 슬라이스 가공 불필요.",
       "imageOverlay 는 우하단 단일 라벨용 (예: '999+', '02:13'). 좌상단 배지/랭킹은 ProductCard 의 rankingNumber 를 쓰거나 image 슬롯에서 직접 그릴 것.",
-      "rating 은 0~5 number — footer 영역에 별 5개 자동 렌더. 0.25 단위 반올림이라 정밀한 0.5 표현은 ReviewCard 사용.",
+      "rating 은 0-5 number — footer 영역에 별 5개 자동 렌더. 0.25 단위 반올림이라 정밀한 0.5 표현은 ReviewCard 사용.",
       "footer 와 rating 은 동시 사용 가능 — footer 가 위, rating 이 아래 row 로 stack. 작성자/메타는 footer 안에 자유 조립.",
       "onCardClick 지정 시 role='button' + Enter/Space 핸들링 자동. CTA 버튼을 footer 에 넣을 때는 e.stopPropagation() 필요.",
       "장문 설명/리치 본문은 Card 사용. MediaCard 는 미디어가 시각 hero 인 진열용.",
@@ -2804,7 +2804,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "title 은 자동 2줄 ellipsis. size='md' 는 min-height 44px 로 2줄 정렬 보장 — 그 이상 보여주려면 디테일 화면.",
       "가격 단위('원')는 절대 Bold 로 키우지 말 것 — 가격 본문(Black)과 시각 무게 같아짐. Pretendard Regular 12 고정.",
       "`buyersCount` 는 자동 truncate — 10,000 이상은 `9,999+명` 으로 표시. 외부에서 '999,999+' 문자열로 가공해서 넘기지 말 것.",
-      "`rating` 은 0~5 number. 정수면 자동 '5.0' 포맷, 소수면 첫째자리까지 (예: 4.7).",
+      "`rating` 은 0-5 number. 정수면 자동 '5.0' 포맷, 소수면 첫째자리까지 (예: 4.7).",
       "`reviewCount` 는 `rating` 없으면 무시됨. 단독 노출 불가 — 평점과 묶음 정보라는 가이드.",
       "`pointDiscount` 외곽선 칩은 모바일(`size='sm'`) 캐시딜 패턴. PC 디자인에는 등장 X — 데스크탑에서 사용 자제.",
       "`rankingNumber` 는 캐시딜 랭킹 노출용. 일반 상품 진열에 임의로 1~N 박지 말 것 — 사용자가 '순위' 로 인지함.",
@@ -3257,7 +3257,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       '아이콘 없이 텍스트만: <ActionChip label="안내 보기" onClick={…} />',
     ],
     sizeMatrix: {
-      height: "20~24px (라벨/아이콘 sizing 에 따라 자동)",
+      height: "20-24px (라벨/아이콘 sizing 에 따라 자동)",
       iconBox: "14 × 14 (icon.normal)",
       label: "caption1 12/16 Medium · text.subtle",
       bg: "fill.neutralSubtle (hover surface.section)",
@@ -3325,7 +3325,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary:
       "현재 화면이 정보 계층 어디에 있는지 보여주는 경로. 3 depth 이상의 카탈로그 / 설정 / CMS 페이지에서 의미 있음.",
     pitfalls: [
-      "1~2 depth 페이지에 Breadcrumb 강제 표기 — 화면 위에 차지하는 노이즈 대비 정보가 적음.",
+      "1-2 depth 페이지에 Breadcrumb 강제 표기 — 화면 위에 차지하는 노이즈 대비 정보가 적음.",
       "마지막 segment 를 링크로 만들지 말 것 (현재 위치). active=true 표시.",
       "separator 를 이모지나 텍스트 기호(→ / >)로 인라인 입력 금지 — separator attribute 또는 토큰 사용.",
     ],
@@ -3480,7 +3480,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   LikertScale: {
     name: "LikertScale",
     summary:
-      "1~5 / 1~7 단계 만족도 / 동의 정도 측정. 자가검사(우울/불안), 후기, 설문에 사용. 단계당 텍스트 라벨은 최소화하고 양 끝 anchor 만.",
+      "1-5 / 1-7 단계 만족도 / 동의 정도 측정. 자가검사(우울/불안), 후기, 설문에 사용. 단계당 텍스트 라벨은 최소화하고 양 끝 anchor 만.",
     pitfalls: [
       "양 끝 anchor(start-label / end-label) 누락 — 1/5 가 좋음/나쁨 어느 쪽인지 모호.",
       "11점 이상 단계는 슬라이더(nds-slider) 가 더 적합. Likert 는 3/5/7 단계 권장.",
@@ -3524,7 +3524,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary:
       "검색어 입력 + debounce + clear. dropdown suggestion 이 필요하면 nds-autocomplete 사용.",
     pitfalls: [
-      "debounce 0 으로 매 keystroke 마다 fetch — 백엔드 부하 / UI flicker. 200~400ms 권장.",
+      "debounce 0 으로 매 keystroke 마다 fetch — 백엔드 부하 / UI flicker. 200-400ms 권장.",
       "min-query-length 미설정 — 1글자 입력에 즉시 fetch 가 일어남.",
       "검색 결과 dropdown 이 필요한데 nds-input + 자체 panel 로 흉내 — nds-autocomplete 로 일원화.",
     ],
@@ -3535,7 +3535,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   SegmentedControl: {
     name: "SegmentedControl",
-    summary: "2~5 개의 평행 옵션 중 단일 선택 (탭의 가벼운 대체). 4개 초과면 Select / Tabs.",
+    summary: "2-5 개의 평행 옵션 중 단일 선택 (탭의 가벼운 대체). 4개 초과면 Select / Tabs.",
     pitfalls: [
       "옵션이 6개 이상 — 가로 폭 부족으로 라벨 truncate. Select 사용.",
       "Segmented 와 Tabs 를 같은 화면에서 동시 사용 — 위계가 모호.",
@@ -3562,7 +3562,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   StarRating: {
     name: "StarRating",
-    summary: "1~5 / 1~10 별 점수. 후기 입력 + 후기 표시 양쪽에 사용. readonly 와 disabled 구분.",
+    summary: "1-5 / 1-10 별 점수. 후기 입력 + 후기 표시 양쪽에 사용. readonly 와 disabled 구분.",
     pitfalls: [
       "0.5 / 부분 별 채움이 필요한데 정수만 받는 input 으로 사용 — 디자인은 0.5 단위 표시 지원.",
       "readonly 와 disabled 혼동 — disabled 는 폼 비활성, readonly 는 보기 전용 (clickable 아님).",
@@ -3693,7 +3693,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Form field 옆에 inline action(다시 보내기 / 자동 채우기 / 외부 링크) 을 배치하는 보조 row.",
     pitfalls: [
       "Action 이 핵심 폼 동작(검색 / 제출) 이면 row 안이 아니라 별도 CTA 영역.",
-      "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1~2 단어로 유지.",
+      "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1-2 단어로 유지.",
     ],
   },
   TimeSlotPicker: {
@@ -3853,10 +3853,10 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     family: "Pretendard (한/영 모두)",
     weights: ["Regular(400)", "Medium(500)", "Semibold(600)", "Bold(700)"],
     rules: [
-      "Display/Headlines: Bold(700), 18~52px",
-      "Body: Medium~Regular, 14~16px",
-      "Caption: Regular, 11~13px",
-      "한 화면에 2~3개 웨이트만 사용 (3개 이상 혼용 금지)",
+      "Display/Headlines: Bold(700), 18-52px",
+      "Body: Medium~Regular, 14-16px",
+      "Caption: Regular, 11-13px",
+      "한 화면에 2-3개 웨이트만 사용 (3개 이상 혼용 금지)",
     ],
   },
   spacing: {
@@ -3944,7 +3944,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "shadow-heavy layout 금지 — 한 화면에 그림자 있는 요소가 3개를 넘으면 floating 의미를 잃습니다. Border 또는 surface tone 으로 대체",
     "detached card(공중에 떠 있는 카드) 를 의미 없이 만들지 마세요 — 카드는 페이지 흐름 안에 자연스럽게 위치",
     // ── Typography Chaos ──
-    "Bold 를 한 화면에서 5곳 이상 남발하지 마세요 — Bold 는 '가장 중요한 1~2 곳' 에만",
+    "Bold 를 한 화면에서 5곳 이상 남발하지 마세요 — Bold 는 '가장 중요한 1-2 곳' 에만",
     "같은 화면에 h1 / h2 같은 큰 제목을 2개 이상 두지 마세요 — 한 화면당 최상위 헤딩은 1개. 보조 섹션은 h3 이하",
     "hierarchy 가 불명확한 텍스트 위계를 만들지 마세요 — 인접한 두 영역의 텍스트가 같은 fontSize × fontWeight 이면 위계가 무너짐",
     // ── Decorative Surface Abuse ──
@@ -3956,7 +3956,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "장식 중심 hero section(큰 일러스트 + 큰 카피 + gradient 배경)을 만들지 마세요 — EAP 도메인은 사용자 상태/액션을 직접 보여주는 것이 우선",
     // ── Everything Has an Icon ──
     "한 화면에 여러 icon 스타일(선/면/colorful)을 혼용하지 마세요 — `@nudge-eap/icons` 단일 셋만",
-    "colorful/멀티컬러 아이콘을 본문 UI 에 과다 사용하지 마세요 — DS icon 은 currentColor monochrome 이 원칙. brand color icon 은 진입점 1~2 개에만",
+    "colorful/멀티컬러 아이콘을 본문 UI 에 과다 사용하지 마세요 — DS icon 은 currentColor monochrome 이 원칙. brand color icon 은 진입점 1-2 개에만",
     // ── Spacing Randomness 보강 ──
     "같은 depth(부모 컨테이너 안의 형제 요소들) 에 서로 다른 spacing 을 적용하지 마세요 — 형제는 같은 --gap-* 으로 통일",
     // ── Brand Icon ──
@@ -4015,7 +4015,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     },
     {
       name: "bold-overuse",
-      rule: "한 화면에 Bold 텍스트 5곳 이상 사용 금지 — Bold 는 화면당 1~2개 핵심에만. 본문은 Regular/Medium.",
+      rule: "한 화면에 Bold 텍스트 5곳 이상 사용 금지 — Bold 는 화면당 1-2개 핵심에만. 본문은 Regular/Medium.",
     },
     {
       name: "mixed-icon-style",
@@ -4361,12 +4361,12 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "action-row": {
     name: "action-row",
     summary:
-      "헤더 우측 액션 row · 필터 바 · 도구 모음처럼 *서로 다른 컴포넌트가 한 줄로 나란히 놓이는* 영역에서 높이를 어떻게 맞추는가. 빠지면 1~2px 어긋남이 row 전체를 시각적으로 불편하게 만든다. `sizing.button` / `sizing.tabs` / `sizing.input` 토큰의 단일 source of truth.",
+      "헤더 우측 액션 row · 필터 바 · 도구 모음처럼 *서로 다른 컴포넌트가 한 줄로 나란히 놓이는* 영역에서 높이를 어떻게 맞추는가. 빠지면 1-2px 어긋남이 row 전체를 시각적으로 불편하게 만든다. `sizing.button` / `sizing.tabs` / `sizing.input` 토큰의 단일 source of truth.",
     rules: [
       "한 row 안의 모든 컴포넌트는 *동일한 height bucket* (44 / 48 / 52 중 하나) 으로 통일. 4px 차이도 정렬 깨짐.",
       "**기본 bucket = 44px** — Button.md(44) / Tabs.chip(pc 44) / Input.field(44) 가 자연 매치. 헤더 우측 액션 row · 필터 바 · 카드 footer 의 표준.",
       "**큰 bucket = 48px** — Button.lg(48) / Button.field(48) / Input.default(48) / AppBar 아래 큰 액션 row. primary CTA 가 포함된 row 에 사용.",
-      "**작은 bucket = 38~42px** — Button.sm(42) / Button.xs(38) / Tabs.chip(mobile 36 — 38 에 가깝게 padding 조정). 정보 밀도 높은 어드민·표 상단 도구 모음에 사용.",
+      "**작은 bucket = 38-42px** — Button.sm(42) / Button.xs(38) / Tabs.chip(mobile 36 — 38 에 가깝게 padding 조정). 정보 밀도 높은 어드민·표 상단 도구 모음에 사용.",
       "DS 컴포넌트의 height 는 `sizing.button.{size}` / `sizing.tabs.{type}.{viewport}` / `sizing.input.{kind}` 토큰이 단일 진실. **인라인 height 로 덮어쓰지 말 것** — 자연 높이가 다른 컴포넌트를 같은 px 로 강제하면 line-height 가 어긋난다.",
       "DateRangePicker / Toggle / Select 같이 sizing.* 토큰이 없는 컴포넌트는 size prop 으로 매치하거나, 같은 row 에서 padding 만 조정해 외형을 맞춘다. **임의 height: 40px 같은 raw px 금지** — 토큰에서 가장 가까운 bucket 으로 라운드.",
       "row 안 컴포넌트 간 gap 은 8 / 12 / 16 중 하나. var(--gap-component-tight) / var(--gap-component-default) / var(--gap-component-loose).",
@@ -4457,7 +4457,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "용도별 토큰 매핑(Figma Color Usage 표):\n  · 본문 옆 강조 → `--semantic-icon-strong-default` (Neutral/800 · #383838)\n  · 보조 정보·메타 → `--semantic-icon-normal-default` (Neutral/600 · #666666)\n  · 비활성 → `--semantic-icon-disabled-default` (Neutral/300 · #C7C7C7)\n  · 어두운 배경 위 → `--semantic-icon-inverse-default` (White · #FFFFFF)\n  · 브랜드 강조 → `--semantic-icon-brand-default` (Bright Blue/500 · #2B96ED)",
       "상태 의미가 있을 때만 status 토큰을 사용한다:\n  · 성공 → `--semantic-icon-status-success` (Teal/500 · #13BFA2)\n  · 오류 → `--semantic-icon-status-error` (Orange Red/500 · #F13F00)\n  · 주의 → `--semantic-icon-status-caution` (Golden Yellow/500 · #FFC303)",
       "TestresultSafe/Warning/Danger, Siren 같은 '컬러 아이콘'(다색 일러스트성)은 시맨틱 토큰을 덧씌우지 않는다. 그대로 사용한다.",
-      "아이콘만 별도 강한 색으로 튀게 하지 않는다. 강조가 필요하면 텍스트, 배경, 아이콘 중 1~2개만 함께 조합한다.",
+      "아이콘만 별도 강한 색으로 튀게 하지 않는다. 강조가 필요하면 텍스트, 배경, 아이콘 중 1-2개만 함께 조합한다.",
     ],
     avoid: [
       "<InfoIcon />처럼 단독 아이콘을 색 지정 없이 배치",
@@ -4542,10 +4542,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       {
         heading: "타이포그래피 위계",
         items: [
-          "**Bold 남발 금지** — Bold 텍스트는 화면당 1~2 곳에만. 5곳 이상이면 위계가 사라지고 모든 글자가 평등해진다. 본문은 Regular/Medium.",
+          "**Bold 남발 금지** — Bold 텍스트는 화면당 1-2 곳에만. 5곳 이상이면 위계가 사라지고 모든 글자가 평등해진다. 본문은 Regular/Medium.",
           "**최상위 헤딩 중복 금지** — h1/h2 같은 큰 제목은 화면당 1개. 보조 섹션은 h3 이하로 내려야 페이지 안에서 '어디가 본론' 인지 보인다.",
           "**위계 불명 텍스트 금지** — 인접한 두 영역이 같은 fontSize × fontWeight 이면 위계가 무너진다. 헤딩과 본문의 시각적 차이를 항상 만든다.",
-          "**폰트 웨이트 3개 이상 혼용 금지** — 한 화면에 2~3개 웨이트만. Display(Bold) · Body(Medium/Regular) · Caption(Regular) 정도가 표준.",
+          "**폰트 웨이트 3개 이상 혼용 금지** — 한 화면에 2-3개 웨이트만. Display(Bold) · Body(Medium/Regular) · Caption(Regular) 정도가 표준.",
         ],
       },
       {
@@ -4553,7 +4553,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         items: [
           "**아이콘 스타일 혼용 금지** — 같은 화면/그룹 안에 Line · Filled · Colorful 아이콘을 섞지 않는다. `@nudge-eap/icons` 단일 셋만, 같은 그룹은 한 스타일로 통일.",
           "**장식용 헤딩 아이콘 금지** — 서브타이틀(h3/h4) · Form Label · 본문 텍스트 앞 장식 아이콘 금지. 일부 헤딩에만 아이콘이 붙으면 위계가 깨진다. 한 화면 헤딩 앞 아이콘 5개 이상은 자동 위반.",
-          "**Color icon 본문 남용 금지** — multi-color/colorful 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger 등) 와 진입점 1~2개에만. 일반 UI 강조에는 monochrome currentColor 만 사용.",
+          "**Color icon 본문 남용 금지** — multi-color/colorful 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger 등) 와 진입점 1-2개에만. 일반 UI 강조에는 monochrome currentColor 만 사용.",
         ],
       },
       {
@@ -4660,18 +4660,25 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "목업 생성 전에 정답/오답 시각 레퍼런스를 수집하고, 1줄 캡션으로 톤 판단 기준을 고정하는 패턴.",
     rules: [
       "목업 작성 전에는 프롬프트에 이미지, 스크린샷, Figma 링크, figmaNodeUrl 이 이미 있어도 항상 사용자에게 시각 레퍼런스 확인 질문을 한다.",
-      "단, 같은 목업 작업에서 이미 질문했고 사용자가 답했거나 references.md/.references 가 있으면 다시 묻지 말고 읽어서 적용한다.",
+      "단, 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, references.md 의 첫 줄 `task:` 슬러그가 현재 task 와 일치하면 다시 묻지 말고 읽어서 적용한다. 이전 task 의 stale references.md (예: cashpobi-form 작업물이 남은 상태에서 geniet-diary 시작) 는 없는 것으로 간주.",
+      "references.md 첫 줄은 `task: <brand>-<screen-slug>` 형식 필수 (예: `task: geniet-diary-hub`). 이게 staleness 판정 기준.",
       "사용자 응답으로 기존 첨부/링크를 기준으로 진행해도 되는지, 추가 정답/오답 레퍼런스가 있는지 확인한다.",
-      "권장 세트는 정답 3~5장 + 오답 3~5장. 각 레퍼런스는 '왜 맞는지/틀린지' 1줄 캡션을 붙인다.",
+      "권장 세트는 정답 1-2장 + 오답 1-2장. 각 레퍼런스는 '왜 맞는지/틀린지' 1줄 캡션을 붙인다.",
+      "`source` 로 허용되는 것은 Figma URL (`figma.com/...`) 또는 이미지 파일 (`.png/.jpg/.jpeg/.webp/.gif/.svg`) 뿐. PRD/spec/요구사항 `.md` 는 source 가 아니다 (텍스트 문서는 spec 이지 visual reference 가 아님).",
       "레퍼런스를 받은 뒤에는 brandTone 문장보다 레퍼런스 캡션을 우선한다.",
       "구현 전 references.md 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적는다.",
-      "완료 보고에는 어떤 reference cue 를 실제 화면에 반영했는지 2~4개로 요약한다.",
+      "완료 보고에는 어떤 reference cue 를 실제 화면에 반영했는지 2-4개로 요약한다.",
     ],
     avoid: [
       "레퍼런스 없이 '차분한/전문적인/친근한' 같은 형용사만 보고 화면 생성",
       "정답 이미지만 받고 오답 기준 없이 작업",
       "이미지의 색감만 따라 하고 정보 밀도, 강조 장치 수, CTA 위계를 무시",
       "references.md 를 저장만 하고 구현 계획/완료 보고에서 반영 근거를 설명하지 않음",
+      "[stale-references-md] 이전 task 의 references.md 가 남아 있는데 'task: 슬러그' 비교 없이 '이미 답변 받음' 으로 통과시킴 — 반드시 슬러그 매칭",
+      "[prd-as-visual] PRD 에 ASCII 레이아웃·컬러 스펙이 있다고 'visual reference 로 간주' — 텍스트 ≠ 시각자료, Figma 또는 이미지 필요",
+      "[decisive-tone-bypass] 사용자 어조 ('바로 만들어줘' / 'PRD 지켜서') 가 단호하다고 게이트 skip — 어조는 우회 사유가 아님",
+      "[soft-prompt-misread] 가이드의 'soft prompt' 표현을 'optional 권고' 로 약화 해석 — 이 게이트는 REQUIRED",
+      "[checklist-omission] 메모리/체크리스트의 후반 단계만 따라가다 이 게이트를 'principles 응답에 끼어있는 부차 advisory' 로 격하",
     ],
     referenceInputs: {
       accepted: [
@@ -4680,10 +4687,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         "오답 스크린샷 이미지",
         "프롬프트에 첨부된 이미지/링크",
       ],
-      minimum: "최소 정답 1장 + 오답 1장. 가능하면 총 6~10장.",
+      minimum: "최소 정답 1장 + 오답 1장. 가능하면 총 6-10장.",
       format: "[good|bad] source=<figma-url|image-name> caption=<1-line reason>",
       fallbackQuestion:
-        "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요.",
+        "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요.",
     },
     examples: [
       {
@@ -4700,11 +4707,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       },
     ],
     metrics: {
-      recommendedReferenceCount: "6~10",
+      recommendedReferenceCount: "6-10",
       minGoodReferences: 1,
       minBadReferences: 1,
-      recommendedGoodReferences: "3~5",
-      recommendedBadReferences: "3~5",
+      recommendedGoodReferences: "1-2",
+      recommendedBadReferences: "1-2",
       captionLength: "1 line",
       preferFigmaNodeUrl: "true",
     },
@@ -4734,7 +4741,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     summary: "Select/Dropdown 옵션 수에 따른 높이와 검색 정책.",
     rules: [
       "옵션 7개 이하는 일반 Select.",
-      "옵션 8~15개는 max-height 320px 안팎의 스크롤 목록.",
+      "옵션 8-15개는 max-height 320px 안팎의 스크롤 목록.",
       "옵션 15개 초과는 검색 가능 Select/Autocomplete 검토.",
       "옵션 50개 초과는 서버 검색 또는 가상화 검토.",
       "옵션 라벨은 1줄 유지. 보조 설명은 help text나 별도 상세 영역으로 분리.",
@@ -5287,9 +5294,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**Slot 1 — kcal chip**: 식품 칼로리 표시 (예: 109 kcal). Chip tinted brand xs · Body 4. base variant 의 padding 안쪽, Title 직후 또는 Metadata 라인 인라인.",
       "**Slot 2 — star rating + review count**: ★ + 평점 + (리뷰 N개). Metadata 라인 좌측. 리뷰 없는 카드는 '리뷰 없음' 으로 fallback (mute color).",
       "**Slot 3 — promotion badge**: top-right absolute (Card.Root 기준). 리뷰가 없는 카드에만 노출. 같은 그리드 안에서 promotion + review 동시 노출 금지.",
-      "**Slot 4 — nutrition tag chip row**: 0~3개 chip (고단백/저탄수/저지방/고나트륨/고식이섬유/저당 등). chip/nutrition/* 토큰 (success/info/warning/critical 톤). 위치는 Title 위 또는 Description 직후. 4개 이상 노출 금지.",
+      "**Slot 4 — nutrition tag chip row**: 0-3개 chip (고단백/저탄수/저지방/고나트륨/고식이섬유/저당 등). chip/nutrition/* 토큰 (success/info/warning/critical 톤). 위치는 Title 위 또는 Description 직후. 4개 이상 노출 금지.",
       "**Slot 5 — like overlay**: top-right absolute, Media 슬롯 위 (이미지 over). 'heart 아이콘 + 999+' 형태. Cover variant 의 Media 위에만, Thumb/List 사용 X.",
-      "**Slot 6 — author meta**: avatar(xs 20~24) + 작성자 이름 + 작성일. Metadata 라인 또는 Description 하단. 한 카드 최대 1개.",
+      "**Slot 6 — author meta**: avatar(xs 20-24) + 작성자 이름 + 작성일. Metadata 라인 또는 Description 하단. 한 카드 최대 1개.",
       "**Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale brand (Cashpobi 빨강 / Geniet mint600). 1줄에 1개.",
       "**Slot 8 — strikethrough price + sale price**: 정가(취소선 + mute) + 할인가(Bold + Strong). discount badge 와 같은 라인에 정렬. 가격 표시는 카드당 1쌍.",
       "**Slot 9 — shipping chip**: '무료배송' 같은 정책 라벨. ghost/line variant · neutral color. Metadata 라인 우측 또는 가격 라인 하단.",
@@ -5308,7 +5315,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "Slot 5(like) + Slot 3(promotion) 동시 노출 — 둘 다 top-right absolute 라 겹침",
       "Slot 4(nutrition tag) 4개 이상 — 위계 붕괴",
       "Slot 8(price) strikethrough 없이 sale price 만 — 할인 컨텍스트 누락",
-      "Slot 11(ranking leading) 을 1~3 medal 없이 number 로만 표시 — 시각 위계가 안 잡힘",
+      "Slot 11(ranking leading) 을 1-3 medal 없이 number 로만 표시 — 시각 위계가 안 잡힘",
       "한 그리드에서 카드마다 다른 Composition 조합 사용 — 정보 누락처럼 보이는 안티패턴",
       "Composition 슬롯 안에 별도 CTA 버튼 두기 — Card.Root clickable 만 사용",
       "promotion badge 위치를 top-right 외에 두기 — 절대 위치 규칙 위반",
@@ -5322,7 +5329,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       maxPricePairPerCard: 1,
       promotionBadgePosition: "top-right absolute (Card.Root)",
       likeOverlayPosition: "top-right absolute (Media slot, image overlay)",
-      rankingLeadingMedalRange: "1~3 (gold/silver/bronze) · 4+ (number + neutral subtle bg)",
+      rankingLeadingMedalRange: "1-3 (gold/silver/bronze) · 4+ (number + neutral subtle bg)",
       macroBarColors: "탄=info · 단=success · 지=caution",
       figmaNodeUrl: "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=131-1769",
     },
@@ -5335,7 +5342,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "단일 Card 가 아니라 '관련 row 묶음 + 섹션 제목 + 페이지네이션' 을 한 번에 포장하는 구조. " +
       "Figma 출처: Zenirit Card 가이드의 'Background+Border+Shadow' 명세 (예: '루테인 포함 영양제 · 총 84개 제품').",
     rules: [
-      "**구조**: 외곽 컨테이너(border 1px + radius 12~16 + bg surface) → 헤더(섹션 타이틀 + 보조 정보, 예: '총 84개 제품') → 내부 row 리스트(보통 Thumb variant ListItem 5~6개) → 페이지네이션 (선택).",
+      "**구조**: 외곽 컨테이너(border 1px + radius 12-16 + bg surface) → 헤더(섹션 타이틀 + 보조 정보, 예: '총 84개 제품') → 내부 row 리스트(보통 Thumb variant ListItem 5-6개) → 페이지네이션 (선택).",
       "**컨테이너 vs 단일 Card**: Section Card 는 Card 가 아니라 'Card-of-Cards' 컨테이너. variant prop 으로 표현하지 말고, 별도 `<Card.Root variant='section'>` 또는 `<Section bordered>` 형태로 분리.",
       "**내부 row 제약**: 내부에 들어가는 row 는 Thumb variant 의 단순 형태만 (썸네일 + Title + Meta). 다른 variant 혼용 금지.",
       "**Composition 제약**: Section Card 안의 row 는 Composition 슬롯을 4개 모두 사용하지 않음. Title + Star rating + Review count 정도까지만. 위계 충돌 방지.",
@@ -5349,12 +5356,12 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "내부 row 마다 elevation/border 추가 — Section 컨테이너가 이미 경계 표시",
       "내부에 List/Cover variant row 혼합 — Thumb only",
       "Section 헤더에 CTA 버튼 추가 — '더보기' 가 필요하면 페이지네이션 또는 별도 하단 TextButton",
-      "내부 row 가 1~2개뿐인 Section Card — 컨테이너 의미 없음, 직접 row 노출",
+      "내부 row 가 1-2개뿐인 Section Card — 컨테이너 의미 없음, 직접 row 노출",
       "단일 1회성 메시지 그룹을 Section Card 로 포장 — Banner/Notice 가 적절",
     ],
     metrics: {
       containerBorder: "1px (semantic-border-normal-default)",
-      containerRadius: "12~16px (--shape-md / --shape-lg)",
+      containerRadius: "12-16px (--shape-md / --shape-lg)",
       containerBgToken: "var(--semantic-bg-surface-default)",
       headerTitleType: "H4 Bold (또는 Body 1 Bold)",
       headerSubType: "Caption Regular Muted (우측 정렬)",

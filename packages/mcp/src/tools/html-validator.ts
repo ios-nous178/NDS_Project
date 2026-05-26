@@ -756,7 +756,7 @@ function collectDocumentLevelViolations(
       rule: "repeated-h2",
       line: 1,
       detail: `<h2> 가 ${h2Count}개 — 같은 화면에 큰 제목이 너무 많습니다.`,
-      suggestion: "h2 는 화면당 2~3개 이내. 더 세분화는 h3/h4 로 표현.",
+      suggestion: "h2 는 화면당 2-3개 이내. 더 세분화는 h3/h4 로 표현.",
     });
   }
 
@@ -771,7 +771,7 @@ function collectDocumentLevelViolations(
       rule: "bold-overuse",
       line: 1,
       detail: `Bold(700+) inline 텍스트 선언이 ${boldCount}곳.`,
-      suggestion: "Bold 는 화면당 1~2개 핵심 텍스트에만. 본문은 Regular(400)/Medium(500).",
+      suggestion: "Bold 는 화면당 1-2개 핵심 텍스트에만. 본문은 Regular(400)/Medium(500).",
     });
   }
 
@@ -840,7 +840,7 @@ function collectDocumentLevelViolations(
       line: 1,
       detail: `강조 장치가 동시에 많이 사용됨: ${emphasisSignals.map((s) => s.name).join(", ")}`,
       suggestion:
-        "안내/보조 영역은 색 배경, 아이콘, Chip/Badge, 굵은 제목 중 1~2개만 사용하세요. get_guide({ topic: 'pattern:notice' }) 참조.",
+        "안내/보조 영역은 색 배경, 아이콘, Chip/Badge, 굵은 제목 중 1-2개만 사용하세요. get_guide({ topic: 'pattern:notice' }) 참조.",
     });
   }
 
