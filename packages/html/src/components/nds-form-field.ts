@@ -39,6 +39,9 @@ export class NdsFormField extends NdsElement {
       "optional",
       "counter",
       "html-for",
+      "label-position",
+      "label-width",
+      "density",
     ];
   }
 
@@ -79,11 +82,28 @@ export class NdsFormField extends NdsElement {
     const optional = this.boolAttr("optional");
     const counter = this.getAttribute("counter");
     const htmlFor = this.getAttribute("html-for") || this._baseId;
+    const labelPositionAttr = this.getAttribute("label-position");
+    // description 이 있으면 left 모드여도 top 으로 자동 폴백 (좁은 좌측 컬럼에 멀티라인 description 부적합).
+    const labelPosition = labelPositionAttr === "left" && !description ? "left" : "top";
+    const labelWidth = this.getAttribute("label-width");
+
+    this._root.dataset.labelPosition = labelPosition;
+    const density = this.getAttribute("density") === "admin" ? "admin" : "default";
+    this._root.dataset.density = density;
+    if (labelPosition === "left" && labelWidth) {
+      this._root.style.setProperty("--nds-form-field-label-width", `${labelWidth}px`);
+    } else {
+      this._root.style.removeProperty("--nds-form-field-label-width");
+    }
 
     // Remove all root children except the control stash, then rebuild around it.
     Array.from(this._root.children).forEach((child) => {
       if (child !== this._control) child.remove();
     });
+    // Footer 는 control 내부로 흡수 — left 모드에서 helper 가 control 컬럼과 정렬되도록.
+    Array.from(this._control.querySelectorAll(`:scope > .${FF_FOOTER_CLASS}`)).forEach((n) =>
+      n.remove(),
+    );
 
     // Label Row (prepend before control)
     if (label || description) {
@@ -159,7 +179,7 @@ export class NdsFormField extends NdsElement {
         counterSpan.textContent = counter;
         footerDiv.appendChild(counterSpan);
       }
-      this._root.appendChild(footerDiv);
+      this._control.appendChild(footerDiv);
     }
   }
 }

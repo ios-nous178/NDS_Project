@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26T00:55:22.107Z",
+  "generatedAt": "2026-05-26T03:09:59.805Z",
   "packages": [
     {
       "name": "@nudge-eap/tokens",
@@ -953,6 +953,12 @@
           "optional": true,
           "type": "ButtonColor",
           "allowedValues": ["primary", "secondary", "assistive"]
+        },
+        {
+          "name": "shape",
+          "optional": true,
+          "type": "ButtonShape",
+          "allowedValues": ["default", "pill"]
         },
         {
           "name": "fullWidth",
@@ -2796,6 +2802,23 @@
           "type": "string"
         },
         {
+          "name": "labelPosition",
+          "optional": true,
+          "type": "FormFieldLabelPosition",
+          "allowedValues": ["top", "left"]
+        },
+        {
+          "name": "labelWidth",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "density",
+          "optional": true,
+          "type": "FormFieldDensity",
+          "allowedValues": ["default", "admin"]
+        },
+        {
           "name": "children",
           "optional": false,
           "type": "React.ReactNode"
@@ -3105,7 +3128,7 @@
           "name": "size",
           "optional": true,
           "type": "InputSize",
-          "allowedValues": ["default", "field"]
+          "allowedValues": ["default", "field", "compact"]
         },
         {
           "name": "slotProps",
@@ -3126,8 +3149,32 @@
       "dtsRelPath": "packages/react/dist/Input.d.ts",
       "htmlTag": "nds-input",
       "htmlAttrs": {
-        "size": ["default", "field"]
+        "size": ["default", "field", "compact"]
       }
+    },
+    {
+      "name": "InputGroup",
+      "props": [
+        {
+          "name": "gap",
+          "optional": true,
+          "type": "InputGroupGap",
+          "allowedValues": ["tight", "default", "loose"]
+        },
+        {
+          "name": "align",
+          "optional": true,
+          "type": "InputGroupAlign",
+          "allowedValues": ["stretch", "start"]
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/InputGroup.d.ts",
+      "htmlTag": "nds-input-group"
     },
     {
       "name": "JournalEntry",
@@ -9462,6 +9509,11 @@
       "group": "size"
     },
     {
+      "name": "--size-input-compact",
+      "value": "40px",
+      "group": "size"
+    },
+    {
       "name": "--size-input-default",
       "value": "48px",
       "group": "size"
@@ -9844,6 +9896,7 @@
     "nds-image-cropper",
     "nds-image-upload",
     "nds-input",
+    "nds-input-group",
     "nds-inspector",
     "nds-journal-entry",
     "nds-lightbox",
@@ -10187,9 +10240,13 @@
       "attrs": {}
     },
     {
+      "tag": "nds-input-group",
+      "attrs": {}
+    },
+    {
       "tag": "nds-input",
       "attrs": {
-        "size": ["default", "field"]
+        "size": ["default", "field", "compact"]
       }
     },
     {

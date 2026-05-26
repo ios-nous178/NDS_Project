@@ -495,6 +495,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "카드 리스트/섹션 리스트에서 반복되는 '자세히 보기 →' 버튼은 시각 소음이 큼. 반복 CTA는 아이콘 없이 텍스트만 쓰거나 카드 전체 클릭 패턴을 검토.",
       "Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'magenta'를 기대하면 안 됨.",
       "Outlined/Assistive 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=assistive variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
+      '**아이콘 색 하드코딩 금지** — `<LockIcon color="var(--semantic-icon-inverse-default)" />` 처럼 inverse/brand 토큰을 박지 말 것. NudgeEAP/Trost(primary=흰 텍스트) 에서는 맞아 보이지만, 캐포비(primary=검정 텍스트 on 노랑) 에서는 흰 아이콘이 노란 배경 위에 떠 보임. 항상 `color="currentColor"` 로 두어 Button 텍스트 색을 상속하게 한다.',
+      "**shape='pill' 은 radius 만 바꿈** — color/variant/size 매트릭스와 직교. 캐포비 admin 에서 모달·BottomCTA 가 pill, 일반 폼/카드 액션이 default. shape 만 다른 두 버튼을 한 화면에 섞으면 위계 혼란 — 컨텍스트별로 통일.",
     ],
     recommended: [
       "1차 CTA: color='primary', variant='solid'",
@@ -552,7 +554,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "Solid/Primary(#FFD200 + 검정), Solid/Neutral(#000 + 흰), Weak/Neutral, Outlined/Primary(노란 보더), Outlined/Neutral 5 스타일. " +
         "Solid Primary 의 텍스트는 항상 검정 (#000) — high-contrast 시그니처. " +
         "Solid/Neutral(검정) 은 color=secondary, variant=solid 슬롯이 담당 — Geniet dark inverse 패턴과 동일 운용. " +
-        "ButtonBG/Disabled 는 Yellow/100(#FFFAE5) 노란 톤 (gray 아님). " +
+        "**Disabled 페어 (Figma 3098:1032 SSOT)**: Solid/Primary · Solid/Neutral 모두 bg #DDDDDD (Neutral 400) + text #FFFFFF. " +
+        "Outlined disabled (Primary/Neutral) 는 border #E7E7E7 + text #BBB. " +
+        "**Shape**: default(radius 8 — 일반 admin 액션) · pill(radius full — 모달 확인/취소, BottomCTA, 격식 컨텍스트). 5종 스타일 × 2 shape × 5 size = 50개 cell 이 Figma ButtonGuide 에 모두 존재. " +
         "사이즈: X-Large(52) / Large(48) / Medium(44) / Small(40) / Mini(36). " +
         "추가 컴포넌트: TextButton(Large 38 / Medium 32), IconButton(48/44/40/32).",
     },
@@ -564,9 +568,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       xs: "height 38 / px 16 / py 10 / 13·18 bold / icon 18 / gap 6",
     },
     stateMatrix: {
-      "primary/solid/disabled": "bg #9CA2AE (cool-gray/400) + 흰 텍스트",
-      "secondary/solid/disabled": "bg #E6E7EB (cool-gray/200) + 텍스트 #9CA2AE",
-      outlined_disabled: "흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE (Figma 명세)",
+      "primary/solid/disabled":
+        "(NudgeEAP) bg #9CA2AE cool-gray + 흰 텍스트. (캐포비) bg #DDDDDD Neutral 400 + 흰 텍스트 — Figma 3098:1079.",
+      "secondary/solid/disabled":
+        "(NudgeEAP) bg #E6E7EB + 텍스트 #9CA2AE. (캐포비) bg #DDDDDD + 텍스트 #FFFFFF — Solid/Primary disabled 와 같은 페어.",
+      outlined_disabled:
+        "(NudgeEAP) 흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE. (캐포비) 흰 배경 + 보더 #E7E7E7 + 텍스트 #BBB.",
       hover: "primary=#017EE4 / secondary=#E3F2FC / outlined/assistive=#FAFAFA",
     },
     accessibility: [
@@ -859,25 +866,51 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     summary:
       "사용자의 현재 흐름을 일시적으로 중단하고 중요한 결정/응답을 받기 위한 오버레이 UI. " +
-      "Radius 8px (shape.md), 카드 padding 비대칭 (top 28 / x 16 / bottom 16), " +
-      "본문 그룹과 버튼 그룹 사이 24px gap, 50% overlay, shadow.md. " +
-      "Device 너비: PC 332px / Mobile 294px (device='pc'|'mobile' 또는 maxWidth로 지정). " +
+      "(기본/모바일) Radius 8 / 카드 padding 비대칭 28·16·16 / PC 332 · Mobile 294 / 본문↔버튼 24px gap / 50% overlay / shadow.md. " +
       "Type: default / title(헤더) / Image(64×64 아이콘+타이틀). " +
-      "Button: 최대 2개 (1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할).",
+      "Button: 최대 2개 (1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할). " +
+      '(캐포비 admin) `<html data-brand="cashpobi">` 가 박힌 환경에서는 480px / radius 16 / padding 32 균등 / gap 20 / Title2 좌측 정렬 / pill 44px 버튼 + 검정 CTA 로 자동 변형. ' +
+      "Modal API/props 는 동일 — CSS cascade 만 다름. 4가지 admin 패턴: ① Single(우측 정렬 120px) / ② Dual(양분) / ③ With Close(헤더 X + 우측 단일) / ④ Confirm+Slot(추가 슬롯).",
+    figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9947",
+    references: [
+      {
+        label: "Cashpobi Admin Modal Guide — 4 patterns",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3418-471",
+        caption:
+          "Cashwalk for Business · ModalGuide. Single / Dual / With Close / Confirm+Slot 4가지 슬롯 기반 admin 패턴 SSOT.",
+        brand: "cashpobi",
+      },
+    ],
+    brandMatrix: {
+      "nudge-eap":
+        "기본 모바일/PC 스펙 — 332/294 너비, radius 8, padding 비대칭(28/16/16), 본문/버튼 중앙 정렬, 본문↔버튼 24px gap.",
+      trost: "nudge-eap 와 동일 cascade. 색만 trost 브랜드 토큰 적용 (confirm = brand fill).",
+      geniet: "nudge-eap 와 동일 cascade. 색만 geniet 브랜드 토큰 적용 (confirm = brand fill).",
+      cashpobi:
+        "admin 데스크톱 다이얼로그로 변형: 480 / radius 16 / padding 32 균등 / gap 20 / Title2(18·26) 좌측 정렬 / Body2(14·20) 좌측 정렬 / pill 버튼 44px / Body2 medium. " +
+        "Confirm = 검정 CTA (`cv.button.bgSecondary` = #000), Cancel = white + `cv.button.borderAssistive` 회색 보더. " +
+        "Footer 1버튼(Single): 우측 정렬 + 120px 고정 폭 (`data-has-both-actions` 속성 자동 감지). " +
+        "Footer 2버튼(Dual): 가로 양분 — 기존과 동일. " +
+        "헤더는 좌측 정렬 위해 spacer 가 자동으로 display:none. " +
+        "(참고: 4가지 admin 패턴 SSOT 는 Figma 3418:471).",
+    },
     pitfalls: [
-      "Modal 내부에 다시 큰 그림자/보더를 추가하지 말 것 (이미 shadow.md 적용됨).",
+      "Modal 내부에 다시 큰 그림자/보더를 추가하지 말 것 (이미 shadow 토큰이 적용됨).",
       "ESC/오버레이 클릭으로 닫히는 기본 동작을 막으면 접근성 저해.",
       "버튼은 최대 2개까지만 사용. 3개 이상이 필요하면 BottomSheet 검토.",
-      "maxWidth 미지정 시 기본 332px(PC). 모바일 화면이면 device='mobile' 로 294px 지정.",
+      "maxWidth 미지정 시 기본 폭은 브랜드에 따라 다름: nudge-eap/trost/geniet=332(PC), cashpobi=480(admin). 모바일 화면이면 device='mobile' 로 294px 지정.",
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
+      "**Cashpobi 한정** — flat `<Modal ...>` 에 `closable + onClose + onConfirm` 을 한꺼번에 넘기면 헤더 X 와 푸터 cancel 이 중복으로 노출됨. 패턴 ③(With Close: 헤더 X + 푸터 단일 확인) 은 반드시 Compound API (`Modal.Root` / `Modal.Header closable` / `Modal.Footer onConfirm` 만) 로 조립 — 푸터에는 `onClose` 를 넘기지 말 것.",
+      '**Cashpobi 한정** — admin 모달이라고 가정해 너비/패딩/라운드를 inline style 로 덮어쓰지 말 것. `<html data-brand="cashpobi">` 가 박힌 환경이면 480/16/32 가 자동 적용됨 — 그 외 컨텍스트라면 기본 모바일 스펙이 의도된 것.',
     ],
     usagePolicy: {
       useFor: [
         "즉각적 판단/응답이 필요한 확인 (삭제 확인, 결제 확인)",
         "현재 흐름 중단이 정당화되는 중요한 결정",
         "추가 입력 없이 한 화면에서 결정을 마쳐야 하는 짧은 폼",
+        "(캐포비 admin) 검수/등록/노출 변경 같은 admin 워크플로우의 확인 다이얼로그",
       ],
       doNotUseFor: [
         "단순 정보 전달 — inline Notice / Banner / section 안내 사용",
@@ -1071,6 +1104,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     sizeMatrix: {
       default: "height 48 / padding 16·13 / wrapper gap 10 / radius 8",
       field: "height 44 / 같은 토큰, label-gap 8",
+      compact:
+        "height 40 / padding 12·10 / label-gap 6 — Cashpobi admin TextField (Figma 3082:846). FormField.labelPosition='left' 와 짝으로 사용.",
     },
     stateMatrix: {
       default: "border #D8D8D8 / bg white / placeholder #999",
@@ -3385,15 +3420,60 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   FormField: {
     name: "FormField",
     summary:
-      "Input / Textarea / Select 같은 form control 의 label / helper / error / counter 슬롯을 묶는 래퍼.",
+      "Input / Textarea / Select 같은 form control 의 label / helper / error / counter 슬롯을 묶는 래퍼. label-position(top|left) + density(default|admin) 조합으로 모바일/admin 폼을 한 컴포넌트로 처리.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3082-846",
     pitfalls: [
       "label 또는 html-for 누락 — Form 안의 input id 와 라벨이 끊겨 접근성이 깨짐.",
       "error 와 helper 를 동시에 표시 — 사용자는 어떤 메시지를 우선해야 할지 혼란. error 모드에서는 helper 숨김.",
       "counter 는 max-length 가 명확한 textarea / input 에서만 사용.",
+      "label-position='left' + description 동시 사용 — description 이 있으면 자동으로 top 으로 폴백 (좌측 좁은 컬럼에 멀티라인 설명을 욱여넣지 않기 위함).",
+      "label-position='left' 인데 input size 가 default(48) — 캐포비 admin 표준은 size='compact'(40). 라벨 baseline 이 안 맞음.",
+      "density='admin' 인데 stack 사이에 별도 gap 24/48 박음 — FormField 자체 py-24 가 이미 시각 48px 을 만드므로 이중 간격이 됨. 부모는 그냥 flex column 으로 두고 FormField 가 알아서 간격 책임지게 할 것.",
+      "density 와 size 혼동: density 는 FormField 자체 (label/helper typo + padding) 가 admin 톤이냐, size 는 Input/Select 의 height 가 40 이냐. 캐포비 admin 표준은 둘 다 admin/compact 짝.",
+      "FormField child 슬롯에 raw <div> + 수기 flex 로 input 여러 개 — 대신 InputGroup 컴포넌트 사용 (gap 12 + flex:1 균등 자동).",
     ],
+    recommended: [
+      "모바일/일반 폼: <nds-form-field label='이름' helper='실명' required> + <nds-input>",
+      "캐포비 admin 표준 (단일 input): <nds-form-field label='Label' label-position='left' density='admin'> + <nds-input size='compact' / nds-select>",
+      "캐포비 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)",
+      "FormSection (FormField 두 개 이상 stack): 부모는 <div class='form-card'> (radius 16, padding 24, white bg) + 안에 <nds-form-field density='admin'> 들을 그냥 flex column 으로 쌓기. 각 FormField 의 py-24 가 자동으로 시각 48px 간격을 만듦.",
+      "글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만.",
+    ],
+    sizeMatrix: {
+      top: "label 위, control 아래. 모바일/일반 폼 기본. label-row column flex.",
+      left: "label 좌측 고정(width 기본 180px, labelWidth prop), control 우측 1fr. baseline 정렬을 위해 label 컬럼 padding-top 10px(default)/12px(admin) 자동 적용.",
+      "density:default":
+        "label body3 (13/18), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.",
+      "density:admin":
+        "label body1 (16/24, ≡ Figma Subtitle1/Medium), helper body3 (14/20, ≡ Figma Body2/Regular), 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871 표준).",
+    },
     examplesHtml: {
-      do: '<nds-form-field label="이름" helper="실명을 입력해주세요" html-for="name-input" required>\n  <nds-input id="name-input" name="name"></nds-input>\n</nds-form-field>',
-      dont: '<!-- htmlFor (React 표기) — vanilla HTML 에선 html-for 만 동작 -->\n<nds-form-field label="이름" htmlFor="x"><nds-input id="x"></nds-input></nds-form-field>',
+      do: '<!-- 모바일/일반 폼 -->\n<nds-form-field label="이름" helper="실명을 입력해주세요" html-for="name-input" required>\n  <nds-input id="name-input" name="name"></nds-input>\n</nds-form-field>\n\n<!-- 캐포비 admin: label 좌측 + compact + admin density -->\n<nds-form-field label="Label" label-position="left" density="admin" html-for="admin-name">\n  <nds-input id="admin-name" size="compact" placeholder="값을 입력하세요"></nds-input>\n</nds-form-field>\n\n<!-- row 다중 input — InputGroup -->\n<nds-form-field label="기간" label-position="left" density="admin">\n  <nds-input-group>\n    <nds-select placeholder="년"></nds-select>\n    <nds-select placeholder="월"></nds-select>\n    <nds-select placeholder="일"></nds-select>\n  </nds-input-group>\n</nds-form-field>',
+      dont: '<!-- htmlFor (React 표기) — vanilla HTML 에선 html-for 만 동작 -->\n<nds-form-field label="이름" htmlFor="x"><nds-input id="x"></nds-input></nds-form-field>\n<!-- label-position="left" 인데 default size — 라벨이 input 중앙과 안 맞음 -->\n<nds-form-field label="Label" label-position="left"><nds-input></nds-input></nds-form-field>\n<!-- admin 인데 부모에 gap 박음 — 이중 간격 -->\n<div style="display:flex;flex-direction:column;gap:24px">\n  <nds-form-field density="admin">...</nds-form-field>\n  <nds-form-field density="admin">...</nds-form-field>\n</div>\n<!-- 수기 flex 로 row 다중 input — InputGroup 써야 함 -->\n<nds-form-field label="기간"><div style="display:flex;gap:12px"><nds-input/><nds-input/></div></nds-form-field>',
+    },
+  },
+  InputGroup: {
+    name: "InputGroup",
+    summary:
+      "한 줄에 form control 여러 개를 묶는 wrapper. FormField 의 단일 child slot 에 넣어 row 다중 input 폼을 만든다 (예: 년/월/일 3-Dropdown, 이메일+도메인 2-Input).",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3466-17405",
+    pitfalls: [
+      "FormField 없이 InputGroup 만 단독 — label 없이 row 만 뜨면 의미 전달 불완전.",
+      "각 child 너비를 px 로 박지 말 것 — stretch(기본)는 flex:1 균등, start 는 본래 너비. 비율 분배가 필요하면 child 에 직접 flex 설정.",
+      "gap='loose'(16) 는 FormField label↔control gap 과 같음 — 시각적으로 그룹 경계가 모호. row 다중 input 은 default(12) 또는 tight(8) 권장.",
+    ],
+    recommended: [
+      "년/월/일 3-Dropdown: <nds-form-field label='기간' label-position='left' density='admin'><nds-input-group> 안에 <nds-select> × 3",
+      "이메일+도메인 2-Input: <nds-input-group gap='tight'><nds-input/><nds-input/></nds-input-group>",
+      "비율이 다른 케이스 (input + 짧은 button): align='start' 로 본래 너비 유지.",
+    ],
+    sizeMatrix: {
+      gap: "tight=8 / default=12 (Figma 캐포비 admin 표준) / loose=16",
+      align: "stretch(기본)=모든 child flex:1 균등 / start=본래 너비",
+    },
+    examplesHtml: {
+      do: '<nds-form-field label="기간" label-position="left" density="admin">\n  <nds-input-group>\n    <nds-select placeholder="년"></nds-select>\n    <nds-select placeholder="월"></nds-select>\n    <nds-select placeholder="일"></nds-select>\n  </nds-input-group>\n</nds-form-field>',
+      dont: '<!-- FormField 없이 단독 — label 끊김 -->\n<nds-input-group><nds-input></nds-input><nds-input></nds-input></nds-input-group>\n<!-- child 너비를 px 로 — stretch 효과 깨짐 -->\n<nds-input-group><nds-input style="width:200px"></nds-input></nds-input-group>',
     },
   },
   LikertScale: {

@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import {
   FormField,
   Input,
+  InputGroup,
+  Select,
   Textarea,
   LikertScale,
   RadioGroup,
@@ -95,6 +97,153 @@ function LikertWrappedExample() {
   );
 }
 
+function LabelLeftExample() {
+  const [name, setName] = useState("");
+  return (
+    <div style={{ width: 600 }}>
+      <FormField
+        label="이름"
+        labelPosition="left"
+        helper="도움말이 노출됩니다."
+        htmlFor="cashpobi-admin-name"
+      >
+        <Input
+          id="cashpobi-admin-name"
+          size="compact"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="값을 입력하세요"
+        />
+      </FormField>
+    </div>
+  );
+}
+
+function CashpobiAdminTextFieldExample() {
+  // Cashpobi Figma Section_TextField (3082:846) — Label=Left × {Typing, Error, Disabled, Complete}.
+  const states = [
+    {
+      key: "default",
+      caption: "Default",
+      props: { placeholder: "값을 입력하세요" },
+      helper: "도움말이 노출됩니다.",
+    },
+    {
+      key: "typing",
+      caption: "Typing",
+      props: { defaultValue: "입력된 텍스트", autoFocus: true },
+      helper: "도움말이 노출됩니다.",
+    },
+    {
+      key: "error",
+      caption: "Error",
+      props: { defaultValue: "입력된 텍스트", error: true },
+      error: "에러 메시지가 노출됩니다.",
+    },
+    {
+      key: "disabled",
+      caption: "Disabled",
+      props: { placeholder: "값을 입력하세요", disabled: true },
+      helper: "도움말이 노출됩니다.",
+    },
+    {
+      key: "complete",
+      caption: "Complete",
+      props: { defaultValue: "입력된 텍스트", complete: true },
+      helper: "도움말이 노출됩니다.",
+    },
+  ] as const;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20, width: 600 }}>
+      {states.map((s) => (
+        <div key={s.key} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <FormField
+            label="Label"
+            labelPosition="left"
+            required={s.key === "error"}
+            helper={"helper" in s ? s.helper : undefined}
+            error={"error" in s ? s.error : undefined}
+            htmlFor={`cashpobi-admin-${s.key}`}
+          >
+            <Input id={`cashpobi-admin-${s.key}`} size="compact" {...s.props} />
+          </FormField>
+          <span style={{ fontSize: 11, color: "#bbb", fontWeight: 700 }}>{s.caption}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AdminFormSectionExample() {
+  // Cashpobi Figma "기본 정보" FormSection (3466:17405) 재현.
+  // Container = white card with radius-16 border, padding 24.
+  // 안에 FormField 2개 stack — 둘 다 density="admin" 이라 py-24 가 자동으로 사이 48px 시각 간격을 만듦.
+  const [single, setSingle] = useState("");
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+  return (
+    <div style={{ width: 1000 }}>
+      <h3 style={{ font: "700 24px/1.2 Inter", margin: "0 0 16px", color: "#111" }}>기본 정보</h3>
+      <div
+        style={{
+          background: "#fff",
+          border: "1px solid #eee",
+          borderRadius: 16,
+          padding: 24,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <FormField label="Label" labelPosition="left" density="admin">
+          <Select
+            value={single}
+            onValueChange={setSingle}
+            options={[
+              { value: "a", label: "옵션 A" },
+              { value: "b", label: "옵션 B" },
+            ]}
+            placeholder="선택해 주세요"
+          />
+        </FormField>
+        <FormField label="Label" labelPosition="left" density="admin">
+          <InputGroup>
+            <Select
+              value={year}
+              onValueChange={setYear}
+              options={[
+                { value: "2024", label: "2024" },
+                { value: "2025", label: "2025" },
+                { value: "2026", label: "2026" },
+              ]}
+              placeholder="년"
+            />
+            <Select
+              value={month}
+              onValueChange={setMonth}
+              options={Array.from({ length: 12 }, (_, i) => ({
+                value: String(i + 1),
+                label: `${i + 1}월`,
+              }))}
+              placeholder="월"
+            />
+            <Select
+              value={day}
+              onValueChange={setDay}
+              options={Array.from({ length: 31 }, (_, i) => ({
+                value: String(i + 1),
+                label: `${i + 1}일`,
+              }))}
+              placeholder="일"
+            />
+          </InputGroup>
+        </FormField>
+      </div>
+    </div>
+  );
+}
+
 function RadioWrappedExample() {
   const [value, setValue] = useState("video");
   return (
@@ -120,4 +269,42 @@ export const WrappingLikert: Story = {
 export const WrappingRadio: Story = {
   name: "RadioGroup 감싸기",
   render: () => <RadioWrappedExample />,
+};
+export const LabelLeft: Story = {
+  name: "라벨 좌측 (admin)",
+  render: () => <LabelLeftExample />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Cashpobi admin TextField 패턴. `labelPosition="left"` + `Input size="compact"` (40px) 으로 라벨 좌측 고정 폼. 라벨 컬럼 너비 기본 180px (`labelWidth` 로 조정).',
+      },
+    },
+  },
+};
+export const CashpobiAdminTextField: Story = {
+  name: "캐포비 admin · TextField 5 states",
+  render: () => <CashpobiAdminTextFieldExample />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Figma Cashpobi Library `Section_TextField` (3082:846) 의 5개 state 재현. Label=Left + Input size=compact 조합.",
+      },
+    },
+  },
+};
+export const CashpobiAdminFormSection: Story = {
+  name: "캐포비 admin · FormSection + InputGroup",
+  render: () => <AdminFormSectionExample />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Figma Cashpobi Library `FormSection` (3466:17405) 재현. " +
+          "FormField `density='admin'` 가 자체 py-24 를 부여해 stack 시 시각 48px 간격이 자동 형성됨. " +
+          "두번째 FormField 안에서 `InputGroup` 으로 년/월/일 Select 3개를 gap 12 균등 분할.",
+      },
+    },
+  },
 };

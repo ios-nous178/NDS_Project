@@ -14,24 +14,35 @@ const INPUT_CLEAR_CLASS = `${INPUT_CLASS}__clear`;
 const INPUT_HELPER_CLASS = `${INPUT_CLASS}__helper`;
 const INPUT_HELPER_GROUP_CLASS = `${INPUT_CLASS}__helper-group`;
 
-export type InputSize = "default" | "field";
+export type InputSize = "default" | "field" | "compact";
 
 /* Figma 실측 (171:9903)
  *   label ↔ wrapper gap : 12px
  *   wrapper ↔ helper gap: 8px (disabled=12)
  *   helper(items) gap   : 12px (HelpText 1 ↔ HelpText 2)
  *   wrapper text↔icon gap: 10px
+ *
+ * compact: Cashpobi admin TextField (Figma 3082:846) — height 40, padding 12.
+ *   FormField.labelPosition="left" 와 짝으로 가장 자주 쓰임.
  */
 const inputSizeConfig = {
   default: {
     height: sizing.input.default,
+    paddingX: undefined,
     labelGap: spacing[12],
     helperGap: spacing[8],
   },
   field: {
     height: sizing.input.field,
+    paddingX: undefined,
     labelGap: spacing[8],
     helperGap: spacing[8],
+  },
+  compact: {
+    height: sizing.input.compact,
+    paddingX: spacing[12],
+    labelGap: spacing[6],
+    helperGap: spacing[6],
   },
 } as const;
 /* ─── Utils ─── */
@@ -130,6 +141,9 @@ export const InputRoot: React.FC<InputRootProps> = ({
             "--nds-input-height": `${sizeStyle.height}px`,
             "--nds-input-label-gap": `${sizeStyle.labelGap}px`,
             "--nds-input-helper-gap": `${sizeStyle.helperGap}px`,
+            ...(sizeStyle.paddingX !== undefined && {
+              "--nds-input-padding-x": `${sizeStyle.paddingX}px`,
+            }),
             ...style,
           } as React.CSSProperties
         }

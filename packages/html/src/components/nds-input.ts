@@ -19,13 +19,18 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 
-export type InputSize = "default" | "field";
+export type InputSize = "default" | "field" | "compact";
 
-const SIZES: readonly InputSize[] = ["default", "field"];
+const SIZES: readonly InputSize[] = ["default", "field", "compact"];
 
-const SIZE_CONFIG: Record<InputSize, { labelGap: number; helperGap: number }> = {
-  default: { labelGap: 12, helperGap: 8 },
-  field: { labelGap: 8, helperGap: 8 },
+// sizing.input.{default,field,compact} = {48, 44, 40}px. compact 는 캐포비 admin TextField (Figma 3082:846).
+const SIZE_CONFIG: Record<
+  InputSize,
+  { height: number; paddingX: number | null; labelGap: number; helperGap: number }
+> = {
+  default: { height: 48, paddingX: null, labelGap: 12, helperGap: 8 },
+  field: { height: 44, paddingX: null, labelGap: 8, helperGap: 8 },
+  compact: { height: 40, paddingX: 12, labelGap: 6, helperGap: 6 },
 };
 
 const FORWARDED_ATTRS = [
@@ -152,8 +157,14 @@ export class NdsInput extends NdsElement {
     root.dataset.disabled = String(disabled);
     root.dataset.error = String(error);
     root.style.setProperty("--nds-input-width", fullWidth ? "100%" : "auto");
+    root.style.setProperty("--nds-input-height", `${cfg.height}px`);
     root.style.setProperty("--nds-input-label-gap", `${cfg.labelGap}px`);
     root.style.setProperty("--nds-input-helper-gap", `${cfg.helperGap}px`);
+    if (cfg.paddingX !== null) {
+      root.style.setProperty("--nds-input-padding-x", `${cfg.paddingX}px`);
+    } else {
+      root.style.removeProperty("--nds-input-padding-x");
+    }
 
     this._wrapper.dataset.focused = String(this._focused);
     this._wrapper.dataset.error = String(error);

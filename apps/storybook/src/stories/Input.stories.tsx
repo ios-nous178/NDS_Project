@@ -21,7 +21,7 @@ const meta: Meta<InputProps> = {
   argTypes: {
     size: {
       control: "radio",
-      options: ["default", "field"],
+      options: ["default", "field", "compact"],
     },
     error: { control: "boolean" },
     clearable: { control: "boolean" },
