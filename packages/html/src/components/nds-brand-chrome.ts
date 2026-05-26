@@ -19,6 +19,16 @@ import { NdsElement, define } from "../base/nds-element.js";
 import { cv, fontWeight, radius, spacing, transition, typeScale, zIndex } from "@nudge-eap/tokens";
 import "./nds-header.js";
 import "./nds-footer.js";
+import {
+  GENIET_LOGO_PC_DATA_URI,
+  GENIET_LOGO_MOBILE_DATA_URI,
+  GENIET_LOGO_FOOTER_DATA_URI,
+  NUDGE_EAP_LOGO_DATA_URI,
+  NUDGE_EAP_LOGO_FOOTER_DATA_URI,
+  TROST_LOGO_DATA_URI,
+  TROST_LOGO_MOBILE_DATA_URI,
+  CASHPOBI_LOGO_DATA_URI,
+} from "./brand-logo-defaults.js";
 
 /* ──────────────── Types ──────────────── */
 
@@ -148,8 +158,10 @@ interface BrandChrome {
 const BRAND_DATA: Record<BrandKey, BrandChrome> = {
   "nudge-eap": {
     label: "NudgeEAP",
-    logo: { src: "nudge-eap-logo.png", alt: "NudgeEAP", width: 124, height: 28 },
-    footerLogo: { src: "nudge-eap-logo-footer.png", alt: "NudgeEAP", width: 100, height: 23 },
+    /* 로고 src 는 base64 data URI 로 self-contained — 외부 소비자가 자산 hosting
+     * 없이도 어떤 환경에서든 깨지지 않고 렌더된다. asset-base-url 로 override 도 가능. */
+    logo: { src: NUDGE_EAP_LOGO_DATA_URI, alt: "NudgeEAP", width: 124, height: 28 },
+    footerLogo: { src: NUDGE_EAP_LOGO_FOOTER_DATA_URI, alt: "NudgeEAP", width: 100, height: 23 },
     maxWidth: 1200,
     webMenu: [
       { key: "counsel", label: "상담하기", href: "/counsel" },
@@ -185,8 +197,9 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
   },
   trost: {
     label: "Trost",
-    logo: { src: "trost-logo.svg", alt: "Trost", width: 90, height: 36 },
-    mobileLogo: { src: "trost-logo-mobile.webp", alt: "Trost", width: 80, height: 28 },
+    /* 로고 self-contained data URI (geniet/nudge-eap 와 동일 정책). */
+    logo: { src: TROST_LOGO_DATA_URI, alt: "Trost", width: 90, height: 36 },
+    mobileLogo: { src: TROST_LOGO_MOBILE_DATA_URI, alt: "Trost", width: 80, height: 28 },
     maxWidth: 1080,
     webMenu: [
       { key: "home", label: "홈", href: "/" },
@@ -238,9 +251,12 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
   },
   geniet: {
     label: "Geniet",
-    logo: { src: "geniet-logo-pc.webp", alt: "Geniet", width: 165, height: 54 },
-    mobileLogo: { src: "geniet-logo-mobile.webp", alt: "Geniet", width: 97, height: 32 },
-    footerLogo: { src: "geniet-logo-footer.webp", alt: "Geniet", width: 110, height: 32 },
+    /* 로고 src 는 base64 data URI 로 self-contained — 외부 소비자가 별도 asset
+     * hosting 을 안 해도 어떤 환경에서든 깨지지 않고 렌더된다. asset-base-url 을
+     * 주면 resolveAssetUrl 이 data: 는 그대로 통과시키므로 override 도 안전. */
+    logo: { src: GENIET_LOGO_PC_DATA_URI, alt: "Geniet", width: 165, height: 54 },
+    mobileLogo: { src: GENIET_LOGO_MOBILE_DATA_URI, alt: "Geniet", width: 97, height: 32 },
+    footerLogo: { src: GENIET_LOGO_FOOTER_DATA_URI, alt: "Geniet", width: 110, height: 32 },
     maxWidth: 1280,
     webMenu: [
       { key: "home", label: "홈", href: "/" },
@@ -308,14 +324,16 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
   },
   cashpobi: {
     label: "Cashpobi",
+    /* 로고 self-contained data URI (geniet/trost/nudge-eap 와 동일 정책).
+     * 데스크탑/모바일 동일 로고 — 크기만 다르게. */
     logo: {
-      src: "cashpobi/cashwalk-for-business-horizontal.svg",
+      src: CASHPOBI_LOGO_DATA_URI,
       alt: "Cashwalk for Business",
       width: 107,
       height: 32,
     },
     mobileLogo: {
-      src: "cashpobi/cashwalk-for-business-horizontal.svg",
+      src: CASHPOBI_LOGO_DATA_URI,
       alt: "Cashwalk for Business",
       width: 80,
       height: 24,
@@ -645,16 +663,24 @@ function renderGenietHeader(
       gap: ${spacing[24]}px;
       box-sizing: border-box;
     }
+    /* Rail: viewport 전체 폭 — 위/아래 border 가 화면 끝까지 그어진다.
+     * 콘텐츠는 max-width 안쪽 nav 가 잡고, rail 은 border 만 담당. */
+    .nds-brand-geniet__menu-header-rail {
+      width: 100%;
+      margin-top: ${g.pcGap}px;
+      border-top: 1px solid ${cv.borderRole.subtle};
+      border-bottom: 1px solid ${cv.borderRole.subtle};
+      background: ${cv.surface.default};
+      box-sizing: border-box;
+    }
     .nds-brand-geniet__menu-header {
       display: flex;
       align-items: stretch;
       width: 100%;
       max-width: ${brand.maxWidth}px;
       height: ${g.pcMenuHeight}px;
-      margin: ${g.pcGap}px auto 0;
+      margin: 0 auto;
       padding: 0 ${spacing[16]}px;
-      border-top: 1px solid ${cv.borderRole.subtle};
-      border-bottom: 1px solid ${cv.borderRole.subtle};
       box-sizing: border-box;
     }
     .nds-brand-geniet__logo {
@@ -846,14 +872,17 @@ function renderGenietHeader(
       font-family: inherit;
       transition: background-color ${transition.default};
     }
+    /* 캐시리뷰 — 흰 배경 + 연한 파란 보더 + 토스 블루 텍스트/아이콘. brand mint 와
+     * 구분되는 accent 컬러라 시멘틱 토큰 대신 hex 로 못박는다 (React AppBar 와 동일). */
     .nds-brand-geniet__cta-pill[data-tone="outline"] {
       background: ${cv.surface.default};
-      border: 1px solid ${cv.borderRole.subtle};
-      color: ${cv.textRole.brand};
+      border: 1px solid #dce9ff;
+      color: #1677ff;
     }
+    /* 친구초대 이벤트 — 연한 하늘 배경 + 파란 텍스트. */
     .nds-brand-geniet__cta-pill[data-tone="tinted"] {
-      background: ${cv.surface.brandSubtle};
-      color: ${cv.textRole.brand};
+      background: #e9f7ff;
+      color: #0093f1;
     }
     .nds-brand-geniet__cta-pill[data-tone="filled"] {
       background: ${cv.fill.brand};
@@ -1038,13 +1067,15 @@ function renderGenietHeader(
         </div>
         <div class="nds-brand-geniet__login-area" data-slot="login-area">${actionButtonsHtml}</div>
       </div>
-      <nav class="nds-brand-geniet__menu-header" data-slot="menu-header">
-        <a class="nds-brand-geniet__category" href="${escapeAttr(g.categoryHref)}">
-          ${GENIET_ICONS.menu}<span>${escapeHtml(g.categoryLabel)}</span>
-        </a>
-        <div class="nds-brand-geniet__gnb">${gnbHtml}</div>
-        <div class="nds-brand-geniet__cta-group">${ctaHtml}</div>
-      </nav>
+      <div class="nds-brand-geniet__menu-header-rail" data-slot="menu-header-rail">
+        <nav class="nds-brand-geniet__menu-header" data-slot="menu-header">
+          <a class="nds-brand-geniet__category" href="${escapeAttr(g.categoryHref)}">
+            ${GENIET_ICONS.menu}<span>${escapeHtml(g.categoryLabel)}</span>
+          </a>
+          <div class="nds-brand-geniet__gnb">${gnbHtml}</div>
+          <div class="nds-brand-geniet__cta-group">${ctaHtml}</div>
+        </nav>
+      </div>
     </header>
   `;
 }

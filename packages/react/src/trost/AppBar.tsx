@@ -18,6 +18,7 @@ import { Button } from "../Button";
 import { TrendingKeywords } from "../TrendingKeywords";
 import type { TrendingKeywordItem } from "../TrendingKeywords";
 import { TrostEnergyCoinIcon } from "@nudge-eap/icons";
+import { TROST_LOGO_DATA_URI, TROST_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults";
 
 /* ─── Constants (Trost 웹사이트 실측 스펙 + 모바일 홈 헤더 2단 가이드) ─── */
 
@@ -288,7 +289,7 @@ function PointChip({ chip }: { chip: TrostAppBarPointChip }) {
 export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((props, ref) => {
   const {
     variant = "desktop",
-    logo,
+    logo: logoProp,
     pcMaxWidth = PC_MAX_WIDTH_DEFAULT,
     mainBarPaddingY = MAIN_BAR_PADDING_Y_DEFAULT,
     navHeight = NAV_HEIGHT_DEFAULT,
@@ -316,6 +317,14 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
     onMobileSearchChange,
     onMobileSearch,
   } = props;
+
+  /* logo prop 미지정 시 self-contained 기본 로고. 외부 소비자가 자산 hosting 없이도
+   * 어떤 환경에서든 깨지지 않고 렌더. 호스트가 자체 자산을 쓰면 prop 으로 override. */
+  const logo: TrostAppBarLogo =
+    logoProp ??
+    (variant === "mobile"
+      ? { src: TROST_LOGO_MOBILE_DATA_URI, alt: "Trost", width: 80, height: 28 }
+      : { src: TROST_LOGO_DATA_URI, alt: "Trost", width: 90, height: 36 });
 
   if (variant === "webview") {
     return (
