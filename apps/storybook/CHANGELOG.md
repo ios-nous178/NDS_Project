@@ -1,5 +1,19 @@
 # @nudge-eap/storybook
 
+## 0.1.11
+
+### Patch Changes
+
+- Updated dependencies [ea692d7]
+- Updated dependencies [5968807]
+- Updated dependencies [2fd35b4]
+- Updated dependencies [5968807]
+- Updated dependencies
+  - @nudge-eap/react@1.0.0
+  - @nudge-eap/tokens@0.2.0
+  - @nudge-eap/icons@0.2.0
+  - @nudge-eap/tailwind-preset@0.2.0
+
 ## 0.1.7
 
 ### Patch Changes

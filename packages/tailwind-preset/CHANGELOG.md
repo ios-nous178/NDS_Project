@@ -1,5 +1,16 @@
 # @nudge-eap/tailwind-preset
 
+## 0.2.0
+
+### Minor Changes
+
+- 0.2.0 — 캐포비 브랜드 합류 + 신규 컴포넌트 5종 + 브랜드 헤더/푸터 한 줄 호출 + MCP 가드레일 강화
+
+### Patch Changes
+
+- Updated dependencies
+  - @nudge-eap/tokens@0.2.0
+
 ## 0.1.10
 
 ### Patch Changes

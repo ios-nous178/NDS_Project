@@ -337,7 +337,9 @@ jobs:
 
           if [ -s "$FRIENDLY_FILE" ]; then
             echo "::notice::Using friendly changelog from $FRIENDLY_FILE"
-            CONTENT=$(cat "$FRIENDLY_FILE")
+            # HTML 주석은 작성자 가이드용이라 슬랙에 노출하지 않는다.
+            # perl 한 줄로 멀티라인 <!-- ... --> 블록 제거 + 앞쪽 빈 줄 정리.
+            CONTENT=$(perl -0777 -pe 's/<!--.*?-->//gs; s/\A\s+//' "$FRIENDLY_FILE")
             HEADER="*이번 업데이트에서 달라진 점* (${RANGE_LABEL})"
           else
             echo "::notice::No $FRIENDLY_FILE found — falling back to git log"
