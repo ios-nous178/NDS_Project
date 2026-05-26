@@ -772,7 +772,7 @@ function auditVisualReferences(cwd: string): WorkspaceAuditViolation | null {
   const fallbackQuestion =
     "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? " +
     "이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. " +
-    "가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요.";
+    "가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요.";
   const fixHint =
     "응답을 받으면 references.md 에 다음 형식으로 저장: " +
     "'[good|bad] source=<figma-url|image-name> caption=<1-line reason>'. " +
@@ -837,6 +837,41 @@ function auditVisualReferences(cwd: string): WorkspaceAuditViolation | null {
         "정답 1장 + 오답 1장 이상의 시각 기준을 캡션과 함께 적어 주세요.\n" +
         fixHint,
     };
+  }
+
+  // source 가 시각 자료인지 검사. 텍스트 PRD/spec 만 들어가 있으면 거부.
+  // 허용: figma.com URL, 이미지 파일 (.png/.jpg/.jpeg/.webp/.gif/.svg).
+  // 거부: .md/.txt/.pdf/.doc/.docx + 'PRD'/'spec'/'요구사항' 같은 키워드만 적힌 source.
+  const sourceLines = content
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => /^\[(good|bad)\]/i.test(l));
+  if (sourceLines.length > 0) {
+    const visualRe = /source=([^ \t]+)/i;
+    const isVisual = (src: string) => {
+      const s = src.toLowerCase();
+      if (s.includes("figma.com")) return true;
+      if (/\.(png|jpe?g|webp|gif|svg|heic|avif)(\?|#|$)/.test(s)) return true;
+      return false;
+    };
+    const visualCount = sourceLines.reduce((acc, line) => {
+      const m = line.match(visualRe);
+      if (!m) return acc;
+      return isVisual(m[1]) ? acc + 1 : acc;
+    }, 0);
+    if (visualCount === 0) {
+      return {
+        rule: "missing-visual-references",
+        files: [refsMdName],
+        detail:
+          `${refsMdName} 에 [good]/[bad] 항목이 있지만 source 가 모두 텍스트 (PRD/spec/.md) 입니다. ` +
+          "Figma URL 또는 이미지 파일 (.png/.jpg/.webp 등) 이 최소 1개 필요합니다. " +
+          "텍스트 PRD 는 spec 이지 visual reference 가 아닙니다. " +
+          "PRD 에 ASCII 레이아웃·컬러 스펙이 있어도 'visual reference 로 간주' 하지 마세요 — " +
+          "톤 판단은 실제 시각자료에서 나옵니다.\n" +
+          `사용자에게 다시 물어보세요: "${fallbackQuestion}"\n${fixHint}`,
+      };
+    }
   }
 
   return null;

@@ -58,7 +58,7 @@ import {
 } from "./tools/session-state.js";
 
 const VISUAL_REFERENCE_QUESTION =
-  "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 3~5장, 피해야 할 오답 3~5장에 각각 1줄 캡션을 붙여 주세요.";
+  "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요.";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDirectRun =
@@ -385,14 +385,24 @@ function visualReferencePrompt(toolName: string) {
     tool: toolName,
     requiredFirstResponseQuestion: VISUAL_REFERENCE_QUESTION,
     repeatPolicy:
-      "Ask this at most once per mockup task. If the user already answered in the current conversation or references.md/.references exists for this workspace, do not ask again; read the references and proceed.",
+      "Ask once per mockup task. SKIP ONLY IF (A) the user already answered in the CURRENT conversation OR (B) references.md/.references exists AND its first line is `task: <slug>` matching the current task scope (brand + screen). If references.md exists but is for a previous/unrelated task (different brand, different screen, stale slug), TREAT IT AS ABSENT and ask again — do not infer 'already answered' from file existence alone.",
     instruction:
       "For any mockup/screen/page creation request, ask this before implementation. If the user already provided references, ask whether to use those as the visual source of truth and whether there are additional good/bad references.",
     afterAnswer:
-      "Create references.md in the mockup workspace root with lines like: [good] source=<figma-url|image-name> caption=<1-line reason> and [bad] source=<figma-url|image-name> caption=<1-line reason>.",
+      "Create references.md in the mockup workspace root. FIRST LINE MUST be `task: <brand>-<screen-slug>` (e.g. `task: geniet-diary-hub`). Then lines like: [good] source=<figma-url|image-filename> caption=<1-line reason> and [bad] source=<figma-url|image-filename> caption=<1-line reason>.",
+    acceptedSourceTypes:
+      "ONLY accept as `source`: Figma URLs (figma.com/...), image files (.png/.jpg/.jpeg/.webp/.gif/.svg), or screenshot filenames. REJECT: .md/.txt/.pdf/PRD/spec/요구사항 문서 — text documents are SPECs, not visual references. If the user only provides a text PRD, you MUST still ask for at least 1 visual (Figma node or screenshot). Do NOT self-justify 'PRD has ASCII layout / color spec, so it counts as visual'.",
     useReferences:
       "Use MCP-bundled component/pattern references from get_guide responses first as the DS baseline (figmaNodeUrl, references[], imageAbsolutePath). Then read task-specific references.md and write a short visual plan that maps good references to concrete layout/spacing/typography/color decisions and bad references to explicit avoid rules. In the final response, summarize both MCP reference cues and task reference cues that were applied.",
-    note: "This is a soft prompt, not a hard block. Continue only after surfacing the question to the user.",
+    enforcement:
+      "REQUIRED first-response gate. NOT a 'soft prompt' — skipping is a process violation that users have flagged repeatedly. Even when (a) user tone sounds decisive ('그냥 만들어줘', 'PRD 지켜서'), (b) PRD has detailed visual spec, (c) auto-mode is active, (d) a stale references.md exists — ALL of these have been used as past justifications for skipping and ALL are invalid. Surface the question first; await user reply.",
+    knownBypassPatterns: [
+      "stale-references-md: references.md from a previous unrelated task → treated as 'answered'. Fix: check `task:` slug.",
+      "prd-as-visual: text PRD with ASCII/spec → self-justified as visual reference. Fix: text ≠ visual; require Figma URL or image.",
+      "decisive-tone: '바로 만들어줘' / 'PRD 지켜서' → interpreted as 'skip questions'. Fix: tone does not override gate.",
+      "soft-prompt-misread: old 'soft prompt' wording → interpreted as optional. Fix: this gate is REQUIRED.",
+      "checklist-omission: memory/checklist mentions later steps but not this gate → gate demoted to advisory. Fix: this gate runs BEFORE every other checklist item.",
+    ],
   };
 }
 
@@ -419,7 +429,7 @@ function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
 /**
  * 세션 동안 get_guide({ topic: 'principles' }) 호출 여부를 응답 상단에 부착.
  * principles 를 먼저 읽지 않고 작업하면 emoji / native landmark / raw <header> / 시멘틱 토큰
- * 위반을 사후에 패치하느라 토큰을 25~30% 더 쓰게 된다는 회고 데이터에 근거.
+ * 위반을 사후에 패치하느라 토큰을 25-30% 더 쓰게 된다는 회고 데이터에 근거.
  *
  * validate_html_mockup / build_singlefile_html 응답에 부착한다 — 둘 다 mockup 작업
  * 후반부에 호출되므로, 이 시점에 "principles 안 봤네?" 가 뜨면 다음 작업 사이클에서 챙김.
@@ -433,7 +443,7 @@ function attachPrinciplesAck<T>(result: T): T | object {
     calledAt: principlesCalledAt() ?? null,
     question: "이번 세션에 get_guide({ topic:'principles' }) 호출 기록 있나요?",
     shortcut:
-      "없으면 지금 호출 — 평균 25~30% 토큰 절약 (회고 데이터). 배치 호출 예: get_guide({ topics:['principles','dos-donts'] }).",
+      "없으면 지금 호출 — 평균 25-30% 토큰 절약 (회고 데이터). 배치 호출 예: get_guide({ topics:['principles','dos-donts'] }).",
   };
   if (Array.isArray(result)) {
     return { _principlesAck: ack, results: result };
