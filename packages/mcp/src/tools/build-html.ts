@@ -81,6 +81,7 @@ export interface BuildSinglefileHtmlResult {
   routerWarning?: string;
   buildLogTail?: string;
   dsUsageSummary?: string;
+  sourceBadgeSync?: { attempted: boolean; updated: boolean; summary?: string; reason?: string };
   auditViolations?: WorkspaceAuditViolation[];
   /** 감지/지정된 워크스페이스 intent. audit 룰과 next-step 안내가 갈라지는 기준. */
   intent?: WorkspaceIntent;
@@ -254,6 +255,7 @@ export async function buildSinglefileHtml(
   const routerWarning = intent === "react" ? detectBrowserRouter(cwd) : undefined;
 
   const startMs = Date.now();
+  const sourceBadgeSync = intent === "html" ? syncSourceDsBadge(cwd) : undefined;
   let buildStdout = "";
   let buildStderr = "";
   try {
@@ -374,6 +376,7 @@ export async function buildSinglefileHtml(
     routerWarning,
     buildLogTail,
     dsUsageSummary,
+    sourceBadgeSync,
     intent,
     validation,
     report,
@@ -445,24 +448,62 @@ export function ensureCssMinifyDisabled(source: string): string {
   return source.slice(0, closeBraceIdx) + insertion + source.slice(closeBraceIdx);
 }
 
-function injectHtmlUsageSummary(cwd: string, outputPath: string): string | undefined {
+function getHtmlUsageBadgeSummary(cwd: string, source: string): string {
+  const counts = countHtmlUsage(source);
+  const version = detectDsVersions(cwd).primary ?? "unknown";
+  return `DS@${version} · DS ${counts.ndsTags.total} (${counts.dsRatio}%)`;
+}
+
+function syncSourceDsBadge(cwd: string): {
+  attempted: boolean;
+  updated: boolean;
+  summary?: string;
+  reason?: string;
+} {
   const sourcePath = path.join(cwd, "index.html");
-  if (!fs.existsSync(sourcePath)) return undefined;
+  if (!fs.existsSync(sourcePath)) {
+    return { attempted: false, updated: false, reason: "index.html not found" };
+  }
   try {
     const source = fs.readFileSync(sourcePath, "utf-8");
-    const counts = countHtmlUsage(source);
-    const version = detectDsVersions(cwd).primary ?? "unknown";
-    const summary =
-      `NudgeEAP DS usage: DS@${version} · DS ${counts.ndsTags.total} (${counts.dsRatio}%) · ` +
-      `nds-class ${counts.ndsClassed.total} · native ${counts.nativeUnwrapped.total}`;
-    const html = fs.readFileSync(outputPath, "utf-8");
-    if (html.includes("NudgeEAP DS usage:")) return summary;
-    fs.writeFileSync(
-      outputPath,
-      html.replace(/(<html\b[^>]*>)/i, `$1\n<!-- ${summary} -->`),
-      "utf-8",
+    if (!/\bdata-ds-badge\b/.test(source)) {
+      return { attempted: true, updated: false, reason: "data-ds-badge not found" };
+    }
+    const summary = getHtmlUsageBadgeSummary(cwd, source);
+    const next = source.replace(
+      /(<([a-z][\w:-]*)\b[^>]*\bdata-ds-badge(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>)([\s\S]*?)(<\/\2>)/gi,
+      (_match, open: string, _tag: string, _body: string, close: string) =>
+        `${open}${summary}${close}`,
     );
-    return summary;
+    if (next === source) return { attempted: true, updated: false, summary };
+    fs.writeFileSync(sourcePath, next, "utf-8");
+    return { attempted: true, updated: true, summary };
+  } catch (err) {
+    return { attempted: true, updated: false, reason: (err as Error).message };
+  }
+}
+
+export function injectHtmlUsageSummary(cwd: string, outputPath: string): string | undefined {
+  try {
+    const html = fs.readFileSync(outputPath, "utf-8");
+    const counts = countHtmlUsage(html);
+    const badgeSummary = getHtmlUsageBadgeSummary(cwd, html);
+    const commentSummary =
+      `NudgeEAP DS usage: ${badgeSummary} · ` +
+      `nds-class ${counts.ndsClassed.total} · native ${counts.nativeUnwrapped.total}`;
+
+    let nextHtml = html.replace(
+      /(<([a-z][\w:-]*)\b[^>]*\bdata-ds-badge(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>)([\s\S]*?)(<\/\2>)/gi,
+      (_match, open: string, _tag: string, _body: string, close: string) =>
+        `${open}${badgeSummary}${close}`,
+    );
+
+    if (!nextHtml.includes("NudgeEAP DS usage:")) {
+      nextHtml = nextHtml.replace(/(<html\b[^>]*>)/i, `$1\n<!-- ${commentSummary} -->`);
+    }
+
+    if (nextHtml !== html) fs.writeFileSync(outputPath, nextHtml, "utf-8");
+    return badgeSummary;
   } catch {
     return undefined;
   }
