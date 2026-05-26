@@ -1032,3 +1032,211 @@ html[data-theme="dark"] .container.margin-vert--lg [class*="searchResultItem"] m
     padding: 14px;
   }
 }
+
+/* ─── 본문 이미지 (스크린샷) — 테두리 + 둥근 모서리 + 최대 폭 제한 ─── */
+
+.markdown img {
+  display: block;
+  max-width: 720px;
+  width: 100%;
+  height: auto;
+  margin: 1.5rem 0;
+  padding: 4px;
+  border: 1px solid #e6e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+html[data-theme="dark"] .markdown img {
+  border-color: #44403c;
+  background: #1c1917;
+  box-shadow: none;
+}
+
+/* ─── 본문 표 — 셀 패딩 / 헤더 배경 / 줄간격 ─── */
+
+.markdown table {
+  display: table;
+  width: 100%;
+  margin: 1.25rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e6e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.markdown table thead {
+  background: #f8f9fb;
+}
+
+.markdown table th,
+.markdown table td {
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid #eef0f3;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.markdown table th {
+  font-weight: 700;
+  color: #18181b;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+}
+
+.markdown table tr:last-child td {
+  border-bottom: 0;
+}
+
+.markdown table tr:nth-child(even) td {
+  background: #fbfbfc;
+}
+
+html[data-theme="dark"] .markdown table {
+  border-color: #44403c;
+}
+
+html[data-theme="dark"] .markdown table thead {
+  background: #292524;
+}
+
+html[data-theme="dark"] .markdown table th {
+  color: #fafaf9;
+}
+
+html[data-theme="dark"] .markdown table th,
+html[data-theme="dark"] .markdown table td {
+  border-bottom-color: #3a3633;
+}
+
+html[data-theme="dark"] .markdown table tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ─── 부탁 한 줄 박스 (blockquote) — 토스 스타일 연한 회색 박스 ─── */
+
+.markdown blockquote {
+  margin: 1.25rem 0;
+  padding: 14px 18px;
+  border: 1px solid #e6e7eb;
+  border-left: 3px solid #18181b;
+  border-radius: 8px;
+  background: #f8f9fb;
+  color: #18181b;
+  font-style: normal;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.markdown blockquote p {
+  margin: 0;
+  color: inherit;
+}
+
+.markdown blockquote p + p {
+  margin-top: 0.5rem;
+}
+
+html[data-theme="dark"] .markdown blockquote {
+  border-color: #44403c;
+  border-left-color: #fafaf9;
+  background: #1c1917;
+  color: #fafaf9;
+}
+
+/* ─── Admonition (콜아웃 박스) — 톤다운된 차분한 디자인 ─── */
+
+.markdown .theme-admonition {
+  margin: 1.25rem 0;
+  padding: 16px 18px;
+  border: 1px solid #e6e7eb;
+  border-left: 4px solid var(--ifm-color-warning);
+  border-radius: 10px;
+  background: #fffaf2;
+  box-shadow: none;
+}
+
+.markdown .theme-admonition-warning {
+  border-left-color: #d97706;
+  background: #fffaf2;
+}
+
+.markdown .theme-admonition-note,
+.markdown .theme-admonition-info {
+  border-left-color: #2563eb;
+  background: #f6f9ff;
+}
+
+.markdown .theme-admonition-tip {
+  border-left-color: #059669;
+  background: #f4faf6;
+}
+
+.markdown .theme-admonition .admonitionHeading_node_modules,
+.markdown .theme-admonition [class*="admonitionHeading"] {
+  margin-bottom: 8px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.markdown .theme-admonition ul,
+.markdown .theme-admonition ol {
+  margin: 8px 0 0;
+  padding-left: 1.25rem;
+}
+
+.markdown .theme-admonition li + li {
+  margin-top: 6px;
+}
+
+html[data-theme="dark"] .markdown .theme-admonition-warning {
+  background: rgba(217, 119, 6, 0.08);
+}
+
+html[data-theme="dark"] .markdown .theme-admonition-note,
+html[data-theme="dark"] .markdown .theme-admonition-info {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+html[data-theme="dark"] .markdown .theme-admonition-tip {
+  background: rgba(5, 150, 105, 0.08);
+}
+
+/* ─── 본문 링크 — 차분한 색 + 호버 시 밑줄 ─── */
+
+.markdown a:not(.card):not([class*="hash-link"]) {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.markdown a:not(.card):not([class*="hash-link"]):hover {
+  color: var(--ifm-color-primary-dark);
+  border-bottom-color: currentColor;
+  text-decoration: none;
+}
+
+/* 링크 모음 (bullet list) 가독성 — 항목 간격 + 부제(em dash) 색 분리 */
+
+.markdown ul li {
+  margin: 0.35rem 0;
+  line-height: 1.65;
+}
+
+html[data-theme="dark"] .markdown a:not(.card):not([class*="hash-link"]) {
+  color: var(--ifm-color-primary-light);
+}
+
+html[data-theme="dark"] .markdown a:not(.card):not([class*="hash-link"]):hover {
+  color: var(--ifm-color-primary-lightest);
+}
