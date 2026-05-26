@@ -29,7 +29,7 @@ export const buttonStyles = `
     border-radius: var(--nds-button-radius, ${radius.md}px);
     border: 1px solid var(--nds-button-border-color, transparent);
     background: var(--nds-button-background, ${cv.surface.brand});
-    color: var(--nds-button-text-color, ${cv.textRole.inverse});
+    color: var(--nds-button-text-color, ${cv.button.textDefault});
     font-family: var(--nds-button-font-family, ${fontFamily.web});
     font-size: var(--nds-button-font-size, ${typeScale.body1.fontSize}px);
     line-height: var(--nds-button-line-height, ${typeScale.body1.lineHeight}px);

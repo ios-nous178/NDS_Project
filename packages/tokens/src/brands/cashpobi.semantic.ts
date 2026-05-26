@@ -126,7 +126,7 @@ export const cashpobiSemantic = {
     },
   },
   buttonText: {
-    default: cashpobiCommon[1000], // #000000 — ButtonText/Default (Black on Yellow)
+    default: cashpobiNeutral[800], // #333333 — ButtonText/Default (Gray 800 on Yellow)
     brand: cashpobiYellow[700], // #FEAF01 — ButtonText/Outlined
     // Solid/Neutral (검정 bg) 위 흰 텍스트. Geniet 패턴과 동일.
     secondary: {
