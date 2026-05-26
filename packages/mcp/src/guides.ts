@@ -551,11 +551,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "variant=solid/outlined 만 허용 (Figma 207:1853 가이드). soft/outlined-sub 는 dev console 경고 — 사용 금지. " +
         "secondary/solid 는 #333333(gray-900) dark inverse + 흰 텍스트 — Geniet 고유 패턴.",
       cashpobi:
-        "Solid/Primary(#FFD200 + 검정), Solid/Neutral(#000 + 흰), Weak/Neutral, Outlined/Primary(노란 보더), Outlined/Neutral 5 스타일. " +
+        "Solid/Primary(#FFD200 + 검정), Solid/Secondary(#000 + 흰), Weak/Secondary, Outlined/Primary(노란 보더), Outlined/Secondary 5 스타일. " +
+        "(※ Figma 캔버스 라벨은 'Neutral' 로 표기되지만 DS 네이밍은 'Secondary' — 동일 슬롯. color=\"secondary\" 식별자와 정합.) " +
         "Solid Primary 의 텍스트는 항상 검정 (#000) — high-contrast 시그니처. " +
-        "Solid/Neutral(검정) 은 color=secondary, variant=solid 슬롯이 담당 — Geniet dark inverse 패턴과 동일 운용. " +
-        "**Disabled 페어 (Figma 3098:1032 SSOT)**: Solid/Primary · Solid/Neutral 모두 bg #DDDDDD (Neutral 400) + text #FFFFFF. " +
-        "Outlined disabled (Primary/Neutral) 는 border #E7E7E7 + text #BBB. " +
+        "Solid/Secondary(검정) 은 color=secondary, variant=solid 슬롯이 담당 — Geniet dark inverse 패턴과 동일 운용. " +
+        "**Disabled 페어 (Figma 3098:1032 SSOT)**: Solid/Primary · Solid/Secondary 모두 bg #DDDDDD (atomic Neutral/400) + text #FFFFFF. " +
+        "Outlined disabled (Primary/Secondary) 는 border #E7E7E7 + text #BBB. " +
         "**Shape**: default(radius 8 — 일반 admin 액션) · pill(radius full — 모달 확인/취소, BottomCTA, 격식 컨텍스트). 5종 스타일 × 2 shape × 5 size = 50개 cell 이 Figma ButtonGuide 에 모두 존재. " +
         "사이즈: X-Large(52) / Large(48) / Medium(44) / Small(40) / Mini(36). " +
         "추가 컴포넌트: TextButton(Large 38 / Medium 32), IconButton(48/44/40/32).",
@@ -4891,16 +4892,19 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashpobi-button": {
     name: "cashpobi-button",
     summary:
-      "캐포비 admin 의 Button 카탈로그 — 5 스타일 × 5 사이즈 × 3 상태 + TextButton + IconButton.",
+      "캐포비 admin 의 Button 카탈로그 — 5 스타일 × 2 shape × 5 사이즈 × 3 상태 + TextButton + IconButton.",
     rules: [
-      "5 스타일: Solid/Primary · Solid/Neutral · Weak/Neutral · Outlined/Primary · Outlined/Neutral.",
+      "5 스타일: Solid/Primary · Solid/Secondary · Weak/Secondary · Outlined/Primary · Outlined/Secondary. (※ Figma 캔버스 라벨은 'Neutral' 이지만 DS 네이밍은 'Secondary' — 동일 슬롯, color=\"secondary\" 와 정합.)",
+      '2 shape: default(radius 8 · 일반 admin 폼/CTA) · pill(radius full · 모달 확인/취소·BottomCTA·격식 컨텍스트). `<Button shape="pill" />` 로 지정.',
       "5 사이즈: X-Large 52px · Large 48px · Medium 44px · Small 40px · Mini 36px.",
       "Solid/Primary 는 #FFD200 배경 + 검정 텍스트(high-contrast) — 캐포비 시그니처. 텍스트 색을 흰색으로 바꾸지 않는다.",
-      "Disabled bg 는 노란 톤(Yellow/100 #FFFAE5). gray 톤(neutral/300) 으로 바꾸지 않는다 — 시각 위계 가이드.",
+      "Disabled bg 는 Neutral/400 #DDDDDD + 흰 텍스트 (Solid/Primary · Solid/Secondary 공통 페어, Figma 3098:1079/3098:1121).",
+      "Outlined disabled (Primary/Secondary 모두) 는 border #E7E7E7 + text #BBB.",
       "TextButton: Large(38px) / Medium(32px) × Default/Hover/Disabled.",
       "IconButton: X-Large(48) / Large(44) / Medium(40) / Small(32) × Default/Hover/Disabled. (총 12 variants)",
       "터치/마우스 타겟 ≥ 36px (Mini) — admin 데스크톱은 그래도 Medium(44) 이상 권장.",
       "Outlined/Primary 텍스트는 Yellow/700 (#FEAF01) — Outlined 텍스트가 그린 색이면 안 됨 (가이드 명시).",
+      '**아이콘 색 하드코딩 금지** — `color="var(--semantic-icon-inverse-default)"` 처럼 inverse/brand 토큰 사용 금지. 캐포비는 primary text 가 검정이라 흰 아이콘이 노란 배경 위에 떠 보임. `color="currentColor"` 로 두어 Button 텍스트 색을 상속.',
     ],
     avoid: [
       "Solid/Primary 의 텍스트를 흰색으로 바꾸지 말 것 — 가이드 위반 + 가독성 저하.",

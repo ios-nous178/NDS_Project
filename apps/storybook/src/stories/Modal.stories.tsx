@@ -1,10 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, waitFor } from "storybook/test";
 import { Badge, Button, Modal, type ModalProps } from "@nudge-eap/react";
 import { cv } from "@nudge-eap/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
+
+/* Modal 은 createPortal 로 document.body 에 mount 되므로 캐스케이드를
+   적용하려면 <html data-brand="cashpobi"> 가 필요. 캐포비 admin 스토리는
+   브랜드 툴바와 무관하게 항상 cashpobi 캐스케이드를 보여주기 위해
+   documentElement 의 data-brand 를 일시적으로 cashpobi 로 고정한다. */
+function useForceCashpobiBrand() {
+  useEffect(() => {
+    const root = document.documentElement;
+    const prev = root.getAttribute("data-brand");
+    root.setAttribute("data-brand", "cashpobi");
+    return () => {
+      if (prev === null) root.removeAttribute("data-brand");
+      else root.setAttribute("data-brand", prev);
+    };
+  }, []);
+}
 
 const flatModalSource = `import { useState } from "react";
 import { Button, Modal } from "@nudge-eap/react";
@@ -628,6 +644,197 @@ const MODAL_SPEC_ROWS: Array<{ key: string; value: string }> = [
   { key: "푸터 버튼 padding / radius / gap", value: "11/24 · 8 · 8" },
   { key: "푸터 버튼 font", value: "15 / 22 (확인 700, 취소 500)" },
 ];
+
+/* ─── Cashpobi Admin Modal (Figma 3418:471) ─────────────────
+   "Cashwalk for Business ModalGuide" — admin 데스크톱 다이얼로그.
+   480px / radius 16 / padding 32 / pill 44px / Title2 좌측 정렬.
+   4가지 슬롯 기반 패턴: Single / Dual / With Close / Confirm+Slot. */
+
+function CashpobiSingleActionExample() {
+  useForceCashpobiBrand();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button color="secondary" variant="solid" onClick={() => setOpen(true)}>
+        ① Single Action 열기
+      </Button>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="수정 완료"
+        confirmText="확인"
+        onConfirm={(close) => close()}
+      >
+        수정이 완료되었습니다.
+        <br />
+        검수 후 퀴즈에 반영됩니다.
+      </Modal>
+    </>
+  );
+}
+
+function CashpobiDualActionExample() {
+  useForceCashpobiBrand();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button color="secondary" variant="solid" onClick={() => setOpen(true)}>
+        ② Dual Action 열기
+      </Button>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="쿠폰 노출 여부를 변경하시겠습니까?"
+        closeText="취소"
+        confirmText="변경"
+        onConfirm={(close) => close()}
+      >
+        쿠폰 노출 여부를 변경할 경우, 상태 반영에 최대 5분까지 소요될 수 있습니다.
+      </Modal>
+    </>
+  );
+}
+
+/* Pattern ③: 헤더 X + 푸터 단일 확인 버튼. flat ModalComponent 는
+   `onClose` 를 전달하면 자동으로 cancel 버튼을 만들기 때문에 이 패턴은
+   Compound API 로 명시적으로 조립한다. */
+function CashpobiWithCloseExample() {
+  useForceCashpobiBrand();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button color="secondary" variant="solid" onClick={() => setOpen(true)}>
+        ③ With Close 열기
+      </Button>
+      <Modal.Root open={open} onClose={() => setOpen(false)}>
+        <Modal.Overlay />
+        <Modal.Content>
+          <Modal.Header title="검수 안내" closable />
+          <Modal.Body>
+            퀴즈가 등록되었습니다.
+            <br />
+            등록된 퀴즈는 [퀴즈 목록 &gt; 검수 대기 탭]에서 확인 가능합니다.
+          </Modal.Body>
+          <Modal.Footer confirmText="확인" onConfirm={() => setOpen(false)} />
+        </Modal.Content>
+      </Modal.Root>
+    </>
+  );
+}
+
+function CashpobiConfirmSlotExample() {
+  useForceCashpobiBrand();
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState("");
+
+  return (
+    <>
+      <Button color="secondary" variant="solid" onClick={() => setOpen(true)}>
+        ④ Confirm + Slot 열기
+      </Button>
+      <Modal.Root open={open} onClose={() => setOpen(false)}>
+        <Modal.Overlay />
+        <Modal.Content>
+          <Modal.Header title="퀴즈는 진행 중 종료가 불가한 상품입니다." />
+          <Modal.Body>
+            광고주 요청으로 퀴즈가 강제 종료될 경우, 광고비는 전액 청구되며, 보장된 참여자 수 미달에
+            대해서도 환불·보상·재집행은 불가합니다.
+          </Modal.Body>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "12px 16px",
+              borderRadius: 8,
+              border: "1px dashed #EEE",
+              backgroundColor: "#FFF",
+            }}
+          >
+            <input
+              type="text"
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              placeholder="강제 종료 사유 입력 (선택)"
+              style={{
+                flex: 1,
+                border: "none",
+                outline: "none",
+                fontSize: 14,
+                color: "#333",
+                backgroundColor: "transparent",
+              }}
+            />
+          </div>
+          <Modal.Footer
+            onClose={() => setOpen(false)}
+            closeText="취소"
+            onConfirm={(close) => close()}
+            confirmText="강제 종료"
+          />
+        </Modal.Content>
+      </Modal.Root>
+    </>
+  );
+}
+
+export const CashpobiAdminSingleAction: Story = {
+  name: "Brand/Cashpobi Admin · ① Single Action",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "캐포비 admin Modal · 1버튼 패턴 (Figma 3418:471 / Cashwalk for Business ModalGuide ①). " +
+          "단순 안내 후 확인 1개. 확인 버튼은 우측 정렬 + 120px 고정 폭.",
+      },
+    },
+  },
+  render: () => <CashpobiSingleActionExample />,
+};
+
+export const CashpobiAdminDualAction: Story = {
+  name: "Brand/Cashpobi Admin · ② Dual Action",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "캐포비 admin Modal · 취소 + 실행 2버튼 패턴 (Figma 3418:471 ②). " +
+          "버튼은 가로 양분, confirm = 검정 CTA, cancel = white + assistive 보더.",
+      },
+    },
+  },
+  render: () => <CashpobiDualActionExample />,
+};
+
+export const CashpobiAdminWithClose: Story = {
+  name: "Brand/Cashpobi Admin · ③ With Close",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "캐포비 admin Modal · 헤더 X + 푸터 단일 확인 버튼 (Figma 3418:471 ③). " +
+          "헤더 X 와 푸터 cancel 이 중복되지 않도록 Compound API (`Modal.Root` ...) 로 조립.",
+      },
+    },
+  },
+  render: () => <CashpobiWithCloseExample />,
+};
+
+export const CashpobiAdminConfirmSlot: Story = {
+  name: "Brand/Cashpobi Admin · ④ Confirm + Slot",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "캐포비 admin Modal · 본문 + 추가 컨텐츠 슬롯 + 2버튼 (Figma 3418:471 ④). " +
+          "Compound API 의 `Modal.Content` 자식으로 슬롯을 끼워 넣으면 gap 20 으로 자동 정렬.",
+      },
+    },
+  },
+  render: () => <CashpobiConfirmSlotExample />,
+};
 
 export const FigmaSpec: Story = {
   name: "Spec/✓ Figma Synced (612:18421)",
