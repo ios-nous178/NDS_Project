@@ -1,9 +1,23 @@
 import React from "react";
-import { cv, fontWeight, sizing, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-eap/tokens";
 
 export type ButtonVariant = "solid" | "outlined" | "soft" | "outlined-sub";
 export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "field";
 export type ButtonColor = "primary" | "secondary" | "assistive";
+/**
+ * Button shape.
+ * - `default` : radius.md (8px) — 일반 admin 폼/CTA · 페이지 내 액션
+ * - `pill`    : radius full (9999px) — 모달 확인/취소, BottomCTA, 격식 컨텍스트
+ *
+ * Figma ButtonGuide(캐포비 3098:1032) 의 "When to use · Shape" 가이드와 정합.
+ * 다른 브랜드에서도 사용 가능 — radius 만 바꿈, color×variant 매트릭스와 직교.
+ */
+export type ButtonShape = "default" | "pill";
+
+const SHAPE_RADIUS: Record<ButtonShape, string> = {
+  default: `${radius.md}px`,
+  pill: "9999px",
+};
 
 const BUTTON_CLASS = "nds-button";
 const BUTTON_LABEL_CLASS = `${BUTTON_CLASS}__label`;
@@ -387,6 +401,12 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   size?: ButtonSize;
   /** 버튼 색상 테마 */
   color?: ButtonColor;
+  /**
+   * 버튼 모양 (border-radius).
+   * - `default` (기본) — radius.md (8px), 일반 admin 액션
+   * - `pill` — radius full (9999px), 모달 액션 / BottomCTA / 격식 컨텍스트
+   */
+  shape?: ButtonShape;
   /** 부모 너비에 맞춤 */
   fullWidth?: boolean;
   /** 라벨 왼쪽에 표시할 아이콘 */
@@ -405,6 +425,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant = "solid",
       size = "lg",
       color = "primary",
+      shape = "default",
       fullWidth = false,
       disabled,
       leftIcon,
@@ -441,6 +462,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         data-variant={variant}
         data-size={size}
         data-color={color}
+        data-shape={shape}
         className={cx(BUTTON_CLASS, className)}
         style={
           {
@@ -451,6 +473,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "--nds-button-line-height": `${sizeStyle.lineHeight}px`,
             "--nds-button-icon-size": `${sizeStyle.iconSize}px`,
             "--nds-button-font-weight": state.fontWeight ?? 700,
+            "--nds-button-radius": SHAPE_RADIUS[shape],
             "--nds-button-width": fullWidth ? "100%" : "auto",
             "--nds-button-background": state.background,
             "--nds-button-text-color": state.text,

@@ -27,6 +27,7 @@ const ROOT_CLASS = `${MODAL_CLASS}__root`;
 const OVERLAY_CLASS = `${MODAL_CLASS}__overlay`;
 const CONTENT_CLASS = `${MODAL_CLASS}__content`;
 const HEADER_CLASS = `${MODAL_CLASS}__header`;
+const HEADER_TITLE_CLASS = `${MODAL_CLASS}__header-title`;
 const CLOSE_CLASS = `${MODAL_CLASS}__close`;
 const BODY_CLASS = `${MODAL_CLASS}__body`;
 
@@ -144,6 +145,7 @@ export class NdsModal extends NdsElement {
     if (titleText) {
       const h = document.createElement("h2");
       h.dataset.slot = "header-content";
+      h.className = HEADER_TITLE_CLASS;
       h.textContent = titleText;
       this._header.appendChild(h);
       this._content?.setAttribute("aria-labelledby", "");

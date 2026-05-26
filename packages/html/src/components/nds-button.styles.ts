@@ -8,11 +8,12 @@
  * 양쪽이 같은 source 를 import 하는 식으로 SSOT 통일 예정.
  */
 
-import { cv, fontWeight, sizing, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-eap/tokens";
 
 export type ButtonVariant = "solid" | "outlined" | "soft" | "outlined-sub";
 export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "field";
 export type ButtonColor = "primary" | "secondary" | "assistive";
+export type ButtonShape = "default" | "pill";
 
 export const BUTTON_VARIANTS: readonly ButtonVariant[] = [
   "solid",
@@ -22,6 +23,12 @@ export const BUTTON_VARIANTS: readonly ButtonVariant[] = [
 ] as const;
 export const BUTTON_SIZES: readonly ButtonSize[] = ["xl", "lg", "md", "sm", "xs", "field"] as const;
 export const BUTTON_COLORS: readonly ButtonColor[] = ["primary", "secondary", "assistive"] as const;
+export const BUTTON_SHAPES: readonly ButtonShape[] = ["default", "pill"] as const;
+
+export const SHAPE_RADIUS: Record<ButtonShape, string> = {
+  default: `${radius.md}px`,
+  pill: "9999px",
+};
 
 export const sizeConfig = {
   xl: {

@@ -24,9 +24,12 @@
 import { NdsElement, define } from "../base/nds-element.js";
 import {
   BUTTON_COLORS,
+  BUTTON_SHAPES,
   BUTTON_SIZES,
   BUTTON_VARIANTS,
+  SHAPE_RADIUS,
   type ButtonColor,
+  type ButtonShape,
   type ButtonSize,
   type ButtonVariant,
   sizeConfig,
@@ -66,7 +69,16 @@ export class NdsButton extends NdsElement {
   static elementName = "nds-button";
 
   static get observedAttributes(): readonly string[] {
-    return ["variant", "size", "color", "disabled", "full-width", "type", ...FORWARDED_ATTRS];
+    return [
+      "variant",
+      "size",
+      "color",
+      "shape",
+      "disabled",
+      "full-width",
+      "type",
+      ...FORWARDED_ATTRS,
+    ];
   }
 
   private _inner: HTMLButtonElement | null = null;
@@ -114,6 +126,7 @@ export class NdsButton extends NdsElement {
     const variant = this._normalizedVariant();
     const size = this._normalizedSize();
     const color = this._normalizedColor();
+    const shape = this._normalizedShape();
     const disabled = this.boolAttr("disabled");
     const fullWidth = this.boolAttr("full-width");
     const type = this._normalizedType();
@@ -129,6 +142,7 @@ export class NdsButton extends NdsElement {
     inner.dataset.variant = variant;
     inner.dataset.size = size;
     inner.dataset.color = color;
+    inner.dataset.shape = shape;
 
     // a11y / form attribute forwarding — host 에 적힌 값을 inner button 으로 mirror.
     // 호스트에서 attribute 가 제거되면 inner 에서도 제거.
@@ -147,6 +161,7 @@ export class NdsButton extends NdsElement {
       "--nds-button-line-height": `${cfg.lineHeight}px`,
       "--nds-button-icon-size": `${cfg.iconSize}px`,
       "--nds-button-font-weight": state.fontWeight ?? 700,
+      "--nds-button-radius": SHAPE_RADIUS[shape],
       "--nds-button-width": fullWidth ? "100%" : "auto",
       "--nds-button-background": state.background,
       "--nds-button-text-color": state.text,
@@ -175,6 +190,11 @@ export class NdsButton extends NdsElement {
   private _normalizedColor(): ButtonColor {
     const v = this.attr("color", "primary");
     return (BUTTON_COLORS as readonly string[]).includes(v) ? (v as ButtonColor) : "primary";
+  }
+
+  private _normalizedShape(): ButtonShape {
+    const v = this.attr("shape", "default");
+    return (BUTTON_SHAPES as readonly string[]).includes(v) ? (v as ButtonShape) : "default";
   }
 
   private _normalizedType(): ButtonType {

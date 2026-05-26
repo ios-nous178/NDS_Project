@@ -196,4 +196,120 @@ export const modalStyles = `
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
   }
+
+  /* ============================================================
+     Cashpobi (admin) brand cascade — Figma "Cashwalk for Business
+     ModalGuide" 3418:471. 일반 EAP 모바일 모달(332/294)과 다른
+     admin desktop 다이얼로그 스펙:
+       · 너비 480 / radius 16 / padding 32 균등 / gap 20
+       · 헤더: 타이틀 좌측 정렬(Title2 18/26) + (옵션) 우측 X
+       · 본문: Body2 14/20 좌측 정렬, color text/normal
+       · 푸터(44px, pill r9999, Body2 medium):
+           ① Single (onConfirm 만)         → 우측 정렬 · 120px 고정
+           ② Dual   (onConfirm + onClose)  → 가로 양분 (기존 동작)
+       · confirm = 검정 CTA (button.bgSecondary)
+       · cancel  = white + assistive 회색 보더
+     기존 props 만으로 4가지 admin 패턴 모두 표현 가능 — Modal API
+     변경 없이 CSS cascade 만 추가. <html data-brand="cashpobi"> 가
+     박혀 있을 때만 자동 적용.
+  ============================================================ */
+  :where([data-brand="cashpobi"] .${CONTENT_CLASS}) {
+    max-width: var(--nds-modal-max-width, 480px);
+    gap: ${spacing[20]}px;
+    padding: ${spacing[32]}px;
+    border-radius: var(--nds-modal-radius, 16px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  :where([data-brand="cashpobi"] .${HEADER_CLASS}) {
+    gap: 0;
+  }
+
+  /* 캐포비는 타이틀 좌측 정렬 — 중앙 정렬용 좌측 ghost spacer 제거 */
+  :where([data-brand="cashpobi"] .${HEADER_SPACER_CLASS}) {
+    display: none;
+  }
+
+  /* Cashpobi Title2 = DS headline5 (18/26). 캐포비 typeScale 가
+     별도 변수로 노출되지 않아 동일 픽셀 매핑인 headline5 사용. */
+  :where([data-brand="cashpobi"] .${HEADER_TITLE_CLASS}) {
+    flex: 1;
+    text-align: left;
+    font-size: ${typeScale.headline5.fontSize}px;
+    line-height: ${typeScale.headline5.lineHeight}px;
+    font-weight: 700;
+    color: ${cv.textRole.strong};
+  }
+
+  :where([data-brand="cashpobi"] .${CLOSE_CLASS}) {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    font-size: 22px;
+    color: ${cv.iconRole.normal};
+  }
+
+  /* Cashpobi Body2 = DS body3 (14/20) — 픽셀 매핑. */
+  :where([data-brand="cashpobi"] .${BODY_CLASS}) {
+    text-align: left;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    color: ${cv.textRole.normal};
+  }
+
+  /* gap:20 으로 통일했으므로 body→footer 추가 margin 제거 */
+  :where([data-brand="cashpobi"] .${BODY_CLASS}:has(+ .${FOOTER_CLASS})) {
+    margin-bottom: 0;
+  }
+
+  :where([data-brand="cashpobi"] .${FOOTER_CLASS}) {
+    gap: ${spacing[8]}px;
+  }
+
+  /* Single action (취소 없이 confirm 만) → 우측 정렬 + 120px 고정 */
+  :where([data-brand="cashpobi"] .${FOOTER_CLASS}:not([data-has-both-actions="true"]):not([data-layout="custom"])) {
+    justify-content: flex-end;
+  }
+
+  :where([data-brand="cashpobi"] .${FOOTER_CLASS}:not([data-has-both-actions="true"]):not([data-layout="custom"]) .${FOOTER_ACTION_CLASS}) {
+    flex: 0 0 120px;
+  }
+
+  /* Cashpobi 버튼: pill / 44px / Body2(14/20) Medium */
+  :where([data-brand="cashpobi"] .${FOOTER_ACTION_CLASS}) {
+    height: 44px;
+    padding: ${spacing[12]}px ${spacing[18]}px;
+    border-radius: 9999px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    font-weight: 500;
+  }
+
+  :where([data-brand="cashpobi"] .${FOOTER_CANCEL_CLASS}) {
+    background-color: ${cv.surface.default};
+    border-color: ${cv.button.borderAssistive};
+    color: ${cv.textRole.strong};
+  }
+
+  :where([data-brand="cashpobi"] .${FOOTER_CANCEL_CLASS}:hover) {
+    background-color: ${cv.surface.subtle};
+    border-color: ${cv.button.borderAssistive};
+  }
+
+  :where([data-brand="cashpobi"] .${FOOTER_CONFIRM_CLASS}) {
+    background-color: ${cv.button.bgSecondary};
+    border-color: ${cv.button.bgSecondary};
+    color: ${cv.button.textSecondary};
+  }
+
+  :where([data-brand="cashpobi"] .${FOOTER_CONFIRM_CLASS}:hover) {
+    background-color: ${cv.button.bgSecondaryHover};
+    border-color: ${cv.button.bgSecondaryHover};
+  }
+
+  :where([data-brand="cashpobi"] .${FOOTER_CONFIRM_CLASS}:active) {
+    background-color: ${cv.button.bgSecondaryHover};
+    border-color: ${cv.button.bgSecondaryHover};
+  }
 `;

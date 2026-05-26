@@ -1,3 +1,4 @@
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, fn } from "storybook/test";
 import { Button } from "@nudge-eap/react";
@@ -27,6 +28,7 @@ const meta: Meta<typeof Button> = {
       control: "radio",
       options: ["primary", "secondary", "assistive"],
     },
+    shape: { control: "radio", options: ["default", "pill"] },
     disabled: { control: "boolean" },
     fullWidth: { control: "boolean" },
   },
@@ -35,6 +37,7 @@ const meta: Meta<typeof Button> = {
     variant: "solid",
     size: "lg",
     color: "primary",
+    shape: "default",
     disabled: false,
     fullWidth: false,
   },
@@ -363,11 +366,7 @@ export const WebviewChallengeButtons: Story = {
       <Button color="primary" fullWidth>
         참여하기
       </Button>
-      <Button
-        color="primary"
-        fullWidth
-        leftIcon={<LockIcon size={18} color="var(--semantic-icon-inverse-default)" />}
-      >
+      <Button color="primary" fullWidth leftIcon={<LockIcon size={18} color="currentColor" />}>
         인증하고 참여하기
       </Button>
       <Button variant="soft" color="primary" fullWidth>
@@ -403,6 +402,15 @@ export const HeaderAndUtilityButtons: Story = {
 
 export const WithIconsAndSlots: Story = {
   name: "Recipe/With Icons And Slots",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "아이콘은 `currentColor` 로 그려서 브랜드/variant 별 텍스트 색을 자동 상속한다. " +
+          "캐포비 처럼 primary text 가 검정(#000)인 브랜드에서도 흰 아이콘이 노란 배경 위에 떠 보이는 문제를 막는다.",
+      },
+    },
+  },
   render: () => (
     <div
       style={{
@@ -412,10 +420,7 @@ export const WithIconsAndSlots: Story = {
         gap: "var(--gap-comfortable)",
       }}
     >
-      <Button
-        leftIcon={<CommentIcon size={18} color="var(--semantic-icon-inverse-default)" />}
-        fullWidth
-      >
+      <Button leftIcon={<CommentIcon size={18} color="currentColor" />} fullWidth>
         앱에서 상담하기
       </Button>
       <Button
@@ -424,10 +429,100 @@ export const WithIconsAndSlots: Story = {
         labelClassName="button-story-label"
         slotProps={{
           label: { style: { letterSpacing: "-0.02em" } },
-          rightIcon: { style: { color: "#017EE4", fontWeight: 700 } },
+          rightIcon: { style: { color: "currentColor", fontWeight: 700 } },
         }}
       >
         더보기
+      </Button>
+    </div>
+  ),
+};
+
+/* ─── Pill shape (Figma 3098:1032 ButtonGuide) ─────────
+   Default / Pill 의 차이는 border-radius 만 — 색·크기·padding 동일.
+   Pill = 모달 액션, BottomCTA, 격식 컨텍스트용. */
+
+/* Figma 의 "Neutral" 라벨은 DS 네이밍으로 "Secondary" 와 동일. 코드 식별자도
+   color="secondary" 를 사용하므로 스토리 라벨도 Secondary 로 통일한다. */
+const PILL_COLOR_ROWS: Array<{
+  label: string;
+  color: "primary" | "secondary" | "assistive";
+  variant: "solid" | "outlined" | "soft";
+}> = [
+  { label: "Pill · Solid Primary", color: "primary", variant: "solid" },
+  { label: "Pill · Solid Secondary", color: "secondary", variant: "solid" },
+  { label: "Pill · Weak Secondary", color: "assistive", variant: "soft" },
+  { label: "Pill · Outlined Primary", color: "primary", variant: "outlined" },
+  { label: "Pill · Outlined Secondary", color: "secondary", variant: "outlined" },
+];
+
+export const ShapePillMatrix: Story = {
+  name: "Shape/Pill (5 variants × 3 states)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Figma ButtonGuide 3098:1032 의 5종 Pill 패턴 (Solid Primary / Solid Secondary / Weak Secondary / " +
+          "Outlined Primary / Outlined Secondary) × Default · Hover · Disabled. " +
+          "Figma 라벨의 'Neutral' 은 DS 네이밍으로 'Secondary' 와 동일 슬롯. " +
+          "`shape='pill'` 만 추가하면 radius 만 9999px 로 바뀌고 color×variant 매트릭스는 그대로 적용된다.",
+      },
+    },
+  },
+  render: () => (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "180px repeat(3, auto)",
+        alignItems: "center",
+        gap: "16px 24px",
+        fontFamily: "Pretendard, sans-serif",
+        fontSize: 12,
+        color: "#666",
+      }}
+    >
+      <div />
+      <div style={{ fontWeight: 700, color: "#111" }}>Default</div>
+      <div style={{ fontWeight: 700, color: "#111" }}>Hover (마우스 올리기)</div>
+      <div style={{ fontWeight: 700, color: "#111" }}>Disabled</div>
+      {PILL_COLOR_ROWS.map((row) => (
+        <React.Fragment key={row.label}>
+          <div>{row.label}</div>
+          <Button shape="pill" color={row.color} variant={row.variant}>
+            확인
+          </Button>
+          <Button shape="pill" color={row.color} variant={row.variant}>
+            Hover
+          </Button>
+          <Button shape="pill" color={row.color} variant={row.variant} disabled>
+            확인
+          </Button>
+        </React.Fragment>
+      ))}
+    </div>
+  ),
+};
+
+export const ShapeComparison: Story = {
+  name: "Shape/Default vs Pill",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "동일 color/variant/size 에서 `shape` 만 다르게 한 비교. " +
+          "기본 admin 액션은 `default` (radius 8), 모달·BottomCTA·격식 컨텍스트는 `pill` (radius full).",
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+      <Button shape="default">기본 (radius 8)</Button>
+      <Button shape="pill">Pill (radius full)</Button>
+      <Button shape="default" variant="outlined">
+        기본 outlined
+      </Button>
+      <Button shape="pill" variant="outlined">
+        Pill outlined
       </Button>
     </div>
   ),
