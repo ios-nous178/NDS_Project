@@ -224,14 +224,18 @@ export class NdsTabsTrigger extends NdsElement {
 
   override connectedCallback(): void {
     if (!this._li) this._mount();
+    // 부모 nds-tabs / nds-tabs-list 의 _mount() 가 자식을 reparent 하면
+    // 이 trigger 도 disconnect→reconnect 됩니다. 리스너를 host element 자체에
+    // 달면 light DOM bubble 로 li 클릭이 그대로 잡히고, addEventListener 가
+    // 같은 (type, listener) 에 idempotent 이므로 재mount 가드와 무관하게 안전.
+    this.addEventListener("click", this._onClick);
+    this.addEventListener("keydown", this._onKey);
     super.connectedCallback();
   }
 
   override disconnectedCallback(): void {
-    if (this._li) {
-      this._li.removeEventListener("click", this._onClick);
-      this._li.removeEventListener("keydown", this._onKey);
-    }
+    this.removeEventListener("click", this._onClick);
+    this.removeEventListener("keydown", this._onKey);
   }
 
   private _mount(): void {
@@ -246,9 +250,6 @@ export class NdsTabsTrigger extends NdsElement {
     while (this.firstChild) label.appendChild(this.firstChild);
     inner.appendChild(label);
     li.appendChild(inner);
-
-    li.addEventListener("click", this._onClick);
-    li.addEventListener("keydown", this._onKey);
 
     this.appendChild(li);
     this._li = li;
