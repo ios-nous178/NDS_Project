@@ -1,5 +1,5 @@
 import React from "react";
-import { fontFamily, fontWeight } from "@nudge-eap/tokens";
+import { fontFamily, fontWeight } from "@nudge-design/tokens";
 
 export type BadgeVariant = "fill" | "ghost" | "line";
 export type BadgeColor = "brand" | "neutral" | "success" | "error" | "caution" | "info";

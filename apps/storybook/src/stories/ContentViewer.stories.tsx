@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ContentViewer } from "@nudge-eap/react";
+import { ContentViewer } from "@nudge-design/react";
 
 const meta: Meta<typeof ContentViewer> = {
   title: "Components/ContentViewer",

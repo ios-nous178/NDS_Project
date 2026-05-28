@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/PopularPosts.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/PopularPosts.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const PP_ROOT_CLASS = "nds-popular-posts";
 const PP_HEADER_CLASS = `${PP_ROOT_CLASS}__header`;

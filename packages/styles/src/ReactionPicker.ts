@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/ReactionPicker.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/ReactionPicker.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-design/tokens";
 
 const RP_CLASS = "nds-reaction-picker";
 const RP_ITEM_CLASS = `${RP_CLASS}__item`;

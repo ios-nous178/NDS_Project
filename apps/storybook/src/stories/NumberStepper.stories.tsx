@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { NumberStepper } from "@nudge-eap/react";
+import { NumberStepper } from "@nudge-design/react";
 
 const meta: Meta<typeof NumberStepper> = {
   title: "Components/NumberStepper",

@@ -31,11 +31,11 @@ import type {
 
 /**
  * DS 패키지로 인정하는 import source prefix 들.
- * `@nudge-eap/html` 도 DS 로 카운트한다 — html 패키지의 Web Component (`<nds-button>` 등) 는
+ * `@nudge-design/html` 도 DS 로 카운트한다 — html 패키지의 Web Component (`<nds-button>` 등) 는
  * lowercase JSX 태그로 등장하므로 import 출처보다 태그 이름으로 판별한다 (NDS_HTML_TAG_RE 참고).
  * 다만 클래스 단위로 import 해서 직접 register 하는 경우도 있으니, import source 도 함께 인정.
  */
-const DS_PACKAGE_PREFIXES = ["@nudge-eap/react", "@nudge-eap/html"] as const;
+const DS_PACKAGE_PREFIXES = ["@nudge-design/react", "@nudge-design/html"] as const;
 const ADMIN_CMS_PACKAGE = "antd";
 const TRACKED_NATIVE_TAGS = new Set([
   "button",

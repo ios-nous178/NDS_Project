@@ -16,12 +16,12 @@ afterEach(() => {
 
 describe("reportMockupUsage", () => {
   it("parses a mockup in dry-run mode without writing log files or posting webhooks", async () => {
-    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-mcp-usage-"));
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-mcp-usage-"));
     tmpDirs.push(cwd);
     const filePath = path.join(cwd, "Demo.tsx");
     fs.writeFileSync(
       filePath,
-      `import { Button } from "@nudge-eap/react";
+      `import { Button } from "@nudge-design/react";
 
 export function Demo() {
   return <Button color="primary">Start</Button>;
@@ -40,22 +40,22 @@ export function Demo() {
   });
 
   it("reports DS ratio and DS version together in humanReadable (MUST)", async () => {
-    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-mcp-usage-version-"));
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-mcp-usage-version-"));
     tmpDirs.push(cwd);
 
     // Simulate an installed DS package in node_modules so detectDsVersions resolves a version.
-    const pkgDir = path.join(cwd, "node_modules", "@nudge-eap", "react");
+    const pkgDir = path.join(cwd, "node_modules", "@nudge-design", "react");
     fs.mkdirSync(pkgDir, { recursive: true });
     fs.writeFileSync(
       path.join(pkgDir, "package.json"),
-      JSON.stringify({ name: "@nudge-eap/react", version: "9.8.7" }),
+      JSON.stringify({ name: "@nudge-design/react", version: "9.8.7" }),
       "utf8",
     );
 
     const filePath = path.join(cwd, "Demo.tsx");
     fs.writeFileSync(
       filePath,
-      `import { Button } from "@nudge-eap/react";
+      `import { Button } from "@nudge-design/react";
 
 export function Demo() {
   return <Button color="primary">Start</Button>;
@@ -75,13 +75,13 @@ export function Demo() {
     expect(result._nextSuggestion).toContain("DS 버전");
   });
 
-  it("counts @nudge-eap/html imports as DS (same bucket as react)", async () => {
-    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-mcp-usage-html-import-"));
+  it("counts @nudge-design/html imports as DS (same bucket as react)", async () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-mcp-usage-html-import-"));
     tmpDirs.push(cwd);
     const filePath = path.join(cwd, "Demo.tsx");
     fs.writeFileSync(
       filePath,
-      `import { NdsButton } from "@nudge-eap/html";
+      `import { NdsButton } from "@nudge-design/html";
 
 export function Demo() {
   return <NdsButton color="primary">Start</NdsButton>;
@@ -96,14 +96,14 @@ export function Demo() {
   });
 
   it("falls back to declared dependency range when node_modules is missing", async () => {
-    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-mcp-usage-declared-"));
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-mcp-usage-declared-"));
     tmpDirs.push(cwd);
 
     fs.writeFileSync(
       path.join(cwd, "package.json"),
       JSON.stringify({
         name: "mockup-project",
-        dependencies: { "@nudge-eap/react": "^1.2.3" },
+        dependencies: { "@nudge-design/react": "^1.2.3" },
       }),
       "utf8",
     );
@@ -111,7 +111,7 @@ export function Demo() {
     const filePath = path.join(cwd, "Demo.tsx");
     fs.writeFileSync(
       filePath,
-      `import { Button } from "@nudge-eap/react";
+      `import { Button } from "@nudge-design/react";
 
 export function Demo() {
   return <Button>Start</Button>;

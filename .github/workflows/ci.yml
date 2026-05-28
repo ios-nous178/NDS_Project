@@ -53,7 +53,7 @@ jobs:
         run: pnpm docs:build
 
       - name: Build Storybook
-        run: pnpm --filter @nudge-eap/storybook build
+        run: pnpm --filter @nudge-design/storybook build
 
       - name: Run Storybook tests
         run: |
@@ -66,7 +66,7 @@ jobs:
             fi
             sleep 1
           done
-          pnpm --filter @nudge-eap/storybook test-storybook --url http://127.0.0.1:6006
+          pnpm --filter @nudge-design/storybook test-storybook --url http://127.0.0.1:6006
 
       - name: Check Figma link coverage
         run: node scripts/check-figma-links.mjs

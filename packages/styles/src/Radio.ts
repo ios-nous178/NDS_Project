@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Radio.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Radio.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const RADIO_CLASS = "nds-radio";
 const RADIO_ROOT_CLASS = `${RADIO_CLASS}__root`;

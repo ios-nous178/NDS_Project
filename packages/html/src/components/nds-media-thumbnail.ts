@@ -22,7 +22,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { radius } from "@nudge-eap/tokens";
+import { radius } from "@nudge-design/tokens";
 
 const MT_CLASS = "nds-media-thumbnail";
 const MT_IMG_CLASS = `${MT_CLASS}__img`;

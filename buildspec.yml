@@ -1,6 +1,6 @@
 version: 0.2
 
-# CodeBuild buildspec for NudgeEAP Design System
+# CodeBuild buildspec for Nudge Design System
 # - Builds Storybook (static) and Docusaurus (docs)
 # - Bundles them with apps/web-server (Express) into an EB-deployable artifact
 # - The output artifact is consumed by the CodePipeline Elastic Beanstalk Deploy action
@@ -30,7 +30,7 @@ phases:
       - pnpm build
       # docs 가 / 에서 서빙되므로 navbar 의 Storybook 링크는 동일 오리진의 /storybook/ 으로 둔다.
       - STORYBOOK_BASE_URL=/storybook/ pnpm docs:build
-      - pnpm --filter @nudge-eap/storybook build
+      - pnpm --filter @nudge-design/storybook build
 
   post_build:
     commands:
@@ -48,7 +48,7 @@ artifacts:
   base-directory: eb-bundle
   files:
     - "**/*"
-  name: nudge-eap-ds-$(date +%Y-%m-%d-%H%M%S)
+  name: nudge-ds-$(date +%Y-%m-%d-%H%M%S)
 
 cache:
   paths:

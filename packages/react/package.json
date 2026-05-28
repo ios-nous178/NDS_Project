@@ -1,7 +1,7 @@
 {
-  "name": "@nudge-eap/react",
-  "version": "0.2.0",
-  "description": "React components for NudgeEAP Design System",
+  "name": "@nudge-design/react",
+  "version": "0.0.1",
+  "description": "React components for Nudge Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -25,9 +25,9 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@nudge-eap/icons": "workspace:*",
-    "@nudge-eap/styles": "workspace:*",
-    "@nudge-eap/tokens": "workspace:*"
+    "@nudge-design/icons": "workspace:*",
+    "@nudge-design/styles": "workspace:*",
+    "@nudge-design/tokens": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

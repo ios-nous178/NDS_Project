@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { GreetingHeader, MoodSelector, IconButton, Avatar } from "@nudge-eap/react";
-import { PushIcon } from "@nudge-eap/icons";
+import { GreetingHeader, MoodSelector, IconButton, Avatar } from "@nudge-design/react";
+import { PushIcon } from "@nudge-design/icons";
 
 const meta: Meta<typeof GreetingHeader> = {
   title: "Components/GreetingHeader",

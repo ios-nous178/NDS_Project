@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CallControlBar } from "@nudge-eap/react";
+import { CallControlBar } from "@nudge-design/react";
 
 const meta: Meta<typeof CallControlBar> = {
   title: "Components/CallControlBar",

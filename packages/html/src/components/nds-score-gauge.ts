@@ -24,7 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { cv } from "@nudge-eap/tokens";
+import { cv } from "@nudge-design/tokens";
 
 const SG_CLASS = "nds-score-gauge";
 const SG_TRACK_CLASS = `${SG_CLASS}__track`;

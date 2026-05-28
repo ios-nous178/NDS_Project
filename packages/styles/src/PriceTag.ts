@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/PriceTag.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/PriceTag.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight } from "@nudge-design/tokens";
 
 const PT_CLASS = "nds-price-tag";
 const PT_DISCOUNT_CLASS = `${PT_CLASS}__discount`;

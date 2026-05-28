@@ -8,7 +8,7 @@ import {
   transition,
   typeScale,
   zIndex,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 import { Header } from "../Header";
 import type {
   HeaderMenuItemData as AppBarGNBItem,
@@ -17,7 +17,7 @@ import type {
 import { Button } from "../Button";
 import { TrendingKeywords } from "../TrendingKeywords";
 import type { TrendingKeywordItem } from "../TrendingKeywords";
-import { TrostEnergyCoinIcon } from "@nudge-eap/icons";
+import { TrostEnergyCoinIcon } from "@nudge-design/icons";
 import { TROST_LOGO_DATA_URI, TROST_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults";
 
 /* ─── Constants (Trost 웹사이트 실측 스펙 + 모바일 홈 헤더 2단 가이드) ─── */

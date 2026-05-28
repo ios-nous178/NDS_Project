@@ -8,7 +8,7 @@
  * 양쪽이 같은 source 를 import 하는 식으로 SSOT 통일 예정.
  */
 
-import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-design/tokens";
 
 export type ButtonVariant = "solid" | "outlined" | "soft" | "outlined-sub";
 export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "field";

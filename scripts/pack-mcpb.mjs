@@ -2,7 +2,7 @@
 /**
  * pack-mcpb.mjs — Claude Desktop Extension(.mcpb) 번들 생성
  *
- * 결과물: dist-mcpb/nudge-eap-ds.mcpb (= zip 파일)
+ * 결과물: dist-mcpb/nudge-ds.mcpb (= zip 파일)
  *
  * 사용:
  *   node scripts/pack-mcpb.mjs                # 풀 빌드 + 패킹
@@ -27,7 +27,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const OUT_ROOT = path.join(ROOT, "dist-mcpb");
-const BUNDLE_NAME = "nudge-eap-ds";
+const BUNDLE_NAME = "nudge-ds";
 const BUNDLE_DIR = path.join(OUT_ROOT, BUNDLE_NAME);
 const MCPB_PATH = path.join(OUT_ROOT, `${BUNDLE_NAME}.mcpb`);
 
@@ -81,7 +81,7 @@ if (!skipBuild) {
   // local-packages/*.tgz 갱신 (catalog 와 같은 버전)
   run("pnpm", ["release:local"]);
   // dist/server.js + catalog.json 생성
-  run("pnpm", ["build", "--filter", "@nudge-eap/mcp"]);
+  run("pnpm", ["build", "--filter", "@nudge-design/mcp"]);
 }
 
 const mcpPkg = readJson(path.join(ROOT, "packages/mcp/package.json"));
@@ -110,7 +110,7 @@ fs.writeFileSync(
   path.join(BUNDLE_DIR, "package.json"),
   `${JSON.stringify(
     {
-      name: "nudge-eap-ds-mcpb-bundle",
+      name: "nudge-ds-mcpb-bundle",
       private: true,
       type: "module",
       main: "dist/server.js",

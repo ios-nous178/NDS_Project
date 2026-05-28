@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/JournalEntry.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/JournalEntry.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const JE_CLASS = "nds-journal-entry";
 const JE_HEADER_CLASS = `${JE_CLASS}__header`;

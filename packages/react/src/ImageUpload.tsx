@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { InfoIcon, InputdeleteIcon } from "@nudge-eap/icons";
+import { InfoIcon, InputdeleteIcon } from "@nudge-design/icons";
 
 /* ─── Types ─── */
 

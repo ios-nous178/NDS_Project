@@ -1,7 +1,7 @@
 {
-  "name": "@nudge-eap/icons",
-  "version": "0.2.0",
-  "description": "SVG icon components for NudgeEAP Design System",
+  "name": "@nudge-design/icons",
+  "version": "0.0.1",
+  "description": "SVG icon components for Nudge Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -9,9 +9,25 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./mono": {
+      "types": "./dist/mono/index.d.ts",
+      "import": "./dist/mono/index.js"
+    },
+    "./multicolor": {
+      "types": "./dist/multicolor/index.d.ts",
+      "import": "./dist/multicolor/index.js"
+    },
     "./vanilla": {
       "types": "./dist/vanilla.d.ts",
       "import": "./dist/vanilla.js"
+    },
+    "./mono/vanilla": {
+      "types": "./dist/mono/vanilla.d.ts",
+      "import": "./dist/mono/vanilla.js"
+    },
+    "./multicolor/vanilla": {
+      "types": "./dist/multicolor/vanilla.d.ts",
+      "import": "./dist/multicolor/vanilla.js"
     }
   },
   "files": [

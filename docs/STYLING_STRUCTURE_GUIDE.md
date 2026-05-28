@@ -18,27 +18,27 @@
 
 ## 패키지 책임 구조
 
-NDS는 목업 생성과 프레임워크 독립 사용성을 위해 `@nudge-eap/html`을 기본 런타임으로 보고, `@nudge-eap/react`는 React 제품에서 선택적으로 사용하는 어댑터로 둡니다.
+NDS는 목업 생성과 프레임워크 독립 사용성을 위해 `@nudge-design/html`을 기본 런타임으로 보고, `@nudge-design/react`는 React 제품에서 선택적으로 사용하는 어댑터로 둡니다.
 
 ```mermaid
 flowchart TB
   subgraph Core["Core"]
-    Tokens["@nudge-eap/tokens\n디자인 값"]
-    Icons["@nudge-eap/icons\n아이콘 자산"]
-    Styles["@nudge-eap/styles\n공통 CSS"]
+    Tokens["@nudge-design/tokens\n디자인 값"]
+    Icons["@nudge-design/icons\n아이콘 자산"]
+    Styles["@nudge-design/styles\n공통 CSS"]
   end
 
   subgraph Runtime["Primary Runtime"]
-    Html["@nudge-eap/html\nWeb Components / Mockup 기준"]
+    Html["@nudge-design/html\nWeb Components / Mockup 기준"]
   end
 
   subgraph Optional["Optional Adapters"]
-    React["@nudge-eap/react\nReact 앱용 선택 어댑터"]
-    Tailwind["@nudge-eap/tailwind-preset\nTailwind preset"]
+    React["@nudge-design/react\nReact 앱용 선택 어댑터"]
+    Tailwind["@nudge-design/tailwind-preset\nTailwind preset"]
   end
 
   subgraph Tools["Tools"]
-    MCP["@nudge-eap/mcp\n목업 생성/검증"]
+    MCP["@nudge-design/mcp\n목업 생성/검증"]
     Storybook["Storybook\n시각 검증"]
     Docs["Docs\n가이드"]
   end

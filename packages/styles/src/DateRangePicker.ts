@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/DateRangePicker.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/DateRangePicker.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
 
 const DR_CLASS = "nds-date-range";
 const DR_ROOT_CLASS = `${DR_CLASS}__root`;

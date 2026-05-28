@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TrostFooter } from "@nudge-eap/react";
+import { TrostFooter } from "@nudge-design/react";
 
 const meta: Meta = {
   title: "Components/Footer",

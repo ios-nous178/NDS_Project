@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { EmotionHeatmap, type EmotionEntry } from "@nudge-eap/react";
+import { EmotionHeatmap, type EmotionEntry } from "@nudge-design/react";
 
 const meta: Meta<typeof EmotionHeatmap> = {
   title: "Components/EmotionHeatmap",

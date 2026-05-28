@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BreathingGuide } from "@nudge-eap/react";
+import { BreathingGuide } from "@nudge-design/react";
 
 const meta: Meta<typeof BreathingGuide> = {
   title: "Components/BreathingGuide",

@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Popup.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, radius, shadow, spacing, typeScale, zIndex } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Popup.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, radius, shadow, spacing, typeScale, zIndex } from "@nudge-design/tokens";
 
 const POPUP_CLASS = "nds-popup";
 const POPUP_ROOT_CLASS = `${POPUP_CLASS}__root`;

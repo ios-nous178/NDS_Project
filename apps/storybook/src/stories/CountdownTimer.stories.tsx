@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CountdownTimer } from "@nudge-eap/react";
+import { CountdownTimer } from "@nudge-design/react";
 
 const meta: Meta<typeof CountdownTimer> = {
   title: "Components/CountdownTimer",

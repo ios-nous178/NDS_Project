@@ -18,7 +18,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { createIconSvg, type VanillaIconName } from "@nudge-eap/icons/vanilla";
+import { createIconSvg, type VanillaIconName } from "@nudge-design/icons/vanilla";
 
 const AC_CLASS = "nds-appointment-card";
 const AC_DATE_CLASS = `${AC_CLASS}__date`;

@@ -5,16 +5,16 @@ title: 시작하기
 
 # 시작하기
 
-NudgeEAP Design System(NDS)을 프로젝트에 설치하고 사용하는 방법을 안내합니다.
+Nudge Design System(NDS)을 프로젝트에 설치하고 사용하는 방법을 안내합니다.
 
 ## 설치
 
 ```bash
 # pnpm (권장)
-pnpm add @nudge-eap/react @nudge-eap/tokens
+pnpm add @nudge-design/react @nudge-design/tokens
 
 # npm
-npm install @nudge-eap/react @nudge-eap/tokens
+npm install @nudge-design/react @nudge-design/tokens
 ```
 
 ### Tailwind CSS 사용자
@@ -22,13 +22,13 @@ npm install @nudge-eap/react @nudge-eap/tokens
 Tailwind CSS를 사용하는 프로젝트라면 프리셋도 함께 설치하세요.
 
 ```bash
-pnpm add @nudge-eap/tailwind-preset
+pnpm add @nudge-design/tailwind-preset
 ```
 
 `tailwind.config.ts`에 프리셋을 추가합니다.
 
 ```ts
-import { nudgeEapPreset } from "@nudge-eap/tailwind-preset";
+import { nudgeEapPreset } from "@nudge-design/tailwind-preset";
 
 export default {
   presets: [nudgeEapPreset],
@@ -39,11 +39,11 @@ export default {
 ### 아이콘
 
 ```bash
-pnpm add @nudge-eap/icons
+pnpm add @nudge-design/icons
 ```
 
 ```tsx
-import { SearchIcon, CloseIcon, ChevronRightIcon } from "@nudge-eap/icons";
+import { SearchIcon, CloseIcon, ChevronRightIcon } from "@nudge-design/icons";
 
 // 기본 (24x24, currentColor)
 <SearchIcon />
@@ -64,7 +64,7 @@ import { SearchIcon, CloseIcon, ChevronRightIcon } from "@nudge-eap/icons";
 ### 컴포넌트 사용
 
 ```tsx
-import { Button, Badge } from "@nudge-eap/react";
+import { Button, Badge } from "@nudge-design/react";
 
 function App() {
   return (
@@ -85,7 +85,7 @@ function App() {
 디자인 토큰을 직접 참조해야 할 때 사용합니다.
 
 ```tsx
-import { colors, spacing, typography } from "@nudge-eap/tokens";
+import { colors, spacing, typography } from "@nudge-design/tokens";
 
 const style = {
   color: colors.blue[500],
@@ -97,7 +97,7 @@ const style = {
 ### CSS 변수로 사용
 
 ```tsx
-import "@nudge-eap/tokens/css";
+import "@nudge-design/tokens/css";
 ```
 
 ```css
@@ -113,12 +113,12 @@ import "@nudge-eap/tokens/css";
 
 | 패키지                       | 설명                                   | 상태    |
 | ---------------------------- | -------------------------------------- | ------- |
-| `@nudge-eap/tokens`          | 디자인 토큰 (색상, 타이포, 간격)       | ✅ 안정 |
-| `@nudge-eap/styles`          | 공통 CSS 번들                          | ✅ 안정 |
-| `@nudge-eap/html`            | Web Components / HTML 목업 기준 런타임 | ✅ 안정 |
-| `@nudge-eap/react`           | React 앱용 선택 어댑터                 | ✅ 안정 |
-| `@nudge-eap/icons`           | SVG 아이콘 컴포넌트                    | ✅ 안정 |
-| `@nudge-eap/tailwind-preset` | Tailwind CSS 프리셋                    | ✅ 안정 |
+| `@nudge-design/tokens`          | 디자인 토큰 (색상, 타이포, 간격)       | ✅ 안정 |
+| `@nudge-design/styles`          | 공통 CSS 번들                          | ✅ 안정 |
+| `@nudge-design/html`            | Web Components / HTML 목업 기준 런타임 | ✅ 안정 |
+| `@nudge-design/react`           | React 앱용 선택 어댑터                 | ✅ 안정 |
+| `@nudge-design/icons`           | SVG 아이콘 컴포넌트                    | ✅ 안정 |
+| `@nudge-design/tailwind-preset` | Tailwind CSS 프리셋                    | ✅ 안정 |
 
 ---
 

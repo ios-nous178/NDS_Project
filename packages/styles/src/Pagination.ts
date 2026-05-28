@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Pagination.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Pagination.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const PG_CLASS = "nds-pagination";
 const PG_ITEM_CLASS = `${PG_CLASS}__item`;

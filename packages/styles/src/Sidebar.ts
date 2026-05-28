@@ -1,6 +1,6 @@
 /* Mirror of packages/react/src/Sidebar.tsx — keep in sync. */
 /* The .tsx still self-injects this literal at runtime; this copy feeds the bundled styles.css. */
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
 
 const SB_CLASS = "nds-sidebar";
 const SB_ROOT_CLASS = `${SB_CLASS}__root`;

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ImageUpload } from "@nudge-eap/react";
+import { ImageUpload } from "@nudge-design/react";
 import React, { useState } from "react";
 
 const meta: Meta<typeof ImageUpload> = {

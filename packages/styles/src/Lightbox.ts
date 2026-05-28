@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Lightbox.tsx during the @nudge-eap/styles split. */
-import { fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Lightbox.tsx during the @nudge-design/styles split. */
+import { fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const LB_CLASS = "nds-lightbox";
 const LB_BACKDROP_CLASS = `${LB_CLASS}__backdrop`;

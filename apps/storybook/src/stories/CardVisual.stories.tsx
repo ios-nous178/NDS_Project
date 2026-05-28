@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CardVisual, type CardVisualBrand } from "@nudge-eap/react";
+import { CardVisual, type CardVisualBrand } from "@nudge-design/react";
 
 const meta: Meta<typeof CardVisual> = {
   title: "Components/CardVisual",

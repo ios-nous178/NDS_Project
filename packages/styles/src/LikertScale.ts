@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/LikertScale.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/LikertScale.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const LK_CLASS = "nds-likert";
 const LK_ROOT_CLASS = `${LK_CLASS}__root`;

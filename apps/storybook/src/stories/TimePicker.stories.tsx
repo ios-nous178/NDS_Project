@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TimePicker } from "@nudge-eap/react";
+import { TimePicker } from "@nudge-design/react";
 
 const meta: Meta<typeof TimePicker> = {
   title: "Components/TimePicker",

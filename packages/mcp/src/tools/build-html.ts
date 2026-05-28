@@ -104,10 +104,10 @@ export interface BuildSinglefileHtmlResult {
  * 워크스페이스가 React (.tsx) 인지 vanilla HTML (<nds-*>) 인지 판별.
  *
  * 우선순위 (React 신호가 강한 경우에만 React 로, 그 외는 모두 html):
- *   1. package.json deps 에 @nudge-eap/react 가 있으면 → react (기존 React mockup 백워드 호환)
+ *   1. package.json deps 에 @nudge-design/react 가 있으면 → react (기존 React mockup 백워드 호환)
  *   2. src/main.tsx 가 있으면 → react (기존 React mockup 백워드 호환)
  *   3. src/ 에 .tsx 가 1개라도 있으면 → react
- *   4. 그 외 (신규 워크스페이스 / 비어 있는 디렉터리 / @nudge-eap/html only 등) → html
+ *   4. 그 외 (신규 워크스페이스 / 비어 있는 디렉터리 / @nudge-design/html only 등) → html
  *
  * 정책 (2026-05-25): default 가 react → html 로 변경. 신규 mockup 워크스페이스는
  * vanilla HTML 워크플로우로 진입한다. 기존 React mockup 은 위 React 신호 셋에서
@@ -122,7 +122,7 @@ export function detectWorkspaceIntent(cwd: string): WorkspaceIntent {
         devDependencies?: Record<string, string>;
       };
       const all = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
-      if ("@nudge-eap/react" in all) return "react";
+      if ("@nudge-design/react" in all) return "react";
     } catch {
       // ignore, fall through to file-based detection
     }
@@ -490,7 +490,7 @@ export function injectHtmlUsageSummary(cwd: string, outputPath: string): string 
     const counts = countHtmlUsage(html);
     const badgeSummary = getHtmlUsageBadgeSummary(cwd, html);
     const commentSummary =
-      `NudgeEAP DS usage: ${badgeSummary} · ` +
+      `Nudge DS usage: ${badgeSummary} · ` +
       `nds-class ${counts.ndsClassed.total} · native ${counts.nativeUnwrapped.total}`;
 
     let nextHtml = html.replace(
@@ -499,7 +499,7 @@ export function injectHtmlUsageSummary(cwd: string, outputPath: string): string 
         `${open}${badgeSummary}${close}`,
     );
 
-    if (!nextHtml.includes("NudgeEAP DS usage:")) {
+    if (!nextHtml.includes("Nudge DS usage:")) {
       nextHtml = nextHtml.replace(/(<html\b[^>]*>)/i, `$1\n<!-- ${commentSummary} -->`);
     }
 
@@ -698,13 +698,13 @@ export function auditMockupWorkspace(
         files: inlineTokenHits,
         detail:
           ".css/.scss 의 :root 블록에 시멘틱 토큰(--color-*, --nds-*, --eap-*, --gap-*, --inset-*) 을 인라인 재정의했습니다. " +
-          `@nudge-eap/tokens/css 단일 진리원천을 깨는 우회입니다. ${entryFile} 에서 \`import "@nudge-eap/tokens/css"\` 한 줄로만 토큰을 가져오세요.`,
+          `@nudge-design/tokens/css 단일 진리원천을 깨는 우회입니다. ${entryFile} 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 토큰을 가져오세요.`,
       });
     }
   }
 
   if (resolvedIntent === "react" && srcExists) {
-    // 입력 형식은 .tsx 가 가장 일반적이지만, @nudge-eap/html 패키지의 Web Component 기반 워크플로우에선
+    // 입력 형식은 .tsx 가 가장 일반적이지만, @nudge-design/html 패키지의 Web Component 기반 워크플로우에선
     // .html / .astro 도 1급 입력. 셋 중 *하나라도* 있으면 통과. raw .html 직접 작성을 막는 룰
     // (raw-html-in-src) 는 src/ 안의 손글씨 .html 위반을 별도로 잡으므로, 여기선
     // "워크스페이스에 의도된 입력 파일이 존재하는가" 만 검사한다.

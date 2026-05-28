@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Lightbox } from "@nudge-eap/react";
+import { Lightbox } from "@nudge-design/react";
 
 const meta: Meta<typeof Lightbox> = {
   title: "Components/Lightbox",

@@ -1,7 +1,7 @@
 {
-  "name": "@nudge-eap/styles",
-  "version": "0.2.0",
-  "description": "Framework-agnostic CSS bundle for NudgeEAP Design System — consumed by @nudge-eap/react and @nudge-eap/html.",
+  "name": "@nudge-design/styles",
+  "version": "0.0.1",
+  "description": "Framework-agnostic CSS bundle for Nudge Design System — consumed by @nudge-design/react and @nudge-design/html.",
   "exports": {
     "./styles.css": "./dist/styles.css"
   },
@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nudge-eap/tokens": "workspace:*"
+    "@nudge-design/tokens": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.0"

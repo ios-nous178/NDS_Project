@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/DataTable.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/DataTable.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const DT_CLASS = "nds-data-table";
 const DT_SCROLL_CLASS = `${DT_CLASS}__scroll`;

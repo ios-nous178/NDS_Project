@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/TipCard.tsx during the @nudge-eap/styles split. */
-import { fontFamily, fontWeight, radius, spacing, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/TipCard.tsx during the @nudge-design/styles split. */
+import { fontFamily, fontWeight, radius, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const TC_CLASS = "nds-tip-card";
 const TC_ICON_CLASS = `${TC_CLASS}__icon`;

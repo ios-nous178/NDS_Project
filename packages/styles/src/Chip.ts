@@ -1,6 +1,6 @@
 /* Mirror of packages/react/src/Chip.tsx — keep in sync. */
 /* The .tsx still self-injects this literal at runtime; this copy feeds the bundled styles.css. */
-import { transition } from "@nudge-eap/tokens";
+import { transition } from "@nudge-design/tokens";
 
 const CHIP_CLASS = "nds-chip";
 const CHIP_ROOT_CLASS = `${CHIP_CLASS}__root`;

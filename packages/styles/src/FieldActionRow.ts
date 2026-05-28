@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/FieldActionRow.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/FieldActionRow.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const FAR_CLASS = "nds-field-action-row";
 const FAR_ROOT_CLASS = `${FAR_CLASS}__root`;

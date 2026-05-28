@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * NudgeEAP DS MCP Server
+ * Nudge DS MCP Server
  *
  * 외부 목업 프로젝트에서 Claude가 DS의 컴포넌트/아이콘/토큰을 조회하고
  * 작성한 mockup .tsx 파일을 검증할 수 있도록 도구를 노출한다.
@@ -9,7 +9,7 @@
  * 등록: ~/.claude/settings.json 또는 외부 프로젝트의 .claude/settings.json
  *   {
  *     "mcpServers": {
- *       "nudge-eap-ds": {
+ *       "nudge-ds": {
  *         "command": "node",
  *         "args": ["<repoRoot>/packages/mcp/dist/server.js"]
  *       }
@@ -84,7 +84,7 @@ const mcpbManifest = loadMcpbManifest();
 // 2) mcpb 번들 (Claude Desktop이 압축을 풀어 실행): 같은 디렉터리 안에 local-packages/만 동봉되어 있고
 //    leleos 레포 자체는 없다. install/update 안내가 달라야 한다.
 const installMode: "dev" | "mcpb" = (() => {
-  const env = process.env.NUDGE_EAP_DS_INSTALL_MODE;
+  const env = process.env.NUDGE_DS_INSTALL_MODE;
   if (env === "mcpb" || env === "dev") return env;
   // dev 추정: packages/tokens 같은 모노레포 디렉터리가 보이면 dev
   const guessedRoot = path.resolve(__dirname, "../../..");
@@ -92,8 +92,8 @@ const installMode: "dev" | "mcpb" = (() => {
   return "mcpb";
 })();
 
-const repoRoot = process.env.NUDGE_EAP_DS_REPO_ROOT
-  ? path.resolve(process.env.NUDGE_EAP_DS_REPO_ROOT)
+const repoRoot = process.env.NUDGE_DS_REPO_ROOT
+  ? path.resolve(process.env.NUDGE_DS_REPO_ROOT)
   : installMode === "dev"
     ? path.resolve(__dirname, "../../..")
     : path.resolve(__dirname, ".."); // mcpb 번들 루트 = packages/mcp/
@@ -111,8 +111,8 @@ function checkCatalogFreshness() {
     const p = path.join(repoRoot, rel);
     if (fs.existsSync(p) && fs.statSync(p).mtimeMs > catalogMtime) {
       console.error(
-        `[nudge-eap-mcp] WARN: catalog may be stale (${rel} is newer). ` +
-          `Run 'pnpm build --filter @nudge-eap/mcp' in DS repo to refresh.`,
+        `[nudge-mcp] WARN: catalog may be stale (${rel} is newer). ` +
+          `Run 'pnpm build --filter @nudge-design/mcp' in DS repo to refresh.`,
       );
       return;
     }
@@ -122,7 +122,7 @@ function checkCatalogFreshness() {
 function loadManifest(): Manifest {
   if (!fs.existsSync(catalogPath)) {
     throw new Error(
-      `catalog.json not found at ${catalogPath}. Run 'pnpm --filter @nudge-eap/mcp build:manifest' first.`,
+      `catalog.json not found at ${catalogPath}. Run 'pnpm --filter @nudge-design/mcp build:manifest' first.`,
     );
   }
   const parsed = JSON.parse(fs.readFileSync(catalogPath, "utf-8")) as Catalog;
@@ -555,7 +555,7 @@ function suggestReplacement(args: { snippet: string; rule?: string }) {
 /* ───────────── MCP 서버 등록 ───────────── */
 
 const server = new Server(
-  { name: "nudge-eap-ds", version: mcpbManifest?.version ?? "0.1.6" },
+  { name: "nudge-ds", version: mcpbManifest?.version ?? "0.1.6" },
   { capabilities: { tools: {} } },
 );
 
@@ -812,7 +812,7 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error(
-    `[nudge-eap-mcp] ready. components=${manifest.components.length}, icons=${manifest.icons.length}, tokens=${manifest.tokens.length}`,
+    `[nudge-mcp] ready. components=${manifest.components.length}, icons=${manifest.icons.length}, tokens=${manifest.tokens.length}`,
   );
 }
 

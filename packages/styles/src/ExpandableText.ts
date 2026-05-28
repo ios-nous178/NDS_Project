@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/ExpandableText.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/ExpandableText.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-design/tokens";
 
 const ET_CLASS = "nds-expandable-text";
 const ET_BODY_CLASS = `${ET_CLASS}__body`;

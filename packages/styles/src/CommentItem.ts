@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/CommentItem.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/CommentItem.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const CI_CLASS = "nds-comment-item";
 const CI_AVATAR_CLASS = `${CI_CLASS}__avatar`;

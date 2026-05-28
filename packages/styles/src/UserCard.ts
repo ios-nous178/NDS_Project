@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/UserCard.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/UserCard.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const UC_CLASS = "nds-user-card";
 const UC_AVATAR_CLASS = `${UC_CLASS}__avatar`;

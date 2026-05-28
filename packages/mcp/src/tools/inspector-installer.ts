@@ -5,9 +5,9 @@
  * 마커 코멘트로 idempotent — 두 번째 호출은 no-op.
  *
  * 지원하는 진입점 (탐지 순서):
- *   1. src/main.tsx / src/index.tsx — React 프로젝트 → @nudge-eap/react/inspector 의
+ *   1. src/main.tsx / src/index.tsx — React 프로젝트 → @nudge-design/react/inspector 의
  *      DsInspector 를 React.createRoot 로 마운트 (기존 동작).
- *   2. src/main.ts  / src/index.ts  — Vanilla TS / Astro 프로젝트 → @nudge-eap/html 의
+ *   2. src/main.ts  / src/index.ts  — Vanilla TS / Astro 프로젝트 → @nudge-design/html 의
  *      <nds-inspector> custom element 를 dynamic import + document.body 에 append.
  *   3. index.html                   — plain HTML 프로젝트 → </body> 직전에
  *      <script type="module"> 블록 삽입. (Astro 의 src/pages/index.astro 도 대응.)
@@ -19,11 +19,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
-export const INSPECTOR_BLOCK_BEGIN = "// === nudge-eap-ds inspector mount (auto) ===";
-export const INSPECTOR_BLOCK_END = "// === end nudge-eap-ds inspector mount ===";
+export const INSPECTOR_BLOCK_BEGIN = "// === nudge-ds inspector mount (auto) ===";
+export const INSPECTOR_BLOCK_END = "// === end nudge-ds inspector mount ===";
 
-export const INSPECTOR_HTML_BLOCK_BEGIN = "<!-- === nudge-eap-ds inspector mount (auto) === -->";
-export const INSPECTOR_HTML_BLOCK_END = "<!-- === end nudge-eap-ds inspector mount === -->";
+export const INSPECTOR_HTML_BLOCK_BEGIN = "<!-- === nudge-ds inspector mount (auto) === -->";
+export const INSPECTOR_HTML_BLOCK_END = "<!-- === end nudge-ds inspector mount === -->";
 
 /** React + React DOM 기반 마운트 — main.tsx / index.tsx 용. */
 export const INSPECTOR_MOUNT_BLOCK = `
@@ -34,7 +34,7 @@ if (import.meta.env.DEV) {
   void Promise.all([
     import("react"),
     import("react-dom/client"),
-    import("@nudge-eap/react/inspector"),
+    import("@nudge-design/react/inspector"),
   ]).then(([React, { createRoot }, { DsInspector }]) => {
     let host = document.getElementById("nds-inspector-host");
     if (!host) {
@@ -54,7 +54,7 @@ ${INSPECTOR_BLOCK_BEGIN}
 // dev-only DS Inspector overlay. Toggle with Ctrl/Cmd+Shift+D.
 // 삭제하려면 이 BEGIN ~ END 블록 전체를 지우세요.
 if (import.meta.env.DEV) {
-  void import("@nudge-eap/html/elements/nds-inspector").then(() => {
+  void import("@nudge-design/html/elements/nds-inspector").then(() => {
     if (!document.getElementById("nds-inspector-host")) {
       const el = document.createElement("nds-inspector");
       el.id = "nds-inspector-host";
@@ -70,7 +70,7 @@ export const INSPECTOR_MOUNT_BLOCK_HTML = `${INSPECTOR_HTML_BLOCK_BEGIN}
 <script type="module">
   // dev-only DS Inspector overlay. Toggle with Ctrl/Cmd+Shift+D.
   // 삭제하려면 이 BEGIN ~ END 블록 전체를 지우세요.
-  import "@nudge-eap/html/elements/nds-inspector";
+  import "@nudge-design/html/elements/nds-inspector";
   if (!document.getElementById("nds-inspector-host")) {
     const el = document.createElement("nds-inspector");
     el.id = "nds-inspector-host";
@@ -175,12 +175,12 @@ function hintFor(kind: EntryKind): string {
   switch (kind) {
     case "react-tsx":
       return (
-        base + " @nudge-eap/react 가 설치돼 있어야 합니다 (없으면 get_setup({ step: 'install' }))."
+        base + " @nudge-design/react 가 설치돼 있어야 합니다 (없으면 get_setup({ step: 'install' }))."
       );
     case "vanilla-ts":
     case "html":
       return (
-        base + " @nudge-eap/html 이 설치돼 있어야 합니다 (없으면 get_setup({ step: 'install' }))."
+        base + " @nudge-design/html 이 설치돼 있어야 합니다 (없으면 get_setup({ step: 'install' }))."
       );
   }
 }

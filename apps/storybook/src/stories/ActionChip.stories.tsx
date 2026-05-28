@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ActionChip } from "@nudge-eap/react";
-import { DownloadIcon, EditIcon, InfoIcon } from "@nudge-eap/icons";
+import { ActionChip } from "@nudge-design/react";
+import { DownloadIcon, EditIcon, InfoIcon } from "@nudge-design/icons";
 import React from "react";
 
 const meta: Meta<typeof ActionChip> = {

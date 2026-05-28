@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Pagination } from "@nudge-eap/react";
+import { Pagination } from "@nudge-design/react";
 
 const meta: Meta<typeof Pagination> = {
   title: "Components/Pagination",

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { SelectionCard } from "@nudge-eap/react";
+import { SelectionCard } from "@nudge-design/react";
 
 const meta: Meta = {
   title: "Components/SelectionCard",

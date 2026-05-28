@@ -5,7 +5,7 @@
  * Storybook DesignGuideBadge 가 이 정보를 카드 옆에 노출한다.
  */
 
-import type { GuideMeta } from "@nudge-eap/tokens";
+import type { GuideMeta } from "@nudge-design/tokens";
 
 export type ChipVariantKey = "fill" | "outlined" | "ghost";
 export type ChipColorKey = "brand" | "neutral" | "success" | "error" | "caution";

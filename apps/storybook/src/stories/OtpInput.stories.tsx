@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { OtpInput } from "@nudge-eap/react";
+import { OtpInput } from "@nudge-design/react";
 
 const meta: Meta<typeof OtpInput> = {
   title: "Components/OtpInput",

@@ -5,11 +5,11 @@
  * 부착해, 가이드 문서에 정식 등재된 항목인지(core) 합의 전인지(experimental)
  * 한눈에 구분하게 한다.
  *
- * 데이터 소스: `@nudge-eap/tokens`의 `semanticGuide`,
- *            `@nudge-eap/react`의 `badgeGuide`/`chipGuide` 등.
+ * 데이터 소스: `@nudge-design/tokens`의 `semanticGuide`,
+ *            `@nudge-design/react`의 `badgeGuide`/`chipGuide` 등.
  */
 
-import type { GuideMeta, GuideStatus } from "@nudge-eap/tokens";
+import type { GuideMeta, GuideStatus } from "@nudge-design/tokens";
 
 const FIGMA_BASE = "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH";
 

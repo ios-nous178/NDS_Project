@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/CrisisCallout.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/CrisisCallout.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const CC_CLASS = "nds-crisis-callout";
 const CC_ICON_CLASS = `${CC_CLASS}__icon`;

@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/SelectionCard.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/SelectionCard.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const SC_CLASS = "nds-selection-card";
 const SC_ROOT_CLASS = `${SC_CLASS}__root`;

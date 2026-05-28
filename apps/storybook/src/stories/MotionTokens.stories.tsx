@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { duration, easing, transition } from "@nudge-eap/tokens";
+import { duration, easing, transition } from "@nudge-design/tokens";
 import React, { useState } from "react";
 
 function DurationItem({ token, value }: { token: string; value: number }) {

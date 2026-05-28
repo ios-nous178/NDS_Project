@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ChatBubble } from "@nudge-eap/react";
+import { ChatBubble } from "@nudge-design/react";
 
 const meta: Meta<typeof ChatBubble> = {
   title: "Components/ChatBubble",

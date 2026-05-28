@@ -21,7 +21,7 @@ describe("getGuide", () => {
 
     expect(result._principlesDigest).toEqual(
       expect.arrayContaining([
-        "No emoji/text-symbol icons; use find_icon + @nudge-eap/icons.",
+        "No emoji/text-symbol icons; use find_icon + @nudge-design/icons.",
         "Use semantic tokens; avoid raw hex/rgb and raw palette tokens.",
       ]),
     );

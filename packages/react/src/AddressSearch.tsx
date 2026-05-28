@@ -1,5 +1,5 @@
 import React, { useId, useState } from "react";
-import { cv } from "@nudge-eap/tokens";
+import { cv } from "@nudge-design/tokens";
 
 /* ─── Constants ─── */
 

@@ -3,7 +3,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { cv, sizing, spacing } from "@nudge-eap/tokens";
+import { cv, sizing, spacing } from "@nudge-design/tokens";
 
 const FOOTER_CLASS = "nds-footer";
 const FOOTER_NAV_CLASS = `${FOOTER_CLASS}__nav`;

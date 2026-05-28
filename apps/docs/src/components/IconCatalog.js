@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import * as Icons from "@nudge-eap/icons";
+import * as Icons from "@nudge-design/icons";
 import styles from "./IconCatalog.module.css";
 
 function pascalToKebab(name) {
@@ -70,7 +70,7 @@ export default function IconCatalog() {
 
   const onCopy = async (e, name) => {
     e.preventDefault();
-    const snippet = `import { ${name} } from "@nudge-eap/icons";`;
+    const snippet = `import { ${name} } from "@nudge-design/icons";`;
     try {
       await navigator.clipboard.writeText(snippet);
     } catch {

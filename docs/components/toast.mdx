@@ -6,14 +6,14 @@ category: 피드백
 related: [Popup, Modal]
 ---
 
-import { Toast, Button } from "@nudge-eap/react";
+import { Toast, Button } from "@nudge-design/react";
 
 # Toast
 
 사용자에게 피드백 메시지를 일시적으로 표시하는 토스트 컴포넌트입니다. Provider 기반 컨텍스트 API와 명령형 API를 모두 지원합니다.
 
 ```tsx
-import { Toast } from "@nudge-eap/react";
+import { Toast } from "@nudge-design/react";
 
 const { Provider: ToastProvider, useToast, show: showToast } = Toast;
 ```
@@ -48,7 +48,7 @@ const { Provider: ToastProvider, useToast, show: showToast } = Toast;
 
 ```tsx
 // App.tsx
-import { Toast } from "@nudge-eap/react";
+import { Toast } from "@nudge-design/react";
 
 function App() {
   return (
@@ -95,7 +95,7 @@ toast("상담 예약이 취소되었습니다", {
 ## 명령형 API (Provider 외부)
 
 ```tsx
-import { Toast } from "@nudge-eap/react";
+import { Toast } from "@nudge-design/react";
 
 // Provider 안에서 연결 (1회)
 function ToastConnector() {
@@ -160,7 +160,7 @@ import Toast from "@/app.component/toast/Toast";
 Toast.alert("메시지", "bottom");
 
 // After (Design System)
-import { Toast } from "@nudge-eap/react";
+import { Toast } from "@nudge-design/react";
 Toast.show("메시지");
 ```
 

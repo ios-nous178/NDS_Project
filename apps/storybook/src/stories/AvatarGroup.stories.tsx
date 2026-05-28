@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { AvatarGroup } from "@nudge-eap/react";
+import { AvatarGroup } from "@nudge-design/react";
 
 const meta: Meta<typeof AvatarGroup> = {
   title: "Components/AvatarGroup",

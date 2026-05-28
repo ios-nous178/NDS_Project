@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { AttachmentItem } from "@nudge-eap/react";
+import { AttachmentItem } from "@nudge-design/react";
 
 const meta: Meta<typeof AttachmentItem> = {
   title: "Components/AttachmentItem",

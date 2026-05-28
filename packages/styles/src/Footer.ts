@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Footer.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Footer.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -8,7 +8,7 @@ import {
   transition,
   typeScale,
   zIndex,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const FOOTER_CLASS = "nds-footer";
 const FOOTER_NAV_CLASS = `${FOOTER_CLASS}__nav`;

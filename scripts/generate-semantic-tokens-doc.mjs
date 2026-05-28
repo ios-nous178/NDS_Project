@@ -181,7 +181,7 @@ lines.push("");
 lines.push(
   "- 컴포넌트 스타일에서 `var(--semantic-...)` 로 사용 — 카드의 `⧉` 아이콘으로 한 번에 복사",
 );
-lines.push("- JS 에서는 `@nudge-eap/tokens` 의 `cv.{group}.{key}` (예: `cv.surface.brand`)");
+lines.push("- JS 에서는 `@nudge-design/tokens` 의 `cv.{group}.{key}` (예: `cv.surface.brand`)");
 lines.push("- **CORE** 배지 = Figma 가이드에 정식 등재 / **EXPERIMENTAL** = 합의 전");
 lines.push("");
 lines.push(

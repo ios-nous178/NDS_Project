@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Skeleton } from "@nudge-eap/react";
+import { Skeleton } from "@nudge-design/react";
 
 const meta: Meta<typeof Skeleton> = {
   title: "Components/Skeleton",

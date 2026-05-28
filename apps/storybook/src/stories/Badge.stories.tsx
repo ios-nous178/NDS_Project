@@ -6,7 +6,7 @@ import {
   badgeVariantGuide,
   type BadgeColor,
   type BadgeVariant,
-} from "@nudge-eap/react";
+} from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { DesignGuideBadge } from "../components/DesignGuideBadge";
 

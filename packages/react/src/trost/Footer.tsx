@@ -1,5 +1,5 @@
 import React from "react";
-import { trostNeutral } from "@nudge-eap/tokens";
+import { trostNeutral } from "@nudge-design/tokens";
 import { Footer as BaseFooter } from "../Footer";
 import type { FooterLinkItem, CompanyInfoData } from "../Footer";
 import type { TrostSnsLink } from "./types";

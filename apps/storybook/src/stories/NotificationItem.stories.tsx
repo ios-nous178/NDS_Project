@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { NotificationItem } from "@nudge-eap/react";
+import { NotificationItem } from "@nudge-design/react";
 
 const meta: Meta<typeof NotificationItem> = {
   title: "Components/NotificationItem",

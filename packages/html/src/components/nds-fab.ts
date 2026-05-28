@@ -2,7 +2,7 @@
  * <nds-fab> — DS FAB 의 vanilla Web Component 버전.
  */
 
-import { createIconSvg, type VanillaIconName } from "@nudge-eap/icons/vanilla";
+import { createIconSvg, type VanillaIconName } from "@nudge-design/icons/vanilla";
 
 import { NdsElement, define } from "../base/nds-element.js";
 

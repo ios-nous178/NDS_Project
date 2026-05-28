@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/ActivityTimeline.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/ActivityTimeline.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-design/tokens";
 
 const TL_CLASS = "nds-timeline";
 const TL_LIST_CLASS = `${TL_CLASS}__list`;

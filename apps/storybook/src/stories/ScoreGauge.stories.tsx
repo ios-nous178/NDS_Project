@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ScoreGauge } from "@nudge-eap/react";
+import { ScoreGauge } from "@nudge-design/react";
 
 const meta: Meta<typeof ScoreGauge> = {
   title: "Components/ScoreGauge",

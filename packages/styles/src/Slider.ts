@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Slider.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Slider.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   shadow,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const SL_CLASS = "nds-slider";
 const SL_ROOT_CLASS = `${SL_CLASS}__root`;

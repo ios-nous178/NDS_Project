@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { cv, fontWeight } from "@nudge-eap/tokens";
+import { cv, fontWeight } from "@nudge-design/tokens";
 
 /* ─── Constants ─── */
 

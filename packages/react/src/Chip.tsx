@@ -1,5 +1,5 @@
 import React from "react";
-import { fontFamily, fontWeight, radius, transition } from "@nudge-eap/tokens";
+import { fontFamily, fontWeight, radius, transition } from "@nudge-design/tokens";
 
 /* ─── Class names ─── */
 

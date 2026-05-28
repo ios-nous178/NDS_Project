@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { StatCard, Sparkline } from "@nudge-eap/react";
+import { StatCard, Sparkline } from "@nudge-design/react";
 
 const meta: Meta<typeof StatCard> = {
   title: "Components/StatCard",

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ChatComposer } from "@nudge-eap/react";
+import { ChatComposer } from "@nudge-design/react";
 
 const meta: Meta<typeof ChatComposer> = {
   title: "Components/ChatComposer",

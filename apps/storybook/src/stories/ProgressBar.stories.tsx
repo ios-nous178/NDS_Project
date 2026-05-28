@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ProgressBar } from "@nudge-eap/react";
+import { ProgressBar } from "@nudge-design/react";
 
 const meta: Meta<typeof ProgressBar> = {
   title: "Components/ProgressBar",

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { FilterBar } from "@nudge-eap/react";
+import { FilterBar } from "@nudge-design/react";
 
 const meta: Meta<typeof FilterBar> = {
   title: "Components/FilterBar",

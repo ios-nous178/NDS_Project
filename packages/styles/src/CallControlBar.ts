@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/CallControlBar.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/CallControlBar.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const CB_CLASS = "nds-call-control-bar";
 const CB_TIMER_CLASS = `${CB_CLASS}__timer`;

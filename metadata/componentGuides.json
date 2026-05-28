@@ -1434,7 +1434,7 @@
         "네이밍 컨벤션: 기본 Line = `XIcon`, Filled 짝 = `XActiveIcon` 또는 `XOnIcon` (예: HomeIcon ↔ HomeActiveIcon, SleepmodeOffIcon ↔ SleepmodeOnIcon). 짝 정보는 ICON_METADATA[name].pair 로 확인.",
         "카테고리 8종(basic / navigation / action / media / state-reaction / location / eap-service / color)은 의미 분류일 뿐 강제 import 경로 분리가 아니다. find_icon 결과의 카테고리는 유사 의미 후보를 찾는 힌트로 사용.",
         "컬러(다색) 카테고리 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger, Siren) 전용이다. 일반 UI 강조에 색 아이콘을 끼워 넣지 않는다.",
-        "필요한 아이콘이 없으면 인라인 `<svg>`를 만들지 말고 `packages/icons/svg/`에 kebab-case 로 SVG 를 추가한 뒤 `pnpm --filter @nudge-eap/icons build` 로 컴포넌트를 재생성한다. viewBox 는 0 0 24 24, stroke/fill 은 `currentColor` 로 유지."
+        "필요한 아이콘이 없으면 인라인 `<svg>`를 만들지 말고 `packages/icons/svg/`에 kebab-case 로 SVG 를 추가한 뒤 `pnpm --filter @nudge-design/icons build` 로 컴포넌트를 재생성한다. viewBox 는 0 0 24 24, stroke/fill 은 `currentColor` 로 유지."
       ],
       "avoid": [
         "12 / 16 / 20 / 24 / 32 / 48 외의 임의 사이즈 (예: 18px, 22px) 사용",
@@ -1442,7 +1442,7 @@
         "15px 이하에서 가는 Line 스타일을 그대로 사용 — Filled 로 교체",
         "동일 화면 / 동일 그룹에서 Line + Filled 스타일 혼용",
         "단독 IconButton 의 터치 영역을 40px 미만으로 두기",
-        "아이콘 컴포넌트를 인라인 `<svg>` 로 직접 작성하기 — `@nudge-eap/icons` 사용",
+        "아이콘 컴포넌트를 인라인 `<svg>` 로 직접 작성하기 — `@nudge-design/icons` 사용",
         "컬러(다색) 아이콘에 color prop 강제 적용 — 다색 표현이 어긋남"
       ],
       "metrics": {

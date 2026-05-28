@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/MediaThumbnail.tsx during the @nudge-eap/styles split. */
-import { cv, transition } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/MediaThumbnail.tsx during the @nudge-design/styles split. */
+import { cv, transition } from "@nudge-design/tokens";
 
 const MT_CLASS = "nds-media-thumbnail";
 const MT_IMG_CLASS = `${MT_CLASS}__img`;

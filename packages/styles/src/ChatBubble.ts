@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/ChatBubble.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/ChatBubble.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-design/tokens";
 
 const CB_CLASS = "nds-chat-bubble";
 const CB_ROW_CLASS = `${CB_CLASS}__row`;

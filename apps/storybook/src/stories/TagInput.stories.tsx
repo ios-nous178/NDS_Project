@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TagInput } from "@nudge-eap/react";
+import { TagInput } from "@nudge-design/react";
 
 const meta: Meta<typeof TagInput> = {
   title: "Components/TagInput",

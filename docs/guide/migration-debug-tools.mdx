@@ -87,7 +87,7 @@ Portal 오버레이는 DOM 트리 바깥에서 렌더링되므로 **어떤 `over
 ### 패키지 구조
 
 ```
-@nudge-eap/react
+@nudge-design/react
 ├── DSHighlightProvider   — Provider (단축키/URL 감지, 모드 관리)
 ├── DSMark                — 영역 등록 래퍼
 ├── useDSHighlight        — 모드/cycle 접근 훅
@@ -95,7 +95,7 @@ Portal 오버레이는 DOM 트리 바깥에서 렌더링되므로 **어떤 `over
     └── (DSHighlightToggle) — 드래그 가능 토글 버튼 (내부)
 ```
 
-> 실제 구현은 `@nudge-eap/react` 패키지 내부에 있으므로, 서비스 프로젝트에서는 별도 구현 없이 import만 하면 됩니다.
+> 실제 구현은 `@nudge-design/react` 패키지 내부에 있으므로, 서비스 프로젝트에서는 별도 구현 없이 import만 하면 됩니다.
 
 ---
 
@@ -513,13 +513,13 @@ static/img/migration/
 
 ## 설치 및 사용
 
-`DSHighlightProvider`, `DSMark`, `useDSHighlight`는 **`@nudge-eap/react` 패키지에 포함**되어 있습니다.
+`DSHighlightProvider`, `DSMark`, `useDSHighlight`는 **`@nudge-design/react` 패키지에 포함**되어 있습니다.
 
 ### 1. CSS import (1회)
 
 ```tsx
 // layout.tsx 또는 page.tsx
-import "@nudge-eap/react/styles.css";
+import "@nudge-design/react/styles.css";
 ```
 
 ### 2. Next.js App Router에서 사용
@@ -530,7 +530,7 @@ Next.js에서는 `'use client'` 지시어가 필요하므로 re-export 래퍼를
 // src/components/DSHighlight.tsx
 "use client";
 
-export { DSHighlightProvider, DSMark, useDSHighlight } from "@nudge-eap/react";
+export { DSHighlightProvider, DSMark, useDSHighlight } from "@nudge-design/react";
 ```
 
 ### 3. 페이지에 적용
@@ -561,7 +561,7 @@ export default function MyPageDS() {
 `'use client'`가 불필요하므로 직접 import합니다.
 
 ```tsx
-import { DSHighlightProvider, DSMark } from "@nudge-eap/react";
+import { DSHighlightProvider, DSMark } from "@nudge-design/react";
 ```
 
 그 다음 이 문서에 해당 페이지의 비교 섹션을 추가하세요.

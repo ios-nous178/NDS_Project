@@ -204,9 +204,9 @@ interface AutoReportOutcome {
   webhookError?: string;
   queued?: boolean;
   totalDs?: number;
-  /** % of tracked JSX that came from @nudge-eap/react. Always surfaced alongside dsVersion. */
+  /** % of tracked JSX that came from @nudge-design/react. Always surfaced alongside dsVersion. */
   dsRatio?: number;
-  /** Installed @nudge-eap/react version (or declared range fallback). Always paired with dsRatio. */
+  /** Installed @nudge-design/react version (or declared range fallback). Always paired with dsRatio. */
   dsVersion?: string | null;
   reason: PendingMockupReport["reason"];
 }

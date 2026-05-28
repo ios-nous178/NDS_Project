@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TrostAppBar } from "@nudge-eap/react";
+import { TrostAppBar } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("trost");

@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Confetti.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Confetti.tsx during the @nudge-design/styles split. */
 const CF_CLASS = "nds-confetti";
 
 export const cfStyles = `

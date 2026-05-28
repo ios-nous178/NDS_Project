@@ -8,7 +8,7 @@ import {
   GenietBenefitIcon,
   GenietReviewIcon,
   GenietCommunityIcon,
-} from "@nudge-eap/icons";
+} from "@nudge-design/icons";
 
 /**
  * Geniet BottomNav (Figma 90:2, app(geniet) 5탭).

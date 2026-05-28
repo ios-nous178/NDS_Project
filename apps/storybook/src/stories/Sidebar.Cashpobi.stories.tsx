@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Sidebar, type SidebarItem, type SidebarSection } from "@nudge-eap/react";
+import { Sidebar, type SidebarItem, type SidebarSection } from "@nudge-design/react";
 import {
   CashpobiGnbBannerIcon,
   CashpobiGnbCashIcon,
@@ -9,7 +9,7 @@ import {
   CashpobiGnbMemberIcon,
   CashpobiGnbQuizIcon,
   CashpobiGnbSettingIcon,
-} from "@nudge-eap/icons";
+} from "@nudge-design/icons";
 
 /**
  * Brands/Cashpobi/Sidebar — 캐포비(캐시워크 for Business) 어드민 사이드바.

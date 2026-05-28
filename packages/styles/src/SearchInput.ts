@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/SearchInput.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/SearchInput.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -8,7 +8,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const SEARCH_CLASS = "nds-search-input";
 const SEARCH_ROOT_CLASS = `${SEARCH_CLASS}__root`;

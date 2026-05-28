@@ -10,7 +10,7 @@
  *          └─ <span class="nds-checkbox__label" data-slot="label">동의합니다</span>
  *        </label>
  *
- * Light DOM 에 React DS 와 같은 class/data-slot 구조를 만들어 @nudge-eap/html/styles.css
+ * Light DOM 에 React DS 와 같은 class/data-slot 구조를 만들어 @nudge-design/html/styles.css
  * (= React DS stylesheet copy) 를 그대로 재사용한다.
  */
 

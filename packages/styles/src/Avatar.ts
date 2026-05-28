@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Avatar.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Avatar.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-design/tokens";
 
 const AV_CLASS = "nds-avatar";
 const AV_IMAGE_CLASS = `${AV_CLASS}__image`;

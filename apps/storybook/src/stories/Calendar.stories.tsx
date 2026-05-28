@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Calendar } from "@nudge-eap/react";
+import { Calendar } from "@nudge-design/react";
 
 const meta: Meta<typeof Calendar> = {
   title: "Components/Calendar",

@@ -8,12 +8,12 @@ import {
   transition,
   typeScale,
   zIndex,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 import { Header } from "../Header";
 import type { HeaderMenuItemData as AppBarGNBItem } from "../Header";
 import { TrendingKeywords } from "../TrendingKeywords";
 import type { TrendingKeywordItem } from "../TrendingKeywords";
-import { GenietMenuIcon, GenietSearchIcon, GenietGpointIcon } from "@nudge-eap/icons";
+import { GenietMenuIcon, GenietSearchIcon, GenietGpointIcon } from "@nudge-design/icons";
 import { GENIET_LOGO_PC_DATA_URI, GENIET_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults";
 
 /* ─── Constants (Figma 77:2 — Geniet_TopHeader_Guide) ───

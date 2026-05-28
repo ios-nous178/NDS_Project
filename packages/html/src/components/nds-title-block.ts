@@ -14,7 +14,7 @@
  *   </nds-title-block>
  */
 
-import { typeScale } from "@nudge-eap/tokens";
+import { typeScale } from "@nudge-design/tokens";
 
 import { NdsElement, define } from "../base/nds-element.js";
 

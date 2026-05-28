@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Header, NudgeEAPLogo } from "@nudge-eap/react";
+import { Header, NudgeEAPLogo } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 /**

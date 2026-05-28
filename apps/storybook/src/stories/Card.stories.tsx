@@ -1,9 +1,9 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, within } from "storybook/test";
-import { Card, Button, type CardProps } from "@nudge-eap/react";
-import { StarIcon } from "@nudge-eap/icons";
-import { colors } from "@nudge-eap/tokens";
+import { Card, Button, type CardProps } from "@nudge-design/react";
+import { StarIcon } from "@nudge-design/icons";
+import { colors } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 

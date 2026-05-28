@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/MentionInput.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/MentionInput.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const MI_CLASS = "nds-mention-input";
 const MI_LABEL_CLASS = `${MI_CLASS}__label`;

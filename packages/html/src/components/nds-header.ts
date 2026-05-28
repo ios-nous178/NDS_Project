@@ -24,7 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { cv, fontWeight, shadow, sizing, spacing, typeScale, zIndex } from "@nudge-eap/tokens";
+import { cv, fontWeight, shadow, sizing, spacing, typeScale, zIndex } from "@nudge-design/tokens";
 
 const HEADER_CLASS = "nds-header";
 const H_LEFT_CLASS = `${HEADER_CLASS}__left`;

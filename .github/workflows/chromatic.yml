@@ -50,7 +50,7 @@ jobs:
       - name: Publish to Chromatic (baseline)
         if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' && github.ref == 'refs/heads/main' }}
         run: |
-          pnpm --filter @nudge-eap/storybook chromatic \
+          pnpm --filter @nudge-design/storybook chromatic \
             --project-token=$CHROMATIC_PROJECT_TOKEN \
             --build-script-name=build \
             --auto-accept-changes \
@@ -60,7 +60,7 @@ jobs:
       - name: Publish to Chromatic (PR)
         if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' && github.ref != 'refs/heads/main' }}
         run: |
-          pnpm --filter @nudge-eap/storybook chromatic \
+          pnpm --filter @nudge-design/storybook chromatic \
             --project-token=$CHROMATIC_PROJECT_TOKEN \
             --build-script-name=build \
             --only-changed \

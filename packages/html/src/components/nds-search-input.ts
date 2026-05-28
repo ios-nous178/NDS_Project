@@ -11,7 +11,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { cv } from "@nudge-eap/tokens";
+import { cv } from "@nudge-design/tokens";
 
 const SEARCH_CLASS = "nds-search-input";
 const SEARCH_ROOT_CLASS = `${SEARCH_CLASS}__root`;

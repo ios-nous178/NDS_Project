@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/FloatingCtaBanner.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/FloatingCtaBanner.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -9,7 +9,7 @@ import {
   transition,
   typeScale,
   zIndex,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const FCB_ROOT_CLASS = "nds-floating-cta-banner";
 const FCB_ICON_CLASS = `${FCB_ROOT_CLASS}__icon`;

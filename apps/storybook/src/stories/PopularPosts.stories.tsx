@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { PopularPosts } from "@nudge-eap/react";
-import type { PopularPostsItem, PopularPostsTab } from "@nudge-eap/react";
+import { PopularPosts } from "@nudge-design/react";
+import type { PopularPostsItem, PopularPostsTab } from "@nudge-design/react";
 import React, { useState } from "react";
 
 const sampleTabs: PopularPostsTab[] = [

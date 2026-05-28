@@ -1,12 +1,12 @@
 /**
- * @nudge-eap/styles — bundle every per-component xxxStyles literal in src/ into
- * a single dist/styles.css. This used to live in @nudge-eap/react but was split
- * out so @nudge-eap/html (and any other framework adapter) can depend on the
+ * @nudge-design/styles — bundle every per-component xxxStyles literal in src/ into
+ * a single dist/styles.css. This used to live in @nudge-design/react but was split
+ * out so @nudge-design/html (and any other framework adapter) can depend on the
  * CSS bundle without dragging in React.
  *
  * Pipeline: read every .ts file in src/, regex out the `xxxStyles` template
  * literal, evaluate the ${...} interpolations against tokens loaded directly
- * from @nudge-eap/tokens source files (no compiled artifact needed), write the
+ * from @nudge-design/tokens source files (no compiled artifact needed), write the
  * concatenated result to dist/styles.css.
  *
  * Run: node scripts/extract-styles.mjs
@@ -85,7 +85,7 @@ const srcFiles = fs
   .filter((f) => f.endsWith(".ts"))
   .sort();
 
-const header = `/* NDS Design System — Auto-generated styles */\n/* Do not edit. Regenerate: pnpm --filter @nudge-eap/styles build */\n\n`;
+const header = `/* NDS Design System — Auto-generated styles */\n/* Do not edit. Regenerate: pnpm --filter @nudge-design/styles build */\n\n`;
 const styleVarPattern = /(?:export\s+)?const\s+(\w+Styles)\s*=\s*`([\s\S]*?)`;/g;
 const classConstPattern =
   /const\s+(\w+(?:CLASS|_CLASS))\s*=\s*(?:`([^`]*)`|"([^"]*)"|'([^']*)')\s*;/g;

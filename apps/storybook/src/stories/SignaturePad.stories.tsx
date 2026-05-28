@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { SignaturePad, type SignaturePadHandle } from "@nudge-eap/react";
+import { SignaturePad, type SignaturePadHandle } from "@nudge-design/react";
 
 const meta: Meta<typeof SignaturePad> = {
   title: "Components/SignaturePad",

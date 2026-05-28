@@ -2,7 +2,7 @@
 /**
  * sync-mcpb-version.mjs — DS 패키지 버전 → 파생 버전 미러 동기화
  *
- * DS 패키지(@nudge-eap/{react,tokens,icons,tailwind-preset}) 의 package.json
+ * DS 패키지(@nudge-design/{react,tokens,icons,tailwind-preset}) 의 package.json
  * version 이 SSOT 이고, 다음 두 파생 미러를 같은 버전으로 맞춘다.
  *
  *   1. packages/mcp/manifest.json   — release-mcpb 워크플로우가 release tag 로 사용
@@ -119,13 +119,13 @@ for (const m of drift) {
   );
 }
 
-// `@nudge-eap/mcp` (내부 패키지) 의 package.json version 도 같이 맞춰주면
+// `@nudge-design/mcp` (내부 패키지) 의 package.json version 도 같이 맞춰주면
 // 외부 의존성/로그에서 일관성이 생기지만, 사용자가 의도적으로 분리해 두었으면
 // 건드리지 않는다. mcp 가 이미 같은 값이면 손대지 않음.
 const mcpPkg = readJson(MCP_PKG_PATH);
 if (mcpPkg.version !== targetVersion) {
   console.warn(
     `[sync-mcpb-version] note: packages/mcp/package.json is at ${mcpPkg.version} (manifest is at ${targetVersion}). ` +
-      `If you want them in lockstep, bump it manually or add a changeset for @nudge-eap/mcp.`,
+      `If you want them in lockstep, bump it manually or add a changeset for @nudge-design/mcp.`,
   );
 }

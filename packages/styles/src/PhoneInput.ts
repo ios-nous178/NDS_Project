@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/PhoneInput.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/PhoneInput.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -9,7 +9,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const PI_CLASS = "nds-phone-input";
 const PI_ROOT_CLASS = `${PI_CLASS}__root`;

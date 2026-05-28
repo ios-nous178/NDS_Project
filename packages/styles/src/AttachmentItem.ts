@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/AttachmentItem.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/AttachmentItem.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const AT_CLASS = "nds-attachment-item";
 const AT_ICON_CLASS = `${AT_CLASS}__icon`;

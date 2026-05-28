@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Toast.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, transition, typeScale, zIndex } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Toast.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, transition, typeScale, zIndex } from "@nudge-design/tokens";
 
 const TOAST_CLASS = "nds-toast";
 const TOAST_VIEWPORT_CLASS = `${TOAST_CLASS}__viewport`;

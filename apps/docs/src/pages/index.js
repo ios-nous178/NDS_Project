@@ -2,7 +2,7 @@ import clsx from "clsx";
 import Link from "@docusaurus/Link";
 import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import { Button, Badge, Input, Chip } from "@nudge-eap/react";
+import { Button, Badge, Input, Chip } from "@nudge-design/react";
 import {
   ArrowNextIcon,
   ChevronRightIcon,
@@ -12,7 +12,7 @@ import {
   FavoriteIcon,
   CalendarIcon,
   LinkIcon,
-} from "@nudge-eap/icons";
+} from "@nudge-design/icons";
 import styles from "./index.module.css";
 
 const NOTION_INSTALL_GUIDE_URL =
@@ -64,7 +64,7 @@ function ComponentPreviewGrid() {
           <span className={styles.eyebrow}>Components</span>
           <h2>컴포넌트 미리보기</h2>
           <p>
-            이 섹션에 보이는 미리보기는 모두 <code>@nudge-eap/react</code>로 렌더링한 실제
+            이 섹션에 보이는 미리보기는 모두 <code>@nudge-design/react</code>로 렌더링한 실제
             컴포넌트입니다.
             <br />
             카드를 클릭하면 각 문서로 이동해 props와 사용 가이드를 바로 확인할 수 있어요.
@@ -282,12 +282,12 @@ function McpPitch() {
               규칙대로 짚어서 만들어 줍니다.
             </h2>
             <p className={styles.mcpDesc}>
-              <code>nudge-eap-ds</code> MCP 서버가 원칙·컴포넌트·토큰·아이콘을 추측 없이 찾아오고,
+              <code>nudge-ds</code> MCP 서버가 원칙·컴포넌트·토큰·아이콘을 추측 없이 찾아오고,
               작성한 목업의 토큰 위반과 금지 패턴까지 검증합니다. 15개 도구가 백그라운드에서
               동작합니다.
             </p>
             <div className={styles.mcpLinks}>
-              <Link to="/NUDGE_EAP_DS_MCP_USAGE" className={styles.mcpLinkPrimary}>
+              <Link to="/NUDGE_DS_MCP_USAGE" className={styles.mcpLinkPrimary}>
                 사용 가이드
                 <ArrowNextIcon size={14} />
               </Link>

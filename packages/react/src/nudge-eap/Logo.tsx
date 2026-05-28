@@ -12,10 +12,10 @@ import {
 /**
  * NudgeEAPLogo — Figma 698:87 (NudgeEAP Library) Logo Guide 의 6종 variant 자체-포함 React 컴포넌트.
  *
- * 외부 컨슈머는 `@nudge-eap/react` 만 import 하면 별도 자산 import 없이 로고 사용 가능:
+ * 외부 컨슈머는 `@nudge-design/react` 만 import 하면 별도 자산 import 없이 로고 사용 가능:
  *
  * ```tsx
- * import { NudgeEAPLogo } from "@nudge-eap/react";
+ * import { NudgeEAPLogo } from "@nudge-design/react";
  *
  * <NudgeEAPLogo />                          // KO+EN horizontal (대표 로고)
  * <NudgeEAPLogo variant="symbol" size={40} /> // Symbol gradient (앱 아이콘/파비콘)

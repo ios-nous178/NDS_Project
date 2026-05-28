@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { TitleBlock } from "@nudge-eap/react";
+import { TitleBlock } from "@nudge-design/react";
 
 const meta: Meta<typeof TitleBlock> = {
   title: "Components/TitleBlock",

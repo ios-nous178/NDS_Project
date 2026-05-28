@@ -11,6 +11,7 @@ import {
   AppointmentCard,
   Footer,
   AssessmentResultCard,
+  Asset,
   AttachmentItem,
   AudioPlayer,
   Autocomplete,
@@ -112,7 +113,7 @@ import {
   ActionChip,
   UserCard,
   VotePoll,
-} from "@nudge-eap/react";
+} from "@nudge-design/react";
 import {
   CalendarIcon,
   ChevronLeftIcon,
@@ -128,8 +129,8 @@ import {
   ShareIcon,
   TelephoneIcon,
   VideocameraIcon,
-} from "@nudge-eap/icons";
-import { cv, radius, shadow } from "@nudge-eap/tokens";
+} from "@nudge-design/icons";
+import { cv, radius, shadow } from "@nudge-design/tokens";
 import inventory from "../../../../metadata/componentInventory.json";
 import componentGuides from "../../../../metadata/componentGuides.json";
 
@@ -200,6 +201,31 @@ const PREVIEWS: Record<string, PreviewRender> = {
     <div style={previewRow}>
       <Avatar name="홍길동" size="md" />
       <Avatar name="김상담" size="md" />
+    </div>
+  ),
+  Asset: () => (
+    <div style={previewRow}>
+      <Asset size="md" content={{ type: "initial", name: "이정민" }} />
+      <Asset
+        size="md"
+        shape="rounded"
+        content={{ type: "initial", name: "AB" }}
+      />
+      <Asset
+        size="md"
+        content={{ type: "initial", name: "C" }}
+        acc={
+          <span
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              background: "#22c55e",
+              border: "2px solid white",
+            }}
+          />
+        }
+      />
     </div>
   ),
   AvatarGroup: () => (

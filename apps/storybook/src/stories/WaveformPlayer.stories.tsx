@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { WaveformPlayer } from "@nudge-eap/react";
+import { WaveformPlayer } from "@nudge-design/react";
 
 const SAMPLE_AUDIO = "https://www.kozco.com/tech/piano2.wav";
 

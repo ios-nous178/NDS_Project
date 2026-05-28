@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Breadcrumb } from "@nudge-eap/react";
+import { Breadcrumb } from "@nudge-design/react";
 
 const meta: Meta<typeof Breadcrumb> = {
   title: "Components/Breadcrumb",

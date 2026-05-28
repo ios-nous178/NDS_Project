@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import * as Icons from "@nudge-eap/icons";
+import * as Icons from "@nudge-design/icons";
 
 const ICON_ENTRIES: Array<{
   name: string;
@@ -25,7 +25,7 @@ const meta: Meta = {
           "",
           "브랜드별 아이콘은 prefix 로 구분됩니다 — prefix 없는 base 셋은 **NudgeEAP**, `Cashpobi*` / `Geniet*` / `Trost*` 는 각 브랜드 전용, `Mockup*` (Bold/Linear) 는 mockup 전용 IconSax 셋입니다.",
           "",
-          "패키지: `@nudge-eap/icons` · 카테고리·사용 가이드는 [Docs · Icons](/components/icons)를 참고하세요.",
+          "패키지: `@nudge-design/icons` · 카테고리·사용 가이드는 [Docs · Icons](/components/icons)를 참고하세요.",
         ].join("\n"),
       },
     },

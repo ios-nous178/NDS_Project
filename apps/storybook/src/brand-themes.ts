@@ -44,7 +44,7 @@ export interface BrandTheme {
   description: string;
   /** CSS custom properties to inject on :root (dist vars + 수동 override merge 결과) */
   cssVars: Record<string, string>;
-  /** Extra CSS file to import (from @nudge-eap/tokens) */
+  /** Extra CSS file to import (from @nudge-design/tokens) */
   cssImport?: string;
 }
 
@@ -328,7 +328,7 @@ const _rawBrandThemes: Record<string, BrandTheme> = {
  * 최종 brandThemes — dist/{brand}.css 의 :root 토큰을 base 로 깔고,
  * _rawBrandThemes 의 수동 cssVars 가 그 위를 override.
  *
- * 자동 sync: tokens 패키지 빌드(`pnpm build --filter @nudge-eap/tokens`) 시 dist css 갱신
+ * 자동 sync: tokens 패키지 빌드(`pnpm build --filter @nudge-design/tokens`) 시 dist css 갱신
  * → storybook 재로드 시 새 값 반영.
  *
  * Override: 같은 토큰을 _rawBrandThemes 의 cssVars 에 명시하면 dist 보다 우선.

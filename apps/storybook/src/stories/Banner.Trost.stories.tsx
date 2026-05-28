@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Banner } from "@nudge-eap/react";
-import { ChevronRightIcon } from "@nudge-eap/icons";
+import { Banner } from "@nudge-design/react";
+import { ChevronRightIcon } from "@nudge-design/icons";
 
 const meta: Meta = {
   title: "Brands/Trost/Banner",

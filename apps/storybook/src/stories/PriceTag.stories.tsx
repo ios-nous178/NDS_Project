@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { PriceTag } from "@nudge-eap/react";
+import { PriceTag } from "@nudge-design/react";
 
 const meta: Meta<typeof PriceTag> = {
   title: "Components/PriceTag",

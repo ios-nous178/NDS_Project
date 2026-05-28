@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, waitFor } from "storybook/test";
-import { Badge, Button, Modal, type ModalProps } from "@nudge-eap/react";
-import { cv } from "@nudge-eap/tokens";
+import { Badge, Button, Modal, type ModalProps } from "@nudge-design/react";
+import { cv } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
@@ -23,7 +23,7 @@ function useForceCashpobiBrand() {
 }
 
 const flatModalSource = `import { useState } from "react";
-import { Button, Modal } from "@nudge-eap/react";
+import { Button, Modal } from "@nudge-design/react";
 
 export function Example() {
   const [open, setOpen] = useState(false);
@@ -47,7 +47,7 @@ export function Example() {
 }`;
 
 const compoundModalSource = `import { useState } from "react";
-import { Badge, Button, Modal } from "@nudge-eap/react";
+import { Badge, Button, Modal } from "@nudge-design/react";
 
 export function Example() {
   const [open, setOpen] = useState(false);
@@ -88,7 +88,7 @@ export function Example() {
 }`;
 
 const slotPropsSource = `import { useState } from "react";
-import { Button, Modal } from "@nudge-eap/react";
+import { Button, Modal } from "@nudge-design/react";
 
 export function Example() {
   const [open, setOpen] = useState(false);
@@ -125,7 +125,7 @@ export function Example() {
 }`;
 
 const classNameSource = `import { useState } from "react";
-import { Button, Modal } from "@nudge-eap/react";
+import { Button, Modal } from "@nudge-design/react";
 
 export function Example() {
   const [open, setOpen] = useState(false);
@@ -154,7 +154,7 @@ export function Example() {
 }`;
 
 const counselingAppDownloadSource = `import { useState } from "react";
-import { Button, Modal } from "@nudge-eap/react";
+import { Button, Modal } from "@nudge-design/react";
 
 export function Example() {
   const [open, setOpen] = useState(false);
@@ -185,7 +185,7 @@ export function Example() {
 }`;
 
 const participateRewardSource = `import { useState } from "react";
-import { Button, Modal } from "@nudge-eap/react";
+import { Button, Modal } from "@nudge-design/react";
 
 const rewards = [
   { imageUrl: "https://placehold.co/40x40", title: "스타벅스 아메리카노 T" },

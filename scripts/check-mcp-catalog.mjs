@@ -14,7 +14,7 @@ const previousManifestText = fs.existsSync(manifestPath)
   ? fs.readFileSync(manifestPath, "utf8")
   : "";
 
-execFileSync("pnpm", ["--filter", "@nudge-eap/mcp", "build:manifest"], {
+execFileSync("pnpm", ["--filter", "@nudge-design/mcp", "build:manifest"], {
   cwd: ROOT,
   stdio: "inherit",
 });
@@ -34,7 +34,7 @@ const nextCatalogText = nextCatalog ? `${JSON.stringify(nextCatalog, null, 2)}\n
 if (previousCatalogText !== nextCatalogText || previousManifestText !== nextManifestText) {
   console.error(
     "\n[check-mcp-catalog] packages/mcp/catalog.json is stale. " +
-      "Run `pnpm --filter @nudge-eap/mcp build:manifest` after building DS packages.",
+      "Run `pnpm --filter @nudge-design/mcp build:manifest` after building DS packages.",
   );
   process.exit(1);
 }

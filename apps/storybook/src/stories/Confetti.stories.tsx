@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Confetti, Button } from "@nudge-eap/react";
+import { Confetti, Button } from "@nudge-design/react";
 
 const meta: Meta<typeof Confetti> = {
   title: "Components/Confetti",

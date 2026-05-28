@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/List.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/List.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const LIST_CLASS = "nds-list";
 const LIST_ROOT_CLASS = `${LIST_CLASS}__root`;

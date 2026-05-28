@@ -11,7 +11,7 @@ import type {
   HeaderAuthMenuItem,
   CompanyInfoData,
   TrendingKeywordItem,
-} from "@nudge-eap/react";
+} from "@nudge-design/react";
 
 /* ─── Logo asset imports (Vite resolves base path automatically) ─── */
 /**

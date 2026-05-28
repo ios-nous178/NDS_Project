@@ -1,7 +1,7 @@
 /**
  * NudgeEAP 로고 base64 PNG 데이터 (Figma 698:87 — NudgeEAP Library Logo Guide).
  *
- * 자체-포함 자산 — 외부 컨슈머는 `@nudge-eap/react` 만 import 하면 별도 자산 import 없이
+ * 자체-포함 자산 — 외부 컨슈머는 `@nudge-design/react` 만 import 하면 별도 자산 import 없이
  * NudgeEAPLogo 컴포넌트로 로고 사용 가능. 124×28 (가로형) / 64×64 (Symbol) / 100×34 (DAIN)
  * 1x raster fill — Figma 의 ImgLogo 가 raster image fill 이라 SVG path 추출 불가.
  *

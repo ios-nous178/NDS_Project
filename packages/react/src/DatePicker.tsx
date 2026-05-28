@@ -1,6 +1,6 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 
-import { CalendarIcon, CashpobiCalendarIcon } from "@nudge-eap/icons";
+import { CalendarIcon, CashpobiCalendarIcon } from "@nudge-design/icons";
 import { addDismissableLayerListeners, WebPortal } from "./internal/web";
 import { useBrand } from "./internal/useBrand";
 

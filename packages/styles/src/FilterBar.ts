@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/FilterBar.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/FilterBar.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const FB_CLASS = "nds-filter-bar";
 const FB_LIST_CLASS = `${FB_CLASS}__list`;

@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/VoiceRecorder.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/VoiceRecorder.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const VR_CLASS = "nds-voice-recorder";
 const VR_BTN_CLASS = `${VR_CLASS}__btn`;

@@ -36,12 +36,12 @@ import { relativeSafe, serializeUsage } from "./parser.js";
  */
 
 const TRACKED_DS_PACKAGES = [
-  "@nudge-eap/react",
-  "@nudge-eap/tokens",
-  "@nudge-eap/icons",
-  "@nudge-eap/tailwind-preset",
+  "@nudge-design/react",
+  "@nudge-design/tokens",
+  "@nudge-design/icons",
+  "@nudge-design/tailwind-preset",
 ] as const;
-const DS_VERSION_PRIMARY = "@nudge-eap/react";
+const DS_VERSION_PRIMARY = "@nudge-design/react";
 
 export function detectDsVersions(cwd: string): DsVersions {
   const installed: Record<string, string | null> = {};

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { DateRangePicker, defaultRangePresets, type DateRange } from "@nudge-eap/react";
+import { DateRangePicker, defaultRangePresets, type DateRange } from "@nudge-design/react";
 
 const meta: Meta<typeof DateRangePicker> = {
   title: "Components/DateRangePicker",

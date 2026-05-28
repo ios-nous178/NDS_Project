@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/StatusTimeline.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/StatusTimeline.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, typeScale } from "@nudge-design/tokens";
 
 const ST_CLASS = "nds-status-timeline";
 const ST_ITEM_CLASS = `${ST_CLASS}__item`;

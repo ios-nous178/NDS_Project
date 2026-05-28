@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Banner.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Banner.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const BN_CLASS = "nds-banner";
 const BN_CONTENT_CLASS = `${BN_CLASS}__content`;

@@ -1,4 +1,4 @@
-# NudgeEAP Design System
+# Nudge Design System
 
 EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 3개 브랜드: **Trost / Geniet / NudgeEAP**.
 
@@ -24,7 +24,7 @@ EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 3개 브랜드: **T
 node -v                                 # 24.x 필요
 pnpm -v || npm install -g pnpm@9
 pnpm install
-pnpm build --filter @nudge-eap/tokens   # 컴포넌트가 의존
+pnpm build --filter @nudge-design/tokens   # 컴포넌트가 의존
 pnpm --filter storybook dev             # 스토리북 → http://localhost:6006
 ```
 
@@ -37,7 +37,7 @@ Windows: PowerShell 권장. `pnpm` 설치 시 실행 정책 문제가 나면
 | --------------------------------------------------------- | ------------------ |
 | `pnpm --filter storybook dev`                             | 스토리북 개발 서버 |
 | `pnpm build`                                              | 전체 빌드          |
-| `pnpm build --filter @nudge-eap/tokens`                   | 토큰만 빌드        |
+| `pnpm build --filter @nudge-design/tokens`                   | 토큰만 빌드        |
 | `npx tsc --noEmit --project apps/storybook/tsconfig.json` | 타입 체크          |
 
 ## 주요 디렉토리
@@ -74,7 +74,7 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 1. `packages/tokens/src/{colors|spacing|typography|elevation|motion|...}.ts` 수정
 2. 시멘틱은 `--semantic-*` 네임스페이스로 — raw hex / `--eap-*` / `--color-semantic-*` 신규 추가 금지
 3. 토큰 정의 의도는 `DESIGN.md` YAML 에도 동기화
-4. `pnpm build --filter @nudge-eap/tokens` (의존 패키지가 import 하므로 필수)
+4. `pnpm build --filter @nudge-design/tokens` (의존 패키지가 import 하므로 필수)
 
 ### 가이드 · 패턴 · 원칙만 추가
 
@@ -93,7 +93,7 @@ pnpm changeset
 
 # 2. 누적 changeset 일괄 반영
 pnpm version-packages
-#    → @nudge-eap/{react,tokens,icons,tailwind-preset} 의 package.json version bump
+#    → @nudge-design/{react,tokens,icons,tailwind-preset} 의 package.json version bump
 #    → CHANGELOG.md 갱신
 #    → 후속 스크립트가 자동 실행:
 #       · sync-mcpb-version.mjs  : 루트 package.json + packages/mcp/manifest.json 을 최대 DS 버전으로 sync
@@ -120,11 +120,11 @@ pnpm version-packages
 #    GitHub Release body 는 손대지 않음 (개발자용 raw 커밋 로그는 그대로 — 디버깅용)
 ```
 
-DS 4개 패키지(@nudge-eap/{react,tokens,icons,tailwind-preset}) 의 package.json version 이 SSOT 이고, 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 미러입니다. `sync-mcpb-version.mjs` 한 번 실행으로 둘 다 최대 DS 버전으로 끌어올립니다. 루트 미러는 `pack-local-packages.mjs` 가 tarball 파일명에 박는 값이라 자동 sync 가 빠지면 `pack` 이 의도치 않은 다운그레이드를 만들 위험이 있으므로 빠뜨리지 마세요.
+DS 4개 패키지(@nudge-design/{react,tokens,icons,tailwind-preset}) 의 package.json version 이 SSOT 이고, 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 미러입니다. `sync-mcpb-version.mjs` 한 번 실행으로 둘 다 최대 DS 버전으로 끌어올립니다. 루트 미러는 `pack-local-packages.mjs` 가 tarball 파일명에 박는 값이라 자동 sync 가 빠지면 `pack` 이 의도치 않은 다운그레이드를 만들 위험이 있으므로 빠뜨리지 마세요.
 
 워크플로우 트리거 경로: `packages/mcp/src/**`, `packages/tokens/src/**`, `packages/react/src/**`, `packages/icons/svg/**`, `packages/mcp/manifest.json`. 그러나 **`manifest.json` version 이 기존 tag 와 같으면 release skip** 이므로 step 2 의 자동 동기화가 핵심.
 
 CI 의 `pnpm lint` 가 `sync-mcpb-version --check` 로 루트/manifest 양쪽 drift 를 막아 줍니다 — 손으로 어긋나게 만들면 빨갛게 뜸. `pack-local-packages.mjs` 도 실행 시 root ↔ DS 4개 일치를 assert 하므로 stale 루트로 다운그레이드되는 사고는 더 이상 발생하지 않습니다.
 
 - 가이드/원칙만 추가했어도 외부 전파 필요하면 `pnpm changeset` 으로 영향받는 패키지 골라 patch bump.
-- `@nudge-eap/mcp` (내부) 는 의도적으로 분리. 함께 bump 하려면 changeset 에 명시.
+- `@nudge-design/mcp` (내부) 는 의도적으로 분리. 함께 bump 하려면 changeset 에 명시.

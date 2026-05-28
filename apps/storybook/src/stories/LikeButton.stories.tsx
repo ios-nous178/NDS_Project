@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { LikeButton } from "@nudge-eap/react";
+import { LikeButton } from "@nudge-design/react";
 
 const meta: Meta<typeof LikeButton> = {
   title: "Components/LikeButton",

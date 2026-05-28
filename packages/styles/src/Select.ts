@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Select.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Select.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -10,7 +10,7 @@ import {
   transition,
   typeScale,
   zIndex,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const SELECT_CLASS = "nds-select";
 const SELECT_ROOT_CLASS = `${SELECT_CLASS}__root`;

@@ -275,11 +275,11 @@ function collectBrands() {
     };
 
     const cssImport = cssExports.includes(slug)
-      ? `@nudge-eap/tokens/css/${slug}`
+      ? `@nudge-design/tokens/css/${slug}`
       : slug === "nudge-eap" && hasBaseCssExport
-        ? "@nudge-eap/tokens/css"
+        ? "@nudge-design/tokens/css"
         : null;
-    const jsExport = jsThemes.includes(slug) ? `@nudge-eap/tokens/brands` : null;
+    const jsExport = jsThemes.includes(slug) ? `@nudge-design/tokens/brands` : null;
 
     return {
       slug,
@@ -326,11 +326,11 @@ const packagesMeta = [
   readPkg("packages/react"),
   readPkg("packages/icons"),
   readPkg("packages/tailwind-preset"),
-  // @nudge-eap/styles: framework-agnostic CSS bundle. @nudge-eap/react 가
+  // @nudge-design/styles: framework-agnostic CSS bundle. @nudge-design/react 가
   // 빌드 시 이 CSS 를 미러해 자기 dist/styles.css 로 노출하므로 외부 React
-  // 프로젝트는 여전히 @nudge-eap/react/styles.css 를 import 하면 된다.
+  // 프로젝트는 여전히 @nudge-design/react/styles.css 를 import 하면 된다.
   readPkg("packages/styles"),
-  // @nudge-eap/html: vanilla Web Components (experimental, 별도 라이프사이클).
+  // @nudge-design/html: vanilla Web Components (experimental, 별도 라이프사이클).
   // .mcpb 에 동봉되며 외부 mockup 프로젝트에서 install 가능.
   readPkg("packages/html"),
 ].filter(Boolean);
@@ -392,7 +392,7 @@ if (fs.existsSync(tokensCssPath)) {
 
 const brands = collectBrands();
 
-// @nudge-eap/html 의 custom element 태그 목록 — validate_html_mockup 이
+// @nudge-design/html 의 custom element 태그 목록 — validate_html_mockup 이
 // "이 <nds-foo> 태그가 진짜 존재하나?" 를 알기 위해 catalog 에 박아둔다.
 // packages/html/src/components/nds-*.ts 파일의 static elementName 을 우선 읽는다.
 // 한 파일에 nds-select-option / nds-footer-* 같은 보조 엘리먼트가 같이 등록될 수

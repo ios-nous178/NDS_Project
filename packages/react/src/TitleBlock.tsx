@@ -1,5 +1,5 @@
 import React from "react";
-import { typeScale } from "@nudge-eap/tokens";
+import { typeScale } from "@nudge-design/tokens";
 
 /**
  * TitleBlock — 헤딩 + 서브타이틀 표준 블록.

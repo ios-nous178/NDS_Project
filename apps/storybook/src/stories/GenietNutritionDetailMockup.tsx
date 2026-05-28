@@ -20,8 +20,8 @@ import {
   Breadcrumb,
   StarRating,
   DataTable,
-} from "@nudge-eap/react";
-import { CalendarIcon, CommentIcon, RefreshIcon, SearchIcon, ThumbUpIcon } from "@nudge-eap/icons";
+} from "@nudge-design/react";
+import { CalendarIcon, CommentIcon, RefreshIcon, SearchIcon, ThumbUpIcon } from "@nudge-design/icons";
 import { MockupLayout, useIsMobile, Accordion } from "./mockup-layout";
 import {
   currentFood,
@@ -56,7 +56,7 @@ const G = {
 } as const;
 
 /* ────────────────────────────────────────────
- * 인라인 SVG 아이콘 — @nudge-eap/icons 에 없어 신규 생성.
+ * 인라인 SVG 아이콘 — @nudge-design/icons 에 없어 신규 생성.
  * currentColor 기반이라 부모 color 또는 color prop으로 톤 제어 가능.
  * ──────────────────────────────────────────── */
 type SvgIconProps = { size?: number; color?: string };

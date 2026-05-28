@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/QuickActionGrid.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/QuickActionGrid.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const QA_CLASS = "nds-quick-action-grid";
 const QA_ITEM_CLASS = `${QA_CLASS}__item`;

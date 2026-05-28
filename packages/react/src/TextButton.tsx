@@ -1,5 +1,5 @@
 import React from "react";
-import { sizing, typeScale } from "@nudge-eap/tokens";
+import { sizing, typeScale } from "@nudge-design/tokens";
 
 export type TextButtonSize = "large" | "medium";
 

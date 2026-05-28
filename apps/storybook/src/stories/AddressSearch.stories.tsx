@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { AddressSearch, type AddressResult, type AddressValue } from "@nudge-eap/react";
+import { AddressSearch, type AddressResult, type AddressValue } from "@nudge-design/react";
 
 const meta: Meta<typeof AddressSearch> = {
   title: "Components/AddressSearch",

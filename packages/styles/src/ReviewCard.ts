@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/ReviewCard.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/ReviewCard.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-design/tokens";
 
 const RC_CLASS = "nds-review-card";
 const RC_HEADER_CLASS = `${RC_CLASS}__header`;

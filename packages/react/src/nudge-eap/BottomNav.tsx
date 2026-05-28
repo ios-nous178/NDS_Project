@@ -11,7 +11,7 @@ import {
   MentalcareActiveIcon,
   MypageIcon,
   MypageActiveIcon,
-} from "@nudge-eap/icons";
+} from "@nudge-design/icons";
 
 /**
  * NudgeEAP BottomNav — 5탭 (홈/챌린지/상담/멘탈케어/내 공간).

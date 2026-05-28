@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, sizing, spacing } from "@nudge-eap/tokens";
+import { cv, sizing, spacing } from "@nudge-design/tokens";
 
 /* ─── Constants ─── */
 

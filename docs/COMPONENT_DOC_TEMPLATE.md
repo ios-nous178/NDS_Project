@@ -145,7 +145,7 @@ category: { 카테고리 }
 related: [{ 관련 컴포넌트 }]
 ---
 
-import { ComponentName } from "@nudge-eap/react";
+import { ComponentName } from "@nudge-design/react";
 import ComponentPreview from "@site/src/components/ComponentPreview";
 import Playground from "@site/src/components/Playground";
 
@@ -154,7 +154,7 @@ import Playground from "@site/src/components/Playground";
 {컴포넌트 한 줄 설명}
 
 ```tsx
-import { ComponentName } from "@nudge-eap/react";
+import { ComponentName } from "@nudge-design/react";
 ```
 
 ---

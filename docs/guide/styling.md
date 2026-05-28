@@ -135,7 +135,7 @@ import styles from "./MyPage.module.css";
 
 ```tsx
 import styled from "styled-components";
-import { Button } from "@nudge-eap/react";
+import { Button } from "@nudge-design/react";
 
 const GlowButton = styled(Button)`
   box-shadow: 0 0 20px rgba(43, 150, 237, 0.3);
@@ -193,14 +193,14 @@ const GlowButton = styled(Button)`
 ### 프리셋 설치
 
 ```bash
-pnpm add @nudge-eap/tailwind-preset
+pnpm add @nudge-design/tailwind-preset
 ```
 
 ### 설정
 
 ```ts
 // tailwind.config.ts
-import { nudgeEapPreset } from "@nudge-eap/tailwind-preset";
+import { nudgeEapPreset } from "@nudge-design/tailwind-preset";
 
 export default {
   presets: [nudgeEapPreset],

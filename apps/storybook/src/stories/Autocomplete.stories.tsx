@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Autocomplete, type AutocompleteOption } from "@nudge-eap/react";
+import { Autocomplete, type AutocompleteOption } from "@nudge-design/react";
 
 const ALL_MEDICATIONS: AutocompleteOption[] = [
   { value: "lexapro", label: "렉사프로", description: "에스시탈로프람 10mg" },

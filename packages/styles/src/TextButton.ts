@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/TextButton.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/TextButton.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const TEXT_BUTTON_CLASS = "nds-text-button";
 const TEXT_BUTTON_LABEL_CLASS = `${TEXT_BUTTON_CLASS}__label`;
@@ -20,6 +20,7 @@ export const textButtonStyles = `
     font-size: var(--nds-text-button-font-size, ${typeScale.body2.fontSize}px);
     line-height: var(--nds-text-button-line-height, ${typeScale.body2.lineHeight}px);
     font-weight: ${fontWeight.regular};
+    white-space: nowrap;
     cursor: pointer;
     transition: color ${transition.default};
   }

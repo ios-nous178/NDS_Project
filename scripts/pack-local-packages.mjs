@@ -36,7 +36,7 @@ const OUT_DIR = path.join(ROOT, "local-packages");
 //   tokens / icons (no deps)
 //   → styles / tailwind-preset (tokens 의존)
 //   → react (tokens + icons + styles)
-// 이 순서가 깨지면 CI clean checkout 에서 `Cannot find module '@nudge-eap/icons'` 같은
+// 이 순서가 깨지면 CI clean checkout 에서 `Cannot find module '@nudge-design/icons'` 같은
 // TS2307 에러로 빌드가 죽는다. 로컬에서는 stale dist/ 가 있어 빌드가 통과하므로
 // 사고가 잘 안 드러난다. 손대기 전 위 layer 분류를 다시 확인할 것.
 const PACKAGES = ["tokens", "icons", "styles", "tailwind-preset", "react"];
@@ -80,7 +80,7 @@ if (drift.length > 0) {
   console.error(
     `✗ Version drift detected (root vs DS packages):\n` +
       `  root package.json: ${rootVersion}\n` +
-      drift.map((p) => `  @nudge-eap/${p.name}: ${p.version}`).join("\n") +
+      drift.map((p) => `  @nudge-design/${p.name}: ${p.version}`).join("\n") +
       `\n\n` +
       `  Likely causes:\n` +
       `    1. \`pnpm version-packages\` 후 sync 가 안 돌았다 → \`pnpm sync:mcpb-version\` 실행\n` +
@@ -97,10 +97,10 @@ console.log(`🔖 DS version verified: ${rootVersion} (root ↔ all DS packages 
 const ALL_PACKAGES = [...PACKAGES, ...EXTRA_PACKAGES];
 
 if (!skipBuild) {
-  console.log(`📦 Building: ${ALL_PACKAGES.map((n) => `@nudge-eap/${n}`).join(", ")}`);
+  console.log(`📦 Building: ${ALL_PACKAGES.map((n) => `@nudge-design/${n}`).join(", ")}`);
   for (const name of ALL_PACKAGES) {
-    console.log(`  → building @nudge-eap/${name}`);
-    execSync(`pnpm --filter @nudge-eap/${name} build`, { cwd: ROOT, stdio: "inherit" });
+    console.log(`  → building @nudge-design/${name}`);
+    execSync(`pnpm --filter @nudge-design/${name} build`, { cwd: ROOT, stdio: "inherit" });
   }
   console.log("");
 }
@@ -115,7 +115,7 @@ for (const name of ALL_PACKAGES) {
   const version = pkgJson.version;
   const expectedFile = `nudge-eap-${name}-${version}.tgz`;
 
-  console.log(`📦 Packing @nudge-eap/${name} (v${version})...`);
+  console.log(`📦 Packing @nudge-design/${name} (v${version})...`);
 
   // Clean up old .tgz files for this package (different versions)
   const prefix = `nudge-eap-${name}-`;
