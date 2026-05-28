@@ -76,7 +76,13 @@ export interface SemanticColors {
     default?: string;
     brand?: string;
     secondary?: { default?: string; disabled?: string };
+    /** Solid/Outlined Assistive enabled 텍스트 (공용). */
     assistive?: string;
+    /**
+     * Outlined Assistive disabled 텍스트. Solid Assistive disabled 는 보편적으로
+     * `cv.surface.default` (white) 를 사용해 base 가 처리 → 별도 슬롯 불필요.
+     */
+    assistiveDisabled?: string;
     disabled?: string;
   };
   buttonBorder?: {
@@ -86,6 +92,12 @@ export interface SemanticColors {
   icon?: {
     strong?: { default?: string };
     normal?: { default?: string };
+    /**
+     * 약한 아이콘 톤. Figma 런마일 library (20:94) 가 아이콘 컬러 슬롯을
+     * `gray600` 으로 명시한 자리 — BottomNav inactive / secondary 아이콘 등에
+     * 사용. 다른 brand 는 미정의 시 fallback (base = neutral medium).
+     */
+    muted?: { default?: string };
     disabled?: { default?: string };
     inverse?: { default?: string };
     brand?: { default?: string };
@@ -145,11 +157,11 @@ export interface TypographyOverrides {
 export interface SpacingOverrides {
   /** Atomic spacing scale — `--spacing-{key}` */
   spacing?: Record<string | number, number>;
-  /** Semantic gap — `--gap-{key}` (tight/default/comfortable/loose/wide 등) */
+  /** Semantic gap — `--semantic-gap-{key}` (tight/default/comfortable/loose/wide 등) */
   gap?: Record<string, number>;
-  /** Heading 별 다음 요소 간격 — `--gap-title-{key}` */
+  /** Heading 별 다음 요소 간격 — `--semantic-gap-title-{key}` */
   gapTitle?: Record<string, number>;
-  /** 컨테이너 내부 padding — `--inset-{key}` (chip/input/card/modal/section/page 등) */
+  /** 컨테이너 내부 padding — `--semantic-inset-{key}` (chip/input/card/modal/section/page 등) */
   inset?: Record<string, number>;
   radius?: Record<string, number>;
   shape?: Record<string, number>;
@@ -196,7 +208,7 @@ export interface ElevationOverrides {
  * (오버라이드를 안 정의한 브랜드는 컴포넌트의 fallback 값이 그대로 적용 — 기존 동작 유지)
  * 예) CashwalkBiz admin 은 input radius 4px / height 40px / padding-x = inset-input (base 8/48/inset-card).
  *
- * value 가 number 면 `${value}px` 로 emit, string 이면 그대로 (`var(--inset-input)` 같은 CSS var 참조 가능).
+ * value 가 number 면 `${value}px` 로 emit, string 이면 그대로 (`var(--semantic-inset-input)` 같은 CSS var 참조 가능).
  */
 type ComponentValue = number | string;
 export interface ComponentOverrides {

@@ -1,0 +1,34 @@
+import React from "react";
+
+export interface RunmileCircleCheckColorIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const RunmileCircleCheckColorIcon = React.forwardRef<SVGSVGElement, RunmileCircleCheckColorIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(2 2)">
+    <g id="storke">
+    <rect id="Rectangle 8" x="0.85" y="0.85" width="18.3" height="18.3" rx="3.15" stroke="#E5E8EB" strokeWidth="1.7"/>
+    </g>
+  </g>
+  <g transform="translate(2 2)">
+    <g id="ic_circlecheck">
+    <rect id="Rectangle 8" width="20" height="20" rx="10" fill="#24C58A"/>
+    <path id="Vector 319 (Stroke)" d="M13.8828 6.41503C14.2057 6.07437 14.7442 6.05999 15.085 6.38281C15.4256 6.70568 15.44 7.24421 15.1172 7.58496L9.43262 13.585C9.27212 13.7542 9.04869 13.8496 8.81543 13.8496C8.58216 13.8495 8.35868 13.7543 8.19824 13.585L4.88281 10.085C4.56 9.74421 4.57438 9.20568 4.91504 8.88281C5.25579 8.55999 5.79432 8.57437 6.11719 8.91503L8.81543 11.7627L13.8828 6.41503Z" fill="white"/>
+    </g>
+  </g>
+    </svg>
+  )
+);
+
+RunmileCircleCheckColorIcon.displayName = "RunmileCircleCheckColorIcon";

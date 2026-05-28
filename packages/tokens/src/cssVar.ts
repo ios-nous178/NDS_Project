@@ -77,11 +77,20 @@ export const cv = {
     bgOutlined: v("--semantic-button-bg-outlined-default"),
     bgOutlinedHover: v("--semantic-button-bg-outlined-hover"),
     bgOutlinedDisabled: v("--semantic-button-bg-outlined-disabled"),
+    // Solid/Assistive — neutral filled (light gray fill + neutral text). 브랜드별 톤은
+    // buttonBg.assistive / buttonText.assistive 슬롯에서 override.
+    bgAssistive: v("--semantic-button-bg-assistive-default"),
+    bgAssistiveHover: v("--semantic-button-bg-assistive-hover"),
+    bgAssistiveDisabled: v("--semantic-button-bg-assistive-disabled"),
     textDefault: v("--semantic-button-text-default"),
     textBrand: v("--semantic-button-text-brand"),
     // Solid/Secondary 텍스트 — 브랜드별 의도가 갈리는 슬롯 (Geniet=white on dark, 다른 브랜드=brand on tint).
     textSecondary: v("--semantic-button-text-secondary-default"),
     textSecondaryDisabled: v("--semantic-button-text-secondary-disabled"),
+    // Solid/Outlined Assistive 의 enabled 텍스트 (Solid+Outlined 공용). Solid disabled 텍스트는
+    // `cv.surface.default` (white) 가 일반 패턴. Outlined disabled 텍스트는 `textAssistiveDisabled`.
+    textAssistive: v("--semantic-button-text-assistive"),
+    textAssistiveDisabled: v("--semantic-button-text-assistive-disabled"),
     textDisabled: v("--semantic-button-text-disabled"),
     borderOutlined: v("--semantic-button-border-outlined-default"),
     borderOutlinedHover: v("--semantic-button-border-outlined-hover"),

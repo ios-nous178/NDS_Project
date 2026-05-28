@@ -1,0 +1,29 @@
+import React from "react";
+
+export interface RunmileFireColorIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const RunmileFireColorIcon = React.forwardRef<SVGSVGElement, RunmileFireColorIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(3.996 2.1912)">
+    <path id="Vector" d="M8.13699 0.29054C7.59643 -0.254914 6.64769 0.00690409 6.48221 0.748722C6.36086 1.28327 6.063 1.85054 5.34593 2.65781C4.07726 4.0869 1.35239 6.6069 0.646356 8.69054C0.646356 8.69054 -2.05645 14.6578 3.59186 18.7378L3.62496 18.7596C3.96695 18.9669 10.0565 22.6214 14.712 16.316C14.712 16.316 14.712 16.316 14.712 16.3051C14.7892 16.2069 17.1941 12.8469 15.2305 8.41781C14.8995 7.67599 13.9287 7.55599 13.3882 8.1669C13.1124 8.47236 12.7262 8.72326 12.1636 8.81054C12.1636 8.81054 9.60423 8.86508 10.1338 5.8869C10.3985 4.38145 10.4868 2.67963 8.12596 0.29054H8.13699Z" fill="#FF5B37"/>
+  </g>
+  <g transform="translate(7.9968 11.1912)">
+    <path id="Vector" d="M1.62849 0.175099C1.93465 -0.160161 2.51165 0.0132494 2.57053 0.464115C2.73539 1.62018 3.27707 3.2618 4.98452 3.20399C5.6675 3.18087 6.45646 3.14619 7.22188 2.77625C7.59869 2.60284 8.02261 2.90342 7.99906 3.30804C7.92841 4.45255 7.52804 6.27913 5.86769 7.40051C5.86769 7.40051 3.86584 8.93808 1.48718 7.08838C1.48718 7.08838 -1.95128 3.97856 1.62849 0.175099Z" fill="#FFBFB1"/>
+  </g>
+    </svg>
+  )
+);
+
+RunmileFireColorIcon.displayName = "RunmileFireColorIcon";

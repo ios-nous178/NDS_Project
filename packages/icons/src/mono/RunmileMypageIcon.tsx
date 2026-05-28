@@ -1,0 +1,28 @@
+import React from "react";
+
+export interface RunmileMypageIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const RunmileMypageIcon = React.forwardRef<SVGSVGElement, RunmileMypageIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(3.9864 2.94)">
+    <g id="Group">
+    <path id="Union" d="M8.01319 9.82812C11.5332 9.82812 14.5534 11.9679 15.8442 15.0176C16.5761 16.7468 14.9905 18.3281 13.1128 18.3281H2.91358L2.7378 18.3232C0.996366 18.2317 -0.432047 16.79 0.120611 15.1787L0.182134 15.0176C1.47301 11.9679 4.49321 9.82814 8.01319 9.82812ZM8.01319 11.1279C5.03359 11.1279 2.47394 12.9386 1.3794 15.5244C1.23041 15.8765 1.29602 16.1803 1.54346 16.4609C1.82127 16.7758 2.32447 17.0283 2.91358 17.0283H13.1128C13.7019 17.0283 14.2051 16.7758 14.4829 16.4609C14.7304 16.1803 14.796 15.8765 14.647 15.5244C13.5524 12.9386 10.9928 11.1279 8.01319 11.1279ZM8.01319 0C10.3604 0 12.2632 1.90279 12.2632 4.25C12.2632 6.59721 10.3604 8.5 8.01319 8.5C5.66599 8.49999 3.76319 6.5972 3.76319 4.25C3.76319 1.9028 5.66599 9.27739e-06 8.01319 0ZM8.01319 1.2998C6.38396 1.29981 5.06299 2.62077 5.06299 4.25C5.06299 5.87923 6.38396 7.20019 8.01319 7.2002C9.64243 7.2002 10.9634 5.87924 10.9634 4.25C10.9634 2.62076 9.64243 1.2998 8.01319 1.2998Z" fill="currentColor"/>
+    </g>
+  </g>
+    </svg>
+  )
+);
+
+RunmileMypageIcon.displayName = "RunmileMypageIcon";

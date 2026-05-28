@@ -16,7 +16,8 @@
     "./css": "./dist/tokens.css",
     "./css/trost": "./dist/trost.css",
     "./css/geniet": "./dist/geniet.css",
-    "./css/cashwalk-biz": "./dist/cashwalk-biz.css"
+    "./css/cashwalk-biz": "./dist/cashwalk-biz.css",
+    "./css/runmile": "./dist/runmile.css"
   },
   "files": [
     "dist"

@@ -1,0 +1,28 @@
+import React from "react";
+
+export interface RunmileMailIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const RunmileMailIcon = React.forwardRef<SVGSVGElement, RunmileMailIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(1 3)">
+    <g id="ic_mail">
+    <path id="Union" d="M18.2061 0.00488281C20.3194 0.112115 22 1.85996 22 4V14C22 16.14 20.3194 17.8879 18.2061 17.9951L18 18H4C1.85996 18 0.112115 16.3194 0.00488281 14.2061L0 14V4C0 1.79086 1.79086 6.44256e-08 4 0H18L18.2061 0.00488281ZM12.2715 9.45508C11.4482 9.74317 10.5518 9.74317 9.72852 9.45508L1.7002 6.64551V14C1.7002 15.2703 2.72975 16.2998 4 16.2998H18C19.2703 16.2998 20.2998 15.2703 20.2998 14V6.64551L12.2715 9.45508ZM4 1.7002C2.72975 1.7002 1.7002 2.72975 1.7002 4V4.84375L10.29 7.85059C10.7498 8.01144 11.2502 8.01144 11.71 7.85059L20.2998 4.84375V4C20.2998 2.72975 19.2703 1.7002 18 1.7002H4Z" fill="currentColor"/>
+    </g>
+  </g>
+    </svg>
+  )
+);
+
+RunmileMailIcon.displayName = "RunmileMailIcon";

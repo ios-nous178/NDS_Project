@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface RunmileLikeActiveIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const RunmileLikeActiveIcon = React.forwardRef<SVGSVGElement, RunmileLikeActiveIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(3 4)">
+    <path id="shape" fillRule="evenodd" clipRule="evenodd" d="M14.35 0.85C15.61 0.85 16.7372 1.34137 17.5479 2.15211C18.3586 2.96284 18.85 4.09 18.85 5.35C18.85 8.92793 15.4531 11.7641 10.6395 16.129L9.84746 16.85L9.07253 16.1499C4.23655 11.7553 0.85 8.92228 0.85 5.35C0.85 4.09 1.34137 2.96284 2.15211 2.15211C2.96284 1.34137 4.09 0.85 5.35 0.85C6.79618 0.85 8.18306 1.5249 9.08865 2.58834C9.39961 2.95351 9.6563 3.3674 9.8501 3.81107C10.0438 3.36725 10.3004 2.95344 10.6114 2.58834C11.5169 1.5249 12.9038 0.85 14.35 0.85Z" fill="currentColor" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
+  </g>
+    </svg>
+  )
+);
+
+RunmileLikeActiveIcon.displayName = "RunmileLikeActiveIcon";

@@ -14,7 +14,16 @@ const config: StorybookConfig = {
     "@chromatic-com/storybook",
     "@storybook/addon-vitest",
   ],
-  staticDirs: ["../public"],
+  staticDirs: [
+    "../public",
+    // brand-logos 는 @nudge-design/assets 가 SSOT. Storybook 은 직접 마운트해서
+    // /brand-logos/* URL 로 서빙 (공개 API contract 와 동일 경로).
+    // apps/storybook/public/brand-logos/ 의 복제본은 더 이상 존재하지 않음.
+    {
+      from: "../../../packages/assets/src/brand-logos",
+      to: "/brand-logos",
+    },
+  ],
   framework: {
     name: "@storybook/react-vite",
     options: {},

@@ -6,7 +6,7 @@
  *   - tokens.css / styles.css 를 <style> 로 인라인
  *   - dist/runtime.js 를 esbuild 로 IIFE bundle 해서 <script> 로 인라인
  *     (workspace import @nudge-design/tokens 등을 해소)
- *   - apps/storybook/public/brand-logos/ 를 test-fixture/_assets/brand-logos/ 로 복사
+ *   - @nudge-design/assets (SSOT) 의 brand-logos 를 test-fixture/_assets/brand-logos/ 로 복사
  *     (asset-base-url 을 /test-fixture/_assets/brand-logos 로 박아 self-contained)
  *
  * 사용:
@@ -57,7 +57,8 @@ const bundledJs = result.outputFiles[0].text;
 
 /* ── 3. copy brand-logos to be self-contained ── */
 const assetsDir = path.join(__dirname, "_assets/brand-logos");
-const srcLogosDir = path.join(root, "apps/storybook/public/brand-logos");
+// SSOT: @nudge-design/assets — apps/storybook 도 같은 경로를 staticDir 로 마운트.
+const srcLogosDir = path.join(root, "packages/assets/src/brand-logos");
 fs.rmSync(assetsDir, { recursive: true, force: true });
 fs.mkdirSync(assetsDir, { recursive: true });
 function copyRecursive(src, dst) {

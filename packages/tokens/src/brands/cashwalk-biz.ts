@@ -177,16 +177,16 @@ export const cashwalkBizTheme: BrandTheme = {
   // → override 없이 cascade. zIndex 도 base 따라감.
 
   // Component overrides — Figma 캐포비 InputGuide (3080:741) 기준.
-  // base(NudgeEAP/Trost/Geniet) 는 input rounded 8px / height 48px / padding-x = --inset-card.
-  // 캐포비 admin 은 rounded 4px / height 40px / padding-x = --inset-input(10px).
+  // base(NudgeEAP/Trost/Geniet) 는 input rounded 8px / height 48px / padding-x = --semantic-inset-card.
+  // 캐포비 admin 은 rounded 4px / height 40px / padding-x = --semantic-inset-input(10px).
   // emit: `--nds-{component}-{prop}` → 각 컴포넌트가 fallback 으로 읽어 cascade (다른 브랜드는 fallback 그대로).
   components: {
-    input: { radius: 4, height: 40, paddingX: "var(--inset-input)" },
-    // Select 는 원래 padding 이 var(--inset-input) 직참조 — 캐포비 inset-input(10)이 자연 cascade.
+    input: { radius: 4, height: 40, paddingX: "var(--semantic-inset-input)" },
+    // Select 는 원래 padding 이 var(--semantic-inset-input) 직참조 — 캐포비 inset-input(10)이 자연 cascade.
     select: { radius: 4, height: 40 },
-    // Textarea 는 원래 padding 이 var(--inset-input) var(--inset-card) 직참조 — 캐포비 cascade 동일.
+    // Textarea 는 원래 padding 이 var(--semantic-inset-input) var(--semantic-inset-card) 직참조 — 캐포비 cascade 동일.
     textarea: { radius: 4 },
-    datepicker: { radius: 4, height: 40, paddingX: "var(--inset-input)" },
+    datepicker: { radius: 4, height: 40, paddingX: "var(--semantic-inset-input)" },
     // Figma 캐포비 CheckboxGuide (3082:899):
     //   box 15×15 / 1.25px border / radius 2px / unchecked border #DDD (border.strong)
     //   disabled = 색 변경 없이 단순 opacity 0.4

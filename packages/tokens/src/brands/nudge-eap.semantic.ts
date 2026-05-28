@@ -4,8 +4,7 @@
  *
  * 9 groups (8 Figma roles + `bg.disabled` DS extension) · ~80 tokens.
  * Atomic palette(colors.ts) 만 참조한다. CSS emit 시
- * `--semantic-{group}-{role}-{variant}` namespace 로 노출. (구 `--eap-*`
- * 와 구 palette-semantic `colors.semantic.*` 트리는 제거됨 — Figma SSOT 만 남음.)
+ * `--semantic-{group}-{role}-{variant}` namespace 로 노출.
  *
  * JS 측 참조는 `cv` (cssVar.ts) 에서 일원화. 외부 코드는 이 파일을 직접
  * import 하지 않는다 — 빌드 파이프라인(generate-css.js) 전용.
@@ -74,6 +73,13 @@ export const nudgeEapSemantic = {
       hover: blue[50], // #F1F8FD
       disabled: neutral["00"], // #FFFFFF
     },
+    // Solid/Assistive — DS extension (Figma SSOT 미정의, NudgeEAP base 는 cool-gray fill 유지).
+    // Runmile 등 brand 가 light gray filled 톤으로 override.
+    assistive: {
+      default: coolGray[400], // #9CA2AE (기존 cv.borderRole.brandDisabled 매핑과 동일 톤 — 시각 보존)
+      hover: "#7E8593", // 한 단계 어두운 cool-gray (기존 인라인 값 유지)
+      disabled: neutral[100], // #F5F5F5 (기존 cv.borderRole.subtle 매핑과 동일)
+    },
   },
   buttonText: {
     default: neutral["00"], // #FFFFFF
@@ -83,8 +89,12 @@ export const nudgeEapSemantic = {
       default: blue[500], // #2B96ED
       disabled: coolGray[400], // #9CA2AE
     },
-    // Figma 실 Button (171:8480) → `--eap-button-text-disabled: #9ca2ae` 으로
-    // SemanticColorGuide 의 "Neutral 400" 라벨과 어긋나지만 실 컴포넌트가 SSOT.
+    // Solid+Outlined Assistive enabled 텍스트 — NudgeEAP base 는 흰 텍스트 (기존 cv.surface.default 매핑 유지).
+    assistive: neutral["00"], // #FFFFFF
+    // Outlined Assistive disabled 텍스트 — 기존 cv.textRole.muted (#999) 매핑 유지.
+    assistiveDisabled: neutral[500], // #999999
+    // Figma 실 Button (171:8480) 이 cool-gray/400 (#9CA2AE) 사용 — 이게 SSOT.
+    // SemanticColorGuide 의 "Neutral 400" 라벨과 어긋나지만 실 컴포넌트 우선.
     disabled: coolGray[400], // #9CA2AE
   },
   buttonBorder: {

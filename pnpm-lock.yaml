@@ -101,6 +101,9 @@ importers:
 
   apps/storybook:
     dependencies:
+      '@nudge-design/assets':
+        specifier: workspace:*
+        version: link:../../packages/assets
       '@nudge-design/icons':
         specifier: workspace:*
         version: link:../../packages/icons
@@ -190,8 +193,17 @@ importers:
         specifier: ^4.21.2
         version: 4.22.1
 
+  packages/assets:
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
   packages/html:
     dependencies:
+      '@nudge-design/assets':
+        specifier: workspace:*
+        version: link:../assets
       '@nudge-design/icons':
         specifier: workspace:*
         version: link:../icons
@@ -241,6 +253,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.0.4
         version: 1.29.0(zod@3.25.76)
+      '@nudge-design/assets':
+        specifier: workspace:*
+        version: link:../assets
       '@nudge-design/icons':
         specifier: workspace:*
         version: link:../icons
@@ -269,6 +284,9 @@ importers:
 
   packages/react:
     dependencies:
+      '@nudge-design/assets':
+        specifier: workspace:*
+        version: link:../assets
       '@nudge-design/icons':
         specifier: workspace:*
         version: link:../icons
