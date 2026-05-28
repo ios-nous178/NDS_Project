@@ -159,6 +159,28 @@ describe("nds-tabs", () => {
     expect(event).not.toBeNull();
     expect((event as unknown as CustomEvent<{ activeKey: string }>).detail.activeKey).toBe("b");
   });
+
+  it("trigger click on the host element (not just inner li) toggles active-key", async () => {
+    // 회귀 방지: trigger 가 부모 mount 시 reparent 되면서 disconnect→reconnect 되는데,
+    // 이전엔 클릭 리스너를 inner li 에 달아둬서 재mount 가드 때문에 다시 안 달려 무반응이었음.
+    // 이제 host element 자체에 달아서 light DOM bubble 로 잡힌다.
+    document.body.innerHTML = `
+      <nds-tabs active-key="a">
+        <nds-tabs-list>
+          <nds-tabs-trigger key="a">A</nds-tabs-trigger>
+          <nds-tabs-trigger key="b">B</nds-tabs-trigger>
+        </nds-tabs-list>
+      </nds-tabs>
+    `;
+    await twice();
+
+    const tabs = document.querySelector("nds-tabs")!;
+    const triggerBHost = document.querySelector('nds-tabs-trigger[key="b"]') as HTMLElement;
+    triggerBHost.click();
+    await twice();
+
+    expect(tabs.getAttribute("active-key")).toBe("b");
+  });
 });
 
 describe("nds-modal", () => {
