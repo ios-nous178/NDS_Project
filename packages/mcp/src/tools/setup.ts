@@ -627,10 +627,10 @@ const HTML_INDEX_HTML_TEMPLATE = `<!doctype html>
     <title>NudgeEAP Mockup</title>
   </head>
   <body>
-    <main id="app" style="max-width: 720px; margin: 0 auto; padding: var(--inset-screen);">
+    <main id="app" style="max-width: 720px; margin: 0 auto; padding: var(--semantic-inset-screen);">
       <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 vanilla HTML 목업입니다"></nds-title-block>
 
-      <div style="display: flex; gap: var(--gap-md); margin-top: var(--gap-lg);">
+      <div style="display: flex; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
         <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
         <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
       </div>
@@ -1266,7 +1266,8 @@ export function getBrandInfo(args: { brand: string }) {
     trost: "Trost",
     geniet: "Geniet",
     "nudge-eap": "NudgeEAP",
-    cashpobi: "Cashpobi",
+    "cashwalk-biz": "CashwalkBiz",
+    runmile: "Runmile",
   };
   const componentPrefix = componentPrefixByBrand[slug] ?? brandComponentPrefix;
   const brandComponents = Object.keys(COMPONENT_GUIDES)

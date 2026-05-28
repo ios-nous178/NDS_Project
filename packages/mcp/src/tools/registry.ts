@@ -350,6 +350,12 @@ const TOOLS = [
           description:
             "Optional. Pick only these top-level keys from the response (e.g. ['dos', 'donts'] on `principles`, or ['colorMatrix', 'sizeMatrix'] on a component guide). Meta keys (_advisory, _htmlAdvisory) are always preserved. If none match, response is an error with availableSections listed.",
         },
+        brand: {
+          type: "string",
+          enum: ["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"],
+          description:
+            "Optional brand slug. When set, the base guide is merged with the brand's service overlay (allowedVariants/disallowed/preferred/forbiddenPatterns, servicePitfalls, iconSet, copyTone). When omitted, a `_brandVariants` slim summary is attached so the caller can see which brands have an overlay for this topic.",
+        },
       },
       additionalProperties: false,
     },
@@ -568,6 +574,12 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         intent: optionalString(args, "intent", toolName),
         target: optionalEnum(args, "target", GUIDE_TARGET_VALUES, toolName),
         sections: optionalStringArray(args, "sections", toolName),
+        brand: optionalEnum(
+          args,
+          "brand",
+          ["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"] as const,
+          toolName,
+        ),
       };
     case "get_setup":
       return {

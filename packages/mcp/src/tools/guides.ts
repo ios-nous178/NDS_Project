@@ -18,6 +18,8 @@ import {
   UX_WRITING_GUIDE,
   detectIntentFromText,
 } from "../guides.js";
+import { SERVICE_OVERLAYS, listBrandVariants, type BrandSlug } from "../guides/services/index.js";
+import { mergeServiceOverlay } from "../guides/merge.js";
 import { markPrinciplesCalled } from "./session-state.js";
 
 /**
@@ -276,12 +278,161 @@ function pickSections<T extends Record<string, unknown>>(
   return picked as T;
 }
 
+/**
+ * brand 가 주어지면 SERVICE_OVERLAYS 에서 해당 topic 의 overlay 를 꺼내 머지.
+ * brand 미지정 시 _brandVariants 슬림 요약을 첨부 (어느 brand 에 overlay 가 있는지 호출자가 인지하도록).
+ *
+ * overlay 가 비어 있는 경우 (Pattern 'Overlay 0'): _brandOverlayEmpty 마커만 추가하고 base 그대로 반환.
+ *
+ * 마커 스코프 주의: '_brandOverlayEmpty: true' 는 'SERVICE_OVERLAYS[brand][topic] 슬롯이 없음'
+ * 만을 의미한다. brand-aware metadata (matrixOverrides, brandChrome 등) 는 별도 경로로 여전히
+ * 적용될 수 있으므로 "이 brand 에 어떤 brand-specific 데이터도 없음" 으로 읽으면 안 된다.
+ * (마커 prefix 컨벤션 통일: _brandApplied / _brandVariants / _brandAwareApplied 와 같은 _brand* 계열)
+ */
+function applyBrandOverlay(
+  topic: string,
+  result: Record<string, unknown>,
+  brand: BrandSlug | undefined,
+): Record<string, unknown> {
+  if (brand) {
+    const overlay = SERVICE_OVERLAYS[brand]?.[topic];
+    if (overlay) {
+      const merged = mergeServiceOverlay(result, overlay);
+      merged._brandApplied = brand;
+      return merged;
+    }
+    return { ...result, _brandApplied: brand, _brandOverlayEmpty: true };
+  }
+  const variants = listBrandVariants(topic);
+  if (Object.keys(variants).length > 0) {
+    return { ...result, _brandVariants: variants };
+  }
+  return result;
+}
+
+/**
+ * base.matrixOverrides 는 service overlay 가 아니라 base 안의 brand-aware metadata
+ * (Figma 450:68 v2 결정). brand 가 지정되면 해당 brand 의 sizeMatrix/stateMatrix override 를
+ * base 매트릭스에 deep merge 하고, dimensions 는 그대로 응답에 노출.
+ *
+ * raw matrixOverrides map (모든 brand) 은 응답에서 제거 — brand 가 지정됐으면 그 brand 의
+ * 적용된 값만 보여주는 게 호출자에게 명확.
+ */
+function applyMatrixOverrides(
+  result: Record<string, unknown>,
+  brand: BrandSlug | undefined,
+): Record<string, unknown> {
+  const all = result.matrixOverrides as
+    | Partial<
+        Record<
+          BrandSlug,
+          {
+            sizeMatrix?: Record<string, string>;
+            stateMatrix?: Record<string, string>;
+            dimensions?: Record<string, string>;
+          }
+        >
+      >
+    | undefined;
+  if (!all) return result;
+
+  if (!brand) {
+    const { matrixOverrides: _omit, ...rest } = result;
+    const brandsWithOverride = Object.keys(all);
+    if (brandsWithOverride.length === 0) return rest;
+    return { ...rest, _matrixOverrideBrands: brandsWithOverride };
+  }
+
+  const mo = all[brand];
+  const { matrixOverrides: _omit, ...rest } = result;
+  if (!mo) return rest;
+
+  const merged: Record<string, unknown> = { ...rest, _matrixOverrideApplied: brand };
+  if (mo.sizeMatrix) {
+    const baseSize = (rest.sizeMatrix as Record<string, string> | undefined) ?? {};
+    merged.sizeMatrix = { ...baseSize, ...mo.sizeMatrix };
+  }
+  if (mo.stateMatrix) {
+    const baseState = (rest.stateMatrix as Record<string, string> | undefined) ?? {};
+    merged.stateMatrix = { ...baseState, ...mo.stateMatrix };
+  }
+  if (mo.dimensions) {
+    merged.dimensions = mo.dimensions;
+  }
+  return merged;
+}
+
+/**
+ * Pattern 'Brand-aware Base' metadata (validPropValues / assetManifest / forcedProps) 처리.
+ * BrandHeader (validPropValues + assetManifest) / BrandFooter (forcedProps + assetManifest) 같은
+ * brand-aware 컴포넌트가 사용.
+ *
+ * brand 지정: 해당 brand 의 값만 fold 해서 응답에 노출 (slim).
+ * brand 미지정: raw map 그대로 + _brandAwareMetadataBrands 슬림 요약.
+ *
+ * forcedProps 의 '*' 키는 명시 안 된 brand 의 default 값 (예: footerTone trost=dark, '*'=light).
+ */
+function applyBrandAwareMetadata(
+  result: Record<string, unknown>,
+  brand: BrandSlug | undefined,
+): Record<string, unknown> {
+  const vpvMap = result.validPropValues as
+    | Partial<Record<BrandSlug, Record<string, string[]>>>
+    | undefined;
+  const amMap = result.assetManifest as Partial<Record<BrandSlug, string[]>> | undefined;
+  const fpMap = result.forcedProps as
+    | Record<string, Partial<Record<BrandSlug | "*", string>>>
+    | undefined;
+  if (!vpvMap && !amMap && !fpMap) return result;
+
+  if (!brand) {
+    const brands = new Set<string>();
+    if (vpvMap) Object.keys(vpvMap).forEach((b) => brands.add(b));
+    if (amMap) Object.keys(amMap).forEach((b) => brands.add(b));
+    if (fpMap) {
+      for (const brandMap of Object.values(fpMap)) {
+        Object.keys(brandMap).forEach((b) => {
+          if (b !== "*") brands.add(b);
+        });
+      }
+    }
+    return brands.size > 0
+      ? { ...result, _brandAwareMetadataBrands: Array.from(brands).sort() }
+      : result;
+  }
+
+  const { validPropValues: _vpv, assetManifest: _am, forcedProps: _fp, ...rest } = result;
+  const folded: Record<string, unknown> = { ...rest, _brandAwareApplied: brand };
+
+  if (vpvMap) {
+    const vpv = vpvMap[brand];
+    if (vpv) folded.validPropValues = vpv;
+  }
+  if (amMap) {
+    const am = amMap[brand];
+    if (am) folded.assetManifest = am;
+  }
+  if (fpMap) {
+    const fp: Record<string, string> = {};
+    for (const [propName, brandMap] of Object.entries(fpMap)) {
+      if (brandMap[brand] !== undefined) {
+        fp[propName] = brandMap[brand]!;
+      } else if (brandMap["*"] !== undefined) {
+        fp[propName] = brandMap["*"]!;
+      }
+    }
+    if (Object.keys(fp).length > 0) folded.forcedProps = fp;
+  }
+  return folded;
+}
+
 export function getGuide(args: {
   topic?: string;
   topics?: string[];
   intent?: string;
   target?: GuideTarget;
   sections?: string[];
+  brand?: BrandSlug;
 }): Record<string, unknown> {
   const topics = Array.isArray(args.topics)
     ? args.topics.filter((topic): topic is string => typeof topic === "string" && topic.length > 0)
@@ -298,6 +449,7 @@ export function getGuide(args: {
             intent: args.intent,
             target: args.target,
             sections: args.sections,
+            brand: args.brand,
           }),
         ]),
       ),
@@ -324,7 +476,10 @@ export function getGuide(args: {
         availableTopics: listGuideTopics(),
       };
     }
-    return pickSections(getComponentGuide(name, target) as Record<string, unknown>, sections);
+    const base = getComponentGuide(name, target) as Record<string, unknown>;
+    const withMatrix = applyMatrixOverrides(base, args.brand);
+    const withMeta = applyBrandAwareMetadata(withMatrix, args.brand);
+    return pickSections(applyBrandOverlay(topic, withMeta, args.brand), sections);
   }
   if (topic.startsWith("pattern:")) {
     const name = topic.slice("pattern:".length);
@@ -334,7 +489,8 @@ export function getGuide(args: {
         availableTopics: listGuideTopics(),
       };
     }
-    return pickSections(getPatternGuide(name) as Record<string, unknown>, sections);
+    const base = getPatternGuide(name) as Record<string, unknown>;
+    return pickSections(applyBrandOverlay(topic, base, args.brand), sections);
   }
 
   switch (topic) {
@@ -343,8 +499,10 @@ export function getGuide(args: {
       return pickSections(getDesignPrinciples() as Record<string, unknown>, sections);
     case "dos-donts":
       return pickSections(getDosAndDonts() as Record<string, unknown>, sections);
-    case "ux-writing":
-      return pickSections(getUxWritingGuide() as Record<string, unknown>, sections);
+    case "ux-writing": {
+      const base = getUxWritingGuide() as Record<string, unknown>;
+      return pickSections(applyBrandOverlay("ux-writing", base, args.brand), sections);
+    }
     case "admin-cms":
       return pickSections(
         getAdminCmsGuide({ intent: args.intent }) as Record<string, unknown>,
@@ -459,7 +617,7 @@ function getSlimClaudeMdTemplate(args: {
 1. Collect visual references once per mockup task. If the user already answered or \`references.md\` / \`.references/\` exists, do not ask again.
 2. Read \`references.md\` before implementation and write a short visual plan: which good cues to apply, which bad cues to avoid.
 3. Use MCP-bundled references from \`get_guide\` first as the DS baseline: \`figmaNodeUrl\`, \`references[]\`, and \`imageAbsolutePath\`.
-4. For component examples, call \`get_guide({ topic: "component:<Name>", target: "html" })\`.
+4. For component examples, call \`get_guide({ topic: "component:<Name>", target: "html" })\`. **For brand-specific screens (task slug \`<brand>-<screen>\` exposes the brand), pass \`brand: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz"\`** — service overlay, matrixOverrides spec, and brand-aware metadata fold into the response under \`_brandApplied\` / \`_matrixOverrideApplied\` / \`_brandAwareApplied\`. Without \`brand\` you only get \`_brandVariants\` (slim summary of which brands have overlays).
 5. Use \`get_guide({ topic: "principles" })\` and relevant \`pattern:<name>\` guides only as needed. Use \`sections\` to keep calls small.
 6. Write root \`index.html\` with real \`<nds-*>\` elements.
 7. Run \`validate_html_mockup({ filePath: "index.html" })\`; fix until violation count is 0.
@@ -568,6 +726,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - nudge-ds MCP는 이 도구들로 작업:
   - \`get_guide({ topic: "principles" })\` / \`get_guide({ topic: "dos-donts" })\` — DS 원칙
   - \`get_guide({ topic: "component:<Name>", target: "html" })\` — <nds-*> form 의 do/dont 예시
+  - \`get_guide({ topic: "component:<Name>", target: "html", brand: "trost|geniet|nudge-eap|cashwalk-biz" })\` — brand 별 변형 자동 적용. 응답에 \`_brandApplied\` (service overlay), \`_matrixOverrideApplied\` (spec 차이), \`_brandAwareApplied\` (validPropValues/assetManifest/forcedProps) 메타로 어느 layer 가 적용됐는지 명시. brand 미지정 호출은 \`_brandVariants\` 슬림 요약 첨부 — 어느 brand 에 overlay 가 있는지 확인 후 다시 호출. **task 슬러그가 brand 를 알려주면 (예: \`task: geniet-diary-hub\`) 컴포넌트 가이드 호출 시 \`brand: "geniet"\` 같이 지정.**
   - \`get_guide({ topic: "pattern:<name>" })\` — 패턴 가이드 (cta-group, dark-patterns 등)
   - \`find_component\` / \`find_icon\` / \`find_token\` — DS 자산 조회
   - \`validate_html_mockup({ filePath })\` — HTML 정적 검증
@@ -587,7 +746,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 2. **\`.tsx\` 파일 작성 금지.** 이 워크플로우는 React 가 없다. JSX 가 필요하면 intent 를 'user-app' 으로 바꿔 다른 워크스페이스에서 작업하라고 안내. \`<Button color="primary">\` 처럼 PascalCase + JSX 컨테이너 prop 패턴이 나타나면 즉시 \`<nds-button color="primary">\` (kebab-case attribute) 로 교체.
 3. **\`<nds-*>\` 흉내 금지 — raw \`<button class="nds-button">\` 으로 시각만 따라 그리기 X.** 반드시 \`<nds-button>\` 같은 실제 custom-element 를 쓸 것. main.ts 의 \`import "@nudge-design/html/runtime"\` 한 줄로 모든 element 가 등록된다.
 4. **이벤트는 inline \`onclick="..."\` 대신 \`addEventListener\`.** \`document.querySelector("nds-select").addEventListener("select-change", e => …)\` 패턴. WC 가 dispatch 하는 커스텀 이벤트(\`nds-*-change\`, \`select-change\`, \`tabs-change\` 등) 사용. 자세한 이벤트명은 \`get_guide({ topic: "component:<Name>", target: "html" })\` 응답의 examples.do/dont 참고.
-5. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다.
+5. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다.
 6. **산출물은 반드시 \`build_singlefile_html\`.** raw \`vite build\` 결과의 다중 파일 \`dist/\` 폴더로 끝내지 말 것. 디자이너/PM 에게 공유 가능한 표준 산출물은 \`vite-plugin-singlefile\` 로 inline 된 \`dist/index.html\` 1개 파일이다. MCP 가 vite.config 패치 + 빌드까지 자동 수행한다.
 
 **우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
@@ -597,7 +756,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] root \`index.html\` 이 존재하고 \`<nds-*>\` custom-element 를 1개 이상 사용한다.
 - [ ] \`src/\` 에 \`.tsx\` 파일이 없다 (\`.ts\` + 필요 시 \`.css\` 만).
 - [ ] \`@nudge-design/react\` 가 어떤 \`.ts\` / \`.html\` 에서도 import / 참조되지 않는다.
-- [ ] \`src/\` 의 \`.css\` 어디에도 \`:root { --color-* / --nds-* / --eap-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
+- [ ] \`src/\` 의 \`.css\` 어디에도 \`:root { --semantic-* / --nds-* / --color-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
 - [ ] 모든 DS 사용처는 \`<nds-*>\` custom-element 이다 (\`<button class="nds-button">\` 같은 className 흉내 없음).
 - [ ] main.ts 가 \`import "@nudge-design/html/runtime"\` 을 포함한다.
 
@@ -646,7 +805,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **기존 antd/HTML 코드를 받았을 때 className 만 치환하지 말 것**. \`<button class="nds-button">\` 은 nds-button 흉내일 뿐 실제 Web Component 가 아님 — 반드시 \`<nds-button>\` 으로 element 자체를 바꾼다.
 - raw \`button\`, \`input\`, \`select\`, \`textarea\` 는 특별한 이유 없으면 사용하지 않는다. \`validate_html_mockup\` 의 \`native-form-element-without-nds-wrapper\` 룰로 자동 검출됨.
 - **이모지·텍스트 기호 절대 금지**. 라벨/제목/empty state 어디에도 이모지(😀 🔥 ⭐ ✅ ⚠️) / 기호(→ ← ✓ ★ •) 박지 말 것. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-design/icons\` 에서 찾고, 없으면 인라인 SVG.
-- 색상/간격은 인라인 hex, rgb, px 보다 DS 토큰(\`var(--semantic-* )\` / \`var(--gap-* )\` / \`var(--inset-* )\`) 을 우선 사용.
+- 색상/간격은 인라인 hex, rgb, px 보다 DS 토큰(\`var(--semantic-* )\` / \`var(--semantic-gap-* )\` / \`var(--semantic-inset-* )\`) 을 우선 사용.
 - 인라인 SVG를 직접 만들기보다 \`@nudge-design/icons\` 아이콘을 사용한다.
 - **아이콘 선택 필수 우선순위**: 브랜드 전용 > NudgeEAP 기본 > MockupLinear/Bold > 자체 SVG.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
@@ -855,7 +1014,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 워크스페이스 루트의 \`references.md\` 에 \`[good|bad] source=<figma-url|image-name> caption=<1-line reason>\` 형식으로 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 이 파일이 비어 있거나 없으면 \`build_singlefile_html\` pre-flight audit 가 차단한다 (\`missing-visual-references\`). "브랜드 톤 가이드 보고 알아서 만들게요" 식 우회 X — brandTone 형용사만 보고 만든 화면이 반복적으로 거절되어 왔다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
 2. **\`src/\` 하위에 손으로 작성한 \`.html\` 파일 금지.** "스탠드얼론 HTML 로 빠르게 보여드릴게요" / "그냥 한 파일로 끝내고 싶어요" / "HTML 이 더 단순해요" 식 우회 X. 결과적으로 DS prop API 검증·\`validate_mockup\` AST 검사·\`report_mockup_usage\` 집계가 **전부 무력화**된다. \`dist/index.html\` 은 \`build_singlefile_html\` 산출물이므로 예외.
-3. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
+3. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
 4. **DS 컴포넌트를 HTML/CSS 로 "시각만 흉내" 금지.** \`<button className="my-btn">\` 으로 Button 모양만 따라 그리기, \`<div className="chip">\` 으로 Chip 흉내 X. 반드시 \`import { Button, Chip, IconButton, ... } from "@nudge-design/react"\` 의 **실제 JSX** 를 쓸 것 — prop API · 토큰 · a11y 가 자동으로 보장된다.
 5. **\`vite build\` / esbuild / webpack / parcel / rollup 직접 호출 금지.** 단일 HTML 산출은 **오직 \`build_singlefile_html({})\` 로만**. 다른 번들러 / 손수 inline 화는 \`nds-*\` 클래스 · onClick 인터랙션 · 토큰 변수 해석이 손실됨.
 
@@ -864,7 +1023,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] 워크스페이스 루트에 \`references.md\` (또는 \`.references/\` 폴더) 가 존재하고, 정답 1장 + 오답 1장 이상의 시각 기준이 캡션과 함께 적혀 있다.
 - [ ] 구현 전 \`references.md\` 를 읽고 good/bad 기준을 실제 레이아웃·간격·타이포·컬러 결정에 반영했다.
 - [ ] \`src/\` 에 손으로 작성한 \`.html\` 파일이 없다 (\`dist/index.html\` 은 빌드 산출물이라 예외).
-- [ ] \`src/\` 의 \`.css\` / \`.scss\` 어디에도 \`:root { --color-* / --nds-* / --eap-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
+- [ ] \`src/\` 의 \`.css\` / \`.scss\` 어디에도 \`:root { --semantic-* / --nds-* / --color-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
 - [ ] 시멘틱 토큰은 \`main.tsx\` 의 \`import "@nudge-design/tokens/css"\` 한 줄로만 들어온다.
 - [ ] 모든 DS 컴포넌트 사용처는 \`@nudge-design/react\` 의 실제 JSX import 다 (className 으로 시각 모사한 raw HTML 없음).
 - [ ] 산출물은 \`build_singlefile_html({})\` 결과의 \`dist/index.html\` **한 파일** 이다.
@@ -882,7 +1041,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴을 한 번에 로드. 브랜드를 바꾸면 재호출.
 - **모든 mockup 작업은 시각 레퍼런스 확인 질문부터 시작.** \`get_guide({ topic: "pattern:visual-reference" })\` 로 룰 확인 후, 프롬프트에 이미지/Figma 링크가 있어도 위 MUST 1번 질문을 사용자에게 그대로 하고 답을 \`references.md\` 에 저장. \`build_singlefile_html\` 의 \`missing-visual-references\` audit 룰로 강제됨.
 - 컴포넌트/아이콘/토큰 사용 전 \`find_component\` / \`find_icon\` / \`find_token\` 호출 (인자 없으면 전체 / \`{ query }\` 면 fuzzy / \`{ name }\` 면 풀 스펙)
-- 처음 쓰는 주요 컴포넌트는 \`get_guide({ topic: "component:Button" })\` 형식으로 호출
+- 처음 쓰는 주요 컴포넌트는 \`get_guide({ topic: "component:Button" })\` 형식으로 호출. **brand 화면이면 \`brand: "trost|geniet|nudge-eap|cashwalk-biz"\` 같이 지정** — service overlay (allowed/disallowed/preferred/forbiddenPatterns, servicePitfalls) + matrixOverrides (spec 차이) + brand-aware metadata (validPropValues/assetManifest/forcedProps) 가 자동 fold 되어 응답. 응답 메타 키 (\`_brandApplied\` / \`_matrixOverrideApplied\` / \`_brandAwareApplied\`) 로 어느 layer 적용됐는지 확인. brand 미지정 호출은 \`_brandVariants\` 슬림 요약만 첨부 — 어느 brand 가 overlay 갖고 있는지 본 후 다시 호출.
 - CTA 그룹, 아이콘 컬러·사용처, 시멘틱 spacing(--gap-* / --inset-*), surface 레이어·brand bg 사용, 시각 레퍼런스, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트, 다크패턴(진입 직후 시트·뒤로가기 인터럽트·거절 불가 CTA·중간 광고·라벨 모호성)은 \`get_guide({ topic: "pattern:semantic-spacing" })\` / \`get_guide({ topic: "pattern:surface-layer" })\` / \`get_guide({ topic: "pattern:icon-usage" })\` / \`get_guide({ topic: "pattern:cta-group" })\` / \`get_guide({ topic: "pattern:dark-patterns" })\` 형식으로 호출
 - **사용자 노출 텍스트(버튼·라벨·placeholder·empty state·에러·다이얼로그)는 작성 전 \`get_guide({ topic: "ux-writing" })\` 호출** — 해요체·능동형·긍정형·캐주얼 경어·"닫기 vs 취소" 같은 마이크로카피 규칙 + EAP 멘탈케어 도메인 규칙(위기·자해·진단 표현 톤)을 한 번에 로드.
 - 워크스페이스 첫 셋업 시 **\`get_setup({ step: "inspector" })\` 한 번 호출** — MCP 가 src/main.tsx 를 직접 패치해 DsInspector 를 dev-only 로 마운트합니다 (idempotent). 성공 후 dev 서버 재시작하면 우하단 floating 버튼으로 DS / antd / native 비율을 실시간 확인 가능 (Ctrl/Cmd+Shift+D 토글). 별도 코드 수정 불필요.
