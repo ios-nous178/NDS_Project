@@ -33,7 +33,7 @@ export const msStyles = `
   :where(.${MS_HEADER_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${MS_INDICATOR_CLASS}) {
@@ -80,12 +80,12 @@ export const msStyles = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${MS_BTN_CLASS}) {
     height: 48px;
-    padding: 0 var(--inset-card-large);
+    padding: 0 var(--semantic-inset-card-large);
     border-radius: ${radius.md}px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};

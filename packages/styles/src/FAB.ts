@@ -19,7 +19,7 @@ export const fabStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};

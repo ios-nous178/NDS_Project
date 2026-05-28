@@ -23,7 +23,7 @@ export const aiStyles = `
   :where(.${AI_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
   }
@@ -38,7 +38,7 @@ export const aiStyles = `
     display: flex;
     align-items: center;
     height: 56px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -79,12 +79,12 @@ export const aiStyles = `
   :where(.${AI_PRESETS_CLASS}) {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${AI_PRESET_CLASS}) {
     height: 36px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: 9999px;
     background: ${cv.surface.default};

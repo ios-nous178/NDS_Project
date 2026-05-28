@@ -14,7 +14,7 @@ export const selectionCardStyles = `
   :where(.${SC_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
   }
@@ -28,8 +28,8 @@ export const selectionCardStyles = `
     position: relative;
     display: flex;
     align-items: flex-start;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.lg}px;

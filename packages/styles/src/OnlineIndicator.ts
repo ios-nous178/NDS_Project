@@ -9,7 +9,7 @@ export const oiStyles = `
   :where(.${OI_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-family: ${fontFamily.web};
   }
 

@@ -43,7 +43,7 @@ export const headerStyles = `
     justify-content: space-between;
     width: 100%;
     min-height: var(--nds-header-height, ${sizing.appBar.height}px);
-    padding: 0 var(--nds-header-padding-x, var(--inset-card));
+    padding: 0 var(--nds-header-padding-x, var(--semantic-inset-card));
     background: var(--nds-header-background, ${cv.surface.default});
     border-bottom: var(--nds-header-border-bottom, 1px solid ${cv.borderRole.subtle});
     box-shadow: var(--nds-header-shadow, none);
@@ -58,7 +58,7 @@ export const headerStyles = `
   :where(.${H_LEFT_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     flex-shrink: 0;
   }
 
@@ -83,7 +83,7 @@ export const headerStyles = `
   :where(.${H_RIGHT_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     flex-shrink: 0;
     margin-left: auto;
   }
@@ -96,7 +96,7 @@ export const headerStyles = `
     width: 100%;
     max-width: var(--nds-header-main-max-width, none);
     margin: 0 auto;
-    padding: var(--nds-header-main-py, 0) var(--inset-card);
+    padding: var(--nds-header-main-py, 0) var(--semantic-inset-card);
     box-sizing: border-box;
   }
 
@@ -107,7 +107,7 @@ export const headerStyles = `
     max-width: var(--nds-header-nav-max-width, none);
     height: var(--nds-header-nav-height, 56px);
     margin: 0 auto;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     box-sizing: border-box;
   }
 
@@ -120,7 +120,7 @@ export const headerStyles = `
     height: var(--nds-header-search-height, 48px);
     border: var(--nds-header-search-border-width, 2px) solid var(--nds-header-search-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-header-search-radius, 24px);
-    padding: 0 var(--nds-header-search-pr, 36px) 0 var(--nds-header-search-pl, var(--inset-card-large));
+    padding: 0 var(--nds-header-search-pr, 36px) 0 var(--nds-header-search-pl, var(--semantic-inset-card-large));
     font-size: var(--nds-header-search-font-size, ${typeScale.body2.fontSize}px);
     color: ${cv.textRole.muted};
     box-sizing: border-box;
@@ -269,7 +269,7 @@ export const headerStyles = `
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 0 var(--nds-header-menu-px, var(--inset-card-large));
+    padding: 0 var(--nds-header-menu-px, var(--semantic-inset-card-large));
     font-size: var(--nds-header-menu-font-size, ${typeScale.headline5.fontSize}px);
     line-height: ${typeScale.headline5.lineHeight}px;
     font-weight: var(--nds-header-menu-font-weight, ${fontWeight.bold});
@@ -299,7 +299,7 @@ export const headerStyles = `
   :where(.${H_ACTIONS_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
     flex-shrink: 0;
     justify-self: end;
   }

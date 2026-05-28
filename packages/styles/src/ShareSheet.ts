@@ -46,7 +46,7 @@ export const ssStyles = `
     max-width: 480px;
     background: ${cv.surface.default};
     border-radius: ${radius.lg}px ${radius.lg}px 0 0;
-    padding: var(--inset-modal) var(--inset-card-large) var(--inset-card-large);
+    padding: var(--semantic-inset-modal) var(--semantic-inset-card-large) var(--semantic-inset-card-large);
     box-sizing: border-box;
     animation: nds-share-slide 240ms ease;
   }
@@ -59,7 +59,7 @@ export const ssStyles = `
   :where(.${SS_HEADER_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     margin-bottom: ${spacing[20]}px;
   }
 
@@ -79,15 +79,15 @@ export const ssStyles = `
   :where(.${SS_GRID_CLASS}) {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${SS_ITEM_CLASS}) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-default);
-    padding: var(--inset-chip);
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-chip);
     border: none;
     background: transparent;
     cursor: pointer;
@@ -119,9 +119,9 @@ export const ssStyles = `
   :where(.${SS_LINK_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     margin-top: ${spacing[16]}px;
-    padding: var(--inset-chip) var(--inset-input);
+    padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     background: ${cv.surface.section};
     border-radius: ${radius.md}px;
   }
@@ -139,7 +139,7 @@ export const ssStyles = `
 
   :where(.${SS_COPY_BTN_CLASS}) {
     height: 32px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border: none;
     border-radius: 9999px;
     background: ${cv.surface.inverse};

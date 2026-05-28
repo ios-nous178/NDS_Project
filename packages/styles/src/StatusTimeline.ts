@@ -39,12 +39,12 @@ export const stStyles = `
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${ST_CLASS}[data-direction="vertical"]) .${ST_ITEM_CLASS} {
     flex-direction: row;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     flex: none;
     align-items: stretch;
   }
@@ -128,7 +128,7 @@ export const stStyles = `
   }
 
   :where(.${ST_CLASS}[data-direction="vertical"]) .${ST_BODY_CLASS} {
-    padding-bottom: var(--inset-card);
+    padding-bottom: var(--semantic-inset-card);
   }
 
   :where(.${ST_LABEL_CLASS}) {

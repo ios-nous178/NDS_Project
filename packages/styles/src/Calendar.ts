@@ -26,12 +26,12 @@ export const calendarStyles = `
   :where(.${CL_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
     width: 100%;
     font-family: ${fontFamily.web};
     color: ${cv.textRole.normal};
     background: var(--nds-calendar-bg, ${cv.surface.default});
-    padding: var(--nds-calendar-padding, var(--inset-card));
+    padding: var(--nds-calendar-padding, var(--semantic-inset-card));
     border-radius: var(--nds-calendar-radius, ${radius.lg}px);
     box-sizing: border-box;
   }
@@ -52,7 +52,7 @@ export const calendarStyles = `
   :where(.${CL_NAV_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${CL_NAV_BTN_CLASS}) {
@@ -86,14 +86,14 @@ export const calendarStyles = `
   :where(.${CL_GRID_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${CL_WEEKDAYS_CLASS}),
   :where(.${CL_DAYS_CLASS}) {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${CL_WEEKDAY_CLASS}) {

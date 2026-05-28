@@ -17,8 +17,8 @@ export const streakStyles = `
   :where(.${SK_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-loose);
-    padding: var(--inset-card-large);
+    gap: var(--semantic-gap-loose);
+    padding: var(--semantic-inset-card-large);
     background: var(--nds-streak-bg, ${cv.surface.default});
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -29,7 +29,7 @@ export const streakStyles = `
   :where(.${SK_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${SK_HEADER_CLASS}) .${SK_CLASS}__icon {
@@ -56,7 +56,7 @@ export const streakStyles = `
   :where(.${SK_VALUE_CLASS}) {
     display: flex;
     align-items: baseline;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${SK_NUMBER_CLASS}) {
@@ -75,7 +75,7 @@ export const streakStyles = `
 
   :where(.${SK_GRID_CLASS}) {
     display: flex;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     width: 100%;
   }
 
@@ -84,7 +84,7 @@ export const streakStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${SK_DAY_LABEL_CLASS}) {

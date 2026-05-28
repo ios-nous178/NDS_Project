@@ -21,7 +21,7 @@ export const segmentedStyles = `
     background: ${cv.surface.subtle};
     border-radius: ${radius.md}px;
     padding: ${spacing[4]}px;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -38,7 +38,7 @@ export const segmentedStyles = `
     justify-content: center;
     min-width: 0;
     height: 32px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     background: transparent;
     border: none;
     border-radius: ${radius.sm}px;

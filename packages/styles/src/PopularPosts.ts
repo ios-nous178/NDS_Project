@@ -26,7 +26,7 @@ export const popularPostsStyles = `
   :where(.${PP_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
     width: 100%;
     box-sizing: border-box;
     padding: ${spacing[20]}px;

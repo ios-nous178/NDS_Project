@@ -16,8 +16,8 @@ export const stStyles = `
   :where(.${ST_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card) var(--inset-card-large);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     background: var(--nds-stat-card-bg, ${cv.surface.default});
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -32,7 +32,7 @@ export const stStyles = `
   :where(.${ST_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     color: ${cv.textRole.subtle};
   }
 
@@ -55,13 +55,13 @@ export const stStyles = `
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
   }
 
   :where(.${ST_VALUE_CLASS}) {
     display: inline-flex;
     align-items: baseline;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${ST_VALUE_CLASS}) > strong {
@@ -82,7 +82,7 @@ export const stStyles = `
     display: inline-flex;
     align-items: center;
     gap: 2px;
-    padding: 2px var(--inset-chip);
+    padding: 2px var(--semantic-inset-chip);
     border-radius: 9999px;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};

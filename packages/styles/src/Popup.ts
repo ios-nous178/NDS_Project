@@ -37,8 +37,8 @@ export const popupStyles = `
     max-width: var(--nds-popup-max-width, 400px);
     display: flex;
     flex-direction: column;
-    gap: var(--gap-wide);
-    padding: ${spacing[28]}px var(--inset-card) var(--inset-card);
+    gap: var(--semantic-gap-wide);
+    padding: ${spacing[28]}px var(--semantic-inset-card) var(--semantic-inset-card);
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
     box-shadow: ${shadow["3"]};
@@ -49,7 +49,7 @@ export const popupStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     text-align: center;
     color: ${cv.textRole.normal};
     font-family: ${fontFamily.web};
@@ -73,7 +73,7 @@ export const popupStyles = `
 
   :where(.${POPUP_ACTIONS_CLASS}) {
     display: flex;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
   }
 
@@ -87,7 +87,7 @@ export const popupStyles = `
     align-items: center;
     justify-content: center;
     min-height: 44px;
-    padding: ${spacing[10]}px var(--inset-card);
+    padding: ${spacing[10]}px var(--semantic-inset-card);
     border: none;
     border-radius: ${radius.md}px;
     font-family: ${fontFamily.web};

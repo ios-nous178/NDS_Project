@@ -11,8 +11,8 @@ export const wpStyles = `
   :where(.${WP_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-chip) var(--inset-input);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     background: ${cv.surface.section};
     border-radius: 9999px;
     font-family: ${fontFamily.web};

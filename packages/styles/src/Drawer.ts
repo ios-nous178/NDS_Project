@@ -1,5 +1,13 @@
 /* Auto-generated from packages/react/src/Drawer.tsx during the @nudge-design/styles split. */
-import { cv, fontFamily, fontWeight, shadow, spacing, typeScale, zIndex } from "@nudge-design/tokens";
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  shadow,
+  spacing,
+  typeScale,
+  zIndex,
+} from "@nudge-design/tokens";
 
 const DR_CLASS = "nds-drawer";
 const DR_ROOT_CLASS = `${DR_CLASS}__root`;
@@ -72,8 +80,8 @@ export const drawerStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card-large) var(--inset-card-large) var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card-large) var(--semantic-inset-card-large) var(--semantic-inset-card);
     border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
@@ -125,14 +133,14 @@ export const drawerStyles = `
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: var(--inset-card-large);
+    padding: var(--semantic-inset-card-large);
     box-sizing: border-box;
   }
 
   :where(.${DR_FOOTER_CLASS}) {
     display: flex;
-    gap: var(--gap-default);
-    padding: var(--inset-card) var(--inset-card-large);
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 

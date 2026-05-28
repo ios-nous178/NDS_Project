@@ -27,7 +27,7 @@ export const fileUploadStyles = `
   :where(.${FU_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -39,8 +39,8 @@ export const fileUploadStyles = `
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--gap-default);
-    padding: var(--inset-modal) var(--inset-card-large);
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-modal) var(--semantic-inset-card-large);
     background: ${cv.surface.page};
     border: 1.5px dashed ${cv.borderRole.normal};
     border-radius: ${radius.lg}px;
@@ -108,8 +108,8 @@ export const fileUploadStyles = `
   :where(.${FU_ITEM_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
-    padding: var(--inset-chip) var(--inset-input);
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;

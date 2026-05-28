@@ -29,8 +29,8 @@ export const niStyles = `
   :where(.${NI_CLASS}) {
     display: flex;
     align-items: flex-start;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card);
     background: ${cv.surface.default};
     border-bottom: 1px solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};

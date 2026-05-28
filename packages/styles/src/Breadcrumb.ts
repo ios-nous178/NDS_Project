@@ -10,7 +10,7 @@ export const breadcrumbStyles = `
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-family: ${fontFamily.web};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;

@@ -22,10 +22,10 @@ export const buttonStyles = `
     align-items: center;
     justify-content: center;
     vertical-align: middle;
-    gap: var(--nds-button-gap, var(--gap-default));
+    gap: var(--nds-button-gap, var(--semantic-gap-default));
     width: var(--nds-button-width, auto);
     min-height: var(--nds-button-height, 48px);
-    padding: 0 var(--nds-button-padding-x, var(--inset-card));
+    padding: 0 var(--nds-button-padding-x, var(--semantic-inset-card));
     border-radius: var(--nds-button-radius, ${radius.md}px);
     border: 1px solid var(--nds-button-border-color, transparent);
     background: var(--nds-button-background, ${cv.surface.brand});

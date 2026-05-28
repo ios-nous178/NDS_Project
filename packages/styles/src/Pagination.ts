@@ -17,7 +17,7 @@ export const paginationStyles = `
   :where(.${PG_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -48,13 +48,13 @@ export const paginationStyles = `
   }
 
   :where(.${PG_ITEM_CLASS}[data-active="true"]) {
-    background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    background: var(--nds-pagination-active-bg, ${cv.surface.brand});
+    color: var(--nds-pagination-active-text, ${cv.textRole.inverse});
     font-weight: ${fontWeight.bold};
   }
 
   :where(.${PG_ITEM_CLASS}[data-active="true"]:hover) {
-    background: ${cv.fill.brandHover};
+    background: var(--nds-pagination-active-bg-hover, ${cv.fill.brandHover});
   }
 
   :where(.${PG_ITEM_CLASS}:disabled) {

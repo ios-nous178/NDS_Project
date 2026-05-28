@@ -28,8 +28,8 @@ const CN_CTA_CLASS = `${CN_CLASS}__cta`;
 export const counselorCardStyles = `
   :where(.${CN_CLASS}) {
     display: flex;
-    gap: var(--gap-loose);
-    padding: var(--inset-card-large);
+    gap: var(--semantic-gap-loose);
+    padding: var(--semantic-inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -74,7 +74,7 @@ export const counselorCardStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${CN_HEADER_CLASS}) {
@@ -100,7 +100,7 @@ export const counselorCardStyles = `
   :where(.${CN_RATING_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${CN_RATING_VALUE_CLASS}) {
@@ -125,7 +125,7 @@ export const counselorCardStyles = `
   :where(.${CN_TAG_CLASS}) {
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[2]}px var(--inset-chip);
+    padding: ${spacing[2]}px var(--semantic-inset-chip);
     background: ${cv.surface.page};
     color: ${cv.textRole.strong};
     border-radius: ${radius.pill}px;
@@ -155,7 +155,7 @@ export const counselorCardStyles = `
     all: unset;
     display: inline-flex;
     align-items: center;
-    padding: var(--inset-chip) var(--inset-card);
+    padding: var(--semantic-inset-chip) var(--semantic-inset-card);
     background: ${cv.surface.brand};
     color: ${cv.textRole.inverse};
     border-radius: ${radius.pill}px;

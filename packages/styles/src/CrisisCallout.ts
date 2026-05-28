@@ -21,9 +21,9 @@ export const crisisCalloutStyles = `
   :where(.${CC_CLASS}) {
     display: flex;
     align-items: flex-start;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     width: 100%;
-    padding: var(--inset-card) var(--inset-card-large);
+    padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     background: ${cv.surface.statusError};
     border: 1px solid ${cv.borderRole.statusError};
     border-radius: ${radius.lg}px;
@@ -79,7 +79,7 @@ export const crisisCalloutStyles = `
 
   :where(.${CC_ACTIONS_CLASS}) {
     display: flex;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     margin-top: ${spacing[8]}px;
     flex-wrap: wrap;
   }
@@ -89,7 +89,7 @@ export const crisisCalloutStyles = `
     display: inline-flex;
     align-items: center;
     gap: ${spacing[6]}px;
-    padding: var(--inset-chip) var(--inset-input);
+    padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     background: ${cv.fill.statusError};
     color: ${cv.textRole.inverse};
     border-radius: ${radius.md}px;

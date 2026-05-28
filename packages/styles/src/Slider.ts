@@ -22,7 +22,7 @@ export const sliderStyles = `
   :where(.${SL_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;

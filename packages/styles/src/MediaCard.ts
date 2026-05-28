@@ -84,7 +84,7 @@ export const mediaCardStyles = `
     display: flex;
     flex-direction: column;
     gap: ${spacing[4]}px;
-    padding: var(--inset-card);
+    padding: var(--semantic-inset-card);
   }
 
   :where(.${MC_EYEBROW_CLASS}) {

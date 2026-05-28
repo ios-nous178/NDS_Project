@@ -18,7 +18,7 @@ export const icStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     font-family: ${fontFamily.web};
   }
 
@@ -87,7 +87,7 @@ export const icStyles = `
     max-width: 320px;
     display: flex;
     align-items: center;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${IC_ZOOM_BTN_CLASS}) {

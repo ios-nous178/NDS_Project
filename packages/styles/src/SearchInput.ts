@@ -23,7 +23,7 @@ export const searchInputStyles = `
   :where(.${SEARCH_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--nds-search-input-label-gap, var(--gap-comfortable));
+    gap: var(--nds-search-input-label-gap, var(--semantic-gap-comfortable));
     width: var(--nds-search-input-width, 100%);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -42,7 +42,7 @@ export const searchInputStyles = `
     align-items: center;
     width: 100%;
     min-height: var(--nds-search-input-height, 48px);
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border: 1px solid var(--nds-search-input-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-search-input-radius, ${radius.md}px);
     background: var(--nds-search-input-background, ${cv.surface.default});

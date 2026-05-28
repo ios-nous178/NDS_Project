@@ -47,7 +47,7 @@ export const videoPlayerStyles = `
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: var(--inset-card);
+    padding: var(--semantic-inset-card);
     color: #fff;
     background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.5) 100%);
     pointer-events: none;
@@ -73,7 +73,7 @@ export const videoPlayerStyles = `
     font-size: 12px;
     line-height: 16px;
     background: rgba(0,0,0,0.55);
-    padding: 4px var(--inset-chip);
+    padding: 4px var(--semantic-inset-chip);
     border-radius: ${radius.sm}px;
     font-weight: ${fontWeight.medium};
   }
@@ -108,7 +108,7 @@ export const videoPlayerStyles = `
   :where(.${VP_CONTROLS_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
   }
 

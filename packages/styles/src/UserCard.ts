@@ -22,8 +22,8 @@ const UC_ACTION_CLASS = `${UC_CLASS}__action`;
 export const ucStyles = `
   :where(.${UC_CLASS}) {
     display: flex;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-input) var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-input) var(--semantic-inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -40,7 +40,7 @@ export const ucStyles = `
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: var(--inset-card-large);
+    padding: var(--semantic-inset-card-large);
   }
 
   :where(.${UC_AVATAR_CLASS}) {
@@ -93,7 +93,7 @@ export const ucStyles = `
   :where(.${UC_META_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-size: ${typeScale.caption1.fontSize}px;
     color: ${cv.textRole.subtle};
     margin-top: ${spacing[4]}px;

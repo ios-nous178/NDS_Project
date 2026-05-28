@@ -13,8 +13,8 @@ export const cbStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-loose);
-    padding: var(--inset-card-large);
+    gap: var(--semantic-gap-loose);
+    padding: var(--semantic-inset-card-large);
     background: var(--nds-call-bar-bg, rgba(0, 0, 0, 0.85));
     color: #fff;
     border-radius: var(--nds-call-bar-radius, ${radius.lg}px);
@@ -32,7 +32,7 @@ export const cbStyles = `
   :where(.${CB_BUTTONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
   }
 
   :where(.${CB_BTN_CLASS}) {
@@ -72,7 +72,7 @@ export const cbStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-size: ${typeScale.caption2.fontSize}px;
     color: rgba(255, 255, 255, 0.7);
   }

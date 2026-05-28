@@ -13,7 +13,7 @@ export const cvStyles = `
     position: relative;
     width: 320px;
     aspect-ratio: 1.586;
-    padding: var(--inset-card-large);
+    padding: var(--semantic-inset-card-large);
     border-radius: ${radius.lg}px;
     color: var(--nds-card-fg, #fff);
     font-family: ${fontFamily.web};
@@ -55,7 +55,7 @@ export const cvStyles = `
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${CV_HOLDER_CLASS}) {

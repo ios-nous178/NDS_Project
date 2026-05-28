@@ -27,8 +27,8 @@ export const apptStyles = `
   :where(.${AC_CLASS}) {
     display: flex;
     align-items: stretch;
-    gap: var(--gap-loose);
-    padding: var(--inset-card);
+    gap: var(--semantic-gap-loose);
+    padding: var(--semantic-inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -55,7 +55,7 @@ export const apptStyles = `
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--inset-chip);
+    padding: var(--semantic-inset-chip);
     gap: 2px;
   }
 
@@ -85,7 +85,7 @@ export const apptStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${AC_TITLE_CLASS}) {
@@ -112,7 +112,7 @@ export const apptStyles = `
     color: ${cv.textRole.subtle};
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${AC_FOOTER_CLASS}) {
@@ -120,7 +120,7 @@ export const apptStyles = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${AC_STATUS_CLASS}) {
@@ -137,12 +137,12 @@ export const apptStyles = `
   :where(.${AC_ACTIONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${AC_ACTION_CLASS}) {
     height: 32px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border-radius: ${radius.md}px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};

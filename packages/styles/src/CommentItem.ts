@@ -15,13 +15,13 @@ const CI_REPLIES_CLASS = `${CI_CLASS}__replies`;
 export const ciStyles = `
   :where(.${CI_CLASS}) {
     display: flex;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-input) 0;
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-input) 0;
     font-family: ${fontFamily.web};
   }
 
   :where(.${CI_CLASS}[data-reply="true"]) {
-    padding-left: var(--inset-modal);
+    padding-left: var(--semantic-inset-modal);
   }
 
   :where(.${CI_AVATAR_CLASS}) {
@@ -33,13 +33,13 @@ export const ciStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${CI_HEAD_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     flex-wrap: wrap;
   }
 
@@ -66,7 +66,7 @@ export const ciStyles = `
   :where(.${CI_ACTIONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     margin-top: ${spacing[4]}px;
   }
 
@@ -87,6 +87,6 @@ export const ciStyles = `
   :where(.${CI_REPLIES_CLASS}) {
     margin-top: ${spacing[8]}px;
     border-left: 2px solid ${cv.borderRole.subtle};
-    padding-left: var(--inset-input);
+    padding-left: var(--semantic-inset-input);
   }
 `;

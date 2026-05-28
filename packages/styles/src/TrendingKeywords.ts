@@ -40,7 +40,7 @@ export const trendingKeywordsStyles = `
     height: 30px;
     overflow: hidden;
     cursor: pointer;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${TK_SLIDE_ITEM_CLASS}) {
@@ -115,7 +115,7 @@ export const trendingKeywordsStyles = `
     top: -8px;
     right: -40px;
     width: 280px;
-    padding: var(--inset-modal);
+    padding: var(--semantic-inset-modal);
     background: ${cv.surface.default};
     border-radius: ${radius.lg}px;
     box-shadow: ${shadow["1"]};
@@ -171,7 +171,7 @@ export const trendingKeywordsStyles = `
   :where(.${TK_DROPDOWN_CLASS_LIST_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${TK_DROPDOWN_CLASS_ITEM_CLASS}) {

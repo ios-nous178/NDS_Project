@@ -13,8 +13,8 @@ export const vrStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card-large);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card-large);
     background: ${cv.surface.section};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
@@ -64,7 +64,7 @@ export const vrStyles = `
   :where(.${VR_INDICATOR_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     color: var(--semantic-text-status-error);
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
@@ -93,6 +93,6 @@ export const vrStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 `;

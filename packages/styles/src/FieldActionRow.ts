@@ -20,7 +20,7 @@ export const fieldActionRowStyles = `
   :where(.${FAR_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--nds-far-gap, var(--gap-default));
+    gap: var(--nds-far-gap, var(--semantic-gap-default));
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -28,7 +28,7 @@ export const fieldActionRowStyles = `
 
   :where(.${FAR_ROOT_CLASS} > [data-slot="row"]) {
     display: flex;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     align-items: flex-start;
   }
 
@@ -41,7 +41,7 @@ export const fieldActionRowStyles = `
   :where(.${FAR_FIELD_CLASS} input) {
     width: 100%;
     height: 48px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border: 1px solid var(--nds-far-border-color, ${cv.borderRole.normal});
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -103,7 +103,7 @@ export const fieldActionRowStyles = `
     justify-content: center;
     height: 48px;
     min-width: var(--nds-far-action-min-width, 70px);
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border-radius: ${radius.md}px;
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;

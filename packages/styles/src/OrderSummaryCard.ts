@@ -16,7 +16,7 @@ export const osStyles = `
   :where(.${OS_CLASS}) {
     display: flex;
     flex-direction: column;
-    padding: var(--inset-card-large);
+    padding: var(--semantic-inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -38,14 +38,14 @@ export const osStyles = `
   :where(.${OS_LIST_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${OS_ROW_CLASS}) {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${OS_LABEL_CLASS}) {
@@ -79,7 +79,7 @@ export const osStyles = `
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${OS_TOTAL_CLASS}) > span:first-child {

@@ -9,7 +9,7 @@ export const ctStyles = `
   :where(.${CT_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     color: ${cv.textRole.normal};
   }

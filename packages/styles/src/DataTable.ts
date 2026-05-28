@@ -47,7 +47,7 @@ export const dataTableStyles = `
 
   :where(.${DT_TH_CLASS}) {
     text-align: left;
-    padding: ${spacing[10]}px var(--inset-input);
+    padding: ${spacing[10]}px var(--semantic-inset-input);
     background: ${cv.surface.page};
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
@@ -71,7 +71,7 @@ export const dataTableStyles = `
   :where(.${DT_TH_INNER_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${DT_SORT_ICON_CLASS}) {
@@ -103,7 +103,7 @@ export const dataTableStyles = `
   }
 
   :where(.${DT_TD_CLASS}) {
-    padding: var(--inset-input);
+    padding: var(--semantic-inset-input);
     color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -114,13 +114,13 @@ export const dataTableStyles = `
 
   :where(.${DT_CLASS}[data-size="sm"]) .${DT_TH_CLASS},
   :where(.${DT_CLASS}[data-size="sm"]) .${DT_TD_CLASS} {
-    padding: var(--inset-chip) ${spacing[10]}px;
+    padding: var(--semantic-inset-chip) ${spacing[10]}px;
   }
 
   :where(.${DT_EMPTY_CLASS}),
   :where(.${DT_LOADING_CLASS}) {
     text-align: center;
-    padding: ${spacing[36]}px var(--inset-card-large);
+    padding: ${spacing[36]}px var(--semantic-inset-card-large);
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -142,13 +142,13 @@ export const dataTableStyles = `
   :where(.${DT_CARD_CLASS}) {
     display: none;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
   :where(.${DT_CARD_CLASS}) > article {
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
-    padding: var(--inset-input) var(--inset-card);
+    padding: var(--semantic-inset-input) var(--semantic-inset-card);
     display: flex;
     flex-direction: column;
     gap: ${spacing[6]}px;
@@ -165,7 +165,7 @@ export const dataTableStyles = `
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
   :where(.${DT_CARD_LABEL_CLASS}) {
     flex-shrink: 0;

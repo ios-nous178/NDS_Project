@@ -15,7 +15,7 @@ export const checkboxStyles = `
     position: relative;
     display: inline-flex;
     align-items: flex-start;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     cursor: pointer;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -121,7 +121,7 @@ export const checkboxStyles = `
   :where(.${CB_GROUP_CLASS}) {
     display: flex;
     flex-direction: var(--nds-checkbox-group-direction, column);
-    gap: var(--nds-checkbox-group-gap, var(--nds-choice-group-gap, var(--gap-comfortable)));
+    gap: var(--nds-checkbox-group-gap, var(--nds-choice-group-gap, var(--semantic-gap-comfortable)));
     font-family: ${fontFamily.web};
   }
 

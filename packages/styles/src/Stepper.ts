@@ -27,7 +27,7 @@ export const stepperStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     min-width: 0;
   }
 

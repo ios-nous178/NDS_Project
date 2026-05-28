@@ -17,8 +17,8 @@ export const rcStyles = `
   :where(.${RC_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card) var(--inset-card-large);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -29,14 +29,14 @@ export const rcStyles = `
   :where(.${RC_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     justify-content: space-between;
   }
 
   :where(.${RC_AUTHOR_AREA_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     min-width: 0;
   }
 
@@ -65,7 +65,7 @@ export const rcStyles = `
   :where(.${RC_META_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-size: ${typeScale.caption2.fontSize}px;
     color: ${cv.textRole.subtle};
   }
@@ -73,7 +73,7 @@ export const rcStyles = `
   :where(.${RC_RATING_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     flex-shrink: 0;
     color: #FFD54F;
     font-size: ${typeScale.body3.fontSize}px;
@@ -103,11 +103,11 @@ export const rcStyles = `
   :where(.${RC_TAGS_CLASS}) {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${RC_TAG_CLASS}) {
-    padding: 2px var(--inset-chip);
+    padding: 2px var(--semantic-inset-chip);
     border-radius: 9999px;
     background: ${cv.surface.section};
     color: ${cv.textRole.subtle};

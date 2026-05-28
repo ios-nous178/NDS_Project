@@ -15,8 +15,8 @@ export const toastStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-default);
-    padding: var(--inset-card);
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-card);
     z-index: ${zIndex.toast};
     pointer-events: none;
     box-sizing: border-box;
@@ -33,9 +33,9 @@ export const toastStyles = `
   :where(.${TOAST_ITEM_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     max-width: var(--nds-toast-max-width, 400px);
-    padding: var(--nds-toast-padding, var(--inset-input) var(--inset-card-large));
+    padding: var(--nds-toast-padding, var(--semantic-inset-input) var(--semantic-inset-card-large));
     border-radius: var(--nds-toast-radius, 22px);
     font-family: ${fontFamily.web};
     font-size: var(--nds-toast-font-size, ${typeScale.body3.fontSize}px);

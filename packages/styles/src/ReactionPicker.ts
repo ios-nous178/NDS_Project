@@ -10,16 +10,16 @@ export const rpStyles = `
   :where(.${RP_CLASS}) {
     display: inline-flex;
     flex-wrap: wrap;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-family: ${fontFamily.web};
   }
 
   :where(.${RP_ITEM_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     height: 32px;
-    padding: 0 var(--inset-chip);
+    padding: 0 var(--semantic-inset-chip);
     border-radius: 9999px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};

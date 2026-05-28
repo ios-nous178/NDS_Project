@@ -43,7 +43,7 @@ export const carouselStyles = `
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     margin-top: ${spacing[16]}px;
   }
 
