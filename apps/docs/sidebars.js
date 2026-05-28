@@ -42,6 +42,7 @@ module.exports = {
         "components/overview",
         "components/gallery",
         "components/inventory",
+        "components/brand-coverage",
         "components/icons",
         {
           type: "category",

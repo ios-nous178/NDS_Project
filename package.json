@@ -14,6 +14,7 @@
   "scripts": {
     "generate:component-inventory": "node scripts/generate-component-inventory.mjs",
     "generate:component-guides": "node scripts/generate-component-guides.mjs",
+    "generate:brand-coverage": "node scripts/generate-brand-coverage.mjs",
     "generate:guide-docs": "node scripts/generate-guide-docs.mjs",
     "generate:tokens": "node scripts/sync-tokens.mjs --write && pnpm --filter=@nudge-design/tokens build",
     "lint:tokens": "node scripts/sync-tokens.mjs --check",
@@ -50,12 +51,12 @@
     "lint-staged": "lint-staged",
     "prepare": "test -d .git && husky || true"
   },
-  "prebuild": "pnpm generate:component-inventory && pnpm generate:component-guides",
-  "predev": "pnpm generate:component-inventory && pnpm generate:component-guides",
-  "predocs:dev": "pnpm generate:component-inventory && pnpm generate:component-guides",
-  "predocs:build": "pnpm generate:component-inventory && pnpm generate:component-guides",
-  "prestorybook": "pnpm generate:component-inventory && pnpm generate:component-guides",
-  "prelint": "pnpm generate:component-inventory && pnpm generate:component-guides",
+  "prebuild": "pnpm generate:component-inventory && pnpm generate:component-guides && pnpm generate:brand-coverage",
+  "predev": "pnpm generate:component-inventory && pnpm generate:component-guides && pnpm generate:brand-coverage",
+  "predocs:dev": "pnpm generate:component-inventory && pnpm generate:component-guides && pnpm generate:brand-coverage",
+  "predocs:build": "pnpm generate:component-inventory && pnpm generate:component-guides && pnpm generate:brand-coverage",
+  "prestorybook": "pnpm generate:component-inventory && pnpm generate:component-guides && pnpm generate:brand-coverage",
+  "prelint": "pnpm generate:component-inventory && pnpm generate:component-guides && pnpm generate:brand-coverage",
   "devDependencies": {
     "@changesets/cli": "^2.29.6",
     "@eslint/js": "^9.27.0",
