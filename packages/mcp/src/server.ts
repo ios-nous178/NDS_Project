@@ -174,6 +174,12 @@ for (const c of manifest.components) {
   const kebab = c.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
   ndsClassPrefixSet.add(`nds-${kebab}`);
 }
+// @nudge-design/styles 의 layout primitives — 컴포넌트가 아니라 클래스만 제공하므로
+// manifest.components 에 없다. validator 가 unknown-nds-class 로 잘못 잡지 않게 명시 추가.
+// 가이드: get_guide({ topic: 'pattern:admin-shell' }).
+ndsClassPrefixSet.add("nds-shell");
+ndsClassPrefixSet.add("nds-section");
+ndsClassPrefixSet.add("nds-form-row");
 // nds-* tag 별 attribute enum (예: nds-button.color = primary|secondary|assistive)
 const ndsAttrEnums = new Map<string, Map<string, string[]>>();
 for (const el of manifest.ndsHtmlElements ?? []) {
