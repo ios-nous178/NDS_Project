@@ -10,7 +10,7 @@ export const numberStepperStyles = `
   :where(.${NS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }

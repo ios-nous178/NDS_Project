@@ -84,7 +84,7 @@ export const lbStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.medium};
     background: rgba(0, 0, 0, 0.5);
-    padding: 6px var(--inset-input);
+    padding: 6px var(--semantic-inset-input);
     border-radius: 9999px;
   }
 

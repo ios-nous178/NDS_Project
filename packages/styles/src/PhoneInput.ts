@@ -31,7 +31,7 @@ export const phoneInputStyles = `
   :where(.${PI_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -66,7 +66,7 @@ export const phoneInputStyles = `
     display: inline-flex;
     align-items: center;
     gap: ${spacing[6]}px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border: none;
     background: transparent;
     color: ${cv.textRole.normal};
@@ -124,9 +124,9 @@ export const phoneInputStyles = `
   :where(.${PI_MENU_ITEM_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
-    padding: var(--inset-chip) ${spacing[10]}px;
+    padding: var(--semantic-inset-chip) ${spacing[10]}px;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -166,7 +166,7 @@ export const phoneInputStyles = `
   :where(.${PI_INPUT_CLASS}) {
     flex: 1;
     min-width: 0;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border: none;
     background: transparent;
     outline: none;

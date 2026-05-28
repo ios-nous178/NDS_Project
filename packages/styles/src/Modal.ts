@@ -26,7 +26,7 @@ export const modalStyles = `
     align-items: center;
     justify-content: center;
     z-index: ${zIndex.modal};
-    padding: var(--inset-card-large);
+    padding: var(--semantic-inset-card-large);
   }
 
   :where(.${OVERLAY_CLASS}) {
@@ -45,8 +45,8 @@ export const modalStyles = `
     max-width: var(--nds-modal-max-width, 332px);
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
-    padding: ${spacing[28]}px var(--inset-card) var(--inset-card);
+    gap: var(--semantic-gap-default);
+    padding: ${spacing[28]}px var(--semantic-inset-card) var(--semantic-inset-card);
     overflow: hidden;
     border-radius: var(--nds-modal-radius, ${radius.md}px);
     background-color: ${cv.surface.default};
@@ -61,7 +61,7 @@ export const modalStyles = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     padding: 0;
   }
 
@@ -129,13 +129,13 @@ export const modalStyles = `
   :where(.${FOOTER_CLASS}) {
     display: flex;
     width: 100%;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     box-sizing: border-box;
   }
 
   :where(.${FOOTER_CLASS}[data-layout="custom"]) {
     padding: 0;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     justify-content: center;
   }
 
@@ -149,7 +149,7 @@ export const modalStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[11]}px var(--inset-modal);
+    padding: ${spacing[11]}px var(--semantic-inset-modal);
     border-radius: ${radius.md}px;
     border: 1px solid transparent;
     cursor: pointer;

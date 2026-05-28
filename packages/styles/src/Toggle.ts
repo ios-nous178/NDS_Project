@@ -10,7 +10,7 @@ export const toggleStyles = `
   :where(.${TG_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     cursor: pointer;
     font-family: ${fontFamily.web};
     box-sizing: border-box;

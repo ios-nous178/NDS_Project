@@ -11,7 +11,7 @@ export const accordionStyles = `
   :where(.${ACC_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -28,7 +28,7 @@ export const accordionStyles = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--inset-card) var(--inset-card-large);
+    padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     border: none;
     background: transparent;
     cursor: pointer;
@@ -62,7 +62,7 @@ export const accordionStyles = `
   }
 
   :where(.${ACC_CONTENT_CLASS}) {
-    padding: 0 var(--inset-card-large) var(--inset-card);
+    padding: 0 var(--semantic-inset-card-large) var(--semantic-inset-card);
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     color: ${cv.textRole.subtle};

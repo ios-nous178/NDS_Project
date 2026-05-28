@@ -26,9 +26,9 @@ export const audioPlayerStyles = `
   :where(.${AP_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     width: 100%;
-    padding: var(--inset-card) var(--inset-card-large);
+    padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -133,7 +133,7 @@ export const audioPlayerStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
   }
 
   :where(.${AP_BUTTON_CLASS}) {

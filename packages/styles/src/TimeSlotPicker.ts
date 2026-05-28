@@ -13,7 +13,7 @@ export const timeSlotPickerStyles = `
   :where(.${TS_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -22,7 +22,7 @@ export const timeSlotPickerStyles = `
   :where(.${TS_GROUP_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${TS_GROUP_LABEL_CLASS}) {
@@ -35,7 +35,7 @@ export const timeSlotPickerStyles = `
   :where(.${TS_GRID_CLASS}) {
     display: grid;
     grid-template-columns: repeat(var(--nds-time-slot-cols, 4), 1fr);
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${TS_SLOT_CLASS}) {
@@ -43,7 +43,7 @@ export const timeSlotPickerStyles = `
     align-items: center;
     justify-content: center;
     height: 40px;
-    padding: 0 var(--inset-chip);
+    padding: 0 var(--semantic-inset-chip);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.sm}px;
     background: ${cv.surface.default};
@@ -87,7 +87,7 @@ export const timeSlotPickerStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--inset-modal);
+    padding: var(--semantic-inset-modal);
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;

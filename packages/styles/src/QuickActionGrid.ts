@@ -18,7 +18,7 @@ const QA_BADGE_CLASS = `${QA_CLASS}__badge`;
 export const qaStyles = `
   :where(.${QA_CLASS}) {
     display: grid;
-    gap: var(--nds-quick-action-gap, var(--gap-comfortable));
+    gap: var(--nds-quick-action-gap, var(--semantic-gap-comfortable));
     grid-template-columns: repeat(var(--nds-quick-action-cols, 4), 1fr);
     width: 100%;
     font-family: ${fontFamily.web};
@@ -29,8 +29,8 @@ export const qaStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-default);
-    padding: var(--inset-input) ${spacing[4]}px;
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-input) ${spacing[4]}px;
     border: none;
     background: transparent;
     cursor: pointer;

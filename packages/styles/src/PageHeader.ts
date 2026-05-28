@@ -16,8 +16,8 @@ export const phStyles = `
   :where(.${PH_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card-large) var(--inset-modal);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card-large) var(--semantic-inset-modal);
     background: var(--nds-page-header-bg, ${cv.surface.default});
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -30,7 +30,7 @@ export const phStyles = `
   :where(.${PH_TOP_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     min-height: 24px;
   }
 
@@ -66,7 +66,7 @@ export const phStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
   }
 
   :where(.${PH_TITLE_AREA_CLASS}) {
@@ -74,7 +74,7 @@ export const phStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${PH_TITLE_CLASS}) {
@@ -95,7 +95,7 @@ export const phStyles = `
   :where(.${PH_ACTIONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     flex-shrink: 0;
   }
 

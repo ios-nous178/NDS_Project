@@ -25,7 +25,7 @@ export const autocompleteStyles = `
     position: relative;
     display: inline-flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     width: var(--nds-autocomplete-width, auto);
     box-sizing: border-box;
@@ -44,7 +44,7 @@ export const autocompleteStyles = `
   :where(.${AC_INPUT_CLASS}) {
     width: 100%;
     height: ${sizing.input.default}px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -96,8 +96,8 @@ export const autocompleteStyles = `
   :where(.${AC_OPTION_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-input) var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-input) var(--semantic-inset-card);
     cursor: pointer;
     color: ${cv.textRole.normal};
     font-size: ${typeScale.body2.fontSize}px;
@@ -129,7 +129,7 @@ export const autocompleteStyles = `
 
   :where(.${AC_EMPTY_CLASS}),
   :where(.${AC_LOADING_CLASS}) {
-    padding: var(--inset-card);
+    padding: var(--semantic-inset-card);
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     text-align: center;

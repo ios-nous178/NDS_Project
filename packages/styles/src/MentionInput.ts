@@ -22,7 +22,7 @@ export const miStyles = `
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
   }
 
@@ -49,7 +49,7 @@ export const miStyles = `
     background: transparent;
     outline: none;
     resize: vertical;
-    padding: var(--inset-input) var(--inset-card);
+    padding: var(--semantic-inset-input) var(--semantic-inset-card);
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
@@ -76,8 +76,8 @@ export const miStyles = `
   :where(.${MI_ITEM_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-chip) var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-chip) var(--semantic-inset-card);
     cursor: pointer;
     color: ${cv.textRole.normal};
     transition: background-color ${transition.default};

@@ -18,7 +18,7 @@ export const formFieldStyles = `
   :where(.${FF_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -29,13 +29,13 @@ export const formFieldStyles = `
   :where(.${FF_ROOT_CLASS}[data-label-position="left"]) {
     flex-direction: row;
     align-items: flex-start;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
   }
 
   :where(.${FF_LABEL_ROW_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${FF_ROOT_CLASS}[data-label-position="left"]) > .${FF_LABEL_ROW_CLASS} {
@@ -48,7 +48,7 @@ export const formFieldStyles = `
   :where(.${FF_LABEL_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
@@ -76,7 +76,7 @@ export const formFieldStyles = `
   :where(.${FF_CONTROL_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     flex: 1 1 auto;
     min-width: 0;
   }
@@ -116,7 +116,7 @@ export const formFieldStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${FF_HELPER_CLASS}) {

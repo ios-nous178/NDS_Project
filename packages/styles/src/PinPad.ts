@@ -13,8 +13,8 @@ export const ppStyles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--gap-wide);
-    padding: var(--inset-card-large);
+    gap: var(--semantic-gap-wide);
+    padding: var(--semantic-inset-card-large);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -28,7 +28,7 @@ export const ppStyles = `
   :where(.${PP_DOTS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${PP_DOTS_CLASS}[data-error="true"]) {
@@ -63,7 +63,7 @@ export const ppStyles = `
   :where(.${PP_GRID_CLASS}) {
     display: grid;
     grid-template-columns: repeat(3, 72px);
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${PP_KEY_CLASS}) {

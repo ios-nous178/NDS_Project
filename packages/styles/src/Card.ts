@@ -35,7 +35,7 @@ export const cardStyles = `
     align-items: flex-start;
     gap: var(--nds-card-gap, ${spacing[12]}px);
     width: var(--nds-card-width, 100%);
-    padding: var(--nds-card-padding, var(--inset-card, 16px));
+    padding: var(--nds-card-padding, var(--semantic-inset-card, 16px));
     font-family: ${fontFamily.web};
     box-sizing: border-box;
     border-radius: var(--nds-card-radius, ${radius.lg}px);
@@ -102,7 +102,7 @@ export const cardStyles = `
   :where(.${CARD_CHIPS_CLASS}) {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--gap-tight, ${spacing[4]}px);
+    gap: var(--semantic-gap-tight, ${spacing[4]}px);
     align-items: flex-start;
   }
 
@@ -154,7 +154,7 @@ export const cardStyles = `
   :where(.${CARD_META_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-tight, ${spacing[4]}px);
+    gap: var(--semantic-gap-tight, ${spacing[4]}px);
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
@@ -199,19 +199,19 @@ export const cardStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: var(--gap-default, ${spacing[8]}px);
+    gap: var(--semantic-gap-default, ${spacing[8]}px);
     width: 100%;
   }
 
   :where(.${CARD_FOOTER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default, ${spacing[8]}px);
+    gap: var(--semantic-gap-default, ${spacing[8]}px);
     width: 100%;
   }
 
   :where(.${CARD_FOOTER_CLASS}[data-divider="true"]) {
-    padding-top: var(--inset-card, 16px);
+    padding-top: var(--semantic-inset-card, 16px);
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 `;

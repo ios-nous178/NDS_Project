@@ -1,5 +1,12 @@
 /* Auto-generated from packages/react/src/TipCard.tsx during the @nudge-design/styles split. */
-import { fontFamily, fontWeight, radius, spacing, transition, typeScale } from "@nudge-design/tokens";
+import {
+  fontFamily,
+  fontWeight,
+  radius,
+  spacing,
+  transition,
+  typeScale,
+} from "@nudge-design/tokens";
 
 const TC_CLASS = "nds-tip-card";
 const TC_ICON_CLASS = `${TC_CLASS}__icon`;
@@ -34,8 +41,8 @@ export const tcStyles = `
   :where(.${TC_CLASS}) {
     display: flex;
     align-items: flex-start;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card);
     background: var(--nds-tip-bg, ${TONE_BG.info});
     color: var(--nds-tip-fg, ${TONE_FG.info});
     border-radius: ${radius.lg}px;

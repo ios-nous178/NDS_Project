@@ -28,7 +28,7 @@ export const moodStyles = `
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
   }
 
@@ -42,7 +42,7 @@ export const moodStyles = `
     flex: 1 1 0;
     min-width: 0;
     cursor: pointer;
-    padding: var(--inset-chip) ${spacing[4]}px;
+    padding: var(--semantic-inset-chip) ${spacing[4]}px;
     border-radius: ${radius.lg}px;
     transition: background-color ${transition.default};
   }

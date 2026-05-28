@@ -1,5 +1,12 @@
 /* Auto-generated from packages/react/src/Snackbar.tsx during the @nudge-design/styles split. */
-import { fontFamily, fontWeight, radius, spacing, transition, typeScale } from "@nudge-design/tokens";
+import {
+  fontFamily,
+  fontWeight,
+  radius,
+  spacing,
+  transition,
+  typeScale,
+} from "@nudge-design/tokens";
 
 const SB_CLASS = "nds-snackbar";
 const SB_ICON_CLASS = `${SB_CLASS}__icon`;
@@ -13,8 +20,8 @@ export const snackbarStyles = `
   :where(.${SB_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-input) var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-input) var(--semantic-inset-card);
     border-radius: var(--nds-snackbar-radius, ${radius.md}px);
     background: var(--nds-snackbar-bg, var(--semantic-bg-section-default));
     color: var(--nds-snackbar-fg, var(--semantic-text-normal-default));
@@ -73,7 +80,7 @@ export const snackbarStyles = `
 
   :where(.${SB_ACTION_CLASS}) {
     height: 28px;
-    padding: 0 var(--inset-chip);
+    padding: 0 var(--semantic-inset-chip);
     border: none;
     background: rgba(255, 255, 255, 0.12);
     color: inherit;

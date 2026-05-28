@@ -14,7 +14,7 @@ export const radioStyles = `
     position: relative;
     display: inline-flex;
     align-items: flex-start;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     cursor: pointer;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -115,7 +115,7 @@ export const radioStyles = `
   :where(.${RADIO_GROUP_CLASS}) {
     display: flex;
     flex-direction: var(--nds-radio-group-direction, column);
-    gap: var(--nds-radio-group-gap, var(--nds-choice-group-gap, var(--gap-comfortable)));
+    gap: var(--nds-radio-group-gap, var(--nds-choice-group-gap, var(--semantic-gap-comfortable)));
     font-family: ${fontFamily.web};
   }
 

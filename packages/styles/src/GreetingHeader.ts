@@ -13,8 +13,8 @@ export const ghStyles = `
   :where(.${GH_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-loose);
-    padding: var(--inset-modal);
+    gap: var(--semantic-gap-loose);
+    padding: var(--semantic-inset-modal);
     background: ${cv.surface.default};
     border-radius: ${radius.lg}px;
     font-family: ${fontFamily.web};
@@ -29,7 +29,7 @@ export const ghStyles = `
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
   }
 
   :where(.${GH_GREETING_CLASS}) {

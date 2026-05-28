@@ -15,8 +15,8 @@ const JE_THUMB_CLASS = `${JE_CLASS}__thumb`;
 export const journalStyles = `
   :where(.${JE_CLASS}) {
     display: flex;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -33,13 +33,13 @@ export const journalStyles = `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${JE_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${JE_MOOD_CLASS}) {
@@ -87,11 +87,11 @@ export const journalStyles = `
   :where(.${JE_TAGS_CLASS}) {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${JE_TAG_CLASS}) {
-    padding: 2px var(--inset-chip);
+    padding: 2px var(--semantic-inset-chip);
     border-radius: 9999px;
     background: ${cv.surface.section};
     color: ${cv.textRole.subtle};

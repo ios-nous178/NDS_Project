@@ -10,7 +10,7 @@ export const otpStyles = `
   :where(.${OTP_ROOT_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }

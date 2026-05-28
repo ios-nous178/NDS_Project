@@ -18,8 +18,8 @@ export const heatmapStyles = `
   :where(.${HM_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-loose);
-    padding: var(--inset-card-large);
+    gap: var(--semantic-gap-loose);
+    padding: var(--semantic-inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -31,7 +31,7 @@ export const heatmapStyles = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${HM_TITLE_CLASS}) {
@@ -45,7 +45,7 @@ export const heatmapStyles = `
   :where(.${HM_LEGEND_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     font-size: ${typeScale.caption2.fontSize}px;
     color: ${cv.textRole.subtle};
   }
@@ -59,14 +59,14 @@ export const heatmapStyles = `
   :where(.${HM_GRID_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${HM_WEEKDAYS_CLASS}),
   :where(.${HM_CELLS_CLASS}) {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${HM_WEEKDAY_CLASS}) {

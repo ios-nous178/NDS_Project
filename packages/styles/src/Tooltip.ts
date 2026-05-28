@@ -22,7 +22,7 @@ export const tooltipStyles = `
   :where(.${TT_CONTENT_CLASS}) {
     position: absolute;
     z-index: ${zIndex.popup};
-    padding: var(--inset-chip) var(--inset-input);
+    padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     background: ${cv.surface.inverse};
     color: ${cv.textRole.inverse};
     font-size: ${typeScale.caption1.fontSize}px;

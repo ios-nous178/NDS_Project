@@ -13,7 +13,7 @@ export const sigStyles = `
   :where(.${SP_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -60,12 +60,12 @@ export const sigStyles = `
   :where(.${SP_CONTROLS_CLASS}) {
     display: flex;
     justify-content: flex-end;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${SP_BTN_CLASS}) {
     height: 32px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border-radius: ${radius.md}px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};

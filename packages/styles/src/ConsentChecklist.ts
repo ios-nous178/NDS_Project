@@ -36,8 +36,8 @@ export const consentStyles = `
   :where(.${CL_ALL_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
-    padding: var(--inset-input) 0;
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-input) 0;
     cursor: pointer;
   }
 
@@ -51,7 +51,7 @@ export const consentStyles = `
     display: flex;
     flex-direction: column;
     gap: ${spacing[2]}px;
-    padding: var(--inset-chip) 0;
+    padding: var(--semantic-inset-chip) 0;
   }
 
   :where(.${CL_ITEM_CLASS}) {
@@ -62,14 +62,14 @@ export const consentStyles = `
   :where(.${CL_ITEM_HEAD_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
-    padding: var(--inset-chip) 0;
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-chip) 0;
   }
 
   :where(.${CL_LABEL_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     flex: 1;
     cursor: pointer;
     min-width: 0;
@@ -157,7 +157,7 @@ export const consentStyles = `
 
   :where(.${CL_DETAIL_CLASS}) {
     margin: ${spacing[4]}px 0 ${spacing[8]}px 32px;
-    padding: var(--inset-input) var(--inset-input);
+    padding: var(--semantic-inset-input) var(--semantic-inset-input);
     background: ${cv.surface.page};
     border-radius: ${radius.md}px;
     font-size: ${typeScale.caption1.fontSize}px;

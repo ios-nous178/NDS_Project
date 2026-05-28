@@ -39,12 +39,12 @@ export const ccStyles = `
   :where(.${CC_LEFT_CLASS}) {
     flex-shrink: 0;
     width: 110px;
-    padding: var(--inset-card) var(--inset-input);
+    padding: var(--semantic-inset-card) var(--semantic-inset-input);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${CC_DISCOUNT_CLASS}) {
@@ -93,8 +93,8 @@ export const ccStyles = `
     flex: 1;
     display: flex;
     align-items: center;
-    gap: var(--gap-comfortable);
-    padding: var(--inset-card) var(--inset-card-large);
+    gap: var(--semantic-gap-comfortable);
+    padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     color: ${cv.textRole.normal};
     background: ${cv.surface.default};
   }
@@ -131,7 +131,7 @@ export const ccStyles = `
   :where(.${CC_ACTION_CLASS}) {
     flex-shrink: 0;
     height: 32px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border: none;
     border-radius: 9999px;
     background: var(--semantic-bg-brand-default);

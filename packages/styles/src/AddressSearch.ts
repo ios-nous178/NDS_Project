@@ -25,7 +25,7 @@ export const asStyles = `
   :where(.${AS_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     width: 100%;
     font-family: ${fontFamily.web};
   }
@@ -38,14 +38,14 @@ export const asStyles = `
 
   :where(.${AS_FIELD_ROW_CLASS}) {
     display: flex;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${AS_INPUT_CLASS}) {
     flex: 1;
     min-width: 0;
     height: ${sizing.input.default}px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -59,7 +59,7 @@ export const asStyles = `
 
   :where(.${AS_BTN_CLASS}) {
     height: ${sizing.input.default}px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border-radius: ${radius.md}px;
     border: none;
     background: ${cv.surface.inverse};
@@ -87,7 +87,7 @@ export const asStyles = `
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: var(--inset-input) var(--inset-card);
+    padding: var(--semantic-inset-input) var(--semantic-inset-card);
     border-bottom: 1px solid ${cv.borderRole.subtle};
     cursor: pointer;
     transition: background-color ${transition.default};
@@ -106,7 +106,7 @@ export const asStyles = `
   }
 
   :where(.${AS_RESULT_CLASS}[data-empty="true"]) {
-    padding: var(--inset-card);
+    padding: var(--semantic-inset-card);
     color: ${cv.textRole.subtle};
     text-align: center;
     border: 1px solid ${cv.borderRole.subtle};
@@ -117,8 +117,8 @@ export const asStyles = `
   :where(.${AS_DETAIL_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-tight);
-    padding: var(--inset-input);
+    gap: var(--semantic-gap-tight);
+    padding: var(--semantic-inset-input);
     background: ${cv.surface.section};
     border-radius: ${radius.md}px;
   }
@@ -130,7 +130,7 @@ export const asStyles = `
 
   :where(.${AS_DETAIL_CLASS}) input {
     height: 40px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};

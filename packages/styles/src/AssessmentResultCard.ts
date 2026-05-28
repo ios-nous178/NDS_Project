@@ -36,7 +36,7 @@ export const assessmentResultStyles = `
     display: flex;
     flex-direction: column;
     gap: ${spacing[20]}px;
-    padding: var(--inset-card-large) var(--inset-modal);
+    padding: var(--semantic-inset-card-large) var(--semantic-inset-modal);
     background: var(--nds-ar-card-bg);
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
@@ -75,7 +75,7 @@ export const assessmentResultStyles = `
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${AR_TITLE_CLASS}) {
@@ -92,7 +92,7 @@ export const assessmentResultStyles = `
     display: inline-flex;
     align-items: center;
     /* 단계 칩은 단순 보조 아닌 카드의 평가 핵심 — body3 톤으로 가독성·접근성 확보. */
-    padding: ${spacing[6]}px var(--inset-input);
+    padding: ${spacing[6]}px var(--semantic-inset-input);
     border-radius: ${radius.pill}px;
     background: var(--nds-ar-level-bg);
     color: var(--nds-ar-level-text);
@@ -104,7 +104,7 @@ export const assessmentResultStyles = `
   :where(.${AR_BODY_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-loose);
+    gap: var(--semantic-gap-loose);
   }
 
   :where(.${AR_SCORE_CLASS}) {
@@ -144,7 +144,7 @@ export const assessmentResultStyles = `
 
   :where(.${AR_GAUGE_BAR_CLASS}) {
     display: flex;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${AR_GAUGE_SEG_CLASS}) {
@@ -173,7 +173,7 @@ export const assessmentResultStyles = `
 
   :where(.${AR_GAUGE_LABELS_CLASS}) {
     display: flex;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${AR_GAUGE_LABEL_CLASS}) {
@@ -201,7 +201,7 @@ export const assessmentResultStyles = `
 
   :where(.${AR_FOOTER_CLASS}) {
     margin-top: ${spacing[4]}px;
-    padding-top: var(--inset-input);
+    padding-top: var(--semantic-inset-input);
     border-top: 1px solid ${cv.borderRole.subtle};
     display: flex;
     justify-content: flex-end;
@@ -211,7 +211,7 @@ export const assessmentResultStyles = `
     all: unset;
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     padding: ${spacing[6]}px ${spacing[10]}px;
     border-radius: ${radius.sm}px;
     font-family: inherit;

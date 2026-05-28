@@ -22,7 +22,7 @@ export const tiStyles = `
   :where(.${TI_ROOT_CLASS}) {
     display: inline-flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -41,7 +41,7 @@ export const tiStyles = `
     align-items: center;
     gap: ${spacing[6]}px;
     min-height: 48px;
-    padding: var(--inset-chip) var(--inset-input);
+    padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
@@ -65,7 +65,7 @@ export const tiStyles = `
   :where(.${TI_TAG_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
     height: 26px;
     padding: 0 ${spacing[4]}px 0 ${spacing[10]}px;
     border-radius: 9999px;

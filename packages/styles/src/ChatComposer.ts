@@ -23,8 +23,8 @@ export const composerStyles = `
   :where(.${CC_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
-    padding: var(--inset-input);
+    gap: var(--semantic-gap-default);
+    padding: var(--semantic-inset-input);
     background: ${cv.surface.default};
     border-top: 1px solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};
@@ -33,7 +33,7 @@ export const composerStyles = `
 
   :where(.${CC_QUICK_CLASS}) {
     display: flex;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     overflow-x: auto;
     padding-bottom: ${spacing[4]}px;
     scrollbar-width: none;
@@ -43,7 +43,7 @@ export const composerStyles = `
   :where(.${CC_QUICK_ITEM_CLASS}) {
     flex-shrink: 0;
     height: 32px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border-radius: 9999px;
     border: 1px solid ${cv.borderRole.normal};
     background: ${cv.surface.default};
@@ -61,16 +61,16 @@ export const composerStyles = `
   :where(.${CC_INPUT_AREA_CLASS}) {
     display: flex;
     align-items: flex-end;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     background: ${cv.surface.section};
     border-radius: ${radius.lg}px;
-    padding: var(--inset-chip);
+    padding: var(--semantic-inset-chip);
   }
 
   :where(.${CC_LEFT_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${CC_BTN_CLASS}) {
@@ -106,7 +106,7 @@ export const composerStyles = `
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.textRole.normal};
-    padding: var(--inset-chip) 4px;
+    padding: var(--semantic-inset-chip) 4px;
     max-height: var(--nds-chat-composer-max, 120px);
     overflow-y: auto;
     box-sizing: border-box;

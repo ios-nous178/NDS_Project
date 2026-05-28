@@ -20,7 +20,7 @@ export const tpStyles = `
   :where(.${TP_ROOT_CLASS}) {
     display: inline-flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
   }
 
@@ -36,7 +36,7 @@ export const tpStyles = `
     display: flex;
     align-items: center;
     height: ${sizing.input.default}px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};

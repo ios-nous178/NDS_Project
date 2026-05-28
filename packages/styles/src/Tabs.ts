@@ -57,7 +57,7 @@ export const tabsStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
   }
 
   :where(.${TABS_TRIGGER_ICON_CLASS}) {
@@ -94,14 +94,14 @@ export const tabsStyles = `
    * 을 inset-input(12) 으로 축소. 글자 수가 더 많으면 ellipsis 로 잘린다. */
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="mobile"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.line.mobile}px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.line.pc}px;
-    padding: 0 var(--inset-card-large);
+    padding: 0 var(--semantic-inset-card-large);
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
@@ -137,14 +137,14 @@ export const tabsStyles = `
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"]) {
     background: ${cv.surface.default};
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="mobile"]) {
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"]::-webkit-scrollbar) {
@@ -165,14 +165,14 @@ export const tabsStyles = `
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="mobile"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.chip.mobile}px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
     height: ${sizing.tabs.chip.pc}px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
   }
@@ -209,7 +209,7 @@ export const tabsStyles = `
     align-items: center;
     justify-content: center;
     height: ${sizing.tabs.segment.pc}px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     background: ${cv.surface.page};
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;

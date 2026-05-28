@@ -45,7 +45,7 @@ export const cmStyles = `
     position: absolute;
     width: 320px;
     max-width: calc(100vw - ${spacing[32]}px);
-    padding: var(--inset-card-large);
+    padding: var(--semantic-inset-card-large);
     background: ${cv.surface.default};
     border-radius: ${radius.lg}px;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
@@ -57,7 +57,7 @@ export const cmStyles = `
   :where(.${CM_STEP_CLASS}) {
     display: inline-flex;
     align-items: center;
-    padding: 2px var(--inset-chip);
+    padding: 2px var(--semantic-inset-chip);
     border-radius: 9999px;
     background: ${"#91CAF6"};
     color: ${cv.textRole.brand};
@@ -86,7 +86,7 @@ export const cmStyles = `
     justify-content: space-between;
     align-items: center;
     margin-top: ${spacing[20]}px;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
   }
 
   :where(.${CM_DOTS_CLASS}) {
@@ -111,12 +111,12 @@ export const cmStyles = `
   :where(.${CM_ACTIONS_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-tight);
+    gap: var(--semantic-gap-tight);
   }
 
   :where(.${CM_SKIP_CLASS}) {
     height: 36px;
-    padding: 0 var(--inset-input);
+    padding: 0 var(--semantic-inset-input);
     border: none;
     background: transparent;
     color: ${cv.textRole.subtle};
@@ -134,7 +134,7 @@ export const cmStyles = `
 
   :where(.${CM_BTN_CLASS}) {
     height: 36px;
-    padding: 0 var(--inset-card);
+    padding: 0 var(--semantic-inset-card);
     border-radius: ${radius.md}px;
     border: none;
     background: ${cv.surface.brand};

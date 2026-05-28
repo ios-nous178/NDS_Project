@@ -9,7 +9,7 @@ export const etStyles = `
   :where(.${ET_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     color: ${cv.textRole.normal};
   }

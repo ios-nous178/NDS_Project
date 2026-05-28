@@ -30,7 +30,7 @@ export const timelineStyles = `
 
   :where(.${TL_ITEM_CLASS}) {
     display: flex;
-    gap: var(--gap-comfortable);
+    gap: var(--semantic-gap-comfortable);
     align-items: stretch;
   }
 
@@ -85,7 +85,7 @@ export const timelineStyles = `
   :where(.${TL_BODY_CLASS}) {
     flex: 1;
     min-width: 0;
-    padding-bottom: var(--inset-card-large);
+    padding-bottom: var(--semantic-inset-card-large);
     display: flex;
     flex-direction: column;
     gap: ${spacing[2]}px;
@@ -104,7 +104,7 @@ export const timelineStyles = `
   :where(.${TL_TITLE_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-default);
+    gap: var(--semantic-gap-default);
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.bold};
@@ -121,7 +121,7 @@ export const timelineStyles = `
   :where(.${TL_BADGE_CLASS}) {
     display: inline-flex;
     align-items: center;
-    padding: ${spacing[2]}px var(--inset-chip);
+    padding: ${spacing[2]}px var(--semantic-inset-chip);
     border-radius: ${radius.pill}px;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
