@@ -176,7 +176,7 @@ export function validateMockupSource(
               line: ln,
               detail: `${value}px (4 의 배수 아님)`,
               suggestion:
-                "4pt grid 위반. 4 의 배수(4/8/12/16/20/24…) 로 보정하거나 var(--gap-*|--inset-*) semantic 토큰 사용.",
+                "4pt grid 위반. 4 의 배수(4/8/12/16/20/24…) 로 보정하거나 var(--semantic-gap-*|--semantic-inset-*) semantic 토큰 사용.",
             });
           }
         }
@@ -193,7 +193,7 @@ export function validateMockupSource(
         line: ln,
         detail: line.trim(),
         suggestion:
-          "padding/margin/gap 은 primitive var(--spacing-*) 가 아니라 semantic var(--gap-*|--inset-*) 만 사용하세요. find_token({ group: 'gap' }) / find_token({ group: 'inset' }) 참조.",
+          "padding/margin/gap 은 primitive var(--spacing-*) 가 아니라 semantic var(--semantic-gap-*|--semantic-inset-*) 만 사용하세요. find_token({ group: 'gap' }) / find_token({ group: 'inset' }) 참조.",
       });
     }
     // 3. native button/input/select
@@ -634,7 +634,7 @@ export function validateMockupSource(
       line: 1,
       detail: `한 mockup 에 Card.Root 가 ${cardRootTotal}개 — 모든 정보 단위를 카드로 감싸는 패턴.`,
       suggestion:
-        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--gap-loose) + heading + Divider 로 위계를 표현하세요. bannedPatterns: card-everything 참조.",
+        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--semantic-gap-loose) + heading + Divider 로 위계를 표현하세요. bannedPatterns: card-everything 참조.",
     });
   }
 

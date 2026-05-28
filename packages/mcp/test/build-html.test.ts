@@ -208,7 +208,7 @@ describe("auditMockupWorkspace", () => {
     fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
     fs.writeFileSync(
       path.join(tmp, "src", "styles.css"),
-      `:root {\n  --color-semantic-bg-primary: #fff;\n  --gap-md: 16px;\n}`,
+      `:root {\n  --semantic-bg-brand-default: #fff;\n  --semantic-gap-default: 16px;\n}`,
     );
     const violations = auditMockupWorkspace(tmp);
     const v = violations.find((x) => x.rule === "inline-root-tokens");
@@ -491,7 +491,7 @@ describe("auditMockupWorkspace — html intent", () => {
     fs.writeFileSync(path.join(tmp, "src", "main.ts"), `// entry`);
     fs.writeFileSync(
       path.join(tmp, "src", "index.css"),
-      `:root { --color-semantic-bg-primary: #fff; }`,
+      `:root { --semantic-bg-brand-default: #fff; }`,
     );
     const v = auditMockupWorkspace(tmp, "html").find((x) => x.rule === "inline-root-tokens");
     expect(v).toBeTruthy();

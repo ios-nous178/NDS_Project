@@ -8,6 +8,20 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+// metadata-only import — base64 dataUri 페이로드를 MCP 번들로 끌어오지 않음.
+import {
+  BRAND_LOGO_METADATA,
+  type BrandSlug as AssetsBrandSlug,
+} from "@nudge-design/assets/brand-logo-metadata";
+import {
+  SNS_LOGO_METADATA,
+  SNS_SERVICES,
+  type SnsLogoColor,
+  type SnsService,
+} from "@nudge-design/assets/sns-logo-metadata";
+import { PROFILE_IMAGE_METADATA, PROFILE_IMAGE_IDS } from "@nudge-design/assets/profile-images";
+import { ILLUSTRATION_METADATA, ILLUSTRATION_IDS } from "@nudge-design/assets/illustrations";
+import { MARATHON_EVENT_METADATA, MARATHON_EVENT_IDS } from "@nudge-design/assets/marathon-events";
 import {
   ADMIN_CMS_GUIDE,
   COMPONENT_GUIDES,
@@ -68,7 +82,7 @@ const OPTIONAL_PACKAGES = ["@nudge-design/tailwind-preset", "@nudge-design/html"
 /**
  * intent: 'html' 셋업에서 필요한 최소 패키지 셋.
  * - @nudge-design/html: 모든 <nds-*> Web Component 정의 + side-effect runtime
- * - @nudge-design/tokens: 시멘틱 CSS 변수 (--semantic-* / --gap-* / --inset-* 등)
+ * - @nudge-design/tokens: 시멘틱 CSS 변수 (--semantic-* / --nds-* 등)
  * - @nudge-design/icons: <nds-*> 안에서 사용하는 인라인 SVG 모음 (선택이지만 권장)
  *
  * @nudge-design/react 는 의도적으로 제외 — 이 워크플로우는 .tsx 를 쓰지 않는다.
@@ -495,7 +509,7 @@ export function getInstallCommandHtml(args: { tgzDir?: string }) {
 
 /**
  * vanilla-ts 프로젝트의 src/main.ts 최상단에 들어갈 side-effect import 묶음.
- * - tokens CSS: --semantic-* / --gap-* 등 시멘틱 변수 주입
+ * - tokens CSS: --semantic-* / --nds-* 등 시멘틱 변수 주입
  * - html/styles.css: nds-* 컴포넌트 스타일
  * - html/runtime: 모든 <nds-*> custom element 정의 (side-effect)
  */
@@ -1274,6 +1288,39 @@ export function getBrandInfo(args: { brand: string }) {
     .filter((name) => name.startsWith(componentPrefix) && name !== componentPrefix)
     .sort();
 
+  // brand-logo 매니페스트 — @nudge-design/assets SSOT 미러
+  const logoMetaSet = BRAND_LOGO_METADATA[slug as AssetsBrandSlug] ?? {};
+  const logoVariants = Object.keys(logoMetaSet);
+  const logoFiles = logoVariants.map((variant) => ({
+    variant,
+    filename: logoMetaSet[variant as keyof typeof logoMetaSet]!.filename,
+    mimeType: logoMetaSet[variant as keyof typeof logoMetaSet]!.mimeType,
+    publicPath: `/brand-logos/${logoMetaSet[variant as keyof typeof logoMetaSet]!.filename}`,
+  }));
+
+  // SNS 로그인 자산 — 현재 Runmile 라이브러리에서만 정의됨. 다른 브랜드가
+  // 추후 자체 SNS 자산을 가지면 brand 별 분기 추가.
+  const snsByBrand: Record<string, readonly SnsService[]> = {
+    runmile: SNS_SERVICES,
+  };
+  const snsForBrand = snsByBrand[slug];
+  const snsFiles = snsForBrand
+    ? snsForBrand.flatMap((sns) => {
+        const set = SNS_LOGO_METADATA[sns];
+        return (Object.keys(set) as SnsLogoColor[]).map((color) => {
+          const meta = set[color]!;
+          return {
+            sns,
+            color,
+            filename: meta.filename,
+            mimeType: meta.mimeType,
+            figmaNodeId: meta.figmaNodeId,
+            publicPath: `/${meta.filename}`,
+          };
+        });
+      })
+    : [];
+
   return {
     ok: true,
     ...brand,
@@ -1283,6 +1330,97 @@ export function getBrandInfo(args: { brand: string }) {
       brandIcons.length > 0
         ? `이 브랜드 모드(brand='${slug}') 로 작업 시 위 ${brandIcons.length}개 아이콘은 같은 의미의 공용 아이콘보다 **우선 사용**. 매칭이 없는 의미만 공용 fallback. 공통 컴포넌트(Footer/BottomNav 등) 의 *구현* 에는 brand 분기 로직을 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.`
         : `이 브랜드 전용 prefix 아이콘은 아직 없습니다. 공용 @nudge-design/icons 의 아이콘을 그대로 사용하세요.`,
+    assets: {
+      logos: {
+        package: "@nudge-design/assets",
+        variants: logoVariants,
+        files: logoFiles,
+        importExample:
+          logoVariants.length > 0
+            ? `import { getBrandLogo } from "@nudge-design/assets";\nconst logo = getBrandLogo("${slug}"${logoVariants[0] === "default" ? "" : `, "${logoVariants[0]}"`});\n// → { filename, dataUri, mimeType }`
+            : null,
+        publicHosting: {
+          baseDir: "public/brand-logos/",
+          assetBaseUrlAttr: "/brand-logos",
+          note:
+            logoVariants.length > 0
+              ? `외부 소비자가 헤더/푸터(<BrandHeader brand='${slug}' /> 또는 <nds-brand-header brand='${slug}'>)를 사용할 때 위 'files' 의 파일들을 public/brand-logos/ 에 호스팅. asset-base-url 미지정 시 default '/brand-logos' 사용.`
+              : `'${slug}' 브랜드는 아직 로고 자산이 등록되지 않았습니다. packages/assets/src/brand-logos/ 에 추가 후 brand-logo-metadata.ts 에 등록.`,
+        },
+      },
+      snsLogos: snsForBrand
+        ? {
+            package: "@nudge-design/assets",
+            services: snsForBrand,
+            files: snsFiles,
+            importExample: `import { getSnsLogo } from "@nudge-design/assets";\nconst logo = getSnsLogo("naver", "main");\n// → { filename, dataUri, mimeType, figmaNodeId }`,
+            publicHosting: {
+              baseDir: "public/sns-logos/",
+              note: `Runmile 라이브러리 (Figma 107:1045) 의 SNS 로그인 버튼 자산. 4 서비스(naver/kakao/google/apple) × 색상(white/main/black) 조합. 외부 소비자가 SNS 로그인 화면을 만들 때 \`public/sns-logos/{service}-{color}.svg\` 로 호스팅하거나, dataUri 로 직접 인라인.`,
+            },
+          }
+        : null,
+      profileImages:
+        slug === "runmile"
+          ? {
+              package: "@nudge-design/assets",
+              ids: PROFILE_IMAGE_IDS,
+              files: PROFILE_IMAGE_IDS.map((id) => ({
+                id,
+                filename: PROFILE_IMAGE_METADATA[id].filename,
+                mimeType: PROFILE_IMAGE_METADATA[id].mimeType,
+                figmaNodeId: PROFILE_IMAGE_METADATA[id].figmaNodeId,
+                source: PROFILE_IMAGE_METADATA[id].source,
+                publicPath: `/${PROFILE_IMAGE_METADATA[id].filename}`,
+              })),
+              importExample: `import { getProfileImage } from "@nudge-design/assets";\nconst meta = getProfileImage(1);\n// → { filename: "profile-images/profile-1.jpg", mimeType, figmaNodeId, source }`,
+              publicHosting: {
+                baseDir: "public/profile-images/",
+                note: `Runmile 라이브러리 21:136 의 사용자 프로필 기본 이미지 12종. id 1/2/9~12 는 단일 raster export (원본 사진/일러스트, ~600KB max), id 3~8 은 Figma screenshot flatten 24×24 (~1.5KB). 모두 파일 호스팅으로 사용 — dataUri 미제공.`,
+              },
+            }
+          : null,
+      illustrations:
+        slug === "runmile"
+          ? {
+              package: "@nudge-design/assets",
+              ids: ILLUSTRATION_IDS,
+              files: ILLUSTRATION_IDS.map((id) => ({
+                id,
+                filename: ILLUSTRATION_METADATA[id].filename,
+                mimeType: ILLUSTRATION_METADATA[id].mimeType,
+                figmaNodeId: ILLUSTRATION_METADATA[id].figmaNodeId,
+                figmaNodeName: ILLUSTRATION_METADATA[id].figmaNodeName,
+                publicPath: `/${ILLUSTRATION_METADATA[id].filename}`,
+              })),
+              importExample: `import { getIllustration } from "@nudge-design/assets";\nconst meta = getIllustration("page-error");\n// → { filename: "illustrations/page-error.png", mimeType: "image/png", figmaNodeId, figmaNodeName }`,
+              publicHosting: {
+                baseDir: "public/illustrations/",
+                note: `Runmile 라이브러리 55:955 의 빈 상태 / 에러 / 알람 일러스트 10종 (140×140 PNG). Figma screenshot flatten 으로 export (원본은 multi-layer composite). 파일 호스팅으로 사용.`,
+              },
+            }
+          : null,
+      marathonEvents:
+        slug === "runmile"
+          ? {
+              package: "@nudge-design/assets",
+              ids: MARATHON_EVENT_IDS,
+              files: MARATHON_EVENT_IDS.map((id) => ({
+                id,
+                filename: MARATHON_EVENT_METADATA[id].filename,
+                mimeType: MARATHON_EVENT_METADATA[id].mimeType,
+                figmaNodeId: MARATHON_EVENT_METADATA[id].figmaNodeId,
+                figmaNodeName: MARATHON_EVENT_METADATA[id].figmaNodeName,
+                publicPath: `/${MARATHON_EVENT_METADATA[id].filename}`,
+              })),
+              importExample: `import { getMarathonEvent } from "@nudge-design/assets";\nconst meta = getMarathonEvent("hangang-night-run");\n// → { filename: "marathon-events/hangang-night-run.png", mimeType, figmaNodeName: "한강나이트런" }`,
+              publicHosting: {
+                baseDir: "public/marathon-events/",
+                note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종 (180×180 PNG, ~40KB each). 댕댕이레이스/개나리런/포켓몬런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
+              },
+            }
+          : null,
+    },
     usage: {
       cssImport: brand.cssImport
         ? `import "${brand.cssImport}";`
