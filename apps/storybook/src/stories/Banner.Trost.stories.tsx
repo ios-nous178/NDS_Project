@@ -45,7 +45,7 @@ export const AppDownload: Story = {
           alignItems: "center",
           justifyContent: "space-between",
           width: "100%",
-          padding: "var(--inset-modal) 0",
+          padding: "var(--semantic-inset-modal) 0",
         }}
       >
         <div>
@@ -68,9 +68,9 @@ export const AppDownload: Story = {
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "var(--gap-tight)",
+              gap: "var(--semantic-gap-tight)",
               marginTop: 16,
-              padding: "var(--inset-input) 32px",
+              padding: "var(--semantic-inset-input) 32px",
               background: "#4968FF",
               color: "#fff",
               fontSize: 16,
@@ -114,7 +114,7 @@ export const CashtalkSubs: Story = {
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
-          gap: "var(--gap-default)",
+          gap: "var(--semantic-gap-default)",
         }}
       >
         <img

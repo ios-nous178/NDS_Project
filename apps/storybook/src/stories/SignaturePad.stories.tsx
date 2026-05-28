@@ -34,7 +34,7 @@ export const SaveOnSubmit: Story = {
     return (
       <div style={{ width: 480 }}>
         <SignaturePad ref={ref} label="서명" />
-        <div style={{ display: "flex", gap: "var(--gap-default)", marginTop: 12 }}>
+        <div style={{ display: "flex", gap: "var(--semantic-gap-default)", marginTop: 12 }}>
           <button
             type="button"
             onClick={() => setSavedUrl(ref.current?.toDataURL() ?? null)}

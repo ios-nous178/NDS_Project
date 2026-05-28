@@ -27,7 +27,7 @@ export const Playground: Story = {
         <div
           style={{
             display: "flex",
-            gap: "var(--gap-default)",
+            gap: "var(--semantic-gap-default)",
             marginTop: 12,
             justifyContent: "center",
           }}

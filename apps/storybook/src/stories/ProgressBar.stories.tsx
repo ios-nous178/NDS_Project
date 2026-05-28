@@ -28,7 +28,14 @@ export const Playground: Story = {};
 export const Sizes: Story = {
   name: "Size/비교",
   render: () => (
-    <div style={{ width: 300, display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div
+      style={{
+        width: 300,
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--semantic-gap-loose)",
+      }}
+    >
       <ProgressBar value={30} size="sm" />
       <ProgressBar value={60} size="md" />
       <ProgressBar value={90} size="lg" />
@@ -39,7 +46,14 @@ export const Sizes: Story = {
 export const CustomColor: Story = {
   name: "Example/색상 오버라이드",
   render: () => (
-    <div style={{ width: 300, display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div
+      style={{
+        width: 300,
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--semantic-gap-loose)",
+      }}
+    >
       <ProgressBar value={100} color="#00A07C" />
       <ProgressBar value={75} color="#ED2E77" />
       <ProgressBar value={40} color="#FFC303" />

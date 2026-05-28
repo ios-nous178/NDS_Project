@@ -42,7 +42,7 @@ export const BrokenImage: Story = {
 export const AllSizes: Story = {
   name: "Size/전체 비교",
   render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}>
       <Avatar size="xs" name="A" />
       <Avatar size="sm" name="BC" />
       <Avatar size="md" name="홍길동" />

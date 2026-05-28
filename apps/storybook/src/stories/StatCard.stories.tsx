@@ -27,7 +27,7 @@ export const Grid: Story = {
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(2, 1fr)",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
         width: 600,
       }}
     >

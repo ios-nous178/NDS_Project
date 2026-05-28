@@ -93,7 +93,7 @@ export const ContentCarousel: Story = {
           <div
             key={n}
             style={{
-              padding: "var(--inset-modal)",
+              padding: "var(--semantic-inset-modal)",
               background: "var(--semantic-bg-section-default)",
               borderRadius: 12,
             }}

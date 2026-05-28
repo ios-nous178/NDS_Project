@@ -41,7 +41,7 @@ type Story = StoryObj<TabsProps>;
 const mobileFrame: React.CSSProperties = { width: 390 };
 const pcFrame: React.CSSProperties = { width: 720 };
 const segmentFrame: React.CSSProperties = { width: 1024 };
-const panelStyle: React.CSSProperties = { padding: "var(--inset-card-large)" };
+const panelStyle: React.CSSProperties = { padding: "var(--semantic-inset-card-large)" };
 
 /* ────────────────────────────────────────────
  * 데모용 아이콘 (Segment 변형)
@@ -108,8 +108,8 @@ function ShowcaseSection({
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-loose)",
-        padding: "var(--inset-modal) 0",
+        gap: "var(--semantic-gap-loose)",
+        padding: "var(--semantic-inset-modal) 0",
         borderTop: `1px solid ${colors.neutral[100]}`,
       }}
     >
@@ -213,18 +213,18 @@ function OverviewCard({
     <div
       style={{
         flex: 1,
-        padding: "var(--inset-card-large)",
+        padding: "var(--semantic-inset-card-large)",
         background: colors.neutral[50],
         borderRadius: 12,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-default)",
+        gap: "var(--semantic-gap-default)",
       }}
     >
       <span
         style={{
           alignSelf: "flex-start",
-          padding: "3px var(--inset-chip)",
+          padding: "3px var(--semantic-inset-chip)",
           background: colors.neutral["00"],
           border: `1px solid ${colors.neutral[200]}`,
           borderRadius: 999,
@@ -247,7 +247,9 @@ export const Overview: Story = {
   name: "Guide/Overview",
   parameters: { layout: "padded" },
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-loose)", width: "100%", maxWidth: 1200 }}>
+    <div
+      style={{ display: "flex", gap: "var(--semantic-gap-loose)", width: "100%", maxWidth: 1200 }}
+    >
       <OverviewCard
         badge="Mobile"
         title="Line Type"
@@ -485,13 +487,13 @@ function StateDemoFrame({
       style={{
         flex: 1,
         minWidth: 0,
-        padding: "var(--inset-card)",
+        padding: "var(--semantic-inset-card)",
         background: colors.neutral["00"],
         border: `1px solid ${colors.neutral[100]}`,
         borderRadius: 12,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
       }}
     >
       <div style={{ minHeight: 48 }}>{children}</div>
@@ -536,7 +538,7 @@ export const States: Story = {
       title="States"
       description="각 탭 타입의 상태(State)별 시각적 처리 방식입니다. Line/Chip은 네 가지 상태, Segment는 세 가지 상태를 지원합니다."
     >
-      <div style={{ display: "flex", gap: "var(--gap-loose)", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "var(--semantic-gap-loose)", flexWrap: "wrap" }}>
         <StateDemoFrame
           title="Default"
           description="선택되지 않은 기본 상태. 텍스트 Muted, 하단 얇은 구분선."
@@ -587,7 +589,7 @@ function SpecTable({
             <th
               key={h}
               style={{
-                padding: "10px var(--inset-input)",
+                padding: "10px var(--semantic-inset-input)",
                 textAlign: "left",
                 fontWeight: 600,
                 fontSize: 12,
@@ -622,8 +624,16 @@ export const SizeSpecs: Story = {
       title="Size & Specs"
       description="플랫폼(Mobile / PC)에 따라 탭의 높이, Padding, 폰트 크기가 다르게 적용됩니다."
     >
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--gap-loose)" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "var(--semantic-gap-loose)",
+        }}
+      >
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}
+        >
           <PlatformLabel text="Mobile" />
           <SpecTable
             rows={[
@@ -644,28 +654,30 @@ export const SizeSpecs: Story = {
               {
                 type: "Chip",
                 height: "36px",
-                padding: "7·var(--inset-input)",
+                padding: "7·var(--semantic-inset-input)",
                 radius: "Radius/Full",
                 font: "Caption1 Regular/Bold",
               },
             ]}
           />
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}
+        >
           <PlatformLabel text="PC" />
           <SpecTable
             rows={[
               {
                 type: "Line / Neutral",
                 height: "56px",
-                padding: "20·var(--inset-card)",
+                padding: "20·var(--semantic-inset-card)",
                 radius: "—",
                 font: "Body3 Regular/Bold",
               },
               {
                 type: "Chip",
                 height: "44px",
-                padding: "10·var(--inset-card)",
+                padding: "10·var(--semantic-inset-card)",
                 radius: "Radius/Full",
                 font: "Body3 Regular/Bold",
               },
@@ -702,7 +714,7 @@ function GuideCard({
     <div
       style={{
         flex: 1,
-        padding: "var(--inset-card-large)",
+        padding: "var(--semantic-inset-card-large)",
         borderRadius: 12,
         background: isDo ? "#EAF8F0" : "#FCEEEE",
         border: `1px solid ${isDo ? "#9BD9B3" : "#F0B1B1"}`,
@@ -712,7 +724,7 @@ function GuideCard({
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "var(--gap-default)",
+          gap: "var(--semantic-gap-default)",
           marginBottom: 12,
         }}
       >
@@ -750,7 +762,7 @@ export const DoDont: Story = {
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection title="DO / Don't" description="Tabs 컴포넌트 사용 시 권장/지양 케이스입니다.">
-      <div style={{ display: "flex", gap: "var(--gap-loose)" }}>
+      <div style={{ display: "flex", gap: "var(--semantic-gap-loose)" }}>
         <GuideCard
           variant="do"
           title="DO"
@@ -829,11 +841,13 @@ function FlatVsCompoundParityDemo() {
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(2, minmax(0, 360px))",
-        gap: "var(--gap-wide)",
+        gap: "var(--semantic-gap-wide)",
         alignItems: "start",
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
+      >
         <strong>Flat API</strong>
         <Tabs
           items={sampleItems}
@@ -843,7 +857,9 @@ function FlatVsCompoundParityDemo() {
           size="mobile"
         />
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
+      >
         <strong>Compound API</strong>
         <Tabs.Root
           activeKey={compoundActiveKey}
@@ -922,7 +938,7 @@ function KeyboardNavigationReviewDemo() {
         ...mobileFrame,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
       }}
     >
       <p style={{ margin: 0, color: colors.neutral[700], fontSize: 14, lineHeight: "20px" }}>

@@ -32,7 +32,7 @@ export const Sizes: Story = {
     const [a, setA] = useState(true);
     const [b, setB] = useState(false);
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
         <Toggle size="md" checked={a} onCheckedChange={setA} label="Medium (44×24)" />
         <Toggle size="sm" checked={b} onCheckedChange={setB} label="Small (36×20)" />
       </div>
@@ -43,7 +43,7 @@ export const Sizes: Story = {
 export const Disabled: Story = {
   name: "State/Disabled",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       <Toggle checked={false} disabled label="비활성 OFF" />
       <Toggle checked={true} disabled label="비활성 ON" />
     </div>

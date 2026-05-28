@@ -61,7 +61,7 @@ export function Example() {
           <Modal.Header
             style={{
               justifyContent: "flex-start",
-              gap: "var(--gap-default)",
+              gap: "var(--semantic-gap-default)",
               borderBottom: "1px solid #ECECEC",
             }}
           >
@@ -108,7 +108,7 @@ export function Example() {
           },
           body: {
             style: {
-              padding: "var(--inset-modal) var(--inset-card) var(--inset-card-large)",
+              padding: "var(--semantic-inset-modal) var(--semantic-inset-card) var(--semantic-inset-card-large)",
               textAlign: "left",
             },
           },
@@ -166,7 +166,7 @@ export function Example() {
         <Modal.Overlay />
         <Modal.Content maxWidth={296}>
           <Modal.Body style={{ padding: "32px 24px 20px" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}>
               <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>
                 상담은 앱에서만 진행할 수 있습니다.
               </h2>
@@ -175,7 +175,7 @@ export function Example() {
               </p>
             </div>
           </Modal.Body>
-          <Modal.Footer style={{ padding: "var(--inset-card)" }}>
+          <Modal.Footer style={{ padding: "var(--semantic-inset-card)" }}>
             <Button fullWidth>앱에서 상담하기</Button>
           </Modal.Footer>
         </Modal.Content>
@@ -251,7 +251,7 @@ function CompoundModalExample() {
           <Modal.Header
             style={{
               justifyContent: "flex-start",
-              gap: "var(--gap-default)",
+              gap: "var(--semantic-gap-default)",
               borderBottom: "1px solid #ECECEC",
             }}
           >
@@ -331,14 +331,14 @@ function PlaylistEditModalUIExample() {
                 height: 48,
                 borderRadius: 8,
                 border: "1px solid #D1D5DB",
-                padding: "var(--inset-input)",
+                padding: "var(--semantic-inset-input)",
                 fontSize: 14,
                 outline: "none",
                 boxSizing: "border-box",
               }}
             />
 
-            <div style={{ display: "flex", gap: "var(--gap-default)", marginTop: 20 }}>
+            <div style={{ display: "flex", gap: "var(--semantic-gap-default)", marginTop: 20 }}>
               <Button
                 variant="solid"
                 size="md"
@@ -378,7 +378,8 @@ function PlaylistEditModalSlotPropsExample() {
           },
           body: {
             style: {
-              padding: "var(--inset-modal) var(--inset-card) var(--inset-card-large)",
+              padding:
+                "var(--semantic-inset-modal) var(--semantic-inset-card) var(--semantic-inset-card-large)",
               textAlign: "left",
             },
           },
@@ -418,14 +419,14 @@ function PlaylistEditModalSlotPropsExample() {
             height: 48,
             borderRadius: 8,
             border: "1px solid #D1D5DB",
-            padding: "var(--inset-input)",
+            padding: "var(--semantic-inset-input)",
             fontSize: 14,
             outline: "none",
             boxSizing: "border-box",
           }}
         />
 
-        <div style={{ display: "flex", gap: "var(--gap-default)", marginTop: 20 }}>
+        <div style={{ display: "flex", gap: "var(--semantic-gap-default)", marginTop: 20 }}>
           <Button
             variant="solid"
             size="md"
@@ -494,14 +495,14 @@ function PlaylistEditModalClassNameExample() {
             height: 48,
             borderRadius: 8,
             border: "1px solid #D1D5DB",
-            padding: "var(--inset-input)",
+            padding: "var(--semantic-inset-input)",
             fontSize: 14,
             outline: "none",
             boxSizing: "border-box",
           }}
         />
 
-        <div style={{ display: "flex", gap: "var(--gap-default)", marginTop: 20 }}>
+        <div style={{ display: "flex", gap: "var(--semantic-gap-default)", marginTop: 20 }}>
           <Button
             variant="solid"
             size="md"
@@ -536,7 +537,13 @@ function CounselingAppDownloadModalExample() {
         <Modal.Overlay />
         <Modal.Content maxWidth={296}>
           <Modal.Body style={{ padding: "32px 24px 20px" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--semantic-gap-default)",
+              }}
+            >
               <h2
                 style={{
                   margin: 0,
@@ -560,7 +567,7 @@ function CounselingAppDownloadModalExample() {
               </p>
             </div>
           </Modal.Body>
-          <Modal.Footer style={{ padding: "var(--inset-card)" }}>
+          <Modal.Footer style={{ padding: "var(--semantic-inset-card)" }}>
             <Button fullWidth>앱에서 상담하기</Button>
           </Modal.Footer>
         </Modal.Content>
@@ -590,7 +597,7 @@ function ParticipateRewardModalExample() {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "var(--gap-comfortable)",
+            gap: "var(--semantic-gap-comfortable)",
             textAlign: "center",
           }}
         >
@@ -599,15 +606,17 @@ function ParticipateRewardModalExample() {
             <br />
             확인하실 수 있습니다.
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}
+          >
             {participateRewards.map((reward) => (
               <div
                 key={reward.title}
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "var(--gap-default)",
-                  padding: "var(--inset-chip) 0",
+                  gap: "var(--semantic-gap-default)",
+                  padding: "var(--semantic-inset-chip) 0",
                   textAlign: "left",
                 }}
               >

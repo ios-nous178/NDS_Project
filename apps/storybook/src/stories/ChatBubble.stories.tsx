@@ -13,7 +13,14 @@ export default meta;
 type Story = StoryObj<typeof ChatBubble>;
 
 const w = (children: React.ReactNode) => (
-  <div style={{ width: 420, display: "flex", flexDirection: "column", gap: "var(--gap-tight)" }}>
+  <div
+    style={{
+      width: 420,
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--semantic-gap-tight)",
+    }}
+  >
     {children}
   </div>
 );

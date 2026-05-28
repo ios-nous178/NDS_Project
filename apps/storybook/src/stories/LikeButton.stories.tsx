@@ -41,7 +41,7 @@ export const Sizes: Story = {
     const [m, setM] = useState(true);
     const [l, setL] = useState(false);
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-wide)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-wide)" }}>
         <LikeButton size="sm" liked={s} count={3} onChange={setS} />
         <LikeButton size="md" liked={m} count={42} onChange={setM} />
         <LikeButton size="lg" liked={l} count={1234} onChange={setL} />
@@ -78,7 +78,7 @@ export const LargeCount: Story = {
   render: function Render() {
     const [v, setV] = useState(false);
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}>
         <LikeButton liked={v} count={999} onChange={setV} />
         <LikeButton liked={v} count={1234} onChange={setV} />
         <LikeButton liked={v} count={12000} onChange={setV} />

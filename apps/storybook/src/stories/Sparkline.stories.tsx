@@ -28,7 +28,7 @@ export const Playground: Story = {
 export const Variants: Story = {
   name: "Variant/line area bar",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       <Sparkline data={STRESS} kind="line" width={200} height={48} />
       <Sparkline data={STRESS} kind="area" width={200} height={48} />
       <Sparkline data={STRESS} kind="bar" width={200} height={48} />
@@ -42,7 +42,7 @@ export const InCard: Story = {
     <div
       style={{
         width: 280,
-        padding: "var(--inset-card)",
+        padding: "var(--semantic-inset-card)",
         background: "#FAFBFC",
         borderRadius: 12,
         border: "1px solid #eee",

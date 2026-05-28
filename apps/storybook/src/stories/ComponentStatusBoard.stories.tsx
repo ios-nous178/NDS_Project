@@ -344,7 +344,7 @@ function ComponentStatusBoard() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-          gap: "var(--gap-comfortable)",
+          gap: "var(--semantic-gap-comfortable)",
           marginBottom: 28,
         }}
       >
@@ -366,7 +366,7 @@ function ComponentStatusBoard() {
             style={{
               background: s.bg,
               borderRadius: 12,
-              padding: "var(--inset-card) 18px",
+              padding: "var(--semantic-inset-card) 18px",
               textAlign: "center",
             }}
           >
@@ -380,7 +380,7 @@ function ComponentStatusBoard() {
       <div
         style={{
           display: "flex",
-          gap: "var(--gap-default)",
+          gap: "var(--semantic-gap-default)",
           marginBottom: 20,
           flexWrap: "wrap",
           alignItems: "center",
@@ -413,7 +413,7 @@ function ComponentStatusBoard() {
           style={{
             flex: 1,
             minWidth: 150,
-            padding: "6px var(--inset-input)",
+            padding: "6px var(--semantic-inset-input)",
             border: "1px solid #E5E5E5",
             borderRadius: 8,
             fontSize: 13,
@@ -458,7 +458,7 @@ function ComponentStatusBoard() {
                 </th>
                 <th
                   style={{
-                    padding: "var(--inset-chip) var(--inset-input)",
+                    padding: "var(--semantic-inset-chip) var(--semantic-inset-input)",
                     textAlign: "center",
                     fontWeight: 600,
                     color: "#666",
@@ -468,7 +468,7 @@ function ComponentStatusBoard() {
                 </th>
                 <th
                   style={{
-                    padding: "var(--inset-chip) var(--inset-input)",
+                    padding: "var(--semantic-inset-chip) var(--semantic-inset-input)",
                     textAlign: "center",
                     fontWeight: 600,
                     color: "#666",
@@ -478,7 +478,7 @@ function ComponentStatusBoard() {
                 </th>
                 <th
                   style={{
-                    padding: "var(--inset-chip) var(--inset-input)",
+                    padding: "var(--semantic-inset-chip) var(--semantic-inset-input)",
                     textAlign: "center",
                     fontWeight: 600,
                     color: "#666",
@@ -503,7 +503,7 @@ function ComponentStatusBoard() {
                           fontWeight: 600,
                           color: st.color,
                           background: st.bg,
-                          padding: "2px var(--inset-chip)",
+                          padding: "2px var(--semantic-inset-chip)",
                           borderRadius: 4,
                         }}
                       >

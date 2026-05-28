@@ -10,7 +10,7 @@ function RadiusItem({ token, value }: { token: string; value: number }) {
         gridTemplateColumns: "120px 80px 1fr",
         alignItems: "center",
         gap: 20,
-        padding: "var(--inset-card) 0",
+        padding: "var(--semantic-inset-card) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
@@ -37,7 +37,7 @@ function BorderWidthItem({ token, value }: { token: string; value: number }) {
         gridTemplateColumns: "120px 80px 1fr",
         alignItems: "center",
         gap: 20,
-        padding: "var(--inset-card) 0",
+        padding: "var(--semantic-inset-card) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
@@ -62,7 +62,7 @@ function RadiusTokensPage() {
     <div
       style={{
         fontFamily: "'Pretendard', sans-serif",
-        padding: "var(--inset-modal)",
+        padding: "var(--semantic-inset-modal)",
         backgroundColor: "#FFFFFF",
       }}
     >

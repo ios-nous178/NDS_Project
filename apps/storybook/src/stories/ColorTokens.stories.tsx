@@ -26,7 +26,7 @@ function Swatch({
 }) {
   const guide = group && tokenKey ? getSemanticGuide(`${group}.${tokenKey}`) : undefined;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}>
       <div
         style={{
           width: 48,
@@ -36,7 +36,7 @@ function Swatch({
           border: hex === "#FFFFFF" ? "1px solid #ECECEC" : undefined,
         }}
       />
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-tight)" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-tight)" }}>
         <div style={{ fontSize: 14, fontWeight: 500 }}>{name}</div>
         <div style={{ fontSize: 12, color: "#999" }}>{hex}</div>
         {guide && <DesignGuideBadge meta={guide} />}
@@ -53,7 +53,7 @@ function PaletteGroup({ title, palette }: { title: string; palette: Record<strin
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, 200px)",
-          gap: "var(--gap-default)",
+          gap: "var(--semantic-gap-default)",
         }}
       >
         {Object.entries(palette).map(([key, hex]) => (
@@ -108,7 +108,7 @@ function RoleGroup({
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, 240px)",
-          gap: "var(--gap-default)",
+          gap: "var(--semantic-gap-default)",
         }}
       >
         {tokens.map(({ path, hex }) => {
@@ -126,7 +126,7 @@ function RoleGroup({
 
 function ColorTokensPage() {
   return (
-    <div style={{ fontFamily: "'Pretendard', sans-serif", padding: "var(--inset-modal)" }}>
+    <div style={{ fontFamily: "'Pretendard', sans-serif", padding: "var(--semantic-inset-modal)" }}>
       <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Color Tokens</h2>
 
       <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16, color: "#111111" }}>

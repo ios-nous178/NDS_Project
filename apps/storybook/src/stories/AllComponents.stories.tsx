@@ -206,11 +206,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
   Asset: () => (
     <div style={previewRow}>
       <Asset size="md" content={{ type: "initial", name: "이정민" }} />
-      <Asset
-        size="md"
-        shape="rounded"
-        content={{ type: "initial", name: "AB" }}
-      />
+      <Asset size="md" shape="rounded" content={{ type: "initial", name: "AB" }} />
       <Asset
         size="md"
         content={{ type: "initial", name: "C" }}
@@ -348,7 +344,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: "var(--gap-default)",
+            gap: "var(--semantic-gap-default)",
           }}
         >
           <div style={{ width: "100%", maxWidth: 240 }}>
@@ -904,7 +900,12 @@ const PREVIEWS: Record<string, PreviewRender> = {
   MultiStepForm: () => (
     <div style={{ width: "100%", maxWidth: 240, fontSize: 12 }}>
       <div
-        style={{ display: "flex", gap: "var(--gap-tight)", alignItems: "center", marginBottom: 8 }}
+        style={{
+          display: "flex",
+          gap: "var(--semantic-gap-tight)",
+          alignItems: "center",
+          marginBottom: 8,
+        }}
       >
         <div style={{ flex: 1, height: 4, background: "#2B96ED", borderRadius: 2 }} />
         <div style={{ flex: 1, height: 4, background: "#2B96ED", borderRadius: 2 }} />
@@ -928,7 +929,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     <div
       style={{
         width: 180,
-        padding: "var(--inset-card) var(--inset-input)",
+        padding: "var(--semantic-inset-card) var(--semantic-inset-input)",
         border: "1px dashed #D8D8D8",
         borderRadius: 8,
         textAlign: "center",
@@ -978,7 +979,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   OnlineIndicator: () => (
-    <div style={{ ...previewRow, gap: "var(--gap-loose)" }}>
+    <div style={{ ...previewRow, gap: "var(--semantic-gap-loose)" }}>
       <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12 }}>
         <OnlineIndicator status="online" /> online
       </span>
@@ -1074,7 +1075,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
         display: "flex",
         alignItems: "center",
         gap: 6,
-        padding: "10px var(--inset-input)",
+        padding: "10px var(--semantic-inset-input)",
         background: "#F8F9FB",
         borderRadius: 24,
       }}
@@ -1097,7 +1098,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   VoiceRecorder: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
       <span
         style={{
           width: 36,
@@ -1117,7 +1118,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   CallControlBar: () => (
-    <div style={{ display: "flex", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
       <span
         style={{
           width: 36,
@@ -1697,7 +1698,7 @@ const previewRow: React.CSSProperties = {
   display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
 };
 
 /* ──────────────────────────────────────────
@@ -1715,7 +1716,7 @@ const mockModalSurface: React.CSSProperties = {
   boxShadow: shadow["3"],
   display: "flex",
   flexDirection: "column",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
 };
 
 const mockModalHeader: React.CSSProperties = {
@@ -1752,12 +1753,12 @@ const mockModalBody: React.CSSProperties = {
   lineHeight: 1.55,
   color: cv.textRole.normal,
   textAlign: "center",
-  padding: "4px 4px var(--inset-chip)",
+  padding: "4px 4px var(--semantic-inset-chip)",
 };
 
 const mockModalFooter: React.CSSProperties = {
   display: "flex",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
 };
 
 const mockModalCancelBtn: React.CSSProperties = {
@@ -1788,7 +1789,7 @@ const mockPopupSurface: React.CSSProperties = {
   width: 224,
   background: cv.surface.default,
   borderRadius: radius.md,
-  padding: "var(--inset-card-large) var(--inset-card-large) 14px",
+  padding: "var(--semantic-inset-card-large) var(--semantic-inset-card-large) 14px",
   boxShadow: shadow["3"],
   display: "flex",
   flexDirection: "column",
@@ -1813,7 +1814,7 @@ const mockPopupDesc: React.CSSProperties = {
 
 const mockPopupActions: React.CSSProperties = {
   display: "flex",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
   width: "100%",
 };
 
@@ -1900,7 +1901,7 @@ const mockBottomSheetPanel: React.CSSProperties = {
   background: cv.surface.default,
   borderTopLeftRadius: radius.lg,
   borderTopRightRadius: radius.lg,
-  padding: "var(--inset-chip) 14px 14px",
+  padding: "var(--semantic-inset-chip) 14px 14px",
   display: "flex",
   flexDirection: "column",
   gap: 6,
@@ -1914,7 +1915,7 @@ const mockShareSheetPanel: React.CSSProperties = {
   background: cv.surface.default,
   borderTopLeftRadius: radius.lg,
   borderTopRightRadius: radius.lg,
-  padding: "var(--inset-chip) var(--inset-input) var(--inset-input)",
+  padding: "var(--semantic-inset-chip) var(--semantic-inset-input) var(--semantic-inset-input)",
   display: "flex",
   flexDirection: "column",
   gap: 6,
@@ -1924,7 +1925,7 @@ const mockShareSheetRow: React.CSSProperties = {
   display: "flex",
   justifyContent: "space-around",
   alignItems: "center",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
 };
 
 const mockToastFloating: React.CSSProperties = {
@@ -1935,7 +1936,7 @@ const mockToastFloating: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
-  padding: "6px var(--inset-input)",
+  padding: "6px var(--semantic-inset-input)",
   background: cv.textRole.normal,
   color: cv.textRole.inverse,
   borderRadius: radius.pill,
@@ -2092,7 +2093,7 @@ const mockCoachCard: React.CSSProperties = {
   left: "50%",
   transform: "translateX(-50%)",
   width: 200,
-  padding: "10px var(--inset-input)",
+  padding: "10px var(--semantic-inset-input)",
   background: cv.textRole.normal,
   color: cv.textRole.inverse,
   borderRadius: radius.lg,
@@ -2165,7 +2166,7 @@ const mockDrawerHeader: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "var(--inset-chip) 10px",
+  padding: "var(--semantic-inset-chip) 10px",
   borderBottom: `1px solid ${cv.borderRole.subtle}`,
 };
 
@@ -2184,10 +2185,10 @@ const mockDrawerClose: React.CSSProperties = {
 };
 
 const mockDrawerBody: React.CSSProperties = {
-  padding: "var(--inset-chip) 10px",
+  padding: "var(--semantic-inset-chip) 10px",
   display: "flex",
   flexDirection: "column",
-  gap: "var(--gap-tight)",
+  gap: "var(--semantic-gap-tight)",
 };
 
 const mockDrawerRow: React.CSSProperties = {
@@ -2251,7 +2252,7 @@ const mockDropdownDivider: React.CSSProperties = {
 const dsHighlightFrame: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
   padding: "10px 14px",
   border: `1px dashed ${cv.borderRole.brand}`,
   borderRadius: radius.md,
@@ -2267,7 +2268,7 @@ const dsHighlightLabel: React.CSSProperties = {
 const dsHighlightMode: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 600,
-  padding: "3px var(--inset-chip)",
+  padding: "3px var(--semantic-inset-chip)",
   borderRadius: radius.pill,
   background: cv.surface.default,
   border: `1px solid ${cv.borderRole.normal}`,
@@ -2316,7 +2317,7 @@ const mockDesktopScaler: React.CSSProperties = {
 };
 
 const mockDesktopBody: React.CSSProperties = {
-  padding: "var(--inset-card) var(--inset-modal)",
+  padding: "var(--semantic-inset-card) var(--semantic-inset-modal)",
   fontSize: 18,
   fontWeight: 500,
   color: cv.textRole.muted,
@@ -2629,8 +2630,8 @@ const controlsRow: React.CSSProperties = {
   display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
-  gap: "var(--gap-comfortable)",
-  padding: "var(--inset-input) var(--inset-card)",
+  gap: "var(--semantic-gap-comfortable)",
+  padding: "var(--semantic-inset-input) var(--semantic-inset-card)",
   background: "#FAFAFA",
   border: "1px solid #ECECEC",
   borderRadius: 10,
@@ -2642,7 +2643,7 @@ const controlsRow: React.CSSProperties = {
 const searchInput: React.CSSProperties = {
   flex: "1 1 240px",
   height: 36,
-  padding: "0 var(--inset-input)",
+  padding: "0 var(--semantic-inset-input)",
   border: "1px solid #D8D8D8",
   borderRadius: 8,
   fontSize: 13,
@@ -2657,7 +2658,7 @@ const categoryRow: React.CSSProperties = {
 };
 
 const categoryChip: React.CSSProperties = {
-  padding: "5px var(--inset-input)",
+  padding: "5px var(--semantic-inset-input)",
   background: "#FFFFFF",
   border: "1px solid #D8D8D8",
   borderRadius: 100,
@@ -2678,7 +2679,7 @@ const syncedToggle: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
-  padding: "5px var(--inset-input)",
+  padding: "5px var(--semantic-inset-input)",
   background: "#FFFFFF",
   border: "1px solid #D8D8D8",
   borderRadius: 100,
@@ -2720,7 +2721,7 @@ const categoryHeader: React.CSSProperties = {
   letterSpacing: "-0.01em",
   display: "flex",
   alignItems: "baseline",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
 };
 
 const categoryHeaderCount: React.CSSProperties = {
@@ -2732,7 +2733,7 @@ const categoryHeaderCount: React.CSSProperties = {
 const grid: React.CSSProperties = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-  gap: "var(--gap-loose)",
+  gap: "var(--semantic-gap-loose)",
 };
 
 const card: React.CSSProperties = {
@@ -2749,7 +2750,7 @@ const cardHead: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "space-between",
   padding: "14px 18px",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
   borderBottom: "1px solid #F2F2F2",
 };
 
@@ -2762,7 +2763,7 @@ const cardName: React.CSSProperties = {
 
 const cardTags: React.CSSProperties = {
   display: "flex",
-  gap: "var(--gap-tight)",
+  gap: "var(--semantic-gap-tight)",
   flexWrap: "wrap",
 };
 
@@ -2771,7 +2772,7 @@ const categoryTag: React.CSSProperties = {
   fontWeight: 700,
   color: "#666",
   background: "#F4F4F4",
-  padding: "3px var(--inset-chip)",
+  padding: "3px var(--semantic-inset-chip)",
   borderRadius: 5,
 };
 
@@ -2780,7 +2781,7 @@ const syncedTag: React.CSSProperties = {
   fontWeight: 700,
   color: "#00A07C",
   background: "rgba(0,160,124,0.1)",
-  padding: "3px var(--inset-chip)",
+  padding: "3px var(--semantic-inset-chip)",
   borderRadius: 5,
 };
 
@@ -2791,7 +2792,7 @@ const cardPreview: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   minHeight: 180,
-  padding: "var(--inset-modal)",
+  padding: "var(--semantic-inset-modal)",
   background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(43,150,237,0.03), transparent 80%)",
   overflow: "hidden",
 };
@@ -2800,7 +2801,7 @@ const previewPlaceholder: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "10px var(--inset-card)",
+  padding: "10px var(--semantic-inset-card)",
   background: "#F4F4F4",
   border: "1px dashed #D8D8D8",
   borderRadius: 8,
@@ -2824,7 +2825,7 @@ const cardDesc: React.CSSProperties = {
 
 const cardMeta: React.CSSProperties = {
   margin: 0,
-  padding: "var(--inset-chip) 18px 4px",
+  padding: "var(--semantic-inset-chip) 18px 4px",
   display: "flex",
   flexDirection: "column",
   gap: 6,
@@ -2833,7 +2834,7 @@ const cardMeta: React.CSSProperties = {
 const cardMetaRow: React.CSSProperties = {
   display: "grid",
   gridTemplateColumns: "44px 1fr",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
   alignItems: "baseline",
 };
 
@@ -2861,7 +2862,7 @@ const cardFoot: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
-  gap: "var(--gap-default)",
+  gap: "var(--semantic-gap-default)",
   padding: "10px 18px 14px",
   borderTop: "1px solid #F2F2F2",
   marginTop: 8,
@@ -2876,7 +2877,7 @@ const footLink: React.CSSProperties = {
 };
 
 const guideBlock: React.CSSProperties = {
-  padding: "var(--inset-chip) 18px 0",
+  padding: "var(--semantic-inset-chip) 18px 0",
   borderTop: "1px solid #F2F2F2",
   marginTop: 8,
 };
@@ -2887,7 +2888,7 @@ const guideToggle: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "space-between",
   width: "100%",
-  padding: "var(--inset-chip) 0",
+  padding: "var(--semantic-inset-chip) 0",
   fontSize: 12,
   fontWeight: 700,
   color: "#333",
@@ -2904,8 +2905,8 @@ const guideToggleChevron: React.CSSProperties = {
 const guideBody: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: "var(--gap-default)",
-  padding: "4px 0 var(--inset-input)",
+  gap: "var(--semantic-gap-default)",
+  padding: "4px 0 var(--semantic-inset-input)",
 };
 
 const guideSummary: React.CSSProperties = {
@@ -2914,7 +2915,7 @@ const guideSummary: React.CSSProperties = {
   lineHeight: 1.55,
   color: "#475569",
   background: "#F8FAFC",
-  padding: "var(--inset-chip) 10px",
+  padding: "var(--semantic-inset-chip) 10px",
   borderRadius: 6,
   border: "1px solid #E2E8F0",
 };
@@ -2922,7 +2923,7 @@ const guideSummary: React.CSSProperties = {
 const guideListBlock: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: "var(--gap-tight)",
+  gap: "var(--semantic-gap-tight)",
 };
 
 const guideListTitle: React.CSSProperties = {

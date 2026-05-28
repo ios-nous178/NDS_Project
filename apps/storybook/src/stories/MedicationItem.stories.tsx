@@ -58,7 +58,12 @@ export const List: Story = {
     const [t, setT] = useState<Record<string, boolean>>({ a: true, b: false, c: false });
     return (
       <div
-        style={{ width: 420, display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}
+        style={{
+          width: 420,
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--semantic-gap-default)",
+        }}
       >
         <MedicationItem
           name="졸로프트"

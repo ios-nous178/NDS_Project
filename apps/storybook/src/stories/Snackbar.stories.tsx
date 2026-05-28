@@ -30,7 +30,9 @@ export const WithAction: Story = {
   render: function Render() {
     const [count, setCount] = useState(0);
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
+      >
         <Snackbar
           title="감정 기록을 삭제했어요"
           actionLabel="되돌리기"
@@ -49,7 +51,7 @@ export const Variants: Story = {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
         width: 480,
       }}
     >

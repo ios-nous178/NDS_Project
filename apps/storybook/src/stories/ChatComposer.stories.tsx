@@ -21,11 +21,11 @@ export const Playground: Story = {
         <div
           style={{
             minHeight: 200,
-            padding: "var(--inset-card)",
+            padding: "var(--semantic-inset-card)",
             background: "#FAFBFC",
             display: "flex",
             flexDirection: "column",
-            gap: "var(--gap-default)",
+            gap: "var(--semantic-gap-default)",
           }}
         >
           {history.map((m, i) => (
@@ -35,7 +35,7 @@ export const Playground: Story = {
                 alignSelf: "flex-end",
                 background: "var(--semantic-bg-brand-default)",
                 color: "#fff",
-                padding: "var(--inset-chip) var(--inset-input)",
+                padding: "var(--semantic-inset-chip) var(--semantic-inset-input)",
                 borderRadius: 12,
                 maxWidth: "70%",
               }}
@@ -44,7 +44,9 @@ export const Playground: Story = {
             </div>
           ))}
           {history.length === 0 && (
-            <div style={{ color: "#999", textAlign: "center", padding: "var(--inset-modal)" }}>
+            <div
+              style={{ color: "#999", textAlign: "center", padding: "var(--semantic-inset-modal)" }}
+            >
               아직 메시지가 없어요
             </div>
           )}

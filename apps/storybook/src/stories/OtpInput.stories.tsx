@@ -48,7 +48,7 @@ export const OnComplete: Story = {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "var(--gap-comfortable)",
+          gap: "var(--semantic-gap-comfortable)",
         }}
       >
         <OtpInput value={v} onValueChange={setV} onComplete={(value) => setDone(value)} />

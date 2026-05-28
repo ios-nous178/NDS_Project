@@ -326,6 +326,48 @@ const cashwalkBiz: BrandFixture = {
   },
 };
 
+/**
+ * Runmile (런마일 · 러닝 대회 정보/커뮤니티)
+ *
+ * Figma SSOT: udH9ME1HnHk4kbxR17Neig (런마일 library)
+ *   - Colors    60:1245
+ *   - Typography 63:447
+ *   - BottomNav  83:887  — 4탭 (홈/대회정보/커뮤니티/마이페이지)
+ *
+ * Header/Footer 가이드는 아직 없음 — 추후 추가.
+ */
+const runmile: BrandFixture = {
+  logo: {
+    headerPc: { src: "", width: 0, height: 0 },
+    headerMobile: { src: "", width: 0, height: 0 },
+    footer: { src: "", width: 0, height: 0 },
+  },
+  header: {
+    pcMaxWidth: 1200,
+    mainBarPaddingY: "0",
+    mobileHeight: 52,
+    webviewTitle: "런마일",
+    layout: "single",
+    gnb: { items: [], navHeight: 52 },
+    auth: { items: [], separator: "none" },
+  },
+  footer: {
+    links: [],
+    company: {
+      name: "런마일",
+      address: "",
+      bizNumber: "",
+      email: "",
+      copyright: "",
+    },
+  },
+  tabBar: {
+    tabLabels: ["홈", "대회정보", "커뮤니티", "마이페이지"],
+    defaultActive: 0,
+    useShadow: true,
+  },
+};
+
 /* ─── Export ─── */
 
 export const brandFixtures: Record<string, BrandFixture> = {
@@ -333,6 +375,7 @@ export const brandFixtures: Record<string, BrandFixture> = {
   trost,
   geniet,
   "cashwalk-biz": cashwalkBiz,
+  runmile,
 };
 
 export function getBrandFixture(brandKey: string): BrandFixture {
