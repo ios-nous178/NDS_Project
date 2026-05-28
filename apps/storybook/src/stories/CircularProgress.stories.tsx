@@ -24,7 +24,7 @@ export const Playground: Story = {
 export const Sizes: Story = {
   name: "Size/sm md lg",
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-wide)", alignItems: "center" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-wide)", alignItems: "center" }}>
       <CircularProgress value={70} size={48} />
       <CircularProgress value={70} size={80} />
       <CircularProgress value={70} size={120} />
@@ -35,7 +35,7 @@ export const Sizes: Story = {
 export const Colors: Story = {
   name: "Color/semantic 톤",
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-wide)" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-wide)" }}>
       <CircularProgress value={80} size={80} caption="목표" />
       <CircularProgress
         value={50}
@@ -62,7 +62,7 @@ export const Colors: Story = {
 export const WithLabelOverride: Story = {
   name: "Recipe/라벨 커스텀 (분/시간)",
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-wide)" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-wide)" }}>
       <CircularProgress value={28} max={60} size={96} label="28분" caption="목표 60분" />
       <CircularProgress value={3} max={5} size={96} label="3/5" caption="이번 주" />
     </div>

@@ -66,7 +66,7 @@ export const List: Story = {
         width: 480,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
       }}
     >
       <CouponCard

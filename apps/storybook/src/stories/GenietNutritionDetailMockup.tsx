@@ -21,7 +21,13 @@ import {
   StarRating,
   DataTable,
 } from "@nudge-design/react";
-import { CalendarIcon, CommentIcon, RefreshIcon, SearchIcon, ThumbUpIcon } from "@nudge-design/icons";
+import {
+  CalendarIcon,
+  CommentIcon,
+  RefreshIcon,
+  SearchIcon,
+  ThumbUpIcon,
+} from "@nudge-design/icons";
 import { MockupLayout, useIsMobile, Accordion } from "./mockup-layout";
 import {
   currentFood,
@@ -163,7 +169,7 @@ function NutrientBar({
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
         padding: "8px 0",
       }}
     >
@@ -228,7 +234,7 @@ export default function GenietNutritionDetailMockup() {
         style={{
           display: "inline-flex",
           alignItems: "center",
-          gap: "var(--gap-default)",
+          gap: "var(--semantic-gap-default)",
           fontSize: isMobile ? 20 : 24,
           fontWeight: 700,
           color: G.black,
@@ -291,7 +297,7 @@ export default function GenietNutritionDetailMockup() {
             <div
               style={{
                 display: "flex",
-                gap: "var(--gap-default)",
+                gap: "var(--semantic-gap-default)",
                 flexWrap: "wrap",
                 marginBottom: 8,
                 justifyContent: isMobile ? "center" : "flex-start",
@@ -341,7 +347,7 @@ export default function GenietNutritionDetailMockup() {
                 alignItems: "baseline",
                 gap: 6,
                 marginTop: 16,
-                padding: "var(--inset-input) var(--inset-card-large)",
+                padding: "var(--semantic-inset-input) var(--semantic-inset-card-large)",
                 borderRadius: 12,
                 background: G.tealBg,
               }}
@@ -450,7 +456,7 @@ export default function GenietNutritionDetailMockup() {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "var(--gap-comfortable)",
+              gap: "var(--semantic-gap-comfortable)",
               marginBottom: isMobile ? 32 : 40,
             }}
           >
@@ -459,8 +465,8 @@ export default function GenietNutritionDetailMockup() {
                 key={i}
                 style={{
                   display: "flex",
-                  gap: "var(--gap-comfortable)",
-                  padding: "14px var(--inset-card)",
+                  gap: "var(--semantic-gap-comfortable)",
+                  padding: "14px var(--semantic-inset-card)",
                   borderRadius: 12,
                   background: G.tealBgLight,
                 }}
@@ -472,14 +478,20 @@ export default function GenietNutritionDetailMockup() {
           </div>
 
           <SectionTitle>섭취 주의사항</SectionTitle>
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--semantic-gap-comfortable)",
+            }}
+          >
             {food.cautions.map((c, i) => (
               <div
                 key={i}
                 style={{
                   display: "flex",
-                  gap: "var(--gap-comfortable)",
-                  padding: "14px var(--inset-card)",
+                  gap: "var(--semantic-gap-comfortable)",
+                  padding: "14px var(--semantic-inset-card)",
                   borderRadius: 12,
                   background: "#FFF5F5",
                 }}
@@ -577,7 +589,13 @@ export default function GenietNutritionDetailMockup() {
                 </Badge>
               }
               footer={
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-tight)" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "var(--semantic-gap-tight)",
+                  }}
+                >
                   <StarRating value={recipe.rating} size={12} showValue />
                   <span style={{ fontSize: 12, color: G.muted }}>({recipe.reviewCount})</span>
                 </div>
@@ -716,11 +734,17 @@ export default function GenietNutritionDetailMockup() {
         </div>
 
         {/* 리뷰 목록 */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
           {foodReviews.slice(0, 3).map((review) => (
             <Card key={review.id} variant="outlined">
               <Card.Header>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-default)" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "var(--semantic-gap-default)",
+                  }}
+                >
                   <Avatar name={review.userName} size="sm" />
                   <div>
                     <span style={{ fontSize: 14, fontWeight: 600, color: G.black }}>
@@ -758,7 +782,7 @@ export default function GenietNutritionDetailMockup() {
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: "var(--gap-tight)",
+                      gap: "var(--semantic-gap-tight)",
                       fontSize: 12,
                       color: G.muted,
                     }}
@@ -849,7 +873,11 @@ export default function GenietNutritionDetailMockup() {
             <Card key={tf.name} variant="outlined" clickable>
               <Card.Body>
                 <div
-                  style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "var(--semantic-gap-comfortable)",
+                  }}
                 >
                   <span
                     style={{
@@ -879,7 +907,7 @@ export default function GenietNutritionDetailMockup() {
         <SectionTitle sub="관련 검색어로 더 많은 영양 정보를 찾아보세요">
           <SearchIcon size={24} color={G.teal} /> 관련 검색
         </SectionTitle>
-        <div style={{ display: "flex", gap: "var(--gap-default)", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "var(--semantic-gap-default)", flexWrap: "wrap" }}>
           {relatedSearchTags.map((tag) => (
             <Chip
               key={tag}

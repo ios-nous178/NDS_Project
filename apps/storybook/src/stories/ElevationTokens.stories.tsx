@@ -60,7 +60,7 @@ function LevelCard({ def }: { def: LevelDef }) {
         gridTemplateColumns: "64px 140px 1fr 220px 120px",
         alignItems: "center",
         gap: 20,
-        padding: "var(--inset-card-large) 0",
+        padding: "var(--semantic-inset-card-large) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
@@ -90,7 +90,7 @@ function LevelCard({ def }: { def: LevelDef }) {
           fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
           color: "#555",
           background: "#FAFAFA",
-          padding: "4px var(--inset-chip)",
+          padding: "4px var(--semantic-inset-chip)",
           borderRadius: 4,
         }}
       >
@@ -142,7 +142,7 @@ function GuideBanner() {
       style={{
         background: "var(--semantic-bg-status-info, #E3F2FC)",
         color: "var(--semantic-text-status-info, #017EE4)",
-        padding: "var(--inset-input) var(--inset-card)",
+        padding: "var(--semantic-inset-input) var(--semantic-inset-card)",
         borderRadius: 8,
         fontSize: 13,
         lineHeight: 1.5,
@@ -169,7 +169,7 @@ function PrinciplesBlock() {
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "var(--gap-loose)",
+        gap: "var(--semantic-gap-loose)",
         marginBottom: 32,
       }}
     >
@@ -195,7 +195,7 @@ function PrinciplesBlock() {
           style={{
             border: "1px solid #ECECEC",
             borderRadius: 12,
-            padding: "var(--inset-card) var(--inset-card-large)",
+            padding: "var(--semantic-inset-card) var(--semantic-inset-card-large)",
           }}
         >
           <div
@@ -224,7 +224,7 @@ function DoDontBlock() {
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
-        gap: "var(--gap-loose)",
+        gap: "var(--semantic-gap-loose)",
         marginBottom: 32,
       }}
     >
@@ -232,7 +232,7 @@ function DoDontBlock() {
         style={{
           border: "1px solid #ECECEC",
           borderRadius: 12,
-          padding: "var(--inset-card-large)",
+          padding: "var(--semantic-inset-card-large)",
         }}
       >
         <div style={{ fontSize: 14, fontWeight: 700, color: "#00A07C", marginBottom: 12 }}>
@@ -251,7 +251,7 @@ function DoDontBlock() {
         style={{
           border: "1px solid #ECECEC",
           borderRadius: 12,
-          padding: "var(--inset-card-large)",
+          padding: "var(--semantic-inset-card-large)",
         }}
       >
         <div style={{ fontSize: 14, fontWeight: 700, color: "#F13F00", marginBottom: 12 }}>
@@ -275,7 +275,7 @@ function ElevationTokensPage() {
     <div
       style={{
         fontFamily: "'Pretendard', sans-serif",
-        padding: "var(--inset-modal)",
+        padding: "var(--semantic-inset-modal)",
         backgroundColor: "#FFFFFF",
       }}
     >

@@ -24,8 +24,8 @@ export const Playground: Story = {
         <div
           style={{
             display: "flex",
-            gap: "var(--gap-wide)",
-            padding: "var(--inset-modal)",
+            gap: "var(--semantic-gap-wide)",
+            padding: "var(--semantic-inset-modal)",
             background: "#FAFBFC",
             borderRadius: 12,
           }}

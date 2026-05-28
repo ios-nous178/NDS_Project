@@ -326,8 +326,8 @@ function IconCard({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: "var(--gap-default)",
-        padding: "var(--inset-card) var(--inset-chip)",
+        gap: "var(--semantic-gap-default)",
+        padding: "var(--semantic-inset-card) var(--semantic-inset-chip)",
         border: "1px solid var(--semantic-border-normal-default, #EEEEEE)",
         borderRadius: 8,
         background: bg,
@@ -404,8 +404,10 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
   }, [query, sourceFilter]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}
+      >
         <input
           type="search"
           value={query}
@@ -414,7 +416,7 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
           style={{
             flex: 1,
             height: 40,
-            padding: "0 var(--inset-input)",
+            padding: "0 var(--semantic-inset-input)",
             border: "1px solid var(--semantic-border-normal-default, #EEEEEE)",
             borderRadius: 8,
             fontSize: 14,
@@ -452,7 +454,7 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-                gap: "var(--gap-comfortable)",
+                gap: "var(--semantic-gap-comfortable)",
               }}
             >
               {inCat.map((entry) => (

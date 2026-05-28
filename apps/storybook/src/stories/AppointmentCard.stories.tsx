@@ -38,7 +38,7 @@ export const Statuses: Story = {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
         width: 480,
       }}
     >

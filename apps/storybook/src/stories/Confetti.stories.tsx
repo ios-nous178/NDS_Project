@@ -34,7 +34,7 @@ export const ChallengeComplete: Story = {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "var(--gap-loose)",
+          gap: "var(--semantic-gap-loose)",
         }}
       >
         <h2>🎯 14일 챌린지 달성!</h2>

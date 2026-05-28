@@ -16,7 +16,7 @@ function SizeRow({ label, value }: { label: string; value: number }) {
     >
       <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>{label}</div>
       <div style={{ fontSize: 13, color: "#666666" }}>{value}px</div>
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-loose)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-loose)" }}>
         <div
           style={{
             width: Math.max(value * 2, 48),
@@ -51,7 +51,7 @@ function SizingTokensPage() {
     <div
       style={{
         fontFamily: "'Pretendard', sans-serif",
-        padding: "var(--inset-modal)",
+        padding: "var(--semantic-inset-modal)",
         backgroundColor: "#FFFFFF",
       }}
     >

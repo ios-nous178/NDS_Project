@@ -25,8 +25,8 @@ function TypeRow({
       style={{
         display: "grid",
         gridTemplateColumns: "minmax(180px, 220px) 1fr",
-        gap: "var(--gap-wide)",
-        padding: "var(--inset-card-large) 0",
+        gap: "var(--semantic-gap-wide)",
+        padding: "var(--semantic-inset-card-large) 0",
         borderBottom: "1px solid #ECECEC",
       }}
     >
@@ -42,7 +42,9 @@ function TypeRow({
         </div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
+      >
         {WEIGHT_VARIANTS.map((w) => (
           <div key={w.value}>
             <div style={{ fontSize: 11, color: "#999999", marginBottom: 4 }}>{w.label}</div>
@@ -70,7 +72,7 @@ function TypographyTokensPage() {
     <div
       style={{
         fontFamily: fontFamily.web,
-        padding: "var(--inset-modal)",
+        padding: "var(--semantic-inset-modal)",
         backgroundColor: "#FFFFFF",
       }}
     >
@@ -85,15 +87,27 @@ function TypographyTokensPage() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "var(--gap-comfortable)",
+          gap: "var(--semantic-gap-comfortable)",
           marginBottom: 32,
         }}
       >
-        <div style={{ padding: "var(--inset-card)", borderRadius: 12, backgroundColor: "#F8F9FB" }}>
+        <div
+          style={{
+            padding: "var(--semantic-inset-card)",
+            borderRadius: 12,
+            backgroundColor: "#F8F9FB",
+          }}
+        >
           <div style={{ fontSize: 12, color: "#777777", marginBottom: 6 }}>Font Family</div>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>{fontFamily.web}</div>
         </div>
-        <div style={{ padding: "var(--inset-card)", borderRadius: 12, backgroundColor: "#F8F9FB" }}>
+        <div
+          style={{
+            padding: "var(--semantic-inset-card)",
+            borderRadius: 12,
+            backgroundColor: "#F8F9FB",
+          }}
+        >
           <div style={{ fontSize: 12, color: "#777777", marginBottom: 6 }}>Font Weights</div>
           <div style={{ fontSize: 14, color: "#111111", lineHeight: "22px" }}>
             Regular {fontWeight.regular} / Medium {fontWeight.medium} / Bold {fontWeight.bold}

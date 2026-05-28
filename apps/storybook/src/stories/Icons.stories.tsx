@@ -67,8 +67,8 @@ function IconCard({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: "var(--gap-default)",
-        padding: "var(--inset-card) var(--inset-chip)",
+        gap: "var(--semantic-gap-default)",
+        padding: "var(--semantic-inset-card) var(--semantic-inset-chip)",
         border: "1px solid #ECECEC",
         borderRadius: 8,
         background: bg,
@@ -140,8 +140,10 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
   }, [query, brand]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}
+      >
         <input
           type="search"
           value={query}
@@ -150,7 +152,7 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
           style={{
             flex: 1,
             height: 40,
-            padding: "0 var(--inset-input)",
+            padding: "0 var(--semantic-inset-input)",
             border: "1px solid #D8D8D8",
             borderRadius: 8,
             fontSize: 14,
@@ -167,7 +169,7 @@ function Catalog({ size, color, bg }: { size: number; color: string; bg: string 
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-          gap: "var(--gap-comfortable)",
+          gap: "var(--semantic-gap-comfortable)",
         }}
       >
         {filtered.map(({ name, Component }) => (
@@ -329,9 +331,9 @@ export const UsageExamples: Story = {
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "var(--gap-default)",
+            gap: "var(--semantic-gap-default)",
             height: 48,
-            padding: "0 var(--inset-card)",
+            padding: "0 var(--semantic-inset-card)",
             borderRadius: 8,
             background: "#2B96ED",
             color: "#FFFFFF",
@@ -391,7 +393,7 @@ function Block({
       style={{
         border: `1px solid ${bad ? "#F4C8B8" : "#D6E4F0"}`,
         borderRadius: 8,
-        padding: "var(--inset-card)",
+        padding: "var(--semantic-inset-card)",
         background: bad ? "#FFF7F4" : "#F8FBFE",
       }}
     >
@@ -409,7 +411,7 @@ function Block({
       <pre
         style={{
           margin: 0,
-          padding: "var(--inset-input)",
+          padding: "var(--semantic-inset-input)",
           background: "#0F1B2C",
           color: "#E6EEF8",
           borderRadius: 6,

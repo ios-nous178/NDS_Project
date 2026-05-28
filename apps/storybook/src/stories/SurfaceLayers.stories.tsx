@@ -43,7 +43,7 @@ function LayerSwatch({
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 240px",
-        gap: "var(--gap-loose)",
+        gap: "var(--semantic-gap-loose)",
         alignItems: "stretch",
         marginBottom: 12,
       }}
@@ -53,7 +53,7 @@ function LayerSwatch({
           background: bg,
           border: "1px solid #E5E5E5",
           borderRadius: 8,
-          padding: "var(--inset-card)",
+          padding: "var(--semantic-inset-card)",
           minHeight: 80,
           display: "flex",
           alignItems: "center",
@@ -78,7 +78,7 @@ function DoCard() {
         background: "var(--semantic-bg-brand-subtle)",
         border: "1px solid var(--semantic-border-brand-default, #2B96ED)",
         borderRadius: 8,
-        padding: "var(--inset-card)",
+        padding: "var(--semantic-inset-card)",
         marginBottom: 12,
       }}
     >
@@ -98,7 +98,7 @@ function DontCard({ label, body }: { label: string; body: string }) {
       style={{
         background: "var(--semantic-bg-brand-subtle)",
         borderRadius: 8,
-        padding: "var(--inset-card)",
+        padding: "var(--semantic-inset-card)",
         marginBottom: 12,
       }}
     >
@@ -135,7 +135,7 @@ function SurfacePage() {
     <div
       style={{
         fontFamily: "'Pretendard', sans-serif",
-        padding: "var(--inset-modal)",
+        padding: "var(--semantic-inset-modal)",
         background: "var(--semantic-bg-page-default)",
       }}
     >
@@ -182,7 +182,7 @@ function SurfacePage() {
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "var(--gap-wide)",
+          gap: "var(--semantic-gap-wide)",
         }}
       >
         <div>
@@ -198,7 +198,11 @@ function SurfacePage() {
             KPI/summary 카드를 brand bg 로 도배 — 위계가 평탄해진다.
           </p>
           <div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--gap-default)" }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "var(--semantic-gap-default)",
+            }}
           >
             <DontCard label="이번 주 상담" body="3회" />
             <DontCard label="다음 일정" body="목 14:00" />

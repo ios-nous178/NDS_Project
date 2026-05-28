@@ -22,7 +22,7 @@ export const Playground: Story = { render: (args) => <OnlineIndicator {...args} 
 export const Statuses: Story = {
   name: "Variant/모든 상태",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}>
       <OnlineIndicator status="online" showLabel />
       <OnlineIndicator status="away" showLabel />
       <OnlineIndicator status="busy" showLabel />
@@ -34,7 +34,7 @@ export const Statuses: Story = {
 export const OnAvatar: Story = {
   name: "Recipe/아바타 우하단 점",
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-wide)" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-wide)" }}>
       {(["online", "away", "busy", "offline"] as const).map((s) => (
         <div key={s} style={{ position: "relative", width: 56, height: 56 }}>
           <Avatar name={s} size="xl" />
@@ -64,7 +64,7 @@ export const InCounselorList: Story = {
         width: 320,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
       }}
     >
       {[
@@ -75,7 +75,7 @@ export const InCounselorList: Story = {
       ].map((c) => (
         <div
           key={c.name}
-          style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}
+          style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}
         >
           <Avatar name={c.name} />
           <div style={{ flex: 1 }}>

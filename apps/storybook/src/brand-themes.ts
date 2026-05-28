@@ -20,6 +20,7 @@
 import trostDistCss from "../../../packages/tokens/dist/trost.css?raw";
 import genietDistCss from "../../../packages/tokens/dist/geniet.css?raw";
 import cashwalkBizDistCss from "../../../packages/tokens/dist/cashwalk-biz.css?raw";
+import runmileDistCss from "../../../packages/tokens/dist/runmile.css?raw";
 
 function parseCssRootVars(raw: string): Record<string, string> {
   const rootBlock = raw.match(/:root\s*\{([\s\S]*?)\}/);
@@ -36,6 +37,7 @@ const distVars: Record<string, Record<string, string>> = {
   trost: parseCssRootVars(trostDistCss),
   geniet: parseCssRootVars(genietDistCss),
   "cashwalk-biz": parseCssRootVars(cashwalkBizDistCss),
+  runmile: parseCssRootVars(runmileDistCss),
 };
 
 export interface BrandTheme {
@@ -320,6 +322,47 @@ const _rawBrandThemes: Record<string, BrandTheme> = {
 
       // BottomSheet — 가이드 명시 top radius 20px
       "--nds-bottom-sheet-radius": "20px",
+    },
+  },
+  runmile: {
+    name: "runmile",
+    label: "Runmile (런마일)",
+    description: "오렌지 시그니처 러닝 대회 정보/커뮤니티 플랫폼",
+    cssImport: "runmile",
+    // 기본 `--semantic-*` role tokens 은 dist/runmile.css 에서 자동 sync.
+    // 여기에는 컴포넌트 레벨(--nds-*) 토큰 + storybook 미세 조정만 명시.
+    cssVars: {
+      // Button — orange500 CTA (런마일 시그니처)
+      "--nds-button-background": "#FF5B37",
+      "--nds-button-text-color": "#FFFFFF",
+      "--nds-button-border-color": "#FF5B37",
+      "--nds-button-radius": "8px",
+      "--nds-button-hover-background": "#E84A28",
+
+      // Input — gray400 border, orange focus (Figma 144:609)
+      "--nds-input-border-color": "#D1D6DB",
+
+      // Card / BottomSheet — Toss 스타일 radius
+      "--nds-card-radius": "12px",
+      "--nds-bottom-sheet-radius": "16px",
+      "--nds-bottom-sheet-handle-color": "#E5E8EB",
+
+      // Chip — Figma 172:566 5 type. base Chip 의 variant×color 매트릭스 위에
+      //   시멘틱 토큰만 cascade 로 매핑됨 (assetive1=outlined+neutral,
+      //   assetive2=ghost+neutral, main1=fill+brand, secondary=fill+neutral).
+      //   selected pseudo-state 만 별도 cssVars 로 override.
+      "--nds-chip-selected-background": "#FF5B37",
+      "--nds-chip-selected-text": "#FFFFFF",
+      "--nds-chip-selected-border": "#FF5B37",
+
+      // Pagination — Figma 120:1234. active = gray800 fill (brand orange 아님).
+      "--nds-pagination-active-bg": "#4E5968",
+      "--nds-pagination-active-bg-hover": "#333D4B",
+      "--nds-pagination-active-text": "#FFFFFF",
+
+      // Typography
+      "--font-web":
+        "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', Roboto, Helvetica, Arial, sans-serif, system-ui",
     },
   },
 };

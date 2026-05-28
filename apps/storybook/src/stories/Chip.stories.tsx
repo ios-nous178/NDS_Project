@@ -75,11 +75,11 @@ export const Playground: Story = {};
 export const StyleMatrix: Story = {
   name: "Figma/Style × Color Matrix",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       {VARIANTS.map((variant) => (
         <div
           key={variant}
-          style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}
+          style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}
         >
           <div style={{ minWidth: 110 }}>
             <div style={{ fontSize: 13, fontWeight: 700, textTransform: "capitalize" }}>
@@ -87,7 +87,7 @@ export const StyleMatrix: Story = {
             </div>
             <div style={{ fontSize: 11, color: "#888" }}>{VARIANT_USAGE[variant]}</div>
           </div>
-          <div style={{ display: "flex", gap: "var(--gap-default)", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "var(--semantic-gap-default)", flexWrap: "wrap" }}>
             {COLORS.map((color) => (
               <Chip key={color} label={COLOR_LABEL[color]} variant={variant} color={color} />
             ))}
@@ -101,7 +101,7 @@ export const StyleMatrix: Story = {
 export const Sizes: Story = {
   name: "Figma/Sizes",
   render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
       <Chip label="Small" size="sm" variant="fill" color="brand" />
       <Chip label="Medium" size="md" variant="fill" color="brand" />
     </div>
@@ -130,7 +130,14 @@ function ToggleChipsExample() {
   };
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-default)", maxWidth: 360 }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "var(--semantic-gap-default)",
+        maxWidth: 360,
+      }}
+    >
       {subjects.map((s) => (
         <Chip
           key={s}
@@ -153,7 +160,7 @@ function RemovableChipsExample() {
   const [filters, setFilters] = useState(["서울", "심리상담", "대면"]);
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)" }}>
       {filters.map((f) => (
         <Chip
           key={f}
@@ -170,7 +177,7 @@ function RemovableChipsExample() {
 export const Disabled: Story = {
   name: "State/Disabled",
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
       <Chip label="Disabled" variant="outlined" color="brand" disabled />
       <Chip label="Disabled Filled" variant="fill" color="brand" disabled />
     </div>
@@ -180,7 +187,7 @@ export const Disabled: Story = {
 export const WithIcon: Story = {
   name: "Recipe/With Icon",
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
       <Chip
         label="대면"
         variant="ghost"
@@ -247,7 +254,7 @@ export const KeyboardToggleInteraction: Story = {
 export const DisabledChipInteraction: Story = {
   name: "Interaction/Disabled Chip",
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
       <Chip label="비활성" variant="outlined" color="brand" disabled />
       <Chip label="비활성 채움" variant="fill" color="brand" disabled />
     </div>
@@ -273,14 +280,14 @@ export const DesignGuideOverview: Story = {
     },
   },
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-wide)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-wide)" }}>
       <div>
         <h4 style={{ marginBottom: 12 }}>Variants</h4>
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, 220px)",
-            gap: "var(--gap-loose)",
+            gap: "var(--semantic-gap-loose)",
           }}
         >
           {VARIANTS.map((variant) => (
@@ -289,8 +296,8 @@ export const DesignGuideOverview: Story = {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--gap-default)",
-                padding: "var(--inset-input)",
+                gap: "var(--semantic-gap-default)",
+                padding: "var(--semantic-inset-input)",
                 border: "1px solid #ECECEC",
                 borderRadius: 8,
               }}
@@ -307,7 +314,7 @@ export const DesignGuideOverview: Story = {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, 220px)",
-            gap: "var(--gap-loose)",
+            gap: "var(--semantic-gap-loose)",
           }}
         >
           {COLORS.map((color) => (
@@ -316,8 +323,8 @@ export const DesignGuideOverview: Story = {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--gap-default)",
-                padding: "var(--inset-input)",
+                gap: "var(--semantic-gap-default)",
+                padding: "var(--semantic-inset-input)",
                 border: "1px solid #ECECEC",
                 borderRadius: 8,
               }}

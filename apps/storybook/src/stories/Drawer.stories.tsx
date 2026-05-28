@@ -67,7 +67,7 @@ function LeftNavExample() {
             <li
               key={label}
               style={{
-                padding: "var(--inset-input) 0",
+                padding: "var(--semantic-inset-input) 0",
                 borderBottom: "1px solid #eee",
                 cursor: "pointer",
               }}
@@ -106,7 +106,7 @@ function FilterExample() {
           </>
         }
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-wide)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-wide)" }}>
           <FormField label="상담사 유형">
             <RadioGroup
               name="counselor-type"
@@ -147,7 +147,7 @@ function LargeExample() {
         title="검사 상세 결과"
         description="검사 일자: 2026-04-30"
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
           <p>여기에 검사 결과 차트, 해석, 권고사항 등이 표시됩니다.</p>
           <p>스크롤이 필요한 긴 콘텐츠도 잘 처리됩니다.</p>
         </div>

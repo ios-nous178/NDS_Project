@@ -162,7 +162,14 @@ function FullFlowExample() {
   const [verified, setVerified] = useState(false);
 
   return (
-    <div style={{ width: 360, display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div
+      style={{
+        width: 360,
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--semantic-gap-loose)",
+      }}
+    >
       <FieldActionRow
         field={
           <input

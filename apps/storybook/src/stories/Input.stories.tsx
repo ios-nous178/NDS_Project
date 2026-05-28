@@ -187,7 +187,14 @@ export const HelperVariants: StoryObj<InputProps> = {
     },
   },
   render: () => (
-    <div style={{ display: "flex", width: 360, flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div
+      style={{
+        display: "flex",
+        width: 360,
+        flexDirection: "column",
+        gap: "var(--semantic-gap-loose)",
+      }}
+    >
       <Input label="기본" placeholder="입력해주세요" helperText="일반 도움말 텍스트입니다" />
       <Input.Root>
         <Input.Label>검증 통과</Input.Label>
@@ -210,7 +217,14 @@ export const HelperVariants: StoryObj<InputProps> = {
 export const States: Story = {
   name: "State/States",
   render: () => (
-    <div style={{ display: "flex", width: 360, flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div
+      style={{
+        display: "flex",
+        width: 360,
+        flexDirection: "column",
+        gap: "var(--semantic-gap-loose)",
+      }}
+    >
       <Input label="기본 상태" placeholder="입력해주세요" helperText="도움말 텍스트" />
       <Input
         label="에러 상태"

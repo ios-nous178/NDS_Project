@@ -24,10 +24,10 @@ export const Playground: Story = {
         <PullToRefresh onRefresh={refresh} style={{ height: "100%" }}>
           <div
             style={{
-              padding: "var(--inset-card)",
+              padding: "var(--semantic-inset-card)",
               display: "flex",
               flexDirection: "column",
-              gap: "var(--gap-default)",
+              gap: "var(--semantic-gap-default)",
             }}
           >
             <p style={{ margin: 0, color: "#888", fontSize: 13 }}>
@@ -36,7 +36,11 @@ export const Playground: Story = {
             {items.map((it, i) => (
               <div
                 key={i}
-                style={{ padding: "var(--inset-input)", background: "#FAFBFC", borderRadius: 8 }}
+                style={{
+                  padding: "var(--semantic-inset-input)",
+                  background: "#FAFBFC",
+                  borderRadius: 8,
+                }}
               >
                 {it}
               </div>
@@ -59,7 +63,7 @@ export const CustomLabels: Story = {
         refreshingLabel="동기화 중..."
         style={{ height: "100%" }}
       >
-        <div style={{ padding: "var(--inset-card)" }}>
+        <div style={{ padding: "var(--semantic-inset-card)" }}>
           <p style={{ margin: 0 }}>일기 콘텐츠 영역</p>
         </div>
       </PullToRefresh>

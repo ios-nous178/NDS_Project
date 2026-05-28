@@ -31,7 +31,7 @@ export const HHMMSS: Story = {
 export const Remaining: Story = {
   name: "Variant/remaining (자연어)",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}>
       <CountdownTimer endsAt={Date.now() + 30 * 1000} format="remaining" />
       <CountdownTimer endsAt={inMin(45)} format="remaining" />
       <CountdownTimer endsAt={inMin(180)} format="remaining" />
@@ -49,11 +49,11 @@ export const InContext: Story = {
   render: () => (
     <div
       style={{
-        padding: "var(--inset-card)",
+        padding: "var(--semantic-inset-card)",
         border: "1px solid #ddd",
         borderRadius: 8,
         display: "flex",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
         alignItems: "center",
       }}
     >
@@ -62,7 +62,7 @@ export const InContext: Story = {
         style={{
           flex: 1,
           height: 40,
-          padding: "0 var(--inset-input)",
+          padding: "0 var(--semantic-inset-input)",
           borderRadius: 6,
           border: "1px solid #ccc",
         }}

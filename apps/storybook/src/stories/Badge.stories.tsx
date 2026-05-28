@@ -74,11 +74,11 @@ export const Playground: Story = {};
 export const StyleMatrix: Story = {
   name: "Figma/Style × Color Matrix",
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       {VARIANTS.map((variant) => (
         <div
           key={variant}
-          style={{ display: "flex", alignItems: "center", gap: "var(--gap-comfortable)" }}
+          style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}
         >
           <span
             style={{
@@ -90,7 +90,7 @@ export const StyleMatrix: Story = {
           >
             {variant}
           </span>
-          <div style={{ display: "flex", gap: "var(--gap-default)", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "var(--semantic-gap-default)", flexWrap: "wrap" }}>
             {COLORS.map((color) => (
               <Badge key={color} variant={variant} color={color}>
                 {COLOR_LABEL[color]}
@@ -106,7 +106,7 @@ export const StyleMatrix: Story = {
 export const SizeScale: Story = {
   name: "Figma/Size Scale",
   render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
       <Badge size="sm" color="brand">
         SM
       </Badge>
@@ -127,7 +127,7 @@ export const ColorUsage: Story = {
       style={{
         display: "grid",
         gridTemplateColumns: "auto 1fr auto",
-        gap: "var(--gap-comfortable) var(--gap-loose)",
+        gap: "var(--semantic-gap-comfortable) var(--semantic-gap-loose)",
         alignItems: "center",
       }}
     >
@@ -151,7 +151,7 @@ export const ColorUsage: Story = {
 export const StatusBadges: Story = {
   name: "Recipe/Status Badges",
   render: () => (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)" }}>
       <Badge variant="fill" color="success">
         참여중
       </Badge>
@@ -214,7 +214,7 @@ export const VariantRenderingInteraction: Story = {
 export const AllColorsContractInteraction: Story = {
   name: "Interaction/All Colors Contract",
   render: () => (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)" }}>
       {COLORS.map((color) => (
         <Badge key={color} color={color}>
           {color}
@@ -234,7 +234,7 @@ export const AllColorsContractInteraction: Story = {
 export const SizeContractInteraction: Story = {
   name: "Interaction/Size Contract",
   render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-default)" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
       <Badge size="sm">Small</Badge>
       <Badge size="md">Medium</Badge>
       <Badge size="lg">Large</Badge>
@@ -264,14 +264,14 @@ export const DesignGuideOverview: Story = {
     },
   },
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-wide)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-wide)" }}>
       <div>
         <h4 style={{ marginBottom: 12 }}>Variants</h4>
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, 220px)",
-            gap: "var(--gap-loose)",
+            gap: "var(--semantic-gap-loose)",
           }}
         >
           {VARIANTS.map((variant) => (
@@ -280,8 +280,8 @@ export const DesignGuideOverview: Story = {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--gap-default)",
-                padding: "var(--inset-input)",
+                gap: "var(--semantic-gap-default)",
+                padding: "var(--semantic-inset-input)",
                 border: "1px solid #ECECEC",
                 borderRadius: 8,
               }}
@@ -298,7 +298,7 @@ export const DesignGuideOverview: Story = {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, 220px)",
-            gap: "var(--gap-loose)",
+            gap: "var(--semantic-gap-loose)",
           }}
         >
           {COLORS.map((color) => (
@@ -307,8 +307,8 @@ export const DesignGuideOverview: Story = {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--gap-default)",
-                padding: "var(--inset-input)",
+                gap: "var(--semantic-gap-default)",
+                padding: "var(--semantic-inset-input)",
                 border: "1px solid #ECECEC",
                 borderRadius: 8,
               }}

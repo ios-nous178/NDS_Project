@@ -42,8 +42,8 @@ function GuideSection({
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-loose)",
-        padding: "var(--inset-modal) 0",
+        gap: "var(--semantic-gap-loose)",
+        padding: "var(--semantic-inset-modal) 0",
         borderTop: `1px solid ${colors.neutral[100]}`,
       }}
     >
@@ -73,7 +73,7 @@ function StateRow({ label, children }: { label: string; children: React.ReactNod
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
         minHeight: 28,
       }}
     >
@@ -107,7 +107,7 @@ function SpecTable({ rows }: { rows: { key: string; value: string }[] }) {
           >
             <td
               style={{
-                padding: "var(--inset-chip) var(--inset-input)",
+                padding: "var(--semantic-inset-chip) var(--semantic-inset-input)",
                 color: colors.neutral[700],
                 fontWeight: 500,
                 width: 160,
@@ -136,12 +136,12 @@ function OverviewCard({
     <div
       style={{
         flex: 1,
-        padding: "var(--inset-card-large)",
+        padding: "var(--semantic-inset-card-large)",
         background: colors.neutral[50],
         borderRadius: 12,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-default)",
+        gap: "var(--semantic-gap-default)",
       }}
     >
       <h4 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{title}</h4>
@@ -173,7 +173,9 @@ export const TypeOverview: Story = {
       title="Type Overview"
       description="Radio · Checkbox · Toggle 세 가지 선택 컨트롤 컴포넌트입니다. 각각 단일 선택, 다중 선택, 기능 켜기/끄기 용도에 맞게 사용합니다."
     >
-      <div style={{ display: "flex", gap: "var(--gap-loose)", width: "100%", maxWidth: 1300 }}>
+      <div
+        style={{ display: "flex", gap: "var(--semantic-gap-loose)", width: "100%", maxWidth: 1300 }}
+      >
         <OverviewCard
           title="Radio Button"
           description="여러 옵션 중 단 하나만 선택. 상담 신청서의 성별, 상담 유형 선택에 사용."
@@ -202,7 +204,12 @@ function RadioExampleGender() {
   const [value, setValue] = useState("self");
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)", maxWidth: 420 }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--semantic-gap-loose)",
+        maxWidth: 420,
+      }}
     >
       <strong style={{ fontSize: 14 }}>성별*</strong>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
@@ -237,7 +244,7 @@ export const RadioStates: Story = {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "var(--gap-comfortable)",
+            gap: "var(--semantic-gap-comfortable)",
             minWidth: 220,
           }}
         >
@@ -299,7 +306,7 @@ function CheckboxExampleAgreement() {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
         maxWidth: 320,
       }}
     >
@@ -322,7 +329,7 @@ export const CheckboxStates: Story = {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "var(--gap-comfortable)",
+            gap: "var(--semantic-gap-comfortable)",
             minWidth: 220,
           }}
         >
@@ -560,7 +567,7 @@ function GuideCard({
     <div
       style={{
         flex: 1,
-        padding: "var(--inset-card-large)",
+        padding: "var(--semantic-inset-card-large)",
         borderRadius: 12,
         background: isDo ? "#EAF8F0" : "#FCEEEE",
         border: `1px solid ${isDo ? "#9BD9B3" : "#F0B1B1"}`,
@@ -570,7 +577,7 @@ function GuideCard({
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "var(--gap-default)",
+          gap: "var(--semantic-gap-default)",
           marginBottom: 12,
         }}
       >
@@ -607,7 +614,7 @@ export const DoDont: Story = {
   name: "Guide/DO & Don't",
   render: () => (
     <GuideSection title="DO / Don't">
-      <div style={{ display: "flex", gap: "var(--gap-loose)", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "var(--semantic-gap-loose)", flexWrap: "wrap" }}>
         <GuideCard
           variant="do"
           title="DO"

@@ -30,7 +30,11 @@ export const Brands: Story = {
   name: "Variant/모든 브랜드",
   render: () => (
     <div
-      style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--gap-loose)" }}
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        gap: "var(--semantic-gap-loose)",
+      }}
     >
       {(
         [

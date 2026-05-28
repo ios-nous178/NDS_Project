@@ -105,7 +105,7 @@ function WithSearchCallbackExample() {
         width: 360,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
       }}
     >
       <SearchInput
@@ -224,7 +224,7 @@ function SearchCallbackInteractionDemo() {
         width: 360,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
       }}
     >
       <SearchInput

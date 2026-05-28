@@ -20,7 +20,7 @@ export const Default: Story = {
 export const Sizes: Story = {
   name: "State/Sizes",
   render: () => (
-    <div style={{ display: "flex", gap: "var(--gap-wide)", alignItems: "center" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-wide)", alignItems: "center" }}>
       <Spinner size="sm" />
       <Spinner size="md" />
       <Spinner size="lg" />
@@ -47,7 +47,7 @@ export const InfiniteLoad: Story = {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: "var(--gap-default)",
+        gap: "var(--semantic-gap-default)",
         padding: 40,
         color: "var(--semantic-text-subtle-default)",
       }}

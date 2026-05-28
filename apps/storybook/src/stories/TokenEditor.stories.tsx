@@ -151,7 +151,7 @@ function TokenEditor() {
         fontFamily: "'Pretendard Variable', Pretendard, -apple-system, sans-serif",
         maxWidth: 720,
         margin: "0 auto",
-        padding: "var(--inset-modal)",
+        padding: "var(--semantic-inset-modal)",
       }}
     >
       {/* 헤더 */}
@@ -169,7 +169,7 @@ function TokenEditor() {
       <div
         style={{
           display: "flex",
-          gap: "var(--gap-comfortable)",
+          gap: "var(--semantic-gap-comfortable)",
           alignItems: "center",
           marginBottom: 20,
           flexWrap: "wrap",
@@ -182,7 +182,7 @@ function TokenEditor() {
               key={t.name}
               onClick={() => setBrand(t.name)}
               style={{
-                padding: "var(--inset-chip) var(--inset-card)",
+                padding: "var(--semantic-inset-chip) var(--semantic-inset-card)",
                 borderRadius: 8,
                 fontSize: 13,
                 fontWeight: brand === t.name ? 700 : 500,
@@ -207,7 +207,7 @@ function TokenEditor() {
           style={{
             flex: 1,
             minWidth: 160,
-            padding: "var(--inset-chip) var(--inset-input)",
+            padding: "var(--semantic-inset-chip) var(--semantic-inset-input)",
             border: "1px solid #E5E5E5",
             borderRadius: 8,
             fontSize: 13,
@@ -217,12 +217,12 @@ function TokenEditor() {
         />
 
         {/* 액션 */}
-        <div style={{ display: "flex", gap: "var(--gap-default)" }}>
+        <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
           {changeCount > 0 && (
             <button
               onClick={handleResetAll}
               style={{
-                padding: "var(--inset-chip) 14px",
+                padding: "var(--semantic-inset-chip) 14px",
                 borderRadius: 8,
                 fontSize: 13,
                 fontWeight: 500,
@@ -240,7 +240,7 @@ function TokenEditor() {
             onClick={handleExport}
             disabled={changeCount === 0}
             style={{
-              padding: "var(--inset-chip) 14px",
+              padding: "var(--semantic-inset-chip) 14px",
               borderRadius: 8,
               fontSize: 13,
               fontWeight: 700,
@@ -280,7 +280,13 @@ function TokenEditor() {
                 {tokens.length}개
               </span>
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--semantic-gap-default)",
+              }}
+            >
               {tokens.map((token) => {
                 const currentValue = overrides[token.key] ?? token.value;
                 const isModified = token.key in overrides;
@@ -341,8 +347,8 @@ function TokenRow({
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "var(--gap-default)",
-        padding: "var(--inset-chip) var(--inset-input)",
+        gap: "var(--semantic-gap-default)",
+        padding: "var(--semantic-inset-chip) var(--semantic-inset-input)",
         borderRadius: 8,
         background: isModified ? "#FFFCE6" : "#FAFAFA",
         border: isModified ? "1px solid #FFE60050" : "1px solid transparent",
@@ -367,7 +373,7 @@ function TokenRow({
 
       {/* 에디터 */}
       {type === "color" ? (
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--gap-default)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
           <div
             onClick={() => colorInputRef.current?.click()}
             style={{
@@ -393,7 +399,7 @@ function TokenRow({
             onChange={(e) => onChange(tokenKey, e.target.value)}
             style={{
               width: 90,
-              padding: "4px var(--inset-chip)",
+              padding: "4px var(--semantic-inset-chip)",
               border: "1px solid #DDD",
               borderRadius: 6,
               fontSize: 12,
@@ -418,7 +424,7 @@ function TokenRow({
             onChange={(e) => onChange(tokenKey, e.target.value)}
             style={{
               width: 70,
-              padding: "4px var(--inset-chip)",
+              padding: "4px var(--semantic-inset-chip)",
               border: "1px solid #DDD",
               borderRadius: 6,
               fontSize: 12,
@@ -434,7 +440,7 @@ function TokenRow({
           onChange={(e) => onChange(tokenKey, e.target.value)}
           style={{
             width: 180,
-            padding: "4px var(--inset-chip)",
+            padding: "4px var(--semantic-inset-chip)",
             border: "1px solid #DDD",
             borderRadius: 6,
             fontSize: 12,
@@ -450,7 +456,7 @@ function TokenRow({
           onClick={() => onReset(tokenKey)}
           title={`원래 값: ${originalValue}`}
           style={{
-            padding: "4px var(--inset-chip)",
+            padding: "4px var(--semantic-inset-chip)",
             borderRadius: 4,
             fontSize: 11,
             fontWeight: 600,

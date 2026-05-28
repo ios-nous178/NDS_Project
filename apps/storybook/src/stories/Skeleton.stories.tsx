@@ -42,13 +42,13 @@ export const CardSkeleton: Story = {
         width: 280,
         display: "flex",
         flexDirection: "column",
-        gap: "var(--gap-comfortable)",
+        gap: "var(--semantic-gap-comfortable)",
       }}
     >
       <Skeleton width={280} height={160} />
       <Skeleton variant="text" width="60%" />
       <Skeleton variant="text" width="90%" />
-      <div style={{ display: "flex", gap: "var(--gap-default)", alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--semantic-gap-default)", alignItems: "center" }}>
         <Skeleton variant="circular" width={32} />
         <Skeleton variant="text" width={100} />
       </div>

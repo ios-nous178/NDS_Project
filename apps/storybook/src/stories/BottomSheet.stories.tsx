@@ -42,12 +42,18 @@ function FlatExample() {
           </Button>
         }
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-comfortable)" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--semantic-gap-comfortable)",
+          }}
+        >
           {["심리상담", "법률상담", "재무상담", "건강상담"].map((item) => (
             <div
               key={item}
               style={{
-                padding: "var(--inset-input) var(--inset-card)",
+                padding: "var(--semantic-inset-input) var(--semantic-inset-card)",
                 borderRadius: 8,
                 border: `1px solid ${colors.neutral[200]}`,
                 cursor: "pointer",
@@ -139,7 +145,7 @@ function ListSelectionExample() {
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "var(--gap-default)",
+          gap: "var(--semantic-gap-default)",
           alignItems: "center",
         }}
       >
@@ -149,7 +155,7 @@ function ListSelectionExample() {
         )}
       </div>
       <BottomSheet open={open} onClose={() => setOpen(false)} title="상담 방식" closable>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-tight)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-tight)" }}>
           {options.map((option) => (
             <button
               key={option}
@@ -200,7 +206,7 @@ function LongContentExample() {
           </Button>
         }
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-loose)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
           {Array.from({ length: 10 }, (_, i) => (
             <p
               key={i}
@@ -274,7 +280,9 @@ function CustomMaxWidthExample() {
         closable
         maxWidth={360}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}
+        >
           <Button fullWidth onClick={() => setOpen(false)}>
             상담 예약하기
           </Button>
@@ -351,7 +359,9 @@ function NoOverlayExample() {
         mask={false}
         showHandle={false}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-default)" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}
+        >
           <Button fullWidth variant="soft" onClick={() => setOpen(false)}>
             복사하기
           </Button>
