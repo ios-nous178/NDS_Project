@@ -105,10 +105,10 @@ function LabelLeftExample() {
         label="이름"
         labelPosition="left"
         helper="도움말이 노출됩니다."
-        htmlFor="cashpobi-admin-name"
+        htmlFor="cashwalk-biz-admin-name"
       >
         <Input
-          id="cashpobi-admin-name"
+          id="cashwalk-biz-admin-name"
           size="compact"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -119,8 +119,8 @@ function LabelLeftExample() {
   );
 }
 
-function CashpobiAdminTextFieldExample() {
-  // Cashpobi Figma Section_TextField (3082:846) — Label=Left × {Typing, Error, Disabled, Complete}.
+function CashwalkBizAdminTextFieldExample() {
+  // CashwalkBiz Figma Section_TextField (3082:846) — Label=Left × {Typing, Error, Disabled, Complete}.
   const states = [
     {
       key: "default",
@@ -164,9 +164,9 @@ function CashpobiAdminTextFieldExample() {
             required={s.key === "error"}
             helper={"helper" in s ? s.helper : undefined}
             error={"error" in s ? s.error : undefined}
-            htmlFor={`cashpobi-admin-${s.key}`}
+            htmlFor={`cashwalk-biz-admin-${s.key}`}
           >
-            <Input id={`cashpobi-admin-${s.key}`} size="compact" {...s.props} />
+            <Input id={`cashwalk-biz-admin-${s.key}`} size="compact" {...s.props} />
           </FormField>
           <span style={{ fontSize: 11, color: "#bbb", fontWeight: 700 }}>{s.caption}</span>
         </div>
@@ -176,7 +176,7 @@ function CashpobiAdminTextFieldExample() {
 }
 
 function AdminFormSectionExample() {
-  // Cashpobi Figma "기본 정보" FormSection (3466:17405) 재현.
+  // CashwalkBiz Figma "기본 정보" FormSection (3466:17405) 재현.
   // Container = white card with radius-16 border, padding 24.
   // 안에 FormField 2개 stack — 둘 다 density="admin" 이라 py-24 가 자동으로 사이 48px 시각 간격을 만듦.
   const [single, setSingle] = useState("");
@@ -277,31 +277,31 @@ export const LabelLeft: Story = {
     docs: {
       description: {
         story:
-          'Cashpobi admin TextField 패턴. `labelPosition="left"` + `Input size="compact"` (40px) 으로 라벨 좌측 고정 폼. 라벨 컬럼 너비 기본 180px (`labelWidth` 로 조정).',
+          'CashwalkBiz admin TextField 패턴. `labelPosition="left"` + `Input size="compact"` (40px) 으로 라벨 좌측 고정 폼. 라벨 컬럼 너비 기본 180px (`labelWidth` 로 조정).',
       },
     },
   },
 };
-export const CashpobiAdminTextField: Story = {
+export const CashwalkBizAdminTextField: Story = {
   name: "캐포비 admin · TextField 5 states",
-  render: () => <CashpobiAdminTextFieldExample />,
+  render: () => <CashwalkBizAdminTextFieldExample />,
   parameters: {
     docs: {
       description: {
         story:
-          "Figma Cashpobi Library `Section_TextField` (3082:846) 의 5개 state 재현. Label=Left + Input size=compact 조합.",
+          "Figma CashwalkBiz Library `Section_TextField` (3082:846) 의 5개 state 재현. Label=Left + Input size=compact 조합.",
       },
     },
   },
 };
-export const CashpobiAdminFormSection: Story = {
+export const CashwalkBizAdminFormSection: Story = {
   name: "캐포비 admin · FormSection + InputGroup",
   render: () => <AdminFormSectionExample />,
   parameters: {
     docs: {
       description: {
         story:
-          "Figma Cashpobi Library `FormSection` (3466:17405) 재현. " +
+          "Figma CashwalkBiz Library `FormSection` (3466:17405) 재현. " +
           "FormField `density='admin'` 가 자체 py-24 를 부여해 stack 시 시각 48px 간격이 자동 형성됨. " +
           "두번째 FormField 안에서 `InputGroup` 으로 년/월/일 Select 3개를 gap 12 균등 분할.",
       },

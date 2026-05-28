@@ -3,7 +3,7 @@
  *
  * 이 파일의 단일 목적: `<nds-brand-header brand="...">` 출력이
  * `apps/storybook` 의 GenietDesktop / TrostWebHeaderDesktop / NudgeEAPWebHeaderDesktop /
- * CashpobiWebHeaderDesktop 스토리(= React 컴포넌트 출력)와 **시각적으로 동등한 요소를
+ * CashwalkBizWebHeaderDesktop 스토리(= React 컴포넌트 출력)와 **시각적으로 동등한 요소를
  * 모두 들고 있는지**를 항목별로 단단히 잠그는 것.
  *
  * nds-brand-chrome.test.ts 가 "기본 동작" 단위 검증이라면, 이 파일은 "React 스토리와
@@ -14,9 +14,9 @@
  *   - apps/storybook/src/stories/AppBar.Geniet.stories.tsx       (GenietDesktop / GenietMobile)
  *   - apps/storybook/src/stories/WebHeader.Trost.stories.tsx     (TrostWebHeaderDesktop)
  *   - apps/storybook/src/stories/WebHeader.NudgeEAP.stories.tsx  (NudgeEAPWebHeaderDesktop)
- *   - apps/storybook/src/stories/AppBar.Cashpobi.stories.tsx     (CashpobiWebHeader)
+ *   - apps/storybook/src/stories/AppBar.CashwalkBiz.stories.tsx     (CashwalkBizWebHeader)
  *   - apps/storybook/src/brand-fixtures.ts                       (콘텐츠 fixture)
- *   - packages/react/src/{geniet,trost,nudge-eap,cashpobi}/      (DOM 구조 SSOT)
+ *   - packages/react/src/{geniet,trost,nudge-eap,cashwalk-biz}/      (DOM 구조 SSOT)
  */
 
 import { beforeEach, describe, expect, it } from "vitest";
@@ -259,17 +259,17 @@ describe("NudgeEAP web ↔ React NudgeEAPWebHeader", () => {
 });
 
 /* ──────────────────────────────────────────────────────────────────────────
- * Cashpobi — CashpobiWebHeaderDesktop (Figma 380:1739 / 98:1082)
- *   React: packages/react/src/cashpobi/WebHeader.tsx
+ * CashwalkBiz — CashwalkBizWebHeaderDesktop (Figma 380:1739 / 98:1082)
+ *   React: packages/react/src/cashwalk-biz/WebHeader.tsx
  *     · 1-tier desktop (max 1600), yellow primary CTA pill (#FFD200, 36h, 8r)
  *     · mobile: logo + hamburger flex
- *   Story: AppBar.Cashpobi.stories.tsx → CashpobiWebHeaderDesktop / Mobile
+ *   Story: AppBar.CashwalkBiz.stories.tsx → CashwalkBizWebHeaderDesktop / Mobile
  * ────────────────────────────────────────────────────────────────────────── */
 
-describe("Cashpobi web ↔ React CashpobiWebHeader variant='desktop'", () => {
+describe("CashwalkBiz web ↔ React CashwalkBizWebHeader variant='desktop'", () => {
   it("renders 5-tab menu + login + yellow primary CTA pill (#FFD200)", async () => {
-    const el = await mount({ brand: "cashpobi", "active-key": "campaign" });
-    const menu = el.querySelectorAll(".nds-brand-cashpobi__menu-item");
+    const el = await mount({ brand: "cashwalk-biz", "active-key": "campaign" });
+    const menu = el.querySelectorAll(".nds-brand-cashwalk-biz__menu-item");
     expect(menu.length).toBe(5);
     expect(Array.from(menu).map((m) => m.textContent?.trim())).toEqual([
       "홈",
@@ -279,26 +279,26 @@ describe("Cashpobi web ↔ React CashpobiWebHeader variant='desktop'", () => {
       "설정",
     ]);
     /* primary CTA — yellow pill */
-    const cta = el.querySelector(".nds-brand-cashpobi__primary-cta") as HTMLAnchorElement;
+    const cta = el.querySelector(".nds-brand-cashwalk-biz__primary-cta") as HTMLAnchorElement;
     expect(cta?.textContent).toBe("광고 시작하기");
     expect(cta?.getAttribute("href")).toBe("/start");
     /* yellow #FFD200 is the brand signature — css rule 에 박혀 있어야 함 */
     const styleTag = document.querySelector(
-      'style[data-nds-style="nds-brand-chrome-cashpobi"]',
+      'style[data-nds-style="nds-brand-chrome-cashwalk-biz"]',
     ) as HTMLStyleElement | null;
     expect(styleTag?.textContent).toContain("#ffd200");
   });
 });
 
-describe("Cashpobi mobile ↔ React CashpobiWebHeader variant='mobile'", () => {
+describe("CashwalkBiz mobile ↔ React CashwalkBizWebHeader variant='mobile'", () => {
   it("renders compact bar: logo (80×24) + hamburger", async () => {
-    const el = await mount({ brand: "cashpobi", surface: "mobile" });
-    expect(el.querySelector(".nds-brand-cashpobi__inner--mobile")).toBeTruthy();
+    const el = await mount({ brand: "cashwalk-biz", surface: "mobile" });
+    expect(el.querySelector(".nds-brand-cashwalk-biz__inner--mobile")).toBeTruthy();
     const logo = el.querySelector('img[alt="Cashwalk for Business"]') as HTMLImageElement;
     expect(logo?.getAttribute("width")).toBe("80");
-    expect(el.querySelector('.nds-brand-cashpobi__hamburger[aria-label="메뉴"]')).toBeTruthy();
+    expect(el.querySelector('.nds-brand-cashwalk-biz__hamburger[aria-label="메뉴"]')).toBeTruthy();
     /* 메뉴/CTA 는 모바일에서 미노출 */
-    expect(el.querySelector(".nds-brand-cashpobi__menu")).toBeNull();
-    expect(el.querySelector(".nds-brand-cashpobi__primary-cta")).toBeNull();
+    expect(el.querySelector(".nds-brand-cashwalk-biz__menu")).toBeNull();
+    expect(el.querySelector(".nds-brand-cashwalk-biz__primary-cta")).toBeNull();
   });
 });

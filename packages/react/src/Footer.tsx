@@ -401,7 +401,7 @@ const FooterWebCompound = Object.assign(FooterWeb, {
 
 /**
  * Base `Footer` compound — `{Brand}Footer` (`NudgeEAPFooter` / `TrostFooter` /
- * `CashpobiFooter` / `GenietFooter`) 의 빌딩 블록.
+ * `CashwalkBizFooter` / `GenietFooter`) 의 빌딩 블록.
  *
  *   - `.Info` — 회사 정보 푸터 (홈페이지 하단)
  *   - `.TabBar` — 하단 탭 네비게이션 (앱)

@@ -10,13 +10,21 @@
  *   <nds-trost-header></nds-trost-header>
  *   <nds-geniet-header surface="mobile"></nds-geniet-header>
  *
- * React 패키지의 brand chrome (Trost/Geniet/NudgeEAP/Cashpobi WebHeader / AppBar)
+ * React 패키지의 brand chrome (Trost/Geniet/NudgeEAP/CashwalkBiz WebHeader / AppBar)
  * 과 시각적으로 동등한 HTML 을 직접 렌더한다. 단순 wrapper 가 아니라 brand 별
  * 풍부한 데이터를 들고 있으며, brand-specific 마크업/스타일을 inline 으로 inject.
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { cv, fontWeight, radius, spacing, transition, typeScale, zIndex } from "@nudge-design/tokens";
+import {
+  cv,
+  fontWeight,
+  radius,
+  spacing,
+  transition,
+  typeScale,
+  zIndex,
+} from "@nudge-design/tokens";
 import "./nds-header.js";
 import "./nds-footer.js";
 import {
@@ -27,12 +35,12 @@ import {
   NUDGE_EAP_LOGO_FOOTER_DATA_URI,
   TROST_LOGO_DATA_URI,
   TROST_LOGO_MOBILE_DATA_URI,
-  CASHPOBI_LOGO_DATA_URI,
+  CASHWALK_BIZ_LOGO_DATA_URI,
 } from "./brand-logo-defaults.js";
 
 /* ──────────────── Types ──────────────── */
 
-type BrandKey = "nudge-eap" | "trost" | "geniet" | "cashpobi";
+type BrandKey = "nudge-eap" | "trost" | "geniet" | "cashwalk-biz";
 type HeaderSurface = "web" | "mobile" | "webview";
 type FooterSurface = "web" | "app";
 
@@ -146,8 +154,8 @@ interface BrandChrome {
     appDownloadHref: string;
   };
 
-  /** Cashpobi 전용 — yellow primary CTA pill */
-  cashpobi?: {
+  /** CashwalkBiz 전용 — yellow primary CTA pill */
+  "cashwalk-biz"?: {
     primaryCta: { label: string; href: string };
     mobileHeight: number;
   };
@@ -322,18 +330,18 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       mobilePointHref: "#",
     },
   },
-  cashpobi: {
-    label: "Cashpobi",
+  "cashwalk-biz": {
+    label: "CashwalkBiz",
     /* 로고 self-contained data URI (geniet/trost/nudge-eap 와 동일 정책).
      * 데스크탑/모바일 동일 로고 — 크기만 다르게. */
     logo: {
-      src: CASHPOBI_LOGO_DATA_URI,
+      src: CASHWALK_BIZ_LOGO_DATA_URI,
       alt: "Cashwalk for Business",
       width: 107,
       height: 32,
     },
     mobileLogo: {
-      src: CASHPOBI_LOGO_DATA_URI,
+      src: CASHWALK_BIZ_LOGO_DATA_URI,
       alt: "Cashwalk for Business",
       width: 80,
       height: 24,
@@ -346,7 +354,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       { key: "channel", label: "채널", href: "/channels" },
       { key: "setting", label: "설정", href: "/settings" },
     ],
-    mobileTitle: "Cashpobi",
+    mobileTitle: "CashwalkBiz",
     authLabel: "로그인",
     footerTone: "light",
     footerSurface: "web",
@@ -365,7 +373,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       copyright: "Copyright Cashwalk. All Rights Reserved.",
     },
     extra: "Cashwalk for Business",
-    cashpobi: {
+    "cashwalk-biz": {
       primaryCta: { label: "광고 시작하기", href: "/start" },
       mobileHeight: 56,
     },
@@ -1371,31 +1379,31 @@ function renderTrostHeader(
   `;
 }
 
-/* ──────────────── Brand: Cashpobi ──────────────── */
-/* React: CashpobiWebHeader — 1단 헤더 + yellow primary CTA pill. */
+/* ──────────────── Brand: CashwalkBiz ──────────────── */
+/* React: CashwalkBizWebHeader — 1단 헤더 + yellow primary CTA pill. */
 
-function renderCashpobiHeader(
+function renderCashwalkBizHeader(
   brand: BrandChrome,
   surface: HeaderSurface,
   activeKey: string,
   assetBaseUrl: string,
 ): string {
-  const c = brand.cashpobi;
+  const c = brand["cashwalk-biz"];
 
   if (surface === "webview") {
     return renderWebviewHeader(brand.mobileTitle);
   }
 
-  const styleId = "nds-brand-chrome-cashpobi";
+  const styleId = "nds-brand-chrome-cashwalk-biz";
   const css = `
-    .nds-brand-cashpobi {
+    .nds-brand-cashwalk-biz {
       display: block;
       width: 100%;
       background: ${cv.surface.default};
       border-bottom: 1px solid ${cv.borderRole.subtle};
       box-sizing: border-box;
     }
-    .nds-brand-cashpobi__inner {
+    .nds-brand-cashwalk-biz__inner {
       max-width: ${brand.maxWidth}px;
       margin: 0 auto;
       height: 64px;
@@ -1405,27 +1413,27 @@ function renderCashpobiHeader(
       padding: 0 60px;
       box-sizing: border-box;
     }
-    .nds-brand-cashpobi__inner--mobile {
+    .nds-brand-cashwalk-biz__inner--mobile {
       height: ${c?.mobileHeight ?? 56}px;
       padding: 0 ${spacing[16]}px;
       justify-content: space-between;
     }
-    .nds-brand-cashpobi__logo {
+    .nds-brand-cashwalk-biz__logo {
       display: inline-flex;
       align-items: center;
       flex-shrink: 0;
       text-decoration: none;
     }
-    .nds-brand-cashpobi__menu {
+    .nds-brand-cashwalk-biz__menu {
       display: flex;
       align-items: center;
       gap: ${spacing[8]}px;
       flex: 1;
       margin-left: ${spacing[24]}px;
     }
-    .nds-brand-cashpobi__menu-item,
-    .nds-brand-cashpobi__menu-item:visited,
-    .nds-brand-cashpobi__menu-item:hover {
+    .nds-brand-cashwalk-biz__menu-item,
+    .nds-brand-cashwalk-biz__menu-item:visited,
+    .nds-brand-cashwalk-biz__menu-item:hover {
       display: inline-flex;
       align-items: center;
       height: 44px;
@@ -1437,17 +1445,17 @@ function renderCashpobiHeader(
       text-decoration: none;
       border-radius: ${radius.sm}px;
     }
-    .nds-brand-cashpobi__menu-item[data-active="true"] {
+    .nds-brand-cashwalk-biz__menu-item[data-active="true"] {
       color: ${cv.textRole.strong};
       font-weight: ${fontWeight.bold};
     }
-    .nds-brand-cashpobi__actions {
+    .nds-brand-cashwalk-biz__actions {
       display: inline-flex;
       align-items: center;
       gap: ${spacing[16]}px;
       flex-shrink: 0;
     }
-    .nds-brand-cashpobi__auth {
+    .nds-brand-cashwalk-biz__auth {
       display: inline-flex;
       align-items: center;
       height: 36px;
@@ -1462,7 +1470,7 @@ function renderCashpobiHeader(
       text-decoration: none;
       font-family: inherit;
     }
-    .nds-brand-cashpobi__primary-cta {
+    .nds-brand-cashwalk-biz__primary-cta {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1481,7 +1489,7 @@ function renderCashpobiHeader(
       white-space: nowrap;
       box-sizing: border-box;
     }
-    .nds-brand-cashpobi__hamburger {
+    .nds-brand-cashwalk-biz__hamburger {
       all: unset;
       display: inline-flex;
       align-items: center;
@@ -1497,10 +1505,10 @@ function renderCashpobiHeader(
     const logoImg = brand.mobileLogo ?? brand.logo;
     return `
       ${ensureStyle(styleId, css)}
-      <header class="nds-brand-cashpobi" data-slot="root">
-        <div class="nds-brand-cashpobi__inner nds-brand-cashpobi__inner--mobile">
-          <a class="nds-brand-cashpobi__logo" href="/">${renderLogoImg(logoImg, assetBaseUrl)}</a>
-          <button type="button" class="nds-brand-cashpobi__hamburger" aria-label="메뉴">${TROST_ICONS.hamburger}</button>
+      <header class="nds-brand-cashwalk-biz" data-slot="root">
+        <div class="nds-brand-cashwalk-biz__inner nds-brand-cashwalk-biz__inner--mobile">
+          <a class="nds-brand-cashwalk-biz__logo" href="/">${renderLogoImg(logoImg, assetBaseUrl)}</a>
+          <button type="button" class="nds-brand-cashwalk-biz__hamburger" aria-label="메뉴">${TROST_ICONS.hamburger}</button>
         </div>
       </header>
     `;
@@ -1509,22 +1517,22 @@ function renderCashpobiHeader(
   const menuHtml = brand.webMenu
     .map(
       (item) =>
-        `<a class="nds-brand-cashpobi__menu-item" href="${escapeAttr(item.href)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
+        `<a class="nds-brand-cashwalk-biz__menu-item" href="${escapeAttr(item.href)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
     )
     .join("");
 
   const ctaHtml = c?.primaryCta
-    ? `<a class="nds-brand-cashpobi__primary-cta" href="${escapeAttr(c.primaryCta.href)}">${escapeHtml(c.primaryCta.label)}</a>`
+    ? `<a class="nds-brand-cashwalk-biz__primary-cta" href="${escapeAttr(c.primaryCta.href)}">${escapeHtml(c.primaryCta.label)}</a>`
     : "";
 
   return `
     ${ensureStyle(styleId, css)}
-    <header class="nds-brand-cashpobi" data-slot="root">
-      <div class="nds-brand-cashpobi__inner">
-        <a class="nds-brand-cashpobi__logo" href="/">${renderLogoImg(brand.logo, assetBaseUrl)}</a>
-        <nav class="nds-brand-cashpobi__menu">${menuHtml}</nav>
-        <div class="nds-brand-cashpobi__actions">
-          <a class="nds-brand-cashpobi__auth" href="#">${escapeHtml(brand.authLabel ?? "로그인")}</a>
+    <header class="nds-brand-cashwalk-biz" data-slot="root">
+      <div class="nds-brand-cashwalk-biz__inner">
+        <a class="nds-brand-cashwalk-biz__logo" href="/">${renderLogoImg(brand.logo, assetBaseUrl)}</a>
+        <nav class="nds-brand-cashwalk-biz__menu">${menuHtml}</nav>
+        <div class="nds-brand-cashwalk-biz__actions">
+          <a class="nds-brand-cashwalk-biz__auth" href="#">${escapeHtml(brand.authLabel ?? "로그인")}</a>
           ${ctaHtml}
         </div>
       </div>
@@ -1546,8 +1554,8 @@ function renderHeader(
       return renderGenietHeader(brand, surface, activeKey, assetBaseUrl);
     case "trost":
       return renderTrostHeader(brand, surface, activeKey, assetBaseUrl);
-    case "cashpobi":
-      return renderCashpobiHeader(brand, surface, activeKey, assetBaseUrl);
+    case "cashwalk-biz":
+      return renderCashwalkBizHeader(brand, surface, activeKey, assetBaseUrl);
     case "nudge-eap":
     default:
       return renderNudgeEAPHeader(brand, surface, activeKey, assetBaseUrl);

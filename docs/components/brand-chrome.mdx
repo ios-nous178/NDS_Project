@@ -16,14 +16,14 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 | Geniet   | `GenietAppBar`                        | `GenietFooter`   | `GenietBottomNav`   |
 | Trost    | `TrostAppBar`                         | `TrostFooter`    | `TrostBottomNav`    |
 | NudgeEAP | `NudgeEAPAppBar`, `NudgeEAPWebHeader` | `NudgeEAPFooter` | `NudgeEAPBottomNav` |
-| Cashpobi | `CashpobiWebHeader`                   | `CashpobiFooter` | 웹 전용             |
+| CashwalkBiz | `CashwalkBizWebHeader`                   | `CashwalkBizFooter` | 웹 전용             |
 
 ## 호출 기준
 
 - 앱/모바일 chrome 은 `{Brand}AppBar`, `{Brand}BottomNav` 를 우선 사용합니다.
 - 웹 헤더가 별도로 있는 브랜드는 `{Brand}WebHeader` 를 사용합니다.
 - 푸터는 `{Brand}Footer` 한 이름으로 호출하고, 필요한 경우 `surface="web"` 또는 `surface="app"` 으로 분기합니다.
-- Cashpobi 는 웹 전용 브랜드라 AppBar / BottomNav 를 제공하지 않습니다.
+- CashwalkBiz 는 웹 전용 브랜드라 AppBar / BottomNav 를 제공하지 않습니다.
 - Geniet 은 앱 전용 푸터만 제공하므로 `GenietFooter` 는 app surface 만 사용합니다.
 
 ## HTML 목업
@@ -43,14 +43,14 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 ></nds-brand-header>
 ```
 
-브랜드 alias 는 `nds-nudge-eap-*`, `nds-trost-*`, `nds-geniet-*`, `nds-cashpobi-*` 형식을 사용합니다.
+브랜드 alias 는 `nds-nudge-eap-*`, `nds-trost-*`, `nds-geniet-*`, `nds-cashwalk-biz-*` 형식을 사용합니다.
 
 ## 마이그레이션
 
 ```tsx
 import {
-  CashpobiFooter,
-  CashpobiWebHeader,
+  CashwalkBizFooter,
+  CashwalkBizWebHeader,
   GenietAppBar,
   GenietBottomNav,
   GenietFooter,
@@ -70,7 +70,7 @@ import {
 - `TrostDesktopFooter` / `TrostWebFooter` → `TrostFooter surface="web"`
 - `NudgeEAPAppFooter` → `NudgeEAPFooter surface="app"`
 - `NudgeEAPWebFooter` → `NudgeEAPFooter surface="web"`
-- `CashpobiWebFooter` → `CashpobiFooter`
+- `CashwalkBizWebFooter` → `CashwalkBizFooter`
 
 ## 관련 base 컴포넌트
 

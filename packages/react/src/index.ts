@@ -137,4 +137,4 @@ export * from "./Sidebar";
 export * from "./geniet";
 export * from "./trost";
 export * from "./nudge-eap";
-export * from "./cashpobi";
+export * from "./cashwalk-biz";

@@ -25,7 +25,7 @@ const root = path.resolve(__dirname, "../../..");
 
 /* ── 1. inline tokens + styles ──
  *   tokens.css 는 :root 에 NudgeEAP 디폴트를 박는다. 같은 페이지에 4 brand 가 같이
- *   있으므로 trost/geniet/cashpobi.css 도 `:root` selector 를 그대로 두면 마지막 brand
+ *   있으므로 trost/geniet/cashwalk-biz.css 도 `:root` selector 를 그대로 두면 마지막 brand
  *   override 가 모든 frame 에 cascade. 이를 막기 위해 brand css 의 `:root` 를
  *   `[data-brand="X"]` 로 rewrap (brand-chrome 가 root element 에 data-brand 를 박음). */
 const tokensCss = fs.readFileSync(path.join(root, "packages/tokens/dist/tokens.css"), "utf-8");
@@ -38,7 +38,7 @@ function readBrandCss(brand) {
   return raw.replace(/:root\b/g, `[data-brand="${brand}"]`);
 }
 
-const brandsCss = ["trost", "geniet", "cashpobi"]
+const brandsCss = ["trost", "geniet", "cashwalk-biz"]
   .map((b) => `/* ── ${b} brand tokens (scoped) ── */\n${readBrandCss(b)}`)
   .join("\n\n");
 
@@ -215,21 +215,21 @@ const html = `<!DOCTYPE html>
   </div>
 </div>
 
-<!-- Cashpobi -->
-<h2><span class="badge">yellow CTA</span>Cashpobi · Desktop (5탭 + 광고시작하기 #FFD200 pill)</h2>
+<!-- CashwalkBiz -->
+<h2><span class="badge">yellow CTA</span>CashwalkBiz · Desktop (5탭 + 광고시작하기 #FFD200 pill)</h2>
 <div class="frame">
   <div class="frame__head">
-    <code>&lt;nds-brand-header brand="cashpobi"&gt;</code>
-    <a href="http://localhost:6006/?path=/story/components-header--cashpobi-web-header-desktop-pc" target="_blank">→ React storybook</a>
+    <code>&lt;nds-brand-header brand="cashwalk-biz"&gt;</code>
+    <a href="http://localhost:6006/?path=/story/components-header--cashwalk-biz-web-header-desktop-pc" target="_blank">→ React storybook</a>
   </div>
-  <nds-brand-header brand="cashpobi" active-key="campaign" asset-base-url="${ASSET_BASE}"></nds-brand-header>
+  <nds-brand-header brand="cashwalk-biz" active-key="campaign" asset-base-url="${ASSET_BASE}"></nds-brand-header>
 </div>
 
-<h2>Cashpobi · Mobile</h2>
+<h2>CashwalkBiz · Mobile</h2>
 <div class="row row--mobile">
   <div class="frame frame--mobile">
     <div class="frame__head"><code>surface="mobile"</code><span>—</span></div>
-    <nds-brand-header brand="cashpobi" surface="mobile" asset-base-url="${ASSET_BASE}"></nds-brand-header>
+    <nds-brand-header brand="cashwalk-biz" surface="mobile" asset-base-url="${ASSET_BASE}"></nds-brand-header>
   </div>
 </div>
 

@@ -24,7 +24,7 @@ export const formFieldStyles = `
     box-sizing: border-box;
   }
 
-  /* Cashpobi admin 표준 — 라벨 좌측 고정, control 우측 채움.
+  /* CashwalkBiz admin 표준 — 라벨 좌측 고정, control 우측 채움.
    * description 이 있으면 컴포넌트 쪽에서 자동 top 폴백 (label-row 가 vertical 이라야 함). */
   :where(.${FF_ROOT_CLASS}[data-label-position="left"]) {
     flex-direction: row;

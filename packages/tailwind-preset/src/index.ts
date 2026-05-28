@@ -19,16 +19,16 @@ import {
   trostStatus,
   trostSemantic,
   trostTheme,
-  cashpobiCommon,
-  cashpobiNeutral,
-  cashpobiYellow,
-  cashpobiCoralRed,
-  cashpobiBlue,
-  cashpobiGreen,
-  cashpobiBrown,
-  cashpobiStatus,
-  cashpobiSemantic,
-  cashpobiTheme,
+  cashwalkBizCommon,
+  cashwalkBizNeutral,
+  cashwalkBizYellow,
+  cashwalkBizCoralRed,
+  cashwalkBizBlue,
+  cashwalkBizGreen,
+  cashwalkBizBrown,
+  cashwalkBizStatus,
+  cashwalkBizSemantic,
+  cashwalkBizTheme,
 } from "@nudge-design/tokens";
 
 /**
@@ -225,9 +225,9 @@ export const trostPreset = {
   },
 };
 
-// trostSemantic / cashpobiSemantic 등은 prop 미사용 import 회피 위해 명시적 참조
+// trostSemantic / cashwalkBizSemantic 등은 prop 미사용 import 회피 위해 명시적 참조
 void trostSemantic;
-void cashpobiSemantic;
+void cashwalkBizSemantic;
 void magenta;
 
 /** Pass-through: tokens are already string hex values */
@@ -236,34 +236,34 @@ function objectToPx(obj: Record<string, string | number>): Record<string, string
 }
 
 /**
- * Cashpobi Tailwind preset.
+ * CashwalkBiz Tailwind preset.
  *
- * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 cashpobi.css 가 var 를
+ * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 cashwalk-biz.css 가 var 를
  * 노란 톤으로 redefine 하므로 자동 캐포비 색상. 별도 색상 alias 만 추가:
- *   - `bg-cashpobi-yellow-500` 같은 brand-prefixed
+ *   - `bg-cashwalk-biz-yellow-500` 같은 brand-prefixed
  *   - `bg-brown-500` 같은 캐시워크 로고용
  *
- * Typography / radius / spacing 은 cashpobi 가이드에 맞춘 별도 매핑.
+ * Typography / radius / spacing 은 cashwalk-biz 가이드에 맞춘 별도 매핑.
  */
-export const cashpobiPreset = {
+export const cashwalkBizPreset = {
   theme: {
     extend: {
       colors: {
         // 캐포비 고유 atomic palette
-        "cashpobi-neutral": objectToPx(cashpobiNeutral),
-        "cashpobi-yellow": objectToPx(cashpobiYellow),
-        "cashpobi-blue": objectToPx(cashpobiBlue),
-        "cashpobi-green": objectToPx(cashpobiGreen),
-        "cashpobi-coral-red": objectToPx(cashpobiCoralRed),
-        brown: objectToPx(cashpobiBrown),
-        common: objectToPx(cashpobiCommon),
-        status: objectToPx(cashpobiStatus),
+        "cashwalk-biz-neutral": objectToPx(cashwalkBizNeutral),
+        "cashwalk-biz-yellow": objectToPx(cashwalkBizYellow),
+        "cashwalk-biz-blue": objectToPx(cashwalkBizBlue),
+        "cashwalk-biz-green": objectToPx(cashwalkBizGreen),
+        "cashwalk-biz-coral-red": objectToPx(cashwalkBizCoralRed),
+        brown: objectToPx(cashwalkBizBrown),
+        common: objectToPx(cashwalkBizCommon),
+        status: objectToPx(cashwalkBizStatus),
 
-        // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashpobi.css 가 자동 redefine
+        // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashwalk-biz.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
       },
       fontFamily: {
-        sans: cashpobiTheme.typography!.fontFamily!.web.split(", "),
+        sans: cashwalkBizTheme.typography!.fontFamily!.web.split(", "),
       },
       fontWeight: {
         regular: String(fontWeight.regular),
@@ -272,27 +272,27 @@ export const cashpobiPreset = {
         bold: String(fontWeight.bold),
       },
       fontSize: Object.fromEntries(
-        Object.entries(cashpobiTheme.typography!.typeScale!).map(([key, val]) => [
+        Object.entries(cashwalkBizTheme.typography!.typeScale!).map(([key, val]) => [
           key,
           [`${val.fontSize}px`, { lineHeight: `${val.lineHeight}px` }],
         ]),
       ),
-      spacing: cashpobiTheme.spacing?.spacing
+      spacing: cashwalkBizTheme.spacing?.spacing
         ? Object.fromEntries(
-            Object.entries(cashpobiTheme.spacing.spacing).map(([k, v]) => [k, `${v}px`]),
+            Object.entries(cashwalkBizTheme.spacing.spacing).map(([k, v]) => [k, `${v}px`]),
           )
         : undefined,
-      borderRadius: cashpobiTheme.spacing?.radius
+      borderRadius: cashwalkBizTheme.spacing?.radius
         ? Object.fromEntries(
-            Object.entries(cashpobiTheme.spacing.radius).map(([k, v]) => [
+            Object.entries(cashwalkBizTheme.spacing.radius).map(([k, v]) => [
               k,
               v === 9999 ? "9999px" : `${v}px`,
             ]),
           )
         : undefined,
-      borderWidth: cashpobiTheme.spacing?.borderWidth
+      borderWidth: cashwalkBizTheme.spacing?.borderWidth
         ? Object.fromEntries(
-            Object.entries(cashpobiTheme.spacing.borderWidth).map(([k, v]) => [k, `${v}px`]),
+            Object.entries(cashwalkBizTheme.spacing.borderWidth).map(([k, v]) => [k, `${v}px`]),
           )
         : undefined,
     },

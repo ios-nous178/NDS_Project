@@ -56,7 +56,7 @@ function htmlSetupPackages(): Manifest["packages"] {
 }
 
 describe("setup brand registry", () => {
-  it("exposes cashpobi when tokens css export exists even without a brand DESIGN.md entry", () => {
+  it("exposes cashwalk-biz when tokens css export exists even without a brand DESIGN.md entry", () => {
     configureWithManifest({
       packages: [
         {
@@ -64,7 +64,7 @@ describe("setup brand registry", () => {
           version: "0.1.10",
           dependencies: {},
           peerDependencies: {},
-          cssExports: ["@nudge-design/tokens/css", "@nudge-design/tokens/css/cashpobi"],
+          cssExports: ["@nudge-design/tokens/css", "@nudge-design/tokens/css/cashwalk-biz"],
         },
         {
           name: "@nudge-design/html",
@@ -76,15 +76,15 @@ describe("setup brand registry", () => {
       ],
     });
 
-    const result = getBrand({ brand: "cashpobi" });
+    const result = getBrand({ brand: "cashwalk-biz" });
     expect("detail" in result ? result.detail.ok : false).toBe(true);
     expect("detail" in result ? result.detail.cssImport : null).toBe(
-      "@nudge-design/tokens/css/cashpobi",
+      "@nudge-design/tokens/css/cashwalk-biz",
     );
     expect("detail" in result ? result.detail.ready : false).toBe(true);
 
-    const imports = getHtmlEntryImports({ brand: "cashpobi" });
-    expect(imports.code).toContain(`import "@nudge-design/tokens/css/cashpobi";`);
+    const imports = getHtmlEntryImports({ brand: "cashwalk-biz" });
+    expect(imports.code).toContain(`import "@nudge-design/tokens/css/cashwalk-biz";`);
   });
 });
 

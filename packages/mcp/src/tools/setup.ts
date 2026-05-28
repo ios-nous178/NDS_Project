@@ -8,7 +8,12 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { ADMIN_CMS_GUIDE, ICON_METADATA, detectIntentFromText } from "../guides.js";
+import {
+  ADMIN_CMS_GUIDE,
+  COMPONENT_GUIDES,
+  ICON_METADATA,
+  detectIntentFromText,
+} from "../guides.js";
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
 import { createAgentsMd, createClaudeMd } from "./guides.js";
 import { ensureInspectorInMainTsx } from "./inspector-installer.js";
@@ -38,7 +43,7 @@ const FALLBACK_BRAND_META: Record<
   string,
   Pick<BrandDef, "name" | "description" | "primaryColor" | "keyColors" | "fontFamilies">
 > = {
-  cashpobi: {
+  "cashwalk-biz": {
     name: "Cashwalk for Business",
     description: "Cashwalk for Business brand tokens.",
     primaryColor: null,
@@ -68,7 +73,11 @@ const OPTIONAL_PACKAGES = ["@nudge-design/tailwind-preset", "@nudge-design/html"
  *
  * @nudge-design/react 는 의도적으로 제외 — 이 워크플로우는 .tsx 를 쓰지 않는다.
  */
-const HTML_REQUIRED_PACKAGES = ["@nudge-design/tokens", "@nudge-design/html", "@nudge-design/icons"];
+const HTML_REQUIRED_PACKAGES = [
+  "@nudge-design/tokens",
+  "@nudge-design/html",
+  "@nudge-design/icons",
+];
 
 /* ───────────── 패키지 조회 ───────────── */
 
@@ -524,7 +533,9 @@ export function getHtmlEntryImports(args: { brand?: string }) {
   if (htmlPkg) {
     lines.push(`import "@nudge-design/html/styles.css";  // nds-* 컴포넌트 스타일`);
     lines.push(`import "./index.css";  // 프로젝트 minimal reset`);
-    lines.push(`import "@nudge-design/html/runtime";  // <nds-*> custom element 등록 (side-effect)`);
+    lines.push(
+      `import "@nudge-design/html/runtime";  // <nds-*> custom element 등록 (side-effect)`,
+    );
   }
   return {
     targetFile: "src/main.ts",
@@ -1249,10 +1260,24 @@ export function getBrandInfo(args: { brand: string }) {
     .filter(() => slug !== "nudge-eap")
     .sort();
 
+  // brand-namespaced 컴포넌트 가이드 추출 (BottomNav trio / AppBar / WebHeader / 별도 Footer 등).
+  // 컴포넌트 가이드 키는 NudgeEAP 처럼 EAP 대문자라 brandComponentPrefix (NudgeEap) 와 다름 — 별도 매핑.
+  const componentPrefixByBrand: Record<string, string> = {
+    trost: "Trost",
+    geniet: "Geniet",
+    "nudge-eap": "NudgeEAP",
+    cashpobi: "Cashpobi",
+  };
+  const componentPrefix = componentPrefixByBrand[slug] ?? brandComponentPrefix;
+  const brandComponents = Object.keys(COMPONENT_GUIDES)
+    .filter((name) => name.startsWith(componentPrefix) && name !== componentPrefix)
+    .sort();
+
   return {
     ok: true,
     ...brand,
     brandIcons,
+    brandComponents,
     iconPolicy:
       brandIcons.length > 0
         ? `이 브랜드 모드(brand='${slug}') 로 작업 시 위 ${brandIcons.length}개 아이콘은 같은 의미의 공용 아이콘보다 **우선 사용**. 매칭이 없는 의미만 공용 fallback. 공통 컴포넌트(Footer/BottomNav 등) 의 *구현* 에는 brand 분기 로직을 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.`

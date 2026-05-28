@@ -16,11 +16,11 @@ description: 하단 푸터 컴포넌트. 브랜드별 단일 진입점({Brand}Fo
 | ------------ | --------------------------------------- | ---------------------------------------------------------------------------------- |
 | NudgeEAP     | `surface='web'` / `surface='app'`       | web: 약관·앱다운로드·ISO·DAIN·poweredBy / app: 회사정보·약관·로고                  |
 | Trost        | `surface='web'` / `surface='app'`       | web: dark PC 푸터 · 약관·SNS·앱다운로드 / app: dark · `layout='desktop'\|'mobile'` |
-| Cashpobi     | `surface='web'` (default, app 없음)     | light 톤 · `layout='desktop'\|'mobile'`                                            |
+| CashwalkBiz     | `surface='web'` (default, app 없음)     | light 톤 · `layout='desktop'\|'mobile'`                                            |
 | Geniet       | `surface='app'` (default, web 없음)     | 커머스 고지 · 통신판매중개자 안내                                                 |
 
 ```tsx
-import { NudgeEAPFooter, TrostFooter, CashpobiFooter, GenietFooter } from "@nudge-design/react";
+import { NudgeEAPFooter, TrostFooter, CashwalkBizFooter, GenietFooter } from "@nudge-design/react";
 
 // NudgeEAP web (Figma 20:13799)
 <NudgeEAPFooter
@@ -40,8 +40,8 @@ import { NudgeEAPFooter, TrostFooter, CashpobiFooter, GenietFooter } from "@nudg
 // Trost app
 <TrostFooter surface="app" layout="desktop" links={[...]} company={...} extra="..." logo={...} />
 
-// Cashpobi (web only)
-<CashpobiFooter layout="desktop" links={[...]} company={...} maxWidth={1600} />
+// CashwalkBiz (web only)
+<CashwalkBizFooter layout="desktop" links={[...]} company={...} maxWidth={1600} />
 
 // Geniet (app only)
 <GenietFooter links={[...]} company={...} extra="..." logo={{ src, width, height }} />

@@ -328,7 +328,7 @@ sizing:
   input:
     default: 48px
     field: 44px
-    compact: 40px # Admin/Settings 표준 (Cashpobi admin TextField) — 라벨 좌측 폼·dense table inline 편집
+    compact: 40px # Admin/Settings 표준 (CashwalkBiz admin TextField) — 라벨 좌측 폼·dense table inline 편집
 
 # ── Elevation ───────────────────────────────────────────────
 elevation:

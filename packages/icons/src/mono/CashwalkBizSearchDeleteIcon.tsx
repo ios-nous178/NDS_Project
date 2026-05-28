@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface CashwalkBizSearchDeleteIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkBizSearchDeleteIcon = React.forwardRef<SVGSVGElement, CashwalkBizSearchDeleteIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <circle cx="10.5" cy="10.5" r="6.25" stroke="currentColor" strokeWidth="1.5"/>
+  <path d="M15 15l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  <path d="M8.5 8.5l4 4M12.5 8.5l-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+    </svg>
+  )
+);
+
+CashwalkBizSearchDeleteIcon.displayName = "CashwalkBizSearchDeleteIcon";

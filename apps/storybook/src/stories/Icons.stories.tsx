@@ -23,7 +23,7 @@ const meta: Meta = {
           "",
           `총 **${ICON_ENTRIES.length}개** 아이콘. 클릭하면 컴포넌트 이름이 클립보드에 복사됩니다.`,
           "",
-          "브랜드별 아이콘은 prefix 로 구분됩니다 — prefix 없는 base 셋은 **NudgeEAP**, `Cashpobi*` / `Geniet*` / `Trost*` 는 각 브랜드 전용, `Mockup*` (Bold/Linear) 는 mockup 전용 IconSax 셋입니다.",
+          "브랜드별 아이콘은 prefix 로 구분됩니다 — prefix 없는 base 셋은 **NudgeEAP**, `CashwalkBiz*` / `Geniet*` / `Trost*` 는 각 브랜드 전용, `Mockup*` (Bold/Linear) 는 mockup 전용 IconSax 셋입니다.",
           "",
           "패키지: `@nudge-design/icons` · 카테고리·사용 가이드는 [Docs · Icons](/components/icons)를 참고하세요.",
         ].join("\n"),
@@ -113,13 +113,13 @@ function IconCard({
   );
 }
 
-type BrandFilter = "all" | "nudge-eap" | "cashpobi" | "geniet" | "trost" | "mockup";
+type BrandFilter = "all" | "nudge-eap" | "cashwalk-biz" | "geniet" | "trost" | "mockup";
 
 // 컴포넌트 이름 prefix → 어느 브랜드 그룹에 속하는지.
 // 'nudge-eap' 은 prefix 가 없는 base DS 아이콘 (NudgeEAP brand 의 default set).
 // 'mockup' 은 MockupBold / MockupLinear 등 Mockup* prefix 전체 (IconSax 셋).
 function brandOf(componentName: string): Exclude<BrandFilter, "all"> {
-  if (componentName.startsWith("Cashpobi")) return "cashpobi";
+  if (componentName.startsWith("CashwalkBiz")) return "cashwalk-biz";
   if (componentName.startsWith("Geniet")) return "geniet";
   if (componentName.startsWith("Trost")) return "trost";
   if (componentName.startsWith("Mockup")) return "mockup";
@@ -199,7 +199,7 @@ function BrandChips({
     const c: Record<BrandFilter, number> = {
       all: entries.length,
       "nudge-eap": 0,
-      cashpobi: 0,
+      "cashwalk-biz": 0,
       geniet: 0,
       trost: 0,
       mockup: 0,
@@ -211,7 +211,7 @@ function BrandChips({
   const options: { v: BrandFilter; label: string }[] = [
     { v: "all", label: "All" },
     { v: "nudge-eap", label: "NudgeEAP" },
-    { v: "cashpobi", label: "Cashpobi" },
+    { v: "cashwalk-biz", label: "CashwalkBiz" },
     { v: "geniet", label: "Geniet" },
     { v: "trost", label: "Trost" },
     { v: "mockup", label: "Mockup (IconSax)" },

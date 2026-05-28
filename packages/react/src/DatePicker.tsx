@@ -1,6 +1,6 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 
-import { CalendarIcon, CashpobiCalendarIcon } from "@nudge-design/icons";
+import { CalendarIcon, CashwalkBizCalendarIcon } from "@nudge-design/icons";
 import { addDismissableLayerListeners, WebPortal } from "./internal/web";
 import { useBrand } from "./internal/useBrand";
 
@@ -146,10 +146,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const grid = useMemo(() => buildMonthGrid(viewDate), [viewDate]);
 
-  // brand 별 트리거 아이콘 swap — Cashpobi 는 자체 캘린더 글리프(filled + dot grid).
+  // brand 별 트리거 아이콘 swap — CashwalkBiz 는 자체 캘린더 글리프(filled + dot grid).
   // 다른 브랜드는 공용 CalendarIcon. 향후 brand glyph 추가 시 같은 분기에 더하면 됨.
   const brand = useBrand();
-  const TriggerCalendarIcon = brand === "cashpobi" ? CashpobiCalendarIcon : CalendarIcon;
+  const TriggerCalendarIcon = brand === "cashwalk-biz" ? CashwalkBizCalendarIcon : CalendarIcon;
 
   return (
     <div

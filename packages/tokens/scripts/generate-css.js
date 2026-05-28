@@ -6,7 +6,7 @@
  *   dist/tokens.css   — NudgeEAP 기본 토큰
  *   dist/trost.css    — Trost 브랜드 오버라이드 토큰
  *   dist/geniet.css   — Geniet 브랜드 오버라이드 토큰
- *   dist/cashpobi.css — Cashpobi 브랜드 오버라이드 토큰
+ *   dist/cashwalk-biz.css — CashwalkBiz 브랜드 오버라이드 토큰
  */
 const fs = require("fs");
 const path = require("path");
@@ -436,10 +436,14 @@ fs.writeFileSync(
 );
 console.log(`Generated ${genietPath}`);
 
-const cashpobiPath = path.join(distDir, "cashpobi.css");
-const { cashpobiTheme } = require("../dist/brands/cashpobi");
+const cashwalkBizPath = path.join(distDir, "cashwalk-biz.css");
+const { cashwalkBizTheme } = require("../dist/brands/cashwalk-biz");
 fs.writeFileSync(
-  cashpobiPath,
-  generateBrandTokens({ theme: cashpobiTheme, title: "cashpobi", cssImport: "cashpobi" }),
+  cashwalkBizPath,
+  generateBrandTokens({
+    theme: cashwalkBizTheme,
+    title: "cashwalk-biz",
+    cssImport: "cashwalk-biz",
+  }),
 );
-console.log(`Generated ${cashpobiPath}`);
+console.log(`Generated ${cashwalkBizPath}`);

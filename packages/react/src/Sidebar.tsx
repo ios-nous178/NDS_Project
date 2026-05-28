@@ -524,12 +524,12 @@ const sidebarStyles = `
 
 /* ─── Brand presets ─── */
 
-// Cashpobi 가이드 (Figma 168:1250 실측): 활성 아이템 bg = #FFF4C0 (Yellow/200 톤),
+// CashwalkBiz 가이드 (Figma 168:1250 실측): 활성 아이템 bg = #FFF4C0 (Yellow/200 톤),
 // radius 12 (idle 16 → 12 로 좁아짐). 텍스트는 #383838 유지 (Bold 가 아니라 Medium 유지).
-// `data-brand="cashpobi"` 가 :root 에 박혔을 때만 자동 적용.
+// `data-brand="cashwalk-biz"` 가 :root 에 박혔을 때만 자동 적용.
 
-const sidebarCashpobiTuning = `
-  :where([data-brand="cashpobi"] .${SB_ROOT_CLASS}) {
+const sidebarCashwalkBizTuning = `
+  :where([data-brand="cashwalk-biz"] .${SB_ROOT_CLASS}) {
     --nds-sidebar-item-active-bg: #FFF4C0;
     --nds-sidebar-item-active-radius: 12px;
     --nds-sidebar-item-active-accent: #FFD200;
@@ -773,7 +773,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       <style>{sidebarStyles}</style>
-      <style>{sidebarCashpobiTuning}</style>
+      <style>{sidebarCashwalkBizTuning}</style>
       <Component
         data-slot="root"
         data-collapsed={collapsed ? "true" : "false"}

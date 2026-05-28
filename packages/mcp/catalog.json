@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-28T04:46:45.819Z",
+  "generatedAt": "2026-05-28T05:16:31.222Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10,7 +10,7 @@
         "@nudge-design/tokens/css",
         "@nudge-design/tokens/css/trost",
         "@nudge-design/tokens/css/geniet",
-        "@nudge-design/tokens/css/cashpobi"
+        "@nudge-design/tokens/css/cashwalk-biz"
       ]
     },
     {
@@ -25,9 +25,7 @@
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0"
       },
-      "cssExports": [
-        "@nudge-design/react/styles.css"
-      ]
+      "cssExports": ["@nudge-design/react/styles.css"]
     },
     {
       "name": "@nudge-design/icons",
@@ -54,9 +52,7 @@
         "@nudge-design/tokens": "workspace:*"
       },
       "peerDependencies": {},
-      "cssExports": [
-        "@nudge-design/styles/styles.css"
-      ]
+      "cssExports": ["@nudge-design/styles/styles.css"]
     },
     {
       "name": "@nudge-design/html",
@@ -67,9 +63,7 @@
         "@nudge-design/tokens": "workspace:*"
       },
       "peerDependencies": {},
-      "cssExports": [
-        "@nudge-design/html/styles.css"
-      ]
+      "cssExports": ["@nudge-design/html/styles.css"]
     }
   ],
   "components": [
@@ -80,10 +74,7 @@
           "name": "type",
           "optional": true,
           "type": "AccordionType",
-          "allowedValues": [
-            "single",
-            "multiple"
-          ]
+          "allowedValues": ["single", "multiple"]
         },
         {
           "name": "value",
@@ -274,11 +265,7 @@
           "name": "variant",
           "optional": true,
           "type": "AppBarVariant",
-          "allowedValues": [
-            "default",
-            "webview",
-            "transparent"
-          ]
+          "allowedValues": ["default", "webview", "transparent"]
         }
       ],
       "dtsRelPath": "packages/react/dist/AppBar.d.ts"
@@ -331,12 +318,7 @@
           "name": "mode",
           "optional": true,
           "type": "AppointmentMode",
-          "allowedValues": [
-            "video",
-            "phone",
-            "chat",
-            "in-person"
-          ]
+          "allowedValues": ["video", "phone", "chat", "in-person"]
         },
         {
           "name": "location",
@@ -347,13 +329,7 @@
           "name": "status",
           "optional": true,
           "type": "AppointmentStatus",
-          "allowedValues": [
-            "scheduled",
-            "confirmed",
-            "in-progress",
-            "completed",
-            "canceled"
-          ]
+          "allowedValues": ["scheduled", "confirmed", "in-progress", "completed", "canceled"]
         },
         {
           "name": "actions",
@@ -391,12 +367,7 @@
           "name": "level",
           "optional": false,
           "type": "AssessmentLevel",
-          "allowedValues": [
-            "normal",
-            "mild",
-            "moderate",
-            "severe"
-          ]
+          "allowedValues": ["normal", "mild", "moderate", "severe"]
         },
         {
           "name": "levelText",
@@ -444,11 +415,7 @@
           "name": "shape",
           "optional": true,
           "type": "AssetShape",
-          "allowedValues": [
-            "square",
-            "rounded",
-            "circle"
-          ]
+          "allowedValues": ["square", "rounded", "circle"]
         },
         {
           "name": "size",
@@ -464,11 +431,7 @@
           "name": "scaleType",
           "optional": true,
           "type": "AssetScaleType",
-          "allowedValues": [
-            "cover",
-            "contain",
-            "fill"
-          ]
+          "allowedValues": ["cover", "contain", "fill"]
         },
         {
           "name": "overlap",
@@ -500,25 +463,13 @@
           "name": "fileType",
           "optional": true,
           "type": "AttachmentFileType",
-          "allowedValues": [
-            "pdf",
-            "image",
-            "video",
-            "audio",
-            "document",
-            "archive",
-            "other"
-          ]
+          "allowedValues": ["pdf", "image", "video", "audio", "document", "archive", "other"]
         },
         {
           "name": "status",
           "optional": true,
           "type": "AttachmentStatus",
-          "allowedValues": [
-            "uploading",
-            "done",
-            "error"
-          ]
+          "allowedValues": ["uploading", "done", "error"]
         },
         {
           "name": "progress",
@@ -737,13 +688,7 @@
       "dtsRelPath": "packages/react/dist/AvatarGroup.d.ts",
       "htmlTag": "nds-avatar-group",
       "htmlAttrs": {
-        "size": [
-          "xs",
-          "sm",
-          "md",
-          "lg",
-          "xl"
-        ]
+        "size": ["xs", "sm", "md", "lg", "xl"]
       }
     },
     {
@@ -753,34 +698,19 @@
           "name": "variant",
           "optional": true,
           "type": "BadgeVariant",
-          "allowedValues": [
-            "fill",
-            "ghost",
-            "line"
-          ]
+          "allowedValues": ["fill", "ghost", "line"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "BadgeColor",
-          "allowedValues": [
-            "brand",
-            "neutral",
-            "success",
-            "error",
-            "caution",
-            "info"
-          ]
+          "allowedValues": ["brand", "neutral", "success", "error", "caution", "info"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "BadgeSize",
-          "allowedValues": [
-            "sm",
-            "md",
-            "lg"
-          ]
+          "allowedValues": ["sm", "md", "lg"]
         },
         {
           "name": "labelClassName",
@@ -796,24 +726,9 @@
       "dtsRelPath": "packages/react/dist/Badge.d.ts",
       "htmlTag": "nds-badge",
       "htmlAttrs": {
-        "variant": [
-          "fill",
-          "ghost",
-          "line"
-        ],
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ],
-        "color": [
-          "brand",
-          "neutral",
-          "success",
-          "error",
-          "caution",
-          "info"
-        ]
+        "variant": ["fill", "ghost", "line"],
+        "size": ["sm", "md", "lg"],
+        "color": ["brand", "neutral", "success", "error", "caution", "info"]
       }
     },
     {
@@ -828,11 +743,7 @@
           "name": "variant",
           "optional": true,
           "type": "BannerVariant",
-          "allowedValues": [
-            "filled",
-            "outlined",
-            "image"
-          ]
+          "allowedValues": ["filled", "outlined", "image"]
         },
         {
           "name": "title",
@@ -1067,44 +978,25 @@
           "name": "variant",
           "optional": true,
           "type": "ButtonVariant",
-          "allowedValues": [
-            "solid",
-            "outlined",
-            "soft",
-            "outlined-sub"
-          ]
+          "allowedValues": ["solid", "outlined", "soft", "outlined-sub"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "ButtonSize",
-          "allowedValues": [
-            "xl",
-            "lg",
-            "md",
-            "sm",
-            "xs",
-            "field"
-          ]
+          "allowedValues": ["xl", "lg", "md", "sm", "xs", "field"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "ButtonColor",
-          "allowedValues": [
-            "primary",
-            "secondary",
-            "assistive"
-          ]
+          "allowedValues": ["primary", "secondary", "assistive"]
         },
         {
           "name": "shape",
           "optional": true,
           "type": "ButtonShape",
-          "allowedValues": [
-            "default",
-            "pill"
-          ]
+          "allowedValues": ["default", "pill"]
         },
         {
           "name": "fullWidth",
@@ -1135,25 +1027,9 @@
       "dtsRelPath": "packages/react/dist/Button.d.ts",
       "htmlTag": "nds-button",
       "htmlAttrs": {
-        "variant": [
-          "solid",
-          "outlined",
-          "soft",
-          "outlined-sub"
-        ],
-        "size": [
-          "xl",
-          "lg",
-          "md",
-          "sm",
-          "xs",
-          "field"
-        ],
-        "color": [
-          "primary",
-          "secondary",
-          "assistive"
-        ]
+        "variant": ["solid", "outlined", "soft", "outlined-sub"],
+        "size": ["xl", "lg", "md", "sm", "xs", "field"],
+        "color": ["primary", "secondary", "assistive"]
       }
     },
     {
@@ -1262,10 +1138,7 @@
           "name": "variant",
           "optional": true,
           "type": "CardVariant",
-          "allowedValues": [
-            "outlined",
-            "flat"
-          ]
+          "allowedValues": ["outlined", "flat"]
         },
         {
           "name": "clickable",
@@ -1376,10 +1249,7 @@
       "dtsRelPath": "packages/react/dist/Card.d.ts",
       "htmlTag": "nds-card",
       "htmlAttrs": {
-        "variant": [
-          "outlined",
-          "flat"
-        ]
+        "variant": ["outlined", "flat"]
       }
     },
     {
@@ -1467,11 +1337,7 @@
           "name": "indicator",
           "optional": true,
           "type": "CarouselIndicator",
-          "allowedValues": [
-            "dots",
-            "counter",
-            "none"
-          ]
+          "allowedValues": ["dots", "counter", "none"]
         },
         {
           "name": "showArrows",
@@ -1499,10 +1365,7 @@
           "name": "role",
           "optional": false,
           "type": "ChatRole",
-          "allowedValues": [
-            "me",
-            "them"
-          ]
+          "allowedValues": ["me", "them"]
         },
         {
           "name": "children",
@@ -1528,12 +1391,7 @@
           "name": "group",
           "optional": true,
           "type": "ChatGroupPosition",
-          "allowedValues": [
-            "single",
-            "first",
-            "middle",
-            "last"
-          ]
+          "allowedValues": ["single", "first", "middle", "last"]
         },
         {
           "name": "read",
@@ -1650,32 +1508,19 @@
           "name": "variant",
           "optional": true,
           "type": "ChipVariant",
-          "allowedValues": [
-            "fill",
-            "outlined",
-            "ghost"
-          ]
+          "allowedValues": ["fill", "outlined", "ghost"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "ChipColor",
-          "allowedValues": [
-            "brand",
-            "neutral",
-            "success",
-            "error",
-            "caution"
-          ]
+          "allowedValues": ["brand", "neutral", "success", "error", "caution"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "ChipSize",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "selected",
@@ -1706,22 +1551,9 @@
       "dtsRelPath": "packages/react/dist/Chip.d.ts",
       "htmlTag": "nds-chip",
       "htmlAttrs": {
-        "variant": [
-          "fill",
-          "outlined",
-          "ghost"
-        ],
-        "size": [
-          "sm",
-          "md"
-        ],
-        "color": [
-          "brand",
-          "neutral",
-          "success",
-          "error",
-          "caution"
-        ]
+        "variant": ["fill", "outlined", "ghost"],
+        "size": ["sm", "md"],
+        "color": ["brand", "neutral", "success", "error", "caution"]
       }
     },
     {
@@ -1932,14 +1764,7 @@
       "dtsRelPath": "packages/react/dist/Confetti.d.ts",
       "htmlTag": "nds-confetti",
       "htmlAttrs": {
-        "color": [
-          "#FF6B6B",
-          "#FFD166",
-          "#06D6A0",
-          "#118AB2",
-          "#9D4EDD",
-          "#FF9F1C"
-        ]
+        "color": ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"]
       }
     },
     {
@@ -2070,11 +1895,7 @@
           "name": "format",
           "optional": true,
           "type": "CountdownFormat",
-          "allowedValues": [
-            "mm:ss",
-            "hh:mm:ss",
-            "remaining"
-          ]
+          "allowedValues": ["mm:ss", "hh:mm:ss", "remaining"]
         },
         {
           "name": "onComplete",
@@ -2164,10 +1985,7 @@
           "name": "tone",
           "optional": true,
           "type": "CrisisTone",
-          "allowedValues": [
-            "danger",
-            "caution"
-          ]
+          "allowedValues": ["danger", "caution"]
         },
         {
           "name": "title",
@@ -2225,10 +2043,7 @@
           "name": "sortDirection",
           "optional": true,
           "type": "SortDirection",
-          "allowedValues": [
-            "asc",
-            "desc"
-          ]
+          "allowedValues": ["asc", "desc"]
         },
         {
           "name": "onSort",
@@ -2249,19 +2064,13 @@
           "name": "size",
           "optional": true,
           "type": "\"sm\" | \"md\"",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "responsive",
           "optional": true,
           "type": "\"scroll\" | \"cards\"",
-          "allowedValues": [
-            "scroll",
-            "cards"
-          ]
+          "allowedValues": ["scroll", "cards"]
         },
         {
           "name": "className",
@@ -2393,10 +2202,7 @@
           "name": "orientation",
           "optional": true,
           "type": "DividerOrientation",
-          "allowedValues": [
-            "horizontal",
-            "vertical"
-          ]
+          "allowedValues": ["horizontal", "vertical"]
         },
         {
           "name": "thickness",
@@ -2417,10 +2223,7 @@
       "dtsRelPath": "packages/react/dist/Divider.d.ts",
       "htmlTag": "nds-divider",
       "htmlAttrs": {
-        "orientation": [
-          "horizontal",
-          "vertical"
-        ]
+        "orientation": ["horizontal", "vertical"]
       }
     },
     {
@@ -2440,20 +2243,13 @@
           "name": "side",
           "optional": true,
           "type": "DrawerSide",
-          "allowedValues": [
-            "left",
-            "right"
-          ]
+          "allowedValues": ["left", "right"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "DrawerSize",
-          "allowedValues": [
-            "sm",
-            "md",
-            "lg"
-          ]
+          "allowedValues": ["sm", "md", "lg"]
         },
         {
           "name": "width",
@@ -2526,10 +2322,7 @@
           "name": "align",
           "optional": true,
           "type": "DropdownAlign",
-          "allowedValues": [
-            "start",
-            "end"
-          ]
+          "allowedValues": ["start", "end"]
         },
         {
           "name": "minWidth",
@@ -2568,12 +2361,7 @@
           "name": "defaultMode",
           "optional": true,
           "type": "HighlightMode",
-          "allowedValues": [
-            "off",
-            "area",
-            "component",
-            "all"
-          ]
+          "allowedValues": ["off", "area", "component", "all"]
         }
       ],
       "dtsRelPath": "packages/react/dist/DSHighlight.d.ts"
@@ -2630,13 +2418,7 @@
       "dtsRelPath": "packages/react/dist/EmotionHeatmap.d.ts",
       "htmlTag": "nds-emotion-heatmap",
       "htmlAttrs": {
-        "color": [
-          "#ECECF0",
-          "#C9DBFF",
-          "#92BBFF",
-          "#5C97F2",
-          "#2563DB"
-        ]
+        "color": ["#ECECF0", "#C9DBFF", "#92BBFF", "#5C97F2", "#2563DB"]
       }
     },
     {
@@ -2745,11 +2527,7 @@
           "name": "color",
           "optional": true,
           "type": "FABColor",
-          "allowedValues": [
-            "primary",
-            "neutral",
-            "secondary"
-          ]
+          "allowedValues": ["primary", "neutral", "secondary"]
         },
         {
           "name": "size",
@@ -2760,12 +2538,7 @@
           "name": "position",
           "optional": true,
           "type": "FABPosition",
-          "allowedValues": [
-            "bottom-right",
-            "bottom-left",
-            "bottom-center",
-            "static"
-          ]
+          "allowedValues": ["bottom-right", "bottom-left", "bottom-center", "static"]
         },
         {
           "name": "offset",
@@ -2798,10 +2571,7 @@
           "name": "actionTone",
           "optional": true,
           "type": "\"outline\" | \"solid\"",
-          "allowedValues": [
-            "outline",
-            "solid"
-          ]
+          "allowedValues": ["outline", "solid"]
         },
         {
           "name": "timer",
@@ -2968,10 +2738,7 @@
           "name": "size",
           "optional": true,
           "type": "FloatingCtaBannerSize",
-          "allowedValues": [
-            "pc",
-            "mobile"
-          ]
+          "allowedValues": ["pc", "mobile"]
         },
         {
           "name": "floating",
@@ -3076,10 +2843,7 @@
           "name": "labelPosition",
           "optional": true,
           "type": "FormFieldLabelPosition",
-          "allowedValues": [
-            "top",
-            "left"
-          ]
+          "allowedValues": ["top", "left"]
         },
         {
           "name": "labelWidth",
@@ -3090,10 +2854,7 @@
           "name": "density",
           "optional": true,
           "type": "FormFieldDensity",
-          "allowedValues": [
-            "default",
-            "admin"
-          ]
+          "allowedValues": ["default", "admin"]
         },
         {
           "name": "children",
@@ -3136,10 +2897,7 @@
           "name": "tone",
           "optional": true,
           "type": "\"default\" | \"primary\"",
-          "allowedValues": [
-            "default",
-            "primary"
-          ]
+          "allowedValues": ["default", "primary"]
         }
       ],
       "dtsRelPath": "packages/react/dist/GreetingHeader.d.ts",
@@ -3152,22 +2910,13 @@
           "name": "variant",
           "optional": true,
           "type": "HeaderVariant",
-          "allowedValues": [
-            "compact",
-            "webview",
-            "transparent",
-            "web"
-          ]
+          "allowedValues": ["compact", "webview", "transparent", "web"]
         },
         {
           "name": "position",
           "optional": true,
           "type": "HeaderPosition",
-          "allowedValues": [
-            "sticky",
-            "fixed",
-            "static"
-          ]
+          "allowedValues": ["sticky", "fixed", "static"]
         },
         {
           "name": "title",
@@ -3210,12 +2959,7 @@
           "name": "size",
           "optional": true,
           "type": "IconButtonSize",
-          "allowedValues": [
-            "x-large",
-            "large",
-            "medium",
-            "small"
-          ]
+          "allowedValues": ["x-large", "large", "medium", "small"]
         },
         {
           "name": "icon",
@@ -3231,12 +2975,7 @@
       "dtsRelPath": "packages/react/dist/IconButton.d.ts",
       "htmlTag": "nds-icon-button",
       "htmlAttrs": {
-        "size": [
-          "x-large",
-          "large",
-          "medium",
-          "small"
-        ]
+        "size": ["x-large", "large", "medium", "small"]
       }
     },
     {
@@ -3251,10 +2990,7 @@
           "name": "shape",
           "optional": true,
           "type": "\"circle\" | \"square\"",
-          "allowedValues": [
-            "circle",
-            "square"
-          ]
+          "allowedValues": ["circle", "square"]
         },
         {
           "name": "size",
@@ -3287,11 +3023,7 @@
           "name": "state",
           "optional": true,
           "type": "ImageUploadState",
-          "allowedValues": [
-            "empty",
-            "uploaded",
-            "error"
-          ]
+          "allowedValues": ["empty", "uploaded", "error"]
         },
         {
           "name": "imageUrl",
@@ -3434,11 +3166,7 @@
           "name": "size",
           "optional": true,
           "type": "InputSize",
-          "allowedValues": [
-            "default",
-            "field",
-            "compact"
-          ]
+          "allowedValues": ["default", "field", "compact"]
         },
         {
           "name": "slotProps",
@@ -3459,11 +3187,7 @@
       "dtsRelPath": "packages/react/dist/Input.d.ts",
       "htmlTag": "nds-input",
       "htmlAttrs": {
-        "size": [
-          "default",
-          "field",
-          "compact"
-        ]
+        "size": ["default", "field", "compact"]
       }
     },
     {
@@ -3473,20 +3197,13 @@
           "name": "gap",
           "optional": true,
           "type": "InputGroupGap",
-          "allowedValues": [
-            "tight",
-            "default",
-            "loose"
-          ]
+          "allowedValues": ["tight", "default", "loose"]
         },
         {
           "name": "align",
           "optional": true,
           "type": "InputGroupAlign",
-          "allowedValues": [
-            "stretch",
-            "start"
-          ]
+          "allowedValues": ["stretch", "start"]
         },
         {
           "name": "children",
@@ -3667,11 +3384,7 @@
           "name": "variant",
           "optional": true,
           "type": "ListVariant",
-          "allowedValues": [
-            "plain",
-            "card",
-            "divided"
-          ]
+          "allowedValues": ["plain", "card", "divided"]
         },
         {
           "name": "children",
@@ -3682,16 +3395,8 @@
       "dtsRelPath": "packages/react/dist/List.d.ts",
       "htmlTag": "nds-list",
       "htmlAttrs": {
-        "variant": [
-          "plain",
-          "card",
-          "divided"
-        ],
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ]
+        "variant": ["plain", "card", "divided"],
+        "size": ["sm", "md", "lg"]
       }
     },
     {
@@ -3773,22 +3478,13 @@
           "name": "fit",
           "optional": true,
           "type": "MediaFit",
-          "allowedValues": [
-            "cover",
-            "contain"
-          ]
+          "allowedValues": ["cover", "contain"]
         },
         {
           "name": "rounded",
           "optional": true,
           "type": "MediaRounded",
-          "allowedValues": [
-            "none",
-            "sm",
-            "md",
-            "lg",
-            "pill"
-          ]
+          "allowedValues": ["none", "sm", "md", "lg", "pill"]
         },
         {
           "name": "fallbackSrc",
@@ -3960,10 +3656,7 @@
           "name": "device",
           "optional": true,
           "type": "ModalDevice",
-          "allowedValues": [
-            "pc",
-            "mobile"
-          ]
+          "allowedValues": ["pc", "mobile"]
         },
         {
           "name": "children",
@@ -4128,11 +3821,7 @@
           "name": "indicator",
           "optional": true,
           "type": "MultiStepFormIndicator",
-          "allowedValues": [
-            "progress",
-            "steps",
-            "none"
-          ]
+          "allowedValues": ["progress", "steps", "none"]
         },
         {
           "name": "nextLabel",
@@ -4165,13 +3854,7 @@
           "name": "kind",
           "optional": true,
           "type": "NotificationKind",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "error",
-            "system"
-          ]
+          "allowedValues": ["info", "success", "warning", "error", "system"]
         },
         {
           "name": "icon",
@@ -4271,12 +3954,7 @@
           "name": "status",
           "optional": false,
           "type": "PresenceStatus",
-          "allowedValues": [
-            "online",
-            "away",
-            "busy",
-            "offline"
-          ]
+          "allowedValues": ["online", "away", "busy", "offline"]
         },
         {
           "name": "showLabel",
@@ -4705,10 +4383,7 @@
           "name": "discountPosition",
           "optional": true,
           "type": "\"before\" | \"none\"",
-          "allowedValues": [
-            "before",
-            "none"
-          ]
+          "allowedValues": ["before", "none"]
         },
         {
           "name": "formatThousands",
@@ -4731,10 +4406,7 @@
           "name": "size",
           "optional": true,
           "type": "ProductCardSize",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "thumbnail",
@@ -5101,10 +4773,7 @@
           "name": "variant",
           "optional": true,
           "type": "SearchInputVariant",
-          "allowedValues": [
-            "outlined",
-            "filled"
-          ]
+          "allowedValues": ["outlined", "filled"]
         },
         {
           "name": "clearable",
@@ -5167,10 +4836,7 @@
           "name": "size",
           "optional": true,
           "type": "SegmentedControlSize",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "fullWidth",
@@ -5186,10 +4852,7 @@
       "dtsRelPath": "packages/react/dist/SegmentedControl.d.ts",
       "htmlTag": "nds-segmented",
       "htmlAttrs": {
-        "size": [
-          "sm",
-          "md"
-        ]
+        "size": ["sm", "md"]
       }
     },
     {
@@ -5276,10 +4939,7 @@
           "name": "mode",
           "optional": true,
           "type": "SelectionCardMode",
-          "allowedValues": [
-            "single",
-            "multiple"
-          ]
+          "allowedValues": ["single", "multiple"]
         },
         {
           "name": "value",
@@ -5305,10 +4965,7 @@
           "name": "layout",
           "optional": true,
           "type": "SelectionCardLayout",
-          "allowedValues": [
-            "vertical",
-            "horizontal"
-          ]
+          "allowedValues": ["vertical", "horizontal"]
         },
         {
           "name": "name",
@@ -5507,11 +5164,7 @@
           "name": "variant",
           "optional": true,
           "type": "SkeletonVariant",
-          "allowedValues": [
-            "rectangular",
-            "circular",
-            "text"
-          ]
+          "allowedValues": ["rectangular", "circular", "text"]
         },
         {
           "name": "width",
@@ -5532,11 +5185,7 @@
       "dtsRelPath": "packages/react/dist/Skeleton.d.ts",
       "htmlTag": "nds-skeleton",
       "htmlAttrs": {
-        "variant": [
-          "rectangular",
-          "circular",
-          "text"
-        ]
+        "variant": ["rectangular", "circular", "text"]
       }
     },
     {
@@ -5608,12 +5257,7 @@
           "name": "variant",
           "optional": true,
           "type": "SnackbarVariant",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "error"
-          ]
+          "allowedValues": ["info", "success", "warning", "error"]
         },
         {
           "name": "icon",
@@ -5654,12 +5298,7 @@
       "dtsRelPath": "packages/react/dist/Snackbar.d.ts",
       "htmlTag": "nds-snackbar",
       "htmlAttrs": {
-        "variant": [
-          "info",
-          "success",
-          "warning",
-          "error"
-        ]
+        "variant": ["info", "success", "warning", "error"]
       }
     },
     {
@@ -5674,11 +5313,7 @@
           "name": "kind",
           "optional": true,
           "type": "SparklineKind",
-          "allowedValues": [
-            "line",
-            "area",
-            "bar"
-          ]
+          "allowedValues": ["line", "area", "bar"]
         },
         {
           "name": "color",
@@ -5810,11 +5445,7 @@
           "name": "trend",
           "optional": true,
           "type": "StatCardTrend",
-          "allowedValues": [
-            "up",
-            "down",
-            "flat"
-          ]
+          "allowedValues": ["up", "down", "flat"]
         },
         {
           "name": "trailing",
@@ -5852,10 +5483,7 @@
           "name": "direction",
           "optional": true,
           "type": "StatusTimelineDirection",
-          "allowedValues": [
-            "horizontal",
-            "vertical"
-          ]
+          "allowedValues": ["horizontal", "vertical"]
         }
       ],
       "dtsRelPath": "packages/react/dist/StatusTimeline.d.ts",
@@ -5878,19 +5506,13 @@
           "name": "variant",
           "optional": true,
           "type": "StepperVariant",
-          "allowedValues": [
-            "numbered",
-            "dots"
-          ]
+          "allowedValues": ["numbered", "dots"]
         }
       ],
       "dtsRelPath": "packages/react/dist/Stepper.d.ts",
       "htmlTag": "nds-stepper",
       "htmlAttrs": {
-        "variant": [
-          "numbered",
-          "dots"
-        ]
+        "variant": ["numbered", "dots"]
       }
     },
     {
@@ -5952,29 +5574,19 @@
           "name": "variant",
           "optional": true,
           "type": "TabsVariant",
-          "allowedValues": [
-            "line",
-            "chip",
-            "segment"
-          ]
+          "allowedValues": ["line", "chip", "segment"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "TabsSize",
-          "allowedValues": [
-            "mobile",
-            "pc"
-          ]
+          "allowedValues": ["mobile", "pc"]
         },
         {
           "name": "tone",
           "optional": true,
           "type": "TabsTone",
-          "allowedValues": [
-            "neutral",
-            "color"
-          ]
+          "allowedValues": ["neutral", "color"]
         },
         {
           "name": "fullWidth",
@@ -6000,19 +5612,9 @@
       "dtsRelPath": "packages/react/dist/Tabs.d.ts",
       "htmlTag": "nds-tabs",
       "htmlAttrs": {
-        "variant": [
-          "line",
-          "chip",
-          "segment"
-        ],
-        "size": [
-          "mobile",
-          "pc"
-        ],
-        "tone": [
-          "neutral",
-          "color"
-        ]
+        "variant": ["line", "chip", "segment"],
+        "size": ["mobile", "pc"],
+        "tone": ["neutral", "color"]
       }
     },
     {
@@ -6109,12 +5711,7 @@
           "name": "resize",
           "optional": true,
           "type": "\"none\" | \"vertical\" | \"horizontal\" | \"both\"",
-          "allowedValues": [
-            "none",
-            "vertical",
-            "horizontal",
-            "both"
-          ]
+          "allowedValues": ["none", "vertical", "horizontal", "both"]
         },
         {
           "name": "className",
@@ -6132,10 +5729,7 @@
           "name": "size",
           "optional": true,
           "type": "TextButtonSize",
-          "allowedValues": [
-            "large",
-            "medium"
-          ]
+          "allowedValues": ["large", "medium"]
         },
         {
           "name": "leftIcon",
@@ -6268,12 +5862,7 @@
           "name": "tone",
           "optional": true,
           "type": "TipCardTone",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "neutral"
-          ]
+          "allowedValues": ["info", "success", "warning", "neutral"]
         },
         {
           "name": "label",
@@ -6309,12 +5898,7 @@
       "dtsRelPath": "packages/react/dist/TipCard.d.ts",
       "htmlTag": "nds-tip-card",
       "htmlAttrs": {
-        "tone": [
-          "info",
-          "success",
-          "warning",
-          "neutral"
-        ]
+        "tone": ["info", "success", "warning", "neutral"]
       }
     },
     {
@@ -6346,10 +5930,7 @@
           "name": "position",
           "optional": true,
           "type": "ToastPosition",
-          "allowedValues": [
-            "top",
-            "bottom"
-          ]
+          "allowedValues": ["top", "bottom"]
         },
         {
           "name": "duration",
@@ -6375,12 +5956,7 @@
       "dtsRelPath": "packages/react/dist/Toast.d.ts",
       "htmlTag": "nds-toast",
       "htmlAttrs": {
-        "variant": [
-          "default",
-          "success",
-          "error",
-          "info"
-        ]
+        "variant": ["default", "success", "error", "info"]
       }
     },
     {
@@ -6432,12 +6008,7 @@
           "name": "placement",
           "optional": true,
           "type": "TooltipPlacement",
-          "allowedValues": [
-            "top",
-            "bottom",
-            "left",
-            "right"
-          ]
+          "allowedValues": ["top", "bottom", "left", "right"]
         },
         {
           "name": "delay",
@@ -6537,10 +6108,7 @@
           "name": "layout",
           "optional": true,
           "type": "UserCardLayout",
-          "allowedValues": [
-            "row",
-            "stacked"
-          ]
+          "allowedValues": ["row", "stacked"]
         },
         {
           "name": "onClick",
@@ -6615,11 +6183,7 @@
           "name": "state",
           "optional": false,
           "type": "VoiceRecorderState",
-          "allowedValues": [
-            "idle",
-            "recording",
-            "paused"
-          ]
+          "allowedValues": ["idle", "recording", "paused"]
         },
         {
           "name": "onStateChange",
@@ -6741,11 +6305,7 @@
           "name": "position",
           "optional": true,
           "type": "WebHeaderPosition",
-          "allowedValues": [
-            "sticky",
-            "fixed",
-            "static"
-          ]
+          "allowedValues": ["sticky", "fixed", "static"]
         },
         {
           "name": "maxWidth",
@@ -8261,8 +7821,8 @@
   ],
   "brands": [
     {
-      "slug": "cashpobi",
-      "name": "cashpobi",
+      "slug": "cashwalk-biz",
+      "name": "cashwalk-biz",
       "primaryColor": null,
       "keyColors": {
         "primary": null,
@@ -8275,7 +7835,7 @@
       },
       "fontFamilies": [],
       "designMdRelPath": "",
-      "cssImport": "@nudge-design/tokens/css/cashpobi",
+      "cssImport": "@nudge-design/tokens/css/cashwalk-biz",
       "jsExport": "@nudge-design/tokens/brands",
       "ready": true
     },
@@ -8294,9 +7854,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#111111"
       },
-      "fontFamilies": [
-        "Pretendard"
-      ],
+      "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/geniet/DESIGN.md",
       "cssImport": "@nudge-design/tokens/css/geniet",
       "jsExport": "@nudge-design/tokens/brands",
@@ -8317,9 +7875,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#383838"
       },
-      "fontFamilies": [
-        "Pretendard"
-      ],
+      "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/nudge-eap/DESIGN.md",
       "cssImport": "@nudge-design/tokens/css",
       "jsExport": "@nudge-design/tokens/brands",
@@ -8340,9 +7896,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#333333"
       },
-      "fontFamilies": [
-        "Pretendard Variable"
-      ],
+      "fontFamilies": ["Pretendard Variable"],
       "designMdRelPath": "brands/trost/DESIGN.md",
       "cssImport": "@nudge-design/tokens/css/trost",
       "jsExport": "@nudge-design/tokens/brands",
@@ -8559,13 +8113,7 @@
     {
       "tag": "nds-avatar-group",
       "attrs": {
-        "size": [
-          "xs",
-          "sm",
-          "md",
-          "lg",
-          "xl"
-        ]
+        "size": ["xs", "sm", "md", "lg", "xl"]
       }
     },
     {
@@ -8575,24 +8123,9 @@
     {
       "tag": "nds-badge",
       "attrs": {
-        "variant": [
-          "fill",
-          "ghost",
-          "line"
-        ],
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ],
-        "color": [
-          "brand",
-          "neutral",
-          "success",
-          "error",
-          "caution",
-          "info"
-        ]
+        "variant": ["fill", "ghost", "line"],
+        "size": ["sm", "md", "lg"],
+        "color": ["brand", "neutral", "success", "error", "caution", "info"]
       }
     },
     {
@@ -8618,25 +8151,9 @@
     {
       "tag": "nds-button",
       "attrs": {
-        "variant": [
-          "solid",
-          "outlined",
-          "soft",
-          "outlined-sub"
-        ],
-        "size": [
-          "xl",
-          "lg",
-          "md",
-          "sm",
-          "xs",
-          "field"
-        ],
-        "color": [
-          "primary",
-          "secondary",
-          "assistive"
-        ]
+        "variant": ["solid", "outlined", "soft", "outlined-sub"],
+        "size": ["xl", "lg", "md", "sm", "xs", "field"],
+        "color": ["primary", "secondary", "assistive"]
       }
     },
     {
@@ -8654,10 +8171,7 @@
     {
       "tag": "nds-card",
       "attrs": {
-        "variant": [
-          "outlined",
-          "flat"
-        ]
+        "variant": ["outlined", "flat"]
       }
     },
     {
@@ -8679,22 +8193,9 @@
     {
       "tag": "nds-chip",
       "attrs": {
-        "variant": [
-          "fill",
-          "outlined",
-          "ghost"
-        ],
-        "size": [
-          "sm",
-          "md"
-        ],
-        "color": [
-          "brand",
-          "neutral",
-          "success",
-          "error",
-          "caution"
-        ]
+        "variant": ["fill", "outlined", "ghost"],
+        "size": ["sm", "md"],
+        "color": ["brand", "neutral", "success", "error", "caution"]
       }
     },
     {
@@ -8712,14 +8213,7 @@
     {
       "tag": "nds-confetti",
       "attrs": {
-        "color": [
-          "#FF6B6B",
-          "#FFD166",
-          "#06D6A0",
-          "#118AB2",
-          "#9D4EDD",
-          "#FF9F1C"
-        ]
+        "color": ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"]
       }
     },
     {
@@ -8761,10 +8255,7 @@
     {
       "tag": "nds-divider",
       "attrs": {
-        "orientation": [
-          "horizontal",
-          "vertical"
-        ]
+        "orientation": ["horizontal", "vertical"]
       }
     },
     {
@@ -8782,13 +8273,7 @@
     {
       "tag": "nds-emotion-heatmap",
       "attrs": {
-        "color": [
-          "#ECECF0",
-          "#C9DBFF",
-          "#92BBFF",
-          "#5C97F2",
-          "#2563DB"
-        ]
+        "color": ["#ECECF0", "#C9DBFF", "#92BBFF", "#5C97F2", "#2563DB"]
       }
     },
     {
@@ -8838,12 +8323,7 @@
     {
       "tag": "nds-icon-button",
       "attrs": {
-        "size": [
-          "x-large",
-          "large",
-          "medium",
-          "small"
-        ]
+        "size": ["x-large", "large", "medium", "small"]
       }
     },
     {
@@ -8861,11 +8341,7 @@
     {
       "tag": "nds-input",
       "attrs": {
-        "size": [
-          "default",
-          "field",
-          "compact"
-        ]
+        "size": ["default", "field", "compact"]
       }
     },
     {
@@ -8891,16 +8367,8 @@
     {
       "tag": "nds-list",
       "attrs": {
-        "variant": [
-          "plain",
-          "card",
-          "divided"
-        ],
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ]
+        "variant": ["plain", "card", "divided"],
+        "size": ["sm", "md", "lg"]
       }
     },
     {
@@ -9018,19 +8486,13 @@
     {
       "tag": "nds-segmented-control",
       "attrs": {
-        "size": [
-          "sm",
-          "md"
-        ]
+        "size": ["sm", "md"]
       }
     },
     {
       "tag": "nds-segmented",
       "attrs": {
-        "size": [
-          "sm",
-          "md"
-        ]
+        "size": ["sm", "md"]
       }
     },
     {
@@ -9056,11 +8518,7 @@
     {
       "tag": "nds-skeleton",
       "attrs": {
-        "variant": [
-          "rectangular",
-          "circular",
-          "text"
-        ]
+        "variant": ["rectangular", "circular", "text"]
       }
     },
     {
@@ -9070,12 +8528,7 @@
     {
       "tag": "nds-snackbar",
       "attrs": {
-        "variant": [
-          "info",
-          "success",
-          "warning",
-          "error"
-        ]
+        "variant": ["info", "success", "warning", "error"]
       }
     },
     {
@@ -9101,10 +8554,7 @@
     {
       "tag": "nds-stepper",
       "attrs": {
-        "variant": [
-          "numbered",
-          "dots"
-        ]
+        "variant": ["numbered", "dots"]
       }
     },
     {
@@ -9114,19 +8564,9 @@
     {
       "tag": "nds-tabs",
       "attrs": {
-        "variant": [
-          "line",
-          "chip",
-          "segment"
-        ],
-        "size": [
-          "mobile",
-          "pc"
-        ],
-        "tone": [
-          "neutral",
-          "color"
-        ]
+        "variant": ["line", "chip", "segment"],
+        "size": ["mobile", "pc"],
+        "tone": ["neutral", "color"]
       }
     },
     {
@@ -9156,12 +8596,7 @@
     {
       "tag": "nds-tip-card",
       "attrs": {
-        "tone": [
-          "info",
-          "success",
-          "warning",
-          "neutral"
-        ]
+        "tone": ["info", "success", "warning", "neutral"]
       }
     },
     {
@@ -9171,12 +8606,7 @@
     {
       "tag": "nds-toast",
       "attrs": {
-        "variant": [
-          "default",
-          "success",
-          "error",
-          "info"
-        ]
+        "variant": ["default", "success", "error", "info"]
       }
     },
     {
