@@ -9,10 +9,11 @@ import {
 configureHtmlValidator({
   tokenSet: new Set([
     "--color-blue-500",
-    "--color-semantic-primary-bg",
     "--color-blue-50",
     "--semantic-bg-brand-default",
     "--semantic-bg-brand-subtle",
+    "--semantic-gap-default",
+    "--semantic-inset-card",
     "--gap-default",
     "--inset-card",
     "--spacing-16",

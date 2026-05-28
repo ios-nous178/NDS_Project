@@ -678,7 +678,7 @@ export function auditMockupWorkspace(
   }
 
   if (srcExists) {
-    const TOKEN_REDEF_RE = /:root\s*\{[\s\S]{0,2000}?(--color-|--nds-|--eap-|--gap-|--inset-)/;
+    const TOKEN_REDEF_RE = /:root\s*\{[\s\S]{0,2000}?(--semantic-|--nds-|--color-|--gap-|--inset-)/;
     const cssFiles = walkFiles(srcDir, /\.(css|scss)$/i, 50);
     const inlineTokenHits: string[] = [];
     for (const f of cssFiles) {
@@ -697,7 +697,7 @@ export function auditMockupWorkspace(
         rule: "inline-root-tokens",
         files: inlineTokenHits,
         detail:
-          ".css/.scss 의 :root 블록에 시멘틱 토큰(--color-*, --nds-*, --eap-*, --gap-*, --inset-*) 을 인라인 재정의했습니다. " +
+          ".css/.scss 의 :root 블록에 시멘틱 토큰(--semantic-*, --nds-*, --color-*, --gap-*, --inset-*) 을 인라인 재정의했습니다. " +
           `@nudge-design/tokens/css 단일 진리원천을 깨는 우회입니다. ${entryFile} 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 토큰을 가져오세요.`,
       });
     }

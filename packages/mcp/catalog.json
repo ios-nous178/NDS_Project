@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-28T05:16:31.222Z",
+  "generatedAt": "2026-05-28T09:53:05.692Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10,13 +10,15 @@
         "@nudge-design/tokens/css",
         "@nudge-design/tokens/css/trost",
         "@nudge-design/tokens/css/geniet",
-        "@nudge-design/tokens/css/cashwalk-biz"
+        "@nudge-design/tokens/css/cashwalk-biz",
+        "@nudge-design/tokens/css/runmile"
       ]
     },
     {
       "name": "@nudge-design/react",
       "version": "0.0.1",
       "dependencies": {
+        "@nudge-design/assets": "workspace:*",
         "@nudge-design/icons": "workspace:*",
         "@nudge-design/styles": "workspace:*",
         "@nudge-design/tokens": "workspace:*"
@@ -58,6 +60,7 @@
       "name": "@nudge-design/html",
       "version": "0.0.1",
       "dependencies": {
+        "@nudge-design/assets": "workspace:*",
         "@nudge-design/icons": "workspace:*",
         "@nudge-design/styles": "workspace:*",
         "@nudge-design/tokens": "workspace:*"
@@ -6895,52 +6898,52 @@
     },
     {
       "name": "--gap-comfortable",
-      "value": "12px",
+      "value": "var(--semantic-gap-comfortable)",
       "group": "gap"
     },
     {
       "name": "--gap-default",
-      "value": "10px",
+      "value": "var(--semantic-gap-default)",
       "group": "gap"
     },
     {
       "name": "--gap-loose",
-      "value": "16px",
+      "value": "var(--semantic-gap-loose)",
       "group": "gap"
     },
     {
       "name": "--gap-tight",
-      "value": "4px",
+      "value": "var(--semantic-gap-tight)",
       "group": "gap"
     },
     {
       "name": "--gap-title-h1",
-      "value": "12px",
+      "value": "var(--semantic-gap-title-h1)",
       "group": "gap"
     },
     {
       "name": "--gap-title-h2",
-      "value": "12px",
+      "value": "var(--semantic-gap-title-h2)",
       "group": "gap"
     },
     {
       "name": "--gap-title-h3",
-      "value": "12px",
+      "value": "var(--semantic-gap-title-h3)",
       "group": "gap"
     },
     {
       "name": "--gap-title-h4",
-      "value": "6px",
+      "value": "var(--semantic-gap-title-h4)",
       "group": "gap"
     },
     {
       "name": "--gap-title-h5",
-      "value": "8px",
+      "value": "var(--semantic-gap-title-h5)",
       "group": "gap"
     },
     {
       "name": "--gap-wide",
-      "value": "24px",
+      "value": "var(--semantic-gap-wide)",
       "group": "gap"
     },
     {
@@ -6980,27 +6983,27 @@
     },
     {
       "name": "--inset-card",
-      "value": "16px",
+      "value": "var(--semantic-inset-card)",
       "group": "inset"
     },
     {
       "name": "--inset-card-large",
-      "value": "20px",
+      "value": "var(--semantic-inset-card-large)",
       "group": "inset"
     },
     {
       "name": "--inset-chip",
-      "value": "8px",
+      "value": "var(--semantic-inset-chip)",
       "group": "inset"
     },
     {
       "name": "--inset-input",
-      "value": "12px",
+      "value": "var(--semantic-inset-input)",
       "group": "inset"
     },
     {
       "name": "--inset-modal",
-      "value": "24px",
+      "value": "var(--semantic-inset-modal)",
       "group": "inset"
     },
     {
@@ -7204,6 +7207,21 @@
       "group": "semantic"
     },
     {
+      "name": "--semantic-button-bg-assistive-default",
+      "value": "#9CA2AE",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-button-bg-assistive-disabled",
+      "value": "#F5F5F5",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-button-bg-assistive-hover",
+      "value": "#7E8593",
+      "group": "semantic"
+    },
+    {
       "name": "--semantic-button-bg-default",
       "value": "#2B96ED",
       "group": "semantic"
@@ -7279,6 +7297,16 @@
       "group": "semantic"
     },
     {
+      "name": "--semantic-button-text-assistive",
+      "value": "#FFFFFF",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-button-text-assistive-disabled",
+      "value": "#999999",
+      "group": "semantic"
+    },
+    {
       "name": "--semantic-button-text-brand",
       "value": "#2B96ED",
       "group": "semantic"
@@ -7346,6 +7374,56 @@
     {
       "name": "--semantic-fill-status-error",
       "value": "#F13F00",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-comfortable",
+      "value": "12px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-default",
+      "value": "10px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-loose",
+      "value": "16px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-tight",
+      "value": "4px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-title-h1",
+      "value": "12px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-title-h2",
+      "value": "12px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-title-h3",
+      "value": "12px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-title-h4",
+      "value": "6px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-title-h5",
+      "value": "8px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-wide",
+      "value": "24px",
       "group": "semantic"
     },
     {
@@ -7446,6 +7524,31 @@
     {
       "name": "--semantic-input-placeholder",
       "value": "#999999",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-inset-card",
+      "value": "16px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-inset-card-large",
+      "value": "20px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-inset-chip",
+      "value": "8px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-inset-input",
+      "value": "12px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-inset-modal",
+      "value": "24px",
       "group": "semantic"
     },
     {
@@ -7878,6 +7981,27 @@
       "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/nudge-eap/DESIGN.md",
       "cssImport": "@nudge-design/tokens/css",
+      "jsExport": "@nudge-design/tokens/brands",
+      "ready": true
+    },
+    {
+      "slug": "runmile",
+      "name": "Runmile",
+      "version": "alpha",
+      "description": "러닝 대회 정보 + 커뮤니티 + 마이러닝 기록을 묶은 모바일 퍼스트 플랫폼. 오렌지(#FF5B37) 시그니처 + Toss 스타일 cool gray + Pretendard.",
+      "primaryColor": "#FF5B37",
+      "keyColors": {
+        "primary": "#FF5B37",
+        "secondary": "#007AFF",
+        "error": "#FF2428",
+        "caution": "null",
+        "success": "null",
+        "surface": "#FFFFFF",
+        "onSurface": "#221E1F"
+      },
+      "fontFamilies": [],
+      "designMdRelPath": "brands/runmile/DESIGN.md",
+      "cssImport": "@nudge-design/tokens/css/runmile",
       "jsExport": "@nudge-design/tokens/brands",
       "ready": true
     },
