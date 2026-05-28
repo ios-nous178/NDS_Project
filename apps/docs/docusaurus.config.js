@@ -16,9 +16,9 @@ const config = {
   customFields: {
     storybookUrl,
     dsVersion,
-    // "다른 도구로 열기" 드롭다운이 raw.githubusercontent.com / GitHub blob URL 을 만들 때 사용.
-    // 레포가 비공개일 때 마크다운 복사·AI 링크는 fetch 가 401/404 로 실패할 수 있지만
-    // (toast 안내), 공개 전환 시 코드 수정 없이 자동 작동.
+    // "다른 도구로 열기" 의 "GitHub 에서 읽기" 항목용 (개발자가 로그인된 상태에서만 의미 있음).
+    // 마크다운 복사·열기·ChatGPT·Claude 는 같은-오리진 /raw/docs/... 경로를 쓰므로
+    // 프라이빗 레포여도 동작. (apps/docs/scripts/copy-raw-docs.mjs 가 build/dev 직전에 복사)
     repo: {
       owner: "cashwalk",
       name: "NudgeEAPDesignSystem",

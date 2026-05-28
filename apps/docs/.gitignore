@@ -1,0 +1,3 @@
+# scripts/copy-raw-docs.mjs 가 build/dev 직전에 docs/ 마크다운을 복사하는 위치.
+# 같은-오리진 /raw/docs/... 로 서빙해 프라이빗 레포에서도 마크다운 보기/복사가 동작.
+static/raw/
