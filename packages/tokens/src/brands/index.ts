@@ -38,15 +38,15 @@ export {
 export type { GenietSemanticTokens } from "./geniet";
 
 export {
-  cashpobiTheme,
-  cashpobiCommon,
-  cashpobiNeutral,
-  cashpobiYellow,
-  cashpobiCoralRed,
-  cashpobiBlue,
-  cashpobiGreen,
-  cashpobiBrown,
-  cashpobiStatus,
-  cashpobiSemantic,
-} from "./cashpobi";
-export type { CashpobiSemanticTokens } from "./cashpobi";
+  cashwalkBizTheme,
+  cashwalkBizCommon,
+  cashwalkBizNeutral,
+  cashwalkBizYellow,
+  cashwalkBizCoralRed,
+  cashwalkBizBlue,
+  cashwalkBizGreen,
+  cashwalkBizBrown,
+  cashwalkBizStatus,
+  cashwalkBizSemantic,
+} from "./cashwalk-biz";
+export type { CashwalkBizSemanticTokens } from "./cashwalk-biz";

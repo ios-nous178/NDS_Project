@@ -23,7 +23,7 @@ export async function reportMockupUsage(args: {
   filePath: string;
   mockupName?: string;
   context?: "user-app" | "admin-cms" | "unknown";
-  brand?: "trost" | "geniet" | "nudge-eap" | "cashpobi";
+  brand?: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz";
   cwd?: string;
   dryRun?: boolean;
 }): Promise<{

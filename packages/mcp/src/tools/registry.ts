@@ -26,7 +26,7 @@ const TOOLS = [
         brand: {
           type: "string",
           description:
-            "Optional brand slug (e.g. 'trost', 'nudge-eap', 'geniet', 'cashpobi'). Omit to list all.",
+            "Optional brand slug (e.g. 'trost', 'nudge-eap', 'geniet', 'cashwalk-biz'). Omit to list all.",
         },
       },
       additionalProperties: false,

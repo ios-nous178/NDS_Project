@@ -348,10 +348,10 @@ export function validateHtmlSource(
             ? "사이드바는 <nds-sidebar> 우선 사용. get_guide({ topic: 'component:Sidebar', target: 'html' }) 참조."
             : tag === "footer"
               ? hasBrandFooter
-                ? "[error] 사용자 앱/브랜드 화면의 푸터는 raw <footer> 금지. <nds-brand-footer brand='geniet|trost|nudge-eap|cashpobi' surface='web|app' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandFooter', target: 'html' }) 참조."
+                ? "[error] 사용자 앱/브랜드 화면의 푸터는 raw <footer> 금지. <nds-brand-footer brand='geniet|trost|nudge-eap|cashwalk-biz' surface='web|app' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandFooter', target: 'html' }) 참조."
                 : "푸터는 <nds-footer-info> / <nds-footer-web> 우선 사용. get_guide({ topic: 'component:Footer', target: 'html' }) 참조."
               : hasBrandHeader
-                ? "[error] 사용자 앱/브랜드 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-brand-header brand='geniet|trost|nudge-eap|cashpobi' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조."
+                ? "[error] 사용자 앱/브랜드 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-brand-header brand='geniet|trost|nudge-eap|cashwalk-biz' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조."
                 : "헤더는 <nds-header> 우선 사용. get_guide({ topic: 'component:Header', target: 'html' }) 참조.",
       });
     }

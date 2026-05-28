@@ -281,7 +281,7 @@ const sidebarStyles = `
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_META_CLASS}) { display: none; }
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_CLASS}) { justify-content: center; padding: ${spacing[4]}px; }
 
-  :where([data-brand="cashpobi"] .${SB_ROOT_CLASS}) {
+  :where([data-brand="cashwalk-biz"] .${SB_ROOT_CLASS}) {
     --nds-sidebar-item-active-bg: #FFF4C0;
     --nds-sidebar-item-active-radius: 12px;
     --nds-sidebar-item-active-accent: #FFD200;

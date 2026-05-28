@@ -22,7 +22,7 @@ export type InputSize = "default" | "field" | "compact";
  *   helper(items) gap   : 12px (HelpText 1 ↔ HelpText 2)
  *   wrapper text↔icon gap: 10px
  *
- * compact: Cashpobi admin TextField (Figma 3082:846) — height 40, padding 12.
+ * compact: CashwalkBiz admin TextField (Figma 3082:846) — height 40, padding 12.
  *   FormField.labelPosition="left" 와 짝으로 가장 자주 쓰임.
  */
 const inputSizeConfig = {

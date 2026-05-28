@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 /**
  * `<html data-brand="...">` 값을 reactive 하게 읽는 hook.
  *
- * 브랜드 토큰은 CSS cascade(`[data-brand="cashpobi"] { ... }`) 로 적용되지만,
+ * 브랜드 토큰은 CSS cascade(`[data-brand="cashwalk-biz"] { ... }`) 로 적용되지만,
  * 아이콘 컴포넌트 swap 처럼 React render 분기가 필요한 경우 이 hook 을 쓴다.
  *
  * SSR 환경에서는 첫 render 시 `null` (서버는 `document` 없음) → mount 이후 update.

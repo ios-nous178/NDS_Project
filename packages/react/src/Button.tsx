@@ -124,8 +124,8 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
     // Primary Soft — "brand-tinted soft" 버튼.
     // bg = surface.brandSubtle (브랜드별 옅은 brand 톤) + text = textRole.brand (brand 색).
-    // 모든 브랜드에서 일관: NudgeEAP=Blue/50, Trost=Cobalt subtle, Geniet=Mint subtle, Cashpobi=Yellow/100.
-    // (이전 statusInfo bg + brand text 조합은 Cashpobi 처럼 brand/info hue 가 다른 브랜드에서
+    // 모든 브랜드에서 일관: NudgeEAP=Blue/50, Trost=Cobalt subtle, Geniet=Mint subtle, CashwalkBiz=Yellow/100.
+    // (이전 statusInfo bg + brand text 조합은 CashwalkBiz 처럼 brand/info hue 가 다른 브랜드에서
     //  파랑 bg + 노랑 text 같은 부조화가 발생.)
     soft: {
       enabled: {
@@ -228,9 +228,9 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
       },
     },
     // secondary outlined — Figma Outlined/Neutral 패턴 (white bg + neutral border + strong text).
-    // dark-inverse 그룹(Cashpobi/Geniet) 에서 secondary.solid 가 검정/짙은 그레이 fill 이라
+    // dark-inverse 그룹(CashwalkBiz/Geniet) 에서 secondary.solid 가 검정/짙은 그레이 fill 이라
     // outlined 도 같은 위계의 "neutral 강조" 로 통일. light-subtle 그룹에서도 "primary 가 아닌
-    // 2차 outlined CTA" 로 자연스러운 해석. (이전엔 primary.outlined 와 동일해 Cashpobi 에서
+    // 2차 outlined CTA" 로 자연스러운 해석. (이전엔 primary.outlined 와 동일해 CashwalkBiz 에서
     // 노란 보더로 잘못 표시됐음.)
     outlined: {
       enabled: {

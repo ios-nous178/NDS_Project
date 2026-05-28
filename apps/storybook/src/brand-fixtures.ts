@@ -25,13 +25,13 @@ import trostLogoMobile from "../public/brand-logos/trost-logo-mobile.webp";
 import genietLogoPc from "../public/brand-logos/geniet-logo-pc.webp";
 import genietLogoMobile from "../public/brand-logos/geniet-logo-mobile.webp";
 import genietLogoFooter from "../public/brand-logos/geniet-logo-footer.webp";
-import cashwalkVertical from "../public/brand-logos/cashpobi/cashwalk-vertical.png";
+import cashwalkVertical from "../public/brand-logos/cashwalk-biz/cashwalk-vertical.png";
 /**
  * Figma 9lJ9XCwVYFSoZGcmRuJtI4 / 98:1082 — 캐포비 admin GNB 의 logo_cfb_horizontal.
  * cashwalk wordmark + 'for business' 텍스트 + 신발 마스코트가 합쳐진 헤더 전용 lockup (106.667 × 32).
  * 라이브러리 horizontal(cashwalk only) 과는 별개 — 헤더용 lockup 으로 신규 등록.
  */
-import cashwalkForBusinessHorizontal from "../public/brand-logos/cashpobi/cashwalk-for-business-horizontal.svg";
+import cashwalkForBusinessHorizontal from "../public/brand-logos/cashwalk-biz/cashwalk-for-business-horizontal.svg";
 
 /* ─── Types ─── */
 
@@ -282,7 +282,7 @@ const geniet: BrandFixture = {
 };
 
 /**
- * Cashpobi (캐포비 · 캐시워크 for Business)
+ * CashwalkBiz (캐포비 · 캐시워크 for Business)
  *
  * 로고 가이드: 캐포비 Library 3154:550 — 2 lockups (Vertical / Horizontal) · Brown #5E5050.
  * - Horizontal: GNB / 컴팩트 헤더 / 이메일 / 문서·인쇄용 헤더
@@ -290,7 +290,7 @@ const geniet: BrandFixture = {
  *
  * Admin 데스크톱 위주이지만 BrandFixture 의 모바일 슬롯도 horizontal lockup 으로 통일.
  */
-const cashpobi: BrandFixture = {
+const cashwalkBiz: BrandFixture = {
   logo: {
     /* Figma 9lJ9XCwVYFSoZGcmRuJtI4: PC GNB 98:1082 의 logo_cfb_horizontal = 107 × 32,
      * Mobile GNB 380:1121 의 logo_cfb_horizontal = 80 × 24 (정확 실측). */
@@ -332,7 +332,7 @@ export const brandFixtures: Record<string, BrandFixture> = {
   "nudge-eap": nudgeEap,
   trost,
   geniet,
-  cashpobi,
+  "cashwalk-biz": cashwalkBiz,
 };
 
 export function getBrandFixture(brandKey: string): BrandFixture {

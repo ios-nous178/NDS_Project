@@ -16,28 +16,30 @@ describe("nds-brand-header / nds-brand-footer", () => {
     expect(customElements.get("nds-trost-footer")).toBeTruthy();
     expect(customElements.get("nds-geniet-header")).toBeTruthy();
     expect(customElements.get("nds-geniet-footer")).toBeTruthy();
-    expect(customElements.get("nds-cashpobi-header")).toBeTruthy();
-    expect(customElements.get("nds-cashpobi-footer")).toBeTruthy();
+    expect(customElements.get("nds-cashwalk-biz-header")).toBeTruthy();
+    expect(customElements.get("nds-cashwalk-biz-footer")).toBeTruthy();
   });
 
-  it("renders a Cashpobi web header with brand-specific yellow primary CTA", async () => {
+  it("renders a CashwalkBiz web header with brand-specific yellow primary CTA", async () => {
     const el = document.createElement("nds-brand-header");
-    el.setAttribute("brand", "cashpobi");
+    el.setAttribute("brand", "cashwalk-biz");
     el.setAttribute("active-key", "campaign");
     document.body.appendChild(el);
     await flush();
 
-    const header = el.querySelector(".nds-brand-cashpobi") as HTMLElement;
+    const header = el.querySelector(".nds-brand-cashwalk-biz") as HTMLElement;
     const logo = el.querySelector('img[alt="Cashwalk for Business"]');
     expect(header).toBeTruthy();
-    /* 로고는 self-contained data URI (cashpobi 는 svg 원본). */
+    /* 로고는 self-contained data URI (cashwalk-biz 는 svg 원본). */
     expect(logo?.getAttribute("src")).toMatch(/^data:image\/svg\+xml;base64,/);
     expect(el.textContent).toContain("캠페인");
     const activeMenu = el.querySelector(
-      '.nds-brand-cashpobi__menu-item[data-active="true"]',
+      '.nds-brand-cashwalk-biz__menu-item[data-active="true"]',
     ) as HTMLElement | null;
     expect(activeMenu?.textContent).toContain("캠페인");
-    const cta = el.querySelector(".nds-brand-cashpobi__primary-cta") as HTMLAnchorElement | null;
+    const cta = el.querySelector(
+      ".nds-brand-cashwalk-biz__primary-cta",
+    ) as HTMLAnchorElement | null;
     expect(cta?.textContent).toContain("광고 시작하기");
   });
 

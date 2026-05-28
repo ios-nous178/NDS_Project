@@ -39,7 +39,7 @@ export interface SemanticColors {
     inverse?: { default?: string };
     brand?: { default?: string; strong?: string };
     /**
-     * Inline 링크 텍스트. Cashpobi 가이드에 명시된 `Text/Link/Default` 슬롯.
+     * Inline 링크 텍스트. CashwalkBiz 가이드에 명시된 `Text/Link/Default` 슬롯.
      * NudgeEAP base 에는 없고, brand 가이드가 link 를 별도 컬러로 분리할 때 사용.
      */
     link?: { default?: string };
@@ -122,7 +122,7 @@ export interface SemanticColors {
   };
   /**
    * 캐시워크 로고 등 brand identity asset 전용 색상 슬롯.
-   * Cashpobi 가이드의 `Brand/Logo/{Default,Subtle,Strong}` (Brown 톤).
+   * CashwalkBiz 가이드의 `Brand/Logo/{Default,Subtle,Strong}` (Brown 톤).
    * NudgeEAP base / Trost / Geniet 는 사용하지 않음 — 로고 raw hex 또는 별도 자산 사용.
    */
   brandLogo?: {
@@ -172,7 +172,7 @@ export interface SpacingOverrides {
     };
   };
   /**
-   * Admin/page layout 토큰 — Cashpobi 가이드의 Layout/Page · Sidebar · Content · MaxContent.
+   * Admin/page layout 토큰 — CashwalkBiz 가이드의 Layout/Page · Sidebar · Content · MaxContent.
    * NudgeEAP base / Trost / Geniet 는 미사용. emit: `--layout-{key}` (px).
    */
   layout?: {
@@ -194,7 +194,7 @@ export interface ElevationOverrides {
  * 특정 컴포넌트만 브랜드 가이드에 맞게 보정할 때 사용.
  * emit: `--nds-{component}-{prop}` CSS var. 컴포넌트는 이 var 를 fallback 패턴으로 읽어 cascade.
  * (오버라이드를 안 정의한 브랜드는 컴포넌트의 fallback 값이 그대로 적용 — 기존 동작 유지)
- * 예) Cashpobi admin 은 input radius 4px / height 40px / padding-x = inset-input (base 8/48/inset-card).
+ * 예) CashwalkBiz admin 은 input radius 4px / height 40px / padding-x = inset-input (base 8/48/inset-card).
  *
  * value 가 number 면 `${value}px` 로 emit, string 이면 그대로 (`var(--inset-input)` 같은 CSS var 참조 가능).
  */

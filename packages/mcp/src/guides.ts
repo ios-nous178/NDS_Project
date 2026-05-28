@@ -467,7 +467,7 @@ export interface ComponentGuide {
     /** 패키지 내 상대경로 (`references/...`) — MCP server 가 절대경로로 풀어준다. */
     image?: string;
     caption?: string;
-    brand?: "trost" | "geniet" | "cashpobi" | "nudge-eap";
+    brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
   }>;
   /** 접근성 가이드 (aria/대비/타겟 사이즈 등) */
   accessibility?: string[];
@@ -536,7 +536,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "primary/outlined": "흰 배경 + #2B96ED 보더/텍스트 — 밝은 배경 위 보조 액션",
       "primary/soft":
         "surface.brandSubtle 배경 + textRole.brand 텍스트 — 3차 액션 (Figma 라이브러리엔 별도 셀 없음). " +
-        "브랜드별: NudgeEAP=Blue/50+Blue/500, Trost=cobalt-50+cobalt, Geniet=Mint/100+Mint/600, Cashpobi=Yellow/100+Yellow/800.",
+        "브랜드별: NudgeEAP=Blue/50+Blue/500, Trost=cobalt-50+cobalt, Geniet=Mint/100+Mint/600, CashwalkBiz=Yellow/100+Yellow/800.",
       "secondary/solid":
         "#F1F8FD 배경 + #2B96ED 텍스트 — 파란 카드/배경 위 강조 (default), hover=#E3F2FC",
       "assistive/outlined":
@@ -551,7 +551,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       geniet:
         "variant=solid/outlined 만 허용 (Figma 207:1853 가이드). soft/outlined-sub 는 dev console 경고 — 사용 금지. " +
         "secondary/solid 는 #333333(gray-900) dark inverse + 흰 텍스트 — Geniet 고유 패턴.",
-      cashpobi:
+      "cashwalk-biz":
         "Solid/Primary(#FFD200 + 검정), Solid/Secondary(#000 + 흰), Weak/Secondary, Outlined/Primary(노란 보더), Outlined/Secondary 5 스타일. " +
         "(※ Figma 캔버스 라벨은 'Neutral' 로 표기되지만 DS 네이밍은 'Secondary' — 동일 슬롯. color=\"secondary\" 식별자와 정합.) " +
         "Solid Primary 의 텍스트는 항상 검정 (#000) — high-contrast 시그니처. " +
@@ -871,16 +871,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "(기본/모바일) Radius 8 / 카드 padding 비대칭 28·16·16 / PC 332 · Mobile 294 / 본문↔버튼 24px gap / 50% overlay / shadow.md. " +
       "Type: default / title(헤더) / Image(64×64 아이콘+타이틀). " +
       "Button: 최대 2개 (1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할). " +
-      '(캐포비 admin) `<html data-brand="cashpobi">` 가 박힌 환경에서는 480px / radius 16 / padding 32 균등 / gap 20 / Title2 좌측 정렬 / pill 44px 버튼 + 검정 CTA 로 자동 변형. ' +
+      '(캐포비 admin) `<html data-brand="cashwalk-biz">` 가 박힌 환경에서는 480px / radius 16 / padding 32 균등 / gap 20 / Title2 좌측 정렬 / pill 44px 버튼 + 검정 CTA 로 자동 변형. ' +
       "Modal API/props 는 동일 — CSS cascade 만 다름. 4가지 admin 패턴: ① Single(우측 정렬 120px) / ② Dual(양분) / ③ With Close(헤더 X + 우측 단일) / ④ Confirm+Slot(추가 슬롯).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9947",
     references: [
       {
-        label: "Cashpobi Admin Modal Guide — 4 patterns",
+        label: "CashwalkBiz Admin Modal Guide — 4 patterns",
         url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3418-471",
         caption:
           "Cashwalk for Business · ModalGuide. Single / Dual / With Close / Confirm+Slot 4가지 슬롯 기반 admin 패턴 SSOT.",
-        brand: "cashpobi",
+        brand: "cashwalk-biz",
       },
     ],
     brandMatrix: {
@@ -888,7 +888,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "기본 모바일/PC 스펙 — 332/294 너비, radius 8, padding 비대칭(28/16/16), 본문/버튼 중앙 정렬, 본문↔버튼 24px gap.",
       trost: "nudge-eap 와 동일 cascade. 색만 trost 브랜드 토큰 적용 (confirm = brand fill).",
       geniet: "nudge-eap 와 동일 cascade. 색만 geniet 브랜드 토큰 적용 (confirm = brand fill).",
-      cashpobi:
+      "cashwalk-biz":
         "admin 데스크톱 다이얼로그로 변형: 480 / radius 16 / padding 32 균등 / gap 20 / Title2(18·26) 좌측 정렬 / Body2(14·20) 좌측 정렬 / pill 버튼 44px / Body2 medium. " +
         "Confirm = 검정 CTA (`cv.button.bgSecondary` = #000), Cancel = white + `cv.button.borderAssistive` 회색 보더. " +
         "Footer 1버튼(Single): 우측 정렬 + 120px 고정 폭 (`data-has-both-actions` 속성 자동 감지). " +
@@ -900,12 +900,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Modal 내부에 다시 큰 그림자/보더를 추가하지 말 것 (이미 shadow 토큰이 적용됨).",
       "ESC/오버레이 클릭으로 닫히는 기본 동작을 막으면 접근성 저해.",
       "버튼은 최대 2개까지만 사용. 3개 이상이 필요하면 BottomSheet 검토.",
-      "maxWidth 미지정 시 기본 폭은 브랜드에 따라 다름: nudge-eap/trost/geniet=332(PC), cashpobi=480(admin). 모바일 화면이면 device='mobile' 로 294px 지정.",
+      "maxWidth 미지정 시 기본 폭은 브랜드에 따라 다름: nudge-eap/trost/geniet=332(PC), cashwalk-biz=480(admin). 모바일 화면이면 device='mobile' 로 294px 지정.",
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
-      "**Cashpobi 한정** — flat `<Modal ...>` 에 `closable + onClose + onConfirm` 을 한꺼번에 넘기면 헤더 X 와 푸터 cancel 이 중복으로 노출됨. 패턴 ③(With Close: 헤더 X + 푸터 단일 확인) 은 반드시 Compound API (`Modal.Root` / `Modal.Header closable` / `Modal.Footer onConfirm` 만) 로 조립 — 푸터에는 `onClose` 를 넘기지 말 것.",
-      '**Cashpobi 한정** — admin 모달이라고 가정해 너비/패딩/라운드를 inline style 로 덮어쓰지 말 것. `<html data-brand="cashpobi">` 가 박힌 환경이면 480/16/32 가 자동 적용됨 — 그 외 컨텍스트라면 기본 모바일 스펙이 의도된 것.',
+      "**CashwalkBiz 한정** — flat `<Modal ...>` 에 `closable + onClose + onConfirm` 을 한꺼번에 넘기면 헤더 X 와 푸터 cancel 이 중복으로 노출됨. 패턴 ③(With Close: 헤더 X + 푸터 단일 확인) 은 반드시 Compound API (`Modal.Root` / `Modal.Header closable` / `Modal.Footer onConfirm` 만) 로 조립 — 푸터에는 `onClose` 를 넘기지 말 것.",
+      '**CashwalkBiz 한정** — admin 모달이라고 가정해 너비/패딩/라운드를 inline style 로 덮어쓰지 말 것. `<html data-brand="cashwalk-biz">` 가 박힌 환경이면 480/16/32 가 자동 적용됨 — 그 외 컨텍스트라면 기본 모바일 스펙이 의도된 것.',
     ],
     usagePolicy: {
       useFor: [
@@ -1108,7 +1108,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       default: "height 48 / padding 16·13 / wrapper gap 10 / radius 8",
       field: "height 44 / 같은 토큰, label-gap 8",
       compact:
-        "height 40 / padding 12·10 / label-gap 6 — Cashpobi admin TextField (Figma 3082:846). FormField.labelPosition='left' 와 짝으로 사용.",
+        "height 40 / padding 12·10 / label-gap 6 — CashwalkBiz admin TextField (Figma 3082:846). FormField.labelPosition='left' 와 짝으로 사용.",
     },
     stateMatrix: {
       default: "border #D8D8D8 / bg white / placeholder #999",
@@ -1164,15 +1164,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- 어드민에 nds-sidebar 사용 — 어드민은 antd Layout.Sider -->\n<nds-sidebar items='...'></nds-sidebar>",
     },
     summary:
-      "어드민/CMS용 좌측 수직 내비게이션. 캐포비(Cashpobi) Figma 168:1250 / 290:1593 기준으로 정합. " +
+      "어드민/CMS용 좌측 수직 내비게이션. 캐포비(CashwalkBiz) Figma 168:1250 / 290:1593 기준으로 정합. " +
       "flat items 배열 또는 SidebarSection[] (라벨 그룹) 둘 다 지원, 1단계 서브메뉴 + 뱃지 + collapsed(64px) 가능.",
     figmaNodeUrl:
       "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B5%AD-%EC%BA%90%EC%8B%9C%EC%9B%8C%ED%81%AC_WEB-Dev?node-id=168-1250",
     pitfalls: [
       "items prop 은 flat SidebarItem[] 또는 SidebarSection[] 둘 다 받지만, **섹션 라벨이 필요하면** SidebarSection[] 으로 넘길 것. flat 배열 안에 빈 객체로 'spacer' 만들지 말 것.",
       "활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.",
-      "캐포비 브랜드는 `data-brand='cashpobi'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
-      "GNB 아이콘은 brand-specific 우선 — 캐포비에서는 `CashpobiGnbBannerIcon`/`CashpobiGnbCashIcon`/`CashpobiGnbChannelIcon`/`CashpobiGnbChatIcon`/`CashpobiGnbMemberIcon`/`CashpobiGnbQuizIcon`/`CashpobiGnbSettingIcon` 7종 사용.",
+      "캐포비 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
+      "GNB 아이콘은 brand-specific 우선 — 캐포비에서는 `CashwalkBizGnbBannerIcon`/`CashwalkBizGnbCashIcon`/`CashwalkBizGnbChannelIcon`/`CashwalkBizGnbChatIcon`/`CashwalkBizGnbMemberIcon`/`CashwalkBizGnbQuizIcon`/`CashwalkBizGnbSettingIcon` 7종 사용.",
       "서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).",
       "collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).",
       "footer 와 user 를 동시에 주면 footer 가 우선. user 는 'avatar + 이름 + 역할' 정형 패턴 단축이라 footer 가 있으면 무시.",
@@ -1872,7 +1872,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- raw <header> 에 인라인 스타일로 흉내 — 토큰/elevated 그림자가 안 들어감 -->\n<header style="position:fixed;background:#fff">…</header>',
     },
     summary:
-      "base 헤더. variant 로 분기: compact(모바일 56px flex) / webview(56px, title 중앙 + back) / transparent(56px, 배경 투명) / web(데스크탑 80px grid 3열, max-width 1200). 브랜드 화면이면 base Header 가 아니라 brand chrome (TrostAppBar / NudgeEAPWebHeader / CashpobiWebHeader 등) 사용.",
+      "base 헤더. variant 로 분기: compact(모바일 56px flex) / webview(56px, title 중앙 + back) / transparent(56px, 배경 투명) / web(데스크탑 80px grid 3열, max-width 1200). 브랜드 화면이면 base Header 가 아니라 brand chrome (TrostAppBar / NudgeEAPWebHeader / CashwalkBizWebHeader 등) 사용.",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=96-25918",
     pitfalls: [
       "variant 선택: 모바일 헤더는 variant='compact', 데스크탑 웹 헤더는 variant='web'. 'web' 이 grid 3열 + 80px + 1200 max-width 의 그 헤더.",
@@ -2138,24 +2138,24 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "`<NudgeEAPWebHeader logo={{ src, alt:'NudgeEAP', href:'/' }} menuItems={GNB} activeKey={current} showAppDownload appDownloadHref='/download' authState={isLoggedIn ? 'logout' : 'login'} authHref='/auth' />`",
     ],
   },
-  CashpobiWebHeader: {
-    name: "CashpobiWebHeader",
+  CashwalkBizWebHeader: {
+    name: "CashwalkBizWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
       "캐포비(캐시워크 for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐포비는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공.",
     figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-1739",
     pitfalls: [
-      "캐포비 화면에는 base `<Header>` 가 아니라 `<CashpobiWebHeader>` 사용.",
+      "캐포비 화면에는 base `<Header>` 가 아니라 `<CashwalkBizWebHeader>` 사용.",
       "캐포비 시그니처 (Yellow/200 + Neutral/900) 는 토큰 cascade 가 자동 적용 — 인라인 background 로 덮어쓰지 말 것.",
-      "캐포비는 *AppBar / BottomNav 컴포넌트 없음* (앱 없으니 필요 없음). 모바일 헤더도 CashpobiWebHeader variant='mobile', 모바일 푸터는 CashpobiFooter layout='mobile'.",
+      "캐포비는 *AppBar / BottomNav 컴포넌트 없음* (앱 없으니 필요 없음). 모바일 헤더도 CashwalkBizWebHeader variant='mobile', 모바일 푸터는 CashwalkBizFooter layout='mobile'.",
     ],
     recommended: [
-      "Desktop: `<CashpobiWebHeader variant='desktop' logo={{...}} menuItems={...} activeKey='home' actions={[{ key:'login', label:'로그인', href:'#' }]} />`",
-      "Mobile: `<CashpobiWebHeader variant='mobile' logo={{...}} onMobileMenu={() => openDrawer()} />`",
+      "Desktop: `<CashwalkBizWebHeader variant='desktop' logo={{...}} menuItems={...} activeKey='home' actions={[{ key:'login', label:'로그인', href:'#' }]} />`",
+      "Mobile: `<CashwalkBizWebHeader variant='mobile' logo={{...}} onMobileMenu={() => openDrawer()} />`",
     ],
   },
-  CashpobiFooter: {
-    name: "CashpobiFooter",
+  CashwalkBizFooter: {
+    name: "CashwalkBizFooter",
     _htmlStatus: "no-html-equivalent",
     summary:
       "캐포비 통합 푸터. 캐포비는 웹 전용이라 surface='web' (default) 만 지원. layout='desktop'|'mobile' 으로 반응형 분기. light 톤 + Neutral 텍스트.",
@@ -2163,11 +2163,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "Trost 처럼 다크 푸터로 바꾸지 말 것 — 캐포비 가이드는 light + neutral 텍스트.",
       "surface prop 은 'web' 만 — 타입 단에서 다른 값 차단 (캐포비는 app 푸터 없음).",
-      "기존 CashpobiWebFooter 의 variant prop 이 CashpobiFooter 에서는 layout 으로 rename.",
+      "기존 CashwalkBizWebFooter 의 variant prop 이 CashwalkBizFooter 에서는 layout 으로 rename.",
     ],
     recommended: [
-      "Desktop: `<CashpobiFooter layout='desktop' links={...} company={{ name:'캐시워크 주식회사', address:..., bizNumber:..., copyright:... }} maxWidth={1600} />`",
-      "Mobile: `<CashpobiFooter layout='mobile' links={...} company={...} />`",
+      "Desktop: `<CashwalkBizFooter layout='desktop' links={...} company={{ name:'캐시워크 주식회사', address:..., bizNumber:..., copyright:... }} maxWidth={1600} />`",
+      "Mobile: `<CashwalkBizFooter layout='mobile' links={...} company={...} />`",
     ],
   },
   PageHeader: {
@@ -3762,7 +3762,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   BrandHeader: {
     name: "BrandHeader",
     summary:
-      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashpobi' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
+      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
     pitfalls: [
       "**손수 조립 금지** — nds-header / nds-header-logo / nds-header-menu / nds-header-menu-item / nds-header-actions / nds-header-auth-button 를 직접 박지 말 것. 메뉴 라벨/href/순서를 손으로 적으면 브랜드 일관성이 깨지고 다음 브랜드 화면에서 또 적게 됨. BrandHeader 한 줄이 BRAND_DATA 에서 전부 자동.",
       "**asset-base-url 안 주면 `/brand-logos` 가 default** — 워크스페이스에 그 폴더가 없으면 로고가 깨짐. `public/brand-logos/` 디렉토리 만들고 브랜드별 파일 배치 필요 (아래 recommended 참고).",
@@ -3773,8 +3773,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Trost: `<nds-brand-header brand='trost' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/trost-logo.svg` · webMenu keys: home / counsel / test / care / center",
       "Geniet: `<nds-brand-header brand='geniet' surface='web' active-key='deal' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/geniet-logo-pc.webp` + `geniet-logo-footer.webp` · webMenu keys: home / community / deal / review",
       "NudgeEAP: `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/nudge-eap-logo.png` + `nudge-eap-logo-footer.png` · webMenu keys: counsel / test / therapy / letter / news / my",
-      "Cashpobi: `<nds-brand-header brand='cashpobi' surface='web' active-key='campaign' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/cashpobi/cashwalk-for-business-horizontal.svg` · webMenu keys: home / campaign / member / channel / setting",
-      "Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashpobi-header>` — brand attribute 안 써도 동일 동작.",
+      "CashwalkBiz: `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='campaign' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/cashwalk-biz/cashwalk-for-business-horizontal.svg` · webMenu keys: home / campaign / member / channel / setting",
+      "Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashwalk-biz-header>` — brand attribute 안 써도 동일 동작.",
     ],
     examplesHtml: {
       do: '<nds-brand-header brand="geniet" surface="web" active-key="deal" asset-base-url="/brand-logos"></nds-brand-header>',
@@ -3790,7 +3790,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     usagePolicy: {
       useFor: [
-        "사용자 앱 (Trost/Geniet/NudgeEAP/Cashpobi) PC GNB",
+        "사용자 앱 (Trost/Geniet/NudgeEAP/CashwalkBiz) PC GNB",
         "사용자 앱 모바일 compact 헤더 (surface='mobile')",
         "webview 페이지 뒤로가기/타이틀 헤더 (surface='webview')",
       ],
@@ -3816,8 +3816,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Trost (dark): `<nds-brand-footer brand='trost' surface='app' asset-base-url='/brand-logos' />`",
       "Geniet (light): `<nds-brand-footer brand='geniet' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `geniet-logo-footer.webp`",
       "NudgeEAP (light): `<nds-brand-footer brand='nudge-eap' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `nudge-eap-logo-footer.png`",
-      "Cashpobi (light): `<nds-brand-footer brand='cashpobi' surface='web' asset-base-url='/brand-logos' />`",
-      "Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashpobi-footer>`",
+      "CashwalkBiz (light): `<nds-brand-footer brand='cashwalk-biz' surface='web' asset-base-url='/brand-logos' />`",
+      "Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashwalk-biz-footer>`",
     ],
     examplesHtml: {
       do: '<nds-brand-footer brand="geniet" surface="web" asset-base-url="/brand-logos"></nds-brand-footer>',
@@ -3832,7 +3832,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   BrandChrome: {
     name: "BrandChrome",
     summary:
-      "Brand chrome wrappers — BrandHeader + BrandFooter 의 umbrella. **개별 BrandHeader / BrandFooter 가이드를 우선 참고.** `nds-brand-chrome.ts` 한 파일에 4개 브랜드 (nudge-eap / trost / geniet / cashpobi) 의 BRAND_DATA (로고/메뉴/사업자정보/footer 링크) 가 모두 정의돼 있다. 손수 조립한 헤더/푸터가 발견되면 BrandHeader/BrandFooter 한 줄로 즉시 교체.",
+      "Brand chrome wrappers — BrandHeader + BrandFooter 의 umbrella. **개별 BrandHeader / BrandFooter 가이드를 우선 참고.** `nds-brand-chrome.ts` 한 파일에 4개 브랜드 (nudge-eap / trost / geniet / cashwalk-biz) 의 BRAND_DATA (로고/메뉴/사업자정보/footer 링크) 가 모두 정의돼 있다. 손수 조립한 헤더/푸터가 발견되면 BrandHeader/BrandFooter 한 줄로 즉시 교체.",
     pitfalls: [
       "이 컴포넌트는 wrapper — 실제 사용 시 `<nds-brand-header>` 와 `<nds-brand-footer>` 를 호출. `<nds-brand-chrome>` 단독 사용은 없음.",
       "BRAND_DATA 를 수정하려면 DS 레포의 `packages/html/src/components/nds-brand-chrome.ts` 직접 편집 (외부 mockup 프로젝트에서는 불가능).",
@@ -4169,7 +4169,7 @@ export interface PatternGuide {
     /** 로컬 이미지 경로 (`apps/storybook/public/...` 등). */
     image?: string;
     caption?: string;
-    brand?: "trost" | "geniet" | "cashpobi" | "nudge-eap";
+    brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
   }>;
 }
 
@@ -4510,7 +4510,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "네이밍 컨벤션: 기본 Line = `XIcon`, Filled 짝 = `XActiveIcon` 또는 `XOnIcon` (예: HomeIcon ↔ HomeActiveIcon, SleepmodeOffIcon ↔ SleepmodeOnIcon). 짝 정보는 ICON_METADATA[name].pair 로 확인.",
       "카테고리 8종(basic / navigation / action / media / state-reaction / location / eap-service / color)은 의미 분류일 뿐 강제 import 경로 분리가 아니다. find_icon 결과의 카테고리는 유사 의미 후보를 찾는 힌트로 사용.",
       "컬러(다색) 카테고리 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger, Siren) 전용이다. 일반 UI 강조에 색 아이콘을 끼워 넣지 않는다.",
-      "**Mono vs Multicolor 트랙 분리** (SEED 스타일) — `@nudge-design/icons` 는 두 트랙으로 나뉜다. Mono(1925개, `currentColor` 만 사용해서 `color` prop 으로 자유 변경) 와 Multicolor(17개, 브랜드 시그니처 — Trost mental 일러스트·Geniet 브랜드 아이콘·Cashpobi GNB chat/member 등 — 내부 accent 색 잠금). UI chrome(navigation/action/state)은 mono, 서비스 시그니처/주요 진입점은 multicolor.",
+      "**Mono vs Multicolor 트랙 분리** (SEED 스타일) — `@nudge-design/icons` 는 두 트랙으로 나뉜다. Mono(1925개, `currentColor` 만 사용해서 `color` prop 으로 자유 변경) 와 Multicolor(17개, 브랜드 시그니처 — Trost mental 일러스트·Geniet 브랜드 아이콘·CashwalkBiz GNB chat/member 등 — 내부 accent 색 잠금). UI chrome(navigation/action/state)은 mono, 서비스 시그니처/주요 진입점은 multicolor.",
       "**Import 경로 선택**: 기본은 root flat `import { CalendarIcon } from '@nudge-design/icons'` (백워드 호환). 자동완성 범위를 좁히고 카테고리를 분명히 하려면 subpath `import { CalendarIcon } from '@nudge-design/icons/mono'` 또는 `import { GenietPlayIcon } from '@nudge-design/icons/multicolor'` 사용. namespace 형 `import { MonoIcons, MultiIcons } from '@nudge-design/icons'` 도 가능.",
       "**Multicolor 컬러 override 금지** — multicolor 아이콘의 `color` prop 은 base(`currentColor` 사용 영역)만 바꾼다. 내부 accent(`#FFF` 등)는 SVG 에 고정되어 있으니 SVG 를 직접 편집하지 말 것.",
       "필요한 아이콘이 브랜드/NudgeEAP/Mockup 패키지 어디에도 없을 때만 인라인 `<svg>` 또는 신규 SVG 추가를 검토한다. 신규 추가 시 mono 아이콘은 `packages/icons/svg/mono/`, multicolor 아이콘은 `packages/icons/svg/multicolor/` 에 kebab-case 로 저장한 뒤 `pnpm --filter @nudge-design/icons build` 로 컴포넌트를 재생성한다. viewBox 는 0 0 24 24, mono 의 stroke/fill 은 `currentColor` 로 유지.",
@@ -4689,7 +4689,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "목업 생성 전에 정답/오답 시각 레퍼런스를 수집하고, 1줄 캡션으로 톤 판단 기준을 고정하는 패턴.",
     rules: [
       "목업 작성 전에는 프롬프트에 이미지, 스크린샷, Figma 링크, figmaNodeUrl 이 이미 있어도 항상 사용자에게 시각 레퍼런스 확인 질문을 한다.",
-      "단, 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, references.md 의 첫 줄 `task:` 슬러그가 현재 task 와 일치하면 다시 묻지 말고 읽어서 적용한다. 이전 task 의 stale references.md (예: cashpobi-form 작업물이 남은 상태에서 geniet-diary 시작) 는 없는 것으로 간주.",
+      "단, 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, references.md 의 첫 줄 `task:` 슬러그가 현재 task 와 일치하면 다시 묻지 말고 읽어서 적용한다. 이전 task 의 stale references.md (예: cashwalk-biz-form 작업물이 남은 상태에서 geniet-diary 시작) 는 없는 것으로 간주.",
       "references.md 첫 줄은 `task: <brand>-<screen-slug>` 형식 필수 (예: `task: geniet-diary-hub`). 이게 staleness 판정 기준.",
       "사용자 응답으로 기존 첨부/링크를 기준으로 진행해도 되는지, 추가 정답/오답 레퍼런스가 있는지 확인한다.",
       "권장 세트는 정답 1-2장 + 오답 1-2장. 각 레퍼런스는 '왜 맞는지/틀린지' 1줄 캡션을 붙인다.",
@@ -4897,8 +4897,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     },
   },
 
-  "cashpobi-icon-library": {
-    name: "cashpobi-icon-library",
+  "cashwalk-biz-icon-library": {
+    name: "cashwalk-biz-icon-library",
     summary:
       "캐포비(캐시워크 for Business) admin 전용 아이콘 라이브러리. 46 icons · 6 categories (Navigation / Action / Status / Social / GNB / Selection). " +
       "현재는 카탈로그 메타데이터만 등록되어 있고 SVG 자산은 미동기화 — 디자인팀에서 SVG export 받기 전까지 공용 @nudge-design/icons 의 매칭 아이콘으로 fallback.",
@@ -4921,12 +4921,12 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       totalIcons: 46,
       categories: 6,
       svgSyncStatus: "pending — 디자인팀에서 export 받기 전까지 공용 아이콘 fallback",
-      relatedPatterns: "iconography, cashpobi-button, cashpobi-input",
+      relatedPatterns: "iconography, cashwalk-biz-button, cashwalk-biz-input",
     },
   },
 
-  "cashpobi-button": {
-    name: "cashpobi-button",
+  "cashwalk-biz-button": {
+    name: "cashwalk-biz-button",
     summary:
       "캐포비 admin 의 Button 카탈로그 — 5 스타일 × 2 shape × 5 사이즈 × 3 상태 + TextButton + IconButton.",
     rules: [
@@ -4952,15 +4952,15 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       states: "default / hover / disabled",
       textButtonSizes: "Large=38 / Medium=32 (px)",
       iconButtonSizes: "X-Large=48 / Large=44 / Medium=40 / Small=32 (px)",
-      relatedPatterns: "cta-group, cashpobi-input",
+      relatedPatterns: "cta-group, cashwalk-biz-input",
     },
   },
 
-  "cashpobi-form-layout": {
-    name: "cashpobi-form-layout",
+  "cashwalk-biz-form-layout": {
+    name: "cashwalk-biz-form-layout",
     summary:
       "캐포비 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → 페이지 끝 inline 센터 [취소][저장] 알약(rounded-28) cluster' 표준. " +
-      "Figma 290:1197 (퀴즈 등록하기) 실측. 필드 단위 컴포넌트 정책은 pattern:cashpobi-input, CTA 정책은 pattern:cashpobi-button 과 함께 본다.",
+      "Figma 290:1197 (퀴즈 등록하기) 실측. 필드 단위 컴포넌트 정책은 pattern:cashwalk-biz-input, CTA 정책은 pattern:cashwalk-biz-button 과 함께 본다.",
     rules: [
       "**페이지 컨테이너**: 사이드바(좌 300px) 우측 본문. 페이지 bg `#FAFAFA`, 콘텐츠 컬럼 폭 1491px (실측), 좌측 padding 32px.",
       "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838. 타이틀 아래 76px 후 **1px hairline divider #D8D8D8** 풀폭. 우측에는 액션 두지 말 것.",
@@ -4968,7 +4968,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.",
       "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**, 필드 우측 ~684px (long) 또는 ~228px (date/short). 라벨은 row 중앙 정렬.",
       "**라벨 타이포**: Pretendard **Medium 16 / lh 24, #666** (text.subtle). 'strong' 색을 쓰지 않는다 — 빽빽한 폼에서 라벨은 subtle 로 둬도 위계가 명확.",
-      "**필드 컴포넌트**: 높이 **48px**, `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border 는 `pattern:cashpobi-input` 참조.",
+      "**필드 컴포넌트**: 높이 **48px**, `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border 는 `pattern:cashwalk-biz-input` 참조.",
       "**행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.",
       "**Helper text**: Pretendard Regular **14 / lh 20, #666**. 글자 수 카운터(`0/30`) 는 14 Medium #999 우측 정렬.",
       "**필수 마커**: 라벨 옆 ` *` color **`#FC3500`** (Coral Red-Orange). 'optional' 표기 X.",
@@ -5031,28 +5031,28 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       ctaDisabled: "bg #D8D8D8 + 흰 텍스트",
       maxPrimarySolidPerScreen: 1,
       validationTiming: "onBlur or submit",
-      relatedPatterns: "cashpobi-input, cashpobi-button, cta-group",
+      relatedPatterns: "cashwalk-biz-input, cashwalk-biz-button, cta-group",
     },
     figmaNodeUrl:
       "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B5%AD-%EC%BA%90%EC%8B%9C%EC%9B%8C%ED%81%AC_WEB-Dev?node-id=290-1197",
     references: [
       {
         label: "캐포비 admin 폼 SSOT — 퀴즈 등록하기 (Figma 290:1197)",
-        image: "references/cashpobi-form-290-1197.png",
+        image: "references/cashwalk-biz-form-290-1197.png",
         caption: "캐포비 admin 폼 페이지 SSOT 스크린샷. 본 가이드 metrics 는 이 노드 실측 기준.",
-        brand: "cashpobi",
+        brand: "cashwalk-biz",
       },
       {
         label: "캐포비 사이드바 — 광고/운영/관리 3섹션 (Figma 168:1250)",
-        image: "references/cashpobi-sidebar-168-1250.png",
+        image: "references/cashwalk-biz-sidebar-168-1250.png",
         caption: "본문 좌측 LNB. 폼 페이지의 사이드바 컨텍스트.",
-        brand: "cashpobi",
+        brand: "cashwalk-biz",
       },
       {
         label: "캐포비 사이드바 — 서브메뉴 펼침 변형 (Figma 290:1593)",
-        image: "references/cashpobi-sidebar-290-1593.png",
+        image: "references/cashwalk-biz-sidebar-290-1593.png",
         caption: "퀴즈 관리 sub-item 펼친 상태 (등록하기/목록/통계). 폼 진입 경로.",
-        brand: "cashpobi",
+        brand: "cashwalk-biz",
       },
     ],
   },
@@ -5286,8 +5286,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     ],
   },
 
-  "cashpobi-input": {
-    name: "cashpobi-input",
+  "cashwalk-biz-input": {
+    name: "cashwalk-biz-input",
     summary:
       "캐포비 admin 의 Input/Form 컴포넌트 카탈로그. 8 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
     rules: [
@@ -5308,7 +5308,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · ImageUpload · ActionChip",
       defaultStates: "default / typing / error / disabled / complete",
       focusBorder: "#111111 (Neutral/900, 검정)",
-      relatedPatterns: "cashpobi-button, dropdown",
+      relatedPatterns: "cashwalk-biz-button, dropdown",
     },
   },
 
@@ -5326,7 +5326,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**Slot 4 — nutrition tag chip row**: 0-3개 chip (고단백/저탄수/저지방/고나트륨/고식이섬유/저당 등). chip/nutrition/* 토큰 (success/info/warning/critical 톤). 위치는 Title 위 또는 Description 직후. 4개 이상 노출 금지.",
       "**Slot 5 — like overlay**: top-right absolute, Media 슬롯 위 (이미지 over). 'heart 아이콘 + 999+' 형태. Cover variant 의 Media 위에만, Thumb/List 사용 X.",
       "**Slot 6 — author meta**: avatar(xs 20-24) + 작성자 이름 + 작성일. Metadata 라인 또는 Description 하단. 한 카드 최대 1개.",
-      "**Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale brand (Cashpobi 빨강 / Geniet mint600). 1줄에 1개.",
+      "**Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale brand (CashwalkBiz 빨강 / Geniet mint600). 1줄에 1개.",
       "**Slot 8 — strikethrough price + sale price**: 정가(취소선 + mute) + 할인가(Bold + Strong). discount badge 와 같은 라인에 정렬. 가격 표시는 카드당 1쌍.",
       "**Slot 9 — shipping chip**: '무료배송' 같은 정책 라벨. ghost/line variant · neutral color. Metadata 라인 우측 또는 가격 라인 하단.",
       "**Slot 10 — certification chip**: '식약처 인증 제품' 같은 신뢰성 라벨. success/info color · ghost variant · check icon prefix. Status 슬롯 또는 Metadata 라인 하단.",

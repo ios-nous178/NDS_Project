@@ -8,34 +8,34 @@ export type VanillaIconName =
   | "BluetoothIcon"
   | "CalendarIcon"
   | "CameraIcon"
-  | "CashpobiArrowDownIcon"
-  | "CashpobiArrowRightIcon"
-  | "CashpobiArrowUpIcon"
-  | "CashpobiBannerIcon"
-  | "CashpobiBubbleIcon"
-  | "CashpobiCalendarIcon"
-  | "CashpobiCautionIcon"
-  | "CashpobiCheckCircleOffIcon"
-  | "CashpobiCheckCircleOnIcon"
-  | "CashpobiCheckIcon"
-  | "CashpobiCheckboxErrorIcon"
-  | "CashpobiCheckboxOffIcon"
-  | "CashpobiCheckboxOnGreenIcon"
-  | "CashpobiCheckboxOnIcon"
-  | "CashpobiDeleteCircleIcon"
-  | "CashpobiErrorIcon"
-  | "CashpobiGnbBannerIcon"
-  | "CashpobiGnbCashIcon"
-  | "CashpobiGnbChannelIcon"
-  | "CashpobiGnbQuizIcon"
-  | "CashpobiGnbSettingIcon"
-  | "CashpobiMessageQuizIcon"
-  | "CashpobiOpenIcon"
-  | "CashpobiQuestionIcon"
-  | "CashpobiRadioOffIcon"
-  | "CashpobiRadioOnIcon"
-  | "CashpobiRippleIcon"
-  | "CashpobiSearchDeleteIcon"
+  | "CashwalkBizArrowDownIcon"
+  | "CashwalkBizArrowRightIcon"
+  | "CashwalkBizArrowUpIcon"
+  | "CashwalkBizBannerIcon"
+  | "CashwalkBizBubbleIcon"
+  | "CashwalkBizCalendarIcon"
+  | "CashwalkBizCautionIcon"
+  | "CashwalkBizCheckCircleOffIcon"
+  | "CashwalkBizCheckCircleOnIcon"
+  | "CashwalkBizCheckIcon"
+  | "CashwalkBizCheckboxErrorIcon"
+  | "CashwalkBizCheckboxOffIcon"
+  | "CashwalkBizCheckboxOnGreenIcon"
+  | "CashwalkBizCheckboxOnIcon"
+  | "CashwalkBizDeleteCircleIcon"
+  | "CashwalkBizErrorIcon"
+  | "CashwalkBizGnbBannerIcon"
+  | "CashwalkBizGnbCashIcon"
+  | "CashwalkBizGnbChannelIcon"
+  | "CashwalkBizGnbQuizIcon"
+  | "CashwalkBizGnbSettingIcon"
+  | "CashwalkBizMessageQuizIcon"
+  | "CashwalkBizOpenIcon"
+  | "CashwalkBizQuestionIcon"
+  | "CashwalkBizRadioOffIcon"
+  | "CashwalkBizRadioOnIcon"
+  | "CashwalkBizRippleIcon"
+  | "CashwalkBizSearchDeleteIcon"
   | "CenterIcon"
   | "ChallengeActiveIcon"
   | "ChallengeIcon"
@@ -1927,8 +1927,8 @@ export type VanillaIconName =
   | "WalkIcon"
   | "WebIcon"
   | "CashdealPointIcon"
-  | "CashpobiGnbChatIcon"
-  | "CashpobiGnbMemberIcon"
+  | "CashwalkBizGnbChatIcon"
+  | "CashwalkBizGnbMemberIcon"
   | "GenietArrowRightStepperIcon"
   | "GenietArrowRightIcon"
   | "GenietGpointIcon"
@@ -1990,115 +1990,115 @@ export const vanillaIconDefinitions: Record<VanillaIconName, IconDefinition> = {
     viewBox: "0 0 24 24",
     body: "<g transform=\"translate(2 3)\">\n    <path id=\"Vector\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7.778 18H12.222C15.343 18 16.904 18 18.025 17.265C18.5088 16.9482 18.9254 16.5391 19.251 16.061C20 14.961 20 13.428 20 10.364C20 7.30005 20 5.76705 19.251 4.66705C18.9254 4.18904 18.5088 3.77991 18.025 3.46305C17.305 2.99005 16.403 2.82105 15.022 2.76105C14.363 2.76105 13.796 2.27105 13.667 1.63605C13.5684 1.17092 13.3123 0.754083 12.9418 0.455997C12.5714 0.157912 12.1095 -0.00314481 11.634 4.65308e-05H8.366C7.378 4.65308e-05 6.527 0.685047 6.333 1.63605C6.204 2.27105 5.637 2.76105 4.978 2.76105C3.598 2.82105 2.696 2.99105 1.975 3.46305C1.49154 3.78001 1.07527 4.18914 0.75 4.66705C0 5.76705 0 7.29905 0 10.364C0 13.429 5.96046e-08 14.96 0.749 16.061C1.073 16.537 1.489 16.946 1.975 17.265C3.096 18 4.657 18 7.778 18ZM10 6.27305C7.699 6.27305 5.833 8.10405 5.833 10.363C5.833 12.622 7.7 14.456 10 14.456C12.3 14.456 14.167 12.624 14.167 10.365C14.167 8.10605 12.3 6.27305 10 6.27305ZM10 7.90905C8.62 7.90905 7.5 9.00805 7.5 10.364C7.5 11.719 8.62 12.818 10 12.818C11.38 12.818 12.5 11.719 12.5 10.364C12.5 9.00905 11.38 7.90905 10 7.90905ZM14.722 7.09105C14.722 6.63905 15.095 6.27305 15.556 6.27305H16.666C17.126 6.27305 17.5 6.63905 17.5 7.09105C17.4979 7.30994 17.409 7.51905 17.2528 7.67243C17.0966 7.82581 16.8859 7.91091 16.667 7.90905H15.556C15.4475 7.9101 15.3399 7.88978 15.2393 7.84924C15.1387 7.80871 15.047 7.74874 14.9696 7.67278C14.8921 7.59683 14.8304 7.50636 14.7879 7.40654C14.7454 7.30673 14.723 7.19952 14.722 7.09105Z\" fill=\"currentColor\"/>\n  </g>",
   },
-  CashpobiArrowDownIcon: {
+  CashwalkBizArrowDownIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(2.608696 1.463415)\">\n<g id=\"Path 37\">\n<path id=\"Path 36\" d=\"M1 1L8.2 8.2L1 15.4\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n</g>",
   },
-  CashpobiArrowRightIcon: {
+  CashwalkBizArrowRightIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(2.399976 1.142852)\">\n<g id=\"Path 37\">\n<path id=\"Path 36\" d=\"M8.5 1.50007L1.5 10.5001L8.5 19.5001\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n</g>",
   },
-  CashpobiArrowUpIcon: {
+  CashwalkBizArrowUpIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(2.608696 1.463415)\">\n<g id=\"Path 37\">\n<path id=\"Path 36\" d=\"M8.2 1L1 8.2L8.2 15.4\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n</g>",
   },
-  CashpobiBannerIcon: {
+  CashwalkBizBannerIcon: {
     viewBox: "0 0 24 24",
     body: "<rect x=\"3.25\" y=\"6.5\" width=\"17.5\" height=\"11\" rx=\"2.25\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n  <path d=\"M7.5 14V10h1.4l1.6 2.6V10h1.4v4H10.5L8.9 11.4V14H7.5zm6.6 0V10h3.4v1.1h-2v.5h1.8v1h-1.8v.3h2V14h-3.4z\" fill=\"currentColor\"/>",
   },
-  CashpobiBubbleIcon: {
+  CashwalkBizBubbleIcon: {
     viewBox: "0 0 24 24",
     body: "<path d=\"M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v8a2.5 2.5 0 01-2.5 2.5H13l-4.5 4v-4H6.5A2.5 2.5 0 014 14.5v-8z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/>\n  <circle cx=\"8.5\" cy=\"10.5\" r=\"1\" fill=\"currentColor\"/>\n  <circle cx=\"12\" cy=\"10.5\" r=\"1\" fill=\"currentColor\"/>\n  <circle cx=\"15.5\" cy=\"10.5\" r=\"1\" fill=\"currentColor\"/>",
   },
-  CashpobiCalendarIcon: {
+  CashwalkBizCalendarIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.2 1.2)\">\n<g id=\"calendar\">\n<path id=\"Shape\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17 2H16V1C16 0.447715 15.5523 0 15 0C14.4477 0 14 0.447715 14 1V2H6V1C6 0.447715 5.55228 0 5 0C4.44772 0 4 0.447715 4 1V2H3C1.34315 2 0 3.34315 0 5V17C0 18.6569 1.34315 20 3 20H17C18.6569 20 20 18.6569 20 17V5C20 3.34315 18.6569 2 17 2ZM6 11C6 11.5523 5.55228 12 5 12C4.44772 12 4 11.5523 4 11C4 10.4477 4.44772 10 5 10C5.55228 10 6 10.4477 6 11ZM10 12C10.5523 12 11 11.5523 11 11C11 10.4477 10.5523 10 10 10C9.44771 10 9 10.4477 9 11C9 11.5523 9.44771 12 10 12ZM15 12C15.5523 12 16 11.5523 16 11C16 10.4477 15.5523 10 15 10C14.4477 10 14 10.4477 14 11C14 11.5523 14.4477 12 15 12ZM11 15C11 15.5523 10.5523 16 10 16C9.44771 16 9 15.5523 9 15C9 14.4477 9.44771 14 10 14C10.5523 14 11 14.4477 11 15ZM15 16C15.5523 16 16 15.5523 16 15C16 14.4477 15.5523 14 15 14C14.4477 14 14 14.4477 14 15C14 15.5523 14.4477 16 15 16ZM17 18C17.5523 18 18 17.5523 18 17V8H2V17C2 17.5523 2.44772 18 3 18H17ZM18 6H2V5C2 4.44772 2.44772 4 3 4H17C17.5523 4 18 4.44772 18 5V6ZM6 15C6 15.5523 5.55228 16 5 16C4.44772 16 4 15.5523 4 15C4 14.4477 4.44772 14 5 14C5.55228 14 6 14.4477 6 15Z\" fill=\"currentColor\"/>\n</g>\n</g>",
   },
-  CashpobiCautionIcon: {
+  CashwalkBizCautionIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1 1.052632)\">\n<path id=\"Vector\" d=\"M0 0H24V22.8H0V0Z\" fill=\"currentColor\"/>\n</g>",
   },
-  CashpobiCheckCircleOffIcon: {
+  CashwalkBizCheckCircleOffIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.249987 1.249987)\">\n<g id=\"Group 31\">\n<path id=\"Exclude\" d=\"M9.59961 0C14.9016 0 19.2 4.29763 19.2002 9.59961C19.2002 14.9018 14.9018 19.2002 9.59961 19.2002C4.29763 19.2 0 14.9016 0 9.59961C0.000219738 4.29777 4.29777 0.000219742 9.59961 0ZM15.0312 6.75977C14.6296 6.35808 13.9779 6.35808 13.5762 6.75977L8.81738 11.5176L6.29199 8.99121C5.89031 8.58953 5.2386 8.58953 4.83691 8.99121C4.43524 9.39289 4.43523 10.0446 4.83691 10.4463L8.09082 13.7002C8.49251 14.1017 9.14426 14.1018 9.5459 13.7002L15.0312 8.21387C15.4328 7.81222 15.4328 7.16142 15.0312 6.75977Z\" fill=\"currentColor\"/>\n</g>\n</g>",
   },
-  CashpobiCheckCircleOnIcon: {
+  CashwalkBizCheckCircleOnIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.25 1.25)\">\n<g id=\"Group 31\">\n<path id=\"Fill 9\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M9.60002 19.2C4.29785 19.2 0 14.9022 0 9.60002C0 4.29785 4.29785 0 9.60002 0C14.9022 0 19.2 4.29785 19.2 9.60002C19.2 14.9022 14.9022 19.2 9.60002 19.2Z\" fill=\"currentColor\"/>\n<path id=\"Path 2\" d=\"M13.5767 6.75945C13.9783 6.35777 14.6296 6.35777 15.0313 6.75945C15.433 7.16114 15.433 7.81239 15.0313 8.21407L9.54556 13.6998C9.14388 14.1015 8.49262 14.1015 8.09094 13.6998L4.83715 10.446C4.43547 10.0443 4.43547 9.39307 4.83715 8.99139C5.23883 8.5897 5.89009 8.5897 6.29177 8.99139L8.8175 11.5174L13.5767 6.75945Z\" fill=\"currentColor\"/>\n</g>\n</g>",
   },
-  CashpobiCheckIcon: {
+  CashwalkBizCheckIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.420118 1.905412)\">\n<path id=\"Path 4\" d=\"M14.8357 0.543547C15.2402 0.108208 15.9211 0.083267 16.3565 0.48784C16.7918 0.892413 16.8167 1.5733 16.4122 2.00864L7.07848 12.0521C6.6528 12.5102 5.92766 12.5102 5.50198 12.0521L0.48784 6.65667C0.083267 6.22133 0.108208 5.54044 0.543547 5.13587C0.978887 4.7313 1.65977 4.75624 2.06434 5.19158L6.29066 9.73844L14.8357 0.543547Z\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"0.4\"/>\n</g>",
   },
-  CashpobiCheckboxErrorIcon: {
+  CashwalkBizCheckboxErrorIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(2.553191 2.553191)\">\n<g id=\"Group\">\n<path id=\"Line\" d=\"M0.346447 0.346447C0.523958 0.168936 0.801733 0.152798 0.997474 0.298035L1.05355 0.346447L9.05355 8.34645C9.24882 8.54171 9.24882 8.85829 9.05355 9.05355C8.87604 9.23106 8.59827 9.2472 8.40253 9.10197L8.34645 9.05355L0.346447 1.05355C0.151184 0.858291 0.151184 0.541709 0.346447 0.346447Z\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"0.4\"/>\n<path id=\"Line_2\" d=\"M9.05355 0.346447C9.23106 0.523958 9.2472 0.801733 9.10197 0.997474L9.05355 1.05355L1.05355 9.05355C0.858292 9.24882 0.541708 9.24882 0.346446 9.05355C0.168935 8.87604 0.152799 8.59827 0.298035 8.40253L0.346446 8.34645L8.34645 0.346447C8.54171 0.151184 8.85829 0.151184 9.05355 0.346447Z\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"0.4\"/>\n</g>\n</g>",
   },
-  CashpobiCheckboxOffIcon: {
+  CashwalkBizCheckboxOffIcon: {
     viewBox: "0 0 24 24",
     body: "<rect x=\"3.75\" y=\"3.75\" width=\"16.5\" height=\"16.5\" rx=\"3.5\" stroke=\"currentColor\" stroke-width=\"1.5\"/>",
   },
-  CashpobiCheckboxOnGreenIcon: {
+  CashwalkBizCheckboxOnGreenIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(2.086957 2.823529)\">\n<path id=\"Path 4\" d=\"M10.2006 0.239442C10.4826 -0.0639769 10.9571 -0.08136 11.2606 0.200615C11.564 0.482591 11.5814 0.957146 11.2994 1.26056L4.79409 8.26056C4.49741 8.57982 3.99201 8.57982 3.69532 8.26056L0.200615 4.5001C-0.08136 4.19668 -0.0639769 3.72213 0.239442 3.44015C0.54286 3.15818 1.01742 3.17556 1.29939 3.47898L4.245 6.648L10.2006 0.239442Z\" fill=\"currentColor\"/>\n</g>",
   },
-  CashpobiCheckboxOnIcon: {
+  CashwalkBizCheckboxOnIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(2.086957 2.823529)\">\n<path id=\"Path 4\" d=\"M10.2006 0.239442C10.4826 -0.0639769 10.9571 -0.08136 11.2606 0.200615C11.564 0.482591 11.5814 0.957146 11.2994 1.26056L4.79409 8.26056C4.49741 8.57982 3.99201 8.57982 3.69532 8.26056L0.200615 4.5001C-0.08136 4.19668 -0.0639769 3.72213 0.239442 3.44015C0.54286 3.15818 1.01742 3.17556 1.29939 3.47898L4.245 6.648L10.2006 0.239442Z\" fill=\"currentColor\"/>\n</g>",
   },
-  CashpobiDeleteCircleIcon: {
+  CashwalkBizDeleteCircleIcon: {
     viewBox: "0 0 24 24",
     body: "<circle cx=\"12\" cy=\"12\" r=\"9.5\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n  <path d=\"M9 9l6 6M15 9l-6 6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>",
   },
-  CashpobiErrorIcon: {
+  CashwalkBizErrorIcon: {
     viewBox: "0 0 24 24",
     body: "<g id=\"Group 13\">\n<circle id=\"Oval\" cx=\"12\" cy=\"12\" r=\"11\" stroke=\"currentColor\" stroke-width=\"2\"/>\n<g id=\"!\">\n<circle id=\"Oval_2\" cx=\"12\" cy=\"16.44\" r=\"1.2\" fill=\"currentColor\"/>\n<rect id=\"Rectangle\" x=\"10.8\" y=\"6.6\" width=\"2.4\" height=\"7.2\" rx=\"1.2\" fill=\"currentColor\"/>\n</g>\n</g>",
   },
-  CashpobiGnbBannerIcon: {
+  CashwalkBizGnbBannerIcon: {
     viewBox: "0 0 24 24",
     body: "<rect x=\"3.75\" y=\"4.75\" width=\"16.5\" height=\"14.5\" rx=\"2.25\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n  <path d=\"M3.75 9h16.5\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n  <circle cx=\"7\" cy=\"7\" r=\"0.85\" fill=\"currentColor\"/>",
   },
-  CashpobiGnbCashIcon: {
+  CashwalkBizGnbCashIcon: {
     viewBox: "0 0 24 24",
     body: "<circle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n  <path d=\"M12 6.5v11\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n  <path d=\"M15 9.5c0-1.1-1.34-2-3-2s-3 .9-3 2 1.34 1.75 3 1.75 3 .65 3 1.75-1.34 2-3 2-3-.9-3-2\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>",
   },
-  CashpobiGnbChannelIcon: {
+  CashwalkBizGnbChannelIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.116279 1.116279)\">\n<g id=\"shape\">\n<path id=\"Fill-1\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M15.052 13.9932H12.6979V13.2466C12.6979 10.9446 11.4585 8.9998 9.99158 8.9998V7.50676C12.127 7.50676 13.8483 9.52508 14.1871 12.2555C14.2043 12.3943 14.3236 12.5002 14.4686 12.5002H14.7686C14.9252 12.5002 15.052 12.6223 15.052 12.7732V13.9932Z\" fill=\"currentColor\"/>\n<path id=\"Fill-3\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M18.858 13.9932H16.504V13.2466C16.504 10.9446 15.2645 8.9998 13.7976 8.9998V7.50676C15.933 7.50676 17.6544 9.52508 17.9932 12.2555C18.0103 12.3943 18.1296 12.5002 18.2746 12.5002H18.5747C18.7313 12.5002 18.858 12.6223 18.858 12.7732V13.9932Z\" fill=\"currentColor\"/>\n<path id=\"Fill-6\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M3.90814 13.9932H2.64185V11.4784H3.4166C4.49736 11.4784 5.41065 10.0014 5.41065 8.2532V7.50676H6.1854C8.32079 7.50676 10.0423 9.52508 10.3809 12.2555C10.3981 12.3943 10.5174 12.5002 10.6624 12.5002H10.9626C11.119 12.5002 11.246 12.6223 11.246 12.7732V13.9932H8.89177V13.2466C8.89177 11.3299 8.03267 9.66075 6.89825 9.15575C6.64853 10.9389 5.66895 12.3385 4.37215 12.8047C4.26272 12.8438 4.19152 12.9457 4.19152 13.0583V13.7202C4.19152 13.8711 4.06474 13.9932 3.90814 13.9932Z\" fill=\"currentColor\"/>\n<path id=\"bg\" d=\"M16.4257 0.75H5.07432C2.68607 0.75 0.75 2.68607 0.75 5.07432V16.4257C0.75 18.8139 2.68607 20.75 5.07432 20.75H16.4257C18.8139 20.75 20.75 18.8139 20.75 16.4257V5.07432C20.75 2.68607 18.8139 0.75 16.4257 0.75Z\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n</g>\n</g>",
   },
-  CashpobiGnbQuizIcon: {
+  CashwalkBizGnbQuizIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1 1.069934)\">\n<g id=\"Group\">\n<g id=\"Rectangle\">\n</g>\n<path id=\"bg\" d=\"M17.6757 0.75H6.32432C3.93607 0.75 2 2.98858 2 5.75V15.75C2 18.5114 3.93607 20.75 6.32432 20.75H17.6757C20.0639 20.75 22 18.5114 22 15.75V5.75C22 2.98858 20.0639 0.75 17.6757 0.75Z\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n<path id=\"Shape\" d=\"M8.49166 8.94741C8.92285 6.52179 11.118 5.75 12.7644 5.75C14.4108 5.75 16.3707 6.55854 15.9395 8.98416L15.5475 11.2995C15.4324 12.0615 15.0617 12.7694 14.4892 13.3209L15.0771 14.1294C15.4691 14.6439 15.1163 15.2687 14.6068 15.5627C14.0972 15.8567 13.3132 15.82 12.9996 15.3422L12.3724 14.3867C11.9982 14.4579 11.6175 14.4949 11.2356 14.4969C9.58924 14.4969 7.62928 13.6884 8.06047 11.2628L8.49166 8.94741ZM13.7052 8.91065C13.793 8.57051 13.7033 8.21149 13.4636 7.94323C13.2239 7.67498 12.8626 7.52935 12.49 7.55084C11.6398 7.53309 10.9125 8.11985 10.8044 8.91065L10.3732 11.3363C10.308 11.6735 10.4061 12.0205 10.6409 12.2832C10.8757 12.5459 11.2228 12.6972 11.5884 12.6961C12.4164 12.6589 13.1113 12.0984 13.274 11.3363L13.7052 8.91065Z\" fill=\"currentColor\"/>\n</g>\n</g>",
   },
-  CashpobiGnbSettingIcon: {
+  CashwalkBizGnbSettingIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.371429 1.370403)\">\n<g id=\"ic_teamwalk_mypage_black\">\n<path id=\"shape\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M8.74685 9.57691C10.9707 9.57691 12.9876 10.3587 14.4462 11.6343C15.862 12.8726 16.75 14.5798 16.75 16.4729L0.750034 16.75C0.743692 14.5798 1.63165 12.8726 3.04752 11.6343C4.50611 10.3587 6.523 9.57691 8.74685 9.57691ZM8.58871 0.75C9.40516 0.75 10.1443 1.08077 10.6794 1.61556C11.2144 2.15035 11.5453 2.88916 11.5453 3.70522C11.5453 4.52128 11.2144 5.26009 10.6794 5.79488C10.1443 6.32967 9.40516 6.66044 8.58871 6.66044C7.77227 6.66044 7.03311 6.32967 6.49807 5.79488C5.96303 5.26009 5.6321 4.52128 5.6321 3.70522C5.6321 2.88916 5.96303 2.15035 6.49807 1.61556C7.03311 1.08077 7.77227 0.75 8.58871 0.75Z\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n</g>\n</g>",
   },
-  CashpobiMessageQuizIcon: {
+  CashwalkBizMessageQuizIcon: {
     viewBox: "0 0 24 24",
     body: "<g id=\"Group\">\n<g id=\"Rectangle\">\n</g>\n<rect id=\"bg\" x=\"2.75\" y=\"2.75\" width=\"18.5\" height=\"18.5\" rx=\"3.25\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n<path id=\"Shape\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12.7475 7C11.1415 7 9.00022 7.77179 8.5796 10.1974L8.15899 12.5128C7.73837 14.9384 9.65026 15.7469 11.2563 15.7469C11.6287 15.7449 12.0001 15.7079 12.3652 15.6367L12.977 16.5922C13.2829 17.07 14.0476 17.1067 14.5447 16.8127C15.0418 16.5187 15.3859 15.8939 15.0036 15.3794L14.43 14.5709C14.9885 14.0194 15.3501 13.3115 15.4624 12.5495L15.8448 10.2342C16.2654 7.80854 14.3535 7 12.7475 7ZM13.4296 9.19323C13.6634 9.46148 13.7509 9.82051 13.6652 10.1607L13.2446 12.5863C13.0859 13.3484 12.4081 13.9089 11.6004 13.9461C11.2438 13.9472 10.9051 13.7959 10.6761 13.5332C10.4471 13.2705 10.3514 12.9235 10.415 12.5863L10.8356 10.1607C10.9411 9.36985 11.6506 8.78309 12.4799 8.80084C12.8433 8.77935 13.1958 8.92498 13.4296 9.19323Z\" fill=\"currentColor\"/>\n</g>",
   },
-  CashpobiOpenIcon: {
+  CashwalkBizOpenIcon: {
     viewBox: "0 0 24 24",
     body: "<path d=\"M10 4H5a1.5 1.5 0 00-1.5 1.5v13.5A1.5 1.5 0 005 20.5h13.5A1.5 1.5 0 0020 19v-5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n  <path d=\"M14 4h6v6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n  <path d=\"M20 4l-9 9\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>",
   },
-  CashpobiQuestionIcon: {
+  CashwalkBizQuestionIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.2 1.2)\">\n<g id=\"shape\">\n<path id=\"Shape\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M10.8333 11.1252C10.8199 10.8349 10.9939 10.5653 11.275 10.4405V10.4328C12.4889 9.9644 13.295 8.87416 13.3338 7.64841C13.3725 6.42265 12.6367 5.28992 11.4545 4.75553C10.2723 4.22113 8.8642 4.38472 7.85833 5.17331C7.10412 5.76372 6.66793 6.63514 6.66667 7.55407C6.66667 7.98376 7.03976 8.33209 7.5 8.33209C7.96024 8.33209 8.33333 7.98376 8.33333 7.55407C8.33334 6.77262 8.95413 6.11239 9.78407 6.01115C10.614 5.90991 11.3956 6.39906 11.6107 7.15427C11.8258 7.90948 11.4075 8.69647 10.6333 8.99341C9.72733 9.35711 9.14747 10.1968 9.16667 11.1174V11.4442C9.16667 11.8739 9.53976 12.2222 10 12.2222C10.4602 12.2222 10.8333 11.8739 10.8333 11.4442V11.1252ZM9.16667 14.7222C9.16667 15.1825 9.53976 15.5556 10 15.5556C10.4602 15.5556 10.8333 15.1825 10.8333 14.7222C10.8333 14.262 10.4602 13.8889 10 13.8889C9.53976 13.8889 9.16667 14.262 9.16667 14.7222Z\" fill=\"currentColor\"/>\n<circle id=\"Oval\" cx=\"10\" cy=\"10\" r=\"9.09091\" stroke=\"currentColor\" stroke-width=\"1.81818\"/>\n</g>\n</g>",
   },
-  CashpobiRadioOffIcon: {
+  CashwalkBizRadioOffIcon: {
     viewBox: "0 0 24 24",
     body: "<circle id=\"Oval\" cx=\"12\" cy=\"12\" r=\"10.8\" stroke=\"currentColor\" stroke-width=\"2.4\"/>",
   },
-  CashpobiRadioOnIcon: {
+  CashwalkBizRadioOnIcon: {
     viewBox: "0 0 24 24",
     body: "<circle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n  <circle cx=\"12\" cy=\"12\" r=\"4.5\" fill=\"currentColor\"/>",
   },
-  CashpobiRippleIcon: {
+  CashwalkBizRippleIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(2.181362 1.868766)\">\n<g id=\"Group 3\">\n<path id=\"Fill 1\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M8.44313 7.8161L6.30413 5.6571C5.74713 4.9141 6.62413 4.0261 7.35313 4.6081C8.35613 5.7571 9.59913 6.7841 10.6011 7.9211C10.9381 8.3021 11.1711 8.6111 10.8471 9.1151L7.28513 12.6761C6.49013 13.2531 5.63913 12.2001 6.33713 11.5171L8.44313 9.3951L3.416 9.3961C1.27959 9.3951 0.0368089 7.78117 0.0368089 5.9411L0 0.592502C0.144 -0.195498 1.334 -0.198498 1.47 0.589502C1.51181 1.76613 1.49812 2.43397 1.49087 3.09005C1.48346 3.75939 1.51404 4.41648 1.58575 5.5891C1.58676 5.6056 1.58457 5.62209 1.58575 5.63856C1.64891 6.52032 1.80024 7.39188 2.53817 7.70375C2.84458 7.83325 3.29575 7.8161 3.71883 7.8161H8.44313Z\" fill=\"currentColor\"/>\n</g>\n</g>",
   },
-  CashpobiSearchDeleteIcon: {
+  CashwalkBizSearchDeleteIcon: {
     viewBox: "0 0 24 24",
     body: "<circle cx=\"10.5\" cy=\"10.5\" r=\"6.25\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n  <path d=\"M15 15l5 5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n  <path d=\"M8.5 8.5l4 4M12.5 8.5l-4 4\" stroke=\"currentColor\" stroke-width=\"1.3\" stroke-linecap=\"round\"/>",
   },
@@ -9666,11 +9666,11 @@ export const vanillaIconDefinitions: Record<VanillaIconName, IconDefinition> = {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.714)\">\n<circle cx=\"7\" cy=\"7\" r=\"7\" fill=\"#F24015\"/>\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6.29954 10.2534H4.94027V3.91493H7.27792C8.86124 3.91493 9.78733 4.79025 9.78733 6.12549C9.78733 7.47556 8.86124 8.35088 7.27792 8.35088H6.29954V10.2534ZM6.29954 5.10923V7.15659H7.21817C7.97249 7.15659 8.42807 6.80053 8.42807 6.12549C8.42807 5.45787 7.97249 5.10923 7.21817 5.10923H6.29954Z\" fill=\"white\"/>\n<path d=\"M7 0C10.866 0 14 3.13401 14 7C14 10.866 10.866 14 7 14C3.13401 14 0 10.866 0 7C1.12745e-07 3.13401 3.13401 1.12749e-07 7 0ZM7 1.86621C4.16494 1.86621 1.86621 4.16494 1.86621 7C1.86621 9.83506 4.16494 12.1338 7 12.1338C9.83506 12.1338 12.1338 9.83506 12.1338 7C12.1338 4.16494 9.83506 1.86621 7 1.86621Z\" fill=\"url(#cashdeal_point_grad)\"/>\n<ellipse opacity=\"0.5\" cx=\"2.99885\" cy=\"2.43858\" rx=\"0.9409\" ry=\"1.61327\" transform=\"rotate(47 2.99885 2.43858)\" fill=\"white\"/>\n</g>\n<defs>\n<linearGradient id=\"cashdeal_point_grad\" x1=\"-3.9674\" y1=\"5.48148\" x2=\"5.24024\" y2=\"16.5755\" gradientUnits=\"userSpaceOnUse\">\n<stop stop-color=\"#FF7F60\"/>\n<stop offset=\"1\" stop-color=\"#E53000\"/>\n</linearGradient>\n</defs>",
   },
-  CashpobiGnbChatIcon: {
+  CashwalkBizGnbChatIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.0932 1.093653)\">\n<g id=\"Ic/bubble/line\">\n<path id=\"&#237;&#140;&#168;&#236;&#138;&#164;_5059\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6.61612 20.2175C9.08392 21.3833 11.916 21.5114 14.479 20.5733C17.042 19.6351 19.1221 17.709 20.2541 15.2255C21.5284 12.5687 21.52 9.47542 20.2313 6.82552C18.7487 3.45553 15.5608 1.1498 11.896 0.796953C8.23127 0.444109 4.66193 2.09924 2.56363 5.12447C0.465319 8.1497 0.165655 12.0727 1.78012 15.3815C1.81304 15.4501 1.82434 15.5271 1.81252 15.6023L1.10452 20.0051C1.06524 20.2509 1.14619 20.5006 1.32219 20.6767C1.4982 20.8527 1.74793 20.9336 1.99372 20.8943L6.39532 20.1851C6.47051 20.1737 6.54739 20.185 6.61612 20.2175Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path id=\"&#237;&#140;&#168;&#236;&#138;&#164;_5060\" d=\"M11.0057 9.62272C11.7878 9.62272 12.4217 10.2567 12.4217 11.0387C12.4217 11.8208 11.7878 12.4547 11.0057 12.4547C10.2237 12.4547 9.58972 11.8208 9.58972 11.0387C9.59038 10.257 10.224 9.62338 11.0057 9.62272Z\" fill=\"currentColor\"/>\n<path id=\"&#237;&#140;&#168;&#236;&#138;&#164;_5061\" d=\"M15.3233 9.62272C16.1054 9.62272 16.7393 10.2567 16.7393 11.0387C16.7393 11.8208 16.1054 12.4547 15.3233 12.4547C14.5413 12.4547 13.9073 11.8208 13.9073 11.0387C13.908 10.257 14.5416 9.62338 15.3233 9.62272Z\" fill=\"currentColor\"/>\n<path id=\"&#237;&#140;&#168;&#236;&#138;&#164;_5062\" d=\"M6.68812 9.62272C7.47016 9.62272 8.10412 10.2567 8.10412 11.0387C8.10412 11.8208 7.47016 12.4547 6.68812 12.4547C5.90609 12.4547 5.27212 11.8208 5.27212 11.0387C5.27278 10.257 5.90636 9.62338 6.68812 9.62272Z\" fill=\"currentColor\"/>\n</g>\n</g>",
   },
-  CashpobiGnbMemberIcon: {
+  CashwalkBizGnbMemberIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"scale(1.2 1.2)\">\n<g id=\"_&#234;&#178;&#169;&#235;&#166;&#172;_&#235;&#170;&#168;&#235;&#147;&#156;\" clip-path=\"url(#clip0_0_543)\">\n<path id=\"Vector\" d=\"M20 8.26264V8.57068C19.9102 8.80788 19.7734 9.02511 19.5719 9.11553C19.3094 9.23334 19.0211 9.2353 18.7984 9.07873C16.4863 7.45437 13.3152 7.70018 11.3102 9.68777C11.2246 10.6906 10.7809 11.5943 10.0262 12.2965C10.5844 12.5333 11.091 12.7956 11.5805 13.1353C11.9426 13.4003 12.0176 13.8857 11.7625 14.2352C11.5082 14.5839 11.0375 14.6607 10.6625 14.4039C8.24688 12.7486 5.03555 13.1244 2.99727 15.1734C2.35313 15.8208 1.88477 16.5852 1.60391 17.4522C1.52188 17.7055 1.57695 17.9571 1.7293 18.1607C1.87461 18.3556 2.10156 18.4703 2.38789 18.4707L9.13633 18.4715C9.54531 18.4715 9.8457 18.765 9.90938 19.1224C9.97852 19.5103 9.75352 19.8351 9.41133 19.9995H1.83594C0.849219 19.7342 0.166406 18.9689 0 17.9642V17.4162L0.0570313 17.1935C0.676172 14.93 2.45391 13.1193 4.64883 12.2836C3.40703 11.1113 3.01875 9.35194 3.68867 7.77377C4.30273 6.3275 5.75859 5.34114 7.38633 5.3564C8.96211 5.37128 10.4203 6.33376 11.0434 7.86027C11.5926 7.46416 12.1352 7.18117 12.7422 6.92988C11.059 5.37519 11.0324 2.78639 12.5895 1.19882C14.1668 -0.409884 16.7301 -0.398142 18.2938 1.22191C19.8313 2.81535 19.7934 5.38889 18.1102 6.93732C18.6332 7.16121 19.1082 7.4078 19.5723 7.70918C19.7895 7.85009 19.9137 8.03405 20.0004 8.26225L20 8.26264ZM15.1164 1.58906C13.7523 1.76872 12.85 3.02163 13.0348 4.33129C13.2203 5.64448 14.4313 6.56391 15.7375 6.39599C17.0613 6.22534 18.0047 5.00296 17.8289 3.67685C17.6563 2.37423 16.4684 1.41097 15.1164 1.58945V1.58906ZM7.03086 6.94593C5.66719 7.1252 4.76367 8.38085 4.95078 9.69208C5.1375 11.0017 6.34609 11.9184 7.64766 11.7533C8.97305 11.5849 9.91875 10.3622 9.74531 9.03803C9.57188 7.71388 8.38477 6.76744 7.03086 6.94593Z\" fill=\"currentColor\"/>\n<path id=\"Vector_2\" d=\"M20 16.1642V16.4722C19.8848 16.7967 19.6434 17.0957 19.2574 17.0969L17.0703 17.1032L17.0715 19.2176C17.0715 19.5847 16.8691 19.8513 16.5598 20.0004H16.0191C15.7113 19.8505 15.507 19.5843 15.5074 19.218L15.5086 17.1032L13.3211 17.0957C12.8844 17.0942 12.575 16.698 12.5832 16.3031C12.5918 15.8917 12.9215 15.5395 13.3594 15.5387L15.507 15.5348L15.5109 13.3851C15.5117 12.9323 15.8852 12.5953 16.3082 12.605C16.7184 12.6144 17.0691 12.944 17.0699 13.3851L17.073 15.5367L19.1406 15.5332C19.5719 15.5324 19.8777 15.768 20.0008 16.1649L20 16.1642Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_0_543\">\n<rect width=\"20\" height=\"20\" fill=\"white\"/>\n</clipPath>\n</defs>\n</g>",
   },

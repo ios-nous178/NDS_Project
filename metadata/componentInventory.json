@@ -1625,7 +1625,7 @@
     "notes": "NudgeEAPAppBar 와 분리. AppBar 는 앱(모바일/웹뷰) 전용, WebHeader 는 데스크톱 1920 viewport / max-width 1200. 로고는 Figma 698:87 (NudgeEAP Library) 의 KO+EN horizontal 대표 로고."
   },
   {
-    "name": "CashpobiWebHeader",
+    "name": "CashwalkBizWebHeader",
     "category": "레이아웃",
     "status": "implemented",
     "description": "캐포비 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐포비는 웹 전용이라 AppBar 없음",
@@ -1637,7 +1637,7 @@
     "notes": "캐포비는 *웹 전용* — AppBar/BottomNav 슬롯이 없고 WebHeader/Footer 만 제공. 시그니처 Yellow/200 + Neutral/900 텍스트는 토큰 cascade 자동."
   },
   {
-    "name": "CashpobiFooter",
+    "name": "CashwalkBizFooter",
     "category": "레이아웃",
     "status": "implemented",
     "description": "캐포비 통합 푸터. 캐포비는 웹 전용이라 surface='web' (default) 만 지원. layout='desktop'|'mobile' 으로 반응형 분기",
@@ -1646,6 +1646,6 @@
     "figmaUrl": "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-2208",
     "figmaNodeId": "380:2208",
     "usageSummary": "캐시워크 한국 웹 푸터. surface prop 통일된 호출 표면, layout 으로 desktop/mobile 분기",
-    "notes": "CashpobiWebFooter 를 흡수. surface prop 은 타입 단에서 'web' 만 허용. variant → layout 으로 rename."
+    "notes": "CashwalkBizWebFooter 를 흡수. surface prop 은 타입 단에서 'web' 만 허용. variant → layout 으로 rename."
   }
 ]

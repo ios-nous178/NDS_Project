@@ -7,14 +7,14 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 /* Modal 은 createPortal 로 document.body 에 mount 되므로 캐스케이드를
-   적용하려면 <html data-brand="cashpobi"> 가 필요. 캐포비 admin 스토리는
-   브랜드 툴바와 무관하게 항상 cashpobi 캐스케이드를 보여주기 위해
-   documentElement 의 data-brand 를 일시적으로 cashpobi 로 고정한다. */
-function useForceCashpobiBrand() {
+   적용하려면 <html data-brand="cashwalk-biz"> 가 필요. 캐포비 admin 스토리는
+   브랜드 툴바와 무관하게 항상 cashwalk-biz 캐스케이드를 보여주기 위해
+   documentElement 의 data-brand 를 일시적으로 cashwalk-biz 로 고정한다. */
+function useForceCashwalkBizBrand() {
   useEffect(() => {
     const root = document.documentElement;
     const prev = root.getAttribute("data-brand");
-    root.setAttribute("data-brand", "cashpobi");
+    root.setAttribute("data-brand", "cashwalk-biz");
     return () => {
       if (prev === null) root.removeAttribute("data-brand");
       else root.setAttribute("data-brand", prev);
@@ -645,13 +645,13 @@ const MODAL_SPEC_ROWS: Array<{ key: string; value: string }> = [
   { key: "푸터 버튼 font", value: "15 / 22 (확인 700, 취소 500)" },
 ];
 
-/* ─── Cashpobi Admin Modal (Figma 3418:471) ─────────────────
+/* ─── CashwalkBiz Admin Modal (Figma 3418:471) ─────────────────
    "Cashwalk for Business ModalGuide" — admin 데스크톱 다이얼로그.
    480px / radius 16 / padding 32 / pill 44px / Title2 좌측 정렬.
    4가지 슬롯 기반 패턴: Single / Dual / With Close / Confirm+Slot. */
 
-function CashpobiSingleActionExample() {
-  useForceCashpobiBrand();
+function CashwalkBizSingleActionExample() {
+  useForceCashwalkBizBrand();
   const [open, setOpen] = useState(false);
 
   return (
@@ -674,8 +674,8 @@ function CashpobiSingleActionExample() {
   );
 }
 
-function CashpobiDualActionExample() {
-  useForceCashpobiBrand();
+function CashwalkBizDualActionExample() {
+  useForceCashwalkBizBrand();
   const [open, setOpen] = useState(false);
 
   return (
@@ -700,8 +700,8 @@ function CashpobiDualActionExample() {
 /* Pattern ③: 헤더 X + 푸터 단일 확인 버튼. flat ModalComponent 는
    `onClose` 를 전달하면 자동으로 cancel 버튼을 만들기 때문에 이 패턴은
    Compound API 로 명시적으로 조립한다. */
-function CashpobiWithCloseExample() {
-  useForceCashpobiBrand();
+function CashwalkBizWithCloseExample() {
+  useForceCashwalkBizBrand();
   const [open, setOpen] = useState(false);
 
   return (
@@ -725,8 +725,8 @@ function CashpobiWithCloseExample() {
   );
 }
 
-function CashpobiConfirmSlotExample() {
-  useForceCashpobiBrand();
+function CashwalkBizConfirmSlotExample() {
+  useForceCashwalkBizBrand();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
 
@@ -780,8 +780,8 @@ function CashpobiConfirmSlotExample() {
   );
 }
 
-export const CashpobiAdminSingleAction: Story = {
-  name: "Brand/Cashpobi Admin · ① Single Action",
+export const CashwalkBizAdminSingleAction: Story = {
+  name: "Brand/CashwalkBiz Admin · ① Single Action",
   parameters: {
     docs: {
       description: {
@@ -791,11 +791,11 @@ export const CashpobiAdminSingleAction: Story = {
       },
     },
   },
-  render: () => <CashpobiSingleActionExample />,
+  render: () => <CashwalkBizSingleActionExample />,
 };
 
-export const CashpobiAdminDualAction: Story = {
-  name: "Brand/Cashpobi Admin · ② Dual Action",
+export const CashwalkBizAdminDualAction: Story = {
+  name: "Brand/CashwalkBiz Admin · ② Dual Action",
   parameters: {
     docs: {
       description: {
@@ -805,11 +805,11 @@ export const CashpobiAdminDualAction: Story = {
       },
     },
   },
-  render: () => <CashpobiDualActionExample />,
+  render: () => <CashwalkBizDualActionExample />,
 };
 
-export const CashpobiAdminWithClose: Story = {
-  name: "Brand/Cashpobi Admin · ③ With Close",
+export const CashwalkBizAdminWithClose: Story = {
+  name: "Brand/CashwalkBiz Admin · ③ With Close",
   parameters: {
     docs: {
       description: {
@@ -819,11 +819,11 @@ export const CashpobiAdminWithClose: Story = {
       },
     },
   },
-  render: () => <CashpobiWithCloseExample />,
+  render: () => <CashwalkBizWithCloseExample />,
 };
 
-export const CashpobiAdminConfirmSlot: Story = {
-  name: "Brand/Cashpobi Admin · ④ Confirm + Slot",
+export const CashwalkBizAdminConfirmSlot: Story = {
+  name: "Brand/CashwalkBiz Admin · ④ Confirm + Slot",
   parameters: {
     docs: {
       description: {
@@ -833,7 +833,7 @@ export const CashpobiAdminConfirmSlot: Story = {
       },
     },
   },
-  render: () => <CashpobiConfirmSlotExample />,
+  render: () => <CashwalkBizConfirmSlotExample />,
 };
 
 export const FigmaSpec: Story = {
