@@ -1,81 +1,51 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  BRANDS,
+  BRAND_LABEL,
+  buildManifest,
+  htmlStatus,
+  reactStatus,
+  writeManifestJson,
+} from "./coverage-manifest.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const metadataPath = path.join(rootDir, "metadata", "tdsComponents.json");
-const reactIndexPath = path.join(rootDir, "packages", "react", "src", "index.ts");
-const htmlIndexPath = path.join(rootDir, "packages", "html", "src", "index.ts");
 const outputPath = path.join(rootDir, "docs", "components", "brand-coverage.mdx");
 
-const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz"];
-const BRAND_LABEL = {
-  trost: "Trost",
-  geniet: "Geniet",
-  "nudge-eap": "NudgeEAP",
-  "cashwalk-biz": "CashwalkBiz",
-};
-
-/**
- * packages/react/src/index.ts 와 packages/html/src/index.ts 를 직접 파싱해서
- * 코드상 실제 export 된 컴포넌트 이름 집합을 만든다. Story 와 같은 SSOT.
- */
-async function readReactExports() {
-  const src = await fs.readFile(reactIndexPath, "utf8");
-  const exports = new Set();
-  // export * from "./Button"; / export * from "./geniet";
-  for (const m of src.matchAll(/export\s+\*\s+from\s+"\.\/([A-Z][^"]*)"/g)) {
-    exports.add(m[1]);
-  }
-  return exports;
-}
-
-async function readHtmlExports() {
-  const src = await fs.readFile(htmlIndexPath, "utf8");
-  const exports = new Set();
-  // export { NdsButton } from "./components/nds-button.js";
-  for (const m of src.matchAll(/export\s+\{\s*Nds([A-Z][A-Za-z0-9]*)/g)) {
-    exports.add(m[1]);
-  }
-  // export { NdsCard, NdsCardHeader, ... }
-  for (const m of src.matchAll(/Nds([A-Z][A-Za-z0-9]*)/g)) {
-    exports.add(m[1]);
-  }
-  return exports;
-}
-
 const data = JSON.parse(await fs.readFile(metadataPath, "utf8"));
-const reactExports = await readReactExports();
-const htmlExports = await readHtmlExports();
+
+const manifest = await buildManifest();
+const manifestJsonPath = await writeManifestJson(manifest);
+
+/** 셀 마크: ● 코드+브랜드Figma / ○ 코드만 / — 없음. brandChrome 행은 브랜드 chrome 폴더 기준. */
+function glyph(status) {
+  return status === "synced" ? "●" : status === "code" ? "○" : "—";
+}
+function reactCell(c, brand) {
+  return glyph(reactStatus(c, brand, manifest));
+}
+function htmlCell(c, brand) {
+  return glyph(htmlStatus(c, brand, manifest));
+}
 
 function hasBrandFigma(c, brand) {
   return Boolean(c.figmaByBrand?.[brand]);
 }
 
-/** 셀 마크: ● 코드+브랜드Figma / ○ 코드만 / — 없음 */
-function reactCell(c, brand) {
-  if (!c.nds) return "—";
-  if (!reactExports.has(c.nds)) return "—";
-  return hasBrandFigma(c, brand) ? "●" : "○";
-}
-function htmlCell(c, brand) {
-  if (!c.nds) return "—";
-  if (!htmlExports.has(c.nds)) return "—";
-  return hasBrandFigma(c, brand) ? "●" : "○";
-}
-
-function brandFigmaCount(c) {
-  return BRANDS.filter((b) => hasBrandFigma(c, b)).length;
-}
-
-/** 통계 */
+/** 통계 — 일반 컴포넌트는 react/html exports, brandChrome 행은 브랜드 chrome union 기준. */
 const total = data.components.length;
 const mapped = data.components.filter((c) => c.nds).length;
 const gaps = data.components.filter((c) => !c.nds).length;
-const reactCovered = data.components.filter((c) => c.nds && reactExports.has(c.nds)).length;
-const htmlCovered = data.components.filter((c) => c.nds && htmlExports.has(c.nds)).length;
+const reactCovered = data.components.filter((c) => {
+  if (!c.nds) return false;
+  if (c.brandChrome) return BRANDS.some((b) => manifest.brandChrome[b]?.has(c.nds));
+  return manifest.reactExports.has(c.nds);
+}).length;
+const htmlCovered = data.components.filter((c) => c.nds && manifest.htmlExports.has(c.nds)).length;
 const figmaPerBrand = Object.fromEntries(
   BRANDS.map((b) => [b, data.components.filter((c) => hasBrandFigma(c, b)).length]),
 );
@@ -118,6 +88,7 @@ const lines = [
   "- `—` 코드 없음",
   "",
   "> 브랜드 Figma 가이드는 `metadata/tdsComponents.json` 의 `figmaByBrand[brand]` 슬롯이 SSOT. 슬롯이 채워질수록 `○` 가 `●` 로 점등됩니다.",
+  "> `brandChrome: true` 컴포넌트(예: Navbar→AppBar)는 `packages/react/src/{brand}/` 폴더에 해당 파일이 있어야 코드 있음으로 판정됩니다.",
   "",
   "## 요약",
   "",
@@ -154,11 +125,12 @@ lines.push(
   "## 갱신 방법",
   "",
   "1. 브랜드별 Figma 가이드가 새로 추가되면 `metadata/tdsComponents.json` 의 해당 컴포넌트 `figmaByBrand` 객체에 URL 추가",
-  "2. `pnpm generate:brand-coverage` 실행 → 이 페이지 재생성",
+  "2. `pnpm generate:brand-coverage` 실행 → 이 페이지 + `metadata/coverage-manifest.json` 재생성",
   "3. Storybook `Coverage / Brand × Component (목표)` 페이지에서도 동일 데이터로 확인",
   "",
-  `_데이터 출처: \`metadata/tdsComponents.json\` · \`packages/react/src/index.ts\` · \`packages/html/src/index.ts\`_`,
+  `_데이터 출처: \`metadata/tdsComponents.json\` · \`metadata/coverage-manifest.json\` (parsed from \`packages/{react,html}/src/index.ts\` + \`packages/react/src/{brand}/\`)_`,
 );
 
 await fs.writeFile(outputPath, `${lines.join("\n").trimEnd()}\n`, "utf8");
 console.log(`Generated ${path.relative(rootDir, outputPath)}`);
+console.log(`Generated ${path.relative(rootDir, manifestJsonPath)}`);
