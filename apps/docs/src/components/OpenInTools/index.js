@@ -12,13 +12,19 @@ function sourceToRepoPath(source) {
   return source.slice(m[0].length);
 }
 
-function buildUrls({ repo, repoPath }) {
-  if (!repo || !repoPath) return null;
-  const { owner, name, branch } = repo;
-  return {
-    rawUrl: `https://raw.githubusercontent.com/${owner}/${name}/${branch}/${repoPath}`,
-    blobUrl: `https://github.com/${owner}/${name}/blob/${branch}/${repoPath}`,
-  };
+// rawPath  : 같은-오리진 fetch / 새 창 열기용 (private repo 라도 401/404 없이 동작)
+// rawAbsUrl: 외부 서비스(ChatGPT/Claude) 가 fetch 하는 절대 URL — public 도메인 배포 전제
+// blobUrl  : 개발자용 GitHub 링크 (로그인된 사람만 의미 있음)
+function buildUrls({ siteUrl, baseUrl, repo, repoPath }) {
+  if (!repoPath) return null;
+  const base = (baseUrl ?? "/").endsWith("/") ? (baseUrl ?? "/") : `${baseUrl}/`;
+  const rawPath = `${base}raw/${repoPath}`;
+  const origin = siteUrl ? siteUrl.replace(/\/$/, "") : "";
+  const rawAbsUrl = `${origin}${rawPath}`;
+  const blobUrl = repo
+    ? `https://github.com/${repo.owner}/${repo.name}/blob/${repo.branch}/${repoPath}`
+    : null;
+  return { rawPath, rawAbsUrl, blobUrl };
 }
 
 function ChevronDown() {
@@ -162,18 +168,23 @@ export default function OpenInTools() {
   }, [toast]);
 
   const repoPath = sourceToRepoPath(metadata?.source);
-  const urls = buildUrls({ repo, repoPath });
+  const urls = buildUrls({
+    siteUrl: siteConfig.url,
+    baseUrl: siteConfig.baseUrl,
+    repo,
+    repoPath,
+  });
 
   const handleCopy = useCallback(async () => {
     if (!urls) return;
     setOpen(false);
     try {
-      let content = cache.get(urls.rawUrl);
+      let content = cache.get(urls.rawPath);
       if (!content) {
-        const res = await fetch(urls.rawUrl);
+        const res = await fetch(urls.rawPath);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         content = await res.text();
-        cache.set(urls.rawUrl, content);
+        cache.set(urls.rawPath, content);
       }
       await navigator.clipboard.writeText(content);
       setToast({ kind: "success", message: "마크다운이 복사되었습니다" });
@@ -184,7 +195,7 @@ export default function OpenInTools() {
 
   if (!urls) return null;
 
-  const q = PROMPT_TEMPLATE(urls.rawUrl);
+  const q = PROMPT_TEMPLATE(urls.rawAbsUrl);
   const chatgptUrl = `https://chatgpt.com/?${new URLSearchParams({ hints: "search", q })}`;
   const claudeUrl = `https://claude.ai/new?${new URLSearchParams({ q })}`;
 
@@ -208,7 +219,7 @@ export default function OpenInTools() {
           </button>
           <a
             className={styles.option}
-            href={urls.rawUrl}
+            href={urls.rawPath}
             target="_blank"
             rel="noreferrer noopener"
             role="menuitem"
