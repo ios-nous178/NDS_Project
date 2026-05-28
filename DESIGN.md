@@ -405,7 +405,7 @@ components:
     padding: 24px
 ---
 
-# NudgeEAP Design System
+# Nudge Design System
 
 ## Overview
 

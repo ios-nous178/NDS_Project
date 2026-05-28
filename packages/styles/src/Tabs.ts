@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Tabs.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Tabs.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   sizing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const TABS_CLASS = "nds-tabs";
 const TABS_ROOT_CLASS = `${TABS_CLASS}__root`;

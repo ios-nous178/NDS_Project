@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { FloatingCtaBanner } from "@nudge-eap/react";
+import { FloatingCtaBanner } from "@nudge-design/react";
 import React from "react";
 
 /* ─── 좌측 일러스트 (간단한 인라인 SVG — 음식 컬러 일러스트 자리 ) ─── */

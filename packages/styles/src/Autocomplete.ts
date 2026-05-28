@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Autocomplete.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Autocomplete.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -8,7 +8,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const AC_CLASS = "nds-autocomplete";
 const AC_ROOT_CLASS = `${AC_CLASS}__root`;

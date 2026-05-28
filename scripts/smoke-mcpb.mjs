@@ -16,13 +16,13 @@ const positional = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
 const sourceMode = process.argv.includes("--source");
 const defaultBundleDir = sourceMode
   ? path.join(ROOT, "packages/mcp")
-  : path.join(ROOT, "dist-mcpb/nudge-eap-ds");
+  : path.join(ROOT, "dist-mcpb/nudge-ds");
 const bundleDir = path.resolve(positional[0] ?? defaultBundleDir);
 let runtimeDir = bundleDir;
 let tempRoot = null;
 
 if (!sourceMode) {
-  tempRoot = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-mcpb-smoke-")));
+  tempRoot = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "nudge-mcpb-smoke-")));
   runtimeDir = path.join(tempRoot, "bundle");
   fs.cpSync(bundleDir, runtimeDir, {
     recursive: true,
@@ -48,7 +48,7 @@ const child = spawn(process.execPath, [serverPath], {
   cwd: runtimeDir,
   env: {
     ...process.env,
-    NUDGE_EAP_DS_INSTALL_MODE: "mcpb",
+    NUDGE_DS_INSTALL_MODE: "mcpb",
   },
   stdio: ["pipe", "pipe", "pipe"],
 });
@@ -89,7 +89,7 @@ try {
   await request("initialize", {
     protocolVersion: "2024-11-05",
     capabilities: {},
-    clientInfo: { name: "nudge-eap-mcpb-smoke", version: "0.0.0" },
+    clientInfo: { name: "nudge-mcpb-smoke", version: "0.0.0" },
   });
   notify("notifications/initialized", {});
 
@@ -120,8 +120,8 @@ try {
   const imports = await callTool("get_setup", { step: "imports", brand: "trost" });
   const hasDsStyleImport =
     typeof imports?.code === "string" &&
-    (imports.code.includes("@nudge-eap/react/styles.css") ||
-      imports.code.includes("@nudge-eap/html/styles.css"));
+    (imports.code.includes("@nudge-design/react/styles.css") ||
+      imports.code.includes("@nudge-design/html/styles.css"));
   if (!hasDsStyleImport) {
     throw new Error(
       `get_setup({step:'imports'}) returned unexpected result: ${JSON.stringify(imports)}`,

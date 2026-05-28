@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { grid } from "@nudge-eap/tokens";
+import { grid } from "@nudge-design/tokens";
 
 function GridColumn({ index, width }: { index: number; width: number }) {
   return (

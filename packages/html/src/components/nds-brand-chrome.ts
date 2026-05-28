@@ -16,7 +16,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { cv, fontWeight, radius, spacing, transition, typeScale, zIndex } from "@nudge-eap/tokens";
+import { cv, fontWeight, radius, spacing, transition, typeScale, zIndex } from "@nudge-design/tokens";
 import "./nds-header.js";
 import "./nds-footer.js";
 import {

@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/InputGroup.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/InputGroup.tsx during the @nudge-design/styles split. */
 
 const IG_ROOT_CLASS = "nds-input-group";
 

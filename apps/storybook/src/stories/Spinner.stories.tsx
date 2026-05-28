@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Spinner, Button } from "@nudge-eap/react";
+import { Spinner, Button } from "@nudge-design/react";
 
 const meta: Meta<typeof Spinner> = {
   title: "Components/Spinner",

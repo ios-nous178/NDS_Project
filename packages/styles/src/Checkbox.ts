@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Checkbox.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Checkbox.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const CB_CLASS = "nds-checkbox";
 const CB_ROOT_CLASS = `${CB_CLASS}__root`;

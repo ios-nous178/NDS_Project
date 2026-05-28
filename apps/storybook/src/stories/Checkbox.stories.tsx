@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Checkbox, CheckboxGroup, Radio, RadioGroup, RadioGroupItem } from "@nudge-eap/react";
+import { Checkbox, CheckboxGroup, Radio, RadioGroup, RadioGroupItem } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 

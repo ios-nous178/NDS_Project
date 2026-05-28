@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CrisisCallout } from "@nudge-eap/react";
+import { CrisisCallout } from "@nudge-design/react";
 
 const meta: Meta<typeof CrisisCallout> = {
   title: "Components/CrisisCallout",

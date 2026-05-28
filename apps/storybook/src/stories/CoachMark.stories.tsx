@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CoachMark } from "@nudge-eap/react";
-import { EditIcon, SettingIcon } from "@nudge-eap/icons";
+import { CoachMark } from "@nudge-design/react";
+import { EditIcon, SettingIcon } from "@nudge-design/icons";
 
 const meta: Meta<typeof CoachMark> = {
   title: "Components/CoachMark",

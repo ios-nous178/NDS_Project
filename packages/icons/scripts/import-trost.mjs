@@ -1,8 +1,8 @@
 /**
- * Trost 원본 SVG → @nudge-eap/icons svg/ 로 정제 import.
+ * Trost 원본 SVG → @nudge-design/icons svg/ 로 정제 import.
  *
  * Trost 홈페이지(TrostAstroHomepage)의 public/images 하위 SVG는 viewBox 가 18/20/24/28/32/60 으로
- * 제각각이고 fill 에 브랜드 hex 가 박혀 있어 NudgeEAP DS 표준(viewBox 24×24, currentColor) 에 맞지 않는다.
+ * 제각각이고 fill 에 브랜드 hex 가 박혀 있어 Nudge DS 표준(viewBox 24×24, currentColor) 에 맞지 않는다.
  * 이 스크립트는 UI 아이콘 17개를 정제해서 packages/icons/svg/trost-*.svg 로 떨군다.
  *
  * 사용법: node packages/icons/scripts/import-trost.mjs

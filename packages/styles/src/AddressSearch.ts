@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/AddressSearch.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/AddressSearch.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -8,7 +8,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const AS_CLASS = "nds-address-search";
 const AS_LABEL_CLASS = `${AS_CLASS}__label`;

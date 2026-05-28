@@ -11,7 +11,7 @@
 /* ──────────────────────────────────────────────────────────────────────
  * Intent 감지 / 분기
  *
- * 이 MCP는 본질적으로 "사용자 앱(@nudge-eap/react)" 컴포넌트 라이브러리를
+ * 이 MCP는 본질적으로 "사용자 앱(@nudge-design/react)" 컴포넌트 라이브러리를
  * 노출하지만, 사용자가 어드민/CMS 화면을 만들 때는 antd를 써야 한다.
  *
  * 사용자의 자연어 요청에 다음 키워드가 보이면 admin-cms 의도로 간주:
@@ -48,7 +48,7 @@ const ADMIN_KEYWORDS = [
 /**
  * vanilla HTML / Web Component 워크플로우를 의미하는 키워드.
  * 사용자가 'HTML 로 작업', '바닐라', '<nds-button>', 'Web Component', 'react 없이' 등을
- * 언급하면 .tsx + Vite + React 워크플로우 대신 @nudge-eap/html 셋업으로 분기시킨다.
+ * 언급하면 .tsx + Vite + React 워크플로우 대신 @nudge-design/html 셋업으로 분기시킨다.
  */
 const HTML_KEYWORDS = [
   "vanilla html",
@@ -77,7 +77,7 @@ const HTML_KEYWORDS = [
   "custom element",
   "custom-element",
   "<nds-",
-  "@nudge-eap/html",
+  "@nudge-design/html",
   "html-only",
   "html only",
   "no-react",
@@ -93,7 +93,7 @@ const HTML_KEYWORDS = [
  *
  * 정책 변경 (2026-05-25): admin-cms 가 아니면 무조건 **html** 로 라우팅.
  * 더 이상 user-app(.tsx + React) 을 default 로 안내하지 않는다 — 신규 mockup
- * 워크스페이스는 모두 vanilla HTML (@nudge-eap/html + Vite vanilla-ts) 로 셋업.
+ * 워크스페이스는 모두 vanilla HTML (@nudge-design/html + Vite vanilla-ts) 로 셋업.
  * 기존 React mockup 워크스페이스는 detectWorkspaceIntent (build-html.ts) 가
  * package.json / src 구조로 회귀 없이 react 로 인식하므로 백워드 호환.
  *
@@ -140,7 +140,7 @@ export const SCOPE_ADVISORY = {
     "admin-cms": {
       keywords: ADMIN_KEYWORDS,
       action:
-        "어드민/CMS/운영툴/백오피스 화면이라면 이 DS(@nudge-eap/react)를 쓰지 말 것. " +
+        "어드민/CMS/운영툴/백오피스 화면이라면 이 DS(@nudge-design/react)를 쓰지 말 것. " +
         "antd v5를 사용하고, 시각/구조 컨벤션은 get_guide({ topic: 'admin-cms' })를 호출해 확인할 것. " +
         "두 라이브러리를 한 화면에서 섞어쓰지 말 것.",
       tools: [
@@ -150,16 +150,16 @@ export const SCOPE_ADVISORY = {
     },
     "user-app": {
       action:
-        "[deprecated] React/.tsx + @nudge-eap/react 워크플로우. 신규 mockup 워크스페이스는 " +
-        "'html' 분기로 진입하세요 (Vite vanilla-ts + @nudge-eap/html). 기존 React mockup 을 " +
+        "[deprecated] React/.tsx + @nudge-design/react 워크플로우. 신규 mockup 워크스페이스는 " +
+        "'html' 분기로 진입하세요 (Vite vanilla-ts + @nudge-design/html). 기존 React mockup 을 " +
         "유지보수하는 경우에만 이 분기로 들어옵니다 — build-html / usage 도구가 " +
-        "package.json 의 @nudge-eap/react 또는 src/main.tsx 를 감지하면 자동으로 React 룰을 적용합니다.",
+        "package.json 의 @nudge-design/react 또는 src/main.tsx 를 감지하면 자동으로 React 룰을 적용합니다.",
     },
     html: {
       keywords: HTML_KEYWORDS,
       action:
         "vanilla HTML / Web Component 워크플로우(react 없이 <nds-*> 직접 작성) 라면 " +
-        "@nudge-eap/html 패키지를 사용한다. .tsx 가 아니라 root index.html 을 직접 작성하고 " +
+        "@nudge-design/html 패키지를 사용한다. .tsx 가 아니라 root index.html 을 직접 작성하고 " +
         "validate_html_mockup / analyze_html_mockup 으로 검증, " +
         "최종 산출물은 build_singlefile_html 로 dist/index.html (단일 파일) 만든다 — 디자이너/PM 에게 dnd 공유 가능. " +
         "get_setup({ step: 'full', intent: 'html' }) 로 Vite vanilla-ts 셋업, " +
@@ -236,7 +236,7 @@ export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
     "어드민/CMS/운영툴/백오피스 화면. 사용자 앱이 아닌 운영자가 보는 화면. " +
     "출처: NudgeEAPCMS (Next.js + antd 5.5.1 + styled-components) 실제 운영 코드.",
   rationale:
-    "NudgeEAP DS는 B2C 멘탈케어 앱 화면을 위한 컴포넌트 셋이다. 어드민은 정보 밀도 / 표 / 폼 / " +
+    "Nudge DS는 B2C 멘탈케어 앱 화면을 위한 컴포넌트 셋이다. 어드민은 정보 밀도 / 표 / 폼 / " +
     "필터 위주라 antd가 더 적합하고, 운영팀이 익숙한 시각 언어와도 일치한다.",
   techStack: {
     required: [
@@ -246,8 +246,8 @@ export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
       "dayjs (locale: ko)",
     ],
     forbidden: [
-      "@nudge-eap/react — 사용자 앱 DS, 어드민에서 절대 import 금지",
-      "@nudge-eap/tokens — 어드민에서는 antd 기본 토큰 사용",
+      "@nudge-design/react — 사용자 앱 DS, 어드민에서 절대 import 금지",
+      "@nudge-design/tokens — 어드민에서는 antd 기본 토큰 사용",
       "큰 그라디언트, 마케팅 히어로, 장식 배경",
     ],
     optional: ["styled-components (CMS 본 레포 컨벤션)", "react-router-dom (Vite 단독일 때)"],
@@ -356,14 +356,14 @@ export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
     note: "어드민에서는 NudgeEAP 토큰을 import하지 말 것. 위 색상을 인라인 또는 styled-components로 직접 지정.",
   },
   forbidden: [
-    "@nudge-eap/react / @nudge-eap/tokens / @nudge-eap/icons import (어드민 화면에서)",
+    "@nudge-design/react / @nudge-design/tokens / @nudge-design/icons import (어드민 화면에서)",
     "큰 히어로 카드, 마케팅 톤, 그라디언트 배경",
     "antd Table 위에 별도 Card wrapper로 그림자+패딩 추가 (CMS는 본문에 직접 노출)",
     "Tabs를 페이지 단위로 남발 (CMS는 페이지 단위 Tabs 거의 사용 안 함)",
   ],
   selfCheck: [
     "antd에서 import 했는가 (직접 button/input/select 만들지 않았는가)",
-    "@nudge-eap/* 패키지를 어드민 화면에서 import 하지 않았는가",
+    "@nudge-design/* 패키지를 어드민 화면에서 import 하지 않았는가",
     "사이드바에 라이트 240px + 6px 톱 액센트 + INFO + CMS MENU + SETTING 블록이 있는가",
     "본문 padding 40 60 200, body #f4f4f4, footer 'Copyright © Nudge EAP...' 있는가",
     "HeaderSubject(Breadcrumb separator='>', h1 22/700, desc 12)로 페이지 헤더를 구성했는가",
@@ -497,6 +497,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Outlined/Assistive 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=assistive variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
       '**아이콘 색 하드코딩 금지** — `<LockIcon color="var(--semantic-icon-inverse-default)" />` 처럼 inverse/brand 토큰을 박지 말 것. NudgeEAP/Trost(primary=흰 텍스트) 에서는 맞아 보이지만, 캐포비(primary=검정 텍스트 on 노랑) 에서는 흰 아이콘이 노란 배경 위에 떠 보임. 항상 `color="currentColor"` 로 두어 Button 텍스트 색을 상속하게 한다.',
       "**shape='pill' 은 radius 만 바꿈** — color/variant/size 매트릭스와 직교. 캐포비 admin 에서 모달·BottomCTA 가 pill, 일반 폼/카드 액션이 default. shape 만 다른 두 버튼을 한 화면에 섞으면 위계 혼란 — 컨텍스트별로 통일.",
+      "**라벨 1줄 강제 — 두 줄 줄바꿈 금지** (전 브랜드 공통 룰). 라벨이 컨테이너 폭 부족으로 wrap 되면 버튼 높이가 깨지고 좌우 정렬·아이콘 베이스라인이 어긋남. 대응: (1) 라벨을 짧은 동사구로 (2) IconButton 또는 dropdown 으로 분리 (3) 컨테이너 width/grid 재설계. 절대 `white-space: normal` 로 강제 wrap 시키지 말 것 — DS 의 `white-space: nowrap` 이 의도된 가드. 텍스트가 길 수밖에 없으면 size 를 줄이지 말고 단어를 줄여라.",
     ],
     recommended: [
       "1차 CTA: color='primary', variant='solid'",
@@ -1094,6 +1095,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "label/helper 의 typography 는 caption-2(12/16) — body3(14/20) 로 키우지 말 것. Figma 명세보다 크면 폼이 산만해짐.",
       "complete=true 와 errorMessage 를 동시에 주지 말 것 — error 가 우선이지만 success 의도가 묻힘.",
       "errorMessage/successMessage/helperText 중 하나라도 있으면 helpers 배열은 무시됨. 단일/멀티 의도를 분리해서 사용.",
+      "**helperText 와 errorMessage 동시 노출 금지** (★ 핵심 룰). DS 는 우선순위 error > success > helper 로 1 줄만 표시하도록 이미 강제하지만, 가이드/스토리/목업에서도 두 줄 동시 표시한 형태로 그리지 말 것. 헬퍼는 '비어 있을 때의 안내', 에러는 '검증 실패 후의 즉시 피드백' — 의미가 충돌하고 인지 부하가 커진다. 검증 실패 순간 helper 는 같은 자리에서 error 메시지로 교체되어야 함 (자리 점프 X, 두 줄 누적 X).",
     ],
     recommended: [
       "기본: <Input label='이메일' placeholder='example@nudge.kr' helperText='...' />",
@@ -1653,7 +1655,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: [
       "감정 기록 7일: days=[{date,label:'일',done}, ...] 7개",
-      "복약 트래킹: icon prop 에는 @nudge-eap/icons 컴포넌트(예: PillIcon — find_icon('pill') 로 확인) 를 넘기고 숫자만 강조 (days 생략). icon prop 에 이모지 문자열 절대 금지.",
+      "복약 트래킹: icon prop 에는 @nudge-design/icons 컴포넌트(예: PillIcon — find_icon('pill') 로 확인) 를 넘기고 숫자만 강조 (days 생략). icon prop 에 이모지 문자열 절대 금지.",
       "끊긴 후 재시작: footer로 '작은 시작' 같은 격려 문구",
     ],
   },
@@ -3306,6 +3308,25 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- accordion-trigger 안에 또 다른 클릭 가능한 element — nested interactive -->\n<nds-accordion-item value="x">\n  <nds-accordion-trigger><nds-button>열기</nds-button></nds-accordion-trigger>\n  <nds-accordion-content>본문</nds-accordion-content>\n</nds-accordion-item>',
     },
   },
+  Asset: {
+    name: "Asset",
+    summary:
+      "Toss TDS 식 통합 미디어 컴포넌트. image / icon / initial / lottie / custom 을 동일한 Frame 위에 표현해 모양·크기·overlap·status accessory 의 일관성을 강제한다. Avatar 가 '사람 식별' 한정 컴포넌트라면 Asset 은 그보다 일반적인 박스 — 카드 썸네일, 카테고리 시그니처, 상품 이미지, 채팅 첨부 등.",
+    pitfalls: [
+      "content prop 은 discriminated union — `{ type: 'image', src }` / `{ type: 'icon', icon }` / `{ type: 'initial', name }` / `{ type: 'lottie', src }` / `{ type: 'custom', render }` 중 하나. 객체로 묶어서 넘기지 말고 type 키로 분기한 형태로 정확히 전달.",
+      "size 는 xs/sm/md/lg/xl/2xl 프리셋 또는 임의 px 숫자. 임의 px 은 비표준 사이즈가 박힐 수 있으므로 가능하면 프리셋 사용.",
+      "shape='circle' + content.type='image' 가 가장 흔한 사용 — 이 경우 Avatar 와 거의 같음. Avatar 는 그대로 둔다 (사람 한정 시멘틱). Asset 은 일반 미디어 박스.",
+      "overlap prop 은 우측 음수 마진. AvatarGroup 처럼 옆 Asset 위로 겹쳐 놓을 때만 사용. 단독 사용 시 0.",
+      "acc(accessory) 는 우측 하단 status dot / count badge / online indicator 슬롯. 풀-사이즈 컴포넌트(긴 텍스트 라벨 등) 를 넣지 말 것 — 작은 시각 신호만.",
+      "image type 에서 src 로드 실패 시 alt 의 이니셜로 자동 graceful degrade. alt 가 빈 문자열이면 빈 박스가 됨.",
+      "scaleType 은 image/lottie 에만 의미 있음 — icon/initial 에는 영향 없음.",
+      "multicolor 아이콘을 icon content 로 넣을 때 `color` prop 으로 base 색을 바꿀 수는 있지만 내부 accent 는 잠겨있음 (iconography 가이드 참고).",
+    ],
+    examplesHtml: {
+      do: '<!-- 일반 미디어 박스 (카드 썸네일) -->\n<nds-asset shape="rounded" size="lg" content=\'{"type":"image","src":"/thumb.jpg","alt":"제품"}\' scale-type="cover"></nds-asset>\n\n<!-- 카테고리 시그니처 (multicolor 아이콘) -->\n<nds-asset shape="rounded" size="xl" content=\'{"type":"icon","icon":"TrostMentalDepressionIcon"}\'></nds-asset>\n\n<!-- 온라인 상태가 붙은 사람 -->\n<nds-asset shape="circle" size="md" content=\'{"type":"image","src":"/me.jpg","alt":"이정민"}\' acc-status="online"></nds-asset>',
+      dont: '<!-- content 를 객체로 안 묶고 src 만 던지기 -->\n<nds-asset src="/x.jpg" size="md"></nds-asset>\n\n<!-- 사람 식별인데 Avatar 대신 Asset 사용 — 시멘틱 약화 -->\n<nds-asset shape="circle" size="md" content=\'{"type":"image","src":"/user.jpg","alt":"사용자"}\'></nds-asset> <!-- Avatar 가 맞음 -->\n\n<!-- acc 에 풀-사이즈 텍스트 라벨 -->\n<nds-asset content=\'{"type":"image","src":"/x.jpg"}\' acc="신규 상품 입고 안내"></nds-asset>',
+    },
+  },
   Avatar: {
     name: "Avatar",
     summary:
@@ -3955,7 +3976,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "장식용 chart/graph 를 추가하지 마세요 — 데이터가 실제 인사이트를 주지 않으면 Sparkline 한 줄로 충분. Generic SaaS dashboard 톤 피하세요",
     "장식 중심 hero section(큰 일러스트 + 큰 카피 + gradient 배경)을 만들지 마세요 — EAP 도메인은 사용자 상태/액션을 직접 보여주는 것이 우선",
     // ── Everything Has an Icon ──
-    "한 화면에 여러 icon 스타일(선/면/colorful)을 혼용하지 마세요 — `@nudge-eap/icons` 단일 셋만",
+    "한 화면에 여러 icon 스타일(선/면/colorful)을 혼용하지 마세요 — `@nudge-design/icons` 단일 셋만",
     "colorful/멀티컬러 아이콘을 본문 UI 에 과다 사용하지 마세요 — DS icon 은 currentColor monochrome 이 원칙. brand color icon 은 진입점 1-2 개에만",
     // ── Spacing Randomness 보강 ──
     "같은 depth(부모 컨테이너 안의 형제 요소들) 에 서로 다른 spacing 을 적용하지 마세요 — 형제는 같은 --gap-* 으로 통일",
@@ -4019,7 +4040,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     },
     {
       name: "mixed-icon-style",
-      rule: "한 화면에 여러 icon 스타일(선/면/colorful) 혼용 금지 — `@nudge-eap/icons` 단일 셋만. 외부 콜렉션·이모지·multi-color SVG 섞지 마세요.",
+      rule: "한 화면에 여러 icon 스타일(선/면/colorful) 혼용 금지 — `@nudge-design/icons` 단일 셋만. 외부 콜렉션·이모지·multi-color SVG 섞지 마세요.",
     },
   ],
 };
@@ -4489,7 +4510,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "네이밍 컨벤션: 기본 Line = `XIcon`, Filled 짝 = `XActiveIcon` 또는 `XOnIcon` (예: HomeIcon ↔ HomeActiveIcon, SleepmodeOffIcon ↔ SleepmodeOnIcon). 짝 정보는 ICON_METADATA[name].pair 로 확인.",
       "카테고리 8종(basic / navigation / action / media / state-reaction / location / eap-service / color)은 의미 분류일 뿐 강제 import 경로 분리가 아니다. find_icon 결과의 카테고리는 유사 의미 후보를 찾는 힌트로 사용.",
       "컬러(다색) 카테고리 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger, Siren) 전용이다. 일반 UI 강조에 색 아이콘을 끼워 넣지 않는다.",
-      "필요한 아이콘이 브랜드/NudgeEAP/Mockup 패키지 어디에도 없을 때만 인라인 `<svg>` 또는 신규 SVG 추가를 검토한다. 신규 추가 시 `packages/icons/svg/`에 kebab-case 로 저장한 뒤 `pnpm --filter @nudge-eap/icons build` 로 컴포넌트를 재생성한다. viewBox 는 0 0 24 24, stroke/fill 은 `currentColor` 로 유지.",
+      "**Mono vs Multicolor 트랙 분리** (SEED 스타일) — `@nudge-design/icons` 는 두 트랙으로 나뉜다. Mono(1925개, `currentColor` 만 사용해서 `color` prop 으로 자유 변경) 와 Multicolor(17개, 브랜드 시그니처 — Trost mental 일러스트·Geniet 브랜드 아이콘·Cashpobi GNB chat/member 등 — 내부 accent 색 잠금). UI chrome(navigation/action/state)은 mono, 서비스 시그니처/주요 진입점은 multicolor.",
+      "**Import 경로 선택**: 기본은 root flat `import { CalendarIcon } from '@nudge-design/icons'` (백워드 호환). 자동완성 범위를 좁히고 카테고리를 분명히 하려면 subpath `import { CalendarIcon } from '@nudge-design/icons/mono'` 또는 `import { GenietPlayIcon } from '@nudge-design/icons/multicolor'` 사용. namespace 형 `import { MonoIcons, MultiIcons } from '@nudge-design/icons'` 도 가능.",
+      "**Multicolor 컬러 override 금지** — multicolor 아이콘의 `color` prop 은 base(`currentColor` 사용 영역)만 바꾼다. 내부 accent(`#FFF` 등)는 SVG 에 고정되어 있으니 SVG 를 직접 편집하지 말 것.",
+      "필요한 아이콘이 브랜드/NudgeEAP/Mockup 패키지 어디에도 없을 때만 인라인 `<svg>` 또는 신규 SVG 추가를 검토한다. 신규 추가 시 mono 아이콘은 `packages/icons/svg/mono/`, multicolor 아이콘은 `packages/icons/svg/multicolor/` 에 kebab-case 로 저장한 뒤 `pnpm --filter @nudge-design/icons build` 로 컴포넌트를 재생성한다. viewBox 는 0 0 24 24, mono 의 stroke/fill 은 `currentColor` 로 유지.",
     ],
     avoid: [
       "브랜드 전용 아이콘이 있는데 NudgeEAP/Mockup 아이콘으로 대체",
@@ -4500,8 +4524,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "15px 이하에서 가는 Line 스타일을 그대로 사용 — Filled 로 교체",
       "동일 화면 / 동일 그룹에서 Line + Filled 스타일 혼용",
       "단독 IconButton 의 터치 영역을 40px 미만으로 두기",
-      "아이콘 컴포넌트를 인라인 `<svg>` 로 직접 작성하기 — `@nudge-eap/icons` 사용",
+      "아이콘 컴포넌트를 인라인 `<svg>` 로 직접 작성하기 — `@nudge-design/icons` 사용",
       "컬러(다색) 아이콘에 color prop 강제 적용 — 다색 표현이 어긋남",
+      "multicolor 아이콘 SVG 내부 accent 색을 임의로 편집하기 — 스타일이 잠겨있음. 브랜드 변경이 필요하면 디자인팀과 협의해 새 SVG 등록.",
+      "mono 아이콘을 `packages/icons/svg/multicolor/` 에, multicolor 아이콘을 `packages/icons/svg/mono/` 에 잘못 배치하기 — generate.js 가 카테고리별 export 를 만들기 때문에 위치가 곧 카테고리.",
     ],
     metrics: {
       sizeScale: "12 / 16 / 20 / 24 / 32 / 48 px",
@@ -4515,6 +4541,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         "brand-specific icon → NudgeEAP default icon → mockup default icon package(MockupLinear*/MockupBold*) → generated custom SVG",
       figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=379-490",
       categories: "basic, navigation, action, media, state-reaction, location, eap-service, color",
+      tracks: "mono (1925, currentColor) | multicolor (17, style-locked brand signature)",
+      importPaths:
+        "@nudge-design/icons (flat, backward-compat) | @nudge-design/icons/mono | @nudge-design/icons/multicolor | @nudge-design/icons (MonoIcons / MultiIcons namespace)",
     },
   },
   "visual-antipatterns": (() => {
@@ -4551,7 +4580,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       {
         heading: "아이콘",
         items: [
-          "**아이콘 스타일 혼용 금지** — 같은 화면/그룹 안에 Line · Filled · Colorful 아이콘을 섞지 않는다. `@nudge-eap/icons` 단일 셋만, 같은 그룹은 한 스타일로 통일.",
+          "**아이콘 스타일 혼용 금지** — 같은 화면/그룹 안에 Line · Filled · Colorful 아이콘을 섞지 않는다. `@nudge-design/icons` 단일 셋만, 같은 그룹은 한 스타일로 통일.",
           "**장식용 헤딩 아이콘 금지** — 서브타이틀(h3/h4) · Form Label · 본문 텍스트 앞 장식 아이콘 금지. 일부 헤딩에만 아이콘이 붙으면 위계가 깨진다. 한 화면 헤딩 앞 아이콘 5개 이상은 자동 위반.",
           "**Color icon 본문 남용 금지** — multi-color/colorful 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger 등) 와 진입점 1-2개에만. 일반 UI 강조에는 monochrome currentColor 만 사용.",
         ],
@@ -4872,7 +4901,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     name: "cashpobi-icon-library",
     summary:
       "캐포비(캐시워크 for Business) admin 전용 아이콘 라이브러리. 46 icons · 6 categories (Navigation / Action / Status / Social / GNB / Selection). " +
-      "현재는 카탈로그 메타데이터만 등록되어 있고 SVG 자산은 미동기화 — 디자인팀에서 SVG export 받기 전까지 공용 @nudge-eap/icons 의 매칭 아이콘으로 fallback.",
+      "현재는 카탈로그 메타데이터만 등록되어 있고 SVG 자산은 미동기화 — 디자인팀에서 SVG export 받기 전까지 공용 @nudge-design/icons 의 매칭 아이콘으로 fallback.",
     rules: [
       "Navigation (7): chevron-up/down/left/right, arrow-up/down/right.",
       "Action (9): close, plus, search, delete, edit, delete-circle, refresh, filter, search-delete.",

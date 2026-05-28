@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
-import { cv, sizing, spacing } from "@nudge-eap/tokens";
+import { cv, sizing, spacing } from "@nudge-design/tokens";
 
 /* ─── Class names ─── */
 

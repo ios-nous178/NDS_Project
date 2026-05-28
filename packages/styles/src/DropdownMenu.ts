@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/DropdownMenu.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/DropdownMenu.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -9,7 +9,7 @@ import {
   transition,
   typeScale,
   zIndex,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const DM_CLASS = "nds-dropdown-menu";
 const DM_PANEL_CLASS = `${DM_CLASS}__panel`;

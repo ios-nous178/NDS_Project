@@ -17,7 +17,7 @@
  *  - raw-landmark         : sidebar/footer/header 를 raw landmark 로 구현했지만 nds-* 대체재가 있음
  *  - text-icon-substitute : x/× 같은 텍스트를 아이콘 대체로 사용
  *  - unknown-token        : var(--xxx) 의 --xxx 가 카탈로그에 없음
- *  - unknown-nds-tag      : <nds-foo> 가 카탈로그(@nudge-eap/html) 에 없는 태그
+ *  - unknown-nds-tag      : <nds-foo> 가 카탈로그(@nudge-design/html) 에 없는 태그
  *  - unknown-nds-class    : class="nds-foo" 가 React DS stylesheet 에 없는 클래스
  *  - invalid-nds-attr-value : nds-* attribute enum 위반
  *
@@ -376,7 +376,7 @@ export function validateHtmlSource(
         line,
         selector,
         detail: "<svg> 직접 사용",
-        suggestion: "먼저 find_icon 으로 @nudge-eap/icons 에 적합 아이콘 있는지 확인.",
+        suggestion: "먼저 find_icon 으로 @nudge-design/icons 에 적합 아이콘 있는지 확인.",
       });
     }
 
@@ -386,7 +386,7 @@ export function validateHtmlSource(
         rule: "unknown-nds-tag",
         line,
         selector,
-        detail: `<${tag}> 는 @nudge-eap/html 에 없는 custom element`,
+        detail: `<${tag}> 는 @nudge-design/html 에 없는 custom element`,
         suggestion:
           "find_component({ query }) 또는 get_guide({ target: 'html', topic: 'component:<name>' }) 로 실제 nds-* 태그명을 확인.",
       });
@@ -499,7 +499,7 @@ export function validateHtmlSource(
             selector,
             detail: text.trim().slice(0, 60),
             suggestion:
-              "이모지 금지. 아이콘이 필요하면 find_icon({ query }) → @nudge-eap/icons 인라인 SVG. 차선책으로 MockupLinear*/MockupBold* 패키지.",
+              "이모지 금지. 아이콘이 필요하면 find_icon({ query }) → @nudge-design/icons 인라인 SVG. 차선책으로 MockupLinear*/MockupBold* 패키지.",
           });
         }
         if (STRICT_SYMBOL_RE.test(text)) {

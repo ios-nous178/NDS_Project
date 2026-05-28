@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Drawer.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, shadow, spacing, typeScale, zIndex } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Drawer.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, shadow, spacing, typeScale, zIndex } from "@nudge-design/tokens";
 
 const DR_CLASS = "nds-drawer";
 const DR_ROOT_CLASS = `${DR_CLASS}__root`;

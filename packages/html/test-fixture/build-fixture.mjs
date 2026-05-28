@@ -2,7 +2,7 @@
 /**
  * Self-contained fixture 빌더.
  *
- * @nudge-eap/tokens 의 tokens.css 와 @nudge-eap/styles 의 styles.css 를
+ * @nudge-design/tokens 의 tokens.css 와 @nudge-design/styles 의 styles.css 를
  * fixture HTML 안에 <style> 로 인라인해서, 어느 디렉터리에서 정적 서버를
  * 돌리든 (또는 file:// 로 열어도) 토큰/스타일이 항상 로드되게 만든다.
  *
@@ -22,11 +22,11 @@ const tokensCss = fs.readFileSync(path.join(root, "packages/tokens/dist/tokens.c
 const stylesCss = fs.readFileSync(path.join(root, "packages/styles/dist/styles.css"), "utf-8");
 // runtime.js 가 base/nds-element.js, components/nds-button.styles.js,
 // components/nds-button.js 를 import 한다. tsc 결과는 native ESM 이라
-// 그대로 import 못 박힘 (확장자 없는 @nudge-eap/tokens import 가 들어가서).
+// 그대로 import 못 박힘 (확장자 없는 @nudge-design/tokens import 가 들어가서).
 // → fixture 에서는 importmap + 빌드된 모듈 그대로 사용하지 않고,
 //   필요한 컴포넌트 정의를 직접 인라인한다. 그게 가장 확실.
 
-// 실제로는 빌드된 nds-button.js 가 @nudge-eap/tokens 를 import 하므로
+// 실제로는 빌드된 nds-button.js 가 @nudge-design/tokens 를 import 하므로
 // browser 단독으로는 못 돈다. 그래서 bundling 한 단일 IIFE 가 필요.
 // 가장 가벼운 길: esbuild 한 번 호출.
 
@@ -40,7 +40,7 @@ const result = await build({
   platform: "browser",
   target: "es2020",
   resolveExtensions: [".js"],
-  // @nudge-eap/tokens 는 monorepo workspace 라 node_modules 에 symlink 로 있음.
+  // @nudge-design/tokens 는 monorepo workspace 라 node_modules 에 symlink 로 있음.
   // esbuild 가 그걸 따라가 dist/index.js → dist/colors.js 등 확장자 없는 import 도
   // 해결한다 (esbuild 는 .js 확장자 자동 부여 옵션이 있음).
   loader: { ".js": "js" },

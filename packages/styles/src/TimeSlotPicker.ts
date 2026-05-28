@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/TimeSlotPicker.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/TimeSlotPicker.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const TS_CLASS = "nds-time-slot-picker";
 const TS_ROOT_CLASS = `${TS_CLASS}__root`;

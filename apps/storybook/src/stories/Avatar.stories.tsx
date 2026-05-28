@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Avatar } from "@nudge-eap/react";
+import { Avatar } from "@nudge-design/react";
 
 const meta: Meta<typeof Avatar> = {
   title: "Components/Avatar",

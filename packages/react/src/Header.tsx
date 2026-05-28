@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontWeight, shadow, sizing, spacing, typeScale, zIndex } from "@nudge-eap/tokens";
+import { cv, fontWeight, shadow, sizing, spacing, typeScale, zIndex } from "@nudge-design/tokens";
 
 /* ─────────────────────────────────────────────────────────────
  * Header — base 헤더

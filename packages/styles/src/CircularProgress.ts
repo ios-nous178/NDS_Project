@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/CircularProgress.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, transition } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/CircularProgress.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, transition } from "@nudge-design/tokens";
 
 const CP_CLASS = "nds-circular-progress";
 const CP_SVG_CLASS = `${CP_CLASS}__svg`;

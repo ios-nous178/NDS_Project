@@ -1,5 +1,5 @@
 import React from "react";
-import { trostNeutral } from "@nudge-eap/tokens";
+import { trostNeutral } from "@nudge-design/tokens";
 
 export interface TrostUtilityHeaderProps {
   /** 좌측 로고 링크 href */

@@ -19,7 +19,7 @@ export interface ComponentDef {
   props: PropDef[];
   dtsRelPath: string;
   /**
-   * 같은 의미의 @nudge-eap/html Web Component tag 가 있으면 채워진다 (예: "nds-button").
+   * 같은 의미의 @nudge-design/html Web Component tag 가 있으면 채워진다 (예: "nds-button").
    * 외부 mockup 이 React 대신 vanilla/Astro 로 작성될 때 MCP `find_component` 가
    * "이 컴포넌트는 <nds-button> 으로도 쓸 수 있다" 를 함께 안내할 수 있게 한다.
    */
@@ -74,7 +74,7 @@ export interface Catalog {
   icons: string[];
   tokens: TokenDef[];
   brands: BrandDef[];
-  /** @nudge-eap/html custom element 태그 목록 (예: "nds-button", "nds-input"). */
+  /** @nudge-design/html custom element 태그 목록 (예: "nds-button", "nds-input"). */
   ndsHtmlTags?: string[];
   /** 각 nds-* 의 attribute enum (예: { tag: "nds-button", attrs: { color: ["primary", ...] } }). */
   ndsHtmlElements?: NdsHtmlElementDef[];

@@ -43,7 +43,7 @@ jobs:
       # 디자인시스템 문서 URL.
       # Repository Variables (Settings → Secrets and variables → Actions → Variables)
       # 에서 DOCS_URL 을 설정하면 그 값을 쓰고, 미설정 시 아래 기본값을 쓴다.
-      DOCS_URL: ${{ vars.DOCS_URL || 'http://nudge-eap-design-system.eba-afhh232q.ap-northeast-2.elasticbeanstalk.com/' }}
+      DOCS_URL: ${{ vars.DOCS_URL || 'http://nudge-design-system.eba-afhh232q.ap-northeast-2.elasticbeanstalk.com/' }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -99,8 +99,8 @@ jobs:
       - name: Prepare versioned asset
         if: steps.tag_check.outputs.exists == 'false'
         run: |
-          cp dist-mcpb/nudge-eap-ds.mcpb \
-             dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb
+          cp dist-mcpb/nudge-ds.mcpb \
+             dist-mcpb/nudge-ds-v${{ steps.meta.outputs.version }}.mcpb
           ls -lh dist-mcpb/
 
       # git log 기반 변경사항을 한 번 추출해 두고 GitHub Release body 와 Slack
@@ -164,28 +164,28 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
-          name: NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}
+          name: Nudge DS MCPB v${{ steps.meta.outputs.version }}
           # 두 파일을 같이 올린다:
-          # - nudge-eap-ds.mcpb                  → "releases/latest/download/" 고정 URL 용
-          # - nudge-eap-ds-v<version>.mcpb       → 받는 사람 Downloads 폴더에서 버전 식별용
+          # - nudge-ds.mcpb                  → "releases/latest/download/" 고정 URL 용
+          # - nudge-ds-v<version>.mcpb       → 받는 사람 Downloads 폴더에서 버전 식별용
           files: |
-            dist-mcpb/nudge-eap-ds.mcpb
-            dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb
+            dist-mcpb/nudge-ds.mcpb
+            dist-mcpb/nudge-ds-v${{ steps.meta.outputs.version }}.mcpb
           body: |
-            ## NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}
+            ## Nudge DS MCPB v${{ steps.meta.outputs.version }}
 
             ### 처음 설치하시는 분
-            1. 아래 `nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb` 를 다운로드
+            1. 아래 `nudge-ds-v${{ steps.meta.outputs.version }}.mcpb` 를 다운로드
             2. Claude Desktop → Settings → Extensions → **Install from file** 선택 (또는 .mcpb 더블클릭)
             3. `⌘Q` 로 Claude Desktop 완전 종료 후 다시 실행
 
             ### 업데이트하시는 분
-            1. Claude Desktop → Settings → Extensions → `nudge-eap-ds` 옆 **Update** 버튼
+            1. Claude Desktop → Settings → Extensions → `nudge-ds` 옆 **Update** 버튼
             2. Update 버튼이 안 보이면 위의 "처음 설치" 와 동일하게 .mcpb 재설치
             3. `⌘Q` 로 Claude Desktop 완전 종료 후 다시 실행
 
             ### 외부 mockup 프로젝트 사용자
-            DS 패키지 (`@nudge-eap/*`) 가 갱신되었으면 mockup 프로젝트 루트에서 클린 재설치하세요. MCP 의 `get_install_command` 도구가 정확한 .tgz 경로를 알려줍니다.
+            DS 패키지 (`@nudge-design/*`) 가 갱신되었으면 mockup 프로젝트 루트에서 클린 재설치하세요. MCP 의 `get_install_command` 도구가 정확한 .tgz 경로를 알려줍니다.
             ```bash
             rm -rf node_modules/@nudge-eap* && npm install <.tgz 경로들>
             ```
@@ -198,7 +198,7 @@ jobs:
 
             **최신 버전 직링크 (항상 최신을 가리킴)**
             ```
-            https://github.com/${{ github.repository }}/releases/latest/download/nudge-eap-ds.mcpb
+            https://github.com/${{ github.repository }}/releases/latest/download/nudge-ds.mcpb
             ```
           generate_release_notes: false
           fail_on_unmatched_files: true
@@ -227,7 +227,7 @@ jobs:
           set -euo pipefail
 
           TEXT=$(printf '%s\n\n%s' \
-            "📦 *NudgeEAP DS MCPB v${VERSION} Update* 📦" \
+            "📦 *Nudge DS MCPB v${VERSION} Update* 📦" \
             "_설치 방법 · 문서 링크 · 변경 사항은 스레드에서 확인 부탁드립니다_")
 
           PAYLOAD=$(jq -n \
@@ -258,9 +258,9 @@ jobs:
           payload: |
             channel_id: "${{ secrets.SLACK_CHANNEL_ID }}"
             thread_ts: "${{ steps.head.outputs.thread_ts }}"
-            file: "./dist-mcpb/nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
-            filename: "nudge-eap-ds-v${{ steps.meta.outputs.version }}.mcpb"
-            title: "NudgeEAP DS MCPB v${{ steps.meta.outputs.version }}"
+            file: "./dist-mcpb/nudge-ds-v${{ steps.meta.outputs.version }}.mcpb"
+            filename: "nudge-ds-v${{ steps.meta.outputs.version }}.mcpb"
+            title: "Nudge DS MCPB v${{ steps.meta.outputs.version }}"
 
       - name: Post install details to Slack thread
         if: steps.tag_check.outputs.exists == 'false' && steps.head.outputs.thread_ts != ''

@@ -83,7 +83,7 @@ module.exports = {
         "guide/page-migration-priority",
         "guide/migration-debug-tools",
         "guide/styling",
-        "NUDGE_EAP_DS_MCP_USAGE",
+        "NUDGE_DS_MCP_USAGE",
         "guide/mcp-tools-reference",
       ],
     },

@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/StreakCard.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/StreakCard.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-design/tokens";
 
 const SK_CLASS = "nds-streak-card";
 const SK_HEADER_CLASS = `${SK_CLASS}__header`;

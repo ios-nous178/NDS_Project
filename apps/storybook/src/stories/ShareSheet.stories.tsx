@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ShareSheet, Button } from "@nudge-eap/react";
-import { CommentIcon, DownloadIcon, LinkIcon, MoreIcon, TelephoneIcon } from "@nudge-eap/icons";
+import { ShareSheet, Button } from "@nudge-design/react";
+import { CommentIcon, DownloadIcon, LinkIcon, MoreIcon, TelephoneIcon } from "@nudge-design/icons";
 
 const meta: Meta<typeof ShareSheet> = {
   title: "Components/ShareSheet",

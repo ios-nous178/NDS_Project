@@ -1,6 +1,6 @@
 import React from "react";
 
-import { CashdealPointIcon, StarFilledIcon } from "@nudge-eap/icons";
+import { CashdealPointIcon, StarFilledIcon } from "@nudge-design/icons";
 
 /* ─── Constants ─── */
 

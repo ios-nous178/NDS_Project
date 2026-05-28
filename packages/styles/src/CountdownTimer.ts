@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/CountdownTimer.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/CountdownTimer.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, typeScale } from "@nudge-design/tokens";
 
 const CT_CLASS = "nds-countdown-timer";
 const CT_TIME_CLASS = `${CT_CLASS}__time`;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Carousel } from "@nudge-eap/react";
+import { Carousel } from "@nudge-design/react";
 
 const meta: Meta<typeof Carousel> = {
   title: "Components/Carousel",

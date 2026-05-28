@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Modal.tsx during the @nudge-eap/styles split. */
-import { cv, radius, shadow, spacing, typeScale, zIndex } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Modal.tsx during the @nudge-design/styles split. */
+import { cv, radius, shadow, spacing, typeScale, zIndex } from "@nudge-design/tokens";
 
 const MODAL_CLASS = "nds-modal";
 const ROOT_CLASS = `${MODAL_CLASS}__root`;

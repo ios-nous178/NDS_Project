@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/ActionChip.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, radius, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/ActionChip.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, radius, spacing, typeScale } from "@nudge-design/tokens";
 
 const AC_ROOT_CLASS = "nds-action-chip";
 const AC_ICON_CLASS = `${AC_ROOT_CLASS}__icon`;

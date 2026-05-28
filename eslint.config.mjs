@@ -77,7 +77,7 @@ export default tseslint.config(
         {
           paths: [
             {
-              name: "@nudge-eap/tokens",
+              name: "@nudge-design/tokens",
               importNames: rawPaletteImportNames,
               message:
                 "Raw palette imports are blocked in app/component code. Use cv or --semantic-* tokens instead.",

@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/NotificationItem.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/NotificationItem.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const NI_CLASS = "nds-notification-item";
 const NI_ICON_CLASS = `${NI_CLASS}__icon`;

@@ -10,7 +10,7 @@ title: Elevation
 요소가 화면 위에 얼마나 떠있는지를 표현하는 레이어 시스템입니다. Shadow는 시각 효과가 아닌 **정보 위계**를 명시하기 위해 사용하며, 최소한으로 적용합니다.
 
 ```tsx
-import { shadow, elevationLevel } from "@nudge-eap/tokens";
+import { shadow, elevationLevel } from "@nudge-design/tokens";
 ```
 
 ---
@@ -52,7 +52,7 @@ import { shadow, elevationLevel } from "@nudge-eap/tokens";
 ## 사용법
 
 ```tsx
-import { shadow, elevationLevel } from "@nudge-eap/tokens";
+import { shadow, elevationLevel } from "@nudge-design/tokens";
 
 // 키 기반 (Figma E1 ~ E3과 동일)
 <div style={{ boxShadow: shadow["2"] }} />

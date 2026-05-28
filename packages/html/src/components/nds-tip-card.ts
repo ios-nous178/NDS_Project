@@ -7,7 +7,7 @@ import {
   createInfoSvg,
   createTestresultWarningSvg,
   createThumbUpSvg,
-} from "@nudge-eap/icons/vanilla";
+} from "@nudge-design/icons/vanilla";
 
 import { NdsElement, define } from "../base/nds-element.js";
 

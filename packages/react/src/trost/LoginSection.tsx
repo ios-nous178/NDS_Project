@@ -1,5 +1,5 @@
 import React from "react";
-import { trostNeutral } from "@nudge-eap/tokens";
+import { trostNeutral } from "@nudge-design/tokens";
 import type { TrostUser } from "./types";
 
 export interface TrostLoginSectionProps {

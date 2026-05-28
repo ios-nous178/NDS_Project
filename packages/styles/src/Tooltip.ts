@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Tooltip.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, typeScale, zIndex } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Tooltip.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, typeScale, zIndex } from "@nudge-design/tokens";
 
 const TT_CLASS = "nds-tooltip";
 const TT_TRIGGER_CLASS = `${TT_CLASS}__trigger`;

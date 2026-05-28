@@ -17,7 +17,7 @@
  *   1. 사전: 31개 단일-image SVG 를 /tmp/figma-cashpobi/{name}.svg 로 curl 받기
  *      (URL 매핑은 .release-notes 가 아닌 이 스크립트 헤더 참조)
  *   2. node packages/icons/scripts/import-cashpobi.mjs
- *   3. pnpm --filter @nudge-eap/icons build
+ *   3. pnpm --filter @nudge-design/icons build
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";

@@ -1,7 +1,7 @@
 {
-  "name": "@nudge-eap/tailwind-preset",
-  "version": "0.2.0",
-  "description": "Tailwind CSS preset for NudgeEAP Design System",
+  "name": "@nudge-design/tailwind-preset",
+  "version": "0.0.1",
+  "description": "Tailwind CSS preset for Nudge Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -20,7 +20,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nudge-eap/tokens": "workspace:*"
+    "@nudge-design/tokens": "workspace:*"
   },
   "devDependencies": {
     "tailwindcss": "^4.0.0",

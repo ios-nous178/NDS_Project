@@ -1,6 +1,6 @@
 {
-  "name": "@nudge-eap/docs",
-  "version": "0.1.11",
+  "name": "@nudge-design/docs",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "docusaurus start --port 3001",
@@ -17,9 +17,9 @@
     "@docusaurus/theme-common": "^3.10.1",
     "@docusaurus/theme-live-codeblock": "latest",
     "@easyops-cn/docusaurus-search-local": "^0.55.1",
-    "@nudge-eap/icons": "workspace:*",
-    "@nudge-eap/react": "workspace:*",
-    "@nudge-eap/tokens": "workspace:*",
+    "@nudge-design/icons": "workspace:*",
+    "@nudge-design/react": "workspace:*",
+    "@nudge-design/tokens": "workspace:*",
     "clsx": "^2.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

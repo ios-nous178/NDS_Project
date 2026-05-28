@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/FileUpload.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/FileUpload.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const FU_CLASS = "nds-file-upload";
 const FU_ROOT_CLASS = `${FU_CLASS}__root`;

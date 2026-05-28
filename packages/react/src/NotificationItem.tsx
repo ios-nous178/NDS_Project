@@ -5,7 +5,7 @@ import {
   TestresultWarningIcon,
   BlockIcon,
   PushIcon,
-} from "@nudge-eap/icons";
+} from "@nudge-design/icons";
 
 /* ─── Constants ─── */
 

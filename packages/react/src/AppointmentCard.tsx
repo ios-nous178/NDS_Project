@@ -6,7 +6,7 @@ import {
   CounselingChatIcon,
   PinIcon,
   TimeIcon,
-} from "@nudge-eap/icons";
+} from "@nudge-design/icons";
 
 /* ─── Constants ─── */
 

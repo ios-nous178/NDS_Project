@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/CounselorCard.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/CounselorCard.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -8,7 +8,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const CN_CLASS = "nds-counselor-card";
 const CN_AVATAR_CLASS = `${CN_CLASS}__avatar`;

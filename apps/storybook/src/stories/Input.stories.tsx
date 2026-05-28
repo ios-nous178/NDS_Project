@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Input, type InputProps } from "@nudge-eap/react";
-import { SearchIcon } from "@nudge-eap/icons";
+import { Input, type InputProps } from "@nudge-design/react";
+import { SearchIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser, pause } from "./interactionTest";
 

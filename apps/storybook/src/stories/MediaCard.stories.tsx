@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { MediaCard, Avatar } from "@nudge-eap/react";
+import { MediaCard, Avatar } from "@nudge-design/react";
 
 const meta: Meta<typeof MediaCard> = {
   title: "Components/MediaCard",

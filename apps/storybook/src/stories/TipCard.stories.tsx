@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TipCard } from "@nudge-eap/react";
+import { TipCard } from "@nudge-design/react";
 
 const meta: Meta<typeof TipCard> = {
   title: "Components/TipCard",

@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Input.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Input.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -8,7 +8,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const INPUT_CLASS = "nds-input";
 const INPUT_ROOT_CLASS = `${INPUT_CLASS}__root`;

@@ -9,7 +9,7 @@ import {
   green,
   nudgeEapSemantic,
   getSemanticGuide,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 import React from "react";
 import { DesignGuideBadge } from "../components/DesignGuideBadge";
 

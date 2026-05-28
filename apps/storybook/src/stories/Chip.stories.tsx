@@ -8,8 +8,8 @@ import {
   type ChipColor,
   type ChipProps,
   type ChipVariant,
-} from "@nudge-eap/react";
-import { PinIcon, TelephoneIcon } from "@nudge-eap/icons";
+} from "@nudge-design/react";
+import { PinIcon, TelephoneIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 import { DesignGuideBadge } from "../components/DesignGuideBadge";

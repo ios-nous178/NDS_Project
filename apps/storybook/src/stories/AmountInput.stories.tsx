@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { AmountInput } from "@nudge-eap/react";
+import { AmountInput } from "@nudge-design/react";
 
 const meta: Meta<typeof AmountInput> = {
   title: "Components/AmountInput",

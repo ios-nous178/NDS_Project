@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { DropdownMenu, IconButton, Button } from "@nudge-eap/react";
-import { MoreIcon } from "@nudge-eap/icons";
+import { DropdownMenu, IconButton, Button } from "@nudge-design/react";
+import { MoreIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {

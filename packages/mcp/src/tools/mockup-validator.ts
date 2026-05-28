@@ -215,7 +215,7 @@ export function validateMockupSource(
         line: ln,
         detail: line.trim(),
         suggestion:
-          "먼저 find_icon으로 @nudge-eap/icons에 적합한 아이콘이 있는지 확인하세요. 없을 때만 인라인 SVG로 새로 그리는 것이 허용됩니다 (텍스트/이모지는 금지).",
+          "먼저 find_icon으로 @nudge-design/icons에 적합한 아이콘이 있는지 확인하세요. 없을 때만 인라인 SVG로 새로 그리는 것이 허용됩니다 (텍스트/이모지는 금지).",
       });
     }
     // 4-bis. 이모지 / 텍스트 기호 절대 금지
@@ -233,7 +233,7 @@ export function validateMockupSource(
           line: ln,
           detail: line.trim(),
           suggestion:
-            "이모지는 사용 금지입니다. 아이콘이 필요하면 find_icon 으로 @nudge-eap/icons 에서 찾고, 라벨이면 평문으로 작성하세요.",
+            "이모지는 사용 금지입니다. 아이콘이 필요하면 find_icon 으로 @nudge-design/icons 에서 찾고, 라벨이면 평문으로 작성하세요.",
         });
       }
       // 4-bis-2. 텍스트 기호 — 아이콘 대용 / 장식 / rating 표현 전부 금지.
@@ -317,7 +317,7 @@ export function validateMockupSource(
 
   // 6. import 검증 — 한 번만
   const importMatches = source.matchAll(
-    /import\s*\{([^}]+)\}\s*from\s*["']@nudge-eap\/(react|icons)["']/g,
+    /import\s*\{([^}]+)\}\s*from\s*["']@nudge-design\/(react|icons)["']/g,
   );
   for (const m of importMatches) {
     const pkg = m[2] as "react" | "icons";
@@ -748,7 +748,7 @@ export function validateMockupSource(
   }
 
   // ─── 아이콘 스타일 혼용 ──────────────────────────────────
-  // @nudge-eap/icons 가 아닌 외부 라이브러리 아이콘 import 검출
+  // @nudge-design/icons 가 아닌 외부 라이브러리 아이콘 import 검출
   const externalIconLibs = [
     { name: "lucide-react", re: /from\s+["']lucide-react["']/ },
     { name: "react-icons", re: /from\s+["']react-icons\// },
@@ -762,7 +762,7 @@ export function validateMockupSource(
       line: 1,
       detail: `외부 아이콘 라이브러리 사용: ${externalIconLibs.map((l) => l.name).join(", ")}`,
       suggestion:
-        "DS 는 `@nudge-eap/icons` 단일 셋만. 필요 아이콘이 없으면 find_icon 으로 확인 후 그래도 없으면 인라인 SVG. bannedPatterns: mixed-icon-style 참조.",
+        "DS 는 `@nudge-design/icons` 단일 셋만. 필요 아이콘이 없으면 find_icon 으로 확인 후 그래도 없으면 인라인 SVG. bannedPatterns: mixed-icon-style 참조.",
     });
   }
 

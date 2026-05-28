@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { VoiceRecorder, type VoiceRecorderState } from "@nudge-eap/react";
+import { VoiceRecorder, type VoiceRecorderState } from "@nudge-design/react";
 
 const meta: Meta<typeof VoiceRecorder> = {
   title: "Components/VoiceRecorder",

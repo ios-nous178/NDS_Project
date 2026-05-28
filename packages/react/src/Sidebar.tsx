@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
 
 /* ─── Class names ─── */
 

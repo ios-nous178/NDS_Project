@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Banner } from "@nudge-eap/react";
+import { Banner } from "@nudge-design/react";
 
 const meta: Meta<typeof Banner> = {
   title: "Components/Banner",

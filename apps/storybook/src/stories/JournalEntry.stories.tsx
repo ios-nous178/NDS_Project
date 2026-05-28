@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { JournalEntry } from "@nudge-eap/react";
+import { JournalEntry } from "@nudge-design/react";
 
 const meta: Meta<typeof JournalEntry> = {
   title: "Components/JournalEntry",

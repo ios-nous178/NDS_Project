@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Checkbox, Radio, Toggle } from "@nudge-eap/react";
-import { colors } from "@nudge-eap/tokens";
+import { Checkbox, Radio, Toggle } from "@nudge-design/react";
+import { colors } from "@nudge-design/tokens";
 
 /**
  * Figma `Controls` 가이드(171:9904) 정합 스토리.

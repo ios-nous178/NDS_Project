@@ -5,7 +5,7 @@
  * 사람(디자이너 / PM / QA) 은 docs 사이트에서 같은 본문을 본다.
  * 본문 변경 시 packages/mcp/src/guides.ts 만 고치고 이 스크립트를 다시 돌리면 둘 다 갱신.
  *
- * 입력: packages/mcp/dist/guides.js — pnpm build --filter @nudge-eap/mcp 가 선행되어야 함.
+ * 입력: packages/mcp/dist/guides.js — pnpm build --filter @nudge-design/mcp 가 선행되어야 함.
  * 출력:
  *   - docs/guide/ux-writing.md           (UX_WRITING_GUIDE)
  *   - docs/guide/dark-patterns.md        (PATTERN_GUIDES['dark-patterns'])
@@ -26,7 +26,7 @@ try {
 } catch {
   console.error(
     `[generate-guide-docs] ${path.relative(rootDir, mcpDist)} 가 없습니다. ` +
-      `먼저 'pnpm build --filter @nudge-eap/mcp' 로 빌드하세요.`,
+      `먼저 'pnpm build --filter @nudge-design/mcp' 로 빌드하세요.`,
   );
   process.exit(1);
 }

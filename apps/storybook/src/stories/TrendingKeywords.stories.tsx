@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { TrendingKeywords } from "@nudge-eap/react";
-import type { TrendingKeywordItem } from "@nudge-eap/react";
+import { TrendingKeywords } from "@nudge-design/react";
+import type { TrendingKeywordItem } from "@nudge-design/react";
 import React, { useState } from "react";
 
 const sampleItems: TrendingKeywordItem[] = [

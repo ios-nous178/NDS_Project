@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ActivityTimeline } from "@nudge-eap/react";
+import { ActivityTimeline } from "@nudge-design/react";
 
 const meta: Meta<typeof ActivityTimeline> = {
   title: "Components/ActivityTimeline",

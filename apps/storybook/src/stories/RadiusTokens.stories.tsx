@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { borderWidth, radius } from "@nudge-eap/tokens";
+import { borderWidth, radius } from "@nudge-design/tokens";
 import React from "react";
 
 function RadiusItem({ token, value }: { token: string; value: number }) {

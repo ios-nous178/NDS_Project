@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/StatCard.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/StatCard.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-design/tokens";
 
 const ST_CLASS = "nds-stat-card";
 const ST_HEADER_CLASS = `${ST_CLASS}__header`;

@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/ImageUpload.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, radius, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/ImageUpload.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, radius, spacing, typeScale } from "@nudge-design/tokens";
 
 const IU_ROOT_CLASS = "nds-image-upload";
 const IU_PREVIEW_COL_CLASS = `${IU_ROOT_CLASS}__preview-col`;

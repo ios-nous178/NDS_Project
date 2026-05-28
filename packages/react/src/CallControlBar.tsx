@@ -1,7 +1,7 @@
 import React from "react";
-import * as NDSIcons from "@nudge-eap/icons";
+import * as NDSIcons from "@nudge-design/icons";
 
-// @nudge-eap/icons는 React 19 타입으로 빌드되어 React 18 타입 시스템과 forwardRef 시그니처가
+// @nudge-design/icons는 React 19 타입으로 빌드되어 React 18 타입 시스템과 forwardRef 시그니처가
 // 호환되지 않음. 런타임 동작은 동일하므로 컴포넌트 타입을 일치시키기 위해 좁은 타입으로 캐스트.
 type IconComp = React.ComponentType<{ size?: number; style?: React.CSSProperties }>;
 const MicrophoneIcon = NDSIcons.MicrophoneIcon as unknown as IconComp;

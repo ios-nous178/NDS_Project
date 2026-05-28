@@ -41,7 +41,7 @@ title: 시각 안티패턴
 
 ### 아이콘
 
-- **아이콘 스타일 혼용 금지** — 같은 화면/그룹 안에 Line · Filled · Colorful 아이콘을 섞지 않는다. `@nudge-eap/icons` 단일 셋만, 같은 그룹은 한 스타일로 통일.
+- **아이콘 스타일 혼용 금지** — 같은 화면/그룹 안에 Line · Filled · Colorful 아이콘을 섞지 않는다. `@nudge-design/icons` 단일 셋만, 같은 그룹은 한 스타일로 통일.
 - **장식용 헤딩 아이콘 금지** — 서브타이틀(h3/h4) · Form Label · 본문 텍스트 앞 장식 아이콘 금지. 일부 헤딩에만 아이콘이 붙으면 위계가 깨진다. 한 화면 헤딩 앞 아이콘 5개 이상은 자동 위반.
 - **Color icon 본문 남용 금지** — multi-color/colorful 아이콘은 결과 일러스트(TestresultSafe/Warning/Danger 등) 와 진입점 1~2개에만. 일반 UI 강조에는 monochrome currentColor 만 사용.
 

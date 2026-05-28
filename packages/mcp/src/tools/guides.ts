@@ -80,7 +80,7 @@ export type GuideTarget = "react" | "html";
 
 const PRINCIPLES_DIGEST = [
   "get_guide({ topic: 'principles' }) first for mockup work.",
-  "No emoji/text-symbol icons; use find_icon + @nudge-eap/icons.",
+  "No emoji/text-symbol icons; use find_icon + @nudge-design/icons.",
   "No raw <header>/<footer>/<main>/<nav> when nds/brand components fit.",
   "Use semantic tokens; avoid raw hex/rgb and raw palette tokens.",
   "Use <nds-*> components before custom native controls/CSS lookalikes.",
@@ -123,7 +123,7 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
         "attribute 는 kebab-case, 이벤트는 addEventListener('nds-...', handler) 로 바인딩하세요.";
     } else if (_htmlStatus === "no-html-equivalent") {
       htmlAdvisory =
-        "target=html 호출됐지만 이 컴포넌트는 @nudge-eap/html 패키지에 1:1 대응되는 nds-* element 가 아직 없습니다. " +
+        "target=html 호출됐지만 이 컴포넌트는 @nudge-design/html 패키지에 1:1 대응되는 nds-* element 가 아직 없습니다. " +
         "find_component({ query }) 로 대체 가능한 다른 HTML 지원 컴포넌트를 검토하세요. " +
         "examples 는 기존 JSX 형태 그대로 노출됩니다.";
     } else {
@@ -370,14 +370,14 @@ export function getInspectorSetup() {
       "외부 mockup 프로젝트의 dev 화면 우하단에 floating 버튼을 띄워, DS / antd / native 요소를 색깔별로 outline + 카운트로 시각화. Ctrl/Cmd+Shift+D 토글. dev-only.",
     rationale:
       "AI 생성 화면이 'DS 적용처럼 보이지만 실은 antd/native 잔존' 인지 사용자가 한눈에 검증할 수 있게 함. validate_mockup 의 정적 검증과 보완 — 정적 검증은 코드를, Inspector 는 런타임 DOM 을 봄.",
-    package: "@nudge-eap/react",
-    subpath: "@nudge-eap/react/inspector",
+    package: "@nudge-design/react",
+    subpath: "@nudge-design/react/inspector",
     install:
-      "이미 @nudge-eap/react 가 설치돼 있다면 추가 설치 불필요. subpath export 로 inspector 만 분리되어 있어 tree-shake 가능.",
+      "이미 @nudge-design/react 가 설치돼 있다면 추가 설치 불필요. subpath export 로 inspector 만 분리되어 있어 tree-shake 가능.",
     setup: {
       file: "src/main.tsx (또는 App.tsx 의 최상단 레벨)",
       action: "DsInspector 를 import 해서 dev 모드에서만 렌더. production 빌드에는 자동 제외.",
-      code: `import { DsInspector } from "@nudge-eap/react/inspector";
+      code: `import { DsInspector } from "@nudge-design/react/inspector";
 
 // 기존 App 옆에 dev-only 로 렌더
 function Root() {
@@ -396,7 +396,7 @@ function Root() {
       "DS 비율 낮거나 antd/native 가 보이면 → validate_mockup 으로 정적 검증 + 코드 재구성",
     ],
     classification: {
-      ds: "className 에 `nds-` prefix → @nudge-eap/react 컴포넌트",
+      ds: "className 에 `nds-` prefix → @nudge-design/react 컴포넌트",
       antd: "className 에 `ant-` prefix → antd 컴포넌트 (user-app 에서는 변환 미완료 신호)",
       native: "<button>, <input>, <select>, <textarea>, <form>, <label> 등 raw HTML primitive",
     },
@@ -410,19 +410,19 @@ function getSlimClaudeMdTemplate(args: {
   projectName?: string;
   intent?: "user-app" | "admin-cms" | "html";
 }) {
-  const title = args.projectName ? `# ${args.projectName}` : "# NudgeEAP Mockup Workspace";
+  const title = args.projectName ? `# ${args.projectName}` : "# Nudge Mockup Workspace";
   if (args.intent === "admin-cms") {
     return `${title}
 
 ## Role
 
 - Build admin/CMS mockups in this external project.
-- Do not modify the NudgeEAP Design System repo, publish packages, push git changes, or open DS PRs from here.
+- Do not modify the Nudge Design System repo, publish packages, push git changes, or open DS PRs from here.
 
 ## Stack
 
 - Use antd v5 for admin/CMS screens.
-- Do not use @nudge-eap/react, @nudge-eap/html, @nudge-eap/tokens, or @nudge-eap/icons in admin/CMS mockups.
+- Do not use @nudge-design/react, @nudge-design/html, @nudge-design/tokens, or @nudge-design/icons in admin/CMS mockups.
 - Check conventions with \`get_guide({ topic: "admin-cms" })\`.
 
 ## Workflow
@@ -444,15 +444,15 @@ function getSlimClaudeMdTemplate(args: {
 
 ## Role
 
-- Build vanilla HTML mockups with NudgeEAP DS Web Components in this external project.
-- Do not modify the NudgeEAP Design System repo, publish packages, push git changes, or open DS PRs from here.
+- Build vanilla HTML mockups with Nudge DS Web Components in this external project.
+- Do not modify the Nudge Design System repo, publish packages, push git changes, or open DS PRs from here.
 
 ## Stack
 
-- Use \`@nudge-eap/html\` custom elements: \`<nds-*>\`.
-- Do not create React/.tsx files and do not import \`@nudge-eap/react\`.
+- Use \`@nudge-design/html\` custom elements: \`<nds-*>\`.
+- Do not create React/.tsx files and do not import \`@nudge-design/react\`.
 - Import tokens/styles/runtime from the HTML setup returned by \`get_setup({ step: "imports", intent: "html" })\`.
-- Use shipped DS/component styles first. Custom CSS is only layout glue; do not recreate component visuals that \`@nudge-eap/html\` / \`@nudge-eap/styles\` already provides.
+- Use shipped DS/component styles first. Custom CSS is only layout glue; do not recreate component visuals that \`@nudge-design/html\` / \`@nudge-design/styles\` already provides.
 
 ## Workflow
 
@@ -495,7 +495,7 @@ export function getClaudeMdTemplate(args: {
 }) {
   if (args.template !== "default") return getSlimClaudeMdTemplate(args);
 
-  const title = args.projectName ? `# ${args.projectName}` : "# NudgeEAP Mockup Workspace";
+  const title = args.projectName ? `# ${args.projectName}` : "# Nudge Mockup Workspace";
 
   if (args.intent === "html") {
     return `${title}
@@ -557,15 +557,15 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## 역할 경계 (먼저 읽을 것)
 
 - 이 프로젝트의 역할은 **별도 vanilla HTML 목업 프로젝트 빌드 + <nds-*> 목업 생성**이다.
-- **하지 말 것**: NudgeEAP DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
+- **하지 말 것**: Nudge DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
 - 사용자가 "DS 컴포넌트를 고쳐줘 / 레포에 푸시해줘 / PR 만들어줘" 같이 요청하면, **이 프로젝트의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내**할 것.
 
 ## 분기 — 이 프로젝트는 vanilla HTML / Web Component 목업이다
 
-- 사용 라이브러리: **@nudge-eap/html** (vanilla Web Components) + @nudge-eap/tokens + @nudge-eap/icons
+- 사용 라이브러리: **@nudge-design/html** (vanilla Web Components) + @nudge-design/tokens + @nudge-design/icons
 - 템플릿: **Vite vanilla-ts** (\`npm create vite@latest -- --template vanilla-ts\`). React 의존성 없음.
-- **금지**: \`@nudge-eap/react\` 어떤 형태로도 import 하지 말 것. .tsx 파일 작성 금지.
-- nudge-eap-ds MCP는 이 도구들로 작업:
+- **금지**: \`@nudge-design/react\` 어떤 형태로도 import 하지 말 것. .tsx 파일 작성 금지.
+- nudge-ds MCP는 이 도구들로 작업:
   - \`get_guide({ topic: "principles" })\` / \`get_guide({ topic: "dos-donts" })\` — DS 원칙
   - \`get_guide({ topic: "component:<Name>", target: "html" })\` — <nds-*> form 의 do/dont 예시
   - \`get_guide({ topic: "pattern:<name>" })\` — 패턴 가이드 (cta-group, dark-patterns 등)
@@ -585,9 +585,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 \`references.md\` 에 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
 2. **\`.tsx\` 파일 작성 금지.** 이 워크플로우는 React 가 없다. JSX 가 필요하면 intent 를 'user-app' 으로 바꿔 다른 워크스페이스에서 작업하라고 안내. \`<Button color="primary">\` 처럼 PascalCase + JSX 컨테이너 prop 패턴이 나타나면 즉시 \`<nds-button color="primary">\` (kebab-case attribute) 로 교체.
-3. **\`<nds-*>\` 흉내 금지 — raw \`<button class="nds-button">\` 으로 시각만 따라 그리기 X.** 반드시 \`<nds-button>\` 같은 실제 custom-element 를 쓸 것. main.ts 의 \`import "@nudge-eap/html/runtime"\` 한 줄로 모든 element 가 등록된다.
+3. **\`<nds-*>\` 흉내 금지 — raw \`<button class="nds-button">\` 으로 시각만 따라 그리기 X.** 반드시 \`<nds-button>\` 같은 실제 custom-element 를 쓸 것. main.ts 의 \`import "@nudge-design/html/runtime"\` 한 줄로 모든 element 가 등록된다.
 4. **이벤트는 inline \`onclick="..."\` 대신 \`addEventListener\`.** \`document.querySelector("nds-select").addEventListener("select-change", e => …)\` 패턴. WC 가 dispatch 하는 커스텀 이벤트(\`nds-*-change\`, \`select-change\`, \`tabs-change\` 등) 사용. 자세한 이벤트명은 \`get_guide({ topic: "component:<Name>", target: "html" })\` 응답의 examples.do/dont 참고.
-5. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-eap/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-eap/tokens/css"\` 한 줄로만 가져온다.
+5. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다.
 6. **산출물은 반드시 \`build_singlefile_html\`.** raw \`vite build\` 결과의 다중 파일 \`dist/\` 폴더로 끝내지 말 것. 디자이너/PM 에게 공유 가능한 표준 산출물은 \`vite-plugin-singlefile\` 로 inline 된 \`dist/index.html\` 1개 파일이다. MCP 가 vite.config 패치 + 빌드까지 자동 수행한다.
 
 **우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
@@ -596,16 +596,16 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] 구현 전 \`references.md\` 를 읽고 good/bad 기준을 실제 레이아웃·간격·타이포·컬러 결정에 반영했다.
 - [ ] root \`index.html\` 이 존재하고 \`<nds-*>\` custom-element 를 1개 이상 사용한다.
 - [ ] \`src/\` 에 \`.tsx\` 파일이 없다 (\`.ts\` + 필요 시 \`.css\` 만).
-- [ ] \`@nudge-eap/react\` 가 어떤 \`.ts\` / \`.html\` 에서도 import / 참조되지 않는다.
+- [ ] \`@nudge-design/react\` 가 어떤 \`.ts\` / \`.html\` 에서도 import / 참조되지 않는다.
 - [ ] \`src/\` 의 \`.css\` 어디에도 \`:root { --color-* / --nds-* / --eap-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
 - [ ] 모든 DS 사용처는 \`<nds-*>\` custom-element 이다 (\`<button class="nds-button">\` 같은 className 흉내 없음).
-- [ ] main.ts 가 \`import "@nudge-eap/html/runtime"\` 을 포함한다.
+- [ ] main.ts 가 \`import "@nudge-design/html/runtime"\` 을 포함한다.
 
 위 항목 중 하나라도 어긋나면 **HTML 을 폐기하고 처음부터 다시 작성**. 사용자가 명시적으로 허용한 경우에만 예외이며, 이 경우에도 "validate_html_mockup · analyze_html_mockup 가 무력화됩니다" 라고 먼저 경고할 것.
 
 ## 작업 원칙
 
-- 이 프로젝트는 NudgeEAP Design System 의 vanilla HTML 패키지(@nudge-eap/html) 기반 목업 워크스페이스다.
+- 이 프로젝트는 Nudge Design System 의 vanilla HTML 패키지(@nudge-design/html) 기반 목업 워크스페이스다.
 - DS 컴포넌트/아이콘/토큰을 추측해서 사용하지 말고, MCP 도구로 확인한 뒤 사용한다.
 - 구현 완료의 기준은 코드 작성이 아니라 실제 dev 화면이 에러 없이 렌더링되는 것이다.
 - raw \`button\`, \`input\`, \`select\`, \`textarea\` 는 특별한 이유가 없으면 사용하지 않는다 — 대신 \`<nds-button>\` / \`<nds-input>\` / \`<nds-select>\` / \`<nds-textarea>\` 사용.
@@ -629,7 +629,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴 로드.
 - **모든 mockup 작업은 시각 레퍼런스 수집부터 시작.** \`get_guide({ topic: "pattern:visual-reference" })\` 로 룰 확인.
 - 컴포넌트 사용 전 \`find_component({ query })\` → \`get_guide({ topic: "component:<Name>", target: "html" })\` 호출. \`target: "html"\` 을 반드시 명시 — examples.do / examples.dont 가 \`<nds-*>\` form 으로 교체된다. 빠뜨리면 React JSX 예시가 반환됨 (이 워크플로우에선 무용지물).
-- 아이콘은 \`find_icon({ query })\` 로 검색 후 \`@nudge-eap/icons\` 의 인라인 SVG 사용. 이모지·텍스트 기호 금지 (\`validate_html_mockup\` 의 emoji-banned / text-symbol-banned 룰).
+- 아이콘은 \`find_icon({ query })\` 로 검색 후 \`@nudge-design/icons\` 의 인라인 SVG 사용. 이모지·텍스트 기호 금지 (\`validate_html_mockup\` 의 emoji-banned / text-symbol-banned 룰).
 - **사용자 노출 텍스트는 작성 전 \`get_guide({ topic: "ux-writing" })\` 호출** — 해요체·능동형·EAP 도메인 톤.
 - 목업 \`.html\` 작성 직후 반드시 \`validate_html_mockup({ filePath })\` 호출. 위반 0건 될 때까지 수정 후 재실행.
 - 위반이 해소된 뒤 \`analyze_html_mockup({ filePath })\` 로 채택 비율 확인. \`dsRatio\` 가 낮거나 native(\`<button>\` 등) 잔존이 있으면 \`convert_html_to_ds_html\` 호출 또는 손으로 교체.
@@ -645,9 +645,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **DS 뱃지 숫자는 직접 세지 말 것.** \`build_singlefile_html\` 이 산출된 \`dist/index.html\` 기준으로 \`data-ds-badge\` 텍스트를 최신 \`dsUsageSummary\` 로 자동 치환한다. 원본에 임시 숫자를 넣어도 최종 산출물은 build 응답 값을 SSOT 로 삼는다.
 - **기존 antd/HTML 코드를 받았을 때 className 만 치환하지 말 것**. \`<button class="nds-button">\` 은 nds-button 흉내일 뿐 실제 Web Component 가 아님 — 반드시 \`<nds-button>\` 으로 element 자체를 바꾼다.
 - raw \`button\`, \`input\`, \`select\`, \`textarea\` 는 특별한 이유 없으면 사용하지 않는다. \`validate_html_mockup\` 의 \`native-form-element-without-nds-wrapper\` 룰로 자동 검출됨.
-- **이모지·텍스트 기호 절대 금지**. 라벨/제목/empty state 어디에도 이모지(😀 🔥 ⭐ ✅ ⚠️) / 기호(→ ← ✓ ★ •) 박지 말 것. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-eap/icons\` 에서 찾고, 없으면 인라인 SVG.
+- **이모지·텍스트 기호 절대 금지**. 라벨/제목/empty state 어디에도 이모지(😀 🔥 ⭐ ✅ ⚠️) / 기호(→ ← ✓ ★ •) 박지 말 것. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-design/icons\` 에서 찾고, 없으면 인라인 SVG.
 - 색상/간격은 인라인 hex, rgb, px 보다 DS 토큰(\`var(--semantic-* )\` / \`var(--gap-* )\` / \`var(--inset-* )\`) 을 우선 사용.
-- 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
+- 인라인 SVG를 직접 만들기보다 \`@nudge-design/icons\` 아이콘을 사용한다.
 - **아이콘 선택 필수 우선순위**: 브랜드 전용 > NudgeEAP 기본 > MockupLinear/Bold > 자체 SVG.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
 - 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA 에 붙이지 않는다.
@@ -673,12 +673,12 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ## Self-Check
 
-- [ ] \`@nudge-eap/html/runtime\` 이 main.ts 에서 import 되어 있다.
-- [ ] \`@nudge-eap/react\` / \`@nudge-eap/tokens\` 의 React-only entry 를 import 한 곳이 없다.
+- [ ] \`@nudge-design/html/runtime\` 이 main.ts 에서 import 되어 있다.
+- [ ] \`@nudge-design/react\` / \`@nudge-design/tokens\` 의 React-only entry 를 import 한 곳이 없다.
 - [ ] \`.tsx\` 파일이 \`src/\` 에 없다 (\`.ts\` + 필요 시 \`.css\` 만).
 - [ ] 모든 DS 사용처는 \`<nds-*>\` custom-element 다 (\`<button class="nds-button">\` 같은 흉내 없음).
 - [ ] 이벤트는 \`addEventListener\` 로 — \`onclick=\` 인라인 없음.
-- [ ] 토큰은 \`@nudge-eap/tokens/css\` 한 줄로만 들어온다 (\`:root\` 인라인 재정의 없음).
+- [ ] 토큰은 \`@nudge-design/tokens/css\` 한 줄로만 들어온다 (\`:root\` 인라인 재정의 없음).
 - [ ] \`validate_html_mockup\` 위반 0건 (2회 self-check 통과).
 - [ ] \`analyze_html_mockup.dsRatio\` 가 충분히 높고 native 잔존이 0/최소.
 - [ ] 이모지·텍스트 기호 (→ ✓ ★ • 등) 사용 없음.
@@ -698,15 +698,15 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## 역할 경계 (먼저 읽을 것)
 
 - 이 프로젝트의 역할은 **별도 목업 프로젝트 빌드 + 목업 생성**이다.
-- **하지 말 것**: NudgeEAP DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
+- **하지 말 것**: Nudge DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
 - 사용자가 "DS 컴포넌트를 고쳐줘 / 레포에 푸시해줘 / PR 만들어줘" 같이 요청하면, **이 프로젝트의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내**할 것.
 - 이 프로젝트는 DS를 '소비'하는 쪽이고, DS 레포는 별도로 관리된다.
 
 ## 분기 — 이 프로젝트는 어드민/CMS 목업이다
 
 - 사용 라이브러리: **antd v5** (NudgeEAPCMS 기준 5.5.1) + @ant-design/icons + dayjs(ko)
-- **금지**: \`@nudge-eap/react\`, \`@nudge-eap/tokens\`, \`@nudge-eap/icons\` 어떤 형태로도 import하지 말 것
-- nudge-eap-ds MCP는 두 가지 도구만 사용:
+- **금지**: \`@nudge-design/react\`, \`@nudge-design/tokens\`, \`@nudge-design/icons\` 어떤 형태로도 import하지 말 것
+- nudge-ds MCP는 두 가지 도구만 사용:
   - \`get_guide({ topic: "admin-cms" })\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
   - \`dev_server({ action: "start" })\` / \`check_preview\` / \`dev_server({ action: "stop" })\` — 어드민에서도 동일하게 사용 가능
 
@@ -764,7 +764,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## Self-Check
 
 - [ ] antd에서 import (직접 button/input/select 만들지 않음)
-- [ ] @nudge-eap/* 어떤 패키지도 import하지 않음
+- [ ] @nudge-design/* 어떤 패키지도 import하지 않음
 - [ ] 사이드바 라이트 240px + 6px 톱 액센트 + INFO/CMS MENU/SETTING 블록 있음
 - [ ] HeaderSubject + 검색 폼(Select+Input.Search+초기화) + Table(align center+Button.link) 패턴 일관
 - [ ] body \`#f4f4f4\` + 본문 \`padding: 40 60 200\` + 푸터 카피 있음
@@ -834,7 +834,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## 역할 경계 (먼저 읽을 것)
 
 - 이 프로젝트의 역할은 **별도 목업 프로젝트 빌드 + 목업 생성**이다.
-- **하지 말 것**: NudgeEAP DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
+- **하지 말 것**: Nudge DS 레포 자체 수정, DS 코드의 git commit/push, GitHub 레포 변경, npm publish, 패키지 버전 bump.
 - 사용자가 "DS 컴포넌트를 고쳐줘 / 레포에 푸시해줘 / PR 만들어줘" 같이 요청하면, **이 프로젝트의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내**할 것.
 - 이 프로젝트는 DS를 '소비'하는 쪽이고, DS 레포는 별도로 관리된다.
 
@@ -855,8 +855,8 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 워크스페이스 루트의 \`references.md\` 에 \`[good|bad] source=<figma-url|image-name> caption=<1-line reason>\` 형식으로 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 이 파일이 비어 있거나 없으면 \`build_singlefile_html\` pre-flight audit 가 차단한다 (\`missing-visual-references\`). "브랜드 톤 가이드 보고 알아서 만들게요" 식 우회 X — brandTone 형용사만 보고 만든 화면이 반복적으로 거절되어 왔다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
 2. **\`src/\` 하위에 손으로 작성한 \`.html\` 파일 금지.** "스탠드얼론 HTML 로 빠르게 보여드릴게요" / "그냥 한 파일로 끝내고 싶어요" / "HTML 이 더 단순해요" 식 우회 X. 결과적으로 DS prop API 검증·\`validate_mockup\` AST 검사·\`report_mockup_usage\` 집계가 **전부 무력화**된다. \`dist/index.html\` 은 \`build_singlefile_html\` 산출물이므로 예외.
-3. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-eap/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-eap/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
-4. **DS 컴포넌트를 HTML/CSS 로 "시각만 흉내" 금지.** \`<button className="my-btn">\` 으로 Button 모양만 따라 그리기, \`<div className="chip">\` 으로 Chip 흉내 X. 반드시 \`import { Button, Chip, IconButton, ... } from "@nudge-eap/react"\` 의 **실제 JSX** 를 쓸 것 — prop API · 토큰 · a11y 가 자동으로 보장된다.
+3. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --color-*: ...; --nds-*: ...; --eap-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
+4. **DS 컴포넌트를 HTML/CSS 로 "시각만 흉내" 금지.** \`<button className="my-btn">\` 으로 Button 모양만 따라 그리기, \`<div className="chip">\` 으로 Chip 흉내 X. 반드시 \`import { Button, Chip, IconButton, ... } from "@nudge-design/react"\` 의 **실제 JSX** 를 쓸 것 — prop API · 토큰 · a11y 가 자동으로 보장된다.
 5. **\`vite build\` / esbuild / webpack / parcel / rollup 직접 호출 금지.** 단일 HTML 산출은 **오직 \`build_singlefile_html({})\` 로만**. 다른 번들러 / 손수 inline 화는 \`nds-*\` 클래스 · onClick 인터랙션 · 토큰 변수 해석이 손실됨.
 
 **우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
@@ -865,15 +865,15 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] 구현 전 \`references.md\` 를 읽고 good/bad 기준을 실제 레이아웃·간격·타이포·컬러 결정에 반영했다.
 - [ ] \`src/\` 에 손으로 작성한 \`.html\` 파일이 없다 (\`dist/index.html\` 은 빌드 산출물이라 예외).
 - [ ] \`src/\` 의 \`.css\` / \`.scss\` 어디에도 \`:root { --color-* / --nds-* / --eap-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
-- [ ] 시멘틱 토큰은 \`main.tsx\` 의 \`import "@nudge-eap/tokens/css"\` 한 줄로만 들어온다.
-- [ ] 모든 DS 컴포넌트 사용처는 \`@nudge-eap/react\` 의 실제 JSX import 다 (className 으로 시각 모사한 raw HTML 없음).
+- [ ] 시멘틱 토큰은 \`main.tsx\` 의 \`import "@nudge-design/tokens/css"\` 한 줄로만 들어온다.
+- [ ] 모든 DS 컴포넌트 사용처는 \`@nudge-design/react\` 의 실제 JSX import 다 (className 으로 시각 모사한 raw HTML 없음).
 - [ ] 산출물은 \`build_singlefile_html({})\` 결과의 \`dist/index.html\` **한 파일** 이다.
 
 위 6개 중 하나라도 어긋나면 **HTML/CSS 를 폐기하고 \`.tsx\` 기반으로 즉시 다시 작성**. 사용자가 명시적으로 "HTML 직접 작성 허용" / "토큰 인라인 정의 허용" / "레퍼런스 없이 진행 허용" 이라고 지시한 경우에만 예외이며, 이 경우에도 사용자에게 "MCP 검증 파이프라인(validate_mockup·report_mockup_usage·visual-reference 가드)이 무력화됩니다" 라고 먼저 경고할 것.
 
 ## 작업 원칙
 
-- 이 프로젝트는 NudgeEAP Design System 기반 사용자 앱 목업 작업 공간이다.
+- 이 프로젝트는 Nudge Design System 기반 사용자 앱 목업 작업 공간이다.
 - DS 컴포넌트/아이콘/토큰을 추측해서 사용하지 말고, MCP 도구로 확인한 뒤 사용한다.
 - 구현 완료의 기준은 코드 작성이 아니라 실제 dev 화면이 에러 없이 렌더링되는 것이다.
 
@@ -911,9 +911,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<BrandHeader brand='trost|geniet|nudge-eap|cashpobi' surface='web|mobile|webview' activeKey='...' assetBaseUrl='/brand-logos' />\` + \`<BrandFooter brand='...' surface='web|app' assetBaseUrl='/brand-logos' />\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 BRAND_DATA 에서 자동. Header / HeaderLogo / HeaderMenu(Item) / HeaderActions / HeaderAuthButton 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:BrandHeader" })\` 로 브랜드별 필요 로고 파일 (\`public/brand-logos/*.png|svg|webp\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-brand-chrome\` / \`BrandChrome\`) find_component 결과만 보고 못 짚는 함정 — BrandHeader/BrandFooter 가이드를 먼저 호출하라.**
 - **기존 antd/HTML 코드를 받았을 때 변수명만 치환하지 말 것**. 색상값을 \`var(--...)\` 로 바꾸는 것만으론 "DS 적용"이 아니다. antd \`<Table>\` → DS \`<DataTable>\`, antd \`<Form>\` → DS \`Input\`/\`Select\` 조합 식으로 **컴포넌트 구조를 처음부터 재구성**한다. 한 줄이라도 antd import 가 남아 있으면 변환 미완료로 본다 (validate_mockup 의 \`antd-import-in-user-app\` 으로 자동 검출됨).
 - raw \`button\`, \`input\`, \`select\`, \`textarea\`는 특별한 이유가 없으면 사용하지 않는다.
-- **이모지·텍스트 기호 절대 금지**. 라벨/버튼/제목/placeholder/empty state 어디에도 이모지(😀 🔥 ⭐ 💡 ✅ ⚠️ 등) 박지 말 것. → ← ✓ ★ • 같은 기호 텍스트도 금지. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-eap/icons\` 에서 찾고, 없으면 인라인 SVG. 진행/별점/불릿은 DS 컴포넌트 사용. \`validate_mockup\` 의 \`emoji-banned\` / \`text-symbol-banned\` 룰로 자동 위반 카운트됨.
+- **이모지·텍스트 기호 절대 금지**. 라벨/버튼/제목/placeholder/empty state 어디에도 이모지(😀 🔥 ⭐ 💡 ✅ ⚠️ 등) 박지 말 것. → ← ✓ ★ • 같은 기호 텍스트도 금지. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-design/icons\` 에서 찾고, 없으면 인라인 SVG. 진행/별점/불릿은 DS 컴포넌트 사용. \`validate_mockup\` 의 \`emoji-banned\` / \`text-symbol-banned\` 룰로 자동 위반 카운트됨.
 - 색상/간격은 인라인 hex, rgb, px 값보다 DS 토큰을 우선 사용한다.
-- 인라인 SVG를 직접 만들기보다 \`@nudge-eap/icons\` 아이콘을 사용한다.
+- 인라인 SVG를 직접 만들기보다 \`@nudge-design/icons\` 아이콘을 사용한다.
 - **아이콘 선택 필수 우선순위**: 브랜드 전용 아이콘(Geniet*/Trost* 등) > NudgeEAP 기본 브랜드 아이콘 > 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) > 자체 생성 SVG. \`find_icon\` 과 \`get_brand({ brand })\` 로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 내려간다.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
 - 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA에는 붙이지 않는다.

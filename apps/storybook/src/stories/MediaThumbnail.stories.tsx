@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { MediaThumbnail } from "@nudge-eap/react";
+import { MediaThumbnail } from "@nudge-design/react";
 
 const meta: Meta<typeof MediaThumbnail> = {
   title: "Components/MediaThumbnail",

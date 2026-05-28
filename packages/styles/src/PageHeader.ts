@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/PageHeader.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/PageHeader.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const PH_CLASS = "nds-page-header";
 const PH_TOP_CLASS = `${PH_CLASS}__top`;

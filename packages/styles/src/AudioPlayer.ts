@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/AudioPlayer.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/AudioPlayer.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const AP_CLASS = "nds-audio-player";
 const AP_HEAD_CLASS = `${AP_CLASS}__head`;

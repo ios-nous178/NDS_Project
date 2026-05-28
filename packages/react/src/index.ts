@@ -1,4 +1,5 @@
 export * from "./Accordion";
+export * from "./Asset";
 export * from "./Button";
 export * from "./TextButton";
 export * from "./IconButton";

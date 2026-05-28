@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { PinPad } from "@nudge-eap/react";
+import { PinPad } from "@nudge-design/react";
 
 const meta: Meta<typeof PinPad> = {
   title: "Components/PinPad",

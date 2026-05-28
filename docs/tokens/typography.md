@@ -5,10 +5,10 @@ title: 타이포그래피
 
 # 타이포그래피 토큰
 
-NudgeEAP Design System의 타이포그래피 체계입니다. Figma Design Guide 실측 기반으로 정의되었습니다.
+Nudge Design System의 타이포그래피 체계입니다. Figma Design Guide 실측 기반으로 정의되었습니다.
 
 ```tsx
-import { typography } from "@nudge-eap/tokens";
+import { typography } from "@nudge-design/tokens";
 ```
 
 ---
@@ -67,7 +67,7 @@ import { typography } from "@nudge-eap/tokens";
 ### 직접 참조
 
 ```tsx
-import { typography } from "@nudge-eap/tokens";
+import { typography } from "@nudge-design/tokens";
 
 const titleStyle = {
   fontSize: typography.typeScale.headline3.fontSize, // 24
@@ -84,7 +84,7 @@ const { fontSize, lineHeight, fontWeight } = typography.typeScale.body1;
 
 ### Tailwind 프리셋 사용
 
-`@nudge-eap/tailwind-preset`을 설정하면 Tailwind 유틸리티로 사용할 수 있습니다.
+`@nudge-design/tailwind-preset`을 설정하면 Tailwind 유틸리티로 사용할 수 있습니다.
 
 ```html
 <h1 class="text-display font-bold">타이틀</h1>

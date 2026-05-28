@@ -57,7 +57,7 @@ const TOOLS = [
   {
     name: "find_icon",
     description:
-      "Search @nudge-eap/icons. For mockup/screen work, do not call this until visual references are collected. Prefer `{ query }`; no args returns the icon index.",
+      "Search @nudge-design/icons. For mockup/screen work, do not call this until visual references are collected. Prefer `{ query }`; no args returns the icon index.",
     inputSchema: {
       type: "object",
       properties: {
@@ -383,7 +383,7 @@ const TOOLS = [
         includeTailwind: {
           type: "boolean",
           description:
-            "[step=install|full] Include @nudge-eap/tailwind-preset install (default: false).",
+            "[step=install|full] Include @nudge-design/tailwind-preset install (default: false).",
         },
         intent: {
           type: "string",

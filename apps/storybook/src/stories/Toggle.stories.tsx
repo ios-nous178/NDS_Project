@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Toggle } from "@nudge-eap/react";
+import { Toggle } from "@nudge-design/react";
 
 const meta: Meta<typeof Toggle> = {
   title: "Components/Toggle",

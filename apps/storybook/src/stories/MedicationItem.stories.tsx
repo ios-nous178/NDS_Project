@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { MedicationItem } from "@nudge-eap/react";
+import { MedicationItem } from "@nudge-design/react";
 
 const meta: Meta<typeof MedicationItem> = {
   title: "Components/MedicationItem",

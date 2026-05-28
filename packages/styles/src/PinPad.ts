@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/PinPad.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/PinPad.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-design/tokens";
 
 const PP_CLASS = "nds-pin-pad";
 const PP_DOTS_CLASS = `${PP_CLASS}__dots`;

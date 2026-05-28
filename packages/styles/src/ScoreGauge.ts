@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/ScoreGauge.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/ScoreGauge.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
 
 const SG_CLASS = "nds-score-gauge";
 const SG_TRACK_CLASS = `${SG_CLASS}__track`;

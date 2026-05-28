@@ -5,7 +5,7 @@ title: 디자인 원칙
 
 # 디자인 원칙
 
-NudgeEAP Design System(NDS)의 핵심 설계 원칙입니다.
+Nudge Design System(NDS)의 핵심 설계 원칙입니다.
 
 ---
 
@@ -13,7 +13,7 @@ NudgeEAP Design System(NDS)의 핵심 설계 원칙입니다.
 
 모든 시각적 속성(색상, 타이포, 간격)은 디자인 토큰에서 시작합니다.
 
-- Figma의 디자인 값 → `@nudge-eap/tokens`에 정의
+- Figma의 디자인 값 → `@nudge-design/tokens`에 정의
 - 컴포넌트는 토큰만 참조
 - 토큰이 변경되면 모든 컴포넌트에 일괄 반영
 

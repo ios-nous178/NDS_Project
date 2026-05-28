@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/CardVisual.tsx during the @nudge-eap/styles split. */
-import { fontFamily, fontWeight, radius, shadow, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/CardVisual.tsx during the @nudge-design/styles split. */
+import { fontFamily, fontWeight, radius, shadow, spacing, typeScale } from "@nudge-design/tokens";
 
 const CV_CLASS = "nds-card-visual";
 const CV_BRAND_CLASS = `${CV_CLASS}__brand`;

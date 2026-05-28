@@ -336,7 +336,7 @@ function ComponentStatusBoard() {
         컴포넌트 상태 보드
       </h1>
       <p style={{ fontSize: 14, color: "#666", margin: "0 0 24px" }}>
-        NudgeEAP Design System 전체 컴포넌트 현황
+        Nudge Design System 전체 컴포넌트 현황
       </p>
 
       {/* 요약 카드 */}

@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ExpandableText } from "@nudge-eap/react";
+import { ExpandableText } from "@nudge-design/react";
 
 const meta: Meta<typeof ExpandableText> = {
   title: "Components/ExpandableText",

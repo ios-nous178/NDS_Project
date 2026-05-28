@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ChevronRightIcon } from "@nudge-eap/icons";
+import { ChevronRightIcon } from "@nudge-design/icons";
 
 /* ─── Types ─── */
 

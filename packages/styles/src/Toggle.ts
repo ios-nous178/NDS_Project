@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Toggle.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Toggle.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-design/tokens";
 
 const TG_CLASS = "nds-toggle";
 const TG_TRACK_CLASS = `${TG_CLASS}__track`;

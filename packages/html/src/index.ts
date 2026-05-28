@@ -2,8 +2,8 @@
  * Public API — class export only (side-effect 등록은 ./runtime 에서).
  *
  * 사용 패턴:
- *   import "@nudge-eap/html/runtime";          // 자동 등록 (권장)
- *   import { NdsButton } from "@nudge-eap/html"; // 클래스 직접 참조 / 수동 등록
+ *   import "@nudge-design/html/runtime";          // 자동 등록 (권장)
+ *   import { NdsButton } from "@nudge-design/html"; // 클래스 직접 참조 / 수동 등록
  */
 
 export { NdsElement, define } from "./base/nds-element.js";

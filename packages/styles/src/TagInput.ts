@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/TagInput.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/TagInput.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const TI_CLASS = "nds-tag-input";
 const TI_ROOT_CLASS = `${TI_CLASS}__root`;

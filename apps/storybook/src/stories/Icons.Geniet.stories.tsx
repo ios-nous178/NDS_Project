@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import * as Icons from "@nudge-eap/icons";
+import * as Icons from "@nudge-design/icons";
 
 /**
  * Brands/Geniet/Icons — Geniet 브랜드 전용 아이콘 카탈로그.
  *
- * 자동 추출: `@nudge-eap/icons` 에서 `Geniet` prefix 로 시작하는 컴포넌트만 필터.
+ * 자동 추출: `@nudge-design/icons` 에서 `Geniet` prefix 로 시작하는 컴포넌트만 필터.
  * 새 GenietXxxIcon 이 추가되면 빌드 시 자동 반영.
  *
  * 정책 (MCP get_brand_info("geniet").iconPolicy 와 동일):

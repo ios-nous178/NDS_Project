@@ -1,23 +1,23 @@
 <!-- markdownlint-disable MD036 MD033 MD041 -->
 
-# [Slack 공지 초안] NudgeEAP DS MCP 소개
+# [Slack 공지 초안] Nudge DS MCP 소개
 
 > 톤 레퍼런스: OpenMetadata 공지글. 슬랙에 올릴 때 이모지(`:blob_빼꼼:`, `:sparkles:` 등)는 워크스페이스에 등록된 커스텀 이모지로 자동 치환됩니다.
 
 ---
 
-안녕하세요. 기획자/디자이너/PM 도 코드 없이 NudgeEAP 시안을 직접 만들 수 있도록 사내 디자인 시스템을 AI 도구에 연결한 **NudgeEAP Design System MCP** 를 소개합니다. :blob\_빼꼼:
+안녕하세요. 기획자/디자이너/PM 도 코드 없이 NudgeEAP 시안을 직접 만들 수 있도록 사내 디자인 시스템을 AI 도구에 연결한 **Nudge Design System MCP** 를 소개합니다. :blob\_빼꼼:
 
 Figma 도, 개발자 의존도, 코드 지식도 없이 한국어 한 줄로 부탁만 하면 트로스트 / 지니어트 / NudgeEAP 시안 한 페이지를 HTML 한 파일로 받아볼 수 있도록 만들었습니다.
 
-:cashwalklogo: **NudgeEAP DS MCP 란?**
+:cashwalklogo: **Nudge DS MCP 란?**
 "넛지 DS 써서 트로스트 상담사 목록 만들어줘" 한 줄이면, 우리 디자인 시스템의 컴포넌트·아이콘·토큰·금지 패턴까지 알아서 조합해 시안을 만들어 주는 **사내 디자인 시스템 ↔ Claude / Codex 연결고리** 입니다.
 
 브랜드별 톤, CTA 위계, 그라데이션 금지, 회색 버튼 활성화 금지 같은 우리 DS 의 룰을 매번 사람이 알려주지 않아도 AI 가 자동으로 지킵니다.
 
-[NudgeEAP DS MCP 설치 가이드 바로가기](https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272) - Claude Code Desktop 에 `.mcpb` 파일 더블클릭만 하면 바로 이용하실 수 있습니다.
+[Nudge DS MCP 설치 가이드 바로가기](https://www.notion.so/cashwalkteam/NudgeEAP-Design-System-MCP-35ea054b7d82807bb097c6c9d6b3d272) - Claude Code Desktop 에 `.mcpb` 파일 더블클릭만 하면 바로 이용하실 수 있습니다.
 
-:sparkles: **어떤 걸 할 수 있나요?** ([상세 사용 가이드](https://github.com/cashwalk/NudgeEAPDesignSystem/blob/main/docs/NUDGE_EAP_DS_MCP_USAGE.md))
+:sparkles: **어떤 걸 할 수 있나요?** ([상세 사용 가이드](https://github.com/cashwalk/NudgeEAPDesignSystem/blob/main/docs/NUDGE_DS_MCP_USAGE.md))
 
 **한 줄로 시안 만들기**
 "트로스트 서비스 상담사 목록, 모바일. 검색바 + 카테고리 칩 + 카드 + 페이지네이션" 처럼 페이지·기기·핵심 구성만 적어주시면, DS 컴포넌트로 조합된 화면이 나옵니다. 화면 종류만 명시하면 어떤 컴포넌트·톤·규칙을 쓸지는 AI 가 알아서 결정합니다.
@@ -26,7 +26,7 @@ Figma 도, 개발자 의존도, 코드 지식도 없이 한국어 한 줄로 부
 트로스트 / 지니어트 / NudgeEAP 중에서 어떤 브랜드인지만 알려주시면, 각 브랜드의 컬러·타이포·CTA 톤이 자동으로 적용됩니다. "지니어트 버전으로도 만들어줘" 한 마디로 같은 화면의 브랜드 변주도 가능합니다.
 
 **서비스 vs 어드민 자동 분리**
-서비스(사용자 앱)는 NudgeEAP DS, 어드민(CMS / 백오피스)은 Ant Design - 종류만 말씀해주시면 라이브러리·톤·밀도가 자동으로 갈립니다. "어드민 회원 관리 페이지" / "트로스트 마이페이지" 처럼만 적어주세요.
+서비스(사용자 앱)는 Nudge DS, 어드민(CMS / 백오피스)은 Ant Design - 종류만 말씀해주시면 라이브러리·톤·밀도가 자동으로 갈립니다. "어드민 회원 관리 페이지" / "트로스트 마이페이지" 처럼만 적어주세요.
 
 **HTML 한 파일로 공유**
 "HTML 뽑아줘" 한 마디면 클릭·탭·인터랙션이 살아있는 한 파일(`dist/index.html`)이 나옵니다. 슬랙·메일에 첨부해서 그대로 공유하시면 됩니다. 받는 분은 더블클릭만 하면 시안을 만질 수 있어요.

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { MentionInput, type MentionUser, Avatar } from "@nudge-eap/react";
+import { MentionInput, type MentionUser, Avatar } from "@nudge-design/react";
 
 const meta: Meta<typeof MentionInput> = {
   title: "Components/MentionInput",

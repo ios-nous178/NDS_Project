@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { PageHeader, Button, Breadcrumb, Tabs } from "@nudge-eap/react";
+import { PageHeader, Button, Breadcrumb, Tabs } from "@nudge-design/react";
 
 const meta: Meta<typeof PageHeader> = {
   title: "Components/PageHeader",

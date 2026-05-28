@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { trostYellow, trostNeutral } from "@nudge-eap/tokens";
+import { trostYellow, trostNeutral } from "@nudge-design/tokens";
 
 export interface TrostSearchFormProps {
   placeholder?: string;

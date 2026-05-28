@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/OnlineIndicator.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/OnlineIndicator.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, typeScale } from "@nudge-design/tokens";
 
 const OI_CLASS = "nds-online-indicator";
 const OI_DOT_CLASS = `${OI_CLASS}__dot`;

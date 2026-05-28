@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/MultiStepForm.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/MultiStepForm.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const MS_CLASS = "nds-multi-step-form";
 const MS_HEADER_CLASS = `${MS_CLASS}__header`;

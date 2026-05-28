@@ -36,7 +36,7 @@
  *   full-height (기본 true → 100vh sticky)
  */
 
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
 import { NdsElement, define } from "../base/nds-element.js";
 
 const SB_CLASS = "nds-sidebar";

@@ -28,7 +28,7 @@ describe("validateMockupSource", () => {
 
   it("flags Chip usage without the required label prop", () => {
     const source = `
-      import { Chip } from "@nudge-eap/react";
+      import { Chip } from "@nudge-design/react";
 
       export function Demo() {
         return <Chip>New</Chip>;
@@ -40,7 +40,7 @@ describe("validateMockupSource", () => {
 
   it("flags multiple primary solid CTAs", () => {
     const source = `
-      import { Button } from "@nudge-eap/react";
+      import { Button } from "@nudge-design/react";
 
       export function Demo() {
         return (

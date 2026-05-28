@@ -5,7 +5,7 @@
  * 산출물: test-fixture/brand-chrome.dist.html
  *   - tokens.css / styles.css 를 <style> 로 인라인
  *   - dist/runtime.js 를 esbuild 로 IIFE bundle 해서 <script> 로 인라인
- *     (workspace import @nudge-eap/tokens 등을 해소)
+ *     (workspace import @nudge-design/tokens 등을 해소)
  *   - apps/storybook/public/brand-logos/ 를 test-fixture/_assets/brand-logos/ 로 복사
  *     (asset-base-url 을 /test-fixture/_assets/brand-logos 로 박아 self-contained)
  *
@@ -144,7 +144,7 @@ const html = `<!DOCTYPE html>
 
 <h1>nds-brand-header / brand-footer — 시각 정합 (React Storybook 1:1)</h1>
 <p class="lede">
-  <code>@nudge-eap/html</code> 의 <code>&lt;nds-brand-header&gt;</code> 출력 (self-contained).
+  <code>@nudge-design/html</code> 의 <code>&lt;nds-brand-header&gt;</code> 출력 (self-contained).
   각 프레임 우측의 "→ React storybook" 링크가 같은 디자인의 React 스토리.
   Storybook 이 <a href="http://localhost:6006" target="_blank">http://localhost:6006</a> 에 떠 있으면 한 화면에서 비교 가능.
 </p>

@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { colors } from "@nudge-eap/tokens";
+import { colors } from "@nudge-design/tokens";
 import styles from "./ColorCatalog.module.css";
 
 const GROUP_META = [

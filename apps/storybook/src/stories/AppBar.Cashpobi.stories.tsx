@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CashpobiWebHeader } from "@nudge-eap/react";
+import { CashpobiWebHeader } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("cashpobi");

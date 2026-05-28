@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ReactionPicker } from "@nudge-eap/react";
+import { ReactionPicker } from "@nudge-design/react";
 
 const meta: Meta<typeof ReactionPicker> = {
   title: "Components/ReactionPicker",

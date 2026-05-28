@@ -1,5 +1,5 @@
 import React from "react";
-import { trostNeutral, trostStatus } from "@nudge-eap/tokens";
+import { trostNeutral, trostStatus } from "@nudge-design/tokens";
 
 export interface TrostAppDownloadButtonProps {
   /** 호버 툴팁 내부 QR 이미지 src */

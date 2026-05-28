@@ -1,5 +1,5 @@
 import React from "react";
-import { InfoIcon, ThumbUpIcon, TestresultWarningIcon, ChevronRightIcon } from "@nudge-eap/icons";
+import { InfoIcon, ThumbUpIcon, TestresultWarningIcon, ChevronRightIcon } from "@nudge-design/icons";
 
 /* ─── Constants ─── */
 

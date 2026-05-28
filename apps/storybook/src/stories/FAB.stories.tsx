@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { FAB } from "@nudge-eap/react";
-import { PlusIcon, EditIcon } from "@nudge-eap/icons";
+import { FAB } from "@nudge-design/react";
+import { PlusIcon, EditIcon } from "@nudge-design/icons";
 
 const plusIconNode = <PlusIcon size={22} aria-hidden />;
 const editIconNode = <EditIcon size={22} aria-hidden />;

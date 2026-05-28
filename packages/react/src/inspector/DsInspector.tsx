@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * 화면 우하단 floating 버튼이 뜨고 클릭(또는 Ctrl/Cmd+Shift+D) 시 페이지의
  * 모든 element 를 분류해 outline + 카운트로 표시한다.
  *
- *   - DS    (초록 실선): className 에 `nds-` prefix → @nudge-eap/react 컴포넌트
+ *   - DS    (초록 실선): className 에 `nds-` prefix → @nudge-design/react 컴포넌트
  *   - antd  (주황 실선): className 에 `ant-` prefix → antd 컴포넌트
  *   - native(빨강 점선): plain <button>/<input>/<select> 등 raw HTML primitive
  *

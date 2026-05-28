@@ -2,7 +2,7 @@
  * Figma 지니어트-Dev (wDL8a2RbsglC8KjNufn3ks) bottom nav + header 에서 추출한 SVG → svg/ 정제 import.
  *
  * Figma asset URL 은 `fill="var(--fill-0, #111111)"` 패턴 + width/height="100%" + preserveAspectRatio="none"
- * 같은 Figma 전용 속성을 갖고 오는데, NudgeEAP DS 표준(viewBox 24×24, currentColor)에 맞춰 정제.
+ * 같은 Figma 전용 속성을 갖고 오는데, Nudge DS 표준(viewBox 24×24, currentColor)에 맞춰 정제.
  *
  * 사용법:
  *   1. /tmp/figma-geniet/{name}.svg 에 원본 SVG 떨군 뒤 (curl)

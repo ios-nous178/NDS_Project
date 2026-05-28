@@ -127,7 +127,7 @@ describe("injectHtmlUsageSummary", () => {
         path.join(tmp, "package.json"),
         JSON.stringify({
           dependencies: {
-            "@nudge-eap/tokens": "0.1.10",
+            "@nudge-design/tokens": "0.1.10",
           },
         }),
       );
@@ -150,7 +150,7 @@ describe("injectHtmlUsageSummary", () => {
 
       expect(summary).toBe("DS@0.1.10 · DS 4 (100%)");
       expect(html).toContain(`<span data-ds-badge>DS@0.1.10 · DS 4 (100%)</span>`);
-      expect(html).toContain("NudgeEAP DS usage: DS@0.1.10 · DS 4 (100%)");
+      expect(html).toContain("Nudge DS usage: DS@0.1.10 · DS 4 (100%)");
       expect(html).not.toContain("DS 14 (94%)");
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
@@ -173,7 +173,7 @@ describe("auditMockupWorkspace", () => {
   it("clean workspace (.tsx only, no css token redef, refs present) → 0 violations", () => {
     fs.writeFileSync(
       path.join(tmp, "src", "App.tsx"),
-      `import { Button } from "@nudge-eap/react";\nexport default () => <Button>ok</Button>;`,
+      `import { Button } from "@nudge-design/react";\nexport default () => <Button>ok</Button>;`,
     );
     fs.writeFileSync(path.join(tmp, "index.html"), `<!doctype html><div id="root"></div>`);
     fs.writeFileSync(
@@ -240,7 +240,7 @@ describe("auditMockupWorkspace", () => {
   it("passes no-tsx-found when src/ has .astro files (Astro workflow)", () => {
     fs.writeFileSync(
       path.join(tmp, "src", "index.astro"),
-      `---\nimport "@nudge-eap/html/runtime";\n---\n<nds-button>x</nds-button>`,
+      `---\nimport "@nudge-design/html/runtime";\n---\n<nds-button>x</nds-button>`,
     );
     fs.writeFileSync(path.join(tmp, "index.html"), `<!doctype html>`);
     fs.writeFileSync(
@@ -357,19 +357,19 @@ describe("detectWorkspaceIntent", () => {
     fs.rmSync(tmp, { recursive: true, force: true });
   });
 
-  it("returns 'html' when package.json has @nudge-eap/html without @nudge-eap/react", () => {
+  it("returns 'html' when package.json has @nudge-design/html without @nudge-design/react", () => {
     fs.writeFileSync(
       path.join(tmp, "package.json"),
-      JSON.stringify({ dependencies: { "@nudge-eap/html": "1.0.0" } }),
+      JSON.stringify({ dependencies: { "@nudge-design/html": "1.0.0" } }),
     );
     expect(detectWorkspaceIntent(tmp)).toBe("html");
   });
 
-  it("returns 'react' when package.json has @nudge-eap/react (even if html is also present)", () => {
+  it("returns 'react' when package.json has @nudge-design/react (even if html is also present)", () => {
     fs.writeFileSync(
       path.join(tmp, "package.json"),
       JSON.stringify({
-        dependencies: { "@nudge-eap/react": "1.0.0", "@nudge-eap/html": "1.0.0" },
+        dependencies: { "@nudge-design/react": "1.0.0", "@nudge-design/html": "1.0.0" },
       }),
     );
     expect(detectWorkspaceIntent(tmp)).toBe("react");
@@ -385,12 +385,12 @@ describe("detectWorkspaceIntent", () => {
   it("falls back to src/main.ts (no .tsx anywhere) → html", () => {
     fs.writeFileSync(path.join(tmp, "package.json"), JSON.stringify({}));
     fs.mkdirSync(path.join(tmp, "src"));
-    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-eap/html/runtime";`);
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-design/html/runtime";`);
     expect(detectWorkspaceIntent(tmp)).toBe("html");
   });
 
   it("defaults to 'html' for empty / brand-new workspaces (policy: html-first)", () => {
-    // 2026-05-25 정책: React 신호 (package.json deps 의 @nudge-eap/react,
+    // 2026-05-25 정책: React 신호 (package.json deps 의 @nudge-design/react,
     // src/main.tsx, src/ 안의 .tsx) 가 없으면 모두 html. 빈 디렉터리도 html 로 분류.
     expect(detectWorkspaceIntent(tmp)).toBe("html");
   });
@@ -423,12 +423,12 @@ describe("auditMockupWorkspace — html intent", () => {
       path.join(tmp, "index.html"),
       `<!doctype html><body><nds-button color="primary">상담 신청</nds-button><script type="module" src="/src/main.ts"></script></body>`,
     );
-    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-eap/html/runtime";`);
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-design/html/runtime";`);
     expect(auditMockupWorkspace(tmp, "html")).toEqual([]);
   });
 
   it("flags missing root index.html (no-html-entry-found)", () => {
-    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-eap/html/runtime";`);
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-design/html/runtime";`);
     const v = auditMockupWorkspace(tmp, "html").find((x) => x.rule === "no-html-entry-found");
     expect(v).toBeTruthy();
     expect(v?.detail).toContain("index.html");
@@ -439,7 +439,7 @@ describe("auditMockupWorkspace — html intent", () => {
       path.join(tmp, "index.html"),
       `<!doctype html><body><button class="nds-button">fake</button></body>`,
     );
-    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-eap/html/runtime";`);
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-design/html/runtime";`);
     const v = auditMockupWorkspace(tmp, "html").find((x) => x.rule === "html-entry-has-no-nds-tag");
     expect(v).toBeTruthy();
     expect(v?.files).toContain("index.html");
@@ -501,7 +501,7 @@ describe("auditMockupWorkspace — html intent", () => {
   it("auto-detects html intent from package.json when not passed explicitly", () => {
     fs.writeFileSync(
       path.join(tmp, "package.json"),
-      JSON.stringify({ dependencies: { "@nudge-eap/html": "1.0.0" } }),
+      JSON.stringify({ dependencies: { "@nudge-design/html": "1.0.0" } }),
     );
     fs.writeFileSync(
       path.join(tmp, "index.html"),

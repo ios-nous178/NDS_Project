@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/MoodSelector.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/MoodSelector.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const MD_CLASS = "nds-mood";
 const MD_ROOT_CLASS = `${MD_CLASS}__root`;

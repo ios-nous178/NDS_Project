@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { fontFamily, fontWeight, typeScale } from "@nudge-eap/tokens";
+import { fontFamily, fontWeight, typeScale } from "@nudge-design/tokens";
 import React from "react";
 
 // Figma 가이드(171:6676)와 동일하게 각 스케일을 Bold/Medium/Regular 3개 weight 로 노출.

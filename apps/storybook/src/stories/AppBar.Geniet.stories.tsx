@@ -1,14 +1,14 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { GenietAppBar } from "@nudge-eap/react";
-import type { GenietAppBarAction, GenietAppBarCta } from "@nudge-eap/react";
+import { GenietAppBar } from "@nudge-design/react";
+import type { GenietAppBarAction, GenietAppBarCta } from "@nudge-design/react";
 import {
   GenietCouponIcon,
   GenietMypageIcon,
   GenietLoginIcon,
   GenietCashreviewIcon,
   GenietConfettiIcon,
-} from "@nudge-eap/icons";
+} from "@nudge-design/icons";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("geniet");

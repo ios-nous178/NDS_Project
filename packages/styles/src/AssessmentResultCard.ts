@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/AssessmentResultCard.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/AssessmentResultCard.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const AR_CLASS = "nds-assessment-result";
 const AR_HEADER_CLASS = `${AR_CLASS}__header`;

@@ -9,7 +9,7 @@ import {
   LikertScale,
   RadioGroup,
   RadioGroupItem,
-} from "@nudge-eap/react";
+} from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {

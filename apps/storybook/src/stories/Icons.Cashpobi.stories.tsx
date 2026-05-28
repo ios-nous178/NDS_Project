@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import * as Icons from "@nudge-eap/icons";
+import * as Icons from "@nudge-design/icons";
 
 /**
  * Brands/Cashpobi/Icons — 캐포비(캐시워크 for Business) 어드민 전용 아이콘 카탈로그.
@@ -20,7 +20,7 @@ type IconComp = React.FC<{ size?: number; color?: string }>;
 
 interface Entry {
   name: string; // Storybook 표시명 (Figma 카탈로그 라벨)
-  componentName: string; // @nudge-eap/icons export 이름
+  componentName: string; // @nudge-design/icons export 이름
   Component: IconComp;
   category: "Navigation" | "Action" | "Status" | "Social" | "GNB" | "Selection";
   source: "common" | "cashpobi";
@@ -211,8 +211,8 @@ const ENTRIES: Entry[] = ICON_MAP.map(({ componentName, ...rest }) => {
   const Component = (Icons as Record<string, unknown>)[componentName] as IconComp | undefined;
   if (!Component) {
     throw new Error(
-      `[Icons.Cashpobi] missing export "${componentName}" in @nudge-eap/icons (icon "${rest.name}"). ` +
-        `Run: pnpm --filter @nudge-eap/icons build`,
+      `[Icons.Cashpobi] missing export "${componentName}" in @nudge-design/icons (icon "${rest.name}"). ` +
+        `Run: pnpm --filter @nudge-design/icons build`,
     );
   }
   return { ...rest, componentName, Component };

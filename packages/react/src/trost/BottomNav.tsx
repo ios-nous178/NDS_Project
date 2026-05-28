@@ -9,7 +9,7 @@ import {
   CommentIcon,
   MypageIcon,
   MypageActiveIcon,
-} from "@nudge-eap/icons";
+} from "@nudge-design/icons";
 
 /**
  * Trost BottomNav (5탭 — 홈/사운드/내음악/커뮤니티/마이페이지).

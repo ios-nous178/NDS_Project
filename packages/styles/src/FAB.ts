@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/FAB.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/FAB.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const FB_CLASS = "nds-fab";
 const FB_LABEL_CLASS = `${FB_CLASS}__label`;

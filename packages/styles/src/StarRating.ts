@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/StarRating.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/StarRating.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
 
 const SR_CLASS = "nds-star-rating";
 const SR_STAR_CLASS = `${SR_CLASS}__star`;

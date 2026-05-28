@@ -1,7 +1,7 @@
 /**
  * Side-effect entry: import 만으로 모든 nds-* custom elements 가 등록된다.
  *
- *   import "@nudge-eap/html/runtime";
+ *   import "@nudge-design/html/runtime";
  *
  * Astro / plain HTML / React 어디서든 한 번 import 하면 끝.
  * 각 컴포넌트 파일은 자기 자신의 define() 을 모듈 톱레벨에서 호출하므로

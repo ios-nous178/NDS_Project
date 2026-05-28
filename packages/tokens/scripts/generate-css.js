@@ -225,8 +225,8 @@ function generateBrandTokens({ theme, title, cssImport }) {
     " * NudgeEAP tokens.css 이후에 import하면 브랜드 토큰이 오버라이드됩니다.",
     " *",
     " * Usage:",
-    " *   @import '@nudge-eap/tokens/css';",
-    ` *   @import '@nudge-eap/tokens/css/${cssImport}';`,
+    " *   @import '@nudge-design/tokens/css';",
+    ` *   @import '@nudge-design/tokens/css/${cssImport}';`,
     " */",
     ":root {",
   ];

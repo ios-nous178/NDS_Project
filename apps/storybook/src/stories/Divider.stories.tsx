@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Divider } from "@nudge-eap/react";
+import { Divider } from "@nudge-design/react";
 
 const meta: Meta<typeof Divider> = {
   title: "Components/Divider",

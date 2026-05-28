@@ -8,7 +8,7 @@ import {
   TrostLoginSection,
   TrostAppDownloadButton,
   TrostTabNavigation,
-} from "@nudge-eap/react";
+} from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 import trostLogo from "../../public/brand-logos/trost-logo.svg";

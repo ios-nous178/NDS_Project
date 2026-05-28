@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Stepper.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Stepper.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const ST_CLASS = "nds-stepper";
 const ST_ROOT_CLASS = `${ST_CLASS}__root`;

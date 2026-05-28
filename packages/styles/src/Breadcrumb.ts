@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Breadcrumb.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/Breadcrumb.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, transition, typeScale } from "@nudge-design/tokens";
 
 const BC_CLASS = "nds-breadcrumb";
 const BC_ITEM_CLASS = `${BC_CLASS}__item`;

@@ -9,7 +9,7 @@ import {
   RadioGroupItem,
   Checkbox,
   CheckboxGroup,
-} from "@nudge-eap/react";
+} from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {

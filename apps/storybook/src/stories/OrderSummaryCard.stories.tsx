@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { OrderSummaryCard, Button } from "@nudge-eap/react";
+import { OrderSummaryCard, Button } from "@nudge-design/react";
 
 const meta: Meta<typeof OrderSummaryCard> = {
   title: "Components/OrderSummaryCard",

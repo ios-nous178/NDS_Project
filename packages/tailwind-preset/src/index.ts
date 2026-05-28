@@ -29,14 +29,14 @@ import {
   cashpobiStatus,
   cashpobiSemantic,
   cashpobiTheme,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 /**
- * NudgeEAP Tailwind CSS Preset
+ * Nudge Tailwind CSS Preset
  *
  * Usage in tailwind.config.ts:
  * ```
- * import { nudgeEapPreset } from "@nudge-eap/tailwind-preset";
+ * import { nudgeEapPreset } from "@nudge-design/tailwind-preset";
  * export default { presets: [nudgeEapPreset] };
  * ```
  *

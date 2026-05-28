@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Snackbar } from "@nudge-eap/react";
+import { Snackbar } from "@nudge-design/react";
 
 const meta: Meta<typeof Snackbar> = {
   title: "Components/Snackbar",

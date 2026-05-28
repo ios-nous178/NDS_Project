@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/TrendingKeywords.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/TrendingKeywords.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -8,7 +8,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const TK_ROOT_CLASS = "nds-trending-keywords";
 const TK_SLIDER_CLASS = `${TK_ROOT_CLASS}__slider`;

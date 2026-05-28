@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/TitleBlock.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/TitleBlock.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight } from "@nudge-design/tokens";
 
 const TB_CLASS = "nds-title-block";
 const TB_TITLE_CLASS = `${TB_CLASS}__title`;

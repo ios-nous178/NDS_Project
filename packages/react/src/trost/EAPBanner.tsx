@@ -3,7 +3,7 @@
  * 4pt 그리드 예외 정책은 `trost/index.ts` 헤더 코멘트 참조.
  */
 import React from "react";
-import { trostEapBanner, trostNeutral } from "@nudge-eap/tokens";
+import { trostEapBanner, trostNeutral } from "@nudge-design/tokens";
 
 export interface TrostEAPBannerProps {
   /** NudgeEAP로 유입되는 CTA 링크 (default: https://eapkorea.co.kr/) */

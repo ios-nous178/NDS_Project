@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Card.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Card.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const CARD_CLASS = "nds-card";
 const CARD_ROOT_CLASS = `${CARD_CLASS}__root`;

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ImageCropper, type ImageCropperHandle } from "@nudge-eap/react";
+import { ImageCropper, type ImageCropperHandle } from "@nudge-design/react";
 
 const meta: Meta<typeof ImageCropper> = {
   title: "Components/ImageCropper",

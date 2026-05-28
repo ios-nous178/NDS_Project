@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/IconButton.tsx during the @nudge-eap/styles split. */
-import { cv, radius, transition } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/IconButton.tsx during the @nudge-design/styles split. */
+import { cv, radius, transition } from "@nudge-design/tokens";
 
 const ICON_BUTTON_CLASS = "nds-icon-button";
 

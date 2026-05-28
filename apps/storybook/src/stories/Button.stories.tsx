@@ -1,8 +1,8 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, fn } from "storybook/test";
-import { Button } from "@nudge-eap/react";
-import { LockIcon, CommentIcon } from "@nudge-eap/icons";
+import { Button } from "@nudge-design/react";
+import { LockIcon, CommentIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 

@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/VideoPlayer.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/VideoPlayer.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const VP_CLASS = "nds-video-player";
 const VP_VIDEO_CLASS = `${VP_CLASS}__video`;

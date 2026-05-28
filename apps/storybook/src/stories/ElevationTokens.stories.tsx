@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { shadow, elevationLevel, zIndex } from "@nudge-eap/tokens";
+import { shadow, elevationLevel, zIndex } from "@nudge-design/tokens";
 import React from "react";
 
 /* ─────────────────────────────────────────────────────────────

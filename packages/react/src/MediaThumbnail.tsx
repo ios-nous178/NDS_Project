@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { radius } from "@nudge-eap/tokens";
+import { radius } from "@nudge-design/tokens";
 
 /* ─── Constants ─── */
 

@@ -5,10 +5,10 @@ title: 간격 및 사이징
 
 # 간격 및 사이징 토큰
 
-NudgeEAP Design System의 간격(Spacing), 둥글기(Radius), 사이징(Sizing) 체계입니다. Figma 컴포넌트 레드라인 실측 기반으로 정의되었습니다.
+Nudge Design System의 간격(Spacing), 둥글기(Radius), 사이징(Sizing) 체계입니다. Figma 컴포넌트 레드라인 실측 기반으로 정의되었습니다.
 
 ```tsx
-import { spacing, radius, sizing, borderWidth } from "@nudge-eap/tokens";
+import { spacing, radius, sizing, borderWidth } from "@nudge-design/tokens";
 ```
 
 ---
@@ -95,7 +95,7 @@ import { spacing, radius, sizing, borderWidth } from "@nudge-eap/tokens";
 ### 직접 참조
 
 ```tsx
-import { spacing, radius, sizing } from "@nudge-eap/tokens";
+import { spacing, radius, sizing } from "@nudge-design/tokens";
 
 const cardStyle = {
   padding: spacing[16],

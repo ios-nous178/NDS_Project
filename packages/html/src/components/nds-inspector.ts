@@ -6,7 +6,7 @@
  * 사용:
  *   <!-- index.html -->
  *   <script type="module">
- *     import "@nudge-eap/html/elements/nds-inspector";
+ *     import "@nudge-design/html/elements/nds-inspector";
  *     document.body.appendChild(document.createElement("nds-inspector"));
  *   </script>
  *

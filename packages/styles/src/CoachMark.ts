@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/CoachMark.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/CoachMark.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const CM_CLASS = "nds-coach-mark";
 const CM_OVERLAY_CLASS = `${CM_CLASS}__overlay`;

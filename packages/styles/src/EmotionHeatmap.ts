@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/EmotionHeatmap.tsx during the @nudge-eap/styles split. */
-import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-eap/tokens";
+/* Auto-generated from packages/react/src/EmotionHeatmap.tsx during the @nudge-design/styles split. */
+import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-design/tokens";
 
 const HM_CLASS = "nds-emotion-heatmap";
 const HM_HEADER_CLASS = `${HM_CLASS}__header`;

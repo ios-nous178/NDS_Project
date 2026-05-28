@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { List, ListItem, Avatar, Badge, Toggle } from "@nudge-eap/react";
-import { ChevronRightIcon } from "@nudge-eap/icons";
+import { List, ListItem, Avatar, Badge, Toggle } from "@nudge-design/react";
+import { ChevronRightIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {

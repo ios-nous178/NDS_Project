@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { AssessmentResultCard } from "@nudge-eap/react";
+import { AssessmentResultCard } from "@nudge-design/react";
 
 const meta: Meta<typeof AssessmentResultCard> = {
   title: "Components/AssessmentResultCard",

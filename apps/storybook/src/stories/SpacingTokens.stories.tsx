@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { spacing, gap, inset } from "@nudge-eap/tokens";
+import { spacing, gap, inset } from "@nudge-design/tokens";
 
 const GAP_INTENT: Record<string, { intent: string; use: string }> = {
   tight: { intent: "tight", use: "Chip · Badge 그룹" },

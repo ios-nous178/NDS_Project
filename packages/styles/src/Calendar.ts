@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/Calendar.tsx during the @nudge-eap/styles split. */
+/* Auto-generated from packages/react/src/Calendar.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -7,7 +7,7 @@ import {
   spacing,
   transition,
   typeScale,
-} from "@nudge-eap/tokens";
+} from "@nudge-design/tokens";
 
 const CL_CLASS = "nds-calendar";
 const CL_HEADER_CLASS = `${CL_CLASS}__header`;

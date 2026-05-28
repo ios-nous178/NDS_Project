@@ -33,21 +33,21 @@ function configureWithManifest(manifest: Partial<Manifest>) {
 function htmlSetupPackages(): Manifest["packages"] {
   return [
     {
-      name: "@nudge-eap/html",
+      name: "@nudge-design/html",
       version: "0.1.10",
       dependencies: {},
       peerDependencies: {},
-      cssExports: ["@nudge-eap/html/styles.css"],
+      cssExports: ["@nudge-design/html/styles.css"],
     },
     {
-      name: "@nudge-eap/tokens",
+      name: "@nudge-design/tokens",
       version: "0.1.10",
       dependencies: {},
       peerDependencies: {},
-      cssExports: ["@nudge-eap/tokens/css"],
+      cssExports: ["@nudge-design/tokens/css"],
     },
     {
-      name: "@nudge-eap/icons",
+      name: "@nudge-design/icons",
       version: "0.1.10",
       dependencies: {},
       peerDependencies: {},
@@ -60,18 +60,18 @@ describe("setup brand registry", () => {
     configureWithManifest({
       packages: [
         {
-          name: "@nudge-eap/tokens",
+          name: "@nudge-design/tokens",
           version: "0.1.10",
           dependencies: {},
           peerDependencies: {},
-          cssExports: ["@nudge-eap/tokens/css", "@nudge-eap/tokens/css/cashpobi"],
+          cssExports: ["@nudge-design/tokens/css", "@nudge-design/tokens/css/cashpobi"],
         },
         {
-          name: "@nudge-eap/html",
+          name: "@nudge-design/html",
           version: "0.1.10",
           dependencies: {},
           peerDependencies: {},
-          cssExports: ["@nudge-eap/html/styles.css"],
+          cssExports: ["@nudge-design/html/styles.css"],
         },
       ],
     });
@@ -79,12 +79,12 @@ describe("setup brand registry", () => {
     const result = getBrand({ brand: "cashpobi" });
     expect("detail" in result ? result.detail.ok : false).toBe(true);
     expect("detail" in result ? result.detail.cssImport : null).toBe(
-      "@nudge-eap/tokens/css/cashpobi",
+      "@nudge-design/tokens/css/cashpobi",
     );
     expect("detail" in result ? result.detail.ready : false).toBe(true);
 
     const imports = getHtmlEntryImports({ brand: "cashpobi" });
-    expect(imports.code).toContain(`import "@nudge-eap/tokens/css/cashpobi";`);
+    expect(imports.code).toContain(`import "@nudge-design/tokens/css/cashpobi";`);
   });
 });
 

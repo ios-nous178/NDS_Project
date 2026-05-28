@@ -1,8 +1,8 @@
 /**
- * Geniet 원본 SVG → @nudge-eap/icons svg/ 로 정제 import.
+ * Geniet 원본 SVG → @nudge-design/icons svg/ 로 정제 import.
  *
  * Geniet 홈페이지(GenietHomePage) 의 public/images 하위 SVG 는 viewBox 가 16/18/20/24/28/54/64 로 제각각이고,
- * fill 도 #xxx 박혀 있어 NudgeEAP DS 표준(viewBox 24×24, currentColor) 에 맞지 않는다.
+ * fill 도 #xxx 박혀 있어 Nudge DS 표준(viewBox 24×24, currentColor) 에 맞지 않는다.
  * 이 스크립트는 19개 UI 아이콘만 골라 정제해서 packages/icons/svg/geniet-*.svg 로 떨군다.
  *
  * 사용법: node packages/icons/scripts/import-geniet.mjs

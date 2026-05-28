@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { sizing } from "@nudge-eap/tokens";
+import { sizing } from "@nudge-design/tokens";
 import React from "react";
 
 function SizeRow({ label, value }: { label: string; value: number }) {

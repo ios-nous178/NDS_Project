@@ -12,7 +12,7 @@
  *   </MockupLayout>
  */
 import React, { useState } from "react";
-import { Header, Footer, Button, TrendingKeywords } from "@nudge-eap/react";
+import { Header, Footer, Button, TrendingKeywords } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 /* ═══════════════════════════════════════
