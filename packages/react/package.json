@@ -25,6 +25,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@nudge-design/assets": "workspace:*",
     "@nudge-design/icons": "workspace:*",
     "@nudge-design/styles": "workspace:*",
     "@nudge-design/tokens": "workspace:*"

@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface RunmileImageIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const RunmileImageIcon = React.forwardRef<SVGSVGElement, RunmileImageIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(1.9992 1.9992)">
+    <path id="Vector" d="M15.44 0H4.56C2.04 0 0 2.04 0 4.56V15.45C0 17.97 2.04 20.01 4.56 20.01H15.45C17.97 20.01 20.01 17.97 20.01 15.45V4.56C20.01 2.04 17.97 0 15.45 0H15.44ZM14.29 3.46C15.41 3.46 16.31 4.37 16.31 5.48C16.31 6.59 15.4 7.5 14.29 7.5C13.18 7.5 12.27 6.59 12.27 5.48C12.27 4.37 13.18 3.46 14.29 3.46ZM15.49 17.22L13.19 17.25L11.52 17.23H8.76L7.13 17.25L4.42 17.22C2.95 17.2 2.03 15.83 2.75 14.71L4.07 12.66L5.82 10.11C6.42 9.24 7.83 9.24 8.42 10.11L10.18 12.66L10.64 13.37L12.13 11.27C12.62 10.58 13.75 10.58 14.24 11.27L15.79 13.45L16.91 15.15C17.52 16.07 16.74 17.21 15.49 17.22Z" fill="currentColor"/>
+  </g>
+    </svg>
+  )
+);
+
+RunmileImageIcon.displayName = "RunmileImageIcon";

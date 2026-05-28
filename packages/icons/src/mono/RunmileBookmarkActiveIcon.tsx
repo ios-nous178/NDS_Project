@@ -1,0 +1,33 @@
+import React from "react";
+
+export interface RunmileBookmarkActiveIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const RunmileBookmarkActiveIcon = React.forwardRef<SVGSVGElement, RunmileBookmarkActiveIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(4 3)">
+    <g id="storke">
+    <path id="Vector 328" d="M14 0H2C0.895431 0 0 0.895431 0 2V18.1984C0 18.9833 0.862852 19.4622 1.52894 19.0471L7.73553 15.1787C7.89741 15.0778 8.10259 15.0778 8.26447 15.1787L14.4711 19.0471C15.1371 19.4622 16 18.9833 16 18.1984V2C16 0.895431 15.1046 0 14 0Z" fill="currentColor"/>
+    </g>
+  </g>
+  <g transform="translate(4 3)">
+    <g id="ic_bookmark_fill">
+    <path id="Vector 328" d="M14 0H2C0.895431 0 0 0.895431 0 2V18.1984C0 18.9833 0.862852 19.4622 1.52894 19.0471L7.73553 15.1787C7.89741 15.0778 8.10259 15.0778 8.26447 15.1787L14.4711 19.0471C15.1371 19.4622 16 18.9833 16 18.1984V2C16 0.895431 15.1046 0 14 0Z" fill="currentColor"/>
+    </g>
+  </g>
+    </svg>
+  )
+);
+
+RunmileBookmarkActiveIcon.displayName = "RunmileBookmarkActiveIcon";

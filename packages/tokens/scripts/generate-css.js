@@ -110,25 +110,43 @@ function generateBaseTokens() {
     lines.push(`  --spacing-${key}: ${value}px;`);
   }
 
-  // Gap — Semantic (Figma · SpacingGuide / Gap)
+  // Gap — Semantic (Figma · SpacingGuide / Gap). emit: --semantic-gap-{key}
+  // 옛 이름(--gap-{key})은 deprecated alias 로 함께 emit (외부 consumer 호환용).
   lines.push("");
-  lines.push("  /* ── Gap (Semantic, Figma · SpacingGuide / Gap) ── */");
+  lines.push("  /* ── Semantic / Gap (Figma · SpacingGuide / Gap) ── */");
   for (const [key, value] of Object.entries(gap)) {
-    lines.push(`  --gap-${key}: ${value}px;`);
+    lines.push(`  --semantic-gap-${key}: ${value}px;`);
+  }
+  for (const key of Object.keys(gap)) {
+    lines.push(
+      `  --gap-${key}: var(--semantic-gap-${key}); /* @deprecated → --semantic-gap-${key} */`,
+    );
   }
 
-  // Gap/Title — 헤딩 ↔ 서브타이틀 간격 (Figma TitleGapGuide 859:5614)
+  // Gap/Title — 헤딩 ↔ 서브타이틀 간격 (Figma TitleGapGuide 859:5614).
+  // emit: --semantic-gap-title-{key}. 옛 --gap-title-{key} 는 alias.
   lines.push("");
-  lines.push("  /* ── Gap/Title (Figma · TitleGapGuide 859:5614) ── */");
+  lines.push("  /* ── Semantic / Gap-Title (Figma · TitleGapGuide 859:5614) ── */");
   for (const [key, value] of Object.entries(gapTitle)) {
-    lines.push(`  --gap-title-${key}: ${value}px;`);
+    lines.push(`  --semantic-gap-title-${key}: ${value}px;`);
+  }
+  for (const key of Object.keys(gapTitle)) {
+    lines.push(
+      `  --gap-title-${key}: var(--semantic-gap-title-${key}); /* @deprecated → --semantic-gap-title-${key} */`,
+    );
   }
 
-  // Inset — Semantic (Figma · SpacingGuide / Inset) — 사용처 기반 컨테이너 내부 여백
+  // Inset — Semantic (Figma · SpacingGuide / Inset). 컨테이너 내부 여백.
+  // emit: --semantic-inset-{key}. 옛 --inset-{key} 는 alias.
   lines.push("");
-  lines.push("  /* ── Inset (Semantic, Figma · SpacingGuide / Inset) ── */");
+  lines.push("  /* ── Semantic / Inset (Figma · SpacingGuide / Inset) ── */");
   for (const [key, value] of Object.entries(inset)) {
-    lines.push(`  --inset-${key}: ${value}px;`);
+    lines.push(`  --semantic-inset-${key}: ${value}px;`);
+  }
+  for (const key of Object.keys(inset)) {
+    lines.push(
+      `  --inset-${key}: var(--semantic-inset-${key}); /* @deprecated → --semantic-inset-${key} */`,
+    );
   }
 
   // Grid — 거터·마진 (Figma · SpacingGuide / Grid)
@@ -274,30 +292,30 @@ function generateBrandTokens({ theme, title, cssImport }) {
     }
   }
 
-  // Gap — `--gap-{key}`
+  // Gap — `--semantic-gap-{key}` (옛 --gap-{key} 는 base alias 가 그대로 cascade)
   if (spacingOverrides && spacingOverrides.gap) {
     lines.push("");
-    lines.push("  /* ── Gap ── */");
+    lines.push("  /* ── Semantic / Gap ── */");
     for (const [key, value] of Object.entries(spacingOverrides.gap)) {
-      lines.push(`  --gap-${key}: ${value}px;`);
+      lines.push(`  --semantic-gap-${key}: ${value}px;`);
     }
   }
 
-  // Gap/Title — `--gap-title-{key}`
+  // Gap/Title — `--semantic-gap-title-{key}`
   if (spacingOverrides && spacingOverrides.gapTitle) {
     lines.push("");
-    lines.push("  /* ── Gap/Title ── */");
+    lines.push("  /* ── Semantic / Gap-Title ── */");
     for (const [key, value] of Object.entries(spacingOverrides.gapTitle)) {
-      lines.push(`  --gap-title-${key}: ${value}px;`);
+      lines.push(`  --semantic-gap-title-${key}: ${value}px;`);
     }
   }
 
-  // Inset — `--inset-{key}`
+  // Inset — `--semantic-inset-{key}`
   if (spacingOverrides && spacingOverrides.inset) {
     lines.push("");
-    lines.push("  /* ── Inset ── */");
+    lines.push("  /* ── Semantic / Inset ── */");
     for (const [key, value] of Object.entries(spacingOverrides.inset)) {
-      lines.push(`  --inset-${key}: ${value}px;`);
+      lines.push(`  --semantic-inset-${key}: ${value}px;`);
     }
   }
 
@@ -447,3 +465,11 @@ fs.writeFileSync(
   }),
 );
 console.log(`Generated ${cashwalkBizPath}`);
+
+const runmilePath = path.join(distDir, "runmile.css");
+const { runmileTheme } = require("../dist/brands/runmile");
+fs.writeFileSync(
+  runmilePath,
+  generateBrandTokens({ theme: runmileTheme, title: "runmile", cssImport: "runmile" }),
+);
+console.log(`Generated ${runmilePath}`);
