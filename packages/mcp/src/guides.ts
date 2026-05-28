@@ -455,8 +455,37 @@ export interface ComponentGuide {
   sizeMatrix?: Record<string, string>;
   /** state(active/hover/disabled) 별 토큰/배경 매핑 */
   stateMatrix?: Record<string, string>;
-  /** 브랜드별 허용 variant / 패턴 차이 — Figma 라이브러리가 브랜드별로 다른 컴포넌트(Button 등)에서 사용. */
-  brandMatrix?: Record<string, string>;
+  /** brand 별 sizeMatrix/stateMatrix 의 부분 override + 자유 dimensions 객체.
+   *  service overlay 가 아니라 base 안의 brand-aware metadata (Figma 450:68 v2 결정).
+   *
+   *  brand 가 지정된 get_guide 호출 시 router 가 해당 brand 의 override 를 base 매트릭스에 deep merge 한다.
+   *  dimensions 는 base 에 없는 spec 을 brand 별로 신설할 때 사용 (예: Modal Cashwalk-biz 의 admin desktop 변형 width/radius/padding/typography). */
+  matrixOverrides?: Partial<
+    Record<
+      "trost" | "geniet" | "cashwalk-biz" | "nudge-eap",
+      {
+        sizeMatrix?: Partial<Record<string, string>>;
+        stateMatrix?: Partial<Record<string, string>>;
+        /** base 에 없는 spec 키. 키 이름은 자유 (width / radius / padding / typo* 등). 응답에 dimensions 그대로 노출. */
+        dimensions?: Record<string, string>;
+      }
+    >
+  >;
+  /** brand 별 valid prop 값 — Pattern 'Brand-aware Base' (Figma 450:68 v2).
+   *  예: BrandHeader.activeKey = { trost: ['home','counsel',...], geniet: ['home','community',...] }.
+   *  brand 가 지정된 get_guide 호출 시 router 가 해당 brand 값만 응답에 fold. */
+  validPropValues?: Partial<
+    Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap", Record<string, string[]>>
+  >;
+  /** brand 별 필요 파일 manifest — Pattern 'Brand-aware Base'.
+   *  예: { trost: ['trost-logo.svg'], geniet: ['geniet-logo-pc.webp', ...] }. 호스트 앱이 public/ 에 배치해야 할 자산. */
+  assetManifest?: Partial<Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap", string[]>>;
+  /** brand 별 강제 prop 값 — Pattern 'Brand-aware Base'.
+   *  예: { footerTone: { trost: 'dark', '*': 'light' } } — 키 '*' 는 명시 안 된 brand 의 default. */
+  forcedProps?: Record<
+    string,
+    Partial<Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "*", string>>
+  >;
   /** 출처 Figma 노드 URL (Library 파일) */
   figmaNodeUrl?: string;
   /** 추가 레퍼런스 (스크린샷 URL · Figma/Zeplin 다중 노드 등). PatternGuide.references 와 동일 형태. */
@@ -495,8 +524,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "카드 리스트/섹션 리스트에서 반복되는 '자세히 보기 →' 버튼은 시각 소음이 큼. 반복 CTA는 아이콘 없이 텍스트만 쓰거나 카드 전체 클릭 패턴을 검토.",
       "Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'magenta'를 기대하면 안 됨.",
       "Outlined/Assistive 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=assistive variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
-      '**아이콘 색 하드코딩 금지** — `<LockIcon color="var(--semantic-icon-inverse-default)" />` 처럼 inverse/brand 토큰을 박지 말 것. NudgeEAP/Trost(primary=흰 텍스트) 에서는 맞아 보이지만, 캐포비(primary=검정 텍스트 on 노랑) 에서는 흰 아이콘이 노란 배경 위에 떠 보임. 항상 `color="currentColor"` 로 두어 Button 텍스트 색을 상속하게 한다.',
-      "**shape='pill' 은 radius 만 바꿈** — color/variant/size 매트릭스와 직교. 캐포비 admin 에서 모달·BottomCTA 가 pill, 일반 폼/카드 액션이 default. shape 만 다른 두 버튼을 한 화면에 섞으면 위계 혼란 — 컨텍스트별로 통일.",
+      '**아이콘 색 하드코딩 금지** — `<LockIcon color="var(--semantic-icon-inverse-default)" />` 처럼 inverse/brand 토큰을 박지 말 것. NudgeEAP/Trost(primary=흰 텍스트) 에서는 맞아 보이지만, 캐시워크 포 비즈니스(primary=검정 텍스트 on 노랑) 에서는 흰 아이콘이 노란 배경 위에 떠 보임. 항상 `color="currentColor"` 로 두어 Button 텍스트 색을 상속하게 한다.',
+      "**shape='pill' 은 radius 만 바꿈** — color/variant/size 매트릭스와 직교. shape 만 다른 두 버튼을 한 화면에 섞으면 위계 혼란 — 컨텍스트별로 통일. brand 별 shape 사용 패턴은 get_guide({ topic:'component:Button', brand:'<slug>' }).preferredPatterns 참조.",
       "**라벨 1줄 강제 — 두 줄 줄바꿈 금지** (전 브랜드 공통 룰). 라벨이 컨테이너 폭 부족으로 wrap 되면 버튼 높이가 깨지고 좌우 정렬·아이콘 베이스라인이 어긋남. 대응: (1) 라벨을 짧은 동사구로 (2) IconButton 또는 dropdown 으로 분리 (3) 컨테이너 width/grid 재설계. 절대 `white-space: normal` 로 강제 wrap 시키지 말 것 — DS 의 `white-space: nowrap` 이 의도된 가드. 텍스트가 길 수밖에 없으면 size 를 줄이지 말고 단어를 줄여라.",
     ],
     recommended: [
@@ -535,32 +564,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "primary/solid": "#2B96ED 배경 + 흰 텍스트 — 가장 중요한 CTA",
       "primary/outlined": "흰 배경 + #2B96ED 보더/텍스트 — 밝은 배경 위 보조 액션",
       "primary/soft":
-        "surface.brandSubtle 배경 + textRole.brand 텍스트 — 3차 액션 (Figma 라이브러리엔 별도 셀 없음). " +
-        "브랜드별: NudgeEAP=Blue/50+Blue/500, Trost=cobalt-50+cobalt, Geniet=Mint/100+Mint/600, CashwalkBiz=Yellow/100+Yellow/800.",
+        "surface.brandSubtle 배경 + textRole.brand 텍스트 — 3차 액션 (Figma 라이브러리엔 별도 셀 없음). 색 값은 packages/tokens/src/brands/<brand>.semantic.ts 토큰 SSOT 참조.",
       "secondary/solid":
         "#F1F8FD 배경 + #2B96ED 텍스트 — 파란 카드/배경 위 강조 (default), hover=#E3F2FC",
       "assistive/outlined":
         "흰 배경 + #D8D8D8 보더 + #383838 medium weight 텍스트 — 중립 액션. Figma는 M/S/XS 만 지원, disabled 없음",
       "error/solid": "error fill + 흰 텍스트 — 파괴 액션 한정",
-    },
-    brandMatrix: {
-      "nudge-eap":
-        "variant=solid/outlined/soft/outlined-sub 전부 사용 가능. secondary/solid 는 옅은 blue.",
-      trost:
-        "variant=solid/outlined/soft/outlined-sub 사용 가능. secondary/solid 는 cobalt-50 배경 + cobalt 텍스트.",
-      geniet:
-        "variant=solid/outlined 만 허용 (Figma 207:1853 가이드). soft/outlined-sub 는 dev console 경고 — 사용 금지. " +
-        "secondary/solid 는 #333333(gray-900) dark inverse + 흰 텍스트 — Geniet 고유 패턴.",
-      "cashwalk-biz":
-        "Solid/Primary(#FFD200 + 검정), Solid/Secondary(#000 + 흰), Weak/Secondary, Outlined/Primary(노란 보더), Outlined/Secondary 5 스타일. " +
-        "(※ Figma 캔버스 라벨은 'Neutral' 로 표기되지만 DS 네이밍은 'Secondary' — 동일 슬롯. color=\"secondary\" 식별자와 정합.) " +
-        "Solid Primary 의 텍스트는 항상 검정 (#000) — high-contrast 시그니처. " +
-        "Solid/Secondary(검정) 은 color=secondary, variant=solid 슬롯이 담당 — Geniet dark inverse 패턴과 동일 운용. " +
-        "**Disabled 페어 (Figma 3098:1032 SSOT)**: Solid/Primary · Solid/Secondary 모두 bg #DDDDDD (atomic Neutral/400) + text #FFFFFF. " +
-        "Outlined disabled (Primary/Secondary) 는 border #E7E7E7 + text #BBB. " +
-        "**Shape**: default(radius 8 — 일반 admin 액션) · pill(radius full — 모달 확인/취소, BottomCTA, 격식 컨텍스트). 5종 스타일 × 2 shape × 5 size = 50개 cell 이 Figma ButtonGuide 에 모두 존재. " +
-        "사이즈: X-Large(52) / Large(48) / Medium(44) / Small(40) / Mini(36). " +
-        "추가 컴포넌트: TextButton(Large 38 / Medium 32), IconButton(48/44/40/32).",
     },
     sizeMatrix: {
       xl: "height 52 / px 16 / py 14 / 16·24 bold / icon 20 / gap 8",
@@ -570,13 +579,37 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       xs: "height 38 / px 16 / py 10 / 13·18 bold / icon 18 / gap 6",
     },
     stateMatrix: {
-      "primary/solid/disabled":
-        "(NudgeEAP) bg #9CA2AE cool-gray + 흰 텍스트. (캐포비) bg #DDDDDD Neutral 400 + 흰 텍스트 — Figma 3098:1079.",
-      "secondary/solid/disabled":
-        "(NudgeEAP) bg #E6E7EB + 텍스트 #9CA2AE. (캐포비) bg #DDDDDD + 텍스트 #FFFFFF — Solid/Primary disabled 와 같은 페어.",
-      outlined_disabled:
-        "(NudgeEAP) 흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE. (캐포비) 흰 배경 + 보더 #E7E7E7 + 텍스트 #BBB.",
+      "primary/solid/disabled": "bg #9CA2AE cool-gray + 흰 텍스트.",
+      "secondary/solid/disabled": "bg #E6E7EB + 텍스트 #9CA2AE.",
+      outlined_disabled: "흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE.",
       hover: "primary=#017EE4 / secondary=#E3F2FC / outlined/assistive=#FAFAFA",
+    },
+    /**
+     * Cashwalk-biz Button 의 spec 차이 (Figma 3098:1032 / 1079 SSOT).
+     * sm/xs height 만 base 와 다름 (sm 42→40, xs 38→36). 나머지 (xl/lg/md) 는 base 동일.
+     * disabled 3종은 base.stateMatrix 본문에 묶여있는 "(캐시워크 포 비즈니스) ..." 텍스트를
+     * 깨끗하게 깔린 단일 문장으로 교체 (shallow merge by key 라 override 가 base 키를 덮어씀).
+     */
+    matrixOverrides: {
+      "cashwalk-biz": {
+        sizeMatrix: {
+          sm: "height 40 (base 42 → 40) / 그 외 px/py/typography 는 base 동일",
+          xs: "height 36 (base 38 → 36) / 그 외 px/py/typography 는 base 동일",
+        },
+        stateMatrix: {
+          "primary/solid/disabled":
+            "bg #DDDDDD (atomic Neutral/400) + text #FFFFFF (Figma 3098:1079).",
+          "secondary/solid/disabled":
+            "bg #DDDDDD + text #FFFFFF — Solid/Primary disabled 와 같은 페어.",
+          outlined_disabled: "흰 배경 + 보더 #E7E7E7 + 텍스트 #BBB.",
+        },
+        dimensions: {
+          shape:
+            "default(radius 8 — 일반 admin 액션) · pill(radius full — 모달 확인/취소, BottomCTA, 격식 컨텍스트). 5종 스타일 × 2 shape × 5 size = 50 cell (Figma ButtonGuide SSOT).",
+          relatedComponents:
+            "TextButton(Large 38 / Medium 32), IconButton(48/44/40/32) — 별도 컴포넌트 가이드.",
+        },
+      },
     },
     accessibility: [
       "터치 타겟 최소 44px — md(44)/lg(48)/xl(52) 권장. xs(38)/sm(42)는 보조 행에서만.",
@@ -871,8 +904,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "(기본/모바일) Radius 8 / 카드 padding 비대칭 28·16·16 / PC 332 · Mobile 294 / 본문↔버튼 24px gap / 50% overlay / shadow.md. " +
       "Type: default / title(헤더) / Image(64×64 아이콘+타이틀). " +
       "Button: 최대 2개 (1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할). " +
-      '(캐포비 admin) `<html data-brand="cashwalk-biz">` 가 박힌 환경에서는 480px / radius 16 / padding 32 균등 / gap 20 / Title2 좌측 정렬 / pill 44px 버튼 + 검정 CTA 로 자동 변형. ' +
-      "Modal API/props 는 동일 — CSS cascade 만 다름. 4가지 admin 패턴: ① Single(우측 정렬 120px) / ② Dual(양분) / ③ With Close(헤더 X + 우측 단일) / ④ Confirm+Slot(추가 슬롯).",
+      "Modal API/props 는 brand 무관 동일 — CSS cascade 만 다름. brand 별 spec 변형 (예: admin desktop 4가지 패턴) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9947",
     references: [
       {
@@ -883,36 +915,41 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         brand: "cashwalk-biz",
       },
     ],
-    brandMatrix: {
-      "nudge-eap":
-        "기본 모바일/PC 스펙 — 332/294 너비, radius 8, padding 비대칭(28/16/16), 본문/버튼 중앙 정렬, 본문↔버튼 24px gap.",
-      trost: "nudge-eap 와 동일 cascade. 색만 trost 브랜드 토큰 적용 (confirm = brand fill).",
-      geniet: "nudge-eap 와 동일 cascade. 색만 geniet 브랜드 토큰 적용 (confirm = brand fill).",
-      "cashwalk-biz":
-        "admin 데스크톱 다이얼로그로 변형: 480 / radius 16 / padding 32 균등 / gap 20 / Title2(18·26) 좌측 정렬 / Body2(14·20) 좌측 정렬 / pill 버튼 44px / Body2 medium. " +
-        "Confirm = 검정 CTA (`cv.button.bgSecondary` = #000), Cancel = white + `cv.button.borderAssistive` 회색 보더. " +
-        "Footer 1버튼(Single): 우측 정렬 + 120px 고정 폭 (`data-has-both-actions` 속성 자동 감지). " +
-        "Footer 2버튼(Dual): 가로 양분 — 기존과 동일. " +
-        "헤더는 좌측 정렬 위해 spacer 가 자동으로 display:none. " +
-        "(참고: 4가지 admin 패턴 SSOT 는 Figma 3418:471).",
+    /**
+     * brand 별 spec override. brand 가 지정된 get_guide 호출 시 router 가 dimensions 를 응답에 노출.
+     * Cashwalk-biz 의 admin desktop 변형 (480/radius16/padding32/gap20/typography) — base 모바일 스펙과 spec 자체가 다름.
+     * trost / geniet 는 토큰만 다르고 spec 동일 → matrixOverrides 비움 (Pattern 'Overlay 0').
+     */
+    matrixOverrides: {
+      "cashwalk-biz": {
+        dimensions: {
+          width: "480px (PC admin desktop · base 332/294 와 다름)",
+          radius: "16px (base 8)",
+          padding: "32px 균등 (base 비대칭 28/16/16)",
+          gapBodyToFooter: "20px (base 24)",
+          buttonHeight: "44px pill (base 변형 없음)",
+          titleTypo: "Title2 18·26 좌측 정렬 (base 중앙 정렬)",
+          bodyTypo: "Body2 14·20 medium 좌측 정렬 (base 중앙 정렬)",
+          activationCondition:
+            '`<html data-brand="cashwalk-biz">` 가 박힌 환경에서만 자동 적용 — 그 외에서는 base 모바일 스펙 유지',
+        },
+      },
     },
     pitfalls: [
       "Modal 내부에 다시 큰 그림자/보더를 추가하지 말 것 (이미 shadow 토큰이 적용됨).",
       "ESC/오버레이 클릭으로 닫히는 기본 동작을 막으면 접근성 저해.",
       "버튼은 최대 2개까지만 사용. 3개 이상이 필요하면 BottomSheet 검토.",
-      "maxWidth 미지정 시 기본 폭은 브랜드에 따라 다름: nudge-eap/trost/geniet=332(PC), cashwalk-biz=480(admin). 모바일 화면이면 device='mobile' 로 294px 지정.",
+      "maxWidth 미지정 시 base 기본 폭은 PC 332 / 모바일 294. brand 별 변형 (예: cashwalk-biz admin desktop 480) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 로 확인. 모바일 화면이면 device='mobile' 명시.",
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
-      "**CashwalkBiz 한정** — flat `<Modal ...>` 에 `closable + onClose + onConfirm` 을 한꺼번에 넘기면 헤더 X 와 푸터 cancel 이 중복으로 노출됨. 패턴 ③(With Close: 헤더 X + 푸터 단일 확인) 은 반드시 Compound API (`Modal.Root` / `Modal.Header closable` / `Modal.Footer onConfirm` 만) 로 조립 — 푸터에는 `onClose` 를 넘기지 말 것.",
-      '**CashwalkBiz 한정** — admin 모달이라고 가정해 너비/패딩/라운드를 inline style 로 덮어쓰지 말 것. `<html data-brand="cashwalk-biz">` 가 박힌 환경이면 480/16/32 가 자동 적용됨 — 그 외 컨텍스트라면 기본 모바일 스펙이 의도된 것.',
     ],
     usagePolicy: {
       useFor: [
         "즉각적 판단/응답이 필요한 확인 (삭제 확인, 결제 확인)",
         "현재 흐름 중단이 정당화되는 중요한 결정",
         "추가 입력 없이 한 화면에서 결정을 마쳐야 하는 짧은 폼",
-        "(캐포비 admin) 검수/등록/노출 변경 같은 admin 워크플로우의 확인 다이얼로그",
+        "(캐시워크 포 비즈니스 admin) 검수/등록/노출 변경 같은 admin 워크플로우의 확인 다이얼로그",
       ],
       doNotUseFor: [
         "단순 정보 전달 — inline Notice / Banner / section 안내 사용",
@@ -1164,15 +1201,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- 어드민에 nds-sidebar 사용 — 어드민은 antd Layout.Sider -->\n<nds-sidebar items='...'></nds-sidebar>",
     },
     summary:
-      "어드민/CMS용 좌측 수직 내비게이션. 캐포비(CashwalkBiz) Figma 168:1250 / 290:1593 기준으로 정합. " +
+      "어드민/CMS용 좌측 수직 내비게이션. 캐시워크 포 비즈니스(CashwalkBiz) Figma 168:1250 / 290:1593 기준으로 정합. " +
       "flat items 배열 또는 SidebarSection[] (라벨 그룹) 둘 다 지원, 1단계 서브메뉴 + 뱃지 + collapsed(64px) 가능.",
     figmaNodeUrl:
       "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B5%AD-%EC%BA%90%EC%8B%9C%EC%9B%8C%ED%81%AC_WEB-Dev?node-id=168-1250",
     pitfalls: [
       "items prop 은 flat SidebarItem[] 또는 SidebarSection[] 둘 다 받지만, **섹션 라벨이 필요하면** SidebarSection[] 으로 넘길 것. flat 배열 안에 빈 객체로 'spacer' 만들지 말 것.",
       "활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.",
-      "캐포비 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
-      "GNB 아이콘은 brand-specific 우선 — 캐포비에서는 `CashwalkBizGnbBannerIcon`/`CashwalkBizGnbCashIcon`/`CashwalkBizGnbChannelIcon`/`CashwalkBizGnbChatIcon`/`CashwalkBizGnbMemberIcon`/`CashwalkBizGnbQuizIcon`/`CashwalkBizGnbSettingIcon` 7종 사용.",
+      "캐시워크 포 비즈니스 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
+      "GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 get_brand({ brand:'<slug>' }).brandIcons 참조.",
       "서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).",
       "collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).",
       "footer 와 user 를 동시에 주면 footer 가 우선. user 는 'avatar + 이름 + 역할' 정형 패턴 단축이라 footer 가 있으면 무시.",
@@ -1895,7 +1932,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "height 80 / bottom border 1px subtle / content max-width 1200 / grid 3열 (1fr auto 1fr)",
       logo: "web: height 60 / max-width 200 / object-fit contain — compact: 자유 (props 로 사이즈 지정)",
       "menu-item":
-        "h 100% / px var(--inset-card-large) / headline-5(18·26) bold / 활성 시 brand 색 + bottom 3px",
+        "h 100% / px var(--semantic-inset-card-large) / headline-5(18·26) bold / 활성 시 brand 색 + bottom 3px",
       "download-btn": "px 14 / py 8 / radius 8 / bg surface.subtle / body-1 bold brand",
       "auth-btn": "px 18 / py 8 / radius 8 / 1px brand border / body-1 bold brand",
     },
@@ -2142,12 +2179,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "CashwalkBizWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "캐포비(캐시워크 for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐포비는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공.",
+      "캐시워크 포 비즈니스 (Cashwalk for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐시워크 포 비즈니스는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공.",
     figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-1739",
     pitfalls: [
-      "캐포비 화면에는 base `<Header>` 가 아니라 `<CashwalkBizWebHeader>` 사용.",
-      "캐포비 시그니처 (Yellow/200 + Neutral/900) 는 토큰 cascade 가 자동 적용 — 인라인 background 로 덮어쓰지 말 것.",
-      "캐포비는 *AppBar / BottomNav 컴포넌트 없음* (앱 없으니 필요 없음). 모바일 헤더도 CashwalkBizWebHeader variant='mobile', 모바일 푸터는 CashwalkBizFooter layout='mobile'.",
+      "캐시워크 포 비즈니스 화면에는 base `<Header>` 가 아니라 `<CashwalkBizWebHeader>` 사용.",
+      "캐시워크 포 비즈니스 시그니처 (Yellow/200 + Neutral/900) 는 토큰 cascade 가 자동 적용 — 인라인 background 로 덮어쓰지 말 것.",
+      "캐시워크 포 비즈니스는 *AppBar / BottomNav 컴포넌트 없음* (앱 없으니 필요 없음). 모바일 헤더도 CashwalkBizWebHeader variant='mobile', 모바일 푸터는 CashwalkBizFooter layout='mobile'.",
     ],
     recommended: [
       "Desktop: `<CashwalkBizWebHeader variant='desktop' logo={{...}} menuItems={...} activeKey='home' actions={[{ key:'login', label:'로그인', href:'#' }]} />`",
@@ -2158,11 +2195,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "CashwalkBizFooter",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "캐포비 통합 푸터. 캐포비는 웹 전용이라 surface='web' (default) 만 지원. layout='desktop'|'mobile' 으로 반응형 분기. light 톤 + Neutral 텍스트.",
+      "캐시워크 포 비즈니스 통합 푸터. 캐시워크 포 비즈니스는 웹 전용이라 surface='web' (default) 만 지원. layout='desktop'|'mobile' 으로 반응형 분기. light 톤 + Neutral 텍스트.",
     figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-2208",
     pitfalls: [
-      "Trost 처럼 다크 푸터로 바꾸지 말 것 — 캐포비 가이드는 light + neutral 텍스트.",
-      "surface prop 은 'web' 만 — 타입 단에서 다른 값 차단 (캐포비는 app 푸터 없음).",
+      "Trost 처럼 다크 푸터로 바꾸지 말 것 — 캐시워크 포 비즈니스 가이드는 light + neutral 텍스트.",
+      "surface prop 은 'web' 만 — 타입 단에서 다른 값 차단 (캐시워크 포 비즈니스는 app 푸터 없음).",
       "기존 CashwalkBizWebFooter 의 variant prop 이 CashwalkBizFooter 에서는 layout 으로 rename.",
     ],
     recommended: [
@@ -3184,7 +3221,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- state 를 자동으로 'uploaded' 로 바꾸지 않음 — 호스트에서 명시적 갱신 필요 -->\n<nds-image-upload state=\"empty\"></nds-image-upload>  <!-- upload 끝나도 그대로 -->",
     },
     summary:
-      "캐포비 admin 의 단일 이미지 업로드 위젯. 150×150 preview + 우측 업로드 버튼(135×44) + 사이즈 안내 가로 레이아웃. state(empty/uploaded/error) 별 시각 분기.",
+      "캐시워크 포 비즈니스 admin 의 단일 이미지 업로드 위젯. 150×150 preview + 우측 업로드 버튼(135×44) + 사이즈 안내 가로 레이아웃. state(empty/uploaded/error) 별 시각 분기.",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3078-617",
     pitfalls: [
       '`<input type="file">` 는 internal trigger — 외부에서 별도 file picker 를 마운트하거나 `onUploadClick` 안에서 직접 input.click() 호출 금지.',
@@ -3221,7 +3258,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     usagePolicy: {
       useFor: [
-        "캐포비 admin 의 콘텐츠/상품/배너 등록 폼 단일 이미지 슬롯",
+        "캐시워크 포 비즈니스 admin 의 콘텐츠/상품/배너 등록 폼 단일 이미지 슬롯",
         "권장 사이즈 명시가 필요한 업로드 영역 (예: 200×200, 4:3)",
         "user-app 에서도 호환 — 시멘틱 토큰 cascade 로 자동 브랜드 톤",
       ],
@@ -3449,15 +3486,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "error 와 helper 를 동시에 표시 — 사용자는 어떤 메시지를 우선해야 할지 혼란. error 모드에서는 helper 숨김.",
       "counter 는 max-length 가 명확한 textarea / input 에서만 사용.",
       "label-position='left' + description 동시 사용 — description 이 있으면 자동으로 top 으로 폴백 (좌측 좁은 컬럼에 멀티라인 설명을 욱여넣지 않기 위함).",
-      "label-position='left' 인데 input size 가 default(48) — 캐포비 admin 표준은 size='compact'(40). 라벨 baseline 이 안 맞음.",
+      "label-position='left' 인데 input size 가 default(48) — 캐시워크 포 비즈니스 admin 표준은 size='compact'(40). 라벨 baseline 이 안 맞음.",
       "density='admin' 인데 stack 사이에 별도 gap 24/48 박음 — FormField 자체 py-24 가 이미 시각 48px 을 만드므로 이중 간격이 됨. 부모는 그냥 flex column 으로 두고 FormField 가 알아서 간격 책임지게 할 것.",
-      "density 와 size 혼동: density 는 FormField 자체 (label/helper typo + padding) 가 admin 톤이냐, size 는 Input/Select 의 height 가 40 이냐. 캐포비 admin 표준은 둘 다 admin/compact 짝.",
+      "density 와 size 혼동: density 는 FormField 자체 (label/helper typo + padding) 가 admin 톤이냐, size 는 Input/Select 의 height 가 40 이냐. 캐시워크 포 비즈니스 admin 표준은 둘 다 admin/compact 짝.",
       "FormField child 슬롯에 raw <div> + 수기 flex 로 input 여러 개 — 대신 InputGroup 컴포넌트 사용 (gap 12 + flex:1 균등 자동).",
     ],
     recommended: [
       "모바일/일반 폼: <nds-form-field label='이름' helper='실명' required> + <nds-input>",
-      "캐포비 admin 표준 (단일 input): <nds-form-field label='Label' label-position='left' density='admin'> + <nds-input size='compact' / nds-select>",
-      "캐포비 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)",
+      "캐시워크 포 비즈니스 admin 표준 (단일 input): <nds-form-field label='Label' label-position='left' density='admin'> + <nds-input size='compact' / nds-select>",
+      "캐시워크 포 비즈니스 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)",
       "FormSection (FormField 두 개 이상 stack): 부모는 <div class='form-card'> (radius 16, padding 24, white bg) + 안에 <nds-form-field density='admin'> 들을 그냥 flex column 으로 쌓기. 각 FormField 의 py-24 가 자동으로 시각 48px 간격을 만듦.",
       "글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만.",
     ],
@@ -3470,7 +3507,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "label body1 (16/24, ≡ Figma Subtitle1/Medium), helper body3 (14/20, ≡ Figma Body2/Regular), 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871 표준).",
     },
     examplesHtml: {
-      do: '<!-- 모바일/일반 폼 -->\n<nds-form-field label="이름" helper="실명을 입력해주세요" html-for="name-input" required>\n  <nds-input id="name-input" name="name"></nds-input>\n</nds-form-field>\n\n<!-- 캐포비 admin: label 좌측 + compact + admin density -->\n<nds-form-field label="Label" label-position="left" density="admin" html-for="admin-name">\n  <nds-input id="admin-name" size="compact" placeholder="값을 입력하세요"></nds-input>\n</nds-form-field>\n\n<!-- row 다중 input — InputGroup -->\n<nds-form-field label="기간" label-position="left" density="admin">\n  <nds-input-group>\n    <nds-select placeholder="년"></nds-select>\n    <nds-select placeholder="월"></nds-select>\n    <nds-select placeholder="일"></nds-select>\n  </nds-input-group>\n</nds-form-field>',
+      do: '<!-- 모바일/일반 폼 -->\n<nds-form-field label="이름" helper="실명을 입력해주세요" html-for="name-input" required>\n  <nds-input id="name-input" name="name"></nds-input>\n</nds-form-field>\n\n<!-- 캐시워크 포 비즈니스 admin: label 좌측 + compact + admin density -->\n<nds-form-field label="Label" label-position="left" density="admin" html-for="admin-name">\n  <nds-input id="admin-name" size="compact" placeholder="값을 입력하세요"></nds-input>\n</nds-form-field>\n\n<!-- row 다중 input — InputGroup -->\n<nds-form-field label="기간" label-position="left" density="admin">\n  <nds-input-group>\n    <nds-select placeholder="년"></nds-select>\n    <nds-select placeholder="월"></nds-select>\n    <nds-select placeholder="일"></nds-select>\n  </nds-input-group>\n</nds-form-field>',
       dont: '<!-- htmlFor (React 표기) — vanilla HTML 에선 html-for 만 동작 -->\n<nds-form-field label="이름" htmlFor="x"><nds-input id="x"></nds-input></nds-form-field>\n<!-- label-position="left" 인데 default size — 라벨이 input 중앙과 안 맞음 -->\n<nds-form-field label="Label" label-position="left"><nds-input></nds-input></nds-form-field>\n<!-- admin 인데 부모에 gap 박음 — 이중 간격 -->\n<div style="display:flex;flex-direction:column;gap:24px">\n  <nds-form-field density="admin">...</nds-form-field>\n  <nds-form-field density="admin">...</nds-form-field>\n</div>\n<!-- 수기 flex 로 row 다중 input — InputGroup 써야 함 -->\n<nds-form-field label="기간"><div style="display:flex;gap:12px"><nds-input/><nds-input/></div></nds-form-field>',
     },
   },
@@ -3490,7 +3527,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "비율이 다른 케이스 (input + 짧은 button): align='start' 로 본래 너비 유지.",
     ],
     sizeMatrix: {
-      gap: "tight=8 / default=12 (Figma 캐포비 admin 표준) / loose=16",
+      gap: "tight=8 / default=12 (Figma 캐시워크 포 비즈니스 admin 표준) / loose=16",
       align: "stretch(기본)=모든 child flex:1 균등 / start=본래 너비",
     },
     examplesHtml: {
@@ -3801,6 +3838,26 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       emphasisRule:
         "헤더/푸터를 손수 조립한 흔적이 발견되면 즉시 BrandHeader/BrandFooter 한 줄로 교체. 메뉴 라벨이나 로고를 페이지마다 적는 건 SSOT 위반.",
     },
+    /**
+     * Pattern 'Brand-aware Base' metadata (Figma 450:68 v2).
+     * BRAND_DATA SSOT 는 `packages/html/src/components/nds-brand-chrome.ts` — 본 metadata 는 그 미러 (가이드 응답용).
+     */
+    validPropValues: {
+      trost: { activeKey: ["home", "counsel", "test", "care", "center"] },
+      geniet: { activeKey: ["home", "community", "deal", "review"] },
+      "nudge-eap": {
+        activeKey: ["counsel", "test", "therapy", "letter", "news", "my"],
+      },
+      "cashwalk-biz": {
+        activeKey: ["home", "campaign", "member", "channel", "setting"],
+      },
+    },
+    assetManifest: {
+      trost: ["trost-logo.svg"],
+      geniet: ["geniet-logo-pc.webp", "geniet-logo-footer.webp"],
+      "nudge-eap": ["nudge-eap-logo.png", "nudge-eap-logo-footer.png"],
+      "cashwalk-biz": ["cashwalk-biz/cashwalk-for-business-horizontal.svg"],
+    },
   },
   BrandFooter: {
     name: "BrandFooter",
@@ -3827,6 +3884,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         '  <a href="/terms">이용약관</a> | <a href="/privacy"><b>개인정보처리방침</b></a>\n' +
         "  <p>넛지모바일 주식회사 · 사업자번호 ...</p>\n" +
         "</footer>",
+    },
+    /**
+     * Pattern 'Brand-aware Base' metadata (Figma 450:68 v2).
+     * forcedProps: footerTone 은 brand 별 고정. trost 만 dark, 그 외 light ('*' 키 = default).
+     */
+    forcedProps: {
+      footerTone: { trost: "dark", "*": "light" },
+    },
+    assetManifest: {
+      trost: [],
+      geniet: ["geniet-logo-footer.webp"],
+      "nudge-eap": ["nudge-eap-logo-footer.png"],
+      "cashwalk-biz": [],
     },
   },
   BrandChrome: {
@@ -4390,7 +4460,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**작은 bucket = 38-42px** — Button.sm(42) / Button.xs(38) / Tabs.chip(mobile 36 — 38 에 가깝게 padding 조정). 정보 밀도 높은 어드민·표 상단 도구 모음에 사용.",
       "DS 컴포넌트의 height 는 `sizing.button.{size}` / `sizing.tabs.{type}.{viewport}` / `sizing.input.{kind}` 토큰이 단일 진실. **인라인 height 로 덮어쓰지 말 것** — 자연 높이가 다른 컴포넌트를 같은 px 로 강제하면 line-height 가 어긋난다.",
       "DateRangePicker / Toggle / Select 같이 sizing.* 토큰이 없는 컴포넌트는 size prop 으로 매치하거나, 같은 row 에서 padding 만 조정해 외형을 맞춘다. **임의 height: 40px 같은 raw px 금지** — 토큰에서 가장 가까운 bucket 으로 라운드.",
-      "row 안 컴포넌트 간 gap 은 8 / 12 / 16 중 하나. var(--gap-component-tight) / var(--gap-component-default) / var(--gap-component-loose).",
+      "row 안 컴포넌트 간 gap 은 8 / 12 / 16 중 하나. var(--semantic-gap-component-tight) / var(--semantic-gap-component-default) / var(--semantic-gap-component-loose).",
       "row baseline 정렬: align-items: center (vertical center) 가 기본. text label 이 있는 컴포넌트와 icon-only 컴포넌트를 섞으면 baseline 정렬은 어긋남 — center 만 사용.",
     ],
     avoid: [
@@ -4900,7 +4970,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-icon-library": {
     name: "cashwalk-biz-icon-library",
     summary:
-      "캐포비(캐시워크 for Business) admin 전용 아이콘 라이브러리. 46 icons · 6 categories (Navigation / Action / Status / Social / GNB / Selection). " +
+      "캐시워크 포 비즈니스 (Cashwalk for Business) admin 전용 아이콘 라이브러리. 46 icons · 6 categories (Navigation / Action / Status / Social / GNB / Selection). " +
       "현재는 카탈로그 메타데이터만 등록되어 있고 SVG 자산은 미동기화 — 디자인팀에서 SVG export 받기 전까지 공용 @nudge-design/icons 의 매칭 아이콘으로 fallback.",
     rules: [
       "Navigation (7): chevron-up/down/left/right, arrow-up/down/right.",
@@ -4909,13 +4979,13 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "Social (8): like, comment, share, ripple, bubble, message-quiz, banner, calendar.",
       "GNB (8): gnb-banner, gnb-channel, gnb-chat, gnb-quiz, gnb-member, gnb-setting, gnb-cash, download.",
       "Selection (6): radio-off/on, checkbox-off/on/error/on-green. Checkbox 의 'on-green' 은 success 표시용 별도 variant.",
-      "캐포비 모드에서 brand prefix 아이콘이 별도 제공되기 전까지는 공용 아이콘을 사용하되, 의미가 같은 캐포비 카탈로그 항목을 우선 fallback 후보로 본다.",
+      "캐시워크 포 비즈니스 모드에서 brand prefix 아이콘이 별도 제공되기 전까지는 공용 아이콘을 사용하되, 의미가 같은 캐시워크 포 비즈니스 카탈로그 항목을 우선 fallback 후보로 본다.",
       "동일 카테고리(Action / Status 등) 내 아이콘은 동일 weight / stroke 로 통일.",
       "Checkbox 의 error / on-green 분기는 가이드에 명시된 의미(에러 표시 / 성공 표시) 그대로 사용.",
     ],
     avoid: [
-      "SVG 가 도착하기 전 임의로 다른 출처(아이콘셋, lucide 등) 아이콘을 캐포비 화면에 섞지 말 것.",
-      "공용 아이콘과 캐포비 아이콘 의미가 충돌하면 캐포비 admin 화면에서는 캐포비 우선.",
+      "SVG 가 도착하기 전 임의로 다른 출처(아이콘셋, lucide 등) 아이콘을 캐시워크 포 비즈니스 화면에 섞지 말 것.",
+      "공용 아이콘과 캐시워크 포 비즈니스 아이콘 의미가 충돌하면 캐시워크 포 비즈니스 admin 화면에서는 캐시워크 포 비즈니스 우선.",
     ],
     metrics: {
       totalIcons: 46,
@@ -4928,19 +4998,19 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-button": {
     name: "cashwalk-biz-button",
     summary:
-      "캐포비 admin 의 Button 카탈로그 — 5 스타일 × 2 shape × 5 사이즈 × 3 상태 + TextButton + IconButton.",
+      "캐시워크 포 비즈니스 admin 의 Button 카탈로그 — 5 스타일 × 2 shape × 5 사이즈 × 3 상태 + TextButton + IconButton.",
     rules: [
       "5 스타일: Solid/Primary · Solid/Secondary · Weak/Secondary · Outlined/Primary · Outlined/Secondary. (※ Figma 캔버스 라벨은 'Neutral' 이지만 DS 네이밍은 'Secondary' — 동일 슬롯, color=\"secondary\" 와 정합.)",
       '2 shape: default(radius 8 · 일반 admin 폼/CTA) · pill(radius full · 모달 확인/취소·BottomCTA·격식 컨텍스트). `<Button shape="pill" />` 로 지정.',
       "5 사이즈: X-Large 52px · Large 48px · Medium 44px · Small 40px · Mini 36px.",
-      "Solid/Primary 는 #FFD200 배경 + 검정 텍스트(high-contrast) — 캐포비 시그니처. 텍스트 색을 흰색으로 바꾸지 않는다.",
+      "Solid/Primary 는 #FFD200 배경 + 검정 텍스트(high-contrast) — 캐시워크 포 비즈니스 시그니처. 텍스트 색을 흰색으로 바꾸지 않는다.",
       "Disabled bg 는 Neutral/400 #DDDDDD + 흰 텍스트 (Solid/Primary · Solid/Secondary 공통 페어, Figma 3098:1079/3098:1121).",
       "Outlined disabled (Primary/Secondary 모두) 는 border #E7E7E7 + text #BBB.",
       "TextButton: Large(38px) / Medium(32px) × Default/Hover/Disabled.",
       "IconButton: X-Large(48) / Large(44) / Medium(40) / Small(32) × Default/Hover/Disabled. (총 12 variants)",
       "터치/마우스 타겟 ≥ 36px (Mini) — admin 데스크톱은 그래도 Medium(44) 이상 권장.",
       "Outlined/Primary 텍스트는 Yellow/700 (#FEAF01) — Outlined 텍스트가 그린 색이면 안 됨 (가이드 명시).",
-      '**아이콘 색 하드코딩 금지** — `color="var(--semantic-icon-inverse-default)"` 처럼 inverse/brand 토큰 사용 금지. 캐포비는 primary text 가 검정이라 흰 아이콘이 노란 배경 위에 떠 보임. `color="currentColor"` 로 두어 Button 텍스트 색을 상속.',
+      '**아이콘 색 하드코딩 금지** — `color="var(--semantic-icon-inverse-default)"` 처럼 inverse/brand 토큰 사용 금지. 캐시워크 포 비즈니스는 primary text 가 검정이라 흰 아이콘이 노란 배경 위에 떠 보임. `color="currentColor"` 로 두어 Button 텍스트 색을 상속.',
     ],
     avoid: [
       "Solid/Primary 의 텍스트를 흰색으로 바꾸지 말 것 — 가이드 위반 + 가독성 저하.",
@@ -4959,7 +5029,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-form-layout": {
     name: "cashwalk-biz-form-layout",
     summary:
-      "캐포비 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → 페이지 끝 inline 센터 [취소][저장] 알약(rounded-28) cluster' 표준. " +
+      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → 페이지 끝 inline 센터 [취소][저장] 알약(rounded-28) cluster' 표준. " +
       "Figma 290:1197 (퀴즈 등록하기) 실측. 필드 단위 컴포넌트 정책은 pattern:cashwalk-biz-input, CTA 정책은 pattern:cashwalk-biz-button 과 함께 본다.",
     rules: [
       "**페이지 컨테이너**: 사이드바(좌 300px) 우측 본문. 페이지 bg `#FAFAFA`, 콘텐츠 컬럼 폭 1491px (실측), 좌측 padding 32px.",
@@ -4979,11 +5049,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**유효성 검사**: 입력 중 에러 표시 X (onBlur/submit). 글자 수 카운터만 실시간.",
     ],
     avoid: [
-      "라벨을 필드 위에 배치 (label-above 2단 흐름) — 캐포비 admin 은 인라인-좌측 (172px 라벨 컬럼) 패턴.",
+      "라벨을 필드 위에 배치 (label-above 2단 흐름) — 캐시워크 포 비즈니스 admin 은 인라인-좌측 (172px 라벨 컬럼) 패턴.",
       "페이지 헤더 우측에 [저장] 버튼 — 하단 센터 액션바와 중복.",
-      "필수 마커 색을 `#FF4141` 으로 — 캐포비 폼은 `#FC3500` (Coral Red-Orange).",
+      "필수 마커 색을 `#FF4141` 으로 — 캐시워크 포 비즈니스 폼은 `#FC3500` (Coral Red-Orange).",
       "Disabled CTA 를 Yellow/100 (#FFFAE5) 로 — 폼 액션바 disabled 는 `#D8D8D8` neutral gray.",
-      "액션바를 우측 정렬 또는 sticky bottom — 캐포비 폼은 페이지 끝 inline 센터.",
+      "액션바를 우측 정렬 또는 sticky bottom — 캐시워크 포 비즈니스 폼은 페이지 끝 inline 센터.",
       "CTA 모양을 8px rounded 사각형 — Figma 는 56h rounded-28 알약 (pill).",
       "필드 border-radius 를 8px 로 — Figma 는 10px.",
       "필수 라벨을 brand yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.",
@@ -4992,7 +5062,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     examples: [
       {
         verdict: "good",
-        source: "Figma 290:1197 캐포비 admin form (퀴즈 등록하기)",
+        source: "Figma 290:1197 캐시워크 포 비즈니스 admin form (퀴즈 등록하기)",
         caption:
           "PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-48 rounded-10 → 페이지 끝 [취소][저장] 알약 cluster 센터.",
       },
@@ -5000,7 +5070,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         verdict: "bad",
         source: "잘못된 admin form 레이아웃",
         caption:
-          "라벨-위 흐름 + 우측 정렬 sticky 액션바 + rounded-8 사각 CTA + #FF4141 필수마커 — 모두 캐포비 admin 컨벤션 위반.",
+          "라벨-위 흐름 + 우측 정렬 sticky 액션바 + rounded-8 사각 CTA + #FF4141 필수마커 — 모두 캐시워크 포 비즈니스 admin 컨벤션 위반.",
       },
     ],
     metrics: {
@@ -5037,19 +5107,20 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B5%AD-%EC%BA%90%EC%8B%9C%EC%9B%8C%ED%81%AC_WEB-Dev?node-id=290-1197",
     references: [
       {
-        label: "캐포비 admin 폼 SSOT — 퀴즈 등록하기 (Figma 290:1197)",
+        label: "캐시워크 포 비즈니스 admin 폼 SSOT — 퀴즈 등록하기 (Figma 290:1197)",
         image: "references/cashwalk-biz-form-290-1197.png",
-        caption: "캐포비 admin 폼 페이지 SSOT 스크린샷. 본 가이드 metrics 는 이 노드 실측 기준.",
+        caption:
+          "캐시워크 포 비즈니스 admin 폼 페이지 SSOT 스크린샷. 본 가이드 metrics 는 이 노드 실측 기준.",
         brand: "cashwalk-biz",
       },
       {
-        label: "캐포비 사이드바 — 광고/운영/관리 3섹션 (Figma 168:1250)",
+        label: "캐시워크 포 비즈니스 사이드바 — 광고/운영/관리 3섹션 (Figma 168:1250)",
         image: "references/cashwalk-biz-sidebar-168-1250.png",
         caption: "본문 좌측 LNB. 폼 페이지의 사이드바 컨텍스트.",
         brand: "cashwalk-biz",
       },
       {
-        label: "캐포비 사이드바 — 서브메뉴 펼침 변형 (Figma 290:1593)",
+        label: "캐시워크 포 비즈니스 사이드바 — 서브메뉴 펼침 변형 (Figma 290:1593)",
         image: "references/cashwalk-biz-sidebar-290-1593.png",
         caption: "퀴즈 관리 sub-item 펼친 상태 (등록하기/목록/통계). 폼 진입 경로.",
         brand: "cashwalk-biz",
@@ -5066,9 +5137,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**뷰포트**: 데스크탑 1920px, 본문 rail **800px** 센터. 모바일 폼은 이 가이드 적용 X (별도 시안 필요).",
       "**WebHeader**: 80h 풀폭 white + bottom border `#ECECEC`. 좌측 로고 + 센터 6 nav (`Bold 18/26 #111`) + 우측 [로그인 #2b96ed]/[앱 다운로드 #F5F5F5 + blue 텍스트].",
       "**페이지 헤더**: 타이틀 Pretendard **Bold 28/38** (Headline 2) #111. step/progress indicator 없음.",
-      "**필드 레이아웃 = 라벨-위 (label-above) 단일 컬럼** — 캐포비 admin (인라인-좌측) 과 정반대. 800px rail 안 세로 흐름.",
+      "**필드 레이아웃 = 라벨-위 (label-above) 단일 컬럼** — 캐시워크 포 비즈니스 admin (인라인-좌측) 과 정반대. 800px rail 안 세로 흐름.",
       "**라벨 타이포**: Pretendard **Medium 16/24 #383838**. 필수 마커: 별표 `*` **`#F13F00`** (Coral Red) 라벨 뒤 인라인.",
-      "**필드 컴포넌트**: 높이 **48px**, `radius 8px`, border 1px `#D8D8D8`, **bg `#FAFAFA`** (soft off-white — 멘탈케어 톤. 캐포비 pure white 와 차이). padding 16×14.",
+      "**필드 컴포넌트**: 높이 **48px**, `radius 8px`, border 1px `#D8D8D8`, **bg `#FAFAFA`** (soft off-white — 멘탈케어 톤. 캐시워크 포 비즈니스 pure white 와 차이). padding 16×14.",
       "**그룹 간격**: 그룹↔그룹 **36px**, 라벨↔필드 **12px**, helper↔라벨 **4px**.",
       "**Helper 텍스트**: Pretendard Regular **13/18 #383838** 또는 14/20 #666.",
       "**CTA**: 페이지 끝 inline + 센터. 단일 primary 버튼 (`신청서 제출하기`) **w-328 h-48 rounded-8 padding 12**, Bold 16/24 white. 활성 `#2b96ed`, disabled `#9CA2AE` + 흰.",
@@ -5080,7 +5151,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**유효성 검사**: onBlur/submit (실시간 빨간 메시지 금지 — 멘탈케어 컨텍스트 거부감).",
     ],
     avoid: [
-      "라벨을 인라인-좌측 컬럼으로 정렬 — NudgeEAP 고객 폼은 label-above. (캐포비 admin 패턴 혼동 적용 X).",
+      "라벨을 인라인-좌측 컬럼으로 정렬 — NudgeEAP 고객 폼은 label-above. (캐시워크 포 비즈니스 admin 패턴 혼동 적용 X).",
       "필드 bg pure white — 멘탈케어 컨텍스트는 soft off-white(`#FAFAFA`) 시그니처.",
       "필수 마커를 `#FF4141` 로 — NudgeEAP 는 `#F13F00` Coral Red.",
       "비밀유지 안내 누락 — 검사/상담 폼은 신뢰 확보 타일이 거의 필수.",
@@ -5289,13 +5360,13 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-input": {
     name: "cashwalk-biz-input",
     summary:
-      "캐포비 admin 의 Input/Form 컴포넌트 카탈로그. 8 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
+      "캐시워크 포 비즈니스 admin 의 Input/Form 컴포넌트 카탈로그. 8 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
     rules: [
       "TextInput (5 states), TextField (Label+Input+Helper, 5 states), Dropdown (Default/Hover/Active/Error/Disabled), DateInput (5 states), Textarea (5 states), Checkbox (4 variants), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션).",
-      "Input/Border/Focus 는 ★ Neutral/900 (#111111) 검정 — 다른 브랜드(brand 색 focus) 와 달리 캐포비 admin 은 검정 outline.",
+      "Input/Border/Focus 는 ★ Neutral/900 (#111111) 검정 — 다른 브랜드(brand 색 focus) 와 달리 캐시워크 포 비즈니스 admin 은 검정 outline.",
       "Input/BG/Disabled = Neutral/50 (#FAFAFA), Input/Border/Default = Neutral/200 (#EEEEEE).",
       "Checkbox 의 'on-green' SVG 가 별도 — success 표시(이미 처리 완료) 의미. 일반 checked 와 구분.",
-      "ImageUpload 는 캐포비 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.",
+      "ImageUpload 는 캐시워크 포 비즈니스 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.",
       "Input focus 는 brand 색(노랑) 이 아니라 검정 outline. 가이드 명시.",
       "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline.",
     ],

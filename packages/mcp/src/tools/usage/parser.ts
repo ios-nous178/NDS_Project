@@ -234,11 +234,15 @@ function detectBrand(absPath: string): Brand {
   const lower = absPath.toLowerCase();
   if (/(trost)/i.test(lower)) return "trost";
   if (/(geniet)/i.test(lower)) return "geniet";
+  // 한국어 alias 는 "캐시워크 포 비즈니스". "캐포비" / "비지니스" 오타는 legacy alias 로 backward-compat.
   if (
-    /(cashwalk-biz|cashwalk[-_ ]for[-_ ]business|캐포비|캐시워크[-_ ]포[-_ ]비지니스)/i.test(lower)
+    /(cashwalk-biz|cashwalk[-_ ]for[-_ ]business|캐시워크[-_ ]?포[-_ ]?비[즈지]니스|캐포비)/i.test(
+      lower,
+    )
   )
     return "cashwalk-biz";
   if (/(nudge[-_]?eap)/i.test(lower)) return "nudge-eap";
+  if (/(runmile|런마일)/i.test(lower)) return "runmile";
   return null;
 }
 
