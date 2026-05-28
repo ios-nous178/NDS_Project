@@ -20,6 +20,7 @@
  *  - unknown-nds-tag      : <nds-foo> 가 카탈로그(@nudge-design/html) 에 없는 태그
  *  - unknown-nds-class    : class="nds-foo" 가 React DS stylesheet 에 없는 클래스
  *  - invalid-nds-attr-value : nds-* attribute enum 위반
+ *  - raw-shell-pattern    : <style> 안 raw .page / .topbar / .section / .form-row 정의 (admin-shell 가이드 위반)
  *
  * 검출 룰 (JSX 에서 포팅 — 컨테이너 / 카운팅 / 시각 위계):
  *  - card-slot-double-padding   : <nds-card-header|body|footer> 에 외곽 padding
@@ -157,7 +158,55 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "tone-on-tone-filled": "warn",
   "visual-emphasis-overload": "warn",
   "primary-color-role-overload": "warn",
+  // admin-shell 강제 (pattern:admin-shell)
+  "raw-shell-pattern": "error",
 };
+
+/**
+ * raw-shell-pattern detector — <style> 안 layout primitive 재정의 감지.
+ * mock-test 류 어드민 페이지마다 200-600 줄 .page/.topbar/.section/.form-row CSS 를
+ * 매번 손으로 쓰는 패턴을 차단. @nudge-design/styles 의 nds-shell / nds-section /
+ * nds-form-row 클래스로 교체해야 함. 가이드: get_guide({ topic: 'pattern:admin-shell' }).
+ *
+ * 매칭 전략 — 흔한 선택자 이름 + 시그니처 CSS 속성 조합으로만 잡음 (false positive 회피):
+ *   .page/.shell/.layout + display: grid + 1fr + 3자리 px        → nds-shell
+ *   .topbar/.app-bar/.header-bar + position: sticky + top: 0      → nds-shell__topbar
+ *   .section/.panel/.surface-card + background + border + radius  → nds-section
+ *   .form-row/.field-row + display: grid + 1fr                    → nds-form-row
+ *
+ * 선택자에 nds- prefix 가 있으면 제외 (DS 클래스 본인 정의는 패스).
+ */
+const RAW_SHELL_PATTERNS: Array<{
+  name: string;
+  selectorRe: RegExp;
+  requireAll: RegExp[];
+  ndsClass: string;
+}> = [
+  {
+    name: "page shell (sidebar + main grid)",
+    selectorRe: /\.(?:page|shell|app-shell|app-root|layout)\b(?![-_\w])[^{,]*\{([^}]+)\}/gi,
+    requireAll: [/display\s*:\s*grid/i, /grid-template-columns/i, /\b1fr\b/, /\b\d{3}px\b/],
+    ndsClass: 'class="nds-shell"',
+  },
+  {
+    name: "sticky topbar",
+    selectorRe: /\.(?:topbar|top-bar|app-bar|header-bar|app-header)\b(?![-_\w])[^{,]*\{([^}]+)\}/gi,
+    requireAll: [/position\s*:\s*sticky/i, /top\s*:\s*0/i],
+    ndsClass: 'class="nds-shell__topbar"',
+  },
+  {
+    name: "section card (white surface + border + radius)",
+    selectorRe: /\.(?:section|panel|surface-card|card-box|box-card)\b(?![-_\w])[^{,]*\{([^}]+)\}/gi,
+    requireAll: [/background\s*:/i, /border\s*:\s*1px/i, /border-radius/i],
+    ndsClass: 'class="nds-section"',
+  },
+  {
+    name: "form row (label + control grid)",
+    selectorRe: /\.(?:form-row|field-row|label-row)\b(?![-_\w])[^{,]*\{([^}]+)\}/gi,
+    requireAll: [/display\s*:\s*grid/i, /grid-template-columns/i, /\b1fr\b/],
+    ndsClass: 'class="nds-form-row"',
+  },
+];
 
 function severityFor(rule: string): HtmlViolationSeverity {
   return RULE_SEVERITY[rule] ?? "warn";
@@ -224,7 +273,8 @@ function checkStyleString(
             line,
             selector,
             detail: `${v}px (4 의 배수 아님)`,
-            suggestion: "4 의 배수 (4/8/12/16/20/24…) 또는 var(--gap-*|--inset-*) semantic 토큰.",
+            suggestion:
+              "4 의 배수 (4/8/12/16/20/24…) 또는 var(--semantic-gap-*|--semantic-inset-*) semantic 토큰.",
           });
         }
       }
@@ -243,7 +293,7 @@ function checkStyleString(
       selector,
       detail: style.trim(),
       suggestion:
-        "padding/margin/gap 은 var(--spacing-*) 가 아니라 semantic var(--gap-*|--inset-*) 만 사용.",
+        "padding/margin/gap 은 var(--spacing-*) 가 아니라 semantic var(--semantic-gap-*|--semantic-inset-*) 만 사용.",
     });
   }
 
@@ -550,6 +600,29 @@ export function validateHtmlSource(
         });
       }
     }
+
+    // raw-shell-pattern — admin-shell 가이드 강제 (nds-shell / nds-section / nds-form-row).
+    for (const pattern of RAW_SHELL_PATTERNS) {
+      // matchAll 마다 lastIndex 가 진행되도록 매번 새 RegExp 인스턴스가 필요한 건 아니지만,
+      // global flag 가 매번 매치되도록 source 를 cssBody 로 한정해 호출.
+      for (const match of cssBody.matchAll(pattern.selectorRe)) {
+        const ruleBody = match[1] ?? "";
+        if (!pattern.requireAll.every((re) => re.test(ruleBody))) continue;
+        const offsetInBody = match.index ?? 0;
+        const linesBefore = cssBody.slice(0, offsetInBody).split("\n").length - 1;
+        const line = blockLine + linesBefore;
+        const selectorHead = match[0].slice(0, match[0].indexOf("{")).trim();
+        violations.push({
+          rule: "raw-shell-pattern",
+          line,
+          selector: "<style>",
+          detail: `${pattern.name} 을 raw CSS 로 정의: ${selectorHead.slice(0, 60)}`,
+          suggestion:
+            `${pattern.ndsClass} 사용. @nudge-design/styles/styles.css 한 줄 import 로 활성화. ` +
+            `상세: get_guide({ topic: 'pattern:admin-shell' }).`,
+        });
+      }
+    }
   }
 
   // ─── 컨테이너 패스 (Card / Footer / 영역별 CTA) ───
@@ -719,7 +792,7 @@ function collectDocumentLevelViolations(
       line: 1,
       detail: `한 mockup 에 nds-card 가 ${cardTotal}개 — 모든 정보 단위를 카드로 감싸는 패턴.`,
       suggestion:
-        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--gap-loose) + heading + Divider 로 위계를 표현하세요.",
+        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--semantic-gap-loose) + heading + Divider 로 위계를 표현하세요.",
     });
   }
 
