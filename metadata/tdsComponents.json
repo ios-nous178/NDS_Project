@@ -1,0 +1,476 @@
+{
+  "$comment": "목표 컴포넌트 (target components) baseline + 브랜드별 Figma 가이드 매핑. 출처는 TDS(Toss DS) Components 사이드바이지만, 우리에게는 '브랜드 4개가 결국 갖춰야 할 컴포넌트 목표' 로 사용. figmaByBrand 는 브랜드별 Figma 가이드 URL — 채워질수록 진짜 구현 비율이 올라감.",
+  "$sources": {
+    "mobile": "https://tossmini-docs.toss.im/tds-mobile/",
+    "rn": "https://tossmini-docs.toss.im/tds-react-native/",
+    "fetchedAt": "2026-05-28"
+  },
+  "categories": {
+    "general": "일반",
+    "input": "입력",
+    "overlay": "오버레이",
+    "feedback": "피드백",
+    "navigation": "내비게이션",
+    "layout": "레이아웃",
+    "content": "콘텐츠",
+    "data": "데이터",
+    "domain": "도메인"
+  },
+  "components": [
+    {
+      "tds": "Button",
+      "platforms": ["mobile", "rn"],
+      "category": "general",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Button/",
+      "nds": "Button",
+      "figmaByBrand": {
+        "nudge-eap": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=508-6962"
+      }
+    },
+    {
+      "tds": "TextButton",
+      "platforms": ["mobile", "rn"],
+      "category": "general",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/text-button/",
+      "nds": "TextButton",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "IconButton",
+      "platforms": ["mobile", "rn"],
+      "category": "general",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/icon-button/",
+      "nds": "IconButton",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Badge",
+      "platforms": ["mobile", "rn"],
+      "category": "general",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/badge/",
+      "nds": "Badge",
+      "figmaByBrand": {
+        "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-10856"
+      }
+    },
+    {
+      "tds": "BoardRow",
+      "platforms": ["mobile", "rn"],
+      "category": "content",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/board-row/",
+      "nds": "Accordion",
+      "ndsNote": "BoardRow = 토글형 Q&A. NDS Accordion 으로 매핑.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Border",
+      "platforms": ["mobile", "rn"],
+      "category": "general",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/border/",
+      "nds": "Divider",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "BottomInfo",
+      "platforms": ["mobile", "rn"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/bottom-info/",
+      "nds": null,
+      "ndsNote": "TDS 의 보조 문구 하단 영역 — NDS 에는 명시 컴포넌트 없음 (Banner / TipCard 로 대체).",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "BottomSheet",
+      "platforms": ["mobile"],
+      "category": "overlay",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/bottom-sheet/",
+      "nds": "BottomSheet",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "BottomCTA",
+      "platforms": ["mobile"],
+      "category": "layout",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/BottomCTA/check-first/",
+      "nds": "FloatingCtaBanner",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Bubble",
+      "platforms": ["mobile"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/bubble/",
+      "nds": "Tooltip",
+      "ndsNote": "TDS Bubble = 한 줄 안내 풍선. NDS Tooltip 으로 매핑.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Checkbox",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/checkbox/",
+      "nds": "Checkbox",
+      "figmaByBrand": {
+        "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904"
+      }
+    },
+    {
+      "tds": "Radio",
+      "platforms": ["rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/radio/",
+      "nds": "Radio",
+      "figmaByBrand": {
+        "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904"
+      }
+    },
+    {
+      "tds": "Switch",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/switch/",
+      "nds": "Toggle",
+      "figmaByBrand": {
+        "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904"
+      }
+    },
+    {
+      "tds": "TextField",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/TextField/text-field/",
+      "nds": "Input",
+      "figmaByBrand": {
+        "nudge-eap": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=430-4212"
+      }
+    },
+    {
+      "tds": "SearchField",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/search-field/",
+      "nds": "SearchInput",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Slider",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/slider/",
+      "nds": "Slider",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Stepper",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/stepper/",
+      "nds": "Stepper",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "NumericSpinner",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/numeric-spinner/",
+      "nds": "NumberStepper",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "SegmentedControl",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/segmented-control/",
+      "nds": "SegmentedControl",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Rating",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/rating/",
+      "nds": "StarRating",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Keypad",
+      "platforms": ["mobile", "rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Keypad/keypad/",
+      "nds": "PinPad",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Dropdown",
+      "platforms": ["rn"],
+      "category": "input",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/dropdown/",
+      "nds": "Select",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Tab",
+      "platforms": ["mobile", "rn"],
+      "category": "navigation",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/tab/",
+      "nds": "Tabs",
+      "figmaByBrand": {
+        "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9902"
+      }
+    },
+    {
+      "tds": "Menu",
+      "platforms": ["mobile"],
+      "category": "overlay",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/menu/",
+      "nds": "DropdownMenu",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Navbar",
+      "platforms": ["rn"],
+      "category": "navigation",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/navbar/",
+      "nds": "AppBar",
+      "brandChrome": true,
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Modal",
+      "platforms": ["mobile"],
+      "category": "overlay",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/modal/",
+      "nds": "Modal",
+      "figmaByBrand": {
+        "nudge-eap": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=612-18421"
+      }
+    },
+    {
+      "tds": "Dialog",
+      "platforms": ["mobile", "rn"],
+      "category": "overlay",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Dialog/dialog/",
+      "nds": "Popup",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Toast",
+      "platforms": ["mobile", "rn"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/toast/",
+      "nds": "Toast",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Tooltip",
+      "platforms": ["mobile"],
+      "category": "overlay",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/tooltip/",
+      "nds": "Tooltip",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Loader",
+      "platforms": ["mobile", "rn"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/loader/",
+      "nds": "Spinner",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Skeleton",
+      "platforms": ["mobile", "rn"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/skeleton/",
+      "nds": "Skeleton",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "ProgressBar",
+      "platforms": ["mobile", "rn"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/progress-bar/",
+      "nds": "ProgressBar",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "ProgressStepper",
+      "platforms": ["mobile"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/progress-stepper/",
+      "nds": "MultiStepForm",
+      "ndsNote": "단계 진행 표시 — NDS MultiStepForm 의 indicator.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Result",
+      "platforms": ["mobile", "rn"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/result/",
+      "nds": "EmptyState",
+      "ndsNote": "TDS Result = 완료/실패 결과 화면. NDS 에서는 EmptyState (변형) 으로 커버.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "ErrorPage",
+      "platforms": ["rn"],
+      "category": "feedback",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/error-page/",
+      "nds": "EmptyState",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "GridList",
+      "platforms": ["mobile", "rn"],
+      "category": "layout",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/grid-list/",
+      "nds": "QuickActionGrid",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "List",
+      "platforms": ["rn"],
+      "category": "layout",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/list/",
+      "nds": "List",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "ListRow",
+      "platforms": ["mobile", "rn"],
+      "category": "content",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/ListRow/list-row-overview/",
+      "nds": "List",
+      "ndsNote": "NDS 는 List + ListItem 으로 통합.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "ListHeader",
+      "platforms": ["mobile", "rn"],
+      "category": "content",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/list-header/",
+      "nds": "PageHeader",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "ListFooter",
+      "platforms": ["mobile", "rn"],
+      "category": "content",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/list-footer/",
+      "nds": null,
+      "ndsNote": "리스트 하단 보조 텍스트 — NDS 별도 컴포넌트 없음.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "TableRow",
+      "platforms": ["mobile", "rn"],
+      "category": "data",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/table-row/",
+      "nds": "DataTable",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Top",
+      "platforms": ["mobile"],
+      "category": "layout",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/top/",
+      "nds": "PageHeader",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "AmountTop",
+      "platforms": ["rn"],
+      "category": "layout",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/amount-top/",
+      "nds": null,
+      "ndsNote": "TDS 의 금액 강조 상단 영역 — NDS 미구현.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Asset",
+      "platforms": ["mobile", "rn"],
+      "category": "content",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Asset/asset/",
+      "nds": "Asset",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Carousel",
+      "platforms": ["rn"],
+      "category": "content",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/carousel/",
+      "nds": "Carousel",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Agreement",
+      "platforms": ["mobile"],
+      "category": "domain",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Agreement/v4/",
+      "nds": "ConsentChecklist",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Chart",
+      "platforms": ["mobile"],
+      "category": "data",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/chart/",
+      "nds": "Sparkline",
+      "ndsNote": "TDS Chart 보다 NDS Sparkline 이 가볍지만 가장 가까운 매핑.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "BarChart",
+      "platforms": ["rn"],
+      "category": "data",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/bar-chart/",
+      "nds": null,
+      "ndsNote": "전용 BarChart 없음 — DataTable 또는 외부 차트 라이브러리 사용 권장.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Highlight",
+      "platforms": ["mobile", "rn"],
+      "category": "general",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/highlight/",
+      "nds": "DSHighlight",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Paragraph",
+      "platforms": ["mobile"],
+      "category": "content",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/paragraph/",
+      "nds": "ExpandableText",
+      "ndsNote": "Paragraph 자체는 텍스트 컴포넌트 — NDS 는 ExpandableText 로 가장 가까운 패턴 제공.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Post",
+      "platforms": ["mobile", "rn"],
+      "category": "content",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/post/",
+      "nds": "TitleBlock",
+      "ndsNote": "Post = 줄글 포스트 스타일. NDS TitleBlock + 본문 조합으로 대체.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Gradient",
+      "platforms": ["rn"],
+      "category": "general",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/gradient/",
+      "nds": null,
+      "ndsNote": "그라데이션 유틸 — NDS 에는 토큰만 존재.",
+      "figmaByBrand": {}
+    },
+    {
+      "tds": "Shadow",
+      "platforms": ["rn"],
+      "category": "general",
+      "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/shadow/",
+      "nds": null,
+      "ndsNote": "그림자 유틸 — NDS 는 elevation 토큰으로 대체.",
+      "figmaByBrand": {}
+    }
+  ]
+}
