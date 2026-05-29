@@ -1,0 +1,30 @@
+import React from "react";
+
+export interface RunmileAccountIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const RunmileAccountIcon = React.forwardRef<SVGSVGElement, RunmileAccountIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(2 2)">
+    <g id="ic/user/stroke">
+<path id="Vector" d="M10 1.3C14.8 1.3 18.7 5.2 18.7 10C18.7 14.8 14.8 18.7 10 18.7C5.2 18.7 1.3 14.8 1.3 10C1.3 5.2 5.2 1.3 10 1.3ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0Z" fill="currentColor"/>
+<path id="Vector_2" d="M9.99001 11.37C11.6 11.37 13.05 12.33 13.69 13.84C13.67 13.9 13.48 14.07 13.17 14.07H6.81001C6.50001 14.07 6.31001 13.89 6.30001 13.81C6.93001 12.33 8.37001 11.37 9.99001 11.37ZM9.99001 10.07C7.80001 10.07 5.91001 11.4 5.11001 13.31C4.65001 14.39 5.64001 15.37 6.81001 15.37H13.17C14.34 15.37 15.33 14.38 14.87 13.31C14.07 11.41 12.18 10.07 9.99001 10.07Z" fill="currentColor"/>
+<path id="Vector_3" d="M9.99003 5.24C10.73 5.24 11.34 5.85 11.34 6.59C11.34 7.33 10.73 7.94 9.99003 7.94C9.25003 7.94 8.64003 7.33 8.64003 6.59C8.64003 5.85 9.25003 5.24 9.99003 5.24ZM9.99003 3.94C8.53003 3.94 7.34003 5.13 7.34003 6.59C7.34003 8.05 8.53003 9.24 9.99003 9.24C11.45 9.24 12.64 8.05 12.64 6.59C12.64 5.13 11.45 3.94 9.99003 3.94Z" fill="currentColor"/>
+</g>
+  </g>
+    </svg>
+  )
+);
+
+RunmileAccountIcon.displayName = "RunmileAccountIcon";
