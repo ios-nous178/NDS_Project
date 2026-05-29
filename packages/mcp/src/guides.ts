@@ -3429,6 +3429,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "Checkbox",
     summary:
       "다중 선택 / on-off / 약관 동의 체크. 라벨이 함께 와야 의미가 전달되고, 단일 선택 그룹은 Radio 가 맞음.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3295-547",
     pitfalls: [
       "약관/필수 동의에 disabled 로 잠가두면 시각 위계가 모호 — required 또는 별도 안내문으로 명시.",
       "checked 와 default-checked 동시 사용 — controlled / uncontrolled 가 섞임.",
@@ -3709,6 +3710,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "Toggle",
     summary:
       "즉시 적용되는 on/off 스위치. 설정 페이지 / 알림 토글에 사용. 폼 제출 후 적용되는 binary 는 Checkbox 가 맞음.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3295-547",
     pitfalls: [
       "label 없는 단독 Toggle — 무엇을 켜고 끄는지 시각만으론 불명확.",
       "Toggle 변경 후 별도 '저장' 버튼이 필요한 UI 라면 Checkbox 가 맞음 — Toggle 은 즉시 반영 시그널.",
