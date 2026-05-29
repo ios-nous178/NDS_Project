@@ -536,7 +536,7 @@ export interface ComponentGuide {
     /** 패키지 내 상대경로 (`references/...`) — MCP server 가 절대경로로 풀어준다. */
     image?: string;
     caption?: string;
-    brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
+    brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile";
   }>;
   /** 접근성 가이드 (aria/대비/타겟 사이즈 등) */
   accessibility?: string[];
@@ -2256,6 +2256,22 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "현재 React/HTML 컴포넌트 없음 (`packages/react/src/runmile/` 에 BottomNav 만). 외부 mockup 에서 이 컴포넌트를 호출하면 안 됨 — 신규 PR 로 구현 후 사용.",
       "Runmile 로고는 `@nudge-design/assets` 의 `getBrandLogo('runmile')` 으로 가져옴 (red/mono/muted 3 variants).",
+    ],
+    references: [
+      {
+        label: "Runmile 웹 홈 — 기본 상태 (state=default)",
+        image: "references/runmile-web-home.png",
+        caption:
+          "런마일 웹 PC 홈 풀 캡처. 상단 RunmileWebHeader (로고 + 대회 정보/커뮤니티 GNB + 검색바 + 로그인) → 모집중인 대회 / 진행중인 대회 카드 그리드 + 우측 커뮤니티 인기글 사이드바 + 푸터. coral #FF5B37 = 런마일 primary.",
+        brand: "runmile",
+      },
+      {
+        label: "Runmile 웹 홈 — 채팅 패널 오픈 (헤더 우측 채팅 액션)",
+        image: "references/runmile-web-home-chat.png",
+        caption:
+          "헤더 우측에 채팅/로그인 액션이 노출된 상태. 채팅 버튼 클릭 시 우측 채팅 드로어가 열려 참여중/인기 채팅방 리스트 (대회 썸네일 + 진행중/모집중/진행대기 배지 + 미읽음 카운트) 를 보여줌.",
+        brand: "runmile",
+      },
     ],
   },
   RunmileToast: {
@@ -4314,7 +4330,7 @@ export interface PatternGuide {
     /** 로컬 이미지 경로 (`apps/storybook/public/...` 등). */
     image?: string;
     caption?: string;
-    brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
+    brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile";
   }>;
 }
 
