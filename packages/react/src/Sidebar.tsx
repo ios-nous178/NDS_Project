@@ -366,13 +366,12 @@ const sidebarStyles = `
     white-space: nowrap;
   }
 
-  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_LABEL_CLASS}),
-  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_BADGE_CLASS}),
-  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_CARET_CLASS}) {
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_LABEL_CLASS}) {
     display: none;
   }
 
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_INNER_CLASS}) {
+    position: relative;
     justify-content: center;
     padding: 0;
     gap: 0;
@@ -410,6 +409,28 @@ const sidebarStyles = `
 
   :where(.${SB_ITEM_CARET_CLASS}[data-expanded="true"]) {
     transform: rotate(90deg);
+  }
+
+  /* Collapsed: caret hidden; a numeric badge collapses to an 8px dot on the icon's top-right.
+     Declared AFTER the badge/caret base rules so the :where() (0-specificity) cascade resolves
+     to these — otherwise the later base display:inline-flex would win and the count would render
+     full-size in the 72px rail, breaking the layout. */
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_CARET_CLASS}) {
+    display: none;
+  }
+
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_BADGE_CLASS}) {
+    position: absolute;
+    top: 6px;
+    left: calc(50% + 3px);
+    min-width: 0;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0;
+    line-height: 0;
+    color: transparent;
   }
 
   /* ── Children (nested level) ──────────────────────── */
@@ -524,16 +545,20 @@ const sidebarStyles = `
 
 /* ─── Brand presets ─── */
 
-// CashwalkBiz 가이드 (Figma 168:1250 실측): 활성 아이템 bg = #FFF4C0 (Yellow/200 톤),
-// radius 12 (idle 16 → 12 로 좁아짐). 텍스트는 #383838 유지 (Bold 가 아니라 Medium 유지).
-// `data-brand="cashwalk-biz"` 가 :root 에 박혔을 때만 자동 적용.
-
+// CashwalkBiz 튜닝 (캐포비 Library MenuItem 3302:641 실측). `data-brand="cashwalk-biz"` cascade 전용.
+//
+// 색은 전부 --semantic-* 토큰 cascade 가 SSOT — 여기서 hex 로 박지 않는다:
+//   · active bg  = var(--semantic-bg-brand-subtle)  → cashwalk = Yellow/100 #FFFAE5 (cashwalk-biz.semantic.ts bg.brand.subtle)
+//   · accent     = var(--semantic-fill-brand)        → cashwalk = #FFD200 (현재 미사용 dormant 슬롯)
+// 둘 다 base preset 이 이미 정확히 해석하므로 override 불필요.
+//
+// 캐포비만 갈라지는 것은 시멘틱 색 토큰으로 표현 불가능한 두 가지뿐:
+//   1) active radius — base 는 idle 16 → active 12 로 좁히지만, 캐포비 메뉴아이템은 idle 과 동일한 16 유지 (geometry, nds 슬롯 리터럴).
+//   2) active 라벨 색 — base 는 strong(#111) 으로 darkening 하지만, 캐포비는 선택 시에도 normal(#333) 유지 (어떤 text role 을 쓰느냐의 선택 → 토큰 참조).
 const sidebarCashwalkBizTuning = `
   :where([data-brand="cashwalk-biz"] .${SB_ROOT_CLASS}) {
-    --nds-sidebar-item-active-bg: #FFF4C0;
-    --nds-sidebar-item-active-radius: 12px;
-    --nds-sidebar-item-active-accent: #FFD200;
-    --nds-sidebar-text-active: #383838;
+    --nds-sidebar-item-active-radius: 16px;
+    --nds-sidebar-text-active: ${cv.textRole.normal};
   }
 `;
 

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Sidebar, type SidebarItem, type SidebarSection } from "@nudge-design/react";
+import { BRAND_LOGOS } from "@nudge-design/assets";
 import {
   CashwalkBizGnbBannerIcon,
+  CashwalkBizGnbCatalogIcon,
   CashwalkBizGnbCashIcon,
   CashwalkBizGnbChannelIcon,
   CashwalkBizGnbChatIcon,
+  CashwalkBizGnbEditIcon,
   CashwalkBizGnbMemberIcon,
   CashwalkBizGnbQuizIcon,
   CashwalkBizGnbSettingIcon,
@@ -14,22 +17,21 @@ import {
 /**
  * Brands/CashwalkBiz/Sidebar — 캐포비(캐시워크 for Business) 어드민 사이드바.
  *
- * 레퍼런스 (Figma 한국 캐시워크_WEB-Dev 실측):
- *   - 168:1250 — 단일 사이드바 표준 (광고/운영/관리 3섹션, 7 GNB 아이템)
- *   - 290:1593 — 서브메뉴 변형 (퀴즈 관리 펼침)
+ * 레퍼런스 (Figma 캐포비 Library):
+ *   - 3304:617 — 전체 사이드바 구성 (계정/잔액/CTA + 광고·자산·계정 3섹션 + 로그아웃)
+ *   - 3302:641 — MenuItem 변형 (1dep/2dep/3dep × default/selected)
  *
  * Figma 실측 메트릭:
- *   - 컨테이너: 300px width, white bg, right border #E7E7E7
- *   - 헤더: 32 top padding, 36×36 rounded-8 avatar + 16 Bold name + 13 caption account#
- *   - 섹션: py-28, 1px top border #EEE (첫 섹션 제외)
- *   - 섹션 라벨: 14 Medium uppercase #666, pl-20 pr-10
- *   - 아이템: 252×42, rounded-16(idle)/12(active), padding 20×12, gap 10, icon 24, label 16
- *   - 활성: bg #FFF4C0 + #383838 텍스트 (Medium 유지, Bold 아님)
- *   - data-brand="cashwalk-biz" 가 :root 에 있을 때 자동 톤 매핑
+ *   - 컨테이너: 300px width, white bg, px-24 py-40
+ *   - 헤더 블록: 로고 → 계정 정보(14 #666 / 16 #333) → 잔액(14 #666 / 16 #333) → CTA 쌍(충전하기 검정 solid / 내역보기 outlined, rounded-8)
+ *   - 섹션 라벨: 12 Bold #666 tracking 0.96 (광고 관리 / 자산 관리 / 계정 관리), 섹션 사이 1px #EEE divider
+ *   - 메뉴아이템: 1dep 48px(아이콘 24 + 라벨 15) / 2dep 40px(pl-52, 라벨 14), rounded-16
+ *   - 활성: bg Yellow/100 #FFFAE5 + 라벨 #333 유지 (Bold 아님), 좌측 accent stripe 없음
+ *   - 색은 data-brand="cashwalk-biz" cascade 가 --semantic-* 토큰으로 자동 매핑 (컴포넌트가 hex 박지 않음)
  *
- * 두 가지 레이아웃:
- *   1) `Default` — 168:1250 미러. 광고/운영/관리 3섹션 (실제 캐포비 admin 라벨)
- *   2) `WithSubMenu` — 290:1593 미러. 퀴즈 관리 펼침 (등록하기/목록/통계)
+ * 세 가지 레이아웃:
+ *   1) `Default` — 3304:617 미러. 잔액/CTA 헤더 + 광고·자산·계정 3섹션 + 배너 등록 활성
+ *   2) `WithSubMenu` — 퀴즈 관리 펼침 (등록하기/목록/통계)
  *   3) `Collapsed` — 아이콘 only, 72px 너비
  */
 
@@ -42,25 +44,20 @@ const meta: Meta<typeof Sidebar> = {
 export default meta;
 type Story = StoryObj<typeof Sidebar>;
 
-const LogoMark: React.FC = () => (
-  <span
-    aria-label="CashwalkBiz"
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: 28,
-      height: 28,
-      borderRadius: 8,
-      background: "#111111",
-      color: "#FFD200",
-      fontWeight: 800,
-      fontSize: 14,
-      letterSpacing: -0.5,
-    }}
-  >
-    캐
-  </span>
+// 실제 캐포비 워드마크 (Figma 3304:617 logo/Cashwalk/Vertical). @nudge-design/assets 의
+// base64 dataUri 사용 — 외부 호스팅 없이도 깨지지 않게. (assets 매니페스트상 vertical /
+// horizontal 은 동일 lockup dataUri 로 매핑되어 있어 한 자산을 height 로 스케일해 쓴다.)
+const CASHWALK_LOGO = BRAND_LOGOS["cashwalk-biz"]?.vertical?.dataUri ?? "";
+
+const CashwalkLogo: React.FC<{ height?: number; maxWidth?: number }> = ({
+  height = 40,
+  maxWidth,
+}) => (
+  <img
+    src={CASHWALK_LOGO}
+    alt="캐시워크 for Business"
+    style={{ height, width: "auto", maxWidth, display: "block" }}
+  />
 );
 
 const PreviewFrame: React.FC<{ children: React.ReactNode; rightLabel?: string }> = ({
@@ -87,84 +84,123 @@ const PreviewFrame: React.FC<{ children: React.ReactNode; rightLabel?: string }>
   </div>
 );
 
-/* ─── Story 1 — 168:1250: 광고/운영/관리 3섹션 admin 사이드바 ─────────────── */
+/* ─── 잔액 / CTA 헤더 블록 (3304:617 미러) ───────────────────────────── */
+
+const ChargeCta: React.FC = () => (
+  <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+    <button
+      type="button"
+      style={{
+        padding: "8px 16px",
+        borderRadius: 8,
+        border: "none",
+        background: "#111111",
+        color: "#FFFFFF",
+        fontFamily: "inherit",
+        fontSize: 15,
+        fontWeight: 500,
+        cursor: "pointer",
+      }}
+    >
+      충전하기
+    </button>
+    <button
+      type="button"
+      style={{
+        padding: "8px 16px",
+        borderRadius: 8,
+        border: "1px solid #111111",
+        background: "#FFFFFF",
+        color: "#111111",
+        fontFamily: "inherit",
+        fontSize: 15,
+        fontWeight: 500,
+        cursor: "pointer",
+      }}
+    >
+      내역보기
+    </button>
+  </div>
+);
+
+const AccountHeader: React.FC = () => (
+  <div style={{ width: "100%" }}>
+    <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+      <CashwalkLogo height={56} />
+    </div>
+    <p style={{ margin: 0, fontSize: 14, color: "#666666" }}>계정 정보</p>
+    <p style={{ margin: "8px 0 0", fontSize: 16, fontWeight: 500, color: "#333333" }}>
+      business@cashwalk.io
+    </p>
+    <p style={{ margin: "24px 0 0", fontSize: 14, color: "#666666" }}>잔액</p>
+    <p style={{ margin: "8px 0 0", fontSize: 16, fontWeight: 500, color: "#333333" }}>
+      999,999,999,999원
+    </p>
+    <ChargeCta />
+  </div>
+);
+
+/* ─── Story 1 — 3304:617: 광고·자산·계정 3섹션 + 배너 등록 활성 ─────────── */
 
 const DefaultStory: React.FC = () => {
-  const [activeKey, setActiveKey] = useState("cash");
+  const [activeKey, setActiveKey] = useState("banner-register");
 
   const sections: SidebarSection[] = [
     {
       key: "ad",
-      label: "광고",
+      label: "광고 관리",
       items: [
-        { key: "banner", label: "배너", icon: <CashwalkBizGnbBannerIcon size={24} /> },
+        {
+          key: "banner",
+          label: "배너",
+          icon: <CashwalkBizGnbBannerIcon size={24} />,
+          children: [
+            { key: "banner-register", label: "배너 등록" },
+            { key: "banner-list", label: "배너 목록" },
+            { key: "banner-report", label: "배너 리포트" },
+          ],
+        },
         { key: "quiz", label: "퀴즈", icon: <CashwalkBizGnbQuizIcon size={24} /> },
-        { key: "message", label: "메세지", icon: <CashwalkBizGnbChatIcon size={24} /> },
+        { key: "message", label: "메시지", icon: <CashwalkBizGnbChatIcon size={24} /> },
       ],
     },
     {
-      key: "operate",
-      label: "운영",
-      items: [{ key: "channel", label: "채널", icon: <CashwalkBizGnbChannelIcon size={24} /> }],
+      key: "asset",
+      label: "자산 관리",
+      items: [{ key: "catalog", label: "카탈로그", icon: <CashwalkBizGnbCatalogIcon size={24} /> }],
     },
     {
-      key: "manage",
-      label: "관리",
-      items: [
-        { key: "member", label: "멤버 관리", icon: <CashwalkBizGnbMemberIcon size={24} /> },
-        { key: "ad-account", label: "광고계정 관리", icon: <CashwalkBizGnbBannerIcon size={24} /> },
-        { key: "cash", label: "캐시 관리", icon: <CashwalkBizGnbCashIcon size={24} /> },
-      ],
+      key: "account",
+      label: "계정 관리",
+      items: [{ key: "edit-info", label: "정보 수정", icon: <CashwalkBizGnbEditIcon size={24} /> }],
     },
   ];
 
   return (
-    <PreviewFrame rightLabel="캐시 관리">
+    <PreviewFrame rightLabel="배너 · 등록">
       <Sidebar
         items={sections}
         activeKey={activeKey}
         onItemClick={(item) => setActiveKey(item.key)}
-        header={
-          <div
+        header={<AccountHeader />}
+        footer={
+          <button
+            type="button"
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              padding: "0 5px",
               width: "100%",
+              height: 48,
+              borderRadius: 28,
+              border: "1px solid #EEEEEE",
+              background: "white",
+              color: "#111",
+              fontFamily: "inherit",
+              fontSize: 16,
+              fontWeight: 500,
+              cursor: "pointer",
             }}
           >
-            <LogoMark />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 16,
-                  lineHeight: "24px",
-                  fontWeight: 700,
-                  color: "#383838",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                리비바이오 광고
-              </p>
-              <p
-                style={{
-                  margin: "4px 0 0",
-                  fontSize: 13,
-                  lineHeight: "18px",
-                  color: "#666666",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                광고계정 번호 : 123923
-              </p>
-            </div>
-          </div>
+            로그아웃
+          </button>
         }
       />
     </PreviewFrame>
@@ -172,19 +208,19 @@ const DefaultStory: React.FC = () => {
 };
 
 export const Default: Story = {
-  name: "CashwalkBiz/Default (광고 · 운영 · 관리)",
+  name: "CashwalkBiz/Default (광고 · 자산 · 계정)",
   parameters: {
     docs: {
       description: {
         story:
-          "Figma 168:1250 미러. 캐포비 admin 표준 — 사업자(광고계정) + 광고/운영/관리 3섹션 + 캐시 관리 활성.",
+          "Figma 3304:617 미러. 캐포비 admin 표준 — 계정/잔액/CTA 헤더 + 광고 관리(배너▸등록/목록/리포트, 퀴즈, 메시지) / 자산 관리(카탈로그) / 계정 관리(정보 수정) + 로그아웃. 배너 등록 활성(Yellow/100).",
       },
     },
   },
   render: () => <DefaultStory />,
 };
 
-/* ─── Story 2 — 290:1593: 서브메뉴 펼침 (퀴즈 관리 등록/목록/통계) ─────────── */
+/* ─── Story 2 — 서브메뉴 펼침 (퀴즈 관리 등록/목록/통계) ───────────────── */
 
 const WithSubMenuStory: React.FC = () => {
   const [activeKey, setActiveKey] = useState("quiz-create");
@@ -202,7 +238,7 @@ const WithSubMenuStory: React.FC = () => {
         { key: "quiz-stat", label: "퀴즈 통계" },
       ],
     },
-    { key: "setting", label: "정보 수정", icon: <CashwalkBizGnbSettingIcon size={24} /> },
+    { key: "setting", label: "정보 수정", icon: <CashwalkBizGnbEditIcon size={24} /> },
   ];
 
   return (
@@ -221,7 +257,7 @@ const WithSubMenuStory: React.FC = () => {
               width: "100%",
             }}
           >
-            <LogoMark />
+            <CashwalkLogo height={22} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <p
                 style={{
@@ -229,7 +265,7 @@ const WithSubMenuStory: React.FC = () => {
                   fontSize: 16,
                   lineHeight: "24px",
                   fontWeight: 700,
-                  color: "#383838",
+                  color: "#333333",
                 }}
               >
                 business@cashwalk.io
@@ -242,9 +278,9 @@ const WithSubMenuStory: React.FC = () => {
             type="button"
             style={{
               width: "100%",
-              height: 56,
+              height: 48,
               borderRadius: 28,
-              border: "1px solid #D8D8D8",
+              border: "1px solid #EEEEEE",
               background: "white",
               color: "#111",
               fontFamily: "inherit",
@@ -266,8 +302,7 @@ export const WithSubMenu: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Figma 290:1593 미러. 퀴즈 관리 펼침 — 등록하기/목록/통계 3 서브아이템. 1단계 children 지원.",
+        story: "퀴즈 관리 펼침 — 등록하기/목록/통계 3 서브아이템. 1단계 children 지원.",
       },
     },
   },
@@ -287,13 +322,14 @@ const CollapsedStory: React.FC = () => {
     { key: "chat", label: "채팅", icon: <CashwalkBizGnbChatIcon size={24} />, badge: 12 },
     { key: "member", label: "회원", icon: <CashwalkBizGnbMemberIcon size={24} /> },
     { key: "quiz", label: "퀴즈", icon: <CashwalkBizGnbQuizIcon size={24} /> },
+    { key: "catalog", label: "카탈로그", icon: <CashwalkBizGnbCatalogIcon size={24} /> },
     { key: "setting", label: "설정", icon: <CashwalkBizGnbSettingIcon size={24} /> },
   ];
 
   return (
     <PreviewFrame rightLabel="채팅">
       <Sidebar
-        logo={{ element: <LogoMark /> }}
+        logo={{ element: <CashwalkLogo height={18} maxWidth={48} /> }}
         title="캐시워크 for Business"
         collapsed={collapsed}
         onToggleCollapse={() => setCollapsed((v) => !v)}
@@ -312,7 +348,7 @@ export const Collapsed: Story = {
     docs: {
       description: {
         story:
-          "collapsed=true 일 때 72px 너비로 축소. 라벨/뱃지/캐럿 모두 숨기고 아이콘만 노출. 헤더 좌측 토글로 펼침.",
+          "collapsed=true 일 때 72px 너비로 축소. 라벨/캐럿은 숨기고 아이콘만 노출, 숫자 뱃지(채팅 12)는 아이콘 우상단 dot 으로 축약. 헤더 좌측 토글로 펼침.",
       },
     },
   },
