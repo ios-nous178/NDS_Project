@@ -380,7 +380,8 @@ const TOOLS = [
         brand: {
           type: "string",
           description:
-            "[step=imports|full] Brand slug (see get_brand). If omitted, the first 'ready' brand is used as default.",
+            "[step=imports|full|claude-md|agents-md] Brand slug (see get_brand). If omitted, the first 'ready' brand is used as default. " +
+            "Also affects admin routing: brand='cashwalk-biz' + intent='admin-cms' routes to the Nudge DS (html workflow), NOT antd — 캐포비는 DS 안에 자체 admin 디자인 시스템을 가진 유일한 브랜드.",
         },
         withRouter: {
           type: "boolean",
@@ -395,7 +396,8 @@ const TOOLS = [
           type: "string",
           enum: ["admin-cms", "html"],
           description:
-            "Workspace intent. Default/html uses vanilla <nds-*>; admin-cms uses antd conventions.",
+            "Workspace intent. Default/html uses vanilla <nds-*>; admin-cms uses antd conventions. " +
+            "Exception: admin-cms + brand='cashwalk-biz' is routed to the DS (html) workflow, not antd.",
         },
         template: {
           type: "string",

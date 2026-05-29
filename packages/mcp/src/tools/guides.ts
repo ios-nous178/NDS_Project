@@ -17,6 +17,8 @@ import {
   SCOPE_ADVISORY,
   UX_WRITING_GUIDE,
   detectIntentFromText,
+  resolveEffectiveIntent,
+  isDsAdminBrand,
 } from "../guides.js";
 import { SERVICE_OVERLAYS, listBrandVariants, type BrandSlug } from "../guides/services/index.js";
 import { mergeServiceOverlay } from "../guides/merge.js";
@@ -196,7 +198,31 @@ export function listFigmaSyncStatus() {
   };
 }
 
-export function getAdminCmsGuide(args: { intent?: string }) {
+export function getAdminCmsGuide(args: { intent?: string; brand?: string }) {
+  // 캐포비 어드민은 antd 가 아니라 DS 로 만든다 — antd 컨벤션 대신 DS 경로로 리다이렉트.
+  if (isDsAdminBrand(args.brand)) {
+    return {
+      intent: "html" as const,
+      brand: args.brand,
+      note:
+        `${args.brand} 어드민은 antd 가 아니라 Nudge DS 로 만든다. ` +
+        "이 브랜드는 DS 안에 자체 admin 디자인 시스템(admin layout/input/Modal admin 토큰)을 갖추고 있어, " +
+        "아래 antd 컨벤션(NudgeEAPCMS)을 따르지 말 것.",
+      useInstead: [
+        `get_setup({ step: 'full', intent: 'admin-cms', brand: '${args.brand}' }) — DS(html) 셋업으로 자동 우회`,
+        `get_guide({ topic: 'component:<Name>', brand: '${args.brand}', target: 'html' }) — admin 토큰이 cascade 된 DS 컴포넌트`,
+        `get_guide({ topic: 'principles', brand: '${args.brand}' })`,
+      ],
+      techStack: {
+        required: [
+          "@nudge-design/html (<nds-*>)",
+          "@nudge-design/tokens/css",
+          `${args.brand} 브랜드 css`,
+        ],
+        forbidden: ["antd", "@ant-design/icons"],
+      },
+    };
+  }
   return {
     intent: "admin-cms",
     note:
@@ -505,7 +531,7 @@ export function getGuide(args: {
     }
     case "admin-cms":
       return pickSections(
-        getAdminCmsGuide({ intent: args.intent }) as Record<string, unknown>,
+        getAdminCmsGuide({ intent: args.intent, brand: args.brand }) as Record<string, unknown>,
         sections,
       );
     case "scope-advisory":
@@ -1118,6 +1144,7 @@ function createInstructionMd(args: {
   projectName?: string;
   overwrite?: boolean;
   intent?: string;
+  brand?: string;
   template?: ClaudeMdTemplateVariant;
   fileName: "CLAUDE.md" | "AGENTS.md";
 }) {
@@ -1140,9 +1167,8 @@ function createInstructionMd(args: {
 
   // 정책 (2026-05-25): admin-cms 가 아니면 모두 html 템플릿. 신규 CLAUDE.md 는 slim 이 기본이고,
   // 기존 장문 템플릿은 template: "default" 를 명시했을 때만 생성한다.
-  const detected = detectIntentFromText(args.intent);
-  const intent: "admin-cms" | "html" =
-    args.intent === "admin-cms" || detected === "admin-cms" ? "admin-cms" : "html";
+  // 캐포비 admin 은 resolveEffectiveIntent 가 "html" 로 우회시켜 DS 템플릿이 나간다.
+  const intent = resolveEffectiveIntent(args.intent, args.brand);
 
   const template = args.template === "default" ? "default" : "slim";
   const content = getClaudeMdTemplate({ projectName: args.projectName, intent, template });
@@ -1167,6 +1193,7 @@ export function createClaudeMd(args: {
   projectName?: string;
   overwrite?: boolean;
   intent?: string;
+  brand?: string;
   template?: ClaudeMdTemplateVariant;
 }) {
   return createInstructionMd({ ...args, fileName: "CLAUDE.md" });
@@ -1177,6 +1204,7 @@ export function createAgentsMd(args: {
   projectName?: string;
   overwrite?: boolean;
   intent?: string;
+  brand?: string;
   template?: ClaudeMdTemplateVariant;
 }) {
   return createInstructionMd({ ...args, fileName: "AGENTS.md" });

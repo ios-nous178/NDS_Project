@@ -26,7 +26,7 @@ import {
   ADMIN_CMS_GUIDE,
   COMPONENT_GUIDES,
   ICON_METADATA,
-  detectIntentFromText,
+  resolveEffectiveIntent,
 } from "../guides.js";
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
 import { createAgentsMd, createClaudeMd } from "./guides.js";
@@ -827,8 +827,8 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 }
 
 function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: string }) {
-  const detected = detectIntentFromText(args.intent);
-  if (args.intent === "admin-cms" || detected === "admin-cms") {
+  // 캐포비 admin 은 resolveEffectiveIntent 가 "html" 로 우회 → antd 셋업이 아니라 DS(html) 셋업.
+  if (resolveEffectiveIntent(args.intent, args.brand) === "admin-cms") {
     return {
       intent: "admin-cms",
       mode: "summary",
@@ -1077,15 +1077,16 @@ export function getSetupInstructions(args: {
   includeTailwind?: boolean;
   intent?: string;
 }) {
-  const detected = detectIntentFromText(args.intent);
-  if (args.intent === "admin-cms" || detected === "admin-cms") {
+  // 캐포비 admin 은 resolveEffectiveIntent 가 "html" 로 우회 → antd 가 아니라 DS(html) 셋업.
+  const effectiveIntent = resolveEffectiveIntent(args.intent, args.brand);
+  if (effectiveIntent === "admin-cms") {
     return getSetupInstructionsAdminCms({ withRouter: args.withRouter });
   }
   // 정책 (2026-05-25): admin-cms 가 아니면 모두 html 워크플로우로 안내한다.
   // user-app(.tsx + React) 신규 셋업은 더 이상 노출하지 않는다 — detectIntentFromText 가
   // 발화 매칭이 안 되는 경우에도 default 가 'html' 이라 여기까지 admin-cms 외에는 도달하지 않지만,
   // 호출자가 명시적으로 intent='user-app' 을 넘긴 경우에도 안전하게 html 로 보낸다.
-  if (args.intent === "html" || detected === "html" || args.intent === "user-app" || !args.intent) {
+  if (effectiveIntent === "html" || args.intent === "user-app" || !args.intent) {
     return getSetupInstructionsHtml({ brand: args.brand, tgzDir: args.tgzDir });
   }
 
@@ -1408,15 +1409,17 @@ export function getBrandInfo(args: { brand: string }) {
               files: MARATHON_EVENT_IDS.map((id) => ({
                 id,
                 filename: MARATHON_EVENT_METADATA[id].filename,
+                filename3x: MARATHON_EVENT_METADATA[id].filename3x,
                 mimeType: MARATHON_EVENT_METADATA[id].mimeType,
                 figmaNodeId: MARATHON_EVENT_METADATA[id].figmaNodeId,
                 figmaNodeName: MARATHON_EVENT_METADATA[id].figmaNodeName,
                 publicPath: `/${MARATHON_EVENT_METADATA[id].filename}`,
+                publicPath3x: `/${MARATHON_EVENT_METADATA[id].filename3x}`,
               })),
-              importExample: `import { getMarathonEvent } from "@nudge-design/assets";\nconst meta = getMarathonEvent("hangang-night-run");\n// → { filename: "marathon-events/hangang-night-run.png", mimeType, figmaNodeName: "한강나이트런" }`,
+              importExample: `import { getMarathonEvent } from "@nudge-design/assets";\nconst meta = getMarathonEvent("hangang-night-run");\n// → { filename: "marathon-events/hangang-night-run.png", filename3x: "...@3x.png", mimeType, figmaNodeName: "한강나이트런" }\n// srcset 예: <img src={\`/\${meta.filename}\`} srcSet={\`/\${meta.filename} 2x, /\${meta.filename3x} 3x\`} width={180} height={180} />`,
               publicHosting: {
                 baseDir: "public/marathon-events/",
-                note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종 (180×180 PNG, ~40KB each). 댕댕이레이스/개나리런/포켓몬런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
+                note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종. Figma 원본 래스터에서 재export: base 360×360 (2x) + @3x 540×540 (3x). srcset '2x/3x' 로 사용하고 180×180 슬롯에 렌더. 댕댕이레이스/개나리런/포켓몬런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
               },
             }
           : null,
@@ -1516,8 +1519,8 @@ export function getSetup(args: {
   // 보고 html 로 라우팅 — 신규 mockup 워크스페이스는 React 트랙을 권장하지 않는다.
   // detectIntentFromText 도 default 가 'html' 이므로 이 boolean 은 사실상 "admin-cms 아님"
   // 과 동의어이지만, 가독성을 위해 명시적으로 둔다.
-  const isHtmlIntent =
-    args.intent !== "admin-cms" && detectIntentFromText(args.intent) !== "admin-cms";
+  // 캐포비 admin 은 resolveEffectiveIntent 가 "html" 로 우회시키므로 isHtmlIntent=true 가 된다.
+  const isHtmlIntent = resolveEffectiveIntent(args.intent, args.brand) !== "admin-cms";
   switch (step) {
     case "install":
       return isHtmlIntent
@@ -1541,6 +1544,7 @@ export function getSetup(args: {
         projectName: args.projectName,
         overwrite: args.overwrite,
         intent: args.intent,
+        brand: args.brand,
         template: args.template,
       });
     case "agents-md":
@@ -1549,6 +1553,7 @@ export function getSetup(args: {
         projectName: args.projectName,
         overwrite: args.overwrite,
         intent: args.intent,
+        brand: args.brand,
         template: args.template,
       });
     case "inspector": {
