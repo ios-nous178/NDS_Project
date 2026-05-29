@@ -25,7 +25,7 @@ describe("nds-title-block — DOM parity with React TitleBlock", () => {
 
     expect(root.dataset.slot).toBe("root");
     expect(root.dataset.level).toBe("h2");
-    expect(root.style.gap).toBe("var(--gap-title-h2)");
+    expect(root.style.gap).toBe("var(--semantic-gap-title-h2)");
     expect(title.tagName).toBe("H2");
     expect(title.textContent).toBe("안녕");
     expect(title.style.fontSize).toBe("28px");
@@ -58,7 +58,7 @@ describe("nds-title-block — DOM parity with React TitleBlock", () => {
 
     const root = el.querySelector(".nds-title-block") as HTMLElement;
     expect(root.dataset.level).toBe("h4");
-    expect(root.style.gap).toBe("var(--gap-title-h4)");
+    expect(root.style.gap).toBe("var(--semantic-gap-title-h4)");
   });
 
   it("falls back to h2 for invalid level", async () => {

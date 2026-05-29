@@ -200,7 +200,7 @@ export class NdsBadge extends NdsElement {
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      gap: "var(--gap-tight)",
+      gap: "var(--semantic-gap-tight)",
       height: `${st.height}px`,
       padding: `${st.paddingY}px ${st.paddingX}px`,
       borderRadius: `${st.radius}px`,
