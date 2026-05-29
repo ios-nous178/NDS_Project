@@ -13,25 +13,33 @@ import type {
   TrendingKeywordItem,
 } from "@nudge-design/react";
 
-/* ─── Logo asset imports (Vite resolves base path automatically) ─── */
+/* ─── Logo asset URLs ─── */
+/**
+ * 브랜드 로고는 `@nudge-design/assets` 가 SSOT 이며, Storybook 은 이를
+ * `/brand-logos/*` 로 정적 마운트해서 서빙한다 (.storybook/main.ts staticDirs).
+ * 따라서 모듈 import 가 아니라 마운트 URL 로 참조한다.
+ * `BASE_URL` prefix 로 프로덕션 base("/storybook/") 까지 자동 반영.
+ */
+const BRAND_LOGOS_BASE = `${import.meta.env.BASE_URL}brand-logos/`;
+
 /**
  * Figma 698:87 (NudgeEAP Library) Logo Guide 에서 추출한 Symbol + KO+EN horizontal (대표 로고).
  * 자체 원본 124×28 PNG. NudgeEAP 헤더 컴포넌트는 내장 vector 로고를 기본 사용하고,
  * 이 fixture PNG 는 목업/푸터 fallback 용으로 원본 크기 이하에서만 사용한다.
  */
-import nudgeEapHeaderLogo from "../public/brand-logos/nudge-eap/nudge-eap-koen.png";
-import trostLogo from "../public/brand-logos/trost-logo.svg";
-import trostLogoMobile from "../public/brand-logos/trost-logo-mobile.webp";
-import genietLogoPc from "../public/brand-logos/geniet-logo-pc.webp";
-import genietLogoMobile from "../public/brand-logos/geniet-logo-mobile.webp";
-import genietLogoFooter from "../public/brand-logos/geniet-logo-footer.webp";
-import cashwalkVertical from "../public/brand-logos/cashwalk-biz/cashwalk-vertical.png";
+const nudgeEapHeaderLogo = `${BRAND_LOGOS_BASE}nudge-eap/nudge-eap-koen.png`;
+const trostLogo = `${BRAND_LOGOS_BASE}trost-logo.svg`;
+const trostLogoMobile = `${BRAND_LOGOS_BASE}trost-logo-mobile.webp`;
+const genietLogoPc = `${BRAND_LOGOS_BASE}geniet-logo-pc.webp`;
+const genietLogoMobile = `${BRAND_LOGOS_BASE}geniet-logo-mobile.webp`;
+const genietLogoFooter = `${BRAND_LOGOS_BASE}geniet-logo-footer.webp`;
+const cashwalkVertical = `${BRAND_LOGOS_BASE}cashwalk-biz/cashwalk-vertical.png`;
 /**
  * Figma 9lJ9XCwVYFSoZGcmRuJtI4 / 98:1082 — 캐포비 admin GNB 의 logo_cfb_horizontal.
  * cashwalk wordmark + 'for business' 텍스트 + 신발 마스코트가 합쳐진 헤더 전용 lockup (106.667 × 32).
  * 라이브러리 horizontal(cashwalk only) 과는 별개 — 헤더용 lockup 으로 신규 등록.
  */
-import cashwalkForBusinessHorizontal from "../public/brand-logos/cashwalk-biz/cashwalk-for-business-horizontal.svg";
+const cashwalkForBusinessHorizontal = `${BRAND_LOGOS_BASE}cashwalk-biz/cashwalk-for-business-horizontal.svg`;
 
 /* ─── Types ─── */
 
@@ -362,7 +370,8 @@ const runmile: BrandFixture = {
     },
   },
   tabBar: {
-    tabLabels: ["홈", "대회정보", "커뮤니티", "마이페이지"],
+    // Figma 1221:64046 bottomnavi5 — 5탭 (채팅 신설, 커뮤니티/마이페이지 아이콘 교체).
+    tabLabels: ["홈", "대회정보", "커뮤니티", "채팅", "마이페이지"],
     defaultActive: 0,
     useShadow: true,
   },
