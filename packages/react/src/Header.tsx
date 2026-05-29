@@ -508,7 +508,7 @@ const HeaderAuthMenu = React.memo(
               <button
                 className={H_AUTH_MENU_ITEM_CLASS}
                 style={{
-                  padding: separator === "divider" ? `0 var(--inset-chip)` : "0",
+                  padding: separator === "divider" ? `0 var(--semantic-inset-chip)` : "0",
                   marginRight: separator !== "divider" && i < items.length - 1 ? spacing[20] : 0,
                 }}
                 onClick={onItemClick ? (e) => onItemClick(item, e) : undefined}

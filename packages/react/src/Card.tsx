@@ -23,12 +23,12 @@ const CARD_FOOTER_TEXT_CLASS = `${CARD_CLASS}__footer-text`;
 
 /* ─── Styles ─── */
 // Figma 171:9363 (Card 마스터) 사양에 맞춤:
-//   - 균등 padding(--inset-card, 16px) + gap(--nds-card-gap, 12px) 의 수직 스택
+//   - 균등 padding(--semantic-inset-card, 16px) + gap(--nds-card-gap, 12px) 의 수직 스택
 //   - corner radius lg(12), thumbnail radius 10
 //   - 타이포: title=Headline 5/Bold(18/26 strong), description=Body 3/Regular(14/20 subtle),
 //             metadata/footerText=Caption 1/Regular(13/18 muted)
 //   - 본문 갭: Title↔Description 4px · Description↔Metadata 8px
-//   - Footer divider: border-top 1px + padding-top --inset-card(16)
+//   - Footer divider: border-top 1px + padding-top --semantic-inset-card(16)
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>

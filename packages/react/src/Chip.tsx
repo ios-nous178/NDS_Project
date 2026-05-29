@@ -253,7 +253,7 @@ export const Chip: React.FC<ChipProps> = ({
   const rootStyle: React.CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
-    gap: "var(--gap-tight)",
+    gap: "var(--semantic-gap-tight)",
     height: sizeTokens.height,
     padding: `${sizeTokens.paddingY}px ${paddingRight}px ${sizeTokens.paddingY}px ${sizeTokens.paddingX}px`,
     borderRadius: radius.pill,

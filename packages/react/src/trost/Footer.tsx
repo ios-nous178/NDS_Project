@@ -66,7 +66,7 @@ const DEFAULT_SNS_LINKS: TrostFooterSnsLink[] = [
 
 function AppStoreButtons({ links }: { links: TrostFooterStoreLink[] }) {
   return (
-    <div style={{ display: "flex", gap: "var(--gap-default)", marginBottom: 20 }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-default)", marginBottom: 20 }}>
       {links.map((s) => (
         <a key={s.alt} href={s.href} target="_blank" rel="noopener noreferrer">
           <img src={s.img} alt={s.alt} width={145} height={48} style={{ display: "block" }} />
@@ -78,7 +78,7 @@ function AppStoreButtons({ links }: { links: TrostFooterStoreLink[] }) {
 
 function SnsIcons({ links }: { links: TrostFooterSnsLink[] }) {
   return (
-    <div style={{ display: "flex", gap: "var(--gap-comfortable)" }}>
+    <div style={{ display: "flex", gap: "var(--semantic-gap-comfortable)" }}>
       {links.map((s) => (
         <a key={s.alt} href={s.href} target="_blank" rel="noopener noreferrer">
           <img
@@ -186,7 +186,7 @@ const TrostFooterApp = React.forwardRef<HTMLElement, TrostFooterAppProps>((props
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-end",
-              gap: "var(--gap-loose)",
+              gap: "var(--semantic-gap-loose)",
               flexShrink: 0,
             }}
           >

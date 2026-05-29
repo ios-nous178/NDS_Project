@@ -185,7 +185,7 @@ export function DsInspector({
             color: "#fff",
             border: "none",
             borderRadius: 9999,
-            padding: "var(--inset-chip) 14px",
+            padding: "var(--semantic-inset-chip) 14px",
             cursor: "pointer",
             boxShadow: "0 4px 12px rgba(0,0,0,0.18)",
             fontSize: 12,
@@ -202,7 +202,7 @@ export function DsInspector({
             border: "1px solid #e0e0e0",
             borderRadius: 12,
             boxShadow: "0 8px 24px rgba(0,0,0,0.16)",
-            padding: "var(--inset-input)",
+            padding: "var(--semantic-inset-input)",
             minWidth: 220,
           }}
         >
@@ -291,7 +291,7 @@ function StatRow({ color, label, count }: StatRowProps) {
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "var(--gap-default)",
+        gap: "var(--semantic-gap-default)",
         padding: "3px 0",
       }}
     >

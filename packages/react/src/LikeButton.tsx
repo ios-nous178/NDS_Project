@@ -7,7 +7,7 @@ const LB_ICON_CLASS = `${LB_CLASS}__icon`;
 const LB_COUNT_CLASS = `${LB_CLASS}__count`;
 
 const sizeConfig = {
-  sm: { icon: 18, count: 13, gap: "var(--gap-tight)" },
+  sm: { icon: 18, count: 13, gap: "var(--semantic-gap-tight)" },
   md: { icon: 22, count: 14, gap: 6 },
   lg: { icon: 28, count: 15, gap: 6 },
 } as const;

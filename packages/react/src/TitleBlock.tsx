@@ -20,11 +20,11 @@ const TB_SUBTITLE_CLASS = `${TB_CLASS}__subtitle`;
 /* ─── Level → 폰트 매핑 (Figma 859:5714 Mapping Table) ─── */
 
 const LEVEL_CONFIG = {
-  h1: { title: typeScale.headline1, subtitle: typeScale.body3, gapVar: "--gap-title-h1" },
-  h2: { title: typeScale.headline2, subtitle: typeScale.body3, gapVar: "--gap-title-h2" },
-  h3: { title: typeScale.headline3, subtitle: typeScale.body3, gapVar: "--gap-title-h3" },
-  h4: { title: typeScale.headline4, subtitle: typeScale.caption1, gapVar: "--gap-title-h4" },
-  h5: { title: typeScale.headline5, subtitle: typeScale.caption1, gapVar: "--gap-title-h5" },
+  h1: { title: typeScale.headline1, subtitle: typeScale.body3, gapVar: "--semantic-gap-title-h1" },
+  h2: { title: typeScale.headline2, subtitle: typeScale.body3, gapVar: "--semantic-gap-title-h2" },
+  h3: { title: typeScale.headline3, subtitle: typeScale.body3, gapVar: "--semantic-gap-title-h3" },
+  h4: { title: typeScale.headline4, subtitle: typeScale.caption1, gapVar: "--semantic-gap-title-h4" },
+  h5: { title: typeScale.headline5, subtitle: typeScale.caption1, gapVar: "--semantic-gap-title-h5" },
 } as const;
 
 export type TitleBlockLevel = keyof typeof LEVEL_CONFIG;
