@@ -1,6 +1,4 @@
 export { CashdealPointIcon } from "./CashdealPointIcon";
-export { CashwalkBizGnbChatIcon } from "./CashwalkBizGnbChatIcon";
-export { CashwalkBizGnbMemberIcon } from "./CashwalkBizGnbMemberIcon";
 export { GenietArrowRightStepperIcon } from "./GenietArrowRightStepperIcon";
 export { GenietArrowRightIcon } from "./GenietArrowRightIcon";
 export { GenietGpointIcon } from "./GenietGpointIcon";
@@ -20,8 +18,6 @@ export { TrostMentalMedicineIcon } from "./TrostMentalMedicineIcon";
 export { TrostMentalRoutineIcon } from "./TrostMentalRoutineIcon";
 export { TrostMindkeySymbolIcon } from "./TrostMindkeySymbolIcon";
 export type { CashdealPointIconProps } from "./CashdealPointIcon";
-export type { CashwalkBizGnbChatIconProps } from "./CashwalkBizGnbChatIcon";
-export type { CashwalkBizGnbMemberIconProps } from "./CashwalkBizGnbMemberIcon";
 export type { GenietArrowRightStepperIconProps } from "./GenietArrowRightStepperIcon";
 export type { GenietArrowRightIconProps } from "./GenietArrowRightIcon";
 export type { GenietGpointIconProps } from "./GenietGpointIcon";
