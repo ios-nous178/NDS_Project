@@ -63,11 +63,12 @@ export const RunmileFooterMobile: Story = {
 };
 
 /**
- * Figma 83:887 — 4탭 (홈/대회정보/커뮤니티/마이페이지).
+ * Figma 1221:64046 `bottomnavi5` — 5탭 (홈/대회정보/커뮤니티/채팅/마이페이지).
+ * 4탭(83:887) → 5탭 업데이트: 채팅 신설, 커뮤니티=2인 그룹, 마이페이지=원형 인물 아이콘.
  * active = black filled icon · gray600 inactive · label Pretendard Medium 12/16.
  */
 export const RunmileTabBar: Story = {
-  name: "Runmile/하단 탭바 (4탭, Figma 83:887)",
+  name: "Runmile/하단 탭바 (5탭, Figma 1221:64046)",
   render: () => {
     const tabs = b.tabBar.tabLabels.map((l, i) => ({
       key: `tab-${i}`,
@@ -116,6 +117,31 @@ export const RunmileTabBarFlagActive: Story = {
   },
 };
 
+export const RunmileTabBarChatActive: Story = {
+  name: "Runmile/하단 탭바 — 채팅 활성",
+  render: () => {
+    const tabs = b.tabBar.tabLabels.map((l, i) => ({
+      key: `tab-${i}`,
+      label: l,
+      href: "#",
+    }));
+    return (
+      <div
+        style={{
+          height: 120,
+          background: "#f9fafb",
+          display: "flex",
+          alignItems: "flex-end",
+          width: 375,
+          margin: "0 auto",
+        }}
+      >
+        <RunmileBottomNav tabs={tabs} activeTab="tab-3" position="static" />
+      </div>
+    );
+  },
+};
+
 export const RunmileTabBarMyPageActive: Story = {
   name: "Runmile/하단 탭바 — 마이페이지 활성",
   render: () => {
@@ -135,7 +161,7 @@ export const RunmileTabBarMyPageActive: Story = {
           margin: "0 auto",
         }}
       >
-        <RunmileBottomNav tabs={tabs} activeTab="tab-3" position="static" />
+        <RunmileBottomNav tabs={tabs} activeTab="tab-4" position="static" />
       </div>
     );
   },

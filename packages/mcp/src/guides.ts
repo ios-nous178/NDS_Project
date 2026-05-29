@@ -2251,11 +2251,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "RunmileWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "**미구현 — Figma SSOT 등록만.** Runmile 웹 헤더 (1440×80). state=default / state=default2 / state=only logo 3가지 변형. 구현은 별도 PR — 가이드 노드만 먼저 등록해 find_component 가 디자인 소스를 가리킬 수 있게 함.",
-    figmaNodeUrl: "https://www.figma.com/design/udH9ME1HnHk4kbxR17Neig/?node-id=151-2227",
+      "Runmile 데스크톱 PC 헤더 (height 80, bg white, border-bottom 1px gray300, content max-width 1440 / 좌우 80px). 로고(coral) + 좌측 GNB(대회 정보/커뮤니티, Bold 18) + 중앙 검색바(coral 2px border, rounded 100) + 우측 액션(아이콘 28 + 라벨 14). `loggedIn` 으로 우측 액션 분기: false=채팅/로그인, true=채팅(미읽음 badge)/마이페이지. 모바일/웹뷰는 RunmileAppBar.",
+    figmaNodeUrl: "https://www.figma.com/design/g3ifA735EE6EKjeL4ZW2ax/?node-id=1058-13336",
     pitfalls: [
-      "현재 React/HTML 컴포넌트 없음 (`packages/react/src/runmile/` 에 BottomNav 만). 외부 mockup 에서 이 컴포넌트를 호출하면 안 됨 — 신규 PR 로 구현 후 사용.",
-      "Runmile 로고는 `@nudge-design/assets` 의 `getBrandLogo('runmile')` 으로 가져옴 (red/mono/muted 3 variants).",
+      "데스크톱 전용. 모바일/웹뷰 헤더는 `RunmileAppBar` (Figma 36:258) 사용.",
+      "Runmile 로고는 `@nudge-design/assets` 의 `BRAND_LOGOS.runmile.default.dataUri` (coral #FF5B37) 를 `logoSrc` 로 주입. 미지정 시 'Runmile' 텍스트 폴백.",
+      "우측 채팅 아이콘은 단일 말풍선(RunmileChattingIcon) — 바텀네비 채팅 탭의 이중 말풍선(RunmileChats)과 다름.",
+      "미읽음 badge 는 `loggedIn && chatUnreadCount > 0` 일 때만 노출 (99 초과 시 '99+').",
+      '색은 전부 data-brand="runmile" cascade 의 --semantic-* 토큰 — host 가 hex 로 덮지 말 것.',
+    ],
+    recommended: [
+      "로그인 전: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={[{key:'competition',label:'대회 정보',href:'/competitions'},{key:'community',label:'커뮤니티',href:'/community'}]} activeKey='competition' loggedIn={false} onSearch={...} />`",
+      "로그인 후: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />`",
     ],
     references: [
       {
@@ -2270,6 +2277,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         image: "references/runmile-web-home-chat.png",
         caption:
           "헤더 우측에 채팅/로그인 액션이 노출된 상태. 채팅 버튼 클릭 시 우측 채팅 드로어가 열려 참여중/인기 채팅방 리스트 (대회 썸네일 + 진행중/모집중/진행대기 배지 + 미읽음 카운트) 를 보여줌.",
+        brand: "runmile",
+      },
+      {
+        label: "Runmile 웹 대회 상세 페이지 (대회 정보 → 상세)",
+        image: "references/runmile-web-competition-detail.png",
+        caption:
+          "런마일 웹 PC 대회 상세 풀 캡처. 상단 RunmileWebHeader → ① 히어로(좌: 대회 썸네일, 우: 제목 + 코스 배지 5km/10km/Half + 해시태그 + 일시/장소/주최·접수기간/참가비/문의 2열 정보표 + coral '참가하기' CTA + 좋아요/공유) → ② 게시판 리스트 + 채팅 패널 2열 → ③ 대회 안내(지도 + 5km/10km/Half 코스 탭 + 편의시설 + 날씨 카드 캐러셀) → ④ 대회 정보 텍스트(코스별 출발시간/오시는 길) → ⑤ 기념품 정보(노란 배경 그리드: 배번표·메달·기념스티커·뱃지·생수·간식·파우치·핫팩) → 푸터. coral #FF5B37 = 런마일 primary, 정보표·탭·배지는 DS 패턴으로 매핑.",
         brand: "runmile",
       },
     ],
