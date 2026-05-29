@@ -237,7 +237,7 @@ export class NdsChip extends NdsElement {
     Object.assign(root.style, {
       display: "inline-flex",
       alignItems: "center",
-      gap: "var(--gap-tight)",
+      gap: "var(--semantic-gap-tight)",
       height: `${st.height}px`,
       padding: `${st.paddingY}px ${paddingRight}px ${st.paddingY}px ${st.paddingX}px`,
       borderRadius: "9999px",

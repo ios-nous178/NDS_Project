@@ -184,14 +184,13 @@ flowchart LR
 
   subgraph SEM["2. Semantic CSS 변수<br/>@nudge-design/tokens/css"]
     direction TB
-    NDS["--nds-* (구조 · 기본)"]
-    CSV["--color-semantic-* (역할)"]
-    EAP["--eap-* (앱 슬롯)"]
+    SMN["--semantic-* (Figma SSOT)<br/>색: bg/text/icon/fill/border/button*/input<br/>여백: gap-* · gap-title-* · inset-*"]
+    NDS["--nds-* (DS 자체 컴포넌트 슬롯)<br/>sidebar / chip / 브랜드별 app-bar 등"]
   end
 
-  BR["3. Brand override<br/>brands/{trost,geniet,nudge-eap}<br/>(같은 변수에 다른 값)"]
+  BR["3. Brand override<br/>brands/{trost,geniet,nudge-eap,cashwalk-biz,runmile}<br/>(같은 변수에 다른 값)"]
 
-  CMP["4. 컴포넌트<br/>@nudge-design/react<br/>var(--nds-button-bg-default) …"]
+  CMP["4. 컴포넌트<br/>@nudge-design/react<br/>var(--semantic-bg-brand-default) …"]
 
   COL --> SEM
   SPC --> SEM

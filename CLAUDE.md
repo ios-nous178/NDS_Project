@@ -72,7 +72,7 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 ### 신규 / 수정 토큰
 
 1. `packages/tokens/src/{colors|spacing|typography|elevation|motion|...}.ts` 수정
-2. 시멘틱은 `--semantic-*` 네임스페이스로 — raw hex / `--eap-*` / `--color-semantic-*` 신규 추가 금지
+2. 시멘틱은 두 갈래만 사용 — Figma 정합 토큰은 `--semantic-*` (색: bg/text/icon/fill/border/button*/input + 여백: gap/gap-title/inset 모두 SSOT 1:1 미러), DS 자체 컴포넌트 슬롯은 `--nds-*` (`--nds-sidebar-*`, `--nds-chip-*`, `--nds-{brand}-*` 등). raw hex 신규 추가 금지. 옛 prefix(`--eap-*`, `--color-semantic-*`)는 폐기. `--gap-*` / `--inset-*` 는 `--semantic-gap-*` / `--semantic-inset-*` 의 deprecated alias — 새 코드는 `--semantic-` prefix 사용.
 3. 토큰 정의 의도는 `DESIGN.md` YAML 에도 동기화
 4. `pnpm build --filter @nudge-design/tokens` (의존 패키지가 import 하므로 필수)
 
@@ -119,6 +119,38 @@ pnpm version-packages
 # 4. 변경 커밋 + main push → release-mcpb.yml 가 빌드/태그/슬랙 알림까지 자동
 #    GitHub Release body 는 손대지 않음 (개발자용 raw 커밋 로그는 그대로 — 디버깅용)
 ```
+
+#### 슬랙 공유용 톤 가이드 (`.release-notes/pending.md`)
+
+읽는 사람이 **디자이너 / PM / 기획자 / QA** 라는 전제. 패키지명 · prop 명 · 타입명 · 리팩토링 단어("SSOT 단일화", "리팩터") 같은 코드 용어를 그대로 옮기면 못 읽음 — 효과 / 구조 / 경험으로 번역해서 옮기세요.
+
+**1. 항목 종결은 명사형**
+
+- 동작 표현: `통합 / 단일화 / 표준화 / 강화 / 정리 / 합류 / 도입 / 전환 / 추가 / 개선` 우선. `~했다` 같은 서술형 금지.
+
+**2. 2단 구조 — 항목(1줄) → 하위 bullet(효과 / 세부)**
+
+- 1단: 무엇이 바뀌었는가 (사용자 관점).
+- 2단: 왜 좋아졌는가 / 어떤 게 가능해졌는가. 숫자 ("5종 동시 추가"), Before→After 화살표 ("AppBar/WebHeader/AppFooter/WebFooter → `<Header>` / `<Footer>`") 적극 사용.
+
+**3. 큰 릴리즈는 3단 섹션 — `배경` / `주요 변경사항` / `기대효과`**
+
+- minor 이상 (0.x.0) 또는 신규 브랜드 / 신규 컴포넌트 다수가 들어가면 적용.
+- patch 한두 건이면 단순 bullet 리스트로 충분.
+
+**4. 번역 예시 (개발자 톤 → 공유용 톤)**
+
+| Before (커밋 / 코드 톤)                                                           | After (공유용 톤)                                                                                                  |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `InputGroup 추가, FormField density="admin" 기반 compact admin form 구조 지원`   | **어드민 폼 구조 표준화**<br>· 라벨 / description / 다중 입력 정렬 방식 개선<br>· admin UI 일관성 강화              |
+| `AppBar / WebHeader / AppFooter / WebFooter 컴포넌트 unify`                       | **브랜드 헤더 / 푸터 단일화**<br>· `<Header>` / `<Footer>` 하나로 통합<br>· 브랜드 로고 6종 DS 내장 — 호스트 자산 불필요 |
+| `feat(mcp): visual reference gate + 5 retro bypass patterns`                     | **MCP 가드레일 강화**<br>· 시각 레퍼런스 확인 단계 추가<br>· 반복 우회 / 재작업 패턴 대응 강화                       |
+| `refactor(coverage): brand × component coverage SSOT 단일화`                     | **브랜드별 컴포넌트 커버리지 단일 출처화**<br>· 어떤 브랜드가 어떤 컴포넌트를 지원하는지 한눈에 확인 가능            |
+
+**5. 워크플로우**
+
+- 릴리즈 commit 만들 때 — 위 `step 1~2` 직후, push 전에 Claude 가 `git log` 보고 `.release-notes/pending.md` 작성 → 사람이 한 번 읽고 OK 하면 같은 commit 에 포함.
+- 길이: 한 릴리즈당 5~8 항목 권장. 10 넘으면 묶거나 빼세요.
 
 DS 4개 패키지(@nudge-design/{react,tokens,icons,tailwind-preset}) 의 package.json version 이 SSOT 이고, 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 미러입니다. `sync-mcpb-version.mjs` 한 번 실행으로 둘 다 최대 DS 버전으로 끌어올립니다. 루트 미러는 `pack-local-packages.mjs` 가 tarball 파일명에 박는 값이라 자동 sync 가 빠지면 `pack` 이 의도치 않은 다운그레이드를 만들 위험이 있으므로 빠뜨리지 마세요.
 
