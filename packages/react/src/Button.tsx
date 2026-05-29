@@ -117,9 +117,11 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.button.bgDisabled,
       },
       hover: {
-        background: cv.fill.brandHover,
+        // semantic-button-bg-hover 슬롯 — brand 별로 fill.brandHover 와 다른 hover 톤을 명시할 수 있다.
+        // Runmile 의 경우 fill.brandHover (어두운 톤 #E84A28) 가 아닌 가벼운 톤 (orange/400 #FF805C) 이 SSOT.
+        background: cv.button.bgHover,
         text: cv.button.textDefault,
-        border: cv.fill.brandHover,
+        border: cv.button.bgHover,
       },
     },
     // Primary Soft — "brand-tinted soft" 버튼.
@@ -271,25 +273,26 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
   },
   assistive: {
-    // Figma: Solid/Assistive — cool gray filled (Figma SSOT 미정의, DS extension)
+    // Solid/Assistive — `buttonBg.assistive` / `buttonText.assistive` 슬롯에서 brand 별 톤 매핑.
+    //   · NudgeEAP base : cool-gray fill + white text (#9CA2AE / #FFFFFF — 기존 패턴 유지)
+    //   · Geniet        : neutral gray filled (#ECECEC) + gray text
+    //   · Runmile       : light gray filled (#F2F4F6) + gray800 text
     solid: {
       enabled: {
-        // cv.borderRole.brandDisabled 도 같은 #9CA2AE — Figma 가 같은 값을
-        // border-brand-disabled 로 정의해둔 걸 의미적으로 재활용.
-        background: cv.borderRole.brandDisabled,
-        text: cv.surface.default,
-        border: cv.borderRole.brandDisabled,
+        background: cv.button.bgAssistive,
+        text: cv.button.textAssistive,
+        border: cv.button.bgAssistive,
       },
       disabled: {
-        background: cv.borderRole.subtle,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
+        background: cv.button.bgAssistiveDisabled,
+        // Solid Disabled 텍스트는 모든 brand 공용 white — surface.default 가 SSOT.
+        text: cv.surface.default,
+        border: cv.button.bgAssistiveDisabled,
       },
       hover: {
-        // bespoke "darker cool gray" — Figma SSOT 미정의, 인라인 유지
-        background: "#7E8593",
-        text: cv.surface.default,
-        border: "#7E8593",
+        background: cv.button.bgAssistiveHover,
+        text: cv.button.textAssistive,
+        border: cv.button.bgAssistiveHover,
       },
     },
     soft: {
@@ -309,24 +312,25 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.borderRole.subtle,
       },
     },
-    // Figma: Outlined/Assistive — neutral border, default text
+    // Figma: Outlined/Assistive — neutral border + assistive text (Solid 와 enabled 텍스트 공용).
     outlined: {
       enabled: {
         background: cv.surface.default,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
+        text: cv.button.textAssistive,
+        border: cv.button.borderAssistive,
         fontWeight: fontWeight.medium,
       },
       disabled: {
         background: cv.surface.default,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
+        // Outlined Disabled 텍스트는 brand 별 다른 톤 (Figma 런마일 = gray600 #919CAA).
+        text: cv.button.textAssistiveDisabled,
+        border: cv.button.borderAssistiveDisabled,
         fontWeight: fontWeight.medium,
       },
       hover: {
         background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
+        text: cv.button.textAssistive,
+        border: cv.button.borderAssistive,
         fontWeight: fontWeight.medium,
       },
     },

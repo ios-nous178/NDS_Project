@@ -9,9 +9,9 @@ const PT_ORIGINAL_CLASS = `${PT_CLASS}__original`;
 const PT_UNIT_CLASS = `${PT_CLASS}__unit`;
 
 const sizeConfig = {
-  sm: { amount: 14, original: 12, gap: "var(--gap-tight)" },
+  sm: { amount: 14, original: 12, gap: "var(--semantic-gap-tight)" },
   md: { amount: 18, original: 13, gap: 6 },
-  lg: { amount: 24, original: 14, gap: "var(--gap-default)" },
+  lg: { amount: 24, original: 14, gap: "var(--semantic-gap-default)" },
 } as const;
 
 export type PriceTagSize = keyof typeof sizeConfig;
