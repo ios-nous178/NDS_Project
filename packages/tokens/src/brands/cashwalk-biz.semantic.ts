@@ -67,7 +67,7 @@ export const cashwalkBizSemantic = {
     normal: { default: cashwalkBizNeutral[800] }, // #333333 — Text/Normal
     subtle: { default: cashwalkBizNeutral[700] }, // #666666 — Text/Subtle
     muted: { default: cashwalkBizNeutral[500] }, // #BBBBBB — Text/Muted
-    disabled: { default: cashwalkBizNeutral[400] }, // #DDDDDD — Text/Disabled
+    disabled: { default: cashwalkBizNeutral[500] }, // #BBBBBB — Text/Disabled (Figma 3222:458, muted 와 동일)
     inverse: { default: cashwalkBizCommon["00"] }, // #FFFFFF — Text/Inverse
     brand: {
       default: cashwalkBizYellow[800], // #FD9B02 — Text/Brand (가독성 위해 800)
@@ -78,7 +78,7 @@ export const cashwalkBizSemantic = {
       success: cashwalkBizGreen[600], // #00B350 — Text/Status/Success
       error: cashwalkBizCoralRed[500], // #FF4141 — Text/Status/Error
       caution: cashwalkBizYellow[800], // #FD9B02 — Text/Status/Caution
-      info: cashwalkBizBlue[500], // #007AFF — Text/Status/Info
+      info: cashwalkBizBlue[600], // #006FE6 — Text/Status/Info (Figma 3222:458)
     },
   },
 
@@ -144,15 +144,16 @@ export const cashwalkBizSemantic = {
     },
   },
   buttonText: {
-    default: cashwalkBizNeutral[800], // #333333 — ButtonText/Default (Gray 800 on Yellow)
+    default: cashwalkBizCommon[1000], // #000000 — ButtonText/Default (Figma 3222:458, 노랑 위 검정)
     brand: cashwalkBizYellow[700], // #FEAF01 — ButtonText/Outlined
     // Solid/Secondary disabled = 흰 텍스트 (#FFFFFF) — Solid/Primary 와 같은 페어.
     secondary: {
       default: cashwalkBizCommon["00"], // #FFFFFF — 검정 bg 위 흰 텍스트
       disabled: cashwalkBizCommon["00"], // #FFFFFF — Solid/Secondary Disabled (#DDDDDD bg 위 흰)
     },
-    // Outlined Primary/Secondary disabled 텍스트: Neutral/500 #BBB (Figma 3098:1205 등).
-    disabled: cashwalkBizNeutral[500], // #BBBBBB — Outlined disabled text
+    // SemanticColorGuide 의 ButtonText/Disabled = #FFFFFF (Solid disabled, 회색 bg 위 흰 텍스트).
+    // ※ Outlined disabled 텍스트는 컴포넌트가 cv.textRole.muted 로 직접 처리하므로 이 슬롯과 무관.
+    disabled: cashwalkBizCommon["00"], // #FFFFFF — ButtonText/Disabled (Figma 3222:458)
   },
   buttonBorder: {
     outlined: {

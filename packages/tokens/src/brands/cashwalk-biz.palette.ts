@@ -1,8 +1,8 @@
 /**
  * CashwalkBiz (캐포비 · 캐시워크 포 비지니스) Brand Palette — atomic 색상 스케일.
  *
- * SSOT: Figma 캐포비 Library / Color - Atomic (171:6674)
- *   https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/캐포비---Library?node-id=171-6674
+ * SSOT: Figma 캐포비 Library / Color - Atomic (3218:458)
+ *   https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/캐포비---Library?node-id=3218-458
  *
  * 7 families · 62 swatches:
  *   - Common  : 00 / 1000              (white · black 절대값)
