@@ -44,6 +44,12 @@ function createWindow(): void {
     mainWindow = null;
   });
 
+  // 전체화면 진입/해제를 렌더러에 알린다. mac 은 전체화면이면 신호등이 사라지므로
+  // 헤더가 좌측 84px 예약을 풀고 로고/타이틀을 왼쪽에 붙이는 데 쓴다.
+  const sendFullscreen = (): void => win.webContents.send("window:fullscreen", win.isFullScreen());
+  win.on("enter-full-screen", sendFullscreen);
+  win.on("leave-full-screen", sendFullscreen);
+
   // dev 는 electron-vite 가 띄운 Vite 서버 URL, prod 는 번들된 index.html.
   if (process.env.ELECTRON_RENDERER_URL) {
     void win.loadURL(process.env.ELECTRON_RENDERER_URL);

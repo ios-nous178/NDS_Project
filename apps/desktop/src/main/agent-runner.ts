@@ -4,12 +4,14 @@ import { spawn as ptySpawn, type IPty } from "node-pty";
 import type { WebContents } from "electron";
 import { getAugmentedPath, getToolProcessEnv } from "@nudge-design/mockup-core";
 import { logAppEvent } from "./events.js";
+import { ensureBundledMcpConfig } from "./mcp-config.js";
 import {
   appendTranscript,
   createSession,
   updateSessionStatus,
   type SessionStatus,
 } from "./sessions.js";
+import type { Surface } from "./intake.js";
 
 /**
  * AgentRunner — 사용자 머신에 설치된 CLI 를 PTY 로 spawn 하는 어댑터 seam.
@@ -49,11 +51,35 @@ const AGENT_SPECS: Record<AgentType, AgentSpec> = {
 export interface StartAgentArgs {
   sessionId: string;
   agentType: AgentType;
+  /** 세션 로그/이벤트 SSOT 디렉토리(프로젝트 루트). 세션 JSONL 이 여기 모인다. */
   projectPath: string;
+  /** PTY 의 실제 cwd. 인테이크 목업은 서브폴더(<projectPath>/<slug>). 없으면 projectPath. */
+  cwdOverride?: string;
+  /** 시드 첫 프롬프트 — positional 인자로 얹어 인터랙티브 세션을 그대로 시작한다. */
+  initialPrompt?: string;
   mockupFile?: string;
+  /** 인테이크 메타(세션 표시/Level 3 검증 기반). */
+  brand?: string;
+  surface?: Surface;
+  intent?: "html" | "admin-cms";
   cols?: number;
   rows?: number;
 }
+
+/**
+ * claude 매 턴 시스템 프롬프트에 강제 주입하는 DS 사용 의무(--append-system-prompt).
+ * MCP 도구를 "쓸 수 있게"(--mcp-config) 하는 것과 별개로 "반드시 쓰게" 못박는다 — bare 편집
+ * 세션에서 추측으로 클래스/스타일을 지어내 nds 를 건너뛰는 불상사를 막기 위함.
+ */
+const DS_SYSTEM_MANDATE = [
+  "이 작업공간은 Nudge 디자인 시스템(DS) 목업 전용입니다.",
+  "UI·화면·컴포넌트·토큰·아이콘을 만들거나 수정할 때는 추측하지 말고 반드시 nudge-ds MCP 도구를 먼저 사용하세요:",
+  "- 작업 시작 시 get_guide({topic:'principles'}) 와 dos-donts 확인.",
+  "- 컴포넌트는 find_component → get_guide({topic:'component:<Name>', target:'html'}) 로 props/함정 확인.",
+  "- 색/여백은 find_token (시멘틱 --semantic-* / --nds-* 만, raw hex 금지), 아이콘은 find_icon.",
+  "- HTML 목업은 <nds-*> 커스텀 엘리먼트 사용. 변경 후 반드시 validate_html_mockup 으로 위반 0 까지 검증.",
+  "DS 규칙을 모를 때 클래스/스타일/컴포넌트를 임의로 지어내지 말고 항상 MCP 로 조회하세요.",
+].join("\n");
 
 const running = new Map<string, IPty>();
 
@@ -104,6 +130,9 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
     agentType: args.agentType,
     mockupFile: args.mockupFile,
     title: `${spec.label} · ${args.mockupFile ?? "project"}`,
+    brand: args.brand,
+    surface: args.surface,
+    intent: args.intent,
   };
 
   const searchPath = agentSearchPath();
@@ -126,11 +155,35 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
     payload: { agentType: args.agentType },
   });
 
+  // claude 전용 플래그:
+  //  · --mcp-config       : 앱 동봉 nudge-ds MCP 를 얹는다(비-strict = 추가형). 번들 없으면 생략.
+  //  · --append-system-prompt : DS 사용 의무를 매 턴 시스템 프롬프트에 강제 주입(억지로 nds 쓰게).
+  // (codex 는 두 플래그가 없어 워크스페이스 AGENTS.md 로 컨텍스트를 받는다.)
+  const isClaude = args.agentType === "claude";
+  const mcpConfig = isClaude ? ensureBundledMcpConfig() : null;
+  const claudeFlags = isClaude
+    ? [
+        ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
+        "--append-system-prompt",
+        DS_SYSTEM_MANDATE,
+      ]
+    : [];
+
+  // 시드 프롬프트가 있으면 positional 인자로 얹는다(claude [prompt] / codex [PROMPT] → 인터랙티브 유지).
+  // ⚠️ `--mcp-config <configs...>` 는 가변 인자라 바로 뒤의 prompt 를 두 번째 config 로 삼킨다.
+  //    그래서 prompt 를 맨 앞 operand 로 두어 가변 플래그가 경로 하나만 소비하게 한다
+  //    (시드 프롬프트는 항상 한국어 문장이라 서브커맨드와 충돌하지 않음).
+  const ptyArgs = [
+    ...(args.initialPrompt ? [args.initialPrompt] : []),
+    ...spec.args,
+    ...claudeFlags,
+  ];
+
   let proc: IPty;
   try {
-    proc = ptySpawn(binPath, spec.args, {
+    proc = ptySpawn(binPath, ptyArgs, {
       name: "xterm-color",
-      cwd: args.projectPath,
+      cwd: args.cwdOverride ?? args.projectPath,
       env: cleanEnv({ ...getToolProcessEnv(), PATH: searchPath }),
       cols: args.cols ?? 80,
       rows: args.rows ?? 24,

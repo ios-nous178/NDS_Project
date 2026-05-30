@@ -1,10 +1,11 @@
-import { contextBridge, ipcRenderer, type IpcRendererEvent } from "electron";
+import { contextBridge, ipcRenderer, webUtils, type IpcRendererEvent } from "electron";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import type { OpenProjectResult } from "../main/ipc.js";
 import type { ExportResult } from "../main/export-runner.js";
 import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 import type { StartAgentArgs } from "../main/agent-runner.js";
 import type { ChatSession } from "../main/sessions.js";
+import type { RunIntakeArgs } from "../main/intake.js";
 import type { AppEventInput } from "@nudge-design/mockup-core";
 
 // renderer 가 preload 를 단일 타입 계약 표면으로 쓰도록 재export.
@@ -13,6 +14,14 @@ export type { OpenProjectResult } from "../main/ipc.js";
 export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 export type { AgentType } from "../main/agent-runner.js";
 export type { ChatSession } from "../main/sessions.js";
+export type { RunIntakeArgs, ScreenshotInput, Surface } from "../main/intake.js";
+
+/** intake:start 요청 — RunIntakeArgs(projectPath 제외, 렌더러가 주입 안 함) + 터미널 치수. */
+export type StartIntakeArgs = Omit<RunIntakeArgs, "projectPath"> & {
+  projectPath: string;
+  cols?: number;
+  rows?: number;
+};
 
 export interface FileChangedEvent {
   filePath: string;
@@ -39,6 +48,14 @@ const harness = {
   platform: process.platform,
   /** 앱 버전(package.json) — 상단바 상시 노출용. */
   getVersion: (): Promise<string> => ipcRenderer.invoke("app:version"),
+  /** 초기 전체화면 상태(헤더 좌측 신호등 패딩 분기용). */
+  isFullscreen: (): Promise<boolean> => ipcRenderer.invoke("window:isFullscreen"),
+  /** 전체화면 진입/해제 구독. 반환 함수로 해제. */
+  onFullscreenChange: (cb: (isFullscreen: boolean) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, isFullscreen: boolean): void => cb(isFullscreen);
+    ipcRenderer.on("window:fullscreen", listener);
+    return () => ipcRenderer.removeListener("window:fullscreen", listener);
+  },
   openProject: (): Promise<OpenProjectResult | { canceled: true }> =>
     ipcRenderer.invoke("project:open"),
   readMockup: (filePath: string): Promise<{ source: string }> =>
@@ -57,9 +74,10 @@ const harness = {
     `mockup://preview/${relPath.split("/").map(encodeURIComponent).join("/")}?t=${bust}`,
 
   // ── 비파괴 내보내기 (공유용 HTML) ──
-  /** 원본 무변경 — 자체완결 dist/index.html 생성 + 버전 stamp + usage + webhook. */
-  exportMockup: (projectPath: string): Promise<ExportResult> =>
-    ipcRenderer.invoke("export:run", { projectPath }),
+  /** 원본 무변경 — 자체완결 dist/index.html 생성 + 버전 stamp + usage + webhook.
+   *  mockupDir = 활성 목업 서브폴더(빌드 cwd). 없으면 projectPath 루트에서 빌드. */
+  exportMockup: (projectPath: string, mockupDir?: string): Promise<ExportResult> =>
+    ipcRenderer.invoke("export:run", { projectPath, mockupDir }),
   /** 내보낼 위치/파일명을 먼저 고른다(빌드 전). 취소 시 path 없음. */
   pickExportPath: (defaultPath: string): Promise<{ path?: string }> =>
     ipcRenderer.invoke("export:pickPath", { defaultPath }),
@@ -106,6 +124,20 @@ const harness = {
   /** 세션 메타 + raw 트랜스크립트 삭제(실행 중이면 main 이 먼저 종료). */
   deleteSession: (projectPath: string, sessionId: string): Promise<{ ok: boolean }> =>
     ipcRenderer.invoke("session:delete", { projectPath, sessionId }),
+
+  // ── 인테이크 (Level 2) ──
+  /** 게이트 충족 파일 작성 후 시드 세션 시작. 성공 시 sessionId 로 터미널 attach. */
+  startIntake: (
+    args: StartIntakeArgs,
+  ): Promise<{
+    ok: boolean;
+    sessionId?: string;
+    slug?: string;
+    intent?: "html" | "admin-cms";
+    error?: string;
+  }> => ipcRenderer.invoke("intake:start", args),
+  /** 드래그드롭 File → 실제 절대경로(File.path 대체). 멀티MB IPC 회피용. 동기·read-only. */
+  pathForFile: (file: File): string => webUtils.getPathForFile(file),
 };
 
 contextBridge.exposeInMainWorld("harness", harness);

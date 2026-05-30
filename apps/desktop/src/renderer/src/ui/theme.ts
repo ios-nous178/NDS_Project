@@ -30,8 +30,21 @@ export const mono = "ui-monospace, SFMono-Regular, Menlo, monospace";
 export const dragRegion = { WebkitAppRegion: "drag" } as unknown as React.CSSProperties;
 export const noDrag = { WebkitAppRegion: "no-drag" } as unknown as React.CSSProperties;
 
+/**
+ * 모든 버튼 공통 — macOS Chromium 의 네이티브 버튼 베젤(투명 bg 위에 검정 링으로 보임)과
+ * 기본 focus outline 을 제거한다. 인라인이라 UA 스타일(:focus 포함)을 무조건 이긴다.
+ * 각 버튼 스타일이 이걸 spread 로 먼저 깔고 시작한다.
+ */
+export const btnReset = {
+  WebkitAppearance: "none",
+  appearance: "none",
+  outline: "none",
+  boxShadow: "none",
+} as unknown as React.CSSProperties;
+
 /** 투명 bg + 보더 pill 버튼 (레퍼런스의 'Max 5x'/'Plus' 느낌, 다크). */
 export const pillBtn: React.CSSProperties = {
+  ...btnReset,
   padding: "4px 12px",
   borderRadius: 999,
   border: `1px solid ${c.border}`,
@@ -45,11 +58,14 @@ export const pillBtn: React.CSSProperties = {
 export const pillBtnActive: React.CSSProperties = {
   ...pillBtn,
   background: c.accentBg,
-  borderColor: c.accent,
+  // border shorthand 전체로 지정(borderColor longhand 와 섞으면 active→inactive 복귀 시
+  // React 가 longhand 만 제거해 border-color 가 검정으로 깨지는 버그가 난다).
+  border: `1px solid ${c.accent}`,
   color: c.accent,
 };
 
 export const primaryBtn: React.CSSProperties = {
+  ...btnReset,
   padding: "5px 14px",
   borderRadius: 6,
   border: "none",
@@ -68,6 +84,7 @@ export const primaryBtnDisabled: React.CSSProperties = {
 };
 
 export const ghostBtn: React.CSSProperties = {
+  ...btnReset,
   padding: "5px 12px",
   borderRadius: 6,
   border: `1px solid ${c.border}`,
@@ -108,6 +125,7 @@ export const segGroup: React.CSSProperties = {
 };
 
 export const segItem: React.CSSProperties = {
+  ...btnReset,
   display: "inline-flex",
   alignItems: "center",
   gap: 4,

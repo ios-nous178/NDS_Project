@@ -12,6 +12,7 @@
  */
 export type AppEventType =
   | "project_opened"
+  | "intake_created"
   | "mockup_selected"
   | "validation_completed"
   | "export_completed"

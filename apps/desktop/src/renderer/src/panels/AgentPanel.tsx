@@ -31,6 +31,7 @@ export function AgentPanel({
   projectPath,
   mockupFile,
   active = true,
+  attachSessionId,
   onLiveChange,
   onHistoryChange,
 }: {
@@ -38,6 +39,8 @@ export function AgentPanel({
   mockupFile: string | null;
   /** 패널이 화면에 보이는지(기록 보기 오버레이로 가려지면 false). 가려졌다 돌아올 때 포커스 복구용. */
   active?: boolean;
+  /** main 이 이미 시작한 세션(인테이크 등)에 터미널을 attach. 값이 바뀌면 그 세션을 띄운다. */
+  attachSessionId?: string | null;
   /** 라이브 세션 id 변경(시작 시 id, 종료 시 null). */
   onLiveChange?: (sessionId: string | null) => void;
   /** 채팅기록 리스트 새로고침 트리거. */
@@ -74,20 +77,24 @@ export function AgentPanel({
   }, []);
 
   // 기록 보기(display:none)로 가려졌다 다시 보일 때 xterm 이 포커스를 잃어 입력이 안 먹는다.
-  // 돌아오는 순간 리핏 + 재포커스해 곧장 타이핑이 되도록 복구한다.
+  // ⚠️ display:block 직후 같은 틱엔 컨테이너가 아직 0-size 라 fit/focus 가 먹지 않는다.
+  //    requestAnimationFrame 으로 레이아웃이 끝난 다음 프레임에 리핏 + 재포커스한다.
   useEffect(() => {
     if (!active) return;
-    const term = termRef.current;
-    if (!term) return;
-    try {
-      fitRef.current?.fit();
-    } catch {
-      /* 0-size 등 */
-    }
-    if (sessionRef.current && term.cols > 0) {
-      void window.harness.resizeAgent(sessionRef.current, term.cols, term.rows);
-    }
-    term.focus();
+    const raf = requestAnimationFrame(() => {
+      const term = termRef.current;
+      if (!term) return;
+      try {
+        fitRef.current?.fit();
+      } catch {
+        /* 0-size 등 */
+      }
+      if (sessionRef.current && term.cols > 0) {
+        void window.harness.resizeAgent(sessionRef.current, term.cols, term.rows);
+      }
+      term.focus();
+    });
+    return () => cancelAnimationFrame(raf);
   }, [active]);
 
   useEffect(() => {
@@ -117,18 +124,9 @@ export function AgentPanel({
     [],
   );
 
-  const start = useCallback(async () => {
-    if (!projectPath || !containerRef.current) return;
-    setError("");
-
-    // 이전 라이브 세션이 남아있으면 새 세션으로 덮어쓰기 전에 PTY 를 먼저 중지.
-    // 안 그러면 main 의 running Map 에서 도달 불가능한 orphan PTY 로 떠돈다.
-    if (sessionRef.current) {
-      void window.harness.stopAgent(sessionRef.current);
-      sessionRef.current = null;
-      liveCb.current?.(null);
-    }
-
+  // 새 xterm 인스턴스 생성 + 입력 배선(start/attach 공용). 이전 터미널은 dispose.
+  const makeTerminal = useCallback((): Terminal | null => {
+    if (!containerRef.current) return null;
     termRef.current?.dispose();
     const term = new Terminal({
       fontSize: 12,
@@ -149,6 +147,23 @@ export function AgentPanel({
     });
     termRef.current = term;
     fitRef.current = fit;
+    return term;
+  }, []);
+
+  const start = useCallback(async () => {
+    if (!projectPath || !containerRef.current) return;
+    setError("");
+
+    // 이전 라이브 세션이 남아있으면 새 세션으로 덮어쓰기 전에 PTY 를 먼저 중지.
+    // 안 그러면 main 의 running Map 에서 도달 불가능한 orphan PTY 로 떠돈다.
+    if (sessionRef.current) {
+      void window.harness.stopAgent(sessionRef.current);
+      sessionRef.current = null;
+      liveCb.current?.(null);
+    }
+
+    const term = makeTerminal();
+    if (!term) return;
 
     const id = crypto.randomUUID();
     sessionRef.current = id;
@@ -173,7 +188,37 @@ export function AgentPanel({
     liveCb.current?.(id);
     histCb.current?.();
     term.focus();
-  }, [projectPath, agentType, mockupFile]);
+  }, [projectPath, agentType, mockupFile, makeTerminal]);
+
+  // main 이 이미 시작한 세션(인테이크)에 터미널을 붙인다. startAgent 는 호출하지 않는다.
+  // 초기 출력 유실 방지: 라이브 구독을 켜기(sessionRef 세팅) 전에 지금까지의 트랜스크립트를
+  // 1회 replay 한다. (read 와 세팅 사이의 짧은 창은 갓 시작한 세션에선 무시 가능 — plan 참조.)
+  const attach = useCallback(
+    async (id: string) => {
+      if (!projectPath) return;
+      setError("");
+      const term = makeTerminal();
+      if (!term) return;
+      try {
+        const { text } = await window.harness.readTranscript(projectPath, id);
+        if (text) term.write(text);
+      } catch {
+        /* 트랜스크립트 없음 — 라이브만 */
+      }
+      sessionRef.current = id;
+      setStatus("running");
+      liveCb.current?.(id);
+      histCb.current?.();
+      term.focus();
+    },
+    [projectPath, makeTerminal],
+  );
+
+  useEffect(() => {
+    if (attachSessionId && attachSessionId !== sessionRef.current) {
+      void attach(attachSessionId);
+    }
+  }, [attachSessionId, attach]);
 
   const stop = useCallback(() => {
     if (sessionRef.current) void window.harness.stopAgent(sessionRef.current);
