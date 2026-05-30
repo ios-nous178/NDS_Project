@@ -187,12 +187,21 @@ function agentLabel(t: ChatSession["agentType"]): string {
   return t === "claude" ? "Claude" : "Codex";
 }
 function statusKo(s: ChatSession["status"]): string {
-  return s === "active" ? "진행중" : s === "completed" ? "완료" : "실패";
+  switch (s) {
+    case "active":
+      return "진행중";
+    case "completed":
+      return "완료";
+    case "interrupted":
+      return "중단됨";
+    default:
+      return "실패";
+  }
 }
 function dotColor(isLive: boolean, status: ChatSession["status"]): string {
   if (isLive) return c.green;
-  if (status === "failed") return c.red;
-  return c.textFaint;
+  if (status === "failed") return c.red; // 진짜 오류만 빨강
+  return c.textFaint; // 중단됨/완료 등은 중립
 }
 function fmtTime(iso: string): string {
   try {

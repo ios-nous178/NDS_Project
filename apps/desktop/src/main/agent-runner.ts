@@ -4,7 +4,12 @@ import { spawn as ptySpawn, type IPty } from "node-pty";
 import type { WebContents } from "electron";
 import { getAugmentedPath, getToolProcessEnv } from "@nudge-design/mockup-core";
 import { logAppEvent } from "./events.js";
-import { appendTranscript, createSession, updateSessionStatus } from "./sessions.js";
+import {
+  appendTranscript,
+  createSession,
+  updateSessionStatus,
+  type SessionStatus,
+} from "./sessions.js";
 
 /**
  * AgentRunner — 사용자 머신에 설치된 CLI 를 PTY 로 spawn 하는 어댑터 seam.
@@ -151,13 +156,16 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
 
   proc.onExit(({ exitCode, signal }) => {
     running.delete(args.sessionId);
+    // 시그널로 죽었으면(사용자 "중지" / 앱 종료 → kill) 오류가 아니라 중단(interrupted).
+    // 정상 종료(0)는 completed, 그 외 비정상 종료코드만 진짜 failed.
+    const status: SessionStatus = signal ? "interrupted" : exitCode === 0 ? "completed" : "failed";
     logAppEvent(args.projectPath, {
-      type: exitCode === 0 ? "agent_response_completed" : "agent_failed",
+      type: status === "completed" ? "agent_response_completed" : "agent_failed",
       sessionId: args.sessionId,
       mockupFile: args.mockupFile,
       payload: { agentType: args.agentType, exitCode, signal },
     });
-    updateSessionStatus(args.projectPath, sessionBase, exitCode === 0 ? "completed" : "failed");
+    updateSessionStatus(args.projectPath, sessionBase, status);
     if (!wc.isDestroyed()) wc.send("agent:exit", { sessionId: args.sessionId, exitCode });
   });
 
