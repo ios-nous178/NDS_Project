@@ -13,7 +13,8 @@ const COMMON_BIN_DIRS = [
 ];
 
 function getHomeBinDirs(): string[] {
-  const home = process.env.HOME;
+  // Windows GUI 프로세스는 HOME 이 없을 수 있으므로 USERPROFILE 로 폴백.
+  const home = process.env.HOME ?? process.env.USERPROFILE;
   if (!home) return [];
 
   const dirs = [

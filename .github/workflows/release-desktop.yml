@@ -1,0 +1,96 @@
+name: Release Desktop
+
+# Nudge Studio(apps/desktop) 패키징 — macOS universal(.dmg/.zip) + Windows(.exe/nsis).
+#
+# 왜 OS 매트릭스인가:
+#   node-pty 는 네이티브 모듈이라 타깃 OS/arch 에서 빌드해야 동작하는 .node 가 나온다.
+#   특히 Windows 용 .node 는 macOS 에서 크로스빌드가 불가 → 반드시 windows runner 에서 패키징.
+#   macOS universal 은 electron-builder 가 arm64·x64 를 각각 리빌드 후 lipo 로 합친다
+#   (electron-builder.yml 의 npmRebuild: true 가 이를 가능케 함).
+#
+# 코드서명은 아직 미설정 → CSC_IDENTITY_AUTO_DISCOVERY=false 로 끄고 unsigned 산출물을 만든다.
+#   배포 시 사용자는 mac 은 "우클릭 → 열기"(Gatekeeper), win 은 SmartScreen "추가 정보 → 실행" 필요.
+#
+# 트리거:
+#   - 수동(workflow_dispatch)
+#   - 태그 push (desktop-v*) → 산출물을 GitHub Release(prerelease)로 업로드
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - "desktop-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            label: mac-universal
+          - os: windows-latest
+            label: win-x64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 9.6.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+          # setup-node v5 의 packageManager 자동 감지 캐시를 끔(ci.yml 과 동일 이유).
+          package-manager-cache: false
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # DS 소스 dist 전체 생성 — bundle-mcp-desktop 이 요구하는
+      # packages/html/dist/standalone · packages/assets/dist/files · mockup-core 등.
+      - name: Build workspace
+        run: pnpm build
+
+      # bundle:mcp(.mcp-bundle 생성) → electron-vite build → electron-builder.
+      # npmRebuild: true 라 electron-builder 가 node-pty 를 타깃 arch 로 리빌드한다.
+      - name: Package desktop app
+        run: pnpm --filter @nudge-design/desktop run package
+        env:
+          # 코드서명 미설정 — 자동 인증서 탐색을 꺼서 빌드 실패를 막는다(unsigned 산출물).
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          # electron-builder 가 임의로 GitHub publish 를 시도하지 않도록 명시.
+          GH_TOKEN: ""
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nudge-studio-${{ matrix.label }}
+          if-no-files-found: error
+          path: |
+            apps/desktop/release/*.dmg
+            apps/desktop/release/*.zip
+            apps/desktop/release/*.exe
+            apps/desktop/release/*.blockmap
+            apps/desktop/release/latest*.yml
+
+      # 태그(desktop-v*)로 트리거된 경우에만 Release 에 첨부. unsigned 라 prerelease 로 표시.
+      - name: Attach to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/desktop-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          fail_on_unmatched_files: false
+          files: |
+            apps/desktop/release/*.dmg
+            apps/desktop/release/*.zip
+            apps/desktop/release/*.exe

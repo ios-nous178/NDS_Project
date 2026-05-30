@@ -83,18 +83,30 @@ const DS_SYSTEM_MANDATE = [
 
 const running = new Map<string, IPty>();
 
+const isWindows = process.platform === "win32";
+
 /**
  * 에이전트 바이너리 탐지용 PATH. GUI 앱은 로그인 셸 PATH 를 못 물려받으므로 core
- * getAugmentedPath 에 더해 CLI 가 흔히 깔리는 ~/.local/bin · ~/.bun/bin 을 앞에 보강한다
- * (claude 가 ~/.local/bin 에 깔리는 케이스 — core 는 일부러 안 건드림).
+ * getAugmentedPath 에 더해 CLI 가 흔히 깔리는 디렉토리를 앞에 보강한다.
+ *  · mac/linux: ~/.local/bin · ~/.bun/bin · ~/bin (claude 공식 인스톨러는 ~/.local/bin).
+ *  · windows  : %APPDATA%\npm (npm -g 의 claude.cmd) · %LOCALAPPDATA%\Programs\claude ·
+ *               %USERPROFILE%\.local\bin (네이티브 인스톨러).
+ * (core 는 일부러 ~/.local/bin 을 안 건드리므로 여기서 보강.)
  */
 function agentSearchPath(): string {
-  const home = process.env.HOME ?? "";
-  const extra = home
-    ? [join(home, ".local/bin"), join(home, ".bun/bin"), join(home, "bin")].filter((d) =>
-        existsSync(d),
-      )
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? "";
+  const candidates = home
+    ? isWindows
+      ? [
+          join(process.env.APPDATA ?? join(home, "AppData/Roaming"), "npm"),
+          join(process.env.LOCALAPPDATA ?? join(home, "AppData/Local"), "Programs", "claude"),
+          join(home, ".local/bin"),
+          join(home, ".bun/bin"),
+          join(home, "bin"),
+        ]
+      : [join(home, ".local/bin"), join(home, ".bun/bin"), join(home, "bin")]
     : [];
+  const extra = candidates.filter((d) => existsSync(d));
   const seen = new Set<string>();
   const out: string[] = [];
   for (const dir of [...extra, ...getAugmentedPath().split(delimiter)]) {
@@ -105,11 +117,29 @@ function agentSearchPath(): string {
   return out.join(delimiter);
 }
 
+/**
+ * Windows 는 실행 파일이 확장자(.exe/.cmd/.bat)를 가지므로 PATHEXT 후보를 붙여 탐색한다.
+ * claude 는 npm 전역 설치면 claude.cmd, 네이티브 인스톨러면 claude.exe 로 깔린다 —
+ * 확장자 없이 `claude` 만 찾으면 설치돼 있어도 못 찾던 버그를 고친다.
+ */
+function binCandidates(bin: string): string[] {
+  if (!isWindows) return [bin];
+  // .exe 를 먼저 — 직접 spawn 가능. .cmd/.bat 은 cmd.exe 경유 필요(아래 startAgent 참고).
+  const exts = (process.env.PATHEXT ?? ".EXE;.CMD;.BAT")
+    .split(";")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  const ordered = [".exe", ".cmd", ".bat", ...exts].filter((e, i, a) => a.indexOf(e) === i);
+  return [bin, ...ordered.map((e) => `${bin}${e}`)];
+}
+
 function resolveBin(bin: string, searchPath: string): string | null {
   for (const dir of searchPath.split(delimiter)) {
     if (!dir) continue;
-    const candidate = join(dir, bin);
-    if (existsSync(candidate)) return candidate;
+    for (const name of binCandidates(bin)) {
+      const candidate = join(dir, name);
+      if (existsSync(candidate)) return candidate;
+    }
   }
   return null;
 }
@@ -179,9 +209,15 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
     ...claudeFlags,
   ];
 
+  // Windows: .cmd/.bat 은 실행 파일이 아니라 CreateProcess 로 직접 spawn 불가 →
+  // cmd.exe /c 로 감싼다. .exe 는 그대로 직접 spawn (가장 견고).
+  const useCmdWrapper = isWindows && /\.(cmd|bat)$/i.test(binPath);
+  const spawnFile = useCmdWrapper ? (process.env.ComSpec ?? "cmd.exe") : binPath;
+  const spawnArgs = useCmdWrapper ? ["/c", binPath, ...ptyArgs] : ptyArgs;
+
   let proc: IPty;
   try {
-    proc = ptySpawn(binPath, ptyArgs, {
+    proc = ptySpawn(spawnFile, spawnArgs, {
       name: "xterm-color",
       cwd: args.cwdOverride ?? args.projectPath,
       env: cleanEnv({ ...getToolProcessEnv(), PATH: searchPath }),
