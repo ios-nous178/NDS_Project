@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import type { ChatSession } from "../../preload/index.js";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
@@ -8,6 +8,8 @@ import { AgentPanel } from "./panels/AgentPanel.js";
 import { SessionHistoryPanel } from "./panels/SessionHistoryPanel.js";
 import { TranscriptView } from "./panels/TranscriptView.js";
 import { ExportButton } from "./panels/ExportButton.js";
+import { IntakeModal } from "./panels/IntakeModal.js";
+import { Dropdown } from "./ui/Dropdown.js";
 import { Logo } from "./ui/Logo.js";
 import {
   c,
@@ -18,6 +20,8 @@ import {
   noDrag,
   pillBtn,
   pillBtnActive,
+  primaryBtn,
+  primaryBtnDisabled,
   tabBar,
   segGroup,
   segItem,
@@ -43,6 +47,13 @@ export function App(): React.JSX.Element {
   const [liveSessionId, setLiveSessionId] = useState<string | null>(null);
   const [historyRefresh, setHistoryRefresh] = useState(0);
   const [viewing, setViewing] = useState<ChatSession | null>(null);
+  // 인테이크
+  const [intakeOpen, setIntakeOpen] = useState(false);
+  const [attachSessionId, setAttachSessionId] = useState<string | null>(null);
+  /** 현재 컨텍스트의 intent — admin-cms 면 HTML 미리보기/내보내기 비대상(채팅 전용). */
+  const [activeIntent, setActiveIntent] = useState<"html" | "admin-cms">("html");
+  /** 인테이크가 만든 목업 폴더 슬러그(빌드/내보내기 cwd 계산용). */
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
   const selectedRef = useRef<string | null>(null);
   const projectRef = useRef<string | null>(null);
@@ -51,6 +62,13 @@ export function App(): React.JSX.Element {
   const [appVersion, setAppVersion] = useState<string>("");
   useEffect(() => {
     void window.harness.getVersion().then(setAppVersion);
+  }, []);
+
+  // 전체화면이면 mac 신호등이 사라지므로 헤더 좌측 84px 예약을 푼다.
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  useEffect(() => {
+    void window.harness.isFullscreen().then(setIsFullscreen);
+    return window.harness.onFullscreenChange(setIsFullscreen);
   }, []);
 
   const loadFile = useCallback(async (projectRoot: string, rel: string) => {
@@ -86,6 +104,10 @@ export function App(): React.JSX.Element {
     setPreviewRel(null);
     setViewing(null);
     setLiveSessionId(null);
+    setAttachSessionId(null);
+    setActiveIntent("html");
+    setActiveSlug(null);
+    setIntakeOpen(false);
     setHistoryRefresh((n) => n + 1);
   }, []);
 
@@ -96,6 +118,8 @@ export function App(): React.JSX.Element {
       selectedRef.current = rel;
       setPreviewRel(rel);
       setTab("preview");
+      // 기존(목록의) 목업은 HTML 미리보기 대상 — admin-cms 비활성 상태를 해제.
+      setActiveIntent("html");
       void loadFile(projectPath, rel);
       void window.harness.appendEvent({ projectPath, type: "mockup_selected", mockupFile: rel });
     },
@@ -111,6 +135,18 @@ export function App(): React.JSX.Element {
   }, [loadFile]);
 
   const refreshHistory = useCallback(() => setHistoryRefresh((n) => n + 1), []);
+
+  // 빌드/내보내기 cwd = 선택된 목업의 폴더(없으면 인테이크가 만든 슬러그 폴더). 둘 다 없으면 루트.
+  const activeMockupDir = useMemo(() => {
+    if (!projectPath) return undefined;
+    const rel = selected ?? (activeSlug ? `${activeSlug}/index.html` : null);
+    if (!rel) return undefined;
+    const slash = rel.lastIndexOf("/");
+    const dir = slash > 0 ? rel.slice(0, slash) : "";
+    return dir ? `${projectPath}/${dir}` : projectPath;
+  }, [projectPath, selected, activeSlug]);
+
+  const isAdminCms = activeIntent === "admin-cms";
 
   return (
     <div
@@ -131,7 +167,7 @@ export function App(): React.JSX.Element {
           display: "flex",
           alignItems: "center",
           gap: 10,
-          padding: isMac ? "8px 14px 8px 84px" : "8px 146px 8px 14px",
+          padding: isMac ? (isFullscreen ? "8px 14px" : "8px 14px 8px 84px") : "8px 146px 8px 14px",
           borderBottom: `1px solid ${c.border}`,
           background: c.bgPanel,
         }}
@@ -164,31 +200,27 @@ export function App(): React.JSX.Element {
         <button onClick={openProject} style={{ ...ghostBtn, ...noDrag }}>
           프로젝트 열기
         </button>
-        <select
-          value={selected ?? ""}
-          onChange={(e) => selectEntry(e.target.value)}
-          disabled={entries.length === 0}
+        <button
+          onClick={() => setIntakeOpen(true)}
+          disabled={!projectPath || liveSessionId !== null}
+          title={liveSessionId !== null ? "실행 중인 세션을 먼저 중지하세요" : undefined}
           style={{
+            ...(projectPath && liveSessionId === null ? primaryBtn : primaryBtnDisabled),
             ...noDrag,
-            maxWidth: 320,
-            padding: "5px 8px",
-            borderRadius: 6,
-            border: `1px solid ${c.border}`,
-            background: c.bg,
-            color: c.text,
-            fontSize: 12,
-            fontFamily: mono,
           }}
         >
-          <option value="" disabled>
-            {entries.length ? `목업 선택 (${entries.length})` : "목업 없음"}
-          </option>
-          {entries.map((e) => (
-            <option key={e} value={e}>
-              {e}
-            </option>
-          ))}
-        </select>
+          + 새 목업
+        </button>
+        <div style={{ ...noDrag, width: 300 }}>
+          <Dropdown
+            value={selected ?? ""}
+            options={entries.map((e) => ({ value: e, label: e }))}
+            onChange={selectEntry}
+            placeholder={entries.length ? `목업 선택 (${entries.length})` : "목업 없음"}
+            disabled={entries.length === 0}
+            mono
+          />
+        </div>
         {exportedRel && (
           <button
             onClick={() => {
@@ -207,6 +239,8 @@ export function App(): React.JSX.Element {
         >
           <ExportButton
             projectPath={projectPath}
+            mockupDir={activeMockupDir}
+            disabled={isAdminCms}
             onExported={(rel) => {
               setExportedRel(rel);
               setPreviewRel(rel);
@@ -281,7 +315,11 @@ export function App(): React.JSX.Element {
               projectPath={projectPath}
               mockupFile={selected}
               active={!viewing}
-              onLiveChange={setLiveSessionId}
+              attachSessionId={attachSessionId}
+              onLiveChange={(id) => {
+                setLiveSessionId(id);
+                if (id === null) setAttachSessionId(null);
+              }}
               onHistoryChange={refreshHistory}
             />
           </div>
@@ -356,9 +394,28 @@ export function App(): React.JSX.Element {
           </div>
 
           <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
-            {tab === "preview" && (
-              <PreviewPanel relPath={previewRel} bust={bust} viewport={viewport} />
-            )}
+            {tab === "preview" &&
+              (isAdminCms ? (
+                <div
+                  style={{
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 24,
+                    textAlign: "center",
+                    color: c.textMuted,
+                    fontSize: 13,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  이 세션은 어드민(antd / .tsx) 경로입니다.
+                  <br />
+                  HTML 미리보기·내보내기는 적용되지 않습니다 — 채팅에서 생성을 진행하세요.
+                </div>
+              ) : (
+                <PreviewPanel relPath={previewRel} bust={bust} viewport={viewport} />
+              ))}
             {tab === "validate" && (
               <div style={{ height: "100%", overflowY: "auto", padding: 16 }}>
                 <ValidationPanel result={result} loading={validating} />
@@ -390,6 +447,23 @@ export function App(): React.JSX.Element {
           </div>
         </section>
       </div>
+
+      {intakeOpen && projectPath && (
+        <IntakeModal
+          projectPath={projectPath}
+          onClose={() => setIntakeOpen(false)}
+          onStarted={(sessionId, intent, slug) => {
+            setActiveSlug(slug);
+            setActiveIntent(intent);
+            setSelected(null);
+            selectedRef.current = null;
+            setLiveSessionId(sessionId);
+            setAttachSessionId(sessionId);
+            setViewing(null);
+            refreshHistory();
+          }}
+        />
+      )}
     </div>
   );
 }

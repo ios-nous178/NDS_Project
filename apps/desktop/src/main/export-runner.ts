@@ -2,8 +2,11 @@ import { buildSinglefileHtml, type BuildSinglefileHtmlResult } from "@nudge-desi
 
 export interface ExportResult {
   build: BuildSinglefileHtmlResult;
-  /** projectPath 기준 공유용 산출물 상대경로 (성공 시). */
-  outputRel?: string;
+  /** workspaceDir(빌드 cwd) 기준 상대경로 — 예: "dist/index.html". */
+  workspaceOutputRel?: string;
+  /** projectPath(미리보기 프로토콜 root) 기준 상대경로 — 예: "geniet-home/dist/index.html".
+   *  앱 미리보기/선택 목록은 반드시 이 값을 쓴다(workspace 기준만 주면 루트 dist 를 찾는 버그). */
+  projectOutputRel?: string;
 }
 
 /**
@@ -15,19 +18,30 @@ export interface ExportResult {
  * 생성은 Claude Code 가 따로 하므로 시각 레퍼런스 게이트는 끈다(skipVisualReferences).
  * DS-wrap 준수는 검증 패널의 native-interactive 등으로 강제(원본을 mutate 하지 않음).
  */
-export async function exportMockup(projectPath: string): Promise<ExportResult> {
+/**
+ * @param projectPath 미리보기 프로토콜 root(세션/이벤트 SSOT). rel 경로의 기준.
+ * @param workspaceDir 실제 빌드 cwd(인테이크 목업 서브폴더). 없으면 projectPath.
+ */
+export async function exportMockup(
+  projectPath: string,
+  workspaceDir: string = projectPath,
+): Promise<ExportResult> {
   const build = await buildSinglefileHtml({
-    cwd: projectPath,
+    cwd: workspaceDir,
     intent: "html",
     skipVisualReferences: true,
     skipSourceBadge: true,
   });
 
-  let outputRel: string | undefined;
+  let workspaceOutputRel: string | undefined;
+  let projectOutputRel: string | undefined;
   if (build.ok && build.outputPath) {
-    outputRel = build.outputPath.startsWith(projectPath)
-      ? build.outputPath.slice(projectPath.length).replace(/^[/\\]+/, "")
-      : build.outputPath;
+    const rel = (base: string): string | undefined =>
+      build.outputPath!.startsWith(base)
+        ? build.outputPath!.slice(base.length).replace(/^[/\\]+/, "")
+        : undefined;
+    workspaceOutputRel = rel(workspaceDir) ?? build.outputPath;
+    projectOutputRel = rel(projectPath) ?? build.outputPath;
   }
-  return { build, outputRel };
+  return { build, workspaceOutputRel, projectOutputRel };
 }

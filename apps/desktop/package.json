@@ -10,8 +10,10 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "node --test 'src/**/*.test.ts'",
     "rebuild": "electron-rebuild -f -w node-pty",
-    "package": "electron-vite build && electron-builder"
+    "bundle:mcp": "node ../../scripts/bundle-mcp-desktop.mjs",
+    "package": "pnpm bundle:mcp && electron-vite build && electron-builder"
   },
   "dependencies": {
     "@nudge-design/mockup-core": "workspace:*",

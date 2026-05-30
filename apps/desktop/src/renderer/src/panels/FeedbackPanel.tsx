@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { FeedbackKind } from "@nudge-design/mockup-core";
-import { c } from "../ui/theme.js";
+import { btnReset, c } from "../ui/theme.js";
 
 /**
  * 현재 선택된 목업에 대한 유저 피드백 수집(Phase 3).
@@ -162,6 +162,7 @@ export function FeedbackPanel({
 }
 
 const toggleBase: React.CSSProperties = {
+  ...btnReset,
   padding: "5px 16px",
   borderRadius: 6,
   border: `1px solid ${c.border}`,
@@ -172,7 +173,8 @@ const toggleOff: React.CSSProperties = { ...toggleBase, background: c.bgElevated
 const toggleOn: React.CSSProperties = {
   ...toggleBase,
   background: c.accent,
-  borderColor: c.accent,
+  // border shorthand 전체로(borderColor longhand 와 섞으면 선택 해제 시 검정으로 깨짐).
+  border: `1px solid ${c.accent}`,
   color: c.accentText,
   fontWeight: 600,
 };
@@ -190,6 +192,7 @@ const textareaStyle: React.CSSProperties = {
   marginBottom: 6,
 };
 const primaryBtn: React.CSSProperties = {
+  ...btnReset,
   padding: "6px 12px",
   borderRadius: 6,
   border: "none",

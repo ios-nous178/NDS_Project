@@ -23,6 +23,8 @@ import {
   reconcileStaleSessions,
   type ChatSession,
 } from "./sessions.js";
+import { runIntake, type RunIntakeArgs } from "./intake.js";
+import { randomUUID } from "node:crypto";
 import type { AppEventInput } from "@nudge-design/mockup-core";
 
 // dot-폴더를 일괄 차단하지 않는다(.demo 같은 정당한 목업 위치를 노출하기 위해).
@@ -91,6 +93,11 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   // 앱 버전(package.json) — 상단바 상시 노출용.
   ipcMain.handle("app:version", async (): Promise<string> => app.getVersion());
 
+  // 헤더가 마운트 시 초기 전체화면 상태를 알도록(이후 변화는 window:fullscreen 이벤트).
+  ipcMain.handle("window:isFullscreen", async (): Promise<boolean> => {
+    return getWindow()?.isFullScreen() ?? false;
+  });
+
   ipcMain.handle("project:open", async (): Promise<OpenProjectResult | { canceled: true }> => {
     const win = getWindow();
     const result = await dialog.showOpenDialog(win ?? undefined!, {
@@ -131,15 +138,19 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   );
 
   // ── 비파괴 내보내기 (공유용 HTML) ──
-  ipcMain.handle("export:run", async (_e, args: { projectPath: string }): Promise<ExportResult> => {
-    const result = await exportMockup(args.projectPath);
-    logAppEvent(args.projectPath, {
-      type: result.build.ok ? "export_completed" : "error_occurred",
-      mockupFile: result.outputRel,
-      payload: { ok: result.build.ok, sizeKb: result.build.sizeKb, error: result.build.error },
-    });
-    return result;
-  });
+  // mockupDir = 활성 목업 서브폴더(빌드 cwd). 없으면 projectPath 루트에서 빌드(Model 1 호환).
+  ipcMain.handle(
+    "export:run",
+    async (_e, args: { projectPath: string; mockupDir?: string }): Promise<ExportResult> => {
+      const result = await exportMockup(args.projectPath, args.mockupDir);
+      logAppEvent(args.projectPath, {
+        type: result.build.ok ? "export_completed" : "error_occurred",
+        mockupFile: result.projectOutputRel,
+        payload: { ok: result.build.ok, sizeKb: result.build.sizeKb, error: result.build.error },
+      });
+      return result;
+    },
+  );
 
   // 저장 위치/파일명 먼저 고르기 — 빌드 전에 호출한다(=고른 폴더로 바로 내보내는 흐름).
   // 다이얼로그만 띄우고 경로만 돌려준다. 실제 기록은 빌드 후 export:place 가 한다.
@@ -246,6 +257,54 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     async (_e, args: { projectPath: string; sessionId: string }): Promise<{ ok: boolean }> => {
       stopAgent(args.sessionId);
       return deleteSession(args.projectPath, args.sessionId);
+    },
+  );
+
+  // ── 인테이크 (Level 2) — 게이트 충족 파일 작성 후 시드 세션 시작 ──
+  // runIntake 가 references.md/brief.md/CLAUDE.md/AGENTS.md 를 서브폴더에 쓰고, startAgent 가
+  // 그 폴더를 cwd 로 시드 프롬프트와 함께 PTY 를 띄운다. sessionId 를 돌려줘 렌더러가 터미널을 attach.
+  ipcMain.handle(
+    "intake:start",
+    async (
+      _e,
+      args: RunIntakeArgs & { cols?: number; rows?: number },
+    ): Promise<{
+      ok: boolean;
+      sessionId?: string;
+      slug?: string;
+      intent?: "html" | "admin-cms";
+      error?: string;
+    }> => {
+      const wc = getWindow()?.webContents;
+      if (!wc) return { ok: false, error: "창이 없습니다." };
+      const r = runIntake(args);
+      if (!r.ok || !r.workspaceDir) return { ok: false, error: r.error ?? "인테이크 실패" };
+
+      logAppEvent(args.projectPath, {
+        type: "intake_created",
+        mockupFile: `${r.slug}/index.html`,
+        payload: { brand: args.brand, surface: args.surface, intent: r.intent, slug: r.slug },
+      });
+
+      const sessionId = randomUUID();
+      const started = startAgent(
+        {
+          sessionId,
+          agentType: args.agentType,
+          projectPath: args.projectPath,
+          cwdOverride: r.workspaceDir,
+          initialPrompt: r.seedPrompt,
+          mockupFile: `${r.slug}/index.html`,
+          brand: args.brand,
+          surface: args.surface,
+          intent: r.intent,
+          cols: args.cols,
+          rows: args.rows,
+        },
+        wc,
+      );
+      if (!started.ok) return { ok: false, error: started.error };
+      return { ok: true, sessionId, slug: r.slug, intent: r.intent };
     },
   );
 }

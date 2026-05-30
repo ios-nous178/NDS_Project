@@ -9,6 +9,7 @@ import {
 import { join } from "node:path";
 import { resolveWritableLogDir } from "@nudge-design/mockup-core";
 import type { AgentType } from "./agent-runner.js";
+import type { Surface } from "./intake.js";
 
 /**
  * 에이전트 채팅 "세션" 의 로컬 저장.
@@ -34,7 +35,14 @@ export interface ChatSession {
   status: SessionStatus;
   createdAt: string;
   updatedAt: string;
+  /** 인테이크 세션 메타(Level 3 검증/표시용). bare 세션이면 undefined. */
+  brand?: string;
+  surface?: Surface;
+  intent?: "html" | "admin-cms";
 }
+
+/** create/update 가 받는 세션 베이스(상태/타임스탬프 제외). */
+export type SessionBase = Omit<ChatSession, "status" | "createdAt" | "updatedAt">;
 
 function logDir(projectPath: string): string {
   return resolveWritableLogDir({ cwd: projectPath });
@@ -50,10 +58,7 @@ function appendSession(projectPath: string, session: ChatSession): void {
   }
 }
 
-export function createSession(
-  projectPath: string,
-  input: { sessionId: string; agentType: AgentType; mockupFile?: string; title: string },
-): ChatSession {
+export function createSession(projectPath: string, input: SessionBase): ChatSession {
   const now = new Date().toISOString();
   const session: ChatSession = { ...input, status: "active", createdAt: now, updatedAt: now };
   appendSession(projectPath, session);
@@ -62,7 +67,7 @@ export function createSession(
 
 export function updateSessionStatus(
   projectPath: string,
-  base: { sessionId: string; agentType: AgentType; mockupFile?: string; title: string },
+  base: SessionBase,
   status: SessionStatus,
 ): void {
   const now = new Date().toISOString();

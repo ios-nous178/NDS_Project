@@ -7,9 +7,15 @@ import { c, ghostBtn } from "../ui/theme.js";
  */
 export function ExportButton({
   projectPath,
+  mockupDir,
+  disabled,
   onExported,
 }: {
   projectPath: string | null;
+  /** 활성 목업 폴더(빌드 cwd). 없으면 projectPath 루트에서 빌드. */
+  mockupDir?: string | null;
+  /** admin-cms 등 HTML 파이프라인 비대상이면 비활성. */
+  disabled?: boolean;
   /** 공유용 산출물(projectPath 기준 상대경로) 미리보기 전환용. */
   onExported: (outputRel: string) => void;
 }): React.JSX.Element {
@@ -17,20 +23,21 @@ export function ExportButton({
   const [toast, setToast] = useState<{ ok: boolean; msg: string } | null>(null);
 
   const run = useCallback(async () => {
-    if (!projectPath || busy) return;
-    const base = projectPath.split(/[/\\]/).filter(Boolean).pop() ?? "mockup";
+    if (!projectPath || busy || disabled) return;
+    // 저장 파일명 기본값은 활성 목업 폴더 이름(없으면 프로젝트 이름) 기준.
+    const base = (mockupDir ?? projectPath).split(/[/\\]/).filter(Boolean).pop() ?? "mockup";
     const picked = await window.harness.pickExportPath(`${projectPath}/${base}-share.html`);
     if (!picked.path) return; // 위치 취소 → 빌드 안 함.
 
     setBusy(true);
     setToast(null);
     try {
-      const r = await window.harness.exportMockup(projectPath);
+      const r = await window.harness.exportMockup(projectPath, mockupDir ?? undefined);
       if (!r.build.ok) {
         setToast({ ok: false, msg: r.build.error ?? "빌드 실패" });
         return;
       }
-      if (r.outputRel) onExported(r.outputRel);
+      if (r.projectOutputRel) onExported(r.projectOutputRel);
       if (r.build.outputPath) {
         const placed = await window.harness.placeExport(r.build.outputPath, picked.path);
         setToast({ ok: true, msg: `저장됨 · ${placed.path.split(/[/\\]/).pop()}` });
@@ -41,11 +48,11 @@ export function ExportButton({
       setBusy(false);
       window.setTimeout(() => setToast(null), 4000);
     }
-  }, [projectPath, busy, onExported]);
+  }, [projectPath, busy, disabled, mockupDir, onExported]);
 
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
-      <button onClick={run} disabled={!projectPath || busy} style={ghostBtn}>
+      <button onClick={run} disabled={!projectPath || busy || disabled} style={ghostBtn}>
         {busy ? "내보내는 중…" : "내보내기"}
       </button>
       {toast && (
