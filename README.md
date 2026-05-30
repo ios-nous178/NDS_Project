@@ -167,11 +167,13 @@ import { nudgeEapPreset } from "@nudge-design/tailwind-preset";
 
 ## 멀티 브랜드
 
-3개 브랜드를 CSS 변수 오버라이드로 지원합니다. Storybook 툴바에서 브랜드를 전환하면 동일 컴포넌트가 브랜드별 스타일로 렌더링됩니다.
+5개 브랜드를 CSS 변수 오버라이드로 지원합니다. Storybook 툴바에서 브랜드를 전환하면 동일 컴포넌트가 브랜드별 스타일로 렌더링됩니다.
 
 - **NudgeEAP** (블루) — 기본 토큰, 기업 EAP 멘탈케어
 - **Trost** (옐로우) — 심리 상담 플랫폼
 - **Geniet** (틸) — 건강 관리 + 리워드 커머스
+- **CashwalkBiz** (옐로우) — 캐시워크 포 비즈니스(B2B)
+- **Runmile** (오렌지) — 러닝 대회 + 커뮤니티 + 마이러닝 기록
 
 ```mermaid
 flowchart LR

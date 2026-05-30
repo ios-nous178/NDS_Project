@@ -8,7 +8,7 @@ import coverageManifest from "../../../../metadata/coverage-manifest.json";
  * Brand × Component Coverage Board
  *
  * 행 = 목표 컴포넌트 (target components — TDS Components 사이드바 기반 baseline)
- * 열 = 4개 브랜드 (Trost / Geniet / NudgeEAP / CashwalkBiz)
+ * 열 = 5개 브랜드 (Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile)
  * 각 셀 = React 패키지 + HTML 패키지 구현 여부
  *
  * "진짜 구현됨" 기준
@@ -40,7 +40,7 @@ type TdsComponent = {
   figmaByBrand: Partial<Record<Brand, string>>;
 };
 
-const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz"] as const;
+const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz", "runmile"] as const;
 type Brand = (typeof BRANDS)[number];
 
 const BRAND_LABEL: Record<Brand, string> = {
@@ -48,6 +48,7 @@ const BRAND_LABEL: Record<Brand, string> = {
   geniet: "Geniet",
   "nudge-eap": "NudgeEAP",
   "cashwalk-biz": "CashwalkBiz",
+  runmile: "Runmile",
 };
 
 /* ─── 코드 매니페스트 SSOT — metadata/coverage-manifest.json 단일 출처.
@@ -240,7 +241,7 @@ function CoverageBoard() {
       <header style={{ marginBottom: 24 }}>
         <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Brand × Component Coverage</h1>
         <p style={{ margin: "6px 0 0", color: colors.textSub, fontSize: 13, lineHeight: 1.6 }}>
-          NDS 가 결국 갖춰야 할 목표 컴포넌트 리스트를 기준으로, 4개 브랜드 × 2개
+          NDS 가 결국 갖춰야 할 목표 컴포넌트 리스트를 기준으로, 5개 브랜드 × 2개
           패키지(@nudge-design/react, @nudge-design/html) 구현 현황을 보여줍니다.{" "}
           <strong style={{ color: colors.text }}>● 초록</strong> = 코드 + 이 브랜드 Figma 가이드 둘
           다 ✓.
@@ -488,7 +489,7 @@ function CoverageBoard() {
           </span>
         </h2>
         <p style={{ margin: "0 0 12px", color: colors.textSub, fontSize: 12, lineHeight: 1.5 }}>
-          나머지 컴포넌트는 4개 브랜드 모두 토큰 오버라이드만으로 동일하게 동작합니다. 여기는{" "}
+          나머지 컴포넌트는 5개 브랜드 모두 토큰 오버라이드만으로 동일하게 동작합니다. 여기는{" "}
           <code style={{ color: colors.brand }}>packages/react/src/{`{brand}`}</code> 폴더 기준으로
           실제 브랜드 fork 가 있는 chrome 컴포넌트만 나열합니다.
         </p>

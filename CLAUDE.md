@@ -1,6 +1,6 @@
 # Nudge Design System
 
-EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 3개 브랜드: **Trost / Geniet / NudgeEAP**.
+EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 5개 브랜드: **Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile**.
 
 ## DS 사용 규칙 SSOT
 

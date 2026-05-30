@@ -25,7 +25,7 @@
  *
  * 사용자 앱으로 간주하는 키워드:
  *   사용자 앱 / 모바일 앱 / 마이페이지 / 회원가입 / 상담 신청 / 챌린지 / 일기 / 콘텐츠 카드
- *   Trost / Geniet / NudgeEAP 사용자 화면
+ *   Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile 사용자 화면
  * ────────────────────────────────────────────────────────────────────── */
 
 const ADMIN_KEYWORDS = [
@@ -147,7 +147,7 @@ export function resolveEffectiveIntent(
 }
 
 export const SCOPE_ADVISORY = {
-  scope: "사용자 앱 (Trost / Geniet / NudgeEAP) 화면 전용",
+  scope: "사용자 앱 (Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile) 화면 전용",
   role: {
     purpose:
       "이 MCP의 역할은 '별도의 외부 목업 프로젝트(예: Vite + React)에서 DS를 소비해 목업을 만드는 것'이다. " +
@@ -3964,7 +3964,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     usagePolicy: {
       useFor: [
-        "사용자 앱 (Trost/Geniet/NudgeEAP/CashwalkBiz) PC GNB",
+        "사용자 앱 (Trost/Geniet/NudgeEAP/CashwalkBiz/Runmile) PC GNB",
         "사용자 앱 모바일 compact 헤더 (surface='mobile')",
         "webview 페이지 뒤로가기/타이틀 헤더 (surface='webview')",
       ],
