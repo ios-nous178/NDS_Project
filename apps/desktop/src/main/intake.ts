@@ -182,8 +182,10 @@ function bootstrapDoc(brand: string, surface: Surface, intent: string): string {
   → get_guide({topic:'pattern:ui-direction-proposal'})
   → 컴포넌트 가이드 1개씩(target:'html') → index.html 을 <nds-*> + 시멘틱 토큰으로 작성(raw hex 금지)
   → validate_html_mockup → build_singlefile_html (html intent 는 자동 검증).
-- 빌드 도구(vite 등)가 없으면 get_setup 으로 스캐폴딩.
-${intent === "admin-cms" ? "- intent=admin-cms: antd / NudgeEAPCMS .tsx 경로 사용." : ""}
+- **이 폴더에 곧장 index.html 을 쓰세요.** vite/npm·get_setup 스캐폴딩·DS 패키지 설치는 불필요합니다 —
+  이 앱(Nudge Studio)이 build_singlefile_html 으로 prebuilt DS runtime/CSS 를 자동 inline 합니다.
+  npm create vite / npm install @nudge-design/* 를 실행하지 마세요(이 환경엔 tarball 이 없습니다).
+${intent === "admin-cms" ? "- intent=admin-cms: antd / NudgeEAPCMS .tsx 경로 사용(이 경우만 vite react-ts + npm 필요)." : ""}
 `;
 }
 
