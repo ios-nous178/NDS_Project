@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface TrostHomeIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostHomeIcon = React.forwardRef<SVGSVGElement, TrostHomeIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(1.29 2.05)">
+    <path d="M10.0286 1.01679C10.4122 0.661086 11.0054 0.661054 11.389 1.01679L20.344 9.32441C21.0105 9.94264 20.5734 11.0567 19.6644 11.0568H17.4192V18.1476C17.4192 18.6998 16.9714 19.1475 16.4192 19.1476H12.7093V15.9377C12.7091 14.8334 11.8135 13.9379 10.7093 13.9377C9.60482 13.9377 8.70946 14.8333 8.70927 15.9377V19.1476H4.99833C4.44605 19.1476 3.99833 18.6999 3.99833 18.1476V11.0568H1.75322C0.844139 11.0568 0.407027 9.94266 1.07353 9.32441L10.0286 1.01679Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+  </g>
+    </svg>
+  )
+);
+
+TrostHomeIcon.displayName = "TrostHomeIcon";

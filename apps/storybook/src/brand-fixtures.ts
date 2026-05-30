@@ -210,7 +210,11 @@ const trost: BrandFixture = {
     darkBg: true,
   },
   tabBar: {
-    tabLabels: ["홈", "사운드", "내음악", "커뮤니티", "마이페이지"],
+    // 트로스트는 앱이 두 종류 → BottomNav 도 두 variant.
+    //  · variant="trost" (기본, 아래 tabLabels): 신규 트로스트 앱 — Figma 5:1169.
+    //  · variant="cashwalk-trost": (캐시워크)트로스트 앱 (홈/사운드/내음악/커뮤니티/마이페이지)
+    //    — Figma 5:1249·5:1306. (캐시워크) 탭은 BottomNav.Trost 스토리에서 직접 렌더.
+    tabLabels: ["홈", "심리상담", "커뮤니티", "멘탈케어", "내공간"],
     defaultActive: 0,
   },
 };
