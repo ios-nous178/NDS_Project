@@ -3,10 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: mockup:; frame-src mockup:"
-    />
+    <!-- CSP 는 Phase 4 보안 강화에서 dev(Vite HMR 허용)/prod 분기로 추가.
+         지금 default-src 'self' 를 박으면 dev HMR(eval/ws)이 깨져 부팅 검증을 방해함. -->
     <title>Nudge EAP Harness</title>
   </head>
   <body>
