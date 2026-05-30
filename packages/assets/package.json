@@ -50,7 +50,8 @@
       "types": "./dist/nudge-img-metadata.d.ts",
       "import": "./dist/nudge-img-metadata.js"
     },
-    "./files/*": "./dist/files/*"
+    "./files/*": "./dist/files/*",
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"

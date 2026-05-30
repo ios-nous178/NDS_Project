@@ -56,11 +56,12 @@ export function resolveAssetsFilesDir(): string | null {
   if (isUsableDir(envDir)) return (cachedDir = envDir);
 
   // ② node_modules resolve. createRequire 로 호출해 esbuild 가 정적 번들하지 않고
-  //    런타임 resolve 로 남긴다. "." export(dist/index.js) → 형제 dist/files.
+  //    런타임 resolve 로 남긴다. "./package.json"(전 조건 노출) → 형제 dist/files.
+  //    ("." export 는 import 조건만 있어 require.resolve 가 throw 하므로 package.json 으로 잡는다.)
   try {
     const req = createRequire(import.meta.url);
-    const idx = req.resolve("@nudge-design/assets");
-    const dir = path.join(path.dirname(idx), "files");
+    const pkg = req.resolve("@nudge-design/assets/package.json");
+    const dir = path.join(path.dirname(pkg), "dist", "files");
     if (isUsableDir(dir)) return (cachedDir = dir);
   } catch {
     // resolve 실패는 ③ 으로.
