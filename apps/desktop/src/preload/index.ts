@@ -63,6 +63,9 @@ const harness = {
   validate: (filePath: string): Promise<ValidateHtmlMockupResult> =>
     ipcRenderer.invoke("validate:run", { filePath }),
   stopWatch: (): Promise<{ ok: true }> => ipcRenderer.invoke("watch:stop"),
+  /** 활성 프로젝트의 목업 목록을 다시 스캔(새 목업 생성 후 드롭다운 갱신용). */
+  rescanMockups: (projectPath: string): Promise<{ htmlEntries: string[] }> =>
+    ipcRenderer.invoke("project:rescan", { projectPath }),
   /** 파일 변경 구독. 반환된 함수로 구독 해제. */
   onFileChanged: (cb: (e: FileChangedEvent) => void): (() => void) => {
     const listener = (_e: IpcRendererEvent, payload: FileChangedEvent): void => cb(payload);

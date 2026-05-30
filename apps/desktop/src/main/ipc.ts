@@ -123,6 +123,15 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     return { ok: true };
   });
 
+  // 와처가 .html 변경을 알릴 때 렌더러가 상단 목업 목록을 다시 채우도록 재스캔.
+  // (인앱 에이전트/인테이크가 새 목업을 만들면 드롭다운에 즉시 반영하기 위함.)
+  ipcMain.handle(
+    "project:rescan",
+    async (_e, args: { projectPath: string }): Promise<{ htmlEntries: string[] }> => {
+      return { htmlEntries: findHtmlMockups(args.projectPath) };
+    },
+  );
+
   ipcMain.handle(
     "mockup:read",
     async (_e, args: { filePath: string }): Promise<{ source: string }> => {
