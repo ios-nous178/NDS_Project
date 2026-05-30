@@ -168,6 +168,11 @@ export function writeAgent(sessionId: string, data: string): void {
   running.get(sessionId)?.write(data);
 }
 
+/** 현재 PTY 가 살아있는 세션 id 집합. 재시작 후 stale "active" 정리에 쓰인다. */
+export function runningSessionIds(): Set<string> {
+  return new Set(running.keys());
+}
+
 export function resizeAgent(sessionId: string, cols: number, rows: number): void {
   try {
     running.get(sessionId)?.resize(cols, rows);

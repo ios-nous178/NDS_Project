@@ -116,6 +116,24 @@ export function readSessions(projectPath: string): ChatSession[] {
 }
 
 /**
+ * 재시작 후 stale "active" 정리. PTY 는 main 프로세스 자식이라 앱 종료와 함께 죽지만,
+ * 상태를 "failed" 로 적는 onExit 은 비동기라 종료 직전엔 못 돌 수 있다(또는 강제종료/크래시).
+ * 그래서 메타엔 "active" 가 남아 재시작 시 "진행중" 으로 잘못 보이고, 클릭해도 라이브 PTY 가
+ * 없어 입력이 조용히 먹힌다. 살아있지 않은 "active" 세션을 "failed" 로 마킹해 혼란을 없앤다.
+ * 멱등 — 이미 "failed/completed" 면 건너뛴다. 변경한 세션 수를 반환.
+ */
+export function reconcileStaleSessions(projectPath: string, liveIds: Set<string>): number {
+  let changed = 0;
+  for (const s of readSessions(projectPath)) {
+    if (s.status === "active" && !liveIds.has(s.sessionId)) {
+      appendSession(projectPath, { ...s, status: "failed", updatedAt: new Date().toISOString() });
+      changed++;
+    }
+  }
+  return changed;
+}
+
+/**
  * 세션 1건 삭제. append-only JSONL 이라 해당 sessionId 라인을 모두 걸러 rewrite 하고
  * raw 트랜스크립트(`<id>.log`)도 unlink 한다. best-effort — 실패해도 throw 하지 않는다.
  * 라이브(실행 중) 세션 가드는 호출부(stopAgent 후) 책임.
