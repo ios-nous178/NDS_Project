@@ -1,5 +1,9 @@
 import { app, BrowserWindow } from "electron";
 import { join } from "node:path";
+import { bootstrapValidator } from "./catalog.js";
+import { registerIpcHandlers } from "./ipc.js";
+
+let mainWindow: BrowserWindow | null = null;
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -17,6 +21,9 @@ function createWindow(): void {
   });
 
   win.on("ready-to-show", () => win.show());
+  win.on("closed", () => {
+    mainWindow = null;
+  });
 
   // dev 는 electron-vite 가 띄운 Vite 서버 URL, prod 는 번들된 index.html.
   if (process.env.ELECTRON_RENDERER_URL) {
@@ -24,9 +31,14 @@ function createWindow(): void {
   } else {
     void win.loadFile(join(import.meta.dirname, "../renderer/index.html"));
   }
+
+  mainWindow = win;
 }
 
 app.whenReady().then(() => {
+  // validator 부트스트랩(하드 어서션) — catalog 누락/빈 값이면 여기서 크래시.
+  bootstrapValidator();
+  registerIpcHandlers(() => mainWindow);
   createWindow();
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

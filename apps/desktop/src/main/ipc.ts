@@ -1,0 +1,86 @@
+import { dialog, ipcMain, type BrowserWindow } from "electron";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join, relative } from "node:path";
+import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
+
+const SKIP_DIRS = new Set([
+  "node_modules",
+  "dist",
+  "out",
+  "build",
+  ".git",
+  ".turbo",
+  ".cache",
+  "coverage",
+]);
+const HTML_RE = /\.html?$/i;
+const NDS_USE_RE = /<nds-[a-z][a-z0-9-]*/i;
+
+export interface OpenProjectResult {
+  projectPath: string;
+  htmlEntries: string[];
+}
+
+/** chosen 디렉토리에서 <nds-*> 를 쓰는 .html 파일을 얕게 스캔 (depth ≤ 6). */
+function findHtmlMockups(root: string): string[] {
+  const out: string[] = [];
+  const walk = (dir: string, depth: number): void => {
+    if (depth > 6 || out.length >= 200) return;
+    let entries;
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      if (out.length >= 200) return;
+      if (e.isDirectory()) {
+        if (e.name.startsWith(".") || SKIP_DIRS.has(e.name)) continue;
+        walk(join(dir, e.name), depth + 1);
+      } else if (e.isFile() && HTML_RE.test(e.name)) {
+        const full = join(dir, e.name);
+        try {
+          if (NDS_USE_RE.test(readFileSync(full, "utf8"))) out.push(full);
+        } catch {
+          /* skip unreadable */
+        }
+      }
+    }
+  };
+  walk(root, 0);
+  out.sort((a, b) => {
+    try {
+      return statSync(b).mtimeMs - statSync(a).mtimeMs;
+    } catch {
+      return 0;
+    }
+  });
+  return out.map((p) => relative(root, p));
+}
+
+export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void {
+  ipcMain.handle("project:open", async (): Promise<OpenProjectResult | { canceled: true }> => {
+    const win = getWindow();
+    const result = await dialog.showOpenDialog(win ?? undefined!, {
+      properties: ["openDirectory"],
+      title: "목업 프로젝트 폴더 선택",
+    });
+    if (result.canceled || result.filePaths.length === 0) return { canceled: true };
+    const projectPath = result.filePaths[0];
+    return { projectPath, htmlEntries: findHtmlMockups(projectPath) };
+  });
+
+  ipcMain.handle(
+    "mockup:read",
+    async (_e, args: { filePath: string }): Promise<{ source: string }> => {
+      return { source: readFileSync(args.filePath, "utf8") };
+    },
+  );
+
+  ipcMain.handle(
+    "validate:run",
+    async (_e, args: { filePath: string }): Promise<ValidateHtmlMockupResult> => {
+      return validateHtmlMockup({ filePath: args.filePath });
+    },
+  );
+}
