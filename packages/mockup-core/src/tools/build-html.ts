@@ -162,11 +162,14 @@ export async function buildSinglefileHtml(
   const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
 
   const pkgJsonPath = path.join(cwd, "package.json");
-  if (!fs.existsSync(pkgJsonPath)) {
+  const intent: WorkspaceIntent = args.intent ?? detectWorkspaceIntent(cwd);
+
+  // package.json 은 react(vite) 경로에서만 필수다 — JSX 컴파일/번들에 deps 가 필요하기 때문.
+  // html 무번들러 경로는 index.html 만 있으면 prebuilt DS runtime/CSS 를 cheerio 로 inline 해
+  // 빌드되므로(데스크톱 하네스처럼 vite/npm 이 아예 없는 환경 포함) package.json 을 요구하지 않는다.
+  if (intent === "react" && !fs.existsSync(pkgJsonPath)) {
     return fail("package.json not found in cwd. Run this in your mockup project root.");
   }
-
-  const intent: WorkspaceIntent = args.intent ?? detectWorkspaceIntent(cwd);
 
   if (!args.skipAudit) {
     const violations = auditMockupWorkspace(cwd, intent, {
