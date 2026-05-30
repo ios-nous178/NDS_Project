@@ -16,6 +16,7 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 | Geniet   | `GenietAppBar`                        | `GenietFooter`   | `GenietBottomNav`   |
 | Trost    | `TrostAppBar`                         | `TrostFooter`    | `TrostBottomNav`    |
 | NudgeEAP | `NudgeEAPAppBar`, `NudgeEAPWebHeader` | `NudgeEAPFooter` | `NudgeEAPBottomNav` |
+| Runmile  | `RunmileAppBar`, `RunmileWebHeader`   | `RunmileFooter`  | `RunmileBottomNav`  |
 | CashwalkBiz | `CashwalkBizWebHeader`                   | `CashwalkBizFooter` | 웹 전용             |
 
 ## 호출 기준
@@ -28,13 +29,16 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 
 ## HTML 목업
 
-`@nudge-design/html`에서는 브랜드별 완성형 header/footer wrapper 를 제공합니다. 로고 asset 은 기본적으로 `/brand-logos` 아래에서 찾고, 공유용 HTML처럼 경로가 다른 경우 `asset-base-url`만 바꿉니다.
+`@nudge-design/html`에서는 브랜드별 완성형 header/footer/bottom-nav wrapper 를 제공합니다. 로고 asset 은 기본적으로 `/brand-logos` 아래에서 찾고, 공유용 HTML처럼 경로가 다른 경우 `asset-base-url`만 바꿉니다.
 
 ```html
 <nds-brand-header brand="nudge-eap" surface="web"></nds-brand-header>
+<!-- ...page content... -->
+<nds-brand-bottom-nav brand="nudge-eap" active-key="home"></nds-brand-bottom-nav>
 <nds-brand-footer brand="nudge-eap"></nds-brand-footer>
 
 <nds-trost-header></nds-trost-header>
+<nds-trost-bottom-nav active-key="counsel"></nds-trost-bottom-nav>
 <nds-trost-footer></nds-trost-footer>
 
 <nds-brand-header
@@ -43,7 +47,9 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 ></nds-brand-header>
 ```
 
-브랜드 alias 는 `nds-nudge-eap-*`, `nds-trost-*`, `nds-geniet-*`, `nds-cashwalk-biz-*` 형식을 사용합니다.
+`<nds-brand-bottom-nav brand="trost|geniet|nudge-eap|runmile" active-key="...">` 한 줄로 브랜드별 5탭(라벨/아이콘/색)이 자동 렌더됩니다. 제네릭 `nds-footer-tab-bar` 에 아이콘 SVG 를 직접 슬롯으로 주입하지 마세요. CashwalkBiz 는 웹 전용이라 bottom-nav 가 없습니다(빈 렌더).
+
+브랜드 alias 는 `nds-nudge-eap-*`, `nds-trost-*`, `nds-geniet-*`, `nds-runmile-*`, `nds-cashwalk-biz-*` 형식을 사용합니다.
 
 ## 마이그레이션
 
@@ -57,6 +63,8 @@ import {
   NudgeEAPBottomNav,
   NudgeEAPFooter,
   NudgeEAPWebHeader,
+  RunmileBottomNav,
+  RunmileFooter,
   TrostAppBar,
   TrostBottomNav,
   TrostFooter,

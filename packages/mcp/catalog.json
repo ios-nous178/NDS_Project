@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-30T13:36:59.233Z",
+  "generatedAt": "2026-05-30T13:48:09.548Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10097,6 +10097,7 @@
     "nds-badge",
     "nds-banner",
     "nds-bottom-sheet",
+    "nds-brand-bottom-nav",
     "nds-brand-chrome",
     "nds-brand-footer",
     "nds-brand-header",
