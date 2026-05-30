@@ -23,7 +23,8 @@ import type { AgentType } from "./agent-runner.js";
 export const CHAT_SESSIONS_FILENAME = ".ds-chat-sessions.jsonl";
 export const TRANSCRIPT_DIRNAME = ".ds-agent-sessions";
 
-export type SessionStatus = "active" | "completed" | "failed";
+// interrupted = 사용자가 중지했거나 앱 종료/크래시로 끊긴 세션. 진짜 오류(failed)와 구분한다.
+export type SessionStatus = "active" | "completed" | "failed" | "interrupted";
 
 export interface ChatSession {
   sessionId: string;
@@ -117,16 +118,21 @@ export function readSessions(projectPath: string): ChatSession[] {
 
 /**
  * 재시작 후 stale "active" 정리. PTY 는 main 프로세스 자식이라 앱 종료와 함께 죽지만,
- * 상태를 "failed" 로 적는 onExit 은 비동기라 종료 직전엔 못 돌 수 있다(또는 강제종료/크래시).
+ * 상태를 적는 onExit 은 비동기라 종료 직전엔 못 돌 수 있다(또는 강제종료/크래시).
  * 그래서 메타엔 "active" 가 남아 재시작 시 "진행중" 으로 잘못 보이고, 클릭해도 라이브 PTY 가
- * 없어 입력이 조용히 먹힌다. 살아있지 않은 "active" 세션을 "failed" 로 마킹해 혼란을 없앤다.
- * 멱등 — 이미 "failed/completed" 면 건너뛴다. 변경한 세션 수를 반환.
+ * 없어 입력이 조용히 먹힌다. 살아있지 않은 "active" 세션을 "interrupted"(중단됨)로 마킹한다.
+ * 정상 종료가 아닌 것뿐이지 오류는 아니므로 "failed" 가 아니라 "interrupted".
+ * 멱등 — 이미 active 가 아니면 건너뛴다. 변경한 세션 수를 반환.
  */
 export function reconcileStaleSessions(projectPath: string, liveIds: Set<string>): number {
   let changed = 0;
   for (const s of readSessions(projectPath)) {
     if (s.status === "active" && !liveIds.has(s.sessionId)) {
-      appendSession(projectPath, { ...s, status: "failed", updatedAt: new Date().toISOString() });
+      appendSession(projectPath, {
+        ...s,
+        status: "interrupted",
+        updatedAt: new Date().toISOString(),
+      });
       changed++;
     }
   }
