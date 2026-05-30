@@ -23,11 +23,11 @@ import type {
 const BRAND_LOGOS_BASE = `${import.meta.env.BASE_URL}brand-logos/`;
 
 /**
- * Figma 698:87 (NudgeEAP Library) Logo Guide 에서 추출한 Symbol + KO+EN horizontal (대표 로고).
- * 자체 원본 124×28 PNG. NudgeEAP 헤더 컴포넌트는 내장 vector 로고를 기본 사용하고,
- * 이 fixture PNG 는 목업/푸터 fallback 용으로 원본 크기 이하에서만 사용한다.
+ * Figma 698:87 (NudgeEAP Library) Logo Guide 의 Symbol + KO+EN horizontal (대표 로고).
+ * @nudge-design/assets 의 scalable SVG (getBrandLogo("nudge-eap", "koEnHorizontal")).
+ * NudgeEAP 헤더는 내장 vector 로고를 기본 사용하고, 이 fixture 는 목업/푸터 fallback 용.
  */
-const nudgeEapHeaderLogo = `${BRAND_LOGOS_BASE}nudge-eap/nudge-eap-koen.png`;
+const nudgeEapHeaderLogo = `${BRAND_LOGOS_BASE}nudge-eap/nudge-eap-koen.svg`;
 const trostLogo = `${BRAND_LOGOS_BASE}trost-logo.svg`;
 const trostLogoMobile = `${BRAND_LOGOS_BASE}trost-logo-mobile.webp`;
 const genietLogoPc = `${BRAND_LOGOS_BASE}geniet-logo-pc.webp`;
