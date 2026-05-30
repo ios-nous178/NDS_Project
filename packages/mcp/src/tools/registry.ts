@@ -57,16 +57,27 @@ const TOOLS = [
   {
     name: "find_icon",
     description:
-      "Search @nudge-design/icons. For mockup/screen work, do not call this until visual references are collected. Prefer `{ query }`; no args returns the icon index.",
+      "Search @nudge-design/icons. For mockup/screen work, do not call this until visual references are collected. " +
+      "Flow: `{ query }` to find a name → `{ name }` to get the paste-ready inline SVG (`svg` field) " +
+      "for vanilla HTML mockups (no npm install needed). No args returns the icon index.",
     inputSchema: {
       type: "object",
       properties: {
+        name: {
+          type: "string",
+          description:
+            "Exact icon name (e.g. 'CalendarIcon'). Returns paste-ready inline `svg` + `viewBox`/`body`.",
+        },
         query: { type: "string", description: "Optional natural-language search query." },
         category: {
           type: "string",
           description: "Optional icon category from the no-arg summary.",
         },
         limit: { type: "number", description: "Max icons returned for query/category calls." },
+        size: {
+          type: "number",
+          description: "Optional width/height(px) for the returned inline svg. Default 24.",
+        },
       },
       additionalProperties: false,
     },
@@ -462,9 +473,11 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       };
     case "find_icon":
       return {
+        name: optionalString(args, "name", toolName),
         query: optionalString(args, "query", toolName),
         category: optionalString(args, "category", toolName),
         limit: optionalNumber(args, "limit", toolName, { min: 1 }),
+        size: optionalNumber(args, "size", toolName, { min: 1 }),
       };
     case "find_token":
       return {
