@@ -18,6 +18,18 @@ export function ExportPanel({
   const [error, setError] = useState<string>("");
   const [savedPath, setSavedPath] = useState<string>("");
 
+  // 빌드된 자체완결 산출물을 네이티브 저장 다이얼로그로 원하는 위치/이름에 복사.
+  const saveCopy = useCallback(
+    async (outputPath: string) => {
+      if (!projectPath) return;
+      const base = projectPath.split(/[/\\]/).filter(Boolean).pop() ?? "mockup";
+      const defaultPath = `${projectPath}/${base}-share.html`;
+      const res = await window.harness.saveExport(outputPath, defaultPath);
+      if (res.saved && res.path) setSavedPath(res.path);
+    },
+    [projectPath],
+  );
+
   const runExport = useCallback(async () => {
     if (!projectPath) return;
     setPhase("exporting");
@@ -28,19 +40,17 @@ export function ExportPanel({
       setResult(r);
       setPhase("done");
       if (r.build.ok && r.outputRel) onExported(r.outputRel);
+      // 빌드 성공 시 곧바로 저장 위치/이름 선택 다이얼로그를 띄운다(취소 가능).
+      if (r.build.ok && r.build.outputPath) await saveCopy(r.build.outputPath);
     } catch (e) {
       setError((e as Error).message);
       setPhase("error");
     }
-  }, [projectPath, onExported]);
+  }, [projectPath, onExported, saveCopy]);
 
-  const saveAs = useCallback(async () => {
-    if (!projectPath || !result?.build.outputPath) return;
-    const base = projectPath.split(/[/\\]/).filter(Boolean).pop() ?? "mockup";
-    const defaultPath = `${projectPath}/${base}-share.html`;
-    const res = await window.harness.saveExport(result.build.outputPath, defaultPath);
-    if (res.saved && res.path) setSavedPath(res.path);
-  }, [projectPath, result]);
+  const saveAgain = useCallback(() => {
+    if (result?.build.outputPath) void saveCopy(result.build.outputPath);
+  }, [result, saveCopy]);
 
   if (!projectPath)
     return <div style={{ color: "#999", fontSize: 13 }}>프로젝트를 열면 내보낼 수 있습니다.</div>;
@@ -48,10 +58,10 @@ export function ExportPanel({
   return (
     <div style={{ fontSize: 13 }}>
       <button onClick={runExport} disabled={phase === "exporting"} style={primaryBtn}>
-        {phase === "exporting" ? "내보내는 중…" : "공유용 HTML 내보내기"}
+        {phase === "exporting" ? "내보내는 중…" : "공유용 HTML 내보내기…"}
       </button>
       <div style={{ color: "#98a2b3", fontSize: 11, marginTop: 6 }}>
-        원본은 그대로 두고 자체완결 단일파일을 새로 만듭니다.
+        원본은 그대로 두고 자체완결 단일파일을 새로 만든 뒤 저장 위치/이름을 고릅니다.
         {!hasSelection && " (목업 프로젝트 루트의 index.html 이 빌드 진입점)"}
       </div>
 
@@ -77,16 +87,25 @@ export function ExportPanel({
           )}
           {result.build.ok && (
             <div style={{ marginTop: 8 }}>
-              <button onClick={saveAs} style={primaryBtn}>
-                공유용으로 저장…
-              </button>
-              {savedPath && (
+              {savedPath ? (
                 <div
-                  style={{ color: "#067647", fontSize: 12, marginTop: 4, wordBreak: "break-all" }}
+                  style={{
+                    color: "#067647",
+                    fontSize: 12,
+                    marginBottom: 6,
+                    wordBreak: "break-all",
+                  }}
                 >
                   저장됨: {savedPath}
                 </div>
+              ) : (
+                <div style={{ color: "#98a2b3", fontSize: 12, marginBottom: 6 }}>
+                  저장을 취소했습니다.
+                </div>
               )}
+              <button onClick={saveAgain} style={linkBtn}>
+                {savedPath ? "다른 위치에 또 저장…" : "다시 저장…"}
+              </button>
             </div>
           )}
           {result.build.dsUsageSummary && (
