@@ -12,6 +12,7 @@ export function SessionHistoryPanel({
   liveSessionId,
   selectedSessionId,
   onSelect,
+  onDeleted,
 }: {
   projectPath: string | null;
   /** 값이 바뀌면 리스트 재조회(세션 시작/종료 시). */
@@ -21,8 +22,25 @@ export function SessionHistoryPanel({
   /** 현재 트랜스크립트를 보고 있는 세션. */
   selectedSessionId: string | null;
   onSelect: (session: ChatSession) => void;
+  /** 세션 삭제 완료 — 부모가 보기 상태 정리/리스트 갱신. */
+  onDeleted: (sessionId: string) => void;
 }): React.JSX.Element {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  const handleDelete = async (s: ChatSession): Promise<void> => {
+    if (!projectPath) return;
+    if (
+      !window.confirm(`이 채팅 세션을 삭제할까요?\n${s.title}\n\n트랜스크립트도 함께 삭제됩니다.`)
+    ) {
+      return;
+    }
+    const res = await window.harness.deleteSession(projectPath, s.sessionId);
+    if (res.ok) {
+      setSessions((prev) => prev.filter((x) => x.sessionId !== s.sessionId));
+      onDeleted(s.sessionId);
+    }
+  };
 
   useEffect(() => {
     if (!projectPath) {
@@ -76,46 +94,88 @@ export function SessionHistoryPanel({
           const isSelected = s.sessionId === selectedSessionId;
           const isLive = s.sessionId === liveSessionId;
           return (
-            <button
+            <div
               key={s.sessionId}
-              onClick={() => onSelect(s)}
-              title={s.title}
-              style={{
-                display: "block",
-                width: "100%",
-                textAlign: "left",
-                padding: "8px 10px",
-                marginBottom: 3,
-                border: "none",
-                borderLeft: `2px solid ${isSelected ? c.accent : "transparent"}`,
-                borderRadius: 8,
-                background: isSelected ? c.accentBg : c.bgElevated,
-                color: c.text,
-                cursor: "pointer",
-              }}
+              onMouseEnter={() => setHovered(s.sessionId)}
+              onMouseLeave={() => setHovered((h) => (h === s.sessionId ? null : h))}
+              style={{ position: "relative", marginBottom: 3 }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5 }}>
-                <span style={{ color: dotColor(isLive, s.status) }}>●</span>
-                <span style={{ fontWeight: 600 }}>{agentLabel(s.agentType)}</span>
-                {isLive && <span style={{ color: c.green, fontSize: 10 }}>LIVE</span>}
-              </div>
-              <div
+              <button
+                onClick={() => onSelect(s)}
+                title={s.title}
                 style={{
-                  fontSize: 11,
-                  color: c.textMuted,
-                  fontFamily: mono,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  marginTop: 2,
+                  display: "block",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "8px 28px 8px 10px",
+                  border: "none",
+                  borderLeft: `2px solid ${isSelected ? c.accent : "transparent"}`,
+                  borderRadius: 8,
+                  background: isSelected ? c.accentBg : c.bgElevated,
+                  color: c.text,
+                  cursor: "pointer",
                 }}
               >
-                {s.mockupFile ?? "project"}
-              </div>
-              <div style={{ fontSize: 10.5, color: c.textFaint, marginTop: 2 }}>
-                {fmtTime(s.createdAt)} · {statusKo(s.status)}
-              </div>
-            </button>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5 }}>
+                  <span style={{ color: dotColor(isLive, s.status) }}>●</span>
+                  <span style={{ fontWeight: 600 }}>{agentLabel(s.agentType)}</span>
+                  {isLive && <span style={{ color: c.green, fontSize: 10 }}>LIVE</span>}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: c.textMuted,
+                    fontFamily: mono,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    marginTop: 2,
+                  }}
+                >
+                  {s.mockupFile ?? "project"}
+                </div>
+                <div style={{ fontSize: 10.5, color: c.textFaint, marginTop: 2 }}>
+                  {fmtTime(s.createdAt)} · {statusKo(s.status)}
+                </div>
+              </button>
+              {/* 라이브 세션은 삭제 불가(먼저 중지) — hover 시에만 노출. */}
+              {!isLive && hovered === s.sessionId && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    void handleDelete(s);
+                  }}
+                  title="세션 삭제"
+                  aria-label="세션 삭제"
+                  style={{
+                    position: "absolute",
+                    top: 6,
+                    right: 6,
+                    width: 18,
+                    height: 18,
+                    lineHeight: "16px",
+                    textAlign: "center",
+                    padding: 0,
+                    border: "none",
+                    borderRadius: 5,
+                    background: "transparent",
+                    color: c.textFaint,
+                    fontSize: 14,
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = c.red;
+                    e.currentTarget.style.color = "#fff";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = c.textFaint;
+                  }}
+                >
+                  ×
+                </button>
+              )}
+            </div>
           );
         })}
       </div>

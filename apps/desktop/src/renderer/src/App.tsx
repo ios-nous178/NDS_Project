@@ -15,10 +15,12 @@ import {
   ghostBtn,
   mono,
   noDrag,
-  tabActive,
-  tabIdle,
   pillBtn,
   pillBtnActive,
+  tabBar,
+  segGroup,
+  segItem,
+  segItemActive,
 } from "./ui/theme.js";
 
 type PreviewTab = "preview" | "validate" | "feedback" | "source";
@@ -43,6 +45,12 @@ export function App(): React.JSX.Element {
 
   const selectedRef = useRef<string | null>(null);
   const projectRef = useRef<string | null>(null);
+  // 타이틀바 패딩 분기용(신호등 vs Windows 오버레이).
+  const isMac = window.harness.platform === "darwin";
+  const [appVersion, setAppVersion] = useState<string>("");
+  useEffect(() => {
+    void window.harness.getVersion().then(setAppVersion);
+  }, []);
 
   const loadFile = useCallback(async (projectRoot: string, rel: string) => {
     const abs = `${projectRoot}/${rel}`;
@@ -114,20 +122,37 @@ export function App(): React.JSX.Element {
         fontFamily: font,
       }}
     >
-      {/* 상단바 (커스텀 타이틀바 — 헤더로 창 드래그, 좌측은 신호등 자리 확보) */}
+      {/* 상단바 (커스텀 타이틀바 — 헤더로 창 드래그). mac 은 좌측 신호등 자리(84px),
+          Windows 는 우측 네이티브 컨트롤 오버레이 자리(146px)를 비운다. */}
       <header
         style={{
           ...dragRegion,
           display: "flex",
           alignItems: "center",
           gap: 10,
-          padding: "8px 14px 8px 84px",
+          padding: isMac ? "8px 14px 8px 84px" : "8px 146px 8px 14px",
           borderBottom: `1px solid ${c.border}`,
           background: c.bgPanel,
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.15, marginRight: 4 }}>
-          <strong style={{ fontSize: 13, color: c.text }}>Nudge Studio</strong>
+          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <strong style={{ fontSize: 13, color: c.text }}>Nudge Studio</strong>
+            {appVersion && (
+              <span
+                style={{
+                  fontSize: 10,
+                  color: c.textMuted,
+                  fontFamily: mono,
+                  padding: "1px 5px",
+                  borderRadius: 4,
+                  border: `1px solid ${c.border}`,
+                }}
+              >
+                v{appVersion}
+              </span>
+            )}
+          </span>
           <span style={{ fontSize: 10, color: c.textMuted }}>
             Design System Powered Mockup Builder
           </span>
@@ -214,13 +239,25 @@ export function App(): React.JSX.Element {
         }}
       >
         {/* 채팅기록 */}
-        <aside style={{ borderRight: `1px solid ${c.border}`, background: c.bgPanel, minWidth: 0 }}>
+        <aside
+          style={{
+            borderRight: `1px solid ${c.border}`,
+            background: c.bgPanel,
+            minWidth: 0,
+            minHeight: 0,
+            overflow: "hidden",
+          }}
+        >
           <SessionHistoryPanel
             projectPath={projectPath}
             refreshKey={historyRefresh}
             liveSessionId={liveSessionId}
             selectedSessionId={viewing?.sessionId ?? null}
             onSelect={(s) => setViewing(s)}
+            onDeleted={(sessionId) => {
+              setViewing((v) => (v?.sessionId === sessionId ? null : v));
+              refreshHistory();
+            }}
           />
         </aside>
 
@@ -229,6 +266,8 @@ export function App(): React.JSX.Element {
           style={{
             borderRight: `1px solid ${c.border}`,
             minWidth: 0,
+            minHeight: 0,
+            overflow: "hidden",
             position: "relative",
             background: c.bg,
           }}
@@ -253,44 +292,48 @@ export function App(): React.JSX.Element {
           )}
         </main>
 
-        {/* 미리보기 + 탭 */}
+        {/* 미리보기 + 탭 (높이는 grid 행에 잠겨 1·2섹션과 항상 동일) */}
         <section
-          style={{ minWidth: 0, display: "flex", flexDirection: "column", background: c.bg }}
+          style={{
+            minWidth: 0,
+            minHeight: 0,
+            height: "100%",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            background: c.bg,
+          }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-              padding: "0 8px",
-              borderBottom: `1px solid ${c.border}`,
-              background: c.bgPanel,
-            }}
-          >
-            <button
-              onClick={() => setTab("preview")}
-              style={tab === "preview" ? tabActive : tabIdle}
-            >
-              미리보기
-            </button>
-            <button
-              onClick={() => setTab("validate")}
-              style={tab === "validate" ? tabActive : tabIdle}
-            >
-              검증
-              {result && !result.ok && <span style={{ color: c.red }}> ●</span>}
-            </button>
-            <button
-              onClick={() => setTab("feedback")}
-              style={tab === "feedback" ? tabActive : tabIdle}
-            >
-              피드백
-            </button>
-            <button onClick={() => setTab("source")} style={tab === "source" ? tabActive : tabIdle}>
-              소스
-            </button>
+          <div style={tabBar}>
+            <div style={segGroup}>
+              <button
+                onClick={() => setTab("preview")}
+                style={tab === "preview" ? segItemActive : segItem}
+              >
+                미리보기
+              </button>
+              <button
+                onClick={() => setTab("validate")}
+                style={tab === "validate" ? segItemActive : segItem}
+              >
+                검증
+                {result && !result.ok && <span style={{ color: c.red }}>●</span>}
+              </button>
+              <button
+                onClick={() => setTab("feedback")}
+                style={tab === "feedback" ? segItemActive : segItem}
+              >
+                피드백
+              </button>
+              <button
+                onClick={() => setTab("source")}
+                style={tab === "source" ? segItemActive : segItem}
+              >
+                소스
+              </button>
+            </div>
             {tab === "preview" && (
-              <div style={{ marginLeft: "auto", display: "flex", gap: 4, padding: "5px 0" }}>
+              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 4 }}>
                 <button
                   onClick={() => setViewport("web")}
                   style={viewport === "web" ? pillBtnActive : pillBtn}

@@ -35,6 +35,10 @@ export type AppEventArgs = { projectPath: string } & Omit<AppEventInput, "projec
  * renderer 가 접근하는 유일한 표면. main 의 IPC 핸들러를 타입드 래퍼로 노출한다.
  */
 const harness = {
+  /** 커스텀 타이틀바 패딩(신호등 vs Windows 오버레이)을 헤더가 분기하도록 노출. */
+  platform: process.platform,
+  /** 앱 버전(package.json) — 상단바 상시 노출용. */
+  getVersion: (): Promise<string> => ipcRenderer.invoke("app:version"),
   openProject: (): Promise<OpenProjectResult | { canceled: true }> =>
     ipcRenderer.invoke("project:open"),
   readMockup: (filePath: string): Promise<{ source: string }> =>
@@ -99,6 +103,9 @@ const harness = {
     ipcRenderer.invoke("session:list", { projectPath }),
   readTranscript: (projectPath: string, sessionId: string): Promise<{ text: string }> =>
     ipcRenderer.invoke("session:transcript", { projectPath, sessionId }),
+  /** 세션 메타 + raw 트랜스크립트 삭제(실행 중이면 main 이 먼저 종료). */
+  deleteSession: (projectPath: string, sessionId: string): Promise<{ ok: boolean }> =>
+    ipcRenderer.invoke("session:delete", { projectPath, sessionId }),
 };
 
 contextBridge.exposeInMainWorld("harness", harness);
