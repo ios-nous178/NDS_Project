@@ -14,13 +14,6 @@ import {
   segItemActive,
 } from "../ui/theme.js";
 
-/**
- * 목업 인테이크 모달 (Level 2 강제).
- *
- * 브랜드·표면·기획서·스크린샷을 에이전트 시작 전에 받아, main 의 runIntake 가 게이트 충족
- * 파일을 결정론적으로 써두게 한다. 제출 → intake:start → 시드 세션 시작 → onStarted(sessionId).
- */
-
 const BRANDS: { slug: string; label: string }[] = [
   { slug: "trost", label: "Trost" },
   { slug: "geniet", label: "Geniet" },
@@ -29,14 +22,112 @@ const BRANDS: { slug: string; label: string }[] = [
   { slug: "cashwalk-biz", label: "Cashpobi (cashwalk-biz)" },
 ];
 
-type Surface = "service" | "admin";
+const SIMPLE_TEMPLATE = `# 간단 화면 기획서
 
-/** 화면 썸네일/전송용 내부 표현. main 으로는 fileName/sourcePath/base64 만 넘긴다. */
+## 화면 목적
+-
+
+## 주요 사용자
+-
+
+## 핵심 행동
+-
+
+## 꼭 보여야 하는 정보
+-
+
+## 버튼/CTA
+-
+
+## 상태/케이스
+-
+
+## 톤과 분위기
+-
+`;
+
+const DETAIL_TEMPLATE = `# 화면 기획서
+
+## 1. 화면 목적
+-
+
+## 2. 주요 사용자
+-
+
+## 3. 사용자가 해야 하는 핵심 행동
+-
+
+## 4. 화면에 꼭 보여야 하는 정보
+-
+
+## 5. 강조 우선순위
+1.
+2.
+3.
+
+## 6. 상태/케이스
+-
+
+## 7. 버튼/CTA
+-
+
+## 8. 톤과 분위기
+-
+
+## 9. 참고하면 좋은 화면
+좋은 참고:
+-
+
+피해야 할 참고:
+-
+
+## 10. 추가 요청
+-
+`;
+
+const ADMIN_TEMPLATE = `# 어드민 화면 기획서
+
+## 화면 목적
+관리자가 이 화면에서 판단하거나 처리해야 하는 일은 무엇인가요?
+
+## 주요 사용자/권한
+-
+
+## 핵심 지표/데이터
+-
+
+## 테이블 컬럼
+-
+
+## 필터/검색
+-
+
+## 주요 액션
+-
+
+## 빈 상태/오류 상태
+-
+
+## 정보 밀도
+높게 / 보통 / 낮게
+
+## 추가 요청
+-
+`;
+
+type Surface = "service" | "admin";
+type DirectionMode = "auto" | "propose" | "skip";
+
 interface ShotItem extends ScreenshotInput {
   thumbUrl: string;
 }
 
-/** guides.ts resolveEffectiveIntent 미러(렌더러 프리뷰용 — 실제 계산은 main intake.ts). */
+interface DocItem {
+  fileName: string;
+  base64?: string;
+  sourcePath?: string;
+}
+
 function previewIntent(surface: Surface, brand: string): "html" | "admin-cms" {
   return surface === "admin" && brand !== "cashwalk-biz" ? "admin-cms" : "html";
 }
@@ -50,13 +141,6 @@ function kebab(s: string): string {
 
 const ALLOWED_EXT = /\.(png|jpe?g|webp|gif|svg)$/i;
 const DOC_EXT = /\.(pdf|md|markdown|txt|html?)$/i;
-
-/** 기획 문서 첨부 내부 표현(썸네일 없음). */
-interface DocItem {
-  fileName: string;
-  base64?: string;
-  sourcePath?: string;
-}
 
 export function IntakeModal({
   projectPath,
@@ -74,6 +158,8 @@ export function IntakeModal({
   const [slug, setSlug] = useState("");
   const [slugDirty, setSlugDirty] = useState(false);
   const [prd, setPrd] = useState("");
+  const [directionMode, setDirectionMode] = useState<DirectionMode>("auto");
+  const [selectedDirection, setSelectedDirection] = useState("");
   const [figma, setFigma] = useState("");
   const [extra, setExtra] = useState("");
   const [shots, setShots] = useState<ShotItem[]>([]);
@@ -86,7 +172,6 @@ export function IntakeModal({
     return `${brand}-${kebab(screenName) || "screen"}`;
   }, [brand, screenName]);
   const effectiveSlug = slugDirty ? slug : autoSlug;
-
   const intent = previewIntent(surface, brand);
   const isAdminCms = intent === "admin-cms";
 
@@ -98,7 +183,6 @@ export function IntakeModal({
       if (sourcePath) {
         next.push({ fileName: f.name, sourcePath, thumbUrl: URL.createObjectURL(f) });
       } else {
-        // path 없음(붙여넣기/보안) → base64 폴백
         const reader = new FileReader();
         reader.onload = () => {
           const dataUrl = String(reader.result);
@@ -130,43 +214,54 @@ export function IntakeModal({
     if (next.length) setDocs((prev) => [...prev, ...next]);
   }, []);
 
+  const insertTemplate = useCallback((template: string) => {
+    setPrd((prev) => (prev.trim() ? `${prev.trim()}\n\n${template}` : template));
+  }, []);
+
   const canSubmit = !!brand && !!screenName.trim() && !busy;
 
   const submit = useCallback(async () => {
     if (!canSubmit) return;
     setBusy(true);
     setError("");
-    const res = await window.harness.startIntake({
-      projectPath,
-      brand,
-      surface,
-      screenName: screenName.trim(),
-      slug: slugDirty ? slug.trim() : undefined,
-      prd,
-      extraRequirements: extra,
-      screenshots: shots.map((s) => ({
-        fileName: s.fileName,
-        sourcePath: s.sourcePath,
-        base64: s.base64,
-      })),
-      attachments: docs.map((d) => ({
-        fileName: d.fileName,
-        sourcePath: d.sourcePath,
-        base64: d.base64,
-      })),
-      figmaUrls: figma
-        .split("\n")
-        .map((u) => u.trim())
-        .filter(Boolean),
-      agentType,
-    });
-    setBusy(false);
-    if (!res.ok || !res.sessionId) {
-      setError(res.error ?? "시작 실패");
-      return;
+    try {
+      const res = await window.harness.startIntake({
+        projectPath,
+        brand,
+        surface,
+        screenName: screenName.trim(),
+        slug: slugDirty ? slug.trim() : undefined,
+        prd,
+        extraRequirements: extra,
+        screenshots: shots.map((s) => ({
+          fileName: s.fileName,
+          sourcePath: s.sourcePath,
+          base64: s.base64,
+        })),
+        attachments: docs.map((d) => ({
+          fileName: d.fileName,
+          sourcePath: d.sourcePath,
+          base64: d.base64,
+        })),
+        figmaUrls: figma
+          .split("\n")
+          .map((u) => u.trim())
+          .filter(Boolean),
+        agentType,
+        directionMode,
+        selectedDirection,
+      });
+      if (!res.ok || !res.sessionId) {
+        setError(res.error ?? "시작 실패");
+        return;
+      }
+      onStarted(res.sessionId, res.intent ?? intent, res.slug ?? effectiveSlug);
+      onClose();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
     }
-    onStarted(res.sessionId, res.intent ?? intent, res.slug ?? effectiveSlug);
-    onClose();
   }, [
     canSubmit,
     projectPath,
@@ -175,15 +270,17 @@ export function IntakeModal({
     screenName,
     slug,
     slugDirty,
-    intent,
-    effectiveSlug,
     prd,
     extra,
     shots,
     docs,
     figma,
     agentType,
+    directionMode,
+    selectedDirection,
     onStarted,
+    intent,
+    effectiveSlug,
     onClose,
   ]);
 
@@ -208,20 +305,25 @@ export function IntakeModal({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: 560,
+          width: 620,
           maxWidth: "92vw",
-          maxHeight: "85vh",
+          maxHeight: "86vh",
           overflow: "auto",
           background: c.bgPanel,
           border: `1px solid ${c.border}`,
-          borderRadius: 10,
+          borderRadius: 8,
           padding: 20,
           fontFamily: font,
           color: c.text,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-          <strong style={{ fontSize: 15 }}>새 목업</strong>
+          <div>
+            <strong style={{ fontSize: 15 }}>새 목업</strong>
+            <div style={{ color: c.textMuted, fontSize: 11, marginTop: 3 }}>
+              기획서와 레퍼런스를 먼저 고정한 뒤 에이전트를 시작합니다.
+            </div>
+          </div>
           <div style={{ marginLeft: "auto", display: "flex", gap: 2, ...segGroup }}>
             {(["claude", "codex"] as AgentType[]).map((t) => (
               <button
@@ -235,7 +337,6 @@ export function IntakeModal({
           </div>
         </div>
 
-        {/* 브랜드 */}
         <div style={field}>
           {label("브랜드 *")}
           <Dropdown
@@ -247,10 +348,8 @@ export function IntakeModal({
           />
         </div>
 
-        {/* 화면 종류 */}
         <div style={field}>
           {label("어떤 화면인가요? *")}
-          {/* 다른 입력 필드와 좌우 끝을 맞추기 위해 전체폭 + 두 버튼이 50%씩 채운다. */}
           <div style={{ ...segGroup, display: "flex", width: "100%", boxSizing: "border-box" }}>
             {(["service", "admin"] as Surface[]).map((s) => {
               const segStyle = surface === s ? segItemActive : segItem;
@@ -266,25 +365,13 @@ export function IntakeModal({
             })}
           </div>
           {isAdminCms && (
-            <div
-              style={{
-                marginTop: 8,
-                padding: "8px 10px",
-                borderRadius: 6,
-                background: c.accentBg,
-                border: `1px solid ${c.border}`,
-                fontSize: 11,
-                color: c.text,
-                lineHeight: 1.5,
-              }}
-            >
-              관리자 화면은 앱 안에서 바로 미리보기·내보내기가 아직 안 돼요(별도 구조라서요). 생성은
-              채팅으로 정상 진행됩니다.
+            <div style={noticeStyle}>
+              관리자 화면은 앱 안에서 바로 미리보기·내보내기가 아직 안 됩니다. 생성은 채팅으로
+              진행됩니다.
             </div>
           )}
         </div>
 
-        {/* 화면명 + 슬러그 */}
         <div style={field}>
           {label("화면 이름 *")}
           <input
@@ -309,136 +396,101 @@ export function IntakeModal({
           </div>
         </div>
 
-        {/* 기획 내용 */}
         <div style={field}>
-          {label("기획 내용")}
+          <div style={{ display: "flex", alignItems: "center", marginBottom: 5 }}>
+            {label("기획 내용")}
+            <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
+              <button onClick={() => insertTemplate(SIMPLE_TEMPLATE)} style={smallBtn}>
+                간단
+              </button>
+              <button onClick={() => insertTemplate(DETAIL_TEMPLATE)} style={smallBtn}>
+                상세
+              </button>
+              <button onClick={() => insertTemplate(ADMIN_TEMPLATE)} style={smallBtn}>
+                어드민
+              </button>
+            </div>
+          </div>
           <textarea
             value={prd}
             onChange={(e) => setPrd(e.target.value)}
-            rows={5}
-            placeholder="이 화면이 무엇을 하는지 · 어떤 요소가 들어가는지 · 어떻게 동작하는지"
+            rows={7}
+            placeholder="화면 목적, 핵심 행동, 정보 우선순위, CTA, 상태/케이스를 적어주세요."
             style={{ ...input, resize: "vertical", fontFamily: font }}
           />
         </div>
 
-        {/* 기획 문서 첨부 (PDF·MD·TXT·HTML) */}
+        <div style={field}>
+          {label("UI 방향")}
+          <div style={{ ...segGroup, display: "flex", width: "100%", boxSizing: "border-box" }}>
+            {[
+              { value: "auto", label: "자동 판단" },
+              { value: "propose", label: "방향 먼저 제안" },
+              { value: "skip", label: "바로 생성" },
+            ].map((m) => {
+              const active = directionMode === m.value;
+              return (
+                <button
+                  key={m.value}
+                  onClick={() => setDirectionMode(m.value as DirectionMode)}
+                  style={{
+                    ...(active ? segItemActive : segItem),
+                    flex: 1,
+                    justifyContent: "center",
+                    padding: "7px 0",
+                  }}
+                >
+                  {m.label}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ color: c.textMuted, fontSize: 11, lineHeight: 1.5, marginTop: 6 }}>
+            자동 판단은 기획서가 명확하면 바로 만들고, 정보 위계·흐름·CTA 전략이 애매하면 먼저 2-3개
+            UI/UX 방향을 제안하게 합니다.
+          </div>
+          <textarea
+            value={selectedDirection}
+            onChange={(e) => setSelectedDirection(e.target.value)}
+            rows={3}
+            placeholder="이미 원하는 방향이 있다면 적어주세요. 예: 첫 화면은 가능 시간을 먼저, 상세 신뢰 정보는 선택 후 노출."
+            style={{ ...input, resize: "vertical", fontFamily: font, marginTop: 8 }}
+          />
+        </div>
+
         <div style={field}>
           {label("기획 문서 첨부 (PDF·MD·TXT·HTML)")}
-          <div
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              addDocs(e.dataTransfer.files);
-            }}
-            onClick={() => document.getElementById("intake-doc")?.click()}
-            style={{
-              border: `1px dashed ${c.border}`,
-              borderRadius: 8,
-              padding: 14,
-              textAlign: "center",
-              fontSize: 12,
-              color: c.textMuted,
-              cursor: "pointer",
-              background: c.bg,
-            }}
-          >
-            기획서 파일을 끌어다 놓거나 클릭해 선택 (pdf/md/txt/html)
-          </div>
-          <input
-            id="intake-doc"
-            type="file"
+          <DropZone
+            text="기획서 파일을 끌어다 놓거나 클릭해 선택"
+            onFiles={addDocs}
+            inputId="intake-doc"
             accept=".pdf,.md,.markdown,.txt,.html,.htm"
-            multiple
-            style={{ display: "none" }}
-            onChange={(e) => {
-              if (e.target.files) addDocs(e.target.files);
-              e.target.value = "";
-            }}
           />
           {docs.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 8 }}>
               {docs.map((d, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "5px 9px",
-                    borderRadius: 6,
-                    background: c.bgElevated,
-                    border: `1px solid ${c.border}`,
-                    fontSize: 12,
-                  }}
-                >
-                  <span
-                    style={{
-                      flex: 1,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    📄 {d.fileName}
-                  </span>
-                  <button
-                    onClick={() => setDocs((prev) => prev.filter((_, j) => j !== i))}
-                    title="제거"
-                    style={{
-                      border: "none",
-                      background: "transparent",
-                      color: c.textMuted,
-                      cursor: "pointer",
-                      fontSize: 14,
-                      lineHeight: 1,
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
+                <FileRow
+                  key={`${d.fileName}-${i}`}
+                  fileName={d.fileName}
+                  onRemove={() => setDocs((prev) => prev.filter((_, j) => j !== i))}
+                />
               ))}
             </div>
           )}
         </div>
 
-        {/* 스크린샷 */}
         <div style={field}>
           {label("예시 스크린샷 (드래그 또는 클릭)")}
-          <div
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              addFiles(e.dataTransfer.files);
-            }}
-            onClick={() => document.getElementById("intake-file")?.click()}
-            style={{
-              border: `1px dashed ${c.border}`,
-              borderRadius: 8,
-              padding: 14,
-              textAlign: "center",
-              fontSize: 12,
-              color: c.textMuted,
-              cursor: "pointer",
-              background: c.bg,
-            }}
-          >
-            이미지를 끌어다 놓거나 클릭해 선택 (png/jpg/webp/gif/svg)
-          </div>
-          <input
-            id="intake-file"
-            type="file"
+          <DropZone
+            text="이미지를 끌어다 놓거나 클릭해 선택"
+            onFiles={addFiles}
+            inputId="intake-file"
             accept="image/*"
-            multiple
-            style={{ display: "none" }}
-            onChange={(e) => {
-              if (e.target.files) addFiles(e.target.files);
-              e.target.value = "";
-            }}
           />
           {shots.length > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
               {shots.map((s, i) => (
-                <div key={i} style={{ position: "relative" }}>
+                <div key={`${s.fileName}-${i}`} style={{ position: "relative" }}>
                   <img
                     src={s.thumbUrl}
                     alt={s.fileName}
@@ -453,22 +505,10 @@ export function IntakeModal({
                   />
                   <button
                     onClick={() => setShots((prev) => prev.filter((_, j) => j !== i))}
-                    style={{
-                      position: "absolute",
-                      top: -6,
-                      right: -6,
-                      width: 18,
-                      height: 18,
-                      borderRadius: 999,
-                      border: "none",
-                      background: c.red,
-                      color: "#fff",
-                      fontSize: 12,
-                      lineHeight: "16px",
-                      cursor: "pointer",
-                    }}
+                    style={removeBubble}
+                    title="제거"
                   >
-                    ×
+                    x
                   </button>
                 </div>
               ))}
@@ -476,28 +516,24 @@ export function IntakeModal({
           )}
         </div>
 
-        {/* Figma URLs */}
         <div style={field}>
           {label("Figma 링크 (한 줄에 하나)")}
           <textarea
             value={figma}
             onChange={(e) => setFigma(e.target.value)}
             rows={2}
-            placeholder="https://figma.com/design/…?node-id=1:2"
+            placeholder="https://figma.com/design/...?node-id=1:2"
             style={{ ...input, resize: "vertical", fontFamily: mono, fontSize: 12 }}
           />
         </div>
 
-        {/* 추가 요구 */}
         <div style={field}>
           {label("추가 요구사항 (제작 방식·규칙)")}
           <textarea
             value={extra}
             onChange={(e) => setExtra(e.target.value)}
             rows={3}
-            placeholder={
-              "예: 여러 화면으로 나눠 제작 · CTA 버튼은 플로팅 고정 · 빈/에러 상태 포함 · 다크모드 우선"
-            }
+            placeholder="예: 여러 화면으로 나눠 제작 · CTA 버튼은 플로팅 고정 · 빈/에러 상태 포함"
             style={{ ...input, resize: "vertical", fontFamily: font }}
           />
         </div>
@@ -513,10 +549,131 @@ export function IntakeModal({
             disabled={!canSubmit}
             style={canSubmit ? primaryBtn : primaryBtnDisabled}
           >
-            {busy ? "시작 중…" : "생성 시작"}
+            {busy ? "시작 중..." : "생성 시작"}
           </button>
         </div>
       </div>
     </div>
   );
 }
+
+function DropZone({
+  text,
+  inputId,
+  accept,
+  onFiles,
+}: {
+  text: string;
+  inputId: string;
+  accept: string;
+  onFiles: (files: FileList | File[]) => void;
+}): React.JSX.Element {
+  return (
+    <>
+      <div
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          onFiles(e.dataTransfer.files);
+        }}
+        onClick={() => document.getElementById(inputId)?.click()}
+        style={{
+          border: `1px dashed ${c.border}`,
+          borderRadius: 8,
+          padding: 14,
+          textAlign: "center",
+          fontSize: 12,
+          color: c.textMuted,
+          cursor: "pointer",
+          background: c.bg,
+        }}
+      >
+        {text}
+      </div>
+      <input
+        id={inputId}
+        type="file"
+        accept={accept}
+        multiple
+        style={{ display: "none" }}
+        onChange={(e) => {
+          if (e.target.files) onFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
+    </>
+  );
+}
+
+function FileRow({
+  fileName,
+  onRemove,
+}: {
+  fileName: string;
+  onRemove: () => void;
+}): React.JSX.Element {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "5px 9px",
+        borderRadius: 6,
+        background: c.bgElevated,
+        border: `1px solid ${c.border}`,
+        fontSize: 12,
+      }}
+    >
+      <span
+        style={{
+          flex: 1,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {fileName}
+      </span>
+      <button
+        onClick={onRemove}
+        title="제거"
+        style={{ border: "none", background: "transparent", color: c.textMuted, cursor: "pointer" }}
+      >
+        x
+      </button>
+    </div>
+  );
+}
+
+const noticeStyle: React.CSSProperties = {
+  marginTop: 8,
+  padding: "8px 10px",
+  borderRadius: 6,
+  background: c.accentBg,
+  border: `1px solid ${c.border}`,
+  fontSize: 11,
+  color: c.text,
+  lineHeight: 1.5,
+};
+
+const smallBtn: React.CSSProperties = {
+  ...ghostBtn,
+  padding: "3px 8px",
+  fontSize: 11,
+};
+
+const removeBubble: React.CSSProperties = {
+  position: "absolute",
+  top: -6,
+  right: -6,
+  width: 18,
+  height: 18,
+  borderRadius: 999,
+  border: "none",
+  background: c.red,
+  color: "#1e1e1e",
+  fontSize: 12,
+  lineHeight: "16px",
+  cursor: "pointer",
+};

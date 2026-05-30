@@ -49,6 +49,15 @@ export interface RunIntakeArgs {
   attachments?: AttachmentInput[];
   figmaUrls?: string[];
   agentType: AgentType;
+  /**
+   * UI 방향 게이트.
+   * - auto: PRD 가 명확하면 바로 생성, 불명확하면 먼저 2-3개 방향 제안 후 대기.
+   * - propose: 항상 방향 제안 후 사용자 선택 대기.
+   * - skip: PRD/selectedDirection 을 확정 방향으로 보고 바로 생성.
+   */
+  directionMode?: "auto" | "propose" | "skip";
+  /** 사용자가 이미 고른/명시한 UI 방향. 있으면 brief.md 에 고정한다. */
+  selectedDirection?: string;
 }
 
 export interface RunIntakeResult {
@@ -168,7 +177,9 @@ function bootstrapDoc(brand: string, surface: Surface, intent: string): string {
 
 이 폴더는 Nudge DS 목업 작업 공간입니다. **nudge-eap-ds MCP 서버가 규칙의 SSOT** 입니다.
 - references.md = 시각 레퍼런스(있으면 게이트 충족). brief.md = 기획서 + 추가 요구사항.
+- brief.md 의 "UI 방향 결정" 섹션이 있으면 그 결정을 우선한다. auto/propose 모드면 코드 작성 전 방향 판단/제안을 먼저 끝낸다.
 - 워크플로우(intent=${intent}): get_guide({topic:'principles'}) + dos-donts → get_brand({brand:'${brand}'})
+  → get_guide({topic:'pattern:ui-direction-proposal'})
   → 컴포넌트 가이드 1개씩(target:'html') → index.html 을 <nds-*> + 시멘틱 토큰으로 작성(raw hex 금지)
   → validate_html_mockup → build_singlefile_html (html intent 는 자동 검증).
 - 빌드 도구(vite 등)가 없으면 get_setup 으로 스캐폴딩.
@@ -180,6 +191,13 @@ function briefDoc(args: RunIntakeArgs, intent: string, docNames: string[]): stri
   const attachSection = docNames.length
     ? `\n## 첨부 문서 (반드시 읽을 것)\n${docNames.map((n) => `- brief/${n}`).join("\n")}\n`
     : "";
+  const directionMode = args.directionMode ?? "auto";
+  const selectedDirection = args.selectedDirection?.trim();
+  const directionSection = `\n## UI 방향 결정\n- mode: ${directionMode}\n${
+    selectedDirection
+      ? `\n### 확정/참고 방향\n${selectedDirection}\n`
+      : "\n### 확정/참고 방향\n(미입력)\n"
+  }\n### 판단 기준\n- PRD 에 첫 화면 강조점, 정보 우선순위, CTA 전략, 핵심 흐름이 명확하면 방향 제안 없이 진행.\n- 기능/데이터 목록만 있고 구성 전략이 불명확하면 코드 작성 전에 이 화면 안에서 가능한 UI/UX 방향 2-3개를 구체적으로 제안하고 사용자 선택을 기다림.\n- 방향 제안은 화면 유형 분류가 아니라 같은 기획서 안의 정보 위계, 사용자 흐름, CTA 배치, 불안/망설임 해소 전략 차이를 비교해야 함.\n`;
   return `# ${args.screenName}
 
 브랜드: ${args.brand} · 표면: ${args.surface} · intent: ${intent}
@@ -189,6 +207,7 @@ ${args.prd?.trim() || "(미입력)"}
 
 ## 추가 요구사항
 ${args.extraRequirements?.trim() || "(없음)"}
+${directionSection}
 ${attachSection}`;
 }
 
@@ -196,7 +215,17 @@ function seedPrompt(args: RunIntakeArgs, intent: string, hasVisual: boolean): st
   const visualLine = hasVisual
     ? "references.md 가 시각 레퍼런스 게이트를 충족하므로 레퍼런스 재질문 없이 진행."
     : "시각 레퍼런스가 아직 없음 — 빌드 전에 Figma/스크린샷 1개 이상을 사용자에게 요청할 것(DS 시각 게이트).";
-  return `이 폴더의 CLAUDE.md/AGENTS.md, ${hasVisual ? "references.md, " : ""}brief.md 를 먼저 읽고 목업을 만들어줘. 브랜드=${args.brand}, 표면=${args.surface}, 타겟 intent=${intent}. ${visualLine}`;
+  const mode = args.directionMode ?? "auto";
+  const visualGateLine = hasVisual
+    ? ""
+    : "시각 레퍼런스 게이트가 UI 방향 판단보다 우선한다. 레퍼런스가 없으면 방향 제안/질문은 가능하지만 index.html 작성과 빌드는 Figma/스크린샷 1개 이상을 받은 뒤 진행.";
+  const directionLine =
+    mode === "propose"
+      ? "코드 작성 전에 brief.md 를 읽고 이 화면 안의 UI/UX 방향 2-3개를 먼저 제안한 뒤 사용자 선택을 기다려."
+      : mode === "skip"
+        ? "brief.md 의 기획/확정 방향을 기준으로 방향 재질문 없이 바로 생성해."
+        : "brief.md 를 읽고 UI 방향이 명확하면 바로 생성하고, 불명확하면 코드 작성 전에 이 화면 안의 UI/UX 방향 2-3개를 먼저 제안한 뒤 사용자 선택을 기다려.";
+  return `이 폴더의 CLAUDE.md/AGENTS.md, ${hasVisual ? "references.md, " : ""}brief.md 를 먼저 읽고 목업을 만들어줘. 브랜드=${args.brand}, 표면=${args.surface}, 타겟 intent=${intent}. ${visualLine} ${visualGateLine} ${directionLine}`;
 }
 
 export function runIntake(args: RunIntakeArgs): RunIntakeResult {
