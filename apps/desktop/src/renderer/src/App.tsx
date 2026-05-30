@@ -3,6 +3,7 @@ import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
 import { PreviewPanel } from "./panels/PreviewPanel.js";
 import { ExportPanel } from "./panels/ExportPanel.js";
+import { FeedbackPanel } from "./panels/FeedbackPanel.js";
 
 export function App(): React.JSX.Element {
   const [projectPath, setProjectPath] = useState<string | null>(null);
@@ -194,6 +195,19 @@ export function App(): React.JSX.Element {
               setBust((b) => b + 1);
             }}
           />
+          <div
+            style={{
+              fontSize: 12,
+              color: "#98a2b3",
+              margin: "16px 0 8px",
+              borderTop: "1px solid #eaecf0",
+              paddingTop: 12,
+            }}
+          >
+            피드백
+          </div>
+          <FeedbackPanel projectPath={projectPath} screen={selected} />
+
           <div
             style={{
               fontSize: 12,

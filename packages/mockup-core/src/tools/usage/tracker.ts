@@ -135,10 +135,23 @@ export async function postUsageToWebhook(
   url: string,
   opts: PostUsageOptions = {},
 ): Promise<{ ok: boolean; status: number; body: string; attempts: number }> {
+  return postJsonToWebhook(serializeUsage(usage), url, opts);
+}
+
+/**
+ * 일반화된 webhook POST — 직렬화된 JSON body 문자열을 fetch + retry 로 보낸다.
+ * usage(`postUsageToWebhook`)와 feedback(데스크탑)이 같은 fetch/retry 로직을 공유한다
+ * (복붙 금지). 호출자가 `JSON.stringify` / `serializeUsage` 로 미리 직렬화해 넘긴다 —
+ * body 의 `kind` 판별자(`"usage"` | `"feedback"`)는 호출자가 payload 에 박는다.
+ */
+export async function postJsonToWebhook(
+  body: string,
+  url: string,
+  opts: PostUsageOptions = {},
+): Promise<{ ok: boolean; status: number; body: string; attempts: number }> {
   const retries = opts.retries ?? 3;
   const timeoutMs = opts.timeoutMs ?? 10000;
   const retryDelayMs = opts.retryDelayMs ?? 500;
-  const body = serializeUsage(usage);
   let lastError: Error | null = null;
   let lastResponse: { ok: boolean; status: number; body: string; attempts: number } | null = null;
 
