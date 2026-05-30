@@ -23,7 +23,7 @@ phases:
   pre_build:
     commands:
       - pnpm install --frozen-lockfile
-      - pnpm generate:component-inventory
+      - pnpm generate:brand-coverage
 
   build:
     commands:

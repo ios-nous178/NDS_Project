@@ -25,6 +25,35 @@ function readDtsExports(dir) {
 }
 
 /**
+ * 아이콘 패키지는 dist/index.d.ts 하나로 모든 아이콘을 re-export 한다
+ * (per-icon .d.ts 는 mono/ · multicolor/ 하위에 있어 top-level readDtsExports 로는 안 잡힘).
+ * index.d.ts 의 `export { XIcon } from "..."` 선언에서 컴포넌트 이름만 추출한다.
+ * `export type { XIconProps }` 같은 type-only re-export 는 `export\s+\{` 패턴과
+ * `\w*Icon$` 필터로 자연스럽게 제외된다.
+ */
+function readIconExports(distDir) {
+  const indexDts = path.join(distDir, "index.d.ts");
+  if (!fs.existsSync(indexDts)) {
+    return readDtsExports(distDir).filter((n) => n.endsWith("Icon"));
+  }
+  const src = fs.readFileSync(indexDts, "utf-8");
+  const names = new Set();
+  const re = /export\s+\{([^}]*)\}\s*from/g;
+  let m;
+  while ((m = re.exec(src)) !== null) {
+    for (const part of m[1].split(",")) {
+      const name = part
+        .trim()
+        .split(/\s+as\s+/)
+        .pop()
+        .trim();
+      if (/^[A-Z]\w*Icon$/.test(name)) names.add(name);
+    }
+  }
+  return [...names];
+}
+
+/**
  * d.ts에서 `<ComponentName>Props` 인터페이스/타입을 찾아 props를 추출한다.
  * - 첫 번째 `*Props` 가 아니라 파일명과 매칭되는 `<basename>Props` 를 우선 선택
  *   (예: Button.d.ts → `ButtonProps`, `ButtonSlotProps`/`ButtonOptionProps` 등은 무시)
@@ -373,7 +402,7 @@ const components = componentNames.map((name) => {
   };
 });
 
-const icons = readDtsExports(iconsDist).filter((n) => n.endsWith("Icon"));
+const icons = readIconExports(iconsDist);
 
 let tokens = [];
 if (fs.existsSync(tokensCssPath)) {

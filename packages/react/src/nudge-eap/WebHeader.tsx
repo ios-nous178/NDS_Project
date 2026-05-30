@@ -103,16 +103,7 @@ export const NudgeEAPWebHeader = React.forwardRef<HTMLElement, NudgeEAPWebHeader
       <Header ref={ref} variant="web" position="static" maxWidth={maxWidth}>
         {logoNode}
         {menuItems && menuItems.length > 0 && (
-          <Header.Menu
-            items={menuItems}
-            activeKey={activeKey}
-            onItemClick={onMenuItemClick}
-            style={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-          />
+          <Header.Menu items={menuItems} activeKey={activeKey} onItemClick={onMenuItemClick} />
         )}
         <Header.Actions>
           {showAppDownload && (

@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { NudgeEAPWebHeader } from "@nudge-design/react";
+import { NudgeEAPAppBar, NudgeEAPWebHeader } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("nudge-eap");
@@ -8,12 +8,15 @@ const b = getBrandFixture("nudge-eap");
 const meta: Meta = {
   title: "Components/Header",
   parameters: { layout: "fullscreen" },
+  globals: { brand: "nudge-eap" },
 };
 export default meta;
 type Story = StoryObj;
 
+/* ─── 데스크톱 웹 (NudgeEAPWebHeader) ─── */
+
 export const NudgeEAPWebHeaderDesktop: Story = {
-  name: "NudgeEAPWebHeader/Desktop (Figma 39:5751)",
+  name: "NudgeEAP/Desktop",
   parameters: {
     docs: {
       description: {
@@ -36,7 +39,7 @@ export const NudgeEAPWebHeaderDesktop: Story = {
 };
 
 export const NudgeEAPWebHeaderLoggedIn: Story = {
-  name: "NudgeEAPWebHeader/Desktop — Logged in",
+  name: "NudgeEAP/Desktop (로그인 후)",
   render: () => (
     <NudgeEAPWebHeader
       maxWidth={b.header.pcMaxWidth}
@@ -46,6 +49,32 @@ export const NudgeEAPWebHeaderLoggedIn: Story = {
       appDownloadHref="#"
       authState="logout"
       authHref="#"
+    />
+  ),
+};
+
+/* ─── 앱 / 모바일 (NudgeEAPAppBar) ─── */
+
+export const NudgeEAPMobile: Story = {
+  name: "NudgeEAP/Mobile",
+  render: () => (
+    <div style={{ maxWidth: 480 }}>
+      <NudgeEAPAppBar
+        variant="mobile"
+        mobileHeight={b.header.mobileHeight}
+        authItems={b.header.auth.items}
+      />
+    </div>
+  ),
+};
+
+export const NudgeEAPWebview: Story = {
+  name: "NudgeEAP/Webview",
+  render: () => (
+    <NudgeEAPAppBar
+      variant="webview"
+      webviewTitle={b.header.webviewTitle}
+      mobileHeight={b.header.mobileHeight}
     />
   ),
 };

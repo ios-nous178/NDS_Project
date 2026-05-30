@@ -1,7 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Header, NudgeEAPLogo } from "@nudge-design/react";
-import { getBrandFixture } from "../brand-fixtures";
+import { Header } from "@nudge-design/react";
 
 /**
  * `<Header>` — 옛 `AppBar` + `WebHeader` 의 통합 base.
@@ -27,7 +26,7 @@ type Story = StoryObj<typeof Header>;
 /* ─── Compact (옛 AppBar) ─── */
 
 export const CompactMobile: Story = {
-  name: "Compact/모바일 기본",
+  name: "Base/Mobile",
   args: {
     variant: "compact",
     position: "static",
@@ -43,7 +42,7 @@ export const CompactMobile: Story = {
 };
 
 export const Webview: Story = {
-  name: "Webview/기본 웹뷰 헤더",
+  name: "Base/Webview",
   args: {
     variant: "webview",
     position: "static",
@@ -53,7 +52,7 @@ export const Webview: Story = {
 };
 
 export const CompactElevated: Story = {
-  name: "Compact/Elevated 그림자",
+  name: "Base/Mobile (Elevated)",
   args: {
     variant: "compact",
     position: "static",
@@ -69,7 +68,7 @@ export const CompactElevated: Story = {
 };
 
 export const CompactTwoTier: Story = {
-  name: "Compact/2단 컴파운드 (MainBar + NavBar)",
+  name: "Base/2단 컴파운드",
   render: () => (
     <Header
       variant="compact"
@@ -110,28 +109,9 @@ export const CompactTwoTier: Story = {
   ),
 };
 
-/* ─── Web (옛 WebHeader) ─── */
-
-function WebHeaderDemo({ brand }: { brand: "nudge-eap" }) {
-  const b = getBrandFixture(brand);
-  return (
-    <Header variant="web" position="static">
-      <Header.Logo href="/">
-        <NudgeEAPLogo variant="koen" size={32} alt="NudgeEAP" />
-      </Header.Logo>
-      <Header.Menu items={b.header.gnb.items} activeKey="home" />
-      <Header.Actions>
-        <Header.AppDownloadButton href="#">앱 다운로드</Header.AppDownloadButton>
-        <Header.AuthButton authState="login" href="#" />
-      </Header.Actions>
-    </Header>
-  );
-}
-
-export const WebNudgeEAP: Story = {
-  name: "Web/NudgeEAP",
-  render: () => <WebHeaderDemo brand="nudge-eap" />,
-};
-
-/* Trost/Geniet 은 2단 이상 브랜드 전용 헤더라 단일 tier 인 brand-agnostic
- * web variant 와 1:1 매핑되지 않습니다. 풀 구성은 각 브랜드 Header 스토리 참조. */
+/* ─── Web (옛 WebHeader) ───
+ *
+ * web variant 의 브랜드 완성형 데모는 각 브랜드 전용 스토리 참조:
+ *   · NudgeEAP → "Header/NudgeEAP/*" (WebHeader.NudgeEAP.stories.tsx)
+ *   · Trost/Geniet → 2단 이상 브랜드 전용 헤더라 단일 tier web variant 와 1:1 매핑 안 됨.
+ * 여기서 base 데모를 중복으로 두지 않습니다. */

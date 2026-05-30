@@ -8,11 +8,12 @@ const b = getBrandFixture("nudge-eap");
 const meta: Meta = {
   title: "Components/Footer",
   parameters: { layout: "fullscreen" },
+  globals: { brand: "nudge-eap" },
 };
 export default meta;
 type Story = StoryObj;
 
-/* ─── App download icons (24×24, monochrome white) ─── */
+/* App download icons (24×24, monochrome white) */
 function GooglePlayIcon() {
   return (
     <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,8 +45,30 @@ function OneStoreIcon() {
   );
 }
 
+/* ─── 모바일 앱 푸터 (surface='app') ─── */
+
+export const NudgeEAPApp: Story = {
+  name: "NudgeEAP/Mobile",
+  render: () => (
+    <div style={{ maxWidth: 480 }}>
+      <NudgeEAPFooter
+        surface="app"
+        links={b.footer.links}
+        company={b.footer.company}
+        logo={{
+          src: b.logo.footer.src,
+          width: b.logo.footer.width,
+          height: b.logo.footer.height,
+        }}
+      />
+    </div>
+  ),
+};
+
+/* ─── 데스크톱 웹 푸터 (surface='web') ─── */
+
 export const NudgeEAPWeb: Story = {
-  name: "NudgeEAP/Web Desktop (surface='web', Figma 20:13799)",
+  name: "NudgeEAP/Desktop",
   parameters: {
     docs: {
       description: {
