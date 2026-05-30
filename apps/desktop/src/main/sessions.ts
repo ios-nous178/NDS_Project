@@ -32,6 +32,10 @@ export interface ChatSession {
   agentType: AgentType;
   mockupFile?: string;
   title: string;
+  /** 인테이크에서 받은 사람이 읽는 화면 이름(채팅기록 리스트 타이틀의 기본값). */
+  screenName?: string;
+  /** 사용자가 직접 고친 제목(더블클릭 인라인 편집). 있으면 screenName/title 보다 우선. */
+  customTitle?: string;
   status: SessionStatus;
   createdAt: string;
   updatedAt: string;
@@ -113,9 +117,21 @@ export function readSessions(projectPath: string): ChatSession[] {
     }
     if (!s.sessionId) continue;
     if (!latest.has(s.sessionId)) order.push(s.sessionId);
-    // 같은 세션의 후속 라인은 createdAt 을 잃지 않게 첫 라인 createdAt 을 보존.
+    // 같은 세션의 후속 라인(상태 갱신 등)은 createdAt 을 잃지 않게 첫 라인 값을 보존.
+    // screenName/customTitle 은 상태 갱신 라인(onExit 의 sessionBase)·rename 라인에서 누락될 수
+    // 있으므로 이전에 본 값을 이월한다(최신 라인이 명시하면 그 값 우선).
     const prev = latest.get(s.sessionId);
-    latest.set(s.sessionId, prev ? { ...s, createdAt: prev.createdAt } : s);
+    latest.set(
+      s.sessionId,
+      prev
+        ? {
+            ...s,
+            createdAt: prev.createdAt,
+            screenName: s.screenName ?? prev.screenName,
+            customTitle: s.customTitle ?? prev.customTitle,
+          }
+        : s,
+    );
   }
   // 파일 등장 순서의 역순 = 최근 시작 세션 우선.
   return order.reverse().map((id) => latest.get(id)!);
@@ -173,6 +189,27 @@ export function deleteSession(projectPath: string, sessionId: string): { ok: boo
   } catch {
     /* best-effort */
   }
+  return { ok: true };
+}
+
+/**
+ * 세션 제목 변경(채팅기록 인라인 편집). append-only JSONL 이라 현재 세션 스냅샷에
+ * customTitle 만 얹어 새 라인을 덧붙인다(reader 가 최신 라인 사용). 빈 문자열이면
+ * customTitle 을 비워(undefined) 기본 제목으로 되돌린다. best-effort.
+ */
+export function renameSession(
+  projectPath: string,
+  sessionId: string,
+  customTitle: string,
+): { ok: boolean } {
+  const current = readSessions(projectPath).find((s) => s.sessionId === sessionId);
+  if (!current) return { ok: false };
+  const trimmed = customTitle.trim();
+  appendSession(projectPath, {
+    ...current,
+    customTitle: trimmed || undefined,
+    updatedAt: new Date().toISOString(),
+  });
   return { ok: true };
 }
 
