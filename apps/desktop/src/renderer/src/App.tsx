@@ -11,6 +11,7 @@ import { ExportButton } from "./panels/ExportButton.js";
 import { IntakeModal } from "./panels/IntakeModal.js";
 import { Dropdown } from "./ui/Dropdown.js";
 import { Logo } from "./ui/Logo.js";
+import { Resizer } from "./ui/Resizer.js";
 import {
   c,
   dragRegion,
@@ -29,6 +30,28 @@ import {
 } from "./ui/theme.js";
 
 type PreviewTab = "preview" | "validate" | "feedback" | "source";
+
+// 3분할 폭(px) 사용자 조절. 1·2섹션은 고정폭, 3섹션(미리보기)은 나머지를 채운다.
+const PANES_KEY = "nudge-studio:pane-widths";
+const PANE = { sidebarMin: 200, sidebarMax: 480, chatMin: 360, previewMin: 360 };
+const PANE_DEFAULT = { sidebar: 260, chat: 560 };
+
+const clampNum = (v: number, lo: number, hi: number): number => Math.min(Math.max(v, lo), hi);
+
+function loadPaneWidths(): { sidebar: number; chat: number } {
+  try {
+    const raw = localStorage.getItem(PANES_KEY);
+    if (raw) {
+      const p = JSON.parse(raw) as { sidebar?: unknown; chat?: unknown };
+      if (typeof p.sidebar === "number" && typeof p.chat === "number") {
+        return { sidebar: p.sidebar, chat: p.chat };
+      }
+    }
+  } catch {
+    // 손상된 값은 기본값으로.
+  }
+  return { ...PANE_DEFAULT };
+}
 
 export function App(): React.JSX.Element {
   const [projectPath, setProjectPath] = useState<string | null>(null);
@@ -55,8 +78,65 @@ export function App(): React.JSX.Element {
   /** 인테이크가 만든 목업 폴더 슬러그(빌드/내보내기 cwd 계산용). */
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
+  // 3분할 폭 — 리사이저 드래그로 조절, localStorage 에 기억.
+  const [paneW, setPaneW] = useState(loadPaneWidths);
+  const paneRowRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const id = setTimeout(() => localStorage.setItem(PANES_KEY, JSON.stringify(paneW)), 150);
+    return () => clearTimeout(id);
+  }, [paneW]);
+  // 창이 줄어 미리보기(3섹션)가 사라지지 않도록 컨테이너 폭 변화 시 clamp.
+  useEffect(() => {
+    const el = paneRowRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      const w = el.clientWidth;
+      if (w === 0) return;
+      setPaneW((p) => {
+        const maxChat = Math.max(PANE.chatMin, w - p.sidebar - PANE.previewMin);
+        const chat = Math.min(p.chat, maxChat);
+        const maxSidebar = clampNum(w - chat - PANE.previewMin, PANE.sidebarMin, PANE.sidebarMax);
+        const sidebar = Math.min(p.sidebar, maxSidebar);
+        return sidebar === p.sidebar && chat === p.chat ? p : { sidebar, chat };
+      });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const resizeSidebar = useCallback((clientX: number) => {
+    const el = paneRowRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setPaneW((p) => {
+      const maxSidebar = clampNum(
+        rect.width - p.chat - PANE.previewMin,
+        PANE.sidebarMin,
+        PANE.sidebarMax,
+      );
+      return { ...p, sidebar: clampNum(clientX - rect.left, PANE.sidebarMin, maxSidebar) };
+    });
+  }, []);
+  const resizeChat = useCallback((clientX: number) => {
+    const el = paneRowRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setPaneW((p) => {
+      const maxChat = Math.max(PANE.chatMin, rect.width - p.sidebar - PANE.previewMin);
+      return { ...p, chat: clampNum(clientX - rect.left - p.sidebar, PANE.chatMin, maxChat) };
+    });
+  }, []);
+
   const selectedRef = useRef<string | null>(null);
   const projectRef = useRef<string | null>(null);
+  // 라이브 세션이 도는 동안 작업 폴더의 최신 HTML 을 미리보기로 자동 추적.
+  // 사용자가 목업을 직접 고르면 해제(autoFollow=false). 새 인테이크 시작 시 재개.
+  const liveRef = useRef<string | null>(null);
+  const slugRef = useRef<string | null>(null);
+  const intentRef = useRef<"html" | "admin-cms">("html");
+  const autoFollowRef = useRef(true);
+  liveRef.current = liveSessionId;
+  slugRef.current = activeSlug;
+  intentRef.current = activeIntent;
   // 타이틀바 패딩 분기용(신호등 vs Windows 오버레이).
   const isMac = window.harness.platform === "darwin";
   const [appVersion, setAppVersion] = useState<string>("");
@@ -114,6 +194,8 @@ export function App(): React.JSX.Element {
   const selectEntry = useCallback(
     (rel: string) => {
       if (!projectPath || !rel) return;
+      // 사용자가 직접 고른 목업이 있으면 라이브 자동추적 해제.
+      autoFollowRef.current = false;
       setSelected(rel);
       selectedRef.current = rel;
       setPreviewRel(rel);
@@ -128,9 +210,20 @@ export function App(): React.JSX.Element {
 
   useEffect(() => {
     return window.harness.onFileChanged((e) => {
-      if (e.relPath === selectedRef.current && projectRef.current) {
-        void loadFile(projectRef.current, e.relPath);
+      const root = projectRef.current;
+      if (!root) return;
+      if (e.relPath === selectedRef.current) {
+        void loadFile(root, e.relPath);
       }
+      // 인앱 에이전트/인테이크가 새 목업을 쓰면 상단 드롭다운 목록을 갱신.
+      // (와처가 200ms 디바운스하므로 재스캔 빈도는 안전. 변경이 없으면 setState 생략.)
+      void window.harness.rescanMockups(root).then(({ htmlEntries }) => {
+        setEntries((prev) =>
+          prev.length === htmlEntries.length && prev.every((p, i) => p === htmlEntries[i])
+            ? prev
+            : htmlEntries,
+        );
+      });
     });
   }, [loadFile]);
 
@@ -267,18 +360,21 @@ export function App(): React.JSX.Element {
         </div>
       </header>
 
-      {/* 3분할 */}
+      {/* 3분할 — 1·2섹션 고정폭(드래그 조절), 3섹션이 나머지를 채운다. */}
       <div
+        ref={paneRowRef}
         style={{
           flex: 1,
           minHeight: 0,
-          display: "grid",
-          gridTemplateColumns: "260px minmax(0, 1fr) minmax(0, 1.15fr)",
+          display: "flex",
+          position: "relative",
         }}
       >
         {/* 채팅기록 */}
         <aside
           style={{
+            width: paneW.sidebar,
+            flexShrink: 0,
             borderRight: `1px solid ${c.border}`,
             background: c.bgPanel,
             minWidth: 0,
@@ -302,6 +398,8 @@ export function App(): React.JSX.Element {
         {/* 채팅 (라이브 AgentPanel 은 상시 마운트, 기록 보기는 위에 오버레이) */}
         <main
           style={{
+            width: paneW.chat,
+            flexShrink: 0,
             borderRight: `1px solid ${c.border}`,
             minWidth: 0,
             minHeight: 0,
@@ -335,9 +433,10 @@ export function App(): React.JSX.Element {
           )}
         </main>
 
-        {/* 미리보기 + 탭 (높이는 grid 행에 잠겨 1·2섹션과 항상 동일) */}
+        {/* 미리보기 + 탭 — 나머지 폭을 채운다(1·2섹션과 높이 동일). */}
         <section
           style={{
+            flex: 1,
             minWidth: 0,
             minHeight: 0,
             height: "100%",
@@ -414,7 +513,12 @@ export function App(): React.JSX.Element {
                   HTML 미리보기·내보내기는 적용되지 않습니다 — 채팅에서 생성을 진행하세요.
                 </div>
               ) : (
-                <PreviewPanel relPath={previewRel} bust={bust} viewport={viewport} />
+                <PreviewPanel
+                  relPath={previewRel}
+                  bust={bust}
+                  viewport={viewport}
+                  live={liveSessionId !== null}
+                />
               ))}
             {tab === "validate" && (
               <div style={{ height: "100%", overflowY: "auto", padding: 16 }}>
@@ -446,6 +550,10 @@ export function App(): React.JSX.Element {
             )}
           </div>
         </section>
+
+        {/* 드래그 핸들 — 경계에 겹쳐 깔린다(absolute). 1↔2, 2↔3 경계. */}
+        <Resizer left={paneW.sidebar} onDrag={resizeSidebar} ariaLabel="채팅기록 폭 조절" />
+        <Resizer left={paneW.sidebar + paneW.chat} onDrag={resizeChat} ariaLabel="채팅 폭 조절" />
       </div>
 
       {intakeOpen && projectPath && (
@@ -455,8 +563,12 @@ export function App(): React.JSX.Element {
           onStarted={(sessionId, intent, slug) => {
             setActiveSlug(slug);
             setActiveIntent(intent);
+            // 새 생성 시작 → 결과물을 실시간으로 따라가도록 자동추적 재개.
+            autoFollowRef.current = true;
             setSelected(null);
             selectedRef.current = null;
+            setPreviewRel(null);
+            setTab("preview");
             setLiveSessionId(sessionId);
             setAttachSessionId(sessionId);
             setViewing(null);
