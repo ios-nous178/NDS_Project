@@ -30,11 +30,14 @@ type Status = "idle" | "running" | "exited" | "error";
 export function AgentPanel({
   projectPath,
   mockupFile,
+  active = true,
   onLiveChange,
   onHistoryChange,
 }: {
   projectPath: string | null;
   mockupFile: string | null;
+  /** 패널이 화면에 보이는지(기록 보기 오버레이로 가려지면 false). 가려졌다 돌아올 때 포커스 복구용. */
+  active?: boolean;
   /** 라이브 세션 id 변경(시작 시 id, 종료 시 null). */
   onLiveChange?: (sessionId: string | null) => void;
   /** 채팅기록 리스트 새로고침 트리거. */
@@ -69,6 +72,23 @@ export function AgentPanel({
       offExit();
     };
   }, []);
+
+  // 기록 보기(display:none)로 가려졌다 다시 보일 때 xterm 이 포커스를 잃어 입력이 안 먹는다.
+  // 돌아오는 순간 리핏 + 재포커스해 곧장 타이핑이 되도록 복구한다.
+  useEffect(() => {
+    if (!active) return;
+    const term = termRef.current;
+    if (!term) return;
+    try {
+      fitRef.current?.fit();
+    } catch {
+      /* 0-size 등 */
+    }
+    if (sessionRef.current && term.cols > 0) {
+      void window.harness.resizeAgent(sessionRef.current, term.cols, term.rows);
+    }
+    term.focus();
+  }, [active]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -218,6 +238,7 @@ export function AgentPanel({
       </div>
       <div
         ref={containerRef}
+        onMouseDown={() => termRef.current?.focus()}
         style={{ flex: 1, minHeight: 0, background: "#1e1e1e", padding: 4 }}
       />
     </div>
