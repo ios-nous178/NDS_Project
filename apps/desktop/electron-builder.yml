@@ -1,0 +1,33 @@
+# electron-builder — Nudge EAP Harness 패키징 (Phase 4)
+#
+# electron-vite 가 out/{main,preload,renderer} 로 번들한 뒤 이 설정으로 installer 를 만든다.
+# main/preload 는 deps 외부화(externalizeDepsPlugin) 라 런타임에 node_modules 를 resolve 한다
+# → 그 production 의존성(@nudge-design/*, chokidar, cheerio→undici, @babel/parser …)이
+#   asar 안에 들어가야 packaged 앱이 동작한다(electron-builder 가 자동 포함).
+#
+# catalog.json 은 번들 외부 리소스로 동봉 → main/catalog.ts 의
+#   process.resourcesPath/catalog.json 분기가 packaged 환경에서 이걸 읽는다.
+appId: io.cashwalk.nudge-eap-harness
+productName: Nudge EAP Harness
+directories:
+  output: release
+files:
+  - out/**
+  - package.json
+extraResources:
+  - from: ../../packages/mcp/catalog.json
+    to: catalog.json
+asar: true
+# pnpm 심볼릭 node_modules — 네이티브 리빌드는 불필요(순수 JS 의존성만).
+npmRebuild: false
+mac:
+  target:
+    - dmg
+    - zip
+  category: public.app-category.developer-tools
+win:
+  target:
+    - nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
