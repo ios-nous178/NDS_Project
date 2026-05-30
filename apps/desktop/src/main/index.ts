@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from "electron";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { bootstrapValidator } from "./catalog.js";
 import { registerIpcHandlers } from "./ipc.js";
@@ -7,6 +8,24 @@ import { stopWatch } from "./watcher.js";
 import { stopAllAgents } from "./agent-runner.js";
 
 let mainWindow: BrowserWindow | null = null;
+
+/**
+ * packaged 앱에서 main 프로세스가 직접 도는 build_singlefile_html(비파괴 export)이
+ * DS 단일 자산을 찾게 한다. dev 는 node_modules resolve 로 충분하지만 packaged 는
+ * node_modules 가 없어 sidecar 위치(resources/mcp/dist/{standalone,assets})를 env 로
+ * 명시해야 한다. spawned MCP 서버는 mcp-config.ts 가 따로 주입한다(여긴 main 전용).
+ */
+function bootstrapBundledAssetDirs(): void {
+  const resourcesPath = (process as NodeJS.Process & { resourcesPath?: string }).resourcesPath;
+  if (!resourcesPath) return;
+  const setIfPresent = (key: string, dir: string): void => {
+    if (!process.env[key] && existsSync(dir)) process.env[key] = dir;
+  };
+  setIfPresent("NUDGE_DS_STANDALONE_DIR", join(resourcesPath, "mcp", "dist", "standalone"));
+  setIfPresent("NUDGE_DS_ASSETS_DIR", join(resourcesPath, "mcp", "dist", "assets"));
+}
+
+bootstrapBundledAssetDirs();
 
 // privileged 스킴 등록은 app.whenReady 이전이어야 한다.
 registerMockupScheme();

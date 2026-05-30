@@ -366,6 +366,9 @@ importers:
       '@babel/types':
         specifier: ^7.25.0
         version: 7.29.0
+      '@nudge-design/assets':
+        specifier: workspace:*
+        version: link:../assets
       '@nudge-design/html':
         specifier: workspace:*
         version: link:../html
