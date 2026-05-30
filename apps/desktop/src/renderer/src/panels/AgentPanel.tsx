@@ -77,24 +77,32 @@ export function AgentPanel({
   }, []);
 
   // 기록 보기(display:none)로 가려졌다 다시 보일 때 xterm 이 포커스를 잃어 입력이 안 먹는다.
-  // ⚠️ display:block 직후 같은 틱엔 컨테이너가 아직 0-size 라 fit/focus 가 먹지 않는다.
-  //    requestAnimationFrame 으로 레이아웃이 끝난 다음 프레임에 리핏 + 재포커스한다.
+  // ⚠️ display:block 직후 한 프레임만으론 컨테이너 레이아웃이 확정 안 돼 fit/focus 가 새는 경우가 있다.
+  //    두 번 연속 rAF 로 레이아웃이 자리잡은 뒤 리핏 + 재포커스하고, xterm 의 입력 textarea 를
+  //    직접 focus 해 키 입력 경로를 확실히 되살린다.
   useEffect(() => {
     if (!active) return;
-    const raf = requestAnimationFrame(() => {
-      const term = termRef.current;
-      if (!term) return;
-      try {
-        fitRef.current?.fit();
-      } catch {
-        /* 0-size 등 */
-      }
-      if (sessionRef.current && term.cols > 0) {
-        void window.harness.resizeAgent(sessionRef.current, term.cols, term.rows);
-      }
-      term.focus();
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        const term = termRef.current;
+        if (!term) return;
+        try {
+          fitRef.current?.fit();
+        } catch {
+          /* 0-size 등 */
+        }
+        if (sessionRef.current && term.cols > 0) {
+          void window.harness.resizeAgent(sessionRef.current, term.cols, term.rows);
+        }
+        term.focus();
+        term.textarea?.focus();
+      });
     });
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+    };
   }, [active]);
 
   useEffect(() => {
