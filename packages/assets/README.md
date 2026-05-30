@@ -119,7 +119,6 @@ getNudgeImgCategory("psych-tests"); // 심리검사 아이콘 12종
 | `rank`         | 3   | 랭킹 메달 1·2·3위            |
 | `eap-profiles` | 11  | user/client/counselor 프로필 |
 
-> **해상도**: 현재 **1x PNG** (캔버스 native px — 대부분 64×64, profiles 60×60,
-> rank 40×40, 3d 98×72). 이 자산들은 CSS 사각형·마스크·회전·라이브 텍스트로
-> 합성돼 단일 래스터 export 가 불가 → Figma 렌더 flatten 으로 확보했습니다.
-> 고밀도(2x/3x)는 Figma REST images export(`scale=2|3`)로 후속 교체 예정.
+> **해상도**: **2x(base) + 3x(`@3x`)** PNG (marathon-events 와 동일). 디자이너
+> Figma Export 원본이라 합성 컴포넌트까지 픽셀퍼펙트. `filename`=2x, `filename3x`=3x →
+> `srcset` 으로 사용. (base 2x: 대부분 128×128, profiles 120, rank 80, 3d 198×148)

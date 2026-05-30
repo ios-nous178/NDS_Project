@@ -15,11 +15,11 @@
  *
  * 로고(IMG/logo, 20:2035)는 의도적으로 제외 — 별도 가이드.
  *
- * **해상도**: 현재 1x PNG (Figma 캔버스 native px — 대부분 64×64,
- * profiles 60×60, rank 40×40, 3d 98×72). 이 자산들은 컴포넌트가
- * CSS 사각형 / 마스크 / 회전 / 라이브 텍스트로 합성돼 있어 단일 래스터
- * export 가 불가능 → Figma 렌더 flatten(1x) 으로 확보. 고밀도(2x/3x)는
- * Figma REST images export(`scale=2|3`)로 후속 교체 예정.
+ * **해상도**: 2x(base) + 3x(`@3x`) PNG — marathon-events 와 동일 컨벤션.
+ * 디자이너가 Figma Export(PNG 2x/3x)로 내보낸 원본이라 합성 컴포넌트
+ * (CSS 사각형 · 마스크 · 회전 · 라이브 텍스트)까지 픽셀퍼펙트. base 는
+ * 노드 native 의 2x (대부분 128×128, profiles 120, rank 80, 3d 198×148),
+ * `filename3x` 는 3x. `srcset="… 2x, …@3x 3x"` 로 사용.
  *
  * raster PNG 라 dataUri 미제공 — 파일 호스팅 필수.
  * 외부 소비자는 `@nudge-design/assets/files/{filename}` 로 참조.
@@ -41,8 +41,10 @@ export interface NudgeImgMeta {
   category: NudgeImgCategory;
   /** 카테고리 내 식별자 (kebab-case, 파일명 stem). */
   id: string;
-  /** `files/{category}/{id}.png` — 호스팅 경로. */
+  /** `files/{category}/{id}.png` — base(2x) 호스팅 경로. */
   filename: string;
+  /** `files/{category}/{id}@3x.png` — 3x (고밀도, srcset 용). */
+  filename3x: string;
   mimeType: "image/png";
   /** Figma 노드 id. */
   figmaNodeId: string;
@@ -60,6 +62,7 @@ function meta(
     category,
     id,
     filename: `${category}/${id}.png`,
+    filename3x: `${category}/${id}@3x.png`,
     mimeType: "image/png",
     figmaNodeId,
     figmaNodeName,
