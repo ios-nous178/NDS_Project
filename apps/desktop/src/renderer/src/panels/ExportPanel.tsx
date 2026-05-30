@@ -16,11 +16,13 @@ export function ExportPanel({
   const [phase, setPhase] = useState<Phase>("idle");
   const [result, setResult] = useState<ExportResult | null>(null);
   const [error, setError] = useState<string>("");
+  const [savedPath, setSavedPath] = useState<string>("");
 
   const runExport = useCallback(async () => {
     if (!projectPath) return;
     setPhase("exporting");
     setError("");
+    setSavedPath("");
     try {
       const r = await window.harness.exportMockup(projectPath);
       setResult(r);
@@ -31,6 +33,14 @@ export function ExportPanel({
       setPhase("error");
     }
   }, [projectPath, onExported]);
+
+  const saveAs = useCallback(async () => {
+    if (!projectPath || !result?.build.outputPath) return;
+    const base = projectPath.split(/[/\\]/).filter(Boolean).pop() ?? "mockup";
+    const defaultPath = `${projectPath}/${base}-share.html`;
+    const res = await window.harness.saveExport(result.build.outputPath, defaultPath);
+    if (res.saved && res.path) setSavedPath(res.path);
+  }, [projectPath, result]);
 
   if (!projectPath)
     return <div style={{ color: "#999", fontSize: 13 }}>프로젝트를 열면 내보낼 수 있습니다.</div>;
@@ -63,6 +73,20 @@ export function ExportPanel({
               <button onClick={() => onExported(result.outputRel!)} style={linkBtn}>
                 미리보기
               </button>
+            </div>
+          )}
+          {result.build.ok && (
+            <div style={{ marginTop: 8 }}>
+              <button onClick={saveAs} style={primaryBtn}>
+                공유용으로 저장…
+              </button>
+              {savedPath && (
+                <div
+                  style={{ color: "#067647", fontSize: 12, marginTop: 4, wordBreak: "break-all" }}
+                >
+                  저장됨: {savedPath}
+                </div>
+              )}
             </div>
           )}
           {result.build.dsUsageSummary && (

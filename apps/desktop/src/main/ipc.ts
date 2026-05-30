@@ -1,5 +1,5 @@
 import { dialog, ipcMain, type BrowserWindow } from "electron";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { copyFileSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { setPreviewRoot } from "./mockup-protocol.js";
@@ -107,4 +107,22 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   ipcMain.handle("export:run", async (_e, args: { projectPath: string }): Promise<ExportResult> => {
     return exportMockup(args.projectPath);
   });
+
+  // 자체완결 산출물을 사용자가 고른 파일명/위치로 저장(복사). dist 아티팩트는 그대로 둔다.
+  ipcMain.handle(
+    "export:save",
+    async (
+      _e,
+      args: { sourcePath: string; defaultPath: string },
+    ): Promise<{ saved: boolean; path?: string }> => {
+      const res = await dialog.showSaveDialog(getWindow() ?? undefined!, {
+        title: "공유용 HTML 저장",
+        defaultPath: args.defaultPath,
+        filters: [{ name: "HTML", extensions: ["html"] }],
+      });
+      if (res.canceled || !res.filePath) return { saved: false };
+      copyFileSync(args.sourcePath, res.filePath);
+      return { saved: true, path: res.filePath };
+    },
+  );
 }

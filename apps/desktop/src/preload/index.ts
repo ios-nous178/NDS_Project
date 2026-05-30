@@ -37,6 +37,12 @@ const harness = {
   /** 원본 무변경 — 자체완결 dist/index.html 생성 + 버전 stamp + usage + webhook. */
   exportMockup: (projectPath: string): Promise<ExportResult> =>
     ipcRenderer.invoke("export:run", { projectPath }),
+  /** 자체완결 산출물을 네이티브 저장 다이얼로그로 원하는 파일명/위치에 복사. */
+  saveExport: (
+    sourcePath: string,
+    defaultPath: string,
+  ): Promise<{ saved: boolean; path?: string }> =>
+    ipcRenderer.invoke("export:save", { sourcePath, defaultPath }),
 };
 
 contextBridge.exposeInMainWorld("harness", harness);
