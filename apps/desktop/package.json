@@ -10,15 +10,20 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "rebuild": "electron-rebuild -f -w node-pty",
     "package": "electron-vite build && electron-builder"
   },
   "dependencies": {
     "@nudge-design/mockup-core": "workspace:*",
     "@nudge-design/react": "workspace:*",
     "@nudge-design/tokens": "workspace:*",
-    "chokidar": "^4.0.1"
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "chokidar": "^4.0.1",
+    "node-pty": "^1.1.0"
   },
   "devDependencies": {
+    "@electron/rebuild": "^4.0.4",
     "@types/node": "^20.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

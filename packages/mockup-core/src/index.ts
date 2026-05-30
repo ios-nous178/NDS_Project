@@ -32,5 +32,9 @@ export * from "./tools/catalog-config.js";
 export * from "./tools/feedback/types.js";
 export * from "./tools/feedback/log.js";
 
+// 앱 이벤트 로그 IO 레이어 (데스크탑 하네스 Phase 5)
+export * from "./tools/events/types.js";
+export * from "./tools/events/log.js";
+
 // 공용 타입
 export * from "./types/usage.js";
