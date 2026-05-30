@@ -10,6 +10,7 @@ import {
   GenietConfettiIcon,
 } from "@nudge-design/icons";
 import { getBrandFixture } from "../brand-fixtures";
+import { DesktopPreview } from "../desktop-preview";
 
 const b = getBrandFixture("geniet");
 
@@ -65,24 +66,26 @@ export const GenietDesktop: Story = {
     },
   },
   render: () => (
-    <GenietAppBar
-      variant="desktop"
-      logo={{
-        src: b.logo.headerPc.src,
-        alt: "Geniet",
-        href: "/",
-        width: b.logo.headerPc.width,
-        height: b.logo.headerPc.height,
-      }}
-      pcMaxWidth={b.header.pcMaxWidth}
-      gnbItems={b.header.gnb.items}
-      activeKey="home"
-      actionButtons={actionButtons}
-      searchPlaceholder={b.header.searchBar?.placeholder}
-      searchWidth={b.header.searchBar?.width}
-      trendingKeywords={b.header.trending}
-      ctaButtons={ctaButtons}
-    />
+    <DesktopPreview>
+      <GenietAppBar
+        variant="desktop"
+        logo={{
+          src: b.logo.headerPc.src,
+          alt: "Geniet",
+          href: "/",
+          width: b.logo.headerPc.width,
+          height: b.logo.headerPc.height,
+        }}
+        pcMaxWidth={b.header.pcMaxWidth}
+        gnbItems={b.header.gnb.items}
+        activeKey="home"
+        actionButtons={actionButtons}
+        searchPlaceholder={b.header.searchBar?.placeholder}
+        searchWidth={b.header.searchBar?.width}
+        trendingKeywords={b.header.trending}
+        ctaButtons={ctaButtons}
+      />
+    </DesktopPreview>
   ),
 };
 

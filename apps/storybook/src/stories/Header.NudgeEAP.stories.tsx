@@ -2,6 +2,7 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { NudgeEAPAppBar, NudgeEAPWebHeader } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
+import { DesktopPreview } from "../desktop-preview";
 
 const b = getBrandFixture("nudge-eap");
 
@@ -26,30 +27,34 @@ export const NudgeEAPWebHeaderDesktop: Story = {
     },
   },
   render: () => (
-    <NudgeEAPWebHeader
-      maxWidth={b.header.pcMaxWidth}
-      menuItems={b.header.gnb.items}
-      activeKey="counsel"
-      showAppDownload
-      appDownloadHref="#"
-      authState="login"
-      authHref="#"
-    />
+    <DesktopPreview>
+      <NudgeEAPWebHeader
+        maxWidth={b.header.pcMaxWidth}
+        menuItems={b.header.gnb.items}
+        activeKey="counsel"
+        showAppDownload
+        appDownloadHref="#"
+        authState="login"
+        authHref="#"
+      />
+    </DesktopPreview>
   ),
 };
 
 export const NudgeEAPWebHeaderLoggedIn: Story = {
   name: "NudgeEAP/Desktop (로그인 후)",
   render: () => (
-    <NudgeEAPWebHeader
-      maxWidth={b.header.pcMaxWidth}
-      menuItems={b.header.gnb.items}
-      activeKey="my"
-      showAppDownload
-      appDownloadHref="#"
-      authState="logout"
-      authHref="#"
-    />
+    <DesktopPreview>
+      <NudgeEAPWebHeader
+        maxWidth={b.header.pcMaxWidth}
+        menuItems={b.header.gnb.items}
+        activeKey="my"
+        showAppDownload
+        appDownloadHref="#"
+        authState="logout"
+        authHref="#"
+      />
+    </DesktopPreview>
   ),
 };
 

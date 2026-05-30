@@ -6,7 +6,8 @@ import {
   HomeActiveIcon,
   ChallengeIcon,
   ChallengeActiveIcon,
-  CommentIcon,
+  CounselIcon,
+  CounselActiveIcon,
   MentalcareIcon,
   MentalcareActiveIcon,
   MypageIcon,
@@ -34,7 +35,7 @@ function nudgeEapTabIconFor(label: string, active: boolean): React.ReactNode {
     case "챌린지":
       return active ? <ChallengeActiveIcon size={24} /> : <ChallengeIcon size={24} />;
     case "상담":
-      return <CommentIcon size={24} />;
+      return active ? <CounselActiveIcon size={24} /> : <CounselIcon size={24} />;
     case "멘탈케어":
       return active ? <MentalcareActiveIcon size={24} /> : <MentalcareIcon size={24} />;
     case "내 공간":

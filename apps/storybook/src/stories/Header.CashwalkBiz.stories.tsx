@@ -2,6 +2,7 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { CashwalkBizWebHeader } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
+import { DesktopPreview } from "../desktop-preview";
 
 const b = getBrandFixture("cashwalk-biz");
 
@@ -32,20 +33,22 @@ export const CashwalkBizDesktop: Story = {
     },
   },
   render: () => (
-    <CashwalkBizWebHeader
-      variant="desktop"
-      logo={{
-        src: b.logo.headerPc.src,
-        alt: "Cashwalk for Business",
-        href: "/",
-        width: b.logo.headerPc.width,
-        height: b.logo.headerPc.height,
-      }}
-      maxWidth={b.header.pcMaxWidth}
-      menuItems={placeholderMenu}
-      activeKey="ad"
-      primaryCta={{ label: "광고 시작하기", href: "#" }}
-    />
+    <DesktopPreview width={1600}>
+      <CashwalkBizWebHeader
+        variant="desktop"
+        logo={{
+          src: b.logo.headerPc.src,
+          alt: "Cashwalk for Business",
+          href: "/",
+          width: b.logo.headerPc.width,
+          height: b.logo.headerPc.height,
+        }}
+        maxWidth={b.header.pcMaxWidth}
+        menuItems={placeholderMenu}
+        activeKey="ad"
+        primaryCta={{ label: "광고 시작하기", href: "#" }}
+      />
+    </DesktopPreview>
   ),
 };
 

@@ -13,18 +13,37 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
+const wrap: React.CSSProperties = {
+  height: 120,
+  background: "#f9f9f9",
+  display: "flex",
+  alignItems: "flex-end",
+  width: 375,
+  margin: "0 auto",
+};
+
+function TrostTabBarDemo() {
+  const tabs = b.tabBar.tabLabels.map((l, i) => ({ key: `tab-${i}`, label: l, href: "#" }));
+  const [active, setActive] = React.useState("tab-0");
+  return (
+    <div style={wrap}>
+      <TrostBottomNav
+        tabs={tabs}
+        activeTab={active}
+        position="static"
+        onTabClick={(tab, e) => {
+          e.preventDefault();
+          setActive(tab.key);
+        }}
+      />
+    </div>
+  );
+}
+
+/**
+ * 5탭. 탭을 클릭하면 해당 탭이 활성화됩니다.
+ */
 export const TrostTabBar: Story = {
-  name: "Trost/기본 (5탭)",
-  render: () => {
-    const tabs = b.tabBar.tabLabels.map((l, i) => ({
-      key: `tab-${i}`,
-      label: l,
-      href: "#",
-    }));
-    return (
-      <div style={{ height: 120, background: "#f9f9f9", display: "flex", alignItems: "flex-end" }}>
-        <TrostBottomNav tabs={tabs} activeTab="tab-0" position="static" />
-      </div>
-    );
-  },
+  name: "Trost (5탭)",
+  render: () => <TrostTabBarDemo />,
 };

@@ -54,7 +54,9 @@
       "Read(//private/tmp/**)",
       "Bash(rtk curl *)",
       "Bash(rtk ls *)",
-      "Bash(rtk grep *)"
+      "Bash(rtk grep *)",
+      "Bash(rtk git *)",
+      "Bash(rtk read *)"
     ]
   },
   "enabledMcpjsonServers": ["nudge-design-system", "apps-in-toss", "nudge-ds"]
