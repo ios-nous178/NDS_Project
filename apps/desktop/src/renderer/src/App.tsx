@@ -280,6 +280,7 @@ export function App(): React.JSX.Element {
             <AgentPanel
               projectPath={projectPath}
               mockupFile={selected}
+              active={!viewing}
               onLiveChange={setLiveSessionId}
               onHistoryChange={refreshHistory}
             />
