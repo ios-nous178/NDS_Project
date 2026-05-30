@@ -66,13 +66,29 @@ export function TranscriptView({
           display: "flex",
           alignItems: "center",
           gap: 8,
-          padding: "6px 12px",
+          height: 40,
+          boxSizing: "border-box",
+          padding: "0 12px",
           borderBottom: `1px solid ${c.border}`,
           fontSize: 12.5,
           color: c.text,
         }}
       >
         <span style={{ color: c.yellow }}>기록 보기</span>
+        <span
+          style={{
+            fontSize: 10.5,
+            color: c.textMuted,
+            background: c.bgElevated,
+            border: `1px solid ${c.border}`,
+            borderRadius: 999,
+            padding: "1px 7px",
+            whiteSpace: "nowrap",
+          }}
+          title="끝난 세션의 기록입니다. 입력은 불가하며, 대화를 이어가려면 새 세션을 시작하세요."
+        >
+          읽기 전용 · 입력 불가
+        </span>
         <span
           style={{
             color: c.textMuted,

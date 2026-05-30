@@ -8,6 +8,7 @@ import { exportMockup, type ExportResult } from "./export-runner.js";
 import { submitFeedback, type SubmitFeedbackArgs, type SubmitFeedbackResult } from "./feedback.js";
 import {
   resizeAgent,
+  runningSessionIds,
   startAgent,
   stopAgent,
   writeAgent,
@@ -15,7 +16,13 @@ import {
   type StartAgentArgs,
 } from "./agent-runner.js";
 import { logAppEvent } from "./events.js";
-import { deleteSession, readSessions, readTranscript, type ChatSession } from "./sessions.js";
+import {
+  deleteSession,
+  readSessions,
+  readTranscript,
+  reconcileStaleSessions,
+  type ChatSession,
+} from "./sessions.js";
 import type { AppEventInput } from "@nudge-design/mockup-core";
 
 // dot-폴더를 일괄 차단하지 않는다(.demo 같은 정당한 목업 위치를 노출하기 위해).
@@ -220,6 +227,8 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   ipcMain.handle(
     "session:list",
     async (_e, args: { projectPath: string }): Promise<ChatSession[]> => {
+      // 리스트를 읽기 직전, 라이브 PTY 가 없는 stale "active"(재시작/크래시 잔재)를 정리.
+      reconcileStaleSessions(args.projectPath, runningSessionIds());
       return readSessions(args.projectPath);
     },
   );

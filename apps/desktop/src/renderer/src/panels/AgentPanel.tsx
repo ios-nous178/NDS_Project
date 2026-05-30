@@ -101,6 +101,14 @@ export function AgentPanel({
     if (!projectPath || !containerRef.current) return;
     setError("");
 
+    // 이전 라이브 세션이 남아있으면 새 세션으로 덮어쓰기 전에 PTY 를 먼저 중지.
+    // 안 그러면 main 의 running Map 에서 도달 불가능한 orphan PTY 로 떠돈다.
+    if (sessionRef.current) {
+      void window.harness.stopAgent(sessionRef.current);
+      sessionRef.current = null;
+      liveCb.current?.(null);
+    }
+
     termRef.current?.dispose();
     const term = new Terminal({
       fontSize: 12,
@@ -160,7 +168,9 @@ export function AgentPanel({
           display: "flex",
           alignItems: "center",
           gap: 8,
-          padding: "6px 12px",
+          height: 40,
+          boxSizing: "border-box",
+          padding: "0 12px",
           borderBottom: `1px solid ${c.border}`,
           fontSize: 13,
         }}
