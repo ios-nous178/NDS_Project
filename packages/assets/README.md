@@ -77,5 +77,40 @@ src/
 │   └── runmile/             (로고 미준비 — 매니페스트에 empty)
 ├── brand-logo-manifest.ts   ← BRAND_LOGOS, getBrandLogo, 강타입
 ├── brand-logo-defaults.ts   ← base64 data URI (html/react 의 1:1 복제 통합)
+├── psych-tests/ menu-app/ menu-web/ circle-icons/   ┐
+├── consult/ gift/ 3d/ rank/ eap-profiles/           ┘ ← NudgeEAP "img" 자산 58종
+├── nudge-img-metadata.ts    ← NUDGE_IMG_METADATA, getNudgeImg, getNudgeImgCategory
 └── index.ts
 ```
+
+## NudgeEAP img 자산
+
+NudgeEAP Dev Figma (`mvecozaRQoGRePffskRgmh`, section 20:1699 "img") 의 화면용
+이미지 58종 · 8 카테고리. 로고(IMG/logo)는 제외 (별도 가이드).
+
+```ts
+import { NUDGE_IMG_METADATA, getNudgeImg, getNudgeImgCategory } from "@nudge-design/assets/nudge-img";
+
+const medal = getNudgeImg("rank", "rank-01");
+// → { category: "rank", id: "rank-01", filename: "rank/rank-01.png", ... }
+<img src={`/img/${medal.filename}`} alt="1위" />
+
+getNudgeImgCategory("psych-tests"); // 심리검사 아이콘 12종
+```
+
+| 카테고리       | 수  | 비고                         |
+| -------------- | --- | ---------------------------- |
+| `psych-tests`  | 12  | 심리검사 진입 아이콘         |
+| `menu-app`     | 9   | 앱 메뉴 진입점               |
+| `menu-web`     | 8   | 웹 메뉴 (default/selected)   |
+| `circle-icons` | 5   | 원형 뱃지 (blue/white)       |
+| `consult`      | 3   | 상담탭 아이콘                |
+| `gift`         | 5   | 기프트 카테고리              |
+| `3d`           | 2   | 3D 일러스트 (워크랭킹/쇼핑)  |
+| `rank`         | 3   | 랭킹 메달 1·2·3위            |
+| `eap-profiles` | 11  | user/client/counselor 프로필 |
+
+> **해상도**: 현재 **1x PNG** (캔버스 native px — 대부분 64×64, profiles 60×60,
+> rank 40×40, 3d 98×72). 이 자산들은 CSS 사각형·마스크·회전·라이브 텍스트로
+> 합성돼 단일 래스터 export 가 불가 → Figma 렌더 flatten 으로 확보했습니다.
+> 고밀도(2x/3x)는 Figma REST images export(`scale=2|3`)로 후속 교체 예정.
