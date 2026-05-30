@@ -121,7 +121,9 @@ try {
   const hasDsStyleImport =
     typeof imports?.code === "string" &&
     (imports.code.includes("@nudge-design/react/styles.css") ||
-      imports.code.includes("@nudge-design/html/styles.css"));
+      imports.code.includes("@nudge-design/html/styles.css") ||
+      imports.code.includes("nudge-ds.runtime.js") ||
+      imports.code.includes("/standalone/"));
   if (!hasDsStyleImport) {
     throw new Error(
       `get_setup({step:'imports'}) returned unexpected result: ${JSON.stringify(imports)}`,

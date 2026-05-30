@@ -18,6 +18,7 @@ import path from "node:path";
 import * as cheerio from "cheerio";
 import { getAugmentedPath, getToolProcessEnv } from "./process-env.js";
 import { loadStandaloneAssets } from "./standalone-assets.js";
+import { inlineDsAssetReferences } from "./asset-inliner.js";
 import {
   countHtmlUsage,
   reportHtmlMockupUsage,
@@ -214,12 +215,16 @@ export async function buildSinglefileHtml(
   let installedSinglefile = false;
   let routerWarning: string | undefined;
   let buildLogTail: string | undefined;
+  let assetsInlined = 0;
+  let assetsMissing: string[] = [];
 
   if (intent === "html") {
     // ── 무번들러 경로: prebuilt DS runtime/CSS 를 사용자 index.html 에 inline → 단일 파일.
     //    bare import / vite 불필요. 순수 cheerio 문자열 연산.
     const inlined = buildHtmlSinglefileNoBundler(cwd, args.brand, outputPath);
     if (!inlined.ok) return { ...fail(inlined.error ?? "html inline build failed"), intent };
+    assetsInlined = inlined.assetsInlined ?? 0;
+    assetsMissing = inlined.assetsMissing ?? [];
   } else {
     // ── react 경로: 기존 vite single-file 빌드. JSX 컴파일이 필요해 번들러 유지. ──
     let pkg: Record<string, unknown>;
@@ -357,6 +362,10 @@ export async function buildSinglefileHtml(
   if (configPatched) annotations.push(`vite.config patched`);
   if (dsUsageSummary) annotations.push(dsUsageSummary);
   if (installedSinglefile) annotations.push(`installed vite-plugin-singlefile`);
+  if (assetsInlined > 0) annotations.push(`assets inlined ${assetsInlined}`);
+  if (assetsMissing.length > 0) {
+    annotations.push(`[!] assets not found (${assetsMissing.length}): ${assetsMissing.join(", ")}`);
+  }
   if (routerWarning) annotations.push(`[!] ${routerWarning}`);
   if (validation) {
     annotations.push(`validate ${validation.ok ? "ok" : `${validation.violations.length}건 위반`}`);
@@ -433,7 +442,13 @@ function buildHtmlSinglefileNoBundler(
   cwd: string,
   argBrand: string | undefined,
   outputPath: string,
-): { ok: boolean; error?: string; brand?: string } {
+): {
+  ok: boolean;
+  error?: string;
+  brand?: string;
+  assetsInlined?: number;
+  assetsMissing?: string[];
+} {
   const sourcePath = path.join(cwd, "index.html");
   if (!fs.existsSync(sourcePath)) {
     return {
@@ -483,14 +498,23 @@ function buildHtmlSinglefileNoBundler(
   if (body.length === 0) $("html").append("<body></body>");
   $("body").append(`<script>\n${safeJs}\n</script>`);
 
-  // 4) dist/index.html 쓰기.
+  // 4) DS 화면 자산(@nudge-design/assets/files/*) 참조를 실제 쓴 것만 base64 로 inline
+  //    → 외부 호스팅/S3 없이 단일 HTML 유지. 로고는 runtime 에 이미 base64 라 대상 아님.
+  const assetInline = inlineDsAssetReferences($);
+
+  // 5) dist/index.html 쓰기.
   try {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, $.html(), "utf-8");
   } catch (err) {
     return { ok: false, error: `Failed to write ${outputPath}: ${(err as Error).message}` };
   }
-  return { ok: true, brand };
+  return {
+    ok: true,
+    brand,
+    assetsInlined: assetInline.inlined.length,
+    assetsMissing: assetInline.missing,
+  };
 }
 
 /**
