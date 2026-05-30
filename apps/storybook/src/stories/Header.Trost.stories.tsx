@@ -18,7 +18,7 @@ const b = getBrandFixture("trost");
 // 브랜드 로고는 @nudge-design/assets SSOT 를 /brand-logos/* 로 정적 마운트해 서빙한다
 // (.storybook/main.ts staticDirs). 모듈 import 가 아니라 마운트 URL 로 참조.
 const trostLogo = `${import.meta.env.BASE_URL}brand-logos/trost-logo.svg`;
-const nudgeEapSymbol = `${import.meta.env.BASE_URL}brand-logos/nudge-eap/nudge-eap-symbol.png`;
+const nudgeEapSymbol = `${import.meta.env.BASE_URL}brand-logos/nudge-eap/nudge-eap-symbol.svg`;
 
 const meta: Meta = {
   title: "Components/Header",
