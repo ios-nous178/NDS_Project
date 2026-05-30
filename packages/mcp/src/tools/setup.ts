@@ -468,7 +468,7 @@ export function getMainTsxImports(args: { brand?: string }) {
  * @nudge-design/html 은 bare import (`@nudge-design/tokens` 등) 를 사용하므로 browser 단독으로
  * 못 돌리고, Vite 처럼 ESM resolver 가 있는 dev server / bundler 가 필요하다.
  * Vite vanilla-ts 템플릿을 권장한다 — React 의존성 없이 가볍고,
- * dev_server / check_preview / validate_html_mockup 흐름이 그대로 동작한다.
+ * dev_server / validate_html_mockup 흐름이 그대로 동작한다.
  *
  * 산출물: root index.html 작성 → build_singlefile_html → dist/index.html (단일 파일).
  * build_singlefile_html 은 워크스페이스 intent 를 자동 감지해 React/.tsx 와 HTML/.html 둘 다 처리한다 —
@@ -767,14 +767,10 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 
   steps.push({
     step: 10,
-    title: "동작 확인 (dev 서버 + check_preview)",
-    commands: [
-      "npm install --save-dev playwright",
-      "npx playwright install chromium",
-      "npm run dev",
-    ],
+    title: "동작 확인 (dev 서버)",
+    commands: ["npm run dev"],
     note:
-      "MCP 의 dev_server({ action: 'start' }) / check_preview 가 vanilla 프로젝트도 동일하게 동작. " +
+      "MCP 의 dev_server({ action: 'start' }) 로 띄운 미리보기 URL 을 브라우저에서 직접 열어 " +
       "런타임 에러 / 빈 화면 / unknown custom-element 경고 여부 확인.",
   });
 
@@ -840,7 +836,6 @@ function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: strin
       nextTools: [
         "get_guide({ topic: 'admin-cms' })",
         "dev_server({ action: 'start' })",
-        "check_preview({})",
         "build_singlefile_html({})",
       ],
       _hint:
@@ -1047,16 +1042,9 @@ const theme = {
 
   steps.push({
     step: 6,
-    title: "(선택) Playwright 설치 — 미리보기 자동 검증",
-    commands: ["npm install --save-dev playwright", "npx playwright install chromium"],
-    note: "MCP의 dev_server({ action: 'start' }) / check_preview 가 어드민 화면도 똑같이 검증할 수 있습니다.",
-  });
-
-  steps.push({
-    step: 7,
     title: "동작 확인",
     commands: ["npm run dev"],
-    note: "기본 5173 포트. dev_server({ action: 'start' }) / check_preview 사용 가능.",
+    note: "기본 5173 포트. dev_server({ action: 'start' }) 로 미리보기 URL 을 띄워 브라우저에서 확인.",
   });
 
   return {
@@ -1183,12 +1171,8 @@ export function getSetupInstructions(args: {
   steps.push({
     step: 9,
     title: "동작 확인",
-    commands: [
-      "npm install --save-dev playwright",
-      "npx playwright install chromium",
-      "npm run dev",
-    ],
-    note: "MCP의 dev_server({ action: 'start' }) / check_preview 가 dev URL을 열어 런타임 에러와 빈 화면 여부를 확인할 수 있습니다. 이후 prds/*.md를 작성하고 Claude에게 목업 생성을 요청하세요.",
+    commands: ["npm run dev"],
+    note: "MCP의 dev_server({ action: 'start' }) 로 띄운 dev URL을 브라우저에서 직접 열어 런타임 에러와 빈 화면 여부를 확인하세요. 이후 prds/*.md를 작성하고 Claude에게 목업 생성을 요청하세요.",
   });
 
   return {

@@ -814,7 +814,7 @@ export function validateMockup(
   const _nextSuggestion =
     violations.length === 0
       ? "Self-Check 1차 통과. **반드시 한 번 더 validate_mockup 을 호출해 2차 확인** (총 2회 self-check 가 워크스페이스 룰). " +
-        "2차도 통과면: (1) dev_server({ action: 'start' }) → check_preview 로 런타임 에러 0건 확인. " +
+        "2차도 통과면: (1) dev_server({ action: 'start' }) → dev URL 을 브라우저에서 열어 런타임 에러 0건 확인. " +
         "(2) report_mockup_usage 호출. " +
         "(3) **반드시 build_singlefile_html({}) 호출** — 이 워크스페이스의 표준 산출물 형식은 단일 HTML 파일입니다. 사용자에게 '만들까요' 라고 묻지 말고 그냥 실행하세요 (명시적 거부 시에만 생략). 손으로 .html 작성·vite build 직접 실행·다른 번들러 사용 금지 — nds-* / onClick 손실됨. " +
         "(4) dev_server({ action: 'stop' })."

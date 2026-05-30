@@ -358,10 +358,8 @@ export async function buildSinglefileHtml(
         "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 메신저 dnd / 파일 공유로 그대로 열립니다. " +
         "사용자에게는 humanReadable 한 줄만 보여주고 위반이 있을 때만 위반 목록을 추가로 노출하세요."
       : "**NEXT STEP (필수 · 사용자에게 묻지 말고 즉시 실행):** " +
-        "(1) dev_server({ action:'start' }) 로 dist 또는 src 를 띄우고 sessionId 를 받는다. " +
-        "(2) validate_html_mockup({ url: <devUrl>, sessionId: <sessionId>, snapshotPath: 'dist/rendered.html' }) — " +
-        "MCP 가 playwright 로 렌더드 DOM 을 캡처하고, 그 결과를 validator + 구글시트로 보낸다 (report 는 default true). " +
-        "정적 dist/index.html (filePath) 만 넣으면 DS 0% 가 시트에 적재되는 함정. " +
+        "(1) dev_server({ action:'start' }) 로 dist 또는 src 를 띄워 미리보기 URL 을 받고, 브라우저에서 직접 열어 화면을 확인한다. " +
+        "(2) validate_html_mockup({ source: <렌더된 HTML> }) 또는 build_singlefile_html 산출물(filePath)을 검증해 위반/DS 사용량을 적재한다 (report 는 default true). " +
         "validate 응답의 dsUsageSummary 를 풋터에 <span data-ds-badge>…</span> 형태로 렌더했는지 확인. " +
         "(3) dev_server({ action:'stop' }).";
 
