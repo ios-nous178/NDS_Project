@@ -13,10 +13,13 @@ export function PreviewPanel({
   relPath,
   bust,
   viewport,
+  live = false,
 }: {
   relPath: string | null;
   bust: number;
   viewport: Viewport;
+  /** 터미널에서 목업 생성 중이면 true — 빈 상태 안내 문구 변경 + "생성 중" 배지 표시. */
+  live?: boolean;
 }): React.JSX.Element {
   if (!relPath)
     return (
@@ -29,11 +32,49 @@ export function PreviewPanel({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          textAlign: "center",
+          lineHeight: 1.6,
         }}
       >
-        목업을 선택하면 미리보기가 표시됩니다.
+        {live
+          ? "목업 생성 중 — 결과물이 만들어지면 실시간으로 표시됩니다."
+          : "목업을 선택하면 미리보기가 표시됩니다."}
       </div>
     );
+
+  const liveBadge = live ? (
+    <div
+      style={{
+        position: "absolute",
+        top: 10,
+        right: 10,
+        zIndex: 1,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "4px 10px",
+        borderRadius: 999,
+        fontSize: 11,
+        fontWeight: 600,
+        color: "#fff",
+        background: "rgba(22,163,74,0.92)",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.25)",
+        pointerEvents: "none",
+      }}
+    >
+      <style>{"@keyframes ndsLivePulse{0%,100%{opacity:1}50%{opacity:0.25}}"}</style>
+      <span
+        style={{
+          width: 7,
+          height: 7,
+          borderRadius: "50%",
+          background: "#fff",
+          animation: "ndsLivePulse 1.2s ease-in-out infinite",
+        }}
+      />
+      생성 중
+    </div>
+  ) : null;
 
   const src = window.harness.previewUrl(relPath, bust);
   const frame = (
@@ -47,13 +88,19 @@ export function PreviewPanel({
   );
 
   if (viewport === "web") {
-    return <div style={{ width: "100%", height: "100%", background: "#fff" }}>{frame}</div>;
+    return (
+      <div style={{ position: "relative", width: "100%", height: "100%", background: "#fff" }}>
+        {liveBadge}
+        {frame}
+      </div>
+    );
   }
 
   // 앱: 가운데 정렬된 폰 프레임.
   return (
     <div
       style={{
+        position: "relative",
         width: "100%",
         height: "100%",
         display: "flex",
@@ -65,6 +112,7 @@ export function PreviewPanel({
         overflow: "auto",
       }}
     >
+      {liveBadge}
       <div
         style={{
           width: APP_WIDTH,
