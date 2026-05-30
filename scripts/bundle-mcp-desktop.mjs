@@ -111,6 +111,18 @@ if (!fs.existsSync(assetsFilesSrc)) {
   process.exit(1);
 }
 
+// find_icon({ name }) 이 lazy 로드하는 아이콘 vanilla 정의(viewBox+body). packaged 앱은
+// node_modules 가 없으니 sidecar 로 동봉 → server.mjs(dist/tools) 기준 ../icons/vanilla.js
+// 를 icon-svg.ts 의 resolver 가 찾는다. (mcp-config.ts 가 env 로도 명시.)
+const iconsVanillaSrc = path.join(ROOT, "packages/icons/dist/vanilla.js");
+if (!fs.existsSync(iconsVanillaSrc)) {
+  console.error(
+    `[bundle-mcp-desktop] ${path.relative(ROOT, iconsVanillaSrc)} 없음 — ` +
+      `'pnpm build --filter @nudge-design/icons' 로 먼저 생성하세요.`,
+  );
+  process.exit(1);
+}
+
 // 2) 기존 산출물 비우기
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, "dist/tools"), { recursive: true });
@@ -140,6 +152,9 @@ copyDir(path.join(MCP, "references"), path.join(OUT, "references"));
 copyDir(standaloneSrc, path.join(OUT, "dist/standalone"));
 // DS 화면 이미지 자산 → dist/assets (server.mjs 의 __dirname/../assets 으로 resolve).
 copyDir(assetsFilesSrc, path.join(OUT, "dist/assets"));
+// 아이콘 vanilla 정의 → dist/icons/vanilla.js (server.mjs 의 __dirname/../icons/vanilla.js).
+fs.mkdirSync(path.join(OUT, "dist/icons"), { recursive: true });
+fs.copyFileSync(iconsVanillaSrc, path.join(OUT, "dist/icons/vanilla.js"));
 
 console.log(`\n✓ MCP 데스크탑 번들 생성 (${sizeMB(OUT)} MB):`);
 console.log(`  ${path.relative(ROOT, OUT)}`);

@@ -45,6 +45,7 @@ import { buildSinglefileHtml } from "./tools/build-html.js";
 import { getGuide } from "./tools/guides.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
+import { getIconSvg } from "./icon-svg.js";
 import {
   noteReportSent,
   noteReportSuppressed,
@@ -307,13 +308,57 @@ function decorateIcon(name: string) {
 
 /**
  * find_icon 통합 라우터.
+ *  - { name } → 그 아이콘의 inline SVG (붙여 넣을 수 있는 완성형) + 메타
  *  - 인자 없음 → 카테고리별 count summary
- *  - { query } → top 10 점수 매치
+ *  - { query } → top 10 점수 매치 (이름만 — SVG 가 필요하면 find_icon({ name }) 재호출)
  *  - { category } → 해당 카테고리 아이콘 목록
  */
-function findIcon(args: { query?: string; category?: string; limit?: number }) {
+async function findIcon(args: {
+  name?: string;
+  query?: string;
+  category?: string;
+  limit?: number;
+  size?: number;
+}) {
   const categoryIndex = getIconCategoryIndex();
   const limit = clampLimit(args.limit, 20, 100);
+  // { name } 정확 매치 → inline SVG 반환. 무번들러(데스크톱/외부 html)에서 npm 설치 없이
+  // index.html 에 바로 붙여 넣을 수 있게 한다.
+  if (args.name) {
+    if (!iconSet.has(args.name)) {
+      const suggestions = manifest.icons
+        .map((name) => ({ name, score: scoreMatch(args.name as string, name) }))
+        .filter((c) => c.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map((c) => c.name);
+      return {
+        error: `Icon '${args.name}' not found. find_icon({ query: '${args.name}' }) 로 검색하거나 아래 후보 확인.`,
+        suggestions,
+      };
+    }
+    try {
+      const svg = await getIconSvg(args.name, args.size);
+      if (!svg) {
+        return {
+          ...decorateIcon(args.name),
+          error: `'${args.name}' 의 SVG 정의를 찾지 못했습니다(메타만 등록). 인라인 SVG 를 직접 작성하세요.`,
+        };
+      }
+      return {
+        ...decorateIcon(args.name),
+        ...svg,
+        _hint:
+          "svg 를 그대로 index.html 의 <nds-icon-button> 등 안에 붙여 넣으세요(npm 설치 불필요). " +
+          "색은 부모의 color/currentColor 를 상속합니다.",
+      };
+    } catch (err) {
+      return {
+        ...decorateIcon(args.name),
+        error: `아이콘 SVG 로드 실패: ${(err as Error).message}`,
+      };
+    }
+  }
   if (args.query) {
     return manifest.icons
       .map((name) => ({ ...decorateIcon(name), score: scoreMatch(args.query as string, name) }))
@@ -568,10 +613,12 @@ const toolHandlers = {
       "find_component",
       findComponent(args as { name?: string; query?: string; limit?: number; verbose?: boolean }),
     ),
-  find_icon: (args: ToolArgs) =>
+  find_icon: async (args: ToolArgs) =>
     withVisualReferencePrompt(
       "find_icon",
-      findIcon(args as { query?: string; category?: string; limit?: number }),
+      await findIcon(
+        args as { name?: string; query?: string; category?: string; limit?: number; size?: number },
+      ),
     ),
   find_token: (args: ToolArgs) =>
     withVisualReferencePrompt("find_token", findToken(args as { group?: string; query?: string })),

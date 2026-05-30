@@ -86,6 +86,9 @@ export function ensureBundledMcpConfig(): string | null {
     // DS 화면 이미지 자산(asset-inliner 가 목업 참조분만 base64 inline). 동일 패턴 →
     // ../assets = resources/mcp/dist/assets (bundle-mcp-desktop 이 dist/files 를 복사).
     env.NUDGE_DS_ASSETS_DIR = join(dirname(resolved.entry), "..", "assets");
+    // find_icon({name}) 이 lazy 로드하는 아이콘 vanilla 정의(viewBox+body). 동일 패턴 →
+    // ../icons/vanilla.js (bundle-mcp-desktop 이 packages/icons/dist/vanilla.js 를 복사).
+    env.NUDGE_DS_ICONS_VANILLA = join(dirname(resolved.entry), "..", "icons", "vanilla.js");
   }
 
   const config = {
