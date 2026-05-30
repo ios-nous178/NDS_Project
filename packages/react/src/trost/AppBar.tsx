@@ -6,6 +6,7 @@ import {
   radius,
   spacing,
   transition,
+  trostCobalt,
   typeScale,
   zIndex,
 } from "@nudge-design/tokens";
@@ -17,7 +18,13 @@ import type {
 import { Button } from "../Button";
 import { TrendingKeywords } from "../TrendingKeywords";
 import type { TrendingKeywordItem } from "../TrendingKeywords";
-import { TrostEnergyCoinIcon } from "@nudge-design/icons";
+import {
+  TrostEnergyCoinIcon,
+  ChevronLeftIcon,
+  ArrowBackIcon,
+  SearchIcon,
+  SettingIcon,
+} from "@nudge-design/icons";
 import { TROST_LOGO_DATA_URI, TROST_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults";
 
 /* ─── Constants (Trost 웹사이트 실측 스펙 + 모바일 홈 헤더 2단 가이드) ─── */
@@ -40,6 +47,16 @@ const MO_RIGHT = `${ROOT}__mo-right`;
 const MO_POINT_CHIP = `${ROOT}__point-chip`;
 const MO_BELL_BTN = `${ROOT}__bell-btn`;
 const MO_SEARCH = `${ROOT}__mo-search`;
+
+/* webview(앱 인-웹뷰 헤더) 전용 */
+const WV = `${ROOT}__wv`;
+const WV_BACK = `${ROOT}__wv-back`;
+const WV_LOGO = `${ROOT}__wv-logo`;
+const WV_TITLE = `${ROOT}__wv-title`;
+const WV_RIGHT = `${ROOT}__wv-right`;
+const WV_ACTION = `${ROOT}__wv-action`;
+const WV_TEXT = `${ROOT}__wv-text`;
+const WV_DIVIDER = `${ROOT}__wv-divider`;
 
 /* ─── Styles (서브디렉토리 — extract-styles 스캔 범위 밖이라 <style> 로 inject) ─── */
 
@@ -165,6 +182,118 @@ const trostAppBarStyles = `
     display: flex;
     cursor: pointer;
   }
+
+  /* ── webview(앱 인-웹뷰) 헤더 ── */
+  :where(.${WV}) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: var(--nds-trost-app-bar-webview-height, 44px);
+    padding: 0 ${spacing[16]}px;
+    background: ${cv.surface.default};
+    border-bottom: 1px solid ${cv.borderRole.subtle};
+    box-sizing: border-box;
+  }
+
+  :where(.${WV_BACK}) {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-right: ${spacing[8]}px;
+    color: ${cv.iconRole.strong};
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  :where(.${WV_LOGO}) {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  :where(.${WV_TITLE}) {
+    margin: 0;
+    color: ${cv.textRole.strong};
+    font-weight: ${fontWeight.bold};
+    font-family: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* main: 좌측 정렬 20/28 */
+  :where(.${WV}[data-level="main"]) .${WV_TITLE} {
+    flex: 1;
+    min-width: 0;
+    font-size: ${typeScale.headline4.fontSize}px;
+    line-height: ${typeScale.headline4.lineHeight}px;
+  }
+
+  /* sub: 절대 중앙 16/24 */
+  :where(.${WV}[data-level="sub"]) .${WV_TITLE} {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 56%;
+    text-align: center;
+    font-size: ${typeScale.body1.fontSize}px;
+    line-height: ${typeScale.body1.lineHeight}px;
+  }
+
+  :where(.${WV_RIGHT}) {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: ${spacing[16]}px;
+    flex-shrink: 0;
+  }
+
+  :where(.${WV_ACTION}) {
+    all: unset;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: ${cv.iconRole.strong};
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  :where(.${WV_ACTION}[data-has-badge="true"])::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${cv.fill.brand};
+    box-shadow: 0 0 0 2px ${cv.surface.default};
+  }
+
+  :where(.${WV_TEXT}) {
+    all: unset;
+    color: ${trostCobalt[500]};
+    font-weight: ${fontWeight.bold};
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
+    cursor: pointer;
+    font-family: inherit;
+    flex-shrink: 0;
+  }
+
+  :where(.${WV_DIVIDER}) {
+    width: 1px;
+    height: 14px;
+    background: ${cv.borderRole.normal};
+    flex-shrink: 0;
+  }
 `;
 
 /* ─── Types ─── */
@@ -217,6 +346,18 @@ export interface TrostAppBarProps {
   trendingTimestamp?: string;
   webviewTitle?: string;
   onBack?: () => void;
+  /* ─── Webview(앱 인-웹뷰) 헤더 전용 ─── */
+  /** 앱 종류 — back 아이콘 분기. 'trost'=쉐브론(<), 'cashwalk-trost'=화살표(←). 기본 'trost'. */
+  app?: "trost" | "cashwalk-trost";
+  /** 웹뷰 헤더 레벨. 'main'=좌측 타이틀 20px·높이 56·back 없음, 'sub'=중앙 타이틀 16px·높이 44·back. 기본 'sub'. */
+  webviewLevel?: "main" | "sub";
+  /** 우측 검색 액션 — 지정 시 검색 아이콘 노출(심리상담/멘탈케어 메인). */
+  onSearchClick?: () => void;
+  /** 우측 설정 액션 — 지정 시 설정(기어) 아이콘 노출. */
+  onSettingClick?: () => void;
+  /** 우측 텍스트 액션 (sub/text 케이스, cobalt 컬러). */
+  webviewActionText?: string;
+  onWebviewActionText?: () => void;
   /* ─── Mobile 전용 (2단 홈 헤더) ─── */
   /** Row1 우측 포인트 chip — 미지정 시 미노출. */
   pointChip?: TrostAppBarPointChip;
@@ -307,6 +448,12 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
     trendingTimestamp = "09:00 기준",
     webviewTitle,
     onBack,
+    app,
+    webviewLevel,
+    onSearchClick,
+    onSettingClick,
+    webviewActionText,
+    onWebviewActionText,
     pointChip,
     showNotificationBell = true,
     hasNotification,
@@ -327,15 +474,88 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
       : { src: TROST_LOGO_DATA_URI, alt: "Trost", width: 90, height: 36 });
 
   if (variant === "webview") {
+    /* 트로스트는 앱이 2종 → 웹뷰 헤더도 케이스가 다양 (Figma 5:1169 App bar).
+     *   level='main' (h56): 좌측 타이틀 20px + [설정|검색] + 알림 / 홈은 로고+포인트+알림
+     *   level='sub'  (h44): back + 중앙 타이틀 16px + [설정/검색/텍스트/알림] 조합
+     *   app='trost'→쉐브론 back, app='cashwalk-trost'→화살표 back ((캐시워크)트로스트). */
+    const level = webviewLevel ?? "sub";
+    const resolvedHeight = mobileHeight ?? (level === "main" ? 56 : 44);
+    const BackIcon = app === "cashwalk-trost" ? ArrowBackIcon : ChevronLeftIcon;
+    const isHome = level === "main" && pointChip != null && webviewTitle == null;
+    const hasRight =
+      isHome ||
+      Boolean(onSearchClick) ||
+      Boolean(onSettingClick) ||
+      webviewActionText != null ||
+      Boolean(onNotificationClick);
+
     return (
-      <Header
+      <header
         ref={ref}
-        variant="webview"
-        position="static"
-        title={webviewTitle}
-        leftSlot={<Header.BackButton onClick={onBack} />}
-        style={{ "--nds-header-height": `${mobileHeight ?? 56}px` } as React.CSSProperties}
-      />
+        data-slot="root"
+        className={`${ROOT} ${WV}`}
+        data-level={level}
+        data-app={app ?? "trost"}
+        style={
+          { "--nds-trost-app-bar-webview-height": `${resolvedHeight}px` } as React.CSSProperties
+        }
+      >
+        <style>{trostAppBarStyles}</style>
+        {level === "sub" && (
+          <button type="button" className={WV_BACK} aria-label="뒤로" onClick={onBack}>
+            <BackIcon size={24} />
+          </button>
+        )}
+        {isHome ? (
+          <a className={WV_LOGO} href={logo.href ?? "/"}>
+            <img
+              src={logo.src}
+              alt={logo.alt ?? "Trost"}
+              height={logo.height}
+              style={{ display: "block", height: logo.height, width: "auto" }}
+            />
+          </a>
+        ) : (
+          webviewTitle != null && <h1 className={WV_TITLE}>{webviewTitle}</h1>
+        )}
+        {hasRight && (
+          <div className={WV_RIGHT}>
+            {isHome && pointChip && <PointChip chip={pointChip} />}
+            {isHome && pointChip && onNotificationClick && <span className={WV_DIVIDER} />}
+            {onSearchClick && (
+              <button type="button" className={WV_ACTION} aria-label="검색" onClick={onSearchClick}>
+                <SearchIcon size={24} />
+              </button>
+            )}
+            {onSettingClick && (
+              <button
+                type="button"
+                className={WV_ACTION}
+                aria-label="설정"
+                onClick={onSettingClick}
+              >
+                <SettingIcon size={24} />
+              </button>
+            )}
+            {webviewActionText != null && (
+              <button type="button" className={WV_TEXT} onClick={onWebviewActionText}>
+                {webviewActionText}
+              </button>
+            )}
+            {onNotificationClick && (
+              <button
+                type="button"
+                className={WV_ACTION}
+                aria-label="알림"
+                data-has-badge={hasNotification ? "true" : undefined}
+                onClick={onNotificationClick}
+              >
+                {notificationIcon ?? <DefaultBellIcon />}
+              </button>
+            )}
+          </div>
+        )}
+      </header>
     );
   }
 
