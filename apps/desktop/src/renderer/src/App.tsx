@@ -5,10 +5,11 @@ import { ValidationPanel } from "./panels/ValidationPanel.js";
 import { PreviewPanel, type Viewport } from "./panels/PreviewPanel.js";
 import { FeedbackPanel } from "./panels/FeedbackPanel.js";
 import { AgentPanel } from "./panels/AgentPanel.js";
-import { SessionHistoryPanel } from "./panels/SessionHistoryPanel.js";
+import { SessionHistoryPanel, sessionTitle } from "./panels/SessionHistoryPanel.js";
 import { TranscriptView } from "./panels/TranscriptView.js";
 import { ExportButton } from "./panels/ExportButton.js";
 import { IntakeModal } from "./panels/IntakeModal.js";
+import { HelpModal } from "./panels/HelpModal.js";
 import { Dropdown } from "./ui/Dropdown.js";
 import { Logo } from "./ui/Logo.js";
 import { Resizer } from "./ui/Resizer.js";
@@ -72,6 +73,8 @@ export function App(): React.JSX.Element {
   const [viewing, setViewing] = useState<ChatSession | null>(null);
   // 인테이크
   const [intakeOpen, setIntakeOpen] = useState(false);
+  // 헬프 센터(상단 ? 버튼)
+  const [helpOpen, setHelpOpen] = useState(false);
   const [attachSessionId, setAttachSessionId] = useState<string | null>(null);
   /** 현재 컨텍스트의 intent — admin-cms 면 HTML 미리보기/내보내기 비대상(채팅 전용). */
   const [activeIntent, setActiveIntent] = useState<"html" | "admin-cms">("html");
@@ -133,7 +136,11 @@ export function App(): React.JSX.Element {
   const liveRef = useRef<string | null>(null);
   const slugRef = useRef<string | null>(null);
   const intentRef = useRef<"html" | "admin-cms">("html");
+  // autoFollow 는 와처 콜백(고정 클로저)에서 ref 로 읽지만, "생성 중" 뱃지가 미리보기
+  // 상태를 따라가야 하므로 state 로도 들고 매 렌더 ref 에 미러링한다.
+  const [autoFollow, setAutoFollow] = useState(true);
   const autoFollowRef = useRef(true);
+  autoFollowRef.current = autoFollow;
   liveRef.current = liveSessionId;
   slugRef.current = activeSlug;
   intentRef.current = activeIntent;
@@ -195,7 +202,7 @@ export function App(): React.JSX.Element {
     (rel: string) => {
       if (!projectPath || !rel) return;
       // 사용자가 직접 고른 목업이 있으면 라이브 자동추적 해제.
-      autoFollowRef.current = false;
+      setAutoFollow(false);
       setSelected(rel);
       selectedRef.current = rel;
       setPreviewRel(rel);
@@ -259,6 +266,9 @@ export function App(): React.JSX.Element {
   }, [projectPath, selected, activeSlug]);
 
   const isAdminCms = activeIntent === "admin-cms";
+  // "생성 중" 뱃지 = 지금 미리보기에 뜬 목업이 라이브 출력을 실제로 따라가는 중일 때만.
+  // (과거 세션 보는 중이거나 사용자가 특정 목업을 직접 고르면 자동추적이 꺼져 뱃지도 꺼진다.)
+  const previewLive = liveSessionId !== null && autoFollow && !viewing;
 
   return (
     <div
@@ -380,6 +390,26 @@ export function App(): React.JSX.Element {
               {projectPath}
             </span>
           )}
+          <button
+            onClick={() => setHelpOpen(true)}
+            title="도움말 · 문의"
+            aria-label="도움말"
+            style={{
+              ...ghostBtn,
+              ...noDrag,
+              width: 28,
+              height: 28,
+              padding: 0,
+              borderRadius: 999,
+              fontSize: 14,
+              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            ?
+          </button>
         </div>
       </header>
 
@@ -411,8 +441,19 @@ export function App(): React.JSX.Element {
             liveSessionId={liveSessionId}
             selectedSessionId={viewing?.sessionId ?? null}
             // 라이브 세션을 누르면 read-only 트랜스크립트가 아니라 라이브 채팅으로 복귀
-            // (viewing=null → AgentPanel active 로 포커스/입력 복구). 그 외는 기록 보기.
-            onSelect={(s) => setViewing(s.sessionId === liveSessionId ? null : s)}
+            // (viewing=null → AgentPanel active 로 포커스/입력 복구). 그 외는 기록 보기 +
+            // 연관 목업이 있으면(HTML 타겟) 우측 미리보기에 즉시 띄운다.
+            onSelect={(s) => {
+              const live = s.sessionId === liveSessionId;
+              setViewing(live ? null : s);
+              if (!live && s.mockupFile && s.intent !== "admin-cms") {
+                setAutoFollow(false); // 과거 세션을 명시적으로 봄 → 라이브 자동추적 해제
+                setActiveIntent("html");
+                setPreviewRel(s.mockupFile);
+                setTab("preview");
+                setBust((b) => b + 1);
+              }
+            }}
             onDeleted={(sessionId) => {
               setViewing((v) => (v?.sessionId === sessionId ? null : v));
               refreshHistory();
@@ -451,7 +492,7 @@ export function App(): React.JSX.Element {
               <TranscriptView
                 projectPath={projectPath}
                 sessionId={viewing.sessionId}
-                label={viewing.title}
+                label={sessionTitle(viewing)}
                 onClose={() => setViewing(null)}
               />
             </div>
@@ -542,7 +583,7 @@ export function App(): React.JSX.Element {
                   relPath={previewRel}
                   bust={bust}
                   viewport={viewport}
-                  live={liveSessionId !== null}
+                  live={previewLive}
                 />
               ))}
             {tab === "validate" && (
@@ -581,6 +622,16 @@ export function App(): React.JSX.Element {
         <Resizer left={paneW.sidebar + paneW.chat} onDrag={resizeChat} ariaLabel="채팅 폭 조절" />
       </div>
 
+      {helpOpen && (
+        <HelpModal
+          projectPath={projectPath}
+          selectedMockup={selected}
+          appVersion={appVersion}
+          platform={window.harness.platform}
+          onClose={() => setHelpOpen(false)}
+        />
+      )}
+
       {intakeOpen && projectPath && (
         <IntakeModal
           projectPath={projectPath}
@@ -595,7 +646,7 @@ export function App(): React.JSX.Element {
             setActiveSlug(slug);
             setActiveIntent(intent);
             // 새 생성 시작 → 결과물을 실시간으로 따라가도록 자동추적 재개.
-            autoFollowRef.current = true;
+            setAutoFollow(true);
             setSelected(null);
             selectedRef.current = null;
             setPreviewRel(null);

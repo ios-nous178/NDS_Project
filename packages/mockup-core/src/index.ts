@@ -14,6 +14,8 @@ export * from "./tools/html-analyzer.js";
 export * from "./tools/html-validator.js";
 // single-file 빌드 + workspace audit + 버전 badge stamp
 export * from "./tools/build-html.js";
+// 고정 DS 스탬프 바(DS 버전 / NDS% / 앱 버전) — dist + 라이브 미리보기 공통 주입
+export * from "./tools/ds-stamp.js";
 // prebuilt DS 단일 자산(dist/standalone) 런타임 로더 — html intent inline 의 자원
 export * from "./tools/standalone-assets.js";
 // DS 화면 자산(@nudge-design/assets/files/*) on-demand base64 인라이너 — 무배포 단일 HTML

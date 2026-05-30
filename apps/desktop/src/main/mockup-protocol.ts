@@ -1,7 +1,9 @@
-import { protocol, net } from "electron";
-import { existsSync, statSync } from "node:fs";
-import { extname, relative, resolve, sep } from "node:path";
+import { app, protocol, net } from "electron";
+import { existsSync, readFileSync, statSync } from "node:fs";
+import { dirname, extname, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
+import { countHtmlUsage, detectDsVersions, injectDsStampBar } from "@nudge-design/mockup-core";
+import { resolveBundledDsVersion } from "./ds-version.js";
 
 /**
  * mockup:// — 활성 프로젝트 루트 안의 파일을 iframe 미리보기로 서빙한다.
@@ -64,8 +66,33 @@ export function registerMockupProtocol(): void {
       return new Response("not found", { status: 404 });
     }
 
+    const ext = extname(abs).toLowerCase();
+    const mime = MIME[ext];
+
+    // HTML 은 고정 DS 스탬프 바를 인메모리로 주입해 서빙한다(원본 파일 무변경 = 비파괴).
+    // 공유용 dist 와 동일한 바를 라이브 미리보기에도 똑같이 박아 "강제 노출"을 일관되게 만든다.
+    // (dist 는 이미 박혀 있어도 injectDsStampBar 가 멱등 — 먼저 걷어내고 최신 수치로 다시 박는다.)
+    if (ext === ".html" || ext === ".htm") {
+      try {
+        const html = readFileSync(abs, "utf8");
+        const counts = countHtmlUsage(html);
+        // 동봉 DS 버전(=inline 되는 runtime/CSS 버전)을 우선, 없으면 폴더 기준 자동 감지.
+        const dsVersion = resolveBundledDsVersion() ?? detectDsVersions(dirname(abs)).primary;
+        const stamped = injectDsStampBar(html, {
+          dsVersion,
+          ratio: counts.dsRatio,
+          appVersion: app.getVersion(),
+        });
+        return new Response(stamped, {
+          status: 200,
+          headers: { "content-type": "text/html; charset=utf-8" },
+        });
+      } catch {
+        // 주입 실패 시 원본 그대로 서빙(미리보기 자체는 살린다).
+      }
+    }
+
     const res = await net.fetch(pathToFileURL(abs).toString());
-    const mime = MIME[extname(abs).toLowerCase()];
     if (mime) {
       const headers = new Headers(res.headers);
       headers.set("content-type", mime);

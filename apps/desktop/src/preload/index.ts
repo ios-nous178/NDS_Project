@@ -56,6 +56,8 @@ const harness = {
     ipcRenderer.on("window:fullscreen", listener);
     return () => ipcRenderer.removeListener("window:fullscreen", listener);
   },
+  /** 헬프 센터의 링크/메일을 기본 브라우저·메일 앱으로 연다(http/https/mailto 만). */
+  openExternal: (url: string): Promise<void> => ipcRenderer.invoke("shell:openExternal", { url }),
   openProject: (): Promise<OpenProjectResult | { canceled: true }> =>
     ipcRenderer.invoke("project:open"),
   readMockup: (filePath: string): Promise<{ source: string }> =>
@@ -127,6 +129,13 @@ const harness = {
   /** 세션 메타 + raw 트랜스크립트 삭제(실행 중이면 main 이 먼저 종료). */
   deleteSession: (projectPath: string, sessionId: string): Promise<{ ok: boolean }> =>
     ipcRenderer.invoke("session:delete", { projectPath, sessionId }),
+  /** 세션 제목 변경(채팅기록 인라인 편집). 빈 문자열이면 기본 제목으로 복귀. */
+  renameSession: (
+    projectPath: string,
+    sessionId: string,
+    title: string,
+  ): Promise<{ ok: boolean }> =>
+    ipcRenderer.invoke("session:rename", { projectPath, sessionId, title }),
 
   // ── 인테이크 (Level 2) ──
   /** 게이트 충족 파일 작성 후 시드 세션 시작. 성공 시 sessionId 로 터미널 attach. */

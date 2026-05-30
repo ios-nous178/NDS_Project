@@ -58,6 +58,8 @@ export interface StartAgentArgs {
   /** 시드 첫 프롬프트 — positional 인자로 얹어 인터랙티브 세션을 그대로 시작한다. */
   initialPrompt?: string;
   mockupFile?: string;
+  /** 인테이크에서 받은 사람이 읽는 화면 이름(채팅기록 타이틀 기본값). */
+  screenName?: string;
   /** 인테이크 메타(세션 표시/Level 3 검증 기반). */
   brand?: string;
   surface?: Surface;
@@ -76,7 +78,8 @@ const DS_SYSTEM_MANDATE = [
   "UI·화면·컴포넌트·토큰·아이콘을 만들거나 수정할 때는 추측하지 말고 반드시 nudge-ds MCP 도구를 먼저 사용하세요:",
   "- 작업 시작 시 get_guide({topic:'principles'}) 와 dos-donts 확인.",
   "- 컴포넌트는 find_component → get_guide({topic:'component:<Name>', target:'html'}) 로 props/함정 확인.",
-  "- 색/여백은 find_token (시멘틱 --semantic-* / --nds-* 만, raw hex 금지), 아이콘은 find_icon.",
+  "- 색/여백은 find_token (시멘틱 --semantic-* / --nds-* 만, raw hex 금지).",
+  "- 아이콘은 find_icon({query})로 찾고 find_icon({name})으로 붙여넣을 inline svg 를 받으세요(npm 설치 불필요). 이모지/텍스트 기호 금지.",
   "- HTML 목업은 <nds-*> 커스텀 엘리먼트 사용. 변경 후 반드시 validate_html_mockup 으로 위반 0 까지 검증.",
   "DS 규칙을 모를 때 클래스/스타일/컴포넌트를 임의로 지어내지 말고 항상 MCP 로 조회하세요.",
 ].join("\n");
@@ -160,6 +163,7 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
     agentType: args.agentType,
     mockupFile: args.mockupFile,
     title: `${spec.label} · ${args.mockupFile ?? "project"}`,
+    screenName: args.screenName,
     brand: args.brand,
     surface: args.surface,
     intent: args.intent,

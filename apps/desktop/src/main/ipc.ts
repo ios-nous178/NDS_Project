@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain, type BrowserWindow } from "electron";
+import { app, dialog, ipcMain, shell, type BrowserWindow } from "electron";
 import { copyFileSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
@@ -21,6 +21,7 @@ import {
   readSessions,
   readTranscript,
   reconcileStaleSessions,
+  renameSession,
   type ChatSession,
 } from "./sessions.js";
 import { runIntake, type RunIntakeArgs } from "./intake.js";
@@ -93,6 +94,11 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   // 앱 버전(package.json) — 상단바 상시 노출용.
   ipcMain.handle("app:version", async (): Promise<string> => app.getVersion());
 
+  // 헬프 센터의 외부 링크/메일 열기 — 안전한 스킴만 허용(기본 브라우저/메일 앱으로 위임).
+  ipcMain.handle("shell:openExternal", async (_e, args: { url: string }): Promise<void> => {
+    if (/^(https?|mailto):/i.test(args.url)) await shell.openExternal(args.url);
+  });
+
   // 헤더가 마운트 시 초기 전체화면 상태를 알도록(이후 변화는 window:fullscreen 이벤트).
   ipcMain.handle("window:isFullscreen", async (): Promise<boolean> => {
     return getWindow()?.isFullScreen() ?? false;
@@ -151,7 +157,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   ipcMain.handle(
     "export:run",
     async (_e, args: { projectPath: string; mockupDir?: string }): Promise<ExportResult> => {
-      const result = await exportMockup(args.projectPath, args.mockupDir);
+      const result = await exportMockup(args.projectPath, args.mockupDir, app.getVersion());
       logAppEvent(args.projectPath, {
         type: result.build.ok ? "export_completed" : "error_occurred",
         mockupFile: result.projectOutputRel,
@@ -260,6 +266,17 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     },
   );
 
+  // 세션 제목 변경(채팅기록 인라인 편집). 빈 문자열이면 기본 제목으로 되돌린다.
+  ipcMain.handle(
+    "session:rename",
+    async (
+      _e,
+      args: { projectPath: string; sessionId: string; title: string },
+    ): Promise<{ ok: boolean }> => {
+      return renameSession(args.projectPath, args.sessionId, args.title);
+    },
+  );
+
   // 세션 메타 + raw 트랜스크립트 삭제. 실행 중이면 먼저 PTY 를 종료한다.
   ipcMain.handle(
     "session:delete",
@@ -304,6 +321,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
           cwdOverride: r.workspaceDir,
           initialPrompt: r.seedPrompt,
           mockupFile: `${r.slug}/index.html`,
+          screenName: args.screenName,
           brand: args.brand,
           surface: args.surface,
           intent: r.intent,

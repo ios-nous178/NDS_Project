@@ -26,6 +26,7 @@ import {
 } from "./html-analyzer.js";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "./html-validator.js";
 import { detectDsVersions } from "./usage/tracker.js";
+import { injectDsStampBar } from "./ds-stamp.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -69,6 +70,21 @@ export interface BuildSinglefileHtmlArgs {
    * body.brand-* → 워크스페이스 nudge.brand 마커 → baseOnlyBrand(nudge-eap) 순으로 자동 감지.
    */
   brand?: string;
+  /**
+   * true 면 dist 산출물에 고정 DS 스탬프 바(DS 버전 / NDS% / [앱 버전])를 박는다.
+   * 데스크탑 하네스 전용 — 외부 MCP 소비자의 공유 산출물은 기본(false) 그대로 두어 회귀 없음.
+   */
+  stampBar?: boolean;
+  /**
+   * 호스트 제품 버전(데스크탑 하네스 = Nudge Studio). stampBar 와 함께 주면 스탬프 바에
+   * STUDIO 세그먼트로 박힌다. 생략하면 DS 버전 + NDS% 만 표시.
+   */
+  appVersion?: string;
+  /**
+   * 스탬프 바의 DS 버전 override. 생략 시 detectDsVersions(cwd) 로 자동 감지. 번들러리스
+   * 하네스 목업처럼 node_modules 가 없어 자동 감지가 비는 경우 호스트가 직접 주입한다.
+   */
+  dsVersion?: string;
 }
 
 export type WorkspaceIntent = "react" | "html";
@@ -328,6 +344,11 @@ export async function buildSinglefileHtml(
     );
   }
   const dsUsageSummary = intent === "html" ? injectHtmlUsageSummary(cwd, outputPath) : undefined;
+  // 고정 DS 스탬프 바 — dist 산출물에 결정론적으로 박는다(에이전트 우회 불가). 공유본에 항상 노출.
+  // 데스크탑 하네스(stampBar)에서만 — 외부 MCP 소비자 산출물은 회귀 없이 그대로.
+  if (intent === "html" && args.stampBar) {
+    stampDsBar(cwd, outputPath, args.appVersion, args.dsVersion);
+  }
   const sizeBytes = fs.statSync(outputPath).size;
   const sizeKb = Math.round(sizeBytes / 1024);
   const elapsedSec = Math.round((Date.now() - startMs) / 1000);
@@ -672,6 +693,28 @@ export function injectHtmlUsageSummary(cwd: string, outputPath: string): string 
     return badgeSummary;
   } catch {
     return undefined;
+  }
+}
+
+/**
+ * dist/index.html 에 고정 DS 스탬프 바를 주입(멱등). injectHtmlUsageSummary 직후 호출 — 그쪽이
+ * 보이지 않는 data-ds-badge/주석을 담당한다면, 이쪽은 "항상 보이는 고정 바"를 책임진다.
+ * best-effort: 실패해도 빌드 자체는 성공으로 둔다.
+ */
+function stampDsBar(
+  cwd: string,
+  outputPath: string,
+  appVersion?: string,
+  dsVersionOverride?: string,
+): void {
+  try {
+    const html = fs.readFileSync(outputPath, "utf-8");
+    const counts = countHtmlUsage(html);
+    const dsVersion = dsVersionOverride ?? detectDsVersions(cwd).primary;
+    const next = injectDsStampBar(html, { dsVersion, ratio: counts.dsRatio, appVersion });
+    if (next !== html) fs.writeFileSync(outputPath, next, "utf-8");
+  } catch {
+    // 스탬프 실패는 산출물 자체를 무효화하지 않는다.
   }
 }
 
