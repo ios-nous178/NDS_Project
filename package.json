@@ -11,6 +11,11 @@
     "node": "24.0.0",
     "pnpm": "9.6.0"
   },
+  "pnpm": {
+    "overrides": {
+      "node-gyp": "^12.2.0"
+    }
+  },
   "scripts": {
     "generate:component-guides": "node scripts/generate-component-guides.mjs",
     "generate:brand-coverage": "node scripts/generate-brand-coverage.mjs",
