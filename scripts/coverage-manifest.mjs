@@ -21,13 +21,14 @@ const reactSrcDir = path.join(rootDir, "packages", "react", "src");
 const reactIndexPath = path.join(reactSrcDir, "index.ts");
 const htmlIndexPath = path.join(rootDir, "packages", "html", "src", "index.ts");
 
-export const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz"];
+export const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz", "runmile"];
 
 export const BRAND_LABEL = {
   trost: "Trost",
   geniet: "Geniet",
   "nudge-eap": "NudgeEAP",
   "cashwalk-biz": "CashwalkBiz",
+  runmile: "Runmile",
 };
 
 async function readReactExports() {

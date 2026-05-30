@@ -52,7 +52,7 @@ export const ENTRY_TOOL_ADVISORY =
   "이 MCP의 역할은 '별도 외부 목업 프로젝트를 빌드하고 목업을 생성하는 것'입니다. " +
   "DS 레포 소스 수정, git commit/push, GitHub 레포 변경, npm publish 같은 작업은 이 MCP의 역할이 아닙니다. " +
   "사용자가 그런 작업을 요청하면 DS 레포에서 직접 작업하라고 안내하세요. " +
-  "이 MCP는 사용자 앱(Trost / Geniet / NudgeEAP) 컴포넌트만 노출합니다. " +
+  "이 MCP는 사용자 앱(Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile) 컴포넌트만 노출합니다. " +
   "어드민/CMS/운영툴/백오피스 화면이라면 antd v5를 쓰고 get_guide({ topic: 'admin-cms' })를 호출하세요. " +
   "두 디자인시스템을 한 화면에서 섞어쓰지 마세요.";
 
