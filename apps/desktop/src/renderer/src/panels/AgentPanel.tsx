@@ -3,17 +3,25 @@ import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import type { AgentType } from "../../../preload/index.js";
+import {
+  c,
+  mono,
+  pillBtn,
+  pillBtnActive,
+  primaryBtn,
+  primaryBtnDisabled,
+  dangerBtn,
+} from "../ui/theme.js";
 
 /**
- * 인앱 에이전트 터미널 (Phase 5).
+ * 인앱 에이전트 터미널 (Phase 5 · 다크 Phase 6).
  *
- * 사용자 머신에 설치된 claude(이어서 codex) CLI 를 PTY 로 구동해 xterm.js 터미널에 그대로
- * 띄운다. 라이선스/로그인은 설치본 그대로 — API 키 불필요. 진짜 TUI(권한 프롬프트 등) 동작.
- *
- * 패널은 항상 마운트되고 App 이 dock 높이만 토글한다 → 접었다 펴도 PTY 세션이 유지된다.
+ * 사용자 머신에 설치된 claude/codex CLI 를 PTY 로 구동해 xterm.js 터미널에 그대로 띄운다.
+ * 라이선스/로그인은 설치본 그대로 — API 키 불필요. 진짜 TUI(권한 프롬프트 등) 동작.
+ * 세션 시작/종료를 App 에 알려 채팅기록 리스트가 동기화된다.
  */
 const AGENTS: { type: AgentType; label: string; enabled: boolean }[] = [
-  { type: "claude", label: "Claude Code", enabled: true },
+  { type: "claude", label: "Claude", enabled: true },
   { type: "codex", label: "Codex", enabled: true },
 ];
 
@@ -22,10 +30,15 @@ type Status = "idle" | "running" | "exited" | "error";
 export function AgentPanel({
   projectPath,
   mockupFile,
+  onLiveChange,
+  onHistoryChange,
 }: {
   projectPath: string | null;
-  /** 세션을 어떤 목업 맥락에서 시작했는지(이벤트/세션 메타에 기록). */
   mockupFile: string | null;
+  /** 라이브 세션 id 변경(시작 시 id, 종료 시 null). */
+  onLiveChange?: (sessionId: string | null) => void;
+  /** 채팅기록 리스트 새로고침 트리거. */
+  onHistoryChange?: () => void;
 }): React.JSX.Element {
   const [agentType, setAgentType] = useState<AgentType>("claude");
   const [status, setStatus] = useState<Status>("idle");
@@ -34,8 +47,11 @@ export function AgentPanel({
   const fitRef = useRef<FitAddon | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sessionRef = useRef<string | null>(null);
+  const liveCb = useRef(onLiveChange);
+  const histCb = useRef(onHistoryChange);
+  liveCb.current = onLiveChange;
+  histCb.current = onHistoryChange;
 
-  // PTY 출력/종료 구독 — ref 기반이라 한 번만 등록.
   useEffect(() => {
     const offData = window.harness.onAgentData((e) => {
       if (e.sessionId === sessionRef.current) termRef.current?.write(e.data);
@@ -45,6 +61,8 @@ export function AgentPanel({
       setStatus(e.exitCode === 0 ? "exited" : "error");
       termRef.current?.writeln(`\r\n\x1b[90m[세션 종료 · code ${e.exitCode}]\x1b[0m`);
       sessionRef.current = null;
+      liveCb.current?.(null);
+      histCb.current?.();
     });
     return () => {
       offData();
@@ -52,7 +70,6 @@ export function AgentPanel({
     };
   }, []);
 
-  // 컨테이너 리사이즈 → fit + PTY resize.
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -73,7 +90,6 @@ export function AgentPanel({
     return () => ro.disconnect();
   }, []);
 
-  // 언마운트(=앱 종료) 시 터미널만 정리. PTY kill 은 main 의 will-quit 가 담당.
   useEffect(
     () => () => {
       termRef.current?.dispose();
@@ -88,7 +104,7 @@ export function AgentPanel({
     termRef.current?.dispose();
     const term = new Terminal({
       fontSize: 12,
-      fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+      fontFamily: mono,
       cursorBlink: true,
       theme: { background: "#1e1e1e" },
     });
@@ -122,9 +138,12 @@ export function AgentPanel({
       setStatus("error");
       setError(res.error ?? "시작 실패");
       term.writeln(`\x1b[31m${res.error ?? "시작 실패"}\x1b[0m`);
+      histCb.current?.();
       return;
     }
     setStatus("running");
+    liveCb.current?.(id);
+    histCb.current?.();
     term.focus();
   }, [projectPath, agentType, mockupFile]);
 
@@ -142,27 +161,28 @@ export function AgentPanel({
           alignItems: "center",
           gap: 8,
           padding: "6px 12px",
-          borderBottom: "1px solid #e4e7ec",
+          borderBottom: `1px solid ${c.border}`,
           fontSize: 13,
         }}
       >
-        <span style={{ color: "#475467", fontWeight: 600 }}>AI 에이전트</span>
         <div style={{ display: "flex", gap: 4 }}>
           {AGENTS.map((a) => (
             <button
               key={a.type}
               disabled={!a.enabled || running}
               onClick={() => setAgentType(a.type)}
-              title={a.enabled ? "" : "곧 지원 (Phase 5b)"}
-              style={agentType === a.type && a.enabled ? chipOn : chipOff}
+              style={agentType === a.type ? pillBtnActive : pillBtn}
             >
               {a.label}
-              {!a.enabled && " (곧)"}
             </button>
           ))}
         </div>
         {!running ? (
-          <button onClick={start} disabled={!projectPath} style={primaryBtn}>
+          <button
+            onClick={start}
+            disabled={!projectPath}
+            style={projectPath ? primaryBtn : primaryBtnDisabled}
+          >
             세션 시작
           </button>
         ) : (
@@ -172,11 +192,17 @@ export function AgentPanel({
         )}
         <span style={{ color: statusColor(status), fontSize: 12 }}>{statusLabel(status)}</span>
         {error && (
-          <span style={{ color: "#d92d20", fontSize: 12, marginLeft: "auto" }}>{error}</span>
-        )}
-        {!projectPath && (
-          <span style={{ color: "#98a2b3", fontSize: 12, marginLeft: "auto" }}>
-            프로젝트를 먼저 여세요.
+          <span
+            style={{
+              color: c.red,
+              fontSize: 12,
+              marginLeft: "auto",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {error}
           </span>
         )}
       </div>
@@ -192,38 +218,5 @@ function statusLabel(s: Status): string {
   return s === "running" ? "실행 중" : s === "exited" ? "종료됨" : s === "error" ? "오류" : "대기";
 }
 function statusColor(s: Status): string {
-  return s === "running" ? "#067647" : s === "error" ? "#d92d20" : "#98a2b3";
+  return s === "running" ? c.green : s === "error" ? c.red : c.textMuted;
 }
-
-const chipBase: React.CSSProperties = {
-  padding: "3px 10px",
-  borderRadius: 999,
-  border: "1px solid #d0d5dd",
-  cursor: "pointer",
-  fontSize: 12,
-};
-const chipOff: React.CSSProperties = { ...chipBase, background: "#fff", color: "#475467" };
-const chipOn: React.CSSProperties = {
-  ...chipBase,
-  background: "#175cd3",
-  borderColor: "#175cd3",
-  color: "#fff",
-};
-const primaryBtn: React.CSSProperties = {
-  padding: "4px 12px",
-  borderRadius: 6,
-  border: "none",
-  background: "#175cd3",
-  color: "#fff",
-  cursor: "pointer",
-  fontSize: 12,
-};
-const dangerBtn: React.CSSProperties = {
-  padding: "4px 12px",
-  borderRadius: 6,
-  border: "none",
-  background: "#d92d20",
-  color: "#fff",
-  cursor: "pointer",
-  fontSize: 12,
-};

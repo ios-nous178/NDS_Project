@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { FeedbackKind } from "@nudge-design/mockup-core";
+import { c } from "../ui/theme.js";
 
 /**
  * 현재 선택된 목업에 대한 유저 피드백 수집(Phase 3).
@@ -70,13 +71,15 @@ export function FeedbackPanel({
 
   if (!projectPath || !screen)
     return (
-      <div style={{ color: "#999", fontSize: 13 }}>목업을 선택하면 피드백을 남길 수 있습니다.</div>
+      <div style={{ color: c.textFaint, fontSize: 13 }}>
+        목업을 선택하면 피드백을 남길 수 있습니다.
+      </div>
     );
 
   return (
-    <div style={{ fontSize: 13 }}>
+    <div style={{ fontSize: 13, color: c.text }}>
       {/* ① 수정요청 */}
-      <div style={{ fontWeight: 600, color: "#344054", marginBottom: 6 }}>
+      <div style={{ fontWeight: 600, color: c.text, marginBottom: 6 }}>
         이 목업에 수정요청이 있나요?
       </div>
       <div style={{ display: "flex", gap: 8, marginBottom: hasRevision ? 8 : 0 }}>
@@ -122,9 +125,9 @@ export function FeedbackPanel({
       <div
         style={{
           fontWeight: 600,
-          color: "#344054",
+          color: c.text,
           margin: "16px 0 6px",
-          borderTop: "1px solid #eaecf0",
+          borderTop: `1px solid ${c.borderSubtle}`,
           paddingTop: 12,
         }}
       >
@@ -151,7 +154,7 @@ export function FeedbackPanel({
           {toast.msg}
         </div>
       )}
-      <div style={{ color: "#98a2b3", fontSize: 11, marginTop: 8 }}>
+      <div style={{ color: c.textFaint, fontSize: 11, marginTop: 8 }}>
         로컬 <code>.ds-feedback-log.jsonl</code> 에 저장됩니다(외부 전송 없음).
       </div>
     </div>
@@ -161,23 +164,26 @@ export function FeedbackPanel({
 const toggleBase: React.CSSProperties = {
   padding: "5px 16px",
   borderRadius: 6,
-  border: "1px solid #d0d5dd",
+  border: `1px solid ${c.border}`,
   cursor: "pointer",
   fontSize: 13,
 };
-const toggleOff: React.CSSProperties = { ...toggleBase, background: "#fff", color: "#344054" };
+const toggleOff: React.CSSProperties = { ...toggleBase, background: c.bgElevated, color: c.text };
 const toggleOn: React.CSSProperties = {
   ...toggleBase,
-  background: "#175cd3",
-  borderColor: "#175cd3",
-  color: "#fff",
+  background: c.accent,
+  borderColor: c.accent,
+  color: c.accentText,
+  fontWeight: 600,
 };
 const textareaStyle: React.CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
   padding: "8px 10px",
   borderRadius: 6,
-  border: "1px solid #d0d5dd",
+  border: `1px solid ${c.border}`,
+  background: c.bg,
+  color: c.text,
   fontSize: 13,
   fontFamily: "inherit",
   resize: "vertical",
@@ -187,22 +193,24 @@ const primaryBtn: React.CSSProperties = {
   padding: "6px 12px",
   borderRadius: 6,
   border: "none",
-  background: "#175cd3",
-  color: "#fff",
+  background: c.accent,
+  color: c.accentText,
+  fontWeight: 600,
   cursor: "pointer",
   fontSize: 13,
 };
 const primaryBtnDisabled: React.CSSProperties = {
   ...primaryBtn,
-  background: "#d0d5dd",
+  background: c.bgElevated,
+  color: c.textFaint,
   cursor: "not-allowed",
 };
 const toastBox: React.CSSProperties = {
   marginTop: 8,
   padding: "6px 10px",
   borderRadius: 6,
-  background: "#f9fafb",
-  border: "1px solid #eaecf0",
+  background: c.bgElevated,
+  border: `1px solid ${c.border}`,
   fontSize: 12,
   fontWeight: 600,
 };

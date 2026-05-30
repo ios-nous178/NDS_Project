@@ -16,7 +16,12 @@ function createWindow(): void {
     width: 1280,
     height: 860,
     show: false,
-    title: "Nudge EAP Harness",
+    title: "Nudge Studio",
+    // 네이티브 타이틀바를 다크 UI 에 녹인다: 신호등 버튼만 남기고(hiddenInset) 헤더를
+    // 우리가 그린다. backgroundColor 로 로딩 중 흰 플래시도 제거.
+    titleBarStyle: "hiddenInset",
+    trafficLightPosition: { x: 16, y: 14 },
+    backgroundColor: "#1e1e1e",
     webPreferences: {
       preload: join(import.meta.dirname, "../preload/index.mjs"),
       // main 프로세스가 결정론 파이프라인(Node)을 돌리므로 renderer 는 preload 로만 통신.

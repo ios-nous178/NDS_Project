@@ -5,7 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- CSP 는 Phase 4 보안 강화에서 dev(Vite HMR 허용)/prod 분기로 추가.
          지금 default-src 'self' 를 박으면 dev HMR(eval/ws)이 깨져 부팅 검증을 방해함. -->
-    <title>Nudge EAP Harness</title>
+    <title>Nudge Studio</title>
+    <style>
+      /* 다크 톤 전역 (Phase 6) — body 기본 마진/흰 배경 제거. */
+      html,
+      body,
+      #root {
+        margin: 0;
+        height: 100%;
+        background: #1e1e1e;
+      }
+      body {
+        color: #d4d4d4;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* 다크 스크롤바 */
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3c3c3c;
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      /* 다크 select 옵션 */
+      option {
+        background: #252526;
+        color: #d4d4d4;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

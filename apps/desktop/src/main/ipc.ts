@@ -15,6 +15,7 @@ import {
   type StartAgentArgs,
 } from "./agent-runner.js";
 import { logAppEvent } from "./events.js";
+import { readSessions, readTranscript, type ChatSession } from "./sessions.js";
 import type { AppEventInput } from "@nudge-design/mockup-core";
 
 // dot-폴더를 일괄 차단하지 않는다(.demo 같은 정당한 목업 위치를 노출하기 위해).
@@ -211,6 +212,22 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   ipcMain.handle("agent:stop", async (_e, args: { sessionId: string }): Promise<void> => {
     stopAgent(args.sessionId);
   });
+
+  // ── 채팅기록 (Phase 6) — 로컬 세션 메타/트랜스크립트 조회 ──
+  ipcMain.handle(
+    "session:list",
+    async (_e, args: { projectPath: string }): Promise<ChatSession[]> => {
+      return readSessions(args.projectPath);
+    },
+  );
+
+  ipcMain.handle(
+    "session:transcript",
+    async (_e, args: { projectPath: string; sessionId: string }): Promise<{ text: string }> => {
+      return { text: readTranscript(args.projectPath, args.sessionId) };
+    },
+  );
 }
 
 export type { AgentType };
+export type { ChatSession } from "./sessions.js";
