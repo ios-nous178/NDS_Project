@@ -410,7 +410,9 @@ export function App(): React.JSX.Element {
             refreshKey={historyRefresh}
             liveSessionId={liveSessionId}
             selectedSessionId={viewing?.sessionId ?? null}
-            onSelect={(s) => setViewing(s)}
+            // 라이브 세션을 누르면 read-only 트랜스크립트가 아니라 라이브 채팅으로 복귀
+            // (viewing=null → AgentPanel active 로 포커스/입력 복구). 그 외는 기록 보기.
+            onSelect={(s) => setViewing(s.sessionId === liveSessionId ? null : s)}
             onDeleted={(sessionId) => {
               setViewing((v) => (v?.sessionId === sessionId ? null : v));
               refreshHistory();
