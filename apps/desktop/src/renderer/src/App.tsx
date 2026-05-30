@@ -1,10 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
+import type { ChatSession } from "../../preload/index.js";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
-import { PreviewPanel } from "./panels/PreviewPanel.js";
-import { ExportPanel } from "./panels/ExportPanel.js";
+import { PreviewPanel, type Viewport } from "./panels/PreviewPanel.js";
 import { FeedbackPanel } from "./panels/FeedbackPanel.js";
 import { AgentPanel } from "./panels/AgentPanel.js";
+import { SessionHistoryPanel } from "./panels/SessionHistoryPanel.js";
+import { TranscriptView } from "./panels/TranscriptView.js";
+import { ExportButton } from "./panels/ExportButton.js";
+import {
+  c,
+  dragRegion,
+  font,
+  ghostBtn,
+  mono,
+  noDrag,
+  tabActive,
+  tabIdle,
+  pillBtn,
+  pillBtnActive,
+} from "./ui/theme.js";
+
+type PreviewTab = "preview" | "validate" | "feedback" | "source";
 
 export function App(): React.JSX.Element {
   const [projectPath, setProjectPath] = useState<string | null>(null);
@@ -14,12 +31,16 @@ export function App(): React.JSX.Element {
   const [result, setResult] = useState<ValidateHtmlMockupResult | null>(null);
   const [validating, setValidating] = useState(false);
   const [bust, setBust] = useState(0);
-  // 미리보기 대상(소스 파일 / 내보내기 후엔 공유용 dist/index.html). 검증 대상(selected)과 분리.
   const [previewRel, setPreviewRel] = useState<string | null>(null);
-  // 마지막 내보내기 산출물(공유용 HTML). 사이드바에 고정 노출.
   const [exportedRel, setExportedRel] = useState<string | null>(null);
-  // 인앱 에이전트 dock 열림 여부. AgentPanel 은 항상 마운트(세션 유지), 높이만 토글.
-  const [agentOpen, setAgentOpen] = useState(false);
+  // 미리보기 칼럼
+  const [tab, setTab] = useState<PreviewTab>("preview");
+  const [viewport, setViewport] = useState<Viewport>("web");
+  // 채팅기록
+  const [liveSessionId, setLiveSessionId] = useState<string | null>(null);
+  const [historyRefresh, setHistoryRefresh] = useState(0);
+  const [viewing, setViewing] = useState<ChatSession | null>(null);
+
   const selectedRef = useRef<string | null>(null);
   const projectRef = useRef<string | null>(null);
 
@@ -54,21 +75,24 @@ export function App(): React.JSX.Element {
     setResult(null);
     setExportedRel(null);
     setPreviewRel(null);
+    setViewing(null);
+    setLiveSessionId(null);
+    setHistoryRefresh((n) => n + 1);
   }, []);
 
   const selectEntry = useCallback(
     (rel: string) => {
-      if (!projectPath) return;
+      if (!projectPath || !rel) return;
       setSelected(rel);
       selectedRef.current = rel;
-      setPreviewRel(rel); // 미리보기를 소스 파일로 (빌드하면 dist 로 전환됨)
+      setPreviewRel(rel);
+      setTab("preview");
       void loadFile(projectPath, rel);
       void window.harness.appendEvent({ projectPath, type: "mockup_selected", mockupFile: rel });
     },
     [projectPath, loadFile],
   );
 
-  // 저장 감시 → 현재 선택 파일이 바뀌면 재검증 + 미리보기 리로드.
   useEffect(() => {
     return window.harness.onFileChanged((e) => {
       if (e.relPath === selectedRef.current && projectRef.current) {
@@ -77,186 +101,247 @@ export function App(): React.JSX.Element {
     });
   }, [loadFile]);
 
+  const refreshHistory = useCallback(() => setHistoryRefresh((n) => n + 1), []);
+
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        fontFamily: "system-ui, sans-serif",
+        background: c.bg,
+        color: c.text,
+        fontFamily: font,
       }}
     >
+      {/* 상단바 (커스텀 타이틀바 — 헤더로 창 드래그, 좌측은 신호등 자리 확보) */}
       <header
         style={{
+          ...dragRegion,
           display: "flex",
           alignItems: "center",
-          gap: 12,
-          padding: "10px 16px",
-          borderBottom: "1px solid #e4e7ec",
+          gap: 10,
+          padding: "8px 14px 8px 84px",
+          borderBottom: `1px solid ${c.border}`,
+          background: c.bgPanel,
         }}
       >
-        <strong>Nudge EAP Harness</strong>
-        <button onClick={openProject} style={btnStyle}>
-          프로젝트 폴더 열기
-        </button>
-        <button
-          onClick={() => setAgentOpen((o) => !o)}
-          style={{ ...btnStyle, background: agentOpen ? "#eff8ff" : "#fff" }}
-        >
-          🤖 AI 에이전트 {agentOpen ? "▾" : "▸"}
-        </button>
-        {projectPath && (
-          <span
-            style={{
-              color: "#667085",
-              fontSize: 12,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {projectPath}
+        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.15, marginRight: 4 }}>
+          <strong style={{ fontSize: 13, color: c.text }}>Nudge Studio</strong>
+          <span style={{ fontSize: 10, color: c.textMuted }}>
+            Design System Powered Mockup Builder
           </span>
-        )}
-      </header>
-
-      <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-        <aside
-          style={{ width: 240, borderRight: "1px solid #e4e7ec", overflowY: "auto", padding: 12 }}
+        </div>
+        <button onClick={openProject} style={{ ...ghostBtn, ...noDrag }}>
+          프로젝트 열기
+        </button>
+        <select
+          value={selected ?? ""}
+          onChange={(e) => selectEntry(e.target.value)}
+          disabled={entries.length === 0}
+          style={{
+            ...noDrag,
+            maxWidth: 320,
+            padding: "5px 8px",
+            borderRadius: 6,
+            border: `1px solid ${c.border}`,
+            background: c.bg,
+            color: c.text,
+            fontSize: 12,
+            fontFamily: mono,
+          }}
         >
-          {exportedRel && (
-            <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 4 }}>공유용 HTML</div>
-              <button
-                onClick={() => {
-                  setPreviewRel(exportedRel);
-                  setBust((b) => b + 1);
-                }}
-                title={exportedRel}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "6px 8px",
-                  border: "1px solid #d1fadf",
-                  borderRadius: 6,
-                  background: previewRel === exportedRel ? "#ecfdf3" : "#f6fef9",
-                  color: "#067647",
-                  cursor: "pointer",
-                  fontSize: 13,
-                }}
-              >
-                📦 {exportedRel}
-              </button>
-            </div>
-          )}
-          <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>
-            HTML 목업 ({entries.length})
-          </div>
+          <option value="" disabled>
+            {entries.length ? `목업 선택 (${entries.length})` : "목업 없음"}
+          </option>
           {entries.map((e) => (
-            <button
-              key={e}
-              onClick={() => selectEntry(e)}
-              style={{
-                display: "block",
-                width: "100%",
-                textAlign: "left",
-                padding: "6px 8px",
-                border: "none",
-                borderRadius: 6,
-                background: selected === e ? "#eff8ff" : "transparent",
-                color: selected === e ? "#175cd3" : "#344054",
-                cursor: "pointer",
-                fontSize: 13,
-              }}
-            >
+            <option key={e} value={e}>
               {e}
-            </button>
+            </option>
           ))}
-        </aside>
-
-        <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-          <section style={{ flex: 1, minHeight: 0, borderBottom: "1px solid #e4e7ec" }}>
-            <PreviewPanel relPath={previewRel} bust={bust} />
-          </section>
-          <details style={{ maxHeight: 180, overflow: "auto", padding: "8px 16px" }}>
-            <summary style={{ fontSize: 12, color: "#98a2b3", cursor: "pointer" }}>소스</summary>
-            <pre
-              style={{
-                margin: "8px 0 0",
-                fontSize: 12,
-                lineHeight: 1.5,
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-                color: "#475467",
-              }}
-            >
-              {source || "(선택된 파일 없음)"}
-            </pre>
-          </details>
-          {/* 인앱 에이전트 dock — 항상 마운트, 높이만 토글해 PTY 세션 유지. */}
-          <div
-            style={{
-              height: agentOpen ? 360 : 0,
-              overflow: "hidden",
-              borderTop: agentOpen ? "1px solid #e4e7ec" : "none",
+        </select>
+        {exportedRel && (
+          <button
+            onClick={() => {
+              setPreviewRel(exportedRel);
+              setTab("preview");
+              setBust((b) => b + 1);
             }}
+            title={exportedRel}
+            style={{ ...(previewRel === exportedRel ? pillBtnActive : pillBtn), ...noDrag }}
           >
-            <AgentPanel projectPath={projectPath} mockupFile={selected} />
-          </div>
-        </main>
-
-        <section
-          style={{ width: 360, padding: 16, overflow: "auto", borderLeft: "1px solid #e4e7ec" }}
+            📦 공유본
+          </button>
+        )}
+        <div
+          style={{ ...noDrag, marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}
         >
-          <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>
-            내보내기 (공유용 HTML)
-          </div>
-          <ExportPanel
+          <ExportButton
             projectPath={projectPath}
-            hasSelection={!!selected}
             onExported={(rel) => {
               setExportedRel(rel);
               setPreviewRel(rel);
+              setTab("preview");
               setBust((b) => b + 1);
             }}
           />
-          <div
-            style={{
-              fontSize: 12,
-              color: "#98a2b3",
-              margin: "16px 0 8px",
-              borderTop: "1px solid #eaecf0",
-              paddingTop: 12,
-            }}
-          >
-            피드백
-          </div>
-          <FeedbackPanel projectPath={projectPath} screen={selected} />
+          {projectPath && (
+            <span
+              style={{
+                color: c.textFaint,
+                fontSize: 11,
+                fontFamily: mono,
+                maxWidth: 260,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+              title={projectPath}
+            >
+              {projectPath}
+            </span>
+          )}
+        </div>
+      </header>
 
+      {/* 3분할 */}
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          display: "grid",
+          gridTemplateColumns: "260px minmax(0, 1fr) minmax(0, 1.15fr)",
+        }}
+      >
+        {/* 채팅기록 */}
+        <aside style={{ borderRight: `1px solid ${c.border}`, background: c.bgPanel, minWidth: 0 }}>
+          <SessionHistoryPanel
+            projectPath={projectPath}
+            refreshKey={historyRefresh}
+            liveSessionId={liveSessionId}
+            selectedSessionId={viewing?.sessionId ?? null}
+            onSelect={(s) => setViewing(s)}
+          />
+        </aside>
+
+        {/* 채팅 (라이브 AgentPanel 은 상시 마운트, 기록 보기는 위에 오버레이) */}
+        <main
+          style={{
+            borderRight: `1px solid ${c.border}`,
+            minWidth: 0,
+            position: "relative",
+            background: c.bg,
+          }}
+        >
+          <div style={{ height: "100%", display: viewing ? "none" : "block" }}>
+            <AgentPanel
+              projectPath={projectPath}
+              mockupFile={selected}
+              onLiveChange={setLiveSessionId}
+              onHistoryChange={refreshHistory}
+            />
+          </div>
+          {viewing && projectPath && (
+            <div style={{ position: "absolute", inset: 0 }}>
+              <TranscriptView
+                projectPath={projectPath}
+                sessionId={viewing.sessionId}
+                label={viewing.title}
+                onClose={() => setViewing(null)}
+              />
+            </div>
+          )}
+        </main>
+
+        {/* 미리보기 + 탭 */}
+        <section
+          style={{ minWidth: 0, display: "flex", flexDirection: "column", background: c.bg }}
+        >
           <div
             style={{
-              fontSize: 12,
-              color: "#98a2b3",
-              margin: "16px 0 8px",
-              borderTop: "1px solid #eaecf0",
-              paddingTop: 12,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              padding: "0 8px",
+              borderBottom: `1px solid ${c.border}`,
+              background: c.bgPanel,
             }}
           >
-            검증 (21 규칙)
+            <button
+              onClick={() => setTab("preview")}
+              style={tab === "preview" ? tabActive : tabIdle}
+            >
+              미리보기
+            </button>
+            <button
+              onClick={() => setTab("validate")}
+              style={tab === "validate" ? tabActive : tabIdle}
+            >
+              검증
+              {result && !result.ok && <span style={{ color: c.red }}> ●</span>}
+            </button>
+            <button
+              onClick={() => setTab("feedback")}
+              style={tab === "feedback" ? tabActive : tabIdle}
+            >
+              피드백
+            </button>
+            <button onClick={() => setTab("source")} style={tab === "source" ? tabActive : tabIdle}>
+              소스
+            </button>
+            {tab === "preview" && (
+              <div style={{ marginLeft: "auto", display: "flex", gap: 4, padding: "5px 0" }}>
+                <button
+                  onClick={() => setViewport("web")}
+                  style={viewport === "web" ? pillBtnActive : pillBtn}
+                >
+                  웹
+                </button>
+                <button
+                  onClick={() => setViewport("app")}
+                  style={viewport === "app" ? pillBtnActive : pillBtn}
+                >
+                  앱
+                </button>
+              </div>
+            )}
           </div>
-          <ValidationPanel result={result} loading={validating} />
+
+          <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+            {tab === "preview" && (
+              <PreviewPanel relPath={previewRel} bust={bust} viewport={viewport} />
+            )}
+            {tab === "validate" && (
+              <div style={{ height: "100%", overflowY: "auto", padding: 16 }}>
+                <ValidationPanel result={result} loading={validating} />
+              </div>
+            )}
+            {tab === "feedback" && (
+              <div style={{ height: "100%", overflowY: "auto", padding: 16 }}>
+                <FeedbackPanel projectPath={projectPath} screen={selected} />
+              </div>
+            )}
+            {tab === "source" && (
+              <pre
+                style={{
+                  height: "100%",
+                  margin: 0,
+                  overflow: "auto",
+                  padding: 16,
+                  fontSize: 12,
+                  lineHeight: 1.5,
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                  color: c.textMuted,
+                  fontFamily: mono,
+                }}
+              >
+                {source || "(선택된 파일 없음)"}
+              </pre>
+            )}
+          </div>
         </section>
       </div>
     </div>
   );
 }
-
-const btnStyle: React.CSSProperties = {
-  padding: "6px 12px",
-  borderRadius: 6,
-  border: "1px solid #d0d5dd",
-  background: "#fff",
-  cursor: "pointer",
-  fontSize: 13,
-};

@@ -4,6 +4,7 @@ import type { OpenProjectResult } from "../main/ipc.js";
 import type { ExportResult } from "../main/export-runner.js";
 import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 import type { StartAgentArgs } from "../main/agent-runner.js";
+import type { ChatSession } from "../main/sessions.js";
 import type { AppEventInput } from "@nudge-design/mockup-core";
 
 // renderer 가 preload 를 단일 타입 계약 표면으로 쓰도록 재export.
@@ -11,6 +12,7 @@ export type { ExportResult } from "../main/export-runner.js";
 export type { OpenProjectResult } from "../main/ipc.js";
 export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 export type { AgentType } from "../main/agent-runner.js";
+export type { ChatSession } from "../main/sessions.js";
 
 export interface FileChangedEvent {
   filePath: string;
@@ -91,6 +93,12 @@ const harness = {
     ipcRenderer.on("agent:exit", listener);
     return () => ipcRenderer.removeListener("agent:exit", listener);
   },
+
+  // ── 채팅기록 (Phase 6) — 로컬 세션 조회 ──
+  listSessions: (projectPath: string): Promise<ChatSession[]> =>
+    ipcRenderer.invoke("session:list", { projectPath }),
+  readTranscript: (projectPath: string, sessionId: string): Promise<{ text: string }> =>
+    ipcRenderer.invoke("session:transcript", { projectPath, sessionId }),
 };
 
 contextBridge.exposeInMainWorld("harness", harness);

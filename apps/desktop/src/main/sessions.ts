@@ -1,4 +1,4 @@
-import { appendFileSync, mkdirSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { resolveWritableLogDir } from "@nudge-design/mockup-core";
 import type { AgentType } from "./agent-runner.js";
@@ -74,5 +74,47 @@ export function appendTranscript(projectPath: string, sessionId: string, data: s
     appendFileSync(join(dir, `${sessionId}.log`), data, "utf8");
   } catch {
     /* best-effort */
+  }
+}
+
+/**
+ * 세션 메타를 읽어 newest-first 로 반환. append-only JSONL 이라 같은 sessionId 의
+ * **마지막(=최신 status) 라인**만 남긴다(채팅기록 리스트용).
+ */
+export function readSessions(projectPath: string): ChatSession[] {
+  let raw: string;
+  try {
+    raw = readFileSync(join(logDir(projectPath), CHAT_SESSIONS_FILENAME), "utf8");
+  } catch {
+    return [];
+  }
+  const latest = new Map<string, ChatSession>();
+  const order: string[] = [];
+  for (const line of raw.split("\n")) {
+    if (!line.trim()) continue;
+    let s: ChatSession;
+    try {
+      s = JSON.parse(line) as ChatSession;
+    } catch {
+      continue;
+    }
+    if (!s.sessionId) continue;
+    if (!latest.has(s.sessionId)) order.push(s.sessionId);
+    // 같은 세션의 후속 라인은 createdAt 을 잃지 않게 첫 라인 createdAt 을 보존.
+    const prev = latest.get(s.sessionId);
+    latest.set(s.sessionId, prev ? { ...s, createdAt: prev.createdAt } : s);
+  }
+  // 파일 등장 순서의 역순 = 최근 시작 세션 우선.
+  return order.reverse().map((id) => latest.get(id)!);
+}
+
+/** 세션의 raw pty 트랜스크립트(없으면 ""). */
+export function readTranscript(projectPath: string, sessionId: string): string {
+  const file = join(logDir(projectPath), TRANSCRIPT_DIRNAME, `${sessionId}.log`);
+  if (!existsSync(file)) return "";
+  try {
+    return readFileSync(file, "utf8");
+  } catch {
+    return "";
   }
 }
