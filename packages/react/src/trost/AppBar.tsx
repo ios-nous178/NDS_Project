@@ -20,10 +20,11 @@ import { TrendingKeywords } from "../TrendingKeywords";
 import type { TrendingKeywordItem } from "../TrendingKeywords";
 import {
   TrostEnergyCoinIcon,
-  ChevronLeftIcon,
-  ArrowBackIcon,
-  SearchIcon,
-  SettingIcon,
+  TrostBackIcon,
+  TrostMkBackIcon,
+  TrostSearchIcon,
+  TrostAlarmIcon,
+  TrostSettingIcon,
 } from "@nudge-design/icons";
 import { TROST_LOGO_DATA_URI, TROST_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults";
 
@@ -137,7 +138,7 @@ const trostAppBarStyles = `
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${cv.fill.brand};
+    background: ${cv.fill.statusError};
     box-shadow: 0 0 0 2px ${cv.surface.default};
   }
 
@@ -273,7 +274,7 @@ const trostAppBarStyles = `
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${cv.fill.brand};
+    background: ${cv.fill.statusError};
     box-shadow: 0 0 0 2px ${cv.surface.default};
   }
 
@@ -377,28 +378,6 @@ export interface TrostAppBarProps {
   onMobileSearch?: (value: string) => void;
 }
 
-/* ─── Inline SVGs ─── */
-
-function DefaultBellIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M12 3.5a6 6 0 0 0-6 6v3.4l-1.6 2.6a.8.8 0 0 0 .68 1.2h13.84a.8.8 0 0 0 .68-1.2L18 12.9V9.5a6 6 0 0 0-6-6Zm0 17a2.5 2.5 0 0 1-2.45-2h4.9A2.5 2.5 0 0 1 12 20.5Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-function DefaultSearchIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M13 13L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 /* ─── Sub-components ─── */
 
 function PointChip({ chip }: { chip: TrostAppBarPointChip }) {
@@ -480,7 +459,7 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
      *   app='trost'→쉐브론 back, app='cashwalk-trost'→화살표 back ((캐시워크)트로스트). */
     const level = webviewLevel ?? "sub";
     const resolvedHeight = mobileHeight ?? (level === "main" ? 56 : 44);
-    const BackIcon = app === "cashwalk-trost" ? ArrowBackIcon : ChevronLeftIcon;
+    const BackIcon = app === "cashwalk-trost" ? TrostMkBackIcon : TrostBackIcon;
     const isHome = level === "main" && pointChip != null && webviewTitle == null;
     const hasRight =
       isHome ||
@@ -524,7 +503,7 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
             {isHome && pointChip && onNotificationClick && <span className={WV_DIVIDER} />}
             {onSearchClick && (
               <button type="button" className={WV_ACTION} aria-label="검색" onClick={onSearchClick}>
-                <SearchIcon size={24} />
+                <TrostSearchIcon size={24} />
               </button>
             )}
             {onSettingClick && (
@@ -534,7 +513,7 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
                 aria-label="설정"
                 onClick={onSettingClick}
               >
-                <SettingIcon size={24} />
+                <TrostSettingIcon size={24} />
               </button>
             )}
             {webviewActionText != null && (
@@ -550,7 +529,7 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
                 data-has-badge={hasNotification ? "true" : undefined}
                 onClick={onNotificationClick}
               >
-                {notificationIcon ?? <DefaultBellIcon />}
+                {notificationIcon ?? <TrostAlarmIcon size={24} />}
               </button>
             )}
           </div>
@@ -625,7 +604,7 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
                 data-has-badge={hasNotification ? "true" : undefined}
                 onClick={onNotificationClick}
               >
-                {notificationIcon ?? <DefaultBellIcon />}
+                {notificationIcon ?? <TrostAlarmIcon size={24} />}
               </button>
             )}
           </div>
@@ -651,7 +630,7 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
                 aria-label="검색"
                 onClick={() => onMobileSearch?.(mobileSearchValue ?? "")}
               >
-                <DefaultSearchIcon />
+                <TrostSearchIcon size={20} />
               </span>
             </div>
           </div>

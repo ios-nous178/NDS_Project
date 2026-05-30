@@ -4531,6 +4531,12 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   TrostMkTalkActiveIcon: { category: "navigation", style: "filled", pair: "TrostMkTalkIcon" },
   TrostMkMypageIcon: { category: "navigation", style: "line", pair: "TrostMkMypageActiveIcon" },
   TrostMkMypageActiveIcon: { category: "navigation", style: "filled", pair: "TrostMkMypageIcon" },
+  // Trost 앱바 (webview 헤더) 아이콘 — Figma 5:1169
+  TrostBackIcon: { category: "navigation", style: "line" },
+  TrostMkBackIcon: { category: "navigation", style: "line" },
+  TrostSearchIcon: { category: "action", style: "line" },
+  TrostAlarmIcon: { category: "action", style: "line" },
+  TrostSettingIcon: { category: "action", style: "line" },
   ChallengeIcon: { category: "navigation", style: "line", pair: "ChallengeActiveIcon" },
   ChallengeActiveIcon: { category: "navigation", style: "filled", pair: "ChallengeIcon" },
   MypageIcon: { category: "navigation", style: "line", pair: "MypageActiveIcon" },
