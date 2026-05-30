@@ -1,0 +1,34 @@
+{
+  "name": "@nudge-design/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Nudge EAP Kraft-like 데스크탑 하네스 — DS 목업 빌드/검증/미리보기/피드백을 코드로 강제.",
+  "type": "module",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "package": "electron-vite build && electron-builder"
+  },
+  "dependencies": {
+    "@nudge-design/mockup-core": "workspace:*",
+    "@nudge-design/react": "workspace:*",
+    "@nudge-design/tokens": "workspace:*",
+    "chokidar": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^3.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  }
+}
