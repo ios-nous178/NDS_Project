@@ -221,10 +221,9 @@ const sidebarStyles = `
   :where(.${SB_ITEM_INNER_CLASS}:hover .${SB_ITEM_ICON_CLASS}),
   :where(.${SB_ITEM_INNER_CLASS}[aria-current="page"] .${SB_ITEM_ICON_CLASS}) { color: var(--nds-sidebar-icon-active); }
   :where(.${SB_ITEM_LABEL_CLASS}) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_LABEL_CLASS}),
-  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_BADGE_CLASS}),
-  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_CARET_CLASS}) { display: none; }
-  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_INNER_CLASS}) { justify-content: center; padding: 0; gap: 0; }
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_LABEL_CLASS}) { display: none; }
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_INNER_CLASS}) { position: relative; justify-content: center; padding: 0; gap: 0; }
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_INNER_CLASS}[aria-current="page"]::before) { display: none; }
   :where(.${SB_ITEM_BADGE_CLASS}) {
     display: inline-flex; align-items: center; justify-content: center;
     min-width: 18px; height: 18px; padding: 0 6px; border-radius: 9px;
@@ -238,6 +237,16 @@ const sidebarStyles = `
     transition: transform 0.18s ease;
   }
   :where(.${SB_ITEM_CARET_CLASS}[data-expanded="true"]) { transform: rotate(90deg); }
+  /* Collapsed: caret hidden; a numeric badge collapses to an 8px dot on the icon's top-right.
+     Declared AFTER the badge/caret base rules so the :where() (0-specificity) cascade resolves
+     to these — otherwise the later base display:inline-flex would win and the count would render
+     full-size in the 72px rail, breaking the layout. (react Sidebar.tsx 와 미러.) */
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_CARET_CLASS}) { display: none; }
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ITEM_BADGE_CLASS}) {
+    position: absolute; top: 6px; left: calc(50% + 3px);
+    min-width: 0; width: 8px; height: 8px; padding: 0;
+    border-radius: 50%; font-size: 0; line-height: 0; color: transparent;
+  }
 
   :where(.${SB_CHILDREN_CLASS}) {
     list-style: none; margin: ${spacing[2]}px 0 0; padding: 0;
@@ -281,11 +290,18 @@ const sidebarStyles = `
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_META_CLASS}) { display: none; }
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_CLASS}) { justify-content: center; padding: ${spacing[4]}px; }
 
+  /*
+   * CashwalkBiz 튜닝 (캐포비 Library MenuItem 3302:641 실측). react Sidebar.tsx 와 미러.
+   * 색은 --semantic-* 토큰 cascade 가 SSOT — hex 로 박지 않는다:
+   *   · active bg = var(--semantic-bg-brand-subtle) → cashwalk = Yellow/100 #FFFAE5 (cashwalk-biz.semantic.ts bg.brand.subtle)
+   *   · accent    = var(--semantic-fill-brand)       → cashwalk = #FFD200 (미사용 dormant 슬롯)
+   * 캐포비만 갈라지는 것은 시멘틱 색 토큰으로 표현 불가능한 둘뿐:
+   *   1) active radius — base 는 idle 16 → active 12, 캐포비는 idle 과 동일 16 유지 (geometry).
+   *   2) active 라벨 색 — base 는 strong(#111) darkening, 캐포비는 선택 시에도 normal(#333) 유지 (text role 선택).
+   */
   :where([data-brand="cashwalk-biz"] .${SB_ROOT_CLASS}) {
-    --nds-sidebar-item-active-bg: #FFF4C0;
-    --nds-sidebar-item-active-radius: 12px;
-    --nds-sidebar-item-active-accent: #FFD200;
-    --nds-sidebar-text-active: #383838;
+    --nds-sidebar-item-active-radius: 16px;
+    --nds-sidebar-text-active: ${cv.textRole.normal};
   }
 `;
 

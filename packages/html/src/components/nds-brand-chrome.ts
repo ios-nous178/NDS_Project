@@ -40,7 +40,7 @@ import {
 
 /* ──────────────── Types ──────────────── */
 
-type BrandKey = "nudge-eap" | "trost" | "geniet" | "cashwalk-biz";
+type BrandKey = "nudge-eap" | "trost" | "geniet" | "cashwalk-biz" | "runmile";
 type HeaderSurface = "web" | "mobile" | "webview";
 type FooterSurface = "web" | "app";
 
@@ -158,6 +158,13 @@ interface BrandChrome {
   "cashwalk-biz"?: {
     primaryCta: { label: string; href: string };
     mobileHeight: number;
+  };
+
+  /** Runmile 전용 — 중앙 coral 검색바 + 우측 채팅/로그인 액션 */
+  runmile?: {
+    searchPlaceholder: string;
+    chatLabel: string;
+    loginLabel: string;
   };
 }
 
@@ -378,6 +385,38 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       mobileHeight: 56,
     },
   },
+  runmile: {
+    label: "Runmile",
+    /* Runmile 은 coral 워드마크를 텍스트로 직접 렌더한다 (HTML 패키지에 로고 자산
+     * 없음). logo 는 BrandLogo 타입을 만족시키기 위한 더미 — web 헤더는 renderLogoImg
+     * 대신 <span> 워드마크를 쓰고, footer 도 src "" 라 깨진 이미지가 안 나온다. */
+    logo: { src: "", alt: "Runmile", width: 142, height: 32 },
+    maxWidth: 1440,
+    webMenu: [
+      { key: "race", label: "대회 정보", href: "/race" },
+      { key: "community", label: "커뮤니티", href: "/community" },
+    ],
+    mobileTitle: "Runmile",
+    authLabel: "로그인",
+    footerTone: "light",
+    footerSurface: "app",
+    footerLinks: [
+      { label: "이용약관", href: "#" },
+      { label: "개인정보처리방침", href: "#", bold: true },
+    ],
+    company: {
+      name: "㈜넛지헬스케어주식회사",
+      ceo: "송승근, 박정신",
+      bizNumber: "849-88-00418",
+      address: "서울특별시 강남구 역삼로1길8 넛지캠퍼스 빌딩",
+      copyright: "Copyright Runmile. All Rights Reserved.",
+    },
+    runmile: {
+      searchPlaceholder: "궁금한 대회정보를 검색해 보세요",
+      chatLabel: "채팅",
+      loginLabel: "로그인",
+    },
+  },
 };
 
 const BRAND_KEYS = Object.keys(BRAND_DATA) as BrandKey[];
@@ -475,6 +514,16 @@ const TROST_ICONS = {
   search: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6" /><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>`,
   bell: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3.5a6 6 0 0 0-6 6v3.4l-1.6 2.6a.8.8 0 0 0 .68 1.2h13.84a.8.8 0 0 0 .68-1.2L18 12.9V9.5a6 6 0 0 0-6-6Zm0 17a2.5 2.5 0 0 1-2.45-2h4.9A2.5 2.5 0 0 1 12 20.5Z" fill="currentColor"/></svg>`,
   hamburger: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>`,
+};
+
+/* Runmile icons — currentColor stroke glyphs (chat / login / search).
+ * React WebHeader 는 @nudge-design/icons 의 RunmileChatting/Login/Search 를 쓰지만,
+ * HTML 패키지는 다른 brand (TROST/GENIET) 와 동일하게 inline SVG 로 self-contained
+ * 하게 들고 간다. 구조 / 사이즈 (28 액션, 24 검색) / currentColor 만 정확하면 됨. */
+const RUNMILE_ICONS = {
+  chat: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 14.5h6a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2v2l-3-2h-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
+  login: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 3.5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 12h8M19 9l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  search: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
 };
 
 /* ──────────────── Brand: NudgeEAP ──────────────── */
@@ -1540,6 +1589,227 @@ function renderCashwalkBizHeader(
   `;
 }
 
+/* ──────────────── Brand: Runmile ──────────────── */
+/* React: RunmileWebHeader (Figma 1058:13271) — 1단 80h 헤더.
+ *   좌측 coral 워드마크 + GNB(대회 정보 / 커뮤니티) / 중앙 absolute coral 검색바 /
+ *   우측 액션(채팅 + 로그인, 아이콘 28 위 + 라벨 14 아래).
+ * 색은 React 와 동일하게 --semantic-* var() + hex fallback 으로 못박는다. */
+
+function renderRunmileHeader(
+  brand: BrandChrome,
+  surface: HeaderSurface,
+  activeKey: string,
+  _assetBaseUrl: string,
+): string {
+  const r = brand.runmile;
+  if (!r) return "";
+
+  if (surface === "webview") {
+    return renderWebviewHeader(brand.mobileTitle);
+  }
+
+  /* React constants (WebHeader.tsx) — 시멘틱 토큰 + hex fallback. */
+  const C_BLACK = "var(--semantic-icon-strong-default, #221E1F)";
+  const C_CORAL_FILL = "var(--semantic-fill-brand-default, #FF5B37)";
+  const C_CORAL_TEXT = "var(--semantic-text-brand-default, #FF5B37)";
+  const C_CORAL_ICON = "var(--semantic-icon-brand-default, #FF5B37)";
+  const C_LABEL = "var(--semantic-text-normal-default, #333D4B)";
+  const C_ICON_GRAY = "var(--semantic-icon-normal-default, #4E5968)";
+  const C_PLACEHOLDER = "var(--semantic-text-muted-default, #919CAA)";
+  const C_BORDER = "var(--semantic-border-subtle-default, #E5E8EB)";
+  const C_WHITE = "var(--semantic-bg-surface-default, #FFFFFF)";
+
+  if (surface === "mobile") {
+    /* 모바일은 52h white bar + 중앙 coral 워드마크 (AppBar variant="logo" 톤). */
+    const styleId = "nds-brand-chrome-runmile-mobile";
+    const css = `
+      .nds-brand-runmile-mobile {
+        position: relative;
+        width: 100%;
+        height: 52px;
+        background: ${C_WHITE};
+        box-sizing: border-box;
+      }
+      .nds-brand-runmile-mobile__logo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        font-weight: 800;
+        color: ${C_CORAL_TEXT};
+        text-decoration: none;
+        line-height: 1;
+      }
+    `;
+    return `
+      ${ensureStyle(styleId, css)}
+      <header class="nds-brand-runmile-mobile" data-slot="root">
+        <a class="nds-brand-runmile-mobile__logo" href="/">Runmile</a>
+      </header>
+    `;
+  }
+
+  /* desktop — 1단 80h */
+  const styleId = "nds-brand-chrome-runmile-web";
+  const css = `
+    .nds-brand-runmile-web {
+      display: block;
+      width: 100%;
+      height: 80px;
+      background: ${C_WHITE};
+      border-bottom: 1px solid ${C_BORDER};
+      box-sizing: border-box;
+    }
+    .nds-brand-runmile-web__inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      width: 100%;
+      max-width: ${brand.maxWidth}px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 80px;
+      box-sizing: border-box;
+    }
+    .nds-brand-runmile-web__logo {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      line-height: 0;
+      text-decoration: none;
+    }
+    .nds-brand-runmile-web__logo span {
+      font-size: 22px;
+      font-weight: 800;
+      color: ${C_CORAL_TEXT};
+      line-height: 1;
+    }
+    .nds-brand-runmile-web__nav {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      flex-shrink: 0;
+    }
+    .nds-brand-runmile-web__nav-item {
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      color: ${C_BLACK};
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nds-brand-runmile-web__nav-item[data-active="true"] {
+      color: ${C_CORAL_TEXT};
+    }
+    .nds-brand-runmile-web__search {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      width: 430px;
+      height: 48px;
+      border: 2px solid ${C_CORAL_FILL};
+      border-radius: 100px;
+      box-sizing: border-box;
+      padding: 0 14px 0 18px;
+      background: ${C_WHITE};
+    }
+    .nds-brand-runmile-web__search input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 15px;
+      line-height: 22px;
+      color: ${C_BLACK};
+    }
+    .nds-brand-runmile-web__search input::placeholder {
+      color: ${C_PLACEHOLDER};
+    }
+    .nds-brand-runmile-web__search-btn {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: ${C_CORAL_ICON};
+      line-height: 0;
+      margin-left: 8px;
+    }
+    .nds-brand-runmile-web__actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .nds-brand-runmile-web__action {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 61px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+    }
+    .nds-brand-runmile-web__action-icon {
+      width: 28px;
+      height: 28px;
+      line-height: 0;
+      color: ${C_ICON_GRAY};
+    }
+    .nds-brand-runmile-web__action-label {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+      color: ${C_LABEL};
+    }
+  `;
+
+  const navHtml = brand.webMenu
+    .map(
+      (item) =>
+        `<a class="nds-brand-runmile-web__nav-item" href="${escapeAttr(item.href)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
+    )
+    .join("");
+
+  return `
+    ${ensureStyle(styleId, css)}
+    <header class="nds-brand-runmile-web" data-slot="root">
+      <div class="nds-brand-runmile-web__inner">
+        <a class="nds-brand-runmile-web__logo" href="/"><span>Runmile</span></a>
+        <nav class="nds-brand-runmile-web__nav">${navHtml}</nav>
+        <div class="nds-brand-runmile-web__search">
+          <input type="text" placeholder="${escapeAttr(r.searchPlaceholder)}" autocomplete="off" />
+          <button type="button" class="nds-brand-runmile-web__search-btn" aria-label="검색">${RUNMILE_ICONS.search}</button>
+        </div>
+        <div class="nds-brand-runmile-web__actions">
+          <a class="nds-brand-runmile-web__action" href="#" aria-label="${escapeAttr(r.chatLabel)}">
+            <span class="nds-brand-runmile-web__action-icon">${RUNMILE_ICONS.chat}</span>
+            <span class="nds-brand-runmile-web__action-label">${escapeHtml(r.chatLabel)}</span>
+          </a>
+          <a class="nds-brand-runmile-web__action" href="#" aria-label="${escapeAttr(r.loginLabel)}">
+            <span class="nds-brand-runmile-web__action-icon">${RUNMILE_ICONS.login}</span>
+            <span class="nds-brand-runmile-web__action-label">${escapeHtml(r.loginLabel)}</span>
+          </a>
+        </div>
+      </div>
+    </header>
+  `;
+}
+
 /* ──────────────── Header dispatch ──────────────── */
 
 function renderHeader(
@@ -1556,6 +1826,8 @@ function renderHeader(
       return renderTrostHeader(brand, surface, activeKey, assetBaseUrl);
     case "cashwalk-biz":
       return renderCashwalkBizHeader(brand, surface, activeKey, assetBaseUrl);
+    case "runmile":
+      return renderRunmileHeader(brand, surface, activeKey, assetBaseUrl);
     case "nudge-eap":
     default:
       return renderNudgeEAPHeader(brand, surface, activeKey, assetBaseUrl);
@@ -1626,7 +1898,9 @@ function renderFooter(
     ? `<div class="nds-footer__extra">${escapeHtml(brand.extra)}</div>`
     : "";
   const footerLogo = brand.footerLogo ?? brand.logo;
-  const footerLogoSrc = resolveAssetUrl(assetBaseUrl, footerLogo.src);
+  /* runmile 처럼 로고 자산 없이 워드마크만 쓰는 brand 는 footerLogo.src 가 "" —
+   * 빈 src 로 <img> 를 만들면 깨진 이미지가 뜨므로 src 있을 때만 렌더한다. */
+  const footerLogoSrc = footerLogo.src ? resolveAssetUrl(assetBaseUrl, footerLogo.src) : "";
   const linkReset = ensureStyle(FOOTER_LINK_RESET_ID, FOOTER_LINK_RESET_CSS);
 
   if (surface === "web") {
@@ -1640,7 +1914,7 @@ function renderFooter(
             <nds-footer-company-info data="${company}"></nds-footer-company-info>
           </nds-footer-web-section>
           <nds-footer-web-section>
-            ${renderLogoImg(footerLogo, assetBaseUrl)}
+            ${footerLogo.src ? renderLogoImg(footerLogo, assetBaseUrl) : ""}
           </nds-footer-web-section>
         </nds-footer-web-row>
       </nds-footer-web>
