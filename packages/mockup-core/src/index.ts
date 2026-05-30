@@ -14,6 +14,8 @@ export * from "./tools/html-analyzer.js";
 export * from "./tools/html-validator.js";
 // single-file 빌드 + workspace audit + 버전 badge stamp
 export * from "./tools/build-html.js";
+// prebuilt DS 단일 자산(dist/standalone) 런타임 로더 — html intent inline 의 자원
+export * from "./tools/standalone-assets.js";
 // Vite dev server spawn (하네스는 주로 iframe 미리보기를 쓰지만 보존)
 export * from "./tools/preview.js";
 // spawn 시 PATH 보강

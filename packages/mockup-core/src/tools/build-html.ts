@@ -15,7 +15,9 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import fs from "node:fs";
 import path from "node:path";
+import * as cheerio from "cheerio";
 import { getAugmentedPath, getToolProcessEnv } from "./process-env.js";
+import { loadStandaloneAssets } from "./standalone-assets.js";
 import {
   countHtmlUsage,
   reportHtmlMockupUsage,
@@ -61,6 +63,11 @@ export interface BuildSinglefileHtmlArgs {
    * - "html": vanilla HTML / Web Component (<nds-*>) 워크플로우 — html-친화 audit 적용.
    */
   intent?: "react" | "html";
+  /**
+   * html intent 한정: inline 할 브랜드 토큰 CSS 선택. 생략 시 index.html 의 data-brand /
+   * body.brand-* → 워크스페이스 nudge.brand 마커 → baseOnlyBrand(nudge-eap) 순으로 자동 감지.
+   */
+  brand?: string;
 }
 
 export type WorkspaceIntent = "react" | "html";
@@ -194,110 +201,122 @@ export async function buildSinglefileHtml(
     }
   }
 
-  let pkg: Record<string, unknown>;
-  try {
-    pkg = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8")) as Record<string, unknown>;
-  } catch (err) {
-    return fail(`Failed to parse package.json: ${(err as Error).message}`);
-  }
-  const deps = (pkg.dependencies ?? {}) as Record<string, string>;
-  const devDeps = (pkg.devDependencies ?? {}) as Record<string, string>;
-  const allDeps = { ...deps, ...devDeps };
-
-  if (!allDeps.vite) {
-    return fail(
-      "This tool requires a Vite project. 'vite' is missing from package.json dependencies.",
-    );
-  }
-
-  const configPath = VITE_CONFIG_CANDIDATES.map((c) => path.join(cwd, c)).find((p) =>
-    fs.existsSync(p),
-  );
-  if (!configPath) {
-    return fail(
-      `No vite.config.[ts|mts|js|mjs] found at ${cwd}. Create one before running this tool.`,
-    );
-  }
-
-  let installedSinglefile = false;
-  if (!allDeps["vite-plugin-singlefile"]) {
-    try {
-      await execFileAsync("npm", ["install", "--save-dev", "vite-plugin-singlefile"], {
-        cwd,
-        env: getToolProcessEnv(),
-        timeout: NPM_INSTALL_TIMEOUT_MS,
-      });
-      installedSinglefile = true;
-    } catch (err) {
-      return fail(
-        `Failed to install vite-plugin-singlefile: ${(err as Error).message}. ` +
-          `MCP tried with PATH=${getAugmentedPath()}. ` +
-          `Try running 'npm install --save-dev vite-plugin-singlefile' manually.`,
-      );
-    }
-  }
-
-  const configBefore = fs.readFileSync(configPath, "utf-8");
-  let configPatched = false;
-  let configCurrent = configBefore;
-  if (!configBefore.includes("vite-plugin-singlefile")) {
-    const patched = patchViteConfig(configBefore);
-    if (patched === null) {
-      return fail(
-        `Could not auto-patch ${path.relative(cwd, configPath)}. Add this manually:\n` +
-          `  import { viteSingleFile } from "vite-plugin-singlefile";\n` +
-          `  // then add viteSingleFile() to the plugins array in defineConfig(...)\n` +
-          `Then run build_singlefile_html again.`,
-      );
-    }
-    configCurrent = patched;
-    configPatched = true;
-  }
-  // DS CSS 의 box-shadow `... ));` 가 lightningcss 파서를 깨는 사례가 있어 (Vite ≥ 5.x 의 cssMinify 기본값이
-  // lightningcss 인 환경에서 발생). singlefile 패치가 skip 된 경우에도 cssMinify:false 만큼은 강제 보장.
-  const withMinify = ensureCssMinifyDisabled(configCurrent);
-  if (withMinify !== configCurrent) {
-    configCurrent = withMinify;
-    configPatched = true;
-  }
-  if (configPatched) {
-    fs.writeFileSync(configPath, configCurrent, "utf-8");
-  }
-
-  // BrowserRouter 경고는 React 트리에만 의미가 있다 (HashRouter 권장). HTML 워크플로우에선 skip.
-  const routerWarning = intent === "react" ? detectBrowserRouter(cwd) : undefined;
-
   const startMs = Date.now();
   // skipSourceBadge: 소스 index.html 을 건드리지 않는다(하네스의 비파괴 export).
   // 버전 stamp 는 dist 산출물(injectHtmlUsageSummary)에만 들어가므로 공유용 파일엔 그대로 남는다.
   const sourceBadgeSync =
     intent === "html" && !args.skipSourceBadge ? syncSourceDsBadge(cwd) : undefined;
-  let buildStdout = "";
-  let buildStderr = "";
-  try {
-    const result = await execFileAsync("npx", ["vite", "build"], {
-      cwd,
-      env: getToolProcessEnv(),
-      timeout: VITE_BUILD_TIMEOUT_MS,
-      maxBuffer: BUILD_MAX_BUFFER,
-    });
-    buildStdout = result.stdout;
-    buildStderr = result.stderr;
-  } catch (err) {
-    const e = err as { stdout?: string; stderr?: string; message?: string };
-    return fail(
-      `vite build failed: ${e.message ?? "unknown error"}\n` +
-        `PATH used by MCP: ${getAugmentedPath()}\n` +
-        tailLines(`${e.stdout ?? ""}\n${e.stderr ?? ""}`.trim(), 20),
-    );
-  }
-  const buildLogTail = tailLines(`${buildStdout}\n${buildStderr}`.trim(), 12);
 
   const outputPath = path.join(cwd, "dist", "index.html");
+  // react 의 vite 빌드만 채우는 진단 필드. html(무번들러) 경로에선 undefined.
+  let configPath: string | undefined;
+  let configPatched = false;
+  let installedSinglefile = false;
+  let routerWarning: string | undefined;
+  let buildLogTail: string | undefined;
+
+  if (intent === "html") {
+    // ── 무번들러 경로: prebuilt DS runtime/CSS 를 사용자 index.html 에 inline → 단일 파일.
+    //    bare import / vite 불필요. 순수 cheerio 문자열 연산.
+    const inlined = buildHtmlSinglefileNoBundler(cwd, args.brand, outputPath);
+    if (!inlined.ok) return { ...fail(inlined.error ?? "html inline build failed"), intent };
+  } else {
+    // ── react 경로: 기존 vite single-file 빌드. JSX 컴파일이 필요해 번들러 유지. ──
+    let pkg: Record<string, unknown>;
+    try {
+      pkg = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8")) as Record<string, unknown>;
+    } catch (err) {
+      return fail(`Failed to parse package.json: ${(err as Error).message}`);
+    }
+    const deps = (pkg.dependencies ?? {}) as Record<string, string>;
+    const devDeps = (pkg.devDependencies ?? {}) as Record<string, string>;
+    const allDeps = { ...deps, ...devDeps };
+
+    if (!allDeps.vite) {
+      return fail(
+        "This tool requires a Vite project. 'vite' is missing from package.json dependencies.",
+      );
+    }
+
+    configPath = VITE_CONFIG_CANDIDATES.map((c) => path.join(cwd, c)).find((p) => fs.existsSync(p));
+    if (!configPath) {
+      return fail(
+        `No vite.config.[ts|mts|js|mjs] found at ${cwd}. Create one before running this tool.`,
+      );
+    }
+
+    if (!allDeps["vite-plugin-singlefile"]) {
+      try {
+        await execFileAsync("npm", ["install", "--save-dev", "vite-plugin-singlefile"], {
+          cwd,
+          env: getToolProcessEnv(),
+          timeout: NPM_INSTALL_TIMEOUT_MS,
+        });
+        installedSinglefile = true;
+      } catch (err) {
+        return fail(
+          `Failed to install vite-plugin-singlefile: ${(err as Error).message}. ` +
+            `MCP tried with PATH=${getAugmentedPath()}. ` +
+            `Try running 'npm install --save-dev vite-plugin-singlefile' manually.`,
+        );
+      }
+    }
+
+    const configBefore = fs.readFileSync(configPath, "utf-8");
+    let configCurrent = configBefore;
+    if (!configBefore.includes("vite-plugin-singlefile")) {
+      const patched = patchViteConfig(configBefore);
+      if (patched === null) {
+        return fail(
+          `Could not auto-patch ${path.relative(cwd, configPath)}. Add this manually:\n` +
+            `  import { viteSingleFile } from "vite-plugin-singlefile";\n` +
+            `  // then add viteSingleFile() to the plugins array in defineConfig(...)\n` +
+            `Then run build_singlefile_html again.`,
+        );
+      }
+      configCurrent = patched;
+      configPatched = true;
+    }
+    // DS CSS 의 box-shadow `... ));` 가 lightningcss 파서를 깨는 사례가 있어 (Vite ≥ 5.x 의 cssMinify 기본값이
+    // lightningcss 인 환경에서 발생). singlefile 패치가 skip 된 경우에도 cssMinify:false 만큼은 강제 보장.
+    const withMinify = ensureCssMinifyDisabled(configCurrent);
+    if (withMinify !== configCurrent) {
+      configCurrent = withMinify;
+      configPatched = true;
+    }
+    if (configPatched) {
+      fs.writeFileSync(configPath, configCurrent, "utf-8");
+    }
+
+    // BrowserRouter 경고는 React 트리에만 의미가 있다 (HashRouter 권장).
+    routerWarning = detectBrowserRouter(cwd);
+
+    let buildStdout = "";
+    let buildStderr = "";
+    try {
+      const result = await execFileAsync("npx", ["vite", "build"], {
+        cwd,
+        env: getToolProcessEnv(),
+        timeout: VITE_BUILD_TIMEOUT_MS,
+        maxBuffer: BUILD_MAX_BUFFER,
+      });
+      buildStdout = result.stdout;
+      buildStderr = result.stderr;
+    } catch (err) {
+      const e = err as { stdout?: string; stderr?: string; message?: string };
+      return fail(
+        `vite build failed: ${e.message ?? "unknown error"}\n` +
+          `PATH used by MCP: ${getAugmentedPath()}\n` +
+          tailLines(`${e.stdout ?? ""}\n${e.stderr ?? ""}`.trim(), 20),
+      );
+    }
+    buildLogTail = tailLines(`${buildStdout}\n${buildStderr}`.trim(), 12);
+  }
+
   if (!fs.existsSync(outputPath)) {
     return fail(
       `Build succeeded but dist/index.html is missing. Custom outDir in vite.config? ` +
-        `Build log tail:\n${buildLogTail}`,
+        (buildLogTail ? `Build log tail:\n${buildLogTail}` : ""),
     );
   }
   const dsUsageSummary = intent === "html" ? injectHtmlUsageSummary(cwd, outputPath) : undefined;
@@ -399,6 +418,111 @@ export async function buildSinglefileHtml(
     nextStep: nextCall,
     _nextSuggestion,
   };
+}
+
+/**
+ * html intent 의 무번들러 single-file 빌드.
+ *
+ * 사용자 index.html 을 읽어 (1) dev 전용 외부 참조(<script src> / <link rel=stylesheet>) 를
+ * 걷어내고 (2) prebuilt DS CSS 를 <head> 맨 앞 <style> 로, runtime IIFE 를 </body> 직전
+ * <script> 로 inline 한 뒤 dist/index.html 로 쓴다. 결과는 외부의존성 0 인 단일 파일.
+ *
+ * 원본 index.html 은 변경하지 않는다(항상 source → fresh dist 라 멱등).
+ */
+function buildHtmlSinglefileNoBundler(
+  cwd: string,
+  argBrand: string | undefined,
+  outputPath: string,
+): { ok: boolean; error?: string; brand?: string } {
+  const sourcePath = path.join(cwd, "index.html");
+  if (!fs.existsSync(sourcePath)) {
+    return {
+      ok: false,
+      error: `index.html not found at ${cwd}. Create it with <nds-*> tags first.`,
+    };
+  }
+
+  let source: string;
+  try {
+    source = fs.readFileSync(sourcePath, "utf-8");
+  } catch (err) {
+    return { ok: false, error: `Failed to read index.html: ${(err as Error).message}` };
+  }
+
+  const $ = cheerio.load(source, { xmlMode: false });
+
+  // 1) dev 전용 외부 참조 제거 — 단일 파일엔 로컬 상대경로가 살아남을 수 없다.
+  //    절대 http(s)://, //CDN 만 보존하고 나머지(로컬 .ts/.js/.css, /src, sidecar 번들)는 모두 제거.
+  const isExternal = (url: string) => /^(https?:)?\/\//i.test(url.trim());
+  $("script[src]").each((_, el) => {
+    if (!isExternal($(el).attr("src") ?? "")) $(el).remove();
+  });
+  $("link[rel='stylesheet'][href]").each((_, el) => {
+    if (!isExternal($(el).attr("href") ?? "")) $(el).remove();
+  });
+
+  // 2) 브랜드 해석 후 prebuilt 자산 로드.
+  const brand = resolveHtmlBrand($, cwd, argBrand);
+  let css: string;
+  let runtimeJs: string;
+  try {
+    const assets = loadStandaloneAssets(brand);
+    css = assets.css;
+    runtimeJs = assets.runtimeJs;
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+
+  // 3) inline. </style>·</script> 조기 종료 방지 가드.
+  const safeCss = css.replace(/<\/(style)/gi, "<\\/$1");
+  const safeJs = runtimeJs.replace(/<\/(script)/gi, "<\\/$1");
+  const head = $("head");
+  if (head.length === 0) $("html").prepend("<head></head>");
+  $("head").prepend(`<style data-nds-standalone>\n${safeCss}\n</style>`);
+  const body = $("body");
+  if (body.length === 0) $("html").append("<body></body>");
+  $("body").append(`<script>\n${safeJs}\n</script>`);
+
+  // 4) dist/index.html 쓰기.
+  try {
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.writeFileSync(outputPath, $.html(), "utf-8");
+  } catch (err) {
+    return { ok: false, error: `Failed to write ${outputPath}: ${(err as Error).message}` };
+  }
+  return { ok: true, brand };
+}
+
+/**
+ * html intent inline 시 적용할 브랜드 결정.
+ *   ① 명시 인자 → ② index.html 의 <html data-brand> / <body class="brand-*"> →
+ *   ③ 워크스페이스 nudge.brand 마커 → ④ undefined(loadStandaloneAssets 가 baseOnlyBrand 폴백).
+ */
+function resolveHtmlBrand(
+  $: cheerio.CheerioAPI,
+  cwd: string,
+  argBrand: string | undefined,
+): string | undefined {
+  const fromArg = argBrand?.trim();
+  if (fromArg) return fromArg;
+
+  const dataBrand = $("html").attr("data-brand") ?? $("body").attr("data-brand");
+  if (dataBrand?.trim()) return dataBrand.trim();
+
+  const bodyClass = $("body").attr("class") ?? "";
+  const classMatch = bodyClass.match(/\bbrand-([a-z0-9-]+)\b/i);
+  if (classMatch) return classMatch[1];
+
+  const markerPath = path.join(cwd, "nudge.brand");
+  if (fs.existsSync(markerPath)) {
+    try {
+      const marker = fs.readFileSync(markerPath, "utf-8").trim();
+      if (marker) return marker;
+    } catch {
+      // ignore — 폴백
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -753,8 +877,8 @@ export function auditMockupWorkspace(
         files: [],
         detail:
           "프로젝트 루트에 index.html 이 없습니다. vanilla HTML 워크플로우의 진입점은 " +
-          "Vite vanilla-ts 의 root index.html 입니다 — `npm create vite@latest -- --template vanilla-ts` 후 " +
-          "index.html 에 <nds-*> 직접 작성하세요. " +
+          "루트 index.html 입니다 — 빌드 도구 없이 index.html 에 <nds-*> 를 직접 작성하세요. " +
+          "build_singlefile_html 이 DS runtime/CSS 를 자동 inline 합니다. " +
           "get_setup({ step: 'full', intent: 'html' }) 로 템플릿을 받을 수 있습니다.",
       });
     } else {

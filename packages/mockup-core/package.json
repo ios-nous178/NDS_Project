@@ -1,7 +1,8 @@
 {
   "name": "@nudge-design/mockup-core",
-  "version": "0.0.1",
-  "description": "Deterministic mockup engine shared by the Nudge DS MCP server and the desktop harness (HTML build, DS-wrap, validation, usage tracking).",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DS 목업 빌드/검증 코어 — MCP 와 데스크탑이 공유.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -19,20 +20,20 @@
       "default": "./dist/types/*.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test 'src/**/*.test.ts'"
   },
   "dependencies": {
     "@babel/parser": "^7.25.0",
     "@babel/types": "^7.25.0",
+    "@nudge-design/html": "workspace:*",
+    "@nudge-design/react": "workspace:*",
+    "@nudge-design/tokens": "workspace:*",
     "cheerio": "^1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.7.0"
+    "@types/node": "^20.0.0"
   }
 }

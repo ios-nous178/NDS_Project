@@ -102,6 +102,18 @@ copyFile(path.join(ROOT, "packages/mcp/manifest.json"), path.join(BUNDLE_DIR, "m
 copyFile(path.join(ROOT, "packages/mcp/catalog.json"), path.join(BUNDLE_DIR, "catalog.json"));
 copyDir(path.join(ROOT, "packages/mcp/dist"), path.join(BUNDLE_DIR, "dist"));
 
+// 1-b) prebuilt DS 단일 자산(html intent inline 의 자원) — dist/server.js 옆 dist/standalone 에
+//      두어 mockup-core 의 resolver(__dirname/standalone)가 찾게 한다.
+const mcpbStandaloneSrc = path.join(ROOT, "packages/html/dist/standalone");
+if (!fs.existsSync(path.join(mcpbStandaloneSrc, "manifest.json"))) {
+  console.error(
+    `[pack-mcpb] ${path.relative(ROOT, mcpbStandaloneSrc)}/manifest.json 없음 — ` +
+      `'pnpm release:local' 또는 'pnpm build --filter @nudge-design/html' 로 먼저 생성하세요.`,
+  );
+  process.exit(1);
+}
+copyDir(mcpbStandaloneSrc, path.join(BUNDLE_DIR, "dist/standalone"));
+
 // 2) 외부 목업 프로젝트에 설치할 DS .tgz 동봉
 copyDir(path.join(ROOT, "local-packages"), path.join(BUNDLE_DIR, "local-packages"));
 
