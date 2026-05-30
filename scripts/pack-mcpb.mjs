@@ -7,40 +7,47 @@
  * 사용:
  *   node scripts/pack-mcpb.mjs                # 풀 빌드 + 패킹
  *   node scripts/pack-mcpb.mjs --no-build     # 빌드 생략 (이미 빌드된 상태)
- *   node scripts/pack-mcpb.mjs --no-install   # node_modules 설치 생략 (오프라인 등)
  *
- * 번들 구조:
- *   manifest.json                      ← mcpb 스펙
- *   catalog.json                       ← 컴포넌트 카탈로그
- *   dist/server.js                     ← MCP 진입점
- *   node_modules/                      ← 런타임 의존성 (npm install --omit=dev)
- *   local-packages/*.tgz               ← DS 패키지 4종
- *   package.json                       ← npm install 시드용
+ * 번들 구조 (= bundle-mcp-desktop 과 동일한 single-file 레이아웃):
+ *   manifest.json                      ← mcpb 스펙 (Claude Desktop 이 루트에서 읽음)
+ *   dist/
+ *     tools/server.mjs                 ← esbuild 단일 파일 (workspace deps 까지 인라인)
+ *     catalog.json                     ← server 의 __dirname/../catalog.json
+ *     manifest.json                    ← server 의 __dirname/../manifest.json (version 표시용)
+ *     standalone/                      ← prebuilt DS 단일 자산 (../standalone sidecar)
+ *     assets/                          ← DS 화면 이미지 (../assets sidecar)
+ *     icons/vanilla.js                 ← find_icon({name}) vanilla 정의 (../icons/vanilla.js)
+ *     local-packages/*.tgz             ← get_setup 가 외부 목업 프로젝트에 설치 안내하는 DS .tgz
+ *
+ * 왜 esbuild 단일 파일인가:
+ *  - MCP 서버는 @nudge-design/mockup-core·assets·icons(workspace) 를 런타임에 정적 import 한다.
+ *    예전의 npm-install 방식은 이 workspace 패키지(특히 mockup-core)를 node_modules 에 넣지 못해
+ *    `ERR_MODULE_NOT_FOUND: @nudge-design/mockup-core` 로 부팅이 깨졌다.
+ *  - esbuild 로 전부 인라인하면 node_modules / local-packages 시드 없이 한 파일로 동작한다.
+ *    (apps/desktop 의 bundle-mcp-desktop.mjs 와 동일한 해결책 — 그쪽은 이미 이 방식이다.)
+ *
+ * 왜 dist/tools/server.mjs 깊이인가:
+ *  - 단일 파일로 합치면 모든 모듈의 import.meta.url 이 출력 파일 위치로 collapse 된다.
+ *  - sidecar resolver(standalone/asset/icon)들이 `__dirname/../{standalone,assets,icons}` 를
+ *    탐색하므로, server.mjs 를 dist/tools 에 두고 자산을 dist/ 바로 아래에 둬야 ③ 전략이 맞는다.
  *
  * mcpb CLI 가 설치되어 있으면 mcpb pack 으로 압축하고, 없으면 zip 으로 폴백한다.
  */
 import fs from "node:fs";
 import path from "node:path";
-import { execFileSync, execSync, spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { build } from "esbuild";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
+const MCP = path.join(ROOT, "packages/mcp");
 const OUT_ROOT = path.join(ROOT, "dist-mcpb");
 const BUNDLE_NAME = "nudge-ds";
 const BUNDLE_DIR = path.join(OUT_ROOT, BUNDLE_NAME);
 const MCPB_PATH = path.join(OUT_ROOT, `${BUNDLE_NAME}.mcpb`);
 
 const skipBuild = process.argv.includes("--no-build");
-const skipInstall = process.argv.includes("--no-install");
-
-const runtimeDeps = [
-  "@babel/parser",
-  "@babel/traverse",
-  "@babel/types",
-  "@modelcontextprotocol/sdk",
-  "cheerio",
-];
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, "utf-8"));
@@ -77,71 +84,87 @@ function run(command, args, options = {}) {
   execFileSync(command, args, { cwd: ROOT, stdio: "inherit", ...options });
 }
 
+// Windows 는 pnpm 이 pnpm.cmd 라 execFile(no-shell)로는 ENOENT.
+const PNPM = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+
 if (!skipBuild) {
-  // local-packages/*.tgz 갱신 (catalog 와 같은 버전)
-  run("pnpm", ["release:local"]);
+  // local-packages/*.tgz 갱신 (catalog 와 같은 버전) + 의존 패키지 dist 보장
+  run(PNPM, ["release:local"]);
   // dist/server.js + catalog.json 생성
-  run("pnpm", ["build", "--filter", "@nudge-design/mcp"]);
+  run(PNPM, ["build", "--filter", "@nudge-design/mcp"]);
 }
 
-const mcpPkg = readJson(path.join(ROOT, "packages/mcp/package.json"));
-const mcpManifest = readJson(path.join(ROOT, "packages/mcp/manifest.json"));
-const deps = Object.fromEntries(runtimeDeps.map((name) => [name, mcpPkg.dependencies[name]]));
-
+const mcpManifest = readJson(path.join(MCP, "manifest.json"));
 // manifest.json 의 version 이 mcpb 버전의 정의(SSOT)다.
-// 과거에는 packages/mcp/package.json 으로 덮어쓰는 로직이 있었으나, manifest 를
-// 손으로 올린 의도를 빌드가 되돌려 놓는 부작용이 있어 제거함.
 console.log(`[pack-mcpb] manifest.version = ${mcpManifest.version}`);
 
-removeIfExists(BUNDLE_DIR);
-ensureDir(BUNDLE_DIR);
-ensureDir(OUT_ROOT);
-
-// 1) MCP dist + 메타데이터
-copyFile(path.join(ROOT, "packages/mcp/manifest.json"), path.join(BUNDLE_DIR, "manifest.json"));
-copyFile(path.join(ROOT, "packages/mcp/catalog.json"), path.join(BUNDLE_DIR, "catalog.json"));
-copyDir(path.join(ROOT, "packages/mcp/dist"), path.join(BUNDLE_DIR, "dist"));
-
-// 1-b) prebuilt DS 단일 자산(html intent inline 의 자원) — dist/server.js 옆 dist/standalone 에
-//      두어 mockup-core 의 resolver(__dirname/standalone)가 찾게 한다.
-const mcpbStandaloneSrc = path.join(ROOT, "packages/html/dist/standalone");
-if (!fs.existsSync(path.join(mcpbStandaloneSrc, "manifest.json"))) {
+const serverEntry = path.join(MCP, "dist/server.js");
+if (!fs.existsSync(serverEntry)) {
   console.error(
-    `[pack-mcpb] ${path.relative(ROOT, mcpbStandaloneSrc)}/manifest.json 없음 — ` +
-      `'pnpm release:local' 또는 'pnpm build --filter @nudge-design/html' 로 먼저 생성하세요.`,
+    `[pack-mcpb] ${path.relative(ROOT, serverEntry)} 없음 — --no-build 없이 실행하세요.`,
   );
   process.exit(1);
 }
-copyDir(mcpbStandaloneSrc, path.join(BUNDLE_DIR, "dist/standalone"));
 
-// 2) 외부 목업 프로젝트에 설치할 DS .tgz 동봉
-copyDir(path.join(ROOT, "local-packages"), path.join(BUNDLE_DIR, "local-packages"));
-
-// 3) node_modules 시드용 package.json
-fs.writeFileSync(
-  path.join(BUNDLE_DIR, "package.json"),
-  `${JSON.stringify(
-    {
-      name: "nudge-ds-mcpb-bundle",
-      private: true,
-      type: "module",
-      main: "dist/server.js",
-      dependencies: deps,
-    },
-    null,
-    2,
-  )}\n`,
-  "utf-8",
-);
-
-// 4) 런타임 의존성 설치
-if (!skipInstall) {
-  console.log("\n[pack-mcpb] installing runtime dependencies into bundle...");
-  execSync("npm install --omit=dev --ignore-scripts --no-audit --no-fund", {
-    cwd: BUNDLE_DIR,
-    stdio: "inherit",
-  });
+// ── prebuilt sidecar 입력 가드 (없으면 빌드가 런타임에 깨짐) ─────────────────
+const standaloneSrc = path.join(ROOT, "packages/html/dist/standalone");
+if (!fs.existsSync(path.join(standaloneSrc, "manifest.json"))) {
+  console.error(
+    `[pack-mcpb] ${path.relative(ROOT, standaloneSrc)}/manifest.json 없음 — ` +
+      `'pnpm build --filter @nudge-design/html' 로 먼저 생성하세요.`,
+  );
+  process.exit(1);
 }
+const assetsFilesSrc = path.join(ROOT, "packages/assets/dist/files");
+if (!fs.existsSync(assetsFilesSrc)) {
+  console.error(
+    `[pack-mcpb] ${path.relative(ROOT, assetsFilesSrc)} 없음 — ` +
+      `'pnpm build --filter @nudge-design/assets' 로 먼저 생성하세요.`,
+  );
+  process.exit(1);
+}
+const iconsVanillaSrc = path.join(ROOT, "packages/icons/dist/vanilla.js");
+if (!fs.existsSync(iconsVanillaSrc)) {
+  console.error(
+    `[pack-mcpb] ${path.relative(ROOT, iconsVanillaSrc)} 없음 — ` +
+      `'pnpm build --filter @nudge-design/icons' 로 먼저 생성하세요.`,
+  );
+  process.exit(1);
+}
+
+removeIfExists(BUNDLE_DIR);
+ensureDir(path.join(BUNDLE_DIR, "dist/tools"));
+ensureDir(OUT_ROOT);
+
+// 1) esbuild 단일 파일 (workspace deps 포함 전부 인라인, node: 빌트인만 외부)
+console.log("[pack-mcpb] esbuild → dist/tools/server.mjs");
+await build({
+  entryPoints: [serverEntry],
+  bundle: true,
+  platform: "node",
+  format: "esm",
+  target: "node20",
+  outfile: path.join(BUNDLE_DIR, "dist/tools/server.mjs"),
+  // ESM 출력에서 번들된 CJS 의존성(cheerio→undici 등)이 쓰는 require 를 살린다.
+  banner: {
+    js: "import{createRequire as __nudgeCR}from'node:module';const require=__nudgeCR(import.meta.url);",
+  },
+  logLevel: "warning",
+});
+
+// 2) 런타임 부속 자산 (server.mjs 의 __dirname/../* 로 resolve)
+copyFile(path.join(MCP, "manifest.json"), path.join(BUNDLE_DIR, "dist/manifest.json"));
+copyFile(path.join(MCP, "catalog.json"), path.join(BUNDLE_DIR, "dist/catalog.json"));
+copyDir(standaloneSrc, path.join(BUNDLE_DIR, "dist/standalone"));
+copyDir(assetsFilesSrc, path.join(BUNDLE_DIR, "dist/assets"));
+copyFile(iconsVanillaSrc, path.join(BUNDLE_DIR, "dist/icons/vanilla.js"));
+
+// 3) get_setup 가 외부 목업 프로젝트에 설치 안내하는 DS .tgz.
+//    server 는 mcpb 모드에서 __dirname/../local-packages (= dist/local-packages) 를 읽는다.
+copyDir(path.join(ROOT, "local-packages"), path.join(BUNDLE_DIR, "dist/local-packages"));
+
+// 4) Claude Desktop 이 확장을 인식하려면 manifest.json 이 번들 루트에 있어야 한다.
+copyFile(path.join(MCP, "manifest.json"), path.join(BUNDLE_DIR, "manifest.json"));
 
 // 5) .mcpb 압축
 removeIfExists(MCPB_PATH);
