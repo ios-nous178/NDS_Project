@@ -214,6 +214,25 @@ export function App(): React.JSX.Element {
       if (!root) return;
       if (e.relPath === selectedRef.current) {
         void loadFile(root, e.relPath);
+      } else {
+        // 터미널에서 목업 생성 중이면, 작업 폴더 안에서 새로 생기거나 바뀐 HTML 을
+        // 자동으로 미리보기에 띄워 "작업 중인 화면" 을 실시간으로 보여준다.
+        // (admin-cms 세션은 HTML 미리보기 대상이 아니므로 제외. 사용자가 목업을
+        //  직접 고르면 autoFollow=false 로 꺼지고, 새 인테이크 시작 시 다시 켜진다.)
+        const slug = slugRef.current;
+        const inWorkspace = slug ? e.relPath.startsWith(`${slug}/`) : true;
+        if (
+          autoFollowRef.current &&
+          liveRef.current &&
+          intentRef.current !== "admin-cms" &&
+          inWorkspace
+        ) {
+          setSelected(e.relPath);
+          selectedRef.current = e.relPath;
+          setPreviewRel(e.relPath);
+          setTab("preview");
+          void loadFile(root, e.relPath);
+        }
       }
       // 인앱 에이전트/인테이크가 새 목업을 쓰면 상단 드롭다운 목록을 갱신.
       // (와처가 200ms 디바운스하므로 재스캔 빈도는 안전. 변경이 없으면 setState 생략.)
