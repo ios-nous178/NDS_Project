@@ -4,13 +4,7 @@ import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { setPreviewRoot } from "./mockup-protocol.js";
 import { startWatch, stopWatch } from "./watcher.js";
-import {
-  previewConvert,
-  rollbackConvert,
-  runPipeline,
-  type ConvertPreview,
-  type PipelineRunResult,
-} from "./pipeline-runner.js";
+import { exportMockup, type ExportResult } from "./export-runner.js";
 
 // dot-폴더를 일괄 차단하지 않는다(.demo 같은 정당한 목업 위치를 노출하기 위해).
 // 대신 노이즈/대용량 디렉토리만 막고, <nds-*> 내용 필터가 나머지를 걸러낸다.
@@ -109,28 +103,8 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     },
   );
 
-  // ── 코드 강제 빌드 파이프라인 (Phase 2) ──
-  ipcMain.handle(
-    "pipeline:preview",
-    async (_e, args: { mockupPath: string }): Promise<ConvertPreview> => {
-      return previewConvert(args.mockupPath);
-    },
-  );
-
-  ipcMain.handle(
-    "pipeline:run",
-    async (
-      _e,
-      args: { mockupPath: string; projectPath: string; applyConvert: boolean },
-    ): Promise<PipelineRunResult> => {
-      return runPipeline(args);
-    },
-  );
-
-  ipcMain.handle(
-    "pipeline:rollback",
-    async (_e, args: { mockupPath: string }): Promise<{ ok: boolean }> => {
-      return { ok: rollbackConvert(args.mockupPath) };
-    },
-  );
+  // ── 비파괴 내보내기 (공유용 HTML) ──
+  ipcMain.handle("export:run", async (_e, args: { projectPath: string }): Promise<ExportResult> => {
+    return exportMockup(args.projectPath);
+  });
 }
