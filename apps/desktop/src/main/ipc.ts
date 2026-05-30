@@ -25,6 +25,7 @@ import {
   type ChatSession,
 } from "./sessions.js";
 import { runIntake, type RunIntakeArgs } from "./intake.js";
+import { checkForUpdate, type UpdateCheckResult } from "./update-check.js";
 import { randomUUID } from "node:crypto";
 import type { AppEventInput } from "@nudge-design/mockup-core";
 
@@ -98,6 +99,9 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   ipcMain.handle("shell:openExternal", async (_e, args: { url: string }): Promise<void> => {
     if (/^(https?|mailto):/i.test(args.url)) await shell.openExternal(args.url);
   });
+
+  // 업데이트 알림 — GitHub Releases 최신 데스크탑 빌드를 조회해 현재 버전과 비교(알림만, 자동설치 X).
+  ipcMain.handle("update:check", async (): Promise<UpdateCheckResult> => checkForUpdate());
 
   // 헤더가 마운트 시 초기 전체화면 상태를 알도록(이후 변화는 window:fullscreen 이벤트).
   ipcMain.handle("window:isFullscreen", async (): Promise<boolean> => {

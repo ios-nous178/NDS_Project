@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
-import type { ChatSession } from "../../preload/index.js";
+import type { ChatSession, UpdateCheckResult } from "../../preload/index.js";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
 import { PreviewPanel, type Viewport } from "./panels/PreviewPanel.js";
 import { FeedbackPanel } from "./panels/FeedbackPanel.js";
@@ -150,6 +150,15 @@ export function App(): React.JSX.Element {
   useEffect(() => {
     void window.harness.getVersion().then(setAppVersion);
   }, []);
+
+  // 업데이트 알림 — 부팅 시 1회 조회(실패는 조용히 무시). 새 버전이 있으면 헤더 배너 + 헬프센터에 노출.
+  const [update, setUpdate] = useState<UpdateCheckResult | null>(null);
+  useEffect(() => {
+    void window.harness.checkForUpdate().then(setUpdate);
+  }, []);
+  const openRelease = useCallback(() => {
+    if (update?.releaseUrl) void window.harness.openExternal(update.releaseUrl);
+  }, [update]);
 
   // 전체화면이면 mac 신호등이 사라지므로 헤더 좌측 84px 예약을 푼다.
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -390,6 +399,22 @@ export function App(): React.JSX.Element {
               {projectPath}
             </span>
           )}
+          {update?.hasUpdate && update.latestVersion && (
+            <button
+              onClick={openRelease}
+              title={`새 버전 v${update.latestVersion} 다운로드 (브라우저로 Release 페이지 열기)`}
+              style={{
+                ...primaryBtn,
+                ...noDrag,
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                fontSize: 11.5,
+              }}
+            >
+              <span style={{ fontSize: 12 }}>⬆</span>새 버전 v{update.latestVersion}
+            </button>
+          )}
           <button
             onClick={() => setHelpOpen(true)}
             title="도움말 · 문의"
@@ -628,6 +653,7 @@ export function App(): React.JSX.Element {
           selectedMockup={selected}
           appVersion={appVersion}
           platform={window.harness.platform}
+          update={update}
           onClose={() => setHelpOpen(false)}
         />
       )}

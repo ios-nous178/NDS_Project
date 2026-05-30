@@ -7,6 +7,7 @@ import type { StartAgentArgs } from "../main/agent-runner.js";
 import type { ChatSession } from "../main/sessions.js";
 import type { RunIntakeArgs } from "../main/intake.js";
 import type { AppEventInput } from "@nudge-design/mockup-core";
+import type { UpdateCheckResult } from "../main/update-check.js";
 
 // renderer 가 preload 를 단일 타입 계약 표면으로 쓰도록 재export.
 export type { ExportResult } from "../main/export-runner.js";
@@ -15,6 +16,7 @@ export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.
 export type { AgentType } from "../main/agent-runner.js";
 export type { ChatSession } from "../main/sessions.js";
 export type { RunIntakeArgs, ScreenshotInput, Surface } from "../main/intake.js";
+export type { UpdateCheckResult } from "../main/update-check.js";
 
 /** intake:start 요청 — RunIntakeArgs(projectPath 제외, 렌더러가 주입 안 함) + 터미널 치수. */
 export type StartIntakeArgs = Omit<RunIntakeArgs, "projectPath"> & {
@@ -58,6 +60,8 @@ const harness = {
   },
   /** 헬프 센터의 링크/메일을 기본 브라우저·메일 앱으로 연다(http/https/mailto 만). */
   openExternal: (url: string): Promise<void> => ipcRenderer.invoke("shell:openExternal", { url }),
+  /** GitHub Releases 최신 데스크탑 빌드를 조회해 현재 버전과 비교(알림만, 자동설치 X). */
+  checkForUpdate: (): Promise<UpdateCheckResult> => ipcRenderer.invoke("update:check"),
   openProject: (): Promise<OpenProjectResult | { canceled: true }> =>
     ipcRenderer.invoke("project:open"),
   readMockup: (filePath: string): Promise<{ source: string }> =>
