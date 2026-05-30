@@ -55,6 +55,14 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
+  // dev 모드 mac Dock 아이콘 — 패키징 시엔 번들(icns)이 담당하므로 dev 에서만 설정.
+  if (isMac && process.env.ELECTRON_RENDERER_URL) {
+    try {
+      app.dock?.setIcon(join(import.meta.dirname, "../../build/icon.png"));
+    } catch {
+      /* 아이콘 누락 시 무시 */
+    }
+  }
   // validator 부트스트랩(하드 어서션) — catalog 누락/빈 값이면 여기서 크래시.
   bootstrapValidator();
   registerMockupProtocol();

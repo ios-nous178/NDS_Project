@@ -2,6 +2,8 @@ node_modules
 dist
 dist-mcpb
 build
+# 데스크탑 앱 아이콘은 build/ 안에 있어도 패키징(CI)에 필요하므로 추적.
+!apps/desktop/build/
 .turbo
 .docusaurus
 *.tsbuildinfo
