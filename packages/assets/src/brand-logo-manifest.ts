@@ -17,7 +17,12 @@ import {
 } from "./brand-logo-metadata.js";
 
 export type { BrandSlug, LogoVariant, LogoMimeType, BrandLogoMeta };
-export { BRAND_LOGO_METADATA, BRAND_SLUGS, getBrandLogoVariants } from "./brand-logo-metadata.js";
+export {
+  BRAND_LOGO_METADATA,
+  BRAND_SLUGS,
+  getBrandLogoVariants,
+  DAIN_LOGO,
+} from "./brand-logo-metadata.js";
 
 export interface BrandLogo extends BrandLogoMeta {
   /** base64 data URI fallback. 자산 호스팅 없이도 헤더/푸터가 깨지지 않게. */

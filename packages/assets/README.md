@@ -58,12 +58,21 @@ get_brand({ brand: "geniet" }).assets.logos
 | nudge-eap    | `default`                | `nudge-eap-logo.png`                                |
 | nudge-eap    | `svg`                    | `nudge-eap-logo.svg`                                |
 | nudge-eap    | `footer`                 | `nudge-eap-logo-footer.png`                         |
+| nudge-eap    | `koHorizontal`           | `nudge-eap/nudge-eap-ko.svg`                        |
+| nudge-eap    | `koEnHorizontal` (대표)  | `nudge-eap/nudge-eap-koen.svg`                      |
+| nudge-eap    | `enHorizontal`           | `nudge-eap/nudge-eap-en.svg`                        |
+| nudge-eap    | `enMono` (다크)          | `nudge-eap/nudge-eap-en-dark.svg`                   |
+| nudge-eap    | `symbol` (앱아이콘)      | `nudge-eap/nudge-eap-symbol.svg`                    |
 | cashwalk-biz | `horizontal`             | `cashwalk-biz/cashwalk-horizontal.png`              |
 | cashwalk-biz | `vertical`               | `cashwalk-biz/cashwalk-vertical.png`                |
 | cashwalk-biz | `horizontalSvg`          | `cashwalk-biz/cashwalk-for-business-horizontal.svg` |
 | runmile      | `default` (red, #FF5B37) | `runmile-logo.svg`                                  |
 | runmile      | `mono` (black)           | `runmile-logo-black.svg`                            |
 | runmile      | `muted` (gray700)        | `runmile-logo-gray700.svg`                          |
+
+> **DAIN 로고**는 DS 브랜드(`BrandSlug`)가 아니라 NudgeEAP 문맥 전용 서브브랜드라
+> `getBrandLogo` variant 가 아닌 별도 상수로 분리: `import { DAIN_LOGO } from "@nudge-design/assets"`
+> (`nudge-eap/dain-logo.svg`).
 
 ## 패키지 구조
 
