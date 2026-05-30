@@ -2,8 +2,13 @@ import { app, BrowserWindow } from "electron";
 import { join } from "node:path";
 import { bootstrapValidator } from "./catalog.js";
 import { registerIpcHandlers } from "./ipc.js";
+import { registerMockupScheme, registerMockupProtocol } from "./mockup-protocol.js";
+import { stopWatch } from "./watcher.js";
 
 let mainWindow: BrowserWindow | null = null;
+
+// privileged 스킴 등록은 app.whenReady 이전이어야 한다.
+registerMockupScheme();
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -38,6 +43,7 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // validator 부트스트랩(하드 어서션) — catalog 누락/빈 값이면 여기서 크래시.
   bootstrapValidator();
+  registerMockupProtocol();
   registerIpcHandlers(() => mainWindow);
   createWindow();
   app.on("activate", () => {
@@ -47,4 +53,8 @@ app.whenReady().then(() => {
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
+});
+
+app.on("will-quit", () => {
+  stopWatch();
 });

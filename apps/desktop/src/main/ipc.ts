@@ -2,6 +2,8 @@ import { dialog, ipcMain, type BrowserWindow } from "electron";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
+import { setPreviewRoot } from "./mockup-protocol.js";
+import { startWatch, stopWatch } from "./watcher.js";
 
 const SKIP_DIRS = new Set([
   "node_modules",
@@ -67,7 +69,16 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     });
     if (result.canceled || result.filePaths.length === 0) return { canceled: true };
     const projectPath = result.filePaths[0];
+    // 미리보기 프로토콜 루트 + 파일 와처를 이 프로젝트로 전환.
+    setPreviewRoot(projectPath);
+    const wc = win?.webContents;
+    if (wc) startWatch(projectPath, wc);
     return { projectPath, htmlEntries: findHtmlMockups(projectPath) };
+  });
+
+  ipcMain.handle("watch:stop", async (): Promise<{ ok: true }> => {
+    stopWatch();
+    return { ok: true };
   });
 
   ipcMain.handle(

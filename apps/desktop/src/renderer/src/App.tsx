@@ -1,6 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
+import { PreviewPanel } from "./panels/PreviewPanel.js";
 
 export function App(): React.JSX.Element {
   const [projectPath, setProjectPath] = useState<string | null>(null);
@@ -9,33 +10,53 @@ export function App(): React.JSX.Element {
   const [source, setSource] = useState<string>("");
   const [result, setResult] = useState<ValidateHtmlMockupResult | null>(null);
   const [validating, setValidating] = useState(false);
+  const [bust, setBust] = useState(0);
+  const selectedRef = useRef<string | null>(null);
+  const projectRef = useRef<string | null>(null);
+
+  const loadFile = useCallback(async (projectRoot: string, rel: string) => {
+    const abs = `${projectRoot}/${rel}`;
+    setValidating(true);
+    const [{ source: src }, validation] = await Promise.all([
+      window.harness.readMockup(abs),
+      window.harness.validate(abs),
+    ]);
+    setSource(src);
+    setResult(validation);
+    setValidating(false);
+    setBust((b) => b + 1);
+  }, []);
 
   const openProject = useCallback(async () => {
     const res = await window.harness.openProject();
     if ("canceled" in res) return;
     setProjectPath(res.projectPath);
+    projectRef.current = res.projectPath;
     setEntries(res.htmlEntries);
     setSelected(null);
+    selectedRef.current = null;
     setSource("");
     setResult(null);
   }, []);
 
   const selectEntry = useCallback(
-    async (rel: string) => {
+    (rel: string) => {
       if (!projectPath) return;
-      const abs = `${projectPath}/${rel}`;
       setSelected(rel);
-      setValidating(true);
-      const [{ source: src }, validation] = await Promise.all([
-        window.harness.readMockup(abs),
-        window.harness.validate(abs),
-      ]);
-      setSource(src);
-      setResult(validation);
-      setValidating(false);
+      selectedRef.current = rel;
+      void loadFile(projectPath, rel);
     },
-    [projectPath],
+    [projectPath, loadFile],
   );
+
+  // 저장 감시 → 현재 선택 파일이 바뀌면 재검증 + 미리보기 리로드.
+  useEffect(() => {
+    return window.harness.onFileChanged((e) => {
+      if (e.relPath === selectedRef.current && projectRef.current) {
+        void loadFile(projectRef.current, e.relPath);
+      }
+    });
+  }, [loadFile]);
 
   return (
     <div
@@ -76,7 +97,7 @@ export function App(): React.JSX.Element {
 
       <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
         <aside
-          style={{ width: 260, borderRight: "1px solid #e4e7ec", overflowY: "auto", padding: 12 }}
+          style={{ width: 240, borderRight: "1px solid #e4e7ec", overflowY: "auto", padding: 12 }}
         >
           <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>
             HTML 목업 ({entries.length})
@@ -103,14 +124,15 @@ export function App(): React.JSX.Element {
           ))}
         </aside>
 
-        <main style={{ flex: 1, display: "flex", minWidth: 0 }}>
-          <section
-            style={{ flex: 1, padding: 16, overflow: "auto", borderRight: "1px solid #e4e7ec" }}
-          >
-            <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>소스</div>
+        <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+          <section style={{ flex: 1, minHeight: 0, borderBottom: "1px solid #e4e7ec" }}>
+            <PreviewPanel relPath={selected} bust={bust} />
+          </section>
+          <details style={{ maxHeight: 180, overflow: "auto", padding: "8px 16px" }}>
+            <summary style={{ fontSize: 12, color: "#98a2b3", cursor: "pointer" }}>소스</summary>
             <pre
               style={{
-                margin: 0,
+                margin: "8px 0 0",
                 fontSize: 12,
                 lineHeight: 1.5,
                 whiteSpace: "pre-wrap",
@@ -120,12 +142,15 @@ export function App(): React.JSX.Element {
             >
               {source || "(선택된 파일 없음)"}
             </pre>
-          </section>
-          <section style={{ width: 380, padding: 16, overflow: "auto" }}>
-            <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>검증 (21 규칙)</div>
-            <ValidationPanel result={result} loading={validating} />
-          </section>
+          </details>
         </main>
+
+        <section
+          style={{ width: 360, padding: 16, overflow: "auto", borderLeft: "1px solid #e4e7ec" }}
+        >
+          <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>검증 (21 규칙)</div>
+          <ValidationPanel result={result} loading={validating} />
+        </section>
       </div>
     </div>
   );
