@@ -14,7 +14,7 @@ import type { AgentType } from "../../../preload/index.js";
  */
 const AGENTS: { type: AgentType; label: string; enabled: boolean }[] = [
   { type: "claude", label: "Claude Code", enabled: true },
-  { type: "codex", label: "Codex", enabled: false }, // Phase 5b 에서 활성화
+  { type: "codex", label: "Codex", enabled: true },
 ];
 
 type Status = "idle" | "running" | "exited" | "error";

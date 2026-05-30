@@ -31,7 +31,8 @@ const AGENT_SPECS: Record<AgentType, AgentSpec> = {
     installHint:
       "claude CLI 를 찾지 못했습니다. 설치/로그인 후 PATH 에 있는지 확인하세요 (https://claude.com/claude-code).",
   },
-  // Phase 5b 에서 사용 — spec 은 미리 둔다.
+  // bare `codex` = 인터랙티브 TUI (no subcommand → interactive). /opt/homebrew/bin 등은
+  // getAugmentedPath 가 이미 포함.
   codex: {
     bin: "codex",
     args: [],
