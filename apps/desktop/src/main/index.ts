@@ -4,6 +4,7 @@ import { bootstrapValidator } from "./catalog.js";
 import { registerIpcHandlers } from "./ipc.js";
 import { registerMockupScheme, registerMockupProtocol } from "./mockup-protocol.js";
 import { stopWatch } from "./watcher.js";
+import { stopAllAgents } from "./agent-runner.js";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -57,4 +58,5 @@ app.on("window-all-closed", () => {
 
 app.on("will-quit", () => {
   stopWatch();
+  stopAllAgents();
 });

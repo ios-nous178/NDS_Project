@@ -4,6 +4,7 @@ import { ValidationPanel } from "./panels/ValidationPanel.js";
 import { PreviewPanel } from "./panels/PreviewPanel.js";
 import { ExportPanel } from "./panels/ExportPanel.js";
 import { FeedbackPanel } from "./panels/FeedbackPanel.js";
+import { AgentPanel } from "./panels/AgentPanel.js";
 
 export function App(): React.JSX.Element {
   const [projectPath, setProjectPath] = useState<string | null>(null);
@@ -17,6 +18,8 @@ export function App(): React.JSX.Element {
   const [previewRel, setPreviewRel] = useState<string | null>(null);
   // 마지막 내보내기 산출물(공유용 HTML). 사이드바에 고정 노출.
   const [exportedRel, setExportedRel] = useState<string | null>(null);
+  // 인앱 에이전트 dock 열림 여부. AgentPanel 은 항상 마운트(세션 유지), 높이만 토글.
+  const [agentOpen, setAgentOpen] = useState(false);
   const selectedRef = useRef<string | null>(null);
   const projectRef = useRef<string | null>(null);
 
@@ -31,6 +34,12 @@ export function App(): React.JSX.Element {
     setResult(validation);
     setValidating(false);
     setBust((b) => b + 1);
+    void window.harness.appendEvent({
+      projectPath: projectRoot,
+      type: "validation_completed",
+      mockupFile: rel,
+      payload: { ok: validation.ok },
+    });
   }, []);
 
   const openProject = useCallback(async () => {
@@ -54,6 +63,7 @@ export function App(): React.JSX.Element {
       selectedRef.current = rel;
       setPreviewRel(rel); // 미리보기를 소스 파일로 (빌드하면 dist 로 전환됨)
       void loadFile(projectPath, rel);
+      void window.harness.appendEvent({ projectPath, type: "mockup_selected", mockupFile: rel });
     },
     [projectPath, loadFile],
   );
@@ -88,6 +98,12 @@ export function App(): React.JSX.Element {
         <strong>Nudge EAP Harness</strong>
         <button onClick={openProject} style={btnStyle}>
           프로젝트 폴더 열기
+        </button>
+        <button
+          onClick={() => setAgentOpen((o) => !o)}
+          style={{ ...btnStyle, background: agentOpen ? "#eff8ff" : "#fff" }}
+        >
+          🤖 AI 에이전트 {agentOpen ? "▾" : "▸"}
         </button>
         {projectPath && (
           <span
@@ -178,6 +194,16 @@ export function App(): React.JSX.Element {
               {source || "(선택된 파일 없음)"}
             </pre>
           </details>
+          {/* 인앱 에이전트 dock — 항상 마운트, 높이만 토글해 PTY 세션 유지. */}
+          <div
+            style={{
+              height: agentOpen ? 360 : 0,
+              overflow: "hidden",
+              borderTop: agentOpen ? "1px solid #e4e7ec" : "none",
+            }}
+          >
+            <AgentPanel projectPath={projectPath} mockupFile={selected} />
+          </div>
         </main>
 
         <section
