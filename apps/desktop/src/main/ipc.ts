@@ -4,16 +4,30 @@ import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { setPreviewRoot } from "./mockup-protocol.js";
 import { startWatch, stopWatch } from "./watcher.js";
+import {
+  previewConvert,
+  rollbackConvert,
+  runPipeline,
+  type ConvertPreview,
+  type PipelineRunResult,
+} from "./pipeline-runner.js";
 
+// dot-폴더를 일괄 차단하지 않는다(.demo 같은 정당한 목업 위치를 노출하기 위해).
+// 대신 노이즈/대용량 디렉토리만 막고, <nds-*> 내용 필터가 나머지를 걸러낸다.
 const SKIP_DIRS = new Set([
   "node_modules",
   "dist",
   "out",
   "build",
+  "coverage",
   ".git",
   ".turbo",
   ".cache",
-  "coverage",
+  ".pnpm",
+  ".yarn",
+  ".next",
+  ".vite",
+  ".svelte-kit",
 ]);
 const HTML_RE = /\.html?$/i;
 const NDS_USE_RE = /<nds-[a-z][a-z0-9-]*/i;
@@ -37,7 +51,7 @@ function findHtmlMockups(root: string): string[] {
     for (const e of entries) {
       if (out.length >= 200) return;
       if (e.isDirectory()) {
-        if (e.name.startsWith(".") || SKIP_DIRS.has(e.name)) continue;
+        if (SKIP_DIRS.has(e.name)) continue;
         walk(join(dir, e.name), depth + 1);
       } else if (e.isFile() && HTML_RE.test(e.name)) {
         const full = join(dir, e.name);
@@ -92,6 +106,31 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     "validate:run",
     async (_e, args: { filePath: string }): Promise<ValidateHtmlMockupResult> => {
       return validateHtmlMockup({ filePath: args.filePath });
+    },
+  );
+
+  // ── 코드 강제 빌드 파이프라인 (Phase 2) ──
+  ipcMain.handle(
+    "pipeline:preview",
+    async (_e, args: { mockupPath: string }): Promise<ConvertPreview> => {
+      return previewConvert(args.mockupPath);
+    },
+  );
+
+  ipcMain.handle(
+    "pipeline:run",
+    async (
+      _e,
+      args: { mockupPath: string; projectPath: string; applyConvert: boolean },
+    ): Promise<PipelineRunResult> => {
+      return runPipeline(args);
+    },
+  );
+
+  ipcMain.handle(
+    "pipeline:rollback",
+    async (_e, args: { mockupPath: string }): Promise<{ ok: boolean }> => {
+      return { ok: rollbackConvert(args.mockupPath) };
     },
   );
 }

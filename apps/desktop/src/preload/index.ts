@@ -1,6 +1,11 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from "electron";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import type { OpenProjectResult } from "../main/ipc.js";
+import type { ConvertPreview, PipelineRunResult } from "../main/pipeline-runner.js";
+
+// renderer 가 preload 를 단일 타입 계약 표면으로 쓰도록 재export.
+export type { ConvertPreview, PipelineRunResult } from "../main/pipeline-runner.js";
+export type { OpenProjectResult } from "../main/ipc.js";
 
 export interface FileChangedEvent {
   filePath: string;
@@ -27,6 +32,21 @@ const harness = {
   /** 미리보기 iframe 용 mockup:// URL. 프로젝트 루트 기준 상대경로 + 캐시버스터. */
   previewUrl: (relPath: string, bust: number): string =>
     `mockup://preview/${relPath.split("/").map(encodeURIComponent).join("/")}?t=${bust}`,
+
+  // ── 코드 강제 빌드 파이프라인 ──
+  /** DS-wrap 변환 미리보기(diff + git dirty). 적용 전 호출. */
+  pipelinePreview: (mockupPath: string): Promise<ConvertPreview> =>
+    ipcRenderer.invoke("pipeline:preview", { mockupPath }),
+  /** 강제 파이프라인 실행 (applyConvert 면 백업 후 write-back, 그 뒤 빌드). */
+  pipelineRun: (
+    mockupPath: string,
+    projectPath: string,
+    applyConvert: boolean,
+  ): Promise<PipelineRunResult> =>
+    ipcRenderer.invoke("pipeline:run", { mockupPath, projectPath, applyConvert }),
+  /** write-back 되돌리기 (.bak 복원). */
+  pipelineRollback: (mockupPath: string): Promise<{ ok: boolean }> =>
+    ipcRenderer.invoke("pipeline:rollback", { mockupPath }),
 };
 
 contextBridge.exposeInMainWorld("harness", harness);

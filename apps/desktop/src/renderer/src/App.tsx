@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
 import { PreviewPanel } from "./panels/PreviewPanel.js";
+import { PipelinePanel } from "./panels/PipelinePanel.js";
 
 export function App(): React.JSX.Element {
   const [projectPath, setProjectPath] = useState<string | null>(null);
@@ -11,6 +12,8 @@ export function App(): React.JSX.Element {
   const [result, setResult] = useState<ValidateHtmlMockupResult | null>(null);
   const [validating, setValidating] = useState(false);
   const [bust, setBust] = useState(0);
+  // 미리보기 대상(소스 파일 / 빌드 후엔 dist/index.html). 검증 대상(selected)과 분리.
+  const [previewRel, setPreviewRel] = useState<string | null>(null);
   const selectedRef = useRef<string | null>(null);
   const projectRef = useRef<string | null>(null);
 
@@ -44,6 +47,7 @@ export function App(): React.JSX.Element {
       if (!projectPath) return;
       setSelected(rel);
       selectedRef.current = rel;
+      setPreviewRel(rel); // 미리보기를 소스 파일로 (빌드하면 dist 로 전환됨)
       void loadFile(projectPath, rel);
     },
     [projectPath, loadFile],
@@ -126,7 +130,7 @@ export function App(): React.JSX.Element {
 
         <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
           <section style={{ flex: 1, minHeight: 0, borderBottom: "1px solid #e4e7ec" }}>
-            <PreviewPanel relPath={selected} bust={bust} />
+            <PreviewPanel relPath={previewRel} bust={bust} />
           </section>
           <details style={{ maxHeight: 180, overflow: "auto", padding: "8px 16px" }}>
             <summary style={{ fontSize: 12, color: "#98a2b3", cursor: "pointer" }}>소스</summary>
@@ -148,7 +152,28 @@ export function App(): React.JSX.Element {
         <section
           style={{ width: 360, padding: 16, overflow: "auto", borderLeft: "1px solid #e4e7ec" }}
         >
-          <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>검증 (21 규칙)</div>
+          <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>
+            빌드 파이프라인 (강제)
+          </div>
+          <PipelinePanel
+            mockupPath={projectPath && selected ? `${projectPath}/${selected}` : null}
+            projectPath={projectPath}
+            onBuilt={(rel) => {
+              setPreviewRel(rel);
+              setBust((b) => b + 1);
+            }}
+          />
+          <div
+            style={{
+              fontSize: 12,
+              color: "#98a2b3",
+              margin: "16px 0 8px",
+              borderTop: "1px solid #eaecf0",
+              paddingTop: 12,
+            }}
+          >
+            검증 (21 규칙)
+          </div>
           <ValidationPanel result={result} loading={validating} />
         </section>
       </div>

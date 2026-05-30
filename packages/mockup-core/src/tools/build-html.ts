@@ -45,6 +45,12 @@ export interface BuildSinglefileHtmlArgs {
    */
   skipAudit?: boolean;
   /**
+   * 시각 레퍼런스 게이트(missing-visual-references)만 건너뛴다. 다른 audit 룰
+   * (no-html-entry-found / html-entry-has-no-nds-tag 등)은 그대로 유지. 하네스에서
+   * 사용 — 생성은 Claude Code 가 하고 앱은 빌드/검증만 하므로 시각 게이트가 불필요.
+   */
+  skipVisualReferences?: boolean;
+  /**
    * 강제로 워크스페이스 intent 를 지정. 생략 시 package.json + src/ 구조로 자동 감지.
    * - "react": React + JSX (.tsx) 워크플로우 — 기존 audit 룰 적용.
    * - "html": vanilla HTML / Web Component (<nds-*>) 워크플로우 — html-친화 audit 적용.
@@ -150,7 +156,9 @@ export async function buildSinglefileHtml(
   const intent: WorkspaceIntent = args.intent ?? detectWorkspaceIntent(cwd);
 
   if (!args.skipAudit) {
-    const violations = auditMockupWorkspace(cwd, intent);
+    const violations = auditMockupWorkspace(cwd, intent, {
+      skipVisualReferences: args.skipVisualReferences,
+    });
     if (violations.length > 0) {
       const lines = violations.map((v) => {
         const fileList =
@@ -629,14 +637,19 @@ function detectLineIndent(source: string, index: number): string {
 export function auditMockupWorkspace(
   cwd: string,
   intent?: WorkspaceIntent,
+  opts?: { skipVisualReferences?: boolean },
 ): WorkspaceAuditViolation[] {
   const resolvedIntent = intent ?? detectWorkspaceIntent(cwd);
   const violations: WorkspaceAuditViolation[] = [];
   const srcDir = path.join(cwd, "src");
   const srcExists = fs.existsSync(srcDir);
 
-  const refsViolation = auditVisualReferences(cwd);
-  if (refsViolation) violations.push(refsViolation);
+  // 시각 레퍼런스 게이트는 MCP 의 LLM 소프트 넛지용. 하네스(데스크탑)는 생성을
+  // Claude Code 가 따로 하고 빌드/검증만 하므로 이 게이트를 끈다(계획서 하네스 모델).
+  if (!opts?.skipVisualReferences) {
+    const refsViolation = auditVisualReferences(cwd);
+    if (refsViolation) violations.push(refsViolation);
+  }
 
   // React 워크플로우에서는 손글씨 .html 이 우회 패턴 — 차단.
   // HTML 워크플로우에서는 .html 이 1급 입력이므로 이 룰을 건너뛴다 (대신 no-html-entry-found 가 책임).
