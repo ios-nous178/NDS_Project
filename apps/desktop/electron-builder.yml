@@ -25,12 +25,16 @@ asarUnpack:
 # 맞춰 미리 리빌드해 둔다. 그 산출물을 그대로 동봉하므로 패키징 시 재리빌드는 끈다.
 # (electron 메이저 버전을 올리면 `pnpm --filter @nudge-design/desktop rebuild` 재실행 필요.)
 npmRebuild: false
+# 앱 아이콘 — build/icon-master.svg(docs 로고 마크, 흰색) → icns/ico/png 로 생성.
+# build/ 는 electron-builder 의 기본 buildResources 라 자동 감지되지만 명시해 둔다.
 mac:
+  icon: build/icon.icns
   target:
     - dmg
     - zip
   category: public.app-category.developer-tools
 win:
+  icon: build/icon.ico
   target:
     - nsis
 nsis:

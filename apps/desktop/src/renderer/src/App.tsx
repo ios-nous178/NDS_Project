@@ -8,6 +8,7 @@ import { AgentPanel } from "./panels/AgentPanel.js";
 import { SessionHistoryPanel } from "./panels/SessionHistoryPanel.js";
 import { TranscriptView } from "./panels/TranscriptView.js";
 import { ExportButton } from "./panels/ExportButton.js";
+import { Logo } from "./ui/Logo.js";
 import {
   c,
   dragRegion,
@@ -135,6 +136,9 @@ export function App(): React.JSX.Element {
           background: c.bgPanel,
         }}
       >
+        <span style={{ color: c.text, display: "flex", alignItems: "center" }}>
+          <Logo size={24} />
+        </span>
         <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.15, marginRight: 4 }}>
           <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <strong style={{ fontSize: 13, color: c.text }}>Nudge Studio</strong>
