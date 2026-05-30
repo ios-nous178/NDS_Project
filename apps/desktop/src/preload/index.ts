@@ -2,10 +2,12 @@ import { contextBridge, ipcRenderer, type IpcRendererEvent } from "electron";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import type { OpenProjectResult } from "../main/ipc.js";
 import type { ExportResult } from "../main/export-runner.js";
+import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 
 // renderer 가 preload 를 단일 타입 계약 표면으로 쓰도록 재export.
 export type { ExportResult } from "../main/export-runner.js";
 export type { OpenProjectResult } from "../main/ipc.js";
+export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 
 export interface FileChangedEvent {
   filePath: string;
@@ -43,6 +45,11 @@ const harness = {
     defaultPath: string,
   ): Promise<{ saved: boolean; path?: string }> =>
     ipcRenderer.invoke("export:save", { sourcePath, defaultPath }),
+
+  // ── 유저 피드백 (Phase 3) — 로컬 저장만 ──
+  /** 현재 목업에 대한 수정요청/기타 피드백 1건을 `.ds-feedback-log.jsonl` 에 적재. */
+  submitFeedback: (args: SubmitFeedbackArgs): Promise<SubmitFeedbackResult> =>
+    ipcRenderer.invoke("feedback:submit", args),
 };
 
 contextBridge.exposeInMainWorld("harness", harness);

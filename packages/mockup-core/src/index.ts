@@ -28,5 +28,9 @@ export * from "./tools/usage/webhook.js";
 // catalog → validator 부트스트랩 (데스크탑 main 시작 시 호출)
 export * from "./tools/catalog-config.js";
 
+// 유저 피드백 IO 레이어 (데스크탑 하네스 Phase 3)
+export * from "./tools/feedback/types.js";
+export * from "./tools/feedback/log.js";
+
 // 공용 타입
 export * from "./types/usage.js";

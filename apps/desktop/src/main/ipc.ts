@@ -5,6 +5,7 @@ import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design
 import { setPreviewRoot } from "./mockup-protocol.js";
 import { startWatch, stopWatch } from "./watcher.js";
 import { exportMockup, type ExportResult } from "./export-runner.js";
+import { submitFeedback, type SubmitFeedbackArgs, type SubmitFeedbackResult } from "./feedback.js";
 
 // dot-폴더를 일괄 차단하지 않는다(.demo 같은 정당한 목업 위치를 노출하기 위해).
 // 대신 노이즈/대용량 디렉토리만 막고, <nds-*> 내용 필터가 나머지를 걸러낸다.
@@ -123,6 +124,14 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
       if (res.canceled || !res.filePath) return { saved: false };
       copyFileSync(args.sourcePath, res.filePath);
       return { saved: true, path: res.filePath };
+    },
+  );
+
+  // ── 유저 피드백 (Phase 3) — 로컬 .ds-feedback-log.jsonl 저장만 (webhook OFF) ──
+  ipcMain.handle(
+    "feedback:submit",
+    async (_e, args: SubmitFeedbackArgs): Promise<SubmitFeedbackResult> => {
+      return submitFeedback(args);
     },
   );
 }
