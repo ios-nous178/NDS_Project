@@ -1,3 +1,4 @@
+import React from "react";
 import type { Preview, Decorator } from "@storybook/react";
 import { brandThemes, defaultBrand } from "../src/brand-themes";
 import "../../../packages/tokens/dist/tokens.css";
@@ -41,6 +42,18 @@ const withBrandTheme: Decorator = (Story, context) => {
     } catch {
       /* 무시 */
     }
+
+    // Docs(개요)처럼 한 페이지에 여러 브랜드가 동시에 렌더되면 위의 :root 전역 테마가
+    // 마지막 브랜드로 덮어써진다. 각 스토리가 자기 브랜드 색을 유지하도록 CSS 변수를
+    // 스토리 단위 래퍼에 스코프해서 한 번 더 적용한다. (display:contents → 레이아웃 영향 없음)
+    return React.createElement(
+      "div",
+      {
+        "data-brand": brandKey,
+        style: { display: "contents", ...theme.cssVars } as unknown as React.CSSProperties,
+      },
+      React.createElement(Story),
+    );
   }
 
   return Story();

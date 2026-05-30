@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TrostFooter, TrostBottomNav } from "@nudge-design/react";
+import { TrostFooter } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
 
 const b = getBrandFixture("trost");
@@ -13,8 +13,25 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
+/* ─── 데스크톱 웹 푸터 (surface='web' · 다크 푸터) ─── */
+
+export const TrostWeb: Story = {
+  name: "Trost/Desktop",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Trost 데스크톱 다크 푸터. SNS / 앱 다운로드 / 회사 정보 / 약관 링크 슬롯을 prop 으로 받습니다. width >= 1024 에서만 노출됩니다.",
+      },
+    },
+  },
+  render: () => <TrostFooter surface="web" />,
+};
+
+/* ─── 앱 푸터 (surface='app') — 데스크톱 / 모바일 레이아웃 ─── */
+
 export const TrostAppDesktop: Story = {
-  name: "Trost/App Desktop (surface='app' layout='desktop')",
+  name: "Trost/Desktop (앱 레이아웃)",
   render: () => (
     <TrostFooter
       surface="app"
@@ -32,7 +49,7 @@ export const TrostAppDesktop: Story = {
 };
 
 export const TrostAppMobile: Story = {
-  name: "Trost/App Mobile (surface='app' layout='mobile')",
+  name: "Trost/Mobile",
   render: () => (
     <div style={{ maxWidth: 480 }}>
       <TrostFooter
@@ -44,20 +61,4 @@ export const TrostAppMobile: Story = {
       />
     </div>
   ),
-};
-
-export const TrostTabBar: Story = {
-  name: "Trost/하단 탭바 (5탭)",
-  render: () => {
-    const tabs = b.tabBar.tabLabels.map((l, i) => ({
-      key: `tab-${i}`,
-      label: l,
-      href: "#",
-    }));
-    return (
-      <div style={{ height: 120, background: "#f9f9f9", display: "flex", alignItems: "flex-end" }}>
-        <TrostBottomNav tabs={tabs} activeTab="tab-0" position="static" />
-      </div>
-    );
-  },
 };

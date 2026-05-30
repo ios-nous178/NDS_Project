@@ -2264,7 +2264,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "로그인 전: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={[{key:'competition',label:'대회 정보',href:'/competitions'},{key:'community',label:'커뮤니티',href:'/community'}]} activeKey='competition' loggedIn={false} onSearch={...} />`",
       "로그인 후: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />`",
     ],
+    // 런마일 목업 예시 이미지 일시 비활성화 — MCP 가 참고하지 못하도록 주석 처리.
+    // 다시 노출하려면 아래 블록 주석을 해제하고 가이드 재빌드.
     references: [
+      /*
       {
         label: "Runmile 웹 홈 — 기본 상태 (state=default)",
         image: "references/runmile-web-home.png",
@@ -2286,6 +2289,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           "런마일 웹 PC 대회 상세 풀 캡처. 상단 RunmileWebHeader → ① 히어로(좌: 대회 썸네일, 우: 제목 + 코스 배지 5km/10km/Half + 해시태그 + 일시/장소/주최·접수기간/참가비/문의 2열 정보표 + coral '참가하기' CTA + 좋아요/공유) → ② 게시판 리스트 + 채팅 패널 2열 → ③ 대회 안내(지도 + 5km/10km/Half 코스 탭 + 편의시설 + 날씨 카드 캐러셀) → ④ 대회 정보 텍스트(코스별 출발시간/오시는 길) → ⑤ 기념품 정보(노란 배경 그리드: 배번표·메달·기념스티커·뱃지·생수·간식·파우치·핫팩) → 푸터. coral #FF5B37 = 런마일 primary, 정보표·탭·배지는 DS 패턴으로 매핑.",
         brand: "runmile",
       },
+      */
     ],
   },
   RunmileToast: {
@@ -4533,9 +4537,23 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   GenietCommunityIcon: { category: "navigation", style: "line" },
   GenietSearchIcon: { category: "navigation", style: "line" },
 
+  // ── Cashwalk for Business 어드민 GNB (Figma 9lJ9XCwVYFSoZGcmRuJtI4 — mono 24×24) ──
+  // 어드민 사이드바/GNB 전용. active 별도 그래픽 없이 color cascade 로 토글.
+  CashwalkBizGnbBannerIcon: { category: "navigation", style: "line" },
+  CashwalkBizGnbCashIcon: { category: "navigation", style: "line" },
+  CashwalkBizGnbCatalogIcon: { category: "navigation", style: "line" },
+  CashwalkBizGnbChannelIcon: { category: "navigation", style: "line" },
+  CashwalkBizGnbChatIcon: { category: "navigation", style: "line" },
+  CashwalkBizGnbEditIcon: { category: "navigation", style: "line" },
+  CashwalkBizGnbMemberIcon: { category: "navigation", style: "line" },
+  CashwalkBizGnbQuizIcon: { category: "navigation", style: "line" },
+  CashwalkBizGnbSettingIcon: { category: "navigation", style: "line" },
+
   // ── Runmile (Figma 런마일 library 20:94 — base 24×24 + currentColor 정규화) ──
   // Active suffix = filled (icon/{name}/state=fill). Suffix 없음 = stroke (line).
   // Multicolor (-Color suffix) 는 디자인 가이드의 컬러 보존.
+  RunmileAccountActiveIcon: { category: "navigation", style: "filled" },
+  RunmileAccountIcon: { category: "navigation", style: "line" },
   RunmileAlramActiveIcon: { category: "state-reaction", style: "filled" },
   RunmileAlramIcon: { category: "state-reaction", style: "line" },
   RunmileAlramOffIcon: { category: "state-reaction", style: "line" },
@@ -4555,6 +4573,8 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   RunmileCautionColorIcon: { category: "color", style: "color" },
   RunmileChallengeActiveIcon: { category: "navigation", style: "filled" },
   RunmileChallengeIcon: { category: "navigation", style: "line" },
+  RunmileChatsActiveIcon: { category: "navigation", style: "filled" },
+  RunmileChatsIcon: { category: "navigation", style: "line" },
   RunmileChattingActiveIcon: { category: "action", style: "filled" },
   RunmileChattingIcon: { category: "action", style: "line" },
   RunmileCheckboxActiveIcon: { category: "state-reaction", style: "filled" },

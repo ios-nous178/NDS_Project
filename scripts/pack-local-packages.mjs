@@ -6,7 +6,7 @@
  *   node scripts/pack-local-packages.mjs              # build + pack all
  *   node scripts/pack-local-packages.mjs --no-build   # pack only (assumes already built)
  *
- * Output: local-packages/nudge-eap-{name}-{version}.tgz (4 files)
+ * Output: local-packages/nudge-design-{name}-{version}.tgz (4 files)
  * Old .tgz files for the same package (different version) are removed automatically.
  *
  * Version contract: DS 패키지 4개(tokens/react/icons/tailwind-preset)의 package.json
@@ -113,12 +113,12 @@ for (const name of ALL_PACKAGES) {
   const pkgDir = path.join(ROOT, "packages", name);
   const pkgJson = JSON.parse(fs.readFileSync(path.join(pkgDir, "package.json"), "utf-8"));
   const version = pkgJson.version;
-  const expectedFile = `nudge-eap-${name}-${version}.tgz`;
+  const expectedFile = `nudge-design-${name}-${version}.tgz`;
 
   console.log(`📦 Packing @nudge-design/${name} (v${version})...`);
 
   // Clean up old .tgz files for this package (different versions)
-  const prefix = `nudge-eap-${name}-`;
+  const prefix = `nudge-design-${name}-`;
   for (const f of fs.readdirSync(OUT_DIR)) {
     if (f.startsWith(prefix) && f.endsWith(".tgz") && f !== expectedFile) {
       fs.unlinkSync(path.join(OUT_DIR, f));

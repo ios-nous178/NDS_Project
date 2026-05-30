@@ -55,7 +55,7 @@ export default meta;
 type Story = StoryObj;
 
 export const GenietDesktop: Story = {
-  name: "GenietWebHeader/Desktop (Figma 77:2 — Search/Menu 2단)",
+  name: "Geniet/Desktop",
   parameters: {
     docs: {
       description: {
@@ -87,7 +87,7 @@ export const GenietDesktop: Story = {
 };
 
 export const GenietMobile: Story = {
-  name: "GenietAppBar/Mobile (Figma 77:2 — Row1+Row2 102h)",
+  name: "Geniet/Mobile",
   parameters: {
     docs: {
       description: {
@@ -115,7 +115,7 @@ export const GenietMobile: Story = {
 };
 
 export const GenietWebview: Story = {
-  name: "GenietAppBar/Webview",
+  name: "Geniet/Webview",
   render: () => (
     <GenietAppBar
       variant="webview"

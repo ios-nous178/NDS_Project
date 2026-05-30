@@ -22,7 +22,7 @@ const placeholderMenu = [
 ];
 
 export const CashwalkBizDesktop: Story = {
-  name: "CashwalkBizWebHeader/Desktop (PC)",
+  name: "CashwalkBiz/Desktop",
   parameters: {
     docs: {
       description: {
@@ -50,7 +50,7 @@ export const CashwalkBizDesktop: Story = {
 };
 
 export const CashwalkBizMobile: Story = {
-  name: "CashwalkBizWebHeader/Mobile",
+  name: "CashwalkBiz/Mobile",
   parameters: {
     docs: {
       description: { story: "Figma 380:1119 (한국 캐시워크 WEB Dev). 로고 + 햄버거." },

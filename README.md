@@ -4,16 +4,16 @@
 
 ## 배포 사이트
 
-| 경로                                                                                                      | 설명                                    |
-| --------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| 경로                                                                                                  | 설명                                    |
+| ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | [/](http://nudge-design-system.eba-afhh232q.ap-northeast-2.elasticbeanstalk.com/)                     | 랜딩 페이지 (Docs / Storybook 바로가기) |
 | [/docs/](http://nudge-design-system.eba-afhh232q.ap-northeast-2.elasticbeanstalk.com/docs/)           | Docusaurus 문서 사이트                  |
 | [/storybook/](http://nudge-design-system.eba-afhh232q.ap-northeast-2.elasticbeanstalk.com/storybook/) | Storybook 컴포넌트                      |
 
 ## Packages
 
-| 패키지                       | 설명                                                                     |
-| ---------------------------- | ------------------------------------------------------------------------ |
+| 패키지                          | 설명                                                                     |
+| ------------------------------- | ------------------------------------------------------------------------ |
 | `@nudge-design/tokens`          | 색상, 타이포그래피, spacing, radius 토큰. TS export + CSS 변수 파일 생성 |
 | `@nudge-design/react`           | React 컴포넌트 120종 (Button, Card, Modal, Tabs, Toast, Avatar 등)       |
 | `@nudge-design/icons`           | Figma 기준 84종 아이콘. `currentColor` 기반, `size`/`color` prop 지원    |
@@ -101,7 +101,7 @@ pnpm typecheck                      # 전체 타입 체크
 pnpm test                           # 전체 테스트
 pnpm --filter @nudge-design/tokens build   # 토큰만 빌드
 pnpm --filter @nudge-design/icons build    # 아이콘 생성 + 빌드
-pnpm generate:component-inventory       # 컴포넌트 인벤토리 재생성
+pnpm generate:brand-coverage            # 브랜드별 컴포넌트 커버리지 재생성
 ```
 
 ### 버전 / 릴리즈 (Changesets)
@@ -269,7 +269,6 @@ flowchart TB
 | [semantic-tokens.md](./docs/semantic-tokens.md)                 | 시멘틱 토큰 카탈로그 (자동 생성)   |
 | [FIGMA_TO_REACT_WORKFLOW.md](./docs/FIGMA_TO_REACT_WORKFLOW.md) | Figma -> React 반자동화 워크플로우 |
 | [STYLING_STRUCTURE_GUIDE.md](./docs/STYLING_STRUCTURE_GUIDE.md) | 스타일 확장 구조 가이드            |
-| [components/inventory.md](./docs/components/inventory.md)       | 컴포넌트 인벤토리                  |
 
 ## CI
 

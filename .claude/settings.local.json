@@ -48,8 +48,14 @@
       "Bash(git fetch *)",
       "Bash(git check-ignore *)",
       "Bash(gh release *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "mcp__nudge-ds__get_brand",
+      "mcp__figma__get_variable_defs",
+      "Read(//private/tmp/**)",
+      "Bash(rtk curl *)",
+      "Bash(rtk ls *)",
+      "Bash(rtk grep *)"
     ]
   },
-  "enabledMcpjsonServers": ["nudge-design-system", "apps-in-toss", "nudge-eap-ds"]
+  "enabledMcpjsonServers": ["nudge-design-system", "apps-in-toss", "nudge-ds"]
 }

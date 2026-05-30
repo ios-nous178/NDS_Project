@@ -111,8 +111,8 @@ import "@nudge-design/tokens/css";
 
 ## 패키지 구성
 
-| 패키지                       | 설명                                   | 상태    |
-| ---------------------------- | -------------------------------------- | ------- |
+| 패키지                          | 설명                                   | 상태    |
+| ------------------------------- | -------------------------------------- | ------- |
 | `@nudge-design/tokens`          | 디자인 토큰 (색상, 타이포, 간격)       | ✅ 안정 |
 | `@nudge-design/styles`          | 공통 CSS 번들                          | ✅ 안정 |
 | `@nudge-design/html`            | Web Components / HTML 목업 기준 런타임 | ✅ 안정 |
@@ -187,7 +187,7 @@ NDS 컴포넌트는 세 가지 방식으로 스타일을 확장할 수 있습니
 ## 다음 단계
 
 - [컴포넌트 한눈에 보기](/components/overview) — 전체 컴포넌트 목록
-- [컴포넌트 인벤토리](/components/inventory) — Figma, Storybook, Docs 연결표
+- [브랜드별 컴포넌트 커버리지](/components/brand-coverage) — 브랜드 × 컴포넌트 Figma 정합 현황
 - [디자인 토큰](/tokens/colors) — 색상, 타이포그래피, 간격
 - [디자인 원칙](/guide/design-principles) — NDS의 핵심 원칙
 
@@ -212,23 +212,19 @@ NDS 컴포넌트는 세 가지 방식으로 스타일을 확장할 수 있습니
 }
 ```
 
-### 2. 자동 생성 실행
+### 2. 반영 위치 확인
 
-```bash
-pnpm generate:component-inventory
-```
+`metadata/componentInventory.json`의 `figmaSynced` 값은 빌드 시 아래에 자동 반영됩니다 (별도 생성 명령 불필요).
 
-이 명령은 `docs/components/inventory.md`를 자동 생성합니다.
-
-### 3. 반영 위치 확인
-
-- Storybook Docs: 각 컴포넌트 문서 상단 설명 영역
-- Docusaurus Docs: `/components/inventory`
+- Docs 사이드바: "Figma 정합 / Figma 미정합" 두 섹션으로 컴포넌트 자동 분류
+- 컴포넌트 갤러리: `/components/gallery` 의 "Figma Synced" 태그 / 필터
+- Storybook Docs: 각 컴포넌트 문서 상단 정합 배지
 - 메타데이터 원본: `metadata/componentInventory.json`
 
-### 4. 운영 팁
+### 3. 운영 팁
 
 - 실제 Figma 링크가 없을 때는 `figmaUrl`, `figmaNodeId`를 비워둘 수 있습니다.
 - Storybook title은 실제 스토리의 `title`과 동일해야 합니다.
 - Story 이름은 `State/...`, `Recipe/...`, `Interaction/...`, `QA/...`, `Reference/...` prefix를 기준으로 통일합니다. `Playground`는 예외로 유지합니다.
-- `status`는 `implemented`, `planned`, `draft` 중 하나로 맞추는 것을 권장합니다.
+- `status`는 `implemented`, `planned`, `draft` 중 하나로 맞추는 것을 권장합니
+다.

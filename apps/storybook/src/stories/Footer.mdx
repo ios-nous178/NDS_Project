@@ -1,0 +1,48 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+import * as NudgeEAP from "./Footer.NudgeEAP.stories";
+import * as Geniet from "./Footer.Geniet.stories";
+import * as Trost from "./Footer.Trost.stories";
+import * as CashwalkBiz from "./Footer.CashwalkBiz.stories";
+import * as Runmile from "./Footer.Runmile.stories";
+
+<Meta title="Components/Footer/개요" />
+
+# Footer
+
+브랜드별 하단 푸터 모음. Header 와 같은 **Desktop / Mobile** 축으로 정렬했습니다
+(웹 푸터 → Desktop, 앱 푸터 → Mobile). 모바일 앱 하단 내비게이션은 푸터와 성격이 달라
+별도 컴포넌트로 분리했습니다 → **`Components/BottomNav`**.
+
+| 브랜드 | Desktop | Mobile | 비고 |
+| --- | --- | --- | --- |
+| **NudgeEAP** | ✓ | ✓ | — |
+| **Geniet** | — | ✓ | 앱 커머스 고지 푸터 |
+| **Trost** | ✓ | ✓ | 데스크톱에 앱 레이아웃 변형 1종 추가 |
+| **CashwalkBiz** | ✓ | ✓ | 웹 전용 light 푸터 |
+| **Runmile** | ✓ | ✓ | — |
+
+## NudgeEAP
+
+<Canvas of={NudgeEAP.NudgeEAPWeb} />
+<Canvas of={NudgeEAP.NudgeEAPApp} />
+
+## Geniet
+
+<Canvas of={Geniet.GenietInfoFooter} />
+
+## Trost
+
+<Canvas of={Trost.TrostWeb} />
+<Canvas of={Trost.TrostAppMobile} />
+<Canvas of={Trost.TrostAppDesktop} />
+
+## CashwalkBiz
+
+<Canvas of={CashwalkBiz.CashwalkBizDesktop} />
+<Canvas of={CashwalkBiz.CashwalkBizMobile} />
+
+## Runmile
+
+<Canvas of={Runmile.RunmileFooterPc} />
+<Canvas of={Runmile.RunmileFooterMobile} />

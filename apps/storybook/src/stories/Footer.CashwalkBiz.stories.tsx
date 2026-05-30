@@ -26,7 +26,7 @@ const placeholderCompany = {
 };
 
 export const CashwalkBizDesktop: Story = {
-  name: "CashwalkBiz/Web Desktop (layout='desktop')",
+  name: "CashwalkBiz/Desktop",
   parameters: {
     docs: {
       description: {
@@ -46,7 +46,7 @@ export const CashwalkBizDesktop: Story = {
 };
 
 export const CashwalkBizMobile: Story = {
-  name: "CashwalkBiz/Web Mobile (layout='mobile')",
+  name: "CashwalkBiz/Mobile",
   parameters: {
     docs: { story: "Figma 98:1267 — mobile light 푸터." },
   },

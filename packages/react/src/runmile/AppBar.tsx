@@ -11,7 +11,8 @@ import { RunmileBackIcon } from "@nudge-design/icons";
  *   - `variant="menu-title"`           : 좌측 back + title (Bold 20/24) / 우측 actions
  *
  * 우측 actions 는 children 으로 그대로 전달 — `<RunmileCalendarIcon>`,
- * `<RunmileSearchIcon>`, `<RunmileCloseIcon>` 같은 24px 아이콘 0~3 개. 사이 간격 12px.
+ * `<RunmileSearchIcon>`, `<RunmileCloseIcon>` 같은 24px 아이콘 0~3 개. 사이 간격 14px
+ * (Figma 36:258 — 아이콘 right 16/54/92, 피치 38px = 24 + gap 14).
  *
  * 색상은 모두 시멘틱 토큰 cascade.
  *   - bg: `--semantic-bg-surface-default` (#FFFFFF)
@@ -77,7 +78,7 @@ function ActionsRow({ children }: { children: React.ReactNode }) {
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: 12,
+        gap: 14,
         color: ICON_COLOR,
       }}
     >
@@ -95,6 +96,11 @@ export const RunmileAppBar = React.forwardRef<HTMLElement, RunmileAppBarProps>(
       background: "var(--semantic-bg-surface-default, #FFFFFF)",
       fontFamily:
         "var(--font-web, 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif)",
+      // 아이콘은 inline-flex(BackButton/ActionsRow)라 라인박스 baseline 에 얹힌다.
+      // line-height 미지정 시 폰트 strut 의 descent(~4px)가 아이콘 아래에 생겨
+      // 중앙정렬 박스가 커지고 아이콘이 ~2px 위로 떠 보인다. strut 제거.
+      // (title/menu-title 텍스트는 각 span 이 lineHeight:"24px" 를 명시하므로 무관.)
+      lineHeight: 0,
       ...style,
     };
 
@@ -147,6 +153,18 @@ export const RunmileAppBar = React.forwardRef<HTMLElement, RunmileAppBarProps>(
     if (variant === "logo") {
       return (
         <header ref={ref} style={baseStyle} {...rest}>
+          {back && (
+            <div
+              style={{
+                position: "absolute",
+                left: 16,
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              <BackButton back={back} />
+            </div>
+          )}
           {logo && (
             <img
               src={logo.src}
