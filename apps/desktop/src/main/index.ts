@@ -11,16 +11,24 @@ let mainWindow: BrowserWindow | null = null;
 // privileged 스킴 등록은 app.whenReady 이전이어야 한다.
 registerMockupScheme();
 
+const isMac = process.platform === "darwin";
+
 function createWindow(): void {
   const win = new BrowserWindow({
     width: 1280,
     height: 860,
     show: false,
     title: "Nudge Studio",
-    // 네이티브 타이틀바를 다크 UI 에 녹인다: 신호등 버튼만 남기고(hiddenInset) 헤더를
-    // 우리가 그린다. backgroundColor 로 로딩 중 흰 플래시도 제거.
-    titleBarStyle: "hiddenInset",
-    trafficLightPosition: { x: 16, y: 14 },
+    // 네이티브 타이틀바를 다크 UI 에 녹여 헤더를 직접 그린다. backgroundColor 로 로딩 중
+    // 흰 플래시 제거. 'hiddenInset' 은 macOS 전용(윈도우에선 창 컨트롤이 사라짐)이라
+    // 플랫폼별로 분기한다:
+    //   · mac  : titleBarStyle 'hidden' + 좌측 신호등(trafficLightPosition).
+    //            'hiddenInset' 대신 'hidden' 으로 상단 네이티브 하이라이트(흰 1px 선)를 줄인다.
+    //   · win  : titleBarStyle 'hidden' + titleBarOverlay 로 우측에 다크 테마 최소/최대/닫기 노출.
+    titleBarStyle: "hidden",
+    ...(isMac
+      ? { trafficLightPosition: { x: 16, y: 14 } }
+      : { titleBarOverlay: { color: "#252526", symbolColor: "#d4d4d4", height: 38 } }),
     backgroundColor: "#1e1e1e",
     webPreferences: {
       preload: join(import.meta.dirname, "../preload/index.mjs"),

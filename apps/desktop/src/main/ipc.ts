@@ -1,4 +1,4 @@
-import { dialog, ipcMain, type BrowserWindow } from "electron";
+import { app, dialog, ipcMain, type BrowserWindow } from "electron";
 import { copyFileSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
@@ -15,7 +15,7 @@ import {
   type StartAgentArgs,
 } from "./agent-runner.js";
 import { logAppEvent } from "./events.js";
-import { readSessions, readTranscript, type ChatSession } from "./sessions.js";
+import { deleteSession, readSessions, readTranscript, type ChatSession } from "./sessions.js";
 import type { AppEventInput } from "@nudge-design/mockup-core";
 
 // dot-폴더를 일괄 차단하지 않는다(.demo 같은 정당한 목업 위치를 노출하기 위해).
@@ -81,6 +81,9 @@ function findHtmlMockups(root: string): string[] {
 }
 
 export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void {
+  // 앱 버전(package.json) — 상단바 상시 노출용.
+  ipcMain.handle("app:version", async (): Promise<string> => app.getVersion());
+
   ipcMain.handle("project:open", async (): Promise<OpenProjectResult | { canceled: true }> => {
     const win = getWindow();
     const result = await dialog.showOpenDialog(win ?? undefined!, {
@@ -225,6 +228,15 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     "session:transcript",
     async (_e, args: { projectPath: string; sessionId: string }): Promise<{ text: string }> => {
       return { text: readTranscript(args.projectPath, args.sessionId) };
+    },
+  );
+
+  // 세션 메타 + raw 트랜스크립트 삭제. 실행 중이면 먼저 PTY 를 종료한다.
+  ipcMain.handle(
+    "session:delete",
+    async (_e, args: { projectPath: string; sessionId: string }): Promise<{ ok: boolean }> => {
+      stopAgent(args.sessionId);
+      return deleteSession(args.projectPath, args.sessionId);
     },
   );
 }

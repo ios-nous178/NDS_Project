@@ -83,20 +83,49 @@ export const dangerBtn: React.CSSProperties = {
   color: "#1e1e1e",
 };
 
-export const tabIdle: React.CSSProperties = {
-  padding: "6px 12px",
+/** 탭바 — 고정 높이라 섹션 헤더 높이가 항상 일정. 세그먼트 그룹 + 우측 pill 을 담는다. */
+export const tabBar: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  height: 38,
+  flexShrink: 0,
+  padding: "0 8px",
+  borderBottom: `1px solid ${c.border}`,
+  background: c.bgPanel,
+};
+
+/** 세그먼트 컨트롤 컨테이너 — 어두운 well 안에 칩들이 붙어 들어간다(밑줄/검정 영역 제거). */
+export const segGroup: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 2,
+  padding: 3,
+  borderRadius: 8,
+  background: c.bg,
+  border: `1px solid ${c.border}`,
+};
+
+export const segItem: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 4,
+  padding: "3px 11px",
+  borderRadius: 6,
   border: "none",
-  borderBottom: "2px solid transparent",
   background: "transparent",
   color: c.textMuted,
   cursor: "pointer",
   fontSize: 12,
+  fontWeight: 500,
+  whiteSpace: "nowrap",
 };
 
-export const tabActive: React.CSSProperties = {
-  ...tabIdle,
-  color: c.text,
-  borderBottomColor: c.accent,
+/** 선택 칩 — 웹/앱 pill 과 같은 은은한 노랑으로 통일. */
+export const segItemActive: React.CSSProperties = {
+  ...segItem,
+  background: c.accentBg,
+  color: c.accent,
 };
 
 export const input: React.CSSProperties = {

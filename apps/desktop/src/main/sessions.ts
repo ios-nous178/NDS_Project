@@ -1,4 +1,11 @@
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { resolveWritableLogDir } from "@nudge-design/mockup-core";
 import type { AgentType } from "./agent-runner.js";
@@ -106,6 +113,38 @@ export function readSessions(projectPath: string): ChatSession[] {
   }
   // 파일 등장 순서의 역순 = 최근 시작 세션 우선.
   return order.reverse().map((id) => latest.get(id)!);
+}
+
+/**
+ * 세션 1건 삭제. append-only JSONL 이라 해당 sessionId 라인을 모두 걸러 rewrite 하고
+ * raw 트랜스크립트(`<id>.log`)도 unlink 한다. best-effort — 실패해도 throw 하지 않는다.
+ * 라이브(실행 중) 세션 가드는 호출부(stopAgent 후) 책임.
+ */
+export function deleteSession(projectPath: string, sessionId: string): { ok: boolean } {
+  try {
+    const file = join(logDir(projectPath), CHAT_SESSIONS_FILENAME);
+    if (existsSync(file)) {
+      const kept = readFileSync(file, "utf8")
+        .split("\n")
+        .filter((line) => {
+          if (!line.trim()) return false;
+          try {
+            return (JSON.parse(line) as ChatSession).sessionId !== sessionId;
+          } catch {
+            return false; // 깨진 라인은 이참에 정리
+          }
+        });
+      writeFileSync(file, kept.length ? kept.join("\n") + "\n" : "", "utf8");
+    }
+  } catch {
+    return { ok: false };
+  }
+  try {
+    rmSync(join(logDir(projectPath), TRANSCRIPT_DIRNAME, `${sessionId}.log`), { force: true });
+  } catch {
+    /* best-effort */
+  }
+  return { ok: true };
 }
 
 /** 세션의 raw pty 트랜스크립트(없으면 ""). */
