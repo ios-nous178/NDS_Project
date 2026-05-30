@@ -295,10 +295,14 @@ export function App(): React.JSX.Element {
         </button>
         <button
           onClick={() => setIntakeOpen(true)}
-          disabled={!projectPath || liveSessionId !== null}
-          title={liveSessionId !== null ? "실행 중인 세션을 먼저 중지하세요" : undefined}
+          disabled={!projectPath}
+          title={
+            liveSessionId !== null
+              ? "새 목업을 시작하면 실행 중인 세션은 중지됩니다 (목업 폴더는 그대로 보존)"
+              : undefined
+          }
           style={{
-            ...(projectPath && liveSessionId === null ? primaryBtn : primaryBtnDisabled),
+            ...(projectPath ? primaryBtn : primaryBtnDisabled),
             ...noDrag,
           }}
         >
@@ -561,6 +565,12 @@ export function App(): React.JSX.Element {
           projectPath={projectPath}
           onClose={() => setIntakeOpen(false)}
           onStarted={(sessionId, intent, slug) => {
+            // 인테이크는 attach 경로라 이전 라이브 세션 PTY 를 자동 정리하지 않는다.
+            // 새 세션으로 넘어가기 전에 직접 중지 — orphan PTY / 동시 claude 프로세스 방지.
+            // (이전 목업 파일은 폴더에 이미 저장돼 있어 idle 세션 종료는 무손실.)
+            if (liveSessionId && liveSessionId !== sessionId) {
+              void window.harness.stopAgent(liveSessionId);
+            }
             setActiveSlug(slug);
             setActiveIntent(intent);
             // 새 생성 시작 → 결과물을 실시간으로 따라가도록 자동추적 재개.
