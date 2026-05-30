@@ -149,60 +149,9 @@ const TOOLS = [
     },
   },
   {
-    name: "check_preview",
-    description:
-      "Use Playwright to detect runtime errors, Vite overlays, failed requests, and blank screens.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        url: {
-          type: "string",
-          description:
-            "Base URL to check. Defaults to dev_server session URL or http://127.0.0.1:5173.",
-        },
-        routePath: {
-          type: "string",
-          description:
-            "Optional route path or hash path to append, e.g. '/trost/list' or '#/trost/list'.",
-        },
-        cwd: {
-          type: "string",
-          description:
-            "Project root used to resolve playwright. Defaults to session cwd or MCP cwd.",
-        },
-        sessionId: {
-          type: "string",
-          description: "Session id returned by dev_server({ action: 'start' }).",
-        },
-        timeoutMs: {
-          type: "number",
-          description: "Navigation/check timeout. Default: 15000.",
-        },
-        minTextLength: {
-          type: "number",
-          description:
-            "Minimum body text length before the page is suspicious if few visible elements exist. Default: 8.",
-        },
-        viewport: {
-          type: "object",
-          properties: {
-            width: { type: "number" },
-            height: { type: "number" },
-          },
-          additionalProperties: false,
-        },
-        autoReport: {
-          type: "boolean",
-          description: "If true, run pending usage auto-report after this call. Default false.",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
     name: "build_singlefile_html",
     description:
-      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true. **For html intent (vanilla <nds-*>), the build automatically runs validate_html_mockup + usage report (Sheets webhook) on the built artifact** — no separate call needed; results are in `validation` and `report` fields. For react intent, you must still call dev_server + validate_html_mockup({url}) afterward (Playwright snapshot of rendered DOM).",
+      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true. **For html intent (vanilla <nds-*>), the build automatically runs validate_html_mockup + usage report (Sheets webhook) on the built artifact** — no separate call needed; results are in `validation` and `report` fields.",
     inputSchema: {
       type: "object",
       properties: {
@@ -227,43 +176,18 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. Pass `url` (or `sessionId`) to validate the **rendered DOM** (mandatory for React/Vite mockups where <nds-*> are injected at runtime — static dist/index.html shells show DS 0%). `withStats:true` adds DS adoption stats. **Usage report (Sheets webhook + JSONL) is auto-enabled** — pass `report:false` only to suppress (e.g. noisy iteration cycles).",
+      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. Validates static source — pass `source` (HTML string) or `filePath` (.html file). `withStats:true` adds DS adoption stats. **Usage report (Sheets webhook + JSONL) is auto-enabled** — pass `report:false` only to suppress (e.g. noisy iteration cycles).",
     inputSchema: {
       type: "object",
       properties: {
         source: {
           type: "string",
-          description:
-            "HTML source string. One of `source` / `filePath` / `url` (or `sessionId`) is required.",
+          description: "HTML source string. One of `source` / `filePath` is required.",
         },
         filePath: {
           type: "string",
           description:
-            "Absolute path to an .html file. **Only correct for vanilla <nds-*> mockups where the file IS the rendered output.** React/Vite workspaces must use `url` instead — the static dist/index.html shell counts as DS 0%.",
-        },
-        url: {
-          type: "string",
-          description:
-            "Live URL (dev server or preview). MCP launches Playwright headless, captures `document.documentElement.outerHTML`, then validates the rendered DOM. Recommended for any workspace where <nds-*> elements are injected at runtime.",
-        },
-        sessionId: {
-          type: "string",
-          description:
-            "dev_server session id. If provided, MCP uses that session's URL/cwd as snapshot source. Convenient: dev_server({ action:'start' }) → use its sessionId here.",
-        },
-        waitForSelector: {
-          type: "string",
-          description:
-            "CSS selector to wait for before snapshotting (e.g. 'nds-button' or '[data-app-ready]'). More reliable than relying on networkidle alone.",
-        },
-        timeoutMs: {
-          type: "number",
-          description: "Snapshot timeout when `url`/`sessionId` is used. Default 15000.",
-        },
-        snapshotPath: {
-          type: "string",
-          description:
-            "[url/sessionId] If provided, the captured rendered DOM is also written to this path (for debugging / re-validation later).",
+            "Absolute path to an .html file (the file IS the rendered output). For React/Vite workspaces where <nds-*> are injected at runtime, build a single-file artifact first via build_singlefile_html, or pass the rendered HTML through `source`.",
         },
         withStats: {
           type: "boolean",
@@ -525,23 +449,6 @@ function optionalEnum<T extends readonly string[]>(
   return value;
 }
 
-function optionalViewport(
-  args: ToolArgs,
-  key: string,
-  toolName: string,
-): { width?: number; height?: number } | undefined {
-  const value = args[key];
-  if (value === undefined) return undefined;
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw new Error(`${toolName}: '${key}' must be an object.`);
-  }
-  const viewport = value as ToolArgs;
-  return {
-    width: optionalNumber(viewport, "width", `${toolName}.${key}`, { min: 1 }),
-    height: optionalNumber(viewport, "height", `${toolName}.${key}`, { min: 1 }),
-  };
-}
-
 function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
   const args = readArgs(toolName, rawArgs);
   switch (toolName) {
@@ -619,17 +526,6 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         autoReport: optionalBoolean(args, "autoReport", toolName),
         sessionId: optionalString(args, "sessionId", toolName),
       };
-    case "check_preview":
-      return {
-        url: optionalString(args, "url", toolName),
-        routePath: optionalString(args, "routePath", toolName),
-        cwd: optionalString(args, "cwd", toolName),
-        sessionId: optionalString(args, "sessionId", toolName),
-        timeoutMs: optionalNumber(args, "timeoutMs", toolName, { min: 1 }),
-        minTextLength: optionalNumber(args, "minTextLength", toolName, { min: 0 }),
-        viewport: optionalViewport(args, "viewport", toolName),
-        autoReport: optionalBoolean(args, "autoReport", toolName),
-      };
     case "build_singlefile_html":
       return {
         cwd: optionalString(args, "cwd", toolName),
@@ -640,11 +536,6 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       return {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),
-        url: optionalString(args, "url", toolName),
-        sessionId: optionalString(args, "sessionId", toolName),
-        waitForSelector: optionalString(args, "waitForSelector", toolName),
-        timeoutMs: optionalNumber(args, "timeoutMs", toolName, { min: 1 }),
-        snapshotPath: optionalString(args, "snapshotPath", toolName),
         withStats: optionalBoolean(args, "withStats", toolName),
         report: optionalBoolean(args, "report", toolName),
         mockupName: optionalString(args, "mockupName", toolName),

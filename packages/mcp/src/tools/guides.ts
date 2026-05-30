@@ -613,7 +613,7 @@ function getSlimClaudeMdTemplate(args: {
 
 1. Read \`get_guide({ topic: "admin-cms" })\`.
 2. Implement with real antd components, not raw HTML/CSS lookalikes.
-3. Run typecheck and preview with \`dev_server\` + \`check_preview\`.
+3. Run typecheck, then \`dev_server({ action: "start" })\` and open the preview URL in a browser to check it.
 4. Build the shareable file with \`build_singlefile_html({})\`.
 
 ## Hard Rules
@@ -648,7 +648,7 @@ function getSlimClaudeMdTemplate(args: {
 6. Write root \`index.html\` with real \`<nds-*>\` elements.
 7. Run \`validate_html_mockup({ filePath: "index.html" })\`; fix until violation count is 0.
 8. Run \`analyze_html_mockup({ filePath: "index.html" })\` for DS adoption stats.
-9. Run \`dev_server({ action: "start" })\` and \`check_preview\`.
+9. Run \`dev_server({ action: "start" })\` and open the preview URL in a browser to check it.
 10. Build the shareable file with \`build_singlefile_html({})\`.
 
 ## Completion Gate
@@ -757,7 +757,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
   - \`find_component\` / \`find_icon\` / \`find_token\` — DS 자산 조회
   - \`validate_html_mockup({ filePath })\` — HTML 정적 검증
   - \`analyze_html_mockup({ filePath })\` — DS 채택 비율 / native 잔존 측정
-  - \`dev_server({ action: "start" })\` / \`check_preview\` / \`dev_server({ action: "stop" })\` — dev 서버 검증
+  - \`dev_server({ action: "start" })\` / \`dev_server({ action: "stop" })\` — dev 서버 미리보기 (URL 을 브라우저에서 직접 확인)
   - \`build_singlefile_html\` — vanilla HTML 워크플로우도 1급 지원. inline 산출물 1개 \`.html\` (JS · CSS · nds-* runtime 전부 inline) 로 디자이너/PM 에게 dnd 전달 가능.
 
 ## 산출물 형식 강제 (MUST — 우회 절대 금지)
@@ -819,7 +819,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - 목업 \`.html\` 작성 직후 반드시 \`validate_html_mockup({ filePath })\` 호출. 위반 0건 될 때까지 수정 후 재실행.
 - 위반이 해소된 뒤 \`analyze_html_mockup({ filePath })\` 로 채택 비율 확인. \`dsRatio\` 가 낮거나 native(\`<button>\` 등) 잔존이 있으면 \`convert_html_to_ds_html\` 호출 또는 손으로 교체.
 - 구현 후 \`dev_server({ action: "start" })\` 로 dev 서버 실행.
-- dev URL 응답하면 \`check_preview\` 로 런타임 에러, unknown custom-element 경고, 빈 화면 여부 확인.
+- dev URL 응답하면 브라우저에서 직접 열어 런타임 에러, unknown custom-element 경고, 빈 화면 여부 확인.
 - 완료 전 \`get_guide({ topic: "dos-donts" })\` 로 최종 sanity check.
 - 작업 종료 시 \`dev_server({ action: "stop" })\` 로 종료.
 
@@ -850,7 +850,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 6-bis. **2회 self-check 강제** — 위반이 0건이 됐어도 \`validate_html_mockup\` 을 한 번 더 호출해 새로 들어온 위반이 없는지 확인.
 7. \`analyze_html_mockup({ filePath })\` 실행. \`dsRatio\` 와 \`recommendations[]\` 를 사용자에게 보여주고, native 잔존이 있으면 \`convert_html_to_ds_html\` 호출.
 8. \`dev_server({ action: "start" })\` 실행.
-9. \`check_preview\` 실행 및 런타임 오류 수정. unknown custom-element 경고는 main.ts 의 runtime import 누락 신호.
+9. dev URL 을 브라우저에서 직접 열어 런타임 오류 확인 및 수정. unknown custom-element 경고는 main.ts 의 runtime import 누락 신호.
 10. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인.
 11. **\`build_singlefile_html\` 호출 → \`dist/index.html\` 1개 파일 산출**. 결과 humanReadable 을 사용자에게 그대로 보여줄 것 (\`[OK] dist/index.html (NN KB, Ms)\`). MCP 가 intent='html' 을 자동 감지해 \`vite-plugin-singlefile\` 설치 + vite.config 패치 + 빌드까지 수행. 산출물 1개 파일이 메신저 dnd / 첨부로 공유 가능. 응답의 \`dsUsageSummary\` (예: \`DS@0.1.10 · DS 12 (45%)\`) 를 \`<footer>\` 안에 visible 하게 렌더 — \`<span data-ds-badge>...</span>\` 형태. (HTML 주석만으로는 디자이너/PM 이 어떤 DS 버전인지 확인 불가)
 12. **반드시 \`validate_html_mockup({ filePath: 'dist/index.html', report: true })\` 호출** — build 응답의 \`humanReadable\` 첫 줄 NEXT STEP 라인을 따라 즉시 실행. (vanilla HTML 워크스페이스는 정적 파일이 곧 렌더 결과라 \`filePath\` 그대로 OK.) 사용자에게 묻지 말고 그냥 실행. 이 호출은 (a) DS 사용량을 구글시트에 적재하고 (b) 마지막 위반 검사를 수행. 빠뜨리면 운영팀이 채택 비율 추적 불가 + ds-badge-missing / emoji-banned 같은 마지막 위반이 산출물에 그대로 남음.
@@ -893,7 +893,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **금지**: \`@nudge-design/react\`, \`@nudge-design/tokens\`, \`@nudge-design/icons\` 어떤 형태로도 import하지 말 것
 - nudge-ds MCP는 두 가지 도구만 사용:
   - \`get_guide({ topic: "admin-cms" })\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
-  - \`dev_server({ action: "start" })\` / \`check_preview\` / \`dev_server({ action: "stop" })\` — 어드민에서도 동일하게 사용 가능
+  - \`dev_server({ action: "start" })\` / \`dev_server({ action: "stop" })\` — 어드민에서도 동일하게 dev 서버 미리보기 (URL 을 브라우저에서 직접 확인)
 
 ## 산출물 형식 강제 (MUST — 우회 절대 금지)
 
@@ -943,7 +943,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 1. \`get_guide({ topic: "admin-cms" })\` 호출해 컨벤션 재확인
 2. AdminLayout(Sider+Content+Footer) → 페이지 작성
 3. \`tsc --noEmit\` 통과
-4. \`dev_server({ action: "start" })\` → \`check_preview\` → 에러 0건 확인
+4. \`dev_server({ action: "start" })\` → 브라우저에서 dev URL 열어 에러 0건 확인
 5. \`dev_server({ action: "stop" })\`
 
 ## Self-Check
@@ -1075,8 +1075,8 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - 위반이 있으면 \`suggest_replacement\`로 수정 후 재검증, 최대 3회 루프
 - **\`validate_mockup\` 통과 후 반드시 \`npx tsc --noEmit\` 실행** — validate_mockup 은 패턴 검사만 하므로 잘못된 prop union 값(\`IconButton size="md"\` → 유효: x-large/large/medium/small, \`Card variant="content"\` → 유효: outlined/elevated/flat 등)은 못 잡습니다. Vite dev 서버도 esbuild 변환이라 타입 에러를 무시함. tsc 가 0 errors 되어야 다음 단계로.
 - 구현 후 \`dev_server({ action: "start" })\` 로 dev 서버 실행
-- dev URL이 응답하면 \`check_preview\`로 런타임 에러, Vite overlay, 빈 화면 여부 확인
-- \`check_preview.ok === false\`이면 에러를 수정하고 다시 \`check_preview\`
+- dev URL이 응답하면 브라우저에서 직접 열어 런타임 에러, Vite overlay, 빈 화면 여부 확인
+- 에러가 보이면 수정하고 dev URL 을 다시 확인
 - 완료 전 \`get_guide({ topic: "dos-donts" })\`로 최종 sanity check
 - 목업 \`.tsx\` 가 완성/수정될 때마다 **반드시 \`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 로컬 \`.ds-usage-log.jsonl\` 적재 + 공용 Google Sheets webhook으로 자동 전송 (별도 인증/설정 불필요). 빠뜨리면 사용량 집계가 비어 보임.
 - **최종 산출물은 항상 단일 HTML 파일**. mockup 완성 후 **반드시 \`build_singlefile_html({})\` 호출** — 사용자에게 "만들까요" 라고 묻지 말 것. 그냥 실행하세요. 사용자가 명시적으로 "빌드하지 마" 라고 거부한 경우에만 생략. 손으로 .html 작성, \`vite build\` 직접 실행, 다른 번들러 사용, .tsx 만 남기고 종료 — **모두 금지**.
@@ -1120,7 +1120,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 5-bis. **2회 self-check 강제** — 1회차에서 위반이 없었거나 수정해서 0건이 됐어도, \`validate_mockup\` 을 **반드시 한 번 더** 호출해 2회차 결과까지 0건임을 확인. 1회차 통과만 보고 다음 단계로 넘어가는 것 금지 (수정 과정에서 새 위반이 들어올 수 있음). 위반을 인지하고 그대로 제출하는 것도 금지.
 5.5. **\`npx tsc --noEmit\` 실행** — invalid prop union(예: \`size="md"\` while only x-large|large|medium|small) 등 validate_mockup 이 못 잡는 타입 에러를 여기서 차단. 0 errors 가 되어야 다음 단계.
 6. \`dev_server({ action: "start" })\` 실행
-7. \`check_preview\` 실행 및 런타임 오류 수정
+7. dev 서버 미리보기 URL 을 브라우저에서 직접 열어 런타임 오류·빈 화면 여부 확인 후 수정
 8. (선택) Inspector 가 셋업돼 있으면 화면 우하단 패널에서 DS 비율 / antd·native 잔존 여부 확인. 미셋업이면 \`get_setup({ step: "inspector" })\` 한 번 호출(자동 패치).
 9. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인
 10. **\`report_mockup_usage({ filePath: '<mockup경로.tsx>' })\` 호출** — 사용량 집계 적재 (생략 금지). 응답의 \`humanReadable\` 한 줄을 **사용자에게 반드시 보여줄 것**.
@@ -1130,10 +1130,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
     - 사용자가 명시적으로 "빌드하지 마" / "TSX 만 줘" / "HTML 필요 없어" 라고 거부한 경우에만 생략 가능.
     - **다른 출력 방식 모두 금지**: 손으로 .html 작성, \`vite build\` 직접 실행, esbuild/parcel/webpack 사용, .tsx 만 남기고 종료 — 모두 금지. nds-* 클래스와 onClick 인터랙션이 손실됨.
     - 빌드 후 \`dist/index.html\` 경로와 파일 크기를 사용자에게 알릴 것 — 이게 슬랙/메일 공유용 최종 산출물입니다.
-12. **렌더드 DOM 기반 최종 검증 + 시트 적재 (필수 · 묻지 말고 즉시 실행)**:
-    - React/Vite 워크스페이스는 \`<nds-*>\` 가 런타임에 주입되므로 \`dist/index.html\` (정적 shell) 만 그대로 validate 하면 DS 0% 가 시트에 적재되는 함정.
-    - \`dev_server({ action:'start' })\` 가 떠 있는 상태에서 (없으면 다시 띄움) **\`validate_html_mockup({ url: <devUrl>, sessionId: <sessionId>, report: true, snapshotPath: 'dist/rendered.html' })\` 호출**.
-    - MCP 가 playwright 로 렌더드 DOM 을 캡처해 validator + 구글시트 양쪽 모두 그 결과로 처리. \`snapshotPath\` 가 dist 아래 떨궈져 디버깅·재검증에 재사용 가능.
+12. **최종 검증 + 시트 적재 (필수 · 묻지 말고 즉시 실행)**:
+    - 빌드 산출물(\`dist/index.html\`) 또는 렌더된 HTML 을 검증한다 — **\`validate_html_mockup({ filePath: '<프로젝트>/dist/index.html' })\` 또는 \`validate_html_mockup({ source: <렌더된 HTML> })\` 호출** (report 는 default true 라 구글시트까지 자동 적재).
+    - React/Vite 워크스페이스는 \`<nds-*>\` 가 런타임에 주입되므로 정적 \`dist/index.html\` shell 만 검증하면 DS 사용량이 낮게 잡힐 수 있다. 정확한 수치가 필요하면 dev 서버에서 렌더된 HTML 을 복사해 \`source\` 로 넘긴다.
     - 응답의 \`dsUsageSummary\` (예: \`DS@0.1.10 · DS 12 (45%)\`) 를 받아 \`<footer>\` 안에 visible 하게 렌더 — \`<span data-ds-badge>DS@0.1.10 · DS 12 (45%)</span>\` 형태. 풋터에 없으면 validator 가 \`ds-badge-missing\` 으로 막음. 통계는 본인이 직접 \`<div>/<span>\` 카운트하지 말 것 — validator 가 단일 SSOT.
 13. 사용자가 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
 `;

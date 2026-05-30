@@ -39,12 +39,7 @@ import {
 } from "./tools/html-analyzer.js";
 import type { AnalyzeHtmlMockupResult } from "./tools/html-analyzer.js";
 export { countHtmlUsage } from "./tools/html-analyzer.js";
-import {
-  checkPreview,
-  devServer,
-  registerDevServerCleanup,
-  snapshotRenderedHtml,
-} from "./tools/preview.js";
+import { devServer, registerDevServerCleanup } from "./tools/preview.js";
 import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "./tools/build-html.js";
 import { getGuide } from "./tools/guides.js";
@@ -630,18 +625,6 @@ const toolHandlers = {
         sessionId?: string;
       },
     ),
-  check_preview: (args: ToolArgs) =>
-    checkPreview(
-      args as {
-        url?: string;
-        routePath?: string;
-        cwd?: string;
-        sessionId?: string;
-        timeoutMs?: number;
-        minTextLength?: number;
-        viewport?: { width?: number; height?: number };
-      },
-    ),
   build_singlefile_html: async (args: ToolArgs) => {
     const result = await buildSinglefileHtml(
       args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" },
@@ -654,11 +637,6 @@ const toolHandlers = {
     const typed = args as {
       source?: string;
       filePath?: string;
-      url?: string;
-      sessionId?: string;
-      waitForSelector?: string;
-      timeoutMs?: number;
-      snapshotPath?: string;
       withStats?: boolean;
       report?: boolean;
       mockupName?: string;
@@ -666,47 +644,15 @@ const toolHandlers = {
       dryRun?: boolean;
     };
 
-    // url 또는 sessionId 가 있으면 렌더드 DOM 캡처 후 그 결과로 validation.
-    // React/Vite 처럼 런타임에 <nds-*> 가 주입되는 워크스페이스에서 dist/index.html 만
-    // 그대로 검증하면 DS 0% 가 나오는 함정을 자동으로 회피한다.
-    let effectiveSource = typed.source;
-    let effectiveFilePath = typed.filePath;
-    let snapshot: Awaited<ReturnType<typeof snapshotRenderedHtml>> | null = null;
-    if (!effectiveSource && (typed.url || typed.sessionId)) {
-      snapshot = await snapshotRenderedHtml({
-        url: typed.url,
-        sessionId: typed.sessionId,
-        cwd: typed.cwd,
-        waitForSelector: typed.waitForSelector,
-        timeoutMs: typed.timeoutMs,
-      });
-      if (!snapshot.ok) {
-        return {
-          ok: false,
-          phase: "snapshot",
-          snapshot,
-          suggestion:
-            "렌더드 DOM 캡처 실패. dev_server({ action:'start' }) 가 살아있는지, url 이 정확한지, playwright 가 설치되어 있는지 확인. 그래도 안 되면 filePath 로 정적 검증 fallback.",
-        };
-      }
-      effectiveSource = snapshot.html;
-      // snapshotPath 가 지정되면 디스크에 떨궈서 downstream 도구가 재사용 가능하게.
-      if (typed.snapshotPath) {
-        const abs = path.isAbsolute(typed.snapshotPath)
-          ? typed.snapshotPath
-          : path.join(typed.cwd ?? process.cwd(), typed.snapshotPath);
-        fs.mkdirSync(path.dirname(abs), { recursive: true });
-        fs.writeFileSync(abs, snapshot.html, "utf-8");
-        effectiveFilePath = abs;
-      }
-    }
+    // 정적 검증만 지원 — source(HTML 문자열) 또는 filePath(.html) 를 그대로 검증한다.
+    const effectiveSource = typed.source;
+    const effectiveFilePath = typed.filePath;
 
     const result = validateHtmlMockup({ source: effectiveSource, filePath: effectiveFilePath });
     let extras: {
       // root 의 violations[] / violationsByRule 와 동일하므로 stats 에서는 둘 다 제외해 응답 크기 절약.
       stats?: Omit<AnalyzeHtmlMockupResult, "violations" | "violationsByRule">;
       report?: unknown;
-      snapshot?: { url: string; byteLength: number; snapshotPath?: string };
       _reportSuppressedWarning?: {
         rule: string;
         suppressedCallCount: number;
@@ -714,16 +660,6 @@ const toolHandlers = {
         howToFlush: string;
       };
     } | null = null;
-
-    if (snapshot?.ok) {
-      extras = {
-        snapshot: {
-          url: snapshot.url,
-          byteLength: snapshot.byteLength,
-          snapshotPath: typed.snapshotPath ? (effectiveFilePath ?? undefined) : undefined,
-        },
-      };
-    }
 
     // withStats:true → analyzeHtmlMockup 결과(stats / grouped / recommendations) 를 함께 반환.
     // 옛 analyze_html_mockup 도구의 호출자가 그대로 옮겨올 수 있도록 필드를 분리해 노출.
