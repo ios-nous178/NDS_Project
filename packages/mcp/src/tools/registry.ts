@@ -110,7 +110,11 @@ const TOOLS = [
   },
   {
     name: "dev_server",
-    description: "Start or stop a local mockup dev server and return the preview URL/session id.",
+    description:
+      "Start or stop a local mockup dev server (Vite) and return the preview URL/session id. " +
+      "For react/admin-cms (.tsx) workspaces only. For html (vanilla <nds-*>) mockups it is not needed — " +
+      "build_singlefile_html produces a self-contained dist/index.html you open directly; calling start on an " +
+      "html workspace returns guidance instead of spawning.",
     inputSchema: {
       type: "object",
       properties: {

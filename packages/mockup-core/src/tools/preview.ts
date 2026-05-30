@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { getToolProcessEnv } from "./process-env.js";
+import { detectWorkspaceIntent } from "./build-html.js";
 
 interface DevServerSession {
   id: string;
@@ -92,6 +93,23 @@ export async function startDevServer(args: {
   const cwd = path.resolve(args.cwd ?? process.cwd());
   if (!fs.existsSync(cwd)) {
     return { ok: false, error: `cwd not found: ${cwd}` };
+  }
+
+  // html(vanilla <nds-*>, 무번들러) 워크스페이스는 dev server 가 필요 없다 — build_singlefile_html 이
+  // 만든 자체완결 dist/index.html 을 그대로 열면 된다. dev_server(vite)는 react/admin-cms 전용.
+  // (명시 command 를 넘기면 사용자가 의도적으로 서버를 띄우려는 것이므로 존중하고 건너뛰지 않는다.)
+  if (!args.command && detectWorkspaceIntent(cwd) === "html") {
+    return {
+      ok: true,
+      skipped: true,
+      intent: "html",
+      cwd,
+      message:
+        "html(vanilla <nds-*>) 목업은 dev server 가 필요 없습니다 — 번들러 없이 build_singlefile_html 이 " +
+        "DS runtime/CSS 를 inline 한 자체완결 dist/index.html 을 만듭니다. 그 파일을 브라우저에서 직접 여세요(file://). " +
+        "Nudge Studio 데스크톱 앱이라면 미리보기 패널이 자동으로 dist 를 띄웁니다.",
+      next: "build_singlefile_html({ cwd }) → dist/index.html 을 브라우저로 열기",
+    };
   }
 
   const command = args.command ?? "npm";
