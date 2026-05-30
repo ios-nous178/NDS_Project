@@ -58,15 +58,96 @@ export const TrostMobile: Story = {
   ),
 };
 
+/**
+ * 앱 인-웹뷰 헤더 — 트로스트는 앱이 2종(트로스트 앱 / (캐시워크)트로스트 앱)이라
+ * 케이스가 다양합니다 (Figma 5:1169 App bar).
+ *
+ *  · main (h56): 좌측 타이틀 20px + [설정/검색] + 알림. 홈은 로고 + 포인트 + 알림.
+ *  · sub  (h44): back + 중앙 타이틀 16px + [설정/검색/텍스트/알림] 조합.
+ *  · app='trost' → 쉐브론(<) back, app='cashwalk-trost' → 화살표(←) back.
+ */
+const noop = () => undefined;
+const WvRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div style={{ marginBottom: 18 }}>
+    <div style={{ fontSize: 11, color: "#888", margin: "0 0 4px 4px" }}>{label}</div>
+    <div style={{ width: 360, border: "1px solid #e5e5e5" }}>{children}</div>
+  </div>
+);
+
 export const TrostWebview: Story = {
-  name: "Trost/Webview",
+  name: "Trost/Webview (앱바 케이스)",
   render: () => (
-    <TrostAppBar
-      variant="webview"
-      logo={{ src: b.logo.headerMobile.src }}
-      webviewTitle={b.header.webviewTitle}
-      mobileHeight={b.header.mobileHeight}
-    />
+    <div style={{ padding: 16, background: "#f4f4f4" }}>
+      <WvRow label="트로스트 앱 · main — 타이틀 + 설정 + 알림 (h56)">
+        <TrostAppBar
+          variant="webview"
+          webviewLevel="main"
+          webviewTitle="타이틀"
+          onSettingClick={noop}
+          onNotificationClick={noop}
+          hasNotification
+        />
+      </WvRow>
+      <WvRow label="트로스트 앱 · main 홈 — 로고 + 포인트 + 알림 (h56)">
+        <TrostAppBar
+          variant="webview"
+          webviewLevel="main"
+          logo={{ src: trostLogo, alt: "Trost", height: 22 }}
+          pointChip={{ amount: "123,990", href: "/point" }}
+          onNotificationClick={noop}
+          hasNotification
+        />
+      </WvRow>
+      <WvRow label="트로스트 앱 · main — 심리상담 + 검색 + 알림 (h56)">
+        <TrostAppBar
+          variant="webview"
+          webviewLevel="main"
+          webviewTitle="심리상담"
+          onSearchClick={noop}
+          onNotificationClick={noop}
+        />
+      </WvRow>
+      <WvRow label="트로스트 앱 · sub — 뒤로(쉐브론) + 타이틀 + 설정 + 알림 (h44)">
+        <TrostAppBar
+          variant="webview"
+          app="trost"
+          webviewTitle="타이틀"
+          onBack={noop}
+          onSettingClick={noop}
+          onNotificationClick={noop}
+        />
+      </WvRow>
+      <WvRow label="트로스트 앱 · sub — 뒤로 + 타이틀 + 알림 (h44)">
+        <TrostAppBar
+          variant="webview"
+          webviewTitle="타이틀"
+          onBack={noop}
+          onNotificationClick={noop}
+        />
+      </WvRow>
+      <WvRow label="트로스트 앱 · sub — 뒤로 + 타이틀 (액션 없음, h44)">
+        <TrostAppBar variant="webview" webviewTitle="타이틀" onBack={noop} />
+      </WvRow>
+      <WvRow label="트로스트 앱 · sub/text — 뒤로 + 타이틀 + 텍스트 액션 (h44)">
+        <TrostAppBar
+          variant="webview"
+          webviewTitle="타이틀"
+          onBack={noop}
+          webviewActionText="완료"
+          onWebviewActionText={noop}
+        />
+      </WvRow>
+      <WvRow label="(캐시워크)트로스트 앱 · sub — 뒤로(화살표) + 타이틀 + 설정 + 알림 (h44)">
+        <TrostAppBar
+          variant="webview"
+          app="cashwalk-trost"
+          webviewTitle="타이틀"
+          onBack={noop}
+          onSettingClick={noop}
+          onNotificationClick={noop}
+        />
+      </WvRow>
+    </div>
   ),
 };
 
