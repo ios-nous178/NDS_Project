@@ -28,39 +28,27 @@ const makeTabs = () => b.tabBar.tabLabels.map((l, i) => ({ key: `tab-${i}`, labe
  * Figma 1221:64046 `bottomnavi5` — 5탭 (홈/대회정보/커뮤니티/채팅/마이페이지).
  * 4탭(83:887) → 5탭 업데이트: 채팅 신설, 커뮤니티=2인 그룹, 마이페이지=원형 인물 아이콘.
  * active = black filled icon · gray600 inactive · label Pretendard Medium 12/16.
+ *
+ * 탭을 클릭하면 해당 탭이 활성화됩니다 (활성 상태별 스토리를 따로 두지 않음).
  */
+function RunmileTabBarDemo() {
+  const [active, setActive] = React.useState("tab-0");
+  return (
+    <div style={wrap}>
+      <RunmileBottomNav
+        tabs={makeTabs()}
+        activeTab={active}
+        position="static"
+        onTabClick={(tab, e) => {
+          e.preventDefault();
+          setActive(tab.key);
+        }}
+      />
+    </div>
+  );
+}
+
 export const RunmileTabBar: Story = {
-  name: "Runmile/기본 (5탭, Figma 1221:64046)",
-  render: () => (
-    <div style={wrap}>
-      <RunmileBottomNav tabs={makeTabs()} activeTab="tab-0" position="static" />
-    </div>
-  ),
-};
-
-export const RunmileTabBarFlagActive: Story = {
-  name: "Runmile/대회정보 활성",
-  render: () => (
-    <div style={wrap}>
-      <RunmileBottomNav tabs={makeTabs()} activeTab="tab-1" position="static" />
-    </div>
-  ),
-};
-
-export const RunmileTabBarChatActive: Story = {
-  name: "Runmile/채팅 활성",
-  render: () => (
-    <div style={wrap}>
-      <RunmileBottomNav tabs={makeTabs()} activeTab="tab-3" position="static" />
-    </div>
-  ),
-};
-
-export const RunmileTabBarMyPageActive: Story = {
-  name: "Runmile/마이페이지 활성",
-  render: () => (
-    <div style={wrap}>
-      <RunmileBottomNav tabs={makeTabs()} activeTab="tab-4" position="static" />
-    </div>
-  ),
+  name: "Runmile (5탭, Figma 1221:64046)",
+  render: () => <RunmileTabBarDemo />,
 };

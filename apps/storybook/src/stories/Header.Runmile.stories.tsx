@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { RunmileAppBar, RunmileWebHeader } from "@nudge-design/react";
 import { RunmileCalendarIcon, RunmileSearchIcon, RunmileCloseIcon } from "@nudge-design/icons";
 import { BRAND_LOGOS } from "@nudge-design/assets";
+import { DesktopPreview } from "../desktop-preview";
 
 /**
  * 모바일 헤더(Figma 36:258 — 360×52, 3 variant) + 데스크톱 웹 헤더
@@ -28,20 +29,9 @@ export default meta;
 type Story = StoryObj;
 
 function Frame({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        width: 360,
-        margin: "40px auto",
-        border: "1px solid var(--semantic-border-normal-default, #E5E8EB)",
-        borderRadius: 8,
-        overflow: "hidden",
-        background: "#fff",
-      }}
-    >
-      {children}
-    </div>
-  );
+  // 다른 브랜드 모바일 스토리와 동일하게 단순 폭 제한만 둔다.
+  // (이전엔 border/radius 로 감싸 Runmile 만 아웃라인이 잡혀 보였음)
+  return <div style={{ maxWidth: 360 }}>{children}</div>;
 }
 
 /* ─── 앱 / 모바일 (RunmileAppBar · 360×52 3 variant) ─── */
@@ -97,15 +87,17 @@ export const RunmileWebHeaderLoggedOut: Story = {
     },
   },
   render: () => (
-    <RunmileWebHeader
-      logoSrc={RUNMILE_LOGO}
-      menuItems={RUNMILE_GNB}
-      activeKey="competition"
-      loggedIn={false}
-      loginHref="#"
-      chatHref="#"
-      onSearch={(k) => console.log("[runmile search]", k)}
-    />
+    <DesktopPreview>
+      <RunmileWebHeader
+        logoSrc={RUNMILE_LOGO}
+        menuItems={RUNMILE_GNB}
+        activeKey="competition"
+        loggedIn={false}
+        loginHref="#"
+        chatHref="#"
+        onSearch={(k) => console.log("[runmile search]", k)}
+      />
+    </DesktopPreview>
   ),
 };
 
@@ -120,15 +112,17 @@ export const RunmileWebHeaderLoggedIn: Story = {
     },
   },
   render: () => (
-    <RunmileWebHeader
-      logoSrc={RUNMILE_LOGO}
-      menuItems={RUNMILE_GNB}
-      activeKey="community"
-      loggedIn
-      chatUnreadCount={12}
-      chatHref="#"
-      myPageHref="#"
-      onSearch={(k) => console.log("[runmile search]", k)}
-    />
+    <DesktopPreview>
+      <RunmileWebHeader
+        logoSrc={RUNMILE_LOGO}
+        menuItems={RUNMILE_GNB}
+        activeKey="community"
+        loggedIn
+        chatUnreadCount={12}
+        chatHref="#"
+        myPageHref="#"
+        onSearch={(k) => console.log("[runmile search]", k)}
+      />
+    </DesktopPreview>
   ),
 };

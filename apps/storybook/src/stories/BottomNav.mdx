@@ -11,13 +11,14 @@ import * as Runmile from "./BottomNav.Runmile.stories";
 
 모바일 앱 하단 내비게이션 탭바 모음. 푸터(Footer)와 분리된 별도 내비게이션 컴포넌트입니다.
 탭 라벨·아이콘은 브랜드별로 다르며 active 상태에 따라 채워진 아이콘으로 전환됩니다.
+각 데모는 탭을 클릭하면 해당 탭이 활성화됩니다.
 
 | 브랜드 | 탭 수 | 비고 |
 | --- | --- | --- |
-| **NudgeEAP** | 3 | — |
+| **NudgeEAP** | 5 | Figma 20:3331 · 홈/챌린지/상담/멘탈케어/내 공간 |
 | **Geniet** | 5 | Figma 90:2 |
 | **Trost** | 5 | — |
-| **Runmile** | 5 | Figma 1221:64046 · 상태별(대회정보/채팅/마이페이지) |
+| **Runmile** | 5 | Figma 1221:64046 |
 
 ## NudgeEAP
 
@@ -26,7 +27,6 @@ import * as Runmile from "./BottomNav.Runmile.stories";
 ## Geniet
 
 <Canvas of={Geniet.GenietTabBar} />
-<Canvas of={Geniet.GenietTabBarCommunityActive} />
 
 ## Trost
 
@@ -35,6 +35,3 @@ import * as Runmile from "./BottomNav.Runmile.stories";
 ## Runmile
 
 <Canvas of={Runmile.RunmileTabBar} />
-<Canvas of={Runmile.RunmileTabBarFlagActive} />
-<Canvas of={Runmile.RunmileTabBarChatActive} />
-<Canvas of={Runmile.RunmileTabBarMyPageActive} />

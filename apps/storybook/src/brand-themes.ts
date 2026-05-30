@@ -17,6 +17,8 @@
  */
 
 // dist/{brand}.css 의 :root 블록을 ?raw 로 가져와서 토큰 자동 sync.
+// NudgeEAP 는 base 토큰(dist/tokens.css)이 곧 브랜드 색이라 별도 brand css 가 없다.
+import tokensDistCss from "../../../packages/tokens/dist/tokens.css?raw";
 import trostDistCss from "../../../packages/tokens/dist/trost.css?raw";
 import genietDistCss from "../../../packages/tokens/dist/geniet.css?raw";
 import cashwalkBizDistCss from "../../../packages/tokens/dist/cashwalk-biz.css?raw";
@@ -34,6 +36,10 @@ function parseCssRootVars(raw: string): Record<string, string> {
 
 /** dist/{brand}.css 에서 파싱한 시멘틱 토큰. tokens 패키지가 SSOT 인 부분. */
 const distVars: Record<string, Record<string, string>> = {
+  // NudgeEAP = base 토큰 전체. docs(개요)처럼 한 페이지에 여러 브랜드가 동시에 렌더돼
+  // :root 가 마지막 브랜드로 오염돼도, 스토리 단위 wrapper 가 이 base 셋을 다시 깔아
+  // NudgeEAP 색을 복원하도록 명시적으로 넣는다. (비어 있으면 오염된 :root 를 그대로 상속)
+  "nudge-eap": parseCssRootVars(tokensDistCss),
   trost: parseCssRootVars(trostDistCss),
   geniet: parseCssRootVars(genietDistCss),
   "cashwalk-biz": parseCssRootVars(cashwalkBizDistCss),

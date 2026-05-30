@@ -11,6 +11,7 @@ import {
   TrostTabNavigation,
 } from "@nudge-design/react";
 import { getBrandFixture } from "../brand-fixtures";
+import { DesktopPreview } from "../desktop-preview";
 
 const b = getBrandFixture("trost");
 
@@ -124,63 +125,67 @@ export const TrostWebHeaderDesktop: Story = {
     },
   },
   render: () => (
-    <TrostWebHeader
-      banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbol} />}
-      utility={
-        <TrostUtilityHeader
-          logoHref="/"
-          logoSrc={trostLogo}
-          searchSlot={
-            <TrostSearchForm
-              placeholder={b.header.searchBar?.placeholder}
-              onSearch={(keyword) => console.log("[trost search]", keyword)}
-              width={b.header.searchBar?.width}
-            />
-          }
-          loginSlot={
-            <TrostLoginSection
-              user={null}
-              onLoginClick={() => console.log("[trost login]")}
-              onPartnerSignupClick={() => console.log("[trost partner signup]")}
-              logoutHref="/logout"
-            />
-          }
-          appDownloadSlot={<TrostAppDownloadButton />}
-        />
-      }
-      tabs={<TrostTabNavigation tabs={TROST_TABS} currentPath="/" />}
-    />
+    <DesktopPreview>
+      <TrostWebHeader
+        banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbol} />}
+        utility={
+          <TrostUtilityHeader
+            logoHref="/"
+            logoSrc={trostLogo}
+            searchSlot={
+              <TrostSearchForm
+                placeholder={b.header.searchBar?.placeholder}
+                onSearch={(keyword) => console.log("[trost search]", keyword)}
+                width={b.header.searchBar?.width}
+              />
+            }
+            loginSlot={
+              <TrostLoginSection
+                user={null}
+                onLoginClick={() => console.log("[trost login]")}
+                onPartnerSignupClick={() => console.log("[trost partner signup]")}
+                logoutHref="/logout"
+              />
+            }
+            appDownloadSlot={<TrostAppDownloadButton />}
+          />
+        }
+        tabs={<TrostTabNavigation tabs={TROST_TABS} currentPath="/" />}
+      />
+    </DesktopPreview>
   ),
 };
 
 export const TrostWebHeaderLoggedIn: Story = {
   name: "Trost/Desktop (로그인 후)",
   render: () => (
-    <TrostWebHeader
-      banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbol} />}
-      utility={
-        <TrostUtilityHeader
-          logoHref="/"
-          logoSrc={trostLogo}
-          searchSlot={
-            <TrostSearchForm
-              placeholder={b.header.searchBar?.placeholder}
-              onSearch={(keyword) => console.log("[trost search]", keyword)}
-              width={b.header.searchBar?.width}
-            />
-          }
-          loginSlot={
-            <TrostLoginSection
-              user={{ name: "정민" }}
-              onLoginClick={() => undefined}
-              onPartnerSignupClick={() => undefined}
-              logoutHref="/logout"
-            />
-          }
-          appDownloadSlot={<TrostAppDownloadButton />}
-        />
-      }
-      tabs={<TrostTabNavigation tabs={TROST_TABS} currentPath="/community" />}
-    />
+    <DesktopPreview>
+      <TrostWebHeader
+        banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbol} />}
+        utility={
+          <TrostUtilityHeader
+            logoHref="/"
+            logoSrc={trostLogo}
+            searchSlot={
+              <TrostSearchForm
+                placeholder={b.header.searchBar?.placeholder}
+                onSearch={(keyword) => console.log("[trost search]", keyword)}
+                width={b.header.searchBar?.width}
+              />
+            }
+            loginSlot={
+              <TrostLoginSection
+                user={{ name: "정민" }}
+                onLoginClick={() => undefined}
+                onPartnerSignupClick={() => undefined}
+                logoutHref="/logout"
+              />
+            }
+            appDownloadSlot={<TrostAppDownloadButton />}
+          />
+        }
+        tabs={<TrostTabNavigation tabs={TROST_TABS} currentPath="/community" />}
+      />
+    </DesktopPreview>
   ),
 };

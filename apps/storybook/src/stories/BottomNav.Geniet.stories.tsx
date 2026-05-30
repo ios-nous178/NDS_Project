@@ -22,26 +22,29 @@ const wrap: React.CSSProperties = {
   margin: "0 auto",
 };
 
-export const GenietTabBar: Story = {
-  name: "Geniet/기본 (5탭, Figma 90:2)",
-  render: () => {
-    const tabs = b.tabBar.tabLabels.map((l, i) => ({ key: `tab-${i}`, label: l, href: "#" }));
-    return (
-      <div style={wrap}>
-        <GenietBottomNav tabs={tabs} activeTab="tab-0" position="static" />
-      </div>
-    );
-  },
-};
+function GenietTabBarDemo() {
+  const tabs = b.tabBar.tabLabels.map((l, i) => ({ key: `tab-${i}`, label: l, href: "#" }));
+  const [active, setActive] = React.useState("tab-0");
+  return (
+    <div style={wrap}>
+      <GenietBottomNav
+        tabs={tabs}
+        activeTab={active}
+        position="static"
+        shadow={false}
+        onTabClick={(tab, e) => {
+          e.preventDefault();
+          setActive(tab.key);
+        }}
+      />
+    </div>
+  );
+}
 
-export const GenietTabBarCommunityActive: Story = {
-  name: "Geniet/커뮤니티 활성",
-  render: () => {
-    const tabs = b.tabBar.tabLabels.map((l, i) => ({ key: `tab-${i}`, label: l, href: "#" }));
-    return (
-      <div style={wrap}>
-        <GenietBottomNav tabs={tabs} activeTab="tab-4" position="static" shadow={false} />
-      </div>
-    );
-  },
+/**
+ * Figma 90:2 — 5탭. 탭을 클릭하면 해당 탭이 활성화됩니다.
+ */
+export const GenietTabBar: Story = {
+  name: "Geniet (5탭, Figma 90:2)",
+  render: () => <GenietTabBarDemo />,
 };
