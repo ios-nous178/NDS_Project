@@ -14,9 +14,21 @@ directories:
 files:
   - out/**
   - package.json
+  # pnpm 워크스페이스 의존성은 패키지 루트가 심볼릭 링크라 turbo 캐시(.turbo/*.log)까지
+  # asar 수집 대상에 끌려온다. realpath 가 apps/desktop 밖이라 패킹 시 상대경로 계산이
+  # 터지므로(getRelativePath) 명시적으로 제외한다.
+  - "!**/.turbo"
+  - "!**/.turbo/**"
 extraResources:
   - from: ../../packages/mcp/catalog.json
     to: catalog.json
+  # nudge-ds MCP 서버 자체완결 번들(esbuild 단일 파일 + catalog + references) → resources/mcp/.
+  # scripts/bundle-mcp-desktop.mjs 산출물(apps/desktop/.mcp-bundle/). node_modules·네이티브
+  # 모듈 없음 → Win/Mac 그대로 복사. agent-runner 가 claude 실행 시
+  # resources/mcp/dist/tools/server.mjs 를 Electron-as-node 로 띄워 --mcp-config 로 주입
+  # → 받는 사람이 node/MCP 설치 없이도 nudge-ds 도구가 붙는다.
+  - from: .mcp-bundle
+    to: mcp
 asar: true
 # node-pty 의 네이티브 `.node` 는 asar 안에서 dlopen 불가 → asar 밖으로 추출해야 로드된다.
 asarUnpack:

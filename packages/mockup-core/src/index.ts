@@ -16,6 +16,8 @@ export * from "./tools/html-validator.js";
 export * from "./tools/build-html.js";
 // prebuilt DS 단일 자산(dist/standalone) 런타임 로더 — html intent inline 의 자원
 export * from "./tools/standalone-assets.js";
+// DS 화면 자산(@nudge-design/assets/files/*) on-demand base64 인라이너 — 무배포 단일 HTML
+export * from "./tools/asset-inliner.js";
 // Vite dev server spawn (하네스는 주로 iframe 미리보기를 쓰지만 보존)
 export * from "./tools/preview.js";
 // spawn 시 PATH 보강

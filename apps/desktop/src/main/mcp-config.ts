@@ -77,7 +77,16 @@ export function ensureBundledMcpConfig(): string | null {
   };
   // packaged 번들은 모노레포 디렉터리가 없어 자동 감지도 mcpb 로 떨어지지만 명시한다.
   // dev 경로는 강제하지 않는다 — 서버가 모노레포를 감지해 dev 모드로 동작해야 함.
-  if (resolved.packaged) env.NUDGE_DS_INSTALL_MODE = "mcpb";
+  if (resolved.packaged) {
+    env.NUDGE_DS_INSTALL_MODE = "mcpb";
+    // prebuilt DS 단일 자산(html intent inline 의 자원) 위치를 명시 — single-file server.mjs 의
+    // import.meta.url 기반 sidecar 추정이 빗나가도 확실히 찾게 한다(bundle-mcp-desktop 이 dist/standalone 에 복사).
+    // entry = resources/mcp/dist/tools/server.mjs → ../standalone = resources/mcp/dist/standalone.
+    env.NUDGE_DS_STANDALONE_DIR = join(dirname(resolved.entry), "..", "standalone");
+    // DS 화면 이미지 자산(asset-inliner 가 목업 참조분만 base64 inline). 동일 패턴 →
+    // ../assets = resources/mcp/dist/assets (bundle-mcp-desktop 이 dist/files 를 복사).
+    env.NUDGE_DS_ASSETS_DIR = join(dirname(resolved.entry), "..", "assets");
+  }
 
   const config = {
     mcpServers: {
