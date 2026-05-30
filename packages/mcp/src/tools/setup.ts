@@ -562,104 +562,38 @@ export function getHtmlEntryImports(args: { brand?: string }) {
 }
 
 /**
- * Vite vanilla-ts 템플릿이 만드는 기본 style.css 를 덮어쓰는 minimal reset.
- * React 워크플로우의 MINIMAL_RESET_CSS 와 동일 — DS 컴포넌트 스타일을
- * :where(.nds-*) 가 직접 책임지므로 그대로 재사용해도 안전하다.
+ * 무번들러 html 목업의 index.html 출발점 — <nds-*> 사용처.
+ * vite/main.ts/import 없음: DS runtime/CSS 는 build_singlefile_html 이 자동 inline 한다.
+ * 브랜드는 <html data-brand="..."> 로 지정 — 빌드가 그 토큰을 inline 한다(미지정 시 기본 브랜드).
  */
-const HTML_MINIMAL_RESET_CSS = `/* nudge-ds minimal reset — vanilla HTML 워크플로우
- * tokens.css 이후 import 되어야 var(--font-family-default) 등이 적용된다.
- * @nudge-design/html/styles.css 이전 import 되어야 DS 컴포넌트 룰이 reset을 이긴다.
- */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-:where(html, body) {
-  margin: 0;
-  padding: 0;
-}
-
-:where(body) {
-  font-family: var(--font-family-default);
-  font-size: var(--font-size-body-2);
-  line-height: var(--line-height-body-2);
-  color: var(--semantic-text-default);
-  background: var(--semantic-bg-white);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-
-:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
-  margin: 0;
-}
-
-:where(a) {
-  color: inherit;
-  text-decoration: none;
-}
-
-:where(img, svg, video, canvas, audio, iframe) {
-  display: block;
-  max-width: 100%;
-}
-
-:where(ul, ol) {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-`;
-
-/** Vite vanilla-ts 템플릿의 src/main.ts 자리에 들어갈 최소 entry. */
-const HTML_MAIN_TS_TEMPLATE = `// nudge-ds vanilla HTML entry — DS 토큰 + 스타일 + runtime 등록
-// 자세한 작업 흐름은 CLAUDE.md 의 "산출물 형식 강제" 섹션 참고.
-
-// 1) 토큰 / 스타일 / reset — import 순서 중요
-import "@nudge-design/tokens/css";
-import "@nudge-design/html/styles.css";
-import "./index.css";
-
-// 2) <nds-*> custom element 등록 (side-effect)
-import "@nudge-design/html/runtime";
-
-// 3) 동적 코드는 여기에. <nds-*> 이벤트 바인딩 예시:
-//    document.querySelector("nds-button")?.addEventListener("click", () => {
-//      console.log("clicked");
-//    });
-`;
-
-/** Vite vanilla-ts 템플릿의 index.html 출발점 — <nds-*> 사용처. */
-const HTML_INDEX_HTML_TEMPLATE = `<!doctype html>
-<html lang="ko">
+function htmlIndexTemplate(brandAttr: string): string {
+  return `<!doctype html>
+<html lang="ko"${brandAttr}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NudgeEAP Mockup</title>
   </head>
   <body>
-    <main id="app" style="max-width: 720px; margin: 0 auto; padding: var(--semantic-inset-screen);">
-      <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 vanilla HTML 목업입니다"></nds-title-block>
+    <main style="max-width: 720px; margin: 0 auto; padding: var(--semantic-inset-screen);">
+      <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-block>
 
       <div style="display: flex; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
         <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
         <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
       </div>
     </main>
-    <script type="module" src="/src/main.ts"></script>
+    <!-- DS runtime/CSS 는 build_singlefile_html 이 자동 inline 합니다. <script>/import 불필요. -->
   </body>
 </html>
 `;
+}
 
 function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
-  const { installMode, manifest, tgzDirDefault } = getCtx();
-  const tgzDir = args.tgzDir ? path.resolve(args.tgzDir) : tgzDirDefault;
-  const install = getInstallCommandHtml({ tgzDir });
-  // brand 별로 다른 토큰 CSS import 라인을 얻어 응답에 함께 노출한다.
-  const imports = getHtmlEntryImports({ brand: args.brand });
+  const { installMode, manifest } = getCtx();
+  const resolved = resolveBrand(args.brand);
+  const brandSlug = resolved.ok && resolved.brand ? resolved.brand.slug : undefined;
+  const brandAttr = brandSlug ? ` data-brand="${brandSlug}"` : "";
 
   const steps: Array<{
     step: number;
@@ -671,39 +605,15 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 
   steps.push({
     step: 1,
-    title: "Vite vanilla-ts 프로젝트 생성 (이미 있으면 건너뛰기)",
-    commands: [
-      "npm create vite@latest my-html-mockups -- --template vanilla-ts",
-      "cd my-html-mockups",
-    ],
-    note: "react-ts 가 아니라 vanilla-ts 템플릿을 사용한다. React 의존성이 없고 .ts + .html 만으로 충분.",
+    title: "목업 폴더 준비 (빌드 도구 불필요)",
+    commands: ["mkdir -p my-mockup && cd my-mockup"],
+    note:
+      "vite/npm/번들러가 필요 없습니다. 이 폴더에 index.html 하나만 두면 build_singlefile_html 이 " +
+      "DS runtime/CSS 를 자동 inline 합니다. (npm create vite / npm install @nudge-design/* 하지 마세요.)",
   });
 
   steps.push({
     step: 2,
-    title: "DS html 패키지 설치 (@nudge-design/html + tokens + icons)",
-    commands: [install.recommendedCommand],
-    note: install.note,
-  });
-
-  steps.push({
-    step: 3,
-    title: "src/main.ts 를 DS entry 로 교체",
-    code: HTML_MAIN_TS_TEMPLATE,
-    note: "Vite 템플릿이 만든 main.ts 를 덮어쓰기. import 순서가 중요 — tokens → styles → reset → runtime.",
-  });
-
-  steps.push({
-    step: 4,
-    title: "src/index.css 에 minimal reset 작성 (Vite 템플릿 기본 style.css 를 덮어쓰기)",
-    code: HTML_MINIMAL_RESET_CSS,
-    note:
-      "main.ts 가 './index.css' 를 import 하므로 파일명은 index.css 로 통일. " +
-      "DS 컴포넌트 스타일은 :where(.nds-*) 가 책임지므로 추가 reset 불필요.",
-  });
-
-  steps.push({
-    step: 5,
     title: "시각 레퍼런스 수집 — references.md 작성",
     code:
       "# references.md\n" +
@@ -716,26 +626,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   });
 
   steps.push({
-    step: 6,
-    title: "index.html 을 <nds-*> 직접 작성으로 교체",
-    code: HTML_INDEX_HTML_TEMPLATE,
-    note:
-      "index.html 의 <body> 안에 <nds-*> 를 그대로 사용. " +
-      "이벤트는 addEventListener('nds-*-change' 등) 로 main.ts 에서 바인딩. " +
-      "코드 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져온다.",
-  });
-
-  steps.push({
-    step: 7,
-    title: "기본 폴더 구조 생성",
-    commands: ["mkdir -p src/mockups prds docs"],
-    note:
-      "src/mockups/ 하위에 각 화면별 .html 을 두고, index.html 에서 link 하거나 별도 entry 로 빌드. " +
-      "추가 entry 가 필요하면 vite.config.ts 의 rollupOptions.input 에 등록.",
-  });
-
-  steps.push({
-    step: 8,
+    step: 3,
     title: "에이전트 지침 파일 생성 — CLAUDE.md + AGENTS.md",
     commands: [
       "get_setup({ step: 'claude-md', cwd: '<프로젝트 루트>' })",
@@ -744,6 +635,57 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     note:
       "두 파일은 같은 템플릿을 사용합니다. Claude Code 는 CLAUDE.md, Codex/일반 에이전트는 AGENTS.md 를 읽으므로 " +
       "DS 버전/사용량 뱃지, Google Sheets POST 상태, 간격/텍스트기호/누락 항목 보고 게이트가 양쪽에 모두 들어가야 합니다.",
+  });
+
+  steps.push({
+    step: 4,
+    title: "index.html 을 <nds-*> 로 직접 작성",
+    code: htmlIndexTemplate(brandAttr),
+    note:
+      "DS runtime/CSS 는 빌드가 자동 inline 하므로 <script>/import 가 필요 없습니다. " +
+      (brandSlug
+        ? `<html data-brand="${brandSlug}"> 로 브랜드 토큰이 적용됩니다. `
+        : '브랜드는 <html data-brand="<slug>"> 로 지정하세요(get_brand 로 확인). 미지정 시 기본 브랜드. ') +
+      "컴포넌트 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져옵니다.",
+  });
+
+  steps.push({
+    step: 5,
+    title: "아이콘 — find_icon 으로 inline SVG 받기",
+    commands: [
+      "find_icon({ query: '<검색어>' })   // 후보 이름 찾기",
+      "find_icon({ name: '<IconName>' })  // 붙여넣을 inline svg 반환",
+    ],
+    note:
+      "find_icon({ name }) 응답의 svg 필드를 <nds-icon-button> 등 안에 그대로 붙여 넣으세요(npm 설치 불필요). " +
+      "색은 부모의 color/currentColor 를 상속합니다. 이모지·텍스트 기호 금지(validate 의 emoji-banned/text-symbol-banned).",
+  });
+
+  steps.push({
+    step: 6,
+    title: "정적 검증 루프 — validate_html_mockup / analyze_html_mockup",
+    commands: [
+      "validate_html_mockup({ filePath: '<프로젝트>/index.html' })",
+      "analyze_html_mockup({ filePath: '<프로젝트>/index.html' })",
+    ],
+    note: "validate 위반 0건 + analyze.dsRatio 충분히 높은 상태를 ship 기준으로 사용.",
+  });
+
+  steps.push({
+    step: 7,
+    title: "최종 산출물 빌드 — 단일 dist/index.html",
+    commands: ["build_singlefile_html({ cwd: '<프로젝트>' })"],
+    note:
+      "JS · CSS · <nds-*> runtime · DS 이미지까지 전부 inline 된 1개 파일. " +
+      "html intent 는 빌드가 validate + usage report 까지 자동 실행합니다. 번들러/npm 불필요.",
+  });
+
+  steps.push({
+    step: 8,
+    title: "미리보기 (dev 서버 불필요)",
+    note:
+      "dist/index.html 은 자체완결이라 브라우저로 그냥 열면 됩니다(file://). 메신저 dnd/첨부로 공유해도 그대로 열립니다. " +
+      "Nudge Studio 데스크톱 앱이라면 미리보기 패널이 자동으로 dist 를 띄웁니다.",
   });
 
   if (installMode === "mcpb") {
@@ -765,59 +707,14 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     });
   }
 
-  steps.push({
-    step: 10,
-    title: "동작 확인 (dev 서버)",
-    commands: ["npm run dev"],
-    note:
-      "MCP 의 dev_server({ action: 'start' }) 로 띄운 미리보기 URL 을 브라우저에서 직접 열어 " +
-      "런타임 에러 / 빈 화면 / unknown custom-element 경고 여부 확인.",
-  });
-
-  steps.push({
-    step: 11,
-    title: "정적 검증 루프 — validate_html_mockup / analyze_html_mockup",
-    commands: [
-      "// .html 작성/수정 직후마다 호출:",
-      "validate_html_mockup({ filePath: '<프로젝트>/src/mockups/<이름>.html' })",
-      "// 채택 비율 / native 잔존 확인:",
-      "analyze_html_mockup({ filePath: '<프로젝트>/src/mockups/<이름>.html' })",
-    ],
-    note:
-      "validate_html_mockup 위반 0건 + analyze_html_mockup.dsRatio 충분히 높은 상태를 ship 기준으로 사용. " +
-      "최종 산출물은 build_singlefile_html 이 만든 단일 dist/index.html — intent='html' 자동 감지로 " +
-      "vite-plugin-singlefile 만 패치/설치되며 React 도구는 안 끌어들인다.",
-  });
-
-  steps.push({
-    step: 12,
-    title: "최종 산출물 빌드 — 단일 dist/index.html",
-    commands: [
-      "// JS · CSS · @nudge-design/html runtime 까지 전부 inline 된 1개 파일:",
-      "build_singlefile_html({ cwd: '<프로젝트>' })",
-    ],
-    note:
-      "결과 humanReadable 을 사용자에게 그대로 전달 — 디자이너/PM 에게 메신저 dnd / 첨부로 공유 가능합니다. " +
-      "MCP 가 vite-plugin-singlefile 자동 설치 + vite.config 패치까지 처리합니다.",
-  });
-
   return {
     intent: "html",
+    bundler: "none",
     _advisory:
-      "이 셋업은 vanilla HTML / Web Component (<nds-*>) 워크플로우용입니다. " +
-      "일반 목업은 intent 를 생략하거나 'html' 로 두고, 어드민이면 'admin-cms' 로 지정하세요.",
-    summary: {
-      tgzDir,
-      requiredPackages: HTML_REQUIRED_PACKAGES,
-      optionalPackages: ["@nudge-design/tailwind-preset"],
-      installReady: install.ready,
-      resolvedBrand: imports.resolvedBrand,
-      brandResolvedImports: imports.code,
-    },
-    dependencyGraph: manifest.packages.map((p) => ({
-      name: p.name,
-      dependsOn: Object.keys(p.dependencies).filter((d) => d.startsWith("@nudge-design/")),
-    })),
+      "vanilla HTML / Web Component(<nds-*>) 워크플로우 — vite/npm/번들러 없이 build_singlefile_html 이 " +
+      "DS runtime/CSS 를 자동 inline 합니다. 어드민(antd)만 vite react-ts 가 필요하며 intent='admin-cms' 로 분기됩니다.",
+    resolvedBrand: brandSlug,
+    availableBrands: resolved.availableBrands,
     steps,
   };
 }
@@ -843,27 +740,20 @@ function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: strin
     };
   }
 
-  const { tgzDirDefault } = getCtx();
-  const tgzDir = args.tgzDir ? path.resolve(args.tgzDir) : tgzDirDefault;
-  const install = getInstallCommandHtml({ tgzDir });
-  const imports = getHtmlEntryImports({ brand: args.brand });
+  const resolved = resolveBrand(args.brand);
   return {
     intent: "html",
     mode: "summary",
-    tgzDir,
-    installReady: install.ready,
-    command: install.recommendedCommand,
-    resolvedBrand: imports.resolvedBrand,
-    importTarget: imports.targetFile,
-    importCode: imports.code,
+    bundler: "none",
+    resolvedBrand: resolved.ok && resolved.brand ? resolved.brand.slug : undefined,
     steps: [
-      "Create or open a Vite vanilla-ts mockup project.",
-      "Install @nudge-design/html + tokens + icons using `command`.",
-      "Use the returned importCode in src/main.ts.",
-      "Create both CLAUDE.md and AGENTS.md so Claude/Codex receive the same mockup gates.",
+      "Create or open a plain folder for the mockup (no vite/npm — the build inlines DS runtime/CSS).",
       "Collect visual references first and save them in references.md.",
-      "Write root index.html with real <nds-*> elements.",
-      "Validate/analyze, preview, then build_singlefile_html.",
+      "Create both CLAUDE.md and AGENTS.md so Claude/Codex receive the same mockup gates.",
+      'Write index.html with real <nds-*> elements (set <html data-brand="..."> for brand tokens). No <script>/imports needed.',
+      "Use find_icon({ name }) to get paste-ready inline SVGs for icons.",
+      "Validate/analyze, then build_singlefile_html to get a self-contained dist/index.html.",
+      "Open dist/index.html directly to preview (no dev server).",
     ],
     nextTools: [
       "get_guide({ topic: 'principles' })",
@@ -871,12 +761,12 @@ function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: strin
       "get_setup({ step: 'agents-md', cwd: '<project>' })",
       "get_guide({ topic: 'pattern:visual-reference' })",
       "get_guide({ topic: 'component:Button', target: 'html' })",
+      "find_icon({ name: '<IconName>' })",
       "validate_html_mockup({ filePath: 'index.html' })",
-      "analyze_html_mockup({ filePath: 'index.html' })",
       "build_singlefile_html({})",
     ],
     _hint:
-      "Call get_setup({ step: 'full', intent: 'html', mode: 'full' }) for detailed setup with templates.",
+      "Call get_setup({ step: 'full', intent: 'html', mode: 'full' }) for detailed vite-free setup.",
   };
 }
 
@@ -1508,11 +1398,24 @@ export function getSetup(args: {
   switch (step) {
     case "install":
       return isHtmlIntent
-        ? getInstallCommandHtml({ tgzDir: args.tgzDir })
+        ? {
+            intent: "html",
+            required: false,
+            message:
+              "html(vanilla <nds-*>) 목업은 DS 패키지 설치가 필요 없습니다 — build_singlefile_html 이 " +
+              "DS runtime/CSS 를 자동 inline 합니다(vite/npm 불필요). 어드민(antd)만 설치가 필요하며 " +
+              "get_setup({ step:'install', intent:'admin-cms' }) 로 호출하세요.",
+          }
         : getInstallCommand({ tgzDir: args.tgzDir, includeTailwind: args.includeTailwind });
     case "imports":
       return isHtmlIntent
-        ? getHtmlEntryImports({ brand: args.brand })
+        ? {
+            intent: "html",
+            required: false,
+            message:
+              "html 목업은 src/main.ts 임포트가 필요 없습니다(번들러 없음). index.html 에 <nds-*> 만 작성하면 " +
+              'build_singlefile_html 이 DS runtime/CSS 를 inline 합니다. 브랜드는 <html data-brand="<slug>"> 로 지정.',
+          }
         : getMainTsxImports({ brand: args.brand });
     case "update": {
       // 옛 check_mcp_update 도구 흡수 — 업데이트 안내와 GitHub Releases 의 최신 .mcpb 정보를 한 번에.
