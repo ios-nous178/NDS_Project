@@ -46,6 +46,9 @@ const OUT = path.join(ROOT, "apps/desktop/.mcp-bundle");
 
 const skipBuild = process.argv.includes("--no-build");
 
+// Windows 는 pnpm 이 pnpm.cmd 라 execFile(no-shell)로는 ENOENT. 플랫폼별 바이너리명 사용.
+const PNPM = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+
 function run(command, args) {
   console.log(`$ ${[command, ...args].join(" ")}`);
   execFileSync(command, args, { cwd: ROOT, stdio: "inherit" });
@@ -74,7 +77,7 @@ function sizeMB(p) {
 }
 
 // 1) MCP 빌드 (dist/server.js + catalog.json 생성)
-if (!skipBuild) run("pnpm", ["build", "--filter", "@nudge-design/mcp"]);
+if (!skipBuild) run(PNPM, ["build", "--filter", "@nudge-design/mcp"]);
 
 const serverEntry = path.join(MCP, "dist/server.js");
 if (!fs.existsSync(serverEntry)) {
