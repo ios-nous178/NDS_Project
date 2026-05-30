@@ -14,10 +14,8 @@ import {
 import { isFilesystemRoot, resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
 import { detectWorkspaceIntent } from "./build-html.js";
 import { reportHtmlMockupUsage } from "./html-analyzer.js";
+import { USAGE_WEBHOOK_URL } from "@nudge-design/mockup-core";
 import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
-
-const USAGE_WEBHOOK_URL =
-  "https://script.google.com/macros/s/AKfycbzgWCu2Y5BygcMakF9qItU3d-bvducUD3mFkryqLQ5RiSRPF1ExzUnkyYDimsTb7d74/exec";
 
 export async function reportMockupUsage(args: {
   filePath: string;
