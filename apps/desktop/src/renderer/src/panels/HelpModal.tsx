@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import type { UpdateCheckResult } from "../../../preload/index.js";
 import { Logo } from "../ui/Logo.js";
 import {
   btnReset,
@@ -61,7 +62,12 @@ const GUIDE_STEPS: { title: string; body: string }[] = [
 const CHANGES: { version: string; items: string[] }[] = [
   {
     version: "데스크탑 패키징",
-    items: ["Windows 지원 + macOS universal 빌드", "릴리즈 워크플로우 자동화", "헬프 센터(?) 추가"],
+    items: [
+      "Windows 지원 + macOS universal 빌드",
+      "릴리즈 워크플로우 자동화",
+      "헬프 센터(?) 추가",
+      "새 버전 알림 — 헤더 배너 · 헬프센터에서 바로 다운로드",
+    ],
   },
   {
     version: "실시간 미리보기",
@@ -88,12 +94,14 @@ export function HelpModal({
   selectedMockup,
   appVersion,
   platform,
+  update,
   onClose,
 }: {
   projectPath: string | null;
   selectedMockup: string | null;
   appVersion: string;
   platform: string;
+  update: UpdateCheckResult | null;
   onClose: () => void;
 }): React.JSX.Element {
   const [tab, setTab] = useState<HelpTab>("guide");
@@ -278,7 +286,7 @@ export function HelpModal({
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
+                  flexDirection: "column",
                   gap: 12,
                   padding: 14,
                   borderRadius: 10,
@@ -286,28 +294,31 @@ export function HelpModal({
                   background: c.bg,
                 }}
               >
-                <span style={{ display: "flex", alignItems: "center" }}>
-                  <Logo size={32} />
-                </span>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>Nudge Studio</div>
-                  <div style={{ fontSize: 11, color: c.textMuted, marginTop: 2 }}>
-                    Design System Powered Mockup Builder
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    <Logo size={32} />
+                  </span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>Nudge Studio</div>
+                    <div style={{ fontSize: 11, color: c.textMuted, marginTop: 2 }}>
+                      Design System Powered Mockup Builder
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-end",
+                      gap: 4,
+                    }}
+                  >
+                    <span style={versionChip}>v{appVersion || "?"}</span>
+                    <span style={{ fontSize: 10, color: c.textFaint, fontFamily: mono }}>
+                      {platform}
+                    </span>
                   </div>
                 </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-end",
-                    gap: 4,
-                  }}
-                >
-                  <span style={versionChip}>v{appVersion || "?"}</span>
-                  <span style={{ fontSize: 10, color: c.textFaint, fontFamily: mono }}>
-                    {platform}
-                  </span>
-                </div>
+                <UpdateRow update={update} onOpen={open} />
               </div>
 
               {/* 링크 */}
@@ -349,6 +360,65 @@ export function HelpModal({
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * 버전 카드 하단 업데이트 상태 줄 — 조회 중 / 최신 / 새 버전 / 실패 를 한 줄로 표현.
+ * 새 버전이면 "다운로드" 버튼이 Release 페이지를 기본 브라우저로 연다(자동설치 없음).
+ */
+function UpdateRow({
+  update,
+  onOpen,
+}: {
+  update: UpdateCheckResult | null;
+  onOpen: (url: string) => void;
+}): React.JSX.Element {
+  const top = {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    paddingTop: 12,
+    borderTop: `1px solid ${c.border}`,
+    fontSize: 12,
+  } as const;
+
+  if (!update) {
+    return (
+      <div style={{ ...top, color: c.textFaint }}>
+        <span>업데이트 확인 중…</span>
+      </div>
+    );
+  }
+  if (update.hasUpdate && update.latestVersion && update.releaseUrl) {
+    const url = update.releaseUrl;
+    return (
+      <div style={top}>
+        <span style={{ color: c.accent, fontWeight: 600 }}>
+          새 버전 v{update.latestVersion} 사용 가능
+        </span>
+        <span style={{ color: c.textFaint }}>(현재 v{update.currentVersion})</span>
+        <button
+          onClick={() => onOpen(url)}
+          style={{ ...primaryBtn, marginLeft: "auto", fontSize: 11.5, padding: "4px 12px" }}
+        >
+          다운로드 ↗
+        </button>
+      </div>
+    );
+  }
+  if (update.error) {
+    return (
+      <div style={{ ...top, color: c.textFaint }}>
+        <span>업데이트 확인 실패 — 네트워크를 확인하세요.</span>
+      </div>
+    );
+  }
+  return (
+    <div style={{ ...top, color: c.textMuted }}>
+      <span style={{ color: c.green }}>✓</span>
+      <span>최신 버전입니다.</span>
     </div>
   );
 }
