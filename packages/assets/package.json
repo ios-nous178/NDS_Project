@@ -46,6 +46,10 @@
       "types": "./dist/marathon-event-metadata.d.ts",
       "import": "./dist/marathon-event-metadata.js"
     },
+    "./nudge-img": {
+      "types": "./dist/nudge-img-metadata.d.ts",
+      "import": "./dist/nudge-img-metadata.js"
+    },
     "./files/*": "./dist/files/*"
   },
   "files": [

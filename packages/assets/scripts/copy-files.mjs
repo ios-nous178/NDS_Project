@@ -25,6 +25,16 @@ const CATEGORIES = [
   "profile-images",
   "illustrations",
   "marathon-events",
+  // NudgeEAP "img" section (file mvecozaRQoGRePffskRgmh, section 20:1699)
+  "psych-tests",
+  "menu-app",
+  "menu-web",
+  "circle-icons",
+  "consult",
+  "gift",
+  "3d",
+  "rank",
+  "eap-profiles",
 ];
 
 // src 에 더 이상 없는 파일이 dist 에 stale 로 남는 걸 방지 — 매 빌드마다 reset.
