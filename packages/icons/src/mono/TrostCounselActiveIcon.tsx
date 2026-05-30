@@ -1,0 +1,28 @@
+import React from "react";
+
+export interface TrostCounselActiveIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostCounselActiveIcon = React.forwardRef<SVGSVGElement, TrostCounselActiveIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g transform="translate(1.46 1.86)">
+    <path d="M15.9258 15.9514C15.5507 15.5763 15.34 15.0676 15.34 14.5372C15.34 14.0067 15.5507 13.498 15.9258 13.1229C16.3009 12.7479 16.8096 12.5372 17.34 12.5372C17.8704 12.5372 18.3792 12.7479 18.7542 13.1229C19.1293 13.498 19.34 14.0067 19.34 14.5372C19.34 15.0676 19.1293 15.5763 18.7542 15.9514C18.3792 16.3264 17.8704 16.5372 17.34 16.5372C16.8096 16.5372 16.3009 16.3264 15.9258 15.9514Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14.34 19.5372C14.34 18.4372 15.24 17.5372 16.34 17.5372H18.34C19.44 17.5372 20.34 18.4372 20.34 19.5372" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round"/>
+    <path d="M11.6652 16.3742C11.8336 16.1116 11.8985 15.794 11.8424 15.4871C11.7823 15.1581 11.7508 14.829 11.7508 14.5C11.7508 12.95 12.3808 11.46 13.4808 10.4C14.5408 9.34 15.7552 8.95967 17.2852 8.95967C18.2552 8.95967 18.9998 9.07711 19.8398 9.53711C19.8398 9.53711 20.0185 9.62755 20.1517 9.5506C20.2557 9.4905 20.2608 9.34786 20.2568 9.22781C20.0995 4.5318 15.7828 0.75 10.5108 0.75C5.17077 0.75 0.750766 4.68 0.750766 9.5C0.750766 10.9005 1.11679 12.2611 1.82043 13.4898C1.98149 13.771 2.02066 14.1093 1.90267 14.4112L0.800766 17.23C0.700766 17.49 0.750766 17.78 0.930766 17.99C1.11077 18.2 1.39077 18.29 1.66077 18.23L5.65621 17.3349C5.87305 17.2864 6.09928 17.3129 6.30323 17.4011C7.59283 17.9591 8.95963 18.25 10.3008 18.25C10.3708 18.25 10.4408 18.25 10.5108 18.25C10.7427 18.25 10.9324 18.0742 10.997 17.8515C11.1481 17.3302 11.3709 16.8332 11.6652 16.3742Z" fill="currentColor" stroke="currentColor" strokeWidth="1.5"/>
+  </g>
+    </svg>
+  )
+);
+
+TrostCounselActiveIcon.displayName = "TrostCounselActiveIcon";
