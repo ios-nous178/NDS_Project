@@ -51,6 +51,11 @@ export interface BuildSinglefileHtmlArgs {
    */
   skipVisualReferences?: boolean;
   /**
+   * 소스 index.html 의 DS 버전 badge 주입(syncSourceDsBadge)을 건너뛴다 — 원본 무변경.
+   * 버전 stamp 는 dist 산출물에만 들어간다(injectHtmlUsageSummary). 하네스의 비파괴 export 용.
+   */
+  skipSourceBadge?: boolean;
+  /**
    * 강제로 워크스페이스 intent 를 지정. 생략 시 package.json + src/ 구조로 자동 감지.
    * - "react": React + JSX (.tsx) 워크플로우 — 기존 audit 룰 적용.
    * - "html": vanilla HTML / Web Component (<nds-*>) 워크플로우 — html-친화 audit 적용.
@@ -263,7 +268,10 @@ export async function buildSinglefileHtml(
   const routerWarning = intent === "react" ? detectBrowserRouter(cwd) : undefined;
 
   const startMs = Date.now();
-  const sourceBadgeSync = intent === "html" ? syncSourceDsBadge(cwd) : undefined;
+  // skipSourceBadge: 소스 index.html 을 건드리지 않는다(하네스의 비파괴 export).
+  // 버전 stamp 는 dist 산출물(injectHtmlUsageSummary)에만 들어가므로 공유용 파일엔 그대로 남는다.
+  const sourceBadgeSync =
+    intent === "html" && !args.skipSourceBadge ? syncSourceDsBadge(cwd) : undefined;
   let buildStdout = "";
   let buildStderr = "";
   try {

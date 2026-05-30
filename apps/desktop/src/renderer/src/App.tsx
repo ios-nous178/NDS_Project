@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
 import { PreviewPanel } from "./panels/PreviewPanel.js";
-import { PipelinePanel } from "./panels/PipelinePanel.js";
+import { ExportPanel } from "./panels/ExportPanel.js";
 
 export function App(): React.JSX.Element {
   const [projectPath, setProjectPath] = useState<string | null>(null);
@@ -12,8 +12,10 @@ export function App(): React.JSX.Element {
   const [result, setResult] = useState<ValidateHtmlMockupResult | null>(null);
   const [validating, setValidating] = useState(false);
   const [bust, setBust] = useState(0);
-  // 미리보기 대상(소스 파일 / 빌드 후엔 dist/index.html). 검증 대상(selected)과 분리.
+  // 미리보기 대상(소스 파일 / 내보내기 후엔 공유용 dist/index.html). 검증 대상(selected)과 분리.
   const [previewRel, setPreviewRel] = useState<string | null>(null);
+  // 마지막 내보내기 산출물(공유용 HTML). 사이드바에 고정 노출.
+  const [exportedRel, setExportedRel] = useState<string | null>(null);
   const selectedRef = useRef<string | null>(null);
   const projectRef = useRef<string | null>(null);
 
@@ -40,6 +42,8 @@ export function App(): React.JSX.Element {
     selectedRef.current = null;
     setSource("");
     setResult(null);
+    setExportedRel(null);
+    setPreviewRel(null);
   }, []);
 
   const selectEntry = useCallback(
@@ -103,6 +107,32 @@ export function App(): React.JSX.Element {
         <aside
           style={{ width: 240, borderRight: "1px solid #e4e7ec", overflowY: "auto", padding: 12 }}
         >
+          {exportedRel && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 4 }}>공유용 HTML</div>
+              <button
+                onClick={() => {
+                  setPreviewRel(exportedRel);
+                  setBust((b) => b + 1);
+                }}
+                title={exportedRel}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "6px 8px",
+                  border: "1px solid #d1fadf",
+                  borderRadius: 6,
+                  background: previewRel === exportedRel ? "#ecfdf3" : "#f6fef9",
+                  color: "#067647",
+                  cursor: "pointer",
+                  fontSize: 13,
+                }}
+              >
+                📦 {exportedRel}
+              </button>
+            </div>
+          )}
           <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>
             HTML 목업 ({entries.length})
           </div>
@@ -153,12 +183,13 @@ export function App(): React.JSX.Element {
           style={{ width: 360, padding: 16, overflow: "auto", borderLeft: "1px solid #e4e7ec" }}
         >
           <div style={{ fontSize: 12, color: "#98a2b3", marginBottom: 8 }}>
-            빌드 파이프라인 (강제)
+            내보내기 (공유용 HTML)
           </div>
-          <PipelinePanel
-            mockupPath={projectPath && selected ? `${projectPath}/${selected}` : null}
+          <ExportPanel
             projectPath={projectPath}
-            onBuilt={(rel) => {
+            hasSelection={!!selected}
+            onExported={(rel) => {
+              setExportedRel(rel);
               setPreviewRel(rel);
               setBust((b) => b + 1);
             }}
