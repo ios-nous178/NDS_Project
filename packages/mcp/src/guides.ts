@@ -2051,9 +2051,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   GenietBottomNav: {
     name: "GenietBottomNav",
-    _htmlStatus: "no-html-equivalent",
     summary:
-      "Geniet 5탭 BottomNav (Figma 90:2 — 홈/기록/혜택/리뷰/커뮤니티). 단일 그래픽 + color cascade. label 만 받으면 자동 아이콘 매핑.",
+      "Geniet 5탭 BottomNav (Figma 90:2 — 홈/기록/혜택/리뷰/커뮤니티). 단일 그래픽 + color cascade. label 만 받으면 자동 아이콘 매핑. HTML 목업은 `<nds-brand-bottom-nav brand='geniet'>` (BrandBottomNav 가이드).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=90-2",
     pitfalls: [
       "label 이 '홈/기록/혜택/리뷰/커뮤니티' 중 하나가 아니면 fallback HomeIcon 으로 렌더 — 커스텀 라벨이면 tabs[i].icon 직접 지정.",
@@ -2064,6 +2063,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "`<GenietBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
       "스크롤 컨테이너 안: `position='static'` 으로 fixed 빠져나가는 것 방지.",
       "그림자 끄기: `shadow={false}` (기본 true — Figma 90:2 의 살짝 떠 보이는 가이드)",
+      "HTML 목업(vanilla): `<nds-brand-bottom-nav brand='geniet' active-key='home'>` — 제네릭 nds-footer-tab-bar 손수 조립 금지.",
     ],
     references: [
       {
@@ -2115,9 +2115,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TrostBottomNav: {
     name: "TrostBottomNav",
-    _htmlStatus: "no-html-equivalent",
     summary:
-      "Trost BottomNav — 트로스트는 앱이 두 종류라 variant 로 분기. variant='trost'(기본): 트로스트 앱 5탭 (홈/심리상담/커뮤니티/멘탈케어/내공간 — Figma 5:1169). variant='cashwalk-trost': (캐시워크)트로스트 앱 5탭 (홈/사운드/내음악/커뮤니티/마이페이지 — Figma 5:1249·5:1306). 두 variant 모두 5탭 active/inactive 그래픽 분리, active 색은 브랜드색 아닌 검정.",
+      "Trost BottomNav — 트로스트는 앱이 두 종류라 variant 로 분기. variant='trost'(기본): 트로스트 앱 5탭 (홈/심리상담/커뮤니티/멘탈케어/내공간 — Figma 5:1169). variant='cashwalk-trost': (캐시워크)트로스트 앱 5탭 (홈/사운드/내음악/커뮤니티/마이페이지 — Figma 5:1249·5:1306). 두 variant 모두 5탭 active/inactive 그래픽 분리, active 색은 브랜드색 아닌 검정. HTML 목업은 `<nds-brand-bottom-nav brand='trost'>` — 단, 기본 트로스트 variant 만 커버(cashwalk-trost 미지원).",
     pitfalls: [
       "variant 마다 label 매핑이 다름. trost: 홈/심리상담/커뮤니티/멘탈케어/내공간. cashwalk-trost: 홈/사운드/내음악/커뮤니티/마이페이지. 매핑 실패 시 각 variant 의 홈 아이콘으로 fallback.",
       "두 앱 모두 '홈/커뮤니티' 탭이 있지만 그래픽이 다름 — 반드시 variant 로 구분. trost 커뮤니티=TrostCommunity(게시판), cashwalk-trost 커뮤니티=TrostMkTalk(말풍선+점).",
@@ -2128,6 +2127,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "트로스트 앱: `<TrostBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />` (variant 생략 = 'trost')",
       "(캐시워크)트로스트 앱: `<TrostBottomNav variant='cashwalk-trost' tabs={[{ key:'home', label:'홈', href:'/' }, { key:'sound', label:'사운드', ... }, ...]} />`",
+      "HTML 목업(vanilla, 기본 트로스트 앱): `<nds-brand-bottom-nav brand='trost' active-key='home'>` — 제네릭 nds-footer-tab-bar 손수 조립 금지.",
     ],
     figmaNodeUrl:
       "https://www.figma.com/design/H0UUl3maspMM2iaoRAsrf7/%ED%8A%B8%EB%A1%9C%EC%8A%A4%ED%8A%B8-Dev?node-id=5-1169",
@@ -2195,9 +2195,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   NudgeEAPBottomNav: {
     name: "NudgeEAPBottomNav",
-    _htmlStatus: "no-html-equivalent",
     summary:
-      "NudgeEAP 5탭 BottomNav (홈/챌린지/상담/멘탈케어/내 공간). 5탭 모두 active/inactive 그래픽 분리 (채워진 아이콘으로 전환).",
+      "NudgeEAP 5탭 BottomNav (홈/챌린지/상담/멘탈케어/내 공간). 5탭 모두 active/inactive 그래픽 분리 (채워진 아이콘으로 전환). HTML 목업은 `<nds-brand-bottom-nav brand='nudge-eap'>` (BrandBottomNav 가이드).",
     figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-3331",
     pitfalls: [
       "label 매핑은 '홈/챌린지/상담/멘탈케어/내 공간' 기준. 다른 라벨이면 fallback HomeIcon.",
@@ -2206,6 +2205,23 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: [
       "`<NudgeEAPBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
+      "HTML 목업(vanilla): `<nds-brand-bottom-nav brand='nudge-eap' active-key='home'>` — 제네릭 nds-footer-tab-bar 손수 조립 금지.",
+    ],
+  },
+  RunmileBottomNav: {
+    name: "RunmileBottomNav",
+    summary:
+      "Runmile 5탭 BottomNav (홈/대회정보/커뮤니티/채팅/마이페이지 — Figma 1221:64046). 5탭 모두 active/inactive 그래픽 분리, active=검정(#221E1F)/inactive=gray600. 라벨 12/16 (Figma 실측). HTML 목업은 `<nds-brand-bottom-nav brand='runmile'>` (BrandBottomNav 가이드).",
+    figmaNodeUrl: "https://www.figma.com/design/g3ifA735EE6EKjeL4ZW2ax/?node-id=1221-64046",
+    pitfalls: [
+      "label 매핑은 '홈/대회정보/커뮤니티/채팅/마이페이지' 기준. 다른 라벨이면 fallback RunmileHomeIcon.",
+      "커뮤니티 탭은 2인 그룹(People) 아이콘, 마이페이지는 원형 인물(Account) 아이콘 — 4탭(83:887)→5탭(1221:64046) 개편판.",
+      "채팅 탭의 이중 말풍선(RunmileChats)은 웹 헤더의 단일 말풍선(RunmileChatting)과 다름 — 혼용 금지.",
+      "active 색 = --semantic-icon-strong-default. 라벨은 11/14 가 아니라 12/16.",
+    ],
+    recommended: [
+      "`<RunmileBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
+      "HTML 목업(vanilla): `<nds-brand-bottom-nav brand='runmile' active-key='home'>` — 제네릭 nds-footer-tab-bar 손수 조립 금지.",
     ],
   },
   NudgeEAPWebHeader: {
@@ -4016,16 +4032,66 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "cashwalk-biz": [],
     },
   },
+  BrandBottomNav: {
+    name: "BrandBottomNav",
+    summary:
+      "**브랜드 앱 하단 BottomNav — 손수 조립하지 말 것.** `<nds-brand-bottom-nav brand='trost|geniet|nudge-eap|runmile' active-key='home'>` 한 줄로 브랜드별 5탭 (라벨/아이콘 active·inactive/색)이 BRAND_DATA 에서 자동 렌더. 제네릭 nds-footer-tab-bar + nds-footer-tab-item 에 아이콘 SVG 를 슬롯으로 직접 주입하는 건 안티패턴.",
+    pitfalls: [
+      "**손수 조립 금지** — nds-footer-tab-bar / nds-footer-tab-item 를 직접 박고 `<span slot='icon'>` 에 SVG 를 손으로 넣지 말 것. 브랜드별 탭/아이콘/색은 BrandBottomNav 한 줄이 BRAND_DATA 에서 전부 자동.",
+      "**cashwalk-biz 는 BottomNav 없음** — 웹 전용 브랜드라 `<nds-brand-bottom-nav brand='cashwalk-biz'>` 는 빈 렌더. 어드민/CMS 좌측 내비는 Sidebar 사용.",
+      "active-key 는 브랜드별 탭 key 와 매칭 — trost: home/counsel/community/care/my · geniet: home/record/benefit/review/community · nudge-eap: home/challenge/counsel/care/my · runmile: home/race/community/chat/my. 잘못 적으면 활성 탭 표시 안 됨.",
+      "**Geniet 은 단일 그래픽 + color cascade** — active/inactive 별도 아트가 아니라 같은 SVG 가 nav-item color(민트↔그레이)로 active 를 표현. Trost/NudgeEAP/Runmile 은 active/inactive 그래픽 분리(채워진 아이콘 전환).",
+      "Runmile 라벨은 12/16 (Figma 실측 — 11/14 아님).",
+      "HTML 래퍼는 트로스트 기본 앱(홈/심리상담/커뮤니티/멘탈케어/내공간)만 커버. React TrostBottomNav 의 variant='cashwalk-trost'(홈/사운드/내음악/커뮤니티/마이페이지)는 HTML 미지원 — 필요 시 React 컴포넌트 사용.",
+    ],
+    recommended: [
+      "Trost: `<nds-brand-bottom-nav brand='trost' active-key='counsel' />` · 탭 keys: home / counsel / community / care / my",
+      "Geniet: `<nds-brand-bottom-nav brand='geniet' active-key='home' />` · 탭 keys: home / record / benefit / review / community (단일 그래픽 + color cascade)",
+      "NudgeEAP: `<nds-brand-bottom-nav brand='nudge-eap' active-key='home' />` · 탭 keys: home / challenge / counsel / care / my",
+      "Runmile: `<nds-brand-bottom-nav brand='runmile' active-key='race' />` · 탭 keys: home / race / community / chat / my (라벨 12/16)",
+      "Aliases (선택): `<nds-trost-bottom-nav>`, `<nds-geniet-bottom-nav>`, `<nds-nudge-eap-bottom-nav>`, `<nds-runmile-bottom-nav>` — brand attribute 안 써도 동일 동작.",
+    ],
+    examplesHtml: {
+      do: '<nds-brand-bottom-nav brand="trost" active-key="counsel"></nds-brand-bottom-nav>',
+      dont:
+        "<!-- 손수 조립 안티패턴 — 탭/아이콘/색을 인라인으로 박으면 브랜드 데이터와 분리되어 다음 화면에서 또 적게 됨 -->\n" +
+        '<nds-footer-tab-bar active-tab="home">\n' +
+        '  <nds-footer-tab-item key="home" label="홈" href="/">\n' +
+        '    <span slot="icon"><svg ...></svg></span>\n' +
+        '    <span slot="active-icon"><svg ...></svg></span>\n' +
+        "  </nds-footer-tab-item>\n" +
+        "  <!-- ...4 more... -->\n" +
+        "</nds-footer-tab-bar>",
+    },
+    usagePolicy: {
+      useFor: ["사용자 앱 (Trost/Geniet/NudgeEAP/Runmile) 모바일 하단 5탭 내비게이션"],
+      doNotUseFor: [
+        "웹 전용 브랜드(CashwalkBiz) — BottomNav 자체가 없음",
+        "어드민/CMS 좌측 내비 — Sidebar 사용",
+      ],
+      emphasisRule:
+        "nds-footer-tab-bar 를 손수 조립하고 SVG 를 슬롯에 박은 흔적이 발견되면 즉시 BrandBottomNav 한 줄로 교체.",
+    },
+    /**
+     * Pattern 'Brand-aware Base' metadata. BRAND_DATA SSOT 는 `packages/html/src/components/nds-brand-chrome.ts`.
+     * runmile 은 validPropValues 타입 union 밖이라 활성 key 는 recommended/pitfalls prose 로만 노출.
+     */
+    validPropValues: {
+      trost: { activeKey: ["home", "counsel", "community", "care", "my"] },
+      geniet: { activeKey: ["home", "record", "benefit", "review", "community"] },
+      "nudge-eap": { activeKey: ["home", "challenge", "counsel", "care", "my"] },
+    },
+  },
   BrandChrome: {
     name: "BrandChrome",
     summary:
-      "Brand chrome wrappers — BrandHeader + BrandFooter 의 umbrella. **개별 BrandHeader / BrandFooter 가이드를 우선 참고.** `nds-brand-chrome.ts` 한 파일에 4개 브랜드 (nudge-eap / trost / geniet / cashwalk-biz) 의 BRAND_DATA (로고/메뉴/사업자정보/footer 링크) 가 모두 정의돼 있다. 손수 조립한 헤더/푸터가 발견되면 BrandHeader/BrandFooter 한 줄로 즉시 교체.",
+      "Brand chrome wrappers — BrandHeader + BrandFooter + BrandBottomNav 의 umbrella. **개별 BrandHeader / BrandFooter / BrandBottomNav 가이드를 우선 참고.** `nds-brand-chrome.ts` 한 파일에 5개 브랜드 (nudge-eap / trost / geniet / cashwalk-biz / runmile) 의 BRAND_DATA (로고/메뉴/사업자정보/footer 링크/bottomNav 탭) 가 모두 정의돼 있다. 손수 조립한 헤더/푸터/바텀네비가 발견되면 Brand* 한 줄로 즉시 교체.",
     pitfalls: [
-      "이 컴포넌트는 wrapper — 실제 사용 시 `<nds-brand-header>` 와 `<nds-brand-footer>` 를 호출. `<nds-brand-chrome>` 단독 사용은 없음.",
+      "이 컴포넌트는 wrapper — 실제 사용 시 `<nds-brand-header>` / `<nds-brand-footer>` / `<nds-brand-bottom-nav>` 를 호출. `<nds-brand-chrome>` 단독 사용은 없음.",
       "BRAND_DATA 를 수정하려면 DS 레포의 `packages/html/src/components/nds-brand-chrome.ts` 직접 편집 (외부 mockup 프로젝트에서는 불가능).",
     ],
     examplesHtml: {
-      do: '<nds-brand-header brand="trost" surface="web" active-key="counsel" asset-base-url="/brand-logos"></nds-brand-header>\n<!-- ...page content... -->\n<nds-brand-footer brand="trost" surface="app" asset-base-url="/brand-logos"></nds-brand-footer>',
+      do: '<nds-brand-header brand="trost" surface="web" active-key="counsel" asset-base-url="/brand-logos"></nds-brand-header>\n<!-- ...page content... -->\n<nds-brand-bottom-nav brand="trost" active-key="counsel"></nds-brand-bottom-nav>\n<nds-brand-footer brand="trost" surface="app" asset-base-url="/brand-logos"></nds-brand-footer>',
       dont: '<!-- nds-brand-chrome 단독 사용 — wrapper 라 의미 없음 -->\n<nds-brand-chrome brand="trost"></nds-brand-chrome>',
     },
   },
