@@ -550,8 +550,8 @@ export function SessionHistoryPanel({
                     cursor: "pointer",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = c.red;
-                    e.currentTarget.style.color = "#fff";
+                    e.currentTarget.style.background = c.bgHover;
+                    e.currentTarget.style.color = c.text;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "transparent";
