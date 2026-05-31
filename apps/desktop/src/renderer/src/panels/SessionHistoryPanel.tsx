@@ -145,7 +145,6 @@ export function SessionHistoryPanel({
   }, [menuOpen]);
 
   const handleDelete = async (s: ChatSession): Promise<void> => {
-    if (!projectPath) return;
     if (
       !window.confirm(
         `이 채팅 세션을 삭제할까요?\n${sessionTitle(s)}\n\n트랜스크립트도 함께 삭제됩니다.`,
@@ -153,7 +152,8 @@ export function SessionHistoryPanel({
     ) {
       return;
     }
-    const res = await window.harness.deleteSession(projectPath, s.sessionId);
+    // 채팅기록은 전역 저장 — projectPath 는 무시되지만 IPC 시그니처 호환 위해 넘긴다.
+    const res = await window.harness.deleteSession(projectPath ?? "", s.sessionId);
     if (res.ok) {
       setSessions((prev) => prev.filter((x) => x.sessionId !== s.sessionId));
       onDeleted(s.sessionId);
@@ -167,11 +167,10 @@ export function SessionHistoryPanel({
 
   const commitEdit = async (s: ChatSession): Promise<void> => {
     setEditingId(null);
-    if (!projectPath) return;
     const next = draft.trim();
     // 빈 값 → 기본 제목(screenName/파일명)으로 복귀. 변화 없으면 IPC 생략.
     if (next === sessionTitle(s)) return;
-    const res = await window.harness.renameSession(projectPath, s.sessionId, next);
+    const res = await window.harness.renameSession(projectPath ?? "", s.sessionId, next);
     if (res.ok) {
       setSessions((prev) =>
         prev.map((x) =>
@@ -182,12 +181,9 @@ export function SessionHistoryPanel({
   };
 
   useEffect(() => {
-    if (!projectPath) {
-      setSessions([]);
-      return;
-    }
+    // 채팅기록은 전역 저장 — 프로젝트를 안 열어도 항상 로드한다(projectPath 무관).
     let alive = true;
-    void window.harness.listSessions(projectPath).then((list) => {
+    void window.harness.listSessions(projectPath ?? "").then((list) => {
       if (alive) setSessions(list);
     });
     return () => {
@@ -224,11 +220,10 @@ export function SessionHistoryPanel({
         <div style={{ position: "relative", marginLeft: "auto" }} ref={menuRef}>
           <button
             onClick={() => setMenuOpen((o) => !o)}
-            disabled={!projectPath}
             title={
               liveSessionId
                 ? "새 대화를 시작하면 실행 중인 세션은 중지됩니다 (기록은 보존)"
-                : "새 대화 시작"
+                : "새 대화 시작 (폴더를 골라 시작)"
             }
             aria-haspopup="menu"
             aria-expanded={menuOpen}
@@ -239,20 +234,12 @@ export function SessionHistoryPanel({
               //    닫을 때(active→inactive) React 가 longhand 만 제거해 border-color 가
               //    검정으로 깨진다(theme.ts pillBtnActive 주석의 그 함정).
               ...(menuOpen ? { border: `1px solid ${c.accent}`, color: c.accent } : null),
-              ...(projectPath
-                ? null
-                : {
-                    opacity: 0.4,
-                    cursor: "not-allowed",
-                    background: c.bgElevated,
-                    color: c.textFaint,
-                  }),
             }}
           >
             <span style={{ fontSize: 13, lineHeight: 1 }}>+</span> 새 채팅
             <span style={{ fontSize: 9, opacity: 0.8 }}>▾</span>
           </button>
-          {menuOpen && projectPath && (
+          {menuOpen && (
             <div role="menu" style={menuStyle}>
               <div style={menuLabel}>빠른 채팅</div>
               {/* 클릭 한 번에 바로 시작 — 기본(pty) 으로 띄운다(패널에서 다시 안 고름). */}
@@ -334,11 +321,12 @@ export function SessionHistoryPanel({
         </div>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: 8 }}>
-        {!projectPath && (
-          <div style={{ color: c.textFaint, fontSize: 12, padding: 10 }}>프로젝트를 여세요.</div>
-        )}
-        {projectPath && sessions.length === 0 && (
-          <div style={{ color: c.textFaint, fontSize: 12, padding: 10 }}>아직 세션이 없습니다.</div>
+        {sessions.length === 0 && (
+          <div style={{ color: c.textFaint, fontSize: 12, padding: 10, lineHeight: 1.6 }}>
+            아직 세션이 없습니다.
+            <br />
+            <span style={{ color: c.textMuted }}>+ 새 채팅</span> 으로 폴더를 골라 시작하세요.
+          </div>
         )}
         {sessions.map((s) => {
           const isSelected = s.sessionId === selectedSessionId;
@@ -433,6 +421,7 @@ export function SessionHistoryPanel({
                   )}
                 </div>
                 <div
+                  title={s.cwd ?? s.mockupFile ?? "project"}
                   style={{
                     fontSize: 11,
                     color: c.textMuted,
@@ -441,9 +430,12 @@ export function SessionHistoryPanel({
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                     marginTop: 3,
+                    direction: "rtl",
+                    textAlign: "left",
                   }}
                 >
-                  {s.mockupFile ?? "project"}
+                  {/* 작업 폴더/목업 경로 — 길면 앞부분을 …로 잘라 끝(폴더명)이 보이게(rtl). */}
+                  {s.mockupFile ?? s.cwd ?? "project"}
                 </div>
                 <div
                   style={{

@@ -149,6 +149,20 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     return { projectPath, htmlEntries };
   });
 
+  // 작업 폴더 선택 — 새 채팅 시작 시 PTY 가 돌 cwd 를 고른다(프로젝트 열기와 별개).
+  ipcMain.handle(
+    "dialog:pick-folder",
+    async (): Promise<{ folder: string } | { canceled: true }> => {
+      const win = getWindow();
+      const res = await dialog.showOpenDialog(win ?? undefined!, {
+        properties: ["openDirectory", "createDirectory"],
+        title: "작업 폴더 선택",
+      });
+      if (res.canceled || res.filePaths.length === 0) return { canceled: true };
+      return { folder: res.filePaths[0] };
+    },
+  );
+
   ipcMain.handle("watch:stop", async (): Promise<{ ok: true }> => {
     stopWatch();
     return { ok: true };

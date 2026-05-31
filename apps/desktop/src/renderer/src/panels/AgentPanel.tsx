@@ -22,6 +22,9 @@ const AGENT_LABEL: Record<AgentType, string> = { claude: "Claude", codex: "Codex
 export interface NewChatRequest {
   seq: number;
   agentType: AgentType;
+  transport: Transport;
+  /** 새 채팅이 작업할 폴더(PTY cwd). 없으면 현재 프로젝트 루트에서 시작. */
+  cwd?: string;
 }
 
 type Status = "idle" | "running" | "exited" | "error";
@@ -171,15 +174,17 @@ export function AgentPanel({
   }, []);
 
   const start = useCallback(
-    async (agentTypeOverride?: AgentType) => {
-      if (!projectPath) return;
+    async (agentTypeOverride?: AgentType, transportOverride?: Transport, cwdOverride?: string) => {
+      // 작업 폴더 — "+ 새 채팅"에서 고른 폴더가 있으면 그것, 없으면 현재 프로젝트 루트.
+      const workdir = cwdOverride ?? projectPath;
+      if (!workdir) return;
       setError("");
 
-      // 에이전트는 "+ 새 채팅" 메뉴에서 고른 값이 넘어온다(없으면 현재 state).
+      // 에이전트·전송방식은 "+ 새 채팅" 메뉴에서 고른 값이 넘어온다(없으면 현재 state).
       const at = agentTypeOverride ?? agentType;
-      if (agentTypeOverride && agentTypeOverride !== agentType) setAgentType(agentTypeOverride);
+      if (at !== agentType) setAgentType(at);
       // 구조화(stream-json)는 claude 전용 — codex 면 기본(pty)으로 강제.
-      const tp: Transport = at !== "claude" ? "pty" : transport;
+      const tp: Transport = at !== "claude" ? "pty" : (transportOverride ?? transport);
       if (tp !== transport) setTransport(tp);
 
       // 이전 라이브 세션이 남아있으면 새 세션으로 덮어쓰기 전에 먼저 중지.
@@ -207,8 +212,10 @@ export function AgentPanel({
         sessionId: id,
         agentType: at,
         transport: tp,
-        projectPath,
-        mockupFile: mockupFile ?? undefined,
+        projectPath: workdir,
+        cwdOverride: workdir,
+        // 폴더를 새로 고른 채팅은 특정 목업에 매이지 않는다(빈 채팅).
+        mockupFile: cwdOverride ? undefined : (mockupFile ?? undefined),
         ...(term ? { cols: term.cols, rows: term.rows } : {}),
       });
       if (!res.ok) {
