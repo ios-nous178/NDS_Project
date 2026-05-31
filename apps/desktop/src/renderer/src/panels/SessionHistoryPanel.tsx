@@ -458,23 +458,32 @@ export function SessionHistoryPanel({
                   <span>
                     {fmtTime(s.createdAt)} · {statusKo(s.status)}
                   </span>
-                  {s.transport === "stream-json" && (
-                    <span
-                      title="구조화(canary) 세션 — claude stream-json"
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 3,
-                        flexShrink: 0,
-                        color: c.textMuted,
-                      }}
-                    >
-                      <CanaryBird size={10} />
-                      canary
-                    </span>
-                  )}
                 </div>
               </div>
+              {/* 구조화(canary) 표식 — 카드 우측 상단 고정. 삭제 버튼(hover)과 자리가
+                  겹치지 않게, hover 시엔 숨겨 삭제 버튼에 양보한다. */}
+              {s.transport === "stream-json" &&
+                !(hovered === s.sessionId && !isLive && !isEditing) && (
+                  <span
+                    title="구조화(canary) 세션 — claude stream-json"
+                    style={{
+                      position: "absolute",
+                      top: 6,
+                      right: 7,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 3,
+                      color: c.textMuted,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: 0.3,
+                      pointerEvents: "none",
+                    }}
+                  >
+                    <CanaryBird size={10} />
+                    canary
+                  </span>
+                )}
               {/* 라이브 세션은 삭제 불가(먼저 중지) — hover 시에만 노출. 편집 중엔 숨김. */}
               {!isLive && !isEditing && hovered === s.sessionId && (
                 <button
