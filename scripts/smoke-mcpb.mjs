@@ -106,9 +106,12 @@ try {
   const text = call.content?.[0]?.text;
   const result = text ? JSON.parse(text) : null;
   // source 모드는 packed bundle 이 아니라 dev tree 를 가리키므로 ready 는 false 일 수 있다.
-  // 핵심은 tool 이 정상 응답을 만들었는지 — files 가 비어있지 않은지만 확인.
-  const readyOk = sourceMode ? true : result?.ready === true;
-  if (!readyOk || !Array.isArray(result?.files) || result.files.length === 0) {
+  // 핵심은 tool 이 정상 응답을 만들었는지 확인.
+  // 신규: _visualReferenceFirstResponse 가 포함된 시각 레퍼런스 게이트 응답도 정상으로 간주한다.
+  const isGate = !!result?._visualReferenceFirstResponse;
+  const readyOk = isGate || (sourceMode ? true : result?.ready === true);
+  const hasFiles = isGate || (Array.isArray(result?.files) && result.files.length > 0);
+  if (!readyOk || !hasFiles) {
     throw new Error(`get_setup({step:'install'}) returned unexpected result: ${text}`);
   }
 
