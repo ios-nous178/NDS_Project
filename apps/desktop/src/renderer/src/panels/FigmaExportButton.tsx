@@ -1,18 +1,26 @@
 import { useCallback, useState } from "react";
 import { c, ghostBtn } from "../ui/theme.js";
 
-/** Figma 로고 — currentColor 라 버튼 글자색을 따라간다(단색 단순화). */
+/** Figma 라인(아웃라인) 아이콘 — currentColor 라 버튼 글자색을 따라간다(다른 라인 아이콘과 톤 통일). */
 function FigmaIcon(): React.JSX.Element {
   return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M6 1.2h2.7a2.4 2.4 0 0 1 0 4.8H6V1.2ZM6 6h2.7a2.4 2.4 0 0 1 0 4.8H6V6ZM6 1.2H3.3a2.4 2.4 0 0 0 0 4.8H6M6 6H3.3a2.4 2.4 0 0 0 0 4.8H6v-1.2"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="10.4" cy="8.4" r="2.4" stroke="currentColor" strokeWidth="1.3" />
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={{ display: "block", flexShrink: 0 }}
+    >
+      <path d="M5 5.5a3.5 3.5 0 0 1 3.5 -3.5h3.5v7h-3.5a3.5 3.5 0 0 1 -3.5 -3.5z" />
+      <path d="M12 2h3.5a3.5 3.5 0 0 1 0 7h-3.5z" />
+      <path d="M12 12.5a3.5 3.5 0 1 1 7 0a3.5 3.5 0 0 1 -7 0z" />
+      <path d="M5 19.5a3.5 3.5 0 0 1 3.5 -3.5h3.5v3.5a3.5 3.5 0 1 1 -7 0z" />
+      <path d="M5 12.5a3.5 3.5 0 0 1 3.5 -3.5h3.5v7h-3.5a3.5 3.5 0 0 1 -3.5 -3.5z" />
     </svg>
   );
 }

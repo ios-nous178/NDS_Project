@@ -127,8 +127,8 @@ export const tabBar: React.CSSProperties = {
   height: SECTION_HEADER_H,
   boxSizing: "border-box",
   flexShrink: 0,
-  padding: "0 8px",
-  borderBottom: `1px solid ${c.border}`,
+  padding: "0 14px",
+  borderBottom: `1px solid ${c.borderSubtle}`,
   background: c.bgPanel,
 };
 

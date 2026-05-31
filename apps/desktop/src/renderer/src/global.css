@@ -22,7 +22,7 @@ button:active {
   box-shadow: none !important;
 }
 
-/* 입력 요소: 두꺼운 기본 outline·글로우 제거, 보더만 은은한 노랑(brand accent). */
+/* 입력 요소: 두꺼운 기본 outline·글로우 제거. 보더 강조는 각 컴포넌트에서 결정한다. */
 input:focus,
 input:focus-visible,
 textarea:focus,
@@ -31,5 +31,4 @@ select:focus,
 select:focus-visible {
   outline: none !important;
   box-shadow: none !important;
-  border-color: #ffd33d !important;
 }
