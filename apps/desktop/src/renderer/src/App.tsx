@@ -9,6 +9,7 @@ import { SessionHistoryPanel, sessionTitle } from "./panels/SessionHistoryPanel.
 import { TranscriptView } from "./panels/TranscriptView.js";
 import { StructuredTranscriptView } from "./panels/StructuredChatView.js";
 import { ExportButton } from "./panels/ExportButton.js";
+import { FigmaExportButton } from "./panels/FigmaExportButton.js";
 import { IntakeModal } from "./panels/IntakeModal.js";
 import { HelpModal } from "./panels/HelpModal.js";
 import { Dropdown } from "./ui/Dropdown.js";
@@ -391,6 +392,11 @@ export function App(): React.JSX.Element {
               {projectPath}
             </span>
           )}
+          <FigmaExportButton
+            projectPath={projectPath}
+            mockupDir={activeMockupDir}
+            disabled={isAdminCms}
+          />
           <ExportButton
             projectPath={projectPath}
             mockupDir={activeMockupDir}
