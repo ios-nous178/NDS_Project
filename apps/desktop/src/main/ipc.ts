@@ -3,6 +3,7 @@ import { copyFileSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { setPreviewRoot } from "./mockup-protocol.js";
+import { lastValidProjectPath, writeAppState } from "./app-state.js";
 import { startWatch, stopWatch } from "./watcher.js";
 import { exportMockup, type ExportResult } from "./export-runner.js";
 import { exportFigmaScene, type FigmaExportResult } from "./figma-export.js";
@@ -56,6 +57,24 @@ const NDS_USE_RE = /<nds-[a-z][a-z0-9-]*/i;
 export interface OpenProjectResult {
   projectPath: string;
   htmlEntries: string[];
+}
+
+/** project:current 응답 — 재시작 후 마지막 프로젝트 복원용(없으면 projectPath: null). */
+export type CurrentProjectResult =
+  | { projectPath: string; htmlEntries: string[] }
+  | { projectPath: null };
+
+/**
+ * 폴더를 "활성 프로젝트"로 만든다 — 미리보기 루트(previewRoot) + 파일 와처 + persistence.
+ *
+ * 회고: previewRoot 는 project:open 에서만 잡혔고 "새 채팅"(pickFolder)·앱 재시작 후엔
+ * null 이라 "no preview root" 가 떴다. 폴더를 잡는 모든 경로가 이 헬퍼를 거치게 해서
+ * 미리보기 루트가 항상 따라오게 한다.
+ */
+function activateProject(projectPath: string, wc: Electron.WebContents | undefined | null): void {
+  setPreviewRoot(projectPath);
+  if (wc) startWatch(projectPath, wc);
+  writeAppState({ lastProjectPath: projectPath });
 }
 
 /** chosen 디렉토리에서 <nds-*> 를 쓰는 .html 파일을 얕게 스캔 (depth ≤ 6). */
@@ -137,10 +156,8 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     });
     if (result.canceled || result.filePaths.length === 0) return { canceled: true };
     const projectPath = result.filePaths[0];
-    // 미리보기 프로토콜 루트 + 파일 와처를 이 프로젝트로 전환.
-    setPreviewRoot(projectPath);
-    const wc = win?.webContents;
-    if (wc) startWatch(projectPath, wc);
+    // 미리보기 프로토콜 루트 + 파일 와처 + persistence 를 이 프로젝트로 전환.
+    activateProject(projectPath, win?.webContents);
     const htmlEntries = findHtmlMockups(projectPath);
     logAppEvent(projectPath, {
       type: "project_opened",
@@ -149,7 +166,18 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     return { projectPath, htmlEntries };
   });
 
-  // 작업 폴더 선택 — 새 채팅 시작 시 PTY 가 돌 cwd 를 고른다(프로젝트 열기와 별개).
+  // 재시작 후 마지막 프로젝트 복원 — 렌더러가 마운트 시 호출. previewRoot/와처를 다시 잡아
+  // "no preview root" 없이 곧바로 미리보기가 되게 한다. (없으면 projectPath: null)
+  ipcMain.handle("project:current", async (): Promise<CurrentProjectResult> => {
+    const last = lastValidProjectPath();
+    if (!last) return { projectPath: null };
+    activateProject(last, getWindow()?.webContents);
+    return { projectPath: last, htmlEntries: findHtmlMockups(last) };
+  });
+
+  // 작업 폴더 선택 — 새 채팅 시작 시 PTY 가 돌 cwd 를 고른다.
+  // 이 폴더에서 에이전트가 목업을 생성하므로 미리보기 루트(+와처)도 함께 이 폴더로 잡는다
+  // (회고: 안 잡으면 생성된 목업 미리보기가 "no preview root" 로 막혔다).
   ipcMain.handle(
     "dialog:pick-folder",
     async (): Promise<{ folder: string } | { canceled: true }> => {
@@ -159,7 +187,9 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
         title: "작업 폴더 선택",
       });
       if (res.canceled || res.filePaths.length === 0) return { canceled: true };
-      return { folder: res.filePaths[0] };
+      const folder = res.filePaths[0];
+      activateProject(folder, win?.webContents);
+      return { folder };
     },
   );
 
