@@ -36,6 +36,8 @@ import {
   TROST_LOGO_DATA_URI,
   TROST_LOGO_MOBILE_DATA_URI,
   CASHWALK_BIZ_LOGO_DATA_URI,
+  RUNMILE_LOGO_DATA_URI,
+  RUNMILE_LOGO_GRAY700_DATA_URI,
 } from "./brand-logo-defaults.js";
 
 /* ──────────────── Types ──────────────── */
@@ -209,7 +211,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
     maxWidth: 1200,
     webMenu: [
       { key: "counsel", label: "상담하기", href: "/counsel" },
-      { key: "test", label: "심리검사", href: "/tests" },
+      { key: "test", label: "심리검사", href: "/test" },
       { key: "therapy", label: "심리치료", href: "/therapy" },
       { key: "letter", label: "주간레터", href: "/letter" },
       { key: "news", label: "소식", href: "/news" },
@@ -276,12 +278,15 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
     logo: { src: TROST_LOGO_DATA_URI, alt: "Trost", width: 90, height: 36 },
     mobileLogo: { src: TROST_LOGO_MOBILE_DATA_URI, alt: "Trost", width: 80, height: 28 },
     maxWidth: 1080,
+    /* renderTrostHeader 는 t.tabs 를 렌더 — webMenu 는 직접 안 읽지만 다른 소비자/일관성용으로
+     * 실제 탭(Storybook SSOT)과 동기화해 stale 트랩 제거. */
     webMenu: [
       { key: "home", label: "홈", href: "/" },
-      { key: "counsel", label: "상담", href: "/counsel" },
-      { key: "test", label: "심리검사", href: "/tests" },
-      { key: "care", label: "마음케어", href: "/care" },
-      { key: "center", label: "상담센터", href: "/center" },
+      { key: "community", label: "커뮤니티", href: "/community" },
+      { key: "quotes", label: "오늘의 명언/성경", href: "/quotes" },
+      { key: "counsel", label: "전문 심리상담", href: "/counsel" },
+      { key: "test", label: "심리검사", href: "/test" },
+      { key: "medicine", label: "약물치료", href: "/medicine" },
     ],
     mobileTitle: "Trost",
     authLabel: "로그인",
@@ -363,7 +368,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
      * 주면 resolveAssetUrl 이 data: 는 그대로 통과시키므로 override 도 안전. */
     logo: { src: GENIET_LOGO_PC_DATA_URI, alt: "Geniet", width: 165, height: 54 },
     mobileLogo: { src: GENIET_LOGO_MOBILE_DATA_URI, alt: "Geniet", width: 97, height: 32 },
-    footerLogo: { src: GENIET_LOGO_FOOTER_DATA_URI, alt: "Geniet", width: 110, height: 32 },
+    footerLogo: { src: GENIET_LOGO_FOOTER_DATA_URI, alt: "Geniet", width: 166, height: 48 },
     maxWidth: 1280,
     webMenu: [
       { key: "home", label: "홈", href: "/" },
@@ -385,9 +390,9 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       name: "넛지모바일 주식회사",
       ceo: "한상범",
       bizNumber: "897-87-02757",
-      address: "서울시 강남구 테헤란로20길 18, 6층",
+      address: "서울시 강남구 테헤란로20길 18, 6층(역삼동, 부봉빌딩)",
       email: "geniet_app@geniet.co.kr",
-      copyright: "Copyright 2024 by Geniet, Inc. All Rights Reserved.",
+      copyright: "Copyright 2024 by Geniet, Inc. ALL Rights Reserved",
     },
     extra:
       "지니어트는 통신판매중개자이며 통신판매의 당사자가 아닙니다. 따라서 지니어트는 상품 거래정보 및 거래에 대하여 책임을 지지 않습니다.",
@@ -484,12 +489,13 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       height: 24,
     },
     maxWidth: 1600,
+    /* Figma 98:1082 (한국 캐시워크 WEB Dev) — 마케팅 GNB 5탭, 광고 활성. Storybook SSOT. */
     webMenu: [
-      { key: "home", label: "홈", href: "/" },
-      { key: "campaign", label: "캠페인", href: "/campaigns" },
-      { key: "member", label: "회원", href: "/members" },
-      { key: "channel", label: "채널", href: "/channels" },
-      { key: "setting", label: "설정", href: "/settings" },
+      { key: "channel", label: "채널", href: "/channel" },
+      { key: "ad", label: "광고", href: "/ad" },
+      { key: "case", label: "성공사례", href: "/case" },
+      { key: "notice", label: "공지사항", href: "/notice" },
+      { key: "guide", label: "이용방법", href: "/guide" },
     ],
     mobileTitle: "CashwalkBiz",
     authLabel: "로그인",
@@ -517,10 +523,12 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
   },
   runmile: {
     label: "Runmile",
-    /* Runmile 은 coral 워드마크를 텍스트로 직접 렌더한다 (HTML 패키지에 로고 자산
-     * 없음). logo 는 BrandLogo 타입을 만족시키기 위한 더미 — web 헤더는 renderLogoImg
-     * 대신 <span> 워드마크를 쓰고, footer 도 src "" 라 깨진 이미지가 안 나온다. */
-    logo: { src: "", alt: "Runmile", width: 142, height: 32 },
+    /* Runmile 로고 = @nudge-design/assets base64 data URI (Storybook 과 동일, self-contained).
+     * 헤더/모바일 = coral default(BRAND_LOGOS.runmile.default), footer = muted gray700
+     * (BRAND_LOGOS.runmile.muted). 외부 호스팅 없이도 깨지지 않게 inline. */
+    logo: { src: RUNMILE_LOGO_DATA_URI, alt: "Runmile", width: 142, height: 32 },
+    mobileLogo: { src: RUNMILE_LOGO_DATA_URI, alt: "Runmile", width: 100, height: 23 },
+    footerLogo: { src: RUNMILE_LOGO_GRAY700_DATA_URI, alt: "Runmile", width: 142, height: 32 },
     maxWidth: 1440,
     webMenu: [
       { key: "race", label: "대회 정보", href: "/race" },
@@ -1819,7 +1827,7 @@ function renderRunmileHeader(
   brand: BrandChrome,
   surface: HeaderSurface,
   activeKey: string,
-  _assetBaseUrl: string,
+  assetBaseUrl: string,
 ): string {
   const r = brand.runmile;
   if (!r) return "";
@@ -1865,7 +1873,7 @@ function renderRunmileHeader(
     return `
       ${ensureStyle(styleId, css)}
       <header class="nds-brand-runmile-mobile" data-slot="root">
-        <a class="nds-brand-runmile-mobile__logo" href="/">Runmile</a>
+        <a class="nds-brand-runmile-mobile__logo" href="/">${renderLogoImg(brand.mobileLogo ?? brand.logo, assetBaseUrl)}</a>
       </header>
     `;
   }
@@ -2009,7 +2017,7 @@ function renderRunmileHeader(
     ${ensureStyle(styleId, css)}
     <header class="nds-brand-runmile-web" data-slot="root">
       <div class="nds-brand-runmile-web__inner">
-        <a class="nds-brand-runmile-web__logo" href="/"><span>Runmile</span></a>
+        <a class="nds-brand-runmile-web__logo" href="/">${renderLogoImg(brand.logo, assetBaseUrl)}</a>
         <nav class="nds-brand-runmile-web__nav">${navHtml}</nav>
         <div class="nds-brand-runmile-web__search">
           <input type="text" placeholder="${escapeAttr(r.searchPlaceholder)}" autocomplete="off" />

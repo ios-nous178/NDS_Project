@@ -13,4 +13,6 @@ export {
   TROST_LOGO_DATA_URI,
   TROST_LOGO_MOBILE_DATA_URI,
   CASHWALK_BIZ_LOGO_DATA_URI,
+  RUNMILE_LOGO_DATA_URI,
+  RUNMILE_LOGO_GRAY700_DATA_URI,
 } from "@nudge-design/assets/brand-logo-defaults";

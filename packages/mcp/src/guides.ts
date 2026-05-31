@@ -3936,7 +3936,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   BrandHeader: {
     name: "BrandHeader",
     summary:
-      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
+      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
     pitfalls: [
       "**손수 조립 금지** — nds-header / nds-header-logo / nds-header-menu / nds-header-menu-item / nds-header-actions / nds-header-auth-button 를 직접 박지 말 것. 메뉴 라벨/href/순서를 손으로 적으면 브랜드 일관성이 깨지고 다음 브랜드 화면에서 또 적게 됨. BrandHeader 한 줄이 BRAND_DATA 에서 전부 자동.",
       "**asset-base-url 안 주면 `/brand-logos` 가 default** — 워크스페이스에 그 폴더가 없으면 로고가 깨짐. `public/brand-logos/` 디렉토리 만들고 브랜드별 파일 배치 필요 (아래 recommended 참고).",
@@ -3947,8 +3947,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Trost: `<nds-brand-header brand='trost' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/trost-logo.svg` · webMenu keys: home / counsel / test / care / center",
       "Geniet: `<nds-brand-header brand='geniet' surface='web' active-key='deal' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/geniet-logo-pc.webp` + `geniet-logo-footer.webp` · webMenu keys: home / community / deal / review",
       "NudgeEAP: `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/nudge-eap-logo.png` + `nudge-eap-logo-footer.png` · webMenu keys: counsel / test / therapy / letter / news / my",
-      "CashwalkBiz: `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='campaign' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/cashwalk-biz/cashwalk-for-business-horizontal.svg` · webMenu keys: home / campaign / member / channel / setting",
-      "Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashwalk-biz-header>` — brand attribute 안 써도 동일 동작.",
+      "CashwalkBiz: `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='ad' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/cashwalk-biz/cashwalk-for-business-horizontal.svg` · webMenu keys: channel / ad / case / notice / guide",
+      "Runmile: `<nds-brand-header brand='runmile' surface='web' active-key='race' />` · 자산 파일 불필요 (coral 텍스트 워드마크 내장 — 로고 이미지 없음) · webMenu keys: race / community · web 헤더 = 좌측 워드마크+nav · 중앙 coral 검색바 · 우측 채팅/로그인 액션 자동. mobile=52h 중앙 워드마크 bar.",
+      "Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashwalk-biz-header>`, `<nds-runmile-header>` — brand attribute 안 써도 동일 동작.",
     ],
     examplesHtml: {
       do: '<nds-brand-header brand="geniet" surface="web" active-key="deal" asset-base-url="/brand-logos"></nds-brand-header>',
@@ -3978,6 +3979,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     /**
      * Pattern 'Brand-aware Base' metadata (Figma 450:68 v2).
      * BRAND_DATA SSOT 는 `packages/html/src/components/nds-brand-chrome.ts` — 본 metadata 는 그 미러 (가이드 응답용).
+     * runmile 은 BrandSlug 타입 union 밖이라 구조화 fold(validPropValues/assetManifest)에는 못 넣는다 —
+     * `<nds-brand-header brand='runmile'>` 는 코드상 완전 지원(렌더/alias 모두). 활성 key(race/community)와
+     * 자산(파일 불필요) 는 summary/recommended prose 로 노출. BrandBottomNav 와 동일 정책.
      */
     validPropValues: {
       trost: { activeKey: ["home", "counsel", "test", "care", "center"] },
@@ -3986,7 +3990,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         activeKey: ["counsel", "test", "therapy", "letter", "news", "my"],
       },
       "cashwalk-biz": {
-        activeKey: ["home", "campaign", "member", "channel", "setting"],
+        activeKey: ["channel", "ad", "case", "notice", "guide"],
       },
     },
     assetManifest: {
@@ -4011,7 +4015,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Geniet (light): `<nds-brand-footer brand='geniet' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `geniet-logo-footer.webp`",
       "NudgeEAP (light): `<nds-brand-footer brand='nudge-eap' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `nudge-eap-logo-footer.png`",
       "CashwalkBiz (light): `<nds-brand-footer brand='cashwalk-biz' surface='web' asset-base-url='/brand-logos' />`",
-      "Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashwalk-biz-footer>`",
+      "Runmile (light): `<nds-brand-footer brand='runmile' surface='app' />` · 자산 파일 불필요 (로고 이미지 없음 — 텍스트 기반) · footerTone=light (forcedProps '*' default)",
+      "Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashwalk-biz-footer>`, `<nds-runmile-footer>`",
     ],
     examplesHtml: {
       do: '<nds-brand-footer brand="geniet" surface="web" asset-base-url="/brand-logos"></nds-brand-footer>',
