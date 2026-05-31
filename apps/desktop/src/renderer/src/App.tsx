@@ -590,6 +590,8 @@ export function App(): React.JSX.Element {
                   projectPath={projectPath ?? ""}
                   sessionId={viewing.sessionId}
                   label={sessionTitle(viewing)}
+                  cols={viewing.cols}
+                  rows={viewing.rows}
                   onClose={() => setViewing(null)}
                 />
               )}

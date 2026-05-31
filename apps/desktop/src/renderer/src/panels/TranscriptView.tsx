@@ -12,14 +12,25 @@ export function TranscriptView({
   projectPath,
   sessionId,
   label,
+  cols,
+  rows,
   onClose,
 }: {
   projectPath: string;
   sessionId: string;
   label: string;
+  /**
+   * 녹화 시점의 PTY 폭/높이. raw TUI 트랜스크립트는 이 폭으로만 정확히 재생된다 —
+   * 다른 폭으로 흘리면 커서 제어코드가 어긋나 전각(한글) 글자가 깨진다. 있으면 xterm 폭을
+   * 이 값으로 **고정**(fit 안 함)하고, 없으면(옛 세션) 차선책으로 패널에 맞춘다.
+   */
+  cols?: number;
+  rows?: number;
   onClose: () => void;
 }): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  // 녹화 폭이 둘 다 유효할 때만 고정 재생. 하나라도 없으면 옛 세션 → fit 폴백.
+  const fixed = typeof cols === "number" && cols > 0 && typeof rows === "number" && rows > 0;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -30,34 +41,44 @@ export function TranscriptView({
       disableStdin: true,
       cursorBlink: false,
       theme: { background: "#1e1e1e" },
+      ...(fixed ? { cols, rows } : {}),
     });
-    const fit = new FitAddon();
-    term.loadAddon(fit);
+    // 녹화 폭이 있으면 fit 하지 않는다 — 폭을 그대로 고정해야 한글이 안 깨진다.
+    // 패널이 더 좁으면 컨테이너가 가로 스크롤로 감싼다(overflow:auto). 옛 세션만 fit/관찰.
+    let fit: FitAddon | null = null;
+    if (!fixed) {
+      fit = new FitAddon();
+      term.loadAddon(fit);
+    }
     term.open(el);
-    try {
-      fit.fit();
-    } catch {
-      /* ignore */
+    if (fit) {
+      try {
+        fit.fit();
+      } catch {
+        /* ignore */
+      }
     }
     let alive = true;
     void window.harness.readTranscript(projectPath, sessionId).then((res) => {
       if (!alive) return;
       term.write(res.text || "\x1b[90m(트랜스크립트 없음)\x1b[0m");
     });
-    const ro = new ResizeObserver(() => {
-      try {
-        fit.fit();
-      } catch {
-        /* ignore */
-      }
-    });
-    ro.observe(el);
+    const ro = fit
+      ? new ResizeObserver(() => {
+          try {
+            fit.fit();
+          } catch {
+            /* ignore */
+          }
+        })
+      : null;
+    ro?.observe(el);
     return () => {
       alive = false;
-      ro.disconnect();
+      ro?.disconnect();
       term.dispose();
     };
-  }, [projectPath, sessionId]);
+  }, [projectPath, sessionId, fixed, cols, rows]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
@@ -117,7 +138,14 @@ export function TranscriptView({
       </div>
       <div
         ref={containerRef}
-        style={{ flex: 1, minHeight: 0, background: "#1e1e1e", padding: 4 }}
+        style={{
+          flex: 1,
+          minHeight: 0,
+          background: "#1e1e1e",
+          padding: 4,
+          // 고정 폭 재생이 패널보다 넓으면 reflow(=깨짐) 대신 가로 스크롤로 감싼다.
+          overflow: fixed ? "auto" : "hidden",
+        }}
       />
     </div>
   );

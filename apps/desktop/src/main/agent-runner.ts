@@ -180,6 +180,12 @@ const DS_SYSTEM_MANDATE = [
 ].join("\n");
 
 const running = new Map<string, IPty>();
+/**
+ * 살아있는 pty 세션의 최신 폭/높이(컬럼/로우). 라이브 리사이즈로 갱신되며 종료 시
+ * 세션 메타에 기록돼 기록 재생이 "마지막으로 본 폭"으로 고정된다 — raw TUI 트랜스크립트는
+ * 녹화 폭에 종속이라 다른 폭으로 흘리면 전각(한글)이 깨진다.
+ */
+const sessionDims = new Map<string, { cols: number; rows: number }>();
 /** stream-json(canary) 세션. child = 상주 claude 프로세스, emit = 정규화 메시지 저장+전송 클로저. */
 const streamRunning = new Map<string, { child: ChildProcess; emit: (msg: ChatMessage) => void }>();
 
@@ -394,6 +400,9 @@ export function startAgent(
     transport,
     // 작업 폴더(PTY cwd) — 전역 저장이라 세션마다 다를 수 있어 카드에 경로로 표시.
     cwd: args.cwdOverride ?? args.projectPath,
+    // 녹화 폭 — 기록 재생을 이 폭으로 고정해 한글(전각) 깨짐을 막는다(pty 전용, 라이브 리사이즈로 갱신).
+    cols: args.cols,
+    rows: args.rows,
   };
 
   const searchPath = agentSearchPath();
@@ -502,6 +511,7 @@ export function startAgent(
   }
 
   running.set(args.sessionId, proc);
+  sessionDims.set(args.sessionId, { cols: args.cols ?? 80, rows: args.rows ?? 24 });
 
   // Claude Code(및 일부 TUI)는 턴을 끝내고 입력 대기로 돌아갈 때 터미널 벨(\x07)을 울린다.
   // Stop 훅(신호파일)과 함께 signalTurnDone 디바운스로 합쳐 알림 1건만 발생시킨다.
@@ -513,6 +523,9 @@ export function startAgent(
 
   proc.onExit(({ exitCode, signal }) => {
     running.delete(args.sessionId);
+    // 종료 시점의 최신 폭을 메타에 박아 기록 재생이 그 폭으로 고정되게 한다.
+    const dims = sessionDims.get(args.sessionId);
+    sessionDims.delete(args.sessionId);
     if (turnTimer) clearTimeout(turnTimer);
     turnHook.dispose();
     // 시그널로 죽었으면(사용자 "중지" / 앱 종료 → kill) 오류가 아니라 중단(interrupted).
@@ -524,7 +537,11 @@ export function startAgent(
       mockupFile: args.mockupFile,
       payload: { agentType: args.agentType, exitCode, signal },
     });
-    updateSessionStatus(args.projectPath, sessionBase, status);
+    updateSessionStatus(
+      args.projectPath,
+      dims ? { ...sessionBase, cols: dims.cols, rows: dims.rows } : sessionBase,
+      status,
+    );
     if (!wc.isDestroyed()) wc.send("agent:exit", { sessionId: args.sessionId, exitCode });
   });
 
@@ -689,6 +706,12 @@ export function resizeAgent(sessionId: string, cols: number, rows: number): void
     running.get(sessionId)?.resize(cols, rows);
   } catch {
     /* 세션이 막 종료된 경우 등 — 무시 */
+  }
+  // 최신 폭을 기억해 둔다 — 종료 시 메타에 박혀 기록 재생이 이 폭으로 고정된다.
+  const dims = sessionDims.get(sessionId);
+  if (dims) {
+    dims.cols = cols;
+    dims.rows = rows;
   }
 }
 
