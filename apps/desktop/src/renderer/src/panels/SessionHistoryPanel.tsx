@@ -428,24 +428,6 @@ export function SessionHistoryPanel({
                       {sessionTitle(s)}
                     </span>
                   )}
-                  {s.transport === "stream-json" && (
-                    <span
-                      title="구조화(canary) 세션 — claude stream-json"
-                      style={{
-                        flexShrink: 0,
-                        fontSize: 9,
-                        fontWeight: 700,
-                        letterSpacing: 0.3,
-                        color: c.textMuted,
-                        border: `1px solid ${c.textMuted}`,
-                        borderRadius: 4,
-                        padding: "0 4px",
-                        lineHeight: "14px",
-                      }}
-                    >
-                      CANARY
-                    </span>
-                  )}
                   {isLive && (
                     <span style={{ color: c.green, fontSize: 10, flexShrink: 0 }}>LIVE</span>
                   )}
@@ -463,8 +445,34 @@ export function SessionHistoryPanel({
                 >
                   {s.mockupFile ?? "project"}
                 </div>
-                <div style={{ fontSize: 10.5, color: c.textFaint, marginTop: 2 }}>
-                  {fmtTime(s.createdAt)} · {statusKo(s.status)}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                    fontSize: 10.5,
+                    color: c.textFaint,
+                    marginTop: 2,
+                  }}
+                >
+                  <span>
+                    {fmtTime(s.createdAt)} · {statusKo(s.status)}
+                  </span>
+                  {s.transport === "stream-json" && (
+                    <span
+                      title="구조화(canary) 세션 — claude stream-json"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 3,
+                        flexShrink: 0,
+                        color: c.textMuted,
+                      }}
+                    >
+                      <CanaryBird size={10} />
+                      canary
+                    </span>
+                  )}
                 </div>
               </div>
               {/* 라이브 세션은 삭제 불가(먼저 중지) — hover 시에만 노출. 편집 중엔 숨김. */}
