@@ -89,6 +89,9 @@ const harness = {
   /** 미리보기 iframe 용 mockup:// URL. 프로젝트 루트 기준 상대경로 + 캐시버스터. */
   previewUrl: (relPath: string, bust: number): string =>
     `mockup://preview/${relPath.split("/").map(encodeURIComponent).join("/")}?t=${bust}`,
+  /** 미리보기 목업을 별도 창으로 연다(더블클릭 느낌). mockup:// 로 로드해 런타임/스탬프 동일. */
+  openMockupWindow: (relPath: string): Promise<void> =>
+    ipcRenderer.invoke("preview:openWindow", { relPath }),
 
   // ── 비파괴 내보내기 (공유용 HTML) ──
   /** 원본 무변경 — 자체완결 dist/index.html 생성 + 버전 stamp + usage + webhook.
