@@ -445,7 +445,7 @@ export function App(): React.JSX.Element {
               refreshHistory();
             }}
             onNewChat={startNewChat}
-            onNewMockup={() => setIntakeOpen(true)}
+            onNewMockup={() => void openMockupIntake()}
           />
         </aside>
 
@@ -476,18 +476,18 @@ export function App(): React.JSX.Element {
               onHistoryChange={refreshHistory}
             />
           </div>
-          {viewing && projectPath && (
+          {viewing && (
             <div style={{ position: "absolute", inset: 0 }}>
               {viewing.transport === "stream-json" ? (
                 <StructuredTranscriptView
-                  projectPath={projectPath}
+                  projectPath={projectPath ?? ""}
                   sessionId={viewing.sessionId}
                   label={sessionTitle(viewing)}
                   onClose={() => setViewing(null)}
                 />
               ) : (
                 <TranscriptView
-                  projectPath={projectPath}
+                  projectPath={projectPath ?? ""}
                   sessionId={viewing.sessionId}
                   label={sessionTitle(viewing)}
                   onClose={() => setViewing(null)}

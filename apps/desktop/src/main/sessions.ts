@@ -69,6 +69,32 @@ function logDir(_projectPath?: string): string {
   return join(app.getPath("userData"), "chat-sessions");
 }
 
+function globalLogDirs(projectPath?: string): string[] {
+  const appData = app.getPath("appData");
+  const dirs = [
+    logDir(projectPath),
+    // dev/electron-vite name. Packaged app names can differ, so keep reading it.
+    join(appData, "@nudge-design", "desktop", "chat-sessions"),
+    // Packaged productName fallback.
+    join(appData, "Nudge Studio", "chat-sessions"),
+  ];
+  return [...new Set(dirs)];
+}
+
+// 이전 버전은 프로젝트 폴더 바로 아래에 세션 파일을 저장했다. 새 기록은 전역 저장만 쓰되,
+// 사용자가 기존 프로젝트를 열면 과거 기록/트랜스크립트도 읽고 삭제할 수 있게 유지한다.
+function legacyLogDir(projectPath?: string): string | null {
+  const p = projectPath?.trim();
+  return p ? p : null;
+}
+
+function readDirs(projectPath?: string): string[] {
+  const dirs = globalLogDirs(projectPath);
+  const legacy = legacyLogDir(projectPath);
+  if (legacy && !dirs.includes(legacy)) dirs.push(legacy);
+  return dirs;
+}
+
 function appendSession(projectPath: string, session: ChatSession): void {
   try {
     const dir = logDir(projectPath);
@@ -128,8 +154,10 @@ export function appendStructuredTranscript(
 
 /** 구조화 세션의 정규화 메시지 배열(없거나 깨진 줄은 건너뜀). 재생용. */
 export function readStructuredTranscript(projectPath: string, sessionId: string): ChatMessage[] {
-  const file = join(logDir(projectPath), TRANSCRIPT_DIRNAME, `${sessionId}${STRUCTURED_EXT}`);
-  if (!existsSync(file)) return [];
+  const file = readDirs(projectPath)
+    .map((dir) => join(dir, TRANSCRIPT_DIRNAME, `${sessionId}${STRUCTURED_EXT}`))
+    .find((candidate) => existsSync(candidate));
+  if (!file) return [];
   let raw: string;
   try {
     raw = readFileSync(file, "utf8");
@@ -153,12 +181,17 @@ export function readStructuredTranscript(projectPath: string, sessionId: string)
  * **마지막(=최신 status) 라인**만 남긴다(채팅기록 리스트용).
  */
 export function readSessions(projectPath: string): ChatSession[] {
-  let raw: string;
-  try {
-    raw = readFileSync(join(logDir(projectPath), CHAT_SESSIONS_FILENAME), "utf8");
-  } catch {
-    return [];
-  }
+  const raw = readDirs(projectPath)
+    .map((dir) => {
+      try {
+        return readFileSync(join(dir, CHAT_SESSIONS_FILENAME), "utf8");
+      } catch {
+        return "";
+      }
+    })
+    .filter(Boolean)
+    .join("\n");
+  if (!raw) return [];
   const latest = new Map<string, ChatSession>();
   const order: string[] = [];
   for (const line of raw.split("\n")) {
@@ -221,8 +254,9 @@ export function reconcileStaleSessions(projectPath: string, liveIds: Set<string>
  */
 export function deleteSession(projectPath: string, sessionId: string): { ok: boolean } {
   try {
-    const file = join(logDir(projectPath), CHAT_SESSIONS_FILENAME);
-    if (existsSync(file)) {
+    for (const dir of readDirs(projectPath)) {
+      const file = join(dir, CHAT_SESSIONS_FILENAME);
+      if (!existsSync(file)) continue;
       const kept = readFileSync(file, "utf8")
         .split("\n")
         .filter((line) => {
@@ -239,9 +273,11 @@ export function deleteSession(projectPath: string, sessionId: string): { ok: boo
     return { ok: false };
   }
   try {
-    const dir = join(logDir(projectPath), TRANSCRIPT_DIRNAME);
-    rmSync(join(dir, `${sessionId}.log`), { force: true });
-    rmSync(join(dir, `${sessionId}${STRUCTURED_EXT}`), { force: true });
+    for (const dir of readDirs(projectPath)) {
+      const transcriptDir = join(dir, TRANSCRIPT_DIRNAME);
+      rmSync(join(transcriptDir, `${sessionId}.log`), { force: true });
+      rmSync(join(transcriptDir, `${sessionId}${STRUCTURED_EXT}`), { force: true });
+    }
   } catch {
     /* best-effort */
   }
@@ -271,8 +307,10 @@ export function renameSession(
 
 /** 세션의 raw pty 트랜스크립트(없으면 ""). */
 export function readTranscript(projectPath: string, sessionId: string): string {
-  const file = join(logDir(projectPath), TRANSCRIPT_DIRNAME, `${sessionId}.log`);
-  if (!existsSync(file)) return "";
+  const file = readDirs(projectPath)
+    .map((dir) => join(dir, TRANSCRIPT_DIRNAME, `${sessionId}.log`))
+    .find((candidate) => existsSync(candidate));
+  if (!file) return "";
   try {
     return readFileSync(file, "utf8");
   } catch {
