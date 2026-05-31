@@ -13,7 +13,8 @@
     "test": "node --test 'src/**/*.test.ts'",
     "rebuild": "electron-rebuild -f -w node-pty",
     "bundle:mcp": "node ../../scripts/bundle-mcp-desktop.mjs",
-    "package": "pnpm bundle:mcp && electron-vite build && electron-builder"
+    "package": "pnpm bundle:mcp && electron-vite build && electron-builder",
+    "package:mac:arm64": "pnpm bundle:mcp && electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg --arm64"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.11.0",
