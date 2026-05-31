@@ -37,6 +37,9 @@ asarUnpack:
 # during packaging can hang inside @electron/rebuild on Apple Silicon, while the
 # packaged app can load the bundled prebuilds as long as node-pty is unpacked.
 npmRebuild: false
+# prebuild 의 spawn-helper 가 0644(실행불가)로 풀려 패키징되면 PTY spawn 시
+# "posix_spawnp failed" 로 죽는다 → afterPack 에서 0755 강제. (scripts/after-pack.cjs)
+afterPack: scripts/after-pack.cjs
 # 앱 아이콘 — build/icon-master.svg(docs 로고 마크, 흰색) → icns/ico/png 로 생성.
 # build/ 는 electron-builder 의 기본 buildResources 라 자동 감지되지만 명시해 둔다.
 mac:
