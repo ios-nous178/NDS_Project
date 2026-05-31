@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain, shell, type BrowserWindow } from "electron";
+import { app, dialog, ipcMain, shell, BrowserWindow } from "electron";
 import { copyFileSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
@@ -101,6 +101,23 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   // 헬프 센터의 외부 링크/메일 열기 — 안전한 스킴만 허용(기본 브라우저/메일 앱으로 위임).
   ipcMain.handle("shell:openExternal", async (_e, args: { url: string }): Promise<void> => {
     if (/^(https?|mailto):/i.test(args.url)) await shell.openExternal(args.url);
+  });
+
+  // 미리보기 HTML 을 별도 창으로 열기("새 창으로 열기"). 원본 파일을 직접 여는 대신 mockup://
+  // 로 로드해, iframe 미리보기와 동일하게 DS runtime/CSS + 스탬프 바가 주입된 상태로 렌더한다.
+  ipcMain.handle("preview:openWindow", async (_e, args: { relPath: string }): Promise<void> => {
+    const rel = args.relPath?.trim();
+    if (!rel) return;
+    const url = `mockup://preview/${rel.split("/").map(encodeURIComponent).join("/")}`;
+    const win = new BrowserWindow({
+      width: 1280,
+      height: 880,
+      title: rel.split("/").pop() ?? "미리보기",
+      backgroundColor: "#ffffff",
+      webPreferences: { sandbox: true },
+    });
+    win.setMenuBarVisibility(false);
+    await win.loadURL(url);
   });
 
   // 업데이트 알림 — GitHub Releases 최신 데스크탑 빌드를 조회해 현재 버전과 비교(알림만, 자동설치 X).

@@ -1,8 +1,9 @@
-import { existsSync } from "node:fs";
+import { existsSync, mkdtempSync, writeFileSync, watchFile, unwatchFile, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
 import { spawn as cpSpawn, type ChildProcess } from "node:child_process";
 import { spawn as ptySpawn, type IPty } from "node-pty";
-import type { WebContents } from "electron";
+import { Notification, BrowserWindow, type WebContents } from "electron";
 import { getAugmentedPath, getToolProcessEnv } from "@nudge-design/mockup-core";
 import { logAppEvent } from "./events.js";
 import { ensureBundledMcpConfig } from "./mcp-config.js";
@@ -167,6 +168,79 @@ function cleanEnv(env: NodeJS.ProcessEnv): { [key: string]: string } {
   return out;
 }
 
+/**
+ * 작업(턴) 완료 시 OS 데스크탑 알림.
+ * - 창이 이미 포커스돼 있으면(사용자가 보고 있으면) 띄우지 않는다 — 무음 정책.
+ * - 클릭하면 창을 복원/포커스한다.
+ * PTY(raw TUI) = Claude Code 가 턴 완료(입력 대기) 시 울리는 터미널 벨(\x07) 을 신호로,
+ * stream-json = `result` 메시지를 신호로 호출한다.
+ */
+function notifyAgentTurn(wc: WebContents, opts: { ok: boolean; screenName?: string }): void {
+  if (wc.isDestroyed() || !Notification.isSupported()) return;
+  const win = BrowserWindow.fromWebContents(wc);
+  if (win?.isFocused()) return; // 이미 보고 있으면 알림 불필요
+  const name = opts.screenName?.trim() || "작업";
+  const n = new Notification({
+    title: opts.ok ? "작업 완료" : "작업 실패",
+    body: opts.ok
+      ? `${name} — 에이전트 응답이 끝났어요.`
+      : `${name} — 에이전트가 중단되거나 실패했어요.`,
+  });
+  n.on("click", () => {
+    if (win) {
+      if (win.isMinimized()) win.restore();
+      win.show();
+      win.focus();
+    }
+  });
+  n.show();
+}
+
+/**
+ * PTY(터미널) 모드 턴 완료를 신뢰도 높게 잡기 위한 Claude Stop 훅 배선.
+ * 임시 settings.json 에 Stop 훅(신호파일 append)을 넣어 `--settings` 로 주입하고,
+ * 그 신호파일을 watchFile 폴링으로 감시한다. 훅 명령은 POSIX 셸 전제라 윈도/codex 는
+ * 벨(\x07) 폴백에 맡긴다. settingsArgs 를 spawn args 에 펼치고, 종료 시 dispose() 호출.
+ */
+function setupTurnHook(
+  isClaude: boolean,
+  onTurnDone: () => void,
+): { settingsArgs: string[]; dispose: () => void } {
+  const noop = { settingsArgs: [] as string[], dispose: (): void => {} };
+  if (!isClaude || isWindows) return noop;
+  try {
+    const dir = mkdtempSync(join(tmpdir(), "nudge-turn-"));
+    const signalPath = join(dir, "signal");
+    const settingsPath = join(dir, "settings.json");
+    const settings = {
+      hooks: {
+        Stop: [{ hooks: [{ type: "command", command: `printf 1 >> '${signalPath}'` }] }],
+      },
+    };
+    writeFileSync(settingsPath, JSON.stringify(settings));
+    let last = 0;
+    watchFile(signalPath, { interval: 300 }, (cur) => {
+      if (cur.size > last) {
+        last = cur.size;
+        onTurnDone();
+      }
+    });
+    return {
+      settingsArgs: ["--settings", settingsPath],
+      dispose: (): void => {
+        unwatchFile(signalPath);
+        try {
+          rmSync(dir, { recursive: true, force: true });
+        } catch {
+          /* 정리 실패는 무시 */
+        }
+      },
+    };
+  } catch {
+    return noop;
+  }
+}
+
 export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean; error?: string } {
   const spec = AGENT_SPECS[args.agentType];
   if (!spec) return { ok: false, error: `알 수 없는 에이전트: ${args.agentType}` };
@@ -235,10 +309,22 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
   // ⚠️ `--mcp-config <configs...>` 는 가변 인자라 바로 뒤의 prompt 를 두 번째 config 로 삼킨다.
   //    그래서 prompt 를 맨 앞 operand 로 두어 가변 플래그가 경로 하나만 소비하게 한다
   //    (시드 프롬프트는 항상 한국어 문장이라 서브커맨드와 충돌하지 않음).
+  // 턴 완료 알림 신호 — 벨(\x07) + Claude Stop 훅(신호파일) 두 경로를 400ms 디바운스로 합쳐 1건만.
+  let turnTimer: NodeJS.Timeout | null = null;
+  const signalTurnDone = (): void => {
+    if (turnTimer) clearTimeout(turnTimer);
+    turnTimer = setTimeout(() => {
+      turnTimer = null;
+      notifyAgentTurn(wc, { ok: true, screenName: args.screenName });
+    }, 400);
+  };
+  const turnHook = setupTurnHook(isClaude, signalTurnDone);
+
   const ptyArgs = [
     ...(args.initialPrompt ? [args.initialPrompt] : []),
     ...spec.args,
     ...claudeFlags,
+    ...turnHook.settingsArgs,
   ];
 
   // Windows: .cmd/.bat 은 실행 파일이 아니라 CreateProcess 로 직접 spawn 불가 →
@@ -265,18 +351,24 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
       payload: { agentType: args.agentType, error: msg },
     });
     updateSessionStatus(args.projectPath, sessionBase, "failed");
+    turnHook.dispose();
     return { ok: false, error: msg };
   }
 
   running.set(args.sessionId, proc);
 
+  // Claude Code(및 일부 TUI)는 턴을 끝내고 입력 대기로 돌아갈 때 터미널 벨(\x07)을 울린다.
+  // Stop 훅(신호파일)과 함께 signalTurnDone 디바운스로 합쳐 알림 1건만 발생시킨다.
   proc.onData((data) => {
     appendTranscript(args.projectPath, args.sessionId, data);
     if (!wc.isDestroyed()) wc.send("agent:data", { sessionId: args.sessionId, data });
+    if (data.includes("\x07")) signalTurnDone();
   });
 
   proc.onExit(({ exitCode, signal }) => {
     running.delete(args.sessionId);
+    if (turnTimer) clearTimeout(turnTimer);
+    turnHook.dispose();
     // 시그널로 죽었으면(사용자 "중지" / 앱 종료 → kill) 오류가 아니라 중단(interrupted).
     // 정상 종료(0)는 completed, 그 외 비정상 종료코드만 진짜 failed.
     const status: SessionStatus = signal ? "interrupted" : exitCode === 0 ? "completed" : "failed";
@@ -354,6 +446,10 @@ function startStreamAgent(
   const emit = (msg: ChatMessage): void => {
     appendStructuredTranscript(args.projectPath, sessionId, msg);
     if (!wc.isDestroyed()) wc.send("agent:message", { sessionId, message: msg });
+    // 구조화 모드는 턴 완료마다 result 메시지가 온다 — 이게 "작업 완료" 신호.
+    if (msg.kind === "result") {
+      notifyAgentTurn(wc, { ok: msg.ok, screenName: args.screenName });
+    }
   };
   streamRunning.set(sessionId, { child, emit });
 
