@@ -23,6 +23,11 @@ on:
 permissions:
   contents: write
 
+env:
+  # GitHub-hosted runners are moving JavaScript actions from Node 20 to Node 24.
+  # Opt in now so deprecation warnings surface as real compatibility issues before the cutoff.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   build:
     strategy:
