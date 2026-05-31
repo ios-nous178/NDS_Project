@@ -566,9 +566,10 @@ export function getHtmlEntryImports(args: { brand?: string }) {
  * vite/main.ts/import 없음: DS runtime/CSS 는 build_singlefile_html 이 자동 inline 한다.
  * 브랜드는 <html data-brand="..."> 로 지정 — 빌드가 그 토큰을 inline 한다(미지정 시 기본 브랜드).
  *
- * 여러 화면을 "화면처럼" 보여주기: .mockup-canvas 안에 .mockup-screen[data-device] 프레임을
- * 나란히 깐다(빌드가 자동 inline 하는 목업 전용 CSS — 별도 <style> 불필요). 브랜드 헤더는
- * surface 로 웹/모바일/웹뷰를 분기하므로 같은 화면을 디바이스별로 한눈에 비교할 수 있다.
+ * 여러 화면 = .mockup-canvas 안에 .mockup-screen[data-device] 프레임을 나열한다. 각 스크린은
+ * 자기완결: 자체 헤더(+필요시 푸터) + device 최소높이라 내용이 짧아도 "화면"처럼 보인다.
+ * 화면이 2개 이상이면 런타임이 상단에 전환 탭을 자동 주입 — 기본 '탭'(한 번에 한 화면, 미리보기
+ * 친화), '전체' 토글로 옆으로 나란히 비교. 프레임 CSS/JS 는 빌드가 자동 inline(별도 <style> 불필요).
  */
 function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
   const brand = brandSlug ?? "nudge-eap";
@@ -580,24 +581,13 @@ function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
     <title>NudgeEAP Mockup</title>
   </head>
   <body>
-    <!-- 여러 화면을 디바이스 프레임으로 나란히. data-device: web | mobile | webview | tablet -->
+    <!-- 여러 화면을 디바이스 프레임으로 나열. data-device: mobile | webview | web | tablet
+         · 화면 2개 이상 → 상단 전환 탭 자동(기본 '탭', '전체'로 나란히 보기)
+         · 처음부터 나란히 보려면 <div class="mockup-canvas" data-mode="grid"> -->
     <div class="mockup-canvas">
 
-      <!-- 화면 1: 웹(PC) -->
-      <section class="mockup-screen" data-device="web" data-label="홈 (웹)">
-        <!-- 브랜드 헤더는 손수 조립 금지 — surface='web' 한 줄. active-key 는 get_guide BrandHeader 참고 -->
-        <nds-brand-header brand="${brand}" surface="web" asset-base-url="/brand-logos"></nds-brand-header>
-        <main style="flex: 1; padding: var(--semantic-inset-screen);">
-          <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-block>
-          <div style="display: flex; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
-            <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
-            <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
-          </div>
-        </main>
-      </section>
-
-      <!-- 화면 2: 모바일 (같은 화면, surface='mobile') -->
-      <section class="mockup-screen" data-device="mobile" data-label="홈 (모바일)">
+      <!-- 화면 1: 홈 (모바일) — 브랜드 헤더는 손수 조립 금지, surface='mobile' 한 줄 -->
+      <section class="mockup-screen" data-device="mobile" data-label="홈">
         <nds-brand-header brand="${brand}" surface="mobile"></nds-brand-header>
         <main style="flex: 1; padding: var(--semantic-inset-screen);">
           <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-block>
@@ -608,8 +598,23 @@ function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
         </main>
       </section>
 
+      <!-- 화면 2: 상세 (모바일 웹뷰, surface='webview' = 뒤로가기 헤더) -->
+      <section class="mockup-screen" data-device="webview" data-label="상세">
+        <nds-brand-header brand="${brand}" surface="webview"></nds-brand-header>
+        <main style="flex: 1; padding: var(--semantic-inset-screen);">
+          <nds-title-block level="h1" title="상담 상세" subtitle="두 번째 화면입니다"></nds-title-block>
+          <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
+            <nds-button color="primary" variant="solid">신청 완료하기</nds-button>
+          </div>
+        </main>
+      </section>
+
+      <!-- 웹(PC) 화면이 필요하면 data-device="web" 으로 추가:
+           <section class="mockup-screen" data-device="web" data-label="홈 (웹)">
+             <nds-brand-header brand="${brand}" surface="web" asset-base-url="/brand-logos"></nds-brand-header> … -->
+
     </div>
-    <!-- DS runtime/CSS + 디바이스 프레임 CSS 는 build_singlefile_html 이 자동 inline 합니다. <script>/import 불필요. -->
+    <!-- DS runtime/CSS + 디바이스 프레임/스위처 는 build_singlefile_html 이 자동 inline 합니다. <script>/import 불필요. -->
   </body>
 </html>
 `;
@@ -674,7 +679,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
         : '브랜드는 <html data-brand="<slug>"> 로 지정하세요(get_brand 로 확인). 미지정 시 기본 브랜드. ') +
       "컴포넌트 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져옵니다. " +
       "【헤더/푸터】 사용자 앱 화면이면 base <nds-header> 를 손수 조립하지 말고 <nds-brand-header brand surface='web|mobile|webview'> / <nds-brand-footer> 한 줄을 쓰세요(BrandHeader/BrandFooter 가이드). " +
-      "【여러 화면】 한 파일에 여러 화면을 그릴 땐 .mockup-canvas > .mockup-screen[data-device='web|mobile|webview'] 프레임으로 나란히 배치 — 고정 너비·최소높이 device-frame 으로 '화면처럼' 보입니다(get_guide({ topic: 'pattern:multi-screen' })). " +
+      "【여러 화면】 한 파일에 여러 화면을 그릴 땐 .mockup-canvas > .mockup-screen[data-device='mobile|webview|web|tablet'] 프레임으로 나열 — 각 스크린은 자체 헤더(+필요시 푸터)+device 최소높이로 자기완결시킵니다(높이를 내용에 맡기지 말 것). 화면 2개 이상이면 상단 전환 탭이 자동 생성(기본 '탭'=한 번에 한 화면·미리보기 친화, '전체'=나란히 비교; data-mode='grid' 로 처음부터 나란히). get_guide({ topic: 'pattern:multi-screen' }). " +
       "【이미지】 DS 자산 이미지는 get_brand 의 inlineRef(@nudge-design/assets/files/…) 규약으로 <img src> 에 쓰면 빌드가 base64 inline(내부·외부 모두 보임). 상대경로 /…/x.png 는 단일 파일에서 깨집니다.",
   });
 

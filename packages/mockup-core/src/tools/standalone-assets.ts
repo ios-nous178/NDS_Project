@@ -45,9 +45,13 @@ const here = path.dirname(fileURLToPath(import.meta.url));
  * 나란히 깔고, surface 별(웹/모바일/웹뷰)로 각각 프레임을 둬 한눈에 비교한다.
  *
  *   <div class="mockup-canvas">
- *     <section class="mockup-screen" data-device="web"    data-label="홈 (웹)">…</section>
- *     <section class="mockup-screen" data-device="mobile" data-label="홈 (모바일)">…</section>
+ *     <section class="mockup-screen" data-device="mobile" data-label="홈">…</section>
+ *     <section class="mockup-screen" data-device="mobile" data-label="상세">…</section>
  *   </div>
+ *
+ * 화면이 2개 이상이면 MOCKUP_FRAME_JS 가 상단에 스크린 전환 탭(스위처)을 자동 주입한다.
+ * 기본 모드 = 'tabs'(한 번에 한 화면 — 미리보기 친화). 스위처의 '전체' 버튼 또는
+ * `<div class="mockup-canvas" data-mode="grid">` 로 옆으로 나란히 비교(grid) 전환.
  *
  * 클래스 prefix 가 nds- 가 아니라서 validator 의 unknown-nds-class / raw-shell-pattern 에
  * 걸리지 않는다(둘 다 nds-* / .page·.section 류만 검사).
@@ -74,13 +78,132 @@ export const MOCKUP_FRAME_CSS = `
   color:var(--semantic-text-tertiary, #71717a);
   white-space:nowrap;
 }
-/* 디바이스 프리셋 — 고정 너비 + 최소 높이로 "디바이스 프레임" 느낌. 내부는 자연 스크롤/확장. */
+/* 디바이스 프리셋 — 고정 너비 + 최소 높이로 "디바이스 프레임" 느낌. 내부는 자연 스크롤/확장.
+   회고: 높이를 내용에 맡기면(min-height 없음) 화면마다 높이가 제각각이라 디바이스가 아니라
+   쌓인 섹션처럼 보인다. → device 별 min-height 로 짧은 내용도 화면 높이를 유지. */
 .mockup-screen[data-device="mobile"]{ width:390px;  min-height:844px; }
 .mockup-screen[data-device="webview"]{ width:390px; min-height:720px; }
 .mockup-screen[data-device="tablet"]{ width:834px;  min-height:1112px; }
 .mockup-screen[data-device="web"]{ width:1440px;    min-height:900px; }
 /* device 미지정 기본 = 모바일 폭. */
 .mockup-screen:not([data-device]){ width:390px; min-height:844px; }
+
+/* ── 스크린 전환 스위처(런타임 주입) ── */
+.mockup-switcher{
+  position:sticky;top:0;z-index:20;flex:0 0 100%;
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  width:100%;margin:0 0 8px;padding:10px 12px;box-sizing:border-box;
+  background:var(--semantic-bg-surface-default, #ffffff);
+  border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+.mockup-switcher__tabs{display:flex;flex-wrap:wrap;gap:4px;flex:1;min-width:0;}
+.mockup-switcher__tab{
+  font-size:13px;line-height:1;padding:8px 12px;border:0;border-radius:8px;
+  cursor:pointer;white-space:nowrap;background:transparent;
+  color:var(--semantic-text-tertiary, #71717a);
+}
+.mockup-switcher__tab[data-active]{
+  background:var(--semantic-bg-base, #f4f4f5);font-weight:600;
+  color:var(--semantic-text-strong, #18181b);
+}
+.mockup-switcher__mode{display:flex;gap:4px;flex:0 0 auto;}
+.mockup-switcher__mode-btn{
+  font-size:12px;line-height:1;padding:8px 10px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--semantic-border-line, #e4e4e7);background:transparent;
+  color:var(--semantic-text-tertiary, #71717a);
+}
+.mockup-switcher__mode-btn[data-active]{
+  background:var(--semantic-text-strong, #18181b);color:#ffffff;border-color:transparent;
+}
+/* 탭 모드 — 활성 1개만 가운데 노출(미리보기 친화). 캡션은 탭과 중복이라 숨김. */
+.mockup-canvas[data-mode="tabs"]{display:block;}
+.mockup-canvas[data-mode="tabs"] .mockup-screen{display:none;}
+.mockup-canvas[data-mode="tabs"] .mockup-screen[data-active]{display:flex;margin:0 auto;}
+.mockup-canvas[data-mode="tabs"] .mockup-screen[data-label]::before{content:none;}
+/* 전체(grid) 모드 — 옆으로 나란히. 탭 목록은 숨기고 모드 토글만. */
+.mockup-canvas[data-mode="grid"] .mockup-switcher__tabs{display:none;}
+`;
+
+/**
+ * 스크린 전환 스위처 런타임 — 목업 전용(production DS 아님). loadStandaloneAssets 가
+ * DS runtime IIFE 뒤에 이어 붙여 단일 파일/미리보기에 항상 inline 한다.
+ *
+ * `.mockup-canvas` 안에 `.mockup-screen` 이 2개 이상이면 상단에 탭바를 자동 생성:
+ *   - 탭 = 각 스크린의 data-label (없으면 "화면 N")
+ *   - 모드 토글 = [탭](기본·한 번에 한 화면) / [전체](옆으로 나란히)
+ * JS 가 안 돌면 CSS 기본값(flex-wrap)으로 모든 화면이 그대로 보여 graceful degrade.
+ */
+export const MOCKUP_FRAME_JS = `
+(function(){
+  function enhance(canvas){
+    if(canvas.__mockupSwitcher) return;
+    var screens = [];
+    for(var i=0;i<canvas.children.length;i++){
+      var el = canvas.children[i];
+      if(el.classList && el.classList.contains('mockup-screen')) screens.push(el);
+    }
+    if(screens.length < 2) return;
+    canvas.__mockupSwitcher = true;
+
+    var bar = document.createElement('nav');
+    bar.className = 'mockup-switcher';
+    var tabsWrap = document.createElement('div');
+    tabsWrap.className = 'mockup-switcher__tabs';
+    bar.appendChild(tabsWrap);
+    var modeWrap = document.createElement('div');
+    modeWrap.className = 'mockup-switcher__mode';
+    bar.appendChild(modeWrap);
+
+    function setMode(mode){
+      canvas.setAttribute('data-mode', mode);
+      tabsModeBtn.toggleAttribute('data-active', mode === 'tabs');
+      gridModeBtn.toggleAttribute('data-active', mode === 'grid');
+    }
+    function activate(idx){
+      for(var j=0;j<screens.length;j++){
+        screens[j].toggleAttribute('data-active', j === idx);
+        tabs[j].toggleAttribute('data-active', j === idx);
+      }
+    }
+    function mkMode(text, mode){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mockup-switcher__mode-btn';
+      b.textContent = text;
+      b.addEventListener('click', function(){ setMode(mode); });
+      return b;
+    }
+
+    var tabs = screens.map(function(screen, idx){
+      var label = screen.getAttribute('data-label') || ('화면 ' + (idx + 1));
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'mockup-switcher__tab';
+      btn.textContent = label;
+      btn.addEventListener('click', function(){ setMode('tabs'); activate(idx); });
+      tabsWrap.appendChild(btn);
+      return btn;
+    });
+
+    var tabsModeBtn = mkMode('탭', 'tabs');
+    var gridModeBtn = mkMode('전체', 'grid');
+    modeWrap.appendChild(tabsModeBtn);
+    modeWrap.appendChild(gridModeBtn);
+
+    canvas.insertBefore(bar, canvas.firstChild);
+    activate(0);
+    setMode(canvas.getAttribute('data-mode') === 'grid' ? 'grid' : 'tabs');
+  }
+  function run(){
+    var list = document.querySelectorAll('.mockup-canvas');
+    for(var i=0;i<list.length;i++) enhance(list[i]);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();
 `;
 
 function dirHasManifest(dir: string | undefined): dir is string {
@@ -158,7 +281,9 @@ export function loadStandaloneAssets(brand?: string): StandaloneAssets {
     // 목업 전용 디바이스 프레임 — 단일 파일 빌드·미리보기 양쪽에 항상 동봉(옵트인 클래스).
     "\n" +
     MOCKUP_FRAME_CSS;
-  const runtimeJs = fs.readFileSync(path.join(dir, manifest.runtime), "utf-8");
+  // DS runtime IIFE 뒤에 스크린 스위처 런타임을 이어 붙인다(목업 전용 · 둘 다 self-contained IIFE).
+  const runtimeJs =
+    fs.readFileSync(path.join(dir, manifest.runtime), "utf-8") + "\n" + MOCKUP_FRAME_JS;
 
   const assets: StandaloneAssets = { runtimeJs, css, brand: resolvedBrand };
   cache.set(cacheKey, assets);
