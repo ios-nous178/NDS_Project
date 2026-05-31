@@ -1,5 +1,6 @@
 import React from "react";
 import { FooterInfo } from "../Footer";
+import { RUNMILE_LOGO_GRAY700_DATA_URI } from "../brand-logo-defaults";
 
 /**
  * Runmile Footer (Figma 22:80 PC · 43:846 Mobile).
@@ -13,8 +14,8 @@ import { FooterInfo } from "../Footer";
  *   - 회사 정보 / 문의 / copyright: `--semantic-text-muted-default` (#6B7684, gray700)
  *   - 세로 구분선: `--semantic-border-normal-default` (실측 #D1D6DB)
  *
- * 로고는 prop 으로 받음 — fixture 에서 `@nudge-design/assets` 의 `runmile-logo-gray700.svg`
- * dataUri 를 그대로 박아 넣는 패턴 (다른 brand 와 동일).
+ * 로고는 미지정 시 base64 내장 `runmile-logo-gray700` 워드마크가 기본값 — 파일 호스팅 불필요.
+ * `logo` prop 으로 자체 로고 override 가능.
  */
 
 export interface RunmileFooterTermLink {
@@ -57,6 +58,14 @@ const DEFAULT_TERMS: RunmileFooterTermLink[] = [
   { label: "이용약관", href: "#" },
   { label: "개인정보처리방침", href: "#", bold: true },
 ];
+
+/** 미지정 시 base64 내장 Runmile gray700 워드마크 — 파일 호스팅 불필요. */
+const DEFAULT_LOGO: RunmileFooterLogo = {
+  src: RUNMILE_LOGO_GRAY700_DATA_URI,
+  width: 142,
+  height: 32,
+  alt: "Runmile",
+};
 
 const SEPARATOR_COLOR = "var(--semantic-border-normal-default, #D1D6DB)";
 const TERMS_COLOR = "var(--semantic-text-subtle-default, #4E5968)";
@@ -207,7 +216,7 @@ export const RunmileFooter = React.forwardRef<HTMLElement, RunmileFooterProps>(
       company,
       contactEmail,
       copyright,
-      logo,
+      logo = DEFAULT_LOGO,
       maxWidth = 1280,
       style,
       ...rest
