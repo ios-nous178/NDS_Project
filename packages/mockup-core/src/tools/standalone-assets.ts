@@ -117,3 +117,63 @@ export function loadStandaloneAssets(brand?: string): StandaloneAssets {
 export function listStandaloneBrands(): string[] {
   return Object.keys(loadManifest(resolveStandaloneDir()).brands);
 }
+
+/** prebuilt 인라인 자산을 식별하는 마커(중복 주입 방지 + build_singlefile_html 산출물 감지 공용). */
+export const STANDALONE_MARKER = "data-nds-standalone";
+
+/**
+ * 작업 중인 raw HTML 에 DS runtime/CSS 를 인라인한다 — **라이브 미리보기 전용**.
+ *
+ * build_singlefile_html 은 export 시점에만 runtime/CSS 를 inline 하므로, 작업 중 원본
+ * index.html 에는 <nds-*> 를 등록할 런타임이 없다. mockup-protocol(미리보기)이 원본을 그대로
+ * 서빙하면 커스텀 엘리먼트가 업그레이드되지 않아 자식 텍스트가 그대로 노출된다(예: nds-select
+ * 옵션이 흩뿌려짐). 미리보기 서빙 직전에 이 함수로 runtime/CSS 를 in-memory 주입해 export 와
+ * 동일하게 렌더한다(원본 파일 무변경 = 비파괴, 멱등).
+ *
+ * - 이미 인라인된 산출물(STANDALONE_MARKER 존재 = dist)이면 그대로 둔다.
+ * - 브랜드는 인자 우선, 없으면 <html|body data-brand> / <body class="brand-*"> 에서 감지.
+ * - 자산을 못 찾으면 원본을 그대로 반환(미리보기 자체는 살린다).
+ */
+export function injectStandaloneRuntime(html: string, brand?: string): string {
+  if (html.includes(STANDALONE_MARKER)) return html;
+
+  let assets: StandaloneAssets;
+  try {
+    assets = loadStandaloneAssets(brand ?? detectBrandFromHtml(html));
+  } catch {
+    return html;
+  }
+
+  // </style>·</script> 조기 종료 방지 가드(build-html 의 inline 과 동일).
+  const safeCss = assets.css.replace(/<\/(style)/gi, "<\\/$1");
+  const safeJs = assets.runtimeJs.replace(/<\/(script)/gi, "<\\/$1");
+  const styleTag = `<style ${STANDALONE_MARKER}>\n${safeCss}\n</style>`;
+  const scriptTag = `<script ${STANDALONE_MARKER}>\n${safeJs}\n</script>`;
+
+  // CSS → <head> 맨 앞(없으면 만들어 끼우거나 문서 맨 앞).
+  let out = html;
+  if (/<head[^>]*>/i.test(out)) {
+    out = out.replace(/(<head[^>]*>)/i, `$1\n${styleTag}`);
+  } else if (/<html[^>]*>/i.test(out)) {
+    out = out.replace(/(<html[^>]*>)/i, `$1<head>${styleTag}</head>`);
+  } else {
+    out = styleTag + out;
+  }
+
+  // runtime → </body> 직전(없으면 끝에 덧붙임).
+  if (/<\/body>/i.test(out)) {
+    out = out.replace(/<\/body>/i, `${scriptTag}</body>`);
+  } else {
+    out = out + scriptTag;
+  }
+  return out;
+}
+
+/** <html|body data-brand="x"> 또는 <body class="… brand-x …"> 에서 브랜드 slug 추출. */
+function detectBrandFromHtml(html: string): string | undefined {
+  const dataBrand = html.match(/<(?:html|body)\b[^>]*\bdata-brand\s*=\s*["']([^"']+)["']/i);
+  if (dataBrand) return dataBrand[1].trim();
+  const bodyClass = html.match(/<body\b[^>]*\bclass\s*=\s*["']([^"']*)["']/i);
+  const m = bodyClass?.[1].match(/\bbrand-([a-z0-9-]+)\b/i);
+  return m ? m[1] : undefined;
+}

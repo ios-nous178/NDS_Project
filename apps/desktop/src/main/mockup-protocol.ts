@@ -2,7 +2,12 @@ import { app, protocol, net } from "electron";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, extname, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
-import { countHtmlUsage, detectDsVersions, injectDsStampBar } from "@nudge-design/mockup-core";
+import {
+  countHtmlUsage,
+  detectDsVersions,
+  injectDsStampBar,
+  injectStandaloneRuntime,
+} from "@nudge-design/mockup-core";
 import { resolveBundledDsVersion } from "./ds-version.js";
 
 /**
@@ -74,8 +79,13 @@ export function registerMockupProtocol(): void {
     // (dist 는 이미 박혀 있어도 injectDsStampBar 가 멱등 — 먼저 걷어내고 최신 수치로 다시 박는다.)
     if (ext === ".html" || ext === ".htm") {
       try {
-        const html = readFileSync(abs, "utf8");
-        const counts = countHtmlUsage(html);
+        const raw = readFileSync(abs, "utf8");
+        // 작업 중 원본엔 DS runtime/CSS 가 없다(빌드 시점에만 inline) → <nds-*> 가 업그레이드
+        // 안 돼 옵션/자식 텍스트가 그대로 노출된다. 미리보기 서빙 직전에 in-memory 로 주입해
+        // export 와 동일하게 렌더(원본 무변경·멱등, 이미 인라인된 dist 는 그대로 둠).
+        const html = injectStandaloneRuntime(raw);
+        // NDS% 는 작성자가 쓴 원본 기준 — 주입된 runtime/CSS 가 섞인 html 로 세지 않는다.
+        const counts = countHtmlUsage(raw);
         // 동봉 DS 버전(=inline 되는 runtime/CSS 버전)을 우선, 없으면 폴더 기준 자동 감지.
         const dsVersion = resolveBundledDsVersion() ?? detectDsVersions(dirname(abs)).primary;
         const stamped = injectDsStampBar(html, {

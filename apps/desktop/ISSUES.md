@@ -40,6 +40,33 @@
 
 ---
 
+## [x] 4. 라이브 미리보기에서 `<nds-*>` 가 업그레이드 안 됨 (옵션 텍스트가 흩뿌려짐)
+
+**증상**: Runmile 목업에서 `<nds-select>` 가 드롭다운으로 안 보이고 옵션("인기순"/"활동 많은 순")
+텍스트가 페이지에 그대로 흩뿌려짐. nds 를 썼는데 깨져 보임.
+
+**근본 원인 (확정)**: 작업 중 원본 `index.html` 에는 **DS runtime/CSS 가 없다**.
+runtime/CSS 는 `build_singlefile_html`(export) 시점에만 inline(`buildHtmlSinglefileNoBundler`
+→ `loadStandaloneAssets`). 그런데 라이브 미리보기(`mockup-protocol.ts`)는 원본을 거의 그대로
+서빙(스탬프 바만 주입)하므로 `<nds-select>` 등 커스텀 엘리먼트가 **등록/업그레이드되지 않아**
+자식 텍스트가 raw 로 노출됨. (setup 가이드도 "runtime/CSS 는 빌드가 자동 inline, `<script>` 불필요"
+전제라 원본엔 의도적으로 런타임이 없음.)
+
+**수정**:
+
+- `packages/mockup-core/src/tools/standalone-assets.ts` — `injectStandaloneRuntime(html, brand?)`
+  추가. 미리보기 서빙 직전 in-memory 로 DS runtime/CSS 를 head/body 에 주입(원본 무변경·멱등,
+  이미 인라인된 dist 는 `STANDALONE_MARKER` 로 감지해 skip). 브랜드는 `data-brand`/`body.brand-*`
+  자동 감지.
+- `apps/desktop/src/main/mockup-protocol.ts` — HTML 서빙 시 `injectStandaloneRuntime(raw)` 후
+  스탬프 주입. NDS% 카운트는 원본(raw) 기준 유지(주입본으로 세지 않음).
+
+> 참고: 사용자가 쓴 `<nds-select value="latest">` 는 매칭되는 옵션 value 가 없어(popular/active)
+> 트리거에 "latest" 가 그대로 뜬다 — 런타임 동작과 별개인 작성 값 문제. 초기값은 `value=""`(placeholder)
+> 또는 실제 옵션 value 로.
+
+---
+
 ### 적용 메모
 
 - main 프로세스 수정이라 **앱 재빌드/재시작 필요** (`watcher.ts`, `ds-version.ts`).
