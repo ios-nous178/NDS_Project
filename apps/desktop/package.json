@@ -2,7 +2,7 @@
   "name": "@nudge-design/desktop",
   "version": "0.0.1",
   "private": true,
-  "description": "Nudge EAP Kraft-like 데스크탑 하네스 — DS 목업 빌드/검증/미리보기/피드백을 코드로 강제.",
+  "description": "Nudge Studio 데스크탑 앱 — DS 목업 빌드/검증/미리보기/피드백을 지원합니다.",
   "type": "module",
   "main": "./out/main/index.js",
   "scripts": {
