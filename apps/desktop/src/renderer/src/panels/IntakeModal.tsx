@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import type { AgentType, Platform, ScreenshotInput, Transport } from "../../../preload/index.js";
 import { Dropdown } from "../ui/Dropdown.js";
+import { AgentInstallPrompt } from "./AgentInstallPrompt.js";
 import {
   c,
   font,
@@ -170,6 +171,10 @@ export function IntakeModal({
   const [docs, setDocs] = useState<DocItem[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // claude 미설치 시 뜨는 설치 안내(있으면 모달 위에 겹쳐 표시).
+  const [needsInstall, setNeedsInstall] = useState<{ agentType: AgentType; hint?: string } | null>(
+    null,
+  );
 
   const autoSlug = useMemo(() => {
     if (!brand || !screenName.trim()) return "";
@@ -229,6 +234,13 @@ export function IntakeModal({
     setBusy(true);
     setError("");
     try {
+      // 인테이크가 워크스페이스를 만들기 전에 CLI 설치부터 확인 — 미설치면 안내만 띄우고
+      // 워크스페이스 중복 생성 없이 멈춘다(설치 후 다시 제출).
+      const probe = await window.harness.checkAgent(agentType);
+      if (!probe.found) {
+        setNeedsInstall({ agentType });
+        return;
+      }
       const res = await window.harness.startIntake({
         projectPath,
         brand,
@@ -260,6 +272,11 @@ export function IntakeModal({
         selectedDirection,
       });
       if (!res.ok || !res.sessionId) {
+        if (res.code === "not-found") {
+          // 인테이크는 이미 워크스페이스를 만든 상태 — 설치만 끝나면 같은 submit 으로 재시작.
+          setNeedsInstall({ agentType, hint: res.error });
+          return;
+        }
         setError(res.error ?? "시작 실패");
         return;
       }
@@ -637,6 +654,17 @@ export function IntakeModal({
           </button>
         </div>
       </div>
+      {needsInstall && (
+        <AgentInstallPrompt
+          agentType={needsInstall.agentType}
+          installHint={needsInstall.hint}
+          onClose={() => setNeedsInstall(null)}
+          onReady={() => {
+            setNeedsInstall(null);
+            void submit();
+          }}
+        />
+      )}
     </div>
   );
 }

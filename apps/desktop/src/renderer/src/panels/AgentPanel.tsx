@@ -4,6 +4,8 @@ import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import type { AgentType, ChatMessage, Transport } from "../../../preload/index.js";
 import { StructuredChatView } from "./StructuredChatView.js";
+import { AgentInstallPrompt } from "./AgentInstallPrompt.js";
+import { extractAuthUrls } from "./auth-url.js";
 import { c, mono, dangerGhostBtn, SECTION_HEADER_H } from "../ui/theme.js";
 
 /**
@@ -58,10 +60,19 @@ export function AgentPanel({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
+  // claude 미설치(not-found) 시 뜨는 설치 안내. retry 로 직전 start 인자를 그대로 재실행.
+  const [installPrompt, setInstallPrompt] = useState<{
+    agentType: AgentType;
+    hint?: string;
+    retry: () => void;
+  } | null>(null);
   const termRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sessionRef = useRef<string | null>(null);
+  // 로그인 URL 자동 열기용 — 청크 누적 버퍼 + 이미 연 URL(중복 방지).
+  const authBufRef = useRef("");
+  const openedUrlsRef = useRef<Set<string>>(new Set());
   const liveCb = useRef(onLiveChange);
   const histCb = useRef(onHistoryChange);
   liveCb.current = onLiveChange;
@@ -69,7 +80,17 @@ export function AgentPanel({
 
   useEffect(() => {
     const offData = window.harness.onAgentData((e) => {
-      if (e.sessionId === sessionRef.current) termRef.current?.write(e.data);
+      if (e.sessionId !== sessionRef.current) return;
+      termRef.current?.write(e.data);
+      // 로그인 OAuth URL 자동 열기 — PTY 안 claude 가 브라우저를 못 띄우는 경우 대비.
+      // 청크 경계로 URL 이 쪼개질 수 있어 작은 롤링 버퍼에 누적해 재스캔한다.
+      authBufRef.current = (authBufRef.current + e.data).slice(-8192);
+      for (const url of extractAuthUrls(authBufRef.current)) {
+        if (openedUrlsRef.current.has(url)) continue;
+        openedUrlsRef.current.add(url);
+        void window.harness.openExternal(url);
+        termRef.current?.writeln(`\r\n\x1b[90m[브라우저에서 로그인 페이지를 열었어요]\x1b[0m`);
+      }
     });
     // 구조화(stream-json) 세션의 정규화 메시지 — 라이브 누적(같은 세션만).
     const offMessage = window.harness.onAgentMessage((e) => {
@@ -168,6 +189,37 @@ export function AgentPanel({
     term.onData((data) => {
       if (sessionRef.current) void window.harness.sendAgentInput(sessionRef.current, data);
     });
+    // 클립보드: 터미널에선 Ctrl+C 가 SIGINT 라 그냥 두면 복사가 안 되고 세션이 죽는다.
+    //  · 선택영역이 있을 때 Ctrl/Cmd+C → 복사(인터럽트 안 보냄)
+    //  · 선택영역이 없으면 Ctrl+C → 그대로 SIGINT(기존 동작)
+    //  · Ctrl/Cmd+V, Ctrl+Shift+V → 붙여넣기 / Ctrl+Shift+C → 항상 복사
+    //  (로그인 URL 을 직접 긁어 복사·재입력할 수 있게 — 자동 열기 실패 시 수동 폴백)
+    term.attachCustomKeyEventHandler((e) => {
+      if (e.type !== "keydown") return true;
+      const mod = e.ctrlKey || e.metaKey;
+      const key = e.key.toLowerCase();
+      if (mod && e.shiftKey && key === "c") {
+        const sel = term.getSelection();
+        if (sel) void navigator.clipboard.writeText(sel);
+        return false;
+      }
+      if (mod && !e.shiftKey && key === "c") {
+        const sel = term.getSelection();
+        if (sel) {
+          void navigator.clipboard.writeText(sel);
+          term.clearSelection();
+          return false; // 복사로 소비 — SIGINT 안 보냄
+        }
+        return true; // 선택 없음 → 인터럽트
+      }
+      if (mod && key === "v") {
+        void navigator.clipboard.readText().then((t) => {
+          if (t && sessionRef.current) void window.harness.sendAgentInput(sessionRef.current, t);
+        });
+        return false;
+      }
+      return true;
+    });
     termRef.current = term;
     fitRef.current = fit;
     return term;
@@ -207,6 +259,9 @@ export function AgentPanel({
 
       const id = crypto.randomUUID();
       sessionRef.current = id;
+      // 새 세션 = 새 로그인 가능성 → URL 스캔 상태 초기화.
+      authBufRef.current = "";
+      openedUrlsRef.current = new Set();
 
       const res = await window.harness.startAgent({
         sessionId: id,
@@ -220,6 +275,16 @@ export function AgentPanel({
       });
       if (!res.ok) {
         sessionRef.current = null;
+        if (res.code === "not-found") {
+          // 빨간 에러 대신 설치 안내 모달 — onReady(설치 완료)면 같은 인자로 재시작.
+          setStatus("idle");
+          setInstallPrompt({
+            agentType: at,
+            hint: res.error,
+            retry: () => void start(at, tp, cwdOverride),
+          });
+          return;
+        }
         setStatus("error");
         setError(res.error ?? "시작 실패");
         term?.writeln(`\x1b[31m${res.error ?? "시작 실패"}\x1b[0m`);
@@ -375,6 +440,18 @@ export function AgentPanel({
           ref={containerRef}
           onMouseDown={() => termRef.current?.focus()}
           style={{ flex: 1, minHeight: 0, background: "#1e1e1e", padding: 4 }}
+        />
+      )}
+      {installPrompt && (
+        <AgentInstallPrompt
+          agentType={installPrompt.agentType}
+          installHint={installPrompt.hint}
+          onClose={() => setInstallPrompt(null)}
+          onReady={() => {
+            const retry = installPrompt.retry;
+            setInstallPrompt(null);
+            retry();
+          }}
         />
       )}
     </div>

@@ -34,6 +34,8 @@ interface AgentSpec {
   args: string[];
   label: string;
   installHint: string;
+  /** `npm install -g <pkg>` 로 자동 설치할 전역 패키지명. 없으면 자동 설치 미지원. */
+  npmPackage?: string;
 }
 
 const AGENT_SPECS: Record<AgentType, AgentSpec> = {
@@ -43,6 +45,7 @@ const AGENT_SPECS: Record<AgentType, AgentSpec> = {
     label: "Claude Code",
     installHint:
       "claude CLI 를 찾지 못했습니다. 설치/로그인 후 PATH 에 있는지 확인하세요 (https://claude.com/claude-code).",
+    npmPackage: "@anthropic-ai/claude-code",
   },
   // bare `codex` = 인터랙티브 TUI (no subcommand → interactive). /opt/homebrew/bin 등은
   // getAugmentedPath 가 이미 포함.
@@ -53,6 +56,90 @@ const AGENT_SPECS: Record<AgentType, AgentSpec> = {
     installHint: "codex CLI 를 찾지 못했습니다. 설치 후 PATH 에 있는지 확인하세요.",
   },
 };
+
+/** 에이전트 CLI 설치 상태 점검 결과. 렌더러의 설치 안내 패널이 분기에 사용. */
+export interface AgentCheck {
+  /** 에이전트 CLI(claude/codex)를 PATH 에서 찾았는가. */
+  found: boolean;
+  /** `npm install -g` 으로 자동 설치할 수 있는가(npmPackage 정의 + npm 존재). */
+  canAutoInstall: boolean;
+  /** npm(=Node.js) 이 있는가. 없으면 자동 설치 불가 → Node.js 먼저 안내. */
+  npmFound: boolean;
+}
+
+/**
+ * 에이전트 CLI 와 npm(자동 설치 전제) 존재 여부를 점검한다.
+ * agentSearchPath 가 %APPDATA%\npm 등 설치 위치를 하드코딩하므로, 설치 직후
+ * PATH 갱신("새 터미널") 없이도 found 가 true 로 뒤집힌다.
+ */
+export function checkAgent(agentType: AgentType): AgentCheck {
+  const spec = AGENT_SPECS[agentType];
+  const searchPath = agentSearchPath();
+  const npmFound = resolveBin("npm", searchPath) !== null;
+  return {
+    found: resolveBin(spec.bin, searchPath) !== null,
+    canAutoInstall: Boolean(spec.npmPackage) && npmFound,
+    npmFound,
+  };
+}
+
+/** installAgent 결과. output 은 실패 시에만 펼쳐 보여줄 raw 로그. */
+export interface InstallResult {
+  ok: boolean;
+  /** stdout+stderr 합본. 성공 시엔 빈 문자열일 수 있음(실패 진단용). */
+  output: string;
+}
+
+/**
+ * 에이전트 CLI 를 `npm install -g <pkg>` 로 자동 설치한다. 설치 후 resolveBin 으로
+ * 재확인해 ok 를 판정 — exit 0 이어도 바이너리가 안 잡히면 ok:false.
+ * Windows 의 npm.cmd 는 직접 spawn 불가 → cmd.exe /c 로 감싼다(PTY 경로와 동일 규칙).
+ */
+export async function installAgent(agentType: AgentType): Promise<InstallResult> {
+  const spec = AGENT_SPECS[agentType];
+  if (!spec.npmPackage) {
+    return { ok: false, output: `${spec.label} 자동 설치는 지원하지 않습니다.` };
+  }
+  const searchPath = agentSearchPath();
+  const npmPath = resolveBin("npm", searchPath);
+  if (!npmPath) {
+    return {
+      ok: false,
+      output:
+        "Node.js(npm)가 없어 자동 설치할 수 없습니다. Node.js 를 먼저 설치한 뒤 다시 시도하세요.",
+    };
+  }
+  const useCmdWrapper = isWindows && /\.(cmd|bat)$/i.test(npmPath);
+  const spawnFile = useCmdWrapper
+    ? (process.env.ComSpec ?? process.env.COMSPEC ?? "cmd.exe")
+    : npmPath;
+  const npmArgs = ["install", "-g", spec.npmPackage];
+  const spawnArgs = useCmdWrapper ? ["/d", "/s", "/c", npmPath, ...npmArgs] : npmArgs;
+  return new Promise<InstallResult>((resolve) => {
+    let output = "";
+    const append = (chunk: Buffer): void => {
+      output += chunk.toString();
+    };
+    let child: ChildProcess;
+    try {
+      child = cpSpawn(spawnFile, spawnArgs, {
+        env: cleanEnv({ ...getToolProcessEnv(), PATH: searchPath }),
+        windowsHide: true,
+      });
+    } catch (e) {
+      resolve({ ok: false, output: `설치 프로세스를 시작하지 못했습니다: ${String(e)}` });
+      return;
+    }
+    child.stdout?.on("data", append);
+    child.stderr?.on("data", append);
+    child.on("error", (e) => resolve({ ok: false, output: `${output}\n${String(e)}` }));
+    child.on("exit", (code) => {
+      // 설치 직후 재확인 — PATH 갱신 없이도 하드코딩 후보 디렉토리에서 잡힌다.
+      const found = resolveBin(spec.bin, agentSearchPath()) !== null;
+      resolve({ ok: code === 0 && found, output });
+    });
+  });
+}
 
 export interface StartAgentArgs {
   sessionId: string;
@@ -278,7 +365,13 @@ function setupTurnHook(
   }
 }
 
-export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean; error?: string } {
+/** startAgent 실패 사유 코드. "not-found" 면 렌더러가 설치 안내 패널을 띄운다. */
+export type StartAgentErrorCode = "not-found";
+
+export function startAgent(
+  args: StartAgentArgs,
+  wc: WebContents,
+): { ok: boolean; error?: string; code?: StartAgentErrorCode } {
   const spec = AGENT_SPECS[args.agentType];
   if (!spec) return { ok: false, error: `알 수 없는 에이전트: ${args.agentType}` };
   if (isSessionRunning(args.sessionId)) return { ok: false, error: "이미 실행 중인 세션입니다." };
@@ -312,7 +405,7 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
       mockupFile: args.mockupFile,
       payload: { agentType: args.agentType, error: "not-found" },
     });
-    return { ok: false, error: spec.installHint };
+    return { ok: false, error: spec.installHint, code: "not-found" };
   }
 
   createSession(args.projectPath, sessionBase);
