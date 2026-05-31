@@ -306,10 +306,20 @@ export function AgentPanel({
           }}
         >
           {running && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5 }}>
-              <span style={{ color: c.green, fontSize: 9 }}>●</span>
-              <strong style={{ color: c.text, fontWeight: 600 }}>{AGENT_LABEL[agentType]}</strong>
-              <span style={{ color: c.textFaint, fontSize: 11 }}>실행 중</span>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12.5,
+                lineHeight: 1,
+              }}
+            >
+              <span style={{ color: c.green, fontSize: 9, lineHeight: 1 }}>●</span>
+              <strong style={{ color: c.text, fontWeight: 600, lineHeight: 1 }}>
+                {AGENT_LABEL[agentType]}
+              </strong>
+              <span style={{ color: c.textFaint, fontSize: 11, lineHeight: 1 }}>실행 중</span>
               {transport === "stream-json" && (
                 <span
                   title="구조화(canary) 세션 — claude stream-json"
