@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer, webUtils, type IpcRendererEvent } from "electron";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
-import type { OpenProjectResult } from "../main/ipc.js";
+import type { OpenProjectResult, CurrentProjectResult } from "../main/ipc.js";
 import type { ExportResult } from "../main/export-runner.js";
 import type { FigmaExportResult } from "../main/figma-export.js";
 import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
@@ -14,7 +14,7 @@ import type { UpdateCheckResult } from "../main/update-check.js";
 // renderer 가 preload 를 단일 타입 계약 표면으로 쓰도록 재export.
 export type { ExportResult } from "../main/export-runner.js";
 export type { FigmaExportResult } from "../main/figma-export.js";
-export type { OpenProjectResult } from "../main/ipc.js";
+export type { OpenProjectResult, CurrentProjectResult } from "../main/ipc.js";
 export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 export type { AgentType, StartAgentArgs } from "../main/agent-runner.js";
 export type { ChatSession, Transport } from "../main/sessions.js";
@@ -74,6 +74,8 @@ const harness = {
   checkForUpdate: (): Promise<UpdateCheckResult> => ipcRenderer.invoke("update:check"),
   openProject: (): Promise<OpenProjectResult | { canceled: true }> =>
     ipcRenderer.invoke("project:open"),
+  /** 재시작 후 마지막 프로젝트 복원(없으면 projectPath: null). 렌더러 마운트 시 호출. */
+  currentProject: (): Promise<CurrentProjectResult> => ipcRenderer.invoke("project:current"),
   /** 작업 폴더 선택(새 채팅 cwd). 취소 시 { canceled: true }. */
   pickFolder: (): Promise<{ folder: string } | { canceled: true }> =>
     ipcRenderer.invoke("dialog:pick-folder"),

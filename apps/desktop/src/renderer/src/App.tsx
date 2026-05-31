@@ -247,6 +247,21 @@ export function App(): React.JSX.Element {
     });
   }, [loadFile]);
 
+  // 마운트 시 마지막 프로젝트 복원 — 앱을 재시작해도 main 이 previewRoot/와처를 다시 잡아
+  // "no preview root" 없이 곧바로 목업 목록·미리보기가 살아난다(사용자가 다시 폴더를 열 필요 X).
+  useEffect(() => {
+    let cancelled = false;
+    void window.harness.currentProject().then((res) => {
+      if (cancelled || res.projectPath === null) return;
+      setProjectPath(res.projectPath);
+      projectRef.current = res.projectPath;
+      setHistoryRefresh((n) => n + 1);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const refreshHistory = useCallback(() => setHistoryRefresh((n) => n + 1), []);
 
   // "+ 새 채팅" → 빠른 채팅 — 먼저 작업 폴더를 고르고(취소 시 중단), 과거 세션 보기 중이면
@@ -255,6 +270,13 @@ export function App(): React.JSX.Element {
   const startNewChat = useCallback(async (req: Omit<NewChatRequest, "seq" | "cwd">) => {
     const picked = await window.harness.pickFolder();
     if ("canceled" in picked) return;
+    // pickFolder 가 main 에서 이 폴더를 미리보기 루트로 잡아준다 → 생성된 목업이 곧바로
+    // 미리보기됨("no preview root" 방지). 렌더러 상태도 이 폴더로 맞춘다.
+    setProjectPath(picked.folder);
+    projectRef.current = picked.folder;
+    setSelected(null);
+    selectedRef.current = null;
+    setPreviewRel(null);
     setViewing(null);
     setNewChatReq((prev) => ({ seq: (prev?.seq ?? 0) + 1, cwd: picked.folder, ...req }));
   }, []);
