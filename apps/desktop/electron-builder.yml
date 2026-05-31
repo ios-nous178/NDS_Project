@@ -29,6 +29,13 @@ extraResources:
   # → 받는 사람이 node/MCP 설치 없이도 nudge-ds 도구가 붙는다.
   - from: .mcp-bundle
     to: mcp
+  # 앱 동봉 claude CLI 네이티브 바이너리(scripts/bundle-claude-desktop.mjs 산출물) → resources/claude/.
+  # 사용자 PATH 에 claude 가 없을 때의 폴백 — 받는 사람이 따로 설치/로그인하지 않아도 앱이 동작한다.
+  # 플랫폼별 단일 실행파일(.claude-bundle/{platform}-{arch}/claude[.exe], 플랫폼당 ~200MB).
+  # mac universal 은 arm64·x64 둘 다 동봉(런타임에 process.arch 로 선택). 네이티브 모듈·심볼릭
+  # 링크 없음 → 그대로 복사. (제거하려면 이 두 줄 + .claude-bundle 삭제 → 런타임이 PATH 폴백으로 복귀.)
+  - from: .claude-bundle
+    to: claude
 asar: true
 # node-pty 의 네이티브 `.node` 는 asar 안에서 dlopen 불가 → asar 밖으로 추출해야 로드된다.
 asarUnpack:
@@ -44,12 +51,17 @@ afterPack: scripts/after-pack.cjs
 # build/ 는 electron-builder 의 기본 buildResources 라 자동 감지되지만 명시해 둔다.
 mac:
   icon: build/icon.icns
-  # universal = arm64 + x64 단일 .app/.dmg (Apple Silicon · Intel 맥 모두 한 산출물로 커버).
+  # arch 별 산출물(arm64 / x64 각각) — universal 단일본 대신 분리한다.
+  #  · universal 은 모든 바이너리(electron·node-pty·동봉 claude)를 arm64+x64 두 벌로 안고 가
+  #    산출물이 거의 2배(arm64 dmg 113MB vs universal 190MB). 게다가 동봉 claude 는 arch 당 ~205MB라
+  #    universal 이면 한 dmg 에 두 바이너리(~430MB)가 다 들어간다.
+  #  · 분리하면 사용자는 자기 arch 것만 받는다(arm64 맥 → arm64 dmg + claude arm64 한 벌).
+  #    다른 arch 의 동봉 claude 는 afterPack(scripts/after-pack.cjs)이 빌드 arch 기준으로 잘라낸다.
   target:
     - target: dmg
-      arch: universal
+      arch: [arm64, x64]
     - target: zip
-      arch: universal
+      arch: [arm64, x64]
   category: public.app-category.developer-tools
 win:
   icon: build/icon.ico
