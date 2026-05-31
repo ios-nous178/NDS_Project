@@ -155,6 +155,15 @@ copyDir(assetsFilesSrc, path.join(OUT, "dist/assets"));
 // 아이콘 vanilla 정의 → dist/icons/vanilla.js (server.mjs 의 __dirname/../icons/vanilla.js).
 fs.mkdirSync(path.join(OUT, "dist/icons"), { recursive: true });
 fs.copyFileSync(iconsVanillaSrc, path.join(OUT, "dist/icons/vanilla.js"));
+// vanilla.js 는 ESM(`export …`)인데 패키징되면 이 트리가 resources/mcp/ 로 떨어지며
+// 위쪽 `"type":"module"` package.json 조상이 사라진다. 그러면 Electron-as-node 가 bare
+// `.js` 를 CommonJS 로 파싱해 `Unexpected token 'export'` 로 죽고 find_icon 의 모든 아이콘
+// 로드가 실패한다(모듈 로드 단계라 아이콘 전체 영향). dist/icons 옆에 타입 마커를 떨궈,
+// 번들이 어디로 풀리든 ESM 으로 해석되게 한다.
+fs.writeFileSync(
+  path.join(OUT, "dist/icons/package.json"),
+  `${JSON.stringify({ type: "module" })}\n`,
+);
 
 console.log(`\n✓ MCP 데스크탑 번들 생성 (${sizeMB(OUT)} MB):`);
 console.log(`  ${path.relative(ROOT, OUT)}`);
