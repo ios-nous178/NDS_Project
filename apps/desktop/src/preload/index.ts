@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer, webUtils, type IpcRendererEvent } from "ele
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import type { OpenProjectResult } from "../main/ipc.js";
 import type { ExportResult } from "../main/export-runner.js";
+import type { FigmaExportResult } from "../main/figma-export.js";
 import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 import type { StartAgentArgs } from "../main/agent-runner.js";
 import type { ChatSession, Transport } from "../main/sessions.js";
@@ -12,6 +13,7 @@ import type { UpdateCheckResult } from "../main/update-check.js";
 
 // renderer 가 preload 를 단일 타입 계약 표면으로 쓰도록 재export.
 export type { ExportResult } from "../main/export-runner.js";
+export type { FigmaExportResult } from "../main/figma-export.js";
 export type { OpenProjectResult } from "../main/ipc.js";
 export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 export type { AgentType, StartAgentArgs } from "../main/agent-runner.js";
@@ -104,6 +106,11 @@ const harness = {
   /** 빌드된 자체완결 산출물을 미리 고른 목적지로 기록. */
   placeExport: (sourcePath: string, destPath: string): Promise<{ path: string }> =>
     ipcRenderer.invoke("export:place", { sourcePath, destPath }),
+
+  // ── Figma 평면 레이어 export (canary) ──
+  /** dist 렌더 → DOM 추출 → dist/.figma/scene.json 저장 + 클립보드 복사. 짝 플러그인이 캔버스에 짓는다. */
+  exportFigmaScene: (projectPath: string, mockupDir?: string): Promise<FigmaExportResult> =>
+    ipcRenderer.invoke("figma:export", { projectPath, mockupDir }),
 
   // ── 유저 피드백 (Phase 3) — 로컬 저장만 ──
   /** 현재 목업에 대한 수정요청/기타 피드백 1건을 `.ds-feedback-log.jsonl` 에 적재. */

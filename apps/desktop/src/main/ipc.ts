@@ -5,6 +5,7 @@ import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design
 import { setPreviewRoot } from "./mockup-protocol.js";
 import { startWatch, stopWatch } from "./watcher.js";
 import { exportMockup, type ExportResult } from "./export-runner.js";
+import { exportFigmaScene, type FigmaExportResult } from "./figma-export.js";
 import { submitFeedback, type SubmitFeedbackArgs, type SubmitFeedbackResult } from "./feedback.js";
 import {
   resizeAgent,
@@ -212,6 +213,27 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     async (_e, args: { sourcePath: string; destPath: string }): Promise<{ path: string }> => {
       copyFileSync(args.sourcePath, args.destPath);
       return { path: args.destPath };
+    },
+  );
+
+  // ── Figma 평면 레이어 export (canary) ──
+  // dist 를 화면 밖 창에 렌더 → DOM 추출 → dist/.figma/scene.json 저장 + 클립보드 복사.
+  // 짝 플러그인(tools/figma-plugin)이 그 scene.json 을 Figma 캔버스에 짓는다. 전부 로컬.
+  ipcMain.handle(
+    "figma:export",
+    async (_e, args: { projectPath: string; mockupDir?: string }): Promise<FigmaExportResult> => {
+      const result = await exportFigmaScene(args.projectPath, args.mockupDir, app.getVersion());
+      logAppEvent(args.projectPath, {
+        type: result.ok ? "export_completed" : "error_occurred",
+        mockupFile: result.sceneRel,
+        payload: {
+          kind: "figma-scene",
+          ok: result.ok,
+          nodeCount: result.nodeCount,
+          error: result.error,
+        },
+      });
+      return result;
     },
   );
 

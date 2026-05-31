@@ -1,0 +1,13 @@
+{
+  "name": "Nudge Mockup Import (canary)",
+  "id": "nudge-mockup-import-canary",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "scene.json 을 붙여넣기/파일로만 받는다. 네트워크 접근 없음(무유출 기조)."
+  }
+}

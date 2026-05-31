@@ -34,6 +34,9 @@ export * from "./tools/usage/webhook.js";
 // catalog → validator 부트스트랩 (데스크탑 main 시작 시 호출)
 export * from "./tools/catalog-config.js";
 
+// 목업 → Figma 평면 레이어 scene 추출 (canary) — 데스크탑이 dist 렌더 후 주입
+export * from "./tools/figma/scene.js";
+
 // 유저 피드백 IO 레이어 (데스크탑 하네스 Phase 3)
 export * from "./tools/feedback/types.js";
 export * from "./tools/feedback/log.js";
