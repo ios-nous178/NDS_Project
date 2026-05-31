@@ -10,6 +10,14 @@ import { join } from "node:path";
 import { resolveWritableLogDir } from "@nudge-design/mockup-core";
 import type { AgentType } from "./agent-runner.js";
 import type { Surface } from "./intake.js";
+import type { ChatMessage } from "./chat-types.js";
+
+/**
+ * 에이전트 전송 방식. `pty`(기본) = node-pty raw TUI / `stream-json`(canary) = headless
+ * `claude -p --output-format stream-json` 구조화 이벤트. 후자는 raw .log 대신 정규화된
+ * <id>.jsonl(ChatMessage 라인)을 남겨 라이브/재생이 같은 렌더러를 쓴다.
+ */
+export type Transport = "pty" | "stream-json";
 
 /**
  * 에이전트 채팅 "세션" 의 로컬 저장.
@@ -23,6 +31,8 @@ import type { Surface } from "./intake.js";
  */
 export const CHAT_SESSIONS_FILENAME = ".ds-chat-sessions.jsonl";
 export const TRANSCRIPT_DIRNAME = ".ds-agent-sessions";
+/** 구조화(stream-json) 세션의 정규화 메시지 로그 확장자. raw pty 는 `.log`. */
+const STRUCTURED_EXT = ".jsonl";
 
 // interrupted = 사용자가 중지했거나 앱 종료/크래시로 끊긴 세션. 진짜 오류(failed)와 구분한다.
 export type SessionStatus = "active" | "completed" | "failed" | "interrupted";
@@ -43,6 +53,8 @@ export interface ChatSession {
   brand?: string;
   surface?: Surface;
   intent?: "html" | "admin-cms";
+  /** 전송 방식. 기록 클릭 시 렌더러가 raw(xterm) vs 구조화(카드) 재생을 분기. 옛 세션은 undefined=pty. */
+  transport?: Transport;
 }
 
 /** create/update 가 받는 세션 베이스(상태/타임스탬프 제외). */
@@ -92,6 +104,43 @@ export function appendTranscript(projectPath: string, sessionId: string, data: s
   } catch {
     /* best-effort */
   }
+}
+
+/** 구조화(stream-json) 세션의 정규화 메시지 1건을 <id>.jsonl 에 append. */
+export function appendStructuredTranscript(
+  projectPath: string,
+  sessionId: string,
+  msg: ChatMessage,
+): void {
+  try {
+    const dir = join(logDir(projectPath), TRANSCRIPT_DIRNAME);
+    mkdirSync(dir, { recursive: true });
+    appendFileSync(join(dir, `${sessionId}${STRUCTURED_EXT}`), JSON.stringify(msg) + "\n", "utf8");
+  } catch {
+    /* best-effort */
+  }
+}
+
+/** 구조화 세션의 정규화 메시지 배열(없거나 깨진 줄은 건너뜀). 재생용. */
+export function readStructuredTranscript(projectPath: string, sessionId: string): ChatMessage[] {
+  const file = join(logDir(projectPath), TRANSCRIPT_DIRNAME, `${sessionId}${STRUCTURED_EXT}`);
+  if (!existsSync(file)) return [];
+  let raw: string;
+  try {
+    raw = readFileSync(file, "utf8");
+  } catch {
+    return [];
+  }
+  const out: ChatMessage[] = [];
+  for (const line of raw.split("\n")) {
+    if (!line.trim()) continue;
+    try {
+      out.push(JSON.parse(line) as ChatMessage);
+    } catch {
+      /* 깨진 줄 무시 */
+    }
+  }
+  return out;
 }
 
 /**
@@ -185,7 +234,9 @@ export function deleteSession(projectPath: string, sessionId: string): { ok: boo
     return { ok: false };
   }
   try {
-    rmSync(join(logDir(projectPath), TRANSCRIPT_DIRNAME, `${sessionId}.log`), { force: true });
+    const dir = join(logDir(projectPath), TRANSCRIPT_DIRNAME);
+    rmSync(join(dir, `${sessionId}.log`), { force: true });
+    rmSync(join(dir, `${sessionId}${STRUCTURED_EXT}`), { force: true });
   } catch {
     /* best-effort */
   }

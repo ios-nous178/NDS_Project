@@ -1,5 +1,26 @@
 import { useCallback, useState } from "react";
-import { c, ghostBtn } from "../ui/theme.js";
+import { c, primaryBtn, primaryBtnDisabled } from "../ui/theme.js";
+
+/** 다운로드(트레이로 내려받는) 아이콘 — currentColor 라 버튼 글자색을 따라간다. */
+function DownloadIcon(): React.JSX.Element {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M8 2.5v7m0 0L5.2 6.7M8 9.5l2.8-2.8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2.8 10.5v1.2A1.8 1.8 0 0 0 4.6 13.5h6.8a1.8 1.8 0 0 0 1.8-1.8v-1.2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 /**
  * 상단바 내보내기 버튼 (Phase 6). 기존 pick-path-first 흐름 재사용:
@@ -52,7 +73,18 @@ export function ExportButton({
 
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
-      <button onClick={run} disabled={!projectPath || busy || disabled} style={ghostBtn}>
+      <button
+        onClick={run}
+        disabled={!projectPath || busy || disabled}
+        title="현재 목업을 공유용 단일 HTML 파일로 내보냅니다 (저장 위치 선택 → 빌드 → 저장)"
+        style={{
+          ...(!projectPath || busy || disabled ? primaryBtnDisabled : primaryBtn),
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+        }}
+      >
+        <DownloadIcon />
         {busy ? "내보내는 중…" : "내보내기"}
       </button>
       {toast && (

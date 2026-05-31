@@ -1,16 +1,21 @@
 import { existsSync } from "node:fs";
 import { delimiter, join } from "node:path";
+import { spawn as cpSpawn, type ChildProcess } from "node:child_process";
 import { spawn as ptySpawn, type IPty } from "node-pty";
 import type { WebContents } from "electron";
 import { getAugmentedPath, getToolProcessEnv } from "@nudge-design/mockup-core";
 import { logAppEvent } from "./events.js";
 import { ensureBundledMcpConfig } from "./mcp-config.js";
 import {
+  appendStructuredTranscript,
   appendTranscript,
   createSession,
   updateSessionStatus,
+  type SessionBase,
   type SessionStatus,
+  type Transport,
 } from "./sessions.js";
+import { NdjsonBuffer, encodeUserTurn, mapClaudeEvent, type ChatMessage } from "./chat-types.js";
 import type { Surface } from "./intake.js";
 
 /**
@@ -64,6 +69,8 @@ export interface StartAgentArgs {
   brand?: string;
   surface?: Surface;
   intent?: "html" | "admin-cms";
+  /** 전송 방식. 기본 pty(raw TUI). `stream-json`(canary) = headless 구조화 — claude 전용. */
+  transport?: Transport;
   cols?: number;
   rows?: number;
 }
@@ -85,8 +92,15 @@ const DS_SYSTEM_MANDATE = [
 ].join("\n");
 
 const running = new Map<string, IPty>();
+/** stream-json(canary) 세션. child = 상주 claude 프로세스, emit = 정규화 메시지 저장+전송 클로저. */
+const streamRunning = new Map<string, { child: ChildProcess; emit: (msg: ChatMessage) => void }>();
 
 const isWindows = process.platform === "win32";
+
+/** 두 transport 를 통틀어 해당 세션이 살아있는지. */
+function isSessionRunning(sessionId: string): boolean {
+  return running.has(sessionId) || streamRunning.has(sessionId);
+}
 
 /**
  * 에이전트 바이너리 탐지용 PATH. GUI 앱은 로그인 셸 PATH 를 못 물려받으므로 core
@@ -156,7 +170,13 @@ function cleanEnv(env: NodeJS.ProcessEnv): { [key: string]: string } {
 export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean; error?: string } {
   const spec = AGENT_SPECS[args.agentType];
   if (!spec) return { ok: false, error: `알 수 없는 에이전트: ${args.agentType}` };
-  if (running.has(args.sessionId)) return { ok: false, error: "이미 실행 중인 세션입니다." };
+  if (isSessionRunning(args.sessionId)) return { ok: false, error: "이미 실행 중인 세션입니다." };
+
+  const transport: Transport = args.transport ?? "pty";
+  // stream-json 은 claude 의 `-p --output-format stream-json` 전용 — codex 등가물 없음.
+  if (transport === "stream-json" && args.agentType !== "claude") {
+    return { ok: false, error: "구조화(stream-json) 모드는 Claude 에서만 지원됩니다." };
+  }
 
   const sessionBase = {
     sessionId: args.sessionId,
@@ -167,6 +187,7 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
     brand: args.brand,
     surface: args.surface,
     intent: args.intent,
+    transport,
   };
 
   const searchPath = agentSearchPath();
@@ -195,6 +216,13 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
   // (codex 는 두 플래그가 없어 워크스페이스 AGENTS.md 로 컨텍스트를 받는다.)
   const isClaude = args.agentType === "claude";
   const mcpConfig = isClaude ? ensureBundledMcpConfig() : null;
+
+  // 구조화(stream-json) transport 는 PTY 가 아니라 piped child_process 로 분기. createSession/
+  // agent_started 로그는 위에서 이미 공통으로 처리됨 — 여기선 spawn + 이벤트 배선만.
+  if (transport === "stream-json") {
+    return startStreamAgent(args, binPath, searchPath, mcpConfig, sessionBase, wc);
+  }
+
   const claudeFlags = isClaude
     ? [
         ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
@@ -265,13 +293,144 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
   return { ok: true };
 }
 
+/**
+ * 구조화(stream-json) 세션 spawn. PTY 가 아니라 piped child_process 로 claude 를
+ * `-p --input-format stream-json --output-format stream-json` 상주 모드로 띄운다.
+ *  · stdout NDJSON → NdjsonBuffer 로 줄 재조립 → mapClaudeEvent → 정규화 메시지 저장+전송.
+ *  · stdin 은 열어둔다(멀티턴) — sendStreamTurn 이 유저 턴을 JSON 라인으로 write.
+ *  · 권한: bypassPermissions(로컬 신뢰 + PTY 와 동일 작업 비교 목적, 대화형 프롬프트 부재 대응).
+ * createSession/agent_started 는 호출부(startAgent)가 이미 기록함.
+ */
+function startStreamAgent(
+  args: StartAgentArgs,
+  binPath: string,
+  searchPath: string,
+  mcpConfig: string | null,
+  sessionBase: SessionBase,
+  wc: WebContents,
+): { ok: boolean; error?: string } {
+  const sessionId = args.sessionId;
+  const streamArgs = [
+    "-p",
+    "--input-format",
+    "stream-json",
+    "--output-format",
+    "stream-json",
+    "--verbose", // -p + stream-json 출력에 필요(누락 시 일부 버전에서 거부).
+    "--session-id",
+    sessionId, // 우리 UUID 를 claude 세션 id 로 정렬(후속 --resume 대비).
+    "--permission-mode",
+    "bypassPermissions",
+    ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
+    "--append-system-prompt",
+    DS_SYSTEM_MANDATE,
+  ];
+
+  // Windows .cmd/.bat 은 직접 spawn 불가 → cmd.exe /c 경유(PTY 경로와 동일 규칙).
+  const useCmdWrapper = isWindows && /\.(cmd|bat)$/i.test(binPath);
+  const spawnFile = useCmdWrapper ? (process.env.ComSpec ?? "cmd.exe") : binPath;
+  const spawnArgs = useCmdWrapper ? ["/c", binPath, ...streamArgs] : streamArgs;
+
+  let child: ChildProcess;
+  try {
+    child = cpSpawn(spawnFile, spawnArgs, {
+      cwd: args.cwdOverride ?? args.projectPath,
+      env: cleanEnv({ ...getToolProcessEnv(), PATH: searchPath }),
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+  } catch (err) {
+    const msg = (err as Error).message;
+    logAppEvent(args.projectPath, {
+      type: "agent_failed",
+      sessionId,
+      mockupFile: args.mockupFile,
+      payload: { agentType: args.agentType, transport: "stream-json", error: msg },
+    });
+    updateSessionStatus(args.projectPath, sessionBase, "failed");
+    return { ok: false, error: msg };
+  }
+
+  // 정규화 메시지 1건을 영구저장(.jsonl) + 렌더러로 전송. 라이브/재생 단일 출처.
+  const emit = (msg: ChatMessage): void => {
+    appendStructuredTranscript(args.projectPath, sessionId, msg);
+    if (!wc.isDestroyed()) wc.send("agent:message", { sessionId, message: msg });
+  };
+  streamRunning.set(sessionId, { child, emit });
+
+  const buf = new NdjsonBuffer();
+  const drain = (events: unknown[]): void => {
+    for (const evt of events) for (const msg of mapClaudeEvent(evt)) emit(msg);
+  };
+  child.stdout?.setEncoding("utf8");
+  child.stdout?.on("data", (chunk: string) => drain(buf.push(chunk)));
+
+  let stderr = "";
+  child.stderr?.setEncoding("utf8");
+  child.stderr?.on("data", (chunk: string) => {
+    stderr += chunk;
+    if (stderr.length > 8000) stderr = stderr.slice(-8000); // 폭주 방지
+  });
+
+  const finish = (status: SessionStatus, exitCode: number): void => {
+    drain(buf.flush());
+    streamRunning.delete(sessionId);
+    if (status === "failed" && stderr.trim()) {
+      emit({ kind: "error", text: stderr.trim().slice(0, 800) });
+    }
+    logAppEvent(args.projectPath, {
+      type: status === "completed" ? "agent_response_completed" : "agent_failed",
+      sessionId,
+      mockupFile: args.mockupFile,
+      payload: { agentType: args.agentType, transport: "stream-json", exitCode },
+    });
+    updateSessionStatus(args.projectPath, sessionBase, status);
+    if (!wc.isDestroyed()) wc.send("agent:exit", { sessionId, exitCode });
+  };
+
+  // 바이너리 자체를 못 띄운 경우(ENOENT 등) — close 가 안 올 수 있어 별도 처리. 멱등 가드.
+  child.on("error", (err) => {
+    if (!streamRunning.has(sessionId)) return;
+    stderr += `\n${(err as Error).message}`;
+    finish("failed", 1);
+  });
+
+  child.on("close", (code, signal) => {
+    if (!streamRunning.has(sessionId)) return; // error 가 이미 처리
+    // 시그널 종료(중지/앱 종료)=interrupted, 0=completed, 그 외 코드=failed (PTY 와 동일 시맨틱).
+    const status: SessionStatus = signal ? "interrupted" : code === 0 ? "completed" : "failed";
+    finish(status, code ?? (signal ? 130 : 1));
+  });
+
+  // 시드 프롬프트(인테이크 등)가 있으면 첫 유저 턴으로 stdin 에 흘리고 UI 에도 버블로 보인다.
+  if (args.initialPrompt) {
+    emit({ kind: "user", text: args.initialPrompt });
+    child.stdin?.write(encodeUserTurn(args.initialPrompt));
+  }
+
+  return { ok: true };
+}
+
+/**
+ * 구조화 세션의 다음 유저 턴. JSON 라인으로 stdin write + 같은 텍스트를 user 버블로
+ * 저장/전송(단일 출처라 렌더러는 echo 를 받아 렌더). pty 세션이면 무시.
+ */
+export function sendStreamTurn(sessionId: string, text: string): void {
+  const session = streamRunning.get(sessionId);
+  if (!session) return;
+  session.emit({ kind: "user", text });
+  session.child.stdin?.write(encodeUserTurn(text));
+}
+
 export function writeAgent(sessionId: string, data: string): void {
   running.get(sessionId)?.write(data);
 }
 
-/** 현재 PTY 가 살아있는 세션 id 집합. 재시작 후 stale "active" 정리에 쓰인다. */
+/**
+ * 현재 살아있는 세션 id 집합(PTY + stream-json 두 transport). 재시작 후 stale "active"
+ * 정리에 쓰인다 — 두 맵을 union 하지 않으면 라이브 stream 세션이 잘못 interrupted 로 마킹된다.
+ */
 export function runningSessionIds(): Set<string> {
-  return new Set(running.keys());
+  return new Set([...running.keys(), ...streamRunning.keys()]);
 }
 
 export function resizeAgent(sessionId: string, cols: number, rows: number): void {
@@ -284,11 +443,22 @@ export function resizeAgent(sessionId: string, cols: number, rows: number): void
 
 export function stopAgent(sessionId: string): void {
   const proc = running.get(sessionId);
-  if (!proc) return;
-  try {
-    proc.kill();
-  } catch {
-    /* 이미 종료 */
+  if (proc) {
+    try {
+      proc.kill();
+    } catch {
+      /* 이미 종료 */
+    }
+    return;
+  }
+  const stream = streamRunning.get(sessionId);
+  if (stream) {
+    try {
+      stream.child.stdin?.end(); // 멀티턴 stdin 닫고
+      stream.child.kill(); // 종료(close 핸들러가 정리/상태 기록)
+    } catch {
+      /* 이미 종료 */
+    }
   }
 }
 
@@ -301,4 +471,13 @@ export function stopAllAgents(): void {
     }
   }
   running.clear();
+  for (const { child } of streamRunning.values()) {
+    try {
+      child.stdin?.end();
+      child.kill();
+    } catch {
+      /* ignore */
+    }
+  }
+  streamRunning.clear();
 }

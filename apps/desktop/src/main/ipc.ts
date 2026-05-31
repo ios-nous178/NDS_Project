@@ -9,6 +9,7 @@ import { submitFeedback, type SubmitFeedbackArgs, type SubmitFeedbackResult } fr
 import {
   resizeAgent,
   runningSessionIds,
+  sendStreamTurn,
   startAgent,
   stopAgent,
   writeAgent,
@@ -19,11 +20,13 @@ import { logAppEvent } from "./events.js";
 import {
   deleteSession,
   readSessions,
+  readStructuredTranscript,
   readTranscript,
   reconcileStaleSessions,
   renameSession,
   type ChatSession,
 } from "./sessions.js";
+import type { ChatMessage } from "./chat-types.js";
 import { runIntake, type RunIntakeArgs } from "./intake.js";
 import { checkForUpdate, type UpdateCheckResult } from "./update-check.js";
 import { randomUUID } from "node:crypto";
@@ -242,6 +245,14 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     },
   );
 
+  // 구조화(stream-json) 세션의 다음 유저 턴(JSON 라인으로 stdin write). pty 세션이면 무시됨.
+  ipcMain.handle(
+    "agent:sendTurn",
+    async (_e, args: { sessionId: string; text: string }): Promise<void> => {
+      sendStreamTurn(args.sessionId, args.text);
+    },
+  );
+
   ipcMain.handle(
     "agent:resize",
     async (_e, args: { sessionId: string; cols: number; rows: number }): Promise<void> => {
@@ -267,6 +278,17 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     "session:transcript",
     async (_e, args: { projectPath: string; sessionId: string }): Promise<{ text: string }> => {
       return { text: readTranscript(args.projectPath, args.sessionId) };
+    },
+  );
+
+  // 구조화(stream-json) 세션의 정규화 메시지 — 카드형 재생용(과거 세션 다시 열기).
+  ipcMain.handle(
+    "session:structuredTranscript",
+    async (
+      _e,
+      args: { projectPath: string; sessionId: string },
+    ): Promise<{ messages: ChatMessage[] }> => {
+      return { messages: readStructuredTranscript(args.projectPath, args.sessionId) };
     },
   );
 
@@ -297,7 +319,11 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     "intake:start",
     async (
       _e,
-      args: RunIntakeArgs & { cols?: number; rows?: number },
+      args: RunIntakeArgs & {
+        cols?: number;
+        rows?: number;
+        transport?: StartAgentArgs["transport"];
+      },
     ): Promise<{
       ok: boolean;
       sessionId?: string;
@@ -321,6 +347,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
         {
           sessionId,
           agentType: args.agentType,
+          transport: args.transport,
           projectPath: args.projectPath,
           cwdOverride: r.workspaceDir,
           initialPrompt: r.seedPrompt,
