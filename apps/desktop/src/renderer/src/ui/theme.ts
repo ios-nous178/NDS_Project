@@ -21,8 +21,6 @@ export const c = {
   green: "#89d185",
   red: "#f48771",
   yellow: "#e2c08d",
-  // canary/실험 기능 강조 — 브랜드 옐로우 accent 와 구분되는 퍼플(beta 톤).
-  purple: "#b18cff",
 } as const;
 
 export const font = "ui-sans-serif, -apple-system, system-ui, 'Segoe UI', sans-serif";
