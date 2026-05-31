@@ -12,7 +12,6 @@ import { ExportButton } from "./panels/ExportButton.js";
 import { FigmaExportButton } from "./panels/FigmaExportButton.js";
 import { IntakeModal } from "./panels/IntakeModal.js";
 import { HelpModal } from "./panels/HelpModal.js";
-import { Dropdown } from "./ui/Dropdown.js";
 import { Logo } from "./ui/Logo.js";
 import { Resizer } from "./ui/Resizer.js";
 import {
@@ -25,7 +24,6 @@ import {
   pillBtn,
   pillBtnActive,
   primaryBtn,
-  primaryBtnDisabled,
   tabBar,
   segGroup,
   segItem,
@@ -58,7 +56,6 @@ function loadPaneWidths(): { sidebar: number; chat: number } {
 
 export function App(): React.JSX.Element {
   const [projectPath, setProjectPath] = useState<string | null>(null);
-  const [entries, setEntries] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [source, setSource] = useState<string>("");
   const [result, setResult] = useState<ValidateHtmlMockupResult | null>(null);
@@ -189,12 +186,13 @@ export function App(): React.JSX.Element {
     });
   }, []);
 
-  const openProject = useCallback(async () => {
+  // 프로젝트 폴더를 연다(미리보기 루트 + 파일 와처 전환). 성공 시 그 경로를, 취소면 null.
+  // 상단 '프로젝트 열기' 버튼은 없앴고, '목업 제작' 이 프로젝트가 없을 때 이걸 먼저 호출한다.
+  const openProject = useCallback(async (): Promise<string | null> => {
     const res = await window.harness.openProject();
-    if ("canceled" in res) return;
+    if ("canceled" in res) return null;
     setProjectPath(res.projectPath);
     projectRef.current = res.projectPath;
-    setEntries(res.htmlEntries);
     setSelected(null);
     selectedRef.current = null;
     setSource("");
@@ -205,26 +203,15 @@ export function App(): React.JSX.Element {
     setAttachSessionId(null);
     setActiveIntent("html");
     setActiveSlug(null);
-    setIntakeOpen(false);
     setHistoryRefresh((n) => n + 1);
+    return res.projectPath;
   }, []);
 
-  const selectEntry = useCallback(
-    (rel: string) => {
-      if (!projectPath || !rel) return;
-      // 사용자가 직접 고른 목업이 있으면 라이브 자동추적 해제.
-      setAutoFollow(false);
-      setSelected(rel);
-      selectedRef.current = rel;
-      setPreviewRel(rel);
-      setTab("preview");
-      // 기존(목록의) 목업은 HTML 미리보기 대상 — admin-cms 비활성 상태를 해제.
-      setActiveIntent("html");
-      void loadFile(projectPath, rel);
-      void window.harness.appendEvent({ projectPath, type: "mockup_selected", mockupFile: rel });
-    },
-    [projectPath, loadFile],
-  );
+  // '목업 제작' — 프로젝트가 없으면 폴더를 먼저 고른 뒤 인테이크 모달을 연다(항상 활성).
+  const openMockupIntake = useCallback(async () => {
+    if (!projectPath && !(await openProject())) return;
+    setIntakeOpen(true);
+  }, [projectPath, openProject]);
 
   useEffect(() => {
     return window.harness.onFileChanged((e) => {
@@ -252,15 +239,6 @@ export function App(): React.JSX.Element {
           void loadFile(root, e.relPath);
         }
       }
-      // 인앱 에이전트/인테이크가 새 목업을 쓰면 상단 드롭다운 목록을 갱신.
-      // (와처가 200ms 디바운스하므로 재스캔 빈도는 안전. 변경이 없으면 setState 생략.)
-      void window.harness.rescanMockups(root).then(({ htmlEntries }) => {
-        setEntries((prev) =>
-          prev.length === htmlEntries.length && prev.every((p, i) => p === htmlEntries[i])
-            ? prev
-            : htmlEntries,
-        );
-      });
     });
   }, [loadFile]);
 
@@ -340,27 +318,13 @@ export function App(): React.JSX.Element {
             Design System Powered Mockup Builder
           </span>
         </div>
-        <button onClick={openProject} style={{ ...ghostBtn, ...noDrag }}>
-          프로젝트 열기
-        </button>
         <button
-          onClick={() => setIntakeOpen(true)}
-          disabled={!projectPath}
-          title={projectPath ? "기획서·레퍼런스로 목업 제작" : "먼저 프로젝트를 여세요"}
-          style={{ ...(projectPath ? primaryBtn : primaryBtnDisabled), ...noDrag }}
+          onClick={() => void openMockupIntake()}
+          title="기획서·레퍼런스로 목업 제작"
+          style={{ ...primaryBtn, ...noDrag }}
         >
           목업 제작
         </button>
-        <div style={{ ...noDrag, width: 300 }}>
-          <Dropdown
-            value={selected ?? ""}
-            options={entries.map((e) => ({ value: e, label: e }))}
-            onChange={selectEntry}
-            placeholder={entries.length ? `목업 선택 (${entries.length})` : "목업 없음"}
-            disabled={entries.length === 0}
-            mono
-          />
-        </div>
         <div
           style={{ ...noDrag, marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}
         >

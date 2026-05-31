@@ -113,12 +113,18 @@ export const dangerGhostBtn: React.CSSProperties = {
   fontWeight: 600,
 };
 
+/**
+ * 3개 섹션(채팅기록 / 채팅 / 미리보기) 내부 헤더의 공통 높이. 가장 큰 1번 섹션 헤더에
+ * 맞춘 값 — 세 헤더가 한 줄로 정렬되도록 모두 이 높이를 쓴다.
+ */
+export const SECTION_HEADER_H = 44;
+
 /** 탭바 — 고정 높이라 섹션 헤더 높이가 항상 일정. 세그먼트 그룹 + 우측 pill 을 담는다. */
 export const tabBar: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: 8,
-  height: 40,
+  height: SECTION_HEADER_H,
   boxSizing: "border-box",
   flexShrink: 0,
   padding: "0 8px",
