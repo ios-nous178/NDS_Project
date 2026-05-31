@@ -4,7 +4,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import type { AgentType, ChatMessage, Transport } from "../../../preload/index.js";
 import { StructuredChatView } from "./StructuredChatView.js";
-import { c, mono, dangerGhostBtn, segGroup, segItem, segItemActive } from "../ui/theme.js";
+import { c, mono, dangerGhostBtn } from "../ui/theme.js";
 
 /**
  * 인앱 에이전트 터미널 (Phase 5 · 다크 Phase 6).
@@ -302,12 +302,30 @@ export function AgentPanel({
           fontSize: 13,
         }}
       >
-        {/* 라이브 상태 — 실행 중이면 에이전트명 + LIVE, 아니면 시작 안내(시작은 좌측 "+ 새 채팅"). */}
+        {/* 세션 시작·에이전트·전송방식(기본/구조화)은 모두 좌측 "+ 새 채팅" 메뉴에서 정한다.
+            이 헤더는 라이브 상태 표시 + 중지만 담당한다(2번 섹션엔 시작 UI 없음). */}
         {running ? (
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5 }}>
             <span style={{ color: c.green, fontSize: 9 }}>●</span>
             <strong style={{ color: c.text, fontWeight: 600 }}>{AGENT_LABEL[agentType]}</strong>
             <span style={{ color: c.textFaint, fontSize: 11 }}>실행 중</span>
+            {transport === "stream-json" && (
+              <span
+                title="구조화(canary) 세션 — claude stream-json"
+                style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: 0.3,
+                  color: c.accent,
+                  border: `1px solid ${c.accent}`,
+                  borderRadius: 4,
+                  padding: "0 4px",
+                  lineHeight: "14px",
+                }}
+              >
+                CANARY
+              </span>
+            )}
           </span>
         ) : (
           <span style={{ fontSize: 12, color: c.textFaint }}>
@@ -315,36 +333,8 @@ export function AgentPanel({
             시작하세요
           </span>
         )}
-        {/* 전송 방식 토글(canary). claude 일 때만 활성 — codex 는 구조화 등가물이 없음.
-            시작 전 미리 고르는 설정 — "+ 새 채팅" 이 이 값을 읽어 세션을 띄운다. */}
-        <div
-          style={segGroup}
-          title="구조화(canary)는 Claude 의 stream-json 출력을 카드형 채팅으로 보여줍니다"
-        >
-          {(
-            [
-              { t: "pty", label: "기본" },
-              { t: "stream-json", label: "구조화된(canary)" },
-            ] as { t: Transport; label: string }[]
-          ).map(({ t, label }) => {
-            const disabled = running || (t === "stream-json" && agentType !== "claude");
-            return (
-              <button
-                key={t}
-                disabled={disabled}
-                onClick={() => setTransport(t)}
-                style={{
-                  ...(transport === t ? segItemActive : segItem),
-                  ...(disabled && transport !== t ? { opacity: 0.4, cursor: "not-allowed" } : {}),
-                }}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
         {running && (
-          <button onClick={stop} style={dangerGhostBtn}>
+          <button onClick={stop} style={{ ...dangerGhostBtn, marginLeft: "auto" }}>
             중지
           </button>
         )}
