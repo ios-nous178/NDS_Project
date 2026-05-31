@@ -33,18 +33,19 @@ function escHtml(s: string): string {
 
 // 고정 팔레트 — 브랜드 cascade 와 무관한 "시스템 워터마크" 색. 어떤 목업 위에서도 동일하게 보인다.
 const STAMP = {
-  bg: "#16181D",
-  border: "#2A2E37",
+  bg: "rgba(22,24,29,.82)", // 반투명 — 뒤 UI 가 비치게(backdrop-filter blur 와 함께).
+  border: "rgba(255,255,255,.12)",
   text: "#E8EAED",
   dim: "#9AA0AA",
   accent: "#FFD33D", // Nudge 옐로우
-  height: 26,
+  height: 28,
 };
 
 /**
  * 고정 스탬프 바 마크업(style + div) 문자열.
- * - position:fixed 하단 풀폭 바, pointer-events:none(클릭/스크롤 비방해), z-index 최상단.
- * - body 에 padding-bottom 을 줘 콘텐츠가 바에 가리지 않게 한다.
+ * - 좌측 하단 **플로팅 pill**(풀폭 X) — UI 를 최소로 가린다. 반투명 + backdrop blur.
+ * - X 버튼으로 즉시 숨김(인라인 onclick 으로 스탬프 엘리먼트 전체 제거 — JS 의존 최소).
+ * - pointer-events:auto 는 X 클릭을 위해 필요. pill 자체만 작게 차지(나머지 화면은 비방해).
  * - 인쇄 시 숨김(@media print).
  */
 export function renderDsStampBar(info: DsStampInfo): string {
@@ -70,22 +71,33 @@ export function renderDsStampBar(info: DsStampInfo): string {
     parts.push(divider, seg("STUDIO", `v${escHtml(appV)}`));
   }
 
+  // X 닫기 — 클릭 시 스탬프 엘리먼트(bar + style)를 모두 제거한다. 따옴표 충돌 없도록
+  // querySelector 는 작은따옴표, onclick 값은 큰따옴표.
+  const close =
+    `<button type="button" ${DS_STAMP_MARKER}="close" aria-label="숨기기" title="숨기기" ` +
+    `onclick="for(var n of document.querySelectorAll('[${DS_STAMP_MARKER}]'))n.remove()" style="` +
+    `display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;` +
+    `width:18px;height:18px;padding:0;margin:0;border:0;border-radius:999px;cursor:pointer;` +
+    `background:rgba(255,255,255,.08);color:${STAMP.dim};font-size:14px;line-height:1;` +
+    `font-family:inherit">&times;</button>`;
+
   const style =
     `<style ${DS_STAMP_MARKER}="style">` +
-    `html{--nds-stamp-h:${STAMP.height}px}` +
-    `body{padding-bottom:var(--nds-stamp-h)!important}` +
     `@media print{[${DS_STAMP_MARKER}]{display:none!important}}` +
     `</style>`;
 
   const bar =
     `<div ${DS_STAMP_MARKER}="bar" role="contentinfo" aria-label="Nudge DS 적용 정보" style="` +
-    `position:fixed;left:0;right:0;bottom:0;height:${STAMP.height}px;box-sizing:border-box;margin:0;` +
-    `display:flex;align-items:center;justify-content:center;gap:10px;padding:0 14px;` +
-    `background:${STAMP.bg};border-top:1px solid ${STAMP.border};` +
+    `position:fixed;left:12px;bottom:12px;height:${STAMP.height}px;box-sizing:border-box;margin:0;` +
+    `display:inline-flex;align-items:center;gap:9px;padding:0 6px 0 12px;` +
+    `background:${STAMP.bg};border:1px solid ${STAMP.border};border-radius:999px;` +
+    `-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.32);` +
     `font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1;` +
     `color:${STAMP.text};white-space:nowrap;overflow:hidden;` +
-    `z-index:2147483647;pointer-events:none;user-select:none;-webkit-font-smoothing:antialiased">` +
+    `z-index:2147483647;pointer-events:auto;user-select:none;-webkit-font-smoothing:antialiased">` +
     parts.join("") +
+    divider +
+    close +
     `</div>`;
 
   return style + bar;
