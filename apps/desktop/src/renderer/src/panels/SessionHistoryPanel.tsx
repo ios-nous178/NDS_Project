@@ -311,24 +311,11 @@ export function SessionHistoryPanel({
                     color: c.text,
                   }}
                 >
-                  <CanaryBird />
+                  <CanaryBird size={9} />
                 </span>
                 <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   Claude · 구조화
-                  <span
-                    style={{
-                      fontSize: 9,
-                      fontWeight: 700,
-                      letterSpacing: 0.3,
-                      color: c.textMuted,
-                      border: `1px solid ${c.textMuted}`,
-                      borderRadius: 4,
-                      padding: "0 4px",
-                      lineHeight: "13px",
-                    }}
-                  >
-                    CANARY
-                  </span>
+                  <span style={{ fontSize: 10, color: c.textMuted }}>(canary)</span>
                 </span>
               </button>
               <div style={menuDivider} />

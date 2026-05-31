@@ -202,6 +202,39 @@ function notifyAgentTurn(wc: WebContents, opts: { ok: boolean; screenName?: stri
  * 그 신호파일을 watchFile 폴링으로 감시한다. 훅 명령은 POSIX 셸 전제라 윈도/codex 는
  * 벨(\x07) 폴백에 맡긴다. settingsArgs 를 spawn args 에 펼치고, 종료 시 dispose() 호출.
  */
+// 데스크톱 앱이 띄우는 claude 세션에 항상 주입하는 하드 차단 권한(settings.permissions.deny).
+// deny 는 모든 permission-mode(default/acceptEdits/bypassPermissions)보다 우선하는 hard block 이라
+// 사용자가 권한 프롬프트에서 승인해도, bypass 모드여도 실행되지 않는다.
+//  - git commit / push : 데스크톱 목업 작업 중 의도치 않은 커밋/푸시를 원천 차단.
+//  - figma 쓰기 도구    : 레퍼런스 조회(get_*/read)는 허용하되 생성/수정/삭제는 차단.
+// NOTE: figma MCP write 도구의 정확한 이름은 서버가 붙는 환경에서 확인해 보강할 것
+//       (trailing wildcard 미매칭 시 패턴은 무시될 뿐 read 에는 영향 없음).
+const HARD_DENY_PERMISSIONS: string[] = [
+  "Bash(git commit:*)",
+  "Bash(git push:*)",
+  "mcp__figma__create_*",
+  "mcp__figma__update_*",
+  "mcp__figma__set_*",
+  "mcp__figma__delete_*",
+  "mcp__figma__write_*",
+];
+
+// stream(canary) 세션용 deny 전용 settings 파일 — turn hook 을 안 쓰는 경로라 따로 만든다.
+// mkdtemp 로 1회 생성 후 캐시(작은 JSON, OS tmp 가 정리). 실패하면 null(주입 생략).
+let denySettingsPath: string | null = null;
+function ensureDenySettingsPath(): string | null {
+  if (denySettingsPath) return denySettingsPath;
+  try {
+    const dir = mkdtempSync(join(tmpdir(), "nudge-deny-"));
+    const p = join(dir, "settings.json");
+    writeFileSync(p, JSON.stringify({ permissions: { deny: HARD_DENY_PERMISSIONS } }));
+    denySettingsPath = p;
+    return p;
+  } catch {
+    return null;
+  }
+}
+
 function setupTurnHook(
   isClaude: boolean,
   onTurnDone: () => void,
@@ -216,6 +249,8 @@ function setupTurnHook(
       hooks: {
         Stop: [{ hooks: [{ type: "command", command: `printf 1 >> '${signalPath}'` }] }],
       },
+      // git commit/push·figma 쓰기 하드 차단 — turn hook settings 에 병합해 한 번에 주입.
+      permissions: { deny: HARD_DENY_PERMISSIONS },
     };
     writeFileSync(settingsPath, JSON.stringify(settings));
     let last = 0;
@@ -404,6 +439,9 @@ function startStreamAgent(
   wc: WebContents,
 ): { ok: boolean; error?: string } {
   const sessionId = args.sessionId;
+  // git commit/push·figma 쓰기 하드 차단(deny). bypassPermissions 여도 deny 가 우선한다.
+  // stream 은 turn hook 을 안 쓰므로 전용 settings 파일로 주입.
+  const denyPath = ensureDenySettingsPath();
   const streamArgs = [
     "-p",
     "--input-format",
@@ -416,6 +454,7 @@ function startStreamAgent(
     "--permission-mode",
     "bypassPermissions",
     ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
+    ...(denyPath ? ["--settings", denyPath] : []),
     "--append-system-prompt",
     DS_SYSTEM_MANDATE,
   ];
