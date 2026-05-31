@@ -66,7 +66,7 @@ const menuDivider: React.CSSProperties = {
   background: c.border,
 };
 
-/** 작고 둥근 새 — canary(카나리아=새) 컨셉. 도형 조합(몸통+꼬리+부리+눈), currentColor 채움. */
+/** 작고 통통한 카나리아 — 동그란 몸통 한 덩어리 + 짧은 부리/꼬리/눈. currentColor 채움. */
 function CanaryBird({ size = 11 }: { size?: number }): React.JSX.Element {
   return (
     <svg
@@ -77,14 +77,14 @@ function CanaryBird({ size = 11 }: { size?: number }): React.JSX.Element {
       aria-hidden="true"
       focusable="false"
     >
-      {/* 꼬리 */}
-      <path d="M6 12 1 9.5l1 5z" />
-      {/* 통통한 몸통+머리 */}
-      <circle cx="11" cy="13" r="6.5" />
-      {/* 부리 */}
-      <path d="M16.5 11l5 1.5-5 1.5z" />
+      {/* 짧은 꼬리 (왼쪽 아래) */}
+      <path d="M5 14 1.5 13l2 3.5z" />
+      {/* 통통한 몸통+머리 (큰 원 한 덩어리) */}
+      <circle cx="12" cy="12" r="7" />
+      {/* 짧은 부리 (오른쪽) */}
+      <path d="M18.5 10.5l3.5 1-3.5 1z" />
       {/* 눈 (배경색으로 파냄) */}
-      <circle cx="13.5" cy="11" r="1" fill="#1e1e1e" />
+      <circle cx="15" cy="10.4" r="1.1" fill="#1e1e1e" />
     </svg>
   );
 }
