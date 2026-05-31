@@ -16,7 +16,18 @@ test("renderDsStampBar 은 DS 버전 / NDS% / 앱 버전을 모두 박는다", (
   assert.match(bar, /v0\.0\.1/);
   assert.match(bar, /STUDIO/);
   assert.match(bar, /position:fixed/);
-  assert.match(bar, /pointer-events:none/);
+  // X 클릭을 받으려면 pointer-events:auto (좌측 하단 플로팅 pill).
+  assert.match(bar, /pointer-events:auto/);
+});
+
+test("좌측 하단 플로팅 pill + X 닫기 버튼을 포함한다", () => {
+  const bar = renderDsStampBar({ dsVersion: "1.0.0", ratio: 50, appVersion: "0.0.1" });
+  assert.match(bar, /left:12px/);
+  assert.match(bar, /bottom:12px/);
+  assert.match(bar, /border-radius:999px/);
+  assert.match(bar, /backdrop-filter:blur/);
+  assert.match(bar, new RegExp(`${DS_STAMP_MARKER}="close"`));
+  assert.match(bar, /&times;/);
 });
 
 test("앱 버전이 없으면 STUDIO 세그먼트를 생략한다", () => {
