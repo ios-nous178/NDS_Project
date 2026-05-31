@@ -18,6 +18,104 @@ test("buildFigmaSceneScript: self-contained IIFE 문자열", () => {
   assert.ok(src.includes("data-nds-stamp"));
   assert.ok(src.includes("nds-"));
   assert.ok(src.includes(String(MAX_SCENE_NODES)));
+  // <svg> 아이콘 캡처 + currentColor 치환 로직이 박혀 있어야 한다.
+  assert.ok(src.includes('"svg"'));
+  assert.ok(src.includes("outerHTML"));
+  assert.ok(src.includes("currentColor"));
+  // 트리 빌더 + flex 레이아웃 + Range 기반 텍스트 박스.
+  assert.ok(src.includes("selectNodeContents"));
+  assert.ok(src.includes("flexDirection"));
+  assert.ok(src.includes("rootLayout"));
+});
+
+test("normalizeScene: 트리(children) + flex layout 보존 / 잘못된 layout 드롭", () => {
+  const scene = normalizeScene({
+    width: 390,
+    height: 844,
+    rootLayout: { mode: "VERTICAL", gap: 16, primary: "MIN", counter: "MIN" },
+    nodes: [
+      {
+        type: "frame",
+        name: "Row",
+        x: 0,
+        y: 0,
+        w: 300,
+        h: 40,
+        layout: {
+          mode: "HORIZONTAL",
+          gap: 8,
+          padTop: 4,
+          padLeft: 12,
+          primary: "SPACE_BETWEEN",
+          counter: "CENTER",
+          wrap: false,
+        },
+        children: [
+          { type: "svg", name: "Icon", x: 0, y: 0, w: 24, h: 24, svg: "<svg><path/></svg>" },
+          {
+            type: "text",
+            name: "라벨",
+            x: 30,
+            y: 0,
+            w: 60,
+            h: 20,
+            text: "라벨",
+            font: { family: "Pretendard", size: 14, weight: 500, color: "rgb(0,0,0)" },
+          },
+        ],
+      },
+      // mode 없는 layout → 드롭(절대배치 프레임으로 남음).
+      {
+        type: "frame",
+        name: "Bad",
+        x: 0,
+        y: 50,
+        w: 10,
+        h: 10,
+        fill: "red",
+        layout: { gap: 8 },
+      },
+    ],
+  });
+  assert.equal(scene.rootLayout?.mode, "VERTICAL");
+  assert.equal(scene.rootLayout?.gap, 16);
+  assert.equal(scene.nodes.length, 2);
+  const row = scene.nodes[0];
+  assert.equal(row.layout?.mode, "HORIZONTAL");
+  assert.equal(row.layout?.primary, "SPACE_BETWEEN");
+  assert.equal(row.layout?.counter, "CENTER");
+  assert.equal(row.layout?.padLeft, 12);
+  assert.equal(row.children?.length, 2);
+  assert.equal(row.children?.[0].type, "svg");
+  assert.equal(row.children?.[1].text, "라벨");
+  // 잘못된 layout 은 떨어지고 프레임 자체는 남는다.
+  assert.equal(scene.nodes[1].layout, undefined);
+  assert.equal(scene.nodes[1].fill, "red");
+});
+
+test("normalizeScene: svg 노드 통과 + 빈 svg 드롭", () => {
+  const scene = normalizeScene({
+    nodes: [
+      {
+        type: "svg",
+        name: "ChevronIcon",
+        x: 4,
+        y: 4,
+        w: 24,
+        h: 24,
+        svg: '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>',
+        dsComponent: "Icon",
+      },
+      { type: "svg", name: "empty", x: 0, y: 0, w: 16, h: 16, svg: "   " },
+      { type: "svg", name: "missing", x: 0, y: 0, w: 16, h: 16 },
+    ],
+  });
+  assert.equal(scene.nodes.length, 1);
+  const [icon] = scene.nodes;
+  assert.equal(icon.type, "svg");
+  assert.equal(icon.name, "ChevronIcon");
+  assert.equal(icon.dsComponent, "Icon");
+  assert.match(icon.svg ?? "", /<path/);
 });
 
 test("normalizeScene: frame/text/image 통과 + 메타 보존", () => {
