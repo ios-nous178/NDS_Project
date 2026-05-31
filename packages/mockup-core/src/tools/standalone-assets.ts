@@ -35,6 +35,54 @@ interface StandaloneManifest {
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
+/**
+ * 목업 전용 디바이스 프레임 CSS — `@nudge-design/html` 의 production 스타일이 아니라
+ * **목업 표현용**이라 mockup-core 에서만 주입한다(외부 앱은 절대 안 받음). 단일 파일 빌드와
+ * 라이브 미리보기 양쪽에 항상 inline 되므로 옵트인 클래스만 쓰면 device-frame 처럼 보인다.
+ *
+ * 회고: 한 파일에 여러 화면을 그릴 때 .app{max-width} 로 세로로 쌓이기만 해 "화면처럼" 안 보이고
+ * 모바일/웹을 미디어쿼리로 토글해 동시에 못 봤다. → 고정 너비/최소높이 프레임을 캔버스에
+ * 나란히 깔고, surface 별(웹/모바일/웹뷰)로 각각 프레임을 둬 한눈에 비교한다.
+ *
+ *   <div class="mockup-canvas">
+ *     <section class="mockup-screen" data-device="web"    data-label="홈 (웹)">…</section>
+ *     <section class="mockup-screen" data-device="mobile" data-label="홈 (모바일)">…</section>
+ *   </div>
+ *
+ * 클래스 prefix 가 nds- 가 아니라서 validator 의 unknown-nds-class / raw-shell-pattern 에
+ * 걸리지 않는다(둘 다 nds-* / .page·.section 류만 검사).
+ */
+export const MOCKUP_FRAME_CSS = `
+/* ── Nudge mockup device frames (목업 전용 · production DS 아님) ── */
+.mockup-canvas{
+  display:flex;flex-wrap:wrap;align-items:flex-start;
+  gap:64px;padding:64px;box-sizing:border-box;min-height:100vh;
+  background:var(--semantic-bg-base, #f4f4f5);
+}
+.mockup-screen{
+  position:relative;flex:0 0 auto;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:var(--semantic-bg-surface-default, #ffffff);
+  border-radius:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,.14);
+}
+/* 캡션(화면 이름) — data-label 이 있으면 프레임 위에 표시. attr() 라 텍스트 검증 무관. */
+.mockup-screen[data-label]::before{
+  content:attr(data-label);
+  position:absolute;top:-30px;left:2px;
+  font-size:13px;line-height:1;font-weight:600;
+  color:var(--semantic-text-tertiary, #71717a);
+  white-space:nowrap;
+}
+/* 디바이스 프리셋 — 고정 너비 + 최소 높이로 "디바이스 프레임" 느낌. 내부는 자연 스크롤/확장. */
+.mockup-screen[data-device="mobile"]{ width:390px;  min-height:844px; }
+.mockup-screen[data-device="webview"]{ width:390px; min-height:720px; }
+.mockup-screen[data-device="tablet"]{ width:834px;  min-height:1112px; }
+.mockup-screen[data-device="web"]{ width:1440px;    min-height:900px; }
+/* device 미지정 기본 = 모바일 폭. */
+.mockup-screen:not([data-device]){ width:390px; min-height:844px; }
+`;
+
 function dirHasManifest(dir: string | undefined): dir is string {
   return !!dir && fs.existsSync(path.join(dir, "manifest.json"));
 }
@@ -105,7 +153,11 @@ export function loadStandaloneAssets(brand?: string): StandaloneAssets {
   if (hit) return hit;
 
   const cssPieces = manifest.brands[resolvedBrand] ?? manifest.brands[manifest.baseOnlyBrand];
-  const css = cssPieces.map((file) => fs.readFileSync(path.join(dir, file), "utf-8")).join("\n");
+  const css =
+    cssPieces.map((file) => fs.readFileSync(path.join(dir, file), "utf-8")).join("\n") +
+    // 목업 전용 디바이스 프레임 — 단일 파일 빌드·미리보기 양쪽에 항상 동봉(옵트인 클래스).
+    "\n" +
+    MOCKUP_FRAME_CSS;
   const runtimeJs = fs.readFileSync(path.join(dir, manifest.runtime), "utf-8");
 
   const assets: StandaloneAssets = { runtimeJs, css, brand: resolvedBrand };

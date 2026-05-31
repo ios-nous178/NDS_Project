@@ -487,6 +487,12 @@ export interface ComponentGuide {
    * `target: 'html'` 호출 시 examplesHtml 가 비어 있는 react-only 컴포넌트임을 명시.
    * 값은 'no-html-equivalent' 만 허용 (현재 정의된 마커).
    * 라우터는 이 값이 있으면 `_htmlAdvisory` 한 줄을 응답에 첨부하고 react examples 를 그대로 노출.
+   *
+   * 브랜드 크롬(BrandX WebHeader / AppBar / Footer)에도 이 마커를 쓰되, 라우터의
+   * `brandChromeHtmlRedirect(name)` 가 컴포넌트 이름으로 `<nds-brand-header>` / `<nds-brand-footer>`
+   * 표지판 advisory 를 자동 생성한다 (막다른 길 안내가 아니라 brand wrapper 로 유도). 단, 본문
+   * summary/recommended 에도 wrapper 한 줄을 같이 박아 조회 순서와 무관하게 노출되게 할 것
+   * (BottomNav 가이드 패턴 — 회고: 진입점 하나만 보고 멈추는 실수 방지).
    */
   _htmlStatus?: "no-html-equivalent";
   /** color × variant 별 표시 톤 요약 */
@@ -1238,7 +1244,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "Sidebar",
     examplesHtml: {
       do: '<nds-sidebar active-key="home" width="240"\n  items=\'[{"key":"home","label":"홈","icon":"home"},{"key":"chat","label":"상담","icon":"chat"}]\'\n  title="NudgeEAP"></nds-sidebar>\n<script>el.addEventListener("item-click", e => navigate(e.detail.key));</script>',
-      dont: "<!-- 어드민에 nds-sidebar 사용 — 어드민은 antd Layout.Sider -->\n<nds-sidebar items='...'></nds-sidebar>",
+      dont: "<!-- 일반 어드민/CMS(=antd 영역)에서 nds-sidebar 사용 — 일반 어드민은 antd Layout.Sider. -->\n<!-- ★ 단, 캐포비(cashwalk-biz) 어드민은 정반대 — nds-sidebar 가 정답이다 (DS 자체 admin DS). 아래 pitfalls 참고 -->\n<nds-sidebar items='...'></nds-sidebar>",
     },
     summary:
       "어드민/CMS용 좌측 수직 내비게이션. 캐시워크 포 비즈니스(CashwalkBiz) Figma 168:1250 / 290:1593 기준으로 정합. " +
@@ -1246,6 +1252,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     figmaNodeUrl:
       "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B5%AD-%EC%BA%90%EC%8B%9C%EC%9B%8C%ED%81%AC_WEB-Dev?node-id=168-1250",
     pitfalls: [
+      "**★ 캐포비(cashwalk-biz) 어드민 = nds-sidebar 가 정답.** 일반 브랜드의 어드민/CMS 는 antd Layout.Sider 가 규칙이지만(get_guide({ topic:'admin-cms' })), 캐포비는 DS 안에 자체 admin DS(sidebar 300px · admin 토큰)를 갖고 있어 antd 가 아니라 이 `<nds-sidebar>`(React `<Sidebar>`) 를 쓴다. `intent='admin-cms' + brand='cashwalk-biz'` 면 라우터도 antd 가 아니라 html/DS 로 보낸다. `:root[data-brand='cashwalk-biz']` cascade 로 brand-subtle bg + 노란 indicator 가 자동 적용 — 색 hex 박지 말 것.",
       "items prop 은 flat SidebarItem[] 또는 SidebarSection[] 둘 다 받지만, **섹션 라벨이 필요하면** SidebarSection[] 으로 넘길 것. flat 배열 안에 빈 객체로 'spacer' 만들지 말 것.",
       "활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.",
       "캐시워크 포 비즈니스 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
@@ -2017,6 +2024,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Webview: `<GenietAppBar variant='webview' webviewTitle='건강 기록' onBack={...} />` — BackButton 자동.",
       "카테고리 박스 라벨/링크 변경: `category={{ label: '카테고리', href: '/cat' }}`. 숨기려면 `category={false}`.",
       "GNB 5탭 기본: 홈 / 커뮤니티 / 헬시딜 / 음식 리뷰 / 기록 (Pretendard Bold 17).",
+      "HTML 목업(vanilla): `<nds-brand-header brand='geniet' surface='mobile' active-key='home'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'.",
     ],
     references: [
       {
@@ -2047,6 +2055,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: [
       "`<GenietFooter links={...} company={{ name, ceo, address, bizNumber, email, copyright }} extra='지니어트는 통신판매중개자이며...' logo={{ src, width, height }} />`",
+      "HTML 목업(vanilla): `<nds-brand-footer brand='geniet' surface='app'>` — Footer.Info 손수 조립 금지 (BrandFooter 가이드).",
     ],
   },
   GenietBottomNav: {
@@ -2097,6 +2106,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Webview sub ((캐시워크)트로스트, 화살표 back): `<TrostAppBar variant='webview' app='cashwalk-trost' webviewTitle='타이틀' onBack={...} onSettingClick={...} onNotificationClick={...} />`",
       "Webview main (좌측 타이틀 + 검색): `<TrostAppBar variant='webview' webviewLevel='main' webviewTitle='심리상담' onSearchClick={...} onNotificationClick={...} />`",
       "Webview sub/text (완료 등 텍스트 액션): `<TrostAppBar variant='webview' webviewTitle='타이틀' onBack={...} webviewActionText='완료' onWebviewActionText={...} />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='trost' surface='mobile' active-key='home'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'.",
     ],
   },
   TrostFooter: {
@@ -2115,6 +2125,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Web (PC): `<TrostFooter surface='web' />` — 기본값 다 갖춤. 커스텀 약관: `<TrostFooter surface='web' termsHref='...' locationTermsHref='...' />`",
       "App desktop: `<TrostFooter surface='app' layout='desktop' links={...} company={...} extra='긴급 위기상담 ...' logo={...} />`",
       "App mobile: `<TrostFooter surface='app' layout='mobile' links={...} company={...} />`",
+      "HTML 목업(vanilla): `<nds-brand-footer brand='trost' surface='app'>` (PC 다크 푸터는 surface='web') — Footer 손수 조립 금지 (BrandFooter 가이드).",
     ],
   },
   TrostBottomNav: {
@@ -2140,7 +2151,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "TrostWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "Trost 데스크톱(≥1024) 웹 헤더. 3슬롯 컴파운드 — EAP 배너 (Rectangle 2613) + 유틸리티 헤더 (로고 Path / 검색 Rectangle 2522 / 로그인 / 앱 다운로드) + 탭 네비게이션. `TrostDesktopHeader` 의 alias — brand chrome 5개 슬롯 중 WebHeader 자리.",
+      "Trost 데스크톱(≥1024) 웹 헤더. 3슬롯 컴파운드 — EAP 배너 (Rectangle 2613) + 유틸리티 헤더 (로고 Path / 검색 Rectangle 2522 / 로그인 / 앱 다운로드) + 탭 네비게이션. `TrostDesktopHeader` 의 alias — brand chrome 5개 슬롯 중 WebHeader 자리. **HTML 목업은 `<nds-brand-header brand='trost' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
     pitfalls: [
       "<1024 viewport 에서는 display:none. 모바일에는 `TrostAppBar variant='mobile'` 사용.",
       "3슬롯 (banner / utility / tabs) 모두 ReactNode — 호스트 앱이 `TrostEAPBanner` / `TrostUtilityHeader` / `TrostTabNavigation` 을 직접 컴포지션. 단일 prop 으로 데이터 주입하는 형태 아님.",
@@ -2151,6 +2162,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "기본: `<TrostWebHeader banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbolSrc} />} utility={<TrostUtilityHeader logoSrc={trostLogo} searchSlot={<TrostSearchForm onSearch={...} />} loginSlot={<TrostLoginSection ... />} appDownloadSlot={<TrostAppDownloadButton />} />} tabs={<TrostTabNavigation tabs={TROST_TABS} currentPath={pathname} />} />`",
       "EAP 배너 숨기기: `banner` prop 비워두면 됨.",
       "sticky 끄기: `<TrostWebHeader sticky={false} ... />` (기본 true).",
+      "HTML 목업(vanilla): `<nds-brand-header brand='trost' surface='web' active-key='counsel'>` — base nds-header 슬롯 손수 조립 금지 (BrandHeader 가이드). 모바일은 surface='mobile'.",
     ],
     figmaNodeUrl: "https://zpl.io/Dp775xl",
     references: [
@@ -2178,6 +2190,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Desktop: `<NudgeEAPAppBar variant='desktop' logo={...} gnbItems={...} activeKey='home' authItems={[{ key:'login', label:'로그인' }]} />`",
       "Mobile: `<NudgeEAPAppBar variant='mobile' logo={...} authItems={...} />`",
       "Webview: `<NudgeEAPAppBar variant='webview' webviewTitle='심리검사 결과' onBack={...} />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='nudge-eap' surface='mobile' active-key='counsel'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'.",
     ],
   },
   NudgeEAPFooter: {
@@ -2195,6 +2208,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "Web (PC): `<NudgeEAPFooter surface='web' links={...} company={{ address, bizNumber, phone, fax, email, copyright }} appDownloads={...} iso={{ imgSrc, captionLines }} dain={{ logoSrc, label }} poweredBy='powered by Cashwalk' maxWidth={1200} />`",
       "App (surface 생략 가능): `<NudgeEAPFooter links={...} company={{ name:'(주)다인', address, bizNumber, copyright }} logo={{ src, width, height }} />`",
+      "HTML 목업(vanilla): `<nds-brand-footer brand='nudge-eap' surface='app'>` (PC 풍부 푸터는 surface='web') — Footer 손수 조립 금지 (BrandFooter 가이드).",
     ],
   },
   NudgeEAPBottomNav: {
@@ -2232,7 +2246,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "NudgeEAPWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      'NudgeEAP 웹 헤더 (PC) — base Header (variant="web") wrapper. 로고 200×60 (Symbol + KO+EN horizontal) + GNB 6탭 (상담하기/심리검사/심리치료/주간레터/소식/마이페이지) + 우측 앱다운로드 + 로그인/로그아웃.',
+      "NudgeEAP 웹 헤더 (PC) — base Header (variant=\"web\") wrapper. 로고 200×60 (Symbol + KO+EN horizontal) + GNB 6탭 (상담하기/심리검사/심리치료/주간레터/소식/마이페이지) + 우측 앱다운로드 + 로그인/로그아웃. **HTML 목업은 `<nds-brand-header brand='nudge-eap' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
     figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=39-5751",
     pitfalls: [
       "NudgeEAPAppBar 와 분리 — AppBar 는 앱(모바일/웹뷰) 전용 (Figma 20:3235), WebHeader 는 데스크톱 (39:5751).",
@@ -2241,13 +2255,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: [
       "`<NudgeEAPWebHeader logo={{ src, alt:'NudgeEAP', href:'/' }} menuItems={GNB} activeKey={current} showAppDownload appDownloadHref='/download' authState={isLoggedIn ? 'logout' : 'login'} authHref='/auth' />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 모바일/웹뷰는 surface='mobile'|'webview'.",
     ],
   },
   CashwalkBizWebHeader: {
     name: "CashwalkBizWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "캐시워크 포 비즈니스 (Cashwalk for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐시워크 포 비즈니스는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공.",
+      "캐시워크 포 비즈니스 (Cashwalk for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐시워크 포 비즈니스는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공. **HTML 목업은 `<nds-brand-header brand='cashwalk-biz' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
     figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-1739",
     pitfalls: [
       "캐시워크 포 비즈니스 화면에는 base `<Header>` 가 아니라 `<CashwalkBizWebHeader>` 사용.",
@@ -2257,6 +2272,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "Desktop: `<CashwalkBizWebHeader variant='desktop' logo={{...}} menuItems={...} activeKey='home' actions={[{ key:'login', label:'로그인', href:'#' }]} />`",
       "Mobile: `<CashwalkBizWebHeader variant='mobile' logo={{...}} onMobileMenu={() => openDrawer()} />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='ad'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 모바일은 반응형 web (별도 AppBar 없음).",
     ],
   },
   CashwalkBizFooter: {
@@ -2273,13 +2289,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "Desktop: `<CashwalkBizFooter layout='desktop' links={...} company={{ name:'캐시워크 주식회사', address:..., bizNumber:..., copyright:... }} maxWidth={1600} />`",
       "Mobile: `<CashwalkBizFooter layout='mobile' links={...} company={...} />`",
+      "HTML 목업(vanilla): `<nds-brand-footer brand='cashwalk-biz' surface='web'>` — Footer 손수 조립 금지 (BrandFooter 가이드).",
     ],
   },
   RunmileWebHeader: {
     name: "RunmileWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "Runmile 데스크톱 PC 헤더 (height 80, bg white, border-bottom 1px gray300, content max-width 1440 / 좌우 80px). 로고(coral) + 좌측 GNB(대회 정보/커뮤니티, Bold 18) + 중앙 검색바(coral 2px border, rounded 100) + 우측 액션(아이콘 28 + 라벨 14). `loggedIn` 으로 우측 액션 분기: false=채팅/로그인, true=채팅(미읽음 badge)/마이페이지. 모바일/웹뷰는 RunmileAppBar.",
+      "Runmile 데스크톱 PC 헤더 (height 80, bg white, border-bottom 1px gray300, content max-width 1440 / 좌우 80px). 로고(coral) + 좌측 GNB(대회 정보/커뮤니티, Bold 18) + 중앙 검색바(coral 2px border, rounded 100) + 우측 액션(아이콘 28 + 라벨 14). `loggedIn` 으로 우측 액션 분기: false=채팅/로그인, true=채팅(미읽음 badge)/마이페이지. 모바일/웹뷰는 RunmileAppBar. **HTML 목업은 `<nds-brand-header brand='runmile' surface='web'>` (BottomNav 와 동일한 brand wrapper 패턴 — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
     figmaNodeUrl: "https://www.figma.com/design/g3ifA735EE6EKjeL4ZW2ax/?node-id=1058-13336",
     pitfalls: [
       "데스크톱 전용. 모바일/웹뷰 헤더는 `RunmileAppBar` (Figma 36:258) 사용.",
@@ -2291,6 +2308,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "로그인 전: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={[{key:'competition',label:'대회 정보',href:'/competitions'},{key:'community',label:'커뮤니티',href:'/community'}]} activeKey='competition' loggedIn={false} onSearch={...} />`",
       "로그인 후: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='runmile' surface='web' active-key='race'>` — base nds-header + nds-header-menu-item 손수 조립 금지 (BrandHeader 가이드). 모바일 bar 는 surface='mobile'.",
     ],
     // 런마일 목업 예시 이미지 일시 비활성화 — MCP 가 참고하지 못하도록 주석 처리.
     // 다시 노출하려면 아래 블록 주석을 해제하고 가이드 재빌드.
@@ -3936,23 +3954,24 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   BrandHeader: {
     name: "BrandHeader",
     summary:
-      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
+      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
     pitfalls: [
       "**손수 조립 금지** — nds-header / nds-header-logo / nds-header-menu / nds-header-menu-item / nds-header-actions / nds-header-auth-button 를 직접 박지 말 것. 메뉴 라벨/href/순서를 손으로 적으면 브랜드 일관성이 깨지고 다음 브랜드 화면에서 또 적게 됨. BrandHeader 한 줄이 BRAND_DATA 에서 전부 자동.",
-      "**asset-base-url 안 주면 `/brand-logos` 가 default** — 워크스페이스에 그 폴더가 없으면 로고가 깨짐. `public/brand-logos/` 디렉토리 만들고 브랜드별 파일 배치 필요 (아래 recommended 참고).",
+      "**로고는 base64 내장 — 자산 파일·호스팅 불필요.** 5개 브랜드 로고가 BRAND_DATA 에 data URI 로 박혀 있어 `asset-base-url` 없이도 어디서든 안 깨지고 렌더된다 (단일 HTML 목업 그대로 OK). `asset-base-url` 은 **자체 로고로 바꿀 때만** 쓰는 선택적 override — `public/brand-logos/` 폴더를 만들 의무는 없다.",
       "**surface 별 출력 다름** — `web` (PC GNB · 로고+메뉴+auth), `mobile` (compact 헤더 · 로고+auth), `webview` (뒤로가기 + 타이틀만). 모바일 화면이면 surface='mobile' 명시.",
       "active-key 는 BRAND_DATA[brand].webMenu 의 key 와 매칭. 잘못 적으면 활성 메뉴 표시가 안 됨. 각 브랜드 key 목록은 nds-brand-chrome.ts BRAND_DATA 또는 아래 recommended 참고.",
     ],
     recommended: [
-      "Trost: `<nds-brand-header brand='trost' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/trost-logo.svg` · webMenu keys: home / counsel / test / care / center",
-      "Geniet: `<nds-brand-header brand='geniet' surface='web' active-key='deal' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/geniet-logo-pc.webp` + `geniet-logo-footer.webp` · webMenu keys: home / community / deal / review",
-      "NudgeEAP: `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/nudge-eap-logo.png` + `nudge-eap-logo-footer.png` · webMenu keys: counsel / test / therapy / letter / news / my",
-      "CashwalkBiz: `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='ad' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/cashwalk-biz/cashwalk-for-business-horizontal.svg` · webMenu keys: channel / ad / case / notice / guide",
-      "Runmile: `<nds-brand-header brand='runmile' surface='web' active-key='race' />` · 자산 파일 불필요 (coral 텍스트 워드마크 내장 — 로고 이미지 없음) · webMenu keys: race / community · web 헤더 = 좌측 워드마크+nav · 중앙 coral 검색바 · 우측 채팅/로그인 액션 자동. mobile=52h 중앙 워드마크 bar.",
+      "Trost: `<nds-brand-header brand='trost' surface='web' active-key='counsel' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: home / counsel / test / care / center",
+      "Geniet: `<nds-brand-header brand='geniet' surface='web' active-key='deal' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: home / community / deal / review",
+      "NudgeEAP: `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: counsel / test / therapy / letter / news / my",
+      "CashwalkBiz: `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='ad' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: channel / ad / case / notice / guide",
+      "Runmile: `<nds-brand-header brand='runmile' surface='web' active-key='race' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: race / community · web 헤더 = 좌측 워드마크+nav · 중앙 coral 검색바 · 우측 채팅/로그인 액션 자동. mobile=52h 중앙 워드마크 bar.",
+      "자체 로고로 교체할 때만: `asset-base-url='/brand-logos'` + 해당 파일 배치 (override 전용 · 기본 목업엔 불필요).",
       "Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashwalk-biz-header>`, `<nds-runmile-header>` — brand attribute 안 써도 동일 동작.",
     ],
     examplesHtml: {
-      do: '<nds-brand-header brand="geniet" surface="web" active-key="deal" asset-base-url="/brand-logos"></nds-brand-header>',
+      do: '<nds-brand-header brand="geniet" surface="web" active-key="deal"></nds-brand-header>',
       dont:
         "<!-- 손수 조립 안티패턴 — 메뉴 라벨/href 를 인라인으로 적으면 브랜드 데이터와 분리되어 다음 화면에서 또 적게 됨 -->\n" +
         '<nds-header variant="web" position="static" max-width="1200">\n' +
@@ -3970,7 +3989,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "webview 페이지 뒤로가기/타이틀 헤더 (surface='webview')",
       ],
       doNotUseFor: [
-        "어드민/CMS — antd Layout.Sider 사용",
+        "어드민/CMS — antd Layout.Sider 사용 (단, 캐포비(cashwalk-biz) 어드민은 예외로 DS Sidebar — get_guide({ topic:'component:Sidebar' }))",
         "단일 시연용 임시 화면이라 브랜드 정체성이 무의미한 경우",
       ],
       emphasisRule:
@@ -4003,23 +4022,24 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   BrandFooter: {
     name: "BrandFooter",
     summary:
-      "**브랜드 글로벌 푸터 — 손수 조립하지 말 것.** `<nds-brand-footer brand='...' surface='web|app' asset-base-url='/brand-logos'>` 한 줄로 이용약관/개인정보처리방침/사업자정보/copyright/푸터 로고가 BRAND_DATA 에서 자동 렌더. nds-footer + nds-footer-links + nds-footer-company 직접 조립 = 안티패턴.",
+      "**브랜드 글로벌 푸터 — 손수 조립하지 말 것.** `<nds-brand-footer brand='...' surface='web|app'>` 한 줄로 이용약관/개인정보처리방침/사업자정보/copyright/푸터 로고가 BRAND_DATA 에서 자동 렌더. nds-footer + nds-footer-links + nds-footer-company 직접 조립 = 안티패턴.",
     pitfalls: [
       "**손수 조립 금지** — 이용약관/개인정보 링크, 사업자번호, CEO 이름 등을 매번 입력하지 말 것. 한 번 잘못 적으면 법적 표기 누락 위험.",
-      "**asset-base-url 일관성** — BrandHeader 와 같은 asset-base-url 사용. 푸터 로고 파일이 따로 있는 브랜드(nudge-eap: `*-logo-footer.png`, geniet: `geniet-logo-footer.webp`) 는 그 파일도 같이 배치.",
+      "**푸터 로고도 base64 내장 — 파일·호스팅 불필요.** 푸터 로고가 따로 있는 브랜드(nudge-eap/geniet/runmile)도 data URI 로 박혀 있어 `asset-base-url` 없이 그대로 렌더된다. `asset-base-url` 은 자체 로고로 바꿀 때만 쓰는 선택적 override.",
       "**surface 차이** — `web` (PC 전용 wide 푸터 · 로고+링크+회사정보), `app` (모바일 앱 footer · 압축형). 사용자 앱 모바일 화면이면 surface='app'.",
       "footerTone 은 브랜드별 고정 (trost=dark / 나머지=light) — 임의 override 시도 시 디자인 인텐트 어긋남.",
     ],
     recommended: [
-      "Trost (dark): `<nds-brand-footer brand='trost' surface='app' asset-base-url='/brand-logos' />`",
-      "Geniet (light): `<nds-brand-footer brand='geniet' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `geniet-logo-footer.webp`",
-      "NudgeEAP (light): `<nds-brand-footer brand='nudge-eap' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `nudge-eap-logo-footer.png`",
-      "CashwalkBiz (light): `<nds-brand-footer brand='cashwalk-biz' surface='web' asset-base-url='/brand-logos' />`",
-      "Runmile (light): `<nds-brand-footer brand='runmile' surface='app' />` · 자산 파일 불필요 (로고 이미지 없음 — 텍스트 기반) · footerTone=light (forcedProps '*' default)",
+      "Trost (dark): `<nds-brand-footer brand='trost' surface='app' />` · 로고 base64 내장 (파일 불필요)",
+      "Geniet (light): `<nds-brand-footer brand='geniet' surface='web' />` · 로고 base64 내장 (파일 불필요)",
+      "NudgeEAP (light): `<nds-brand-footer brand='nudge-eap' surface='web' />` · 로고 base64 내장 (파일 불필요)",
+      "CashwalkBiz (light): `<nds-brand-footer brand='cashwalk-biz' surface='web' />` · 로고 base64 내장 (파일 불필요)",
+      "Runmile (light): `<nds-brand-footer brand='runmile' surface='app' />` · 로고 base64 내장 (gray700 워드마크) · footerTone=light (forcedProps '*' default)",
+      "자체 로고로 교체할 때만: `asset-base-url='/brand-logos'` (override 전용 · 기본 목업엔 불필요).",
       "Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashwalk-biz-footer>`, `<nds-runmile-footer>`",
     ],
     examplesHtml: {
-      do: '<nds-brand-footer brand="geniet" surface="web" asset-base-url="/brand-logos"></nds-brand-footer>',
+      do: '<nds-brand-footer brand="geniet" surface="web"></nds-brand-footer>',
       dont:
         "<!-- 손수 조립 안티패턴 — 사업자 정보/copyright/링크를 인라인으로 적으면 법적 표기 누락/잘못된 정보가 SSOT 깨고 페이지 간 불일치 -->\n" +
         '<footer class="my-footer">\n' +
@@ -4100,7 +4120,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "BRAND_DATA 를 수정하려면 DS 레포의 `packages/html/src/components/nds-brand-chrome.ts` 직접 편집 (외부 mockup 프로젝트에서는 불가능).",
     ],
     examplesHtml: {
-      do: '<nds-brand-header brand="trost" surface="web" active-key="counsel" asset-base-url="/brand-logos"></nds-brand-header>\n<!-- ...page content... -->\n<nds-brand-bottom-nav brand="trost" active-key="counsel"></nds-brand-bottom-nav>\n<nds-brand-footer brand="trost" surface="app" asset-base-url="/brand-logos"></nds-brand-footer>',
+      do: '<nds-brand-header brand="trost" surface="web" active-key="counsel"></nds-brand-header>\n<!-- ...page content... -->\n<nds-brand-bottom-nav brand="trost" active-key="counsel"></nds-brand-bottom-nav>\n<nds-brand-footer brand="trost" surface="app"></nds-brand-footer>',
       dont: '<!-- nds-brand-chrome 단독 사용 — wrapper 라 의미 없음 -->\n<nds-brand-chrome brand="trost"></nds-brand-chrome>',
     },
   },
@@ -4859,6 +4879,46 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       maxInterstitialsMidFlow: 0,
       ctaLabelClarity: "required",
       maxPrimarySolidPerScreen: 1,
+    },
+  },
+  "multi-screen": {
+    name: "multi-screen",
+    summary:
+      "한 HTML 파일에 여러 화면을 '화면처럼' 보여주는 디바이스 프레임 패턴. 회고: .app{max-width} 로 세로로 쌓기만 하면 디바이스가 아니라 그냥 컨테이너로 보이고, 모바일/웹을 미디어쿼리로 토글하면 동시에 못 본다. → .mockup-canvas 안에 .mockup-screen[data-device] 프레임을 나란히 깔고, 같은 화면을 surface 별(web/mobile/webview)로 각각 둬 한눈에 비교한다. 프레임 CSS 는 build_singlefile_html 이 자동 inline 하므로 별도 <style> 불필요(클래스만 쓰면 됨).",
+    rules: [
+      "여러 화면 = `.mockup-canvas` (flex-wrap 캔버스) > `.mockup-screen` (고정 너비·최소높이 프레임) N개. 프레임마다 `data-device='web|mobile|webview|tablet'` 로 디바이스 폭을 정한다(web 1440 / mobile 390 / webview 390 / tablet 834).",
+      "각 프레임에 `data-label='홈 (웹)'` 같은 캡션을 달면 프레임 위에 화면 이름이 표시된다.",
+      "모바일/웹을 미디어쿼리로 display 토글하지 말 것 — 한 뷰포트에 한 모드만 보여 '구분'이 아니라 '숨기기'가 된다. 디바이스마다 별도 `.mockup-screen` 프레임을 두고 surface 를 다르게 준다.",
+      "브랜드 헤더는 프레임 안에서 `<nds-brand-header brand surface='web|mobile|webview'>` 로 — 같은 브랜드를 surface 만 바꿔 디바이스별 헤더(PC GNB / 모바일 컴팩트 / 웹뷰 뒤로가기)를 자동 분기한다. base `<nds-header>` 손수 조립 금지.",
+      "프레임 CSS(.mockup-canvas / .mockup-screen)는 목업 전용으로 빌드가 자동 inline — 직접 `<style>` 에 `.screen{width:...}` 를 재정의하지 말 것(클래스만 쓰면 된다).",
+      "단일 화면 목업이면 캔버스 없이 `<main>` 하나로 충분 — 프레임은 화면이 2개 이상일 때.",
+    ],
+    avoid: [
+      ".app/.screen 에 max-width 만 주고 세로로 쌓아 디바이스 프레임 없이 나열",
+      "@media 로 모바일/웹 헤더를 display 토글 (동시 비교 불가)",
+      "base <nds-header> + nds-header-logo/menu 손수 조립으로 브랜드 GNB 흉내",
+      "디바이스 프레임 너비/높이를 <style> 에 손으로 재정의 (.mockup-screen[data-device] 프리셋 사용)",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source:
+          '<div class="mockup-canvas">\n  <section class="mockup-screen" data-device="web" data-label="홈 (웹)">\n    <nds-brand-header brand="runmile" surface="web"></nds-brand-header>\n    <main style="flex:1; padding: var(--semantic-inset-screen);">…</main>\n  </section>\n  <section class="mockup-screen" data-device="mobile" data-label="홈 (모바일)">\n    <nds-brand-header brand="runmile" surface="mobile"></nds-brand-header>\n    <main style="flex:1; padding: var(--semantic-inset-screen);">…</main>\n  </section>\n</div>',
+        caption:
+          "같은 홈 화면을 웹/모바일 프레임으로 나란히 — surface 로 헤더가 자동 분기, 디바이스 폭으로 화면처럼 보임.",
+      },
+      {
+        verdict: "bad",
+        source:
+          '<main style="max-width:720px;margin:0 auto;">…웹 헤더…</main>\n<main style="max-width:720px;margin:0 auto;">…모바일 화면…</main>\n<style>@media(max-width:600px){.web-header{display:none}}</style>',
+        caption:
+          "max-width 컨테이너로 세로로 쌓고 미디어쿼리로 토글 — 디바이스 프레임도 없고 동시 비교도 안 됨.",
+      },
+    ],
+    metrics: {
+      canvasClass: "mockup-canvas",
+      screenClass: "mockup-screen",
+      deviceWidths: "web 1440 / tablet 834 / mobile 390 / webview 390",
     },
   },
   "icon-color": {

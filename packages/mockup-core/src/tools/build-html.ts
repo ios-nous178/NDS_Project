@@ -236,6 +236,7 @@ export async function buildSinglefileHtml(
   let buildLogTail: string | undefined;
   let assetsInlined = 0;
   let assetsMissing: string[] = [];
+  let assetsBroken: string[] = [];
 
   if (intent === "html") {
     // ── 무번들러 경로: prebuilt DS runtime/CSS 를 사용자 index.html 에 inline → 단일 파일.
@@ -244,6 +245,7 @@ export async function buildSinglefileHtml(
     if (!inlined.ok) return { ...fail(inlined.error ?? "html inline build failed"), intent };
     assetsInlined = inlined.assetsInlined ?? 0;
     assetsMissing = inlined.assetsMissing ?? [];
+    assetsBroken = inlined.assetsBroken ?? [];
   } else {
     // ── react 경로: 기존 vite single-file 빌드. JSX 컴파일이 필요해 번들러 유지. ──
     let pkg: Record<string, unknown>;
@@ -390,6 +392,13 @@ export async function buildSinglefileHtml(
   if (assetsMissing.length > 0) {
     annotations.push(`[!] assets not found (${assetsMissing.length}): ${assetsMissing.join(", ")}`);
   }
+  if (assetsBroken.length > 0) {
+    // 단일 파일에 inline 안 되는 로컬 이미지 — 내부 미리보기·외부 단독 파일 모두 깨진다.
+    annotations.push(
+      `[!] broken images — 단일 파일에 안 박힘 (${assetsBroken.length}): ${assetsBroken.join(", ")} ` +
+        `→ @nudge-design/assets/files/… 규약(get_brand 의 inlineRef) 또는 http(s)/data: 로 교체`,
+    );
+  }
   if (routerWarning) annotations.push(`[!] ${routerWarning}`);
   if (validation) {
     annotations.push(`validate ${validation.ok ? "ok" : `${validation.violations.length}건 위반`}`);
@@ -472,6 +481,8 @@ function buildHtmlSinglefileNoBundler(
   brand?: string;
   assetsInlined?: number;
   assetsMissing?: string[];
+  /** 단일 파일에 inline 안 되는 로컬 이미지 경로 (src/srcset) — 깨질 참조. */
+  assetsBroken?: string[];
 } {
   const sourcePath = path.join(cwd, "index.html");
   if (!fs.existsSync(sourcePath)) {
@@ -526,6 +537,10 @@ function buildHtmlSinglefileNoBundler(
   //    → 외부 호스팅/S3 없이 단일 HTML 유지. 로고는 runtime 에 이미 base64 라 대상 아님.
   const assetInline = inlineDsAssetReferences($);
 
+  // 4-bis) inline 도 보존도 안 되는 로컬 이미지 경로 수집 → 깨질 참조 경고용.
+  //    회고: 상대경로(/marathon-events/…) 이미지가 단일 파일·미리보기 모두 깨짐.
+  const assetsBroken = collectNonInlinableImgRefs($);
+
   // 5) dist/index.html 쓰기.
   try {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
@@ -538,7 +553,38 @@ function buildHtmlSinglefileNoBundler(
     brand,
     assetsInlined: assetInline.inlined.length,
     assetsMissing: assetInline.missing,
+    assetsBroken,
   };
+}
+
+/**
+ * 단일 파일 빌드에 살아남지 못하는 로컬 이미지 참조(img/source 의 src·srcset) 수집.
+ * 인라인(@nudge-design/assets/files/…, data:, blob:) · 보존(http(s)://, //) 되는 건 제외.
+ * inlineDsAssetReferences 가 이미 규약 참조를 data: 로 바꾼 뒤 호출되므로, 남은 로컬
+ * 상대경로(/foo.png, ./foo, ../foo, foo.png)만 잡힌다.
+ */
+function collectNonInlinableImgRefs($: cheerio.CheerioAPI): string[] {
+  const broken = new Set<string>();
+  const isBad = (raw: string): boolean => {
+    const url = raw.trim();
+    if (!url || url.startsWith("#")) return false;
+    return !["data:", "blob:", "http://", "https://", "//", "@nudge-design/assets/"].some((p) =>
+      url.startsWith(p),
+    );
+  };
+  $("img[src], source[src]").each((_, el) => {
+    const v = $(el).attr("src");
+    if (v && isBad(v)) broken.add(v.trim());
+  });
+  $("img[srcset], source[srcset]").each((_, el) => {
+    const v = $(el).attr("srcset");
+    if (!v) return;
+    for (const entry of v.split(",")) {
+      const token = entry.trim().split(/\s+/)[0];
+      if (token && isBad(token)) broken.add(token);
+    }
+  });
+  return [...broken];
 }
 
 /**
