@@ -1,6 +1,7 @@
 import React from "react";
 import { Footer as BaseFooter } from "../Footer";
 import type { FooterLinkItem, CompanyInfoData } from "../Footer";
+import { GENIET_LOGO_FOOTER_DATA_URI } from "../brand-logo-defaults";
 
 export interface GenietFooterLogo {
   src: string;
@@ -20,7 +21,7 @@ export interface GenietFooterProps {
   company: CompanyInfoData;
   /** 통신판매중개자 안내 등 부가 고지. */
   extra?: React.ReactNode;
-  /** 푸터 로고. */
+  /** 푸터 로고. 미지정 시 base64 내장 로고 (geniet-logo-footer) 사용 — 파일 호스팅 불필요. */
   logo?: GenietFooterLogo;
 }
 
@@ -36,9 +37,9 @@ export const GenietFooter = React.forwardRef<HTMLElement, GenietFooterProps>(
         {extra && <BaseFooter.Extra>{extra}</BaseFooter.Extra>}
         <BaseFooter.CompanyInfo
           data={company}
-          logoSrc={logo?.src}
-          logoWidth={logo?.width}
-          logoHeight={logo?.height}
+          logoSrc={logo?.src ?? GENIET_LOGO_FOOTER_DATA_URI}
+          logoWidth={logo?.width ?? 166}
+          logoHeight={logo?.height ?? 48}
         />
       </BaseFooter.Info>
     );

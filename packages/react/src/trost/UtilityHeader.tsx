@@ -1,10 +1,11 @@
 import React from "react";
 import { trostNeutral } from "@nudge-design/tokens";
+import { TROST_LOGO_DATA_URI } from "../brand-logo-defaults";
 
 export interface TrostUtilityHeaderProps {
   /** 좌측 로고 링크 href */
   logoHref?: string;
-  /** 로고 SVG src */
+  /** 로고 SVG src. 미지정 시 base64 내장 Trost 로고 사용 — 파일 호스팅 불필요. */
   logoSrc?: string;
   /** 로고 클릭 핸들러 (선택) */
   onLogoClick?: () => void;
@@ -56,7 +57,7 @@ const STYLE = `
 
 export function TrostUtilityHeader({
   logoHref = "/",
-  logoSrc,
+  logoSrc = TROST_LOGO_DATA_URI,
   onLogoClick,
   searchSlot,
   loginSlot,

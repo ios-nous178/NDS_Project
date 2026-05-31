@@ -1,6 +1,7 @@
 import React from "react";
 import { trostNeutral } from "@nudge-design/tokens";
 import { Footer as BaseFooter } from "../Footer";
+import { TROST_LOGO_DATA_URI } from "../brand-logo-defaults";
 import type { FooterLinkItem, CompanyInfoData } from "../Footer";
 import type { TrostSnsLink } from "./types";
 
@@ -176,9 +177,9 @@ const TrostFooterApp = React.forwardRef<HTMLElement, TrostFooterAppProps>((props
             {extra && <BaseFooter.Extra>{extra}</BaseFooter.Extra>}
             <BaseFooter.CompanyInfo
               data={company}
-              logoSrc={logo?.src}
-              logoWidth={logo?.width}
-              logoHeight={logo?.height}
+              logoSrc={logo?.src ?? TROST_LOGO_DATA_URI}
+              logoWidth={logo?.width ?? 90}
+              logoHeight={logo?.height ?? 36}
             />
           </div>
           <div
