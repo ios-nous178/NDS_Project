@@ -66,6 +66,31 @@ const menuDivider: React.CSSProperties = {
   background: c.border,
 };
 
+/** 작은 새 아이콘 — canary(카나리아=새) 컨셉. currentColor 상속(이모지 대신 SVG). */
+function CanaryBird({ size = 13 }: { size?: number }): React.JSX.Element {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M16 7h.01" />
+      <path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20" />
+      <path d="m20 7 2 .5-2 .5" />
+      <path d="M10 18v3" />
+      <path d="M14 17.75V21" />
+      <path d="M7 18a6 6 0 0 0 3.84-10.61" />
+    </svg>
+  );
+}
+
 /**
  * 채팅기록 — 과거 에이전트 세션 리스트(.ds-chat-sessions.jsonl). 클릭하면 부모가
  * 그 세션의 raw 트랜스크립트를 read-only 로 보여주고(라이브 아님), 연관 목업이 있으면
@@ -261,7 +286,9 @@ export function SessionHistoryPanel({
                 onMouseEnter={(e) => (e.currentTarget.style.background = c.bgHover)}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
-                <span style={{ width: 13, textAlign: "center", fontSize: 11 }}>⚡</span>
+                <span style={{ width: 13, display: "inline-flex", justifyContent: "center" }}>
+                  <CanaryBird />
+                </span>
                 <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   Claude · 구조화
                   <span
@@ -269,8 +296,8 @@ export function SessionHistoryPanel({
                       fontSize: 9,
                       fontWeight: 700,
                       letterSpacing: 0.3,
-                      color: c.purple,
-                      border: `1px solid ${c.purple}`,
+                      color: c.textMuted,
+                      border: `1px solid ${c.textMuted}`,
                       borderRadius: 4,
                       padding: "0 4px",
                       lineHeight: "13px",
@@ -404,8 +431,8 @@ export function SessionHistoryPanel({
                         fontSize: 9,
                         fontWeight: 700,
                         letterSpacing: 0.3,
-                        color: c.purple,
-                        border: `1px solid ${c.purple}`,
+                        color: c.textMuted,
+                        border: `1px solid ${c.textMuted}`,
                         borderRadius: 4,
                         padding: "0 4px",
                         lineHeight: "14px",
@@ -489,7 +516,35 @@ function OpenAiMark(): React.JSX.Element {
   );
 }
 
-/** 에이전트 종류 표시 — 텍스트 대신 색 배지(Claude=클레이 ✳ / Codex=그린 OpenAI 마크). */
+/** Claude 선버스트 마크 — 방사형 레이로 그린다. currentColor 라 배지 글자색(흰색)을 따라간다. */
+function ClaudeMark(): React.JSX.Element {
+  const cx = 12;
+  const cy = 12;
+  const r0 = 2.6;
+  const r1 = 9.8;
+  const rays = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden="true">
+      {rays.map((deg) => {
+        const a = (deg * Math.PI) / 180;
+        return (
+          <line
+            key={deg}
+            x1={cx + r0 * Math.cos(a)}
+            y1={cy + r0 * Math.sin(a)}
+            x2={cx + r1 * Math.cos(a)}
+            y2={cy + r1 * Math.sin(a)}
+            stroke="currentColor"
+            strokeWidth={2.3}
+            strokeLinecap="round"
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+/** 에이전트 종류 표시 — 색 배지(Claude=클레이 버스트 / Codex=그린 OpenAI 마크). */
 function AgentIcon({ type }: { type: ChatSession["agentType"] }): React.JSX.Element {
   const isClaude = type === "claude";
   return (
@@ -503,15 +558,13 @@ function AgentIcon({ type }: { type: ChatSession["agentType"] }): React.JSX.Elem
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: 13,
-        fontWeight: 700,
         lineHeight: 1,
         fontFamily: mono,
         background: isClaude ? "#d97757" : "#10a37f",
         color: "#fff",
       }}
     >
-      {isClaude ? "✳" : <OpenAiMark />}
+      {isClaude ? <ClaudeMark /> : <OpenAiMark />}
     </span>
   );
 }
