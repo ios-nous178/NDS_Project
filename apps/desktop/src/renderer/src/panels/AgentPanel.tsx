@@ -297,77 +297,75 @@ export function AgentPanel({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
-      {/* 2번 섹션 헤더는 보여줄 게 있을 때만(라이브 상태 / 에러) 렌더한다. 시작 UI 는 좌측
-          "+ 새 채팅" 으로 일원화돼 idle 상태엔 헤더가 비므로, 빈 바를 아예 그리지 않는다. */}
-      {(running || error) && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            height: SECTION_HEADER_H,
-            boxSizing: "border-box",
-            flexShrink: 0,
-            padding: "0 12px",
-            borderBottom: `1px solid ${c.border}`,
-            fontSize: 13,
-          }}
-        >
-          {running && (
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                fontSize: 12.5,
-                lineHeight: 1,
-              }}
-            >
-              <span style={{ color: c.green, fontSize: 9, lineHeight: 1 }}>●</span>
-              <strong style={{ color: c.text, fontWeight: 600, lineHeight: 1 }}>
-                {AGENT_LABEL[agentType]}
-              </strong>
-              <span style={{ color: c.textFaint, fontSize: 11, lineHeight: 1 }}>실행 중</span>
-              {transport === "stream-json" && (
-                <span
-                  title="구조화(canary) 세션 — claude stream-json"
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    letterSpacing: 0.3,
-                    color: c.textMuted,
-                    border: `1px solid ${c.textMuted}`,
-                    borderRadius: 4,
-                    padding: "0 4px",
-                    lineHeight: "14px",
-                  }}
-                >
-                  CANARY
-                </span>
-              )}
-            </span>
-          )}
-          {running && (
-            <button onClick={stop} style={{ ...dangerGhostBtn, marginLeft: "auto" }}>
-              중지
-            </button>
-          )}
-          {error && (
-            <span
-              style={{
-                color: c.red,
-                fontSize: 12,
-                marginLeft: "auto",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {error}
-            </span>
-          )}
-        </div>
-      )}
+      {/* 3개 섹션 헤더 높이/톤 통일 (Phase 6). idle 상태에서도 빈 바를 유지해 레이아웃을 맞춘다. */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          height: SECTION_HEADER_H,
+          boxSizing: "border-box",
+          flexShrink: 0,
+          padding: "0 14px",
+          borderBottom: `1px solid ${c.borderSubtle}`,
+          background: c.bgPanel,
+          fontSize: 13,
+        }}
+      >
+        {running ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 12.5,
+              lineHeight: 1,
+            }}
+          >
+            <span style={{ color: c.green, fontSize: 9, lineHeight: 1 }}>●</span>
+            <strong style={{ color: c.text, fontWeight: 600, lineHeight: 1 }}>
+              {AGENT_LABEL[agentType]}
+            </strong>
+            <span style={{ color: c.textFaint, fontSize: 11, lineHeight: 1 }}>실행 중</span>
+            {transport === "stream-json" && (
+              <span
+                title="구조화(canary) 세션 — claude stream-json"
+                style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: 0.3,
+                  color: c.textMuted,
+                  border: `1px solid ${c.textMuted}`,
+                  borderRadius: 4,
+                  padding: "0 4px",
+                  lineHeight: "14px",
+                }}
+              >
+                CANARY
+              </span>
+            )}
+          </span>
+        ) : error ? (
+          <span
+            style={{
+              color: c.red,
+              fontSize: 12,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {error}
+          </span>
+        ) : (
+          <span style={{ color: c.text, fontSize: 13, fontWeight: 600 }}>채팅</span>
+        )}
+        {running && (
+          <button onClick={stop} style={{ ...dangerGhostBtn, marginLeft: "auto" }}>
+            중지
+          </button>
+        )}
+      </div>
       {transport === "stream-json" ? (
         <div style={{ flex: 1, minHeight: 0 }}>
           <StructuredChatView messages={messages} onSend={sendTurn} disabled={!running} />

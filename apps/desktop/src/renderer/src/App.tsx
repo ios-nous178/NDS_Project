@@ -22,7 +22,6 @@ import {
   mono,
   noDrag,
   pillBtn,
-  pillBtnActive,
   primaryBtn,
   tabBar,
   segGroup,
@@ -264,6 +263,15 @@ export function App(): React.JSX.Element {
     return dir ? `${projectPath}/${dir}` : projectPath;
   }, [projectPath, selected, activeSlug]);
 
+  /** 상단바에 보일 현재 작업 문맥(세션/목업 경로). 없으면 프로젝트 폴더명. */
+  const currentContext = useMemo(() => {
+    const rel = viewing?.mockupFile ?? viewing?.cwd ?? selected ?? activeSlug;
+    if (rel) return rel;
+    if (!projectPath) return "";
+    const parts = projectPath.split(/[/\\]/).filter(Boolean);
+    return parts[parts.length - 1] ?? projectPath;
+  }, [projectPath, selected, activeSlug, viewing]);
+
   const isAdminCms = activeIntent === "admin-cms";
   // "생성 중" 뱃지 = 지금 미리보기에 뜬 목업이 라이브 출력을 실제로 따라가는 중일 때만.
   // (과거 세션 보는 중이거나 사용자가 특정 목업을 직접 고르면 자동추적이 꺼져 뱃지도 꺼진다.)
@@ -345,7 +353,7 @@ export function App(): React.JSX.Element {
               <span style={{ fontSize: 12 }}>⬆</span>새 버전 v{update.latestVersion}
             </button>
           )}
-          {projectPath && (
+          {currentContext && (
             <span
               style={{
                 color: c.textFaint,
@@ -356,9 +364,9 @@ export function App(): React.JSX.Element {
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
               }}
-              title={projectPath}
+              title={projectPath || ""}
             >
-              {projectPath}
+              {currentContext}
             </span>
           )}
           <FigmaExportButton
@@ -539,19 +547,21 @@ export function App(): React.JSX.Element {
               </button>
             </div>
             {tab === "preview" && (
-              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 4 }}>
-                <button
-                  onClick={() => setViewport("web")}
-                  style={viewport === "web" ? pillBtnActive : pillBtn}
-                >
-                  웹
-                </button>
-                <button
-                  onClick={() => setViewport("app")}
-                  style={viewport === "app" ? pillBtnActive : pillBtn}
-                >
-                  앱
-                </button>
+              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={segGroup}>
+                  <button
+                    onClick={() => setViewport("web")}
+                    style={viewport === "web" ? segItemActive : segItem}
+                  >
+                    Web
+                  </button>
+                  <button
+                    onClick={() => setViewport("app")}
+                    style={viewport === "app" ? segItemActive : segItem}
+                  >
+                    Mobile
+                  </button>
+                </div>
                 <span style={{ width: 1, height: 16, background: c.border, margin: "0 4px" }} />
                 <button
                   onClick={() => previewRel && window.harness.openMockupWindow(previewRel)}

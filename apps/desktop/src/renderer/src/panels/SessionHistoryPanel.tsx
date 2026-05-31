@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { AgentType, ChatSession, Transport } from "../../../preload/index.js";
-import { btnReset, c, mono } from "../ui/theme.js";
+import { btnReset, c, mono, SECTION_HEADER_H } from "../ui/theme.js";
 
 /** 헤더 우측 "+ 새 채팅 ▾" — 은은한 보더 칩(다른 pill 톤과 통일). */
 const newChatBtn: React.CSSProperties = {
@@ -230,7 +230,10 @@ export function SessionHistoryPanel({
           display: "flex",
           alignItems: "center",
           gap: 8,
-          padding: "11px 14px",
+          height: SECTION_HEADER_H,
+          boxSizing: "border-box",
+          flexShrink: 0,
+          padding: "0 14px",
           color: c.text,
           borderBottom: `1px solid ${c.borderSubtle}`,
         }}
@@ -413,11 +416,11 @@ export function SessionHistoryPanel({
                         flex: 1,
                         minWidth: 0,
                         boxSizing: "border-box",
-                        // 높이 18 = lineHeight 16 + 보더 1px*2. 보기 상태 행 높이와 일치시켜
-                        // 더블클릭 편집 진입 시 카드가 커지지 않게 한다. 보더는 은은한 회색.
+                        // 높이 18 = lineHeight 16 + 상하패딩 1px*2.
+                        // 보더를 아예 제거해 배경에 녹아들게 한다.
                         height: 18,
-                        padding: "0 5px",
-                        border: `1px solid ${c.border}`,
+                        padding: "1px 5px",
+                        border: "none",
                         borderRadius: 4,
                         background: c.bg,
                         color: c.text,
