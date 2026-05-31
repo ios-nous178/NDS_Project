@@ -32,3 +32,21 @@ select:focus-visible {
   outline: none !important;
   box-shadow: none !important;
 }
+
+/* 상단바 메인 CTA(목업 제작) — 단색 솔리드(주변은 전부 ghost 라 이것만 옐로 → 자연 강조).
+   평소엔 장식 0(미니멀), hover 때만 살짝 떠오르며 부드러운 옐로 글로우.
+   ⚠️ 글로우는 box-shadow 가 아니라 filter:drop-shadow — 위 button:focus/:active 의
+   `box-shadow:none !important` 가 box-shadow 글로우를 죽이기 때문. drop-shadow 는 영향 없음. */
+.nds-cta-primary {
+  transition:
+    transform 120ms ease,
+    filter 120ms ease;
+}
+.nds-cta-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04) drop-shadow(0 3px 10px rgba(255, 211, 61, 0.45));
+}
+.nds-cta-primary:active {
+  transform: translateY(0);
+  filter: brightness(0.97);
+}
