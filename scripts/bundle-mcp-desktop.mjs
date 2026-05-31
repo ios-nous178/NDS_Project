@@ -46,12 +46,14 @@ const OUT = path.join(ROOT, "apps/desktop/.mcp-bundle");
 
 const skipBuild = process.argv.includes("--no-build");
 
-// Windows 는 pnpm 이 pnpm.cmd 라 execFile(no-shell)로는 ENOENT. 플랫폼별 바이너리명 사용.
-const PNPM = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+const IS_WIN = process.platform === "win32";
+// Windows에서 pnpm은 .cmd shim으로 제공된다. Node 24의 execFileSync(no-shell)로 .cmd를
+// 직접 실행하면 GitHub Actions windows runner에서 EINVAL이 날 수 있어 shell을 통해 실행한다.
+const PNPM = "pnpm";
 
 function run(command, args) {
   console.log(`$ ${[command, ...args].join(" ")}`);
-  execFileSync(command, args, { cwd: ROOT, stdio: "inherit" });
+  execFileSync(command, args, { cwd: ROOT, stdio: "inherit", shell: IS_WIN });
 }
 
 function copyDir(src, dest) {
