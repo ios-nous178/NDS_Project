@@ -458,12 +458,21 @@ export function App(): React.JSX.Element {
             onSelect={(s) => {
               const live = s.sessionId === liveSessionId;
               setViewing(live ? null : s);
-              if (!live && s.mockupFile && s.intent !== "admin-cms") {
-                setAutoFollow(false); // 과거 세션을 명시적으로 봄 → 라이브 자동추적 해제
+              if (live) return;
+              setAutoFollow(false); // 과거 세션을 명시적으로 봄 → 라이브 자동추적 해제
+              if (s.mockupFile && s.intent !== "admin-cms") {
                 setActiveIntent("html");
                 setPreviewRel(s.mockupFile);
                 setTab("preview");
                 setBust((b) => b + 1);
+              } else {
+                // 연관 목업이 없는(작업 안 된) 세션 → 이전 목업 미리보기 잔상 제거.
+                setActiveIntent(s.intent === "admin-cms" ? "admin-cms" : "html");
+                setPreviewRel(null);
+                setSelected(null);
+                selectedRef.current = null;
+                setSource("");
+                setResult(null);
               }
             }}
             onDeleted={(sessionId) => {
