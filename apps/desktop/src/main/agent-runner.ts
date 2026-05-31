@@ -262,6 +262,8 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
     surface: args.surface,
     intent: args.intent,
     transport,
+    // 작업 폴더(PTY cwd) — 전역 저장이라 세션마다 다를 수 있어 카드에 경로로 표시.
+    cwd: args.cwdOverride ?? args.projectPath,
   };
 
   const searchPath = agentSearchPath();

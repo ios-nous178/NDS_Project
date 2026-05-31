@@ -25,6 +25,7 @@ import {
   pillBtn,
   pillBtnActive,
   primaryBtn,
+  primaryBtnDisabled,
   tabBar,
   segGroup,
   segItem,
@@ -265,16 +266,15 @@ export function App(): React.JSX.Element {
 
   const refreshHistory = useCallback(() => setHistoryRefresh((n) => n + 1), []);
 
-  // "+ 새 채팅" → 빠른 채팅 — 과거 세션 보기 중이면 라이브 패널로 복귀시키고, AgentPanel 이
-  // 고른 에이전트·전송방식으로 새 bare 세션을 바로 시작하도록 요청 seq 를 올린다(모달 없이).
-  const startNewChat = useCallback(
-    (req: Omit<NewChatRequest, "seq">) => {
-      if (!projectPath) return;
-      setViewing(null);
-      setNewChatReq((prev) => ({ seq: (prev?.seq ?? 0) + 1, ...req }));
-    },
-    [projectPath],
-  );
+  // "+ 새 채팅" → 빠른 채팅 — 먼저 작업 폴더를 고르고(취소 시 중단), 과거 세션 보기 중이면
+  // 라이브 패널로 복귀시킨 뒤 AgentPanel 이 그 폴더에서 새 세션을 시작하도록 요청 seq 를 올린다.
+  // 프로젝트를 미리 열지 않아도 폴더만 고르면 채팅이 시작된다(채팅기록은 전역 저장).
+  const startNewChat = useCallback(async (req: Omit<NewChatRequest, "seq" | "cwd">) => {
+    const picked = await window.harness.pickFolder();
+    if ("canceled" in picked) return;
+    setViewing(null);
+    setNewChatReq((prev) => ({ seq: (prev?.seq ?? 0) + 1, cwd: picked.folder, ...req }));
+  }, []);
 
   // 빌드/내보내기 cwd = 선택된 목업의 폴더(없으면 인테이크가 만든 슬러그 폴더). 둘 다 없으면 루트.
   const activeMockupDir = useMemo(() => {
@@ -342,6 +342,14 @@ export function App(): React.JSX.Element {
         </div>
         <button onClick={openProject} style={{ ...ghostBtn, ...noDrag }}>
           프로젝트 열기
+        </button>
+        <button
+          onClick={() => setIntakeOpen(true)}
+          disabled={!projectPath}
+          title={projectPath ? "기획서·레퍼런스로 목업 제작" : "먼저 프로젝트를 여세요"}
+          style={{ ...(projectPath ? primaryBtn : primaryBtnDisabled), ...noDrag }}
+        >
+          목업 제작
         </button>
         <div style={{ ...noDrag, width: 300 }}>
           <Dropdown

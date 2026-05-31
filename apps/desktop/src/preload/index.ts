@@ -74,6 +74,9 @@ const harness = {
   checkForUpdate: (): Promise<UpdateCheckResult> => ipcRenderer.invoke("update:check"),
   openProject: (): Promise<OpenProjectResult | { canceled: true }> =>
     ipcRenderer.invoke("project:open"),
+  /** 작업 폴더 선택(새 채팅 cwd). 취소 시 { canceled: true }. */
+  pickFolder: (): Promise<{ folder: string } | { canceled: true }> =>
+    ipcRenderer.invoke("dialog:pick-folder"),
   readMockup: (filePath: string): Promise<{ source: string }> =>
     ipcRenderer.invoke("mockup:read", { filePath }),
   validate: (filePath: string): Promise<ValidateHtmlMockupResult> =>

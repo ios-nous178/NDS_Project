@@ -7,7 +7,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
-import { resolveWritableLogDir } from "@nudge-design/mockup-core";
+import { app } from "electron";
 import type { AgentType } from "./agent-runner.js";
 import type { Surface } from "./intake.js";
 import type { ChatMessage } from "./chat-types.js";
@@ -55,13 +55,18 @@ export interface ChatSession {
   intent?: "html" | "admin-cms";
   /** 전송 방식. 기록 클릭 시 렌더러가 raw(xterm) vs 구조화(카드) 재생을 분기. 옛 세션은 undefined=pty. */
   transport?: Transport;
+  /** 이 세션이 실제로 작업한 폴더(PTY cwd). 새 채팅 시 사용자가 고른 폴더. 옛 세션은 undefined. */
+  cwd?: string;
 }
 
 /** create/update 가 받는 세션 베이스(상태/타임스탬프 제외). */
 export type SessionBase = Omit<ChatSession, "status" | "createdAt" | "updatedAt">;
 
-function logDir(projectPath: string): string {
-  return resolveWritableLogDir({ cwd: projectPath });
+// 채팅 세션은 프로젝트 폴더가 아니라 앱 전역(userData)에 모은다 — 어느 폴더에서
+// 작업하든 한 곳에서 기록을 관리한다. projectPath 인자는 옛 호출부 호환을 위해 받지만
+// 더 이상 저장 위치에 영향을 주지 않는다(각 세션의 작업 폴더는 cwd 필드로 기록).
+function logDir(_projectPath?: string): string {
+  return join(app.getPath("userData"), "chat-sessions");
 }
 
 function appendSession(projectPath: string, session: ChatSession): void {
