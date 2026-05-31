@@ -2300,14 +2300,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     figmaNodeUrl: "https://www.figma.com/design/g3ifA735EE6EKjeL4ZW2ax/?node-id=1058-13336",
     pitfalls: [
       "데스크톱 전용. 모바일/웹뷰 헤더는 `RunmileAppBar` (Figma 36:258) 사용.",
-      "Runmile 로고는 `@nudge-design/assets` 의 `BRAND_LOGOS.runmile.default.dataUri` (coral #FF5B37) 를 `logoSrc` 로 주입. 미지정 시 'Runmile' 텍스트 폴백.",
+      "로고는 base64 내장이 기본값 — `logoSrc` 안 줘도 coral #FF5B37 워드마크가 자동 렌더 (파일 호스팅 불필요). 자체 로고로 바꿀 때만 `logoSrc` 주입. `logoSrc=''` 처럼 빈 값을 명시하면 'Runmile' 텍스트 폴백.",
       "우측 채팅 아이콘은 단일 말풍선(RunmileChattingIcon) — 바텀네비 채팅 탭의 이중 말풍선(RunmileChats)과 다름.",
       "미읽음 badge 는 `loggedIn && chatUnreadCount > 0` 일 때만 노출 (99 초과 시 '99+').",
       '색은 전부 data-brand="runmile" cascade 의 --semantic-* 토큰 — host 가 hex 로 덮지 말 것.',
     ],
     recommended: [
-      "로그인 전: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={[{key:'competition',label:'대회 정보',href:'/competitions'},{key:'community',label:'커뮤니티',href:'/community'}]} activeKey='competition' loggedIn={false} onSearch={...} />`",
-      "로그인 후: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />`",
+      "로그인 전 (로고 생략 = base64 기본): `<RunmileWebHeader menuItems={[{key:'competition',label:'대회 정보',href:'/competitions'},{key:'community',label:'커뮤니티',href:'/community'}]} activeKey='competition' loggedIn={false} onSearch={...} />`",
+      "로그인 후: `<RunmileWebHeader menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />` — 자체 로고로 바꾸려면 `logoSrc={...}` 추가.",
       "HTML 목업(vanilla): `<nds-brand-header brand='runmile' surface='web' active-key='race'>` — base nds-header + nds-header-menu-item 손수 조립 금지 (BrandHeader 가이드). 모바일 bar 는 surface='mobile'.",
     ],
     // 런마일 목업 예시 이미지 일시 비활성화 — MCP 가 참고하지 못하도록 주석 처리.
@@ -4884,17 +4884,18 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "multi-screen": {
     name: "multi-screen",
     summary:
-      "한 HTML 파일에 여러 화면을 '화면처럼' 보여주는 디바이스 프레임 패턴. 회고: .app{max-width} 로 세로로 쌓기만 하면 디바이스가 아니라 그냥 컨테이너로 보이고, 모바일/웹을 미디어쿼리로 토글하면 동시에 못 본다. → .mockup-canvas 안에 .mockup-screen[data-device] 프레임을 나란히 깔고, 같은 화면을 surface 별(web/mobile/webview)로 각각 둬 한눈에 비교한다. 프레임 CSS 는 build_singlefile_html 이 자동 inline 하므로 별도 <style> 불필요(클래스만 쓰면 됨).",
+      "한 HTML 파일에 여러 화면을 '화면처럼' 보여주는 디바이스 프레임 + 탭 스위처 패턴. 회고: 스크린 높이를 내용에 맡겨(min-height 없음) 화면마다 제각각이고, 각 스크린이 자체 헤더/푸터도 없어 디바이스가 아니라 하나의 긴 페이지로 보였다. → .mockup-canvas 안에 .mockup-screen[data-device] 프레임을 나열하고, 각 스크린은 자체 헤더(+필요시 푸터) + device 최소높이로 자기완결시킨다. 화면이 2개 이상이면 런타임이 상단에 전환 탭을 자동 주입(기본 '탭' = 한 번에 한 화면, '전체' = 옆으로 나란히). 프레임 CSS/JS 는 build_singlefile_html 이 자동 inline — 클래스만 쓰면 된다(별도 <style>/스크립트 불필요).",
     rules: [
-      "여러 화면 = `.mockup-canvas` (flex-wrap 캔버스) > `.mockup-screen` (고정 너비·최소높이 프레임) N개. 프레임마다 `data-device='web|mobile|webview|tablet'` 로 디바이스 폭을 정한다(web 1440 / mobile 390 / webview 390 / tablet 834).",
-      "각 프레임에 `data-label='홈 (웹)'` 같은 캡션을 달면 프레임 위에 화면 이름이 표시된다.",
-      "모바일/웹을 미디어쿼리로 display 토글하지 말 것 — 한 뷰포트에 한 모드만 보여 '구분'이 아니라 '숨기기'가 된다. 디바이스마다 별도 `.mockup-screen` 프레임을 두고 surface 를 다르게 준다.",
-      "브랜드 헤더는 프레임 안에서 `<nds-brand-header brand surface='web|mobile|webview'>` 로 — 같은 브랜드를 surface 만 바꿔 디바이스별 헤더(PC GNB / 모바일 컴팩트 / 웹뷰 뒤로가기)를 자동 분기한다. base `<nds-header>` 손수 조립 금지.",
-      "프레임 CSS(.mockup-canvas / .mockup-screen)는 목업 전용으로 빌드가 자동 inline — 직접 `<style>` 에 `.screen{width:...}` 를 재정의하지 말 것(클래스만 쓰면 된다).",
-      "단일 화면 목업이면 캔버스 없이 `<main>` 하나로 충분 — 프레임은 화면이 2개 이상일 때.",
+      "여러 화면 = `.mockup-canvas` > `.mockup-screen` N개. 프레임마다 `data-device='mobile|webview|web|tablet'` 로 디바이스 폭+최소높이를 정한다(mobile 390×844 / webview 390×720 / web 1440×900 / tablet 834×1112).",
+      "각 `.mockup-screen` 은 자기완결: 자체 `<nds-brand-header surface=…>`(+필요시 `<nds-brand-footer>`) + device 최소높이. 내용이 짧아도 device 높이를 유지해 '화면'처럼 보인다 — 높이를 내용에 맡기지 말 것.",
+      "화면 ≥2 → 런타임이 상단 전환 탭을 자동 생성(탭 라벨 = 각 스크린 `data-label`, 없으면 '화면 N'). 기본 모드 '탭'(한 번에 한 화면 — 미리보기 친화), 스위처의 '전체' 또는 `<div class=\"mockup-canvas\" data-mode=\"grid\">` 로 옆으로 나란히 비교.",
+      "브랜드 헤더는 프레임 안에서 `<nds-brand-header brand surface='web|mobile|webview'>` — surface 로 디바이스별 헤더(PC GNB / 모바일 컴팩트 / 웹뷰 뒤로가기)가 자동 분기. base `<nds-header>` 손수 조립 금지.",
+      "프레임/스위처(.mockup-canvas · .mockup-screen)는 목업 전용으로 빌드가 자동 inline — `<style>` 에 `.screen{width:…}` 나 미디어쿼리 토글을 직접 쓰지 말 것(클래스만 사용).",
+      "단일 화면 목업이면 `.mockup-screen` 하나(또는 캔버스 없이 `<main>` 하나)로 충분 — 탭은 화면이 2개 이상일 때만 자동 생성.",
     ],
     avoid: [
-      ".app/.screen 에 max-width 만 주고 세로로 쌓아 디바이스 프레임 없이 나열",
+      "스크린 높이를 내용에 맡겨(min-height 없이) 화면마다 높이가 제각각",
+      "각 스크린에 자체 헤더/푸터 없이 하나의 긴 페이지로 쌓기",
       "@media 로 모바일/웹 헤더를 display 토글 (동시 비교 불가)",
       "base <nds-header> + nds-header-logo/menu 손수 조립으로 브랜드 GNB 흉내",
       "디바이스 프레임 너비/높이를 <style> 에 손으로 재정의 (.mockup-screen[data-device] 프리셋 사용)",
@@ -4903,22 +4904,23 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       {
         verdict: "good",
         source:
-          '<div class="mockup-canvas">\n  <section class="mockup-screen" data-device="web" data-label="홈 (웹)">\n    <nds-brand-header brand="runmile" surface="web"></nds-brand-header>\n    <main style="flex:1; padding: var(--semantic-inset-screen);">…</main>\n  </section>\n  <section class="mockup-screen" data-device="mobile" data-label="홈 (모바일)">\n    <nds-brand-header brand="runmile" surface="mobile"></nds-brand-header>\n    <main style="flex:1; padding: var(--semantic-inset-screen);">…</main>\n  </section>\n</div>',
+          '<div class="mockup-canvas">\n  <section class="mockup-screen" data-device="mobile" data-label="홈">\n    <nds-brand-header brand="runmile" surface="mobile"></nds-brand-header>\n    <main style="flex:1; padding: var(--semantic-inset-screen);">…</main>\n  </section>\n  <section class="mockup-screen" data-device="webview" data-label="상세">\n    <nds-brand-header brand="runmile" surface="webview"></nds-brand-header>\n    <main style="flex:1; padding: var(--semantic-inset-screen);">…</main>\n  </section>\n</div>\n<!-- 화면 2개 → 상단 전환 탭 자동(홈/상세). 기본 탭, \'전체\'로 나란히. -->',
         caption:
-          "같은 홈 화면을 웹/모바일 프레임으로 나란히 — surface 로 헤더가 자동 분기, 디바이스 폭으로 화면처럼 보임.",
+          "각 스크린이 자체 헤더 + device 최소높이로 자기완결. 화면 2개라 탭 스위처 자동 — 기본은 한 번에 한 화면(미리보기 친화), '전체'로 나란히 비교.",
       },
       {
         verdict: "bad",
         source:
-          '<main style="max-width:720px;margin:0 auto;">…웹 헤더…</main>\n<main style="max-width:720px;margin:0 auto;">…모바일 화면…</main>\n<style>@media(max-width:600px){.web-header{display:none}}</style>',
+          '<main style="max-width:720px;margin:0 auto;">…홈…</main>\n<main style="max-width:720px;margin:0 auto;">…상세…</main>\n<style>@media(max-width:600px){.web-header{display:none}}</style>',
         caption:
-          "max-width 컨테이너로 세로로 쌓고 미디어쿼리로 토글 — 디바이스 프레임도 없고 동시 비교도 안 됨.",
+          "max-width 컨테이너로 세로로 쌓고(높이는 내용에 맡김) 헤더는 미디어쿼리 토글 — 디바이스 프레임도 자기완결도 없음.",
       },
     ],
     metrics: {
       canvasClass: "mockup-canvas",
       screenClass: "mockup-screen",
-      deviceWidths: "web 1440 / tablet 834 / mobile 390 / webview 390",
+      deviceFrames: "mobile 390×844 / webview 390×720 / web 1440×900 / tablet 834×1112",
+      defaultMode: "tabs (화면 ≥2 자동) · data-mode='grid' 로 나란히",
     },
   },
   "icon-color": {
