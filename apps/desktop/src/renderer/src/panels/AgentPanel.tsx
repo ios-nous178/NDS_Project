@@ -4,7 +4,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import type { AgentType, ChatMessage, Transport } from "../../../preload/index.js";
 import { StructuredChatView } from "./StructuredChatView.js";
-import { c, mono, dangerGhostBtn } from "../ui/theme.js";
+import { c, mono, dangerGhostBtn, SECTION_HEADER_H } from "../ui/theme.js";
 
 /**
  * 인앱 에이전트 터미널 (Phase 5 · 다크 Phase 6).
@@ -305,8 +305,9 @@ export function AgentPanel({
             display: "flex",
             alignItems: "center",
             gap: 8,
-            height: 40,
+            height: SECTION_HEADER_H,
             boxSizing: "border-box",
+            flexShrink: 0,
             padding: "0 12px",
             borderBottom: `1px solid ${c.border}`,
             fontSize: 13,
