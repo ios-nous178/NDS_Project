@@ -1,23 +1,46 @@
 /**
- * tools/figma/scene.ts — 목업 → Figma "평면 레이어" scene 추출 (canary).
+ * tools/figma/scene.ts — 목업 → Figma "계층 + 오토레이아웃" scene 추출 (canary).
  *
  * Figma REST API 로는 캔버스에 디자인 노드를 만들 수 없다(읽기/댓글/변수만). 그래서
  * 파이프라인은 2단이다:
  *   1) 데스크탑 앱이 self-contained dist/index.html 을 숨은 BrowserWindow 에 렌더하고
- *      `buildFigmaSceneScript()` 를 주입해 DOM 을 평면 scene 으로 추출 → scene.json.
- *   2) 짝이 되는 Figma 플러그인(tools/figma-plugin)이 scene.json 을 읽어 frame/rect/text/
- *      image 로 캔버스에 짓는다.
+ *      `buildFigmaSceneScript()` 를 주입해 DOM 을 "트리" scene 으로 추출 → scene.json.
+ *   2) 짝이 되는 Figma 플러그인(tools/figma-plugin)이 scene.json 을 읽어 frame/text/
+ *      image/svg 로 캔버스에 짓는다.
+ *
+ * 계층/레이아웃: 평면(flat)이 아니라 트리다. flex 컨테이너는 `layout` 을 달고 자식을
+ * 품으며(플러그인이 Figma Auto Layout 으로 복원), 비-flex/시각요소 없는 래퍼는 평탄화한다.
+ * 좌표는 모든 노드가 root(=body) content box 기준 절대좌표를 유지하고, Auto Layout 이
+ * 아닌 프레임의 자식만 플러그인이 부모 상대좌표로 환산해 절대 배치한다.
  *
  * 이 모듈은 (a) 브라우저에 주입할 워커 소스 문자열과 (b) 추출 결과를 검증/정규화하는
  * 순수 함수만 담는다. DOM 접근이 없으므로 normalize 는 node:test 로 단위 테스트 가능.
  *
  * DS-aware: 외부 HTML→Figma 도구가 못 하는 것 — `<nds-*>` 커스텀 엘리먼트를 만나면
  * 레이어 이름을 DS 컴포넌트명(`ndsTagToComponentName` 규칙 미러)으로 박는다. Figma DS
- * 라이브러리가 publish 되면 이 dsComponent/props 메타로 평면 레이어 → 진짜 컴포넌트
+ * 라이브러리가 publish 되면 이 dsComponent/props 메타로 레이어 → 진짜 컴포넌트
  * 인스턴스 승격이 가능(Phase 3).
  */
 
-export type FigmaSceneNodeType = "frame" | "text" | "image";
+export type FigmaSceneNodeType = "frame" | "text" | "image" | "svg";
+
+/** flex 컨테이너 → Figma Auto Layout 매핑(없으면 frame 은 절대배치). */
+export interface FigmaLayout {
+  /** flex-direction row/column → 가로/세로. */
+  mode: "HORIZONTAL" | "VERTICAL";
+  /** gap(주축 간격) px. */
+  gap: number;
+  padTop: number;
+  padRight: number;
+  padBottom: number;
+  padLeft: number;
+  /** justify-content → primaryAxisAlignItems. */
+  primary: "MIN" | "CENTER" | "MAX" | "SPACE_BETWEEN";
+  /** align-items → counterAxisAlignItems. */
+  counter: "MIN" | "CENTER" | "MAX" | "BASELINE";
+  /** flex-wrap. */
+  wrap: boolean;
+}
 
 export interface FigmaStroke {
   color: string; // CSS rg(a) 문자열
@@ -51,6 +74,21 @@ export interface FigmaSceneNode {
   font?: FigmaFont;
   /** image 노드: data: URL (base64 인라인). 외부 URL 은 버린다(무유출 단일 산출물 기조). */
   image?: string;
+  /**
+   * svg 노드: <svg> 의 outerHTML 마크업 통째. 플러그인이 figma.createNodeFromSvg 로
+   * 진짜 편집 가능한 벡터 레이어로 만든다(아이콘 보존). currentColor 는 추출 시점의
+   * computed color 로 치환돼 들어온다(Figma 는 currentColor 를 검정으로 처리하므로).
+   */
+  svg?: string;
+  /** frame 자식(트리). leaf(text/image/svg)에는 없다. */
+  children?: FigmaSceneNode[];
+  /** frame 이 flex 컨테이너면 Auto Layout 스펙(없으면 자식은 절대배치). */
+  layout?: FigmaLayout | null;
+  /**
+   * CSS position:absolute/fixed — flex 흐름에서 빠진 요소. Auto Layout 부모 안에서는
+   * 플러그인이 layoutPositioning="ABSOLUTE" + 절대좌표로 배치해 흐름을 흩뜨리지 않게 한다.
+   */
+  absolute?: boolean;
   /** 가장 가까운 nds-* 조상에서 유도한 DS 컴포넌트명(레이어 명명 + Phase 3 승격용). */
   dsComponent?: string | null;
   props?: Record<string, string>;
@@ -61,6 +99,8 @@ export interface FigmaScene {
   /** 추출 시각 viewport 기준 전체 캔버스 크기. */
   width: number;
   height: number;
+  /** body 가 flex 면 root 프레임에 적용할 Auto Layout(없으면 top-level 절대배치). */
+  rootLayout?: FigmaLayout | null;
   nodes: FigmaSceneNode[];
 }
 
@@ -73,12 +113,15 @@ export const MAX_SCENE_NODES = 4000;
  * Electron `webContents.executeJavaScript` 가 이 IIFE 의 반환값(직렬화 가능한 scene)을
  * 그대로 돌려준다. 외부 의존 없는 self-contained 바닐라 JS 여야 한다.
  *
- * 추출 규칙(평면 레이어, 노이즈 최소화):
+ * 추출 규칙(트리, 노이즈 최소화):
  *  - 보이는 요소만(display/visibility/opacity/0-size 제외, data-nds-stamp 바 제외).
- *  - 시각적으로 의미 있을 때만 frame 노드 방출(배경 채움 · 보더 · radius 중 하나라도).
- *  - <img> 및 data: 배경이미지 → image 노드.
- *  - 직접 텍스트 런이 있으면 text 노드(폰트/색/정렬 포함).
- *  - 구조용 빈 div 는 노드를 안 만들고 자식만 계속 순회.
+ *  - <svg> → svg 노드(마크업 통째, 자식 비순회) → 플러그인이 벡터로 복원(아이콘 보존).
+ *  - <img> 및 data: 배경이미지 → image 노드(leaf).
+ *  - 직접 텍스트 런(텍스트 노드)은 Range 로 실제 박스를 재서 text 노드로(폰트/색/정렬 포함).
+ *  - flex 컨테이너 → layout 단 frame, 자식 품음(Auto Layout). 시각요소(배경/보더/radius)
+ *    있는 요소 → frame.
+ *  - 그 외 투명 래퍼는 평탄화: 부모가 flex 가 아니면 자식을 부모로 끌어올린다(div soup 방지).
+ *    부모가 flex 면 플렉스 아이템 수를 보존해야 하므로 투명 프레임으로 1개 묶음 유지.
  */
 export function buildFigmaSceneScript(): string {
   return `(function () {
@@ -86,8 +129,8 @@ export function buildFigmaSceneScript(): string {
   var rootRect = rootEl.getBoundingClientRect();
   var W = Math.max(rootEl.scrollWidth, Math.ceil(rootRect.width)) || Math.ceil(rootRect.width);
   var H = Math.max(rootEl.scrollHeight, Math.ceil(rootRect.height)) || Math.ceil(rootRect.height);
-  var nodes = [];
   var CAP = ${MAX_SCENE_NODES};
+  var count = 0;
 
   function px(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
   function visibleFill(bg) {
@@ -96,6 +139,34 @@ export function buildFigmaSceneScript(): string {
   function hasBorder(cs) {
     var w = px(cs.borderTopWidth) + px(cs.borderRightWidth) + px(cs.borderBottomWidth) + px(cs.borderLeftWidth);
     return w > 0 && cs.borderTopStyle !== "none";
+  }
+  function isFlex(cs) { return (cs.display || "").indexOf("flex") !== -1; }
+  // flex computed style → Auto Layout 스펙.
+  function layoutOf(cs) {
+    if (!isFlex(cs)) return null;
+    var dir = cs.flexDirection || "row";
+    var vertical = dir.indexOf("column") === 0;
+    var gapSrc = vertical
+      ? (cs.rowGap && cs.rowGap !== "normal" ? cs.rowGap : cs.gap)
+      : (cs.columnGap && cs.columnGap !== "normal" ? cs.columnGap : cs.gap);
+    var jc = cs.justifyContent || "flex-start";
+    var primary =
+      jc.indexOf("between") !== -1 || jc.indexOf("around") !== -1 || jc.indexOf("evenly") !== -1 ? "SPACE_BETWEEN"
+      : jc.indexOf("center") !== -1 ? "CENTER"
+      : jc.indexOf("end") !== -1 ? "MAX" : "MIN";
+    var ai = cs.alignItems || "stretch";
+    var counter =
+      ai.indexOf("center") !== -1 ? "CENTER"
+      : ai.indexOf("end") !== -1 ? "MAX"
+      : (!vertical && ai.indexOf("baseline") !== -1) ? "BASELINE" : "MIN";
+    return {
+      mode: vertical ? "VERTICAL" : "HORIZONTAL",
+      gap: px(gapSrc),
+      padTop: px(cs.paddingTop), padRight: px(cs.paddingRight),
+      padBottom: px(cs.paddingBottom), padLeft: px(cs.paddingLeft),
+      primary: primary, counter: counter,
+      wrap: (cs.flexWrap || "").indexOf("wrap") !== -1,
+    };
   }
   // kebab nds-tag → PascalCase (ndsTagToComponentName 규칙 미러, 브라우저 인라인).
   function dsNameFor(el) {
@@ -119,14 +190,6 @@ export function buildFigmaSceneScript(): string {
     }
     return out;
   }
-  function directText(el) {
-    var t = "";
-    for (var i = 0; i < el.childNodes.length; i++) {
-      var c = el.childNodes[i];
-      if (c.nodeType === 3) t += c.nodeValue;
-    }
-    return t.replace(/\\s+/g, " ").trim();
-  }
   function box(el) {
     var r = el.getBoundingClientRect();
     return {
@@ -136,66 +199,140 @@ export function buildFigmaSceneScript(): string {
       h: Math.round(r.height),
     };
   }
+  // 텍스트 런(텍스트 노드)의 실제 렌더 박스 — Range 로 잰다(부모 박스보다 타이트·정확).
+  function textRunBox(textNode) {
+    try {
+      var range = document.createRange();
+      range.selectNodeContents(textNode);
+      var r = range.getBoundingClientRect();
+      return {
+        x: Math.round(r.left - rootRect.left),
+        y: Math.round(r.top - rootRect.top),
+        w: Math.round(r.width),
+        h: Math.round(r.height),
+      };
+    } catch (e) { return null; }
+  }
+  function textRunNode(s, tb, cs, ds) {
+    var lh = cs.lineHeight === "normal" ? null : px(cs.lineHeight);
+    return {
+      type: "text",
+      name: s.length > 24 ? s.slice(0, 24) + "\\u2026" : s,
+      x: tb.x, y: tb.y, w: tb.w, h: tb.h,
+      text: s,
+      font: {
+        family: (cs.fontFamily.split(",")[0] || "").replace(/['"]/g, "").trim(),
+        size: px(cs.fontSize),
+        weight: parseInt(cs.fontWeight, 10) || 400,
+        color: cs.color,
+        lineHeight: lh,
+        align: cs.textAlign,
+      },
+      dsComponent: ds,
+    };
+  }
   function dataUrlFromBg(bg) {
     var m = /url\\((['"]?)(data:[^'")]+)\\1\\)/.exec(bg);
     return m ? m[2] : null;
   }
 
-  function walk(el) {
-    if (nodes.length >= CAP || el.nodeType !== 1) return;
+  // 한 요소를 노드 / 평탄화된 노드 배열 / null 로 변환.
+  // parentFlex=true 면 평탄화 금지(플렉스 아이템 1개로 보존).
+  function build(el, parentFlex) {
+    if (count >= CAP || el.nodeType !== 1) return null;
     var tag = el.tagName.toLowerCase();
-    if (tag === "script" || tag === "style" || tag === "noscript" || tag === "template") return;
-    if (el.getAttribute && el.getAttribute("data-nds-stamp") !== null) return; // DS 스탬프 바 제외
+    if (tag === "script" || tag === "style" || tag === "noscript" || tag === "template") return null;
+    if (el.getAttribute && el.getAttribute("data-nds-stamp") !== null) return null;
     var cs = getComputedStyle(el);
-    if (cs.display === "none" || cs.visibility === "hidden" || parseFloat(cs.opacity) === 0) return;
+    if (cs.display === "none" || cs.visibility === "hidden" || parseFloat(cs.opacity) === 0) return null;
     var b = box(el);
-    if (b.w >= 1 && b.h >= 1) {
-      var ds = dsNameFor(el);
-      var radius = px(cs.borderTopLeftRadius);
-      if (tag === "img" && el.currentSrc && el.currentSrc.indexOf("data:") === 0) {
-        nodes.push({ type: "image", name: ds || "image", x: b.x, y: b.y, w: b.w, h: b.h, image: el.currentSrc, radius: radius, dsComponent: ds });
-      } else {
-        var bgImg = cs.backgroundImage && cs.backgroundImage !== "none" ? dataUrlFromBg(cs.backgroundImage) : null;
-        if (bgImg) {
-          nodes.push({ type: "image", name: ds || tag, x: b.x, y: b.y, w: b.w, h: b.h, image: bgImg, radius: radius, dsComponent: ds });
-        } else {
-          var fill = visibleFill(cs.backgroundColor) ? cs.backgroundColor : null;
-          var stroke = hasBorder(cs) ? { color: cs.borderTopColor, weight: px(cs.borderTopWidth) } : null;
-          if (fill || stroke || radius > 0) {
-            var op = parseFloat(cs.opacity);
-            var n = { type: "frame", name: ds || tag, x: b.x, y: b.y, w: b.w, h: b.h, fill: fill, stroke: stroke, radius: radius, dsComponent: ds };
-            if (op < 1) n.opacity = op;
-            if (ds) { var p = dataProps(el); if (Object.keys(p).length) n.props = p; }
-            nodes.push(n);
-          }
+    if (b.w < 1 || b.h < 1) return null;
+    var ds = dsNameFor(el);
+    var radius = px(cs.borderTopLeftRadius);
+    var absolute = cs.position === "absolute" || cs.position === "fixed";
+
+    // leaf: svg(아이콘) → 마크업 통째, currentColor 는 computed color 로 치환.
+    if (tag === "svg") {
+      count++;
+      var svgMarkup = (el.outerHTML || "").split("currentColor").join(cs.color);
+      return { type: "svg", name: ds || "icon", x: b.x, y: b.y, w: b.w, h: b.h, svg: svgMarkup, absolute: absolute, dsComponent: ds };
+    }
+    // leaf: image
+    if (tag === "img" && el.currentSrc && el.currentSrc.indexOf("data:") === 0) {
+      count++;
+      return { type: "image", name: ds || "image", x: b.x, y: b.y, w: b.w, h: b.h, image: el.currentSrc, radius: radius, absolute: absolute, dsComponent: ds };
+    }
+    var bgImg = cs.backgroundImage && cs.backgroundImage !== "none" ? dataUrlFromBg(cs.backgroundImage) : null;
+    if (bgImg) {
+      count++;
+      return { type: "image", name: ds || tag, x: b.x, y: b.y, w: b.w, h: b.h, image: bgImg, radius: radius, absolute: absolute, dsComponent: ds };
+    }
+
+    var flex = isFlex(cs);
+
+    // 자식 수집(텍스트 런 + 요소). childNodes 순회로 문서 순서 보존(아이콘+라벨 순서 등).
+    var kids = [];
+    var ch = el.childNodes;
+    for (var i = 0; i < ch.length; i++) {
+      if (count >= CAP) break;
+      var node = ch[i];
+      if (node.nodeType === 3) {
+        var s = (node.nodeValue || "").replace(/\\s+/g, " ").trim();
+        if (s) {
+          var tb = textRunBox(node);
+          if (tb && tb.w >= 1 && tb.h >= 1) { count++; kids.push(textRunNode(s, tb, cs, ds)); }
+        }
+      } else if (node.nodeType === 1) {
+        var r = build(node, flex);
+        if (r) {
+          if (r.length !== undefined && r.type === undefined) { for (var k = 0; k < r.length; k++) kids.push(r[k]); }
+          else kids.push(r);
         }
       }
-      var txt = directText(el);
-      if (txt && nodes.length < CAP) {
-        var lh = cs.lineHeight === "normal" ? null : px(cs.lineHeight);
-        nodes.push({
-          type: "text",
-          name: txt.length > 24 ? txt.slice(0, 24) + "…" : txt,
-          x: b.x, y: b.y, w: b.w, h: b.h,
-          text: txt,
-          font: {
-            family: (cs.fontFamily.split(",")[0] || "").replace(/['"]/g, "").trim(),
-            size: px(cs.fontSize),
-            weight: parseInt(cs.fontWeight, 10) || 400,
-            color: cs.color,
-            lineHeight: lh,
-            align: cs.textAlign,
-          },
-          dsComponent: ds,
-        });
-      }
     }
-    var kids = el.children;
-    for (var i = 0; i < kids.length; i++) walk(kids[i]);
+
+    var fill = visibleFill(cs.backgroundColor) ? cs.backgroundColor : null;
+    var stroke = hasBorder(cs) ? { color: cs.borderTopColor, weight: px(cs.borderTopWidth) } : null;
+    var hasVisual = !!(fill || stroke || radius > 0);
+
+    function makeFrame(withLayout) {
+      count++;
+      var op = parseFloat(cs.opacity);
+      var n = { type: "frame", name: ds || tag, x: b.x, y: b.y, w: b.w, h: b.h, fill: fill, stroke: stroke, radius: radius, absolute: absolute, dsComponent: ds, children: kids };
+      if (op < 1) n.opacity = op;
+      if (withLayout) n.layout = layoutOf(cs);
+      if (ds) { var p = dataProps(el); if (Object.keys(p).length) n.props = p; }
+      return n;
+    }
+
+    // 시각 스타일 있거나 flex → 프레임으로 방출(flex 면 layout 동반).
+    if (hasVisual || flex) return makeFrame(flex);
+
+    // 투명 래퍼.
+    if (parentFlex) {
+      if (kids.length === 0) return null;
+      if (kids.length === 1) return kids[0];
+      return makeFrame(false); // 플렉스 아이템 1개로 묶음(투명 프레임)
+    }
+    // 부모가 flex 아님 → 평탄화(자식을 위로).
+    if (kids.length === 0) return null;
+    if (kids.length === 1) return kids[0];
+    return kids; // 프래그먼트(배열)
   }
 
-  walk(rootEl);
-  return { version: 1, width: W, height: H, nodes: nodes };
+  var bodyCs = getComputedStyle(rootEl);
+  var bodyFlex = isFlex(bodyCs);
+  var topKids = [];
+  var bch = rootEl.children;
+  for (var bi = 0; bi < bch.length; bi++) {
+    if (count >= CAP) break;
+    var tr = build(bch[bi], bodyFlex);
+    if (tr) {
+      if (tr.length !== undefined && tr.type === undefined) { for (var tk = 0; tk < tr.length; tk++) topKids.push(tr[tk]); }
+      else topKids.push(tr);
+    }
+  }
+  return { version: 1, width: W, height: H, rootLayout: bodyFlex ? layoutOf(bodyCs) : null, nodes: topKids };
 })();`;
 }
 
@@ -213,6 +350,10 @@ interface RawNode {
   text?: unknown;
   font?: unknown;
   image?: unknown;
+  svg?: unknown;
+  children?: unknown;
+  layout?: unknown;
+  absolute?: unknown;
   dsComponent?: unknown;
   props?: unknown;
 }
@@ -221,12 +362,42 @@ function num(v: unknown, fallback = 0): number {
   return typeof v === "number" && isFinite(v) ? v : fallback;
 }
 
-function cleanNode(raw: RawNode): FigmaSceneNode | null {
+const PRIMARY_ALIGN = ["MIN", "CENTER", "MAX", "SPACE_BETWEEN"];
+const COUNTER_ALIGN = ["MIN", "CENTER", "MAX", "BASELINE"];
+
+/** raw layout 검증 → FigmaLayout 또는 null. mode 가 없으면 layout 자체를 버린다. */
+function cleanLayout(raw: unknown): FigmaLayout | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  const mode = r.mode === "VERTICAL" ? "VERTICAL" : r.mode === "HORIZONTAL" ? "HORIZONTAL" : null;
+  if (!mode) return null;
+  const primary = (
+    PRIMARY_ALIGN.includes(r.primary as string) ? r.primary : "MIN"
+  ) as FigmaLayout["primary"];
+  const counter = (
+    COUNTER_ALIGN.includes(r.counter as string) ? r.counter : "MIN"
+  ) as FigmaLayout["counter"];
+  return {
+    mode,
+    gap: Math.max(0, num(r.gap)),
+    padTop: Math.max(0, num(r.padTop)),
+    padRight: Math.max(0, num(r.padRight)),
+    padBottom: Math.max(0, num(r.padBottom)),
+    padLeft: Math.max(0, num(r.padLeft)),
+    primary,
+    counter,
+    wrap: r.wrap === true,
+  };
+}
+
+function cleanNode(raw: RawNode, ctr: { n: number }): FigmaSceneNode | null {
+  if (ctr.n >= MAX_SCENE_NODES) return null;
   const type = raw.type;
-  if (type !== "frame" && type !== "text" && type !== "image") return null;
+  if (type !== "frame" && type !== "text" && type !== "image" && type !== "svg") return null;
   const w = num(raw.w);
   const h = num(raw.h);
   if (w < 1 || h < 1) return null;
+  ctr.n++;
 
   const node: FigmaSceneNode = {
     type,
@@ -237,6 +408,7 @@ function cleanNode(raw: RawNode): FigmaSceneNode | null {
     h: Math.round(h),
   };
   if (typeof raw.dsComponent === "string") node.dsComponent = raw.dsComponent;
+  if (raw.absolute === true) node.absolute = true;
   if (typeof raw.radius === "number" && raw.radius > 0) node.radius = Math.round(num(raw.radius));
   if (typeof raw.opacity === "number" && raw.opacity < 1) node.opacity = raw.opacity;
 
@@ -247,9 +419,24 @@ function cleanNode(raw: RawNode): FigmaSceneNode | null {
       node.stroke = { color: s.color, weight: num(s.weight, 1) };
     if (raw.props && typeof raw.props === "object")
       node.props = raw.props as Record<string, string>;
+    const lyt = cleanLayout(raw.layout);
+    if (lyt) node.layout = lyt;
+    if (Array.isArray(raw.children) && raw.children.length) {
+      const kids: FigmaSceneNode[] = [];
+      for (const rk of raw.children as RawNode[]) {
+        if (ctr.n >= MAX_SCENE_NODES) break;
+        const c = cleanNode(rk ?? {}, ctr);
+        if (c) kids.push(c);
+      }
+      if (kids.length) node.children = kids;
+    }
   } else if (type === "image") {
     // data: URL 만 통과(외부 URL 은 무유출 기조상 버린다 → 빈 박스 회귀).
     if (typeof raw.image === "string" && raw.image.startsWith("data:")) node.image = raw.image;
+    else return null;
+  } else if (type === "svg") {
+    // <svg> 마크업. 비어 있으면 떨군다.
+    if (typeof raw.svg === "string" && raw.svg.trim()) node.svg = raw.svg;
     else return null;
   } else {
     // text
@@ -281,16 +468,18 @@ export function normalizeScene(raw: unknown): FigmaScene {
     nodes?: unknown;
   };
   const rawNodes = Array.isArray(r.nodes) ? (r.nodes as RawNode[]) : [];
+  const ctr = { n: 0 };
   const nodes: FigmaSceneNode[] = [];
   for (const rn of rawNodes) {
-    if (nodes.length >= MAX_SCENE_NODES) break;
-    const cleaned = cleanNode(rn ?? {});
+    if (ctr.n >= MAX_SCENE_NODES) break;
+    const cleaned = cleanNode(rn ?? {}, ctr);
     if (cleaned) nodes.push(cleaned);
   }
   return {
     version: num(r.version, 1),
     width: Math.max(1, Math.round(num(r.width, 1))),
     height: Math.max(1, Math.round(num(r.height, 1))),
+    rootLayout: cleanLayout((r as { rootLayout?: unknown }).rootLayout),
     nodes,
   };
 }
