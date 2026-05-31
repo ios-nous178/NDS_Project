@@ -3,13 +3,18 @@ import { c } from "../ui/theme.js";
 export type Viewport = "web" | "app";
 
 /** 앱(모바일) 뷰포트 프레임 폭. iPhone 14-ish. */
-const APP_WIDTH = 390;
+export const APP_WIDTH = 390;
 /** 웹 뷰포트의 고정 논리 폭 — DS 데스크톱 캔버스(=mockup-screen[data-device=web], 헤더 max-width 1440)와 일치.
  *  미리보기 패널 폭과 무관하게 항상 이 폭으로 렌더해 ① 목업끼리 폭이 일정하고
  *  ② 확대/축소가 "화면(논리 폭)은 고정 + 시각 배율만 변경"으로 동작한다. */
-const WEB_WIDTH = 1440;
+export const WEB_WIDTH = 1440;
 /** 앱 폰 프레임 논리 높이(iPhone 14-ish). */
-const APP_HEIGHT = 844;
+export const APP_HEIGHT = 844;
+/** 앱 뷰포트 컨테이너의 좌우/상하 패딩(아래 렌더와 동일하게 유지). 화면맞춤 계산에 사용. */
+export const APP_PADDING = 16;
+/** zoom 배율 허용 범위. 툴바와 화면맞춤 계산이 공유한다. */
+export const ZOOM_MIN = 0.25;
+export const ZOOM_MAX = 3;
 
 /**
  * 목업 미리보기. 웹 = 고정 논리 폭(1440)의 데스크톱 캔버스, 앱 = 모바일 폰 프레임(390×844).

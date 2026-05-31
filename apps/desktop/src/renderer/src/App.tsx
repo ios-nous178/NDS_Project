@@ -2,7 +2,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import type { ChatSession, UpdateCheckResult } from "../../preload/index.js";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
-import { PreviewPanel, type Viewport } from "./panels/PreviewPanel.js";
+import {
+  PreviewPanel,
+  type Viewport,
+  APP_WIDTH,
+  APP_HEIGHT,
+  APP_PADDING,
+  WEB_WIDTH,
+  ZOOM_MIN,
+  ZOOM_MAX,
+} from "./panels/PreviewPanel.js";
+import { ZoomControl } from "./ui/ZoomControl.js";
 import { FeedbackPanel } from "./panels/FeedbackPanel.js";
 import { AgentPanel, type NewChatRequest } from "./panels/AgentPanel.js";
 import { SessionHistoryPanel, sessionTitle } from "./panels/SessionHistoryPanel.js";
@@ -66,10 +76,29 @@ export function App(): React.JSX.Element {
   const [viewport, setViewport] = useState<Viewport>("web");
   // 미리보기 확대/축소 — 0.25~3.0, 0.1 단위. 결과물 디테일 확인/전체 조망용.
   const [zoom, setZoom] = useState(1);
-  const adjustZoom = useCallback(
-    (delta: number) => setZoom((z) => clampNum(Math.round((z + delta) * 100) / 100, 0.25, 3)),
+  // 미리보기 영역 DOM — 화면맞춤(가용 크기 기준 배율 계산)에 사용.
+  const previewBoxRef = useRef<HTMLDivElement>(null);
+  const setZoomClamped = useCallback(
+    (z: number) => setZoom(clampNum(Math.round(z * 100) / 100, ZOOM_MIN, ZOOM_MAX)),
     [],
   );
+  const adjustZoom = useCallback(
+    (delta: number) =>
+      setZoom((z) => clampNum(Math.round((z + delta) * 100) / 100, ZOOM_MIN, ZOOM_MAX)),
+    [],
+  );
+  // 화면맞춤: 미리보기 가용 영역에 목업이 꽉 차도록 배율 산출. 웹은 폭 기준, 앱은 폭·높이 중 작은 쪽.
+  const fitToScreen = useCallback(() => {
+    const box = previewBoxRef.current;
+    if (!box) return;
+    if (viewport === "web") {
+      setZoomClamped(box.clientWidth / WEB_WIDTH);
+    } else {
+      const availW = box.clientWidth - APP_PADDING * 2;
+      const availH = box.clientHeight - APP_PADDING * 2;
+      setZoomClamped(Math.min(availW / APP_WIDTH, availH / APP_HEIGHT));
+    }
+  }, [viewport, setZoomClamped]);
   // 채팅기록
   const [liveSessionId, setLiveSessionId] = useState<string | null>(null);
   const [historyRefresh, setHistoryRefresh] = useState(0);
@@ -622,39 +651,13 @@ export function App(): React.JSX.Element {
                   </button>
                 </div>
                 <span style={{ width: 1, height: 16, background: c.border, margin: "0 4px" }} />
-                {/* 확대/축소 — −/퍼센트(클릭=100% 리셋)/+. */}
-                <div style={segGroup}>
-                  <button
-                    onClick={() => adjustZoom(-0.1)}
-                    disabled={zoom <= 0.25}
-                    title="축소"
-                    aria-label="축소"
-                    style={{ ...segItem, padding: "3px 9px", opacity: zoom <= 0.25 ? 0.4 : 1 }}
-                  >
-                    −
-                  </button>
-                  <button
-                    onClick={() => setZoom(1)}
-                    title="100% 로 리셋"
-                    style={{
-                      ...segItem,
-                      padding: "3px 6px",
-                      minWidth: 44,
-                      justifyContent: "center",
-                    }}
-                  >
-                    {Math.round(zoom * 100)}%
-                  </button>
-                  <button
-                    onClick={() => adjustZoom(0.1)}
-                    disabled={zoom >= 3}
-                    title="확대"
-                    aria-label="확대"
-                    style={{ ...segItem, padding: "3px 9px", opacity: zoom >= 3 ? 0.4 : 1 }}
-                  >
-                    +
-                  </button>
-                </div>
+                {/* 확대/축소 — −/퍼센트(클릭=메뉴: 화면맞춤·실제 크기·프리셋)/+. */}
+                <ZoomControl
+                  zoom={zoom}
+                  onAdjust={adjustZoom}
+                  onSet={setZoomClamped}
+                  onFit={fitToScreen}
+                />
                 <span style={{ width: 1, height: 16, background: c.border, margin: "0 4px" }} />
                 <button
                   onClick={() => previewRel && window.harness.openMockupWindow(previewRel)}
@@ -689,7 +692,7 @@ export function App(): React.JSX.Element {
             )}
           </div>
 
-          <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+          <div ref={previewBoxRef} style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
             {tab === "preview" &&
               (isAdminCms ? (
                 <div
