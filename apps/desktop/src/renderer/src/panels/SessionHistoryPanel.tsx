@@ -449,10 +449,24 @@ export function SessionHistoryPanel({
                       {sessionTitle(s)}
                     </span>
                   )}
-                  {/* canary 는 카드 우측 상단 absolute 로만 노출(아래). LIVE 는 편집 중엔 숨겨
-                      입력창과 겹치지 않게 한다. */}
+                  {/* canary 는 카드 우측 하단 absolute 로만 노출(아래). LIVE 는 편집 중엔 숨겨
+                      입력창과 겹치지 않게 한다. 배지 톤(보더+패딩)으로 다른 표식과 통일. */}
                   {isLive && !isEditing && (
-                    <span style={{ color: c.green, fontSize: 10, flexShrink: 0 }}>LIVE</span>
+                    <span
+                      style={{
+                        flexShrink: 0,
+                        fontSize: 9,
+                        fontWeight: 700,
+                        letterSpacing: 0.3,
+                        color: c.green,
+                        border: `1px solid ${c.green}`,
+                        borderRadius: 4,
+                        padding: "0 4px",
+                        lineHeight: "14px",
+                      }}
+                    >
+                      LIVE
+                    </span>
                   )}
                 </div>
                 <div
@@ -487,31 +501,23 @@ export function SessionHistoryPanel({
                   </span>
                 </div>
               </div>
-              {/* 구조화(canary) 표식 — 카드 우측 상단 고정. 삭제 버튼(hover)과 자리가
-                  겹치지 않게, hover 시엔 숨겨 삭제 버튼에 양보한다. */}
-              {s.transport === "stream-json" &&
-                !isEditing &&
-                !(hovered === s.sessionId && !isLive) && (
-                  <span
-                    title="구조화(canary) 세션 — claude stream-json"
-                    style={{
-                      position: "absolute",
-                      top: 6,
-                      right: 7,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 3,
-                      color: c.textMuted,
-                      fontSize: 9,
-                      fontWeight: 700,
-                      letterSpacing: 0.3,
-                      pointerEvents: "none",
-                    }}
-                  >
-                    <CanaryBird size={10} />
-                    canary
-                  </span>
-                )}
+              {/* 구조화(canary) 표식 — 카드 우측 하단에 아이콘만 고정. LIVE(타이틀 행)·삭제
+                  버튼(우측 상단)과 자리가 겹치지 않는다. 편집 중엔 숨긴다. */}
+              {s.transport === "stream-json" && !isEditing && (
+                <span
+                  title="구조화(canary) 세션 — claude stream-json"
+                  style={{
+                    position: "absolute",
+                    bottom: 7,
+                    right: 9,
+                    display: "inline-flex",
+                    color: c.textMuted,
+                    pointerEvents: "none",
+                  }}
+                >
+                  <CanaryBird size={11} />
+                </span>
+              )}
               {/* 라이브 세션은 삭제 불가(먼저 중지) — hover 시에만 노출. 편집 중엔 숨김. */}
               {!isLive && !isEditing && hovered === s.sessionId && (
                 <button
