@@ -478,7 +478,19 @@ export function App(): React.JSX.Element {
             onSelect={(s) => {
               const live = s.sessionId === liveSessionId;
               setViewing(live ? null : s);
-              if (live) return;
+              if (live) {
+                // 라이브 세션으로 복귀 — 과거 세션을 보느라 꺼둔 자동추적을 다시 켜고,
+                // 이미 만들어진 라이브 목업이 있으면 즉시 미리보기에 복원한다(미리보기 있는
+                // 채팅 → 미리보기 있는 채팅 이동 시 미리보기가 안 바뀌던 이슈).
+                setAutoFollow(true);
+                if (s.mockupFile && s.intent !== "admin-cms") {
+                  setActiveIntent("html");
+                  setPreviewRel(s.mockupFile);
+                  setTab("preview");
+                  setBust((b) => b + 1);
+                }
+                return;
+              }
               setAutoFollow(false); // 과거 세션을 명시적으로 봄 → 라이브 자동추적 해제
               if (s.mockupFile && s.intent !== "admin-cms") {
                 setActiveIntent("html");

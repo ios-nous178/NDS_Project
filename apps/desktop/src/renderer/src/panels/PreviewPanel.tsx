@@ -4,10 +4,17 @@ export type Viewport = "web" | "app";
 
 /** 앱(모바일) 뷰포트 프레임 폭. iPhone 14-ish. */
 const APP_WIDTH = 390;
+/** 웹 뷰포트의 고정 논리 폭 — DS 데스크톱 캔버스(=mockup-screen[data-device=web], 헤더 max-width 1440)와 일치.
+ *  미리보기 패널 폭과 무관하게 항상 이 폭으로 렌더해 ① 목업끼리 폭이 일정하고
+ *  ② 확대/축소가 "화면(논리 폭)은 고정 + 시각 배율만 변경"으로 동작한다. */
+const WEB_WIDTH = 1440;
+/** 앱 폰 프레임 논리 높이(iPhone 14-ish). */
+const APP_HEIGHT = 844;
 
 /**
- * 목업 미리보기. 웹 = 전체폭, 앱 = 가운데 정렬된 모바일 폰 프레임(반응형 확인용).
- * iframe 자체는 동일 산출물을 가리키고 컨테이너 폭만 바꾼다.
+ * 목업 미리보기. 웹 = 고정 논리 폭(1440)의 데스크톱 캔버스, 앱 = 모바일 폰 프레임(390×844).
+ * iframe 의 논리 크기는 항상 고정하고 zoom 은 transform: scale 로 시각 배율만 바꾼다
+ * (패널을 줄여도 목업 폭은 그대로 — 줄어드는 건 배율뿐). 넘치면 컨테이너가 스크롤한다.
  */
 export function PreviewPanel({
   relPath,
@@ -102,22 +109,25 @@ export function PreviewPanel({
         }}
       >
         {liveBadge}
-        {/* iframe 논리 폭은 컨테이너 폭(100%)을 유지(반응형 불변) — 시각적으로만 scale. */}
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            transform: `scale(${zoom})`,
-            transformOrigin: "0 0",
-          }}
-        >
-          {frame}
+        {/* 사이징 박스: 실제 차지 폭 = WEB_WIDTH*zoom. margin auto 로 패널보다 작으면 가운데,
+            크면 가로 스크롤. 안쪽 iframe 은 논리 폭 WEB_WIDTH 고정 + scale(zoom)(origin 0 0). */}
+        <div style={{ width: WEB_WIDTH * zoom, height: "100%", margin: "0 auto" }}>
+          <div
+            style={{
+              width: WEB_WIDTH,
+              height: `${100 / zoom}%`,
+              transform: `scale(${zoom})`,
+              transformOrigin: "0 0",
+            }}
+          >
+            {frame}
+          </div>
         </div>
       </div>
     );
   }
 
-  // 앱: 가운데 정렬된 폰 프레임.
+  // 앱: 가운데 정렬된 폰 프레임(390×844 논리 고정 + scale(zoom)).
   return (
     <div
       style={{
@@ -134,23 +144,24 @@ export function PreviewPanel({
       }}
     >
       {liveBadge}
-      <div
-        style={{
-          width: APP_WIDTH,
-          maxWidth: "100%",
-          height: "100%",
-          maxHeight: 844,
-          borderRadius: 24,
-          border: `8px solid #000`,
-          overflow: "hidden",
-          background: "#fff",
-          boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
-          flexShrink: 0,
-          transform: `scale(${zoom})`,
-          transformOrigin: "center center",
-        }}
-      >
-        {frame}
+      {/* 사이징 박스 = 폰 프레임의 시각 크기(논리 크기 × zoom) — flex 가운데 정렬이 이 박스를 잡는다. */}
+      <div style={{ width: APP_WIDTH * zoom, height: APP_HEIGHT * zoom, flexShrink: 0 }}>
+        <div
+          style={{
+            width: APP_WIDTH,
+            height: APP_HEIGHT,
+            boxSizing: "border-box",
+            borderRadius: 24,
+            border: `8px solid #000`,
+            overflow: "hidden",
+            background: "#fff",
+            boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
+            transform: `scale(${zoom})`,
+            transformOrigin: "0 0",
+          }}
+        >
+          {frame}
+        </div>
       </div>
     </div>
   );
