@@ -334,22 +334,20 @@ export function App(): React.JSX.Element {
         </div>
         <button
           onClick={() => void openMockupIntake()}
-          title="기획서·레퍼런스로 목업 제작"
-          // 메인 액션 — 색(accent)은 유지하되 크기·굵기·글로우로 더 눈에 띄게.
+          title="기획서·레퍼런스로 목업 만들기"
+          className="nds-cta-primary"
+          // 메인 액션 — 주변이 전부 ghost 라 이 단색 옐로 하나만으로 강조된다(미니멀).
+          // 평소 장식 0, hover 때만 살짝 떠오름 + 부드러운 글로우(.nds-cta-primary, global.css).
           style={{
             ...primaryBtn,
             ...noDrag,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "7px 18px",
+            padding: "7px 16px",
             fontSize: 13,
-            fontWeight: 700,
-            boxShadow: `0 0 0 1px ${c.accent}, 0 2px 10px rgba(255,211,61,0.35)`,
+            fontWeight: 600,
+            borderRadius: 8,
           }}
         >
-          <span style={{ fontSize: 14, lineHeight: 1, marginTop: -1 }}>+</span>
-          목업 제작
+          목업 만들기
         </button>
         <div
           style={{ ...noDrag, marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}
