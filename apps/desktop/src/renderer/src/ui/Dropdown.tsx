@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { c, font, input, mono as monoFont } from "./theme.js";
+import { btnReset, c, font, input, mono as monoFont } from "./theme.js";
 
 /**
  * 다크 테마 커스텀 드롭다운 — 네이티브 <select> 대체.
@@ -54,6 +54,9 @@ export function Dropdown({
         disabled={disabled}
         onClick={() => setOpen((o) => !o)}
         style={{
+          // btnReset 가 input 보다 먼저 깔려야 macOS Chromium 의 네이티브 버튼 베젤(투명
+          // bg 위 검정 링)/focus outline 이 사라진다 — input 은 appearance 를 안 건드린다.
+          ...btnReset,
           ...input,
           display: "flex",
           alignItems: "center",
