@@ -1,6 +1,7 @@
 import { existsSync, mkdtempSync, writeFileSync, watchFile, unwatchFile, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { delimiter, join } from "node:path";
+import { delimiter, dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawn as cpSpawn, type ChildProcess } from "node:child_process";
 import { spawn as ptySpawn, type IPty } from "node-pty";
 import { Notification, BrowserWindow, type WebContents } from "electron";
@@ -77,7 +78,8 @@ export function checkAgent(agentType: AgentType): AgentCheck {
   const searchPath = agentSearchPath();
   const npmFound = resolveBin("npm", searchPath) !== null;
   return {
-    found: resolveBin(spec.bin, searchPath) !== null,
+    // PATH 설치본 또는 앱 동봉본(claude) 둘 중 하나라도 있으면 found — 설치 안내를 띄우지 않는다.
+    found: resolveAgentBin(agentType, searchPath) !== null,
     canAutoInstall: Boolean(spec.npmPackage) && npmFound,
     npmFound,
   };
@@ -257,6 +259,52 @@ function resolveBin(bin: string, searchPath: string): string | null {
   return null;
 }
 
+const moduleDir = dirname(fileURLToPath(import.meta.url));
+
+/**
+ * 앱 동봉 claude 네이티브 바이너리 경로(있으면). 사용자 PATH 에서 claude 를 못 찾을 때의
+ * 폴백 — 받는 사람이 claude 를 따로 설치/로그인하지 않아도 앱이 바로 동작한다.
+ *  · packaged: resources/claude/{platform}-{arch}/claude(.exe)  (electron-builder extraResources)
+ *  · dev     : <monorepo>/apps/desktop/.claude-bundle/{platform}-{arch}/claude(.exe)
+ * claude 는 플랫폼별 self-contained 실행파일이라 node 없이 그대로 spawn 된다. 로그인 자격
+ * (~/.claude)은 어느 바이너리든 공유하므로 사용자 로그인이 그대로 유효하다.
+ * (번들을 빼면 두 후보 모두 부재 → null → 자동으로 PATH 전용 동작으로 복귀.)
+ */
+let cachedBundledClaude: string | null | undefined;
+function resolveBundledClaude(): string | null {
+  if (cachedBundledClaude !== undefined) return cachedBundledClaude;
+  const archDir = `${process.platform}-${process.arch}`;
+  const binName = isWindows ? "claude.exe" : "claude";
+
+  const resourcesPath = (process as NodeJS.Process & { resourcesPath?: string }).resourcesPath;
+  if (resourcesPath) {
+    const packaged = join(resourcesPath, "claude", archDir, binName);
+    if (existsSync(packaged)) return (cachedBundledClaude = packaged);
+  }
+
+  // dev/모노레포: moduleDir(out/main/…) 에서 위로 올라가며 .claude-bundle 탐색.
+  let dir = moduleDir;
+  for (let i = 0; i < 8; i += 1) {
+    const candidate = join(dir, ".claude-bundle", archDir, binName);
+    if (existsSync(candidate)) return (cachedBundledClaude = candidate);
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return (cachedBundledClaude = null);
+}
+
+/**
+ * 에이전트 실행 바이너리 해석. 사용자 PATH 설치본을 우선하고(최신/로그인/커스텀 설정 존중),
+ * 없을 때만 앱 동봉본으로 폴백한다(claude 한정 — codex 는 동봉하지 않음).
+ */
+function resolveAgentBin(agentType: AgentType, searchPath: string): string | null {
+  const onPath = resolveBin(AGENT_SPECS[agentType].bin, searchPath);
+  if (onPath) return onPath;
+  if (agentType === "claude") return resolveBundledClaude();
+  return null;
+}
+
 function cleanEnv(env: NodeJS.ProcessEnv): { [key: string]: string } {
   const out: { [key: string]: string } = {};
   for (const [k, v] of Object.entries(env)) if (typeof v === "string") out[k] = v;
@@ -406,7 +454,8 @@ export function startAgent(
   };
 
   const searchPath = agentSearchPath();
-  const binPath = resolveBin(spec.bin, searchPath);
+  // 사용자 PATH 설치본 우선, 없으면 앱 동봉 claude 로 폴백.
+  const binPath = resolveAgentBin(args.agentType, searchPath);
   if (!binPath) {
     logAppEvent(args.projectPath, {
       type: "agent_failed",
