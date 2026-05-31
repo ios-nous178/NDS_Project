@@ -142,13 +142,15 @@ function agentSearchPath(): string {
  */
 function binCandidates(bin: string): string[] {
   if (!isWindows) return [bin];
-  // .exe 를 먼저 — 직접 spawn 가능. .cmd/.bat 은 cmd.exe 경유 필요(아래 startAgent 참고).
+  // Windows npm global install creates both `claude` (shell shim) and `claude.cmd`.
+  // The extensionless shim is not a Win32 executable and causes spawn error 193, so
+  // prefer PATHEXT candidates and keep the bare name only as a last fallback.
   const exts = (process.env.PATHEXT ?? ".EXE;.CMD;.BAT")
     .split(";")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
   const ordered = [".exe", ".cmd", ".bat", ...exts].filter((e, i, a) => a.indexOf(e) === i);
-  return [bin, ...ordered.map((e) => `${bin}${e}`)];
+  return [...ordered.map((e) => `${bin}${e}`), bin];
 }
 
 function resolveBin(bin: string, searchPath: string): string | null {
@@ -371,8 +373,10 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
   // Windows: .cmd/.bat 은 실행 파일이 아니라 CreateProcess 로 직접 spawn 불가 →
   // cmd.exe /c 로 감싼다. .exe 는 그대로 직접 spawn (가장 견고).
   const useCmdWrapper = isWindows && /\.(cmd|bat)$/i.test(binPath);
-  const spawnFile = useCmdWrapper ? (process.env.ComSpec ?? "cmd.exe") : binPath;
-  const spawnArgs = useCmdWrapper ? ["/c", binPath, ...ptyArgs] : ptyArgs;
+  const spawnFile = useCmdWrapper
+    ? (process.env.ComSpec ?? process.env.COMSPEC ?? "cmd.exe")
+    : binPath;
+  const spawnArgs = useCmdWrapper ? ["/d", "/s", "/c", binPath, ...ptyArgs] : ptyArgs;
 
   let proc: IPty;
   try {
@@ -473,8 +477,10 @@ function startStreamAgent(
 
   // Windows .cmd/.bat 은 직접 spawn 불가 → cmd.exe /c 경유(PTY 경로와 동일 규칙).
   const useCmdWrapper = isWindows && /\.(cmd|bat)$/i.test(binPath);
-  const spawnFile = useCmdWrapper ? (process.env.ComSpec ?? "cmd.exe") : binPath;
-  const spawnArgs = useCmdWrapper ? ["/c", binPath, ...streamArgs] : streamArgs;
+  const spawnFile = useCmdWrapper
+    ? (process.env.ComSpec ?? process.env.COMSPEC ?? "cmd.exe")
+    : binPath;
+  const spawnArgs = useCmdWrapper ? ["/d", "/s", "/c", binPath, ...streamArgs] : streamArgs;
 
   let child: ChildProcess;
   try {
