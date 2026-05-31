@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import type { AgentType, ScreenshotInput } from "../../../preload/index.js";
+import type { AgentType, Platform, ScreenshotInput, Transport } from "../../../preload/index.js";
 import { Dropdown } from "../ui/Dropdown.js";
 import {
   c,
@@ -152,8 +152,12 @@ export function IntakeModal({
   onStarted: (sessionId: string, intent: "html" | "admin-cms", slug: string) => void;
 }): React.JSX.Element {
   const [agentType, setAgentType] = useState<AgentType>("claude");
+  // 전송 방식 — pty(기본 raw TUI) / stream-json(구조화 canary, claude 전용).
+  const [transport, setTransport] = useState<Transport>("pty");
   const [brand, setBrand] = useState("");
   const [surface, setSurface] = useState<Surface>("service");
+  // 고객용 화면의 제작 대상 플랫폼(웹 데스크탑/모바일/반응형 · 앱).
+  const [platform, setPlatform] = useState<Platform>("web-responsive");
   const [screenName, setScreenName] = useState("");
   const [slug, setSlug] = useState("");
   const [slugDirty, setSlugDirty] = useState(false);
@@ -232,7 +236,11 @@ export function IntakeModal({
         screenName: screenName.trim(),
         slug: slugDirty ? slug.trim() : undefined,
         prd,
+        platform: surface === "service" ? platform : undefined,
         extraRequirements: extra,
+        // 구조화(canary)는 claude 전용 — codex 면 startIntake/agent-runner 가 pty 로 강제하지만
+        // 여기서도 보내는 값을 일치시킨다.
+        transport: agentType === "claude" ? transport : "pty",
         screenshots: shots.map((s) => ({
           fileName: s.fileName,
           sourcePath: s.sourcePath,
@@ -267,6 +275,7 @@ export function IntakeModal({
     projectPath,
     brand,
     surface,
+    platform,
     screenName,
     slug,
     slugDirty,
@@ -276,6 +285,7 @@ export function IntakeModal({
     docs,
     figma,
     agentType,
+    transport,
     directionMode,
     selectedDirection,
     onStarted,
@@ -324,16 +334,70 @@ export function IntakeModal({
               기획서와 레퍼런스를 먼저 고정한 뒤 에이전트를 시작합니다.
             </div>
           </div>
-          <div style={{ marginLeft: "auto", display: "flex", gap: 2, ...segGroup }}>
-            {(["claude", "codex"] as AgentType[]).map((t) => (
-              <button
-                key={t}
-                onClick={() => setAgentType(t)}
-                style={agentType === t ? segItemActive : segItem}
-              >
-                {t === "claude" ? "Claude" : "Codex"}
-              </button>
-            ))}
+          <div
+            style={{
+              marginLeft: "auto",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              gap: 6,
+            }}
+          >
+            <div style={{ display: "flex", gap: 2, ...segGroup }}>
+              {(["claude", "codex"] as AgentType[]).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => {
+                    setAgentType(t);
+                    // 구조화(canary)는 claude 전용 — codex 로 바꾸면 pty 로 되돌린다.
+                    if (t !== "claude") setTransport("pty");
+                  }}
+                  style={agentType === t ? segItemActive : segItem}
+                >
+                  {t === "claude" ? "Claude" : "Codex"}
+                </button>
+              ))}
+            </div>
+            {/* 구조화(canary) — Claude stream-json. codex 면 비활성. */}
+            <button
+              onClick={() =>
+                agentType === "claude" &&
+                setTransport((tp) => (tp === "stream-json" ? "pty" : "stream-json"))
+              }
+              disabled={agentType !== "claude"}
+              title={
+                agentType === "claude"
+                  ? "Claude 의 stream-json 출력을 카드형 채팅으로 보여주는 실험 모드"
+                  : "구조화(canary)는 Claude 전용입니다"
+              }
+              style={{
+                ...segItem,
+                gap: 6,
+                padding: "3px 10px",
+                borderRadius: 999,
+                border: `1px solid ${transport === "stream-json" ? c.accent : c.border}`,
+                background: transport === "stream-json" ? c.accentBg : "transparent",
+                color:
+                  agentType !== "claude"
+                    ? c.textFaint
+                    : transport === "stream-json"
+                      ? c.accent
+                      : c.textMuted,
+                cursor: agentType === "claude" ? "pointer" : "not-allowed",
+                fontSize: 11,
+              }}
+            >
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: transport === "stream-json" ? c.accent : "transparent",
+                  border: `1px solid ${transport === "stream-json" ? c.accent : c.textFaint}`,
+                }}
+              />
+              구조화 (canary)
+            </button>
           </div>
         </div>
 
@@ -371,6 +435,26 @@ export function IntakeModal({
             </div>
           )}
         </div>
+
+        {surface === "service" && (
+          <div style={field}>
+            {label("어디에 쓰는 화면인가요? *")}
+            <Dropdown
+              value={platform}
+              options={[
+                { value: "web-responsive", label: "웹 · 데스크탑+모바일(반응형)" },
+                { value: "web-desktop", label: "웹 · 데스크탑" },
+                { value: "web-mobile", label: "웹 · 모바일" },
+                { value: "app", label: "앱 (모바일 네이티브 느낌)" },
+              ]}
+              onChange={(v) => setPlatform(v as Platform)}
+              placeholder="플랫폼 선택"
+            />
+            <div style={{ color: c.textMuted, fontSize: 11, lineHeight: 1.5, marginTop: 6 }}>
+              에이전트가 반응형 폭·레이아웃·인터랙션을 이 폼팩터에 맞춰 제작합니다.
+            </div>
+          </div>
+        )}
 
         <div style={field}>
           {label("화면 이름 *")}

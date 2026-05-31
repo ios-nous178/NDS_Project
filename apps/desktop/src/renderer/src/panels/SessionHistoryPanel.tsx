@@ -466,6 +466,9 @@ export function SessionHistoryPanel({
                         borderRadius: 4,
                         padding: "0 4px",
                         lineHeight: "14px",
+                        // 라이브 카드엔 삭제 버튼이 안 뜨므로(중지 먼저), 우측 예약폭(28px)으로
+                        // 배지를 더 밀어 카드 오른쪽 끝에 가깝게 정렬한다.
+                        marginRight: -18,
                       }}
                     >
                       LIVE

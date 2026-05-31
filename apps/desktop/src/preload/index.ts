@@ -19,7 +19,7 @@ export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.
 export type { AgentType, StartAgentArgs } from "../main/agent-runner.js";
 export type { ChatSession, Transport } from "../main/sessions.js";
 export type { ChatMessage } from "../main/chat-types.js";
-export type { RunIntakeArgs, ScreenshotInput, Surface } from "../main/intake.js";
+export type { Platform, RunIntakeArgs, ScreenshotInput, Surface } from "../main/intake.js";
 export type { UpdateCheckResult } from "../main/update-check.js";
 
 /** intake:start 요청 — RunIntakeArgs(projectPath 제외, 렌더러가 주입 안 함) + 터미널 치수 + transport. */

@@ -15,6 +15,29 @@ import type { AgentType } from "./agent-runner.js";
 
 export type Surface = "service" | "admin";
 
+/**
+ * 제작 대상 플랫폼/폼팩터 — 고객용(service) 화면에서 묻는다(admin 은 항상 데스크탑 웹).
+ * 에이전트가 반응형 폭·인터랙션·레이아웃을 어디에 맞출지 결정하는 핵심 입력.
+ */
+export type Platform = "web-desktop" | "web-mobile" | "web-responsive" | "app";
+
+const PLATFORM_LABELS: Record<Platform, string> = {
+  "web-desktop": "웹 · 데스크탑",
+  "web-mobile": "웹 · 모바일",
+  "web-responsive": "웹 · 데스크탑+모바일(반응형)",
+  app: "앱(모바일 네이티브 느낌)",
+};
+
+const PLATFORM_GUIDANCE: Record<Platform, string> = {
+  "web-desktop":
+    "데스크탑 웹 기준(넓은 뷰포트). 좌우 여백·다단 레이아웃·호버 인터랙션을 활용하고, 모바일 전용 패턴(바텀시트/탭바)은 피한다.",
+  "web-mobile":
+    "모바일 웹 기준(좁은 뷰포트, ~390px). 한 손 조작·세로 스크롤·큰 탭 타겟. 데스크탑 전용 호버 의존 금지.",
+  "web-responsive":
+    "데스크탑+모바일 반응형. 모바일(~390px)과 데스크탑(~1280px) 양쪽이 자연스럽게 동작하도록 브레이크포인트를 설계한다.",
+  app: "모바일 앱 화면(네이티브 느낌). 앱 헤더/바텀 내비 등 브랜드 앱 크롬을 사용하고 ~390px 폭을 기준으로 한다.",
+};
+
 /** guides.ts:126 `DS_ADMIN_BRANDS` 미러 — 자체 어드민 디자인을 가진 브랜드(antd 우회, DS 로 제작). */
 const DS_ADMIN_BRANDS = ["cashwalk-biz"];
 
@@ -44,6 +67,8 @@ export interface RunIntakeArgs {
   slug?: string;
   prd: string;
   extraRequirements?: string;
+  /** 고객용 화면의 제작 대상 플랫폼(웹 데스크탑/모바일/반응형 · 앱). admin 이면 무시. */
+  platform?: Platform;
   screenshots: ScreenshotInput[];
   /** 기획 문서 첨부(brief/ 폴더에 저장 + brief.md 에 경로 노출). */
   attachments?: AttachmentInput[];
@@ -200,10 +225,14 @@ function briefDoc(args: RunIntakeArgs, intent: string, docNames: string[]): stri
       ? `\n### 확정/참고 방향\n${selectedDirection}\n`
       : "\n### 확정/참고 방향\n(미입력)\n"
   }\n### 판단 기준\n- PRD 에 첫 화면 강조점, 정보 우선순위, CTA 전략, 핵심 흐름이 명확하면 방향 제안 없이 진행.\n- 기능/데이터 목록만 있고 구성 전략이 불명확하면 코드 작성 전에 이 화면 안에서 가능한 UI/UX 방향 2-3개를 구체적으로 제안하고 사용자 선택을 기다림.\n- 방향 제안은 화면 유형 분류가 아니라 같은 기획서 안의 정보 위계, 사용자 흐름, CTA 배치, 불안/망설임 해소 전략 차이를 비교해야 함.\n`;
+  const platformSection =
+    args.surface === "service" && args.platform
+      ? `\n## 제작 대상 플랫폼\n- ${PLATFORM_LABELS[args.platform]}\n- ${PLATFORM_GUIDANCE[args.platform]}\n`
+      : "";
   return `# ${args.screenName}
 
 브랜드: ${args.brand} · 표면: ${args.surface} · intent: ${intent}
-
+${platformSection}
 ## 기획
 ${args.prd?.trim() || "(미입력)"}
 
@@ -227,7 +256,11 @@ function seedPrompt(args: RunIntakeArgs, intent: string, hasVisual: boolean): st
       : mode === "skip"
         ? "brief.md 의 기획/확정 방향을 기준으로 방향 재질문 없이 바로 생성해."
         : "brief.md 를 읽고 UI 방향이 명확하면 바로 생성하고, 불명확하면 코드 작성 전에 이 화면 안의 UI/UX 방향 2-3개를 먼저 제안한 뒤 사용자 선택을 기다려.";
-  return `이 폴더의 CLAUDE.md/AGENTS.md, ${hasVisual ? "references.md, " : ""}brief.md 를 먼저 읽고 목업을 만들어줘. 브랜드=${args.brand}, 표면=${args.surface}, 타겟 intent=${intent}. ${visualLine} ${visualGateLine} ${directionLine}`;
+  const platformLine =
+    args.surface === "service" && args.platform
+      ? `제작 대상 플랫폼=${PLATFORM_LABELS[args.platform]} (${PLATFORM_GUIDANCE[args.platform]}). `
+      : "";
+  return `이 폴더의 CLAUDE.md/AGENTS.md, ${hasVisual ? "references.md, " : ""}brief.md 를 먼저 읽고 목업을 만들어줘. 브랜드=${args.brand}, 표면=${args.surface}, 타겟 intent=${intent}. ${platformLine}${visualLine} ${visualGateLine} ${directionLine}`;
 }
 
 export function runIntake(args: RunIntakeArgs): RunIntakeResult {
