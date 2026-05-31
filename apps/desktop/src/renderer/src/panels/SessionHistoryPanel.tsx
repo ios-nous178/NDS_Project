@@ -66,27 +66,59 @@ const menuDivider: React.CSSProperties = {
   background: c.border,
 };
 
-/** 작고 통통한 카나리아 — 동그란 몸통 한 덩어리 + 짧은 부리/꼬리/눈. currentColor 채움. */
-function CanaryBird({ size = 11 }: { size?: number }): React.JSX.Element {
+/**
+ * 카나리아 아이콘 — 레퍼런스 이미지를 potrace 로 벡터 트레이싱. 눈은 path hole, currentColor.
+ * A/B 테스트용: CANARY_VARIANT 한 줄만 'A'(통통 병아리) / 'B'(든 날개 비둘기) 로 바꾸면 앱 전체 전환.
+ */
+function CanaryBirdA({ size = 11 }: { size?: number }): React.JSX.Element {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="0 0 73.078415 68.724102"
       fill="currentColor"
       aria-hidden="true"
       focusable="false"
     >
-      {/* 짧은 꼬리 (왼쪽 아래) */}
-      <path d="M5 14 1.5 13l2 3.5z" />
-      {/* 통통한 몸통+머리 (큰 원 한 덩어리) */}
-      <circle cx="12" cy="12" r="7" />
-      {/* 짧은 부리 (오른쪽) */}
-      <path d="M18.5 10.5l3.5 1-3.5 1z" />
-      {/* 눈 (배경색으로 파냄) */}
-      <circle cx="15" cy="10.4" r="1.1" fill="#1e1e1e" />
+      <g
+        transform="translate(-13.921585,83.084572) scale(0.100000,-0.100000)"
+        fill="currentColor"
+        stroke="none"
+      >
+        {" "}
+        <path d="M530 819 c-37 -15 -88 -68 -99 -103 -5 -17 -12 -64 -16 -104 -15 -174 -77 -241 -222 -242 -68 -1 -68 -1 -20 -44 57 -51 135 -92 207 -107 36 -8 50 -15 46 -24 -7 -20 62 -45 91 -32 16 7 36 5 75 -8 52 -17 52 -17 75 12 23 28 23 28 2 46 -12 9 -27 17 -35 17 -21 0 -18 6 32 55 58 59 100 149 116 249 11 74 14 80 50 103 21 14 38 28 38 30 0 2 -19 12 -42 23 -25 11 -53 34 -68 57 -48 71 -151 103 -230 72z m164 -125 c20 -19 20 -38 2 -54 -23 -19 -61 -8 -64 18 -7 44 32 67 62 36z" />{" "}
+      </g>
     </svg>
   );
+}
+
+function CanaryBirdB({ size = 11 }: { size?: number }): React.JSX.Element {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 82.682476 83.485674"
+      fill="currentColor"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g
+        transform="translate(-12.950433,92.000000) scale(0.100000,-0.100000)"
+        fill="currentColor"
+        stroke="none"
+      >
+        {" "}
+        <path d="M182 907 c-71 -85 -70 -307 2 -366 9 -8 26 -36 38 -64 14 -31 35 -60 60 -77 38 -28 38 -28 -13 -60 -105 -68 -129 -144 -64 -205 80 -76 242 -63 304 24 12 16 21 33 21 39 0 5 21 15 46 21 117 30 191 126 209 275 4 31 11 56 15 56 4 0 23 11 43 24 20 14 52 28 72 32 45 8 52 20 27 47 -11 12 -26 43 -32 69 -18 69 -56 101 -127 106 -74 5 -113 -20 -160 -100 -32 -54 -36 -58 -71 -58 -67 0 -139 45 -244 151 -53 55 -101 99 -106 99 -5 0 -14 -6 -20 -13z" />{" "}
+        <path d="M433 898 c-11 -13 -26 -34 -33 -46 -10 -21 -9 -27 11 -48 13 -14 47 -36 77 -51 55 -27 55 -27 73 -4 26 32 24 42 -12 77 -17 16 -39 44 -51 62 -23 38 -37 40 -65 10z" />{" "}
+      </g>
+    </svg>
+  );
+}
+
+const CANARY_VARIANT: "A" | "B" = "B";
+
+function CanaryBird(props: { size?: number }): React.JSX.Element {
+  return CANARY_VARIANT === "A" ? <CanaryBirdA {...props} /> : <CanaryBirdB {...props} />;
 }
 
 /**
@@ -357,8 +389,8 @@ export function SessionHistoryPanel({
                   width: "100%",
                   boxSizing: "border-box",
                   textAlign: "left",
-                  padding: "8px 28px 8px 10px",
-                  borderLeft: `2px solid ${isSelected ? c.accent : "transparent"}`,
+                  padding: "8px 28px 8px 12px",
+                  // 선택 강조는 배경(accentBg)만으로 — 왼쪽 노란 라인 제거.
                   borderRadius: 8,
                   background: isSelected ? c.accentBg : c.bgElevated,
                   color: c.text,
@@ -366,7 +398,16 @@ export function SessionHistoryPanel({
                   outline: "none",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+                {/* 타이틀 행 — 보기/편집 전환 시 높이가 안 바뀌도록 minHeight 고정 + 수직중앙. */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    minWidth: 0,
+                    minHeight: 18,
+                  }}
+                >
                   <AgentIcon type={s.agentType} />
                   {isEditing ? (
                     <input
@@ -385,13 +426,17 @@ export function SessionHistoryPanel({
                         flex: 1,
                         minWidth: 0,
                         boxSizing: "border-box",
-                        padding: "1px 5px",
-                        border: `1px solid ${c.accent}`,
+                        // 높이 18 = lineHeight 16 + 보더 1px*2. 보기 상태 행 높이와 일치시켜
+                        // 더블클릭 편집 진입 시 카드가 커지지 않게 한다. 보더는 은은한 회색.
+                        height: 18,
+                        padding: "0 5px",
+                        border: `1px solid ${c.border}`,
                         borderRadius: 4,
                         background: c.bg,
                         color: c.text,
                         fontSize: 12.5,
                         fontWeight: 600,
+                        lineHeight: "16px",
                         fontFamily: "inherit",
                         outline: "none",
                       }}
@@ -408,6 +453,7 @@ export function SessionHistoryPanel({
                         minWidth: 0,
                         fontSize: 12.5,
                         fontWeight: 600,
+                        lineHeight: "16px",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
@@ -416,7 +462,9 @@ export function SessionHistoryPanel({
                       {sessionTitle(s)}
                     </span>
                   )}
-                  {isLive && (
+                  {/* canary 는 카드 우측 상단 absolute 로만 노출(아래). LIVE 는 편집 중엔 숨겨
+                      입력창과 겹치지 않게 한다. */}
+                  {isLive && !isEditing && (
                     <span style={{ color: c.green, fontSize: 10, flexShrink: 0 }}>LIVE</span>
                   )}
                 </div>
@@ -455,7 +503,8 @@ export function SessionHistoryPanel({
               {/* 구조화(canary) 표식 — 카드 우측 상단 고정. 삭제 버튼(hover)과 자리가
                   겹치지 않게, hover 시엔 숨겨 삭제 버튼에 양보한다. */}
               {s.transport === "stream-json" &&
-                !(hovered === s.sessionId && !isLive && !isEditing) && (
+                !isEditing &&
+                !(hovered === s.sessionId && !isLive) && (
                   <span
                     title="구조화(canary) 세션 — claude stream-json"
                     style={{
