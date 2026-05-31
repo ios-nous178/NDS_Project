@@ -66,27 +66,25 @@ const menuDivider: React.CSSProperties = {
   background: c.border,
 };
 
-/** 작은 새 아이콘 — canary(카나리아=새) 컨셉. currentColor 상속(이모지 대신 SVG). */
-function CanaryBird({ size = 13 }: { size?: number }): React.JSX.Element {
+/** 작고 둥근 새 — canary(카나리아=새) 컨셉. 도형 조합(몸통+꼬리+부리+눈), currentColor 채움. */
+function CanaryBird({ size = 11 }: { size?: number }): React.JSX.Element {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor"
       aria-hidden="true"
       focusable="false"
     >
-      <path d="M16 7h.01" />
-      <path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20" />
-      <path d="m20 7 2 .5-2 .5" />
-      <path d="M10 18v3" />
-      <path d="M14 17.75V21" />
-      <path d="M7 18a6 6 0 0 0 3.84-10.61" />
+      {/* 꼬리 */}
+      <path d="M6 12 1 9.5l1 5z" />
+      {/* 통통한 몸통+머리 */}
+      <circle cx="11" cy="13" r="6.5" />
+      {/* 부리 */}
+      <path d="M16.5 11l5 1.5-5 1.5z" />
+      {/* 눈 (배경색으로 파냄) */}
+      <circle cx="13.5" cy="11" r="1" fill="#1e1e1e" />
     </svg>
   );
 }
@@ -286,7 +284,14 @@ export function SessionHistoryPanel({
                 onMouseEnter={(e) => (e.currentTarget.style.background = c.bgHover)}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
-                <span style={{ width: 13, display: "inline-flex", justifyContent: "center" }}>
+                <span
+                  style={{
+                    width: 13,
+                    display: "inline-flex",
+                    justifyContent: "center",
+                    color: c.text,
+                  }}
+                >
                   <CanaryBird />
                 </span>
                 <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
