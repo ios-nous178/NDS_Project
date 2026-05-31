@@ -1,12 +1,14 @@
 import { app, protocol, net } from "electron";
-import { existsSync, readFileSync, statSync } from "node:fs";
-import { dirname, extname, relative, resolve, sep } from "node:path";
+import { existsSync, readFileSync, statSync, appendFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   countHtmlUsage,
   detectDsVersions,
   injectDsStampBar,
   injectStandaloneRuntime,
+  inlineDsAssetReferencesInHtml,
 } from "@nudge-design/mockup-core";
 import { resolveBundledDsVersion } from "./ds-version.js";
 
@@ -83,7 +85,10 @@ export function registerMockupProtocol(): void {
         // 작업 중 원본엔 DS runtime/CSS 가 없다(빌드 시점에만 inline) → <nds-*> 가 업그레이드
         // 안 돼 옵션/자식 텍스트가 그대로 노출된다. 미리보기 서빙 직전에 in-memory 로 주입해
         // export 와 동일하게 렌더(원본 무변경·멱등, 이미 인라인된 dist 는 그대로 둠).
-        const html = injectStandaloneRuntime(raw);
+        const runtime = injectStandaloneRuntime(raw);
+        // DS 화면 자산(@nudge-design/assets/files/*) 을 export 와 동일하게 base64 인라인 —
+        // 안 하면 미리보기 iframe 이 규약 경로를 못 풀어 이미지가 엑박으로 깨진다.
+        const html = inlineDsAssetReferencesInHtml(runtime).html;
         // NDS% 는 작성자가 쓴 원본 기준 — 주입된 runtime/CSS 가 섞인 html 로 세지 않는다.
         const counts = countHtmlUsage(raw);
         // 동봉 DS 버전(=inline 되는 runtime/CSS 버전)을 우선, 없으면 폴더 기준 자동 감지.
@@ -97,8 +102,18 @@ export function registerMockupProtocol(): void {
           status: 200,
           headers: { "content-type": "text/html; charset=utf-8" },
         });
-      } catch {
-        // 주입 실패 시 원본 그대로 서빙(미리보기 자체는 살린다).
+      } catch (err) {
+        // 주입 실패 시 원본 그대로 서빙(미리보기 자체는 살린다). 단, 실패 원인을 더 이상
+        // 삼키지 않는다 — 콘솔 + 임시 로그 파일에 남겨 "CSS 안 뜸" 진단을 가능하게 한다.
+        const e = err as Error;
+        const line = `[${new Date().toISOString()}] mockup inject FAILED for ${abs}\n  ${e?.message}\n  ${(e?.stack ?? "").split("\n").slice(1, 5).join("\n  ")}\n`;
+
+        console.error("[mockup-protocol]", line);
+        try {
+          appendFileSync(join(tmpdir(), "nds-preview-error.log"), line);
+        } catch {
+          // 로그 파일 쓰기 실패는 무시.
+        }
       }
     }
 
