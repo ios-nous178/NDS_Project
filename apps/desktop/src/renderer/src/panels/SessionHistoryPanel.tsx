@@ -212,7 +212,10 @@ export function SessionHistoryPanel({
             style={{
               ...newChatBtn,
               marginLeft: 0,
-              ...(menuOpen ? { borderColor: c.accent, color: c.accent } : null),
+              // ⚠️ border 는 shorthand 전체로 지정. borderColor longhand 로 덮으면 메뉴를
+              //    닫을 때(active→inactive) React 가 longhand 만 제거해 border-color 가
+              //    검정으로 깨진다(theme.ts pillBtnActive 주석의 그 함정).
+              ...(menuOpen ? { border: `1px solid ${c.accent}`, color: c.accent } : null),
               ...(projectPath
                 ? null
                 : {
