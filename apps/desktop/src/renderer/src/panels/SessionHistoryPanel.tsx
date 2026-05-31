@@ -1,6 +1,70 @@
-import { useEffect, useState } from "react";
-import type { ChatSession } from "../../../preload/index.js";
-import { c, mono } from "../ui/theme.js";
+import { useEffect, useRef, useState } from "react";
+import type { AgentType, ChatSession, Transport } from "../../../preload/index.js";
+import { btnReset, c, mono } from "../ui/theme.js";
+
+/** 헤더 우측 "+ 새 채팅 ▾" — 은은한 보더 칩(다른 pill 톤과 통일). */
+const newChatBtn: React.CSSProperties = {
+  ...btnReset,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 4,
+  padding: "3px 9px",
+  borderRadius: 999,
+  border: `1px solid ${c.border}`,
+  background: "transparent",
+  color: c.text,
+  cursor: "pointer",
+  fontSize: 11.5,
+  fontWeight: 600,
+  whiteSpace: "nowrap",
+};
+
+/** 드롭다운 패널 — 버튼 우측 아래로 펼쳐지는 다크 메뉴. */
+const menuStyle: React.CSSProperties = {
+  position: "absolute",
+  top: "calc(100% + 6px)",
+  right: 0,
+  zIndex: 30,
+  minWidth: 184,
+  padding: 4,
+  borderRadius: 8,
+  border: `1px solid ${c.border}`,
+  background: c.bgElevated,
+  boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+};
+
+const menuLabel: React.CSSProperties = {
+  padding: "5px 8px 3px",
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: 0.3,
+  color: c.textFaint,
+  textTransform: "uppercase",
+};
+
+const menuItem: React.CSSProperties = {
+  ...btnReset,
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  width: "100%",
+  boxSizing: "border-box",
+  padding: "7px 8px",
+  borderRadius: 6,
+  border: "none",
+  background: "transparent",
+  color: c.text,
+  cursor: "pointer",
+  fontSize: 12.5,
+  fontWeight: 500,
+  textAlign: "left",
+};
+
+const menuDivider: React.CSSProperties = {
+  height: 1,
+  margin: "4px 6px",
+  background: c.border,
+};
 
 /**
  * 채팅기록 — 과거 에이전트 세션 리스트(.ds-chat-sessions.jsonl). 클릭하면 부모가
@@ -14,6 +78,8 @@ export function SessionHistoryPanel({
   selectedSessionId,
   onSelect,
   onDeleted,
+  onNewChat,
+  onNewMockup,
 }: {
   projectPath: string | null;
   /** 값이 바뀌면 리스트 재조회(세션 시작/종료 시). */
@@ -25,12 +91,35 @@ export function SessionHistoryPanel({
   onSelect: (session: ChatSession) => void;
   /** 세션 삭제 완료 — 부모가 보기 상태 정리/리스트 갱신. */
   onDeleted: (sessionId: string) => void;
+  /** "빠른 채팅" — 고른 에이전트·전송방식으로 빈 세션을 바로 시작(인테이크 없이). */
+  onNewChat: (req: { agentType: AgentType; transport: Transport }) => void;
+  /** "목업 제작…" — 기획서/레퍼런스 인테이크 모달을 연다. */
+  onNewMockup: () => void;
 }): React.JSX.Element {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [hovered, setHovered] = useState<string | null>(null);
   // 인라인 제목 편집 — 더블클릭으로 진입. 편집 중인 세션 id + 드래프트 텍스트.
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
+  // "+ 새 채팅 ▾" 드롭다운 열림 상태 + 바깥 클릭 닫기용 ref.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDown = (e: MouseEvent): void => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
 
   const handleDelete = async (s: ChatSession): Promise<void> => {
     if (!projectPath) return;
@@ -109,6 +198,105 @@ export function SessionHistoryPanel({
             {sessions.length}
           </span>
         )}
+        <div style={{ position: "relative", marginLeft: "auto" }} ref={menuRef}>
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            disabled={!projectPath}
+            title={
+              liveSessionId
+                ? "새 대화를 시작하면 실행 중인 세션은 중지됩니다 (기록은 보존)"
+                : "새 대화 시작"
+            }
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            style={{
+              ...newChatBtn,
+              marginLeft: 0,
+              ...(menuOpen ? { borderColor: c.accent, color: c.accent } : null),
+              ...(projectPath
+                ? null
+                : {
+                    opacity: 0.4,
+                    cursor: "not-allowed",
+                    background: c.bgElevated,
+                    color: c.textFaint,
+                  }),
+            }}
+          >
+            <span style={{ fontSize: 13, lineHeight: 1 }}>+</span> 새 채팅
+            <span style={{ fontSize: 9, opacity: 0.8 }}>▾</span>
+          </button>
+          {menuOpen && projectPath && (
+            <div role="menu" style={menuStyle}>
+              <div style={menuLabel}>빠른 채팅</div>
+              {/* 클릭 한 번에 바로 시작 — 기본(pty) 으로 띄운다(패널에서 다시 안 고름). */}
+              {(["claude", "codex"] as AgentType[]).map((t) => (
+                <button
+                  key={t}
+                  role="menuitem"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onNewChat({ agentType: t, transport: "pty" });
+                  }}
+                  style={menuItem}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = c.bgHover)}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <AgentIcon type={t} />
+                  {t === "claude" ? "Claude 로 시작" : "Codex 로 시작"}
+                </button>
+              ))}
+              {/* 구조화(canary) — Claude 전용 실험 모드. 평소 흐름과 분리해 작게 노출. */}
+              <button
+                role="menuitem"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onNewChat({ agentType: "claude", transport: "stream-json" });
+                }}
+                title="Claude 의 stream-json 출력을 카드형 채팅으로 보여주는 실험 모드"
+                style={{ ...menuItem, fontSize: 11.5, color: c.textMuted }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = c.bgHover)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              >
+                <span style={{ width: 13, textAlign: "center", fontSize: 11 }}>◆</span>
+                <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  Claude · 구조화
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: 0.3,
+                      color: c.accent,
+                      border: `1px solid ${c.accent}`,
+                      borderRadius: 4,
+                      padding: "0 4px",
+                      lineHeight: "13px",
+                    }}
+                  >
+                    CANARY
+                  </span>
+                </span>
+              </button>
+              <div style={menuDivider} />
+              <button
+                role="menuitem"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onNewMockup();
+                }}
+                style={menuItem}
+                onMouseEnter={(e) => (e.currentTarget.style.background = c.bgHover)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              >
+                <span style={{ fontSize: 12, width: 13, textAlign: "center" }}>＋</span>
+                <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.3 }}>
+                  목업 제작…
+                  <span style={{ fontSize: 10, color: c.textFaint }}>기획서·레퍼런스 기반</span>
+                </span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: 8 }}>
         {!projectPath && (
