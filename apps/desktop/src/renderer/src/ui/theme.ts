@@ -100,6 +100,19 @@ export const dangerBtn: React.CSSProperties = {
   color: "#1e1e1e",
 };
 
+/** 중지 등 파괴적 동작의 고스트 변형 — 투명 bg + 빨강 보더/글자. 다른 pill 들과 톤 통일. */
+export const dangerGhostBtn: React.CSSProperties = {
+  ...btnReset,
+  padding: "5px 14px",
+  borderRadius: 6,
+  border: `1px solid ${c.red}`,
+  background: "transparent",
+  color: c.red,
+  cursor: "pointer",
+  fontSize: 12,
+  fontWeight: 600,
+};
+
 /** 탭바 — 고정 높이라 섹션 헤더 높이가 항상 일정. 세그먼트 그룹 + 우측 pill 을 담는다. */
 export const tabBar: React.CSSProperties = {
   display: "flex",

@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
-import type { AgentType } from "../../../preload/index.js";
+import type { AgentType, ChatMessage, Transport } from "../../../preload/index.js";
+import { StructuredChatView } from "./StructuredChatView.js";
 import {
   c,
   mono,
@@ -10,7 +11,10 @@ import {
   pillBtnActive,
   primaryBtn,
   primaryBtnDisabled,
-  dangerBtn,
+  dangerGhostBtn,
+  segGroup,
+  segItem,
+  segItemActive,
 } from "../ui/theme.js";
 
 /**
@@ -47,6 +51,10 @@ export function AgentPanel({
   onHistoryChange?: () => void;
 }): React.JSX.Element {
   const [agentType, setAgentType] = useState<AgentType>("claude");
+  // 전송 방식. pty(기본) = xterm raw TUI / stream-json(canary) = 구조화 카드 채팅(claude 전용).
+  const [transport, setTransport] = useState<Transport>("pty");
+  // 구조화 모드 라이브 메시지 누적(pty 모드에선 미사용).
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
   const termRef = useRef<Terminal | null>(null);
@@ -62,9 +70,14 @@ export function AgentPanel({
     const offData = window.harness.onAgentData((e) => {
       if (e.sessionId === sessionRef.current) termRef.current?.write(e.data);
     });
+    // 구조화(stream-json) 세션의 정규화 메시지 — 라이브 누적(같은 세션만).
+    const offMessage = window.harness.onAgentMessage((e) => {
+      if (e.sessionId === sessionRef.current) setMessages((prev) => [...prev, e.message]);
+    });
     const offExit = window.harness.onAgentExit((e) => {
       if (e.sessionId !== sessionRef.current) return;
       setStatus(e.exitCode === 0 ? "exited" : "error");
+      // pty 모드만 터미널에 종료 줄을 적는다(구조화 모드는 result 푸터가 대신함).
       termRef.current?.writeln(`\r\n\x1b[90m[세션 종료 · code ${e.exitCode}]\x1b[0m`);
       sessionRef.current = null;
       liveCb.current?.(null);
@@ -72,6 +85,7 @@ export function AgentPanel({
     });
     return () => {
       offData();
+      offMessage();
       offExit();
     };
   }, []);
@@ -159,19 +173,26 @@ export function AgentPanel({
   }, []);
 
   const start = useCallback(async () => {
-    if (!projectPath || !containerRef.current) return;
+    if (!projectPath) return;
     setError("");
 
-    // 이전 라이브 세션이 남아있으면 새 세션으로 덮어쓰기 전에 PTY 를 먼저 중지.
-    // 안 그러면 main 의 running Map 에서 도달 불가능한 orphan PTY 로 떠돈다.
+    // 이전 라이브 세션이 남아있으면 새 세션으로 덮어쓰기 전에 먼저 중지.
+    // 안 그러면 main 의 running Map 에서 도달 불가능한 orphan 프로세스로 떠돈다.
     if (sessionRef.current) {
       void window.harness.stopAgent(sessionRef.current);
       sessionRef.current = null;
       liveCb.current?.(null);
     }
 
-    const term = makeTerminal();
-    if (!term) return;
+    const isStream = transport === "stream-json";
+    let term: Terminal | null = null;
+    if (isStream) {
+      setMessages([]); // 구조화 모드: 카드 채팅 초기화(xterm 미사용).
+    } else {
+      if (!containerRef.current) return;
+      term = makeTerminal();
+      if (!term) return;
+    }
 
     const id = crypto.randomUUID();
     sessionRef.current = id;
@@ -179,24 +200,29 @@ export function AgentPanel({
     const res = await window.harness.startAgent({
       sessionId: id,
       agentType,
+      transport,
       projectPath,
       mockupFile: mockupFile ?? undefined,
-      cols: term.cols,
-      rows: term.rows,
+      ...(term ? { cols: term.cols, rows: term.rows } : {}),
     });
     if (!res.ok) {
       sessionRef.current = null;
       setStatus("error");
       setError(res.error ?? "시작 실패");
-      term.writeln(`\x1b[31m${res.error ?? "시작 실패"}\x1b[0m`);
+      term?.writeln(`\x1b[31m${res.error ?? "시작 실패"}\x1b[0m`);
       histCb.current?.();
       return;
     }
     setStatus("running");
     liveCb.current?.(id);
     histCb.current?.();
-    term.focus();
-  }, [projectPath, agentType, mockupFile, makeTerminal]);
+    term?.focus();
+  }, [projectPath, agentType, transport, mockupFile, makeTerminal]);
+
+  // 구조화 모드 입력창 → 다음 유저 턴 전송(메시지 echo 는 main 이 agent:message 로 돌려줌).
+  const sendTurn = useCallback((text: string) => {
+    if (sessionRef.current) void window.harness.sendAgentTurn(sessionRef.current, text);
+  }, []);
 
   // main 이 이미 시작한 세션(인테이크)에 터미널을 붙인다. startAgent 는 호출하지 않는다.
   // 초기 출력 유실 방지: 라이브 구독을 켜기(sessionRef 세팅) 전에 지금까지의 트랜스크립트를
@@ -205,6 +231,12 @@ export function AgentPanel({
     async (id: string) => {
       if (!projectPath) return;
       setError("");
+      // 인테이크 세션은 pty(raw TUI) — canary 토글 상태였다면 기본으로 되돌려 xterm
+      // 컨테이너가 렌더되게 하고, DOM 에 올라올 한 프레임을 기다린 뒤 터미널을 만든다.
+      setTransport("pty");
+      if (!containerRef.current) {
+        await new Promise<void>((r) => requestAnimationFrame(() => r()));
+      }
       const term = makeTerminal();
       if (!term) return;
       try {
@@ -253,12 +285,43 @@ export function AgentPanel({
             <button
               key={a.type}
               disabled={!a.enabled || running}
-              onClick={() => setAgentType(a.type)}
+              onClick={() => {
+                setAgentType(a.type);
+                // 구조화(stream-json)는 claude 전용 — codex 선택 시 기본(pty)으로 되돌린다.
+                if (a.type !== "claude") setTransport("pty");
+              }}
               style={agentType === a.type ? pillBtnActive : pillBtn}
             >
               {a.label}
             </button>
           ))}
+        </div>
+        {/* 전송 방식 토글(canary). claude 일 때만 활성 — codex 는 구조화 등가물이 없음. */}
+        <div
+          style={segGroup}
+          title="구조화(canary)는 Claude 의 stream-json 출력을 카드형 채팅으로 보여줍니다"
+        >
+          {(
+            [
+              { t: "pty", label: "기본" },
+              { t: "stream-json", label: "구조화된(canary)" },
+            ] as { t: Transport; label: string }[]
+          ).map(({ t, label }) => {
+            const disabled = running || (t === "stream-json" && agentType !== "claude");
+            return (
+              <button
+                key={t}
+                disabled={disabled}
+                onClick={() => setTransport(t)}
+                style={{
+                  ...(transport === t ? segItemActive : segItem),
+                  ...(disabled && transport !== t ? { opacity: 0.4, cursor: "not-allowed" } : {}),
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
         {!running ? (
           <button
@@ -269,11 +332,10 @@ export function AgentPanel({
             세션 시작
           </button>
         ) : (
-          <button onClick={stop} style={dangerBtn}>
+          <button onClick={stop} style={dangerGhostBtn}>
             중지
           </button>
         )}
-        <span style={{ color: statusColor(status), fontSize: 12 }}>{statusLabel(status)}</span>
         {error && (
           <span
             style={{
@@ -289,18 +351,17 @@ export function AgentPanel({
           </span>
         )}
       </div>
-      <div
-        ref={containerRef}
-        onMouseDown={() => termRef.current?.focus()}
-        style={{ flex: 1, minHeight: 0, background: "#1e1e1e", padding: 4 }}
-      />
+      {transport === "stream-json" ? (
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <StructuredChatView messages={messages} onSend={sendTurn} disabled={!running} />
+        </div>
+      ) : (
+        <div
+          ref={containerRef}
+          onMouseDown={() => termRef.current?.focus()}
+          style={{ flex: 1, minHeight: 0, background: "#1e1e1e", padding: 4 }}
+        />
+      )}
     </div>
   );
-}
-
-function statusLabel(s: Status): string {
-  return s === "running" ? "실행 중" : s === "exited" ? "종료됨" : s === "error" ? "오류" : "대기";
-}
-function statusColor(s: Status): string {
-  return s === "running" ? c.green : s === "error" ? c.red : c.textMuted;
 }

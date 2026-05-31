@@ -7,6 +7,7 @@ import { FeedbackPanel } from "./panels/FeedbackPanel.js";
 import { AgentPanel } from "./panels/AgentPanel.js";
 import { SessionHistoryPanel, sessionTitle } from "./panels/SessionHistoryPanel.js";
 import { TranscriptView } from "./panels/TranscriptView.js";
+import { StructuredTranscriptView } from "./panels/StructuredChatView.js";
 import { ExportButton } from "./panels/ExportButton.js";
 import { IntakeModal } from "./panels/IntakeModal.js";
 import { HelpModal } from "./panels/HelpModal.js";
@@ -63,7 +64,6 @@ export function App(): React.JSX.Element {
   const [validating, setValidating] = useState(false);
   const [bust, setBust] = useState(0);
   const [previewRel, setPreviewRel] = useState<string | null>(null);
-  const [exportedRel, setExportedRel] = useState<string | null>(null);
   // 미리보기 칼럼
   const [tab, setTab] = useState<PreviewTab>("preview");
   const [viewport, setViewport] = useState<Viewport>("web");
@@ -196,7 +196,6 @@ export function App(): React.JSX.Element {
     selectedRef.current = null;
     setSource("");
     setResult(null);
-    setExportedRel(null);
     setPreviewRel(null);
     setViewing(null);
     setLiveSessionId(null);
@@ -356,19 +355,6 @@ export function App(): React.JSX.Element {
             mono
           />
         </div>
-        {exportedRel && (
-          <button
-            onClick={() => {
-              setPreviewRel(exportedRel);
-              setTab("preview");
-              setBust((b) => b + 1);
-            }}
-            title={exportedRel}
-            style={{ ...(previewRel === exportedRel ? pillBtnActive : pillBtn), ...noDrag }}
-          >
-            📦 공유본
-          </button>
-        )}
         <div
           style={{ ...noDrag, marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}
         >
@@ -377,7 +363,6 @@ export function App(): React.JSX.Element {
             mockupDir={activeMockupDir}
             disabled={isAdminCms}
             onExported={(rel) => {
-              setExportedRel(rel);
               setPreviewRel(rel);
               setTab("preview");
               setBust((b) => b + 1);
@@ -514,12 +499,21 @@ export function App(): React.JSX.Element {
           </div>
           {viewing && projectPath && (
             <div style={{ position: "absolute", inset: 0 }}>
-              <TranscriptView
-                projectPath={projectPath}
-                sessionId={viewing.sessionId}
-                label={sessionTitle(viewing)}
-                onClose={() => setViewing(null)}
-              />
+              {viewing.transport === "stream-json" ? (
+                <StructuredTranscriptView
+                  projectPath={projectPath}
+                  sessionId={viewing.sessionId}
+                  label={sessionTitle(viewing)}
+                  onClose={() => setViewing(null)}
+                />
+              ) : (
+                <TranscriptView
+                  projectPath={projectPath}
+                  sessionId={viewing.sessionId}
+                  label={sessionTitle(viewing)}
+                  onClose={() => setViewing(null)}
+                />
+              )}
             </div>
           )}
         </main>

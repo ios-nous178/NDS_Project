@@ -4,7 +4,8 @@ import type { OpenProjectResult } from "../main/ipc.js";
 import type { ExportResult } from "../main/export-runner.js";
 import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
 import type { StartAgentArgs } from "../main/agent-runner.js";
-import type { ChatSession } from "../main/sessions.js";
+import type { ChatSession, Transport } from "../main/sessions.js";
+import type { ChatMessage } from "../main/chat-types.js";
 import type { RunIntakeArgs } from "../main/intake.js";
 import type { AppEventInput } from "@nudge-design/mockup-core";
 import type { UpdateCheckResult } from "../main/update-check.js";
@@ -13,16 +14,18 @@ import type { UpdateCheckResult } from "../main/update-check.js";
 export type { ExportResult } from "../main/export-runner.js";
 export type { OpenProjectResult } from "../main/ipc.js";
 export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
-export type { AgentType } from "../main/agent-runner.js";
-export type { ChatSession } from "../main/sessions.js";
+export type { AgentType, StartAgentArgs } from "../main/agent-runner.js";
+export type { ChatSession, Transport } from "../main/sessions.js";
+export type { ChatMessage } from "../main/chat-types.js";
 export type { RunIntakeArgs, ScreenshotInput, Surface } from "../main/intake.js";
 export type { UpdateCheckResult } from "../main/update-check.js";
 
-/** intake:start 요청 — RunIntakeArgs(projectPath 제외, 렌더러가 주입 안 함) + 터미널 치수. */
+/** intake:start 요청 — RunIntakeArgs(projectPath 제외, 렌더러가 주입 안 함) + 터미널 치수 + transport. */
 export type StartIntakeArgs = Omit<RunIntakeArgs, "projectPath"> & {
   projectPath: string;
   cols?: number;
   rows?: number;
+  transport?: Transport;
 };
 
 export interface FileChangedEvent {
@@ -37,6 +40,11 @@ export interface AgentDataEvent {
 export interface AgentExitEvent {
   sessionId: string;
   exitCode: number;
+}
+/** 구조화(stream-json) 세션의 정규화 메시지 1건. */
+export interface AgentMessageEvent {
+  sessionId: string;
+  message: ChatMessage;
 }
 
 /** 렌더러가 main 의 hash 처리를 거치도록 projectPathHash 는 제외하고 넘긴다. */
@@ -109,6 +117,9 @@ const harness = {
     ipcRenderer.invoke("agent:start", args),
   sendAgentInput: (sessionId: string, data: string): Promise<void> =>
     ipcRenderer.invoke("agent:input", { sessionId, data }),
+  /** 구조화(stream-json) 세션의 다음 유저 턴(전체 메시지 1건). pty 세션이면 무시됨. */
+  sendAgentTurn: (sessionId: string, text: string): Promise<void> =>
+    ipcRenderer.invoke("agent:sendTurn", { sessionId, text }),
   resizeAgent: (sessionId: string, cols: number, rows: number): Promise<void> =>
     ipcRenderer.invoke("agent:resize", { sessionId, cols, rows }),
   stopAgent: (sessionId: string): Promise<void> => ipcRenderer.invoke("agent:stop", { sessionId }),
@@ -124,12 +135,24 @@ const harness = {
     ipcRenderer.on("agent:exit", listener);
     return () => ipcRenderer.removeListener("agent:exit", listener);
   },
+  /** 구조화(stream-json) 세션의 정규화 메시지 구독. 반환 함수로 해제. */
+  onAgentMessage: (cb: (e: AgentMessageEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: AgentMessageEvent): void => cb(payload);
+    ipcRenderer.on("agent:message", listener);
+    return () => ipcRenderer.removeListener("agent:message", listener);
+  },
 
   // ── 채팅기록 (Phase 6) — 로컬 세션 조회 ──
   listSessions: (projectPath: string): Promise<ChatSession[]> =>
     ipcRenderer.invoke("session:list", { projectPath }),
   readTranscript: (projectPath: string, sessionId: string): Promise<{ text: string }> =>
     ipcRenderer.invoke("session:transcript", { projectPath, sessionId }),
+  /** 구조화(stream-json) 세션의 정규화 메시지 배열(카드형 재생용). */
+  readStructuredTranscript: (
+    projectPath: string,
+    sessionId: string,
+  ): Promise<{ messages: ChatMessage[] }> =>
+    ipcRenderer.invoke("session:structuredTranscript", { projectPath, sessionId }),
   /** 세션 메타 + raw 트랜스크립트 삭제(실행 중이면 main 이 먼저 종료). */
   deleteSession: (projectPath: string, sessionId: string): Promise<{ ok: boolean }> =>
     ipcRenderer.invoke("session:delete", { projectPath, sessionId }),

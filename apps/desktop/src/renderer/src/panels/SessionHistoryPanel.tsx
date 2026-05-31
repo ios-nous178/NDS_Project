@@ -205,6 +205,24 @@ export function SessionHistoryPanel({
                       {sessionTitle(s)}
                     </span>
                   )}
+                  {s.transport === "stream-json" && (
+                    <span
+                      title="구조화(canary) 세션 — claude stream-json"
+                      style={{
+                        flexShrink: 0,
+                        fontSize: 9,
+                        fontWeight: 700,
+                        letterSpacing: 0.3,
+                        color: c.accent,
+                        border: `1px solid ${c.accent}`,
+                        borderRadius: 4,
+                        padding: "0 4px",
+                        lineHeight: "14px",
+                      }}
+                    >
+                      CANARY
+                    </span>
+                  )}
                   {isLive && (
                     <span style={{ color: c.green, fontSize: 10, flexShrink: 0 }}>LIVE</span>
                   )}
