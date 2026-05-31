@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { c, primaryBtn, primaryBtnDisabled } from "../ui/theme.js";
+import { c, ghostBtn } from "../ui/theme.js";
 
 /** 다운로드(트레이로 내려받는) 아이콘 — currentColor 라 버튼 글자색을 따라간다. */
 function DownloadIcon(): React.JSX.Element {
@@ -78,10 +78,13 @@ export function ExportButton({
         disabled={!projectPath || busy || disabled}
         title="현재 목업을 공유용 단일 HTML 파일로 내보냅니다 (저장 위치 선택 → 빌드 → 저장)"
         style={{
-          ...(!projectPath || busy || disabled ? primaryBtnDisabled : primaryBtn),
+          ...ghostBtn,
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
+          ...(!projectPath || busy || disabled
+            ? { color: c.textFaint, cursor: "not-allowed", opacity: 0.6 }
+            : {}),
         }}
       >
         <DownloadIcon />
