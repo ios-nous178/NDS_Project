@@ -285,7 +285,7 @@ export function AgentPanel({
     const seq = newChatReq?.seq ?? 0;
     if (newChatReq && seq !== prevSeq.current) {
       prevSeq.current = seq;
-      void startRef.current(newChatReq.agentType);
+      void startRef.current(newChatReq.agentType, newChatReq.transport, newChatReq.cwd);
     }
   }, [newChatReq]);
 
