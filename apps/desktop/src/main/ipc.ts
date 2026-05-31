@@ -9,14 +9,19 @@ import { exportMockup, type ExportResult } from "./export-runner.js";
 import { exportFigmaScene, type FigmaExportResult } from "./figma-export.js";
 import { submitFeedback, type SubmitFeedbackArgs, type SubmitFeedbackResult } from "./feedback.js";
 import {
+  checkAgent,
+  installAgent,
   resizeAgent,
   runningSessionIds,
   sendStreamTurn,
   startAgent,
   stopAgent,
   writeAgent,
+  type AgentCheck,
   type AgentType,
+  type InstallResult,
   type StartAgentArgs,
+  type StartAgentErrorCode,
 } from "./agent-runner.js";
 import { logAppEvent } from "./events.js";
 import {
@@ -347,6 +352,17 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     stopAgent(args.sessionId);
   });
 
+  // ── 에이전트 CLI 설치 안내 — 미설치 시 렌더러가 점검 후 원클릭 설치 ──
+  ipcMain.handle(
+    "agent:check",
+    async (_e, args: { agentType: AgentType }): Promise<AgentCheck> => checkAgent(args.agentType),
+  );
+  ipcMain.handle(
+    "agent:install",
+    async (_e, args: { agentType: AgentType }): Promise<InstallResult> =>
+      installAgent(args.agentType),
+  );
+
   // ── 채팅기록 (Phase 6) — 로컬 세션 메타/트랜스크립트 조회 ──
   ipcMain.handle(
     "session:list",
@@ -413,6 +429,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
       slug?: string;
       intent?: "html" | "admin-cms";
       error?: string;
+      code?: StartAgentErrorCode;
     }> => {
       const wc = getWindow()?.webContents;
       if (!wc) return { ok: false, error: "창이 없습니다." };
@@ -444,7 +461,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
         },
         wc,
       );
-      if (!started.ok) return { ok: false, error: started.error };
+      if (!started.ok) return { ok: false, error: started.error, code: started.code };
       return { ok: true, sessionId, slug: r.slug, intent: r.intent };
     },
   );

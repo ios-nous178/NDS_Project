@@ -4,7 +4,13 @@ import type { OpenProjectResult, CurrentProjectResult } from "../main/ipc.js";
 import type { ExportResult } from "../main/export-runner.js";
 import type { FigmaExportResult } from "../main/figma-export.js";
 import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
-import type { StartAgentArgs } from "../main/agent-runner.js";
+import type {
+  AgentCheck,
+  AgentType,
+  InstallResult,
+  StartAgentArgs,
+  StartAgentErrorCode,
+} from "../main/agent-runner.js";
 import type { ChatSession, Transport } from "../main/sessions.js";
 import type { ChatMessage } from "../main/chat-types.js";
 import type { RunIntakeArgs } from "../main/intake.js";
@@ -16,7 +22,13 @@ export type { ExportResult } from "../main/export-runner.js";
 export type { FigmaExportResult } from "../main/figma-export.js";
 export type { OpenProjectResult, CurrentProjectResult } from "../main/ipc.js";
 export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
-export type { AgentType, StartAgentArgs } from "../main/agent-runner.js";
+export type {
+  AgentCheck,
+  AgentType,
+  InstallResult,
+  StartAgentArgs,
+  StartAgentErrorCode,
+} from "../main/agent-runner.js";
 export type { ChatSession, Transport } from "../main/sessions.js";
 export type { ChatMessage } from "../main/chat-types.js";
 export type { Platform, RunIntakeArgs, ScreenshotInput, Surface } from "../main/intake.js";
@@ -128,8 +140,16 @@ const harness = {
     ipcRenderer.invoke("event:append", args),
 
   // ── 인앱 에이전트 (Phase 5) — claude/codex PTY ──
-  startAgent: (args: StartAgentArgs): Promise<{ ok: boolean; error?: string }> =>
+  startAgent: (
+    args: StartAgentArgs,
+  ): Promise<{ ok: boolean; error?: string; code?: StartAgentErrorCode }> =>
     ipcRenderer.invoke("agent:start", args),
+  /** 에이전트 CLI 설치 상태 점검(설치 안내 패널 분기용). */
+  checkAgent: (agentType: AgentType): Promise<AgentCheck> =>
+    ipcRenderer.invoke("agent:check", { agentType }),
+  /** 에이전트 CLI 를 `npm install -g` 로 자동 설치. 실패 시 output 에 raw 로그. */
+  installAgent: (agentType: AgentType): Promise<InstallResult> =>
+    ipcRenderer.invoke("agent:install", { agentType }),
   sendAgentInput: (sessionId: string, data: string): Promise<void> =>
     ipcRenderer.invoke("agent:input", { sessionId, data }),
   /** 구조화(stream-json) 세션의 다음 유저 턴(전체 메시지 1건). pty 세션이면 무시됨. */
@@ -189,6 +209,7 @@ const harness = {
     slug?: string;
     intent?: "html" | "admin-cms";
     error?: string;
+    code?: StartAgentErrorCode;
   }> => ipcRenderer.invoke("intake:start", args),
   /** 드래그드롭 File → 실제 절대경로(File.path 대체). 멀티MB IPC 회피용. 동기·read-only. */
   pathForFile: (file: File): string => webUtils.getPathForFile(file),
