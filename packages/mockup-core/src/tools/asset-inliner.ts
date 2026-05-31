@@ -21,7 +21,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import type * as cheerio from "cheerio";
+import * as cheerio from "cheerio";
 
 /** src/srcset/url() 에서 이걸로 시작하는 참조만 DS 자산으로 본다. */
 export const ASSET_REF_PREFIX = "@nudge-design/assets/files/";
@@ -196,4 +196,20 @@ export function inlineDsAssetReferences($: cheerio.CheerioAPI): AssetInlineResul
   });
 
   return { inlined: [...inlined], missing: [...missing] };
+}
+
+/**
+ * 문자열 HTML 에서 DS 자산 참조를 base64 로 인라인한다 — cheerio 트리가 없는 경로(라이브
+ * 미리보기 mockup:// 서빙 등)에서 export(build-html)와 동일하게 이미지를 표시하기 위함.
+ * 자산 참조가 하나도 없으면 원본 문자열을 그대로 반환(불필요한 cheerio round-trip 회피).
+ */
+export function inlineDsAssetReferencesInHtml(html: string): { html: string } & AssetInlineResult {
+  // 참조 prefix 가 아예 없으면 파싱 자체를 건너뛴다(대부분의 목업은 자산 참조 없음).
+  if (!html.includes(ASSET_REF_PREFIX)) return { html, inlined: [], missing: [] };
+  const $ = cheerio.load(html, { xmlMode: false });
+  const result = inlineDsAssetReferences($);
+  if (result.inlined.length === 0 && result.missing.length === 0) {
+    return { html, ...result };
+  }
+  return { html: $.html(), ...result };
 }
