@@ -57,6 +57,14 @@ export interface ChatSession {
   transport?: Transport;
   /** 이 세션이 실제로 작업한 폴더(PTY cwd). 새 채팅 시 사용자가 고른 폴더. 옛 세션은 undefined. */
   cwd?: string;
+  /**
+   * 녹화 시점의 PTY 폭/높이(컬럼/로우). raw pty 트랜스크립트는 전체화면 TUI 의 커서·재그리기
+   * 제어코드 덩어리라 **녹화한 폭으로만 정확히 재생**된다 — 다른 폭으로 흘리면 전각(한글)
+   * 글자가 어긋나 깨진다. 기록 보기는 이 값으로 xterm 폭을 고정한다(fit 금지). 라이브 중
+   * 리사이즈하면 최신 폭으로 갱신된다. 옛 세션은 undefined → 차선책(패널 맞춤)으로 폴백.
+   */
+  cols?: number;
+  rows?: number;
 }
 
 /** create/update 가 받는 세션 베이스(상태/타임스탬프 제외). */
@@ -216,6 +224,9 @@ export function readSessions(projectPath: string): ChatSession[] {
             createdAt: prev.createdAt,
             screenName: s.screenName ?? prev.screenName,
             customTitle: s.customTitle ?? prev.customTitle,
+            // 녹화 폭은 최신 라인(라이브 리사이즈/종료 라인)이 명시하면 그 값, 아니면 첫 라인 보존.
+            cols: s.cols ?? prev.cols,
+            rows: s.rows ?? prev.rows,
           }
         : s,
     );
