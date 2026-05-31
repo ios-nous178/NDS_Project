@@ -64,6 +64,12 @@ export function App(): React.JSX.Element {
   // 미리보기 칼럼
   const [tab, setTab] = useState<PreviewTab>("preview");
   const [viewport, setViewport] = useState<Viewport>("web");
+  // 미리보기 확대/축소 — 0.25~3.0, 0.1 단위. 결과물 디테일 확인/전체 조망용.
+  const [zoom, setZoom] = useState(1);
+  const adjustZoom = useCallback(
+    (delta: number) => setZoom((z) => clampNum(Math.round((z + delta) * 100) / 100, 0.25, 3)),
+    [],
+  );
   // 채팅기록
   const [liveSessionId, setLiveSessionId] = useState<string | null>(null);
   const [historyRefresh, setHistoryRefresh] = useState(0);
@@ -329,8 +335,20 @@ export function App(): React.JSX.Element {
         <button
           onClick={() => void openMockupIntake()}
           title="기획서·레퍼런스로 목업 제작"
-          style={{ ...primaryBtn, ...noDrag }}
+          // 메인 액션 — 색(accent)은 유지하되 크기·굵기·글로우로 더 눈에 띄게.
+          style={{
+            ...primaryBtn,
+            ...noDrag,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "7px 18px",
+            fontSize: 13,
+            fontWeight: 700,
+            boxShadow: `0 0 0 1px ${c.accent}, 0 2px 10px rgba(255,211,61,0.35)`,
+          }}
         >
+          <span style={{ fontSize: 14, lineHeight: 1, marginTop: -1 }}>+</span>
           목업 제작
         </button>
         <div
@@ -563,6 +581,40 @@ export function App(): React.JSX.Element {
                   </button>
                 </div>
                 <span style={{ width: 1, height: 16, background: c.border, margin: "0 4px" }} />
+                {/* 확대/축소 — −/퍼센트(클릭=100% 리셋)/+. */}
+                <div style={segGroup}>
+                  <button
+                    onClick={() => adjustZoom(-0.1)}
+                    disabled={zoom <= 0.25}
+                    title="축소"
+                    aria-label="축소"
+                    style={{ ...segItem, padding: "3px 9px", opacity: zoom <= 0.25 ? 0.4 : 1 }}
+                  >
+                    −
+                  </button>
+                  <button
+                    onClick={() => setZoom(1)}
+                    title="100% 로 리셋"
+                    style={{
+                      ...segItem,
+                      padding: "3px 6px",
+                      minWidth: 44,
+                      justifyContent: "center",
+                    }}
+                  >
+                    {Math.round(zoom * 100)}%
+                  </button>
+                  <button
+                    onClick={() => adjustZoom(0.1)}
+                    disabled={zoom >= 3}
+                    title="확대"
+                    aria-label="확대"
+                    style={{ ...segItem, padding: "3px 9px", opacity: zoom >= 3 ? 0.4 : 1 }}
+                  >
+                    +
+                  </button>
+                </div>
+                <span style={{ width: 1, height: 16, background: c.border, margin: "0 4px" }} />
                 <button
                   onClick={() => previewRel && window.harness.openMockupWindow(previewRel)}
                   disabled={!previewRel}
@@ -622,6 +674,7 @@ export function App(): React.JSX.Element {
                   bust={bust}
                   viewport={viewport}
                   live={previewLive}
+                  zoom={zoom}
                 />
               ))}
             {tab === "validate" && (

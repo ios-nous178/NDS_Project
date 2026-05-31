@@ -14,12 +14,15 @@ export function PreviewPanel({
   bust,
   viewport,
   live = false,
+  zoom = 1,
 }: {
   relPath: string | null;
   bust: number;
   viewport: Viewport;
   /** 터미널에서 목업 생성 중이면 true — 빈 상태 안내 문구 변경 + "생성 중" 배지 표시. */
   live?: boolean;
+  /** 미리보기 확대/축소 배율(1 = 100%). iframe 의 논리 폭은 유지하고 시각적으로만 스케일. */
+  zoom?: number;
 }): React.JSX.Element {
   if (!relPath)
     return (
@@ -89,9 +92,27 @@ export function PreviewPanel({
 
   if (viewport === "web") {
     return (
-      <div style={{ position: "relative", width: "100%", height: "100%", background: "#fff" }}>
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          background: "#fff",
+          overflow: "auto",
+        }}
+      >
         {liveBadge}
-        {frame}
+        {/* iframe 논리 폭은 컨테이너 폭(100%)을 유지(반응형 불변) — 시각적으로만 scale. */}
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            transform: `scale(${zoom})`,
+            transformOrigin: "0 0",
+          }}
+        >
+          {frame}
+        </div>
       </div>
     );
   }
@@ -125,6 +146,8 @@ export function PreviewPanel({
           background: "#fff",
           boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
           flexShrink: 0,
+          transform: `scale(${zoom})`,
+          transformOrigin: "center center",
         }}
       >
         {frame}

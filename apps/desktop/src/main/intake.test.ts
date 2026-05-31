@@ -103,6 +103,33 @@ test("시각 >=1 -> references.md 첫 줄 task: + source=.references/ 경로", (
   }
 });
 
+test("platform: service + app -> brief/seed 에 플랫폼 가이드 반영", () => {
+  const projectPath = tmpProject();
+  try {
+    const r = runIntake(baseArgs({ projectPath, surface: "service", platform: "app" }));
+    assert.ok(r.ok);
+    const brief = readFileSync(join(r.workspaceDir!, "brief.md"), "utf8");
+    assert.match(brief, /제작 대상 플랫폼/);
+    assert.match(brief, /앱\(모바일 네이티브 느낌\)/);
+    assert.match(r.seedPrompt!, /제작 대상 플랫폼=앱/);
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("platform: admin 이면 플랫폼 섹션 생략", () => {
+  const projectPath = tmpProject();
+  try {
+    // admin + geniet -> admin-cms. platform 을 줘도 brief 에 플랫폼 섹션이 없어야 한다.
+    const r = runIntake(baseArgs({ projectPath, surface: "admin", platform: "app" }));
+    assert.ok(r.ok);
+    const brief = readFileSync(join(r.workspaceDir!, "brief.md"), "utf8");
+    assert.doesNotMatch(brief, /제작 대상 플랫폼/);
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
 test("directionMode=propose -> brief/seed 가 코드 작성 전 방향 제안을 강제", () => {
   const projectPath = tmpProject();
   try {

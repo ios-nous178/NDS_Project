@@ -121,13 +121,20 @@ try {
   }
 
   const imports = await callTool("get_setup", { step: "imports", brand: "trost" });
+  // intent 미지정이면 기본 html — imports 는 코드 대신 {intent:'html', required:false, message}
+  // (build_singlefile_html 이 runtime/CSS 를 자동 inline 하므로 임포트 불필요) 를 반환한다.
+  // admin-cms(React) 트랙만 실제 import code 를 돌려준다. 둘 다 정상 응답으로 간주.
+  const isHtmlImportsInfo =
+    imports?.intent === "html" &&
+    typeof imports?.message === "string" &&
+    imports.message.length > 0;
   const hasDsStyleImport =
     typeof imports?.code === "string" &&
     (imports.code.includes("@nudge-design/react/styles.css") ||
       imports.code.includes("@nudge-design/html/styles.css") ||
       imports.code.includes("nudge-ds.runtime.js") ||
       imports.code.includes("/standalone/"));
-  if (!hasDsStyleImport) {
+  if (!isHtmlImportsInfo && !hasDsStyleImport) {
     throw new Error(
       `get_setup({step:'imports'}) returned unexpected result: ${JSON.stringify(imports)}`,
     );

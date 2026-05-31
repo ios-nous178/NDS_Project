@@ -347,11 +347,15 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
   //    그래서 prompt 를 맨 앞 operand 로 두어 가변 플래그가 경로 하나만 소비하게 한다
   //    (시드 프롬프트는 항상 한국어 문장이라 서브커맨드와 충돌하지 않음).
   // 턴 완료 알림 신호 — 벨(\x07) + Claude Stop 훅(신호파일) 두 경로를 400ms 디바운스로 합쳐 1건만.
+  // 알림은 세션당 1회(첫 턴 완료)만 — 매 턴마다 OS 알림이 쏟아지지 않게 한다.
   let turnTimer: NodeJS.Timeout | null = null;
+  let notifiedOnce = false;
   const signalTurnDone = (): void => {
+    if (notifiedOnce) return;
     if (turnTimer) clearTimeout(turnTimer);
     turnTimer = setTimeout(() => {
       turnTimer = null;
+      notifiedOnce = true;
       notifyAgentTurn(wc, { ok: true, screenName: args.screenName });
     }, 400);
   };
@@ -373,9 +377,17 @@ export function startAgent(args: StartAgentArgs, wc: WebContents): { ok: boolean
   let proc: IPty;
   try {
     proc = ptySpawn(spawnFile, spawnArgs, {
-      name: "xterm-color",
+      // 256색 terminfo + COLORTERM=truecolor 로 claude 의 브랜드(주황) 트루컬러를 그대로 받는다.
+      // "xterm-color"(8색)면 claude 주황이 가장 가까운 ANSI-16(빨강)으로 떨어져 "클로드가 빨갛게"
+      // 보이는 문제가 생긴다 — xterm.js 는 truecolor 를 지원하므로 환경만 알려주면 된다.
+      name: "xterm-256color",
       cwd: args.cwdOverride ?? args.projectPath,
-      env: cleanEnv({ ...getToolProcessEnv(), PATH: searchPath }),
+      env: cleanEnv({
+        ...getToolProcessEnv(),
+        PATH: searchPath,
+        TERM: "xterm-256color",
+        COLORTERM: "truecolor",
+      }),
       cols: args.cols ?? 80,
       rows: args.rows ?? 24,
     });
@@ -484,11 +496,14 @@ function startStreamAgent(
   }
 
   // 정규화 메시지 1건을 영구저장(.jsonl) + 렌더러로 전송. 라이브/재생 단일 출처.
+  // 알림은 세션당 1회(첫 result)만 — 매 턴마다 OS 알림이 쏟아지지 않게 한다.
+  let notifiedOnce = false;
   const emit = (msg: ChatMessage): void => {
     appendStructuredTranscript(args.projectPath, sessionId, msg);
     if (!wc.isDestroyed()) wc.send("agent:message", { sessionId, message: msg });
     // 구조화 모드는 턴 완료마다 result 메시지가 온다 — 이게 "작업 완료" 신호.
-    if (msg.kind === "result") {
+    if (msg.kind === "result" && !notifiedOnce) {
+      notifiedOnce = true;
       notifyAgentTurn(wc, { ok: msg.ok, screenName: args.screenName });
     }
   };
