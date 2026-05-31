@@ -4,7 +4,7 @@ import type { ChatSession, UpdateCheckResult } from "../../preload/index.js";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
 import { PreviewPanel, type Viewport } from "./panels/PreviewPanel.js";
 import { FeedbackPanel } from "./panels/FeedbackPanel.js";
-import { AgentPanel } from "./panels/AgentPanel.js";
+import { AgentPanel, type NewChatRequest } from "./panels/AgentPanel.js";
 import { SessionHistoryPanel, sessionTitle } from "./panels/SessionHistoryPanel.js";
 import { TranscriptView } from "./panels/TranscriptView.js";
 import { StructuredTranscriptView } from "./panels/StructuredChatView.js";
@@ -25,7 +25,6 @@ import {
   pillBtn,
   pillBtnActive,
   primaryBtn,
-  primaryBtnDisabled,
   tabBar,
   segGroup,
   segItem,
@@ -72,6 +71,8 @@ export function App(): React.JSX.Element {
   const [liveSessionId, setLiveSessionId] = useState<string | null>(null);
   const [historyRefresh, setHistoryRefresh] = useState(0);
   const [viewing, setViewing] = useState<ChatSession | null>(null);
+  // "+ 새 채팅"(채팅기록 헤더) → AgentPanel 에 전달하는 시작 요청(seq + 고른 에이전트).
+  const [newChatReq, setNewChatReq] = useState<NewChatRequest | null>(null);
   // 인테이크
   const [intakeOpen, setIntakeOpen] = useState(false);
   // 헬프 센터(상단 ? 버튼)
@@ -264,6 +265,17 @@ export function App(): React.JSX.Element {
 
   const refreshHistory = useCallback(() => setHistoryRefresh((n) => n + 1), []);
 
+  // "+ 새 채팅" → 빠른 채팅 — 과거 세션 보기 중이면 라이브 패널로 복귀시키고, AgentPanel 이
+  // 고른 에이전트·전송방식으로 새 bare 세션을 바로 시작하도록 요청 seq 를 올린다(모달 없이).
+  const startNewChat = useCallback(
+    (req: Omit<NewChatRequest, "seq">) => {
+      if (!projectPath) return;
+      setViewing(null);
+      setNewChatReq((prev) => ({ seq: (prev?.seq ?? 0) + 1, ...req }));
+    },
+    [projectPath],
+  );
+
   // 빌드/내보내기 cwd = 선택된 목업의 폴더(없으면 인테이크가 만든 슬러그 폴더). 둘 다 없으면 루트.
   const activeMockupDir = useMemo(() => {
     if (!projectPath) return undefined;
@@ -330,21 +342,6 @@ export function App(): React.JSX.Element {
         </div>
         <button onClick={openProject} style={{ ...ghostBtn, ...noDrag }}>
           프로젝트 열기
-        </button>
-        <button
-          onClick={() => setIntakeOpen(true)}
-          disabled={!projectPath}
-          title={
-            liveSessionId !== null
-              ? "새 목업을 시작하면 실행 중인 세션은 중지됩니다 (목업 폴더는 그대로 보존)"
-              : undefined
-          }
-          style={{
-            ...(projectPath ? primaryBtn : primaryBtnDisabled),
-            ...noDrag,
-          }}
-        >
-          + 새 목업
         </button>
         <div style={{ ...noDrag, width: 300 }}>
           <Dropdown
@@ -475,6 +472,8 @@ export function App(): React.JSX.Element {
               setViewing((v) => (v?.sessionId === sessionId ? null : v));
               refreshHistory();
             }}
+            onNewChat={startNewChat}
+            onNewMockup={() => setIntakeOpen(true)}
           />
         </aside>
 
@@ -497,6 +496,7 @@ export function App(): React.JSX.Element {
               mockupFile={selected}
               active={!viewing}
               attachSessionId={attachSessionId}
+              newChatReq={newChatReq}
               onLiveChange={(id) => {
                 setLiveSessionId(id);
                 if (id === null) setAttachSessionId(null);
@@ -579,6 +579,36 @@ export function App(): React.JSX.Element {
                   style={viewport === "app" ? pillBtnActive : pillBtn}
                 >
                   앱
+                </button>
+                <span style={{ width: 1, height: 16, background: c.border, margin: "0 4px" }} />
+                <button
+                  onClick={() => previewRel && window.harness.openMockupWindow(previewRel)}
+                  disabled={!previewRel}
+                  title="새 창으로 열기"
+                  aria-label="새 창으로 열기"
+                  style={{
+                    ...pillBtn,
+                    padding: "4px 8px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    opacity: previewRel ? 1 : 0.4,
+                    cursor: previewRel ? "pointer" : "default",
+                  }}
+                >
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M15 3h6v6" />
+                    <path d="M10 14 21 3" />
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+                  </svg>
                 </button>
               </div>
             )}

@@ -4,18 +4,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import type { AgentType, ChatMessage, Transport } from "../../../preload/index.js";
 import { StructuredChatView } from "./StructuredChatView.js";
-import {
-  c,
-  mono,
-  pillBtn,
-  pillBtnActive,
-  primaryBtn,
-  primaryBtnDisabled,
-  dangerGhostBtn,
-  segGroup,
-  segItem,
-  segItemActive,
-} from "../ui/theme.js";
+import { c, mono, dangerGhostBtn, segGroup, segItem, segItemActive } from "../ui/theme.js";
 
 /**
  * 인앱 에이전트 터미널 (Phase 5 · 다크 Phase 6).
@@ -23,11 +12,17 @@ import {
  * 사용자 머신에 설치된 claude/codex CLI 를 PTY 로 구동해 xterm.js 터미널에 그대로 띄운다.
  * 라이선스/로그인은 설치본 그대로 — API 키 불필요. 진짜 TUI(권한 프롬프트 등) 동작.
  * 세션 시작/종료를 App 에 알려 채팅기록 리스트가 동기화된다.
+ *
+ * 세션 시작 진입점은 좌측 채팅기록 헤더의 "+ 새 채팅" 으로 일원화됐다(에이전트도 거기서
+ * 고른다). 이 패널 헤더는 라이브 상태 표시 + 전송방식(canary) 토글 + 중지만 담당한다.
  */
-const AGENTS: { type: AgentType; label: string; enabled: boolean }[] = [
-  { type: "claude", label: "Claude", enabled: true },
-  { type: "codex", label: "Codex", enabled: true },
-];
+const AGENT_LABEL: Record<AgentType, string> = { claude: "Claude", codex: "Codex" };
+
+/** 채팅기록 헤더의 "+ 새 채팅" 이 보내는 시작 요청. seq 가 바뀔 때마다 1회 시작. */
+export interface NewChatRequest {
+  seq: number;
+  agentType: AgentType;
+}
 
 type Status = "idle" | "running" | "exited" | "error";
 
@@ -36,6 +31,7 @@ export function AgentPanel({
   mockupFile,
   active = true,
   attachSessionId,
+  newChatReq,
   onLiveChange,
   onHistoryChange,
 }: {
@@ -45,6 +41,8 @@ export function AgentPanel({
   active?: boolean;
   /** main 이 이미 시작한 세션(인테이크 등)에 터미널을 attach. 값이 바뀌면 그 세션을 띄운다. */
   attachSessionId?: string | null;
+  /** "+ 새 채팅" 요청. seq 가 바뀌면 지정 에이전트로 새 bare 세션을 시작한다. */
+  newChatReq?: NewChatRequest | null;
   /** 라이브 세션 id 변경(시작 시 id, 종료 시 null). */
   onLiveChange?: (sessionId: string | null) => void;
   /** 채팅기록 리스트 새로고침 트리거. */
@@ -172,52 +170,62 @@ export function AgentPanel({
     return term;
   }, []);
 
-  const start = useCallback(async () => {
-    if (!projectPath) return;
-    setError("");
+  const start = useCallback(
+    async (agentTypeOverride?: AgentType) => {
+      if (!projectPath) return;
+      setError("");
 
-    // 이전 라이브 세션이 남아있으면 새 세션으로 덮어쓰기 전에 먼저 중지.
-    // 안 그러면 main 의 running Map 에서 도달 불가능한 orphan 프로세스로 떠돈다.
-    if (sessionRef.current) {
-      void window.harness.stopAgent(sessionRef.current);
-      sessionRef.current = null;
-      liveCb.current?.(null);
-    }
+      // 에이전트는 "+ 새 채팅" 메뉴에서 고른 값이 넘어온다(없으면 현재 state).
+      const at = agentTypeOverride ?? agentType;
+      if (agentTypeOverride && agentTypeOverride !== agentType) setAgentType(agentTypeOverride);
+      // 구조화(stream-json)는 claude 전용 — codex 면 기본(pty)으로 강제.
+      const tp: Transport = at !== "claude" ? "pty" : transport;
+      if (tp !== transport) setTransport(tp);
 
-    const isStream = transport === "stream-json";
-    let term: Terminal | null = null;
-    if (isStream) {
-      setMessages([]); // 구조화 모드: 카드 채팅 초기화(xterm 미사용).
-    } else {
-      if (!containerRef.current) return;
-      term = makeTerminal();
-      if (!term) return;
-    }
+      // 이전 라이브 세션이 남아있으면 새 세션으로 덮어쓰기 전에 먼저 중지.
+      // 안 그러면 main 의 running Map 에서 도달 불가능한 orphan 프로세스로 떠돈다.
+      if (sessionRef.current) {
+        void window.harness.stopAgent(sessionRef.current);
+        sessionRef.current = null;
+        liveCb.current?.(null);
+      }
 
-    const id = crypto.randomUUID();
-    sessionRef.current = id;
+      const isStream = tp === "stream-json";
+      let term: Terminal | null = null;
+      if (isStream) {
+        setMessages([]); // 구조화 모드: 카드 채팅 초기화(xterm 미사용).
+      } else {
+        if (!containerRef.current) return;
+        term = makeTerminal();
+        if (!term) return;
+      }
 
-    const res = await window.harness.startAgent({
-      sessionId: id,
-      agentType,
-      transport,
-      projectPath,
-      mockupFile: mockupFile ?? undefined,
-      ...(term ? { cols: term.cols, rows: term.rows } : {}),
-    });
-    if (!res.ok) {
-      sessionRef.current = null;
-      setStatus("error");
-      setError(res.error ?? "시작 실패");
-      term?.writeln(`\x1b[31m${res.error ?? "시작 실패"}\x1b[0m`);
+      const id = crypto.randomUUID();
+      sessionRef.current = id;
+
+      const res = await window.harness.startAgent({
+        sessionId: id,
+        agentType: at,
+        transport: tp,
+        projectPath,
+        mockupFile: mockupFile ?? undefined,
+        ...(term ? { cols: term.cols, rows: term.rows } : {}),
+      });
+      if (!res.ok) {
+        sessionRef.current = null;
+        setStatus("error");
+        setError(res.error ?? "시작 실패");
+        term?.writeln(`\x1b[31m${res.error ?? "시작 실패"}\x1b[0m`);
+        histCb.current?.();
+        return;
+      }
+      setStatus("running");
+      liveCb.current?.(id);
       histCb.current?.();
-      return;
-    }
-    setStatus("running");
-    liveCb.current?.(id);
-    histCb.current?.();
-    term?.focus();
-  }, [projectPath, agentType, transport, mockupFile, makeTerminal]);
+      term?.focus();
+    },
+    [projectPath, agentType, transport, mockupFile, makeTerminal],
+  );
 
   // 구조화 모드 입력창 → 다음 유저 턴 전송(메시지 echo 는 main 이 agent:message 로 돌려줌).
   const sendTurn = useCallback((text: string) => {
@@ -260,6 +268,20 @@ export function AgentPanel({
     }
   }, [attachSessionId, attach]);
 
+  // "+ 새 채팅"(채팅기록 헤더) — 요청 seq 가 바뀌면 지정 에이전트로 새 bare 세션을 시작.
+  // start() 가 이전 라이브 세션을 먼저 정리하므로 안전. start 의 identity 변화(mockupFile 등)
+  // 로 재실행되지 않게 ref 로 최신 start 를 읽고 seq 만 추적한다.
+  const startRef = useRef(start);
+  startRef.current = start;
+  const prevSeq = useRef(newChatReq?.seq ?? 0);
+  useEffect(() => {
+    const seq = newChatReq?.seq ?? 0;
+    if (newChatReq && seq !== prevSeq.current) {
+      prevSeq.current = seq;
+      void startRef.current(newChatReq.agentType);
+    }
+  }, [newChatReq]);
+
   const stop = useCallback(() => {
     if (sessionRef.current) void window.harness.stopAgent(sessionRef.current);
   }, []);
@@ -280,23 +302,21 @@ export function AgentPanel({
           fontSize: 13,
         }}
       >
-        <div style={{ display: "flex", gap: 4 }}>
-          {AGENTS.map((a) => (
-            <button
-              key={a.type}
-              disabled={!a.enabled || running}
-              onClick={() => {
-                setAgentType(a.type);
-                // 구조화(stream-json)는 claude 전용 — codex 선택 시 기본(pty)으로 되돌린다.
-                if (a.type !== "claude") setTransport("pty");
-              }}
-              style={agentType === a.type ? pillBtnActive : pillBtn}
-            >
-              {a.label}
-            </button>
-          ))}
-        </div>
-        {/* 전송 방식 토글(canary). claude 일 때만 활성 — codex 는 구조화 등가물이 없음. */}
+        {/* 라이브 상태 — 실행 중이면 에이전트명 + LIVE, 아니면 시작 안내(시작은 좌측 "+ 새 채팅"). */}
+        {running ? (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5 }}>
+            <span style={{ color: c.green, fontSize: 9 }}>●</span>
+            <strong style={{ color: c.text, fontWeight: 600 }}>{AGENT_LABEL[agentType]}</strong>
+            <span style={{ color: c.textFaint, fontSize: 11 }}>실행 중</span>
+          </span>
+        ) : (
+          <span style={{ fontSize: 12, color: c.textFaint }}>
+            좌측 <strong style={{ color: c.textMuted, fontWeight: 600 }}>+ 새 채팅</strong> 으로
+            시작하세요
+          </span>
+        )}
+        {/* 전송 방식 토글(canary). claude 일 때만 활성 — codex 는 구조화 등가물이 없음.
+            시작 전 미리 고르는 설정 — "+ 새 채팅" 이 이 값을 읽어 세션을 띄운다. */}
         <div
           style={segGroup}
           title="구조화(canary)는 Claude 의 stream-json 출력을 카드형 채팅으로 보여줍니다"
@@ -323,15 +343,7 @@ export function AgentPanel({
             );
           })}
         </div>
-        {!running ? (
-          <button
-            onClick={start}
-            disabled={!projectPath}
-            style={projectPath ? primaryBtn : primaryBtnDisabled}
-          >
-            세션 시작
-          </button>
-        ) : (
+        {running && (
           <button onClick={stop} style={dangerGhostBtn}>
             중지
           </button>
