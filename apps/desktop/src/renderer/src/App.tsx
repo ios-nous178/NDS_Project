@@ -310,15 +310,19 @@ export function App(): React.JSX.Element {
     setNewChatReq((prev) => ({ seq: (prev?.seq ?? 0) + 1, cwd: picked.folder, ...req }));
   }, []);
 
-  // 빌드/내보내기 cwd = 선택된 목업의 폴더(없으면 인테이크가 만든 슬러그 폴더). 둘 다 없으면 루트.
+  // 빌드/내보내기 cwd = 지금 미리보기에 띄운 목업의 폴더. 우선순위:
+  //   selected(파일트리 선택) → previewRel(채팅 세션 클릭으로 띄운 목업) → activeSlug(인테이크).
+  // ⚠️ previewRel 폴백이 핵심: 채팅 세션을 클릭하면 previewRel 만 갱신되고 selected 는 그대로라,
+  //    이게 없으면 export 가 projectPath 루트를 빌드해 "index.html 없음"으로 실패한다
+  //    (미리보기는 하위 목업을 보는데 내보내기는 루트를 빌드 = 어긋남).
   const activeMockupDir = useMemo(() => {
     if (!projectPath) return undefined;
-    const rel = selected ?? (activeSlug ? `${activeSlug}/index.html` : null);
+    const rel = selected ?? previewRel ?? (activeSlug ? `${activeSlug}/index.html` : null);
     if (!rel) return undefined;
     const slash = rel.lastIndexOf("/");
     const dir = slash > 0 ? rel.slice(0, slash) : "";
     return dir ? `${projectPath}/${dir}` : projectPath;
-  }, [projectPath, selected, activeSlug]);
+  }, [projectPath, selected, previewRel, activeSlug]);
 
   /** 상단바에 보일 현재 작업 문맥(세션/목업 경로). 없으면 프로젝트 폴더명. */
   const currentContext = useMemo(() => {
