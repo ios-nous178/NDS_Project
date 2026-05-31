@@ -442,5 +442,11 @@ export class NdsSelectOption extends NdsElement {
   }
 }
 
-define(NdsSelect);
+// ⚠️ 등록 순서 — leaf(option) 를 부모(select) 보다 먼저 define 해야 한다.
+// customElements.define 은 문서에 이미 있는 매칭 요소를 동기 upgrade 하므로, 정적 HTML
+// 목업에서 NdsSelect 를 먼저 define 하면 <nds-select> 가 즉시 upgrade → _mount 가
+// 아직 미정의인 <nds-select-option> 에 setOwner 를 호출 → throw → 옵션이 raw 텍스트로
+// 새어 나온다(드롭다운 안 만들어짐). option 을 먼저 등록하면 부모 upgrade 시점에
+// customElements.upgrade(opt) 가 실제로 동작하고 setOwner 가 존재한다.
 define(NdsSelectOption);
+define(NdsSelect);

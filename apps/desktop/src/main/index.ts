@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { bootstrapValidator } from "./catalog.js";
 import { registerIpcHandlers } from "./ipc.js";
 import { registerMockupScheme, registerMockupProtocol } from "./mockup-protocol.js";
@@ -10,19 +11,49 @@ import { stopAllAgents } from "./agent-runner.js";
 let mainWindow: BrowserWindow | null = null;
 
 /**
- * packaged 앱에서 main 프로세스가 직접 도는 build_singlefile_html(비파괴 export)이
- * DS 단일 자산을 찾게 한다. dev 는 node_modules resolve 로 충분하지만 packaged 는
- * node_modules 가 없어 sidecar 위치(resources/mcp/dist/{standalone,assets})를 env 로
- * 명시해야 한다. spawned MCP 서버는 mcp-config.ts 가 따로 주입한다(여긴 main 전용).
+ * main 프로세스가 직접 도는 미리보기 주입(injectStandaloneRuntime)·내보내기가 DS 단일
+ * 자산(standalone runtime/CSS, assets/files)을 찾게 env 로 위치를 못박는다.
+ *
+ *  - packaged: node_modules 가 없으니 sidecar(resources/mcp/dist/{standalone,assets}).
+ *  - dev: electron-vite 가 @nudge-design/mockup-core·html 을 main 번들에 인라인하므로
+ *    그 안의 createRequire(import.meta.url) 가 out/main 기준으로 동작 → packages/mockup-core/
+ *    node_modules 에 있는 @nudge-design/html 을 못 찾아 resolveStandaloneDir 가 throw 한다
+ *    (= 미리보기가 주입 실패로 raw HTML 만 서빙 → CSS·헤더 사라짐). 워크스페이스의
+ *    packages/{html,assets}/dist 를 직접 못박아 env(strategy ①)로 확정한다.
  */
 function bootstrapBundledAssetDirs(): void {
-  const resourcesPath = (process as NodeJS.Process & { resourcesPath?: string }).resourcesPath;
-  if (!resourcesPath) return;
-  const setIfPresent = (key: string, dir: string): void => {
-    if (!process.env[key] && existsSync(dir)) process.env[key] = dir;
+  const setIfPresent = (key: string, dir: string | null): void => {
+    if (dir && !process.env[key] && existsSync(dir)) process.env[key] = dir;
   };
-  setIfPresent("NUDGE_DS_STANDALONE_DIR", join(resourcesPath, "mcp", "dist", "standalone"));
-  setIfPresent("NUDGE_DS_ASSETS_DIR", join(resourcesPath, "mcp", "dist", "assets"));
+
+  // packaged sidecar 우선.
+  const resourcesPath = (process as NodeJS.Process & { resourcesPath?: string }).resourcesPath;
+  if (resourcesPath) {
+    setIfPresent("NUDGE_DS_STANDALONE_DIR", join(resourcesPath, "mcp", "dist", "standalone"));
+    setIfPresent("NUDGE_DS_ASSETS_DIR", join(resourcesPath, "mcp", "dist", "assets"));
+  }
+
+  // dev/모노레포 폴백 — 번들 위치(out/main)에서 위로 올라가며 워크스페이스 dist 를 찾는다.
+  // sentinel 로 정확한 디렉터리만 잡는다(standalone=manifest.json, assets=files/).
+  const findUp = (rel: string, sentinel: string): string | null => {
+    let dir = dirname(fileURLToPath(import.meta.url));
+    for (let i = 0; i < 8; i += 1) {
+      const cand = join(dir, rel);
+      if (existsSync(join(cand, sentinel))) return cand;
+      const parent = dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+    return null;
+  };
+  setIfPresent(
+    "NUDGE_DS_STANDALONE_DIR",
+    findUp(join("packages", "html", "dist", "standalone"), "manifest.json"),
+  );
+  setIfPresent(
+    "NUDGE_DS_ASSETS_DIR",
+    findUp(join("packages", "assets", "dist", "files"), "brand-logos"),
+  );
 }
 
 bootstrapBundledAssetDirs();
