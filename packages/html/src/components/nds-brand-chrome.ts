@@ -227,6 +227,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
     footerTone: "light",
     footerSurface: "web",
     footerLinks: [
+      { label: "고객센터", href: "/support" },
       { label: "개인정보 처리방침", href: "/privacy", bold: true },
       { label: "서비스 이용약관", href: "/terms" },
       { label: "위치기반 서비스 이용약관", href: "/location-terms" },
@@ -235,7 +236,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       name: "주식회사 다인",
       ceo: "한상범",
       bizNumber: "101-86-16191",
-      address: "서울특별시 강남구 역삼로1길 8, 5층",
+      address: "서울특별시 강남구 역삼로1길 8, 5층 (역삼동, 넛지캠퍼스빌딩)",
       phone: "02-2268-5980",
       email: "support@nudgeeap.com",
       copyright: "Copyright 2024 Dain Co.Ltd. All Rights Reserved.",
