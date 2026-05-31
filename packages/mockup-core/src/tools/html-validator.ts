@@ -15,6 +15,8 @@
  *  - inline-svg           : <svg> (DS 아이콘 화이트리스트와 대조)
  *  - native-interactive   : <button>/<input>/<select> 가 nds-* 클래스/태그 없이 사용됨
  *  - raw-landmark         : sidebar/footer/header 를 raw landmark 로 구현했지만 nds-* 대체재가 있음
+ *  - manual-brand-header  : 브랜드 화면(data-brand/nds-brand-*)인데 base nds-header 에 로고/메뉴/auth 손수 조립
+ *  - non-inlinable-img-src: 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (src/srcset)
  *  - text-icon-substitute : x/× 같은 텍스트를 아이콘 대체로 사용
  *  - unknown-token        : var(--xxx) 의 --xxx 가 카탈로그에 없음
  *  - unknown-nds-tag      : <nds-foo> 가 카탈로그(@nudge-design/html) 에 없는 태그
@@ -122,6 +124,10 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   // contract / DS 미사용
   "native-interactive": "error",
   "raw-landmark": "warn",
+  // 브랜드 화면인데 base nds-header 를 손수 조립 (회고: brand chrome 미사용 안티패턴)
+  "manual-brand-header": "warn",
+  // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
+  "non-inlinable-img-src": "warn",
   "unknown-nds-tag": "error",
   "unknown-nds-class": "error",
   "invalid-nds-attr-value": "error",
@@ -218,6 +224,37 @@ const EMOJI_RE =
 
 function lineNumberAt(source: string, index: number): number {
   return source.slice(0, index).split("\n").length;
+}
+
+/**
+ * 단일 HTML 빌드(build_singlefile_html)에 살아남지 못하는 로컬 이미지 참조인지.
+ * 인라인되거나 보존되는 것:
+ *   - data: / blob:                         → 이미 인라인
+ *   - http(s):// , //                       → 외부 절대 URL (빌드가 보존)
+ *   - @nudge-design/assets/files/…          → 빌드가 base64 inline (규약)
+ * 그 외(/foo.png, ./foo, ../foo, foo.png)는 단일 파일에서 깨진다 → 위반.
+ */
+const INLINABLE_IMG_PREFIXES = [
+  "data:",
+  "blob:",
+  "http://",
+  "https://",
+  "//",
+  "@nudge-design/assets/",
+];
+function isNonInlinableImgRef(rawUrl: string): boolean {
+  const url = rawUrl.trim();
+  if (!url) return false;
+  if (url.startsWith("#")) return false;
+  return !INLINABLE_IMG_PREFIXES.some((p) => url.startsWith(p));
+}
+
+/** srcset 의 각 URL 토큰을 추출 (descriptor 제외). */
+function srcsetUrls(srcset: string): string[] {
+  return srcset
+    .split(",")
+    .map((entry) => entry.trim().split(/\s+/)[0])
+    .filter(Boolean);
 }
 
 /** style="..." 문자열 안에 hex/rgb/gradient/px 등을 검사. */
@@ -430,6 +467,32 @@ export function validateHtmlSource(
       });
     }
 
+    // 3-bis. 단일 파일 빌드에 안 박히는 로컬 이미지 경로 — src / srcset.
+    //   회고: 상대경로(/marathon-events/…) 이미지가 내부 미리보기·외부 단독 파일 모두 깨짐.
+    //   build_singlefile_html 은 @nudge-design/assets/files/… 규약만 base64 inline 하고
+    //   외부 http(s)·data: 만 보존한다. 나머지 로컬 경로는 살아남지 못한다.
+    if (tag === "img" || tag === "source") {
+      const offenders: string[] = [];
+      if (attrs.src && isNonInlinableImgRef(attrs.src)) offenders.push(attrs.src);
+      if (attrs.srcset) {
+        for (const u of srcsetUrls(attrs.srcset)) {
+          if (isNonInlinableImgRef(u)) offenders.push(u);
+        }
+      }
+      if (offenders.length > 0) {
+        violations.push({
+          rule: "non-inlinable-img-src",
+          line,
+          selector,
+          detail: `${offenders.slice(0, 2).join(", ")}${offenders.length > 2 ? " …" : ""}`,
+          suggestion:
+            "이 경로는 단일 HTML 빌드에 inline 되지 않아 내부 미리보기·외부 단독 파일 모두 깨집니다. " +
+            "DS 자산이면 @nudge-design/assets/files/{category}/{id}.png 규약(get_brand 의 inlineRef)으로 바꾸면 build_singlefile_html 이 base64 inline 합니다. " +
+            "외부 이미지는 http(s):// 절대 URL 또는 data: URI 를 사용하세요. (상대경로 /…, ./…, ../… 는 호스팅 앱 전용)",
+        });
+      }
+    }
+
     // 4. unknown nds-* 태그
     if (tag.startsWith("nds-") && ctx.ndsTagSet.size > 0 && !ctx.ndsTagSet.has(tag)) {
       violations.push({
@@ -631,6 +694,33 @@ export function validateHtmlSource(
   // 카드별 / Footer별 / 영역별 카운트를 도출해 패턴 위반을 잡는다.
   collectContainerViolations(source, $, violations);
 
+  // ─── 브랜드 화면에서 base nds-header 손수 조립 감지 ───
+  //   회고: RunmileWebHeader 가이드가 "HTML 대응 없음" 이라 base <nds-header> 에
+  //   로고/메뉴/auth 를 손으로 붙여 브랜드 GNB 를 조립 = 안티패턴. surface 분기도 안 됨.
+  //   브랜드 컨텍스트(<html data-brand> 또는 nds-brand-* chrome 사용)가 있는데
+  //   base nds-header 에 GNB 자식(logo/menu/auth)을 직접 박았으면 nds-brand-header 로 유도.
+  const hasDataBrand = $("html[data-brand], body[data-brand]").length > 0;
+  const hasBrandChrome = $("nds-brand-header, nds-brand-footer, nds-brand-bottom-nav").length > 0;
+  if (hasDataBrand || hasBrandChrome) {
+    $("nds-header").each((_i, el) => {
+      if (el.type !== "tag") return;
+      const $el = $(el);
+      const hasGnbChildren =
+        $el.find("nds-header-menu, nds-header-menu-item, nds-header-logo, nds-header-auth-button")
+          .length > 0;
+      if (!hasGnbChildren) return;
+      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+      violations.push({
+        rule: "manual-brand-header",
+        line: lineNumberAt(source, offset),
+        selector: describeElement(el as unknown as DomElement),
+        detail: "브랜드 화면에서 base <nds-header> 에 로고/메뉴/auth 를 손수 조립함.",
+        suggestion:
+          "브랜드 헤더는 손수 조립 금지. <nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 한 줄로 교체하면 로고/메뉴/auth 가 BRAND_DATA 에서 자동 렌더되고 surface 로 PC·모바일·웹뷰가 분기됩니다. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조.",
+      });
+    });
+  }
+
   // ─── 헤딩 안 장식 아이콘 (descendant scan) ───
   for (const headingTag of ["h3", "h4"] as const) {
     $(headingTag).each((_i, el) => {
@@ -652,7 +742,10 @@ export function validateHtmlSource(
   }
 
   // ─── 문서-레벨 카운트 룰 ───
-  collectDocumentLevelViolations(source, $, violations);
+  //   여러 디바이스 프레임(.mockup-screen)을 한 파일에 그리면 같은 화면이 N벌 반복되므로
+  //   "화면당 1개" 류 카운트 임계값을 프레임 수만큼 비례 확대한다(프레임 1개 = 기존과 동일).
+  const screenCount = Math.max(1, $(".mockup-screen").length);
+  collectDocumentLevelViolations(source, $, violations, screenCount);
 
   // push 시점에 severity 를 명시하지 않은 violation 은 RULE_SEVERITY 에서 채운다.
   for (const v of violations) {
@@ -769,9 +862,10 @@ function collectDocumentLevelViolations(
   source: string,
   $: cheerio.CheerioAPI,
   out: HtmlViolation[],
+  screenCount = 1,
 ): void {
   const chipTotal = $("nds-chip").length;
-  if (chipTotal > 8) {
+  if (chipTotal > 8 * screenCount) {
     const ninth = $("nds-chip").eq(8).get(0) as DomElement | undefined;
     const line = ninth
       ? lineNumberAt(source, (ninth as unknown as { startIndex?: number }).startIndex ?? 0)
@@ -786,7 +880,7 @@ function collectDocumentLevelViolations(
   }
 
   const cardTotal = $("nds-card").length;
-  if (cardTotal >= 5) {
+  if (cardTotal >= 5 * screenCount) {
     out.push({
       rule: "card-everything",
       line: 1,
@@ -804,7 +898,7 @@ function collectDocumentLevelViolations(
     .toArray()
     .filter((b) => isPrimarySolidButton(b as unknown as DomElement))
     .filter((b) => !isInsideSecondaryActionContext(b as unknown as DomElement)).length;
-  if (pagePrimarySolidTotal > 1) {
+  if (pagePrimarySolidTotal > screenCount) {
     out.push({
       rule: "primary-cta-overuse",
       line: 1,
@@ -815,7 +909,7 @@ function collectDocumentLevelViolations(
   }
 
   const h1Count = $("h1").length;
-  if (h1Count >= 2) {
+  if (h1Count > screenCount) {
     out.push({
       rule: "repeated-h1",
       line: 1,
@@ -824,7 +918,7 @@ function collectDocumentLevelViolations(
     });
   }
   const h2Count = $("h2").length;
-  if (h2Count >= 4) {
+  if (h2Count > 3 * screenCount) {
     out.push({
       rule: "repeated-h2",
       line: 1,
@@ -839,7 +933,7 @@ function collectDocumentLevelViolations(
     const style = ((el as unknown as DomElement).attribs?.style ?? "").trim();
     if (/font-weight\s*:\s*(?:bold|700|800|900)\b/i.test(style)) boldCount += 1;
   });
-  if (boldCount >= 5) {
+  if (boldCount >= 5 * screenCount) {
     out.push({
       rule: "bold-overuse",
       line: 1,
@@ -850,7 +944,7 @@ function collectDocumentLevelViolations(
 
   // Brand BG 한 화면 1곳 — --semantic-bg-brand-default | subtle 2회 이상이면 위반
   const brandBgMatches = source.match(/var\(--semantic-bg-brand-(?:default|subtle)\)/g) ?? [];
-  if (brandBgMatches.length >= 2) {
+  if (brandBgMatches.length >= 2 * screenCount) {
     out.push({
       rule: "brand-bg-overuse",
       line: 1,
@@ -871,7 +965,7 @@ function collectDocumentLevelViolations(
       decorativeShadowCount += 1;
     }
   });
-  if (decorativeShadowCount >= 4) {
+  if (decorativeShadowCount >= 4 * screenCount) {
     out.push({
       rule: "decorative-shadow",
       line: 1,

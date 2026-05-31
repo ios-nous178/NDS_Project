@@ -565,8 +565,13 @@ export function getHtmlEntryImports(args: { brand?: string }) {
  * 무번들러 html 목업의 index.html 출발점 — <nds-*> 사용처.
  * vite/main.ts/import 없음: DS runtime/CSS 는 build_singlefile_html 이 자동 inline 한다.
  * 브랜드는 <html data-brand="..."> 로 지정 — 빌드가 그 토큰을 inline 한다(미지정 시 기본 브랜드).
+ *
+ * 여러 화면을 "화면처럼" 보여주기: .mockup-canvas 안에 .mockup-screen[data-device] 프레임을
+ * 나란히 깐다(빌드가 자동 inline 하는 목업 전용 CSS — 별도 <style> 불필요). 브랜드 헤더는
+ * surface 로 웹/모바일/웹뷰를 분기하므로 같은 화면을 디바이스별로 한눈에 비교할 수 있다.
  */
-function htmlIndexTemplate(brandAttr: string): string {
+function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
+  const brand = brandSlug ?? "nudge-eap";
   return `<!doctype html>
 <html lang="ko"${brandAttr}>
   <head>
@@ -575,15 +580,36 @@ function htmlIndexTemplate(brandAttr: string): string {
     <title>NudgeEAP Mockup</title>
   </head>
   <body>
-    <main style="max-width: 720px; margin: 0 auto; padding: var(--semantic-inset-screen);">
-      <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-block>
+    <!-- 여러 화면을 디바이스 프레임으로 나란히. data-device: web | mobile | webview | tablet -->
+    <div class="mockup-canvas">
 
-      <div style="display: flex; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
-        <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
-        <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
-      </div>
-    </main>
-    <!-- DS runtime/CSS 는 build_singlefile_html 이 자동 inline 합니다. <script>/import 불필요. -->
+      <!-- 화면 1: 웹(PC) -->
+      <section class="mockup-screen" data-device="web" data-label="홈 (웹)">
+        <!-- 브랜드 헤더는 손수 조립 금지 — surface='web' 한 줄. active-key 는 get_guide BrandHeader 참고 -->
+        <nds-brand-header brand="${brand}" surface="web" asset-base-url="/brand-logos"></nds-brand-header>
+        <main style="flex: 1; padding: var(--semantic-inset-screen);">
+          <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-block>
+          <div style="display: flex; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
+            <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
+            <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
+          </div>
+        </main>
+      </section>
+
+      <!-- 화면 2: 모바일 (같은 화면, surface='mobile') -->
+      <section class="mockup-screen" data-device="mobile" data-label="홈 (모바일)">
+        <nds-brand-header brand="${brand}" surface="mobile"></nds-brand-header>
+        <main style="flex: 1; padding: var(--semantic-inset-screen);">
+          <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-block>
+          <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
+            <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
+            <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
+          </div>
+        </main>
+      </section>
+
+    </div>
+    <!-- DS runtime/CSS + 디바이스 프레임 CSS 는 build_singlefile_html 이 자동 inline 합니다. <script>/import 불필요. -->
   </body>
 </html>
 `;
@@ -640,13 +666,16 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
   steps.push({
     step: 4,
     title: "index.html 을 <nds-*> 로 직접 작성",
-    code: htmlIndexTemplate(brandAttr),
+    code: htmlIndexTemplate(brandAttr, brandSlug),
     note:
       "DS runtime/CSS 는 빌드가 자동 inline 하므로 <script>/import 가 필요 없습니다. " +
       (brandSlug
         ? `<html data-brand="${brandSlug}"> 로 브랜드 토큰이 적용됩니다. `
         : '브랜드는 <html data-brand="<slug>"> 로 지정하세요(get_brand 로 확인). 미지정 시 기본 브랜드. ') +
-      "컴포넌트 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져옵니다.",
+      "컴포넌트 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져옵니다. " +
+      "【헤더/푸터】 사용자 앱 화면이면 base <nds-header> 를 손수 조립하지 말고 <nds-brand-header brand surface='web|mobile|webview'> / <nds-brand-footer> 한 줄을 쓰세요(BrandHeader/BrandFooter 가이드). " +
+      "【여러 화면】 한 파일에 여러 화면을 그릴 땐 .mockup-canvas > .mockup-screen[data-device='web|mobile|webview'] 프레임으로 나란히 배치 — 고정 너비·최소높이 device-frame 으로 '화면처럼' 보입니다(get_guide({ topic: 'pattern:multi-screen' })). " +
+      "【이미지】 DS 자산 이미지는 get_brand 의 inlineRef(@nudge-design/assets/files/…) 규약으로 <img src> 에 쓰면 빌드가 base64 inline(내부·외부 모두 보임). 상대경로 /…/x.png 는 단일 파일에서 깨집니다.",
   });
 
   steps.push({
@@ -1246,12 +1275,15 @@ export function getBrandInfo(args: { brand: string }) {
                 mimeType: PROFILE_IMAGE_METADATA[id].mimeType,
                 figmaNodeId: PROFILE_IMAGE_METADATA[id].figmaNodeId,
                 source: PROFILE_IMAGE_METADATA[id].source,
+                // 단일 HTML 목업: 이 규약으로 <img src> 에 쓰면 build_singlefile_html 이 base64 inline.
+                inlineRef: `@nudge-design/assets/files/${PROFILE_IMAGE_METADATA[id].filename}`,
+                // 호스팅 앱(외부 public/ 서빙)일 때만.
                 publicPath: `/${PROFILE_IMAGE_METADATA[id].filename}`,
               })),
-              importExample: `import { getProfileImage } from "@nudge-design/assets";\nconst meta = getProfileImage(1);\n// → { filename: "profile-images/profile-1.jpg", mimeType, figmaNodeId, source }`,
+              importExample: `// ① 단일 HTML 목업 (build_singlefile_html 가 base64 inline) — 이게 기본:\n<img src="@nudge-design/assets/files/profile-images/profile-1.jpg" width="24" height="24" alt="" />\n// ② React/호스팅 앱: import { getProfileImage } from "@nudge-design/assets"; getProfileImage(1) → { filename, mimeType, figmaNodeId, source }, public/ 호스팅 후 /profile-images/profile-1.jpg`,
               publicHosting: {
                 baseDir: "public/profile-images/",
-                note: `Runmile 라이브러리 21:136 의 사용자 프로필 기본 이미지 12종. id 1/2/9~12 는 단일 raster export (원본 사진/일러스트, ~600KB max), id 3~8 은 Figma screenshot flatten 24×24 (~1.5KB). 모두 파일 호스팅으로 사용 — dataUri 미제공.`,
+                note: `Runmile 라이브러리 21:136 의 사용자 프로필 기본 이미지 12종. id 1/2/9~12 는 단일 raster export (원본 사진/일러스트, ~600KB max), id 3~8 은 Figma screenshot flatten 24×24 (~1.5KB). **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 규약을 <img src> 에 그대로 써라 — build_singlefile_html 이 base64 로 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/profile-images/…)는 단일 파일에 안 박혀 깨진다(호스팅 앱 전용).** dataUri 메타데이터는 미제공(inline 은 빌드가 처리).`,
               },
             }
           : null,
@@ -1266,12 +1298,13 @@ export function getBrandInfo(args: { brand: string }) {
                 mimeType: ILLUSTRATION_METADATA[id].mimeType,
                 figmaNodeId: ILLUSTRATION_METADATA[id].figmaNodeId,
                 figmaNodeName: ILLUSTRATION_METADATA[id].figmaNodeName,
+                inlineRef: `@nudge-design/assets/files/${ILLUSTRATION_METADATA[id].filename}`,
                 publicPath: `/${ILLUSTRATION_METADATA[id].filename}`,
               })),
-              importExample: `import { getIllustration } from "@nudge-design/assets";\nconst meta = getIllustration("page-error");\n// → { filename: "illustrations/page-error.png", mimeType: "image/png", figmaNodeId, figmaNodeName }`,
+              importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline) — 기본:\n<img src="@nudge-design/assets/files/illustrations/page-error.png" width="140" height="140" alt="" />\n// ② React/호스팅 앱: import { getIllustration } from "@nudge-design/assets"; getIllustration("page-error") → { filename, mimeType, figmaNodeId, figmaNodeName }`,
               publicHosting: {
                 baseDir: "public/illustrations/",
-                note: `Runmile 라이브러리 55:955 의 빈 상태 / 에러 / 알람 일러스트 10종 (140×140 PNG). Figma screenshot flatten 으로 export (원본은 multi-layer composite). 파일 호스팅으로 사용.`,
+                note: `Runmile 라이브러리 55:955 의 빈 상태 / 에러 / 알람 일러스트 10종 (140×140 PNG). Figma screenshot flatten 으로 export. **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 를 <img src> 에 쓰면 build_singlefile_html 이 base64 inline. 상대경로(/illustrations/…)는 단일 파일에서 깨짐(호스팅 앱 전용).**`,
               },
             }
           : null,
@@ -1287,13 +1320,15 @@ export function getBrandInfo(args: { brand: string }) {
                 mimeType: MARATHON_EVENT_METADATA[id].mimeType,
                 figmaNodeId: MARATHON_EVENT_METADATA[id].figmaNodeId,
                 figmaNodeName: MARATHON_EVENT_METADATA[id].figmaNodeName,
+                inlineRef: `@nudge-design/assets/files/${MARATHON_EVENT_METADATA[id].filename}`,
+                inlineRef3x: `@nudge-design/assets/files/${MARATHON_EVENT_METADATA[id].filename3x}`,
                 publicPath: `/${MARATHON_EVENT_METADATA[id].filename}`,
                 publicPath3x: `/${MARATHON_EVENT_METADATA[id].filename3x}`,
               })),
-              importExample: `import { getMarathonEvent } from "@nudge-design/assets";\nconst meta = getMarathonEvent("hangang-night-run");\n// → { filename: "marathon-events/hangang-night-run.png", filename3x: "...@3x.png", mimeType, figmaNodeName: "한강나이트런" }\n// srcset 예: <img src={\`/\${meta.filename}\`} srcSet={\`/\${meta.filename} 2x, /\${meta.filename3x} 3x\`} width={180} height={180} />`,
+              importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline, srcset 토큰까지 치환) — 기본:\n<img src="@nudge-design/assets/files/marathon-events/hangang-night-run.png"\n     srcset="@nudge-design/assets/files/marathon-events/hangang-night-run.png 2x, @nudge-design/assets/files/marathon-events/hangang-night-run@3x.png 3x"\n     width="180" height="180" alt="한강나이트런" />\n// ② React/호스팅 앱: import { getMarathonEvent } from "@nudge-design/assets"; getMarathonEvent("hangang-night-run") → { filename, filename3x, mimeType, figmaNodeName }, public/ 호스팅 후 /marathon-events/…`,
               publicHosting: {
                 baseDir: "public/marathon-events/",
-                note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종. Figma 원본 래스터에서 재export: base 360×360 (2x) + @3x 540×540 (3x). srcset '2x/3x' 로 사용하고 180×180 슬롯에 렌더. 댕댕이레이스/개나리런/포켓몬런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
+                note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종. base 360×360 (2x) + @3x 540×540 (3x), srcset 으로 180×180 슬롯에 렌더. **단일 HTML 목업이면 inlineRef / inlineRef3x(@nudge-design/assets/files/…) 를 src·srcset 에 그대로 써라 — build_singlefile_html 이 두 토큰 모두 base64 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/marathon-events/…)는 단일 파일에서 깨짐(호스팅 앱 전용).** 댕댕이레이스/개나리런/포켓몬런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
               },
             }
           : null,

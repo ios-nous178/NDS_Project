@@ -82,6 +82,61 @@ export function getUxWritingGuide() {
 
 export type GuideTarget = "react" | "html";
 
+/**
+ * 브랜드 chrome React-only 컴포넌트(WebHeader/AppBar/Footer/BottomNav)는 HTML 1:1 대응
+ * element 가 없다(_htmlStatus='no-html-equivalent'). 하지만 "대응 element 없음" 이라고만
+ * 안내하면 회고처럼 base `<nds-header>` 를 손수 조립하는 막다른 길로 샌다.
+ * 실제로는 `<nds-brand-header|footer|bottom-nav>` 한 줄이 BRAND_DATA 에서 전부 렌더한다.
+ * 컴포넌트 이름(브랜드 prefix + 슬롯 suffix)에서 올바른 brand element + surface 를 유도해
+ * 막다른 길 대신 "이걸 쓰라" 는 표지판으로 바꾼다. (브랜드 신규 컴포넌트도 자동 커버)
+ */
+const BRAND_CHROME_BRANDS: Array<[prefix: string, slug: string]> = [
+  ["NudgeEAP", "nudge-eap"],
+  ["CashwalkBiz", "cashwalk-biz"],
+  ["Trost", "trost"],
+  ["Geniet", "geniet"],
+  ["Runmile", "runmile"],
+];
+
+export function brandChromeHtmlRedirect(name: string): string | undefined {
+  const hit = BRAND_CHROME_BRANDS.find(([prefix]) => name.startsWith(prefix));
+  if (!hit) return undefined;
+  const [prefix, slug] = hit;
+  const slot = name.slice(prefix.length);
+  switch (slot) {
+    case "WebHeader":
+    case "DesktopHeader":
+      return (
+        `<nds-brand-header brand='${slug}' surface='web' active-key='...' asset-base-url='/brand-logos'> ` +
+        `— 상세: get_guide({ topic: 'component:BrandHeader', target: 'html' })`
+      );
+    case "AppBar":
+    case "MobileHeader":
+      return (
+        `<nds-brand-header brand='${slug}' surface='mobile' active-key='...'> ` +
+        `(웹뷰 헤더는 surface='webview') — 상세: get_guide({ topic: 'component:BrandHeader', target: 'html' })`
+      );
+    case "Footer":
+    case "WebFooter":
+      return (
+        `<nds-brand-footer brand='${slug}' surface='web' asset-base-url='/brand-logos'> ` +
+        `(앱 푸터는 surface='app') — 상세: get_guide({ topic: 'component:BrandFooter', target: 'html' })`
+      );
+    case "AppFooter":
+      return (
+        `<nds-brand-footer brand='${slug}' surface='app'> ` +
+        `— 상세: get_guide({ topic: 'component:BrandFooter', target: 'html' })`
+      );
+    case "BottomNav":
+      return (
+        `<nds-brand-bottom-nav brand='${slug}' active-key='...'> ` +
+        `— 상세: get_guide({ topic: 'component:BrandBottomNav', target: 'html' })`
+      );
+    default:
+      return undefined;
+  }
+}
+
 const PRINCIPLES_DIGEST = [
   "get_guide({ topic: 'principles' }) first for mockup work.",
   "No emoji/text-symbol icons; use find_icon + @nudge-design/icons.",
@@ -126,10 +181,22 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
         "target=html — examples 필드가 vanilla HTML (<nds-*>) 형태로 교체됐습니다. " +
         "attribute 는 kebab-case, 이벤트는 addEventListener('nds-...', handler) 로 바인딩하세요.";
     } else if (_htmlStatus === "no-html-equivalent") {
-      htmlAdvisory =
-        "target=html 호출됐지만 이 컴포넌트는 @nudge-design/html 패키지에 1:1 대응되는 nds-* element 가 아직 없습니다. " +
-        "find_component({ query }) 로 대체 가능한 다른 HTML 지원 컴포넌트를 검토하세요. " +
-        "examples 는 기존 JSX 형태 그대로 노출됩니다.";
+      const redirect = brandChromeHtmlRedirect(guide.name);
+      if (redirect) {
+        // 브랜드 chrome — 막다른 길("대응 element 없음") 대신 brand element 표지판.
+        htmlAdvisory =
+          "★ target=html — 이 컴포넌트는 React 전용 브랜드 chrome 래퍼입니다. " +
+          "HTML 목업에서는 base <nds-header> 를 손수 조립하지 말고(회고: 손수 조립 = 안티패턴) " +
+          `다음 한 줄을 쓰세요: ${redirect}. ` +
+          "로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보가 BRAND_DATA 에서 자동 렌더되고, " +
+          "surface 값(web / mobile / webview)으로 PC·모바일·웹뷰 헤더가 각각 분기됩니다. " +
+          "아래 examples 는 React 용 JSX 라 HTML 에 그대로 붙여넣지 마세요.";
+      } else {
+        htmlAdvisory =
+          "target=html 호출됐지만 이 컴포넌트는 @nudge-design/html 패키지에 1:1 대응되는 nds-* element 가 아직 없습니다. " +
+          "find_component({ query }) 로 대체 가능한 다른 HTML 지원 컴포넌트를 검토하세요. " +
+          "examples 는 기존 JSX 형태 그대로 노출됩니다.";
+      }
     } else {
       htmlAdvisory =
         "target=html 호출됐지만 이 가이드에는 아직 examplesHtml 가 큐레이션되어 있지 않습니다. " +
