@@ -358,32 +358,7 @@ export function App(): React.JSX.Element {
         <div
           style={{ ...noDrag, marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}
         >
-          <ExportButton
-            projectPath={projectPath}
-            mockupDir={activeMockupDir}
-            disabled={isAdminCms}
-            onExported={(rel) => {
-              setPreviewRel(rel);
-              setTab("preview");
-              setBust((b) => b + 1);
-            }}
-          />
-          {projectPath && (
-            <span
-              style={{
-                color: c.textFaint,
-                fontSize: 11,
-                fontFamily: mono,
-                maxWidth: 260,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-              title={projectPath}
-            >
-              {projectPath}
-            </span>
-          )}
+          {/* 새 버전 알림(드물게 노출)은 맨 앞에 두어, 나머지가 파일경로 → 내보내기 → 도움말 순서를 유지. */}
           {update?.hasUpdate && update.latestVersion && (
             <button
               onClick={openRelease}
@@ -400,6 +375,32 @@ export function App(): React.JSX.Element {
               <span style={{ fontSize: 12 }}>⬆</span>새 버전 v{update.latestVersion}
             </button>
           )}
+          {projectPath && (
+            <span
+              style={{
+                color: c.textFaint,
+                fontSize: 11,
+                fontFamily: mono,
+                maxWidth: 260,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+              title={projectPath}
+            >
+              {projectPath}
+            </span>
+          )}
+          <ExportButton
+            projectPath={projectPath}
+            mockupDir={activeMockupDir}
+            disabled={isAdminCms}
+            onExported={(rel) => {
+              setPreviewRel(rel);
+              setTab("preview");
+              setBust((b) => b + 1);
+            }}
+          />
           <button
             onClick={() => setHelpOpen(true)}
             title="도움말 · 문의"
