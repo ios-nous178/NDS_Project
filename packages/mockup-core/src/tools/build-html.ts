@@ -201,18 +201,26 @@ export async function buildSinglefileHtml(
             : "";
         return `[${v.rule}]\n  ${v.detail}${fileList}`;
       });
-      const fixHint =
-        intent === "html"
-          ? "위반 파일을 폐기하고 <nds-*> Web Component 기반으로 다시 작성하세요. " +
-            "get_setup({ step: 'full', intent: 'html' }) 로 템플릿을 받을 수 있습니다."
-          : "위반 파일을 폐기하고 .tsx 기반으로 다시 작성하세요.";
-      const msg =
-        `워크스페이스 사전 검사 실패 (${violations.length}건, intent=${intent}). ` +
-        `CLAUDE.md "산출물 형식 강제 (MUST — 우회 절대 금지)" 섹션 위반:\n\n` +
-        lines.join("\n\n") +
-        `\n\n해결: ${fixHint} ` +
-        `사용자가 명시적으로 우회를 허용한 경우에만 build_singlefile_html({ skipAudit: true }) 로 재호출하세요 — ` +
-        `이 경우 MCP 검증 파이프라인(validate_mockup·report_mockup_usage)이 무력화됨을 사용자에게 먼저 경고할 것.`;
+      // no-html-entry-found 는 "잘못 작성"이 아니라 "이 폴더에 index.html 이 아예 없음" —
+      // 컴포넌트 재작성 안내(+skipAudit 우회)는 부적절하므로 별도 메시지로 분기한다.
+      // (흔한 원인: 빌드 cwd 가 생성 결과 폴더가 아니라 intake 만 있는 폴더를 가리킴.)
+      const onlyMissingEntry = violations.every((v) => v.rule === "no-html-entry-found");
+      const msg = onlyMissingEntry
+        ? `내보낼 index.html 을 찾지 못했습니다.\n  빌드 폴더(cwd): ${cwd}\n\n` +
+          `이 폴더에 index.html 이 없습니다. 목업 생성이 끝난 폴더(index.html 이 있는 곳)를 ` +
+          `내보내기 대상으로 선택했는지 확인하세요. 같은 이름의 폴더가 여러 곳(예: intake 만 있는 사본)에 ` +
+          `있으면 생성 결과가 든 폴더가 맞는지 점검하세요.`
+        : `워크스페이스 사전 검사 실패 (${violations.length}건, intent=${intent}, cwd=${cwd}). ` +
+          `CLAUDE.md "산출물 형식 강제 (MUST — 우회 절대 금지)" 섹션 위반:\n\n` +
+          lines.join("\n\n") +
+          `\n\n해결: ${
+            intent === "html"
+              ? "위반 파일을 폐기하고 <nds-*> Web Component 기반으로 다시 작성하세요. " +
+                "get_setup({ step: 'full', intent: 'html' }) 로 템플릿을 받을 수 있습니다."
+              : "위반 파일을 폐기하고 .tsx 기반으로 다시 작성하세요."
+          } ` +
+          `사용자가 명시적으로 우회를 허용한 경우에만 build_singlefile_html({ skipAudit: true }) 로 재호출하세요 — ` +
+          `이 경우 MCP 검증 파이프라인(validate_mockup·report_mockup_usage)이 무력화됨을 사용자에게 먼저 경고할 것.`;
       return {
         ...fail(msg),
         intent,
