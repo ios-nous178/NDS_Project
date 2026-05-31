@@ -33,12 +33,10 @@ asar: true
 # node-pty 의 네이티브 `.node` 는 asar 안에서 dlopen 불가 → asar 밖으로 추출해야 로드된다.
 asarUnpack:
   - "**/node_modules/node-pty/**"
-# node-pty(네이티브)는 패키징 시 타깃 arch 별로 electron ABI 에 맞춰 리빌드해야 한다.
-#  · mac universal: electron-builder 가 arm64·x64 를 각각 리빌드 → @electron/universal 이
-#    pty.node 를 fat 바이너리로 lipo. 단일 prebuilt 만으론 한쪽 arch 에서 죽으므로 npmRebuild 필수.
-#  · windows: 반드시 Windows 호스트(또는 CI)에서 패키징해야 동작하는 .node 가 나온다(mac 에서 크로스빌드 불가).
-# dev(`pnpm dev`)는 여전히 `pnpm --filter @nudge-design/desktop rebuild`(electron-rebuild)로 호스트 arch 리빌드.
-npmRebuild: true
+# node-pty 1.1.0 ships prebuilds for darwin-arm64/darwin-x64/win32-x64. Rebuilding it
+# during packaging can hang inside @electron/rebuild on Apple Silicon, while the
+# packaged app can load the bundled prebuilds as long as node-pty is unpacked.
+npmRebuild: false
 # 앱 아이콘 — build/icon-master.svg(docs 로고 마크, 흰색) → icns/ico/png 로 생성.
 # build/ 는 electron-builder 의 기본 buildResources 라 자동 감지되지만 명시해 둔다.
 mac:
