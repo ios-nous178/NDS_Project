@@ -1,8 +1,16 @@
-import { existsSync, mkdtempSync, writeFileSync, watchFile, unwatchFile, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdtempSync,
+  writeFileSync,
+  watchFile,
+  unwatchFile,
+  rmSync,
+  realpathSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawn as cpSpawn, type ChildProcess } from "node:child_process";
+import { spawn as cpSpawn, execFileSync, type ChildProcess } from "node:child_process";
 import { spawn as ptySpawn, type IPty } from "node-pty";
 import { Notification, BrowserWindow, type WebContents } from "electron";
 import { getAugmentedPath, getToolProcessEnv } from "@nudge-design/mockup-core";
@@ -305,6 +313,80 @@ function resolveAgentBin(agentType: AgentType, searchPath: string): string | nul
   return null;
 }
 
+/** PATH·동봉 claude 실행본 1건. 설정 충돌(구버전/중복) 진단 안내가 "어느 걸 정리할지" 보여줄 때 쓴다. */
+export interface ClaudeInstall {
+  /** PATH 에서 찾은 실행 경로(심볼릭 링크일 수 있음 — 사용자에게 보여줄 위치). */
+  path: string;
+  /** `claude --version` 의 SemVer(못 읽으면 null). */
+  version: string | null;
+  /** 앱이 실제로 spawn 한 바로 그 바이너리인가(realpath 기준). */
+  active: boolean;
+  /** 앱 동봉 폴백 바이너리인가. */
+  bundled: boolean;
+}
+
+function safeRealpath(p: string): string {
+  try {
+    return realpathSync(p);
+  } catch {
+    return p;
+  }
+}
+
+/** `claude --version` 의 첫 SemVer 를 읽는다(실패/타임아웃 시 null). --version 은 settings 적용 전에 끝나 안전. */
+function claudeVersionOf(binPath: string): string | null {
+  try {
+    const out = execFileSync(binPath, ["--version"], { timeout: 4000, encoding: "utf8" });
+    return out.match(/(\d+\.\d+\.\d+)/)?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * agentSearchPath 상의 모든 claude 실행본 + 앱 동봉본을 나열한다(realpath 로 중복 제거).
+ * 각 후보의 --version 을 읽어 붙이고, 앱이 실제로 spawn 한 activePath 와 같은 것을 active 로 표시한다.
+ * 순서는 앱이 고르는 순서(PATH 앞쪽 우선)와 동일 — 보통 첫 항목이 active. 설정 충돌 진단 패널이
+ * "구버전/중복 claude 가 어디에 있는지" 보여주는 데 쓴다(--version 동기 호출이라 드문 에러 경로에서만).
+ */
+export function listClaudeInstalls(activePath?: string): ClaudeInstall[] {
+  const activeReal = activePath ? safeRealpath(activePath) : null;
+  const seen = new Set<string>();
+  const out: ClaudeInstall[] = [];
+  const consider = (p: string | null, bundled: boolean): void => {
+    if (!p) return;
+    const real = safeRealpath(p);
+    if (seen.has(real)) return;
+    seen.add(real);
+    out.push({ path: p, version: claudeVersionOf(p), active: real === activeReal, bundled });
+  };
+  for (const dir of agentSearchPath().split(delimiter)) {
+    if (!dir) continue;
+    for (const name of binCandidates("claude")) {
+      const candidate = join(dir, name);
+      if (existsSync(candidate)) consider(candidate, false);
+    }
+  }
+  consider(resolveBundledClaude(), true);
+  return out;
+}
+
+/**
+ * 세션 출력에 이게 보이면 claude 가 settings 적용 중 죽은 것 — 보통 구버전/중복 설치가 원인.
+ * 사후 감지해 렌더러에 "정리 안내"(agent:diagnostic) 를 1회 보낸다.
+ */
+const SETTINGS_CONFLICT_RE = /Object not disposable|Error processing settings/i;
+
+/** 설정 충돌 진단을 렌더러로 1회 푸시. installs 스캔은 --version 동기 호출이라 감지 시점에만 돈다. */
+function emitSettingsConflict(wc: WebContents, sessionId: string, activePath: string): void {
+  if (wc.isDestroyed()) return;
+  wc.send("agent:diagnostic", {
+    sessionId,
+    kind: "settings-conflict",
+    installs: listClaudeInstalls(activePath),
+  });
+}
+
 function cleanEnv(env: NodeJS.ProcessEnv): { [key: string]: string } {
   const out: { [key: string]: string } = {};
   for (const [k, v] of Object.entries(env)) if (typeof v === "string") out[k] = v;
@@ -562,12 +644,26 @@ export function startAgent(
   running.set(args.sessionId, proc);
   sessionDims.set(args.sessionId, { cols: args.cols ?? 80, rows: args.rows ?? 24 });
 
+  // claude 설정 충돌(구버전/중복 설치) 사후 감지 — 출력 청크가 phrase 를 쪼갤 수 있어 작은 롤링
+  // 버퍼에 누적해 재스캔하고, 매칭되면 설치 목록과 함께 렌더러에 1회 알린다(정리 안내 패널).
+  let conflictTail = "";
+  let conflictNotified = false;
+  const scanSettingsConflict = (chunk: string): void => {
+    if (conflictNotified || !isClaude) return;
+    conflictTail = (conflictTail + chunk).slice(-4096);
+    if (SETTINGS_CONFLICT_RE.test(conflictTail)) {
+      conflictNotified = true;
+      emitSettingsConflict(wc, args.sessionId, binPath);
+    }
+  };
+
   // Claude Code(및 일부 TUI)는 턴을 끝내고 입력 대기로 돌아갈 때 터미널 벨(\x07)을 울린다.
   // Stop 훅(신호파일)과 함께 signalTurnDone 디바운스로 합쳐 알림 1건만 발생시킨다.
   proc.onData((data) => {
     appendTranscript(args.projectPath, args.sessionId, data);
     if (!wc.isDestroyed()) wc.send("agent:data", { sessionId: args.sessionId, data });
     if (data.includes("\x07")) signalTurnDone();
+    scanSettingsConflict(data);
   });
 
   proc.onExit(({ exitCode, signal }) => {
@@ -682,10 +778,16 @@ function startStreamAgent(
   child.stdout?.on("data", (chunk: string) => drain(buf.push(chunk)));
 
   let stderr = "";
+  let conflictNotified = false;
   child.stderr?.setEncoding("utf8");
   child.stderr?.on("data", (chunk: string) => {
     stderr += chunk;
     if (stderr.length > 8000) stderr = stderr.slice(-8000); // 폭주 방지
+    // claude 설정 충돌(구버전/중복 설치) 사후 감지 — 정리 안내를 렌더러에 1회 알린다.
+    if (!conflictNotified && SETTINGS_CONFLICT_RE.test(stderr)) {
+      conflictNotified = true;
+      emitSettingsConflict(wc, sessionId, binPath);
+    }
   });
 
   const finish = (status: SessionStatus, exitCode: number): void => {
