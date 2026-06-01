@@ -25,6 +25,14 @@ export interface StandaloneAssets {
   css: string;
   /** 실제로 적용된 브랜드 slug(미지정/미지 → baseOnlyBrand). */
   brand: string;
+  /** 호출자가 명시/감지해 넘긴 원래 brand 입력(정규화 전, trim 후). 미지정이면 undefined. */
+  requested?: string;
+  /**
+   * requested 가 정식 브랜드(별칭 정규화 포함)로 해석됐는지.
+   * false = 브랜드를 명시했는데 미지 slug 라 base 로 조용히 폴백됨 → 블루 회귀 신호.
+   * requested 가 undefined(브랜드 미지정 = base 의도)면 true.
+   */
+  recognized: boolean;
 }
 
 interface StandaloneManifest {
@@ -260,20 +268,51 @@ function loadManifest(dir: string): StandaloneManifest {
 }
 
 /**
+ * 브랜드 slug 별칭 → 정식 manifest slug.
+ *
+ * 회고(2026-06): 데스크탑 목업에서 `data-brand="cashpobi"`(캐포비 통용명)로 작성하자
+ * manifest 에 `cashpobi` 가 없어 조용히 baseOnlyBrand(nudge-eap = 블루)로 폴백 →
+ * 캐포비 시그니처 노란 버튼이 DS 기본 블루로 렌더됐다. 통용명/표기 흔들림을 정식 slug 로
+ * 정규화하고, 그래도 미지면 호출부(build-html / validator)가 조용히 넘기지 말고 경고한다.
+ */
+export const BRAND_ALIASES: Record<string, string> = {
+  cashpobi: "cashwalk-biz",
+  "cash-pobi": "cashwalk-biz",
+  cashwalkbiz: "cashwalk-biz",
+  cashwalk: "cashwalk-biz",
+  cashwalkforbusiness: "cashwalk-biz",
+  nudgeeap: "nudge-eap",
+  nudge: "nudge-eap",
+  eap: "nudge-eap",
+};
+
+/** 통용 별칭/표기흔들림을 정식 slug 로 정규화(소문자·trim 후). 미지정은 undefined, 미지 입력은 그대로. */
+export function canonicalBrandSlug(brand?: string): string | undefined {
+  const n = brand?.trim().toLowerCase();
+  if (!n) return undefined;
+  return BRAND_ALIASES[n] ?? n;
+}
+
+/**
  * 브랜드에 맞는 prebuilt 자산(runtime JS + 조합된 CSS)을 읽어 반환.
- * @param brand 브랜드 slug. 미지정/미지 브랜드는 manifest.baseOnlyBrand 로 폴백.
+ * @param brand 브랜드 slug(별칭 허용). 미지정/미지 브랜드는 manifest.baseOnlyBrand 로 폴백하되,
+ *   미지 브랜드는 `recognized:false` 로 표시해 호출부가 조용한 블루 회귀를 감지하게 한다.
  */
 export function loadStandaloneAssets(brand?: string): StandaloneAssets {
   const dir = resolveStandaloneDir();
   const manifest = loadManifest(dir);
 
-  const normalized = brand?.trim().toLowerCase();
+  const requested = brand?.trim() || undefined;
+  const canonical = canonicalBrandSlug(brand);
+  // 브랜드 미지정 = base 의도(recognized:true). 명시했는데 manifest 에 없으면 recognized:false.
+  const recognized = requested ? !!(canonical && manifest.brands[canonical]) : true;
   const resolvedBrand =
-    normalized && manifest.brands[normalized] ? normalized : manifest.baseOnlyBrand;
+    canonical && manifest.brands[canonical] ? canonical : manifest.baseOnlyBrand;
 
   const cacheKey = `${dir}::${resolvedBrand}`;
   const hit = cache.get(cacheKey);
-  if (hit) return hit;
+  // requested/recognized 는 호출별로 달라지므로 캐시 본문(runtime/css)만 재사용하고 매번 덧씌운다.
+  if (hit) return { ...hit, requested, recognized };
 
   const cssPieces = manifest.brands[resolvedBrand] ?? manifest.brands[manifest.baseOnlyBrand];
   const css =
@@ -285,12 +324,13 @@ export function loadStandaloneAssets(brand?: string): StandaloneAssets {
   const runtimeJs =
     fs.readFileSync(path.join(dir, manifest.runtime), "utf-8") + "\n" + MOCKUP_FRAME_JS;
 
-  const assets: StandaloneAssets = { runtimeJs, css, brand: resolvedBrand };
-  cache.set(cacheKey, assets);
-  return assets;
+  // 캐시에는 브랜드-불변 본문만 저장(requested/recognized 제외 — 매 호출 덧씌움).
+  const base: StandaloneAssets = { runtimeJs, css, brand: resolvedBrand, recognized: true };
+  cache.set(cacheKey, base);
+  return { ...base, requested, recognized };
 }
 
-/** 알려진 브랜드 slug 목록(테스트/진단용). */
+/** 알려진 정식 브랜드 slug 목록(테스트/진단용). 별칭은 미포함. */
 export function listStandaloneBrands(): string[] {
   return Object.keys(loadManifest(resolveStandaloneDir()).brands);
 }
@@ -346,11 +386,19 @@ export function injectStandaloneRuntime(html: string, brand?: string): string {
   return out;
 }
 
-/** <html|body data-brand="x"> 또는 <body class="… brand-x …"> 에서 브랜드 slug 추출. */
+/**
+ * <html|body data-brand="x">, <body class="… brand-x …">, 또는 nds-brand-* chrome 컴포넌트의
+ * brand 속성에서 브랜드 slug 추출. (build-html 의 resolveHtmlBrand 와 동일 우선순위 — 미리보기↔빌드 일치)
+ */
 function detectBrandFromHtml(html: string): string | undefined {
   const dataBrand = html.match(/<(?:html|body)\b[^>]*\bdata-brand\s*=\s*["']([^"']+)["']/i);
   if (dataBrand) return dataBrand[1].trim();
   const bodyClass = html.match(/<body\b[^>]*\bclass\s*=\s*["']([^"']*)["']/i);
   const m = bodyClass?.[1].match(/\bbrand-([a-z0-9-]+)\b/i);
-  return m ? m[1] : undefined;
+  if (m) return m[1];
+  // brand chrome 컴포넌트 속성(회고: brand 를 chrome 에만 선언하면 base 블루로 폴백됨).
+  const chrome = html.match(
+    /<nds-brand-(?:header|footer|bottom-nav)\b[^>]*\bbrand\s*=\s*["']([^"']+)["']/i,
+  );
+  return chrome ? chrome[1].trim() : undefined;
 }

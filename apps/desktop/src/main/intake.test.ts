@@ -78,6 +78,19 @@ test("시각 0 -> references.md 미생성, brief/CLAUDE/AGENTS 는 생성", () =
   }
 });
 
+test("nudge.brand 마커를 정식 brand 로 박는다 (빌드의 브랜드 SSOT)", () => {
+  const projectPath = tmpProject();
+  try {
+    const r = runIntake(baseArgs({ projectPath, brand: "cashwalk-biz" }));
+    assert.ok(r.ok);
+    const markerPath = join(r.workspaceDir!, "nudge.brand");
+    assert.ok(existsSync(markerPath));
+    assert.equal(readFileSync(markerPath, "utf8").trim(), "cashwalk-biz");
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
 test("시각 >=1 -> references.md 첫 줄 task: + source=.references/ 경로", () => {
   const projectPath = tmpProject();
   try {

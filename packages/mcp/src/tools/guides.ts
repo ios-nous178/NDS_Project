@@ -23,6 +23,26 @@ import {
 import { SERVICE_OVERLAYS, listBrandVariants, type BrandSlug } from "../guides/services/index.js";
 import { mergeServiceOverlay } from "../guides/merge.js";
 import { markPrinciplesCalled } from "./session-state.js";
+import { canonicalBrandSlug } from "@nudge-design/mockup-core";
+
+/**
+ * 워크스페이스 브랜드 SSOT 마커. get_setup 이 brand 와 함께 호출되면 cwd 에 이 파일을 박아,
+ * 빌드(resolveHtmlBrand)가 html 선언 누락 시에도 정식 brand 를 단일 출처에서 읽게 한다.
+ * (회고: 브랜드를 chrome 속성에만 선언 → base 블루 폴백. 마커가 있으면 추론조차 불필요.)
+ */
+export const BRAND_MARKER_FILE = "nudge.brand";
+
+/** cwd 에 nudge.brand 마커를 canonical slug 로 기록. brand 없으면 no-op. */
+function writeBrandMarker(cwd: string, brand?: string): { brandMarker?: string } {
+  const canonical = canonicalBrandSlug(brand);
+  if (!canonical) return {};
+  try {
+    fs.writeFileSync(path.join(cwd, BRAND_MARKER_FILE), `${canonical}\n`, "utf-8");
+    return { brandMarker: canonical };
+  } catch {
+    return {}; // 마커 쓰기 실패는 치명적이지 않음 — 빌드의 추론/chrome 폴백이 받쳐 줌
+  }
+}
 
 /**
  * MCP 패키지 루트. references/*.png 같은 상대경로를 절대경로로 풀어 응답에 함께
@@ -1240,6 +1260,9 @@ function createInstructionMd(args: {
   const content = getClaudeMdTemplate({ projectName: args.projectName, intent, template });
   fs.writeFileSync(filePath, content, "utf-8");
 
+  // 계층 1 — 브랜드 SSOT 마커. brand 가 오면 nudge.brand 를 박아 빌드가 단일 출처에서 읽게 한다.
+  const { brandMarker } = writeBrandMarker(cwd, args.brand);
+
   return {
     ok: true,
     filePath,
@@ -1247,6 +1270,7 @@ function createInstructionMd(args: {
     bytes: Buffer.byteLength(content, "utf-8"),
     intent,
     template,
+    brandMarker,
     next:
       args.fileName === "AGENTS.md"
         ? "Restart or reload Codex/agent sessions in this project so the new AGENTS.md instructions are picked up."

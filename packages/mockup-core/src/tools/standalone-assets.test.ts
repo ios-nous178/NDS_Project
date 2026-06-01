@@ -4,6 +4,8 @@ import {
   injectStandaloneRuntime,
   STANDALONE_MARKER,
   listStandaloneBrands,
+  loadStandaloneAssets,
+  canonicalBrandSlug,
 } from "./standalone-assets.js";
 
 const countOccurrences = (s: string, sub: string): number => s.split(sub).length - 1;
@@ -42,4 +44,52 @@ test("data-brand 로 브랜드 CSS 를 고른다", () => {
     const out = injectStandaloneRuntime(`<html data-brand="runmile"><body></body></html>`);
     assert.match(out, new RegExp(`<style ${STANDALONE_MARKER}>`));
   }
+});
+
+test("회고: 브랜드를 nds-brand-header[brand] 에만 선언해도 감지해 브랜드 CSS 를 인라인한다", () => {
+  if (!listStandaloneBrands().includes("cashwalk-biz")) return; // 자산 없으면 skip
+  // <html data-brand> 없이 chrome 컴포넌트 속성에만 brand 가 있는 케이스(이 목업의 실제 형태).
+  const html = `<html lang="ko"><head></head><body><nds-brand-header brand="cashwalk-biz" surface="web"></nds-brand-header></body></html>`;
+  const out = injectStandaloneRuntime(html);
+  const decls = [...out.matchAll(/--semantic-button-bg-default:\s*(#[0-9A-Fa-f]{3,8})/g)];
+  assert.ok(decls.length > 0);
+  // 캐스케이드 승자가 캐포비 노랑이어야(블루 base 폴백 X).
+  assert.equal(decls[decls.length - 1][1].toUpperCase(), "#FFD200");
+});
+
+test("canonicalBrandSlug 은 통용 별칭을 정식 slug 로 정규화한다", () => {
+  assert.equal(canonicalBrandSlug("cashpobi"), "cashwalk-biz");
+  assert.equal(canonicalBrandSlug("CASHPOBI"), "cashwalk-biz");
+  assert.equal(canonicalBrandSlug(" cashwalk "), "cashwalk-biz");
+  assert.equal(canonicalBrandSlug("cashwalk-biz"), "cashwalk-biz"); // 이미 정식
+  assert.equal(canonicalBrandSlug("nudge"), "nudge-eap");
+  assert.equal(canonicalBrandSlug(undefined), undefined);
+  assert.equal(canonicalBrandSlug("totally-unknown"), "totally-unknown"); // 미지는 그대로
+});
+
+test("회고: cashpobi 별칭은 cashwalk-biz 노란 버튼 토큰으로 해석된다(블루 폴백 X)", () => {
+  if (!listStandaloneBrands().includes("cashwalk-biz")) return; // 자산 없으면 skip
+  const assets = loadStandaloneAssets("cashpobi");
+  assert.equal(assets.brand, "cashwalk-biz");
+  assert.equal(assets.recognized, true);
+  // base tokens.css(블루) + brand.cashwalk-biz.css(노랑) 가 concat 되므로 두 선언이 모두
+  // 문자열에 존재한다. 실제 렌더 색은 캐스케이드 승자(= 마지막 :root 선언). 캐포비는 노랑이어야.
+  const decls = [...assets.css.matchAll(/--semantic-button-bg-default:\s*(#[0-9A-Fa-f]{3,8})/g)];
+  assert.ok(decls.length > 0, "button-bg-default 선언이 있어야 함");
+  const winner = decls[decls.length - 1][1].toUpperCase();
+  assert.equal(winner, "#FFD200", `캐포비 primary 버튼은 노랑이어야 하는데 ${winner}`);
+});
+
+test("미지 브랜드는 base 로 폴백하되 recognized:false 로 표시한다", () => {
+  const assets = loadStandaloneAssets("does-not-exist");
+  assert.equal(assets.recognized, false);
+  assert.equal(assets.requested, "does-not-exist");
+  // 폴백 대상은 base(미지정 시와 동일).
+  assert.equal(assets.brand, loadStandaloneAssets(undefined).brand);
+});
+
+test("브랜드 미지정은 base 의도이므로 recognized:true", () => {
+  const assets = loadStandaloneAssets(undefined);
+  assert.equal(assets.recognized, true);
+  assert.equal(assets.requested, undefined);
 });
