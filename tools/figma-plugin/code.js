@@ -163,12 +163,13 @@ function applyLayout(frame, L, w, h) {
     frame.counterAxisAlignItems =
       L.counter === "BASELINE" && L.mode !== "HORIZONTAL" ? "MIN" : L.counter || "MIN";
     frame.layoutWrap = L.wrap ? "WRAP" : "NO_WRAP";
-    // 캡처한 원본 크기를 유지(자식에 맞춰 hug 되지 않게 FIXED).
+    // 캡처한 원본 크기를 유지(자식에 맞춰 hug 되지 않게 FIXED). 단 WRAP 이면 counter 축을
+    // FIXED 로 두는 건 Figma 가 거부(throw)하므로 AUTO(hug) 로 둬야 applyLayout 이 안 깨진다.
     frame.primaryAxisSizingMode = "FIXED";
-    frame.counterAxisSizingMode = "FIXED";
+    frame.counterAxisSizingMode = L.wrap ? "AUTO" : "FIXED";
     frame.resize(Math.max(0.01, w), Math.max(0.01, h));
   } catch (_e) {
-    /* 유효하지 않은 조합(wrap×sizing 등)이면 조용히 절대배치로 둔다 */
+    /* 그래도 실패하면 자식은 appendChildNode 가 미리 박아둔 절대좌표로 남는다(쏠림 방지) */
   }
 }
 
@@ -214,24 +215,23 @@ function appendChildNode(parentFrame, parentNode, childNode, fontCache, counter)
   counter.made++;
   var relX = (childNode.x || 0) - (parentNode.x || 0);
   var relY = (childNode.y || 0) - (parentNode.y || 0);
-  if (parentNode.layout) {
-    // Auto Layout 부모: 흐름 배치는 Figma 가 함. 단 position:absolute 였던 자식은
-    // 흐름에서 빼고(layoutPositioning=ABSOLUTE) 절대좌표로 둬 레이아웃을 흩뜨리지 않는다.
-    if (childNode.absolute) {
-      try {
-        el.layoutPositioning = "ABSOLUTE";
-        el.x = relX;
-        el.y = relY;
-      } catch (_e2) {
-        /* 무시 */
-      }
-    }
-  } else {
+  // 항상 상대좌표를 먼저 박는다 — 이 시점엔 부모가 아직 plain frame 이다. 부모가 Auto
+  // Layout 이면 뒤이은 applyLayout 이 흐름배치로 덮어쓰지만, applyLayout 이 실패해도
+  // 좌표가 남아 자식이 (0,0) 으로 쏠리지 않는다(과거 wrap 버그로 헤더가 무너지던 원인).
+  try {
+    el.x = relX;
+    el.y = relY;
+  } catch (_e3) {
+    /* createNodeFromSvg 등 일부는 x/y 세터가 막힐 수 있음 */
+  }
+  // Auto Layout 부모 안의 position:absolute 였던 자식은 흐름에서 빼서 절대배치 유지.
+  if (parentNode.layout && childNode.absolute) {
     try {
+      el.layoutPositioning = "ABSOLUTE";
       el.x = relX;
       el.y = relY;
-    } catch (_e3) {
-      /* createNodeFromSvg 등 일부는 x/y 세터가 막힐 수 있음 */
+    } catch (_e2) {
+      /* 무시 */
     }
   }
 }
@@ -321,7 +321,24 @@ function buildNode(node, fontCache, counter) {
       var sp = solidPaint(node.stroke.color);
       if (sp) {
         frame.strokes = [sp];
-        frame.strokeWeight = Math.max(1, node.stroke.weight || 1);
+        var st = node.stroke;
+        var perSide =
+          st.uniform === false &&
+          (st.top != null || st.right != null || st.bottom != null || st.left != null);
+        if (perSide) {
+          // 한 변만 있는 구분선(border-bottom 등)을 전체 박스 보더로 칠하지 않게 변별 두께.
+          try {
+            frame.strokeAlign = "INSIDE"; // 개별 변 두께는 INSIDE 정렬에서만 유효.
+            frame.strokeTopWeight = Math.max(0, st.top || 0);
+            frame.strokeRightWeight = Math.max(0, st.right || 0);
+            frame.strokeBottomWeight = Math.max(0, st.bottom || 0);
+            frame.strokeLeftWeight = Math.max(0, st.left || 0);
+          } catch (_eStroke) {
+            frame.strokeWeight = Math.max(1, st.weight || 1);
+          }
+        } else {
+          frame.strokeWeight = Math.max(1, st.weight || 1);
+        }
       }
     }
     // 자식 재귀 → append + 배치.
