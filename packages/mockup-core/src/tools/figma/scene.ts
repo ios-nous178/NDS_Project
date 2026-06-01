@@ -238,37 +238,112 @@ export function buildFigmaSceneScript(): string {
 
   // 한 요소를 노드 / 평탄화된 노드 배열 / null 로 변환.
   // parentFlex=true 면 평탄화 금지(플렉스 아이템 1개로 보존).
-  function build(el, parentFlex) {
+  // parentDs = 부모 쪽에서 내려온 "가장 가까운 nds 컴포넌트명". 같은 이름이면 같은 컴포넌트
+  // 내부이므로 dsComponent 를 다시 달지 않는다(레이어명/메타 과다 중복 방지 = "루트만 태깅").
+  function build(el, parentFlex, parentDs) {
     if (count >= CAP || el.nodeType !== 1) return null;
     var tag = el.tagName.toLowerCase();
     if (tag === "script" || tag === "style" || tag === "noscript" || tag === "template") return null;
     if (el.getAttribute && el.getAttribute("data-nds-stamp") !== null) return null;
     var cs = getComputedStyle(el);
     if (cs.display === "none" || cs.visibility === "hidden" || parseFloat(cs.opacity) === 0) return null;
+    // display:contents 요소(대부분의 nds-* 커스텀 엘리먼트)는 자기 박스를 만들지 않아
+    // getBoundingClientRect 가 0×0 이다. 0-size 가드로 떨구면 자식(실제 시각·이미지를
+    // 든 내부 div)까지 통째로 사라진다 → 박스 없는 패스스루로 보고 아래에서 평탄화한다.
+    var isContents = cs.display === "contents";
     var b = box(el);
-    if (b.w < 1 || b.h < 1) return null;
+    if (!isContents && (b.w < 1 || b.h < 1)) return null;
     var ds = dsNameFor(el);
+    // 이 노드가 컴포넌트 "루트"일 때만 태깅 — 부모가 이미 같은 컴포넌트면(=내부 자손) 비태깅.
+    var dsTag = ds && ds !== parentDs ? ds : null;
     var radius = px(cs.borderTopLeftRadius);
     var absolute = cs.position === "absolute" || cs.position === "fixed";
+
+    // form 컨트롤: placeholder / value 는 DOM 텍스트 노드가 아니라 "속성"이라 텍스트 런
+    // 순회로는 안 잡힌다 → 입력칸이 빈 상자로만 나오던 회귀. 단 "텍스트형" 입력만 대상:
+    // radio / checkbox / range / file 등은 value 가 보이는 글자가 아니라(예: "under3m")
+    // 레이어로 새므로 제외하고 일반 경로(시각 박스)로 흘려보낸다.
+    if (tag === "input" || tag === "textarea") {
+      var itype = (el.getAttribute("type") || "text").toLowerCase();
+      var isTextInput = tag === "textarea" ||
+        "|text|search|email|tel|url|password|number|".indexOf("|" + itype + "|") !== -1;
+      if (isTextInput) {
+        var hasVal = el.value != null && String(el.value) !== "";
+        var shown = hasVal ? String(el.value) : el.placeholder || "";
+        var fpadL = px(cs.paddingLeft), fpadR = px(cs.paddingRight), fpadT = px(cs.paddingTop);
+        var fsize = px(cs.fontSize) || 14;
+        var fline = Math.round(fsize * 1.4);
+        var fieldKids = [];
+        if (shown) {
+          // 값은 텍스트색, placeholder 는 ::placeholder 의 실제 색(흐린 회색)을 그대로.
+          var fcolor = cs.color;
+          if (!hasVal) {
+            try { fcolor = getComputedStyle(el, "::placeholder").color || cs.color; } catch (e2) { /* 무시 */ }
+          }
+          count++;
+          fieldKids.push({
+            type: "text",
+            name: shown.length > 24 ? shown.slice(0, 24) + "\\u2026" : shown,
+            // textarea 는 상단 정렬, 한 줄 input 은 세로 가운데.
+            x: b.x + fpadL,
+            y: tag === "textarea" ? b.y + fpadT : b.y + Math.max(0, Math.round((b.h - fline) / 2)),
+            w: Math.max(1, b.w - fpadL - fpadR),
+            h: fline,
+            text: shown,
+            font: {
+              family: (cs.fontFamily.split(",")[0] || "").replace(/['"]/g, "").trim(),
+              size: fsize,
+              weight: parseInt(cs.fontWeight, 10) || 400,
+              color: fcolor,
+              lineHeight: cs.lineHeight === "normal" ? null : px(cs.lineHeight),
+              align: cs.textAlign,
+            },
+            dsComponent: null,
+          });
+        }
+        // 입력칸 자체는 "고정폭/높이 프레임"으로 방출 — 오토레이아웃에서 placeholder 텍스트가
+        // hug 로 줄어들어도(검색 아이콘이 딱 붙는 회귀) 입력칸 폭이 유지돼 옆 아이콘이 우측에
+        // 밀린 위치를 지키고, textarea 는 입력 영역 높이(예: 120px)가 그대로 보존된다.
+        count++;
+        return {
+          type: "frame",
+          name: dsTag || tag,
+          x: b.x, y: b.y, w: b.w, h: b.h,
+          fill: visibleFill(cs.backgroundColor) ? cs.backgroundColor : null,
+          stroke: null,
+          radius: radius,
+          absolute: absolute,
+          dsComponent: dsTag,
+          children: fieldKids,
+        };
+      }
+    }
 
     // leaf: svg(아이콘) → 마크업 통째, currentColor 는 computed color 로 치환.
     if (tag === "svg") {
       count++;
       var svgMarkup = (el.outerHTML || "").split("currentColor").join(cs.color);
-      return { type: "svg", name: ds || "icon", x: b.x, y: b.y, w: b.w, h: b.h, svg: svgMarkup, absolute: absolute, dsComponent: ds };
+      return { type: "svg", name: dsTag || "icon", x: b.x, y: b.y, w: b.w, h: b.h, svg: svgMarkup, absolute: absolute, dsComponent: dsTag };
     }
     // leaf: image
     if (tag === "img" && el.currentSrc && el.currentSrc.indexOf("data:") === 0) {
       count++;
-      return { type: "image", name: ds || "image", x: b.x, y: b.y, w: b.w, h: b.h, image: el.currentSrc, radius: radius, absolute: absolute, dsComponent: ds };
+      return { type: "image", name: dsTag || "image", x: b.x, y: b.y, w: b.w, h: b.h, image: el.currentSrc, radius: radius, absolute: absolute, dsComponent: dsTag };
     }
-    var bgImg = cs.backgroundImage && cs.backgroundImage !== "none" ? dataUrlFromBg(cs.backgroundImage) : null;
+    var bgImg = !isContents && cs.backgroundImage && cs.backgroundImage !== "none" ? dataUrlFromBg(cs.backgroundImage) : null;
     if (bgImg) {
       count++;
-      return { type: "image", name: ds || tag, x: b.x, y: b.y, w: b.w, h: b.h, image: bgImg, radius: radius, absolute: absolute, dsComponent: ds };
+      return { type: "image", name: dsTag || tag, x: b.x, y: b.y, w: b.w, h: b.h, image: bgImg, radius: radius, absolute: absolute, dsComponent: dsTag };
     }
 
     var flex = isFlex(cs);
+    var fill = visibleFill(cs.backgroundColor) ? cs.backgroundColor : null;
+    var stroke = hasBorder(cs) ? { color: cs.borderTopColor, weight: px(cs.borderTopWidth) } : null;
+    var hasVisual = !!(fill || stroke || radius > 0);
+    // 이 요소가 실제 프레임으로 방출되면(=컴포넌트 박스) 자식의 부모 컨텍스트를 ds 로 갱신하고,
+    // 평탄화(contents/투명 래퍼)되면 자식이 이 요소를 건너뛰므로 parentDs 를 그대로 물려준다.
+    var willEmit = !isContents && (hasVisual || flex);
+    var childDs = willEmit ? ds : parentDs;
 
     // 자식 수집(텍스트 런 + 요소). childNodes 순회로 문서 순서 보존(아이콘+라벨 순서 등).
     var kids = [];
@@ -280,10 +355,15 @@ export function buildFigmaSceneScript(): string {
         var s = (node.nodeValue || "").replace(/\\s+/g, " ").trim();
         if (s) {
           var tb = textRunBox(node);
-          if (tb && tb.w >= 1 && tb.h >= 1) { count++; kids.push(textRunNode(s, tb, cs, ds)); }
+          if (tb && tb.w >= 1 && tb.h >= 1) {
+            count++;
+            // 텍스트 런도 루트 경계에서만 태깅(=프레임으로 안 싸이는 텍스트 전용 컴포넌트).
+            var textTag = ds && ds !== childDs ? ds : null;
+            kids.push(textRunNode(s, tb, cs, textTag));
+          }
         }
       } else if (node.nodeType === 1) {
-        var r = build(node, flex);
+        var r = build(node, flex, childDs);
         if (r) {
           if (r.length !== undefined && r.type === undefined) { for (var k = 0; k < r.length; k++) kids.push(r[k]); }
           else kids.push(r);
@@ -291,18 +371,23 @@ export function buildFigmaSceneScript(): string {
       }
     }
 
-    var fill = visibleFill(cs.backgroundColor) ? cs.backgroundColor : null;
-    var stroke = hasBorder(cs) ? { color: cs.borderTopColor, weight: px(cs.borderTopWidth) } : null;
-    var hasVisual = !!(fill || stroke || radius > 0);
-
     function makeFrame(withLayout) {
       count++;
       var op = parseFloat(cs.opacity);
-      var n = { type: "frame", name: ds || tag, x: b.x, y: b.y, w: b.w, h: b.h, fill: fill, stroke: stroke, radius: radius, absolute: absolute, dsComponent: ds, children: kids };
+      var n = { type: "frame", name: dsTag || tag, x: b.x, y: b.y, w: b.w, h: b.h, fill: fill, stroke: stroke, radius: radius, absolute: absolute, dsComponent: dsTag, children: kids };
       if (op < 1) n.opacity = op;
       if (withLayout) n.layout = layoutOf(cs);
-      if (ds) { var p = dataProps(el); if (Object.keys(p).length) n.props = p; }
+      if (dsTag) { var p = dataProps(el); if (Object.keys(p).length) n.props = p; }
       return n;
+    }
+
+    // display:contents → 자기 프레임 없이 자식을 부모로 평탄화(자식 각각이 부모의
+    // 흐름/플렉스 아이템으로 그대로 승격된다 — 이게 display:contents 의 정의). DS 커스텀
+    // 엘리먼트(nds-card/select/banner/badge…)가 전부 이 경로 — 자식 div 가 실제 시각·이미지.
+    if (isContents) {
+      if (kids.length === 0) return null;
+      if (kids.length === 1) return kids[0];
+      return kids;
     }
 
     // 시각 스타일 있거나 flex → 프레임으로 방출(flex 면 layout 동반).
@@ -326,7 +411,7 @@ export function buildFigmaSceneScript(): string {
   var bch = rootEl.children;
   for (var bi = 0; bi < bch.length; bi++) {
     if (count >= CAP) break;
-    var tr = build(bch[bi], bodyFlex);
+    var tr = build(bch[bi], bodyFlex, null);
     if (tr) {
       if (tr.length !== undefined && tr.type === undefined) { for (var tk = 0; tk < tr.length; tk++) topKids.push(tr[tk]); }
       else topKids.push(tr);
