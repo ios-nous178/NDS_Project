@@ -44,7 +44,14 @@ export interface FigmaLayout {
 
 export interface FigmaStroke {
   color: string; // CSS rg(a) 문자열
-  weight: number;
+  weight: number; // 대표(최대) 두께 — uniform 이거나 per-side 미지원 폴백용
+  /** 변별 두께(px). 한 변만 있는 구분선(border-bottom 등)이 Figma 에서 전체 박스 보더로
+   * 잡히지 않게 플러그인이 개별 변 두께로 칠한다. 4변이 같으면 uniform=true. */
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+  uniform: boolean;
 }
 
 export interface FigmaFont {
@@ -136,9 +143,16 @@ export function buildFigmaSceneScript(): string {
   function visibleFill(bg) {
     return bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent";
   }
-  function hasBorder(cs) {
-    var w = px(cs.borderTopWidth) + px(cs.borderRightWidth) + px(cs.borderBottomWidth) + px(cs.borderLeftWidth);
-    return w > 0 && cs.borderTopStyle !== "none";
+  // 변별로 "보이는" 보더만 잰다(style!==none). 한 변만 있는 구분선(예: 게시글 사이
+  // border-bottom)도 잡되, per-side 두께를 보존해 플러그인이 전체 박스로 칠하지 않게 한다.
+  function borderOf(cs) {
+    var t = cs.borderTopStyle !== "none" ? px(cs.borderTopWidth) : 0;
+    var r = cs.borderRightStyle !== "none" ? px(cs.borderRightWidth) : 0;
+    var b = cs.borderBottomStyle !== "none" ? px(cs.borderBottomWidth) : 0;
+    var l = cs.borderLeftStyle !== "none" ? px(cs.borderLeftWidth) : 0;
+    if (t + r + b + l <= 0) return null;
+    var color = b ? cs.borderBottomColor : t ? cs.borderTopColor : l ? cs.borderLeftColor : cs.borderRightColor;
+    return { color: color, weight: Math.max(t, r, b, l), top: t, right: r, bottom: b, left: l, uniform: t === r && r === b && b === l };
   }
   function isFlex(cs) { return (cs.display || "").indexOf("flex") !== -1; }
   // flex computed style → Auto Layout 스펙.
@@ -165,7 +179,9 @@ export function buildFigmaSceneScript(): string {
       padTop: px(cs.paddingTop), padRight: px(cs.paddingRight),
       padBottom: px(cs.paddingBottom), padLeft: px(cs.paddingLeft),
       primary: primary, counter: counter,
-      wrap: (cs.flexWrap || "").indexOf("wrap") !== -1,
+      // 주의: "nowrap" 도 "wrap" 을 부분문자열로 포함하므로 indexOf 로 보면 안 된다
+      // (모든 flex 가 wrap=true 가 돼 플러그인 오토레이아웃이 깨졌던 버그). 정확 매칭.
+      wrap: cs.flexWrap === "wrap" || cs.flexWrap === "wrap-reverse",
     };
   }
   // kebab nds-tag → PascalCase (ndsTagToComponentName 규칙 미러, 브라우저 인라인).
@@ -234,6 +250,20 @@ export function buildFigmaSceneScript(): string {
   function dataUrlFromBg(bg) {
     var m = /url\\((['"]?)(data:[^'")]+)\\1\\)/.exec(bg);
     return m ? m[2] : null;
+  }
+  // SVG data URL → 원본 <svg> 마크업(base64/percent-encoded 모두). SVG 아니면 null.
+  function svgFromDataUrl(url) {
+    if (!url || url.indexOf("data:image/svg+xml") !== 0) return null;
+    var comma = url.indexOf(",");
+    if (comma === -1) return null;
+    try {
+      var head = url.slice(0, comma);
+      var body = url.slice(comma + 1);
+      var svg = head.indexOf(";base64") !== -1 ? atob(body) : decodeURIComponent(body);
+      return svg.indexOf("<svg") !== -1 ? svg : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   // 한 요소를 노드 / 평탄화된 노드 배열 / null 로 변환.
@@ -325,20 +355,26 @@ export function buildFigmaSceneScript(): string {
       var svgMarkup = (el.outerHTML || "").split("currentColor").join(cs.color);
       return { type: "svg", name: dsTag || "icon", x: b.x, y: b.y, w: b.w, h: b.h, svg: svgMarkup, absolute: absolute, dsComponent: dsTag };
     }
-    // leaf: image
+    // leaf: image. SVG data URL(예: 브랜드 로고 <img src="data:image/svg+xml...">)은
+    // raster 가 아니라 벡터 — figma.createImage 가 SVG 를 못 받아 회색 박스로 폴백되던
+    // 원인. → svg 노드로 방출해 플러그인이 createNodeFromSvg 로 진짜 로고를 만들게 한다.
     if (tag === "img" && el.currentSrc && el.currentSrc.indexOf("data:") === 0) {
       count++;
+      var imgSvg = svgFromDataUrl(el.currentSrc);
+      if (imgSvg) return { type: "svg", name: dsTag || "icon", x: b.x, y: b.y, w: b.w, h: b.h, svg: imgSvg, absolute: absolute, dsComponent: dsTag };
       return { type: "image", name: dsTag || "image", x: b.x, y: b.y, w: b.w, h: b.h, image: el.currentSrc, radius: radius, absolute: absolute, dsComponent: dsTag };
     }
     var bgImg = !isContents && cs.backgroundImage && cs.backgroundImage !== "none" ? dataUrlFromBg(cs.backgroundImage) : null;
     if (bgImg) {
       count++;
+      var bgSvg = svgFromDataUrl(bgImg);
+      if (bgSvg) return { type: "svg", name: dsTag || tag, x: b.x, y: b.y, w: b.w, h: b.h, svg: bgSvg, absolute: absolute, dsComponent: dsTag };
       return { type: "image", name: dsTag || tag, x: b.x, y: b.y, w: b.w, h: b.h, image: bgImg, radius: radius, absolute: absolute, dsComponent: dsTag };
     }
 
     var flex = isFlex(cs);
     var fill = visibleFill(cs.backgroundColor) ? cs.backgroundColor : null;
-    var stroke = hasBorder(cs) ? { color: cs.borderTopColor, weight: px(cs.borderTopWidth) } : null;
+    var stroke = borderOf(cs);
     var hasVisual = !!(fill || stroke || radius > 0);
     // 이 요소가 실제 프레임으로 방출되면(=컴포넌트 박스) 자식의 부모 컨텍스트를 ds 로 갱신하고,
     // 평탄화(contents/투명 래퍼)되면 자식이 이 요소를 건너뛰므로 parentDs 를 그대로 물려준다.
@@ -499,9 +535,35 @@ function cleanNode(raw: RawNode, ctr: { n: number }): FigmaSceneNode | null {
 
   if (type === "frame") {
     if (typeof raw.fill === "string") node.fill = raw.fill;
-    const s = raw.stroke as { color?: unknown; weight?: unknown } | null | undefined;
-    if (s && typeof s.color === "string")
-      node.stroke = { color: s.color, weight: num(s.weight, 1) };
+    const s = raw.stroke as
+      | {
+          color?: unknown;
+          weight?: unknown;
+          top?: unknown;
+          right?: unknown;
+          bottom?: unknown;
+          left?: unknown;
+          uniform?: unknown;
+        }
+      | null
+      | undefined;
+    if (s && typeof s.color === "string") {
+      const t = Math.max(0, num(s.top));
+      const r = Math.max(0, num(s.right));
+      const b = Math.max(0, num(s.bottom));
+      const l = Math.max(0, num(s.left));
+      const anySide = t + r + b + l > 0;
+      node.stroke = {
+        color: s.color,
+        weight: num(s.weight, 1),
+        top: t,
+        right: r,
+        bottom: b,
+        left: l,
+        // 변별 정보가 없던 옛 데이터는 uniform 취급(전체 박스 보더 = 종전 동작).
+        uniform: anySide ? s.uniform === true || (t === r && r === b && b === l) : true,
+      };
+    }
     if (raw.props && typeof raw.props === "object")
       node.props = raw.props as Record<string, string>;
     const lyt = cleanLayout(raw.layout);
