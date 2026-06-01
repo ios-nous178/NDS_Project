@@ -146,6 +146,28 @@ describe("html setup visual reference guardrail", () => {
     expect(content).toContain("Google Sheets usage POST");
   });
 
+  it("brand 와 함께 claude-md 셋업 시 nudge.brand 마커를 canonical slug 로 박는다", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-brand-marker-"));
+
+    // 별칭(cashpobi)으로 호출해도 정식 slug 로 정규화돼 마커에 기록돼야 한다.
+    const result = getSetup({ step: "claude-md", cwd, brand: "cashpobi", intent: "html" });
+
+    expect("ok" in result ? result.ok : false).toBe(true);
+    expect("brandMarker" in result ? result.brandMarker : undefined).toBe("cashwalk-biz");
+    const markerPath = path.join(cwd, "nudge.brand");
+    expect(fs.existsSync(markerPath)).toBe(true);
+    expect(fs.readFileSync(markerPath, "utf-8").trim()).toBe("cashwalk-biz");
+  });
+
+  it("brand 없이 셋업하면 nudge.brand 마커를 만들지 않는다", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-no-marker-"));
+
+    const result = getSetup({ step: "agents-md", cwd });
+
+    expect("ok" in result ? result.ok : false).toBe(true);
+    expect(fs.existsSync(path.join(cwd, "nudge.brand"))).toBe(false);
+  });
+
   it("includes an explicit references.md step in full html setup", () => {
     configureWithManifest({
       packages: htmlSetupPackages(),

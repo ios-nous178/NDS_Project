@@ -306,6 +306,12 @@ export function runIntake(args: RunIntakeArgs): RunIntakeResult {
     writeFileSync(join(workspaceDir, "CLAUDE.md"), bootstrap, "utf8");
     writeFileSync(join(workspaceDir, "AGENTS.md"), bootstrap, "utf8");
 
+    // ── 브랜드 SSOT 마커(nudge.brand). ──
+    // 회고(2026-06): 브랜드를 chrome 속성에만 선언 → 빌드가 base(블루)로 폴백해 색이 틀림.
+    // 워크스페이스 생성 시 정식 brand 를 단일 파일에 박아, build_singlefile_html 의 resolveHtmlBrand 가
+    // html 선언이 누락돼도 이 마커를 최우선 출처로 읽게 한다(추론조차 불필요). UI 가 canonical slug 제공.
+    writeFileSync(join(workspaceDir, "nudge.brand"), `${args.brand}\n`, "utf8");
+
     return {
       ok: true,
       workspaceDir,

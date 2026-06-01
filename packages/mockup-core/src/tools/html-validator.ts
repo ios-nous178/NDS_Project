@@ -53,6 +53,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as cheerio from "cheerio";
+import { canonicalBrandSlug, listStandaloneBrands } from "./standalone-assets.js";
 
 /**
  * cheerio 의 element 노드 — 직접 type import 없이 구조만. cheerio Element 는
@@ -126,6 +127,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "raw-landmark": "warn",
   // 브랜드 화면인데 base nds-header 를 손수 조립 (회고: brand chrome 미사용 안티패턴)
   "manual-brand-header": "warn",
+  // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
+  "unknown-brand-slug": "error",
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
   "non-inlinable-img-src": "warn",
   "unknown-nds-tag": "error",
@@ -719,6 +722,35 @@ export function validateHtmlSource(
           "브랜드 헤더는 손수 조립 금지. <nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 한 줄로 교체하면 로고/메뉴/auth 가 BRAND_DATA 에서 자동 렌더되고 surface 로 PC·모바일·웹뷰가 분기됩니다. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조.",
       });
     });
+  }
+
+  // ─── 미지 브랜드 slug (회고: cashpobi → base 블루 폴백) ───
+  //   data-brand / <body class="brand-*"> 로 브랜드를 선언했는데 정식 slug 가 아니면
+  //   loadStandaloneAssets 가 base(nudge-eap)로 조용히 폴백 → 색이 기본값으로 잘못 렌더된다.
+  //   별칭(canonicalBrandSlug)으로 정규화해도 정식 brand 가 아니면 error 로 잡아 교정 유도.
+  {
+    const declared =
+      $("html").attr("data-brand") ??
+      $("body").attr("data-brand") ??
+      ($("body").attr("class") ?? "").match(/\bbrand-([a-z0-9-]+)\b/i)?.[1];
+    if (declared?.trim()) {
+      let known: string[] = [];
+      try {
+        known = listStandaloneBrands();
+      } catch {
+        known = []; // manifest 없으면(단위 테스트 등) 룰 skip
+      }
+      const canonical = canonicalBrandSlug(declared);
+      if (known.length > 0 && (!canonical || !known.includes(canonical))) {
+        violations.push({
+          rule: "unknown-brand-slug",
+          line: 1,
+          selector: `data-brand="${declared.trim()}"`,
+          detail: `미지 브랜드 slug '${declared.trim()}' — base 로 폴백돼 색이 기본값(블루)으로 렌더됩니다.`,
+          suggestion: `정식 slug 로 교정: ${known.join(", ")}. (예: cashpobi/cashwalk → cashwalk-biz)`,
+        });
+      }
+    }
   }
 
   // ─── 헤딩 안 장식 아이콘 (descendant scan) ───
