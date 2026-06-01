@@ -7,6 +7,7 @@ import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.
 import type {
   AgentCheck,
   AgentType,
+  ClaudeInstall,
   InstallResult,
   StartAgentArgs,
   StartAgentErrorCode,
@@ -25,6 +26,7 @@ export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.
 export type {
   AgentCheck,
   AgentType,
+  ClaudeInstall,
   InstallResult,
   StartAgentArgs,
   StartAgentErrorCode,
@@ -54,6 +56,13 @@ export interface AgentDataEvent {
 export interface AgentExitEvent {
   sessionId: string;
   exitCode: number;
+}
+/** 설정 충돌 등 사후 진단 신호 — 구버전/중복 claude 정리 안내 패널용. */
+export interface AgentDiagnosticEvent {
+  sessionId: string;
+  kind: "settings-conflict";
+  /** PATH·동봉 claude 실행본 목록(active/version 표시) — 어느 걸 정리할지 보여준다. */
+  installs: ClaudeInstall[];
 }
 /** 구조화(stream-json) 세션의 정규화 메시지 1건. */
 export interface AgentMessageEvent {
@@ -169,6 +178,12 @@ const harness = {
     const listener = (_e: IpcRendererEvent, payload: AgentExitEvent): void => cb(payload);
     ipcRenderer.on("agent:exit", listener);
     return () => ipcRenderer.removeListener("agent:exit", listener);
+  },
+  /** 사후 진단 신호 구독(구버전/중복 claude 정리 안내용). 반환 함수로 해제. */
+  onAgentDiagnostic: (cb: (e: AgentDiagnosticEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: AgentDiagnosticEvent): void => cb(payload);
+    ipcRenderer.on("agent:diagnostic", listener);
+    return () => ipcRenderer.removeListener("agent:diagnostic", listener);
   },
   /** 구조화(stream-json) 세션의 정규화 메시지 구독. 반환 함수로 해제. */
   onAgentMessage: (cb: (e: AgentMessageEvent) => void): (() => void) => {

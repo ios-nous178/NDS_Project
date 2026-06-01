@@ -2,9 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
-import type { AgentType, ChatMessage, Transport } from "../../../preload/index.js";
+import type {
+  AgentDiagnosticEvent,
+  AgentType,
+  ChatMessage,
+  Transport,
+} from "../../../preload/index.js";
 import { StructuredChatView } from "./StructuredChatView.js";
 import { AgentInstallPrompt } from "./AgentInstallPrompt.js";
+import { AgentConflictPrompt } from "./AgentConflictPrompt.js";
 import { extractAuthUrls } from "./auth-url.js";
 import { c, mono, dangerGhostBtn, SECTION_HEADER_H } from "../ui/theme.js";
 
@@ -66,6 +72,10 @@ export function AgentPanel({
     hint?: string;
     retry: () => void;
   } | null>(null);
+  // claude 설정 충돌(구버전/중복 설치) 사후 감지 안내. main 의 agent:diagnostic 으로 채워진다.
+  const [conflict, setConflict] = useState<AgentDiagnosticEvent | null>(null);
+  // 마지막 start 인자 재실행용(충돌 안내의 "다시 시도"). 직전 새 채팅 시작을 그대로 반복.
+  const lastStartRef = useRef<(() => void) | null>(null);
   const termRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -105,10 +115,16 @@ export function AgentPanel({
       liveCb.current?.(null);
       histCb.current?.();
     });
+    // 설정 충돌(구버전/중복 claude) 사후 감지 — 정리 안내 패널을 띄운다(같은 세션만).
+    const offDiag = window.harness.onAgentDiagnostic((e) => {
+      if (e.sessionId !== sessionRef.current) return;
+      if (e.kind === "settings-conflict") setConflict(e);
+    });
     return () => {
       offData();
       offMessage();
       offExit();
+      offDiag();
     };
   }, []);
 
@@ -231,6 +247,8 @@ export function AgentPanel({
       const workdir = cwdOverride ?? projectPath;
       if (!workdir) return;
       setError("");
+      // 설정 충돌 안내의 "다시 시도" 가 이 시작을 그대로 반복할 수 있게 기억.
+      lastStartRef.current = () => void start(agentTypeOverride, transportOverride, cwdOverride);
 
       // 에이전트·전송방식은 "+ 새 채팅" 메뉴에서 고른 값이 넘어온다(없으면 현재 state).
       const at = agentTypeOverride ?? agentType;
@@ -451,6 +469,16 @@ export function AgentPanel({
             const retry = installPrompt.retry;
             setInstallPrompt(null);
             retry();
+          }}
+        />
+      )}
+      {conflict && (
+        <AgentConflictPrompt
+          installs={conflict.installs}
+          onClose={() => setConflict(null)}
+          onRetry={() => {
+            setConflict(null);
+            lastStartRef.current?.();
           }}
         />
       )}
