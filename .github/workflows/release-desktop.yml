@@ -1,12 +1,13 @@
 name: Release Desktop
 
-# Nudge Studio(apps/desktop) 패키징 — macOS universal(.dmg/.zip) + Windows(.exe/nsis).
+# Nudge Studio(apps/desktop) 패키징 — macOS arm64·x64 분리(.dmg/.zip) + Windows(.exe/nsis).
 #
 # 왜 OS 매트릭스인가:
 #   node-pty 는 네이티브 모듈이라 타깃 OS/arch 에서 빌드해야 동작하는 .node 가 나온다.
 #   특히 Windows 용 .node 는 macOS 에서 크로스빌드가 불가 → 반드시 windows runner 에서 패키징.
-#   macOS universal 은 electron-builder 가 arm64·x64 를 각각 리빌드 후 lipo 로 합친다
-#   (electron-builder.yml 의 npmRebuild: true 가 이를 가능케 함).
+#   macOS 는 arm64·x64 dmg 를 분리 산출(universal 단일본 대신) — 사용자가 자기 arch 것만 받아
+#   다운로드가 작아지고, 동봉 claude 바이너리(arch 당 ~205MB)도 한 벌만 들어간다
+#   (node-pty 1.1.0 은 darwin-arm64/x64 prebuild 동봉 → npmRebuild:false 로 양쪽 패킹 가능).
 #
 # 코드서명은 아직 미설정 → CSC_IDENTITY_AUTO_DISCOVERY=false 로 끄고 unsigned 산출물을 만든다.
 #   배포 시 사용자는 mac 은 "우클릭 → 열기"(Gatekeeper), win 은 SmartScreen "추가 정보 → 실행" 필요.
@@ -23,6 +24,11 @@ on:
 permissions:
   contents: write
 
+env:
+  # GitHub-hosted runners are moving JavaScript actions from Node 20 to Node 24.
+  # Opt in now so deprecation warnings surface as real compatibility issues before the cutoff.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   build:
     strategy:
@@ -30,7 +36,7 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            label: mac-universal
+            label: mac
           - os: windows-latest
             label: win-x64
     runs-on: ${{ matrix.os }}
@@ -61,8 +67,25 @@ jobs:
       - name: Build workspace
         run: pnpm build
 
-      # bundle:mcp(.mcp-bundle 생성) → electron-vite build → electron-builder.
-      # npmRebuild: true 라 electron-builder 가 node-pty 를 타깃 arch 로 리빌드한다.
+      # 동봉 claude 바이너리(arch 당 ~205MB)는 npm 에서 받으므로 버전 키로 캐싱 — 같은 claude
+      # 버전이면 매 빌드 재다운로드를 생략한다(bundle:claude 가 version.json 으로 캐시 적중 판정).
+      # 키에 matrix.label 을 넣어 mac(arm64+x64 두 바이너리)·win(win32-x64) 스코프를 분리한다.
+      - name: Resolve claude version
+        id: claudever
+        shell: bash
+        run: echo "version=$(npm view @anthropic-ai/claude-code version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache claude bundle
+        uses: actions/cache@v4
+        with:
+          path: apps/desktop/.claude-bundle
+          key: claude-bundle-${{ matrix.label }}-${{ steps.claudever.outputs.version }}
+
+      # package 스크립트 = bundle:mcp(.mcp-bundle) + bundle:claude(.claude-bundle, host arch claude
+      # 바이너리 npm 다운로드) → electron-vite build → electron-builder.
+      # mac runner(arm64)는 arm64·x64 dmg 를 둘 다 산출 → bundle:claude 가 darwin-arm64·darwin-x64
+      # 두 바이너리를 받고, afterPack 이 각 dmg 에서 반대편 arch 를 잘라낸다. npmRebuild:false 라도
+      # node-pty 1.1.0 prebuild 가 darwin-arm64/x64·win32-x64 를 커버해 그대로 패킹된다.
       - name: Package desktop app
         run: pnpm --filter @nudge-design/desktop run package
         env:
