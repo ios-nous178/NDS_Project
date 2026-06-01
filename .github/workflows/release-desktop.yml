@@ -33,12 +33,23 @@ jobs:
   build:
     strategy:
       fail-fast: false
+      # arch 별 잡 — mac 을 arm64·x64 로 분리해 산출물(아티팩트)을 하나씩 따로 낸다.
+      #  · ebArgs       : electron-builder 플랫폼·arch 플래그(해당 arch 만 빌드).
+      #  · claudeTarget : 그 arch 의 동봉 claude 바이너리 하나만 받는다(.claude-bundle).
       matrix:
         include:
           - os: macos-latest
-            label: mac
+            label: mac-arm64
+            ebArgs: --mac --arm64
+            claudeTarget: darwin-arm64
+          - os: macos-latest
+            label: mac-x64
+            ebArgs: --mac --x64
+            claudeTarget: darwin-x64
           - os: windows-latest
             label: win-x64
+            ebArgs: --win --x64
+            claudeTarget: win32-x64
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -69,7 +80,7 @@ jobs:
 
       # 동봉 claude 바이너리(arch 당 ~205MB)는 npm 에서 받으므로 버전 키로 캐싱 — 같은 claude
       # 버전이면 매 빌드 재다운로드를 생략한다(bundle:claude 가 version.json 으로 캐시 적중 판정).
-      # 키에 matrix.label 을 넣어 mac(arm64+x64 두 바이너리)·win(win32-x64) 스코프를 분리한다.
+      # 키에 matrix.label(arch 별)을 넣어 잡마다 자기 arch 바이너리만 캐싱한다.
       - name: Resolve claude version
         id: claudever
         shell: bash
@@ -81,13 +92,16 @@ jobs:
           path: apps/desktop/.claude-bundle
           key: claude-bundle-${{ matrix.label }}-${{ steps.claudever.outputs.version }}
 
-      # package 스크립트 = bundle:mcp(.mcp-bundle) + bundle:claude(.claude-bundle, host arch claude
-      # 바이너리 npm 다운로드) → electron-vite build → electron-builder.
-      # mac runner(arm64)는 arm64·x64 dmg 를 둘 다 산출 → bundle:claude 가 darwin-arm64·darwin-x64
-      # 두 바이너리를 받고, afterPack 이 각 dmg 에서 반대편 arch 를 잘라낸다. npmRebuild:false 라도
-      # node-pty 1.1.0 prebuild 가 darwin-arm64/x64·win32-x64 를 커버해 그대로 패킹된다.
+      # arch 별 패키징 — bundle:mcp(.mcp-bundle) + bundle:claude(이 arch 바이너리 하나) →
+      # electron-vite build → electron-builder(이 플랫폼·arch 만). 잡당 dmg/exe 한 종류만 나온다.
+      # npmRebuild:false 라도 node-pty 1.1.0 prebuild 가 darwin-arm64/x64·win32-x64 를 커버.
       - name: Package desktop app
-        run: pnpm --filter @nudge-design/desktop run package
+        shell: bash
+        run: |
+          node scripts/bundle-mcp-desktop.mjs
+          node scripts/bundle-claude-desktop.mjs --targets=${{ matrix.claudeTarget }}
+          pnpm --filter @nudge-design/desktop exec electron-vite build
+          pnpm --filter @nudge-design/desktop exec electron-builder ${{ matrix.ebArgs }}
         env:
           # 코드서명 미설정 — 자동 인증서 탐색을 꺼서 빌드 실패를 막는다(unsigned 산출물).
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
