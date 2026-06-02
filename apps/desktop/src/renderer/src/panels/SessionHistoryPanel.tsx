@@ -133,6 +133,7 @@ export function SessionHistoryPanel({
   selectedSessionId,
   onSelect,
   onDeleted,
+  onResume,
   onNewChat,
   onNewMockup,
 }: {
@@ -146,6 +147,8 @@ export function SessionHistoryPanel({
   onSelect: (session: ChatSession) => void;
   /** 세션 삭제 완료 — 부모가 보기 상태 정리/리스트 갱신. */
   onDeleted: (sessionId: string) => void;
+  /** "이어가기" — CLI 네이티브 resume 으로 끝난 세션을 다시 라이브로(부모가 spawn+attach). */
+  onResume: (session: ChatSession) => void;
   /** "빠른 채팅" — 고른 에이전트·전송방식으로 빈 세션을 바로 시작(인테이크 없이). */
   onNewChat: (req: { agentType: AgentType; transport: Transport }) => void;
   /** "목업 제작…" — 기획서/레퍼런스 인테이크 모달을 연다. */
@@ -505,6 +508,38 @@ export function SessionHistoryPanel({
                   <span>
                     {fmtTime(s.createdAt)} · {statusKo(s.status)}
                   </span>
+                  {/* 이어가기 — CLI 네이티브 대화가 남아있는(resumable) 끝난 세션만. 라이브/편집 중엔 숨김. */}
+                  {s.resumable && !isLive && !isEditing && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onResume(s);
+                      }}
+                      title="이 세션을 이어서 진행합니다 (대화 컨텍스트 복원)"
+                      style={{
+                        ...btnReset,
+                        padding: "1px 7px",
+                        borderRadius: 999,
+                        border: `1px solid ${c.border}`,
+                        background: "transparent",
+                        color: c.textMuted,
+                        cursor: "pointer",
+                        fontSize: 10,
+                        fontWeight: 600,
+                        lineHeight: "15px",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = c.accent;
+                        e.currentTarget.style.color = c.accent;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = c.border;
+                        e.currentTarget.style.color = c.textMuted;
+                      }}
+                    >
+                      ↩ 이어가기
+                    </button>
+                  )}
                 </div>
               </div>
               {/* 구조화(canary) 표식 — 카드 우측 하단에 아이콘만 고정. LIVE(타이틀 행)·삭제

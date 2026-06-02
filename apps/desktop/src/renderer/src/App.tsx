@@ -544,6 +544,32 @@ export function App(): React.JSX.Element {
               setViewing((v) => (v?.sessionId === sessionId ? null : v));
               refreshHistory();
             }}
+            onResume={(s) => {
+              // CLI 네이티브 resume 으로 끝난 세션을 다시 라이브로. main 이 PTY 를 재spawn 하면
+              // intake 와 동일하게 attach 로 라이브 패널을 붙인다(컨텍스트는 claude/codex 가 복원).
+              void (async () => {
+                const res = await window.harness.resumeSession(projectPath ?? "", s.sessionId);
+                if (!res.ok) {
+                  window.alert(res.error ?? "이어가기에 실패했습니다.");
+                  return;
+                }
+                // 다른 라이브 세션이 떠 있으면 먼저 정리(orphan PTY / 동시 프로세스 방지).
+                if (liveSessionId && liveSessionId !== s.sessionId) {
+                  void window.harness.stopAgent(liveSessionId);
+                }
+                setAutoFollow(true);
+                if (s.mockupFile && s.intent !== "admin-cms") {
+                  setActiveIntent("html");
+                  setPreviewRel(s.mockupFile);
+                  setTab("preview");
+                  setBust((b) => b + 1);
+                }
+                setLiveSessionId(s.sessionId);
+                setAttachSessionId(s.sessionId);
+                setViewing(null);
+                refreshHistory();
+              })();
+            }}
             onNewChat={startNewChat}
             onNewMockup={() => void openMockupIntake()}
           />

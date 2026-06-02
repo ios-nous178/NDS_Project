@@ -34,6 +34,7 @@ import {
   type ChatSession,
 } from "./sessions.js";
 import type { ChatMessage } from "./chat-types.js";
+import { isResumable } from "./agent-resume.js";
 import { runIntake, type RunIntakeArgs } from "./intake.js";
 import { checkForUpdate, type UpdateCheckResult } from "./update-check.js";
 import { randomUUID } from "node:crypto";
@@ -369,7 +370,8 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     async (_e, args: { projectPath: string }): Promise<ChatSession[]> => {
       // 리스트를 읽기 직전, 라이브 PTY 가 없는 stale "active"(재시작/크래시 잔재)를 정리.
       reconcileStaleSessions(args.projectPath, runningSessionIds());
-      return readSessions(args.projectPath);
+      // resumable 은 계산 필드 — 렌더러는 fs(네이티브 store 존재)를 못 보므로 여기서 판정해 붙인다.
+      return readSessions(args.projectPath).map((s) => ({ ...s, resumable: isResumable(s) }));
     },
   );
 
@@ -408,6 +410,43 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     async (_e, args: { projectPath: string; sessionId: string }): Promise<{ ok: boolean }> => {
       stopAgent(args.sessionId);
       return deleteSession(args.projectPath, args.sessionId);
+    },
+  );
+
+  // 끝난 세션을 CLI 네이티브 resume 으로 이어간다(resume v1). 저장된 ChatSession 에서 레시피를
+  // 복원해 startAgent 의 resume 모드로 재spawn. resume 은 항상 PTY(claude store 는 transport
+  // 무관 → stream-json 세션도 PTY 로 이어감). 성공하면 렌더러가 attach 로 라이브 패널을 붙인다.
+  ipcMain.handle(
+    "session:resume",
+    async (
+      _e,
+      args: { projectPath: string; sessionId: string; cols?: number; rows?: number },
+    ): Promise<{ ok: boolean; error?: string; code?: StartAgentErrorCode }> => {
+      const wc = getWindow()?.webContents;
+      if (!wc) return { ok: false, error: "창이 없습니다." };
+      const s = readSessions(args.projectPath).find((x) => x.sessionId === args.sessionId);
+      if (!s) return { ok: false, error: "세션을 찾을 수 없습니다." };
+      if (!isResumable(s) || !s.agentSessionId || !s.cwd) {
+        return { ok: false, error: "이 세션은 이어갈 수 없습니다(저장된 대화 기록이 없습니다)." };
+      }
+      return startAgent(
+        {
+          sessionId: s.sessionId,
+          agentType: s.agentType,
+          projectPath: args.projectPath,
+          cwdOverride: s.cwd,
+          mockupFile: s.mockupFile,
+          screenName: s.screenName,
+          brand: s.brand,
+          surface: s.surface,
+          intent: s.intent,
+          transport: "pty",
+          cols: args.cols,
+          rows: args.rows,
+          resume: { agentSessionId: s.agentSessionId, agentSessionFile: s.agentSessionFile },
+        },
+        wc,
+      );
     },
   );
 
