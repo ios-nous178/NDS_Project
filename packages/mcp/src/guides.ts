@@ -4195,6 +4195,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     pill: "9999px — 칩, 토글",
   },
   dos: [
+    "★ 선언된 표면(surface: admin/service)이 화면 이름 통념을 지배한다 — 작업 시작 시 표면부터 확정하고 모든 레이아웃을 거기 맞춘다. surface=admin 이면 '회원가입/로그인/온보딩'처럼 소비자 플로우를 연상시켜도 어드민 화면(admin-shell 사이드바+톱바, 또는 어드민 온보딩 중앙 카드)으로 만든다. 표면의 SSOT 는 brief/CLAUDE.md 선언 + nudge.surface 마커 — 화면 제목으로 추측하지 말 것.",
     "Primary 색상은 화면당 가장 중요한 1개 액션에만 사용",
     "강조 장치는 화면당 우선순위가 가장 높은 영역에 집중하고, 안내/보조 영역은 기본적으로 neutral surface를 사용",
     "텍스트 대비비 WCAG AA (4.5:1) 이상 유지",
@@ -4214,6 +4215,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "브랜드 분기는 공통 컴포넌트 구현이 아니라 **브랜드 전용 화면/스토리** 에서 처리 — 브랜드 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<Footer.TabBar tabs={[{ icon: <GenietRecordIcon /> }]} />`)",
   ],
   donts: [
+    "표면=admin 화면에 소비자 brand chrome(<nds-brand-header> / <nds-brand-footer> / <nds-brand-bottom-nav>) 사용 금지 — 어드민은 admin-shell(사이드바+톱바) 또는 어드민 온보딩 카드. '회원가입/로그인'이라는 화면 이름으로 소비자 플로우를 추측하지 마세요. build_singlefile_html / validate_html_mockup 의 admin-surface-consumer-chrome 룰(error)로 자동 차단됨.",
     "한 화면에 3개 이상의 폰트 웨이트를 혼용하지 마세요",
     "둥근 코너와 각진 코너를 같은 뷰에서 섞지 마세요",
     "그림자와 보더를 동시에 적용하여 이중 계층을 만들지 마세요",

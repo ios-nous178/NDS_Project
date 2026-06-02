@@ -70,6 +70,9 @@ interface DomElement {
 
 export type HtmlViolationSeverity = "error" | "warn" | "info";
 
+/** 선언된 제작 표면. 화면 이름 통념(가입/로그인=소비자)보다 우선하는 지배 변수. */
+export type HtmlSurface = "service" | "admin" | null;
+
 export interface HtmlViolation {
   rule: string;
   line: number;
@@ -127,6 +130,10 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "raw-landmark": "warn",
   // 브랜드 화면인데 base nds-header 를 손수 조립 (회고: brand chrome 미사용 안티패턴)
   "manual-brand-header": "warn",
+  // 선언 표면=admin 인데 소비자 brand chrome(header/footer/bottom-nav) 사용 (회고: 가입 admin 화면을 소비자 플로우로 오제작)
+  "admin-surface-consumer-chrome": "error",
+  // 선언 표면=service 인데 어드민 사이드바(nds-sidebar) 사용 — 표면 불일치(역방향)
+  "service-surface-admin-shell": "warn",
   // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
   "unknown-brand-slug": "error",
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
@@ -365,9 +372,10 @@ function describeElement(el: DomElement): string {
 
 export function validateHtmlSource(
   source: string,
-  options?: { context?: HtmlValidationContext },
+  options?: { context?: HtmlValidationContext; surface?: HtmlSurface },
 ): HtmlViolation[] {
   const ctx = options?.context ?? configured;
+  const surface = options?.surface ?? null;
   const violations: HtmlViolation[] = [];
   const $ = cheerio.load(source, { xmlMode: false });
 
@@ -720,6 +728,42 @@ export function validateHtmlSource(
         detail: "브랜드 화면에서 base <nds-header> 에 로고/메뉴/auth 를 손수 조립함.",
         suggestion:
           "브랜드 헤더는 손수 조립 금지. <nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 한 줄로 교체하면 로고/메뉴/auth 가 BRAND_DATA 에서 자동 렌더되고 surface 로 PC·모바일·웹뷰가 분기됩니다. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조.",
+      });
+    });
+  }
+
+  // ─── 선언 표면(surface) ↔ 화면 chrome 불일치 ───
+  //   회고(2026-06): cashwalk-biz 는 admin/service 가 둘 다 intent='html' 로 붕괴해(resolveIntent),
+  //   import 기반 context 감지로는 어드민/소비자를 구분 못 한다. 선언된 surface(nudge.surface 마커)를
+  //   지배 변수로 삼아, '가입/로그인/온보딩' 같은 화면 이름 통념 때문에 admin 을 소비자 플로우로
+  //   오제작하는 것을 차단한다. (표면이 화면 이름 통념을 지배한다.)
+  if (surface === "admin") {
+    // admin 화면 = admin-shell(사이드바+톱바) 또는 어드민 온보딩(중앙 카드). 소비자 brand chrome 은
+    // 마케팅/앱 표면 전용이라 admin 에 쓰이면 표면을 잘못 잡은 것 → error.
+    $("nds-brand-header, nds-brand-footer, nds-brand-bottom-nav").each((_i, el) => {
+      if (el.type !== "tag") return;
+      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+      violations.push({
+        rule: "admin-surface-consumer-chrome",
+        line: lineNumberAt(source, offset),
+        selector: describeElement(el as unknown as DomElement),
+        detail: `선언된 표면=admin 인데 소비자 brand chrome <${el.tagName.toLowerCase()}> 사용.`,
+        suggestion:
+          "표면=admin 화면은 소비자 brand chrome(nds-brand-header/footer/bottom-nav)을 쓰지 않는다. admin-shell(사이드바+톱바: get_guide({ topic: 'pattern:admin-shell' })) 또는 어드민 온보딩 카드로 만들 것. 캐포비 어드민 패턴: get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }). 표면 자체가 잘못 선언됐다면 nudge.surface 마커/brief 의 표면을 먼저 확인.",
+      });
+    });
+  } else if (surface === "service") {
+    // 역방향(warn): 소비자 화면에 어드민 사이드바를 쓰면 표면을 잘못 잡았을 가능성.
+    $("nds-sidebar").each((_i, el) => {
+      if (el.type !== "tag") return;
+      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+      violations.push({
+        rule: "service-surface-admin-shell",
+        line: lineNumberAt(source, offset),
+        selector: describeElement(el as unknown as DomElement),
+        detail: "선언된 표면=service 인데 어드민 사이드바(nds-sidebar) 사용.",
+        suggestion:
+          "표면=service(소비자) 화면은 어드민 사이드바 대신 브랜드 chrome(nds-brand-header/footer/bottom-nav)을 쓴다. 정말 어드민 화면이라면 표면 선언(nudge.surface)을 admin 으로 바로잡을 것.",
       });
     });
   }
@@ -1190,7 +1234,143 @@ function hasAncestorNdsTag(el: DomElement): boolean {
 export interface ValidateHtmlMockupArgs {
   source?: string;
   filePath?: string;
+  /** 워크스페이스 루트(nudge.surface / nudge.brand 마커 탐색 시작점). 없으면 filePath 의 디렉토리에서 위로 탐색. */
+  cwd?: string;
+  /** 선언된 제작 표면. 없으면 nudge.surface 마커에서 읽는다. 화면 이름 통념을 지배. */
+  surface?: HtmlSurface;
 }
+
+/**
+ * nudge.surface 마커를 startDir 에서 위로 최대 5단계 탐색해 선언된 표면을 읽는다.
+ * (build-html 의 resolveHtmlBrand 가 nudge.brand 를 cwd 에서 읽는 것과 동일 SSOT 패턴.)
+ */
+export function readSurfaceMarker(startDir: string): HtmlSurface {
+  let dir = startDir;
+  for (let i = 0; i < 5; i++) {
+    const marker = path.join(dir, "nudge.surface");
+    if (fs.existsSync(marker)) {
+      try {
+        const value = fs.readFileSync(marker, "utf-8").trim();
+        if (value === "admin" || value === "service") return value;
+      } catch {
+        // ignore — 폴백
+      }
+      return null;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
+/** 결정적 품질 점수 차원 (Kraft 코드기반 scorer 미러, animation 제외). */
+export type ScoreDimension = "color" | "typography" | "spacing" | "layout" | "component" | "icon";
+
+export interface MockupScores {
+  /** 0~100. 6개 차원 평균(반올림). */
+  overall: number;
+  dimensions: Record<ScoreDimension, number>;
+}
+
+const SCORE_DIMENSIONS: ScoreDimension[] = [
+  "color",
+  "typography",
+  "spacing",
+  "layout",
+  "component",
+  "icon",
+];
+
+/** rule → 품질 차원. 매핑 안 된 rule 은 점수에 반영 안 함(보수적). */
+const RULE_DIMENSION: Record<string, ScoreDimension> = {
+  // color (color-tokens): raw 색·미지 토큰·그라데이션·과한 brand/tone-on-tone 색
+  "inline-color": "color",
+  "unknown-token": "color",
+  "gradient-banned": "color",
+  "tone-on-tone-filled": "color",
+  "brand-bg-overuse": "color",
+  "primary-color-role-overload": "color",
+  // typography
+  "repeated-h1": "typography",
+  "repeated-h2": "typography",
+  "bold-overuse": "typography",
+  // spacing (spacing-rules)
+  "inline-spacing": "spacing",
+  "non-4pt-spacing": "spacing",
+  "non-semantic-spacing": "spacing",
+  "card-slot-double-padding": "spacing",
+  // layout (layout-structure): 카드 중첩·CTA 위계·칩 과다·장식
+  "raw-landmark": "layout",
+  "nested-card": "layout",
+  "card-badge-overuse": "layout",
+  "card-footer-button-overuse": "layout",
+  "primary-cta-per-container": "layout",
+  "primary-cta-overuse": "layout",
+  "chip-overuse": "layout",
+  "card-everything": "layout",
+  "decorative-shadow": "layout",
+  "visual-emphasis-overload": "layout",
+  "raw-shell-pattern": "layout",
+  // component (component-compliance): DS 미사용·브랜드 크롬·attr enum·뱃지
+  "native-interactive": "component",
+  "manual-brand-header": "component",
+  "unknown-brand-slug": "component",
+  "non-inlinable-img-src": "component",
+  "unknown-nds-tag": "component",
+  "unknown-nds-class": "component",
+  "invalid-nds-attr-value": "component",
+  "ds-badge-missing": "component",
+  "assistive-solid-cta": "component",
+  // icon (icon-usage): 이모지/기호·인라인 svg·heading 장식 아이콘
+  "emoji-banned": "icon",
+  "text-symbol-banned": "icon",
+  "text-icon-substitute": "icon",
+  "inline-svg": "icon",
+  "heading-decorative-icon": "icon",
+};
+
+const SCORE_SEVERITY_PENALTY: Record<HtmlViolationSeverity, number> = {
+  error: 20,
+  warn: 8,
+  info: 3,
+};
+
+/** 위반 집계(violationsByRule) → 차원별 0~100 점수 + overall. 순수·결정적. */
+export function computeScores(byRule: ValidateHtmlMockupResult["violationsByRule"]): MockupScores {
+  const penalty: Record<ScoreDimension, number> = {
+    color: 0,
+    typography: 0,
+    spacing: 0,
+    layout: 0,
+    component: 0,
+    icon: 0,
+  };
+  for (const r of byRule) {
+    const dim = RULE_DIMENSION[r.rule];
+    if (!dim) continue;
+    penalty[dim] += r.count * (SCORE_SEVERITY_PENALTY[r.severity] ?? 5);
+  }
+  const dimensions: Record<ScoreDimension, number> = {
+    color: 0,
+    typography: 0,
+    spacing: 0,
+    layout: 0,
+    component: 0,
+    icon: 0,
+  };
+  for (const d of SCORE_DIMENSIONS) dimensions[d] = Math.max(0, 100 - penalty[d]);
+  const overall = Math.round(
+    SCORE_DIMENSIONS.reduce((s, d) => s + dimensions[d], 0) / SCORE_DIMENSIONS.length,
+  );
+  return { overall, dimensions };
+}
+
+/** validate 가 실행 못 됐을 때(빌드 폴백 등) 쓰는 중립 만점 스코어. */
+export const NEUTRAL_SCORES: MockupScores = {
+  overall: 100,
+  dimensions: { color: 100, typography: 100, spacing: 100, layout: 100, component: 100, icon: 100 },
+};
 
 export interface ValidateHtmlMockupResult {
   ok: boolean;
@@ -1211,6 +1391,8 @@ export interface ValidateHtmlMockupResult {
     /** error 가 1개 이상이면 true — ship 차단 권장. */
     hasErrors: boolean;
   };
+  /** 차원별 0~100 품질 점수 + overall. 위반에서 결정적으로 환산(computeScores). */
+  scores: MockupScores;
   jsxOnlyNotice: string;
 }
 
@@ -1284,15 +1466,20 @@ function summarizeSeverity(
 
 export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMockupResult {
   let source = args.source;
+  let markerStartDir = args.cwd;
   if (!source && args.filePath) {
     const p = path.resolve(args.filePath);
     if (!fs.existsSync(p)) throw new Error(`File not found: ${p}`);
     source = fs.readFileSync(p, "utf-8");
+    if (!markerStartDir) markerStartDir = path.dirname(p);
   }
   if (!source) {
     throw new Error("Provide either `source` (HTML string) or `filePath`.");
   }
-  const rawViolations = validateHtmlSource(source);
+  // 선언 표면: 명시 인자 > nudge.surface 마커. 화면 이름 통념을 지배(표면 불일치 룰의 입력).
+  const surface: HtmlSurface =
+    args.surface ?? (markerStartDir ? readSurfaceMarker(markerStartDir) : null);
+  const rawViolations = validateHtmlSource(source, { surface });
   const violations = trimViolationsForResponse(rawViolations);
   const violationsByRule = summarizeByRule(rawViolations);
   const severitySummary = summarizeSeverity(rawViolations);
@@ -1301,6 +1488,7 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
     violations,
     violationsByRule,
     severitySummary,
+    scores: computeScores(violationsByRule),
     jsxOnlyNotice:
       "validate_html_mockup 은 토큰·간격·아이콘·nds-* 태그/클래스·컨테이너 패턴 (Card 중첩 / Footer 버튼 과다 / 영역별 primary CTA / heading 장식 / brand BG / bold 남발 등) 까지 검사합니다. " +
       "다만 JSX 전용 룰 — antd import 잔존 / 외부 아이콘 라이브러리 import / Chip.label 속성 / 화살표 아이콘 식별 (HTML 에서는 익명 <svg>) — 은 .tsx 시점에서만 검출됩니다. " +
