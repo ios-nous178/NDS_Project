@@ -1,3 +1,6 @@
+// 네이티브 검증 패널은 **HTML 룰 전용**이다(ValidateHtmlMockupResult). TSX/JSX 목업 룰
+// (mockup-validator.ts, MCP 전용)은 하네스 범위 밖이며, 필요 시 에이전트가 번들 MCP
+// 서브프로세스로 닿는다 — 의도된 분기(html intent 만 hard gate). 자세한 배경: catalog-config.ts.
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { c } from "../ui/theme.js";
 

@@ -195,6 +195,14 @@ function saveFiles(files: ScreenshotInput[], destDir: string, fallbackStem: stri
   return saved;
 }
 
+/**
+ * CLAUDE.md = AGENTS.md 로 워크스페이스에 쓰는 부트스트랩 본문.
+ *
+ * MCP `getClaudeMdTemplate`(packages/mcp/src/tools/guides.ts)의 축약 미러다 — 하네스는
+ * vite/npm 스캐폴딩을 빼고 surface/brand 컨텍스트를 더한 자체본을 쓴다(의도된 fork).
+ * 단, **완료 게이트**(DS 뱃지·webhook 상태·적용 레퍼런스 보고)는 MCP 템플릿과 동기 유지한다 —
+ * codex 는 --append-system-prompt 가 없어 이 AGENTS.md 가 유일한 standing instruction 이기 때문.
+ */
 function bootstrapDoc(brand: string, surface: Surface, intent: string): string {
   return `# DS 목업 워크스페이스
 
@@ -214,6 +222,7 @@ function bootstrapDoc(brand: string, surface: Surface, intent: string): string {
   → (복잡/다단계 화면이거나 구성 합의가 필요하면) save_design_spec 으로 경량 DesignSpec 작성·검증(ok:true) 후 사용자에게 보여주고 동의 — 단순 화면은 생략. 룰·스키마: get_guide({topic:'pattern:design-spec'})
   → 컴포넌트 가이드 1개씩(target:'html') → index.html 을 <nds-*> + 시멘틱 토큰으로 작성(raw hex 금지)
   → validate_html_mockup → build_singlefile_html (html intent 는 자동 검증).
+- **완료 게이트(응답 전 필수 보고)**: ① 적용한 시각 레퍼런스, ② 풋터 DS 뱃지 \`<span data-ds-badge>DS@x · DS N (M%)</span>\` — 숫자는 직접 세지 말고 build/validate 응답의 \`dsUsageSummary\` 를 그대로 사용(없으면 validator 가 \`ds-badge-missing\` 으로 차단), ③ Google Sheets 사용량 POST 상태 \`webhook ok\` / \`webhook queued(...)\` / \`webhook skipped\` 중 하나를 응답에 명시.
 - **이 폴더에 곧장 index.html 을 쓰세요.** vite/npm·get_setup 스캐폴딩·DS 패키지 설치는 불필요합니다 —
   이 앱(Nudge Studio)이 build_singlefile_html 으로 prebuilt DS runtime/CSS 를 자동 inline 합니다.
   npm create vite / npm install @nudge-design/* 를 실행하지 마세요(이 환경엔 tarball 이 없습니다).

@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { app } from "electron";
@@ -50,26 +50,28 @@ function resolveMcpServerEntry(): ResolvedEntry | null {
   return null;
 }
 
-let cached: string | null | undefined;
+/** 번들 nudge-ds MCP 서버 실행 스펙 — claude(--mcp-config json) / codex(-c mcp_servers.*) 양쪽이 공유. */
+export interface BundledMcpServerSpec {
+  /** 서버를 띄울 실행 파일 = Electron-as-node (process.execPath). */
+  command: string;
+  /** server.mjs(packaged) 또는 dist/server.js(dev) 1건. */
+  args: string[];
+  /** 런타임 env (ELECTRON_RUN_AS_NODE + packaged sidecar 경로들). */
+  env: Record<string, string>;
+  /** packaged(extraResources) 번들이면 true. */
+  packaged: boolean;
+}
+
+let cachedSpec: BundledMcpServerSpec | null | undefined;
 
 /**
- * claude `--mcp-config` 로 넘길 설정 파일 경로를 반환. 번들 서버를 못 찾으면 null
- * (주입을 건너뛰고 에이전트 실행 자체는 막지 않는다).
- *
- * 결과는 userData/mcp/nudge-ds.mcp.json 에 1회 기록 후 캐시한다.
+ * 번들 MCP 서버의 실행 스펙(command/args/env)을 해석한다. 못 찾으면 null.
+ * claude 는 이걸 .mcp.json 으로 직렬화하고, codex 는 -c mcp_servers.* override 로 푼다.
  */
-export function ensureBundledMcpConfig(): string | null {
-  if (cached !== undefined) return cached;
-
+export function bundledMcpServerSpec(): BundledMcpServerSpec | null {
+  if (cachedSpec !== undefined) return cachedSpec;
   const resolved = resolveMcpServerEntry();
-  if (!resolved) {
-    console.warn(
-      "[harness] 번들 MCP 서버(server.js)를 찾지 못해 nudge-ds 자동 주입을 건너뜁니다. " +
-        "(dev 라면 'pnpm build --filter @nudge-design/mcp' 후 재시작)",
-    );
-    cached = null;
-    return null;
-  }
+  if (!resolved) return (cachedSpec = null);
 
   const env: Record<string, string> = {
     // Electron 바이너리를 순수 node 로 동작시킨다 (창/도크 없이 stdio MCP 만).
@@ -91,13 +93,54 @@ export function ensureBundledMcpConfig(): string | null {
     env.NUDGE_DS_ICONS_VANILLA = join(dirname(resolved.entry), "..", "icons", "vanilla.js");
   }
 
+  return (cachedSpec = {
+    command: process.execPath,
+    args: [resolved.entry],
+    env,
+    packaged: resolved.packaged,
+  });
+}
+
+/**
+ * 번들 빌드 스탬프(BUILD_STAMP.json — bundle-mcp-desktop.mjs 가 git HEAD/시각 기록)를 읽어
+ * 로그에 붙일 접미사로. 어떤 빌드의 MCP 가 붙었는지 packaged 앱 디버깅 때 보이게 한다(없으면 "").
+ * entry = .../dist/tools/server.mjs → ../BUILD_STAMP.json = .../dist/BUILD_STAMP.json.
+ */
+function bundleStampSuffix(entry: string): string {
+  try {
+    const stampPath = join(dirname(entry), "..", "BUILD_STAMP.json");
+    if (!existsSync(stampPath)) return "";
+    const s = JSON.parse(readFileSync(stampPath, "utf8")) as { gitHead?: string; builtAt?: string };
+    return ` [bundle ${s.gitHead ?? "?"} @ ${s.builtAt ?? "?"}]`;
+  } catch {
+    return "";
+  }
+}
+
+let cached: string | null | undefined;
+
+/**
+ * claude `--mcp-config` 로 넘길 설정 파일 경로를 반환. 번들 서버를 못 찾으면 null
+ * (주입을 건너뛰고 에이전트 실행 자체는 막지 않는다).
+ *
+ * 결과는 userData/mcp/nudge-ds.mcp.json 에 1회 기록 후 캐시한다.
+ */
+export function ensureBundledMcpConfig(): string | null {
+  if (cached !== undefined) return cached;
+
+  const spec = bundledMcpServerSpec();
+  if (!spec) {
+    console.warn(
+      "[harness] 번들 MCP 서버(server.js)를 찾지 못해 nudge-ds 자동 주입을 건너뜁니다. " +
+        "(dev 라면 'pnpm build --filter @nudge-design/mcp' 후 재시작)",
+    );
+    cached = null;
+    return null;
+  }
+
   const config = {
     mcpServers: {
-      "nudge-ds": {
-        command: process.execPath,
-        args: [resolved.entry],
-        env,
-      },
+      "nudge-ds": { command: spec.command, args: spec.args, env: spec.env },
     },
   };
 
@@ -107,9 +150,46 @@ export function ensureBundledMcpConfig(): string | null {
   writeFileSync(file, `${JSON.stringify(config, null, 2)}\n`, "utf8");
 
   console.log(
-    `[harness] 번들 MCP 자동 주입: ${file} → ${resolved.entry} ` +
-      `(${resolved.packaged ? "packaged/mcpb" : "dev/monorepo"})`,
+    `[harness] 번들 MCP 자동 주입(claude): ${file} → ${spec.args[0]} ` +
+      `(${spec.packaged ? "packaged/mcpb" : "dev/monorepo"})${bundleStampSuffix(spec.args[0])}`,
   );
   cached = file;
   return file;
+}
+
+/**
+ * codex CLI 용 nudge-ds MCP 주입 인자. claude 의 --mcp-config(추가형) 등가물 —
+ * codex 는 `-c mcp_servers.<name>.<key>=<TOML>` config override 로 서버를 얹는다.
+ * (-c 는 전역 옵션이라 호출부에서 prompt/`resume` 서브커맨드보다 **앞에** 둬야 한다.)
+ *
+ * 값은 codex 가 TOML 로 파싱하므로 basic string("…")으로 직렬화한다 — Windows 경로의
+ * 백슬래시·따옴표까지 안전하게 이스케이프된다. 번들을 못 찾으면 [](주입 생략, 실행은 계속).
+ */
+export function codexMcpConfigArgs(): string[] {
+  const spec = bundledMcpServerSpec();
+  if (!spec) {
+    console.warn(
+      "[harness] 번들 MCP 서버를 찾지 못해 codex nudge-ds 주입을 건너뜁니다. " +
+        "(dev 라면 'pnpm build --filter @nudge-design/mcp' 후 재시작)",
+    );
+    return [];
+  }
+  // TOML basic string — 모든 경로/값에 안전(백슬래시·따옴표 이스케이프).
+  const toml = (s: string): string => `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+  const argsToml = `[${spec.args.map(toml).join(", ")}]`;
+  const envToml = `{ ${Object.entries(spec.env)
+    .map(([k, v]) => `${k} = ${toml(v)}`)
+    .join(", ")} }`;
+  console.log(
+    `[harness] 번들 MCP 자동 주입(codex): -c mcp_servers.nudge-ds → ${spec.args[0]} ` +
+      `(${spec.packaged ? "packaged/mcpb" : "dev/monorepo"})${bundleStampSuffix(spec.args[0])}`,
+  );
+  return [
+    "-c",
+    `mcp_servers.nudge-ds.command=${toml(spec.command)}`,
+    "-c",
+    `mcp_servers.nudge-ds.args=${argsToml}`,
+    "-c",
+    `mcp_servers.nudge-ds.env=${envToml}`,
+  ];
 }

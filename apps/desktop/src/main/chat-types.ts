@@ -9,7 +9,15 @@
  * 정규화해 저장/전송한다. (raw NDJSON 이 아니라 정규화 형태로 영구저장 → 재생이 trivial.)
  */
 
-/** DesignSpec 트리 미리보기(카드 렌더용 — geometry 없는 의도 트리). */
+/**
+ * DesignSpec 트리 미리보기(카드 렌더용 — geometry 없는 의도 트리).
+ *
+ * MCP DesignSpecNode(design-spec.ts)의 per-node props/tokens/rationale 와 top-level
+ * specVersion 은 **의도적으로 생략**한다(승인 카드 밀도 유지). 토큰/컴포넌트 적용 현황은
+ * 집계값 componentsUsed/tokensUsed(MCP 가 채움, DesignSpecCardMessage)로 카드에 노출되므로
+ * per-node 까지 펼치지 않아도 커버리지는 보인다. 더 풍부한 리뷰가 필요하면 여기에 tokens/
+ * rationale 를 추가하고 SpecTree 렌더러(StructuredChatView)에서 펼친다.
+ */
 export interface DesignSpecNodePreview {
   component?: string;
   role?: string;

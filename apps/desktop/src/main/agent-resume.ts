@@ -37,9 +37,9 @@ export interface ResumeRecipe {
   recipe?: {
     /** --model 핀했다면. */
     model?: string;
-    /** claude --mcp-config(앱 동봉 DS MCP) 를 붙였나. codex 는 항상 false. */
+    /** 앱 동봉 DS MCP 를 붙였나(claude --mcp-config / codex -c mcp_servers.*). 번들 부재 시 false. */
     mcpConfig: boolean;
-    /** claude --append-system-prompt DS_SYSTEM_MANDATE 를 주입했나. codex 는 항상 false. */
+    /** claude --append-system-prompt DS_SYSTEM_MANDATE 를 주입했나. codex 는 AGENTS.md 사용이라 false. */
     appendSystemPrompt: boolean;
   };
   /** 스키마 진화 대비. */

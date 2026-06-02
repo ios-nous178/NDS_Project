@@ -149,6 +149,30 @@ await build({
 // 4) 런타임 부속 자산
 fs.copyFileSync(path.join(MCP, "catalog.json"), path.join(OUT, "dist/catalog.json"));
 fs.copyFileSync(path.join(MCP, "manifest.json"), path.join(OUT, "dist/manifest.json"));
+
+// 4-a) 빌드 스탬프 — manifest version 이 0.0.1 로 고정이라 번들이 stale 해도 조용히 묻힌다.
+// git HEAD + 빌드 시각을 박아 mcp-config.ts 가 주입 로그에 찍게 하고(어떤 빌드의 MCP 가 붙었는지),
+// packaged 앱 디버깅 때 "이 번들이 언제/어느 커밋 기준인지"를 한눈에 알 수 있게 한다.
+const gitHead = (() => {
+  try {
+    return execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: ROOT }).toString().trim();
+  } catch {
+    return null;
+  }
+})();
+fs.writeFileSync(
+  path.join(OUT, "dist/BUILD_STAMP.json"),
+  `${JSON.stringify(
+    {
+      gitHead,
+      builtAt: new Date().toISOString(),
+      mcpManifestVersion: JSON.parse(fs.readFileSync(path.join(MCP, "manifest.json"), "utf8"))
+        .version,
+    },
+    null,
+    2,
+  )}\n`,
+);
 copyDir(path.join(MCP, "references"), path.join(OUT, "references"));
 // prebuilt DS 단일 자산 → dist/standalone (server.mjs 의 __dirname/../standalone 으로 resolve).
 copyDir(standaloneSrc, path.join(OUT, "dist/standalone"));

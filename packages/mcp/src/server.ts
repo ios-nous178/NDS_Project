@@ -35,6 +35,8 @@ import {
   validateHtmlMockup,
 } from "@nudge-design/mockup-core/tools/html-validator";
 export { validateHtmlSource } from "@nudge-design/mockup-core/tools/html-validator";
+// validate_html_mockup 컨텍스트 도출 SSOT — 데스크탑 하네스(catalog.ts)도 같은 헬퍼를 쓴다.
+import { deriveHtmlValidationContext } from "@nudge-design/mockup-core/tools/catalog-config";
 import {
   analyzeHtmlMockup,
   convertHtmlToDsHtml,
@@ -154,46 +156,13 @@ configureMockupValidator({
   propAllowedValues,
 });
 
-// validate_html_mockup 용 context. nds-* 태그/클래스 prefix 셋.
-const ndsHtmlTagSet = new Set(manifest.ndsHtmlTags ?? []);
-[
-  "nds-select-option",
-  "nds-footer-info",
-  "nds-footer-tab-bar",
-  "nds-footer-tab-item",
-  "nds-footer-company-info",
-  "nds-footer-web",
-  "nds-footer-web-row",
-  "nds-footer-web-section",
-].forEach((tag) => ndsHtmlTagSet.add(tag));
-// React 컴포넌트 이름 → BEM-ish 베이스 클래스 prefix.
-// 예: "Button" → "nds-button", "IconButton" → "nds-icon-button".
-// stylesheet 룰은 대개 .nds-button { ... } 또는 .nds-card__root { ... } 라
-// __sub / --modifier 는 잘라낸 base prefix 만 비교한다.
-const ndsClassPrefixSet = new Set<string>();
-for (const c of manifest.components) {
-  const kebab = c.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-  ndsClassPrefixSet.add(`nds-${kebab}`);
-}
-// @nudge-design/styles 의 layout primitives — 컴포넌트가 아니라 클래스만 제공하므로
-// manifest.components 에 없다. validator 가 unknown-nds-class 로 잘못 잡지 않게 명시 추가.
-// 가이드: get_guide({ topic: 'pattern:admin-shell' }).
-ndsClassPrefixSet.add("nds-shell");
-ndsClassPrefixSet.add("nds-section");
-ndsClassPrefixSet.add("nds-form-row");
-// nds-* tag 별 attribute enum (예: nds-button.color = primary|secondary|assistive)
-const ndsAttrEnums = new Map<string, Map<string, string[]>>();
-for (const el of manifest.ndsHtmlElements ?? []) {
-  const attrMap = new Map<string, string[]>();
-  for (const [k, v] of Object.entries(el.attrs)) attrMap.set(k, v);
-  if (attrMap.size > 0) ndsAttrEnums.set(el.tag, attrMap);
-}
-configureHtmlValidator({
-  tokenSet,
-  ndsTagSet: ndsHtmlTagSet,
-  ndsClassPrefixSet,
-  ndsAttrEnums,
-});
+// validate_html_mockup 용 context (nds-* 태그/클래스 prefix/attr enum 셋) — 도출 로직은
+// mockup-core 의 catalog-config(deriveHtmlValidationContext)가 SSOT 다. 예전엔 server.ts 가
+// 같은 보강 목록(EXTRA 태그/prefix)을 인라인으로 손-동기화했지만, 데스크탑 하네스(catalog.ts)와
+// 어긋나면 unknown-nds-tag 검출이 한쪽에서 조용히 무력화될 위험이 있어 공유 헬퍼로 단일화했다.
+// DesignSpec 검증기도 같은 ndsAttrEnums 를 재사용한다(아래 configureDesignSpec).
+const htmlCtx = deriveHtmlValidationContext(manifest);
+configureHtmlValidator(htmlCtx);
 
 // DesignSpec(경량 IR) 검증기에도 같은 카탈로그를 주입한다 — prompt→spec→code 의 코드前 검증용.
 // 브랜드 셋은 자산 디렉토리에서 읽으므로(런타임엔 번들/dev 양쪽 해석됨) 방어적으로 — 미해석 시
@@ -209,7 +178,7 @@ configureDesignSpec({
   componentNames: new Set(componentByName.keys()),
   brands: standaloneBrandSet,
   propAllowedValues,
-  ndsAttrEnums,
+  ndsAttrEnums: htmlCtx.ndsAttrEnums,
 });
 
 // mcpb 번들은 packages/mcp/ 옆에 local-packages/ 를 동봉, dev 모드는 레포 루트 아래.
