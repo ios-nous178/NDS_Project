@@ -335,6 +335,37 @@ test("SelfCorrectionTracker: clean validate → hasErrors:false", () => {
   assert.equal(end?.validation?.hasErrors, false);
 });
 
+test("SelfCorrectionTracker[D3]: build 결과의 scores(D1) + outputPath 를 추출", () => {
+  const t = new SelfCorrectionTracker();
+  t.observe(validateUse("b1", "mcp__nudge-ds__build_singlefile_html"));
+  t.observe(
+    validateResult("b1", {
+      ok: true,
+      outputPath: "/proj/x/dist/index.html",
+      validation: {
+        violationsByRule: [],
+        severitySummary: { error: 0, warn: 1, info: 0, hasErrors: false },
+        scores: {
+          overall: 88,
+          dimensions: {
+            color: 100,
+            typography: 100,
+            spacing: 92,
+            layout: 80,
+            component: 100,
+            icon: 100,
+          },
+        },
+      },
+    }),
+  );
+  const end = t.observe(RESULT_EVT);
+  assert.equal(end?.validation?.hasErrors, false);
+  assert.equal(end?.validation?.buildOutputPath, "/proj/x/dist/index.html");
+  assert.equal(end?.validation?.codeScores?.overall, 88);
+  assert.equal(end?.validation?.codeScores?.dimensions.layout, 80);
+});
+
 test("SelfCorrectionTracker: build_singlefile_html 의 중첩 .validation 도 읽는다", () => {
   const t = new SelfCorrectionTracker();
   t.observe(validateUse("b1", "mcp__nudge-ds__build_singlefile_html"));

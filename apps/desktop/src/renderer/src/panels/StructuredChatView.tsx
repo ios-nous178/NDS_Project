@@ -51,6 +51,12 @@ function resultFooter(m: Extract<ChatMessage, { kind: "result" }>): string {
 
 type DesignSpecMsg = Extract<ChatMessage, { kind: "design-spec" }>;
 type SpecNode = NonNullable<DesignSpecMsg["spec"]["tree"]>[number];
+type DesignScoreMsg = Extract<ChatMessage, { kind: "design-score" }>;
+
+const SCORE_FIX_PREFIX =
+  "🤖 LLM 품질 평가 피드백을 반영해서 고쳐줘 (새 컴포넌트 추가 말고 지적된 점만 개선 후 validate/build): ";
+/** 점수 → 색 (≥80 green · ≥60 yellow · 그 외 red). */
+const scoreColor = (n: number): string => (n >= 80 ? c.green : n >= 60 ? c.yellow : c.red);
 
 const APPROVE_TURN =
   "✅ 이 DesignSpec 을 승인합니다. 이 스펙 그대로 컴포넌트 가이드(target:'html') 확인 → index.html 작성 → validate_html_mockup(위반 0) → build_singlefile_html 까지 진행해줘.";
@@ -316,6 +322,121 @@ function DesignSpecCard({
   );
 }
 
+/** 점수 칩 한 줄(라벨 + 0~100, 색은 점수별). */
+function ScoreChips({ entries }: { entries: [string, number][] }): React.JSX.Element {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+      {entries.map(([label, n]) => (
+        <span
+          key={label}
+          style={{
+            fontSize: 10.5,
+            fontFamily: mono,
+            color: scoreColor(n),
+            border: `1px solid ${c.border}`,
+            borderRadius: 6,
+            padding: "1px 6px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {label} {n}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * D3 품질 스코어 카드 — D1 코드 점수(결정적) + D2 LLM 점수(정성). clean 빌드 후 1회 자동 표시.
+ * 점수 낮아도 자동 교정 안 함 — 라이브이고 LLM notes 가 있으면 '이 피드백으로 고치기' 버튼(수동 게이트).
+ */
+function DesignScoreCard({
+  m,
+  onAction,
+}: {
+  m: DesignScoreMsg;
+  onAction?: (text: string) => void;
+}): React.JSX.Element {
+  const code = m.codeScores;
+  const llm = m.llm;
+  const llmEntries: [string, number][] = llm.scores
+    ? (Object.entries(llm.scores) as [string, number][])
+    : [];
+  return (
+    <div
+      style={{
+        alignSelf: "stretch",
+        border: `1px solid ${c.border}`,
+        background: c.bgElevated,
+        borderRadius: 10,
+        padding: 12,
+        display: "flex",
+        flexDirection: "column",
+        gap: 9,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: c.text }}>📊 품질 점수</span>
+        {code && (
+          <span style={{ fontSize: 11, fontWeight: 700, color: scoreColor(code.overall) }}>
+            코드 {code.overall}
+          </span>
+        )}
+        {llm.ok && llm.overall != null && (
+          <span style={{ fontSize: 11, fontWeight: 700, color: scoreColor(llm.overall) }}>
+            · LLM {llm.overall}
+          </span>
+        )}
+      </div>
+
+      {code && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <span style={{ fontSize: 10.5, color: c.textFaint, fontFamily: mono }}>
+            코드 (D1 · 결정적)
+          </span>
+          <ScoreChips entries={Object.entries(code.dimensions) as [string, number][]} />
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <span style={{ fontSize: 10.5, color: c.textFaint, fontFamily: mono }}>LLM 정성 (D2)</span>
+        {llm.ok ? (
+          <>
+            <ScoreChips entries={llmEntries} />
+            {llm.notes && (
+              <div style={{ fontSize: 12, color: c.textMuted, lineHeight: 1.5 }}>{llm.notes}</div>
+            )}
+          </>
+        ) : (
+          <div style={{ fontSize: 11.5, color: c.textFaint, fontFamily: mono }}>
+            {llm.error ?? "LLM 채점 실패"}
+          </div>
+        )}
+      </div>
+
+      {onAction && llm.ok && llm.notes && (
+        <div style={{ borderTop: `1px solid ${c.borderSubtle}`, paddingTop: 9 }}>
+          <button
+            onClick={() => onAction(SCORE_FIX_PREFIX + llm.notes)}
+            style={{
+              ...btnReset,
+              padding: "6px 12px",
+              borderRadius: 6,
+              border: `1px solid ${c.border}`,
+              background: c.bg,
+              color: c.text,
+              cursor: "pointer",
+              fontSize: 12,
+            }}
+          >
+            이 피드백으로 고치기
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function MessageRow({
   m,
   isPending,
@@ -478,6 +599,8 @@ function MessageRow({
       );
     case "design-spec":
       return <DesignSpecCard m={m} isPending={isPending} onAction={onAction} />;
+    case "design-score":
+      return <DesignScoreCard m={m} onAction={onAction} />;
     default:
       return null;
   }

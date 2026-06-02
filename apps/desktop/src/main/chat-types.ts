@@ -67,7 +67,23 @@ export type ChatMessage =
   | { kind: "error"; text: string }
   // 하네스가 끼워넣는 시스템 안내(자동 자기교정 진행/소진 등). 에이전트 발화 아님.
   | { kind: "notice"; text: string; tone?: "info" | "warn" }
-  | DesignSpecCardMessage;
+  | DesignSpecCardMessage
+  | DesignScoreMessage;
+
+/** D3 품질 스코어 카드 — D1 코드 점수 + D2 LLM 점수. clean 빌드 후 1회 자동 채점해 보여준다. */
+export interface DesignScoreMessage {
+  kind: "design-score";
+  /** D1 결정적 코드 점수(차원별 0~100 + overall). 없으면 null. */
+  codeScores: CodeScores | null;
+  /** D2 독립 LLM 채점 결과(ux/interaction/flow/form). */
+  llm: {
+    ok: boolean;
+    overall?: number;
+    scores?: Record<string, number>;
+    notes?: string;
+    error?: string;
+  };
+}
 
 /**
  * NDJSON 라인 버퍼. stdout 청크는 라인 경계와 안 맞으므로(한 청크에 여러 줄 / 줄 중간이
@@ -392,11 +408,20 @@ export class DesignSpecTracker {
 }
 
 /** 한 턴의 검증 결과 요약(자동 자기교정 판단용). */
+export interface CodeScores {
+  overall: number;
+  dimensions: Record<string, number>;
+}
+
 export interface ValidationOutcome {
   hasErrors: boolean;
   errorCount: number;
   /** error severity 룰만 (rule + 발생 수). 교정 프롬프트에 나열. */
   errorRules: { rule: string; count: number }[];
+  /** D1 코드 품질 점수(차원별 0~100 + overall) — validate/build 결과의 scores 블록. */
+  codeScores?: CodeScores;
+  /** build_singlefile_html 산출물 경로 — clean 빌드 후 LLM 채점(D3) 대상. */
+  buildOutputPath?: string;
 }
 
 /** validate_html_mockup / build_singlefile_html tool_result(JSON) → ValidationOutcome. */
@@ -424,7 +449,18 @@ function parseValidationOutcome(resultText: string): ValidationOutcome | null {
         !!r && typeof r === "object" && (r as Record<string, unknown>).severity === "error",
     )
     .map((r) => ({ rule: String(r.rule ?? ""), count: typeof r.count === "number" ? r.count : 1 }));
-  return { hasErrors, errorCount, errorRules };
+  // D1 코드 점수(validate/build 의 scores 블록) + 빌드 산출물 경로(outputPath 는 build 결과 top-level).
+  const rawScores = v.scores as Record<string, unknown> | undefined;
+  let codeScores: CodeScores | undefined;
+  if (rawScores && typeof rawScores === "object" && typeof rawScores.overall === "number") {
+    const dims = rawScores.dimensions;
+    codeScores = {
+      overall: rawScores.overall,
+      dimensions: dims && typeof dims === "object" ? (dims as Record<string, number>) : {},
+    };
+  }
+  const buildOutputPath = typeof parsed.outputPath === "string" ? parsed.outputPath : undefined;
+  return { hasErrors, errorCount, errorRules, codeScores, buildOutputPath };
 }
 
 /**
