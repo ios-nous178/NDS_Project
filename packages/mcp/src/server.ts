@@ -30,18 +30,21 @@ import {
 import type { Catalog, Manifest, McpbManifest } from "./types/manifest.js";
 import { configureMockupValidator } from "./tools/mockup-validator.js";
 export { validateMockupSource } from "./tools/mockup-validator.js";
-import { configureHtmlValidator, validateHtmlMockup } from "./tools/html-validator.js";
-export { validateHtmlSource } from "./tools/html-validator.js";
+import {
+  configureHtmlValidator,
+  validateHtmlMockup,
+} from "@nudge-design/mockup-core/tools/html-validator";
+export { validateHtmlSource } from "@nudge-design/mockup-core/tools/html-validator";
 import {
   analyzeHtmlMockup,
   convertHtmlToDsHtml,
   reportHtmlMockupUsage,
-} from "./tools/html-analyzer.js";
-import type { AnalyzeHtmlMockupResult } from "./tools/html-analyzer.js";
-export { countHtmlUsage } from "./tools/html-analyzer.js";
-import { devServer, registerDevServerCleanup } from "./tools/preview.js";
+} from "@nudge-design/mockup-core/tools/html-analyzer";
+import type { AnalyzeHtmlMockupResult } from "@nudge-design/mockup-core/tools/html-analyzer";
+export { countHtmlUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
+import { devServer, registerDevServerCleanup } from "@nudge-design/mockup-core/tools/preview";
 import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
-import { buildSinglefileHtml } from "./tools/build-html.js";
+import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { getGuide } from "./tools/guides.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
