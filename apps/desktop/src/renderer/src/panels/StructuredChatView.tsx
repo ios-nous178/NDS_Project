@@ -262,7 +262,8 @@ function DesignSpecCard({
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
+                  // 한글(IME) 조합 중 Enter 는 글자 확정용 — isComposing 일 땐 전송하지 않는다(조각 전송 방지).
+                  if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                     e.preventDefault();
                     sendReject();
                   }
@@ -562,8 +563,10 @@ export function StructuredChatView({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
-            // Enter 전송 / Shift+Enter 줄바꿈.
-            if (e.key === "Enter" && !e.shiftKey) {
+            // Enter 전송 / Shift+Enter 줄바꿈. 단 한글(IME) 조합 중 Enter 는 글자 확정용이므로
+            // isComposing 일 땐 전송하지 않는다 — 안 막으면 조합 중 Enter 가 "하이" 같은 첫 조각만
+            // 보내고 나머지가 잘린다(조합 확정 Enter 와 전송 Enter 가 분리되도록).
+            if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
               e.preventDefault();
               send();
             }
