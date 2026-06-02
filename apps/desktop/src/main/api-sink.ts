@@ -2,7 +2,8 @@
  * nudge-design-api(로컬 채팅/리뷰 DB) 로 내보내는 **best-effort 싱크**.
  *
  * 로컬-퍼스트 계약 유지:
- *  - 기본 ON(localhost:3000). 끄려면 `NUDGE_API_LOG=0`. 다른 서버로 보내려면 `NUDGE_API_URL`.
+ *  - 기본 ON + 기본 API 서버(localhost:3000)로 기본 주소로 전송. 끄려면 `NUDGE_API_LOG=0`,
+ *    주소 바꾸려면 `NUDGE_API_URL` 또는 아래 DEFAULT_API_URL 한 줄.
  *  - fire-and-forget + 절대 throw 안 함. 서버가 꺼져 있어도 조용히 무시(에이전트 UX 영향 0).
  *  - 로컬 JSONL 이 여전히 SSOT. 이건 그 위에 얹는 보조 sink 일 뿐.
  *
@@ -22,7 +23,11 @@ import type { FeedbackEntry } from "@nudge-design/mockup-core";
 // 기본 ON. 끄려면 NUDGE_API_LOG=0 (또는 false/off/no). best-effort 라 서버 꺼져 있어도 무해.
 const RAW_FLAG = process.env.NUDGE_API_LOG;
 const ENABLED = !["0", "false", "off", "no"].includes((RAW_FLAG ?? "").toLowerCase());
-const BASE_URL = (process.env.NUDGE_API_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+
+// ⚠️ 임시 하드코딩: 기본 API 서버 주소. env 없이도 기본 주소로 보낸다.
+//    나중에 도메인/설정 UI 로 바꿀 예정. 그때까지는 이 한 줄만 고치면 됨(또는 NUDGE_API_URL 로 덮어쓰기).
+const DEFAULT_API_URL = "http://localhost:3000";
+const BASE_URL = (process.env.NUDGE_API_URL ?? DEFAULT_API_URL).replace(/\/+$/, "");
 
 function safeUser(): string {
   try {
