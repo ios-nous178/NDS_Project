@@ -7,8 +7,8 @@ EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 5개 브랜드: **T
 외부 프로젝트(npm 으로 DS 를 소비하는 쪽)에서 적용되는 작업 규칙은 모두 **MCP 가 SSOT** 입니다.
 이 모노레포의 CLAUDE.md 에는 DS 사용 규칙을 중복 작성하지 않습니다. 규칙을 바꾸려면 아래 파일을 수정하세요.
 
-- `packages/mcp/src/server.ts` — `getClaudeMdTemplate` (외부 프로젝트가 받는 CLAUDE.md 본문)
-- `packages/mcp/src/guides.ts` — 컴포넌트 / 패턴 / 원칙 / 어드민 가이드 본문
+- `packages/mcp/src/tools/guides.ts` — `getClaudeMdTemplate` (외부 프로젝트가 받는 CLAUDE.md 본문)
+- `packages/mcp/src/guides.ts` — 컴포넌트 / 패턴 / 원칙 / 어드민 가이드 본문 (`COMPONENT_GUIDES` / `PATTERN_GUIDES` / `DESIGN_PRINCIPLES` / `ADMIN_CMS_GUIDE`)
 
 작업 중 규칙을 직접 확인해야 하면 MCP 도구 호출:
 
@@ -46,8 +46,9 @@ Windows: PowerShell 권장. `pnpm` 설치 시 실행 정책 문제가 나면
 packages/react/src/     ← DS 컴포넌트 (.tsx) — Props 는 여기서 확인
 packages/tokens/src/    ← 디자인 토큰
 packages/mcp/src/       ← MCP 서버 (외부 프로젝트가 받는 가이드 SSOT)
-  server.ts             ← getClaudeMdTemplate (get_setup({ step: 'claude-md' }) 본문)
-  guides.ts             ← 컴포넌트 / 패턴 / 원칙 / 어드민 가이드
+  server.ts             ← MCP 서버 엔트리 (툴 등록 / find_token / suggest_replacement 등)
+  tools/guides.ts       ← getClaudeMdTemplate (get_setup({ step: 'claude-md' }) 본문) + get_guide
+  guides.ts             ← 컴포넌트 / 패턴 / 원칙 / 어드민 가이드 본문
 apps/storybook/         ← 스토리북 (DS 컴포넌트 데모용)
 DESIGN.md               ← 디자인 토큰 YAML 정의
 ```
