@@ -6318,7 +6318,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**03 FilterBar**: 테이블 위 한 줄(`pattern:action-row`) — Search Input + Dropdown 필터(상태 등) + 기간(DateRange). 카드 형태: radius **12px**, padding **20/24**.",
       "**04 Table**: 헤더 행 + 데이터 행. 헤더 행 배경 `--semantic-bg-surface-subtle`(#FAFAFA). 카드 radius **12px**, Row padding **16/24**, Row 사이 **1px border `#F5F5F5`**. 컬럼은 균등 또는 flex.",
       "**행 셀 컴포넌트**: 썸네일(이미지 컬럼) + 핵심 텍스트(클릭 시 Detail 진입 — 링크색) + **상태 = Badge**(진행중=success/green · 진행예정=subtle · 종료=neutral gray) + 숫자 컬럼 우측 정렬 + **노출 = Toggle**(노출 on green / 미노출 off) + **관리 = 수정(pencil)·삭제(trash) 아이콘 액션**. 상태를 raw 텍스트로, 노출을 체크박스로 만들지 않는다.",
-      "**05 Pagination**: 중앙 정렬 페이지 번호, 버튼 **32×32**, 현재 페이지 강조 fill. 우측에 페이지 사이즈 셀렉트('10개씩 보기') 배치 가능.",
+      "**05 Pagination**: 중앙 정렬 페이지 번호, 버튼 **32×32**, **현재 페이지 = 검정(neutral 900 / #111) fill + 흰 텍스트**(brand yellow 아님 — 노랑은 활성/선택 강조용이라 페이지네이션 현재 페이지와 시각 충돌). 우측에 페이지 사이즈 셀렉트('10개씩 보기') 배치 가능.",
       "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(대시보드와 동일 LNB).",
       "**Validate**: ① Row > 50 → 페이지네이션 필수 / ≤ 10 → 페이지네이션 생략. ② 필터 > 4개 → 필터 패널 분리(좌측 또는 상단 collapsible). ③ Row 클릭 액션 있으면 → 행 hover effect + cursor pointer. ④ Empty state 필수 → '등록된 OOO이 없습니다' + CTA. ⑤ 정렬 가능 컬럼 → Header 셀에 화살표 아이콘.",
     ],
@@ -6329,6 +6329,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "헤더에 '등록하기' 외 primary 액션 여러 개",
       "Empty state 를 빈 테이블로 방치 — '등록된 OOO이 없습니다' + CTA 필수",
       "FilterBar/Table radius 를 12px 외로 · 헤더 행 배경 누락",
+      "페이지네이션 현재 페이지를 brand yellow fill 로 — 현재 페이지는 검정(#111) fill + 흰 텍스트",
     ],
     examples: [
       {
@@ -6359,7 +6360,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         "썸네일 + 링크 텍스트 + 상태 Badge + 숫자(우측정렬) + 노출 Toggle + 관리(수정/삭제 아이콘)",
       statusBadge: "진행중=success · 진행예정=subtle · 종료=neutral",
       pagination:
-        "중앙 정렬 · 버튼 32×32 · 현재 페이지 강조 fill (docs spec=Yellow/500; pattern 렌더는 검정 fill — 디자이너 확인 여지)",
+        "중앙 정렬 · 버튼 32×32 · 현재 페이지 = 검정(#111) fill + 흰 텍스트 (brand yellow 아님)",
       pageSizeSelect: "'10개씩 보기' 셀렉트 (우측)",
       validatePaginationThreshold: "Row > 50 필수 / ≤ 10 생략",
       validateFilterThreshold: "필터 > 4 → 패널 분리",
