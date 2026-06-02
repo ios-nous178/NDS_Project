@@ -220,6 +220,12 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     },
   );
 
+  // 인터랙티브 검증(파일 열기/저장 시 UI 패널용). HTML 룰 셋만 돌린다 — TSX 목업은 하네스 범위 밖이고,
+  // 필요하면 에이전트가 번들 MCP 서브프로세스의 validate_html_mockup 으로 닿는다(catalog-config 주석 참고).
+  // 의도적으로 MCP 핸들러의 report(Google Sheets usage POST)·withStats(analyze) 를 붙이지 않는다:
+  // DS 사용량 보고의 단일 'ship moment' 은 Export(export-runner → reportHtmlMockupUsage)다. 파일 열 때마다
+  // 검증이 자동 POST 하면 같은 목업이 사용량 행을 중복 적재한다. cwd 는 filePath 의 dirname 으로 자동 폴백되어
+  // nudge.surface/nudge.brand 마커를 그대로 읽으므로 별도 전달 불필요.
   ipcMain.handle(
     "validate:run",
     async (_e, args: { filePath: string }): Promise<ValidateHtmlMockupResult> => {

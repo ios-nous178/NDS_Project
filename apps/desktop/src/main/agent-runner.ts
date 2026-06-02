@@ -15,7 +15,7 @@ import { spawn as ptySpawn, type IPty } from "node-pty";
 import { app, Notification, BrowserWindow, type WebContents } from "electron";
 import { getAugmentedPath, getToolProcessEnv } from "@nudge-design/mockup-core";
 import { logAppEvent } from "./events.js";
-import { ensureBundledMcpConfig } from "./mcp-config.js";
+import { codexMcpConfigArgs, ensureBundledMcpConfig } from "./mcp-config.js";
 import {
   appendStructuredTranscript,
   appendTranscript,
@@ -212,6 +212,9 @@ const DS_SYSTEM_MANDATE = [
   "- 색/여백은 find_token (시멘틱 --semantic-* / --nds-* 만, raw hex 금지).",
   "- 아이콘은 find_icon({query})로 찾고 find_icon({name})으로 붙여넣을 inline svg 를 받으세요(npm 설치 불필요). 이모지/텍스트 기호 금지.",
   "- HTML 목업은 <nds-*> 커스텀 엘리먼트 사용. 변경 후 반드시 validate_html_mockup 으로 위반 0 까지 검증.",
+  // 완료 게이트 — MCP getClaudeMdTemplate 의 '## Completion Gate' 미러(동기 유지). 빌드 자체는 validator
+  // 규칙(ds-badge-missing)과 webhook 자동 발사로 강제되지만, 그 상태를 사용자에게 '보고'하게 못박는다.
+  "- 완료 시 응답에 게이트 보고: ① 적용한 시각 레퍼런스, ② 풋터 DS 뱃지(<span data-ds-badge>…</span> — 직접 세지 말고 build/validate 응답의 dsUsageSummary 사용), ③ Google Sheets POST 상태(webhook ok/queued/skipped).",
   "DS 규칙을 모를 때 클래스/스타일/컴포넌트를 임의로 지어내지 말고 항상 MCP 로 조회하세요.",
 ].join("\n");
 
@@ -553,8 +556,12 @@ export function startAgent(
   }
 
   const isClaude = args.agentType === "claude";
-  // --mcp-config(앱 동봉 nudge-ds MCP, claude 전용) — resume 레시피에 "MCP 붙였나"로도 기록한다.
+  // 앱 동봉 nudge-ds MCP 주입 — claude 는 --mcp-config(json 파일), codex 는 -c mcp_servers.*
+  // config override 로 같은 번들 서버를 얹는다(둘 다 비-strict 추가형). resume 레시피에 "MCP 붙였나"로도 기록.
   const mcpConfig = isClaude ? ensureBundledMcpConfig() : null;
+  // codex 전용 -c 인자(전역 옵션 → prompt/resume 보다 앞에 배치). 번들 없으면 [].
+  const codexMcpArgs = isClaude ? [] : codexMcpConfigArgs();
+  const hasMcp = isClaude ? Boolean(mcpConfig) : codexMcpArgs.length > 0;
   const cwd = args.cwdOverride ?? args.projectPath;
 
   // resume v1 레시피 — 같은 컨텍스트로 재구동하기 위한 최소 기록. claude 는 우리 sessionId 가 곧
@@ -566,12 +573,12 @@ export function startAgent(
         // 실패해도 포인터를 잃지 않는다). 레시피는 현재 spawn 기준으로 갱신.
         agentSessionId: args.resume.agentSessionId,
         agentSessionFile: args.resume.agentSessionFile,
-        recipe: { mcpConfig: Boolean(mcpConfig), appendSystemPrompt: isClaude },
+        recipe: { mcpConfig: hasMcp, appendSystemPrompt: isClaude },
         snapshotVersion: SNAPSHOT_VERSION,
         appVersion: app.getVersion(),
       }
     : {
-        recipe: { mcpConfig: Boolean(mcpConfig), appendSystemPrompt: isClaude },
+        recipe: { mcpConfig: hasMcp, appendSystemPrompt: isClaude },
         snapshotVersion: SNAPSHOT_VERSION,
         appVersion: app.getVersion(),
         // claude 는 우리 id 가 곧 네이티브 id, store 경로 결정적 → 지금 박는다. codex 는 onExit 캡처.
@@ -622,9 +629,10 @@ export function startAgent(
     payload: { agentType: args.agentType },
   });
 
-  // claude 전용 플래그(아래 claudeFlags): --mcp-config(앱 동봉 nudge-ds MCP, 비-strict 추가형) +
-  // --append-system-prompt(DS 사용 의무 주입). codex 는 둘 다 없이 워크스페이스 AGENTS.md 로 컨텍스트.
-  // (isClaude/mcpConfig/cwd 는 위 resume 레시피 계산에서 이미 선언됨.)
+  // 컨텍스트 플래그 — claude: --mcp-config + --append-system-prompt(아래 claudeContextFlags).
+  // codex: -c mcp_servers.*(위 codexMcpArgs)로 MCP 를 얹고, DS 사용 의무는 워크스페이스 AGENTS.md
+  // (intake bootstrapDoc)로 전달한다(codex 는 --append-system-prompt 등가 플래그가 없음).
+  // (isClaude/mcpConfig/codexMcpArgs/cwd 는 위 resume 레시피 계산에서 이미 선언됨.)
 
   // 구조화(stream-json) transport 는 PTY 가 아니라 piped child_process 로 분기. createSession/
   // agent_started 로그는 위에서 이미 공통으로 처리됨 — 여기선 spawn + 이벤트 배선만.
@@ -642,10 +650,8 @@ export function startAgent(
     : [];
   // 신규 세션만 --session-id 로 우리 id 를 claude 네이티브 id 로 못 박는다(resume v1 토대) — 그러면
   // `claude --resume <sessionId>` 로 이어갈 수 있다(`~/.claude/projects/<dashed-cwd>/<id>.jsonl`).
-  // resume 모드는 leadArgs 의 --resume(claude) / resume(codex) 이 세션을 지정하므로 --session-id 금지(충돌).
-  const claudeFlags = args.resume
-    ? claudeContextFlags
-    : [...setSessionIdArgsFor(args.agentType, args.sessionId), ...claudeContextFlags];
+  // codex 는 [](=사후 캡처). resume 모드는 leadArgs 의 --resume/resume 이 세션을 지정하므로 금지(충돌).
+  const sessionIdArgs = args.resume ? [] : setSessionIdArgsFor(args.agentType, args.sessionId);
 
   // 시드 프롬프트가 있으면 positional 인자로 얹는다(claude [prompt] / codex [PROMPT] → 인터랙티브 유지).
   // ⚠️ `--mcp-config <configs...>` 는 가변 인자라 바로 뒤의 prompt 를 두 번째 config 로 삼킨다.
@@ -674,7 +680,16 @@ export function startAgent(
       ? [args.initialPrompt]
       : [];
 
-  const ptyArgs = [...leadArgs, ...spec.args, ...claudeFlags, ...turnHook.settingsArgs];
+  // codex 의 -c 는 전역 옵션이라 leadArgs(prompt/`resume`) **앞**에, claude 플래그는 prompt **뒤**에
+  // 둔다(가변 --mcp-config 가 prompt 를 삼키지 않도록). codexMcpArgs/claudeContextFlags 는 서로 배타적.
+  const ptyArgs = [
+    ...codexMcpArgs,
+    ...leadArgs,
+    ...spec.args,
+    ...sessionIdArgs,
+    ...claudeContextFlags,
+    ...turnHook.settingsArgs,
+  ];
 
   // Windows: .cmd/.bat 은 실행 파일이 아니라 CreateProcess 로 직접 spawn 불가 →
   // cmd.exe /c 로 감싼다. .exe 는 그대로 직접 spawn (가장 견고).
