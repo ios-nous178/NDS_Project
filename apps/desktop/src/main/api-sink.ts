@@ -2,7 +2,7 @@
  * nudge-design-api(로컬 채팅/리뷰 DB) 로 내보내는 **best-effort 싱크**.
  *
  * 로컬-퍼스트 계약 유지:
- *  - 기본 OFF. 환경변수 `NUDGE_API_LOG` 가 설정됐을 때만 활성(미설정 시 모든 함수 no-op).
+ *  - 기본 ON(localhost:3000). 끄려면 `NUDGE_API_LOG=0`. 다른 서버로 보내려면 `NUDGE_API_URL`.
  *  - fire-and-forget + 절대 throw 안 함. 서버가 꺼져 있어도 조용히 무시(에이전트 UX 영향 0).
  *  - 로컬 JSONL 이 여전히 SSOT. 이건 그 위에 얹는 보조 sink 일 뿐.
  *
@@ -19,8 +19,9 @@ import type { ChatSession } from "./sessions.js";
 import type { ChatMessage } from "./chat-types.js";
 import type { FeedbackEntry } from "@nudge-design/mockup-core";
 
+// 기본 ON. 끄려면 NUDGE_API_LOG=0 (또는 false/off/no). best-effort 라 서버 꺼져 있어도 무해.
 const RAW_FLAG = process.env.NUDGE_API_LOG;
-const ENABLED = !!RAW_FLAG && RAW_FLAG !== "0" && RAW_FLAG.toLowerCase() !== "false";
+const ENABLED = !["0", "false", "off", "no"].includes((RAW_FLAG ?? "").toLowerCase());
 const BASE_URL = (process.env.NUDGE_API_URL ?? "http://localhost:3000").replace(/\/+$/, "");
 
 function safeUser(): string {
