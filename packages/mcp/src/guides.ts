@@ -1243,7 +1243,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Sidebar: {
     name: "Sidebar",
     examplesHtml: {
-      do: '<nds-sidebar active-key="home" width="240"\n  items=\'[{"key":"home","label":"홈","icon":"home"},{"key":"chat","label":"상담","icon":"chat"}]\'\n  title="NudgeEAP"></nds-sidebar>\n<script>el.addEventListener("item-click", e => navigate(e.detail.key));</script>',
+      do: '<nds-sidebar active-key="home" width="240"\n  items=\'[{"key":"home","label":"홈","icon":"<svg ...>...</svg>"},{"key":"chat","label":"상담","icon":"<svg ...>...</svg>"}]\'\n  title="NudgeEAP"></nds-sidebar>\n<!-- icon = find_icon({name}) 가 준 inline SVG 문자열을 그대로. 이름("home")을 넣으면 innerHTML 이라 텍스트로 흘러나옴. items 는 JSON 속성이라 SVG의 " 는 \\" 로 이스케이프 -->\n<script>el.addEventListener("item-click", e => navigate(e.detail.key));</script>',
       dont: "<!-- 일반 어드민/CMS(=antd 영역)에서 nds-sidebar 사용 — 일반 어드민은 antd Layout.Sider. -->\n<!-- ★ 단, 캐포비(cashwalk-biz) 어드민은 정반대 — nds-sidebar 가 정답이다 (DS 자체 admin DS). 아래 pitfalls 참고 -->\n<nds-sidebar items='...'></nds-sidebar>",
     },
     summary:
@@ -1256,7 +1256,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "items prop 은 flat SidebarItem[] 또는 SidebarSection[] 둘 다 받지만, **섹션 라벨이 필요하면** SidebarSection[] 으로 넘길 것. flat 배열 안에 빈 객체로 'spacer' 만들지 말 것.",
       "활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.",
       "캐시워크 포 비즈니스 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
-      "GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 get_brand({ brand:'<slug>' }).brandIcons 참조.",
+      '**★ HTML `<nds-sidebar>` 의 item `icon` = inline SVG 문자열 (이름 아님).** `icon` 은 innerHTML 로 주입되므로 `"icon":"home"` 이나 `"icon":"CashwalkBizGnbBannerIcon"` 처럼 **이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자). 절차: `find_icon({ name })` → 반환 inline SVG 를 `icon` 에 주입. React `<Sidebar>` 의 `icon?: ReactNode`(엘리먼트)와 대칭일 뿐, **HTML 목업이라 아이콘이 안 된다는 건 사실이 아니다**(런타임 한계 X). `items` 가 JSON 속성이라 SVG 안 `"` 는 `\\"` 로 이스케이프.',
+      "GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 get_brand({ brand:'<slug>' }).brandIcons 참조. (이때 얻은 이름을 그대로 HTML icon 에 넣지 말고 find_icon 으로 SVG 를 받아 주입.)",
       "서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).",
       "collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).",
       "footer 와 user 를 동시에 주면 footer 가 우선. user 는 'avatar + 이름 + 역할' 정형 패턴 단축이라 footer 가 있으면 무시.",
@@ -5907,6 +5908,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**브랜드 토큰만 사용**: 색/보더/배경은 nds-shell 계열이 이미 `--semantic-bg-surface-default` / `--semantic-border-normal-default` / `--semantic-text-strong-default` 등을 참조. raw hex 또는 `var(--semantic-*)` 인라인 override 금지 — 브랜드 스왑 시 깨짐.",
       "**Aside / sticky** 가 자체 white card 가 필요하면 → `<nds-section>` 으로 감싸기. 별도 `.aside { background: ...; border: 1px solid ...; border-radius: ...; padding: 24px; }` 를 새로 정의 금지 (nds-section 의 의도된 중복).",
       "**Validator 강제**: html-validator 가 `<style>` 블록의 raw shell 패턴을 `raw-shell-pattern: error` 로 차단. 의도된 예외(예: 마케팅 랜딩의 hero 등 admin shell 이 아닌 layout) 만 별도 클래스명 (`.lp-hero` 등 nds- 접두 회피) + 인라인 토큰 사용으로 우회.",
+      '**사이드바 아이콘 = inline SVG (이름 아님)**: `<nds-sidebar items=\'[...]\'>` 의 각 item `icon` 필드는 **innerHTML 로 주입되는 raw SVG 마크업**이다. `"icon":"CashwalkBizGnbBannerIcon"` 처럼 **아이콘 이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자로 흘러나옴). 올바른 절차: `find_icon({ name })` → 반환된 inline SVG 문자열을 `icon` 에 넣는다. `icon` 은 React `<Sidebar>` 의 `icon?: ReactNode` 와 대칭 — HTML 은 SVG 문자열, React 는 엘리먼트. **HTML 목업이라 사이드바가 라벨 전용이라는 건 사실이 아니다**(런타임 한계 아님). `items` 는 JSON 속성이므로 SVG 안의 `"` 는 `\\"` 로 이스케이프할 것.',
     ],
     avoid: [
       '`<style>` 안에 `.page { display: grid; grid-template-columns: 240px 1fr }` 직접 정의 — `class="nds-shell"` 사용',
@@ -5918,11 +5920,15 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "nds-form-row__label 폰트/색을 다시 정의 — semantic 토큰 의도 깨짐. 폭만 바꾸려면 `--nds-form-row-label-width`",
       "어드민 페이지 1개 안에서 nds-shell 클래스 + raw shell CSS 혼용 (drift 보장)",
       "raw `<header>` / `<main>` / `<aside>` 만 사용하고 nds-shell 클래스 미부여 — landmark 의미는 그대로 두되 클래스로 visual contract 보장",
+      'nds-sidebar item `icon` 에 아이콘 이름(`"CashwalkBizGnbBannerIcon"`)을 넣기 — innerHTML 이라 텍스트로 흘러나옴. find_icon 의 inline SVG 문자열을 넣을 것',
+      "아이콘이 안 박힌다고 사이드바를 라벨 전용으로 두고 'HTML 런타임 한계'로 결론내리기 — icon=inline SVG 로 정상 렌더됨",
     ],
     metrics: {
       requiredImport: "@nudge-design/styles/styles.css",
       pageShellClass: "nds-shell",
       sidebarClass: "nds-shell__sidebar",
+      sidebarIcon:
+        'nds-sidebar item.icon = inline SVG (find_icon 결과 주입, 이름 아님 — innerHTML) · React Sidebar 는 icon?:ReactNode 로 대칭 · JSON 속성이라 SVG의 " 는 이스케이프',
       mainClass: "nds-shell__main",
       topbarClass: "nds-shell__topbar (+ -title-group / -title / -subtitle / -actions)",
       tabsClass: "nds-shell__tabs",
