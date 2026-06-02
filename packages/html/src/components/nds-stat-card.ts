@@ -83,12 +83,14 @@ export class NdsStatCard extends NdsElement {
   private _createHeader(): HTMLDivElement {
     const header = document.createElement("div");
     header.className = ST_HEADER_CLASS;
-    const iconText = this.getAttribute("icon");
-    if (iconText) {
+    // icon 속성 = inline SVG 마크업 (find_icon 결과). React StatCard 의 icon?:ReactNode 와 대칭.
+    // 이름/이모지를 넣으면 그대로 텍스트로 흘러나오므로 innerHTML 로 SVG 를 주입한다. (nds-sidebar 와 동일 규약)
+    const iconSvg = this.getAttribute("icon");
+    if (iconSvg) {
       const icon = document.createElement("span");
       icon.className = ST_ICON_CLASS;
       icon.setAttribute("aria-hidden", "true");
-      icon.textContent = iconText;
+      icon.innerHTML = iconSvg;
       header.appendChild(icon);
     }
     header.appendChild(createSpan(ST_LABEL_CLASS, this.attr("label", "")));

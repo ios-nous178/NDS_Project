@@ -11,7 +11,11 @@ describe("nds-stat-card", () => {
   it("renders label, icon, value, unit, delta, and description", async () => {
     const el = document.createElement("nds-stat-card");
     el.setAttribute("label", "완료율");
-    el.setAttribute("icon", "chart");
+    // icon = inline SVG 마크업 (find_icon 결과) — 이름/이모지 아님, innerHTML 로 주입
+    el.setAttribute(
+      "icon",
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z" /></svg>',
+    );
     el.setAttribute("value", "84");
     el.setAttribute("unit", "%");
     el.setAttribute("delta", "+12%");
@@ -23,7 +27,8 @@ describe("nds-stat-card", () => {
     const root = el.querySelector(".nds-stat-card") as HTMLElement;
     const delta = el.querySelector(".nds-stat-card__delta") as HTMLElement;
     expect(root.dataset.slot).toBe("root");
-    expect(el.querySelector(".nds-stat-card__icon")?.textContent).toBe("chart");
+    // icon 은 innerHTML 로 주입된 inline SVG → svg 엘리먼트로 렌더 (이름/이모지가 텍스트로 흘러나오지 않음)
+    expect(el.querySelector(".nds-stat-card__icon svg")).toBeTruthy();
     expect(el.querySelector(".nds-stat-card__label")?.textContent).toBe("완료율");
     expect(el.querySelector(".nds-stat-card__value strong")?.textContent).toBe("84");
     expect(el.querySelector(".nds-stat-card__unit")?.textContent).toBe("%");
