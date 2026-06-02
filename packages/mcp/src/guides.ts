@@ -6008,4 +6008,530 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "시각 레퍼런스가 없는 상태에서 방향 선택만으로 구현/빌드 진행",
     ],
   },
+
+  "design-spec": {
+    name: "design-spec",
+    summary:
+      "prompt → **DesignSpec(JSON)** → code 의 경량 중간표현. 복잡/다단계 화면이거나 사용자와 구성 합의가 필요할 때, HTML 작성 전에 save_design_spec 으로 의도 스펙을 만들고 ok:true + 사용자 동의 후 build_singlefile_html 로 진행(soft 승인 게이트). 추적성·정밀편집·코드前 검증을 얻는다.",
+    rules: [
+      "언제 쓰나: 다화면/복잡 플로우, 컴포넌트 선택이 모호, 또는 사용자가 화면 구성에 합의하고 싶을 때. 단순 단일 화면이면 생략하고 바로 HTML 로 가도 된다(과한 절차 강제 금지).",
+      "스펙은 '의도'만 담는다: 컴포넌트 트리(시멘틱 이름), 참조할 시멘틱 토큰 '이름', brand/surface, 그리고 결정 근거(rationale). 좌표·resolved 색·px·이미지 바이트는 담지 않는다 — 그건 코드→Figma scene.json(역방향 추출) 담당이다.",
+      "토큰은 시멘틱 only: tokens[] 에는 '--semantic-*' 같은 토큰 이름만. raw hex/rgb 금지(raw-hex-token error). raw 팔레트(--color-blue-500 등)는 warn — --semantic-* 우선.",
+      "save_design_spec 은 카탈로그 기준으로 자동 검증한다(브랜드 실재·토큰 존재·prop enum·컴포넌트 존재). ok:false 면 violations 를 고쳐 재저장한 뒤, ok:true 가 되어야 빌드로 넘어간다(validate-before-code).",
+      "저장한 스펙을 사용자에게 한 번 보여주고 동의를 받은 뒤 build_singlefile_html 로 HTML 을 만든다(soft gate). 스펙과 다른 화면을 임의로 만들지 않는다.",
+      "component 는 PascalCase('Button') 또는 nds-tag('nds-button') 둘 다 허용 — scene.ts(코드→Figma)의 ndsTagToComponentName 어휘를 공유하므로, 정방향 스펙과 역방향 scene 을 컴포넌트 정체성으로 JOIN 할 수 있다.",
+      "ui-direction-proposal 로 방향이 정해졌으면 그 방향을 DesignSpec 으로 구체화한다(두 패턴은 상호 보완 — 방향 합의 → 스펙 고정 → 빌드).",
+      "시각 레퍼런스 게이트가 더 우선이다. references.md(Figma/스크린샷)가 없으면 스펙은 만들 수 있어도 build 는 레퍼런스를 받은 뒤 진행한다.",
+    ],
+    metrics: {
+      file: "design-spec.json",
+      blocksCode: false,
+      semanticTokensOnly: true,
+    },
+    examples: [
+      {
+        verdict: "good",
+        source:
+          '{ "screen": { "brand": "geniet", "surface": "app", "intent": "리뷰 상세 — 평점·본문·도움돼요" }, "tree": [ { "component": "Card", "role": "리뷰 본문", "tokens": ["--semantic-bg-default","--semantic-text-default"], "children": [ { "component": "Button", "role": "primary CTA", "props": { "color": "secondary" }, "rationale": "Geniet secondary = dark inverse" } ] } ], "decisions": ["primary CTA 1개만", "raw hex 없음 — 전부 --semantic-*"] }',
+        caption:
+          "의도·컴포넌트·시멘틱 토큰 이름·근거만. 좌표/색값/px 없음. component 는 DS 이름 또는 nds-tag.",
+      },
+      {
+        verdict: "bad",
+        source:
+          '{ "tree": [ { "component": "Button", "props": { "background": "#1A1A1A" }, "x": 24, "y": 600 } ] }',
+        caption:
+          "좌표(x/y)·raw hex 를 스펙에 넣으면 scene.json 열화판이 된다. screen(brand/surface/intent)·근거 누락. → raw-hex-prop error.",
+      },
+    ],
+    avoid: [
+      "단순 단일 화면에도 매번 스펙을 강제(과한 절차)",
+      "스펙에 좌표·resolved 색·px·이미지를 담기(그건 scene.json 몫)",
+      "tokens 에 raw hex/rgb 또는 카탈로그에 없는 토큰 이름",
+      "save_design_spec 이 ok:false 인데 그대로 build 로 진행",
+      "스펙만 만들고 사용자 동의 없이 빌드 / 스펙과 다른 HTML 작성",
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // 캐시워크 포 비즈니스 어드민 Page Pattern System (골격 — Figma 실측 대기)
+  //
+  // 캐포비 어드민 화면은 등록/수정/목록/상세/통계 안에서 반복된다. 개별 컴포넌트를
+  // 계속 추가하는 대신 "페이지 패턴 → 섹션 → 조립 규칙" 을 먼저 정의하고 그 위에
+  // 컴포넌트를 끼우는 방식. 5개 패턴(Onboarding / Dashboard / List / Detail / Form)
+  // 으로 표준화.  Figma 파일 7dCJU5lNPfgcAjFPwbbLIu (🗄️ 캐포비 - Library → 📐 Page
+  // Pattern), 각 패턴은 docs 노드 + pattern 노드 한 쌍.
+  //
+  // ⚠️ 아래 5개는 **골격** 이다. rules/metrics 의 정확한 px·색·간격은 Figma 노드
+  //    실측으로 채워야 한다(순차 업데이트 2단계). 현재 rules 는 Slack 정리본의 구성
+  //    슬롯 수준만 담는다. 채우기 전까지 metrics.status = "skeleton".
+  // ───────────────────────────────────────────────────────────────────────
+  "cashwalk-biz-page-patterns": {
+    name: "cashwalk-biz-page-patterns",
+    summary:
+      "**[Page Pattern System 오버뷰]** 캐시워크 포 비즈니스 어드민 화면을 5개 페이지 패턴으로 표준화 — Onboarding / Dashboard / List / Detail / Form. " +
+      "개별 컴포넌트부터 쌓지 말고 'PRD → 페이지 패턴 매핑 → 섹션 구조화 → 패턴 내 반복 컴포넌트 조립' 순서로 화면을 만든다. " +
+      "패턴별 상세는 `pattern:cashwalk-biz-page-{onboarding|dashboard|list|detail|form}`. 필드/CTA/입력 단위 실측은 `pattern:cashwalk-biz-form-layout` · `pattern:cashwalk-biz-button` · `pattern:cashwalk-biz-input`, shell 보일러플레이트는 `pattern:admin-shell`. " +
+      "Figma 7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern).",
+    rules: [
+      "**먼저 패턴을 고른다**: 새 어드민 화면을 받으면 PRD 의 목적을 5개 패턴 중 하나로 먼저 분류한다 — 로그인/계정복구=Onboarding, 통계/요약 홈=Dashboard, 목록·검색=List, 단건 상세/탭=Detail, 등록·수정=Form. 분류 없이 컴포넌트부터 배치하지 않는다.",
+      "**조립 순서 고정**: ① 페이지 패턴 선택 → ② 패턴의 섹션 슬롯 채우기(섹션 단위 구조화) → ③ 섹션 안 반복 컴포넌트(테이블·필터·필드·차트)를 DS 컴포넌트로 조립 → ④ validate. 역순(컴포넌트 먼저)으로 가면 패턴 일관성이 깨진다.",
+      "**shell 은 공통**: 모든 패턴은 사이드바 + topbar + content 의 `admin-shell`(nds-shell 계열) 위에 얹힌다. 패턴은 content 영역의 섹션 구성만 정의한다 — raw shell CSS 재정의 금지(`pattern:admin-shell`).",
+      "**한 화면 = 한 패턴**: 한 페이지에 List + Form 을 섞지 않는다. 인라인 등록이 필요하면 List 안의 모달/드로어로 Form 패턴을 띄우되, 패턴 경계는 유지한다.",
+      "**필드/버튼/입력 실측은 위임**: 페이지 패턴은 '무엇이 어디에' 까지만 정의. 라벨 컬럼·필드 높이·CTA 알약 같은 px 단위는 `cashwalk-biz-form-layout` / `cashwalk-biz-button` / `cashwalk-biz-input` 가 SSOT.",
+    ],
+    avoid: [
+      "패턴 분류 없이 컴포넌트부터 화면에 배치",
+      "한 페이지에 두 패턴(예: 목록 + 등록 폼)을 한 흐름으로 섞기",
+      "페이지 패턴 가이드 안에 필드 높이·CTA px 같은 컴포넌트 단위 실측을 중복 정의 (cashwalk-biz-* 컴포넌트 가이드가 SSOT)",
+      'admin-shell 대신 raw <div class="page"> + grid CSS 로 shell 직접 작성',
+    ],
+    metrics: {
+      status: "skeleton — Figma 실측 대기",
+      patternCount: 5,
+      patterns: "onboarding / dashboard / list / detail / form",
+      figmaFile: "7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern)",
+      assemblyOrder: "① 패턴 선택 → ② 섹션 구조화 → ③ 컴포넌트 조립 → ④ validate",
+      relatedPatterns:
+        "cashwalk-biz-page-{onboarding,dashboard,list,detail,form}, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-button, cashwalk-biz-input",
+    },
+    references: [
+      {
+        label: "Onboarding docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-792",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Onboarding pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3611-2",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Dashboard docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-855",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Dashboard pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "List docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-915",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "List pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Detail docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-978",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Detail pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3614-367",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Form docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-1041",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Form pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-onboarding": {
+    name: "cashwalk-biz-page-onboarding",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **Onboarding 패턴** — 로그인 · 아이디 찾기 · 비밀번호 찾기 등 인증 진입 화면. shell(사이드바/네비) 없이 탈색 회색 캔버스 중앙에 480px 고정 카드 1개. " +
+      "구성: 01 Logo → 02 Form → 03 Primary CTA → 04 Helper. 오버뷰 `pattern:cashwalk-biz-page-patterns`. CTA/입력 실측은 `pattern:cashwalk-biz-button` · `pattern:cashwalk-biz-input`. Figma docs 3626-792 / pattern 3611-2 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '로그인 / 회원가입 / 비밀번호 찾기 / 이메일 인증 / 가입 완료' 키워드가 있고, 사이드바·네비게이션 없이 단독 흐름으로 진행되며, 단일 목적 + 단일 폼 + 단일 CTA 로 구성되는 화면.",
+      "**중앙 카드 1개 (shell 없음)**: 비로그인 상태라 admin-shell(사이드바/topbar) 미적용. 캔버스 배경 = `--semantic-bg-surface-subtle`(#FAFAFA 탈색 회색), 그 위에 카드를 **수직+수평 중앙** 정렬.",
+      "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing).",
+      "**01 Logo**: 카드 상단 중앙 정렬. 캐포비 로고 컴포넌트 사용(직접 SVG 조립 X). 찾기 화면은 로고 아래 안내문(예: '캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.')을 둔다.",
+      "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
+      "**03 Primary CTA**: Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득). 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개(`pattern:cashwalk-biz-button`).",
+      "**04 Helper**: 보조 링크는 **TextButton(Medium)** — 로그인 화면의 '아이디 찾기 | 비밀번호 찾기', 가입 유도 등. solid 버튼으로 만들지 않는다.",
+      "**상태 분기는 같은 골격**: 로그인 / 아이디 찾기 / 비밀번호 찾기는 동일한 480px 중앙 카드 레이아웃의 변형. 화면마다 다른 골격을 만들지 않는다.",
+      "**Validate**: ① Step ≥ 3 → 별도 Multi-step Onboarding 으로(상단 Step Progress 추가). ② Form 필드 > 5 → `pattern:cashwalk-biz-page-form` 전환 검토. ③ 외부 인증(SMS/Email) 필요 → 인증 코드 입력 Section 추가. ④ 이용약관 동의 필요 → Form 위에 CheckboxGroup 추가.",
+    ],
+    avoid: [
+      "온보딩 카드에 사이드바/topbar(admin-shell) 부착 — 비로그인 인증 화면은 중앙 카드만",
+      "카드 폭을 480px 외 값으로 (고정 폭 패턴)",
+      "로그인·아이디찾기·비밀번호찾기마다 다른 레이아웃 골격",
+      "Primary CTA 를 카드 폭보다 좁게 / 2개 이상 / outlined 로",
+      "보조 링크(찾기·가입)를 solid 버튼으로 — TextButton(Medium) 텍스트 링크가 맞다",
+      "로고를 직접 SVG 로 조립 — 캐포비 로고 컴포넌트 사용",
+      "필드 6개 이상·3스텝 이상을 단일 온보딩 카드에 욱여넣기 (Validate Rule 위반 → Form/Multi-step 전환)",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3611-2 (캐포비 Onboarding 패턴 — 로그인 / 아이디 찾기 / 비밀번호 찾기)",
+        caption:
+          "탈색 회색 캔버스 중앙 480px 카드. 01 Logo(중앙) → 02 Form(로그인=TextInput / 찾기=RadioGroup) → 03 Primary CTA(Solid/Primary/X-Large FILL yellow) → 04 Helper(TextButton). 세 화면 동일 골격.",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 온보딩 화면",
+        caption:
+          "사이드바 부착 + 가변 폭 카드 + 좁은/2개 CTA + 보조 링크를 solid 버튼으로 — Onboarding 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-792 / pattern 3611-2)",
+      composition: "01 Logo → 02 Form → 03 Primary CTA → 04 Helper",
+      shell: "none (비로그인 — admin-shell 미적용)",
+      cardWidth: "480px (고정)",
+      cardPadding: "48px",
+      cardRadius: "16px (--semantic-bg radius/16)",
+      cardBg: "--semantic-bg-surface-default (#FFFFFF)",
+      canvasBg: "--semantic-bg-surface-subtle (#FAFAFA)",
+      cardItemSpacing: "40px (큰 단위 그룹간)",
+      cardAlign: "vertical + horizontal center",
+      logo: "캐포비 로고 컴포넌트 (중앙 정렬)",
+      formLogin: "TextInput (ID + Password eye 토글)",
+      formFind: "RadioGroup (찾기 방법 선택 — 전화/이메일)",
+      primaryCta: "Button Solid/Primary/X-Large 가로 FILL · #FFD200 + 검정",
+      helper: "TextButton(Medium) 보조 링크",
+      validateStepThreshold: "Step ≥ 3 → Multi-step Onboarding",
+      validateFieldThreshold: "필드 > 5 → cashwalk-biz-page-form 전환",
+      maxPrimarySolidPerScreen: 1,
+      relatedPatterns: "cashwalk-biz-page-patterns, cashwalk-biz-button, cashwalk-biz-input",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3611-2",
+    references: [
+      {
+        label: "캐포비 Onboarding 패턴 SSOT — 로그인/아이디찾기/비밀번호찾기 (Figma 3611-2)",
+        image: "references/cashwalk-biz-onboarding-3611-2.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3611-2",
+        caption:
+          "세 인증 화면이 동일한 480px 중앙 카드 골격. 본 가이드 metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 Onboarding docs (Figma 3626-792)",
+        image: "references/cashwalk-biz-onboarding-docs-3626-792.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-792",
+        caption:
+          "언제 사용 · 지원 화면 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-dashboard": {
+    name: "cashwalk-biz-page-dashboard",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **Dashboard 패턴** — 주요 지표·통계·차트를 한눈에 보여주는 통계/현황 화면. " +
+      "구성: 01 Sidebar → 02 Page Header+Actions(Pill) → 03 Summary Strip(인라인 지표, **개별 KPI 카드 미사용**) → 04 Charts(라인+바 2-up) → 05 Stats Table. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-855 / pattern 3612-9 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '대시보드 / 메인 / 홈 / 요약 / 현황 / KPI' 키워드가 있고, 여러 데이터를 시각화해 한눈에 보여줘야 하며, 사용자가 가장 먼저 보는 진입 화면일 때.",
+      "**Main Area**: admin-shell content 영역 padding **48px**, 섹션 간 itemSpacing **32px**. 섹션 순서는 위→아래로 요약→추세→상세: 02 Header → 03 Summary → 04 Charts → 05 Table.",
+      "**02 Page Header + Actions**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **Pill 액션** — [기간 조회](outline/white pill) + [자료 다운로드](solid yellow #FFD200 pill + download 아이콘). 본문에 액션을 흩뿌리지 않고 헤더 우측에 모은다.",
+      "**03 Summary Strip (개별 KPI 카드 미사용)**: 핵심 지표를 **한 줄 strip** 으로 — 좌측 상태 라벨(예: '전체 캠페인 성과' + '실시간 집계 · {갱신시각} 기준'), 우측에 지표들을 **세로 구분선으로 나눠 인라인** 배치. 각 지표 = 라벨(Caption 12/16 #666) 위, 값(Bold) 아래. strip 배경은 brand 노란 틴트 `Yellow/100 (#FFFAE5)`. **KPI 마다 별도 카드를 만들지 않는다.**",
+      "**04 Charts**: 차트 카드 안에 **라인 차트 + 바 차트 2-up**(좌 추이 라인 / 우 항목별 비교 바). gridline + 범례 포함. 차트 카드 높이 **360px**(기본).",
+      "**05 Stats Table**: 항목별 통계 테이블 — 헤더 행(연회색 bg) + 데이터 행. 우측 정렬 숫자 컬럼(노출수/클릭수/전환율/소진액 등).",
+      "**카드 규격(차트·테이블 공통)**: radius **12px**, padding **24px**, border **1px `--semantic-border-normal-subtle`(#F5F5F5)**, bg `--semantic-bg-surface-default`(#FFFFFF). 페이지 캔버스는 `--semantic-bg-surface-subtle`(#FAFAFA).",
+      "**01 Sidebar**: 좌측 LNB = Sidebar 컴포넌트(Figma 3304:617) — 계정 정보 + 광고/자산/계정 관리 섹션. admin-shell 의 nds-shell__sidebar 슬롯.",
+      "**Validate**: ① 핵심 지표 ≤ 4개 → Summary Strip, 그 이상 → 별도 통계 카드/그리드 검토. ② Chart 종류(Line/Bar/Donut) 명시 — Chart Library 25종 참조. ③ 데이터 없음 → Empty State 변형(회색 패널 + 안내문). ④ 갱신 시각 필요 → Header(또는 Summary)에 '마지막 갱신 mm/dd hh:mm' 추가.",
+    ],
+    avoid: [
+      "Summary 지표를 **개별 KPI 카드**(카드 4장 grid)로 — 캐포비 대시보드는 노란 틴트 인라인 strip 1개",
+      "요약·차트·테이블 위계를 뒤섞어 배치",
+      "헤더 Pill 액션 대신 본문 곳곳에 액션 버튼 분산",
+      "차트 카드 radius/padding 을 폼 카드(16/48)와 다르게 임의 설정 — 대시보드 카드는 12/24",
+      "데이터 없음 상태를 빈 차트/빈 테이블로 방치 — Empty State 패널 + 안내문",
+      "차트 종류를 정의 없이 그리기 (Line/Bar/Donut 중 무엇인지 명시)",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3612-9 (캐포비 Dashboard 패턴)",
+        caption:
+          "Sidebar + 헤더(제목 + 기간조회/자료다운로드 Pill) + 노란 틴트 Summary Strip(인라인 지표 4종 구분선) + 라인/바 2-up 차트 카드(h360) + 항목별 통계 테이블. 카드 12/24.",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 대시보드",
+        caption:
+          "지표를 KPI 카드 4장 grid 로 + 차트 종류 불명 + 데이터 없을 때 빈 차트 방치 — Dashboard 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-855 / pattern 3612-9)",
+      composition:
+        "01 Sidebar → 02 Header+Actions → 03 Summary Strip → 04 Charts(2-up) → 05 Stats Table",
+      shell: "admin-shell (Sidebar 3304:617)",
+      mainAreaPadding: "48px",
+      sectionItemSpacing: "32px",
+      pageTitle: "Heading1 Bold 32/40 #111",
+      headerActions: "Pill — [기간 조회] outline + [자료 다운로드] solid yellow #FFD200",
+      summaryStrip:
+        "인라인 지표 strip (개별 KPI 카드 미사용) · 라벨 Caption 12/16 #666 + 값 Bold · 세로 구분선 · bg Yellow/100 #FFFAE5",
+      charts: "라인 + 바 2-up (gridline·범례) · 카드 높이 360px",
+      statsTable: "헤더 행(연회색) + 데이터 행 · 숫자 우측 정렬",
+      cardRadius: "12px",
+      cardPadding: "24px",
+      cardBorder: "1px #F5F5F5 (--semantic-border-normal-subtle)",
+      cardBg: "--semantic-bg-surface-default (#FFFFFF)",
+      canvasBg: "--semantic-bg-surface-subtle (#FAFAFA)",
+      validateSummaryThreshold: "핵심 지표 ≤ 4 → Summary Strip / >4 → 별도 카드·그리드",
+      emptyState: "데이터 없음 → 회색 패널 + 안내문",
+      relatedPatterns: "cashwalk-biz-page-patterns, admin-shell, dense-list",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9",
+    references: [
+      {
+        label: "캐포비 Dashboard 패턴 SSOT (Figma 3612-9)",
+        image: "references/cashwalk-biz-dashboard-3612-9.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9",
+        caption:
+          "Sidebar + 헤더 Pill + 노란 틴트 Summary Strip + 라인/바 2-up + 통계 테이블. metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 Dashboard docs (Figma 3626-855)",
+        image: "references/cashwalk-biz-dashboard-docs-3626-855.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-855",
+        caption: "언제 사용 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-list": {
+    name: "cashwalk-biz-page-list",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **List 패턴** — 검색/필터/페이지네이션이 있는 데이터 목록 화면. " +
+      "구성: 01 Sidebar → 02 PageHeader+Primary Action('등록하기') → 03 FilterBar → 04 Table(썸네일·상태배지·노출토글·수정/삭제) → 05 Pagination. Detail 진입 전 단계. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-915 / pattern 3613-234 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '목록 / 조회 / 검색 / 필터링 / 리포트(테이블)' 키워드가 있고, 여러 row 데이터를 비교·탐색해야 하며, Detail 화면으로 진입하기 전 단계일 때.",
+      "**02 PageHeader + Primary Action**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **'등록하기' Primary Button** 1개. 목록의 주 액션은 헤더 우측에만 둔다.",
+      "**03 FilterBar**: 테이블 위 한 줄(`pattern:action-row`) — Search Input + Dropdown 필터(상태 등) + 기간(DateRange). 카드 형태: radius **12px**, padding **20/24**.",
+      "**04 Table**: 헤더 행 + 데이터 행. 헤더 행 배경 `--semantic-bg-surface-subtle`(#FAFAFA). 카드 radius **12px**, Row padding **16/24**, Row 사이 **1px border `#F5F5F5`**. 컬럼은 균등 또는 flex.",
+      "**행 셀 컴포넌트**: 썸네일(이미지 컬럼) + 핵심 텍스트(클릭 시 Detail 진입 — 링크색) + **상태 = Badge**(진행중=success/green · 진행예정=subtle · 종료=neutral gray) + 숫자 컬럼 우측 정렬 + **노출 = Toggle**(노출 on green / 미노출 off) + **관리 = 수정(pencil)·삭제(trash) 아이콘 액션**. 상태를 raw 텍스트로, 노출을 체크박스로 만들지 않는다.",
+      "**05 Pagination**: 중앙 정렬 페이지 번호, 버튼 **32×32**, 현재 페이지 강조 fill. 우측에 페이지 사이즈 셀렉트('10개씩 보기') 배치 가능.",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(대시보드와 동일 LNB).",
+      "**Validate**: ① Row > 50 → 페이지네이션 필수 / ≤ 10 → 페이지네이션 생략. ② 필터 > 4개 → 필터 패널 분리(좌측 또는 상단 collapsible). ③ Row 클릭 액션 있으면 → 행 hover effect + cursor pointer. ④ Empty state 필수 → '등록된 OOO이 없습니다' + CTA. ⑤ 정렬 가능 컬럼 → Header 셀에 화살표 아이콘.",
+    ],
+    avoid: [
+      "필터를 테이블과 떨어뜨려 본문 곳곳에 배치 — FilterBar 는 테이블 위 한 줄",
+      "상태를 raw 텍스트로 (Badge 미사용), 노출 on/off 를 체크박스로 (Toggle 미사용)",
+      "관리 컬럼에 수정/삭제 외 잡다한 버튼 추가",
+      "헤더에 '등록하기' 외 primary 액션 여러 개",
+      "Empty state 를 빈 테이블로 방치 — '등록된 OOO이 없습니다' + CTA 필수",
+      "FilterBar/Table radius 를 12px 외로 · 헤더 행 배경 누락",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3613-234 (캐포비 List 패턴 — 배너광고 목록)",
+        caption:
+          "헤더(제목 + 등록하기) + FilterBar(검색·상태·기간) + 테이블(이미지·캠페인명·상태 Badge·노출수·클릭수·소진액·노출 Toggle·관리 수정/삭제) + 중앙 페이지네이션 + 페이지 사이즈 셀렉트.",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 목록 화면",
+        caption:
+          "상태를 색 없는 텍스트로 + 노출을 체크박스로 + 행마다 버튼 흩뿌리기 + Empty state 없이 빈 테이블 — List 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-915 / pattern 3613-234)",
+      composition: "01 Sidebar → 02 Header+등록하기 → 03 FilterBar → 04 Table → 05 Pagination",
+      shell: "admin-shell",
+      pageTitle: "Heading1 Bold 32/40 #111",
+      primaryAction: "'등록하기' Primary Button (헤더 우측)",
+      filterBar: "Search Input + Dropdown 필터 + DateRange · radius 12 · padding 20/24",
+      tableRadius: "12px",
+      tableRowPadding: "16/24",
+      tableRowBorder: "1px #F5F5F5 (row 사이)",
+      tableHeaderBg: "--semantic-bg-surface-subtle (#FAFAFA)",
+      rowCells:
+        "썸네일 + 링크 텍스트 + 상태 Badge + 숫자(우측정렬) + 노출 Toggle + 관리(수정/삭제 아이콘)",
+      statusBadge: "진행중=success · 진행예정=subtle · 종료=neutral",
+      pagination:
+        "중앙 정렬 · 버튼 32×32 · 현재 페이지 강조 fill (docs spec=Yellow/500; pattern 렌더는 검정 fill — 디자이너 확인 여지)",
+      pageSizeSelect: "'10개씩 보기' 셀렉트 (우측)",
+      validatePaginationThreshold: "Row > 50 필수 / ≤ 10 생략",
+      validateFilterThreshold: "필터 > 4 → 패널 분리",
+      emptyState: "'등록된 OOO이 없습니다' + CTA 필수",
+      relatedPatterns:
+        "cashwalk-biz-page-patterns, admin-shell, action-row, dense-list, cashwalk-biz-page-detail",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
+    references: [
+      {
+        label: "캐포비 List 패턴 SSOT — 배너광고 목록 (Figma 3613-234)",
+        image: "references/cashwalk-biz-list-3613-234.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
+        caption:
+          "헤더 + FilterBar + 상태배지/노출토글/관리 테이블 + 페이지네이션. metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 List docs (Figma 3626-915)",
+        image: "references/cashwalk-biz-list-docs-3626-915.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-915",
+        caption: "언제 사용 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-detail": {
+    name: "cashwalk-biz-page-detail",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **Detail 패턴** — 개별 항목의 정보를 보고 액션을 수행하는 화면. " +
+      "구성: 01 Sidebar → 02 Breadcrumb → 03 PageHeader+Status+Actions → 04 Tab Navigation(underline) → 05 Info Card(key-value). List 에서 row 클릭 후 진입. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-978 / pattern 3614-367 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '상세 / 정보 보기 / 수정 / 편집' 키워드가 있고, List 에서 row 클릭 후 진입하며, 관련 액션(수정/삭제/실행)이 동반될 때.",
+      "**02 Breadcrumb (필수)**: 상위 페이지 경로를 명시(예: '배너광고 목록 / 여름 시즌 프로모션 상세'). 타이포 Body3/Subtle, **divider '/' 문자**, itemSpacing **8px**. 상세는 항상 목록에서 진입하므로 경로 생략 금지.",
+      "**03 PageHeader + Status + Actions**: 좌측 제목(Heading1 Bold 32/40) + **상태 ActionChip**(title 과 gap **12px**), 우측 **액션 버튼들**(예: outline 보조 + solid 주). 삭제 같은 위험 액션은 별도 Outlined/Neutral 버튼으로 **우측 끝** 배치.",
+      "**04 Tab Navigation**: **Underline 탭**(예: 기본 정보 / 성과 리포트 / 히스토리). 데이터 항목이 많으면 탭으로 분리.",
+      "**05 Info Card**: 정보 블록 = **key-value rows**(또는 FormSection). **key 컬럼 width 240px 고정, value 컬럼 flex**. key-value row padding **16/24**, **border-bottom `--semantic-border-normal-subtle`(#F5F5F5)**. 카드 안 상단에 섹션 제목.",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(목록/대시보드와 동일 LNB).",
+      "**편집은 Form 패턴으로 분리**: 상세 화면은 보기 중심. 편집 가능 필드만 있는 화면이면 Detail 이 아니라 `pattern:cashwalk-biz-page-form` 으로 만든다. 인라인 편집 폼을 상세에 펼치지 않는다.",
+      "**Validate**: ① 데이터 항목 > 15개 → Tab 으로 분리(탭당 5~8개). ② 편집 가능 필드만 있는 경우 → Form 패턴으로 변경. ③ 삭제 액션 → 별도 Outlined/Neutral 버튼, 우측 끝 배치. ④ 위험 액션(삭제) → 확인 Modal 필수 호출. ⑤ 권한별 액션 숨김 → BOOLEAN prop 또는 변형 변경.",
+    ],
+    avoid: [
+      "Breadcrumb 생략 (상세 진입 경로 불명확) · divider 를 '>' 등으로 (캐포비는 '/' 문자)",
+      "상세 화면 안에서 바로 인라인 편집 폼 펼치기 — 편집은 Form 패턴으로 분리",
+      "Info Card key 컬럼을 가변 폭으로 — key 240px 고정 + value flex",
+      "삭제(위험) 액션을 solid/primary 로 또는 확인 Modal 없이 즉시 실행",
+      "데이터 항목 15개 초과를 한 카드에 나열 — Tab 으로 분리",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3614-367 (캐포비 Detail 패턴 — 여름 시즌 프로모션 상세)",
+        caption:
+          "Breadcrumb('목록 / OO 상세', '/' divider) + 제목 + 상태칩 + 우측 액션 + Underline 탭(기본정보/성과/히스토리) + Info Card(key 240 고정 / value flex, row 16/24 border-bottom).",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 상세 화면",
+        caption:
+          "Breadcrumb 없이 진입 + 상세 안에 인라인 편집 폼 + 삭제를 primary 버튼으로 확인 Modal 없이 — Detail 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-978 / pattern 3614-367)",
+      composition:
+        "01 Sidebar → 02 Breadcrumb → 03 Header+Status+Actions → 04 Tab(underline) → 05 Info Card",
+      shell: "admin-shell",
+      breadcrumb: "Body3/Subtle · divider '/' · itemSpacing 8",
+      pageHeader: "제목 Heading1 Bold 32/40 + 상태 ActionChip (gap 12) + 우측 액션 버튼",
+      tabs: "Underline (기본 정보 / 성과 / 히스토리 등)",
+      infoCardKeyWidth: "240px 고정",
+      infoCardValue: "flex",
+      keyValueRowPadding: "16/24",
+      keyValueRowBorder: "border-bottom 1px #F5F5F5 (--semantic-border-normal-subtle)",
+      deleteAction: "Outlined/Neutral · 우측 끝 · 확인 Modal 필수",
+      validateTabThreshold: "데이터 항목 > 15 → Tab 분리 (탭당 5~8)",
+      relatedPatterns:
+        "cashwalk-biz-page-patterns, admin-shell, cashwalk-biz-page-list, cashwalk-biz-page-form, card-section",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3614-367",
+    references: [
+      {
+        label: "캐포비 Detail 패턴 SSOT — 여름 시즌 프로모션 상세 (Figma 3614-367)",
+        image: "references/cashwalk-biz-detail-3614-367.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3614-367",
+        caption:
+          "Breadcrumb + 제목/상태칩/액션 + Underline 탭 + key-value Info Card. metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 Detail docs (Figma 3626-978)",
+        image: "references/cashwalk-biz-detail-docs-3626-978.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-978",
+        caption: "언제 사용 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-form": {
+    name: "cashwalk-biz-page-form",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **Form 패턴** — 다단계 입력으로 새 항목을 등록하는 화면. " +
+      "구성: 01 Sidebar → 02 Step Progress → 03 Form Sections(FormSection 반복) → 04 Summary/Preview Panel(선택, 우측 400px) → 05 Footer Actions. " +
+      "**필드 단위 실측(라벨 컬럼·필드 높이·필수 마커 등)은 `pattern:cashwalk-biz-form-layout` 이 SSOT** — 이 패턴은 페이지 조립(Step/섹션/요약/Footer) + **PRD→컴포넌트 매핑**을 정의. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-1041 / pattern 3615-522 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '등록 / 만들기 / 생성 / 신규 / Step' 키워드가 있고, 여러 정책 옵션을 단계별로 설정하거나 '캠페인 → 광고 → 소재'처럼 계층 구조를 등록할 때.",
+      "**02 Step Progress**: 가로 막대 + Step N 라벨(Done / Current / Todo 상태). 다단계 등록일 때 사용 — Step ≥ 3 이면 필수. 영역 padding **32/48**, 하단 **border 1px**. 단건이면 생략.",
+      "**03 Form Sections**: **FormSection 컴포넌트 반복** — 각 섹션 = 제목(예: '광고 정보') + 설명 + 필드 슬롯(label-좌측 + 입력 + helper). 섹션 사이 gap **32px**. 필드 슬롯의 라벨 컬럼·필드 높이·필수 마커 등 px·색은 `pattern:cashwalk-biz-form-layout` 을 그대로 따른다(여기서 중복 정의 X).",
+      "**04 Summary / Preview Panel (선택)**: 메인 폼 우측 보조 패널 **400px** — 예상 성과·미리보기·입력 요약. 2컬럼 = 메인 폼(FILL) + 패널 400px. 없으면 단일 컬럼.",
+      "**05 Footer Actions**: 페이지 끝 Footer — **좌측 [이전 단계]·[임시저장] / 우측 [다음 단계]·[등록](Solid)**. Footer 영역 padding **24/48**, 상단 **border 1px**, 배경 `--semantic-bg-surface-default`. (단건 폼의 inline 센터 [취소][저장] 클러스터는 `cashwalk-biz-form-layout` 참조 — 다단계는 좌/우 분리 Footer.)",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트.",
+      "**Validate — PRD → 컴포넌트 매핑(정량)**: 글자 ≤ 40 → **TextInput** / 글자 > 40 → **Textarea** / 단일 선택 ≤ 3 → **SelectionButtonGroup** / 단일 선택 > 3 → **Dropdown** / 다중 선택 → **CheckboxGroup** / ON·OFF 즉시 적용 → **Toggle** / 날짜·시간 → **DateInput** / 이미지·파일 → **ImageUpload**.",
+      "**Validate — 구조**: Step ≥ 3 → Step Progress 필수 / 필수 필드 → FormField `required=true` / 조건부 노출 → Boolean variant 또는 컨테이너 hide.",
+    ],
+    avoid: [
+      "필드 높이·라벨 컬럼·필수 마커 px 를 이 패턴에 중복 정의 (cashwalk-biz-form-layout 이 SSOT)",
+      "단건 폼에 불필요한 Step Progress — Step ≥ 3 일 때만",
+      "다단계 Footer 를 inline 센터 클러스터로 — 다단계는 좌(이전/임시저장)·우(다음/등록) 분리 Footer + 상단 border",
+      "입력 타입을 임의 선택 — PRD→컴포넌트 매핑(글자수/선택수/타입)으로 결정",
+      "요약/미리보기 패널 폭을 400px 외로 임의 설정",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3615-522 (캐포비 Form 패턴 — 다단계 광고 등록)",
+        caption:
+          "Step Progress(캠페인→광고그룹→소재) + FormSection 반복(광고 정보/기간/예산, 섹션 gap 32) + 우측 미리보기 패널 400px + Footer(좌 이전/임시저장 · 우 다음 단계 solid, 상단 border).",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 등록 폼",
+        caption:
+          "단건인데 Step Progress 부착 + 입력 타입을 매핑 없이 임의 선택 + Footer 를 inline 센터로 + 필드 px 를 여기서 재정의 — Form 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-1041 / pattern 3615-522)",
+      composition:
+        "01 Sidebar → 02 Step Progress → 03 Form Sections → 04 Summary Panel(선택) → 05 Footer Actions",
+      shell: "admin-shell",
+      stepProgress:
+        "가로 막대 + Step N (Done/Current/Todo) · padding 32/48 · 하단 border 1px · Step≥3 필수",
+      formSectionGap: "32px (섹션 사이)",
+      twoColumn: "메인 폼(FILL) + Summary/Preview 패널 400px (선택)",
+      footer:
+        "좌 [이전 단계]·[임시저장] / 우 [다음 단계]·[등록](Solid) · padding 24/48 · 상단 border 1px · bg surface",
+      fieldSpecSsot: "cashwalk-biz-form-layout (라벨 컬럼·필드 높이·필수 마커 px)",
+      prdComponentMapping:
+        "≤40자 TextInput · >40자 Textarea · 단일≤3 SelectionButtonGroup · 단일>3 Dropdown · 다중 CheckboxGroup · ON/OFF Toggle · 날짜 DateInput · 파일 ImageUpload",
+      requiredFieldProp: "FormField required=true",
+      conditionalField: "Boolean variant 또는 컨테이너 hide",
+      relatedPatterns:
+        "cashwalk-biz-page-patterns, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-input, cashwalk-biz-button",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
+    references: [
+      {
+        label: "캐포비 Form 패턴 SSOT — 다단계 등록 (Figma 3615-522)",
+        image: "references/cashwalk-biz-form-pattern-3615-522.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
+        caption:
+          "Step Progress + FormSection 반복 + 우측 미리보기 패널 + 좌/우 분리 Footer. metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 Form docs — PRD→컴포넌트 매핑 포함 (Figma 3626-1041)",
+        image: "references/cashwalk-biz-form-docs-3626-1041.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-1041",
+        caption:
+          "언제 사용 · Section 구조 · Layout Spec · Validate Rule(PRD→컴포넌트 매핑) 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
 };
