@@ -200,6 +200,12 @@ function bootstrapDoc(brand: string, surface: Surface, intent: string): string {
 
 브랜드: ${brand} · 표면: ${surface} · 타겟: ${intent}
 
+> ★ **표면(surface)이 화면 이름 통념을 지배한다.** 이 작업의 표면은 **${surface}** 다. 화면 제목이 '회원가입/로그인/온보딩'처럼 소비자 플로우를 연상시켜도 \`surface=${surface}\` 를 먼저 확정하고 모든 레이아웃을 거기 맞춘다.${
+    surface === "admin"
+      ? " surface=admin 이면 **어드민 화면**이다 — admin-shell(사이드바+톱바) 또는 어드민 온보딩(중앙 카드)으로 만들고, **소비자 brand chrome(`<nds-brand-header>`/`<nds-brand-footer>`/`<nds-brand-bottom-nav>`)은 사용 금지**(build_singlefile_html 이 error 로 차단). 캐포비 어드민 패턴은 get_guide({topic:'pattern:cashwalk-biz-page-patterns'}) 와 pattern:admin-shell 참조."
+      : " surface=service 이면 소비자 화면이다 — 브랜드 chrome(header/footer/bottom-nav)을 쓰고 어드민 사이드바(nds-sidebar)는 쓰지 않는다."
+  }
+
 이 폴더는 Nudge DS 목업 작업 공간입니다. **nudge-eap-ds MCP 서버가 규칙의 SSOT** 입니다.
 - references.md = 시각 레퍼런스(있으면 게이트 충족). brief.md = 기획서 + 추가 요구사항.
 - brief.md 의 "UI 방향 결정" 섹션이 있으면 그 결정을 우선한다. auto/propose 모드면 코드 작성 전 방향 판단/제안을 먼저 끝낸다.
@@ -261,7 +267,11 @@ function seedPrompt(args: RunIntakeArgs, intent: string, hasVisual: boolean): st
     args.surface === "service" && args.platform
       ? `제작 대상 플랫폼=${PLATFORM_LABELS[args.platform]} (${PLATFORM_GUIDANCE[args.platform]}). `
       : "";
-  return `이 폴더의 CLAUDE.md/AGENTS.md, ${hasVisual ? "references.md, " : ""}brief.md 를 먼저 읽고 목업을 만들어줘. 브랜드=${args.brand}, 표면=${args.surface}, 타겟 intent=${intent}. ${platformLine}${visualLine} ${visualGateLine} ${directionLine}`;
+  const surfaceLine =
+    args.surface === "admin"
+      ? "표면=admin 이 화면 이름 통념보다 우선한다 — '가입/로그인/온보딩'이라도 소비자 플로우가 아니라 어드민 화면(admin-shell 또는 어드민 온보딩 카드)으로 만들고 소비자 brand chrome(nds-brand-header/footer/bottom-nav)은 쓰지 마(빌드가 error 로 차단). "
+      : "표면=service 이 화면 이름 통념보다 우선한다 — 어드민 사이드바(nds-sidebar) 대신 소비자 brand chrome 을 쓴다. ";
+  return `이 폴더의 CLAUDE.md/AGENTS.md, ${hasVisual ? "references.md, " : ""}brief.md 를 먼저 읽고 목업을 만들어줘. 브랜드=${args.brand}, 표면=${args.surface}, 타겟 intent=${intent}. ${surfaceLine}${platformLine}${visualLine} ${visualGateLine} ${directionLine}`;
 }
 
 export function runIntake(args: RunIntakeArgs): RunIntakeResult {
@@ -312,6 +322,14 @@ export function runIntake(args: RunIntakeArgs): RunIntakeResult {
     // 워크스페이스 생성 시 정식 brand 를 단일 파일에 박아, build_singlefile_html 의 resolveHtmlBrand 가
     // html 선언이 누락돼도 이 마커를 최우선 출처로 읽게 한다(추론조차 불필요). UI 가 canonical slug 제공.
     writeFileSync(join(workspaceDir, "nudge.brand"), `${args.brand}\n`, "utf8");
+
+    // ── 표면 SSOT 마커(nudge.surface). ──
+    // 회고(2026-06): cashwalk-biz 는 admin/service 가 둘 다 intent='html' 로 붕괴해(resolveIntent)
+    // intent 필드만으로는 어드민/소비자 구분이 사라진다. 그 구분을 지닌 유일한 변수가 surface 인데,
+    // prose(CLAUDE.md/brief)로만 선언돼 에이전트가 화면이름 통념('가입=소비자')으로 덮어써도 막을 게 없었다.
+    // surface 를 머신 마커로 박아, build_singlefile_html / validate_html_mockup 이 이를 읽어
+    // "선언 admin 인데 소비자 brand chrome" 같은 표면 불일치를 결정론적으로 차단하게 한다.
+    writeFileSync(join(workspaceDir, "nudge.surface"), `${args.surface}\n`, "utf8");
 
     return {
       ok: true,

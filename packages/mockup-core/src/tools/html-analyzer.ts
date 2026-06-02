@@ -12,7 +12,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import * as cheerio from "cheerio";
-import { validateHtmlSource, type HtmlViolation } from "./html-validator.js";
+import {
+  validateHtmlSource,
+  readSurfaceMarker,
+  type HtmlViolation,
+  type HtmlSurface,
+} from "./html-validator.js";
 import { ndsTagToComponentName } from "./usage/parser.js";
 import {
   detectDsVersions,
@@ -136,6 +141,8 @@ function readSourceArgs(args: { source?: string; filePath?: string }): {
 export interface AnalyzeHtmlMockupArgs {
   source?: string;
   filePath?: string;
+  /** 워크스페이스 루트(nudge.surface 마커 탐색 시작점). 없으면 filePath 디렉토리에서 위로 탐색. */
+  cwd?: string;
 }
 
 export interface AnalyzeHtmlMockupResult {
@@ -151,7 +158,10 @@ export interface AnalyzeHtmlMockupResult {
 export function analyzeHtmlMockup(args: AnalyzeHtmlMockupArgs): AnalyzeHtmlMockupResult {
   const { source, filePath } = readSourceArgs(args);
   const counts = countHtmlUsage(source);
-  const violations = validateHtmlSource(source);
+  // 선언 표면: nudge.surface 마커(cwd 또는 filePath 디렉토리에서 위로). 표면 불일치 룰 입력.
+  const markerStartDir = args.cwd ?? (filePath ? path.dirname(filePath) : undefined);
+  const surface: HtmlSurface = markerStartDir ? readSurfaceMarker(markerStartDir) : null;
+  const violations = validateHtmlSource(source, { surface });
 
   const violationsByRule: Record<string, number> = {};
   for (const v of violations) violationsByRule[v.rule] = (violationsByRule[v.rule] ?? 0) + 1;

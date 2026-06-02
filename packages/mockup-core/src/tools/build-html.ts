@@ -29,7 +29,11 @@ import {
   reportHtmlMockupUsage,
   type ReportHtmlMockupUsageResult,
 } from "./html-analyzer.js";
-import { validateHtmlMockup, type ValidateHtmlMockupResult } from "./html-validator.js";
+import {
+  NEUTRAL_SCORES,
+  validateHtmlMockup,
+  type ValidateHtmlMockupResult,
+} from "./html-validator.js";
 import { detectDsVersions } from "./usage/tracker.js";
 import { injectDsStampBar } from "./ds-stamp.js";
 
@@ -379,7 +383,8 @@ export async function buildSinglefileHtml(
   let reportError: string | undefined;
   if (intent === "html") {
     try {
-      validation = validateHtmlMockup({ filePath: outputPath });
+      // cwd(워크스페이스 루트)를 넘겨 nudge.surface 마커로 표면 불일치(admin↔소비자 chrome)를 검출.
+      validation = validateHtmlMockup({ filePath: outputPath, cwd });
     } catch (err) {
       // build 자체는 성공했으므로 검증 실패는 응답에 노트만 남기고 ok 는 유지.
       validation = {
@@ -387,6 +392,7 @@ export async function buildSinglefileHtml(
         violations: [],
         violationsByRule: [],
         severitySummary: { error: 0, warn: 0, info: 0, hasErrors: false },
+        scores: NEUTRAL_SCORES,
         jsxOnlyNotice: `validate auto-call failed: ${(err as Error).message}`,
       };
     }

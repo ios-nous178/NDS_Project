@@ -717,7 +717,12 @@ const toolHandlers = {
     const effectiveSource = typed.source;
     const effectiveFilePath = typed.filePath;
 
-    const result = validateHtmlMockup({ source: effectiveSource, filePath: effectiveFilePath });
+    // cwd 를 넘겨 nudge.surface 마커로 표면 불일치(admin↔소비자 chrome)까지 검출.
+    const result = validateHtmlMockup({
+      source: effectiveSource,
+      filePath: effectiveFilePath,
+      cwd: typed.cwd,
+    });
     let extras: {
       // root 의 violations[] / violationsByRule 와 동일하므로 stats 에서는 둘 다 제외해 응답 크기 절약.
       stats?: Omit<AnalyzeHtmlMockupResult, "violations" | "violationsByRule">;
@@ -741,6 +746,7 @@ const toolHandlers = {
       } = analyzeHtmlMockup({
         source: effectiveSource,
         filePath: effectiveFilePath,
+        cwd: typed.cwd,
       });
       extras = {
         ...(extras ?? {}),

@@ -91,6 +91,36 @@ test("nudge.brand 마커를 정식 brand 로 박는다 (빌드의 브랜드 SSOT
   }
 });
 
+test("nudge.surface 마커를 선언 표면으로 박는다 (표면 SSOT — 화면 이름 통념보다 우선)", () => {
+  const projectPath = tmpProject();
+  try {
+    const admin = runIntake(baseArgs({ projectPath, brand: "cashwalk-biz", surface: "admin" }));
+    assert.ok(admin.ok);
+    const adminMarker = join(admin.workspaceDir!, "nudge.surface");
+    assert.ok(existsSync(adminMarker));
+    assert.equal(readFileSync(adminMarker, "utf8").trim(), "admin");
+
+    const svc = runIntake(baseArgs({ projectPath, brand: "cashwalk-biz", surface: "service" }));
+    assert.equal(readFileSync(join(svc.workspaceDir!, "nudge.surface"), "utf8").trim(), "service");
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("surface=admin -> 부트스트랩/seed 에 표면 우선 + 소비자 chrome 금지 가드", () => {
+  const projectPath = tmpProject();
+  try {
+    const r = runIntake(baseArgs({ projectPath, brand: "cashwalk-biz", surface: "admin" }));
+    assert.ok(r.ok);
+    const claude = readFileSync(join(r.workspaceDir!, "CLAUDE.md"), "utf8");
+    assert.match(claude, /표면\(surface\)이 화면 이름 통념을 지배/);
+    assert.match(claude, /소비자 brand chrome/);
+    assert.match(r.seedPrompt!, /표면=admin 이 화면 이름 통념보다 우선/);
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
 test("시각 >=1 -> references.md 첫 줄 task: + source=.references/ 경로", () => {
   const projectPath = tmpProject();
   try {
