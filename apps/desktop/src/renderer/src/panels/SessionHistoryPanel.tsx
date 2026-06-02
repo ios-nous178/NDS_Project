@@ -414,7 +414,8 @@ export function SessionHistoryPanel({
                       onBlur={() => void commitEdit(s)}
                       onKeyDown={(e) => {
                         e.stopPropagation();
-                        if (e.key === "Enter") void commitEdit(s);
+                        // 한글(IME) 조합 중 Enter 는 글자 확정 — isComposing 일 땐 커밋하지 않는다(이름 잘림 방지).
+                        if (e.key === "Enter" && !e.nativeEvent.isComposing) void commitEdit(s);
                         else if (e.key === "Escape") setEditingId(null);
                       }}
                       style={{
