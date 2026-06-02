@@ -43,9 +43,11 @@ import {
 import type { AnalyzeHtmlMockupResult } from "@nudge-design/mockup-core/tools/html-analyzer";
 export { countHtmlUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
 import { devServer, registerDevServerCleanup } from "@nudge-design/mockup-core/tools/preview";
+import { listStandaloneBrands } from "@nudge-design/mockup-core/tools/standalone-assets";
 import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { getGuide } from "./tools/guides.js";
+import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
 import { getIconSvg } from "./icon-svg.js";
@@ -190,6 +192,23 @@ configureHtmlValidator({
   tokenSet,
   ndsTagSet: ndsHtmlTagSet,
   ndsClassPrefixSet,
+  ndsAttrEnums,
+});
+
+// DesignSpec(경량 IR) 검증기에도 같은 카탈로그를 주입한다 — prompt→spec→code 의 코드前 검증용.
+// 브랜드 셋은 자산 디렉토리에서 읽으므로(런타임엔 번들/dev 양쪽 해석됨) 방어적으로 — 미해석 시
+// brand 엄격검사는 design-spec 쪽에서 자동 skip 된다.
+let standaloneBrandSet = new Set<string>();
+try {
+  standaloneBrandSet = new Set(listStandaloneBrands());
+} catch {
+  standaloneBrandSet = new Set();
+}
+configureDesignSpec({
+  tokenSet,
+  componentNames: new Set(componentByName.keys()),
+  brands: standaloneBrandSet,
+  propAllowedValues,
   ndsAttrEnums,
 });
 
@@ -765,6 +784,16 @@ const toolHandlers = {
   convert_html_to_ds_html: (args: ToolArgs) =>
     convertHtmlToDsHtml(
       args as { source?: string; filePath?: string; rewriteInlineColors?: boolean },
+    ),
+  validate_design_spec: (args: ToolArgs) =>
+    withVisualReferencePrompt(
+      "validate_design_spec",
+      validateDesignSpec((args as { spec?: unknown }).spec),
+    ),
+  save_design_spec: (args: ToolArgs) =>
+    withVisualReferencePrompt(
+      "save_design_spec",
+      saveDesignSpec(args as { spec?: unknown; cwd?: string; fileName?: string }),
     ),
 } satisfies ToolHandlers;
 

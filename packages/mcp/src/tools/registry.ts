@@ -256,6 +256,46 @@ const TOOLS = [
     },
   },
   {
+    name: "save_design_spec",
+    description:
+      "Save a lightweight DesignSpec (the prompt→**DesignSpec**→code intermediate representation) to `<cwd>/design-spec.json`, validating it against the DS catalog first. The DesignSpec captures INTENT only — component tree (semantic names), semantic token names (no hex), brand/surface, and design rationale — NOT pixel geometry (that belongs to the code→Figma scene.json). Call this BEFORE build_singlefile_html: show the saved spec to the user, get agreement, then build from it (soft approval gate). If `ok:false`, fix the reported violations and re-save before building. `component` accepts either PascalCase DS names ('Button') or nds-tags ('nds-button') — they share the scene.ts vocabulary.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        spec: {
+          type: "object",
+          description:
+            "DesignSpec object: { screen: { brand, surface: 'web'|'app', intent }, tree: [{ component, role?, props?, tokens?, rationale?, children? }], decisions?: string[] }. May also be passed as a JSON string.",
+        },
+        cwd: {
+          type: "string",
+          description: "Workspace dir to write design-spec.json into. Defaults to process cwd.",
+        },
+        fileName: {
+          type: "string",
+          description: "Output file name. Default 'design-spec.json'.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "validate_design_spec",
+    description:
+      "Validate a DesignSpec against the DS catalog WITHOUT writing a file — semantic-token-only (no raw hex), known tokens, resolvable brand slug (guards the silent base-blue fallback), known components, and prop enum legality. Returns violations grouped by severity (error/warn/info) plus ok=(no errors). Use during self-correction before save_design_spec.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        spec: {
+          type: "object",
+          description:
+            "DesignSpec object (or JSON string) to validate. See save_design_spec for shape.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "get_guide",
     description:
       "Fetch DS guidance by topic. Pass `topics: [...]` to batch multiple guides in one call. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. Component guides include a short `_principlesDigest`; still call `get_guide({ topic: 'principles' })` once per session. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys.",
