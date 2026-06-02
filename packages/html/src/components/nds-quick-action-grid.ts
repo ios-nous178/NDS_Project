@@ -3,12 +3,13 @@
  *
  * 사용:
  *   <nds-quick-action-grid columns="3" gap="16"
- *     actions='[{"key":"call","label":"전화","icon":"☎️","badge":"NEW"},
- *               {"key":"chat","label":"채팅","icon":"💬","badge":"3"},
- *               {"key":"book","label":"예약","icon":"📅","disabled":true}]'>
+ *     actions='[{"key":"call","label":"전화","icon":"<svg ...>...</svg>","badge":"NEW"},
+ *               {"key":"chat","label":"채팅","icon":"<svg ...>...</svg>","badge":"3"},
+ *               {"key":"book","label":"예약","icon":"<svg ...>...</svg>","disabled":true}]'>
  *   </nds-quick-action-grid>
  *
- * 아이템 클릭 시 "quick-action" CustomEvent (detail: { key }) 디스패치.
+ * icon = find_icon({name}) 가 준 inline SVG 마크업 문자열 (이름/이모지 아님 — innerHTML 주입).
+ * actions 는 JSON 속성이라 SVG 안 " 는 \" 로 이스케이프. 아이템 클릭 시 "quick-action" CustomEvent (detail: { key }) 디스패치.
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -25,6 +26,7 @@ type QuickActionColumns = (typeof COLUMN_OPTIONS)[number];
 interface QuickAction {
   key: string;
   label: string;
+  /** inline SVG 마크업 문자열 (find_icon 결과). 이름/이모지가 아니라 innerHTML 로 주입된다. */
   icon: string;
   badge?: string;
   disabled?: boolean;
@@ -93,7 +95,9 @@ export class NdsQuickActionGrid extends NdsElement {
     const icon = document.createElement("span");
     icon.className = QA_ICON_CLASS;
     icon.setAttribute("aria-hidden", "true");
-    icon.textContent = action.icon;
+    // icon = inline SVG 마크업 (find_icon 결과). React QuickActionGrid 의 icon?:ReactNode 와 대칭.
+    // 이름/이모지를 넣으면 그대로 텍스트로 흘러나오므로 innerHTML 로 SVG 를 주입한다. (nds-sidebar 와 동일 규약)
+    icon.innerHTML = action.icon;
     button.appendChild(icon);
 
     const label = document.createElement("span");
