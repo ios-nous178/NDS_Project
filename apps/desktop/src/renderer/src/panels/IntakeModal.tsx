@@ -153,8 +153,9 @@ export function IntakeModal({
   onStarted: (sessionId: string, intent: "html" | "admin-cms", slug: string) => void;
 }): React.JSX.Element {
   const [agentType, setAgentType] = useState<AgentType>("claude");
-  // 전송 방식 — pty(기본 raw TUI) / stream-json(구조화 canary, claude 전용).
-  const [transport, setTransport] = useState<Transport>("pty");
+  // 전송 방식 — stream-json(구조화, claude 기본) / pty(raw TUI). claude 는 구조화가 기본이라
+  // 대화가 카드형으로 보이고 DB(api-sink)에 메시지가 기록된다. codex 는 stream-json 미지원 → pty.
+  const [transport, setTransport] = useState<Transport>("stream-json");
   const [brand, setBrand] = useState("");
   const [surface, setSurface] = useState<Surface>("service");
   // 고객용 화면의 제작 대상 플랫폼(웹 데스크탑/모바일/반응형 · 앱).

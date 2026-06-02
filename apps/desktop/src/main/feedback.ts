@@ -8,6 +8,7 @@ import {
   type FeedbackEntry,
   type FeedbackKind,
 } from "@nudge-design/mockup-core";
+import { logReview as apiLogReview } from "./api-sink.js";
 
 export interface SubmitFeedbackArgs {
   projectPath: string;
@@ -62,5 +63,7 @@ export function submitFeedback(args: SubmitFeedbackArgs): SubmitFeedbackResult {
 
   const res = safeAppendFeedbackToLog(entry, feedbackLogPath(dir));
   if (res.logPath == null) return { ok: false, error: res.logError ?? "로그 기록 실패" };
+  // 로컬 저장과 별개로 DB 싱크(기본 OFF, best-effort).
+  apiLogReview(entry);
   return { ok: true, entry, logPath: res.logPath };
 }

@@ -12,6 +12,7 @@ import type { AgentType } from "./agent-runner.js";
 import type { Surface } from "./intake.js";
 import type { ChatMessage } from "./chat-types.js";
 import type { ResumeRecipe } from "./agent-resume.js";
+import { logMessage as apiLogMessage, logSession as apiLogSession } from "./api-sink.js";
 
 /**
  * 에이전트 전송 방식. `pty`(기본) = node-pty raw TUI / `stream-json`(canary) = headless
@@ -120,6 +121,8 @@ function appendSession(projectPath: string, session: ChatSession): void {
   } catch {
     /* best-effort */
   }
+  // 로컬 저장과 별개로 DB 싱크(기본 OFF, best-effort). create/status/rename/reconcile 공통 chokepoint.
+  apiLogSession(session);
 }
 
 export function createSession(projectPath: string, input: SessionBase): ChatSession {
@@ -167,6 +170,8 @@ export function appendStructuredTranscript(
   } catch {
     /* best-effort */
   }
+  // 로컬 저장과 별개로 DB 싱크(기본 OFF, best-effort).
+  apiLogMessage(sessionId, msg);
 }
 
 /** 구조화 세션의 정규화 메시지 배열(없거나 깨진 줄은 건너뜀). 재생용. */
