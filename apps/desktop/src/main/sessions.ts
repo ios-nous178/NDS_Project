@@ -11,6 +11,7 @@ import { app } from "electron";
 import type { AgentType } from "./agent-runner.js";
 import type { Surface } from "./intake.js";
 import type { ChatMessage } from "./chat-types.js";
+import type { ResumeRecipe } from "./agent-resume.js";
 
 /**
  * 에이전트 전송 방식. `pty`(기본) = node-pty raw TUI / `stream-json`(canary) = headless
@@ -37,7 +38,9 @@ const STRUCTURED_EXT = ".jsonl";
 // interrupted = 사용자가 중지했거나 앱 종료/크래시로 끊긴 세션. 진짜 오류(failed)와 구분한다.
 export type SessionStatus = "active" | "completed" | "failed" | "interrupted";
 
-export interface ChatSession {
+// ResumeRecipe(resume v1 포인터/레시피)를 흡수 — agentSessionId/agentSessionFile/recipe/
+// snapshotVersion/appVersion. 전부 optional이라 옛 세션은 isResumable=false 로 자연 분류된다.
+export interface ChatSession extends ResumeRecipe {
   sessionId: string;
   agentType: AgentType;
   mockupFile?: string;
@@ -65,6 +68,12 @@ export interface ChatSession {
    */
   cols?: number;
   rows?: number;
+  /**
+   * **계산 필드(영속 아님)** — session:list 시점에 main 이 isResumable 로 판정해 붙인다.
+   * 렌더러는 fs 를 못 보므로(네이티브 store 존재 확인 불가) 이 값으로 "이어가기" 버튼을 분기한다.
+   * createSession/updateSessionStatus 는 절대 쓰지 않는다.
+   */
+  resumable?: boolean;
 }
 
 /** create/update 가 받는 세션 베이스(상태/타임스탬프 제외). */

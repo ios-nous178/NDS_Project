@@ -206,6 +206,17 @@ const harness = {
   /** 세션 메타 + raw 트랜스크립트 삭제(실행 중이면 main 이 먼저 종료). */
   deleteSession: (projectPath: string, sessionId: string): Promise<{ ok: boolean }> =>
     ipcRenderer.invoke("session:delete", { projectPath, sessionId }),
+  /**
+   * 끝난 세션을 CLI 네이티브 resume 으로 이어간다(resume v1, resumable 세션만). 성공하면
+   * main 이 PTY 를 재spawn 하므로 렌더러는 sessionId 로 터미널 attach 한다(startIntake 와 동일 패턴).
+   */
+  resumeSession: (
+    projectPath: string,
+    sessionId: string,
+    cols?: number,
+    rows?: number,
+  ): Promise<{ ok: boolean; error?: string }> =>
+    ipcRenderer.invoke("session:resume", { projectPath, sessionId, cols, rows }),
   /** 세션 제목 변경(채팅기록 인라인 편집). 빈 문자열이면 기본 제목으로 복귀. */
   renameSession: (
     projectPath: string,

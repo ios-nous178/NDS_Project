@@ -39,6 +39,7 @@ import {
   SNAPSHOT_VERSION,
   captureCodexSession,
   claudeStoreFile,
+  resumeArgsFor,
   setSessionIdArgsFor,
 } from "./agent-resume.js";
 
@@ -631,18 +632,20 @@ export function startAgent(
     return startStreamAgent(args, binPath, searchPath, mcpConfig, sessionBase, wc);
   }
 
-  const claudeFlags = isClaude
+  // claude 컨텍스트 플래그(MCP + DS 의무) — resume/신규 공통으로 붙인다.
+  const claudeContextFlags = isClaude
     ? [
-        // 우리 sessionId 를 claude 네이티브 세션 id 로 못 박는다(resume v1 토대) — 그러면
-        // `claude --resume <sessionId>` 로 그대로 이어갈 수 있다. claude 는
-        // `~/.claude/projects/<dashed-cwd>/<sessionId>.jsonl` 에 전체 대화를 저장한다.
-        // (stream-json 경로는 이미 --session-id 를 넘긴다. PTY 경로도 여기서 맞춘다.)
-        ...setSessionIdArgsFor(args.agentType, args.sessionId),
         ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
         "--append-system-prompt",
         DS_SYSTEM_MANDATE,
       ]
     : [];
+  // 신규 세션만 --session-id 로 우리 id 를 claude 네이티브 id 로 못 박는다(resume v1 토대) — 그러면
+  // `claude --resume <sessionId>` 로 이어갈 수 있다(`~/.claude/projects/<dashed-cwd>/<id>.jsonl`).
+  // resume 모드는 leadArgs 의 --resume(claude) / resume(codex) 이 세션을 지정하므로 --session-id 금지(충돌).
+  const claudeFlags = args.resume
+    ? claudeContextFlags
+    : [...setSessionIdArgsFor(args.agentType, args.sessionId), ...claudeContextFlags];
 
   // 시드 프롬프트가 있으면 positional 인자로 얹는다(claude [prompt] / codex [PROMPT] → 인터랙티브 유지).
   // ⚠️ `--mcp-config <configs...>` 는 가변 인자라 바로 뒤의 prompt 를 두 번째 config 로 삼킨다.
@@ -663,12 +666,15 @@ export function startAgent(
   };
   const turnHook = setupTurnHook(isClaude, signalTurnDone);
 
-  const ptyArgs = [
-    ...(args.initialPrompt ? [args.initialPrompt] : []),
-    ...spec.args,
-    ...claudeFlags,
-    ...turnHook.settingsArgs,
-  ];
+  // 선두 인자: resume 이면 resume 인자(claude `--resume <id>` / codex `resume <id>` 서브커맨드 —
+  // codex 의 `resume` 는 반드시 첫 토큰), 아니면 시드 프롬프트(positional).
+  const leadArgs = args.resume
+    ? resumeArgsFor(args.agentType, args.resume.agentSessionId)
+    : args.initialPrompt
+      ? [args.initialPrompt]
+      : [];
+
+  const ptyArgs = [...leadArgs, ...spec.args, ...claudeFlags, ...turnHook.settingsArgs];
 
   // Windows: .cmd/.bat 은 실행 파일이 아니라 CreateProcess 로 직접 spawn 불가 →
   // cmd.exe /c 로 감싼다. .exe 는 그대로 직접 spawn (가장 견고).
@@ -755,7 +761,10 @@ export function startAgent(
     });
     // codex 는 시작 시 id 를 못 박으므로 종료 시점에 rollout 헤더(cwd+시각)로 캡처해 resume 포인터를
     // 채운다. claude 는 spawn 시 이미 sessionBase 에 박혔다(여기선 미적용). best-effort.
-    const codexResume = args.agentType === "codex" ? captureCodexSession(cwd, startedAtMs) : null;
+    // resume 모드에선 재캡처하지 않는다 — codex resume 은 헤더 시각이 원본(과거)이라 매칭 실패로
+    // null 이 나면 이미 가진 포인터(sessionBase.agentSessionId)를 덮어써 잃는다. 보존이 정답.
+    const codexResume =
+      args.agentType === "codex" && !args.resume ? captureCodexSession(cwd, startedAtMs) : null;
     const resumeUpdate = codexResume
       ? { agentSessionId: codexResume.id, agentSessionFile: codexResume.file }
       : {};
