@@ -1,6 +1,7 @@
 import {
   existsSync,
   mkdtempSync,
+  readFileSync,
   writeFileSync,
   watchFile,
   unwatchFile,
@@ -35,6 +36,7 @@ import {
   type ValidationOutcome,
 } from "./chat-types.js";
 import type { Surface } from "./intake.js";
+import { scoreMockupQuality } from "./scorer.js";
 import {
   SNAPSHOT_VERSION,
   captureCodexSession,
@@ -231,7 +233,11 @@ const sessionDims = new Map<string, { cols: number; rows: number }>();
  */
 const streamRunning = new Map<
   string,
-  { child: ChildProcess; emit: (msg: ChatMessage) => void; correction: { count: number } }
+  {
+    child: ChildProcess;
+    emit: (msg: ChatMessage) => void;
+    correction: { count: number; llmScored: boolean };
+  }
 >();
 /** 자동 자기교정 최대 횟수(Kraft 와 동일). 초과하면 사용자에게 넘긴다. */
 const AUTO_FIX_CAP = 2;
@@ -428,6 +434,17 @@ function cleanEnv(env: NodeJS.ProcessEnv): { [key: string]: string } {
   const out: { [key: string]: string } = {};
   for (const [k, v] of Object.entries(env)) if (typeof v === "string") out[k] = v;
   return out;
+}
+
+/**
+ * 보조 spawn(LLM scorer 등)이 재사용할 claude 실행 컨텍스트(bin + 정제 env). 없으면 null.
+ * PATH 설치본 또는 앱 동봉본 중 먼저 잡히는 claude — 메인 세션과 동일 해석.
+ */
+export function resolveClaudeSpawn(): { bin: string; env: { [key: string]: string } } | null {
+  const searchPath = agentSearchPath();
+  const bin = resolveAgentBin("claude", searchPath);
+  if (!bin) return null;
+  return { bin, env: cleanEnv({ ...getToolProcessEnv(), PATH: searchPath }) };
 }
 
 /**
@@ -871,7 +888,7 @@ function startStreamAgent(
       notifyAgentTurn(wc, { ok: msg.ok, screenName: args.screenName });
     }
   };
-  const correction = { count: 0 };
+  const correction = { count: 0, llmScored: false };
   streamRunning.set(sessionId, { child, emit, correction });
 
   const buf = new NdjsonBuffer();
@@ -879,10 +896,43 @@ function startStreamAgent(
   const specTracker = new DesignSpecTracker();
   // 자동 자기교정: validate/build 가 error 잔존인 채 턴이 끝나면 위반 목록으로 교정 턴을 쏜다(최대 AUTO_FIX_CAP).
   const corrTracker = new SelfCorrectionTracker();
+  // D3: clean 빌드 후 1회 자동 LLM 채점 → 코드(D1)+LLM(D2) 스코어 카드. 점수 낮아도 자동 교정 X(수동 게이트).
+  const runQualityScore = (v: ValidationOutcome): void => {
+    if (correction.llmScored || !v.buildOutputPath) return;
+    correction.llmScored = true;
+    let html = "";
+    try {
+      html = readFileSync(v.buildOutputPath, "utf8");
+    } catch {
+      correction.llmScored = false; // 못 읽으면 다음 clean 빌드에 재시도
+      return;
+    }
+    const claude = resolveClaudeSpawn();
+    if (!claude) {
+      emit({
+        kind: "design-score",
+        codeScores: v.codeScores ?? null,
+        llm: { ok: false, error: "claude CLI 미발견 — 코드 점수(D1)만 표시" },
+      });
+      return;
+    }
+    emit({ kind: "notice", tone: "info", text: "🤖 LLM 품질 평가 중… (ux·interaction·flow·form)" });
+    void scoreMockupQuality({
+      html,
+      brand: args.brand,
+      surface: args.surface,
+      bin: claude.bin,
+      env: claude.env,
+    }).then((res) => {
+      if (!wc.isDestroyed())
+        emit({ kind: "design-score", codeScores: v.codeScores ?? null, llm: res });
+    });
+  };
   const handleTurnEnd = (v: ValidationOutcome | null): void => {
     if (!v) return; // 이 턴엔 검증이 없었음(스펙/일반 턴) — 건드리지 않는다.
     if (!v.hasErrors) {
       correction.count = 0; // clean pass → 다음 회귀엔 새로 2회.
+      runQualityScore(v); // clean 빌드면 1회 자동 품질 채점(자동 교정은 안 함 — 카드의 '고치기' 버튼은 수동).
       return;
     }
     const rules =
@@ -977,7 +1027,9 @@ function startStreamAgent(
 export function sendStreamTurn(sessionId: string, text: string): void {
   const session = streamRunning.get(sessionId);
   if (!session) return;
-  session.correction.count = 0; // 유저가 직접 턴을 보냄 = 개입 → 자동 자기교정 카운터 리셋.
+  // 유저가 직접 턴을 보냄 = 개입 → 자동 자기교정 카운터 리셋 + LLM 재채점 허용(고치기 후 개선 확인).
+  session.correction.count = 0;
+  session.correction.llmScored = false;
   session.emit({ kind: "user", text });
   session.child.stdin?.write(encodeUserTurn(text));
 }
