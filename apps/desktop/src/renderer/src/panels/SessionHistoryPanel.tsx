@@ -280,14 +280,15 @@ export function SessionHistoryPanel({
           {menuOpen && (
             <div role="menu" style={menuStyle}>
               <div style={menuLabel}>빠른 채팅</div>
-              {/* 클릭 한 번에 바로 시작 — 기본(pty) 으로 띄운다(패널에서 다시 안 고름). */}
+              {/* 클릭 한 번에 바로 시작. claude 는 구조화(stream-json) 기본 — 카드형 + DB 기록.
+                  codex 는 stream-json 미지원이라 pty. (raw 터미널 claude 는 아래 별도 버튼) */}
               {(["claude", "codex"] as AgentType[]).map((t) => (
                 <button
                   key={t}
                   role="menuitem"
                   onClick={() => {
                     setMenuOpen(false);
-                    onNewChat({ agentType: t, transport: "pty" });
+                    onNewChat({ agentType: t, transport: t === "claude" ? "stream-json" : "pty" });
                   }}
                   style={menuItem}
                   onMouseEnter={(e) => (e.currentTarget.style.background = c.bgHover)}
@@ -297,14 +298,15 @@ export function SessionHistoryPanel({
                   {t === "claude" ? "Claude 로 시작" : "Codex 로 시작"}
                 </button>
               ))}
-              {/* 구조화(canary) — Claude 전용 실험 모드. 평소 흐름과 분리해 작게 노출. */}
+              {/* raw 터미널 탈출구 — claude 를 옛 방식(pty TUI)으로. 구조화가 기본이 됐으므로
+                  raw 화면이 필요할 때만 사용. (구조화 메시지가 없어 DB 에는 메타데이터만 기록) */}
               <button
                 role="menuitem"
                 onClick={() => {
                   setMenuOpen(false);
-                  onNewChat({ agentType: "claude", transport: "stream-json" });
+                  onNewChat({ agentType: "claude", transport: "pty" });
                 }}
-                title="Claude 의 stream-json 출력을 카드형 채팅으로 보여주는 실험 모드"
+                title="Claude 를 raw 터미널(pty TUI)로 시작 — 구조화 카드 대신 옛 터미널 화면"
                 style={{ ...menuItem, fontSize: 11.5, color: c.textMuted }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = c.bgHover)}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
@@ -317,11 +319,11 @@ export function SessionHistoryPanel({
                     color: c.text,
                   }}
                 >
-                  <CanaryBird size={9} />
+                  <AgentIcon type="claude" />
                 </span>
                 <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  Claude · 구조화
-                  <span style={{ fontSize: 10, color: c.textMuted }}>(canary)</span>
+                  Claude · 터미널
+                  <span style={{ fontSize: 10, color: c.textMuted }}>(raw)</span>
                 </span>
               </button>
               <div style={menuDivider} />
