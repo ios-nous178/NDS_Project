@@ -12,8 +12,8 @@ import {
   type UsageWebhookQueueFlushResult,
 } from "./usage/tracker.js";
 import { isFilesystemRoot, resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
-import { detectWorkspaceIntent } from "./build-html.js";
-import { reportHtmlMockupUsage } from "./html-analyzer.js";
+import { detectWorkspaceIntent } from "@nudge-design/mockup-core/tools/build-html";
+import { reportHtmlMockupUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
 import { USAGE_WEBHOOK_URL } from "@nudge-design/mockup-core";
 import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
 
