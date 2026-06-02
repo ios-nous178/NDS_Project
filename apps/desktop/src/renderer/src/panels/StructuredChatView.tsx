@@ -49,7 +49,281 @@ function resultFooter(m: Extract<ChatMessage, { kind: "result" }>): string {
   return parts.join(" · ");
 }
 
-function MessageRow({ m }: { m: ChatMessage }): React.JSX.Element | null {
+type DesignSpecMsg = Extract<ChatMessage, { kind: "design-spec" }>;
+type SpecNode = NonNullable<DesignSpecMsg["spec"]["tree"]>[number];
+
+const APPROVE_TURN =
+  "✅ 이 DesignSpec 을 승인합니다. 이 스펙 그대로 컴포넌트 가이드(target:'html') 확인 → index.html 작성 → validate_html_mockup(위반 0) → build_singlefile_html 까지 진행해줘.";
+const REJECT_PREFIX =
+  "✋ 이 방향 말고 아래 피드백을 반영해서 save_design_spec 으로 스펙을 다시 만들어줘 (아직 코드는 쓰지 말 것):\n";
+
+/** DesignSpec 트리(컴포넌트명 + 의도)를 들여쓰기로 재귀 렌더. geometry 는 없다(의도만). */
+function SpecTree({
+  nodes,
+  depth = 0,
+}: {
+  nodes?: SpecNode[];
+  depth?: number;
+}): React.JSX.Element | null {
+  if (!nodes || nodes.length === 0) return null;
+  return (
+    <>
+      {nodes.map((n, i) => (
+        <div key={i}>
+          <div
+            style={{
+              fontSize: 12,
+              fontFamily: mono,
+              color: c.text,
+              lineHeight: 1.7,
+              paddingLeft: depth * 14,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {depth > 0 && <span style={{ color: c.textFaint }}>└ </span>}
+            <span style={{ fontWeight: 600 }}>{n.component ?? "?"}</span>
+            {n.role && <span style={{ color: c.textMuted }}> · {n.role}</span>}
+          </div>
+          <SpecTree nodes={n.children} depth={depth + 1} />
+        </div>
+      ))}
+    </>
+  );
+}
+
+/**
+ * design-spec 카드 — 코드前 soft 승인 게이트의 렌더 단위.
+ * 검증 통과/위반·의도 트리·결정·메타를 보여주고, 라이브·미승인(isPending)일 때만
+ * [승인하고 빌드] / [수정 요청] 버튼을 띄운다. 버튼은 onAction(다음 유저 턴)으로 흐른다.
+ */
+function DesignSpecCard({
+  m,
+  isPending,
+  onAction,
+}: {
+  m: DesignSpecMsg;
+  isPending?: boolean;
+  onAction?: (text: string) => void;
+}): React.JSX.Element {
+  const [rejecting, setRejecting] = useState(false);
+  const [note, setNote] = useState("");
+  const errors = m.violations.filter((v) => v.severity === "error");
+  const warns = m.violations.filter((v) => v.severity === "warn");
+  const screen = m.spec.screen ?? {};
+  const base = m.path ? m.path.split(/[\\/]/).pop() : null;
+  const sendReject = (): void => {
+    onAction?.(REJECT_PREFIX + (note.trim() || "(구체적 피드백 없음 — 다른 구성으로 다시 제안)"));
+    setNote("");
+    setRejecting(false);
+  };
+  return (
+    <div
+      style={{
+        alignSelf: "stretch",
+        border: `1px solid ${m.ok ? c.accent : c.red}`,
+        background: c.bgElevated,
+        borderRadius: 10,
+        padding: 12,
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: c.text }}>📐 DesignSpec</span>
+        {m.brand && (
+          <span
+            style={{
+              fontSize: 10.5,
+              color: c.textMuted,
+              border: `1px solid ${c.border}`,
+              borderRadius: 999,
+              padding: "1px 7px",
+            }}
+          >
+            {m.brand}
+            {screen.surface ? ` · ${screen.surface}` : ""}
+          </span>
+        )}
+        <span
+          style={{
+            marginLeft: "auto",
+            fontSize: 11,
+            fontWeight: 700,
+            color: m.ok ? c.green : c.red,
+          }}
+        >
+          {m.ok ? "✓ 검증 통과" : `✕ error ${m.summary.error}`}
+          {m.summary.warn > 0 ? ` · warn ${m.summary.warn}` : ""}
+        </span>
+      </div>
+
+      {screen.intent && (
+        <div style={{ fontSize: 12.5, color: c.text, lineHeight: 1.5 }}>{screen.intent}</div>
+      )}
+
+      {m.spec.tree && m.spec.tree.length > 0 && (
+        <div
+          style={{
+            background: c.bg,
+            border: `1px solid ${c.borderSubtle}`,
+            borderRadius: 6,
+            padding: "7px 9px",
+            overflowX: "auto",
+          }}
+        >
+          <SpecTree nodes={m.spec.tree} />
+        </div>
+      )}
+
+      {m.spec.decisions && m.spec.decisions.length > 0 && (
+        <ul
+          style={{
+            margin: 0,
+            paddingLeft: 16,
+            fontSize: 11.5,
+            color: c.textMuted,
+            lineHeight: 1.6,
+          }}
+        >
+          {m.spec.decisions.map((d, i) => (
+            <li key={i}>{d}</li>
+          ))}
+        </ul>
+      )}
+
+      {(errors.length > 0 || warns.length > 0) && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {errors
+            .concat(warns)
+            .slice(0, 6)
+            .map((v, i) => (
+              <div
+                key={i}
+                style={{
+                  fontSize: 11,
+                  fontFamily: mono,
+                  color: v.severity === "error" ? c.red : c.yellow,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+                title={`${v.path}: ${v.message}`}
+              >
+                {v.severity === "error" ? "✕" : "⚠"} {v.rule} · {v.message}
+              </div>
+            ))}
+        </div>
+      )}
+
+      <div style={{ fontSize: 10.5, color: c.textFaint, fontFamily: mono }}>
+        컴포넌트 {m.componentsUsed.length} · 토큰 {m.tokensUsed.length}
+        {base ? ` · ${base}` : ""}
+      </div>
+
+      {isPending && onAction && (
+        <div style={{ borderTop: `1px solid ${c.borderSubtle}`, paddingTop: 9 }}>
+          {!rejecting ? (
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <button
+                onClick={() => onAction(APPROVE_TURN)}
+                disabled={!m.ok}
+                style={!m.ok ? primaryBtnDisabled : primaryBtn}
+                title={m.ok ? "이 스펙대로 빌드까지 진행" : "error 를 고친 새 스펙이 필요합니다"}
+              >
+                승인하고 빌드
+              </button>
+              <button
+                onClick={() => setRejecting(true)}
+                style={{
+                  ...btnReset,
+                  padding: "6px 12px",
+                  borderRadius: 6,
+                  border: `1px solid ${c.border}`,
+                  background: c.bg,
+                  color: c.text,
+                  cursor: "pointer",
+                  fontSize: 12,
+                }}
+              >
+                수정 요청
+              </button>
+              {!m.ok && (
+                <span style={{ fontSize: 11, color: c.textFaint }}>
+                  error 를 고친 새 스펙이 올 때까지 승인할 수 없어요.
+                </span>
+              )}
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendReject();
+                  }
+                }}
+                placeholder="어떻게 바꿀지 알려주세요 (Enter 전송 · Shift+Enter 줄바꿈)"
+                rows={2}
+                autoFocus
+                style={{
+                  resize: "none",
+                  boxSizing: "border-box",
+                  padding: "7px 9px",
+                  borderRadius: 6,
+                  border: `1px solid ${c.border}`,
+                  background: c.bg,
+                  color: c.text,
+                  fontSize: 12.5,
+                  fontFamily: font,
+                  lineHeight: 1.5,
+                  outline: "none",
+                }}
+              />
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={sendReject} style={primaryBtn}>
+                  다시 제안 요청
+                </button>
+                <button
+                  onClick={() => {
+                    setRejecting(false);
+                    setNote("");
+                  }}
+                  style={{
+                    ...btnReset,
+                    padding: "6px 12px",
+                    borderRadius: 6,
+                    border: `1px solid ${c.border}`,
+                    background: c.bg,
+                    color: c.textMuted,
+                    cursor: "pointer",
+                    fontSize: 12,
+                  }}
+                >
+                  취소
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MessageRow({
+  m,
+  isPending,
+  onAction,
+}: {
+  m: ChatMessage;
+  isPending?: boolean;
+  onAction?: (text: string) => void;
+}): React.JSX.Element | null {
   switch (m.kind) {
     case "user":
       return (
@@ -179,17 +453,62 @@ function MessageRow({ m }: { m: ChatMessage }): React.JSX.Element | null {
           {m.text}
         </div>
       );
+    case "notice":
+      return (
+        <div
+          style={{
+            alignSelf: "center",
+            maxWidth: "92%",
+            textAlign: "center",
+            fontSize: 11.5,
+            fontFamily: mono,
+            lineHeight: 1.5,
+            color: m.tone === "warn" ? c.yellow : c.textMuted,
+            background: c.bgElevated,
+            border: `1px solid ${m.tone === "warn" ? c.yellow : c.borderSubtle}`,
+            borderRadius: 8,
+            padding: "5px 11px",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+          }}
+        >
+          {m.text}
+        </div>
+      );
+    case "design-spec":
+      return <DesignSpecCard m={m} isPending={isPending} onAction={onAction} />;
     default:
       return null;
   }
 }
 
 /** 메시지 리스트(자동 스크롤). 라이브·재생 공통. */
-function MessageList({ messages }: { messages: ChatMessage[] }): React.JSX.Element {
+function MessageList({
+  messages,
+  onAction,
+  live,
+}: {
+  messages: ChatMessage[];
+  /** 라이브일 때 design-spec 카드의 승인/수정 버튼이 보내는 다음 유저 턴. */
+  onAction?: (text: string) => void;
+  /** 라이브 세션(입력 가능)이면 마지막 미승인 design-spec 에 게이트 버튼을 띄운다. */
+  live?: boolean;
+}): React.JSX.Element {
   const endRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
   }, [messages.length]);
+  // 게이트 버튼은 "마지막 design-spec 이고 그 뒤 유저 턴이 아직 없을 때"만(= 미승인).
+  let lastSpecIdx = -1;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].kind === "design-spec") {
+      lastSpecIdx = i;
+      break;
+    }
+  }
+  const userAfter =
+    lastSpecIdx >= 0 && messages.slice(lastSpecIdx + 1).some((m) => m.kind === "user");
+  const pendingIdx = live && lastSpecIdx >= 0 && !userAfter ? lastSpecIdx : -1;
   return (
     <div
       style={{
@@ -208,7 +527,7 @@ function MessageList({ messages }: { messages: ChatMessage[] }): React.JSX.Eleme
         </div>
       )}
       {messages.map((m, i) => (
-        <MessageRow key={i} m={m} />
+        <MessageRow key={i} m={m} onAction={onAction} isPending={i === pendingIdx} />
       ))}
       <div ref={endRef} />
     </div>
@@ -237,7 +556,7 @@ export function StructuredChatView({
   };
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
-      <MessageList messages={messages} />
+      <MessageList messages={messages} onAction={onSend} live={!disabled} />
       <div style={{ borderTop: `1px solid ${c.border}`, padding: 10, display: "flex", gap: 8 }}>
         <textarea
           value={draft}

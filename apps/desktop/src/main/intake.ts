@@ -205,6 +205,7 @@ function bootstrapDoc(brand: string, surface: Surface, intent: string): string {
 - brief.md 의 "UI 방향 결정" 섹션이 있으면 그 결정을 우선한다. auto/propose 모드면 코드 작성 전 방향 판단/제안을 먼저 끝낸다.
 - 워크플로우(intent=${intent}): get_guide({topic:'principles'}) + dos-donts → get_brand({brand:'${brand}'})
   → get_guide({topic:'pattern:ui-direction-proposal'})
+  → (복잡/다단계 화면이거나 구성 합의가 필요하면) save_design_spec 으로 경량 DesignSpec 작성·검증(ok:true) 후 사용자에게 보여주고 동의 — 단순 화면은 생략. 룰·스키마: get_guide({topic:'pattern:design-spec'})
   → 컴포넌트 가이드 1개씩(target:'html') → index.html 을 <nds-*> + 시멘틱 토큰으로 작성(raw hex 금지)
   → validate_html_mockup → build_singlefile_html (html intent 는 자동 검증).
 - **이 폴더에 곧장 index.html 을 쓰세요.** vite/npm·get_setup 스캐폴딩·DS 패키지 설치는 불필요합니다 —

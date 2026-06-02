@@ -12,7 +12,7 @@ import { delimiter, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn as cpSpawn, execFileSync, type ChildProcess } from "node:child_process";
 import { spawn as ptySpawn, type IPty } from "node-pty";
-import { Notification, BrowserWindow, type WebContents } from "electron";
+import { app, Notification, BrowserWindow, type WebContents } from "electron";
 import { getAugmentedPath, getToolProcessEnv } from "@nudge-design/mockup-core";
 import { logAppEvent } from "./events.js";
 import { ensureBundledMcpConfig } from "./mcp-config.js";
@@ -25,8 +25,22 @@ import {
   type SessionStatus,
   type Transport,
 } from "./sessions.js";
-import { NdjsonBuffer, encodeUserTurn, mapClaudeEvent, type ChatMessage } from "./chat-types.js";
+import {
+  DesignSpecTracker,
+  NdjsonBuffer,
+  SelfCorrectionTracker,
+  encodeUserTurn,
+  mapClaudeEvent,
+  type ChatMessage,
+  type ValidationOutcome,
+} from "./chat-types.js";
 import type { Surface } from "./intake.js";
+import {
+  SNAPSHOT_VERSION,
+  captureCodexSession,
+  claudeStoreFile,
+  setSessionIdArgsFor,
+} from "./agent-resume.js";
 
 /**
  * AgentRunner — 사용자 머신에 설치된 CLI 를 PTY 로 spawn 하는 어댑터 seam.
@@ -171,6 +185,16 @@ export interface StartAgentArgs {
   transport?: Transport;
   cols?: number;
   rows?: number;
+  /**
+   * resume 모드 — 기존 세션을 CLI 네이티브 resume 으로 이어간다(v1). 있으면 initialPrompt·
+   * --session-id 대신 resume 인자(claude `--resume <id>` / codex `resume <id>`)로 spawn 한다.
+   * resume 은 항상 PTY(claude store 는 transport 무관이라 stream-json 세션도 PTY 로 이어감).
+   */
+  resume?: {
+    agentSessionId: string;
+    /** 저장돼 있던 네이티브 store 경로(codex 재캡처 실패로 잃지 않게 그대로 보존). */
+    agentSessionFile?: string;
+  };
 }
 
 /**
@@ -182,6 +206,7 @@ const DS_SYSTEM_MANDATE = [
   "이 작업공간은 Nudge 디자인 시스템(DS) 목업 전용입니다.",
   "UI·화면·컴포넌트·토큰·아이콘을 만들거나 수정할 때는 추측하지 말고 반드시 nudge-ds MCP 도구를 먼저 사용하세요:",
   "- 작업 시작 시 get_guide({topic:'principles'}) 와 dos-donts 확인.",
+  "- 복잡/다단계 화면이거나 사용자와 구성 합의가 필요하면, HTML 작성 전에 save_design_spec 으로 경량 DesignSpec(컴포넌트 트리+시멘틱 토큰 이름+근거)을 만들고 ok:true + 사용자 동의 후 빌드(soft gate). 단순 화면은 생략. 룰: get_guide({topic:'pattern:design-spec'}).",
   "- 컴포넌트는 find_component → get_guide({topic:'component:<Name>', target:'html'}) 로 props/함정 확인.",
   "- 색/여백은 find_token (시멘틱 --semantic-* / --nds-* 만, raw hex 금지).",
   "- 아이콘은 find_icon({query})로 찾고 find_icon({name})으로 붙여넣을 inline svg 를 받으세요(npm 설치 불필요). 이모지/텍스트 기호 금지.",
@@ -196,8 +221,16 @@ const running = new Map<string, IPty>();
  * 녹화 폭에 종속이라 다른 폭으로 흘리면 전각(한글)이 깨진다.
  */
 const sessionDims = new Map<string, { cols: number; rows: number }>();
-/** stream-json(canary) 세션. child = 상주 claude 프로세스, emit = 정규화 메시지 저장+전송 클로저. */
-const streamRunning = new Map<string, { child: ChildProcess; emit: (msg: ChatMessage) => void }>();
+/**
+ * stream-json(canary) 세션. child = 상주 claude 프로세스, emit = 정규화 메시지 저장+전송 클로저.
+ * correction = 자동 자기교정 횟수(턴이 error 잔존으로 끝나면 하네스가 교정 턴을 쏜다; 유저 개입 시 0 으로 리셋).
+ */
+const streamRunning = new Map<
+  string,
+  { child: ChildProcess; emit: (msg: ChatMessage) => void; correction: { count: number } }
+>();
+/** 자동 자기교정 최대 횟수(Kraft 와 동일). 초과하면 사용자에게 넘긴다. */
+const AUTO_FIX_CAP = 2;
 
 const isWindows = process.platform === "win32";
 
@@ -518,6 +551,37 @@ export function startAgent(
     return { ok: false, error: "구조화(stream-json) 모드는 Claude 에서만 지원됩니다." };
   }
 
+  const isClaude = args.agentType === "claude";
+  // --mcp-config(앱 동봉 nudge-ds MCP, claude 전용) — resume 레시피에 "MCP 붙였나"로도 기록한다.
+  const mcpConfig = isClaude ? ensureBundledMcpConfig() : null;
+  const cwd = args.cwdOverride ?? args.projectPath;
+
+  // resume v1 레시피 — 같은 컨텍스트로 재구동하기 위한 최소 기록. claude 는 우리 sessionId 가 곧
+  // 네이티브 id 이고 store 경로가 결정적이라 spawn 시점에 박는다. codex 는 시작 시 id 를 못 박으므로
+  // onExit 에서 rollout 헤더(cwd+timestamp)로 캡처한다(아래 captureCodexSession).
+  const resumeRecipe = args.resume
+    ? {
+        // resume: 이미 알고 있는 네이티브 id/파일을 그대로 보존(codex 재캡처가 헤더 시각 차이로
+        // 실패해도 포인터를 잃지 않는다). 레시피는 현재 spawn 기준으로 갱신.
+        agentSessionId: args.resume.agentSessionId,
+        agentSessionFile: args.resume.agentSessionFile,
+        recipe: { mcpConfig: Boolean(mcpConfig), appendSystemPrompt: isClaude },
+        snapshotVersion: SNAPSHOT_VERSION,
+        appVersion: app.getVersion(),
+      }
+    : {
+        recipe: { mcpConfig: Boolean(mcpConfig), appendSystemPrompt: isClaude },
+        snapshotVersion: SNAPSHOT_VERSION,
+        appVersion: app.getVersion(),
+        // claude 는 우리 id 가 곧 네이티브 id, store 경로 결정적 → 지금 박는다. codex 는 onExit 캡처.
+        ...(isClaude
+          ? {
+              agentSessionId: args.sessionId,
+              agentSessionFile: claudeStoreFile(cwd, args.sessionId),
+            }
+          : {}),
+      };
+
   const sessionBase = {
     sessionId: args.sessionId,
     agentType: args.agentType,
@@ -529,10 +593,11 @@ export function startAgent(
     intent: args.intent,
     transport,
     // 작업 폴더(PTY cwd) — 전역 저장이라 세션마다 다를 수 있어 카드에 경로로 표시.
-    cwd: args.cwdOverride ?? args.projectPath,
+    cwd,
     // 녹화 폭 — 기록 재생을 이 폭으로 고정해 한글(전각) 깨짐을 막는다(pty 전용, 라이브 리사이즈로 갱신).
     cols: args.cols,
     rows: args.rows,
+    ...resumeRecipe,
   };
 
   const searchPath = agentSearchPath();
@@ -556,12 +621,9 @@ export function startAgent(
     payload: { agentType: args.agentType },
   });
 
-  // claude 전용 플래그:
-  //  · --mcp-config       : 앱 동봉 nudge-ds MCP 를 얹는다(비-strict = 추가형). 번들 없으면 생략.
-  //  · --append-system-prompt : DS 사용 의무를 매 턴 시스템 프롬프트에 강제 주입(억지로 nds 쓰게).
-  // (codex 는 두 플래그가 없어 워크스페이스 AGENTS.md 로 컨텍스트를 받는다.)
-  const isClaude = args.agentType === "claude";
-  const mcpConfig = isClaude ? ensureBundledMcpConfig() : null;
+  // claude 전용 플래그(아래 claudeFlags): --mcp-config(앱 동봉 nudge-ds MCP, 비-strict 추가형) +
+  // --append-system-prompt(DS 사용 의무 주입). codex 는 둘 다 없이 워크스페이스 AGENTS.md 로 컨텍스트.
+  // (isClaude/mcpConfig/cwd 는 위 resume 레시피 계산에서 이미 선언됨.)
 
   // 구조화(stream-json) transport 는 PTY 가 아니라 piped child_process 로 분기. createSession/
   // agent_started 로그는 위에서 이미 공통으로 처리됨 — 여기선 spawn + 이벤트 배선만.
@@ -571,6 +633,11 @@ export function startAgent(
 
   const claudeFlags = isClaude
     ? [
+        // 우리 sessionId 를 claude 네이티브 세션 id 로 못 박는다(resume v1 토대) — 그러면
+        // `claude --resume <sessionId>` 로 그대로 이어갈 수 있다. claude 는
+        // `~/.claude/projects/<dashed-cwd>/<sessionId>.jsonl` 에 전체 대화를 저장한다.
+        // (stream-json 경로는 이미 --session-id 를 넘긴다. PTY 경로도 여기서 맞춘다.)
+        ...setSessionIdArgsFor(args.agentType, args.sessionId),
         ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
         "--append-system-prompt",
         DS_SYSTEM_MANDATE,
@@ -611,6 +678,9 @@ export function startAgent(
     : binPath;
   const spawnArgs = useCmdWrapper ? ["/d", "/s", "/c", binPath, ...ptyArgs] : ptyArgs;
 
+  // codex 세션 id 사후 캡처 기준 시각 — onExit 에서 이 시각 이후 생성된 rollout(cwd 일치)을 찾는다.
+  const startedAtMs = Date.now();
+
   let proc: IPty;
   try {
     proc = ptySpawn(spawnFile, spawnArgs, {
@@ -618,7 +688,8 @@ export function startAgent(
       // "xterm-color"(8색)면 claude 주황이 가장 가까운 ANSI-16(빨강)으로 떨어져 "클로드가 빨갛게"
       // 보이는 문제가 생긴다 — xterm.js 는 truecolor 를 지원하므로 환경만 알려주면 된다.
       name: "xterm-256color",
-      cwd: args.cwdOverride ?? args.projectPath,
+      // resume store 경로 예측(claudeStoreFile)과 반드시 같은 cwd 여야 한다 — 같은 const 사용.
+      cwd,
       env: cleanEnv({
         ...getToolProcessEnv(),
         PATH: searchPath,
@@ -682,9 +753,17 @@ export function startAgent(
       mockupFile: args.mockupFile,
       payload: { agentType: args.agentType, exitCode, signal },
     });
+    // codex 는 시작 시 id 를 못 박으므로 종료 시점에 rollout 헤더(cwd+시각)로 캡처해 resume 포인터를
+    // 채운다. claude 는 spawn 시 이미 sessionBase 에 박혔다(여기선 미적용). best-effort.
+    const codexResume = args.agentType === "codex" ? captureCodexSession(cwd, startedAtMs) : null;
+    const resumeUpdate = codexResume
+      ? { agentSessionId: codexResume.id, agentSessionFile: codexResume.file }
+      : {};
     updateSessionStatus(
       args.projectPath,
-      dims ? { ...sessionBase, cols: dims.cols, rows: dims.rows } : sessionBase,
+      dims
+        ? { ...sessionBase, cols: dims.cols, rows: dims.rows, ...resumeUpdate }
+        : { ...sessionBase, ...resumeUpdate },
       status,
     );
     if (!wc.isDestroyed()) wc.send("agent:exit", { sessionId: args.sessionId, exitCode });
@@ -768,11 +847,49 @@ function startStreamAgent(
       notifyAgentTurn(wc, { ok: msg.ok, screenName: args.screenName });
     }
   };
-  streamRunning.set(sessionId, { child, emit });
+  const correction = { count: 0 };
+  streamRunning.set(sessionId, { child, emit, correction });
 
   const buf = new NdjsonBuffer();
+  // save_design_spec 의 tool_use↔tool_result 를 상관시켜 design-spec 카드(코드前 승인 게이트)를 만든다.
+  const specTracker = new DesignSpecTracker();
+  // 자동 자기교정: validate/build 가 error 잔존인 채 턴이 끝나면 위반 목록으로 교정 턴을 쏜다(최대 AUTO_FIX_CAP).
+  const corrTracker = new SelfCorrectionTracker();
+  const handleTurnEnd = (v: ValidationOutcome | null): void => {
+    if (!v) return; // 이 턴엔 검증이 없었음(스펙/일반 턴) — 건드리지 않는다.
+    if (!v.hasErrors) {
+      correction.count = 0; // clean pass → 다음 회귀엔 새로 2회.
+      return;
+    }
+    const rules =
+      v.errorRules.map((r) => `${r.rule}(${r.count})`).join(", ") || "(상세는 validate 응답 참고)";
+    if (correction.count < AUTO_FIX_CAP) {
+      correction.count += 1;
+      emit({
+        kind: "notice",
+        tone: "info",
+        text: `🔧 자동 수정 ${correction.count}/${AUTO_FIX_CAP} — validate error ${v.errorCount}건 재요청: ${rules}`,
+      });
+      const turn =
+        `🔧 [자동 수정 ${correction.count}/${AUTO_FIX_CAP}] validate 에 아직 error ${v.errorCount}건이 남았어: ${rules}. ` +
+        `새 컴포넌트/장식을 추가하지 말고 이 error 들만 0 으로 고친 뒤, 다시 validate_html_mockup (필요하면 build_singlefile_html) 으로 위반 0 을 확인해줘.`;
+      if (child.stdin?.writable) child.stdin.write(encodeUserTurn(turn));
+    } else {
+      // 2회 소진 — 더 안 쏜다. 유저가 턴을 보내면 sendStreamTurn 이 count 를 0 으로 리셋해 재개 가능.
+      emit({
+        kind: "notice",
+        tone: "warn",
+        text: `⚠️ 자동 수정 ${AUTO_FIX_CAP}회 후에도 error ${v.errorCount}건이 남았어요 — 직접 확인이 필요합니다: ${rules}`,
+      });
+    }
+  };
   const drain = (events: unknown[]): void => {
-    for (const evt of events) for (const msg of mapClaudeEvent(evt)) emit(msg);
+    for (const evt of events) {
+      for (const msg of mapClaudeEvent(evt)) emit(msg);
+      for (const msg of specTracker.observe(evt)) emit(msg);
+      const turn = corrTracker.observe(evt);
+      if (turn) handleTurnEnd(turn.validation);
+    }
   };
   child.stdout?.setEncoding("utf8");
   child.stdout?.on("data", (chunk: string) => drain(buf.push(chunk)));
@@ -836,6 +953,7 @@ function startStreamAgent(
 export function sendStreamTurn(sessionId: string, text: string): void {
   const session = streamRunning.get(sessionId);
   if (!session) return;
+  session.correction.count = 0; // 유저가 직접 턴을 보냄 = 개입 → 자동 자기교정 카운터 리셋.
   session.emit({ kind: "user", text });
   session.child.stdin?.write(encodeUserTurn(text));
 }
