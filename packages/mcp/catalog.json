@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-04T00:54:14.808Z",
+  "generatedAt": "2026-06-04T04:14:32.442Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -4934,6 +4934,38 @@
       ],
       "dtsRelPath": "packages/react/dist/Select.d.ts",
       "htmlTag": "nds-select"
+    },
+    {
+      "name": "SelectionButtonGroup",
+      "props": [
+        {
+          "name": "options",
+          "optional": false,
+          "type": "SelectionButtonOption<T>[]"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "T"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: T) => void"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/SelectionButtonGroup.d.ts",
+      "htmlTag": "nds-selection-button-group"
     },
     {
       "name": "SelectionCard",
@@ -10212,6 +10244,7 @@
     "nds-segmented-control",
     "nds-select",
     "nds-select-option",
+    "nds-selection-button-group",
     "nds-selection-card",
     "nds-selection-card-item",
     "nds-share-sheet",
@@ -10678,6 +10711,10 @@
     },
     {
       "tag": "nds-select",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-selection-button-group",
       "attrs": {}
     },
     {

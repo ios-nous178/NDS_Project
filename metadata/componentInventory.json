@@ -266,6 +266,18 @@
     "notes": "단순 라벨만 있는 선택은 Radio/Checkbox 사용. SelectionCard는 카드 단위 의미 있는 선택지용."
   },
   {
+    "name": "SelectionButtonGroup",
+    "category": "입력",
+    "status": "implemented",
+    "description": "폼 내 상호 배타적 옵션의 단일 선택. 브랜드색 아웃라인 개별 버튼(2~3개), FormField ContentSlot 교체용.",
+    "storybookTitle": "Components/SelectionButtonGroup",
+    "docsPath": "/components/selection-button-group",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-703",
+    "figmaNodeId": "3555:703",
+    "usageSummary": "광고 노출 시간(항상/특정 시간만), 예산 설정 방식(일별/요일별) 등 상호 배타적 옵션",
+    "notes": "SegmentedControl(연결된 회색 트랙, 뷰/상태 전환)과 구분 — 이건 폼 입력용 개별 브랜드색 버튼. 4개 이상은 Select/SelectionCard."
+  },
+  {
     "name": "Snackbar",
     "category": "피드백",
     "status": "implemented",

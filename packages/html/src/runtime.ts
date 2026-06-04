@@ -86,6 +86,7 @@ import "./components/nds-coupon-card.js";
 import "./components/nds-media-card.js";
 import "./components/nds-score-gauge.js";
 import "./components/nds-selection-card.js";
+import "./components/nds-selection-button-group.js";
 import "./components/nds-share-sheet.js";
 import "./components/nds-filter-bar.js";
 import "./components/nds-time-slot-picker.js";

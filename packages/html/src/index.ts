@@ -233,6 +233,7 @@ export type { GaugeLevel } from "./components/nds-score-gauge.js";
 
 export { NdsSelectionCard, NdsSelectionCardItem } from "./components/nds-selection-card.js";
 export type { SelectionCardMode, SelectionCardLayout } from "./components/nds-selection-card.js";
+export { NdsSelectionButtonGroup } from "./components/nds-selection-button-group.js";
 
 export { NdsShareSheet } from "./components/nds-share-sheet.js";
 
