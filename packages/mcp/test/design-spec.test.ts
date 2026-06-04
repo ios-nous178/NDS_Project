@@ -172,6 +172,66 @@ describe("validateDesignSpec", () => {
     expect(validateDesignSpec("nope").ok).toBe(false);
     expect(validateDesignSpec([]).ok).toBe(false);
   });
+
+  it("requires a page pattern for a cashwalk-biz admin screen", () => {
+    const r = validateDesignSpec({
+      ...validSpec,
+      screen: { brand: "cashwalk-biz", surface: "web", intent: "정산 목록", surfaceKind: "admin" },
+    });
+    expect(r.violations.map((v) => v.rule)).toContain("cashwalk-biz-admin-page-pattern");
+    expect(r.ok).toBe(false);
+  });
+
+  it("accepts a cashwalk-biz admin screen with a valid page pattern", () => {
+    const r = validateDesignSpec({
+      ...validSpec,
+      screen: {
+        brand: "cashwalk-biz",
+        surface: "web",
+        intent: "정산 목록",
+        surfaceKind: "admin",
+        pagePattern: "list",
+      },
+    });
+    expect(r.violations.map((v) => v.rule)).not.toContain("cashwalk-biz-admin-page-pattern");
+    expect(r.ok).toBe(true);
+  });
+
+  it("flags an unknown page pattern value on a cashwalk-biz admin screen", () => {
+    const r = validateDesignSpec({
+      ...validSpec,
+      screen: {
+        brand: "cashpobi",
+        surface: "web",
+        intent: "보드",
+        surfaceKind: "admin",
+        pagePattern: "kanban",
+      },
+    });
+    const hit = r.violations.find((v) => v.rule === "cashwalk-biz-admin-page-pattern");
+    expect(hit?.severity).toBe("error");
+  });
+
+  it("does NOT require a page pattern for a non-admin cashwalk-biz screen", () => {
+    const r = validateDesignSpec({
+      ...validSpec,
+      screen: {
+        brand: "cashwalk-biz",
+        surface: "web",
+        intent: "프로모션 홈",
+        surfaceKind: "service",
+      },
+    });
+    expect(r.violations.map((v) => v.rule)).not.toContain("cashwalk-biz-admin-page-pattern");
+  });
+
+  it("does NOT require a page pattern for another brand's admin screen", () => {
+    const r = validateDesignSpec({
+      ...validSpec,
+      screen: { brand: "trost", surface: "web", intent: "관리", surfaceKind: "admin" },
+    });
+    expect(r.violations.map((v) => v.rule)).not.toContain("cashwalk-biz-admin-page-pattern");
+  });
 });
 
 describe("parseDesignSpecInput", () => {

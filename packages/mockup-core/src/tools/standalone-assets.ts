@@ -294,6 +294,31 @@ export function canonicalBrandSlug(brand?: string): string | undefined {
 }
 
 /**
+ * 캐시워크 포 비즈니스(cashwalk-biz) 어드민 Page Pattern System 의 5종 패턴 slug — SSOT.
+ * 가이드 본문은 `get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' })` 와 개별
+ * `cashwalk-biz-page-{onboarding|dashboard|list|detail|form}`. 이 상수는 게이트(validateDesignSpec /
+ * html-validator)가 "캐포비 어드민이면 5종 중 하나를 선언" 을 강제할 때 허용값 enum 으로 쓴다.
+ */
+export const CASHWALK_BIZ_PAGE_PATTERNS = [
+  "onboarding",
+  "dashboard",
+  "list",
+  "detail",
+  "form",
+] as const;
+
+export type CashwalkBizPagePattern = (typeof CASHWALK_BIZ_PAGE_PATTERNS)[number];
+
+/** 입력을 정규화(소문자·trim)해 5종 패턴이면 그대로, 아니면 undefined. */
+export function canonicalPagePattern(value?: string): CashwalkBizPagePattern | undefined {
+  const n = value?.trim().toLowerCase();
+  if (!n) return undefined;
+  return (CASHWALK_BIZ_PAGE_PATTERNS as readonly string[]).includes(n)
+    ? (n as CashwalkBizPagePattern)
+    : undefined;
+}
+
+/**
  * 브랜드에 맞는 prebuilt 자산(runtime JS + 조합된 CSS)을 읽어 반환.
  * @param brand 브랜드 slug(별칭 허용). 미지정/미지 브랜드는 manifest.baseOnlyBrand 로 폴백하되,
  *   미지 브랜드는 `recognized:false` 로 표시해 호출부가 조용한 블루 회귀를 감지하게 한다.
