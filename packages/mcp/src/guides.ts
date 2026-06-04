@@ -1,3 +1,9 @@
+import {
+  CASHWALK_BIZ_ADMIN_SIDEBAR_HTML,
+  CASHWALK_BIZ_ADMIN_SIDEBAR_REACT,
+  CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS,
+} from "./guides/cashwalk-biz-sidebar-example.js";
+
 /**
  * 컴포넌트별 사용 가이드 — d.ts 파싱만으로는 잡히지 않는
  * "이 컴포넌트를 어떻게 써야 하는가"의 큐레이션된 지식.
@@ -1263,6 +1269,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "footer 와 user 를 동시에 주면 footer 가 우선. user 는 'avatar + 이름 + 역할' 정형 패턴 단축이라 footer 가 있으면 무시.",
     ],
     recommended: [
+      "**캐포비 어드민이면 ready-made 픽업**: items 를 손으로 만들지 말고 `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' })` 의 복붙 트리(React/HTML, 아이콘 inline 완료)를 쓰고 activeKey 만 화면 키로. BrandHeader/Footer 처럼 한 번에 끌어온다.",
       "<Sidebar items={items} activeKey={key} onItemClick={(it) => navigate(it.key)} user={{ name, role }} />",
       "섹션 그룹: items={[{ key: 'content', label: '콘텐츠 운영', items: [...] }, { key: 'system', label: '시스템', items: [...] }]}",
       "icon-only 사이드바: collapsed + onToggleCollapse 페어로 controlled. 토글 버튼은 헤더에 자동 노출.",
@@ -6096,6 +6103,69 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   //    실측으로 채워야 한다(순차 업데이트 2단계). 현재 rules 는 Slack 정리본의 구성
   //    슬롯 수준만 담는다. 채우기 전까지 metrics.status = "skeleton".
   // ───────────────────────────────────────────────────────────────────────
+  // ───────────────────────────────────────────────────────────────────────
+  // 캐포비 어드민 사이드바(LNB) ready-made 픽업 — 메뉴 트리 SSOT + 복붙 예시.
+  //   회고: Sidebar 컴포넌트는 완성됐지만 BrandHeader/Footer 처럼 "한 줄 픽업" 이 없어
+  //   매번 items 를 산문 가이드 보고 재조립 → 결과가 들쭉날쭉. 여기서 정규 메뉴 구조 +
+  //   복붙 가능한 React/HTML 예시(아이콘 inline)를 단일 주소로 제공. (라벨/구조는 오버레이
+  //   기반 best-effort — Figma 3304:617 미검증. 실제 메뉴가 확정되면 생성 스크립트 재실행.)
+  // ───────────────────────────────────────────────────────────────────────
+  "cashwalk-biz-admin-sidebar": {
+    name: "cashwalk-biz-admin-sidebar",
+    summary:
+      "**[캐포비 어드민 사이드바 ready-made]** cashwalk-biz admin LNB 를 한 번에 픽업하는 SSOT. " +
+      "`<Sidebar>`(React) / `<nds-sidebar>`(HTML) 컴포넌트는 완성돼 있지만 BrandHeader/Footer 와 달리 메뉴 데이터가 안 박혀 있어 매번 손조립하던 마찰을 해소한다. " +
+      "헤더 블록(로고→계정→잔액→충전/내역 CTA) + 3섹션(광고 관리 / 자산 관리 / 계정 관리) + GNB 아이콘 9종이 들어간 메뉴 트리를 그대로 복붙. " +
+      "활성 bg(Yellow/100)·radius(16)·텍스트색은 `data-brand='cashwalk-biz'` cascade 로 자동 — 색 hex 박지 말 것. 컴포넌트 props 함정은 `get_guide({ topic:'component:Sidebar', brand:'cashwalk-biz' })`, shell 조립은 `pattern:admin-shell`.",
+    rules: [
+      "**먼저 이 패턴으로 사이드바를 픽업한다**: 캐포비 어드민 화면(`pattern:cashwalk-biz-page-{dashboard,list,detail,form}` 의 '01 Sidebar')은 사이드바 items 를 새로 발명하지 말고 아래 ready-made 트리를 복붙해 시작한다. 화면별로 `activeKey` 만 바꾸면 LNB 가 동일하게 유지된다(목록/상세/대시보드/폼 공통).",
+      "**React 복붙** (아이콘 = 컴포넌트 엘리먼트, find_icon 불필요):\n```tsx\n" +
+        CASHWALK_BIZ_ADMIN_SIDEBAR_REACT +
+        "\n```",
+      "**HTML 복붙** (item.icon = inline SVG 가 이미 박혀 있음 — find_icon 9회 호출 불필요):\n```html\n" +
+        CASHWALK_BIZ_ADMIN_SIDEBAR_HTML +
+        "\n```",
+      "**섹션 그룹은 SidebarSection[]**: items 를 flat 배열 + 빈 spacer 로 만들지 말고 `{ key, label, items: [...] }` 섹션 객체로 그룹핑(광고 관리 / 자산 관리 / 계정 관리). 라벨이 섹션 헤더로 렌더된다.",
+      "**서브메뉴는 1단계까지**: '배너'처럼 children(등록/목록/리포트)을 갖는 항목만 캐럿 노출. children 안에 또 children = 금지(2단계 이상 트리 금지).",
+      "**활성 표현은 면(bg)만**: 좌측 accent stripe·Bold 라벨·진한 노랑(Yellow/200) 금지. 활성 여부는 `activeKey` 로만 결정(item 에 isActive boolean 박지 말 것).",
+      "**헤더 블록은 메뉴와 분리**: 로고→계정 이메일→잔액(충전 금액)→충전하기(solid)/내역보기(outlined) 2-up CTA 는 사이드바 상단 고정 블록. 잔액/충전을 메뉴 item 으로 섞지 말 것. (React 는 `header` prop, HTML 은 사이드바 상단 slot 으로 구성.)",
+      "**아이콘은 brand-prefix 우선**: 메뉴 아이콘은 `CashwalkBizGnb*` 9종이 공용 아이콘보다 우선. import 목록: " +
+        CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS.join(", ") +
+        ".",
+      "**로고는 base64 data URI 인라인 (상대경로 금지)**: 위 HTML 예시의 `logo-src` 는 이미 `data:image/svg+xml;base64,…`(BrandHeader 와 동일 로고 SSOT)로 박혀 있어 그대로 쓰면 단일 HTML 에서도 안 깨진다. `/brand-logos/cashwalk-biz.svg` 같은 **상대경로는 build_singlefile_html 이 broken image 로 처리**(단일 파일에서 깨짐)하므로 금지. React 앱은 자산을 번들하므로 public 경로로 충분.",
+    ],
+    avoid: [
+      "사이드바 items 를 화면마다 새로 발명 — 이 ready-made 트리를 복붙하고 activeKey 만 변경",
+      "HTML 에서 item.icon 에 아이콘 이름('CashwalkBizGnbBannerIcon')을 넣기 — innerHTML 이라 텍스트로 흘러나옴. 위 예시는 inline SVG 가 이미 박혀 있으니 그대로 사용",
+      "활성 아이템에 좌측 세로 accent bar / Bold 라벨 / Yellow/200 진한 노랑",
+      "잔액·충전 CTA 를 메뉴 리스트에 섞기 (헤더 블록 고정)",
+      "children 2단계 이상 트리화",
+      "활성 bg·radius·텍스트색을 inline/hex 로 다시 박기 — data-brand cascade 가 처리",
+    ],
+    metrics: {
+      status: "ready-made (메뉴 라벨/구조는 오버레이 기반 best-effort — Figma 3304:617 미검증)",
+      sectionCount: 3,
+      sections: "광고 관리 / 자산 관리 / 계정 관리",
+      width: "300px (캐포비 admin 기준)",
+      gnbIcons: CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS.join(", "),
+      iconPickup:
+        "HTML 예시는 SVG 인라인 완료 — find_icon 반복 불필요 / React 는 아이콘 컴포넌트 직접 import",
+      relatedGuides:
+        "component:Sidebar (props 함정), admin-shell (shell 조립), cashwalk-biz-page-{dashboard,list,detail,form}",
+    },
+    references: [
+      {
+        label: "캐포비 Library Sidebar (메뉴 구조 SSOT)",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3304-617",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 사이드바 레퍼런스 스크린샷",
+        image: "references/cashwalk-biz-sidebar-168-1250.png",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
   "cashwalk-biz-page-patterns": {
     name: "cashwalk-biz-page-patterns",
     summary:
@@ -6104,7 +6174,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "패턴별 상세는 `pattern:cashwalk-biz-page-{onboarding|dashboard|list|detail|form}`. 필드/CTA/입력 단위 실측은 `pattern:cashwalk-biz-form-layout` · `pattern:cashwalk-biz-button` · `pattern:cashwalk-biz-input`, shell 보일러플레이트는 `pattern:admin-shell`. " +
       "Figma 7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern).",
     rules: [
-      "**먼저 패턴을 고른다**: 새 어드민 화면을 받으면 PRD 의 목적을 5개 패턴 중 하나로 먼저 분류한다 — 로그인/계정복구=Onboarding, 통계/요약 홈=Dashboard, 목록·검색=List, 단건 상세/탭=Detail, 등록·수정=Form. 분류 없이 컴포넌트부터 배치하지 않는다.",
+      "**먼저 패턴을 고른다 (하드 게이트)**: 새 어드민 화면을 받으면 PRD 의 목적을 5개 패턴 중 하나로 먼저 분류한다 — 로그인/계정복구=Onboarding, 통계/요약 홈=Dashboard, 목록·검색=List, 단건 상세/탭=Detail, 등록·수정=Form. 분류 없이 컴포넌트부터 배치하지 않는다. **이건 권고가 아니라 강제다** — surface=admin + brand=cashwalk-biz 화면은 패턴 선언이 없으면 validate 가 error(`cashwalk-biz-admin-page-pattern`)로 막는다.",
+      '**패턴 선언 방법**: HTML 목업은 루트에 `data-page-pattern` 마커 — 예: `<html data-brand="cashwalk-biz" data-page-pattern="list">`(또는 body / .mockup-screen). DesignSpec 은 `screen.pagePattern` 필드에 `onboarding|dashboard|list|detail|form` 중 하나. surfaceKind=admin 은 nudge.surface 마커에서 자동 주입되니 보통 pagePattern 만 채우면 된다.',
       "**조립 순서 고정**: ① 페이지 패턴 선택 → ② 패턴의 섹션 슬롯 채우기(섹션 단위 구조화) → ③ 섹션 안 반복 컴포넌트(테이블·필터·필드·차트)를 DS 컴포넌트로 조립 → ④ validate. 역순(컴포넌트 먼저)으로 가면 패턴 일관성이 깨진다.",
       "**shell 은 공통**: 모든 패턴은 사이드바 + topbar + content 의 `admin-shell`(nds-shell 계열) 위에 얹힌다. 패턴은 content 영역의 섹션 구성만 정의한다 — raw shell CSS 재정의 금지(`pattern:admin-shell`).",
       "**한 화면 = 한 패턴**: 한 페이지에 List + Form 을 섞지 않는다. 인라인 등록이 필요하면 List 안의 모달/드로어로 Form 패턴을 띄우되, 패턴 경계는 유지한다.",
@@ -6271,7 +6342,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**04 Charts**: 차트 카드 안에 **라인 차트 + 바 차트 2-up**(좌 추이 라인 / 우 항목별 비교 바). gridline + 범례 포함. 차트 카드 높이 **360px**(기본).",
       "**05 Stats Table**: 항목별 통계 테이블 — 헤더 행(연회색 bg) + 데이터 행. 우측 정렬 숫자 컬럼(노출수/클릭수/전환율/소진액 등).",
       "**카드 규격(차트·테이블 공통)**: radius **12px**, padding **24px**, border **1px `--semantic-border-normal-subtle`(#F5F5F5)**, bg `--semantic-bg-surface-default`(#FFFFFF). 페이지 캔버스는 `--semantic-bg-surface-subtle`(#FAFAFA).",
-      "**01 Sidebar**: 좌측 LNB = Sidebar 컴포넌트(Figma 3304:617) — 계정 정보 + 광고/자산/계정 관리 섹션. admin-shell 의 nds-shell__sidebar 슬롯.",
+      "**01 Sidebar**: 좌측 LNB = Sidebar 컴포넌트(Figma 3304:617) — 계정 정보 + 광고/자산/계정 관리 섹션. admin-shell 의 nds-shell__sidebar 슬롯. **items 를 새로 만들지 말고 `pattern:cashwalk-biz-admin-sidebar` 의 ready-made 트리를 복붙(아이콘 inline 완료)하고 activeKey 만 이 화면 키로.**",
       "**Validate**: ① 핵심 지표 ≤ 4개 → Summary Strip, 그 이상 → 별도 통계 카드/그리드 검토. ② Chart 종류(Line/Bar/Donut) 명시 — Chart Library 25종 참조. ③ 데이터 없음 → Empty State 변형(회색 패널 + 안내문). ④ 갱신 시각 필요 → Header(또는 Summary)에 '마지막 갱신 mm/dd hh:mm' 추가.",
     ],
     avoid: [
@@ -6349,7 +6420,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**04 Table**: 헤더 행 + 데이터 행. 헤더 행 배경 `--semantic-bg-surface-subtle`(#FAFAFA). 카드 radius **12px**, Row padding **16/24**, Row 사이 **1px border `#F5F5F5`**. 컬럼은 균등 또는 flex.",
       "**행 셀 컴포넌트**: 썸네일(이미지 컬럼) + 핵심 텍스트(클릭 시 Detail 진입 — 링크색) + **상태 = Badge**(진행중=success/green · 진행예정=subtle · 종료=neutral gray) + 숫자 컬럼 우측 정렬 + **노출 = Toggle**(노출 on green / 미노출 off) + **관리 = 수정(pencil)·삭제(trash) 아이콘 액션**. 상태를 raw 텍스트로, 노출을 체크박스로 만들지 않는다.",
       "**05 Pagination**: 중앙 정렬 페이지 번호, 버튼 **32×32**, **현재 페이지 = 검정(neutral 900 / #111) fill + 흰 텍스트**(brand yellow 아님 — 노랑은 활성/선택 강조용이라 페이지네이션 현재 페이지와 시각 충돌). 우측에 페이지 사이즈 셀렉트('10개씩 보기') 배치 가능.",
-      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(대시보드와 동일 LNB).",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(대시보드와 동일 LNB). ready-made items 는 `pattern:cashwalk-biz-admin-sidebar` 복붙 + activeKey 만 변경.",
       "**Validate**: ① Row > 50 → 페이지네이션 필수 / ≤ 10 → 페이지네이션 생략. ② 필터 > 4개 → 필터 패널 분리(좌측 또는 상단 collapsible). ③ Row 클릭 액션 있으면 → 행 hover effect + cursor pointer. ④ Empty state 필수 → '등록된 OOO이 없습니다' + CTA. ⑤ 정렬 가능 컬럼 → Header 셀에 화살표 아이콘.",
     ],
     avoid: [
@@ -6428,7 +6499,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**03 PageHeader + Status + Actions**: 좌측 제목(Heading1 Bold 32/40) + **상태 ActionChip**(title 과 gap **12px**), 우측 **액션 버튼들**(예: outline 보조 + solid 주). 삭제 같은 위험 액션은 별도 Outlined/Neutral 버튼으로 **우측 끝** 배치.",
       "**04 Tab Navigation**: **Underline 탭**(예: 기본 정보 / 성과 리포트 / 히스토리). 데이터 항목이 많으면 탭으로 분리.",
       "**05 Info Card**: 정보 블록 = **key-value rows**(또는 FormSection). **key 컬럼 width 240px 고정, value 컬럼 flex**. key-value row padding **16/24**, **border-bottom `--semantic-border-normal-subtle`(#F5F5F5)**. 카드 안 상단에 섹션 제목.",
-      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(목록/대시보드와 동일 LNB).",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(목록/대시보드와 동일 LNB). ready-made items 는 `pattern:cashwalk-biz-admin-sidebar` 복붙 + activeKey 만 변경.",
       "**편집은 Form 패턴으로 분리**: 상세 화면은 보기 중심. 편집 가능 필드만 있는 화면이면 Detail 이 아니라 `pattern:cashwalk-biz-page-form` 으로 만든다. 인라인 편집 폼을 상세에 펼치지 않는다.",
       "**Validate**: ① 데이터 항목 > 15개 → Tab 으로 분리(탭당 5~8개). ② 편집 가능 필드만 있는 경우 → Form 패턴으로 변경. ③ 삭제 액션 → 별도 Outlined/Neutral 버튼, 우측 끝 배치. ④ 위험 액션(삭제) → 확인 Modal 필수 호출. ⑤ 권한별 액션 숨김 → BOOLEAN prop 또는 변형 변경.",
     ],
@@ -6501,7 +6572,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**03 Form Sections**: **FormSection 컴포넌트 반복** — 각 섹션 = 제목(예: '광고 정보') + 설명 + 필드 슬롯(label-좌측 + 입력 + helper). 섹션 사이 gap **32px**. 필드 슬롯의 라벨 컬럼·필드 높이·필수 마커 등 px·색은 `pattern:cashwalk-biz-form-layout` 을 그대로 따른다(여기서 중복 정의 X).",
       "**04 Summary / Preview Panel (선택)**: 메인 폼 우측 보조 패널 **400px** — 예상 성과·미리보기·입력 요약. 2컬럼 = 메인 폼(FILL) + 패널 400px. 없으면 단일 컬럼.",
       "**05 Footer Actions**: 페이지 끝 Footer — **좌측 [이전 단계]·[임시저장] / 우측 [다음 단계]·[등록](Solid)**. Footer 영역 padding **24/48**, 상단 **border 1px**, 배경 `--semantic-bg-surface-default`. (단건 폼의 inline 센터 [취소][저장] 클러스터는 `cashwalk-biz-form-layout` 참조 — 다단계는 좌/우 분리 Footer.)",
-      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트.",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트. ready-made items 는 `pattern:cashwalk-biz-admin-sidebar` 복붙 + activeKey 만 변경.",
       "**Validate — PRD → 컴포넌트 매핑(정량)**: 글자 ≤ 40 → **TextInput** / 글자 > 40 → **Textarea** / 단일 선택 ≤ 3 → **SelectionButtonGroup** / 단일 선택 > 3 → **Dropdown** / 다중 선택 → **CheckboxGroup** / ON·OFF 즉시 적용 → **Toggle** / 날짜·시간 → **DateInput** / 이미지·파일 → **ImageUpload**.",
       "**Validate — 구조**: Step ≥ 3 → Step Progress 필수 / 필수 필드 → FormField `required=true` / 조건부 노출 → Boolean variant 또는 컨테이너 hide.",
     ],

@@ -53,7 +53,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as cheerio from "cheerio";
-import { canonicalBrandSlug, listStandaloneBrands } from "./standalone-assets.js";
+import {
+  canonicalBrandSlug,
+  canonicalPagePattern,
+  CASHWALK_BIZ_PAGE_PATTERNS,
+  listStandaloneBrands,
+} from "./standalone-assets.js";
 
 /**
  * cheerio 의 element 노드 — 직접 type import 없이 구조만. cheerio Element 는
@@ -134,6 +139,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "admin-surface-consumer-chrome": "error",
   // 선언 표면=service 인데 어드민 사이드바(nds-sidebar) 사용 — 표면 불일치(역방향)
   "service-surface-admin-shell": "warn",
+  // 캐포비 어드민(surface=admin + brand=cashwalk-biz)인데 5종 Page Pattern 중 하나를 선언 안 함 / 미지 값
+  "cashwalk-biz-admin-page-pattern": "error",
   // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
   "unknown-brand-slug": "error",
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
@@ -372,10 +379,11 @@ function describeElement(el: DomElement): string {
 
 export function validateHtmlSource(
   source: string,
-  options?: { context?: HtmlValidationContext; surface?: HtmlSurface },
+  options?: { context?: HtmlValidationContext; surface?: HtmlSurface; brand?: string },
 ): HtmlViolation[] {
   const ctx = options?.context ?? configured;
   const surface = options?.surface ?? null;
+  const declaredBrand = options?.brand;
   const violations: HtmlViolation[] = [];
   const $ = cheerio.load(source, { xmlMode: false });
 
@@ -752,6 +760,47 @@ export function validateHtmlSource(
           "표면=admin 화면은 소비자 brand chrome(nds-brand-header/footer/bottom-nav)을 쓰지 않는다. admin-shell(사이드바+톱바: get_guide({ topic: 'pattern:admin-shell' })) 또는 어드민 온보딩 카드로 만들 것. 캐포비 어드민 패턴: get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }). 표면 자체가 잘못 선언됐다면 nudge.surface 마커/brief 의 표면을 먼저 확인.",
       });
     });
+
+    // ─── 캐포비 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ───
+    //   캐시워크 포 비즈니스는 DS 안에 자체 admin 디자인 시스템을 가진 유일한 브랜드라,
+    //   어드민 화면은 Onboarding/Dashboard/List/Detail/Form 5종으로 표준화돼 있다.
+    //   "분류 없이 컴포넌트부터 배치하지 않는다"(pattern:cashwalk-biz-page-patterns)를 권고가 아닌
+    //   하드 게이트로: 루트(html/body/.mockup-screen)에 data-page-pattern 마커가 없거나 5종이 아니면 error.
+    const effBrand =
+      canonicalBrandSlug(declaredBrand) ??
+      canonicalBrandSlug($("html").attr("data-brand") ?? $("body").attr("data-brand")) ??
+      canonicalBrandSlug(($("body").attr("class") ?? "").match(/\bbrand-([a-z0-9-]+)\b/i)?.[1]);
+    if (effBrand === "cashwalk-biz") {
+      const markerNodes = $("[data-page-pattern]");
+      if (markerNodes.length === 0) {
+        violations.push({
+          rule: "cashwalk-biz-admin-page-pattern",
+          line: 1,
+          selector: "<html|body|.mockup-screen>",
+          detail:
+            "캐포비 어드민 화면(surface=admin, brand=cashwalk-biz)인데 Page Pattern 선언이 없습니다.",
+          suggestion: `루트 요소에 data-page-pattern="${CASHWALK_BIZ_PAGE_PATTERNS.join(
+            "|",
+          )}" 중 하나를 선언하세요(예: <html data-brand="cashwalk-biz" data-page-pattern="list">). 어떤 패턴인지 먼저 고르고 그 골격에 컴포넌트를 끼웁니다 — get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) 로 5종(Onboarding/Dashboard/List/Detail/Form) 확인.`,
+        });
+      } else {
+        markerNodes.each((_i, el) => {
+          if (el.type !== "tag") return;
+          const raw = (el as unknown as DomElement).attribs?.["data-page-pattern"] ?? "";
+          if (canonicalPagePattern(raw)) return; // 유효 — OK
+          const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+          violations.push({
+            rule: "cashwalk-biz-admin-page-pattern",
+            line: lineNumberAt(source, offset),
+            selector: describeElement(el as unknown as DomElement),
+            detail: `data-page-pattern="${raw}" 는 캐포비 어드민 5종 패턴이 아닙니다.`,
+            suggestion: `허용값: ${CASHWALK_BIZ_PAGE_PATTERNS.join(
+              "|",
+            )}. get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) 참조.`,
+          });
+        });
+      }
+    }
   } else if (surface === "service") {
     // 역방향(warn): 소비자 화면에 어드민 사이드바를 쓰면 표면을 잘못 잡았을 가능성.
     $("nds-sidebar").each((_i, el) => {
@@ -1238,6 +1287,32 @@ export interface ValidateHtmlMockupArgs {
   cwd?: string;
   /** 선언된 제작 표면. 없으면 nudge.surface 마커에서 읽는다. 화면 이름 통념을 지배. */
   surface?: HtmlSurface;
+  /** 브랜드 slug. 없으면 nudge.brand 마커 → HTML data-brand 순으로 읽는다. 캐포비 어드민 패턴 게이트 입력. */
+  brand?: string;
+}
+
+/**
+ * nudge.brand 마커를 startDir 에서 위로 최대 5단계 탐색해 선언된 브랜드를 읽는다.
+ * (readSurfaceMarker 와 동일 SSOT 패턴 — build-html 의 resolveHtmlBrand 가 nudge.brand 를 읽는 것과 일치.)
+ */
+export function readBrandMarker(startDir: string): string | null {
+  let dir = startDir;
+  for (let i = 0; i < 5; i++) {
+    const marker = path.join(dir, "nudge.brand");
+    if (fs.existsSync(marker)) {
+      try {
+        const value = fs.readFileSync(marker, "utf-8").trim();
+        if (value) return value;
+      } catch {
+        // ignore — 폴백
+      }
+      return null;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
 }
 
 /**
@@ -1301,6 +1376,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "non-semantic-spacing": "spacing",
   "card-slot-double-padding": "spacing",
   // layout (layout-structure): 카드 중첩·CTA 위계·칩 과다·장식
+  "cashwalk-biz-admin-page-pattern": "layout",
   "raw-landmark": "layout",
   "nested-card": "layout",
   "card-badge-overuse": "layout",
@@ -1479,7 +1555,10 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
   // 선언 표면: 명시 인자 > nudge.surface 마커. 화면 이름 통념을 지배(표면 불일치 룰의 입력).
   const surface: HtmlSurface =
     args.surface ?? (markerStartDir ? readSurfaceMarker(markerStartDir) : null);
-  const rawViolations = validateHtmlSource(source, { surface });
+  // 브랜드: 명시 인자 > nudge.brand 마커 (없으면 validateHtmlSource 가 HTML data-brand 로 폴백).
+  const brand =
+    args.brand ?? (markerStartDir ? (readBrandMarker(markerStartDir) ?? undefined) : undefined);
+  const rawViolations = validateHtmlSource(source, { surface, brand });
   const violations = trimViolationsForResponse(rawViolations);
   const violationsByRule = summarizeByRule(rawViolations);
   const severitySummary = summarizeSeverity(rawViolations);

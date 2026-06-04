@@ -17,7 +17,12 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { ndsTagToComponentName } from "@nudge-design/mockup-core/tools/usage/parser";
-import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
+import {
+  canonicalBrandSlug,
+  canonicalPagePattern,
+  CASHWALK_BIZ_PAGE_PATTERNS,
+} from "@nudge-design/mockup-core/tools/standalone-assets";
+import { readSurfaceMarker } from "@nudge-design/mockup-core/tools/html-validator";
 // Decision Log read-side(타입·상수·screenKey·리더)는 공용 코어로 이전 — write-side(build/append)는
 // MCP 검증 타입에 묶여 아래에 남는다. 기존 import 경로 호환을 위해 같은 이름으로 re-export.
 import {
@@ -63,6 +68,16 @@ export interface DesignSpec {
     surface: DesignSpecSurface;
     intent: string;
     name?: string;
+    /**
+     * 제작 표면(admin/service) — web/app(surface) 와 다른 축. nudge.surface 마커와 동일 의미.
+     * saveDesignSpec 가 cwd 의 nudge.surface 마커에서 자동 주입(미선언 시). 캐포비 어드민 패턴 게이트 입력.
+     */
+    surfaceKind?: "admin" | "service";
+    /**
+     * 캐포비 어드민 Page Pattern(Onboarding/Dashboard/List/Detail/Form 5종 중 하나).
+     * brand=cashwalk-biz + surfaceKind=admin 이면 필수 — get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }).
+     */
+    pagePattern?: string;
   };
   tree: DesignSpecNode[];
   /** 화면 전체 차원의 디자인 결정 bullet */
@@ -230,6 +245,43 @@ export function validateDesignSpec(input: unknown): ValidateDesignSpecResult {
     }
     if (!screen.intent || String(screen.intent).trim() === "") {
       add("missing-field", "warn", "screen.intent", "intent(화면 한 줄 설명) 가 비었습니다.");
+    }
+
+    // ── 캐포비 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ──
+    //   캐시워크 포 비즈니스는 DS 안에 자체 admin 디자인 시스템을 가진 유일한 브랜드라,
+    //   어드민 화면은 Onboarding/Dashboard/List/Detail/Form 5종으로 표준화. 코드 직전 게이트에서
+    //   "분류부터 한다"(pattern:cashwalk-biz-page-patterns)를 권고가 아닌 하드 룰로 강제한다.
+    //   surfaceKind 는 모델 선언 또는 saveDesignSpec 가 nudge.surface 마커에서 주입.
+    if (canonicalBrand === "cashwalk-biz" && screen.surfaceKind === "admin") {
+      if (!screen.pagePattern) {
+        add(
+          "cashwalk-biz-admin-page-pattern",
+          "error",
+          "screen.pagePattern",
+          `캐포비 어드민 화면은 Page Pattern 을 먼저 선언해야 합니다 — screen.pagePattern 에 ${CASHWALK_BIZ_PAGE_PATTERNS.join(
+            "|",
+          )} 중 하나. get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) 로 5종 확인.`,
+        );
+      } else if (!canonicalPagePattern(screen.pagePattern)) {
+        add(
+          "cashwalk-biz-admin-page-pattern",
+          "error",
+          "screen.pagePattern",
+          `'${screen.pagePattern}' 는 캐포비 어드민 5종 패턴이 아닙니다. 허용값: ${CASHWALK_BIZ_PAGE_PATTERNS.join(
+            "|",
+          )}.`,
+        );
+      }
+    } else if (screen.pagePattern && !canonicalPagePattern(screen.pagePattern)) {
+      // 어드민이 아니어도 잘못된 패턴 값이면 오타로 보고 잡아준다.
+      add(
+        "cashwalk-biz-admin-page-pattern",
+        "warn",
+        "screen.pagePattern",
+        `'${screen.pagePattern}' 는 알 수 없는 Page Pattern 입니다. 허용값: ${CASHWALK_BIZ_PAGE_PATTERNS.join(
+          "|",
+        )}.`,
+      );
     }
   }
 
@@ -430,8 +482,19 @@ export function saveDesignSpec(args: {
     };
   }
 
-  const result = validateDesignSpec(rawSpec);
   const dir = args.cwd ? path.resolve(args.cwd) : process.cwd();
+
+  // surfaceKind 미선언 시 nudge.surface 마커(admin/service)에서 자동 주입 — 마커가 reliable SSOT 이라
+  // 모델이 빠뜨려도 캐포비 어드민 Page Pattern 게이트가 동작한다. (이미 선언됐으면 존중.)
+  if (rawSpec && typeof rawSpec === "object" && !Array.isArray(rawSpec)) {
+    const screen = (rawSpec as Partial<DesignSpec>).screen;
+    if (screen && typeof screen === "object" && !screen.surfaceKind) {
+      const marker = readSurfaceMarker(dir);
+      if (marker) screen.surfaceKind = marker;
+    }
+  }
+
+  const result = validateDesignSpec(rawSpec);
   const fileName = args.fileName ?? "design-spec.json";
   const outPath = path.join(dir, fileName);
   let written = false;
