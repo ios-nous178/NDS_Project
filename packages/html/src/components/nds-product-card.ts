@@ -151,7 +151,12 @@ export class NdsProductCard extends NdsElement {
       const amount = typeof parsed.amount === "number" ? parsed.amount : NaN;
       if (Number.isNaN(amount) || amount <= 0) return null;
       return { amount, label: typeof parsed.label === "string" ? parsed.label : undefined };
-    } catch {
+    } catch (err) {
+      // 조용히 삼키지 않는다 — JSON 속성 과이스케이프 시 디버깅 불가. (cf. nds-sidebar)
+      console.warn("[nds-product-card] reward 가 유효한 JSON 이 아닙니다.", {
+        error: err,
+        rawHead: raw.slice(0, 80),
+      });
       return null;
     }
   }

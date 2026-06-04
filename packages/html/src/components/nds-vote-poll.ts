@@ -107,7 +107,12 @@ export class NdsVotePoll extends NdsElement {
           label: typeof o.label === "string" ? o.label : String(o.key),
           count: typeof o.count === "number" ? o.count : 0,
         }));
-    } catch {
+    } catch (err) {
+      // 조용히 삼키지 않는다 — JSON 속성 과이스케이프 시 디버깅 불가. (cf. nds-sidebar)
+      console.warn("[nds-vote-poll] options 가 유효한 JSON 이 아닙니다.", {
+        error: err,
+        rawHead: raw.slice(0, 80),
+      });
       return [];
     }
   }
