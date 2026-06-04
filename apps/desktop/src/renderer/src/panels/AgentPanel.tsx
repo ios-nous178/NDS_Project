@@ -80,6 +80,9 @@ export function AgentPanel({
   const fitRef = useRef<FitAddon | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sessionRef = useRef<string | null>(null);
+  // "지금 패널이 라이브로 의도하는" 세션 id. start/attach 진입 즉시 새 id 로 갱신된다.
+  // 교체로 정리되는 옛 세션의 exit 가 새 세션의 라이브 상태(liveCb)를 덮어쓰지 않게 가드한다.
+  const intendedRef = useRef<string | null>(null);
   // 로그인 URL 자동 열기용 — 청크 누적 버퍼 + 이미 연 URL(중복 방지).
   const authBufRef = useRef("");
   const openedUrlsRef = useRef<Set<string>>(new Set());
@@ -114,7 +117,13 @@ export function AgentPanel({
       });
     });
     const offExit = window.harness.onAgentExit((e) => {
-      if (e.sessionId !== sessionRef.current) return;
+      // 의도된 라이브(intendedRef)가 아닌 세션의 종료 = 새 세션으로 교체되며 정리된 옛 세션.
+      // 라이브 상태(status/liveCb)를 건드리지 않는다 — 옛 세션 exit 가 새 attach 를 덮어쓰던 clobber 방지.
+      if (e.sessionId !== intendedRef.current) {
+        if (e.sessionId === sessionRef.current) sessionRef.current = null;
+        histCb.current?.(); // 기록 리스트 상태(완료/중단) 갱신은 유지
+        return;
+      }
       setStatus(e.exitCode === 0 ? "exited" : "error");
       // pty 모드만 터미널에 종료 줄을 적는다(구조화 모드는 result 푸터가 대신함).
       termRef.current?.writeln(`\r\n\x1b[90m[세션 종료 · code ${e.exitCode}]\x1b[0m`);
@@ -167,21 +176,39 @@ export function AgentPanel({
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    // 리사이즈 드래그 중 RO 가 매 프레임 쏟아져도 (a) rAF 로 1회로 합치고 (b) cols/rows 가
+    // 실제 바뀐 경우에만 PTY resize IPC/SIGWINCH 를 보낸다(폭주·중복 전송 방지).
+    let raf = 0;
+    let lastCols = -1;
+    let lastRows = -1;
     const ro = new ResizeObserver(() => {
-      const fit = fitRef.current;
-      const term = termRef.current;
-      if (!fit || !term) return;
-      try {
-        fit.fit();
-      } catch {
-        /* 0-size 등 */
-      }
-      if (sessionRef.current && term.cols > 0) {
-        void window.harness.resizeAgent(sessionRef.current, term.cols, term.rows);
-      }
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const fit = fitRef.current;
+        const term = termRef.current;
+        if (!fit || !term) return;
+        try {
+          fit.fit();
+        } catch {
+          /* 0-size 등 */
+        }
+        if (
+          sessionRef.current &&
+          term.cols > 0 &&
+          (term.cols !== lastCols || term.rows !== lastRows)
+        ) {
+          lastCols = term.cols;
+          lastRows = term.rows;
+          void window.harness.resizeAgent(sessionRef.current, term.cols, term.rows);
+        }
+      });
     });
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
   }, []);
 
   useEffect(
@@ -302,6 +329,7 @@ export function AgentPanel({
 
       const id = crypto.randomUUID();
       sessionRef.current = id;
+      intendedRef.current = id; // 이 세션을 라이브 의도로 표시(옛 세션 exit clobber 방지)
       // 새 세션 = 새 로그인 가능성 → URL 스캔 상태 초기화.
       authBufRef.current = "";
       openedUrlsRef.current = new Set();
@@ -354,6 +382,7 @@ export function AgentPanel({
     async (id: string) => {
       if (!projectPath) return;
       setError("");
+      intendedRef.current = id; // 진입 즉시 라이브 의도 표시 — 옛 세션 exit 의 clobber 윈도우 차단
       // 세션의 실제 transport 를 메타에서 다시 조회해 분기한다. 인테이크 canary 세션은
       // stream-json, resume 세션은 항상 pty 로 재spawn 되며 메타가 최신 라인으로 갱신되므로
       // listSessions 가 "지금 실제로 도는 transport" 를 준다. (예전엔 attach 가 무조건 pty 로

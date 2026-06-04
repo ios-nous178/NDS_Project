@@ -276,6 +276,16 @@ export function App(): React.JSX.Element {
     });
   }, [loadFile]);
 
+  // 와처가 오류로 죽으면(볼륨 unmount·폴더 삭제·FSEvents 무효화 등) 자동추적을 꺼서 "생성 중"
+  // 배지가 영구로 남지 않게 한다. 라이브 출력은 디스크에 계속 쌓이므로(유실 아님) 미리보기는
+  // 수동 새로고침이나 프로젝트 다시 열기로 복구된다.
+  useEffect(() => {
+    return window.harness.onWatchStopped((e) => {
+      console.warn("[nudge-studio] 파일 감시 중단 — 자동추적 비활성화:", e.reason);
+      setAutoFollow(false);
+    });
+  }, []);
+
   // 마운트 시 마지막 프로젝트 복원 — 앱을 재시작해도 main 이 previewRoot/와처를 다시 잡아
   // "no preview root" 없이 곧바로 목업 목록·미리보기가 살아난다(사용자가 다시 폴더를 열 필요 X).
   useEffect(() => {
@@ -337,12 +347,17 @@ export function App(): React.JSX.Element {
   //    (미리보기는 하위 목업을 보는데 내보내기는 루트를 빌드 = 어긋남).
   const activeMockupDir = useMemo(() => {
     if (!previewBase) return undefined;
-    const rel = selected ?? previewRel ?? (activeSlug ? `${activeSlug}/index.html` : null);
+    // 과거 세션을 보는 중(viewing)이면 selected 를 무시한다 — selected 는 라이브 autoFollow 가
+    // 남긴 다른 폴더의 값일 수 있어, previewBase(=viewing.cwd)와 섞이면 존재하지 않는 폴더를
+    // 빌드해 export/Figma 가 어긋난다. 라이브 보기에선 기존 우선순위(selected→previewRel) 유지.
+    const rel = viewing
+      ? (previewRel ?? (activeSlug ? `${activeSlug}/index.html` : null))
+      : (selected ?? previewRel ?? (activeSlug ? `${activeSlug}/index.html` : null));
     if (!rel) return undefined;
     const slash = rel.lastIndexOf("/");
     const dir = slash > 0 ? rel.slice(0, slash) : "";
     return dir ? `${previewBase}/${dir}` : previewBase;
-  }, [previewBase, selected, previewRel, activeSlug]);
+  }, [previewBase, viewing, selected, previewRel, activeSlug]);
 
   /** 상단바에 보일 현재 작업 문맥(세션/목업 경로). 없으면 프로젝트 폴더명. */
   const currentContext = useMemo(() => {
@@ -536,6 +551,10 @@ export function App(): React.JSX.Element {
                 // 이미 만들어진 라이브 목업이 있으면 즉시 미리보기에 복원한다(미리보기 있는
                 // 채팅 → 미리보기 있는 채팅 이동 시 미리보기가 안 바뀌던 이슈).
                 setAutoFollow(true);
+                // previewRoot 를 라이브 세션의 작업 폴더로 되돌린다 — 결과물(mockupFile) 유무와
+                // 무관하게. 과거 세션을 보다 라이브로 돌아오면 previewRoot 가 과거 cwd 에 고정돼
+                // 라이브 첫 HTML 이 엉뚱한 루트로 풀려 깨지던 문제(와처 emit 전에 미리 복원).
+                if (s.cwd) void window.harness.setPreviewRoot(s.cwd);
                 if (s.mockupFile && s.intent !== "admin-cms") {
                   void showSessionPreview(s);
                 }

@@ -28,6 +28,23 @@ export interface FigmaExportResult {
  *
  * 전 과정 로컬 — 네트워크 없음(무유출 단일 산출물 기조). 짝 플러그인은 tools/figma-plugin.
  */
+/** Promise 에 타임아웃을 건다 — 초과 시 reject(이긴 쪽이 타이머 정리). hang 방지용. */
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(`Figma 추출 시간 초과(${label}, ${ms}ms)`)), ms);
+    p.then(
+      (v) => {
+        clearTimeout(t);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(t);
+        reject(e);
+      },
+    );
+  });
+}
+
 export async function exportFigmaScene(
   projectPath: string,
   mockupDir: string | undefined,
@@ -51,16 +68,28 @@ export async function exportFigmaScene(
       contextIsolation: true,
       sandbox: true,
       offscreen: false,
+      // 숨김 창은 rAF 가 throttle 돼 fonts.ready→rAF 대기가 안 풀릴 수 있다 — throttle 끄기.
+      backgroundThrottling: false,
     },
   });
+  // 로드/스크립트가 끝내 settle 안 되면 win 이 destroy 안 돼 figma:export 가 영구 hang 하고
+  // UI 가 "추출 중…" 에 멈춘다 — 각 단계에 타임아웃을 걸어 catch→finally(win.destroy)로 흘린다.
   try {
-    await win.loadFile(distPath);
+    await withTimeout(win.loadFile(distPath), 15000, "load");
     // 폰트/이미지 디코드가 끝나야 getComputedStyle/box 가 안정적. fonts.ready + 다음 프레임 대기.
-    await win.webContents.executeJavaScript(
-      "(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())" +
-        ".then(function(){return new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(function(){r(true)})})})})",
+    await withTimeout(
+      win.webContents.executeJavaScript(
+        "(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())" +
+          ".then(function(){return new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(function(){r(true)})})})})",
+      ),
+      10000,
+      "ready",
     );
-    const raw: unknown = await win.webContents.executeJavaScript(buildFigmaSceneScript());
+    const raw: unknown = await withTimeout(
+      win.webContents.executeJavaScript(buildFigmaSceneScript()),
+      10000,
+      "extract",
+    );
     const scene: FigmaScene = normalizeScene(raw);
 
     const sceneDir = join(dirname(distPath), ".figma");

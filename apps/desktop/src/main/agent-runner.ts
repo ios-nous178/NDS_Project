@@ -585,6 +585,13 @@ export function startAgent(
   if (!spec) return { ok: false, error: `알 수 없는 에이전트: ${args.agentType}` };
   if (isSessionRunning(args.sessionId)) return { ok: false, error: "이미 실행 중인 세션입니다." };
 
+  // 단일 라이브 불변식 — 새 세션을 띄우기 전에 다른 모든 라이브 세션을 main 에서 정리한다.
+  // (렌더러의 fire-and-forget stopAgent 에 의존하지 않음 → 렌더러 실패/유실 시에도 orphan PTY 방지.
+  //  이 앱은 의도적으로 동시 다수 라이브 세션을 쓰지 않는다.)
+  for (const otherId of runningSessionIds()) {
+    if (otherId !== args.sessionId) stopAgent(otherId);
+  }
+
   const transport: Transport = args.transport ?? "pty";
   // stream-json 은 claude 의 `-p --output-format stream-json` 전용 — codex 등가물 없음.
   if (transport === "stream-json" && args.agentType !== "claude") {
@@ -875,6 +882,17 @@ export function startAgent(
  *  · 권한: bypassPermissions(로컬 신뢰 + PTY 와 동일 작업 비교 목적, 대화형 프롬프트 부재 대응).
  * createSession/agent_started 는 호출부(startAgent)가 이미 기록함.
  */
+/** stdin 으로 안전하게 쓴다 — 깨진/닫힌 파이프(EPIPE)면 조용히 무시(메인 크래시 방지). */
+function safeStdinWrite(child: ChildProcess, payload: string): void {
+  const s = child.stdin;
+  if (!s || s.destroyed || !s.writable) return;
+  try {
+    s.write(payload);
+  } catch {
+    /* EPIPE/EOF — stdin 'error' 리스너가 흡수, 종료는 close 핸들러가 확정 */
+  }
+}
+
 function startStreamAgent(
   args: StartAgentArgs,
   binPath: string,
@@ -938,6 +956,11 @@ function startStreamAgent(
     updateSessionStatus(args.projectPath, sessionBase, "failed");
     return { ok: false, error: msg };
   }
+
+  // stdin 'error'(EPIPE 등) 흡수 — 자식이 죽은 뒤(또는 막 죽인 직후) write 하면 미구독 스트림의
+  // 비동기 error 가 uncaughtException 으로 메인 프로세스를 통째로 죽인다. 종료 확정은 close/error
+  // 핸들러가 하므로 여기선 삼키기만 한다(모든 write 는 safeStdinWrite 로 통일).
+  child.stdin?.on("error", () => {});
 
   // 정규화 메시지 1건을 영구저장(.jsonl) + 렌더러로 전송. 라이브/재생 단일 출처.
   // 알림은 세션당 1회(첫 result)만 — 매 턴마다 OS 알림이 쏟아지지 않게 한다.
@@ -1014,7 +1037,7 @@ function startStreamAgent(
       const turn =
         `🔧 [자동 수정 ${correction.count}/${AUTO_FIX_CAP}] validate 에 아직 error ${v.errorCount}건이 남았어: ${rules}. ` +
         `새 컴포넌트/장식을 추가하지 말고 이 error 들만 0 으로 고친 뒤, 다시 validate_html_mockup (필요하면 build_singlefile_html) 으로 위반 0 을 확인해줘.`;
-      if (child.stdin?.writable) child.stdin.write(encodeUserTurn(turn));
+      safeStdinWrite(child, encodeUserTurn(turn));
     } else {
       // 2회 소진 — 더 안 쏜다. 유저가 턴을 보내면 sendStreamTurn 이 count 를 0 으로 리셋해 재개 가능.
       emit({
@@ -1081,7 +1104,7 @@ function startStreamAgent(
   // 시드 프롬프트(인테이크 등)가 있으면 첫 유저 턴으로 stdin 에 흘리고 UI 에도 버블로 보인다.
   if (args.initialPrompt) {
     emit({ kind: "user", text: args.initialPrompt });
-    child.stdin?.write(encodeUserTurn(args.initialPrompt));
+    safeStdinWrite(child, encodeUserTurn(args.initialPrompt));
   }
 
   return { ok: true };
@@ -1098,7 +1121,7 @@ export function sendStreamTurn(sessionId: string, text: string): void {
   session.correction.count = 0;
   session.correction.llmScored = false;
   session.emit({ kind: "user", text });
-  session.child.stdin?.write(encodeUserTurn(text));
+  safeStdinWrite(session.child, encodeUserTurn(text));
 }
 
 export function writeAgent(sessionId: string, data: string): void {
