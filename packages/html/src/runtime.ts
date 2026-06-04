@@ -44,6 +44,7 @@ import "./components/nds-avatar-group.js";
 import "./components/nds-search-input.js";
 import "./components/nds-star-rating.js";
 import "./components/nds-number-stepper.js";
+import "./components/nds-step-progress.js";
 import "./components/nds-slider.js";
 import "./components/nds-segmented.js";
 import "./components/nds-action-chip.js";

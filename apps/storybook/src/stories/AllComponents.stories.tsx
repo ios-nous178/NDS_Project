@@ -97,6 +97,7 @@ import {
   StatCard,
   StatusTimeline,
   Stepper,
+  StepProgress,
   StreakCard,
   Tabs,
   TagInput,
@@ -1489,6 +1490,19 @@ const PREVIEWS: Record<string, PreviewRender> = {
           { key: "1", label: "약관" },
           { key: "2", label: "정보" },
           { key: "3", label: "완료" },
+        ]}
+      />
+    </div>
+  ),
+
+  StepProgress: () => (
+    <div style={{ width: "100%", maxWidth: 360 }}>
+      <StepProgress
+        current={1}
+        steps={[
+          { key: "1", label: "Step 1", title: "캠페인" },
+          { key: "2", label: "Step 2", title: "광고" },
+          { key: "3", label: "Step 3", title: "소재" },
         ]}
       />
     </div>

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-04T04:14:32.442Z",
+  "generatedAt": "2026-06-04T23:54:19.348Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -5122,9 +5122,19 @@
           "type": "React.ReactNode"
         },
         {
+          "name": "account",
+          "optional": true,
+          "type": "SidebarAccount"
+        },
+        {
           "name": "footer",
           "optional": true,
           "type": "React.ReactNode"
+        },
+        {
+          "name": "footerActions",
+          "optional": true,
+          "type": "SidebarAction[]"
         },
         {
           "name": "user",
@@ -5549,6 +5559,23 @@
       "htmlAttrs": {
         "variant": ["numbered", "dots"]
       }
+    },
+    {
+      "name": "StepProgress",
+      "props": [
+        {
+          "name": "steps",
+          "optional": false,
+          "type": "StepProgressItem[]"
+        },
+        {
+          "name": "current",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/StepProgress.d.ts",
+      "htmlTag": "nds-step-progress"
     },
     {
       "name": "StreakCard",
@@ -10258,6 +10285,7 @@
     "nds-star-rating",
     "nds-stat-card",
     "nds-status-timeline",
+    "nds-step-progress",
     "nds-stepper",
     "nds-streak-card",
     "nds-tabs",
@@ -10767,6 +10795,10 @@
     },
     {
       "tag": "nds-status-timeline",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-step-progress",
       "attrs": {}
     },
     {

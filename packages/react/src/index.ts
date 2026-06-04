@@ -43,6 +43,7 @@ export * from "./ImageUpload";
 export * from "./ActionChip";
 export * from "./LikertScale";
 export * from "./Stepper";
+export * from "./StepProgress";
 export * from "./SegmentedControl";
 export * from "./FormField";
 export * from "./InputGroup";
