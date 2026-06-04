@@ -310,19 +310,39 @@ export function App(): React.JSX.Element {
     setNewChatReq((prev) => ({ seq: (prev?.seq ?? 0) + 1, cwd: picked.folder, ...req }));
   }, []);
 
+  // 과거/복귀 세션의 목업을 우측 미리보기에 띄운다. 채팅 세션은 앱 전역(userData)에 모이고 각
+  // 세션의 mockupFile 은 그 세션이 작업한 폴더(cwd) 기준 상대경로다. previewRoot 는 단일이라,
+  // 띄우기 직전 그 세션의 cwd 로 루트를 맞추지 않으면(특히 재시작 후 lastProjectPath 로만 복원될
+  // 때) 다른 폴더 기준으로 풀려 미리보기가 "not found" 로 깨진다. cwd 가 없는 옛 세션은 현재
+  // 루트 그대로(종전 동작). setPreviewRoot 를 먼저 await 해 iframe fetch 전에 루트가 잡히게 한다.
+  const showSessionPreview = useCallback(async (s: ChatSession) => {
+    setActiveIntent("html");
+    setTab("preview");
+    if (s.cwd) await window.harness.setPreviewRoot(s.cwd);
+    setPreviewRel(s.mockupFile ?? null);
+    setBust((b) => b + 1);
+  }, []);
+
+  // 지금 미리보기에 띄운 목업이 실제로 사는 루트. 보통은 활성 프로젝트(projectPath)지만, 다른
+  // 폴더에서 만든 과거 세션을 보는 중이면 그 세션의 작업 폴더(viewing.cwd)다 — main 의 previewRoot
+  // 도 그쪽으로 전환돼 있다(showSessionPreview). export/figma·활성목업 base 가 이걸 따라야 미리보기와
+  // 같은 폴더를 빌드한다(안 그러면 projectPath 루트를 빌드해 "index.html 없음"으로 실패). cwd 없는
+  // 옛 세션은 previewRoot 도 안 바뀌므로 projectPath 그대로(종전 동작).
+  const previewBase = viewing?.cwd ?? projectPath;
+
   // 빌드/내보내기 cwd = 지금 미리보기에 띄운 목업의 폴더. 우선순위:
   //   selected(파일트리 선택) → previewRel(채팅 세션 클릭으로 띄운 목업) → activeSlug(인테이크).
   // ⚠️ previewRel 폴백이 핵심: 채팅 세션을 클릭하면 previewRel 만 갱신되고 selected 는 그대로라,
-  //    이게 없으면 export 가 projectPath 루트를 빌드해 "index.html 없음"으로 실패한다
+  //    이게 없으면 export 가 루트를 빌드해 "index.html 없음"으로 실패한다
   //    (미리보기는 하위 목업을 보는데 내보내기는 루트를 빌드 = 어긋남).
   const activeMockupDir = useMemo(() => {
-    if (!projectPath) return undefined;
+    if (!previewBase) return undefined;
     const rel = selected ?? previewRel ?? (activeSlug ? `${activeSlug}/index.html` : null);
     if (!rel) return undefined;
     const slash = rel.lastIndexOf("/");
     const dir = slash > 0 ? rel.slice(0, slash) : "";
-    return dir ? `${projectPath}/${dir}` : projectPath;
-  }, [projectPath, selected, previewRel, activeSlug]);
+    return dir ? `${previewBase}/${dir}` : previewBase;
+  }, [previewBase, selected, previewRel, activeSlug]);
 
   /** 상단바에 보일 현재 작업 문맥(세션/목업 경로). 없으면 프로젝트 폴더명. */
   const currentContext = useMemo(() => {
@@ -441,12 +461,12 @@ export function App(): React.JSX.Element {
             </span>
           )}
           <FigmaExportButton
-            projectPath={projectPath}
+            projectPath={previewBase}
             mockupDir={activeMockupDir}
             disabled={isAdminCms}
           />
           <ExportButton
-            projectPath={projectPath}
+            projectPath={previewBase}
             mockupDir={activeMockupDir}
             disabled={isAdminCms}
             onExported={(rel) => {
@@ -517,19 +537,13 @@ export function App(): React.JSX.Element {
                 // 채팅 → 미리보기 있는 채팅 이동 시 미리보기가 안 바뀌던 이슈).
                 setAutoFollow(true);
                 if (s.mockupFile && s.intent !== "admin-cms") {
-                  setActiveIntent("html");
-                  setPreviewRel(s.mockupFile);
-                  setTab("preview");
-                  setBust((b) => b + 1);
+                  void showSessionPreview(s);
                 }
                 return;
               }
               setAutoFollow(false); // 과거 세션을 명시적으로 봄 → 라이브 자동추적 해제
               if (s.mockupFile && s.intent !== "admin-cms") {
-                setActiveIntent("html");
-                setPreviewRel(s.mockupFile);
-                setTab("preview");
-                setBust((b) => b + 1);
+                void showSessionPreview(s);
               } else {
                 // 연관 목업이 없는(작업 안 된) 세션 → 이전 목업 미리보기 잔상 제거.
                 setActiveIntent(s.intent === "admin-cms" ? "admin-cms" : "html");
@@ -557,12 +571,15 @@ export function App(): React.JSX.Element {
                 if (liveSessionId && liveSessionId !== s.sessionId) {
                   void window.harness.stopAgent(liveSessionId);
                 }
+                // 재개한 세션의 폴더가 곧 활성 프로젝트가 된다(main 이 같은 폴더로 와처/루트를
+                // 전환). projectPath 를 맞춰 export/와처/활성목업 base 가 그 폴더를 따르게 한다.
+                if (s.cwd) {
+                  setProjectPath(s.cwd);
+                  projectRef.current = s.cwd;
+                }
                 setAutoFollow(true);
                 if (s.mockupFile && s.intent !== "admin-cms") {
-                  setActiveIntent("html");
-                  setPreviewRel(s.mockupFile);
-                  setTab("preview");
-                  setBust((b) => b + 1);
+                  void showSessionPreview(s);
                 }
                 setLiveSessionId(s.sessionId);
                 setAttachSessionId(s.sessionId);
