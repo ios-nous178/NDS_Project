@@ -942,7 +942,11 @@ function startStreamAgent(
   // 정규화 메시지 1건을 영구저장(.jsonl) + 렌더러로 전송. 라이브/재생 단일 출처.
   // 알림은 세션당 1회(첫 result)만 — 매 턴마다 OS 알림이 쏟아지지 않게 한다.
   let notifiedOnce = false;
+  // 세션당 단조 seq — 라이브(agent:message)와 재생(.jsonl)이 같은 키를 갖게 해, attach 가
+  // 과거를 깐 뒤 라이브를 이을 때 경계 메시지 중복을 렌더러가 seq 로 제거할 수 있게 한다.
+  let nextSeq = 0;
   const emit = (msg: ChatMessage): void => {
+    msg.seq = nextSeq++;
     appendStructuredTranscript(args.projectPath, sessionId, msg);
     if (!wc.isDestroyed()) wc.send("agent:message", { sessionId, message: msg });
     // 구조화 모드는 턴 완료마다 result 메시지가 온다 — 이게 "작업 완료" 신호.
