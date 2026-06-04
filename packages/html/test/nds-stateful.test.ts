@@ -305,6 +305,24 @@ describe("nds-select", () => {
     expect(sel.hasAttribute("open")).toBe(false);
   });
 
+  it("marks the selected option with data-selected + renders a checkmark", async () => {
+    document.body.innerHTML = `
+      <nds-select value="jp" placeholder="선택">
+        <nds-select-option value="kr">대한민국</nds-select-option>
+        <nds-select-option value="jp">일본</nds-select-option>
+      </nds-select>
+    `;
+    await twice();
+    const optKr = document.querySelector('nds-select-option[value="kr"]') as HTMLElement;
+    const optJp = document.querySelector('nds-select-option[value="jp"]') as HTMLElement;
+    expect(optJp.dataset.selected).toBe("true");
+    expect(optJp.getAttribute("aria-selected")).toBe("true");
+    expect(optKr.dataset.selected).toBe("false");
+    // 선택 표시용 체크가 옵션 내부에 렌더되고, 라벨 textContent 는 영향받지 않는다.
+    expect(optJp.querySelector(".nds-select__option-check svg")).toBeTruthy();
+    expect(optJp.textContent?.trim()).toBe("일본");
+  });
+
   it("value attribute shows selected option label in trigger", async () => {
     document.body.innerHTML = `
       <nds-select value="jp" placeholder="선택">

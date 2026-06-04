@@ -52,6 +52,22 @@ describe("Select", () => {
     expect(screen.getByRole("button", { name: /바나나/i })).toBeInTheDocument();
   });
 
+  it("reflects the selected option with data-selected + a checkmark on open", async () => {
+    const user = userEvent.setup();
+    render(<SelectHarness value="banana" />);
+
+    await user.click(screen.getByRole("button", { name: /바나나/i }));
+
+    const selected = screen.getByRole("option", { name: "바나나" });
+    expect(selected).toHaveAttribute("aria-selected", "true");
+    expect(selected).toHaveAttribute("data-selected", "true");
+    // 선택 표시용 체크 마크가 선택된 옵션 안에 렌더된다.
+    expect(selected.querySelector(".nds-select__option-check")).toBeTruthy();
+
+    const unselected = screen.getByRole("option", { name: "사과" });
+    expect(unselected).toHaveAttribute("aria-selected", "false");
+  });
+
   it("does not allow selecting a disabled option", async () => {
     const user = userEvent.setup();
     render(<SelectHarness />);

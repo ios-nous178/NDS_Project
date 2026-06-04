@@ -20,6 +20,7 @@ const SELECT_TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
 const SELECT_CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
 const SELECT_DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const SELECT_OPTION_CLASS = `${SELECT_CLASS}__option`;
+const SELECT_OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
 const SELECT_HELPER_CLASS = `${SELECT_CLASS}__helper`;
 
 export const selectStyles = `
@@ -132,20 +133,37 @@ export const selectStyles = `
     transition: background-color ${transition.default};
   }
 
-  :where(.${SELECT_OPTION_CLASS}:hover) {
-    background: ${cv.surface.section};
-    color: ${cv.textRole.strong};
+  /* 선택 표시용 체크 — 평소엔 숨김, 선택된 옵션에서만 노출. trailing 정렬. */
+  :where(.${SELECT_OPTION_CHECK_CLASS}) {
+    display: none;
+    flex-shrink: 0;
+    margin-left: auto;
+    padding-left: ${spacing[8]}px;
+    color: inherit;
   }
 
+  :where(.${SELECT_OPTION_CHECK_CLASS} svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* hover / 키보드 active — 비선택 행의 탐색 어포던스 */
+  :where(.${SELECT_OPTION_CLASS}:hover),
+  :where(.${SELECT_OPTION_CLASS}[data-active="true"]) {
+    background: ${cv.surface.section};
+    color: ${cv.textRole.strong};
+    outline: none;
+  }
+
+  /* 선택 상태 — hover/active 규칙보다 뒤(= 동일 specificity면 우선)에 둬서
+     선택+active 가 겹쳐도 항상 브랜드색이 보이도록 한다. */
   :where(.${SELECT_OPTION_CLASS}[data-selected="true"]) {
     color: ${cv.textRole.brand};
     background: ${cv.surface.brandSubtle};
   }
 
-  :where(.${SELECT_OPTION_CLASS}[data-active="true"]) {
-    background: ${cv.surface.section};
-    color: ${cv.textRole.strong};
-    outline: none;
+  :where(.${SELECT_OPTION_CLASS}[data-selected="true"] .${SELECT_OPTION_CHECK_CLASS}) {
+    display: flex;
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-disabled="true"]) {
