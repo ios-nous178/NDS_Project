@@ -87,6 +87,7 @@ import {
   SegmentedControl,
   Select,
   SelectionCard,
+  SelectionButtonGroup,
   Skeleton,
   Slider,
   Snackbar,
@@ -1304,6 +1305,24 @@ const PREVIEWS: Record<string, PreviewRender> = {
             ]}
           />
         </div>
+      );
+    }
+    return <S />;
+  },
+
+  SelectionButtonGroup: () => {
+    function S() {
+      const [v, setV] = useState("always");
+      return (
+        <SelectionButtonGroup
+          value={v}
+          onValueChange={setV}
+          options={[
+            { value: "always", label: "항상" },
+            { value: "time", label: "특정 시간만" },
+            { value: "weekday", label: "특정 요일/시간만" },
+          ]}
+        />
       );
     }
     return <S />;

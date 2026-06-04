@@ -3748,6 +3748,22 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- debounce 없음 + min-query-length 없음 — 매 keystroke fetch -->\n<nds-search-input placeholder="검색"></nds-search-input>',
     },
   },
+  SelectionButtonGroup: {
+    name: "SelectionButtonGroup",
+    summary:
+      "폼 내 상호 배타적 옵션의 단일 선택 (권장 2~3개). 브랜드색 아웃라인의 개별 버튼을 gap 으로 나열 — FormField ContentSlot 에 교체. 선택 시 brand-subtle 배경 + brand 보더 + 굵은 텍스트.",
+    pitfalls: [
+      "SegmentedControl 과 혼동 — Segmented 는 연결된 회색 트랙(뷰/상태 전환), SelectionButtonGroup 은 폼 입력(개별 브랜드색 버튼). 폼 안 단일선택이면 이 컴포넌트.",
+      "옵션 4개 이상 — 가로 폭 부족. Select 또는 SelectionCard 사용.",
+      "라벨+설명+아이콘이 필요한 카드형 선택 — SelectionCard 가 적합.",
+      "선택색을 hex 로 박지 말 것 — selected 는 --semantic-bg-brand-subtle / --semantic-border-brand-default 캐스케이드로 5개 브랜드 자동 대응.",
+    ],
+    examplesHtml: {
+      do: '<nds-selection-button-group value="always" options=\'[{"value":"always","label":"항상"},{"value":"time","label":"특정 시간만"},{"value":"weekday","label":"특정 요일/시간만"}]\'></nds-selection-button-group>\n<script>el.addEventListener("selection-button-change", e => setSchedule(e.detail.value));</script>',
+      dont: '<!-- 뷰 전환에 SelectionButtonGroup — 폼 입력 컴포넌트라 위계가 어색. SegmentedControl 사용 -->\n<nds-selection-button-group options=\'[{"value":"list","label":"목록"},{"value":"grid","label":"그리드"}]\'></nds-selection-button-group>',
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-703",
+  },
   SegmentedControl: {
     name: "SegmentedControl",
     summary: "2-5 개의 평행 옵션 중 단일 선택 (탭의 가벼운 대체). 4개 초과면 Select / Tabs.",

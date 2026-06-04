@@ -86,7 +86,8 @@ export const dropdownMenuStyles = `
 
   :where(.${DM_ITEM_CLASS}:hover),
   :where(.${DM_ITEM_CLASS}[data-active="true"]) {
-    background: ${cv.surface.subtle};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.strong};
   }
 
   :where(.${DM_ITEM_CLASS}[data-danger="true"]) {

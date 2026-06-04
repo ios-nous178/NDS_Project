@@ -133,7 +133,8 @@ export const selectStyles = `
   }
 
   :where(.${SELECT_OPTION_CLASS}:hover) {
-    background: ${cv.surface.subtle};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.strong};
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-selected="true"]) {
@@ -142,7 +143,8 @@ export const selectStyles = `
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-active="true"]) {
-    background: ${cv.surface.subtle};
+    background: ${cv.surface.section};
+    color: ${cv.textRole.strong};
     outline: none;
   }
 
