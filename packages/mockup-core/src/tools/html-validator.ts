@@ -151,6 +151,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "unknown-nds-tag": "error",
   "unknown-nds-class": "error",
   "invalid-nds-attr-value": "error",
+  // nds-* 의 JSON 속성(items/options/reward 등)이 파싱 불가 — 컴포넌트가 조용히 빈 값 렌더(메뉴 유실)
+  "nds-json-attr-unparseable": "error",
   "unknown-token": "error",
   "ds-badge-missing": "error",
   // 토큰 / 시멘틱
@@ -573,6 +575,32 @@ export function validateHtmlSource(
           detail: `<${tag} ${attrName}="${value}"> — 허용값 아님.`,
           suggestion: `${tag}.${attrName} 허용값: ${allowed.map((v) => `"${v}"`).join(", ")}.`,
         });
+      }
+    }
+
+    // 4-ter. nds-* 의 JSON 속성이 파싱 안 되면 컴포넌트가 조용히 빈 값으로 렌더된다
+    //   (예: nds-sidebar 메뉴 통째 유실 — 로고만 보임). 휴리스틱: nds-* 속성 값이 [ 또는 {
+    //   로 시작하면 JSON 으로 간주하고 파싱 시도. 가장 흔한 원인 = 단일따옴표 속성에서
+    //   구조용 따옴표까지 \" 로 과이스케이프(items='[{\"key\"...]'). build_singlefile_html 의
+    //   자동 validate 단계에서 빌드를 막아 "로고만 뜨는" 침묵 실패를 차단한다.
+    if (tag.startsWith("nds-")) {
+      for (const [attrName, attrValue] of Object.entries(attrs)) {
+        if (typeof attrValue !== "string") continue;
+        const trimmed = attrValue.trim();
+        if (trimmed[0] !== "[" && trimmed[0] !== "{") continue;
+        try {
+          JSON.parse(trimmed);
+        } catch {
+          violations.push({
+            rule: "nds-json-attr-unparseable",
+            line,
+            selector,
+            detail: `<${tag} ${attrName}="${trimmed.slice(0, 40)}…"> — JSON 파싱 실패. 컴포넌트가 빈 값으로 렌더됨(메뉴/옵션 유실).`,
+            suggestion:
+              'JSON 속성의 구조용 따옴표를 \\" 로 이스케이프하지 마세요 — 단일따옴표 속성 안에서는 bare 가 맞고 SVG 내부 따옴표만 \\" 입니다. ' +
+              '큰 데이터는 <nds-...><script type="application/json" slot="items">[...]</script> 가 더 안전합니다.',
+          });
+        }
       }
     }
 

@@ -566,7 +566,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
     pitfalls: [
-      "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
+      "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. **아이콘↔텍스트 간격은 컴포넌트가 `.nds-button__label` 의 gap 으로 자동 적용**하므로 margin-right/padding 으로 직접 띄우지 말 것. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
       "**React 한정** — `<Button leftIcon={<svg/>}>...</Button>` / `rightIcon={<svg/>}` 사용. 빈 React Element 를 넘기고 ref 로 innerHTML 박는 패턴 금지.",
       "color='assistive' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
       "Geniet 브랜드에서 variant='soft' 또는 variant='outlined-sub' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
@@ -979,7 +979,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           radius: "16px (base 8)",
           padding: "32px 균등 (base 비대칭 28/16/16)",
           gapBodyToFooter: "20px (base 24)",
-          buttonHeight: "44px pill (base 변형 없음)",
+          buttonHeight:
+            "44px pill (base 변형 없음) — 모달 액션 버튼 shape 는 pill 이 맞음 (Figma ModalGuide 3418-471). default 사각으로 바꾸지 말 것.",
+          confirmCta:
+            '주 action(확인/적용) = color="secondary" variant="solid" → 캐포비 시그니처 **검정 CTA**(#000 배경·흰 텍스트, buttonBg.secondary 토큰 cascade). colorMatrix 만 보면 secondary/solid 가 파랑(#F1F8FD)으로 보이지만 data-brand="cashwalk-biz" 에서는 검정으로 cascade 됨. 취소/닫기 = color="assistive" variant="outlined". 파괴적 확정(삭제 등)만 color="error".',
           titleTypo: "Title2 18·26 좌측 정렬 (base 중앙 정렬)",
           bodyTypo: "Body2 14·20 medium 좌측 정렬 (base 중앙 정렬)",
           activationCondition:
@@ -995,6 +998,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
+      '캐포비 admin 모달의 주 action(확인/적용)은 color="secondary" variant="solid" — 브랜드 시그니처 **검정 CTA**(#000·흰 텍스트). 취소/닫기는 color="assistive" variant="outlined", 파괴적 확정만 color="error". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (검정인데 파랑으로 나오면 data-brand="cashwalk-biz" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)',
     ],
     usagePolicy: {
       useFor: [
@@ -1249,7 +1253,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Sidebar: {
     name: "Sidebar",
     examplesHtml: {
-      do: '<nds-sidebar active-key="home" width="240"\n  items=\'[{"key":"home","label":"홈","icon":"<svg ...>...</svg>"},{"key":"chat","label":"상담","icon":"<svg ...>...</svg>"}]\'\n  title="NudgeEAP"></nds-sidebar>\n<!-- icon = find_icon({name}) 가 준 inline SVG 문자열을 그대로. 이름("home")을 넣으면 innerHTML 이라 텍스트로 흘러나옴. items 는 JSON 속성이라 SVG의 " 는 \\" 로 이스케이프 -->\n<script>el.addEventListener("item-click", e => navigate(e.detail.key));</script>',
+      do: '<!-- 권장: items 를 자식 <script type="application/json" slot="items"> 로 넣는다 — 속성이 아니라 텍스트라 따옴표 이스케이프 함정이 아예 없고 단일파일 빌드에도 안전 -->\n<nds-sidebar active-key="home" width="240" title="NudgeEAP">\n  <script type="application/json" slot="items">\n  [{"key":"home","label":"홈","icon":"<svg ...>...</svg>"},{"key":"chat","label":"상담","icon":"<svg ...>...</svg>"}]\n  </script>\n</nds-sidebar>\n<!-- 속성 형태도 가능: items=\'[{"key":"home",...}]\' — 단, 구조용 따옴표는 bare 로 두고 SVG 내부 따옴표만 \\" 로 이스케이프(구조 따옴표를 \\" 로 만들면 파싱 실패→메뉴 통째 유실). icon = find_icon({name}) inline SVG 그대로(이름 넣으면 텍스트로 흘러나옴) -->\n<script>el.addEventListener("item-click", e => navigate(e.detail.key));</script>',
       dont: "<!-- 일반 어드민/CMS(=antd 영역)에서 nds-sidebar 사용 — 일반 어드민은 antd Layout.Sider. -->\n<!-- ★ 단, 캐포비(cashwalk-biz) 어드민은 정반대 — nds-sidebar 가 정답이다 (DS 자체 admin DS). 아래 pitfalls 참고 -->\n<nds-sidebar items='...'></nds-sidebar>",
     },
     summary:
@@ -1264,6 +1268,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "캐시워크 포 비즈니스 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
       '**★ HTML `<nds-sidebar>` 의 item `icon` = inline SVG 문자열 (이름 아님).** `icon` 은 innerHTML 로 주입되므로 `"icon":"home"` 이나 `"icon":"CashwalkBizGnbBannerIcon"` 처럼 **이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자). 절차: `find_icon({ name })` → 반환 inline SVG 를 `icon` 에 주입. React `<Sidebar>` 의 `icon?: ReactNode`(엘리먼트)와 대칭일 뿐, **HTML 목업이라 아이콘이 안 된다는 건 사실이 아니다**(런타임 한계 X). `items` 가 JSON 속성이라 SVG 안 `"` 는 `\\"` 로 이스케이프.',
       "GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 get_brand({ brand:'<slug>' }).brandIcons 참조. (이때 얻은 이름을 그대로 HTML icon 에 넣지 말고 find_icon 으로 SVG 를 받아 주입.)",
+      '**★ items JSON 이스케이프 함정 — 사이드바가 로고만 뜨고 메뉴가 통째로 사라지는 #1 원인.** 단일따옴표 `items=\'...\'` 안에서 JSON **구조용 따옴표까지** `\\"` 로 이스케이프하면(`items=\'[{\\"key\\"...]\'`) HTML 속성에서 백슬래시는 리터럴이라 JSON 파싱이 깨지고, 컴포넌트가 메뉴를 통째로 버린다(로고/헤더만 렌더). 구조용 따옴표는 **bare**, SVG 내부 따옴표만 `\\"`. 헷갈리면 `<script type="application/json" slot="items">` 자식을 쓰면 이스케이프가 아예 필요 없다. 빌드 validator(`nds-json-attr-unparseable`)가 깨진 JSON 을 error 로 잡아 빌드를 막고, 컴포넌트도 조용히 비우지 않고 console.warn 한다.',
       "서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).",
       "collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).",
       "footer 와 user 를 동시에 주면 footer 가 우선. user 는 'avatar + 이름 + 역할' 정형 패턴 단축이라 footer 가 있으면 무시.",
@@ -5473,20 +5478,20 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-form-layout": {
     name: "cashwalk-biz-form-layout",
     summary:
-      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → 페이지 끝 inline 센터 [취소][저장] 알약(rounded-28) cluster' 표준. " +
+      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold (+부제) → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → **하단 고정(sticky) 흰 Footer 바**의 우측 [취소][저장]' 표준. " +
       "Figma 290:1197 (퀴즈 등록하기) 실측. 필드 단위 컴포넌트 정책은 pattern:cashwalk-biz-input, CTA 정책은 pattern:cashwalk-biz-button 과 함께 본다.",
     rules: [
       "**페이지 컨테이너**: 사이드바(좌 300px) 우측 본문. 페이지 bg `#FAFAFA`, 콘텐츠 컬럼 폭 1491px (실측), 좌측 padding 32px.",
-      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838. 타이틀 아래 76px 후 **1px hairline divider #D8D8D8** 풀폭. 우측에는 액션 두지 말 것.",
+      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838 **+ (있으면) 바로 아래 부제** Pretendard Regular 16/24 #666. **레퍼런스에 부제가 있으면 반드시 유지 — title-only 로 축소 금지.** 타이틀/부제 아래 76px 후 **1px hairline divider #D8D8D8** 풀폭. **페이지 배경 위에 얹는다 — 별도 박스/sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 우측에는 액션 두지 말 것(액션은 하단 sticky Footer).",
       "**섹션 헤딩 (카드 위 분리 노출)**: 헤딩(예: '기본 정보') 은 카드 **밖** 위에 위치 — Pretendard **Bold 24 / lh 30** #383838. 헤딩 아래 ~54px 후 카드 시작.",
       "**섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.",
       "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**, 필드 우측 ~684px (long) 또는 ~228px (date/short). 라벨은 row 중앙 정렬.",
       "**라벨 타이포**: Pretendard **Medium 16 / lh 24, #666** (text.subtle). 'strong' 색을 쓰지 않는다 — 빽빽한 폼에서 라벨은 subtle 로 둬도 위계가 명확.",
-      "**필드 컴포넌트**: 높이 **48px**, `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border 는 `pattern:cashwalk-biz-input` 참조.",
+      '**필드 컴포넌트**: 높이 **40px** (`nds-input`/`nds-select` 동일 높이로 정렬 — nds-input 은 size 미지정(default)이면 브랜드 :root 40 으로 cascade 되고 `size="compact"` 도 40. **48 로 두면 nds-select(40) 와 높이가 어긋남**), `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border·정확한 radius 는 `pattern:cashwalk-biz-input` 참조.',
       "**행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.",
       "**Helper text**: Pretendard Regular **14 / lh 20, #666**. 글자 수 카운터(`0/30`) 는 14 Medium #999 우측 정렬.",
       "**필수 마커**: 라벨 옆 ` *` color **`#FC3500`** (Coral Red-Orange). 'optional' 표기 X.",
-      "**액션바**: NOT sticky. 페이지 끝 inline + **센터 정렬 cluster** — [취소] + [저장], 각 **w-160 h-56 rounded-28 (알약)**. Cancel: white + 1px #D8D8D8 + #666. Primary: bg `#FFD200` + 검정 텍스트. Disabled: bg `#D8D8D8` + 흰 텍스트.",
+      "**액션바 = 하단 고정(sticky) Footer 바** (2026-06 표준 — 이전 'inline 센터 알약 cluster' 폐기): 콘텐츠 하단에 **흰 배경 `--semantic-bg-surface-default` + 상단 1px border `#ECECEC`** 풀폭 바로 고정, 안쪽 padding 24/48. **우측 정렬** [취소][저장]. 저장=primary solid, 취소=outlined — CTA shape/색 실측은 `pattern:cashwalk-biz-button` (BottomCTA) 가 SSOT. Disabled: `#D8D8D8` neutral. (단건 폼 footer 바의 정확한 px·정렬은 해당 화면 Figma 노드로 확정.)",
       "**액션 위계**: primary solid CTA 1개. 파괴(삭제) 액션은 별도 위치(헤더 우측 또는 카드 우측 상단) 분리.",
       "**선택 chip / 활성 토큰**: `bg #FFFAE2 + border #FFD200` (옅은 노란 + 노란 보더) + Bold #111. 강조 숫자/카운트는 `#FD9B02` (amber).",
       "**우측 보조 사이드 카드 (선택)**: 메인 필드 우측에 요약 카드 (border #ECECEC rounded-16 padding 25×32 w-406) — 미리보기/도움말.",
@@ -5497,7 +5502,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "페이지 헤더 우측에 [저장] 버튼 — 하단 센터 액션바와 중복.",
       "필수 마커 색을 `#FF4141` 으로 — 캐시워크 포 비즈니스 폼은 `#FC3500` (Coral Red-Orange).",
       "Disabled CTA 를 Yellow/100 (#FFFAE5) 로 — 폼 액션바 disabled 는 `#D8D8D8` neutral gray.",
-      "액션바를 우측 정렬 또는 sticky bottom — 캐시워크 포 비즈니스 폼은 페이지 끝 inline 센터.",
+      "액션바를 본문 흐름 안 inline 센터 알약 cluster 로 — 2026-06 부터 **하단 고정(sticky) 흰 Footer 바 + 우측 정렬**이 표준.",
       "CTA 모양을 8px rounded 사각형 — Figma 는 56h rounded-28 알약 (pill).",
       "필드 border-radius 를 8px 로 — Figma 는 10px.",
       "필수 라벨을 brand yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.",
@@ -5508,18 +5513,20 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         verdict: "good",
         source: "Figma 290:1197 캐시워크 포 비즈니스 admin form (퀴즈 등록하기)",
         caption:
-          "PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-48 rounded-10 → 페이지 끝 [취소][저장] 알약 cluster 센터.",
+          "PageTitle 32 Bold (+부제) → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-40 rounded-10 → 하단 고정 흰 Footer 바 우측 [취소][저장].",
       },
       {
         verdict: "bad",
         source: "잘못된 admin form 레이아웃",
         caption:
-          "라벨-위 흐름 + 우측 정렬 sticky 액션바 + rounded-8 사각 CTA + #FF4141 필수마커 — 모두 캐시워크 포 비즈니스 admin 컨벤션 위반.",
+          "라벨-위 흐름 + 헤더를 박스 sticky topbar 로 감쌈 + 부제 삭제 + #FF4141 필수마커 — 모두 캐시워크 포 비즈니스 admin form 컨벤션 위반.",
       },
     ],
     metrics: {
       pageBg: "#FAFAFA",
       pageTitle: "Pretendard Bold 32/60 #383838",
+      pageSubtitle: "Pretendard Regular 16/24 #666 (레퍼런스에 있으면 유지 — title-only 축소 금지)",
+      pageHeaderContainer: "페이지 배경 위 (박스/sticky nds-shell__topbar 아님)",
       titleToDivider: "76px (then 1px hairline #D8D8D8)",
       sectionHeading: "Pretendard Bold 24/30 #383838 (카드 밖 위)",
       sectionHeadingToCardGap: "~54px",
@@ -5531,15 +5538,17 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       labelColumnWidth: "172px",
       labelTypography: "Pretendard Medium 16/24 #666",
       requiredMarker: "라벨 옆 ' *' #FC3500",
-      fieldHeight: "48px",
+      fieldHeight:
+        "40px (nds-input/nds-select 동일 — input default 는 brand :root 로 cascade, 48 로 두면 select 와 어긋남)",
       fieldRadius: "10px",
       fieldBorder: "1px #D8D8D8",
       fieldBg: "white",
       placeholderColor: "#999",
       helperTypography: "Pretendard Regular 14/20 #666 (counter #999)",
-      actionBarPosition: "inline at page-end (NOT sticky)",
-      actionBarAlignment: "center cluster",
-      ctaSize: "w-160 h-56 rounded-28 (pill)",
+      actionBarPosition:
+        "sticky bottom Footer 바 (흰 bg `--semantic-bg-surface-default` + 상단 1px border, padding 24/48)",
+      actionBarAlignment: "right",
+      ctaSize: "cashwalk-biz-button BottomCTA 참조 (저장=primary solid, 취소=outlined)",
       ctaPrimary: "bg #FFD200 + 검정",
       ctaCancel: "white + 1px #D8D8D8 + #666",
       ctaDisabled: "bg #D8D8D8 + 흰 텍스트",
@@ -6213,7 +6222,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "패턴별 상세는 `pattern:cashwalk-biz-page-{onboarding|dashboard|list|detail|form}`. 필드/CTA/입력 단위 실측은 `pattern:cashwalk-biz-form-layout` · `pattern:cashwalk-biz-button` · `pattern:cashwalk-biz-input`, shell 보일러플레이트는 `pattern:admin-shell`. " +
       "Figma 7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern).",
     rules: [
-      "**먼저 패턴을 고른다 (하드 게이트)**: 새 어드민 화면을 받으면 PRD 의 목적을 5개 패턴 중 하나로 먼저 분류한다 — 로그인/계정복구=Onboarding, 통계/요약 홈=Dashboard, 목록·검색=List, 단건 상세/탭=Detail, 등록·수정=Form. 분류 없이 컴포넌트부터 배치하지 않는다. **이건 권고가 아니라 강제다** — surface=admin + brand=cashwalk-biz 화면은 패턴 선언이 없으면 validate 가 error(`cashwalk-biz-admin-page-pattern`)로 막는다.",
+      "**먼저 패턴을 고른다 (하드 게이트)**: 새 어드민 화면을 받으면 PRD 의 목적을 5개 패턴 중 하나로 먼저 분류한다 — 로그인/계정복구=Onboarding, 통계/요약 홈=Dashboard, 목록·검색=List, 단건 상세/탭=Detail, 등록·수정=Form. **Form 은 다시 단건/다단계로 갈린다 — 한 화면(Step Progress 없음, 제목+부제+하단 sticky Footer 바)=`cashwalk-biz-form-layout`, 다단계(캠페인→광고→소재 등 Step Progress)=`cashwalk-biz-page-form`. 이름이 비슷하니 footer 가 헷갈리면 단건은 우측 sticky 바, 다단계는 좌/우 분리 Footer.** 분류 없이 컴포넌트부터 배치하지 않는다. **이건 권고가 아니라 강제다** — surface=admin + brand=cashwalk-biz 화면은 패턴 선언이 없으면 validate 가 error(`cashwalk-biz-admin-page-pattern`)로 막는다.",
       '**패턴 선언 방법**: HTML 목업은 루트에 `data-page-pattern` 마커 — 예: `<html data-brand="cashwalk-biz" data-page-pattern="list">`(또는 body / .mockup-screen). DesignSpec 은 `screen.pagePattern` 필드에 `onboarding|dashboard|list|detail|form` 중 하나. surfaceKind=admin 은 nudge.surface 마커에서 자동 주입되니 보통 pagePattern 만 채우면 된다.',
       "**조립 순서 고정**: ① 페이지 패턴 선택 → ② 패턴의 섹션 슬롯 채우기(섹션 단위 구조화) → ③ 섹션 안 반복 컴포넌트(테이블·필터·필드·차트)를 DS 컴포넌트로 조립 → ④ validate. 역순(컴포넌트 먼저)으로 가면 패턴 일관성이 깨진다.",
       "**shell 은 공통**: 모든 패턴은 사이드바 + topbar + content 의 `admin-shell`(nds-shell 계열) 위에 얹힌다. 패턴은 content 영역의 섹션 구성만 정의한다 — raw shell CSS 재정의 금지(`pattern:admin-shell`).",
@@ -6603,10 +6612,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     name: "cashwalk-biz-page-form",
     summary:
       "캐시워크 포 비즈니스 어드민 **Form 패턴** — 다단계 입력으로 새 항목을 등록하는 화면. " +
-      "구성: 01 Sidebar → 02 Step Progress → 03 Form Sections(FormSection 반복) → 04 Summary/Preview Panel(선택, 우측 400px) → 05 Footer Actions. " +
+      "구성: 01 Sidebar → 01b Page Header(title+부제, 페이지 배경 위) → 02 Step Progress → 03 Form Sections(FormSection 반복) → 04 Summary/Preview Panel(선택, 우측 400px) → 05 Footer Actions. " +
       "**필드 단위 실측(라벨 컬럼·필드 높이·필수 마커 등)은 `pattern:cashwalk-biz-form-layout` 이 SSOT** — 이 패턴은 페이지 조립(Step/섹션/요약/Footer) + **PRD→컴포넌트 매핑**을 정의. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-1041 / pattern 3615-522 실측 반영.",
     rules: [
-      "**언제 쓰나**: PRD 에 '등록 / 만들기 / 생성 / 신규 / Step' 키워드가 있고, 여러 정책 옵션을 단계별로 설정하거나 '캠페인 → 광고 → 소재'처럼 계층 구조를 등록할 때.",
+      "**언제 쓰나**: PRD 에 '등록 / 만들기 / 생성 / 신규 / Step' 키워드가 있고, 여러 정책 옵션을 단계별로 설정하거나 '캠페인 → 광고 → 소재'처럼 계층 구조를 등록할 때. **단건(한 화면, Step Progress 없음) 폼이면 이 page-form 이 아니라 `pattern:cashwalk-biz-form-layout` 이 페이지 SSOT** — 이름이 비슷하니 주의: 단건=form-layout, 다단계=page-form.",
+      "**01b Page Header**: 좌측 타이틀 Bold 32 **+ (있으면) 부제 16/24 #666** → 풀폭 1px hairline divider. **페이지 배경 위에 얹는다 — 박스 sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 상세 px 는 `pattern:cashwalk-biz-form-layout` 의 페이지 헤더 참조(여기서 중복 정의 X).",
       "**02 Step Progress**: 가로 막대 + Step N 라벨(Done / Current / Todo 상태). 다단계 등록일 때 사용 — Step ≥ 3 이면 필수. 영역 padding **32/48**, 하단 **border 1px**. 단건이면 생략.",
       "**03 Form Sections**: **FormSection 컴포넌트 반복** — 각 섹션 = 제목(예: '광고 정보') + 설명 + 필드 슬롯(label-좌측 + 입력 + helper). 섹션 사이 gap **32px**. 필드 슬롯의 라벨 컬럼·필드 높이·필수 마커 등 px·색은 `pattern:cashwalk-biz-form-layout` 을 그대로 따른다(여기서 중복 정의 X).",
       "**04 Summary / Preview Panel (선택)**: 메인 폼 우측 보조 패널 **400px** — 예상 성과·미리보기·입력 요약. 2컬럼 = 메인 폼(FILL) + 패널 400px. 없으면 단일 컬럼.",
@@ -6639,7 +6649,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     metrics: {
       status: "Figma 실측 반영 (docs 3626-1041 / pattern 3615-522)",
       composition:
-        "01 Sidebar → 02 Step Progress → 03 Form Sections → 04 Summary Panel(선택) → 05 Footer Actions",
+        "01 Sidebar → 01b Page Header(title+부제, 페이지 배경 위) → 02 Step Progress → 03 Form Sections → 04 Summary Panel(선택) → 05 Footer Actions",
       shell: "admin-shell",
       stepProgress:
         "가로 막대 + Step N (Done/Current/Todo) · padding 32/48 · 하단 border 1px · Step≥3 필수",

@@ -138,7 +138,11 @@ export const InputRoot: React.FC<InputRootProps> = ({
         style={
           {
             "--nds-input-width": fullWidth ? "100%" : "auto",
-            "--nds-input-height": `${sizeStyle.height}px`,
+            // size="default" 는 inline 높이 생략 → 브랜드 :root override(캐포비 admin 40)가
+            // cascade 로 이김. inline 으로 박으면 nds-select(40) 와 높이 어긋남(48 vs 40).
+            ...(size !== "default" && {
+              "--nds-input-height": `${sizeStyle.height}px`,
+            }),
             "--nds-input-label-gap": `${sizeStyle.labelGap}px`,
             "--nds-input-helper-gap": `${sizeStyle.helperGap}px`,
             ...(sizeStyle.paddingX !== undefined && {

@@ -360,13 +360,31 @@ export class NdsSidebar extends NdsElement {
   }
 
   private _parseItems(): SidebarSection[] {
-    const raw = this.getAttribute("items");
-    if (!raw) return [];
+    // 1순위: 자식 <script type="application/json" slot="items"> — 속성이 아니라 텍스트
+    //   노드라 따옴표/이스케이프 함정이 구조적으로 없다(권장 패턴, 단일파일 빌드에도 안전).
+    // 2순위: items 속성(하위 호환).
+    const script = this.querySelector<HTMLScriptElement>(
+      'script[type="application/json"][slot="items"]',
+    );
+    const raw = script ? script.textContent : this.getAttribute("items");
+    if (!raw || !raw.trim()) return [];
     try {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) return normalizeSections(parsed);
-    } catch {
-      /* ignore */
+      console.warn("[nds-sidebar] items 가 JSON 배열이 아닙니다 — 메뉴를 비웁니다.", {
+        rawHead: raw.slice(0, 80),
+      });
+    } catch (err) {
+      // 조용히 [] 를 반환하면 "로고만 뜨고 메뉴가 통째로 사라지는" 디버깅 불가 증상이 된다.
+      // 가장 흔한 원인: 단일따옴표 items 속성에서 JSON 구조용 따옴표까지 \" 로 과이스케이프
+      //   (예: items='[{\"key\"...]'). 구조 따옴표는 bare 여야 하고 SVG 내부 따옴표만 \" 가 맞다.
+      //   더 안전: <nds-sidebar><script type="application/json" slot="items">[...]</script>.
+      console.warn(
+        "[nds-sidebar] items 가 유효한 JSON 이 아닙니다 — 메뉴를 비웁니다. " +
+          'JSON 구조용 따옴표를 \\" 로 이스케이프하지 마세요. ' +
+          '가능하면 <script type="application/json" slot="items"> 자식을 쓰세요.',
+        { error: err, rawHead: raw.slice(0, 80) },
+      );
     }
     return [];
   }

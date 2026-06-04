@@ -157,7 +157,16 @@ export class NdsInput extends NdsElement {
     root.dataset.disabled = String(disabled);
     root.dataset.error = String(error);
     root.style.setProperty("--nds-input-width", fullWidth ? "100%" : "auto");
-    root.style.setProperty("--nds-input-height", `${cfg.height}px`);
+    // size="default" 는 inline 높이를 박지 않는다 — 그래야 브랜드 :root override
+    // (예: 캐포비 admin --nds-input-height:40)가 cascade 로 이긴다. inline 으로 박으면
+    // :root 를 눌러 nds-select(40, inline 안 박음) 와 높이가 어긋난다(48 vs 40).
+    // field/compact 는 작성자가 명시한 의도이므로 inline 유지.
+    // CSS fallback: min-height: var(--nds-input-height, sizing.input.default=48px).
+    if (size === "default") {
+      root.style.removeProperty("--nds-input-height");
+    } else {
+      root.style.setProperty("--nds-input-height", `${cfg.height}px`);
+    }
     root.style.setProperty("--nds-input-label-gap", `${cfg.labelGap}px`);
     root.style.setProperty("--nds-input-helper-gap", `${cfg.helperGap}px`);
     if (cfg.paddingX !== null) {
