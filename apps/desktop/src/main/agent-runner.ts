@@ -17,6 +17,7 @@ import { app, Notification, BrowserWindow, type WebContents } from "electron";
 import { getAugmentedPath, getToolProcessEnv } from "@nudge-design/mockup-core";
 import { logAppEvent } from "./events.js";
 import { codexMcpConfigArgs, ensureBundledMcpConfig } from "./mcp-config.js";
+import { codexDisableDuplicateDsArgs, detectClaudeDsDuplicates } from "./mcp-dedup.js";
 import {
   appendStructuredTranscript,
   appendTranscript,
@@ -501,13 +502,16 @@ const HARD_DENY_PERMISSIONS: string[] = [
 // stream(canary) 세션용 deny 전용 settings 파일 — turn hook 을 안 쓰는 경로라 따로 만든다.
 // mkdtemp 로 1회 생성 후 캐시(작은 JSON, OS tmp 가 정리). 실패하면 null(주입 생략).
 let denySettingsPath: string | null = null;
-function ensureDenySettingsPath(): string | null {
-  if (denySettingsPath) return denySettingsPath;
+function ensureDenySettingsPath(disabledMcpServers: string[] = []): string | null {
+  // disabledMcpjsonServers 는 cwd 종속이라 있으면 매번 신규 작성(캐시 안 함). 없으면 정적 캐시.
+  if (!disabledMcpServers.length && denySettingsPath) return denySettingsPath;
   try {
     const dir = mkdtempSync(join(tmpdir(), "nudge-deny-"));
     const p = join(dir, "settings.json");
-    writeFileSync(p, JSON.stringify({ permissions: { deny: HARD_DENY_PERMISSIONS } }));
-    denySettingsPath = p;
+    const settings: Record<string, unknown> = { permissions: { deny: HARD_DENY_PERMISSIONS } };
+    if (disabledMcpServers.length) settings.disabledMcpjsonServers = disabledMcpServers;
+    writeFileSync(p, JSON.stringify(settings));
+    if (!disabledMcpServers.length) denySettingsPath = p;
     return p;
   } catch {
     return null;
@@ -517,6 +521,7 @@ function ensureDenySettingsPath(): string | null {
 function setupTurnHook(
   isClaude: boolean,
   onTurnDone: () => void,
+  disabledMcpServers: string[] = [],
 ): { settingsArgs: string[]; dispose: () => void } {
   const noop = { settingsArgs: [] as string[], dispose: (): void => {} };
   if (!isClaude || isWindows) return noop;
@@ -524,12 +529,14 @@ function setupTurnHook(
     const dir = mkdtempSync(join(tmpdir(), "nudge-turn-"));
     const signalPath = join(dir, "signal");
     const settingsPath = join(dir, "settings.json");
-    const settings = {
+    const settings: Record<string, unknown> = {
       hooks: {
         Stop: [{ hooks: [{ type: "command", command: `printf 1 >> '${signalPath}'` }] }],
       },
       // git commit/push·figma 쓰기 하드 차단 — turn hook settings 에 병합해 한 번에 주입.
       permissions: { deny: HARD_DENY_PERMISSIONS },
+      // 기존 DS MCP 중복(.mcp.json project 스코프) 비활성화 — 하네스 번들 nudge-ds 우선.
+      ...(disabledMcpServers.length ? { disabledMcpjsonServers: disabledMcpServers } : {}),
     };
     writeFileSync(settingsPath, JSON.stringify(settings));
     let last = 0;
@@ -646,6 +653,32 @@ export function startAgent(
     payload: { agentType: args.agentType },
   });
 
+  // codex harness-wins: 사용자가 다른 이름으로 직접 등록한 DS MCP 중복을 끄고 하네스 번들
+  // nudge-ds 만 남긴다(동봉 MCP 가 SSOT). `codex mcp list --json` best-effort 조회라 실패해도 무해.
+  // claude 등가 처리(disabledMcpjsonServers)는 아래 claude settings 경로에서.
+  const codexDisableArgs =
+    !isClaude && codexMcpArgs.length > 0
+      ? codexDisableDuplicateDsArgs(binPath, cleanEnv({ ...getToolProcessEnv(), PATH: searchPath }))
+      : [];
+
+  // claude harness-wins(best-effort): project(.mcp.json) DS 중복은 disabledMcpjsonServers 로 끄고
+  // (아래 settings 경로에 주입), user/local 스코프 중복은 못 끄므로 경고만(--strict 는 figma 등
+  // 다른 서버까지 죽어 부적합). claude 미설치 사용자엔 무해.
+  const claudeDsDups =
+    isClaude && mcpConfig ? detectClaudeDsDuplicates(cwd) : { disableable: [], unmanageable: [] };
+  if (claudeDsDups.disableable.length) {
+    console.log(
+      `[harness] claude 기존 DS MCP 중복 비활성화(.mcp.json): ${claudeDsDups.disableable.join(", ")} ` +
+        `→ 하네스 번들 nudge-ds 우선 (해제: NUDGE_DS_KEEP_USER_MCP=1)`,
+    );
+  }
+  if (claudeDsDups.unmanageable.length) {
+    console.warn(
+      `[harness] claude DS MCP 중복(user/local 스코프) 자동 비활성화 불가: ${claudeDsDups.unmanageable.join(", ")} ` +
+        "— 중복을 없애려면 `claude mcp remove <name>` 권장(번들 nudge-ds 와 공존).",
+    );
+  }
+
   // 컨텍스트 플래그 — claude: --mcp-config + --append-system-prompt(아래 claudeContextFlags).
   // codex: -c mcp_servers.*(위 codexMcpArgs)로 MCP 를 얹고, DS 사용 의무는 워크스페이스 AGENTS.md
   // (intake bootstrapDoc)로 전달한다(codex 는 --append-system-prompt 등가 플래그가 없음).
@@ -654,7 +687,15 @@ export function startAgent(
   // 구조화(stream-json) transport 는 PTY 가 아니라 piped child_process 로 분기. createSession/
   // agent_started 로그는 위에서 이미 공통으로 처리됨 — 여기선 spawn + 이벤트 배선만.
   if (transport === "stream-json") {
-    return startStreamAgent(args, binPath, searchPath, mcpConfig, sessionBase, wc);
+    return startStreamAgent(
+      args,
+      binPath,
+      searchPath,
+      mcpConfig,
+      sessionBase,
+      wc,
+      claudeDsDups.disableable,
+    );
   }
 
   // claude 컨텍스트 플래그(MCP + DS 의무) — resume/신규 공통으로 붙인다.
@@ -687,7 +728,7 @@ export function startAgent(
       notifyAgentTurn(wc, { ok: true, screenName: args.screenName });
     }, 400);
   };
-  const turnHook = setupTurnHook(isClaude, signalTurnDone);
+  const turnHook = setupTurnHook(isClaude, signalTurnDone, claudeDsDups.disableable);
 
   // 선두 인자: resume 이면 resume 인자(claude `--resume <id>` / codex `resume <id>` 서브커맨드 —
   // codex 의 `resume` 는 반드시 첫 토큰), 아니면 시드 프롬프트(positional).
@@ -700,6 +741,7 @@ export function startAgent(
   // codex 의 -c 는 전역 옵션이라 leadArgs(prompt/`resume`) **앞**에, claude 플래그는 prompt **뒤**에
   // 둔다(가변 --mcp-config 가 prompt 를 삼키지 않도록). codexMcpArgs/claudeContextFlags 는 서로 배타적.
   const ptyArgs = [
+    ...codexDisableArgs,
     ...codexMcpArgs,
     ...leadArgs,
     ...spec.args,
@@ -828,11 +870,12 @@ function startStreamAgent(
   mcpConfig: string | null,
   sessionBase: SessionBase,
   wc: WebContents,
+  disabledMcpServers: string[] = [],
 ): { ok: boolean; error?: string } {
   const sessionId = args.sessionId;
   // git commit/push·figma 쓰기 하드 차단(deny). bypassPermissions 여도 deny 가 우선한다.
-  // stream 은 turn hook 을 안 쓰므로 전용 settings 파일로 주입.
-  const denyPath = ensureDenySettingsPath();
+  // stream 은 turn hook 을 안 쓰므로 전용 settings 파일로 주입(기존 DS MCP 중복 비활성화도 함께).
+  const denyPath = ensureDenySettingsPath(disabledMcpServers);
   const streamArgs = [
     "-p",
     "--input-format",
