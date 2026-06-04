@@ -241,6 +241,17 @@ export function AgentPanel({
     return term;
   }, []);
 
+  // setTransport("pty") 가 예약한 리렌더로 xterm 컨테이너 div 가 마운트될 때까지 rAF 폴링.
+  // stream-json→pty 전환 시 container div 는 언마운트 상태(ref=null)라, 고정 프레임(단일/이중
+  // rAF)으론 React 19 concurrent 커밋 타이밍을 보장 못 한다 → "조건" 을 프레임 캡과 함께 폴링한다.
+  const waitForContainer = useCallback(async (maxFrames = 10): Promise<boolean> => {
+    for (let i = 0; i < maxFrames; i++) {
+      if (containerRef.current) return true;
+      await new Promise<void>((r) => requestAnimationFrame(() => r()));
+    }
+    return !!containerRef.current;
+  }, []);
+
   const start = useCallback(
     async (agentTypeOverride?: AgentType, transportOverride?: Transport, cwdOverride?: string) => {
       // 작업 폴더 — "+ 새 채팅"에서 고른 폴더가 있으면 그것, 없으면 현재 프로젝트 루트.
@@ -270,9 +281,16 @@ export function AgentPanel({
       if (isStream) {
         setMessages([]); // 구조화 모드: 카드 채팅 초기화(xterm 미사용).
       } else {
-        if (!containerRef.current) return;
+        // stream-json→pty 전환 직후엔 setTransport(pty) 의 리렌더가 아직 커밋 안 돼 컨테이너
+        // div 가 없을 수 있다(stream-json 동안 언마운트). 마운트를 기다린 뒤 터미널을 만든다.
+        // (예전엔 여기서 조용히 return 해 채팅창이 입력·출력 없는 빈 다크 박스로 남았다.)
+        if (!containerRef.current) await waitForContainer();
         term = makeTerminal();
-        if (!term) return;
+        if (!term) {
+          setStatus("error");
+          setError("채팅 화면을 준비하지 못했어요. 다시 시도해 주세요.");
+          return;
+        }
       }
 
       const id = crypto.randomUUID();
@@ -314,7 +332,7 @@ export function AgentPanel({
       histCb.current?.();
       term?.focus();
     },
-    [projectPath, agentType, transport, mockupFile, makeTerminal],
+    [projectPath, agentType, transport, mockupFile, makeTerminal, waitForContainer],
   );
 
   // 구조화 모드 입력창 → 다음 유저 턴 전송(메시지 echo 는 main 이 agent:message 로 돌려줌).
@@ -329,14 +347,48 @@ export function AgentPanel({
     async (id: string) => {
       if (!projectPath) return;
       setError("");
-      // 인테이크 세션은 pty(raw TUI) — canary 토글 상태였다면 기본으로 되돌려 xterm
-      // 컨테이너가 렌더되게 하고, DOM 에 올라올 한 프레임을 기다린 뒤 터미널을 만든다.
-      setTransport("pty");
-      if (!containerRef.current) {
-        await new Promise<void>((r) => requestAnimationFrame(() => r()));
+      // 세션의 실제 transport 를 메타에서 다시 조회해 분기한다. 인테이크 canary 세션은
+      // stream-json, resume 세션은 항상 pty 로 재spawn 되며 메타가 최신 라인으로 갱신되므로
+      // listSessions 가 "지금 실제로 도는 transport" 를 준다. (예전엔 attach 가 무조건 pty 로
+      // 강제해, 카드(stream-json) 세션이 출력 없는 빈 xterm 으로만 떠 채팅창이 비어 보였다.)
+      let tp: Transport = "pty";
+      try {
+        const sessions = await window.harness.listSessions(projectPath);
+        if (sessions.find((s) => s.sessionId === id)?.transport === "stream-json") {
+          tp = "stream-json";
+        }
+      } catch {
+        /* 메타 조회 실패 — pty 로 폴백 */
       }
+      setTransport(tp);
+
+      if (tp === "stream-json") {
+        // 구조화 세션: xterm 이 아니라 카드뷰(StructuredChatView). 과거 메시지를 먼저 깔고
+        // (인테이크 시드 user 버블 포함 — main 이 spawn 직후 .jsonl 에 적어둠) 그다음 sessionRef
+        // 를 켜 라이브(agent:message) 누적을 잇는다. 읽기-우선이라 시드 유실/중복 카드가 최소화.
+        setMessages([]);
+        try {
+          const { messages: past } = await window.harness.readStructuredTranscript(projectPath, id);
+          if (past.length) setMessages(past);
+        } catch {
+          /* 트랜스크립트 없음 — 라이브만 */
+        }
+        sessionRef.current = id;
+        setStatus("running");
+        liveCb.current?.(id);
+        histCb.current?.();
+        return;
+      }
+
+      // pty(raw TUI): canary 토글 상태였다면 위 setTransport("pty") 로 xterm 컨테이너가 다시
+      // 렌더되므로, DOM 에 올라올 때까지 기다린 뒤 터미널을 만든다.
+      if (!containerRef.current) await waitForContainer();
       const term = makeTerminal();
-      if (!term) return;
+      if (!term) {
+        setStatus("error");
+        setError("터미널을 준비하지 못했어요. 다시 시도해 주세요.");
+        return;
+      }
       try {
         const { text } = await window.harness.readTranscript(projectPath, id);
         if (text) term.write(text);
@@ -349,7 +401,7 @@ export function AgentPanel({
       histCb.current?.();
       term.focus();
     },
-    [projectPath, makeTerminal],
+    [projectPath, makeTerminal, waitForContainer],
   );
 
   useEffect(() => {

@@ -45,6 +45,23 @@ const MIME: Record<string, string> = {
   ".woff2": "font/woff2",
 };
 
+/**
+ * 미리보기 로드 실패를 흰/빈 창(plain-text "not found")이 아니라 읽을 수 있는 다크 안내
+ * 페이지로 돌려준다. loadURL 은 404/403 응답을 reject 하지 않고 resolve 하므로(별도 창이든
+ * in-app iframe 이든) 본문이 곧 사용자가 보는 화면이 된다 — 그래서 본문을 안내로 채운다.
+ */
+function errorPage(status: number, title: string, detail: string): Response {
+  const esc = (s: string): string =>
+    s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c] ?? c);
+  const html = `<!doctype html><meta charset="utf-8"><title>${esc(title)}</title>
+<body style="margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#1e1e1e;color:#d4d4d4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;text-align:center">
+<div style="padding:32px;max-width:560px">
+<div style="font-size:15px;font-weight:600;color:#f0f0f0;margin-bottom:10px">${esc(title)}</div>
+<div style="font-size:12.5px;line-height:1.6;color:#9a9a9a;word-break:break-all">${esc(detail)}</div>
+</div></body>`;
+  return new Response(html, { status, headers: { "content-type": "text/html; charset=utf-8" } });
+}
+
 /** app.whenReady 전에 호출 — privileged 스킴 등록. */
 export function registerMockupScheme(): void {
   protocol.registerSchemesAsPrivileged([
@@ -58,7 +75,12 @@ export function registerMockupScheme(): void {
 /** app.whenReady 후 호출 — 실제 핸들러 등록. */
 export function registerMockupProtocol(): void {
   protocol.handle("mockup", async (request) => {
-    if (!previewRoot) return new Response("no preview root", { status: 404 });
+    if (!previewRoot)
+      return errorPage(
+        404,
+        "미리보기를 표시할 수 없어요",
+        "활성 프로젝트(미리보기 루트)가 아직 설정되지 않았습니다.",
+      );
 
     const url = new URL(request.url);
     const relPath = decodeURIComponent(url.pathname).replace(/^\/+/, "");
@@ -67,10 +89,10 @@ export function registerMockupProtocol(): void {
     // 경로 탈출 차단: 반드시 previewRoot 하위여야 한다.
     const rel = relative(previewRoot, abs);
     if (rel.startsWith("..") || rel.startsWith(sep) || abs === previewRoot) {
-      return new Response("forbidden", { status: 403 });
+      return errorPage(403, "접근할 수 없는 경로예요", relPath);
     }
     if (!existsSync(abs) || !statSync(abs).isFile()) {
-      return new Response("not found", { status: 404 });
+      return errorPage(404, "파일을 찾을 수 없어요", relPath);
     }
 
     const ext = extname(abs).toLowerCase();
