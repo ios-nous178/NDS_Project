@@ -120,6 +120,13 @@ const harness = {
   /** 미리보기 목업을 별도 창으로 연다(더블클릭 느낌). mockup:// 로 로드해 런타임/스탬프 동일. */
   openMockupWindow: (relPath: string): Promise<void> =>
     ipcRenderer.invoke("preview:openWindow", { relPath }),
+  /**
+   * 미리보기 루트(previewRoot)를 그 세션의 작업 폴더(cwd)로 가볍게 전환. 채팅 세션은 전역
+   * 저장이라 폴더가 제각각인데 previewRoot 는 단일 — 과거 세션 미리보기를 띄우기 직전 이걸 맞춰야
+   * mockupFile(폴더 기준 상대경로)이 올바로 풀린다(안 맞추면 "not found"). 와처/저장은 안 건드림.
+   */
+  setPreviewRoot: (root: string): Promise<{ ok: boolean }> =>
+    ipcRenderer.invoke("preview:setRoot", { root }),
 
   // ── 비파괴 내보내기 (공유용 HTML) ──
   /** 원본 무변경 — 자체완결 dist/index.html 생성 + 버전 stamp + usage + webhook.

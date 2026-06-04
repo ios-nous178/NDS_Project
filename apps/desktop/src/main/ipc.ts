@@ -1,5 +1,5 @@
 import { app, dialog, ipcMain, shell, BrowserWindow } from "electron";
-import { copyFileSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { copyFileSync, existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import { setPreviewRoot } from "./mockup-protocol.js";
@@ -145,6 +145,21 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     win.setMenuBarVisibility(false);
     await win.loadURL(url);
   });
+
+  // 과거 세션 미리보기용 루트 전환. 채팅 세션은 프로젝트 폴더가 아니라 앱 전역(userData)에
+  // 모이고, 각 세션의 mockupFile 은 그 세션이 작업한 폴더(cwd) 기준 상대경로다. previewRoot 는
+  // 단일이라, 재시작 후 lastProjectPath 로만 복원되면 cwd 가 다른 세션의 미리보기가 엉뚱한 루트
+  // 기준으로 풀려 "not found" 가 떴다. 렌더러가 미리보기를 띄우기 직전 그 세션의 cwd 로 루트만
+  // 가볍게 바꾼다(activateProject 와 달리 와처/persistence 는 건드리지 않음 — 과거 보기는 비파괴).
+  ipcMain.handle(
+    "preview:setRoot",
+    async (_e, args: { root: string }): Promise<{ ok: boolean }> => {
+      const root = args.root?.trim();
+      if (!root || !existsSync(root) || !statSync(root).isDirectory()) return { ok: false };
+      setPreviewRoot(root);
+      return { ok: true };
+    },
+  );
 
   // 업데이트 알림 — GitHub Releases 최신 데스크탑 빌드를 조회해 현재 버전과 비교(알림만, 자동설치 X).
   ipcMain.handle("update:check", async (): Promise<UpdateCheckResult> => checkForUpdate());
@@ -435,6 +450,11 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
       if (!isResumable(s) || !s.agentSessionId || !s.cwd) {
         return { ok: false, error: "이 세션은 이어갈 수 없습니다(저장된 대화 기록이 없습니다)." };
       }
+      // 이어가기 = 그 세션의 폴더(s.cwd)에서 다시 작업한다 → 미리보기 루트·파일 와처·persistence
+      // 를 그 폴더로 전환한다. 안 하면 와처가 옛 폴더를 보고 있어 재개된 에이전트가 만든 파일을
+      // 자동추적 못 하고, export 가 현재 활성 프로젝트(다른 폴더) 루트를 빌드해 "index.html 없음"
+      // 으로 실패한다. 렌더러도 onResume 에서 projectPath 를 s.cwd 로 맞춘다.
+      activateProject(s.cwd, wc);
       return startAgent(
         {
           sessionId: s.sessionId,
