@@ -12,6 +12,7 @@ const SELECT_TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
 const SELECT_CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
 const SELECT_DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const SELECT_OPTION_CLASS = `${SELECT_CLASS}__option`;
+const SELECT_OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
 const SELECT_HELPER_CLASS = `${SELECT_CLASS}__helper`;
 /* ─── Utils ─── */
 
@@ -473,6 +474,17 @@ export const SelectOption: React.FC<SelectOptionProps> = ({
       {...rest}
     >
       {children}
+      <span className={SELECT_OPTION_CHECK_CLASS} aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M3.5 8.5L6.5 11.5L12.5 5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
     </div>
   );
 };

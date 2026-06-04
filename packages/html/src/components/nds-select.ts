@@ -32,7 +32,13 @@ const TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
 const CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
 const DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const OPTION_CLASS = `${SELECT_CLASS}__option`;
+const OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
 const HELPER_CLASS = `${SELECT_CLASS}__helper`;
+
+const OPTION_CHECK_SVG =
+  '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+  '<path d="M3.5 8.5L6.5 11.5L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+  "</svg>";
 
 let nextSelectId = 0;
 
@@ -414,6 +420,13 @@ export class NdsSelectOption extends NdsElement {
     this.classList.add(OPTION_CLASS);
     this.dataset.slot = "option";
     this.setAttribute("role", "option");
+    // 선택 표시용 trailing 체크 — 평소엔 CSS 로 숨김, data-selected 일 때만 노출.
+    // svg 는 텍스트가 없으므로 host.textContent(= trigger 라벨)에 영향 없음.
+    const check = document.createElement("span");
+    check.className = OPTION_CHECK_CLASS;
+    check.setAttribute("aria-hidden", "true");
+    check.innerHTML = OPTION_CHECK_SVG;
+    this.appendChild(check);
     // 클릭 처리는 dropdown delegation 으로 옮김 — portal 후 jsdom 에서
     // 옵션 자체의 listener 가 안 잡히는 케이스를 피한다.
     this._wrapped = true;
