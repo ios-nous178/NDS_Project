@@ -697,12 +697,12 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 
   steps.push({
     step: 6,
-    title: "정적 검증 루프 — validate_html_mockup / analyze_html_mockup",
+    title: "정적 검증 루프 — validate_html_mockup (withStats 로 채택률 포함)",
     commands: [
       "validate_html_mockup({ filePath: '<프로젝트>/index.html' })",
-      "analyze_html_mockup({ filePath: '<프로젝트>/index.html' })",
+      "validate_html_mockup({ filePath: '<프로젝트>/index.html', withStats: true })",
     ],
-    note: "validate 위반 0건 + analyze.dsRatio 충분히 높은 상태를 ship 기준으로 사용.",
+    note: "validate 위반 0건 + withStats.counts.dsRatio 충분히 높은 상태를 ship 기준으로 사용.",
   });
 
   steps.push({

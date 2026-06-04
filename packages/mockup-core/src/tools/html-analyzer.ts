@@ -536,8 +536,43 @@ export function convertHtmlToDsHtml(args: ConvertHtmlToDsHtmlArgs): ConvertHtmlT
     }
   }
 
-  // 3. 미변환 알림 — convert 가 어떻게 안 만진 부분이 남아있는지.
-  if (!TAG_REWRITES.button && /<button\b/.test(output)) unchanged.push("button");
+  // 3. 미변환 잔여 리포트 — convert 가 손대지 못한 native 들을 정직하게 보고한다.
+  //    convert 는 button/input/select/textarea 만 nds-* 로 rewrite 한다. form/landmark(header/footer/aside)
+  //    는 손대지 않으므로 남아 있으면 다음 손질 대상으로 노출해야 한다.
+  //    (이전엔 `!TAG_REWRITES.button` 이 항상 false 라 button 잔존이 절대 리포트되지 않는 죽은 코드였다.)
+  //    rewrite 가 끝난 $ 는 post-tag-rewrite DOM 을 그대로 들고 있으므로 재파싱 없이 재사용한다.
+  const RESIDUAL_TAGS = new Set([
+    "button",
+    "input",
+    "select",
+    "textarea",
+    "form",
+    "header",
+    "footer",
+    "aside",
+  ]);
+  const residualByTag: Record<string, number> = {};
+  $("*").each((_i, el) => {
+    if (el.type !== "tag") return;
+    const t = el.tagName.toLowerCase();
+    if (!RESIDUAL_TAGS.has(t)) return;
+    // nds-* wrapper 안의 inner 는 우리 WC 가 만든 것 → 잔존으로 보지 않는다.
+    let cur: DomElement | null = ((el as unknown as { parent?: DomElement }).parent ??
+      null) as DomElement | null;
+    let insideWrapper = false;
+    while (cur) {
+      if (cur.type === "tag" && cur.tagName?.toLowerCase().startsWith("nds-")) {
+        insideWrapper = true;
+        break;
+      }
+      cur = ((cur as unknown as { parent?: DomElement }).parent ?? null) as DomElement | null;
+    }
+    if (!insideWrapper) residualByTag[t] = (residualByTag[t] ?? 0) + 1;
+  });
+  for (const [t, n] of Object.entries(residualByTag).sort((a, b) => b[1] - a[1])) {
+    unchanged.push(`${t}×${n}`);
+  }
+
   // hex 미 매칭 (catalog 와 일치 안 함)
   const remainingHex = output.match(/style="[^"]*#[0-9a-fA-F]{3,8}\b/g);
   if (remainingHex && remainingHex.length > 0) {

@@ -57,6 +57,7 @@ import {
   canonicalBrandSlug,
   canonicalPagePattern,
   CASHWALK_BIZ_PAGE_PATTERNS,
+  type CashwalkBizPagePattern,
   listStandaloneBrands,
 } from "./standalone-assets.js";
 
@@ -132,6 +133,8 @@ export function configureHtmlValidator(ctx: HtmlValidationContext) {
 const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   // contract / DS 미사용
   "native-interactive": "error",
+  // DS 반영도(dsRatio)가 최소선 미달 — "DS 반영"을 강제하는 집계 게이트(E1).
+  "low-ds-ratio": "error",
   "raw-landmark": "warn",
   // 브랜드 화면인데 base nds-header 를 손수 조립 (회고: brand chrome 미사용 안티패턴)
   "manual-brand-header": "warn",
@@ -234,6 +237,12 @@ const RAW_SHELL_PATTERNS: Array<{
 function severityFor(rule: string): HtmlViolationSeverity {
   return RULE_SEVERITY[rule] ?? "warn";
 }
+
+// E1 low-ds-ratio 게이트 파라미터.
+//   MIN_ELIGIBLE: DS 대상(nds 채택 + native 미교체) 요소가 이 수 미만이면 단순 화면으로 보고 면제 —
+//   폼 1개짜리 화면이 억울하게 막히지 않도록 한다. FLOOR: DS 반영 최소 비율(%).
+const LOW_DS_MIN_ELIGIBLE = 4;
+const LOW_DS_FLOOR = 50;
 
 const STRICT_SYMBOL_RE = /[→←↑↓↔↕➜➔⮕›‹»«▶◀▲▼◆◇✓✗✘✕☑☒★☆⭐♥♡❤•]/;
 const EMOJI_RE =
@@ -385,6 +394,10 @@ export function validateHtmlSource(
   const surface = options?.surface ?? null;
   const declaredBrand = options?.brand;
   const violations: HtmlViolation[] = [];
+  // E1 집계: DS 반영도(dsRatio) 게이트용. nds-* 태그/실재 nds 클래스(채택) vs native 미교체(미반영).
+  let ndsTagCount = 0;
+  let ndsClassCount = 0;
+  let nativeUnwrappedCount = 0;
   const $ = cheerio.load(source, { xmlMode: false });
 
   // 모든 element 순회 — style / class / svg / native button 검사
@@ -396,6 +409,20 @@ export function validateHtmlSource(
     const line = lineNumberAt(source, offset);
     const selector = describeElement(el);
 
+    // E1 집계: DS 반영도 — nds-* 태그 / 실재 nds 클래스(채택) 카운트.
+    if (tag.startsWith("nds-")) {
+      ndsTagCount++;
+    } else {
+      const elClasses = (attrs.class ?? "").split(/\s+/).filter(Boolean);
+      const ndsBase = elClasses.find(
+        (c) => /^nds-[a-z0-9-]+$/.test(c) && !c.includes("__") && !c.includes("--"),
+      );
+      // 실재 nds 클래스만 채택으로 카운트(E4 와 동일 기준) — 가짜 nds-foo 로 비율 부풀리기 차단.
+      if (ndsBase && (ctx.ndsClassPrefixSet.size === 0 || ctx.ndsClassPrefixSet.has(ndsBase))) {
+        ndsClassCount++;
+      }
+    }
+
     // 1. style="..." 검사
     if (attrs.style) {
       checkStyleString(attrs.style, line, selector, ctx, violations);
@@ -404,12 +431,20 @@ export function validateHtmlSource(
     // 2. native interactive 가 nds-* 태그 / 클래스 없이 사용
     if (tag === "button" || tag === "input" || tag === "select" || tag === "textarea") {
       const cls = (attrs.class ?? "").split(/\s+/).filter(Boolean);
-      const hasNdsClass = cls.some((c) => c.startsWith("nds-"));
+      // E4: 실재하는 nds 베이스 클래스만 native-interactive 를 무력화한다. 가짜 nds-foo 를 붙여
+      //     에러를 잠재우거나 dsRatio 게이트를 우회하지 못하게(컨텍스트 미설정이면 prefix 만으로 하위호환).
+      const hasNdsClass = cls.some((c) => {
+        if (!/^nds-[\w-]+/.test(c)) return false;
+        if (ctx.ndsClassPrefixSet.size === 0) return true;
+        const base = c.replace(/__.+$/, "").replace(/--.+$/, "");
+        return ctx.ndsClassPrefixSet.has(base);
+      });
       // <nds-input> 안에 들어있는 inner <input> 은 우리 WC 가 만든 것 — 검사 제외
       const insideNdsWrapper = (el as unknown as { parent?: DomElement }).parent
         ? hasAncestorNdsTag(el)
         : false;
       if (!hasNdsClass && !insideNdsWrapper) {
+        nativeUnwrappedCount++;
         violations.push({
           rule: "native-interactive",
           line,
@@ -871,6 +906,30 @@ export function validateHtmlSource(
   //   "화면당 1개" 류 카운트 임계값을 프레임 수만큼 비례 확대한다(프레임 1개 = 기존과 동일).
   const screenCount = Math.max(1, $(".mockup-screen").length);
   collectDocumentLevelViolations(source, $, violations, screenCount);
+
+  // E1: DS 반영도(dsRatio) 최소선 게이트.
+  //   "DS 반영"이 보고만 되고 강제되지 않던 구멍을 막는다 — nds-* 1개만 있어도 통과하던 문제.
+  //   단순 화면(DS 대상 요소가 적음)은 면제해 억울한 차단을 막고(결정: 경고+자동재시도),
+  //   대상이 충분한데 반영도가 바닥이면 error 로 띄워 기존 자동수정 루프(hasErrors)가 재시도하게 한다.
+  //   build_singlefile_html 은 ok 를 뒤집지 않으므로 빌드/익스포트 자체를 막지는 않는다.
+  const dsAdopted = ndsTagCount + ndsClassCount;
+  const dsEligible = dsAdopted + nativeUnwrappedCount;
+  if (dsEligible >= LOW_DS_MIN_ELIGIBLE) {
+    const dsRatio = Math.round((dsAdopted / dsEligible) * 100);
+    if (dsRatio < LOW_DS_FLOOR) {
+      violations.push({
+        rule: "low-ds-ratio",
+        line: 1,
+        selector: "<html>",
+        severity: "error",
+        detail: `DS 반영도 ${dsRatio}% (nds ${dsAdopted} / 대상 ${dsEligible}) — 최소 ${LOW_DS_FLOOR}% 미달. native ${nativeUnwrappedCount}개가 nds-* 로 미교체.`,
+        suggestion:
+          "native <button>/<input>/<select>/<textarea> 를 nds-* 로 교체하고 raw 색/여백을 토큰으로 바꿔 DS 반영도를 올리세요. " +
+          "convert_html_to_ds_html 으로 1차 변환 후 손으로 마감, find_component({ query }) 로 매핑. " +
+          "HTML 목업을 DS 로 옮기는 작업이면 get_guide({ topic: 'pattern:html-mockup-intake' }) 워크플로우를 따르세요.",
+      });
+    }
+  }
 
   // push 시점에 severity 를 명시하지 않은 violation 은 RULE_SEVERITY 에서 채운다.
   for (const v of violations) {
@@ -1337,6 +1396,31 @@ export function readSurfaceMarker(startDir: string): HtmlSurface {
     dir = parent;
   }
   return null;
+}
+
+/**
+ * nudge.pagePattern 마커를 startDir 에서 위로 최대 5단계 탐색해 선언된 캐포비 Page Pattern 을 읽는다.
+ * (readSurfaceMarker 와 동일 SSOT 패턴 — 데스크탑 intake 추천 카드에서 사용자가 고른 패턴을 이 마커로
+ *  박아두면, save_design_spec 가 screen.pagePattern 미선언 시 여기서 자동 주입한다.)
+ */
+export function readPagePatternMarker(startDir: string): CashwalkBizPagePattern | undefined {
+  let dir = startDir;
+  for (let i = 0; i < 5; i++) {
+    const marker = path.join(dir, "nudge.pagePattern");
+    if (fs.existsSync(marker)) {
+      try {
+        const value = fs.readFileSync(marker, "utf-8").trim();
+        return canonicalPagePattern(value);
+      } catch {
+        // ignore — 폴백
+      }
+      return undefined;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return undefined;
 }
 
 /** 결정적 품질 점수 차원 (Kraft 코드기반 scorer 미러, animation 제외). */
