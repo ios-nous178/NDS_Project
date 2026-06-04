@@ -7,7 +7,7 @@ import {
   detectWorkspaceIntent,
   injectHtmlUsageSummary,
   patchViteConfig,
-} from "../src/tools/build-html.js";
+} from "@nudge-design/mockup-core/tools/build-html";
 
 describe("patchViteConfig", () => {
   it("inserts import + viteSingleFile() into a typical vite.config", () => {
@@ -338,7 +338,7 @@ describe("auditMockupWorkspace", () => {
       fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
       fs.writeFileSync(
         path.join(tmp, "REFERENCES.md"),
-        `[good] source=figma caption=ok hero with single CTA emphasis`,
+        `[good] source=figma.com/x caption=ok hero with single CTA emphasis`,
       );
       const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
       expect(v).toBeUndefined();
@@ -410,7 +410,7 @@ describe("auditMockupWorkspace — html intent", () => {
     fs.mkdirSync(path.join(tmp, "src"));
     fs.writeFileSync(
       path.join(tmp, "references.md"),
-      `[good] source=figma caption=clean hero with single CTA`,
+      `[good] source=figma.com/x caption=clean hero with single CTA`,
     );
   });
 

@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { configureHtmlValidator } from "../src/tools/html-validator";
+import { configureHtmlValidator } from "@nudge-design/mockup-core/tools/html-validator";
 import {
   analyzeHtmlMockup,
   convertHtmlToDsHtml,
   countHtmlUsage,
   reportHtmlMockupUsage,
-} from "../src/tools/html-analyzer";
+} from "@nudge-design/mockup-core/tools/html-analyzer";
 
 configureHtmlValidator({
   tokenSet: new Set(["--semantic-bg-brand-default", "--semantic-text-inverse-default"]),
