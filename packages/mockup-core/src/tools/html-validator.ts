@@ -166,7 +166,9 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "text-symbol-banned": "error",
   "text-icon-substitute": "error",
   // 아이콘 / 시각
-  "inline-svg": "warn",
+  // inline-svg = info(권고). find_icon 이 HTML 용으로 내려주는 DS 아이콘 인라인은 불가피한
+  // 정상 패턴이라 게이트 점수를 깎으면 안 됨(warn=8 → info=3). standalone <svg> 권고로만 노출.
+  "inline-svg": "info",
   "heading-decorative-icon": "warn",
   // 컨테이너 / 카운팅
   "card-slot-double-padding": "warn",
@@ -513,13 +515,19 @@ export function validateHtmlSource(
     }
 
     // 3. inline svg — DS 아이콘 사용 권장
-    if (tag === "svg") {
+    // inline svg — find_icon 으로 받은 DS 아이콘 인라인은 HTML 목업의 정상(불가피) 패턴이다.
+    // nds-* 컴포넌트 안의 아이콘(버튼/사이드바 슬롯 등)은 DS-driven 이므로 아예 제외하고,
+    // 그 외 standalone <svg> 만 info(권고)로 남긴다 — 게이트 점수(icon 차원)를 깎지 않게.
+    // (룰 주석의 'DS 아이콘 화이트리스트' 를 실제로 구현. 회고: inline-svg warn 이 icon 차원을
+    //  0 으로 끌어내려 DS 100% 목업이 81점으로 보이던 채점 불공정 수정.)
+    if (tag === "svg" && !hasAncestorNdsTag(el)) {
       violations.push({
         rule: "inline-svg",
         line,
         selector,
         detail: "<svg> 직접 사용",
-        suggestion: "먼저 find_icon 으로 @nudge-design/icons 에 적합 아이콘 있는지 확인.",
+        suggestion:
+          "먼저 find_icon 으로 @nudge-design/icons 에 적합 아이콘 있는지 확인. (find_icon 이 준 DS 아이콘 인라인은 정상 — info 권고)",
       });
     }
 
