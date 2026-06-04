@@ -67,18 +67,28 @@ export function claudeStoreFile(cwd: string, sessionId: string, home: string = h
 
 // ── codex: rollout 헤더에서 세션 id 사후 캡처 ──────────────────────────────────
 
-/** codex rollout 파일 첫 줄(session_meta)에서 뽑은 후보 헤더. */
-export interface CodexRolloutHeader {
+/** rollout 첫 줄(session_meta)에서 파싱한 본질 식별자(시각 제외 — windowing 은 fs 생성시각으로). */
+export interface CodexSessionMeta {
   id: string;
   cwd: string;
-  timestampMs: number;
+}
+
+/**
+ * windowing 까지 끝난 rollout 후보 = session_meta + fs 생성시각 + 파일경로.
+ * spawn-window 비교는 `createdMs`(fs 생성시각, 실 epoch) 로 한다 — payload.timestamp 는
+ * TZ skew 위험(로컬 naive / 잘못 붙은 Z)이 있어 windowing 에 쓰지 않는다.
+ */
+export interface CodexRolloutHeader extends CodexSessionMeta {
+  /** spawn-window 비교용 실 epoch ms = fs birthtime(미지원 FS 면 mtime 폴백). TZ 불변. */
+  createdMs: number;
   file: string;
 }
 
 /**
  * PURE: 후보 헤더들 중 **이 세션**의 것을 고른다.
- * 규칙 = cwd 일치 && (생성시각 >= spawn시각 - tolerance) 중 **가장 이른** 것.
+ * 규칙 = cwd 일치 && (fs 생성시각 >= spawn시각 - tolerance) 중 **가장 이른** 것.
  * codex 는 spawn 직후 rollout 을 만드므로, spawn 이후 같은 cwd 의 첫 세션이 우리 것이다.
+ * 시각은 fs 생성시각(createdMs)만 본다 — payload.timestamp 의 TZ skew 에 영향받지 않는다.
  */
 export function pickCodexRollout(
   headers: CodexRolloutHeader[],
@@ -87,26 +97,26 @@ export function pickCodexRollout(
   toleranceMs = 60_000,
 ): CodexRolloutHeader | null {
   const matches = headers
-    .filter((h) => h.cwd === cwd && h.timestampMs >= spawnedAtMs - toleranceMs)
-    .sort((a, b) => a.timestampMs - b.timestampMs);
+    .filter((h) => h.cwd === cwd && h.createdMs >= spawnedAtMs - toleranceMs)
+    .sort((a, b) => a.createdMs - b.createdMs);
   return matches[0] ?? null;
 }
 
-/** rollout 파일 첫 줄을 파싱해 헤더로. session_meta 가 아니거나 깨지면 null. */
-export function parseCodexHeader(file: string, firstLine: string): CodexRolloutHeader | null {
+/**
+ * rollout 첫 줄(session_meta)에서 id+cwd 를 뽑는다. session_meta 아님/필수필드 누락이면 null.
+ * 시각은 보지 않는다 — payload.timestamp 는 TZ skew 위험이라 windowing 에 안 쓰고(있어도 무시),
+ * spawn-window 비교는 fs 생성시각(captureCodexSession 이 주입)으로 한다.
+ */
+export function parseCodexHeader(firstLine: string): CodexSessionMeta | null {
   try {
     const o = JSON.parse(firstLine) as {
       type?: string;
-      payload?: { id?: unknown; cwd?: unknown; timestamp?: unknown };
+      payload?: { id?: unknown; cwd?: unknown };
     };
     const p = o.payload;
     if (o.type !== "session_meta" || !p) return null;
-    if (typeof p.id !== "string" || typeof p.cwd !== "string" || typeof p.timestamp !== "string") {
-      return null;
-    }
-    const ms = Date.parse(p.timestamp);
-    if (Number.isNaN(ms)) return null;
-    return { id: p.id, cwd: p.cwd, timestampMs: ms, file };
+    if (typeof p.id !== "string" || typeof p.cwd !== "string") return null;
+    return { id: p.id, cwd: p.cwd };
   } catch {
     return null;
   }
@@ -137,7 +147,8 @@ function walkCodexRollouts(root: string): string[] {
 /**
  * codex 가 방금 만든 세션의 id 를 캡처한다. spawn 직후~짧은 지연 뒤 호출.
  * 비용 절감: **mtime 이 spawn 이후인 rollout 만** 첫 줄을 읽는다(보통 1건).
- * 타임존 추론 없이 fs mtime 으로 거르므로 robust.
+ * windowing(어느 게 우리 것인가)은 fs 생성시각(birthtime, 없으면 mtime)으로 한다 —
+ * 헤더에선 id+cwd 만 쓰고 시각은 fs 가 진리라, payload.timestamp 의 TZ skew 에 영향받지 않는다.
  */
 export function captureCodexSession(
   cwd: string,
@@ -150,22 +161,28 @@ export function captureCodexSession(
   if (!existsSync(root)) return null;
   const headers: CodexRolloutHeader[] = [];
   for (const file of walkCodexRollouts(root)) {
+    let birthtimeMs: number;
     let mtimeMs: number;
     try {
-      mtimeMs = statSync(file).mtimeMs;
+      const st = statSync(file);
+      birthtimeMs = st.birthtimeMs;
+      mtimeMs = st.mtimeMs;
     } catch {
       continue;
     }
-    if (mtimeMs < spawnedAtMs - tol) continue; // spawn 이전 파일은 우리 세션이 아님
+    if (mtimeMs < spawnedAtMs - tol) continue; // append 조차 없던 옛 파일은 우리 세션이 아님(저렴한 1차 컷)
+    // windowing 기준 = fs 생성시각(실 epoch, TZ 불변). birthtime 미지원 FS(0)면 mtime 폴백.
+    const createdMs = birthtimeMs > 0 ? birthtimeMs : mtimeMs;
     let firstLine: string;
     try {
       const raw = readFileSync(file, "utf8");
-      firstLine = raw.slice(0, raw.indexOf("\n") === -1 ? raw.length : raw.indexOf("\n"));
+      const nl = raw.indexOf("\n");
+      firstLine = nl === -1 ? raw : raw.slice(0, nl);
     } catch {
       continue;
     }
-    const h = parseCodexHeader(file, firstLine);
-    if (h) headers.push(h);
+    const meta = parseCodexHeader(firstLine);
+    if (meta) headers.push({ ...meta, createdMs, file });
   }
   const picked = pickCodexRollout(headers, cwd, spawnedAtMs, tol);
   return picked ? { id: picked.id, file: picked.file } : null;
