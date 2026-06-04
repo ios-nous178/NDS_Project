@@ -125,7 +125,7 @@ let cached: string | null | undefined;
  *
  * 결과는 userData/mcp/nudge-ds.mcp.json 에 1회 기록 후 캐시한다.
  */
-export function ensureBundledMcpConfig(): string | null {
+export function ensureBundledMcpConfig(claudeBin?: string): string | null {
   if (cached !== undefined) return cached;
 
   const spec = bundledMcpServerSpec();
@@ -138,9 +138,12 @@ export function ensureBundledMcpConfig(): string | null {
     return null;
   }
 
+  // score_mockup_quality(D2) 가 띄우는 독립 claude -p 가 같은 바이너리를 쓰도록 CLAUDE_BIN 주입.
+  // MCP 서버 env 는 부모 PATH 를 못 물려받을 수 있어(보안), 번들 claude 경로를 명시해 둔다.
+  const env = claudeBin ? { ...spec.env, CLAUDE_BIN: claudeBin } : spec.env;
   const config = {
     mcpServers: {
-      "nudge-ds": { command: spec.command, args: spec.args, env: spec.env },
+      "nudge-ds": { command: spec.command, args: spec.args, env },
     },
   };
 

@@ -109,6 +109,33 @@ const TOOLS = [
     },
   },
   {
+    name: "recommend_page_pattern",
+    description:
+      "Recommend a Cashwalk-Biz admin Page Pattern (onboarding/dashboard/list/detail/form) from a PRD. " +
+      "Returns a keyword-scored ranking of all 5 patterns plus a confidence flag — a FIRST-PASS suggestion only. " +
+      "Read the PRD yourself to confirm (or pick a different candidate), then declare it as screen.pagePattern in save_design_spec.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        prd: {
+          type: "string",
+          description: "PRD / 기획 설명 텍스트 (자연어). 화면이 무엇을 하는지.",
+        },
+        brand: {
+          type: "string",
+          description:
+            "Optional brand slug. Page Pattern 시스템은 cashwalk-biz 어드민 전용 — 다른 브랜드면 advisory 로만 동작.",
+        },
+        surface: {
+          type: "string",
+          description: "Optional 'admin' | 'service'. 강제는 admin 에서만.",
+        },
+      },
+      required: ["prd"],
+      additionalProperties: false,
+    },
+  },
+  {
     name: "dev_server",
     description:
       "Start or stop a local mockup dev server (Vite) and return the preview URL/session id. " +
@@ -250,6 +277,38 @@ const TOOLS = [
         rewriteInlineColors: {
           type: "boolean",
           description: "Default true. Set false to leave inline hex colors alone.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "score_mockup_quality",
+    description:
+      "Grade a built HTML mockup's quality (Eval D3). Returns BOTH D1 (deterministic code score — color/typography/spacing/layout/component/icon, from static validation) AND D2 (independent qualitative LLM score — ux/interaction/flow/form, scored by a separate `claude -p` session with no tools), then a combined `verdict` (통과/주의/미달, ≥80/≥60/<60) graded on the WEAKER group, plus a ready-to-show text `card`. This mirrors exactly what the Nudge Studio desktop harness shows after a clean build (same SSOT). Pass `html` (string) or `filePath` (.html). If no `claude` binary is found (CLAUDE_BIN/PATH), it gracefully returns code-score-only (D1). Call after build_singlefile_html / a clean validate.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        html: {
+          type: "string",
+          description: "Rendered HTML string to score. One of `html` / `filePath` is required.",
+        },
+        filePath: {
+          type: "string",
+          description: "Absolute path to a built .html file (read as the rendered output).",
+        },
+        brand: {
+          type: "string",
+          description: "Optional brand slug for scoring context (e.g. 'geniet', 'cashwalk-biz').",
+        },
+        surface: {
+          type: "string",
+          description: "Optional surface for context ('admin' / 'service').",
+        },
+        cwd: {
+          type: "string",
+          description:
+            "Optional workspace root (lets D1 detect surface-mismatch via nudge.surface).",
         },
       },
       additionalProperties: false,
@@ -619,6 +678,14 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),
         rewriteInlineColors: optionalBoolean(args, "rewriteInlineColors", toolName),
+      };
+    case "score_mockup_quality":
+      return {
+        html: optionalString(args, "html", toolName),
+        filePath: optionalString(args, "filePath", toolName),
+        brand: optionalString(args, "brand", toolName),
+        surface: optionalString(args, "surface", toolName),
+        cwd: optionalString(args, "cwd", toolName),
       };
     default:
       return args;

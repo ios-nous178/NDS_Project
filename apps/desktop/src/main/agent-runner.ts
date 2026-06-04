@@ -34,10 +34,11 @@ import {
   encodeUserTurn,
   mapClaudeEvent,
   type ChatMessage,
+  type DesignScoreMessage,
   type ValidationOutcome,
 } from "./chat-types.js";
 import type { Surface } from "./intake.js";
-import { scoreMockupQuality } from "./scorer.js";
+import { scoreMockupQuality, gradeQuality, VERDICT_LABELS } from "./scorer.js";
 import { buildMemoryRead } from "./memory-read.js";
 import {
   SNAPSHOT_VERSION,
@@ -602,7 +603,7 @@ export function startAgent(
   const isClaude = args.agentType === "claude";
   // 앱 동봉 nudge-ds MCP 주입 — claude 는 --mcp-config(json 파일), codex 는 -c mcp_servers.*
   // config override 로 같은 번들 서버를 얹는다(둘 다 비-strict 추가형). resume 레시피에 "MCP 붙였나"로도 기록.
-  const mcpConfig = isClaude ? ensureBundledMcpConfig() : null;
+  const mcpConfig = isClaude ? ensureBundledMcpConfig(resolveClaudeSpawn()?.bin) : null;
   // codex 전용 -c 인자(전역 옵션 → prompt/resume 보다 앞에 배치). 번들 없으면 [].
   const codexMcpArgs = isClaude ? [] : codexMcpConfigArgs();
   const hasMcp = isClaude ? Boolean(mcpConfig) : codexMcpArgs.length > 0;
@@ -988,6 +989,26 @@ function startStreamAgent(
   // 자동 자기교정: validate/build 가 error 잔존인 채 턴이 끝나면 위반 목록으로 교정 턴을 쏜다(최대 AUTO_FIX_CAP).
   const corrTracker = new SelfCorrectionTracker();
   // D3: clean 빌드 후 1회 자동 LLM 채점 → 코드(D1)+LLM(D2) 스코어 카드. 점수 낮아도 자동 교정 X(수동 게이트).
+  // codeScores(D1) + llm(D2) → gradeQuality(mockup-core SSOT) 로 verdict/overall 을 stamp.
+  // MCP 응답의 verdict 와 같은 임계값/규칙(약한 그룹 min 게이트)을 쓰므로 양쪽 표시가 일치한다.
+  const designScoreMsg = (
+    codeScores: DesignScoreMessage["codeScores"],
+    llm: DesignScoreMessage["llm"],
+  ): DesignScoreMessage => {
+    const grade = gradeQuality({
+      codeOverall: codeScores?.overall,
+      llmOk: llm.ok,
+      llmOverall: llm.overall,
+    });
+    return {
+      kind: "design-score",
+      codeScores,
+      llm,
+      verdict: grade.verdict,
+      verdictLabel: VERDICT_LABELS[grade.verdict],
+      overall: grade.overall,
+    };
+  };
   const runQualityScore = (v: ValidationOutcome): void => {
     if (correction.llmScored || !v.buildOutputPath) return;
     correction.llmScored = true;
@@ -1000,11 +1021,12 @@ function startStreamAgent(
     }
     const claude = resolveClaudeSpawn();
     if (!claude) {
-      emit({
-        kind: "design-score",
-        codeScores: v.codeScores ?? null,
-        llm: { ok: false, error: "claude CLI 미발견 — 코드 점수(D1)만 표시" },
-      });
+      emit(
+        designScoreMsg(v.codeScores ?? null, {
+          ok: false,
+          error: "claude CLI 미발견 — 코드 점수(D1)만 표시",
+        }),
+      );
       return;
     }
     emit({ kind: "notice", tone: "info", text: "🤖 LLM 품질 평가 중… (ux·interaction·flow·form)" });
@@ -1015,8 +1037,7 @@ function startStreamAgent(
       bin: claude.bin,
       env: claude.env,
     }).then((res) => {
-      if (!wc.isDestroyed())
-        emit({ kind: "design-score", codeScores: v.codeScores ?? null, llm: res });
+      if (!wc.isDestroyed()) emit(designScoreMsg(v.codeScores ?? null, res));
     });
   };
   const handleTurnEnd = (v: ValidationOutcome | null): void => {
