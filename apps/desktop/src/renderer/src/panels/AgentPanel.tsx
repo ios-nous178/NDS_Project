@@ -104,7 +104,14 @@ export function AgentPanel({
     });
     // 구조화(stream-json) 세션의 정규화 메시지 — 라이브 누적(같은 세션만).
     const offMessage = window.harness.onAgentMessage((e) => {
-      if (e.sessionId === sessionRef.current) setMessages((prev) => [...prev, e.message]);
+      if (e.sessionId !== sessionRef.current) return;
+      setMessages((prev) => {
+        // attach 가 과거(.jsonl)를 replay 한 뒤 라이브를 이을 때, 경계의 한 메시지가 replay 와
+        // 라이브에 모두 잡힐 수 있다 — 같은 seq 가 이미 있으면 건너뛴다(중복 카드 방지).
+        const s = e.message.seq;
+        if (s !== undefined && prev.some((m) => m.seq === s)) return prev;
+        return [...prev, e.message];
+      });
     });
     const offExit = window.harness.onAgentExit((e) => {
       if (e.sessionId !== sessionRef.current) return;

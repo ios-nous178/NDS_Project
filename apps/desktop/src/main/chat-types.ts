@@ -52,7 +52,7 @@ export interface DesignSpecCardMessage {
 }
 
 /** UI/저장 SSOT. 라이브·재생 공통 렌더 단위. */
-export type ChatMessage =
+export type ChatMessage = (
   | { kind: "user"; text: string }
   | { kind: "assistant-text"; text: string }
   | { kind: "tool-use"; id: string; tool: string; summary: string }
@@ -68,7 +68,15 @@ export type ChatMessage =
   // 하네스가 끼워넣는 시스템 안내(자동 자기교정 진행/소진 등). 에이전트 발화 아님.
   | { kind: "notice"; text: string; tone?: "info" | "warn" }
   | DesignSpecCardMessage
-  | DesignScoreMessage;
+  | DesignScoreMessage
+) & {
+  /**
+   * 단조 증가 시퀀스 — stream emit 시점에 세션당 0,1,2…로 부여(.jsonl 저장 + agent:message
+   * 둘 다에 실림). 라이브 attach 가 과거(.jsonl)를 깐 뒤 라이브를 이을 때, 경계의 한 메시지가
+   * 양쪽에 잡혀도 같은 seq 로 중복 제거한다. 옛 라인/pty 경로는 undefined.
+   */
+  seq?: number;
+};
 
 /** D3 품질 스코어 카드 — D1 코드 점수 + D2 LLM 점수. clean 빌드 후 1회 자동 채점해 보여준다. */
 export interface DesignScoreMessage {
