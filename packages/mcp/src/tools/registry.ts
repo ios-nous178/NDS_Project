@@ -358,7 +358,7 @@ const TOOLS = [
   {
     name: "get_guide",
     description:
-      "Fetch DS guidance by topic. Pass `topics: [...]` to batch multiple guides in one call. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. Component guides include a short `_principlesDigest`; still call `get_guide({ topic: 'principles' })` once per session. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys. For `principles`, prefer `aspects: ['spacing','radius','typography']` to load only the slices a screen actually needs (friendly names: radius→shapes, color→colors, tone→brandTone).",
+      "Fetch DS guidance by topic. Pass `topics: [...]` to batch multiple guides in one call. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. Component guides include a short `_principlesDigest`; still call `get_guide({ topic: 'principles' })` once per session. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys. For `principles`, prefer `aspects: ['spacing','radius','typography']` to load only the slices a screen actually needs (friendly names: radius→shapes, color→colors, tone→brandTone). **When batching many guides (`topics`), pass `view: 'examples'` (or `'rules'`) to avoid pulling full metrics/matrixOverrides for every topic — a 5-guide batch shrinks ~35KB → ~5KB.**",
     inputSchema: {
       type: "object",
       properties: {
@@ -382,6 +382,12 @@ const TOOLS = [
           type: "string",
           enum: ["react", "html"],
           description: "Component example format. Use 'html' for new <nds-*> mockups.",
+        },
+        view: {
+          type: "string",
+          enum: ["examples", "rules", "full"],
+          description:
+            "Optional response size control (biggest token saver for batched component/pattern guides). 'examples' → only summary + examples (the usage snippet you usually want); 'rules' → summary + pitfalls/recommended (component) or rules/avoid (pattern); 'full' (default) → the whole guide incl. metrics/matrixOverrides/references. Explicit `sections` overrides `view`. A 5-guide batch drops from ~35KB to ~5KB with view='examples'.",
         },
         sections: {
           type: "array",
@@ -502,6 +508,7 @@ const SETUP_STEP_VALUES = [
 ] as const;
 const DEV_SERVER_ACTION_VALUES = ["start", "stop"] as const;
 const GUIDE_TARGET_VALUES = ["react", "html"] as const;
+const GUIDE_VIEW_VALUES = ["examples", "rules", "full"] as const;
 const BUILD_INTENT_VALUES = ["react", "html"] as const;
 const CLAUDE_MD_TEMPLATE_VALUES = ["slim", "default"] as const;
 
@@ -610,6 +617,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         topics: optionalStringArray(args, "topics", toolName),
         intent: optionalString(args, "intent", toolName),
         target: optionalEnum(args, "target", GUIDE_TARGET_VALUES, toolName),
+        view: optionalEnum(args, "view", GUIDE_VIEW_VALUES, toolName),
         sections: optionalStringArray(args, "sections", toolName),
         aspects: optionalStringArray(args, "aspects", toolName),
         brand: optionalEnum(
