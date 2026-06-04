@@ -220,6 +220,7 @@ function bootstrapDoc(brand: string, surface: Surface, intent: string): string {
 - 워크플로우(intent=${intent}): get_guide({topic:'principles'}) + dos-donts → get_brand({brand:'${brand}'})
   → get_guide({topic:'pattern:ui-direction-proposal'})
   → (복잡/다단계 화면이거나 구성 합의가 필요하면) save_design_spec 으로 경량 DesignSpec 작성·검증(ok:true) 후 사용자에게 보여주고 동의 — 단순 화면은 생략. 룰·스키마: get_guide({topic:'pattern:design-spec'})
+  → ⛔ 단, 캐포비(cashwalk-biz) 어드민 화면은 복잡도 무관 save_design_spec 필수(생략 금지) — validate 가 5종 Page Pattern(surfaceKind:'admin'+pagePattern) 을 hard error 로 강제. 먼저 get_guide({topic:'pattern:cashwalk-biz-page-patterns'}) 로 분류.
   → 컴포넌트 가이드 1개씩(target:'html') → index.html 을 <nds-*> + 시멘틱 토큰으로 작성(raw hex 금지)
   → validate_html_mockup → build_singlefile_html (html intent 는 자동 검증).
 - **완료 게이트(응답 전 필수 보고)**: ① 적용한 시각 레퍼런스, ② 풋터 DS 뱃지 \`<span data-ds-badge>DS@x · DS N (M%)</span>\` — 숫자는 직접 세지 말고 build/validate 응답의 \`dsUsageSummary\` 를 그대로 사용(없으면 validator 가 \`ds-badge-missing\` 으로 차단), ③ Google Sheets 사용량 POST 상태 \`webhook ok\` / \`webhook queued(...)\` / \`webhook skipped\` 중 하나를 응답에 명시.

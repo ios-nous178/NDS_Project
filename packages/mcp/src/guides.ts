@@ -6041,6 +6041,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "prompt → **DesignSpec(JSON)** → code 의 경량 중간표현. 복잡/다단계 화면이거나 사용자와 구성 합의가 필요할 때, HTML 작성 전에 save_design_spec 으로 의도 스펙을 만들고 ok:true + 사용자 동의 후 build_singlefile_html 로 진행(soft 승인 게이트). 추적성·정밀편집·코드前 검증을 얻는다.",
     rules: [
       "언제 쓰나: 다화면/복잡 플로우, 컴포넌트 선택이 모호, 또는 사용자가 화면 구성에 합의하고 싶을 때. 단순 단일 화면이면 생략하고 바로 HTML 로 가도 된다(과한 절차 강제 금지).",
+      "⛔ 예외 — 캐포비(cashwalk-biz) 어드민 화면은 복잡도와 무관하게 save_design_spec 필수(생략 금지): validate 가 5종 Page Pattern(screen.surfaceKind:'admin' + screen.pagePattern, Onboarding/Dashboard/List/Detail/Form) 선언을 hard error 로 강제하므로, spec 을 건너뛰면 화면-분류 게이트도 통째로 건너뛰어 어드민 일관성이 깨진다. 코드 전에 먼저 분류: get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }).",
       "스펙은 '의도'만 담는다: 컴포넌트 트리(시멘틱 이름), 참조할 시멘틱 토큰 '이름', brand/surface, 그리고 결정 근거(rationale). 좌표·resolved 색·px·이미지 바이트는 담지 않는다 — 그건 코드→Figma scene.json(역방향 추출) 담당이다.",
       "토큰은 시멘틱 only: tokens[] 에는 '--semantic-*' 같은 토큰 이름만. raw hex/rgb 금지(raw-hex-token error). raw 팔레트(--color-blue-500 등)는 warn — --semantic-* 우선.",
       "save_design_spec 은 카탈로그 기준으로 자동 검증한다(브랜드 실재·토큰 존재·prop enum·컴포넌트 존재). ok:false 면 violations 를 고쳐 재저장한 뒤, ok:true 가 되어야 빌드로 넘어간다(validate-before-code).",
@@ -6078,6 +6079,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "tokens 에 raw hex/rgb 또는 카탈로그에 없는 토큰 이름",
       "save_design_spec 이 ok:false 인데 그대로 build 로 진행",
       "스펙만 만들고 사용자 동의 없이 빌드 / 스펙과 다른 HTML 작성",
+      "캐포비(cashwalk-biz) 어드민인데 save_design_spec 을 생략하고 바로 HTML — 5종 Page Pattern 분류 게이트를 우회하게 됨",
     ],
   },
 

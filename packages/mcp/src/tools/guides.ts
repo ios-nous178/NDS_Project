@@ -1044,7 +1044,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 다음 단계별 호출만 허용:
 
 1. **§1 작업 시작 (필수 2개)**: \`get_guide({ topic: "principles" })\` + \`get_guide({ topic: "pattern:visual-reference" })\`. 이것만 받고 outline 작성.
-1-bis. **§1-bis (복잡/다단계 화면이거나 사용자와 구성 합의가 필요할 때만)**: 코드 작성 전에 \`save_design_spec\` 으로 경량 DesignSpec(컴포넌트 트리 + 시멘틱 토큰 '이름' + 결정 근거, 좌표·hex 금지)을 만든다. \`ok:true\` 가 되면 사용자에게 한 번 보여주고 동의를 받은 뒤 빌드로 진행(soft gate). 단순 단일 화면이면 생략하고 바로 §2. 룰·스키마: \`get_guide({ topic: "pattern:design-spec" })\`.
+1-bis. **§1-bis (복잡/다단계 화면이거나 사용자와 구성 합의가 필요할 때 — 단, 캐포비 어드민은 항상 필수)**: 코드 작성 전에 \`save_design_spec\` 으로 경량 DesignSpec(컴포넌트 트리 + 시멘틱 토큰 '이름' + 결정 근거, 좌표·hex 금지)을 만든다. \`ok:true\` 가 되면 사용자에게 한 번 보여주고 동의를 받은 뒤 빌드로 진행(soft gate). 단순 단일 화면이면 생략하고 바로 §2.
+    - ⛔ **캐포비(cashwalk-biz) 어드민 화면은 복잡도와 무관하게 \`save_design_spec\` 필수 — 생략 금지.** cashwalk-biz admin 은 \`validate\` 가 5종 Page Pattern(Onboarding/Dashboard/List/Detail/Form) 선언을 hard error 로 강제한다(\`screen.surfaceKind: "admin"\` + \`screen.pagePattern\`). spec 을 건너뛰면 이 화면-분류 게이트도 통째로 건너뛰어 어드민 일관성이 깨진다. 코드 전에 먼저 분류부터: \`get_guide({ topic: "pattern:cashwalk-biz-page-patterns" })\`.
+    - 룰·스키마: \`get_guide({ topic: "pattern:design-spec" })\`.
 2. **§2 outline 작성 중 (사용 컴포넌트가 정해질 때마다 1개씩)**: \`get_guide({ topic: "component:<Name>", target: "html" })\` — outline 에서 실제로 쓸 컴포넌트만, 한 번에 1개.
 3. **§3 outline 의 특정 패턴이 모호할 때만**: \`get_guide({ topic: "pattern:<name>" })\` — \`cta-group\` / \`notice\` / \`action-row\` 등 정말 필요한 패턴만.
 4. **§4 작성 후 검증 직전 (필수 1개)**: \`get_guide({ topic: "dos-donts" })\`.
