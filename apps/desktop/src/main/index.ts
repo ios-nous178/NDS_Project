@@ -107,6 +107,9 @@ function createWindow(): void {
   win.on("closed", () => {
     clearTimeout(showTimer);
     mainWindow = null;
+    // 창과 함께 에이전트 정리 — macOS 는 창을 닫아도 will-quit 이 안 떠서, 이게 없으면
+    // 실행 중 PTY/child 가 파괴된 webContents 클로저에 묶인 채 orphan 으로 누적된다.
+    stopAllAgents();
   });
 
   // 렌더러 로드/크래시 진단 — 무음 실패(다크 빈 창)를 콘솔(패키징 시 로그)로 드러내고,

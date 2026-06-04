@@ -49,6 +49,11 @@ export interface FileChangedEvent {
   relPath: string;
 }
 
+/** 와처가 오류로 중단됐을 때의 신호(정상 종료 제외). renderer 가 자동추적을 끄고 안내한다. */
+export interface WatchStoppedEvent {
+  reason: string;
+}
+
 export interface AgentDataEvent {
   sessionId: string;
   data: string;
@@ -113,6 +118,12 @@ const harness = {
     const listener = (_e: IpcRendererEvent, payload: FileChangedEvent): void => cb(payload);
     ipcRenderer.on("watch:fileChanged", listener);
     return () => ipcRenderer.removeListener("watch:fileChanged", listener);
+  },
+  /** 와처가 오류로 중단됐을 때 구독(정상 종료 제외). 반환 함수로 해제. */
+  onWatchStopped: (cb: (e: WatchStoppedEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: WatchStoppedEvent): void => cb(payload);
+    ipcRenderer.on("watch:stopped", listener);
+    return () => ipcRenderer.removeListener("watch:stopped", listener);
   },
   /** 미리보기 iframe 용 mockup:// URL. 프로젝트 루트 기준 상대경로 + 캐시버스터. */
   previewUrl: (relPath: string, bust: number): string =>
