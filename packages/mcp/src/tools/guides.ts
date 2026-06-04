@@ -888,7 +888,7 @@ function getSlimClaudeMdTemplate(args: {
 5. Use \`get_guide({ topic: "principles" })\` and relevant \`pattern:<name>\` guides only as needed. Keep calls small: pass \`aspects\` for the principle slices this screen needs (e.g. \`get_guide({ topic: "principles", aspects: ["spacing","radius","typography","color"] })\`), or \`sections\` for arbitrary top-level keys.
 6. Write root \`index.html\` with real \`<nds-*>\` elements.
 7. Run \`validate_html_mockup({ filePath: "index.html" })\`; fix until violation count is 0.
-8. Run \`analyze_html_mockup({ filePath: "index.html" })\` for DS adoption stats.
+8. Run \`validate_html_mockup({ filePath: "index.html", withStats: true })\` for DS adoption stats (\`stats.counts.dsRatio\`).
 9. Run \`dev_server({ action: "start" })\` and open the preview URL in a browser to check it.
 10. Build the shareable file with \`build_singlefile_html({})\`.
 
@@ -997,7 +997,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
   - \`get_guide({ topic: "pattern:<name>" })\` — 패턴 가이드 (cta-group, dark-patterns 등)
   - \`find_component\` / \`find_icon\` / \`find_token\` — DS 자산 조회
   - \`validate_html_mockup({ filePath })\` — HTML 정적 검증
-  - \`analyze_html_mockup({ filePath })\` — DS 채택 비율 / native 잔존 측정
+  - \`validate_html_mockup({ filePath, withStats: true })\` — DS 채택 비율(\`stats.counts.dsRatio\`) / native 잔존 측정
   - \`dev_server({ action: "start" })\` / \`dev_server({ action: "stop" })\` — dev 서버 미리보기 (URL 을 브라우저에서 직접 확인)
   - \`build_singlefile_html\` — vanilla HTML 워크플로우도 1급 지원. inline 산출물 1개 \`.html\` (JS · CSS · nds-* runtime 전부 inline) 로 디자이너/PM 에게 dnd 전달 가능.
 
@@ -1027,7 +1027,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] 모든 DS 사용처는 \`<nds-*>\` custom-element 이다 (\`<button class="nds-button">\` 같은 className 흉내 없음).
 - [ ] main.ts 가 \`import "@nudge-design/html/runtime"\` 을 포함한다.
 
-위 항목 중 하나라도 어긋나면 **HTML 을 폐기하고 처음부터 다시 작성**. 사용자가 명시적으로 허용한 경우에만 예외이며, 이 경우에도 "validate_html_mockup · analyze_html_mockup 가 무력화됩니다" 라고 먼저 경고할 것.
+위 항목 중 하나라도 어긋나면 **HTML 을 폐기하고 처음부터 다시 작성**. 사용자가 명시적으로 허용한 경우에만 예외이며, 이 경우에도 "validate_html_mockup (withStats 채택률 포함) 검증이 무력화됩니다" 라고 먼저 경고할 것.
 
 ## 작업 원칙
 
@@ -1061,7 +1061,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - 아이콘은 \`find_icon({ query })\` 로 검색 후 \`@nudge-design/icons\` 의 인라인 SVG 사용. 이모지·텍스트 기호 금지 (\`validate_html_mockup\` 의 emoji-banned / text-symbol-banned 룰).
 - **사용자 노출 텍스트는 작성 전 \`get_guide({ topic: "ux-writing" })\` 호출** — 해요체·능동형·EAP 도메인 톤.
 - 목업 \`.html\` 작성 직후 반드시 \`validate_html_mockup({ filePath })\` 호출. 위반 0건 될 때까지 수정 후 재실행.
-- 위반이 해소된 뒤 \`analyze_html_mockup({ filePath })\` 로 채택 비율 확인. \`dsRatio\` 가 낮거나 native(\`<button>\` 등) 잔존이 있으면 \`convert_html_to_ds_html\` 호출 또는 손으로 교체.
+- 위반이 해소된 뒤 \`validate_html_mockup({ filePath, withStats: true })\` 로 채택 비율 확인. \`stats.counts.dsRatio\` 가 낮거나 native(\`<button>\` 등) 잔존이 있으면 \`convert_html_to_ds_html\` 호출 또는 손으로 교체.
 - 구현 후 \`dev_server({ action: "start" })\` 로 dev 서버 실행.
 - dev URL 응답하면 브라우저에서 직접 열어 런타임 에러, unknown custom-element 경고, 빈 화면 여부 확인.
 - 완료 전 \`get_guide({ topic: "dos-donts" })\` 로 최종 sanity check.
@@ -1092,7 +1092,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 5. 목업 \`.html\` 작성 (\`src/mockups/<이름>.html\` 또는 \`index.html\`).
 6. \`validate_html_mockup({ filePath })\` 실행. 위반 0건 될 때까지 수정 후 재실행. **응답의 violations[] 와 rule 별 카운트를 사용자에게 그대로 보여줄 것.** **한 라운드에서 잡힌 violation 은 반드시 한 번에 모아서 fix** — 1건 fix → 재실행 → 또 1건 잡힘 패턴 금지 (불필요한 라운드 + 토큰 낭비). 단 validation 호출 자체를 줄여서 라운드 수를 인위적으로 깎지는 말 것 — 최종 clean pass 는 무조건 확인.
 6-bis. **2회 self-check 강제** — 위반이 0건이 됐어도 \`validate_html_mockup\` 을 한 번 더 호출해 새로 들어온 위반이 없는지 확인.
-7. \`analyze_html_mockup({ filePath })\` 실행. \`dsRatio\` 와 \`recommendations[]\` 를 사용자에게 보여주고, native 잔존이 있으면 \`convert_html_to_ds_html\` 호출.
+7. \`validate_html_mockup({ filePath, withStats: true })\` 실행. \`stats.counts.dsRatio\` 와 \`stats.recommendations[]\` 를 사용자에게 보여주고, native 잔존이 있으면 \`convert_html_to_ds_html\` 호출.
 8. \`dev_server({ action: "start" })\` 실행.
 9. dev URL 을 브라우저에서 직접 열어 런타임 오류 확인 및 수정. unknown custom-element 경고는 main.ts 의 runtime import 누락 신호.
 10. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인.
@@ -1109,7 +1109,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] 이벤트는 \`addEventListener\` 로 — \`onclick=\` 인라인 없음.
 - [ ] 토큰은 \`@nudge-design/tokens/css\` 한 줄로만 들어온다 (\`:root\` 인라인 재정의 없음).
 - [ ] \`validate_html_mockup\` 위반 0건 (2회 self-check 통과).
-- [ ] \`analyze_html_mockup.dsRatio\` 가 충분히 높고 native 잔존이 0/최소.
+- [ ] \`validate_html_mockup({ withStats: true }).stats.counts.dsRatio\` 가 충분히 높고 native 잔존이 0/최소.
 - [ ] 이모지·텍스트 기호 (→ ✓ ★ • 등) 사용 없음.
 - [ ] **브랜드 헤더/푸터 사용 여부 점검**: 사용자 앱 화면이면 해당 브랜드(trost/geniet/nudge-eap)의 표준 헤더/푸터 (또는 GNB·BottomNav) 가 적용됐는가? 인라인으로 손수 그리지 않고 브랜드 별 fixtures 사용. 랜딩/스플래시/모달-only 같은 의도적 예외라면 응답에 "헤더/푸터 의도적으로 생략" 명시.
 - [ ] 목업에 DS MCP/Package 버전 및 DS 컴포넌트 사용량/적용 현황이 visible 하게 포함됨. 풋터 뱃지는 \`<span data-ds-badge>DS@x.y.z · DS N (M%)</span>\` 형태를 기본으로 하되, MCP/package 버전까지 함께 보이게 한다. 주석만으로는 부족.

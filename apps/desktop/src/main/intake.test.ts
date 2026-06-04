@@ -107,6 +107,53 @@ test("nudge.surface 마커를 선언 표면으로 박는다 (표면 SSOT — 화
   }
 });
 
+test("selectedPagePattern(유효) -> nudge.pagePattern 마커 + brief/seed 반영 (캐포비 어드민)", () => {
+  const projectPath = tmpProject();
+  try {
+    const r = runIntake(
+      baseArgs({
+        projectPath,
+        brand: "cashwalk-biz",
+        surface: "admin",
+        screenName: "배너 목록",
+        selectedPagePattern: "list",
+      }),
+    );
+    assert.ok(r.workspaceDir);
+    const marker = join(r.workspaceDir!, "nudge.pagePattern");
+    assert.ok(existsSync(marker));
+    assert.equal(readFileSync(marker, "utf8").trim(), "list");
+    const brief = readFileSync(join(r.workspaceDir!, "brief.md"), "utf8");
+    assert.match(brief, /확정 Page Pattern/);
+    assert.match(brief, /\blist\b/);
+    assert.match(r.seedPrompt ?? "", /Page Pattern 은 'list'/);
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("selectedPagePattern 없음/무효 -> nudge.pagePattern 마커 미생성", () => {
+  const projectPath = tmpProject();
+  try {
+    const none = runIntake(
+      baseArgs({ projectPath, brand: "cashwalk-biz", surface: "admin", screenName: "a" }),
+    );
+    assert.ok(!existsSync(join(none.workspaceDir!, "nudge.pagePattern")));
+    const bogus = runIntake(
+      baseArgs({
+        projectPath,
+        brand: "cashwalk-biz",
+        surface: "admin",
+        screenName: "b",
+        selectedPagePattern: "bogus",
+      }),
+    );
+    assert.ok(!existsSync(join(bogus.workspaceDir!, "nudge.pagePattern")));
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
 test("surface=admin -> 부트스트랩/seed 에 표면 우선 + 소비자 chrome 금지 가드", () => {
   const projectPath = tmpProject();
   try {
@@ -215,6 +262,92 @@ test("이미지 형식 외 확장자 -> ok:false", () => {
       baseArgs({ projectPath, screenshots: [{ fileName: "spec.pdf", base64: "AAAA" }] }),
     );
     assert.equal(r.ok, false);
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
+// ── D1+D2: HTML 목업 첨부 = 구조·시각 원본(재현 대상) ──
+
+test("D1: HTML 첨부 -> 시각 게이트(구조) 충족 + references.md 에 brief/ html 원본 등록", () => {
+  const projectPath = tmpProject();
+  try {
+    const html = Buffer.from("<html><body><h1>홈</h1><button>시작</button></body></html>").toString(
+      "base64",
+    );
+    const r = runIntake(
+      baseArgs({ projectPath, attachments: [{ fileName: "plan-mockup.html", base64: html }] }),
+    );
+    assert.ok(r.ok);
+    const ws = r.workspaceDir!;
+    // HTML 단독으로도 references.md 가 생성돼야 한다(스크린샷/Figma 없이 게이트 충족 — 역설 제거).
+    assert.ok(existsSync(join(ws, "references.md")), "HTML 목업이 구조 게이트를 충족해야 함");
+    const refs = readFileSync(join(ws, "references.md"), "utf8");
+    assert.match(refs, /source=brief\/plan-mockup\.html/);
+    assert.match(refs, /구조·콘텐츠·문구의 원본/);
+    // 파일은 brief/ 에 저장된다.
+    assert.ok(existsSync(join(ws, "brief", "plan-mockup.html")));
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("D2: HTML 첨부 -> brief.md/seed/CLAUDE 가 '재현' framing + pattern:html-mockup-intake 안내", () => {
+  const projectPath = tmpProject();
+  try {
+    const html = Buffer.from("<html><body><main>내용</main></body></html>").toString("base64");
+    const r = runIntake(
+      baseArgs({ projectPath, attachments: [{ fileName: "spec.html", base64: html }] }),
+    );
+    const ws = r.workspaceDir!;
+    const brief = readFileSync(join(ws, "brief.md"), "utf8");
+    assert.match(brief, /기존 HTML 목업/);
+    assert.match(brief, /재설계 아닌 재현/);
+    assert.match(brief, /pattern:html-mockup-intake/);
+    assert.match(r.seedPrompt!, /재설계가 아니라 재현/);
+    assert.match(r.seedPrompt!, /pattern:html-mockup-intake/);
+    const claude = readFileSync(join(ws, "CLAUDE.md"), "utf8");
+    assert.match(claude, /기존 HTML 목업이 입력으로 들어왔다/);
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("D2: HTML 재현이면 directionMode=propose 여도 UI 방향 제안을 강제하지 않는다", () => {
+  const projectPath = tmpProject();
+  try {
+    const html = Buffer.from("<html><body><main>내용</main></body></html>").toString("base64");
+    const r = runIntake(
+      baseArgs({
+        projectPath,
+        directionMode: "propose",
+        attachments: [{ fileName: "spec.html", base64: html }],
+      }),
+    );
+    assert.equal(
+      /UI\/UX 방향 2-3개를 먼저 제안/.test(r.seedPrompt!),
+      false,
+      "HTML 재현은 방향 제안 대상이 아님",
+    );
+  } finally {
+    rmSync(projectPath, { recursive: true, force: true });
+  }
+});
+
+test("D1 경계: .md 단독 첨부는 시각 게이트를 채우지 않는다(구조만 충족 결정 — HTML 만 해당)", () => {
+  const projectPath = tmpProject();
+  try {
+    const md = Buffer.from("# 기획\n내용").toString("base64");
+    const r = runIntake(
+      baseArgs({ projectPath, attachments: [{ fileName: "plan.md", base64: md }] }),
+    );
+    assert.equal(
+      existsSync(join(r.workspaceDir!, "references.md")),
+      false,
+      "텍스트 스펙(.md)은 시각 레퍼런스가 아님",
+    );
+    const brief = readFileSync(join(r.workspaceDir!, "brief.md"), "utf8");
+    assert.match(brief, /첨부 문서 \(반드시 읽을 것\)/);
   } finally {
     rmSync(projectPath, { recursive: true, force: true });
   }
