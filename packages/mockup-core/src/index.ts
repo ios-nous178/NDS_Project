@@ -34,6 +34,10 @@ export * from "./tools/usage/webhook.js";
 // catalog → validator 부트스트랩 (데스크탑 main 시작 시 호출)
 export * from "./tools/catalog-config.js";
 
+// 결정 로그(designDecisions.jsonl) 공유 read-side — MCP write-side(save_design_spec)와
+// 데스크탑 read-side(Memory Read)가 함께 쓰는 타입·상수·리더
+export * from "./tools/design-decisions.js";
+
 // 목업 → Figma 평면 레이어 scene 추출 (canary) — 데스크탑이 dist 렌더 후 주입
 export * from "./tools/figma/scene.js";
 

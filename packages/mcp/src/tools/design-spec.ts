@@ -15,8 +15,31 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { ndsTagToComponentName } from "@nudge-design/mockup-core/tools/usage/parser";
 import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
+// Decision Log read-side(타입·상수·screenKey·리더)는 공용 코어로 이전 — write-side(build/append)는
+// MCP 검증 타입에 묶여 아래에 남는다. 기존 import 경로 호환을 위해 같은 이름으로 re-export.
+import {
+  DESIGN_DECISIONS_FILE,
+  DESIGN_DECISIONS_MAX_ROWS,
+  readDesignDecisions,
+  screenKey,
+  type DesignDecisionRow,
+} from "@nudge-design/mockup-core/tools/design-decisions";
+
+export {
+  DESIGN_DECISIONS_FILE,
+  DESIGN_DECISIONS_MAX_ROWS,
+  DEFAULT_PROMOTE_THRESHOLD,
+  readDesignDecisions,
+  promoteDesignDecisions,
+} from "@nudge-design/mockup-core/tools/design-decisions";
+export type {
+  DesignDecisionRow,
+  PromotedPrinciple,
+  PromoteOptions,
+} from "@nudge-design/mockup-core/tools/design-decisions";
 
 export type DesignSpecSurface = "web" | "app";
 
@@ -420,6 +443,12 @@ export function saveDesignSpec(args: {
     written = false;
   }
 
+  // 저장 성공 + 결정 내용이 있으면 designDecisions.jsonl 에 한 줄 누적 (best-effort, never throws).
+  if (written) {
+    const row = buildDesignDecisionRow(rawSpec, result, new Date().toISOString());
+    if (row) appendDesignDecisionRow(dir, row);
+  }
+
   return {
     ...result,
     written,
@@ -428,4 +457,109 @@ export function saveDesignSpec(args: {
       written ? `저장됨 → ${outPath}` : "(저장 실패)"
     } · error ${result.summary.error} / warn ${result.summary.warn} / info ${result.summary.info}`,
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Decision Log — 결정(decisions + node rationale) 추출/누적 (순수 코어 + IO 분리)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** 트리를 깊이우선으로 돌며 rationale 이 있는 노드만 경로와 함께 수집한다(순수). */
+function collectNodeRationales(
+  tree: DesignSpecNode[],
+): { path: string; component: string; rationale: string }[] {
+  const out: { path: string; component: string; rationale: string }[] = [];
+  const walk = (node: unknown, p: string): void => {
+    if (node == null || typeof node !== "object" || Array.isArray(node)) return;
+    const n = node as DesignSpecNode;
+    if (typeof n.rationale === "string" && n.rationale.trim() !== "") {
+      out.push({
+        path: p,
+        component: typeof n.component === "string" ? n.component : "?",
+        rationale: n.rationale.trim(),
+      });
+    }
+    if (Array.isArray(n.children)) n.children.forEach((c, i) => walk(c, `${p}.children[${i}]`));
+  };
+  tree.forEach((node, i) => walk(node, `tree[${i}]`));
+  return out;
+}
+
+/** 결정 내용(screen+decisions+rationales)의 12자리 안정 해시 — 중복 누적 방지용. */
+function stableDecisionHash(content: unknown): string {
+  return crypto.createHash("sha1").update(JSON.stringify(content)).digest("hex").slice(0, 12);
+}
+
+/**
+ * 저장된 spec 에서 결정 로그 한 행을 만든다(순수 — ts 는 호출부가 주입).
+ * 결정 내용(decisions·rationale)이 전혀 없으면 null — '결정 로그'는 저장 로그가 아니다.
+ */
+export function buildDesignDecisionRow(
+  rawSpec: unknown,
+  result: ValidateDesignSpecResult,
+  ts: string,
+): DesignDecisionRow | null {
+  if (rawSpec == null || typeof rawSpec !== "object" || Array.isArray(rawSpec)) return null;
+  const spec = rawSpec as Partial<DesignSpec>;
+  const decisions = Array.isArray(spec.decisions)
+    ? spec.decisions.filter((d): d is string => typeof d === "string" && d.trim() !== "")
+    : [];
+  const rationales = Array.isArray(spec.tree) ? collectNodeRationales(spec.tree) : [];
+  if (decisions.length === 0 && rationales.length === 0) return null;
+
+  const screen = {
+    brand: spec.screen?.brand,
+    surface: spec.screen?.surface,
+    intent: spec.screen?.intent,
+    name: spec.screen?.name,
+  };
+  // ok 를 해시에 포함 — auto-fix 루프에서 결정은 그대로인데 validation 이 false→true 로 바뀌면
+  // 새 행으로 남겨 '최종 승인된 상태'가 로그에 반영되게 한다(검증 전이 추적).
+  const content = { screen, decisions, rationales, ok: result.ok };
+  return {
+    ts,
+    specVersion: spec.specVersion,
+    ok: result.ok,
+    screen,
+    decisions,
+    rationales,
+    componentsUsed: result.componentsUsed,
+    tokensUsed: result.tokensUsed,
+    hash: stableDecisionHash(content),
+  };
+}
+
+/**
+ * 결정 행을 designDecisions.jsonl 에 누적한다(best-effort, never throws).
+ * - 같은 화면(brand·surface·intent·name)의 가장 최근 행과 hash 가 같으면 건너뛴다
+ *   (재저장·auto-fix 루프 중복 방지. 화면을 번갈아 저장해도 각 화면 기준으로 비교).
+ * - maxRows 초과분은 오래된 행부터 버린다(상한 유지 → 읽기/git 비용 bounded). 깨진 행은 자가치유로 제거.
+ * @returns 실제로 행을 추가했으면 true.
+ */
+export function appendDesignDecisionRow(
+  dir: string,
+  row: DesignDecisionRow,
+  fileName: string = DESIGN_DECISIONS_FILE,
+  maxRows: number = DESIGN_DECISIONS_MAX_ROWS,
+): boolean {
+  try {
+    const existing = readDesignDecisions(dir, fileName);
+    const key = screenKey(row.screen);
+    for (let i = existing.length - 1; i >= 0; i--) {
+      if (screenKey(existing[i].screen) === key) {
+        if (existing[i].hash === row.hash) return false; // 같은 화면의 직전 결정과 동일 → 생략
+        break;
+      }
+    }
+    const next = [...existing, row];
+    const capped = maxRows > 0 && next.length > maxRows ? next.slice(next.length - maxRows) : next;
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, fileName),
+      capped.map((r) => JSON.stringify(r)).join("\n") + "\n",
+      "utf-8",
+    );
+    return true;
+  } catch {
+    return false;
+  }
 }

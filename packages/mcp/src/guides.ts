@@ -6032,9 +6032,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "component 는 PascalCase('Button') 또는 nds-tag('nds-button') 둘 다 허용 — scene.ts(코드→Figma)의 ndsTagToComponentName 어휘를 공유하므로, 정방향 스펙과 역방향 scene 을 컴포넌트 정체성으로 JOIN 할 수 있다.",
       "ui-direction-proposal 로 방향이 정해졌으면 그 방향을 DesignSpec 으로 구체화한다(두 패턴은 상호 보완 — 방향 합의 → 스펙 고정 → 빌드).",
       "시각 레퍼런스 게이트가 더 우선이다. references.md(Figma/스크린샷)가 없으면 스펙은 만들 수 있어도 build 는 레퍼런스를 받은 뒤 진행한다.",
+      "결정 로그: save_design_spec 은 design-spec.json(매번 덮어씀) 옆에 decisions/rationale 을 designDecisions.jsonl 로 한 줄씩 누적한다(화면별 dedup, 최근 N행 상한). 결정 이력/메모리 소스이며, 소비 프로젝트에서는 gitignore 권장.",
     ],
     metrics: {
       file: "design-spec.json",
+      decisionLog: "designDecisions.jsonl",
       blocksCode: false,
       semanticTokensOnly: true,
     },

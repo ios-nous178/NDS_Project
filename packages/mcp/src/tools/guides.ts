@@ -23,7 +23,13 @@ import {
 import { SERVICE_OVERLAYS, listBrandVariants, type BrandSlug } from "../guides/services/index.js";
 import { mergeServiceOverlay } from "../guides/merge.js";
 import { markPrinciplesCalled } from "./session-state.js";
-import { canonicalBrandSlug } from "@nudge-design/mockup-core";
+import {
+  canonicalBrandSlug,
+  readDesignDecisions,
+  promoteDesignDecisions,
+  DEFAULT_PROMOTE_THRESHOLD,
+  type PromotedPrinciple,
+} from "@nudge-design/mockup-core";
 
 /**
  * 워크스페이스 브랜드 SSOT 마커. get_setup 이 brand 와 함께 호출되면 cwd 에 이 파일을 박아,
@@ -41,6 +47,56 @@ function writeBrandMarker(cwd: string, brand?: string): { brandMarker?: string }
     return { brandMarker: canonical };
   } catch {
     return {}; // 마커 쓰기 실패는 치명적이지 않음 — 빌드의 추론/chrome 폴백이 받쳐 줌
+  }
+}
+
+/** cwd 의 nudge.brand 마커를 읽어 canonical slug 로 돌려준다(없으면 undefined). writeBrandMarker 의 read 짝. */
+function readBrandMarker(cwd: string): string | undefined {
+  try {
+    const raw = fs.readFileSync(path.join(cwd, BRAND_MARKER_FILE), "utf-8").trim();
+    return canonicalBrandSlug(raw) ?? (raw || undefined);
+  } catch {
+    return undefined;
+  }
+}
+
+/** 양수 정수 환경변수 파싱(없거나 비정상이면 undefined). NUDGE_PROMOTE_THRESHOLD 튜닝용. */
+function parsePositiveInt(v: string | undefined): number | undefined {
+  if (!v) return undefined;
+  const n = Number(v);
+  return Number.isInteger(n) && n > 0 ? n : undefined;
+}
+
+/**
+ * principles 응답에 머지할 `_learnedPrinciples` 블록을 만든다(Decision Log → Principles 승격).
+ * `<cwd>/designDecisions.jsonl` 에서 같은 브랜드의 서로 다른 화면 N개 이상에서 반복된 결정을 끌어올린다.
+ * best-effort — 파일이 없거나(첫 작업) brand 를 모르거나 반복이 임계 미만이면 null(응답 불변).
+ *  · brand = 명시 인자 → cwd 의 nudge.brand 마커 순.
+ *  · cwd  = 명시 인자 → MCP 프로세스 cwd(= save_design_spec 의 기본 기록 위치).
+ *  · NUDGE_LEARNED_PRINCIPLES=0 으로 끌 수 있고, NUDGE_PROMOTE_THRESHOLD 로 임계를 조정한다.
+ */
+function buildLearnedPrinciples(
+  cwdArg: string | undefined,
+  brandArg: string | undefined,
+): { _advisory: string; brand: string; threshold: number; principles: PromotedPrinciple[] } | null {
+  if (process.env.NUDGE_LEARNED_PRINCIPLES === "0") return null;
+  const cwd = cwdArg ?? process.cwd();
+  const brand = canonicalBrandSlug(brandArg) ?? readBrandMarker(cwd);
+  if (!brand) return null;
+  try {
+    const threshold =
+      parsePositiveInt(process.env.NUDGE_PROMOTE_THRESHOLD) ?? DEFAULT_PROMOTE_THRESHOLD;
+    const principles = promoteDesignDecisions(readDesignDecisions(cwd), { brand, threshold });
+    if (principles.length === 0) return null;
+    return {
+      _advisory:
+        "designDecisions.jsonl 에서 자동 승격된, 이 브랜드 화면에서 반복적으로 내린 결정입니다. 새 화면도 특별한 이유가 없으면 따르고, 벗어나면 save_design_spec 의 decisions/rationale 로 근거를 남기세요.",
+      brand,
+      threshold,
+      principles,
+    };
+  } catch {
+    return null;
   }
 }
 
@@ -392,6 +448,63 @@ function pickSections<T extends Record<string, unknown>>(
 }
 
 /**
+ * 'aspects' → principles 응답의 top-level 키(sections) 별칭 맵.
+ *
+ * 화면이 실제로 필요한 측면(예: 'radius' · 'spacing' · 'typography')만 친화적 이름으로 고르면
+ * pickSections 가 DESIGN_PRINCIPLES 의 해당 블록만 돌려준다. DESIGN_PRINCIPLES 가 이미
+ * aspect 별 top-level 키(brandTone/colors/typography/spacing/elevation/shapes/...)로 쪼개져 있어
+ * 데이터 재구조화 없이 동작한다. 'radius'→'shapes', 'color'→'colors' 처럼 직관적 이름을 실제
+ * 키로 매핑하고, 한 aspect 가 여러 섹션으로 펼쳐질 수 있다(dos-donts → dos+donts+bannedPatterns).
+ *
+ * 키는 소문자 정규화 후 조회. principles 가 주 대상이지만 sections 로 펼쳐지므로 다른 topic 에도
+ * 동일 규칙으로 적용된다(매칭 키가 없으면 pickSections 가 availableSections 와 함께 error).
+ */
+const ASPECT_TO_SECTIONS: Record<string, string[]> = {
+  tone: ["brandTone"],
+  "brand-tone": ["brandTone"],
+  voice: ["brandTone"],
+  color: ["colors"],
+  colors: ["colors"],
+  colour: ["colors"],
+  typography: ["typography"],
+  type: ["typography"],
+  font: ["typography"],
+  text: ["typography"],
+  spacing: ["spacing"],
+  gap: ["spacing"],
+  inset: ["spacing"],
+  layout: ["spacing"],
+  elevation: ["elevation"],
+  shadow: ["elevation"],
+  depth: ["elevation"],
+  radius: ["shapes"],
+  corner: ["shapes"],
+  shape: ["shapes"],
+  shapes: ["shapes"],
+  dos: ["dos"],
+  donts: ["donts"],
+  "dos-donts": ["dos", "donts", "bannedPatterns"],
+  banned: ["bannedPatterns"],
+  "banned-patterns": ["bannedPatterns"],
+};
+
+/** get_guide({ aspects }) 가 받을 수 있는 친화적 측면 이름 목록(에러 응답용). */
+export const GUIDE_ASPECT_NAMES = Object.keys(ASPECT_TO_SECTIONS);
+
+/** aspects(친화적 이름)를 pickSections 용 top-level 섹션 키로 펼친다. unknown 은 따로 반환. */
+function expandAspects(aspects: string[]): { sections: string[]; unknown: string[] } {
+  const sections = new Set<string>();
+  const unknown: string[] = [];
+  for (const a of aspects) {
+    const key = String(a).trim().toLowerCase();
+    const mapped = ASPECT_TO_SECTIONS[key];
+    if (mapped) mapped.forEach((s) => sections.add(s));
+    else unknown.push(a);
+  }
+  return { sections: [...sections], unknown };
+}
+
+/**
  * brand 가 주어지면 SERVICE_OVERLAYS 에서 해당 topic 의 overlay 를 꺼내 머지.
  * brand 미지정 시 _brandVariants 슬림 요약을 첨부 (어느 brand 에 overlay 가 있는지 호출자가 인지하도록).
  *
@@ -545,8 +658,18 @@ export function getGuide(args: {
   intent?: string;
   target?: GuideTarget;
   sections?: string[];
+  aspects?: string[];
   brand?: BrandSlug;
+  /** [principles] 워크스페이스 루트 — designDecisions.jsonl 에서 학습된 원칙을 승격해 머지한다. 기본 MCP 프로세스 cwd. */
+  cwd?: string;
 }): Record<string, unknown> {
+  // aspects(친화적 측면 이름)는 principles 의 slice 어휘(spacing/radius/typography/...)다.
+  // 화면이 실제로 필요한 측면만 골라 큰 principles 가이드를 슬림하게 받기 위한 sugar 로,
+  // principles 토픽에만 적용한다(컴포넌트/패턴 가이드는 top-level 키 체계가 달라 무의미 → 무시).
+  const aspectList = Array.isArray(args.aspects)
+    ? args.aspects.filter((a): a is string => typeof a === "string" && a.length > 0)
+    : undefined;
+
   const topics = Array.isArray(args.topics)
     ? args.topics.filter((topic): topic is string => typeof topic === "string" && topic.length > 0)
     : undefined;
@@ -562,7 +685,9 @@ export function getGuide(args: {
             intent: args.intent,
             target: args.target,
             sections: args.sections,
+            aspects: aspectList, // principles 자식에서만 실제 적용된다
             brand: args.brand,
+            cwd: args.cwd, // principles 자식에서 학습된 원칙 승격에 사용
           }),
         ]),
       ),
@@ -579,7 +704,23 @@ export function getGuide(args: {
   }
 
   const target: GuideTarget = args.target === "react" ? "react" : "html";
-  const sections = Array.isArray(args.sections) ? args.sections : undefined;
+
+  // aspects 는 principles 에서만 sections 로 펼친다. 다른 토픽에서는 무시(에러 아님).
+  let sections = Array.isArray(args.sections) ? args.sections : undefined;
+  let aspectUnknown: string[] = [];
+  if (topic === "principles" && aspectList && aspectList.length > 0) {
+    const { sections: expanded, unknown } = expandAspects(aspectList);
+    if (expanded.length === 0) {
+      return {
+        error: `get_guide: aspects ${JSON.stringify(
+          aspectList,
+        )} 를 알 수 없습니다. 화면에 필요한 측면 이름만 고르세요.`,
+        validAspects: GUIDE_ASPECT_NAMES,
+      };
+    }
+    sections = [...new Set([...(sections ?? []), ...expanded])];
+    aspectUnknown = unknown;
+  }
 
   if (topic.startsWith("component:")) {
     const name = topic.slice("component:".length);
@@ -607,9 +748,22 @@ export function getGuide(args: {
   }
 
   switch (topic) {
-    case "principles":
+    case "principles": {
       markPrinciplesCalled();
-      return pickSections(getDesignPrinciples() as Record<string, unknown>, sections);
+      const picked = pickSections(getDesignPrinciples() as Record<string, unknown>, sections);
+      // 일부 aspect 만 오타라 무시된 경우 조용히 떨구지 않고 비치명 마커로 알린다(unknown-brand 경고 패턴 미러).
+      if (aspectUnknown.length > 0 && !("error" in picked)) {
+        (picked as Record<string, unknown>)._unknownAspects = aspectUnknown;
+        (picked as Record<string, unknown>)._validAspects = GUIDE_ASPECT_NAMES;
+      }
+      // Decision Log → Principles 승격: 이 브랜드 화면에서 반복된 결정을 학습된 원칙으로 머지.
+      // 마커 키라 pickSections(섹션 슬라이스) 이후에 붙여 aspects/sections 호출에도 항상 보인다. best-effort.
+      if (!("error" in picked)) {
+        const learned = buildLearnedPrinciples(args.cwd, args.brand);
+        if (learned) (picked as Record<string, unknown>)._learnedPrinciples = learned;
+      }
+      return picked;
+    }
     case "dos-donts":
       return pickSections(getDosAndDonts() as Record<string, unknown>, sections);
     case "ux-writing": {
@@ -731,7 +885,7 @@ function getSlimClaudeMdTemplate(args: {
 2. Read \`references.md\` before implementation and write a short visual plan: which good cues to apply, which bad cues to avoid.
 3. Use MCP-bundled references from \`get_guide\` first as the DS baseline: \`figmaNodeUrl\`, \`references[]\`, and \`imageAbsolutePath\`.
 4. For component examples, call \`get_guide({ topic: "component:<Name>", target: "html" })\`. **For brand-specific screens (task slug \`<brand>-<screen>\` exposes the brand), pass \`brand: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz"\`** — service overlay, matrixOverrides spec, and brand-aware metadata fold into the response under \`_brandApplied\` / \`_matrixOverrideApplied\` / \`_brandAwareApplied\`. Without \`brand\` you only get \`_brandVariants\` (slim summary of which brands have overlays).
-5. Use \`get_guide({ topic: "principles" })\` and relevant \`pattern:<name>\` guides only as needed. Use \`sections\` to keep calls small.
+5. Use \`get_guide({ topic: "principles" })\` and relevant \`pattern:<name>\` guides only as needed. Keep calls small: pass \`aspects\` for the principle slices this screen needs (e.g. \`get_guide({ topic: "principles", aspects: ["spacing","radius","typography","color"] })\`), or \`sections\` for arbitrary top-level keys.
 6. Write root \`index.html\` with real \`<nds-*>\` elements.
 7. Run \`validate_html_mockup({ filePath: "index.html" })\`; fix until violation count is 0.
 8. Run \`analyze_html_mockup({ filePath: "index.html" })\` for DS adoption stats.
