@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { cleanupDevServerSessions, startDevServer, stopDevServer } from "../src/tools/preview";
+import {
+  cleanupDevServerSessions,
+  startDevServer,
+  stopDevServer,
+} from "@nudge-design/mockup-core/tools/preview";
 
 describe("dev server session cleanup", () => {
   it("terminates tracked child processes and clears the session registry", async () => {

@@ -3,7 +3,7 @@ import {
   configureHtmlValidator,
   validateHtmlMockup,
   validateHtmlSource,
-} from "../src/tools/html-validator";
+} from "@nudge-design/mockup-core/tools/html-validator";
 
 // 테스트 환경에서는 token set / nds tag set 을 직접 박는다 (server.ts 의 manifest 로딩 우회).
 configureHtmlValidator({

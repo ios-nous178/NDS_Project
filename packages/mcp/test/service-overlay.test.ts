@@ -217,11 +217,11 @@ describe("Brand-aware Base metadata — BrandHeader / BrandFooter", () => {
     expect(fp.footerTone).toBe("light"); // '*' default 적용
   });
 
-  it("Sidebar cashwalk-biz: iconSet.gnb 7종이 응답에 노출", () => {
+  it("Sidebar cashwalk-biz: iconSet.gnb 9종이 응답에 노출", () => {
     const result = getGuide({ topic: "component:Sidebar", brand: "cashwalk-biz", target: "html" });
     expect(result._brandApplied).toBe("cashwalk-biz");
     const iconSet = result.iconSet as Record<string, string[]>;
-    expect(iconSet.gnb).toHaveLength(7);
+    expect(iconSet.gnb).toHaveLength(9);
     expect(iconSet.gnb).toContain("CashwalkBizGnbBannerIcon");
     expect(iconSet.gnb).toContain("CashwalkBizGnbSettingIcon");
   });
