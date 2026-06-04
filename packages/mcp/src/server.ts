@@ -39,7 +39,6 @@ export { validateHtmlSource } from "@nudge-design/mockup-core/tools/html-validat
 import {
   formatScoreCard,
   gateGuidance,
-  gradeQuality,
   SCORE_THRESHOLDS,
   VERDICT_LABELS,
   type LlmScoreResult,
@@ -506,8 +505,11 @@ function attachPrinciplesAck<T>(result: T): T | object {
   return { _principlesAck: ack, result };
 }
 
-/** 결과(또는 .validation)의 D1 scores.overall 추출 — build 는 .validation 아래, validate 는 top-level. */
-function extractCodeOverall(result: unknown): number | null {
+/** 결과(또는 .validation)의 D1 scores 전체(overall + dimensions) 추출 — 카드 표시용.
+ *  build 는 .validation 아래, validate 는 top-level. */
+function extractCodeScores(
+  result: unknown,
+): { overall: number; dimensions: Record<string, number> } | null {
   if (!result || typeof result !== "object") return null;
   const r = result as Record<string, unknown>;
   const v = (r.validation && typeof r.validation === "object" ? r.validation : r) as Record<
@@ -515,25 +517,39 @@ function extractCodeOverall(result: unknown): number | null {
     unknown
   >;
   const scores = v.scores as Record<string, unknown> | undefined;
-  return scores && typeof scores.overall === "number" ? scores.overall : null;
+  if (!scores || typeof scores.overall !== "number") return null;
+  const dimensions =
+    scores.dimensions && typeof scores.dimensions === "object"
+      ? (scores.dimensions as Record<string, number>)
+      : {};
+  return { overall: scores.overall, dimensions };
 }
 
 /**
- * validate/build 응답에 score 게이트(D1 코드 점수 기준 verdict + 안내)를 부착한다.
- * 데스크톱 design-score 카드와 같은 임계값/verdict 규칙(gradeQuality SSOT)을 써서, 호스트
- * 에이전트가 MCP 만으로도 통과/주의/미달을 일관되게 인지하게 한다. 정성(D2)까지 보려면
- * score_mockup_quality 를 호출하라고 안내한다.
+ * validate/build 응답에 score 게이트 + **풀 스코어카드**를 부착한다.
+ * 데스크톱 design-score 카드와 같은 임계값/verdict 규칙(gradeQuality SSOT)을 쓰고,
+ * formatScoreCard 로 D1 6개 차원(icon 포함)을 한 덩어리 카드로 만들어 그대로 싣는다 —
+ * 회고: 에이전트가 좋은 차원 5개만 발췌하고 낮은 icon 차원을 빼서 "왜 81?" 이 안 보였음.
+ * mustSurface 로 카드를 발췌 없이 그대로 노출하게 강제. 정성(D2)은 score_mockup_quality.
  */
 function attachScoreGate<T>(result: T): T {
-  const overall = extractCodeOverall(result);
-  if (overall == null) return result;
-  const grade = gradeQuality({ codeOverall: overall });
+  const codeScores = extractCodeScores(result);
+  if (codeScores == null) return result;
+  const card = formatScoreCard({
+    codeScores,
+    llm: { ok: false, error: "미채점 — 정성(D2)까지 보려면 score_mockup_quality 호출" },
+  });
+  const grade = card.grade;
   const scoreGate = {
     rule: "score-gate",
     verdict: grade.verdict,
     verdictLabel: VERDICT_LABELS[grade.verdict],
     overall: grade.overall,
+    dimensions: codeScores.dimensions,
     thresholds: SCORE_THRESHOLDS,
+    scoreCard: card.text,
+    mustSurface:
+      "이 scoreCard 를 사용자에게 그대로 보여주세요 — D1 6개 차원(color/typography/spacing/layout/component/icon)을 빠짐없이. 점수가 낮은 차원을 발췌·생략하지 말 것(특히 icon).",
     guidance: gateGuidance(grade.verdict),
     note: "D1(코드) 점수 기준. 정성(D2·ux/interaction/flow/form)까지 채점하려면 score_mockup_quality 를 호출하세요.",
   };
