@@ -38,6 +38,7 @@ import {
 } from "./chat-types.js";
 import type { Surface } from "./intake.js";
 import { scoreMockupQuality } from "./scorer.js";
+import { buildMemoryRead } from "./memory-read.js";
 import {
   SNAPSHOT_VERSION,
   captureCodexSession,
@@ -220,6 +221,17 @@ const DS_SYSTEM_MANDATE = [
   "- 완료 시 응답에 게이트 보고: ① 적용한 시각 레퍼런스, ② 풋터 DS 뱃지(<span data-ds-badge>…</span> — 직접 세지 말고 build/validate 응답의 dsUsageSummary 사용), ③ Google Sheets POST 상태(webhook ok/queued/skipped).",
   "DS 규칙을 모를 때 클래스/스타일/컴포넌트를 임의로 지어내지 말고 항상 MCP 로 조회하세요.",
 ].join("\n");
+
+/**
+ * `--append-system-prompt` 값 = DS 사용 의무 + (있으면) 과거 결정 Memory Read.
+ * 같은 작업폴더(cwd)의 designDecisions.jsonl 을 읽어 현재 브랜드의 최근 결정을 시스템 프롬프트에 얹는다
+ * (Decision Log → Memory Read. save_design_spec write-side 의 read-side 대응). best-effort — 없으면 의무만.
+ * cwd 는 claude(=번들 MCP 서버) 의 spawn cwd 와 동일해야 한다(save_design_spec 의 기본 기록 위치).
+ */
+function appendSystemPromptValue(cwd: string, brand?: string): string {
+  const memory = buildMemoryRead(cwd, { brand });
+  return memory ? `${DS_SYSTEM_MANDATE}\n\n${memory}` : DS_SYSTEM_MANDATE;
+}
 
 const running = new Map<string, IPty>();
 /**
@@ -590,7 +602,7 @@ export function startAgent(
 
   // resume v1 레시피 — 같은 컨텍스트로 재구동하기 위한 최소 기록. claude 는 우리 sessionId 가 곧
   // 네이티브 id 이고 store 경로가 결정적이라 spawn 시점에 박는다. codex 는 시작 시 id 를 못 박으므로
-  // onExit 에서 rollout 헤더(cwd+timestamp)로 캡처한다(아래 captureCodexSession).
+  // onExit 에서 cwd 일치 + fs 생성시각이 spawn 이후인 rollout 을 찾아 캡처한다(아래 captureCodexSession).
   const resumeRecipe = args.resume
     ? {
         // resume: 이미 알고 있는 네이티브 id/파일을 그대로 보존(codex 재캡처가 헤더 시각 차이로
@@ -703,7 +715,7 @@ export function startAgent(
     ? [
         ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
         "--append-system-prompt",
-        DS_SYSTEM_MANDATE,
+        appendSystemPromptValue(cwd, args.brand),
       ]
     : [];
   // 신규 세션만 --session-id 로 우리 id 를 claude 네이티브 id 로 못 박는다(resume v1 토대) — 그러면
@@ -873,6 +885,8 @@ function startStreamAgent(
   disabledMcpServers: string[] = [],
 ): { ok: boolean; error?: string } {
   const sessionId = args.sessionId;
+  // claude(=번들 MCP) spawn cwd — Memory Read 읽기 위치(save_design_spec 기록 위치)와 동일해야 한다.
+  const cwd = args.cwdOverride ?? args.projectPath;
   // git commit/push·figma 쓰기 하드 차단(deny). bypassPermissions 여도 deny 가 우선한다.
   // stream 은 turn hook 을 안 쓰므로 전용 settings 파일로 주입(기존 DS MCP 중복 비활성화도 함께).
   const denyPath = ensureDenySettingsPath(disabledMcpServers);
@@ -896,7 +910,7 @@ function startStreamAgent(
     "--disallowed-tools",
     "AskUserQuestion",
     "--append-system-prompt",
-    DS_SYSTEM_MANDATE,
+    appendSystemPromptValue(cwd, args.brand),
   ];
 
   // Windows .cmd/.bat 은 직접 spawn 불가 → cmd.exe /c 경유(PTY 경로와 동일 규칙).
@@ -909,7 +923,7 @@ function startStreamAgent(
   let child: ChildProcess;
   try {
     child = cpSpawn(spawnFile, spawnArgs, {
-      cwd: args.cwdOverride ?? args.projectPath,
+      cwd,
       env: cleanEnv({ ...getToolProcessEnv(), PATH: searchPath }),
       stdio: ["pipe", "pipe", "pipe"],
     });

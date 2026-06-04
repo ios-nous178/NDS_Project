@@ -625,7 +625,9 @@ const toolHandlers = {
           intent?: string;
           target?: "react" | "html";
           sections?: string[];
+          aspects?: string[];
           brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
+          cwd?: string;
         },
       ),
     ),

@@ -3,10 +3,16 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import {
+  appendDesignDecisionRow,
+  buildDesignDecisionRow,
   configureDesignSpec,
+  DESIGN_DECISIONS_FILE,
   parseDesignSpecInput,
+  promoteDesignDecisions,
+  readDesignDecisions,
   saveDesignSpec,
   validateDesignSpec,
+  type DesignDecisionRow,
   type DesignSpec,
 } from "../src/tools/design-spec";
 
@@ -223,5 +229,274 @@ describe("saveDesignSpec", () => {
     const r = saveDesignSpec({ spec: "{ broken", cwd: dir });
     expect(r.written).toBe(false);
     expect(r.violations.map((v) => v.rule)).toContain("invalid-json");
+  });
+});
+
+describe("design decision log", () => {
+  const okResult = {
+    ok: true,
+    componentsUsed: ["Button", "Card"],
+    tokensUsed: ["--semantic-bg-default"],
+  };
+
+  describe("buildDesignDecisionRow (pure)", () => {
+    it("extracts screen decisions + per-node rationale (with tree paths)", () => {
+      const row = buildDesignDecisionRow(validSpec, okResult as never, "2026-06-02T00:00:00.000Z");
+      expect(row).not.toBeNull();
+      expect(row!.decisions).toEqual(["primary CTA 1개만"]);
+      expect(row!.rationales).toEqual([
+        {
+          path: "tree[0].children[0]",
+          component: "Button",
+          rationale: "Geniet secondary = dark inverse",
+        },
+      ]);
+      expect(row!.screen).toMatchObject({ brand: "geniet", surface: "app", intent: "리뷰 상세" });
+      expect(row!.ok).toBe(true);
+      expect(row!.ts).toBe("2026-06-02T00:00:00.000Z");
+      expect(row!.hash).toMatch(/^[0-9a-f]{12}$/);
+    });
+
+    it("returns null when there is no decision content (decision log, not save log)", () => {
+      const bare: DesignSpec = {
+        screen: { brand: "geniet", surface: "app", intent: "x" },
+        tree: [{ component: "Card" }],
+      };
+      expect(buildDesignDecisionRow(bare, okResult as never, "t")).toBeNull();
+    });
+
+    it("logs a spec that has only node rationale (no screen decisions)", () => {
+      const onlyRationale: DesignSpec = {
+        screen: { brand: "geniet", surface: "app", intent: "x" },
+        tree: [{ component: "Card", rationale: "본문 카드" }],
+      };
+      const row = buildDesignDecisionRow(onlyRationale, okResult as never, "t");
+      expect(row).not.toBeNull();
+      expect(row!.decisions).toEqual([]);
+      expect(row!.rationales).toHaveLength(1);
+    });
+
+    it("rejects non-object specs", () => {
+      expect(buildDesignDecisionRow(null, okResult as never, "t")).toBeNull();
+      expect(buildDesignDecisionRow("nope", okResult as never, "t")).toBeNull();
+    });
+  });
+
+  describe("appendDesignDecisionRow + readDesignDecisions (IO)", () => {
+    let dir: string;
+    beforeAll(() => {
+      dir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-decisions-"));
+    });
+    afterAll(() => {
+      try {
+        fs.rmSync(dir, { recursive: true, force: true });
+      } catch {
+        /* noop */
+      }
+    });
+
+    const mk = (decisions: string[], ts: string): DesignDecisionRow =>
+      buildDesignDecisionRow({ ...validSpec, decisions }, okResult as never, ts)!;
+
+    it("appends rows and reads them back in order", () => {
+      expect(appendDesignDecisionRow(dir, mk(["a"], "t1"))).toBe(true);
+      expect(appendDesignDecisionRow(dir, mk(["b"], "t2"))).toBe(true);
+      const rows = readDesignDecisions(dir);
+      expect(rows.map((r) => r.decisions[0])).toEqual(["a", "b"]);
+      expect(fs.existsSync(path.join(dir, DESIGN_DECISIONS_FILE))).toBe(true);
+    });
+
+    it("skips a duplicate of the immediately-previous row (auto-fix re-save guard)", () => {
+      const before = readDesignDecisions(dir).length;
+      const dup = mk(["b"], "t3-different-ts"); // same content as last → same hash
+      expect(appendDesignDecisionRow(dir, dup)).toBe(false);
+      expect(readDesignDecisions(dir)).toHaveLength(before);
+    });
+
+    it("appends again once the decision content actually changes", () => {
+      const before = readDesignDecisions(dir).length;
+      expect(appendDesignDecisionRow(dir, mk(["c"], "t4"))).toBe(true);
+      expect(readDesignDecisions(dir)).toHaveLength(before + 1);
+    });
+
+    it("skips array-shaped corrupt lines on read (typeof [] === 'object' guard)", () => {
+      const corruptDir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-corrupt-"));
+      fs.writeFileSync(
+        path.join(corruptDir, DESIGN_DECISIONS_FILE),
+        ["[1,2]", JSON.stringify(mk(["x"], "t")), "{ not json"].join("\n") + "\n",
+      );
+      const rows = readDesignDecisions(corruptDir);
+      expect(rows).toHaveLength(1);
+      expect(rows[0].decisions).toEqual(["x"]);
+      fs.rmSync(corruptDir, { recursive: true, force: true });
+    });
+  });
+
+  describe("validity transition + cap + interleaved screens", () => {
+    const row = (spec: DesignSpec, ok: boolean, ts: string): DesignDecisionRow =>
+      buildDesignDecisionRow(spec, { ok, componentsUsed: [], tokensUsed: [] } as never, ts)!;
+
+    it("records an ok:false → ok:true transition as a new row (same decisions)", () => {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-okflip-"));
+      expect(appendDesignDecisionRow(dir, row(validSpec, false, "t1"))).toBe(true);
+      // identical decisions/rationale but now valid → different hash → must append
+      expect(appendDesignDecisionRow(dir, row(validSpec, true, "t2"))).toBe(true);
+      const rows = readDesignDecisions(dir);
+      expect(rows.map((r) => r.ok)).toEqual([false, true]);
+      fs.rmSync(dir, { recursive: true, force: true });
+    });
+
+    it("caps the file to maxRows, dropping the oldest", () => {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-cap-"));
+      for (const d of ["a", "b", "c", "d"]) {
+        appendDesignDecisionRow(
+          dir,
+          row({ ...validSpec, decisions: [d] }, true, `t-${d}`),
+          undefined,
+          2,
+        );
+      }
+      const rows = readDesignDecisions(dir);
+      expect(rows).toHaveLength(2);
+      expect(rows.map((r) => r.decisions[0])).toEqual(["c", "d"]);
+      fs.rmSync(dir, { recursive: true, force: true });
+    });
+
+    it("dedups per-screen, so re-saving an earlier screen unchanged is skipped", () => {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-interleave-"));
+      const A: DesignSpec = {
+        screen: { brand: "geniet", surface: "app", intent: "A" },
+        tree: [{ component: "Card", rationale: "a" }],
+      };
+      const B: DesignSpec = {
+        screen: { brand: "geniet", surface: "web", intent: "B" },
+        tree: [{ component: "Card", rationale: "b" }],
+      };
+      expect(appendDesignDecisionRow(dir, row(A, true, "t1"))).toBe(true);
+      expect(appendDesignDecisionRow(dir, row(B, true, "t2"))).toBe(true);
+      // A again, unchanged → compared against the last A row (not the global last B) → skip
+      expect(appendDesignDecisionRow(dir, row(A, true, "t3"))).toBe(false);
+      expect(readDesignDecisions(dir)).toHaveLength(2);
+      fs.rmSync(dir, { recursive: true, force: true });
+    });
+  });
+
+  describe("saveDesignSpec integration", () => {
+    let dir: string;
+    beforeAll(() => {
+      dir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-save-decisions-"));
+    });
+    afterAll(() => {
+      try {
+        fs.rmSync(dir, { recursive: true, force: true });
+      } catch {
+        /* noop */
+      }
+    });
+
+    it("accumulates a decision row next to design-spec.json on save", () => {
+      saveDesignSpec({ spec: validSpec, cwd: dir });
+      const rows = readDesignDecisions(dir);
+      expect(rows).toHaveLength(1);
+      expect(rows[0].decisions).toEqual(["primary CTA 1개만"]);
+      expect(rows[0].rationales[0].rationale).toBe("Geniet secondary = dark inverse");
+    });
+
+    it("does not write a row for a spec with no decisions/rationale", () => {
+      const bareDir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-bare-"));
+      saveDesignSpec({
+        spec: {
+          screen: { brand: "geniet", surface: "app", intent: "x" },
+          tree: [{ component: "Card" }],
+        },
+        cwd: bareDir,
+      });
+      expect(readDesignDecisions(bareDir)).toHaveLength(0);
+      expect(fs.existsSync(path.join(bareDir, DESIGN_DECISIONS_FILE))).toBe(false);
+      fs.rmSync(bareDir, { recursive: true, force: true });
+    });
+  });
+});
+
+describe("promoteDesignDecisions (Decision Log → Principles)", () => {
+  const row = (over: Partial<DesignDecisionRow> & { ts: string }): DesignDecisionRow => ({
+    ts: over.ts,
+    ok: over.ok ?? true,
+    screen: over.screen ?? { brand: "trost", surface: "web", intent: "화면" },
+    decisions: over.decisions ?? [],
+    rationales: over.rationales ?? [],
+    componentsUsed: [],
+    tokensUsed: [],
+    hash: over.hash ?? Math.random().toString(36).slice(2),
+  });
+
+  // 같은 결정을 N개의 '서로 다른' 화면에 박는다.
+  const screensWith = (decision: string, n: number, brand = "trost"): DesignDecisionRow[] =>
+    Array.from({ length: n }, (_, i) =>
+      row({
+        ts: `t${i}`,
+        screen: { brand, surface: "web", intent: `화면-${i}` },
+        decisions: [decision],
+      }),
+    );
+
+  it("promotes a decision repeated across >= threshold distinct screens", () => {
+    const out = promoteDesignDecisions(screensWith("CTA 는 brandSolid", 3), {
+      brand: "trost",
+      threshold: 3,
+    });
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatchObject({ text: "CTA 는 brandSolid", count: 3, kind: "decision" });
+  });
+
+  it("does NOT promote below threshold", () => {
+    expect(
+      promoteDesignDecisions(screensWith("드문 결정", 2), { brand: "trost", threshold: 3 }),
+    ).toEqual([]);
+  });
+
+  it("counts distinct screens only — re-saves of the same screen do not inflate count", () => {
+    const rows = [
+      row({ ts: "t1", screen: { brand: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
+      row({ ts: "t2", screen: { brand: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
+      row({ ts: "t3", screen: { brand: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
+    ];
+    // 같은 화면 3행 → 화면 1개 → threshold 3 미달.
+    expect(promoteDesignDecisions(rows, { brand: "trost", threshold: 3 })).toEqual([]);
+  });
+
+  it("filters by brand (alias normalized) and excludes other brands", () => {
+    const rows = [
+      ...screensWith("캐포비 규칙", 3, "cashwalk-biz"),
+      ...screensWith("지니어트 규칙", 3, "geniet"),
+    ];
+    const out = promoteDesignDecisions(rows, { brand: "cashpobi", threshold: 3 }); // alias → cashwalk-biz
+    expect(out.map((p) => p.text)).toEqual(["캐포비 규칙"]);
+  });
+
+  it("promotes recurring node rationale with its source components", () => {
+    const rows = Array.from({ length: 3 }, (_, i) =>
+      row({
+        ts: `t${i}`,
+        screen: { brand: "trost", intent: `화면-${i}` },
+        rationales: [{ path: "tree[0]", component: "Button", rationale: "주목도 우선" }],
+      }),
+    );
+    const out = promoteDesignDecisions(rows, { brand: "trost", threshold: 3 });
+    expect(out).toHaveLength(1);
+    expect(out[0]).toMatchObject({ kind: "rationale", count: 3, components: ["Button"] });
+  });
+
+  it("ignores ok=false rows by default (okOnly)", () => {
+    const rows = screensWith("미통과 결정", 3).map((r) => ({ ...r, ok: false }));
+    expect(promoteDesignDecisions(rows, { brand: "trost", threshold: 3 })).toEqual([]);
+  });
+
+  it("sorts by count desc and caps at max", () => {
+    const rows = [...screensWith("자주", 4), ...screensWith("가끔", 3)];
+    const out = promoteDesignDecisions(rows, { brand: "trost", threshold: 3, max: 1 });
+    expect(out).toHaveLength(1);
+    expect(out[0].text).toBe("자주");
+    expect(out[0].count).toBe(4);
   });
 });

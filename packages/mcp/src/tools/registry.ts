@@ -258,7 +258,7 @@ const TOOLS = [
   {
     name: "save_design_spec",
     description:
-      "Save a lightweight DesignSpec (the prompt→**DesignSpec**→code intermediate representation) to `<cwd>/design-spec.json`, validating it against the DS catalog first. The DesignSpec captures INTENT only — component tree (semantic names), semantic token names (no hex), brand/surface, and design rationale — NOT pixel geometry (that belongs to the code→Figma scene.json). Call this BEFORE build_singlefile_html: show the saved spec to the user, get agreement, then build from it (soft approval gate). If `ok:false`, fix the reported violations and re-save before building. `component` accepts either PascalCase DS names ('Button') or nds-tags ('nds-button') — they share the scene.ts vocabulary.",
+      "Save a lightweight DesignSpec (the prompt→**DesignSpec**→code intermediate representation) to `<cwd>/design-spec.json`, validating it against the DS catalog first. The DesignSpec captures INTENT only — component tree (semantic names), semantic token names (no hex), brand/surface, and design rationale — NOT pixel geometry (that belongs to the code→Figma scene.json). Call this BEFORE build_singlefile_html: show the saved spec to the user, get agreement, then build from it (soft approval gate). If `ok:false`, fix the reported violations and re-save before building. `component` accepts either PascalCase DS names ('Button') or nds-tags ('nds-button') — they share the scene.ts vocabulary. SIDE EFFECT: when the spec carries decisions/rationale, one row is also appended to `<cwd>/designDecisions.jsonl` (append-only decision history, deduped per screen, capped to recent rows) — design-spec.json itself is overwritten each save, so this jsonl is the cumulative provenance/memory log. Consumers may want to gitignore it.",
     inputSchema: {
       type: "object",
       properties: {
@@ -269,7 +269,8 @@ const TOOLS = [
         },
         cwd: {
           type: "string",
-          description: "Workspace dir to write design-spec.json into. Defaults to process cwd.",
+          description:
+            "Workspace dir to write design-spec.json (and append designDecisions.jsonl) into. Defaults to process cwd.",
         },
         fileName: {
           type: "string",
@@ -298,7 +299,7 @@ const TOOLS = [
   {
     name: "get_guide",
     description:
-      "Fetch DS guidance by topic. Pass `topics: [...]` to batch multiple guides in one call. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. Component guides include a short `_principlesDigest`; still call `get_guide({ topic: 'principles' })` once per session. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys.",
+      "Fetch DS guidance by topic. Pass `topics: [...]` to batch multiple guides in one call. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. Component guides include a short `_principlesDigest`; still call `get_guide({ topic: 'principles' })` once per session. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys. For `principles`, prefer `aspects: ['spacing','radius','typography']` to load only the slices a screen actually needs (friendly names: radius→shapes, color→colors, tone→brandTone).",
     inputSchema: {
       type: "object",
       properties: {
@@ -329,11 +330,22 @@ const TOOLS = [
           description:
             "Optional. Pick only these top-level keys from the response (e.g. ['dos', 'donts'] on `principles`, or ['colorMatrix', 'sizeMatrix'] on a component guide). Meta keys (_advisory, _htmlAdvisory) are always preserved. If none match, response is an error with availableSections listed.",
         },
+        aspects: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Optional, principles-focused. Friendly names for the principle slices a screen actually needs — e.g. ['spacing','radius','typography','color'] returns only those blocks of `principles` instead of the whole guide. Sugar over `sections` with aliases (radius→shapes, color→colors, tone→brandTone, font→typography, shadow→elevation, dos-donts→dos+donts+bannedPatterns). Merged with `sections` when both are given. If no aspect resolves, the response is an error with validAspects listed.",
+        },
         brand: {
           type: "string",
           enum: ["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"],
           description:
-            "Optional brand slug. When set, the base guide is merged with the brand's service overlay (allowedVariants/disallowed/preferred/forbiddenPatterns, servicePitfalls, iconSet, copyTone). When omitted, a `_brandVariants` slim summary is attached so the caller can see which brands have an overlay for this topic.",
+            "Optional brand slug. When set, the base guide is merged with the brand's service overlay (allowedVariants/disallowed/preferred/forbiddenPatterns, servicePitfalls, iconSet, copyTone). When omitted, a `_brandVariants` slim summary is attached so the caller can see which brands have an overlay for this topic. For `principles`, also scopes the learned-principles promotion.",
+        },
+        cwd: {
+          type: "string",
+          description:
+            "Optional, `principles`-focused. Workspace root to read `designDecisions.jsonl` from — recurring decisions for this brand (≥ threshold distinct screens) are promoted into a `_learnedPrinciples` block (Decision Log → Principles). Defaults to the MCP process cwd (= where save_design_spec writes).",
         },
       },
       additionalProperties: false,
@@ -540,12 +552,14 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         intent: optionalString(args, "intent", toolName),
         target: optionalEnum(args, "target", GUIDE_TARGET_VALUES, toolName),
         sections: optionalStringArray(args, "sections", toolName),
+        aspects: optionalStringArray(args, "aspects", toolName),
         brand: optionalEnum(
           args,
           "brand",
           ["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"] as const,
           toolName,
         ),
+        cwd: optionalString(args, "cwd", toolName),
       };
     case "get_setup":
       return {
