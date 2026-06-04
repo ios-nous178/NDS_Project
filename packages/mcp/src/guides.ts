@@ -3833,6 +3833,22 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- step status 모두 누락 — 진척이 시각화 안 됨 -->\n<nds-stepper current="1" steps=\'[{"label":"1단계"},{"label":"2단계"},{"label":"3단계"}]\'></nds-stepper>',
     },
   },
+  StepProgress: {
+    name: "StepProgress",
+    summary:
+      "가로 막대형 단계 진행 표시. 각 스텝 = 막대 + 라벨(스텝번호 + 제목 2단). 캐시워크 for Business 어드민 다단계 흐름(캠페인 → 광고 → 소재 만들기) 기준.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
+    pitfalls: [
+      "원형 번호형(Stepper)과 혼동 금지 — StepProgress 는 가로 막대 + 스텝번호/제목 라벨 전용(어드민 화면).",
+      "current 미설정 — 0(첫 스텝)으로 폴백돼 진척이 안 보임. 0-based 인덱스로 현재 단계 지정.",
+      "막대 색을 직접 지정 — completed/current 는 브랜드색, upcoming 은 border-normal 로 토큰 자동 결정. hex 박지 말 것.",
+      "라벨은 label(스텝번호 'Step 1')과 title(제목 '캠페인 만들기') 두 갈래. 한쪽만 써도 되지만 어드민 흐름은 둘 다 권장.",
+    ],
+    examplesHtml: {
+      do: '<nds-step-progress current="1" steps=\'[{"label":"Step 1","title":"캠페인 만들기"},{"label":"Step 2","title":"광고 만들기"},{"label":"Step 3","title":"소재 만들기"}]\'></nds-step-progress>',
+      dont: '<!-- current 누락 + 막대 색 직접 지정 -->\n<nds-step-progress steps=\'[{"title":"캠페인"},{"title":"광고"}]\' style="--bar:#ffd200"></nds-step-progress>',
+    },
+  },
   Textarea: {
     name: "Textarea",
     summary: "여러 줄 자유 입력. 일기 / 후기 / 메모. 자체 max-length / min-height 가이드 있음.",

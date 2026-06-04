@@ -758,6 +758,20 @@
     "notes": "값 조절은 NumberStepper. Stepper는 단계 시각화 전용. 실제 폼 관리는 MultiStepForm."
   },
   {
+    "name": "StepProgress",
+    "category": "레이아웃",
+    "status": "implemented",
+    "description": "가로 막대형 단계 진행 표시(Stepper). 각 스텝은 막대 + 라벨(스텝번호 + 제목). Done/Current/Upcoming 상태",
+    "storybookTitle": "Components/StepProgress",
+    "docsPath": "/components/step-progress",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
+    "figmaNodeId": "3782:20029",
+    "figmaSynced": true,
+    "figmaSyncedAt": "2026-06-05",
+    "usageSummary": "캐시워크 for Business 어드민 다단계 흐름(캠페인 → 광고 → 소재 만들기) 진행 표시",
+    "notes": "원형 번호형은 Stepper. StepProgress는 가로 막대 + 스텝번호/제목 2단 라벨 전용. 캐포비 어드민 화면 기준."
+  },
+  {
     "name": "WaveformPlayer",
     "category": "도메인",
     "status": "implemented",

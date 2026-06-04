@@ -127,6 +127,8 @@ export { NdsStarRating } from "./components/nds-star-rating.js";
 export { NdsNumberStepper } from "./components/nds-number-stepper.js";
 export type { NumberStepperSize } from "./components/nds-number-stepper.js";
 
+export { NdsStepProgress } from "./components/nds-step-progress.js";
+
 export { NdsSlider } from "./components/nds-slider.js";
 
 export { NdsSegmented } from "./components/nds-segmented.js";
