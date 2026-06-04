@@ -91,6 +91,15 @@ export interface DesignScoreMessage {
     notes?: string;
     error?: string;
   };
+  /**
+   * D1+D2 종합 게이트 판정(mockup-core gradeQuality SSOT — MCP 와 동일 임계값/규칙).
+   * main 이 채워 보낸다. verdict 는 약한 그룹(min) 기준, overall 은 평균. 옛 메시지는 undefined.
+   */
+  verdict?: "pass" | "warn" | "fail";
+  /** verdict 한국어 라벨(통과/주의/미달) — VERDICT_LABELS SSOT. */
+  verdictLabel?: string;
+  /** 종합 점수(코드·LLM 평균). 둘 다 없으면 null. */
+  overall?: number | null;
 }
 
 /**

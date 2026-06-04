@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "../../../preload/index.js";
+// 품질 점수 라벨/임계값은 mockup-core SSOT — MCP 텍스트 카드와 같은 한국어 라벨/색 경계를 쓴다.
+import { scoreLabel } from "@nudge-design/mockup-core/tools/quality-score-core";
 import { btnReset, c, font, mono, primaryBtn, primaryBtnDisabled } from "../ui/theme.js";
 
 /**
@@ -55,8 +57,11 @@ type DesignScoreMsg = Extract<ChatMessage, { kind: "design-score" }>;
 
 const SCORE_FIX_PREFIX =
   "🤖 LLM 품질 평가 피드백을 반영해서 고쳐줘 (새 컴포넌트 추가 말고 지적된 점만 개선 후 validate/build): ";
-/** 점수 → 색 (≥80 green · ≥60 yellow · 그 외 red). */
+/** 점수 → 색 (≥80 green · ≥60 yellow · 그 외 red). mockup-core SCORE_THRESHOLDS 와 동일 경계. */
 const scoreColor = (n: number): string => (n >= 80 ? c.green : n >= 60 ? c.yellow : c.red);
+/** verdict(pass/warn/fail) → 색. scoreColor 경계와 1:1 대응. */
+const verdictColor = (v: "pass" | "warn" | "fail"): string =>
+  v === "pass" ? c.green : v === "warn" ? c.yellow : c.red;
 
 const APPROVE_TURN =
   "✅ 이 DesignSpec 을 승인합니다. 이 스펙 그대로 컴포넌트 가이드(target:'html') 확인 → index.html 작성 → validate_html_mockup(위반 0) → build_singlefile_html 까지 진행해줘.";
@@ -339,7 +344,7 @@ function ScoreChips({ entries }: { entries: [string, number][] }): React.JSX.Ele
             whiteSpace: "nowrap",
           }}
         >
-          {label} {n}
+          {scoreLabel(label)} {n}
         </span>
       ))}
     </div>
@@ -377,6 +382,22 @@ function DesignScoreCard({
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: c.text }}>📊 품질 점수</span>
+        {/* 종합 게이트 뱃지 — verdict 는 main 이 mockup-core gradeQuality 로 stamp(MCP 와 동일 규칙). */}
+        {m.verdict && (
+          <span
+            style={{
+              fontSize: 10.5,
+              fontWeight: 700,
+              color: verdictColor(m.verdict),
+              border: `1px solid ${verdictColor(m.verdict)}`,
+              borderRadius: 999,
+              padding: "1px 8px",
+            }}
+          >
+            {m.verdictLabel ?? m.verdict}
+            {m.overall != null ? ` ${m.overall}` : ""}
+          </span>
+        )}
         {code && (
           <span style={{ fontSize: 11, fontWeight: 700, color: scoreColor(code.overall) }}>
             코드 {code.overall}

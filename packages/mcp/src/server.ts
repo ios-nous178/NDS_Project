@@ -35,6 +35,17 @@ import {
   validateHtmlMockup,
 } from "@nudge-design/mockup-core/tools/html-validator";
 export { validateHtmlSource } from "@nudge-design/mockup-core/tools/html-validator";
+// 품질 점수 SSOT(데스크톱 하네스와 공유) — D2 정성 채점 + verdict/포맷.
+import {
+  formatScoreCard,
+  gateGuidance,
+  gradeQuality,
+  SCORE_THRESHOLDS,
+  VERDICT_LABELS,
+  type LlmScoreResult,
+} from "@nudge-design/mockup-core/tools/quality-score-core";
+import { scoreMockupQuality } from "@nudge-design/mockup-core/tools/quality-score-runner";
+import { resolveClaudeBin } from "./claude-bin.js";
 // validate_html_mockup 컨텍스트 도출 SSOT — 데스크탑 하네스(catalog.ts)도 같은 헬퍼를 쓴다.
 import { deriveHtmlValidationContext } from "@nudge-design/mockup-core/tools/catalog-config";
 import {
@@ -45,7 +56,11 @@ import {
 import type { AnalyzeHtmlMockupResult } from "@nudge-design/mockup-core/tools/html-analyzer";
 export { countHtmlUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
 import { devServer, registerDevServerCleanup } from "@nudge-design/mockup-core/tools/preview";
-import { listStandaloneBrands } from "@nudge-design/mockup-core/tools/standalone-assets";
+import {
+  canonicalBrandSlug,
+  listStandaloneBrands,
+} from "@nudge-design/mockup-core/tools/standalone-assets";
+import { recommendPagePattern } from "@nudge-design/mockup-core/tools/page-pattern-recommender";
 import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { getGuide } from "./tools/guides.js";
@@ -491,6 +506,43 @@ function attachPrinciplesAck<T>(result: T): T | object {
   return { _principlesAck: ack, result };
 }
 
+/** 결과(또는 .validation)의 D1 scores.overall 추출 — build 는 .validation 아래, validate 는 top-level. */
+function extractCodeOverall(result: unknown): number | null {
+  if (!result || typeof result !== "object") return null;
+  const r = result as Record<string, unknown>;
+  const v = (r.validation && typeof r.validation === "object" ? r.validation : r) as Record<
+    string,
+    unknown
+  >;
+  const scores = v.scores as Record<string, unknown> | undefined;
+  return scores && typeof scores.overall === "number" ? scores.overall : null;
+}
+
+/**
+ * validate/build 응답에 score 게이트(D1 코드 점수 기준 verdict + 안내)를 부착한다.
+ * 데스크톱 design-score 카드와 같은 임계값/verdict 규칙(gradeQuality SSOT)을 써서, 호스트
+ * 에이전트가 MCP 만으로도 통과/주의/미달을 일관되게 인지하게 한다. 정성(D2)까지 보려면
+ * score_mockup_quality 를 호출하라고 안내한다.
+ */
+function attachScoreGate<T>(result: T): T {
+  const overall = extractCodeOverall(result);
+  if (overall == null) return result;
+  const grade = gradeQuality({ codeOverall: overall });
+  const scoreGate = {
+    rule: "score-gate",
+    verdict: grade.verdict,
+    verdictLabel: VERDICT_LABELS[grade.verdict],
+    overall: grade.overall,
+    thresholds: SCORE_THRESHOLDS,
+    guidance: gateGuidance(grade.verdict),
+    note: "D1(코드) 점수 기준. 정성(D2·ux/interaction/flow/form)까지 채점하려면 score_mockup_quality 를 호출하세요.",
+  };
+  if (result && typeof result === "object" && !Array.isArray(result)) {
+    return { ...(result as Record<string, unknown>), scoreGate } as T;
+  }
+  return result;
+}
+
 function getTokenLookupScore(token: Manifest["tokens"][number], query: string): number {
   const baseScore = Math.max(scoreMatch(query, token.name), scoreMatch(query, token.value));
   if (baseScore <= 0) return 0;
@@ -589,6 +641,53 @@ function suggestReplacement(args: { snippet: string; rule?: string }) {
   return { suggestions };
 }
 
+/**
+ * PRD → 캐포비 어드민 Page Pattern 1차 추천(키워드 점수). 점수 로직은 mockup-core 가 SSOT —
+ * 데스크탑 추천 카드와 동일 함수. 응답은 ranked 5종 + top/confident + drill-down 힌트 + "Claude/
+ * 사용자 확정" 안내를 담는다. 최종 확정(screen.pagePattern 선언)은 호출자가 한다(여기서 강제 X).
+ */
+function recommendPagePatternTool(args: { prd?: string; brand?: string; surface?: string }) {
+  const prd = String(args.prd ?? "");
+  const brand = canonicalBrandSlug(args.brand);
+  const surface = args.surface?.trim().toLowerCase();
+  const rec = recommendPagePattern(prd);
+
+  // 캐포비 어드민에서만 hard 게이트. 브랜드/표면 미지정이면 advisory 로 동작.
+  const appliesToCashwalkBizAdmin =
+    (!args.brand || brand === "cashwalk-biz") && (!surface || surface === "admin");
+
+  const ranked = rec.ranked.map((c) => ({
+    pattern: c.pattern,
+    label: c.label,
+    score: c.score,
+    when: c.when,
+    why: c.why,
+    guide: `pattern:cashwalk-biz-page-${c.pattern}`,
+  }));
+
+  const nextStep = rec.top
+    ? `1차 추천: '${rec.ranked[0].label}'. 키워드 점수 기반 후보일 뿐이니 PRD 를 직접 읽고 확정하세요(다른 후보로 바꿔도 됨). 확정하면 get_guide({ topic: 'pattern:cashwalk-biz-page-${rec.top}' }) 로 구조를 확인하고 save_design_spec 의 screen.pagePattern 에 그 값을 넣으세요. (데스크탑 하네스에서 카드로 이미 골랐다면 nudge.pagePattern 마커가 자동 주입합니다.)`
+    : "PRD 키워드로는 패턴을 특정하지 못했습니다 — ranked 5종을 사용자에게 보여주고 직접 고르게 하세요.";
+
+  const humanReadable = [
+    rec.reason,
+    ...ranked.map((c, i) => `${i === 0 ? "▶" : "·"} ${c.label} (score ${c.score}) — ${c.why}`),
+  ].join("\n");
+
+  return {
+    appliesToCashwalkBizAdmin,
+    top: rec.top,
+    confident: rec.confident,
+    reason: rec.reason,
+    ranked,
+    nextStep,
+    humanReadable,
+    note: appliesToCashwalkBizAdmin
+      ? undefined
+      : "참고: Page Pattern 시스템은 cashwalk-biz 어드민 전용입니다. 다른 브랜드/표면엔 강제되지 않으니 advisory 로만 참고하세요.",
+  };
+}
+
 /* ───────────── MCP 서버 등록 ───────────── */
 
 const server = new Server(
@@ -615,6 +714,8 @@ const toolHandlers = {
     withVisualReferencePrompt("find_token", findToken(args as { group?: string; query?: string })),
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
+  recommend_page_pattern: (args: ToolArgs) =>
+    recommendPagePatternTool(args as { prd?: string; brand?: string; surface?: string }),
   get_guide: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "get_guide",
@@ -670,8 +771,8 @@ const toolHandlers = {
       args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" },
     );
     // html intent 빌드는 내부에서 validate + report 까지 자동 실행하므로 report-suppress 카운터에도
-    // 영향을 미친다. 이 시점에 principles 호출 여부를 함께 노출한다.
-    return attachPrinciplesAck(result);
+    // 영향을 미친다. 이 시점에 principles 호출 여부 + score 게이트(D1 verdict)를 함께 노출한다.
+    return attachPrinciplesAck(attachScoreGate(result));
   },
   validate_html_mockup: async (args: ToolArgs) => {
     const typed = args as {
@@ -756,7 +857,66 @@ const toolHandlers = {
         },
       };
     }
-    return attachPrinciplesAck(extras ? { ...result, ...extras } : result);
+    return attachPrinciplesAck(attachScoreGate(extras ? { ...result, ...extras } : result));
+  },
+  score_mockup_quality: async (args: ToolArgs) => {
+    const typed = args as {
+      html?: string;
+      filePath?: string;
+      brand?: string;
+      surface?: string;
+      cwd?: string;
+    };
+    // HTML 확보 — html 인자 우선, 없으면 filePath 를 렌더드 산출물로 읽는다.
+    let html = typed.html;
+    if (!html && typed.filePath) {
+      try {
+        html = fs.readFileSync(typed.filePath, "utf8");
+      } catch (e) {
+        return { ok: false, error: `filePath 읽기 실패: ${String(e)}` };
+      }
+    }
+    if (!html) return { ok: false, error: "html 또는 filePath 중 하나가 필요합니다." };
+
+    // D1 코드 점수 — 정적 검증으로 차원별 점수를 뽑아 데스크톱 D3 카드와 동일 구성으로 합친다.
+    let codeScores: { overall: number; dimensions: Record<string, number> } | null = null;
+    try {
+      const v = validateHtmlMockup({ source: html, cwd: typed.cwd });
+      codeScores = v.scores ?? null;
+    } catch {
+      /* D1 실패해도 D2 는 진행 */
+    }
+
+    // D2 정성 점수 — 독립 claude -p. 못 찾으면 graceful: D1(코드)만 카드에 반영.
+    const bin = resolveClaudeBin();
+    let llm: LlmScoreResult;
+    if (!bin) {
+      llm = {
+        ok: false,
+        error: "claude 실행 파일 미발견(CLAUDE_BIN/PATH) — 코드 점수(D1)만 반영",
+      };
+    } else {
+      llm = await scoreMockupQuality({
+        html,
+        brand: typed.brand,
+        surface: typed.surface,
+        bin,
+        env: { ...process.env } as Record<string, string>,
+      });
+    }
+
+    const { text, grade } = formatScoreCard({ codeScores, llm });
+    return {
+      ok: true,
+      codeScores,
+      llm,
+      verdict: grade.verdict,
+      verdictLabel: VERDICT_LABELS[grade.verdict],
+      overall: grade.overall,
+      thresholds: SCORE_THRESHOLDS,
+      guidance: gateGuidance(grade.verdict),
+      card: text,
+    };
   },
   convert_html_to_ds_html: (args: ToolArgs) =>
     convertHtmlToDsHtml(
