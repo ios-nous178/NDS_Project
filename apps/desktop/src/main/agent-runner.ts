@@ -212,6 +212,7 @@ const DS_SYSTEM_MANDATE = [
   "UI·화면·컴포넌트·토큰·아이콘을 만들거나 수정할 때는 추측하지 말고 반드시 nudge-ds MCP 도구를 먼저 사용하세요:",
   "- 작업 시작 시 get_guide({topic:'principles'}) 와 dos-donts 확인.",
   "- 복잡/다단계 화면이거나 사용자와 구성 합의가 필요하면, HTML 작성 전에 save_design_spec 으로 경량 DesignSpec(컴포넌트 트리+시멘틱 토큰 이름+근거)을 만들고 ok:true + 사용자 동의 후 빌드(soft gate). 단순 화면은 생략. 룰: get_guide({topic:'pattern:design-spec'}).",
+  "  · ⛔ 캐포비(cashwalk-biz) 어드민 화면은 복잡도와 무관하게 save_design_spec 필수(생략 금지) — validate 가 5종 Page Pattern(surfaceKind:'admin'+pagePattern) 선언을 hard error 로 강제. 먼저 분류: get_guide({topic:'pattern:cashwalk-biz-page-patterns'}).",
   "- 컴포넌트는 find_component → get_guide({topic:'component:<Name>', target:'html'}) 로 props/함정 확인.",
   "- 색/여백은 find_token (시멘틱 --semantic-* / --nds-* 만, raw hex 금지).",
   "- 아이콘은 find_icon({query})로 찾고 find_icon({name})으로 붙여넣을 inline svg 를 받으세요(npm 설치 불필요). 이모지/텍스트 기호 금지.",
