@@ -157,6 +157,7 @@ export function getUxWritingGuide() {
 }
 
 export type GuideTarget = "react" | "html";
+export type GuideView = "examples" | "rules" | "full";
 
 /**
  * 브랜드 chrome React-only 컴포넌트(WebHeader/AppBar/Footer/BottomNav)는 HTML 1:1 대응
@@ -491,6 +492,24 @@ const ASPECT_TO_SECTIONS: Record<string, string[]> = {
 /** get_guide({ aspects }) 가 받을 수 있는 친화적 측면 이름 목록(에러 응답용). */
 export const GUIDE_ASPECT_NAMES = Object.keys(ASPECT_TO_SECTIONS);
 
+/**
+ * view(친화 응답 슬림) → pickSections 용 top-level 섹션 키.
+ * 큰 가이드를 배치로 받을 때 metrics/matrixOverrides/references 까지 끌어오지 않도록
+ * 'examples'(예시만) / 'rules'(주의·규칙만) 로 슬라이스한다. 'full'/미지정은 슬림 안 함.
+ * 명시적 sections 가 우선이므로, 이 함수는 sections 미지정일 때만 호출된다.
+ * (_advisory / _htmlAdvisory 같은 메타 키는 pickSections 가 항상 보존.)
+ */
+function viewToSections(topic: string, view: GuideView): string[] | undefined {
+  if (view === "full") return undefined;
+  const isPattern = topic.startsWith("pattern:");
+  const isComponent = topic.startsWith("component:");
+  if (view === "examples") return ["summary", "examples"];
+  // view === "rules"
+  if (isPattern) return ["summary", "rules", "avoid"];
+  if (isComponent) return ["summary", "pitfalls", "recommended"];
+  return ["summary", "dos", "donts", "bannedPatterns"]; // principles / dos-donts 등
+}
+
 /** aspects(친화적 이름)를 pickSections 용 top-level 섹션 키로 펼친다. unknown 은 따로 반환. */
 function expandAspects(aspects: string[]): { sections: string[]; unknown: string[] } {
   const sections = new Set<string>();
@@ -657,6 +676,8 @@ export function getGuide(args: {
   topics?: string[];
   intent?: string;
   target?: GuideTarget;
+  /** 응답 슬림(examples/rules/full). 명시적 sections 가 우선. 배치(topics) 토큰 절약의 핵심. */
+  view?: GuideView;
   sections?: string[];
   aspects?: string[];
   brand?: BrandSlug;
@@ -674,23 +695,43 @@ export function getGuide(args: {
     ? args.topics.filter((topic): topic is string => typeof topic === "string" && topic.length > 0)
     : undefined;
   if (topics && topics.length > 0) {
-    return {
-      _advisory:
-        "Batch get_guide response. Use topics[] to avoid repeated MCP calls; each key contains the same result shape as a single topic call.",
-      topics: Object.fromEntries(
-        topics.map((topic) => [
+    const entries = topics.map(
+      (topic) =>
+        [
           topic,
           getGuide({
             topic,
             intent: args.intent,
             target: args.target,
+            view: args.view,
             sections: args.sections,
             aspects: aspectList, // principles 자식에서만 실제 적용된다
             brand: args.brand,
             cwd: args.cwd, // principles 자식에서 학습된 원칙 승격에 사용
-          }),
-        ]),
-      ),
+          }) as Record<string, unknown>,
+        ] as const,
+    );
+    // ② 배치 보일러플레이트 dedup: 모든 child 에 동일 값으로 들어가는 키(_principlesDigest 등)는
+    //    최상위 _shared 로 1회만 올리고 child 에서 제거 — 토픽 수만큼 반복되던 중복 제거.
+    const children = entries.map(([, v]) => v);
+    const shared: Record<string, unknown> = {};
+    // 키를 가진 child(holders)가 2개 이상이고 그 값이 전부 동일하면 _shared 로 hoist 후 제거.
+    // 컴포넌트만 갖는 _principlesDigest 처럼 일부 토픽에만 있는 공통 상수도 잡아낸다
+    // (패턴은 _principlesDigest 가 없어 'all children' 조건이면 못 잡았던 케이스 보정).
+    for (const key of ["_principlesDigest", "_advisory", "_htmlAdvisory"]) {
+      const holders = children.filter((c) => key in c);
+      if (holders.length < 2) continue;
+      const first = JSON.stringify(holders[0][key]);
+      if (holders.every((c) => JSON.stringify(c[key]) === first)) {
+        shared[key] = holders[0][key];
+        for (const c of holders) delete c[key];
+      }
+    }
+    return {
+      _advisory:
+        "Batch get_guide response. Use topics[] to avoid repeated MCP calls; each key contains the same result shape as a single topic call. 응답이 크면 view:'examples'|'rules' 로 슬림하게 받으세요. 모든 토픽 공통 값은 _shared 로 한 번만 노출됩니다.",
+      ...(Object.keys(shared).length > 0 ? { _shared: shared } : {}),
+      topics: Object.fromEntries(entries),
     };
   }
 
@@ -720,6 +761,11 @@ export function getGuide(args: {
     }
     sections = [...new Set([...(sections ?? []), ...expanded])];
     aspectUnknown = unknown;
+  }
+
+  // ① view → sections sugar. 명시적 sections / (principles) aspects 가 이미 채웠으면 그대로 둔다.
+  if ((!sections || sections.length === 0) && args.view && args.view !== "full") {
+    sections = viewToSections(topic, args.view);
   }
 
   if (topic.startsWith("component:")) {

@@ -110,6 +110,60 @@ describe("getGuide aspects (selective principle loading)", () => {
   });
 });
 
+describe("getGuide view (response slimming)", () => {
+  const size = (o: unknown) => JSON.stringify(o).length;
+
+  it("view='examples' on a component returns only summary + examples (much smaller than full)", () => {
+    const full = getGuide({ topic: "component:Button", target: "html" });
+    const slim = getGuide({ topic: "component:Button", target: "html", view: "examples" });
+    expect(slim.examples).toBeDefined();
+    expect(slim.summary).toBeDefined();
+    // metrics/matrixOverrides 류 큰 키는 빠진다
+    expect(slim.pitfalls).toBeUndefined();
+    expect(slim.metrics).toBeUndefined();
+    expect(size(slim)).toBeLessThan(size(full) / 2);
+  });
+
+  it("view='rules' on a pattern returns rules + avoid (not examples/metrics)", () => {
+    const slim = getGuide({ topic: "pattern:cashwalk-biz-form-layout", view: "rules" });
+    expect(slim.rules).toBeDefined();
+    expect(slim.avoid).toBeDefined();
+    expect(slim.metrics).toBeUndefined();
+  });
+
+  it("explicit sections override view", () => {
+    const slim = getGuide({
+      topic: "component:Button",
+      target: "html",
+      view: "examples",
+      sections: ["pitfalls"],
+    });
+    expect(slim.pitfalls).toBeDefined();
+    expect(slim.examples).toBeUndefined(); // view 무시되고 sections 가 이김
+  });
+
+  it("view threads through batched topics[] and shrinks the whole batch", () => {
+    const topics = ["component:Button", "component:Input", "pattern:cashwalk-biz-form-layout"];
+    const full = getGuide({ topics, target: "html" });
+    const slim = getGuide({ topics, target: "html", view: "examples" });
+    expect(size(slim)).toBeLessThan(size(full) / 2);
+    const button = (slim.topics as Record<string, Record<string, unknown>>)["component:Button"];
+    expect(button.examples).toBeDefined();
+    expect(button.metrics).toBeUndefined();
+  });
+
+  it("batch dedups identical boilerplate (_principlesDigest) into _shared", () => {
+    const result = getGuide({
+      topics: ["component:Button", "component:Input"],
+      target: "html",
+    });
+    const shared = result._shared as Record<string, unknown> | undefined;
+    expect(shared?._principlesDigest).toBeDefined();
+    const button = (result.topics as Record<string, Record<string, unknown>>)["component:Button"];
+    expect(button._principlesDigest).toBeUndefined(); // child 에서 제거됨(중복 제거)
+  });
+});
+
 describe("getGuide principles — learned principles promotion", () => {
   let dir: string;
   beforeEach(() => {
