@@ -1,5 +1,6 @@
 import {
   CASHWALK_BIZ_ADMIN_SIDEBAR_HTML,
+  CASHWALK_BIZ_ADMIN_SIDEBAR_SHELL_HTML,
   CASHWALK_BIZ_ADMIN_SIDEBAR_REACT,
   CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS,
 } from "./guides/cashwalk-biz-sidebar-example.js";
@@ -1272,6 +1273,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).",
       "collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).",
       "footer 와 user 를 동시에 주면 footer 가 우선. user 는 'avatar + 이름 + 역할' 정형 패턴 단축이라 footer 가 있으면 무시.",
+      "**★ 캐포비 계정 헤더 / 로그아웃은 구조화 slot — 손수 div 금지.** 로고 아래 계정 블록(이메일→잔액→충전/내역 CTA 쌍)은 `account` slot(HTML `account='{…}'` / React `account={{…}}`), 최하단 로그아웃은 `footer-actions` slot(HTML `footer-actions='[…]'` / React `footerActions={[…]}`). `account.actions` / `footer-actions` 의 `variant` 는 'solid'|'outlined'(기본 outlined)로 DS 버튼 토큰을 자동 적용 — hex/직접 버튼 마크업 금지. 이 slot 들을 모르고 `header` 에 raw HTML 로 조립하거나 통째로 빼먹는 게 캐포비 사이드바 재발 #1.",
+      "**사이드바는 풀하이트 셸(.nds-shell) 안에 둔다.** `<nds-sidebar>` 는 기본 full-height(100vh sticky)지만, body 직속·height 미확정 컨테이너에 두면 높이가 화면을 못 채우거나 레이아웃이 깨진다. `<div class='nds-shell'>…<nds-sidebar/>…<main class='nds-shell__main'>` 형태로 감쌀 것 — get_guide({ topic: 'pattern:admin-shell' }) / ready-made 셸은 pattern:cashwalk-biz-admin-sidebar.",
     ],
     recommended: [
       "**캐포비 어드민이면 ready-made 픽업**: items 를 손으로 만들지 말고 `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' })` 의 복붙 트리(React/HTML, 아이콘 inline 완료)를 쓰고 activeKey 만 화면 키로. BrandHeader/Footer 처럼 한 번에 끌어온다.",
@@ -6176,7 +6179,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**섹션 그룹은 SidebarSection[]**: items 를 flat 배열 + 빈 spacer 로 만들지 말고 `{ key, label, items: [...] }` 섹션 객체로 그룹핑(광고 관리 / 자산 관리 / 계정 관리). 라벨이 섹션 헤더로 렌더된다.",
       "**서브메뉴는 1단계까지**: '배너'처럼 children(등록/목록/리포트)을 갖는 항목만 캐럿 노출. children 안에 또 children = 금지(2단계 이상 트리 금지).",
       "**활성 표현은 면(bg)만**: 좌측 accent stripe·Bold 라벨·진한 노랑(Yellow/200) 금지. 활성 여부는 `activeKey` 로만 결정(item 에 isActive boolean 박지 말 것).",
-      "**헤더 블록은 메뉴와 분리**: 로고→계정 이메일→잔액(충전 금액)→충전하기(solid)/내역보기(outlined) 2-up CTA 는 사이드바 상단 고정 블록. 잔액/충전을 메뉴 item 으로 섞지 말 것. (React 는 `header` prop, HTML 은 사이드바 상단 slot 으로 구성.)",
+      '**계정 블록은 구조화된 slot 으로 — 손수 div 조립 금지**: 로고 아래 고정 블록(계정 이메일→잔액(충전 금액)→충전하기(solid)/내역보기(outlined) 2-up CTA)은 **HTML `<nds-sidebar account=\'{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}\'>`**, **React `<Sidebar account={{ email, balanceLabel, balance, actions }}>`** 로 넣는다. 위 ready-made 예시에 이미 박혀 있으니 그대로 복붙. 잔액/충전을 메뉴 item 으로 섞지 말 것. (예전 가이드가 \'HTML 상단 slot\' 이라고만 적어 매번 누락되던 회귀를 컴포넌트 slot 으로 차단.)',
+      '**로그아웃은 footer-actions slot 에 고정**: 최하단 로그아웃(outlined)은 **HTML `footer-actions=\'[{"label":"로그아웃","variant":"outlined"}]\'`**, **React `footerActions={[{ label: \'로그아웃\', variant: \'outlined\' }]}`**. 메뉴 리스트 맨 아래 item 으로 넣지 말 것 — 스크롤과 분리된 고정 푸터.',
+      "**사이드바는 풀하이트 셸 안에 둔다(높이가 화면을 안 채우는 #1 원인)**: `<nds-sidebar>` 는 기본 full-height(100vh sticky)지만, body 직속이나 height 미확정 컨테이너에 두면 레이아웃이 깨지거나 높이가 안 찬다. 반드시 `.nds-shell`(grid + min-height:100vh) 안에 넣을 것. 셸까지 끼운 형태:\n```html\n" +
+        CASHWALK_BIZ_ADMIN_SIDEBAR_SHELL_HTML +
+        "\n```",
       "**아이콘은 brand-prefix 우선**: 메뉴 아이콘은 `CashwalkBizGnb*` 9종이 공용 아이콘보다 우선. import 목록: " +
         CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS.join(", ") +
         ".",

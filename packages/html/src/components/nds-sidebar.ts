@@ -33,7 +33,12 @@
  *   logo-src / logo-alt / logo-width / logo-height / logo-href
  *   title / subtitle
  *   user: JSON { name, role?, avatar?, avatarAlt? }
+ *   account: JSON { email?, balanceLabel?, balance?, actions?: [{ label, variant?: 'solid'|'outlined', href?, key? }] }
+ *            — 로고 아래 고정 계정 블록(캐포비: 이메일 → 잔액 → 충전하기/내역보기 CTA 쌍). 메뉴와 분리.
+ *   footer-actions: JSON [{ label, variant?, href?, key? }] — 푸터 고정 액션(예: 로그아웃 outlined).
  *   full-height (기본 true → 100vh sticky)
+ *
+ * 이벤트(추가): action-click (detail: { key, action }) — 계정/푸터 액션 버튼 클릭
  */
 
 import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
@@ -63,6 +68,15 @@ const SB_USER_AVATAR_CLASS = `${SB_CLASS}__user-avatar`;
 const SB_USER_META_CLASS = `${SB_CLASS}__user-meta`;
 const SB_USER_NAME_CLASS = `${SB_CLASS}__user-name`;
 const SB_USER_ROLE_CLASS = `${SB_CLASS}__user-role`;
+// 고정 계정 블록(로고 아래) + 푸터 액션 — 캐포비 어드민의 로고→이메일→잔액→CTA쌍, 로그아웃.
+const SB_ACCOUNT_CLASS = `${SB_CLASS}__account`;
+const SB_ACCOUNT_EMAIL_CLASS = `${SB_CLASS}__account-email`;
+const SB_ACCOUNT_BALANCE_CLASS = `${SB_CLASS}__account-balance`;
+const SB_ACCOUNT_BALANCE_LABEL_CLASS = `${SB_CLASS}__account-balance-label`;
+const SB_ACCOUNT_BALANCE_AMOUNT_CLASS = `${SB_CLASS}__account-balance-amount`;
+const SB_ACCOUNT_ACTIONS_CLASS = `${SB_CLASS}__account-actions`;
+const SB_ACTION_CLASS = `${SB_CLASS}__action`;
+const SB_FOOTER_ACTIONS_CLASS = `${SB_CLASS}__footer-actions`;
 
 const STYLE_ID = "nds-sidebar-style";
 
@@ -87,6 +101,29 @@ interface SidebarUser {
   role?: string;
   avatar?: string;
   avatarAlt?: string;
+}
+
+interface SidebarAction {
+  key?: string;
+  label: string;
+  /** solid = 강조(충전하기), outlined = 보조(내역보기 / 로그아웃). 기본 outlined. */
+  variant?: "solid" | "outlined";
+  href?: string;
+}
+
+/**
+ * 로고 아래 고정 계정 블록 — 캐포비 어드민의 "로고→계정 이메일→잔액(충전 금액)→CTA 쌍".
+ * 메뉴(스크롤 영역)와 분리된 상단 고정 블록으로 렌더된다.
+ */
+interface SidebarAccount {
+  /** 계정 이메일 등 식별 정보. */
+  email?: string;
+  /** 잔액 라벨(예: "충전 잔액"). */
+  balanceLabel?: string;
+  /** 잔액 금액 텍스트(예: "₩1,250,000"). */
+  balance?: string;
+  /** 하단 CTA 쌍 — 보통 [충전하기(solid), 내역보기(outlined)]. */
+  actions?: SidebarAction[];
 }
 
 const isSectionList = (input: SidebarItem[] | SidebarSection[]): input is SidebarSection[] => {
@@ -290,6 +327,57 @@ const sidebarStyles = `
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_META_CLASS}) { display: none; }
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_CLASS}) { justify-content: center; padding: ${spacing[4]}px; }
 
+  /* ── 고정 계정 블록 (로고 아래) + 액션 버튼 (CTA 쌍 / 로그아웃) ───── */
+  :where(.${SB_ACCOUNT_CLASS}) {
+    display: flex; flex-direction: column; gap: ${spacing[12]}px;
+    padding: 0 ${spacing[24]}px ${spacing[16]}px;
+    box-sizing: border-box;
+  }
+  :where(.${SB_ACCOUNT_EMAIL_CLASS}) {
+    margin: 0; font-size: ${typeScale.caption1.fontSize}px; line-height: 18px;
+    color: var(--nds-sidebar-text-subtle);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  :where(.${SB_ACCOUNT_BALANCE_CLASS}) {
+    display: flex; flex-direction: column; gap: ${spacing[4]}px;
+    padding: ${spacing[12]}px ${spacing[16]}px; border-radius: 12px;
+    background: ${cv.surface.section};
+  }
+  :where(.${SB_ACCOUNT_BALANCE_LABEL_CLASS}) {
+    margin: 0; font-size: ${typeScale.caption1.fontSize}px; line-height: 16px;
+    color: var(--nds-sidebar-text-subtle);
+  }
+  :where(.${SB_ACCOUNT_BALANCE_AMOUNT_CLASS}) {
+    margin: 0; font-size: 20px; line-height: 26px; font-weight: ${fontWeight.bold};
+    color: var(--nds-sidebar-text-active);
+  }
+  :where(.${SB_ACCOUNT_ACTIONS_CLASS}) { display: flex; gap: ${spacing[8]}px; }
+  :where(.${SB_ACCOUNT_ACTIONS_CLASS} .${SB_ACTION_CLASS}) { flex: 1; }
+
+  :where(.${SB_ACTION_CLASS}) {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 40px; padding: 0 ${spacing[16]}px; border-radius: 10px;
+    border: 1px solid transparent; box-sizing: border-box;
+    font-family: inherit; font-size: 14px; font-weight: ${fontWeight.semibold}; line-height: 1;
+    text-decoration: none; cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  }
+  :where(.${SB_ACTION_CLASS}[data-variant="solid"]) {
+    background: ${cv.button.bgDefault}; color: ${cv.button.textDefault};
+  }
+  :where(.${SB_ACTION_CLASS}[data-variant="solid"]:hover) { background: ${cv.button.bgHover}; }
+  :where(.${SB_ACTION_CLASS}[data-variant="outlined"]) {
+    background: ${cv.surface.default}; color: ${cv.textRole.brand}; border-color: ${cv.borderRole.brand};
+  }
+  :where(.${SB_ACTION_CLASS}[data-variant="outlined"]:hover) { background: ${cv.surface.brandSubtle}; }
+  :where(.${SB_ACTION_CLASS}:focus-visible) { outline: 2px solid ${cv.borderRole.focus}; outline-offset: 1px; }
+
+  :where(.${SB_FOOTER_ACTIONS_CLASS}) { display: flex; flex-direction: column; gap: ${spacing[8]}px; }
+  :where(.${SB_FOOTER_ACTIONS_CLASS} .${SB_ACTION_CLASS}) { width: 100%; }
+
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ACCOUNT_CLASS}),
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_FOOTER_ACTIONS_CLASS}) { display: none; }
+
   /*
    * CashwalkBiz 튜닝 (캐포비 Library MenuItem 3302:641 실측). react Sidebar.tsx 와 미러.
    * 색은 --semantic-* 토큰 cascade 가 SSOT — hex 로 박지 않는다:
@@ -337,6 +425,8 @@ export class NdsSidebar extends NdsElement {
       "title",
       "subtitle",
       "user",
+      "account",
+      "footer-actions",
       "full-height",
     ];
   }
@@ -401,6 +491,63 @@ export class NdsSidebar extends NdsElement {
       /* ignore */
     }
     return null;
+  }
+
+  private _parseAccount(): SidebarAccount | null {
+    const raw = this.getAttribute("account");
+    if (!raw) return null;
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        return parsed as SidebarAccount;
+      }
+    } catch {
+      console.warn(
+        "[nds-sidebar] account 가 유효한 JSON 객체가 아닙니다 — 계정 블록을 생략합니다.",
+        {
+          rawHead: raw.slice(0, 80),
+        },
+      );
+    }
+    return null;
+  }
+
+  private _parseActions(attr: string): SidebarAction[] {
+    const raw = this.getAttribute(attr);
+    if (!raw || !raw.trim()) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(
+          (a): a is SidebarAction => !!a && typeof a === "object" && typeof a.label === "string",
+        );
+      }
+    } catch {
+      console.warn(`[nds-sidebar] ${attr} 가 유효한 JSON 배열이 아닙니다 — 액션을 생략합니다.`, {
+        rawHead: raw.slice(0, 80),
+      });
+    }
+    return [];
+  }
+
+  private _buildAction(action: SidebarAction): HTMLElement {
+    const variant = action.variant === "solid" ? "solid" : "outlined";
+    const el = action.href ? document.createElement("a") : document.createElement("button");
+    el.className = SB_ACTION_CLASS;
+    el.dataset.variant = variant;
+    if (el instanceof HTMLButtonElement) el.type = "button";
+    if (el instanceof HTMLAnchorElement && action.href) el.href = action.href;
+    el.textContent = action.label;
+    el.addEventListener("click", () => {
+      this.dispatchEvent(
+        new CustomEvent("action-click", {
+          detail: { key: action.key, action },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
+    return el;
   }
 
   private _renderItem(item: SidebarItem, activeKey: string | null, depth: number): HTMLLIElement {
@@ -507,6 +654,8 @@ export class NdsSidebar extends NdsElement {
     const logoHeight = this.getAttribute("logo-height");
     const logoHref = this.getAttribute("logo-href");
     const user = this._parseUser();
+    const account = this._parseAccount();
+    const footerActions = this._parseActions("footer-actions");
     const sections = this._parseItems();
 
     this._root.dataset.collapsed = collapsed ? "true" : "false";
@@ -572,6 +721,47 @@ export class NdsSidebar extends NdsElement {
       children.push(header);
     }
 
+    // 고정 계정 블록 (로고 아래, 메뉴 위) — 이메일 → 잔액 → CTA 쌍.
+    if (account && (account.email || account.balance || account.actions?.length)) {
+      const accountEl = document.createElement("div");
+      accountEl.dataset.slot = "account";
+      accountEl.className = SB_ACCOUNT_CLASS;
+
+      if (account.email) {
+        const email = document.createElement("p");
+        email.className = SB_ACCOUNT_EMAIL_CLASS;
+        email.textContent = account.email;
+        accountEl.appendChild(email);
+      }
+
+      if (account.balance || account.balanceLabel) {
+        const balance = document.createElement("div");
+        balance.className = SB_ACCOUNT_BALANCE_CLASS;
+        if (account.balanceLabel) {
+          const label = document.createElement("p");
+          label.className = SB_ACCOUNT_BALANCE_LABEL_CLASS;
+          label.textContent = account.balanceLabel;
+          balance.appendChild(label);
+        }
+        if (account.balance) {
+          const amount = document.createElement("p");
+          amount.className = SB_ACCOUNT_BALANCE_AMOUNT_CLASS;
+          amount.textContent = account.balance;
+          balance.appendChild(amount);
+        }
+        accountEl.appendChild(balance);
+      }
+
+      if (account.actions?.length) {
+        const actions = document.createElement("div");
+        actions.className = SB_ACCOUNT_ACTIONS_CLASS;
+        account.actions.forEach((a) => actions.appendChild(this._buildAction(a)));
+        accountEl.appendChild(actions);
+      }
+
+      children.push(accountEl);
+    }
+
     const nav = document.createElement("nav");
     nav.dataset.slot = "body";
     nav.className = SB_BODY_CLASS;
@@ -593,36 +783,48 @@ export class NdsSidebar extends NdsElement {
     });
     children.push(nav);
 
-    if (user) {
+    if (user || footerActions.length) {
       const footer = document.createElement("div");
       footer.dataset.slot = "footer";
       footer.className = SB_FOOTER_CLASS;
-      const userBlock = document.createElement("div");
-      userBlock.className = SB_USER_CLASS;
-      const avatar = document.createElement("span");
-      avatar.className = SB_USER_AVATAR_CLASS;
-      if (user.avatar) {
-        const img = document.createElement("img");
-        img.src = user.avatar;
-        img.alt = user.avatarAlt ?? "";
-        avatar.appendChild(img);
-      } else {
-        avatar.textContent = (user.name || "").slice(0, 1).toUpperCase();
+
+      if (user) {
+        const userBlock = document.createElement("div");
+        userBlock.className = SB_USER_CLASS;
+        const avatar = document.createElement("span");
+        avatar.className = SB_USER_AVATAR_CLASS;
+        if (user.avatar) {
+          const img = document.createElement("img");
+          img.src = user.avatar;
+          img.alt = user.avatarAlt ?? "";
+          avatar.appendChild(img);
+        } else {
+          avatar.textContent = (user.name || "").slice(0, 1).toUpperCase();
+        }
+        const meta = document.createElement("div");
+        meta.className = SB_USER_META_CLASS;
+        const name = document.createElement("p");
+        name.className = SB_USER_NAME_CLASS;
+        name.textContent = user.name;
+        meta.appendChild(name);
+        if (user.role) {
+          const role = document.createElement("p");
+          role.className = SB_USER_ROLE_CLASS;
+          role.textContent = user.role;
+          meta.appendChild(role);
+        }
+        userBlock.append(avatar, meta);
+        footer.appendChild(userBlock);
       }
-      const meta = document.createElement("div");
-      meta.className = SB_USER_META_CLASS;
-      const name = document.createElement("p");
-      name.className = SB_USER_NAME_CLASS;
-      name.textContent = user.name;
-      meta.appendChild(name);
-      if (user.role) {
-        const role = document.createElement("p");
-        role.className = SB_USER_ROLE_CLASS;
-        role.textContent = user.role;
-        meta.appendChild(role);
+
+      // 푸터 액션 (로그아웃 등) — 메뉴 스크롤과 분리된 하단 고정.
+      if (footerActions.length) {
+        const actions = document.createElement("div");
+        actions.className = SB_FOOTER_ACTIONS_CLASS;
+        footerActions.forEach((a) => actions.appendChild(this._buildAction(a)));
+        footer.appendChild(actions);
       }
-      userBlock.append(avatar, meta);
-      footer.appendChild(userBlock);
+
       children.push(footer);
     }
 

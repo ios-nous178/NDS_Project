@@ -27,6 +27,14 @@ const SB_USER_AVATAR_CLASS = `${SB_CLASS}__user-avatar`;
 const SB_USER_META_CLASS = `${SB_CLASS}__user-meta`;
 const SB_USER_NAME_CLASS = `${SB_CLASS}__user-name`;
 const SB_USER_ROLE_CLASS = `${SB_CLASS}__user-role`;
+const SB_ACCOUNT_CLASS = `${SB_CLASS}__account`;
+const SB_ACCOUNT_EMAIL_CLASS = `${SB_CLASS}__account-email`;
+const SB_ACCOUNT_BALANCE_CLASS = `${SB_CLASS}__account-balance`;
+const SB_ACCOUNT_BALANCE_LABEL_CLASS = `${SB_CLASS}__account-balance-label`;
+const SB_ACCOUNT_BALANCE_AMOUNT_CLASS = `${SB_CLASS}__account-balance-amount`;
+const SB_ACCOUNT_ACTIONS_CLASS = `${SB_CLASS}__account-actions`;
+const SB_ACTION_CLASS = `${SB_CLASS}__action`;
+const SB_FOOTER_ACTIONS_CLASS = `${SB_CLASS}__footer-actions`;
 
 /* ─── Types ─── */
 
@@ -65,6 +73,30 @@ export interface SidebarUser {
   avatarAlt?: string;
 }
 
+export interface SidebarAction {
+  key?: string;
+  label: React.ReactNode;
+  /** solid = 강조(충전하기), outlined = 보조(내역보기 / 로그아웃). @default "outlined" */
+  variant?: "solid" | "outlined";
+  href?: string;
+  onClick?: (e: React.MouseEvent) => void;
+}
+
+/**
+ * 로고 아래 고정 계정 블록 — 캐포비 어드민의 "로고→계정 이메일→잔액(충전 금액)→CTA 쌍".
+ * 메뉴(스크롤 영역)와 분리된 상단 고정 블록으로 렌더된다. HTML `<nds-sidebar account='...'>` 와 미러.
+ */
+export interface SidebarAccount {
+  /** 계정 이메일 등 식별 정보. */
+  email?: React.ReactNode;
+  /** 잔액 라벨(예: "충전 잔액"). */
+  balanceLabel?: React.ReactNode;
+  /** 잔액 금액 텍스트(예: "₩1,250,000"). */
+  balance?: React.ReactNode;
+  /** 하단 CTA 쌍 — 보통 [충전하기(solid), 내역보기(outlined)]. */
+  actions?: SidebarAction[];
+}
+
 export interface SidebarLogo {
   /** Image src. If `element` provided, that wins. */
   src?: string;
@@ -99,8 +131,15 @@ export interface SidebarProps extends Omit<React.HTMLAttributes<HTMLElement>, "t
   subtitle?: React.ReactNode;
   /** Override the entire header area. */
   header?: React.ReactNode;
+  /**
+   * 로고 아래 고정 계정 블록 (캐포비: 이메일 → 잔액 → 충전하기/내역보기 CTA 쌍).
+   * `header` override 와 직교 — 로고/타이틀은 그대로 두고 그 아래 블록만 추가한다.
+   */
+  account?: SidebarAccount;
   /** Footer content (replaces the user block if both provided). */
   footer?: React.ReactNode;
+  /** 푸터 고정 액션 (예: 로그아웃 outlined). `user`/`footer` 와 함께 렌더 가능. */
+  footerActions?: SidebarAction[];
   /** Convenience footer: user avatar + name + role + click action. */
   user?: SidebarUser;
   /** Make sidebar fill the viewport height. @default true */
@@ -541,6 +580,115 @@ const sidebarStyles = `
     justify-content: center;
     padding: ${spacing[4]}px;
   }
+
+  /* ── 고정 계정 블록 (로고 아래) + 액션 버튼 (CTA 쌍 / 로그아웃) — nds-sidebar.ts 와 미러 ───── */
+  :where(.${SB_ACCOUNT_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[12]}px;
+    padding: 0 ${spacing[24]}px ${spacing[16]}px;
+    box-sizing: border-box;
+  }
+
+  :where(.${SB_ACCOUNT_EMAIL_CLASS}) {
+    margin: 0;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: 18px;
+    color: var(--nds-sidebar-text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :where(.${SB_ACCOUNT_BALANCE_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[4]}px;
+    padding: ${spacing[12]}px ${spacing[16]}px;
+    border-radius: 12px;
+    background: ${cv.surface.section};
+  }
+
+  :where(.${SB_ACCOUNT_BALANCE_LABEL_CLASS}) {
+    margin: 0;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: 16px;
+    color: var(--nds-sidebar-text-subtle);
+  }
+
+  :where(.${SB_ACCOUNT_BALANCE_AMOUNT_CLASS}) {
+    margin: 0;
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: ${fontWeight.bold};
+    color: var(--nds-sidebar-text-active);
+  }
+
+  :where(.${SB_ACCOUNT_ACTIONS_CLASS}) {
+    display: flex;
+    gap: ${spacing[8]}px;
+  }
+
+  :where(.${SB_ACCOUNT_ACTIONS_CLASS} .${SB_ACTION_CLASS}) {
+    flex: 1;
+  }
+
+  :where(.${SB_ACTION_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 ${spacing[16]}px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: ${fontWeight.semibold};
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  }
+
+  :where(.${SB_ACTION_CLASS}[data-variant="solid"]) {
+    background: ${cv.button.bgDefault};
+    color: ${cv.button.textDefault};
+  }
+
+  :where(.${SB_ACTION_CLASS}[data-variant="solid"]:hover) {
+    background: ${cv.button.bgHover};
+  }
+
+  :where(.${SB_ACTION_CLASS}[data-variant="outlined"]) {
+    background: ${cv.surface.default};
+    color: ${cv.textRole.brand};
+    border-color: ${cv.borderRole.brand};
+  }
+
+  :where(.${SB_ACTION_CLASS}[data-variant="outlined"]:hover) {
+    background: ${cv.surface.brandSubtle};
+  }
+
+  :where(.${SB_ACTION_CLASS}:focus-visible) {
+    outline: 2px solid ${cv.borderRole.focus};
+    outline-offset: 1px;
+  }
+
+  :where(.${SB_FOOTER_ACTIONS_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[8]}px;
+  }
+
+  :where(.${SB_FOOTER_ACTIONS_CLASS} .${SB_ACTION_CLASS}) {
+    width: 100%;
+  }
+
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ACCOUNT_CLASS}),
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_FOOTER_ACTIONS_CLASS}) {
+    display: none;
+  }
 `;
 
 /* ─── Brand presets ─── */
@@ -729,7 +877,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   title,
   subtitle,
   header,
+  account,
   footer,
+  footerActions,
   user,
   fullHeight = true,
   as: Tag = "aside",
@@ -790,8 +940,65 @@ export const Sidebar: React.FC<SidebarProps> = ({
     );
   };
 
+  const renderAction = (action: SidebarAction) => {
+    const variant = action.variant === "solid" ? "solid" : "outlined";
+    const inner = action.label;
+    if (action.href) {
+      return (
+        <a
+          key={action.key ?? action.href}
+          href={action.href}
+          className={SB_ACTION_CLASS}
+          data-variant={variant}
+          onClick={action.onClick}
+        >
+          {inner}
+        </a>
+      );
+    }
+    return (
+      <button
+        key={action.key}
+        type="button"
+        className={SB_ACTION_CLASS}
+        data-variant={variant}
+        onClick={action.onClick}
+      >
+        {inner}
+      </button>
+    );
+  };
+
+  const renderAccount = () => {
+    if (!account) return null;
+    const hasContent =
+      account.email !== undefined ||
+      account.balance !== undefined ||
+      account.balanceLabel !== undefined ||
+      !!account.actions?.length;
+    if (!hasContent) return null;
+    return (
+      <div data-slot="account" className={SB_ACCOUNT_CLASS}>
+        {account.email !== undefined && <p className={SB_ACCOUNT_EMAIL_CLASS}>{account.email}</p>}
+        {(account.balance !== undefined || account.balanceLabel !== undefined) && (
+          <div className={SB_ACCOUNT_BALANCE_CLASS}>
+            {account.balanceLabel !== undefined && (
+              <p className={SB_ACCOUNT_BALANCE_LABEL_CLASS}>{account.balanceLabel}</p>
+            )}
+            {account.balance !== undefined && (
+              <p className={SB_ACCOUNT_BALANCE_AMOUNT_CLASS}>{account.balance}</p>
+            )}
+          </div>
+        )}
+        {!!account.actions?.length && (
+          <div className={SB_ACCOUNT_ACTIONS_CLASS}>{account.actions.map(renderAction)}</div>
+        )}
+      </div>
+    );
+  };
+
   const hasHeader = header !== undefined || logo || title || subtitle || onToggleCollapse;
-  const hasFooter = footer !== undefined || user;
+  const hasFooter = footer !== undefined || user || !!footerActions?.length;
 
   const Component = Tag as React.ElementType;
 
@@ -835,6 +1042,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
 
+        {renderAccount()}
+
         <nav data-slot="body" className={SB_BODY_CLASS} aria-label="사이드바 메뉴">
           {sections.map((section) => (
             <div key={section.key} className={SB_SECTION_CLASS}>
@@ -858,7 +1067,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {hasFooter && (
           <div data-slot="footer" className={SB_FOOTER_CLASS}>
-            {footer !== undefined ? footer : renderUser()}
+            {footer !== undefined ? (
+              footer
+            ) : (
+              <>
+                {renderUser()}
+                {!!footerActions?.length && (
+                  <div className={SB_FOOTER_ACTIONS_CLASS}>{footerActions.map(renderAction)}</div>
+                )}
+              </>
+            )}
           </div>
         )}
       </Component>
