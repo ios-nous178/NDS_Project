@@ -143,7 +143,15 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
       webPreferences: { sandbox: true },
     });
     win.setMenuBarVisibility(false);
-    await win.loadURL(url);
+    // 로드 실패 진단 — mockup:// 404/403 은 안내 페이지로 resolve 되지만, 스킴/네비 오류는
+    // did-fail-load 로 떨어진다(-3=ERR_ABORTED 무시). loadURL 거부도 삼키지 않고 로그.
+    win.webContents.on("did-fail-load", (_e, code, desc) => {
+      if (code === -3) return;
+      console.error(`[main] 미리보기 창 로드 실패 ${code} ${desc} ${url}`);
+    });
+    await win.loadURL(url).catch((err) => {
+      console.error("[main] 미리보기 창 loadURL 실패:", err);
+    });
   });
 
   // 과거 세션 미리보기용 루트 전환. 채팅 세션은 프로젝트 폴더가 아니라 앱 전역(userData)에

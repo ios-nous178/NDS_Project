@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, dialog } from "electron";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +9,12 @@ import { stopWatch } from "./watcher.js";
 import { stopAllAgents } from "./agent-runner.js";
 
 let mainWindow: BrowserWindow | null = null;
+
+// 전역 안전망 — 어디서도 안 잡힌 Promise 거부를 콘솔에 남긴다(패키징 시 로그로 흐름).
+// 조용한 실패(창 안 뜸/멈춤)를 최소한 진단 가능하게 한다.
+process.on("unhandledRejection", (reason) => {
+  console.error("[main] unhandledRejection:", reason);
+});
 
 /**
  * main 프로세스가 직접 도는 미리보기 주입(injectStandaloneRuntime)·내보내기가 DS 단일
@@ -89,9 +95,32 @@ function createWindow(): void {
     },
   });
 
-  win.on("ready-to-show", () => win.show());
+  // show 안전망 — ready-to-show 가 끝내 안 와도(로드 실패/렌더러 멈춤) 일정 시간 뒤 강제로
+  // 창을 띄워 "보이지 않는 창" 무음 실패를 막는다(backgroundColor 가 깜빡임을 흡수).
+  const showTimer = setTimeout(() => {
+    if (!win.isDestroyed() && !win.isVisible()) win.show();
+  }, 8000);
+  win.on("ready-to-show", () => {
+    clearTimeout(showTimer);
+    win.show();
+  });
   win.on("closed", () => {
+    clearTimeout(showTimer);
     mainWindow = null;
+  });
+
+  // 렌더러 로드/크래시 진단 — 무음 실패(다크 빈 창)를 콘솔(패키징 시 로그)로 드러내고,
+  // 실패해도 최소한 창은 띄워 사용자가 "앱이 멈췄나" 헷갈리지 않게 한다.
+  win.webContents.on("did-fail-load", (_e, code, desc, url, isMainFrame) => {
+    if (!isMainFrame || code === -3) return; // -3=ERR_ABORTED(정상 네비 취소) 무시
+    console.error(`[main] renderer did-fail-load ${code} ${desc} ${url}`);
+    if (!win.isDestroyed() && !win.isVisible()) win.show();
+  });
+  win.webContents.on("render-process-gone", (_e, details) => {
+    console.error("[main] render-process-gone:", details.reason, details.exitCode);
+  });
+  win.webContents.on("preload-error", (_e, preloadPath, error) => {
+    console.error("[main] preload-error:", preloadPath, error);
   });
 
   // 전체화면 진입/해제를 렌더러에 알린다. mac 은 전체화면이면 신호등이 사라지므로
@@ -101,33 +130,53 @@ function createWindow(): void {
   win.on("leave-full-screen", sendFullscreen);
 
   // dev 는 electron-vite 가 띄운 Vite 서버 URL, prod 는 번들된 index.html.
-  if (process.env.ELECTRON_RENDERER_URL) {
-    void win.loadURL(process.env.ELECTRON_RENDERER_URL);
-  } else {
-    void win.loadFile(join(import.meta.dirname, "../renderer/index.html"));
-  }
+  // 로드 거부를 삼키지 않고(.catch) 로그 + 창 표시로 드러낸다(dev 서버 미기동/경로 회귀 대비).
+  const load = process.env.ELECTRON_RENDERER_URL
+    ? win.loadURL(process.env.ELECTRON_RENDERER_URL)
+    : win.loadFile(join(import.meta.dirname, "../renderer/index.html"));
+  load.catch((err) => {
+    console.error("[main] renderer load failed:", err);
+    if (!win.isDestroyed() && !win.isVisible()) win.show();
+  });
 
   mainWindow = win;
 }
 
-app.whenReady().then(() => {
-  // dev 모드 mac Dock 아이콘 — 패키징 시엔 번들(icns)이 담당하므로 dev 에서만 설정.
-  if (isMac && process.env.ELECTRON_RENDERER_URL) {
-    try {
-      app.dock?.setIcon(join(import.meta.dirname, "../../build/icon.png"));
-    } catch {
-      /* 아이콘 누락 시 무시 */
+app
+  .whenReady()
+  .then(() => {
+    // dev 모드 mac Dock 아이콘 — 패키징 시엔 번들(icns)이 담당하므로 dev 에서만 설정.
+    if (isMac && process.env.ELECTRON_RENDERER_URL) {
+      try {
+        app.dock?.setIcon(join(import.meta.dirname, "../../build/icon.png"));
+      } catch {
+        /* 아이콘 누락 시 무시 */
+      }
     }
-  }
-  // validator 부트스트랩(하드 어서션) — catalog 누락/빈 값이면 여기서 크래시.
-  bootstrapValidator();
-  registerMockupProtocol();
-  registerIpcHandlers(() => mainWindow);
-  createWindow();
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    // validator 부트스트랩 — 실패해도 앱을 죽이지 않는다(창은 띄우고 검증만 비활성). 예전엔
+    // catalog 누락/손상으로 throw 하면 createWindow 에 도달 못 해 "창이 아예 안 뜸" 이 됐다(#5).
+    try {
+      bootstrapValidator();
+    } catch (e) {
+      console.error("[main] validator 부트스트랩 실패 — 검증 비활성으로 계속:", e);
+      dialog.showErrorBox(
+        "검증 비활성",
+        `목업 카탈로그를 불러오지 못해 검증이 꺼진 상태로 실행합니다.\n${String(e)}`,
+      );
+    }
+    registerMockupProtocol();
+    registerIpcHandlers(() => mainWindow);
+    createWindow();
+    app.on("activate", () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
+  })
+  .catch((e) => {
+    // createWindow 등 이후 단계의 예기치 못한 실패도 무음 종료 대신 사용자에게 노출한다.
+    console.error("[main] 부팅 실패:", e);
+    dialog.showErrorBox("부팅 실패", String(e));
+    app.quit();
   });
-});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
