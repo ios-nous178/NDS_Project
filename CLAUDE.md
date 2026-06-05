@@ -28,6 +28,8 @@ EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 5개 브랜드: **T
 - `/ds-release` — **MCPB 릴리즈** (changeset → version → 비개발자 톤 release notes → push)
 - `/prd-extract <figma|png>` — 기획서 → 상세 PRD 마크다운
 
+스킬은 두 트리에 산다 — `.claude/skills/`(SSOT) + `.agents/skills/`(Codex 생성본). 공유 스킬(ds-component·ds-audit·ds-release) **본문은 `.claude/skills/` 만 고치고 `pnpm sync:skills`** 로 Codex 쪽 재생성(`.agents` 직접 수정 금지). `pnpm lint` 의 `sync-skills.mjs --check` 가 drift 차단. 레지스트리는 `scripts/sync-skills.mjs` 상단.
+
 ## 환경 세팅
 
 ```bash
