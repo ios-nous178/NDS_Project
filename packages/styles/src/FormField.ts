@@ -52,7 +52,7 @@ export const formFieldStyles = `
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    color: ${cv.textRole.normal};
+    color: var(--nds-form-field-label-color, ${cv.textRole.normal});
   }
 
   :where(.${FF_REQUIRED_CLASS}) {

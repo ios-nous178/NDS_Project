@@ -182,11 +182,37 @@ export const cashwalkBizTheme: BrandTheme = {
   // emit: `--nds-{component}-{prop}` → 각 컴포넌트가 fallback 으로 읽어 cascade (다른 브랜드는 fallback 그대로).
   components: {
     input: { radius: 4, height: 40, paddingX: "var(--semantic-inset-input)" },
-    // Select 는 원래 padding 이 var(--semantic-inset-input) 직참조 — 캐포비 inset-input(10)이 자연 cascade.
-    select: { radius: 4, height: 40 },
-    // Textarea 는 원래 padding 이 var(--semantic-inset-input) var(--semantic-inset-card) 직참조 — 캐포비 cascade 동일.
-    textarea: { radius: 4 },
-    datepicker: { radius: 4, height: 40, paddingX: "var(--semantic-inset-input)" },
+    // Select — 캐포비 InputGuide(3080:741 · Dropdown/DropdownItem).
+    //   trigger·option 텍스트 Body2 14/20 (base Body3 13/18 과 다름).
+    //   선택 항목 = 회색 배경(Section #F5F5F5) + Strong 텍스트 + Medium 500 (base 의 brand-tint 와 다름),
+    //   메뉴 항목 radius 6 / padding 8·12, 메뉴 컨테이너 inset 4 / 항목 간 gap 2.
+    select: {
+      radius: 4,
+      height: 40,
+      fontSize: 14,
+      lineHeight: 20,
+      optionPadding: "8px 12px",
+      optionRadius: 6,
+      optionSelectedBg: "var(--semantic-bg-section-default)",
+      optionSelectedColor: "var(--semantic-text-strong-default)",
+      optionSelectedWeight: "500",
+      dropdownPadding: 4,
+      dropdownGap: 2,
+    },
+    // Textarea — 캐포비 가이드(3063:643): px 12 / py 10(inset-input) / min-height 100 (base 80).
+    textarea: { radius: 4, paddingX: 12, minHeight: 100 },
+    // DateInput — 캐포비 가이드(3076:756): trigger 텍스트 Body2 14/20.
+    datepicker: {
+      radius: 4,
+      height: 40,
+      paddingX: "var(--semantic-inset-input)",
+      fontSize: 14,
+      lineHeight: 20,
+    },
+    // TextField 라벨 — 캐포비 가이드는 Text/Strong(#111). base 는 Normal(#333).
+    "form-field": { labelColor: "var(--semantic-text-strong-default)" },
+    // ActionChip — 캐포비 가이드(3079:554): radius 6 / bg #ECECEC (Neutral 100·200 사이 raw).
+    "action-chip": { radius: 6, bg: "#ECECEC" },
     // Figma 캐포비 CheckboxGuide (3082:899):
     //   box 15×15 / 1.25px border / radius 2px / unchecked border #DDD (border.strong)
     //   disabled = 색 변경 없이 단순 opacity 0.4
@@ -201,6 +227,27 @@ export const cashwalkBizTheme: BrandTheme = {
       disabledBorderColor: "var(--semantic-border-strong-default)",
       disabledCheckedBg: "var(--semantic-fill-brand-default)",
       disabledCheckedBorderColor: "var(--semantic-fill-brand-default)",
+    },
+    // Figma 캐포비 Tab 가이드 (3544:206):
+    //   Underline: subtitle1 16/24, default medium(500), indicator 2px, padding 16/12 → height 48
+    //   Box(chip): radius 10, padding 20/14 → height 52, selected bg-inverse(#111),
+    //              default button-bg-disabled(#ddd), 양쪽 흰 텍스트 bold (의도된 저대비)
+    tabs: {
+      lineFontSize: 16,
+      lineLineHeight: 24,
+      lineDefaultWeight: "500",
+      lineIndicatorHeight: 2,
+      lineTabHeight: 48,
+      linePaddingX: 16,
+      chipRadius: 10,
+      chipTabHeight: 52,
+      chipPaddingX: 20,
+      chipFontSize: 16,
+      chipLineHeight: 24,
+      chipSelectedBg: "var(--semantic-bg-inverse-default)",
+      chipDefaultBg: "var(--semantic-button-bg-disabled)",
+      chipDefaultColor: "var(--semantic-text-inverse-default)",
+      chipDefaultWeight: "700",
     },
   },
 };
