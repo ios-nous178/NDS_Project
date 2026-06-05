@@ -168,6 +168,9 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   // 선택한 지역(시/도 > 시/군/구)을 Chip 으로 인라인 표현 — SelectionButton 과 혼동 + 제거/개수
   // affordance 누락. SelectedItemsPanel + RegionRow 로 그려야 함 (회귀: 캐포비 타겟팅 폼)
   "region-as-chip": "warn",
+  // SelectedItemsPanel 바로 아래 helper 텍스트를 sibling 으로 붙이면 패널과 helper 가 붙어 보임.
+  // FormField helper 슬롯/속성으로 넣어 control gap 을 타게 해야 함 (회귀: 캐포비 타겟팅 폼).
+  "selected-items-helper-outside-form-field": "error",
   "unknown-token": "error",
   "ds-badge-missing": "error",
   // 토큰 / 시멘틱
@@ -823,6 +826,7 @@ export function validateHtmlSource(
   // cheerio 의 .find() 는 후손 전체를 검색하므로 중첩 카드 카운팅에 그대로 활용.
   // 카드별 / Footer별 / 영역별 카운트를 도출해 패턴 위반을 잡는다.
   collectContainerViolations(source, $, violations);
+  collectSelectedItemsPanelViolations(source, $, violations);
 
   // ─── 브랜드 화면에서 base nds-header 손수 조립 감지 ───
   //   회고: RunmileWebHeader 가이드가 "HTML 대응 없음" 이라 base <nds-header> 에
@@ -1202,6 +1206,53 @@ function collectContainerViolations(
       });
     });
   }
+}
+
+function collectSelectedItemsPanelViolations(
+  source: string,
+  $: cheerio.CheerioAPI,
+  out: HtmlViolation[],
+): void {
+  $("nds-selected-items-panel").each((_i, el) => {
+    if (el.type !== "tag") return;
+    const $panel = $(el);
+    if ($panel.closest("nds-form-field, .nds-form-field__root").length > 0) return;
+
+    const next = $panel.next().get(0) as DomElement | undefined;
+    if (!next || next.type !== "tag") return;
+    if (!isSelectedItemsExternalHelper(next)) return;
+
+    const line = lineNumberAt(source, (next as unknown as { startIndex?: number }).startIndex ?? 0);
+    out.push({
+      rule: "selected-items-helper-outside-form-field",
+      line,
+      selector: describeElement(next),
+      detail:
+        "SelectedItemsPanel 바로 아래에 helper 텍스트가 sibling 으로 배치되어 패널과 설명이 붙어 보입니다.",
+      suggestion:
+        '선택 결과 패널의 안내문은 별도 <p>/<div> sibling 이 아니라 <nds-form-field density="admin" helper="시/도, 시/군/구를 검색해 노출할 지역을 추가하세요."> 안에 넣으세요. React 는 <FormField density="admin" helper="..."><SelectedItemsPanel ... /></FormField>.',
+    });
+  });
+}
+
+function isSelectedItemsExternalHelper(el: DomElement): boolean {
+  const tag = el.tagName?.toLowerCase();
+  if (!tag || !["p", "small", "span", "div"].includes(tag)) return false;
+
+  const attrs = el.attribs ?? {};
+  const marker = `${attrs.class ?? ""} ${attrs.id ?? ""} ${attrs["data-slot"] ?? ""}`.toLowerCase();
+  const text = nodeText(el).replace(/\s+/g, " ").trim();
+  if (text.length < 4 || text.length > 120) return false;
+
+  if (/\b(helper|help|hint|description|desc|caption|guide)\b/.test(marker)) return true;
+  return /(검색|추가|선택|입력|도움|안내|시\/도|시\/군\/구|노출할|지역)/.test(text);
+}
+
+function nodeText(node: unknown): string {
+  if (!node || typeof node !== "object") return "";
+  const n = node as { type?: string; data?: string; children?: unknown[] };
+  if (n.type === "text") return n.data ?? "";
+  return (n.children ?? []).map(nodeText).join("");
 }
 
 /**
@@ -1656,6 +1707,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "primary-cta-overuse": "layout",
   "chip-overuse": "layout",
   "region-as-chip": "layout",
+  "selected-items-helper-outside-form-field": "layout",
   "card-everything": "layout",
   "decorative-shadow": "layout",
   "visual-emphasis-overload": "layout",
