@@ -15,3 +15,5 @@ chromatic.log
 *.tgz
 .ds-usage-log.jsonl
 .ds-usage-webhook-queue.jsonl
+.ds-context-log.jsonl
+.claude/scheduled_tasks.lock
