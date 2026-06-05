@@ -27,7 +27,11 @@ export interface SelectionButtonGroupProps<T extends string = string> extends Om
   value: T;
   /** 값 변경 콜백 */
   onValueChange: (value: T) => void;
-  /** 전체 너비를 옵션 수만큼 균등 분할 */
+  /**
+   * 컨테이너 전체 너비를 옵션 수만큼 균등 분할.
+   * (기본값에서도 그룹 내 옵션은 가장 넓은 옵션 기준 **등폭** 이다 — fullWidth 는 그룹을
+   *  콘텐츠에 hug 시킬지(false) 컨테이너 100% 로 늘릴지(true)만 결정.)
+   */
   fullWidth?: boolean;
   /** 전체 비활성화 */
   disabled?: boolean;
@@ -47,6 +51,8 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
  * 개별 버튼을 gap 으로 나열한다. FormField 의 ContentSlot 에 교체해 사용한다.
  * 선택 상태는 `--semantic-bg-brand-subtle` + `--semantic-border-brand-default`
  * 시멘틱 캐스케이드로 5개 브랜드 모두 브랜드색에 자동 대응한다.
+ *
+ * 그룹 내 옵션은 라벨 길이와 무관하게 **등폭**(가장 넓은 옵션 기준)으로 정렬된다.
  */
 export const SelectionButtonGroup = <T extends string = string>({
   options,

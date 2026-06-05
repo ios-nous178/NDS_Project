@@ -65,6 +65,13 @@ export interface BuildSinglefileHtmlArgs {
    */
   skipVisualReferences?: boolean;
   /**
+   * DS 검증 에러가 있어도 강제로 빌드를 성공(ok:true)으로 둔다 — 사용자 판단. 기본 false:
+   * error-severity 위반이 있으면 빌드를 막는다(ok:false). true 여도 위반은 그대로 응답에
+   * 담기며(validation.violations / forcedDsErrorCount) "N건 미해결 DS 에러로 강제 빌드" 경고가 붙는다.
+   * 위반을 조용히 삼키지 않는다. html intent 에만 의미가 있다(react 는 빌드 시점에 자동 검증을 돌리지 않음).
+   */
+  allowIncomplete?: boolean;
+  /**
    * 소스 index.html 의 DS 버전 badge 주입(syncSourceDsBadge)을 건너뛴다 — 원본 무변경.
    * 버전 stamp 는 dist 산출물에만 들어간다(injectHtmlUsageSummary). 하네스의 비파괴 export 용.
    */
@@ -140,6 +147,13 @@ export interface BuildSinglefileHtmlResult {
   validation?: ValidateHtmlMockupResult;
   /** html intent 한정: PRD/brief 요구사항 커버리지 전용 검증 결과. DS 점수와 분리된다. */
   prdValidation?: ValidatePrdCoverageResult;
+  /**
+   * allowIncomplete:true 로 error-severity DS 위반을 무시하고 강제 빌드한 경우, 미해결 error 개수.
+   * 0/undefined 면 강제하지 않았거나 error 가 없었던 것. 위반 상세는 validation.violations[] 에 그대로 있다.
+   */
+  forcedDsErrorCount?: number;
+  /** allowIncomplete 강제 빌드 시 응답 상단에 띄우는 경고(미해결 DS 에러 N건). */
+  forcedBuildWarning?: string;
   report?: ReportHtmlMockupUsageResult;
   humanReadable: string;
   /** 다음에 호출해야 하는 도구 한 줄 — 응답 첫 줄(humanReadable) NEXT STEP 과 중복 강조용. */
@@ -437,6 +451,19 @@ export async function buildSinglefileHtml(
   const sizeBytes = fs.statSync(outputPath).size;
   const sizeKb = Math.round(sizeBytes / 1024);
 
+  // ── DS 검증 error 게이트 (html intent 한정) ──
+  // validateHtmlMockup 은 빌드 후에 돌므로 산출물(dist/index.html)은 이미 만들어졌다. 하지만
+  // error-severity 위반이 있으면 기본적으로 빌드를 "실패"로 보고한다(ok:false) — 사용자가
+  // allowIncomplete:true 로 명시 우회하지 않는 한. 우회해도 위반은 그대로 응답에 담아 보고한다.
+  const dsErrorCount = intent === "html" ? (validation?.severitySummary.error ?? 0) : 0;
+  const hasBlockingDsErrors = dsErrorCount > 0;
+  const forcedDsErrorCount = hasBlockingDsErrors && args.allowIncomplete ? dsErrorCount : undefined;
+  const forcedBuildWarning =
+    forcedDsErrorCount !== undefined
+      ? `[강제 빌드] DS error 위반 ${forcedDsErrorCount}건이 미해결인 상태로 allowIncomplete:true 로 빌드했습니다. ` +
+        `산출물은 생성됐지만 DS 정합성을 보장하지 않습니다 — validation.violations[] 를 확인하고 공유 전에 수정하세요.`
+      : undefined;
+
   const annotations: string[] = [];
   if (configPatched) annotations.push(`vite.config patched`);
   if (dsUsageSummary) annotations.push(dsUsageSummary);
@@ -477,14 +504,22 @@ export async function buildSinglefileHtml(
     intent === "react"
       ? "dev_server({ action:'start' }) → validate_html_mockup({ url, sessionId })"
       : undefined;
+  // 기본(allowIncomplete 미지정)에서 DS error 위반이 있으면 빌드를 실패로 보고한다.
+  const blockedByDsErrors = hasBlockingDsErrors && !args.allowIncomplete;
   const humanReadable =
     intent === "html"
-      ? validation?.ok && prdValidation?.ok
-        ? `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}`
-        : `[OK build / FAIL validate] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
-          `DS 위반 ${validation?.violations.length ?? 0}건, PRD 위반 ${
-            prdValidation?.violations.length ?? 0
-          }건 — validation.violations[] / prdValidation.violations[] 를 각각 확인 후 수정.`
+      ? blockedByDsErrors
+        ? `[BLOCKED] ${relOutput} 생성됨 — DS error 위반 ${dsErrorCount}건으로 빌드를 막았습니다 (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
+          `validation.violations[] 를 확인해 error 위반을 수정 후 build_singlefile_html 재호출하세요. ` +
+          `사용자가 명시적으로 우회를 허용한 경우에만 build_singlefile_html({ allowIncomplete: true }) 로 재호출 — ` +
+          `이 경우 미해결 DS 에러가 남은 채로 산출물이 공유됩니다.`
+        : validation?.ok && prdValidation?.ok
+          ? `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}`
+          : `[OK build / FAIL validate] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
+            (forcedBuildWarning ? `${forcedBuildWarning}\n` : "") +
+            `DS 위반 ${validation?.violations.length ?? 0}건, PRD 위반 ${
+              prdValidation?.violations.length ?? 0
+            }건 — validation.violations[] / prdValidation.violations[] 를 각각 확인 후 수정.`
       : `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
         `NEXT STEP → ${nextCall} 호출 필수 (DS 사용량 적재 + 위반 최종 확인).`;
 
@@ -503,7 +538,9 @@ export async function buildSinglefileHtml(
         "(3) dev_server({ action:'stop' }).";
 
   return {
-    ok: true,
+    // 기본은 빌드 성공. 단 html intent 에서 DS error 위반이 있고 allowIncomplete 가 아니면 ok:false 로 막는다.
+    // (산출물 dist/index.html 은 이미 생성됐지만, 게이트는 "이 빌드를 ship 해도 되는가" 신호다.)
+    ok: !blockedByDsErrors,
     outputPath,
     sizeBytes,
     sizeKb,
@@ -518,10 +555,19 @@ export async function buildSinglefileHtml(
     intent,
     validation,
     prdValidation,
+    forcedDsErrorCount,
+    forcedBuildWarning,
     report,
     humanReadable,
     nextStep: nextCall,
     _nextSuggestion,
+    ...(blockedByDsErrors
+      ? {
+          error:
+            `DS error 위반 ${dsErrorCount}건으로 빌드가 차단됨. validation.violations[] 확인 후 수정하거나 ` +
+            `allowIncomplete:true 로 명시 우회하세요.`,
+        }
+      : {}),
   };
 }
 

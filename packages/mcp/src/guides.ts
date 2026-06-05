@@ -1627,6 +1627,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     summary: "시작/끝 날짜 한 쌍 선택. DatePicker 두 개 + 빠른 프리셋(최근 7일 등).",
     pitfalls: [
+      "**기간(노출 기간/시작~종료)을 raw text input 2개로 손수 만들지 말 것** — placeholder 'YYYY-MM-DD' 텍스트 입력은 달력 팝오버·범위 검증·간격이 전부 빠진다. 한 컴포넌트 <nds-date-range-picker> 로. (검증룰 date-as-text-input 이 막음. 단일 날짜는 DatePicker.)",
       "value는 { from?, to? } — 부분 선택 가능 (시작만 있을 수 있음). 폼 검증 시 둘 다 있는지 체크.",
       "끝일은 자동으로 minDate=시작일 — 시작일을 뒤로 옮기면 끝일이 자동으로 비워짐(value.to>from 체크).",
       "프리셋은 defaultRangePresets로 빠른 것 3개 제공 (7일/30일/이번 달). 검사·리포트마다 다른 기본값이 필요하면 직접 정의.",
@@ -3010,8 +3011,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- 값에 통화기호와 쉼표 직접 박음 — number 파싱이 깨짐 -->\n<nds-amount-input value="₩10,000"></nds-amount-input>',
     },
     summary:
-      "큰 금액 입력. 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프. NumberStepper(작은 정수)와 분리.",
+      "큰 금액/수량 입력(원·명·개·포인트 등). 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프. NumberStepper(작은 정수)와 분리.",
     pitfalls: [
+      "**금액/수량을 입력받는 폼 필드를 일반 text input 이나 정적 숫자 표시('3,000,000 명' 큰 글씨)로 만들지 말 것** — 사용자가 못 고치고 콤마/단위/clamp 가 빠진다. <nds-amount-input value=… unit='명|원|개' placeholder='0'> 로. unit 은 '원' 외에도 '명/개' 등 자유 (검증룰 amount-as-text-input / amount-as-static-display 가 막음).",
       "value는 number | null. 빈 입력은 null (0이 아님).",
       "presets의 set: true = 값 설정, false/미지정 = 누적. 헷갈리지 말 것.",
       "max/min 자동 클램프 — 외부 검증 X. 단, 에러 메시지는 외부에서 helperText로.",
@@ -3636,6 +3638,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**선택한 지역/카테고리/멤버 등 '동적 다중 선택 결과'를 Chip/ActionChip 으로 인라인 나열 금지** — 특히 캐포비 brand 노란 outlined 칩(`강원특별자치도 > 강릉시 ✕`)은 SelectionButton 과 시각적으로 같아 혼동되고, '추가 선택/선택 해제'·개수 강조·개별 제거 affordance 가 빠진다. 회색 `SelectedItemsPanel`(surface.subtle 패널) + `RegionRow`(라벨 + 삭제 X) 로 그릴 것. 타겟팅 폼 '특정 지역' 결과도 동일 — Figma 3001:49174 는 '+ 지역 추가' 회색 컨테이너이고, 지역을 추가하면 그 안에 RegionRow 가 누적된다(노란 칩 아님).",
       "개수를 타이틀 문자열에 직접 넣지 말 것 — `count` prop/속성이 text.brand 색으로 강조 렌더. 타이틀은 명사만.",
       "헤더 액션은 **선택 해제(onClear)** 가 기본이고 **추가 선택(onAdd)은 옵션** — 임의의 버튼을 헤더에 더 끼워넣지 말 것. **★ 피커 모달 우측 패널에서는 '추가 선택' 노출 금지 → 선택 해제만.** React 는 `onAdd` 미전달 시 자동 숨김이지만, **HTML 웹컴포넌트(`nds-selected-items-panel`)는 추가/해제 둘 다 기본 렌더라 모달에서는 `hide-add` 속성을 반드시 줘야 한다**(안 주면 모달 안에 '추가 선택'이 떠서 회귀). '추가 선택'은 모달 밖(페이지·타겟팅 폼 '+ 지역 추가')에서만 쓰며, 시각 스펙은 **secondary Button + plus(+) 아이콘**(퀴즈 추가 등 다른 add 버튼과 동일 패턴).",
+      "**추가 경로(add 어포던스)는 하나만** — 패널 밖 별도 점선 '지역 추가' 버튼 + 패널 안 '추가 선택' 을 둘 다 두지 말 것(중복 UI, 회귀). 추가는 패널 onAdd(=모달 열기) 한 곳으로 통일하고, 그 클릭이 **2단 모달**(좌: 검색+체크박스 트리, 우: SelectedItemsPanel `hide-add` + 선택 해제, 풋터: full-width '적용')을 띄운다 — 모달이 안 뜨고 페이지에 인라인으로 또 그리면 안 된다. (검증룰 region-add-affordance-duplicated 가 막음.)",
+      "**같은 항목을 패널에 중복 추가 금지** — 추가 시 이미 있으면 무시(유니크). 같은 '인천광역시 > 연수구' 가 두 줄 = 회귀(검증룰 region-row-duplicated).",
       "본문 항목 삭제는 RegionRow 의 onRemove(또는 nds-region-remove 이벤트)로 — 패널이 항목 상태를 들고 있지 않음(controlled). 호스트가 리스트를 갱신.",
       "본문이 길어지면 화면을 덮지 않도록 `--nds-selected-items-panel-body-max-height` 로 스크롤 제한.",
       "RegionRow 는 패널 전용 행 — 일반 리스트/태그 자리에는 ListItem/Chip 사용.",
@@ -4000,6 +4004,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "옵션 4개 이상 — 가로 폭 부족. Select 또는 SelectionCard 사용.",
       "라벨+설명+아이콘이 필요한 카드형 선택 — SelectionCard 가 적합.",
       "선택색을 hex 로 박지 말 것 — selected 는 --semantic-bg-brand-subtle / --semantic-border-brand-default 캐스케이드로 5개 브랜드 자동 대응.",
+      "**그룹 내 옵션은 등폭이 기본** — '전체'(좁음)/'특정 지역'(넓음)처럼 라벨 길이가 달라도 컴포넌트가 가장 넓은 옵션 기준으로 자동 균등하게 그린다(손으로 width 박지 말 것). 한 화면에서 같은 성격의 그룹은 너비를 통일. 컨테이너 100% 로 늘리려면 fullWidth/full-width.",
       "**'특정 X'(특정 지역/연령/카테고리) 선택 시 노출되는 '선택 결과'를 또 다른 SelectionButton·노란 outlined 칩으로 그리지 말 것** — 결과 컴포넌트는 따로다: ① 소수 고정 선택지(연령대 6~7개)는 **toggle Chip**(선택=brand-subtle filled + ✓ 체크) 한 묶음, ② 동적 다중 선택(지역·카테고리처럼 picker 로 추가)은 **`SelectedItemsPanel` + `RegionRow`**(회색 패널 안 '+ 지역 추가' → 추가하면 RegionRow 누적, 개별 제거 X). 특히 **선택한 지역을 `강원특별자치도 > 강릉시 ✕` 같은 노란 outlined 칩으로 인라인 나열 = 회귀(SelectionButton 과 시각적으로 동일해 혼동)** — get_guide({ topic:'component:SelectedItemsPanel' }) 의 RegionRow 사용. 캐포비 타겟팅 폼 SSOT: Figma 3001:49174.",
     ],
     examplesHtml: {
@@ -4523,6 +4528,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "강조 장치는 화면당 우선순위가 가장 높은 영역에 집중하고, 안내/보조 영역은 기본적으로 neutral surface를 사용",
     "텍스트 대비비 WCAG AA (4.5:1) 이상 유지",
     "터치 타겟은 최소 44px 보장",
+    "★ 모든 목업은 반응형으로 — 고정폭 1개 화면으로 끝내지 말 것. 레이아웃은 고정 px 폭이 아니라 유연 컨테이너(max-width + 좌우 패딩, flex/grid + wrap, min-width:0)로 짜고, 좁은 화면(모바일 ~360, 태블릿 ~768)에서 가로 스크롤·요소 깨짐·겹침이 없어야 한다. 콘텐츠 폭은 Desktop center 1200 / Mobile 좌우 16. DataTable 은 responsive='cards', 컴포넌트의 size 분기(예: Tabs size mobile/pc, BrandFooter layout desktop/mobile)는 미디어쿼리/JS 로 전환. 입력 필드는 Field Width 6단계(고정 px) 안에서 반응형 컨테이너만 Full 100%.",
     "4pt 그리드에 맞춰 간격 설정. Gap(요소 간)과 Inset(컨테이너 내부)을 구분해 항상 semantic 토큰(--semantic-gap-* / --semantic-inset-*) 사용",
     "Brand background(--semantic-bg-brand-*)는 주의/안내/하이라이트 의미 전달이 필요할 때만, 한 화면당 1개 이내로 사용 — 자세히는 get_guide({ topic: 'pattern:surface-layer' })",
     "인터랙티브 요소(Button/IconButton/Card.Root clickable/Tabs)에는 onClick 등 핸들러를 반드시 부착",

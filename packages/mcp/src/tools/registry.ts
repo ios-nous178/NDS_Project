@@ -206,6 +206,11 @@ const TOOLS = [
           type: "boolean",
           description: "Skip workspace audit only after explicit user approval. Defaults to false.",
         },
+        allowIncomplete: {
+          type: "boolean",
+          description:
+            "DS 검증 에러가 있어도 강제로 빌드(사용자 판단). 기본 false — 에러는 빌드를 막음. true 면 산출물은 만들어지지만 위반은 validation.violations[] 에 그대로 보고되고 '미해결 DS 에러 N건으로 강제 빌드' 경고가 붙는다.",
+        },
         intent: {
           type: "string",
           enum: ["react", "html"],
@@ -687,6 +692,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       return {
         cwd: optionalString(args, "cwd", toolName),
         skipAudit: optionalBoolean(args, "skipAudit", toolName),
+        allowIncomplete: optionalBoolean(args, "allowIncomplete", toolName),
         intent: optionalEnum(args, "intent", BUILD_INTENT_VALUES, toolName),
       };
     case "validate_html_mockup":

@@ -14,15 +14,23 @@ const SBG_ROOT_CLASS = `${SBG_CLASS}__root`;
 const SBG_ITEM_CLASS = `${SBG_CLASS}__item`;
 
 export const selectionButtonGroupStyles = `
+  /*
+   * 그룹 내 옵션은 등폭이 기본이다 — '전체'(좁음) / '특정 지역'(넓음) 처럼 라벨 길이가
+   * 달라도 묶인 옵션 너비가 들쭉날쭉하면 안 된다(디자인 결정 2026-06).
+   * inline-grid + grid-auto-columns:1fr = 그룹은 콘텐츠에 hug 하되 모든 열은 가장 넓은
+   * 옵션 기준으로 균등. fullWidth=true 는 컨테이너 100% 를 균등 분할.
+   */
   :where(.${SBG_ROOT_CLASS}) {
-    display: inline-flex;
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
     gap: var(--semantic-gap-default);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
 
   :where(.${SBG_ROOT_CLASS}[data-fullwidth="true"]) {
-    display: flex;
+    display: grid;
     width: 100%;
   }
 
@@ -45,8 +53,9 @@ export const selectionButtonGroupStyles = `
     box-sizing: border-box;
   }
 
-  :where(.${SBG_ROOT_CLASS}[data-fullwidth="true"] .${SBG_ITEM_CLASS}) {
-    flex: 1 1 0;
+  /* 등폭 그리드 셀을 꽉 채우고, 긴 라벨도 셀 안에서 줄어들 수 있게 한다(grid 기본 stretch). */
+  :where(.${SBG_ROOT_CLASS} .${SBG_ITEM_CLASS}) {
+    width: 100%;
     min-width: 0;
   }
 

@@ -66,6 +66,23 @@ function FullWidthExample() {
   );
 }
 
+function EqualWidthExample() {
+  // 라벨 길이가 제각각이어도(전체 / 특정 지역 / 특정 시간대만) 그룹 내 옵션은
+  // 가장 넓은 옵션 기준으로 등폭 정렬된다 — fullWidth 없이 hug 상태에서도.
+  const [value, setValue] = useState<"all" | "region" | "time">("region");
+  return (
+    <SelectionButtonGroup
+      options={[
+        { value: "all", label: "전체" },
+        { value: "region", label: "특정 지역" },
+        { value: "time", label: "특정 시간대만" },
+      ]}
+      value={value}
+      onValueChange={setValue}
+    />
+  );
+}
+
 function DisabledItemExample() {
   const [value, setValue] = useState<"a" | "b" | "c">("a");
   return (
@@ -89,6 +106,11 @@ export const TwoOptions: Story = {
 export const ThreeOptions: Story = {
   name: "3개 옵션",
   render: () => <ThreeOptionExample />,
+};
+
+export const EqualWidth: Story = {
+  name: "등폭 (라벨 길이 다름)",
+  render: () => <EqualWidthExample />,
 };
 
 export const FullWidth: Story = {
