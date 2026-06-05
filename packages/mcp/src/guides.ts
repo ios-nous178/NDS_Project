@@ -1006,7 +1006,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           dataModal:
             "**⑤ Data Modal (대형·조회 전용, 확인 팝업 ①~④ 와 구분)**: 목록/상세 데이터를 조회·확인하는 대형 모달. width ~560+ · **radius 12 · padding 24 · gap 16**(확인 모달의 16/32 와 다름) · border #E5E7EB. 헤더 = 제목(16 Bold) + 우상단 Close X(#999, 푸터 CTA 없음 — 조회 전용). 본문 = DataTable(헤더행 bg #F7F8FA · 셀 border #EEE · 36px · 12px) — 상세 + 목록 등 다중 테이블 가능. 페이지 패턴 아님 → Modal + DataTable 조합. Figma ModalGuide 3418-471(⑤ Data Modal 3832-1057).",
           selectionModal:
-            "**⑥ 선택/피커 모달 (대형·다중 선택)**: 항목을 검색·다중 선택해 적용하는 대형 모달(예: 지역·카테고리·타겟 선택). **width ~960 · radius 16 · padding 48 · 흰 배경**. 헤더 = 제목 Bold 24 #383838(좌) + Close X 28(#999, 우). 본문 = **2컬럼(각 ~422 · 높이 ~652 · gap 20)**: 좌 = 필터(검색 input + '전체 선택' 체크박스 + 시/도▸시/군/구 체크박스 트리, 선택 시 옐로우 체크) / 우 = `SelectedItemsPanel`(component:SelectedItemsPanel · RegionRow) — '선택한 N개' + '선택 해제'(reset) + 제거 가능한 선택 항목 리스트. 푸터 = **본문 풀폭 단일 '적용' CTA**: Solid/Primary(옐로우 #FFD200·검정 텍스트, **pill**) · 비활성 = Neutral/400 #DDD. ⚠️ 확인팝업(①~④)의 '우측 hug 검정 pill' 규칙을 적용하지 말 것 — 선택 적용은 **풀폭 옐로우**. 버튼 shape 는 모달 BottomCTA 라 pill 이며, 시안 3001:50787(빈 셸)의 radius10·400centered 적용 버튼은 오류 — 채워진 SSOT 는 **3001:50116**(풀폭 적용). Figma 3001-50116.",
+            "**⑥ 선택/피커 모달 (대형·다중 선택)**: 항목을 검색·다중 선택해 적용하는 대형 모달(예: 지역·카테고리·타겟 선택). **width ~960 · radius 16 · padding 48 · 흰 배경**. 헤더 = 제목 Bold 24 #383838(좌) + Close X 28(#999, 우). 본문 = **2컬럼(각 ~422 · 높이 ~652 · gap 20)**: 좌 = 필터(검색 input + '전체 선택' 체크박스 + 시/도▸시/군/구 체크박스 트리, 선택 시 옐로우 체크) / 우 = `SelectedItemsPanel`(component:SelectedItemsPanel · RegionRow) — '선택한 N개' + '선택 해제'(reset) + 제거 가능한 선택 항목 리스트. **모달 안 패널은 '선택 해제'만 — '추가 선택' 버튼 노출 금지(HTML `hide-add` 속성 필수 · React `onAdd` 미전달). '추가 선택'은 모달 밖 페이지/타겟팅 폼에서만 쓰며 secondary Button + plus(+) 아이콘.** 푸터 = **본문 풀폭 단일 '적용' CTA**: Solid/Primary(옐로우 #FFD200·검정 텍스트, **pill**) · 비활성 = Neutral/400 #DDD. ⚠️ 확인팝업(①~④)의 '우측 hug 검정 pill' 규칙을 적용하지 말 것 — 선택 적용은 **풀폭 옐로우**. 버튼 shape 는 모달 BottomCTA 라 pill 이며, 시안 3001:50787(빈 셸)의 radius10·400centered 적용 버튼은 오류 — 채워진 SSOT 는 **3001:50116**(풀폭 적용). Figma 3001-50116.",
           dataLoaderModal:
             '**⑦ 데이터 로더 모달 (⑤ Data Modal 의 선택형)**: 기존 항목을 표에서 골라 불러오는 대형 모달(예: 소재 불러오기). ⑤ 구조 + **행 선택(radio/check) + 페이지네이션 + 푸터 액션**. 헤더 = 제목 Bold 24 + 검색 input + Close X. 본문 = 선택형 DataTable(상태칩·이미지·텍스트 컬럼 등) + 하단 페이지네이션 + \'N개씩 보기\' 드롭다운. 푸터 = **취소(color="assistive" outlined) + 불러오기(color="secondary" solid · 검정 pill)** 각 ~170×56 (확인팝업 dual 푸터와 동일). 조회 전용 ⑤ 와 달리 선택·확정 액션이 있다. Figma 3001-32822.',
           activationCondition:
@@ -3625,12 +3625,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- count 를 직접 헤더 텍스트에 박지 말 것 — count 속성이 브랜드색 강조를 담당 -->\n<nds-selected-items-panel panel-title="선택한 지역 2개"></nds-selected-items-panel>',
     },
     summary:
-      "선택 항목 슬롯 패널 — 헤더(타이틀 + 강조 개수 + 추가 선택/선택 해제 액션)는 고정, 본문은 RegionRow 리스트·폼·테이블 등으로 swap 하는 INSTANCE_SWAP 슬롯. 캐포비 admin 의 다중 선택 결과 패널. RegionRow(라벨 + 삭제 X) 동봉.",
+      "선택 항목 슬롯 패널 — 헤더(타이틀 + 강조 개수 + 선택 해제 + 옵션 추가 선택), 본문은 RegionRow 리스트·폼·테이블 등으로 swap 하는 INSTANCE_SWAP 슬롯. 캐포비 admin 의 다중 선택 결과 패널. **피커 모달 안에서는 '선택 해제'만 노출(추가 선택 X)**. RegionRow(라벨 + 삭제 X) 동봉.",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3828-1577",
     pitfalls: [
       "**선택한 지역/카테고리/멤버 등 '동적 다중 선택 결과'를 Chip/ActionChip 으로 인라인 나열 금지** — 특히 캐포비 brand 노란 outlined 칩(`강원특별자치도 > 강릉시 ✕`)은 SelectionButton 과 시각적으로 같아 혼동되고, '추가 선택/선택 해제'·개수 강조·개별 제거 affordance 가 빠진다. 회색 `SelectedItemsPanel`(surface.subtle 패널) + `RegionRow`(라벨 + 삭제 X) 로 그릴 것. 타겟팅 폼 '특정 지역' 결과도 동일 — Figma 3001:49174 는 '+ 지역 추가' 회색 컨테이너이고, 지역을 추가하면 그 안에 RegionRow 가 누적된다(노란 칩 아님).",
       "개수를 타이틀 문자열에 직접 넣지 말 것 — `count` prop/속성이 text.brand 색으로 강조 렌더. 타이틀은 명사만.",
-      "헤더 액션(추가 선택 / 선택 해제)은 **고정 구성** — 임의의 버튼을 헤더에 더 끼워넣지 말 것. onAdd/onClear(또는 nds-selected-items-add/clear 이벤트)로만 제어.",
+      "헤더 액션은 **선택 해제(onClear)** 가 기본이고 **추가 선택(onAdd)은 옵션** — 임의의 버튼을 헤더에 더 끼워넣지 말 것. **★ 피커 모달 우측 패널에서는 '추가 선택' 노출 금지 → 선택 해제만.** React 는 `onAdd` 미전달 시 자동 숨김이지만, **HTML 웹컴포넌트(`nds-selected-items-panel`)는 추가/해제 둘 다 기본 렌더라 모달에서는 `hide-add` 속성을 반드시 줘야 한다**(안 주면 모달 안에 '추가 선택'이 떠서 회귀). '추가 선택'은 모달 밖(페이지·타겟팅 폼 '+ 지역 추가')에서만 쓰며, 시각 스펙은 **secondary Button + plus(+) 아이콘**(퀴즈 추가 등 다른 add 버튼과 동일 패턴).",
       "본문 항목 삭제는 RegionRow 의 onRemove(또는 nds-region-remove 이벤트)로 — 패널이 항목 상태를 들고 있지 않음(controlled). 호스트가 리스트를 갱신.",
       "본문이 길어지면 화면을 덮지 않도록 `--nds-selected-items-panel-body-max-height` 로 스크롤 제한.",
       "RegionRow 는 패널 전용 행 — 일반 리스트/태그 자리에는 ListItem/Chip 사용.",
@@ -3638,7 +3638,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**(HTML) 이벤트(nds-selected-items-add/clear, nds-region-remove)는 재렌더로 사라지지 않게 host(또는 상위 컨테이너)에 위임** — 행을 매번 새로 그리면 행에 직접 단 리스너는 유실됨. 부모에서 한 번만 바인딩하고 `e.target`/`closest('nds-region-row')` 로 분기.",
     ],
     recommended: [
-      '기본: <SelectedItemsPanel title="선택한 지역" count={items.length} onAdd={openPicker} onClear={clearAll}>{items.map(i => <RegionRow key={i.id} onRemove={() => remove(i.id)}>{i.label}</RegionRow>)}</SelectedItemsPanel>',
+      '피커 모달 우측 패널(추가 선택 없음): <SelectedItemsPanel title="선택한 지역" count={items.length} onClear={clearAll}>{items.map(i => <RegionRow key={i.id} onRemove={() => remove(i.id)}>{i.label}</RegionRow>)}</SelectedItemsPanel> · HTML 은 <nds-selected-items-panel hide-add …>.',
+      '모달 밖 페이지/타겟팅 폼(추가 선택 있음): onAdd 추가 — <SelectedItemsPanel title="선택한 지역" count={items.length} onAdd={openPicker} onClear={clearAll}>…</SelectedItemsPanel>. onAdd 가 렌더하는 추가 버튼 = secondary + plus(+) 아이콘.',
       "본문 swap: RegionRow 리스트 대신 폼/데이터테이블을 children 으로 그대로 넣어도 됨.",
       "액션 숨김: showActions={false} (읽기 전용 요약 패널).",
     ],
@@ -3668,7 +3669,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "체크박스 목록 자체 — ConsentChecklist / Checkbox 그룹",
       ],
       limits: {
-        headerActions: "추가 선택 / 선택 해제 2종 고정",
+        headerActions:
+          "선택 해제(기본) + 추가 선택(옵션). 피커 모달 안 = 선택 해제만(HTML hide-add / React onAdd 미전달). 추가 선택 시각 = secondary Button + plus 아이콘.",
         body: "INSTANCE_SWAP 슬롯 (RegionRow / 폼 / 테이블)",
       },
     },
@@ -6124,7 +6126,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "ImageUpload 는 캐시워크 포 비즈니스 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.",
       "Input focus 는 brand 색(노랑) 이 아니라 검정 outline. 가이드 명시.",
       "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline. radius 6 / bg #ECECEC.",
-      "SelectedItemsPanel 헤더 액션(추가 선택 / 선택 해제)은 고정 — onAdd/onClear 로 제어. count 는 text.brand 강조. 본문은 RegionRow 리스트 등으로 swap.",
+      "SelectedItemsPanel 헤더 = 선택 해제(기본) + 추가 선택(옵션 onAdd) — **피커 모달 안에서는 추가 선택 빼고 선택 해제만**(HTML `hide-add` / React onAdd 미전달). 추가 선택은 모달 밖에서만, secondary Button + plus 아이콘. count 는 text.brand 강조. 본문은 RegionRow 리스트 등으로 swap.",
       "**Field Width — 입력 필드 가로 너비 6단계 스케일** (TextInput·Dropdown·DateInput·Selection 등 모든 입력 공통, 컨테이너 안에서는 **항상 px 고정값**): XSmall **120px**(field-width-xs · 코드·짧은 ID·숫자, 예 사업자번호 토큰) · Small **200px**(field-width-sm · 단일 키워드 검색·Filter Dropdown·페이지네이션 옆 셀렉트) · **Medium 304px(field-width-md, default — 폼 내부 일반 입력 이메일·이름·계정명, 가장 흔함)** · Large **400px**(field-width-lg · 모달 내부 메인 입력·단독 검색바) · XLarge **488px**(field-width-xl · 와이드 페이지 필터·상세 폼 강조) · Full **100%**(field-width-full · Textarea·반응형 폼). 같은 행에 여러 input 이면 같은 사이즈로 통일. 관측 정규화: Dropdown 105/164/222 → Small(200)·Medium(304), 모달 명/번호 input ~396 → Large(400), '100개씩 보기' 152 → Small(200). Figma InputGuide Field Width(3897-1578).",
     ],
     avoid: [
