@@ -228,6 +228,7 @@ const PRINCIPLES_DIGEST = [
   "No raw <header>/<footer>/<main>/<nav> when nds/brand components fit.",
   "Use semantic tokens; avoid raw hex/rgb and raw palette tokens.",
   "Use <nds-*> components before custom native controls/CSS lookalikes.",
+  "Make every mockup responsive: fluid containers (max-width + padding, flex/grid wrap, min-width:0), no fixed-px-only layout, no horizontal scroll/overlap at ~360/~768.",
 ];
 
 /**

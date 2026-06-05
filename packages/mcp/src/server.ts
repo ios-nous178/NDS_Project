@@ -821,7 +821,12 @@ const toolHandlers = {
   },
   build_singlefile_html: async (args: ToolArgs) => {
     const result = await buildSinglefileHtml({
-      ...(args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" }),
+      ...(args as {
+        cwd?: string;
+        skipAudit?: boolean;
+        allowIncomplete?: boolean;
+        intent?: "react" | "html";
+      }),
       // HTML 목업은 node_modules/package.json 이 없어 버전 fs 탐지가 null → MCP 가 아는
       // 번들 DS 버전(manifest = 최대 DS 버전 미러)을 fallback 으로 흘려 스탬프/시트 null 차단.
       dsVersion: mcpbManifest?.version,

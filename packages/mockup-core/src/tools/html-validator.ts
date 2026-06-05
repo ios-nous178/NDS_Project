@@ -175,6 +175,16 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   // 목업 버튼은 장식이 아니라 실제 동작해야 함. 정적 검증에서는 버튼별 식별자와
   // addEventListener/click/submit 연결 근거를 확인한다.
   "button-without-interaction": "error",
+  // 날짜/기간을 raw text input(placeholder 'YYYY-MM-DD')으로 구현 — DatePicker/DateRangePicker 미사용
+  "date-as-text-input": "warn",
+  // 금액/수량을 일반 input 으로 구현 — AmountInput(콤마·단위·clamp) 미사용
+  "amount-as-text-input": "warn",
+  // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
+  "amount-as-static-display": "warn",
+  // 지역 선택 add 어포던스 중복(외부 '지역 추가' + 패널 '추가 선택') — 모달 1개로 통일해야 함
+  "region-add-affordance-duplicated": "warn",
+  // SelectedItemsPanel 안에 같은 지역 행이 중복 — 선택 결과는 유니크해야 함
+  "region-row-duplicated": "warn",
   "unknown-token": "error",
   "ds-badge-missing": "error",
   // 토큰 / 시멘틱
@@ -561,6 +571,51 @@ export function validateHtmlSource(
       }
     }
 
+    // 2-ter. 날짜/기간·금액/수량은 전용 입력 컴포넌트로. raw <input> / <nds-input> 로
+    //   날짜·금액을 그리면 달력 팝오버·천단위 콤마·단위 suffix·min/max clamp 가 전부 빠진다.
+    //   (회귀: 캐포비 어드민 폼에서 '노출 기간' 을 placeholder 'YYYY-MM-DD' text input 2개로,
+    //    '목표 참여자 수' 를 큰 정적 숫자로 그린 사고.)
+    if (tag === "input" || tag === "nds-input") {
+      // nds-date-picker / nds-amount-input 등 DS 래퍼 안의 inner <input> 은 우리 WC 가 만든 것 → 제외
+      const insideDsWrapper = tag === "input" && hasAncestorNdsTag(el);
+      if (!insideDsWrapper) {
+        const ph = String(attrs.placeholder ?? "");
+        const lbl = `${attrs.label ?? ""} ${attrs["aria-label"] ?? ""} ${attrs.name ?? ""}`;
+        const inputType = String(attrs.type ?? "").toLowerCase();
+        const isDateLike =
+          inputType === "date" ||
+          /\d{4}\s*[-/.]\s*\d{1,2}\s*[-/.]\s*\d{1,2}/.test(ph) ||
+          /(시작일|종료일|날짜|연도|YYYY)/i.test(`${ph} ${lbl}`);
+        if (isDateLike) {
+          const isRange = /(시작|종료|기간|부터|까지|~)/.test(`${ph} ${lbl}`);
+          violations.push({
+            rule: "date-as-text-input",
+            line,
+            selector,
+            detail: `날짜 입력으로 보이는 <${tag}${ph ? ` placeholder="${ph.slice(0, 24)}"` : ""}> 를 일반 텍스트 입력으로 구현함`,
+            suggestion: isRange
+              ? "기간(시작~종료)은 <nds-date-range-picker> 한 컴포넌트로 — text input 두 개를 손수 붙이지 말 것(간격·검증·달력 누락). get_guide({ topic: 'component:DateRangePicker', target: 'html' }) 참조."
+              : "단일 날짜는 <nds-date-picker>(달력 팝오버). placeholder 'YYYY-MM-DD' text input 금지. get_guide({ topic: 'component:DatePicker', target: 'html' }) 참조.",
+          });
+        }
+        const isAmountLike =
+          inputType === "number" ||
+          /(금액|[0-9]\s*원\b|\b명\b|개수|수량|참여자\s*수|규모|건수|회원\s*수|포인트|캐시)/.test(
+            `${ph} ${lbl}`,
+          );
+        if (!isDateLike && isAmountLike) {
+          violations.push({
+            rule: "amount-as-text-input",
+            line,
+            selector,
+            detail: `금액/수량 입력으로 보이는 <${tag}> 를 일반 텍스트 입력으로 구현함`,
+            suggestion:
+              "숫자(금액/수량)는 <nds-amount-input unit='명|원|개'>(천단위 콤마·단위 suffix·min/max clamp). 일반 text input 금지. get_guide({ topic: 'component:AmountInput', target: 'html' }) 참조.",
+          });
+        }
+      }
+    }
+
     // 2-bis. 활성 버튼은 장식으로 끝나면 안 된다. HTML 목업은 정적 산출물이지만,
     // 버튼별 식별자(id/data-action/class)와 script 의 addEventListener/click binding 이
     // 연결돼 있어야 "누르면 뭔가 동작"하는 목업으로 인정한다.
@@ -602,30 +657,50 @@ export function validateHtmlSource(
       (tag === "header" &&
         (ctx.ndsTagSet.has("nds-brand-header") || ctx.ndsTagSet.has("nds-header")))
     ) {
-      const hasBrandHeader = ctx.ndsTagSet.has("nds-brand-header");
-      const hasBrandFooter = ctx.ndsTagSet.has("nds-brand-footer");
-      // brand-header/footer 가 있는데도 raw <header>/<footer> 를 쓰는 건 contract 위반에 가까움.
-      // (회고: validator 추천을 "soft suggestion" 으로 오해해 reference 스크린샷 fidelity 우선)
-      // 이 경우엔 error 로 승격, brand 변형이 없는 일반 landmark 대체는 warn.
-      const isBrandReplaceable =
-        (tag === "footer" && hasBrandFooter) || (tag === "header" && hasBrandHeader);
-      violations.push({
-        rule: "raw-landmark",
-        line,
-        selector,
-        severity: isBrandReplaceable ? "error" : "warn",
-        detail: `<${tag}> 를 raw landmark 로 구현함`,
-        suggestion:
+      // 예외: admin-shell 이 처방하는 셸 chrome 은 raw <header>/<aside> 가 정답이다.
+      //   pattern:admin-shell SSOT 가 <header class="nds-shell__topbar"> / <aside class="nds-shell__sidebar">
+      //   를 명시한다(guides.ts). 이 landmark 들을 raw-landmark 로 잡으면 가이드와 검증이 모순돼,
+      //   작성자가 빠져나가려 셸 chrome 을 <div> 로 strip(=admin-shell 패턴 파괴)하게 된다.
+      //   회고: 캐포비 어드민(업용) 목업에서 헤더/사이드바가 검증에 걸려 <div> 로 다운그레이드된 사고.
+      const landmarkClass = String(attrs.class ?? "");
+      const isAdminShellChrome = /\bnds-shell__/.test(landmarkClass);
+      if (!isAdminShellChrome) {
+        const hasBrandHeader = ctx.ndsTagSet.has("nds-brand-header");
+        const hasBrandFooter = ctx.ndsTagSet.has("nds-brand-footer");
+        // brand-header/footer 가 있는데도 raw <header>/<footer> 를 쓰는 건 contract 위반에 가까움.
+        // (회고: validator 추천을 "soft suggestion" 으로 오해해 reference 스크린샷 fidelity 우선)
+        // 이 경우엔 error 로 승격, brand 변형이 없는 일반 landmark 대체는 warn.
+        const isBrandReplaceable =
+          (tag === "footer" && hasBrandFooter) || (tag === "header" && hasBrandHeader);
+        // 표면=admin 이면 소비자 brand/nds-header 가 아니라 admin-shell chrome 으로 유도해야 한다.
+        //   (admin-surface-consumer-chrome 룰이 brand chrome 을 error 로 막으므로, 여기서 nds-header/
+        //    brand-header 를 권하면 두 룰이 서로 모순된다.)
+        const adminSuggestion =
           tag === "aside"
-            ? "사이드바는 <nds-sidebar> 우선 사용. get_guide({ topic: 'component:Sidebar', target: 'html' }) 참조."
-            : tag === "footer"
-              ? hasBrandFooter
-                ? "[error] 사용자 앱/브랜드 화면의 푸터는 raw <footer> 금지. <nds-brand-footer brand='geniet|trost|nudge-eap|cashwalk-biz' surface='web|app' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandFooter', target: 'html' }) 참조."
-                : "푸터는 <nds-footer-info> / <nds-footer-web> 우선 사용. get_guide({ topic: 'component:Footer', target: 'html' }) 참조."
-              : hasBrandHeader
-                ? "[error] 사용자 앱/브랜드 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-brand-header brand='geniet|trost|nudge-eap|cashwalk-biz' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조."
-                : "헤더는 <nds-header> 우선 사용. get_guide({ topic: 'component:Header', target: 'html' }) 참조.",
-      });
+            ? "어드민 사이드바는 admin-shell 슬롯으로 둔다: <aside class=\"nds-shell__sidebar\"><nds-sidebar>…</nds-sidebar></aside>. get_guide({ topic: 'pattern:admin-shell' }) 참조 (소비자 chrome 금지)."
+            : tag === "header"
+              ? "어드민 톱바는 <header class=\"nds-shell__topbar\"> (admin-shell). nds-header/nds-brand-header(소비자 chrome)로 바꾸지 말 것 — admin-surface-consumer-chrome 룰에 걸린다. get_guide({ topic: 'pattern:admin-shell' }) 참조."
+              : "어드민 화면은 보통 푸터가 없다 — admin-shell(사이드바+톱바+content) 위에 콘텐츠만 둔다. get_guide({ topic: 'pattern:admin-shell' }) 참조.";
+        violations.push({
+          rule: "raw-landmark",
+          line,
+          selector,
+          severity: isBrandReplaceable ? "error" : "warn",
+          detail: `<${tag}> 를 raw landmark 로 구현함`,
+          suggestion:
+            surface === "admin"
+              ? adminSuggestion
+              : tag === "aside"
+                ? "사이드바는 <nds-sidebar> 우선 사용. get_guide({ topic: 'component:Sidebar', target: 'html' }) 참조."
+                : tag === "footer"
+                  ? hasBrandFooter
+                    ? "[error] 사용자 앱/브랜드 화면의 푸터는 raw <footer> 금지. <nds-brand-footer brand='geniet|trost|nudge-eap|cashwalk-biz' surface='web|app' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandFooter', target: 'html' }) 참조."
+                    : "푸터는 <nds-footer-info> / <nds-footer-web> 우선 사용. get_guide({ topic: 'component:Footer', target: 'html' }) 참조."
+                  : hasBrandHeader
+                    ? "[error] 사용자 앱/브랜드 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-brand-header brand='geniet|trost|nudge-eap|cashwalk-biz' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'> 로 반드시 교체. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조."
+                    : "헤더는 <nds-header> 우선 사용. get_guide({ topic: 'component:Header', target: 'html' }) 참조.",
+        });
+      }
     }
 
     const text = $(el).text().trim();
@@ -1382,6 +1457,74 @@ function collectDocumentLevelViolations(
     });
   });
 
+  // amount-as-static-display: 폼 입력 필드 자리에 정적 숫자(콤마+단위)를 박은 안티패턴.
+  //   대시보드 KPI 통계(정적 숫자 표시)는 정상이므로, 폼 컨텍스트(.nds-form-row / nds-form-field /
+  //   .nds-form-field__root) 안에 있을 때만 잡는다. (회귀: 캐포비 '목표 참여자 수' 를 "3,000,000 명"
+  //   큰 글씨로 박고 입력이 안 되던 사고.)
+  $("div, span, p, strong, b, h1, h2, h3, h4").each((_i, el) => {
+    const $el = $(el);
+    if ($el.children().length > 0) return; // leaf 텍스트만 — 컨테이너 제외
+    const txt = $el.text().replace(/\s+/g, " ").trim();
+    if (!/^\d{1,3}(,\d{3})+\s*(명|원|개|건|회|회원|포인트|캐시|점)$/.test(txt)) return;
+    if ($el.closest("nds-amount-input, nds-input, input, button, nds-button").length > 0) return;
+    if (
+      $el.closest(".nds-form-row, .nds-form-row__field, nds-form-field, .nds-form-field__root")
+        .length === 0
+    )
+      return; // 폼 밖(대시보드 통계 등)은 통과
+    out.push({
+      rule: "amount-as-static-display",
+      line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
+      selector: describeElement(el as unknown as DomElement),
+      detail: `폼 입력 필드 자리에 정적 숫자("${txt.slice(0, 20)}")를 박았습니다 — 입력이 불가능합니다.`,
+      suggestion:
+        "폼에서 사용자가 입력하는 수치는 정적 텍스트가 아니라 <nds-amount-input value=... unit='명|원' placeholder='0'>(천단위 콤마·단위·clamp)로. get_guide({ topic: 'component:AmountInput', target: 'html' }) 참조.",
+    });
+  });
+
+  // region-add-affordance-duplicated: 지역 선택에 add 어포던스가 2개 이상
+  //   (외부 점선 '+ 지역 추가' 버튼 + SelectedItemsPanel 내부 '+ 추가 선택'). 추가는 모달 1개로 통일.
+  //   (회귀: 캐포비 타겟팅 폼 — 모달이 안 뜨고 중복 add UI.)
+  const addAffordances = $("button, nds-button, a, [role='button']").filter((_i, el) => {
+    const t = $(el).text().replace(/\s+/g, " ").trim();
+    return /^\+?\s*(지역\s*추가(하기)?|추가\s*선택|선택\s*추가)$/.test(t);
+  });
+  if (addAffordances.length >= 2) {
+    const second = addAffordances.get(1) as DomElement | undefined;
+    out.push({
+      rule: "region-add-affordance-duplicated",
+      line: second
+        ? lineNumberAt(source, (second as unknown as { startIndex?: number }).startIndex ?? 0)
+        : 1,
+      selector: second ? describeElement(second) : undefined,
+      detail: `지역 추가 어포던스가 ${addAffordances.length}개입니다(예: 외부 '지역 추가' + 패널 '추가 선택') — 추가 경로가 중복됩니다.`,
+      suggestion:
+        "지역 추가는 SelectedItemsPanel 의 onAdd(=모달 열기) 한 곳으로 통일하세요. 패널 밖 별도 '지역 추가' 버튼을 또 두지 말 것. '지역 추가' 클릭 → 2단 모달(좌: 체크박스 트리, 우: SelectedItemsPanel hide-add) → '적용'. get_guide({ topic: 'component:SelectedItemsPanel' }) / pattern 의 모달 플로우 참조.",
+    });
+  }
+
+  // region-row-duplicated: SelectedItemsPanel 안 같은 지역 행이 중복.
+  $("nds-selected-items-panel, .nds-selected-items-panel").each((_p, panel) => {
+    const seen = new Set<string>();
+    $(panel)
+      .find("nds-region-row, .nds-region-row")
+      .each((_r, row) => {
+        const t = $(row).text().replace(/\s+/g, " ").trim();
+        if (!t) return;
+        if (seen.has(t)) {
+          out.push({
+            rule: "region-row-duplicated",
+            line: lineNumberAt(source, (row as unknown as { startIndex?: number }).startIndex ?? 0),
+            selector: describeElement(row as unknown as DomElement),
+            detail: `선택한 지역 "${t.slice(0, 24)}" 이(가) 패널에 중복으로 들어 있습니다.`,
+            suggestion:
+              "선택 결과는 유니크해야 합니다 — 같은 지역을 두 번 추가하지 마세요(추가 시 중복 제거). get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
+          });
+        }
+        seen.add(t);
+      });
+  });
+
   const cardTotal = $("nds-card").length;
   if (cardTotal >= 5 * screenCount) {
     out.push({
@@ -1791,6 +1934,8 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "primary-cta-overuse": "layout",
   "chip-overuse": "layout",
   "region-as-chip": "layout",
+  "region-add-affordance-duplicated": "layout",
+  "region-row-duplicated": "layout",
   "selected-items-helper-outside-form-field": "layout",
   "card-everything": "layout",
   "decorative-shadow": "layout",
@@ -1813,6 +1958,9 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "ds-badge-missing": "component",
   "assistive-solid-cta": "component",
   "button-without-interaction": "component",
+  "date-as-text-input": "component",
+  "amount-as-text-input": "component",
+  "amount-as-static-display": "component",
   // icon (icon-usage): 이모지/기호·인라인 svg·heading 장식 아이콘
   "emoji-banned": "icon",
   "text-symbol-banned": "icon",
