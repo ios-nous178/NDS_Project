@@ -277,6 +277,21 @@ export interface ComponentOverrides {
     disabledCheckedBorderColor?: ComponentValue;
   };
   /**
+   * Badge(Label) 시각 변형. 캐포비 ChipGuide(3782:20558 · Rounded Square):
+   *   radius 5 · padding 4/10 · Caption 12/16 · Medium(500) (base 는 bold·radius 4/6).
+   *   톤(색)은 ghost 변형 + semantic 색이 이미 캐포비값으로 cascade → 별도 색 override 불필요.
+   * 다른 브랜드는 fallback (bold·md radius 4) 유지.
+   */
+  badge?: {
+    radius?: ComponentValue;
+    height?: ComponentValue;
+    paddingX?: ComponentValue;
+    paddingY?: ComponentValue;
+    fontSize?: ComponentValue;
+    lineHeight?: ComponentValue;
+    fontWeight?: ComponentValue;
+  };
+  /**
    * Tab 시각 변형. 캐포비 가이드(3544:206):
    *   Underline(line) = subtitle1 16/24 · default medium(500) · indicator 2px · padding 16/12(h48)
    *   Box(chip) = radius 10 · padding 20/14(h52) · selected bg-inverse(#111) ·
