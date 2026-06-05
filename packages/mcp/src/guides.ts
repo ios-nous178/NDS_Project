@@ -5556,11 +5556,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-form-layout": {
     name: "cashwalk-biz-form-layout",
     summary:
-      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold (+부제) → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → **하단 고정(sticky) 흰 Footer 바**의 우측 [취소][저장]' 표준. " +
+      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold (+부제) → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → **하단 고정(sticky) 흰 Footer 바**의 우측 [취소][저장]' 표준. " +
       "Figma 290:1197 (퀴즈 등록하기) 실측. 필드 단위 컴포넌트 정책은 pattern:cashwalk-biz-input, CTA 정책은 pattern:cashwalk-biz-button 과 함께 본다.",
     rules: [
       "**페이지 컨테이너**: 사이드바(좌 300px) 우측 본문. 페이지 bg `#FAFAFA`, 콘텐츠 컬럼 폭 1491px (실측), 좌측 padding 32px.",
-      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838 **+ (있으면) 바로 아래 부제** Pretendard Regular 16/24 #666. **레퍼런스에 부제가 있으면 반드시 유지 — title-only 로 축소 금지.** 타이틀/부제 아래 76px 후 **1px hairline divider #D8D8D8** 풀폭. **페이지 배경 위에 얹는다 — 별도 박스/sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 우측에는 액션 두지 말 것(액션은 하단 sticky Footer).",
+      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838 **+ (있으면) 바로 아래 부제** Pretendard Regular 16/24 #666. **레퍼런스에 부제가 있으면 반드시 유지 — title-only 로 축소 금지.** **타이틀/부제 아래에 divider(밑줄·border-bottom·hr) 를 넣지 말 것** — 헤더는 라인 없이 여백만 두고 다음 섹션으로 바로 이어진다. 타이틀/부제 아래 ~76px 여백 후 섹션 헤딩 시작. **페이지 배경 위에 얹는다 — 별도 박스/sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 우측에는 액션 두지 말 것(액션은 하단 sticky Footer).",
       "**섹션 헤딩 (카드 위 분리 노출)**: 헤딩(예: '기본 정보') 은 카드 **밖** 위에 위치 — Pretendard **Bold 24 / lh 30** #383838. 헤딩 아래 ~54px 후 카드 시작.",
       "**섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.",
       "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**, 필드 우측 ~684px (long) 또는 ~228px (date/short). 라벨은 row 중앙 정렬.",
@@ -5576,6 +5576,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**유효성 검사**: 입력 중 에러 표시 X (onBlur/submit). 글자 수 카운터만 실시간.",
     ],
     avoid: [
+      "**타이틀 아래에 라인(divider·border-bottom·hr·밑줄) 추가 — 금지.** 캐시워크 포 비즈니스 폼 헤더는 라인 없이 여백만으로 분리한다. PageHeader 컴포넌트면 `bordered` 를 켜지 말 것.",
       "라벨을 필드 위에 배치 (label-above 2단 흐름) — 캐시워크 포 비즈니스 admin 은 인라인-좌측 (172px 라벨 컬럼) 패턴.",
       "페이지 헤더 우측에 [저장] 버튼 — 하단 센터 액션바와 중복.",
       "필수 마커 색을 `#FF4141` 으로 — 캐시워크 포 비즈니스 폼은 `#FC3500` (Coral Red-Orange).",
@@ -5591,7 +5592,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         verdict: "good",
         source: "Figma 290:1197 캐시워크 포 비즈니스 admin form (퀴즈 등록하기)",
         caption:
-          "PageTitle 32 Bold (+부제) → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-40 rounded-10 → 하단 고정 흰 Footer 바 우측 [취소][저장].",
+          "PageTitle 32 Bold (+부제, 아래 divider 없음) → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-40 rounded-10 → 하단 고정 흰 Footer 바 우측 [취소][저장].",
       },
       {
         verdict: "bad",
@@ -5605,7 +5606,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       pageTitle: "Pretendard Bold 32/60 #383838",
       pageSubtitle: "Pretendard Regular 16/24 #666 (레퍼런스에 있으면 유지 — title-only 축소 금지)",
       pageHeaderContainer: "페이지 배경 위 (박스/sticky nds-shell__topbar 아님)",
-      titleToDivider: "76px (then 1px hairline #D8D8D8)",
+      titleDivider: "없음 — 타이틀/부제 아래 divider·border·hr 금지 (여백 ~76px 만)",
       sectionHeading: "Pretendard Bold 24/30 #383838 (카드 밖 위)",
       sectionHeadingToCardGap: "~54px",
       cardPadding: "48px × 36px (px × py)",
@@ -6776,7 +6777,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**필드 단위 실측(라벨 컬럼·필드 높이·필수 마커 등)은 `pattern:cashwalk-biz-form-layout` 이 SSOT** — 이 패턴은 페이지 조립(Step/섹션/요약/Footer) + **PRD→컴포넌트 매핑**을 정의. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-1041 / pattern 3615-522 실측 반영.",
     rules: [
       "**언제 쓰나**: PRD 에 '등록 / 만들기 / 생성 / 신규 / Step' 키워드가 있고, 여러 정책 옵션을 단계별로 설정하거나 '캠페인 → 광고 → 소재'처럼 계층 구조를 등록할 때. **단건(한 화면, Step Progress 없음) 폼이면 이 page-form 이 아니라 `pattern:cashwalk-biz-form-layout` 이 페이지 SSOT** — 이름이 비슷하니 주의: 단건=form-layout, 다단계=page-form.",
-      "**01b Page Header**: 좌측 타이틀 Bold 32 **+ (있으면) 부제 16/24 #666** → 풀폭 1px hairline divider. **페이지 배경 위에 얹는다 — 박스 sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 상세 px 는 `pattern:cashwalk-biz-form-layout` 의 페이지 헤더 참조(여기서 중복 정의 X).",
+      "**01b Page Header**: 좌측 타이틀 Bold 32 **+ (있으면) 부제 16/24 #666**. **타이틀/부제 아래에 divider(라인·border-bottom·hr) 를 넣지 말 것** — 여백만으로 다음 영역과 분리한다. **페이지 배경 위에 얹는다 — 박스 sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 상세 px 는 `pattern:cashwalk-biz-form-layout` 의 페이지 헤더 참조(여기서 중복 정의 X).",
       "**02 Step Progress**: 가로 막대 + Step N 라벨(Done / Current / Todo 상태). 다단계 등록일 때 사용 — Step ≥ 3 이면 필수. 영역 padding **32/48**, 하단 **border 1px**. 단건이면 생략.",
       "**03 Form Sections**: **FormSection 컴포넌트 반복** — 각 섹션 = 제목(예: '광고 정보') + 설명 + 필드 슬롯(label-좌측 + 입력 + helper). 섹션 사이 gap **32px**. 필드 슬롯의 라벨 컬럼·필드 높이·필수 마커 등 px·색은 `pattern:cashwalk-biz-form-layout` 을 그대로 따른다(여기서 중복 정의 X).",
       "**04 Summary / Preview Panel (선택)**: 메인 폼 우측 보조 패널 **400px** — 예상 성과·미리보기·입력 요약. 2컬럼 = 메인 폼(FILL) + 패널 400px. 없으면 단일 컬럼.",
@@ -6786,6 +6787,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**Validate — 구조**: Step ≥ 3 → Step Progress 필수 / 필수 필드 → FormField `required=true` / 조건부 노출 → Boolean variant 또는 컨테이너 hide.",
     ],
     avoid: [
+      "**Page Header 타이틀 아래에 라인(divider·border-bottom·hr) 추가 — 금지.** 여백만으로 분리. PageHeader 컴포넌트면 `bordered` 끔.",
       "필드 높이·라벨 컬럼·필수 마커 px 를 이 패턴에 중복 정의 (cashwalk-biz-form-layout 이 SSOT)",
       "단건 폼에 불필요한 Step Progress — Step ≥ 3 일 때만",
       "다단계 Footer 를 inline 센터 클러스터로 — 다단계는 좌(이전/임시저장)·우(다음/등록) 분리 Footer + 상단 border",
