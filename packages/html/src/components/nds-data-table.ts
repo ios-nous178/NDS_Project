@@ -135,7 +135,7 @@ export class NdsDataTable extends NdsElement {
               : typeof c.width === "string"
                 ? c.width
                 : undefined,
-          align: ["left", "center", "right"].includes(c.align) ? c.align : "left",
+          align: ["left", "center", "right"].includes(c.align) ? c.align : "center",
           sortable: !!c.sortable,
           cardLabel: typeof c.cardLabel === "string" ? c.cardLabel : undefined,
           hideOnCard: !!c.hideOnCard,
@@ -176,6 +176,21 @@ export class NdsDataTable extends NdsElement {
       `<rect x="1.2" y="1.2" width="21.6" height="21.6" rx="4" stroke="currentColor" stroke-width="2.4" opacity="0.32"/>` +
       `<rect x="6.5" y="11" width="11" height="2" rx="1" fill="currentColor"/>` +
       (expanded ? "" : `<rect x="11" y="6.5" width="2" height="11" rx="1" fill="currentColor"/>`);
+    return svg;
+  }
+
+  private _branchIcon(): SVGElement {
+    // 자식(하위) 행 머리의 ↳ 분기 화살표.
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "20");
+    svg.setAttribute("height", "20");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("aria-hidden", "true");
+    svg.style.display = "block";
+    svg.innerHTML =
+      `<path d="M9 6v6a2 2 0 0 0 2 2h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>` +
+      `<path d="M14.5 11l3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>`;
     return svg;
   }
 
@@ -273,7 +288,8 @@ export class NdsDataTable extends NdsElement {
       const isSortActive = sortKey === col.key;
       const th = document.createElement("th");
       th.dataset.slot = "th";
-      th.dataset.align = col.align ?? "left";
+      th.dataset.align =
+        expandable && col.key === expanderColumn ? "left" : (col.align ?? "center");
       th.dataset.sortable = col.sortable ? "true" : "false";
       if (col.width) th.style.width = col.width;
       th.className = DT_TH_CLASS;
@@ -355,7 +371,8 @@ export class NdsDataTable extends NdsElement {
         columns.forEach((col) => {
           const td = document.createElement("td");
           td.dataset.slot = "td";
-          td.dataset.align = col.align ?? "left";
+          td.dataset.align =
+            expandable && col.key === expanderColumn ? "left" : (col.align ?? "center");
           td.className = DT_TD_CLASS;
           if (expandable && col.key === expanderColumn) {
             const cell = document.createElement("span");
@@ -380,6 +397,7 @@ export class NdsDataTable extends NdsElement {
               const spacer = document.createElement("span");
               spacer.className = DT_EXPANDER_SPACER_CLASS;
               spacer.setAttribute("aria-hidden", "true");
+              if (fr.depth > 0) spacer.appendChild(this._branchIcon());
               cell.appendChild(spacer);
             }
             const text = document.createElement("span");
