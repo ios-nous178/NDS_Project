@@ -75,6 +75,7 @@ export class NdsSelect extends NdsElement {
   private _chevron: HTMLSpanElement | null = null;
   private _dropdown: HTMLDivElement | null = null;
   private _helper: HTMLSpanElement | null = null;
+  private _childObserver: MutationObserver | null = null;
   private _selectId = "";
   private _activeValue: string | null = null;
   private _outsideClick = (e: MouseEvent) => {
@@ -94,6 +95,7 @@ export class NdsSelect extends NdsElement {
   }
 
   override disconnectedCallback(): void {
+    this._childObserver?.disconnect();
     document.removeEventListener("click", this._outsideClick, true);
     document.removeEventListener("keydown", this._onKey, true);
     window.removeEventListener("scroll", this._onReposition, true);
@@ -164,16 +166,6 @@ export class NdsSelect extends NdsElement {
       const value = opt.getAttribute("value") ?? "";
       this.pickValue(value);
     });
-    for (const opt of options) {
-      dropdown.appendChild(opt);
-      // innerHTML 으로 children 이 박힐 때 부모 (nds-select) 의 connectedCallback 이
-      // 자식 (nds-select-option) 보다 먼저 호출되어 자식이 아직 upgrade 전일 수 있음.
-      // 명시적으로 upgrade 후 setOwner — option 은 portal 후 closest("nds-select")
-      // 가 부모를 못 찾으므로 owner ref 필수.
-      customElements.upgrade(opt);
-      (opt as NdsSelectOption).setOwner(this);
-    }
-
     root.append(trigger, dropdown);
     this.appendChild(root);
 
@@ -182,6 +174,42 @@ export class NdsSelect extends NdsElement {
     this._triggerText = triggerText;
     this._chevron = chevron;
     this._dropdown = dropdown;
+
+    // mount 시점에 이미 존재하는 옵션 입양.
+    for (const opt of options) this._adoptOption(opt as HTMLElement);
+
+    // 스트리밍 HTML 파서(목업 단일 HTML 파일)에서는 부모 <nds-select> 의 connectedCallback 이
+    // 자식 <nds-select-option> 보다 먼저 실행돼 위 초기 수집이 0개일 수 있다 → 드롭다운이 빈 채로
+    // 열리거나 옵션이 host 직속에 raw 로 남는다(이 때문에 목업에서 Select 대신 Segmented 로 우회함).
+    // 늦게 파싱되어 host 직속으로 들어오는 옵션을 dropdown 으로 입양한다.
+    this._childObserver = new MutationObserver((mutations) => {
+      let adopted = false;
+      for (const m of mutations) {
+        for (const node of Array.from(m.addedNodes)) {
+          if (
+            node instanceof HTMLElement &&
+            node.tagName.toLowerCase() === "nds-select-option" &&
+            node.parentElement === this
+          ) {
+            this._adoptOption(node);
+            adopted = true;
+          }
+        }
+      }
+      if (adopted) this.scheduleUpdate();
+    });
+    this._childObserver.observe(this, { childList: true });
+  }
+
+  /**
+   * host 직속 <nds-select-option> 을 dropdown 안으로 옮겨 메뉴에 편입.
+   * option 은 portal 후 closest("nds-select") 로 부모를 못 찾으므로 upgrade + setOwner 보장.
+   */
+  private _adoptOption(opt: HTMLElement): void {
+    if (!this._dropdown || opt.parentElement === this._dropdown) return;
+    this._dropdown.appendChild(opt);
+    customElements.upgrade(opt);
+    (opt as NdsSelectOption).setOwner?.(this);
   }
 
   protected update(): void {
