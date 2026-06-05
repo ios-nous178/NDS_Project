@@ -165,6 +165,9 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   // UTF-8 한글을 Latin-1/unicode_escape 로 잘못 디코딩 → 모지바케(Ã/ë…). 깨진 JSON 도 파싱은 되므로
   // nds-json-attr-unparseable 로는 안 잡힘 (회귀: 사이드바 한글 전부 깨짐 + 로고 유실)
   "mojibake-encoding": "error",
+  // 선택한 지역(시/도 > 시/군/구)을 Chip 으로 인라인 표현 — SelectionButton 과 혼동 + 제거/개수
+  // affordance 누락. SelectedItemsPanel + RegionRow 로 그려야 함 (회귀: 캐포비 타겟팅 폼)
+  "region-as-chip": "warn",
   "unknown-token": "error",
   "ds-badge-missing": "error",
   // 토큰 / 시멘틱
@@ -1227,6 +1230,22 @@ function collectDocumentLevelViolations(
         "Chip 은 상태/분류/짧은 속성에만 제한적으로. 섹션 장식이나 모든 카드 반복 강조는 피하세요. get_guide({ topic: 'component:Chip' }) 참조.",
     });
   }
+
+  // region-as-chip: 지역 경로(시/도 > 시/군/구)가 든 Chip = 선택한 지역을 Chip 으로 잘못 표현한 신호.
+  //   캐포비 타겟팅 폼의 '특정 지역' 결과는 SelectedItemsPanel + RegionRow 로 그려야 한다 — 노란
+  //   outlined 칩은 SelectionButton 과 혼동되고 '추가 선택/선택 해제'·개수 강조·개별 제거가 빠진다.
+  $("nds-chip").each((_i, el) => {
+    const txt = $(el).text().replace(/\s+/g, " ").trim();
+    if (!/\s>\s/.test(txt)) return; // 시/도 > 시/군/구 같은 지역 경로만 — 일반 칩은 통과
+    out.push({
+      rule: "region-as-chip",
+      line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
+      selector: describeElement(el as unknown as DomElement),
+      detail: `선택한 지역으로 보이는 항목("${txt.slice(0, 32)}")을 <nds-chip> 으로 표현했습니다 — 지역 경로(시/도 > 시/군/구)는 Chip 자리가 아닙니다.`,
+      suggestion:
+        "동적 다중 선택 결과(지역/카테고리)는 <nds-selected-items-panel> + <nds-region-row> 로 그릴 것 (회색 패널 · '+ 지역 추가' · 개별 제거 X · 개수 강조). 노란 outlined Chip 은 SelectionButton 과 혼동됨. get_guide({ topic: 'component:SelectedItemsPanel' }). Figma 3001:49174.",
+    });
+  });
 
   const cardTotal = $("nds-card").length;
   if (cardTotal >= 5 * screenCount) {

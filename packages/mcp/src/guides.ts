@@ -3585,6 +3585,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "선택 항목 슬롯 패널 — 헤더(타이틀 + 강조 개수 + 추가 선택/선택 해제 액션)는 고정, 본문은 RegionRow 리스트·폼·테이블 등으로 swap 하는 INSTANCE_SWAP 슬롯. 캐포비 admin 의 다중 선택 결과 패널. RegionRow(라벨 + 삭제 X) 동봉.",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3828-1577",
     pitfalls: [
+      "**선택한 지역/카테고리/멤버 등 '동적 다중 선택 결과'를 Chip/ActionChip 으로 인라인 나열 금지** — 특히 캐포비 brand 노란 outlined 칩(`강원특별자치도 > 강릉시 ✕`)은 SelectionButton 과 시각적으로 같아 혼동되고, '추가 선택/선택 해제'·개수 강조·개별 제거 affordance 가 빠진다. 회색 `SelectedItemsPanel`(surface.subtle 패널) + `RegionRow`(라벨 + 삭제 X) 로 그릴 것. 타겟팅 폼 '특정 지역' 결과도 동일 — Figma 3001:49174 는 '+ 지역 추가' 회색 컨테이너이고, 지역을 추가하면 그 안에 RegionRow 가 누적된다(노란 칩 아님).",
       "개수를 타이틀 문자열에 직접 넣지 말 것 — `count` prop/속성이 text.brand 색으로 강조 렌더. 타이틀은 명사만.",
       "헤더 액션(추가 선택 / 선택 해제)은 **고정 구성** — 임의의 버튼을 헤더에 더 끼워넣지 말 것. onAdd/onClear(또는 nds-selected-items-add/clear 이벤트)로만 제어.",
       "본문 항목 삭제는 RegionRow 의 onRemove(또는 nds-region-remove 이벤트)로 — 패널이 항목 상태를 들고 있지 않음(controlled). 호스트가 리스트를 갱신.",
@@ -3901,6 +3902,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "옵션 4개 이상 — 가로 폭 부족. Select 또는 SelectionCard 사용.",
       "라벨+설명+아이콘이 필요한 카드형 선택 — SelectionCard 가 적합.",
       "선택색을 hex 로 박지 말 것 — selected 는 --semantic-bg-brand-subtle / --semantic-border-brand-default 캐스케이드로 5개 브랜드 자동 대응.",
+      "**'특정 X'(특정 지역/연령/카테고리) 선택 시 노출되는 '선택 결과'를 또 다른 SelectionButton·노란 outlined 칩으로 그리지 말 것** — 결과 컴포넌트는 따로다: ① 소수 고정 선택지(연령대 6~7개)는 **toggle Chip**(선택=brand-subtle filled + ✓ 체크) 한 묶음, ② 동적 다중 선택(지역·카테고리처럼 picker 로 추가)은 **`SelectedItemsPanel` + `RegionRow`**(회색 패널 안 '+ 지역 추가' → 추가하면 RegionRow 누적, 개별 제거 X). 특히 **선택한 지역을 `강원특별자치도 > 강릉시 ✕` 같은 노란 outlined 칩으로 인라인 나열 = 회귀(SelectionButton 과 시각적으로 동일해 혼동)** — get_guide({ topic:'component:SelectedItemsPanel' }) 의 RegionRow 사용. 캐포비 타겟팅 폼 SSOT: Figma 3001:49174.",
     ],
     examplesHtml: {
       do: '<nds-selection-button-group value="always" options=\'[{"value":"always","label":"항상"},{"value":"time","label":"특정 시간만"},{"value":"weekday","label":"특정 요일/시간만"}]\'></nds-selection-button-group>\n<script>el.addEventListener("selection-button-change", e => setSchedule(e.detail.value));</script>',
