@@ -19,8 +19,12 @@ const meta: Meta = {
     },
   },
   decorators: [
-    (Story) => (
-      <ToastProvider>
+    // 스토리별 parameters 로 position/maxCount 를 받는 단일 Provider — 중첩 Provider(=viewport 2개) 방지.
+    (Story, ctx) => (
+      <ToastProvider
+        position={ctx.parameters.toastPosition ?? "bottom"}
+        maxCount={ctx.parameters.toastMaxCount ?? 3}
+      >
         <Story />
       </ToastProvider>
     ),
@@ -110,14 +114,11 @@ function CashbizToastInner() {
  */
 export const CashbizTopRight: Story = {
   name: "Brand/Cashbiz Top-Right (흰 카드 · Single)",
-  // globals.brand → preview 데코레이터가 <html data-brand="cashwalk-biz"> 를 박는다.
-  // 토스트는 body 로 포탈되지만 html 의 data-brand cascade 가 흰 카드 스타일을 적용한다.
+  // globals.brand → preview 데코레이터가 <html data-brand="cashwalk-biz"> 를 박아 흰 카드 cascade 적용.
+  // toastPosition/toastMaxCount → meta 데코레이터의 단일 Provider 가 우측 상단 고정 + 단일 교체로 렌더.
   globals: { brand: "cashwalk-biz" },
-  render: () => (
-    <ToastProvider position="top-right" maxCount={1}>
-      <CashbizToastInner />
-    </ToastProvider>
-  ),
+  parameters: { toastPosition: "top-right", toastMaxCount: 1 },
+  render: () => <CashbizToastInner />,
 };
 
 /* ─── Multiline ─── */

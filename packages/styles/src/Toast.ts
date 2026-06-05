@@ -4,8 +4,10 @@ import { cv, fontFamily, fontWeight, transition, typeScale, zIndex } from "@nudg
 const TOAST_CLASS = "nds-toast";
 const TOAST_VIEWPORT_CLASS = `${TOAST_CLASS}__viewport`;
 const TOAST_ITEM_CLASS = `${TOAST_CLASS}__item`;
+const TOAST_ICON_CLASS = `${TOAST_CLASS}__icon`;
 const TOAST_MESSAGE_CLASS = `${TOAST_CLASS}__message`;
 const TOAST_ACTION_CLASS = `${TOAST_CLASS}__action`;
+const TOAST_CLOSE_CLASS = `${TOAST_CLASS}__close`;
 
 export const toastStyles = `
   :where(.${TOAST_VIEWPORT_CLASS}) {
@@ -105,6 +107,12 @@ export const toastStyles = `
     text-decoration: underline;
   }
 
+  /* status 아이콘 / 닫기 X 는 기본 숨김 — base 다크 pill 외관 유지. 캐포비 흰 카드에서만 노출. */
+  :where(.${TOAST_ICON_CLASS}),
+  :where(.${TOAST_CLOSE_CLASS}) {
+    display: none;
+  }
+
   /* ── 캐포비(cashwalk-biz) admin 토스트 — 흰 카드 (Figma 3001:51644) ──
      base 는 다크 pill(radius 22)·state 별 옅은색 배경이지만, 캐포비는 모든 state 가
      '흰 배경 + 그림자 카드 + 좌측 status 아이콘(색만 state 별) + 검정 메시지'.
@@ -125,16 +133,37 @@ export const toastStyles = `
   }
   :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS} .${TOAST_MESSAGE_CLASS}) {
     text-align: left;
+    font-weight: ${fontWeight.bold};
   }
-  /* 좌측 status 아이콘(컴포넌트가 슬롯을 렌더하면) 색만 state 별. */
-  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="success"] .${TOAST_CLASS}__icon) {
+  /* 좌측 status 아이콘 노출 + 사이즈(24). 색은 state 별(currentColor 가 도형 fill). */
+  :where([data-brand="cashwalk-biz"] .${TOAST_ICON_CLASS}) {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  }
+  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="success"] .${TOAST_ICON_CLASS}) {
     color: ${cv.iconRole.statusSuccess};
   }
-  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="error"] .${TOAST_CLASS}__icon) {
+  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="error"] .${TOAST_ICON_CLASS}) {
     color: ${cv.iconRole.statusError};
   }
-  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="warning"] .${TOAST_CLASS}__icon) {
+  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="warning"] .${TOAST_ICON_CLASS}) {
     color: ${cv.iconRole.statusCaution};
+  }
+  /* 우측 닫기 X 노출 — 회색, 버튼 리셋. */
+  :where([data-brand="cashwalk-biz"] .${TOAST_CLOSE_CLASS}) {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: ${cv.iconRole.normal};
+    cursor: pointer;
   }
 
   @keyframes nds-toast-enter {
