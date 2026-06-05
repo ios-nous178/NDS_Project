@@ -65,6 +65,13 @@ export const segmentedStyles = `
     box-shadow: ${shadow["1"]};
   }
 
+  /* solid: active 가 진한 Inverse fill + 흰 텍스트 (캐포비 노출/클릭 토글 정합) */
+  :where(.${SC_ROOT_CLASS}[data-variant="solid"] .${SC_ITEM_CLASS}[data-active="true"]) {
+    background: ${cv.surface.inverse};
+    color: ${cv.textRole.inverse};
+    box-shadow: none;
+  }
+
   :where(.${SC_ITEM_CLASS}:disabled) {
     cursor: not-allowed;
     opacity: 0.5;

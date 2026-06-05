@@ -11,6 +11,8 @@ export { NdsElement, define } from "./base/nds-element.js";
 export { NdsButton } from "./components/nds-button.js";
 export type { ButtonColor, ButtonSize, ButtonVariant } from "./components/nds-button.styles.js";
 
+export { NdsAddButton } from "./components/nds-add-button.js";
+
 export { NdsIconButton } from "./components/nds-icon-button.js";
 export type { IconButtonSize } from "./components/nds-icon-button.js";
 
@@ -105,6 +107,7 @@ export { NdsFormField } from "./components/nds-form-field.js";
 export { NdsModal } from "./components/nds-modal.js";
 
 export { NdsSelect, NdsSelectOption } from "./components/nds-select.js";
+export { NdsMultiSelect } from "./components/nds-multi-select.js";
 
 export { NdsToast } from "./components/nds-toast.js";
 

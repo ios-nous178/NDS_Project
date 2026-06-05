@@ -10,6 +10,14 @@ const SC_ITEM_CLASS = `${SC_CLASS}__item`;
 
 export type SegmentedControlSize = "sm" | "md";
 
+/**
+ * 시각 변형.
+ *  - `default` : 회색 트랙 위에 흰색으로 떠오르는 active (iOS 스타일).
+ *  - `solid`   : active 가 진한(Inverse) fill + 흰 텍스트. 캐포비 리포트의 노출/클릭
+ *                연결형 토글(Figma 3001:30014) 정합.
+ */
+export type SegmentedControlVariant = "default" | "solid";
+
 export interface SegmentedOption<T extends string = string> {
   /** 옵션 값 */
   value: T;
@@ -31,6 +39,8 @@ export interface SegmentedControlProps<T extends string = string> extends Omit<
   onValueChange: (value: T) => void;
   /** 크기 */
   size?: SegmentedControlSize;
+  /** 시각 변형 @default "default" */
+  variant?: SegmentedControlVariant;
   /** 전체 너비 차지 */
   fullWidth?: boolean;
   /** 비활성화 */
@@ -48,6 +58,7 @@ export const SegmentedControl = <T extends string = string>({
   value,
   onValueChange,
   size = "sm",
+  variant = "default",
   fullWidth = false,
   disabled = false,
   className,
@@ -57,6 +68,7 @@ export const SegmentedControl = <T extends string = string>({
     <div
       data-slot="root"
       data-size={size}
+      data-variant={variant}
       data-fullwidth={fullWidth ? "true" : "false"}
       role="radiogroup"
       className={cx(SC_ROOT_CLASS, className)}

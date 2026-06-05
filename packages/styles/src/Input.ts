@@ -20,6 +20,7 @@ const INPUT_SUFFIX_CLASS = `${INPUT_CLASS}__suffix`;
 const INPUT_CLEAR_CLASS = `${INPUT_CLASS}__clear`;
 const INPUT_HELPER_CLASS = `${INPUT_CLASS}__helper`;
 const INPUT_HELPER_GROUP_CLASS = `${INPUT_CLASS}__helper-group`;
+const INPUT_COUNT_CLASS = `${INPUT_CLASS}__count`;
 
 export const inputStyles = `
   :where(.${INPUT_ROOT_CLASS}) {
@@ -116,6 +117,19 @@ export const inputStyles = `
     flex-shrink: 0;
     line-height: 1;
     color: ${cv.iconRole.strong};
+  }
+
+  :where(.${INPUT_COUNT_CLASS}) {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: ${typeScale.caption2.fontSize}px;
+    line-height: 1;
+    color: ${cv.textRole.muted};
+    font-variant-numeric: tabular-nums;
+  }
+
+  :where(.${INPUT_COUNT_CLASS}[data-over="true"]) {
+    color: ${cv.textRole.statusError};
   }
 
   :where(.${INPUT_CLEAR_CLASS}) {

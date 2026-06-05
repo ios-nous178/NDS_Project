@@ -70,6 +70,7 @@ export class NdsInput extends NdsElement {
       "readonly",
       "full-width",
       "clearable",
+      "show-count",
       "value",
       "default-value",
       "input-id",
@@ -82,6 +83,7 @@ export class NdsInput extends NdsElement {
   private _wrapper: HTMLDivElement | null = null;
   private _field: HTMLInputElement | null = null;
   private _clear: HTMLButtonElement | null = null;
+  private _count: HTMLSpanElement | null = null;
   private _helper: HTMLSpanElement | null = null;
   private _inputId = "";
   private _focused = false;
@@ -119,6 +121,7 @@ export class NdsInput extends NdsElement {
     field.addEventListener("input", () => {
       this._dirty = true;
       this._syncClearVisibility();
+      this._syncCount();
       this.dispatchEvent(new Event("input", { bubbles: true }));
     });
     field.addEventListener("change", () => {
@@ -203,6 +206,7 @@ export class NdsInput extends NdsElement {
     this._syncLabel();
     this._syncHelper();
     this._syncClearVisibility();
+    this._syncCount();
   }
 
   private _syncLabel(): void {
@@ -282,6 +286,34 @@ export class NdsInput extends NdsElement {
       this._clear.remove();
       this._clear = null;
     }
+  }
+
+  private _syncCount(): void {
+    if (!this._wrapper || !this._field) return;
+    const maxRaw = this.getAttribute("maxlength");
+    const max = maxRaw === null ? NaN : Number(maxRaw);
+    const visible = this.boolAttr("show-count") && Number.isFinite(max);
+
+    if (!visible) {
+      if (this._count) {
+        this._count.remove();
+        this._count = null;
+      }
+      return;
+    }
+
+    if (!this._count) {
+      const span = document.createElement("span");
+      span.className = "nds-input__count";
+      span.dataset.slot = "count";
+      // field 바로 뒤(= clear/suffix 앞)에 위치
+      this._wrapper.insertBefore(span, this._field.nextSibling);
+      this._count = span;
+    }
+
+    const len = this._field.value.length;
+    this._count.dataset.over = len > max ? "true" : "false";
+    this._count.textContent = `${len}/${max}`;
   }
 
   private _normalizedSize(): InputSize {

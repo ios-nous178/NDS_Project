@@ -22,6 +22,7 @@ import {
   Breadcrumb,
   BreathingGuide,
   Button,
+  AddButton,
   Calendar,
   Card,
   CardVisual,
@@ -86,6 +87,8 @@ import {
   SearchInput,
   SegmentedControl,
   Select,
+  MultiSelect,
+  PageSizeSelect,
   SelectionCard,
   SelectionButtonGroup,
   Skeleton,
@@ -174,6 +177,14 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Button size="sm" variant="outlined">
         취소
       </Button>
+    </div>
+  ),
+  AddButton: () => (
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%", maxWidth: 360 }}
+    >
+      <AddButton>지역 추가</AddButton>
+      <AddButton error>지역 추가</AddButton>
     </div>
   ),
   TextButton: () => (
@@ -683,6 +694,34 @@ const PREVIEWS: Record<string, PreviewRender> = {
       </StatsTable>
     </div>
   ),
+  MultiSelect: () => {
+    function M() {
+      const [v, setV] = useState<string[]>(["a"]);
+      return (
+        <div style={{ width: "100%", maxWidth: 280 }}>
+          <MultiSelect
+            placeholder="모든 광고"
+            searchPlaceholder="광고명으로 검색"
+            value={v}
+            onValueChange={setV}
+            options={[
+              { value: "a", label: "캠페인 A 타겟팅" },
+              { value: "b", label: "캠페인 B 리타겟" },
+              { value: "c", label: "캠페인 C 포커싱" },
+            ]}
+          />
+        </div>
+      );
+    }
+    return <M />;
+  },
+  PageSizeSelect: () => {
+    function P() {
+      const [n, setN] = useState(100);
+      return <PageSizeSelect value={n} onValueChange={setN} />;
+    }
+    return <P />;
+  },
   ReactionPicker: () => {
     function R() {
       const [v, setV] = useState<string[]>([]);

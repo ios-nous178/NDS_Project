@@ -13,6 +13,7 @@ const INPUT_SUFFIX_CLASS = `${INPUT_CLASS}__suffix`;
 const INPUT_CLEAR_CLASS = `${INPUT_CLASS}__clear`;
 const INPUT_HELPER_CLASS = `${INPUT_CLASS}__helper`;
 const INPUT_HELPER_GROUP_CLASS = `${INPUT_CLASS}__helper-group`;
+const INPUT_COUNT_CLASS = `${INPUT_CLASS}__count`;
 
 export type InputSize = "default" | "field" | "compact";
 
@@ -417,6 +418,11 @@ export interface InputProps extends Omit<
   clearable?: boolean;
   /** 클리어 시 콜백 */
   onClear?: () => void;
+  /**
+   * `maxLength` 와 함께 우측에 "현재/최대" 글자수 카운터를 노출 (예: 24/25).
+   * Figma 캐포비 캠페인 이름 입력(3782:19709) 정합. Textarea 의 카운터와 동일 톤.
+   */
+  showCount?: boolean;
   /** 우측 addon (버튼 등) */
   suffix?: React.ReactNode;
   /** 좌측 addon (아이콘 등) */
@@ -446,6 +452,8 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
       helperIcon,
       clearable = false,
       onClear,
+      showCount = false,
+      maxLength,
       suffix,
       prefix,
       fullWidth = true,
@@ -475,6 +483,8 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
     const isControlled = value !== undefined;
     const currentValue = isControlled ? value : internalValue;
     const hasValue = currentValue !== "" && currentValue !== undefined && currentValue !== null;
+    const charCount = String(currentValue ?? "").length;
+    const showCounter = showCount && typeof maxLength === "number";
     const showError = error || !!errorMessage;
     const showSuccess = !showError && (complete || !!successMessage);
     // 단일 헬퍼 우선순위: errorMessage > successMessage > helperText
@@ -535,6 +545,7 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
           <InputField
             ref={inputRef}
             value={currentValue}
+            maxLength={maxLength}
             onChange={handleChange}
             onFocus={onFocus}
             onBlur={onBlur}
@@ -548,6 +559,15 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
               style={slotProps?.clearButton?.style}
               onClick={handleClear}
             />
+          )}
+          {showCounter && (
+            <span
+              data-slot="count"
+              data-over={charCount > maxLength! ? "true" : "false"}
+              className={INPUT_COUNT_CLASS}
+            >
+              {charCount}/{maxLength}
+            </span>
           )}
           {suffix && (
             <span data-slot="suffix" className={INPUT_SUFFIX_CLASS}>
