@@ -41,6 +41,7 @@ export * from "./PopularPosts";
 export * from "./FloatingCtaBanner";
 export * from "./ImageUpload";
 export * from "./ActionChip";
+export * from "./SelectedItemsPanel";
 export * from "./LikertScale";
 export * from "./Stepper";
 export * from "./StepProgress";

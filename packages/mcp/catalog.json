@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-04T23:54:19.348Z",
+  "generatedAt": "2026-06-05T00:23:02.388Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -4934,6 +4934,58 @@
       ],
       "dtsRelPath": "packages/react/dist/Select.d.ts",
       "htmlTag": "nds-select"
+    },
+    {
+      "name": "SelectedItemsPanel",
+      "props": [
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "count",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "countSuffix",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "showActions",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onAdd",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "onClear",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "addLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "clearLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/SelectedItemsPanel.d.ts",
+      "htmlTag": "nds-selected-items-panel"
     },
     {
       "name": "SelectionButtonGroup",
@@ -10264,6 +10316,7 @@
     "nds-quick-action-grid",
     "nds-radio",
     "nds-reaction-picker",
+    "nds-region-row",
     "nds-review-card",
     "nds-score-gauge",
     "nds-search-input",
@@ -10271,6 +10324,7 @@
     "nds-segmented-control",
     "nds-select",
     "nds-select-option",
+    "nds-selected-items-panel",
     "nds-selection-button-group",
     "nds-selection-card",
     "nds-selection-card-item",
@@ -10739,6 +10793,10 @@
     },
     {
       "tag": "nds-select",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-selected-items-panel",
       "attrs": {}
     },
     {

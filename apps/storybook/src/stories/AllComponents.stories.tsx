@@ -113,6 +113,8 @@ import {
   FloatingCtaBanner,
   ImageUpload,
   ActionChip,
+  SelectedItemsPanel,
+  RegionRow,
   UserCard,
   VotePoll,
 } from "@nudge-design/react";
@@ -1723,6 +1725,14 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <ActionChip label="예시 이미지" />
       <ActionChip label="수정" />
       <ActionChip label="다운로드" />
+    </div>
+  ),
+  SelectedItemsPanel: () => (
+    <div style={{ width: 360 }}>
+      <SelectedItemsPanel title="선택한 지역" count={2} onAdd={() => {}} onClear={() => {}}>
+        <RegionRow onRemove={() => {}}>강원특별자치도 &gt; 강릉시</RegionRow>
+        <RegionRow onRemove={() => {}}>서울특별시 &gt; 강남구</RegionRow>
+      </SelectedItemsPanel>
     </div>
   ),
 };

@@ -136,6 +136,8 @@ export type { SegmentedSize } from "./components/nds-segmented.js";
 
 export { NdsActionChip } from "./components/nds-action-chip.js";
 
+export { NdsSelectedItemsPanel, NdsRegionRow } from "./components/nds-selected-items-panel.js";
+
 export { NdsCountdownTimer } from "./components/nds-countdown-timer.js";
 export type { CountdownFormat } from "./components/nds-countdown-timer.js";
 

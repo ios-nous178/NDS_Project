@@ -1531,6 +1531,18 @@
     "notes": "별도 row 로 떨어뜨리지 말고 helper 와 inline. 주요 CTA 자리에는 사용 금지 (시각 위계 캡션 톤). 아이콘은 14px 강제(`width={14} height={14}`)."
   },
   {
+    "name": "SelectedItemsPanel",
+    "category": "입력",
+    "status": "implemented",
+    "description": "선택 항목 슬롯 패널 — 헤더(타이틀 + 강조 개수 + 추가 선택/선택 해제 액션) 고정, 본문은 RegionRow/리스트/폼/테이블 슬롯. RegionRow(라벨 + 삭제) 동봉.",
+    "storybookTitle": "Components/SelectedItemsPanel",
+    "docsPath": "/components/selected-items-panel",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3828-1577",
+    "figmaNodeId": "3828:1577",
+    "usageSummary": "캐포비 admin 의 다중 선택 결과 패널 (선택한 지역 N개 등). 본문은 INSTANCE_SWAP 슬롯으로 RegionRow 리스트/폼/테이블 교체.",
+    "notes": "헤더 액션(추가 선택 / 선택 해제)은 고정 구성 — onAdd/onClear 콜백으로 제어. count 는 브랜드색(text.brand)으로 강조. 본문 스크롤은 --nds-selected-items-panel-body-max-height 로 제한."
+  },
+  {
     "name": "GenietAppBar",
     "category": "레이아웃",
     "status": "implemented",
