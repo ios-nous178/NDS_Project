@@ -49,8 +49,8 @@ export const dataTableStyles = `
   }
 
   :where(.${DT_TH_CLASS}) {
-    text-align: left;
-    padding: ${spacing[10]}px var(--semantic-inset-input);
+    text-align: center;
+    padding: ${spacing[20]}px var(--semantic-inset-modal);
     background: ${cv.surface.page};
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
@@ -106,7 +106,7 @@ export const dataTableStyles = `
   }
 
   :where(.${DT_TD_CLASS}) {
-    padding: var(--semantic-inset-input);
+    padding: ${spacing[30]}px var(--semantic-inset-modal);
     color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -213,9 +213,12 @@ export const dataTableStyles = `
   }
   :where(.${DT_EXPANDER_SPACER_CLASS}) {
     flex-shrink: 0;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 20px;
     height: 20px;
+    color: ${cv.textRole.subtle};
   }
   /* 자식 행은 살짝 가라앉은 배경으로 위계 표시 */
   :where(.${DT_TR_CLASS}[data-depth="1"]) > .${DT_TD_CLASS} { background: ${cv.surface.page}; }

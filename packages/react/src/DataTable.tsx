@@ -128,6 +128,35 @@ const ExpanderIcon = ({ expanded }: { expanded: boolean }) => (
   </svg>
 );
 
+// 자식(하위) 행 머리의 ↳ 분기 화살표 (Figma 날짜별 리포트 자식 행 마커).
+const BranchIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    style={{ display: "block" }}
+  >
+    <path
+      d="M9 6v6a2 2 0 0 0 2 2h6"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity="0.5"
+    />
+    <path
+      d="M14.5 11l3 3-3 3"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity="0.5"
+    />
+  </svg>
+);
+
 /* ─── Component ─── */
 
 export function DataTable<T>({
@@ -159,6 +188,10 @@ export function DataTable<T>({
   );
   const expandable = typeof getSubRows === "function";
   const expanderKey = expanderColumnKey ?? columns[0]?.key;
+
+  // 기본 정렬 = 중앙(헤더·셀 동일). 펼침 토글 컬럼만 좌측(토글+들여쓰기). 숫자는 컬럼에 align="right".
+  const colAlign = (col: DataTableColumn<T>): "left" | "center" | "right" =>
+    expandable && col.key === expanderKey ? "left" : (col.align ?? "center");
 
   const toggleExpand = useCallback(
     (key: string) => {
@@ -244,6 +277,10 @@ export function DataTable<T>({
           >
             <ExpanderIcon expanded={fr.expanded} />
           </button>
+        ) : fr.depth > 0 ? (
+          <span className={DT_EXPANDER_SPACER_CLASS} aria-hidden="true">
+            <BranchIcon />
+          </span>
         ) : (
           <span className={DT_EXPANDER_SPACER_CLASS} aria-hidden="true" />
         )}
@@ -269,7 +306,7 @@ export function DataTable<T>({
                   <th
                     key={col.key}
                     data-slot="th"
-                    data-align={col.align ?? "left"}
+                    data-align={colAlign(col)}
                     data-sortable={col.sortable ? "true" : "false"}
                     style={{ width: col.width }}
                     className={DT_TH_CLASS}
@@ -328,7 +365,7 @@ export function DataTable<T>({
                     <td
                       key={col.key}
                       data-slot="td"
-                      data-align={col.align ?? "left"}
+                      data-align={colAlign(col)}
                       className={DT_TD_CLASS}
                     >
                       {renderExpandableCell(col, fr)}
