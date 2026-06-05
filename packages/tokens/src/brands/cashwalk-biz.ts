@@ -213,6 +213,19 @@ export const cashwalkBizTheme: BrandTheme = {
     "form-field": { labelColor: "var(--semantic-text-strong-default)" },
     // ActionChip — 캐포비 가이드(3079:554): radius 6 / bg #ECECEC (Neutral 100·200 사이 raw).
     "action-chip": { radius: 6, bg: "#ECECEC" },
+    // Badge(Label) — 캐포비 ChipGuide(3782:20558 · Rounded Square):
+    //   radius 5 / padding 4·10 / Caption 12/16 / Medium(500) (base bold·radius 4/6).
+    //   톤은 ghost 변형 + semantic 색 cascade 로 이미 캐포비값(#FFFAE5/#FD9B02 등) 적용.
+    //   Pill(완전둥근) identity 태그는 radius 만 pill 로 인라인 지정해 사용.
+    badge: {
+      radius: 5,
+      height: 24,
+      paddingX: 10,
+      paddingY: 4,
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: "500",
+    },
     // Figma 캐포비 CheckboxGuide (3082:899):
     //   box 15×15 / 1.25px border / radius 2px / unchecked border #DDD (border.strong)
     //   disabled = 색 변경 없이 단순 opacity 0.4
