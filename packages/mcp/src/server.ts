@@ -68,10 +68,12 @@ import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
 import { getIconSvg } from "./icon-svg.js";
 import {
+  markVisualRefEmitted,
   noteReportSent,
   noteReportSuppressed,
   principlesAcked,
   principlesCalledAt,
+  visualRefEmitted,
 } from "./tools/session-state.js";
 
 const VISUAL_REFERENCE_QUESTION =
@@ -457,8 +459,28 @@ function visualReferencePrompt(toolName: string) {
   };
 }
 
-function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
-  const prompt = visualReferencePrompt(toolName);
+/**
+ * 첫 호출 이후 재첨부되는 슬림 stub. 풀 게이트는 세션 첫 응답에서 100% 보존되고,
+ * enforcement 는 툴 description / 생성된 CLAUDE.md / pattern:visual-reference 에도 상주하므로
+ * 이후 응답은 운영 큐(task 슬러그 확인 + 풀 게이트 재조회 경로)만 1줄로 유지한다.
+ */
+function visualReferencePromptStub(toolName: string) {
+  return {
+    rule: "visual-reference-first-response",
+    tool: toolName,
+    required: false,
+    recap:
+      "레퍼런스 게이트는 이번 세션 첫 응답에서 안내됨. 새 mockup task 면 references.md 의 `task: <slug>` 가 현재 스코프(브랜드+화면)와 맞는지 확인 — 다르거나 없으면 get_guide({ topic: 'pattern:visual-reference' }) 로 풀 게이트 재조회.",
+  };
+}
+
+// export: visual-reference-session.test.ts 의 세션-once 회귀 테스트용 (런타임 동작 변경 없음).
+export function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
+  // 세션 첫 호출만 풀 게이트, 이후엔 슬림 stub — 매 조회 응답의 풀 블록 재첨부는 순수 중복.
+  const prompt = visualRefEmitted()
+    ? visualReferencePromptStub(toolName)
+    : visualReferencePrompt(toolName);
+  markVisualRefEmitted();
   if (Array.isArray(result)) {
     return {
       _visualReferenceFirstResponse: prompt,
@@ -487,15 +509,24 @@ function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
  */
 function attachPrinciplesAck<T>(result: T): T | object {
   const principlesCalled = principlesAcked();
-  const ack = {
-    rule: "principles-first",
-    required: !principlesCalled,
-    principlesCalled,
-    calledAt: principlesCalledAt() ?? null,
-    question: "이번 세션에 get_guide({ topic:'principles' }) 호출 기록 있나요?",
-    shortcut:
-      "없으면 지금 호출 — 평균 25-30% 토큰 절약 (회고 데이터). 배치 호출 예: get_guide({ topics:['principles','dos-donts'] }).",
-  };
+  // 이미 호출한 세션이면 question/shortcut 환기 텍스트는 순수 중복(required 도 항상 false)
+  // → 1줄 ack 로 축약. 미호출 세션에서만 풀 넛지를 띄워 다음 사이클에서 챙기게 한다.
+  const ack = principlesCalled
+    ? {
+        rule: "principles-first",
+        required: false,
+        principlesCalled: true,
+        calledAt: principlesCalledAt() ?? null,
+      }
+    : {
+        rule: "principles-first",
+        required: true,
+        principlesCalled: false,
+        calledAt: null,
+        question: "이번 세션에 get_guide({ topic:'principles' }) 호출 기록 있나요?",
+        shortcut:
+          "없으면 지금 호출 — 평균 25-30% 토큰 절약 (회고 데이터). 배치 호출 예: get_guide({ topics:['principles','dos-donts'] }).",
+      };
   if (Array.isArray(result)) {
     return { _principlesAck: ack, results: result };
   }
