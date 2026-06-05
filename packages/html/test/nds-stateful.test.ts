@@ -236,6 +236,34 @@ describe("nds-modal", () => {
     await flush();
     expect(el.hasAttribute("open")).toBe(false);
   });
+
+  it('slot="footer" 를 .nds-modal__footer 로 승격 + body 의 형제로 배치 (single)', async () => {
+    const el = document.createElement("nds-modal");
+    el.setAttribute("open", "");
+    el.innerHTML = '<p>본문</p><div slot="footer"><button>확인</button></div>';
+    document.body.appendChild(el);
+    await flush();
+
+    const content = el.querySelector(".nds-modal__content") as HTMLElement;
+    const body = content.querySelector(":scope > .nds-modal__body");
+    const footer = content.querySelector(":scope > .nds-modal__footer") as HTMLElement;
+    expect(footer).toBeTruthy(); // body 에 덤프되지 않고 content 직속으로 승격
+    expect(footer.previousElementSibling).toBe(body); // body 의 형제(다음)
+    expect(footer.querySelector("button")).toBeTruthy();
+    expect(footer.dataset.hasBothActions).toBeUndefined(); // single → 미설정(캐포비 우측정렬 cascade)
+  });
+
+  it("footer 버튼 2개 → data-has-both-actions=true (가로 분할)", async () => {
+    const el = document.createElement("nds-modal");
+    el.setAttribute("open", "");
+    el.innerHTML = '<p>본문</p><div slot="footer"><button>취소</button><button>확인</button></div>';
+    document.body.appendChild(el);
+    await flush();
+
+    const footer = el.querySelector(".nds-modal__footer") as HTMLElement;
+    expect(footer).toBeTruthy();
+    expect(footer.dataset.hasBothActions).toBe("true");
+  });
 });
 
 describe("nds-select", () => {

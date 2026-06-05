@@ -4,10 +4,17 @@
  * 사용 예:
  *   <nds-modal id="m1" open title="안내" max-width="332">
  *     <p>본문 내용입니다.</p>
- *     <div slot="footer">  ← MVP: slot 미사용, footer 는 React style class 로 직접
- *       <nds-button>확인</nds-button>
+ *     <div slot="footer">  ← .nds-modal__footer 로 승격돼 body 의 형제로 배치됨
+ *       <nds-button>확인</nds-button>          (단일: 캐포비는 우측 정렬 검정 pill)
  *     </div>
  *   </nds-modal>
+ *
+ * footer slot:
+ *   · slot="footer" 컨테이너는 자동으로 .nds-modal__footer 클래스를 받고 content 안
+ *     body 의 형제로 올라간다 → footer 레이아웃 CSS(본문↔푸터 gap, 버튼 정렬)가 적용됨.
+ *   · 버튼이 2개 이상이면 data-has-both-actions="true" 로 가로 분할(dual),
+ *     1개면 single — data-brand="cashwalk-biz" 에서는 우측 정렬 + 검정 pill 로 cascade.
+ *   · 직접 가로 정렬을 제어하려면 footer 컨테이너에 data-layout="custom".
  *
  * 동작:
  *   · `open` boolean attribute. 빈 값/없음 = 닫힘.
@@ -30,6 +37,8 @@ const HEADER_CLASS = `${MODAL_CLASS}__header`;
 const HEADER_TITLE_CLASS = `${MODAL_CLASS}__header-title`;
 const CLOSE_CLASS = `${MODAL_CLASS}__close`;
 const BODY_CLASS = `${MODAL_CLASS}__body`;
+const FOOTER_CLASS = `${MODAL_CLASS}__footer`;
+const FOOTER_ACTION_CLASS = `${MODAL_CLASS}__footer-action`;
 
 const FOCUSABLE_SELECTOR =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -71,9 +80,20 @@ export class NdsModal extends NdsElement {
   }
 
   private _mount(): void {
-    // children 을 임시 보관 — body 영역으로 옮길 것
+    // children 분리: slot="footer" 컨테이너는 footer 로 승격(아래), 나머지는 body 로.
+    //   React Modal.tsx 와 달리 MVP 는 예전엔 slot 을 무시하고 전부 body 로 덤프했다 —
+    //   그 결과 .nds-modal__footer 레이아웃 CSS(캐포비 single 우측정렬/pill 포함)가
+    //   닿지 않아 모달 버튼이 본문 가운데에 끼는 회귀가 있었다. 이제 footer 를 body 의
+    //   형제로 content 에 올려 CSS 가 정상 적용되게 한다.
+    const footerSource = this.querySelector<HTMLElement>(':scope > [slot="footer"]');
     const userFrag = document.createDocumentFragment();
-    while (this.firstChild) userFrag.appendChild(this.firstChild);
+    while (this.firstChild) {
+      if (this.firstChild === footerSource) {
+        this.removeChild(this.firstChild);
+        continue;
+      }
+      userFrag.appendChild(this.firstChild);
+    }
 
     const root = document.createElement("div");
     const overlay = document.createElement("div");
@@ -103,6 +123,26 @@ export class NdsModal extends NdsElement {
     body.appendChild(userBody);
 
     content.append(header, body);
+
+    // footer 승격: slot="footer" 컨테이너에 nds-modal__footer 클래스를 부여하고
+    //   body 의 형제로 content 에 둔다(React 구조 미러 — content gap 이 본문↔푸터 간격을 만든다).
+    //   액션 버튼이 2개 이상이면 data-has-both-actions="true" → dual(가로 분할),
+    //   아니면 single — 캐포비는 [data-brand] cascade 로 우측 정렬 + 검정 pill.
+    if (footerSource) {
+      footerSource.classList.add(FOOTER_CLASS);
+      footerSource.dataset.slot = "footer";
+      if (!footerSource.dataset.layout && !footerSource.dataset.hasBothActions) {
+        const actionCount = Array.from(footerSource.children).filter(
+          (c) =>
+            c.tagName === "BUTTON" ||
+            c.tagName === "NDS-BUTTON" ||
+            c.classList.contains(FOOTER_ACTION_CLASS),
+        ).length;
+        if (actionCount >= 2) footerSource.dataset.hasBothActions = "true";
+      }
+      content.appendChild(footerSource);
+    }
+
     root.append(overlay, content);
     this.appendChild(root);
 
