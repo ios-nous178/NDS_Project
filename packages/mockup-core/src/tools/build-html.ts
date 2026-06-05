@@ -34,6 +34,7 @@ import {
   validateHtmlMockup,
   type ValidateHtmlMockupResult,
 } from "./html-validator.js";
+import { validatePrdCoverage, type ValidatePrdCoverageResult } from "./prd-coverage.js";
 import { detectDsVersions } from "./usage/tracker.js";
 import { injectDsStampBar } from "./ds-stamp.js";
 
@@ -137,6 +138,8 @@ export interface BuildSinglefileHtmlResult {
    * react intent 는 dist/index.html 이 shell 뿐이라 dev_server + url 캡처가 필요해서 여기서는 자동화하지 않는다.
    */
   validation?: ValidateHtmlMockupResult;
+  /** html intent 한정: PRD/brief 요구사항 커버리지 전용 검증 결과. DS 점수와 분리된다. */
+  prdValidation?: ValidatePrdCoverageResult;
   report?: ReportHtmlMockupUsageResult;
   humanReadable: string;
   /** 다음에 호출해야 하는 도구 한 줄 — 응답 첫 줄(humanReadable) NEXT STEP 과 중복 강조용. */
@@ -373,6 +376,7 @@ export async function buildSinglefileHtml(
   // html intent — dist/index.html 이 곧 렌더 결과이므로 build 직후 validate+report 자동 실행.
   // react intent 는 shell 만 있어 dev_server 없이는 렌더드 DOM 을 못 잡으므로 NEXT STEP 안내로 위임.
   let validation: ValidateHtmlMockupResult | undefined;
+  let prdValidation: ValidatePrdCoverageResult | undefined;
   let report: ReportHtmlMockupUsageResult | undefined;
   let reportError: string | undefined;
   if (intent === "html") {
@@ -388,6 +392,26 @@ export async function buildSinglefileHtml(
         severitySummary: { error: 0, warn: 0, info: 0, hasErrors: false },
         scores: NEUTRAL_SCORES,
         jsxOnlyNotice: `validate auto-call failed: ${(err as Error).message}`,
+      };
+    }
+    try {
+      prdValidation = validatePrdCoverage({ filePath: outputPath });
+    } catch (err) {
+      prdValidation = {
+        ok: false,
+        violations: [
+          {
+            rule: "prd-coverage-incomplete",
+            line: 1,
+            selector: "(document)",
+            detail: `PRD coverage auto-call failed: ${(err as Error).message}`,
+            suggestion:
+              "원본 index.html 의 data-prd-coverage JSON 과 dist/index.html 산출 상태를 확인하세요.",
+          },
+        ],
+        violationsByRule: [{ rule: "prd-coverage-incomplete", count: 1, lines: [1] }],
+        summary: { requirements: 0, implemented: 0, missing: 0, hasManifest: false },
+        note: "PRD/brief 커버리지 전용 검증입니다. DS 토큰/컴포넌트 품질 점수는 validate_html_mockup 결과를 따로 보세요.",
       };
     }
     try {
@@ -433,6 +457,11 @@ export async function buildSinglefileHtml(
   if (validation) {
     annotations.push(`validate ${validation.ok ? "ok" : `${validation.violations.length}건 위반`}`);
   }
+  if (prdValidation) {
+    annotations.push(
+      `prd ${prdValidation.ok ? "ok" : `${prdValidation.violations.length}건 위반`}`,
+    );
+  }
   if (report?.webhook) {
     const w = report.webhook;
     annotations.push(
@@ -450,17 +479,20 @@ export async function buildSinglefileHtml(
       : undefined;
   const humanReadable =
     intent === "html"
-      ? validation?.ok
+      ? validation?.ok && prdValidation?.ok
         ? `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}`
         : `[OK build / FAIL validate] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
-          `위반 ${validation?.violations.length ?? 0}건 — validation.violations[] 확인 후 수정.`
+          `DS 위반 ${validation?.violations.length ?? 0}건, PRD 위반 ${
+            prdValidation?.violations.length ?? 0
+          }건 — validation.violations[] / prdValidation.violations[] 를 각각 확인 후 수정.`
       : `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
         `NEXT STEP → ${nextCall} 호출 필수 (DS 사용량 적재 + 위반 최종 확인).`;
 
   const _nextSuggestion =
     intent === "html"
       ? "html intent — build 가 자동으로 validate + report 까지 실행 완료. " +
-        "validation.violations[] 가 비어 있으면 ship 가능. 위반이 있으면 원본 .html 수정 후 build_singlefile_html 재호출. " +
+        "validation.violations[] 와 prdValidation.violations[] 가 모두 비어 있으면 ship 가능. " +
+        "DS 위반은 validation, PRD/brief 누락은 prdValidation 을 보고 원본 .html 수정 후 build_singlefile_html 재호출. " +
         "report.webhook.ok 가 true 면 구글시트 적재까지 끝난 상태. queued 면 다음 build/validate 호출 시 자동 flush 됨. " +
         "산출된 dist/index.html 1개 파일에 JS · CSS · <nds-*> runtime 이 모두 inline 되어 메신저 dnd / 파일 공유로 그대로 열립니다. " +
         "사용자에게는 humanReadable 한 줄만 보여주고 위반이 있을 때만 위반 목록을 추가로 노출하세요."
@@ -485,6 +517,7 @@ export async function buildSinglefileHtml(
     sourceBadgeSync,
     intent,
     validation,
+    prdValidation,
     report,
     humanReadable,
     nextStep: nextCall,

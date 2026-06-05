@@ -240,26 +240,6 @@ describe("validateHtmlSource", () => {
     `;
     expect(rulesFor(html)).not.toContain("button-without-interaction");
   });
-
-  it("flags incomplete PRD coverage manifest", () => {
-    const html = `
-      <main id="screen"></main>
-      <script type="application/json" data-prd-coverage>
-        {"requirements":[{"id":"R1","requirement":"지역 추가 모달","status":"todo","evidence":"#missing"}]}
-      </script>
-    `;
-    expect(rulesFor(html)).toContain("prd-coverage-incomplete");
-  });
-
-  it("accepts PRD coverage entries with implemented status and existing evidence", () => {
-    const html = `
-      <main id="screen"></main>
-      <script type="application/json" data-prd-coverage>
-        {"requirements":[{"id":"R1","requirement":"화면 본문","status":"implemented","evidence":"#screen"}]}
-      </script>
-    `;
-    expect(rulesFor(html)).not.toContain("prd-coverage-incomplete");
-  });
 });
 
 // ─── JSX 에서 포팅한 컨테이너 / 카운팅 룰 ───

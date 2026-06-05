@@ -75,7 +75,6 @@ describe("computeScores", () => {
     expect(computeScores([r("button-without-interaction", "error", 1)]).dimensions.component).toBe(
       80,
     );
-    expect(computeScores([r("prd-coverage-incomplete", "error", 1)]).dimensions.layout).toBe(80);
   });
 
   it("매핑 안 된 rule 은 점수에 반영 안 함(보수적)", () => {
