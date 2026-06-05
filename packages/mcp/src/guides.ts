@@ -989,6 +989,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
             '주 action(확인/적용) = color="secondary" variant="solid" → 캐포비 시그니처 **검정 CTA**(#000 배경·흰 텍스트, buttonBg.secondary 토큰 cascade). colorMatrix 만 보면 secondary/solid 가 파랑(#F1F8FD)으로 보이지만 data-brand="cashwalk-biz" 에서는 검정으로 cascade 됨. 취소/닫기 = color="assistive" variant="outlined". 파괴적 확정(삭제 등)만 color="error".',
           titleTypo: "Title2 18·26 좌측 정렬 (base 중앙 정렬)",
           bodyTypo: "Body2 14·20 medium 좌측 정렬 (base 중앙 정렬)",
+          dataModal:
+            "**⑤ Data Modal (대형·조회 전용, 확인 팝업 ①~④ 와 구분)**: 목록/상세 데이터를 조회·확인하는 대형 모달. width ~560+ · **radius 12 · padding 24 · gap 16**(확인 모달의 16/32 와 다름) · border #E5E7EB. 헤더 = 제목(16 Bold) + 우상단 Close X(#999, 푸터 CTA 없음 — 조회 전용). 본문 = DataTable(헤더행 bg #F7F8FA · 셀 border #EEE · 36px · 12px) — 상세 + 목록 등 다중 테이블 가능. 페이지 패턴 아님 → Modal + DataTable 조합. Figma ModalGuide 3418-471(⑤ Data Modal 3832-1057).",
           activationCondition:
             '`<html data-brand="cashwalk-biz">` 가 박힌 환경에서만 자동 적용 — 그 외에서는 base 모바일 스펙 유지',
         },
@@ -1011,10 +1013,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "현재 흐름 중단이 정당화되는 중요한 결정",
         "추가 입력 없이 한 화면에서 결정을 마쳐야 하는 짧은 폼",
         "(캐시워크 포 비즈니스 admin) 검수/등록/노출 변경 같은 admin 워크플로우의 확인 다이얼로그",
+        "(캐시워크 포 비즈니스 admin) 목록/상세 데이터 조회 — Data Modal(대형 · 본문 DataTable · Close X · 푸터 CTA 최소). 확인 팝업(①~④)과 사이즈/역할 구분(dimensions.dataModal 참조).",
       ],
       doNotUseFor: [
         "단순 정보 전달 — inline Notice / Banner / section 안내 사용",
-        "긴 콘텐츠/스크롤 페이지 — 별도 페이지나 BottomSheet 검토",
+        "긴 콘텐츠/스크롤 페이지 — 별도 페이지나 BottomSheet 검토 (단, 데이터 조회 목적의 대형 모달은 캐포비 Data Modal 패턴 허용)",
         "여러 단계 분기 — Wizard / 별도 페이지",
         "에러 메시지 — Toast 또는 inline error 사용",
       ],
