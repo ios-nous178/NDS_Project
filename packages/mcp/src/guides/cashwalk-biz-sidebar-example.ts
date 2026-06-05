@@ -121,11 +121,12 @@ export const CASHWALK_BIZ_ADMIN_SIDEBAR_ACCOUNT = String.raw`{"email":"biz@cashw
 export const CASHWALK_BIZ_ADMIN_SIDEBAR_FOOTER_ACTIONS = String.raw`[{"label":"로그아웃","variant":"outlined","key":"logout"}]`;
 
 // 로고는 `brand="cashwalk-biz"` 로 자동 주입(35KB data URI 복붙 불필요) — `<nds-brand-header>` 와 동일 SSOT.
+// 헤더는 로고만 가운데 정렬(Storybook Brands/CashwalkBiz/Sidebar · 시안 3304:617 정합) — title 텍스트는 두지 않는다.
 // items / account / footer-actions 는 `<script type="application/json" slot="...">` 텍스트 노드로 전달한다:
 // 한글이 든 JSON 을 속성 이스케이프/인코딩 사고 없이 그대로 둘 수 있어, 마크업을 스크립트로 추출·재인코딩하다
 // 한글이 모지바케로 깨지는 회귀를 원천 차단한다. (회귀: 사이드바 한글 전부 깨짐 + 로고 유실)
 export const CASHWALK_BIZ_ADMIN_SIDEBAR_HTML =
-  '<nds-sidebar brand="cashwalk-biz" active-key="banner-list" width="300" title="포 비즈니스">\n' +
+  '<nds-sidebar brand="cashwalk-biz" active-key="banner-list" width="300">\n' +
   '  <script type="application/json" slot="account">' +
   CASHWALK_BIZ_ADMIN_SIDEBAR_ACCOUNT +
   "</script>\n" +
