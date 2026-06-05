@@ -221,6 +221,45 @@ describe("validateHtmlSource", () => {
     const r = rulesFor(`<nds-button>no color attr</nds-button>`);
     expect(r).not.toContain("invalid-nds-attr-value");
   });
+
+  it("flags active nds-button without a click interaction", () => {
+    expect(rulesFor(`<nds-button color="primary">저장</nds-button>`)).toContain(
+      "button-without-interaction",
+    );
+  });
+
+  it("does NOT flag button when data-action is wired through addEventListener", () => {
+    const html = `
+      <nds-button color="primary" data-action="save">저장</nds-button>
+      <p id="status"></p>
+      <script>
+        document.querySelector('[data-action="save"]').addEventListener('click', () => {
+          document.querySelector('#status').textContent = '저장됨';
+        });
+      </script>
+    `;
+    expect(rulesFor(html)).not.toContain("button-without-interaction");
+  });
+
+  it("flags incomplete PRD coverage manifest", () => {
+    const html = `
+      <main id="screen"></main>
+      <script type="application/json" data-prd-coverage>
+        {"requirements":[{"id":"R1","requirement":"지역 추가 모달","status":"todo","evidence":"#missing"}]}
+      </script>
+    `;
+    expect(rulesFor(html)).toContain("prd-coverage-incomplete");
+  });
+
+  it("accepts PRD coverage entries with implemented status and existing evidence", () => {
+    const html = `
+      <main id="screen"></main>
+      <script type="application/json" data-prd-coverage>
+        {"requirements":[{"id":"R1","requirement":"화면 본문","status":"implemented","evidence":"#screen"}]}
+      </script>
+    `;
+    expect(rulesFor(html)).not.toContain("prd-coverage-incomplete");
+  });
 });
 
 // ─── JSX 에서 포팅한 컨테이너 / 카운팅 룰 ───

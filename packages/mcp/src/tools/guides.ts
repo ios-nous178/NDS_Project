@@ -1074,8 +1074,10 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 2. **\`.tsx\` 파일 작성 금지.** 이 워크플로우는 React 가 없다. JSX 가 필요하면 intent 를 'user-app' 으로 바꿔 다른 워크스페이스에서 작업하라고 안내. \`<Button color="primary">\` 처럼 PascalCase + JSX 컨테이너 prop 패턴이 나타나면 즉시 \`<nds-button color="primary">\` (kebab-case attribute) 로 교체.
 3. **\`<nds-*>\` 흉내 금지 — raw \`<button class="nds-button">\` 으로 시각만 따라 그리기 X.** 반드시 \`<nds-button>\` 같은 실제 custom-element 를 쓸 것. main.ts 의 \`import "@nudge-design/html/runtime"\` 한 줄로 모든 element 가 등록된다.
 4. **이벤트는 inline \`onclick="..."\` 대신 \`addEventListener\`.** \`document.querySelector("nds-select").addEventListener("select-change", e => …)\` 패턴. WC 가 dispatch 하는 커스텀 이벤트(\`nds-*-change\`, \`select-change\`, \`tabs-change\` 등) 사용. 자세한 이벤트명은 \`get_guide({ topic: "component:<Name>", target: "html" })\` 응답의 examples.do/dont 참고.
-5. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다.
-6. **산출물은 반드시 \`build_singlefile_html\`.** raw \`vite build\` 결과의 다중 파일 \`dist/\` 폴더로 끝내지 말 것. 디자이너/PM 에게 공유 가능한 표준 산출물은 \`vite-plugin-singlefile\` 로 inline 된 \`dist/index.html\` 1개 파일이다. MCP 가 vite.config 패치 + 빌드까지 자동 수행한다.
+5. **버튼은 반드시 동작해야 한다.** 모든 활성 \`<nds-button>\` / 버튼형 컴포넌트에는 \`data-action\` 또는 \`id\` 를 붙이고, \`addEventListener("click", ...)\` 에서 실제 상태 변경(모달 열기, 선택 적용, 단계 이동, 토스트/라이브 영역 피드백, 값 초기화 등)을 구현한다. 장식용 버튼 금지. \`validate_html_mockup\` 의 \`button-without-interaction\` 룰이 버튼별로 잡는다.
+6. **PRD/brief 일부 구현 금지.** 코드 작성 전에 사용자 PRD/brief 의 명시 요구사항을 전부 분해하고, \`index.html\` 에 \`<script type="application/json" data-prd-coverage>{"requirements":[...]}</script>\` 로 남긴다. 각 항목은 \`status:"implemented"\` 와 실제 DOM \`evidence\` selector 를 가져야 한다. \`build_singlefile_html\` 은 매니페스트 누락을 \`missing-prd-coverage\`, \`validate_html_mockup\` 은 미완료/증거 누락을 \`prd-coverage-incomplete\` 로 실패시킨다.
+7. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다.
+8. **산출물은 반드시 \`build_singlefile_html\`.** raw \`vite build\` 결과의 다중 파일 \`dist/\` 폴더로 끝내지 말 것. 디자이너/PM 에게 공유 가능한 표준 산출물은 \`vite-plugin-singlefile\` 로 inline 된 \`dist/index.html\` 1개 파일이다. MCP 가 vite.config 패치 + 빌드까지 자동 수행한다.
 
 **우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
 
@@ -1086,6 +1088,8 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] \`@nudge-design/react\` 가 어떤 \`.ts\` / \`.html\` 에서도 import / 참조되지 않는다.
 - [ ] \`src/\` 의 \`.css\` 어디에도 \`:root { --semantic-* / --nds-* / --color-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
 - [ ] 모든 DS 사용처는 \`<nds-*>\` custom-element 이다 (\`<button class="nds-button">\` 같은 className 흉내 없음).
+- [ ] 모든 활성 버튼/CTA 는 \`data-action\`/id 와 \`addEventListener("click", ...)\` 로 실제 화면 상태 변경을 만든다.
+- [ ] PRD/brief 의 명시 요구사항이 \`data-prd-coverage\` JSON 에 전부 있고, 각 항목의 evidence selector 가 실제 DOM 에 존재한다.
 - [ ] main.ts 가 \`import "@nudge-design/html/runtime"\` 을 포함한다.
 
 위 항목 중 하나라도 어긋나면 **HTML 을 폐기하고 처음부터 다시 작성**. 사용자가 명시적으로 허용한 경우에만 예외이며, 이 경우에도 "validate_html_mockup (withStats 채택률 포함) 검증이 무력화됩니다" 라고 먼저 경고할 것.
@@ -1132,6 +1136,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 - 가능한 한 DS 컴포넌트(\`<nds-*>\`) 를 우선 사용한다.
 - **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>\` + \`<nds-brand-footer brand='...' surface='web|app' asset-base-url='/brand-logos'>\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 BRAND_DATA 에서 자동. nds-header / nds-header-logo / nds-header-menu(-item) / nds-header-actions / nds-header-auth-button 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:BrandHeader", target: "html" })\` 로 브랜드별 필요 로고 파일 (\`public/brand-logos/*.png|svg|webp\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-brand-chrome\`) find_component 결과만 보고 못 짚는 함정 — BrandHeader/BrandFooter 가이드를 먼저 호출하라.**
+- **모든 버튼은 동작한다.** 클릭 후 아무 변화가 없는 버튼은 산출물 결함이다. 필터/탭/모달/선택 피커/초기화/저장/다음/이전/삭제 버튼은 실제 DOM 상태를 바꿔야 하고, 단순 데모 CTA 도 aria-live 피드백이나 모달/상태 텍스트를 갱신해야 한다.
 - **DS 뱃지 숫자는 직접 세지 말 것.** \`build_singlefile_html\` 이 산출된 \`dist/index.html\` 기준으로 \`data-ds-badge\` 텍스트를 최신 \`dsUsageSummary\` 로 자동 치환한다. 원본에 임시 숫자를 넣어도 최종 산출물은 build 응답 값을 SSOT 로 삼는다.
 - **기존 antd/HTML 코드를 받았을 때 className 만 치환하지 말 것**. \`<button class="nds-button">\` 은 nds-button 흉내일 뿐 실제 Web Component 가 아님 — 반드시 \`<nds-button>\` 으로 element 자체를 바꾼다.
 - raw \`button\`, \`input\`, \`select\`, \`textarea\` 는 특별한 이유 없으면 사용하지 않는다. \`validate_html_mockup\` 의 \`native-form-element-without-nds-wrapper\` 룰로 자동 검출됨.

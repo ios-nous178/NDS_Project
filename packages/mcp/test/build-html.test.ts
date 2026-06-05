@@ -404,6 +404,10 @@ describe("detectWorkspaceIntent", () => {
 
 describe("auditMockupWorkspace — html intent", () => {
   let tmp: string;
+  const prdCoverage =
+    `<script type="application/json" data-prd-coverage>` +
+    `{"requirements":[{"id":"R1","requirement":"CTA","status":"implemented","evidence":"nds-button"}]}` +
+    `</script>`;
 
   beforeEach(() => {
     tmp = fs.mkdtempSync(path.join(os.tmpdir(), "audit-html-"));
@@ -421,10 +425,21 @@ describe("auditMockupWorkspace — html intent", () => {
   it("clean html workspace (root index.html with <nds-*>, main.ts) → 0 violations", () => {
     fs.writeFileSync(
       path.join(tmp, "index.html"),
-      `<!doctype html><body><nds-button color="primary">상담 신청</nds-button><script type="module" src="/src/main.ts"></script></body>`,
+      `<!doctype html><body><nds-button color="primary">상담 신청</nds-button>${prdCoverage}<script type="module" src="/src/main.ts"></script></body>`,
     );
     fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-design/html/runtime";`);
     expect(auditMockupWorkspace(tmp, "html")).toEqual([]);
+  });
+
+  it("flags missing PRD/brief coverage manifest (missing-prd-coverage)", () => {
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><nds-button color="primary">상담 신청</nds-button></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-design/html/runtime";`);
+    const v = auditMockupWorkspace(tmp, "html").find((x) => x.rule === "missing-prd-coverage");
+    expect(v).toBeTruthy();
+    expect(v?.detail).toContain("data-prd-coverage");
   });
 
   it("flags missing root index.html (no-html-entry-found)", () => {

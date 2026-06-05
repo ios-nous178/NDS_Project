@@ -592,9 +592,10 @@ function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
         <main style="flex: 1; padding: var(--semantic-inset-screen);">
           <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-block>
           <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
-            <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
-            <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
+            <nds-button color="primary" variant="solid" data-action="request-counseling">상담 신청하기</nds-button>
+            <nds-button color="assistive" variant="outlined" data-action="show-details">자세히 보기</nds-button>
           </div>
+          <p id="home-feedback" aria-live="polite" style="margin-top: var(--semantic-gap-md); color: var(--semantic-text-secondary);"></p>
         </main>
       </section>
 
@@ -604,8 +605,9 @@ function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
         <main style="flex: 1; padding: var(--semantic-inset-screen);">
           <nds-title-block level="h1" title="상담 상세" subtitle="두 번째 화면입니다"></nds-title-block>
           <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
-            <nds-button color="primary" variant="solid">신청 완료하기</nds-button>
+            <nds-button color="primary" variant="solid" data-action="complete-request">신청 완료하기</nds-button>
           </div>
+          <p id="detail-feedback" aria-live="polite" style="margin-top: var(--semantic-gap-md); color: var(--semantic-text-secondary);"></p>
         </main>
       </section>
 
@@ -614,7 +616,28 @@ function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
              <nds-brand-header brand="${brand}" surface="web" asset-base-url="/brand-logos"></nds-brand-header> … -->
 
     </div>
-    <!-- DS runtime/CSS + 디바이스 프레임/스위처 는 build_singlefile_html 이 자동 inline 합니다. <script>/import 불필요. -->
+    <script type="application/json" data-prd-coverage>
+      {
+        "requirements": [
+          { "id": "R1", "requirement": "홈 화면에 상담 신청 CTA를 제공한다", "status": "implemented", "evidence": "[data-action='request-counseling']" },
+          { "id": "R2", "requirement": "상세 화면에 신청 완료 CTA를 제공한다", "status": "implemented", "evidence": "[data-action='complete-request']" },
+          { "id": "R3", "requirement": "모든 버튼은 클릭 시 사용자에게 상태 변화를 보여준다", "status": "implemented", "evidence": "#home-feedback, #detail-feedback" }
+        ]
+      }
+    </script>
+    <script>
+      const homeFeedback = document.querySelector("#home-feedback");
+      const detailFeedback = document.querySelector("#detail-feedback");
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.getAttribute("data-action");
+          if (action === "request-counseling") homeFeedback.textContent = "상담 신청 흐름을 시작했어요.";
+          if (action === "show-details") homeFeedback.textContent = "상세 화면에서 신청 내용을 확인할 수 있어요.";
+          if (action === "complete-request") detailFeedback.textContent = "신청이 완료된 상태로 표시했어요.";
+        });
+      });
+    </script>
+    <!-- DS runtime/CSS + 디바이스 프레임/스위처 는 build_singlefile_html 이 자동 inline 합니다. 인터랙션/PRD coverage 스크립트는 index.html 에 직접 둡니다. -->
   </body>
 </html>
 `;
@@ -680,6 +703,8 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
       "컴포넌트 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져옵니다. " +
       "【헤더/푸터】 사용자 앱 화면이면 base <nds-header> 를 손수 조립하지 말고 <nds-brand-header brand surface='web|mobile|webview'> / <nds-brand-footer> 한 줄을 쓰세요(BrandHeader/BrandFooter 가이드). " +
       "【여러 화면】 한 파일에 여러 화면을 그릴 땐 .mockup-canvas > .mockup-screen[data-device='mobile|webview|web|tablet'] 프레임으로 나열 — 각 스크린은 자체 헤더(+필요시 푸터)+device 최소높이로 자기완결시킵니다(높이를 내용에 맡기지 말 것). 화면 2개 이상이면 상단 전환 탭이 자동 생성(기본 '탭'=한 번에 한 화면·미리보기 친화, '전체'=나란히 비교; data-mode='grid' 로 처음부터 나란히). get_guide({ topic: 'pattern:multi-screen' }). " +
+      "【버튼/인터랙션】 모든 활성 버튼은 data-action/id + addEventListener('click', ...) 로 실제 상태 변경을 만듭니다. validate_html_mockup 의 button-without-interaction 룰이 버튼별로 잡습니다. " +
+      "【PRD 커버리지】 사용자 요구사항을 <script type='application/json' data-prd-coverage> 에 전부 남기고 evidence selector 를 실제 DOM 에 연결합니다. build 는 missing-prd-coverage 로 누락을 차단합니다. " +
       "【이미지】 DS 자산 이미지는 get_brand 의 inlineRef(@nudge-design/assets/files/…) 규약으로 <img src> 에 쓰면 빌드가 base64 inline(내부·외부 모두 보임). 상대경로 /…/x.png 는 단일 파일에서 깨집니다.",
   });
 
@@ -702,7 +727,9 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
       "validate_html_mockup({ filePath: '<프로젝트>/index.html' })",
       "validate_html_mockup({ filePath: '<프로젝트>/index.html', withStats: true })",
     ],
-    note: "validate 위반 0건 + withStats.counts.dsRatio 충분히 높은 상태를 ship 기준으로 사용.",
+    note:
+      "validate 위반 0건 + withStats.counts.dsRatio 충분히 높은 상태를 ship 기준으로 사용. " +
+      "button-without-interaction / prd-coverage-incomplete 는 반드시 수정해야 하는 error 입니다.",
   });
 
   steps.push({

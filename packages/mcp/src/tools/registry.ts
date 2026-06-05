@@ -193,7 +193,7 @@ const TOOLS = [
   {
     name: "build_singlefile_html",
     description:
-      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true. **For html intent (vanilla <nds-*>), the build automatically runs validate_html_mockup + usage report (Sheets webhook) on the built artifact** — no separate call needed; results are in `validation` and `report` fields.",
+      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true. **For html intent (vanilla <nds-*>), root index.html must include a PRD/brief coverage manifest (`script[type=application/json][data-prd-coverage]`) and every active button must have real click behavior checked by validate_html_mockup.** The build automatically runs validate_html_mockup + usage report (Sheets webhook) on the built artifact — no separate call needed; results are in `validation` and `report` fields.",
     inputSchema: {
       type: "object",
       properties: {
@@ -218,7 +218,7 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, and pattern violations. Validates static source — pass `source` (HTML string) or `filePath` (.html file). `withStats:true` adds DS adoption stats. **Usage report (Sheets webhook + JSONL) is auto-enabled** — pass `report:false` only to suppress (e.g. noisy iteration cycles).",
+      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, pattern, active-button interaction, and PRD/brief coverage violations. Validates static source — pass `source` (HTML string) or `filePath` (.html file). `withStats:true` adds DS adoption stats. **Usage report (Sheets webhook + JSONL) is auto-enabled** — pass `report:false` only to suppress (e.g. noisy iteration cycles).",
     inputSchema: {
       type: "object",
       properties: {
