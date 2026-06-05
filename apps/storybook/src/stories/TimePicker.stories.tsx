@@ -29,6 +29,24 @@ export const Playground: Story = {
   },
 };
 
+export const WithPresets: Story = {
+  name: "캐포비/빠른설정 프리셋 (자정까지)",
+  render: function Render() {
+    const [t, setT] = useState("18:00");
+    return (
+      <div style={{ width: 360 }} data-brand="cashwalk-biz">
+        <TimePicker
+          label="노출 종료 시간"
+          value={t}
+          onValueChange={setT}
+          presets={[{ label: "자정까지", value: "23:59" }]}
+          helperText="시계 아이콘으로 직접 선택하거나 '자정까지'로 빠르게 설정"
+        />
+      </div>
+    );
+  },
+};
+
 export const StepOneMinute: Story = {
   name: "Variant/1분 단위",
   render: function Render() {

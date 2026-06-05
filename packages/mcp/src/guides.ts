@@ -2722,7 +2722,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   TimePicker: {
     name: "TimePicker",
     examplesHtml: {
-      do: '<nds-time-picker value="14:30" step="600"\n  label="상담 시간 선택" min="09:00" max="18:00"></nds-time-picker>\n<script>el.addEventListener("nds-time-change", e => setTime(e.detail.value));</script>',
+      do: '<nds-time-picker value="18:00" step="600"\n  label="노출 종료 시간"\n  presets=\'[{"label":"자정까지","value":"23:59"}]\'></nds-time-picker>\n<script>el.addEventListener("nds-time-change", e => setTime(e.detail.value));</script>',
       dont: '<!-- step 0 — 분/초 단위 무제한 — 예약 정확도 깨짐 -->\n<nds-time-picker value="14:30" step="0"></nds-time-picker>',
     },
     summary: "시간만 선택 (HH:mm). step(초 단위)/min/max 지원. 날짜+시간은 DatePicker와 조합.",
@@ -2730,12 +2730,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "step은 초 단위 — 5분이면 300, 15분이면 900.",
       "min/max도 HH:mm 문자열 — Date 객체 X.",
       "상담 슬롯 목록에서 선택은 TimeSlotPicker가 적합 — TimePicker는 자유 시각 입력.",
-      "**(캐포비 어드민) 시간 인풋의 '빠른설정' 프리셋은 회색 중립 칩 — 노란 brand Chip / SelectionButton 금지.** 광고 노출 스케줄 등에서 시간 필드 트레일링(`00:00` + 시계아이콘 우측)에 `자정까지`(= 시간을 24:00 으로 즉시 세팅) 같은 빠른설정 칩이 붙는다. 이건 **회색 중립 surface 의 보조 액션 칩**(ActionChip 류 · 텍스트는 캐포비 브라운 · 시간값을 세팅하는 버튼)이지, 선택 토글이 아니다. **노란 outlined Chip / SelectionButton 으로 그리면 회귀**(SelectionButton 과 혼동되는 '지역=노란칩'과 동일 함정 — region-as-chip 참조). 시각 선택 자체는 `nds-time-picker`. Figma 3001:19122.",
+      '**(캐포비 어드민) 시간 인풋의 \'빠른설정\' 프리셋은 `nds-time-picker` 의 `presets` 속성으로 — 손조립·노란 brand Chip 금지.** 광고 노출 스케줄 등에서 시간 필드 트레일링(`00:00` + 시계아이콘 우측)에 `자정까지`(= 시간을 즉시 세팅) 같은 빠른설정 칩이 붙는다. 이건 컴포넌트 내장 기능이다: `presets=\'[{"label":"자정까지","value":"23:59"}]\'`(React `presets={[{label,value}]}`) — 클릭하면 value 가 세팅되는 **회색 중립 칩**으로 자동 렌더(시계 아이콘 ic_time_picker 포함). raw `<div>`/`<nds-chip>` 으로 손조립하지 말 것. **노란 outlined Chip / SelectionButton 으로 그리면 회귀**(SelectionButton 과 혼동되는 \'지역=노란칩\'과 동일 함정 — region-as-chip 참조). Figma 3001:19122.',
     ],
     recommended: [
       "알림: step=300, min='07:00' max='23:00'",
       "복약: step=900",
-      "캐포비 광고 스케줄: nds-time-picker + 트레일링 빠른설정 칩(회색 중립, 예 '자정까지'→24:00) — 칩 클릭이 time value 를 세팅(노란 brand 아님). Figma 3001:19122.",
+      '캐포비 광고 스케줄: nds-time-picker presets=\'[{"label":"자정까지","value":"23:59"}]\' — 시계아이콘 + 회색 중립 빠른설정 칩이 내장 렌더(노란 brand 아님). Figma 3001:19122.',
     ],
   },
   AddressSearch: {
