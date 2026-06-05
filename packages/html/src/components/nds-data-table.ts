@@ -164,19 +164,18 @@ export class NdsDataTable extends NdsElement {
   }
 
   private _expanderIcon(expanded: boolean): SVGElement {
+    // 04ic/open · 04ic/close (Figma 캐포비 라이브러리) — 라운드 사각 + −(펼침)/+(접힘)
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "16");
-    svg.setAttribute("height", "16");
-    svg.setAttribute("viewBox", "0 0 16 16");
+    svg.setAttribute("width", "20");
+    svg.setAttribute("height", "20");
+    svg.setAttribute("viewBox", "0 0 24 24");
     svg.setAttribute("fill", "none");
     svg.setAttribute("aria-hidden", "true");
     svg.style.display = "block";
     svg.innerHTML =
-      `<rect x="0.5" y="0.5" width="15" height="15" rx="3.5" stroke="currentColor" opacity="0.35"/>` +
-      `<path d="M4.5 8h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>` +
-      (expanded
-        ? ""
-        : `<path d="M8 4.5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`);
+      `<rect x="1.2" y="1.2" width="21.6" height="21.6" rx="4" stroke="currentColor" stroke-width="2.4" opacity="0.32"/>` +
+      `<rect x="6.5" y="11" width="11" height="2" rx="1" fill="currentColor"/>` +
+      (expanded ? "" : `<rect x="11" y="6.5" width="2" height="11" rx="1" fill="currentColor"/>`);
     return svg;
   }
 

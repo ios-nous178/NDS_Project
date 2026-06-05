@@ -102,20 +102,29 @@ const SortIcon = () => (
 
 const EXPAND_INDENT = 20;
 
+// 04ic/open · 04ic/close (Figma 캐포비 라이브러리 3001:10810 / 3001:10802):
+// 라운드 사각 테두리 + 중앙 −(펼침) / +(접힘). 색은 currentColor 로 토큰 cascade.
 const ExpanderIcon = ({ expanded }: { expanded: boolean }) => (
   <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
     fill="none"
     aria-hidden="true"
     style={{ display: "block" }}
   >
-    <rect x="0.5" y="0.5" width="15" height="15" rx="3.5" stroke="currentColor" opacity="0.35" />
-    <path d="M4.5 8h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    {!expanded && (
-      <path d="M8 4.5v7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    )}
+    <rect
+      x="1.2"
+      y="1.2"
+      width="21.6"
+      height="21.6"
+      rx="4"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      opacity="0.32"
+    />
+    <rect x="6.5" y="11" width="11" height="2" rx="1" fill="currentColor" />
+    {!expanded && <rect x="11" y="6.5" width="2" height="11" rx="1" fill="currentColor" />}
   </svg>
 );
 
