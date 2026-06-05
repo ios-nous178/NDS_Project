@@ -153,8 +153,10 @@ const SIDEBAR_BRAND_LOGOS: Record<string, SidebarBrandLogo> = {
   "cashwalk-biz": {
     src: CASHWALK_BIZ_LOGO_DATA_URI,
     alt: "Cashwalk for Business",
-    width: 107,
-    height: 32,
+    // Storybook(Brands/CashwalkBiz/Sidebar = SSOT) · 시안(Figma 3304:617) 정합:
+    // for-business 가로 로고(106.667×32, ~3.33:1)를 높이 56 로 가운데 정렬(폭 ~187).
+    width: 187,
+    height: 56,
   },
   "nudge-eap": { src: NUDGE_EAP_LOGO_DATA_URI, alt: "NudgeEAP", width: 124, height: 28 },
   trost: { src: TROST_LOGO_DATA_URI, alt: "Trost", width: 90, height: 36 },
@@ -223,6 +225,9 @@ const sidebarStyles = `
   }
   :where(.${SB_LOGO_CLASS}) { display: inline-flex; align-items: center; flex-shrink: 0; color: inherit; text-decoration: none; }
   :where(.${SB_LOGO_CLASS} img) { display: block; max-height: 28px; width: auto; }
+  /* 캐포비(cashwalk-biz): Storybook/시안 정합 — 로고 가운데 정렬 + 높이 56(28px 캡 해제). 폭은 viewBox 비율로 auto. */
+  :where([data-brand="cashwalk-biz"] .${SB_HEADER_CLASS}) { justify-content: center; }
+  :where([data-brand="cashwalk-biz"] .${SB_LOGO_CLASS} img) { max-height: none; height: 56px; width: auto; }
 
   :where(.${SB_TITLE_CLASS}) {
     margin: 0; font-size: ${typeScale.body1.fontSize}px; line-height: 20px;
@@ -712,6 +717,9 @@ export class NdsSidebar extends NdsElement {
 
     this._root.dataset.collapsed = collapsed ? "true" : "false";
     this._root.dataset.fullHeight = fullHeight ? "true" : "false";
+    // brand 를 root 에 미러 → [data-brand="..."] 스코프 CSS(로고 사이즈 등)가
+    // shell 래퍼 없이 standalone <nds-sidebar brand="..."> 에서도 적용된다.
+    if (brand) this._root.dataset.brand = brand;
     if (widthAttr) this._root.style.setProperty("--nds-sidebar-width", `${widthAttr}px`);
     if (collapsedWidthAttr) {
       this._root.style.setProperty("--nds-sidebar-collapsed-width", `${collapsedWidthAttr}px`);
