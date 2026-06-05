@@ -968,6 +968,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           "Cashwalk for Business · ModalGuide. Single / Dual / With Close / Confirm+Slot 4가지 슬롯 기반 admin 패턴 SSOT.",
         brand: "cashwalk-biz",
       },
+      {
+        label: "CashwalkBiz ⑥ 선택/피커 모달 — 지역 선택 (SSOT)",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-50116",
+        caption:
+          "대형 2컬럼 선택 모달(좌 검색+체크박스 트리 / 우 SelectedItemsPanel) + 본문 풀폭 옐로우 '적용' CTA. dimensions.selectionModal SSOT. (빈 셸 3001-50787 의 400centered·radius10 적용 버튼은 오류.)",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "CashwalkBiz ⑦ 데이터 로더 모달 — 소재 불러오기",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-32822",
+        caption:
+          "대형 선택형 DataTable 모달(행 radio 선택 + 페이지네이션 + 'N개씩 보기') + 푸터 취소(outlined)/불러오기(검정 pill). dimensions.dataLoaderModal SSOT.",
+        brand: "cashwalk-biz",
+      },
     ],
     /**
      * brand 별 spec override. brand 가 지정된 get_guide 호출 시 router 가 dimensions 를 응답에 노출.
@@ -991,6 +1005,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           bodyTypo: "Body2 14·20 medium 좌측 정렬 (base 중앙 정렬)",
           dataModal:
             "**⑤ Data Modal (대형·조회 전용, 확인 팝업 ①~④ 와 구분)**: 목록/상세 데이터를 조회·확인하는 대형 모달. width ~560+ · **radius 12 · padding 24 · gap 16**(확인 모달의 16/32 와 다름) · border #E5E7EB. 헤더 = 제목(16 Bold) + 우상단 Close X(#999, 푸터 CTA 없음 — 조회 전용). 본문 = DataTable(헤더행 bg #F7F8FA · 셀 border #EEE · 36px · 12px) — 상세 + 목록 등 다중 테이블 가능. 페이지 패턴 아님 → Modal + DataTable 조합. Figma ModalGuide 3418-471(⑤ Data Modal 3832-1057).",
+          selectionModal:
+            "**⑥ 선택/피커 모달 (대형·다중 선택)**: 항목을 검색·다중 선택해 적용하는 대형 모달(예: 지역·카테고리·타겟 선택). **width ~960 · radius 16 · padding 48 · 흰 배경**. 헤더 = 제목 Bold 24 #383838(좌) + Close X 28(#999, 우). 본문 = **2컬럼(각 ~422 · 높이 ~652 · gap 20)**: 좌 = 필터(검색 input + '전체 선택' 체크박스 + 시/도▸시/군/구 체크박스 트리, 선택 시 옐로우 체크) / 우 = `SelectedItemsPanel`(component:SelectedItemsPanel · RegionRow) — '선택한 N개' + '선택 해제'(reset) + 제거 가능한 선택 항목 리스트. 푸터 = **본문 풀폭 단일 '적용' CTA**: Solid/Primary(옐로우 #FFD200·검정 텍스트, **pill**) · 비활성 = Neutral/400 #DDD. ⚠️ 확인팝업(①~④)의 '우측 hug 검정 pill' 규칙을 적용하지 말 것 — 선택 적용은 **풀폭 옐로우**. 버튼 shape 는 모달 BottomCTA 라 pill 이며, 시안 3001:50787(빈 셸)의 radius10·400centered 적용 버튼은 오류 — 채워진 SSOT 는 **3001:50116**(풀폭 적용). Figma 3001-50116.",
+          dataLoaderModal:
+            '**⑦ 데이터 로더 모달 (⑤ Data Modal 의 선택형)**: 기존 항목을 표에서 골라 불러오는 대형 모달(예: 소재 불러오기). ⑤ 구조 + **행 선택(radio/check) + 페이지네이션 + 푸터 액션**. 헤더 = 제목 Bold 24 + 검색 input + Close X. 본문 = 선택형 DataTable(상태칩·이미지·텍스트 컬럼 등) + 하단 페이지네이션 + \'N개씩 보기\' 드롭다운. 푸터 = **취소(color="assistive" outlined) + 불러오기(color="secondary" solid · 검정 pill)** 각 ~170×56 (확인팝업 dual 푸터와 동일). 조회 전용 ⑤ 와 달리 선택·확정 액션이 있다. Figma 3001-32822.',
           activationCondition:
             '`<html data-brand="cashwalk-biz">` 가 박힌 환경에서만 자동 적용 — 그 외에서는 base 모바일 스펙 유지',
         },
@@ -1005,7 +1023,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
       '캐포비 admin 모달의 주 action(확인/적용)은 color="secondary" variant="solid" — 브랜드 시그니처 **검정 CTA**(#000·흰 텍스트). 취소/닫기는 color="assistive" variant="outlined", 파괴적 확정만 color="error". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (검정인데 파랑으로 나오면 data-brand="cashwalk-biz" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)',
-      '**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot="footer">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot="footer"><nds-button color="secondary" variant="solid" shape="pill">확인</nds-button></div>` — slot="footer" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할.',
+      '**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot="footer">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot="footer"><nds-button color="secondary" variant="solid" shape="pill">확인</nds-button></div>` — slot="footer" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할. **단, 이 규칙은 확인/결정 팝업(①~④) 한정** — 모달 종류별로 푸터가 다르다(아래).',
+      '**모달 종류별 푸터 결정 트리** (혼동 금지): ① 확인/결정 팝업 = 우측 hug **검정 pill**(secondary), 취소는 assistive outlined. ② 선택/피커 모달(⑥, dimensions.selectionModal) = **본문 풀폭 단일 "적용" 옐로우 Solid/Primary pill** (검정 아님·hug 아님). ③ 데이터 로더(⑦, dimensions.dataLoaderModal) = 취소(outlined) + 불러오기 **검정 pill**. ④ 조회 전용 Data Modal(⑤) = 푸터 CTA 없음(Close X 만). 어떤 모달인지 먼저 정하고 그 푸터를 쓸 것 — 선택 모달에 검정 hug 를, 확인 팝업에 옐로우 풀폭을 쓰면 회귀.',
     ],
     usagePolicy: {
       useFor: [
