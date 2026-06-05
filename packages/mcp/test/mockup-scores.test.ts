@@ -47,6 +47,30 @@ describe("computeScores", () => {
     expect(computeScores([r("repeated-h1", "error", 1)]).dimensions.typography).toBe(80);
   });
 
+  it("검증 severity 룰은 점수 차원에도 빠짐없이 반영된다", () => {
+    expect(computeScores([r("low-ds-ratio", "error", 1)]).dimensions.component).toBe(80);
+    expect(
+      computeScores([r("admin-surface-consumer-chrome", "error", 1)]).dimensions.component,
+    ).toBe(80);
+    expect(computeScores([r("service-surface-admin-shell", "warn", 1)]).dimensions.component).toBe(
+      92,
+    );
+    expect(
+      computeScores([r("cashwalk-biz-sidebar-incomplete", "error", 1)]).dimensions.component,
+    ).toBe(80);
+    expect(computeScores([r("cashwalk-biz-sidebar-logout", "warn", 1)]).dimensions.component).toBe(
+      92,
+    );
+    expect(computeScores([r("cashwalk-biz-sidebar-shell", "error", 1)]).dimensions.layout).toBe(80);
+    expect(
+      computeScores([r("cashwalk-biz-modal-single-button-fullwidth", "warn", 1)]).dimensions.layout,
+    ).toBe(92);
+    expect(computeScores([r("nds-json-attr-unparseable", "error", 1)]).dimensions.component).toBe(
+      80,
+    );
+    expect(computeScores([r("mojibake-encoding", "error", 1)]).dimensions.typography).toBe(80);
+  });
+
   it("매핑 안 된 rule 은 점수에 반영 안 함(보수적)", () => {
     expect(computeScores([r("totally-made-up-rule", "error", 5)]).overall).toBe(100);
   });

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { validateHtmlSource } from "./html-validator.js";
+import { validateHtmlMockup, validateHtmlSource } from "./html-validator.js";
 
 /**
  * region-as-chip 룰.
@@ -38,6 +38,16 @@ test("지역 경로(>)가 든 nds-chip → region-as-chip warn", () => {
   const hit = has(v, "region-as-chip");
   assert.ok(hit, "지역 경로 칩이면 위반이어야 함");
   assert.equal(hit?.severity, "warn");
+});
+
+test("region-as-chip 은 D1 layout 점수에도 반영", () => {
+  const result = validateHtmlMockup({
+    source: WRONG,
+    surface: "admin",
+    brand: "cashwalk-biz",
+  });
+  assert.ok(result.violationsByRule.some((x) => x.rule === "region-as-chip"));
+  assert.ok(result.scores.dimensions.layout < 100);
 });
 
 test("SelectedItemsPanel + RegionRow(정답)는 region-as-chip 위반 없음", () => {
