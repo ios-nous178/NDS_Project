@@ -55,6 +55,15 @@ const FORWARDED_ATTRS = [
   "tabindex",
 ] as const;
 
+// DS eye / eye-off path (react Input.tsx 의 InputPasswordToggle 와 동일). currentColor 로 muted/strong cascade.
+const EYE_SVG =
+  '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g transform="translate(0 4)"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 0C17.4219 0 21.887 4.62766 23.6412 6.54255C24.1196 7.18085 24.1196 7.81915 23.6412 8.45745C21.887 10.3723 17.2625 15 12 15C6.57807 15 1.95349 10.5319 0.358804 8.45745C-0.119601 7.97872 -0.119601 7.18085 0.358804 6.70213C1.95349 4.62766 6.57807 0 12 0ZM6.7377 7.49999C6.7377 10.3723 9.12972 12.7659 12.0002 12.7659C14.8706 12.7659 17.2626 10.3723 17.2626 7.49999C17.2626 4.62765 14.8706 2.23403 12.0002 2.23403C9.12972 2.23403 6.7377 4.62765 6.7377 7.49999Z" fill="currentColor"/>' +
+  '<ellipse cx="11.9997" cy="7.49997" rx="2.5515" ry="2.55319" fill="currentColor"/></g></svg>';
+const EYE_OFF_SVG =
+  '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<g transform="translate(0 3)"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.156796 8.93661C-0.0522653 9.29924 -0.0522653 9.74743 0.156796 10.1101C1.13231 11.8068 2.42448 13.2384 3.94195 14.3485L2.30912 15.9984C2.08973 16.2174 1.96625 16.516 1.96625 16.8276C1.96625 17.1392 2.08973 17.4378 2.30912 17.6568C2.76253 18.1144 3.49706 18.1144 3.95046 17.6568L19.4557 1.98908C20.48 0.900126 18.8557 -0.72313 17.7912 0.354086L15.6388 2.53121C9.77336 0.79921 3.16154 3.5654 0.156022 8.9374L0.156796 8.93661ZM20.0661 4.69033L16.4513 8.34286C16.5798 8.82005 16.6347 9.35201 16.5906 9.8605C16.4381 12.7057 13.5402 14.7944 10.8312 14.0207L8.35371 16.5241C14.2385 18.2271 20.8279 15.4977 23.8435 10.1101C24.0525 9.7502 24.0525 9.29647 23.8435 8.93661C22.8804 7.23356 21.5843 5.8403 20.0661 4.68955V4.69033ZM7.5485 10.7046L13.1693 5.02518C10.3187 4.21551 7.3503 6.52718 7.39443 9.52336C7.39443 9.93015 7.44863 10.3291 7.5485 10.7046Z" fill="currentColor"/></g></svg>';
+
 let nextInputId = 0;
 
 export class NdsInput extends NdsElement {
@@ -71,6 +80,7 @@ export class NdsInput extends NdsElement {
       "full-width",
       "clearable",
       "show-count",
+      "password-toggle",
       "value",
       "default-value",
       "input-id",
@@ -83,6 +93,8 @@ export class NdsInput extends NdsElement {
   private _wrapper: HTMLDivElement | null = null;
   private _field: HTMLInputElement | null = null;
   private _clear: HTMLButtonElement | null = null;
+  private _passwordToggle: HTMLButtonElement | null = null;
+  private _passwordRevealed = false;
   private _count: HTMLSpanElement | null = null;
   private _helper: HTMLSpanElement | null = null;
   private _inputId = "";
@@ -207,6 +219,45 @@ export class NdsInput extends NdsElement {
     this._syncHelper();
     this._syncClearVisibility();
     this._syncCount();
+    this._syncPasswordToggle();
+  }
+
+  // type="password" + (password-toggle != "false") 면 우측 눈 버튼으로 표시/숨김 토글.
+  // FORWARDED_ATTRS 가 field.type 을 password 로 박은 뒤라, 여기서 revealed 상태로 최종 결정한다.
+  private _syncPasswordToggle(): void {
+    if (!this._wrapper || !this._field) return;
+    const isPassword = this.getAttribute("type") === "password";
+    const enabled = isPassword && this.attr("password-toggle", "true") !== "false";
+
+    if (!enabled) {
+      this._passwordToggle?.remove();
+      this._passwordToggle = null;
+      this._passwordRevealed = false;
+      return;
+    }
+
+    this._field.type = this._passwordRevealed ? "text" : "password";
+
+    if (!this._passwordToggle) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "nds-input__password-toggle";
+      btn.dataset.slot = "password-toggle";
+      btn.addEventListener("mousedown", (e) => e.preventDefault()); // input focus 유지
+      btn.addEventListener("click", () => {
+        this._passwordRevealed = !this._passwordRevealed;
+        this._syncPasswordToggle();
+        this._field?.focus();
+      });
+      this._wrapper.appendChild(btn);
+      this._passwordToggle = btn;
+    }
+
+    const btn = this._passwordToggle;
+    btn.disabled = this.boolAttr("disabled");
+    btn.setAttribute("aria-pressed", String(this._passwordRevealed));
+    btn.setAttribute("aria-label", this._passwordRevealed ? "비밀번호 숨기기" : "비밀번호 표시");
+    btn.innerHTML = this._passwordRevealed ? EYE_OFF_SVG : EYE_SVG;
   }
 
   private _syncLabel(): void {
