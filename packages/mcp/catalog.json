@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T07:14:57.653Z",
+  "generatedAt": "2026-06-05T19:47:37.579Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -296,6 +296,37 @@
           "optional": true,
           "type": "AppBarVariant",
           "allowedValues": ["default", "webview", "transparent"]
+        },
+        {
+          "name": "position",
+          "optional": true,
+          "type": "AppBarPosition",
+          "allowedValues": ["sticky", "fixed", "static"]
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "leftSlot",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "rightSlot",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "elevated",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "AppBarSlotProps"
         }
       ],
       "dtsRelPath": "packages/react/dist/AppBar.d.ts"
@@ -2146,6 +2177,31 @@
           "allowedValues": ["scroll", "cards"]
         },
         {
+          "name": "getSubRows",
+          "optional": true,
+          "type": "(row: T) => T[] | undefined"
+        },
+        {
+          "name": "expanderColumnKey",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "expandedKeys",
+          "optional": true,
+          "type": "string[]"
+        },
+        {
+          "name": "defaultExpandedKeys",
+          "optional": true,
+          "type": "string[]"
+        },
+        {
+          "name": "onExpandedChange",
+          "optional": true,
+          "type": "(keys: string[]) => void"
+        },
+        {
           "name": "className",
           "optional": true,
           "type": "string"
@@ -3222,6 +3278,11 @@
         },
         {
           "name": "showCount",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "passwordToggle",
           "optional": true,
           "type": "boolean"
         },
@@ -6356,6 +6417,22 @@
           "name": "label",
           "optional": true,
           "type": "React.ReactNode"
+        },
+        {
+          "name": "onLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "offLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "tone",
+          "optional": true,
+          "type": "ToggleTone",
+          "allowedValues": ["brand", "success"]
         },
         {
           "name": "size",
@@ -10359,6 +10436,25 @@
   ],
   "brands": [
     {
+      "slug": "cashpobi",
+      "name": "cashpobi",
+      "primaryColor": null,
+      "keyColors": {
+        "primary": null,
+        "secondary": null,
+        "error": null,
+        "caution": null,
+        "success": null,
+        "surface": null,
+        "onSurface": null
+      },
+      "fontFamilies": [],
+      "designMdRelPath": "",
+      "cssImport": null,
+      "jsExport": "@nudge-design/tokens/brands",
+      "ready": false
+    },
+    {
       "slug": "cashwalk-biz",
       "name": "cashwalk-biz",
       "primaryColor": null,
@@ -10397,6 +10493,25 @@
       "cssImport": "@nudge-design/tokens/css/geniet",
       "jsExport": "@nudge-design/tokens/brands",
       "ready": true
+    },
+    {
+      "slug": "moneple",
+      "name": "moneple",
+      "primaryColor": null,
+      "keyColors": {
+        "primary": null,
+        "secondary": null,
+        "error": null,
+        "caution": null,
+        "success": null,
+        "surface": null,
+        "onSurface": null
+      },
+      "fontFamilies": [],
+      "designMdRelPath": "",
+      "cssImport": null,
+      "jsExport": "@nudge-design/tokens/brands",
+      "ready": false
     },
     {
       "slug": "nudge-eap",
