@@ -704,7 +704,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
       "【헤더/푸터】 사용자 앱 화면이면 base <nds-header> 를 손수 조립하지 말고 <nds-brand-header brand surface='web|mobile|webview'> / <nds-brand-footer> 한 줄을 쓰세요(BrandHeader/BrandFooter 가이드). " +
       "【여러 화면】 한 파일에 여러 화면을 그릴 땐 .mockup-canvas > .mockup-screen[data-device='mobile|webview|web|tablet'] 프레임으로 나열 — 각 스크린은 자체 헤더(+필요시 푸터)+device 최소높이로 자기완결시킵니다(높이를 내용에 맡기지 말 것). 화면 2개 이상이면 상단 전환 탭이 자동 생성(기본 '탭'=한 번에 한 화면·미리보기 친화, '전체'=나란히 비교; data-mode='grid' 로 처음부터 나란히). get_guide({ topic: 'pattern:multi-screen' }). " +
       "【버튼/인터랙션】 모든 활성 버튼은 data-action/id + addEventListener('click', ...) 로 실제 상태 변경을 만듭니다. validate_html_mockup 의 button-without-interaction 룰이 버튼별로 잡습니다. " +
-      "【PRD 커버리지】 사용자 요구사항을 <script type='application/json' data-prd-coverage> 에 전부 남기고 evidence selector 를 실제 DOM 에 연결합니다. build 는 missing-prd-coverage 로 누락을 차단합니다. " +
+      "【PRD 커버리지】 사용자 요구사항을 <script type='application/json' data-prd-coverage> 에 전부 남기고 evidence selector 를 실제 DOM 에 연결합니다. build 는 missing-prd-coverage 로 누락을 차단하고, validate_prd_coverage / build.prdValidation 이 미완료 항목을 DS 점수와 별도로 검증합니다. " +
       "【이미지】 DS 자산 이미지는 get_brand 의 inlineRef(@nudge-design/assets/files/…) 규약으로 <img src> 에 쓰면 빌드가 base64 inline(내부·외부 모두 보임). 상대경로 /…/x.png 는 단일 파일에서 깨집니다.",
   });
 
@@ -728,8 +728,8 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
       "validate_html_mockup({ filePath: '<프로젝트>/index.html', withStats: true })",
     ],
     note:
-      "validate 위반 0건 + withStats.counts.dsRatio 충분히 높은 상태를 ship 기준으로 사용. " +
-      "button-without-interaction / prd-coverage-incomplete 는 반드시 수정해야 하는 error 입니다.",
+      "validate_html_mockup 위반 0건 + withStats.counts.dsRatio 충분히 높은 상태를 DS ship 기준으로 사용. " +
+      "button-without-interaction 은 DS/static 품질 error 입니다. PRD/brief 누락은 validate_prd_coverage 또는 build_singlefile_html.prdValidation 으로 별도 확인합니다.",
   });
 
   steps.push({

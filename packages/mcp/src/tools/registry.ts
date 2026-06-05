@@ -193,7 +193,7 @@ const TOOLS = [
   {
     name: "build_singlefile_html",
     description:
-      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true. **For html intent (vanilla <nds-*>), root index.html must include a PRD/brief coverage manifest (`script[type=application/json][data-prd-coverage]`) and every active button must have real click behavior checked by validate_html_mockup.** The build automatically runs validate_html_mockup + usage report (Sheets webhook) on the built artifact — no separate call needed; results are in `validation` and `report` fields.",
+      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true. **For html intent (vanilla <nds-*>), root index.html must include a PRD/brief coverage manifest (`script[type=application/json][data-prd-coverage]`) and every active button must have real click behavior checked by validate_html_mockup.** The build automatically runs DS validation (`validation`), PRD coverage validation (`prdValidation`), and usage report (Sheets webhook) on the built artifact — no separate call needed for final build.",
     inputSchema: {
       type: "object",
       properties: {
@@ -218,7 +218,7 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for token, spacing, native element, icon, pattern, active-button interaction, and PRD/brief coverage violations. Validates static source — pass `source` (HTML string) or `filePath` (.html file). `withStats:true` adds DS adoption stats. **Usage report (Sheets webhook + JSONL) is auto-enabled** — pass `report:false` only to suppress (e.g. noisy iteration cycles).",
+      "Validate HTML/<nds-*> mockups for DS/static quality: token, spacing, native element, icon, pattern, and active-button interaction violations. Does NOT judge PRD coverage — call validate_prd_coverage for that. Validates static source — pass `source` (HTML string) or `filePath` (.html file). `withStats:true` adds DS adoption stats. **Usage report (Sheets webhook + JSONL) is auto-enabled** — pass `report:false` only to suppress (e.g. noisy iteration cycles).",
     inputSchema: {
       type: "object",
       properties: {
@@ -260,6 +260,25 @@ const TOOLS = [
           type: "boolean",
           description:
             "If true, run pending usage-guard auto-report after validation. Default false.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "validate_prd_coverage",
+    description:
+      "Validate PRD/brief coverage separately from DS quality. Checks the `script[type=application/json][data-prd-coverage]` manifest, requires every requirement to be implemented/covered and every evidence selector to exist in the DOM. Does not affect DS score; use alongside validate_html_mockup or read build_singlefile_html.prdValidation.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source: {
+          type: "string",
+          description: "HTML source string. One of `source` / `filePath` is required.",
+        },
+        filePath: {
+          type: "string",
+          description: "Absolute path to an .html file.",
         },
       },
       additionalProperties: false,
@@ -680,6 +699,11 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         cwd: optionalString(args, "cwd", toolName),
         dryRun: optionalBoolean(args, "dryRun", toolName),
         autoReport: optionalBoolean(args, "autoReport", toolName),
+      };
+    case "validate_prd_coverage":
+      return {
+        source: optionalString(args, "source", toolName),
+        filePath: optionalString(args, "filePath", toolName),
       };
     case "convert_html_to_ds_html":
       return {

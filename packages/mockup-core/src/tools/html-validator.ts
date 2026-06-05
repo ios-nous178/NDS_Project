@@ -23,7 +23,6 @@
  *  - unknown-nds-class    : class="nds-foo" 가 React DS stylesheet 에 없는 클래스
  *  - invalid-nds-attr-value : nds-* attribute enum 위반
  *  - button-without-interaction : 활성 버튼에 click/submit 동작 연결 근거가 없음
- *  - prd-coverage-incomplete    : PRD/brief 요구사항 커버리지 매니페스트가 비었거나 미완료
  *  - raw-shell-pattern    : <style> 안 raw .page / .topbar / .section / .form-row 정의 (admin-shell 가이드 위반)
  *
  * 검출 룰 (JSX 에서 포팅 — 컨테이너 / 카운팅 / 시각 위계):
@@ -176,9 +175,6 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   // 목업 버튼은 장식이 아니라 실제 동작해야 함. 정적 검증에서는 버튼별 식별자와
   // addEventListener/click/submit 연결 근거를 확인한다.
   "button-without-interaction": "error",
-  // PRD/brief 일부만 구현하는 사고 방지: 산출물에 요구사항 커버리지 매니페스트를 남기고
-  // 모든 항목이 implemented + evidence selector 로 연결되어야 한다.
-  "prd-coverage-incomplete": "error",
   "unknown-token": "error",
   "ds-badge-missing": "error",
   // 토큰 / 시멘틱
@@ -915,7 +911,6 @@ export function validateHtmlSource(
   // 카드별 / Footer별 / 영역별 카운트를 도출해 패턴 위반을 잡는다.
   collectContainerViolations(source, $, violations);
   collectSelectedItemsPanelViolations(source, $, violations);
-  collectPrdCoverageViolations(source, $, violations);
 
   // ─── 브랜드 화면에서 base nds-header 손수 조립 감지 ───
   //   회고: RunmileWebHeader 가이드가 "HTML 대응 없음" 이라 base <nds-header> 에
@@ -1342,96 +1337,6 @@ function nodeText(node: unknown): string {
   const n = node as { type?: string; data?: string; children?: unknown[] };
   if (n.type === "text") return n.data ?? "";
   return (n.children ?? []).map(nodeText).join("");
-}
-
-interface PrdCoverageItem {
-  id?: unknown;
-  requirement?: unknown;
-  text?: unknown;
-  status?: unknown;
-  evidence?: unknown;
-  selector?: unknown;
-}
-
-function collectPrdCoverageViolations(
-  source: string,
-  $: cheerio.CheerioAPI,
-  out: HtmlViolation[],
-): void {
-  const nodes = $('script[type="application/json"][data-prd-coverage]');
-  if (nodes.length === 0) return;
-
-  nodes.each((_i, el) => {
-    if (el.type !== "tag" && el.type !== "script") return;
-    const line = lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0);
-    const selector = describeElement(el as unknown as DomElement);
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse($(el).text());
-    } catch {
-      out.push({
-        rule: "prd-coverage-incomplete",
-        line,
-        selector,
-        detail: "data-prd-coverage JSON 파싱 실패.",
-        suggestion:
-          'PRD/brief 요구사항을 {"requirements":[{"id":"R1","requirement":"...","status":"implemented","evidence":"#selector"}]} 형식의 valid JSON 으로 남기세요.',
-      });
-      return;
-    }
-
-    const requirements = Array.isArray(parsed)
-      ? parsed
-      : parsed &&
-          typeof parsed === "object" &&
-          Array.isArray((parsed as { requirements?: unknown }).requirements)
-        ? (parsed as { requirements: unknown[] }).requirements
-        : null;
-    if (!requirements || requirements.length === 0) {
-      out.push({
-        rule: "prd-coverage-incomplete",
-        line,
-        selector,
-        detail: "PRD/brief 요구사항 목록이 비어 있습니다.",
-        suggestion:
-          "사용자 PRD/brief 의 명시 요구사항을 빠짐없이 requirements[] 로 분해하고, 각 항목에 implemented 상태와 실제 DOM evidence selector 를 연결하세요.",
-      });
-      return;
-    }
-
-    requirements.forEach((item, index) => {
-      const req = item as PrdCoverageItem;
-      const id = typeof req.id === "string" && req.id.trim() ? req.id.trim() : `#${index + 1}`;
-      const status = typeof req.status === "string" ? req.status.trim().toLowerCase() : "";
-      const okStatus = ["implemented", "done", "complete", "covered"].includes(status);
-      const evidenceRaw = req.evidence ?? req.selector;
-      const evidences =
-        typeof evidenceRaw === "string"
-          ? [evidenceRaw]
-          : Array.isArray(evidenceRaw)
-            ? evidenceRaw.filter((x): x is string => typeof x === "string")
-            : [];
-      const evidence = evidences.map((x) => x.trim()).filter(Boolean);
-      const missingEvidence =
-        evidence.length === 0 ||
-        evidence.some((sel) => {
-          try {
-            return $(sel).length === 0;
-          } catch {
-            return true;
-          }
-        });
-      if (okStatus && !missingEvidence) return;
-      out.push({
-        rule: "prd-coverage-incomplete",
-        line,
-        selector,
-        detail: `${id} 요구사항이 완료 증거를 갖지 못했습니다(status="${status || "missing"}", evidence="${evidence.join(", ") || "missing"}").`,
-        suggestion:
-          "PRD 일부만 구현한 채 종료하지 마세요. 해당 요구사항을 실제 UI/인터랙션으로 구현하고 evidence selector 가 존재하게 하거나, 사용자 승인 없이 omitted/todo 로 남기지 마세요.",
-      });
-    });
-  });
 }
 
 /**
@@ -1887,7 +1792,6 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "chip-overuse": "layout",
   "region-as-chip": "layout",
   "selected-items-helper-outside-form-field": "layout",
-  "prd-coverage-incomplete": "layout",
   "card-everything": "layout",
   "decorative-shadow": "layout",
   "visual-emphasis-overload": "layout",

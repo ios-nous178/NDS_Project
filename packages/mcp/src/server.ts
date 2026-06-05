@@ -68,6 +68,7 @@ import {
 } from "./tools/usage.js";
 import { captureContext } from "./tools/context-capture.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
+import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
 import { getGuide } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
@@ -908,7 +909,18 @@ const toolHandlers = {
         },
       };
     }
-    return attachPrinciplesAck(attachScoreGate(extras ? { ...result, ...extras } : result));
+    const withExtras = extras ? { ...result, ...extras } : result;
+    return attachPrinciplesAck(
+      attachScoreGate({
+        ...withExtras,
+        _prdCoverageNextStep:
+          "PRD/brief 커버리지는 DS 점수와 분리됨. 최종 전 validate_prd_coverage({ source|filePath }) 또는 build_singlefile_html.prdValidation 을 확인하세요.",
+      }),
+    );
+  },
+  validate_prd_coverage: (args: ToolArgs) => {
+    const typed = args as { source?: string; filePath?: string };
+    return validatePrdCoverage(typed);
   },
   score_mockup_quality: async (args: ToolArgs) => {
     const typed = args as {
