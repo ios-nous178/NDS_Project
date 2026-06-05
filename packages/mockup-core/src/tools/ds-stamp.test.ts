@@ -30,6 +30,20 @@ test("좌측 하단 플로팅 pill + X 닫기 버튼을 포함한다", () => {
   assert.match(bar, /&times;/);
 });
 
+test("adoptionRatio 가 ratio 와 다르면 '채택 A% · 전체 B%' 2단 표기", () => {
+  const bar = renderDsStampBar({ dsVersion: "1.4.2", ratio: 70, adoptionRatio: 88 });
+  assert.match(bar, /채택 88% · 전체 70%/);
+});
+
+test("adoptionRatio 가 ratio 와 같거나 없으면 단일 '전체%' 로 폴백", () => {
+  // 같을 때 (HTML 목업은 구조상 A==B) — 2단 표기 안 함.
+  const same = renderDsStampBar({ dsVersion: "1.4.2", ratio: 70, adoptionRatio: 70 });
+  assert.match(same, />70%</);
+  assert.doesNotMatch(same, /채택/);
+  // 생략 시에도 단일.
+  assert.doesNotMatch(renderDsStampBar({ ratio: 92 }), /채택/);
+});
+
 test("앱 버전이 없으면 STUDIO 세그먼트를 생략한다", () => {
   const bar = renderDsStampBar({ dsVersion: "1.4.2", ratio: 50 });
   assert.doesNotMatch(bar, /STUDIO/);

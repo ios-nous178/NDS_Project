@@ -47,6 +47,7 @@ import { scoreMockupQuality } from "@nudge-design/mockup-core/tools/quality-scor
 import { resolveClaudeBin } from "./claude-bin.js";
 // validate_html_mockup 컨텍스트 도출 SSOT — 데스크탑 하네스(catalog.ts)도 같은 헬퍼를 쓴다.
 import { deriveHtmlValidationContext } from "@nudge-design/mockup-core/tools/catalog-config";
+import { configureUsageCatalog } from "@nudge-design/mockup-core/tools/usage/parser";
 import {
   analyzeHtmlMockup,
   convertHtmlToDsHtml,
@@ -176,6 +177,10 @@ configureMockupValidator({
   iconSet,
   propAllowedValues,
 });
+
+// usage 집계기(parser)에도 같은 카탈로그를 주입 — non-DS 요소를 avoidable(대체재 있음) vs
+// forced(대체재 없음)로 정밀 분류해 adoptionRatio(A) / overallRatio(B)를 산출하게 한다.
+configureUsageCatalog(new Set(componentByName.keys()));
 
 // validate_html_mockup 용 context (nds-* 태그/클래스 prefix/attr enum 셋) — 도출 로직은
 // mockup-core 의 catalog-config(deriveHtmlValidationContext)가 SSOT 다. 예전엔 server.ts 가

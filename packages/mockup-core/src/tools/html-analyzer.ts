@@ -431,6 +431,15 @@ function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
       totalCustomNative: counts.nativeUnwrapped.total + counts.ndsClassed.total,
       totalExternal: 0,
       dsRatio: counts.dsRatio,
+      // HTML 목업은 div 기반이라 "DS 에 없어서 div 로 만든 위젯" 과 "그냥 레이아웃 div" 를
+      // import 정체성 없이 구분할 수 없다 → forced 를 신뢰성 있게 측정 불가. nativeUnwrapped
+      // (button/input/select/textarea/form)는 전부 DS 대체재가 있으므로 avoidable 로만 집계하고,
+      // forcedCustom 은 0, overallRatio == adoptionRatio(=기존 dsRatio) 로 둔다. A/B 분리의
+      // 정밀 산출은 TSX 파서(컴포넌트 정체성 보유) 쪽에서 이뤄진다.
+      avoidableMiss: counts.nativeUnwrapped.total + counts.ndsClassed.total,
+      forcedCustom: 0,
+      adoptionRatio: counts.dsRatio,
+      overallRatio: counts.dsRatio,
       parserWarnings: [],
     },
   };

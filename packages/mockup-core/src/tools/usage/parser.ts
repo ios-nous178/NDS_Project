@@ -52,6 +52,49 @@ const NDS_HTML_TAG_RE = /^nds-([a-z][a-z0-9-]*)$/;
 
 const TRACKED_VARIANT_PROPS = ["variant", "size", "color", "tone", "kind"] as const;
 
+/* ───────────── avoidable(있는데 안 씀) vs forced(없어서 못 씀) 분류 ─────────────
+ *
+ * non-DS 요소 하나하나를 카탈로그에 비춰 "DS 대체재가 있느냐"로 가른다.
+ *  - avoidable: DS 에 같은 역할의 컴포넌트가 있는데 native/antd/external 로 그림 → 회피 가능한 미스
+ *  - forced:    DS 에 대체재가 없어 어쩔 수 없이 custom → DS 커버리지 공백 신호
+ *
+ * 카탈로그는 `configureUsageCatalog` 로 주입한다(validator 들과 동일한 SSOT 패턴).
+ * MCP 서버 / 데스크탑 하네스가 부트스트랩 시 1회 호출. 미주입이면 아래 DEFAULT_DS_NAMES
+ * (항상 존재하는 4종 native 대체재)만으로 보수적으로 판정한다.
+ */
+
+/** native HTML 태그 → DS 컴포넌트 후보 이름. 카탈로그 멤버십으로 존재 여부 확정. */
+const NATIVE_DS_CANDIDATE: Record<string, string> = {
+  button: "Button",
+  input: "Input",
+  select: "Select",
+  textarea: "Textarea",
+  a: "Link",
+  label: "FormLabel",
+  form: "Form",
+  fieldset: "Fieldset",
+};
+
+/** 카탈로그 미주입 시 fallback — DS 에 확실히 존재하는 native 대체재(= html convert TAG_REWRITES 셋). */
+const DEFAULT_DS_NAMES = new Set(["Button", "Input", "Select", "Textarea"]);
+
+let dsComponentNames: Set<string> | null = null;
+
+/**
+ * usage 분류기에 DS 컴포넌트 카탈로그(이름 셋)를 주입한다. avoidable/forced 판정 정밀도를 올림.
+ * 미주입이어도 동작하지만(DEFAULT_DS_NAMES 만 사용), 외부 프로젝트 정밀 집계엔 주입 권장.
+ */
+export function configureUsageCatalog(componentNames: Set<string>): void {
+  dsComponentNames = componentNames;
+}
+
+/** DS 카탈로그에 후보 이름이 존재하는가. 미주입이면 항상 존재하는 native 대체재만 true. */
+function hasDsEquivalent(candidate: string | null | undefined): boolean {
+  if (!candidate) return false;
+  if (dsComponentNames) return dsComponentNames.has(candidate);
+  return DEFAULT_DS_NAMES.has(candidate);
+}
+
 interface ImportInfo {
   source: string;
   imported: string; // original name in source module (or "default", "*")
@@ -164,6 +207,27 @@ export function parseMockupSource(
   const totalTracked = totalDs + totalAdminCms + totalCustomNative + totalExternal;
   const dsRatio = totalTracked === 0 ? 0 : Math.round((totalDs / totalTracked) * 100);
 
+  // non-DS 요소를 avoidable(대체재 있음) / forced(대체재 없음)로 가른다.
+  //  · native: 태그 → DS 후보 이름 매핑 후 카탈로그 멤버십.
+  //  · antd / external: 컴포넌트 베이스 이름(slot 제거)이 그대로 DS 카탈로그에 있으면 avoidable.
+  let avoidableMiss = 0;
+  let forcedCustom = 0;
+  for (const n of customNative) {
+    if (hasDsEquivalent(NATIVE_DS_CANDIDATE[n.tag])) avoidableMiss += n.count;
+    else forcedCustom += n.count;
+  }
+  for (const c of adminCms) {
+    if (hasDsEquivalent(baseComponentName(c.component))) avoidableMiss += c.count;
+    else forcedCustom += c.count;
+  }
+  for (const e of external) {
+    if (hasDsEquivalent(baseComponentName(e.component))) avoidableMiss += e.count;
+    else forcedCustom += e.count;
+  }
+  const adoptionDenom = totalDs + avoidableMiss;
+  const adoptionRatio = adoptionDenom === 0 ? 0 : Math.round((totalDs / adoptionDenom) * 100);
+  const overallRatio = dsRatio; // == DS / (DS + avoidable + forced)
+
   return {
     date: new Date().toISOString().slice(0, 10),
     mockupFile: relativeSafe(absPath, cwd),
@@ -180,6 +244,10 @@ export function parseMockupSource(
       totalCustomNative,
       totalExternal,
       dsRatio,
+      avoidableMiss,
+      forcedCustom,
+      adoptionRatio,
+      overallRatio,
       parserWarnings: warnings,
     },
   };
@@ -221,9 +289,19 @@ function emptyUsage(
       totalCustomNative: 0,
       totalExternal: 0,
       dsRatio: 0,
+      avoidableMiss: 0,
+      forcedCustom: 0,
+      adoptionRatio: 0,
+      overallRatio: 0,
       parserWarnings: warnings,
     },
   };
+}
+
+/** "Tabs.Tab" / "Select.Option" → "Tabs" / "Select". slot 제거 후 카탈로그 매칭용 베이스 이름. */
+function baseComponentName(component: string): string {
+  const dot = component.indexOf(".");
+  return dot === -1 ? component : component.slice(0, dot);
 }
 
 function defaultMockupName(absPath: string): string {

@@ -64,8 +64,31 @@ export interface MockupUsage {
     totalAdminCms: number;
     totalCustomNative: number;
     totalExternal: number;
-    /** Pre-computed DS adoption ratio (% of tracked JSX that came from @nudge-design/react). */
+    /**
+     * Pre-computed DS adoption ratio (% of tracked JSX that came from @nudge-design/react).
+     * 분모 = 추적된 모든 요소(DS + antd + native + external) → "전체 사용률"에 해당.
+     * 하위호환을 위해 의미를 바꾸지 않는다 (== overallRatio). 새 코드는 adoptionRatio/overallRatio 사용.
+     */
     dsRatio: number;
+    /**
+     * non-DS 요소 중 **DS 대체재가 존재하는** 개수 — "있었는데 안 쓴" 회피 가능한 미스.
+     * 카탈로그(configureUsageCatalog)가 주입돼야 정밀 산출. 미주입 시 알려진 native 만 avoidable.
+     */
+    avoidableMiss: number;
+    /**
+     * non-DS 요소 중 **DS 대체재가 없는** 개수 — DS 커버리지 공백 때문에 어쩔 수 없이 custom.
+     * (avoidableMiss + forcedCustom == totalAdminCms + totalCustomNative + totalExternal)
+     */
+    forcedCustom: number;
+    /**
+     * A. 채택률 = DS / (DS + avoidableMiss). "쓸 수 있었던 것 중 DS로 쓴 비율" — 팀 기준 점수.
+     */
+    adoptionRatio: number;
+    /**
+     * B. 전체 사용률 = DS / (DS + avoidableMiss + forcedCustom). DS 공백까지 포함한 하한.
+     * adoptionRatio − overallRatio 갭 = "만들어야 할 DS 컴포넌트" 신호. (== dsRatio)
+     */
+    overallRatio: number;
     parserWarnings: string[];
   };
 }
