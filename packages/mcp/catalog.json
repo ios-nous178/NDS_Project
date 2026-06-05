@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T05:23:54.685Z",
+  "generatedAt": "2026-06-05T05:37:38.985Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -5605,6 +5605,17 @@
       ],
       "dtsRelPath": "packages/react/dist/StatCard.d.ts",
       "htmlTag": "nds-stat-card"
+    },
+    {
+      "name": "StatsTable",
+      "props": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/StatsTable.d.ts"
     },
     {
       "name": "StatusTimeline",

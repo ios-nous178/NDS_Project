@@ -3189,6 +3189,29 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["결제 수단 관리: brand별 자동 색", "별명: label='용돈 카드'"],
   },
+  StatsTable: {
+    name: "StatsTable",
+    examplesHtml: {
+      do: '<!-- 통계/집계 리포트 표 — 병합셀(rowspan/colspan) + 합계행. native table 에 class -->\n<table class="nds-stats-table">\n  <thead>\n    <tr><th>연령</th><th>성별</th><th>당첨자 수</th><th>지급된 캐시</th></tr>\n  </thead>\n  <tbody>\n    <tr class="is-summary"><td colspan="2">총합</td><td>999,999</td><td>999,999</td></tr>\n    <tr><td rowspan="2">알 수 없음</td><td>남성</td><td>99</td><td>999</td></tr>\n    <tr><td>여성</td><td>99</td><td>999</td></tr>\n    <tr class="is-summary"><td colspan="2">알 수 없음 총합</td><td>999</td><td>99,999</td></tr>\n  </tbody>\n</table>\n<!-- 표 아래 페이지네이션은 component:Pagination (nds-pagination) -->',
+      dont: "<!-- 합계행/병합셀 리포트 표를 nds-data-table(columns/data API)로 억지로 만들지 말 것 — rowspan·합계행 표현 불가 -->\n<nds-data-table columns='...' data='...'></nds-data-table>\n<!-- 합계행을 굵게 하려고 인라인 style 로 font-weight 박지 말 것. <tr class=\"is-summary\"> 사용 -->\n<tr style=\"font-weight:bold\"><td>총합</td>...</tr>",
+    },
+    summary:
+      '캐포비 어드민 통계/집계 리포트 표 — 회색 헤더 + 가는 그리드 + 병합셀(rowspan/colspan) + 합계행(굵게). native <table class="nds-stats-table"> 구조형 컴포넌트. 동적 정렬·모바일 카드뷰는 DataTable 사용. Figma 퀴즈 통계(3001:47404 캐시워크 통계 표).',
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-47404",
+    pitfalls: [
+      '**병합셀은 native rowspan/colspan** — 합계행(`총합`)은 라벨이 앞 2열을 `colspan="2"` 로 병합, 그룹행(`알 수 없음`/`NN대`)은 첫 열을 `rowspan="2"` 로 병합(남/여 2행). DataTable 의 columns/data 로는 표현 불가.',
+      '**합계/요약 행 = `<tr class="is-summary">`** (또는 `data-summary`). 전체 셀 Bold + 강조색이 자동 적용 — 인라인 font-weight 금지.',
+      '셀 정렬은 `data-align="right"|"center"`. 기본 좌측(Figma 정합). 숫자는 자동 tabular-nums.',
+      "헤더/그리드 색은 토큰 자동(헤더 bg=surface.page, 보더=border subtle). raw hex 금지.",
+      "표는 plot/범례처럼 카드 외부 컨테이너(흰 라운드 박스 + 타이틀) 안에 배치 — nds-stats-table 은 표만 그림.",
+      "페이지가 나뉘는 긴 표는 표 아래에 component:Pagination(nds-pagination) 을 둘 것(활성 페이지 = 브랜드색 자동).",
+    ],
+    recommended: [
+      '집계/합계가 있는 리포트 표(통계 화면) = nds-stats-table + <tr class="is-summary">',
+      "정렬·필터·페이지 인터랙션이 필요한 데이터 그리드 = DataTable",
+      'React: <StatsTable><thead/>…<tr className="is-summary"><td colSpan={2}>총합</td>…</StatsTable>',
+    ],
+  },
   DataTable: {
     name: "DataTable",
     examplesHtml: {
@@ -4040,15 +4063,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Tooltip: {
     name: "Tooltip",
     summary:
-      "trigger 에 마우스 hover / focus 시 보조 설명. 모바일에선 사실상 보이지 않으므로 핵심 정보는 본문에 둘 것.",
+      "trigger 에 마우스 hover / focus 시 보조 설명. **두 줄·여러 줄 본문 허용** — 짧은 힌트는 `content` 속성(자동 줄바꿈), 제목+불릿 같은 **리치 안내**(예: 캐포비 '권한 안내')는 `<template slot=\"content\">` 로 넣고 `max-width` 로 폭 조절. 다크 배경(surface.inverse) + 흰 텍스트 + 하단/방향별 tail 은 공통. 모바일에선 사실상 안 보이므로 핵심 정보는 본문에 둘 것.",
     pitfalls: [
       "Tooltip 안에 인터랙티브 요소(링크/버튼) — 모바일/터치에서는 도달 불가.",
       "trigger 가 aria-label 만 갖고 visible 텍스트가 없는 아이콘 버튼인데 Tooltip 도 같은 내용 — 중복.",
-      "Tooltip 텍스트가 한 문장 초과로 길어짐 — Popover / Modal 사용.",
+      "본문 길이/줄 수 제한은 없음 — 두 줄·여러 줄·제목+불릿 리치까지 허용(`<template slot=\"content\">` + 필요 시 `max-width`). 단 (a) 사용자의 응답/결정이 필요하거나 (b) 한 화면을 채울 만큼 길면 Modal — Tooltip 은 어디까지나 hover 보조 안내. (이전의 '한 문장 초과 금지' 규칙은 폐기.)",
+      '리치 본문은 `content` 속성(평문)이 아니라 **`<template slot="content">`** 로 — HTML(제목 `<p style="font-weight:700">` · 불릿 `<ul><li>` · 강조 `<strong>`)을 넣어야 렌더된다. content 속성에 태그 문자열을 넣으면 그대로 escape 됨.',
     ],
     examplesHtml: {
-      do: '<nds-tooltip content="삭제하면 복구할 수 없어요" placement="top" trigger-label="?"></nds-tooltip>',
-      dont: '<!-- 모바일에서 보이지 않는 본질 정보 -->\n<nds-tooltip content="이용약관 동의가 필수입니다" trigger-label="?"></nds-tooltip>',
+      do: '<!-- ① 짧은 힌트(자동 줄바꿈) -->\n<nds-tooltip content="삭제하면 복구할 수 없어요" placement="top" trigger-label="?"></nds-tooltip>\n<!-- ② 리치 안내(제목+불릿·멀티라인) — 캐포비 권한 안내 형태 -->\n<nds-tooltip trigger-label="?" placement="top" max-width="346" open>\n  <template slot="content">\n    <p style="font-weight:700">권한 안내</p>\n    <ul>\n      <li>비즈니스 계정 : <strong>모든 광고 계정</strong>에 접근할 수 있으며, 광고 계정 생성 및 수정 권한을 가집니다.</li>\n      <li>일반 계정 : <strong>초대된 광고 계정</strong>에 한해 광고 조회 및 관리가 가능합니다.</li>\n    </ul>\n  </template>\n</nds-tooltip>',
+      dont: '<!-- 모바일에서 보이지 않는 본질 정보를 툴팁에만 -->\n<nds-tooltip content="이용약관 동의가 필수입니다" trigger-label="?"></nds-tooltip>\n<!-- 리치 본문을 content 속성에 태그 문자열로 (escape 되어 깨짐) -->\n<nds-tooltip trigger-label="?" content="<strong>권한 안내</strong><ul>..."></nds-tooltip>',
     },
   },
   BottomSheet: {

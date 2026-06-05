@@ -118,6 +118,7 @@ import {
   UserCard,
   VotePoll,
   Chart,
+  StatsTable,
 } from "@nudge-design/react";
 import {
   CalendarIcon,
@@ -652,6 +653,34 @@ const PREVIEWS: Record<string, PreviewRender> = {
           { name: "여성", values: [14, 18, 20, 28, 26, 14] },
         ]}
       />
+    </div>
+  ),
+  StatsTable: () => (
+    <div style={{ width: "100%", maxWidth: 360 }}>
+      <StatsTable>
+        <thead>
+          <tr>
+            <th>연령</th>
+            <th>성별</th>
+            <th>당첨자 수</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="is-summary">
+            <td colSpan={2}>총합</td>
+            <td>999,999</td>
+          </tr>
+          <tr>
+            <td rowSpan={2}>NN대</td>
+            <td>남성</td>
+            <td>99</td>
+          </tr>
+          <tr>
+            <td>여성</td>
+            <td>99</td>
+          </tr>
+        </tbody>
+      </StatsTable>
     </div>
   ),
   ReactionPicker: () => {
