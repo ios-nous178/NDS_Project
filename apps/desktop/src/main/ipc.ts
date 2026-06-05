@@ -1,7 +1,12 @@
 import { app, dialog, ipcMain, shell, BrowserWindow } from "electron";
 import { copyFileSync, existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { validateHtmlMockup, type ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
+import {
+  recommendPagePattern,
+  validateHtmlMockup,
+  type RecommendPagePatternResult,
+  type ValidateHtmlMockupResult,
+} from "@nudge-design/mockup-core";
 import { setPreviewRoot } from "./mockup-protocol.js";
 import { lastValidProjectPath, writeAppState } from "./app-state.js";
 import { startWatch, stopWatch } from "./watcher.js";
@@ -482,6 +487,16 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
         wc,
       );
     },
+  );
+
+  // ── Page Pattern 1차 추천 — 캐포비 어드민 intake 카드용(키워드 점수, mockup-core SSOT). ──
+  // 점수 로직은 MCP recommend_page_pattern 과 동일 함수. 카드가 top 을 미리 고르고 사용자가 바꾼다.
+  ipcMain.handle(
+    "intake:recommend-page-pattern",
+    async (
+      _e,
+      args: { prd?: string; brand?: string; surface?: string },
+    ): Promise<RecommendPagePatternResult> => recommendPagePattern(args?.prd ?? ""),
   );
 
   // ── 인테이크 (Level 2) — 게이트 충족 파일 작성 후 시드 세션 시작 ──

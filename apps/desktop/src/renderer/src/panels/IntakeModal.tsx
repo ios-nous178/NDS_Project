@@ -14,6 +14,7 @@ import {
   segItem,
   segItemActive,
 } from "../ui/theme.js";
+import type { RecommendPagePatternResult } from "@nudge-design/mockup-core";
 
 const BRANDS: { slug: string; label: string }[] = [
   { slug: "trost", label: "Trost" },
@@ -166,6 +167,10 @@ export function IntakeModal({
   const [prd, setPrd] = useState("");
   const [directionMode, setDirectionMode] = useState<DirectionMode>("auto");
   const [selectedDirection, setSelectedDirection] = useState("");
+  // 캐포비 어드민 Page Pattern 1차 추천(키워드 점수) + 사용자 선택.
+  const [pagePattern, setPagePattern] = useState("");
+  const [patternRec, setPatternRec] = useState<RecommendPagePatternResult | null>(null);
+  const [recLoading, setRecLoading] = useState(false);
   const [figma, setFigma] = useState("");
   const [extra, setExtra] = useState("");
   const [shots, setShots] = useState<ShotItem[]>([]);
@@ -271,6 +276,9 @@ export function IntakeModal({
         agentType,
         directionMode,
         selectedDirection,
+        // 캐포비 어드민에서 카드로 고른 패턴만 전달 — main 이 nudge.pagePattern 마커로 박는다.
+        selectedPagePattern:
+          surface === "admin" && brand === "cashwalk-biz" ? pagePattern || undefined : undefined,
       });
       if (!res.ok || !res.sessionId) {
         if (res.code === "not-found") {
@@ -306,6 +314,7 @@ export function IntakeModal({
     transport,
     directionMode,
     selectedDirection,
+    pagePattern,
     onStarted,
     intent,
     effectiveSlug,
@@ -316,6 +325,22 @@ export function IntakeModal({
     <div style={{ fontSize: 11, color: c.textMuted, marginBottom: 5, fontWeight: 600 }}>{t}</div>
   );
   const field: React.CSSProperties = { marginBottom: 14 };
+
+  // Page Pattern 추천 카드는 캐포비 어드민에서만(5종 시스템의 적용 범위와 동일).
+  const showPatternCard = surface === "admin" && brand === "cashwalk-biz";
+  const fetchPatternRec = async (): Promise<void> => {
+    setRecLoading(true);
+    try {
+      const rec = await window.harness.recommendPagePattern({ prd, brand, surface });
+      setPatternRec(rec);
+      // 1차 추천(top)을 미리 선택 — 사용자가 다른 후보로 바꿀 수 있음. 이미 골랐으면 유지.
+      if (rec.top) setPagePattern((prev) => prev || rec.top!);
+    } catch {
+      /* 추천 실패는 치명적 아님 — 사용자가 직접 고르면 된다. */
+    } finally {
+      setRecLoading(false);
+    }
+  };
 
   return (
     <div
@@ -521,6 +546,88 @@ export function IntakeModal({
             style={{ ...input, resize: "vertical", fontFamily: font }}
           />
         </div>
+
+        {showPatternCard && (
+          <div style={field}>
+            {label("Page Pattern (캐포비 어드민 · 5종)")}
+            <div style={{ color: c.textMuted, fontSize: 11, lineHeight: 1.5, marginBottom: 8 }}>
+              PRD 로 1차 추천을 받고, 필요하면 직접 바꾸세요. 고른 패턴은 코드 작성 전 DesignSpec 에
+              자동 반영됩니다.
+            </div>
+            <button
+              onClick={fetchPatternRec}
+              disabled={recLoading || !prd.trim()}
+              style={{ ...smallBtn, opacity: recLoading || !prd.trim() ? 0.5 : 1 }}
+            >
+              {recLoading ? "추천 중…" : patternRec ? "PRD 로 다시 추천" : "PRD 로 패턴 추천"}
+            </button>
+            {patternRec && (
+              <div style={{ marginTop: 8 }}>
+                <div style={{ fontSize: 11, color: c.textMuted, marginBottom: 6 }}>
+                  {patternRec.reason}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {patternRec.ranked.map((cand) => {
+                    const selected = pagePattern === cand.pattern;
+                    const isTop = patternRec.top === cand.pattern;
+                    return (
+                      <button
+                        key={cand.pattern}
+                        onClick={() => setPagePattern(cand.pattern)}
+                        style={{
+                          textAlign: "left",
+                          padding: "8px 10px",
+                          borderRadius: 6,
+                          border: `1px solid ${selected ? c.accent : c.border}`,
+                          background: selected ? c.accentBg : "transparent",
+                          cursor: "pointer",
+                          color: c.text,
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <span
+                            style={{
+                              width: 12,
+                              height: 12,
+                              borderRadius: 999,
+                              border: `1px solid ${selected ? c.accent : c.textFaint}`,
+                              background: selected ? c.accent : "transparent",
+                              flex: "0 0 auto",
+                            }}
+                          />
+                          <span style={{ fontWeight: 600, fontSize: 12 }}>{cand.label}</span>
+                          {isTop && (
+                            <span style={{ fontSize: 10, color: c.accent, fontWeight: 700 }}>
+                              추천
+                            </span>
+                          )}
+                          <span style={{ marginLeft: "auto", fontSize: 10, color: c.textFaint }}>
+                            score {cand.score}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: c.textMuted,
+                            marginTop: 3,
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {cand.when}
+                        </div>
+                        {cand.matchedKeywords.length > 0 && (
+                          <div style={{ fontSize: 10, color: c.textFaint, marginTop: 2 }}>
+                            매칭: {cand.matchedKeywords.join(" · ")}
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <div style={field}>
           {label("UI 방향")}
