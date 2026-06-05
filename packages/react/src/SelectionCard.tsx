@@ -9,6 +9,7 @@ const SC_INDICATOR_CLASS = `${SC_CLASS}__indicator`;
 const SC_BODY_CLASS = `${SC_CLASS}__body`;
 const SC_TITLE_CLASS = `${SC_CLASS}__title`;
 const SC_DESCRIPTION_CLASS = `${SC_CLASS}__description`;
+const SC_CONTENT_CLASS = `${SC_CLASS}__content`;
 const SC_ICON_CLASS = `${SC_CLASS}__icon`;
 
 /* ─── Types ─── */
@@ -65,6 +66,11 @@ export interface SelectionCardItemProps extends Omit<
   disabled?: boolean;
   /** 인디케이터 표시 (체크/라디오 마크). 기본 true */
   showIndicator?: boolean;
+  /**
+   * title/description 아래에 들어가는 리치 중첩 콘텐츠.
+   * Chip 행·bullet 리스트 등 임의 노드 (Figma 캐포비 캠페인 목표 카드 3782:19709 정합).
+   */
+  children?: React.ReactNode;
 }
 /* ─── Utils ─── */
 
@@ -80,6 +86,7 @@ const Item: React.FC<SelectionCardItemProps> = ({
   icon,
   disabled = false,
   showIndicator = true,
+  children,
   className,
   ...rest
 }) => {
@@ -145,6 +152,7 @@ const Item: React.FC<SelectionCardItemProps> = ({
       <span className={SC_BODY_CLASS}>
         <span className={SC_TITLE_CLASS}>{title}</span>
         {description && <span className={SC_DESCRIPTION_CLASS}>{description}</span>}
+        {children && <span className={SC_CONTENT_CLASS}>{children}</span>}
       </span>
     </label>
   );

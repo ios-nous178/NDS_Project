@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T05:37:38.985Z",
+  "generatedAt": "2026-06-05T06:37:11.048Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -131,6 +131,33 @@
       ],
       "dtsRelPath": "packages/react/dist/ActivityTimeline.d.ts",
       "htmlTag": "nds-activity-timeline"
+    },
+    {
+      "name": "AddButton",
+      "props": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "leftIcon",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/AddButton.d.ts",
+      "htmlTag": "nds-add-button"
     },
     {
       "name": "AddressSearch",
@@ -1367,8 +1394,8 @@
         {
           "name": "type",
           "optional": true,
-          "type": "\"line\" | \"bar\"",
-          "allowedValues": ["line", "bar"]
+          "type": "\"line\" | \"bar\" | \"donut\"",
+          "allowedValues": ["line", "bar", "donut"]
         },
         {
           "name": "labels",
@@ -3194,6 +3221,11 @@
           "type": "() => void"
         },
         {
+          "name": "showCount",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
           "name": "suffix",
           "optional": true,
           "type": "React.ReactNode"
@@ -3841,6 +3873,93 @@
       "htmlTag": "nds-mood-selector"
     },
     {
+      "name": "MultiSelect",
+      "props": [
+        {
+          "name": "options",
+          "optional": false,
+          "type": "MultiSelectOption[]"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string[]"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string[]) => void"
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "formatSummary",
+          "optional": true,
+          "type": "(count: number, total: number) => string"
+        },
+        {
+          "name": "searchable",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "searchPlaceholder",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "selectAllLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "applyLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "cancelLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "emptyMessage",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/MultiSelect.d.ts",
+      "htmlTag": "nds-multi-select"
+    },
+    {
       "name": "MultiStepForm",
       "props": [
         {
@@ -4136,6 +4255,42 @@
       ],
       "dtsRelPath": "packages/react/dist/PageHeader.d.ts",
       "htmlTag": "nds-page-header"
+    },
+    {
+      "name": "PageSizeSelect",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: number) => void"
+        },
+        {
+          "name": "options",
+          "optional": true,
+          "type": "number[]"
+        },
+        {
+          "name": "formatLabel",
+          "optional": true,
+          "type": "(size: number) => string"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/PageSizeSelect.d.ts"
     },
     {
       "name": "Pagination",
@@ -4885,6 +5040,12 @@
           "allowedValues": ["sm", "md"]
         },
         {
+          "name": "variant",
+          "optional": true,
+          "type": "SegmentedControlVariant",
+          "allowedValues": ["default", "solid"]
+        },
+        {
           "name": "fullWidth",
           "optional": true,
           "type": "boolean"
@@ -5613,6 +5774,21 @@
           "name": "children",
           "optional": false,
           "type": "React.ReactNode"
+        },
+        {
+          "name": "scroll",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "stickyFirst",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "scrollClassName",
+          "optional": true,
+          "type": "string"
         }
       ],
       "dtsRelPath": "packages/react/dist/StatsTable.d.ts"
@@ -5971,6 +6147,11 @@
           "name": "max",
           "optional": true,
           "type": "string"
+        },
+        {
+          "name": "presets",
+          "optional": true,
+          "type": "TimePickerPreset[]"
         }
       ],
       "dtsRelPath": "packages/react/dist/TimePicker.d.ts",
@@ -10257,6 +10438,7 @@
     "nds-accordion-trigger",
     "nds-action-chip",
     "nds-activity-timeline",
+    "nds-add-button",
     "nds-address-search",
     "nds-amount-input",
     "nds-appointment-card",
@@ -10354,6 +10536,7 @@
     "nds-mention-input",
     "nds-modal",
     "nds-mood-selector",
+    "nds-multi-select",
     "nds-multi-step-form",
     "nds-notification-item",
     "nds-number-stepper",
@@ -10433,6 +10616,10 @@
     },
     {
       "tag": "nds-activity-timeline",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-add-button",
       "attrs": {}
     },
     {
@@ -10750,6 +10937,10 @@
     },
     {
       "tag": "nds-mood-selector",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-multi-select",
       "attrs": {}
     },
     {

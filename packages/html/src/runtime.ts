@@ -131,3 +131,5 @@ import "./components/nds-video-player.js";
 import "./components/nds-voice-recorder.js";
 import "./components/nds-waveform-player.js";
 import "./components/nds-inspector.js";
+import "./components/nds-add-button.js";
+import "./components/nds-multi-select.js";

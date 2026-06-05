@@ -40,7 +40,7 @@ export class NdsSegmented extends NdsElement {
   static elementName = "nds-segmented";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "size", "full-width", "disabled", "options", ...FORWARDED_ATTRS];
+    return ["value", "size", "variant", "full-width", "disabled", "options", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -67,12 +67,14 @@ export class NdsSegmented extends NdsElement {
     if (this.style.display !== "contents") this.style.display = "contents";
 
     const size = this._normalizedSize();
+    const variant = this.attr("variant", "default") === "solid" ? "solid" : "default";
     const fullWidth = this.boolAttr("full-width");
     const disabled = this.boolAttr("disabled");
     const value = this.getAttribute("value") ?? "";
     const options = this._readOptions();
 
     this._root.dataset.size = size;
+    this._root.dataset.variant = variant;
     this._root.dataset.fullwidth = fullWidth ? "true" : "false";
 
     for (const name of FORWARDED_ATTRS) {

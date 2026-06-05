@@ -1205,8 +1205,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Input: {
     name: "Input",
     examplesHtml: {
-      do: '<nds-input label="이메일" placeholder="example@nudge.kr" clearable></nds-input>\n<script>el.addEventListener("input", e => setValue(e.target.value));</script>',
-      dont: '<!-- value 와 default-value 를 동시에 설정 — controlled / uncontrolled 가 섞임 -->\n<nds-input label="이메일" value="a@b" default-value="x@y"></nds-input>\n<!-- raw <input> + className 으로 모양만 흉내 -->\n<input class="nds-input" />',
+      do: '<nds-input label="이메일" placeholder="example@nudge.kr" clearable></nds-input>\n<!-- 글자수 카운터(24/25): maxlength + show-count (React: maxLength + showCount) -->\n<nds-input label="캠페인 이름" maxlength="25" show-count></nds-input>\n<script>el.addEventListener("input", e => setValue(e.target.value));</script>',
+      dont: '<!-- value 와 default-value 를 동시에 설정 — controlled / uncontrolled 가 섞임 -->\n<nds-input label="이메일" value="a@b" default-value="x@y"></nds-input>\n<!-- 글자수 카운터를 suffix 텍스트로 직접 박지 말 것 — show-count 사용 -->\n<nds-input label="이름" suffix="0/25"></nds-input>\n<!-- raw <input> + className 으로 모양만 흉내 -->\n<input class="nds-input" />',
     },
     summary:
       "1px 보더, 흰 배경, 48px 높이. label/wrapper(field+addon)/helper 의 compound 구조 (Figma Library node 171:9903 기준).",
@@ -1217,6 +1217,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "complete=true 와 errorMessage 를 동시에 주지 말 것 — error 가 우선이지만 success 의도가 묻힘.",
       "errorMessage/successMessage/helperText 중 하나라도 있으면 helpers 배열은 무시됨. 단일/멀티 의도를 분리해서 사용.",
       "**helperText 와 errorMessage 동시 노출 금지** (★ 핵심 룰). DS 는 우선순위 error > success > helper 로 1 줄만 표시하도록 이미 강제하지만, 가이드/스토리/목업에서도 두 줄 동시 표시한 형태로 그리지 말 것. 헬퍼는 '비어 있을 때의 안내', 에러는 '검증 실패 후의 즉시 피드백' — 의미가 충돌하고 인지 부하가 커진다. 검증 실패 순간 helper 는 같은 자리에서 error 메시지로 교체되어야 함 (자리 점프 X, 두 줄 누적 X).",
+      "**글자수 카운터(24/25)** 는 `maxlength` + `show-count`(React `maxLength` + `showCount`) — 우측에 자동 노출, 초과 시 빨간색. suffix 에 직접 텍스트로 박지 말 것. (Textarea 는 maxlength 만 주면 카운터 자동.)",
     ],
     recommended: [
       "기본: <Input label='이메일' placeholder='example@nudge.kr' helperText='...' />",
@@ -1711,13 +1712,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   SelectionCard: {
     name: "SelectionCard",
     examplesHtml: {
-      do: '<nds-selection-card mode="single" value="chat">\n  <nds-selection-card-item value="chat" item-title="채팅 상담" description="텍스트로 편하게"></nds-selection-card-item>\n  <nds-selection-card-item value="video" item-title="영상 상담" description="얼굴 보며 깊이 있게"></nds-selection-card-item>\n</nds-selection-card>\n<script>el.addEventListener("nds-selection-change", e => setMode(e.detail.value));</script>',
+      do: '<nds-selection-card mode="single" value="chat">\n  <nds-selection-card-item value="chat" item-title="채팅 상담" description="텍스트로 편하게"></nds-selection-card-item>\n  <nds-selection-card-item value="video" item-title="영상 상담" description="얼굴 보며 깊이 있게"></nds-selection-card-item>\n</nds-selection-card>\n<!-- 리치 카드: title/description 아래에 Chip 행·bullet 리스트를 slot="content" 로 -->\n<nds-selection-card mode="single" value="brand">\n  <nds-selection-card-item value="brand" item-title="브랜드 노출 확대" description="최대한 많은 사용자에게 도달">\n    <div slot="content">\n      <div>사용 가능 광고 유형: <nds-chip>프리미엄형</nds-chip> <nds-chip>디스플레이형</nds-chip></div>\n      <ul><li>신규 브랜드를 알리고 싶을 때</li></ul>\n    </div>\n  </nds-selection-card-item>\n</nds-selection-card>\n<script>el.addEventListener("nds-selection-change", e => setMode(e.detail.value));</script>',
       dont: '<!-- mode=\'multiple\' 인데 value 속성 사용 — values (배열) 사용 -->\n<nds-selection-card mode="multiple" value="chat">…</nds-selection-card>',
     },
-    summary: "카드형 단일/다중 선택지 (RadioCard/CheckboxCard 통합). compound — Group + Item.",
+    summary:
+      '카드형 단일/다중 선택지 (RadioCard/CheckboxCard 통합). compound — Group + Item. title/description 외에 **리치 중첩 콘텐츠**(Chip 행·bullet 리스트)를 React `children` / HTML `slot="content"` 로 카드 본문에 넣을 수 있음(캐포비 캠페인 목표 카드).',
     pitfalls: [
       "라벨만 있는 단순 선택은 Radio/Checkbox를 쓸 것 — SelectionCard는 카드 단위(타이틀+설명+아이콘) 전제.",
       "mode='single'에서는 value/onValueChange, mode='multiple'에서는 values/onValuesChange. 헷갈리지 말 것.",
+      '**카드 안에 Chip 행·bullet 같은 부가 내용**은 React `children`(Item 자식) / HTML `<div slot="content">` 로 — description 에 줄바꿈으로 욱여넣지 말 것.',
       "옵션이 5개 이상이면서 라벨이 짧다면 Chip 토글 그룹이 더 컴팩트.",
       "horizontal 레이아웃은 옵션 3개 이하일 때만. 그 이상은 wrap돼서 어색해짐.",
     ],
@@ -3201,20 +3204,25 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- 합계행/병합셀 리포트 표를 nds-data-table(columns/data API)로 억지로 만들지 말 것 — rowspan·합계행 표현 불가 -->\n<nds-data-table columns='...' data='...'></nds-data-table>\n<!-- 합계행을 굵게 하려고 인라인 style 로 font-weight 박지 말 것. <tr class=\"is-summary\"> 사용 -->\n<tr style=\"font-weight:bold\"><td>총합</td>...</tr>",
     },
     summary:
-      '캐포비 어드민 통계/집계 리포트 표 — 회색 헤더 + 가는 그리드 + 병합셀(rowspan/colspan) + 합계행(굵게). native <table class="nds-stats-table"> 구조형 컴포넌트. 동적 정렬·모바일 카드뷰는 DataTable 사용. Figma 퀴즈 통계(3001:47404 캐시워크 통계 표).',
-    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-47404",
+      '캐포비 어드민 통계/집계 리포트 표 — 회색 헤더 + 가는 그리드 + 병합셀(rowspan/colspan) + 합계행(굵게). 2단 **그룹 슈퍼헤더**(예: "남성"이 10대~60대 하위열을 colspan 으로 묶음)와 **가로 스크롤 + 좌측열 고정** 지원. native <table class="nds-stats-table"> 구조형 컴포넌트. 동적 정렬·모바일 카드뷰는 DataTable 사용. Figma 퀴즈 통계(3001:47404)·인구통계별 리포트(3001:30014).',
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-30014",
     pitfalls: [
       '**병합셀은 native rowspan/colspan** — 합계행(`총합`)은 라벨이 앞 2열을 `colspan="2"` 로 병합, 그룹행(`알 수 없음`/`NN대`)은 첫 열을 `rowspan="2"` 로 병합(남/여 2행). DataTable 의 columns/data 로는 표현 불가.',
+      '**그룹 슈퍼헤더(2단 헤더)** — `<thead>` 에 2개의 `<tr>`: 첫 행은 `<th rowspan="2">날짜</th><th colspan="6" data-align="center">남성</th><th colspan="6" data-align="center">여성</th>`, 둘째 행은 하위열(10대~60대) 나열. 슈퍼헤더는 `data-align="center"`.',
       '**합계/요약 행 = `<tr class="is-summary">`** (또는 `data-summary`). 전체 셀 Bold + 강조색이 자동 적용 — 인라인 font-weight 금지.',
+      '**열이 많아 가로로 넘치면** 표를 `<div class="nds-stats-table__scroll">` 로 감싼다(레이아웃 안 깨지고 표만 스크롤). React 는 `<StatsTable scroll>`.',
+      "**좌측 라벨 열 고정** — `nds-stats-table--sticky-first` 클래스(React `stickyFirst`)로 첫 열을 스크롤 중 freeze. `scroll` 과 함께 사용.",
       '셀 정렬은 `data-align="right"|"center"`. 기본 좌측(Figma 정합). 숫자는 자동 tabular-nums.',
       "헤더/그리드 색은 토큰 자동(헤더 bg=surface.page, 보더=border subtle). raw hex 금지.",
       "표는 plot/범례처럼 카드 외부 컨테이너(흰 라운드 박스 + 타이틀) 안에 배치 — nds-stats-table 은 표만 그림.",
-      "페이지가 나뉘는 긴 표는 표 아래에 component:Pagination(nds-pagination) 을 둘 것(활성 페이지 = 브랜드색 자동).",
+      '**열 헤더 설명 툴팁(ⓘ)** — CTR/CPC/CPM 처럼 헤더에 설명이 필요하면 `<th>` 안에 component:Tooltip(nds-tooltip) 을 합성(`<th>CTR <nds-tooltip text="클릭률">ⓘ</nds-tooltip></th>`).',
+      "페이지가 나뉘는 긴 표는 표 아래에 component:Pagination(nds-pagination) + 행수 선택 component:PageSizeSelect 을 둘 것.",
     ],
     recommended: [
       '집계/합계가 있는 리포트 표(통계 화면) = nds-stats-table + <tr class="is-summary">',
+      '와이드 인구통계 리포트(슈퍼헤더 + 가로 스크롤) = <div class="nds-stats-table__scroll"><table class="nds-stats-table nds-stats-table--sticky-first">',
       "정렬·필터·페이지 인터랙션이 필요한 데이터 그리드 = DataTable",
-      'React: <StatsTable><thead/>…<tr className="is-summary"><td colSpan={2}>총합</td>…</StatsTable>',
+      'React: <StatsTable scroll stickyFirst><thead/>…<tr className="is-summary"><td colSpan={2}>총합</td>…</StatsTable>',
     ],
   },
   DataTable: {
@@ -3866,9 +3874,57 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "PaginationChange 이벤트 처리 없이 page attribute 만 바꿔도 데이터 fetch 가 안 일어남 — 이벤트 핸들러에서 fetch 호출.",
     ],
     examplesHtml: {
-      do: '<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>\n<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>',
+      do: '<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>\n<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>\n<!-- 한 페이지 행 수 선택은 component:PageSizeSelect — 보통 표 하단 우측 -->',
       dont: '<!-- siblings 0 + arrows 없음 — 옆 페이지가 보이지 않음 -->\n<nds-pagination page="1" total-pages="10" siblings="0"></nds-pagination>',
     },
+  },
+  PageSizeSelect: {
+    name: "PageSizeSelect",
+    summary:
+      '리포트/리스트 표 하단 우측의 "한 페이지 행 수" 선택 드롭다운("100개씩 보기"). Pagination 과 짝. 내부적으로 Select(auto 폭) 재사용. HTML 은 nds-select 에 "N개씩 보기" 라벨 옵션으로 구성.',
+    pitfalls: [
+      "Pagination(페이지 이동)과 혼동하지 말 것 — PageSizeSelect 는 행 수만 바꾼다(둘은 보통 같은 줄 좌/우).",
+      "값 변경 시 1페이지로 리셋하지 않으면 현재 페이지가 범위를 벗어날 수 있음 — onValueChange 에서 page=1 처리.",
+      "HTML 목업에서는 전용 태그가 없다 — nds-select 에 {30,50,100} 옵션 + label 'N개씩 보기' 로 만든다(React 만 <PageSizeSelect>).",
+    ],
+    examplesHtml: {
+      do: '<!-- HTML: nds-select 로 구성 -->\n<nds-select value="100" options=\'[{"value":"30","label":"30개씩 보기"},{"value":"50","label":"50개씩 보기"},{"value":"100","label":"100개씩 보기"}]\'></nds-select>\n<!-- React -->\n<!-- <PageSizeSelect value={pageSize} onValueChange={setPageSize} /> -->',
+      dont: "<!-- 페이지 이동을 PageSizeSelect 로 흉내내지 말 것 — Pagination 사용 -->",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-30014",
+  },
+  MultiSelect: {
+    name: "MultiSelect",
+    summary:
+      "검색 + 전체선택/해제 + 체크박스 리스트 + 취소/적용 푸터 + 빈 상태를 가진 다중 선택 필터 드롭다운. 일반 Select(단일·즉시 반영)와 달리 패널 안 초안을 편집하고 **적용** 시에만 반영. 리포트 상단 '광고 다중 선택' 등 필터. Figma 캐포비 광고별 리포트(3001:28554).",
+    pitfalls: [
+      "**단일 선택이면 Select** — MultiSelect 는 적용 버튼이 있는 다중 필터 전용. 즉시 반영 단일 드롭다운에 쓰면 과함.",
+      "적용(apply) 전까지 onValueChange 가 발화하지 않음 — 취소/바깥클릭은 초안 폐기. value(적용값)와 패널 내 draft 를 혼동하지 말 것.",
+      "검색 결과 0건이면 자동으로 빈 상태('검색 결과가 없습니다.') 노출 — 직접 그리지 말 것.",
+      "전체선택/해제는 **현재 검색 필터된 항목** 기준으로 토글된다(전체 목록 아님).",
+      "여러 필터를 한 줄에 둘 때는 component:FilterBar(칩 토글)가 아니라 SearchInput/Select/DateRangePicker/MultiSelect 를 가로로 조합 — FilterBar 는 카테고리 칩 전용.",
+    ],
+    examplesHtml: {
+      do: '<nds-multi-select placeholder="모든 광고" search-placeholder="광고명으로 검색" value=\'[]\'\n  options=\'[{"value":"a","label":"캠페인 A 타겟팅"},{"value":"b","label":"캠페인 B 리타겟"}]\'></nds-multi-select>\n<script>el.addEventListener("nds-multi-select-change", e => filterByAds(e.detail.value));</script>',
+      dont: '<!-- 단일 선택에 MultiSelect — 적용 버튼이 불필요한 마찰. nds-select 사용 -->\n<nds-multi-select options=\'[{"value":"asc","label":"오름차순"},{"value":"desc","label":"내림차순"}]\'></nds-multi-select>',
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-28554",
+  },
+  AddButton: {
+    name: "AddButton",
+    summary:
+      '폼 안에서 "항목 추가"(지역/옵션/행)를 유도하는 점선 affordance 버튼. 일반 Button(solid/outlined CTA)과 의도가 다름 — 반복 추가 슬롯이라 점선 보더. 필수 미선택 시 error 로 빨간 실선 강조. Figma 캐포비 타겟팅 "지역 추가"(3001:18966).',
+    pitfalls: [
+      "일반 제출/확정 CTA 에 쓰지 말 것 — 그건 Button. AddButton 은 '리스트에 한 줄 더 추가' affordance.",
+      'error 는 보더만 빨갛게 한다 — **인라인 에러 메시지("…를 선택해 주세요")는 FormField/필드그룹 쪽에서 별도로** 노출(AddButton 내부엔 메시지 없음).',
+      "보더/배경/에러색은 토큰 자동(점선=border strong, 에러=border status-error #FC3500). raw hex 금지.",
+      "기본 full-width. 좁게 두려면 full-width 끄기.",
+    ],
+    examplesHtml: {
+      do: '<nds-add-button label="지역 추가"></nds-add-button>\n<!-- 필수 미선택 에러 — 빨간 실선. 메시지는 아래 FormField 등에서 별도 -->\n<nds-add-button label="지역 추가" error></nds-add-button>',
+      dont: '<!-- 폼 제출 CTA 에 AddButton — Button(solid)이 맞음 -->\n<nds-add-button label="저장하기"></nds-add-button>',
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-18966",
   },
   Popup: {
     name: "Popup",
@@ -3917,16 +3973,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   SegmentedControl: {
     name: "SegmentedControl",
-    summary: "2-5 개의 평행 옵션 중 단일 선택 (탭의 가벼운 대체). 4개 초과면 Select / Tabs.",
+    summary:
+      "2-5 개의 평행 옵션 중 단일 선택 — 연결된 트랙(뷰/상태 전환). 4개 초과면 Select / Tabs. variant=default(회색 트랙 위 흰 active) | solid(진한 Inverse fill + 흰 active, 캐포비 리포트 노출/클릭 토글 정합).",
     pitfalls: [
       "옵션이 6개 이상 — 가로 폭 부족으로 라벨 truncate. Select 사용.",
+      "**폼 입력의 단일선택(전체/Android/iOS, 전체/여성/남성)에 SegmentedControl 쓰지 말 것** — 그건 분리형 브랜드색 필 버튼인 SelectionButtonGroup(nds-selection-button-group) 이 SSOT. Segmented 는 연결된 트랙(뷰/기간/상태 전환)용.",
+      '리포트 그래프 요약의 노출/클릭 같은 **진한 active 토글**은 `variant="solid"` — default(흰 raised active)는 옅어 의도와 다름.',
       "Segmented 와 Tabs 를 같은 화면에서 동시 사용 — 위계가 모호.",
       "full-width 가 아닌데 화면 가운데 정렬로 옆 여백이 큰 모바일 화면 — 부모 컨테이너 폭 점검.",
     ],
     examplesHtml: {
-      do: '<nds-segmented value="week" size="md" options=\'[{"label":"주","value":"week"},{"label":"월","value":"month"},{"label":"연","value":"year"}]\'></nds-segmented>\n<script>el.addEventListener("segmented-change", e => setPeriod(e.detail.value));</script>',
-      dont: '<!-- 6개 옵션 — segmented 의 시각 위계 깨짐 -->\n<nds-segmented options=\'[{"label":"1","value":"1"},{"label":"2","value":"2"},{"label":"3","value":"3"},{"label":"4","value":"4"},{"label":"5","value":"5"},{"label":"6","value":"6"}]\'></nds-segmented>',
+      do: '<!-- 기간 전환(연결 트랙) -->\n<nds-segmented value="week" size="md" options=\'[{"label":"주","value":"week"},{"label":"월","value":"month"},{"label":"연","value":"year"}]\'></nds-segmented>\n<!-- 리포트 노출/클릭 토글 — 진한 active -->\n<nds-segmented value="impression" variant="solid" options=\'[{"label":"노출","value":"impression"},{"label":"클릭","value":"click"}]\'></nds-segmented>\n<script>el.addEventListener("segmented-change", e => setPeriod(e.detail.value));</script>',
+      dont: '<!-- 폼 단일선택(전체/Android/iOS)에 Segmented — 분리형 필이 맞음. SelectionButtonGroup 사용 -->\n<nds-segmented options=\'[{"label":"전체","value":"all"},{"label":"Android","value":"aos"},{"label":"iOS","value":"ios"}]\'></nds-segmented>',
     },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-30014",
   },
   Skeleton: {
     name: "Skeleton",

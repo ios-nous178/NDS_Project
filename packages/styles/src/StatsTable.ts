@@ -60,4 +60,34 @@ export const statsTableStyles = `
   :where(.${ST_CLASS} [data-align="center"]) {
     text-align: center;
   }
+
+  /* 가로 스크롤 컨테이너 — 열이 많아 넘치는 와이드 리포트용 */
+  :where(.${ST_CLASS}__scroll) {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  :where(.${ST_CLASS}__scroll) .${ST_CLASS} {
+    width: auto;
+    min-width: 100%;
+  }
+
+  /* 좌측 첫 열 고정 (라벨 열 freeze). 스크롤 시 우측 경계 그림자로 분리감. */
+  :where(.${ST_CLASS}--sticky-first th:first-child),
+  :where(.${ST_CLASS}--sticky-first td:first-child) {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: ${cv.surface.default};
+    box-shadow: 1px 0 0 ${cv.borderRole.subtle};
+  }
+  :where(.${ST_CLASS}--sticky-first th:first-child) {
+    z-index: 2;
+    background: ${cv.surface.page};
+  }
+  /* 요약행의 고정 열도 배경을 유지 (투명 누출 방지) */
+  :where(.${ST_CLASS}--sticky-first tr.is-summary td:first-child),
+  :where(.${ST_CLASS}--sticky-first tr[data-summary] td:first-child) {
+    background: ${cv.surface.default};
+  }
 `;
