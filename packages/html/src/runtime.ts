@@ -37,6 +37,7 @@ import "./components/nds-input-group.js";
 import "./components/nds-modal.js";
 import "./components/nds-select.js";
 import "./components/nds-toggle.js";
+import "./components/nds-tooltip.js";
 import "./components/nds-progress-bar.js";
 import "./components/nds-skeleton.js";
 import "./components/nds-title-block.js";

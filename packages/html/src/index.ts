@@ -109,6 +109,9 @@ export { NdsSelect, NdsSelectOption } from "./components/nds-select.js";
 export { NdsToggle } from "./components/nds-toggle.js";
 export type { ToggleSize } from "./components/nds-toggle.js";
 
+export { NdsTooltip } from "./components/nds-tooltip.js";
+export type { TooltipPlacement } from "./components/nds-tooltip.js";
+
 export { NdsProgressBar } from "./components/nds-progress-bar.js";
 export type { ProgressBarSize } from "./components/nds-progress-bar.js";
 
