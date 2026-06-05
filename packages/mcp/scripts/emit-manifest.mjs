@@ -492,9 +492,27 @@ function collectNdsHtmlElements() {
       const values = [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
       if (values.length > 0) attrs[attrName] = values;
     }
-    out.push({ tag, attrs });
+    out.push({ tag, attrs, observedAttrs: extractObservedAttrs(mainSrc, tag) });
   }
   return out;
+}
+
+/**
+ * 파일의 메인 엘리먼트(`static elementName === tag`)의 observedAttributes 배열을 뽑는다.
+ * 한 파일에 보조 엘리먼트(nds-accordion-item 등)가 같이 있으면 그쪽 observedAttributes
+ * 까지 섞이지 않도록, elementName 선언 위치부터 첫 observedAttributes return 만 읽는다.
+ * elementName 선언이 없으면(메인 = 파일명) 파일 첫 observedAttributes 로 폴백.
+ * react props ↔ html attr 이름 set parity 비교(check-mirror-parity)의 한쪽 축.
+ */
+function extractObservedAttrs(src, tag) {
+  const escaped = tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const elIdx = src.search(new RegExp(`static\\s+elementName\\s*=\\s*["']${escaped}["']`));
+  const scope = elIdx >= 0 ? src.slice(elIdx) : src;
+  const m = scope.match(
+    /static\s+get\s+observedAttributes\s*\([^)]*\)\s*:[^{]*\{\s*return\s*\[([\s\S]*?)\]/,
+  );
+  if (!m) return [];
+  return [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
 }
 const ndsHtmlElements = collectNdsHtmlElements();
 
@@ -517,6 +535,7 @@ const DEV_ONLY_NDS_TAGS = new Set(["nds-inspector"]);
     if (existing) {
       existing.htmlTag = el.tag;
       if (Object.keys(el.attrs).length > 0) existing.htmlAttrs = el.attrs;
+      if (el.observedAttrs.length > 0) existing.htmlObservedAttrs = el.observedAttrs;
       continue;
     }
     // React 에 짝이 없는 html-only 컴포넌트 — props 는 없지만 htmlAttrs 가 곧 prop 스펙 역할.
@@ -527,6 +546,7 @@ const DEV_ONLY_NDS_TAGS = new Set(["nds-inspector"]);
       htmlTag: el.tag,
     };
     if (Object.keys(el.attrs).length > 0) entry.htmlAttrs = el.attrs;
+    if (el.observedAttrs.length > 0) entry.htmlObservedAttrs = el.observedAttrs;
     components.push(entry);
     componentIndex.set(pascal, entry);
   }
