@@ -3632,6 +3632,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "약관/필수 동의에 disabled 로 잠가두면 시각 위계가 모호 — required 또는 별도 안내문으로 명시.",
       "checked 와 default-checked 동시 사용 — controlled / uncontrolled 가 섞임.",
       "label 없이 단독으로 던지지 말 것 — 한 줄 안내문이라도 aria-label 로 제공.",
+      "소규모 고정 옵션 다중선택(예: 연령대 10대~70대)은 **SelectChip**(`<nds-chip selected>`) 우선 — 체크박스 리스트는 약관 동의·긴 가변 리스트·행 단위 선택에. (`pattern:cashwalk-biz-badge-chip`)",
     ],
     examplesHtml: {
       do: '<nds-checkbox name="agree-terms" label="이용약관에 동의합니다" required></nds-checkbox>\n<nds-checkbox name="optional-marketing" label="마케팅 정보 수신 (선택)"></nds-checkbox>',
