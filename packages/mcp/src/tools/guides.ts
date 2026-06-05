@@ -214,6 +214,14 @@ export function brandChromeHtmlRedirect(name: string): string | undefined {
   }
 }
 
+/**
+ * 컴포넌트 가이드 공통 advisory — figma 유무와 무관하게 **항상 동일**해야 배치 응답에서
+ * _shared 로 1회만 hoist 된다(getGuide 배치 dedup). 픽셀 확인 큐는 "있으면" 조건부 표현이라
+ * figma 미연결 컴포넌트에도 부정확하지 않다.
+ */
+const COMPONENT_GUIDE_ADVISORY =
+  "props 함정(pitfalls)·matrix 를 먼저 확인하세요. figmaNodeUrl · references[].imageAbsolutePath 가 있으면 픽셀/색/매트릭스가 의심될 때 우선 확인하세요.";
+
 const PRINCIPLES_DIGEST = [
   "get_guide({ topic: 'principles' }) first for mockup work.",
   "No emoji/text-symbol icons; use find_icon + @nudge-design/icons.",
@@ -243,10 +251,10 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
   const resolvedReferences = guide.references
     ? resolvePatternReferenceImages(guide.references)
     : undefined;
-  const hasRef = Boolean(guide.figmaNodeUrl) || Boolean(resolvedReferences?.length);
-  const baseAdvisory = hasRef
-    ? "Figma 원본 노드 URL · 추가 레퍼런스(references[]) 가 포함되어 있습니다. 픽셀/색/매트릭스가 의심되면 figmaNodeUrl · references[].imageAbsolutePath 를 우선 확인하세요."
-    : "이 가이드는 아직 Figma 노드와 연결되지 않았습니다. list_figma_sync_status 로 다른 컴포넌트의 sync 상태를 확인할 수 있습니다.";
+  // 모든 컴포넌트 가이드에서 동일한 조건부 문구 — hasRef 분기를 없애 혼합 배치에서도
+  // _shared 로 hoist 되게 한다(이전엔 hasRef 차이로 토픽 수만큼 반복 노출). figma 픽셀
+  // 확인 큐는 "있으면" 조건부라 noRef 컴포넌트에도 부정확하지 않다.
+  const baseAdvisory = COMPONENT_GUIDE_ADVISORY;
 
   if (target === "html") {
     const { examplesHtml, _htmlStatus, ...rest } = guide;
@@ -308,13 +316,10 @@ export function getPatternGuide(name: string) {
   const resolvedReferences = guide.references
     ? resolvePatternReferenceImages(guide.references)
     : undefined;
-  const hasRef = Boolean(guide.figmaNodeUrl) || Boolean(resolvedReferences?.length);
+  // hasRef 분기 제거 — "있으면" 조건부 단일 문구로 통일해 패턴 배치에서도 _shared hoist.
   return {
     _advisory:
-      "컴포넌트 API가 아니라 배치/위계/강조 사용량 기준입니다. 목업 작성 전 또는 validate_mockup 경고 수정 시 참고하세요." +
-      (hasRef
-        ? " references[].image 는 MCP 패키지 루트 기준 상대 경로 (실제 절대경로는 references[].imageAbsolutePath). 픽셀·여백·상태가 의심되면 이 스크린샷을 우선 확인하세요."
-        : ""),
+      "컴포넌트 API가 아니라 배치/위계/강조 사용량 기준입니다. 목업 작성 전 또는 validate_mockup 경고 수정 시 참고하세요. references[] 가 있으면 픽셀·여백·상태가 의심될 때 references[].imageAbsolutePath 스크린샷을 우선 확인하세요.",
     ...guide,
     references: resolvedReferences ?? guide.references,
   };

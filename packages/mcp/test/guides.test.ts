@@ -162,6 +162,16 @@ describe("getGuide view (response slimming)", () => {
     const button = (result.topics as Record<string, Record<string, unknown>>)["component:Button"];
     expect(button._principlesDigest).toBeUndefined(); // child 에서 제거됨(중복 제거)
   });
+
+  it("hoists _advisory into _shared even for mixed figma-ref components", () => {
+    // Button=figma 연결됨 / Chip=figma 미연결. 통일 전엔 advisory 가 달라 hoist 안 됐다.
+    const result = getGuide({ topics: ["component:Button", "component:Chip"] });
+    const shared = result._shared as Record<string, unknown> | undefined;
+    expect(shared?._advisory).toBeTypeOf("string");
+    const topics = result.topics as Record<string, Record<string, unknown>>;
+    expect(topics["component:Button"]._advisory).toBeUndefined(); // child 에서 제거됨
+    expect(topics["component:Chip"]._advisory).toBeUndefined();
+  });
 });
 
 describe("getGuide principles — learned principles promotion", () => {

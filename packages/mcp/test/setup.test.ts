@@ -86,6 +86,32 @@ describe("setup brand registry", () => {
     const imports = getHtmlEntryImports({ brand: "cashwalk-biz" });
     expect(imports.code).toContain(`import "@nudge-design/tokens/css/cashwalk-biz";`);
   });
+
+  it("slims the bundled brand roster on a detail call (keeps detail, drops heavy per-brand meta)", () => {
+    configureWithManifest({
+      packages: [
+        {
+          name: "@nudge-design/tokens",
+          version: "0.1.10",
+          dependencies: {},
+          peerDependencies: {},
+          cssExports: ["@nudge-design/tokens/css", "@nudge-design/tokens/css/cashwalk-biz"],
+        },
+      ],
+    });
+
+    const result = getBrand({ brand: "cashwalk-biz" }) as {
+      brands: Array<Record<string, unknown>>;
+      detail: Record<string, unknown>;
+    };
+    // detail 은 보존
+    expect(result.detail.ok).toBe(true);
+    // 로스터는 slug/name/ready 만 — description/cssImport/version/primaryColor 는 제거(중복)
+    expect(result.brands.length).toBeGreaterThan(0);
+    for (const b of result.brands) {
+      expect(Object.keys(b).sort()).toEqual(["name", "ready", "slug"]);
+    }
+  });
 });
 
 describe("html setup visual reference guardrail", () => {
