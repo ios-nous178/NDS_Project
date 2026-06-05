@@ -159,6 +159,9 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "invalid-nds-attr-value": "error",
   // nds-* 의 JSON 속성(items/options/reward 등)이 파싱 불가 — 컴포넌트가 조용히 빈 값 렌더(메뉴 유실)
   "nds-json-attr-unparseable": "error",
+  // UTF-8 한글을 Latin-1/unicode_escape 로 잘못 디코딩 → 모지바케(Ã/ë…). 깨진 JSON 도 파싱은 되므로
+  // nds-json-attr-unparseable 로는 안 잡힘 (회귀: 사이드바 한글 전부 깨짐 + 로고 유실)
+  "mojibake-encoding": "error",
   "unknown-token": "error",
   "ds-badge-missing": "error",
   // 토큰 / 시멘틱
@@ -409,6 +412,31 @@ export function validateHtmlSource(
   let ndsClassCount = 0;
   let nativeUnwrappedCount = 0;
   const $ = cheerio.load(source, { xmlMode: false });
+
+  // ─── 인코딩 깨짐(모지바케) 감지 — 문서 전역 1회 ───
+  //   UTF-8 한글을 Latin-1 / Python decode('unicode_escape') 로 잘못 디코딩하면 글자당 3개의
+  //   라틴-1 보충 문자(Ã/ë/¬ …)로 망가진다. 큰 가이드 마크업(사이드바 등)을 스크립트로 추출·
+  //   재인코딩하다 자주 발생 — 깨진 한글도 여전히 valid JSON 이라 nds-json-attr-unparseable 로는
+  //   안 잡힌다. UTF-8 한글(U+AC00+) 3바이트(lead 0xEA–0xED + continuation 0x80–0xBF)를 Latin-1 로
+  //   읽으면 글자당 U+0080–U+00FF 3자가 나오므로, 그 범위 4자 이상 연속을 모지바케 신호로 본다.
+  //   정상 목업은 한글=Hangul·영문/base64=ASCII 라 이 범위 연속이 거의 없다(저오탐).
+  {
+    const fffdIdx = source.indexOf("\uFFFD");
+    const runMatch = new RegExp("[\\u0080-\\u00FF]{4,}").exec(source);
+    const hitIdx = fffdIdx >= 0 ? fffdIdx : runMatch ? (runMatch.index ?? -1) : -1;
+    if (hitIdx >= 0) {
+      const sample = source.slice(hitIdx, hitIdx + 24).replace(/\s+/g, " ");
+      violations.push({
+        rule: "mojibake-encoding",
+        line: lineNumberAt(source, hitIdx),
+        selector: "(document)",
+        detail: `한글 인코딩이 깨졌습니다(모지바케) — 예: "${sample}". UTF-8 한글이 Latin-1 로 잘못 디코딩된 흔적입니다.`,
+        suggestion:
+          '가이드/컴포넌트 마크업을 Python decode(\'unicode_escape\') 나 Latin-1 로 추출·재인코딩하지 마세요 — UTF-8 그대로 복붙하거나 json.loads(UTF-8) 만 사용. <nds-sidebar> 는 items/account/footer-actions 를 <script type="application/json" slot="..."> 텍스트 노드로 받으면 이스케이프·인코딩 사고가 원천 차단됩니다.',
+        severity: "error",
+      });
+    }
+  }
 
   // 모든 element 순회 — style / class / svg / native button 검사
   $("*").each((_idx, el) => {
@@ -887,12 +915,21 @@ export function validateHtmlSource(
         const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
         const line = lineNumberAt(source, offset);
         const selector = describeElement(el as unknown as DomElement);
-        const hasLogo = !!attribs["logo-src"]?.trim();
-        const hasAccount = !!attribs["account"]?.trim();
-        const hasFooterActions = !!attribs["footer-actions"]?.trim();
+        // 로고: 명시 logo-src 또는 brand= 자동주입 둘 다 인정.
+        // 계정/푸터: account/footer-actions 속성 또는 <script type="application/json" slot="..."> 자식 둘 다 인정
+        //   (신규 ready-made 폼이 한글 JSON 을 텍스트 노드로 전달 — 속성 이스케이프·인코딩 사고 차단).
+        const hasLogo = !!attribs["logo-src"]?.trim() || !!attribs["brand"]?.trim();
+        const hasAccount =
+          !!attribs["account"]?.trim() || $(el).find('script[slot="account"]').length > 0;
+        const hasFooterActions =
+          !!attribs["footer-actions"]?.trim() ||
+          $(el).find('script[slot="footer-actions"]').length > 0;
 
         if (!hasLogo || !hasAccount) {
-          const missing = [!hasLogo && "로고(logo-src)", !hasAccount && "계정 블록(account)"]
+          const missing = [
+            !hasLogo && "로고(brand 또는 logo-src)",
+            !hasAccount && "계정 블록(account)",
+          ]
             .filter(Boolean)
             .join(" + ");
           violations.push({
@@ -901,7 +938,7 @@ export function validateHtmlSource(
             selector,
             detail: `캐포비 어드민 사이드바에 ${missing} 누락 — 로고+로그인영역이 빠진 채 렌더됩니다.`,
             suggestion:
-              '<nds-sidebar logo-src=\'data:…\' account=\'{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}\'> 로 로고+계정 블록을 채울 것. ready-made: get_guide({ topic: \'pattern:cashwalk-biz-admin-sidebar\' }) 의 HTML 복붙(account/footer-actions 이미 포함). header 에 raw div 로 손수 조립하지 말 것.',
+              '<nds-sidebar brand="cashwalk-biz">(로고 자동 주입) + 계정 블록은 <script type="application/json" slot="account">{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}</script> 로 채울 것. ready-made: get_guide({ topic: \'pattern:cashwalk-biz-admin-sidebar\' }) 의 HTML 그대로 복붙(brand/account/footer-actions 이미 포함). 35KB data URI 를 logo-src 에 붙이거나 header 에 raw div 로 손수 조립하지 말 것.',
           });
         }
 

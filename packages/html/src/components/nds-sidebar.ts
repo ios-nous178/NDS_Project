@@ -30,6 +30,9 @@
  *   collapsed: 접힘 상태
  *   show-toggle: 토글 버튼 노출 (있으면 사이드바 헤더에 표시)
  *   width / collapsed-width
+ *   brand: "cashwalk-biz" | "nudge-eap" | "trost" | "geniet" | "runmile"
+ *          — 설정 시 해당 브랜드 로고를 brand-logo-defaults 에서 자동 주입(35KB data URI 복붙 불필요).
+ *            명시적 logo-src 가 있으면 그쪽이 우선. (`<nds-brand-header brand>` 과 동일 SSOT)
  *   logo-src / logo-alt / logo-width / logo-height / logo-href
  *   title / subtitle
  *   user: JSON { name, role?, avatar?, avatarAlt? }
@@ -43,6 +46,13 @@
 
 import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
 import { NdsElement, define } from "../base/nds-element.js";
+import {
+  CASHWALK_BIZ_LOGO_DATA_URI,
+  GENIET_LOGO_PC_DATA_URI,
+  NUDGE_EAP_LOGO_DATA_URI,
+  RUNMILE_LOGO_DATA_URI,
+  TROST_LOGO_DATA_URI,
+} from "./brand-logo-defaults.js";
 
 const SB_CLASS = "nds-sidebar";
 const SB_ROOT_CLASS = `${SB_CLASS}__root`;
@@ -125,6 +135,32 @@ interface SidebarAccount {
   /** 하단 CTA 쌍 — 보통 [충전하기(solid), 내역보기(outlined)]. */
   actions?: SidebarAction[];
 }
+
+/**
+ * `brand` 속성 → 로고 자동 주입 맵. `<nds-brand-header>` 와 동일 SSOT(brand-logo-defaults).
+ *
+ * 사이드바 `logo-src` 에 35KB 짜리 base64 data URI 를 손으로 붙이지 않게 하기 위함이다.
+ * 거대 블롭을 LLM 이 그대로 재현/추출하다 깨뜨리는 회귀(가이드 마크업을 unicode_escape 로
+ * 추출 → 한글 모지바케 + 로고 유실)를 원천 차단한다. 명시적 `logo-src` 가 있으면 그쪽이 우선.
+ */
+interface SidebarBrandLogo {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+const SIDEBAR_BRAND_LOGOS: Record<string, SidebarBrandLogo> = {
+  "cashwalk-biz": {
+    src: CASHWALK_BIZ_LOGO_DATA_URI,
+    alt: "Cashwalk for Business",
+    width: 107,
+    height: 32,
+  },
+  "nudge-eap": { src: NUDGE_EAP_LOGO_DATA_URI, alt: "NudgeEAP", width: 124, height: 28 },
+  trost: { src: TROST_LOGO_DATA_URI, alt: "Trost", width: 90, height: 36 },
+  geniet: { src: GENIET_LOGO_PC_DATA_URI, alt: "Geniet", width: 165, height: 54 },
+  runmile: { src: RUNMILE_LOGO_DATA_URI, alt: "Runmile", width: 142, height: 32 },
+};
 
 const isSectionList = (input: SidebarItem[] | SidebarSection[]): input is SidebarSection[] => {
   if (!Array.isArray(input) || input.length === 0) return false;
@@ -417,6 +453,7 @@ export class NdsSidebar extends NdsElement {
       "show-toggle",
       "width",
       "collapsed-width",
+      "brand",
       "logo-src",
       "logo-alt",
       "logo-width",
@@ -494,8 +531,13 @@ export class NdsSidebar extends NdsElement {
   }
 
   private _parseAccount(): SidebarAccount | null {
-    const raw = this.getAttribute("account");
-    if (!raw) return null;
+    // items 와 동일 규약: 1순위 <script type="application/json" slot="account"> 텍스트 노드
+    //   (한글 JSON 을 속성 이스케이프·인코딩 사고 없이 그대로 둘 수 있다), 2순위 account 속성.
+    const script = this.querySelector<HTMLScriptElement>(
+      'script[type="application/json"][slot="account"]',
+    );
+    const raw = script ? script.textContent : this.getAttribute("account");
+    if (!raw || !raw.trim()) return null;
     try {
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
@@ -512,8 +554,12 @@ export class NdsSidebar extends NdsElement {
     return null;
   }
 
-  private _parseActions(attr: string): SidebarAction[] {
-    const raw = this.getAttribute(attr);
+  private _parseActions(slot: string): SidebarAction[] {
+    // 1순위 <script type="application/json" slot="footer-actions"> 텍스트 노드, 2순위 동명 속성.
+    const script = this.querySelector<HTMLScriptElement>(
+      `script[type="application/json"][slot="${slot}"]`,
+    );
+    const raw = script ? script.textContent : this.getAttribute(slot);
     if (!raw || !raw.trim()) return [];
     try {
       const parsed = JSON.parse(raw);
@@ -523,7 +569,7 @@ export class NdsSidebar extends NdsElement {
         );
       }
     } catch {
-      console.warn(`[nds-sidebar] ${attr} 가 유효한 JSON 배열이 아닙니다 — 액션을 생략합니다.`, {
+      console.warn(`[nds-sidebar] ${slot} 가 유효한 JSON 배열이 아닙니다 — 액션을 생략합니다.`, {
         rawHead: raw.slice(0, 80),
       });
     }
@@ -648,10 +694,16 @@ export class NdsSidebar extends NdsElement {
     const activeKey = this.getAttribute("active-key");
     const title = this.getAttribute("title");
     const subtitle = this.getAttribute("subtitle");
-    const logoSrc = this.getAttribute("logo-src");
-    const logoAlt = this.attr("logo-alt", "");
-    const logoWidth = this.getAttribute("logo-width");
-    const logoHeight = this.getAttribute("logo-height");
+    // 로고: 명시 logo-src 가 1순위, 없으면 brand 속성으로 brand-logo-defaults 에서 자동 주입.
+    //   → 35KB base64 를 손으로 붙일 필요가 사라져 "거대 블롭 추출 중 한글 깨짐 + 로고 유실" 회귀를 차단.
+    const brand = this.getAttribute("brand");
+    const brandLogo = brand ? SIDEBAR_BRAND_LOGOS[brand] : undefined;
+    const logoSrc = this.getAttribute("logo-src") ?? brandLogo?.src ?? null;
+    const logoAlt = this.getAttribute("logo-alt") ?? brandLogo?.alt ?? "";
+    const logoWidth =
+      this.getAttribute("logo-width") ?? (brandLogo ? String(brandLogo.width) : null);
+    const logoHeight =
+      this.getAttribute("logo-height") ?? (brandLogo ? String(brandLogo.height) : null);
     const logoHref = this.getAttribute("logo-href");
     const user = this._parseUser();
     const account = this._parseAccount();
