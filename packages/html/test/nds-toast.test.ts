@@ -44,6 +44,48 @@ describe("nds-toast", () => {
     expect(items[1]?.querySelector(".nds-toast__message")?.textContent).toBe("세번째");
   });
 
+  it("supports warning variant and top-right position (캐포비 admin)", async () => {
+    const el = document.createElement("nds-toast");
+    el.setAttribute("position", "top-right");
+    document.body.appendChild(el);
+    await flush();
+
+    el.show("이미 추가된 이메일 주소입니다", { variant: "warning", duration: 0 });
+
+    const viewport = document.body.querySelector(".nds-toast__viewport") as HTMLElement;
+    expect(viewport.dataset.position).toBe("top-right");
+    const item = document.body.querySelector(".nds-toast__item") as HTMLElement;
+    expect(item.dataset.variant).toBe("warning");
+  });
+
+  it("replaces existing toast when max-count is 1 (단일 교체)", async () => {
+    const el = document.createElement("nds-toast");
+    el.setAttribute("max-count", "1");
+    document.body.appendChild(el);
+    await flush();
+
+    el.show("저장 완료", { variant: "success", duration: 0 });
+    el.show("전송 완료", { variant: "success", duration: 0 });
+
+    const items = document.body.querySelectorAll(".nds-toast__item");
+    expect(items).toHaveLength(1);
+    expect(items[0]?.querySelector(".nds-toast__message")?.textContent).toBe("전송 완료");
+  });
+
+  it("falls back to defaults for unknown variant/position", async () => {
+    const el = document.createElement("nds-toast");
+    el.setAttribute("position", "left");
+    document.body.appendChild(el);
+    await flush();
+
+    el.show("메시지", { variant: "bogus" as never, duration: 0 });
+
+    const viewport = document.body.querySelector(".nds-toast__viewport") as HTMLElement;
+    expect(viewport.dataset.position).toBe("bottom");
+    const item = document.body.querySelector(".nds-toast__item") as HTMLElement;
+    expect(item.dataset.variant).toBe("default");
+  });
+
   it("supports window nds-toast-show and nds-toast-dismiss events", async () => {
     const el = document.createElement("nds-toast");
     document.body.appendChild(el);

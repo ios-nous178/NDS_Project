@@ -30,6 +30,12 @@ export const toastStyles = `
     bottom: 0;
   }
 
+  /* 우측 상단 고정 (캐포비 admin). 가로 중앙 정렬 대신 오른쪽 정렬 — viewport 패딩이 top/right 오프셋을 만든다. */
+  :where(.${TOAST_VIEWPORT_CLASS}[data-position="top-right"]) {
+    top: 0;
+    align-items: flex-end;
+  }
+
   :where(.${TOAST_ITEM_CLASS}) {
     display: inline-flex;
     align-items: center;
@@ -59,6 +65,11 @@ export const toastStyles = `
   :where(.${TOAST_ITEM_CLASS}[data-variant="error"]) {
     background: ${cv.surface.statusError};
     color: ${cv.textRole.statusError};
+  }
+
+  :where(.${TOAST_ITEM_CLASS}[data-variant="warning"]) {
+    background: ${cv.surface.statusCaution};
+    color: ${cv.textRole.statusCaution};
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-variant="info"]) {

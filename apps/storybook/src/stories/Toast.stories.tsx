@@ -57,6 +57,12 @@ function VariantsExample() {
       <Button variant="soft" onClick={() => toast("오류가 발생했습니다", { variant: "error" })}>
         Error
       </Button>
+      <Button
+        variant="soft"
+        onClick={() => toast("이미 추가된 항목입니다", { variant: "warning" })}
+      >
+        Warning
+      </Button>
       <Button variant="soft" onClick={() => toast("새 소식이 있습니다", { variant: "info" })}>
         Info
       </Button>
@@ -67,6 +73,47 @@ function VariantsExample() {
 export const Variants: Story = {
   name: "State/Variants",
   render: () => <VariantsExample />,
+};
+
+/* ─── Cashwalk for Business: 우측 상단 고정 + 단일 교체 ─── */
+
+function CashbizToastInner() {
+  const { toast } = useToast();
+  return (
+    <div style={{ display: "flex", gap: "var(--semantic-gap-default)", flexWrap: "wrap" }}>
+      <Button onClick={() => toast("저장 완료", { variant: "success" })}>저장</Button>
+      <Button
+        variant="soft"
+        onClick={() =>
+          toast("네트워크 오류로 중단되었습니다. 다시 시도해 주세요", {
+            variant: "error",
+            duration: 5000,
+          })
+        }
+      >
+        전송(실패)
+      </Button>
+      <Button
+        variant="soft"
+        onClick={() => toast("이미 추가된 이메일 주소입니다", { variant: "warning" })}
+      >
+        초대(중복)
+      </Button>
+    </div>
+  );
+}
+
+/**
+ * 캐포비 admin 토스트 — 우측 상단 고정(`position="top-right"`) · 동시 1개(`maxCount={1}`, 새 토스트가 기존 교체).
+ * 버튼을 연속으로 눌러도 항상 마지막 1개만 우측 상단에 노출됩니다.
+ */
+export const CashbizTopRight: Story = {
+  name: "Brand/Cashbiz Top-Right (Single)",
+  render: () => (
+    <ToastProvider position="top-right" maxCount={1}>
+      <CashbizToastInner />
+    </ToastProvider>
+  ),
 };
 
 /* ─── Multiline ─── */

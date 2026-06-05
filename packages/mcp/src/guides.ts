@@ -3924,11 +3924,51 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Toast: {
     name: "Toast",
     summary:
-      "비차단 알림 (저장 완료 / 네트워크 에러 등). Snackbar 와 거의 동일 기능이지만 multi-stack 가능.",
+      "비차단 알림 (저장 완료 / 네트워크 에러 등). 액션 직후 결과를 알리는 가벼운 피드백 — 확인 없이 자동으로 사라짐. (기본) Snackbar 와 거의 동일하며 multi-stack 가능. " +
+      "**(캐포비 admin) state=success/error/warning 3종 · viewport 우측 상단 고정(top 24 / right 24) · 자동 dismiss 3–5초(Error 5s) · 동시 노출 1개(새 토스트가 기존을 교체, 누적 금지) · status 아이콘 + 메시지 + 닫기 X 구성.** " +
+      "brand 별 spec 변형은 get_guide({ topic:'component:Toast', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
+    references: [
+      {
+        label: "CashwalkBiz Admin Toast Guide",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3858-1005",
+        caption:
+          "Cashwalk for Business · ToastGuide. state success/error/warning · 우측 상단 고정 · auto-dismiss 3–5s(Error 5s) · 단일 노출(교체) · anatomy / Do·Don't SSOT.",
+        brand: "cashwalk-biz",
+      },
+    ],
+    /**
+     * brand 별 spec override. brand 가 지정된 get_guide 호출 시 router 가 dimensions 를 응답에 노출.
+     * Cashwalk-biz 의 admin 변형 — state 집합(success/error/warning), 우측 상단 고정, 단일 노출(교체),
+     * anatomy/behavior 가 base(default/info · top/bottom · multi-stack)와 다름.
+     * trost / geniet 는 토큰만 다르고 spec 동일 → 생략.
+     */
+    matrixOverrides: {
+      "cashwalk-biz": {
+        dimensions: {
+          states:
+            "success / error / warning 3종 (base 의 default/info 대신). Success = check 아이콘(그린) · Error = error 아이콘(레드) · Warning = caution 아이콘(옐로). 각 state 의 status 아이콘 24×24 가 좌측. **variant='warning' 은 컴포넌트에서 지원** — 내부적으로 semantic caution 토큰(bg/text status-caution) cascade. 캐포비는 success/error/warning 만 사용, default/info 는 미사용.",
+          anatomy:
+            "① Status Icon 24×24 (상태별) ② Message — Text/Strong/Default, Bold 16 / line-height 24, 한 줄 권장 · Property(message)로 override ③ Close Icon 24×24 (회색 Icon/Normal/Default, 클릭 시 즉시 닫힘). 좌→우: 아이콘 · 메시지 · 닫기. ⚠️ status 아이콘 / 닫기 X 의 시각 렌더는 호스트 토스트 구현 몫(현 DS Toast 아이템은 message + 선택 action 렌더) — 캐포비 white-card chrome(아이콘+닫기)은 brand cascade / 커스텀 렌더로 보강 필요.",
+          container:
+            "BG/Surface/Default(흰 배경) · border subtle(#F5F5F5) · radius 8 · padding 16 · gap 10 · width 400 · shadow E1(0 2 6 / .2). base item(다크 pill · radius 22)과 달라 data-brand='cashwalk-biz' cascade 또는 --nds-toast-* 토큰 override 로 적용.",
+          position:
+            "viewport 기준 position:fixed · top 24px / right 24px 고정. 화면 변동에도 동일 위치 유지. 좌측·하단·중앙 등 임의 위치 금지. **컴포넌트 position='top-right' 로 지원**(우측 정렬 viewport). base 의 top/bottom(가로 중앙)과 다름.",
+          behavior:
+            "z-index 10000+(모달보다 위) · 진입 모션 slide-in-right 200ms · 자동 dismiss 3–5초(Error 만 5s, duration 으로 지정) · 동시 노출 1개 — 새 토스트가 기존을 교체. **단일 교체는 maxCount=1(React Provider) / max-count='1'(nds-toast)** 로 구현 — 새 항목이 들어오면 기존이 밀려남. base 기본 maxCount=3(multi-stack)과 다름.",
+          message:
+            "한 문장 · 30자 이내(28–30자) · 결과 중심 표현('저장 완료' · '전송 실패'). Error 는 원인 + 다음 행동을 한 문장으로('네트워크 오류로 중단되었습니다. 다시 시도해 주세요'). 두 줄 이상 긴 본문은 Alert/Modal 로 이동.",
+          usage:
+            "Use = 저장·전송·삭제 등 액션 결과 알림 / 한 줄 정보 전달 / 확인 없이 자동으로 사라져도 되는 메시지. Don't = 결정·확인 요구(→Modal) / 긴·다단 정보(→Alert·Modal) / 여러 토스트 누적(최대 1개) / 임의 위치 / state 의미 오용(성공에 warning) / 의미 없이 모든 액션마다 노출(피로감↑).",
+          activationCondition:
+            '`<html data-brand="cashwalk-biz">` 환경 admin 화면 기준 spec. props/API 는 brand 무관 동일 — 우측 상단 고정·단일 노출(교체)은 호스트 토스트 컨테이너(viewport) 동작으로 구현.',
+        },
+      },
+    },
     pitfalls: [
       "duration 0 으로 영구 표시 — 차단 의도면 Modal/Popup, 영구 알림이면 Banner.",
       "변형(default/success/error/warning) 없이 모두 default — 시각 위계가 사라짐.",
       "Toast 안에 input/form 두지 말 것 — interactive 영역이면 Drawer/Modal.",
+      "**(캐포비 admin)** Toast 는 우측 상단 고정(top 24 / right 24) · 동시 1개(새 토스트가 기존 교체)가 SSOT — 좌/하단 임의 위치, 다중 누적 스택, 두 줄 이상 긴 본문(→Alert/Modal), 결정·확인 요구 메시지(→Modal)는 회귀. state 는 의미대로(성공에 warning 금지), 메시지는 30자 이내 결과 중심, Error 는 원인 + 다음 행동. spec = get_guide({ topic:'component:Toast', brand:'cashwalk-biz' }).dimensions / Figma 3858-1005.",
     ],
     examplesHtml: {
       do: '<nds-toast message="저장되었습니다" variant="success" position="bottom" duration="2500" open></nds-toast>\n<script>el.addEventListener("toast-close", () => el.removeAttribute("open"));</script>',
@@ -6341,7 +6381,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**아이콘은 brand-prefix 우선**: 메뉴 아이콘은 `CashwalkBizGnb*` 9종이 공용 아이콘보다 우선. import 목록: " +
         CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS.join(", ") +
         ".",
-      "**로고는 base64 data URI 인라인 (상대경로 금지)**: 위 HTML 예시의 `logo-src` 는 이미 `data:image/svg+xml;base64,…`(BrandHeader 와 동일 로고 SSOT)로 박혀 있어 그대로 쓰면 단일 HTML 에서도 안 깨진다. `/brand-logos/cashwalk-biz.svg` 같은 **상대경로는 build_singlefile_html 이 broken image 로 처리**(단일 파일에서 깨짐)하므로 금지. React 앱은 자산을 번들하므로 public 경로로 충분.",
+      '**로고는 `brand="cashwalk-biz"` 로 자동 주입 (35KB data URI 복붙·상대경로 금지)**: 위 HTML 예시처럼 `<nds-sidebar brand="cashwalk-biz">` 만 두면 BrandHeader 와 동일 로고 SSOT 가 컴포넌트 내부에서 주입돼 단일 HTML 에서도 안 깨진다. `logo-src` 에 `data:image/svg+xml;base64,…` 35KB 블롭을 손으로 붙이지 말 것 — 그 거대 블롭을 추출/재인코딩하다 한글이 깨지고 로고가 유실되던 회귀의 직접 원인이다. `/brand-logos/cashwalk-biz.svg` 같은 상대경로도 단일 파일에서 깨지므로 금지. React 앱은 자산을 번들하므로 `logo={{ src: \'/brand-logos/cashwalk-biz.svg\' }}` public 경로로 충분.',
+      "**마크업을 스크립트로 추출·재인코딩하지 말 것 — 한글 모지바케 #1 원인**: 위 HTML/React 블록은 손대지 말고 그대로 복붙한다. 특히 Python `decode('unicode_escape')` 나 Latin-1 디코딩으로 가공하면 UTF-8 한글(광고 관리 등)이 글자당 3개의 깨진 라틴 문자(Ã/ë…)로 망가지고, 깨진 items JSON 때문에 사이드바 파싱이 흔들려 로고까지 사라진다(= '한글 다 깨지고 로고 안 보임' 증상). 가공이 꼭 필요하면 UTF-8 `json.loads` 만 사용. 이 예시는 items/account/footer-actions 를 `<script type=\"application/json\" slot=\"...\">` 텍스트 노드로 전달해 따옴표 과이스케이프·인코딩 깨짐을 둘 다 구조적으로 차단한다.",
     ],
     avoid: [
       "사이드바 items 를 화면마다 새로 발명 — 이 ready-made 트리를 복붙하고 activeKey 만 변경",

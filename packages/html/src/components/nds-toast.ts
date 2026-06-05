@@ -13,8 +13,8 @@ const TOAST_ITEM_CLASS = `${TOAST_CLASS}__item`;
 const TOAST_MESSAGE_CLASS = `${TOAST_CLASS}__message`;
 const TOAST_ACTION_CLASS = `${TOAST_CLASS}__action`;
 
-export type ToastVariant = "default" | "success" | "error" | "info";
-export type ToastPosition = "top" | "bottom";
+export type ToastVariant = "default" | "success" | "error" | "warning" | "info";
+export type ToastPosition = "top" | "bottom" | "top-right";
 
 export interface ToastShowOptions {
   id?: string;
@@ -32,8 +32,8 @@ interface ToastItem {
   actionLabel?: string;
 }
 
-const VARIANTS: readonly ToastVariant[] = ["default", "success", "error", "info"];
-const POSITIONS: readonly ToastPosition[] = ["top", "bottom"];
+const VARIANTS: readonly ToastVariant[] = ["default", "success", "error", "warning", "info"];
+const POSITIONS: readonly ToastPosition[] = ["top", "bottom", "top-right"];
 
 let toastId = 0;
 
