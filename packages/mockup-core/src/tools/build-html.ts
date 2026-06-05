@@ -80,13 +80,13 @@ export interface BuildSinglefileHtmlArgs {
    */
   brand?: string;
   /**
-   * true 면 dist 산출물에 고정 DS 스탬프 바(DS 버전 / NDS% / [앱 버전])를 박는다.
-   * 데스크탑 하네스 전용 — 외부 MCP 소비자의 공유 산출물은 기본(false) 그대로 두어 회귀 없음.
+   * @deprecated 더 이상 게이트가 아니다 — html intent 빌드는 데스크탑·외부 MCP 모두 항상 스탬프 바를 박는다
+   * (DS 버전·사용률이 어떤 경로로 생성됐든 목업에 노출되도록). 호환을 위해 인자는 계속 수용하되 효과 없음.
    */
   stampBar?: boolean;
   /**
-   * 호스트 제품 버전(데스크탑 하네스 = Nudge Studio). stampBar 와 함께 주면 스탬프 바에
-   * STUDIO 세그먼트로 박힌다. 생략하면 DS 버전 + NDS% 만 표시.
+   * 호스트 제품 버전(데스크탑 하네스 = Nudge Studio). 주면 스탬프 바에 STUDIO 세그먼트로 박힌다.
+   * 생략하면(외부 MCP 산출물 등) DS 버전 + NDS% 만 표시 — STUDIO 세그먼트는 자동 생략.
    */
   appVersion?: string;
   /**
@@ -365,13 +365,6 @@ export async function buildSinglefileHtml(
     );
   }
   const dsUsageSummary = intent === "html" ? injectHtmlUsageSummary(cwd, outputPath) : undefined;
-  // 고정 DS 스탬프 바 — dist 산출물에 결정론적으로 박는다(에이전트 우회 불가). 공유본에 항상 노출.
-  // 데스크탑 하네스(stampBar)에서만 — 외부 MCP 소비자 산출물은 회귀 없이 그대로.
-  if (intent === "html" && args.stampBar) {
-    stampDsBar(cwd, outputPath, args.appVersion, args.dsVersion);
-  }
-  const sizeBytes = fs.statSync(outputPath).size;
-  const sizeKb = Math.round(sizeBytes / 1024);
   const elapsedSec = Math.round((Date.now() - startMs) / 1000);
 
   const relOutput = path.relative(cwd, outputPath);
@@ -408,6 +401,16 @@ export async function buildSinglefileHtml(
       reportError = (err as Error).message;
     }
   }
+
+  // 고정 DS 스탬프 바 — validate·report(=깨끗한 소스 집계)가 끝난 뒤 마지막에 박는다.
+  // 데스크탑·외부 MCP 산출물 모두 박아, 어떤 경로로 생성됐든 DS 버전·사용률이 목업에 항상 노출된다.
+  // report 가 산출한 usage.meta(overall/adoption)를 그대로 사용 — 재집계 없이 시트와 동일 수치.
+  // 순서가 핵심: 스탬프의 인라인 스타일/닫기 버튼이 usage 카운트·검증 위반을 오염시키면 안 된다.
+  if (intent === "html") {
+    stampDsBar(cwd, outputPath, args.appVersion, args.dsVersion, report?.usage);
+  }
+  const sizeBytes = fs.statSync(outputPath).size;
+  const sizeKb = Math.round(sizeBytes / 1024);
 
   const annotations: string[] = [];
   if (configPatched) annotations.push(`vite.config patched`);
@@ -870,12 +873,18 @@ function stampDsBar(
   outputPath: string,
   appVersion?: string,
   dsVersionOverride?: string,
+  usage?: ReportHtmlMockupUsageResult["usage"],
 ): void {
   try {
     const html = fs.readFileSync(outputPath, "utf-8");
-    const counts = countHtmlUsage(html);
-    const dsVersion = dsVersionOverride ?? detectDsVersions(cwd).primary;
-    const next = injectDsStampBar(html, { dsVersion, ratio: counts.dsRatio, appVersion });
+    // report 가 깨끗한 소스로 산출한 usage.meta 를 우선 — A 작업의 전체(overall)/채택(adoption) 비율과 DS 버전을
+    // 시트와 동일하게 박는다. report 가 없을 때만(예외 경로) html 을 직접 세어 dsRatio 로 폴백.
+    const meta = usage?.meta;
+    const ratio = meta ? meta.overallRatio : countHtmlUsage(html).dsRatio;
+    const adoptionRatio = meta ? meta.adoptionRatio : undefined;
+    const dsVersion =
+      usage?.dsVersions?.primary ?? dsVersionOverride ?? detectDsVersions(cwd).primary;
+    const next = injectDsStampBar(html, { dsVersion, ratio, adoptionRatio, appVersion });
     if (next !== html) fs.writeFileSync(outputPath, next, "utf-8");
   } catch {
     // 스탬프 실패는 산출물 자체를 무효화하지 않는다.

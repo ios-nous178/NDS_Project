@@ -135,7 +135,17 @@ export async function reportMockupUsage(args: {
 
   // 사람이 보기 좋게 한 줄 요약 (사용자에게 보여줘야 의미 있음).
   // MUST: DS 사용 비율(%)과 DS 버전은 항상 함께 표기한다 — 두 값은 분리해서 빠뜨릴 수 없는 한 쌍이다.
-  const { totalDs, totalAdminCms, totalCustomNative, totalExternal, dsRatio } = usage.meta;
+  const {
+    totalDs,
+    totalAdminCms,
+    totalCustomNative,
+    totalExternal,
+    dsRatio,
+    adoptionRatio,
+    overallRatio,
+    avoidableMiss,
+    forcedCustom,
+  } = usage.meta;
   const webhookStatus = !webhook.attempted
     ? "skipped"
     : webhook.ok
@@ -145,9 +155,14 @@ export async function reportMockupUsage(args: {
     ? ` · queue retry ${webhook.flushedQueue.succeeded}/${webhook.flushedQueue.attempted}`
     : "";
   const dsVersionLabel = formatDsVersionLabel(usage.dsVersions);
+  // 채택률(A) = 쓸 수 있었던 것 중 DS 비율, 전체(B) = DS 공백 포함. 갭이 크면 "만들어야 할 DS" 신호.
+  const ratioLabel =
+    overallRatio === adoptionRatio
+      ? `${dsRatio}%`
+      : `채택 ${adoptionRatio}% · 전체 ${overallRatio}% (회피가능 ${avoidableMiss} · 불가피 ${forcedCustom})`;
   const humanReadable =
     `[usage] ${usage.mockupName} (${usage.brand ?? "?"}) · DS@${dsVersionLabel} · ` +
-    `DS ${totalDs} (${dsRatio}%) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}${queueStatus}`;
+    `DS ${totalDs} (${ratioLabel}) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}${queueStatus}`;
 
   const _nextSuggestion =
     "⚠️ MUST: 사용자에게 보여줄 한 줄 요약(humanReadable)에는 **DS 사용 비율(%) 과 DS 버전** 이 항상 함께 들어가야 합니다 — 둘 중 하나만 노출하거나 생략하지 마세요. " +
@@ -190,7 +205,14 @@ function formatDsSummary(outcomes: AutoReportOutcome[]): string {
   if (outcomes.length === 0) return "";
   return outcomes
     .map((o) => {
-      const ratio = typeof o.dsRatio === "number" ? `${o.dsRatio}%` : "?%";
+      const ratio =
+        typeof o.adoptionRatio === "number" &&
+        typeof o.overallRatio === "number" &&
+        o.adoptionRatio !== o.overallRatio
+          ? `채택 ${o.adoptionRatio}% · 전체 ${o.overallRatio}%`
+          : typeof o.dsRatio === "number"
+            ? `${o.dsRatio}%`
+            : "?%";
       const version = o.dsVersion ?? "unknown";
       const name = o.filePath.split("/").pop() ?? o.filePath;
       return `${name} (DS@${version} · ${ratio})`;
@@ -222,6 +244,10 @@ interface AutoReportOutcome {
   totalDs?: number;
   /** % of tracked JSX that came from @nudge-design/react. Always surfaced alongside dsVersion. */
   dsRatio?: number;
+  /** A. 채택률 = DS / (DS + 대체재 있는 non-DS). */
+  adoptionRatio?: number;
+  /** B. 전체 사용률 = DS / 추적 전체(DS 공백 포함). == dsRatio. */
+  overallRatio?: number;
   /** Installed @nudge-design/react version (or declared range fallback). Always paired with dsRatio. */
   dsVersion?: string | null;
   reason: PendingMockupReport["reason"];
@@ -249,6 +275,8 @@ async function autoReportPendingMockups(
         queued: res.webhook.queued,
         totalDs: res.usage.meta.totalDs,
         dsRatio: res.usage.meta.dsRatio,
+        adoptionRatio: res.usage.meta.adoptionRatio,
+        overallRatio: res.usage.meta.overallRatio,
         dsVersion: res.usage.dsVersions?.primary ?? null,
         reason: p.reason,
       });

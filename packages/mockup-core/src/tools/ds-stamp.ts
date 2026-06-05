@@ -17,8 +17,14 @@ export const DS_STAMP_MARKER = "data-nds-stamp";
 export interface DsStampInfo {
   /** DS 버전(detectDsVersions().primary). null/빈 값이면 "—". */
   dsVersion?: string | null;
-  /** NDS 적용 비율 0–100(countHtmlUsage().dsRatio). */
+  /** NDS 전체 사용률 0–100 (overallRatio == 기존 dsRatio). 항상 표기되는 하한값. */
   ratio: number;
+  /**
+   * A 작업: 채택률(쓸 수 있었던 것 중 DS 비율). `ratio`(전체)와 **다를 때만** "채택 A% · 전체 B%"
+   * 2단 표기. 생략하거나 ratio 와 같으면 단일 "전체%"로 폴백.
+   * (HTML 목업은 모든 non-DS 가 avoidable·forced 0 이라 구조상 A==B → 자연히 단일 표기.)
+   */
+  adoptionRatio?: number;
   /** 호스트 제품 버전 — 데스크탑 하네스면 Nudge Studio 버전. 없으면 STUDIO 세그먼트 생략. */
   appVersion?: string | null;
 }
@@ -50,7 +56,15 @@ const STAMP = {
  */
 export function renderDsStampBar(info: DsStampInfo): string {
   const ds = escHtml((info.dsVersion ?? "").trim() || "—");
-  const ratio = Math.max(0, Math.min(100, Math.round(info.ratio)));
+  const clampPct = (n: number): number => Math.max(0, Math.min(100, Math.round(n)));
+  const overall = clampPct(info.ratio);
+  const adoption =
+    typeof info.adoptionRatio === "number" ? clampPct(info.adoptionRatio) : undefined;
+  // 채택률이 전체와 다를 때만 2단 표기 — "있었는데 안 쓴(avoidable)" 갭이 있다는 신호.
+  const ndsValue =
+    adoption !== undefined && adoption !== overall
+      ? `채택 ${adoption}% · 전체 ${overall}%`
+      : `${overall}%`;
   const appV = (info.appVersion ?? "").trim();
 
   const divider = `<span aria-hidden="true" style="width:1px;height:11px;background:rgba(255,255,255,.16);flex:0 0 auto"></span>`;
@@ -65,7 +79,7 @@ export function renderDsStampBar(info: DsStampInfo): string {
     divider,
     seg("DS", `v${ds}`),
     divider,
-    seg("NDS", `${ratio}%`, STAMP.accent),
+    seg("NDS", ndsValue, STAMP.accent),
   ];
   if (appV) {
     parts.push(divider, seg("STUDIO", `v${escHtml(appV)}`));
