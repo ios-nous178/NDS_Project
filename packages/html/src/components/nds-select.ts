@@ -8,6 +8,11 @@
  *     <nds-select-option value="us" disabled>미국 (off)</nds-select-option>
  *   </nds-select>
  *
+ * 폭:
+ *   기본 full-width=true(트리거 100% — 폼/캐포비 기본, React fullWidth 기본과 일치).
+ *   좁게 쓰려면 full-width="false"(어드민 검색 필터 등). 드롭다운 메뉴 폭은 전체너비면
+ *   트리거 폭으로 고정, auto 면 가장 넓은 옵션까지 grow 후 캡(넘으면 옵션 말줄임).
+ *
  * 이벤트:
  *   option 선택 → host 에 `value` attribute 설정 + "select-change" CustomEvent
  *   (detail: { value }, bubbles: true).
@@ -32,7 +37,11 @@ const TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
 const CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
 const DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const OPTION_CLASS = `${SELECT_CLASS}__option`;
+const OPTION_LABEL_CLASS = `${SELECT_CLASS}__option-label`;
 const OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
+
+/** auto(좁은) 셀렉트에서 드롭다운이 가장 넓은 옵션까지 grow 할 때의 상한(px). React 와 동일. */
+const SELECT_AUTO_MENU_MAX_WIDTH = 360;
 const HELPER_CLASS = `${SELECT_CLASS}__helper`;
 
 const OPTION_CHECK_SVG =
@@ -185,7 +194,9 @@ export class NdsSelect extends NdsElement {
     const helperText = this.getAttribute("helper-text");
     const disabled = this.boolAttr("disabled");
     const error = this.boolAttr("error");
-    const fullWidth = this.boolAttr("full-width");
+    // 기본 full-width=true (React fullWidth 기본과 일치 — 폼/캐포비는 전체너비가 기본).
+    // 좁게 쓰려면 full-width="false" 명시(예: 어드민 검색 필터).
+    const fullWidth = this.attr("full-width", "true") !== "false";
     const open = this.boolAttr("open");
     const hasValue = value !== null && value !== "";
 
@@ -273,7 +284,14 @@ export class NdsSelect extends NdsElement {
     const placeAbove = spaceBelow < dropdownH && spaceAbove > spaceBelow;
 
     this._dropdown.style.left = `${rect.left}px`;
-    this._dropdown.style.width = `${rect.width}px`;
+    // 메뉴 폭(React 와 동일 전략): 항상 트리거 폭 이상. fullWidth 면 트리거 폭으로 고정,
+    // auto 면 가장 넓은 옵션까지 grow 후 캡(넘으면 옵션 말줄임).
+    const fullWidth = this.attr("full-width", "true") !== "false";
+    this._dropdown.style.minWidth = `${rect.width}px`;
+    this._dropdown.style.width = "max-content";
+    this._dropdown.style.maxWidth = fullWidth
+      ? `${rect.width}px`
+      : `${SELECT_AUTO_MENU_MAX_WIDTH}px`;
     if (placeAbove) {
       this._dropdown.style.top = "";
       this._dropdown.style.bottom = `${viewportH - rect.top}px`;
@@ -420,6 +438,12 @@ export class NdsSelectOption extends NdsElement {
     this.classList.add(OPTION_CLASS);
     this.dataset.slot = "option";
     this.setAttribute("role", "option");
+    // 라벨 콘텐츠(텍스트)를 label span 으로 감싼다 — 메뉴 폭이 캡/트리거폭에 닿으면 줄바꿈
+    // 대신 말줄임(text-overflow). host.textContent 는 그대로라 trigger 라벨 추출에 영향 없음.
+    const label = document.createElement("span");
+    label.className = OPTION_LABEL_CLASS;
+    while (this.firstChild) label.appendChild(this.firstChild);
+    this.appendChild(label);
     // 선택 표시용 trailing 체크 — 평소엔 CSS 로 숨김, data-selected 일 때만 노출.
     // svg 는 텍스트가 없으므로 host.textContent(= trigger 라벨)에 영향 없음.
     const check = document.createElement("span");

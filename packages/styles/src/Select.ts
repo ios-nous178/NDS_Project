@@ -20,6 +20,7 @@ const SELECT_TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
 const SELECT_CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
 const SELECT_DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const SELECT_OPTION_CLASS = `${SELECT_CLASS}__option`;
+const SELECT_OPTION_LABEL_CLASS = `${SELECT_CLASS}__option-label`;
 const SELECT_OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
 const SELECT_HELPER_CLASS = `${SELECT_CLASS}__helper`;
 
@@ -137,6 +138,17 @@ export const selectStyles = `
     color: ${cv.textRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default};
+  }
+
+  /* 옵션 라벨 — 메뉴가 max-width(좁은 셀렉트) / 트리거폭(전체너비) 에 닿으면
+     줄바꿈 대신 말줄임. 메뉴 폭 자체는 JS 가 mode 별로 설정(전체너비=트리거폭,
+     auto=가장 넓은 아이템까지 grow, 캡 max-width). */
+  :where(.${SELECT_OPTION_LABEL_CLASS}) {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* 선택 표시용 체크 — 평소엔 숨김, 선택된 옵션에서만 노출. trailing 정렬. */
