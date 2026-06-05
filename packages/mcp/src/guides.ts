@@ -6856,8 +6856,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "구성: 01 Sidebar → 02 PageHeader+Primary Action('등록하기') → 03 FilterBar → 04 Table(썸네일·상태배지·노출토글·수정/삭제) → 05 Pagination. Detail 진입 전 단계. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-915 / pattern 3613-234 실측 반영.",
     rules: [
       "**언제 쓰나**: PRD 에 '목록 / 조회 / 검색 / 필터링 / 리포트(테이블)' 키워드가 있고, 여러 row 데이터를 비교·탐색해야 하며, Detail 화면으로 진입하기 전 단계일 때.",
-      "**02 PageHeader + Primary Action**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **'등록하기' Primary Button** 1개. 목록의 주 액션은 헤더 우측에만 둔다.",
-      "**03 FilterBar**: 테이블 위 한 줄(`pattern:action-row`) — Search Input + Dropdown 필터(상태 등) + 기간(DateRange). 카드 형태: radius **12px**, padding **20/24**.",
+      "**02 PageHeader + Primary Action**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **'등록하기' Primary Button** 1개(cashwalk-biz Solid/Primary = 노란 #FFD200 + 검정, `pattern:cashwalk-biz-button`). 목록의 주 액션은 헤더 우측에만 둔다.",
+      "**(선택) 광고비/충전 안내 배너**: 잔액 소진 임박 등 조건 충족 시 PageHeader 아래·탭/FilterBar 위에 `pattern:cashwalk-biz-admin-alert-banner`(soft 옐로우 + 종 일러스트 + 노란 pill CTA) 1개. 상시 노출 아님.",
+      "**03 FilterBar**: 테이블 위 한 줄(`pattern:action-row`) — Search Input + Dropdown 필터(상태 등) + 기간(DateRange). 카드 형태: radius **12px**, padding **20/24**. **상태 필터(활성/정지 등)는 Dropdown 필터 또는 상태 톤 칩으로 — solid 초록(활성)/빨강(정지) 버튼 금지**(테이블 상태 Badge 색과 충돌하고, 필터 선택과 상태 표시가 혼동됨).",
       "**04 Table**: 헤더 행 + 데이터 행. 헤더 행 배경 `--semantic-bg-surface-subtle`(#FAFAFA). 카드 radius **12px**, Row padding **16/24**, Row 사이 **1px border `#F5F5F5`**. 컬럼은 균등 또는 flex.",
       "**행 셀 컴포넌트**: 썸네일(이미지 컬럼) + 핵심 텍스트(클릭 시 Detail 진입 — 링크색) + **상태 = Badge**(진행중=success/green · 진행예정=subtle · 종료=neutral gray) + 숫자 컬럼 우측 정렬 + **노출 = Toggle**(노출 on green / 미노출 off) + **관리 = 수정(pencil)·삭제(trash) 아이콘 액션**. 상태를 raw 텍스트로, 노출을 체크박스로 만들지 않는다.",
       "**05 Pagination**: 중앙 정렬 페이지 번호, 버튼 **32×32**, **현재 페이지 = 검정(neutral 900 / #111) fill + 흰 텍스트**(brand yellow 아님 — 노랑은 활성/선택 강조용이라 페이지네이션 현재 페이지와 시각 충돌). 우측에 페이지 사이즈 셀렉트('10개씩 보기') 배치 가능.",
@@ -6872,6 +6873,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "Empty state 를 빈 테이블로 방치 — '등록된 OOO이 없습니다' + CTA 필수",
       "FilterBar/Table radius 를 12px 외로 · 헤더 행 배경 누락",
       "페이지네이션 현재 페이지를 brand yellow fill 로 — 현재 페이지는 검정(#111) fill + 흰 텍스트",
+      "상태 필터를 solid 초록(활성)/빨강(정지) 버튼으로 — Dropdown 필터 또는 상태 톤 칩. 초록/빨강 solid 는 테이블 상태 Badge 와 충돌·혼동",
     ],
     examples: [
       {
@@ -6908,7 +6910,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       validateFilterThreshold: "필터 > 4 → 패널 분리",
       emptyState: "'등록된 OOO이 없습니다' + CTA 필수",
       relatedPatterns:
-        "cashwalk-biz-page-patterns, admin-shell, action-row, dense-list, cashwalk-biz-page-detail, cashwalk-biz-badge-chip, cashwalk-biz-tab",
+        "cashwalk-biz-page-patterns, admin-shell, action-row, dense-list, cashwalk-biz-page-detail, cashwalk-biz-badge-chip, cashwalk-biz-tab, cashwalk-biz-admin-alert-banner",
     },
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
     references: [
@@ -6928,6 +6930,39 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         brand: "cashwalk-biz",
       },
     ],
+  },
+  "cashwalk-biz-admin-alert-banner": {
+    name: "cashwalk-biz-admin-alert-banner",
+    summary:
+      "캐시워크 포 비즈니스 admin **광고비/충전 안내 배너** — 페이지 본문 상단(PageHeader 아래)에 얹는 soft 옐로우 알림 카드. " +
+      "구성: 좌측 일러스트(@nudge-design/assets `charge-alert-bell`) + 제목/설명 + 우측 단일 CTA(노란 pill). " +
+      "NoticeAlert(48px 인라인 strip)·Banner(우측 이미지)·FloatingCtaBanner(하단 sticky pill)와 구분 — 일러스트 동반 멀티라인 안내 카드. Figma 3001-21374.",
+    rules: [
+      "**언제 쓰나**: 잔액 소진 임박 등 계정/광고 상태에 대한 능동 안내 + 즉시 행동(충전) 유도가 필요할 때. 단순 정책 안내는 page-form 의 02b 안내 콜아웃(info) 또는 NoticeAlert.",
+      "**배치**: 리스트/폼 페이지 본문 최상단(PageHeader 아래, 탭/FilterBar 위). 페이지당 1개. 상시 노출이 아니라 조건 충족 시(잔액 임박)에만.",
+      "**박스**: bg `--semantic-bg-brand-subtle`(soft 옐로우 #FFF4C0 계열) · radius **16** · padding 20/24 · 그림자·보더 없음 · 그라데이션 금지.",
+      "**좌측 일러스트**: `@nudge-design/assets` 의 `charge-alert-bell`(종) — 표시 크기 60×60. 라인 아이콘으로 대체하지 말 것(일러스트 자산).",
+      "**텍스트**: 제목 Bold **18/30** `--semantic-text-strong`(#383838) + 설명 Medium **16/24** 동일 계열. 제목에 개수/금액을 직접 박지 말고 본문에서 서술.",
+      "**CTA**: 우측 단일 버튼 = cashwalk-biz **Solid/Primary(노란 #FFD200 + 검정 텍스트) · pill** (`pattern:cashwalk-biz-button` SSOT 그대로). 검정/파랑/outlined 로 바꾸지 말 것 · 버튼 2개 이상 금지(단일 행동).",
+    ],
+    avoid: [
+      "라인 아이콘으로 종 일러스트 대체 — 일러스트 자산(charge-alert-bell) 사용",
+      "NoticeAlert(48px strip)로 제목+설명+CTA 욱여넣기 — 멀티라인 안내 카드는 별물",
+      "CTA 를 검정/파랑/outlined 로 — 충전 같은 주 행동은 노란 Solid/Primary pill",
+      "배너를 페이지에 여러 개 쌓기 / 상시 노출 — 조건 충족 시 1개",
+      "그라데이션 배경 — 단색 brand-subtle 토큰만",
+    ],
+    metrics: {
+      placement: "본문 최상단(PageHeader 아래·탭/FilterBar 위) · 페이지당 1개 · 조건부 노출",
+      box: "bg --semantic-bg-brand-subtle(#FFF4C0) · radius 16 · padding 20/24 · no shadow/border",
+      illustration: "@nudge-design/assets charge-alert-bell(종) · 60×60",
+      title: "Bold 18/30 #383838",
+      description: "Medium 16/24 #383838",
+      cta: "우측 단일 Solid/Primary(노란 #FFD200 + 검정) pill — cashwalk-biz-button SSOT",
+      relatedPatterns:
+        "cashwalk-biz-page-list, cashwalk-biz-page-form, cashwalk-biz-button, cashwalk-biz-page-patterns",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-21374",
   },
   "cashwalk-biz-page-detail": {
     name: "cashwalk-biz-page-detail",
