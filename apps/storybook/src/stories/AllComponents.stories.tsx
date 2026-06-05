@@ -864,10 +864,14 @@ const PREVIEWS: Record<string, PreviewRender> = {
   },
   TimePicker: () => {
     function T() {
-      const [v, setV] = useState("14:00");
+      const [v, setV] = useState("18:00");
       return (
-        <div style={{ width: "100%", maxWidth: 200 }}>
-          <TimePicker value={v} onValueChange={setV} />
+        <div style={{ width: "100%", maxWidth: 320 }} data-brand="cashwalk-biz">
+          <TimePicker
+            value={v}
+            onValueChange={setV}
+            presets={[{ label: "자정까지", value: "23:59" }]}
+          />
         </div>
       );
     }
