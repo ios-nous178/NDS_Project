@@ -80,13 +80,9 @@ export class NdsChart extends NdsElement {
       });
       return null;
     }
-    const typeAttr = this.getAttribute("type");
-    const type: "line" | "bar" =
-      typeAttr === "bar" || typeAttr === "line"
-        ? typeAttr
-        : (parsed.type as string) === "bar"
-          ? "bar"
-          : "line";
+    const typeAttr = this.getAttribute("type") ?? (parsed.type as string);
+    const type: "line" | "bar" | "donut" =
+      typeAttr === "bar" || typeAttr === "donut" || typeAttr === "line" ? typeAttr : "line";
     const labels = Array.isArray(parsed.labels) ? (parsed.labels as unknown[]).map(String) : [];
     const series = Array.isArray(parsed.series)
       ? (parsed.series as Record<string, unknown>[])
@@ -127,6 +123,8 @@ export class NdsChart extends NdsElement {
       this._root.innerHTML = "";
       return;
     }
+    this._root.className =
+      cfg.type === "donut" ? `${CHART_CLASS} ${CHART_CLASS}--donut` : CHART_CLASS;
     const showLegend = !this.boolAttr("no-legend");
     this._root.innerHTML = buildChartSvg(cfg) + (showLegend ? buildLegendHtml(cfg) : "");
   }

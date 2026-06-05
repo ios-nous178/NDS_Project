@@ -28,7 +28,7 @@ export interface ChartTooltip {
 }
 
 export interface ChartConfig {
-  type: "line" | "bar";
+  type: "line" | "bar" | "donut";
   labels: string[];
   series: ChartSeries[];
   yMax?: number;
@@ -75,9 +75,63 @@ export function seriesColor(type: string, i: number, explicit?: string): string 
   return `var(--nds-chart-${i + 1}, ${DEFAULT_FILL[i] ?? DEFAULT_FILL[0]})`;
 }
 
+/* ─── 도넛(성별 분포 등) 레이아웃 — 정사각 viewBox ─── */
+const DONUT_VIEW = 220;
+const DONUT_CX = 110;
+const DONUT_CY = 110;
+const DONUT_OUTER = 88;
+const DONUT_INNER = 52;
+
+interface DonutSeg {
+  name: string;
+  color: string;
+  value: number;
+}
+
+function donutSegs(cfg: ChartConfig): DonutSeg[] {
+  return cfg.series.map((s, i) => ({
+    name: s.name ?? "",
+    color: seriesColor("donut", i, s.color),
+    value: s.values.reduce((a, b) => a + (Number(b) || 0), 0),
+  }));
+}
+
+/**
+ * 도넛 SVG — 각 세그먼트를 stroke-dasharray 링으로 그린다(100%·빈 상태도 안전).
+ * total=0 이면 전체 회색 링(--nds-chart-empty). 시작각 -90(상단), 시계방향.
+ */
+export function buildDonutSvg(cfg: ChartConfig): string {
+  const segs = donutSegs(cfg);
+  const total = segs.reduce((a, s) => a + s.value, 0);
+  const rMid = (DONUT_OUTER + DONUT_INNER) / 2;
+  const w = DONUT_OUTER - DONUT_INNER;
+  const circ = 2 * Math.PI * rMid;
+  const parts: string[] = [];
+  if (total <= 0) {
+    parts.push(
+      `<circle cx="${DONUT_CX}" cy="${DONUT_CY}" r="${rMid}" fill="none" stroke="var(--nds-chart-empty, #BBBBBB)" stroke-width="${w}" />`,
+    );
+  } else {
+    let cum = -90;
+    for (const s of segs) {
+      if (s.value <= 0) continue;
+      const f = s.value / total;
+      const segLen = f * circ;
+      parts.push(
+        `<circle cx="${DONUT_CX}" cy="${DONUT_CY}" r="${rMid}" fill="none" stroke="${s.color}" stroke-width="${w}" stroke-dasharray="${segLen.toFixed(2)} ${(circ - segLen).toFixed(2)}" transform="rotate(${cum.toFixed(2)} ${DONUT_CX} ${DONUT_CY})" />`,
+      );
+      cum += f * 360;
+    }
+  }
+  return `<svg class="${CHART_SVG_CLASS}" viewBox="0 0 ${DONUT_VIEW} ${DONUT_VIEW}" role="img" preserveAspectRatio="xMidYMid meet">${parts.join(
+    "",
+  )}</svg>`;
+}
+
 /** 순수 SVG 빌더 — 문자열 반환. */
 export function buildChartSvg(cfg: ChartConfig): string {
   const { type, labels, series } = cfg;
+  if (type === "donut") return buildDonutSvg(cfg);
   const ticks = Math.max(1, cfg.yTicks ?? 4);
 
   const dataMax = Math.max(0, ...series.flatMap((s) => s.values));
@@ -211,6 +265,22 @@ export function buildLegendItems(cfg: ChartConfig): { color: string; name: strin
 }
 
 export function buildLegendHtml(cfg: ChartConfig): string {
+  if (cfg.type === "donut") {
+    const segs = donutSegs(cfg).filter((s) => s.name);
+    if (!segs.length) return "";
+    const total = segs.reduce((a, s) => a + s.value, 0);
+    const inner = segs
+      .map(
+        (s) =>
+          `<span class="${CHART_LEGEND_ITEM_CLASS}"><span class="${CHART_LEGEND_DOT_CLASS}" style="background:${s.color}"></span>${esc(
+            s.name,
+          )} <b class="${CHART_CLASS}__legend-pct">${
+            total > 0 ? Math.round((s.value / total) * 100) : 0
+          }%</b></span>`,
+      )
+      .join("");
+    return `<div class="${CHART_LEGEND_CLASS}">${inner}</div>`;
+  }
   const items = buildLegendItems(cfg);
   if (!items.length) return "";
   const inner = items

@@ -19,8 +19,8 @@ import {
  *   line  = #FFD200, bar 1 = #007AFF(남성), bar 2 = #FF8437(여성)
  */
 export interface ChartProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
-  /** "line" | "bar" (그룹 막대) */
-  type?: "line" | "bar";
+  /** "line" | "bar" (그룹 막대) | "donut" (도넛 — 시리즈 1개 = 1 세그먼트) */
+  type?: "line" | "bar" | "donut";
   /** x축 라벨 */
   labels: string[];
   /** 데이터 시리즈 (bar 는 다중 시리즈 = 그룹 막대) */
@@ -48,7 +48,9 @@ export function Chart({
 }: ChartProps) {
   const cfg: ChartConfig = { type, labels, series, yMax, yTicks, tooltip };
   const html = buildChartSvg(cfg) + (showLegend ? buildLegendHtml(cfg) : "");
-  const rootClass = className ? `${CHART_CLASS} ${className}` : CHART_CLASS;
+  const rootClass = [CHART_CLASS, type === "donut" ? `${CHART_CLASS}--donut` : "", className]
+    .filter(Boolean)
+    .join(" ");
   return <div className={rootClass} {...rest} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
