@@ -34,6 +34,8 @@
  *   size: "sm" | "md"
  *   responsive: "scroll" | "cards"
  *   row-clickable: 행 클릭 가능
+ *   sub-rows-key: 자식 행 배열이 든 필드명 (지정 시 펼침/접힘 트리 활성화)
+ *   expander-column: 펼침 토글을 놓을 컬럼 key (기본: 첫 컬럼)
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -52,6 +54,9 @@ const DT_CARD_CLASS = `${DT_CLASS}__card`;
 const DT_CARD_ROW_CLASS = `${DT_CLASS}__card-row`;
 const DT_CARD_LABEL_CLASS = `${DT_CLASS}__card-label`;
 const DT_CARD_VALUE_CLASS = `${DT_CLASS}__card-value`;
+const DT_EXPAND_CELL_CLASS = `${DT_CLASS}__expand-cell`;
+const DT_EXPANDER_CLASS = `${DT_CLASS}__expander`;
+const DT_EXPANDER_SPACER_CLASS = `${DT_CLASS}__expander-spacer`;
 
 export type DataTableSortDirection = "asc" | "desc";
 
@@ -92,10 +97,13 @@ export class NdsDataTable extends NdsElement {
       "size",
       "responsive",
       "row-clickable",
+      "sub-rows-key",
+      "expander-column",
     ];
   }
 
   private _root: HTMLDivElement | null = null;
+  private _expanded = new Set<string>();
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
@@ -155,6 +163,59 @@ export class NdsDataTable extends NdsElement {
     return String(v);
   }
 
+  private _expanderIcon(expanded: boolean): SVGElement {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "16");
+    svg.setAttribute("height", "16");
+    svg.setAttribute("viewBox", "0 0 16 16");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("aria-hidden", "true");
+    svg.style.display = "block";
+    svg.innerHTML =
+      `<rect x="0.5" y="0.5" width="15" height="15" rx="3.5" stroke="currentColor" opacity="0.35"/>` +
+      `<path d="M4.5 8h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>` +
+      (expanded
+        ? ""
+        : `<path d="M8 4.5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`);
+    return svg;
+  }
+
+  private _flatten(
+    rows: Record<string, unknown>[],
+    subRowsKey: string | null,
+    rowKeyField: string,
+  ): Array<{
+    row: Record<string, unknown>;
+    key: string;
+    depth: number;
+    index: number;
+    hasChildren: boolean;
+    expanded: boolean;
+  }> {
+    const out: Array<{
+      row: Record<string, unknown>;
+      key: string;
+      depth: number;
+      index: number;
+      hasChildren: boolean;
+      expanded: boolean;
+    }> = [];
+    let i = 0;
+    const walk = (list: Record<string, unknown>[], depth: number) => {
+      for (const row of list) {
+        const index = i++;
+        const key = String(row[rowKeyField] ?? index);
+        const children = subRowsKey ? row[subRowsKey] : undefined;
+        const hasChildren = Array.isArray(children) && children.length > 0;
+        const expanded = hasChildren && this._expanded.has(key);
+        out.push({ row, key, depth, index, hasChildren, expanded });
+        if (expanded) walk(children as Record<string, unknown>[], depth + 1);
+      }
+    };
+    walk(rows, 0);
+    return out;
+  }
+
   private _handleSort(
     col: Column,
     currentKey: string | null,
@@ -190,6 +251,9 @@ export class NdsDataTable extends NdsElement {
     const size = this.getAttribute("size") || "md";
     const responsive = this.getAttribute("responsive") || "scroll";
     const rowClickable = this.boolAttr("row-clickable");
+    const subRowsKey = this.getAttribute("sub-rows-key");
+    const expandable = !!subRowsKey;
+    const expanderColumn = this.getAttribute("expander-column") || columns[0]?.key || "";
 
     this._root.dataset.size = size;
     this._root.dataset.responsive = responsive;
@@ -261,16 +325,27 @@ export class NdsDataTable extends NdsElement {
       tr.appendChild(td);
       tbody.appendChild(tr);
     } else {
-      data.forEach((row, idx) => {
+      const flat = expandable
+        ? this._flatten(data, subRowsKey, _rowKeyField)
+        : data.map((row, index) => ({
+            row,
+            key: String(row[_rowKeyField] ?? index),
+            depth: 0,
+            index,
+            hasChildren: false,
+            expanded: false,
+          }));
+      flat.forEach((fr) => {
         const tr = document.createElement("tr");
         tr.dataset.slot = "tr";
+        if (expandable) tr.dataset.depth = String(fr.depth);
         if (rowClickable) {
           tr.dataset.clickable = "true";
           tr.style.cursor = "pointer";
           tr.addEventListener("click", () => {
             this.dispatchEvent(
               new CustomEvent("nds-data-table-row-click", {
-                detail: { row, index: idx },
+                detail: { row: fr.row, index: fr.index },
                 bubbles: true,
                 composed: true,
               }),
@@ -283,7 +358,38 @@ export class NdsDataTable extends NdsElement {
           td.dataset.slot = "td";
           td.dataset.align = col.align ?? "left";
           td.className = DT_TD_CLASS;
-          td.textContent = this._cellText(col, row);
+          if (expandable && col.key === expanderColumn) {
+            const cell = document.createElement("span");
+            cell.className = DT_EXPAND_CELL_CLASS;
+            cell.style.paddingInlineStart = `${fr.depth * 20}px`;
+            if (fr.hasChildren) {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = DT_EXPANDER_CLASS;
+              btn.dataset.expanded = fr.expanded ? "true" : "false";
+              btn.setAttribute("aria-expanded", fr.expanded ? "true" : "false");
+              btn.setAttribute("aria-label", fr.expanded ? "접기" : "펼치기");
+              btn.appendChild(this._expanderIcon(fr.expanded));
+              btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (this._expanded.has(fr.key)) this._expanded.delete(fr.key);
+                else this._expanded.add(fr.key);
+                this.update();
+              });
+              cell.appendChild(btn);
+            } else {
+              const spacer = document.createElement("span");
+              spacer.className = DT_EXPANDER_SPACER_CLASS;
+              spacer.setAttribute("aria-hidden", "true");
+              cell.appendChild(spacer);
+            }
+            const text = document.createElement("span");
+            text.textContent = this._cellText(col, fr.row);
+            cell.appendChild(text);
+            td.appendChild(cell);
+          } else {
+            td.textContent = this._cellText(col, fr.row);
+          }
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -306,20 +412,50 @@ export class NdsDataTable extends NdsElement {
         cardList.appendChild(empty);
       } else {
         const cardColumns = columns.filter((c) => !c.hideOnCard);
-        data.forEach((row, idx) => {
+        const flat = expandable
+          ? this._flatten(data, subRowsKey, _rowKeyField)
+          : data.map((row, index) => ({
+              row,
+              key: String(row[_rowKeyField] ?? index),
+              depth: 0,
+              index,
+              hasChildren: false,
+              expanded: false,
+            }));
+        flat.forEach((fr) => {
           const card = document.createElement("article");
+          if (expandable) {
+            card.dataset.depth = String(fr.depth);
+            if (fr.depth > 0) card.style.marginInlineStart = `${fr.depth * 20}px`;
+          }
           if (rowClickable) {
             card.dataset.clickable = "true";
             card.style.cursor = "pointer";
             card.addEventListener("click", () => {
               this.dispatchEvent(
                 new CustomEvent("nds-data-table-row-click", {
-                  detail: { row, index: idx },
+                  detail: { row: fr.row, index: fr.index },
                   bubbles: true,
                   composed: true,
                 }),
               );
             });
+          }
+          if (expandable && fr.hasChildren) {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = DT_EXPANDER_CLASS;
+            btn.dataset.expanded = fr.expanded ? "true" : "false";
+            btn.setAttribute("aria-expanded", fr.expanded ? "true" : "false");
+            btn.setAttribute("aria-label", fr.expanded ? "접기" : "펼치기");
+            btn.appendChild(this._expanderIcon(fr.expanded));
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (this._expanded.has(fr.key)) this._expanded.delete(fr.key);
+              else this._expanded.add(fr.key);
+              this.update();
+            });
+            card.appendChild(btn);
           }
           cardColumns.forEach((col) => {
             const cardRow = document.createElement("div");
@@ -331,7 +467,7 @@ export class NdsDataTable extends NdsElement {
 
             const value = document.createElement("span");
             value.className = DT_CARD_VALUE_CLASS;
-            value.textContent = this._cellText(col, row);
+            value.textContent = this._cellText(col, fr.row);
 
             cardRow.append(label, value);
             card.appendChild(cardRow);

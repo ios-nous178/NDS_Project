@@ -23,6 +23,9 @@ const DT_CARD_CLASS = `${DT_CLASS}__card`;
 const DT_CARD_ROW_CLASS = `${DT_CLASS}__card-row`;
 const DT_CARD_LABEL_CLASS = `${DT_CLASS}__card-label`;
 const DT_CARD_VALUE_CLASS = `${DT_CLASS}__card-value`;
+const DT_EXPAND_CELL_CLASS = `${DT_CLASS}__expand-cell`;
+const DT_EXPANDER_CLASS = `${DT_CLASS}__expander`;
+const DT_EXPANDER_SPACER_CLASS = `${DT_CLASS}__expander-spacer`;
 
 export const dataTableStyles = `
   :where(.${DT_CLASS}) {
@@ -181,4 +184,40 @@ export const dataTableStyles = `
     line-height: ${typeScale.body3.lineHeight}px;
     word-break: break-word;
   }
+
+  /* ─── expandable rows (tree) ─── */
+  :where(.${DT_EXPAND_CELL_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-gap-tight);
+    min-width: 0;
+  }
+  :where(.${DT_EXPANDER_CLASS}) {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: ${cv.textRole.subtle};
+    border-radius: ${radius.sm}px;
+    cursor: pointer;
+    transition: background-color ${transition.default}, color ${transition.default};
+  }
+  :where(.${DT_EXPANDER_CLASS}:hover) {
+    background: ${cv.surface.page};
+    color: ${cv.textRole.normal};
+  }
+  :where(.${DT_EXPANDER_SPACER_CLASS}) {
+    flex-shrink: 0;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+  }
+  /* 자식 행은 살짝 가라앉은 배경으로 위계 표시 */
+  :where(.${DT_TR_CLASS}[data-depth="1"]) > .${DT_TD_CLASS} { background: ${cv.surface.page}; }
+  :where(.${DT_TR_CLASS}[data-depth="2"]) > .${DT_TD_CLASS} { background: ${cv.surface.section}; }
 `;
