@@ -271,6 +271,8 @@ export class NdsDataTable extends NdsElement {
 
     this._root.dataset.size = size;
     this._root.dataset.responsive = responsive;
+    if (expandable) this._root.dataset.expandable = "true";
+    else delete this._root.dataset.expandable;
 
     this._root.innerHTML = "";
 

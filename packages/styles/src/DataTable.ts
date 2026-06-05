@@ -48,6 +48,11 @@ export const dataTableStyles = `
     table-layout: auto;
   }
 
+  /* 펼침 표: 컬럼 너비를 헤더 기준으로 고정 — 행을 펼쳐도 컬럼/헤더 정렬이 흔들리지 않음 */
+  :where(.${DT_CLASS}[data-expandable="true"]) .${DT_TABLE_CLASS} {
+    table-layout: fixed;
+  }
+
   :where(.${DT_TH_CLASS}) {
     text-align: center;
     padding: ${spacing[20]}px var(--semantic-inset-modal);
@@ -189,7 +194,7 @@ export const dataTableStyles = `
   :where(.${DT_EXPAND_CELL_CLASS}) {
     display: inline-flex;
     align-items: center;
-    gap: var(--semantic-gap-tight);
+    gap: var(--semantic-gap-default);
     min-width: 0;
   }
   :where(.${DT_EXPANDER_CLASS}) {

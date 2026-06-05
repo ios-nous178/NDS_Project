@@ -294,6 +294,7 @@ export function DataTable<T>({
       data-slot="root"
       data-size={size}
       data-responsive={responsive}
+      data-expandable={expandable ? "true" : undefined}
       className={cx(DT_CLASS, className)}
     >
       <div data-slot="scroll" className={DT_SCROLL_CLASS}>
