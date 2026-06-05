@@ -102,3 +102,58 @@ test("surface=service 면 캐포비여도 사이드바 구성 룰 미적용", ()
   assert.equal(has(v, "cashwalk-biz-sidebar-incomplete"), undefined);
   assert.equal(has(v, "cashwalk-biz-sidebar-shell"), undefined);
 });
+
+// ─── 신규 ready-made 폼: brand= 로고 자동주입 + <script type="application/json" slot="..."> 텍스트 노드 ───
+const BRAND_SLOT_FORM = `<html data-brand="cashwalk-biz" data-page-pattern="list"><body>
+  <div class="nds-shell">
+    <nds-sidebar brand="cashwalk-biz" active-key="banner-list" width="300" title="포 비즈니스">
+      <script type="application/json" slot="account">{"email":"biz@cashwalk.io","balanceLabel":"충전 잔액","balance":"₩1,250,000","actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}</script>
+      <script type="application/json" slot="footer-actions">[{"label":"로그아웃","variant":"outlined"}]</script>
+      <script type="application/json" slot="items">[{"key":"home","label":"홈"}]</script>
+    </nds-sidebar>
+    <main class="nds-shell__main">정산 목록</main>
+  </div>
+</body></html>`;
+
+test("신규 폼(brand= + <script slot>)은 로고/계정/로그아웃 모두 인정 → 사이드바 위반 없음", () => {
+  const v = validateHtmlSource(BRAND_SLOT_FORM, { surface: "admin", brand: "cashwalk-biz" });
+  assert.equal(
+    has(v, "cashwalk-biz-sidebar-incomplete"),
+    undefined,
+    "brand= 로고 + <script slot=account> 를 인정해야 함",
+  );
+  assert.equal(
+    has(v, "cashwalk-biz-sidebar-logout"),
+    undefined,
+    "<script slot=footer-actions> 를 인정해야 함",
+  );
+  assert.equal(has(v, "cashwalk-biz-sidebar-shell"), undefined);
+});
+
+// ─── 모지바케(UTF-8 한글을 Latin-1 로 잘못 디코딩) 감지 ───
+//   Buffer.from(korean,'utf8').toString('latin1') 이 실제 회귀의 깨짐 바이트를 그대로 재현.
+const mojibakeKorean = Buffer.from("광고 관리 자산 관리 로그아웃", "utf8").toString("latin1");
+const MOJIBAKE = `<html data-brand="cashwalk-biz" data-page-pattern="list"><body>
+  <div class="nds-shell">
+    <nds-sidebar brand="cashwalk-biz">
+      <script type="application/json" slot="items">[{"key":"ad","label":"${mojibakeKorean}"}]</script>
+    </nds-sidebar>
+    <main class="nds-shell__main">${mojibakeKorean}</main>
+  </div>
+</body></html>`;
+
+test("UTF-8 한글을 Latin-1 로 잘못 디코딩한 모지바케 → mojibake-encoding error", () => {
+  const v = validateHtmlSource(MOJIBAKE, { surface: "admin", brand: "cashwalk-biz" });
+  const hit = has(v, "mojibake-encoding");
+  assert.ok(hit, "모지바케면 위반이어야 함");
+  assert.equal(hit?.severity, "error");
+});
+
+test("정상 한글 목업(신규 폼)은 mojibake-encoding 오탐 없음", () => {
+  const v = validateHtmlSource(BRAND_SLOT_FORM, { surface: "admin", brand: "cashwalk-biz" });
+  assert.equal(
+    has(v, "mojibake-encoding"),
+    undefined,
+    "정상 Hangul·base64·ASCII 는 오탐 없어야 함",
+  );
+});
