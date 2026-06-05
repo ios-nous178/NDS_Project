@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T02:41:10.185Z",
+  "generatedAt": "2026-06-05T05:23:54.685Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1360,6 +1360,49 @@
       ],
       "dtsRelPath": "packages/react/dist/Carousel.d.ts",
       "htmlTag": "nds-carousel"
+    },
+    {
+      "name": "Chart",
+      "props": [
+        {
+          "name": "type",
+          "optional": true,
+          "type": "\"line\" | \"bar\"",
+          "allowedValues": ["line", "bar"]
+        },
+        {
+          "name": "labels",
+          "optional": false,
+          "type": "string[]"
+        },
+        {
+          "name": "series",
+          "optional": false,
+          "type": "ChartSeries[]"
+        },
+        {
+          "name": "yMax",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "yTicks",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "tooltip",
+          "optional": true,
+          "type": "ChartTooltip"
+        },
+        {
+          "name": "showLegend",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Chart.d.ts",
+      "htmlTag": "nds-chart"
     },
     {
       "name": "ChatBubble",
@@ -6519,6 +6562,7 @@
     "GenietPlayIcon",
     "GenietRecordIcon",
     "GenietReviewIcon",
+    "GenietSearchDeleteIcon",
     "GenietSearchIcon",
     "HamburgerIcon",
     "HomeActiveIcon",
@@ -8478,6 +8522,7 @@
     "TrostMyIcon",
     "TrostPlusCircleIcon",
     "TrostPsychTestIcon",
+    "TrostSearchDeleteIcon",
     "TrostSearchIcon",
     "TrostSettingIcon",
     "TrostTestresultDangerIcon",
@@ -10230,6 +10275,7 @@
     "nds-card-thumbnail",
     "nds-card-visual",
     "nds-carousel",
+    "nds-chart",
     "nds-chat-bubble",
     "nds-chat-composer",
     "nds-checkbox",
@@ -10472,6 +10518,10 @@
     },
     {
       "tag": "nds-carousel",
+      "attrs": {}
+    },
+    {
+      "tag": "nds-chart",
       "attrs": {}
     },
     {

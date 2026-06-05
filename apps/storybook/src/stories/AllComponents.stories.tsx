@@ -117,6 +117,7 @@ import {
   RegionRow,
   UserCard,
   VotePoll,
+  Chart,
 } from "@nudge-design/react";
 import {
   CalendarIcon,
@@ -638,6 +639,18 @@ const PREVIEWS: Record<string, PreviewRender> = {
         ]}
         showResults
         footer="총 20표"
+      />
+    </div>
+  ),
+  Chart: () => (
+    <div style={{ width: "100%", maxWidth: 320 }}>
+      <Chart
+        type="bar"
+        labels={["10", "20", "30", "40", "50", "60"]}
+        series={[
+          { name: "남성", values: [14, 15, 22, 25, 26, 16] },
+          { name: "여성", values: [14, 18, 20, 28, 26, 14] },
+        ]}
       />
     </div>
   ),
