@@ -51,7 +51,7 @@ export const fileUploadStyles = `
 
   :where(.${FU_DROP_CLASS}:hover) {
     background: ${cv.surface.brandSubtle};
-    border-color: ${"#91CAF6"};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${FU_DROP_CLASS}[data-dragover="true"]) {
