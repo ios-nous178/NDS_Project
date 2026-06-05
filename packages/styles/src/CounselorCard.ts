@@ -43,7 +43,7 @@ export const counselorCardStyles = `
   }
 
   :where(.${CN_CLASS}[data-clickable="true"]:hover) {
-    border-color: ${"#91CAF6"};
+    border-color: ${cv.borderRole.focus};
     box-shadow: ${shadow["1"]};
   }
 

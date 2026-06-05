@@ -40,9 +40,9 @@ const ANTD_CLASS_PREFIX = "ant-";
 const NATIVE_TAGS = new Set(["BUTTON", "INPUT", "SELECT", "TEXTAREA", "FORM", "LABEL"]);
 
 const CATEGORY_COLOR: Record<Category, string> = {
-  ds: "#22c55e",
-  antd: "#f97316",
-  native: "#ef4444",
+  ds: "var(--semantic-text-status-success)",
+  antd: "var(--semantic-text-status-caution)",
+  native: "var(--semantic-text-status-error)",
 };
 
 const CATEGORY_LABEL: Record<Category, string> = {
@@ -168,7 +168,7 @@ export class NdsInspector extends NdsElement {
       "font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif",
       "font-size: 12px",
       "line-height: 1.4",
-      "color: #111",
+      "color: var(--semantic-text-strong-default)",
     ].join(";");
 
     const toggleBtn = document.createElement("button");
@@ -176,8 +176,8 @@ export class NdsInspector extends NdsElement {
     toggleBtn.title = "DS Inspector 켜기 (Ctrl/Cmd+Shift+D)";
     toggleBtn.textContent = "🔍 DS Inspector";
     toggleBtn.style.cssText = [
-      "background: #111",
-      "color: #fff",
+      "background: var(--semantic-bg-inverse-default)",
+      "color: var(--semantic-text-inverse-default)",
       "border: none",
       "border-radius: 9999px",
       "padding: 8px 14px",
@@ -190,8 +190,8 @@ export class NdsInspector extends NdsElement {
 
     const panel = document.createElement("div");
     panel.style.cssText = [
-      "background: #fff",
-      "border: 1px solid #e0e0e0",
+      "background: var(--semantic-bg-surface-default)",
+      "border: 1px solid var(--semantic-border-normal-default)",
       "border-radius: 12px",
       "box-shadow: 0 8px 24px rgba(0,0,0,0.16)",
       "padding: 12px",
@@ -219,7 +219,7 @@ export class NdsInspector extends NdsElement {
       "cursor: pointer",
       "font-size: 16px",
       "line-height: 1",
-      "color: #666",
+      "color: var(--semantic-text-muted-default)",
     ].join(";");
     closeBtn.addEventListener("click", () => this._setEnabled(false));
     header.append(title, closeBtn);
@@ -232,17 +232,17 @@ export class NdsInspector extends NdsElement {
     footer.style.cssText = [
       "margin-top: 8px",
       "padding-top: 8px",
-      "border-top: 1px solid #f0f0f0",
+      "border-top: 1px solid var(--semantic-border-subtle-default)",
       "display: flex",
       "justify-content: space-between",
-      "color: #666",
+      "color: var(--semantic-text-muted-default)",
     ].join(";");
     const totalSpan = document.createElement("span");
     totalSpan.textContent = "총 0";
     const ratioWrap = document.createElement("span");
     ratioWrap.append("DS 비율 ");
     const ratioStrong = document.createElement("strong");
-    ratioStrong.style.color = "#111";
+    ratioStrong.style.color = "var(--semantic-text-strong-default)";
     ratioStrong.textContent = "0%";
     ratioWrap.appendChild(ratioStrong);
     footer.append(totalSpan, ratioWrap);
@@ -271,7 +271,8 @@ export class NdsInspector extends NdsElement {
     outlineLabel.append(outlineCheck, outlineText);
 
     const hint = document.createElement("div");
-    hint.style.cssText = "margin-top: 6px; color: #999; font-size: 11px";
+    hint.style.cssText =
+      "margin-top: 6px; color: var(--semantic-text-muted-default); font-size: 11px";
     hint.textContent = "Ctrl/Cmd + Shift + D 로 토글";
 
     panel.append(header, dsRow.row, antdRow.row, nativeRow.row, footer, outlineLabel, hint);

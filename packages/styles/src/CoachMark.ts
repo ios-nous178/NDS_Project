@@ -59,7 +59,7 @@ export const cmStyles = `
     align-items: center;
     padding: 2px var(--semantic-inset-chip);
     border-radius: 9999px;
-    background: ${"#91CAF6"};
+    background: ${cv.surface.brandSubtle};
     color: ${cv.textRole.brand};
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.semibold};
