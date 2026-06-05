@@ -105,6 +105,38 @@ export const toastStyles = `
     text-decoration: underline;
   }
 
+  /* ── 캐포비(cashwalk-biz) admin 토스트 — 흰 카드 (Figma 3001:51644) ──
+     base 는 다크 pill(radius 22)·state 별 옅은색 배경이지만, 캐포비는 모든 state 가
+     '흰 배경 + 그림자 카드 + 좌측 status 아이콘(색만 state 별) + 검정 메시지'.
+     data-brand="cashwalk-biz" cascade 로 흰 카드 토큰을 주입한다. */
+  :where([data-brand="cashwalk-biz"]) {
+    --nds-toast-background: ${cv.surface.default};
+    --nds-toast-radius: 8px;
+    --nds-toast-padding: 16px;
+    --nds-toast-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    --nds-toast-font-size: ${typeScale.body2.fontSize}px;
+    --nds-toast-font-weight: ${fontWeight.medium};
+  }
+  /* state 무관 흰 배경 + 검정 메시지(좌측 정렬). status 는 아이콘 색으로만 구분. */
+  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}) {
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
+    border: 1px solid ${cv.borderRole.subtle};
+  }
+  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS} .${TOAST_MESSAGE_CLASS}) {
+    text-align: left;
+  }
+  /* 좌측 status 아이콘(컴포넌트가 슬롯을 렌더하면) 색만 state 별. */
+  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="success"] .${TOAST_CLASS}__icon) {
+    color: ${cv.iconRole.statusSuccess};
+  }
+  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="error"] .${TOAST_CLASS}__icon) {
+    color: ${cv.iconRole.statusError};
+  }
+  :where([data-brand="cashwalk-biz"] .${TOAST_ITEM_CLASS}[data-variant="warning"] .${TOAST_CLASS}__icon) {
+    color: ${cv.iconRole.statusCaution};
+  }
+
   @keyframes nds-toast-enter {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }

@@ -36,6 +36,7 @@ import "./components/nds-form-field.js";
 import "./components/nds-input-group.js";
 import "./components/nds-modal.js";
 import "./components/nds-select.js";
+import "./components/nds-toast.js";
 import "./components/nds-toggle.js";
 import "./components/nds-tooltip.js";
 import "./components/nds-progress-bar.js";

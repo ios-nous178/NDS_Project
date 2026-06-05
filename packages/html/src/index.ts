@@ -106,6 +106,8 @@ export { NdsModal } from "./components/nds-modal.js";
 
 export { NdsSelect, NdsSelectOption } from "./components/nds-select.js";
 
+export { NdsToast } from "./components/nds-toast.js";
+
 export { NdsToggle } from "./components/nds-toggle.js";
 export type { ToggleSize } from "./components/nds-toggle.js";
 

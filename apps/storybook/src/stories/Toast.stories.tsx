@@ -104,11 +104,15 @@ function CashbizToastInner() {
 }
 
 /**
- * 캐포비 admin 토스트 — 우측 상단 고정(`position="top-right"`) · 동시 1개(`maxCount={1}`, 새 토스트가 기존 교체).
- * 버튼을 연속으로 눌러도 항상 마지막 1개만 우측 상단에 노출됩니다.
+ * 캐포비 admin 토스트 — **흰 카드**(흰 배경 + 그림자 + radius 8) · 우측 상단 고정(`position="top-right"`)
+ * · 동시 1개(`maxCount={1}`, 새 토스트가 기존 교체). 흰 배경/검정 메시지는 `data-brand="cashwalk-biz"`
+ * cascade 로 적용된다(base 의 다크 pill 과 다름). 버튼을 연속으로 눌러도 항상 마지막 1개만 우측 상단에 노출.
  */
 export const CashbizTopRight: Story = {
-  name: "Brand/Cashbiz Top-Right (Single)",
+  name: "Brand/Cashbiz Top-Right (흰 카드 · Single)",
+  // globals.brand → preview 데코레이터가 <html data-brand="cashwalk-biz"> 를 박는다.
+  // 토스트는 body 로 포탈되지만 html 의 data-brand cascade 가 흰 카드 스타일을 적용한다.
+  globals: { brand: "cashwalk-biz" },
   render: () => (
     <ToastProvider position="top-right" maxCount={1}>
       <CashbizToastInner />
