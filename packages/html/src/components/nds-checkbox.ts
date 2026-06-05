@@ -51,6 +51,20 @@ export class NdsCheckbox extends NdsElement {
   private _label: HTMLSpanElement | null = null;
   private _inputId = "";
 
+  /**
+   * 체크 상태 — 네이티브 `<input>.checked` 와 동일하게 host 프로퍼티로 노출.
+   * 읽기 = `checked` 속성 반영, 쓰기 = 속성 토글(→ update 가 inner input 동기화).
+   * 프로그래매틱 set 은 네이티브와 동일하게 `change` 를 발화하지 않음(사용자 입력 시에만 발화).
+   */
+  get checked(): boolean {
+    return this.boolAttr("checked");
+  }
+
+  set checked(value: boolean) {
+    if (value) this.setAttribute("checked", "");
+    else this.removeAttribute("checked");
+  }
+
   override connectedCallback(): void {
     if (!this._root) this._mount();
     super.connectedCallback();
