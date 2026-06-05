@@ -703,10 +703,49 @@ const sidebarStyles = `
 // 캐포비만 갈라지는 것은 시멘틱 색 토큰으로 표현 불가능한 두 가지뿐:
 //   1) active radius — base 는 idle 16 → active 12 로 좁히지만, 캐포비 메뉴아이템은 idle 과 동일한 16 유지 (geometry, nds 슬롯 리터럴).
 //   2) active 라벨 색 — base 는 strong(#111) 으로 darkening 하지만, 캐포비는 선택 시에도 normal(#333) 유지 (어떤 text role 을 쓰느냐의 선택 → 토큰 참조).
+//   3) CTA / footer 액션 — base 는 solid=primary(노랑 #FFD200) · outlined=brand(노랑 보더 + 주황 텍스트).
+//      캐포비 어드민(Figma 3304:617 / Storybook SSOT)은 "시그니처 검정" 톤이고, account CTA 와 footer 가 서로 다른
+//      outlined 를 쓴다 → 새 토큰 슬롯 없이 account-actions / footer-actions 를 분리 타겟해 기존 cv 토큰 + geometry로 정렬:
+//        · solid           = button secondary (bgSecondary #000 + textSecondary 흰), radius 8
+//        · account outlined = 검정 보더+텍스트 (textRole.strong #111), radius 8
+//        · footer outlined  = 회색 보더(borderRole.normal #EEE) + 텍스트 #111, pill radius 28 · height 48
 const sidebarCashwalkBizTuning = `
   :where([data-brand="cashwalk-biz"] .${SB_ROOT_CLASS}) {
     --nds-sidebar-item-active-radius: 16px;
     --nds-sidebar-text-active: ${cv.textRole.normal};
+  }
+
+  :where([data-brand="cashwalk-biz"] .${SB_ACTION_CLASS}) {
+    border-radius: 8px;
+  }
+
+  :where([data-brand="cashwalk-biz"] .${SB_ACTION_CLASS}[data-variant="solid"]) {
+    background: ${cv.button.bgSecondary};
+    color: ${cv.button.textSecondary};
+  }
+
+  :where([data-brand="cashwalk-biz"] .${SB_ACTION_CLASS}[data-variant="solid"]:hover) {
+    background: ${cv.button.bgSecondaryHover};
+  }
+
+  :where([data-brand="cashwalk-biz"] .${SB_ACCOUNT_ACTIONS_CLASS} .${SB_ACTION_CLASS}[data-variant="outlined"]) {
+    color: ${cv.textRole.strong};
+    border-color: ${cv.textRole.strong};
+  }
+
+  :where([data-brand="cashwalk-biz"] .${SB_ACCOUNT_ACTIONS_CLASS} .${SB_ACTION_CLASS}[data-variant="outlined"]:hover) {
+    background: ${cv.surface.subtle};
+  }
+
+  :where([data-brand="cashwalk-biz"] .${SB_FOOTER_ACTIONS_CLASS} .${SB_ACTION_CLASS}[data-variant="outlined"]) {
+    color: ${cv.textRole.strong};
+    border-color: ${cv.borderRole.normal};
+    border-radius: 28px;
+    height: 48px;
+  }
+
+  :where([data-brand="cashwalk-biz"] .${SB_FOOTER_ACTIONS_CLASS} .${SB_ACTION_CLASS}[data-variant="outlined"]:hover) {
+    background: ${cv.surface.subtle};
   }
 `;
 
