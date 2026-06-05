@@ -37,6 +37,7 @@ export * from "./Pagination";
 export * from "./PageSizeSelect";
 export * from "./Breadcrumb";
 export * from "./Banner";
+export * from "./NoticeAlert";
 export * from "./Textarea";
 export * from "./Tooltip";
 export * from "./TrendingKeywords";

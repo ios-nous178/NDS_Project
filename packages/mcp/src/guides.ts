@@ -1202,6 +1202,36 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Banner의 배경에 linear-gradient 사용하지 말 것. 단색 토큰만 (semantic-info-bg 등).",
     ],
   },
+  NoticeAlert: {
+    name: "NoticeAlert",
+    summary:
+      "폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스 — DS notice 패턴의 구현체. " +
+      "입력 컨텍스트 옆에 머무르며 명시적으로 닫기 전까지 유지됨. " +
+      "Toast(액션 결과·자동 사라짐) · Banner(페이지 상단 전역 띠) · Modal(즉각 판단 요구) · CrisisCallout(EAP 위기 안내)과 분리 — 인라인 지속 메시지만 NoticeAlert. " +
+      "5 variant — info(중립 회색·아이콘 없음) / notice(블루·차분한 공지) / caution(옐로우 아이콘·회색 배경) / success(그린·완료) / error(레드 배경+레드 텍스트·조치 필요). " +
+      "캐포비 admin Figma node 3902:1212 가 시각 SSOT(height 48 · radius 12 · padding 12/16 · gap 10 · 좌측 status 아이콘 20×20 + 본문). 색은 임의 hex 금지, semantic status 토큰 binding. notice 패턴 규칙(강조 예산·화면당 색 박스 1개)을 그대로 따른다.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3902-1212",
+    references: [
+      {
+        label: "Cashwalk for Business · NoticeAlertGuide",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3902-1212",
+        caption:
+          "캐포비 라이브러리 인라인 알림 박스 가이드 — state(info/caution/error) 기준 anatomy·token mapping·Use Cases·Do/Don't SSOT. DS 에서는 notice 패턴 + 5 variant 로 흡수.",
+        brand: "cashwalk-biz",
+      },
+    ],
+    pitfalls: [
+      "error variant 를 단순 안내용으로 남발하지 말 것 — 의미가 흐려짐. 단순 정보는 info, 주의는 caution.",
+      "액션·확인 버튼이 필요한 메시지는 NoticeAlert 가 아님 → Modal/Dialog. 일시적 결과 알림 → Toast. 전역 공지 → Banner.",
+      "같은 화면에 색 배경 박스(notice/success/error) 를 여러 개 쌓지 말 것 — notice 패턴 강조 예산(화면당 색 박스 1개 권장). info/caution(회색)은 비교적 자유.",
+      "색을 임의 hex 로 박지 말 것 — variant 만 지정하면 semantic status 토큰(bg/text/icon)이 cascade 로 함께 적용됨.",
+      "안내가 필요한 입력 필드와 멀리 떨어진 위치에 배치하지 말 것 — 입력 컨텍스트 바로 옆.",
+    ],
+    examplesHtml: {
+      do: '<nds-notice-alert variant="caution" message="목표 참여자 수는 1,000명 단위로 입력해 주세요."></nds-notice-alert>\n<nds-notice-alert variant="error" message="필수 정보가 누락되어 저장할 수 없어요."></nds-notice-alert>',
+      dont: '<!-- 단순 안내인데 error 남발 → 의미 흐려짐 (info/caution 이 맞음) -->\n<nds-notice-alert variant="error" message="최대 30자 이내로 입력해 주세요."></nds-notice-alert>\n<!-- 확인 버튼이 필요한 메시지를 NoticeAlert 로 — Modal 이 맞음 -->\n<nds-notice-alert variant="notice" message="삭제하시겠어요? [확인]"></nds-notice-alert>',
+    },
+  },
   Input: {
     name: "Input",
     examplesHtml: {
@@ -5504,7 +5534,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   notice: {
     name: "notice",
     summary:
-      "안내문/콜아웃/인라인 알림 박스의 강조 예산 + variant·size·구성 규칙. 컨텐츠 영역에 인라인으로 놓여 명시적으로 닫을 때까지 유지되는 메시지(정보·공지·주의·완료·오류). 페이지 상단 전역 띠는 Banner, 자동 사라지는 피드백은 Toast/Snackbar, 즉각 판단 요구는 Modal, EAP 위기 안내는 CrisisCallout — 인라인 지속 메시지만 이 패턴.",
+      "안내문/콜아웃/인라인 알림 박스의 강조 예산 + variant·size·구성 규칙. 컨텐츠 영역에 인라인으로 놓여 명시적으로 닫을 때까지 유지되는 메시지(정보·공지·주의·완료·오류). 페이지 상단 전역 띠는 Banner, 자동 사라지는 피드백은 Toast/Snackbar, 즉각 판단 요구는 Modal, EAP 위기 안내는 CrisisCallout — 인라인 지속 메시지만 이 패턴. **구현체 = NoticeAlert 컴포넌트** (`<NoticeAlert>` / `<nds-notice-alert>`, get_guide({ topic:'component:NoticeAlert' })).",
     rules: [
       "안내문은 기본적으로 neutral surface와 본문 텍스트로 처리.",
       "주의/성공/오류처럼 의미가 명확한 경우에만 semantic color 사용.",

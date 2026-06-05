@@ -19,6 +19,7 @@ import {
   AvatarGroup,
   Badge,
   Banner,
+  NoticeAlert,
   Breadcrumb,
   BreathingGuide,
   Button,
@@ -451,6 +452,11 @@ const PREVIEWS: Record<string, PreviewRender> = {
   Banner: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <Banner variant="filled" title="이번주 신규 콘텐츠" />
+    </div>
+  ),
+  NoticeAlert: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <NoticeAlert variant="caution" message="1,000명 단위로 입력해 주세요." />
     </div>
   ),
   EmptyState: () => (
