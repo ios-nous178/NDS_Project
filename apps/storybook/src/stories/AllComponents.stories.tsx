@@ -146,7 +146,9 @@ type ComponentGuide = {
   usagePolicy?: {
     useFor?: string[];
     doNotUseFor?: string[];
-    limits?: Record<string, string | number>;
+    // SSOT(packages/mcp guides.ts ComponentGuide)는 boolean 도 허용(예: ProductCard
+    // rankingBadgeAndSoldOutMutuallyExclusive: true). 좁게 복제돼 drift 났던 것을 맞춤.
+    limits?: Record<string, string | number | boolean>;
   };
   figmaNodeUrl?: string;
   accessibility?: string[];
