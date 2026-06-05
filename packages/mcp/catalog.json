@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T19:47:37.579Z",
+  "generatedAt": "2026-06-05T23:24:51.224Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -101,7 +101,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Accordion.d.ts",
-      "htmlTag": "nds-accordion"
+      "htmlTag": "nds-accordion",
+      "htmlObservedAttrs": ["type", "value", "base-id"]
     },
     {
       "name": "ActionChip",
@@ -118,7 +119,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ActionChip.d.ts",
-      "htmlTag": "nds-action-chip"
+      "htmlTag": "nds-action-chip",
+      "htmlObservedAttrs": ["label", "disabled"]
     },
     {
       "name": "ActivityTimeline",
@@ -130,7 +132,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ActivityTimeline.d.ts",
-      "htmlTag": "nds-activity-timeline"
+      "htmlTag": "nds-activity-timeline",
+      "htmlObservedAttrs": ["items"]
     },
     {
       "name": "AddButton",
@@ -157,7 +160,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/AddButton.d.ts",
-      "htmlTag": "nds-add-button"
+      "htmlTag": "nds-add-button",
+      "htmlObservedAttrs": ["label", "error", "full-width", "disabled"]
     },
     {
       "name": "AddressSearch",
@@ -224,7 +228,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/AddressSearch.d.ts",
-      "htmlTag": "nds-address-search"
+      "htmlTag": "nds-address-search",
+      "htmlObservedAttrs": [
+        "query",
+        "results",
+        "value",
+        "label",
+        "search-label",
+        "empty-message",
+        "loading",
+        "helper-text",
+        "error"
+      ]
     },
     {
       "name": "AmountInput",
@@ -286,7 +301,21 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/AmountInput.d.ts",
-      "htmlTag": "nds-amount-input"
+      "htmlTag": "nds-amount-input",
+      "htmlObservedAttrs": [
+        "value",
+        "prefix",
+        "unit",
+        "label",
+        "helper-text",
+        "error",
+        "full-width",
+        "presets",
+        "max",
+        "min",
+        "placeholder",
+        "disabled"
+      ]
     },
     {
       "name": "AppBar",
@@ -404,7 +433,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/AppointmentCard.d.ts",
-      "htmlTag": "nds-appointment-card"
+      "htmlTag": "nds-appointment-card",
+      "htmlObservedAttrs": [
+        "date",
+        "start-time",
+        "end-time",
+        "title",
+        "mode",
+        "location",
+        "status",
+        "actions"
+      ]
     },
     {
       "name": "AssessmentResultCard",
@@ -467,7 +506,19 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/AssessmentResultCard.d.ts",
-      "htmlTag": "nds-assessment-result-card"
+      "htmlTag": "nds-assessment-result-card",
+      "htmlObservedAttrs": [
+        "title",
+        "score",
+        "max-score",
+        "level",
+        "level-text",
+        "description",
+        "action-label",
+        "score-unit",
+        "hide-gauge",
+        "level-labels"
+      ]
     },
     {
       "name": "Asset",
@@ -564,7 +615,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/AttachmentItem.d.ts",
-      "htmlTag": "nds-attachment-item"
+      "htmlTag": "nds-attachment-item",
+      "htmlObservedAttrs": [
+        "name",
+        "size",
+        "file-type",
+        "status",
+        "progress",
+        "href",
+        "error-message"
+      ]
     },
     {
       "name": "AudioPlayer",
@@ -616,7 +676,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/AudioPlayer.d.ts",
-      "htmlTag": "nds-audio-player"
+      "htmlTag": "nds-audio-player",
+      "htmlObservedAttrs": ["title", "subtitle", "playing", "current-time", "duration"]
     },
     {
       "name": "Autocomplete",
@@ -688,7 +749,19 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Autocomplete.d.ts",
-      "htmlTag": "nds-autocomplete"
+      "htmlTag": "nds-autocomplete",
+      "htmlObservedAttrs": [
+        "value",
+        "placeholder",
+        "disabled",
+        "error",
+        "full-width",
+        "loading",
+        "empty-message",
+        "min-query-length",
+        "highlight",
+        "options"
+      ]
     },
     {
       "name": "Avatar",
@@ -720,7 +793,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Avatar.d.ts",
-      "htmlTag": "nds-avatar"
+      "htmlTag": "nds-avatar",
+      "htmlObservedAttrs": ["src", "alt", "name", "size", "fallback"]
     },
     {
       "name": "AvatarGroup",
@@ -750,7 +824,8 @@
       "htmlTag": "nds-avatar-group",
       "htmlAttrs": {
         "size": ["xs", "sm", "md", "lg", "xl"]
-      }
+      },
+      "htmlObservedAttrs": ["items", "max", "size", "overlap", "aria-label"]
     },
     {
       "name": "Badge",
@@ -790,7 +865,8 @@
         "variant": ["fill", "ghost", "line"],
         "size": ["sm", "md", "lg"],
         "color": ["brand", "neutral", "success", "error", "caution", "info"]
-      }
+      },
+      "htmlObservedAttrs": ["variant", "color", "size"]
     },
     {
       "name": "Badge.guide",
@@ -878,7 +954,22 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Banner.d.ts",
-      "htmlTag": "nds-banner"
+      "htmlTag": "nds-banner",
+      "htmlObservedAttrs": [
+        "variant",
+        "banner-title",
+        "description",
+        "action-label",
+        "action-href",
+        "image-src",
+        "image-alt",
+        "image-width",
+        "image-height",
+        "href",
+        "closable",
+        "full-image-src",
+        "full-image-srcset"
+      ]
     },
     {
       "name": "BottomSheet",
@@ -955,13 +1046,22 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/BottomSheet.d.ts",
-      "htmlTag": "nds-bottom-sheet"
+      "htmlTag": "nds-bottom-sheet",
+      "htmlObservedAttrs": [
+        "open",
+        "sheet-title",
+        "show-handle",
+        "show-close-button",
+        "close-on-overlay-click",
+        "close-on-esc"
+      ]
     },
     {
       "name": "BrandChrome",
       "props": [],
       "dtsRelPath": "packages/html/src/components/nds-brand-chrome.ts",
-      "htmlTag": "nds-brand-chrome"
+      "htmlTag": "nds-brand-chrome",
+      "htmlObservedAttrs": ["brand", "surface", "active-key", "asset-base-url"]
     },
     {
       "name": "Breadcrumb",
@@ -983,7 +1083,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Breadcrumb.d.ts",
-      "htmlTag": "nds-breadcrumb"
+      "htmlTag": "nds-breadcrumb",
+      "htmlObservedAttrs": ["items", "separator"]
     },
     {
       "name": "BreathingGuide",
@@ -1030,7 +1131,15 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/BreathingGuide.d.ts",
-      "htmlTag": "nds-breathing-guide"
+      "htmlTag": "nds-breathing-guide",
+      "htmlObservedAttrs": [
+        "phases",
+        "auto-start",
+        "cycles",
+        "playing",
+        "no-count",
+        "hide-controls"
+      ]
     },
     {
       "name": "Button",
@@ -1091,7 +1200,8 @@
         "variant": ["solid", "outlined", "soft", "outlined-sub"],
         "size": ["xl", "lg", "md", "sm", "xs", "field"],
         "color": ["primary", "secondary", "assistive"]
-      }
+      },
+      "htmlObservedAttrs": ["variant", "size", "color", "shape", "disabled", "full-width", "type"]
     },
     {
       "name": "Calendar",
@@ -1138,7 +1248,15 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Calendar.d.ts",
-      "htmlTag": "nds-calendar"
+      "htmlTag": "nds-calendar",
+      "htmlObservedAttrs": [
+        "month",
+        "value",
+        "week-starts-on",
+        "markers",
+        "disabled-dates",
+        "hide-header"
+      ]
     },
     {
       "name": "CallControlBar",
@@ -1190,7 +1308,15 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CallControlBar.d.ts",
-      "htmlTag": "nds-call-control-bar"
+      "htmlTag": "nds-call-control-bar",
+      "htmlObservedAttrs": [
+        "duration",
+        "muted",
+        "show-camera",
+        "camera-on",
+        "show-speaker",
+        "speaker-on"
+      ]
     },
     {
       "name": "Card",
@@ -1311,7 +1437,8 @@
       "htmlTag": "nds-card",
       "htmlAttrs": {
         "variant": ["outlined", "flat"]
-      }
+      },
+      "htmlObservedAttrs": ["variant", "clickable"]
     },
     {
       "name": "CardVisual",
@@ -1364,7 +1491,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CardVisual.d.ts",
-      "htmlTag": "nds-card-visual"
+      "htmlTag": "nds-card-visual",
+      "htmlObservedAttrs": ["brand", "number", "holder", "expiry", "label", "no-chip", "disabled"]
     },
     {
       "name": "Carousel",
@@ -1417,7 +1545,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Carousel.d.ts",
-      "htmlTag": "nds-carousel"
+      "htmlTag": "nds-carousel",
+      "htmlObservedAttrs": ["active-index", "autoplay", "indicator", "loop", "gap", "show-arrows"]
     },
     {
       "name": "Chart",
@@ -1460,7 +1589,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Chart.d.ts",
-      "htmlTag": "nds-chart"
+      "htmlTag": "nds-chart",
+      "htmlObservedAttrs": ["type", "data", "y-max", "y-ticks", "no-legend"]
     },
     {
       "name": "ChatBubble",
@@ -1504,7 +1634,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ChatBubble.d.ts",
-      "htmlTag": "nds-chat-bubble"
+      "htmlTag": "nds-chat-bubble",
+      "htmlObservedAttrs": ["role", "group", "time", "name", "avatar-src", "read", "message"]
     },
     {
       "name": "ChatComposer",
@@ -1566,7 +1697,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ChatComposer.d.ts",
-      "htmlTag": "nds-chat-composer"
+      "htmlTag": "nds-chat-composer",
+      "htmlObservedAttrs": [
+        "value",
+        "placeholder",
+        "max-length",
+        "show-attach",
+        "show-mic",
+        "quick-replies",
+        "disabled",
+        "submit-on-enter",
+        "max-height"
+      ]
     },
     {
       "name": "Checkbox",
@@ -1598,7 +1740,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Checkbox.d.ts",
-      "htmlTag": "nds-checkbox"
+      "htmlTag": "nds-checkbox",
+      "htmlObservedAttrs": ["checked", "disabled", "label", "input-id"]
     },
     {
       "name": "Chip",
@@ -1658,7 +1801,16 @@
         "variant": ["fill", "outlined", "ghost"],
         "size": ["sm", "md"],
         "color": ["brand", "neutral", "success", "error", "caution"]
-      }
+      },
+      "htmlObservedAttrs": [
+        "variant",
+        "color",
+        "size",
+        "selected",
+        "disabled",
+        "interactive",
+        "removable"
+      ]
     },
     {
       "name": "Chip.guide",
@@ -1720,7 +1872,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CircularProgress.d.ts",
-      "htmlTag": "nds-circular-progress"
+      "htmlTag": "nds-circular-progress",
+      "htmlObservedAttrs": [
+        "value",
+        "max",
+        "size",
+        "thickness",
+        "color",
+        "track-color",
+        "label",
+        "caption",
+        "hide-label"
+      ]
     },
     {
       "name": "CoachMark",
@@ -1772,7 +1935,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CoachMark.d.ts",
-      "htmlTag": "nds-coach-mark"
+      "htmlTag": "nds-coach-mark",
+      "htmlObservedAttrs": [
+        "open",
+        "step",
+        "steps",
+        "finish-label",
+        "next-label",
+        "skip-label",
+        "hide-skip"
+      ]
     },
     {
       "name": "CommentItem",
@@ -1834,7 +2006,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CommentItem.d.ts",
-      "htmlTag": "nds-comment-item"
+      "htmlTag": "nds-comment-item",
+      "htmlObservedAttrs": ["author", "time", "text", "reply-label", "show-reply", "is-reply"]
     },
     {
       "name": "Confetti",
@@ -1869,7 +2042,8 @@
       "htmlTag": "nds-confetti",
       "htmlAttrs": {
         "color": ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"]
-      }
+      },
+      "htmlObservedAttrs": ["active", "count", "duration", "colors"]
     },
     {
       "name": "ConsentChecklist",
@@ -1901,7 +2075,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ConsentChecklist.d.ts",
-      "htmlTag": "nds-consent-checklist"
+      "htmlTag": "nds-consent-checklist",
+      "htmlObservedAttrs": ["value", "items", "all-label", "expandable"]
     },
     {
       "name": "ContentViewer",
@@ -1928,7 +2103,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ContentViewer.d.ts",
-      "htmlTag": "nds-content-viewer"
+      "htmlTag": "nds-content-viewer",
+      "htmlObservedAttrs": ["html", "no-sanitize", "no-image-lazy", "no-external-blank"]
     },
     {
       "name": "CounselorCard",
@@ -1985,7 +2161,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CounselorCard.d.ts",
-      "htmlTag": "nds-counselor-card"
+      "htmlTag": "nds-counselor-card",
+      "htmlObservedAttrs": [
+        "name",
+        "job-title",
+        "image-src",
+        "rating",
+        "review-count",
+        "tags",
+        "bio",
+        "cta-label",
+        "clickable"
+      ]
     },
     {
       "name": "CountdownTimer",
@@ -2028,7 +2215,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CountdownTimer.d.ts",
-      "htmlTag": "nds-countdown-timer"
+      "htmlTag": "nds-countdown-timer",
+      "htmlObservedAttrs": ["ends-at", "format", "label", "expired-text", "no-urgent"]
     },
     {
       "name": "CouponCard",
@@ -2080,7 +2268,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CouponCard.d.ts",
-      "htmlTag": "nds-coupon-card"
+      "htmlTag": "nds-coupon-card",
+      "htmlObservedAttrs": [
+        "discount",
+        "discount-suffix",
+        "coupon-title",
+        "description",
+        "expiry",
+        "action-label",
+        "disabled-label",
+        "show-action",
+        "disabled"
+      ]
     },
     {
       "name": "CrisisCallout",
@@ -2113,7 +2312,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/CrisisCallout.d.ts",
-      "htmlTag": "nds-crisis-callout"
+      "htmlTag": "nds-crisis-callout",
+      "htmlObservedAttrs": ["tone", "title", "description"]
     },
     {
       "name": "DataTable",
@@ -2208,7 +2408,21 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/DataTable.d.ts",
-      "htmlTag": "nds-data-table"
+      "htmlTag": "nds-data-table",
+      "htmlObservedAttrs": [
+        "columns",
+        "data",
+        "row-key",
+        "sort-key",
+        "sort-direction",
+        "empty-message",
+        "loading",
+        "size",
+        "responsive",
+        "row-clickable",
+        "sub-rows-key",
+        "expander-column"
+      ]
     },
     {
       "name": "DatePicker",
@@ -2270,7 +2484,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/DatePicker.d.ts",
-      "htmlTag": "nds-date-picker"
+      "htmlTag": "nds-date-picker",
+      "htmlObservedAttrs": [
+        "value",
+        "min-date",
+        "max-date",
+        "placeholder",
+        "disabled",
+        "error",
+        "full-width"
+      ]
     },
     {
       "name": "DateRangePicker",
@@ -2322,7 +2545,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/DateRangePicker.d.ts",
-      "htmlTag": "nds-date-range-picker"
+      "htmlTag": "nds-date-range-picker",
+      "htmlObservedAttrs": [
+        "from",
+        "to",
+        "min-date",
+        "max-date",
+        "start-label",
+        "end-label",
+        "presets",
+        "disabled"
+      ]
     },
     {
       "name": "Divider",
@@ -2353,7 +2586,8 @@
       "htmlTag": "nds-divider",
       "htmlAttrs": {
         "orientation": ["horizontal", "vertical"]
-      }
+      },
+      "htmlObservedAttrs": ["orientation", "thickness", "spacing", "color"]
     },
     {
       "name": "Drawer",
@@ -2427,7 +2661,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Drawer.d.ts",
-      "htmlTag": "nds-drawer"
+      "htmlTag": "nds-drawer",
+      "htmlObservedAttrs": [
+        "open",
+        "side",
+        "size",
+        "width",
+        "drawer-title",
+        "description",
+        "close-on-overlay-click",
+        "close-on-esc",
+        "show-close-button"
+      ]
     },
     {
       "name": "DropdownMenu",
@@ -2470,13 +2715,15 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/DropdownMenu.d.ts",
-      "htmlTag": "nds-dropdown-menu"
+      "htmlTag": "nds-dropdown-menu",
+      "htmlObservedAttrs": ["items", "groups", "align", "min-width"]
     },
     {
       "name": "DsHighlight",
       "props": [],
       "dtsRelPath": "packages/html/src/components/nds-ds-highlight.ts",
-      "htmlTag": "nds-ds-highlight"
+      "htmlTag": "nds-ds-highlight",
+      "htmlObservedAttrs": ["mode", "hide-toggle", "default-mode"]
     },
     {
       "name": "DSHighlight",
@@ -2548,7 +2795,17 @@
       "htmlTag": "nds-emotion-heatmap",
       "htmlAttrs": {
         "color": ["#ECECF0", "#C9DBFF", "#92BBFF", "#5C97F2", "#2563DB"]
-      }
+      },
+      "htmlObservedAttrs": [
+        "month",
+        "entries",
+        "title",
+        "treat-zero-as-empty",
+        "colors",
+        "low-label",
+        "high-label",
+        "week-starts-on"
+      ]
     },
     {
       "name": "EmptyState",
@@ -2595,7 +2852,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/EmptyState.d.ts",
-      "htmlTag": "nds-empty-state"
+      "htmlTag": "nds-empty-state",
+      "htmlObservedAttrs": ["title", "description", "action", "min-height", "hide-icon"]
     },
     {
       "name": "ExpandableText",
@@ -2637,7 +2895,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ExpandableText.d.ts",
-      "htmlTag": "nds-expandable-text"
+      "htmlTag": "nds-expandable-text",
+      "htmlObservedAttrs": ["lines", "expand-label", "collapse-label", "hide-collapse", "expanded"]
     },
     {
       "name": "FAB",
@@ -2681,7 +2940,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/FAB.d.ts",
-      "htmlTag": "nds-fab"
+      "htmlTag": "nds-fab",
+      "htmlObservedAttrs": ["icon", "label", "color", "size", "position", "offset", "disabled"]
     },
     {
       "name": "FieldActionRow",
@@ -2744,7 +3004,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts",
-      "htmlTag": "nds-field-action-row"
+      "htmlTag": "nds-field-action-row",
+      "htmlObservedAttrs": ["action-tone", "error", "success", "timer-expired", "helper-text"]
     },
     {
       "name": "FileUpload",
@@ -2801,7 +3062,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/FileUpload.d.ts",
-      "htmlTag": "nds-file-upload"
+      "htmlTag": "nds-file-upload",
+      "htmlObservedAttrs": [
+        "accept",
+        "multiple",
+        "max-size",
+        "disabled",
+        "hint",
+        "description",
+        "error-message"
+      ]
     },
     {
       "name": "FilterBar",
@@ -2838,7 +3108,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/FilterBar.d.ts",
-      "htmlTag": "nds-filter-bar"
+      "htmlTag": "nds-filter-bar",
+      "htmlObservedAttrs": ["value", "options", "single", "show-reset", "reset-label"]
     },
     {
       "name": "FloatingCtaBanner",
@@ -2901,7 +3172,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/FloatingCtaBanner.d.ts",
-      "htmlTag": "nds-floating-cta-banner"
+      "htmlTag": "nds-floating-cta-banner",
+      "htmlObservedAttrs": [
+        "caption",
+        "cta-text",
+        "size",
+        "floating",
+        "show-arrow",
+        "bottom-offset",
+        "aria-label"
+      ]
     },
     {
       "name": "Footer",
@@ -2923,7 +3203,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Footer.d.ts",
-      "htmlTag": "nds-footer"
+      "htmlTag": "nds-footer",
+      "htmlObservedAttrs": ["active-tab"]
     },
     {
       "name": "FormField",
@@ -2992,7 +3273,20 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/FormField.d.ts",
-      "htmlTag": "nds-form-field"
+      "htmlTag": "nds-form-field",
+      "htmlObservedAttrs": [
+        "label",
+        "description",
+        "helper",
+        "error",
+        "required",
+        "optional",
+        "counter",
+        "html-for",
+        "label-position",
+        "label-width",
+        "density"
+      ]
     },
     {
       "name": "GreetingHeader",
@@ -3030,7 +3324,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/GreetingHeader.d.ts",
-      "htmlTag": "nds-greeting-header"
+      "htmlTag": "nds-greeting-header",
+      "htmlObservedAttrs": ["name", "greeting", "question", "tone"]
     },
     {
       "name": "Header",
@@ -3079,7 +3374,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Header.d.ts",
-      "htmlTag": "nds-header"
+      "htmlTag": "nds-header",
+      "htmlObservedAttrs": ["variant", "position", "header-title", "elevated", "max-width"]
     },
     {
       "name": "IconButton",
@@ -3105,7 +3401,8 @@
       "htmlTag": "nds-icon-button",
       "htmlAttrs": {
         "size": ["x-large", "large", "medium", "small"]
-      }
+      },
+      "htmlObservedAttrs": ["size", "disabled", "type"]
     },
     {
       "name": "ImageCropper",
@@ -3143,7 +3440,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ImageCropper.d.ts",
-      "htmlTag": "nds-image-cropper"
+      "htmlTag": "nds-image-cropper",
+      "htmlObservedAttrs": ["src", "shape", "size", "output-size", "label"]
     },
     {
       "name": "ImageUpload",
@@ -3221,7 +3519,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ImageUpload.d.ts",
-      "htmlTag": "nds-image-upload"
+      "htmlTag": "nds-image-upload",
+      "htmlObservedAttrs": [
+        "state",
+        "image-url",
+        "image-alt",
+        "accept",
+        "multiple",
+        "upload-label",
+        "size-hint",
+        "helper-text",
+        "error-text"
+      ]
     },
     {
       "name": "Input",
@@ -3327,7 +3636,22 @@
       "htmlTag": "nds-input",
       "htmlAttrs": {
         "size": ["default", "field", "compact"]
-      }
+      },
+      "htmlObservedAttrs": [
+        "label",
+        "helper-text",
+        "size",
+        "error",
+        "disabled",
+        "readonly",
+        "full-width",
+        "clearable",
+        "show-count",
+        "password-toggle",
+        "value",
+        "default-value",
+        "input-id"
+      ]
     },
     {
       "name": "InputGroup",
@@ -3351,7 +3675,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/InputGroup.d.ts",
-      "htmlTag": "nds-input-group"
+      "htmlTag": "nds-input-group",
+      "htmlObservedAttrs": ["gap", "align"]
     },
     {
       "name": "JournalEntry",
@@ -3403,7 +3728,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/JournalEntry.d.ts",
-      "htmlTag": "nds-journal-entry"
+      "htmlTag": "nds-journal-entry",
+      "htmlObservedAttrs": [
+        "date",
+        "mood",
+        "title",
+        "body",
+        "max-lines",
+        "tags",
+        "thumbnail-src",
+        "footer",
+        "clickable"
+      ]
     },
     {
       "name": "Lightbox",
@@ -3435,7 +3771,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Lightbox.d.ts",
-      "htmlTag": "nds-lightbox"
+      "htmlTag": "nds-lightbox",
+      "htmlObservedAttrs": ["open", "index", "images"]
     },
     {
       "name": "LikeButton",
@@ -3472,7 +3809,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/LikeButton.d.ts",
-      "htmlTag": "nds-like-button"
+      "htmlTag": "nds-like-button",
+      "htmlObservedAttrs": ["liked", "count", "size", "hide-count", "active-color"]
     },
     {
       "name": "LikertScale",
@@ -3514,7 +3852,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/LikertScale.d.ts",
-      "htmlTag": "nds-likert-scale"
+      "htmlTag": "nds-likert-scale",
+      "htmlObservedAttrs": ["name", "options", "value", "start-label", "end-label", "disabled"]
     },
     {
       "name": "List",
@@ -3536,7 +3875,8 @@
       "htmlAttrs": {
         "variant": ["plain", "card", "divided"],
         "size": ["sm", "md", "lg"]
-      }
+      },
+      "htmlObservedAttrs": ["variant"]
     },
     {
       "name": "MediaCard",
@@ -3588,7 +3928,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/MediaCard.d.ts",
-      "htmlTag": "nds-media-card"
+      "htmlTag": "nds-media-card",
+      "htmlObservedAttrs": [
+        "image-src",
+        "image-alt",
+        "image-overlay",
+        "image-aspect-ratio",
+        "eyebrow",
+        "card-title",
+        "body",
+        "rating",
+        "clickable"
+      ]
     },
     {
       "name": "MediaThumbnail",
@@ -3652,7 +4003,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/MediaThumbnail.d.ts",
-      "htmlTag": "nds-media-thumbnail"
+      "htmlTag": "nds-media-thumbnail",
+      "htmlObservedAttrs": [
+        "src",
+        "alt",
+        "aspect-ratio",
+        "width",
+        "fit",
+        "rounded",
+        "fallback-src",
+        "eager"
+      ]
     },
     {
       "name": "MedicationItem",
@@ -3694,7 +4055,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/MedicationItem.d.ts",
-      "htmlTag": "nds-medication-item"
+      "htmlTag": "nds-medication-item",
+      "htmlObservedAttrs": ["med-name", "dosage", "times", "note", "taken", "show-check"]
     },
     {
       "name": "MentionInput",
@@ -3751,7 +4113,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/MentionInput.d.ts",
-      "htmlTag": "nds-mention-input"
+      "htmlTag": "nds-mention-input",
+      "htmlObservedAttrs": [
+        "value",
+        "users",
+        "label",
+        "placeholder",
+        "helper-text",
+        "trigger",
+        "error",
+        "disabled"
+      ]
     },
     {
       "name": "Modal",
@@ -3894,7 +4266,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Modal.d.ts",
-      "htmlTag": "nds-modal"
+      "htmlTag": "nds-modal",
+      "htmlObservedAttrs": ["open", "title", "closable", "mask", "is-mask-close", "max-width"]
     },
     {
       "name": "MoodSelector",
@@ -3931,7 +4304,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/MoodSelector.d.ts",
-      "htmlTag": "nds-mood-selector"
+      "htmlTag": "nds-mood-selector",
+      "htmlObservedAttrs": ["value", "options", "name", "show-labels", "disabled"]
     },
     {
       "name": "MultiSelect",
@@ -4018,7 +4392,21 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/MultiSelect.d.ts",
-      "htmlTag": "nds-multi-select"
+      "htmlTag": "nds-multi-select",
+      "htmlObservedAttrs": [
+        "options",
+        "value",
+        "placeholder",
+        "search-placeholder",
+        "searchable",
+        "select-all-label",
+        "apply-label",
+        "cancel-label",
+        "empty-message",
+        "error",
+        "disabled",
+        "full-width"
+      ]
     },
     {
       "name": "MultiStepForm",
@@ -4071,7 +4459,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/MultiStepForm.d.ts",
-      "htmlTag": "nds-multi-step-form"
+      "htmlTag": "nds-multi-step-form",
+      "htmlObservedAttrs": [
+        "steps",
+        "current",
+        "indicator",
+        "next-label",
+        "prev-label",
+        "submit-label",
+        "submitting"
+      ]
     },
     {
       "name": "NoticeAlert",
@@ -4102,7 +4499,8 @@
       "htmlTag": "nds-notice-alert",
       "htmlAttrs": {
         "variant": ["info", "notice", "caution", "success", "error"]
-      }
+      },
+      "htmlObservedAttrs": ["variant", "message", "hide-icon"]
     },
     {
       "name": "NotificationItem",
@@ -4145,7 +4543,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/NotificationItem.d.ts",
-      "htmlTag": "nds-notification-item"
+      "htmlTag": "nds-notification-item",
+      "htmlObservedAttrs": ["kind", "item-title", "description", "time", "unread", "clickable"]
     },
     {
       "name": "NumberStepper",
@@ -4202,7 +4601,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/NumberStepper.d.ts",
-      "htmlTag": "nds-number-stepper"
+      "htmlTag": "nds-number-stepper",
+      "htmlObservedAttrs": ["value", "min", "max", "step", "size", "disabled", "editable", "unit"]
     },
     {
       "name": "OnlineIndicator",
@@ -4230,7 +4630,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/OnlineIndicator.d.ts",
-      "htmlTag": "nds-online-indicator"
+      "htmlTag": "nds-online-indicator",
+      "htmlObservedAttrs": ["status", "show-label", "label", "size", "aria-label"]
     },
     {
       "name": "OrderSummaryCard",
@@ -4262,7 +4663,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/OrderSummaryCard.d.ts",
-      "htmlTag": "nds-order-summary-card"
+      "htmlTag": "nds-order-summary-card",
+      "htmlObservedAttrs": ["title", "rows", "total-label", "total"]
     },
     {
       "name": "OtpInput",
@@ -4304,7 +4706,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/OtpInput.d.ts",
-      "htmlTag": "nds-otp-input"
+      "htmlTag": "nds-otp-input",
+      "htmlObservedAttrs": ["length", "value", "disabled", "error", "auto-focus"]
     },
     {
       "name": "PageHeader",
@@ -4346,7 +4749,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/PageHeader.d.ts",
-      "htmlTag": "nds-page-header"
+      "htmlTag": "nds-page-header",
+      "htmlObservedAttrs": ["page-title", "subtitle", "show-back", "bordered"]
     },
     {
       "name": "PageSizeSelect",
@@ -4414,7 +4818,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Pagination.d.ts",
-      "htmlTag": "nds-pagination"
+      "htmlTag": "nds-pagination",
+      "htmlObservedAttrs": ["page", "total-pages", "siblings", "show-arrows"]
     },
     {
       "name": "PhoneInput",
@@ -4466,7 +4871,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/PhoneInput.d.ts",
-      "htmlTag": "nds-phone-input"
+      "htmlTag": "nds-phone-input",
+      "htmlObservedAttrs": [
+        "country-code",
+        "value",
+        "label",
+        "placeholder",
+        "helper-text",
+        "error",
+        "countries",
+        "full-width",
+        "disabled"
+      ]
     },
     {
       "name": "PinPad",
@@ -4513,7 +4929,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/PinPad.d.ts",
-      "htmlTag": "nds-pin-pad"
+      "htmlTag": "nds-pin-pad",
+      "htmlObservedAttrs": ["value", "pin-length", "label", "shuffle", "shuffle-seed", "error"]
     },
     {
       "name": "PopularPosts",
@@ -4570,7 +4987,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/PopularPosts.d.ts",
-      "htmlTag": "nds-popular-posts"
+      "htmlTag": "nds-popular-posts",
+      "htmlObservedAttrs": [
+        "module-title",
+        "more-label",
+        "show-more",
+        "tabs",
+        "active-tab",
+        "items",
+        "item-clickable"
+      ]
     },
     {
       "name": "Popup",
@@ -4642,7 +5068,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Popup.d.ts",
-      "htmlTag": "nds-popup"
+      "htmlTag": "nds-popup",
+      "htmlObservedAttrs": [
+        "open",
+        "title",
+        "description",
+        "confirm-text",
+        "cancel-text",
+        "show-cancel",
+        "no-mask-close",
+        "max-width"
+      ]
     },
     {
       "name": "PriceTag",
@@ -4690,7 +5126,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/PriceTag.d.ts",
-      "htmlTag": "nds-price-tag"
+      "htmlTag": "nds-price-tag",
+      "htmlObservedAttrs": [
+        "amount",
+        "original-amount",
+        "unit",
+        "prefix",
+        "size",
+        "discount-position",
+        "format-thousands",
+        "free-label"
+      ]
     },
     {
       "name": "ProductCard",
@@ -4788,7 +5234,27 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ProductCard.d.ts",
-      "htmlTag": "nds-product-card"
+      "htmlTag": "nds-product-card",
+      "htmlObservedAttrs": [
+        "size",
+        "thumbnail",
+        "thumbnail-alt",
+        "badge",
+        "ranking-number",
+        "sold-out",
+        "product-title",
+        "original-price",
+        "discount-percent",
+        "price",
+        "currency",
+        "reward",
+        "free-shipping",
+        "point-discount",
+        "buyers-count",
+        "rating",
+        "review-count",
+        "clickable"
+      ]
     },
     {
       "name": "ProgressBar",
@@ -4815,7 +5281,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ProgressBar.d.ts",
-      "htmlTag": "nds-progress-bar"
+      "htmlTag": "nds-progress-bar",
+      "htmlObservedAttrs": ["value", "max", "size", "color"]
     },
     {
       "name": "PullToRefresh",
@@ -4857,7 +5324,14 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/PullToRefresh.d.ts",
-      "htmlTag": "nds-pull-to-refresh"
+      "htmlTag": "nds-pull-to-refresh",
+      "htmlObservedAttrs": [
+        "threshold",
+        "pull-label",
+        "release-label",
+        "refreshing-label",
+        "disabled"
+      ]
     },
     {
       "name": "QuickActionGrid",
@@ -4879,7 +5353,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/QuickActionGrid.d.ts",
-      "htmlTag": "nds-quick-action-grid"
+      "htmlTag": "nds-quick-action-grid",
+      "htmlObservedAttrs": ["actions", "columns", "gap"]
     },
     {
       "name": "Radio",
@@ -4911,7 +5386,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Radio.d.ts",
-      "htmlTag": "nds-radio"
+      "htmlTag": "nds-radio",
+      "htmlObservedAttrs": ["checked", "disabled", "label", "input-id"]
     },
     {
       "name": "ReactionPicker",
@@ -4948,7 +5424,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ReactionPicker.d.ts",
-      "htmlTag": "nds-reaction-picker"
+      "htmlTag": "nds-reaction-picker",
+      "htmlObservedAttrs": ["value", "options", "single", "hide-count", "disabled"]
     },
     {
       "name": "ReviewCard",
@@ -5005,7 +5482,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ReviewCard.d.ts",
-      "htmlTag": "nds-review-card"
+      "htmlTag": "nds-review-card",
+      "htmlObservedAttrs": [
+        "author",
+        "meta",
+        "rating",
+        "rating-label",
+        "card-title",
+        "body",
+        "tags",
+        "verified"
+      ]
     },
     {
       "name": "ScoreGauge",
@@ -5037,7 +5524,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ScoreGauge.d.ts",
-      "htmlTag": "nds-score-gauge"
+      "htmlTag": "nds-score-gauge",
+      "htmlObservedAttrs": ["value", "max", "segments", "show-label", "show-legend", "value-suffix"]
     },
     {
       "name": "SearchInput",
@@ -5105,7 +5593,20 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/SearchInput.d.ts",
-      "htmlTag": "nds-search-input"
+      "htmlTag": "nds-search-input",
+      "htmlObservedAttrs": [
+        "value",
+        "label",
+        "placeholder",
+        "helper-text",
+        "error",
+        "error-message",
+        "variant",
+        "clearable",
+        "show-search-button",
+        "full-width",
+        "disabled"
+      ]
     },
     {
       "name": "SegmentedControl",
@@ -5152,7 +5653,8 @@
       "htmlTag": "nds-segmented",
       "htmlAttrs": {
         "size": ["sm", "md"]
-      }
+      },
+      "htmlObservedAttrs": ["value", "size", "variant", "full-width", "disabled", "options"]
     },
     {
       "name": "Select",
@@ -5229,7 +5731,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Select.d.ts",
-      "htmlTag": "nds-select"
+      "htmlTag": "nds-select",
+      "htmlObservedAttrs": [
+        "value",
+        "placeholder",
+        "label",
+        "helper-text",
+        "disabled",
+        "error",
+        "full-width",
+        "open",
+        "select-id"
+      ]
     },
     {
       "name": "SelectedItemsPanel",
@@ -5281,7 +5794,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/SelectedItemsPanel.d.ts",
-      "htmlTag": "nds-selected-items-panel"
+      "htmlTag": "nds-selected-items-panel",
+      "htmlObservedAttrs": [
+        "panel-title",
+        "count",
+        "count-suffix",
+        "add-label",
+        "clear-label",
+        "hide-actions",
+        "hide-add",
+        "hide-clear"
+      ]
     },
     {
       "name": "SelectionButtonGroup",
@@ -5313,7 +5836,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/SelectionButtonGroup.d.ts",
-      "htmlTag": "nds-selection-button-group"
+      "htmlTag": "nds-selection-button-group",
+      "htmlObservedAttrs": ["value", "full-width", "disabled", "options"]
     },
     {
       "name": "SelectionCard",
@@ -5362,7 +5886,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/SelectionCard.d.ts",
-      "htmlTag": "nds-selection-card"
+      "htmlTag": "nds-selection-card",
+      "htmlObservedAttrs": ["mode", "value", "values", "layout", "name"]
     },
     {
       "name": "ShareSheet",
@@ -5409,7 +5934,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/ShareSheet.d.ts",
-      "htmlTag": "nds-share-sheet"
+      "htmlTag": "nds-share-sheet",
+      "htmlObservedAttrs": [
+        "open",
+        "sheet-title",
+        "description",
+        "targets",
+        "link",
+        "copied-label",
+        "close-on-backdrop-click"
+      ]
     },
     {
       "name": "Sidebar",
@@ -5501,7 +6035,27 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Sidebar.d.ts",
-      "htmlTag": "nds-sidebar"
+      "htmlTag": "nds-sidebar",
+      "htmlObservedAttrs": [
+        "items",
+        "active-key",
+        "collapsed",
+        "show-toggle",
+        "width",
+        "collapsed-width",
+        "brand",
+        "logo-src",
+        "logo-alt",
+        "logo-width",
+        "logo-height",
+        "logo-href",
+        "title",
+        "subtitle",
+        "user",
+        "account",
+        "footer-actions",
+        "full-height"
+      ]
     },
     {
       "name": "SignaturePad",
@@ -5548,7 +6102,16 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/SignaturePad.d.ts",
-      "htmlTag": "nds-signature-pad"
+      "htmlTag": "nds-signature-pad",
+      "htmlObservedAttrs": [
+        "label",
+        "placeholder",
+        "height",
+        "pen-color",
+        "pen-width",
+        "disabled",
+        "hide-controls"
+      ]
     },
     {
       "name": "Skeleton",
@@ -5579,7 +6142,8 @@
       "htmlTag": "nds-skeleton",
       "htmlAttrs": {
         "variant": ["rectangular", "circular", "text"]
-      }
+      },
+      "htmlObservedAttrs": ["variant", "width", "height", "radius"]
     },
     {
       "name": "Slider",
@@ -5641,7 +6205,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Slider.d.ts",
-      "htmlTag": "nds-slider"
+      "htmlTag": "nds-slider",
+      "htmlObservedAttrs": [
+        "value",
+        "min",
+        "max",
+        "step",
+        "start-label",
+        "end-label",
+        "show-value",
+        "disabled"
+      ]
     },
     {
       "name": "Snackbar",
@@ -5692,7 +6266,15 @@
       "htmlTag": "nds-snackbar",
       "htmlAttrs": {
         "variant": ["info", "success", "warning", "error"]
-      }
+      },
+      "htmlObservedAttrs": [
+        "variant",
+        "snackbar-title",
+        "description",
+        "action-label",
+        "closable",
+        "hide-icon"
+      ]
     },
     {
       "name": "Sparkline",
@@ -5745,7 +6327,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Sparkline.d.ts",
-      "htmlTag": "nds-sparkline"
+      "htmlTag": "nds-sparkline",
+      "htmlObservedAttrs": [
+        "data",
+        "kind",
+        "color",
+        "width",
+        "height",
+        "stroke-width",
+        "show-baseline",
+        "show-last-dot"
+      ]
     },
     {
       "name": "Spinner",
@@ -5767,7 +6359,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Spinner.d.ts",
-      "htmlTag": "nds-spinner"
+      "htmlTag": "nds-spinner",
+      "htmlObservedAttrs": ["size", "color", "label"]
     },
     {
       "name": "StarRating",
@@ -5804,7 +6397,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/StarRating.d.ts",
-      "htmlTag": "nds-star-rating"
+      "htmlTag": "nds-star-rating",
+      "htmlObservedAttrs": ["value", "size", "max", "show-value", "disabled", "readonly"]
     },
     {
       "name": "StatCard",
@@ -5857,7 +6451,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/StatCard.d.ts",
-      "htmlTag": "nds-stat-card"
+      "htmlTag": "nds-stat-card",
+      "htmlObservedAttrs": [
+        "label",
+        "value",
+        "unit",
+        "icon",
+        "delta",
+        "trend",
+        "description",
+        "clickable"
+      ]
     },
     {
       "name": "StatsTable",
@@ -5906,7 +6510,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/StatusTimeline.d.ts",
-      "htmlTag": "nds-status-timeline"
+      "htmlTag": "nds-status-timeline",
+      "htmlObservedAttrs": ["current", "direction", "steps"]
     },
     {
       "name": "Stepper",
@@ -5932,7 +6537,8 @@
       "htmlTag": "nds-stepper",
       "htmlAttrs": {
         "variant": ["numbered", "dots"]
-      }
+      },
+      "htmlObservedAttrs": ["steps", "current", "variant"]
     },
     {
       "name": "StepProgress",
@@ -5949,7 +6555,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/StepProgress.d.ts",
-      "htmlTag": "nds-step-progress"
+      "htmlTag": "nds-step-progress",
+      "htmlObservedAttrs": ["steps", "current"]
     },
     {
       "name": "StreakCard",
@@ -5986,7 +6593,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/StreakCard.d.ts",
-      "htmlTag": "nds-streak-card"
+      "htmlTag": "nds-streak-card",
+      "htmlObservedAttrs": ["title", "streak", "unit", "days", "footer"]
     },
     {
       "name": "Tabs",
@@ -6051,7 +6659,8 @@
         "variant": ["line", "chip", "segment"],
         "size": ["mobile", "pc"],
         "tone": ["neutral", "color"]
-      }
+      },
+      "htmlObservedAttrs": ["active-key", "variant", "size", "tone", "full-width", "base-id"]
     },
     {
       "name": "TagInput",
@@ -6113,7 +6722,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/TagInput.d.ts",
-      "htmlTag": "nds-tag-input"
+      "htmlTag": "nds-tag-input",
+      "htmlObservedAttrs": [
+        "value",
+        "label",
+        "placeholder",
+        "helper-text",
+        "error",
+        "max-tags",
+        "allow-duplicates",
+        "full-width",
+        "disabled"
+      ]
     },
     {
       "name": "Textarea",
@@ -6156,7 +6776,20 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Textarea.d.ts",
-      "htmlTag": "nds-textarea"
+      "htmlTag": "nds-textarea",
+      "htmlObservedAttrs": [
+        "label",
+        "helper-text",
+        "error",
+        "disabled",
+        "readonly",
+        "max-length",
+        "min-height",
+        "resize",
+        "input-id",
+        "value",
+        "default-value"
+      ]
     },
     {
       "name": "TextButton",
@@ -6179,13 +6812,15 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/TextButton.d.ts",
-      "htmlTag": "nds-text-button"
+      "htmlTag": "nds-text-button",
+      "htmlObservedAttrs": ["label", "size", "left-icon", "right-icon", "disabled"]
     },
     {
       "name": "Timeline",
       "props": [],
       "dtsRelPath": "packages/html/src/components/nds-timeline.ts",
-      "htmlTag": "nds-timeline"
+      "htmlTag": "nds-timeline",
+      "htmlObservedAttrs": ["date", "title", "description", "status", "status-label"]
     },
     {
       "name": "TimePicker",
@@ -6247,7 +6882,19 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/TimePicker.d.ts",
-      "htmlTag": "nds-time-picker"
+      "htmlTag": "nds-time-picker",
+      "htmlObservedAttrs": [
+        "value",
+        "step",
+        "label",
+        "helper-text",
+        "error",
+        "full-width",
+        "disabled",
+        "min",
+        "max",
+        "presets"
+      ]
     },
     {
       "name": "TimeSlotPicker",
@@ -6289,7 +6936,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/TimeSlotPicker.d.ts",
-      "htmlTag": "nds-time-slot-picker"
+      "htmlTag": "nds-time-slot-picker",
+      "htmlObservedAttrs": ["value", "slots", "groups", "columns", "disabled", "empty-text"]
     },
     {
       "name": "TipCard",
@@ -6340,7 +6988,15 @@
       "htmlTag": "nds-tip-card",
       "htmlAttrs": {
         "tone": ["info", "success", "warning", "neutral"]
-      }
+      },
+      "htmlObservedAttrs": [
+        "tone",
+        "label",
+        "tip-title",
+        "description",
+        "action-label",
+        "clickable"
+      ]
     },
     {
       "name": "TitleBlock",
@@ -6362,7 +7018,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/TitleBlock.d.ts",
-      "htmlTag": "nds-title-block"
+      "htmlTag": "nds-title-block",
+      "htmlObservedAttrs": ["level", "title", "subtitle"]
     },
     {
       "name": "Toast",
@@ -6398,7 +7055,16 @@
       "htmlTag": "nds-toast",
       "htmlAttrs": {
         "variant": ["default", "success", "error", "warning", "info"]
-      }
+      },
+      "htmlObservedAttrs": [
+        "position",
+        "duration",
+        "max-count",
+        "message",
+        "variant",
+        "action-label",
+        "open"
+      ]
     },
     {
       "name": "Toggle",
@@ -6451,7 +7117,17 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Toggle.d.ts",
-      "htmlTag": "nds-toggle"
+      "htmlTag": "nds-toggle",
+      "htmlObservedAttrs": [
+        "checked",
+        "disabled",
+        "label",
+        "on-label",
+        "off-label",
+        "tone",
+        "size",
+        "input-id"
+      ]
     },
     {
       "name": "Tooltip",
@@ -6484,7 +7160,15 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/Tooltip.d.ts",
-      "htmlTag": "nds-tooltip"
+      "htmlTag": "nds-tooltip",
+      "htmlObservedAttrs": [
+        "content",
+        "trigger-label",
+        "placement",
+        "open",
+        "disabled",
+        "max-width"
+      ]
     },
     {
       "name": "TrendingKeywords",
@@ -6521,7 +7205,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/TrendingKeywords.d.ts",
-      "htmlTag": "nds-trending-keywords"
+      "htmlTag": "nds-trending-keywords",
+      "htmlObservedAttrs": ["items", "header-title", "timestamp", "autoplay-delay"]
     },
     {
       "name": "UserCard",
@@ -6574,7 +7259,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/UserCard.d.ts",
-      "htmlTag": "nds-user-card"
+      "htmlTag": "nds-user-card",
+      "htmlObservedAttrs": ["name", "handle", "bio", "meta", "verified", "layout", "clickable"]
     },
     {
       "name": "VideoPlayer",
@@ -6631,7 +7317,18 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/VideoPlayer.d.ts",
-      "htmlTag": "nds-video-player"
+      "htmlTag": "nds-video-player",
+      "htmlObservedAttrs": [
+        "src",
+        "poster",
+        "title",
+        "duration-label",
+        "autoplay",
+        "muted",
+        "loop",
+        "native-controls",
+        "aspect-ratio"
+      ]
     },
     {
       "name": "VoiceRecorder",
@@ -6674,7 +7371,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/VoiceRecorder.d.ts",
-      "htmlTag": "nds-voice-recorder"
+      "htmlTag": "nds-voice-recorder",
+      "htmlObservedAttrs": ["state", "seconds", "max-seconds", "idle-label", "recording-label"]
     },
     {
       "name": "VotePoll",
@@ -6716,7 +7414,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/VotePoll.d.ts",
-      "htmlTag": "nds-vote-poll"
+      "htmlTag": "nds-vote-poll",
+      "htmlObservedAttrs": ["question", "options", "voted-key", "show-results", "disabled"]
     },
     {
       "name": "WaveformPlayer",
@@ -6753,7 +7452,8 @@
         }
       ],
       "dtsRelPath": "packages/react/dist/WaveformPlayer.d.ts",
-      "htmlTag": "nds-waveform-player"
+      "htmlTag": "nds-waveform-player",
+      "htmlObservedAttrs": ["src", "peaks", "bars", "color", "duration", "autoplay"]
     },
     {
       "name": "WebHeader",
@@ -10755,57 +11455,124 @@
   "ndsHtmlElements": [
     {
       "tag": "nds-accordion",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["type", "value", "base-id"]
     },
     {
       "tag": "nds-action-chip",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["label", "disabled"]
     },
     {
       "tag": "nds-activity-timeline",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["items"]
     },
     {
       "tag": "nds-add-button",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["label", "error", "full-width", "disabled"]
     },
     {
       "tag": "nds-address-search",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "query",
+        "results",
+        "value",
+        "label",
+        "search-label",
+        "empty-message",
+        "loading",
+        "helper-text",
+        "error"
+      ]
     },
     {
       "tag": "nds-amount-input",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "prefix",
+        "unit",
+        "label",
+        "helper-text",
+        "error",
+        "full-width",
+        "presets",
+        "max",
+        "min",
+        "placeholder",
+        "disabled"
+      ]
     },
     {
       "tag": "nds-appointment-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "date",
+        "start-time",
+        "end-time",
+        "title",
+        "mode",
+        "location",
+        "status",
+        "actions"
+      ]
     },
     {
       "tag": "nds-assessment-result-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "title",
+        "score",
+        "max-score",
+        "level",
+        "level-text",
+        "description",
+        "action-label",
+        "score-unit",
+        "hide-gauge",
+        "level-labels"
+      ]
     },
     {
       "tag": "nds-attachment-item",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["name", "size", "file-type", "status", "progress", "href", "error-message"]
     },
     {
       "tag": "nds-audio-player",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["title", "subtitle", "playing", "current-time", "duration"]
     },
     {
       "tag": "nds-autocomplete",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "placeholder",
+        "disabled",
+        "error",
+        "full-width",
+        "loading",
+        "empty-message",
+        "min-query-length",
+        "highlight",
+        "options"
+      ]
     },
     {
       "tag": "nds-avatar-group",
       "attrs": {
         "size": ["xs", "sm", "md", "lg", "xl"]
-      }
+      },
+      "observedAttrs": ["items", "max", "size", "overlap", "aria-label"]
     },
     {
       "tag": "nds-avatar",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["src", "alt", "name", "size", "fallback"]
     },
     {
       "tag": "nds-badge",
@@ -10813,27 +11580,54 @@
         "variant": ["fill", "ghost", "line"],
         "size": ["sm", "md", "lg"],
         "color": ["brand", "neutral", "success", "error", "caution", "info"]
-      }
+      },
+      "observedAttrs": ["variant", "color", "size"]
     },
     {
       "tag": "nds-banner",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "variant",
+        "banner-title",
+        "description",
+        "action-label",
+        "action-href",
+        "image-src",
+        "image-alt",
+        "image-width",
+        "image-height",
+        "href",
+        "closable",
+        "full-image-src",
+        "full-image-srcset"
+      ]
     },
     {
       "tag": "nds-bottom-sheet",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "open",
+        "sheet-title",
+        "show-handle",
+        "show-close-button",
+        "close-on-overlay-click",
+        "close-on-esc"
+      ]
     },
     {
       "tag": "nds-brand-chrome",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["brand", "surface", "active-key", "asset-base-url"]
     },
     {
       "tag": "nds-breadcrumb",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["items", "separator"]
     },
     {
       "tag": "nds-breathing-guide",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["phases", "auto-start", "cycles", "playing", "no-count", "hide-controls"]
     },
     {
       "tag": "nds-button",
@@ -10841,45 +11635,79 @@
         "variant": ["solid", "outlined", "soft", "outlined-sub"],
         "size": ["xl", "lg", "md", "sm", "xs", "field"],
         "color": ["primary", "secondary", "assistive"]
-      }
+      },
+      "observedAttrs": ["variant", "size", "color", "shape", "disabled", "full-width", "type"]
     },
     {
       "tag": "nds-calendar",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "month",
+        "value",
+        "week-starts-on",
+        "markers",
+        "disabled-dates",
+        "hide-header"
+      ]
     },
     {
       "tag": "nds-call-control-bar",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "duration",
+        "muted",
+        "show-camera",
+        "camera-on",
+        "show-speaker",
+        "speaker-on"
+      ]
     },
     {
       "tag": "nds-card-visual",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["brand", "number", "holder", "expiry", "label", "no-chip", "disabled"]
     },
     {
       "tag": "nds-card",
       "attrs": {
         "variant": ["outlined", "flat"]
-      }
+      },
+      "observedAttrs": ["variant", "clickable"]
     },
     {
       "tag": "nds-carousel",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["active-index", "autoplay", "indicator", "loop", "gap", "show-arrows"]
     },
     {
       "tag": "nds-chart",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["type", "data", "y-max", "y-ticks", "no-legend"]
     },
     {
       "tag": "nds-chat-bubble",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["role", "group", "time", "name", "avatar-src", "read", "message"]
     },
     {
       "tag": "nds-chat-composer",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "placeholder",
+        "max-length",
+        "show-attach",
+        "show-mic",
+        "quick-replies",
+        "disabled",
+        "submit-on-enter",
+        "max-height"
+      ]
     },
     {
       "tag": "nds-checkbox",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["checked", "disabled", "label", "input-id"]
     },
     {
       "tag": "nds-chip",
@@ -10887,392 +11715,853 @@
         "variant": ["fill", "outlined", "ghost"],
         "size": ["sm", "md"],
         "color": ["brand", "neutral", "success", "error", "caution"]
-      }
+      },
+      "observedAttrs": [
+        "variant",
+        "color",
+        "size",
+        "selected",
+        "disabled",
+        "interactive",
+        "removable"
+      ]
     },
     {
       "tag": "nds-circular-progress",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "max",
+        "size",
+        "thickness",
+        "color",
+        "track-color",
+        "label",
+        "caption",
+        "hide-label"
+      ]
     },
     {
       "tag": "nds-coach-mark",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "open",
+        "step",
+        "steps",
+        "finish-label",
+        "next-label",
+        "skip-label",
+        "hide-skip"
+      ]
     },
     {
       "tag": "nds-comment-item",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["author", "time", "text", "reply-label", "show-reply", "is-reply"]
     },
     {
       "tag": "nds-confetti",
       "attrs": {
         "color": ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"]
-      }
+      },
+      "observedAttrs": ["active", "count", "duration", "colors"]
     },
     {
       "tag": "nds-consent-checklist",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "items", "all-label", "expandable"]
     },
     {
       "tag": "nds-content-viewer",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["html", "no-sanitize", "no-image-lazy", "no-external-blank"]
     },
     {
       "tag": "nds-counselor-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "name",
+        "job-title",
+        "image-src",
+        "rating",
+        "review-count",
+        "tags",
+        "bio",
+        "cta-label",
+        "clickable"
+      ]
     },
     {
       "tag": "nds-countdown-timer",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["ends-at", "format", "label", "expired-text", "no-urgent"]
     },
     {
       "tag": "nds-coupon-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "discount",
+        "discount-suffix",
+        "coupon-title",
+        "description",
+        "expiry",
+        "action-label",
+        "disabled-label",
+        "show-action",
+        "disabled"
+      ]
     },
     {
       "tag": "nds-crisis-callout",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["tone", "title", "description"]
     },
     {
       "tag": "nds-data-table",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "columns",
+        "data",
+        "row-key",
+        "sort-key",
+        "sort-direction",
+        "empty-message",
+        "loading",
+        "size",
+        "responsive",
+        "row-clickable",
+        "sub-rows-key",
+        "expander-column"
+      ]
     },
     {
       "tag": "nds-date-picker",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "min-date",
+        "max-date",
+        "placeholder",
+        "disabled",
+        "error",
+        "full-width"
+      ]
     },
     {
       "tag": "nds-date-range-picker",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "from",
+        "to",
+        "min-date",
+        "max-date",
+        "start-label",
+        "end-label",
+        "presets",
+        "disabled"
+      ]
     },
     {
       "tag": "nds-divider",
       "attrs": {
         "orientation": ["horizontal", "vertical"]
-      }
+      },
+      "observedAttrs": ["orientation", "thickness", "spacing", "color"]
     },
     {
       "tag": "nds-drawer",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "open",
+        "side",
+        "size",
+        "width",
+        "drawer-title",
+        "description",
+        "close-on-overlay-click",
+        "close-on-esc",
+        "show-close-button"
+      ]
     },
     {
       "tag": "nds-dropdown-menu",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["items", "groups", "align", "min-width"]
     },
     {
       "tag": "nds-ds-highlight",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["mode", "hide-toggle", "default-mode"]
     },
     {
       "tag": "nds-emotion-heatmap",
       "attrs": {
         "color": ["#ECECF0", "#C9DBFF", "#92BBFF", "#5C97F2", "#2563DB"]
-      }
+      },
+      "observedAttrs": [
+        "month",
+        "entries",
+        "title",
+        "treat-zero-as-empty",
+        "colors",
+        "low-label",
+        "high-label",
+        "week-starts-on"
+      ]
     },
     {
       "tag": "nds-empty-state",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["title", "description", "action", "min-height", "hide-icon"]
     },
     {
       "tag": "nds-expandable-text",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["lines", "expand-label", "collapse-label", "hide-collapse", "expanded"]
     },
     {
       "tag": "nds-fab",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["icon", "label", "color", "size", "position", "offset", "disabled"]
     },
     {
       "tag": "nds-field-action-row",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["action-tone", "error", "success", "timer-expired", "helper-text"]
     },
     {
       "tag": "nds-file-upload",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "accept",
+        "multiple",
+        "max-size",
+        "disabled",
+        "hint",
+        "description",
+        "error-message"
+      ]
     },
     {
       "tag": "nds-filter-bar",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "options", "single", "show-reset", "reset-label"]
     },
     {
       "tag": "nds-floating-cta-banner",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "caption",
+        "cta-text",
+        "size",
+        "floating",
+        "show-arrow",
+        "bottom-offset",
+        "aria-label"
+      ]
     },
     {
       "tag": "nds-footer",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["active-tab"]
     },
     {
       "tag": "nds-form-field",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "label",
+        "description",
+        "helper",
+        "error",
+        "required",
+        "optional",
+        "counter",
+        "html-for",
+        "label-position",
+        "label-width",
+        "density"
+      ]
     },
     {
       "tag": "nds-greeting-header",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["name", "greeting", "question", "tone"]
     },
     {
       "tag": "nds-header",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["variant", "position", "header-title", "elevated", "max-width"]
     },
     {
       "tag": "nds-icon-button",
       "attrs": {
         "size": ["x-large", "large", "medium", "small"]
-      }
+      },
+      "observedAttrs": ["size", "disabled", "type"]
     },
     {
       "tag": "nds-image-cropper",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["src", "shape", "size", "output-size", "label"]
     },
     {
       "tag": "nds-image-upload",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "state",
+        "image-url",
+        "image-alt",
+        "accept",
+        "multiple",
+        "upload-label",
+        "size-hint",
+        "helper-text",
+        "error-text"
+      ]
     },
     {
       "tag": "nds-input-group",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["gap", "align"]
     },
     {
       "tag": "nds-input",
       "attrs": {
         "size": ["default", "field", "compact"]
-      }
+      },
+      "observedAttrs": [
+        "label",
+        "helper-text",
+        "size",
+        "error",
+        "disabled",
+        "readonly",
+        "full-width",
+        "clearable",
+        "show-count",
+        "password-toggle",
+        "value",
+        "default-value",
+        "input-id"
+      ]
     },
     {
       "tag": "nds-inspector",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["default-enabled", "no-outline"]
     },
     {
       "tag": "nds-journal-entry",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "date",
+        "mood",
+        "title",
+        "body",
+        "max-lines",
+        "tags",
+        "thumbnail-src",
+        "footer",
+        "clickable"
+      ]
     },
     {
       "tag": "nds-lightbox",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["open", "index", "images"]
     },
     {
       "tag": "nds-like-button",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["liked", "count", "size", "hide-count", "active-color"]
     },
     {
       "tag": "nds-likert-scale",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["name", "options", "value", "start-label", "end-label", "disabled"]
     },
     {
       "tag": "nds-list",
       "attrs": {
         "variant": ["plain", "card", "divided"],
         "size": ["sm", "md", "lg"]
-      }
+      },
+      "observedAttrs": ["variant"]
     },
     {
       "tag": "nds-media-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "image-src",
+        "image-alt",
+        "image-overlay",
+        "image-aspect-ratio",
+        "eyebrow",
+        "card-title",
+        "body",
+        "rating",
+        "clickable"
+      ]
     },
     {
       "tag": "nds-media-thumbnail",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "src",
+        "alt",
+        "aspect-ratio",
+        "width",
+        "fit",
+        "rounded",
+        "fallback-src",
+        "eager"
+      ]
     },
     {
       "tag": "nds-medication-item",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["med-name", "dosage", "times", "note", "taken", "show-check"]
     },
     {
       "tag": "nds-mention-input",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "users",
+        "label",
+        "placeholder",
+        "helper-text",
+        "trigger",
+        "error",
+        "disabled"
+      ]
     },
     {
       "tag": "nds-modal",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["open", "title", "closable", "mask", "is-mask-close", "max-width"]
     },
     {
       "tag": "nds-mood-selector",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "options", "name", "show-labels", "disabled"]
     },
     {
       "tag": "nds-multi-select",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "options",
+        "value",
+        "placeholder",
+        "search-placeholder",
+        "searchable",
+        "select-all-label",
+        "apply-label",
+        "cancel-label",
+        "empty-message",
+        "error",
+        "disabled",
+        "full-width"
+      ]
     },
     {
       "tag": "nds-multi-step-form",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "steps",
+        "current",
+        "indicator",
+        "next-label",
+        "prev-label",
+        "submit-label",
+        "submitting"
+      ]
     },
     {
       "tag": "nds-notice-alert",
       "attrs": {
         "variant": ["info", "notice", "caution", "success", "error"]
-      }
+      },
+      "observedAttrs": ["variant", "message", "hide-icon"]
     },
     {
       "tag": "nds-notification-item",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["kind", "item-title", "description", "time", "unread", "clickable"]
     },
     {
       "tag": "nds-number-stepper",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "min", "max", "step", "size", "disabled", "editable", "unit"]
     },
     {
       "tag": "nds-online-indicator",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["status", "show-label", "label", "size", "aria-label"]
     },
     {
       "tag": "nds-order-summary-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["title", "rows", "total-label", "total"]
     },
     {
       "tag": "nds-otp-input",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["length", "value", "disabled", "error", "auto-focus"]
     },
     {
       "tag": "nds-page-header",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["page-title", "subtitle", "show-back", "bordered"]
     },
     {
       "tag": "nds-pagination",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["page", "total-pages", "siblings", "show-arrows"]
     },
     {
       "tag": "nds-phone-input",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "country-code",
+        "value",
+        "label",
+        "placeholder",
+        "helper-text",
+        "error",
+        "countries",
+        "full-width",
+        "disabled"
+      ]
     },
     {
       "tag": "nds-pin-pad",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "pin-length", "label", "shuffle", "shuffle-seed", "error"]
     },
     {
       "tag": "nds-popular-posts",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "module-title",
+        "more-label",
+        "show-more",
+        "tabs",
+        "active-tab",
+        "items",
+        "item-clickable"
+      ]
     },
     {
       "tag": "nds-popup",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "open",
+        "title",
+        "description",
+        "confirm-text",
+        "cancel-text",
+        "show-cancel",
+        "no-mask-close",
+        "max-width"
+      ]
     },
     {
       "tag": "nds-price-tag",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "amount",
+        "original-amount",
+        "unit",
+        "prefix",
+        "size",
+        "discount-position",
+        "format-thousands",
+        "free-label"
+      ]
     },
     {
       "tag": "nds-product-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "size",
+        "thumbnail",
+        "thumbnail-alt",
+        "badge",
+        "ranking-number",
+        "sold-out",
+        "product-title",
+        "original-price",
+        "discount-percent",
+        "price",
+        "currency",
+        "reward",
+        "free-shipping",
+        "point-discount",
+        "buyers-count",
+        "rating",
+        "review-count",
+        "clickable"
+      ]
     },
     {
       "tag": "nds-progress-bar",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "max", "size", "color"]
     },
     {
       "tag": "nds-pull-to-refresh",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["threshold", "pull-label", "release-label", "refreshing-label", "disabled"]
     },
     {
       "tag": "nds-quick-action-grid",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["actions", "columns", "gap"]
     },
     {
       "tag": "nds-radio",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["checked", "disabled", "label", "input-id"]
     },
     {
       "tag": "nds-reaction-picker",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "options", "single", "hide-count", "disabled"]
     },
     {
       "tag": "nds-review-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "author",
+        "meta",
+        "rating",
+        "rating-label",
+        "card-title",
+        "body",
+        "tags",
+        "verified"
+      ]
     },
     {
       "tag": "nds-score-gauge",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "max", "segments", "show-label", "show-legend", "value-suffix"]
     },
     {
       "tag": "nds-search-input",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "label",
+        "placeholder",
+        "helper-text",
+        "error",
+        "error-message",
+        "variant",
+        "clearable",
+        "show-search-button",
+        "full-width",
+        "disabled"
+      ]
     },
     {
       "tag": "nds-segmented-control",
       "attrs": {
         "size": ["sm", "md"]
-      }
+      },
+      "observedAttrs": ["value", "size", "full-width", "disabled", "options"]
     },
     {
       "tag": "nds-segmented",
       "attrs": {
         "size": ["sm", "md"]
-      }
+      },
+      "observedAttrs": ["value", "size", "variant", "full-width", "disabled", "options"]
     },
     {
       "tag": "nds-select",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "placeholder",
+        "label",
+        "helper-text",
+        "disabled",
+        "error",
+        "full-width",
+        "open",
+        "select-id"
+      ]
     },
     {
       "tag": "nds-selected-items-panel",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "panel-title",
+        "count",
+        "count-suffix",
+        "add-label",
+        "clear-label",
+        "hide-actions",
+        "hide-add",
+        "hide-clear"
+      ]
     },
     {
       "tag": "nds-selection-button-group",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "full-width", "disabled", "options"]
     },
     {
       "tag": "nds-selection-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["mode", "value", "values", "layout", "name"]
     },
     {
       "tag": "nds-share-sheet",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "open",
+        "sheet-title",
+        "description",
+        "targets",
+        "link",
+        "copied-label",
+        "close-on-backdrop-click"
+      ]
     },
     {
       "tag": "nds-sidebar",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "items",
+        "active-key",
+        "collapsed",
+        "show-toggle",
+        "width",
+        "collapsed-width",
+        "brand",
+        "logo-src",
+        "logo-alt",
+        "logo-width",
+        "logo-height",
+        "logo-href",
+        "title",
+        "subtitle",
+        "user",
+        "account",
+        "footer-actions",
+        "full-height"
+      ]
     },
     {
       "tag": "nds-signature-pad",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "label",
+        "placeholder",
+        "height",
+        "pen-color",
+        "pen-width",
+        "disabled",
+        "hide-controls"
+      ]
     },
     {
       "tag": "nds-skeleton",
       "attrs": {
         "variant": ["rectangular", "circular", "text"]
-      }
+      },
+      "observedAttrs": ["variant", "width", "height", "radius"]
     },
     {
       "tag": "nds-slider",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "min",
+        "max",
+        "step",
+        "start-label",
+        "end-label",
+        "show-value",
+        "disabled"
+      ]
     },
     {
       "tag": "nds-snackbar",
       "attrs": {
         "variant": ["info", "success", "warning", "error"]
-      }
+      },
+      "observedAttrs": [
+        "variant",
+        "snackbar-title",
+        "description",
+        "action-label",
+        "closable",
+        "hide-icon"
+      ]
     },
     {
       "tag": "nds-sparkline",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "data",
+        "kind",
+        "color",
+        "width",
+        "height",
+        "stroke-width",
+        "show-baseline",
+        "show-last-dot"
+      ]
     },
     {
       "tag": "nds-spinner",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["size", "color", "label"]
     },
     {
       "tag": "nds-star-rating",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "size", "max", "show-value", "disabled", "readonly"]
     },
     {
       "tag": "nds-stat-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "label",
+        "value",
+        "unit",
+        "icon",
+        "delta",
+        "trend",
+        "description",
+        "clickable"
+      ]
     },
     {
       "tag": "nds-status-timeline",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["current", "direction", "steps"]
     },
     {
       "tag": "nds-step-progress",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["steps", "current"]
     },
     {
       "tag": "nds-stepper",
       "attrs": {
         "variant": ["numbered", "dots"]
-      }
+      },
+      "observedAttrs": ["steps", "current", "variant"]
     },
     {
       "tag": "nds-streak-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["title", "streak", "unit", "days", "footer"]
     },
     {
       "tag": "nds-tabs",
@@ -11280,79 +12569,157 @@
         "variant": ["line", "chip", "segment"],
         "size": ["mobile", "pc"],
         "tone": ["neutral", "color"]
-      }
+      },
+      "observedAttrs": ["active-key", "variant", "size", "tone", "full-width", "base-id"]
     },
     {
       "tag": "nds-tag-input",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "label",
+        "placeholder",
+        "helper-text",
+        "error",
+        "max-tags",
+        "allow-duplicates",
+        "full-width",
+        "disabled"
+      ]
     },
     {
       "tag": "nds-text-button",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["label", "size", "left-icon", "right-icon", "disabled"]
     },
     {
       "tag": "nds-textarea",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "label",
+        "helper-text",
+        "error",
+        "disabled",
+        "readonly",
+        "max-length",
+        "min-height",
+        "resize",
+        "input-id",
+        "value",
+        "default-value"
+      ]
     },
     {
       "tag": "nds-time-picker",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "value",
+        "step",
+        "label",
+        "helper-text",
+        "error",
+        "full-width",
+        "disabled",
+        "min",
+        "max",
+        "presets"
+      ]
     },
     {
       "tag": "nds-time-slot-picker",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["value", "slots", "groups", "columns", "disabled", "empty-text"]
     },
     {
       "tag": "nds-timeline",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["date", "title", "description", "status", "status-label"]
     },
     {
       "tag": "nds-tip-card",
       "attrs": {
         "tone": ["info", "success", "warning", "neutral"]
-      }
+      },
+      "observedAttrs": ["tone", "label", "tip-title", "description", "action-label", "clickable"]
     },
     {
       "tag": "nds-title-block",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["level", "title", "subtitle"]
     },
     {
       "tag": "nds-toast",
       "attrs": {
         "variant": ["default", "success", "error", "warning", "info"]
-      }
+      },
+      "observedAttrs": [
+        "position",
+        "duration",
+        "max-count",
+        "message",
+        "variant",
+        "action-label",
+        "open"
+      ]
     },
     {
       "tag": "nds-toggle",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "checked",
+        "disabled",
+        "label",
+        "on-label",
+        "off-label",
+        "tone",
+        "size",
+        "input-id"
+      ]
     },
     {
       "tag": "nds-tooltip",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["content", "trigger-label", "placement", "open", "disabled", "max-width"]
     },
     {
       "tag": "nds-trending-keywords",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["items", "header-title", "timestamp", "autoplay-delay"]
     },
     {
       "tag": "nds-user-card",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["name", "handle", "bio", "meta", "verified", "layout", "clickable"]
     },
     {
       "tag": "nds-video-player",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": [
+        "src",
+        "poster",
+        "title",
+        "duration-label",
+        "autoplay",
+        "muted",
+        "loop",
+        "native-controls",
+        "aspect-ratio"
+      ]
     },
     {
       "tag": "nds-voice-recorder",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["state", "seconds", "max-seconds", "idle-label", "recording-label"]
     },
     {
       "tag": "nds-vote-poll",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["question", "options", "voted-key", "show-results", "disabled"]
     },
     {
       "tag": "nds-waveform-player",
-      "attrs": {}
+      "attrs": {},
+      "observedAttrs": ["src", "peaks", "bars", "color", "duration", "autoplay"]
     }
   ]
 }

@@ -72,16 +72,17 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 
 ### 신규 컴포넌트 추가 (전체 자동화는 `/ds-component`)
 
-| 단계                          | 위치 / 명령                                                                                 |
-| ----------------------------- | ------------------------------------------------------------------------------------------- |
-| 구현 (react)                  | `packages/react/src/{Component}.tsx`                                                        |
-| 스타일                        | `packages/styles/src/{Component}.ts`                                                        |
-| HTML 웹컴포넌트               | `packages/html/src/components/nds-{component}.ts` (+ `index.ts`, observedAttributes)        |
-| Export                        | `packages/react/src/index.ts` · `packages/html/src/index.ts`                                |
-| Storybook 스토리              | `apps/storybook/src/stories/{Component}.stories.tsx`                                        |
-| ★ 카탈로그                    | `apps/storybook/src/stories/AllComponents.stories.tsx` — import + 엔트리 추가               |
-| ★ MCP 가이드 (외부 전파 핵심) | `packages/mcp/src/guides.ts` 의 `COMPONENT_GUIDES` — props 함정 · 매트릭스 · `figmaNodeUrl` |
-| 타입체크                      | `npx tsc --noEmit --project apps/storybook/tsconfig.json`                                   |
+| 단계                          | 위치 / 명령                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 구현 (react)                  | `packages/react/src/{Component}.tsx`                                                                                                 |
+| 스타일                        | `packages/styles/src/{Component}.ts`                                                                                                 |
+| HTML 웹컴포넌트               | `packages/html/src/components/nds-{component}.ts` (+ `index.ts`, observedAttributes)                                                 |
+| Export                        | `packages/react/src/index.ts` · `packages/html/src/index.ts`                                                                         |
+| Storybook 스토리              | `apps/storybook/src/stories/{Component}.stories.tsx`                                                                                 |
+| ★ 카탈로그                    | `apps/storybook/src/stories/AllComponents.stories.tsx` — import + 엔트리 추가                                                        |
+| ★ MCP 가이드 (외부 전파 핵심) | `packages/mcp/src/guides.ts` 의 `COMPONENT_GUIDES` — props 함정 · 매트릭스 · `figmaNodeUrl`                                          |
+| 타입체크                      | `npx tsc --noEmit --project apps/storybook/tsconfig.json`                                                                            |
+| ★ 미러 parity                 | `pnpm lint:mirror-parity` — react↔html set/enum drift 게이트. 의도된 divergence 면 `pnpm lint:mirror-parity:update` 로 baseline 갱신 |
 
 ### 신규 / 수정 토큰
 
