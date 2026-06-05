@@ -1235,8 +1235,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Input: {
     name: "Input",
     examplesHtml: {
-      do: '<nds-input label="이메일" placeholder="example@nudge.kr" clearable></nds-input>\n<!-- 글자수 카운터(24/25): maxlength + show-count (React: maxLength + showCount) -->\n<nds-input label="캠페인 이름" maxlength="25" show-count></nds-input>\n<script>el.addEventListener("input", e => setValue(e.target.value));</script>',
-      dont: '<!-- value 와 default-value 를 동시에 설정 — controlled / uncontrolled 가 섞임 -->\n<nds-input label="이메일" value="a@b" default-value="x@y"></nds-input>\n<!-- 글자수 카운터를 suffix 텍스트로 직접 박지 말 것 — show-count 사용 -->\n<nds-input label="이름" suffix="0/25"></nds-input>\n<!-- raw <input> + className 으로 모양만 흉내 -->\n<input class="nds-input" />',
+      do: '<nds-input label="이메일" placeholder="example@nudge.kr" clearable></nds-input>\n<!-- 글자수 카운터(24/25): maxlength + show-count (React: maxLength + showCount) -->\n<nds-input label="캠페인 이름" maxlength="25" show-count></nds-input>\n<!-- 비밀번호: type=password 면 눈 토글 자동 노출 -->\n<nds-input label="비밀번호" type="password"></nds-input>\n<script>el.addEventListener("input", e => setValue(e.target.value));</script>',
+      dont: '<!-- value 와 default-value 를 동시에 설정 — controlled / uncontrolled 가 섞임 -->\n<nds-input label="이메일" value="a@b" default-value="x@y"></nds-input>\n<!-- 글자수 카운터를 suffix 텍스트로 직접 박지 말 것 — show-count 사용 -->\n<nds-input label="이름" suffix="0/25"></nds-input>\n<!-- 비밀번호 눈 아이콘을 suffix 로 손수 조립 금지 — type=password 가 자동 제공 -->\n<nds-input label="비밀번호" type="password" suffix="👁"></nds-input>\n<!-- raw <input> + className 으로 모양만 흉내 -->\n<input class="nds-input" />',
     },
     summary:
       "1px 보더, 흰 배경, 48px 높이. label/wrapper(field+addon)/helper 의 compound 구조 (Figma Library node 171:9903 기준).",
@@ -1255,6 +1255,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "검증 성공: complete + successMessage — primary 컬러 헬퍼로 자동 전환",
       "달력/검색 같은 아이콘 affordance: suffix prop (24x24)",
       "Multi-helper(비밀번호 규칙 체크리스트 등): helpers={[{ text, icon?, variant? }, ...]} — 또는 compound <Input.HelperGroup><Input.Helper>…</Input.Helper>…</Input.HelperGroup>",
+      '비밀번호: type=\'password\' (HTML `type="password"`) → 우측 눈 아이콘 표시/숨김 토글이 **자동** 노출(auth/로그인 화면). 끄려면 passwordToggle={false} / `password-toggle="false"`. suffix 에 eye 아이콘을 손수 박지 말 것.',
     ],
     sizeMatrix: {
       default: "height 48 / padding 16·13 / wrapper gap 10 / radius 8",
@@ -3258,21 +3259,24 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   DataTable: {
     name: "DataTable",
     examplesHtml: {
-      do: '<nds-data-table\n  columns=\'[{"key":"name","title":"이름","sortable":true},{"key":"age","title":"나이"}]\'\n  data=\'[{"name":"홍길동","age":30}]\'\n  size="md" responsive="cards" row-clickable></nds-data-table>\n<script>\nel.addEventListener("nds-data-table-sort", e => sort(e.detail));\nel.addEventListener("nds-data-table-row-click", e => openRow(e.detail.row));\n</script>',
+      do: '<nds-data-table\n  columns=\'[{"key":"name","title":"이름","sortable":true},{"key":"age","title":"나이"}]\'\n  data=\'[{"name":"홍길동","age":30}]\'\n  size="md" responsive="cards" row-clickable></nds-data-table>\n<script>\nel.addEventListener("nds-data-table-sort", e => sort(e.detail));\nel.addEventListener("nds-data-table-row-click", e => openRow(e.detail.row));\n</script>\n\n<!-- 펼침(트리): sub-rows-key 로 자식 배열 필드 지정 -->\n<nds-data-table row-key="id" sub-rows-key="subRows"\n  columns=\'[{"key":"date","title":"날짜"},{"key":"spend","title":"소진액","align":"right"}]\'\n  data=\'[{"id":"d1","date":"2025-08-28","spend":"11,111","subRows":[{"id":"d1a","date":"2025-08-28","spend":"6,000"}]}]\'></nds-data-table>',
       dont: "<!-- 어드민/CMS 페이지에 DataTable 사용 — 어드민은 antd Table -->\n<nds-data-table columns='...'></nds-data-table>",
     },
     summary:
-      "정렬·클릭·빈 상태·로딩·모바일 카드 변환을 모두 갖춘 표. 사용자 앱(약 복용 이력 등)과 운영툴 양쪽에 사용.",
+      "정렬·클릭·빈 상태·로딩·모바일 카드 변환에 더해 getSubRows(React)/sub-rows-key(HTML)로 펼침·접힘(트리) 자식 행까지 갖춘 표. 사용자 앱(약 복용 이력 등)과 운영툴·리포트 양쪽에 사용.",
     pitfalls: [
       "CMS/어드민은 antd Table을 우선 — DataTable은 사용자 앱(특히 모바일 cards 모드)에서 강점.",
       "columns[].key는 데이터 객체의 실제 key 또는 임의 식별자. render가 있으면 key 자체는 매핑 안 해도 됨.",
       "정렬은 controlled — sortKey/sortDirection/onSort 셋을 부모에서 관리. 컴포넌트가 자체 정렬하지 않음.",
       'responsive="cards"는 max-width 640px에서만 카드로 전환. cardLabel/hideOnCard로 카드 모드 표시 조절.',
       "rowKey는 함수 — index 사용은 reorder 시 버그. 가능하면 row.id 같은 안정적 키.",
+      "펼침(getSubRows/sub-rows-key) 사용 시 rowKey/row-key 는 반드시 행 고유값(자식 포함 유일) — index 기반이면 접었다 펼 때 키가 흔들려 펼침 상태가 깨짐.",
+      '합계/병합셀(rowspan) 리포트 표는 여전히 nds-stats-table(`<tr class="is-summary">`). DataTable 펼침은 트리(자식 행)용 — 표 하단 합계행 렌더는 StatsTable 담당이며 둘을 조합한다.',
     ],
     recommended: [
       '사용자 앱 약 복용 이력: responsive="cards" + size="sm"',
       "리스트가 길면 외부에 Pagination 컴포넌트와 조합",
+      "펼침 리포트(캐포비 날짜별/광고별 — 날짜 행 펼치면 캠페인·광고 자식 행): getSubRows(React) / sub-rows-key(HTML) + (옵션) defaultExpandedKeys·expandedKeys. expanderColumnKey/expander-column 로 토글 컬럼 지정(기본 첫 컬럼).",
     ],
     interactivePattern:
       "행 클릭으로 상세 진입. 정렬 가능 컬럼은 sortable: true 명시 + 외부에서 정렬 처리.",
@@ -6861,6 +6865,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**03 FilterBar**: 테이블 위 한 줄(`pattern:action-row`) — Search Input + Dropdown 필터(상태 등) + 기간(DateRange). 카드 형태: radius **12px**, padding **20/24**. **상태 필터(활성/정지 등)는 Dropdown 필터 또는 상태 톤 칩으로 — solid 초록(활성)/빨강(정지) 버튼 금지**(테이블 상태 Badge 색과 충돌하고, 필터 선택과 상태 표시가 혼동됨).",
       "**04 Table**: 헤더 행 + 데이터 행. 헤더 행 배경 `--semantic-bg-surface-subtle`(#FAFAFA). 카드 radius **12px**, Row padding **16/24**, Row 사이 **1px border `#F5F5F5`**. 컬럼은 균등 또는 flex.",
       "**행 셀 컴포넌트**: 썸네일(이미지 컬럼) + 핵심 텍스트(클릭 시 Detail 진입 — 링크색) + **상태 = Badge**(진행중=success/green · 진행예정=subtle · 종료=neutral gray) + 숫자 컬럼 우측 정렬 + **노출 = Toggle**(노출 on green / 미노출 off) + **관리 = 수정(pencil)·삭제(trash) 아이콘 액션**. 상태를 raw 텍스트로, 노출을 체크박스로 만들지 않는다.",
+      '**펼침(트리) 리포트 행 (선택)**: 날짜별/그룹별 리포트처럼 상위 행을 펼쳐 하위(캠페인·광고) 행을 보는 표는 `nds-data-table` 의 `sub-rows-key`(React `getSubRows`) — [+]/[−] 토글 + 자식 행 들여쓰기 자동. 표 하단 합계행이 같이 필요하면 StatsTable 의 `<tr class="is-summary">` 와 조합.',
       "**05 Pagination**: 중앙 정렬 페이지 번호, 버튼 **32×32**, **현재 페이지 = 검정(neutral 900 / #111) fill + 흰 텍스트**(brand yellow 아님 — 노랑은 활성/선택 강조용이라 페이지네이션 현재 페이지와 시각 충돌). 우측에 페이지 사이즈 셀렉트('10개씩 보기') 배치 가능.",
       "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(대시보드와 동일 LNB). ready-made items 는 `pattern:cashwalk-biz-admin-sidebar` 복붙 + activeKey 만 변경.",
       "**Validate**: ① Row > 50 → 페이지네이션 필수 / ≤ 10 → 페이지네이션 생략. ② 필터 > 4개 → 필터 패널 분리(좌측 또는 상단 collapsible). ③ Row 클릭 액션 있으면 → 행 hover effect + cursor pointer. ④ Empty state 필수 → '등록된 OOO이 없습니다' + CTA. ⑤ 정렬 가능 컬럼 → Header 셀에 화살표 아이콘.",

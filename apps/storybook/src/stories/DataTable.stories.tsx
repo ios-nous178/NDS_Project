@@ -130,3 +130,45 @@ export const ResponsiveCards: Story = {
     <DataTable columns={baseColumns} data={meds} rowKey={(r) => r.id} responsive="cards" />
   ),
 };
+
+interface ReportRow {
+  id: string;
+  date: string;
+  campaign: string;
+  spend: string;
+  subRows?: ReportRow[];
+}
+
+const reportData: ReportRow[] = [
+  {
+    id: "d1",
+    date: "2025-08-28 (목)",
+    campaign: "전체",
+    spend: "₩11,111",
+    subRows: [
+      { id: "d1-1", date: "2025-08-28 (목)", campaign: "리비바이오 캠페인", spend: "₩6,000" },
+      { id: "d1-2", date: "2025-08-28 (목)", campaign: "리비바이오 캠페인 시즌2", spend: "₩5,111" },
+    ],
+  },
+  { id: "d2", date: "2025-08-27 (수)", campaign: "전체", spend: "₩9,000" },
+  { id: "d3", date: "2025-08-26 (화)", campaign: "전체", spend: "₩4,200" },
+];
+
+const reportColumns: DataTableColumn<ReportRow>[] = [
+  { key: "date", title: "날짜" },
+  { key: "campaign", title: "캠페인명" },
+  { key: "spend", title: "소진액(₩)", align: "right" },
+];
+
+export const ExpandableRows: Story = {
+  name: "Recipe/Expandable Rows (tree)",
+  render: () => (
+    <DataTable
+      columns={reportColumns}
+      data={reportData}
+      rowKey={(r) => r.id}
+      getSubRows={(r) => r.subRows}
+      defaultExpandedKeys={["d1"]}
+    />
+  ),
+};
