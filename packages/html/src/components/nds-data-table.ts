@@ -68,6 +68,7 @@ interface Column {
   sortable?: boolean;
   cardLabel?: string;
   hideOnCard?: boolean;
+  media?: boolean;
 }
 
 const SortIcon = () => {
@@ -139,6 +140,7 @@ export class NdsDataTable extends NdsElement {
           sortable: !!c.sortable,
           cardLabel: typeof c.cardLabel === "string" ? c.cardLabel : undefined,
           hideOnCard: !!c.hideOnCard,
+          media: !!c.media,
         }));
     } catch {
       return [];
@@ -375,6 +377,7 @@ export class NdsDataTable extends NdsElement {
           td.dataset.slot = "td";
           td.dataset.align =
             expandable && col.key === expanderColumn ? "left" : (col.align ?? "center");
+          if (col.media) td.dataset.cell = "media";
           td.className = DT_TD_CLASS;
           if (expandable && col.key === expanderColumn) {
             const cell = document.createElement("span");
