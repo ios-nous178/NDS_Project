@@ -58,7 +58,7 @@ export const cashwalkBizCoralRed = {
   200: "#FFCDCD",
   300: "#FF9A9A",
   400: "#FF7070",
-  500: "#FF4141",
+  500: "#FC3500", // 에러 SSOT — Figma 입력 에러(보더/헬퍼/필수*) 와 정합 (이전 #FF4141)
   600: "#E83030",
   700: "#C42020",
   800: "#A01414",
@@ -110,7 +110,7 @@ export const cashwalkBizBrown = {
 
 // ─── Status alias (semantic 빠른 참조용) ────────────────
 export const cashwalkBizStatus = {
-  error: cashwalkBizCoralRed[500], // #FF4141
+  error: cashwalkBizCoralRed[500], // #FC3500
   success: cashwalkBizGreen[500], // #00CC5B
   info: cashwalkBizBlue[500], // #007AFF
   caution: cashwalkBizYellow[700], // #FEAF01 — 노랑은 텍스트 가독성 떨어져 700 사용
