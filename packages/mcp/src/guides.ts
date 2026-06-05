@@ -5752,7 +5752,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838 **+ (있으면) 바로 아래 부제** Pretendard Regular 16/24 #666. **레퍼런스에 부제가 있으면 반드시 유지 — title-only 로 축소 금지.** **타이틀/부제 아래에 divider(밑줄·border-bottom·hr) 를 넣지 말 것** — 헤더는 라인 없이 여백만 두고 다음 섹션으로 바로 이어진다. 타이틀/부제 아래 ~76px 여백 후 섹션 헤딩 시작. **페이지 배경 위에 얹는다 — 별도 박스/sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 우측에는 액션 두지 말 것(액션은 콘텐츠 하단 우측 정렬 [취소][저장]).",
       "**섹션 헤딩 (카드 위 분리 노출)**: 헤딩(예: '기본 정보') 은 카드 **밖** 위에 위치 — Pretendard **Bold 24 / lh 30** #383838. 헤딩 아래 ~54px 후 카드 시작.",
       "**섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.",
-      "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**, 필드 우측 ~684px (long) 또는 ~228px (date/short). 라벨은 row 중앙 정렬.",
+      "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**. 입력 필드 가로 너비는 **Field Width 6단계 스케일**(xs 120 / sm 200 / **md 304 default** / lg 400 / xl 488 / full 100%)에서 **px 고정**으로 선택 — 폼 일반 입력 = **Medium 304px**, 같은 행 input 은 같은 사이즈로 통일, Textarea 는 Full(100%). (임의 너비 ~684/228 류·hug·% 금지 — 스케일·use case 는 `pattern:cashwalk-biz-input` 의 Field Width 가 SSOT.) 라벨은 row 중앙 정렬.",
       "**라벨 타이포**: Pretendard **Medium 16 / lh 24, #666** (text.subtle). 'strong' 색을 쓰지 않는다 — 빽빽한 폼에서 라벨은 subtle 로 둬도 위계가 명확.",
       '**필드 컴포넌트**: 높이 **40px** (`nds-input`/`nds-select` 동일 높이로 정렬 — nds-input 은 size 미지정(default)이면 브랜드 :root 40 으로 cascade 되고 `size="compact"` 도 40. **48 로 두면 nds-select(40) 와 높이가 어긋남**), `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border·정확한 radius 는 `pattern:cashwalk-biz-input` 참조.',
       "**행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.",
@@ -5804,6 +5804,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       cardShadow: "0 10px 20px rgba(102,102,102,0.05)",
       interCardGap: "~64–80px (의미 단위 가변)",
       labelColumnWidth: "172px",
+      fieldWidth:
+        "Field Width 6단계 px 고정 — xs120/sm200/md304(default)/lg400/xl488/full100%. 폼 일반 입력 Medium 304, Textarea Full. 스케일 SSOT=pattern:cashwalk-biz-input.",
       labelTypography: "Pretendard Medium 16/24 #666",
       requiredMarker: "라벨 옆 ' *' #FC3500",
       fieldHeight:
@@ -6093,18 +6095,23 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "Input focus 는 brand 색(노랑) 이 아니라 검정 outline. 가이드 명시.",
       "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline. radius 6 / bg #ECECEC.",
       "SelectedItemsPanel 헤더 액션(추가 선택 / 선택 해제)은 고정 — onAdd/onClear 로 제어. count 는 text.brand 강조. 본문은 RegionRow 리스트 등으로 swap.",
+      "**Field Width — 입력 필드 가로 너비 6단계 스케일** (TextInput·Dropdown·DateInput·Selection 등 모든 입력 공통, 컨테이너 안에서는 **항상 px 고정값**): XSmall **120px**(field-width-xs · 코드·짧은 ID·숫자, 예 사업자번호 토큰) · Small **200px**(field-width-sm · 단일 키워드 검색·Filter Dropdown·페이지네이션 옆 셀렉트) · **Medium 304px(field-width-md, default — 폼 내부 일반 입력 이메일·이름·계정명, 가장 흔함)** · Large **400px**(field-width-lg · 모달 내부 메인 입력·단독 검색바) · XLarge **488px**(field-width-xl · 와이드 페이지 필터·상세 폼 강조) · Full **100%**(field-width-full · Textarea·반응형 폼). 같은 행에 여러 input 이면 같은 사이즈로 통일. 관측 정규화: Dropdown 105/164/222 → Small(200)·Medium(304), 모달 명/번호 input ~396 → Large(400), '100개씩 보기' 152 → Small(200). Figma InputGuide Field Width(3897-1578).",
     ],
     avoid: [
       "Input focus 를 노란색으로 바꾸지 말 것 — 가이드 위반.",
       "ImageUpload Error 상태에서 박스 자체를 빨갛게 칠하지 말 것 — border + helper text 로만 표현.",
+      "입력 필드 너비를 미지정(%/auto/fit-content/hug)으로 두거나 임의값(281·317·396 등)으로 — **Field Width 6단계(120/200/304/400/488/100%) 중 px 고정**으로. (반응형 컨테이너의 Full 100% 만 예외.) XSmall 120 미만·내용물에 맞춘 hug(placeholder 가림) 금지.",
     ],
     metrics: {
       components:
         "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · SelectionButton · SelectionButtonGroup · ImageUpload · ActionChip · SelectedItemsPanel",
       defaultStates: "default / typing / error / disabled / complete",
       focusBorder: "#111111 (Neutral/900, 검정)",
-      relatedPatterns: "cashwalk-biz-button, dropdown",
+      fieldWidth:
+        "6단계 px 고정 — xs 120(field-width-xs) / sm 200(field-width-sm) / md 304(field-width-md, default) / lg 400(field-width-lg) / xl 488(field-width-xl) / full 100%(field-width-full). 폼 일반=Medium 304, 모달 메인=Large 400, Textarea=Full.",
+      relatedPatterns: "cashwalk-biz-button, dropdown, cashwalk-biz-form-layout",
     },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3897-1578",
   },
 
   "cashwalk-biz-tab": {
