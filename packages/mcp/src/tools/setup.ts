@@ -1155,7 +1155,14 @@ export function getBrand(args: { brand?: string }) {
   const list = listBrands();
   if (!args.brand) return list;
   const detail = getBrandInfo({ brand: args.brand });
-  return { ...list, detail };
+  // detail 호출에선 전체 브랜드 메타(description·cssImport·version·primaryColor)는 중복 →
+  // 다른 브랜드는 slug/name/ready 로스터로만 축약. 한-화면-한-브랜드 룰(note)은 유지.
+  return {
+    count: list.count,
+    brands: list.brands.map((b) => ({ slug: b.slug, name: b.name, ready: b.ready })),
+    note: list.note,
+    detail,
+  };
 }
 
 export function getBrandInfo(args: { brand: string }) {

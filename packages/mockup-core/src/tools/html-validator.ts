@@ -1672,6 +1672,8 @@ function trimViolationsForResponse(violations: HtmlViolation[]): HtmlViolation[]
       return { ...v, selector };
     }
     // 같은 rule 의 N+1 번째부터는 line 만 (severity / detail / suggestion 은 sample 과 동일).
+    // 주의: 첫 N(=5)건은 full 유지 — raw-landmark 처럼 같은 rule 이라도 위반마다 suggestion 이
+    // 다른 케이스(header→BrandHeader / footer→BrandFooter)가 있어 무조건 dedup 하면 신호가 샌다.
     return {
       rule: v.rule,
       line: v.line,
@@ -1747,11 +1749,9 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
     severitySummary,
     scores: computeScores(violationsByRule),
     jsxOnlyNotice:
-      "validate_html_mockup 은 토큰·간격·아이콘·nds-* 태그/클래스·컨테이너 패턴 (Card 중첩 / Footer 버튼 과다 / 영역별 primary CTA / heading 장식 / brand BG / bold 남발 등) 까지 검사합니다. " +
-      "다만 JSX 전용 룰 — antd import 잔존 / 외부 아이콘 라이브러리 import / Chip.label 속성 / 화살표 아이콘 식별 (HTML 에서는 익명 <svg>) — 은 .tsx 시점에서만 검출됩니다. " +
-      "prop 의미 검증 (IconButton size union 등) 도 .tsx 의 validate_mockup 을 사용하세요. " +
-      "응답 크기 cap: 같은 rule 의 첫 " +
+      "이 검사는 HTML 정적 룰만 — JSX 전용(antd/외부 아이콘 import 잔존, Chip.label 속성, 화살표 아이콘 식별, IconButton size 등 prop 의미)은 .tsx 의 validate_mockup 으로 별도 확인하세요. " +
+      "응답 cap: 같은 룰 첫 " +
       FULL_SAMPLES_PER_RULE +
-      "건은 detail/suggestion full, 그 뒤는 line 만. 룰별 총 카운트는 violationsByRule 참고.",
+      "건만 full, 그 뒤는 line 만(룰별 총계는 violationsByRule).",
   };
 }

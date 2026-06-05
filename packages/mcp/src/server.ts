@@ -320,7 +320,8 @@ function decorateIcon(name: string) {
  *  - { query } → top 10 점수 매치 (이름만 — SVG 가 필요하면 find_icon({ name }) 재호출)
  *  - { category } → 해당 카테고리 아이콘 목록
  */
-async function findIcon(args: {
+// export: find-slim.test.ts 의 응답 슬림(토큰 절감) 회귀 테스트용 (런타임 동작 변경 없음).
+export async function findIcon(args: {
   name?: string;
   query?: string;
   category?: string;
@@ -367,11 +368,17 @@ async function findIcon(args: {
     }
   }
   if (args.query) {
+    // 이름 찾기 분기 — name(+분류용 category)만. categoryLabel/style/pair·SVG 는
+    // 삽입 시점의 find_icon({ name }) 에서 제공(이미 그 경로 존재). score 는 정렬 후 drop.
     return manifest.icons
-      .map((name) => ({ ...decorateIcon(name), score: scoreMatch(args.query as string, name) }))
+      .map((name) => ({ name, score: scoreMatch(args.query as string, name) }))
       .filter((c) => c.score > 0)
       .sort((a, b) => b.score - a.score)
-      .slice(0, clampLimit(args.limit, 10, 50));
+      .slice(0, clampLimit(args.limit, 10, 50))
+      .map(({ name }) => {
+        const category = ICON_METADATA[name]?.category;
+        return category ? { name, category } : { name };
+      });
   }
   if (args.category) {
     const category = args.category as IconCategory;
@@ -408,18 +415,22 @@ async function findIcon(args: {
  *  - { query } → 점수 기반 매치 (semantic 우선, raw palette deprioritize)
  *  - 둘 다 → query 우선
  */
-function findToken(args: { group?: string; query?: string }) {
+// export: find-slim.test.ts 의 응답 슬림(토큰 절감) 회귀 테스트용 (런타임 동작 변경 없음).
+export function findToken(args: { group?: string; query?: string }) {
   if (args.query) {
     const normalizedQuery = args.query.trim().toLowerCase();
+    // score 는 정렬용 — 출력엔 싣지 않는다. policy 객체(safe+note)도 매 토큰 반복하지 않고,
+    // 회피해야 할 raw palette 토큰에만 짧은 avoid 플래그를 단다(semantic 우선은 기본 기대).
     return manifest.tokens
-      .map((t) => ({
-        ...t,
-        policy: getTokenLookupPolicy(t),
-        score: getTokenLookupScore(t, normalizedQuery),
-      }))
-      .filter((t) => t.score > 0)
+      .map((t) => ({ token: t, score: getTokenLookupScore(t, normalizedQuery) }))
+      .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
+      .slice(0, 10)
+      .map(({ token }) =>
+        isRawPaletteToken(token)
+          ? { ...token, avoid: "raw palette — --semantic-* 토큰 우선" }
+          : token,
+      );
   }
   if (args.group) return manifest.tokens.filter((t) => t.group === args.group);
   const groups: Record<string, number> = {};
@@ -601,31 +612,6 @@ function getTokenLookupScore(token: Manifest["tokens"][number], query: string): 
   if (isRawPaletteToken(token) && isRawPaletteQuery(query)) score += 20;
 
   return score;
-}
-
-function getTokenLookupPolicy(token: Manifest["tokens"][number]) {
-  if (token.group === "semantic") {
-    return {
-      safeForMockup: true,
-      note: "Preferred semantic token. Use this before raw palette tokens.",
-    };
-  }
-  if (isPolicyRadiusOrShapeToken(token)) {
-    return {
-      safeForMockup: true,
-      note: "Approved radius/shape policy token.",
-    };
-  }
-  if (isRawPaletteToken(token)) {
-    return {
-      safeForMockup: false,
-      note: "Raw palette token. Avoid in mockups unless you are implementing the DS itself; prefer --semantic-* tokens.",
-    };
-  }
-  return {
-    safeForMockup: true,
-    note: "Policy-safe design token.",
-  };
 }
 
 function isPolicyRadiusOrShapeToken(token: Manifest["tokens"][number]) {
