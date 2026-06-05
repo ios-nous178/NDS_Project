@@ -3505,6 +3505,58 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       },
     },
   },
+  SelectedItemsPanel: {
+    name: "SelectedItemsPanel",
+    examplesHtml: {
+      do: '<nds-selected-items-panel panel-title="선택한 지역" count="2">\n  <nds-region-row>강원특별자치도 &gt; 강릉시</nds-region-row>\n  <nds-region-row>서울특별시 &gt; 강남구</nds-region-row>\n</nds-selected-items-panel>\n<script>\n  el.addEventListener("nds-selected-items-add", openPicker);\n  el.addEventListener("nds-selected-items-clear", clearAll);\n  el.addEventListener("nds-region-remove", e => e.target.remove());\n</script>',
+      dont: '<!-- count 를 직접 헤더 텍스트에 박지 말 것 — count 속성이 브랜드색 강조를 담당 -->\n<nds-selected-items-panel panel-title="선택한 지역 2개"></nds-selected-items-panel>',
+    },
+    summary:
+      "선택 항목 슬롯 패널 — 헤더(타이틀 + 강조 개수 + 추가 선택/선택 해제 액션)는 고정, 본문은 RegionRow 리스트·폼·테이블 등으로 swap 하는 INSTANCE_SWAP 슬롯. 캐포비 admin 의 다중 선택 결과 패널. RegionRow(라벨 + 삭제 X) 동봉.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3828-1577",
+    pitfalls: [
+      "개수를 타이틀 문자열에 직접 넣지 말 것 — `count` prop/속성이 text.brand 색으로 강조 렌더. 타이틀은 명사만.",
+      "헤더 액션(추가 선택 / 선택 해제)은 **고정 구성** — 임의의 버튼을 헤더에 더 끼워넣지 말 것. onAdd/onClear(또는 nds-selected-items-add/clear 이벤트)로만 제어.",
+      "본문 항목 삭제는 RegionRow 의 onRemove(또는 nds-region-remove 이벤트)로 — 패널이 항목 상태를 들고 있지 않음(controlled). 호스트가 리스트를 갱신.",
+      "본문이 길어지면 화면을 덮지 않도록 `--nds-selected-items-panel-body-max-height` 로 스크롤 제한.",
+      "RegionRow 는 패널 전용 행 — 일반 리스트/태그 자리에는 ListItem/Chip 사용.",
+    ],
+    recommended: [
+      '기본: <SelectedItemsPanel title="선택한 지역" count={items.length} onAdd={openPicker} onClear={clearAll}>{items.map(i => <RegionRow key={i.id} onRemove={() => remove(i.id)}>{i.label}</RegionRow>)}</SelectedItemsPanel>',
+      "본문 swap: RegionRow 리스트 대신 폼/데이터테이블을 children 으로 그대로 넣어도 됨.",
+      "액션 숨김: showActions={false} (읽기 전용 요약 패널).",
+    ],
+    sizeMatrix: {
+      panel: "padding inset-modal · border border.normal · radius xl(16) · bg surface.subtle",
+      title: "headline4 18/26 Bold · text.strong",
+      count: "headline4 18/26 Bold · text.brand (강조 개수)",
+      actionPrimary: "fill.neutral bg · text.inverse · radius md(8) · body3 Bold · + 아이콘 16",
+      actionGhost: "transparent + border.strong · text.subtle · radius md(8) · refresh 아이콘 16",
+      body: "flex column · gap 8 · overflow-y auto (max-height = --nds-selected-items-panel-body-max-height)",
+      regionRow:
+        "padding 8/12/8/16 · radius lg(12) · bg surface.section · label body1 · 삭제 X 20px",
+    },
+    accessibility: [
+      "RegionRow 삭제 버튼: `aria-label`(기본 '삭제') 자동 부착 — removeLabel 로 항목명 포함 권장.",
+      "헤더 액션은 native button — Tab/Enter/Space 자동.",
+      "count 는 시각 강조용 — 스크린리더가 타이틀+개수를 순서대로 읽도록 같은 그룹에 배치.",
+    ],
+    usagePolicy: {
+      useFor: [
+        "캐시워크 포 비즈니스 admin 의 다중 선택 결과 패널 (선택한 지역/카테고리/멤버 N개)",
+        "선택 picker 와 짝을 이루는 '현재 선택' 요약 + 개별 제거",
+      ],
+      doNotUseFor: [
+        "단일 선택 — Select/Dropdown",
+        "일반 정보 카드 — Card",
+        "체크박스 목록 자체 — ConsentChecklist / Checkbox 그룹",
+      ],
+      limits: {
+        headerActions: "추가 선택 / 선택 해제 2종 고정",
+        body: "INSTANCE_SWAP 슬롯 (RegionRow / 폼 / 테이블)",
+      },
+    },
+  },
   Accordion: {
     name: "Accordion",
     summary:
@@ -5836,15 +5888,18 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-input": {
     name: "cashwalk-biz-input",
     summary:
-      "캐시워크 포 비즈니스 admin 의 Input/Form 컴포넌트 카탈로그. 8 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
+      "캐시워크 포 비즈니스 admin 의 Input/Form 컴포넌트 카탈로그. 11 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
     rules: [
-      "TextInput (5 states), TextField (Label+Input+Helper, 5 states), Dropdown (Default/Hover/Active/Error/Disabled), DateInput (5 states), Textarea (5 states), Checkbox (4 variants), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션).",
+      "TextInput (5 states), TextField (Label+Input+Helper, 5 states), Dropdown (Default/Hover/Active/Error/Disabled + Expanded 메뉴), DateInput (5 states), Textarea (5 states), Checkbox (4 variants), SelectionButton/SelectionButtonGroup (선택 버튼 · FormField 교체), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션), SelectedItemsPanel (선택 항목 슬롯 패널 + RegionRow).",
       "Input/Border/Focus 는 ★ Neutral/900 (#111111) 검정 — 다른 브랜드(brand 색 focus) 와 달리 캐시워크 포 비즈니스 admin 은 검정 outline.",
       "Input/BG/Disabled = Neutral/50 (#FAFAFA), Input/Border/Default = Neutral/200 (#EEEEEE).",
+      "Input·Dropdown·DateInput 의 입력 텍스트는 Body2 14/20 (base DS 의 Select/DateInput 13/18 보다 큼 — 캐시워크 포 비즈니스 전용).",
+      "Dropdown 선택(Selected) 항목은 ★ 회색 배경(Section #F5F5F5) + Strong 텍스트 + Medium 500 + 우측 체크 — 다른 브랜드의 brand-tint 선택과 다름. 메뉴 항목 radius 6 / inset 패딩.",
       "Checkbox 의 'on-green' SVG 가 별도 — success 표시(이미 처리 완료) 의미. 일반 checked 와 구분.",
       "ImageUpload 는 캐시워크 포 비즈니스 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.",
       "Input focus 는 brand 색(노랑) 이 아니라 검정 outline. 가이드 명시.",
-      "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline.",
+      "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline. radius 6 / bg #ECECEC.",
+      "SelectedItemsPanel 헤더 액션(추가 선택 / 선택 해제)은 고정 — onAdd/onClear 로 제어. count 는 text.brand 강조. 본문은 RegionRow 리스트 등으로 swap.",
     ],
     avoid: [
       "Input focus 를 노란색으로 바꾸지 말 것 — 가이드 위반.",
@@ -5852,7 +5907,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     ],
     metrics: {
       components:
-        "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · ImageUpload · ActionChip",
+        "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · SelectionButton · SelectionButtonGroup · ImageUpload · ActionChip · SelectedItemsPanel",
       defaultStates: "default / typing / error / disabled / complete",
       focusBorder: "#111111 (Neutral/900, 검정)",
       relatedPatterns: "cashwalk-biz-button, dropdown",
