@@ -69,7 +69,7 @@ import {
 import { captureContext } from "./tools/context-capture.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
-import { getGuide } from "./tools/guides.js";
+import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
@@ -230,6 +230,40 @@ function scoreMatch(query: string, name: string): number {
   return s;
 }
 
+/**
+ * 컴포넌트 검색 별칭 — substring 기반 scoreMatch 가 0점을 주는 흔한 약어·한글 질의를
+ * 가산 보정한다. **가산만** 하고 기존 매치는 절대 제거하지 않으므로 오탐의 최악 사례는
+ * "후보가 하나 늘어남" 수준(틀린 단독 매치가 아님). key = 컴포넌트 이름에 substring 으로
+ * 존재하는 정규 영문, value = 그 별칭들(소문자). 예: '버튼' → name 에 'button' 포함 → Button.
+ */
+const COMPONENT_SEARCH_ALIASES: Record<string, string[]> = {
+  button: ["btn", "버튼"],
+  select: ["dropdown", "셀렉트", "드롭다운"],
+  input: ["인풋", "텍스트필드"],
+  checkbox: ["체크박스"],
+  radio: ["라디오"],
+  modal: ["모달", "다이얼로그", "dialog"],
+  toggle: ["스위치", "switch"],
+  chip: ["칩"],
+  tabs: ["탭"],
+  tooltip: ["툴팁"],
+  badge: ["뱃지", "배지"],
+  toast: ["토스트"],
+  card: ["카드"],
+  avatar: ["아바타"],
+};
+
+/** 별칭이 정규 영문을 포함하는 이름과 맞으면 substring(60) 보다 낮은 50점을 준다. */
+function aliasScore(query: string, name: string): number {
+  const q = query.toLowerCase().trim();
+  if (!q) return 0;
+  const n = name.toLowerCase();
+  for (const [canonical, aliases] of Object.entries(COMPONENT_SEARCH_ALIASES)) {
+    if (n.includes(canonical) && aliases.includes(q)) return 50;
+  }
+  return 0;
+}
+
 /* ───────────── Tool 핸들러 ───────────── */
 
 function clampLimit(value: unknown, fallback: number, max: number): number {
@@ -245,7 +279,7 @@ function searchComponent(query: string, limit = 10) {
       htmlTag: c.htmlTag,
       propsCount: c.props?.length ?? 0,
       guideHint: getComponentGuideHint(c.name),
-      score: scoreMatch(query, c.name),
+      score: Math.max(scoreMatch(query, c.name), aliasScore(query, c.name)),
     }))
     .filter((c) => c.score > 0)
     .sort((a, b) => b.score - a.score)
@@ -276,7 +310,13 @@ function getComponentGuideHint(name: string): string | undefined {
  * 펼치면 수 KB. 한 번에 9개씩 병렬 호출하던 사용 패턴에서 토큰을 크게 잡아먹었다.
  * 슬림 응답이면 prop 존재 여부 확인엔 충분하고, 시그니처 까지 필요하면 verbose:true 로 명시.
  */
-function findComponent(args: { name?: string; query?: string; limit?: number; verbose?: boolean }) {
+// export: find-miss.test.ts 의 query-miss 대칭 / 별칭 회귀 테스트용 (런타임 동작 변경 없음).
+export function findComponent(args: {
+  name?: string;
+  query?: string;
+  limit?: number;
+  verbose?: boolean;
+}) {
   const limit = clampLimit(args.limit, 20, 100);
   if (args.name) {
     const c = componentByName.get(args.name);
@@ -302,7 +342,19 @@ function findComponent(args: { name?: string; query?: string; limit?: number; ve
         "Slim response — prop names only. Pass verbose:true for full signatures (type/allowedValues/etc). For usage examples + guidance, prefer get_guide({ topic: `component:${c.name}` }).",
     };
   }
-  if (args.query) return searchComponent(args.query, clampLimit(args.limit, 10, 50));
+  if (args.query) {
+    const results = searchComponent(args.query, clampLimit(args.limit, 10, 50));
+    if (results.length === 0) {
+      // name-miss 경로와 대칭: 빈 배열([]) 대신 error+suggestions 를 돌려준다. []는 외부
+      // 에이전트가 "컴포넌트 없음 → native 직접 작성" 으로 오판하게 만들고(실제로는 존재),
+      // 그 오판이 taxonomy-gap 신호로 집계되면 수집 데이터까지 오염된다.
+      return {
+        error: `No component matched query '${args.query}'. Call find_component with no args to list all components, or check spelling/synonyms.`,
+        suggestions: [],
+      };
+    }
+    return results;
+  }
   return {
     _hint:
       "No-arg call returns a capped component name list. Use `{ query }` or `{ name }` for details.",
@@ -387,15 +439,22 @@ export async function findIcon(args: {
   if (args.query) {
     // 이름 찾기 분기 — name(+분류용 category)만. categoryLabel/style/pair·SVG 는
     // 삽입 시점의 find_icon({ name }) 에서 제공(이미 그 경로 존재). score 는 정렬 후 drop.
-    return manifest.icons
+    const matches = manifest.icons
       .map((name) => ({ name, score: scoreMatch(args.query as string, name) }))
       .filter((c) => c.score > 0)
       .sort((a, b) => b.score - a.score)
-      .slice(0, clampLimit(args.limit, 10, 50))
-      .map(({ name }) => {
-        const category = ICON_METADATA[name]?.category;
-        return category ? { name, category } : { name };
-      });
+      .slice(0, clampLimit(args.limit, 10, 50));
+    if (matches.length === 0) {
+      // { name } 미스 경로와 대칭: 빈 배열 대신 error 를 돌려줘 "아이콘 전무" 오판을 막는다.
+      return {
+        error: `No icon matched query '${args.query}'. find_icon 인자 없이 호출하면 카테고리 인덱스를 볼 수 있습니다. 더 일반적인 영문 키워드로 다시 시도하세요.`,
+        suggestions: [],
+      };
+    }
+    return matches.map(({ name }) => {
+      const category = ICON_METADATA[name]?.category;
+      return category ? { name, category } : { name };
+    });
   }
   if (args.category) {
     const category = args.category as IconCategory;
@@ -782,6 +841,7 @@ const toolHandlers = {
         },
       ),
     ),
+  list_figma_sync_status: () => listFigmaSyncStatus(),
   get_setup: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "get_setup",
