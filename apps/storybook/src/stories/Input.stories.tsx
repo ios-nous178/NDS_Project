@@ -527,3 +527,43 @@ export const AriaDescribedByHelperEdge: StoryObj<InputProps> = {
     await expect(helperEl).not.toHaveAttribute("role");
   },
 };
+
+function PasswordToggleDemo() {
+  const [pw, setPw] = useState("super-secret");
+  return (
+    <div style={{ width: 360 }}>
+      <Input
+        label="비밀번호"
+        type="password"
+        placeholder="비밀번호를 입력해주세요"
+        value={pw}
+        onChange={(e) => setPw(e.target.value)}
+        helperText="우측 눈 아이콘으로 표시/숨김을 전환할 수 있습니다."
+      />
+    </div>
+  );
+}
+
+export const PasswordToggle: StoryObj<InputProps> = {
+  name: "Recipe/Password Toggle",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'type="password" 면 우측에 눈 아이콘 토글이 자동 노출됩니다 (auth/로그인 화면용). 끄려면 passwordToggle={false}. 아이콘은 DS eye/eye-off 와 동일.',
+      },
+    },
+  },
+  render: () => <PasswordToggleDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const field = canvas.getByLabelText("비밀번호") as HTMLInputElement;
+    await expect(field).toHaveAttribute("type", "password");
+
+    const toggle = canvas.getByRole("button", { name: "비밀번호 표시" });
+    const user = createInteractionUser();
+    await user.click(toggle);
+    await expect(field).toHaveAttribute("type", "text");
+    await expect(canvas.getByRole("button", { name: "비밀번호 숨기기" })).toBeInTheDocument();
+  },
+};

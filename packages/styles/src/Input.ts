@@ -18,6 +18,7 @@ const INPUT_FIELD_CLASS = `${INPUT_CLASS}__field`;
 const INPUT_PREFIX_CLASS = `${INPUT_CLASS}__prefix`;
 const INPUT_SUFFIX_CLASS = `${INPUT_CLASS}__suffix`;
 const INPUT_CLEAR_CLASS = `${INPUT_CLASS}__clear`;
+const INPUT_PASSWORD_TOGGLE_CLASS = `${INPUT_CLASS}__password-toggle`;
 const INPUT_HELPER_CLASS = `${INPUT_CLASS}__helper`;
 const INPUT_HELPER_GROUP_CLASS = `${INPUT_CLASS}__helper-group`;
 const INPUT_COUNT_CLASS = `${INPUT_CLASS}__count`;
@@ -146,6 +147,33 @@ export const inputStyles = `
   }
 
   :where(.${INPUT_CLEAR_CLASS} svg) {
+    width: ${sizing.icon.default}px;
+    height: ${sizing.icon.default}px;
+  }
+
+  :where(.${INPUT_PASSWORD_TOGGLE_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    color: ${cv.iconRole.normal};
+    line-height: 1;
+  }
+
+  :where(.${INPUT_PASSWORD_TOGGLE_CLASS}:hover:not(:disabled)) {
+    color: ${cv.iconRole.strong};
+  }
+
+  :where(.${INPUT_PASSWORD_TOGGLE_CLASS}:disabled) {
+    cursor: default;
+    color: ${cv.iconRole.disabled};
+  }
+
+  :where(.${INPUT_PASSWORD_TOGGLE_CLASS} svg) {
     width: ${sizing.icon.default}px;
     height: ${sizing.icon.default}px;
   }

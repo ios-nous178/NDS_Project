@@ -46,3 +46,45 @@ describe("nds-input — size별 inline 높이 (브랜드 cascade 보존)", () =>
     expect(root.style.getPropertyValue("--nds-input-height")).toBe("44px");
   });
 });
+
+describe("nds-input — 비밀번호 표시/숨김 토글", () => {
+  const setup = async (attrs: Record<string, string>) => {
+    const el = document.createElement("nds-input");
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    document.body.appendChild(el);
+    await flush();
+    return el;
+  };
+
+  it("type=password 면 토글 버튼이 생기고 field 는 password 로 가려진다", async () => {
+    const el = await setup({ type: "password" });
+    const field = el.querySelector<HTMLInputElement>('[data-slot="field"]')!;
+    const toggle = el.querySelector<HTMLButtonElement>('[data-slot="password-toggle"]');
+    expect(toggle).toBeTruthy();
+    expect(field.type).toBe("password");
+    expect(toggle!.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("토글 클릭 시 field type 이 text↔password 로 바뀐다", async () => {
+    const el = await setup({ type: "password" });
+    const field = el.querySelector<HTMLInputElement>('[data-slot="field"]')!;
+    const toggle = el.querySelector<HTMLButtonElement>('[data-slot="password-toggle"]')!;
+    toggle.click();
+    await flush();
+    expect(field.type).toBe("text");
+    expect(toggle.getAttribute("aria-pressed")).toBe("true");
+    toggle.click();
+    await flush();
+    expect(field.type).toBe("password");
+  });
+
+  it('password-toggle="false" 면 토글을 숨긴다', async () => {
+    const el = await setup({ type: "password", "password-toggle": "false" });
+    expect(el.querySelector('[data-slot="password-toggle"]')).toBeNull();
+  });
+
+  it("password 가 아닌 type 은 토글이 없다", async () => {
+    const el = await setup({ type: "email" });
+    expect(el.querySelector('[data-slot="password-toggle"]')).toBeNull();
+  });
+});
