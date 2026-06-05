@@ -717,7 +717,10 @@ export function registerToolHandlers(
       let result = await handler(validatedArgs);
       const afterResult = await options.afterCall?.({ name, args: validatedArgs, result });
       if (afterResult !== undefined) result = afterResult;
-      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      // 성공 응답은 compact 직렬화 — 들여쓰기는 LLM 파싱에 불필요하고 응답당 ~20% 가
+      // 공백이다. 사람이 읽는 카드/노티스는 문자열 값 내부 \n 으로 자체 포맷팅돼 영향 없음.
+      // (에러 경로는 빈도 낮고 디버깅 가독성이 중요해 pretty 유지)
+      return { content: [{ type: "text", text: JSON.stringify(result) }] };
     } catch (e) {
       return {
         content: [
