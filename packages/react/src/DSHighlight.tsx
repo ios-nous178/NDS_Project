@@ -391,7 +391,7 @@ const DSHighlightToggle: React.FC = () => {
           borderRadius: "50%",
           background:
             mode === "off"
-              ? "var(--semantic-icon-muted-default)"
+              ? "var(--semantic-text-muted-default)"
               : "var(--semantic-icon-inverse-default)",
           transition: "background 0.2s",
         }}

@@ -136,7 +136,7 @@ export class NdsDsHighlight extends NdsElement {
 
     const dot = document.createElement("span");
     dot.style.cssText =
-      "display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--semantic-icon-muted-default);";
+      "display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--semantic-text-muted-default);";
     const label = document.createElement("span");
     label.textContent = "DS OFF";
 
@@ -245,7 +245,7 @@ export class NdsDsHighlight extends NdsElement {
     if (dot)
       dot.style.background =
         mode === "off"
-          ? "var(--semantic-icon-muted-default)"
+          ? "var(--semantic-text-muted-default)"
           : "var(--semantic-icon-inverse-default)";
     this._toggleBtn.style.background =
       mode === "off" ? "var(--semantic-bg-inverse-default)" : "var(--semantic-icon-brand-default)";

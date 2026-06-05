@@ -25,7 +25,7 @@ const STATUS_COLOR: Record<PresenceStatus, string> = {
   online: "var(--semantic-icon-status-success)",
   away: "var(--semantic-icon-status-caution)",
   busy: "var(--semantic-icon-status-error)",
-  offline: "#A0A4AC",
+  offline: "var(--semantic-icon-disabled-default)",
 };
 
 const STATUS_LABEL: Record<PresenceStatus, string> = {
