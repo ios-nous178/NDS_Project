@@ -22,7 +22,10 @@ import {
   canonicalPagePattern,
   CASHWALK_BIZ_PAGE_PATTERNS,
 } from "@nudge-design/mockup-core/tools/standalone-assets";
-import { readSurfaceMarker } from "@nudge-design/mockup-core/tools/html-validator";
+import {
+  readPagePatternMarker,
+  readSurfaceMarker,
+} from "@nudge-design/mockup-core/tools/html-validator";
 // Decision Log read-side(타입·상수·screenKey·리더)는 공용 코어로 이전 — write-side(build/append)는
 // MCP 검증 타입에 묶여 아래에 남는다. 기존 import 경로 호환을 위해 같은 이름으로 re-export.
 import {
@@ -491,6 +494,12 @@ export function saveDesignSpec(args: {
     if (screen && typeof screen === "object" && !screen.surfaceKind) {
       const marker = readSurfaceMarker(dir);
       if (marker) screen.surfaceKind = marker;
+    }
+    // pagePattern 미선언 시 nudge.pagePattern 마커에서 자동 주입 — 데스크탑 추천 카드에서 사용자가
+    // 고른 패턴을 마커로 박아두면, 모델이 빠뜨려도 캐포비 어드민 5종 게이트가 통과한다. (선언됐으면 존중.)
+    if (screen && typeof screen === "object" && !screen.pagePattern) {
+      const pp = readPagePatternMarker(dir);
+      if (pp) screen.pagePattern = pp;
     }
   }
 

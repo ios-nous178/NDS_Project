@@ -1,5 +1,8 @@
 import { contextBridge, ipcRenderer, webUtils, type IpcRendererEvent } from "electron";
-import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
+import type {
+  RecommendPagePatternResult,
+  ValidateHtmlMockupResult,
+} from "@nudge-design/mockup-core";
 import type { OpenProjectResult, CurrentProjectResult } from "../main/ipc.js";
 import type { ExportResult } from "../main/export-runner.js";
 import type { FigmaExportResult } from "../main/figma-export.js";
@@ -255,6 +258,13 @@ const harness = {
     error?: string;
     code?: StartAgentErrorCode;
   }> => ipcRenderer.invoke("intake:start", args),
+  /** PRD → 캐포비 어드민 Page Pattern 1차 추천(키워드 점수). intake 추천 카드 전용. */
+  recommendPagePattern: (args: {
+    prd: string;
+    brand?: string;
+    surface?: string;
+  }): Promise<RecommendPagePatternResult> =>
+    ipcRenderer.invoke("intake:recommend-page-pattern", args),
   /** 드래그드롭 File → 실제 절대경로(File.path 대체). 멀티MB IPC 회피용. 동기·read-only. */
   pathForFile: (file: File): string => webUtils.getPathForFile(file),
 };

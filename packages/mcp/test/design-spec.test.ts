@@ -475,6 +475,49 @@ describe("design decision log", () => {
       expect(fs.existsSync(path.join(bareDir, DESIGN_DECISIONS_FILE))).toBe(false);
       fs.rmSync(bareDir, { recursive: true, force: true });
     });
+
+    it("injects screen.pagePattern from nudge.pagePattern marker when omitted (cashwalk-biz admin)", () => {
+      const ppDir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-pp-"));
+      fs.writeFileSync(path.join(ppDir, "nudge.pagePattern"), "list\n", "utf8");
+      const res = saveDesignSpec({
+        spec: {
+          screen: {
+            brand: "cashwalk-biz",
+            surface: "web",
+            intent: "배너 광고 목록",
+            surfaceKind: "admin",
+          },
+          tree: [{ component: "Card" }],
+        },
+        cwd: ppDir,
+      });
+      // 마커가 주입돼 캐포비 어드민 Page Pattern 게이트를 통과(에러 0).
+      expect(res.ok).toBe(true);
+      const written = JSON.parse(fs.readFileSync(path.join(ppDir, "design-spec.json"), "utf8"));
+      expect(written.screen.pagePattern).toBe("list");
+      fs.rmSync(ppDir, { recursive: true, force: true });
+    });
+
+    it("respects an explicitly declared pagePattern over the marker", () => {
+      const ppDir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-pp2-"));
+      fs.writeFileSync(path.join(ppDir, "nudge.pagePattern"), "list\n", "utf8");
+      saveDesignSpec({
+        spec: {
+          screen: {
+            brand: "cashwalk-biz",
+            surface: "web",
+            intent: "캠페인 상세",
+            surfaceKind: "admin",
+            pagePattern: "detail",
+          },
+          tree: [{ component: "Card" }],
+        },
+        cwd: ppDir,
+      });
+      const written = JSON.parse(fs.readFileSync(path.join(ppDir, "design-spec.json"), "utf8"));
+      expect(written.screen.pagePattern).toBe("detail");
+      fs.rmSync(ppDir, { recursive: true, force: true });
+    });
   });
 });
 
