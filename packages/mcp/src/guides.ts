@@ -3272,7 +3272,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "rowKey는 함수 — index 사용은 reorder 시 버그. 가능하면 row.id 같은 안정적 키.",
       "펼침(getSubRows/sub-rows-key) 사용 시 rowKey/row-key 는 반드시 행 고유값(자식 포함 유일) — index 기반이면 접었다 펼 때 키가 흔들려 펼침 상태가 깨짐.",
       '합계/병합셀(rowspan) 리포트 표는 여전히 nds-stats-table(`<tr class="is-summary">`). DataTable 펼침은 트리(자식 행)용 — 표 하단 합계행 렌더는 StatsTable 담당이며 둘을 조합한다.',
-      "기본 정렬 = **중앙**(헤더·셀 동일, 캐포비 리스트 SSOT 3613-365). 텍스트 좌측·숫자 우측이 필요하면 컬럼에 align='left'/'right' 지정 — 펼침 토글 컬럼은 자동 좌측. 기본 간격(size 'md')도 airy(헤더 ~56 · 행 ~80); 조밀한 표는 size='sm'.",
+      "기본 정렬 = **중앙**(헤더·셀 동일, 캐포비 리스트 SSOT 3613-365). 텍스트 좌측·숫자 우측이 필요하면 컬럼에 align='left'/'right' 지정 — 펼침 토글 컬럼은 자동 좌측. 셀 패딩은 **16px 고정(상하좌우)**이고 행 높이는 내용에 따라 가변 — 이미지/썸네일 등 큰 셀은 컬럼에 `media`(React)/`media:true`(HTML JSON) 로 12px. 조밀한 표는 size='sm'. 펼침 표는 컬럼 width 를 지정하면 table-layout:fixed 로 정렬이 안정적.",
     ],
     recommended: [
       '사용자 앱 약 복용 이력: responsive="cards" + size="sm"',

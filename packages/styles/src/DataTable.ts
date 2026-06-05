@@ -55,7 +55,7 @@ export const dataTableStyles = `
 
   :where(.${DT_TH_CLASS}) {
     text-align: center;
-    padding: ${spacing[20]}px var(--semantic-inset-modal);
+    padding: var(--semantic-inset-card);
     background: ${cv.surface.page};
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
@@ -111,7 +111,7 @@ export const dataTableStyles = `
   }
 
   :where(.${DT_TD_CLASS}) {
-    padding: ${spacing[30]}px var(--semantic-inset-modal);
+    padding: var(--semantic-inset-card);
     color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -119,6 +119,8 @@ export const dataTableStyles = `
   }
   :where(.${DT_TD_CLASS}[data-align="center"]) { text-align: center; }
   :where(.${DT_TD_CLASS}[data-align="right"])  { text-align: right; }
+  /* 이미지/큰 셀 — 16px 대신 12px 패딩(썸네일이 행을 과하게 키우지 않게) */
+  :where(.${DT_TD_CLASS}[data-cell="media"]) { padding: ${spacing[12]}px; }
 
   :where(.${DT_CLASS}[data-size="sm"]) .${DT_TH_CLASS},
   :where(.${DT_CLASS}[data-size="sm"]) .${DT_TD_CLASS} {

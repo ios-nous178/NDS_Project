@@ -41,6 +41,8 @@ export interface DataTableColumn<T> {
   cardLabel?: React.ReactNode;
   /** 모바일 카드 모드에서 숨김 */
   hideOnCard?: boolean;
+  /** 이미지/썸네일 등 큰 셀 — 패딩 16px 대신 12px (행이 과하게 커지지 않게) */
+  media?: boolean;
 }
 
 export interface DataTableProps<T> {
@@ -367,6 +369,7 @@ export function DataTable<T>({
                       key={col.key}
                       data-slot="td"
                       data-align={colAlign(col)}
+                      data-cell={col.media ? "media" : undefined}
                       className={DT_TD_CLASS}
                     >
                       {renderExpandableCell(col, fr)}
