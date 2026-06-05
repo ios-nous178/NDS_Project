@@ -60,7 +60,11 @@ import {
   listStandaloneBrands,
 } from "@nudge-design/mockup-core/tools/standalone-assets";
 import { recommendPagePattern } from "@nudge-design/mockup-core/tools/page-pattern-recommender";
-import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
+import {
+  attachUsageGuardOutcome,
+  flushPendingUsageWebhookQueue,
+  runUsageGuards,
+} from "./tools/usage.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { getGuide } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
@@ -786,23 +790,29 @@ const toolHandlers = {
         },
       ),
     ),
-  dev_server: (args: ToolArgs) =>
-    devServer(
-      args as {
-        action: "start" | "stop";
-        cwd?: string;
-        command?: string;
-        args?: string[];
-        url?: string;
-        port?: number;
-        timeoutMs?: number;
-        sessionId?: string;
-      },
-    ),
+  dev_server: async (args: ToolArgs) => {
+    const typed = args as {
+      action: "start" | "stop";
+      cwd?: string;
+      command?: string;
+      args?: string[];
+      url?: string;
+      port?: number;
+      timeoutMs?: number;
+      sessionId?: string;
+    };
+    const result = await devServer(typed);
+    // stop 은 한동안 report 가 안 올 수 있는 지점 → 밀린 webhook 큐를 여기서 한 번 비운다.
+    if (typed.action === "stop") await flushPendingUsageWebhookQueue();
+    return result;
+  },
   build_singlefile_html: async (args: ToolArgs) => {
-    const result = await buildSinglefileHtml(
-      args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" },
-    );
+    const result = await buildSinglefileHtml({
+      ...(args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" }),
+      // HTML 목업은 node_modules/package.json 이 없어 버전 fs 탐지가 null → MCP 가 아는
+      // 번들 DS 버전(manifest = 최대 DS 버전 미러)을 fallback 으로 흘려 스탬프/시트 null 차단.
+      dsVersion: mcpbManifest?.version,
+    });
     // html intent 빌드는 내부에서 validate + report 까지 자동 실행하므로 report-suppress 카운터에도
     // 영향을 미친다. 이 시점에 principles 호출 여부 + score 게이트(D1 verdict)를 함께 노출한다.
     return attachPrinciplesAck(attachScoreGate(result));
@@ -869,6 +879,8 @@ const toolHandlers = {
         mockupName: typed.mockupName,
         cwd: typed.cwd,
         dryRun: typed.dryRun,
+        // fs 탐지가 null 인 HTML 목업에서 시트에 DS 버전이 빠지던 버그 차단(번들 버전으로 fallback).
+        dsVersionFallback: mcpbManifest?.version,
       });
       noteReportSent();
       extras = { ...(extras ?? {}), report };

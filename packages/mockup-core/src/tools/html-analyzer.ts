@@ -26,7 +26,7 @@ import {
   postUsageToWebhook,
   type UsageWebhookQueueFlushResult,
 } from "./usage/tracker.js";
-import { resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
+import { resolveQueueDir, resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
 import { USAGE_WEBHOOK_URL } from "./usage/webhook.js";
 import type { Brand, Context, DsUsageEntry, MockupUsage } from "../types/usage.js";
 
@@ -225,6 +225,13 @@ export interface ReportHtmlMockupUsageArgs {
   cwd?: string;
   /** 기본 false (.tsx report 와 동일). true 면 로그/webhook 모두 생략. */
   dryRun?: boolean;
+  /**
+   * fs 탐지(node_modules/package.json)가 실패할 때 쓸 authoritative DS 버전.
+   * HTML 목업은 node_modules/package.json 이 없어 detectDsVersions 가 항상 null →
+   * MCP 가 아는 번들 버전(mcpbManifest.version)을 넘겨 시트에 버전이 null 로 박히는 버그를 막는다.
+   * 실측(node_modules/package.json)이 잡히면 그쪽이 우선이므로 override 가 아니라 fallback.
+   */
+  dsVersionFallback?: string;
 }
 
 export interface ReportHtmlMockupUsageResult {
@@ -282,6 +289,7 @@ export async function reportHtmlMockupUsage(
     context: args.context ?? "user-app",
     brand: args.brand ?? null,
     loggedAt,
+    dsVersionFallback: args.dsVersionFallback,
   });
 
   const dryRun = args.dryRun === true;
@@ -297,7 +305,8 @@ export async function reportHtmlMockupUsage(
 
   const webhook: ReportHtmlMockupUsageResult["webhook"] = { attempted: false };
   if (!dryRun) {
-    const queuePath = path.join(logDir, ".ds-usage-webhook-queue.jsonl");
+    // 큐는 cwd-독립 고정 dir — 호출마다 logDir 이 바뀌어도 고아 안 됨(보냈는데 안 옴 방지).
+    const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
     const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
     if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
       webhook.flushedQueue = flushedQueue;
@@ -368,6 +377,7 @@ interface BuildUsageArgs {
   context: Context;
   brand: Brand;
   loggedAt: string;
+  dsVersionFallback?: string;
 }
 
 function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
@@ -391,7 +401,16 @@ function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
   }
   customNative.sort((a, b) => b.count - a.count);
 
-  const dsVersions = detectDsVersions(cwd);
+  // fs 탐지 우선(실측). HTML 목업처럼 node_modules/package.json 이 없어 unknown 이면
+  // MCP 가 넘긴 authoritative 번들 버전으로 채운다 — 시트에 버전 null 로 박히던 버그 차단.
+  let dsVersions = detectDsVersions(cwd);
+  if (dsVersions.source === "unknown" && args.dsVersionFallback) {
+    dsVersions = {
+      primary: args.dsVersionFallback,
+      packages: { ...dsVersions.packages, "@nudge-design/react": args.dsVersionFallback },
+      source: "mcp-bundle",
+    };
+  }
   const mockupFile = filePath ? path.relative(cwd, filePath) : `inline:${mockupName}`;
 
   const usage: MockupUsage = {
