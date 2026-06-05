@@ -74,9 +74,9 @@ export const selectStyles = `
   :where(.${SELECT_TRIGGER_TEXT_CLASS}) {
     flex: 1;
     min-width: 0;
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: var(--nds-select-font-size, ${typeScale.body3.fontSize}px);
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body3.lineHeight}px;
+    line-height: var(--nds-select-line-height, ${typeScale.body3.lineHeight}px);
     color: ${cv.textRole.normal};
     white-space: nowrap;
     overflow: hidden;
@@ -109,8 +109,12 @@ export const selectStyles = `
 
   :where(.${SELECT_DROPDOWN_CLASS}) {
     position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: var(--nds-select-dropdown-gap, 0);
     max-height: var(--nds-select-dropdown-max-height, 200px);
     overflow-y: auto;
+    padding: var(--nds-select-dropdown-padding, 0);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
@@ -123,11 +127,13 @@ export const selectStyles = `
   :where(.${SELECT_OPTION_CLASS}) {
     display: flex;
     align-items: center;
-    padding: var(--semantic-inset-input);
+    flex-shrink: 0;
+    padding: var(--nds-select-option-padding, var(--semantic-inset-input));
+    border-radius: var(--nds-select-option-radius, 0);
     font-family: ${fontFamily.web};
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: var(--nds-select-font-size, ${typeScale.body3.fontSize}px);
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body3.lineHeight}px;
+    line-height: var(--nds-select-line-height, ${typeScale.body3.lineHeight}px);
     color: ${cv.textRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default};
@@ -158,8 +164,9 @@ export const selectStyles = `
   /* 선택 상태 — hover/active 규칙보다 뒤(= 동일 specificity면 우선)에 둬서
      선택+active 가 겹쳐도 항상 브랜드색이 보이도록 한다. */
   :where(.${SELECT_OPTION_CLASS}[data-selected="true"]) {
-    color: ${cv.textRole.brand};
-    background: ${cv.surface.brandSubtle};
+    color: var(--nds-select-option-selected-color, ${cv.textRole.brand});
+    background: var(--nds-select-option-selected-bg, ${cv.surface.brandSubtle});
+    font-weight: var(--nds-select-option-selected-weight, ${fontWeight.regular});
   }
 
   :where(.${SELECT_OPTION_CLASS}[data-selected="true"] .${SELECT_OPTION_CHECK_CLASS}) {

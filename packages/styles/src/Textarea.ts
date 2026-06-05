@@ -39,7 +39,7 @@ export const textareaStyles = `
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: var(--semantic-inset-input) var(--semantic-inset-card);
+    padding: var(--semantic-inset-input) var(--nds-textarea-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-textarea-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-textarea-radius, ${radius.md}px);
     background: var(--nds-textarea-background, ${cv.surface.default});

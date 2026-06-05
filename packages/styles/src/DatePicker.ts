@@ -52,8 +52,8 @@ export const datePickerStyles = `
     background: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    font-size: var(--nds-datepicker-font-size, ${typeScale.body3.fontSize}px);
+    line-height: var(--nds-datepicker-line-height, ${typeScale.body3.lineHeight}px);
     color: ${cv.textRole.normal};
     transition: border-color ${transition.default};
     box-sizing: border-box;

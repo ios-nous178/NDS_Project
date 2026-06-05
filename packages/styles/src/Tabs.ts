@@ -82,9 +82,9 @@ export const tabsStyles = `
     align-items: center;
     justify-content: center;
     color: ${cv.textRole.subtle};
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.regular};
+    font-size: var(--nds-tabs-line-font-size, ${typeScale.body3.fontSize}px);
+    line-height: var(--nds-tabs-line-line-height, ${typeScale.body3.lineHeight}px);
+    font-weight: var(--nds-tabs-line-default-weight, ${fontWeight.regular});
     padding: 0;
     position: relative;
     white-space: nowrap;
@@ -100,8 +100,8 @@ export const tabsStyles = `
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
-    height: ${sizing.tabs.line.pc}px;
-    padding: 0 var(--semantic-inset-card-large);
+    height: var(--nds-tabs-line-tab-height, ${sizing.tabs.line.pc}px);
+    padding: 0 var(--nds-tabs-line-padding-x, var(--semantic-inset-card-large));
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
@@ -124,7 +124,7 @@ export const tabsStyles = `
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 3px;
+    height: var(--nds-tabs-line-indicator-height, 3px);
     background: ${cv.textRole.strong};
     transition: transform ${transition.slow}, width ${transition.slow}, background ${transition.default};
   }
@@ -155,11 +155,11 @@ export const tabsStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: ${radius.pill}px;
-    background: ${cv.surface.subtle};
-    color: ${cv.textRole.subtle};
+    border-radius: var(--nds-tabs-chip-radius, ${radius.pill}px);
+    background: var(--nds-tabs-chip-default-bg, ${cv.surface.subtle});
+    color: var(--nds-tabs-chip-default-color, ${cv.textRole.subtle});
     white-space: nowrap;
-    font-weight: ${fontWeight.regular};
+    font-weight: var(--nds-tabs-chip-default-weight, ${fontWeight.regular});
     flex: 0 0 auto;
   }
 
@@ -171,10 +171,10 @@ export const tabsStyles = `
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
-    height: ${sizing.tabs.chip.pc}px;
-    padding: 0 var(--semantic-inset-card);
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    height: var(--nds-tabs-chip-tab-height, ${sizing.tabs.chip.pc}px);
+    padding: 0 var(--nds-tabs-chip-padding-x, var(--semantic-inset-card));
+    font-size: var(--nds-tabs-chip-font-size, ${typeScale.body3.fontSize}px);
+    line-height: var(--nds-tabs-chip-line-height, ${typeScale.body3.lineHeight}px);
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-tone="color"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
@@ -184,7 +184,7 @@ export const tabsStyles = `
   }
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-tone="neutral"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    background: ${cv.fill.neutral};
+    background: var(--nds-tabs-chip-selected-bg, ${cv.fill.neutral});
     color: ${cv.textRole.inverse};
     font-weight: ${fontWeight.bold};
   }

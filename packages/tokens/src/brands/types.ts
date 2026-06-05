@@ -213,9 +213,42 @@ export interface ElevationOverrides {
 type ComponentValue = number | string;
 export interface ComponentOverrides {
   input?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
-  select?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
-  textarea?: { radius?: ComponentValue; paddingX?: ComponentValue; paddingY?: ComponentValue };
-  datepicker?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
+  /**
+   * Select(Dropdown). 캐포비 InputGuide(3080:741)는 trigger/option Body2 14/20,
+   * 선택 항목 = 회색 배경(#F5F5F5) + Strong 텍스트 + Medium 500 + radius 6 + 메뉴 inset.
+   * 다른 브랜드는 fallback (Body3 13/18, brand-tint 선택, flat option) 유지.
+   */
+  select?: {
+    radius?: ComponentValue;
+    height?: ComponentValue;
+    paddingX?: ComponentValue;
+    fontSize?: ComponentValue;
+    lineHeight?: ComponentValue;
+    optionPadding?: ComponentValue;
+    optionRadius?: ComponentValue;
+    optionSelectedBg?: ComponentValue;
+    optionSelectedColor?: ComponentValue;
+    optionSelectedWeight?: ComponentValue;
+    dropdownPadding?: ComponentValue;
+    dropdownGap?: ComponentValue;
+  };
+  textarea?: {
+    radius?: ComponentValue;
+    paddingX?: ComponentValue;
+    paddingY?: ComponentValue;
+    minHeight?: ComponentValue;
+  };
+  datepicker?: {
+    radius?: ComponentValue;
+    height?: ComponentValue;
+    paddingX?: ComponentValue;
+    fontSize?: ComponentValue;
+    lineHeight?: ComponentValue;
+  };
+  /** TextField/FormField 라벨 — 캐포비는 Strong(#111). 다른 브랜드는 Normal(#333) fallback. */
+  "form-field"?: { labelColor?: ComponentValue };
+  /** ActionChip — 캐포비 radius 6 / bg #ECECEC. 다른 브랜드는 radius.sm(4) / fill.neutralSubtle fallback. */
+  "action-chip"?: { radius?: ComponentValue; bg?: ComponentValue };
   /**
    * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,
    * label Pretendard 10/12. 다른 브랜드는 fallback (active=textRole.normal #333, label 11/14).
@@ -242,6 +275,30 @@ export interface ComponentOverrides {
     disabledBorderColor?: ComponentValue;
     disabledCheckedBg?: ComponentValue;
     disabledCheckedBorderColor?: ComponentValue;
+  };
+  /**
+   * Tab 시각 변형. 캐포비 가이드(3544:206):
+   *   Underline(line) = subtitle1 16/24 · default medium(500) · indicator 2px · padding 16/12(h48)
+   *   Box(chip) = radius 10 · padding 20/14(h52) · selected bg-inverse(#111) ·
+   *               default button-bg-disabled(#ddd) + 양쪽 흰 텍스트 bold
+   * 다른 브랜드는 fallback (line body3 14/20·indicator 3px, chip pill·subtle gray) 유지.
+   */
+  tabs?: {
+    lineFontSize?: ComponentValue;
+    lineLineHeight?: ComponentValue;
+    lineDefaultWeight?: ComponentValue;
+    lineIndicatorHeight?: ComponentValue;
+    lineTabHeight?: ComponentValue;
+    linePaddingX?: ComponentValue;
+    chipRadius?: ComponentValue;
+    chipTabHeight?: ComponentValue;
+    chipPaddingX?: ComponentValue;
+    chipFontSize?: ComponentValue;
+    chipLineHeight?: ComponentValue;
+    chipSelectedBg?: ComponentValue;
+    chipDefaultBg?: ComponentValue;
+    chipDefaultColor?: ComponentValue;
+    chipDefaultWeight?: ComponentValue;
   };
 }
 
