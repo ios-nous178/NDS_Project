@@ -37,6 +37,9 @@ configureHtmlValidator({
     "nds-brand-footer",
     "nds-footer-info",
     "nds-header",
+    "nds-form-field",
+    "nds-selected-items-panel",
+    "nds-region-row",
   ]),
   ndsClassPrefixSet: new Set(["nds-button", "nds-input", "nds-card", "nds-chip", "nds-badge"]),
   ndsAttrEnums: new Map([
@@ -293,6 +296,27 @@ describe("validateHtmlSource — ported JSX patterns", () => {
       </nds-modal>
     </body></html>`;
     expect(rulesFor(html)).toContain("cashwalk-biz-modal-single-button-fullwidth");
+  });
+
+  it("flags SelectedItemsPanel helper text placed as an adjacent sibling", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-selected-items-panel panel-title="선택한 지역" count="3">
+        <nds-region-row>서울특별시 &gt; 전체</nds-region-row>
+      </nds-selected-items-panel>
+      <p>시/도, 시/군/구를 검색해 노출할 지역을 추가하세요.</p>
+    </body></html>`;
+    expect(rulesFor(html)).toContain("selected-items-helper-outside-form-field");
+  });
+
+  it("does NOT flag SelectedItemsPanel helper when it is owned by FormField", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-form-field label="지역" density="admin" helper="시/도, 시/군/구를 검색해 노출할 지역을 추가하세요.">
+        <nds-selected-items-panel panel-title="선택한 지역" count="3">
+          <nds-region-row>서울특별시 &gt; 전체</nds-region-row>
+        </nds-selected-items-panel>
+      </nds-form-field>
+    </body></html>`;
+    expect(rulesFor(html)).not.toContain("selected-items-helper-outside-form-field");
   });
 
   it("does NOT flag cashwalk-biz single modal button when hug (no full-width)", () => {
