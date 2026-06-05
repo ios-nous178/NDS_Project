@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T00:23:02.388Z",
+  "generatedAt": "2026-06-05T02:41:10.185Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -6044,7 +6044,7 @@
           "name": "position",
           "optional": true,
           "type": "ToastPosition",
-          "allowedValues": ["top", "bottom"]
+          "allowedValues": ["top", "bottom", "top-right"]
         },
         {
           "name": "duration",
@@ -6070,7 +6070,7 @@
       "dtsRelPath": "packages/react/dist/Toast.d.ts",
       "htmlTag": "nds-toast",
       "htmlAttrs": {
-        "variant": ["default", "success", "error", "info"]
+        "variant": ["default", "success", "error", "warning", "info"]
       }
     },
     {
@@ -10914,7 +10914,7 @@
     {
       "tag": "nds-toast",
       "attrs": {
-        "variant": ["default", "success", "error", "info"]
+        "variant": ["default", "success", "error", "warning", "info"]
       }
     },
     {

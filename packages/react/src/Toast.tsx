@@ -11,8 +11,8 @@ const TOAST_ACTION_CLASS = `${TOAST_CLASS}__action`;
 
 /* ─── Types ─── */
 
-export type ToastVariant = "default" | "success" | "error" | "info";
-export type ToastPosition = "top" | "bottom";
+export type ToastVariant = "default" | "success" | "error" | "warning" | "info";
+export type ToastPosition = "top" | "bottom" | "top-right";
 
 export interface ToastData {
   /** 토스트 고유 식별자 */
