@@ -120,6 +120,14 @@ try {
     throw new Error(`get_brand returned unexpected result: ${JSON.stringify(brands)}`);
   }
 
+  // list_figma_sync_status: 정식 등록 회귀 가드 — 미등록이면 "Unknown tool" 로 떨어진다.
+  const figmaSync = await callTool("list_figma_sync_status", {});
+  if (!Array.isArray(figmaSync?.entries) || typeof figmaSync?.syncedCount !== "number") {
+    throw new Error(
+      `list_figma_sync_status returned unexpected result: ${JSON.stringify(figmaSync)}`,
+    );
+  }
+
   const imports = await callTool("get_setup", { step: "imports", brand: "trost" });
   // intent 미지정이면 기본 html — imports 는 코드 대신 {intent:'html', required:false, message}
   // (build_singlefile_html 이 runtime/CSS 를 자동 inline 하므로 임포트 불필요) 를 반환한다.
