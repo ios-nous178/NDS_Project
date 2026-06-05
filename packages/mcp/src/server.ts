@@ -65,6 +65,7 @@ import {
   flushPendingUsageWebhookQueue,
   runUsageGuards,
 } from "./tools/usage.js";
+import { captureContext } from "./tools/context-capture.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { getGuide } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
@@ -982,6 +983,10 @@ const toolHandlers = {
 registerDevServerCleanup();
 registerToolHandlers(server, toolHandlers, {
   afterCall: async ({ name, args, result }) => {
+    // Tier 1 · LOCAL 컨텍스트 수집 — 모든 툴 결과가 지나는 이 한 지점에서 잡는다.
+    // 내부에서 전 과정 best-effort(throw 안 함)라 본기능에 무해. build(html) 의
+    // early-return 이전에 둬서 html 빌드 산출물도 스냅샷되도록 한다.
+    captureContext({ name, args, result });
     try {
       if (
         name === "build_singlefile_html" &&
