@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T00:23:04.638Z",
+  "generatedAt": "2026-06-05T00:35:33.324Z",
   "source": "packages/mcp/dist/guides.js",
   "components": {
     "Button": {
@@ -4397,6 +4397,74 @@
         "relatedPatterns": "cashwalk-biz-button, dropdown"
       }
     },
+    "cashwalk-biz-tab": {
+      "name": "cashwalk-biz-tab",
+      "summary": "캐시워크 포 비즈니스 admin 의 Tab 카탈로그 — Underline(line) + Box(chip) 2 변형. DS `Tabs` 컴포넌트로 구현, 브랜드 색·치수는 data-brand=\"cashwalk-biz\" 시 자동 cascade.",
+      "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3544-206",
+      "rules": [
+        "**Underline(line)** = 페이지 메인 카테고리·목록 필터·단계 전환. 마크업: `<nds-tabs variant=\"line\" size=\"pc\" tone=\"neutral\">`. 텍스트 Subtitle1 16/24, Selected=Strong(#111) Bold + 하단 2px 검정 인디케이터, Default=Subtle(#666) Medium.",
+        "**Box(chip)** = 상태/좁은 영역 필터(진행중·진행예정·종료 등). 마크업: `<nds-tabs variant=\"chip\" size=\"pc\" tone=\"neutral\">`. radius 10, Selected=#111(bg-inverse) bg + 흰 텍스트 Bold, Default=#DDD(button-bg-disabled) bg + 흰 텍스트 Bold (의도된 저대비 — 가이드 명시).",
+        "치수·색은 모두 캐포비 브랜드 토큰(`--nds-tabs-*`)으로 cascade — 별도 style 오버라이드 금지. `data-brand=\"cashwalk-biz\"` 만 루트에 있으면 자동 적용된다.",
+        "동적 상태(진행/종료)는 Box, 페이지 카테고리는 Underline — 혼용 주의. 단계형 진행 표시는 Tab 이 아니라 `pattern:cashwalk-biz-step-progress`."
+      ],
+      "avoid": [
+        "Box Default 텍스트를 회색으로 바꾸지 말 것 — 캐포비 가이드는 #DDD 위 흰 텍스트(저대비)가 의도된 스펙.",
+        "Underline 인디케이터를 3px(base) 로 두지 말 것 — 캐포비는 2px. 단, 브랜드 cascade 가 처리하므로 직접 px 박지 말 것.",
+        "Tab 으로 다단계 폼 진행도(Step)를 표현하지 말 것 — StepProgress 사용."
+      ],
+      "metrics": {
+        "variants": "line(Underline) · chip(Box)",
+        "font": "Subtitle1 16/24",
+        "lineIndicator": "2px",
+        "boxRadius": 10,
+        "relatedPatterns": "cashwalk-biz-step-progress, cashwalk-biz-badge-chip, cashwalk-biz-page-patterns"
+      }
+    },
+    "cashwalk-biz-badge-chip": {
+      "name": "cashwalk-biz-badge-chip",
+      "summary": "캐시워크 포 비즈니스 admin 의 Label & Chip 카탈로그 — Badge(Rounded Square / Pill) + SelectChip + ActionChip. 톤은 semantic 색으로 cascade.",
+      "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20558",
+      "rules": [
+        "**Badge — Rounded Square (radius 5)** = 거래/처리 동적 상태·카테고리(충전·사용·적립·만료·취소…). 데이터 테이블·리스트 셀에서 가장 빈번. 마크업: `<nds-badge variant=\"ghost\" color=\"...\">충전</nds-badge>`. 톤=의미별 semantic 색: 충전/강조=brand, 사용/안내=info, 적립/완료=success, 만료/중립=neutral, 취소/실패=error.",
+        "**Badge — Pill (radius full)** = 계정 유형·식별 정적 태그(일반 계정·프리미엄·신규…). 헤더/타이틀 옆 식별 표식. 마크업: `<nds-badge variant=\"ghost\" color=\"...\" style=\"--nds-badge-radius:999px\">프리미엄</nds-badge>`. 동적 상태값에는 Pill 쓰지 말 것(Rounded Square 사용).",
+        "Badge 치수(radius 5 · padding 4/10 · Caption 12/16 · Medium 500)는 캐포비 브랜드 토큰(`--nds-badge-*`)으로 cascade. `variant=\"ghost\"` + semantic `color` 만 지정하면 연한 bg + 컬러 텍스트(soft 톤)가 자동 적용된다.",
+        "**SelectChip** = 선택형 칩(다중 선택 그룹, 예: 연령대 선택). DS `Chip` 의 `selected` 상태로 구현 — HTML: `<nds-chip selected>30대</nds-chip>` / `<nds-chip>30대</nds-chip>`. Selected=brand-subtle bg + 좌측 체크 + Bold, Default=#FAFAFA bg + #EEE border + Medium.",
+        "**ActionChip** = TextField helper text 영역 옆 보조 액션(예시 이미지·수정·다운로드). radius 6 / bg #ECECEC / icon 14 + 12 Medium. inline 배치(별도 row 아님). 상세는 `pattern:cashwalk-biz-input`."
+      ],
+      "avoid": [
+        "Badge 에 hex 인라인(예: background:#FFD400) 금지 — semantic color 토큰을 잃는다. `color` prop 으로 의미 톤 지정.",
+        "동적 상태(충전·사용 등)에 Pill, 정적 식별(프리미엄·신규)에 Rounded Square — 혼용 주의(가이드 명시).",
+        "Badge(비액션 상태/속성)와 Chip(선택/필터 액션) 혼용 금지.",
+        "Badge 라벨은 8자 안팎 — 긴 문장·CTA 금지."
+      ],
+      "metrics": {
+        "badgeRoundedRadius": 5,
+        "badgePillRadius": "full",
+        "badgeFont": "Caption 12/16 Medium",
+        "tones": "brand · info · success · neutral · error",
+        "relatedPatterns": "cashwalk-biz-tab, cashwalk-biz-input, cashwalk-biz-page-list"
+      }
+    },
+    "cashwalk-biz-step-progress": {
+      "name": "cashwalk-biz-step-progress",
+      "summary": "캐시워크 포 비즈니스 admin 의 단계형 진행 표시(StepProgress) — 가로 막대 + 스텝번호/제목 2단 라벨. 다단계 폼(캠페인→광고→소재) 진행도.",
+      "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
+      "rules": [
+        "마크업: `<nds-step-progress current=\"1\" steps='[{\"label\":\"Step 1\",\"title\":\"캠페인 만들기\"},{\"label\":\"Step 2\",\"title\":\"광고 만들기\"},{\"label\":\"Step 3\",\"title\":\"소재 만들기\"}]'></nds-step-progress>`. `current` 는 0-based.",
+        "각 스텝 = 막대(8px·radius 6) + 라벨(스텝번호 'Step N' + 제목). 상태: Done(idx<current)=막대 brand·라벨 normal medium / Current(idx===current)=막대 brand·라벨 strong bold / Upcoming(idx>current)=막대 border-normal·라벨 subtle.",
+        "다단계 Form 화면(`pattern:cashwalk-biz-page-form`)의 상단 진행도로 사용 — 단건 Form(`cashwalk-biz-form-layout`)에는 StepProgress 없음.",
+        "원형 번호형 `Stepper` 와 구분 — StepProgress 는 가로 막대 + 2단 라벨 전용(어드민)."
+      ],
+      "avoid": [
+        "막대 색을 직접 지정 금지 — Done/Current=brand, Upcoming=border-normal 으로 토큰 자동 결정.",
+        "단건(한 화면) 폼에 StepProgress 를 붙이지 말 것 — 다단계 흐름에만."
+      ],
+      "metrics": {
+        "bar": "8px · radius 6",
+        "label": "스텝번호(Step N) + 제목 2단",
+        "relatedPatterns": "cashwalk-biz-page-form, cashwalk-biz-tab, cashwalk-biz-page-patterns"
+      }
+    },
     "card-composition": {
       "name": "card-composition",
       "summary": "Card 의 List/Thumb/Cover 3 base variant 위에 얹는 도메인 Composition 슬롯 카탈로그. 도메인 카드(헬시딜·식품 검색·식단 추천·랭킹·리뷰·커뮤니티 등)는 새 variant 를 만들지 말고 base variant + Composition 슬롯 조합으로 표현한다. Figma 출처: Zenirit Card 가이드 옆 도메인 예시 — 헬시딜 랭킹 / 음식 리뷰 / 다이어트·혈당 추천 / 지금 뜨는 한식 / 커뮤니티 게시글 / Product Panel. Card 본문 룰은 get_guide({ topic: 'component:Card' }) 와 함께 본다.",
@@ -4740,7 +4808,7 @@
         "patterns": "onboarding / dashboard / list / detail / form",
         "figmaFile": "7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern)",
         "assemblyOrder": "① 패턴 선택 → ② 섹션 구조화 → ③ 컴포넌트 조립 → ④ validate",
-        "relatedPatterns": "cashwalk-biz-page-{onboarding,dashboard,list,detail,form}, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-button, cashwalk-biz-input"
+        "relatedPatterns": "cashwalk-biz-page-{onboarding,dashboard,list,detail,form}, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-button, cashwalk-biz-input, cashwalk-biz-tab, cashwalk-biz-badge-chip, cashwalk-biz-step-progress"
       },
       "references": [
         {
@@ -4993,7 +5061,7 @@
         "validatePaginationThreshold": "Row > 50 필수 / ≤ 10 생략",
         "validateFilterThreshold": "필터 > 4 → 패널 분리",
         "emptyState": "'등록된 OOO이 없습니다' + CTA 필수",
-        "relatedPatterns": "cashwalk-biz-page-patterns, admin-shell, action-row, dense-list, cashwalk-biz-page-detail"
+        "relatedPatterns": "cashwalk-biz-page-patterns, admin-shell, action-row, dense-list, cashwalk-biz-page-detail, cashwalk-biz-badge-chip, cashwalk-biz-tab"
       },
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
       "references": [
@@ -5123,7 +5191,7 @@
         "prdComponentMapping": "≤40자 TextInput · >40자 Textarea · 단일≤3 SelectionButtonGroup · 단일>3 Dropdown · 다중 CheckboxGroup · ON/OFF Toggle · 날짜 DateInput · 파일 ImageUpload",
         "requiredFieldProp": "FormField required=true",
         "conditionalField": "Boolean variant 또는 컨테이너 hide",
-        "relatedPatterns": "cashwalk-biz-page-patterns, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-input, cashwalk-biz-button"
+        "relatedPatterns": "cashwalk-biz-page-patterns, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-input, cashwalk-biz-button, cashwalk-biz-step-progress, cashwalk-biz-tab"
       },
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
       "references": [
