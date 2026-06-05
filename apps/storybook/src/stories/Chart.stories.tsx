@@ -71,3 +71,39 @@ export const GroupedBar: Story = {
     </Card>
   ),
 };
+
+/** 도넛 — 성별 분포. 시리즈 1개 = 1 세그먼트, 범례에 % 표기. 알수없음은 --nds-chart-empty(회색). */
+export const Donut: Story = {
+  name: "Donut (성별 분포)",
+  render: () => (
+    <Card title="성별">
+      <Chart
+        type="donut"
+        labels={[]}
+        series={[
+          { name: "남성", values: [20] },
+          { name: "여성", values: [20] },
+          { name: "알수없음", values: [60], color: "var(--nds-chart-empty)" },
+        ]}
+      />
+    </Card>
+  ),
+};
+
+/** 도넛 빈 상태 — 데이터 0 이면 전체 회색 링 + 범례 0%. */
+export const DonutEmpty: Story = {
+  name: "Donut/빈 상태 (0%)",
+  render: () => (
+    <Card title="성별">
+      <Chart
+        type="donut"
+        labels={[]}
+        series={[
+          { name: "남성", values: [0] },
+          { name: "여성", values: [0] },
+          { name: "알수없음", values: [0], color: "var(--nds-chart-empty)" },
+        ]}
+      />
+    </Card>
+  ),
+};
