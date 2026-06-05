@@ -436,7 +436,17 @@ function pickSections<T extends Record<string, unknown>>(
   sections: string[] | undefined,
 ): T | { error: string; availableSections: string[] } {
   if (!sections || sections.length === 0) return full;
-  const META_KEYS = new Set(["_advisory", "_htmlAdvisory", "_nextSuggestion", "intent", "scope"]);
+  // _readyMade: 복붙용 ready-made 트리(예: 캐포비 사이드바 HTML/React). view/sections 와 무관하게
+  //   항상 보존 — rules[] 에만 두면 view:'examples'(=['summary','examples'])가 통째로 드롭해
+  //   로고/계정/메뉴를 손조립하게 되던 회귀를 차단한다.
+  const META_KEYS = new Set([
+    "_advisory",
+    "_htmlAdvisory",
+    "_nextSuggestion",
+    "_readyMade",
+    "intent",
+    "scope",
+  ]);
   const allKeys = Object.keys(full);
   const matched = sections.filter((s) => allKeys.includes(s));
   if (matched.length === 0) {

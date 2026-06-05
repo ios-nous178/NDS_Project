@@ -4627,6 +4627,17 @@ export interface PatternGuide {
     caption?: string;
     brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile";
   }>;
+  /**
+   * 복붙용 ready-made 트리(예: 캐포비 사이드바 HTML/React/SHELL). `_` prefix 라 pickSections 가
+   * 모든 view(examples/rules/full)에서 항상 보존한다 — view:'examples' 가 rules 를 드롭해도
+   * 로고/계정/메뉴가 안 사라진다(손조립 회귀 차단). rules[] 에는 여기로의 포인터만 둔다(토큰 중복 방지).
+   */
+  _readyMade?: {
+    note?: string;
+    html?: string;
+    react?: string;
+    shellHtml?: string;
+  };
 }
 
 /** ruleGroups / avoidGroups 를 flat 배열로 펼친다. SSOT 인 flat rules/avoid 에 일관되게 채우기 위한 헬퍼. */
@@ -6385,22 +6396,25 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "`<Sidebar>`(React) / `<nds-sidebar>`(HTML) 컴포넌트는 완성돼 있지만 BrandHeader/Footer 와 달리 메뉴 데이터가 안 박혀 있어 매번 손조립하던 마찰을 해소한다. " +
       "헤더 블록(로고→계정→잔액→충전/내역 CTA) + 3섹션(광고 관리 / 자산 관리 / 계정 관리) + GNB 아이콘 9종이 들어간 메뉴 트리를 그대로 복붙. " +
       "활성 bg(Yellow/100)·radius(16)·텍스트색은 `data-brand='cashwalk-biz'` cascade 로 자동 — 색 hex 박지 말 것. 컴포넌트 props 함정은 `get_guide({ topic:'component:Sidebar', brand:'cashwalk-biz' })`, shell 조립은 `pattern:admin-shell`.",
+    // ready-made 복붙 트리 — `_` prefix 라 pickSections 가 모든 view(examples/rules/full)에서 항상 보존.
+    // rules[] 에만 두면 view:'examples'(=['summary','examples'])가 통째로 드롭해 로고/계정/메뉴를
+    // 손조립하게 되던 회귀를 차단한다. rules 의 'HTML/React/SHELL 복붙' 항목은 여기로 포인터만 남김(토큰 중복 제거).
+    _readyMade: {
+      note: '이 트리를 그대로 복붙(손대지 말 것). brand= 가 로고 자동주입, items/account/footer-actions 는 <script type="application/json" slot="..."> 텍스트 노드라 따옴표 이스케이프·인코딩 사고가 없다. Python decode(\'unicode_escape\')/Latin-1 로 추출·재인코딩 금지(한글 모지바케). 화면별로 active-key 만 변경.',
+      html: CASHWALK_BIZ_ADMIN_SIDEBAR_HTML,
+      react: CASHWALK_BIZ_ADMIN_SIDEBAR_REACT,
+      shellHtml: CASHWALK_BIZ_ADMIN_SIDEBAR_SHELL_HTML,
+    },
     rules: [
       "**먼저 이 패턴으로 사이드바를 픽업한다**: 캐포비 어드민 화면(`pattern:cashwalk-biz-page-{dashboard,list,detail,form}` 의 '01 Sidebar')은 사이드바 items 를 새로 발명하지 말고 아래 ready-made 트리를 복붙해 시작한다. 화면별로 `activeKey` 만 바꾸면 LNB 가 동일하게 유지된다(목록/상세/대시보드/폼 공통).",
-      "**React 복붙** (아이콘 = 컴포넌트 엘리먼트, find_icon 불필요):\n```tsx\n" +
-        CASHWALK_BIZ_ADMIN_SIDEBAR_REACT +
-        "\n```",
-      "**HTML 복붙** (item.icon = inline SVG 가 이미 박혀 있음 — find_icon 9회 호출 불필요):\n```html\n" +
-        CASHWALK_BIZ_ADMIN_SIDEBAR_HTML +
-        "\n```",
+      "**React 복붙**: `_readyMade.react` 트리를 그대로 복붙(아이콘 = 컴포넌트 엘리먼트, find_icon 불필요). 화면별 activeKey 만 변경.",
+      '**HTML 복붙**: `_readyMade.html` 트리를 그대로 복붙(brand= 로고 자동주입, item.icon inline SVG 완료 — find_icon 9회 불필요, items/account/footer-actions 는 `<script type="application/json" slot="...">` 텍스트 노드). active-key 만 변경.',
       "**섹션 그룹은 SidebarSection[]**: items 를 flat 배열 + 빈 spacer 로 만들지 말고 `{ key, label, items: [...] }` 섹션 객체로 그룹핑(광고 관리 / 자산 관리 / 계정 관리). 라벨이 섹션 헤더로 렌더된다.",
       "**서브메뉴는 1단계까지**: '배너'처럼 children(등록/목록/리포트)을 갖는 항목만 캐럿 노출. children 안에 또 children = 금지(2단계 이상 트리 금지).",
       "**활성 표현은 면(bg)만**: 좌측 accent stripe·Bold 라벨·진한 노랑(Yellow/200) 금지. 활성 여부는 `activeKey` 로만 결정(item 에 isActive boolean 박지 말 것).",
       '**계정 블록은 구조화된 slot 으로 — 손수 div 조립 금지**: 로고 아래 고정 블록(계정 이메일→잔액(충전 금액)→충전하기(solid)/내역보기(outlined) 2-up CTA)은 **HTML `<nds-sidebar account=\'{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}\'>`**, **React `<Sidebar account={{ email, balanceLabel, balance, actions }}>`** 로 넣는다. 위 ready-made 예시에 이미 박혀 있으니 그대로 복붙. 잔액/충전을 메뉴 item 으로 섞지 말 것. (예전 가이드가 \'HTML 상단 slot\' 이라고만 적어 매번 누락되던 회귀를 컴포넌트 slot 으로 차단.)',
       '**로그아웃은 footer-actions slot 에 고정**: 최하단 로그아웃(outlined)은 **HTML `footer-actions=\'[{"label":"로그아웃","variant":"outlined"}]\'`**, **React `footerActions={[{ label: \'로그아웃\', variant: \'outlined\' }]}`**. 메뉴 리스트 맨 아래 item 으로 넣지 말 것 — 스크롤과 분리된 고정 푸터.',
-      "**사이드바는 풀하이트 셸 안에 둔다(높이가 화면을 안 채우는 #1 원인)**: `<nds-sidebar>` 는 기본 full-height(100vh sticky)지만, body 직속이나 height 미확정 컨테이너에 두면 레이아웃이 깨지거나 높이가 안 찬다. 반드시 `.nds-shell`(grid + min-height:100vh) 안에 넣을 것. 셸까지 끼운 형태:\n```html\n" +
-        CASHWALK_BIZ_ADMIN_SIDEBAR_SHELL_HTML +
-        "\n```",
+      "**사이드바는 풀하이트 셸 안에 둔다(높이가 화면을 안 채우는 #1 원인)**: `<nds-sidebar>` 는 기본 full-height(100vh sticky)지만, body 직속이나 height 미확정 컨테이너에 두면 레이아웃이 깨지거나 높이가 안 찬다. 반드시 `.nds-shell`(grid + min-height:100vh) 안에 넣을 것. 셸까지 끼운 형태는 `_readyMade.shellHtml` 참조.",
       "**아이콘은 brand-prefix 우선**: 메뉴 아이콘은 `CashwalkBizGnb*` 9종이 공용 아이콘보다 우선. import 목록: " +
         CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS.join(", ") +
         ".",

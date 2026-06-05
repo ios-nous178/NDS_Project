@@ -131,6 +131,21 @@ describe("getGuide view (response slimming)", () => {
     expect(slim.metrics).toBeUndefined();
   });
 
+  it("view='examples' on a ready-made pattern keeps _readyMade (로고/계정/items 가 안 사라진다)", () => {
+    // 회귀: ready-made <nds-sidebar> 가 rules[] 에만 있어 view:'examples'(=summary+examples)가
+    //   통째로 드롭 → 에이전트가 손조립(로고/계정 누락). _readyMade 메타키로 항상 보존하도록 고침.
+    const slim = getGuide({ topic: "pattern:cashwalk-biz-admin-sidebar", view: "examples" });
+    const readyMade = (slim as { _readyMade?: { html?: string; react?: string } })._readyMade;
+    expect(readyMade).toBeDefined();
+    expect(readyMade?.html).toContain('<nds-sidebar brand="cashwalk-biz"');
+    expect(readyMade?.html).toContain('slot="account"');
+    expect(readyMade?.html).toContain("충전 잔액");
+    expect(readyMade?.html).toContain('slot="items"');
+    expect(readyMade?.react).toContain("Sidebar");
+    // verbose rules 는 view:'examples' 라 빠진다(슬림 유지) — ready-made 만 메타로 살아남음
+    expect(slim.rules).toBeUndefined();
+  });
+
   it("explicit sections override view", () => {
     const slim = getGuide({
       topic: "component:Button",
