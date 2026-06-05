@@ -37,3 +37,17 @@ describe("find_icon({ query }) — slim response (token saving)", () => {
     }
   });
 });
+
+describe("find_icon({ name }) — 캐포비 GNB steer (9× 루프 재발 방지)", () => {
+  it("GNB 아이콘이면 _hint 가 ready-made 픽업으로 유도한다", async () => {
+    const result = (await findIcon({ name: "CashwalkBizGnbBannerIcon" })) as Item;
+    expect(result.svg ?? result.error).toBeDefined();
+    expect(result._hint).toBeTypeOf("string");
+    expect(result._hint as string).toContain("cashwalk-biz-admin-sidebar");
+  });
+
+  it("일반 아이콘에는 사이드바 steer 를 달지 않는다", async () => {
+    const result = (await findIcon({ name: "CashwalkBizCheckIcon" })) as Item;
+    expect(result._hint as string).not.toContain("cashwalk-biz-admin-sidebar");
+  });
+});

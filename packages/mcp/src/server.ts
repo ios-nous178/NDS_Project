@@ -364,10 +364,16 @@ export async function findIcon(args: {
           error: `'${args.name}' 의 SVG 정의를 찾지 못했습니다(메타만 등록). 인라인 SVG 를 직접 작성하세요.`,
         };
       }
+      // 캐포비 어드민 사이드바(GNB) 아이콘은 9종을 한 개씩 find_icon 하지 말고
+      // ready-made 픽업(아이콘 이미 인라인)으로 유도 — 오용(9× 루프) 재발 방지.
+      const isCashwalkBizGnb = /^CashwalkBizGnb/.test(args.name);
       return {
         ...decorateIcon(args.name),
         ...svg,
         _hint:
+          (isCashwalkBizGnb
+            ? "⚠ 캐포비 어드민 사이드바(GNB) 아이콘이면 9종을 한 개씩 find_icon 하지 말 것 — 아이콘이 이미 인라인된 ready-made 가 있다: get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' }) (HTML/React + 로고 data URI). 가져와서 activeKey 만 화면 키로. 사이드바가 아닌 단독 아이콘 용도면 아래 svg 그대로 사용. "
+            : "") +
           "svg 를 그대로 index.html 의 <nds-icon-button> 등 안에 붙여 넣으세요(npm 설치 불필요). " +
           "색은 부모의 color/currentColor 를 상속합니다.",
       };
