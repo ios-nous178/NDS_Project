@@ -79,7 +79,15 @@ describe("analyzeHtmlMockup", () => {
 
   it("clean HTML → 0 violations + healthy recommendation", () => {
     const r = analyzeHtmlMockup({
-      source: `<nds-button color="primary">go</nds-button>`,
+      source: `
+        <nds-button color="primary" data-action="go">go</nds-button>
+        <p id="status"></p>
+        <script>
+          document.querySelector('[data-action="go"]').addEventListener('click', () => {
+            document.querySelector('#status').textContent = 'done';
+          });
+        </script>
+      `,
     });
     expect(r.violations.length).toBe(0);
     expect(r.recommendations.join(" ")).toContain("위반 없음");

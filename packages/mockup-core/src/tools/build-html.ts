@@ -104,6 +104,7 @@ export type WorkspaceAuditRule =
   | "inline-root-tokens"
   | "no-tsx-found"
   | "missing-visual-references"
+  | "missing-prd-coverage"
   | "no-html-entry-found"
   | "html-entry-has-no-nds-tag";
 
@@ -1137,6 +1138,8 @@ export function auditMockupWorkspace(
               "get_guide({ topic: 'component:<Name>', target: 'html' }) 로 예시를 가져와 적용하세요.",
           });
         }
+        const prdCoverageViolation = auditPrdCoverageManifest(content);
+        if (prdCoverageViolation) violations.push(prdCoverageViolation);
       } catch {
         // 읽기 실패는 무시 — vite build 단계에서 어차피 실패함
       }
@@ -1144,6 +1147,19 @@ export function auditMockupWorkspace(
   }
 
   return violations;
+}
+
+function auditPrdCoverageManifest(content: string): WorkspaceAuditViolation | null {
+  if (/<script\b[^>]*\bdata-prd-coverage\b[^>]*>/i.test(content)) return null;
+  return {
+    rule: "missing-prd-coverage",
+    files: ["index.html"],
+    detail:
+      "index.html 에 PRD/brief 요구사항 커버리지 매니페스트가 없습니다. " +
+      "사용자 요구사항 일부만 구현하고도 빌드가 통과하는 사고를 막기 위해, 코드 작성 전에 명시 요구사항을 전부 분해해 " +
+      '<script type="application/json" data-prd-coverage>{"requirements":[{"id":"R1","requirement":"...","status":"implemented","evidence":"#selector"}]}</script> ' +
+      "형식으로 남기세요. 각 evidence selector 는 실제 DOM 요소를 가리켜야 하며 validate_html_mockup 이 prd-coverage-incomplete 로 재검증합니다.",
+  };
 }
 
 /**
