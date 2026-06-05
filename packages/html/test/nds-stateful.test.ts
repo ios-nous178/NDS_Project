@@ -288,6 +288,45 @@ describe("nds-select", () => {
     expect(dropdown.style.display).toBe("none");
   });
 
+  it("adopts late-parsed options (스트리밍 파서: 부모가 자식보다 먼저 connect)", async () => {
+    // 목업 단일 HTML 의 스트리밍 파싱 모사 — <nds-select> 가 먼저 connect(_mount, 옵션 0개)된
+    // 뒤 <nds-select-option> 이 늦게 host 직속으로 도착. (이 케이스가 깨져서 Select 대신
+    // Segmented 로 우회했었음.)
+    document.body.innerHTML = "";
+    const sel = document.createElement("nds-select");
+    sel.setAttribute("placeholder", "선택");
+    document.body.appendChild(sel);
+    await twice();
+    const dropdown = sel.querySelector(".nds-select__dropdown") as HTMLDivElement;
+    expect(dropdown.querySelectorAll("nds-select-option").length).toBe(0);
+
+    for (const [v, label] of [
+      ["kr", "대한민국"],
+      ["jp", "일본"],
+    ]) {
+      const opt = document.createElement("nds-select-option");
+      opt.setAttribute("value", v);
+      opt.textContent = label;
+      sel.appendChild(opt);
+    }
+    await twice();
+
+    // 늦게 온 옵션이 dropdown 으로 입양됐는지 + host 직속에 raw 로 안 남는지.
+    expect(dropdown.querySelectorAll("nds-select-option").length).toBe(2);
+    expect(
+      Array.from(sel.children).filter((c) => c.tagName.toLowerCase() === "nds-select-option")
+        .length,
+    ).toBe(0);
+
+    // 우회 없이 드롭다운이 열리고 옵션이 보인다.
+    (sel.querySelector("button.nds-select__trigger") as HTMLButtonElement).click();
+    await twice();
+    expect(sel.hasAttribute("open")).toBe(true);
+    const openDropdown = document.querySelector(".nds-select__dropdown") as HTMLDivElement;
+    expect(openDropdown.style.display).not.toBe("none");
+    expect(openDropdown.querySelectorAll("nds-select-option").length).toBe(2);
+  });
+
   it("trigger click toggles open + sets aria-expanded", async () => {
     document.body.innerHTML = `
       <nds-select placeholder="선택">
