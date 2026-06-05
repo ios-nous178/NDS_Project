@@ -106,7 +106,7 @@ export const pcStyles = `
     width: 36px;
     height: 36px;
     border-radius: ${radius.md}px;
-    background: #f16d4d;
+    background: var(--nds-product-discount-bg, #f16d4d);
     color: ${cv.textRole.inverse};
     display: flex;
     align-items: center;
