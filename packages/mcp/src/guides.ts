@@ -5598,11 +5598,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-form-layout": {
     name: "cashwalk-biz-form-layout",
     summary:
-      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold (+부제) → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → **하단 고정(sticky) 흰 Footer 바**의 우측 [취소][저장]' 표준. " +
+      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold (+부제) → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → **콘텐츠 하단 우측 정렬 [취소][저장] 인라인 액션**(별도 흰 배경 바·sticky 고정 없음)' 표준. " +
       "Figma 290:1197 (퀴즈 등록하기) 실측. 필드 단위 컴포넌트 정책은 pattern:cashwalk-biz-input, CTA 정책은 pattern:cashwalk-biz-button 과 함께 본다.",
     rules: [
       "**페이지 컨테이너**: 사이드바(좌 300px) 우측 본문. 페이지 bg `#FAFAFA`, 콘텐츠 컬럼 폭 1491px (실측), 좌측 padding 32px.",
-      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838 **+ (있으면) 바로 아래 부제** Pretendard Regular 16/24 #666. **레퍼런스에 부제가 있으면 반드시 유지 — title-only 로 축소 금지.** **타이틀/부제 아래에 divider(밑줄·border-bottom·hr) 를 넣지 말 것** — 헤더는 라인 없이 여백만 두고 다음 섹션으로 바로 이어진다. 타이틀/부제 아래 ~76px 여백 후 섹션 헤딩 시작. **페이지 배경 위에 얹는다 — 별도 박스/sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 우측에는 액션 두지 말 것(액션은 하단 sticky Footer).",
+      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838 **+ (있으면) 바로 아래 부제** Pretendard Regular 16/24 #666. **레퍼런스에 부제가 있으면 반드시 유지 — title-only 로 축소 금지.** **타이틀/부제 아래에 divider(밑줄·border-bottom·hr) 를 넣지 말 것** — 헤더는 라인 없이 여백만 두고 다음 섹션으로 바로 이어진다. 타이틀/부제 아래 ~76px 여백 후 섹션 헤딩 시작. **페이지 배경 위에 얹는다 — 별도 박스/sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 우측에는 액션 두지 말 것(액션은 콘텐츠 하단 우측 정렬 [취소][저장]).",
       "**섹션 헤딩 (카드 위 분리 노출)**: 헤딩(예: '기본 정보') 은 카드 **밖** 위에 위치 — Pretendard **Bold 24 / lh 30** #383838. 헤딩 아래 ~54px 후 카드 시작.",
       "**섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.",
       "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**, 필드 우측 ~684px (long) 또는 ~228px (date/short). 라벨은 row 중앙 정렬.",
@@ -5611,7 +5611,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.",
       "**Helper text**: Pretendard Regular **14 / lh 20, #666**. 글자 수 카운터(`0/30`) 는 14 Medium #999 우측 정렬.",
       "**필수 마커**: 라벨 옆 ` *` color **`#FC3500`** (Coral Red-Orange). 'optional' 표기 X.",
-      "**액션바 = 하단 고정(sticky) Footer 바** (2026-06 표준 — 이전 'inline 센터 알약 cluster' 폐기): 콘텐츠 하단에 **흰 배경 `--semantic-bg-surface-default` + 상단 1px border `#ECECEC`** 풀폭 바로 고정, 안쪽 padding 24/48. **우측 정렬** [취소][저장]. 저장=primary solid, 취소=outlined — CTA shape/색 실측은 `pattern:cashwalk-biz-button` (BottomCTA) 가 SSOT. Disabled: `#D8D8D8` neutral. (단건 폼 footer 바의 정확한 px·정렬은 해당 화면 Figma 노드로 확정.)",
+      "**액션바 = 콘텐츠 하단 우측 정렬 [취소][저장] 인라인 액션**: 폼 콘텐츠 맨 끝에 **페이지 배경 위로 우측 정렬** 배치 — **별도 흰 배경 바(`--semantic-bg-surface-default`)·풀폭 상단 border·sticky/fixed 고정을 두지 않는다.** 저장=primary solid, 취소=outlined — CTA shape/색 실측은 `pattern:cashwalk-biz-button` (BottomCTA) 가 SSOT. Disabled: `#D8D8D8` neutral.",
       "**액션 위계**: primary solid CTA 1개. 파괴(삭제) 액션은 별도 위치(헤더 우측 또는 카드 우측 상단) 분리.",
       "**선택 chip / 활성 토큰**: `bg #FFFAE2 + border #FFD200` (옅은 노란 + 노란 보더) + Bold #111. 강조 숫자/카운트는 `#FD9B02` (amber).",
       "**우측 보조 사이드 카드 (선택)**: 메인 필드 우측에 요약 카드 (border #ECECEC rounded-16 padding 25×32 w-406) — 미리보기/도움말.",
@@ -5620,10 +5620,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     avoid: [
       "**타이틀 아래에 라인(divider·border-bottom·hr·밑줄) 추가 — 금지.** 캐시워크 포 비즈니스 폼 헤더는 라인 없이 여백만으로 분리한다. PageHeader 컴포넌트면 `bordered` 를 켜지 말 것.",
       "라벨을 필드 위에 배치 (label-above 2단 흐름) — 캐시워크 포 비즈니스 admin 은 인라인-좌측 (172px 라벨 컬럼) 패턴.",
-      "페이지 헤더 우측에 [저장] 버튼 — 하단 센터 액션바와 중복.",
+      "페이지 헤더 우측에 [저장] 버튼 — 하단 [취소][저장] 액션과 중복.",
       "필수 마커 색을 `#FF4141` 으로 — 캐시워크 포 비즈니스 폼은 `#FC3500` (Coral Red-Orange).",
       "Disabled CTA 를 Yellow/100 (#FFFAE5) 로 — 폼 액션바 disabled 는 `#D8D8D8` neutral gray.",
-      "액션바를 본문 흐름 안 inline 센터 알약 cluster 로 — 2026-06 부터 **하단 고정(sticky) 흰 Footer 바 + 우측 정렬**이 표준.",
+      "하단 액션을 **센터** 정렬하거나 알약 cluster 로 묶기 — 하단 [취소][저장] 은 **콘텐츠 끝 우측 정렬**이 표준(별도 흰 배경 바·sticky 고정 없이 페이지 배경 위).",
       "CTA 모양을 8px rounded 사각형 — Figma 는 56h rounded-28 알약 (pill).",
       "필드 border-radius 를 8px 로 — Figma 는 10px.",
       "필수 라벨을 brand yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.",
@@ -5634,7 +5634,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         verdict: "good",
         source: "Figma 290:1197 캐시워크 포 비즈니스 admin form (퀴즈 등록하기)",
         caption:
-          "PageTitle 32 Bold (+부제, 아래 divider 없음) → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-40 rounded-10 → 하단 고정 흰 Footer 바 우측 [취소][저장].",
+          "PageTitle 32 Bold (+부제, 아래 divider 없음) → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-40 rounded-10 → 콘텐츠 하단 우측 정렬 [취소][저장](별도 흰 바·고정 없음).",
       },
       {
         verdict: "bad",
@@ -5667,7 +5667,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       placeholderColor: "#999",
       helperTypography: "Pretendard Regular 14/20 #666 (counter #999)",
       actionBarPosition:
-        "sticky bottom Footer 바 (흰 bg `--semantic-bg-surface-default` + 상단 1px border, padding 24/48)",
+        "콘텐츠 하단 인라인 액션 (별도 흰 배경 바·sticky/fixed 고정·풀폭 상단 border 없음 · 페이지 배경 위)",
       actionBarAlignment: "right",
       ctaSize: "cashwalk-biz-button BottomCTA 참조 (저장=primary solid, 취소=outlined)",
       ctaPrimary: "bg #FFD200 + 검정",
@@ -6426,7 +6426,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "패턴별 상세는 `pattern:cashwalk-biz-page-{onboarding|dashboard|list|detail|form}`. 필드/CTA/입력 단위 실측은 `pattern:cashwalk-biz-form-layout` · `pattern:cashwalk-biz-button` · `pattern:cashwalk-biz-input`, shell 보일러플레이트는 `pattern:admin-shell`. " +
       "Figma 7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern).",
     rules: [
-      "**먼저 패턴을 고른다 (하드 게이트)**: 새 어드민 화면을 받으면 PRD 의 목적을 5개 패턴 중 하나로 먼저 분류한다 — 로그인/계정복구=Onboarding, 통계/요약 홈=Dashboard, 목록·검색=List, 단건 상세/탭=Detail, 등록·수정=Form. **Form 은 다시 단건/다단계로 갈린다 — 한 화면(Step Progress 없음, 제목+부제+하단 sticky Footer 바)=`cashwalk-biz-form-layout`, 다단계(캠페인→광고→소재 등 Step Progress)=`cashwalk-biz-page-form`. 이름이 비슷하니 footer 가 헷갈리면 단건은 우측 sticky 바, 다단계는 좌/우 분리 Footer.** 분류 없이 컴포넌트부터 배치하지 않는다. **이건 권고가 아니라 강제다** — surface=admin + brand=cashwalk-biz 화면은 패턴 선언이 없으면 validate 가 error(`cashwalk-biz-admin-page-pattern`)로 막는다.",
+      "**먼저 패턴을 고른다 (하드 게이트)**: 새 어드민 화면을 받으면 PRD 의 목적을 5개 패턴 중 하나로 먼저 분류한다 — 로그인/계정복구=Onboarding, 통계/요약 홈=Dashboard, 목록·검색=List, 단건 상세/탭=Detail, 등록·수정=Form. **Form 은 다시 단건/다단계로 갈린다 — 한 화면(Step Progress 없음, 제목+부제+콘텐츠 하단 우측 정렬 [취소][저장])=`cashwalk-biz-form-layout`, 다단계(캠페인→광고→소재 등 Step Progress)=`cashwalk-biz-page-form`. 이름이 비슷하니 하단 액션이 헷갈리면 단건은 콘텐츠 끝 우측 정렬 [취소][저장](별도 바·고정 없음), 다단계는 좌/우 분리 Footer.** 분류 없이 컴포넌트부터 배치하지 않는다. **이건 권고가 아니라 강제다** — surface=admin + brand=cashwalk-biz 화면은 패턴 선언이 없으면 validate 가 error(`cashwalk-biz-admin-page-pattern`)로 막는다.",
       '**패턴 선언 방법**: HTML 목업은 루트에 `data-page-pattern` 마커 — 예: `<html data-brand="cashwalk-biz" data-page-pattern="list">`(또는 body / .mockup-screen). DesignSpec 은 `screen.pagePattern` 필드에 `onboarding|dashboard|list|detail|form` 중 하나. surfaceKind=admin 은 nudge.surface 마커에서 자동 주입되니 보통 pagePattern 만 채우면 된다.',
       "**조립 순서 고정**: ① 페이지 패턴 선택 → ② 패턴의 섹션 슬롯 채우기(섹션 단위 구조화) → ③ 섹션 안 반복 컴포넌트(테이블·필터·필드·차트)를 DS 컴포넌트로 조립 → ④ validate. 역순(컴포넌트 먼저)으로 가면 패턴 일관성이 깨진다.",
       "**shell 은 공통**: 모든 패턴은 사이드바 + topbar + content 의 `admin-shell`(nds-shell 계열) 위에 얹힌다. 패턴은 content 영역의 섹션 구성만 정의한다 — raw shell CSS 재정의 금지(`pattern:admin-shell`).",
