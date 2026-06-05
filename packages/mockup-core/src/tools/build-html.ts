@@ -397,7 +397,11 @@ export async function buildSinglefileHtml(
       };
     }
     try {
-      report = await reportHtmlMockupUsage({ filePath: outputPath, cwd });
+      report = await reportHtmlMockupUsage({
+        filePath: outputPath,
+        cwd,
+        dsVersionFallback: args.dsVersion,
+      });
     } catch (err) {
       // Sheets webhook 실패는 reportHtmlMockupUsage 안에서 큐 적재로 처리되지만
       // throw 가 빠져나오는 경우 (예: fs 쓰기 실패) 도 사용자에게 보이도록 표시만.

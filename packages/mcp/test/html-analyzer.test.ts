@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { configureHtmlValidator } from "@nudge-design/mockup-core/tools/html-validator";
 import {
   analyzeHtmlMockup,
@@ -185,5 +188,34 @@ describe("reportHtmlMockupUsage", () => {
     // Real DS usage = 0 because <button class="nds-button"> is NOT a custom element.
     expect(r.usage.ds.length).toBe(0);
     expect(r.usage.customNative.find((c) => c.tag === "nds-imitation:nds-button")?.count).toBe(1);
+  });
+
+  describe("DS version for HTML mockups (no node_modules/package.json)", () => {
+    // HTML 목업은 node_modules/package.json 이 없어 detectDsVersions 가 항상 unknown → 버전이
+    // 시트에 null 로 박히던 버그. 빈 temp dir 을 cwd 로 줘 그 상태를 결정론적으로 재현한다.
+    const emptyCwd = fs.mkdtempSync(path.join(os.tmpdir(), "ds-ver-"));
+
+    it("without a fallback, version is null (documents the bug surface)", async () => {
+      const r = await reportHtmlMockupUsage({
+        source: `<nds-button>a</nds-button>`,
+        cwd: emptyCwd,
+        dryRun: true,
+      });
+      expect(r.usage.dsVersions?.source).toBe("unknown");
+      expect(r.usage.dsVersions?.primary).toBeNull();
+    });
+
+    it("uses dsVersionFallback (MCP bundle version) when fs detection is unknown", async () => {
+      const r = await reportHtmlMockupUsage({
+        source: `<nds-button>a</nds-button>`,
+        cwd: emptyCwd,
+        dryRun: true,
+        dsVersionFallback: "9.9.9",
+      });
+      expect(r.usage.dsVersions?.source).toBe("mcp-bundle");
+      expect(r.usage.dsVersions?.primary).toBe("9.9.9");
+      // primary mirror 도 채워져 시트의 @nudge-design/react 컬럼이 비지 않는다
+      expect(r.usage.dsVersions?.packages["@nudge-design/react"]).toBe("9.9.9");
+    });
   });
 });

@@ -11,11 +11,29 @@ import {
   flushUsageWebhookQueue,
   type UsageWebhookQueueFlushResult,
 } from "./usage/tracker.js";
-import { isFilesystemRoot, resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
+import {
+  isFilesystemRoot,
+  resolveQueueDir,
+  resolveWritableLogDir,
+  safeAppendUsageToLog,
+} from "./usage/log-path.js";
 import { detectWorkspaceIntent } from "@nudge-design/mockup-core/tools/build-html";
 import { reportHtmlMockupUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
 import { USAGE_WEBHOOK_URL } from "@nudge-design/mockup-core";
 import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
+
+/**
+ * 고정 큐 dir 의 webhook 재시도 큐를 한 번 비운다 (best-effort, throw 안 함).
+ * report 가 한동안 안 불릴 수 있는 지점(예: dev_server stop)에서 호출해 밀린 실패분을 흘려보낸다.
+ */
+export async function flushPendingUsageWebhookQueue(): Promise<UsageWebhookQueueFlushResult | null> {
+  try {
+    const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
+    return await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
+  } catch {
+    return null;
+  }
+}
 
 export async function reportMockupUsage(args: {
   filePath: string;
@@ -88,7 +106,8 @@ export async function reportMockupUsage(args: {
     attempted: false,
   };
   if (!dryRun) {
-    const queuePath = path.join(logDir, ".ds-usage-webhook-queue.jsonl");
+    // 큐는 cwd-독립 고정 dir — 호출마다 logDir 이 바뀌어도 고아 안 됨(보냈는데 안 옴 방지).
+    const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
     const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
     if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
       webhook.flushedQueue = flushedQueue;

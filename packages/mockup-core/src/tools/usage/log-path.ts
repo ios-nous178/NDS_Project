@@ -43,6 +43,33 @@ export function isFilesystemRoot(p: string): boolean {
 }
 
 /**
+ * webhook 재시도 큐의 **고정** 디렉토리.
+ *
+ * 로그(.ds-usage-log.jsonl)는 프로젝트별 cwd 옆에 두는 게 자연스럽지만, 재시도 큐
+ * (.ds-usage-webhook-queue.jsonl)는 호출마다 cwd 가 바뀌면 적재된 위치를 다음 호출이 못 찾아
+ * **"고아 큐"** 가 된다 — webhook 이 한 번 삐끗해 큐로 빠졌는데 영영 flush 안 되는 사고
+ * (= "보냈는데 시트에 없음"). 그래서 큐만은 cwd 와 무관하게 한 곳으로 고정한다. 그러면
+ * 어느 프로젝트의 report 든 다음 호출에서 이 단일 큐를 비운다.
+ *
+ * 우선순위: DS_USAGE_LOG_DIR > <HOME>/.nudge-ds > os.tmpdir().
+ */
+export function resolveQueueDir(): string {
+  const envDir = process.env.DS_USAGE_LOG_DIR;
+  if (envDir && envDir.length > 0) return path.resolve(envDir);
+  try {
+    const home = os.homedir();
+    if (home && !isFilesystemRoot(home)) {
+      const dir = path.join(home, ".nudge-ds");
+      mkdirSync(dir, { recursive: true });
+      return dir;
+    }
+  } catch {
+    /* EROFS / EACCES — tmpdir 로 폴백 */
+  }
+  return os.tmpdir();
+}
+
+/**
  * appendUsageToLog 를 감싸 EROFS / EACCES 같은 환경 실패를 swallow.
  * 성공: { logPath } / 실패: { logPath: null, logError }.
  */
