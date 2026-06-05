@@ -76,7 +76,7 @@ export const cashwalkBizSemantic = {
     link: { default: cashwalkBizBlue[500] }, // #007AFF — Text/Link/Default (캐포비 신규)
     status: {
       success: cashwalkBizGreen[600], // #00B350 — Text/Status/Success
-      error: cashwalkBizCoralRed[500], // #FF4141 — Text/Status/Error
+      error: cashwalkBizCoralRed[500], // #FC3500 — Text/Status/Error
       caution: cashwalkBizYellow[800], // #FD9B02 — Text/Status/Caution
       info: cashwalkBizBlue[600], // #006FE6 — Text/Status/Info (Figma 3222:458)
     },
@@ -100,7 +100,7 @@ export const cashwalkBizSemantic = {
     },
     disabled: { default: cashwalkBizNeutral[200] }, // #EEEEEE — Border/Disabled
     status: {
-      error: cashwalkBizCoralRed[500], // #FF4141 — base alias
+      error: cashwalkBizCoralRed[500], // #FC3500 — base alias
       caution: cashwalkBizYellow[800], // #FD9B02 — text.status.caution 과 정합
     },
   },
@@ -114,7 +114,7 @@ export const cashwalkBizSemantic = {
     brand: { default: cashwalkBizYellow[700] }, // #FEAF01 — Icon/Brand (가이드 yellow/700)
     status: {
       success: cashwalkBizGreen[500], // #00CC5B
-      error: cashwalkBizCoralRed[500], // #FF4141
+      error: cashwalkBizCoralRed[500], // #FC3500
       caution: cashwalkBizYellow[700], // #FEAF01 — 아이콘 가독성 위해 700
     },
   },
@@ -193,13 +193,13 @@ export const cashwalkBizSemantic = {
     borderDefault: cashwalkBizNeutral[200], // #EEEEEE — Input/Border/Default
     borderHover: cashwalkBizNeutral[300], // #E7E7E7 — Input/Border/Hover
     borderFocus: cashwalkBizNeutral[900], // #111111 — Input/Border/Focus (★ 검정)
-    borderError: cashwalkBizCoralRed[500], // #FF4141 — Input/Border/Error
+    borderError: cashwalkBizCoralRed[500], // #FC3500 — Input/Border/Error
     borderDisabled: cashwalkBizNeutral[200], // #EEEEEE — base alias
     placeholder: cashwalkBizNeutral[400], // #DDDDDD — Input/Placeholder
     // helpertext* — 가이드 미정의. text.* 슬롯과 정합되도록 명시.
     helpertextDefault: cashwalkBizNeutral[500], // #BBBBBB
     helpertextSuccess: cashwalkBizGreen[600], // #00B350
-    helpertextError: cashwalkBizCoralRed[500], // #FF4141
+    helpertextError: cashwalkBizCoralRed[500], // #FC3500
     helpertextDisabled: cashwalkBizNeutral[400], // #DDDDDD
   },
 
