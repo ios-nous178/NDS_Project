@@ -2730,8 +2730,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "step은 초 단위 — 5분이면 300, 15분이면 900.",
       "min/max도 HH:mm 문자열 — Date 객체 X.",
       "상담 슬롯 목록에서 선택은 TimeSlotPicker가 적합 — TimePicker는 자유 시각 입력.",
+      "**(캐포비 어드민) 시간 인풋의 '빠른설정' 프리셋은 회색 중립 칩 — 노란 brand Chip / SelectionButton 금지.** 광고 노출 스케줄 등에서 시간 필드 트레일링(`00:00` + 시계아이콘 우측)에 `자정까지`(= 시간을 24:00 으로 즉시 세팅) 같은 빠른설정 칩이 붙는다. 이건 **회색 중립 surface 의 보조 액션 칩**(ActionChip 류 · 텍스트는 캐포비 브라운 · 시간값을 세팅하는 버튼)이지, 선택 토글이 아니다. **노란 outlined Chip / SelectionButton 으로 그리면 회귀**(SelectionButton 과 혼동되는 '지역=노란칩'과 동일 함정 — region-as-chip 참조). 시각 선택 자체는 `nds-time-picker`. Figma 3001:19122.",
     ],
-    recommended: ["알림: step=300, min='07:00' max='23:00'", "복약: step=900"],
+    recommended: [
+      "알림: step=300, min='07:00' max='23:00'",
+      "복약: step=900",
+      "캐포비 광고 스케줄: nds-time-picker + 트레일링 빠른설정 칩(회색 중립, 예 '자정까지'→24:00) — 칩 클릭이 time value 를 세팅(노란 brand 아님). Figma 3001:19122.",
+    ],
   },
   AddressSearch: {
     name: "AddressSearch",
