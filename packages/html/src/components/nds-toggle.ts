@@ -17,6 +17,9 @@ const TG_CLASS = "nds-toggle";
 const TG_TRACK_CLASS = `${TG_CLASS}__track`;
 const TG_THUMB_CLASS = `${TG_CLASS}__thumb`;
 const TG_LABEL_CLASS = `${TG_CLASS}__label`;
+const TG_INNER_LABEL_CLASS = `${TG_CLASS}__inner-label`;
+// 라벨 내장(status) 변형 — react Toggle 의 LABELED 와 동일 (Figma 캐포비 노출 토글 3172:577).
+const LABELED = { trackH: 30, thumbSize: 25, thumbOffset: 2.5 } as const;
 
 export type ToggleSize = "md" | "sm";
 
@@ -48,13 +51,24 @@ export class NdsToggle extends NdsElement {
   static elementName = "nds-toggle";
 
   static get observedAttributes(): readonly string[] {
-    return ["checked", "disabled", "label", "size", "input-id", ...FORWARDED_ATTRS];
+    return [
+      "checked",
+      "disabled",
+      "label",
+      "on-label",
+      "off-label",
+      "tone",
+      "size",
+      "input-id",
+      ...FORWARDED_ATTRS,
+    ];
   }
 
   private _root: HTMLLabelElement | null = null;
   private _input: HTMLInputElement | null = null;
   private _track: HTMLSpanElement | null = null;
   private _label: HTMLSpanElement | null = null;
+  private _innerLabel: HTMLSpanElement | null = null;
   private _inputId = "";
 
   /**
@@ -146,11 +160,26 @@ export class NdsToggle extends NdsElement {
     this._input.disabled = disabled;
     this._input.setAttribute("aria-checked", checked ? "true" : "false");
     this._track.dataset.checked = checked ? "true" : "false";
-    this._track.style.setProperty("--nds-toggle-track-w", `${cfg.trackW}px`);
-    this._track.style.setProperty("--nds-toggle-track-h", `${cfg.trackH}px`);
-    this._track.style.setProperty("--nds-toggle-thumb-size", `${cfg.thumbSize}px`);
-    this._track.style.setProperty("--nds-toggle-thumb-offset", `${cfg.thumbOffset}px`);
-    this._track.style.setProperty("--nds-toggle-thumb-travel", `${thumbTravel}px`);
+
+    // on-label/off-label 중 하나라도 있으면 라벨 내장(status) 변형 — 폭 auto + 큰 썸.
+    const labeled =
+      this.getAttribute("on-label") !== null || this.getAttribute("off-label") !== null;
+    this._track.dataset.labeled = labeled ? "true" : "false";
+    this._track.dataset.tone = this.attr("tone", "brand");
+
+    if (labeled) {
+      this._track.style.removeProperty("--nds-toggle-track-w");
+      this._track.style.setProperty("--nds-toggle-track-h", `${LABELED.trackH}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-size", `${LABELED.thumbSize}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-offset", `${LABELED.thumbOffset}px`);
+      this._track.style.removeProperty("--nds-toggle-thumb-travel");
+    } else {
+      this._track.style.setProperty("--nds-toggle-track-w", `${cfg.trackW}px`);
+      this._track.style.setProperty("--nds-toggle-track-h", `${cfg.trackH}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-size", `${cfg.thumbSize}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-offset", `${cfg.thumbOffset}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-travel", `${thumbTravel}px`);
+    }
 
     for (const name of FORWARDED_ATTRS) {
       const value = this.getAttribute(name);
@@ -159,6 +188,27 @@ export class NdsToggle extends NdsElement {
     }
 
     this._syncLabel();
+    this._syncInnerLabel(checked, labeled);
+  }
+
+  // 트랙 안 on/off 라벨 — checked 면 라벨이 썸 왼쪽, 아니면 오른쪽 (DOM 순서로 위치 결정).
+  private _syncInnerLabel(checked: boolean, labeled: boolean): void {
+    if (!this._track) return;
+    const text = checked ? this.getAttribute("on-label") : this.getAttribute("off-label");
+    if (!labeled || text === null) {
+      this._innerLabel?.remove();
+      this._innerLabel = null;
+      return;
+    }
+    if (!this._innerLabel) {
+      this._innerLabel = document.createElement("span");
+      this._innerLabel.className = TG_INNER_LABEL_CLASS;
+      this._innerLabel.dataset.slot = "inner-label";
+    }
+    this._innerLabel.textContent = text;
+    const thumb = this._track.querySelector<HTMLElement>('[data-slot="thumb"]');
+    if (checked) this._track.insertBefore(this._innerLabel, thumb);
+    else this._track.appendChild(this._innerLabel);
   }
 
   private _syncLabel(): void {

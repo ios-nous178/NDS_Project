@@ -185,3 +185,43 @@ describe("nds-toggle — DOM parity with React Toggle", () => {
     expect(root.htmlFor).toBe("notify-toggle-2");
   });
 });
+
+describe("nds-toggle — 라벨 내장(status) 변형 + tone", () => {
+  const setup = async (attrs: Record<string, string>) => {
+    const el = document.createElement("nds-toggle");
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    document.body.appendChild(el);
+    await flush();
+    return el;
+  };
+
+  it("on-label/off-label 이 있으면 data-labeled=true + 트랙 안 inner-label 렌더", async () => {
+    const el = await setup({ "on-label": "노출", "off-label": "미노출" });
+    const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
+    expect(track.dataset.labeled).toBe("true");
+    const inner = el.querySelector('[data-slot="inner-label"]');
+    expect(inner?.textContent).toBe("미노출"); // unchecked → off-label
+  });
+
+  it("checked 면 on-label 을 썸 왼쪽에 둔다", async () => {
+    const el = await setup({ "on-label": "노출", "off-label": "미노출", checked: "" });
+    const inner = el.querySelector('[data-slot="inner-label"]')!;
+    expect(inner.textContent).toBe("노출");
+    const thumb = el.querySelector('[data-slot="thumb"]')!;
+    // DOM 순서상 inner-label 이 thumb 보다 앞(왼쪽)
+    expect(inner.compareDocumentPosition(thumb) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('tone="success" 는 track data-tone=success', async () => {
+    const el = await setup({ "on-label": "노출", tone: "success", checked: "" });
+    const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
+    expect(track.dataset.tone).toBe("success");
+  });
+
+  it("on/off-label 없으면 data-labeled=false + inner-label 없음", async () => {
+    const el = await setup({ label: "알림" });
+    const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
+    expect(track.dataset.labeled).toBe("false");
+    expect(el.querySelector('[data-slot="inner-label"]')).toBeNull();
+  });
+});
