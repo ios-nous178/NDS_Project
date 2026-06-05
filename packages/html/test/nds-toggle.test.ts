@@ -14,6 +14,24 @@ describe("nds-toggle — DOM parity with React Toggle", () => {
     expect(customElements.get("nds-toggle")).toBe(NdsToggle);
   });
 
+  it("exposes a host .checked property (read + write) like native input", async () => {
+    const el = document.createElement("nds-toggle") as InstanceType<typeof NdsToggle>;
+    document.body.appendChild(el);
+    await flush();
+
+    expect(el.checked).toBe(false);
+
+    el.checked = true;
+    await flush();
+    expect(el.hasAttribute("checked")).toBe(true);
+    expect((el.querySelector("input") as HTMLInputElement).checked).toBe(true);
+    expect(el.checked).toBe(true);
+
+    el.checked = false;
+    await flush();
+    expect(el.checked).toBe(false);
+  });
+
   it("renders label root, switch input, track, thumb, and label slot", async () => {
     const el = document.createElement("nds-toggle");
     el.setAttribute("checked", "");

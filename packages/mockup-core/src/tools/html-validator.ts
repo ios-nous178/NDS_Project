@@ -32,6 +32,7 @@
  *  - card-badge-overuse         : 1 nds-card 안 nds-chip + nds-badge ≥ 3
  *  - card-footer-button-overuse : nds-card-footer 안 nds-button ≥ 3
  *  - primary-cta-per-container  : 영역 1개 안 primary solid nds-button > 1
+ *  - cashwalk-biz-modal-single-button-fullwidth : 캐포비 모달 단일 footer 버튼이 full-width (우측 hug 여야 함)
  *  - primary-cta-overuse        : 페이지 레벨 primary solid nds-button > 1
  *  - chip-overuse               : nds-chip > 8
  *  - card-everything            : nds-card ≥ 5
@@ -150,6 +151,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "cashwalk-biz-sidebar-logout": "warn",
   // 사이드바가 풀하이트 셸(.nds-shell) 밖 — 100vh 가 화면을 못 채움(회귀: 높이 안 참)
   "cashwalk-biz-sidebar-shell": "error",
+  // 캐포비 모달 단일 버튼은 우측 정렬 hug 검정 pill — full-width 금지(회귀: 퍼포멘토 등의 full-width 를 잘못 가져옴)
+  "cashwalk-biz-modal-single-button-fullwidth": "warn",
   // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
   "unknown-brand-slug": "error",
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
@@ -1163,6 +1166,37 @@ function collectContainerViolations(
           suggestion: `한 영역(${label}) 안 Primary Button 은 최대 1개. 보조 액션은 variant="outlined" / color="assistive" / variant="text" 로 낮추세요. get_guide({ topic: 'pattern:cta-group' }) 참조.`,
         });
       }
+    });
+  }
+
+  // 캐포비(cashwalk-biz) 모달 단일 버튼은 우측 정렬 hug 검정 pill — full-width 아님.
+  // 흔한 회귀: 버튼 1개인데 full-width 로 깔림(다른 화면의 full-width 적용 버튼을 잘못 가져옴).
+  const modalBrand = canonicalBrandSlug(
+    $("html").attr("data-brand") ?? $("body").attr("data-brand"),
+  );
+  if (modalBrand === "cashwalk-biz") {
+    $("nds-modal").each((_i, el) => {
+      if (el.type !== "tag") return;
+      const $el = $(el);
+      const footerBtns = $el
+        .find('[slot="footer"] nds-button, nds-modal-footer nds-button')
+        .toArray();
+      // 슬롯 footer 가 없으면(=버튼을 본문에 직접 둔 경우 포함) 모달 내 전체 버튼으로 폴백.
+      const buttons = (footerBtns.length
+        ? footerBtns
+        : $el.find("nds-button").toArray()) as unknown as DomElement[];
+      // 단일 버튼 모달에만 적용 — 2개(취소+확정)는 가로 분할이 정상.
+      if (buttons.length !== 1) return;
+      if (buttons[0].attribs?.["full-width"] === undefined) return;
+      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+      out.push({
+        rule: "cashwalk-biz-modal-single-button-fullwidth",
+        line: lineNumberAt(source, offset),
+        selector: describeElement(el as unknown as DomElement),
+        detail: "캐포비 모달의 단일 버튼에 full-width 가 붙음.",
+        suggestion:
+          "캐포비(cashwalk-biz) 단일 버튼 모달은 우측 정렬 + hug 너비 검정 pill 입니다 — full-width 아님. <nds-button> 에서 full-width 를 제거하고 <div slot=\"footer\"> 로 감싸면 footer cascade 가 우측 hug 로 정렬합니다(버튼 2개일 때만 가로 분할). get_guide({ topic: 'component:Modal', brand: 'cashwalk-biz' }) 참조.",
+      });
     });
   }
 }

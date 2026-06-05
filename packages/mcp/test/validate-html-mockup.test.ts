@@ -285,6 +285,42 @@ describe("validateHtmlSource — ported JSX patterns", () => {
     expect(rulesFor(html)).not.toContain("primary-cta-overuse");
   });
 
+  it("flags cashwalk-biz modal single full-width button (hug 우측정렬이어야 함)", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-modal open title="검수를 승인할까요?">
+        <p>승인하면 즉시 노출됩니다.</p>
+        <div slot="footer"><nds-button color="secondary" variant="solid" full-width>승인</nds-button></div>
+      </nds-modal>
+    </body></html>`;
+    expect(rulesFor(html)).toContain("cashwalk-biz-modal-single-button-fullwidth");
+  });
+
+  it("does NOT flag cashwalk-biz single modal button when hug (no full-width)", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-modal open title="검수를 승인할까요?">
+        <div slot="footer"><nds-button color="secondary" variant="solid" shape="pill">승인</nds-button></div>
+      </nds-modal>
+    </body></html>`;
+    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
+  });
+
+  it("does NOT flag full-width single modal button outside cashwalk-biz brand", () => {
+    const html = `<nds-modal><div slot="footer"><nds-button full-width>확인</nds-button></div></nds-modal>`;
+    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
+  });
+
+  it("does NOT flag cashwalk-biz dual-button modal (가로 분할은 정상)", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-modal>
+        <div slot="footer">
+          <nds-button color="assistive" variant="outlined">닫기</nds-button>
+          <nds-button color="secondary" variant="solid" full-width>확정</nds-button>
+        </div>
+      </nds-modal>
+    </body></html>`;
+    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
+  });
+
   it("does NOT flag primary-cta-overuse when secondary buttons are non-solid", () => {
     const html = `<nds-button>A</nds-button><nds-button variant="outlined">B</nds-button>`;
     expect(rulesFor(html)).not.toContain("primary-cta-overuse");
