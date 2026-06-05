@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T06:37:11.048Z",
+  "generatedAt": "2026-06-05T07:14:57.653Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -4011,6 +4011,37 @@
       ],
       "dtsRelPath": "packages/react/dist/MultiStepForm.d.ts",
       "htmlTag": "nds-multi-step-form"
+    },
+    {
+      "name": "NoticeAlert",
+      "props": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "NoticeAlertVariant",
+          "allowedValues": ["info", "notice", "caution", "success", "error"]
+        },
+        {
+          "name": "message",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode | false"
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/NoticeAlert.d.ts",
+      "htmlTag": "nds-notice-alert",
+      "htmlAttrs": {
+        "variant": ["info", "notice", "caution", "success", "error"]
+      }
     },
     {
       "name": "NotificationItem",
@@ -10538,6 +10569,7 @@
     "nds-mood-selector",
     "nds-multi-select",
     "nds-multi-step-form",
+    "nds-notice-alert",
     "nds-notification-item",
     "nds-number-stepper",
     "nds-online-indicator",
@@ -10946,6 +10978,12 @@
     {
       "tag": "nds-multi-step-form",
       "attrs": {}
+    },
+    {
+      "tag": "nds-notice-alert",
+      "attrs": {
+        "variant": ["info", "notice", "caution", "success", "error"]
+      }
     },
     {
       "tag": "nds-notification-item",

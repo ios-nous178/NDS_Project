@@ -25,6 +25,9 @@ export type { BadgeColor, BadgeSize, BadgeVariant } from "./components/nds-badge
 export { NdsBanner } from "./components/nds-banner.js";
 export type { BannerVariant } from "./components/nds-banner.js";
 
+export { NdsNoticeAlert } from "./components/nds-notice-alert.js";
+export type { NoticeAlertVariant } from "./components/nds-notice-alert.js";
+
 export { NdsBreadcrumb, NdsBreadcrumbItem } from "./components/nds-breadcrumb.js";
 
 export { NdsChip } from "./components/nds-chip.js";

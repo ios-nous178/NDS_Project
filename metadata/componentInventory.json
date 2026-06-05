@@ -1124,6 +1124,18 @@
     "notes": "CrisisCallout(위기 안내·dismiss 불가)과 분리. 정적 안내·홍보용."
   },
   {
+    "name": "NoticeAlert",
+    "category": "피드백",
+    "status": "implemented",
+    "description": "폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스. 5 variant(info/notice/caution/success/error)",
+    "storybookTitle": "Components/NoticeAlert",
+    "docsPath": "/components/notice-alert",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3902-1212",
+    "figmaNodeId": "3902:1212",
+    "usageSummary": "폼 필드 옆 입력 안내, 유효성 경고, 제출 차단 사유, 단순 정보 박스",
+    "notes": "DS notice 패턴의 구현체. Toast(자동 사라짐)·Banner(전역 띠)·Modal(즉각 판단)과 분리 — 입력 컨텍스트 옆 영구 노출."
+  },
+  {
     "name": "Divider",
     "category": "일반",
     "status": "implemented",
