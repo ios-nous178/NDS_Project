@@ -1166,6 +1166,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     summary: "드롭다운. options + value + onValueChange.",
     pitfalls: [
+      '**폭은 기본 전체너비(fullWidth/full-width=true)** — 폼/FormField 안에서 트리거가 100% 를 채운다(캐포비 어드민 폼 기본 규칙). 좁게 써야 하는 경우(어드민 검색 필터 등)에만 `full-width="false"`(React `fullWidth={false}`)를 명시. 드롭다운 메뉴 폭은 전체너비면 트리거 폭으로 고정, auto(좁은) 셀렉트는 가장 넓은 옵션까지 grow 후 캡(360px) — 캡/트리거폭에 닿으면 옵션 라벨이 줄바꿈 대신 말줄임. 메뉴를 트리거보다 임의로 넓게 만들지 말 것.',
       "변경 핸들러는 **onValueChange** (onChange 아님). React 표준이 아닌 DS 컨벤션.",
       "**드롭다운 흉내 금지** — `<nds-button>` / raw `<button>` + ChevronRight/ChevronDown 아이콘 조합으로 드롭다운 모양만 따라 그리지 말 것. 키보드 탐색·focus trap·옵션 list a11y 가 전부 빠짐. 옵션이 1개라도 있으면 무조건 `<nds-select>` 또는 React `<Select>`. 'scope switcher / sort / filter' 같이 옵션이 동적이면 더더욱 raw button 금지.",
       "옵션이 2-3 개의 토글성 선택지면 Tabs / Segment 도 고려 — Select 는 옵션 수가 많거나 라벨이 긴 경우.",

@@ -12,8 +12,15 @@ const SELECT_TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
 const SELECT_CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
 const SELECT_DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const SELECT_OPTION_CLASS = `${SELECT_CLASS}__option`;
+const SELECT_OPTION_LABEL_CLASS = `${SELECT_CLASS}__option-label`;
 const SELECT_OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
 const SELECT_HELPER_CLASS = `${SELECT_CLASS}__helper`;
+
+/**
+ * auto(좁은) 셀렉트에서 드롭다운 메뉴가 가장 넓은 옵션까지 grow 할 때의 상한.
+ * fullWidth 셀렉트는 트리거 폭으로 고정되므로 이 캡을 쓰지 않는다. 넘으면 옵션 말줄임.
+ */
+const SELECT_AUTO_MENU_MAX_WIDTH = 360;
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -44,6 +51,8 @@ interface SelectContextValue {
   setActiveOptionValue: React.Dispatch<React.SetStateAction<string | null>>;
   disabled: boolean;
   error: boolean;
+  /** 트리거 100% 폭(폼/캐포비 기본). 드롭다운 메뉴 폭 전략 분기에 사용. */
+  fullWidth: boolean;
   selectId: string;
   labelId: string;
   helperId: string;
@@ -116,6 +125,7 @@ export const SelectRoot: React.FC<SelectRootProps> = ({
         setActiveOptionValue,
         disabled,
         error,
+        fullWidth,
         selectId,
         labelId,
         helperId,
@@ -299,6 +309,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
     portalContainer,
     listboxId,
     selectId,
+    fullWidth,
   } = useSelectContext();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
@@ -362,7 +373,11 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
         style={{
           top: position.top,
           left: position.left,
-          width: position.width,
+          // 메뉴 폭: 항상 트리거 폭 이상(min-width). fullWidth 면 트리거 폭으로 고정
+          // (max-width=트리거폭), auto 면 가장 넓은 옵션까지 grow 후 캡(말줄임).
+          minWidth: position.width,
+          width: "max-content",
+          maxWidth: fullWidth ? position.width : SELECT_AUTO_MENU_MAX_WIDTH,
           ...style,
         }}
         onKeyDown={(event) => {
@@ -473,7 +488,7 @@ export const SelectOption: React.FC<SelectOptionProps> = ({
       }}
       {...rest}
     >
-      {children}
+      <span className={SELECT_OPTION_LABEL_CLASS}>{children}</span>
       <span className={SELECT_OPTION_CHECK_CLASS} aria-hidden="true">
         <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
