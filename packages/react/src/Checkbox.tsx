@@ -10,7 +10,6 @@ const CB_CHECK_ICON_CLASS = `${CB_CLASS}__check`;
 const CB_MINUS_ICON_CLASS = `${CB_CLASS}__minus`;
 const CB_LABEL_CLASS = `${CB_CLASS}__label`;
 const CB_HELPER_CLASS = `${CB_CLASS}__helper`;
-const CB_GROUP_CLASS = `${CB_CLASS}-group`;
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -140,40 +139,4 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 );
 Checkbox.displayName = "Checkbox";
 
-/* ────────────────────────────────────
-   CheckboxGroup
-   ──────────────────────────────────── */
-
-export type CheckboxGroupLayout = "vertical" | "horizontal";
-
-export interface CheckboxGroupProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 방향 */
-  layout?: CheckboxGroupLayout;
-  /** 간격 */
-  gap?: number;
-  /** 체크박스 아이템들 */
-  children: React.ReactNode;
-}
-
-export const CheckboxGroup: React.FC<CheckboxGroupProps> = React.memo(
-  ({ layout = "vertical", gap, children, className, style, ...rest }) => (
-    <div
-      data-slot="group"
-      data-layout={layout}
-      role="group"
-      className={cx(CB_GROUP_CLASS, className)}
-      style={{
-        ...(gap !== undefined &&
-          ({
-            "--nds-checkbox-group-gap": `${gap}px`,
-            "--nds-choice-group-gap": `${gap}px`,
-          } as React.CSSProperties)),
-        ...style,
-      }}
-      {...rest}
-    >
-      {children}
-    </div>
-  ),
-);
-CheckboxGroup.displayName = "CheckboxGroup";
+/* CheckboxGroup 은 ./CheckboxGroup 로 분리(레이아웃 + 데이터모드 + 전체선택). */
