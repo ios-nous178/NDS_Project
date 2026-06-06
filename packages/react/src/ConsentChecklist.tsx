@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 /* ─── Constants ─── */
 
@@ -15,6 +15,7 @@ const CL_OPTIONAL_CLASS = `${CL_CLASS}__optional`;
 const CL_TOGGLE_CLASS = `${CL_CLASS}__toggle`;
 const CL_DETAIL_CLASS = `${CL_CLASS}__detail`;
 const CL_BOX_CLASS = `${CL_CLASS}__box`;
+const CL_MINUS_CLASS = `${CL_CLASS}__minus`;
 const CL_INPUT_CLASS = `${CL_CLASS}__input`;
 /* ─── Utils ─── */
 
@@ -30,6 +31,12 @@ const CheckIcon = () => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+  </svg>
+);
+
+const MinusIcon = () => (
+  <svg className={CL_MINUS_CLASS} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <path d="M3.5 7H10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
@@ -83,8 +90,17 @@ export const ConsentChecklist: React.FC<ConsentChecklistProps> = ({
   ...rest
 }) => {
   const [openKeys, setOpenKeys] = useState<Set<string>>(new Set());
+  const allInputRef = useRef<HTMLInputElement | null>(null);
   const allKeys = items.map((i) => i.key);
   const allChecked = items.length > 0 && allKeys.every((k) => value.includes(k));
+  const someChecked = allKeys.some((k) => value.includes(k));
+  // 전체동의는 자식 선택 비율로 파생 — CheckboxTree 전체선택과 동일 패턴.
+  const allState = allChecked ? "checked" : someChecked ? "indeterminate" : "unchecked";
+
+  // 네이티브 indeterminate 는 프로퍼티로만 설정 가능(속성 X) → ref 동기화.
+  React.useEffect(() => {
+    if (allInputRef.current) allInputRef.current.indeterminate = allState === "indeterminate";
+  }, [allState]);
 
   const toggleAll = useCallback(() => {
     onValueChange(allChecked ? [] : allKeys);
@@ -110,18 +126,22 @@ export const ConsentChecklist: React.FC<ConsentChecklistProps> = ({
     <div data-slot="root" className={cx(CL_CLASS, className)} {...rest}>
       <label data-slot="all" className={CL_ALL_CLASS}>
         <input
+          ref={allInputRef}
           type="checkbox"
           checked={allChecked}
           onChange={toggleAll}
           className={CL_INPUT_CLASS}
+          aria-checked={allState === "indeterminate" ? "mixed" : undefined}
         />
         <span
           data-slot="box"
+          data-state={allState}
           data-checked={allChecked ? "true" : "false"}
           className={CL_BOX_CLASS}
           aria-hidden="true"
         >
           <CheckIcon />
+          <MinusIcon />
         </span>
         <span data-slot="label-text" className={CL_LABEL_TEXT_CLASS}>
           {allLabel}

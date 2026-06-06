@@ -37,6 +37,7 @@ const CL_OPTIONAL_CLASS = `${CL_CLASS}__optional`;
 const CL_TOGGLE_CLASS = `${CL_CLASS}__toggle`;
 const CL_DETAIL_CLASS = `${CL_CLASS}__detail`;
 const CL_BOX_CLASS = `${CL_CLASS}__box`;
+const CL_MINUS_CLASS = `${CL_CLASS}__minus`;
 const CL_INPUT_CLASS = `${CL_CLASS}__input`;
 
 interface ConsentItem {
@@ -52,6 +53,16 @@ const CheckIcon = () => {
   svg.setAttribute("fill", "none");
   svg.setAttribute("aria-hidden", "true");
   svg.innerHTML = `<path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return svg;
+};
+
+const MinusIcon = () => {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", CL_MINUS_CLASS);
+  svg.setAttribute("viewBox", "0 0 14 14");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = `<path d="M3.5 7H10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
   return svg;
 };
 
@@ -140,6 +151,9 @@ export class NdsConsentChecklist extends NdsElement {
     const allLabel = this.getAttribute("all-label") || "전체 동의";
     const expandable = this.attr("expandable", "true") !== "false";
     const allChecked = items.length > 0 && items.every((i) => value.has(i.key));
+    const someChecked = items.some((i) => value.has(i.key));
+    // 전체동의는 자식 선택 비율로 파생 — CheckboxTree 전체선택과 동일 패턴.
+    const allState = allChecked ? "checked" : someChecked ? "indeterminate" : "unchecked";
 
     this._root.innerHTML = "";
 
@@ -152,16 +166,19 @@ export class NdsConsentChecklist extends NdsElement {
     allInput.type = "checkbox";
     allInput.className = CL_INPUT_CLASS;
     allInput.checked = allChecked;
+    allInput.indeterminate = allState === "indeterminate";
+    if (allState === "indeterminate") allInput.setAttribute("aria-checked", "mixed");
     allInput.addEventListener("change", () => {
       this._commit(allChecked ? [] : items.map((i) => i.key));
     });
 
     const allBox = document.createElement("span");
     allBox.dataset.slot = "box";
+    allBox.dataset.state = allState;
     allBox.dataset.checked = allChecked ? "true" : "false";
     allBox.className = CL_BOX_CLASS;
     allBox.setAttribute("aria-hidden", "true");
-    allBox.appendChild(CheckIcon());
+    allBox.append(CheckIcon(), MinusIcon());
 
     const allLabelEl = document.createElement("span");
     allLabelEl.dataset.slot = "label-text";

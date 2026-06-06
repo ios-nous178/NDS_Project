@@ -22,6 +22,7 @@ const CL_OPTIONAL_CLASS = `${CL_CLASS}__optional`;
 const CL_TOGGLE_CLASS = `${CL_CLASS}__toggle`;
 const CL_DETAIL_CLASS = `${CL_CLASS}__detail`;
 const CL_BOX_CLASS = `${CL_CLASS}__box`;
+const CL_MINUS_CLASS = `${CL_CLASS}__minus`;
 const CL_INPUT_CLASS = `${CL_CLASS}__input`;
 
 export const consentStyles = `
@@ -100,13 +101,26 @@ export const consentStyles = `
     transition: background-color ${transition.default};
   }
 
-  :where(.${CL_BOX_CLASS}[data-checked="true"]) {
+  :where(.${CL_BOX_CLASS}[data-checked="true"]),
+  :where(.${CL_BOX_CLASS}[data-state="checked"]),
+  :where(.${CL_BOX_CLASS}[data-state="indeterminate"]) {
     background: ${cv.surface.brand};
   }
 
   :where(.${CL_BOX_CLASS}) svg {
     width: 14px;
     height: 14px;
+  }
+
+  /* 전체동의 부분선택 — 마이너스만 노출(체크는 숨김). CheckboxTree 전체선택과 동일. */
+  :where(.${CL_MINUS_CLASS}) {
+    display: none;
+  }
+  :where(.${CL_BOX_CLASS}[data-state="indeterminate"] .${CL_MINUS_CLASS}) {
+    display: inline-block;
+  }
+  :where(.${CL_BOX_CLASS}[data-state="indeterminate"] svg:not(.${CL_MINUS_CLASS})) {
+    display: none;
   }
 
   :where(.${CL_LABEL_TEXT_CLASS}) {
