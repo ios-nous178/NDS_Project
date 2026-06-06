@@ -214,3 +214,70 @@ describe("html setup visual reference guardrail", () => {
     );
   });
 });
+
+type ExternalStarterResult = {
+  ok: boolean;
+  brand: string | null;
+  files: {
+    claudeMd: { ok: boolean; filePath?: string; error?: string };
+    agentsMd: { ok: boolean; filePath?: string; error?: string };
+  };
+  mcpConfig: { mcpJson: string; claudeCodeCommand: string; serverPath: string };
+  validationLoop: { step: number; tool: string; why: string }[];
+  promptTemplates: { title: string; prompt: string }[];
+};
+
+describe("get_setup external-starter (도구 중립 온보딩)", () => {
+  it("한 호출로 CLAUDE.md + AGENTS.md + mcpConfig + 검증루프 + 프롬프트템플릿을 낸다", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-starter-"));
+
+    const result = getSetup({ step: "external-starter", cwd, intent: "html" }) as ExternalStarterResult;
+
+    expect(result.ok).toBe(true);
+    expect(fs.existsSync(path.join(cwd, "CLAUDE.md"))).toBe(true);
+    expect(fs.existsSync(path.join(cwd, "AGENTS.md"))).toBe(true);
+    expect(result.files.claudeMd.ok).toBe(true);
+    expect(result.files.agentsMd.ok).toBe(true);
+    // .mcp.json 스니펫 — repoRoot 의 server.js 경로(Claude Code/Cursor/Codex 공용)
+    expect(result.mcpConfig.serverPath).toBe("/tmp/repo/packages/mcp/dist/server.js");
+    expect(result.mcpConfig.mcpJson).toContain("/tmp/repo/packages/mcp/dist/server.js");
+    expect(result.mcpConfig.mcpJson).toContain("mcpServers");
+    expect(result.mcpConfig.claudeCodeCommand).toContain("claude mcp add nudge-ds");
+    // 검증 루프 3단계
+    expect(result.validationLoop.map((s) => s.step)).toEqual([1, 2, 3]);
+    expect(result.validationLoop[1].tool).toContain("build_singlefile_html");
+    // 프롬프트 템플릿
+    expect(result.promptTemplates.length).toBeGreaterThanOrEqual(3);
+    expect(result.promptTemplates[0].prompt).toContain("NDS");
+  });
+
+  it("캐포비 브랜드면 어드민 Page-Pattern 프롬프트를 덧붙이고 nudge.brand 마커를 박는다", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-starter-cpb-"));
+
+    const result = getSetup({
+      step: "external-starter",
+      cwd,
+      brand: "cashpobi",
+      intent: "html",
+    }) as ExternalStarterResult;
+
+    expect(result.brand).toBe("cashwalk-biz");
+    expect(fs.readFileSync(path.join(cwd, "nudge.brand"), "utf-8").trim()).toBe("cashwalk-biz");
+    const titles = result.promptTemplates.map((t) => t.title);
+    expect(titles.some((t) => t.includes("캐포비"))).toBe(true);
+  });
+
+  it("CLAUDE.md 가 이미 있고 overwrite 미지정이면 ok:false 로 보고한다(files[].error)", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-starter-exists-"));
+    fs.writeFileSync(path.join(cwd, "CLAUDE.md"), "기존 내용", "utf-8");
+
+    const result = getSetup({ step: "external-starter", cwd, intent: "html" }) as ExternalStarterResult;
+
+    expect(result.ok).toBe(false);
+    expect(result.files.claudeMd.ok).toBe(false);
+    expect(result.files.claudeMd.error).toContain("already exists");
+  });
+});

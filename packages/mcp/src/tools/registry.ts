@@ -453,14 +453,24 @@ const TOOLS = [
   {
     name: "get_setup",
     description:
-      "Setup router for install/import/update/CLAUDE.md/AGENTS.md/full instructions. Defaults to HTML/<nds-*>. Generated mockup instructions enforce a first-response visual-reference question before code or DS lookups.",
+      "Setup router for install/import/update/CLAUDE.md/AGENTS.md/external-starter/full instructions. Defaults to HTML/<nds-*>. **external-starter** is the tool-neutral quick onboarding for external projects: one call writes CLAUDE.md + AGENTS.md and returns a shared .mcp.json (Claude Code/Cursor/Codex), the recommended validate→build→score loop, and reusable 'NDS 써서' prompt templates. Generated mockup instructions enforce a first-response visual-reference question before code or DS lookups.",
     inputSchema: {
       type: "object",
       properties: {
         step: {
           type: "string",
-          enum: ["install", "imports", "update", "claude-md", "agents-md", "inspector", "full"],
-          description: "install | imports | update | claude-md | agents-md | inspector | full.",
+          enum: [
+            "install",
+            "imports",
+            "update",
+            "claude-md",
+            "agents-md",
+            "inspector",
+            "external-starter",
+            "full",
+          ],
+          description:
+            "install | imports | update | claude-md | agents-md | inspector | external-starter | full.",
         },
         tgzDir: {
           type: "string",
@@ -538,6 +548,7 @@ const SETUP_STEP_VALUES = [
   "claude-md",
   "agents-md",
   "inspector",
+  "external-starter",
   "full",
 ] as const;
 const DEV_SERVER_ACTION_VALUES = ["start", "stop"] as const;
