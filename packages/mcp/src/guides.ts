@@ -1,3 +1,4 @@
+import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
 import {
   CASHWALK_BIZ_ADMIN_SIDEBAR_HTML,
   CASHWALK_BIZ_ADMIN_SIDEBAR_SHELL_HTML,
@@ -133,7 +134,11 @@ export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | 
 export const DS_ADMIN_BRANDS = ["cashwalk-biz"] as const;
 
 export function isDsAdminBrand(brand?: string | null): boolean {
-  return !!brand && (DS_ADMIN_BRANDS as readonly string[]).includes(brand);
+  // 별칭 정규화 필수 — cashpobi / cash-pobi / cashwalkbiz 등 입력도 cashwalk-biz 로 resolve 해야
+  // admin 발화가 antd(NudgeEAPCMS)가 아니라 DS 경로로 우회된다. raw 매치만 하면 brand='cashpobi'
+  // 가 새어나가 NudgeEAPCMS 사이드바(240px·INFO·CMS MENU·Copyright Nudge EAP)가 캐포비에 잘못 적용됨.
+  const canon = canonicalBrandSlug(brand ?? undefined);
+  return !!canon && (DS_ADMIN_BRANDS as readonly string[]).includes(canon);
 }
 
 /**
@@ -874,6 +879,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Fill Badge 남용 금지 — 한 카드/리스트 Row 에 Fill Badge 가 2개 이상 보이면 위계가 무너진다. 일반 카테고리는 ghost/line 우선.",
       "Brand color 는 '현재 선택 / 핵심 강조' 에만 사용. 일반 카테고리·상태 표시에는 neutral 우선.",
       "상태 색(success/error/caution/info) 은 의미 전달 목적에만 사용 — 단순 강조용 컬러로 쓰지 말 것.",
+      "**대기/검수/검토 같은 '중립 워크플로 상태'는 neutral 로** — caution(앰버)은 *주의/경고/선착순* 의미라 '검수 대기'·'대기중'·'검토중' 같은 진행 단계에 쓰면 불필요한 경고처럼 보인다(회귀: 캐포비 '검수 대기' 를 앰버 caution 으로 표기 → '이 색 어디서 나왔나' 혼동). 진행 단계 라벨은 `color=\"neutral\"`, 경고/위험만 caution.",
       "Tone-on-Tone 금지: 연한 Blue 배경 위에 Blue Fill Badge, 연한 Mint Surface 위 Mint Badge 같은 동일 계열 중첩 금지.",
       "Badge 안에 긴 문장/CTA 보조 문구 금지 — 8자 안팎 짧은 라벨만.",
       "Chip 과 혼용 금지 — Chip 은 '선택/필터/분류 액션', Badge 는 '상태/속성 표시(비액션)'.",
@@ -3642,7 +3648,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**같은 항목을 패널에 중복 추가 금지** — 추가 시 이미 있으면 무시(유니크). 같은 '인천광역시 > 연수구' 가 두 줄 = 회귀(검증룰 region-row-duplicated).",
       "본문 항목 삭제는 RegionRow 의 onRemove(또는 nds-region-remove 이벤트)로 — 패널이 항목 상태를 들고 있지 않음(controlled). 호스트가 리스트를 갱신.",
       "본문이 길어지면 화면을 덮지 않도록 `--nds-selected-items-panel-body-max-height` 로 스크롤 제한.",
-      "RegionRow 는 패널 전용 행 — 일반 리스트/태그 자리에는 ListItem/Chip 사용.",
+      "RegionRow 는 패널 전용 행 — 일반 리스트/태그 자리에는 ListItem/Chip 사용. **패널 밖 sibling 으로 RegionRow 를 두지 말 것** — 추가분을 패널 다음에 append 하면 패널 body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고 회색 패널 밖에 렌더된다(회귀: 캐포비 타겟팅 '지역 추가' 누적분이 패널 밖으로 샘 · 검증룰 region-row-outside-panel).",
       "**(HTML) 항목 갱신 시 `panel.innerHTML = ''` 로 통째로 비우지 말 것** — 헤더(타이틀/개수/추가·해제 액션)는 컴포넌트가 mount 시 생성하는 chrome 이라 innerHTML 을 비우면 헤더까지 사라지고 자동 복구되지 않음(connectedCallback 재실행 안 함). 갱신은 ① body 의 `nds-region-row` 자식만 교체(추가·제거)하거나 ② `<nds-selected-items-panel>` 엘리먼트 자체를 새로 만들어 통째 교체. 개수는 `count` 속성으로만 갱신.",
       "**(HTML) 이벤트(nds-selected-items-add/clear, nds-region-remove)는 재렌더로 사라지지 않게 host(또는 상위 컨테이너)에 위임** — 행을 매번 새로 그리면 행에 직접 단 리스너는 유실됨. 부모에서 한 번만 바인딩하고 `e.target`/`closest('nds-region-row')` 로 분기.",
     ],

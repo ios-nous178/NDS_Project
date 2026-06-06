@@ -351,15 +351,24 @@ export function listFigmaSyncStatus() {
 export function getAdminCmsGuide(args: { intent?: string; brand?: string }) {
   // 캐포비 어드민은 antd 가 아니라 DS 로 만든다 — antd 컨벤션 대신 DS 경로로 리다이렉트.
   if (isDsAdminBrand(args.brand)) {
+    const canonicalBrand = canonicalBrandSlug(args.brand) ?? args.brand;
     return {
       intent: "html" as const,
-      brand: args.brand,
+      brand: canonicalBrand,
+      requestedBrand: args.brand,
       note:
-        `${args.brand} 어드민은 antd 가 아니라 Nudge DS 로 만든다. ` +
+        `${args.brand}(=${canonicalBrand}) 어드민은 antd 가 아니라 Nudge DS 로 만든다. ` +
         "이 브랜드는 DS 안에 자체 admin 디자인 시스템(admin layout/input/Modal admin 토큰)을 갖추고 있어, " +
-        "아래 antd 컨벤션(NudgeEAPCMS)을 따르지 말 것.",
+        "NudgeEAPCMS antd 컨벤션(240px Sider · INFO/CMS MENU/SETTING · 'Copyright Nudge EAP' 푸터)을 따르지 말 것. " +
+        "이 antd 패턴을 캐포비 어드민에 그대로 적용하면 잘못된 화면이 된다.",
+      "NDS 쓰기의 의미":
+        "캐포비 어드민에서 'NDS 를 쓴다'는 건 단순히 <nds-*> 태그를 남기고 빌더 검증을 통과시키는 게 아니라, " +
+        "캐포비 어드민의 실제 화면 패턴(Page Pattern System 5종)과 admin 토큰/사이드바를 따르는 것이다. " +
+        "PRD/시안의 화면 맥락이 antd 가이드보다 우선이다.",
       useInstead: [
         `get_setup({ step: 'full', intent: 'admin-cms', brand: '${args.brand}' }) — DS(html) 셋업으로 자동 우회`,
+        `get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) — 캐포비 어드민 화면 5종(onboarding/dashboard/list/detail/form) 중 PRD 에 맞는 패턴 선언`,
+        `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' }) — 캐포비 자체 사이드바(300px·로고 인라인). NudgeEAPCMS 240px Sider 아님`,
         `get_guide({ topic: 'component:<Name>', brand: '${args.brand}', target: 'html' }) — admin 토큰이 cascade 된 DS 컴포넌트`,
         `get_guide({ topic: 'principles', brand: '${args.brand}' })`,
       ],
@@ -367,7 +376,7 @@ export function getAdminCmsGuide(args: { intent?: string; brand?: string }) {
         required: [
           "@nudge-design/html (<nds-*>)",
           "@nudge-design/tokens/css",
-          `${args.brand} 브랜드 css`,
+          `${canonicalBrand} 브랜드 css`,
         ],
         forbidden: ["antd", "@ant-design/icons"],
       },
@@ -375,9 +384,13 @@ export function getAdminCmsGuide(args: { intent?: string; brand?: string }) {
   }
   return {
     intent: "admin-cms",
+    "⚠ 브랜드 확인 먼저": ADMIN_CMS_GUIDE.brandException,
     note:
       "어드민/CMS 화면을 만들 때 따라야 할 시각/구조 컨벤션. " +
-      "이 가이드는 NudgeEAPCMS(antd 5.5.1) 실제 운영 코드에서 추출했습니다.",
+      "이 가이드는 NudgeEAPCMS(antd 5.5.1) 실제 운영 코드에서 추출한 **NudgeEAP 전용** 패턴입니다. " +
+      "다른 브랜드 어드민(특히 캐포비 = cashpobi/cashwalk-biz)에는 그대로 적용하지 마세요 — " +
+      "대상이 캐포비면 get_guide({ topic: 'admin-cms', brand: 'cashpobi' }) 로 다시 호출해 DS 경로를 받으세요. " +
+      "PRD 의 제품 맥락이 이 일반 admin-cms 가이드보다 우선입니다.",
     detectedKeyword:
       args.intent && detectIntentFromText(args.intent) === "admin-cms"
         ? "admin-cms 의도로 인식됨"
