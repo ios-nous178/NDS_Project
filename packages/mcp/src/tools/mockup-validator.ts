@@ -245,7 +245,7 @@ export function validateMockupSource(
           line: ln,
           detail: line.trim(),
           suggestion:
-            "→ ← ✓ ★ • 같은 기호 텍스트 사용 금지. 아이콘이 필요하면 find_icon, 진행/카운트 표시면 DS 컴포넌트(StatusTimeline/StepIndicator/Rating 등)를 사용하세요.",
+            "→ ← ✓ ★ • 같은 기호 텍스트 사용 금지. 아이콘이 필요하면 find_icon, 진행/카운트 표시면 DS 컴포넌트(Timeline/Stepper/Rating 등)를 사용하세요.",
         });
       }
     }
