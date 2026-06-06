@@ -27,15 +27,87 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const CATALOG_PATH = path.join(ROOT, "packages/mcp/catalog.json");
 const BASELINE_PATH = path.join(ROOT, "scripts/mirror-parity-baseline.json");
+const REACT_SRC_DIR = path.join(ROOT, "packages/react/src");
+const HTML_COMPONENTS_DIR = path.join(ROOT, "packages/html/src/components");
 
 const args = new Set(process.argv.slice(2));
 const MODE = args.has("--update") ? "update" : args.has("--warn-only") ? "warn-only" : "check";
+// catalog.json 은 react=dist / html=src 를 섞어 읽는 생성물이라, 컴포넌트를 새로 추가하고
+// `build:manifest` 를 안 돌리면 stale 해져 "react/html 한쪽만 있음" 오탐을 낸다(과거 회귀).
+// 기본적으로 검사 직전에 dist 에서 catalog 를 재생성해 stale 자체를 차단한다.
+// (CI 처럼 빌드 직후 emit 이 끝난 경우엔 `--no-regen` 으로 생략 가능.)
+const SKIP_REGEN = args.has("--no-regen");
+
+/**
+ * 검사 직전 catalog 를 빌드된 dist 에서 재생성한다(react dist .d.ts + html src 를 읽음).
+ * generatedAt 타임스탬프만 바뀌는 churn 을 막기 위해 기존 값을 보존한다(check-mcp-catalog 와 동일 패턴).
+ * 빌드가 안 돼 있거나(react dist 없음) emit 실패 시엔 던지지 않고 경고만 — 기존 catalog 로 폴백한다.
+ */
+function regenerateCatalog() {
+  const prevAt =
+    fs.existsSync(CATALOG_PATH) &&
+    (() => {
+      try {
+        return JSON.parse(fs.readFileSync(CATALOG_PATH, "utf8")).generatedAt;
+      } catch {
+        return undefined;
+      }
+    })();
+  try {
+    execFileSync("pnpm", ["--filter", "@nudge-design/mcp", "build:manifest"], {
+      cwd: ROOT,
+      stdio: ["ignore", "ignore", "inherit"],
+    });
+  } catch {
+    console.warn(
+      "[check-mirror-parity] catalog 재생성 실패 — 기존 catalog.json 으로 진행합니다. " +
+        "DS 패키지를 빌드(`pnpm build`)한 뒤 다시 실행하면 정확합니다.",
+    );
+    return;
+  }
+  // 타임스탬프만 다른 무의미한 변경은 되돌려 워킹트리 noise 를 막는다.
+  if (prevAt && fs.existsSync(CATALOG_PATH)) {
+    try {
+      const next = JSON.parse(fs.readFileSync(CATALOG_PATH, "utf8"));
+      next.generatedAt = prevAt;
+      fs.writeFileSync(CATALOG_PATH, `${JSON.stringify(next, null, 2)}\n`, "utf8");
+    } catch {
+      /* noop — 재생성 자체는 성공했으니 그대로 둔다 */
+    }
+  }
+}
+
+// 대소문자 구분 파일 존재 — macOS 의 case-insensitive FS 에서 DSHighlight↔DsHighlight 같은
+// casing 분기가 false 매칭되는 걸 막는다(readdir 로 정확한 파일명 비교).
+function fileExistsExact(dir, fileName) {
+  try {
+    return fs.readdirSync(dir).includes(fileName);
+  } catch {
+    return false;
+  }
+}
+
+/** react 쪽 소스가 실제로 존재하나? (catalog 가 html-only 라고 했는데 react src 가 있으면 = stale/미빌드) */
+function reactSourceExists(name) {
+  return (
+    fileExistsExact(REACT_SRC_DIR, `${name}.tsx`) || fileExistsExact(REACT_SRC_DIR, `${name}.ts`)
+  );
+}
+
+/** html 쪽 소스가 실제로 존재하나? (catalog 가 react-only 라고 했는데 nds-* 소스가 있으면 = stale) */
+function htmlSourceExists(htmlTag) {
+  if (typeof htmlTag === "string" && htmlTag) {
+    return fileExistsExact(HTML_COMPONENTS_DIR, `${htmlTag}.ts`);
+  }
+  return false;
+}
 
 // React 전용 prop — html custom element 의 attribute 로 대응되지 않는다(슬롯/이벤트/렌더).
 // 이름 set parity 비교에서 제외. (이벤트 핸들러 on* / 함수 타입은 별도 휴리스틱으로도 거른다.)
@@ -218,6 +290,9 @@ function printDrift(title, items) {
 }
 
 // ── main ──────────────────────────────────────────────────────────────────────
+// 검사 직전 catalog 를 dist 에서 재생성 → stale catalog 로 인한 오탐(react/html 한쪽만 있음) 차단.
+if (!SKIP_REGEN) regenerateCatalog();
+
 if (!fs.existsSync(CATALOG_PATH)) {
   console.error(
     "[check-mirror-parity] packages/mcp/catalog.json 이 없습니다. " +
@@ -228,6 +303,7 @@ if (!fs.existsSync(CATALOG_PATH)) {
 
 const catalog = JSON.parse(fs.readFileSync(CATALOG_PATH, "utf8"));
 const drift = computeDrift(catalog);
+const componentByName = new Map((catalog.components ?? []).map((c) => [c.name, c]));
 
 if (MODE === "update") {
   writeBaseline(drift);
@@ -250,6 +326,28 @@ const currentKeys = new Set(drift.map(driftKey));
 
 const newDrift = drift.filter((d) => !baselineKeys.has(driftKey(d)));
 const resolvedKeys = [...baselineKeys].filter((k) => !currentKeys.has(k));
+
+// stale/미빌드 가드 — 신규 "한쪽만 있음" drift 중 빠진 쪽 소스가 실제로 디스크에 있으면
+// 진짜 미러 누락이 아니라 catalog 가 어긋난(보통 react dist 미빌드) 것이다. baseline 에 이미
+// 흡수된 casing 분기(DsHighlight 등)는 제외되므로 신규 drift 에만 적용한다.
+const staleSignals = newDrift.filter((d) => {
+  if (d.kind === "html-only") return reactSourceExists(d.component);
+  if (d.kind === "react-only") return htmlSourceExists(componentByName.get(d.component)?.htmlTag);
+  return false;
+});
+if (staleSignals.length > 0) {
+  console.error(
+    "\n[check-mirror-parity] catalog.json 이 빌드된 dist 와 어긋났습니다(stale). " +
+      "아래 컴포넌트는 react/html 양쪽 소스가 다 있는데 catalog 엔 한쪽만 잡혀 있습니다 — " +
+      "보통 react dist 가 안 빌드돼 emit 이 react 쪽을 못 본 경우입니다:",
+  );
+  for (const d of staleSignals) console.error(`    · ${d.component} (${d.kind})`);
+  console.error(
+    "\n수정: `pnpm build` 로 DS 패키지(특히 @nudge-design/react)를 빌드한 뒤 다시 실행하세요. " +
+      "(catalog 자동 재생성은 react dist 의 .d.ts 가 있어야 react 쪽을 인식합니다.)",
+  );
+  process.exit(1);
+}
 
 const newBlocking = newDrift.filter((d) => !ADVISORY_KINDS.has(d.kind));
 const newAdvisory = newDrift.filter((d) => ADVISORY_KINDS.has(d.kind));
