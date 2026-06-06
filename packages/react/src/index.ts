@@ -17,6 +17,7 @@ export * from "./Checkbox";
 export * from "./Radio";
 export * from "./Select";
 export * from "./MultiSelect";
+export * from "./CheckboxTree";
 export * from "./Toast";
 export * from "./EmptyState";
 export * from "./Card";

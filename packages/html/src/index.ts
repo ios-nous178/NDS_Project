@@ -111,6 +111,7 @@ export { NdsModal } from "./components/nds-modal.js";
 
 export { NdsSelect, NdsSelectOption } from "./components/nds-select.js";
 export { NdsMultiSelect } from "./components/nds-multi-select.js";
+export { NdsCheckboxTree } from "./components/nds-checkbox-tree.js";
 
 export { NdsToast } from "./components/nds-toast.js";
 

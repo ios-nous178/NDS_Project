@@ -134,3 +134,4 @@ import "./components/nds-waveform-player.js";
 import "./components/nds-inspector.js";
 import "./components/nds-add-button.js";
 import "./components/nds-multi-select.js";
+import "./components/nds-checkbox-tree.js";

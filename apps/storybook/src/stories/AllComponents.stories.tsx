@@ -89,6 +89,7 @@ import {
   SegmentedControl,
   Select,
   MultiSelect,
+  CheckboxTree,
   PageSizeSelect,
   SelectionCard,
   SelectionButtonGroup,
@@ -720,6 +721,42 @@ const PREVIEWS: Record<string, PreviewRender> = {
       );
     }
     return <M />;
+  },
+  CheckboxTree: () => {
+    function CT() {
+      const [v, setV] = useState<string[]>(["gangneung"]);
+      return (
+        <div style={{ width: "100%", maxWidth: 320 }}>
+          <CheckboxTree
+            value={v}
+            onValueChange={setV}
+            searchPlaceholder="지역명으로 검색"
+            defaultExpanded={["gangwon"]}
+            style={{ ["--nds-checkbox-tree-max-height" as string]: "260px" }}
+            nodes={[
+              {
+                value: "gangwon",
+                label: "강원도특별자치도",
+                children: [
+                  { value: "gangneung", label: "강릉시" },
+                  { value: "donghae", label: "동해시" },
+                  { value: "sokcho", label: "속초시" },
+                ],
+              },
+              {
+                value: "gyeongnam",
+                label: "경상남도",
+                children: [
+                  { value: "changwon", label: "창원시" },
+                  { value: "jinju", label: "진주시" },
+                ],
+              },
+            ]}
+          />
+        </div>
+      );
+    }
+    return <CT />;
   },
   PageSizeSelect: () => {
     function P() {
