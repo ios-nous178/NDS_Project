@@ -85,12 +85,17 @@ const TOOLS = [
   {
     name: "find_token",
     description:
-      "Look up design tokens. For mockup/screen work, do not call this until visual references are collected. No args returns group counts; `{ group }` lists a group; `{ query }` searches.",
+      "Look up design tokens. For mockup/screen work, do not call this until visual references are collected. No args returns group counts; `{ group }` lists a group; `{ query }` searches. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values.",
     inputSchema: {
       type: "object",
       properties: {
         group: { type: "string", description: "Optional token group filter." },
         query: { type: "string", description: "Optional name/value query (e.g. '#FF5722')." },
+        brand: {
+          type: "string",
+          description:
+            "Optional brand slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + brand-specific tokens and shows brand-specific values for shared semantic tokens. Omit for NudgeEAP/base.",
+        },
       },
       additionalProperties: false,
     },
