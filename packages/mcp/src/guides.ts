@@ -1213,7 +1213,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary:
       "폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스 — DS notice 패턴의 구현체. " +
       "입력 컨텍스트 옆에 머무르며 명시적으로 닫기 전까지 유지됨. " +
-      "Toast(액션 결과·자동 사라짐) · Banner(페이지 상단 전역 띠) · Modal(즉각 판단 요구) · CrisisCallout(EAP 위기 안내)과 분리 — 인라인 지속 메시지만 NoticeAlert. " +
+      "Toast(액션 결과·자동 사라짐) · Banner(페이지 상단 전역 띠) · Modal(즉각 판단 요구)과 분리 — 인라인 지속 메시지만 NoticeAlert. " +
       "5 variant — info(중립 회색·아이콘 없음) / notice(블루·차분한 공지) / caution(옐로우 아이콘·회색 배경) / success(그린·완료) / error(레드 배경+레드 텍스트·조치 필요). " +
       "캐포비 admin Figma node 3902:1212 가 시각 SSOT(height 48 · radius 12 · padding 12/16 · gap 10 · 좌측 status 아이콘 20×20 + 본문). 색은 임의 hex 금지, semantic status 토큰 binding. notice 패턴 규칙(강조 예산·화면당 색 박스 1개)을 그대로 따른다.",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3902-1212",
@@ -1413,25 +1413,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "React: <Chart type=\"bar\" labels={ages} series={[{name:'남성',values:[...]},{name:'여성',values:[...]}]} />",
     ],
   },
-  MoodSelector: {
-    name: "MoodSelector",
-    examplesHtml: {
-      do: '<nds-mood-selector value="calm" name="today-mood"></nds-mood-selector>',
-      dont: "<!-- 5개 nds-icon-button 으로 직접 조립 — 단일 선택/포커스 룰 모두 손실 -->\n<nds-icon-button>😀</nds-icon-button><nds-icon-button>😐</nds-icon-button>…",
-    },
-    summary: "5단계 기분 선택. EAP 앱 첫 화면 핵심 인터랙션. 기본 5개 옵션이 내장됨.",
-    pitfalls: [
-      "options를 직접 넘길 때 5개를 벗어나면 가로 폭 문제 — 4-6개가 권장 범위.",
-      "이모지 대신 아이콘 컴포넌트를 emoji 자리에 넘기지 말 것. emoji는 string 필드.",
-      "value 미선택 상태가 default이므로 폼 제출 전 검증 필수.",
-    ],
-    recommended: [
-      "기본: <MoodSelector value={mood} onValueChange={setMood} /> (5단계 자동)",
-      "showLabels=false로 컴팩트하게 (좁은 카드 안)",
-    ],
-    interactivePattern:
-      "기록 후 다음 단계(메모/저장)로 이어주는 게 자연스러움. 선택 직후 토스트만 띄우고 끝내지 말 것.",
-  },
   AssessmentResultCard: {
     name: "AssessmentResultCard",
     examplesHtml: {
@@ -1443,7 +1424,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "level과 점수를 임의로 분리하지 말 것 — 외부에서 점수 → 단계 매핑이 검사마다 다르므로 호출부에서 결정해서 넘김.",
       'title prop은 검사명("PHQ-9" 등). HTMLDivElement.title과 충돌 방지를 위해 Omit되어 있으니 ReactNode 가능.',
-      'severe인데 description만 있고 후속 액션이 없으면 안전. severe 결과엔 actionLabel("상담 연결") 또는 옆에 CrisisCallout을 같이 둘 것.',
+      'severe인데 description만 있고 후속 액션이 없으면 안전. severe 결과엔 actionLabel("상담 연결")로 후속 액션을 둘 것.',
       "❌ **좌측 컬러 보더(border-left) 디자인 절대 금지** — 한때 단계별 색을 좌측 라인으로도 강조했으나 카드 형태가 어그러지고, 스크롤 리스트에서 시각 잡음이 누적되어 폐기. 단계 색은 배지·점수 텍스트·게이지·액션 으로만 전달. 시안에 좌측 라인이 있어도 컴포넌트에 다시 넣지 말 것.",
       "❌ severe 위급도를 보더 두께/색으로 표시 금지 — 배경 톤(surface.statusError) + 점수/배지/액션 색으로만 강조.",
     ],
@@ -1453,25 +1434,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       moderate: "caution.bg + caution.text — 경계 (mild보다 진한 텍스트로 톤 차이)",
       severe: "error.bg + error.main — 심각",
     },
-    interactivePattern:
-      "actionLabel 클릭은 결과 상세 또는 다음 액션(상담 예약)으로. severe면 CrisisCallout과 묶어서 같이 노출.",
-  },
-  CrisisCallout: {
-    name: "CrisisCallout",
-    examplesHtml: {
-      do: '<nds-crisis-callout tone="error" title="위기 상황이세요?"\n  description="언제든 1577-0199 로 전화하실 수 있어요"></nds-crisis-callout>',
-      dont: '<!-- crisis-callout 을 마케팅/홍보 톤에 사용 — 강한 시그널이 오염됨 -->\n<nds-crisis-callout tone="info" title="신규 이벤트" description="…"></nds-crisis-callout>',
-    },
-    summary: "위기 신호 시 1393/119 등 즉시 연결 박스. dismiss 불가능. EAP의 안전 책임 영역.",
-    pitfalls: [
-      "Banner와 외형이 비슷하지만 절대 closable 만들지 말 것 — 위기 안내는 dismiss 되면 안 됨.",
-      'tone="caution"은 "잠시 휴식이 필요해요" 수준에만. 자살 사고 등 실제 위기는 무조건 tone="danger".',
-      "phoneNumber 제공 시 자동으로 tel: 링크 — 모바일에서 바로 통화. 데스크톱에서도 동작은 OS 핸들러가 받음.",
-      "CrisisCallout 단독으로 화면 어딘가에 두지 말고, severe 결과 옆/혹은 채팅 화면 상단에 배치.",
-    ],
-    recommended: [
-      'tone="danger" + actions=[{ label: "1393 자살예방상담", phoneNumber: "1393" }, { label: "119 응급", phoneNumber: "119", variant: "outlined" }]',
-    ],
+    interactivePattern: "actionLabel 클릭은 결과 상세 또는 다음 액션(상담 예약)으로.",
   },
   CounselorCard: {
     name: "CounselorCard",
@@ -1513,11 +1476,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       do: '<nds-consent-checklist\n  items=\'[\n    {"key":"terms","label":"이용약관 동의","required":true},\n    {"key":"privacy","label":"개인정보 처리방침","required":true},\n    {"key":"marketing","label":"마케팅 정보 수신 (선택)"}\n  ]\'\n  all-label="전체 동의"></nds-consent-checklist>\n<script>el.addEventListener("nds-consent-change", e => setConsent(e.detail.value));</script>',
       dont: '<!-- 개별 nds-checkbox 여러 개로 흉내 — 전체 동의 / required 가드 사라짐 -->\n<nds-checkbox label="약관 동의" required></nds-checkbox>\n<nds-checkbox label="개인정보 동의" required></nds-checkbox>',
     },
-    summary: "전체동의 + 항목별 체크 + 펼치기. 회원가입/민감정보 동의에 표준화.",
+    summary:
+      "전체동의 + 항목별 체크 + 펼치기. 회원가입/민감정보 동의에 표준화. 전체동의는 자식 선택 비율로 checked/indeterminate(부분선택 옐로우 마이너스)/unchecked 자동 표시 — CheckboxTree 전체선택과 동일 패턴.",
     pitfalls: [
       "items[].required=true인데 체크 안 됐을 때의 검증은 호출부 책임. 컴포넌트 자체에서 막지 않음.",
       'detail이 길면 펼친 영역이 화면을 덮음 — 본문은 핵심만, 전문은 "전문 보기" 링크로.',
-      '전체동의 토글 동작이 직관적이어야 함: 부분 체크 상태에서 누르면 "전체 체크"가 아니라 "전체 해제"로 가는 사례가 있는데, 이 컴포넌트는 "모두 체크면 해제, 아니면 전체 체크".',
+      '전체동의 토글: "모두 체크면 해제, 아니면(부분/전무) 전체 체크". 부분 선택이면 전체동의 박스가 indeterminate(마이너스)로 보이고, 클릭하면 전체 체크로 전이된다 — 직접 indeterminate 를 손계산하지 말 것(컴포넌트가 파생).',
+      "시/도 ▸ 시/군구 같은 **계층(2단계 이상) 선택은 ConsentChecklist 가 아니라 CheckboxTree**. ConsentChecklist 는 1단계 동의 항목(+ 펼침 detail) 전용.",
     ],
     interactivePattern:
       "필수만 자동체크 후 사용자가 선택만 토글하는 흐름이 회원가입 컨버전에 유리.",
@@ -1538,21 +1503,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       'PHQ-9: <ScoreGauge value={score} max={27} segments={[{level:"normal",label:"정상",from:0,to:5}, {level:"mild",label:"경증",from:5,to:10}, ...]} />',
     ],
-  },
-  MedicationItem: {
-    name: "MedicationItem",
-    examplesHtml: {
-      do: '<nds-medication-item med-name="우울증 약" dosage="50mg"\n  times=\'[{"time":"08:00"},{"time":"20:00"}]\'\n  note="식후 복용" show-check></nds-medication-item>\n<script>el.addEventListener("nds-medication-taken-change", e => save(e.detail));</script>',
-      dont: '<!-- 복용량/시간 정보 누락 — 환자에게 핵심 정보가 빠짐 -->\n<nds-medication-item med-name="약"></nds-medication-item>',
-    },
-    summary: "복용약 한 줄 표시. 이름/용량/시기/노트 + 체크.",
-    pitfalls: [
-      "리스트로 쌓을 때는 부모에 gap 8-12px. MedicationItem은 자체 margin 없음.",
-      "onTakenChange를 안 넘기면 체크박스가 안 보임 — 표시 전용으로 쓸 수 있음.",
-      'times는 morning/noon/evening/bedtime 4개 enum만. 복약 시간을 분 단위로 보여주려면 note에 "식후 30분" 같이 텍스트로.',
-    ],
-    interactivePattern:
-      '체크 후 즉시 토스트보다 리스트 상단에 "오늘 X/Y 복용 완료" 진행도 ProgressBar 표시가 더 동기 부여됨.',
   },
   AudioPlayer: {
     name: "AudioPlayer",
@@ -1813,62 +1763,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "하단바 있는 화면: offset={72}",
     ],
   },
-  BreathingGuide: {
-    name: "BreathingGuide",
-    examplesHtml: {
-      do: '<nds-breathing-guide cycles="5" auto-start></nds-breathing-guide>',
-      dont: '<!-- raw CSS @keyframes 로 호흡 시각만 흉내 — 카운트/단계 음성이 없음 -->\n<div class="breath-anim"></div>',
-    },
-    summary:
-      "호흡 가이드 애니메이션. 원이 커지고 작아지면서 들숨/멈춤/날숨/쉼을 시각화. phases로 사이클 자유 정의.",
-    pitfalls: [
-      "cycles 미지정 시 무한 반복. 콘텐츠 종료를 원하면 cycles + onComplete 페어 사용.",
-      "phases의 seconds는 정수만(타이머 1초 단위). 분 단위 호흡은 의도적으로 미지원.",
-      "외부에서 playing prop 줄 때 onPlayingChange를 빼먹으면 내부 시작/정지 버튼이 동작 안 함.",
-      "CrisisCallout 위에 즉시 노출하면 압박감을 줄 수 있음. 위기 상황 → 안내 후 별도 화면에서 시작 권장.",
-    ],
-    recommended: [
-      "박스 호흡(기본): <BreathingGuide />",
-      "수면 유도: phases=[{inhale:4},{hold:7},{exhale:8}]",
-      "콘텐츠 카드: cycles=3, autoStart, onComplete로 다음 단계",
-    ],
-  },
-  StreakCard: {
-    name: "StreakCard",
-    examplesHtml: {
-      do: '<nds-streak-card title="연속 기록" streak="15" unit="일" days="30">\n  <svg slot="icon" viewBox="0 0 24 24">…</svg>\n</nds-streak-card>',
-      dont: '<!-- streak 만 있고 단위(unit)/총합(days) 누락 — 진행도가 모호 -->\n<nds-streak-card streak="15"></nds-streak-card>',
-    },
-    summary: "연속 기록 트래커 카드. streak 숫자 + 최근 7-14일 점 그리드. 챌린지/습관 강화 화면.",
-    pitfalls: [
-      "days는 최근 7-14일이 시각적으로 적절. 30일 이상이면 EmotionHeatmap 사용 검토.",
-      "streak=0 상태로 풀 너비 카드를 노출하면 동기 부여 효과가 약함 — 시작 단계에는 더 작은 EmptyState 안내가 좋음.",
-      "오늘 데이터가 미완료일 때는 자동으로 점선 테두리(today)로 표시. 'today' 표시를 직접 만들지 말 것.",
-    ],
-    recommended: [
-      "감정 기록 7일: days=[{date,label:'일',done}, ...] 7개",
-      "복약 트래킹: icon prop 에는 @nudge-design/icons 컴포넌트(예: PillIcon — find_icon('pill') 로 확인) 를 넘기고 숫자만 강조 (days 생략). icon prop 에 이모지 문자열 절대 금지.",
-      "끊긴 후 재시작: footer로 '작은 시작' 같은 격려 문구",
-    ],
-  },
-  EmotionHeatmap: {
-    name: "EmotionHeatmap",
-    examplesHtml: {
-      do: '<nds-emotion-heatmap month="2026-05"\n  entries=\'[{"date":"2026-05-25","level":4}]\'\n  colors=\'["#fff","#fee","#f99","#f00","#900"]\'\n  low-label="낮음" high-label="높음"></nds-emotion-heatmap>',
-      dont: '<!-- colors 가 5개가 아니면 cell 색이 깨짐 -->\n<nds-emotion-heatmap month="2026-05" colors=\'["#fff","#000"]\'></nds-emotion-heatmap>',
-    },
-    summary: "월간 감정 히트맵. 5단계(0-4)를 색 강도로 시각화. 셀 클릭으로 그 날 상세 화면 진입.",
-    pitfalls: [
-      "entries에 없는 날짜는 자동으로 빈 셀(점선). 0 단계로 채우지 말 것 — treatZeroAsEmpty 기본 true.",
-      "colors는 5개 필수 + 옅음→짙음 순서. 4개나 6개 넘기면 인덱스 어긋남.",
-      "30일 미만 기록(7-14일)은 StreakCard가 더 적절 — 히트맵은 한 달 단위.",
-    ],
-    recommended: [
-      "기분 트렌드: 기본 푸른 5단계, onCellClick으로 일기 화면 이동",
-      "스트레스 강도: warm 톤(#FFE9C4 → #C25B0E), legendLabels={low:'차분',high:'활기'}",
-      "챌린지 30일: title='30일 챌린지', 빈 셀이 남은 일자",
-    ],
-  },
   AppointmentCard: {
     name: "AppointmentCard",
     examplesHtml: {
@@ -1886,25 +1780,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "내 예약 리스트: <AppointmentCard ... actions=[{label:'상세'},{label:'참여',primary:true}] />",
       "홈 다음 일정: onClick으로 디테일 화면, 액션 없이 카드 전체 클릭",
       "방문 상담: mode='in-person', location='강남센터 3층 301호'",
-    ],
-  },
-  JournalEntry: {
-    name: "JournalEntry",
-    examplesHtml: {
-      do: '<nds-journal-entry date="2026-05-25" mood="calm" title="좋은 산책"\n  body="아침에 30분 걸으니 머리가 맑아졌다" max-lines="3" clickable></nds-journal-entry>',
-      dont: '<!-- body 가 길어 max-lines 가 필요한데 누락 — 카드가 늘어남 -->\n<nds-journal-entry title="…" body="… 매우 긴 텍스트 …"></nds-journal-entry>',
-    },
-    summary:
-      "감정 일기 한 건 카드. 무드(이모지) + 날짜 + 제목 + 본문 클램프 + 태그 + 썸네일 + 푸터.",
-    pitfalls: [
-      "본문은 기본 3줄 클램프. 전체 노출하려면 maxLines={9999}로 해제.",
-      "title 없이 body만으로도 동작 — 짧은 메모형 일기에는 title 생략이 자연스러움.",
-      "tags 안에 # 기호를 넣지 말 것. 컴포넌트가 자동으로 # 접두사 붙임.",
-    ],
-    recommended: [
-      "리스트: onClick으로 디테일 진입",
-      "감정 일기: mood에 이모지, tags에 감정 키워드",
-      "사진 일기: thumbnailSrc 추가",
     ],
   },
   ChatComposer: {
@@ -1933,7 +1808,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- 다이얼 코드(+82) 를 country-code 로 — ISO 코드 사용 -->\n<nds-phone-input country-code="+82"></nds-phone-input>',
     },
     summary:
-      "국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드/국기는 countries 데이터에서 조회.",
+      "국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드는 countries 데이터에서 조회. 국기 이모지 없이 다이얼코드/ISO코드/국가명만 표시(텍스트 이모지 금지 규칙 준수).",
     pitfalls: [
       "countryCode는 ISO code(KR, US 등)로 관리. '+82' 문자열을 state에 두지 말 것.",
       "번호 마스킹/하이픈 자동화는 컴포넌트가 강제하지 않음 — 필요하면 onValueChange에서 직접.",
@@ -2048,7 +1923,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary: "긴 텍스트 줄 수 클램프 + '더보기/접기' 자동. 짧은 텍스트면 토글 자동 숨김.",
     pitfalls: [
       "본문 안에 폰트 사이즈가 섞이면 line-height 측정 정확도 떨어짐 — 단일 톤 텍스트에만 사용.",
-      "JournalEntry는 자체 본문 클램프(maxLines)를 가지고 있음. 카드 안에서 ExpandableText 중첩하지 말 것.",
+      "자체 본문 클램프(maxLines)를 가진 카드 안에서 ExpandableText 중첩하지 말 것.",
       "hideCollapse=true는 약관 같이 한 번 펼치면 끝나는 케이스용. 일기/콘텐츠는 접기도 가능해야 함.",
     ],
     recommended: [
@@ -2511,25 +2386,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=859-5614",
   },
-  StatCard: {
-    name: "StatCard",
-    examplesHtml: {
-      do: '<nds-stat-card label="이번 주 기록" value="5" unit="일" trend="up" compare="지난주 +2일"></nds-stat-card>',
-      dont: '<!-- 트렌드/단위 없이 숫자만 — 사용자가 의미를 추측해야 함 -->\n<nds-stat-card label="…" value="5"></nds-stat-card>',
-    },
-    summary: "메트릭 강조 카드. 라벨 + 큰 숫자/단위 + delta(변화량) + Sparkline 슬롯(trailing).",
-    pitfalls: [
-      "trend만 주고 delta를 빼면 trend 색이 의미 없어짐. 둘 다 함께 사용.",
-      "그리드에서 카드마다 value 자릿수 차이가 크면 baseline이 흔들림 — 동일 단위로 통일.",
-      "trailing에 Sparkline을 넣을 때 width 100-120, height 36-48 정도가 적절. 그 이상은 카드 균형 깨짐.",
-      "**HTML `icon` 속성 = inline SVG (이름/이모지 아님).** innerHTML 로 주입되므로 `icon=\"chart\"` 같은 이름이나 이모지를 넣으면 텍스트로 흘러나온다. `find_icon({ name })` 의 inline SVG 를 넣을 것 — 속성이라 `icon='<svg ...>'`(단일 따옴표) 형태. React StatCard 의 `icon?: ReactNode` 와 대칭.",
-    ],
-    recommended: [
-      "대시보드 4-up 그리드: <StatCard label, value, unit, delta, trend>",
-      "리포트 hero: + icon으로 강조",
-      "추이 시각화: trailing={<Sparkline />} 결합",
-    ],
-  },
   QuickActionGrid: {
     name: "QuickActionGrid",
     examplesHtml: {
@@ -2688,51 +2544,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["상담사 리스트: showLabel=true로 텍스트 함께", "아바타 점: 라벨 없이 size=10"],
   },
-  ReactionPicker: {
-    name: "ReactionPicker",
-    examplesHtml: {
-      do: '<nds-reaction-picker\n  options=\'[{"key":"like","emoji":"👍","label":"좋아요","count":5},{"key":"care","emoji":"💙","label":"공감","count":12}]\'\n  value=\'["like"]\'></nds-reaction-picker>\n<script>el.addEventListener("nds-reaction-change", e => save(e.detail.value));</script>',
-      dont: '<!-- options 의 emoji / label 누락 — 의미 전달 실패 -->\n<nds-reaction-picker options=\'[{"key":"like"}]\'></nds-reaction-picker>',
-    },
-    summary: "콘텐츠 반응 칩 그룹. 이모지 + 카운트, 다중 또는 단일 선택, hideCount 옵션.",
-    pitfalls: [
-      "value는 single이어도 string[] (길이 0-1) — 일관된 형태로 처리.",
-      "options.count가 undefined면 자동 숨김. 0은 표시됨.",
-      "옵션 4-6개 권장. 8개 이상이면 가로 폭 부담.",
-    ],
-    recommended: [
-      "콘텐츠 좋아요/응원: 다중 선택 + 카운트 표시",
-      "사용자 한 표: single + hideCount",
-    ],
-  },
-  GreetingHeader: {
-    name: "GreetingHeader",
-    examplesHtml: {
-      do: '<nds-greeting-header name="이정민" greeting="좋은 아침이에요"\n  question="오늘 기분은 어떠세요?"></nds-greeting-header>',
-      dont: '<!-- greeting / question 을 slot 으로 — 둘 다 attribute 사용 -->\n<nds-greeting-header name="A"><span slot="greeting">좋은 아침</span></nds-greeting-header>',
-    },
-    summary:
-      "홈 인삿말 카드. 사용자 호칭({name}님 자동) + 인삿말 + 질문 + 액션 슬롯(MoodSelector 등).",
-    pitfalls: [
-      "greeting은 시간대 자동 인식 X — 외부에서 '좋은 아침이에요' 같은 시간대 표현 결정.",
-      "name에 '님' 직접 붙이지 말 것 — 컴포넌트가 자동.",
-      "tone='primary'는 카드 위에 또 카드를 올릴 때(흰 배경 위) 시각 분리에 유용.",
-    ],
-    recommended: [
-      "홈 진입: actions={<MoodSelector />}로 첫 인터랙션 결합",
-      "마이페이지: trailing={<Avatar />}",
-    ],
-  },
   TipCard: {
     name: "TipCard",
     examplesHtml: {
       do: '<nds-tip-card tone="info" label="팁" tip-title="더 잘 자려면"\n  description="자기 1시간 전엔 화면을 멀리해보세요"></nds-tip-card>',
       dont: '<!-- TipCard 를 위기/긴급 안내에 사용 — 시그널 강도가 부족 -->\n<nds-tip-card tone="info" tip-title="자해 충동이 든다면"></nds-tip-card>',
     },
-    summary:
-      "한 줄 인사이트/팁 카드. info/success/warning/neutral 톤. 위기는 CrisisCallout, 페이지 띠는 Banner.",
+    summary: "한 줄 인사이트/팁 카드. info/success/warning/neutral 톤. 페이지 띠는 Banner.",
     pitfalls: [
-      "위기/긴급 안내에 사용하지 말 것 — CrisisCallout이 적합.",
+      "위기/긴급 안내에 사용하지 말 것 — 전용 위기 안내 패턴을 쓸 것.",
       "페이지 상단 띠 알림은 Banner. TipCard는 콘텐츠 영역 안의 카드.",
       "actionLabel + onClick 함께 줘도 액션 버튼은 stopPropagation됨 (의도적).",
     ],
@@ -2846,20 +2666,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "내 메시지: color=primary, 상대 메시지: color='#666'",
     ],
   },
-  MentionInput: {
-    name: "MentionInput",
-    examplesHtml: {
-      do: '<nds-mention-input label="댓글" placeholder="@로 멘션 가능"\n  users=\'[{"key":"alice","name":"앨리스","description":"엔지니어"}]\'></nds-mention-input>\n<script>el.addEventListener("mention", e => track(e.detail.user));</script>',
-      dont: '<!-- users 누락 — @ 입력 시 후보가 안 뜸 -->\n<nds-mention-input placeholder="@로 멘션"></nds-mention-input>',
-    },
-    summary: "@멘션 입력. 자동완성 드롭다운 + 키보드 네비. 트리거 커스텀 (#로 해시태그도 가능).",
-    pitfalls: [
-      "users는 전체 목록 — 컴포넌트가 자동 필터. 외부에서 미리 필터링하지 말 것.",
-      "저장된 텍스트는 plain '@김민지' 형태 — ID로 보존하려면 별도 파싱.",
-      "trigger 앞에 공백 또는 시작 위치여야 자동완성 트리거. 'email@a.com' 같은 케이스는 무시됨 (의도적).",
-    ],
-    recommended: ["단체 채팅 댓글: trigger='@'", "해시태그 자동완성: trigger='#'"],
-  },
   Confetti: {
     name: "Confetti",
     examplesHtml: {
@@ -2901,11 +2707,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       do: '<nds-like-button liked count="42" size="md"></nds-like-button>\n<script>el.addEventListener("nds-like-change", e => persist(e.detail));</script>',
       dont: '<!-- count 를 사용자가 변경한 후 서버에 반영하지 않음 — 새로고침 시 사라짐 -->\n<nds-like-button count="42"></nds-like-button>  <!-- listener 없음 -->',
     },
-    summary:
-      "좋아요 토글 + 카운트. 클릭 펑 애니메이션, 1000+는 자동 K 변환. ReactionPicker(여러 이모지)와 분리.",
+    summary: "좋아요 토글 + 카운트. 클릭 펑 애니메이션, 1000+는 자동 K 변환. 단일 좋아요 전용.",
     pitfalls: [
       "liked/count는 controlled — 외부 source of truth + onChange에서 둘 다 갱신.",
-      "여러 종류 반응(공감/응원/와우)이 필요하면 ReactionPicker — LikeButton은 단일 좋아요.",
+      "LikeButton은 단일 좋아요 토글 전용 — 여러 종류 반응 칩 그룹 용도로 쓰지 말 것.",
       "카운트가 음수가 되지 않도록 외부 가드.",
     ],
     recommended: [
@@ -3175,7 +2980,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       doNotUseFor: [
         "장문 설명이 핵심인 콘텐츠 → Card",
         "사용자 프로필 / 상담사 → UserCard / CounselorCard",
-        "쿠폰 진열 → CouponCard",
         "임의 width(180/200 등) — sm/md 두 사이즈만 SSOT.",
       ],
       limits: {
@@ -3186,24 +2990,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         buyersCountAutoTruncate: "10,000 이상은 '9,999+명'",
       },
     },
-  },
-  CouponCard: {
-    name: "CouponCard",
-    examplesHtml: {
-      do: '<nds-coupon-card discount="30%" coupon-title="첫 상담 30% 할인"\n  expiry="2026-06-30 까지" action-label="사용하기"></nds-coupon-card>\n<script>el.addEventListener("nds-coupon-action", () => useCoupon());</script>',
-      dont: '<!-- expiry 누락 — 사용자가 유효기간을 모름 -->\n<nds-coupon-card discount="30%" coupon-title="할인"></nds-coupon-card>',
-    },
-    summary: "쿠폰 카드. 좌측 할인율(큰 숫자) + 우측 정보·사용 버튼. 점선 + 반원 컷아웃 자동.",
-    pitfalls: [
-      "discount와 discountSuffix는 분리 — '30%할인'이 아니라 '30%' + '할인'.",
-      "disabled=true면 버튼 자동 disabledLabel로 변경.",
-      "쿠폰 발급/사용 처리는 외부 API — onAction 안에서.",
-    ],
-    recommended: [
-      "% 할인: discount='30%' discountSuffix='할인'",
-      "금액 할인: discount='5,000' discountSuffix='원'",
-      "무료: discount='무료' discountSuffix=''",
-    ],
   },
   OrderSummaryCard: {
     name: "OrderSummaryCard",
@@ -3221,20 +3007,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "결제: 상품 금액/쿠폰/포인트/배송비 + 합계",
       "EAP 무료 상담: 회사 부담 emphasis='info'",
     ],
-  },
-  CardVisual: {
-    name: "CardVisual",
-    examplesHtml: {
-      do: '<nds-card-visual brand="nudge-eap" number="1234 56•• •••• 7890" holder="홍길동" expiry="12/29"></nds-card-visual>',
-      dont: '<!-- 카드 번호/만료일을 자체 HTML 로 픽셀 흉내 — 토큰/브랜드 룰이 적용 안 됨 -->\n<div class="fake-card"><span>1234…</span></div>',
-    },
-    summary: "신용/체크카드 비주얼. 8개 브랜드 톤 내장. 마지막 4자리만 표시 (자동 마스킹).",
-    pitfalls: [
-      "전체 카드번호 넣어도 마지막 4자리만 표시 — 보안 위해 의도적.",
-      "만료된 카드는 disabled + label='만료됨' 패턴.",
-      "그라데이션 배경은 토큰이 아닌 브랜드 정체성 — 외부에서 override 자제.",
-    ],
-    recommended: ["결제 수단 관리: brand별 자동 색", "별명: label='용돈 카드'"],
   },
   StatsTable: {
     name: "StatsTable",
@@ -3502,7 +3274,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       ],
       doNotUseFor: [
         "다중 액션 (버튼 2개 이상) — Bottom Sheet 또는 Modal",
-        "긴 안내문 + 액션 — Banner (페이지 상단 띠) 또는 CrisisCallout",
+        "긴 안내문 + 액션 — Banner (페이지 상단 띠)",
         "토스트성 일시 알림 → Toast / Snackbar",
         "사이드바 카드형 진입 → Card",
       ],
@@ -4086,15 +3858,17 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Stepper: {
     name: "Stepper",
-    summary: "다단계 작업(가입/결제/온보딩) 의 현재 진척 표시. 단계 5개 이상은 사용자 인지 부담.",
+    summary:
+      "원형 번호/점 인디케이터로 다단계 작업(가입/결제/온보딩) 의 현재 진척만 표시. variant=numbered|dots. 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. 단계 5개 이상은 사용자 인지 부담. (가로 막대형 어드민 흐름=StepProgress, time/desc 슬롯 상태 트래커=StatusTimeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
     pitfalls: [
-      "completed 단계 라벨에 description 누락 — 사용자가 이전 단계에서 뭘 했는지 떠올리기 어려움.",
-      "vertical / horizontal 혼용 — 한 화면 안에선 한 방향 통일.",
-      "현재 단계가 마지막인데 'current' status 유지 — 'completed' 로 갱신해야 완료 신호.",
+      "status 는 prop 이 아님 — steps 에 {key,label} 만 주고 상태는 current(0-based)로 결정. 'status' 를 박으면 무시됨.",
+      "variant 는 numbered|dots 뿐 — 'horizontal'/'vertical' 같은 값은 없음(Stepper 는 항상 가로). 세로 방향 단계 트래커가 필요하면 StatusTimeline(direction='vertical').",
+      "현재 단계가 마지막인데 current 를 그대로 두면 completed 신호가 안 뜸 — 전부 완료는 current=steps.length.",
+      "step.key 누락 — 안정적 식별자(react key)로 권장.",
     ],
     examplesHtml: {
-      do: '<nds-stepper current="1" variant="horizontal" steps=\'[{"label":"기본 정보","status":"completed"},{"label":"결제","status":"current"},{"label":"확인"}]\'></nds-stepper>',
-      dont: '<!-- step status 모두 누락 — 진척이 시각화 안 됨 -->\n<nds-stepper current="1" steps=\'[{"label":"1단계"},{"label":"2단계"},{"label":"3단계"}]\'></nds-stepper>',
+      do: '<nds-stepper current="1" variant="numbered" steps=\'[{"key":"info","label":"기본 정보"},{"key":"pay","label":"결제"},{"key":"confirm","label":"확인"}]\'></nds-stepper>',
+      dont: '<!-- variant="horizontal" + per-step status 는 존재하지 않는 prop — 무시됨 -->\n<nds-stepper variant="horizontal" steps=\'[{"label":"기본 정보","status":"completed"},{"label":"결제","status":"current"}]\'></nds-stepper>',
     },
   },
   StepProgress: {
@@ -4260,10 +4034,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- slot 미지정 — 위치/스타일이 적용 안 됨 -->\n<nds-field-action-row>\n  <nds-input></nds-input>\n  <nds-button>재전송</nds-button>\n</nds-field-action-row>",
     },
     summary:
-      "Form field 옆에 inline action(다시 보내기 / 자동 채우기 / 외부 링크) 을 배치하는 보조 row.",
+      "전화번호 인증 / 인증코드 입력처럼 '입력 1개 + 액션 버튼 1개(+타이머)' 한 줄 패턴 전용 helper. React 는 flat API 하나만 — 구 Compound API(.Root/.Field/.Action…) 는 제거됨.",
     pitfalls: [
+      "범용 폼 레이아웃 용도 아님 — 여러 필드/버튼은 Input + Button 직접 조합. 이 컴포넌트는 인증 row 1줄에만.",
       "Action 이 핵심 폼 동작(검색 / 제출) 이면 row 안이 아니라 별도 CTA 영역.",
       "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1-2 단어로 유지.",
+      "React 에서 더는 .Root/.Row/.Field/.Timer/.Action/.Helper 합성 불가 — field/action/timer/helperText prop 으로 전달.",
     ],
   },
   TimeSlotPicker: {
@@ -5575,7 +5351,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   notice: {
     name: "notice",
     summary:
-      "안내문/콜아웃/인라인 알림 박스의 강조 예산 + variant·size·구성 규칙. 컨텐츠 영역에 인라인으로 놓여 명시적으로 닫을 때까지 유지되는 메시지(정보·공지·주의·완료·오류). 페이지 상단 전역 띠는 Banner, 자동 사라지는 피드백은 Toast/Snackbar, 즉각 판단 요구는 Modal, EAP 위기 안내는 CrisisCallout — 인라인 지속 메시지만 이 패턴. **구현체 = NoticeAlert 컴포넌트** (`<NoticeAlert>` / `<nds-notice-alert>`, get_guide({ topic:'component:NoticeAlert' })).",
+      "안내문/콜아웃/인라인 알림 박스의 강조 예산 + variant·size·구성 규칙. 컨텐츠 영역에 인라인으로 놓여 명시적으로 닫을 때까지 유지되는 메시지(정보·공지·주의·완료·오류). 페이지 상단 전역 띠는 Banner, 자동 사라지는 피드백은 Toast/Snackbar, 즉각 판단 요구는 Modal — 인라인 지속 메시지만 이 패턴. **구현체 = NoticeAlert 컴포넌트** (`<NoticeAlert>` / `<nds-notice-alert>`, get_guide({ topic:'component:NoticeAlert' })).",
     rules: [
       "안내문은 기본적으로 neutral surface와 본문 텍스트로 처리.",
       "주의/성공/오류처럼 의미가 명확한 경우에만 semantic color 사용.",
@@ -5698,7 +5474,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     summary:
       "Surface / Background 의 4단계 레이어 정의와 Brand background 사용 원칙. Brand background 는 시각 장식이 아니라 '의미 전달'(주의·안내·강조) 목적으로만 사용한다. notice 패턴과 짝.",
     rules: [
-      "Layer 정의 (낮은 → 높은 위계):\n  · L0 기본 surface → `--semantic-bg-surface-default` (#FFFFFF) — 기본 카드/박스 (Card, Info Box)\n  · L1 페이지 배경 → `--semantic-bg-page-default` (≈#F8F9FB) — body, 페이지 전체 배경\n  · L2 Subtle BG → `--semantic-bg-surface-subtle` / `--semantic-bg-section-default` — 비활성 영역, 표 헤더, 섹션 분리\n  · L3 Notice (의미 전달) → `--semantic-bg-brand-subtle` 또는 `--semantic-bg-status-*` — CrisisCallout, 핵심 Notice, 상태성 안내",
+      "Layer 정의 (낮은 → 높은 위계):\n  · L0 기본 surface → `--semantic-bg-surface-default` (#FFFFFF) — 기본 카드/박스 (Card, Info Box)\n  · L1 페이지 배경 → `--semantic-bg-page-default` (≈#F8F9FB) — body, 페이지 전체 배경\n  · L2 Subtle BG → `--semantic-bg-surface-subtle` / `--semantic-bg-section-default` — 비활성 영역, 표 헤더, 섹션 분리\n  · L3 Notice (의미 전달) → `--semantic-bg-brand-subtle` 또는 `--semantic-bg-status-*` — 핵심 Notice, 상태성 안내",
       "Brand background (`--semantic-bg-brand-*`) 는 다음 모두를 만족할 때만 사용:\n  1) 사용자에게 주의 / 안내 / 하이라이트 의미 전달이 필요한가?\n  2) 현재 화면에 이미 사용 중인 brand background 가 없는가?\n  3) 단순 decoration 목적이 아닌가?\n  → 셋 모두 YES 일 때만. 하나라도 NO 면 `--semantic-bg-surface-default` 로 처리.",
       "한 화면당 brand background 최대 1개. 같은 영역에 brand bg + brand chip + brand icon 을 동시에 쌓지 않는다 (tone-on-tone).",
       "상태 의미가 명확할 때만 status 배경(`--semantic-bg-status-error|success|caution|info`) 사용. 일반 안내문은 neutral 우선.",

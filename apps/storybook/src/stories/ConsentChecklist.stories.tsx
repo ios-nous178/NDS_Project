@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, within } from "storybook/test";
 import { ConsentChecklist } from "@nudge-design/react";
+import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<typeof ConsentChecklist> = {
   title: "Components/ConsentChecklist",
@@ -63,5 +65,52 @@ export const Prefilled: Story = {
         <ConsentChecklist items={items} value={v} onValueChange={setV} />
       </div>
     );
+  },
+};
+
+export const Indeterminate: Story = {
+  name: "State/전체동의 부분선택(indeterminate)",
+  render: () => {
+    // 일부만 선택 → "전체 동의" 는 옐로우 마이너스(indeterminate). CheckboxTree 전체선택과 동일.
+    const [v, setV] = useState<string[]>(["service", "privacy"]);
+    return (
+      <div style={{ width: 480 }}>
+        <ConsentChecklist items={items} value={v} onValueChange={setV} />
+      </div>
+    );
+  },
+};
+
+export const IndeterminateInteraction: Story = {
+  name: "Interaction/전체동의 indeterminate → 전체 → 해제",
+  render: () => {
+    const Harness = () => {
+      const [v, setV] = useState<string[]>(["service", "privacy"]);
+      return (
+        <div style={{ width: 480 }}>
+          <ConsentChecklist items={items} value={v} onValueChange={setV} />
+        </div>
+      );
+    };
+    return <Harness />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = createInteractionUser();
+
+    const all = canvas.getByLabelText("전체 동의") as HTMLInputElement;
+    // 2/4 선택 → 부분선택(mixed)
+    await expect(all).not.toBeChecked();
+    await expect(all.indeterminate).toBe(true);
+
+    // 전체동의 클릭 → 전부 체크 + indeterminate 해제
+    await user.click(all);
+    await expect(all).toBeChecked();
+    await expect(all.indeterminate).toBe(false);
+
+    // 다시 클릭 → 전부 해제
+    await user.click(all);
+    await expect(all).not.toBeChecked();
+    await expect(all.indeterminate).toBe(false);
   },
 };
