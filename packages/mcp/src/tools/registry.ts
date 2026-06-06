@@ -543,6 +543,8 @@ const TOOLS = [
   },
 ];
 
+export const TOOL_DEFINITIONS = TOOLS;
+
 const SETUP_STEP_VALUES = [
   "install",
   "imports",
@@ -765,6 +767,10 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
     default:
       return args;
   }
+}
+
+export function validateToolArgsForTest(toolName: string, rawArgs: unknown): ToolArgs {
+  return validateToolArgs(toolName, rawArgs);
 }
 
 export function registerToolHandlers(
