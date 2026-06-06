@@ -181,10 +181,19 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "amount-as-text-input": "warn",
   // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
   "amount-as-static-display": "warn",
-  // 지역 선택 add 어포던스 중복(외부 '지역 추가' + 패널 '추가 선택') — 모달 1개로 통일해야 함
-  "region-add-affordance-duplicated": "warn",
+  // 지역 선택 add 어포던스 중복(외부 '지역 추가' + 패널 '추가 선택') — 모달 1개로 통일해야 함.
+  // 가이드(SelectedItemsPanel 3641)가 "검증룰이 막음"이라 명시한 회귀이고, 현장에서 재발("또 두개
+  // 노출")했으므로 warn→error 로 승격해 빌드 게이트가 실제로 막게 함.
+  "region-add-affordance-duplicated": "error",
   // SelectedItemsPanel 안에 같은 지역 행이 중복 — 선택 결과는 유니크해야 함
   "region-row-duplicated": "warn",
+  // nds-region-row 가 nds-selected-items-panel 밖에 sibling 으로 떨어짐 — 패널 body 의 gap(8)을
+  // 못 타서 행끼리 간격 없이 붙고 회색 패널 밖에 렌더된다(회귀: 캐포비 타겟팅 '지역 추가' 후 누적분이
+  // 패널 밖으로 샘). 갱신은 패널 body 안 자식만 교체해야 함.
+  "region-row-outside-panel": "warn",
+  // 지역 선택 모달(시/도+시/군/구)인데 우측 SelectedItemsPanel 이 빠짐 — 단순 2컬럼 팝오버로 떴음.
+  // 정답은 대형 2단 모달(좌 검색+체크박스 트리 / 우 SelectedItemsPanel hide-add + 풀폭 '적용').
+  "region-picker-modal-missing-panel": "warn",
   "unknown-token": "error",
   "ds-badge-missing": "error",
   // 토큰 / 시멘틱
@@ -272,6 +281,50 @@ const RAW_SHELL_PATTERNS: Array<{
 
 function severityFor(rule: string): HtmlViolationSeverity {
   return RULE_SEVERITY[rule] ?? "warn";
+}
+
+/**
+ * "회피가능 재발명" 판정 — 인터랙티브 의도를 명시했는데 DS 컴포넌트가 **아닌** 요소.
+ * DS 에 대체재가 있는데 raw 마크업으로 그린 avoidable 미스다(forced 와 구분되는 개념).
+ *
+ * native <button>/<input>/<select>/<textarea> 는 별도(native-interactive)로 집계하므로 여기선 제외하고,
+ *  (a) raw landmark <header>/<footer>/<aside>  — nds-brand-header/footer/sidebar 대체재 존재
+ *  (b) 인터랙티브 ARIA role 을 선언한 div/span  — role="button|tab|checkbox…" = 컨트롤 재발명
+ *  (c) onclick 핸들러가 달린 div/span           — 버튼 재발명(DS 는 addEventListener+nds-button 권장)
+ * 만 잡는다. role/onclick 은 작성자가 인터랙션 의도를 명시한 강한 신호라 오탐이 낮다.
+ *
+ * countHtmlUsage(스탬프·usage 리포트 비율)와 low-ds-ratio 게이트가 **같은 판정**을 쓰도록 공유한다
+ * (두 비율 계산기가 어긋나는 드리프트 방지 — 이 레포의 SSOT 패턴). admin-shell 이 처방하는 셸 chrome
+ * (<header class="nds-shell__topbar"> 등)은 raw landmark 가 정답이므로 제외한다.
+ *
+ * 호출부 책임: nds-* 태그/클래스로 이미 채택 집계된 요소, nds-* 래퍼 내부 요소는 넘기기 전에 걸러야 한다.
+ */
+const RAW_LANDMARK_TAGS = new Set(["header", "footer", "aside"]);
+const INTERACTIVE_ARIA_ROLES = new Set([
+  "button",
+  "tab",
+  "tablist",
+  "checkbox",
+  "radio",
+  "switch",
+  "menuitem",
+  "combobox",
+  "slider",
+  "dialog",
+]);
+export function avoidableReinventionKind(
+  tag: string,
+  attrs: Record<string, string>,
+): "landmark" | "role-widget" | null {
+  // admin-shell 처방 chrome 은 raw landmark 가 정답 → 제외
+  if (/\bnds-shell__/.test(attrs.class ?? "")) return null;
+  if (RAW_LANDMARK_TAGS.has(tag)) return "landmark";
+  if (tag === "div" || tag === "span") {
+    const role = (attrs.role ?? "").toLowerCase();
+    if (role && INTERACTIVE_ARIA_ROLES.has(role)) return "role-widget";
+    if (attrs.onclick) return "role-widget";
+  }
+  return null;
 }
 
 // E1 low-ds-ratio 게이트 파라미터.
@@ -478,6 +531,9 @@ export function validateHtmlSource(
   let ndsTagCount = 0;
   let ndsClassCount = 0;
   let nativeUnwrappedCount = 0;
+  // E1: native 외 회피가능 재발명(raw landmark / role·onclick 위젯)도 "DS 로 교체 가능한데 raw 로 그린"
+  //     eligible 미스로 분모에 가산 — div 로 재발명한 컴포넌트가 비율에서 invisible 하던 사각지대를 막는다.
+  let avoidableReinventionCount = 0;
   const $ = cheerio.load(source, { xmlMode: false });
   const scriptText = $("script")
     .map((_i, el) => $(el).text())
@@ -519,8 +575,10 @@ export function validateHtmlSource(
     const selector = describeElement(el);
 
     // E1 집계: DS 반영도 — nds-* 태그 / 실재 nds 클래스(채택) 카운트.
+    let countedAsNds = false;
     if (tag.startsWith("nds-")) {
       ndsTagCount++;
+      countedAsNds = true;
     } else {
       const elClasses = (attrs.class ?? "").split(/\s+/).filter(Boolean);
       const ndsBase = elClasses.find(
@@ -529,7 +587,21 @@ export function validateHtmlSource(
       // 실재 nds 클래스만 채택으로 카운트(E4 와 동일 기준) — 가짜 nds-foo 로 비율 부풀리기 차단.
       if (ndsBase && (ctx.ndsClassPrefixSet.size === 0 || ctx.ndsClassPrefixSet.has(ndsBase))) {
         ndsClassCount++;
+        countedAsNds = true;
       }
+    }
+    // E1 집계: 회피가능 재발명 — native 4종(별도 집계)·nds 채택을 제외한 raw landmark / role·onclick 위젯.
+    //   nds-* 래퍼 내부(우리 WC 가 만든 inner 마크업)는 제외. countHtmlUsage 와 동일 판정(avoidableReinventionKind).
+    if (
+      !countedAsNds &&
+      tag !== "button" &&
+      tag !== "input" &&
+      tag !== "select" &&
+      tag !== "textarea" &&
+      avoidableReinventionKind(tag, attrs) !== null &&
+      !hasAncestorNdsTag(el)
+    ) {
+      avoidableReinventionCount++;
     }
 
     // 1. style="..." 검사
@@ -1213,16 +1285,20 @@ export function validateHtmlSource(
   //   대상이 충분한데 반영도가 바닥이면 error 로 띄워 기존 자동수정 루프(hasErrors)가 재시도하게 한다.
   //   build_singlefile_html 은 ok 를 뒤집지 않으므로 빌드/익스포트 자체를 막지는 않는다.
   const dsAdopted = ndsTagCount + ndsClassCount;
-  const dsEligible = dsAdopted + nativeUnwrappedCount;
+  const dsEligible = dsAdopted + nativeUnwrappedCount + avoidableReinventionCount;
   if (dsEligible >= LOW_DS_MIN_ELIGIBLE) {
     const dsRatio = Math.round((dsAdopted / dsEligible) * 100);
     if (dsRatio < LOW_DS_FLOOR) {
+      const reinvNote =
+        avoidableReinventionCount > 0
+          ? ` + 회피가능 재발명 ${avoidableReinventionCount}개(raw landmark / role·onclick 위젯)`
+          : "";
       violations.push({
         rule: "low-ds-ratio",
         line: 1,
         selector: "<html>",
         severity: "error",
-        detail: `DS 반영도 ${dsRatio}% (nds ${dsAdopted} / 대상 ${dsEligible}) — 최소 ${LOW_DS_FLOOR}% 미달. native ${nativeUnwrappedCount}개가 nds-* 로 미교체.`,
+        detail: `DS 반영도 ${dsRatio}% (nds ${dsAdopted} / 대상 ${dsEligible}) — 최소 ${LOW_DS_FLOOR}% 미달. native ${nativeUnwrappedCount}개가 nds-* 로 미교체${reinvNote}.`,
         suggestion:
           "native <button>/<input>/<select>/<textarea> 를 nds-* 로 교체하고 raw 색/여백을 토큰으로 바꿔 DS 반영도를 올리세요. " +
           "convert_html_to_ds_html 으로 1차 변환 후 손으로 마감, find_component({ query }) 로 매핑. " +
@@ -1483,23 +1559,51 @@ function collectDocumentLevelViolations(
   });
 
   // region-add-affordance-duplicated: 지역 선택에 add 어포던스가 2개 이상
-  //   (외부 점선 '+ 지역 추가' 버튼 + SelectedItemsPanel 내부 '+ 추가 선택'). 추가는 모달 1개로 통일.
-  //   (회귀: 캐포비 타겟팅 폼 — 모달이 안 뜨고 중복 add UI.)
-  const addAffordances = $("button, nds-button, a, [role='button']").filter((_i, el) => {
-    const t = $(el).text().replace(/\s+/g, " ").trim();
-    return /^\+?\s*(지역\s*추가(하기)?|추가\s*선택|선택\s*추가)$/.test(t);
-  });
-  if (addAffordances.length >= 2) {
-    const second = addAffordances.get(1) as DomElement | undefined;
+  //   (외부 점선 '+ 지역 추가' 버튼 + SelectedItemsPanel '추가 선택'). 추가는 패널 onAdd 한 곳으로 통일.
+  //   (회귀: 캐포비 타겟팅 폼 — 모달이 안 뜨고 중복 add UI. 현장 재발 '또 두개 노출'.)
+  //   ★ 패널의 '추가 선택' 은 웹컴포넌트가 런타임에 렌더하므로 정적 텍스트엔 안 나온다 — hide-add 없는
+  //     페이지 패널을 '암묵적 add 어포던스' 로 세고, nds-add-button 은 label 속성으로도 매칭한다.
+  const RE_REGION_ADD = /^\+?\s*(지역\s*추가(하기)?|추가\s*선택|선택\s*추가)$/;
+  const matchesRegionAdd = ($el: ReturnType<typeof $>): boolean => {
+    const t = $el.text().replace(/\s+/g, " ").trim();
+    const label = ($el.attr("label") ?? "").replace(/\s+/g, " ").trim();
+    return RE_REGION_ADD.test(t) || RE_REGION_ADD.test(label);
+  };
+  // 패널 '밖' 의 명시 add 어포던스(별도 '지역 추가' 버튼 등) — 패널 자체 add 와 별개 경로.
+  const externalAdds = $("button, nds-button, nds-add-button, a, [role='button']")
+    .filter(
+      (_i, el) =>
+        matchesRegionAdd($(el)) &&
+        $(el).closest("nds-selected-items-panel, .nds-selected-items-panel").length === 0,
+    )
+    .toArray() as unknown as DomElement[];
+  // 페이지(모달 밖) 패널이 제공하는 add 경로 — hide-add 없으면 헤더 '추가 선택' 을 런타임 렌더(정적
+  //   텍스트엔 안 보임), 또는 패널 안에 명시 '추가 선택' 버튼을 둠. 어느 쪽이든 add 경로 1개.
+  const panelAdds = $("nds-selected-items-panel, .nds-selected-items-panel")
+    .filter((_i, el) => {
+      if ($(el).closest("nds-modal").length > 0) return false; // 모달 안은 hide-add 가 정답(별도 룰)
+      if ($(el).attr("hide-add") === undefined) return true;
+      return (
+        $(el)
+          .find("button, nds-button, nds-add-button, [role='button']")
+          .filter((_j, b) => matchesRegionAdd($(b))).length > 0
+      );
+    })
+    .toArray() as unknown as DomElement[];
+  // 발화: ① 패널 밖 명시 add 가 2개 이상, 또는 ② 패널 add 경로 + 패널 밖 별도 add 가 공존(중복).
+  //   (페이지 패널 1개만 = 정답 단일 경로 → 미발화. 멀티 패널 폼도 패널 밖 add 가 없으면 미발화.)
+  if (externalAdds.length >= 2 || (externalAdds.length >= 1 && panelAdds.length >= 1)) {
+    const marker = externalAdds[externalAdds.length - 1] ?? externalAdds[0];
+    const total = externalAdds.length + panelAdds.length;
     out.push({
       rule: "region-add-affordance-duplicated",
-      line: second
-        ? lineNumberAt(source, (second as unknown as { startIndex?: number }).startIndex ?? 0)
+      line: marker
+        ? lineNumberAt(source, (marker as unknown as { startIndex?: number }).startIndex ?? 0)
         : 1,
-      selector: second ? describeElement(second) : undefined,
-      detail: `지역 추가 어포던스가 ${addAffordances.length}개입니다(예: 외부 '지역 추가' + 패널 '추가 선택') — 추가 경로가 중복됩니다.`,
+      selector: marker ? describeElement(marker) : undefined,
+      detail: `지역 추가 어포던스가 ${total}개입니다(패널 '추가 선택'${panelAdds.length ? "(컴포넌트 렌더)" : ""} + 패널 밖 '지역 추가' 등) — 추가 경로가 중복됩니다.`,
       suggestion:
-        "지역 추가는 SelectedItemsPanel 의 onAdd(=모달 열기) 한 곳으로 통일하세요. 패널 밖 별도 '지역 추가' 버튼을 또 두지 말 것. '지역 추가' 클릭 → 2단 모달(좌: 체크박스 트리, 우: SelectedItemsPanel hide-add) → '적용'. get_guide({ topic: 'component:SelectedItemsPanel' }) / pattern 의 모달 플로우 참조.",
+        "지역 추가는 SelectedItemsPanel 의 onAdd(=모달 열기) 한 곳으로 통일하세요. 패널 밖 별도 '지역 추가'(nds-add-button) 버튼을 또 두지 말 것. '추가 선택' 클릭 → 2단 모달(좌: 검색+체크박스 트리, 우: SelectedItemsPanel hide-add) → 풀폭 '적용'. get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
     });
   }
 
@@ -1523,6 +1627,45 @@ function collectDocumentLevelViolations(
         }
         seen.add(t);
       });
+  });
+
+  // region-row-outside-panel: nds-region-row 가 패널 밖 sibling 으로 떨어짐.
+  //   (회귀: '지역 추가' 후 누적되는 행을 패널 body 가 아니라 패널 다음 sibling 으로 append → 패널
+  //   body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고, 회색 surface.subtle 패널 밖에 렌더된다.
+  //   가이드 SelectedItemsPanel: 갱신은 body 의 nds-region-row 자식만 교체.)
+  $("nds-region-row, .nds-region-row").each((_i, el) => {
+    if (el.type !== "tag") return;
+    if ($(el).closest("nds-selected-items-panel, .nds-selected-items-panel").length > 0) return;
+    out.push({
+      rule: "region-row-outside-panel",
+      line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
+      selector: describeElement(el as unknown as DomElement),
+      detail:
+        "RegionRow 가 SelectedItemsPanel 밖에 있습니다 — 패널 body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고, 회색 패널 밖에 렌더됩니다.",
+      suggestion:
+        "선택한 지역 행은 <nds-selected-items-panel> 의 자식(body)으로 넣으세요. 항목을 추가할 때 패널 다음 sibling 으로 append 하지 말고 패널 body 안 nds-region-row 자식만 교체할 것(헤더/개수는 컴포넌트 chrome). get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
+    });
+  });
+
+  // region-picker-modal-missing-panel: 지역 선택 모달(시/도 + 시/군/구)인데 우측 SelectedItemsPanel 이 없음.
+  //   (회귀: 캐포비 '지역 추가' 클릭 → 정답은 2단 모달[좌 검색+체크박스 트리 / 우 SelectedItemsPanel
+  //   hide-add + 풀폭 '적용']인데, 단순 2컬럼 팝오버[시/도 | 시/군/구]로 작게 떠 우측 선택결과 패널이
+  //   통째 빠진 채 렌더됨. dimensions.selectionModal SSOT.)
+  $("nds-modal, .nds-modal").each((_i, el) => {
+    if (el.type !== "tag") return;
+    const $m = $(el);
+    const txt = $m.text().replace(/\s+/g, " ");
+    if (!(/시\/도/.test(txt) && /시\/군\/구/.test(txt))) return; // 지역 선택 모달 시그니처
+    if ($m.find("nds-selected-items-panel, .nds-selected-items-panel").length > 0) return; // 우측 패널 있으면 정답
+    out.push({
+      rule: "region-picker-modal-missing-panel",
+      line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
+      selector: describeElement(el as unknown as DomElement),
+      detail:
+        "지역 선택 모달(시/도 · 시/군/구)에 우측 SelectedItemsPanel(선택한 N개 · 선택 해제 · 제거 가능 리스트)이 없습니다 — 단순 2컬럼 팝오버로 떴습니다.",
+      suggestion:
+        "지역 선택은 대형 2단 모달입니다(width~960 · 2컬럼): 좌 = 검색 input + '전체 선택' + 시/도▸시/군/구 체크박스 트리(선택=옐로우 체크), 우 = <nds-selected-items-panel hide-add>(선택한 N개 + 선택 해제 + 제거 가능 RegionRow), 풋터 = 풀폭 옐로우 '적용'. get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) ⑥ 선택/피커 모달 · component:SelectedItemsPanel 참조.",
+    });
   });
 
   const cardTotal = $("nds-card").length;

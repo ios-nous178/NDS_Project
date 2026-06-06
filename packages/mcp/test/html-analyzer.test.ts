@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { configureHtmlValidator } from "@nudge-design/mockup-core/tools/html-validator";
+import {
+  configureHtmlValidator,
+  validateHtmlSource,
+} from "@nudge-design/mockup-core/tools/html-validator";
 import {
   analyzeHtmlMockup,
   convertHtmlToDsHtml,
@@ -58,6 +61,61 @@ describe("countHtmlUsage", () => {
   it("dsRatio = 0 when no DS elements", () => {
     const c = countHtmlUsage(`<button>a</button><button>b</button>`);
     expect(c.dsRatio).toBe(0);
+  });
+});
+
+describe("countHtmlUsage — 회피가능 재발명(avoidableReinvention)", () => {
+  it("raw landmark(header/footer/aside)를 회피가능 미스로 집계", () => {
+    const c = countHtmlUsage(`<header>h</header><footer>f</footer><aside>a</aside>`);
+    expect(c.avoidableReinvention.total).toBe(3);
+    expect(c.avoidableReinvention.byKind.landmark).toBe(3);
+  });
+
+  it("role/onclick 위젯(div/span)을 컨트롤 재발명으로 집계", () => {
+    const c = countHtmlUsage(
+      `<div role="button">go</div><span onclick="x()">click</span><div role="tab">t</div>`,
+    );
+    expect(c.avoidableReinvention.total).toBe(3);
+    expect(c.avoidableReinvention.byKind["role-widget"]).toBe(3);
+  });
+
+  it("admin-shell 처방 chrome(nds-shell__*)과 일반 레이아웃 div 는 제외", () => {
+    const c = countHtmlUsage(
+      `<header class="nds-shell__topbar">bar</header><div>layout</div><div class="row">x</div>`,
+    );
+    expect(c.avoidableReinvention.total).toBe(0);
+  });
+
+  it("nds-* 래퍼 내부의 landmark/위젯은 제외(우리 WC inner 마크업)", () => {
+    const c = countHtmlUsage(`<nds-card><div role="button">x</div></nds-card>`);
+    expect(c.avoidableReinvention.total).toBe(0);
+  });
+
+  it("재발명이 dsRatio 분모에 들어가 비율을 낮춘다(사각지대 차단)", () => {
+    // 2 nds-tag 채택 + raw header/footer 2개 재발명 = 2/4 = 50%
+    const c = countHtmlUsage(
+      `<nds-button>a</nds-button><nds-button>b</nds-button><header>h</header><footer>f</footer>`,
+    );
+    expect(c.avoidableReinvention.total).toBe(2);
+    expect(c.dsRatio).toBe(50);
+  });
+});
+
+describe("low-ds-ratio 게이트 — 재발명 반영", () => {
+  it("nds 채택은 적고 raw landmark 다수 → 게이트가 잡는다", () => {
+    // 1 nds + raw header/footer/aside/(div role=button) 4개 = 1/5 = 20% (<50)
+    const src = `<html><body><nds-button>x</nds-button><header>h</header><footer>f</footer><aside>a</aside><div role="button">go</div></body></html>`;
+    const v = validateHtmlSource(src);
+    const hit = v.find((x) => x.rule === "low-ds-ratio");
+    expect(hit).toBeTruthy();
+    expect(hit?.severity).toBe("error");
+  });
+
+  it("admin-shell chrome(nds-shell__*)은 재발명으로 카운트되지 않아 억울하게 막지 않는다", () => {
+    // shell chrome 3개는 제외 → eligible 1개(nds) → MIN_ELIGIBLE 미만 면제
+    const src = `<html><body><header class="nds-shell__topbar">t</header><aside class="nds-shell__sidebar">s</aside><nds-button>x</nds-button></body></html>`;
+    const v = validateHtmlSource(src);
+    expect(v.find((x) => x.rule === "low-ds-ratio")).toBeUndefined();
   });
 });
 
