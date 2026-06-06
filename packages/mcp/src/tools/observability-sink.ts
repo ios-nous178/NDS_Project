@@ -55,9 +55,13 @@ interface RecordQualityArgs extends RecordBase {
 const DEFAULT_MOCKUP_API_URL = "http://127.0.0.1:8090";
 const POST_TIMEOUT_MS = 1500;
 
+function isFlagOff(value: string | undefined): boolean {
+  return ["0", "false", "off", "no"].includes((value ?? "").toLowerCase());
+}
+
 function isEnabled(): boolean {
   const flag = process.env.NUDGE_MOCKUP_API_LOG ?? process.env.NUDGE_OBSERVABILITY_LOG;
-  return !["0", "false", "off", "no"].includes((flag ?? "1").toLowerCase());
+  return !isFlagOff(flag ?? "1");
 }
 
 function baseUrl(): string | null {
@@ -68,6 +72,36 @@ function baseUrl(): string | null {
     process.env.NUDGE_OBSERVABILITY_API_URL ??
     DEFAULT_MOCKUP_API_URL;
   return raw.replace(/\/+$/, "");
+}
+
+function isLoopback(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return host === "127.0.0.1" || host === "localhost" || host === "::1" || host === "[::1]";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * PRD/HTML **원문(raw content)** 전송 게이트. 기본은 OFF — 본문에 기획 내용·내부 식별자가
+ * 담기므로 명시 opt-in(NUDGE_OBSERVABILITY_ARTIFACTS=1) 없이는 메타데이터(kind/source/hash/bytes)만
+ * 보낸다. 원격(non-loopback) sink 로 보낼 때는 더더욱 명시 동의가 있어야만 본문이 나간다.
+ */
+function artifactsContentEnabled(base: string): boolean {
+  const flag = process.env.NUDGE_OBSERVABILITY_ARTIFACTS;
+  if (flag === undefined) return false; // 기본 OFF
+  if (isFlagOff(flag)) return false;
+  // 원격 타깃은 명시 opt-in 이어도 한 번 더 게이트: ARTIFACTS_REMOTE 까지 켜야 본문 송신.
+  if (!isLoopback(base) && isFlagOff(process.env.NUDGE_OBSERVABILITY_ARTIFACTS_REMOTE ?? "0")) {
+    return false;
+  }
+  return true;
+}
+
+/** 선택적 공유 시크릿 — 설정 시 모든 sink POST 에 Authorization 헤더로 붙는다(무인증 평문 완화). */
+function authToken(): string | null {
+  return process.env.NUDGE_OBSERVABILITY_TOKEN?.trim() || null;
 }
 
 function now(): string {
@@ -152,10 +186,13 @@ function buildRunId(kind: string, cwd: string | undefined, filePath: string | nu
 async function postEndpoint(base: string, endpoint: SinkEndpoint): Promise<SinkPostResult> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), POST_TIMEOUT_MS);
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const token = authToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
   try {
     const res = await fetch(`${base}${endpoint.path}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(endpoint.body),
       signal: controller.signal,
     });
@@ -167,14 +204,19 @@ async function postEndpoint(base: string, endpoint: SinkEndpoint): Promise<SinkP
   }
 }
 
+/**
+ * 엔드포인트를 **병렬** 전송한다(Promise.allSettled). 직렬이면 죽은 sink 에서 N×timeout 만큼
+ * 툴 호출이 지연되므로(빌드는 최대 6 엔드포인트) worst-case 를 단일 timeout 으로 bound.
+ */
 async function send(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
   const base = baseUrl();
   if (!base || endpoints.length === 0) return [];
-  const results: SinkPostResult[] = [];
-  for (const endpoint of endpoints) {
-    results.push(await postEndpoint(base, endpoint));
-  }
-  return results;
+  const settled = await Promise.allSettled(endpoints.map((e) => postEndpoint(base, e)));
+  return settled.map((s, i) =>
+    s.status === "fulfilled"
+      ? s.value
+      : { target: base, path: endpoints[i].path, ok: false, error: String(s.reason) },
+  );
 }
 
 function usageEndpoint(
@@ -244,6 +286,28 @@ function qualityEndpoint(args: {
   ];
 }
 
+function artifactRow(args: {
+  runId: string;
+  sessionId: string | null;
+  kind: string;
+  source: string | null;
+  content: string;
+  withContent: boolean;
+}): JsonObject {
+  // 본문은 opt-in 일 때만, 메타데이터(hash/bytes)는 항상 — dedup/신호는 유지하되 원문 유출은 차단.
+  return {
+    artifactId: `${args.runId}#${args.kind}`,
+    runId: args.runId,
+    sessionId: args.sessionId,
+    kind: args.kind,
+    source: args.source,
+    contentHash: hash(args.content, 24),
+    byteLength: Buffer.byteLength(args.content, "utf8"),
+    contentOmitted: !args.withContent,
+    ...(args.withContent ? { content: args.content } : {}),
+  };
+}
+
 function artifactsEndpoint(args: {
   runId: string;
   sessionId: string | null;
@@ -252,33 +316,38 @@ function artifactsEndpoint(args: {
   includePrd: boolean;
   includeOutputHtml: boolean;
 }): SinkEndpoint[] {
+  const base = baseUrl();
+  if (!base) return [];
+  const withContent = artifactsContentEnabled(base);
   const rows: JsonObject[] = [];
   if (args.includePrd) {
     const prd = readInitialPrd(args.cwd);
     if (prd) {
-      rows.push({
-        artifactId: `${args.runId}#initial-prd`,
-        runId: args.runId,
-        sessionId: args.sessionId,
-        kind: "initial-prd",
-        source: prd.source,
-        content: prd.content,
-        contentHash: hash(prd.content, 24),
-      });
+      rows.push(
+        artifactRow({
+          runId: args.runId,
+          sessionId: args.sessionId,
+          kind: "initial-prd",
+          source: prd.source,
+          content: prd.content,
+          withContent,
+        }),
+      );
     }
   }
   if (args.includeOutputHtml) {
     const html = safeRead(args.outputPath);
     if (html) {
-      rows.push({
-        artifactId: `${args.runId}#first-output-html`,
-        runId: args.runId,
-        sessionId: args.sessionId,
-        kind: "first-output-html",
-        source: rel(args.cwd, args.outputPath),
-        content: html,
-        contentHash: hash(html, 24),
-      });
+      rows.push(
+        artifactRow({
+          runId: args.runId,
+          sessionId: args.sessionId,
+          kind: "first-output-html",
+          source: rel(args.cwd, args.outputPath),
+          content: html,
+          withContent,
+        }),
+      );
     }
   }
   return rows.length > 0 ? [{ path: "/artifacts/import", body: rows }] : [];
@@ -392,6 +461,79 @@ export async function recordValidationObservability(
     ...violationsEndpoint({ runId, sessionId, mockupFile, validation: args.result }),
   ];
   return send(endpoints);
+}
+
+interface RecordObservabilityArgs {
+  name: string;
+  args: JsonObject;
+  result: unknown;
+  dsVersion?: string | null;
+}
+
+/**
+ * observability 적재 SSOT 디스패처 — 툴 이름으로 라우팅한다. server.ts 의 registerToolHandlers
+ * ({ afterCall }) 단일 choke-point 에서 호출돼, 새 툴이 적재를 빠뜨리는 일관성 갭을 없앤다.
+ * 핸들러가 부르던 record{Build,Validation,Quality} 를 result/args 에서 재구성한다.
+ * 대상이 아닌 툴/비정상 result 면 null(=무동작).
+ */
+export async function recordObservability(
+  ctx: RecordObservabilityArgs,
+): Promise<SinkPostResult[] | null> {
+  const { name, result } = ctx;
+  if (!result || typeof result !== "object" || Array.isArray(result)) return null;
+  const dsVersion = ctx.dsVersion ?? null;
+  const a = ctx.args as {
+    cwd?: string;
+    source?: string;
+    filePath?: string;
+    brand?: string;
+    surface?: string;
+  };
+  switch (name) {
+    case "build_singlefile_html":
+      return recordBuildObservability({
+        tool: name,
+        cwd: a.cwd,
+        dsVersion,
+        result: result as BuildSinglefileHtmlResult,
+      });
+    case "validate_html_mockup":
+      return recordValidationObservability({
+        tool: name,
+        cwd: a.cwd,
+        source: a.source,
+        filePath: a.filePath,
+        dsVersion,
+        result: result as RecordValidationArgs["result"],
+      });
+    case "score_mockup_quality": {
+      const r = result as {
+        ok?: boolean;
+        codeScores?: { overall: number; dimensions?: Record<string, number> } | null;
+        llm?: LlmScoreResult;
+        verdict?: string;
+        verdictLabel?: string;
+        overall?: number | null;
+      };
+      // 핸들러의 early-return 에러({ ok:false })는 llm 이 없으므로 적재 제외 — 원래 동작과 동일.
+      if (r.ok === false || !r.llm) return null;
+      return recordQualityObservability({
+        tool: name,
+        cwd: a.cwd,
+        filePath: a.filePath,
+        brand: a.brand,
+        surface: a.surface,
+        dsVersion,
+        codeScores: r.codeScores ?? null,
+        llm: r.llm,
+        verdict: r.verdict,
+        verdictLabel: r.verdictLabel,
+        overall: r.overall ?? null,
+      });
+    }
+    default:
+      return null;
+  }
 }
 
 export async function recordQualityObservability(
