@@ -317,7 +317,8 @@ export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
       position: "fixed (좌측 0, top 0, height 100vh)",
       borderRight: "1px solid #ececec",
       zIndex: "10",
-      topAccent: "상단 6px 브랜드 컬러 라인 (border-top: 6px solid var(--semantic-border-brand-default))",
+      topAccent:
+        "상단 6px 브랜드 컬러 라인 (border-top: 6px solid var(--semantic-border-brand-default))",
     },
     sideUserInfo:
       "Sider 상단 24px padding 영역에 [로고/h1] + TinyHeader('INFO') + 이메일(12px #333) + " +
@@ -401,7 +402,8 @@ export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
       "antd 기본 footer (확인/취소) 또는 우측 그룹 액션 정렬. 좌측엔 파괴 액션(종료처리, 삭제) 분리.",
   },
   colors: {
-    "--color-main": "var(--semantic-border-brand-default) — 사이드바 톱 액센트 / 메뉴 선택 우측 보더 / 링크",
+    "--color-main":
+      "var(--semantic-border-brand-default) — 사이드바 톱 액센트 / 메뉴 선택 우측 보더 / 링크",
     text: "#383838 (제목) / #727272 (보조) / #aaa (subtle) / #b1b1b1 (footer)",
     border: "#ececec (light) / #e4e4e4 (HeaderSubject 하단)",
     bg: "#f4f4f4 (body) / #fafafa (hover/header) / #ffffff (sider, content surface)",
@@ -619,8 +621,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
 <Button rightIcon={<ArrowNextIcon />}>자세히 보기</Button>`,
     },
     colorMatrix: {
-      "primary/solid": "var(--semantic-bg-brand-default) 배경 + var(--semantic-text-inverse-default) 텍스트 — 가장 중요한 CTA",
-      "primary/outlined": "흰 배경 + var(--semantic-border-brand-default) 보더/텍스트 — 밝은 배경 위 보조 액션",
+      "primary/solid":
+        "var(--semantic-bg-brand-default) 배경 + var(--semantic-text-inverse-default) 텍스트 — 가장 중요한 CTA",
+      "primary/outlined":
+        "흰 배경 + var(--semantic-border-brand-default) 보더/텍스트 — 밝은 배경 위 보조 액션",
       "primary/soft":
         "surface.brandSubtle 배경 + textRole.brand 텍스트 — 3차 액션 (Figma 라이브러리엔 별도 셀 없음). 색 값은 packages/tokens/src/brands/<brand>.semantic.ts 토큰 SSOT 참조.",
       "secondary/solid":
@@ -640,7 +644,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "primary/solid/disabled": "bg #9CA2AE cool-gray + 흰 텍스트.",
       "secondary/solid/disabled": "bg #E6E7EB + 텍스트 #9CA2AE.",
       outlined_disabled: "흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE.",
-      hover: "primary=var(--semantic-fill-brand-hover) / secondary=var(--semantic-bg-brand-subtle) / outlined/assistive=var(--semantic-bg-surface-subtle)",
+      hover:
+        "primary=var(--semantic-fill-brand-hover) / secondary=var(--semantic-bg-brand-subtle) / outlined/assistive=var(--semantic-bg-surface-subtle)",
     },
     /**
      * Cashwalk-biz Button 의 spec 차이 (Figma 3098:1032 / 1079 SSOT).
@@ -927,8 +932,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "**React 한정** — `<Chip>{children}</Chip>` 으로 children 넣지 말 것. 반드시 `<Chip label='...' />`. 함정: HTML 예시(`<nds-chip>라벨</nds-chip>`)를 보고 React 에도 children 쓰면 API 어긋남.",
       "**HTML 한정** — `<nds-chip label='...' />` 처럼 label attribute 쓰지 말 것. nds-chip 은 label attribute 가 없고 children/text content 만 받음 (nds-chip.ts L189: `while (this.firstChild) label.appendChild(this.firstChild)`).",
-      "**HTML 토글은 attribute 로** — `nds-chip` 은 `selected`/`color`/`variant` 등을 observedAttributes 로 감지해 자동 리렌더한다(NdsElement base 가 attributeChangedCallback→update). `setAttribute(\"selected\",\"\")` / `removeAttribute(\"selected\")` 로 토글하면 색이 즉시 바뀐다 — **칩 노드를 통째로 교체하는 워크어라운드는 불필요**. 단 **property 대입(`el.selected = true`)은 무시됨**(setter 없음, attribute 만 읽음) → 이게 '클릭해도 색이 안 변한다'의 진짜 원인. 삭제는 `removable` + `chip-remove` 이벤트로 연결.",
-      "**좌측 아이콘/체크/도트** — React 는 `icon` prop, HTML 은 `slot=\"icon\"` 자식: `<nds-chip selected><svg slot=\"icon\">…</svg>30대</nds-chip>` (slot 없는 자식은 전부 label 로 들어감). 아이콘은 `currentColor` 를 따르므로 텍스트색(=선택 시 채움 위 텍스트색)으로 렌더된다. brand-subtle 등 다른 선택 톤/텍스트색은 hex 말고 `--nds-chip-selected-background/text/border` override(예: 캐포비는 노랑 위 검정 텍스트로 `--nds-chip-selected-text` override).",
+      '**HTML 토글은 attribute 로** — `nds-chip` 은 `selected`/`color`/`variant` 등을 observedAttributes 로 감지해 자동 리렌더한다(NdsElement base 가 attributeChangedCallback→update). `setAttribute("selected","")` / `removeAttribute("selected")` 로 토글하면 색이 즉시 바뀐다 — **칩 노드를 통째로 교체하는 워크어라운드는 불필요**. 단 **property 대입(`el.selected = true`)은 무시됨**(setter 없음, attribute 만 읽음) → 이게 \'클릭해도 색이 안 변한다\'의 진짜 원인. 삭제는 `removable` + `chip-remove` 이벤트로 연결.',
+      '**좌측 아이콘/체크/도트** — React 는 `icon` prop, HTML 은 `slot="icon"` 자식: `<nds-chip selected><svg slot="icon">…</svg>30대</nds-chip>` (slot 없는 자식은 전부 label 로 들어감). 아이콘은 `currentColor` 를 따르므로 텍스트색(=선택 시 채움 위 텍스트색)으로 렌더된다. brand-subtle 등 다른 선택 톤/텍스트색은 hex 말고 `--nds-chip-selected-background/text/border` override(예: 캐포비는 노랑 위 검정 텍스트로 `--nds-chip-selected-text` override).',
       "Chip은 상태/분류/짧은 속성 표시용이다. 새 섹션을 강조하거나 일반 안내문을 꾸미는 장식으로 쓰지 말 것.",
       "모든 카드/섹션 제목 앞에 Chip을 붙이면 위계가 무너진다. 카드당 최대 1-2개, 섹션당 최대 2개 수준으로 제한.",
       "긴 문장이나 CTA 보조 문구를 Chip에 넣지 말 것. 8자 안팎의 짧은 라벨만 자연스럽다.",
@@ -1275,7 +1280,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     stateMatrix: {
       default: "border #D8D8D8 / bg white / placeholder #999",
-      typing: "border var(--semantic-border-focus-default) (cv.border.focus) / text var(--semantic-text-strong-default) (cv.text.normal)",
+      typing:
+        "border var(--semantic-border-focus-default) (cv.border.focus) / text var(--semantic-text-strong-default) (cv.text.normal)",
       error: "border #F13F00 (cv.error.main) / helper color same",
       disabled: "border #D8D8D8 / bg #FAFAFA (cv.bg.light) / text #999",
       complete: "border #D8D8D8 / bg white / helper variant=success(=primary blue)",
@@ -1701,7 +1707,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           states:
             "success / error / warning 3종. Success = check 칩(그린) · Error = error 칩(레드) · Warning = caution 칩(옐로). status 칩 아이콘 24×24 가 좌측. default/info 도 컴포넌트는 지원하나 캐포비 admin 은 주로 success/error/warning 사용.",
           anatomy:
-            "① Status 칩 아이콘 24×24 (둥근 사각형 칩 + 흰 글리프, 색만 state 별) ② Message — Bold 16 / line-height 24, 한 줄 권장 ③ Close Icon(회색, 클릭 시 즉시 닫힘). 좌→우: 아이콘 · 메시지 · 닫기. **DS Snackbar(`<nds-snackbar-host brand=\"cashwalk-biz\">` / `Snackbar.Provider brand=\"cashwalk-biz\"`)가 칩 아이콘 + 흰 카드 chrome 을 직접 렌더** — 더 이상 호스트 커스텀 렌더 불필요.",
+            '① Status 칩 아이콘 24×24 (둥근 사각형 칩 + 흰 글리프, 색만 state 별) ② Message — Bold 16 / line-height 24, 한 줄 권장 ③ Close Icon(회색, 클릭 시 즉시 닫힘). 좌→우: 아이콘 · 메시지 · 닫기. **DS Snackbar(`<nds-snackbar-host brand="cashwalk-biz">` / `Snackbar.Provider brand="cashwalk-biz"`)가 칩 아이콘 + 흰 카드 chrome 을 직접 렌더** — 더 이상 호스트 커스텀 렌더 불필요.',
           container:
             "BG/Surface/Default(흰 배경) · border subtle · radius 8 · padding 16 · shadow E1(0 2 6 / .12). data-brand='cashwalk-biz' cascade 가 variant 틴트 배경을 흰 카드로 덮는다(아이콘 색은 유지).",
           position:
@@ -3353,7 +3359,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**선택한 항목/지역/카테고리/멤버 등 '동적 다중 선택 결과'를 Chip/ActionChip 으로 인라인 나열 금지** — 노란 outlined 칩은 SelectionButton 과 시각적으로 같아 혼동되고, '추가 선택/선택 해제'·개수 강조·개별 제거 affordance 가 빠진다. 회색 `SelectedItemsPanel`(surface.subtle 패널) + `SelectedItemRow`(라벨 + 삭제 X) 로 그릴 것. 지역 picker 는 한 예시일 뿐이며, 그 경우에도 row 컴포넌트는 동일하다.",
       "개수를 타이틀 문자열에 직접 넣지 말 것 — `count` prop/속성이 text.brand 색으로 강조 렌더. 타이틀은 명사만.",
       "헤더 액션은 **선택 해제(onClear)** 가 기본이고 **추가 선택(onAdd)은 옵션** — 임의의 버튼을 헤더에 더 끼워넣지 말 것. **★ 피커 모달 우측 패널에서는 '추가 선택' 노출 금지 → 선택 해제만.** React 는 `onAdd` 미전달 시 자동 숨김이지만, **HTML 웹컴포넌트(`nds-selected-items-panel`)는 추가/해제 둘 다 기본 렌더라 모달에서는 `hide-add` 속성을 반드시 줘야 한다**(안 주면 모달 안에 '추가 선택'이 떠서 회귀). '추가 선택'은 모달 밖에서만 쓰며, 시각 스펙은 **secondary Button + plus(+) 아이콘**.",
-      "**추가 경로(add 어포던스)는 하나만** — 패널 밖 별도 추가 버튼 + 패널 안 '추가 선택' 을 둘 다 두지 말 것(중복 UI, 회귀). 추가는 패널 onAdd(=모달 열기) 한 곳으로 통일하고, 그 클릭이 **2단 모달**(좌: 검색+체크박스 트리, 우: SelectedItemsPanel `hide-add` + 선택 해제, 풋터: full-width '적용')을 띄운다 — 모달이 안 뜨고 페이지에 인라인으로 또 그리면 안 된다. (검증룰 selected-item-add-affordance-duplicated 가 막음.)",
+      "**캐포비 admin 타겟팅에서 추가 경로(add 어포던스)는 하나만** — 패널 밖 별도 추가 버튼 + 패널 안 '추가 선택' 을 둘 다 두지 말 것(중복 UI, 회귀). 추가는 패널 onAdd(=모달 열기) 한 곳으로 통일하고, 그 클릭이 **2단 모달**(좌: 검색+체크박스 트리, 우: SelectedItemsPanel `hide-add` + 선택 해제, 풋터: full-width '적용')을 띄운다 — 모달이 안 뜨고 페이지에 인라인으로 또 그리면 안 된다. 캐포비 admin validator 에서만 `selected-item-add-affordance-duplicated` 로 막는다(다른 브랜드/표면 전역 룰 아님).",
       "**같은 항목을 패널에 중복 추가 금지** — 추가 시 이미 있으면 무시(유니크). 같은 항목이 두 줄 = 회귀(검증룰 selected-item-row-duplicated).",
       "본문 항목 삭제는 SelectedItemRow 의 onRemove(또는 nds-selected-item-remove / nds-region-remove 이벤트)로 — 패널이 항목 상태를 들고 있지 않음(controlled). 호스트가 리스트를 갱신.",
       "본문이 길어지면 화면을 덮지 않도록 `--nds-selected-items-panel-body-max-height` 로 스크롤 제한.",
@@ -4183,7 +4189,8 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
   brandTone:
     "낮은 진입 장벽과 전문적 신뢰감을 주되, 흔한 SaaS/헬스케어 클리셰처럼 보이면 안 됩니다. Linear/Notion식 회색 카드 그리드, 스톡사진+파스텔 그라데이션, 모든 카드에 아이콘을 꽂는 대시보드 톤, 과한 감성 카피/일러스트 장식은 금지. Neutral surface와 텍스트 위계를 기본으로 두고 primary blue는 대표 CTA와 핵심 인터랙션에만 제한합니다.",
   colors: {
-    primary: "var(--semantic-bg-brand-default) — CTA, 활성, 핵심 인터랙티브. 화면당 가장 중요한 1개 액션만.",
+    primary:
+      "var(--semantic-bg-brand-default) — CTA, 활성, 핵심 인터랙티브. 화면당 가장 중요한 1개 액션만.",
     secondary: "#ED2E77 — 마젠타 포인트. 프로모션, 감정 표현, 보조 강조.",
     error: "#F13F00 — 유효성 오류, 파괴적 액션.",
     caution: "#FFC303 — 주의 알림. 텍스트는 #FFA100.",
@@ -5541,6 +5548,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**액션바 = 콘텐츠 하단 우측 정렬 [취소][저장] 인라인 액션**: 폼 콘텐츠 맨 끝에 **페이지 배경 위로 우측 정렬** 배치 — **별도 흰 배경 바(`--semantic-bg-surface-default`)·풀폭 상단 border·sticky/fixed 고정을 두지 않는다.** 저장=primary solid, 취소=outlined — CTA shape/색 실측은 `pattern:cashwalk-biz-button` (BottomCTA) 가 SSOT. Disabled: `#D8D8D8` neutral.",
       "**액션 위계**: primary solid CTA 1개. 파괴(삭제) 액션은 별도 위치(헤더 우측 또는 카드 우측 상단) 분리.",
       "**선택 chip / 활성 토큰**: `bg #FFFAE2 + border #FFD200` (옅은 노란 + 노란 보더) + Bold #111. 강조 숫자/카운트는 `#FD9B02` (amber).",
+      "**타겟팅 지역 선택(캐포비 한정 SSOT)**: 폼 페이지에는 `SelectedItemsPanel` 로 현재 선택 지역을 보여주고, 첫 선택/추가 선택 클릭 시에만 대형 선택 모달을 연다. 모달 본문은 좌측 `CheckboxTree`(검색 + 전체선택 + 시/도▸시/군/구) + 우측 `SelectedItemsPanel hide-add`(선택 해제 + 제거 가능한 SelectedItemRow) 조합, 푸터는 본문 풀폭 옐로우 `적용` CTA. **모달 안 우측 패널에는 '추가 선택' 버튼을 절대 두지 않는다**(HTML `hide-add`, React `onAdd` 미전달) — 모달 안에 입력 버튼이 2개처럼 보이는 회귀 방지.",
+      "**타겟팅 성별 선택(캐포비 한정 SSOT)**: 성별 필드는 `SelectionButtonGroup` 으로 `전체 / 특정 성별` 을 먼저 고르고, `특정 성별` 상태에서만 selection chip 묶음(`<nds-chip selected interactive>남성</nds-chip>`, `<nds-chip selected interactive>여성</nds-chip>`, 필요 시 `알 수 없음`)을 노출한다. Select / RadioGroup / CheckboxGroup / SegmentedControl 로 대체하지 말 것 — 캐포비 타겟팅 폼에서는 입력 종류가 흔들리면 목업 품질이 가장 크게 흔들린다.",
       "**우측 보조 사이드 카드 (선택)**: 메인 필드 우측에 요약 카드 (border #ECECEC rounded-16 padding 25×32 w-406) — 미리보기/도움말.",
       "**유효성 검사**: 입력 중 에러 표시 X (onBlur/submit). 글자 수 카운터만 실시간.",
     ],
@@ -5554,6 +5563,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "CTA 모양을 8px rounded 사각형 — Figma 는 56h rounded-28 알약 (pill).",
       "필드 border-radius 를 8px 로 — Figma 는 10px.",
       "필수 라벨을 brand yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.",
+      "캐포비 타겟팅 지역 선택을 Chip 인라인 나열/평면 CheckboxGroup/작은 팝오버로 구현 — 폼 페이지 `SelectedItemsPanel` + 대형 선택 모달(`CheckboxTree` + `SelectedItemsPanel hide-add`)이 SSOT.",
+      "캐포비 타겟팅 성별 선택을 Select/RadioGroup/CheckboxGroup/SegmentedControl 로 구현 — `SelectionButtonGroup` + selected Chip 묶음이 SSOT.",
       "한 폼 안에 카드 간격 일정한 24px — Figma 는 의미 단위 64-80px 가변.",
     ],
     examples: [
@@ -5604,6 +5615,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       ctaDisabled: "bg #D8D8D8 + 흰 텍스트",
       maxPrimarySolidPerScreen: 1,
       validationTiming: "onBlur or submit",
+      targetingRegion:
+        "페이지 SelectedItemsPanel → 첫 선택/추가 선택 클릭 시 selection modal(CheckboxTree + SelectedItemsPanel hide-add + full-width yellow 적용)",
+      targetingGender:
+        "SelectionButtonGroup(전체/특정 성별) + selected Chip(남성/여성/알 수 없음). Select/Radio/CheckboxGroup/Segmented 금지.",
       relatedPatterns: "cashwalk-biz-input, cashwalk-biz-button, cta-group",
     },
     figmaNodeUrl:
@@ -5929,7 +5944,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       '**Badge — Rounded Square (radius 5)** = 거래/처리 동적 상태·카테고리(충전·사용·적립·만료·취소…). 데이터 테이블·리스트 셀에서 가장 빈번. 마크업: `<nds-badge variant="ghost" color="...">충전</nds-badge>`. 톤=의미별 semantic 색: 충전/강조=brand, 사용/안내=info, 적립/완료=success, 만료/중립=neutral, 취소/실패=error.',
       '**Badge — Pill (radius full)** = 계정 유형·식별 정적 태그(일반 계정·프리미엄·신규…). 헤더/타이틀 옆 식별 표식. 마크업: `<nds-badge variant="ghost" color="..." style="--nds-badge-radius:999px">프리미엄</nds-badge>`. 동적 상태값에는 Pill 쓰지 말 것(Rounded Square 사용).',
       'Badge 치수(radius 5 · padding 4/10 · Caption 12/16 · Medium 500)는 캐포비 브랜드 토큰(`--nds-badge-*`)으로 cascade. `variant="ghost"` + semantic `color` 만 지정하면 연한 bg + 컬러 텍스트(soft 톤)가 자동 적용된다.',
-      "**SelectChip** = 선택형 칩(다중 선택 그룹, 예: 연령대 선택). DS `Chip` 의 `selected` 상태로 구현 — HTML: `<nds-chip selected>30대</nds-chip>` / `<nds-chip>30대</nds-chip>`. **출시 기본**: Selected=브랜드 채움(solid fill, FILL_COLORS) + Bold, Default=#FAFAFA bg + #EEE border + Medium. 캐포비(cashwalk-biz)는 노랑 채움 위 가독성을 위해 selected 텍스트·체크를 **검정**으로 override 함(`--nds-chip-selected-text`). 좌측 ✓ 체크는 React `icon` prop / HTML `slot=\"icon\"`(`<nds-chip selected><svg slot=\"icon\">…</svg>30대</nds-chip>`). 'brand-subtle bg' 룩이 필요하면 hex 박지 말고 `--nds-chip-selected-background/text/border` override. 채움만으로도 선택 표시는 충분.",
+      '**SelectChip** = 선택형 칩(다중 선택 그룹, 예: 연령대 선택). DS `Chip` 의 `selected` 상태로 구현 — HTML: `<nds-chip selected>30대</nds-chip>` / `<nds-chip>30대</nds-chip>`. **출시 기본**: Selected=브랜드 채움(solid fill, FILL_COLORS) + Bold, Default=#FAFAFA bg + #EEE border + Medium. 캐포비(cashwalk-biz)는 노랑 채움 위 가독성을 위해 selected 텍스트·체크를 **검정**으로 override 함(`--nds-chip-selected-text`). 좌측 ✓ 체크는 React `icon` prop / HTML `slot="icon"`(`<nds-chip selected><svg slot="icon">…</svg>30대</nds-chip>`). \'brand-subtle bg\' 룩이 필요하면 hex 박지 말고 `--nds-chip-selected-background/text/border` override. 채움만으로도 선택 표시는 충분.',
       "**ActionChip** = TextField helper text 영역 옆 보조 액션(예시 이미지·수정·다운로드). radius 6 / bg #ECECEC / icon 14 + 12 Medium. inline 배치(별도 row 아님). 상세는 `pattern:cashwalk-biz-input`.",
     ],
     avoid: [
@@ -6876,20 +6891,21 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     rules: [
       "호스트(<nds-*>)에는 박스 스타일을 주지 않는다 — `display: contents` 라 margin/padding/width/height/flex/align-self/gap/background/border/box-shadow/position 이 전부 드롭된다.",
       "간격이 필요하면 컴포넌트를 일반 `<div>` 로 감싸고 그 wrapper 에 margin/padding 을 준다. 또는 부모 컨테이너를 flex/grid 로 만들고 부모의 `gap`(semantic-gap-*)으로 컴포넌트 사이를 띄운다 — wrapper 보다 부모 gap 이 우선.",
-      "크기(width/height)가 필요해도 호스트가 아니라 wrapper 에 준다 (예: 폼 안에서 Select 를 240px 로 → `<div style=\"width:240px\"><nds-select …></nds-select></div>`).",
+      '크기(width/height)가 필요해도 호스트가 아니라 wrapper 에 준다 (예: 폼 안에서 Select 를 240px 로 → `<div style="width:240px"><nds-select …></nds-select></div>`).',
       "호스트에 줘도 되는 inline 스타일은 CSS 커스텀 프로퍼티뿐 — `--nds-*` / `--semantic-*` 변수(컴포넌트 슬롯·토큰 전달)와 `display: contents` 자신. 그 외 표준 박스 프로퍼티는 금지.",
       "예외: `display: contents` 를 안 쓰는 소수 컴포넌트(brand-chrome / input-group / inspector)는 호스트 스타일이 먹지만, 일관성을 위해 동일하게 wrapper 패턴을 권장.",
     ],
     avoid: [
-      "<nds-selection-button-group style=\"margin-bottom:16px\"> — 호스트 margin 무시 → 하단 패널과 딱 붙음. wrapper div 로 감쌀 것.",
-      "<nds-card style=\"padding:16px\"> — 호스트 padding 무시. 카드 내부 여백은 nds-card-body 가 처리.",
-      "<nds-select style=\"width:240px\"> — 호스트 width 무시. wrapper div 에 width.",
+      '<nds-selection-button-group style="margin-bottom:16px"> — 호스트 margin 무시 → 하단 패널과 딱 붙음. wrapper div 로 감쌀 것.',
+      '<nds-card style="padding:16px"> — 호스트 padding 무시. 카드 내부 여백은 nds-card-body 가 처리.',
+      '<nds-select style="width:240px"> — 호스트 width 무시. wrapper div 에 width.',
       "컴포넌트 사이 간격을 호스트 margin 으로 주려는 모든 시도 — 부모 gap 또는 wrapper 로.",
     ],
     metrics: {
       hostDisplay: "contents",
       affectsComponents: "117 / 121 nds-* (제외: brand-chrome / input-group / inspector)",
-      droppedProps: "margin / padding / width / height / flex / align-self / gap / background / border / box-shadow / position",
+      droppedProps:
+        "margin / padding / width / height / flex / align-self / gap / background / border / box-shadow / position",
       allowedOnHost: "--nds-* · --semantic-* custom properties · display:contents",
       fix: "wrapper div 또는 부모 컨테이너 gap",
       validatorRule: "nds-host-box-style",

@@ -40,6 +40,11 @@ test("지역 경로(>)가 든 nds-chip → region-as-chip warn", () => {
   assert.equal(hit?.severity, "warn");
 });
 
+test("캐포비 admin scope 밖 지역 경로 nds-chip 은 region-as-chip 위반 아님", () => {
+  const v = validateHtmlSource(WRONG, { surface: "service", brand: "nudge-eap" });
+  assert.equal(has(v, "region-as-chip"), undefined);
+});
+
 test("region-as-chip 은 D1 layout 점수에도 반영", () => {
   const result = validateHtmlMockup({
     source: WRONG,
