@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build:manifest": "node scripts/emit-manifest.mjs",
-    "build": "pnpm run build:manifest && tsc",
+    "build": "rm -rf dist && pnpm run build:manifest && tsc",
     "start": "node dist/server.js",
     "dev": "pnpm run build:manifest && tsc --watch",
     "typecheck": "tsc --noEmit",
