@@ -31,6 +31,7 @@ import {
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
 import { createAgentsMd, createClaudeMd } from "./guides.js";
 import { ensureInspectorInMainTsx } from "./inspector-installer.js";
+import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
 
 export interface SetupContext {
   manifest: Manifest;
@@ -1432,6 +1433,7 @@ function resolveBrand(input?: string): {
  *     - "update"    → getUpdateInstructions({ source?, includeLocalPackages? })
  *     - "claude-md" → createClaudeMd({ cwd?, projectName?, overwrite?, intent? })
  *     - "agents-md" → createAgentsMd({ cwd?, projectName?, overwrite?, intent? })
+ *     - "external-starter" → CLAUDE.md + AGENTS.md + .mcp.json + 검증 루프 + 프롬프트 템플릿 한 번에
  *     - "full"      → getSetupInstructions({ ...all }) — 외부 mockup 프로젝트 셋업 전 과정
  *
  * 모든 추가 args 는 top-level optional. step 별로 사용하는 필드만 적용된다.
@@ -1443,9 +1445,90 @@ export const SETUP_STEPS = [
   "claude-md",
   "agents-md",
   "inspector",
+  "external-starter",
   "full",
 ] as const;
 export type SetupStep = (typeof SETUP_STEPS)[number];
+
+/* ───────────── external-starter (도구 중립 온보딩) ───────────── */
+
+/**
+ * MCP 서버 등록 안내 — Claude Code / Cursor / Codex 공용 .mcp.json + claude mcp add 명령.
+ * 경로는 기존 getSetupInstructions(step:'full') 의 server.js 경로와 동일 SSOT.
+ */
+function getMcpConfigSetup() {
+  const { installMode, manifest } = getCtx();
+  const serverPath = path.join(manifest.repoRoot, "packages/mcp/dist/server.js");
+  const mcpJson = JSON.stringify(
+    { mcpServers: { "nudge-ds": { command: "node", args: [serverPath] } } },
+    null,
+    2,
+  );
+  return {
+    serverPath,
+    // 프로젝트 루트 .mcp.json — Claude Code · Cursor · Codex 등 .mcp.json 규약을 읽는 도구가 공유.
+    mcpJson,
+    claudeCodeCommand: `claude mcp add nudge-ds --scope project -- node ${serverPath}`,
+    claudeDesktopNote:
+      installMode === "mcpb"
+        ? "Claude Desktop 사용자는 nudge-ds.mcpb 를 더블클릭해 한 번 설치하면 .mcp.json 없이 모든 프로젝트에서 자동 활성화됩니다."
+        : "Claude Desktop 은 nudge-ds.mcpb(Desktop Extension) 더블클릭 설치도 가능합니다.",
+    note:
+      "프로젝트 루트에 위 mcpJson 을 .mcp.json 으로 저장하면 Claude Code · Cursor · Codex 등 .mcp.json 규약을 읽는 도구가 공유합니다. " +
+      "Claude Code 만 쓰면 claudeCodeCommand 한 줄로도 등록됩니다.",
+  };
+}
+
+/** 권장 검증 루프 — validate → build → score. 외부 에이전트가 산출 직후 따라야 할 순서. */
+function getValidationLoopSummary() {
+  return [
+    {
+      step: 1,
+      tool: "validate_html_mockup({ filePath })",
+      why: "DS 토큰·간격·네이티브 요소·아이콘·패턴·active-button 위반을 정적 검사.",
+    },
+    {
+      step: 2,
+      tool: "build_singlefile_html({})",
+      why: "단일 dist/index.html 산출 — 빌드가 DS 검증 + PRD 커버리지 + usage report 를 자동 실행. DS error 가 있으면 빌드를 막는다(allowIncomplete 로만 우회).",
+    },
+    {
+      step: 3,
+      tool: "score_mockup_quality({ filePath })",
+      why: "D1(코드) + D2(정성 LLM) 품질 점수와 통과/주의/미달 verdict — 사용자에게 그대로 보여줄 카드.",
+    },
+  ];
+}
+
+/** "NDS 써서 ..." 재사용 프롬프트 템플릿. 브랜드가 캐포비면 어드민 Page-Pattern 템플릿을 덧붙인다. */
+function getNdsPromptTemplates(brand?: string) {
+  const brandSlug = canonicalBrandSlug(brand);
+  const brandClause = brandSlug ? `${brandSlug} 브랜드로 ` : "";
+  const templates = [
+    {
+      title: "화면 목업 (NDS 우선)",
+      prompt: `NDS(Nudge DS)로 ${brandClause}<화면 이름> 목업 만들어줘. 먼저 시각 레퍼런스(Figma 링크/스크린샷)부터 물어보고, find_component / get_guide 로 DS 컴포넌트를 조회해서 raw HTML 없이 <nds-*> 로 작성해줘.`,
+    },
+    {
+      title: "기능 구현 (컴포넌트·토큰 우선)",
+      prompt:
+        "이 기능을 NDS 컴포넌트로 구현해줘. find_component 로 맞는 컴포넌트를, find_token 으로 색·간격 토큰(--semantic-*)을 먼저 조회하고, 하드코딩 hex/px 없이 작성해줘.",
+    },
+    {
+      title: "검증 루프",
+      prompt:
+        "목업이 끝나면 build_singlefile_html 로 단일 파일을 산출하고 score_mockup_quality 로 품질 점수(D1+D2)까지 사용자에게 보여줘.",
+    },
+  ];
+  if (brandSlug === "cashwalk-biz") {
+    templates.push({
+      title: "캐포비 어드민 (Page Pattern 먼저)",
+      prompt:
+        "캐포비 어드민 <화면> 만들어줘. 코드 전에 recommend_page_pattern 으로 Page Pattern(Onboarding/Dashboard/List/Detail/Form)을 고르고 save_design_spec 으로 pagePattern 을 선언해 design-spec.json 을 먼저 저장한 뒤 빌드해줘. (이 단계 없으면 build_singlefile_html 이 막는다.)",
+    });
+  }
+  return templates;
+}
 
 export function getSetup(args: {
   step: string;
@@ -1530,6 +1613,47 @@ export function getSetup(args: {
       }
       const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
       return { cwd, ...ensureInspectorInMainTsx(cwd) };
+    }
+    case "external-starter": {
+      // 외부 프로젝트 도구-중립 온보딩 — CLAUDE.md + AGENTS.md + .mcp.json + 검증 루프 + 프롬프트 템플릿.
+      // 파일 생성은 기존 createClaudeMd / createAgentsMd 재사용(둘 다 nudge.brand 마커도 박는다).
+      const claudeMd = createClaudeMd({
+        cwd: args.cwd,
+        projectName: args.projectName,
+        overwrite: args.overwrite,
+        intent: args.intent,
+        brand: args.brand,
+        template: args.template,
+      });
+      const agentsMd = createAgentsMd({
+        cwd: args.cwd,
+        projectName: args.projectName,
+        overwrite: args.overwrite,
+        intent: args.intent,
+        brand: args.brand,
+        template: args.template,
+      });
+      const filesOk = claudeMd.ok === true && agentsMd.ok === true;
+      return {
+        ok: filesOk,
+        step: "external-starter",
+        intent: resolveEffectiveIntent(args.intent, args.brand),
+        brand: canonicalBrandSlug(args.brand) ?? null,
+        files: {
+          claudeMd: { ok: claudeMd.ok === true, filePath: claudeMd.filePath, error: claudeMd.error },
+          agentsMd: { ok: agentsMd.ok === true, filePath: agentsMd.filePath, error: agentsMd.error },
+        },
+        mcpConfig: getMcpConfigSetup(),
+        validationLoop: getValidationLoopSummary(),
+        promptTemplates: getNdsPromptTemplates(args.brand),
+        nextSteps: [
+          filesOk
+            ? "CLAUDE.md + AGENTS.md 생성 완료 — Claude Code 와 Codex 가 같은 DS 규칙을 읽습니다."
+            : "일부 파일이 이미 존재합니다. overwrite: true 로 다시 호출하면 덮어씁니다(files[].error 확인).",
+          "mcpConfig.mcpJson 을 프로젝트 루트 .mcp.json 으로 저장(또는 mcpConfig.claudeCodeCommand 실행)해 MCP 서버를 등록하세요.",
+          "IDE/세션을 재시작해 새 지침을 적용한 뒤 promptTemplates 의 프롬프트로 시작하세요.",
+        ],
+      };
     }
     case "full":
       if (args.mode !== "full") {

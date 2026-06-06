@@ -21,6 +21,8 @@ import {
   loadStandaloneAssets,
   listStandaloneBrands,
   canonicalBrandSlug,
+  canonicalPagePattern,
+  CASHWALK_BIZ_PAGE_PATTERNS,
   BRAND_ALIASES,
 } from "./standalone-assets.js";
 import { inlineDsAssetReferences } from "./asset-inliner.js";
@@ -32,6 +34,8 @@ import {
 import {
   NEUTRAL_SCORES,
   validateHtmlMockup,
+  readSurfaceMarker,
+  readBrandMarker,
   type ValidateHtmlMockupResult,
 } from "./html-validator.js";
 import { validatePrdCoverage, type ValidatePrdCoverageResult } from "./prd-coverage.js";
@@ -114,7 +118,9 @@ export type WorkspaceAuditRule =
   | "missing-visual-references"
   | "missing-prd-coverage"
   | "no-html-entry-found"
-  | "html-entry-has-no-nds-tag";
+  | "html-entry-has-no-nds-tag"
+  | "cashwalk-biz-admin-missing-design-spec"
+  | "cashwalk-biz-admin-missing-page-pattern";
 
 export interface WorkspaceAuditViolation {
   rule: WorkspaceAuditRule;
@@ -217,6 +223,8 @@ export async function buildSinglefileHtml(
   if (!args.skipAudit) {
     const violations = auditMockupWorkspace(cwd, intent, {
       skipVisualReferences: args.skipVisualReferences,
+      // allowIncomplete:true 면 DesignSpec-first 게이트도 명시 우회(소프트 게이트).
+      skipDesignSpec: args.allowIncomplete,
     });
     if (violations.length > 0) {
       const lines = violations.map((v) => {
@@ -1092,7 +1100,7 @@ function detectLineIndent(source: string, index: number): string {
 export function auditMockupWorkspace(
   cwd: string,
   intent?: WorkspaceIntent,
-  opts?: { skipVisualReferences?: boolean },
+  opts?: { skipVisualReferences?: boolean; skipDesignSpec?: boolean },
 ): WorkspaceAuditViolation[] {
   const resolvedIntent = intent ?? detectWorkspaceIntent(cwd);
   const violations: WorkspaceAuditViolation[] = [];
@@ -1104,6 +1112,16 @@ export function auditMockupWorkspace(
   if (!opts?.skipVisualReferences) {
     const refsViolation = auditVisualReferences(cwd);
     if (refsViolation) violations.push(refsViolation);
+  }
+
+  // DesignSpec-first 게이트 — 캐포비 어드민은 코드를 바로 만들지 말고 Page Pattern 분류부터.
+  // design-spec.json(유효 pagePattern 선언) 이 없으면 빌드를 막아 save_design_spec 을 먼저 부르게 한다.
+  // allowIncomplete(=skipDesignSpec) / skipAudit 로 명시 우회 가능한 소프트 게이트.
+  // 표면 마커(nudge.surface)는 외부 프로젝트에 없을 수 있어 brand(data-brand/nudge.brand, 신뢰성 높음)를
+  // 주 신호로 쓴다 — 캐포비는 DS 의 어드민 전용 브랜드이므로 surface=service 가 명시되지 않은 한 어드민으로 본다.
+  if (!opts?.skipDesignSpec) {
+    const dsGate = auditCashwalkBizAdminDesignSpec(cwd);
+    if (dsGate) violations.push(dsGate);
   }
 
   // React 워크플로우에서는 손글씨 .html 이 우회 패턴 — 차단.
@@ -1239,6 +1257,79 @@ function auditPrdCoverageManifest(content: string): WorkspaceAuditViolation | nu
       '<script type="application/json" data-prd-coverage>{"requirements":[{"id":"R1","requirement":"...","status":"implemented","evidence":"#selector"}]}</script> ' +
       "형식으로 남기세요. 각 evidence selector 는 실제 DOM 요소를 가리켜야 하며 validate_html_mockup 이 prd-coverage-incomplete 로 재검증합니다.",
   };
+}
+
+/**
+ * 캐포비 어드민 DesignSpec-first 게이트.
+ * 캐포비(cashwalk-biz)는 DS 의 어드민 전용 브랜드 — 어드민 화면은 코드를 바로 만들지 말고
+ * Page Pattern(Onboarding/Dashboard/List/Detail/Form) 분류부터 한다. design-spec.json 에
+ * 유효한 screen.pagePattern 이 선언돼 있지 않으면 빌드를 막아 save_design_spec 을 먼저 부르게 한다.
+ *
+ * 브랜드 신호: index.html 의 data-brand → nudge.brand 마커 (신뢰성 높음, 외부 프로젝트에도 존재).
+ * 표면 신호: nudge.surface 마커가 service 로 명시된 경우에만 게이트를 끈다 — 마커는 외부 프로젝트에
+ * 없을 수 있으므로 부재 시엔 어드민 브랜드 = 게이트 ON 으로 본다.
+ * design-spec.json 의 전체 카탈로그 검증은 validate_design_spec(MCP) 담당 — 여기선 게이트에 필요한
+ * "pagePattern 이 5종 중 하나로 선언됐는가" 만 가볍게 본다(mockup-core 는 MCP 검증기를 import 하지 않음).
+ */
+function auditCashwalkBizAdminDesignSpec(cwd: string): WorkspaceAuditViolation | null {
+  // 브랜드 — index.html data-brand 우선, 없으면 nudge.brand 마커.
+  let brandRaw: string | undefined;
+  const indexPath = path.join(cwd, "index.html");
+  if (fs.existsSync(indexPath)) {
+    try {
+      const html = fs.readFileSync(indexPath, "utf-8");
+      const m = html.match(/\bdata-brand\s*=\s*["']([^"']+)["']/i);
+      if (m) brandRaw = m[1];
+    } catch {
+      // ignore — 빌드 단계에서 어차피 잡힌다
+    }
+  }
+  if (!brandRaw) brandRaw = readBrandMarker(cwd) ?? undefined;
+  if (canonicalBrandSlug(brandRaw) !== "cashwalk-biz") return null;
+
+  // 표면 — service 로 명시된 캐포비 화면만 게이트 제외(드문 경우). admin/미선언은 게이트 ON.
+  if (readSurfaceMarker(cwd) === "service") return null;
+
+  const specPath = path.join(cwd, "design-spec.json");
+  if (!fs.existsSync(specPath)) {
+    return {
+      rule: "cashwalk-biz-admin-missing-design-spec",
+      files: [],
+      detail:
+        "캐포비 어드민 화면은 코드를 바로 만들지 말고 Page Pattern 분류부터 — design-spec.json 이 없습니다. " +
+        `recommend_page_pattern({ prd }) 으로 5종(${CASHWALK_BIZ_PAGE_PATTERNS.join(
+          " / ",
+        )}) 중 하나를 고르고, save_design_spec({ spec }) 으로 screen.pagePattern 을 선언해 design-spec.json 을 먼저 저장하세요. ` +
+        "분류를 건너뛰고 강제로 빌드하려면 build_singlefile_html({ allowIncomplete: true }) — 단 어드민 일관성이 깨질 수 있음을 사용자에게 먼저 경고하세요. " +
+        "패턴 확인: get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }).",
+    };
+  }
+
+  // design-spec.json 이 있으면 pagePattern 선언만 가볍게 확인.
+  let pagePattern: unknown;
+  try {
+    const spec = JSON.parse(fs.readFileSync(specPath, "utf-8"));
+    pagePattern = (spec as { screen?: { pagePattern?: unknown } })?.screen?.pagePattern;
+  } catch {
+    return {
+      rule: "cashwalk-biz-admin-missing-design-spec",
+      files: ["design-spec.json"],
+      detail:
+        "design-spec.json 을 JSON 으로 파싱할 수 없습니다. save_design_spec 으로 유효한 스펙을 다시 저장하세요.",
+    };
+  }
+  if (!canonicalPagePattern(typeof pagePattern === "string" ? pagePattern : undefined)) {
+    return {
+      rule: "cashwalk-biz-admin-missing-page-pattern",
+      files: ["design-spec.json"],
+      detail:
+        `design-spec.json 에 유효한 screen.pagePattern 이 없습니다(받음: ${
+          typeof pagePattern === "string" ? pagePattern : "없음"
+        }). 캐포비 어드민 5종 중 하나여야 합니다: ${CASHWALK_BIZ_PAGE_PATTERNS.join(" / ")}. ` +
+        "get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) 로 확인 후 save_design_spec 으로 다시 저장하세요.",
+    };
+  }
+  return null;
 }
 
 /**
