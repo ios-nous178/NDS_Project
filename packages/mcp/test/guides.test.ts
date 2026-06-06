@@ -30,6 +30,29 @@ describe("getGuide", () => {
       ]),
     );
   });
+
+  // 회귀: cashpobi(=cashwalk-biz 별칭) admin-cms 가이드를 호출하면 NudgeEAPCMS antd 패턴이 아니라
+  //   DS(html) 경로로 우회돼야 한다. isDsAdminBrand 가 별칭 정규화를 안 해서 brand='cashpobi' 가 새어나가
+  //   240px Sider / INFO / CMS MENU / 'Copyright Nudge EAP' 가 캐포비에 잘못 적용된 사고를 고친 케이스.
+  for (const brand of ["cashpobi", "cash-pobi", "cashwalkbiz", "cashwalk-biz"]) {
+    it(`routes admin-cms guide to DS(html) path for brand='${brand}' (no NudgeEAPCMS antd)`, () => {
+      const r = getGuide({ topic: "admin-cms", brand }) as Record<string, unknown>;
+      expect(r.intent).toBe("html");
+      expect(r.brand).toBe("cashwalk-biz");
+      // NudgeEAPCMS antd 가이드 본문(Sider/footer/searchForm 등)이 새어나오면 안 된다
+      expect(r.layout).toBeUndefined();
+      expect(r.searchForm).toBeUndefined();
+      expect((r.techStack as { forbidden?: string[] })?.forbidden).toContain("antd");
+    });
+  }
+
+  it("nudge-eap admin-cms guide warns it is NudgeEAP-only and surfaces the brand exception", () => {
+    const r = getGuide({ topic: "admin-cms" }) as Record<string, unknown>;
+    expect(r.intent).toBe("admin-cms");
+    // 캐포비 사용자가 brand 없이 호출해도 '대상 브랜드 먼저 확인' 경고가 상단에 보여야 한다
+    expect(r["⚠ 브랜드 확인 먼저"]).toBeTypeOf("string");
+    expect(String(r.note)).toContain("캐포비");
+  });
 });
 
 describe("getGuide aspects (selective principle loading)", () => {
