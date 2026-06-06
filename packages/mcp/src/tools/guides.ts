@@ -1249,9 +1249,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ## 시각 컨벤션 (NudgeEAPCMS 기반)
 
-- **사이더**: 240px 라이트, \`border-right: 1px solid #ececec\`, 상단 6px 브랜드 액센트(#2B96ED)
+- **사이더**: 240px 라이트, \`border-right: 1px solid #ececec\`, 상단 6px 브랜드 액센트(\`var(--semantic-border-brand-default)\`)
 - **사이더 내부**: \`INFO\` 블록(이메일+이름 Tag+권한 Tag) → \`CMS MENU\` 블록(<Menu theme="light" mode="inline">) → \`SETTING\` 블록(로그아웃/정보수정)
-- **메뉴 선택**: \`border-right: 6px solid #2B96ED\`
+- **메뉴 선택**: \`border-right: 6px solid var(--semantic-border-brand-default)\`
 - **본문**: \`margin-left: 240px\`, \`padding: 40px 60px 200px\`
 - **body bg**: \`#f4f4f4\`, **font**: \`Mulish, Gothic_A1, 'Malgun Gothic', '맑은 고딕'\`
 - **HeaderSubject**: Breadcrumb \`separator=">"\` + h1 22/700 #383838 + desc 12/#6b6a6a + \`border-bottom: 1px solid #e4e4e4\`

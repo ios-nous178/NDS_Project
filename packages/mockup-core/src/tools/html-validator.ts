@@ -9,6 +9,7 @@
  *  - inline-spacing       : style="" 의 px/rem (transform 류 제외)
  *  - non-4pt-spacing      : 4 의 배수 아닌 px 값
  *  - non-semantic-spacing : style 의 padding/margin/gap 이 var(--spacing-*) 직접 사용
+ *  - nds-host-box-style   : <nds-*> 호스트(display:contents)에 직접 준 box 스타일(margin/padding/width/flex…) — 드롭됨, wrapper/부모 gap 으로
  *  - gradient-banned      : linear/radial/conic-gradient
  *  - emoji-banned         : 이모지 텍스트
  *  - text-symbol-banned   : → ✓ ★ • 같은 기호 텍스트
@@ -166,8 +167,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   // UTF-8 한글을 Latin-1/unicode_escape 로 잘못 디코딩 → 모지바케(Ã/ë…). 깨진 JSON 도 파싱은 되므로
   // nds-json-attr-unparseable 로는 안 잡힘 (회귀: 사이드바 한글 전부 깨짐 + 로고 유실)
   "mojibake-encoding": "error",
-  // 선택한 지역(시/도 > 시/군/구)을 Chip 으로 인라인 표현 — SelectionButton 과 혼동 + 제거/개수
-  // affordance 누락. SelectedItemsPanel + RegionRow 로 그려야 함 (회귀: 캐포비 타겟팅 폼)
+  // 선택 결과(지역/카테고리/멤버 등)를 Chip 으로 인라인 표현 — SelectionButton 과 혼동 + 제거/개수
+  // affordance 누락. SelectedItemsPanel + SelectedItemRow 로 그려야 함 (회귀: 캐포비 타겟팅 폼)
   "region-as-chip": "warn",
   // SelectedItemsPanel 바로 아래 helper 텍스트를 sibling 으로 붙이면 패널과 helper 가 붙어 보임.
   // FormField helper 슬롯/속성으로 넣어 control gap 을 타게 해야 함 (회귀: 캐포비 타겟팅 폼).
@@ -181,19 +182,19 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "amount-as-text-input": "warn",
   // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
   "amount-as-static-display": "warn",
-  // 지역 선택 add 어포던스 중복(외부 '지역 추가' + 패널 '추가 선택') — 모달 1개로 통일해야 함.
+  // 선택 결과 add 어포던스 중복(외부 추가 + 패널 '추가 선택') — 모달 1개로 통일해야 함.
   // 가이드(SelectedItemsPanel 3641)가 "검증룰이 막음"이라 명시한 회귀이고, 현장에서 재발("또 두개
   // 노출")했으므로 warn→error 로 승격해 빌드 게이트가 실제로 막게 함.
-  "region-add-affordance-duplicated": "error",
-  // SelectedItemsPanel 안에 같은 지역 행이 중복 — 선택 결과는 유니크해야 함
-  "region-row-duplicated": "warn",
-  // nds-region-row 가 nds-selected-items-panel 밖에 sibling 으로 떨어짐 — 패널 body 의 gap(8)을
-  // 못 타서 행끼리 간격 없이 붙고 회색 패널 밖에 렌더된다(회귀: 캐포비 타겟팅 '지역 추가' 후 누적분이
+  "selected-item-add-affordance-duplicated": "error",
+  // SelectedItemsPanel 안에 같은 선택 항목이 중복 — 선택 결과는 유니크해야 함
+  "selected-item-row-duplicated": "warn",
+  // nds-selected-item-row / nds-region-row 가 nds-selected-items-panel 밖에 sibling 으로 떨어짐 — 패널 body 의 gap(8)을
+  // 못 타서 행끼리 간격 없이 붙고 회색 패널 밖에 렌더된다(회귀: 캐포비 타겟팅 추가 후 누적분이
   // 패널 밖으로 샘). 갱신은 패널 body 안 자식만 교체해야 함.
-  "region-row-outside-panel": "warn",
-  // 지역 선택 모달(시/도+시/군/구)인데 우측 SelectedItemsPanel 이 빠짐 — 단순 2컬럼 팝오버로 떴음.
+  "selected-item-row-outside-panel": "warn",
+  // 선택 모달(시/도+시/군/구)인데 우측 SelectedItemsPanel 이 빠짐 — 단순 2컬럼 팝오버로 떴음.
   // 정답은 대형 2단 모달(좌 검색+체크박스 트리 / 우 SelectedItemsPanel hide-add + 풀폭 '적용').
-  "region-picker-modal-missing-panel": "warn",
+  "selected-items-modal-missing-panel": "warn",
   "unknown-token": "error",
   "ds-badge-missing": "error",
   // 토큰 / 시멘틱
@@ -201,6 +202,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "inline-spacing": "warn",
   "non-4pt-spacing": "warn",
   "non-semantic-spacing": "warn",
+  // nds-* 호스트(display:contents)에 직접 준 box 스타일 — 브라우저가 드롭(딱 붙음/여백 사라짐 근본원인)
+  "nds-host-box-style": "warn",
   // 금지 패턴
   "gradient-banned": "error",
   "emoji-banned": "error",
@@ -464,6 +467,28 @@ function checkStyleString(
   }
 }
 
+/**
+ * nds-* 호스트(display:contents)에 직접 준 box/layout inline 스타일 프로퍼티명을 반환.
+ * display:contents 는 호스트 박스를 없애므로 아래 프로퍼티는 브라우저가 전부 드롭한다.
+ * 허용: --nds-* / --semantic-* 커스텀 프로퍼티(슬롯·토큰 전달), display(:contents / :none 등 의도적 토글).
+ * 제외 태그: display:contents 를 안 쓰는 소수 컴포넌트.
+ */
+const HOST_CONTENTS_EXEMPT_TAGS = new Set(["nds-brand-chrome", "nds-input-group", "nds-inspector"]);
+const HOST_DROPPED_PROP =
+  /^(?:margin|padding|width|height|min-width|max-width|min-height|max-height|flex|align-self|justify-self|gap|row-gap|column-gap|background|border|box-shadow|position|top|right|bottom|left|transform|overflow)(?:-[a-z]+)*$/;
+
+function ndsHostBoxStyleProps(tag: string, style: string): string[] {
+  if (!tag.startsWith("nds-")) return [];
+  if (HOST_CONTENTS_EXEMPT_TAGS.has(tag)) return [];
+  const found: string[] = [];
+  for (const decl of style.split(";")) {
+    const prop = decl.split(":")[0]?.trim().toLowerCase();
+    if (!prop || prop.startsWith("--")) continue; // 커스텀 프로퍼티는 허용
+    if (HOST_DROPPED_PROP.test(prop) && !found.includes(prop)) found.push(prop);
+  }
+  return found;
+}
+
 function describeElement(el: DomElement): string {
   const tag = el.tagName;
   const cls = (el.attribs?.class ?? "").split(/\s+/).filter(Boolean).slice(0, 2);
@@ -607,6 +632,21 @@ export function validateHtmlSource(
     // 1. style="..." 검사
     if (attrs.style) {
       checkStyleString(attrs.style, line, selector, ctx, violations);
+      // 1-bis. nds-* 호스트는 display:contents (light-DOM 미러) — 호스트에 직접 준 box 스타일은
+      //   브라우저가 전부 드롭한다(margin/padding/width/flex/gap/background…). '컴포넌트 딱 붙음 /
+      //   모달 헤더 사라짐 / 여백 사라짐' 의 단일 근본 원인. 간격·크기는 wrapper div 또는 부모 gap 으로.
+      //   가이드: get_guide({ topic: 'pattern:host-spacing' }).
+      const droppedProps = ndsHostBoxStyleProps(tag, attrs.style);
+      if (droppedProps.length > 0) {
+        violations.push({
+          rule: "nds-host-box-style",
+          line,
+          selector,
+          detail: `<${tag}> 호스트에 ${droppedProps.join(" / ")} — display:contents 라 무시됨`,
+          suggestion:
+            "nds-* 호스트는 display:contents 라 박스 스타일이 안 먹는다. 일반 <div> 로 감싸 wrapper 에 주거나(간격), 부모 컨테이너를 flex/grid 로 만들어 gap(var(--semantic-gap-*))으로 띄울 것. 호스트엔 --nds-*/--semantic-* 변수만 허용. get_guide({ topic: 'pattern:host-spacing' }).",
+        });
+      }
     }
 
     // 2. native interactive 가 nds-* 태그 / 클래스 없이 사용
@@ -1517,8 +1557,8 @@ function collectDocumentLevelViolations(
     });
   }
 
-  // region-as-chip: 지역 경로(시/도 > 시/군/구)가 든 Chip = 선택한 지역을 Chip 으로 잘못 표현한 신호.
-  //   캐포비 타겟팅 폼의 '특정 지역' 결과는 SelectedItemsPanel + RegionRow 로 그려야 한다 — 노란
+  // region-as-chip: 지역 경로(시/도 > 시/군/구)가 든 Chip = 선택한 결과를 Chip 으로 잘못 표현한 신호.
+  //   캐포비 타겟팅 폼의 '특정 지역' 결과는 SelectedItemsPanel + SelectedItemRow 로 그려야 한다 — 노란
   //   outlined 칩은 SelectionButton 과 혼동되고 '추가 선택/선택 해제'·개수 강조·개별 제거가 빠진다.
   $("nds-chip").each((_i, el) => {
     const txt = $(el).text().replace(/\s+/g, " ").trim();
@@ -1529,7 +1569,7 @@ function collectDocumentLevelViolations(
       selector: describeElement(el as unknown as DomElement),
       detail: `선택한 지역으로 보이는 항목("${txt.slice(0, 32)}")을 <nds-chip> 으로 표현했습니다 — 지역 경로(시/도 > 시/군/구)는 Chip 자리가 아닙니다.`,
       suggestion:
-        "동적 다중 선택 결과(지역/카테고리)는 <nds-selected-items-panel> + <nds-region-row> 로 그릴 것 (회색 패널 · '+ 지역 추가' · 개별 제거 X · 개수 강조). 노란 outlined Chip 은 SelectionButton 과 혼동됨. get_guide({ topic: 'component:SelectedItemsPanel' }). Figma 3001:49174.",
+        "동적 다중 선택 결과(지역/카테고리)는 <nds-selected-items-panel> + <nds-selected-item-row> 로 그릴 것 (회색 패널 · '+ 추가' · 개별 제거 X · 개수 강조). 노란 outlined Chip 은 SelectionButton 과 혼동됨. get_guide({ topic: 'component:SelectedItemsPanel' }). Figma 3001:49174.",
     });
   });
 
@@ -1558,22 +1598,22 @@ function collectDocumentLevelViolations(
     });
   });
 
-  // region-add-affordance-duplicated: 지역 선택에 add 어포던스가 2개 이상
-  //   (외부 점선 '+ 지역 추가' 버튼 + SelectedItemsPanel '추가 선택'). 추가는 패널 onAdd 한 곳으로 통일.
+  // selected-item-add-affordance-duplicated: 선택 결과 add 어포던스가 2개 이상
+  //   (외부 점선 '+ 추가' 버튼 + SelectedItemsPanel '추가 선택'). 추가는 패널 onAdd 한 곳으로 통일.
   //   (회귀: 캐포비 타겟팅 폼 — 모달이 안 뜨고 중복 add UI. 현장 재발 '또 두개 노출'.)
   //   ★ 패널의 '추가 선택' 은 웹컴포넌트가 런타임에 렌더하므로 정적 텍스트엔 안 나온다 — hide-add 없는
   //     페이지 패널을 '암묵적 add 어포던스' 로 세고, nds-add-button 은 label 속성으로도 매칭한다.
-  const RE_REGION_ADD = /^\+?\s*(지역\s*추가(하기)?|추가\s*선택|선택\s*추가)$/;
-  const matchesRegionAdd = ($el: ReturnType<typeof $>): boolean => {
+  const RE_SELECTED_ITEM_ADD = /^\+?\s*((지역|항목|선택\s*결과)\s*추가(하기)?|추가\s*선택|선택\s*추가)$/;
+  const matchesSelectedItemAdd = ($el: ReturnType<typeof $>): boolean => {
     const t = $el.text().replace(/\s+/g, " ").trim();
     const label = ($el.attr("label") ?? "").replace(/\s+/g, " ").trim();
-    return RE_REGION_ADD.test(t) || RE_REGION_ADD.test(label);
+    return RE_SELECTED_ITEM_ADD.test(t) || RE_SELECTED_ITEM_ADD.test(label);
   };
-  // 패널 '밖' 의 명시 add 어포던스(별도 '지역 추가' 버튼 등) — 패널 자체 add 와 별개 경로.
+  // 패널 '밖' 의 명시 add 어포던스(별도 추가 버튼 등) — 패널 자체 add 와 별개 경로.
   const externalAdds = $("button, nds-button, nds-add-button, a, [role='button']")
     .filter(
       (_i, el) =>
-        matchesRegionAdd($(el)) &&
+        matchesSelectedItemAdd($(el)) &&
         $(el).closest("nds-selected-items-panel, .nds-selected-items-panel").length === 0,
     )
     .toArray() as unknown as DomElement[];
@@ -1586,7 +1626,7 @@ function collectDocumentLevelViolations(
       return (
         $(el)
           .find("button, nds-button, nds-add-button, [role='button']")
-          .filter((_j, b) => matchesRegionAdd($(b))).length > 0
+          .filter((_j, b) => matchesSelectedItemAdd($(b))).length > 0
       );
     })
     .toArray() as unknown as DomElement[];
@@ -1596,58 +1636,58 @@ function collectDocumentLevelViolations(
     const marker = externalAdds[externalAdds.length - 1] ?? externalAdds[0];
     const total = externalAdds.length + panelAdds.length;
     out.push({
-      rule: "region-add-affordance-duplicated",
+      rule: "selected-item-add-affordance-duplicated",
       line: marker
         ? lineNumberAt(source, (marker as unknown as { startIndex?: number }).startIndex ?? 0)
         : 1,
       selector: marker ? describeElement(marker) : undefined,
-      detail: `지역 추가 어포던스가 ${total}개입니다(패널 '추가 선택'${panelAdds.length ? "(컴포넌트 렌더)" : ""} + 패널 밖 '지역 추가' 등) — 추가 경로가 중복됩니다.`,
+      detail: `선택 결과 추가 어포던스가 ${total}개입니다(패널 '추가 선택'${panelAdds.length ? "(컴포넌트 렌더)" : ""} + 패널 밖 별도 추가 등) — 추가 경로가 중복됩니다.`,
       suggestion:
-        "지역 추가는 SelectedItemsPanel 의 onAdd(=모달 열기) 한 곳으로 통일하세요. 패널 밖 별도 '지역 추가'(nds-add-button) 버튼을 또 두지 말 것. '추가 선택' 클릭 → 2단 모달(좌: 검색+체크박스 트리, 우: SelectedItemsPanel hide-add) → 풀폭 '적용'. get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
+        "추가는 SelectedItemsPanel 의 onAdd(=모달 열기) 한 곳으로 통일하세요. 패널 밖 별도 추가 버튼(nds-add-button)을 또 두지 말 것. '추가 선택' 클릭 → 2단 모달(좌: 검색+체크박스 트리, 우: SelectedItemsPanel hide-add) → 풀폭 '적용'. get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
     });
   }
 
-  // region-row-duplicated: SelectedItemsPanel 안 같은 지역 행이 중복.
+  // selected-item-row-duplicated: SelectedItemsPanel 안 같은 선택 항목이 중복.
   $("nds-selected-items-panel, .nds-selected-items-panel").each((_p, panel) => {
     const seen = new Set<string>();
     $(panel)
-      .find("nds-region-row, .nds-region-row")
+      .find("nds-selected-item-row, .nds-selected-item-row, nds-region-row, .nds-region-row")
       .each((_r, row) => {
         const t = $(row).text().replace(/\s+/g, " ").trim();
         if (!t) return;
         if (seen.has(t)) {
           out.push({
-            rule: "region-row-duplicated",
+            rule: "selected-item-row-duplicated",
             line: lineNumberAt(source, (row as unknown as { startIndex?: number }).startIndex ?? 0),
             selector: describeElement(row as unknown as DomElement),
-            detail: `선택한 지역 "${t.slice(0, 24)}" 이(가) 패널에 중복으로 들어 있습니다.`,
+            detail: `선택 항목 "${t.slice(0, 24)}" 이(가) 패널에 중복으로 들어 있습니다.`,
             suggestion:
-              "선택 결과는 유니크해야 합니다 — 같은 지역을 두 번 추가하지 마세요(추가 시 중복 제거). get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
+              "선택 결과는 유니크해야 합니다 — 같은 항목을 두 번 추가하지 마세요(추가 시 중복 제거). get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
           });
         }
         seen.add(t);
       });
   });
 
-  // region-row-outside-panel: nds-region-row 가 패널 밖 sibling 으로 떨어짐.
-  //   (회귀: '지역 추가' 후 누적되는 행을 패널 body 가 아니라 패널 다음 sibling 으로 append → 패널
+  // selected-item-row-outside-panel: nds-selected-item-row / nds-region-row 가 패널 밖 sibling 으로 떨어짐.
+  //   (회귀: 추가 후 누적되는 행을 패널 body 가 아니라 패널 다음 sibling 으로 append → 패널
   //   body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고, 회색 surface.subtle 패널 밖에 렌더된다.
-  //   가이드 SelectedItemsPanel: 갱신은 body 의 nds-region-row 자식만 교체.)
-  $("nds-region-row, .nds-region-row").each((_i, el) => {
+  //   가이드 SelectedItemsPanel: 갱신은 body 의 selected-item-row 자식만 교체.)
+  $("nds-selected-item-row, .nds-selected-item-row, nds-region-row, .nds-region-row").each((_i, el) => {
     if (el.type !== "tag") return;
     if ($(el).closest("nds-selected-items-panel, .nds-selected-items-panel").length > 0) return;
     out.push({
-      rule: "region-row-outside-panel",
+      rule: "selected-item-row-outside-panel",
       line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
       selector: describeElement(el as unknown as DomElement),
       detail:
-        "RegionRow 가 SelectedItemsPanel 밖에 있습니다 — 패널 body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고, 회색 패널 밖에 렌더됩니다.",
+        "SelectedItemRow 가 SelectedItemsPanel 밖에 있습니다 — 패널 body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고, 회색 패널 밖에 렌더됩니다.",
       suggestion:
-        "선택한 지역 행은 <nds-selected-items-panel> 의 자식(body)으로 넣으세요. 항목을 추가할 때 패널 다음 sibling 으로 append 하지 말고 패널 body 안 nds-region-row 자식만 교체할 것(헤더/개수는 컴포넌트 chrome). get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
+        "선택 항목 행은 <nds-selected-items-panel> 의 자식(body)으로 넣으세요. 항목을 추가할 때 패널 다음 sibling 으로 append 하지 말고 패널 body 안 nds-selected-item-row 자식만 교체할 것(헤더/개수는 컴포넌트 chrome). get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
     });
   });
 
-  // region-picker-modal-missing-panel: 지역 선택 모달(시/도 + 시/군/구)인데 우측 SelectedItemsPanel 이 없음.
+  // selected-items-modal-missing-panel: 선택 모달(시/도 + 시/군/구)인데 우측 SelectedItemsPanel 이 없음.
   //   (회귀: 캐포비 '지역 추가' 클릭 → 정답은 2단 모달[좌 검색+체크박스 트리 / 우 SelectedItemsPanel
   //   hide-add + 풀폭 '적용']인데, 단순 2컬럼 팝오버[시/도 | 시/군/구]로 작게 떠 우측 선택결과 패널이
   //   통째 빠진 채 렌더됨. dimensions.selectionModal SSOT.)
@@ -1655,16 +1695,16 @@ function collectDocumentLevelViolations(
     if (el.type !== "tag") return;
     const $m = $(el);
     const txt = $m.text().replace(/\s+/g, " ");
-    if (!(/시\/도/.test(txt) && /시\/군\/구/.test(txt))) return; // 지역 선택 모달 시그니처
+    if (!(/시\/도/.test(txt) && /시\/군\/구/.test(txt))) return; // 선택 모달 시그니처
     if ($m.find("nds-selected-items-panel, .nds-selected-items-panel").length > 0) return; // 우측 패널 있으면 정답
     out.push({
-      rule: "region-picker-modal-missing-panel",
+      rule: "selected-items-modal-missing-panel",
       line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
       selector: describeElement(el as unknown as DomElement),
       detail:
-        "지역 선택 모달(시/도 · 시/군/구)에 우측 SelectedItemsPanel(선택한 N개 · 선택 해제 · 제거 가능 리스트)이 없습니다 — 단순 2컬럼 팝오버로 떴습니다.",
+        "선택 모달(시/도 · 시/군/구)에 우측 SelectedItemsPanel(선택한 N개 · 선택 해제 · 제거 가능 리스트)이 없습니다 — 단순 2컬럼 팝오버로 떴습니다.",
       suggestion:
-        "지역 선택은 대형 2단 모달입니다(width~960 · 2컬럼): 좌 = 검색 input + '전체 선택' + 시/도▸시/군/구 체크박스 트리(선택=옐로우 체크), 우 = <nds-selected-items-panel hide-add>(선택한 N개 + 선택 해제 + 제거 가능 RegionRow), 풋터 = 풀폭 옐로우 '적용'. get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) ⑥ 선택/피커 모달 · component:SelectedItemsPanel 참조.",
+        "선택은 대형 2단 모달입니다(width~960 · 2컬럼): 좌 = 검색 input + '전체 선택' + 시/도▸시/군/구 체크박스 트리(선택=옐로우 체크), 우 = <nds-selected-items-panel hide-add>(선택한 N개 + 선택 해제 + 제거 가능 SelectedItemRow), 풋터 = 풀폭 옐로우 '적용'. get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) ⑥ 선택/피커 모달 · component:SelectedItemsPanel 참조.",
     });
   });
 
@@ -2064,6 +2104,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "inline-spacing": "spacing",
   "non-4pt-spacing": "spacing",
   "non-semantic-spacing": "spacing",
+  "nds-host-box-style": "spacing",
   "card-slot-double-padding": "spacing",
   // layout (layout-structure): 카드 중첩·CTA 위계·칩 과다·장식
   "cashwalk-biz-sidebar-shell": "layout",
@@ -2077,8 +2118,10 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "primary-cta-overuse": "layout",
   "chip-overuse": "layout",
   "region-as-chip": "layout",
-  "region-add-affordance-duplicated": "layout",
-  "region-row-duplicated": "layout",
+  "selected-item-add-affordance-duplicated": "layout",
+  "selected-item-row-duplicated": "layout",
+  "selected-item-row-outside-panel": "layout",
+  "selected-items-modal-missing-panel": "layout",
   "selected-items-helper-outside-form-field": "layout",
   "card-everything": "layout",
   "decorative-shadow": "layout",
