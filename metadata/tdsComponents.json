@@ -76,7 +76,7 @@
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/bottom-info/",
       "nds": null,
-      "ndsNote": "TDS 의 보조 문구 하단 영역 — NDS 에는 명시 컴포넌트 없음 (Banner / TipCard 로 대체).",
+      "ndsNote": "TDS 의 보조 문구 하단 영역 — NDS 에는 명시 컴포넌트 없음 (Banner / NoticeAlert 로 대체).",
       "figmaByBrand": {}
     },
     {
@@ -407,7 +407,7 @@
       "platforms": ["mobile"],
       "category": "domain",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Agreement/v4/",
-      "nds": "ConsentChecklist",
+      "nds": "CheckboxGroup",
       "figmaByBrand": {}
     },
     {
@@ -450,8 +450,8 @@
       "platforms": ["mobile", "rn"],
       "category": "content",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/post/",
-      "nds": "TitleBlock",
-      "ndsNote": "Post = 줄글 포스트 스타일. NDS TitleBlock + 본문 조합으로 대체.",
+      "nds": "TitleGroup",
+      "ndsNote": "Post = 줄글 포스트 스타일. NDS TitleGroup + 본문 조합으로 대체.",
       "figmaByBrand": {}
     },
     {

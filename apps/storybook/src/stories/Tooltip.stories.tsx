@@ -14,7 +14,7 @@ import { CashwalkBizQuestionIcon } from "@nudge-design/icons";
  * 단 (a) 사용자의 응답/결정이 필요하거나 (b) 한 화면을 채울 만큼 길면 Modal 을 쓸 것 — Tooltip 은 hover 보조 안내.
  */
 const meta: Meta<typeof Tooltip> = {
-  title: "Components/Tooltip",
+  title: "Components/Overlay/Tooltip",
   component: Tooltip,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -65,7 +65,7 @@ export const Playground: Story = {
 /* ─── 2. 짧은 힌트 (단일/두 줄) ─── */
 
 export const ShortHint: Story = {
-  name: "짧은 힌트 (자동 줄바꿈)",
+  name: "Variant/짧은 힌트 (자동 줄바꿈)",
   render: () => (
     <Frame>
       <Tooltip
@@ -82,7 +82,7 @@ export const ShortHint: Story = {
 /* ─── 3. 리치 안내 (제목 + 불릿) — 캐포비 권한 안내 ─── */
 
 export const RichContent: Story = {
-  name: "리치 안내 (제목+불릿)",
+  name: "Variant/리치 안내 (제목+불릿)",
   parameters: {
     docs: {
       description: {
@@ -120,7 +120,7 @@ export const RichContent: Story = {
 /* ─── 4. Placement 4종 ─── */
 
 export const Placements: Story = {
-  name: "Placement (top/bottom/left/right)",
+  name: "Variant/Placement (top/bottom/left/right)",
   render: () => (
     <div
       style={{

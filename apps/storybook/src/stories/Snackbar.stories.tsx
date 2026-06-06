@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, within } from "storybook/test";
 import { Snackbar } from "@nudge-design/react";
+import { getComponentDocsDescription } from "../componentDocs";
+import { createInteractionUser } from "./interactionTest";
+
+const { Provider: SnackbarProvider, useSnackbar } = Snackbar;
 
 const meta: Meta<typeof Snackbar> = {
-  title: "Components/Snackbar",
+  title: "Components/Feedback/Snackbar",
   component: Snackbar,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: {
+    layout: "padded",
+    docs: {
+      description: {
+        component: getComponentDocsDescription("Snackbar"),
+      },
+    },
+  },
   argTypes: {
     variant: { control: "radio", options: [undefined, "info", "success", "warning", "error"] },
     closable: { control: "boolean" },
@@ -17,31 +29,14 @@ const meta: Meta<typeof Snackbar> = {
 export default meta;
 type Story = StoryObj<typeof Snackbar>;
 
+/* ─── Inline (declarative) ─── */
+
 export const Playground: Story = {
   render: (args) => (
     <div style={{ width: 480 }}>
       <Snackbar {...args} />
     </div>
   ),
-};
-
-export const WithAction: Story = {
-  name: "Recipe/액션 버튼 (되돌리기)",
-  render: function Render() {
-    const [count, setCount] = useState(0);
-    return (
-      <div
-        style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
-      >
-        <Snackbar
-          title="감정 기록을 삭제했어요"
-          actionLabel="되돌리기"
-          onAction={() => setCount((c) => c + 1)}
-        />
-        <small>되돌리기 클릭: {count}회</small>
-      </div>
-    );
-  },
 };
 
 export const Variants: Story = {
@@ -68,6 +63,25 @@ export const Variants: Story = {
   ),
 };
 
+export const WithAction: Story = {
+  name: "Recipe/액션 버튼 (되돌리기)",
+  render: function Render() {
+    const [count, setCount] = useState(0);
+    return (
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
+      >
+        <Snackbar
+          title="감정 기록을 삭제했어요"
+          actionLabel="되돌리기"
+          onAction={() => setCount((c) => c + 1)}
+        />
+        <small>되돌리기 클릭: {count}회</small>
+      </div>
+    );
+  },
+};
+
 export const Closable: Story = {
   name: "State/닫기 버튼",
   render: function Render() {
@@ -80,4 +94,237 @@ export const Closable: Story = {
 export const DescriptionOnly: Story = {
   name: "Recipe/설명 없이",
   render: () => <Snackbar title="복사됐어요" />,
+};
+
+/* ─── Triggered (inline, 부모가 표시 통제) ─── */
+
+export const Triggered: Story = {
+  name: "Recipe/버튼 클릭 후 노출 (인라인)",
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 480 }}>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          style={triggerButton}
+        >
+          Snackbar 토글
+        </button>
+        {open && (
+          <Snackbar
+            title="변경사항이 저장됐어요"
+            description="방금 수정한 내용이 반영되었습니다."
+            closable
+            onClose={() => setOpen(false)}
+          />
+        )}
+      </div>
+    );
+  },
+};
+
+/* ─── Provider (자동 사라짐·포지셔닝·단일교체) ─── */
+
+function ManagedDefaultExample() {
+  const { snackbar } = useSnackbar();
+  return (
+    <button type="button" style={triggerButton} onClick={() => snackbar("변경사항이 저장됐어요")}>
+      Snackbar 표시
+    </button>
+  );
+}
+
+export const Managed: Story = {
+  name: "Variant/클릭 후 노출 (자동 사라짐)",
+  render: () => (
+    <SnackbarProvider position="bottom">
+      <ManagedDefaultExample />
+    </SnackbarProvider>
+  ),
+};
+
+function ManagedActionExample() {
+  const { snackbar } = useSnackbar();
+  return (
+    <button
+      type="button"
+      style={triggerButton}
+      onClick={() =>
+        snackbar("감정 기록을 삭제했어요", {
+          action: { label: "되돌리기", onClick: () => alert("되돌리기 실행") },
+        })
+      }
+    >
+      액션 Snackbar
+    </button>
+  );
+}
+
+export const ManagedWithAction: Story = {
+  name: "Variant/With Action (되돌리기)",
+  render: () => (
+    <SnackbarProvider position="bottom" duration={6000}>
+      <ManagedActionExample />
+    </SnackbarProvider>
+  ),
+};
+
+function ManagedErrorActionExample() {
+  const { snackbar } = useSnackbar();
+  return (
+    <button
+      type="button"
+      style={triggerButton}
+      onClick={() =>
+        snackbar("저장에 실패했습니다", {
+          variant: "error",
+          action: { label: "다시 시도", onClick: () => alert("재시도 실행") },
+        })
+      }
+    >
+      에러 + 액션 Snackbar
+    </button>
+  );
+}
+
+export const ManagedErrorWithAction: Story = {
+  name: "Variant/Error With Action (다시 시도)",
+  render: () => (
+    <SnackbarProvider position="bottom" duration={6000}>
+      <ManagedErrorActionExample />
+    </SnackbarProvider>
+  ),
+};
+
+/* ─── Cashwalk for Business: 흰 카드 · 우측 상단 · 단일 교체 ─── */
+
+function CashbizSnackbarInner() {
+  const { snackbar } = useSnackbar();
+  return (
+    <div style={{ display: "flex", gap: "var(--semantic-gap-default)", flexWrap: "wrap" }}>
+      <button type="button" style={triggerButton} onClick={() => snackbar("변경사항이 저장됐어요")}>
+        Default
+      </button>
+      <button
+        type="button"
+        style={triggerButton}
+        onClick={() => snackbar("저장 완료", { variant: "success" })}
+      >
+        Success
+      </button>
+      <button
+        type="button"
+        style={triggerButton}
+        onClick={() =>
+          snackbar("네트워크 오류로 중단되었습니다. 다시 시도해 주세요", {
+            variant: "error",
+            duration: 5000,
+            action: { label: "다시 시도", onClick: () => alert("재시도") },
+          })
+        }
+      >
+        Error
+      </button>
+      <button
+        type="button"
+        style={triggerButton}
+        onClick={() => snackbar("이미 추가된 이메일 주소입니다", { variant: "warning" })}
+      >
+        Warning
+      </button>
+      <button
+        type="button"
+        style={triggerButton}
+        onClick={() => snackbar("새 소식이 있습니다", { variant: "info" })}
+      >
+        Info
+      </button>
+    </div>
+  );
+}
+
+/**
+ * 캐포비 admin Snackbar — **흰 카드**(흰 배경 + 그림자 + radius 8) · 우측 상단 고정(`position="top-right"`)
+ * · 동시 1개(`maxCount={1}`, 새 알림이 기존 교체) · status 칩 아이콘 + 닫기 X. 흰 카드/검정 메시지는
+ * `data-brand="cashwalk-biz"` cascade + `brand="cashwalk-biz"`(칩 아이콘)로 적용된다.
+ * 기존 캐포비 "토스트"였던 5개 state(Default/Success/Error/Warning/Info)가 Snackbar 로 이관됐다.
+ */
+export const CashbizTopRight: Story = {
+  name: "Brand/Cashbiz Top-Right (흰 카드 · Single)",
+  globals: { brand: "cashwalk-biz" },
+  render: () => (
+    <SnackbarProvider position="top-right" maxCount={1} brand="cashwalk-biz" duration={5000}>
+      <CashbizSnackbarInner />
+    </SnackbarProvider>
+  ),
+};
+
+/* ─── Interaction Tests (docs 개요에서 바로 테스트) ─── */
+
+export const TriggeredInteraction: Story = {
+  name: "Interaction/인라인 클릭 노출",
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <div>
+        <button type="button" style={triggerButton} onClick={() => setOpen(true)}>
+          Snackbar 열기
+        </button>
+        {open && <Snackbar title="변경사항이 저장됐어요" closable onClose={() => setOpen(false)} />}
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = createInteractionUser();
+    await user.click(canvas.getByRole("button", { name: "Snackbar 열기" }));
+    await expect(canvas.getByText("변경사항이 저장됐어요")).toBeInTheDocument();
+  },
+};
+
+export const ManagedInteraction: Story = {
+  name: "Interaction/Provider 클릭 노출",
+  render: () => (
+    <SnackbarProvider position="bottom">
+      <ManagedDefaultExample />
+    </SnackbarProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = createInteractionUser();
+    await user.click(canvas.getByRole("button", { name: "Snackbar 표시" }));
+    await expect(within(document.body).getByText("변경사항이 저장됐어요")).toBeInTheDocument();
+  },
+};
+
+export const ManagedActionInteraction: Story = {
+  name: "Interaction/Provider 액션 버튼",
+  render: () => (
+    <SnackbarProvider position="bottom" duration={6000}>
+      <ManagedActionExample />
+    </SnackbarProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = createInteractionUser();
+    await user.click(canvas.getByRole("button", { name: "액션 Snackbar" }));
+    await expect(within(document.body).getByText("감정 기록을 삭제했어요")).toBeInTheDocument();
+    await expect(
+      within(document.body).getByRole("button", { name: "되돌리기" }),
+    ).toBeInTheDocument();
+  },
+};
+
+/* ─── styles ─── */
+
+const triggerButton: React.CSSProperties = {
+  alignSelf: "flex-start",
+  height: 36,
+  padding: "0 12px",
+  borderRadius: 8,
+  border: "1px solid #D8D8D8",
+  background: "#FFF",
+  font: "inherit",
+  cursor: "pointer",
 };

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { FilterBar } from "@nudge-design/react";
 
 const meta: Meta<typeof FilterBar> = {
-  title: "Components/FilterBar",
+  title: "Components/Navigation/FilterBar",
   component: FilterBar,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

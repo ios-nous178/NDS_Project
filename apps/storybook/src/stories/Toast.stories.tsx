@@ -8,7 +8,7 @@ import { createInteractionUser } from "./interactionTest";
 const { Provider: ToastProvider, useToast } = Toast;
 
 const meta: Meta = {
-  title: "Components/Toast",
+  title: "Components/Feedback/Toast",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -77,48 +77,6 @@ function VariantsExample() {
 export const Variants: Story = {
   name: "State/Variants",
   render: () => <VariantsExample />,
-};
-
-/* ─── Cashwalk for Business: 우측 상단 고정 + 단일 교체 ─── */
-
-function CashbizToastInner() {
-  const { toast } = useToast();
-  return (
-    <div style={{ display: "flex", gap: "var(--semantic-gap-default)", flexWrap: "wrap" }}>
-      <Button onClick={() => toast("저장 완료", { variant: "success" })}>저장</Button>
-      <Button
-        variant="soft"
-        onClick={() =>
-          toast("네트워크 오류로 중단되었습니다. 다시 시도해 주세요", {
-            variant: "error",
-            duration: 5000,
-          })
-        }
-      >
-        전송(실패)
-      </Button>
-      <Button
-        variant="soft"
-        onClick={() => toast("이미 추가된 이메일 주소입니다", { variant: "warning" })}
-      >
-        초대(중복)
-      </Button>
-    </div>
-  );
-}
-
-/**
- * 캐포비 admin 토스트 — **흰 카드**(흰 배경 + 그림자 + radius 8) · 우측 상단 고정(`position="top-right"`)
- * · 동시 1개(`maxCount={1}`, 새 토스트가 기존 교체). 흰 배경/검정 메시지는 `data-brand="cashwalk-biz"`
- * cascade 로 적용된다(base 의 다크 pill 과 다름). 버튼을 연속으로 눌러도 항상 마지막 1개만 우측 상단에 노출.
- */
-export const CashbizTopRight: Story = {
-  name: "Brand/Cashbiz Top-Right (흰 카드 · Single)",
-  // globals.brand → preview 데코레이터가 <html data-brand="cashwalk-biz"> 를 박아 흰 카드 cascade 적용.
-  // toastPosition/toastMaxCount → meta 데코레이터의 단일 Provider 가 우측 상단 고정 + 단일 교체로 렌더.
-  globals: { brand: "cashwalk-biz" },
-  parameters: { toastPosition: "top-right", toastMaxCount: 1 },
-  render: () => <CashbizToastInner />,
 };
 
 /* ─── Multiline ─── */
@@ -210,59 +168,6 @@ export const Stacking: Story = {
   render: () => <StackingExample />,
 };
 
-/* ─── With Action ─── */
-
-function WithActionExample() {
-  const { toast } = useToast();
-
-  return (
-    <Button
-      onClick={() =>
-        toast("상담 예약이 취소되었습니다", {
-          action: {
-            label: "되돌리기",
-            onClick: () => alert("되돌리기 실행"),
-          },
-        })
-      }
-    >
-      액션 토스트
-    </Button>
-  );
-}
-
-export const WithAction: Story = {
-  name: "Recipe/With Action",
-  render: () => <WithActionExample />,
-};
-
-/* ─── Error + Action (실패 후 재시도) ─── */
-
-function ErrorWithActionExample() {
-  const { toast } = useToast();
-
-  return (
-    <Button
-      onClick={() =>
-        toast("저장에 실패했습니다", {
-          variant: "error",
-          action: {
-            label: "다시 시도",
-            onClick: () => alert("재시도 실행"),
-          },
-        })
-      }
-    >
-      에러 + 액션 토스트
-    </Button>
-  );
-}
-
-export const ErrorWithAction: Story = {
-  name: "Recipe/Error With Action",
-  render: () => <ErrorWithActionExample />,
-};
-
 /* ─── Success Flow (실무 시나리오) ─── */
 
 function SuccessFlowExample() {
@@ -275,12 +180,7 @@ function SuccessFlowExample() {
       </Button>
       <Button
         variant="soft"
-        onClick={() =>
-          toast("상담 일정이 확정되었습니다", {
-            variant: "success",
-            action: { label: "일정 보기", onClick: () => alert("일정 페이지로 이동") },
-          })
-        }
+        onClick={() => toast("상담 일정이 확정되었습니다", { variant: "success" })}
       >
         일정 확정
       </Button>
@@ -316,21 +216,6 @@ export const ToastVariantsInteraction: Story = {
 
     await user.click(canvas.getByRole("button", { name: "Error" }));
     await expect(within(document.body).getByText("오류가 발생했습니다")).toBeInTheDocument();
-  },
-};
-
-export const ToastActionInteraction: Story = {
-  name: "Interaction/Toast Action Button",
-  render: () => <WithActionExample />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const user = createInteractionUser();
-
-    await user.click(canvas.getByRole("button", { name: "액션 토스트" }));
-    await expect(within(document.body).getByText("상담 예약이 취소되었습니다")).toBeInTheDocument();
-
-    const actionButton = within(document.body).getByRole("button", { name: "되돌리기" });
-    await expect(actionButton).toBeInTheDocument();
   },
 };
 

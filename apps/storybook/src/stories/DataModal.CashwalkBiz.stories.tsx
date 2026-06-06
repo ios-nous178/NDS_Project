@@ -153,6 +153,6 @@ function DataModalExample() {
 
 /** 시간별 리포트 — Data Modal(대형 조회) + StatsTable. */
 export const HourlyReport: Story = {
-  name: "시간별 리포트",
+  name: "Recipe/시간별 리포트",
   render: () => <DataModalExample />,
 };

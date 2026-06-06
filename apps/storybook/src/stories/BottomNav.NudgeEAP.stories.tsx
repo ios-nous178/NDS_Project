@@ -6,7 +6,7 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("nudge-eap");
 
 const meta: Meta = {
-  title: "Components/BottomNav",
+  title: "Brands/NudgeEAP/BottomNav",
   parameters: { layout: "fullscreen" },
   globals: { brand: "nudge-eap" },
 };
@@ -44,6 +44,6 @@ function NudgeEAPTabBarDemo() {
  * 5탭 (홈/챌린지/상담/멘탈케어/내 공간, Figma 20:3331). 탭을 클릭하면 해당 탭이 활성화됩니다.
  */
 export const NudgeEAPTabBar: Story = {
-  name: "NudgeEAP (5탭)",
+  name: "Variant/NudgeEAP (5탭)",
   render: () => <NudgeEAPTabBarDemo />,
 };

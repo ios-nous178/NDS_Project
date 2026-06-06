@@ -45,7 +45,7 @@ function SpacingItem({ token, value }: { token: string; value: number }) {
             width: value,
             height: 16,
             minWidth: value,
-            backgroundColor: "#2B96ED",
+            backgroundColor: "var(--semantic-fill-brand-default)",
             borderRadius: 999,
           }}
         />
@@ -72,9 +72,9 @@ function GapItem({
       <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>--gap-{name}</div>
       <div style={{ fontSize: 13, color: "#666666" }}>{value}px</div>
       <div style={{ display: "flex", alignItems: "center", gap: `var(--semantic-gap-${name})` }}>
-        <span style={{ width: 24, height: 24, borderRadius: 6, backgroundColor: "#2B96ED" }} />
-        <span style={{ width: 24, height: 24, borderRadius: 6, backgroundColor: "#2B96ED" }} />
-        <span style={{ width: 24, height: 24, borderRadius: 6, backgroundColor: "#2B96ED" }} />
+        <span style={{ width: 24, height: 24, borderRadius: 6, backgroundColor: "var(--semantic-fill-brand-default)" }} />
+        <span style={{ width: 24, height: 24, borderRadius: 6, backgroundColor: "var(--semantic-fill-brand-default)" }} />
+        <span style={{ width: 24, height: 24, borderRadius: 6, backgroundColor: "var(--semantic-fill-brand-default)" }} />
       </div>
       <div style={{ fontSize: 12, color: "#666666" }}>
         <div style={{ fontWeight: 600 }}>{intent}</div>
@@ -107,8 +107,8 @@ function InsetItem({
           style={{
             display: "inline-block",
             padding: `var(--semantic-inset-${name})`,
-            backgroundColor: "#F1F8FD",
-            border: "1px dashed #2B96ED",
+            backgroundColor: "var(--semantic-bg-brand-subtle)",
+            border: "1px dashed var(--semantic-border-brand-default)",
             borderRadius: 4,
           }}
         >
@@ -116,7 +116,7 @@ function InsetItem({
             style={{
               width: 80,
               height: 16,
-              backgroundColor: "#2B96ED",
+              backgroundColor: "var(--semantic-fill-brand-default)",
               borderRadius: 2,
             }}
           />

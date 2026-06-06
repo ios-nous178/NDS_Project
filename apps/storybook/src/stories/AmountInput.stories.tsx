@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AmountInput } from "@nudge-design/react";
 
 const meta: Meta<typeof AmountInput> = {
-  title: "Components/AmountInput",
+  title: "Components/Inputs/AmountInput",
   component: AmountInput,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

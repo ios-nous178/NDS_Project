@@ -7,7 +7,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<typeof Button> = {
-  title: "Components/Button",
+  title: "Components/Display/Button",
   component: Button,
   tags: ["autodocs"],
   parameters: {
@@ -478,7 +478,7 @@ const PILL_COLOR_ROWS: Array<{
 ];
 
 export const ShapePillMatrix: Story = {
-  name: "Shape/Pill (5 variants × 3 states)",
+  name: "Variant/Pill (5 variants × 3 states)",
   parameters: {
     docs: {
       description: {
@@ -525,7 +525,7 @@ export const ShapePillMatrix: Story = {
 };
 
 export const ShapeComparison: Story = {
-  name: "Shape/Default vs Pill",
+  name: "Variant/Default vs Pill",
   parameters: {
     docs: {
       description: {

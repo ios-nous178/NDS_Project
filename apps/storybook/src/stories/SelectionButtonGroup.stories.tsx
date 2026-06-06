@@ -4,7 +4,7 @@ import { SelectionButtonGroup } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/SelectionButtonGroup",
+  title: "Components/Controls/SelectionButtonGroup",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -99,26 +99,26 @@ function DisabledItemExample() {
 }
 
 export const TwoOptions: Story = {
-  name: "2개 옵션",
+  name: "Variant/2개 옵션",
   render: () => <TwoOptionExample />,
 };
 
 export const ThreeOptions: Story = {
-  name: "3개 옵션",
+  name: "Variant/3개 옵션",
   render: () => <ThreeOptionExample />,
 };
 
 export const EqualWidth: Story = {
-  name: "등폭 (라벨 길이 다름)",
+  name: "Variant/등폭 (라벨 길이 다름)",
   render: () => <EqualWidthExample />,
 };
 
 export const FullWidth: Story = {
-  name: "Full Width",
+  name: "Variant/Full Width",
   render: () => <FullWidthExample />,
 };
 
 export const DisabledItem: Story = {
-  name: "비활성 아이템 포함",
+  name: "State/비활성 아이템 포함",
   render: () => <DisabledItemExample />,
 };

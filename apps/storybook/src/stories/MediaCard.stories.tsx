@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { MediaCard, Avatar } from "@nudge-design/react";
 
 const meta: Meta<typeof MediaCard> = {
-  title: "Components/MediaCard",
+  title: "Components/Domain/MediaCard",
   component: MediaCard,
   tags: ["autodocs"],
   parameters: {
@@ -95,7 +95,7 @@ export const WithImageOverlay: Story = {
 /* ─── Layout: Grid (4-up) ─── */
 
 export const Grid4Up: Story = {
-  name: "Layout/Grid 4-up (desktop)",
+  name: "Recipe/Grid 4-up (desktop)",
   render: () => (
     <div
       style={{
@@ -134,7 +134,7 @@ export const Grid4Up: Story = {
 /* ─── Layout: Horizontal scroll (mobile) ─── */
 
 export const HorizontalScroll: Story = {
-  name: "Layout/Horizontal scroll (mobile)",
+  name: "Recipe/Horizontal scroll (mobile)",
   render: () => (
     <div
       style={{

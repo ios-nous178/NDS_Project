@@ -54,6 +54,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "storybook": "turbo dev --filter=@nudge-design/storybook",
+    "storybook:start": "pnpm --filter @nudge-design/storybook build && node scripts/serve-storybook-static.mjs",
     "docs:dev": "turbo dev --filter=@nudge-design/docs",
     "docs:build": "turbo build --filter=@nudge-design/docs --output-logs=errors-only",
     "test": "turbo test --output-logs=errors-only",

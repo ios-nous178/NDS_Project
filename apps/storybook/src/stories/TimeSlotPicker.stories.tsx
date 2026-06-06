@@ -4,7 +4,7 @@ import { TimeSlotPicker, FormField } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/TimeSlotPicker",
+  title: "Components/Controls/TimeSlotPicker",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",

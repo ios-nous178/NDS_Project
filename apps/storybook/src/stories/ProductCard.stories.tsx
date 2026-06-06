@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ProductCard } from "@nudge-design/react";
 
 const meta: Meta<typeof ProductCard> = {
-  title: "Components/ProductCard",
+  title: "Components/Domain/ProductCard",
   component: ProductCard,
   tags: ["autodocs"],
   parameters: {
@@ -111,7 +111,7 @@ export const SoldOut: Story = {
 /* ─── Variation: 캐시딜 PC (236w) — 랭킹 + 풀 메타 ─── */
 
 export const CashdealDesktop: Story = {
-  name: "Variation/Cashdeal Desktop (md)",
+  name: "Variant/Cashdeal Desktop (md)",
   parameters: {
     docs: {
       description: {
@@ -224,7 +224,7 @@ export const CashdealRankingRow: Story = {
 /* ─── Variation: 캐시딜 Mobile (140w) — 포인트할인 + 풀 메타 ─── */
 
 export const CashdealMobile: Story = {
-  name: "Variation/Cashdeal Mobile (sm)",
+  name: "Variant/Cashdeal Mobile (sm)",
   parameters: {
     docs: {
       description: {

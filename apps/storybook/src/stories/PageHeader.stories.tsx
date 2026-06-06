@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { PageHeader, Button, Breadcrumb, Tabs } from "@nudge-design/react";
 
 const meta: Meta<typeof PageHeader> = {
-  title: "Components/PageHeader",
+  title: "Components/Layout/PageHeader",
   component: PageHeader,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

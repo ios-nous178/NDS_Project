@@ -6,7 +6,7 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("runmile");
 
 const meta: Meta = {
-  title: "Components/BottomNav",
+  title: "Brands/Runmile/BottomNav",
   parameters: { layout: "fullscreen" },
   globals: { brand: "runmile" },
 };
@@ -49,6 +49,6 @@ function RunmileTabBarDemo() {
 }
 
 export const RunmileTabBar: Story = {
-  name: "Runmile (5탭, Figma 1221:64046)",
+  name: "Variant/Runmile (5탭, Figma 1221:64046)",
   render: () => <RunmileTabBarDemo />,
 };

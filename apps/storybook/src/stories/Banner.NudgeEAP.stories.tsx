@@ -19,9 +19,9 @@ export const EAPIntro: Story = {
       actionHref="https://eapkorea.co.kr"
       style={
         {
-          "--nds-banner-background": "#E3F2FC",
+          "--nds-banner-background": "var(--semantic-bg-brand-subtle)",
           "--nds-banner-radius": "8px",
-          "--nds-banner-action-color": "#2B96ED",
+          "--nds-banner-action-color": "var(--semantic-text-brand-default)",
         } as React.CSSProperties
       }
     />
@@ -44,12 +44,12 @@ export const TestRecommend: Story = {
       actionLabel="검사 시작하기"
       style={
         {
-          "--nds-banner-background": "#F1F8FD",
+          "--nds-banner-background": "var(--semantic-bg-brand-subtle)",
           "--nds-banner-radius": "8px",
           "--nds-banner-title-font-size": "16px",
           "--nds-banner-desc-font-size": "14px",
           "--nds-banner-action-font-size": "14px",
-          "--nds-banner-action-color": "#2B96ED",
+          "--nds-banner-action-color": "var(--semantic-text-brand-default)",
         } as React.CSSProperties
       }
     />

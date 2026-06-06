@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { FileUpload } from "@nudge-design/react";
 
 const meta: Meta<typeof FileUpload> = {
-  title: "Components/FileUpload",
+  title: "Components/Inputs/FileUpload",
   component: FileUpload,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

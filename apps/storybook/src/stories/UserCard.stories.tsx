@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { UserCard, Avatar, Button } from "@nudge-design/react";
 
 const meta: Meta<typeof UserCard> = {
-  title: "Components/UserCard",
+  title: "Components/Domain/UserCard",
   component: UserCard,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -29,7 +29,7 @@ export const Playground: Story = {
 };
 
 export const Stacked: Story = {
-  name: "Layout/세로 (프로필 모달)",
+  name: "Recipe/세로 (프로필 모달)",
   render: () => (
     <div style={{ width: 280 }}>
       <UserCard

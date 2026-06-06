@@ -4,7 +4,7 @@ import { LikertScale } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/LikertScale",
+  title: "Components/Controls/LikertScale",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -105,21 +105,21 @@ function DisabledExample() {
 }
 
 export const FivePoint: Story = {
-  name: "5점 척도 (양 끝 라벨)",
+  name: "Variant/5점 척도 (양 끝 라벨)",
   render: () => <FivePointExample />,
 };
 
 export const PHQ: Story = {
-  name: "PHQ-9 스타일 (각 점 라벨)",
+  name: "Variant/PHQ-9 스타일 (각 점 라벨)",
   render: () => <PHQExample />,
 };
 
 export const SevenPoint: Story = {
-  name: "7점 척도",
+  name: "Variant/7점 척도",
   render: () => <SevenPointExample />,
 };
 
 export const Disabled: Story = {
-  name: "비활성화",
+  name: "State/비활성화",
   render: () => <DisabledExample />,
 };

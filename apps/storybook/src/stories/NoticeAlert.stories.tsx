@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { NoticeAlert } from "@nudge-design/react";
 
 const meta: Meta<typeof NoticeAlert> = {
-  title: "Components/NoticeAlert",
+  title: "Components/Feedback/NoticeAlert",
   component: NoticeAlert,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -29,7 +29,7 @@ export const Playground: Story = {
 };
 
 export const AllVariants: Story = {
-  name: "Variants/5종 상태",
+  name: "Variant/5종 상태",
   render: () => (
     <div style={{ width: 640, display: "flex", flexDirection: "column", gap: 12 }}>
       <NoticeAlert variant="info" message="최대 30자 이내로 입력해 주세요." />
@@ -45,7 +45,7 @@ export const AllVariants: Story = {
 };
 
 export const MultiLine: Story = {
-  name: "Layout/여러 줄",
+  name: "Recipe/여러 줄",
   render: () => (
     <div style={{ width: 420 }}>
       <NoticeAlert

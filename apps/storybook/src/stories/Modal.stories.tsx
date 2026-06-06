@@ -207,7 +207,7 @@ export function Example() {
 }`;
 
 const meta: Meta<ModalProps> = {
-  title: "Components/Modal",
+  title: "Components/Overlay/Modal",
   component: Modal,
   tags: ["autodocs"],
   parameters: {

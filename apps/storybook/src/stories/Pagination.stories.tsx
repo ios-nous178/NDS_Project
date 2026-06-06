@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Pagination } from "@nudge-design/react";
 
 const meta: Meta<typeof Pagination> = {
-  title: "Components/Pagination",
+  title: "Components/Navigation/Pagination",
   component: Pagination,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -28,19 +28,19 @@ export const Playground: Story = {
 };
 
 export const FewPages: Story = {
-  name: "Example/페이지 적음",
+  name: "Recipe/페이지 적음",
   render: () => <PaginationExample page={2} totalPages={5} onPageChange={() => {}} />,
 };
 
 export const ManyPages: Story = {
-  name: "Example/페이지 많음",
+  name: "Recipe/페이지 많음",
   render: () => (
     <PaginationExample page={10} totalPages={50} siblings={2} onPageChange={() => {}} />
   ),
 };
 
 export const NoArrows: Story = {
-  name: "Example/화살표 없음",
+  name: "Recipe/화살표 없음",
   render: () => (
     <PaginationExample page={3} totalPages={10} showArrows={false} onPageChange={() => {}} />
   ),

@@ -17,7 +17,7 @@ const sampleItems: TrendingKeywordItem[] = [
 ];
 
 const meta: Meta<typeof TrendingKeywords> = {
-  title: "Components/TrendingKeywords",
+  title: "Components/Domain/TrendingKeywords",
   component: TrendingKeywords,
   parameters: {
     layout: "centered",

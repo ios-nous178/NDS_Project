@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { OnlineIndicator, Avatar } from "@nudge-design/react";
 
 const meta: Meta<typeof OnlineIndicator> = {
-  title: "Components/OnlineIndicator",
+  title: "Components/Display/OnlineIndicator",
   component: OnlineIndicator,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { LikeButton } from "@nudge-design/react";
 
 const meta: Meta<typeof LikeButton> = {
-  title: "Components/LikeButton",
+  title: "Components/Display/LikeButton",
   component: LikeButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -35,7 +35,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Size/sm md lg",
+  name: "Variant/sm md lg",
   render: function Render() {
     const [s, setS] = useState(false);
     const [m, setM] = useState(true);

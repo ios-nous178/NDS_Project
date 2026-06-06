@@ -4,7 +4,7 @@ import { DatePicker, FormField } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/DatePicker",
+  title: "Components/Inputs/DatePicker",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",

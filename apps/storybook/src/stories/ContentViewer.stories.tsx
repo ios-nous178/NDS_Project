@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ContentViewer } from "@nudge-design/react";
 
 const meta: Meta<typeof ContentViewer> = {
-  title: "Components/ContentViewer",
+  title: "Components/Domain/ContentViewer",
   component: ContentViewer,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

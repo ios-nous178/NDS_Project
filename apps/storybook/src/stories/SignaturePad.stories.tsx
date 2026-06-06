@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { SignaturePad, type SignaturePadHandle } from "@nudge-design/react";
 
 const meta: Meta<typeof SignaturePad> = {
-  title: "Components/SignaturePad",
+  title: "Components/Inputs/SignaturePad",
   component: SignaturePad,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

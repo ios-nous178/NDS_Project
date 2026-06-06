@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { NotificationItem } from "@nudge-design/react";
 
 const meta: Meta<typeof NotificationItem> = {
-  title: "Components/NotificationItem",
+  title: "Components/Feedback/NotificationItem",
   component: NotificationItem,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -83,7 +83,7 @@ export const NoDescription: Story = {
   render: () => (
     <div style={{ width: 480, border: "1px solid #eee", borderRadius: 12, overflow: "hidden" }}>
       <NotificationItem title="새 댓글이 달렸어요" time="2분 전" unread />
-      <NotificationItem title="🎉 새 콘텐츠가 도착했어요" time="3분 전" />
+      <NotificationItem title="새 콘텐츠가 도착했어요" time="3분 전" />
     </div>
   ),
 };

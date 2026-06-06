@@ -7,7 +7,7 @@ import { DesktopPreview } from "../desktop-preview";
 const b = getBrandFixture("cashwalk-biz");
 
 const meta: Meta = {
-  title: "Components/Header",
+  title: "Brands/CashwalkBiz/Header",
   parameters: { layout: "fullscreen" },
   globals: { brand: "cashwalk-biz" },
 };

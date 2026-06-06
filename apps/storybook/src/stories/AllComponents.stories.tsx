@@ -5,12 +5,11 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  ActivityTimeline,
+  Timeline,
   AddressSearch,
   AmountInput,
   AppointmentCard,
   Footer,
-  AssessmentResultCard,
   Asset,
   AttachmentItem,
   AudioPlayer,
@@ -21,12 +20,10 @@ import {
   Banner,
   NoticeAlert,
   Breadcrumb,
-  BreathingGuide,
   Button,
   AddButton,
   Calendar,
   Card,
-  CardVisual,
   Carousel,
   ChatBubble,
   Checkbox,
@@ -34,19 +31,15 @@ import {
   CircularProgress,
   CommentItem,
   Confetti,
-  ConsentChecklist,
   ContentViewer,
   CounselorCard,
   CountdownTimer,
-  CouponCard,
-  CrisisCallout,
   DataTable,
   type DataTableColumn,
   type DateRange,
   DatePicker,
   DateRangePicker,
   Divider,
-  EmotionHeatmap,
   EmptyState,
   ExpandableText,
   FAB,
@@ -54,20 +47,15 @@ import {
   FileUpload,
   FilterBar,
   FormField,
-  GreetingHeader,
   Header,
   IconButton,
   Input,
-  JournalEntry,
   LikeButton,
   LikertScale,
   List,
   ListItem,
   MediaCard,
   MediaThumbnail,
-  MedicationItem,
-  MentionInput,
-  MoodSelector,
   NotificationItem,
   NumberStepper,
   OnlineIndicator,
@@ -82,7 +70,6 @@ import {
   ProgressBar,
   QuickActionGrid,
   Radio,
-  ReactionPicker,
   ReviewCard,
   ScoreGauge,
   SearchInput,
@@ -90,6 +77,7 @@ import {
   Select,
   MultiSelect,
   CheckboxTree,
+  CheckboxGroup,
   PageSizeSelect,
   SelectionCard,
   SelectionButtonGroup,
@@ -99,19 +87,14 @@ import {
   Sparkline,
   Spinner,
   StarRating,
-  StatCard,
-  StatusTimeline,
   Stepper,
-  StepProgress,
-  StreakCard,
   Tabs,
   TagInput,
   TextButton,
   Textarea,
   TimePicker,
   TimeSlotPicker,
-  TipCard,
-  TitleBlock,
+  TitleGroup,
   Toggle,
   TrendingKeywords,
   PopularPosts,
@@ -119,7 +102,7 @@ import {
   ImageUpload,
   ActionChip,
   SelectedItemsPanel,
-  RegionRow,
+  SelectedItemRow,
   UserCard,
   VotePoll,
   Chart,
@@ -163,6 +146,16 @@ type ComponentGuide = {
 
 const GUIDES: Record<string, ComponentGuide> =
   (componentGuides as { components?: Record<string, ComponentGuide> }).components ?? {};
+
+function isBrandSpecificEntry(entry: { name?: string; storybookTitle?: string; category?: string }) {
+  const brandPrefixes = ["Geniet", "Trost", "NudgeEAP", "CashwalkBiz", "Runmile"];
+  return Boolean(
+    entry.storybookTitle?.startsWith("Brands/") ||
+      brandPrefixes.some((prefix) => entry.storybookTitle?.includes(`/${prefix}/`) || entry.name?.startsWith(prefix)) ||
+      entry.category === "브랜드" ||
+      entry.category === "Brand",
+  );
+}
 
 /* ──────────────────────────────────────────
    Preview registry
@@ -340,25 +333,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
     function TabsPreview() {
       const [lineKey, setLineKey] = useState("home");
       const [chipKey, setChipKey] = useState("all");
-      const [segKey, setSegKey] = useState("dash");
-      const dashIcon = (
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-          <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-          <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-          <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-          <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      );
-      const riskIcon = (
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M10 2L18 17H2L10 2Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-          />
-        </svg>
-      );
       return (
         <div
           style={{
@@ -393,17 +367,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
                 { key: "all", title: "전체" },
                 { key: "work", title: "직장" },
                 { key: "love", title: "연애" },
-              ]}
-            />
-          </div>
-          <div style={{ width: "100%", maxWidth: 240 }}>
-            <Tabs
-              activeKey={segKey}
-              onTabChange={setSegKey}
-              variant="segment"
-              items={[
-                { key: "dash", title: "대시보드", icon: dashIcon },
-                { key: "risk", title: "고위험군", icon: riskIcon },
               ]}
             />
           </div>
@@ -546,29 +509,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <div style={mockLightboxCounter}>1 / 4</div>
     </div>
   ),
-  ShareSheet: () => (
-    <div style={mockOverlayStage}>
-      <div style={mockStageBody}>본문 영역</div>
-      <div style={mockStageScrim} aria-hidden />
-      <div style={mockShareSheetPanel}>
-        <div style={mockGrabber} aria-hidden />
-        <div style={mockShareSheetRow}>
-          {[
-            { key: "copy", label: "복사" },
-            { key: "link", label: "링크" },
-            { key: "more", label: "더보기" },
-          ].map((t) => (
-            <div key={t.key} style={mockShareItem}>
-              <span style={mockShareIcon} aria-hidden>
-                <ShareIcon size={16} />
-              </span>
-              <span style={mockShareLabel}>{t.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  ),
   CoachMark: () => (
     <div style={mockCoachWrap}>
       <Button size="sm" variant="outlined">
@@ -592,38 +532,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
         title="김상담사 · 화상 상담"
         status="confirmed"
       />
-    </div>
-  ),
-  JournalEntry: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <JournalEntry date="오늘" body="오랜만에 마음이 가벼웠다." mood="🙂" />
-    </div>
-  ),
-  StreakCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <StreakCard
-        streak={7}
-        unit="일"
-        days={[true, true, true, true, true, true, true].map((done, i) => ({
-          date: `D-${6 - i}`,
-          done,
-        }))}
-      />
-    </div>
-  ),
-  EmotionHeatmap: () => (
-    <div style={{ width: "100%", maxWidth: 220 }}>
-      <EmotionHeatmap
-        entries={Array.from({ length: 14 }, (_, i) => ({
-          date: `2026-05-${String(i + 1).padStart(2, "0")}`,
-          level: (i % 5) as 0 | 1 | 2 | 3 | 4,
-        }))}
-      />
-    </div>
-  ),
-  BreathingGuide: () => (
-    <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
-      <BreathingGuide autoStart={false} />
     </div>
   ),
   ChatComposer: () => (
@@ -722,6 +630,27 @@ const PREVIEWS: Record<string, PreviewRender> = {
     }
     return <M />;
   },
+  CheckboxGroup: () => {
+    function CG() {
+      const [v, setV] = useState<string[]>(["service"]);
+      return (
+        <div style={{ width: "100%", maxWidth: 320 }}>
+          <CheckboxGroup
+            value={v}
+            onValueChange={setV}
+            selectAll
+            selectAllLabel="전체 동의"
+            items={[
+              { value: "service", label: "이용약관", badge: "[필수]" },
+              { value: "privacy", label: "개인정보 수집·이용", badge: "[필수]" },
+              { value: "marketing", label: "마케팅 수신", badge: "[선택]" },
+            ]}
+          />
+        </div>
+      );
+    }
+    return <CG />;
+  },
   CheckboxTree: () => {
     function CT() {
       const [v, setV] = useState<string[]>(["gangneung"]);
@@ -730,7 +659,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
           <CheckboxTree
             value={v}
             onValueChange={setV}
-            searchPlaceholder="지역명으로 검색"
+            searchable={false}
             defaultExpanded={["gangwon"]}
             style={{ ["--nds-checkbox-tree-max-height" as string]: "260px" }}
             nodes={[
@@ -765,36 +694,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
     }
     return <P />;
   },
-  ReactionPicker: () => {
-    function R() {
-      const [v, setV] = useState<string[]>([]);
-      return (
-        <ReactionPicker
-          value={v}
-          onValueChange={setV}
-          options={[
-            { key: "1", emoji: "👍" },
-            { key: "2", emoji: "❤️" },
-            { key: "3", emoji: "🙏" },
-          ]}
-        />
-      );
-    }
-    return <R />;
-  },
-  GreetingHeader: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <GreetingHeader name="지민" greeting="안녕하세요" question="오늘 기분 어떠세요?" />
-    </div>
-  ),
-  TipCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <TipCard tone="info" title="작은 팁" description="천천히 호흡해보세요." />
-    </div>
-  ),
-  TitleBlock: () => (
+  TitleGroup: () => (
     <div style={{ width: "100%", maxWidth: 280 }}>
-      <TitleBlock level="h4" title="바로 상담하기" subtitle="급한 문제는 5분 내 바로 상담" />
+      <TitleGroup level="h4" title="바로 상담하기" subtitle="급한 문제는 5분 내 바로 상담" />
     </div>
   ),
   NotificationItem: () => (
@@ -815,11 +717,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
       price={13900}
     />
   ),
-  CouponCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <CouponCard discount="30%" title="신규 가입 쿠폰" expiry="~5/31" />
-    </div>
-  ),
   OrderSummaryCard: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <OrderSummaryCard
@@ -828,23 +725,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
           { label: "할인", value: "-3,000원" },
         ]}
         total="29,000원"
-      />
-    </div>
-  ),
-  CardVisual: () => (
-    <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
-      <CardVisual brand="visa" number="**** **** **** 1234" holder="홍길동" expiry="12/27" />
-    </div>
-  ),
-  StatusTimeline: () => (
-    <div style={{ width: "100%", maxWidth: 220 }}>
-      <StatusTimeline
-        steps={[
-          { key: "1", label: "접수" },
-          { key: "2", label: "진행" },
-          { key: "3", label: "완료" },
-        ]}
-        current={1}
       />
     </div>
   ),
@@ -921,17 +801,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
       );
     }
     return <T />;
-  },
-  MentionInput: () => {
-    function M() {
-      const [v, setV] = useState("");
-      return (
-        <div style={{ width: "100%", maxWidth: 220 }}>
-          <MentionInput value={v} onValueChange={setV} users={[{ key: "1", name: "홍길동" }]} />
-        </div>
-      );
-    }
-    return <M />;
   },
   PinPad: () => {
     function P() {
@@ -1041,8 +910,8 @@ const PREVIEWS: Record<string, PreviewRender> = {
           marginBottom: 8,
         }}
       >
-        <div style={{ flex: 1, height: 4, background: "#2B96ED", borderRadius: 2 }} />
-        <div style={{ flex: 1, height: 4, background: "#2B96ED", borderRadius: 2 }} />
+        <div style={{ flex: 1, height: 4, background: "var(--semantic-fill-brand-default)", borderRadius: 2 }} />
+        <div style={{ flex: 1, height: 4, background: "var(--semantic-fill-brand-default)", borderRadius: 2 }} />
         <div style={{ flex: 1, height: 4, background: "#E6E7EB", borderRadius: 2 }} />
         <span style={{ fontSize: 11, color: "#888", marginLeft: 4 }}>2 / 3</span>
       </div>
@@ -1099,11 +968,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   Sparkline: () => <Sparkline data={[3, 5, 4, 8, 6, 9, 7, 11]} width={140} height={40} />,
-  StatCard: () => (
-    <div style={{ width: "100%", maxWidth: 200 }}>
-      <StatCard label="이번주 기록" value="12" unit="회" />
-    </div>
-  ),
   ExpandableText: () => (
     <div style={{ width: "100%", maxWidth: 220 }}>
       <ExpandableText lines={2}>
@@ -1133,10 +997,18 @@ const PREVIEWS: Record<string, PreviewRender> = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: 28,
       }}
     >
-      🎉
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden>
+        <rect x="10" y="14" width="8" height="5" rx="1" fill="#FF6B6B" transform="rotate(-18 14 16)" />
+        <circle cx="46" cy="16" r="3.5" fill="#06D6A0" />
+        <rect x="30" y="9" width="7" height="4" rx="1" fill="#FFD166" transform="rotate(24 33 11)" />
+        <circle cx="18" cy="34" r="3" fill="#118AB2" />
+        <rect x="42" y="32" width="8" height="5" rx="1" fill="#9D4EDD" transform="rotate(32 46 34)" />
+        <rect x="22" y="46" width="7" height="4" rx="1" fill="#FF9F1C" transform="rotate(-12 25 48)" />
+        <circle cx="48" cy="48" r="3.5" fill="#FFD166" />
+        <circle cx="33" cy="30" r="2.5" fill="#FF6B6B" />
+      </svg>
       <Confetti active={false} onComplete={() => {}} />
     </div>
   ),
@@ -1146,7 +1018,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
         <div
           style={{
             height: 70,
-            background: "#E6F3FD",
+            background: "var(--semantic-bg-brand-subtle)",
             borderRadius: 8,
             display: "flex",
             alignItems: "center",
@@ -1222,7 +1094,8 @@ const PREVIEWS: Record<string, PreviewRender> = {
             style={{
               width: 3,
               height: h,
-              background: i < 5 ? "#2B96ED" : "#D8D8D8",
+              background:
+                i < 5 ? "var(--semantic-fill-brand-default)" : "var(--semantic-fill-brand-disabled)",
               borderRadius: 2,
             }}
           />
@@ -1394,17 +1267,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
       );
     }
     return <T />;
-  },
-  MoodSelector: () => {
-    function M() {
-      const [v, setV] = useState("good");
-      return (
-        <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
-          <MoodSelector value={v} onValueChange={setV} showLabels={false} />
-        </div>
-      );
-    }
-    return <M />;
   },
   LikertScale: () => {
     function L() {
@@ -1627,41 +1489,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
 
-  StepProgress: () => (
-    <div style={{ width: "100%", maxWidth: 360 }}>
-      <StepProgress
-        current={1}
-        steps={[
-          { key: "1", label: "Step 1", title: "캠페인" },
-          { key: "2", label: "Step 2", title: "광고" },
-          { key: "3", label: "Step 3", title: "소재" },
-        ]}
-      />
-    </div>
-  ),
-
   /* 도메인 */
-  AssessmentResultCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <AssessmentResultCard
-        title="PHQ-9 우울 검사"
-        score={12}
-        maxScore={27}
-        level="mild"
-        description="가벼운 우울 수준이에요."
-      />
-    </div>
-  ),
-  CrisisCallout: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <CrisisCallout
-        tone="danger"
-        title="지금 도움이 필요하다면"
-        description="자살예방상담전화로 연결할 수 있어요."
-        actions={[{ label: "1393", phoneNumber: "1393", withPhoneIcon: true }]}
-      />
-    </div>
-  ),
   CounselorCard: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <CounselorCard
@@ -1684,38 +1512,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
       </ChatBubble>
     </div>
   ),
-  ConsentChecklist: () => {
-    function C() {
-      const [v, setV] = useState<string[]>(["service"]);
-      return (
-        <div style={{ width: "100%", maxWidth: 240 }}>
-          <ConsentChecklist
-            value={v}
-            onValueChange={setV}
-            items={[
-              { key: "service", label: "서비스 이용 약관", required: true },
-              { key: "privacy", label: "개인정보 수집·이용", required: true },
-              { key: "marketing", label: "마케팅 정보 수신 (선택)" },
-            ]}
-          />
-        </div>
-      );
-    }
-    return <C />;
-  },
   ScoreGauge: () => (
     <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
       <ScoreGauge value={42} max={100} showLabel />
-    </div>
-  ),
-  MedicationItem: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <MedicationItem
-        name="라믹탈"
-        dosage="25mg · 1정"
-        times={["morning", "bedtime"]}
-        note="식후 30분"
-      />
     </div>
   ),
   AudioPlayer: () => (
@@ -1730,9 +1529,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
       />
     </div>
   ),
-  ActivityTimeline: () => (
+  Timeline: () => (
     <div style={{ width: "100%", maxWidth: 220 }}>
-      <ActivityTimeline
+      <Timeline
         items={[
           { key: "1", date: "5/12", title: "1차 상담", status: "completed", statusLabel: "완료" },
           { key: "2", date: "5/19", title: "2차 상담", status: "ongoing", statusLabel: "진행" },
@@ -1858,11 +1657,23 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   SelectedItemsPanel: () => (
-    <div style={{ width: 360 }}>
-      <SelectedItemsPanel title="선택한 지역" count={2} onAdd={() => {}} onClear={() => {}}>
-        <RegionRow onRemove={() => {}}>강원특별자치도 &gt; 강릉시</RegionRow>
-        <RegionRow onRemove={() => {}}>서울특별시 &gt; 강남구</RegionRow>
-      </SelectedItemsPanel>
+    <div style={{ transform: "scale(0.72)", transformOrigin: "center" }}>
+      <div
+        style={
+          {
+            width: 360,
+            padding: "0 4px",
+            // 카탈로그 카드 안에서 헤더가 항상 보이도록 본문만 스크롤 제한
+            "--nds-selected-items-panel-body-max-height": "132px",
+          } as React.CSSProperties
+        }
+      >
+        <SelectedItemsPanel title="선택한 항목" count={3} onAdd={() => {}} onClear={() => {}}>
+          <SelectedItemRow onRemove={() => {}}>카테고리 &gt; 멤버 A</SelectedItemRow>
+          <SelectedItemRow onRemove={() => {}}>카테고리 &gt; 멤버 B</SelectedItemRow>
+          <SelectedItemRow onRemove={() => {}}>카테고리 &gt; 멤버 C</SelectedItemRow>
+        </SelectedItemsPanel>
+      </div>
     </div>
   ),
 };
@@ -2042,7 +1853,7 @@ const mockTooltipArrow: React.CSSProperties = {
   background: cv.textRole.normal,
 };
 
-/* BottomSheet / ShareSheet / Toast — 화면 안 dim + 하단 시트 */
+/* BottomSheet / Toast — 화면 안 dim + 하단 시트 */
 const mockOverlayStage: React.CSSProperties = {
   position: "relative",
   width: 220,
@@ -2078,27 +1889,6 @@ const mockBottomSheetPanel: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: 6,
-};
-
-const mockShareSheetPanel: React.CSSProperties = {
-  position: "absolute",
-  left: 0,
-  right: 0,
-  bottom: 0,
-  background: cv.surface.default,
-  borderTopLeftRadius: radius.lg,
-  borderTopRightRadius: radius.lg,
-  padding: "var(--semantic-inset-chip) var(--semantic-inset-input) var(--semantic-inset-input)",
-  display: "flex",
-  flexDirection: "column",
-  gap: 6,
-};
-
-const mockShareSheetRow: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-around",
-  alignItems: "center",
-  gap: "var(--semantic-gap-default)",
 };
 
 const mockToastFloating: React.CSSProperties = {
@@ -2229,30 +2019,6 @@ const mockLightboxCounter: React.CSSProperties = {
   color: "#fff",
   fontSize: 10,
   fontWeight: 600,
-};
-
-const mockShareItem: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: 6,
-};
-
-const mockShareIcon: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: 36,
-  height: 36,
-  borderRadius: radius.pill,
-  background: cv.surface.page,
-  color: cv.textRole.normal,
-};
-
-const mockShareLabel: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 600,
-  color: cv.textRole.subtle,
 };
 
 const mockCoachWrap: React.CSSProperties = {
@@ -2429,7 +2195,7 @@ const dsHighlightFrame: React.CSSProperties = {
   padding: "10px 14px",
   border: `1px dashed ${cv.borderRole.brand}`,
   borderRadius: radius.md,
-  background: "rgba(43,150,237,0.06)",
+  background: "var(--semantic-bg-brand-subtle)",
 };
 
 const dsHighlightLabel: React.CSSProperties = {
@@ -2706,14 +2472,19 @@ function Catalog() {
   const [category, setCategory] = useState("전체");
   const [syncedOnly, setSyncedOnly] = useState(false);
 
-  const syncedCount = useMemo(
-    () => inventory.filter((e) => (e as InventoryEntry).figmaSynced).length,
+  const catalogInventory = useMemo(
+    () => inventory.filter((entry) => !isBrandSpecificEntry(entry)),
     [],
+  );
+
+  const syncedCount = useMemo(
+    () => catalogInventory.filter((e) => (e as InventoryEntry).figmaSynced).length,
+    [catalogInventory],
   );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return inventory.filter((entry) => {
+    return catalogInventory.filter((entry) => {
       const matchesCategory = category === "전체" || entry.category === category;
       const matchesQuery =
         !q ||
@@ -2723,7 +2494,7 @@ function Catalog() {
       const matchesSynced = !syncedOnly || Boolean((entry as InventoryEntry).figmaSynced);
       return matchesCategory && matchesQuery && matchesSynced;
     });
-  }, [query, category, syncedOnly]);
+  }, [query, category, syncedOnly, catalogInventory]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, InventoryEntry[]>();
@@ -2737,6 +2508,19 @@ function Catalog() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div style={catalogNote}>
+        <p style={catalogNoteTitle}>Floating UI 구분</p>
+        <div style={catalogNoteGrid}>
+          <p style={catalogNoteItem}>
+            <strong>Modal</strong>은 응답이 필요한 큰 흐름, <strong>Popup</strong>은 짧은 확인/거부용입니다.
+          </p>
+          <p style={catalogNoteItem}>
+            <strong>Toast</strong>는 인터랙션 없이 자동 사라지는 일시 메시지,{" "}
+            <strong>Snackbar</strong>는 액션/되돌리기·닫기가 붙는 카드형 알림(캐포비 흰 카드 포함)입니다.
+          </p>
+        </div>
+      </div>
+
       <div style={controlsRow}>
         <input
           type="search"
@@ -2771,7 +2555,7 @@ function Catalog() {
           <span style={syncedToggleCount}>{syncedCount}</span>
         </label>
         <span style={countLabel}>
-          {filtered.length} / {inventory.length}
+          {filtered.length} / {catalogInventory.length}
         </span>
       </div>
 
@@ -2811,6 +2595,37 @@ const controlsRow: React.CSSProperties = {
   position: "sticky",
   top: 0,
   zIndex: 5,
+};
+
+const catalogNote: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  padding: "14px 16px",
+  border: "1px solid #E5E7EB",
+  borderRadius: 10,
+  background: "#F8FAFC",
+};
+
+const catalogNoteTitle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  fontWeight: 800,
+  color: "#111827",
+  letterSpacing: "-0.01em",
+};
+
+const catalogNoteGrid: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gap: 12,
+};
+
+const catalogNoteItem: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  lineHeight: 1.55,
+  color: "#475569",
 };
 
 const searchInput: React.CSSProperties = {
