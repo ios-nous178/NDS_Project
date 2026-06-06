@@ -11,10 +11,11 @@
  * 둘의 치수 drift 는 구조적으로 불가능하다. 실제 치수 리스크는 styles↔Figma 이고
  * 그건 별개 게이트(figma sync / /ds-audit)가 본다.
  *
- * 비교 항목 3가지:
+ * 비교 항목 4가지:
  *   1. 컴포넌트 set parity — react 만 있고 html 미러(nds-*)가 없거나 그 반대.
  *   2. enum 값 parity     — react prop allowedValues ↔ html enum attr(variant/size/color/…) 값 set-diff.
  *   3. attr 이름 parity   — react prop 이름(camel→kebab, 슬롯/이벤트 prop 제외) ↔ html observedAttributes.
+ *   4. slot parity        — react ReactNode 슬롯 prop ↔ html light-DOM slot="..." 구현 set-diff.
  *
  * baseline (scripts/mirror-parity-baseline.json) 에 현재 알려진/허용된 divergence 를
  * 스냅샷해 두고, baseline 에 없는 "신규 drift" 만 위반으로 본다. normalization 특성상
@@ -130,6 +131,41 @@ const REACT_ONLY_PROPS = new Set([
 // html 내부 인프라 attr — react prop 으로 대응될 필요 없음(base 클래스가 주입).
 const HTML_INTERNAL_ATTRS = new Set(["base-id", "base-class", "id"]);
 
+// ReactNode 중 "텍스트 콘텐츠"가 아니라 HTML light-DOM slot 미러가 자연스러운 prop 이름만 1차 게이트.
+// title/label/description/children 같은 본문성 prop 은 html attr/children 으로 표현하는 경우가 많아 제외한다.
+const SLOT_PROP_EXACT = new Set([
+  "action",
+  "actions",
+  "activeIcon",
+  "avatar",
+  "bottom",
+  "breadcrumb",
+  "endIcon",
+  "extra",
+  "footer",
+  "header",
+  "icon",
+  "leading",
+  "leadingIcon",
+  "leftIcon",
+  "leftSlot",
+  "logo",
+  "media",
+  "metadata",
+  "more",
+  "prefix",
+  "rightIcon",
+  "rightSlot",
+  "separator",
+  "startIcon",
+  "suffix",
+  "thumbnail",
+  "trailing",
+  "trailingIcon",
+]);
+const SLOT_PROP_SUFFIX_RE =
+  /(Action|Actions|Avatar|Badge|Bottom|Breadcrumb|Footer|Header|Icon|Logo|Media|Meta|Prefix|Suffix|Slot|Thumbnail|Trailing)$/;
+
 // 권고(advisory) 종류 — 항상 리포트하되 게이트를 차단하진 않는다.
 // prop-name 은 react(node/controlled) ↔ html(attribute/string) 패러다임 차이로
 // 구조적 noise 가 크다(label/title 을 node 슬롯 vs 문자열 attr 로 노출 등).
@@ -156,6 +192,14 @@ function isAttrCandidate(prop) {
   return true;
 }
 
+function isSlotPropCandidate(prop) {
+  const type = prop.type ?? "";
+  if (!/ReactNode|ReactElement|JSX\.Element/.test(type)) return false;
+  if (prop.name === "children") return false;
+  if (SLOT_PROP_EXACT.has(prop.name)) return true;
+  return SLOT_PROP_SUFFIX_RE.test(prop.name);
+}
+
 function hasReactSide(c) {
   return typeof c.dtsRelPath === "string" && c.dtsRelPath.startsWith("packages/react/dist");
 }
@@ -166,6 +210,32 @@ function hasHtmlSide(c) {
 // drift 한 건의 안정적 key — baseline 매칭용. `component::kind::detail`.
 function driftKey(d) {
   return `${d.component}::${d.kind}::${d.detail}`;
+}
+
+function htmlSourcePath(htmlTag) {
+  if (typeof htmlTag !== "string" || !htmlTag) return null;
+  const file = path.join(HTML_COMPONENTS_DIR, `${htmlTag}.ts`);
+  return fs.existsSync(file) ? file : null;
+}
+
+function stripComments(source) {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+}
+
+function collectHtmlSlots(htmlTag) {
+  const file = htmlSourcePath(htmlTag);
+  if (!file) return new Set();
+  const source = stripComments(fs.readFileSync(file, "utf8"));
+  const slots = new Set();
+  const patterns = [
+    /<[^>]*\sslot\s*=\s*["'`]([a-zA-Z0-9_-]+)["'`]/g,
+    /\[\s*slot\s*=\s*["'`]([a-zA-Z0-9_-]+)["'`]\s*\]/g,
+  ];
+  for (const re of patterns) {
+    let match;
+    while ((match = re.exec(source))) slots.add(match[1].replace(/_/g, "-").toLowerCase());
+  }
+  return slots;
 }
 
 function computeDrift(catalog) {
@@ -246,6 +316,32 @@ function computeDrift(catalog) {
             component: c.name,
             kind: "prop-name",
             detail: `html attr "${attr}" 에 대응하는 react prop 이 없음`,
+          });
+        }
+      }
+    }
+
+    // 4) slot parity (ReactNode prop ↔ html light-DOM slot)
+    const reactSlots = new Set(
+      (c.props ?? []).filter(isSlotPropCandidate).map((p) => toKebab(p.name)),
+    );
+    if (reactSlots.size > 0) {
+      const htmlSlots = collectHtmlSlots(c.htmlTag);
+      for (const slot of reactSlots) {
+        if (!htmlSlots.has(slot)) {
+          drift.push({
+            component: c.name,
+            kind: "slot",
+            detail: `react ReactNode prop "${slot}" 에 대응하는 html slot="${slot}" 구현이 없음`,
+          });
+        }
+      }
+      for (const slot of htmlSlots) {
+        if (!reactSlots.has(slot)) {
+          drift.push({
+            component: c.name,
+            kind: "slot",
+            detail: `html slot="${slot}" 에 대응하는 react ReactNode prop 이 없음`,
           });
         }
       }
