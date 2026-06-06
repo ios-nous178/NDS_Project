@@ -94,24 +94,24 @@ title: 시각 안티패턴
 
 ## Metrics
 
-| Key                                | Value     |
-| ---------------------------------- | --------- |
-| `maxPrimaryRolesPerScreen`         | 2         |
-| `maxPrimaryTintSurfacesPerSection` | 1         |
-| `logoColorAsUiAccent`              | forbidden |
-| `toneOnToneFilled`                 | forbidden |
-| `gradientBackground`               | forbidden |
-| `sectionColorOnly`                 | forbidden |
-| `maxCardsPerScreen`                | 5         |
-| `nestedCard`                       | forbidden |
-| `decorativeShadow`                 | forbidden |
-| `maxShadowedElementsPerScreen`     | 3         |
-| `maxFloatingPanelsConcurrent`      | 1         |
-| `maxBoldOccurrencesPerScreen`      | 4         |
-| `maxTopLevelHeadingsPerScreen`     | 1         |
-| `maxFontWeightsPerScreen`          | 3         |
-| `mixedIconStyles`                  | forbidden |
-| `maxDecorativeIconsBeforeHeading`  | 0         |
-| `decorativeKpiGrid`                | forbidden |
-| `decorativeChart`                  | forbidden |
-| `decorativeHero`                   | forbidden |
+| Key | Value |
+|---|---|
+| `maxPrimaryRolesPerScreen` | 2 |
+| `maxPrimaryTintSurfacesPerSection` | 1 |
+| `logoColorAsUiAccent` | forbidden |
+| `toneOnToneFilled` | forbidden |
+| `gradientBackground` | forbidden |
+| `sectionColorOnly` | forbidden |
+| `maxCardsPerScreen` | 5 |
+| `nestedCard` | forbidden |
+| `decorativeShadow` | forbidden |
+| `maxShadowedElementsPerScreen` | 3 |
+| `maxFloatingPanelsConcurrent` | 1 |
+| `maxBoldOccurrencesPerScreen` | 4 |
+| `maxTopLevelHeadingsPerScreen` | 1 |
+| `maxFontWeightsPerScreen` | 3 |
+| `mixedIconStyles` | forbidden |
+| `maxDecorativeIconsBeforeHeading` | 0 |
+| `decorativeKpiGrid` | forbidden |
+| `decorativeChart` | forbidden |
+| `decorativeHero` | forbidden |
