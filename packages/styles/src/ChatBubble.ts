@@ -82,7 +82,7 @@ export const chatBubbleStyles = `
 
   :where(.${CB_ROW_CLASS}[data-role="me"]) .${CB_BUBBLE_CLASS} {
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
   }
 
   /* group corners — them */

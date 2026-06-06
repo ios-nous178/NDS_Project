@@ -86,7 +86,7 @@ export const checkboxStyles = `
     height: 14px;
     opacity: 0;
     transition: opacity ${transition.default};
-    color: ${cv.surface.default};
+    color: ${cv.button.textDefault};
   }
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_CHECK_ICON_CLASS}),

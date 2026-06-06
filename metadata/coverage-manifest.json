@@ -1,11 +1,5 @@
 {
-  "brands": [
-    "trost",
-    "geniet",
-    "nudge-eap",
-    "cashwalk-biz",
-    "runmile"
-  ],
+  "brands": ["trost", "geniet", "nudge-eap", "cashwalk-biz", "runmile"],
   "brandLabel": {
     "trost": "Trost",
     "geniet": "Geniet",
@@ -102,7 +96,6 @@
     "ReviewCard",
     "ScoreGauge",
     "SearchInput",
-    "SegmentedControl",
     "Select",
     "SelectedItemsPanel",
     "SelectionButtonGroup",
@@ -245,7 +238,6 @@
     "ReviewCard",
     "ScoreGauge",
     "SearchInput",
-    "Segmented",
     "Select",
     "SelectOption",
     "SelectedItemRow",
@@ -261,6 +253,7 @@
     "SnackbarHost",
     "Spinner",
     "StarRating",
+    "Stepper",
     "Tabs",
     "TabsList",
     "TabsPanel",
@@ -294,28 +287,10 @@
       "TabNavigation",
       "UtilityHeader"
     ],
-    "geniet": [
-      "AppBar",
-      "BottomNav",
-      "Footer"
-    ],
-    "nudge-eap": [
-      "AppBar",
-      "BottomNav",
-      "Footer",
-      "Logo",
-      "WebHeader"
-    ],
-    "cashwalk-biz": [
-      "Footer",
-      "WebHeader"
-    ],
-    "runmile": [
-      "AppBar",
-      "BottomNav",
-      "Footer",
-      "WebHeader"
-    ]
+    "geniet": ["AppBar", "BottomNav", "Footer"],
+    "nudge-eap": ["AppBar", "BottomNav", "Footer", "Logo", "WebHeader"],
+    "cashwalk-biz": ["Footer", "WebHeader"],
+    "runmile": ["AppBar", "BottomNav", "Footer", "WebHeader"]
   },
   "generatedAt": "2026-06-06T04:55:27.260Z"
 }

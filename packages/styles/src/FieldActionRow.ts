@@ -131,7 +131,7 @@ export const fieldActionRowStyles = `
   :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button) {
     border: 1px solid ${cv.borderRole.brand};
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
   }
 
   :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:hover:not(:disabled)) {

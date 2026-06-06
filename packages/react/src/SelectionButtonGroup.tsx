@@ -47,7 +47,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 /**
  * SelectionButtonGroup — 폼 내에서 상호 배타적인 옵션을 단일 선택하는 버튼 그룹.
  *
- * SegmentedControl(연결된 회색 트랙 + 슬라이딩 펄)과 달리, 브랜드색 아웃라인의
+ * Tabs variant='segment'(연결된 회색 트랙)과 달리, 브랜드색 아웃라인의
  * 개별 버튼을 gap 으로 나열한다. FormField 의 ContentSlot 에 교체해 사용한다.
  * 선택 상태는 `--semantic-bg-brand-subtle` + `--semantic-border-brand-default`
  * 시멘틱 캐스케이드로 5개 브랜드 모두 브랜드색에 자동 대응한다.

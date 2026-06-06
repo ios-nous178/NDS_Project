@@ -43,17 +43,17 @@ export const asStyles = `
   :where(.${AS_INPUT_CLASS}) {
     flex: 1;
     min-width: 0;
-    height: ${sizing.input.default}px;
-    padding: 0 var(--semantic-inset-card);
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
-    background: ${cv.surface.default};
+    height: var(--nds-input-height, ${sizing.input.default}px);
+    padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
+    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border-radius: var(--nds-input-radius, ${radius.md}px);
+    background: var(--nds-input-background, ${cv.surface.default});
     color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     transition: border-color ${transition.default};
   }
-  :where(.${AS_INPUT_CLASS}:focus) { outline: none; border-color: ${cv.borderRole.brand}; }
+  :where(.${AS_INPUT_CLASS}:focus) { outline: none; border-color: ${cv.input.borderFocus}; }
   :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
 
   /* 검색 버튼은 DS Button(.nds-button) 을 합성 — 비주얼은 Button 토큰이 SSOT.

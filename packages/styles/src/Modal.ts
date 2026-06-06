@@ -276,6 +276,16 @@ export const modalStyles = `
     flex: 0 0 120px;
   }
 
+  /* Dual action (취소+실행) → 우측 정렬 hug pill 2개 (Figma ModalGuide ②④ 3418-471 — 50/50 분할 아님).
+     base 는 flex:1 가로분할(타 브랜드)이지만 캐포비 확인/결정 팝업은 우측 hug 검정 pill + outlined 취소. */
+  :where([data-brand="cashwalk-biz"] .${FOOTER_CLASS}[data-has-both-actions="true"]:not([data-layout="custom"])) {
+    justify-content: flex-end;
+  }
+
+  :where([data-brand="cashwalk-biz"] .${FOOTER_CLASS}[data-has-both-actions="true"]:not([data-layout="custom"]) .${FOOTER_ACTION_CLASS}) {
+    flex: 0 0 auto;
+  }
+
   /* CashwalkBiz 버튼: pill / 44px / Body2(14/20) Medium */
   :where([data-brand="cashwalk-biz"] .${FOOTER_ACTION_CLASS}) {
     height: 44px;

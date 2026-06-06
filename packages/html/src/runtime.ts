@@ -48,7 +48,6 @@ import "./components/nds-search-input.js";
 import "./components/nds-star-rating.js";
 import "./components/nds-number-stepper.js";
 import "./components/nds-slider.js";
-import "./components/nds-segmented.js";
 import "./components/nds-action-chip.js";
 import "./components/nds-selected-items-panel.js";
 import "./components/nds-chart.js";

@@ -490,7 +490,7 @@ export interface ComponentGuide {
    * - 태그는 kebab-case `<nds-button>` 형태.
    * - attribute 도 kebab-case (`full-width`, `right-icon`).
    * - 이벤트는 attribute (`onclick="..."`) 가 아니라 `addEventListener("nds-...", ...)` 패턴으로 설명.
-   * - JSON-encoded attribute 값 (예: `<nds-segmented options='[...]' />`) 은 적절한 따옴표 escape 로 표기.
+   * - JSON-encoded attribute 값 (예: `<nds-select options='[...]' />`) 은 적절한 따옴표 escape 로 표기.
    * - children 콜백/compound 패턴 등 React 전용 표현은 단순화하거나 `slot=` 으로 표현.
    */
   examplesHtml?: {
@@ -574,6 +574,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
     pitfalls: [
+      "**라벨을 JS 로 갈아끼우지 말 것 (HTML 한정 함정)** — `nds-button` 은 실제 `<button>` 을 light DOM 에 렌더하므로 `el.textContent = '...'` / `el.innerHTML = '...'` 로 라벨을 바꾸면 컴포넌트가 렌더한 `<button>` 이 통째로 지워지고, host(display:contents)에 맨 텍스트만 남아 스타일·포인터(cursor)·클릭 동작이 전부 사라진다(회귀: 위저드 하단 '다음 단계'→'심사 신청' 라벨 교체로 버튼이 무스타일 텍스트가 됨). 단계별로 라벨이 달라야 하면 (1) 라벨 고정 nds-button 을 단계 수만큼 두고 show/hide 로 전환하거나 (2) host 자체를 새 nds-button 으로 교체하라. **라벨 텍스트만 노드 변이(textContent/innerHTML) 금지.**",
       "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. **아이콘↔텍스트 간격은 컴포넌트가 `.nds-button__label` 의 gap 으로 자동 적용**하므로 margin-right/padding 으로 직접 띄우지 말 것. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
       "**React 한정** — `<Button leftIcon={<svg/>}>...</Button>` / `rightIcon={<svg/>}` 사용. 빈 React Element 를 넘기고 ref 로 innerHTML 박는 패턴 금지.",
       "color='assistive' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
@@ -1065,13 +1066,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     summary:
       "line/chip 2가지 variant. items + activeKey + onTabChange. " +
-      "동일 depth 콘텐츠 전환 · category navigation · section switching 전용. CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지. (세그먼트형 단일 값 선택은 SegmentedControl — 구 variant='segment' 폐지.)",
+      "동일 depth 콘텐츠 전환 · category navigation · section switching 전용. CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지. (세그먼트형 단일 값 선택은 Tabs variant='segment' — 구 SegmentedControl 흡수.)",
     pitfalls: [
       "items 형식은 {key, title}[]. label 같은 다른 키 이름 사용 시 렌더 실패.",
       "변경 핸들러는 onTabChange (onChange 아님).",
       "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 보기 전환만.",
       "같은 리스트의 '필터' 는 FilterBar, Tab 은 '뷰/카테고리/섹션 전환' — 둘을 섞어 쓰지 말 것.",
-      "세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tab 이 아니라 SegmentedControl(size=lg 가 PC). Tab 은 패널 전환(tablist) 전용.",
+      "세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tabs variant='segment' (mobile/pc). line/chip 은 패널 전환(tablist) 전용.",
       "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.",
     ],
     usagePolicy: {
@@ -1084,7 +1085,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "CTA 대체 (저장/신청/다음 단계)",
         "필터 컨트롤 (FilterBar 사용)",
         "페이지 단위 라우팅 (좌측 메뉴 · Breadcrumb 사용)",
-        "세그먼트형 단일 값 선택 (SegmentedControl 사용)",
+        "세그먼트형 단일 값 선택 (Tabs variant='segment' 사용)",
       ],
       variantPolicy: {
         line: "기본 — 모바일/PC 공통, 콘텐츠 전환",
@@ -1258,6 +1259,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9903",
     pitfalls: [
       "검색 변형이 필요하면 SearchInput을 사용. Input에 SearchIcon을 직접 박지 말 것.",
+      "**매 키 입력마다 value 를 재포맷하지 말 것** — `input` 이벤트에서 천단위 콤마/단위를 붙여 `el.value` 를 되쓰면 nds-input 의 내부 controlled 상태와 충돌해 커서가 튀고 한 글자만 입력되거나 수정이 막힌다(회귀: 입찰단가/예산 콤마 라이브 포맷으로 '한 글자 이상 입력·수정 불가'). 금액·수량은 콤마·단위·clamp 가 내장된 **AmountInput(`<nds-amount-input>`)** 을 쓰고(검증룰 amount-as-text-input 이 일반 금액 input 자체를 막음), 굳이 일반 input 이면 포맷은 blur 시점이나 제출 시 파싱으로 미루고 입력 중에는 raw 값을 그대로 유지하라.",
       "label/helper 의 typography 는 caption-2(12/16) — body3(14/20) 로 키우지 말 것. Figma 명세보다 크면 폼이 산만해짐.",
       "complete=true 와 errorMessage 를 동시에 주지 말 것 — error 가 우선이지만 success 의도가 묻힘.",
       "errorMessage/successMessage/helperText 중 하나라도 있으면 helpers 배열은 무시됨. 단일/멀티 의도를 분리해서 사용.",
@@ -1662,6 +1664,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary:
       '카드형 단일/다중 선택지 (RadioCard/CheckboxCard 통합). compound — Group + Item. title/description 외에 **리치 중첩 콘텐츠**(Chip 행·bullet 리스트)를 React `children` / HTML `slot="content"` 로 카드 본문에 넣을 수 있음(캐포비 캠페인 목표 카드).',
     pitfalls: [
+      "**카드형 단일선택을 손수 만들지 말 것** — `nds-selection-card`(mode='single')는 좌측 라디오 인디케이터(미선택=회색 링 / 선택=브랜드 채움 도트)를 **내장**한다(showIndicator 기본 true). 커스텀 `<div>` 카드 + 수동 라디오 동그라미 div 로 재발명하면 도트가 빠지거나 토큰·포커스·a11y(role=radiogroup)가 어긋난다(회귀: 캐포비 '소진 방식/목표/유형' 카드에서 라디오 UI 누락 — '기준이 뭐냐'). 소진방식·목표·유형 등 설명 있는 카드형 단일선택은 전부 nds-selection-card 로.",
       "라벨만 있는 단순 선택은 Radio/Checkbox를 쓸 것 — SelectionCard는 카드 단위(타이틀+설명+아이콘) 전제.",
       "mode='single'에서는 value/onValueChange, mode='multiple'에서는 values/onValuesChange. 헷갈리지 말 것.",
       '**카드 안에 Chip 행·bullet 같은 부가 내용**은 React `children`(Item 자식) / HTML `<div slot="content">` 로 — description 에 줄바꿈으로 욱여넣지 말 것.',
@@ -3636,9 +3639,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "전체 페이지 수 5 이하 / 항목 30 이하면 Pagination 자체가 과한 UI — 한 페이지로 노출.",
       "show-arrows 와 siblings 를 둘 다 끄면 현재 페이지 ±1 만 보여 탐색이 끊김.",
       "PaginationChange 이벤트 처리 없이 page attribute 만 바꿔도 데이터 fetch 가 안 일어남 — 이벤트 핸들러에서 fetch 호출.",
+      '캐포비(data-brand="cashwalk-biz")에서는 각 페이지/화살표가 개별 보더 박스 + 활성 페이지가 검정 채움으로 자동 렌더된다(cascade). markup/attribute 는 base 와 동일 — 박스 모양을 흉내내려 직접 div/border 를 짜지 말 것.',
     ],
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-31310",
     examplesHtml: {
-      do: '<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>\n<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>\n<!-- 한 페이지 행 수 선택은 component:PageSizeSelect — 보통 표 하단 우측 -->',
+      do: '<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>\n<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>\n<!-- 한 페이지 행 수 선택은 component:PageSizeSelect — 보통 표 하단 우측 -->\n<!-- 캐포비 박스형은 <html data-brand="cashwalk-biz"> 만 박혀 있으면 자동 적용 -->',
       dont: '<!-- siblings 0 + arrows 없음 — 옆 페이지가 보이지 않음 -->\n<nds-pagination page="1" total-pages="10" siblings="0"></nds-pagination>',
     },
   },
@@ -3758,7 +3763,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary:
       "폼 내 상호 배타적 옵션의 단일 선택 (권장 2~3개). 브랜드색 아웃라인의 개별 버튼을 gap 으로 나열 — FormField ContentSlot 에 교체. 선택 시 brand-subtle 배경 + brand 보더 + 굵은 텍스트.",
     pitfalls: [
-      "SegmentedControl 과 혼동 — Segmented 는 연결된 회색 트랙(뷰/상태 전환), SelectionButtonGroup 은 폼 입력(개별 브랜드색 버튼). 폼 안 단일선택이면 이 컴포넌트.",
+      "Tabs variant='segment' 와 혼동 — segment 는 연결된 회색 트랙(뷰/상태 전환), SelectionButtonGroup 은 폼 입력(개별 브랜드색 버튼). 폼 안 단일선택이면 이 컴포넌트.",
       "옵션 4개 이상 — 가로 폭 부족. Select 또는 SelectionCard 사용.",
       "라벨+설명+아이콘이 필요한 카드형 선택 — SelectionCard 가 적합.",
       "선택색을 hex 로 박지 말 것 — selected 는 --semantic-bg-brand-subtle / --semantic-border-brand-default 캐스케이드로 5개 브랜드 자동 대응.",
@@ -3767,27 +3772,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     examplesHtml: {
       do: '<nds-selection-button-group value="always" options=\'[{"value":"always","label":"항상"},{"value":"time","label":"특정 시간만"},{"value":"weekday","label":"특정 요일/시간만"}]\'></nds-selection-button-group>\n<script>el.addEventListener("selection-button-change", e => setSchedule(e.detail.value));</script>',
-      dont: '<!-- 뷰 전환에 SelectionButtonGroup — 폼 입력 컴포넌트라 위계가 어색. SegmentedControl 사용 -->\n<nds-selection-button-group options=\'[{"value":"list","label":"목록"},{"value":"grid","label":"그리드"}]\'></nds-selection-button-group>',
+      dont: '<!-- 뷰 전환에 SelectionButtonGroup — 폼 입력 컴포넌트라 위계가 어색. Tabs variant=segment 사용 -->\n<nds-selection-button-group options=\'[{"value":"list","label":"목록"},{"value":"grid","label":"그리드"}]\'></nds-selection-button-group>',
     },
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-703",
-  },
-  SegmentedControl: {
-    name: "SegmentedControl",
-    summary:
-      "2-5 개의 평행 옵션 중 단일 선택(role=radiogroup) — 연결된 트랙(뷰/기간/상태 전환). 4개 초과면 Select / Tabs. size=sm 32 / md 36 / **lg 40(PC — 구 Tabs.segment 흡수, 옵션 아이콘 동반 가능, React 전용)**. variant=default(회색 트랙 위 흰 active) | solid(진한 Inverse fill + 흰 active, 캐포비 리포트 노출/클릭 토글 정합). (콘텐츠 패널 전환은 Tabs — Segmented 는 값 토글, 패널 없음.)",
-    pitfalls: [
-      "옵션이 6개 이상 — 가로 폭 부족으로 라벨 truncate. Select 사용.",
-      "**폼 입력의 단일선택(전체/Android/iOS, 전체/여성/남성)에 SegmentedControl 쓰지 말 것** — 그건 분리형 브랜드색 필 버튼인 SelectionButtonGroup(nds-selection-button-group) 이 SSOT. Segmented 는 연결된 트랙(뷰/기간/상태 전환)용.",
-      '리포트 그래프 요약의 노출/클릭 같은 **진한 active 토글**은 `variant="solid"` — default(흰 raised active)는 옅어 의도와 다름.',
-      "PC 어드민/CMS 의 가로 세그먼트(구 Tabs variant='segment')는 size='lg' — Tabs 의 segment variant 는 폐지됨. 콘텐츠 패널을 전환해야 하면 Tabs(line/chip).",
-      "Segmented 와 Tabs 를 같은 화면에서 동시 사용 — 위계가 모호.",
-      "옵션 아이콘(option.icon)은 React 전용 슬롯 — HTML(nds-segmented)은 텍스트 라벨만.",
-    ],
-    examplesHtml: {
-      do: '<!-- 기간 전환(연결 트랙) -->\n<nds-segmented value="week" size="md" options=\'[{"label":"주","value":"week"},{"label":"월","value":"month"},{"label":"연","value":"year"}]\'></nds-segmented>\n<!-- 리포트 노출/클릭 토글 — 진한 active -->\n<nds-segmented value="impression" variant="solid" options=\'[{"label":"노출","value":"impression"},{"label":"클릭","value":"click"}]\'></nds-segmented>\n<!-- PC 가로 세그먼트(구 Tabs.segment) -->\n<nds-segmented value="all" size="lg" options=\'[{"label":"전체","value":"all"},{"label":"고위험군","value":"risk"}]\'></nds-segmented>\n<script>el.addEventListener("segmented-change", e => setPeriod(e.detail.value));</script>',
-      dont: '<!-- 폼 단일선택(전체/Android/iOS)에 Segmented — 분리형 필이 맞음. SelectionButtonGroup 사용 -->\n<nds-segmented options=\'[{"label":"전체","value":"all"},{"label":"Android","value":"aos"},{"label":"iOS","value":"ios"}]\'></nds-segmented>',
-    },
-    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-30014",
   },
   Skeleton: {
     name: "Skeleton",
@@ -3851,7 +3838,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "Toast",
     summary:
       "**인터랙션 없는 일시 메시지** 전용 (저장 완료 / 복사됨 / 네트워크 에러 등). 확인·클릭 없이 자동으로 사라지는 가벼운 결과 피드백 — multi-stack 가능(maxCount). " +
-      "자동으로 사라지므로 **액션(되돌리기/다시시도)이나 닫기 버튼·브랜드 카드(캐포비 흰 카드)는 두지 않는다** — 그런 알림은 Snackbar 를 사용한다. (액션이 사라지는 토스트에 붙으면 사용자가 누를 새가 없다.)",
+      "자동으로 사라지므로 **액션(되돌리기/다시시도)이나 닫기 버튼·브랜드 카드(캐포비 흰 카드)는 두지 않는다** — 그런 알림은 Snackbar 를 사용한다. (액션이 사라지는 토스트에 붙으면 사용자가 누를 새가 없다.) " +
+      "**캐시워크 포 비즈니스(admin) 는 알림 기본을 Snackbar 로 둔다** — 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 가 캐포비 알림 SSOT 라, Toast 는 캐포비에서 거의 쓰지 않는다(닫기·액션 없는 순수 일시 메시지일 때만 예외). get_guide({ topic: 'component:Snackbar', brand: 'cashwalk-biz' }).",
     pitfalls: [
       "duration 0 으로 영구 표시 — 차단 의도면 Modal/Popup, 영구 알림이면 Banner.",
       "변형(default/success/error/warning) 없이 모두 default — 시각 위계가 사라짐.",
@@ -4282,7 +4270,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "서브타이틀(h3/h4) 앞 장식 아이콘 · Form Label 앞 장식 아이콘 · 본문 텍스트 앞 decorative icon 금지 — 한 화면에서 일부 헤딩에만 아이콘을 붙이면 hierarchy 가 깨짐",
     "헤딩 앞 아이콘 5개 이상 사용 시 자동 위반 — 아이콘을 hierarchy 표현 수단으로 쓰지 마세요",
     "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 동일 depth 콘텐츠 전환 전용",
-    "세그먼트형 단일 값 선택(뷰/기간/상태 토글)에 Tab 사용 금지 — SegmentedControl(size=lg 가 PC) 사용. Tab 은 패널 전환 전용",
+    "세그먼트형 단일 값 선택은 Tabs variant='segment' 사용. line/chip 은 패널 전환 전용",
     "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 즉각적 판단/응답이 필요할 때만",
     "Modal 내부에 또 다른 강조(Card·Brand BG·Chip 그룹)를 쌓지 마세요 — 핵심 action 1 + 보조 action 1 구조가 기본",
     "Fill Badge 를 한 카드/Row 안에 2개 이상 두지 마세요 — 일반 카테고리는 ghost/line 우선, Fill 은 카드당 최대 1개",
@@ -5441,6 +5429,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     summary:
       "아이콘은 장식이 아니라 행동 / 상태 / affordance 전달 목적에만 사용한다. 어디에 써도 되고 어디에 쓰면 안 되는지를 정의하는 화이트리스트 / 블랙리스트. 아이콘 컬러는 get_guide({ topic: 'pattern:icon-color' }), 사이즈/스타일은 get_guide({ topic: 'pattern:iconography' }) 참고.",
     rules: [
+      "**flex 행 안 인라인 아이콘은 `flex-shrink:0` + 고정 width/height 필수** — 텍스트 옆(상태 뱃지 옆 [i], 칩 안, 라벨 옆)에 둔 SVG 는 flex 자식이라 공간이 부족하면 가로폭이 0 까지 눌려 세로로 찌그러진다(회귀: '반려' 뱃지 옆 [i] 아이콘이 1px 너비로 찌그러짐). DS 입력/체크박스는 아이콘 슬롯에 이미 flex-shrink:0 을 주지만(Input prefix/suffix·Checkbox indicator), 손수 넣은 SVG 는 작성자가 `flex-shrink:0; width:16px; height:16px` 를 직접 줘야 한다. find_icon 산출 SVG 도 컨테이너가 flex 면 동일.",
       "**필수 선택 순서**: 브랜드 전용 아이콘 → NudgeEAP 기본 아이콘 → MockupLinear*/MockupBold* 목업 기본 아이콘 → 자체 생성 SVG. find_icon 으로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 이동.",
       "허용 위치 (화이트리스트):\n  · AppBar / Header 기능 버튼 (검색 · 알림 · 뒤로가기 · 메뉴)\n  · Bottom Tab Navigation\n  · IconButton\n  · 동일 위계의 카테고리 그룹 (Concern Grid · Category Grid)\n  · 상태 아이콘 (Success · Warning · Error)\n  · Form Field affordance (검색 · 캘린더 · 드롭다운 토글)",
       "동일 위계의 텍스트는 아이콘 사용 여부가 일관되어야 한다 — 같은 GNB / 같은 카드 리스트 / 같은 헤딩 그룹 안에서 일부에만 아이콘이 붙으면 hierarchy 가 깨진다.",
@@ -5549,7 +5538,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**액션 위계**: primary solid CTA 1개. 파괴(삭제) 액션은 별도 위치(헤더 우측 또는 카드 우측 상단) 분리.",
       "**선택 chip / 활성 토큰**: `bg #FFFAE2 + border #FFD200` (옅은 노란 + 노란 보더) + Bold #111. 강조 숫자/카운트는 `#FD9B02` (amber).",
       "**타겟팅 지역 선택(캐포비 한정 SSOT)**: 폼 페이지에는 `SelectedItemsPanel` 로 현재 선택 지역을 보여주고, 첫 선택/추가 선택 클릭 시에만 대형 선택 모달을 연다. 모달 본문은 좌측 `CheckboxTree`(검색 + 전체선택 + 시/도▸시/군/구) + 우측 `SelectedItemsPanel hide-add`(선택 해제 + 제거 가능한 SelectedItemRow) 조합, 푸터는 본문 풀폭 옐로우 `적용` CTA. **모달 안 우측 패널에는 '추가 선택' 버튼을 절대 두지 않는다**(HTML `hide-add`, React `onAdd` 미전달) — 모달 안에 입력 버튼이 2개처럼 보이는 회귀 방지.",
-      "**타겟팅 성별 선택(캐포비 한정 SSOT)**: 성별 필드는 `SelectionButtonGroup` 으로 `전체 / 특정 성별` 을 먼저 고르고, `특정 성별` 상태에서만 selection chip 묶음(`<nds-chip selected interactive>남성</nds-chip>`, `<nds-chip selected interactive>여성</nds-chip>`, 필요 시 `알 수 없음`)을 노출한다. Select / RadioGroup / CheckboxGroup / SegmentedControl 로 대체하지 말 것 — 캐포비 타겟팅 폼에서는 입력 종류가 흔들리면 목업 품질이 가장 크게 흔들린다.",
+      "**타겟팅 성별 선택(캐포비 한정 SSOT)**: 성별 필드는 `SelectionButtonGroup` 으로 `전체 / 특정 성별` 을 먼저 고르고, `특정 성별` 상태에서만 selection chip 묶음(`<nds-chip selected interactive>남성</nds-chip>`, `<nds-chip selected interactive>여성</nds-chip>`, 필요 시 `알 수 없음`)을 노출한다. Select / RadioGroup / CheckboxGroup 로 대체하지 말 것 — 캐포비 타겟팅 폼에서는 입력 종류가 흔들리면 목업 품질이 가장 크게 흔들린다.",
       "**우측 보조 사이드 카드 (선택)**: 메인 필드 우측에 요약 카드 (border #ECECEC rounded-16 padding 25×32 w-406) — 미리보기/도움말.",
       "**유효성 검사**: 입력 중 에러 표시 X (onBlur/submit). 글자 수 카운터만 실시간.",
     ],
@@ -5564,7 +5553,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "필드 border-radius 를 8px 로 — Figma 는 10px.",
       "필수 라벨을 brand yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.",
       "캐포비 타겟팅 지역 선택을 Chip 인라인 나열/평면 CheckboxGroup/작은 팝오버로 구현 — 폼 페이지 `SelectedItemsPanel` + 대형 선택 모달(`CheckboxTree` + `SelectedItemsPanel hide-add`)이 SSOT.",
-      "캐포비 타겟팅 성별 선택을 Select/RadioGroup/CheckboxGroup/SegmentedControl 로 구현 — `SelectionButtonGroup` + selected Chip 묶음이 SSOT.",
+      "캐포비 타겟팅 성별 선택을 Select/RadioGroup/CheckboxGroup 로 구현 — `SelectionButtonGroup` + selected Chip 묶음이 SSOT.",
       "한 폼 안에 카드 간격 일정한 24px — Figma 는 의미 단위 64-80px 가변.",
     ],
     examples: [
@@ -5872,6 +5861,21 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
           "NudgeEAP 홍보/랜딩 페이지 SSOT 스크린샷 (B2B 도입 유치, 1920/1400 rail, 80h pill CTA, 8 stacked sections).",
         brand: "nudge-eap",
       },
+    ],
+  },
+  "selection-controls": {
+    name: "selection-controls",
+    summary:
+      "선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tabs(variant=segment) / Dropdown 중 하나로 매핑한다.",
+    rules: [
+      "① 다중 선택 + 짧은 라벨(연령대·시군구·태그·관심사) → SelectChip (`<nds-chip selected interactive>`, 캐포비=노란 채움/검정 텍스트).",
+      "② 단일 선택 + 설명 없는 짧은 옵션 2~3개(OS 전체/Android/iOS·성별·노출 구분) → SelectionButtonGroup.",
+      "③ 단일 선택 + 설명/아이콘 있는 카드(캠페인 목표·유형·소진 방식) → SelectionCard(mode=single) — 라디오 도트 내장, 커스텀 카드 금지.",
+      "④ 목록 상태 필터(전체/송출중/정지) → Tabs variant='segment' 또는 캐포비 Box Tab(pattern:cashwalk-biz-tab).",
+      "⑤ 단일 선택 옵션 4개 초과 → Dropdown.",
+    ],
+    avoid: [
+      "같은 용도(예: 연령=다중·짧은 라벨, 지역 시군구=다중·짧은 라벨)인데 화면마다 다른 컴포넌트로 만들기 — 둘 다 SelectChip 으로 통일.",
     ],
   },
 

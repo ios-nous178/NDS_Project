@@ -227,7 +227,7 @@ export const datePickerStyles = `
 
   :where(.${DP_DAY_CLASS}[data-selected="true"]) {
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
     font-weight: ${fontWeight.medium};
   }
 

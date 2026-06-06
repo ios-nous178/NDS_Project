@@ -65,7 +65,7 @@ export const timeSlotPickerStyles = `
   :where(.${TS_SLOT_CLASS}[data-selected="true"]) {
     background: ${cv.surface.brand};
     border-color: ${cv.borderRole.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
     font-weight: ${fontWeight.medium};
   }
 

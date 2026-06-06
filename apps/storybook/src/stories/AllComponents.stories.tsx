@@ -73,7 +73,6 @@ import {
   ReviewCard,
   ScoreGauge,
   SearchInput,
-  SegmentedControl,
   Select,
   MultiSelect,
   CheckboxTree,
@@ -147,13 +146,19 @@ type ComponentGuide = {
 const GUIDES: Record<string, ComponentGuide> =
   (componentGuides as { components?: Record<string, ComponentGuide> }).components ?? {};
 
-function isBrandSpecificEntry(entry: { name?: string; storybookTitle?: string; category?: string }) {
+function isBrandSpecificEntry(entry: {
+  name?: string;
+  storybookTitle?: string;
+  category?: string;
+}) {
   const brandPrefixes = ["Geniet", "Trost", "NudgeEAP", "CashwalkBiz", "Runmile"];
   return Boolean(
     entry.storybookTitle?.startsWith("Brands/") ||
-      brandPrefixes.some((prefix) => entry.storybookTitle?.includes(`/${prefix}/`) || entry.name?.startsWith(prefix)) ||
-      entry.category === "브랜드" ||
-      entry.category === "Brand",
+    brandPrefixes.some(
+      (prefix) => entry.storybookTitle?.includes(`/${prefix}/`) || entry.name?.startsWith(prefix),
+    ) ||
+    entry.category === "브랜드" ||
+    entry.category === "Brand",
   );
 }
 
@@ -331,43 +336,106 @@ const PREVIEWS: Record<string, PreviewRender> = {
   },
   Tabs: () => {
     function TabsPreview() {
-      const [lineKey, setLineKey] = useState("home");
-      const [chipKey, setChipKey] = useState("all");
+      const [lineN, setLineN] = useState("home");
+      const [lineC, setLineC] = useState("home");
+      const [chipC, setChipC] = useState("all");
+      const [chipN, setChipN] = useState("all");
+      const [seg, setSeg] = useState("week");
+      const [segPc, setSegPc] = useState("week");
+      const segItems = [
+        { key: "day", title: "일" },
+        { key: "week", title: "주" },
+        { key: "month", title: "월" },
+      ];
+      const lineItems = [
+        { key: "home", title: "홈" },
+        { key: "list", title: "목록" },
+      ];
+      const chipItems = [
+        { key: "all", title: "전체" },
+        { key: "work", title: "직장" },
+        { key: "love", title: "연애" },
+      ];
+      const cap: React.CSSProperties = {
+        fontSize: 11,
+        fontWeight: 700,
+        color: "var(--semantic-text-subtle-default)",
+        marginBottom: 4,
+      };
+      const row: React.CSSProperties = { width: "100%", maxWidth: 260 };
       return (
         <div
           style={{
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: "var(--semantic-gap-default)",
+            gap: "var(--semantic-gap-comfortable)",
           }}
         >
-          <div style={{ width: "100%", maxWidth: 240 }}>
+          <div style={row}>
+            <div style={cap}>Line · neutral</div>
             <Tabs
-              activeKey={lineKey}
-              onTabChange={setLineKey}
+              activeKey={lineN}
+              onTabChange={setLineN}
               variant="line"
               size="mobile"
               tone="neutral"
-              items={[
-                { key: "home", title: "홈" },
-                { key: "list", title: "목록" },
-              ]}
+              items={lineItems}
             />
           </div>
-          <div style={{ width: "100%", maxWidth: 240 }}>
+          <div style={row}>
+            <div style={cap}>Line · color</div>
             <Tabs
-              activeKey={chipKey}
-              onTabChange={setChipKey}
+              activeKey={lineC}
+              onTabChange={setLineC}
+              variant="line"
+              size="mobile"
+              tone="color"
+              items={lineItems}
+            />
+          </div>
+          <div style={row}>
+            <div style={cap}>Chip · color</div>
+            <Tabs
+              activeKey={chipC}
+              onTabChange={setChipC}
               variant="chip"
               size="mobile"
               tone="color"
               fullWidth={false}
-              items={[
-                { key: "all", title: "전체" },
-                { key: "work", title: "직장" },
-                { key: "love", title: "연애" },
-              ]}
+              items={chipItems}
+            />
+          </div>
+          <div style={row}>
+            <div style={cap}>Chip · neutral</div>
+            <Tabs
+              activeKey={chipN}
+              onTabChange={setChipN}
+              variant="chip"
+              size="mobile"
+              tone="neutral"
+              fullWidth={false}
+              items={chipItems}
+            />
+          </div>
+          <div style={row}>
+            <div style={cap}>Segment · mobile (구 SegmentedControl)</div>
+            <Tabs
+              activeKey={seg}
+              onTabChange={setSeg}
+              variant="segment"
+              size="mobile"
+              items={segItems}
+            />
+          </div>
+          <div style={row}>
+            <div style={cap}>Segment · pc</div>
+            <Tabs
+              activeKey={segPc}
+              onTabChange={setSegPc}
+              variant="segment"
+              size="pc"
+              items={segItems}
             />
           </div>
         </div>
@@ -429,8 +497,17 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   Snackbar: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <Snackbar variant="success" title="저장되었어요" />
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%", maxWidth: 340 }}>
+      <Snackbar
+        variant="success"
+        title="저장되었어요"
+        description="변경 사항이 반영되었습니다"
+        actionLabel="실행취소"
+        onAction={() => {}}
+        closable
+        onClose={() => {}}
+      />
+      <Snackbar variant="error" title="저장에 실패했어요" closable onClose={() => {}} />
     </div>
   ),
   Modal: () => (
@@ -539,11 +616,55 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Input placeholder="메시지 입력 (ChatComposer 대체 미리보기)" />
     </div>
   ),
-  CommentItem: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <CommentItem author="홍길동" text="좋은 글 잘 읽었습니다." time="방금 전" />
-    </div>
-  ),
+  CommentItem: () => {
+    function CommentLike({ count, size = "sm" }: { count: number; size?: "sm" | "md" }) {
+      const [liked, setLiked] = useState(false);
+      return (
+        <LikeButton size={size} liked={liked} count={count + (liked ? 1 : 0)} onChange={setLiked} />
+      );
+    }
+    return (
+      <div style={{ width: "100%", maxWidth: 320 }}>
+        <CommentItem
+          avatar={<Avatar name="이수영" size="sm" />}
+          author="이수영"
+          authorBadge={
+            <Badge variant="fill" color="brand" size="sm">
+              작성자
+            </Badge>
+          }
+          time="2시간 전"
+          text="좋은 글 잘 읽었습니다. 다음 편도 기대할게요!"
+          likeAction={<CommentLike count={12} />}
+          onReply={() => {}}
+          more={
+            <button
+              type="button"
+              aria-label="더보기"
+              style={{ border: "none", background: "transparent", cursor: "pointer", padding: 0 }}
+            >
+              ⋯
+            </button>
+          }
+          replies={
+            <CommentItem
+              isReply
+              avatar={<Avatar name="최서연" size="sm" />}
+              author="최서연"
+              authorBadge={
+                <Badge variant="line" color="brand" size="sm">
+                  상담사
+                </Badge>
+              }
+              time="1시간 전"
+              text="공감해 주셔서 감사합니다 :)"
+              likeAction={<CommentLike count={3} />}
+            />
+          }
+        />
+      </div>
+    );
+  },
   LikeButton: () => {
     function L() {
       const [liked, setLiked] = useState(false);
@@ -569,18 +690,40 @@ const PREVIEWS: Record<string, PreviewRender> = {
       />
     </div>
   ),
-  Chart: () => (
-    <div style={{ width: "100%", maxWidth: 320 }}>
-      <Chart
-        type="bar"
-        labels={["10", "20", "30", "40", "50", "60"]}
-        series={[
-          { name: "남성", values: [14, 15, 22, 25, 26, 16] },
-          { name: "여성", values: [14, 18, 20, 28, 26, 14] },
-        ]}
-      />
-    </div>
-  ),
+  Chart: () => {
+    const labels = ["10", "20", "30", "40", "50", "60"];
+    const series = [
+      { name: "남성", values: [14, 15, 22, 25, 26, 16] },
+      { name: "여성", values: [14, 18, 20, 28, 26, 14] },
+    ];
+    const cap: React.CSSProperties = {
+      fontSize: 11,
+      fontWeight: 700,
+      color: "var(--semantic-text-subtle-default)",
+    };
+    return (
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%", maxWidth: 320 }}
+      >
+        <div>
+          <div style={cap}>Bar</div>
+          <Chart type="bar" labels={labels} series={series} />
+        </div>
+        <div>
+          <div style={cap}>Line</div>
+          <Chart type="line" labels={labels} series={series} />
+        </div>
+        <div>
+          <div style={cap}>Donut</div>
+          <Chart
+            type="donut"
+            labels={["직장", "연애", "건강", "기타"]}
+            series={[{ name: "비율", values: [42, 28, 18, 12] }]}
+          />
+        </div>
+      </div>
+    );
+  },
   StatsTable: () => (
     <div style={{ width: "100%", maxWidth: 360 }}>
       <StatsTable>
@@ -589,21 +732,25 @@ const PREVIEWS: Record<string, PreviewRender> = {
             <th>연령</th>
             <th>성별</th>
             <th>당첨자 수</th>
+            <th>지급 캐시</th>
           </tr>
         </thead>
         <tbody>
           <tr className="is-summary">
             <td colSpan={2}>총합</td>
             <td>999,999</td>
+            <td>1,234,567</td>
           </tr>
           <tr>
-            <td rowSpan={2}>NN대</td>
+            <td rowSpan={2}>30대</td>
             <td>남성</td>
             <td>99</td>
+            <td>12,300</td>
           </tr>
           <tr>
             <td>여성</td>
-            <td>99</td>
+            <td>120</td>
+            <td>15,600</td>
           </tr>
         </tbody>
       </StatsTable>
@@ -705,8 +852,20 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   UserCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <UserCard name="홍길동" handle="@gildong" bio="EAP 전문 상담사" />
+    <div style={{ width: "100%", maxWidth: 280 }}>
+      <UserCard
+        avatar={<Avatar name="홍길동" />}
+        name="홍길동"
+        handle="@gildong"
+        bio="EAP 전문 상담사"
+        verified
+        meta="상담 1,204회 · 평점 4.9"
+        action={
+          <Button size="sm" variant="outlined">
+            팔로우
+          </Button>
+        }
+      />
     </div>
   ),
   ProductCard: () => (
@@ -910,8 +1069,22 @@ const PREVIEWS: Record<string, PreviewRender> = {
           marginBottom: 8,
         }}
       >
-        <div style={{ flex: 1, height: 4, background: "var(--semantic-fill-brand-default)", borderRadius: 2 }} />
-        <div style={{ flex: 1, height: 4, background: "var(--semantic-fill-brand-default)", borderRadius: 2 }} />
+        <div
+          style={{
+            flex: 1,
+            height: 4,
+            background: "var(--semantic-fill-brand-default)",
+            borderRadius: 2,
+          }}
+        />
+        <div
+          style={{
+            flex: 1,
+            height: 4,
+            background: "var(--semantic-fill-brand-default)",
+            borderRadius: 2,
+          }}
+        />
         <div style={{ flex: 1, height: 4, background: "#E6E7EB", borderRadius: 2 }} />
         <span style={{ fontSize: 11, color: "#888", marginLeft: 4 }}>2 / 3</span>
       </div>
@@ -1000,12 +1173,44 @@ const PREVIEWS: Record<string, PreviewRender> = {
       }}
     >
       <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden>
-        <rect x="10" y="14" width="8" height="5" rx="1" fill="#FF6B6B" transform="rotate(-18 14 16)" />
+        <rect
+          x="10"
+          y="14"
+          width="8"
+          height="5"
+          rx="1"
+          fill="#FF6B6B"
+          transform="rotate(-18 14 16)"
+        />
         <circle cx="46" cy="16" r="3.5" fill="#06D6A0" />
-        <rect x="30" y="9" width="7" height="4" rx="1" fill="#FFD166" transform="rotate(24 33 11)" />
+        <rect
+          x="30"
+          y="9"
+          width="7"
+          height="4"
+          rx="1"
+          fill="#FFD166"
+          transform="rotate(24 33 11)"
+        />
         <circle cx="18" cy="34" r="3" fill="#118AB2" />
-        <rect x="42" y="32" width="8" height="5" rx="1" fill="#9D4EDD" transform="rotate(32 46 34)" />
-        <rect x="22" y="46" width="7" height="4" rx="1" fill="#FF9F1C" transform="rotate(-12 25 48)" />
+        <rect
+          x="42"
+          y="32"
+          width="8"
+          height="5"
+          rx="1"
+          fill="#9D4EDD"
+          transform="rotate(32 46 34)"
+        />
+        <rect
+          x="22"
+          y="46"
+          width="7"
+          height="4"
+          rx="1"
+          fill="#FF9F1C"
+          transform="rotate(-12 25 48)"
+        />
         <circle cx="48" cy="48" r="3.5" fill="#FFD166" />
         <circle cx="33" cy="30" r="2.5" fill="#FF6B6B" />
       </svg>
@@ -1095,7 +1300,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
               width: 3,
               height: h,
               background:
-                i < 5 ? "var(--semantic-fill-brand-default)" : "var(--semantic-fill-brand-disabled)",
+                i < 5
+                  ? "var(--semantic-fill-brand-default)"
+                  : "var(--semantic-fill-brand-disabled)",
               borderRadius: 2,
             }}
           />
@@ -1188,7 +1395,12 @@ const PREVIEWS: Record<string, PreviewRender> = {
   /* 입력 */
   Textarea: () => (
     <div style={{ width: "100%", maxWidth: 220 }}>
-      <Textarea placeholder="오늘의 일기를 적어보세요" minHeight={72} />
+      <Textarea
+        placeholder="오늘의 일기를 적어보세요"
+        defaultValue="오늘은 상담이 잘 풀렸다."
+        minHeight={72}
+        maxLength={200}
+      />
     </div>
   ),
   FormField: () => (
@@ -1284,25 +1496,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
       );
     }
     return <L />;
-  },
-  SegmentedControl: () => {
-    function S() {
-      const [v, setV] = useState("week");
-      return (
-        <div style={{ width: "100%", maxWidth: 200 }}>
-          <SegmentedControl
-            value={v}
-            onValueChange={setV}
-            options={[
-              { value: "day", label: "일" },
-              { value: "week", label: "주" },
-              { value: "month", label: "월" },
-            ]}
-          />
-        </div>
-      );
-    }
-    return <S />;
   },
 
   SelectionButtonGroup: () => {
@@ -1573,18 +1766,34 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   DataTable: () => {
-    type Row = { id: string; name: string; status: string };
+    type Status = "완료" | "예약" | "취소";
+    type Row = { id: string; name: string; status: Status; sessions: number };
+    const tone: Record<Status, "success" | "neutral" | "error"> = {
+      완료: "success",
+      예약: "neutral",
+      취소: "error",
+    };
     const columns: DataTableColumn<Row>[] = [
       { key: "name", title: "이름", render: (r) => r.name },
-      { key: "status", title: "상태", render: (r) => r.status, align: "right" },
+      { key: "sessions", title: "상담", render: (r) => `${r.sessions}회`, align: "right" },
+      {
+        key: "status",
+        title: "상태",
+        align: "center",
+        render: (r) => (
+          <Badge color={tone[r.status]} variant="ghost">
+            {r.status}
+          </Badge>
+        ),
+      },
     ];
     const data: Row[] = [
-      { id: "1", name: "홍길동", status: "완료" },
-      { id: "2", name: "김상담", status: "예약" },
-      { id: "3", name: "이지원", status: "취소" },
+      { id: "1", name: "홍길동", status: "완료", sessions: 12 },
+      { id: "2", name: "김상담", status: "예약", sessions: 3 },
+      { id: "3", name: "이지원", status: "취소", sessions: 0 },
     ];
     return (
-      <div style={{ width: "100%", maxWidth: 240 }}>
+      <div style={{ width: "100%", maxWidth: 300 }}>
         <DataTable
           columns={columns}
           data={data}
@@ -2512,11 +2721,13 @@ function Catalog() {
         <p style={catalogNoteTitle}>Floating UI 구분</p>
         <div style={catalogNoteGrid}>
           <p style={catalogNoteItem}>
-            <strong>Modal</strong>은 응답이 필요한 큰 흐름, <strong>Popup</strong>은 짧은 확인/거부용입니다.
+            <strong>Modal</strong>은 응답이 필요한 큰 흐름, <strong>Popup</strong>은 짧은
+            확인/거부용입니다.
           </p>
           <p style={catalogNoteItem}>
             <strong>Toast</strong>는 인터랙션 없이 자동 사라지는 일시 메시지,{" "}
-            <strong>Snackbar</strong>는 액션/되돌리기·닫기가 붙는 카드형 알림(캐포비 흰 카드 포함)입니다.
+            <strong>Snackbar</strong>는 액션/되돌리기·닫기가 붙는 카드형 알림(캐포비 흰 카드
+            포함)입니다.
           </p>
         </div>
       </div>

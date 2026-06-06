@@ -275,7 +275,7 @@
     "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-703",
     "figmaNodeId": "3555:703",
     "usageSummary": "광고 노출 시간(항상/특정 시간만), 예산 설정 방식(일별/요일별) 등 상호 배타적 옵션",
-    "notes": "SegmentedControl(연결된 회색 트랙, 뷰/상태 전환)과 구분 — 이건 폼 입력용 개별 브랜드색 버튼. 4개 이상은 Select/SelectionCard."
+    "notes": "Tabs variant=segment(연결된 회색 트랙, 뷰/상태 전환)과 구분 — 이건 폼 입력용 개별 브랜드색 버튼. 4개 이상은 Select/SelectionCard."
   },
   {
     "name": "Snackbar",
@@ -930,18 +930,6 @@
     "figmaNodeId": "",
     "usageSummary": "PHQ-9, GAD-7, EAP 만족도 설문, 임상 자가체크",
     "notes": "가벼운 의견 수렴은 VotePoll. LikertScale은 정형 설문 척도."
-  },
-  {
-    "name": "SegmentedControl",
-    "category": "입력",
-    "status": "implemented",
-    "description": "가로 세그먼트 컨트롤(radiogroup). 2~5개 옵션 단일 선택, size sm/md/lg(lg=PC, 구 Tabs.segment 흡수·옵션 아이콘 동반). variant default/solid",
-    "storybookTitle": "Components/Controls/SegmentedControl",
-    "docsPath": "/components/segmented-control",
-    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-30014",
-    "figmaNodeId": "3001:30014",
-    "usageSummary": "뷰 토글(일/주/월), 카테고리 1차 분기, 모바일 보조 필터, PC 어드민 세그먼트(size=lg, 구 Tabs.segment)",
-    "notes": "옵션 ≥ 6개거나 스크롤 필요하면 Tabs / FilterBar 검토. 콘텐츠 패널 전환은 Tabs(값 토글만 Segmented). 옵션 아이콘은 React 전용."
   },
   {
     "name": "Timeline",

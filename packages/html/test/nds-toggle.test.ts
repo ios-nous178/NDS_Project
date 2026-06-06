@@ -195,21 +195,27 @@ describe("nds-toggle — 라벨 내장(status) 변형 + tone", () => {
     return el;
   };
 
-  it("on-label/off-label 이 있으면 data-labeled=true + 트랙 안 inner-label 렌더", async () => {
+  it("on-label/off-label 이 있으면 data-labeled=true + 두 라벨 모두 렌더(고정폭)", async () => {
     const el = await setup({ "on-label": "노출", "off-label": "미노출" });
     const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
     expect(track.dataset.labeled).toBe("true");
-    const inner = el.querySelector('[data-slot="inner-label"]');
-    expect(inner?.textContent).toBe("미노출"); // unchecked → off-label
+    // 두 라벨을 한 셀에 스택 → 셀 폭=긴 라벨 기준이라 상태가 바뀌어도 트랙 width 동일.
+    const on = el.querySelector('[data-slot="inner-label"][data-state="on"]');
+    const off = el.querySelector('[data-slot="inner-label"][data-state="off"]');
+    expect(on?.textContent).toBe("노출");
+    expect(off?.textContent).toBe("미노출");
   });
 
-  it("checked 면 on-label 을 썸 왼쪽에 둔다", async () => {
+  it("checked 여부와 무관하게 on/off 라벨이 모두 존재(활성 라벨만 CSS 로 표시 — 고정폭)", async () => {
     const el = await setup({ "on-label": "노출", "off-label": "미노출", checked: "" });
-    const inner = el.querySelector('[data-slot="inner-label"]')!;
-    expect(inner.textContent).toBe("노출");
-    const thumb = el.querySelector('[data-slot="thumb"]')!;
-    // DOM 순서상 inner-label 이 thumb 보다 앞(왼쪽)
-    expect(inner.compareDocumentPosition(thumb) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    // 고정폭의 핵심: 두 라벨 항상 렌더(비활성은 visibility:hidden 으로 자리만 차지).
+    expect(el.querySelectorAll('[data-slot="inner-label"]').length).toBe(2);
+    const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
+    expect(track.dataset.checked).toBe("true");
+    // 활성(보이는) 라벨은 on-label. 라벨↔썸 좌우 위치는 CSS order 가 결정(DOM 순서 아님).
+    expect(el.querySelector('[data-slot="inner-label"][data-state="on"]')?.textContent).toBe(
+      "노출",
+    );
   });
 
   it('tone="success" 는 track data-tone=success', async () => {

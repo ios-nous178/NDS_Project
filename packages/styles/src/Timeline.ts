@@ -102,7 +102,7 @@ export const timelineStyles = `
   :where(.${TL_DOT_CLASS}[data-state="done"]) {
     background: ${cv.surface.brand};
     border-color: ${cv.borderRole.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
   }
   :where(.${TL_DOT_CLASS}[data-state="current"]) {
     background: ${cv.surface.default};

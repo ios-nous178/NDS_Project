@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { SegmentedControl, Tabs, type TabsProps } from "@nudge-design/react";
+import { Tabs, type TabsProps } from "@nudge-design/react";
 import { colors } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
@@ -373,36 +373,42 @@ export const ChipColor: Story = {
  * Segmented Control
  * ════════════════════════════════════════════ */
 
-function SegmentedDemo() {
-  const [value, setValue] = useState<"all" | "risk" | "counsel">("all");
+function SegmentedDemo({ size }: { size: "mobile" | "pc" }) {
+  const [value, setValue] = useState("all");
   return (
-    <div style={{ width: 520 }}>
-      <SegmentedControl
-        size="lg"
-        fullWidth
-        options={[
-          { value: "all", label: "전체" },
-          { value: "risk", label: "고위험군" },
-          { value: "counsel", label: "상담" },
+    <div style={{ width: size === "pc" ? 520 : 280 }}>
+      <Tabs
+        variant="segment"
+        size={size}
+        activeKey={value}
+        onTabChange={setValue}
+        items={[
+          { key: "all", title: "전체" },
+          { key: "risk", title: "고위험군" },
+          { key: "counsel", title: "상담" },
         ]}
-        value={value}
-        onValueChange={setValue}
       />
     </div>
   );
 }
 
 export const Segmented: Story = {
-  name: "Variant/Segmented Control (PC)",
+  name: "Variant/Segment",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
-      title="Segmented Control"
-      description="PC 어드민의 세그먼트형 단일 선택. Tabs의 segment variant를 흡수한 하위 패턴이며, 콘텐츠 패널 전환이 아니라 값 토글에만 사용합니다."
+      title="Segment"
+      description="연결된 회색 트랙 위 균등 분할 단일선택(뷰/기간/상태 토글). 구 SegmentedControl 을 흡수한 variant='segment' — 콘텐츠 패널 전환이 아니라 값 토글에 사용합니다."
     >
-      <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
-        <PlatformLabel text="PC" />
-        <SegmentedDemo />
+      <div style={{ display: "flex", gap: 16, flexDirection: "column" }}>
+        <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
+          <PlatformLabel text="Mobile (36px)" />
+          <SegmentedDemo size="mobile" />
+        </div>
+        <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
+          <PlatformLabel text="PC (40px)" />
+          <SegmentedDemo size="pc" />
+        </div>
       </div>
     </ShowcaseSection>
   ),
@@ -700,7 +706,7 @@ export const DoDont: Story = {
           title="DO"
           items={[
             "같은 계층의 콘텐츠 전환에만 사용하세요",
-            "플랫폼에 맞는 탭 유형을 선택하세요 (Line=밑줄·콘텐츠 전환, Chip=알약·카테고리 필터). 세그먼트 단일선택은 SegmentedControl 사용.",
+            "플랫폼에 맞는 탭 유형을 선택하세요 (Line=밑줄·콘텐츠 전환, Chip=알약·카테고리 필터, Segment=연결 트랙·값 토글).",
             "Chip 탭은 콘텐츠 필터링·카테고리 분류에 사용하세요",
             "탭 레이블은 간결한 명사/동사구로 작성하세요",
           ]}
@@ -710,7 +716,7 @@ export const DoDont: Story = {
           title="Don't"
           items={[
             "서로 다른 계층의 페이지 이동에 탭을 사용하지 마세요",
-            "세그먼트형 단일 선택(값 토글)에는 Tabs 대신 SegmentedControl 을 사용하세요",
+            "세그먼트형 단일 선택(값 토글)에는 variant='segment' 를, 콘텐츠 패널 전환에는 line/chip 을 사용하세요",
             "탭 유형을 한 화면에서 혼용하지 마세요",
             "탭 레이블에 긴 문장을 넣지 마세요 (2줄 이상 금지)",
           ]}
