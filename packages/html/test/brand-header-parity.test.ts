@@ -268,15 +268,16 @@ describe("NudgeEAP web ↔ React NudgeEAPWebHeader", () => {
 
 describe("CashwalkBiz web ↔ React CashwalkBizWebHeader variant='desktop'", () => {
   it("renders 5-tab menu + login + yellow primary CTA pill (#FFD200)", async () => {
-    const el = await mount({ brand: "cashwalk-biz", "active-key": "campaign" });
+    const el = await mount({ brand: "cashwalk-biz", "active-key": "ad" });
     const menu = el.querySelectorAll(".nds-brand-cashwalk-biz__menu-item");
     expect(menu.length).toBe(5);
+    // Figma 98:1082 마케팅 GNB 5탭 (Storybook SSOT). nds-brand-chrome.ts webMenu 와 일치.
     expect(Array.from(menu).map((m) => m.textContent?.trim())).toEqual([
-      "홈",
-      "캠페인",
-      "회원",
       "채널",
-      "설정",
+      "광고",
+      "성공사례",
+      "공지사항",
+      "이용방법",
     ]);
     /* primary CTA — yellow pill */
     const cta = el.querySelector(".nds-brand-cashwalk-biz__primary-cta") as HTMLAnchorElement;
@@ -291,11 +292,11 @@ describe("CashwalkBiz web ↔ React CashwalkBizWebHeader variant='desktop'", () 
 });
 
 describe("CashwalkBiz mobile ↔ React CashwalkBizWebHeader variant='mobile'", () => {
-  it("renders compact bar: logo (80×24) + hamburger", async () => {
+  it("renders compact bar: logo (74×24) + hamburger", async () => {
     const el = await mount({ brand: "cashwalk-biz", surface: "mobile" });
     expect(el.querySelector(".nds-brand-cashwalk-biz__inner--mobile")).toBeTruthy();
     const logo = el.querySelector('img[alt="Cashwalk for Business"]') as HTMLImageElement;
-    expect(logo?.getAttribute("width")).toBe("80");
+    expect(logo?.getAttribute("width")).toBe("74");
     expect(el.querySelector('.nds-brand-cashwalk-biz__hamburger[aria-label="메뉴"]')).toBeTruthy();
     /* 메뉴/CTA 는 모바일에서 미노출 */
     expect(el.querySelector(".nds-brand-cashwalk-biz__menu")).toBeNull();
