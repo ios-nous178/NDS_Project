@@ -148,9 +148,12 @@ describe("injectHtmlUsageSummary", () => {
       const summary = injectHtmlUsageSummary(tmp, outputPath);
       const html = fs.readFileSync(outputPath, "utf-8");
 
-      expect(summary).toBe("DS@0.1.10 · DS 4 (100%)");
-      expect(html).toContain(`<span data-ds-badge>DS@0.1.10 · DS 4 (100%)</span>`);
-      expect(html).toContain("Nudge DS usage: DS@0.1.10 · DS 4 (100%)");
+      // DS 4종 채택(brand-header/button/card/chip) + raw <footer> 1개. raw <footer>는
+      // nds-brand-footer 로 대체 가능한 "회피가능 재발명"이라 분모에 들어가 4/5 = 80%.
+      // (이 테스트의 핵심은 badge 텍스트 치환·DS 4·stale 제거이며, % 는 새 사각지대 집계 반영분.)
+      expect(summary).toBe("DS@0.1.10 · DS 4 (80%)");
+      expect(html).toContain(`<span data-ds-badge>DS@0.1.10 · DS 4 (80%)</span>`);
+      expect(html).toContain("Nudge DS usage: DS@0.1.10 · DS 4 (80%)");
       expect(html).not.toContain("DS 14 (94%)");
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });

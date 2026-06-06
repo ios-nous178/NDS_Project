@@ -15,6 +15,7 @@ import * as cheerio from "cheerio";
 import {
   validateHtmlSource,
   readSurfaceMarker,
+  avoidableReinventionKind,
   type HtmlViolation,
   type HtmlSurface,
 } from "./html-validator.js";
@@ -48,12 +49,19 @@ export interface HtmlUsageCounts {
   ndsClassed: { total: number; byClass: Record<string, number> };
   /** nds-* 래퍼/클래스 없는 native interactive element */
   nativeUnwrapped: { total: number; byTag: Record<string, number> };
+  /**
+   * 회피가능 재발명 — raw landmark(header/footer/aside) / role·onclick 위젯. DS 대체재가 있는데
+   * raw 마크업으로 그린 avoidable 미스(avoidableReinventionKind 판정, validator 와 공유).
+   * native 4종과 동급으로 dsRatio 분모에 가산해 "div 로 재발명한 컴포넌트가 invisible" 한 사각지대를 막는다.
+   */
+  avoidableReinvention: { total: number; byKind: Record<string, number> };
   /** 모든 element 총 수 (script/style 제외) */
   totalElements: number;
   /**
    * DS 적용 비율 (0-100).
-   * (ndsTags + ndsClassed) / (ndsTags + ndsClassed + nativeUnwrapped + plain leaves).
-   * plain leaves 는 보수적으로 nativeUnwrapped 만 count — div/p/span 같은 layout 은 분모에서 제외.
+   * (ndsTags + ndsClassed) / (ndsTags + ndsClassed + nativeUnwrapped + avoidableReinvention).
+   * plain leaves(div/p/span 같은 layout)는 분모에서 제외 — 단, 인터랙티브 의도(landmark/role/onclick)를
+   * 명시한 재발명만 avoidableReinvention 으로 분모에 넣는다.
    */
   dsRatio: number;
 }
@@ -63,7 +71,19 @@ export function countHtmlUsage(source: string): HtmlUsageCounts {
   const ndsTagsByTag: Record<string, number> = {};
   const ndsClassByClass: Record<string, number> = {};
   const nativeByTag: Record<string, number> = {};
+  const reinventionByKind: Record<string, number> = {};
   let totalElements = 0;
+
+  // nds-* 래퍼 내부 element 인지 — 우리 WC 가 만든 inner 마크업은 native/재발명 집계에서 제외.
+  const isInsideNdsWrapper = (el: DomElement): boolean => {
+    let cur: DomElement | null = ((el as unknown as { parent?: DomElement }).parent ??
+      null) as DomElement | null;
+    while (cur) {
+      if (cur.type === "tag" && cur.tagName?.toLowerCase().startsWith("nds-")) return true;
+      cur = ((cur as unknown as { parent?: DomElement }).parent ?? null) as DomElement | null;
+    }
+    return false;
+  };
 
   $("*").each((_i, el) => {
     if (el.type !== "tag") return;
@@ -87,33 +107,31 @@ export function countHtmlUsage(source: string): HtmlUsageCounts {
     }
 
     if (NATIVE_INTERACTIVE_TAGS.has(tag)) {
-      // inner of nds-* wrapper 인지 — 그러면 카운트 제외
-      let cur: DomElement | null = ((el as unknown as { parent?: DomElement }).parent ??
-        null) as DomElement | null;
-      let insideWrapper = false;
-      while (cur) {
-        if (cur.type === "tag" && cur.tagName?.toLowerCase().startsWith("nds-")) {
-          insideWrapper = true;
-          break;
-        }
-        cur = ((cur as unknown as { parent?: DomElement }).parent ?? null) as DomElement | null;
-      }
-      if (!insideWrapper) {
+      if (!isInsideNdsWrapper(el as DomElement)) {
         nativeByTag[tag] = (nativeByTag[tag] ?? 0) + 1;
       }
+      return;
+    }
+
+    // 회피가능 재발명(raw landmark / role·onclick 위젯) — validator 와 동일 판정(드리프트 방지).
+    const reinvKind = avoidableReinventionKind(tag, attribs);
+    if (reinvKind && !isInsideNdsWrapper(el as DomElement)) {
+      reinventionByKind[reinvKind] = (reinventionByKind[reinvKind] ?? 0) + 1;
     }
   });
 
   const ndsTagsTotal = sumValues(ndsTagsByTag);
   const ndsClassTotal = sumValues(ndsClassByClass);
   const nativeTotal = sumValues(nativeByTag);
-  const denom = ndsTagsTotal + ndsClassTotal + nativeTotal;
+  const reinventionTotal = sumValues(reinventionByKind);
+  const denom = ndsTagsTotal + ndsClassTotal + nativeTotal + reinventionTotal;
   const dsRatio = denom === 0 ? 0 : Math.round(((ndsTagsTotal + ndsClassTotal) / denom) * 100);
 
   return {
     ndsTags: { total: ndsTagsTotal, byTag: ndsTagsByTag },
     ndsClassed: { total: ndsClassTotal, byClass: ndsClassByClass },
     nativeUnwrapped: { total: nativeTotal, byTag: nativeByTag },
+    avoidableReinvention: { total: reinventionTotal, byKind: reinventionByKind },
     totalElements,
     dsRatio,
   };
@@ -399,6 +417,10 @@ function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
   for (const [tag, count] of Object.entries(counts.nativeUnwrapped.byTag)) {
     customNative.push({ tag, count });
   }
+  // 회피가능 재발명(raw landmark / role·onclick 위젯)도 avoidable 미스로 노출 — reinvention: prefix 로 구분.
+  for (const [kind, count] of Object.entries(counts.avoidableReinvention.byKind)) {
+    customNative.push({ tag: `reinvention:${kind}`, count });
+  }
   customNative.sort((a, b) => b.count - a.count);
 
   // fs 탐지 우선(실측). HTML 목업처럼 node_modules/package.json 이 없어 unknown 이면
@@ -428,15 +450,17 @@ function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
     meta: {
       totalDs: counts.ndsTags.total,
       totalAdminCms: 0,
-      totalCustomNative: counts.nativeUnwrapped.total + counts.ndsClassed.total,
+      totalCustomNative:
+        counts.nativeUnwrapped.total + counts.ndsClassed.total + counts.avoidableReinvention.total,
       totalExternal: 0,
       dsRatio: counts.dsRatio,
       // HTML 목업은 div 기반이라 "DS 에 없어서 div 로 만든 위젯" 과 "그냥 레이아웃 div" 를
       // import 정체성 없이 구분할 수 없다 → forced 를 신뢰성 있게 측정 불가. nativeUnwrapped
-      // (button/input/select/textarea/form)는 전부 DS 대체재가 있으므로 avoidable 로만 집계하고,
-      // forcedCustom 은 0, overallRatio == adoptionRatio(=기존 dsRatio) 로 둔다. A/B 분리의
-      // 정밀 산출은 TSX 파서(컴포넌트 정체성 보유) 쪽에서 이뤄진다.
-      avoidableMiss: counts.nativeUnwrapped.total + counts.ndsClassed.total,
+      // (button/input/select/textarea/form)와 회피가능 재발명(raw landmark / role·onclick 위젯)은
+      // 전부 DS 대체재가 있으므로 avoidable 로만 집계하고, forcedCustom 은 0, overallRatio ==
+      // adoptionRatio(=기존 dsRatio) 로 둔다. A/B 분리의 정밀 산출은 TSX 파서(컴포넌트 정체성 보유) 쪽.
+      avoidableMiss:
+        counts.nativeUnwrapped.total + counts.ndsClassed.total + counts.avoidableReinvention.total,
       forcedCustom: 0,
       adoptionRatio: counts.dsRatio,
       overallRatio: counts.dsRatio,

@@ -210,6 +210,21 @@ export function parseMockupSource(
   // non-DS 요소를 avoidable(대체재 있음) / forced(대체재 없음)로 가른다.
   //  · native: 태그 → DS 후보 이름 매핑 후 카탈로그 멤버십.
   //  · antd / external: 컴포넌트 베이스 이름(slot 제거)이 그대로 DS 카탈로그에 있으면 avoidable.
+  //
+  // 카탈로그(configureUsageCatalog) 미주입 시 hasDsEquivalent 는 native 4종(DEFAULT_DS_NAMES)
+  // 으로만 판정하므로, antd/external 대부분이 forced 로 오분류돼 채택률(adoptionRatio)이 실제보다
+  // 높게 잡힌다. 이 silent degradation 을 parserWarnings 로 자가 보고해 "조용한 부풀림"을
+  // 호출부가 인지할 수 있게 한다. (MCP 서버 경로는 server.ts 가 부트스트랩 시 자동 주입한다.)
+  if (
+    dsComponentNames === null &&
+    (cmsCounts.size > 0 || externalCounts.size > 0 || nativeCounts.size > 0)
+  ) {
+    warnings.push(
+      "DS 카탈로그 미주입(configureUsageCatalog 미호출) — avoidable/forced 분류가 native 4종" +
+        "(Button/Input/Select/Textarea) fallback 으로만 이뤄져 채택률(adoptionRatio)이 실제보다 높게" +
+        " 잡힐 수 있습니다. 독립 호출 시 configureUsageCatalog(componentNames) 를 먼저 호출하세요.",
+    );
+  }
   let avoidableMiss = 0;
   let forcedCustom = 0;
   for (const n of customNative) {
