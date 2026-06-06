@@ -24,9 +24,9 @@ const SC_CLASS = "nds-segmented";
 const SC_ROOT_CLASS = `${SC_CLASS}__root`;
 const SC_ITEM_CLASS = `${SC_CLASS}__item`;
 
-export type SegmentedSize = "sm" | "md";
+export type SegmentedSize = "sm" | "md" | "lg";
 
-const SIZES: readonly SegmentedSize[] = ["sm", "md"];
+const SIZES: readonly SegmentedSize[] = ["sm", "md", "lg"];
 
 interface SegmentedOption {
   value: string;

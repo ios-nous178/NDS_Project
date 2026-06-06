@@ -19,14 +19,13 @@ const TABS_PANEL_CLASS = `${TABS_CLASS}__panel`;
  * Tabs 변형.
  * - `line` : 하단 밑줄(언더라인) 탭. Mobile · PC 지원.
  * - `chip` : 알약(Pill) 탭. Mobile · PC 지원.
- * - `segment` : 균등 분할 세그먼트 탭. **PC 전용** (CMS).
+ * (균등 분할 세그먼트 단일선택은 SegmentedControl 사용 — 구 variant="segment" 폐지.)
  */
-export type TabsVariant = "line" | "chip" | "segment";
+export type TabsVariant = "line" | "chip";
 
 /**
  * 사이즈 컨텍스트 (Mobile / PC).
  * 높이, 패딩, 폰트가 사이즈별로 다르게 적용된다.
- * Segment 변형은 PC만 지원하므로 size를 무시한다.
  */
 export type TabsSize = "mobile" | "pc";
 
@@ -34,19 +33,12 @@ export type TabsSize = "mobile" | "pc";
  * 톤 (활성 상태 강조 컬러).
  * - `neutral` : 검정 텍스트/슬레이트 배경 강조.
  * - `color`   : 브랜드 컬러(primary) 강조.
- * Segment 변형은 항상 `neutral` 톤이다.
  */
 export type TabsTone = "neutral" | "color";
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
-
-const resolveSize = (variant: TabsVariant, size: TabsSize): TabsSize =>
-  variant === "segment" ? "pc" : size;
-
-const resolveTone = (variant: TabsVariant, tone: TabsTone): TabsTone =>
-  variant === "segment" ? "neutral" : tone;
 
 /* ─── Context ─── */
 
@@ -74,11 +66,11 @@ export interface TabsRootProps extends React.HTMLAttributes<HTMLDivElement> {
   activeKey: string;
   /** 탭 변경 콜백 */
   onTabChange: (key: string) => void;
-  /** 탭 스타일 변형 (`line` | `chip` | `segment`). 기본 `line` */
+  /** 탭 스타일 변형 (`line` | `chip`). 기본 `line` */
   variant?: TabsVariant;
-  /** 사이즈 (Mobile / PC). 기본 `pc`. Segment는 항상 `pc` */
+  /** 사이즈 (Mobile / PC). 기본 `pc` */
   size?: TabsSize;
-  /** 톤 (활성 강조 색). 기본 `neutral`. Segment는 항상 `neutral` */
+  /** 톤 (활성 강조 색). 기본 `neutral` */
   tone?: TabsTone;
   /** 전체 너비 */
   fullWidth?: boolean;
@@ -99,8 +91,8 @@ export const TabsRoot: React.FC<TabsRootProps> = ({
   ...rest
 }) => {
   const baseId = useId();
-  const resolvedSize = resolveSize(variant, size);
-  const resolvedTone = resolveTone(variant, tone);
+  const resolvedSize = size;
+  const resolvedTone = tone;
 
   return (
     <TabsContext.Provider
@@ -173,7 +165,7 @@ export interface TabsTriggerProps extends React.LiHTMLAttributes<HTMLLIElement> 
   tabKey: string;
   /** 탭 버튼에 표시할 콘텐츠 */
   children: React.ReactNode;
-  /** Segment 변형에서 텍스트 앞에 표시할 아이콘 노드 */
+  /** 텍스트 앞에 표시할 아이콘 노드 (선택) */
   icon?: React.ReactNode;
   /** 비활성화 여부 */
   disabled?: boolean;
@@ -336,11 +328,11 @@ export interface TabsProps {
   activeKey: string;
   /** 탭 변경 콜백 */
   onTabChange: (key: string) => void;
-  /** 스타일 변형 (`line` | `chip` | `segment`). 기본 `line` */
+  /** 스타일 변형 (`line` | `chip`). 기본 `line` */
   variant?: TabsVariant;
-  /** 사이즈 (Mobile / PC). 기본 `pc`. Segment는 무시되고 `pc`로 고정 */
+  /** 사이즈 (Mobile / PC). 기본 `pc` */
   size?: TabsSize;
-  /** 톤 (활성 강조 색). 기본 `neutral`. Segment는 무시되고 `neutral`로 고정 */
+  /** 톤 (활성 강조 색). 기본 `neutral` */
   tone?: TabsTone;
   /** 전체 너비 */
   fullWidth?: boolean;

@@ -1,5 +1,6 @@
 import React, { useId, useState } from "react";
 import { cv } from "@nudge-design/tokens";
+import { Button } from "./Button";
 
 /* ─── Constants ─── */
 
@@ -7,7 +8,6 @@ const AS_CLASS = "nds-address-search";
 const AS_LABEL_CLASS = `${AS_CLASS}__label`;
 const AS_FIELD_ROW_CLASS = `${AS_CLASS}__field-row`;
 const AS_INPUT_CLASS = `${AS_CLASS}__input`;
-const AS_BTN_CLASS = `${AS_CLASS}__btn`;
 const AS_RESULT_CLASS = `${AS_CLASS}__result`;
 const AS_RESULT_LIST_CLASS = `${AS_CLASS}__result-list`;
 const AS_RESULT_ITEM_CLASS = `${AS_CLASS}__result-item`;
@@ -122,9 +122,9 @@ export const AddressSearch = React.forwardRef<HTMLDivElement, AddressSearchProps
               }
             }}
           />
-          <button type="button" className={AS_BTN_CLASS} onClick={handleSearch} disabled={loading}>
+          <Button type="button" size="field" onClick={handleSearch} disabled={loading}>
             {loading ? "검색 중..." : searchLabel}
-          </button>
+          </Button>
         </div>
 
         {searched && (

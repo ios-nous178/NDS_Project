@@ -39,6 +39,14 @@ const DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const OPTION_CLASS = `${SELECT_CLASS}__option`;
 const OPTION_LABEL_CLASS = `${SELECT_CLASS}__option-label`;
 const OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
+const SEARCH_CLASS = `${SELECT_CLASS}__search`;
+const EMPTY_CLASS = `${SELECT_CLASS}__empty`;
+
+const SEARCH_ICON_SVG =
+  '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+  '<circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/>' +
+  '<path d="M13 13l-2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
+  "</svg>";
 
 /** auto(좁은) 셀렉트에서 드롭다운이 가장 넓은 옵션까지 grow 할 때의 상한(px). React 와 동일. */
 const SELECT_AUTO_MENU_MAX_WIDTH = 360;
@@ -65,6 +73,9 @@ export class NdsSelect extends NdsElement {
       "full-width",
       "open",
       "select-id",
+      "searchable",
+      "search-placeholder",
+      "empty-message",
     ];
   }
 
@@ -75,6 +86,12 @@ export class NdsSelect extends NdsElement {
   private _chevron: HTMLSpanElement | null = null;
   private _dropdown: HTMLDivElement | null = null;
   private _helper: HTMLSpanElement | null = null;
+  // searchable(검색형, React Select.searchable / Ant showSearch 모델) 전용 노드
+  private _search: HTMLDivElement | null = null;
+  private _searchInput: HTMLInputElement | null = null;
+  private _empty: HTMLDivElement | null = null;
+  private _query = "";
+  private _focusSearchOnOpen = false;
   private _childObserver: MutationObserver | null = null;
   private _selectId = "";
   private _activeValue: string | null = null;
@@ -226,6 +243,7 @@ export class NdsSelect extends NdsElement {
     // 좁게 쓰려면 full-width="false" 명시(예: 어드민 검색 필터).
     const fullWidth = this.attr("full-width", "true") !== "false";
     const open = this.boolAttr("open");
+    const searchable = this.boolAttr("searchable");
     const hasValue = value !== null && value !== "";
 
     this._root.style.width = fullWidth ? "100%" : "auto";
@@ -279,6 +297,17 @@ export class NdsSelect extends NdsElement {
       opt.setActive(v === this._activeValue);
     });
 
+    // searchable(검색형): 검색 인풋 + 빈 상태 보장/제거 후 옵션 필터 적용
+    if (searchable) {
+      this._ensureSearchUI();
+      this._applyFilter(options);
+    } else {
+      this._removeSearchUI();
+      options.forEach((opt) => {
+        opt.style.display = "";
+      });
+    }
+
     this._syncLabel(labelText);
     this._syncHelper(helperText, error);
 
@@ -294,6 +323,12 @@ export class NdsSelect extends NdsElement {
       document.removeEventListener("keydown", this._onKey, true);
       window.removeEventListener("scroll", this._onReposition, true);
       window.removeEventListener("resize", this._onReposition);
+    }
+
+    // 검색형: 열린 직후 한 번 검색 인풋으로 포커스 (이후 update 에선 포커스 가로채지 않음)
+    if (open && searchable && this._focusSearchOnOpen && this._searchInput) {
+      this._focusSearchOnOpen = false;
+      this._searchInput.focus();
     }
   }
 
@@ -372,13 +407,76 @@ export class NdsSelect extends NdsElement {
     return this._dropdown.querySelector<NdsSelectOption>(`nds-select-option[value="${value}"]`);
   }
 
+  /** searchable: 드롭다운 상단 검색 인풋 + 빈 상태 노드를 보장(없으면 생성). */
+  private _ensureSearchUI(): void {
+    if (!this._dropdown) return;
+    if (!this._search) {
+      const search = document.createElement("div");
+      search.className = SEARCH_CLASS;
+      search.dataset.slot = "search";
+      search.innerHTML = SEARCH_ICON_SVG;
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.dataset.slot = "search-input";
+      input.addEventListener("input", () => {
+        this._query = input.value;
+        this.scheduleUpdate();
+      });
+      search.appendChild(input);
+      // 항상 드롭다운 최상단
+      this._dropdown.insertBefore(search, this._dropdown.firstChild);
+      this._search = search;
+      this._searchInput = input;
+    }
+    if (!this._empty) {
+      const empty = document.createElement("div");
+      empty.className = EMPTY_CLASS;
+      empty.dataset.slot = "empty";
+      this._dropdown.appendChild(empty);
+      this._empty = empty;
+    }
+    this._searchInput!.placeholder = this.attr("search-placeholder", "검색");
+    this._empty!.textContent = this.attr("empty-message", "검색 결과가 없어요");
+  }
+
+  /** searchable 해제 시 검색 UI 제거 + 검색어 리셋. */
+  private _removeSearchUI(): void {
+    this._search?.remove();
+    this._empty?.remove();
+    this._search = null;
+    this._searchInput = null;
+    this._empty = null;
+    this._query = "";
+  }
+
+  /** 현재 검색어로 옵션 표시/숨김 + 빈 상태 토글. */
+  private _applyFilter(options: NodeListOf<NdsSelectOption>): void {
+    const q = this._query.trim().toLowerCase();
+    let visible = 0;
+    options.forEach((opt) => {
+      const label = (opt.textContent ?? "").trim().toLowerCase();
+      const match = q === "" || label.includes(q);
+      opt.style.display = match ? "" : "none";
+      if (match) visible += 1;
+    });
+    if (this._empty) this._empty.style.display = visible === 0 ? "" : "none";
+  }
+
   private _setOpen(next: boolean): void {
     if (next && !this.hasAttribute("open")) {
       this.setAttribute("open", "");
       this._activeValue = this.getAttribute("value");
+      // 검색형: 열 때마다 검색어 초기화 + 검색 인풋으로 포커스 예약
+      if (this.boolAttr("searchable")) {
+        this._query = "";
+        if (this._searchInput) this._searchInput.value = "";
+        this._focusSearchOnOpen = true;
+      }
     } else if (!next && this.hasAttribute("open")) {
       this.removeAttribute("open");
       this._activeValue = null;
+      this._query = "";
     }
   }
 
@@ -414,9 +512,14 @@ export class NdsSelect extends NdsElement {
       this._trigger?.focus();
       return;
     }
+    // 검색형: 활성/필터로 숨겨진(display:none) 옵션은 탐색 대상에서 제외.
     const options = Array.from(
       this._dropdown.querySelectorAll<NdsSelectOption>("nds-select-option"),
-    ).filter((o) => !o.hasAttribute("disabled"));
+    ).filter((o) => !o.hasAttribute("disabled") && o.style.display !== "none");
+    const typingInSearch = e.target === this._searchInput;
+
+    // 검색어에 공백 입력 — 선택으로 가로채지 않는다.
+    if (e.key === " " && typingInSearch) return;
     if (options.length === 0) return;
     const values = options.map((o) => o.getAttribute("value") ?? "");
     const currentIdx = values.indexOf(this._activeValue ?? "");
@@ -433,7 +536,9 @@ export class NdsSelect extends NdsElement {
     }
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      if (this._activeValue !== null) this.pickValue(this._activeValue);
+      // active 가 없거나 필터로 사라졌으면 첫 번째 보이는 옵션을 선택(검색형 UX).
+      const target = currentIdx >= 0 ? values[currentIdx] : (values[0] ?? null);
+      if (target !== null) this.pickValue(target);
     }
   }
 }

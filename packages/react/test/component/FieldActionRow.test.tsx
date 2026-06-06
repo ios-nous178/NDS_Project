@@ -76,22 +76,16 @@ describe("FieldActionRow 사용자 시나리오: 인증번호 입력", () => {
 });
 
 describe("FieldActionRow 사용자 시나리오: 이메일 인증", () => {
-  it("Compound API로 입력 + 버튼 + 도움말을 자유롭게 배치한다", async () => {
+  it("flat API로 입력 + 버튼 + 도움말을 배치한다", async () => {
     const user = userEvent.setup();
     const onSend = vi.fn();
 
     render(
-      <FieldActionRow.Root>
-        <FieldActionRow.Row>
-          <FieldActionRow.Field>
-            <input aria-label="이메일" placeholder="이메일 주소" />
-          </FieldActionRow.Field>
-          <FieldActionRow.Action>
-            <button onClick={onSend}>발송</button>
-          </FieldActionRow.Action>
-        </FieldActionRow.Row>
-        <FieldActionRow.Helper>회사 이메일만 입력 가능합니다</FieldActionRow.Helper>
-      </FieldActionRow.Root>,
+      <FieldActionRow
+        field={<input aria-label="이메일" placeholder="이메일 주소" />}
+        action={<button onClick={onSend}>발송</button>}
+        helperText="회사 이메일만 입력 가능합니다"
+      />,
     );
 
     // 이메일을 입력하고 발송 버튼을 클릭한다

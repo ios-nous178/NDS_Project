@@ -213,6 +213,12 @@ export const cashwalkBizTheme: BrandTheme = {
     "form-field": { labelColor: "var(--semantic-text-strong-default)" },
     // ActionChip — 캐포비 가이드(3079:554): radius 6 / bg #ECECEC (Neutral 100·200 사이 raw).
     "action-chip": { radius: 6, bg: "#ECECEC" },
+    // Chip(SelectChip) — 캐포비 브랜드 채움(노랑 #FFD200) 위 텍스트는 검정.
+    //   base 의 selected fill 텍스트는 inverse(흰)인데 노랑 위 흰 글씨는 대비가 약함 →
+    //   ButtonText/Default(노랑 위 검정)와 동일 운용으로 selected 텍스트를 strong(#111)으로 override.
+    //   좌측 ✓ 체크/아이콘은 currentColor(=텍스트색)를 따르므로 함께 검정으로 렌더된다.
+    //   (bg 는 그대로 노랑 채움 유지 — selected-background 는 override 안 함.)
+    chip: { selectedText: "var(--semantic-text-strong-default)" },
     // Badge(Label) — 캐포비 ChipGuide(3782:20558 · Rounded Square):
     //   radius 5 / padding 4·10 / Caption 12/16 / Medium(500) (base bold·radius 4/6).
     //   톤은 ghost 변형 + semantic 색 cascade 로 이미 캐포비값(#FFFAE5/#FD9B02 등) 적용.

@@ -12,9 +12,12 @@ const SIP_ACTION_CLASS = `${SIP_CLASS}__action`;
 const SIP_ACTION_ICON_CLASS = `${SIP_CLASS}__action-icon`;
 const SIP_BODY_CLASS = `${SIP_CLASS}__body`;
 
-const RR_CLASS = "nds-region-row";
-const RR_LABEL_CLASS = `${RR_CLASS}__label`;
-const RR_REMOVE_CLASS = `${RR_CLASS}__remove`;
+const ROW_CLASS = "nds-selected-item-row";
+const LEGACY_ROW_CLASS = "nds-region-row";
+const ROW_LABEL_CLASS = `${ROW_CLASS}__label`;
+const LEGACY_ROW_LABEL_CLASS = `${LEGACY_ROW_CLASS}__label`;
+const ROW_REMOVE_CLASS = `${ROW_CLASS}__remove`;
+const LEGACY_ROW_REMOVE_CLASS = `${LEGACY_ROW_CLASS}__remove`;
 
 /* ─── Inline icons (브랜드 무관 · 16/20px, currentColor) ─── */
 
@@ -50,10 +53,10 @@ const RemoveIcon = () => (
   </svg>
 );
 
-/* ─── RegionRow ─── */
+/* ─── SelectedItemRow ─── */
 
-export interface RegionRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
-  /** 행 라벨 (예: "강원특별자치도 > 강릉시") */
+export interface SelectedItemRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** 행 라벨 (예: "카테고리 > 멤버") */
   children: React.ReactNode;
   /** 우측 삭제 버튼 클릭 — 미지정 시 삭제 버튼 숨김 */
   onRemove?: () => void;
@@ -61,21 +64,23 @@ export interface RegionRowProps extends Omit<React.HTMLAttributes<HTMLDivElement
   removeLabel?: string;
 }
 
-export function RegionRow({
+export function SelectedItemRow({
   children,
   onRemove,
   removeLabel = "삭제",
   className,
   ...rest
-}: RegionRowProps) {
-  const rootClass = className ? `${RR_CLASS} ${className}` : RR_CLASS;
+}: SelectedItemRowProps) {
+  const rootClass = className
+    ? `${ROW_CLASS} ${LEGACY_ROW_CLASS} ${className}`
+    : `${ROW_CLASS} ${LEGACY_ROW_CLASS}`;
   return (
     <div className={rootClass} {...rest}>
-      <span className={RR_LABEL_CLASS}>{children}</span>
+      <span className={`${ROW_LABEL_CLASS} ${LEGACY_ROW_LABEL_CLASS}`}>{children}</span>
       {onRemove && (
         <button
           type="button"
-          className={RR_REMOVE_CLASS}
+          className={`${ROW_REMOVE_CLASS} ${LEGACY_ROW_REMOVE_CLASS}`}
           aria-label={removeLabel}
           onClick={onRemove}
         >
@@ -85,6 +90,10 @@ export function RegionRow({
     </div>
   );
 }
+
+export type RegionRowProps = SelectedItemRowProps;
+export const RegionRow = SelectedItemRow;
+SelectedItemRow.displayName = "SelectedItemRow";
 
 /* ─── SelectedItemsPanel ─── */
 
@@ -108,7 +117,7 @@ export interface SelectedItemsPanelProps extends Omit<
   addLabel?: React.ReactNode;
   /** 해제 액션 라벨 (기본 "선택 해제") */
   clearLabel?: React.ReactNode;
-  /** 본문 슬롯 — 선택 항목 리스트(RegionRow) / 폼 / 테이블 등 */
+  /** 본문 슬롯 — 선택 항목 리스트(SelectedItemRow) / 폼 / 테이블 등 */
   children?: React.ReactNode;
 }
 

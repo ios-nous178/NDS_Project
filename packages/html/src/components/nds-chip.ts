@@ -10,6 +10,7 @@
  *          data-selected="false|true" data-interactive="true" data-disabled="false"
  *          role="button" tabindex="0" aria-pressed="false"
  *          style="inline-flex; ...all visual...">
+ *       <span class="nds-chip__icon" data-slot="icon" aria-hidden="true">…</span>  ← optional, slot="icon"
  *       <span class="nds-chip__label" data-slot="label">라벨</span>
  *       <button class="nds-chip__remove" data-slot="remove" aria-label="라벨 삭제" hidden>
  *         <svg>×</svg>
@@ -23,6 +24,7 @@
  * 사용자가 attribute 만 박으면 됨:
  *   <nds-chip interactive>...</nds-chip>           ← 클릭 가능
  *   <nds-chip interactive removable>...</nds-chip> ← 클릭 가능 + × 버튼
+ *   <nds-chip selected><svg slot="icon">…</svg>30대</nds-chip> ← 좌측 아이콘(React icon prop 미러)
  *
  * React 의 onClick / onRemove 콜백은 WC 에서 attribute 로 표현 불가능 (함수 X) →
  * boolean attribute (`interactive`, `removable`) + CustomEvent 패턴.
@@ -156,6 +158,7 @@ export class NdsChip extends NdsElement {
 
   private _root: HTMLDivElement | null = null;
   private _label: HTMLSpanElement | null = null;
+  private _icon: HTMLSpanElement | null = null;
   private _remove: HTMLButtonElement | null = null;
   private _onRootClick = (e: MouseEvent) => this._handleClick(e);
   private _onRootKey = (e: KeyboardEvent) => this._handleKey(e);
@@ -184,6 +187,22 @@ export class NdsChip extends NdsElement {
     root.className = "nds-chip__root";
     root.dataset.slot = "root";
 
+    // 좌측 아이콘 슬롯 — 자식 중 slot="icon"(또는 data-slot="icon") 을 분리해 label 앞에 둔다.
+    // React Chip 의 icon prop 미러. 못 찾으면(텍스트만) 기존 동작 그대로.
+    const iconEl = Array.from(this.children).find(
+      (c) => c.getAttribute("slot") === "icon" || (c as HTMLElement).dataset?.slot === "icon",
+    );
+    if (iconEl) {
+      const iconSpan = document.createElement("span");
+      iconSpan.className = "nds-chip__icon";
+      iconSpan.dataset.slot = "icon";
+      iconSpan.setAttribute("aria-hidden", "true");
+      iconEl.removeAttribute("slot");
+      iconSpan.appendChild(iconEl);
+      root.appendChild(iconSpan);
+      this._icon = iconSpan;
+    }
+
     label.className = "nds-chip__label";
     label.dataset.slot = "label";
     while (this.firstChild) label.appendChild(this.firstChild);
@@ -209,7 +228,16 @@ export class NdsChip extends NdsElement {
     const interactive = this.boolAttr("interactive");
     const removable = this.boolAttr("removable") && !disabled;
 
-    const ct = selected ? FILL_COLORS[color] : COLORS_BY_VARIANT[variant][color];
+    // selected 는 React Chip.tsx 와 동일하게 brand 채움(FILL)이 기본 선택표시이며,
+    // 브랜드가 brand-subtle 등 다른 선택 톤을 원하면 `--nds-chip-selected-*` 로 override.
+    const baseCt = selected ? FILL_COLORS[color] : COLORS_BY_VARIANT[variant][color];
+    const ct = selected
+      ? {
+          background: `var(--nds-chip-selected-background, ${baseCt.background})`,
+          text: `var(--nds-chip-selected-text, ${baseCt.text})`,
+          border: `var(--nds-chip-selected-border, ${baseCt.border})`,
+        }
+      : baseCt;
     const st = SIZE_TOKENS[size];
     const paddingRight = removable ? Math.max(st.paddingX - 4, 6) : st.paddingX;
 

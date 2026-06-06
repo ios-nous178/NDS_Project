@@ -2,7 +2,6 @@ import React from "react";
 import {
   InfoIcon,
   ThumbUpIcon,
-  TestresultWarningIcon,
   BlockIcon,
   PushIcon,
 } from "@nudge-design/icons";
@@ -11,6 +10,7 @@ import {
 
 const NI_CLASS = "nds-notification-item";
 const NI_ICON_CLASS = `${NI_CLASS}__icon`;
+const NI_ICON_WRAP_CLASS = `${NI_CLASS}__icon-wrap`;
 const NI_BODY_CLASS = `${NI_CLASS}__body`;
 const NI_TITLE_CLASS = `${NI_CLASS}__title`;
 const NI_DESC_CLASS = `${NI_CLASS}__desc`;
@@ -59,7 +59,18 @@ const KIND_FG: Record<NotificationKind, string> = {
 const KIND_ICON: Record<NotificationKind, React.ReactNode> = {
   info: <InfoIcon size={20} />,
   success: <ThumbUpIcon size={20} />,
-  warning: <TestresultWarningIcon size={20} />,
+  warning: (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+      <path
+        d="M12 4.2c.5 0 .9.25 1.18.74l8.34 14.3c.56.96.1 1.76-1.02 1.76H3.5c-1.12 0-1.58-.8-1.02-1.76l8.34-14.3c.28-.49.68-.74 1.18-.74Z"
+        fill="currentColor"
+      />
+      <path
+        d="M12 8.2c.5 0 .86.36.84.86l-.18 4.18c-.02.44-.27.76-.66.76s-.64-.32-.66-.76l-.18-4.18c-.02-.5.34-.86.84-.86Zm0 7.03c.58 0 1.05.47 1.05 1.05S12.58 17.33 12 17.33s-1.05-.47-1.05-1.05.47-1.05 1.05-1.05Z"
+        fill="white"
+      />
+    </svg>
+  ),
   error: <BlockIcon size={20} />,
   system: <PushIcon size={20} />,
 };
@@ -113,9 +124,11 @@ export const NotificationItem = React.forwardRef<HTMLDivElement, NotificationIte
         }
         {...rest}
       >
-        {unread && <span className={NI_DOT_CLASS} aria-label="새 알림" />}
-        <span className={NI_ICON_CLASS} aria-hidden>
-          {iconNode}
+        <span className={NI_ICON_WRAP_CLASS}>
+          <span className={NI_ICON_CLASS} aria-hidden>
+            {iconNode}
+          </span>
+          {unread && <span className={NI_DOT_CLASS} aria-label="새 알림" />}
         </span>
         <div className={NI_BODY_CLASS}>
           <p className={NI_TITLE_CLASS}>{title}</p>

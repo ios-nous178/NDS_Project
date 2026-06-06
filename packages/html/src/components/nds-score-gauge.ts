@@ -25,6 +25,7 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 import { cv } from "@nudge-design/tokens";
+import { arcPath, clamp, findSegment } from "./viz-svg.js";
 
 const SG_CLASS = "nds-score-gauge";
 const SG_TRACK_CLASS = `${SG_CLASS}__track`;
@@ -58,38 +59,6 @@ const defaultSegments = (max: number): GaugeSegment[] => [
   { level: "moderate", label: "경계", from: max * 0.6, to: max * 0.8 },
   { level: "severe", label: "심각", from: max * 0.8, to: max + 0.001 },
 ];
-
-const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, min), max);
-
-const findLevel = (value: number, segments: GaugeSegment[]): GaugeSegment =>
-  segments.find((s) => value >= s.from && value < s.to) ?? segments[segments.length - 1];
-
-const polar = (cx: number, cy: number, r: number, deg: number) => {
-  const rad = ((deg - 180) * Math.PI) / 180;
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-};
-
-const arcPath = (
-  cx: number,
-  cy: number,
-  r: number,
-  startDeg: number,
-  endDeg: number,
-  thickness: number,
-) => {
-  const outerStart = polar(cx, cy, r, startDeg);
-  const outerEnd = polar(cx, cy, r, endDeg);
-  const innerStart = polar(cx, cy, r - thickness, endDeg);
-  const innerEnd = polar(cx, cy, r - thickness, startDeg);
-  const largeArc = endDeg - startDeg > 180 ? 1 : 0;
-  return [
-    `M ${outerStart.x} ${outerStart.y}`,
-    `A ${r} ${r} 0 ${largeArc} 1 ${outerEnd.x} ${outerEnd.y}`,
-    `L ${innerStart.x} ${innerStart.y}`,
-    `A ${r - thickness} ${r - thickness} 0 ${largeArc} 0 ${innerEnd.x} ${innerEnd.y}`,
-    "Z",
-  ].join(" ");
-};
 
 export class NdsScoreGauge extends NdsElement {
   static elementName = "nds-score-gauge";
@@ -147,7 +116,7 @@ export class NdsScoreGauge extends NdsElement {
     const clamped = clamp(value, 0, max);
     const angleRange = 180;
     const valueDeg = (clamped / max) * angleRange;
-    const current = findLevel(value, segs);
+    const current = findSegment(value, segs);
     const thickness = 18;
 
     this._root.innerHTML = "";

@@ -1,6 +1,9 @@
 /**
  * <nds-time-picker> — DS TimePicker 의 vanilla Web Component 버전.
  *
+ * React 버전과 동일하게 네이티브 시간 입력이 아니라 DS 팝오버 패널(시/분 컬럼)로 선택한다.
+ * 빠른설정 프리셋 칩은 필드 트레일링(시계아이콘 우측)에 인라인으로 붙는다.
+ *
  * 사용 예:
  *   <nds-time-picker
  *     label="알람 시간"
@@ -16,12 +19,13 @@
  *
  * 속성:
  *   value: "HH:mm"
- *   step: 초 단위 (default 300 = 5분)
+ *   step: 초 단위 (default 300 = 5분) — 분 컬럼 간격으로 환산
  *   label / placeholder / helper-text
  *   error / full-width / disabled
- *   min / max
- *   presets: JSON [{ label, value }] — 빠른설정 칩(예: [{"label":"자정까지","value":"23:59"}]).
- *            클릭하면 value 세팅. 회색 중립 칩(노란 brand 아님). <script type="application/json" slot="presets"> 도 허용.
+ *   min / max: "HH:mm"
+ *   presets: JSON [{ label, value }] — 빠른설정 칩. <script type="application/json" slot="presets"> 도 허용.
+ *
+ * React 버전의 Portal 은 미지원 — 패널은 inline absolute positioning.
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -30,10 +34,17 @@ const TP_CLASS = "nds-time-picker";
 const TP_ROOT_CLASS = `${TP_CLASS}__root`;
 const TP_LABEL_CLASS = `${TP_CLASS}__label`;
 const TP_FIELD_CLASS = `${TP_CLASS}__field`;
-const TP_INPUT_CLASS = `${TP_CLASS}__input`;
+const TP_TRIGGER_CLASS = `${TP_CLASS}__trigger`;
+const TP_TRIGGER_TEXT_CLASS = `${TP_CLASS}__trigger-text`;
 const TP_ICON_CLASS = `${TP_CLASS}__icon`;
 const TP_PRESETS_CLASS = `${TP_CLASS}__presets`;
 const TP_PRESET_CLASS = `${TP_CLASS}__preset`;
+const TP_PANEL_CLASS = `${TP_CLASS}__panel`;
+const TP_COLS_CLASS = `${TP_CLASS}__columns`;
+const TP_COL_CLASS = `${TP_CLASS}__col`;
+const TP_COL_HEAD_CLASS = `${TP_CLASS}__col-head`;
+const TP_COL_LIST_CLASS = `${TP_CLASS}__col-list`;
+const TP_OPTION_CLASS = `${TP_CLASS}__option`;
 const TP_HELPER_CLASS = `${TP_CLASS}__helper`;
 
 // 시계 아이콘 — Figma ic_time_picker (캐포비 Library 3001:19125) 의 ring + 시계바늘 path 그대로. 색은 currentColor.
@@ -48,6 +59,17 @@ interface TimePreset {
   value: string;
 }
 
+const pad2 = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+const parseHM = (v: string): { h: number; m: number } | null => {
+  const m = /^(\d{1,2}):(\d{2})$/.exec((v || "").trim());
+  if (!m) return null;
+  const h = Number(m[1]);
+  const min = Number(m[2]);
+  if (h < 0 || h > 23 || min < 0 || min > 59) return null;
+  return { h, m: min };
+};
+const toMinutes = (h: number, m: number) => h * 60 + m;
+
 let nextId = 0;
 
 export class NdsTimePicker extends NdsElement {
@@ -58,6 +80,7 @@ export class NdsTimePicker extends NdsElement {
       "value",
       "step",
       "label",
+      "placeholder",
       "helper-text",
       "error",
       "full-width",
@@ -69,17 +92,54 @@ export class NdsTimePicker extends NdsElement {
   }
 
   private _root: HTMLDivElement | null = null;
-  private _labelEl: HTMLLabelElement | null = null;
+  private _labelEl: HTMLSpanElement | null = null;
   private _field: HTMLDivElement | null = null;
-  private _input: HTMLInputElement | null = null;
-  private _icon: HTMLButtonElement | null = null;
+  private _trigger: HTMLButtonElement | null = null;
+  private _triggerText: HTMLSpanElement | null = null;
   private _presetsEl: HTMLSpanElement | null = null;
+  private _panel: HTMLDivElement | null = null;
   private _helper: HTMLParagraphElement | null = null;
-  private _inputId = `nds-time-picker-${++nextId}`;
+  private _open = false;
+  private _labelId = `nds-time-picker-${++nextId}`;
+
+  private _onDocClick = (e: MouseEvent) => {
+    if (!this._open || !this._root) return;
+    if (!this._root.contains(e.target as Node)) {
+      this._open = false;
+      this.scheduleUpdate();
+    }
+  };
+  private _onEsc = (e: KeyboardEvent) => {
+    if (this._open && e.key === "Escape") {
+      e.preventDefault();
+      this._open = false;
+      this._trigger?.focus();
+      this.scheduleUpdate();
+    }
+  };
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
     super.connectedCallback();
+    document.addEventListener("mousedown", this._onDocClick);
+    document.addEventListener("keydown", this._onEsc);
+  }
+
+  override disconnectedCallback(): void {
+    document.removeEventListener("mousedown", this._onDocClick);
+    document.removeEventListener("keydown", this._onEsc);
+  }
+
+  private _emit(value: string): void {
+    this.setAttribute("value", value);
+    this.dispatchEvent(
+      new CustomEvent("nds-time-change", {
+        detail: { value },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    this.scheduleUpdate();
   }
 
   private _mount(): void {
@@ -87,55 +147,41 @@ export class NdsTimePicker extends NdsElement {
     root.dataset.slot = "root";
     root.className = TP_ROOT_CLASS;
 
-    const labelEl = document.createElement("label");
+    const labelEl = document.createElement("span");
     labelEl.className = TP_LABEL_CLASS;
-    labelEl.setAttribute("for", this._inputId);
+    labelEl.id = this._labelId;
 
     const field = document.createElement("div");
+    field.dataset.slot = "field";
     field.className = TP_FIELD_CLASS;
+    field.style.position = "relative";
 
-    const input = document.createElement("input");
-    input.id = this._inputId;
-    input.type = "time";
-    input.className = TP_INPUT_CLASS;
-    input.addEventListener("input", () => {
-      this.setAttribute("value", input.value);
-      this.dispatchEvent(
-        new CustomEvent("nds-time-change", {
-          detail: { value: input.value },
-          bubbles: true,
-          composed: true,
-        }),
-      );
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.dataset.slot = "trigger";
+    trigger.className = TP_TRIGGER_CLASS;
+    trigger.setAttribute("aria-haspopup", "dialog");
+    trigger.addEventListener("click", () => {
+      if (this.boolAttr("disabled")) return;
+      this._open = !this._open;
+      this.scheduleUpdate();
     });
-    field.appendChild(input);
 
-    // 시계 아이콘(Figma ic_time_picker) — 클릭 시 네이티브 picker(showPicker) 호출, 미지원이면 포커스.
-    const icon = document.createElement("button");
-    icon.type = "button";
-    icon.className = TP_ICON_CLASS;
-    icon.setAttribute("aria-label", "시간 선택");
-    icon.tabIndex = -1;
-    icon.innerHTML = CLOCK_SVG;
-    icon.addEventListener("click", () => {
-      if (input.disabled) return;
-      const el = input as HTMLInputElement & { showPicker?: () => void };
-      if (typeof el.showPicker === "function") {
-        try {
-          el.showPicker();
-          return;
-        } catch {
-          /* user-gesture 필요 등 — 포커스로 폴백 */
-        }
-      }
-      input.focus();
-    });
-    field.appendChild(icon);
+    const triggerText = document.createElement("span");
+    triggerText.dataset.slot = "trigger-text";
+    triggerText.className = TP_TRIGGER_TEXT_CLASS;
 
-    // 빠른설정 프리셋 칩 컨테이너 — update() 에서 presets 속성으로 채운다.
+    const iconWrap = document.createElement("span");
+    iconWrap.setAttribute("aria-hidden", "true");
+    iconWrap.className = TP_ICON_CLASS;
+    iconWrap.innerHTML = CLOCK_SVG;
+
+    trigger.append(triggerText, iconWrap);
+
     const presetsEl = document.createElement("span");
     presetsEl.className = TP_PRESETS_CLASS;
-    field.appendChild(presetsEl);
+
+    field.append(trigger, presetsEl);
 
     const helper = document.createElement("p");
     helper.className = TP_HELPER_CLASS;
@@ -146,73 +192,153 @@ export class NdsTimePicker extends NdsElement {
     this._root = root;
     this._labelEl = labelEl;
     this._field = field;
-    this._input = input;
-    this._icon = icon;
+    this._trigger = trigger;
+    this._triggerText = triggerText;
     this._presetsEl = presetsEl;
     this._helper = helper;
   }
 
-  protected update(): void {
-    if (
-      !this._root ||
-      !this._labelEl ||
-      !this._field ||
-      !this._input ||
-      !this._icon ||
-      !this._presetsEl ||
-      !this._helper
-    )
-      return;
-    if (this.style.display !== "contents") this.style.display = "contents";
-
-    const value = this.getAttribute("value") || "";
+  private _minuteStep(): number {
     const step = parseInt(this.attr("step", "300"), 10) || 300;
-    const label = this.getAttribute("label");
-    const helperText = this.getAttribute("helper-text");
-    const error = this.boolAttr("error");
-    const fullWidth = this.boolAttr("full-width");
-    const disabled = this.boolAttr("disabled");
-    const min = this.getAttribute("min");
-    const max = this.getAttribute("max");
+    return Math.min(60, Math.max(1, Math.round(step / 60)));
+  }
 
-    this._root.dataset.fullWidth = fullWidth ? "true" : "false";
+  private _bounds(): { min: number | null; max: number | null } {
+    const minP = parseHM(this.getAttribute("min") || "");
+    const maxP = parseHM(this.getAttribute("max") || "");
+    return {
+      min: minP ? toMinutes(minP.h, minP.m) : null,
+      max: maxP ? toMinutes(maxP.h, maxP.m) : null,
+    };
+  }
 
-    if (label) {
-      this._labelEl.textContent = label;
-      this._labelEl.style.display = "";
-    } else {
-      this._labelEl.style.display = "none";
+  private _inRange(mins: number, b: { min: number | null; max: number | null }): boolean {
+    if (b.min != null && mins < b.min) return false;
+    if (b.max != null && mins > b.max) return false;
+    return true;
+  }
+
+  private _renderPanel(): void {
+    if (!this._field) return;
+    if (this._panel) {
+      this._panel.remove();
+      this._panel = null;
     }
+    if (!this._open) return;
 
-    this._field.dataset.error = error ? "true" : "false";
-    this._field.dataset.disabled = disabled ? "true" : "false";
+    const selected = parseHM(this.getAttribute("value") || "");
+    const minuteStep = this._minuteStep();
+    const b = this._bounds();
+    const minutesList: number[] = [];
+    for (let m = 0; m < 60; m += minuteStep) minutesList.push(m);
 
-    if (this._input.value !== value) this._input.value = value;
-    this._input.disabled = disabled;
-    this._input.step = String(step);
-    if (min) this._input.min = min;
-    else this._input.removeAttribute("min");
-    if (max) this._input.max = max;
-    else this._input.removeAttribute("max");
+    const panel = document.createElement("div");
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-label", "시간 선택");
+    panel.dataset.slot = "panel";
+    panel.className = TP_PANEL_CLASS;
+    panel.style.position = "absolute";
+    panel.style.top = "100%";
+    panel.style.left = "0";
+    panel.style.marginTop = "4px";
+    panel.style.zIndex = "1000";
 
-    if (helperText) {
-      this._helper.textContent = helperText;
-      this._helper.dataset.error = error ? "true" : "false";
-      this._helper.style.display = "";
-    } else {
-      this._helper.style.display = "none";
+    const cols = document.createElement("div");
+    cols.className = TP_COLS_CLASS;
+
+    // 시 컬럼
+    const hourCol = document.createElement("div");
+    hourCol.className = TP_COL_CLASS;
+    hourCol.dataset.unit = "hour";
+    const hourHead = document.createElement("span");
+    hourHead.className = TP_COL_HEAD_CLASS;
+    hourHead.textContent = "시";
+    const hourList = document.createElement("div");
+    hourList.setAttribute("role", "listbox");
+    hourList.setAttribute("aria-label", "시");
+    hourList.className = TP_COL_LIST_CLASS;
+    for (let h = 0; h < 24; h++) {
+      const isSel = selected?.h === h;
+      const m = selected?.m ?? 0;
+      const dis =
+        !this._inRange(toMinutes(h, m), b) &&
+        !minutesList.some((mm) => this._inRange(toMinutes(h, mm), b));
+      const btn = this._optionButton(pad2(h), !!isSel, dis, () => {
+        const cm = selected?.m ?? 0;
+        if (this._inRange(toMinutes(h, cm), b)) {
+          this._emit(`${pad2(h)}:${pad2(cm)}`);
+        } else {
+          const fb = minutesList.find((mm) => this._inRange(toMinutes(h, mm), b));
+          if (fb != null) this._emit(`${pad2(h)}:${pad2(fb)}`);
+        }
+      });
+      hourList.appendChild(btn);
     }
+    hourCol.append(hourHead, hourList);
 
-    this._icon.disabled = disabled;
-    this._renderPresets(disabled);
+    // 분 컬럼
+    const minCol = document.createElement("div");
+    minCol.className = TP_COL_CLASS;
+    minCol.dataset.unit = "minute";
+    const minHead = document.createElement("span");
+    minHead.className = TP_COL_HEAD_CLASS;
+    minHead.textContent = "분";
+    const minList = document.createElement("div");
+    minList.setAttribute("role", "listbox");
+    minList.setAttribute("aria-label", "분");
+    minList.className = TP_COL_LIST_CLASS;
+    for (const m of minutesList) {
+      const isSel = selected?.m === m;
+      const h = selected?.h ?? 0;
+      const dis = !this._inRange(toMinutes(h, m), b);
+      const btn = this._optionButton(pad2(m), !!isSel, dis, () => {
+        const ch = selected?.h ?? 0;
+        if (this._inRange(toMinutes(ch, m), b)) this._emit(`${pad2(ch)}:${pad2(m)}`);
+      });
+      minList.appendChild(btn);
+    }
+    minCol.append(minHead, minList);
+
+    cols.append(hourCol, minCol);
+    panel.appendChild(cols);
+
+    this._field.appendChild(panel);
+    this._panel = panel;
+
+    // 선택 항목 가운데로 스크롤
+    panel
+      .querySelectorAll<HTMLElement>(`.${TP_OPTION_CLASS}[data-selected="true"]`)
+      .forEach((el) => el.scrollIntoView({ block: "center" }));
+  }
+
+  private _optionButton(
+    text: string,
+    selected: boolean,
+    disabled: boolean,
+    onClick: () => void,
+  ): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.setAttribute("role", "option");
+    btn.setAttribute("aria-selected", String(selected));
+    btn.dataset.slot = "option";
+    btn.dataset.selected = selected ? "true" : "false";
+    btn.disabled = disabled;
+    btn.className = TP_OPTION_CLASS;
+    btn.textContent = text;
+    btn.addEventListener("click", () => {
+      if (disabled) return;
+      onClick();
+    });
+    return btn;
   }
 
   /**
-   * 빠른설정 프리셋 칩 렌더링. 1순위 <script type="application/json" slot="presets"> 텍스트 노드
-   *   (한글 라벨을 속성 이스케이프·인코딩 사고 없이), 2순위 presets 속성. 클릭하면 value 를 세팅.
+   * 빠른설정 프리셋 칩(필드 트레일링 인라인). 1순위 <script type="application/json" slot="presets">,
+   * 2순위 presets 속성. 클릭하면 value 세팅(패널은 닫지 않음 — 추가 조정 가능).
    */
   private _renderPresets(disabled: boolean): void {
-    if (!this._presetsEl || !this._input) return;
+    if (!this._presetsEl) return;
     const script = this.querySelector<HTMLScriptElement>(
       'script[type="application/json"][slot="presets"]',
     );
@@ -230,9 +356,7 @@ export class NdsTimePicker extends NdsElement {
       } catch {
         console.warn(
           "[nds-time-picker] presets 가 유효한 JSON 배열이 아닙니다 — 프리셋을 생략합니다.",
-          {
-            rawHead: raw.slice(0, 80),
-          },
+          { rawHead: raw.slice(0, 80) },
         );
       }
     }
@@ -241,24 +365,72 @@ export class NdsTimePicker extends NdsElement {
     for (const p of presets) {
       const chip = document.createElement("button");
       chip.type = "button";
+      chip.dataset.slot = "preset";
       chip.className = TP_PRESET_CLASS;
       chip.textContent = p.label;
       chip.disabled = disabled;
       chip.addEventListener("click", () => {
         if (disabled) return;
-        this.setAttribute("value", p.value);
-        if (this._input) this._input.value = p.value;
-        this.dispatchEvent(
-          new CustomEvent("nds-time-change", {
-            detail: { value: p.value },
-            bubbles: true,
-            composed: true,
-          }),
-        );
+        this._emit(p.value);
       });
       this._presetsEl.appendChild(chip);
     }
     this._presetsEl.style.display = presets.length ? "" : "none";
+  }
+
+  protected update(): void {
+    if (
+      !this._root ||
+      !this._labelEl ||
+      !this._field ||
+      !this._trigger ||
+      !this._triggerText ||
+      !this._helper
+    )
+      return;
+    if (this.style.display !== "contents") this.style.display = "contents";
+
+    const value = this.getAttribute("value") || "";
+    const selected = parseHM(value);
+    const label = this.getAttribute("label");
+    const placeholder = this.getAttribute("placeholder") || "시간 선택";
+    const helperText = this.getAttribute("helper-text");
+    const error = this.boolAttr("error");
+    const fullWidth = this.boolAttr("full-width");
+    const disabled = this.boolAttr("disabled");
+
+    this._root.dataset.fullWidth = fullWidth ? "true" : "false";
+
+    if (label) {
+      this._labelEl.textContent = label;
+      this._labelEl.style.display = "";
+      this._trigger.setAttribute("aria-labelledby", this._labelId);
+    } else {
+      this._labelEl.style.display = "none";
+      this._trigger.removeAttribute("aria-labelledby");
+    }
+
+    this._field.dataset.open = this._open ? "true" : "false";
+    this._field.dataset.error = error ? "true" : "false";
+    this._field.dataset.disabled = disabled ? "true" : "false";
+
+    this._trigger.disabled = disabled;
+    this._trigger.dataset.placeholder = selected ? "false" : "true";
+    this._trigger.setAttribute("aria-expanded", String(this._open));
+    this._triggerText.textContent = selected
+      ? `${pad2(selected.h)}:${pad2(selected.m)}`
+      : placeholder;
+
+    if (helperText) {
+      this._helper.textContent = helperText;
+      this._helper.dataset.error = error ? "true" : "false";
+      this._helper.style.display = "";
+    } else {
+      this._helper.style.display = "none";
+    }
+
+    this._renderPresets(disabled);
+    this._renderPanel();
   }
 }
 

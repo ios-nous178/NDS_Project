@@ -180,7 +180,7 @@ export const inputStyles = `
 
   /* Helper text color — Figma Section_Input (294:12) Input/HelperText/* 토큰 사용.
    *   default  = #999999 (Text/Muted/Default — 일반 도움말)
-   *   success  = #2B96ED (Text/Brand/Default — 폼 검증 통과)
+   *   success  = var(--semantic-text-brand-default) (Text/Brand/Default — 폼 검증 통과)
    *   error    = #F13F00 (Text/Status/Error — 폼 오류)
    *   disabled = #C7C7C7 (Text/Disabled/Default — 비활성)
    * 일반 success(녹색, Banner/Toast 용)과 구분되도록 brand 톤으로 분리. */

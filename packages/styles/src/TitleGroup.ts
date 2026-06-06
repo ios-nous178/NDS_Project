@@ -1,11 +1,11 @@
-/* Auto-generated from packages/react/src/TitleBlock.tsx during the @nudge-design/styles split. */
+/* Auto-generated from packages/react/src/TitleGroup.tsx during the @nudge-design/styles split. */
 import { cv, fontFamily, fontWeight } from "@nudge-design/tokens";
 
-const TB_CLASS = "nds-title-block";
+const TB_CLASS = "nds-title-group";
 const TB_TITLE_CLASS = `${TB_CLASS}__title`;
 const TB_SUBTITLE_CLASS = `${TB_CLASS}__subtitle`;
 
-export const titleBlockStyles = `
+export const titleGroupStyles = `
   :where(.${TB_CLASS}) {
     display: flex;
     flex-direction: column;

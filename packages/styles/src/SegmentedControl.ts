@@ -13,6 +13,7 @@ import {
 const SC_CLASS = "nds-segmented";
 const SC_ROOT_CLASS = `${SC_CLASS}__root`;
 const SC_ITEM_CLASS = `${SC_CLASS}__item`;
+const SC_ICON_CLASS = `${SC_CLASS}__icon`;
 
 export const segmentedStyles = `
   :where(.${SC_ROOT_CLASS}) {
@@ -36,6 +37,7 @@ export const segmentedStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: var(--semantic-gap-tight);
     min-width: 0;
     height: 32px;
     padding: 0 var(--semantic-inset-input);
@@ -56,6 +58,25 @@ export const segmentedStyles = `
     height: 36px;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
+  }
+
+  /* lg: PC 세그먼트(구 Tabs.segment 흡수) — 아이콘 동반 가능 */
+  :where(.${SC_ROOT_CLASS}[data-size="lg"] .${SC_ITEM_CLASS}) {
+    height: 40px;
+    padding: 0 var(--semantic-inset-card);
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
+  }
+
+  :where(.${SC_ICON_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  :where(.${SC_ICON_CLASS}) svg {
+    width: 18px;
+    height: 18px;
   }
 
   :where(.${SC_ITEM_CLASS}[data-active="true"]) {

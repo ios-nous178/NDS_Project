@@ -23,6 +23,8 @@ const SELECT_OPTION_CLASS = `${SELECT_CLASS}__option`;
 const SELECT_OPTION_LABEL_CLASS = `${SELECT_CLASS}__option-label`;
 const SELECT_OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
 const SELECT_HELPER_CLASS = `${SELECT_CLASS}__helper`;
+const SELECT_SEARCH_CLASS = `${SELECT_CLASS}__search`;
+const SELECT_EMPTY_CLASS = `${SELECT_CLASS}__empty`;
 
 export const selectStyles = `
   :where(.${SELECT_ROOT_CLASS}) {
@@ -123,6 +125,52 @@ export const selectStyles = `
     z-index: ${zIndex.dropdown};
     box-sizing: border-box;
     animation: nds-select-fade-in ${transition.default};
+  }
+
+  /* searchable: 드롭다운 상단 고정 검색 인풋 (옵션 스크롤 시에도 유지) */
+  :where(.${SELECT_SEARCH_CLASS}) {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-gap-tight);
+    flex-shrink: 0;
+    padding: var(--semantic-inset-input);
+    border-bottom: 1px solid ${cv.borderRole.subtle};
+    background: ${cv.surface.default};
+  }
+
+  :where(.${SELECT_SEARCH_CLASS} svg) {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: ${cv.iconRole.normal};
+  }
+
+  :where(.${SELECT_SEARCH_CLASS} input) {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    color: ${cv.textRole.normal};
+  }
+
+  :where(.${SELECT_SEARCH_CLASS} input::placeholder) {
+    color: ${cv.textRole.muted};
+  }
+
+  /* searchable: 검색 결과 0건 */
+  :where(.${SELECT_EMPTY_CLASS}) {
+    padding: var(--semantic-inset-card);
+    text-align: center;
+    color: ${cv.textRole.muted};
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
   }
 
   :where(.${SELECT_OPTION_CLASS}) {

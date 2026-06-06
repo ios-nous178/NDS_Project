@@ -149,18 +149,17 @@ export class NdsNotificationItem extends NdsElement {
 
     this._root.innerHTML = "";
 
-    if (unread) {
-      const dot = document.createElement("span");
-      dot.className = NI_DOT_CLASS;
-      dot.setAttribute("aria-label", "새 알림");
-      this._root.appendChild(dot);
-    }
-
     const iconWrap = document.createElement("span");
     iconWrap.className = NI_ICON_CLASS;
     iconWrap.setAttribute("aria-hidden", "true");
     if (this._iconStash) iconWrap.appendChild(this._iconStash);
     else iconWrap.appendChild(kindIcon(kind));
+    if (unread) {
+      const dot = document.createElement("span");
+      dot.className = NI_DOT_CLASS;
+      dot.setAttribute("aria-label", "새 알림");
+      iconWrap.appendChild(dot);
+    }
     this._root.appendChild(iconWrap);
 
     const body = document.createElement("div");

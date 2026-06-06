@@ -1,4 +1,4 @@
-/* SelectedItemsPanel + RegionRow — 캐포비 InputGuide(3828:1577) 의 슬롯 패턴 패널.
+/* SelectedItemsPanel + SelectedItemRow (legacy alias: RegionRow) — 다중 선택 결과 패널.
  * 헤더(타이틀 + 개수 + 추가/해제 액션) 고정, 본문은 children 슬롯(리스트/폼/테이블 swap).
  * 색·radius 는 semantic 토큰으로 브랜드 cascade. */
 import {
@@ -21,9 +21,12 @@ const SIP_ACTION_CLASS = `${SIP_CLASS}__action`;
 const SIP_ACTION_ICON_CLASS = `${SIP_CLASS}__action-icon`;
 const SIP_BODY_CLASS = `${SIP_CLASS}__body`;
 
-const RR_CLASS = "nds-region-row";
-const RR_LABEL_CLASS = `${RR_CLASS}__label`;
-const RR_REMOVE_CLASS = `${RR_CLASS}__remove`;
+const ROW_CLASS = "nds-selected-item-row";
+const LEGACY_ROW_CLASS = "nds-region-row";
+const ROW_LABEL_CLASS = `${ROW_CLASS}__label`;
+const LEGACY_ROW_LABEL_CLASS = `${LEGACY_ROW_CLASS}__label`;
+const ROW_REMOVE_CLASS = `${ROW_CLASS}__remove`;
+const LEGACY_ROW_REMOVE_CLASS = `${LEGACY_ROW_CLASS}__remove`;
 
 export const selectedItemsPanelStyles = `
   :where(.${SIP_CLASS}) {
@@ -137,8 +140,8 @@ export const selectedItemsPanelStyles = `
     overflow-y: auto;
   }
 
-  /* ── RegionRow — 패널 본문에 쌓이는 단일 선택 항목 행 ── */
-  :where(.${RR_CLASS}) {
+  /* ── SelectedItemRow — 패널 본문에 쌓이는 단일 선택 항목 행 ── */
+  :where(.${ROW_CLASS}), :where(.${LEGACY_ROW_CLASS}) {
     display: flex;
     align-items: center;
     gap: ${spacing[8]}px;
@@ -150,7 +153,7 @@ export const selectedItemsPanelStyles = `
     font-family: ${fontFamily.web};
   }
 
-  :where(.${RR_LABEL_CLASS}) {
+  :where(.${ROW_LABEL_CLASS}), :where(.${LEGACY_ROW_LABEL_CLASS}) {
     flex: 1 1 auto;
     min-width: 0;
     font-size: ${typeScale.body1.fontSize}px;
@@ -162,7 +165,7 @@ export const selectedItemsPanelStyles = `
     white-space: nowrap;
   }
 
-  :where(.${RR_REMOVE_CLASS}) {
+  :where(.${ROW_REMOVE_CLASS}), :where(.${LEGACY_ROW_REMOVE_CLASS}) {
     appearance: none;
     display: inline-flex;
     align-items: center;
@@ -178,11 +181,11 @@ export const selectedItemsPanelStyles = `
     transition: color ${transition.default};
   }
 
-  :where(.${RR_REMOVE_CLASS}:hover) {
+  :where(.${ROW_REMOVE_CLASS}:hover), :where(.${LEGACY_ROW_REMOVE_CLASS}:hover) {
     color: ${cv.textRole.statusError};
   }
 
-  :where(.${RR_REMOVE_CLASS} svg) {
+  :where(.${ROW_REMOVE_CLASS} svg), :where(.${LEGACY_ROW_REMOVE_CLASS} svg) {
     width: 20px;
     height: 20px;
   }

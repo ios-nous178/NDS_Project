@@ -55,7 +55,7 @@ export const cashwalkBizSemantic = {
       success: cashwalkBizGreen[50], // #E5F8EE — BG/Status/Success
       error: cashwalkBizCoralRed[50], // #FFF5F5 — BG/Status/Error
       caution: cashwalkBizYellow[100], // #FFFAE5 — BG/Status/Caution
-      info: cashwalkBizBlue[50], // #F5FAFF — BG/Status/Info
+      info: cashwalkBizYellow[100], // #FFFAE5 — BG/Status/Info (brand-subtle 와 동일 톤)
     },
     overlay: "rgba(0, 0, 0, 0.4)", // base NudgeEAP 와 동일
     disabled: cashwalkBizNeutral[200], // #EEEEEE — DS extension

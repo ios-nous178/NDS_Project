@@ -1,10 +1,10 @@
 /**
- * <nds-selected-items-panel> + <nds-region-row> — 캐포비 InputGuide(3828:1577) 슬롯 패널의
+ * <nds-selected-items-panel> + <nds-selected-item-row> — 다중 선택 결과 패널의
  * vanilla Web Component 버전. 헤더(타이틀 + 개수 + 추가/해제 액션) 고정, 본문은 자식 markup 슬롯.
  *
  * 사용 예:
- *   <nds-selected-items-panel panel-title="선택한 지역" count="48">
- *     <nds-region-row>강원특별자치도 &gt; 강릉시</nds-region-row>
+ *   <nds-selected-items-panel panel-title="선택한 항목" count="48">
+ *     <nds-selected-item-row>카테고리 &gt; 멤버</nds-selected-item-row>
  *     ...
  *   </nds-selected-items-panel>
  *
@@ -19,12 +19,15 @@
  * 이벤트 (bubbles, composed):
  *   nds-selected-items-add   -> "추가 선택" 클릭
  *   nds-selected-items-clear -> "선택 해제" 클릭
- *   nds-region-remove        -> RegionRow 삭제 클릭
+ *   nds-selected-item-remove  -> SelectedItemRow 삭제 클릭
+ *   nds-region-remove         -> legacy alias (same event)
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
 
 const SIP_CLASS = "nds-selected-items-panel";
+const ROW_CLASS = "nds-selected-item-row";
+const LEGACY_ROW_CLASS = "nds-region-row";
 
 function svg(viewBox: string, inner: string): SVGElement {
   const el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -166,9 +169,7 @@ export class NdsSelectedItemsPanel extends NdsElement {
   }
 }
 
-export class NdsRegionRow extends NdsElement {
-  static elementName = "nds-region-row";
-
+abstract class SelectedItemRowBase extends NdsElement {
   static get observedAttributes(): readonly string[] {
     return ["remove-label", "hide-remove"];
   }
@@ -183,17 +184,22 @@ export class NdsRegionRow extends NdsElement {
 
   private _mount(): void {
     const root = document.createElement("div");
-    root.className = "nds-region-row";
+    root.className = `${ROW_CLASS} ${LEGACY_ROW_CLASS}`;
     root.dataset.slot = "root";
 
     const label = document.createElement("span");
-    label.className = "nds-region-row__label";
+    label.className = `${ROW_CLASS}__label ${LEGACY_ROW_CLASS}__label`;
     while (this.firstChild) label.appendChild(this.firstChild);
 
     const removeBtn = document.createElement("button");
     removeBtn.type = "button";
-    removeBtn.className = "nds-region-row__remove";
+    removeBtn.className = `${ROW_CLASS}__remove ${LEGACY_ROW_CLASS}__remove`;
     removeBtn.appendChild(svg("0 0 20 20", REMOVE_SVG));
+    removeBtn.addEventListener("click", () =>
+      this.dispatchEvent(
+        new CustomEvent("nds-selected-item-remove", { bubbles: true, composed: true }),
+      ),
+    );
     removeBtn.addEventListener("click", () =>
       this.dispatchEvent(new CustomEvent("nds-region-remove", { bubbles: true, composed: true })),
     );
@@ -212,5 +218,14 @@ export class NdsRegionRow extends NdsElement {
   }
 }
 
+export class NdsSelectedItemRow extends SelectedItemRowBase {
+  static elementName = "nds-selected-item-row";
+}
+
+export class NdsRegionRow extends SelectedItemRowBase {
+  static elementName = "nds-region-row";
+}
+
 define(NdsSelectedItemsPanel);
+define(NdsSelectedItemRow);
 define(NdsRegionRow);

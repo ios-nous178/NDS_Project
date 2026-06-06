@@ -3,6 +3,7 @@ import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nud
 
 const NI_CLASS = "nds-notification-item";
 const NI_ICON_CLASS = `${NI_CLASS}__icon`;
+const NI_ICON_WRAP_CLASS = `${NI_CLASS}__icon-wrap`;
 const NI_BODY_CLASS = `${NI_CLASS}__body`;
 const NI_TITLE_CLASS = `${NI_CLASS}__title`;
 const NI_DESC_CLASS = `${NI_CLASS}__desc`;
@@ -50,14 +51,22 @@ export const niStyles = `
     background: var(--semantic-bg-brand-subtle);
   }
 
+  :where(.${NI_ICON_WRAP_CLASS}) {
+    position: relative;
+    flex-shrink: 0;
+  }
+
   :where(.${NI_DOT_CLASS}) {
     position: absolute;
-    top: ${spacing[16]}px;
-    left: 4px;
-    width: 6px;
-    height: 6px;
+    top: 50%;
+    left: -2px;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
     border-radius: 9999px;
     background: var(--semantic-fill-status-error);
+    border: 2px solid ${cv.surface.default};
+    box-sizing: content-box;
   }
 
   :where(.${NI_ICON_CLASS}) {
@@ -70,7 +79,6 @@ export const niStyles = `
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    flex-shrink: 0;
   }
 
   :where(.${NI_BODY_CLASS}) {

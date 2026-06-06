@@ -13,14 +13,16 @@ const FAR_TIMER_CLASS = `${FAR_CLASS}__timer`;
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
-/* ─── Compound: Root ─── */
+/* ─── Internal building blocks ───
+ * FieldActionRow 는 "전화·코드 인증 폼" 전용 helper 라 공개 API 는 flat 하나로 고정한다.
+ * 아래 조각들은 flat 컴포넌트의 내부 구현일 뿐 — export 하지 않는다 (구 Compound API 제거).
+ */
 
-export interface FieldActionRowRootProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Root 내부 콘텐츠 (Row, Helper 등) */
+interface FieldActionRowRootProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-export const FieldActionRowRoot: React.FC<FieldActionRowRootProps> = React.memo(
+const FieldActionRowRoot: React.FC<FieldActionRowRootProps> = React.memo(
   ({ children, className, ...rest }) => (
     <div data-slot="root" className={cx(FAR_ROOT_CLASS, className)} {...rest}>
       {children}
@@ -29,14 +31,11 @@ export const FieldActionRowRoot: React.FC<FieldActionRowRootProps> = React.memo(
 );
 FieldActionRowRoot.displayName = "FieldActionRowRoot";
 
-/* ─── Compound: Row ─── */
-
-export interface FieldActionRowRowProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 한 행의 콘텐츠 (Field, Timer, Action) */
+interface FieldActionRowRowProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-export const FieldActionRowRow: React.FC<FieldActionRowRowProps> = React.memo(
+const FieldActionRowRow: React.FC<FieldActionRowRowProps> = React.memo(
   ({ children, className, ...rest }) => (
     <div data-slot="row" className={className} {...rest}>
       {children}
@@ -45,18 +44,13 @@ export const FieldActionRowRow: React.FC<FieldActionRowRowProps> = React.memo(
 );
 FieldActionRowRow.displayName = "FieldActionRowRow";
 
-/* ─── Compound: Field ─── */
-
-export interface FieldActionRowFieldProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 에러 상태 표시 */
+interface FieldActionRowFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   error?: boolean;
-  /** 성공 상태 표시 */
   success?: boolean;
-  /** 입력 필드 콘텐츠 */
   children: React.ReactNode;
 }
 
-export const FieldActionRowField: React.FC<FieldActionRowFieldProps> = React.memo(
+const FieldActionRowField: React.FC<FieldActionRowFieldProps> = React.memo(
   ({ error = false, success = false, children, className, ...rest }) => (
     <div
       data-slot="field"
@@ -71,16 +65,12 @@ export const FieldActionRowField: React.FC<FieldActionRowFieldProps> = React.mem
 );
 FieldActionRowField.displayName = "FieldActionRowField";
 
-/* ─── Compound: Timer ─── */
-
-export interface FieldActionRowTimerProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** 타이머 만료 상태 (만료 시 경고 스타일) */
+interface FieldActionRowTimerProps extends React.HTMLAttributes<HTMLSpanElement> {
   expired?: boolean;
-  /** 타이머 텍스트 (예: "02:30") */
   children: React.ReactNode;
 }
 
-export const FieldActionRowTimer: React.FC<FieldActionRowTimerProps> = React.memo(
+const FieldActionRowTimer: React.FC<FieldActionRowTimerProps> = React.memo(
   ({ expired = false, children, className, ...rest }) => (
     <span
       data-slot="timer"
@@ -94,16 +84,13 @@ export const FieldActionRowTimer: React.FC<FieldActionRowTimerProps> = React.mem
 );
 FieldActionRowTimer.displayName = "FieldActionRowTimer";
 
-/* ─── Compound: Action ─── */
-
-export interface FieldActionRowActionProps extends React.HTMLAttributes<HTMLDivElement> {
+interface FieldActionRowActionProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 액션 버튼 스타일 톤 @default "outline" */
   tone?: "outline" | "solid";
-  /** 액션 버튼 콘텐츠 */
   children: React.ReactNode;
 }
 
-export const FieldActionRowAction: React.FC<FieldActionRowActionProps> = React.memo(
+const FieldActionRowAction: React.FC<FieldActionRowActionProps> = React.memo(
   ({ tone = "outline", children, className, ...rest }) => (
     <div data-slot="action" data-tone={tone} className={cx(FAR_ACTION_CLASS, className)} {...rest}>
       {children}
@@ -112,18 +99,13 @@ export const FieldActionRowAction: React.FC<FieldActionRowActionProps> = React.m
 );
 FieldActionRowAction.displayName = "FieldActionRowAction";
 
-/* ─── Compound: Helper ─── */
-
-export interface FieldActionRowHelperProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** 에러 상태 표시 */
+interface FieldActionRowHelperProps extends React.HTMLAttributes<HTMLSpanElement> {
   error?: boolean;
-  /** 성공 상태 표시 */
   success?: boolean;
-  /** 도움/에러/성공 메시지 텍스트 */
   children: React.ReactNode;
 }
 
-export const FieldActionRowHelper: React.FC<FieldActionRowHelperProps> = React.memo(
+const FieldActionRowHelper: React.FC<FieldActionRowHelperProps> = React.memo(
   ({ error = false, success = false, children, className, ...rest }) => (
     <span
       data-slot="helper"
@@ -138,17 +120,17 @@ export const FieldActionRowHelper: React.FC<FieldActionRowHelperProps> = React.m
 );
 FieldActionRowHelper.displayName = "FieldActionRowHelper";
 
-/* ─── Flat API ─── */
+/* ─── Flat API (공개 surface) ─── */
 
 export interface FieldActionRowSlotProps {
   /** 루트 `<div>`에 전달할 추가 props */
-  root?: Omit<FieldActionRowRootProps, "children">;
+  root?: Omit<React.HTMLAttributes<HTMLDivElement>, "children">;
   /** 필드 `<div>`에 전달할 추가 props */
-  field?: Omit<FieldActionRowFieldProps, "children" | "error">;
+  field?: Omit<React.HTMLAttributes<HTMLDivElement>, "children">;
   /** 액션 `<div>`에 전달할 추가 props */
-  action?: Omit<FieldActionRowActionProps, "children" | "tone">;
+  action?: Omit<React.HTMLAttributes<HTMLDivElement>, "children">;
   /** 헬퍼 `<span>`에 전달할 추가 props */
-  helper?: Omit<FieldActionRowHelperProps, "children" | "error" | "success">;
+  helper?: Omit<React.HTMLAttributes<HTMLSpanElement>, "children">;
 }
 
 export interface FieldActionRowProps {
@@ -176,6 +158,10 @@ export interface FieldActionRowProps {
   slotProps?: FieldActionRowSlotProps;
 }
 
+/**
+ * 전화번호 인증 / 인증코드 입력처럼 "입력 1개 + 액션 버튼 1개(+타이머)" 한 줄 패턴 전용 helper.
+ * 일반 폼 레이아웃(여러 필드/버튼)에는 쓰지 않는다 — Input + Button 직접 조합을 사용.
+ */
 const FieldActionRowComponent: React.FC<FieldActionRowProps> = ({
   field,
   action,
@@ -218,13 +204,4 @@ const FieldActionRowComponent: React.FC<FieldActionRowProps> = ({
 
 FieldActionRowComponent.displayName = "FieldActionRow";
 
-/* ─── Export: Flat + Compound ─── */
-
-export const FieldActionRow = Object.assign(FieldActionRowComponent, {
-  Root: FieldActionRowRoot,
-  Row: FieldActionRowRow,
-  Field: FieldActionRowField,
-  Timer: FieldActionRowTimer,
-  Action: FieldActionRowAction,
-  Helper: FieldActionRowHelper,
-});
+export const FieldActionRow = FieldActionRowComponent;

@@ -1,4 +1,5 @@
-import React, { useId } from "react";
+import React, { useEffect, useId, useMemo, useRef, useState } from "react";
+import { addDismissableLayerListeners, WebPortal } from "./internal/web";
 
 /* ─── Constants ─── */
 
@@ -6,10 +7,17 @@ const TP_CLASS = "nds-time-picker";
 const TP_ROOT_CLASS = `${TP_CLASS}__root`;
 const TP_LABEL_CLASS = `${TP_CLASS}__label`;
 const TP_FIELD_CLASS = `${TP_CLASS}__field`;
-const TP_INPUT_CLASS = `${TP_CLASS}__input`;
+const TP_TRIGGER_CLASS = `${TP_CLASS}__trigger`;
+const TP_TRIGGER_TEXT_CLASS = `${TP_CLASS}__trigger-text`;
 const TP_ICON_CLASS = `${TP_CLASS}__icon`;
 const TP_PRESETS_CLASS = `${TP_CLASS}__presets`;
 const TP_PRESET_CLASS = `${TP_CLASS}__preset`;
+const TP_PANEL_CLASS = `${TP_CLASS}__panel`;
+const TP_COLS_CLASS = `${TP_CLASS}__columns`;
+const TP_COL_CLASS = `${TP_CLASS}__col`;
+const TP_COL_HEAD_CLASS = `${TP_CLASS}__col-head`;
+const TP_COL_LIST_CLASS = `${TP_CLASS}__col-list`;
+const TP_OPTION_CLASS = `${TP_CLASS}__option`;
 const TP_HELPER_CLASS = `${TP_CLASS}__helper`;
 
 /* 시계 아이콘 — Figma ic_time_picker (캐포비 Library 3001:19125) 의 ring + 시계바늘 path 그대로.
@@ -52,10 +60,12 @@ export interface TimePickerProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   value: string;
   /** 변경 콜백 */
   onValueChange: (value: string) => void;
-  /** step 분 단위 (input[type=time]의 step 속성, 초 단위 — 60 = 1분) */
+  /** step 분 단위 (초 단위 — 60 = 1분, 300 = 5분). 분 컬럼 간격으로 환산된다. */
   step?: number;
   /** 라벨 */
   label?: React.ReactNode;
+  /** 미선택 시 트리거 placeholder */
+  placeholder?: string;
   /** 헬퍼 / 에러 텍스트 */
   helperText?: React.ReactNode;
   /** 에러 */
@@ -64,97 +74,191 @@ export interface TimePickerProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   fullWidth?: boolean;
   /** 비활성화 */
   disabled?: boolean;
-  /** min (HH:mm) */
+  /** 선택 가능한 최소 시각 (HH:mm, 포함) */
   min?: string;
-  /** max (HH:mm) */
+  /** 선택 가능한 최대 시각 (HH:mm, 포함) */
   max?: string;
+  /** 포털 컨테이너 */
+  portalContainer?: HTMLElement | null;
   /**
    * 빠른설정 프리셋 칩 (예: `[{ label: "자정까지", value: "23:59" }]`). 클릭하면 value 를 즉시 세팅.
-   * 회색 중립 보조 액션 칩으로 렌더 — 노란 brand Chip / SelectionButton 이 아니다(캐포비 어드민 시간 인풋).
+   * 시간 필드 트레일링(시계아이콘 우측)에 붙는 회색 중립 보조 액션 칩으로 렌더 —
+   * 노란 brand Chip / SelectionButton 이 아니다(캐포비 어드민 시간 인풋, Figma 3001:19122).
    */
   presets?: TimePickerPreset[];
 }
+
+/* ─── Utils ─── */
+
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
+const pad2 = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+
+/** "HH:mm" → 자정 기준 분. 형식이 잘못되면 null. */
+const parseHM = (v: string): { h: number; m: number } | null => {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(v.trim());
+  if (!match) return null;
+  const h = Number(match[1]);
+  const m = Number(match[2]);
+  if (h < 0 || h > 23 || m < 0 || m > 59) return null;
+  return { h, m };
+};
+
+const toMinutes = (h: number, m: number) => h * 60 + m;
+
 /* ─── Component ─── */
 
-export const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
+export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
   (
     {
       value,
       onValueChange,
       step = 60 * 5,
       label,
+      placeholder = "시간 선택",
       helperText,
       error = false,
       fullWidth = false,
       disabled = false,
       min,
       max,
+      portalContainer,
       presets,
       className,
       ...rest
     },
     ref,
   ) => {
-    const inputId = useId();
-    const innerRef = React.useRef<HTMLInputElement>(null);
-    React.useImperativeHandle(ref, () => innerRef.current as HTMLInputElement, []);
+    const labelId = useId();
+    const [open, setOpen] = useState(false);
+    const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+    const rootRef = useRef<HTMLDivElement>(null);
+    const fieldRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
+    React.useImperativeHandle(ref, () => rootRef.current as HTMLDivElement, []);
 
-    const openPicker = () => {
-      const el = innerRef.current as (HTMLInputElement & { showPicker?: () => void }) | null;
-      if (!el || disabled) return;
-      // showPicker 지원 시 네이티브 시간 picker 호출, 아니면 입력 포커스로 폴백.
-      if (typeof el.showPicker === "function") {
-        try {
-          el.showPicker();
-          return;
-        } catch {
-          /* user-gesture 필요 등 — 포커스로 폴백 */
-        }
-      }
-      el.focus();
+    const selected = useMemo(() => parseHM(value), [value]);
+    const minuteStep = Math.min(60, Math.max(1, Math.round(step / 60)));
+
+    const minBound = useMemo(() => {
+      const p = min ? parseHM(min) : null;
+      return p ? toMinutes(p.h, p.m) : null;
+    }, [min]);
+    const maxBound = useMemo(() => {
+      const p = max ? parseHM(max) : null;
+      return p ? toMinutes(p.h, p.m) : null;
+    }, [max]);
+
+    const hours = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
+    const minutes = useMemo(() => {
+      const list: number[] = [];
+      for (let m = 0; m < 60; m += minuteStep) list.push(m);
+      return list;
+    }, [minuteStep]);
+
+    const inRange = (mins: number) => {
+      if (minBound != null && mins < minBound) return false;
+      if (maxBound != null && mins > maxBound) return false;
+      return true;
     };
+
+    const displayText = selected ? `${pad2(selected.h)}:${pad2(selected.m)}` : placeholder;
+
+    // 패널 위치 계산 (필드 기준) + 외부 클릭/스크롤 dismiss
+    useEffect(() => {
+      if (!open || !fieldRef.current) return;
+      const rect = fieldRef.current.getBoundingClientRect();
+      setPosition({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+      return addDismissableLayerListeners({
+        contentEl: panelRef.current,
+        triggerEl: fieldRef.current,
+        onDismiss: () => setOpen(false),
+      });
+    }, [open]);
+
+    // Escape 닫기
+    useEffect(() => {
+      if (!open) return;
+      const onKey = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          setOpen(false);
+          triggerRef.current?.focus();
+        }
+      };
+      document.addEventListener("keydown", onKey);
+      return () => document.removeEventListener("keydown", onKey);
+    }, [open]);
+
+    // 열릴 때 선택된 시/분을 가운데로 스크롤
+    useEffect(() => {
+      if (!open || !panelRef.current) return;
+      panelRef.current
+        .querySelectorAll<HTMLElement>(`.${TP_OPTION_CLASS}[data-selected="true"]`)
+        .forEach((el) => el.scrollIntoView({ block: "center" }));
+    }, [open]);
+
+    const commit = (h: number, m: number) => onValueChange(`${pad2(h)}:${pad2(m)}`);
+
+    const selectHour = (h: number) => {
+      const m = selected?.m ?? 0;
+      if (inRange(toMinutes(h, m))) {
+        commit(h, m);
+        return;
+      }
+      // 현재 분이 범위를 벗어나면 해당 시의 첫 유효 분으로 보정
+      const fallback = minutes.find((mm) => inRange(toMinutes(h, mm)));
+      if (fallback != null) commit(h, fallback);
+    };
+
+    const selectMinute = (m: number) => {
+      const h = selected?.h ?? 0;
+      if (inRange(toMinutes(h, m))) commit(h, m);
+    };
+
+    const openPanel = () => !disabled && setOpen((prev) => !prev);
 
     return (
       <div
+        ref={rootRef}
         data-slot="root"
         data-full-width={fullWidth ? "true" : "false"}
         className={cx(TP_ROOT_CLASS, className)}
+        {...rest}
       >
         {label && (
-          <label htmlFor={inputId} className={TP_LABEL_CLASS}>
+          <span id={labelId} className={TP_LABEL_CLASS}>
             {label}
-          </label>
+          </span>
         )}
         <div
-          className={TP_FIELD_CLASS}
+          ref={fieldRef}
+          data-slot="field"
+          data-open={open ? "true" : "false"}
           data-error={error ? "true" : "false"}
           data-disabled={disabled ? "true" : "false"}
+          className={TP_FIELD_CLASS}
         >
-          <input
-            ref={innerRef}
-            id={inputId}
-            type="time"
-            className={TP_INPUT_CLASS}
-            value={value}
-            disabled={disabled}
-            step={step}
-            min={min}
-            max={max}
-            onChange={(e) => onValueChange(e.target.value)}
-            {...rest}
-          />
           <button
+            ref={triggerRef}
             type="button"
-            className={TP_ICON_CLASS}
-            aria-label="시간 선택"
-            tabIndex={-1}
+            data-slot="trigger"
+            data-placeholder={selected ? "false" : "true"}
             disabled={disabled}
-            onClick={openPicker}
+            aria-haspopup="dialog"
+            aria-expanded={open}
+            aria-labelledby={label ? labelId : undefined}
+            className={TP_TRIGGER_CLASS}
+            onClick={openPanel}
           >
-            <ClockIcon />
+            <span data-slot="trigger-text" className={TP_TRIGGER_TEXT_CLASS}>
+              {displayText}
+            </span>
+            <span aria-hidden="true" className={TP_ICON_CLASS}>
+              <ClockIcon />
+            </span>
           </button>
           {presets && presets.length > 0 && (
             <span className={TP_PRESETS_CLASS}>
@@ -162,6 +266,7 @@ export const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
                 <button
                   key={`${p.value}:${p.label}`}
                   type="button"
+                  data-slot="preset"
                   className={TP_PRESET_CLASS}
                   disabled={disabled}
                   onClick={() => onValueChange(p.value)}
@@ -172,6 +277,74 @@ export const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
             </span>
           )}
         </div>
+
+        {open && (
+          <WebPortal container={portalContainer}>
+            <div
+              ref={panelRef}
+              role="dialog"
+              aria-label="시간 선택"
+              data-slot="panel"
+              className={TP_PANEL_CLASS}
+              style={{ top: position.top, left: position.left, minWidth: position.width }}
+            >
+              <div className={TP_COLS_CLASS}>
+                <div className={TP_COL_CLASS} data-unit="hour">
+                  <span className={TP_COL_HEAD_CLASS}>시</span>
+                  <div role="listbox" aria-label="시" className={TP_COL_LIST_CLASS}>
+                    {hours.map((h) => {
+                      const isSel = selected?.h === h;
+                      const m = selected?.m ?? 0;
+                      const dis =
+                        !inRange(toMinutes(h, m)) && !minutes.some((mm) => inRange(toMinutes(h, mm)));
+                      return (
+                        <button
+                          key={h}
+                          type="button"
+                          role="option"
+                          aria-selected={isSel}
+                          data-slot="option"
+                          data-selected={isSel ? "true" : "false"}
+                          disabled={dis}
+                          className={TP_OPTION_CLASS}
+                          onClick={() => selectHour(h)}
+                        >
+                          {pad2(h)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className={TP_COL_CLASS} data-unit="minute">
+                  <span className={TP_COL_HEAD_CLASS}>분</span>
+                  <div role="listbox" aria-label="분" className={TP_COL_LIST_CLASS}>
+                    {minutes.map((m) => {
+                      const isSel = selected?.m === m;
+                      const h = selected?.h ?? 0;
+                      const dis = !inRange(toMinutes(h, m));
+                      return (
+                        <button
+                          key={m}
+                          type="button"
+                          role="option"
+                          aria-selected={isSel}
+                          data-slot="option"
+                          data-selected={isSel ? "true" : "false"}
+                          disabled={dis}
+                          className={TP_OPTION_CLASS}
+                          onClick={() => selectMinute(m)}
+                        >
+                          {pad2(m)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </WebPortal>
+        )}
+
         {helperText && (
           <p className={TP_HELPER_CLASS} data-error={error ? "true" : "false"}>
             {helperText}

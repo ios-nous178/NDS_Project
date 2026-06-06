@@ -1,31 +1,31 @@
 /**
- * <nds-title-block> — DS TitleBlock 의 vanilla Web Component 버전.
+ * <nds-title-group> — DS TitleGroup 의 vanilla Web Component 버전.
  *
- * DOM 구조 (React TitleBlock.tsx 와 동일):
- *   <nds-title-block level="h2" title="안녕" subtitle="반가워"></nds-title-block>
- *     └─ <div class="nds-title-block" data-slot="root" data-level="h2" style="gap: var(--semantic-gap-title-h2);">
- *          ├─ <h2 class="nds-title-block__title" data-slot="title" style="font-size:...;line-height:...">안녕</h2>
- *          └─ <p  class="nds-title-block__subtitle" data-slot="subtitle" style="...">반가워</p>
+ * DOM 구조 (React TitleGroup.tsx 와 동일):
+ *   <nds-title-group level="h2" title="안녕" subtitle="반가워"></nds-title-group>
+ *     └─ <div class="nds-title-group" data-slot="root" data-level="h2" style="gap: var(--semantic-gap-title-h2);">
+ *          ├─ <h2 class="nds-title-group__title" data-slot="title" style="font-size:...;line-height:...">안녕</h2>
+ *          └─ <p  class="nds-title-group__subtitle" data-slot="subtitle" style="...">반가워</p>
  *
  * title / subtitle attribute 가 없으면 host 의 light DOM 자식을 그대로 사용한다.
- *   <nds-title-block level="h3">
+ *   <nds-title-group level="h3">
  *     <span slot="title">제목</span>
  *     <span slot="subtitle">설명</span>
- *   </nds-title-block>
+ *   </nds-title-group>
  */
 
 import { typeScale } from "@nudge-design/tokens";
 
 import { NdsElement, define } from "../base/nds-element.js";
 
-const TB_CLASS = "nds-title-block";
+const TB_CLASS = "nds-title-group";
 const TB_TITLE_CLASS = `${TB_CLASS}__title`;
 const TB_SUBTITLE_CLASS = `${TB_CLASS}__subtitle`;
 
-export type TitleBlockLevel = "h1" | "h2" | "h3" | "h4" | "h5";
+export type TitleGroupLevel = "h1" | "h2" | "h3" | "h4" | "h5";
 
 const LEVEL_CONFIG: Record<
-  TitleBlockLevel,
+  TitleGroupLevel,
   {
     title: { fontSize: number; lineHeight: number };
     subtitle: { fontSize: number; lineHeight: number };
@@ -39,11 +39,11 @@ const LEVEL_CONFIG: Record<
   h5: { title: typeScale.headline5, subtitle: typeScale.caption1, gapVar: "--semantic-gap-title-h5" },
 };
 
-const LEVELS = Object.keys(LEVEL_CONFIG) as TitleBlockLevel[];
+const LEVELS = Object.keys(LEVEL_CONFIG) as TitleGroupLevel[];
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby"] as const;
 
-export class NdsTitleBlock extends NdsElement {
-  static elementName = "nds-title-block";
+export class NdsTitleGroup extends NdsElement {
+  static elementName = "nds-title-group";
 
   static get observedAttributes(): readonly string[] {
     return ["level", "title", "subtitle", ...FORWARDED_ATTRS];
@@ -52,7 +52,7 @@ export class NdsTitleBlock extends NdsElement {
   private _root: HTMLDivElement | null = null;
   private _titleEl: HTMLElement | null = null;
   private _subtitleEl: HTMLParagraphElement | null = null;
-  private _renderedLevel: TitleBlockLevel | null = null;
+  private _renderedLevel: TitleGroupLevel | null = null;
   private _slotTitle = "";
   private _slotSubtitle = "";
 
@@ -103,8 +103,8 @@ export class NdsTitleBlock extends NdsElement {
   }
 
   private _syncTitle(
-    level: TitleBlockLevel,
-    config: (typeof LEVEL_CONFIG)[TitleBlockLevel],
+    level: TitleGroupLevel,
+    config: (typeof LEVEL_CONFIG)[TitleGroupLevel],
     text: string,
   ): void {
     if (!this._root) return;
@@ -127,7 +127,7 @@ export class NdsTitleBlock extends NdsElement {
     this._titleEl.textContent = text;
   }
 
-  private _syncSubtitle(config: (typeof LEVEL_CONFIG)[TitleBlockLevel], text: string): void {
+  private _syncSubtitle(config: (typeof LEVEL_CONFIG)[TitleGroupLevel], text: string): void {
     if (!this._root) return;
     if (!text) {
       this._subtitleEl?.remove();
@@ -145,10 +145,10 @@ export class NdsTitleBlock extends NdsElement {
     this._subtitleEl.textContent = text;
   }
 
-  private _normalizedLevel(): TitleBlockLevel {
+  private _normalizedLevel(): TitleGroupLevel {
     const value = this.attr("level", "h2");
-    return (LEVELS as readonly string[]).includes(value) ? (value as TitleBlockLevel) : "h2";
+    return (LEVELS as readonly string[]).includes(value) ? (value as TitleGroupLevel) : "h2";
   }
 }
 
-define(NdsTitleBlock);
+define(NdsTitleGroup);

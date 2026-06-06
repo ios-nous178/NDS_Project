@@ -3,16 +3,12 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { normalizeSeries } from "./viz-svg.js";
 
 const SL_CLASS = "nds-sparkline";
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 export type SparklineKind = "line" | "area" | "bar";
-
-interface NormalizedPoint {
-  x: number;
-  y: number;
-}
 
 const KINDS: readonly SparklineKind[] = ["line", "area", "bar"];
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby", "title"] as const;
@@ -122,7 +118,7 @@ function createSparklineSvg(options: {
 }): SVGSVGElement {
   const { data, kind, color, width, height, strokeWidth, showBaseline, showLastDot } = options;
   const pad = 2;
-  const { points, midY } = normalize(data, width, height, pad);
+  const { points, midY } = normalizeSeries(data, width, height, pad);
   const linePath = points
     .map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
     .join(" ");
@@ -192,27 +188,6 @@ function createSparklineSvg(options: {
   }
 
   return svg;
-}
-
-function normalize(
-  data: number[],
-  width: number,
-  height: number,
-  pad: number,
-): { points: NormalizedPoint[]; midY: number } {
-  if (data.length === 0) return { points: [], midY: height / 2 };
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = max - min || 1;
-  const usableW = width - pad * 2;
-  const usableH = height - pad * 2;
-  const stepX = data.length === 1 ? 0 : usableW / (data.length - 1);
-  const points = data.map((value, index) => ({
-    x: pad + stepX * index,
-    y: pad + usableH - ((value - min) / range) * usableH,
-  }));
-  const midY = pad + usableH - ((0 - min) / range) * usableH;
-  return { points, midY: Math.max(pad, Math.min(height - pad, midY)) };
 }
 
 define(NdsSparkline);

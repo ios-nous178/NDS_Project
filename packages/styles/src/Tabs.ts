@@ -196,44 +196,6 @@ export const tabsStyles = `
     }
   }
 
-  /* ─── segment variant (PC only) ─── */
-
-  :where(.${TABS_LIST_CLASS}[data-variant="segment"]) {
-    background: ${cv.surface.default};
-    gap: 0;
-  }
-
-  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}) {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: ${sizing.tabs.segment.pc}px;
-    padding: 0 var(--semantic-inset-card);
-    background: ${cv.surface.page};
-    color: ${cv.textRole.subtle};
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
-    font-weight: ${fontWeight.regular};
-  }
-
-  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
-    background: ${cv.fill.neutral};
-    color: ${cv.textRole.inverse};
-    font-weight: ${fontWeight.bold};
-  }
-
-  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}[data-active="true"] .${TABS_TRIGGER_ICON_CLASS}) {
-    color: ${cv.iconRole.inverse};
-  }
-
-  @media (hover: hover) {
-    :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
-      background: ${cv.surface.subtle};
-      color: ${cv.textRole.strong};
-    }
-  }
-
   /* ─── Panel ─── */
 
   :where(.${TABS_PANEL_CLASS}) {
