@@ -14,6 +14,7 @@ export * from "./SearchInput";
 export * from "./Tabs";
 export * from "./BottomSheet";
 export * from "./Checkbox";
+export * from "./CheckboxGroup";
 export * from "./Radio";
 export * from "./Select";
 export * from "./MultiSelect";
