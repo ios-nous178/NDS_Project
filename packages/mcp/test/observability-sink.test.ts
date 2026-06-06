@@ -5,9 +5,9 @@ import path from "node:path";
 import type { BuildSinglefileHtmlResult } from "@nudge-design/mockup-core/tools/build-html";
 import { recordBuildObservability, recordObservability } from "../src/tools/observability-sink";
 
-// 보안 게이트 회귀 가드:
-//  - PRD/HTML 원문(content)은 NUDGE_OBSERVABILITY_ARTIFACTS opt-in 일 때만 전송, 메타(hash/bytes)는 항상.
-//  - 원격(non-loopback) sink 는 ARTIFACTS_REMOTE 까지 켜야 본문이 나간다.
+// 보안 게이트 회귀 가드("원문은 머신 밖으로 안 나간다"):
+//  - loopback sink → 원문 기본 ON. NUDGE_OBSERVABILITY_ARTIFACTS=0 으로만 끈다. 메타(hash/bytes)는 항상.
+//  - 원격(non-loopback) sink → 기본 OFF. ARTIFACTS=1 + ARTIFACTS_REMOTE=1 둘 다라야 본문이 나간다.
 //  - send() 는 병렬(allSettled) — 한 엔드포인트가 죽어도 나머지 결과가 돌아온다.
 //  - recordObservability 디스패처는 툴 이름으로 라우팅(미지원 툴/이상 result → null).
 
@@ -76,7 +76,22 @@ afterEach(() => {
 });
 
 describe("artifact 원문 게이트", () => {
-  it("기본은 원문을 빼고 메타데이터(hash/bytes/contentOmitted)만 보낸다", async () => {
+  it("loopback 은 기본 ON — 원문을 포함하고 메타(hash/bytes)도 붙는다", async () => {
+    vi.stubGlobal("fetch", fakeFetch());
+    await recordBuildObservability({
+      tool: "build_singlefile_html",
+      cwd: tmpDir,
+      result: buildResult(),
+    });
+    const prd = artifactsRows().find((r) => r.kind === "initial-prd");
+    expect(prd?.content).toContain("ABC123");
+    expect(prd?.contentOmitted).toBe(false);
+    expect(typeof prd?.contentHash).toBe("string");
+    expect(prd?.byteLength).toBeGreaterThan(0);
+  });
+
+  it("loopback 이어도 ARTIFACTS=0 이면 원문을 빼고 메타만 보낸다", async () => {
+    process.env.NUDGE_OBSERVABILITY_ARTIFACTS = "0";
     vi.stubGlobal("fetch", fakeFetch());
     await recordBuildObservability({
       tool: "build_singlefile_html",
@@ -91,27 +106,23 @@ describe("artifact 원문 게이트", () => {
       expect(typeof row.contentHash).toBe("string");
       expect(row.byteLength).toBeGreaterThan(0);
     }
-    // 원문이 페이로드 어디에도 새지 않아야 한다.
     expect(JSON.stringify(rows)).not.toContain("ABC123");
   });
 
-  it("ARTIFACTS=1 + loopback 이면 원문을 포함한다", async () => {
-    process.env.NUDGE_OBSERVABILITY_ARTIFACTS = "1";
+  it("원격 sink 는 기본 OFF, ARTIFACTS=1 이어도 본문을 빼고 ARTIFACTS_REMOTE=1 이라야 보낸다", async () => {
+    process.env.NUDGE_MOCKUP_API_URL = "http://10.0.0.5:9999";
     vi.stubGlobal("fetch", fakeFetch());
+    // env 없음 → 원격 기본 OFF
     await recordBuildObservability({
       tool: "build_singlefile_html",
       cwd: tmpDir,
       result: buildResult(),
     });
-    const prd = artifactsRows().find((r) => r.kind === "initial-prd");
-    expect(prd?.content).toContain("ABC123");
-    expect(prd?.contentOmitted).toBe(false);
-  });
+    expect(artifactsRows().every((r) => r.content === undefined)).toBe(true);
 
-  it("원격 sink 는 ARTIFACTS=1 이어도 본문을 빼고, ARTIFACTS_REMOTE=1 이라야 보낸다", async () => {
-    process.env.NUDGE_MOCKUP_API_URL = "http://10.0.0.5:9999";
+    // ARTIFACTS=1 만으론 부족
+    posts = [];
     process.env.NUDGE_OBSERVABILITY_ARTIFACTS = "1";
-    vi.stubGlobal("fetch", fakeFetch());
     await recordBuildObservability({
       tool: "build_singlefile_html",
       cwd: tmpDir,
