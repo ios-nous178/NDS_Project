@@ -492,29 +492,47 @@ export async function findIcon(args: {
  *  - 둘 다 → query 우선
  */
 // export: find-slim.test.ts 의 응답 슬림(토큰 절감) 회귀 테스트용 (런타임 동작 변경 없음).
-export function findToken(args: { group?: string; query?: string }) {
+export function findToken(args: { group?: string; query?: string; brand?: string }) {
+  const brand = args.brand?.trim().toLowerCase() || undefined;
+  // brand 필터:
+  //  - 미지정 → base(shared, brands 필드 없음)만. 브랜드 고유 토큰이 크로스브랜드로
+  //    새는 것을 막아 기존 nudge 워크플로우와 동일(예: mint 안 보임).
+  //  - 지정 → shared + 그 브랜드 고유 토큰.
+  const inBrand = (t: Manifest["tokens"][number]) =>
+    brand ? !t.brands || t.brands.includes(brand) : !t.brands;
+  // brand 지정 시 시멘틱 값을 그 브랜드 실제 값으로 치환해 보여준다(이름은 공통).
+  const view = (t: Manifest["tokens"][number]) => {
+    if (brand && t.brandValues && t.brandValues[brand] !== undefined) {
+      const { brandValues: _bv, ...rest } = t;
+      return { ...rest, value: t.brandValues[brand], baseValue: t.value, brand };
+    }
+    return t;
+  };
+  const pool = manifest.tokens.filter(inBrand);
+
   if (args.query) {
     const normalizedQuery = args.query.trim().toLowerCase();
     // score 는 정렬용 — 출력엔 싣지 않는다. policy 객체(safe+note)도 매 토큰 반복하지 않고,
     // 회피해야 할 raw palette 토큰에만 짧은 avoid 플래그를 단다(semantic 우선은 기본 기대).
-    return manifest.tokens
+    return pool
       .map((t) => ({ token: t, score: getTokenLookupScore(t, normalizedQuery) }))
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 10)
       .map(({ token }) =>
         isRawPaletteToken(token)
-          ? { ...token, avoid: "raw palette — --semantic-* 토큰 우선" }
-          : token,
+          ? { ...view(token), avoid: "raw palette — --semantic-* 토큰 우선" }
+          : view(token),
       );
   }
-  if (args.group) return manifest.tokens.filter((t) => t.group === args.group);
+  if (args.group) return pool.filter((t) => t.group === args.group).map(view);
   const groups: Record<string, number> = {};
-  for (const t of manifest.tokens) groups[t.group] = (groups[t.group] ?? 0) + 1;
+  for (const t of pool) groups[t.group] = (groups[t.group] ?? 0) + 1;
   return {
     _hint:
-      "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. No-arg call returns only the summary to save tokens.",
-    total: manifest.tokens.length,
+      "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. Add `brand` (e.g. 'geniet', 'cashpobi') to scope to a brand's tokens + brand-specific values. No-arg call returns only the summary to save tokens.",
+    total: pool.length,
+    ...(brand ? { brand } : {}),
     groups,
   };
 }
@@ -698,7 +716,14 @@ function isPolicyRadiusOrShapeToken(token: Manifest["tokens"][number]) {
 }
 
 function isRawPaletteToken(token: Manifest["tokens"][number]) {
-  return /^--color-(?:neutral|coolGray|blue|magenta|yellow|red|green)-/.test(token.name);
+  // base(nudge) 팔레트는 기존 동작 유지. 추가로 브랜드 고유 팔레트(--color-mint-500 등,
+  // brands 필드가 붙은 color 스케일 토큰)도 deprioritize 해 시멘틱 우선 규칙을 지킨다.
+  return (
+    /^--color-(?:neutral|coolGray|blue|magenta|yellow|red|green)-/.test(token.name) ||
+    (token.group === "color" &&
+      Array.isArray(token.brands) &&
+      /^--color-[a-zA-Z]+-\d/.test(token.name))
+  );
 }
 
 function isRawPaletteQuery(query: string) {
@@ -820,7 +845,10 @@ const toolHandlers = {
       ),
     ),
   find_token: (args: ToolArgs) =>
-    withVisualReferencePrompt("find_token", findToken(args as { group?: string; query?: string })),
+    withVisualReferencePrompt(
+      "find_token",
+      findToken(args as { group?: string; query?: string; brand?: string }),
+    ),
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
   recommend_page_pattern: (args: ToolArgs) =>
