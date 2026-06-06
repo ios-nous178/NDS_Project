@@ -19,7 +19,7 @@ const TOOLS = [
   {
     name: "get_brand",
     description:
-      "Look up brand metadata. No args lists brands; `{ brand }` returns imports, colors, fonts, and icons. Mockup/screen work must start by asking the user for visual references before this lookup.",
+      "Brand metadata: no args lists brands, `{ brand }` returns imports/colors/fonts/icons. (Mockup work: collect visual refs first.)",
     inputSchema: {
       type: "object",
       properties: {
@@ -35,7 +35,7 @@ const TOOLS = [
   {
     name: "find_component",
     description:
-      "Look up DS components. For mockup/screen work, do not call this until the user has answered the visual-reference question and references.md is ready. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only). Pass `verbose:true` to get full prop signatures (type/allowedValues) — the slim default keeps batched lookups cheap.",
+      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only), `verbose:true` for full signatures (type/allowedValues). For usage examples prefer get_guide({ topic: `component:<Name>` }). (Mockup work: collect visual refs first.)",
     inputSchema: {
       type: "object",
       properties: {
@@ -57,9 +57,7 @@ const TOOLS = [
   {
     name: "find_icon",
     description:
-      "Search @nudge-design/icons. For mockup/screen work, do not call this until visual references are collected. " +
-      "Flow: `{ query }` to find a name → `{ name }` to get the paste-ready inline SVG (`svg` field) " +
-      "for vanilla HTML mockups (no npm install needed). No args returns the icon index.",
+      "Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready inline `svg` (no npm install needed), no args→icon index. (Mockup work: collect visual refs first.)",
     inputSchema: {
       type: "object",
       properties: {
@@ -85,7 +83,7 @@ const TOOLS = [
   {
     name: "find_token",
     description:
-      "Look up design tokens. For mockup/screen work, do not call this until visual references are collected. No args returns group counts; `{ group }` lists a group; `{ query }` searches. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values.",
+      "Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.)",
     inputSchema: {
       type: "object",
       properties: {
@@ -116,9 +114,7 @@ const TOOLS = [
   {
     name: "recommend_page_pattern",
     description:
-      "Recommend a Cashwalk-Biz admin Page Pattern (onboarding/dashboard/list/detail/form) from a PRD. " +
-      "Returns a keyword-scored ranking of all 5 patterns plus a confidence flag — a FIRST-PASS suggestion only. " +
-      "Read the PRD yourself to confirm (or pick a different candidate), then declare it as screen.pagePattern in save_design_spec.",
+      "First-pass suggestion of a Cashwalk-Biz admin Page Pattern (onboarding/dashboard/list/detail/form) from a PRD — keyword-scored ranking of all 5 + confidence flag. Read the PRD to confirm, then set screen.pagePattern in save_design_spec.",
     inputSchema: {
       type: "object",
       properties: {
@@ -143,10 +139,7 @@ const TOOLS = [
   {
     name: "dev_server",
     description:
-      "Start or stop a local mockup dev server (Vite) and return the preview URL/session id. " +
-      "For react/admin-cms (.tsx) workspaces only. For html (vanilla <nds-*>) mockups it is not needed — " +
-      "build_singlefile_html produces a self-contained dist/index.html you open directly; calling start on an " +
-      "html workspace returns guidance instead of spawning.",
+      "Start/stop a local mockup dev server (Vite) → preview URL/session id. React/admin-cms (.tsx) only — for html (<nds-*>) use build_singlefile_html instead (start on an html workspace returns guidance, no spawn).",
     inputSchema: {
       type: "object",
       properties: {
@@ -198,7 +191,7 @@ const TOOLS = [
   {
     name: "build_singlefile_html",
     description:
-      "Build a Vite mockup into one shareable dist/index.html. Runs workspace audit unless skipAudit is true. **For html intent (vanilla <nds-*>), root index.html must include a PRD/brief coverage manifest (`script[type=application/json][data-prd-coverage]`) and every active button must have real click behavior checked by validate_html_mockup.** The build automatically runs DS validation (`validation`), PRD coverage validation (`prdValidation`), and usage report (Sheets webhook) on the built artifact — no separate call needed for final build.",
+      "Build a Vite mockup into one shareable dist/index.html. Auto-runs DS validation (`validation`), PRD coverage (`prdValidation`), and usage report on the artifact — no separate calls for final build. Runs workspace audit unless skipAudit. **html intent requires a PRD coverage manifest (`script[type=application/json][data-prd-coverage]`) and real click behavior on every active button.**",
     inputSchema: {
       type: "object",
       properties: {
@@ -228,7 +221,7 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for DS/static quality: token, spacing, native element, icon, pattern, and active-button interaction violations. Does NOT judge PRD coverage — call validate_prd_coverage for that. Validates static source — pass `source` (HTML string) or `filePath` (.html file). `withStats:true` adds DS adoption stats. **Usage report (Sheets webhook + JSONL) is auto-enabled** — pass `report:false` only to suppress (e.g. noisy iteration cycles).",
+      "Validate HTML/<nds-*> mockups for DS/static quality (token, spacing, native element, icon, pattern, active-button interaction). Pass `source` (HTML string) or `filePath` (.html). `withStats:true` adds DS adoption stats. Not PRD coverage — use validate_prd_coverage. Usage report auto-on; `report:false` only to suppress noisy iterations (final must report).",
     inputSchema: {
       type: "object",
       properties: {
@@ -249,7 +242,7 @@ const TOOLS = [
         report: {
           type: "boolean",
           description:
-            "Write DS usage report (JSONL + Sheets webhook) — replaces legacy report_html_mockup_usage. **Default true** (auto-sends every call). **Prefer omitting this argument.** Passing `false` triggers a session warning that requires you to send the final iteration with `report:true` (or omitted); if the final report is skipped, the sheet stays stale and reviewers see no data. Combine with `url`/`sessionId` so the rendered (not static-shell) stats reach the sheet.",
+            "Write DS usage report (JSONL + Sheets webhook). Default true — prefer omitting. `false` triggers a session warning: the final iteration must report (or the sheet stays stale). Combine with `url`/`sessionId` so rendered (not static-shell) stats reach the sheet.",
         },
         mockupName: {
           type: "string",
@@ -278,7 +271,7 @@ const TOOLS = [
   {
     name: "validate_prd_coverage",
     description:
-      "Validate PRD/brief coverage separately from DS quality. Checks the `script[type=application/json][data-prd-coverage]` manifest, requires every requirement to be implemented/covered and every evidence selector to exist in the DOM. Does not affect DS score; use alongside validate_html_mockup or read build_singlefile_html.prdValidation.",
+      "Validate PRD/brief coverage (separate from DS quality): checks the `script[type=application/json][data-prd-coverage]` manifest — every requirement implemented and every evidence selector present in the DOM. Pass `source` or `filePath`. Use alongside validate_html_mockup or read build_singlefile_html.prdValidation.",
     inputSchema: {
       type: "object",
       properties: {
@@ -314,7 +307,7 @@ const TOOLS = [
   {
     name: "score_mockup_quality",
     description:
-      "Grade a built HTML mockup's quality (Eval D3). Returns BOTH D1 (deterministic code score — color/typography/spacing/layout/component/icon, from static validation) AND D2 (independent qualitative LLM score — ux/interaction/flow/form, scored by a separate `claude -p` session with no tools), then a combined `verdict` (통과/주의/미달, ≥80/≥60/<60) graded on the WEAKER group, plus a ready-to-show text `card`. This mirrors exactly what the Nudge Studio desktop harness shows after a clean build (same SSOT). Pass `html` (string) or `filePath` (.html). If no `claude` binary is found (CLAUDE_BIN/PATH), it gracefully returns code-score-only (D1). Call after build_singlefile_html / a clean validate.",
+      "Grade a built mockup (Eval D3): D1 deterministic code score (color/typography/spacing/layout/component/icon) + D2 qualitative LLM score (ux/interaction/flow/form, from a separate tool-less `claude -p`), combined `verdict` (통과/주의/미달 = ≥80/≥60/<60) on the WEAKER group, plus a display `card` — mirrors the desktop harness post-build SSOT. Pass `html` or `filePath`. No `claude` binary (CLAUDE_BIN/PATH) → D1 only. Call after a clean build/validate.",
     inputSchema: {
       type: "object",
       properties: {
@@ -346,7 +339,7 @@ const TOOLS = [
   {
     name: "save_design_spec",
     description:
-      "Save a lightweight DesignSpec (the prompt→**DesignSpec**→code intermediate representation) to `<cwd>/design-spec.json`, validating it against the DS catalog first. The DesignSpec captures INTENT only — component tree (semantic names), semantic token names (no hex), brand/surface, and design rationale — NOT pixel geometry (that belongs to the code→Figma scene.json). Call this BEFORE build_singlefile_html: show the saved spec to the user, get agreement, then build from it (soft approval gate). If `ok:false`, fix the reported violations and re-save before building. `component` accepts either PascalCase DS names ('Button') or nds-tags ('nds-button') — they share the scene.ts vocabulary. SIDE EFFECT: when the spec carries decisions/rationale, one row is also appended to `<cwd>/designDecisions.jsonl` (append-only decision history, deduped per screen, capped to recent rows) — design-spec.json itself is overwritten each save, so this jsonl is the cumulative provenance/memory log. Consumers may want to gitignore it.",
+      "Save a DesignSpec (prompt→DesignSpec→code IR) to `<cwd>/design-spec.json`, validating against the DS catalog first. Captures INTENT only — component tree, semantic token names (no hex), brand/surface, rationale — not pixel geometry. Call BEFORE build_singlefile_html (show spec → get agreement → build, soft gate); if `ok:false`, fix violations and re-save. `component` accepts PascalCase or nds-tag. Side effect: appends a row to `<cwd>/designDecisions.jsonl` (append-only decision history; consider gitignoring).",
     inputSchema: {
       type: "object",
       properties: {
@@ -371,7 +364,7 @@ const TOOLS = [
   {
     name: "validate_design_spec",
     description:
-      "Validate a DesignSpec against the DS catalog WITHOUT writing a file — semantic-token-only (no raw hex), known tokens, resolvable brand slug (guards the silent base-blue fallback), known components, and prop enum legality. Returns violations grouped by severity (error/warn/info) plus ok=(no errors). Use during self-correction before save_design_spec.",
+      "Validate a DesignSpec against the DS catalog WITHOUT writing a file — semantic-token-only (no raw hex), known tokens, resolvable brand slug, known components, prop enum legality. Returns violations by severity (error/warn/info) + ok. Use during self-correction before save_design_spec.",
     inputSchema: {
       type: "object",
       properties: {
@@ -387,7 +380,7 @@ const TOOLS = [
   {
     name: "get_guide",
     description:
-      "Fetch DS guidance by topic. Pass `topics: [...]` to batch multiple guides in one call. **First-response gate for mockups/screens/pages: before any guide/component/token lookup or code work, ask the user for Figma/screenshots and write the answer to references.md.** Use `target: 'html'` for <nds-*> component examples. Component guides include a short `_principlesDigest`; still call `get_guide({ topic: 'principles' })` once per session. For large guides (principles, admin-cms), pass `sections: ['dos', 'donts']` to receive only those top-level keys. For `principles`, prefer `aspects: ['spacing','radius','typography']` to load only the slices a screen actually needs (friendly names: radius→shapes, color→colors, tone→brandTone). **When batching many guides (`topics`), pass `view: 'examples'` (or `'rules'`) to avoid pulling full metrics/matrixOverrides for every topic — a 5-guide batch shrinks ~35KB → ~5KB.**",
+      "Fetch DS guidance by topic (`component:<Name>`, `pattern:<name>`, or fixed like 'principles'/'dos-donts'/'admin-cms'); batch with `topics:[...]`. Size control: `view:'examples'|'rules'` (biggest saver for batches), `sections`/`aspects` (principles slices), `target:'html'` for <nds-*> examples, `brand` for the service overlay. Call principles once per session. **Mockup first-response gate: ask for Figma/screenshots and write references.md before any guide/component/token lookup or code work.**",
     inputSchema: {
       type: "object",
       properties: {
@@ -416,7 +409,7 @@ const TOOLS = [
           type: "string",
           enum: ["examples", "rules", "full"],
           description:
-            "Optional response size control (biggest token saver for batched component/pattern guides). 'examples' → only summary + examples (the usage snippet you usually want); 'rules' → summary + pitfalls/recommended (component) or rules/avoid (pattern); 'full' (default) → the whole guide incl. metrics/matrixOverrides/references. Explicit `sections` overrides `view`. A 5-guide batch drops from ~35KB to ~5KB with view='examples'.",
+            "Response size control (biggest saver for batched guides). 'examples'→summary + usage examples; 'rules'→summary + pitfalls/recommended (component) or rules/avoid (pattern); 'full' (default)→whole guide incl. metrics/matrixOverrides. `sections` overrides `view`. 5-guide batch: ~35KB→~5KB with 'examples'.",
         },
         sections: {
           type: "array",
@@ -428,18 +421,18 @@ const TOOLS = [
           type: "array",
           items: { type: "string" },
           description:
-            "Optional, principles-focused. Friendly names for the principle slices a screen actually needs — e.g. ['spacing','radius','typography','color'] returns only those blocks of `principles` instead of the whole guide. Sugar over `sections` with aliases (radius→shapes, color→colors, tone→brandTone, font→typography, shadow→elevation, dos-donts→dos+donts+bannedPatterns). Merged with `sections` when both are given. If no aspect resolves, the response is an error with validAspects listed.",
+            "Principles-focused. Friendly names for the slices a screen needs — e.g. ['spacing','radius','typography','color'] returns only those blocks. Sugar over `sections` with aliases (radius→shapes, color→colors, tone→brandTone, font→typography, shadow→elevation, dos-donts→dos+donts+bannedPatterns). Merged with `sections`. No aspect resolves → error lists validAspects.",
         },
         brand: {
           type: "string",
           enum: ["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"],
           description:
-            "Optional brand slug. When set, the base guide is merged with the brand's service overlay (allowedVariants/disallowed/preferred/forbiddenPatterns, servicePitfalls, iconSet, copyTone). When omitted, a `_brandVariants` slim summary is attached so the caller can see which brands have an overlay for this topic. For `principles`, also scopes the learned-principles promotion.",
+            "Optional brand slug. Set → base guide merged with the brand's service overlay (allowedVariants/disallowed/preferred/forbiddenPatterns, servicePitfalls, iconSet, copyTone). Omitted → a `_brandVariants` slim summary lists which brands have an overlay. For `principles`, also scopes learned-principles promotion.",
         },
         cwd: {
           type: "string",
           description:
-            "Optional, `principles`-focused. Workspace root to read `designDecisions.jsonl` from — recurring decisions for this brand (≥ threshold distinct screens) are promoted into a `_learnedPrinciples` block (Decision Log → Principles). Defaults to the MCP process cwd (= where save_design_spec writes).",
+            "`principles`-focused. Workspace root to read `designDecisions.jsonl` — recurring decisions (≥ threshold distinct screens) are promoted into a `_learnedPrinciples` block. Defaults to MCP process cwd (= where save_design_spec writes).",
         },
       },
       additionalProperties: false,
@@ -448,7 +441,7 @@ const TOOLS = [
   {
     name: "list_figma_sync_status",
     description:
-      "List DS component guides' Figma Library sync status — for each guide, whether it carries a clickable figmaNodeUrl (synced) vs pending, plus which size/state/color matrices and a11y notes are filled. No args. Internal DS-maintenance audit surface (used by /ds-audit and the CLAUDE.md contributor flow). Same payload as get_guide({ topic: 'figma-sync' }).",
+      "List DS component guides' Figma Library sync status — figmaNodeUrl (synced vs pending) plus which size/state/color matrices and a11y notes are filled. No args. Internal DS-maintenance audit (= get_guide({ topic: 'figma-sync' })).",
     inputSchema: {
       type: "object",
       properties: {},
@@ -458,7 +451,7 @@ const TOOLS = [
   {
     name: "get_setup",
     description:
-      "Setup router for install/import/update/CLAUDE.md/AGENTS.md/external-starter/full instructions. Defaults to HTML/<nds-*>. **external-starter** is the tool-neutral quick onboarding for external projects: one call writes CLAUDE.md + AGENTS.md and returns a shared .mcp.json (Claude Code/Cursor/Codex), the recommended validate→build→score loop, and reusable 'NDS 써서' prompt templates. Generated mockup instructions enforce a first-response visual-reference question before code or DS lookups.",
+      "Setup router: install/imports/update/claude-md/agents-md/inspector/external-starter/full. Defaults to HTML/<nds-*>. external-starter onboards external projects in one call (writes CLAUDE.md + AGENTS.md, returns a shared .mcp.json for Claude Code/Cursor/Codex, the validate→build→score loop, and 'NDS 써서' prompt templates). Generated mockup instructions enforce the visual-reference-first gate.",
     inputSchema: {
       type: "object",
       properties: {
@@ -485,8 +478,7 @@ const TOOLS = [
         brand: {
           type: "string",
           description:
-            "[step=imports|full|claude-md|agents-md] Brand slug (see get_brand). If omitted, the first 'ready' brand is used as default. " +
-            "Also affects admin routing: brand='cashwalk-biz' + intent='admin-cms' routes to the Nudge DS (html workflow), NOT antd — 캐포비는 DS 안에 자체 admin 디자인 시스템을 가진 유일한 브랜드.",
+            "[step=imports|full|claude-md|agents-md] Brand slug (see get_brand). Omitted → first 'ready' brand. Admin routing: brand='cashwalk-biz' + intent='admin-cms' routes to the Nudge DS (html), NOT antd — 캐포비만 DS 안에 자체 admin 디자인 시스템을 가짐.",
         },
         withRouter: {
           type: "boolean",
@@ -501,8 +493,7 @@ const TOOLS = [
           type: "string",
           enum: ["admin-cms", "html"],
           description:
-            "Workspace intent. Default/html uses vanilla <nds-*>; admin-cms uses antd conventions. " +
-            "Exception: admin-cms + brand='cashwalk-biz' is routed to the DS (html) workflow, not antd.",
+            "Workspace intent. Default/html → vanilla <nds-*>; admin-cms → antd conventions. Exception: admin-cms + brand='cashwalk-biz' routes to the DS (html), not antd.",
         },
         template: {
           type: "string",
@@ -641,6 +632,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       return {
         query: optionalString(args, "query", toolName),
         name: optionalString(args, "name", toolName),
+        verbose: optionalBoolean(args, "verbose", toolName),
         limit: optionalNumber(args, "limit", toolName, { min: 1 }),
       };
     case "find_icon":
@@ -655,6 +647,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       return {
         group: optionalString(args, "group", toolName),
         query: optionalString(args, "query", toolName),
+        brand: optionalString(args, "brand", toolName),
       };
     case "suggest_replacement":
       return {
