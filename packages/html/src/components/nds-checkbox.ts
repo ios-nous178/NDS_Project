@@ -21,6 +21,7 @@ const CB_ROOT_CLASS = `${CB_CLASS}__root`;
 const CB_INPUT_CLASS = `${CB_CLASS}__input`;
 const CB_INDICATOR_CLASS = `${CB_CLASS}__indicator`;
 const CB_CHECK_ICON_CLASS = `${CB_CLASS}__check`;
+const CB_MINUS_ICON_CLASS = `${CB_CLASS}__minus`;
 const CB_LABEL_CLASS = `${CB_CLASS}__label`;
 
 const FORWARDED_ATTRS = [
@@ -42,7 +43,7 @@ export class NdsCheckbox extends NdsElement {
   static elementName = "nds-checkbox";
 
   static get observedAttributes(): readonly string[] {
-    return ["checked", "disabled", "label", "input-id", ...FORWARDED_ATTRS];
+    return ["checked", "indeterminate", "disabled", "label", "input-id", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLLabelElement | null = null;
@@ -63,6 +64,16 @@ export class NdsCheckbox extends NdsElement {
   set checked(value: boolean) {
     if (value) this.setAttribute("checked", "");
     else this.removeAttribute("checked");
+  }
+
+  /** 부분 선택 상태 — 트리/그룹에서 "일부 자식만 선택됨"(옐로우 마이너스). */
+  get indeterminate(): boolean {
+    return this.boolAttr("indeterminate");
+  }
+
+  set indeterminate(value: boolean) {
+    if (value) this.setAttribute("indeterminate", "");
+    else this.removeAttribute("indeterminate");
   }
 
   override connectedCallback(): void {
@@ -93,7 +104,7 @@ export class NdsCheckbox extends NdsElement {
     indicator.className = CB_INDICATOR_CLASS;
     indicator.dataset.slot = "indicator";
     indicator.setAttribute("aria-hidden", "true");
-    indicator.appendChild(createCheckIcon());
+    indicator.append(createCheckIcon(), createMinusIcon());
 
     const label = document.createElement("span");
     label.className = CB_LABEL_CLASS;
@@ -120,8 +131,9 @@ export class NdsCheckbox extends NdsElement {
     }
 
     const checked = this.boolAttr("checked");
+    const indeterminate = this.boolAttr("indeterminate");
     const disabled = this.boolAttr("disabled");
-    const state = checked ? "checked" : "unchecked";
+    const state = indeterminate ? "indeterminate" : checked ? "checked" : "unchecked";
     const inputId = this.attr("input-id", this._inputId);
 
     if (inputId !== this._inputId) {
@@ -131,7 +143,10 @@ export class NdsCheckbox extends NdsElement {
     }
 
     this._input.checked = checked;
+    this._input.indeterminate = indeterminate;
     this._input.disabled = disabled;
+    if (indeterminate) this._input.setAttribute("aria-checked", "mixed");
+    else this._input.removeAttribute("aria-checked");
     this._indicator.dataset.state = state;
     this._indicator.dataset.checked = checked ? "true" : "false";
     this._root.dataset.disabled = disabled ? "true" : "false";
@@ -173,6 +188,23 @@ function createCheckIcon(): SVGSVGElement {
   path.setAttribute("stroke-width", "2");
   path.setAttribute("stroke-linecap", "round");
   path.setAttribute("stroke-linejoin", "round");
+  svg.appendChild(path);
+
+  return svg;
+}
+
+function createMinusIcon(): SVGSVGElement {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", CB_MINUS_ICON_CLASS);
+  svg.setAttribute("viewBox", "0 0 14 14");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", "M3.5 7H10.5");
+  path.setAttribute("stroke", "currentColor");
+  path.setAttribute("stroke-width", "2");
+  path.setAttribute("stroke-linecap", "round");
   svg.appendChild(path);
 
   return svg;

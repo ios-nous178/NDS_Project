@@ -1555,6 +1555,18 @@
     "notes": "헤더 액션(추가 선택 / 선택 해제)은 고정 구성 — onAdd/onClear 콜백으로 제어. count 는 브랜드색(text.brand)으로 강조. 본문 스크롤은 --nds-selected-items-panel-body-max-height 로 제한."
   },
   {
+    "name": "CheckboxTree",
+    "category": "입력",
+    "status": "implemented",
+    "description": "검색 + 전체선택 + 계층(시/도 ▸ 시/군/구) 체크박스 트리. 부모는 하위 leaf 선택 비율에 따라 checked/indeterminate/unchecked 자동 표시, 부모 클릭은 하위 전체 토글. 행 48px, 들여쓰기 32px/depth, 옐로우 체크.",
+    "storybookTitle": "Components/CheckboxTree",
+    "docsPath": "/components/checkbox-tree",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-50785",
+    "figmaNodeId": "3001:50785",
+    "usageSummary": "캐포비 admin 의 지역 선택 모달 좌측 트리. value 는 선택된 leaf 값만 담고, '선택한 지역' 요약은 SelectedItemsPanel + RegionRow 로 조립.",
+    "notes": "value=선택 leaf 값(부모는 파생). indeterminate Checkbox 확장과 한 쌍. 평면 다중선택은 MultiSelect, 즉시 단일선택은 Select. 검색 시 매치 부모 자동 펼침. 스크롤 제한은 --nds-checkbox-tree-max-height."
+  },
+  {
     "name": "GenietAppBar",
     "category": "레이아웃",
     "status": "implemented",

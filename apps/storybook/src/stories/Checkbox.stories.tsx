@@ -66,6 +66,39 @@ function CheckboxDisabledExample() {
   );
 }
 
+function CheckboxIndeterminateExample() {
+  const [children, setChildren] = useState<Record<string, boolean>>({
+    a: true,
+    b: false,
+    c: false,
+  });
+  const values = Object.values(children);
+  const allChecked = values.every(Boolean);
+  const someChecked = values.some(Boolean);
+
+  const toggleAll = () => {
+    const next = !allChecked;
+    setChildren({ a: next, b: next, c: next });
+  };
+  const toggle = (key: string) => setChildren((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  return (
+    <CheckboxGroup>
+      <Checkbox
+        checked={allChecked}
+        indeterminate={someChecked && !allChecked}
+        onCheckedChange={toggleAll}
+        label="전체 선택"
+      />
+      <div style={{ paddingLeft: 28, display: "flex", flexDirection: "column", gap: 8 }}>
+        <Checkbox checked={children.a} onCheckedChange={() => toggle("a")} label="스트레스" />
+        <Checkbox checked={children.b} onCheckedChange={() => toggle("b")} label="수면" />
+        <Checkbox checked={children.c} onCheckedChange={() => toggle("c")} label="대인관계" />
+      </div>
+    </CheckboxGroup>
+  );
+}
+
 function RadioGroupExample() {
   const [value, setValue] = useState("face");
 
@@ -127,6 +160,11 @@ export const CheckboxHorizontal: Story = {
 export const CheckboxDisabled: Story = {
   name: "State/Checkbox Disabled",
   render: () => <CheckboxDisabledExample />,
+};
+
+export const CheckboxIndeterminate: Story = {
+  name: "State/Checkbox Indeterminate",
+  render: () => <CheckboxIndeterminateExample />,
 };
 
 export const RadioGroupVertical: Story = {
@@ -267,6 +305,27 @@ export const DisabledRadioInGroupInteraction: Story = {
     await user.click(disabled);
     await expect(active).toBeChecked();
     await expect(disabled).not.toBeChecked();
+  },
+};
+
+export const IndeterminateParentInteraction: Story = {
+  name: "Interaction/Indeterminate Parent",
+  render: () => <CheckboxIndeterminateExample />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = createInteractionUser();
+
+    const all = canvas.getByLabelText("전체 선택") as HTMLInputElement;
+    // 초기: 스트레스만 선택 → 부모는 부분선택(mixed)
+    await expect(all).not.toBeChecked();
+    await expect(all.indeterminate).toBe(true);
+
+    // 전체 선택 클릭 → 모두 체크 + indeterminate 해제
+    await user.click(all);
+    await expect(canvas.getByLabelText("수면")).toBeChecked();
+    await expect(canvas.getByLabelText("대인관계")).toBeChecked();
+    await expect(all).toBeChecked();
+    await expect(all.indeterminate).toBe(false);
   },
 };
 
