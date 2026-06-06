@@ -72,7 +72,13 @@ import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverag
 import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
+import {
+  recordBuildObservability,
+  recordQualityObservability,
+  recordValidationObservability,
+} from "./tools/observability-sink.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
+import { configureClientIdentity } from "./tools/client-identity.js";
 import { getIconSvg } from "./icon-svg.js";
 import {
   markVisualRefEmitted,
@@ -829,6 +835,15 @@ const server = new Server(
   { capabilities: { tools: {} } },
 );
 
+// 클라이언트 식별(어떤 에이전트·표면이 호출했나) SSOT 를 서버에 묶는다 — observability-sink 가
+// 매 레코드에서 getClientIdentity() 로 읽어 붙인다. clientInfo 는 initialize 후 채워지므로
+// 여기서 server 참조만 넘기고 해석은 호출 시점에 lazy 하게 한다.
+configureClientIdentity({
+  server,
+  installMode,
+  mcpVersion: mcpbManifest?.version ?? null,
+});
+
 const toolHandlers = {
   get_brand: (args: ToolArgs) =>
     withVisualReferencePrompt("get_brand", getBrand(args as { brand?: string })),
@@ -908,20 +923,27 @@ const toolHandlers = {
     return result;
   },
   build_singlefile_html: async (args: ToolArgs) => {
+    const typedArgs = args as {
+      cwd?: string;
+      skipAudit?: boolean;
+      allowIncomplete?: boolean;
+      intent?: "react" | "html";
+    };
     const result = await buildSinglefileHtml({
-      ...(args as {
-        cwd?: string;
-        skipAudit?: boolean;
-        allowIncomplete?: boolean;
-        intent?: "react" | "html";
-      }),
+      ...typedArgs,
       // HTML 목업은 node_modules/package.json 이 없어 버전 fs 탐지가 null → MCP 가 아는
       // 번들 DS 버전(manifest = 최대 DS 버전 미러)을 fallback 으로 흘려 스탬프/시트 null 차단.
       dsVersion: mcpbManifest?.version,
     });
+    const observability = await recordBuildObservability({
+      tool: "build_singlefile_html",
+      cwd: typedArgs.cwd,
+      dsVersion: mcpbManifest?.version,
+      result,
+    });
     // html intent 빌드는 내부에서 validate + report 까지 자동 실행하므로 report-suppress 카운터에도
     // 영향을 미친다. 이 시점에 principles 호출 여부 + score 게이트(D1 verdict)를 함께 노출한다.
-    return attachPrinciplesAck(attachScoreGate(result));
+    return attachPrinciplesAck(attachScoreGate({ ...result, _observability: observability }));
   },
   validate_html_mockup: async (args: ToolArgs) => {
     const typed = args as {
@@ -1009,9 +1031,18 @@ const toolHandlers = {
       };
     }
     const withExtras = extras ? { ...result, ...extras } : result;
+    const observability = await recordValidationObservability({
+      tool: "validate_html_mockup",
+      cwd: typed.cwd,
+      source: effectiveSource,
+      filePath: effectiveFilePath,
+      dsVersion: mcpbManifest?.version,
+      result: withExtras,
+    });
     return attachPrinciplesAck(
       attachScoreGate({
         ...withExtras,
+        _observability: observability,
         _prdCoverageNextStep:
           "PRD/brief 커버리지는 DS 점수와 분리됨. 최종 전 validate_prd_coverage({ source|filePath }) 또는 build_singlefile_html.prdValidation 을 확인하세요.",
       }),
@@ -1068,6 +1099,19 @@ const toolHandlers = {
     }
 
     const { text, grade } = formatScoreCard({ codeScores, llm });
+    const observability = await recordQualityObservability({
+      tool: "score_mockup_quality",
+      cwd: typed.cwd,
+      filePath: typed.filePath,
+      brand: typed.brand,
+      surface: typed.surface,
+      dsVersion: mcpbManifest?.version,
+      codeScores,
+      llm,
+      verdict: grade.verdict,
+      verdictLabel: VERDICT_LABELS[grade.verdict],
+      overall: grade.overall,
+    });
     return {
       ok: true,
       codeScores,
@@ -1078,6 +1122,7 @@ const toolHandlers = {
       thresholds: SCORE_THRESHOLDS,
       guidance: gateGuidance(grade.verdict),
       card: text,
+      _observability: observability,
     };
   },
   convert_html_to_ds_html: (args: ToolArgs) =>
