@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T23:24:51.224Z",
+  "generatedAt": "2026-06-06T00:08:39.078Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -9549,6 +9549,12 @@
       "group": "border"
     },
     {
+      "name": "--border-thin",
+      "value": "1.5px",
+      "group": "border",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
       "name": "--color-amber-100",
       "value": "#FFFAE5",
       "group": "color"
@@ -9601,52 +9607,192 @@
     {
       "name": "--color-blue-100",
       "value": "#E3F2FC",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#E5F2FF",
+        "cashwalk-biz": "#E5F2FF",
+        "geniet": "#E4F5FF"
+      }
     },
     {
       "name": "--color-blue-200",
       "value": "#91CAF6",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#B8DCFF",
+        "cashwalk-biz": "#B8DCFF"
+      }
     },
     {
       "name": "--color-blue-300",
       "value": "#67B5F2",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#80BFFF",
+        "cashwalk-biz": "#80BFFF"
+      }
     },
     {
       "name": "--color-blue-400",
       "value": "#47A5F0",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#4BA1FF",
+        "cashwalk-biz": "#4BA1FF",
+        "geniet": "#62BEFA"
+      }
     },
     {
       "name": "--color-blue-50",
       "value": "#F1F8FD",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#F5FAFF",
+        "cashwalk-biz": "#F5FAFF"
+      }
     },
     {
       "name": "--color-blue-500",
       "value": "#2B96ED",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#007AFF",
+        "cashwalk-biz": "#007AFF",
+        "geniet": "#1FA3F9",
+        "runmile": "#007AFF"
+      }
     },
     {
       "name": "--color-blue-600",
       "value": "#017EE4",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#006FE6",
+        "cashwalk-biz": "#006FE6"
+      }
     },
     {
       "name": "--color-blue-700",
       "value": "#0E71CF",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#0058B8",
+        "cashwalk-biz": "#0058B8"
+      }
     },
     {
       "name": "--color-blue-800",
       "value": "#1B65BA",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#00428C",
+        "cashwalk-biz": "#00428C"
+      }
     },
     {
       "name": "--color-blue-900",
       "value": "#0F52A0",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#002D60",
+        "cashwalk-biz": "#002D60"
+      }
+    },
+    {
+      "name": "--color-brown-100",
+      "value": "#F2EAE8",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-200",
+      "value": "#DCC9C6",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-300",
+      "value": "#B89F9A",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-400",
+      "value": "#87706B",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-50",
+      "value": "#FAF5F4",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-500",
+      "value": "#5E5050",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-600",
+      "value": "#4F4242",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-700",
+      "value": "#403535",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-800",
+      "value": "#312828",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-brown-900",
+      "value": "#221B1B",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-cobalt-100",
+      "value": "#EDF0FF",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-cobalt-300",
+      "value": "#A3B3FF",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-cobalt-50",
+      "value": "#F6F7FF",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-cobalt-500",
+      "value": "#4968FF",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-common-00",
+      "value": "#FFFFFF",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--color-common-1000",
+      "value": "#000000",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz"]
     },
     {
       "name": "--color-coolGray-100",
@@ -9726,7 +9872,10 @@
     {
       "name": "--color-coralRed-500",
       "value": "#FF4141",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashwalk-biz": "#FC3500"
+      }
     },
     {
       "name": "--color-coralRed-600",
@@ -9749,54 +9898,253 @@
       "group": "color"
     },
     {
+      "name": "--color-gray-100",
+      "value": "#F5F5F5",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#F9FAFB"
+      }
+    },
+    {
+      "name": "--color-gray-200",
+      "value": "#ECECEC",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#F2F4F6"
+      }
+    },
+    {
+      "name": "--color-gray-300",
+      "value": "#DDDDDD",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#E5E8EB"
+      }
+    },
+    {
+      "name": "--color-gray-400",
+      "value": "#CCCCCC",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#D1D6DB"
+      }
+    },
+    {
+      "name": "--color-gray-50",
+      "value": "#FAFAFA",
+      "group": "color",
+      "brands": ["geniet"]
+    },
+    {
+      "name": "--color-gray-500",
+      "value": "#BBBBBB",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#B0B8C1"
+      }
+    },
+    {
+      "name": "--color-gray-600",
+      "value": "#999999",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#919CAA"
+      }
+    },
+    {
+      "name": "--color-gray-700",
+      "value": "#777777",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#6B7684"
+      }
+    },
+    {
+      "name": "--color-gray-800",
+      "value": "#666666",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#4E5968"
+      }
+    },
+    {
+      "name": "--color-gray-900",
+      "value": "#333333",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#333D4B"
+      }
+    },
+    {
       "name": "--color-green-100",
       "value": "#AAE3D7",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#C7F0D8",
+        "cashwalk-biz": "#C7F0D8",
+        "geniet": "#F1FBF6"
+      }
     },
     {
       "name": "--color-green-200",
       "value": "#6FD2BD",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#8CE0B0",
+        "cashwalk-biz": "#8CE0B0",
+        "geniet": "#DBF8EA"
+      }
     },
     {
       "name": "--color-green-300",
       "value": "#13BFA2",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#4DD089",
+        "cashwalk-biz": "#4DD089",
+        "geniet": "#80E9B4"
+      }
     },
     {
       "name": "--color-green-400",
       "value": "#00A07C",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#1ACC6E",
+        "cashwalk-biz": "#1ACC6E",
+        "geniet": "#55D695"
+      }
     },
     {
       "name": "--color-green-50",
       "value": "#E5F7F4",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#E5F8EE",
+        "cashwalk-biz": "#E5F8EE"
+      }
     },
     {
       "name": "--color-green-500",
       "value": "#008260",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#00CC5B",
+        "cashwalk-biz": "#00CC5B",
+        "geniet": "#49CA89"
+      }
     },
     {
       "name": "--color-green-600",
       "value": "#006B50",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#00B350",
+        "cashwalk-biz": "#00B350",
+        "geniet": "#18B264"
+      }
     },
     {
       "name": "--color-green-700",
       "value": "#005640",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#009240",
+        "cashwalk-biz": "#009240"
+      }
     },
     {
       "name": "--color-green-800",
       "value": "#003F2E",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#007030",
+        "cashwalk-biz": "#007030"
+      }
     },
     {
       "name": "--color-green-900",
       "value": "#002B1E",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#004D20",
+        "cashwalk-biz": "#004D20"
+      }
+    },
+    {
+      "name": "--color-legacyNeutral-00",
+      "value": "#FFFFFF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-100",
+      "value": "#F6F6F6",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-1000",
+      "value": "#000000",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-150",
+      "value": "#F2F2F2",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-200",
+      "value": "#E5E5E5",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-300",
+      "value": "#D8D8D8",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-400",
+      "value": "#C7C7C7",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-500",
+      "value": "#979797",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-700",
+      "value": "#606060",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-800",
+      "value": "#333333",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-legacyNeutral-cool-100",
+      "value": "#F4F5F7",
+      "group": "color",
+      "brands": ["moneple"]
     },
     {
       "name": "--color-magenta-100",
@@ -9849,6 +10197,30 @@
       "group": "color"
     },
     {
+      "name": "--color-mint-100",
+      "value": "#ECF8F9",
+      "group": "color",
+      "brands": ["geniet"]
+    },
+    {
+      "name": "--color-mint-400",
+      "value": "#7ED4D6",
+      "group": "color",
+      "brands": ["geniet"]
+    },
+    {
+      "name": "--color-mint-500",
+      "value": "#48C2C5",
+      "group": "color",
+      "brands": ["geniet"]
+    },
+    {
+      "name": "--color-mint-600",
+      "value": "#00A8AC",
+      "group": "color",
+      "brands": ["geniet"]
+    },
+    {
       "name": "--color-neutral-00",
       "value": "#FFFFFF",
       "group": "color"
@@ -9856,7 +10228,10 @@
     {
       "name": "--color-neutral-100",
       "value": "#F5F5F5",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "trost": "#F6F6F6"
+      }
     },
     {
       "name": "--color-neutral-1000",
@@ -9864,19 +10239,56 @@
       "group": "color"
     },
     {
+      "name": "--color-neutral-150",
+      "value": "#F4F4F4",
+      "group": "color",
+      "brands": ["moneple", "trost"],
+      "brandValues": {
+        "trost": "#F2F2F2"
+      }
+    },
+    {
       "name": "--color-neutral-200",
       "value": "#ECECEC",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#EEEEEE",
+        "cashwalk-biz": "#EEEEEE",
+        "moneple": "#EDEDED",
+        "trost": "#E5E5E5"
+      }
+    },
+    {
+      "name": "--color-neutral-250",
+      "value": "#E5E5E5",
+      "group": "color",
+      "brands": ["moneple"]
     },
     {
       "name": "--color-neutral-300",
       "value": "#D8D8D8",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#E7E7E7",
+        "cashwalk-biz": "#E7E7E7",
+        "moneple": "#DDDDDD"
+      }
     },
     {
       "name": "--color-neutral-400",
       "value": "#C7C7C7",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#DDDDDD",
+        "moneple": "#BBBBBB"
+      }
+    },
+    {
+      "name": "--color-neutral-450",
+      "value": "#999999",
+      "group": "color",
+      "brands": ["moneple"]
     },
     {
       "name": "--color-neutral-50",
@@ -9886,37 +10298,165 @@
     {
       "name": "--color-neutral-500",
       "value": "#999999",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#BBBBBB",
+        "cashwalk-biz": "#BBBBBB",
+        "moneple": "#918F8F",
+        "trost": "#979797"
+      }
     },
     {
       "name": "--color-neutral-600",
       "value": "#777777",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#999999",
+        "cashwalk-biz": "#999999",
+        "moneple": "#696868"
+      }
     },
     {
       "name": "--color-neutral-700",
       "value": "#666666",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "trost": "#606060"
+      }
+    },
+    {
+      "name": "--color-neutral-80",
+      "value": "#FAFAFA",
+      "group": "color",
+      "brands": ["moneple"]
     },
     {
       "name": "--color-neutral-800",
       "value": "#383838",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#333333",
+        "cashwalk-biz": "#333333",
+        "moneple": "#333333",
+        "trost": "#333333"
+      }
     },
     {
       "name": "--color-neutral-900",
       "value": "#111111",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "moneple": "#151515"
+      }
+    },
+    {
+      "name": "--color-neutral-black",
+      "value": "#111111",
+      "group": "color",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "#221E1F"
+      }
+    },
+    {
+      "name": "--color-neutral-cool-100",
+      "value": "#F4F5F7",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-neutral-white",
+      "value": "#FFFFFF",
+      "group": "color",
+      "brands": ["geniet", "runmile"]
+    },
+    {
+      "name": "--color-orange-100",
+      "value": "#FFF7F5",
+      "group": "color",
+      "brands": ["runmile"]
+    },
+    {
+      "name": "--color-orange-200",
+      "value": "#FFF0ED",
+      "group": "color",
+      "brands": ["runmile"]
+    },
+    {
+      "name": "--color-orange-300",
+      "value": "#FECDC1",
+      "group": "color",
+      "brands": ["runmile"]
+    },
+    {
+      "name": "--color-orange-400",
+      "value": "#FF805C",
+      "group": "color",
+      "brands": ["runmile"]
+    },
+    {
+      "name": "--color-orange-500",
+      "value": "#FF5B37",
+      "group": "color",
+      "brands": ["runmile"]
+    },
+    {
+      "name": "--color-pink-100",
+      "value": "#FEECF0",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-pink-300",
+      "value": "#FFC1CE",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-pink-50",
+      "value": "#FFF5F7",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-pink-500",
+      "value": "#F93E67",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-purple-100",
+      "value": "#E6EAFF",
+      "group": "color",
+      "brands": ["geniet"]
+    },
+    {
+      "name": "--color-purple-400",
+      "value": "#7A8EFF",
+      "group": "color",
+      "brands": ["geniet"]
+    },
+    {
+      "name": "--color-purple-500",
+      "value": "#546EFD",
+      "group": "color",
+      "brands": ["geniet"]
     },
     {
       "name": "--color-red-100",
       "value": "#FFA98C",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#FFEBEE"
+      }
     },
     {
       "name": "--color-red-200",
       "value": "#FF875D",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "runmile": "#FFE9E9"
+      }
     },
     {
       "name": "--color-red-300",
@@ -9926,7 +10466,10 @@
     {
       "name": "--color-red-400",
       "value": "#FF4E0C",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#FF8192"
+      }
     },
     {
       "name": "--color-red-50",
@@ -9936,12 +10479,19 @@
     {
       "name": "--color-red-500",
       "value": "#F13F00",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#FF6177",
+        "runmile": "#FF2428"
+      }
     },
     {
       "name": "--color-red-600",
       "value": "#EA3C00",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#FF3258"
+      }
     },
     {
       "name": "--color-red-700",
@@ -9959,84 +10509,493 @@
       "group": "color"
     },
     {
+      "name": "--color-semantic-bg-coolGray",
+      "value": "#F4F4F4",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-bg-coolGrayLighter",
+      "value": "#F4F4F4",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-bg-disabled",
+      "value": "#EDEDED",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-bg-light",
+      "value": "#F5F5F5",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-bg-overlay",
+      "value": "rgba(0, 0, 0, 0.5)",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-bg-white",
+      "value": "#FFFFFF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-border-default",
+      "value": "#EDEDED",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-border-disabled",
+      "value": "#EDEDED",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-border-focus",
+      "value": "#4968FF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-border-light",
+      "value": "#F4F4F4",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-caution-bg",
+      "value": "#FFF8E6",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-caution-main",
+      "value": "#FF9D00",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-caution-text",
+      "value": "#FF9D00",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-error-bg",
+      "value": "#FEE9E6",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-error-main",
+      "value": "#FF4111",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-icon-default",
+      "value": "#333333",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-icon-inverse",
+      "value": "#FFFFFF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-icon-subtle",
+      "value": "#999999",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-primary-bg",
+      "value": "#FFFCE4",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-primary-bgLighter",
+      "value": "#FFFCE4",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-primary-fg",
+      "value": "#333333",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-primary-hover",
+      "value": "#FFE52E",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-primary-lighter",
+      "value": "#FFF8B8",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-primary-main",
+      "value": "#FFF42E",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-primary-pressed",
+      "value": "#E6D200",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-secondary-bg",
+      "value": "#EDF0FF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-secondary-bgLighter",
+      "value": "#F6F7FF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-secondary-lighter",
+      "value": "#A3B3FF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-secondary-sub",
+      "value": "#4968FF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-success-bg",
+      "value": "#E6F9F2",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-success-main",
+      "value": "#00BC78",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-text-default",
+      "value": "#333333",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-text-disabled",
+      "value": "#BBBBBB",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-text-inverse",
+      "value": "#FFFFFF",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-text-normal",
+      "value": "#333333",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-text-placeholder",
+      "value": "#999999",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-text-strong",
+      "value": "#000000",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-semantic-text-subtle",
+      "value": "#666666",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-status-blue",
+      "value": "#2C91FF",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-status-caution",
+      "value": "#FEAF01",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz", "geniet"],
+      "brandValues": {
+        "geniet": "#FFB700"
+      }
+    },
+    {
+      "name": "--color-status-error",
+      "value": "#FF4141",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz", "geniet", "moneple", "runmile", "trost"],
+      "brandValues": {
+        "cashwalk-biz": "#FC3500",
+        "geniet": "#FF3258",
+        "moneple": "#FF4111",
+        "runmile": "#FF2428",
+        "trost": "#FF4111"
+      }
+    },
+    {
+      "name": "--color-status-green",
+      "value": "#00BC78",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-status-info",
+      "value": "#007AFF",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz", "geniet", "runmile"],
+      "brandValues": {
+        "geniet": "#1FA3F9"
+      }
+    },
+    {
+      "name": "--color-status-orange",
+      "value": "#FF9D00",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-status-success",
+      "value": "#00CC5B",
+      "group": "color",
+      "brands": ["cashpobi", "cashwalk-biz", "geniet"],
+      "brandValues": {
+        "geniet": "#49CA89"
+      }
+    },
+    {
       "name": "--color-yellow-100",
       "value": "#FFEDB3",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FFFAE5",
+        "cashwalk-biz": "#FFFAE5",
+        "geniet": "#FFF8DF"
+      }
     },
     {
       "name": "--color-yellow-200",
       "value": "#FFE282",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FFF0AC",
+        "cashwalk-biz": "#FFF0AC"
+      }
     },
     {
       "name": "--color-yellow-300",
       "value": "#FFD84F",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FFE673",
+        "cashwalk-biz": "#FFE673"
+      }
     },
     {
       "name": "--color-yellow-400",
       "value": "#FFCD27",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FFDC39",
+        "cashwalk-biz": "#FFDC39",
+        "geniet": "#FFD54C"
+      }
     },
     {
       "name": "--color-yellow-50",
       "value": "#FFFAE8",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FFFEF5",
+        "cashwalk-biz": "#FFFEF5"
+      }
     },
     {
       "name": "--color-yellow-500",
       "value": "#FFC303",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FFD200",
+        "cashwalk-biz": "#FFD200",
+        "geniet": "#FFB700"
+      }
     },
     {
       "name": "--color-yellow-600",
       "value": "#FFA100",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FFC400",
+        "cashwalk-biz": "#FFC400",
+        "geniet": "#FFA500"
+      }
     },
     {
       "name": "--color-yellow-700",
       "value": "#E08200",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FEAF01",
+        "cashwalk-biz": "#FEAF01"
+      }
     },
     {
       "name": "--color-yellow-800",
       "value": "#C06800",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FD9B02",
+        "cashwalk-biz": "#FD9B02"
+      }
     },
     {
       "name": "--color-yellow-900",
       "value": "#9B5000",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "cashpobi": "#FC8703",
+        "cashwalk-biz": "#FC8703"
+      }
+    },
+    {
+      "name": "--color-yellow-bg",
+      "value": "#FFFCE4",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-yellow-border",
+      "value": "#FFE52E",
+      "group": "color",
+      "brands": ["moneple", "trost"],
+      "brandValues": {
+        "trost": "#FFE600"
+      }
+    },
+    {
+      "name": "--color-yellow-hover",
+      "value": "#FFE52E",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-yellow-light",
+      "value": "#FFF8B8",
+      "group": "color",
+      "brands": ["moneple", "trost"]
+    },
+    {
+      "name": "--color-yellow-pressed",
+      "value": "#E6D200",
+      "group": "color",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--color-yellow-primary",
+      "value": "#FFF42E",
+      "group": "color",
+      "brands": ["moneple", "trost"]
     },
     {
       "name": "--font-family-default",
       "value": "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', Roboto, Helvetica, Arial, sans-serif, system-ui",
+        "cashwalk-biz": "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', Roboto, Helvetica, Arial, sans-serif, system-ui",
+        "geniet": "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', Roboto, Helvetica, Arial, sans-serif, system-ui",
+        "moneple": "'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', Roboto, Helvetica, Arial, sans-serif, system-ui",
+        "runmile": "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', Roboto, Helvetica, Arial, sans-serif, system-ui",
+        "trost": "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', Roboto, Helvetica, Arial, sans-serif, system-ui"
+      }
     },
     {
       "name": "--font-family-system",
       "value": "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif",
+        "cashwalk-biz": "system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif",
+        "geniet": "system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif",
+        "moneple": "system-ui, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif",
+        "runmile": "system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif",
+        "trost": "system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif"
+      }
     },
     {
       "name": "--font-size-body-1",
       "value": "16px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "15px",
+        "cashwalk-biz": "15px",
+        "geniet": "15px",
+        "runmile": "14px"
+      }
     },
     {
       "name": "--font-size-body-2",
       "value": "15px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "14px",
+        "cashwalk-biz": "14px",
+        "geniet": "14px",
+        "runmile": "13px"
+      }
     },
     {
       "name": "--font-size-body-3",
       "value": "14px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "13px",
+        "cashwalk-biz": "13px",
+        "geniet": "13px",
+        "runmile": "13px"
+      }
     },
     {
       "name": "--font-size-caption-1",
       "value": "13px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "12px",
+        "cashwalk-biz": "12px",
+        "geniet": "12px",
+        "runmile": "12px"
+      }
     },
     {
       "name": "--font-size-caption-2",
@@ -10061,32 +11020,73 @@
     {
       "name": "--font-size-headline-1",
       "value": "36px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "32px",
+        "cashwalk-biz": "32px",
+        "geniet": "22px",
+        "moneple": "26px",
+        "runmile": "24px",
+        "trost": "26px"
+      }
     },
     {
       "name": "--font-size-headline-2",
       "value": "28px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "24px",
+        "cashwalk-biz": "24px",
+        "geniet": "22px",
+        "moneple": "24px",
+        "runmile": "20px",
+        "trost": "24px"
+      }
     },
     {
       "name": "--font-size-headline-3",
       "value": "24px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "20px",
+        "cashwalk-biz": "20px",
+        "geniet": "18px",
+        "moneple": "20px",
+        "runmile": "18px",
+        "trost": "22px"
+      }
     },
     {
       "name": "--font-size-headline-4",
       "value": "20px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "18px",
+        "cashwalk-biz": "18px",
+        "geniet": "18px",
+        "moneple": "18px",
+        "runmile": "16px",
+        "trost": "18px"
+      }
     },
     {
       "name": "--font-size-headline-5",
       "value": "18px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "cashpobi": "16px",
+        "cashwalk-biz": "16px",
+        "geniet": "16px",
+        "runmile": "15px"
+      }
     },
     {
       "name": "--font-size-label",
       "value": "11px",
-      "group": "font"
+      "group": "font",
+      "brandValues": {
+        "trost": "12px"
+      }
     },
     {
       "name": "--font-weight-bold",
@@ -10131,27 +11131,48 @@
     {
       "name": "--gap-title-h1",
       "value": "var(--semantic-gap-title-h1)",
-      "group": "gap"
+      "group": "gap",
+      "brandValues": {
+        "cashpobi": "20px"
+      }
     },
     {
       "name": "--gap-title-h2",
       "value": "var(--semantic-gap-title-h2)",
-      "group": "gap"
+      "group": "gap",
+      "brandValues": {
+        "cashpobi": "16px"
+      }
     },
     {
       "name": "--gap-title-h3",
       "value": "var(--semantic-gap-title-h3)",
-      "group": "gap"
+      "group": "gap",
+      "brandValues": {
+        "cashpobi": "12px"
+      }
     },
     {
       "name": "--gap-title-h4",
       "value": "var(--semantic-gap-title-h4)",
-      "group": "gap"
+      "group": "gap",
+      "brandValues": {
+        "cashpobi": "10px"
+      }
     },
     {
       "name": "--gap-title-h5",
       "value": "var(--semantic-gap-title-h5)",
-      "group": "gap"
+      "group": "gap",
+      "brandValues": {
+        "cashpobi": "8px"
+      }
+    },
+    {
+      "name": "--gap-title-h6",
+      "value": "6px",
+      "group": "gap",
+      "brands": ["cashpobi"]
     },
     {
       "name": "--gap-wide",
@@ -10186,7 +11207,11 @@
     {
       "name": "--grid-margin-pc",
       "value": "360px",
-      "group": "grid"
+      "group": "grid",
+      "brandValues": {
+        "cashpobi": "40px",
+        "cashwalk-biz": "40px"
+      }
     },
     {
       "name": "--grid-margin-pc-min",
@@ -10196,52 +11221,130 @@
     {
       "name": "--inset-card",
       "value": "var(--semantic-inset-card)",
-      "group": "inset"
+      "group": "inset",
+      "brandValues": {
+        "cashpobi": "16px"
+      }
     },
     {
       "name": "--inset-card-large",
       "value": "var(--semantic-inset-card-large)",
-      "group": "inset"
+      "group": "inset",
+      "brandValues": {
+        "cashpobi": "20px"
+      }
     },
     {
       "name": "--inset-chip",
       "value": "var(--semantic-inset-chip)",
-      "group": "inset"
+      "group": "inset",
+      "brandValues": {
+        "cashpobi": "8px"
+      }
     },
     {
       "name": "--inset-input",
       "value": "var(--semantic-inset-input)",
-      "group": "inset"
+      "group": "inset",
+      "brandValues": {
+        "cashpobi": "10px"
+      }
     },
     {
       "name": "--inset-modal",
       "value": "var(--semantic-inset-modal)",
-      "group": "inset"
+      "group": "inset",
+      "brandValues": {
+        "cashpobi": "24px"
+      }
+    },
+    {
+      "name": "--inset-page",
+      "value": "48px",
+      "group": "inset",
+      "brands": ["cashpobi"]
+    },
+    {
+      "name": "--inset-section",
+      "value": "30px",
+      "group": "inset",
+      "brands": ["cashpobi"]
+    },
+    {
+      "name": "--layout-content",
+      "value": "1395px",
+      "group": "layout",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--layout-max-content",
+      "value": "1600px",
+      "group": "layout",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--layout-page",
+      "value": "1920px",
+      "group": "layout",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--layout-sidebar",
+      "value": "300px",
+      "group": "layout",
+      "brands": ["cashpobi", "cashwalk-biz"]
     },
     {
       "name": "--line-height-body-1",
       "value": "24px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "22px",
+        "cashwalk-biz": "22px",
+        "geniet": "22px",
+        "runmile": "20px"
+      }
     },
     {
       "name": "--line-height-body-2",
       "value": "22px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "20px",
+        "cashwalk-biz": "20px",
+        "geniet": "20px",
+        "runmile": "18px"
+      }
     },
     {
       "name": "--line-height-body-3",
       "value": "20px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "18px",
+        "cashwalk-biz": "18px",
+        "geniet": "18px",
+        "runmile": "18px"
+      }
     },
     {
       "name": "--line-height-caption-1",
       "value": "18px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "16px",
+        "cashwalk-biz": "16px",
+        "geniet": "16px",
+        "runmile": "16px"
+      }
     },
     {
       "name": "--line-height-caption-2",
       "value": "16px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "trost": "18px"
+      }
     },
     {
       "name": "--line-height-display-1",
@@ -10261,42 +11364,560 @@
     {
       "name": "--line-height-headline-1",
       "value": "48px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "40px",
+        "cashwalk-biz": "40px",
+        "geniet": "28px",
+        "moneple": "38px",
+        "runmile": "30px",
+        "trost": "38px"
+      }
     },
     {
       "name": "--line-height-headline-2",
       "value": "38px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "32px",
+        "cashwalk-biz": "32px",
+        "geniet": "28px",
+        "moneple": "34px",
+        "runmile": "24px",
+        "trost": "34px"
+      }
     },
     {
       "name": "--line-height-headline-3",
       "value": "32px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "28px",
+        "cashwalk-biz": "28px",
+        "geniet": "26px",
+        "moneple": "28px",
+        "runmile": "24px",
+        "trost": "30px"
+      }
     },
     {
       "name": "--line-height-headline-4",
       "value": "28px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "26px",
+        "cashwalk-biz": "26px",
+        "geniet": "26px",
+        "moneple": "26px",
+        "runmile": "24px",
+        "trost": "26px"
+      }
     },
     {
       "name": "--line-height-headline-5",
       "value": "26px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "cashpobi": "24px",
+        "cashwalk-biz": "24px",
+        "geniet": "24px",
+        "runmile": "22px"
+      }
     },
     {
       "name": "--line-height-label",
       "value": "14px",
-      "group": "line"
+      "group": "line",
+      "brandValues": {
+        "trost": "18px"
+      }
+    },
+    {
+      "name": "--nds-action-chip-bg",
+      "value": "#ECECEC",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-action-chip-radius",
+      "value": "6px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-badge-font-size",
+      "value": "12px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-badge-font-weight",
+      "value": "500",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-badge-height",
+      "value": "24px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-badge-line-height",
+      "value": "16px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-badge-padding-x",
+      "value": "10px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-badge-padding-y",
+      "value": "4px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-badge-radius",
+      "value": "5px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-border-color",
+      "value": "var(--semantic-border-strong-default)",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-border-width",
+      "value": "1.25px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-disabled-bg",
+      "value": "var(--semantic-bg-surface-default)",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-disabled-border-color",
+      "value": "var(--semantic-border-strong-default)",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-disabled-checked-bg",
+      "value": "var(--semantic-fill-brand-default)",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-disabled-checked-border-color",
+      "value": "var(--semantic-fill-brand-default)",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-disabled-opacity",
+      "value": "0.4",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-radius",
+      "value": "2px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-checkbox-size",
+      "value": "15px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-datepicker-font-size",
+      "value": "14px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-datepicker-height",
+      "value": "40px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-datepicker-line-height",
+      "value": "20px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-datepicker-padding-x",
+      "value": "var(--inset-input)",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"],
+      "brandValues": {
+        "cashwalk-biz": "var(--semantic-inset-input)"
+      }
+    },
+    {
+      "name": "--nds-datepicker-radius",
+      "value": "4px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-footer-nav-active-color",
+      "value": "var(--semantic-text-brand-default)",
+      "group": "nds",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "var(--semantic-icon-strong-default)"
+      }
+    },
+    {
+      "name": "--nds-footer-nav-active-label-weight",
+      "value": "700",
+      "group": "nds",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "500"
+      }
+    },
+    {
+      "name": "--nds-footer-nav-inactive-color",
+      "value": "var(--semantic-text-muted-default)",
+      "group": "nds",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "var(--semantic-icon-muted-default)"
+      }
+    },
+    {
+      "name": "--nds-footer-nav-label-font-size",
+      "value": "10px",
+      "group": "nds",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "12px"
+      }
+    },
+    {
+      "name": "--nds-footer-nav-label-line-height",
+      "value": "12px",
+      "group": "nds",
+      "brands": ["geniet", "runmile"],
+      "brandValues": {
+        "runmile": "16px"
+      }
+    },
+    {
+      "name": "--nds-footer-nav-label-weight",
+      "value": "500",
+      "group": "nds",
+      "brands": ["runmile"]
+    },
+    {
+      "name": "--nds-form-field-label-color",
+      "value": "var(--semantic-text-strong-default)",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-input-height",
+      "value": "40px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-input-padding-x",
+      "value": "var(--inset-input)",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"],
+      "brandValues": {
+        "cashwalk-biz": "var(--semantic-inset-input)"
+      }
+    },
+    {
+      "name": "--nds-input-radius",
+      "value": "4px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-dropdown-gap",
+      "value": "2px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-dropdown-padding",
+      "value": "4px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-font-size",
+      "value": "14px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-height",
+      "value": "40px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-line-height",
+      "value": "20px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-option-padding",
+      "value": "8px 12px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-option-radius",
+      "value": "6px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-option-selected-bg",
+      "value": "var(--semantic-bg-section-default)",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-option-selected-color",
+      "value": "var(--semantic-text-strong-default)",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-option-selected-weight",
+      "value": "500",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-select-radius",
+      "value": "4px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-default-bg",
+      "value": "var(--semantic-button-bg-disabled)",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-default-color",
+      "value": "var(--semantic-text-inverse-default)",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-default-weight",
+      "value": "700",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-font-size",
+      "value": "16px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-line-height",
+      "value": "24px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-padding-x",
+      "value": "20px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-radius",
+      "value": "10px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-selected-bg",
+      "value": "var(--semantic-bg-inverse-default)",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-chip-tab-height",
+      "value": "52px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-line-default-weight",
+      "value": "500",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-line-font-size",
+      "value": "16px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-line-indicator-height",
+      "value": "2px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-line-line-height",
+      "value": "24px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-line-padding-x",
+      "value": "16px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-tabs-line-tab-height",
+      "value": "48px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-textarea-min-height",
+      "value": "100px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-textarea-padding-x",
+      "value": "12px",
+      "group": "nds",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--nds-textarea-radius",
+      "value": "4px",
+      "group": "nds",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-0",
+      "value": "0px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-10",
+      "value": "10px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-12",
+      "value": "12px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-16",
+      "value": "16px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-2",
+      "value": "2px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-24",
+      "value": "24px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-28",
+      "value": "28px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-2xl",
+      "value": "23px",
+      "group": "radius",
+      "brands": ["geniet"]
+    },
+    {
+      "name": "--radius-4",
+      "value": "4px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-6",
+      "value": "6px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-8",
+      "value": "8px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--radius-chip",
+      "value": "20px",
+      "group": "radius",
+      "brands": ["moneple"]
     },
     {
       "name": "--radius-lg",
       "value": "12px",
-      "group": "radius"
+      "group": "radius",
+      "brandValues": {
+        "moneple": "8px"
+      }
     },
     {
       "name": "--radius-md",
       "value": "8px",
-      "group": "radius"
+      "group": "radius",
+      "brandValues": {
+        "moneple": "6px"
+      }
+    },
+    {
+      "name": "--radius-none",
+      "value": "0px",
+      "group": "radius",
+      "brands": ["cashpobi", "cashwalk-biz", "geniet", "moneple", "runmile", "trost"]
     },
     {
       "name": "--radius-pill",
@@ -10304,64 +11925,165 @@
       "group": "radius"
     },
     {
+      "name": "--radius-sheet",
+      "value": "16px",
+      "group": "radius",
+      "brands": ["moneple"]
+    },
+    {
       "name": "--radius-sm",
       "value": "4px",
-      "group": "radius"
+      "group": "radius",
+      "brandValues": {
+        "geniet": "6px",
+        "runmile": "6px",
+        "trost": "6px"
+      }
+    },
+    {
+      "name": "--radius-xl",
+      "value": "18px",
+      "group": "radius",
+      "brands": ["geniet", "moneple", "runmile", "trost"],
+      "brandValues": {
+        "moneple": "12px",
+        "runmile": "16px",
+        "trost": "20px"
+      }
+    },
+    {
+      "name": "--radius-xs",
+      "value": "4px",
+      "group": "radius",
+      "brands": ["geniet", "moneple", "runmile", "trost"],
+      "brandValues": {
+        "moneple": "3px",
+        "trost": "6px"
+      }
     },
     {
       "name": "--semantic-bg-brand-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFD200",
+        "cashwalk-biz": "#FFD200",
+        "geniet": "#48C2C5",
+        "runmile": "#FF5B37",
+        "trost": "#FFF42E"
+      }
     },
     {
       "name": "--semantic-bg-brand-subtle",
       "value": "#F1F8FD",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFFAE5",
+        "cashwalk-biz": "#FFFAE5",
+        "geniet": "#ECF8F9",
+        "runmile": "#FFF7F5",
+        "trost": "#FFF8B8"
+      }
     },
     {
       "name": "--semantic-bg-disabled",
       "value": "#ECECEC",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#EEEEEE",
+        "cashwalk-biz": "#EEEEEE",
+        "runmile": "#E5E8EB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-bg-inverse-default",
       "value": "#111111",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "runmile": "#221E1F"
+      }
     },
     {
       "name": "--semantic-bg-overlay",
       "value": "rgba(0,0,0,0.4)",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "rgba(0, 0, 0, 0.4)",
+        "cashwalk-biz": "rgba(0, 0, 0, 0.4)",
+        "geniet": "rgba(0, 0, 0, 0.4)",
+        "runmile": "rgba(0, 0, 0, 0.5)",
+        "trost": "rgba(0, 0, 0, 0.6)"
+      }
     },
     {
       "name": "--semantic-bg-page-default",
       "value": "#F8F9FB",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FAFAFA",
+        "cashwalk-biz": "#FAFAFA",
+        "geniet": "#F5F5F5",
+        "runmile": "#FFFFFF",
+        "trost": "#FFFFFF"
+      }
     },
     {
       "name": "--semantic-bg-section-default",
       "value": "#F3F4F6",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#F5F5F5",
+        "cashwalk-biz": "#F5F5F5",
+        "geniet": "#F5F5F5",
+        "runmile": "#F2F4F6",
+        "trost": "#F4F5F7"
+      }
     },
     {
       "name": "--semantic-bg-status-caution",
       "value": "#FFFAE8",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFFAE5",
+        "cashwalk-biz": "#FFFAE5",
+        "geniet": "#FFF8DF",
+        "trost": "#FFF8E6"
+      }
     },
     {
       "name": "--semantic-bg-status-error",
       "value": "#FEE9E6",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFF5F5",
+        "cashwalk-biz": "#FFF5F5",
+        "geniet": "#FFEBEE",
+        "runmile": "#FFE9E9"
+      }
     },
     {
       "name": "--semantic-bg-status-info",
       "value": "#E3F2FC",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#F5FAFF",
+        "cashwalk-biz": "#F5FAFF",
+        "geniet": "#E4F5FF",
+        "runmile": "#FFF7F5",
+        "trost": "#EDF0FF"
+      }
     },
     {
       "name": "--semantic-bg-status-success",
       "value": "#E5F7F4",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#E5F8EE",
+        "cashwalk-biz": "#E5F8EE",
+        "geniet": "#F1FBF6",
+        "trost": "#E6F9F2"
+      }
     },
     {
       "name": "--semantic-bg-surface-default",
@@ -10371,82 +12093,196 @@
     {
       "name": "--semantic-bg-surface-subtle",
       "value": "#FAFAFA",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "runmile": "#F2F4F6",
+        "trost": "#F6F6F6"
+      }
     },
     {
       "name": "--semantic-border-brand-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFD200",
+        "cashwalk-biz": "#FFD200",
+        "geniet": "#48C2C5",
+        "runmile": "#FF5B37",
+        "trost": "#FFE600"
+      }
     },
     {
       "name": "--semantic-border-brand-disabled",
       "value": "#9CA2AE",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#DDDDDD",
+        "geniet": "#CCCCCC",
+        "runmile": "#E5E8EB",
+        "trost": "#D8D8D8"
+      }
     },
     {
       "name": "--semantic-border-disabled-default",
       "value": "#ECECEC",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#EEEEEE",
+        "cashwalk-biz": "#EEEEEE",
+        "runmile": "#E5E8EB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-border-focus-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFD200",
+        "cashwalk-biz": "#FFD200",
+        "geniet": "#48C2C5",
+        "runmile": "#FF5B37",
+        "trost": "#4968FF"
+      }
     },
     {
       "name": "--semantic-border-normal-default",
       "value": "#ECECEC",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#EEEEEE",
+        "cashwalk-biz": "#EEEEEE",
+        "geniet": "#DDDDDD",
+        "runmile": "#D1D6DB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-border-status-caution",
       "value": "#FFC303",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FD9B02",
+        "cashwalk-biz": "#FD9B02",
+        "geniet": "#FFB700",
+        "trost": "#FF9D00"
+      }
     },
     {
       "name": "--semantic-border-status-error",
       "value": "#F13F00",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FF4141",
+        "cashwalk-biz": "#FC3500",
+        "geniet": "#FF3258",
+        "runmile": "#FF2428",
+        "trost": "#FF4111"
+      }
     },
     {
       "name": "--semantic-border-strong-default",
       "value": "#999999",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#DDDDDD",
+        "geniet": "#BBBBBB",
+        "runmile": "#B0B8C1",
+        "trost": "#979797"
+      }
     },
     {
       "name": "--semantic-border-subtle-default",
       "value": "#F5F5F5",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "#ECECEC",
+        "runmile": "#E5E8EB",
+        "trost": "#F2F2F2"
+      }
+    },
+    {
+      "name": "--semantic-brand-logo-default",
+      "value": "#5E5050",
+      "group": "semantic",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--semantic-brand-logo-strong",
+      "value": "#403535",
+      "group": "semantic",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
+      "name": "--semantic-brand-logo-subtle",
+      "value": "#F2EAE8",
+      "group": "semantic",
+      "brands": ["cashpobi", "cashwalk-biz"]
     },
     {
       "name": "--semantic-button-bg-assistive-default",
       "value": "#9CA2AE",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "#ECECEC",
+        "runmile": "#F2F4F6"
+      }
     },
     {
       "name": "--semantic-button-bg-assistive-disabled",
       "value": "#F5F5F5",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "#CCCCCC",
+        "runmile": "#D1D6DB"
+      }
     },
     {
       "name": "--semantic-button-bg-assistive-hover",
       "value": "#7E8593",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "#F5F5F5",
+        "runmile": "#E5E8EB"
+      }
     },
     {
       "name": "--semantic-button-bg-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFD200",
+        "cashwalk-biz": "#FFD200",
+        "geniet": "#48C2C5",
+        "runmile": "#FF5B37",
+        "trost": "#FFF42E"
+      }
     },
     {
       "name": "--semantic-button-bg-disabled",
       "value": "#9CA2AE",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFFAE5",
+        "cashwalk-biz": "#DDDDDD",
+        "geniet": "#CCCCCC",
+        "runmile": "#E5E8EB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-button-bg-hover",
       "value": "#017EE4",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFC400",
+        "cashwalk-biz": "#FFC400",
+        "geniet": "#00A8AC",
+        "runmile": "#FF805C",
+        "trost": "#FFE600"
+      }
     },
     {
       "name": "--semantic-button-bg-outlined-default",
@@ -10461,107 +12297,244 @@
     {
       "name": "--semantic-button-bg-outlined-hover",
       "value": "#F1F8FD",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFFEF5",
+        "cashwalk-biz": "#FFFEF5",
+        "geniet": "#FAFAFA",
+        "runmile": "#FFF7F5",
+        "trost": "#FFF8B8"
+      }
     },
     {
       "name": "--semantic-button-bg-pressed",
       "value": "#0E71CF",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FEAF01",
+        "cashwalk-biz": "#FEAF01",
+        "geniet": "#00A8AC",
+        "runmile": "#D33E20",
+        "trost": "#E6D200"
+      }
     },
     {
       "name": "--semantic-button-bg-secondary-default",
       "value": "#F1F8FD",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#000000",
+        "cashwalk-biz": "#000000",
+        "geniet": "#333333",
+        "runmile": "#221E1F",
+        "trost": "#F6F7FF"
+      }
     },
     {
       "name": "--semantic-button-bg-secondary-disabled",
       "value": "#E6E7EB",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#EEEEEE",
+        "cashwalk-biz": "#DDDDDD",
+        "geniet": "#CCCCCC",
+        "runmile": "#E5E8EB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-button-bg-secondary-hover",
       "value": "#E3F2FC",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#333333",
+        "cashwalk-biz": "#333333",
+        "geniet": "#666666",
+        "runmile": "#333D4B",
+        "trost": "#EDF0FF"
+      }
     },
     {
       "name": "--semantic-button-border-assistive-default",
       "value": "#D8D8D8",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#E7E7E7",
+        "cashwalk-biz": "#E7E7E7",
+        "geniet": "#DDDDDD",
+        "runmile": "#D1D6DB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-button-border-assistive-disabled",
       "value": "#ECECEC",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#EEEEEE",
+        "cashwalk-biz": "#E7E7E7",
+        "geniet": "#DDDDDD",
+        "runmile": "#D1D6DB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-button-border-outlined-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFD200",
+        "cashwalk-biz": "#FFD200",
+        "geniet": "#00A8AC",
+        "runmile": "#FF5B37",
+        "trost": "#FFE600"
+      }
     },
     {
       "name": "--semantic-button-border-outlined-disabled",
       "value": "#9CA2AE",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#E7E7E7",
+        "geniet": "#DDDDDD",
+        "runmile": "#E5E8EB",
+        "trost": "#D8D8D8"
+      }
     },
     {
       "name": "--semantic-button-border-outlined-hover",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFC400",
+        "cashwalk-biz": "#FFC400",
+        "geniet": "#00A8AC",
+        "runmile": "#FF805C",
+        "trost": "#FFE600"
+      }
     },
     {
       "name": "--semantic-button-text-assistive",
       "value": "#FFFFFF",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "#666666",
+        "runmile": "#4E5968"
+      }
     },
     {
       "name": "--semantic-button-text-assistive-disabled",
       "value": "#999999",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "runmile": "#919CAA"
+      }
     },
     {
       "name": "--semantic-button-text-brand",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FEAF01",
+        "cashwalk-biz": "#FEAF01",
+        "geniet": "#00A8AC",
+        "runmile": "#FF5B37",
+        "trost": "#FF9D00"
+      }
     },
     {
       "name": "--semantic-button-text-default",
       "value": "#FFFFFF",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#000000",
+        "cashwalk-biz": "#000000",
+        "trost": "#000000"
+      }
     },
     {
       "name": "--semantic-button-text-disabled",
       "value": "#9CA2AE",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#FFFFFF",
+        "geniet": "#999999",
+        "runmile": "#B0B8C1",
+        "trost": "#979797"
+      }
     },
     {
       "name": "--semantic-button-text-secondary-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFFFFF",
+        "cashwalk-biz": "#FFFFFF",
+        "geniet": "#FFFFFF",
+        "runmile": "#FFFFFF",
+        "trost": "#4968FF"
+      }
     },
     {
       "name": "--semantic-button-text-secondary-disabled",
       "value": "#9CA2AE",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#FFFFFF",
+        "geniet": "#999999",
+        "runmile": "#B0B8C1",
+        "trost": "#979797"
+      }
     },
     {
       "name": "--semantic-fill-brand-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFD200",
+        "cashwalk-biz": "#FFD200",
+        "geniet": "#48C2C5",
+        "runmile": "#FF5B37",
+        "trost": "#FFF42E"
+      }
     },
     {
       "name": "--semantic-fill-brand-disabled",
       "value": "#D8D8D8",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#E7E7E7",
+        "cashwalk-biz": "#E7E7E7",
+        "geniet": "#DDDDDD",
+        "runmile": "#E5E8EB"
+      }
     },
     {
       "name": "--semantic-fill-brand-hover",
       "value": "#017EE4",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FFC400",
+        "cashwalk-biz": "#FFC400",
+        "geniet": "#00A8AC",
+        "runmile": "#E84A28",
+        "trost": "#FFE600"
+      }
     },
     {
       "name": "--semantic-fill-brand-pressed",
       "value": "#0E71CF",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FEAF01",
+        "cashwalk-biz": "#FEAF01",
+        "geniet": "#00A8AC",
+        "runmile": "#D33E20",
+        "trost": "#E6D200"
+      }
     },
     {
       "name": "--semantic-fill-inverse-default",
@@ -10571,22 +12544,46 @@
     {
       "name": "--semantic-fill-neutral-default",
       "value": "#383838",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#333333",
+        "cashwalk-biz": "#333333",
+        "geniet": "#666666",
+        "runmile": "#333D4B",
+        "trost": "#333333"
+      }
     },
     {
       "name": "--semantic-fill-neutral-subtle",
       "value": "#F5F5F5",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "runmile": "#F2F4F6",
+        "trost": "#F6F6F6"
+      }
     },
     {
       "name": "--semantic-fill-status-caution",
       "value": "#FFC303",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FD9B02",
+        "cashwalk-biz": "#FD9B02",
+        "geniet": "#FFB700",
+        "trost": "#FF9D00"
+      }
     },
     {
       "name": "--semantic-fill-status-error",
       "value": "#F13F00",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FF4141",
+        "cashwalk-biz": "#FC3500",
+        "geniet": "#FF3258",
+        "runmile": "#FF2428",
+        "trost": "#FF4111"
+      }
     },
     {
       "name": "--semantic-gap-comfortable",
@@ -10611,12 +12608,18 @@
     {
       "name": "--semantic-gap-title-h1",
       "value": "12px",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "20px"
+      }
     },
     {
       "name": "--semantic-gap-title-h2",
       "value": "12px",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "16px"
+      }
     },
     {
       "name": "--semantic-gap-title-h3",
@@ -10626,12 +12629,21 @@
     {
       "name": "--semantic-gap-title-h4",
       "value": "6px",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "10px"
+      }
     },
     {
       "name": "--semantic-gap-title-h5",
       "value": "8px",
       "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-title-h6",
+      "value": "6px",
+      "group": "semantic",
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--semantic-gap-wide",
@@ -10641,12 +12653,25 @@
     {
       "name": "--semantic-icon-brand-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FEAF01",
+        "cashwalk-biz": "#FEAF01",
+        "geniet": "#00A8AC",
+        "runmile": "#FF5B37",
+        "trost": "#FF9D00"
+      }
     },
     {
       "name": "--semantic-icon-disabled-default",
       "value": "#C7C7C7",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#DDDDDD",
+        "geniet": "#BBBBBB",
+        "runmile": "#D1D6DB"
+      }
     },
     {
       "name": "--semantic-icon-inverse-default",
@@ -10654,29 +12679,65 @@
       "group": "semantic"
     },
     {
+      "name": "--semantic-icon-muted-default",
+      "value": "#919CAA",
+      "group": "semantic",
+      "brands": ["runmile"]
+    },
+    {
       "name": "--semantic-icon-normal-default",
       "value": "#666666",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "runmile": "#4E5968",
+        "trost": "#606060"
+      }
     },
     {
       "name": "--semantic-icon-status-caution",
       "value": "#FFC303",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FEAF01",
+        "cashwalk-biz": "#FEAF01",
+        "geniet": "#FFB700",
+        "trost": "#FF9D00"
+      }
     },
     {
       "name": "--semantic-icon-status-error",
       "value": "#F13F00",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FF4141",
+        "cashwalk-biz": "#FC3500",
+        "geniet": "#FF3258",
+        "runmile": "#FF2428",
+        "trost": "#FF4111"
+      }
     },
     {
       "name": "--semantic-icon-status-success",
       "value": "#13BFA2",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#00CC5B",
+        "cashwalk-biz": "#00CC5B",
+        "geniet": "#49CA89",
+        "trost": "#00BC78"
+      }
     },
     {
       "name": "--semantic-icon-strong-default",
       "value": "#383838",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#333333",
+        "cashwalk-biz": "#333333",
+        "geniet": "#333333",
+        "runmile": "#221E1F",
+        "trost": "#333333"
+      }
     },
     {
       "name": "--semantic-input-bg",
@@ -10686,57 +12747,129 @@
     {
       "name": "--semantic-input-bg-disabled",
       "value": "#FAFAFA",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "#F5F5F5",
+        "runmile": "#F9FAFB",
+        "trost": "#F6F6F6"
+      }
     },
     {
       "name": "--semantic-input-border-default",
       "value": "#D8D8D8",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#EEEEEE",
+        "cashwalk-biz": "#EEEEEE",
+        "geniet": "#DDDDDD",
+        "runmile": "#D1D6DB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-input-border-disabled",
       "value": "#D8D8D8",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#EEEEEE",
+        "cashwalk-biz": "#EEEEEE",
+        "geniet": "#DDDDDD",
+        "runmile": "#E5E8EB",
+        "trost": "#E5E5E5"
+      }
     },
     {
       "name": "--semantic-input-border-error",
       "value": "#F13F00",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FF4141",
+        "cashwalk-biz": "#FC3500",
+        "geniet": "#FF3258",
+        "runmile": "#FF2428",
+        "trost": "#FF4111"
+      }
     },
     {
       "name": "--semantic-input-border-focus",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#111111",
+        "cashwalk-biz": "#111111",
+        "geniet": "#48C2C5",
+        "runmile": "#FF5B37",
+        "trost": "#4968FF"
+      }
     },
     {
       "name": "--semantic-input-border-hover",
       "value": "#C7C7C7",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#E7E7E7",
+        "cashwalk-biz": "#E7E7E7",
+        "geniet": "#CCCCCC",
+        "runmile": "#B0B8C1"
+      }
     },
     {
       "name": "--semantic-input-helpertext-default",
       "value": "#999999",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#BBBBBB",
+        "cashwalk-biz": "#BBBBBB",
+        "geniet": "#666666",
+        "runmile": "#6B7684",
+        "trost": "#979797"
+      }
     },
     {
       "name": "--semantic-input-helpertext-disabled",
       "value": "#C7C7C7",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#DDDDDD",
+        "geniet": "#BBBBBB",
+        "runmile": "#D1D6DB"
+      }
     },
     {
       "name": "--semantic-input-helpertext-error",
       "value": "#F13F00",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FF4141",
+        "cashwalk-biz": "#FC3500",
+        "geniet": "#FF3258",
+        "runmile": "#FF2428",
+        "trost": "#FF4111"
+      }
     },
     {
       "name": "--semantic-input-helpertext-success",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#00B350",
+        "cashwalk-biz": "#00B350",
+        "geniet": "#00A8AC",
+        "runmile": "#FF5B37",
+        "trost": "#4968FF"
+      }
     },
     {
       "name": "--semantic-input-placeholder",
       "value": "#999999",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#DDDDDD",
+        "runmile": "#B0B8C1",
+        "trost": "#979797"
+      }
     },
     {
       "name": "--semantic-inset-card",
@@ -10756,7 +12889,10 @@
     {
       "name": "--semantic-inset-input",
       "value": "12px",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "10px"
+      }
     },
     {
       "name": "--semantic-inset-modal",
@@ -10764,19 +12900,51 @@
       "group": "semantic"
     },
     {
+      "name": "--semantic-inset-page",
+      "value": "48px",
+      "group": "semantic",
+      "brands": ["cashwalk-biz"]
+    },
+    {
+      "name": "--semantic-inset-section",
+      "value": "30px",
+      "group": "semantic",
+      "brands": ["cashwalk-biz"]
+    },
+    {
       "name": "--semantic-text-brand-default",
       "value": "#2B96ED",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FD9B02",
+        "cashwalk-biz": "#FD9B02",
+        "geniet": "#00A8AC",
+        "runmile": "#FF5B37",
+        "trost": "#FF9D00"
+      }
     },
     {
       "name": "--semantic-text-brand-strong",
       "value": "#1B65BA",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FD9B02",
+        "cashwalk-biz": "#FD9B02",
+        "geniet": "#00A8AC",
+        "runmile": "#FF5B37",
+        "trost": "#FF9D00"
+      }
     },
     {
       "name": "--semantic-text-disabled-default",
       "value": "#C7C7C7",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#DDDDDD",
+        "cashwalk-biz": "#BBBBBB",
+        "geniet": "#BBBBBB",
+        "runmile": "#B0B8C1"
+      }
     },
     {
       "name": "--semantic-text-inverse-default",
@@ -10784,44 +12952,98 @@
       "group": "semantic"
     },
     {
+      "name": "--semantic-text-link-default",
+      "value": "#007AFF",
+      "group": "semantic",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
       "name": "--semantic-text-muted-default",
       "value": "#999999",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#BBBBBB",
+        "cashwalk-biz": "#BBBBBB",
+        "runmile": "#6B7684",
+        "trost": "#979797"
+      }
     },
     {
       "name": "--semantic-text-normal-default",
       "value": "#383838",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#333333",
+        "cashwalk-biz": "#333333",
+        "geniet": "#333333",
+        "runmile": "#333D4B",
+        "trost": "#333333"
+      }
     },
     {
       "name": "--semantic-text-status-caution",
       "value": "#FFA100",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FD9B02",
+        "cashwalk-biz": "#FD9B02",
+        "geniet": "#FFA500",
+        "trost": "#FF9D00"
+      }
     },
     {
       "name": "--semantic-text-status-error",
       "value": "#F13F00",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#FF4141",
+        "cashwalk-biz": "#FC3500",
+        "geniet": "#FF3258",
+        "runmile": "#FF2428",
+        "trost": "#FF4111"
+      }
     },
     {
       "name": "--semantic-text-status-info",
       "value": "#017EE4",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#007AFF",
+        "cashwalk-biz": "#006FE6",
+        "geniet": "#1FA3F9",
+        "runmile": "#007AFF",
+        "trost": "#4968FF"
+      }
     },
     {
       "name": "--semantic-text-status-success",
       "value": "#00A07C",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "cashpobi": "#00B350",
+        "cashwalk-biz": "#00B350",
+        "geniet": "#18B264",
+        "trost": "#00BC78"
+      }
     },
     {
       "name": "--semantic-text-strong-default",
       "value": "#111111",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "runmile": "#221E1F",
+        "trost": "#000000"
+      }
     },
     {
       "name": "--semantic-text-subtle-default",
       "value": "#666666",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "#777777",
+        "runmile": "#4E5968",
+        "trost": "#606060"
+      }
     },
     {
       "name": "--shadow-0",
@@ -10831,17 +13053,60 @@
     {
       "name": "--shadow-1",
       "value": "0px 1px 4px rgba(0, 0, 0, 0.08)",
-      "group": "shadow"
+      "group": "shadow",
+      "brandValues": {
+        "geniet": "0 0 6px rgba(0, 0, 0, 0.04)",
+        "runmile": "0 1px 2px rgba(0, 0, 0, 0.04)",
+        "trost": "0px 2px 16px rgba(0, 0, 0, 0.12)"
+      }
     },
     {
       "name": "--shadow-2",
       "value": "0px 4px 12px rgba(0, 0, 0, 0.10)",
-      "group": "shadow"
+      "group": "shadow",
+      "brandValues": {
+        "geniet": "0 2px 6px rgba(0, 0, 0, 0.15)",
+        "runmile": "0 2px 8px rgba(0, 0, 0, 0.08)"
+      }
     },
     {
       "name": "--shadow-3",
       "value": "0px 8px 24px rgba(0, 0, 0, 0.12)",
-      "group": "shadow"
+      "group": "shadow",
+      "brandValues": {
+        "geniet": "0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.14)",
+        "runmile": "0 8px 24px rgba(0, 0, 0, 0.12)"
+      }
+    },
+    {
+      "name": "--shadow-lg",
+      "value": "0 8px 24px rgba(0, 0, 0, 0.16)",
+      "group": "shadow",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--shadow-md",
+      "value": "0 4px 12px rgba(0, 0, 0, 0.12)",
+      "group": "shadow",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--shadow-none",
+      "value": "none",
+      "group": "shadow",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--shadow-sm",
+      "value": "0 0 16px rgba(0, 0, 0, 0.06)",
+      "group": "shadow",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--shadow-up",
+      "value": "0 -4px 12px rgba(0, 0, 0, 0.1)",
+      "group": "shadow",
+      "brands": ["moneple"]
     },
     {
       "name": "--shape-lg",
@@ -11059,6 +13324,12 @@
       "group": "spacing"
     },
     {
+      "name": "--spacing-56",
+      "value": "56px",
+      "group": "spacing",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
       "name": "--spacing-6",
       "value": "6px",
       "group": "spacing"
@@ -11099,6 +13370,12 @@
       "group": "stroke"
     },
     {
+      "name": "--stroke-thin",
+      "value": "1.5px",
+      "group": "stroke",
+      "brands": ["cashpobi", "cashwalk-biz"]
+    },
+    {
       "name": "--z-appBar",
       "value": "300",
       "group": "z"
@@ -11109,14 +13386,41 @@
       "group": "z"
     },
     {
+      "name": "--z-bottomFixedInput",
+      "value": "200",
+      "group": "z",
+      "brands": ["geniet", "runmile", "trost"]
+    },
+    {
+      "name": "--z-bottomSheet",
+      "value": "100",
+      "group": "z",
+      "brands": ["geniet", "runmile", "trost"]
+    },
+    {
       "name": "--z-dropdown",
       "value": "100",
       "group": "z"
     },
     {
+      "name": "--z-fullscreenBottomSheet",
+      "value": "300",
+      "group": "z",
+      "brands": ["geniet", "runmile", "trost"]
+    },
+    {
       "name": "--z-modal",
       "value": "1000",
-      "group": "z"
+      "group": "z",
+      "brandValues": {
+        "moneple": "8000"
+      }
+    },
+    {
+      "name": "--z-overlay",
+      "value": "9998",
+      "group": "z",
+      "brands": ["moneple"]
     },
     {
       "name": "--z-popup",
@@ -11124,14 +13428,38 @@
       "group": "z"
     },
     {
+      "name": "--z-sheet",
+      "value": "9999",
+      "group": "z",
+      "brands": ["moneple"]
+    },
+    {
+      "name": "--z-sidePanel",
+      "value": "200",
+      "group": "z",
+      "brands": ["moneple"]
+    },
+    {
       "name": "--z-sticky",
       "value": "200",
       "group": "z"
     },
     {
+      "name": "--z-stickyHeader",
+      "value": "50",
+      "group": "z",
+      "brands": ["geniet", "moneple", "runmile", "trost"]
+    },
+    {
       "name": "--z-toast",
       "value": "1200",
-      "group": "z"
+      "group": "z",
+      "brandValues": {
+        "geniet": "400",
+        "moneple": "10000",
+        "runmile": "400",
+        "trost": "400"
+      }
     }
   ],
   "brands": [

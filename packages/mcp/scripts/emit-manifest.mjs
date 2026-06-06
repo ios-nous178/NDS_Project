@@ -404,20 +404,68 @@ const components = componentNames.map((name) => {
 
 const icons = readIconExports(iconsDist);
 
-let tokens = [];
-if (fs.existsSync(tokensCssPath)) {
-  const css = fs.readFileSync(tokensCssPath, "utf-8");
-  const seen = new Map();
+// CSS 파일 하나를 { --name: value } Map 으로. (첫 정의 우선 — base 와 동일 규칙)
+function parseCssVars(file) {
+  const map = new Map();
+  if (!fs.existsSync(file)) return map;
+  const css = fs.readFileSync(file, "utf-8");
   const re = /(--[\w-]+)\s*:\s*([^;]+);/g;
   let m;
   while ((m = re.exec(css)) !== null) {
-    if (!seen.has(m[1])) seen.set(m[1], m[2].trim());
+    if (!map.has(m[1])) map.set(m[1], m[2].trim());
   }
-  tokens = [...seen.entries()].map(([name, value]) => {
-    const group = name.replace(/^--/, "").split("-")[0];
-    return { name, value, group };
-  });
+  return map;
 }
+
+const tokenGroupOf = (name) => name.replace(/^--/, "").split("-")[0];
+
+// base = tokens.css = nudge-eap. 나머지 dist/*.css 는 브랜드 테마(full token set).
+// 같은 이름·다른 값 → brandValues 오버라이드. base 에 없는 이름 → 브랜드 고유 토큰.
+const baseMap = parseCssVars(tokensCssPath);
+const brandCssMaps = fs.existsSync(tokensDistDir)
+  ? fs
+      .readdirSync(tokensDistDir)
+      .filter((f) => f.endsWith(".css") && f !== "tokens.css")
+      .sort()
+      .map((f) => ({
+        slug: f.replace(/\.css$/, ""),
+        map: parseCssVars(path.join(tokensDistDir, f)),
+      }))
+  : [];
+
+// base(공통) 토큰 — 브랜드가 값을 덮으면 brandValues 에 기록.
+const baseTokens = [...baseMap.entries()].map(([name, value]) => {
+  const entry = { name, value, group: tokenGroupOf(name) };
+  const brandValues = {};
+  for (const { slug, map } of brandCssMaps) {
+    const bv = map.get(name);
+    if (bv !== undefined && bv !== value) brandValues[slug] = bv;
+  }
+  if (Object.keys(brandValues).length) entry.brandValues = brandValues;
+  return entry;
+});
+
+// base 에 없는 브랜드 고유 토큰 (예: geniet --color-mint-*).
+const uniqueMap = new Map(); // name -> { value, brands:Set, brandValues:{} }
+for (const { slug, map } of brandCssMaps) {
+  for (const [name, value] of map) {
+    if (baseMap.has(name)) continue; // 오버라이드는 위에서 처리됨
+    if (!uniqueMap.has(name)) {
+      uniqueMap.set(name, { value, brands: new Set([slug]), brandValues: {} });
+    } else {
+      const u = uniqueMap.get(name);
+      u.brands.add(slug);
+      if (value !== u.value) u.brandValues[slug] = value;
+    }
+  }
+}
+const brandTokens = [...uniqueMap.entries()].map(([name, u]) => {
+  const entry = { name, value: u.value, group: tokenGroupOf(name), brands: [...u.brands].sort() };
+  if (Object.keys(u.brandValues).length) entry.brandValues = u.brandValues;
+  return entry;
+});
+
+const tokens = [...baseTokens, ...brandTokens];
 
 const brands = collectBrands();
 
