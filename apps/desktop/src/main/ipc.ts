@@ -38,6 +38,7 @@ import {
   renameSession,
   type ChatSession,
 } from "./sessions.js";
+import { readSessionDashboard, type SessionDashboardResult } from "./session-dashboard.js";
 import type { ChatMessage } from "./chat-types.js";
 import { isResumable } from "./agent-resume.js";
 import { runIntake, type RunIntakeArgs } from "./intake.js";
@@ -406,6 +407,13 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
       reconcileStaleSessions(args.projectPath, runningSessionIds());
       // resumable 은 계산 필드 — 렌더러는 fs(네이티브 store 존재)를 못 보므로 여기서 판정해 붙인다.
       return readSessions(args.projectPath).map((s) => ({ ...s, resumable: isResumable(s) }));
+    },
+  );
+  ipcMain.handle(
+    "session:dashboard",
+    async (_e, args: { projectPath: string }): Promise<SessionDashboardResult> => {
+      reconcileStaleSessions(args.projectPath, runningSessionIds());
+      return readSessionDashboard(args.projectPath);
     },
   );
 

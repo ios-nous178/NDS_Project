@@ -113,6 +113,11 @@ function readDirs(projectPath?: string): string[] {
   return dirs;
 }
 
+/** 채팅 세션/트랜스크립트/로그를 읽을 때 사용하는 후보 저장 디렉터리들. */
+export function sessionStorageDirs(projectPath?: string): string[] {
+  return readDirs(projectPath);
+}
+
 function appendSession(projectPath: string, session: ChatSession): void {
   try {
     const dir = logDir(projectPath);
@@ -238,6 +243,17 @@ export function readSessions(projectPath: string): ChatSession[] {
             createdAt: prev.createdAt,
             screenName: s.screenName ?? prev.screenName,
             customTitle: s.customTitle ?? prev.customTitle,
+            brand: s.brand ?? prev.brand,
+            surface: s.surface ?? prev.surface,
+            intent: s.intent ?? prev.intent,
+            transport: s.transport ?? prev.transport,
+            cwd: s.cwd ?? prev.cwd,
+            mockupFile: s.mockupFile ?? prev.mockupFile,
+            agentSessionId: s.agentSessionId ?? prev.agentSessionId,
+            agentSessionFile: s.agentSessionFile ?? prev.agentSessionFile,
+            recipe: s.recipe ?? prev.recipe,
+            snapshotVersion: s.snapshotVersion ?? prev.snapshotVersion,
+            appVersion: s.appVersion ?? prev.appVersion,
             // 녹화 폭은 최신 라인(라이브 리사이즈/종료 라인)이 명시하면 그 값, 아니면 첫 라인 보존.
             cols: s.cols ?? prev.cols,
             rows: s.rows ?? prev.rows,

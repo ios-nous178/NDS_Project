@@ -511,6 +511,9 @@ export function SessionHistoryPanel({
                   <span>
                     {fmtTime(s.createdAt)} · {statusKo(s.status)}
                   </span>
+                  {s.brand && <MetaChip label={s.brand} />}
+                  {s.surface && <MetaChip label={s.surface} />}
+                  {s.intent && <MetaChip label={s.intent} />}
                   {/* 이어가기 — CLI 네이티브 대화가 남아있는(resumable) 끝난 세션만. 라이브/편집 중엔 숨김. */}
                   {s.resumable && !isLive && !isEditing && (
                     <button
@@ -702,6 +705,26 @@ function statusKo(s: ChatSession["status"]): string {
       return "실패";
   }
 }
+
+function MetaChip({ label }: { label: string }): React.JSX.Element {
+  return (
+    <span
+      style={{
+        flexShrink: 0,
+        padding: "0 5px",
+        borderRadius: 999,
+        border: `1px solid ${c.border}`,
+        color: c.textMuted,
+        fontSize: 9.5,
+        lineHeight: "14px",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
 function fmtTime(iso: string): string {
   try {
     const d = new Date(iso);

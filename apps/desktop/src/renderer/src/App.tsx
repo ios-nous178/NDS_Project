@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core";
 import type { ChatSession, UpdateCheckResult } from "../../preload/index.js";
 import { ValidationPanel } from "./panels/ValidationPanel.js";
+import { SessionDashboardPanel } from "./panels/SessionDashboardPanel.js";
 import {
   PreviewPanel,
   type Viewport,
@@ -39,7 +40,7 @@ import {
   segItemActive,
 } from "./ui/theme.js";
 
-type PreviewTab = "preview" | "validate" | "feedback" | "source";
+type PreviewTab = "dashboard" | "preview" | "validate" | "feedback" | "source";
 
 // 3분할 폭(px) 사용자 조절. 1·2섹션은 고정폭, 3섹션(미리보기)은 나머지를 채운다.
 const PANES_KEY = "nudge-studio:pane-widths";
@@ -114,6 +115,7 @@ export function App(): React.JSX.Element {
   const [activeIntent, setActiveIntent] = useState<"html" | "admin-cms">("html");
   /** 인테이크가 만든 목업 폴더 슬러그(빌드/내보내기 cwd 계산용). */
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const sessionFocusId = viewing?.sessionId ?? liveSessionId ?? null;
 
   // 3분할 폭 — 리사이저 드래그로 조절, localStorage 에 기억.
   const [paneW, setPaneW] = useState(loadPaneWidths);
@@ -369,6 +371,7 @@ export function App(): React.JSX.Element {
   }, [projectPath, selected, activeSlug, viewing]);
 
   const isAdminCms = activeIntent === "admin-cms";
+  const feedbackTarget = viewing ? previewRel : (selected ?? previewRel);
   // "생성 중" 뱃지 = 지금 미리보기에 뜬 목업이 라이브 출력을 실제로 따라가는 중일 때만.
   // (과거 세션 보는 중이거나 사용자가 특정 목업을 직접 고르면 자동추적이 꺼져 뱃지도 꺼진다.)
   const previewLive = liveSessionId !== null && autoFollow && !viewing;
@@ -677,6 +680,12 @@ export function App(): React.JSX.Element {
           <div style={tabBar}>
             <div style={segGroup}>
               <button
+                onClick={() => setTab("dashboard")}
+                style={tab === "dashboard" ? segItemActive : segItem}
+              >
+                대시보드
+              </button>
+              <button
                 onClick={() => setTab("preview")}
                 style={tab === "preview" ? segItemActive : segItem}
               >
@@ -761,6 +770,13 @@ export function App(): React.JSX.Element {
           </div>
 
           <div ref={previewBoxRef} style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+            {tab === "dashboard" && (
+              <SessionDashboardPanel
+                projectPath={projectPath}
+                refreshKey={historyRefresh}
+                focusSessionId={sessionFocusId}
+              />
+            )}
             {tab === "preview" &&
               (isAdminCms ? (
                 <div
@@ -796,7 +812,7 @@ export function App(): React.JSX.Element {
             )}
             {tab === "feedback" && (
               <div style={{ height: "100%", overflowY: "auto", padding: 16 }}>
-                <FeedbackPanel projectPath={projectPath} screen={selected} />
+                <FeedbackPanel projectPath={previewBase} screen={feedbackTarget} />
               </div>
             )}
             {tab === "source" && (

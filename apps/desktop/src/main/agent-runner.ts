@@ -923,12 +923,11 @@ function startStreamAgent(
     "bypassPermissions",
     ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
     ...(denyPath ? ["--settings", denyPath] : []),
-    // 구조화(stream-json) 채팅 UI 는 AskUserQuestion 의 선택지 응답을 받을 경로가 없어 자동 "건너뜀"
-    // 처리돼 흐름이 끊긴다(질문 카드가 떠도 답을 못 보냄). 비활성화하면 에이전트가 일반 텍스트로
-    // 물어보고 사용자가 채팅으로 답하면 sendStreamTurn 으로 이어진다 — harness 가 이미 지원하는 경로.
+    // 구조화(stream-json) 채팅 UI 는 AskUserQuestion 의 선택지 응답이나 SendUserFile 의 파일 payload
+    // 전달 경로가 없다. 둘 다 비활성화해 텍스트 턴/로컬 파일 경로(Read) 흐름으로 수렴시킨다.
     // (PTY 터미널 모드는 대화형 선택이 실제로 동작하므로 거기선 막지 않는다.) 변동인자라 뒤에 플래그를 둔다.
     "--disallowed-tools",
-    "AskUserQuestion",
+    "AskUserQuestion,SendUserFile",
     "--append-system-prompt",
     appendSystemPromptValue(cwd, args.brand),
   ];
