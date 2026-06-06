@@ -19,7 +19,7 @@ const TOOLS = [
   {
     name: "get_brand",
     description:
-      "Brand metadata: no args lists brands, `{ brand }` returns imports/colors/fonts/icons. (Mockup work: collect visual refs first.)",
+      "Brand metadata: no args lists brands, `{ brand }` returns summary/imports/colors/counts, `{ brand, assetKind }` returns one detailed asset list. (Mockup work: collect visual refs first.)",
     inputSchema: {
       type: "object",
       properties: {
@@ -27,6 +27,12 @@ const TOOLS = [
           type: "string",
           description:
             "Optional brand slug (e.g. 'trost', 'nudge-eap', 'geniet', 'cashwalk-biz'). Omit to list all.",
+        },
+        assetKind: {
+          type: "string",
+          enum: ["logos", "snsLogos", "profileImages", "illustrations", "marathonEvents"],
+          description:
+            "[brand lookup only] Fetch one detailed asset list. Omit for summary-only brand metadata.",
         },
       },
       additionalProperties: false,
@@ -547,6 +553,13 @@ const SETUP_STEP_VALUES = [
   "external-starter",
   "full",
 ] as const;
+const BRAND_ASSET_KIND_VALUES = [
+  "logos",
+  "snsLogos",
+  "profileImages",
+  "illustrations",
+  "marathonEvents",
+] as const;
 const DEV_SERVER_ACTION_VALUES = ["start", "stop"] as const;
 const GUIDE_TARGET_VALUES = ["react", "html"] as const;
 const GUIDE_VIEW_VALUES = ["examples", "rules", "full"] as const;
@@ -627,7 +640,10 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
   const args = readArgs(toolName, rawArgs);
   switch (toolName) {
     case "get_brand":
-      return { brand: optionalString(args, "brand", toolName) };
+      return {
+        brand: optionalString(args, "brand", toolName),
+        assetKind: optionalEnum(args, "assetKind", BRAND_ASSET_KIND_VALUES, toolName),
+      };
     case "find_component":
       return {
         query: optionalString(args, "query", toolName),

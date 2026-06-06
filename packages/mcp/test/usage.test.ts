@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { reportMockupUsage } from "../src/tools/usage";
+import { attachUsageGuardOutcome, reportMockupUsage } from "../src/tools/usage";
 import { parseMockupSource } from "../src/tools/usage/parser";
 import { scanMockupsForBuildEvent, scanPendingMockupReports } from "../src/tools/usage/tracker";
 
@@ -125,6 +125,43 @@ export function Demo() {
     expect(result.usage.dsVersions?.source).toBe("package.json");
     expect(result.usage.dsVersions?.primary).toBe("^1.2.3");
     expect(result.humanReadable).toContain("DS@^1.2.3 (declared)");
+  });
+});
+
+describe("attachUsageGuardOutcome", () => {
+  it("attaches summarized auto-report outcomes instead of full file-level arrays", () => {
+    const result = attachUsageGuardOutcome({ ok: true }, {
+      autoReported: [
+        {
+          filePath: "index.html",
+          ok: true,
+          queued: false,
+          totalDs: 4,
+          dsRatio: 80,
+          adoptionRatio: 80,
+          overallRatio: 80,
+          dsVersion: "1.2.3",
+          reason: "build-event",
+        },
+        {
+          filePath: "other.html",
+          ok: false,
+          queued: true,
+          reason: "build-event",
+        },
+      ],
+      pendingNotReported: [
+        { filePath: "left.html", reason: "build-event", mtimeMs: 1, lastLoggedAtMs: null },
+      ],
+      notice: "reported",
+    } as Parameters<typeof attachUsageGuardOutcome>[1]) as Record<string, unknown>;
+
+    expect(result._autoReportedUsage).toEqual(
+      expect.objectContaining({ count: 2, ok: 1, failed: 1, queued: 1 }),
+    );
+    expect(Array.isArray(result._autoReportedUsage)).toBe(false);
+    expect(result._pendingMockupReports).toEqual({ count: 1 });
+    expect(result._usageGuardNotice).toBe("reported");
   });
 });
 

@@ -253,6 +253,24 @@ interface AutoReportOutcome {
   reason: PendingMockupReport["reason"];
 }
 
+function summarizeAutoReportOutcomes(outcomes: AutoReportOutcome[]) {
+  const ok = outcomes.filter((o) => o.ok).length;
+  const failed = outcomes.length - ok;
+  const queued = outcomes.filter((o) => o.queued).length;
+  const dsSummary = formatDsSummary(outcomes);
+  return {
+    count: outcomes.length,
+    ok,
+    failed,
+    queued,
+    ...(dsSummary ? { dsSummary } : {}),
+    notice:
+      failed > 0
+        ? `usage auto-report ${failed}/${outcomes.length} failed or queued`
+        : `usage auto-report ${ok}/${outcomes.length} ok`,
+  };
+}
+
 async function autoReportPendingMockups(
   cwd: string,
   pending: PendingMockupReport[],
@@ -375,8 +393,10 @@ export function attachUsageGuardOutcome(result: unknown, guard: UsageGuardOutcom
     result && typeof result === "object" && !Array.isArray(result)
       ? { ...(result as Record<string, unknown>) }
       : { result };
-  if (guard.autoReported) base._autoReportedUsage = guard.autoReported;
-  if (guard.pendingNotReported) base._pendingMockupReports = guard.pendingNotReported;
+  if (guard.autoReported) base._autoReportedUsage = summarizeAutoReportOutcomes(guard.autoReported);
+  if (guard.pendingNotReported) {
+    base._pendingMockupReports = { count: guard.pendingNotReported.length };
+  }
   if (guard.notice) base._usageGuardNotice = guard.notice;
   return base;
 }

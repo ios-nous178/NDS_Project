@@ -94,6 +94,13 @@ const HTML_REQUIRED_PACKAGES = [
   "@nudge-design/icons",
 ];
 
+export type BrandAssetKind =
+  | "logos"
+  | "snsLogos"
+  | "profileImages"
+  | "illustrations"
+  | "marathonEvents";
+
 /* ───────────── 패키지 조회 ───────────── */
 
 function getPkg(name: string): PackageMeta | undefined {
@@ -1177,12 +1184,13 @@ export function listBrands() {
 /**
  * get_brand 통합 라우터 — 옛 list_brands + get_brand_info 진입점.
  *  - 인자 없음 → 모든 브랜드 목록
- *  - { brand: '<slug>' } → 해당 브랜드 풀 정보 + 목록도 함께
+ *  - { brand: '<slug>' } → 해당 브랜드 요약 + 목록도 함께
+ *  - { brand: '<slug>', assetKind } → 해당 자산 종류의 상세 파일 목록까지
  */
-export function getBrand(args: { brand?: string }) {
+export function getBrand(args: { brand?: string; assetKind?: BrandAssetKind }) {
   const list = listBrands();
   if (!args.brand) return list;
-  const detail = getBrandInfo({ brand: args.brand });
+  const detail = getBrandInfo({ brand: args.brand, assetKind: args.assetKind });
   // detail 호출에선 전체 브랜드 메타(description·cssImport·version·primaryColor)는 중복 →
   // 다른 브랜드는 slug/name/ready 로스터로만 축약. 한-화면-한-브랜드 룰(note)은 유지.
   return {
@@ -1193,7 +1201,7 @@ export function getBrand(args: { brand?: string }) {
   };
 }
 
-export function getBrandInfo(args: { brand: string }) {
+export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }) {
   const slug = args.brand;
   const brandsList = getManifestBrands();
   const brand = brandsList.find((b) => b.slug === slug);
@@ -1265,114 +1273,135 @@ export function getBrandInfo(args: { brand: string }) {
       })
     : [];
 
-  return {
-    ok: true,
-    ...brand,
-    brandIcons,
-    brandComponents,
-    iconPolicy:
-      brandIcons.length > 0
-        ? `이 브랜드 모드(brand='${slug}') 로 작업 시 위 ${brandIcons.length}개 아이콘은 같은 의미의 공용 아이콘보다 **우선 사용**. 매칭이 없는 의미만 공용 fallback. 공통 컴포넌트(Footer/BottomNav 등) 의 *구현* 에는 brand 분기 로직을 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.`
-        : `이 브랜드 전용 prefix 아이콘은 아직 없습니다. 공용 @nudge-design/icons 의 아이콘을 그대로 사용하세요.`,
-    assets: {
-      logos: {
-        package: "@nudge-design/assets",
-        variants: logoVariants,
-        files: logoFiles,
-        importExample:
+  const fullAssets = {
+    logos: {
+      package: "@nudge-design/assets",
+      variants: logoVariants,
+      files: logoFiles,
+      importExample:
+        logoVariants.length > 0
+          ? `import { getBrandLogo } from "@nudge-design/assets";\nconst logo = getBrandLogo("${slug}"${logoVariants[0] === "default" ? "" : `, "${logoVariants[0]}"`});\n// → { filename, dataUri, mimeType }`
+          : null,
+      publicHosting: {
+        baseDir: "public/brand-logos/",
+        assetBaseUrlAttr: "/brand-logos",
+        note:
           logoVariants.length > 0
-            ? `import { getBrandLogo } from "@nudge-design/assets";\nconst logo = getBrandLogo("${slug}"${logoVariants[0] === "default" ? "" : `, "${logoVariants[0]}"`});\n// → { filename, dataUri, mimeType }`
-            : null,
-        publicHosting: {
-          baseDir: "public/brand-logos/",
-          assetBaseUrlAttr: "/brand-logos",
-          note:
-            logoVariants.length > 0
-              ? `외부 소비자가 헤더/푸터(<BrandHeader brand='${slug}' /> 또는 <nds-brand-header brand='${slug}'>)를 사용할 때 위 'files' 의 파일들을 public/brand-logos/ 에 호스팅. asset-base-url 미지정 시 default '/brand-logos' 사용.`
-              : `'${slug}' 브랜드는 아직 로고 자산이 등록되지 않았습니다. packages/assets/src/brand-logos/ 에 추가 후 brand-logo-metadata.ts 에 등록.`,
-        },
+            ? `외부 소비자가 헤더/푸터(<BrandHeader brand='${slug}' /> 또는 <nds-brand-header brand='${slug}'>)를 사용할 때 위 'files' 의 파일들을 public/brand-logos/ 에 호스팅. asset-base-url 미지정 시 default '/brand-logos' 사용.`
+            : `'${slug}' 브랜드는 아직 로고 자산이 등록되지 않았습니다. packages/assets/src/brand-logos/ 에 추가 후 brand-logo-metadata.ts 에 등록.`,
       },
-      snsLogos: snsForBrand
+    },
+    snsLogos: snsForBrand
+      ? {
+          package: "@nudge-design/assets",
+          services: snsForBrand,
+          files: snsFiles,
+          importExample: `import { getSnsLogo } from "@nudge-design/assets";\nconst logo = getSnsLogo("naver", "main");\n// → { filename, dataUri, mimeType, figmaNodeId }`,
+          publicHosting: {
+            baseDir: "public/sns-logos/",
+            note: `Runmile 라이브러리 (Figma 107:1045) 의 SNS 로그인 버튼 자산. 4 서비스(naver/kakao/google/apple) × 색상(white/main/black) 조합. 외부 소비자가 SNS 로그인 화면을 만들 때 \`public/sns-logos/{service}-{color}.svg\` 로 호스팅하거나, dataUri 로 직접 인라인.`,
+          },
+        }
+      : null,
+    profileImages:
+      slug === "runmile"
         ? {
             package: "@nudge-design/assets",
-            services: snsForBrand,
-            files: snsFiles,
-            importExample: `import { getSnsLogo } from "@nudge-design/assets";\nconst logo = getSnsLogo("naver", "main");\n// → { filename, dataUri, mimeType, figmaNodeId }`,
+            ids: PROFILE_IMAGE_IDS,
+            files: PROFILE_IMAGE_IDS.map((id) => ({
+              id,
+              filename: PROFILE_IMAGE_METADATA[id].filename,
+              mimeType: PROFILE_IMAGE_METADATA[id].mimeType,
+              figmaNodeId: PROFILE_IMAGE_METADATA[id].figmaNodeId,
+              source: PROFILE_IMAGE_METADATA[id].source,
+              inlineRef: `@nudge-design/assets/files/${PROFILE_IMAGE_METADATA[id].filename}`,
+              publicPath: `/${PROFILE_IMAGE_METADATA[id].filename}`,
+            })),
+            importExample: `// ① 단일 HTML 목업 (build_singlefile_html 가 base64 inline) — 이게 기본:\n<img src="@nudge-design/assets/files/profile-images/profile-1.jpg" width="24" height="24" alt="" />\n// ② React/호스팅 앱: import { getProfileImage } from "@nudge-design/assets"; getProfileImage(1) → { filename, mimeType, figmaNodeId, source }, public/ 호스팅 후 /profile-images/profile-1.jpg`,
             publicHosting: {
-              baseDir: "public/sns-logos/",
-              note: `Runmile 라이브러리 (Figma 107:1045) 의 SNS 로그인 버튼 자산. 4 서비스(naver/kakao/google/apple) × 색상(white/main/black) 조합. 외부 소비자가 SNS 로그인 화면을 만들 때 \`public/sns-logos/{service}-{color}.svg\` 로 호스팅하거나, dataUri 로 직접 인라인.`,
+              baseDir: "public/profile-images/",
+              note: `Runmile 라이브러리 21:136 의 사용자 프로필 기본 이미지 12종. id 1/2/9~12 는 단일 raster export (원본 사진/일러스트, ~600KB max), id 3~8 은 Figma screenshot flatten 24×24 (~1.5KB). **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 규약을 <img src> 에 그대로 써라 — build_singlefile_html 이 base64 로 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/profile-images/…)는 단일 파일에 안 박혀 깨진다(호스팅 앱 전용).** dataUri 메타데이터는 미제공(inline 은 빌드가 처리).`,
             },
           }
         : null,
-      profileImages:
-        slug === "runmile"
-          ? {
-              package: "@nudge-design/assets",
-              ids: PROFILE_IMAGE_IDS,
-              files: PROFILE_IMAGE_IDS.map((id) => ({
-                id,
-                filename: PROFILE_IMAGE_METADATA[id].filename,
-                mimeType: PROFILE_IMAGE_METADATA[id].mimeType,
-                figmaNodeId: PROFILE_IMAGE_METADATA[id].figmaNodeId,
-                source: PROFILE_IMAGE_METADATA[id].source,
-                // 단일 HTML 목업: 이 규약으로 <img src> 에 쓰면 build_singlefile_html 이 base64 inline.
-                inlineRef: `@nudge-design/assets/files/${PROFILE_IMAGE_METADATA[id].filename}`,
-                // 호스팅 앱(외부 public/ 서빙)일 때만.
-                publicPath: `/${PROFILE_IMAGE_METADATA[id].filename}`,
-              })),
-              importExample: `// ① 단일 HTML 목업 (build_singlefile_html 가 base64 inline) — 이게 기본:\n<img src="@nudge-design/assets/files/profile-images/profile-1.jpg" width="24" height="24" alt="" />\n// ② React/호스팅 앱: import { getProfileImage } from "@nudge-design/assets"; getProfileImage(1) → { filename, mimeType, figmaNodeId, source }, public/ 호스팅 후 /profile-images/profile-1.jpg`,
-              publicHosting: {
-                baseDir: "public/profile-images/",
-                note: `Runmile 라이브러리 21:136 의 사용자 프로필 기본 이미지 12종. id 1/2/9~12 는 단일 raster export (원본 사진/일러스트, ~600KB max), id 3~8 은 Figma screenshot flatten 24×24 (~1.5KB). **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 규약을 <img src> 에 그대로 써라 — build_singlefile_html 이 base64 로 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/profile-images/…)는 단일 파일에 안 박혀 깨진다(호스팅 앱 전용).** dataUri 메타데이터는 미제공(inline 은 빌드가 처리).`,
-              },
-            }
-          : null,
-      illustrations:
-        slug === "runmile"
-          ? {
-              package: "@nudge-design/assets",
-              ids: ILLUSTRATION_IDS,
-              files: ILLUSTRATION_IDS.map((id) => ({
-                id,
-                filename: ILLUSTRATION_METADATA[id].filename,
-                mimeType: ILLUSTRATION_METADATA[id].mimeType,
-                figmaNodeId: ILLUSTRATION_METADATA[id].figmaNodeId,
-                figmaNodeName: ILLUSTRATION_METADATA[id].figmaNodeName,
-                inlineRef: `@nudge-design/assets/files/${ILLUSTRATION_METADATA[id].filename}`,
-                publicPath: `/${ILLUSTRATION_METADATA[id].filename}`,
-              })),
-              importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline) — 기본:\n<img src="@nudge-design/assets/files/illustrations/page-error.png" width="140" height="140" alt="" />\n// ② React/호스팅 앱: import { getIllustration } from "@nudge-design/assets"; getIllustration("page-error") → { filename, mimeType, figmaNodeId, figmaNodeName }`,
-              publicHosting: {
-                baseDir: "public/illustrations/",
-                note: `Runmile 라이브러리 55:955 의 빈 상태 / 에러 / 알람 일러스트 10종 (140×140 PNG). Figma screenshot flatten 으로 export. **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 를 <img src> 에 쓰면 build_singlefile_html 이 base64 inline. 상대경로(/illustrations/…)는 단일 파일에서 깨짐(호스팅 앱 전용).**`,
-              },
-            }
-          : null,
-      marathonEvents:
-        slug === "runmile"
-          ? {
-              package: "@nudge-design/assets",
-              ids: MARATHON_EVENT_IDS,
-              files: MARATHON_EVENT_IDS.map((id) => ({
-                id,
-                filename: MARATHON_EVENT_METADATA[id].filename,
-                filename3x: MARATHON_EVENT_METADATA[id].filename3x,
-                mimeType: MARATHON_EVENT_METADATA[id].mimeType,
-                figmaNodeId: MARATHON_EVENT_METADATA[id].figmaNodeId,
-                figmaNodeName: MARATHON_EVENT_METADATA[id].figmaNodeName,
-                inlineRef: `@nudge-design/assets/files/${MARATHON_EVENT_METADATA[id].filename}`,
-                inlineRef3x: `@nudge-design/assets/files/${MARATHON_EVENT_METADATA[id].filename3x}`,
-                publicPath: `/${MARATHON_EVENT_METADATA[id].filename}`,
-                publicPath3x: `/${MARATHON_EVENT_METADATA[id].filename3x}`,
-              })),
-              importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline, srcset 토큰까지 치환) — 기본:\n<img src="@nudge-design/assets/files/marathon-events/hangang-night-run.png"\n     srcset="@nudge-design/assets/files/marathon-events/hangang-night-run.png 2x, @nudge-design/assets/files/marathon-events/hangang-night-run@3x.png 3x"\n     width="180" height="180" alt="한강나이트런" />\n// ② React/호스팅 앱: import { getMarathonEvent } from "@nudge-design/assets"; getMarathonEvent("hangang-night-run") → { filename, filename3x, mimeType, figmaNodeName }, public/ 호스팅 후 /marathon-events/…`,
-              publicHosting: {
-                baseDir: "public/marathon-events/",
-                note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종. base 360×360 (2x) + @3x 540×540 (3x), srcset 으로 180×180 슬롯에 렌더. **단일 HTML 목업이면 inlineRef / inlineRef3x(@nudge-design/assets/files/…) 를 src·srcset 에 그대로 써라 — build_singlefile_html 이 두 토큰 모두 base64 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/marathon-events/…)는 단일 파일에서 깨짐(호스팅 앱 전용).** 댕댕이레이스/개나리런/포켓몬런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
-              },
-            }
-          : null,
-    },
+    illustrations:
+      slug === "runmile"
+        ? {
+            package: "@nudge-design/assets",
+            ids: ILLUSTRATION_IDS,
+            files: ILLUSTRATION_IDS.map((id) => ({
+              id,
+              filename: ILLUSTRATION_METADATA[id].filename,
+              mimeType: ILLUSTRATION_METADATA[id].mimeType,
+              figmaNodeId: ILLUSTRATION_METADATA[id].figmaNodeId,
+              figmaNodeName: ILLUSTRATION_METADATA[id].figmaNodeName,
+              inlineRef: `@nudge-design/assets/files/${ILLUSTRATION_METADATA[id].filename}`,
+              publicPath: `/${ILLUSTRATION_METADATA[id].filename}`,
+            })),
+            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline) — 기본:\n<img src="@nudge-design/assets/files/illustrations/page-error.png" width="140" height="140" alt="" />\n// ② React/호스팅 앱: import { getIllustration } from "@nudge-design/assets"; getIllustration("page-error") → { filename, mimeType, figmaNodeId, figmaNodeName }`,
+            publicHosting: {
+              baseDir: "public/illustrations/",
+              note: `Runmile 라이브러리 55:955 의 빈 상태 / 에러 / 알람 일러스트 10종 (140×140 PNG). Figma screenshot flatten 으로 export. **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 를 <img src> 에 쓰면 build_singlefile_html 이 base64 inline. 상대경로(/illustrations/…)는 단일 파일에서 깨짐(호스팅 앱 전용).**`,
+            },
+          }
+        : null,
+    marathonEvents:
+      slug === "runmile"
+        ? {
+            package: "@nudge-design/assets",
+            ids: MARATHON_EVENT_IDS,
+            files: MARATHON_EVENT_IDS.map((id) => ({
+              id,
+              filename: MARATHON_EVENT_METADATA[id].filename,
+              filename3x: MARATHON_EVENT_METADATA[id].filename3x,
+              mimeType: MARATHON_EVENT_METADATA[id].mimeType,
+              figmaNodeId: MARATHON_EVENT_METADATA[id].figmaNodeId,
+              figmaNodeName: MARATHON_EVENT_METADATA[id].figmaNodeName,
+              inlineRef: `@nudge-design/assets/files/${MARATHON_EVENT_METADATA[id].filename}`,
+              inlineRef3x: `@nudge-design/assets/files/${MARATHON_EVENT_METADATA[id].filename3x}`,
+              publicPath: `/${MARATHON_EVENT_METADATA[id].filename}`,
+              publicPath3x: `/${MARATHON_EVENT_METADATA[id].filename3x}`,
+            })),
+            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline, srcset 토큰까지 치환) — 기본:\n<img src="@nudge-design/assets/files/marathon-events/hangang-night-run.png"\n     srcset="@nudge-design/assets/files/marathon-events/hangang-night-run.png 2x, @nudge-design/assets/files/marathon-events/hangang-night-run@3x.png 3x"\n     width="180" height="180" alt="한강나이트런" />\n// ② React/호스팅 앱: import { getMarathonEvent } from "@nudge-design/assets"; getMarathonEvent("hangang-night-run") → { filename, filename3x, mimeType, figmaNodeName }, public/ 호스팅 후 /marathon-events/…`,
+            publicHosting: {
+              baseDir: "public/marathon-events/",
+              note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종. base 360×360 (2x) + @3x 540×540 (3x), srcset 으로 180×180 슬롯에 렌더. **단일 HTML 목업이면 inlineRef / inlineRef3x(@nudge-design/assets/files/…) 를 src·srcset 에 그대로 써라 — build_singlefile_html 이 두 토큰 모두 base64 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/marathon-events/…)는 단일 파일에서 깨짐(호스팅 앱 전용).** 댕댕이레이스/개나리런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
+            },
+          }
+        : null,
+  };
+
+  const assetSummary = {
+    logos: { count: logoFiles.length, variants: logoVariants },
+    snsLogos: snsForBrand ? { count: snsFiles.length, services: snsForBrand } : null,
+    profileImages: slug === "runmile" ? { count: PROFILE_IMAGE_IDS.length } : null,
+    illustrations: slug === "runmile" ? { count: ILLUSTRATION_IDS.length } : null,
+    marathonEvents: slug === "runmile" ? { count: MARATHON_EVENT_IDS.length } : null,
+  };
+  const selectedAsset = args.assetKind ? fullAssets[args.assetKind] : undefined;
+
+  return {
+    ok: true,
+    ...brand,
+    brandIconCount: brandIcons.length,
+    brandComponentCount: brandComponents.length,
+    brandIconLookup:
+      brandIcons.length > 0 ? `find_icon({ query: '${brandComponentPrefix}' })` : undefined,
+    brandComponentLookup:
+      brandComponents.length > 0 ? `find_component({ query: '${componentPrefix}' })` : undefined,
+    iconPolicy:
+      brandIcons.length > 0
+        ? `이 브랜드 모드(brand='${slug}') 에는 브랜드 전용 아이콘 ${brandIcons.length}개가 있습니다. 실제 SVG 삽입 전 ${`find_icon({ query: '${brandComponentPrefix}' })`} 로 후보를 확인하고 공용 아이콘보다 우선 사용하세요.`
+        : `이 브랜드 전용 prefix 아이콘은 아직 없습니다. 공용 @nudge-design/icons 의 아이콘을 그대로 사용하세요.`,
+    assetSummary,
+    _assetHint:
+      "Default get_brand detail is summary-only. Pass assetKind:'logos'|'snsLogos'|'profileImages'|'illustrations'|'marathonEvents' to fetch one detailed asset list.",
+    ...(args.assetKind
+      ? {
+          assetKind: args.assetKind,
+          assets: { [args.assetKind]: selectedAsset ?? null },
+        }
+      : {}),
     usage: {
       cssImport: brand.cssImport
         ? `import "${brand.cssImport}";`
@@ -1640,8 +1669,16 @@ export function getSetup(args: {
         intent: resolveEffectiveIntent(args.intent, args.brand),
         brand: canonicalBrandSlug(args.brand) ?? null,
         files: {
-          claudeMd: { ok: claudeMd.ok === true, filePath: claudeMd.filePath, error: claudeMd.error },
-          agentsMd: { ok: agentsMd.ok === true, filePath: agentsMd.filePath, error: agentsMd.error },
+          claudeMd: {
+            ok: claudeMd.ok === true,
+            filePath: claudeMd.filePath,
+            error: claudeMd.error,
+          },
+          agentsMd: {
+            ok: agentsMd.ok === true,
+            filePath: agentsMd.filePath,
+            error: agentsMd.error,
+          },
         },
         mcpConfig: getMcpConfigSetup(),
         validationLoop: getValidationLoopSummary(),

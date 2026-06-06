@@ -182,12 +182,25 @@ describe("getGuide view (response slimming)", () => {
 
   it("view threads through batched topics[] and shrinks the whole batch", () => {
     const topics = ["component:Button", "component:Input", "pattern:cashwalk-biz-form-layout"];
-    const full = getGuide({ topics, target: "html" });
+    const full = getGuide({ topics, target: "html", view: "full" });
     const slim = getGuide({ topics, target: "html", view: "examples" });
     expect(size(slim)).toBeLessThan(size(full) / 2);
     const button = (slim.topics as Record<string, Record<string, unknown>>)["component:Button"];
     expect(button.examples).toBeDefined();
     expect(button.metrics).toBeUndefined();
+  });
+
+  it("batched topics default to a slim view unless view='full' is explicit", () => {
+    const topics = ["component:Button", "component:Input", "pattern:cashwalk-biz-form-layout"];
+    const slimDefault = getGuide({ topics, target: "html" });
+    const full = getGuide({ topics, target: "html", view: "full" });
+
+    expect(size(slimDefault)).toBeLessThan(size(full) / 2);
+    const button = (slimDefault.topics as Record<string, Record<string, unknown>>)[
+      "component:Button"
+    ];
+    expect(button.examples).toBeDefined();
+    expect(button.colorMatrix).toBeUndefined();
   });
 
   it("batch dedups identical boilerplate (_principlesDigest) into _shared", () => {

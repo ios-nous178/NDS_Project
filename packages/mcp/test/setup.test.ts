@@ -112,6 +112,41 @@ describe("setup brand registry", () => {
       expect(Object.keys(b).sort()).toEqual(["name", "ready", "slug"]);
     }
   });
+
+  it("keeps get_brand detail summary-only by default and fetches one assetKind on demand", () => {
+    configureWithManifest({
+      brands: [
+        {
+          slug: "runmile",
+          name: "Runmile",
+          description: "Runmile brand",
+          version: "0.1.10",
+          designMdRelPath: "DESIGN.md",
+          cssImport: "@nudge-design/tokens/css/runmile",
+          jsExport: "@nudge-design/tokens/brands",
+          ready: true,
+          primaryColor: null,
+          keyColors: {},
+          fontFamilies: [],
+        },
+      ],
+    });
+
+    const summary = getBrand({ brand: "runmile" }) as { detail: Record<string, unknown> };
+    expect(summary.detail.brandIconCount).toBeTypeOf("number");
+    expect(summary.detail.brandComponentCount).toBeTypeOf("number");
+    expect(summary.detail.assetSummary).toBeTypeOf("object");
+    expect(summary.detail.assets).toBeUndefined();
+    expect(summary.detail.brandIcons).toBeUndefined();
+    expect(summary.detail.brandComponents).toBeUndefined();
+
+    const detailed = getBrand({ brand: "runmile", assetKind: "illustrations" }) as {
+      detail: { assets?: { illustrations?: { files?: unknown[] } }; assetKind?: string };
+    };
+    expect(detailed.detail.assetKind).toBe("illustrations");
+    expect(detailed.detail.assets?.illustrations?.files?.length).toBeGreaterThan(0);
+    expect(JSON.stringify(detailed.detail.assets)).not.toContain("marathon-events");
+  });
 });
 
 describe("html setup visual reference guardrail", () => {
@@ -232,7 +267,11 @@ describe("get_setup external-starter (도구 중립 온보딩)", () => {
     configureWithManifest({ packages: htmlSetupPackages() });
     const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-starter-"));
 
-    const result = getSetup({ step: "external-starter", cwd, intent: "html" }) as ExternalStarterResult;
+    const result = getSetup({
+      step: "external-starter",
+      cwd,
+      intent: "html",
+    }) as ExternalStarterResult;
 
     expect(result.ok).toBe(true);
     expect(fs.existsSync(path.join(cwd, "CLAUDE.md"))).toBe(true);
@@ -274,7 +313,11 @@ describe("get_setup external-starter (도구 중립 온보딩)", () => {
     const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-starter-exists-"));
     fs.writeFileSync(path.join(cwd, "CLAUDE.md"), "기존 내용", "utf-8");
 
-    const result = getSetup({ step: "external-starter", cwd, intent: "html" }) as ExternalStarterResult;
+    const result = getSetup({
+      step: "external-starter",
+      cwd,
+      intent: "html",
+    }) as ExternalStarterResult;
 
     expect(result.ok).toBe(false);
     expect(result.files.claudeMd.ok).toBe(false);
