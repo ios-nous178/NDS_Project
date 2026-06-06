@@ -302,42 +302,6 @@
     "notes": "한 화면에 1개. StickyBottom CTA와 동시 사용 금지."
   },
   {
-    "name": "BreathingGuide",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "호흡 가이드 애니메이션. 원형 확장/축소로 들숨/멈춤/날숨/쉼 시각화. phases 자유 정의",
-    "storybookTitle": "Components/BreathingGuide",
-    "docsPath": "/components/breathing-guide",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "명상 시작, 이완 가이드, 위기 상황 진정, 잠들기 호흡",
-    "notes": "박스 호흡 기본, 4-7-8 등 커스텀 가능. cycles + onComplete로 종료."
-  },
-  {
-    "name": "StreakCard",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "연속 기록 트래커 카드. streak 숫자 + 최근 일자 점 그리드, today 자동 표시",
-    "storybookTitle": "Components/StreakCard",
-    "docsPath": "/components/streak-card",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "감정 기록 streak, 명상/복약 챌린지, 습관 트래킹",
-    "notes": "최근 7~14일 점 그리드. 30일+ 트래킹은 EmotionHeatmap 검토."
-  },
-  {
-    "name": "EmotionHeatmap",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "월간 감정 히트맵. 5단계 색 강도, 빈 셀(기록 없음), 셀 클릭 진입",
-    "storybookTitle": "Components/EmotionHeatmap",
-    "docsPath": "/components/emotion-heatmap",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "기분 월간 리포트, 스트레스 트렌드, 30일 챌린지 시각화",
-    "notes": "GitHub 잔디형 카드. 30일+ 트래킹용 — 그 미만은 StreakCard."
-  },
-  {
     "name": "AppointmentCard",
     "category": "도메인",
     "status": "implemented",
@@ -348,18 +312,6 @@
     "figmaNodeId": "",
     "usageSummary": "내 예약 리스트, 홈 다음 일정, 상담사 페이지 다음 세션",
     "notes": "CounselorCard(상담사 선택용)와 분리. 잡힌 일정 표시 전용."
-  },
-  {
-    "name": "JournalEntry",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "감정 일기 카드. 무드 + 날짜 + 제목 + 본문 클램프 + 태그 + 썸네일",
-    "storybookTitle": "Components/JournalEntry",
-    "docsPath": "/components/journal-entry",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "감정 일기 리스트, 자유 메모, 챌린지 회고",
-    "notes": "본문 3줄 클램프 기본. title 생략 가능."
   },
   {
     "name": "ChatComposer",
@@ -455,7 +407,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "일기 미리보기, 콘텐츠 설명, 약관 미리보기, 리뷰",
-    "notes": "line-height 기반 측정. JournalEntry는 자체 클램프 있음 — 중첩 금지."
+    "notes": "line-height 기반 측정. 자체 클램프가 있는 카드 안에서는 중첩 금지."
   },
   {
     "name": "PageHeader",
@@ -468,18 +420,6 @@
     "figmaNodeId": "",
     "usageSummary": "디테일 화면 상단, 리스트 화면 헤더, 탭형 페이지",
     "notes": "AppBar(글로벌 네비)와 분리. onBack 지정 시 ← 자동 노출."
-  },
-  {
-    "name": "StatCard",
-    "category": "일반",
-    "status": "implemented",
-    "description": "메트릭 강조 카드. 라벨 + 큰 숫자/단위 + delta + Sparkline 슬롯",
-    "storybookTitle": "Components/StatCard",
-    "docsPath": "/components/stat-card",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "대시보드 메트릭 그리드, 리포트 요약 카드, 디테일 핵심 지표",
-    "notes": "trend(up/down/flat)에 따라 delta 배지 색 자동. trailing 슬롯에 Sparkline 결합."
   },
   {
     "name": "QuickActionGrid",
@@ -588,42 +528,6 @@
     "figmaNodeId": "",
     "usageSummary": "상담사 리스트 상태, 아바타 우하단 점, 그룹 채팅 참가자",
     "notes": "online은 자동 펄스 — 별도 강조 효과 추가 X."
-  },
-  {
-    "name": "ReactionPicker",
-    "category": "일반",
-    "status": "implemented",
-    "description": "이모지 반응 칩 그룹. 다중/단일 선택, 카운트 표시 옵션",
-    "storybookTitle": "Components/ReactionPicker",
-    "docsPath": "/components/reaction-picker",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "콘텐츠 좋아요/공감, 일기 반응, 챌린지 게시판",
-    "notes": "value는 항상 string[] (single도 길이 0~1)."
-  },
-  {
-    "name": "GreetingHeader",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "홈 인삿말 카드. `{name}`님 자동, greeting/question/trailing/actions 슬롯",
-    "storybookTitle": "Components/GreetingHeader",
-    "docsPath": "/components/greeting-header",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "홈 화면 최상단, 마이페이지 인삿말",
-    "notes": "name에 '님' 직접 X. greeting은 외부에서 시간대 결정."
-  },
-  {
-    "name": "TipCard",
-    "category": "피드백",
-    "status": "implemented",
-    "description": "한 줄 인사이트/팁 카드. 4 tone, 라벨/제목/설명/액션, 카드 클릭",
-    "storybookTitle": "Components/TipCard",
-    "docsPath": "/components/tip-card",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "오늘의 팁, 새 콘텐츠 안내, 챌린지 완료 격려",
-    "notes": "위기는 CrisisCallout, 페이지 띠는 Banner. TipCard는 콘텐츠 안 카드."
   },
   {
     "name": "PinPad",
@@ -749,27 +653,15 @@
     "name": "Stepper",
     "category": "레이아웃",
     "status": "implemented",
-    "description": "단계 인디케이터. numbered/dots variant, 현재 단계 강조",
+    "description": "단계 인디케이터. variant=numbered/dots(원형) + bar(가로 막대 + 스텝번호/제목 2단 라벨, 구 StepProgress 흡수), 현재 단계 강조",
     "storybookTitle": "Components/Stepper",
     "docsPath": "/components/stepper",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "회원가입 진행도, 검사·결제 흐름, 챌린지 단계 표시",
-    "notes": "값 조절은 NumberStepper. Stepper는 단계 시각화 전용. 실제 폼 관리는 MultiStepForm."
-  },
-  {
-    "name": "StepProgress",
-    "category": "레이아웃",
-    "status": "implemented",
-    "description": "가로 막대형 단계 진행 표시(Stepper). 각 스텝은 막대 + 라벨(스텝번호 + 제목). Done/Current/Upcoming 상태",
-    "storybookTitle": "Components/StepProgress",
-    "docsPath": "/components/step-progress",
     "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
     "figmaNodeId": "3782:20029",
     "figmaSynced": true,
     "figmaSyncedAt": "2026-06-05",
-    "usageSummary": "캐시워크 for Business 어드민 다단계 흐름(캠페인 → 광고 → 소재 만들기) 진행 표시",
-    "notes": "원형 번호형은 Stepper. StepProgress는 가로 막대 + 스텝번호/제목 2단 라벨 전용. 캐포비 어드민 화면 기준."
+    "usageSummary": "회원가입 진행도, 검사·결제 흐름, 챌린지 단계 표시, 캐시워크 for Business 어드민 다단계 흐름(variant=bar)",
+    "notes": "값 조절은 NumberStepper. Stepper는 단계 시각화 전용(폼 관리는 MultiStepForm). variant=bar 가 구 StepProgress(캐포비 어드민 가로 막대)를 대체."
   },
   {
     "name": "WaveformPlayer",
@@ -782,18 +674,6 @@
     "figmaNodeId": "",
     "usageSummary": "채팅 음성 메시지, 짧은 음성 메모 재생",
     "notes": "AudioPlayer(트랙바)와 분리된 컴팩트 메시지 형태."
-  },
-  {
-    "name": "MentionInput",
-    "category": "입력",
-    "status": "implemented",
-    "description": "@멘션 자동완성 입력. 트리거 커스텀(#도 가능), 키보드 ↓↑/Enter/Esc",
-    "storybookTitle": "Components/MentionInput",
-    "docsPath": "/components/mention-input",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "단체 상담 댓글, 그룹 채팅, 노트/일기 멘션, 해시태그 자동완성",
-    "notes": "users는 전체 목록(컴포넌트가 자동 필터). 텍스트는 plain — ID 보존은 외부 파싱."
   },
   {
     "name": "Confetti",
@@ -829,7 +709,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "콘텐츠/일기/댓글 단일 좋아요, 게시물 푸터",
-    "notes": "ReactionPicker(여러 이모지)와 분리. controlled."
+    "notes": "단일 좋아요 토글 전용. controlled."
   },
   {
     "name": "ShareSheet",
@@ -1052,18 +932,6 @@
     "notes": "TimePicker(자유 입력) / Calendar(날짜만)와 분리. 정해진 슬롯 리스트 전용."
   },
   {
-    "name": "MoodSelector",
-    "category": "입력",
-    "status": "implemented",
-    "description": "5단계 기분 선택. 표정 이모지 + 라벨, 모바일 탭 우선 사이즈",
-    "storybookTitle": "Components/MoodSelector",
-    "docsPath": "/components/mood-selector",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "감정 일기 첫 화면, 데일리 체크인, 챌린지 시작 무드",
-    "notes": "EAP 앱 첫 화면 핵심 인터랙션. JournalEntry 작성 진입 트리거."
-  },
-  {
     "name": "LikertScale",
     "category": "입력",
     "status": "implemented",
@@ -1121,7 +989,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "홈/마이페이지 프로모션, 앱 설치 유도, 운영 공지",
-    "notes": "CrisisCallout(위기 안내·dismiss 불가)과 분리. 정적 안내·홍보용."
+    "notes": "닫기 가능한 정적 안내·홍보용 띠."
   },
   {
     "name": "NoticeAlert",
@@ -1291,18 +1159,6 @@
     "notes": "price 는 number(KRW). 숫자 폰트는 Lato(할인 Medium 18 / 가격 Black 18). badge·soldOut 동시 노출 금지."
   },
   {
-    "name": "CouponCard",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "쿠폰 카드. 좌측 할인율 + 우측 정보, 점선 + 반원 컷아웃 자동",
-    "storybookTitle": "Components/CouponCard",
-    "docsPath": "/components/coupon-card",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "쿠폰함, EAP 무료 코드, 챌린지 보상권",
-    "notes": "discount/suffix 분리. disabled=true면 버튼 자동 변경."
-  },
-  {
     "name": "OrderSummaryCard",
     "category": "도메인",
     "status": "implemented",
@@ -1315,18 +1171,6 @@
     "notes": "할인은 emphasis='discount'. EAP 무료는 emphasis='info'."
   },
   {
-    "name": "CardVisual",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "신용/체크카드 비주얼. 8개 브랜드 톤, 마지막 4자리만 표시",
-    "storybookTitle": "Components/CardVisual",
-    "docsPath": "/components/card-visual",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "카드 등록, 결제 수단 관리, 결제 카드 선택",
-    "notes": "전체 번호 넣어도 자동으로 마지막 4자리만. 보안 위해 의도적."
-  },
-  {
     "name": "AssessmentResultCard",
     "category": "도메인",
     "status": "implemented",
@@ -1337,18 +1181,6 @@
     "figmaNodeId": "",
     "usageSummary": "PHQ-9 / GAD-7 / 스트레스 검사 결과 페이지, 검사 히스토리 카드",
     "notes": "ScoreGauge(반원 게이지)와 페어 가능. level → 색상 자동."
-  },
-  {
-    "name": "CrisisCallout",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "위기 신호 시 1393/119 등 즉시 연결 핫라인 박스. dismiss 불가능",
-    "storybookTitle": "Components/CrisisCallout",
-    "docsPath": "/components/crisis-callout",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "자살·자해 신호 검사 결과, 위기 상황 가이드 페이지",
-    "notes": "Banner(닫기 가능 홍보)와 분리. 안전 책임 영역이라 사용자가 닫지 못한다."
   },
   {
     "name": "CounselorCard",
@@ -1399,18 +1231,6 @@
     "notes": "CircularProgress(단순 비율)와 분리. 임상 단계 색이 의미를 가진다."
   },
   {
-    "name": "MedicationItem",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "복용약 한 줄 표시. 이름 / 용량 / 복용 시기 / 체크 액션",
-    "storybookTitle": "Components/MedicationItem",
-    "docsPath": "/components/medication-item",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "복약 리스트, 복용 알림 카드, 처방 이력",
-    "notes": "AttachmentItem(첨부 파일 표시)과 형태 비슷하지만 의약품 도메인 전용."
-  },
-  {
     "name": "AudioPlayer",
     "category": "도메인",
     "status": "implemented",
@@ -1456,7 +1276,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "콘텐츠 썸네일, 일기 사진, 상담사 사진, 카드 비주얼 슬롯",
-    "notes": "ProductCard·JournalEntry 등 카드 컴포넌트의 이미지 슬롯에 권장."
+    "notes": "ProductCard 등 카드 컴포넌트의 이미지 슬롯에 권장."
   },
   {
     "name": "ContentViewer",
@@ -1565,6 +1385,18 @@
     "figmaNodeId": "3001:50785",
     "usageSummary": "캐포비 admin 의 지역 선택 모달 좌측 트리. value 는 선택된 leaf 값만 담고, '선택한 지역' 요약은 SelectedItemsPanel + RegionRow 로 조립.",
     "notes": "value=선택 leaf 값(부모는 파생). indeterminate Checkbox 확장과 한 쌍. 평면 다중선택은 MultiSelect, 즉시 단일선택은 Select. 검색 시 매치 부모 자동 펼침. 스크롤 제한은 --nds-checkbox-tree-max-height."
+  },
+  {
+    "name": "MultiSelect",
+    "category": "입력",
+    "status": "implemented",
+    "description": "검색 + 전체선택/해제 + 체크박스 리스트 + 취소/적용 푸터를 가진 다중 선택 필터 드롭다운. 일반 Select(단일·즉시 반영)와 달리 트리거를 눌러 패널을 열고, 패널 안 초안(draft)을 편집한 뒤 '적용' 시에만 onValueChange 반영.",
+    "storybookTitle": "Components/MultiSelect",
+    "docsPath": "/components/multi-select",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-28554",
+    "figmaNodeId": "3001:28554",
+    "usageSummary": "리포트 상단 '광고 다중 선택' 등 평면 다중 필터. 계층 선택은 CheckboxTree, 즉시 단일 선택은 Select.",
+    "notes": "draft→적용 패턴(취소/바깥클릭=초안 폐기). 전체선택/해제는 현재 검색 필터된 항목 기준. 닫힌 드롭다운 형태라 인라인 항상-펼침인 ConsentChecklist/CheckboxTree 와 형태가 다름."
   },
   {
     "name": "GenietAppBar",
