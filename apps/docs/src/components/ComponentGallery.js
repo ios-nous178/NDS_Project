@@ -19,6 +19,11 @@ function toStoryId(title) {
     .replace(/^-+|-+$/g, "");
 }
 
+function getDocsLink(entry) {
+  if (entry.docsPath) return entry.docsPath;
+  return `/storybook/?path=/docs/${toStoryId(entry.storybookTitle)}--docs`;
+}
+
 export default function ComponentGallery({ storybookBaseUrl = "/storybook" }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("전체");
@@ -94,7 +99,7 @@ export default function ComponentGallery({ storybookBaseUrl = "/storybook" }) {
           </h3>
           <div className={styles.grid}>
             {entries.map((entry) => (
-              <Link key={entry.name} to={entry.docsPath} className={styles.card}>
+              <Link key={entry.name} to={getDocsLink(entry)} className={styles.card}>
                 <div className={styles.cardHead}>
                   <span className={styles.cardName}>{entry.name}</span>
                   {entry.figmaSynced && <span className={styles.syncedTag}>Figma Synced</span>}
