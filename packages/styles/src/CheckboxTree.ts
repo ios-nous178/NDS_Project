@@ -127,7 +127,7 @@ export const checkboxTreeStyles = `
     border: 1.5px solid ${cv.borderRole.normal};
     border-radius: ${radius.sm}px;
     background: ${cv.surface.default};
-    color: ${cv.surface.default};
+    color: ${cv.button.textDefault};
     transition: background-color ${transition.default}, border-color ${transition.default};
   }
   :where(.${CT_CHECK_CLASS}[data-state="checked"]),

@@ -24,7 +24,7 @@ const LB_COUNT_CLASS = `${LB_CLASS}__count`;
 export type LikeButtonSize = "sm" | "md" | "lg";
 
 const sizeConfig: Record<LikeButtonSize, { icon: number; count: number; gap: number }> = {
-  sm: { icon: 18, count: 13, gap: 4 },
+  sm: { icon: 16, count: 13, gap: 6 },
   md: { icon: 22, count: 14, gap: 6 },
   lg: { icon: 28, count: 15, gap: 6 },
 };

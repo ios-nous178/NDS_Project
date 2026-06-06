@@ -5,6 +5,7 @@ const TG_CLASS = "nds-toggle";
 const TG_TRACK_CLASS = `${TG_CLASS}__track`;
 const TG_THUMB_CLASS = `${TG_CLASS}__thumb`;
 const TG_LABEL_CLASS = `${TG_CLASS}__label`;
+const TG_INNER_LABELS_CLASS = `${TG_CLASS}__inner-labels`;
 const TG_INNER_LABEL_CLASS = `${TG_CLASS}__inner-label`;
 
 export const toggleStyles = `
@@ -96,7 +97,9 @@ export const toggleStyles = `
     background: var(--nds-toggle-track-active-bg, ${cv.iconRole.statusSuccess});
   }
 
-  /* ─── 라벨 내장(status) 변형 — 트랙 안 on/off 텍스트 + 큰 썸. 폭 auto ─── */
+  /* ─── 라벨 내장(status) 변형 — 트랙 안 on/off 텍스트 + 큰 썸 ─── */
+  /* 폭은 긴 라벨 기준 고정 — on/off 두 라벨을 한 grid 셀에 겹쳐 셀이 max(label) 폭을 잡으므로
+     상태(노출/미노출)가 바뀌어도 트랙 width 가 동일하다(회귀: width:auto 라 라벨 길이대로 폭 변동). */
   :where(.${TG_TRACK_CLASS}[data-labeled="true"]) {
     width: auto;
     min-width: 64px;
@@ -107,13 +110,33 @@ export const toggleStyles = `
     padding: 0 var(--nds-toggle-thumb-offset, 2.5px);
   }
 
-  /* labeled: 썸은 absolute/travel 대신 flex item (좌우 위치는 DOM 순서로 결정) */
+  /* labeled: 썸은 absolute/travel 대신 flex item (좌우 위치는 order 로 결정) */
   :where(.${TG_TRACK_CLASS}[data-labeled="true"]) .${TG_THUMB_CLASS},
   :where(.${TG_TRACK_CLASS}[data-labeled="true"][data-checked="true"]) .${TG_THUMB_CLASS} {
     position: static;
     transform: none;
     flex-shrink: 0;
   }
+
+  /* on/off 라벨 셀 — 두 라벨을 같은 grid 셀에 겹쳐 셀 폭 = 긴 라벨 기준(고정폭의 핵심) */
+  :where(.${TG_INNER_LABELS_CLASS}) {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+  }
+  :where(.${TG_INNER_LABELS_CLASS}) .${TG_INNER_LABEL_CLASS} {
+    grid-area: 1 / 1;
+  }
+  /* 활성 라벨만 표시 — 비활성은 자리(폭)만 차지해 고정폭 유지 */
+  :where(.${TG_TRACK_CLASS}[data-checked="true"]) .${TG_INNER_LABEL_CLASS}[data-state="off"],
+  :where(.${TG_TRACK_CLASS}[data-checked="false"]) .${TG_INNER_LABEL_CLASS}[data-state="on"] {
+    visibility: hidden;
+  }
+  /* 라벨셀 ↔ 썸 좌우 배치 (체크=라벨 좌·썸 우 / 해제=썸 좌·라벨 우) */
+  :where(.${TG_TRACK_CLASS}[data-labeled="true"][data-checked="true"]) .${TG_INNER_LABELS_CLASS} { order: 0; }
+  :where(.${TG_TRACK_CLASS}[data-labeled="true"][data-checked="true"]) .${TG_THUMB_CLASS} { order: 1; }
+  :where(.${TG_TRACK_CLASS}[data-labeled="true"][data-checked="false"]) .${TG_THUMB_CLASS} { order: 0; }
+  :where(.${TG_TRACK_CLASS}[data-labeled="true"][data-checked="false"]) .${TG_INNER_LABELS_CLASS} { order: 1; }
 
   :where(.${TG_INNER_LABEL_CLASS}) {
     font-size: ${typeScale.body3.fontSize}px;
@@ -126,10 +149,21 @@ export const toggleStyles = `
   }
 
   :where(.${TG_TRACK_CLASS}[data-checked="true"]) .${TG_INNER_LABEL_CLASS} {
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
   }
 
   :where(.${TG_CLASS}[data-disabled="true"] .${TG_INNER_LABEL_CLASS}) {
     color: ${cv.textRole.disabled};
+  }
+
+  /* ─── 캐포비(cashwalk-biz) — 기본 토글 ON 색은 브랜드 노랑이 아니라 초록.
+     admin on/off 스위치 관습(켜짐=초록). status-success 초록을 ON 트랙 색으로 쓰고,
+     초록 트랙 위 inner-label 은 흰색(검정 button.textDefault 가 초록에서 안 보임).
+     disabled 는 회색 유지(:not([data-disabled])). data-brand cascade — 타 브랜드 무영향. ─── */
+  :where([data-brand="cashwalk-biz"] .${TG_CLASS}:not([data-disabled="true"]) .${TG_TRACK_CLASS}[data-checked="true"]) {
+    background: var(--nds-toggle-track-active-bg, ${cv.iconRole.statusSuccess});
+  }
+  :where([data-brand="cashwalk-biz"] .${TG_TRACK_CLASS}[data-checked="true"]) .${TG_INNER_LABEL_CLASS} {
+    color: ${cv.textRole.inverse};
   }
 `;

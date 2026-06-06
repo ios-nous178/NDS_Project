@@ -364,12 +364,11 @@ function isLowerCaseTag(name: string): boolean {
  * `nds-button` → `Button`, `nds-icon-button` → `IconButton`.
  * 모르는 tag (NDS prefix 가 아닌 다른 kebab custom element) 는 null.
  *
- * 일부 React 명명이 단순 PascalCase 변환과 다른 경우 (FAB 약어, SegmentedControl 풀네임)
+ * 일부 React 명명이 단순 PascalCase 변환과 다른 경우 (FAB 약어 등)
  * 는 NDS_TAG_TO_REACT_ALIAS 로 보정. 카탈로그 (scripts/emit-manifest.mjs) 와 동일한 alias 셋.
  */
 const NDS_TAG_TO_REACT_ALIAS: Record<string, string> = {
   "nds-fab": "FAB",
-  "nds-segmented": "SegmentedControl",
 };
 export function ndsTagToComponentName(tag: string): string | null {
   if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];

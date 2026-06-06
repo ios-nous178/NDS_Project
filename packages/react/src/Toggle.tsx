@@ -6,6 +6,7 @@ const TG_CLASS = "nds-toggle";
 const TG_TRACK_CLASS = `${TG_CLASS}__track`;
 const TG_THUMB_CLASS = `${TG_CLASS}__thumb`;
 const TG_LABEL_CLASS = `${TG_CLASS}__label`;
+const TG_INNER_LABELS_CLASS = `${TG_CLASS}__inner-labels`;
 const TG_INNER_LABEL_CLASS = `${TG_CLASS}__inner-label`;
 
 /* ─── Sizes ─── */
@@ -75,7 +76,6 @@ export const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
     const generatedId = useId();
     const inputId = idProp ?? generatedId;
     const labeled = onLabel != null || offLabel != null;
-    const innerLabel = checked ? onLabel : offLabel;
     const s = sizeConfig[size];
     const thumbTravel = s.trackW - s.thumbSize - s.thumbOffset * 2;
 
@@ -127,17 +127,19 @@ export const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
           className={TG_TRACK_CLASS}
           style={trackStyle}
         >
-          {labeled && checked && innerLabel != null && (
-            <span data-slot="inner-label" className={TG_INNER_LABEL_CLASS}>
-              {innerLabel}
+          {/* on/off 두 라벨을 한 셀에 스택 — 셀 폭=긴 라벨 기준이라 상태 무관 고정폭.
+              활성 라벨만 보이고, 라벨셀↔썸 좌우 위치는 CSS order(track[data-checked])가 결정. */}
+          {labeled && (
+            <span data-slot="inner-labels" className={TG_INNER_LABELS_CLASS}>
+              <span data-slot="inner-label" data-state="on" className={TG_INNER_LABEL_CLASS}>
+                {onLabel}
+              </span>
+              <span data-slot="inner-label" data-state="off" className={TG_INNER_LABEL_CLASS}>
+                {offLabel}
+              </span>
             </span>
           )}
           <span data-slot="thumb" className={TG_THUMB_CLASS} />
-          {labeled && !checked && innerLabel != null && (
-            <span data-slot="inner-label" className={TG_INNER_LABEL_CLASS}>
-              {innerLabel}
-            </span>
-          )}
         </span>
         {label && (
           <span data-slot="label" className={TG_LABEL_CLASS}>

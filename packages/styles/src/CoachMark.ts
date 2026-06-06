@@ -138,7 +138,7 @@ export const cmStyles = `
     border-radius: ${radius.md}px;
     border: none;
     background: ${cv.surface.brand};
-    color: #fff;
+    color: ${cv.button.textDefault};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;

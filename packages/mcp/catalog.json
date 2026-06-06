@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-06T12:44:24.791Z",
+  "generatedAt": "2026-06-06T17:55:35.210Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -27,9 +27,7 @@
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0"
       },
-      "cssExports": [
-        "@nudge-design/react/styles.css"
-      ]
+      "cssExports": ["@nudge-design/react/styles.css"]
     },
     {
       "name": "@nudge-design/icons",
@@ -56,9 +54,7 @@
         "@nudge-design/tokens": "workspace:*"
       },
       "peerDependencies": {},
-      "cssExports": [
-        "@nudge-design/styles/styles.css"
-      ]
+      "cssExports": ["@nudge-design/styles/styles.css"]
     },
     {
       "name": "@nudge-design/html",
@@ -70,9 +66,7 @@
         "@nudge-design/tokens": "workspace:*"
       },
       "peerDependencies": {},
-      "cssExports": [
-        "@nudge-design/html/styles.css"
-      ]
+      "cssExports": ["@nudge-design/html/styles.css"]
     }
   ],
   "components": [
@@ -83,10 +77,7 @@
           "name": "type",
           "optional": true,
           "type": "AccordionType",
-          "allowedValues": [
-            "single",
-            "multiple"
-          ]
+          "allowedValues": ["single", "multiple"]
         },
         {
           "name": "value",
@@ -111,11 +102,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Accordion.d.ts",
       "htmlTag": "nds-accordion",
-      "htmlObservedAttrs": [
-        "type",
-        "value",
-        "base-id"
-      ]
+      "htmlObservedAttrs": ["type", "value", "base-id"]
     },
     {
       "name": "ActionChip",
@@ -133,10 +120,7 @@
       ],
       "dtsRelPath": "packages/react/dist/ActionChip.d.ts",
       "htmlTag": "nds-action-chip",
-      "htmlObservedAttrs": [
-        "label",
-        "disabled"
-      ]
+      "htmlObservedAttrs": ["label", "disabled"]
     },
     {
       "name": "AddButton",
@@ -164,12 +148,7 @@
       ],
       "dtsRelPath": "packages/react/dist/AddButton.d.ts",
       "htmlTag": "nds-add-button",
-      "htmlObservedAttrs": [
-        "label",
-        "error",
-        "full-width",
-        "disabled"
-      ]
+      "htmlObservedAttrs": ["label", "error", "full-width", "disabled"]
     },
     {
       "name": "AddressSearch",
@@ -352,12 +331,7 @@
           "name": "mode",
           "optional": true,
           "type": "AppointmentMode",
-          "allowedValues": [
-            "video",
-            "phone",
-            "chat",
-            "in-person"
-          ]
+          "allowedValues": ["video", "phone", "chat", "in-person"]
         },
         {
           "name": "location",
@@ -368,13 +342,7 @@
           "name": "status",
           "optional": true,
           "type": "AppointmentStatus",
-          "allowedValues": [
-            "scheduled",
-            "confirmed",
-            "in-progress",
-            "completed",
-            "canceled"
-          ]
+          "allowedValues": ["scheduled", "confirmed", "in-progress", "completed", "canceled"]
         },
         {
           "name": "actions",
@@ -407,11 +375,7 @@
           "name": "shape",
           "optional": true,
           "type": "AssetShape",
-          "allowedValues": [
-            "square",
-            "rounded",
-            "circle"
-          ]
+          "allowedValues": ["square", "rounded", "circle"]
         },
         {
           "name": "size",
@@ -427,11 +391,7 @@
           "name": "scaleType",
           "optional": true,
           "type": "AssetScaleType",
-          "allowedValues": [
-            "cover",
-            "contain",
-            "fill"
-          ]
+          "allowedValues": ["cover", "contain", "fill"]
         },
         {
           "name": "overlap",
@@ -463,25 +423,13 @@
           "name": "fileType",
           "optional": true,
           "type": "AttachmentFileType",
-          "allowedValues": [
-            "pdf",
-            "image",
-            "video",
-            "audio",
-            "document",
-            "archive",
-            "other"
-          ]
+          "allowedValues": ["pdf", "image", "video", "audio", "document", "archive", "other"]
         },
         {
           "name": "status",
           "optional": true,
           "type": "AttachmentStatus",
-          "allowedValues": [
-            "uploading",
-            "done",
-            "error"
-          ]
+          "allowedValues": ["uploading", "done", "error"]
         },
         {
           "name": "progress",
@@ -577,13 +525,7 @@
       ],
       "dtsRelPath": "packages/react/dist/AudioPlayer.d.ts",
       "htmlTag": "nds-audio-player",
-      "htmlObservedAttrs": [
-        "title",
-        "subtitle",
-        "playing",
-        "current-time",
-        "duration"
-      ]
+      "htmlObservedAttrs": ["title", "subtitle", "playing", "current-time", "duration"]
     },
     {
       "name": "Autocomplete",
@@ -700,13 +642,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Avatar.d.ts",
       "htmlTag": "nds-avatar",
-      "htmlObservedAttrs": [
-        "src",
-        "alt",
-        "name",
-        "size",
-        "fallback"
-      ]
+      "htmlObservedAttrs": ["src", "alt", "name", "size", "fallback"]
     },
     {
       "name": "AvatarGroup",
@@ -735,21 +671,9 @@
       "dtsRelPath": "packages/react/dist/AvatarGroup.d.ts",
       "htmlTag": "nds-avatar-group",
       "htmlAttrs": {
-        "size": [
-          "xs",
-          "sm",
-          "md",
-          "lg",
-          "xl"
-        ]
+        "size": ["xs", "sm", "md", "lg", "xl"]
       },
-      "htmlObservedAttrs": [
-        "items",
-        "max",
-        "size",
-        "overlap",
-        "aria-label"
-      ]
+      "htmlObservedAttrs": ["items", "max", "size", "overlap", "aria-label"]
     },
     {
       "name": "Badge",
@@ -758,34 +682,19 @@
           "name": "variant",
           "optional": true,
           "type": "BadgeVariant",
-          "allowedValues": [
-            "fill",
-            "ghost",
-            "line"
-          ]
+          "allowedValues": ["fill", "ghost", "line"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "BadgeColor",
-          "allowedValues": [
-            "brand",
-            "neutral",
-            "success",
-            "error",
-            "caution",
-            "info"
-          ]
+          "allowedValues": ["brand", "neutral", "success", "error", "caution", "info"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "BadgeSize",
-          "allowedValues": [
-            "sm",
-            "md",
-            "lg"
-          ]
+          "allowedValues": ["sm", "md", "lg"]
         },
         {
           "name": "labelClassName",
@@ -801,30 +710,11 @@
       "dtsRelPath": "packages/react/dist/Badge.d.ts",
       "htmlTag": "nds-badge",
       "htmlAttrs": {
-        "variant": [
-          "fill",
-          "ghost",
-          "line"
-        ],
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ],
-        "color": [
-          "brand",
-          "neutral",
-          "success",
-          "error",
-          "caution",
-          "info"
-        ]
+        "variant": ["fill", "ghost", "line"],
+        "size": ["sm", "md", "lg"],
+        "color": ["brand", "neutral", "success", "error", "caution", "info"]
       },
-      "htmlObservedAttrs": [
-        "variant",
-        "color",
-        "size"
-      ]
+      "htmlObservedAttrs": ["variant", "color", "size"]
     },
     {
       "name": "Badge.guide",
@@ -838,11 +728,7 @@
           "name": "variant",
           "optional": true,
           "type": "BannerVariant",
-          "allowedValues": [
-            "filled",
-            "outlined",
-            "image"
-          ]
+          "allowedValues": ["filled", "outlined", "image"]
         },
         {
           "name": "title",
@@ -1023,12 +909,7 @@
       "props": [],
       "dtsRelPath": "packages/html/src/components/nds-brand-chrome.ts",
       "htmlTag": "nds-brand-chrome",
-      "htmlObservedAttrs": [
-        "brand",
-        "surface",
-        "active-key",
-        "asset-base-url"
-      ]
+      "htmlObservedAttrs": ["brand", "surface", "active-key", "asset-base-url"]
     },
     {
       "name": "Breadcrumb",
@@ -1051,10 +932,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Breadcrumb.d.ts",
       "htmlTag": "nds-breadcrumb",
-      "htmlObservedAttrs": [
-        "items",
-        "separator"
-      ]
+      "htmlObservedAttrs": ["items", "separator"]
     },
     {
       "name": "Button",
@@ -1063,44 +941,25 @@
           "name": "variant",
           "optional": true,
           "type": "ButtonVariant",
-          "allowedValues": [
-            "solid",
-            "outlined",
-            "soft",
-            "outlined-sub"
-          ]
+          "allowedValues": ["solid", "outlined", "soft", "outlined-sub"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "ButtonSize",
-          "allowedValues": [
-            "xl",
-            "lg",
-            "md",
-            "sm",
-            "xs",
-            "field"
-          ]
+          "allowedValues": ["xl", "lg", "md", "sm", "xs", "field"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "ButtonColor",
-          "allowedValues": [
-            "primary",
-            "secondary",
-            "assistive"
-          ]
+          "allowedValues": ["primary", "secondary", "assistive"]
         },
         {
           "name": "shape",
           "optional": true,
           "type": "ButtonShape",
-          "allowedValues": [
-            "default",
-            "pill"
-          ]
+          "allowedValues": ["default", "pill"]
         },
         {
           "name": "fullWidth",
@@ -1131,35 +990,11 @@
       "dtsRelPath": "packages/react/dist/Button.d.ts",
       "htmlTag": "nds-button",
       "htmlAttrs": {
-        "variant": [
-          "solid",
-          "outlined",
-          "soft",
-          "outlined-sub"
-        ],
-        "size": [
-          "xl",
-          "lg",
-          "md",
-          "sm",
-          "xs",
-          "field"
-        ],
-        "color": [
-          "primary",
-          "secondary",
-          "assistive"
-        ]
+        "variant": ["solid", "outlined", "soft", "outlined-sub"],
+        "size": ["xl", "lg", "md", "sm", "xs", "field"],
+        "color": ["primary", "secondary", "assistive"]
       },
-      "htmlObservedAttrs": [
-        "variant",
-        "size",
-        "color",
-        "shape",
-        "disabled",
-        "full-width",
-        "type"
-      ]
+      "htmlObservedAttrs": ["variant", "size", "color", "shape", "disabled", "full-width", "type"]
     },
     {
       "name": "Calendar",
@@ -1283,10 +1118,7 @@
           "name": "variant",
           "optional": true,
           "type": "CardVariant",
-          "allowedValues": [
-            "outlined",
-            "flat"
-          ]
+          "allowedValues": ["outlined", "flat"]
         },
         {
           "name": "clickable",
@@ -1397,15 +1229,9 @@
       "dtsRelPath": "packages/react/dist/Card.d.ts",
       "htmlTag": "nds-card",
       "htmlAttrs": {
-        "variant": [
-          "outlined",
-          "flat"
-        ]
+        "variant": ["outlined", "flat"]
       },
-      "htmlObservedAttrs": [
-        "variant",
-        "clickable"
-      ]
+      "htmlObservedAttrs": ["variant", "clickable"]
     },
     {
       "name": "Carousel",
@@ -1439,11 +1265,7 @@
           "name": "indicator",
           "optional": true,
           "type": "CarouselIndicator",
-          "allowedValues": [
-            "dots",
-            "counter",
-            "none"
-          ]
+          "allowedValues": ["dots", "counter", "none"]
         },
         {
           "name": "showArrows",
@@ -1463,14 +1285,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Carousel.d.ts",
       "htmlTag": "nds-carousel",
-      "htmlObservedAttrs": [
-        "active-index",
-        "autoplay",
-        "indicator",
-        "loop",
-        "gap",
-        "show-arrows"
-      ]
+      "htmlObservedAttrs": ["active-index", "autoplay", "indicator", "loop", "gap", "show-arrows"]
     },
     {
       "name": "Chart",
@@ -1479,11 +1294,7 @@
           "name": "type",
           "optional": true,
           "type": "\"line\" | \"bar\" | \"donut\"",
-          "allowedValues": [
-            "line",
-            "bar",
-            "donut"
-          ]
+          "allowedValues": ["line", "bar", "donut"]
         },
         {
           "name": "labels",
@@ -1518,13 +1329,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Chart.d.ts",
       "htmlTag": "nds-chart",
-      "htmlObservedAttrs": [
-        "type",
-        "data",
-        "y-max",
-        "y-ticks",
-        "no-legend"
-      ]
+      "htmlObservedAttrs": ["type", "data", "y-max", "y-ticks", "no-legend"]
     },
     {
       "name": "ChatBubble",
@@ -1533,10 +1338,7 @@
           "name": "role",
           "optional": false,
           "type": "ChatRole",
-          "allowedValues": [
-            "me",
-            "them"
-          ]
+          "allowedValues": ["me", "them"]
         },
         {
           "name": "children",
@@ -1562,12 +1364,7 @@
           "name": "group",
           "optional": true,
           "type": "ChatGroupPosition",
-          "allowedValues": [
-            "single",
-            "first",
-            "middle",
-            "last"
-          ]
+          "allowedValues": ["single", "first", "middle", "last"]
         },
         {
           "name": "read",
@@ -1577,15 +1374,7 @@
       ],
       "dtsRelPath": "packages/react/dist/ChatBubble.d.ts",
       "htmlTag": "nds-chat-bubble",
-      "htmlObservedAttrs": [
-        "role",
-        "group",
-        "time",
-        "name",
-        "avatar-src",
-        "read",
-        "message"
-      ]
+      "htmlObservedAttrs": ["role", "group", "time", "name", "avatar-src", "read", "message"]
     },
     {
       "name": "ChatComposer",
@@ -1696,13 +1485,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Checkbox.d.ts",
       "htmlTag": "nds-checkbox",
-      "htmlObservedAttrs": [
-        "checked",
-        "indeterminate",
-        "disabled",
-        "label",
-        "input-id"
-      ]
+      "htmlObservedAttrs": ["checked", "indeterminate", "disabled", "label", "input-id"]
     },
     {
       "name": "CheckboxGroup",
@@ -1711,10 +1494,7 @@
           "name": "layout",
           "optional": true,
           "type": "CheckboxGroupLayout",
-          "allowedValues": [
-            "vertical",
-            "horizontal"
-          ]
+          "allowedValues": ["vertical", "horizontal"]
         },
         {
           "name": "gap",
@@ -1853,32 +1633,19 @@
           "name": "variant",
           "optional": true,
           "type": "ChipVariant",
-          "allowedValues": [
-            "fill",
-            "outlined",
-            "ghost"
-          ]
+          "allowedValues": ["fill", "outlined", "ghost"]
         },
         {
           "name": "color",
           "optional": true,
           "type": "ChipColor",
-          "allowedValues": [
-            "brand",
-            "neutral",
-            "success",
-            "error",
-            "caution"
-          ]
+          "allowedValues": ["brand", "neutral", "success", "error", "caution"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "ChipSize",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "selected",
@@ -1909,22 +1676,9 @@
       "dtsRelPath": "packages/react/dist/Chip.d.ts",
       "htmlTag": "nds-chip",
       "htmlAttrs": {
-        "variant": [
-          "fill",
-          "outlined",
-          "ghost"
-        ],
-        "size": [
-          "sm",
-          "md"
-        ],
-        "color": [
-          "brand",
-          "neutral",
-          "success",
-          "error",
-          "caution"
-        ]
+        "variant": ["fill", "outlined", "ghost"],
+        "size": ["sm", "md"],
+        "color": ["brand", "neutral", "success", "error", "caution"]
       },
       "htmlObservedAttrs": [
         "variant",
@@ -2131,14 +1885,7 @@
       ],
       "dtsRelPath": "packages/react/dist/CommentItem.d.ts",
       "htmlTag": "nds-comment-item",
-      "htmlObservedAttrs": [
-        "author",
-        "time",
-        "text",
-        "reply-label",
-        "show-reply",
-        "is-reply"
-      ]
+      "htmlObservedAttrs": ["author", "time", "text", "reply-label", "show-reply", "is-reply"]
     },
     {
       "name": "Confetti",
@@ -2172,21 +1919,9 @@
       "dtsRelPath": "packages/react/dist/Confetti.d.ts",
       "htmlTag": "nds-confetti",
       "htmlAttrs": {
-        "color": [
-          "#FF6B6B",
-          "#FFD166",
-          "#06D6A0",
-          "#118AB2",
-          "#9D4EDD",
-          "#FF9F1C"
-        ]
+        "color": ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"]
       },
-      "htmlObservedAttrs": [
-        "active",
-        "count",
-        "duration",
-        "colors"
-      ]
+      "htmlObservedAttrs": ["active", "count", "duration", "colors"]
     },
     {
       "name": "ContentViewer",
@@ -2214,12 +1949,7 @@
       ],
       "dtsRelPath": "packages/react/dist/ContentViewer.d.ts",
       "htmlTag": "nds-content-viewer",
-      "htmlObservedAttrs": [
-        "html",
-        "no-sanitize",
-        "no-image-lazy",
-        "no-external-blank"
-      ]
+      "htmlObservedAttrs": ["html", "no-sanitize", "no-image-lazy", "no-external-blank"]
     },
     {
       "name": "CounselorCard",
@@ -2301,11 +2031,7 @@
           "name": "format",
           "optional": true,
           "type": "CountdownFormat",
-          "allowedValues": [
-            "mm:ss",
-            "hh:mm:ss",
-            "remaining"
-          ]
+          "allowedValues": ["mm:ss", "hh:mm:ss", "remaining"]
         },
         {
           "name": "onComplete",
@@ -2335,13 +2061,7 @@
       ],
       "dtsRelPath": "packages/react/dist/CountdownTimer.d.ts",
       "htmlTag": "nds-countdown-timer",
-      "htmlObservedAttrs": [
-        "ends-at",
-        "format",
-        "label",
-        "expired-text",
-        "no-urgent"
-      ]
+      "htmlObservedAttrs": ["ends-at", "format", "label", "expired-text", "no-urgent"]
     },
     {
       "name": "DataTable",
@@ -2375,10 +2095,7 @@
           "name": "sortDirection",
           "optional": true,
           "type": "SortDirection",
-          "allowedValues": [
-            "asc",
-            "desc"
-          ]
+          "allowedValues": ["asc", "desc"]
         },
         {
           "name": "onSort",
@@ -2399,19 +2116,13 @@
           "name": "size",
           "optional": true,
           "type": "\"sm\" | \"md\"",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "responsive",
           "optional": true,
           "type": "\"scroll\" | \"cards\"",
-          "allowedValues": [
-            "scroll",
-            "cards"
-          ]
+          "allowedValues": ["scroll", "cards"]
         },
         {
           "name": "getSubRows",
@@ -2601,10 +2312,7 @@
           "name": "orientation",
           "optional": true,
           "type": "DividerOrientation",
-          "allowedValues": [
-            "horizontal",
-            "vertical"
-          ]
+          "allowedValues": ["horizontal", "vertical"]
         },
         {
           "name": "thickness",
@@ -2625,17 +2333,9 @@
       "dtsRelPath": "packages/react/dist/Divider.d.ts",
       "htmlTag": "nds-divider",
       "htmlAttrs": {
-        "orientation": [
-          "horizontal",
-          "vertical"
-        ]
+        "orientation": ["horizontal", "vertical"]
       },
-      "htmlObservedAttrs": [
-        "orientation",
-        "thickness",
-        "spacing",
-        "color"
-      ]
+      "htmlObservedAttrs": ["orientation", "thickness", "spacing", "color"]
     },
     {
       "name": "Drawer",
@@ -2654,20 +2354,13 @@
           "name": "side",
           "optional": true,
           "type": "DrawerSide",
-          "allowedValues": [
-            "left",
-            "right"
-          ]
+          "allowedValues": ["left", "right"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "DrawerSize",
-          "allowedValues": [
-            "sm",
-            "md",
-            "lg"
-          ]
+          "allowedValues": ["sm", "md", "lg"]
         },
         {
           "name": "width",
@@ -2751,10 +2444,7 @@
           "name": "align",
           "optional": true,
           "type": "DropdownAlign",
-          "allowedValues": [
-            "start",
-            "end"
-          ]
+          "allowedValues": ["start", "end"]
         },
         {
           "name": "minWidth",
@@ -2774,23 +2464,14 @@
       ],
       "dtsRelPath": "packages/react/dist/DropdownMenu.d.ts",
       "htmlTag": "nds-dropdown-menu",
-      "htmlObservedAttrs": [
-        "items",
-        "groups",
-        "align",
-        "min-width"
-      ]
+      "htmlObservedAttrs": ["items", "groups", "align", "min-width"]
     },
     {
       "name": "DsHighlight",
       "props": [],
       "dtsRelPath": "packages/html/src/components/nds-ds-highlight.ts",
       "htmlTag": "nds-ds-highlight",
-      "htmlObservedAttrs": [
-        "mode",
-        "hide-toggle",
-        "default-mode"
-      ]
+      "htmlObservedAttrs": ["mode", "hide-toggle", "default-mode"]
     },
     {
       "name": "DSHighlight",
@@ -2804,12 +2485,7 @@
           "name": "defaultMode",
           "optional": true,
           "type": "HighlightMode",
-          "allowedValues": [
-            "off",
-            "area",
-            "component",
-            "all"
-          ]
+          "allowedValues": ["off", "area", "component", "all"]
         }
       ],
       "dtsRelPath": "packages/react/dist/DSHighlight.d.ts"
@@ -2860,13 +2536,7 @@
       ],
       "dtsRelPath": "packages/react/dist/EmptyState.d.ts",
       "htmlTag": "nds-empty-state",
-      "htmlObservedAttrs": [
-        "title",
-        "description",
-        "action",
-        "min-height",
-        "hide-icon"
-      ]
+      "htmlObservedAttrs": ["title", "description", "action", "min-height", "hide-icon"]
     },
     {
       "name": "ExpandableText",
@@ -2909,13 +2579,7 @@
       ],
       "dtsRelPath": "packages/react/dist/ExpandableText.d.ts",
       "htmlTag": "nds-expandable-text",
-      "htmlObservedAttrs": [
-        "lines",
-        "expand-label",
-        "collapse-label",
-        "hide-collapse",
-        "expanded"
-      ]
+      "htmlObservedAttrs": ["lines", "expand-label", "collapse-label", "hide-collapse", "expanded"]
     },
     {
       "name": "FAB",
@@ -2934,11 +2598,7 @@
           "name": "color",
           "optional": true,
           "type": "FABColor",
-          "allowedValues": [
-            "primary",
-            "neutral",
-            "secondary"
-          ]
+          "allowedValues": ["primary", "neutral", "secondary"]
         },
         {
           "name": "size",
@@ -2949,12 +2609,7 @@
           "name": "position",
           "optional": true,
           "type": "FABPosition",
-          "allowedValues": [
-            "bottom-right",
-            "bottom-left",
-            "bottom-center",
-            "static"
-          ]
+          "allowedValues": ["bottom-right", "bottom-left", "bottom-center", "static"]
         },
         {
           "name": "offset",
@@ -2969,15 +2624,7 @@
       ],
       "dtsRelPath": "packages/react/dist/FAB.d.ts",
       "htmlTag": "nds-fab",
-      "htmlObservedAttrs": [
-        "icon",
-        "label",
-        "color",
-        "size",
-        "position",
-        "offset",
-        "disabled"
-      ]
+      "htmlObservedAttrs": ["icon", "label", "color", "size", "position", "offset", "disabled"]
     },
     {
       "name": "FieldActionRow",
@@ -2996,10 +2643,7 @@
           "name": "actionTone",
           "optional": true,
           "type": "\"outline\" | \"solid\"",
-          "allowedValues": [
-            "outline",
-            "solid"
-          ]
+          "allowedValues": ["outline", "solid"]
         },
         {
           "name": "timer",
@@ -3044,13 +2688,7 @@
       ],
       "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts",
       "htmlTag": "nds-field-action-row",
-      "htmlObservedAttrs": [
-        "action-tone",
-        "error",
-        "success",
-        "timer-expired",
-        "helper-text"
-      ]
+      "htmlObservedAttrs": ["action-tone", "error", "success", "timer-expired", "helper-text"]
     },
     {
       "name": "FileUpload",
@@ -3154,13 +2792,7 @@
       ],
       "dtsRelPath": "packages/react/dist/FilterBar.d.ts",
       "htmlTag": "nds-filter-bar",
-      "htmlObservedAttrs": [
-        "value",
-        "options",
-        "single",
-        "show-reset",
-        "reset-label"
-      ]
+      "htmlObservedAttrs": ["value", "options", "single", "show-reset", "reset-label"]
     },
     {
       "name": "FloatingCtaBanner",
@@ -3189,10 +2821,7 @@
           "name": "size",
           "optional": true,
           "type": "FloatingCtaBannerSize",
-          "allowedValues": [
-            "pc",
-            "mobile"
-          ]
+          "allowedValues": ["pc", "mobile"]
         },
         {
           "name": "floating",
@@ -3258,9 +2887,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Footer.d.ts",
       "htmlTag": "nds-footer",
-      "htmlObservedAttrs": [
-        "active-tab"
-      ]
+      "htmlObservedAttrs": ["active-tab"]
     },
     {
       "name": "FormField",
@@ -3309,10 +2936,7 @@
           "name": "labelPosition",
           "optional": true,
           "type": "FormFieldLabelPosition",
-          "allowedValues": [
-            "top",
-            "left"
-          ]
+          "allowedValues": ["top", "left"]
         },
         {
           "name": "labelWidth",
@@ -3323,10 +2947,7 @@
           "name": "density",
           "optional": true,
           "type": "FormFieldDensity",
-          "allowedValues": [
-            "default",
-            "admin"
-          ]
+          "allowedValues": ["default", "admin"]
         },
         {
           "name": "children",
@@ -3357,22 +2978,13 @@
           "name": "variant",
           "optional": true,
           "type": "HeaderVariant",
-          "allowedValues": [
-            "compact",
-            "webview",
-            "transparent",
-            "web"
-          ]
+          "allowedValues": ["compact", "webview", "transparent", "web"]
         },
         {
           "name": "position",
           "optional": true,
           "type": "HeaderPosition",
-          "allowedValues": [
-            "sticky",
-            "fixed",
-            "static"
-          ]
+          "allowedValues": ["sticky", "fixed", "static"]
         },
         {
           "name": "title",
@@ -3407,13 +3019,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Header.d.ts",
       "htmlTag": "nds-header",
-      "htmlObservedAttrs": [
-        "variant",
-        "position",
-        "header-title",
-        "elevated",
-        "max-width"
-      ]
+      "htmlObservedAttrs": ["variant", "position", "header-title", "elevated", "max-width"]
     },
     {
       "name": "IconButton",
@@ -3422,12 +3028,7 @@
           "name": "size",
           "optional": true,
           "type": "IconButtonSize",
-          "allowedValues": [
-            "x-large",
-            "large",
-            "medium",
-            "small"
-          ]
+          "allowedValues": ["x-large", "large", "medium", "small"]
         },
         {
           "name": "icon",
@@ -3443,18 +3044,9 @@
       "dtsRelPath": "packages/react/dist/IconButton.d.ts",
       "htmlTag": "nds-icon-button",
       "htmlAttrs": {
-        "size": [
-          "x-large",
-          "large",
-          "medium",
-          "small"
-        ]
+        "size": ["x-large", "large", "medium", "small"]
       },
-      "htmlObservedAttrs": [
-        "size",
-        "disabled",
-        "type"
-      ]
+      "htmlObservedAttrs": ["size", "disabled", "type"]
     },
     {
       "name": "ImageCropper",
@@ -3468,10 +3060,7 @@
           "name": "shape",
           "optional": true,
           "type": "\"circle\" | \"square\"",
-          "allowedValues": [
-            "circle",
-            "square"
-          ]
+          "allowedValues": ["circle", "square"]
         },
         {
           "name": "size",
@@ -3496,13 +3085,7 @@
       ],
       "dtsRelPath": "packages/react/dist/ImageCropper.d.ts",
       "htmlTag": "nds-image-cropper",
-      "htmlObservedAttrs": [
-        "src",
-        "shape",
-        "size",
-        "output-size",
-        "label"
-      ]
+      "htmlObservedAttrs": ["src", "shape", "size", "output-size", "label"]
     },
     {
       "name": "ImageUpload",
@@ -3511,11 +3094,7 @@
           "name": "state",
           "optional": true,
           "type": "ImageUploadState",
-          "allowedValues": [
-            "empty",
-            "uploaded",
-            "error"
-          ]
+          "allowedValues": ["empty", "uploaded", "error"]
         },
         {
           "name": "imageUrl",
@@ -3679,11 +3258,7 @@
           "name": "size",
           "optional": true,
           "type": "InputSize",
-          "allowedValues": [
-            "default",
-            "field",
-            "compact"
-          ]
+          "allowedValues": ["default", "field", "compact"]
         },
         {
           "name": "slotProps",
@@ -3704,11 +3279,7 @@
       "dtsRelPath": "packages/react/dist/Input.d.ts",
       "htmlTag": "nds-input",
       "htmlAttrs": {
-        "size": [
-          "default",
-          "field",
-          "compact"
-        ]
+        "size": ["default", "field", "compact"]
       },
       "htmlObservedAttrs": [
         "label",
@@ -3733,20 +3304,13 @@
           "name": "gap",
           "optional": true,
           "type": "InputGroupGap",
-          "allowedValues": [
-            "tight",
-            "default",
-            "loose"
-          ]
+          "allowedValues": ["tight", "default", "loose"]
         },
         {
           "name": "align",
           "optional": true,
           "type": "InputGroupAlign",
-          "allowedValues": [
-            "stretch",
-            "start"
-          ]
+          "allowedValues": ["stretch", "start"]
         },
         {
           "name": "children",
@@ -3756,10 +3320,7 @@
       ],
       "dtsRelPath": "packages/react/dist/InputGroup.d.ts",
       "htmlTag": "nds-input-group",
-      "htmlObservedAttrs": [
-        "gap",
-        "align"
-      ]
+      "htmlObservedAttrs": ["gap", "align"]
     },
     {
       "name": "Lightbox",
@@ -3792,11 +3353,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Lightbox.d.ts",
       "htmlTag": "nds-lightbox",
-      "htmlObservedAttrs": [
-        "open",
-        "index",
-        "images"
-      ]
+      "htmlObservedAttrs": ["open", "index", "images"]
     },
     {
       "name": "LikeButton",
@@ -3834,13 +3391,7 @@
       ],
       "dtsRelPath": "packages/react/dist/LikeButton.d.ts",
       "htmlTag": "nds-like-button",
-      "htmlObservedAttrs": [
-        "liked",
-        "count",
-        "size",
-        "hide-count",
-        "active-color"
-      ]
+      "htmlObservedAttrs": ["liked", "count", "size", "hide-count", "active-color"]
     },
     {
       "name": "LikertScale",
@@ -3883,14 +3434,7 @@
       ],
       "dtsRelPath": "packages/react/dist/LikertScale.d.ts",
       "htmlTag": "nds-likert-scale",
-      "htmlObservedAttrs": [
-        "name",
-        "options",
-        "value",
-        "start-label",
-        "end-label",
-        "disabled"
-      ]
+      "htmlObservedAttrs": ["name", "options", "value", "start-label", "end-label", "disabled"]
     },
     {
       "name": "List",
@@ -3899,11 +3443,7 @@
           "name": "variant",
           "optional": true,
           "type": "ListVariant",
-          "allowedValues": [
-            "plain",
-            "card",
-            "divided"
-          ]
+          "allowedValues": ["plain", "card", "divided"]
         },
         {
           "name": "children",
@@ -3914,20 +3454,10 @@
       "dtsRelPath": "packages/react/dist/List.d.ts",
       "htmlTag": "nds-list",
       "htmlAttrs": {
-        "variant": [
-          "plain",
-          "card",
-          "divided"
-        ],
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ]
+        "variant": ["plain", "card", "divided"],
+        "size": ["sm", "md", "lg"]
       },
-      "htmlObservedAttrs": [
-        "variant"
-      ]
+      "htmlObservedAttrs": ["variant"]
     },
     {
       "name": "MediaCard",
@@ -4019,22 +3549,13 @@
           "name": "fit",
           "optional": true,
           "type": "MediaFit",
-          "allowedValues": [
-            "cover",
-            "contain"
-          ]
+          "allowedValues": ["cover", "contain"]
         },
         {
           "name": "rounded",
           "optional": true,
           "type": "MediaRounded",
-          "allowedValues": [
-            "none",
-            "sm",
-            "md",
-            "lg",
-            "pill"
-          ]
+          "allowedValues": ["none", "sm", "md", "lg", "pill"]
         },
         {
           "name": "fallbackSrc",
@@ -4117,10 +3638,7 @@
           "name": "device",
           "optional": true,
           "type": "ModalDevice",
-          "allowedValues": [
-            "pc",
-            "mobile"
-          ]
+          "allowedValues": ["pc", "mobile"]
         },
         {
           "name": "children",
@@ -4220,14 +3738,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Modal.d.ts",
       "htmlTag": "nds-modal",
-      "htmlObservedAttrs": [
-        "open",
-        "title",
-        "closable",
-        "mask",
-        "is-mask-close",
-        "max-width"
-      ]
+      "htmlObservedAttrs": ["open", "title", "closable", "mask", "is-mask-close", "max-width"]
     },
     {
       "name": "MultiSelect",
@@ -4357,11 +3868,7 @@
           "name": "indicator",
           "optional": true,
           "type": "MultiStepFormIndicator",
-          "allowedValues": [
-            "progress",
-            "steps",
-            "none"
-          ]
+          "allowedValues": ["progress", "steps", "none"]
         },
         {
           "name": "nextLabel",
@@ -4403,13 +3910,7 @@
           "name": "variant",
           "optional": true,
           "type": "NoticeAlertVariant",
-          "allowedValues": [
-            "info",
-            "notice",
-            "caution",
-            "success",
-            "error"
-          ]
+          "allowedValues": ["info", "notice", "caution", "success", "error"]
         },
         {
           "name": "message",
@@ -4430,19 +3931,9 @@
       "dtsRelPath": "packages/react/dist/NoticeAlert.d.ts",
       "htmlTag": "nds-notice-alert",
       "htmlAttrs": {
-        "variant": [
-          "info",
-          "notice",
-          "caution",
-          "success",
-          "error"
-        ]
+        "variant": ["info", "notice", "caution", "success", "error"]
       },
-      "htmlObservedAttrs": [
-        "variant",
-        "message",
-        "hide-icon"
-      ]
+      "htmlObservedAttrs": ["variant", "message", "hide-icon"]
     },
     {
       "name": "NotificationItem",
@@ -4451,13 +3942,7 @@
           "name": "kind",
           "optional": true,
           "type": "NotificationKind",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "error",
-            "system"
-          ]
+          "allowedValues": ["info", "success", "warning", "error", "system"]
         },
         {
           "name": "icon",
@@ -4492,14 +3977,7 @@
       ],
       "dtsRelPath": "packages/react/dist/NotificationItem.d.ts",
       "htmlTag": "nds-notification-item",
-      "htmlObservedAttrs": [
-        "kind",
-        "item-title",
-        "description",
-        "time",
-        "unread",
-        "clickable"
-      ]
+      "htmlObservedAttrs": ["kind", "item-title", "description", "time", "unread", "clickable"]
     },
     {
       "name": "NumberStepper",
@@ -4557,16 +4035,7 @@
       ],
       "dtsRelPath": "packages/react/dist/NumberStepper.d.ts",
       "htmlTag": "nds-number-stepper",
-      "htmlObservedAttrs": [
-        "value",
-        "min",
-        "max",
-        "step",
-        "size",
-        "disabled",
-        "editable",
-        "unit"
-      ]
+      "htmlObservedAttrs": ["value", "min", "max", "step", "size", "disabled", "editable", "unit"]
     },
     {
       "name": "OnlineIndicator",
@@ -4575,12 +4044,7 @@
           "name": "status",
           "optional": false,
           "type": "PresenceStatus",
-          "allowedValues": [
-            "online",
-            "away",
-            "busy",
-            "offline"
-          ]
+          "allowedValues": ["online", "away", "busy", "offline"]
         },
         {
           "name": "showLabel",
@@ -4600,13 +4064,7 @@
       ],
       "dtsRelPath": "packages/react/dist/OnlineIndicator.d.ts",
       "htmlTag": "nds-online-indicator",
-      "htmlObservedAttrs": [
-        "status",
-        "show-label",
-        "label",
-        "size",
-        "aria-label"
-      ]
+      "htmlObservedAttrs": ["status", "show-label", "label", "size", "aria-label"]
     },
     {
       "name": "OrderSummaryCard",
@@ -4639,12 +4097,7 @@
       ],
       "dtsRelPath": "packages/react/dist/OrderSummaryCard.d.ts",
       "htmlTag": "nds-order-summary-card",
-      "htmlObservedAttrs": [
-        "title",
-        "rows",
-        "total-label",
-        "total"
-      ]
+      "htmlObservedAttrs": ["title", "rows", "total-label", "total"]
     },
     {
       "name": "OtpInput",
@@ -4687,13 +4140,7 @@
       ],
       "dtsRelPath": "packages/react/dist/OtpInput.d.ts",
       "htmlTag": "nds-otp-input",
-      "htmlObservedAttrs": [
-        "length",
-        "value",
-        "disabled",
-        "error",
-        "auto-focus"
-      ]
+      "htmlObservedAttrs": ["length", "value", "disabled", "error", "auto-focus"]
     },
     {
       "name": "PageHeader",
@@ -4736,12 +4183,7 @@
       ],
       "dtsRelPath": "packages/react/dist/PageHeader.d.ts",
       "htmlTag": "nds-page-header",
-      "htmlObservedAttrs": [
-        "page-title",
-        "subtitle",
-        "show-back",
-        "bordered"
-      ]
+      "htmlObservedAttrs": ["page-title", "subtitle", "show-back", "bordered"]
     },
     {
       "name": "PageSizeSelect",
@@ -4810,12 +4252,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Pagination.d.ts",
       "htmlTag": "nds-pagination",
-      "htmlObservedAttrs": [
-        "page",
-        "total-pages",
-        "siblings",
-        "show-arrows"
-      ]
+      "htmlObservedAttrs": ["page", "total-pages", "siblings", "show-arrows"]
     },
     {
       "name": "PhoneInput",
@@ -4926,14 +4363,7 @@
       ],
       "dtsRelPath": "packages/react/dist/PinPad.d.ts",
       "htmlTag": "nds-pin-pad",
-      "htmlObservedAttrs": [
-        "value",
-        "pin-length",
-        "label",
-        "shuffle",
-        "shuffle-seed",
-        "error"
-      ]
+      "htmlObservedAttrs": ["value", "pin-length", "label", "shuffle", "shuffle-seed", "error"]
     },
     {
       "name": "PopularPosts",
@@ -5115,10 +4545,7 @@
           "name": "discountPosition",
           "optional": true,
           "type": "\"before\" | \"none\"",
-          "allowedValues": [
-            "before",
-            "none"
-          ]
+          "allowedValues": ["before", "none"]
         },
         {
           "name": "formatThousands",
@@ -5151,10 +4578,7 @@
           "name": "size",
           "optional": true,
           "type": "ProductCardSize",
-          "allowedValues": [
-            "sm",
-            "md"
-          ]
+          "allowedValues": ["sm", "md"]
         },
         {
           "name": "thumbnail",
@@ -5291,12 +4715,7 @@
       ],
       "dtsRelPath": "packages/react/dist/ProgressBar.d.ts",
       "htmlTag": "nds-progress-bar",
-      "htmlObservedAttrs": [
-        "value",
-        "max",
-        "size",
-        "color"
-      ]
+      "htmlObservedAttrs": ["value", "max", "size", "color"]
     },
     {
       "name": "PullToRefresh",
@@ -5368,11 +4787,7 @@
       ],
       "dtsRelPath": "packages/react/dist/QuickActionGrid.d.ts",
       "htmlTag": "nds-quick-action-grid",
-      "htmlObservedAttrs": [
-        "actions",
-        "columns",
-        "gap"
-      ]
+      "htmlObservedAttrs": ["actions", "columns", "gap"]
     },
     {
       "name": "Radio",
@@ -5405,12 +4820,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Radio.d.ts",
       "htmlTag": "nds-radio",
-      "htmlObservedAttrs": [
-        "checked",
-        "disabled",
-        "label",
-        "input-id"
-      ]
+      "htmlObservedAttrs": ["checked", "disabled", "label", "input-id"]
     },
     {
       "name": "ReviewCard",
@@ -5510,14 +4920,7 @@
       ],
       "dtsRelPath": "packages/react/dist/ScoreGauge.d.ts",
       "htmlTag": "nds-score-gauge",
-      "htmlObservedAttrs": [
-        "value",
-        "max",
-        "segments",
-        "show-label",
-        "show-legend",
-        "value-suffix"
-      ]
+      "htmlObservedAttrs": ["value", "max", "segments", "show-label", "show-legend", "value-suffix"]
     },
     {
       "name": "SearchInput",
@@ -5546,10 +4949,7 @@
           "name": "variant",
           "optional": true,
           "type": "SearchInputVariant",
-          "allowedValues": [
-            "outlined",
-            "filled"
-          ]
+          "allowedValues": ["outlined", "filled"]
         },
         {
           "name": "clearable",
@@ -5601,72 +5001,6 @@
         "show-search-button",
         "full-width",
         "disabled"
-      ]
-    },
-    {
-      "name": "SegmentedControl",
-      "props": [
-        {
-          "name": "options",
-          "optional": false,
-          "type": "SegmentedOption<T>[]"
-        },
-        {
-          "name": "value",
-          "optional": false,
-          "type": "T"
-        },
-        {
-          "name": "onValueChange",
-          "optional": false,
-          "type": "(value: T) => void"
-        },
-        {
-          "name": "size",
-          "optional": true,
-          "type": "SegmentedControlSize",
-          "allowedValues": [
-            "sm",
-            "md",
-            "lg"
-          ]
-        },
-        {
-          "name": "variant",
-          "optional": true,
-          "type": "SegmentedControlVariant",
-          "allowedValues": [
-            "default",
-            "solid"
-          ]
-        },
-        {
-          "name": "fullWidth",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/SegmentedControl.d.ts",
-      "htmlTag": "nds-segmented",
-      "htmlAttrs": {
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ]
-      },
-      "htmlObservedAttrs": [
-        "value",
-        "size",
-        "variant",
-        "full-width",
-        "disabled",
-        "options"
       ]
     },
     {
@@ -5868,12 +5202,7 @@
       ],
       "dtsRelPath": "packages/react/dist/SelectionButtonGroup.d.ts",
       "htmlTag": "nds-selection-button-group",
-      "htmlObservedAttrs": [
-        "value",
-        "full-width",
-        "disabled",
-        "options"
-      ]
+      "htmlObservedAttrs": ["value", "full-width", "disabled", "options"]
     },
     {
       "name": "SelectionCard",
@@ -5882,10 +5211,7 @@
           "name": "mode",
           "optional": true,
           "type": "SelectionCardMode",
-          "allowedValues": [
-            "single",
-            "multiple"
-          ]
+          "allowedValues": ["single", "multiple"]
         },
         {
           "name": "value",
@@ -5911,10 +5237,7 @@
           "name": "layout",
           "optional": true,
           "type": "SelectionCardLayout",
-          "allowedValues": [
-            "vertical",
-            "horizontal"
-          ]
+          "allowedValues": ["vertical", "horizontal"]
         },
         {
           "name": "name",
@@ -5929,13 +5252,7 @@
       ],
       "dtsRelPath": "packages/react/dist/SelectionCard.d.ts",
       "htmlTag": "nds-selection-card",
-      "htmlObservedAttrs": [
-        "mode",
-        "value",
-        "values",
-        "layout",
-        "name"
-      ]
+      "htmlObservedAttrs": ["mode", "value", "values", "layout", "name"]
     },
     {
       "name": "Sidebar",
@@ -6112,11 +5429,7 @@
           "name": "variant",
           "optional": true,
           "type": "SkeletonVariant",
-          "allowedValues": [
-            "rectangular",
-            "circular",
-            "text"
-          ]
+          "allowedValues": ["rectangular", "circular", "text"]
         },
         {
           "name": "width",
@@ -6137,18 +5450,9 @@
       "dtsRelPath": "packages/react/dist/Skeleton.d.ts",
       "htmlTag": "nds-skeleton",
       "htmlAttrs": {
-        "variant": [
-          "rectangular",
-          "circular",
-          "text"
-        ]
+        "variant": ["rectangular", "circular", "text"]
       },
-      "htmlObservedAttrs": [
-        "variant",
-        "width",
-        "height",
-        "radius"
-      ]
+      "htmlObservedAttrs": ["variant", "width", "height", "radius"]
     },
     {
       "name": "Slider",
@@ -6229,12 +5533,7 @@
           "name": "variant",
           "optional": true,
           "type": "SnackbarVariant",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "error"
-          ]
+          "allowedValues": ["info", "success", "warning", "error"]
         },
         {
           "name": "icon",
@@ -6275,12 +5574,7 @@
       "dtsRelPath": "packages/react/dist/Snackbar.d.ts",
       "htmlTag": "nds-snackbar",
       "htmlAttrs": {
-        "variant": [
-          "info",
-          "success",
-          "warning",
-          "error"
-        ]
+        "variant": ["info", "success", "warning", "error"]
       },
       "htmlObservedAttrs": [
         "variant",
@@ -6297,19 +5591,9 @@
       "dtsRelPath": "packages/html/src/components/nds-snackbar-host.ts",
       "htmlTag": "nds-snackbar-host",
       "htmlAttrs": {
-        "variant": [
-          "info",
-          "success",
-          "warning",
-          "error"
-        ]
+        "variant": ["info", "success", "warning", "error"]
       },
-      "htmlObservedAttrs": [
-        "position",
-        "duration",
-        "max-count",
-        "brand"
-      ]
+      "htmlObservedAttrs": ["position", "duration", "max-count", "brand"]
     },
     {
       "name": "Sparkline",
@@ -6323,11 +5607,7 @@
           "name": "kind",
           "optional": true,
           "type": "SparklineKind",
-          "allowedValues": [
-            "line",
-            "area",
-            "bar"
-          ]
+          "allowedValues": ["line", "area", "bar"]
         },
         {
           "name": "color",
@@ -6399,11 +5679,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Spinner.d.ts",
       "htmlTag": "nds-spinner",
-      "htmlObservedAttrs": [
-        "size",
-        "color",
-        "label"
-      ]
+      "htmlObservedAttrs": ["size", "color", "label"]
     },
     {
       "name": "StarRating",
@@ -6441,14 +5717,7 @@
       ],
       "dtsRelPath": "packages/react/dist/StarRating.d.ts",
       "htmlTag": "nds-star-rating",
-      "htmlObservedAttrs": [
-        "value",
-        "size",
-        "max",
-        "show-value",
-        "disabled",
-        "readonly"
-      ]
+      "htmlObservedAttrs": ["value", "size", "max", "show-value", "disabled", "readonly"]
     },
     {
       "name": "StatsTable",
@@ -6493,27 +5762,15 @@
           "name": "variant",
           "optional": true,
           "type": "StepperVariant",
-          "allowedValues": [
-            "numbered",
-            "dots",
-            "bar"
-          ]
+          "allowedValues": ["numbered", "dots", "bar"]
         }
       ],
       "dtsRelPath": "packages/react/dist/Stepper.d.ts",
       "htmlTag": "nds-stepper",
       "htmlAttrs": {
-        "variant": [
-          "numbered",
-          "dots",
-          "bar"
-        ]
+        "variant": ["numbered", "dots", "bar"]
       },
-      "htmlObservedAttrs": [
-        "steps",
-        "current",
-        "variant"
-      ]
+      "htmlObservedAttrs": ["steps", "current", "variant"]
     },
     {
       "name": "Tabs",
@@ -6537,28 +5794,19 @@
           "name": "variant",
           "optional": true,
           "type": "TabsVariant",
-          "allowedValues": [
-            "line",
-            "chip"
-          ]
+          "allowedValues": ["line", "chip", "segment"]
         },
         {
           "name": "size",
           "optional": true,
           "type": "TabsSize",
-          "allowedValues": [
-            "mobile",
-            "pc"
-          ]
+          "allowedValues": ["mobile", "pc"]
         },
         {
           "name": "tone",
           "optional": true,
           "type": "TabsTone",
-          "allowedValues": [
-            "neutral",
-            "color"
-          ]
+          "allowedValues": ["neutral", "color"]
         },
         {
           "name": "fullWidth",
@@ -6584,27 +5832,11 @@
       "dtsRelPath": "packages/react/dist/Tabs.d.ts",
       "htmlTag": "nds-tabs",
       "htmlAttrs": {
-        "variant": [
-          "line",
-          "chip"
-        ],
-        "size": [
-          "mobile",
-          "pc"
-        ],
-        "tone": [
-          "neutral",
-          "color"
-        ]
+        "variant": ["line", "chip", "segment"],
+        "size": ["mobile", "pc"],
+        "tone": ["neutral", "color"]
       },
-      "htmlObservedAttrs": [
-        "active-key",
-        "variant",
-        "size",
-        "tone",
-        "full-width",
-        "base-id"
-      ]
+      "htmlObservedAttrs": ["active-key", "variant", "size", "tone", "full-width", "base-id"]
     },
     {
       "name": "TagInput",
@@ -6711,12 +5943,7 @@
           "name": "resize",
           "optional": true,
           "type": "\"none\" | \"vertical\" | \"horizontal\" | \"both\"",
-          "allowedValues": [
-            "none",
-            "vertical",
-            "horizontal",
-            "both"
-          ]
+          "allowedValues": ["none", "vertical", "horizontal", "both"]
         },
         {
           "name": "className",
@@ -6747,10 +5974,7 @@
           "name": "size",
           "optional": true,
           "type": "TextButtonSize",
-          "allowedValues": [
-            "large",
-            "medium"
-          ]
+          "allowedValues": ["large", "medium"]
         },
         {
           "name": "leftIcon",
@@ -6765,13 +5989,7 @@
       ],
       "dtsRelPath": "packages/react/dist/TextButton.d.ts",
       "htmlTag": "nds-text-button",
-      "htmlObservedAttrs": [
-        "label",
-        "size",
-        "left-icon",
-        "right-icon",
-        "disabled"
-      ]
+      "htmlObservedAttrs": ["label", "size", "left-icon", "right-icon", "disabled"]
     },
     {
       "name": "Timeline",
@@ -6785,19 +6003,13 @@
           "name": "mode",
           "optional": true,
           "type": "TimelineMode",
-          "allowedValues": [
-            "activity",
-            "tracker"
-          ]
+          "allowedValues": ["activity", "tracker"]
         },
         {
           "name": "direction",
           "optional": true,
           "type": "TimelineDirection",
-          "allowedValues": [
-            "vertical",
-            "horizontal"
-          ]
+          "allowedValues": ["vertical", "horizontal"]
         },
         {
           "name": "current",
@@ -6807,12 +6019,7 @@
       ],
       "dtsRelPath": "packages/react/dist/Timeline.d.ts",
       "htmlTag": "nds-timeline",
-      "htmlObservedAttrs": [
-        "items",
-        "mode",
-        "direction",
-        "current"
-      ]
+      "htmlObservedAttrs": ["items", "mode", "direction", "current"]
     },
     {
       "name": "TimePicker",
@@ -6940,14 +6147,7 @@
       ],
       "dtsRelPath": "packages/react/dist/TimeSlotPicker.d.ts",
       "htmlTag": "nds-time-slot-picker",
-      "htmlObservedAttrs": [
-        "value",
-        "slots",
-        "groups",
-        "columns",
-        "disabled",
-        "empty-text"
-      ]
+      "htmlObservedAttrs": ["value", "slots", "groups", "columns", "disabled", "empty-text"]
     },
     {
       "name": "TitleGroup",
@@ -6970,11 +6170,7 @@
       ],
       "dtsRelPath": "packages/react/dist/TitleGroup.d.ts",
       "htmlTag": "nds-title-group",
-      "htmlObservedAttrs": [
-        "level",
-        "title",
-        "subtitle"
-      ]
+      "htmlObservedAttrs": ["level", "title", "subtitle"]
     },
     {
       "name": "Toast",
@@ -6983,11 +6179,7 @@
           "name": "position",
           "optional": true,
           "type": "ToastPosition",
-          "allowedValues": [
-            "top",
-            "bottom",
-            "top-right"
-          ]
+          "allowedValues": ["top", "bottom", "top-right"]
         },
         {
           "name": "duration",
@@ -7013,22 +6205,9 @@
       "dtsRelPath": "packages/react/dist/Toast.d.ts",
       "htmlTag": "nds-toast",
       "htmlAttrs": {
-        "variant": [
-          "default",
-          "success",
-          "error",
-          "warning",
-          "info"
-        ]
+        "variant": ["default", "success", "error", "warning", "info"]
       },
-      "htmlObservedAttrs": [
-        "position",
-        "duration",
-        "max-count",
-        "message",
-        "variant",
-        "open"
-      ]
+      "htmlObservedAttrs": ["position", "duration", "max-count", "message", "variant", "open"]
     },
     {
       "name": "Toggle",
@@ -7062,10 +6241,7 @@
           "name": "tone",
           "optional": true,
           "type": "ToggleTone",
-          "allowedValues": [
-            "brand",
-            "success"
-          ]
+          "allowedValues": ["brand", "success"]
         },
         {
           "name": "size",
@@ -7108,12 +6284,7 @@
           "name": "placement",
           "optional": true,
           "type": "TooltipPlacement",
-          "allowedValues": [
-            "top",
-            "bottom",
-            "left",
-            "right"
-          ]
+          "allowedValues": ["top", "bottom", "left", "right"]
         },
         {
           "name": "delay",
@@ -7178,12 +6349,7 @@
       ],
       "dtsRelPath": "packages/react/dist/TrendingKeywords.d.ts",
       "htmlTag": "nds-trending-keywords",
-      "htmlObservedAttrs": [
-        "items",
-        "header-title",
-        "timestamp",
-        "autoplay-delay"
-      ]
+      "htmlObservedAttrs": ["items", "header-title", "timestamp", "autoplay-delay"]
     },
     {
       "name": "UserCard",
@@ -7227,10 +6393,7 @@
           "name": "layout",
           "optional": true,
           "type": "UserCardLayout",
-          "allowedValues": [
-            "row",
-            "stacked"
-          ]
+          "allowedValues": ["row", "stacked"]
         },
         {
           "name": "onClick",
@@ -7240,15 +6403,7 @@
       ],
       "dtsRelPath": "packages/react/dist/UserCard.d.ts",
       "htmlTag": "nds-user-card",
-      "htmlObservedAttrs": [
-        "name",
-        "handle",
-        "bio",
-        "meta",
-        "verified",
-        "layout",
-        "clickable"
-      ]
+      "htmlObservedAttrs": ["name", "handle", "bio", "meta", "verified", "layout", "clickable"]
     },
     {
       "name": "VideoPlayer",
@@ -7325,11 +6480,7 @@
           "name": "state",
           "optional": false,
           "type": "VoiceRecorderState",
-          "allowedValues": [
-            "idle",
-            "recording",
-            "paused"
-          ]
+          "allowedValues": ["idle", "recording", "paused"]
         },
         {
           "name": "onStateChange",
@@ -7364,13 +6515,7 @@
       ],
       "dtsRelPath": "packages/react/dist/VoiceRecorder.d.ts",
       "htmlTag": "nds-voice-recorder",
-      "htmlObservedAttrs": [
-        "state",
-        "seconds",
-        "max-seconds",
-        "idle-label",
-        "recording-label"
-      ]
+      "htmlObservedAttrs": ["state", "seconds", "max-seconds", "idle-label", "recording-label"]
     },
     {
       "name": "VotePoll",
@@ -7413,13 +6558,7 @@
       ],
       "dtsRelPath": "packages/react/dist/VotePoll.d.ts",
       "htmlTag": "nds-vote-poll",
-      "htmlObservedAttrs": [
-        "question",
-        "options",
-        "voted-key",
-        "show-results",
-        "disabled"
-      ]
+      "htmlObservedAttrs": ["question", "options", "voted-key", "show-results", "disabled"]
     },
     {
       "name": "WaveformPlayer",
@@ -7457,14 +6596,7 @@
       ],
       "dtsRelPath": "packages/react/dist/WaveformPlayer.d.ts",
       "htmlTag": "nds-waveform-player",
-      "htmlObservedAttrs": [
-        "src",
-        "peaks",
-        "bars",
-        "color",
-        "duration",
-        "autoplay"
-      ]
+      "htmlObservedAttrs": ["src", "peaks", "bars", "color", "duration", "autoplay"]
     }
   ],
   "icons": [
@@ -9546,9 +8678,7 @@
       "name": "--border-thin",
       "value": "1.5px",
       "group": "border",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-amber-100",
@@ -9688,129 +8818,97 @@
       "name": "--color-brown-100",
       "value": "#F2EAE8",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-200",
       "value": "#DCC9C6",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-300",
       "value": "#B89F9A",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-400",
       "value": "#87706B",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-50",
       "value": "#FAF5F4",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-500",
       "value": "#5E5050",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-600",
       "value": "#4F4242",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-700",
       "value": "#403535",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-800",
       "value": "#312828",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-brown-900",
       "value": "#221B1B",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-cobalt-100",
       "value": "#EDF0FF",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-cobalt-300",
       "value": "#A3B3FF",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-cobalt-50",
       "value": "#F6F7FF",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-cobalt-500",
       "value": "#4968FF",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-common-00",
       "value": "#FFFFFF",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-common-1000",
       "value": "#000000",
       "group": "color",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--color-coolGray-100",
@@ -9919,10 +9017,7 @@
       "name": "--color-gray-100",
       "value": "#F5F5F5",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#F9FAFB"
       }
@@ -9931,10 +9026,7 @@
       "name": "--color-gray-200",
       "value": "#ECECEC",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#F2F4F6"
       }
@@ -9943,10 +9035,7 @@
       "name": "--color-gray-300",
       "value": "#DDDDDD",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#E5E8EB"
       }
@@ -9955,10 +9044,7 @@
       "name": "--color-gray-400",
       "value": "#CCCCCC",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#D1D6DB"
       }
@@ -9967,18 +9053,13 @@
       "name": "--color-gray-50",
       "value": "#FAFAFA",
       "group": "color",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--color-gray-500",
       "value": "#BBBBBB",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#B0B8C1"
       }
@@ -9987,10 +9068,7 @@
       "name": "--color-gray-600",
       "value": "#999999",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#919CAA"
       }
@@ -9999,10 +9077,7 @@
       "name": "--color-gray-700",
       "value": "#777777",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#6B7684"
       }
@@ -10011,10 +9086,7 @@
       "name": "--color-gray-800",
       "value": "#666666",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#4E5968"
       }
@@ -10023,10 +9095,7 @@
       "name": "--color-gray-900",
       "value": "#333333",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#333D4B"
       }
@@ -10171,33 +9240,25 @@
       "name": "--color-mint-100",
       "value": "#ECF8F9",
       "group": "color",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--color-mint-400",
       "value": "#7ED4D6",
       "group": "color",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--color-mint-500",
       "value": "#48C2C5",
       "group": "color",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--color-mint-600",
       "value": "#00A8AC",
       "group": "color",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--color-neutral-00",
@@ -10221,9 +9282,7 @@
       "name": "--color-neutral-150",
       "value": "#F2F2F2",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-neutral-200",
@@ -10298,10 +9357,7 @@
       "name": "--color-neutral-black",
       "value": "#111111",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "#221E1F"
       }
@@ -10310,114 +9366,85 @@
       "name": "--color-neutral-cool-100",
       "value": "#F4F5F7",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-neutral-white",
       "value": "#FFFFFF",
       "group": "color",
-      "brands": [
-        "geniet",
-        "runmile"
-      ]
+      "brands": ["geniet", "runmile"]
     },
     {
       "name": "--color-orange-100",
       "value": "#FFF7F5",
       "group": "color",
-      "brands": [
-        "runmile"
-      ]
+      "brands": ["runmile"]
     },
     {
       "name": "--color-orange-200",
       "value": "#FFF0ED",
       "group": "color",
-      "brands": [
-        "runmile"
-      ]
+      "brands": ["runmile"]
     },
     {
       "name": "--color-orange-300",
       "value": "#FECDC1",
       "group": "color",
-      "brands": [
-        "runmile"
-      ]
+      "brands": ["runmile"]
     },
     {
       "name": "--color-orange-400",
       "value": "#FF805C",
       "group": "color",
-      "brands": [
-        "runmile"
-      ]
+      "brands": ["runmile"]
     },
     {
       "name": "--color-orange-500",
       "value": "#FF5B37",
       "group": "color",
-      "brands": [
-        "runmile"
-      ]
+      "brands": ["runmile"]
     },
     {
       "name": "--color-pink-100",
       "value": "#FEECF0",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-pink-300",
       "value": "#FFC1CE",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-pink-50",
       "value": "#FFF5F7",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-pink-500",
       "value": "#F93E67",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-purple-100",
       "value": "#E6EAFF",
       "group": "color",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--color-purple-400",
       "value": "#7A8EFF",
       "group": "color",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--color-purple-500",
       "value": "#546EFD",
       "group": "color",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--color-red-100",
@@ -10489,18 +9516,13 @@
       "name": "--color-status-blue",
       "value": "#2C91FF",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-status-caution",
       "value": "#FEAF01",
       "group": "color",
-      "brands": [
-        "cashwalk-biz",
-        "geniet"
-      ],
+      "brands": ["cashwalk-biz", "geniet"],
       "brandValues": {
         "geniet": "#FFB700"
       }
@@ -10509,12 +9531,7 @@
       "name": "--color-status-error",
       "value": "#FC3500",
       "group": "color",
-      "brands": [
-        "cashwalk-biz",
-        "geniet",
-        "runmile",
-        "trost"
-      ],
+      "brands": ["cashwalk-biz", "geniet", "runmile", "trost"],
       "brandValues": {
         "geniet": "#FF3258",
         "runmile": "#FF2428",
@@ -10525,19 +9542,13 @@
       "name": "--color-status-green",
       "value": "#00BC78",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-status-info",
       "value": "#007AFF",
       "group": "color",
-      "brands": [
-        "cashwalk-biz",
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["cashwalk-biz", "geniet", "runmile"],
       "brandValues": {
         "geniet": "#1FA3F9"
       }
@@ -10546,18 +9557,13 @@
       "name": "--color-status-orange",
       "value": "#FF9D00",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-status-success",
       "value": "#00CC5B",
       "group": "color",
-      "brands": [
-        "cashwalk-biz",
-        "geniet"
-      ],
+      "brands": ["cashwalk-biz", "geniet"],
       "brandValues": {
         "geniet": "#49CA89"
       }
@@ -10650,25 +9656,19 @@
       "name": "--color-yellow-border",
       "value": "#FFE600",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-yellow-light",
       "value": "#FFF8B8",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--color-yellow-primary",
       "value": "#FFF42E",
       "group": "color",
-      "brands": [
-        "trost"
-      ]
+      "brands": ["trost"]
     },
     {
       "name": "--font-family-default",
@@ -10951,33 +9951,25 @@
       "name": "--layout-content",
       "value": "1395px",
       "group": "layout",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--layout-max-content",
       "value": "1600px",
       "group": "layout",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--layout-page",
       "value": "1920px",
       "group": "layout",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--layout-sidebar",
       "value": "300px",
       "group": "layout",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--line-height-body-1",
@@ -11108,202 +10100,151 @@
       "name": "--nds-action-chip-bg",
       "value": "#ECECEC",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-action-chip-radius",
       "value": "6px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-badge-font-size",
       "value": "12px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-badge-font-weight",
       "value": "500",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-badge-height",
       "value": "24px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-badge-line-height",
       "value": "16px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-badge-padding-x",
       "value": "10px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-badge-padding-y",
       "value": "4px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-badge-radius",
       "value": "5px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-border-color",
       "value": "var(--semantic-border-strong-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-border-width",
       "value": "1.25px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-disabled-bg",
       "value": "var(--semantic-bg-surface-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-disabled-border-color",
       "value": "var(--semantic-border-strong-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-disabled-checked-bg",
       "value": "var(--semantic-fill-brand-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-disabled-checked-border-color",
       "value": "var(--semantic-fill-brand-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-disabled-opacity",
       "value": "0.4",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-radius",
       "value": "2px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-checkbox-size",
       "value": "15px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-chip-selected-text",
       "value": "var(--semantic-text-strong-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-datepicker-font-size",
       "value": "14px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-datepicker-height",
       "value": "40px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-datepicker-line-height",
       "value": "20px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-datepicker-padding-x",
       "value": "var(--semantic-inset-input)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-datepicker-radius",
       "value": "4px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-footer-nav-active-color",
       "value": "var(--semantic-text-brand-default)",
       "group": "nds",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "var(--semantic-icon-strong-default)"
       }
@@ -11312,10 +10253,7 @@
       "name": "--nds-footer-nav-active-label-weight",
       "value": "700",
       "group": "nds",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "500"
       }
@@ -11324,10 +10262,7 @@
       "name": "--nds-footer-nav-inactive-color",
       "value": "var(--semantic-text-muted-default)",
       "group": "nds",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "var(--semantic-icon-muted-default)"
       }
@@ -11336,10 +10271,7 @@
       "name": "--nds-footer-nav-label-font-size",
       "value": "10px",
       "group": "nds",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "12px"
       }
@@ -11348,10 +10280,7 @@
       "name": "--nds-footer-nav-label-line-height",
       "value": "12px",
       "group": "nds",
-      "brands": [
-        "geniet",
-        "runmile"
-      ],
+      "brands": ["geniet", "runmile"],
       "brandValues": {
         "runmile": "16px"
       }
@@ -11360,361 +10289,271 @@
       "name": "--nds-footer-nav-label-weight",
       "value": "500",
       "group": "nds",
-      "brands": [
-        "runmile"
-      ]
+      "brands": ["runmile"]
     },
     {
       "name": "--nds-form-field-label-color",
       "value": "var(--semantic-text-strong-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-input-height",
       "value": "40px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-input-padding-x",
       "value": "var(--semantic-inset-input)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-input-radius",
       "value": "4px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-dropdown-gap",
       "value": "2px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-dropdown-padding",
       "value": "4px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-font-size",
       "value": "14px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-height",
       "value": "40px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-line-height",
       "value": "20px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-option-padding",
       "value": "8px 12px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-option-radius",
       "value": "6px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-option-selected-bg",
       "value": "var(--semantic-bg-section-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-option-selected-color",
       "value": "var(--semantic-text-strong-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-option-selected-weight",
       "value": "500",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-select-radius",
       "value": "4px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-default-bg",
       "value": "var(--semantic-button-bg-disabled)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-default-color",
       "value": "var(--semantic-text-inverse-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-default-weight",
       "value": "700",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-font-size",
       "value": "16px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-line-height",
       "value": "24px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-padding-x",
       "value": "20px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-radius",
       "value": "10px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-selected-bg",
       "value": "var(--semantic-bg-inverse-default)",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-tab-height",
       "value": "52px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-line-default-weight",
       "value": "500",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-line-font-size",
       "value": "16px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-line-indicator-height",
       "value": "2px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-line-line-height",
       "value": "24px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-line-padding-x",
       "value": "16px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-line-tab-height",
       "value": "48px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-textarea-min-height",
       "value": "100px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-textarea-padding-x",
       "value": "12px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-textarea-radius",
       "value": "4px",
       "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-0",
       "value": "0px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-10",
       "value": "10px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-12",
       "value": "12px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-16",
       "value": "16px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-2",
       "value": "2px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-24",
       "value": "24px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-28",
       "value": "28px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-2xl",
       "value": "23px",
       "group": "radius",
-      "brands": [
-        "geniet"
-      ]
+      "brands": ["geniet"]
     },
     {
       "name": "--radius-4",
       "value": "4px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-6",
       "value": "6px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-8",
       "value": "8px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--radius-lg",
@@ -11730,12 +10569,7 @@
       "name": "--radius-none",
       "value": "0px",
       "group": "radius",
-      "brands": [
-        "cashwalk-biz",
-        "geniet",
-        "runmile",
-        "trost"
-      ]
+      "brands": ["cashwalk-biz", "geniet", "runmile", "trost"]
     },
     {
       "name": "--radius-pill",
@@ -11756,11 +10590,7 @@
       "name": "--radius-xl",
       "value": "18px",
       "group": "radius",
-      "brands": [
-        "geniet",
-        "runmile",
-        "trost"
-      ],
+      "brands": ["geniet", "runmile", "trost"],
       "brandValues": {
         "runmile": "16px",
         "trost": "20px"
@@ -11770,11 +10600,7 @@
       "name": "--radius-xs",
       "value": "4px",
       "group": "radius",
-      "brands": [
-        "geniet",
-        "runmile",
-        "trost"
-      ],
+      "brands": ["geniet", "runmile", "trost"],
       "brandValues": {
         "trost": "6px"
       }
@@ -12007,25 +10833,19 @@
       "name": "--semantic-brand-logo-default",
       "value": "#5E5050",
       "group": "semantic",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--semantic-brand-logo-strong",
       "value": "#403535",
       "group": "semantic",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--semantic-brand-logo-subtle",
       "value": "#F2EAE8",
       "group": "semantic",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--semantic-button-bg-assistive-default",
@@ -12424,9 +11244,7 @@
       "name": "--semantic-gap-title-h6",
       "value": "6px",
       "group": "semantic",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--semantic-gap-wide",
@@ -12463,9 +11281,7 @@
       "name": "--semantic-icon-muted-default",
       "value": "#919CAA",
       "group": "semantic",
-      "brands": [
-        "runmile"
-      ]
+      "brands": ["runmile"]
     },
     {
       "name": "--semantic-icon-normal-default",
@@ -12672,17 +11488,13 @@
       "name": "--semantic-inset-page",
       "value": "48px",
       "group": "semantic",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--semantic-inset-section",
       "value": "30px",
       "group": "semantic",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--semantic-text-brand-default",
@@ -12725,9 +11537,7 @@
       "name": "--semantic-text-link-default",
       "value": "#007AFF",
       "group": "semantic",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--semantic-text-muted-default",
@@ -13063,9 +11873,7 @@
       "name": "--spacing-56",
       "value": "56px",
       "group": "spacing",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--spacing-6",
@@ -13111,9 +11919,7 @@
       "name": "--stroke-thin",
       "value": "1.5px",
       "group": "stroke",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "brands": ["cashwalk-biz"]
     },
     {
       "name": "--z-appBar",
@@ -13129,21 +11935,13 @@
       "name": "--z-bottomFixedInput",
       "value": "200",
       "group": "z",
-      "brands": [
-        "geniet",
-        "runmile",
-        "trost"
-      ]
+      "brands": ["geniet", "runmile", "trost"]
     },
     {
       "name": "--z-bottomSheet",
       "value": "100",
       "group": "z",
-      "brands": [
-        "geniet",
-        "runmile",
-        "trost"
-      ]
+      "brands": ["geniet", "runmile", "trost"]
     },
     {
       "name": "--z-dropdown",
@@ -13154,11 +11952,7 @@
       "name": "--z-fullscreenBottomSheet",
       "value": "300",
       "group": "z",
-      "brands": [
-        "geniet",
-        "runmile",
-        "trost"
-      ]
+      "brands": ["geniet", "runmile", "trost"]
     },
     {
       "name": "--z-modal",
@@ -13179,11 +11973,7 @@
       "name": "--z-stickyHeader",
       "value": "50",
       "group": "z",
-      "brands": [
-        "geniet",
-        "runmile",
-        "trost"
-      ]
+      "brands": ["geniet", "runmile", "trost"]
     },
     {
       "name": "--z-toast",
@@ -13231,9 +12021,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#111111"
       },
-      "fontFamilies": [
-        "Pretendard"
-      ],
+      "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/geniet/DESIGN.md",
       "cssImport": "@nudge-design/tokens/css/geniet",
       "jsExport": "@nudge-design/tokens/brands",
@@ -13254,9 +12042,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#383838"
       },
-      "fontFamilies": [
-        "Pretendard"
-      ],
+      "fontFamilies": ["Pretendard"],
       "designMdRelPath": "brands/nudge-eap/DESIGN.md",
       "cssImport": "@nudge-design/tokens/css",
       "jsExport": "@nudge-design/tokens/brands",
@@ -13298,9 +12084,7 @@
         "surface": "#FFFFFF",
         "onSurface": "#333333"
       },
-      "fontFamilies": [
-        "Pretendard Variable"
-      ],
+      "fontFamilies": ["Pretendard Variable"],
       "designMdRelPath": "brands/trost/DESIGN.md",
       "cssImport": "@nudge-design/tokens/css/trost",
       "jsExport": "@nudge-design/tokens/brands",
@@ -13424,7 +12208,6 @@
     "nds-review-card",
     "nds-score-gauge",
     "nds-search-input",
-    "nds-segmented",
     "nds-select",
     "nds-select-option",
     "nds-selected-item-row",
@@ -13467,29 +12250,17 @@
     {
       "tag": "nds-accordion",
       "attrs": {},
-      "observedAttrs": [
-        "type",
-        "value",
-        "base-id"
-      ]
+      "observedAttrs": ["type", "value", "base-id"]
     },
     {
       "tag": "nds-action-chip",
       "attrs": {},
-      "observedAttrs": [
-        "label",
-        "disabled"
-      ]
+      "observedAttrs": ["label", "disabled"]
     },
     {
       "tag": "nds-add-button",
       "attrs": {},
-      "observedAttrs": [
-        "label",
-        "error",
-        "full-width",
-        "disabled"
-      ]
+      "observedAttrs": ["label", "error", "full-width", "disabled"]
     },
     {
       "tag": "nds-address-search",
@@ -13541,26 +12312,12 @@
     {
       "tag": "nds-attachment-item",
       "attrs": {},
-      "observedAttrs": [
-        "name",
-        "size",
-        "file-type",
-        "status",
-        "progress",
-        "href",
-        "error-message"
-      ]
+      "observedAttrs": ["name", "size", "file-type", "status", "progress", "href", "error-message"]
     },
     {
       "tag": "nds-audio-player",
       "attrs": {},
-      "observedAttrs": [
-        "title",
-        "subtitle",
-        "playing",
-        "current-time",
-        "duration"
-      ]
+      "observedAttrs": ["title", "subtitle", "playing", "current-time", "duration"]
     },
     {
       "tag": "nds-autocomplete",
@@ -13581,60 +12338,23 @@
     {
       "tag": "nds-avatar-group",
       "attrs": {
-        "size": [
-          "xs",
-          "sm",
-          "md",
-          "lg",
-          "xl"
-        ]
+        "size": ["xs", "sm", "md", "lg", "xl"]
       },
-      "observedAttrs": [
-        "items",
-        "max",
-        "size",
-        "overlap",
-        "aria-label"
-      ]
+      "observedAttrs": ["items", "max", "size", "overlap", "aria-label"]
     },
     {
       "tag": "nds-avatar",
       "attrs": {},
-      "observedAttrs": [
-        "src",
-        "alt",
-        "name",
-        "size",
-        "fallback"
-      ]
+      "observedAttrs": ["src", "alt", "name", "size", "fallback"]
     },
     {
       "tag": "nds-badge",
       "attrs": {
-        "variant": [
-          "fill",
-          "ghost",
-          "line"
-        ],
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ],
-        "color": [
-          "brand",
-          "neutral",
-          "success",
-          "error",
-          "caution",
-          "info"
-        ]
+        "variant": ["fill", "ghost", "line"],
+        "size": ["sm", "md", "lg"],
+        "color": ["brand", "neutral", "success", "error", "caution", "info"]
       },
-      "observedAttrs": [
-        "variant",
-        "color",
-        "size"
-      ]
+      "observedAttrs": ["variant", "color", "size"]
     },
     {
       "tag": "nds-banner",
@@ -13670,53 +12390,21 @@
     {
       "tag": "nds-brand-chrome",
       "attrs": {},
-      "observedAttrs": [
-        "brand",
-        "surface",
-        "active-key",
-        "asset-base-url"
-      ]
+      "observedAttrs": ["brand", "surface", "active-key", "asset-base-url"]
     },
     {
       "tag": "nds-breadcrumb",
       "attrs": {},
-      "observedAttrs": [
-        "items",
-        "separator"
-      ]
+      "observedAttrs": ["items", "separator"]
     },
     {
       "tag": "nds-button",
       "attrs": {
-        "variant": [
-          "solid",
-          "outlined",
-          "soft",
-          "outlined-sub"
-        ],
-        "size": [
-          "xl",
-          "lg",
-          "md",
-          "sm",
-          "xs",
-          "field"
-        ],
-        "color": [
-          "primary",
-          "secondary",
-          "assistive"
-        ]
+        "variant": ["solid", "outlined", "soft", "outlined-sub"],
+        "size": ["xl", "lg", "md", "sm", "xs", "field"],
+        "color": ["primary", "secondary", "assistive"]
       },
-      "observedAttrs": [
-        "variant",
-        "size",
-        "color",
-        "shape",
-        "disabled",
-        "full-width",
-        "type"
-      ]
+      "observedAttrs": ["variant", "size", "color", "shape", "disabled", "full-width", "type"]
     },
     {
       "tag": "nds-calendar",
@@ -13745,51 +12433,24 @@
     {
       "tag": "nds-card",
       "attrs": {
-        "variant": [
-          "outlined",
-          "flat"
-        ]
+        "variant": ["outlined", "flat"]
       },
-      "observedAttrs": [
-        "variant",
-        "clickable"
-      ]
+      "observedAttrs": ["variant", "clickable"]
     },
     {
       "tag": "nds-carousel",
       "attrs": {},
-      "observedAttrs": [
-        "active-index",
-        "autoplay",
-        "indicator",
-        "loop",
-        "gap",
-        "show-arrows"
-      ]
+      "observedAttrs": ["active-index", "autoplay", "indicator", "loop", "gap", "show-arrows"]
     },
     {
       "tag": "nds-chart",
       "attrs": {},
-      "observedAttrs": [
-        "type",
-        "data",
-        "y-max",
-        "y-ticks",
-        "no-legend"
-      ]
+      "observedAttrs": ["type", "data", "y-max", "y-ticks", "no-legend"]
     },
     {
       "tag": "nds-chat-bubble",
       "attrs": {},
-      "observedAttrs": [
-        "role",
-        "group",
-        "time",
-        "name",
-        "avatar-src",
-        "read",
-        "message"
-      ]
+      "observedAttrs": ["role", "group", "time", "name", "avatar-src", "read", "message"]
     },
     {
       "tag": "nds-chat-composer",
@@ -13836,33 +12497,14 @@
     {
       "tag": "nds-checkbox",
       "attrs": {},
-      "observedAttrs": [
-        "checked",
-        "indeterminate",
-        "disabled",
-        "label",
-        "input-id"
-      ]
+      "observedAttrs": ["checked", "indeterminate", "disabled", "label", "input-id"]
     },
     {
       "tag": "nds-chip",
       "attrs": {
-        "variant": [
-          "fill",
-          "outlined",
-          "ghost"
-        ],
-        "size": [
-          "sm",
-          "md"
-        ],
-        "color": [
-          "brand",
-          "neutral",
-          "success",
-          "error",
-          "caution"
-        ]
+        "variant": ["fill", "outlined", "ghost"],
+        "size": ["sm", "md"],
+        "color": ["brand", "neutral", "success", "error", "caution"]
       },
       "observedAttrs": [
         "variant",
@@ -13905,43 +12547,19 @@
     {
       "tag": "nds-comment-item",
       "attrs": {},
-      "observedAttrs": [
-        "author",
-        "time",
-        "text",
-        "reply-label",
-        "show-reply",
-        "is-reply"
-      ]
+      "observedAttrs": ["author", "time", "text", "reply-label", "show-reply", "is-reply"]
     },
     {
       "tag": "nds-confetti",
       "attrs": {
-        "color": [
-          "#FF6B6B",
-          "#FFD166",
-          "#06D6A0",
-          "#118AB2",
-          "#9D4EDD",
-          "#FF9F1C"
-        ]
+        "color": ["#FF6B6B", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD", "#FF9F1C"]
       },
-      "observedAttrs": [
-        "active",
-        "count",
-        "duration",
-        "colors"
-      ]
+      "observedAttrs": ["active", "count", "duration", "colors"]
     },
     {
       "tag": "nds-content-viewer",
       "attrs": {},
-      "observedAttrs": [
-        "html",
-        "no-sanitize",
-        "no-image-lazy",
-        "no-external-blank"
-      ]
+      "observedAttrs": ["html", "no-sanitize", "no-image-lazy", "no-external-blank"]
     },
     {
       "tag": "nds-counselor-card",
@@ -13961,13 +12579,7 @@
     {
       "tag": "nds-countdown-timer",
       "attrs": {},
-      "observedAttrs": [
-        "ends-at",
-        "format",
-        "label",
-        "expired-text",
-        "no-urgent"
-      ]
+      "observedAttrs": ["ends-at", "format", "label", "expired-text", "no-urgent"]
     },
     {
       "tag": "nds-data-table",
@@ -14017,17 +12629,9 @@
     {
       "tag": "nds-divider",
       "attrs": {
-        "orientation": [
-          "horizontal",
-          "vertical"
-        ]
+        "orientation": ["horizontal", "vertical"]
       },
-      "observedAttrs": [
-        "orientation",
-        "thickness",
-        "spacing",
-        "color"
-      ]
+      "observedAttrs": ["orientation", "thickness", "spacing", "color"]
     },
     {
       "tag": "nds-drawer",
@@ -14047,67 +12651,32 @@
     {
       "tag": "nds-dropdown-menu",
       "attrs": {},
-      "observedAttrs": [
-        "items",
-        "groups",
-        "align",
-        "min-width"
-      ]
+      "observedAttrs": ["items", "groups", "align", "min-width"]
     },
     {
       "tag": "nds-ds-highlight",
       "attrs": {},
-      "observedAttrs": [
-        "mode",
-        "hide-toggle",
-        "default-mode"
-      ]
+      "observedAttrs": ["mode", "hide-toggle", "default-mode"]
     },
     {
       "tag": "nds-empty-state",
       "attrs": {},
-      "observedAttrs": [
-        "title",
-        "description",
-        "action",
-        "min-height",
-        "hide-icon"
-      ]
+      "observedAttrs": ["title", "description", "action", "min-height", "hide-icon"]
     },
     {
       "tag": "nds-expandable-text",
       "attrs": {},
-      "observedAttrs": [
-        "lines",
-        "expand-label",
-        "collapse-label",
-        "hide-collapse",
-        "expanded"
-      ]
+      "observedAttrs": ["lines", "expand-label", "collapse-label", "hide-collapse", "expanded"]
     },
     {
       "tag": "nds-fab",
       "attrs": {},
-      "observedAttrs": [
-        "icon",
-        "label",
-        "color",
-        "size",
-        "position",
-        "offset",
-        "disabled"
-      ]
+      "observedAttrs": ["icon", "label", "color", "size", "position", "offset", "disabled"]
     },
     {
       "tag": "nds-field-action-row",
       "attrs": {},
-      "observedAttrs": [
-        "action-tone",
-        "error",
-        "success",
-        "timer-expired",
-        "helper-text"
-      ]
+      "observedAttrs": ["action-tone", "error", "success", "timer-expired", "helper-text"]
     },
     {
       "tag": "nds-file-upload",
@@ -14125,13 +12694,7 @@
     {
       "tag": "nds-filter-bar",
       "attrs": {},
-      "observedAttrs": [
-        "value",
-        "options",
-        "single",
-        "show-reset",
-        "reset-label"
-      ]
+      "observedAttrs": ["value", "options", "single", "show-reset", "reset-label"]
     },
     {
       "tag": "nds-floating-cta-banner",
@@ -14149,9 +12712,7 @@
     {
       "tag": "nds-footer",
       "attrs": {},
-      "observedAttrs": [
-        "active-tab"
-      ]
+      "observedAttrs": ["active-tab"]
     },
     {
       "tag": "nds-form-field",
@@ -14173,40 +12734,19 @@
     {
       "tag": "nds-header",
       "attrs": {},
-      "observedAttrs": [
-        "variant",
-        "position",
-        "header-title",
-        "elevated",
-        "max-width"
-      ]
+      "observedAttrs": ["variant", "position", "header-title", "elevated", "max-width"]
     },
     {
       "tag": "nds-icon-button",
       "attrs": {
-        "size": [
-          "x-large",
-          "large",
-          "medium",
-          "small"
-        ]
+        "size": ["x-large", "large", "medium", "small"]
       },
-      "observedAttrs": [
-        "size",
-        "disabled",
-        "type"
-      ]
+      "observedAttrs": ["size", "disabled", "type"]
     },
     {
       "tag": "nds-image-cropper",
       "attrs": {},
-      "observedAttrs": [
-        "src",
-        "shape",
-        "size",
-        "output-size",
-        "label"
-      ]
+      "observedAttrs": ["src", "shape", "size", "output-size", "label"]
     },
     {
       "tag": "nds-image-upload",
@@ -14226,19 +12766,12 @@
     {
       "tag": "nds-input-group",
       "attrs": {},
-      "observedAttrs": [
-        "gap",
-        "align"
-      ]
+      "observedAttrs": ["gap", "align"]
     },
     {
       "tag": "nds-input",
       "attrs": {
-        "size": [
-          "default",
-          "field",
-          "compact"
-        ]
+        "size": ["default", "field", "compact"]
       },
       "observedAttrs": [
         "label",
@@ -14259,60 +12792,30 @@
     {
       "tag": "nds-inspector",
       "attrs": {},
-      "observedAttrs": [
-        "default-enabled",
-        "no-outline"
-      ]
+      "observedAttrs": ["default-enabled", "no-outline"]
     },
     {
       "tag": "nds-lightbox",
       "attrs": {},
-      "observedAttrs": [
-        "open",
-        "index",
-        "images"
-      ]
+      "observedAttrs": ["open", "index", "images"]
     },
     {
       "tag": "nds-like-button",
       "attrs": {},
-      "observedAttrs": [
-        "liked",
-        "count",
-        "size",
-        "hide-count",
-        "active-color"
-      ]
+      "observedAttrs": ["liked", "count", "size", "hide-count", "active-color"]
     },
     {
       "tag": "nds-likert-scale",
       "attrs": {},
-      "observedAttrs": [
-        "name",
-        "options",
-        "value",
-        "start-label",
-        "end-label",
-        "disabled"
-      ]
+      "observedAttrs": ["name", "options", "value", "start-label", "end-label", "disabled"]
     },
     {
       "tag": "nds-list",
       "attrs": {
-        "variant": [
-          "plain",
-          "card",
-          "divided"
-        ],
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ]
+        "variant": ["plain", "card", "divided"],
+        "size": ["sm", "md", "lg"]
       },
-      "observedAttrs": [
-        "variant"
-      ]
+      "observedAttrs": ["variant"]
     },
     {
       "tag": "nds-media-card",
@@ -14346,14 +12849,7 @@
     {
       "tag": "nds-modal",
       "attrs": {},
-      "observedAttrs": [
-        "open",
-        "title",
-        "closable",
-        "mask",
-        "is-mask-close",
-        "max-width"
-      ]
+      "observedAttrs": ["open", "title", "closable", "mask", "is-mask-close", "max-width"]
     },
     {
       "tag": "nds-multi-select",
@@ -14389,97 +12885,44 @@
     {
       "tag": "nds-notice-alert",
       "attrs": {
-        "variant": [
-          "info",
-          "notice",
-          "caution",
-          "success",
-          "error"
-        ]
+        "variant": ["info", "notice", "caution", "success", "error"]
       },
-      "observedAttrs": [
-        "variant",
-        "message",
-        "hide-icon"
-      ]
+      "observedAttrs": ["variant", "message", "hide-icon"]
     },
     {
       "tag": "nds-notification-item",
       "attrs": {},
-      "observedAttrs": [
-        "kind",
-        "item-title",
-        "description",
-        "time",
-        "unread",
-        "clickable"
-      ]
+      "observedAttrs": ["kind", "item-title", "description", "time", "unread", "clickable"]
     },
     {
       "tag": "nds-number-stepper",
       "attrs": {},
-      "observedAttrs": [
-        "value",
-        "min",
-        "max",
-        "step",
-        "size",
-        "disabled",
-        "editable",
-        "unit"
-      ]
+      "observedAttrs": ["value", "min", "max", "step", "size", "disabled", "editable", "unit"]
     },
     {
       "tag": "nds-online-indicator",
       "attrs": {},
-      "observedAttrs": [
-        "status",
-        "show-label",
-        "label",
-        "size",
-        "aria-label"
-      ]
+      "observedAttrs": ["status", "show-label", "label", "size", "aria-label"]
     },
     {
       "tag": "nds-order-summary-card",
       "attrs": {},
-      "observedAttrs": [
-        "title",
-        "rows",
-        "total-label",
-        "total"
-      ]
+      "observedAttrs": ["title", "rows", "total-label", "total"]
     },
     {
       "tag": "nds-otp-input",
       "attrs": {},
-      "observedAttrs": [
-        "length",
-        "value",
-        "disabled",
-        "error",
-        "auto-focus"
-      ]
+      "observedAttrs": ["length", "value", "disabled", "error", "auto-focus"]
     },
     {
       "tag": "nds-page-header",
       "attrs": {},
-      "observedAttrs": [
-        "page-title",
-        "subtitle",
-        "show-back",
-        "bordered"
-      ]
+      "observedAttrs": ["page-title", "subtitle", "show-back", "bordered"]
     },
     {
       "tag": "nds-pagination",
       "attrs": {},
-      "observedAttrs": [
-        "page",
-        "total-pages",
-        "siblings",
-        "show-arrows"
-      ]
+      "observedAttrs": ["page", "total-pages", "siblings", "show-arrows"]
     },
     {
       "tag": "nds-phone-input",
@@ -14499,14 +12942,7 @@
     {
       "tag": "nds-pin-pad",
       "attrs": {},
-      "observedAttrs": [
-        "value",
-        "pin-length",
-        "label",
-        "shuffle",
-        "shuffle-seed",
-        "error"
-      ]
+      "observedAttrs": ["value", "pin-length", "label", "shuffle", "shuffle-seed", "error"]
     },
     {
       "tag": "nds-popular-posts",
@@ -14576,42 +13012,22 @@
     {
       "tag": "nds-progress-bar",
       "attrs": {},
-      "observedAttrs": [
-        "value",
-        "max",
-        "size",
-        "color"
-      ]
+      "observedAttrs": ["value", "max", "size", "color"]
     },
     {
       "tag": "nds-pull-to-refresh",
       "attrs": {},
-      "observedAttrs": [
-        "threshold",
-        "pull-label",
-        "release-label",
-        "refreshing-label",
-        "disabled"
-      ]
+      "observedAttrs": ["threshold", "pull-label", "release-label", "refreshing-label", "disabled"]
     },
     {
       "tag": "nds-quick-action-grid",
       "attrs": {},
-      "observedAttrs": [
-        "actions",
-        "columns",
-        "gap"
-      ]
+      "observedAttrs": ["actions", "columns", "gap"]
     },
     {
       "tag": "nds-radio",
       "attrs": {},
-      "observedAttrs": [
-        "checked",
-        "disabled",
-        "label",
-        "input-id"
-      ]
+      "observedAttrs": ["checked", "disabled", "label", "input-id"]
     },
     {
       "tag": "nds-review-card",
@@ -14630,14 +13046,7 @@
     {
       "tag": "nds-score-gauge",
       "attrs": {},
-      "observedAttrs": [
-        "value",
-        "max",
-        "segments",
-        "show-label",
-        "show-legend",
-        "value-suffix"
-      ]
+      "observedAttrs": ["value", "max", "segments", "show-label", "show-legend", "value-suffix"]
     },
     {
       "tag": "nds-search-input",
@@ -14654,24 +13063,6 @@
         "show-search-button",
         "full-width",
         "disabled"
-      ]
-    },
-    {
-      "tag": "nds-segmented",
-      "attrs": {
-        "size": [
-          "sm",
-          "md",
-          "lg"
-        ]
-      },
-      "observedAttrs": [
-        "value",
-        "size",
-        "variant",
-        "full-width",
-        "disabled",
-        "options"
       ]
     },
     {
@@ -14709,23 +13100,12 @@
     {
       "tag": "nds-selection-button-group",
       "attrs": {},
-      "observedAttrs": [
-        "value",
-        "full-width",
-        "disabled",
-        "options"
-      ]
+      "observedAttrs": ["value", "full-width", "disabled", "options"]
     },
     {
       "tag": "nds-selection-card",
       "attrs": {},
-      "observedAttrs": [
-        "mode",
-        "value",
-        "values",
-        "layout",
-        "name"
-      ]
+      "observedAttrs": ["mode", "value", "values", "layout", "name"]
     },
     {
       "tag": "nds-sidebar",
@@ -14767,18 +13147,9 @@
     {
       "tag": "nds-skeleton",
       "attrs": {
-        "variant": [
-          "rectangular",
-          "circular",
-          "text"
-        ]
+        "variant": ["rectangular", "circular", "text"]
       },
-      "observedAttrs": [
-        "variant",
-        "width",
-        "height",
-        "radius"
-      ]
+      "observedAttrs": ["variant", "width", "height", "radius"]
     },
     {
       "tag": "nds-slider",
@@ -14797,29 +13168,14 @@
     {
       "tag": "nds-snackbar-host",
       "attrs": {
-        "variant": [
-          "info",
-          "success",
-          "warning",
-          "error"
-        ]
+        "variant": ["info", "success", "warning", "error"]
       },
-      "observedAttrs": [
-        "position",
-        "duration",
-        "max-count",
-        "brand"
-      ]
+      "observedAttrs": ["position", "duration", "max-count", "brand"]
     },
     {
       "tag": "nds-snackbar",
       "attrs": {
-        "variant": [
-          "info",
-          "success",
-          "warning",
-          "error"
-        ]
+        "variant": ["info", "success", "warning", "error"]
       },
       "observedAttrs": [
         "variant",
@@ -14847,63 +13203,28 @@
     {
       "tag": "nds-spinner",
       "attrs": {},
-      "observedAttrs": [
-        "size",
-        "color",
-        "label"
-      ]
+      "observedAttrs": ["size", "color", "label"]
     },
     {
       "tag": "nds-star-rating",
       "attrs": {},
-      "observedAttrs": [
-        "value",
-        "size",
-        "max",
-        "show-value",
-        "disabled",
-        "readonly"
-      ]
+      "observedAttrs": ["value", "size", "max", "show-value", "disabled", "readonly"]
     },
     {
       "tag": "nds-stepper",
       "attrs": {
-        "variant": [
-          "numbered",
-          "dots",
-          "bar"
-        ]
+        "variant": ["numbered", "dots", "bar"]
       },
-      "observedAttrs": [
-        "steps",
-        "current",
-        "variant"
-      ]
+      "observedAttrs": ["steps", "current", "variant"]
     },
     {
       "tag": "nds-tabs",
       "attrs": {
-        "variant": [
-          "line",
-          "chip"
-        ],
-        "size": [
-          "mobile",
-          "pc"
-        ],
-        "tone": [
-          "neutral",
-          "color"
-        ]
+        "variant": ["line", "chip", "segment"],
+        "size": ["mobile", "pc"],
+        "tone": ["neutral", "color"]
       },
-      "observedAttrs": [
-        "active-key",
-        "variant",
-        "size",
-        "tone",
-        "full-width",
-        "base-id"
-      ]
+      "observedAttrs": ["active-key", "variant", "size", "tone", "full-width", "base-id"]
     },
     {
       "tag": "nds-tag-input",
@@ -14923,13 +13244,7 @@
     {
       "tag": "nds-text-button",
       "attrs": {},
-      "observedAttrs": [
-        "label",
-        "size",
-        "left-icon",
-        "right-icon",
-        "disabled"
-      ]
+      "observedAttrs": ["label", "size", "left-icon", "right-icon", "disabled"]
     },
     {
       "tag": "nds-textarea",
@@ -14968,53 +13283,24 @@
     {
       "tag": "nds-time-slot-picker",
       "attrs": {},
-      "observedAttrs": [
-        "value",
-        "slots",
-        "groups",
-        "columns",
-        "disabled",
-        "empty-text"
-      ]
+      "observedAttrs": ["value", "slots", "groups", "columns", "disabled", "empty-text"]
     },
     {
       "tag": "nds-timeline",
       "attrs": {},
-      "observedAttrs": [
-        "items",
-        "mode",
-        "direction",
-        "current"
-      ]
+      "observedAttrs": ["items", "mode", "direction", "current"]
     },
     {
       "tag": "nds-title-group",
       "attrs": {},
-      "observedAttrs": [
-        "level",
-        "title",
-        "subtitle"
-      ]
+      "observedAttrs": ["level", "title", "subtitle"]
     },
     {
       "tag": "nds-toast",
       "attrs": {
-        "variant": [
-          "default",
-          "success",
-          "error",
-          "warning",
-          "info"
-        ]
+        "variant": ["default", "success", "error", "warning", "info"]
       },
-      "observedAttrs": [
-        "position",
-        "duration",
-        "max-count",
-        "message",
-        "variant",
-        "open"
-      ]
+      "observedAttrs": ["position", "duration", "max-count", "message", "variant", "open"]
     },
     {
       "tag": "nds-toggle",
@@ -15033,37 +13319,17 @@
     {
       "tag": "nds-tooltip",
       "attrs": {},
-      "observedAttrs": [
-        "content",
-        "trigger-label",
-        "placement",
-        "open",
-        "disabled",
-        "max-width"
-      ]
+      "observedAttrs": ["content", "trigger-label", "placement", "open", "disabled", "max-width"]
     },
     {
       "tag": "nds-trending-keywords",
       "attrs": {},
-      "observedAttrs": [
-        "items",
-        "header-title",
-        "timestamp",
-        "autoplay-delay"
-      ]
+      "observedAttrs": ["items", "header-title", "timestamp", "autoplay-delay"]
     },
     {
       "tag": "nds-user-card",
       "attrs": {},
-      "observedAttrs": [
-        "name",
-        "handle",
-        "bio",
-        "meta",
-        "verified",
-        "layout",
-        "clickable"
-      ]
+      "observedAttrs": ["name", "handle", "bio", "meta", "verified", "layout", "clickable"]
     },
     {
       "tag": "nds-video-player",
@@ -15083,36 +13349,17 @@
     {
       "tag": "nds-voice-recorder",
       "attrs": {},
-      "observedAttrs": [
-        "state",
-        "seconds",
-        "max-seconds",
-        "idle-label",
-        "recording-label"
-      ]
+      "observedAttrs": ["state", "seconds", "max-seconds", "idle-label", "recording-label"]
     },
     {
       "tag": "nds-vote-poll",
       "attrs": {},
-      "observedAttrs": [
-        "question",
-        "options",
-        "voted-key",
-        "show-results",
-        "disabled"
-      ]
+      "observedAttrs": ["question", "options", "voted-key", "show-results", "disabled"]
     },
     {
       "tag": "nds-waveform-player",
       "attrs": {},
-      "observedAttrs": [
-        "src",
-        "peaks",
-        "bars",
-        "color",
-        "duration",
-        "autoplay"
-      ]
+      "observedAttrs": ["src", "peaks", "bars", "color", "duration", "autoplay"]
     }
   ]
 }

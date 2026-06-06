@@ -4,7 +4,9 @@ import {
   fontFamily,
   fontWeight,
   radius,
+  shadow,
   sizing,
+  spacing,
   transition,
   typeScale,
 } from "@nudge-design/tokens";
@@ -71,7 +73,9 @@ export const tabsStyles = `
   /* ─── line variant ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="line"]) {
-    background: ${cv.surface.default};
+    /* line variant 스트립은 투명 — 회색 페이지(예: 캐포비 admin #FAFAFA) 위에 떠 보이도록.
+       흰 배경이 필요하면 부모(카드/섹션)가 칠한다. (구 기본값 cv.surface.default 흰색 → 투명) */
+    background: transparent;
     border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
@@ -179,7 +183,7 @@ export const tabsStyles = `
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"][data-tone="color"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
     font-weight: ${fontWeight.bold};
   }
 
@@ -192,6 +196,75 @@ export const tabsStyles = `
   @media (hover: hover) {
     :where(.${TABS_LIST_CLASS}[data-variant="chip"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
       background: ${cv.surface.section};
+      color: ${cv.textRole.strong};
+    }
+  }
+
+  /* ─── segment variant (구 SegmentedControl 흡수) ───
+     연결된 회색 트랙(surface.subtle) 위 균등 분할. active = 흰색 떠오름(surface.default + shadow).
+     mobile 36 / pc 40(아이콘 동반). tone="color" 면 active 가 브랜드 채움. */
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"]) {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    background: ${cv.surface.subtle};
+    border-radius: ${radius.md}px;
+    padding: ${spacing[4]}px;
+    gap: var(--semantic-gap-tight);
+    box-sizing: border-box;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}) {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    height: 36px;
+    padding: 0 var(--semantic-inset-input);
+    background: transparent;
+    border-radius: ${radius.sm}px;
+    color: ${cv.textRole.subtle};
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    font-weight: ${fontWeight.regular};
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color ${transition.default}, color ${transition.default}, box-shadow ${transition.default};
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"][data-size="pc"] .${TABS_TRIGGER_CLASS}) {
+    height: 40px;
+    padding: 0 var(--semantic-inset-card);
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_ICON_CLASS} svg) {
+    width: 18px;
+    height: 18px;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
+    background: ${cv.surface.default};
+    color: ${cv.textRole.normal};
+    font-weight: ${fontWeight.medium};
+    box-shadow: ${shadow["1"]};
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"][data-tone="color"] .${TABS_TRIGGER_CLASS}[data-active="true"]) {
+    background: ${cv.surface.brand};
+    color: ${cv.button.textDefault};
+    box-shadow: none;
+  }
+
+  :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}[data-disabled="true"]) {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  @media (hover: hover) {
+    :where(.${TABS_LIST_CLASS}[data-variant="segment"] .${TABS_TRIGGER_CLASS}:not([data-active="true"]):not([data-disabled="true"]):hover) {
       color: ${cv.textRole.strong};
     }
   }

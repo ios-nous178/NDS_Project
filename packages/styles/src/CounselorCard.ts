@@ -157,7 +157,7 @@ export const counselorCardStyles = `
     align-items: center;
     padding: var(--semantic-inset-chip) var(--semantic-inset-card);
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
     border-radius: ${radius.pill}px;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;

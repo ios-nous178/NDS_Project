@@ -17,7 +17,7 @@ type ColorTokens = {
 const FILL_COLORS: Record<BadgeColor, ColorTokens> = {
   brand: {
     background: "var(--semantic-fill-brand-default)",
-    text: "var(--semantic-text-inverse-default, #ffffff)",
+    text: "var(--semantic-button-text-default, #ffffff)",
     border: "transparent",
   },
   neutral: {

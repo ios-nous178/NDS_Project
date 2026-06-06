@@ -162,7 +162,7 @@ export const audioPlayerStyles = `
     height: 56px;
     border-radius: ${radius.pill}px;
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
     cursor: pointer;
     transition: background-color ${transition.default};
   }

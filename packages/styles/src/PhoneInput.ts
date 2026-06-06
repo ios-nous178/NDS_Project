@@ -51,15 +51,15 @@ export const phoneInputStyles = `
   :where(.${PI_FIELD_CLASS}) {
     display: flex;
     align-items: stretch;
-    height: ${sizing.input.default}px;
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
-    background: ${cv.surface.default};
+    height: var(--nds-input-height, ${sizing.input.default}px);
+    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border-radius: var(--nds-input-radius, ${radius.md}px);
+    background: var(--nds-input-background, ${cv.surface.default});
     overflow: hidden;
     transition: border-color ${transition.default};
   }
 
-  :where(.${PI_FIELD_CLASS}:focus-within) { border-color: ${cv.borderRole.brand}; }
+  :where(.${PI_FIELD_CLASS}:focus-within) { border-color: ${cv.input.borderFocus}; }
 
   :where(.${PI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
 

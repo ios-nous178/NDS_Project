@@ -371,12 +371,11 @@ const unionMap = collectStringLiteralUnions([reactDist]);
  * `nds-icon-button` → `IconButton`. emit-manifest 가 components 와 nds-* 메타를
  * cross-link 할 때 사용. parser.ts 의 ndsTagToComponentName 과 동일 컨벤션.
  *
- * 일부 React 명명이 PascalCase 단순 변환과 다른 경우 (FAB 약어, SegmentedControl 풀네임)
+ * 일부 React 명명이 PascalCase 단순 변환과 다른 경우 (FAB 약어 등)
  * 는 NDS_TAG_TO_REACT_ALIAS 로 보정한다 — 둘은 의미적으로 동일 컴포넌트라 한 엔트리에 합치는 게 맞음.
  */
 const NDS_TAG_TO_REACT_ALIAS = {
   "nds-fab": "FAB",
-  "nds-segmented": "SegmentedControl",
 };
 function ndsTagToPascal(tag) {
   if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];

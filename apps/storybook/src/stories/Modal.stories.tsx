@@ -907,6 +907,69 @@ export const Default: Story = {
   },
 };
 
+/* ─── Single / Dual Action ───────────────────────────────────────────────
+   docs(개요)에서 클릭 없이 바로 UI 가 보이도록, 포털/오버레이 없이 컴포넌트와 동일한
+   DS 클래스(nds-modal__*)로 카드만 인라인 렌더한다 — styles.css 가 그대로 적용되므로
+   브랜드 툴바를 cashwalk-biz 로 두면 우측 hug pill 푸터로 보인다.
+   (실제 열림/포커스/Esc 동작은 State/Default·Interaction 스토리 참고.) */
+
+function ModalStaticPreview({
+  title,
+  body,
+  confirmText,
+  cancelText,
+}: {
+  title: string;
+  body: React.ReactNode;
+  confirmText: string;
+  cancelText?: string;
+}) {
+  const dual = cancelText != null;
+  return (
+    <div className="nds-modal__content" style={{ margin: "0 auto" }}>
+      <div className="nds-modal__header">
+        <h2 className="nds-modal__header-title">{title}</h2>
+      </div>
+      <div className="nds-modal__body" style={{ textAlign: "left" }}>
+        {body}
+      </div>
+      <div className="nds-modal__footer" data-has-both-actions={dual ? "true" : undefined}>
+        {dual && (
+          <button type="button" className="nds-modal__footer-action nds-modal__footer-cancel">
+            {cancelText}
+          </button>
+        )}
+        <button type="button" className="nds-modal__footer-action nds-modal__footer-confirm">
+          {confirmText}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export const SingleAction: Story = {
+  name: "State/Single Action",
+  render: () => (
+    <ModalStaticPreview
+      title="수정 완료"
+      body="수정이 완료되었습니다. 검수 후 반영됩니다."
+      confirmText="확인"
+    />
+  ),
+};
+
+export const DualAction: Story = {
+  name: "State/Dual Action",
+  render: () => (
+    <ModalStaticPreview
+      title="쿠폰 노출 여부를 변경하시겠습니까?"
+      body="변경 시 상태 반영에 최대 5분까지 소요될 수 있습니다."
+      cancelText="취소"
+      confirmText="변경"
+    />
+  ),
+};
+
 export const CompoundCustom: Story = {
   name: "Recipe/Compound Custom",
   render: () => <CompoundModalExample />,

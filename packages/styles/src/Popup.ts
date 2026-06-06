@@ -110,7 +110,65 @@ export const popupStyles = `
 
   :where(.${POPUP_BTN_CONFIRM_CLASS}) {
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
+  }
+
+  /* ─── CashwalkBiz 확인/결정 팝업 — Figma ModalGuide ①②④ (3418-471) 정합 ───
+     base Popup 은 가운데 정렬 + 50/50 회색 버튼이지만, 캐포비는 Modal 확인창과 동일하게
+     좌측 정렬 본문 + 우측 hug pill 푸터(검정 confirm · outlined 취소). 텍스트/버튼 토큰은 Modal cashwalk 와 통일. */
+  :where([data-brand="cashwalk-biz"] .${POPUP_CONTENT_CLASS}) {
+    max-width: var(--nds-popup-max-width, 480px);
+    padding: ${spacing[32]}px;
+    gap: var(--semantic-gap-wide);
+    border-radius: var(--nds-popup-radius, 16px);
+  }
+
+  :where([data-brand="cashwalk-biz"] .${POPUP_TEXT_CLASS}) {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  :where([data-brand="cashwalk-biz"] .${POPUP_TITLE_CLASS}) {
+    font-size: ${typeScale.headline5.fontSize}px;
+    line-height: ${typeScale.headline5.lineHeight}px;
+    color: ${cv.textRole.strong};
+  }
+
+  :where([data-brand="cashwalk-biz"] .${POPUP_DESC_CLASS}) {
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
+    color: ${cv.textRole.normal};
+  }
+
+  /* 푸터: 우측 정렬 hug pill (50/50·세로 스택 아님 — 1버튼/2버튼 모두 우측 hug) */
+  :where([data-brand="cashwalk-biz"] .${POPUP_ACTIONS_CLASS}),
+  :where([data-brand="cashwalk-biz"] .${POPUP_ACTIONS_CLASS}[data-single="true"]) {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: ${spacing[8]}px;
+  }
+
+  :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CLASS}) {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: ${spacing[12]}px ${spacing[18]}px;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    font-weight: 500;
+  }
+
+  :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CANCEL_CLASS}) {
+    background: ${cv.surface.default};
+    border-color: ${cv.button.borderAssistive};
+    color: ${cv.textRole.strong};
+  }
+
+  :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CONFIRM_CLASS}) {
+    background: ${cv.button.bgSecondary};
+    border-color: ${cv.button.bgSecondary};
+    color: ${cv.button.textSecondary};
   }
 
   @keyframes nds-popup-fade-in {

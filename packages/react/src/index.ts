@@ -50,7 +50,6 @@ export * from "./ActionChip";
 export * from "./SelectedItemsPanel";
 export * from "./LikertScale";
 export * from "./Stepper";
-export * from "./SegmentedControl";
 export * from "./FormField";
 export * from "./InputGroup";
 export * from "./DropdownMenu";

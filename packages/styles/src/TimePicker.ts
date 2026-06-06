@@ -214,7 +214,7 @@ export const tpStyles = `
 
   :where(.${TP_OPTION_CLASS}[data-selected="true"]) {
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
     font-weight: ${fontWeight.medium};
   }
 

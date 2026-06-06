@@ -237,12 +237,12 @@ describe("reportHtmlMockupUsage", () => {
 
   it("maps nds-* tags to React component names (PascalCase + alias)", async () => {
     const r = await reportHtmlMockupUsage({
-      source: `<nds-icon-button>a</nds-icon-button><nds-fab>b</nds-fab><nds-segmented>c</nds-segmented>`,
+      source: `<nds-icon-button>a</nds-icon-button><nds-fab>b</nds-fab>`,
       mockupName: "alias-test",
       dryRun: true,
     });
     const names = r.usage.ds.map((d) => d.component).sort();
-    expect(names).toEqual(["FAB", "IconButton", "SegmentedControl"]);
+    expect(names).toEqual(["FAB", "IconButton"]);
   });
 
   it("classifies nds-* className imitations as customNative with nds-imitation: prefix", async () => {

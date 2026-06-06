@@ -17,6 +17,7 @@ const TG_CLASS = "nds-toggle";
 const TG_TRACK_CLASS = `${TG_CLASS}__track`;
 const TG_THUMB_CLASS = `${TG_CLASS}__thumb`;
 const TG_LABEL_CLASS = `${TG_CLASS}__label`;
+const TG_INNER_LABELS_CLASS = `${TG_CLASS}__inner-labels`;
 const TG_INNER_LABEL_CLASS = `${TG_CLASS}__inner-label`;
 // 라벨 내장(status) 변형 — react Toggle 의 LABELED 와 동일 (Figma 캐포비 노출 토글 3172:577).
 const LABELED = { trackH: 30, thumbSize: 25, thumbOffset: 2.5 } as const;
@@ -68,7 +69,9 @@ export class NdsToggle extends NdsElement {
   private _input: HTMLInputElement | null = null;
   private _track: HTMLSpanElement | null = null;
   private _label: HTMLSpanElement | null = null;
-  private _innerLabel: HTMLSpanElement | null = null;
+  private _innerLabels: HTMLSpanElement | null = null;
+  private _onLabel: HTMLSpanElement | null = null;
+  private _offLabel: HTMLSpanElement | null = null;
   private _inputId = "";
 
   /**
@@ -188,27 +191,43 @@ export class NdsToggle extends NdsElement {
     }
 
     this._syncLabel();
-    this._syncInnerLabel(checked, labeled);
+    this._syncInnerLabel(labeled);
   }
 
-  // 트랙 안 on/off 라벨 — checked 면 라벨이 썸 왼쪽, 아니면 오른쪽 (DOM 순서로 위치 결정).
-  private _syncInnerLabel(checked: boolean, labeled: boolean): void {
+  // 트랙 안 on/off 라벨 — 두 라벨을 한 셀에 스택(셀 폭=긴 라벨 기준 고정폭). 활성 라벨만 보이고
+  // 라벨셀↔썸 좌우 위치는 CSS order(track[data-checked])가 결정 (DOM 순서 아님).
+  private _syncInnerLabel(labeled: boolean): void {
     if (!this._track) return;
-    const text = checked ? this.getAttribute("on-label") : this.getAttribute("off-label");
-    if (!labeled || text === null) {
-      this._innerLabel?.remove();
-      this._innerLabel = null;
+    if (!labeled) {
+      this._innerLabels?.remove();
+      this._innerLabels = null;
+      this._onLabel = null;
+      this._offLabel = null;
       return;
     }
-    if (!this._innerLabel) {
-      this._innerLabel = document.createElement("span");
-      this._innerLabel.className = TG_INNER_LABEL_CLASS;
-      this._innerLabel.dataset.slot = "inner-label";
+    if (!this._innerLabels) {
+      const cell = document.createElement("span");
+      cell.className = TG_INNER_LABELS_CLASS;
+      cell.dataset.slot = "inner-labels";
+      const on = document.createElement("span");
+      on.className = TG_INNER_LABEL_CLASS;
+      on.dataset.slot = "inner-label";
+      on.dataset.state = "on";
+      const off = document.createElement("span");
+      off.className = TG_INNER_LABEL_CLASS;
+      off.dataset.slot = "inner-label";
+      off.dataset.state = "off";
+      cell.append(on, off);
+      this._innerLabels = cell;
+      this._onLabel = on;
+      this._offLabel = off;
     }
-    this._innerLabel.textContent = text;
-    const thumb = this._track.querySelector<HTMLElement>('[data-slot="thumb"]');
-    if (checked) this._track.insertBefore(this._innerLabel, thumb);
-    else this._track.appendChild(this._innerLabel);
+    this._onLabel!.textContent = this.getAttribute("on-label") ?? "";
+    this._offLabel!.textContent = this.getAttribute("off-label") ?? "";
+    if (this._innerLabels.parentElement !== this._track) {
+      const thumb = this._track.querySelector<HTMLElement>('[data-slot="thumb"]');
+      this._track.insertBefore(this._innerLabels, thumb);
+    }
   }
 
   private _syncLabel(): void {

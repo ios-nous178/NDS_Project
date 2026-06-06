@@ -17,11 +17,12 @@ const TABS_PANEL_CLASS = `${TABS_CLASS}__panel`;
 
 /**
  * Tabs 변형.
- * - `line` : 하단 밑줄(언더라인) 탭. Mobile · PC 지원.
- * - `chip` : 알약(Pill) 탭. Mobile · PC 지원.
- * (균등 분할 세그먼트 단일선택은 SegmentedControl 사용 — 구 variant="segment" 폐지.)
+ * - `line`    : 하단 밑줄(언더라인) 탭. Mobile · PC 지원.
+ * - `chip`    : 알약(Pill) 탭. Mobile · PC 지원.
+ * - `segment` : 연결된 회색 트랙 위 균등 분할 단일선택(iOS 세그먼트). active = 흰색 떠오름.
+ *               뷰/기간/상태 토글용. Mobile(36) · PC(40, 아이콘 동반). 구 SegmentedControl 흡수.
  */
-export type TabsVariant = "line" | "chip";
+export type TabsVariant = "line" | "chip" | "segment";
 
 /**
  * 사이즈 컨텍스트 (Mobile / PC).
@@ -66,7 +67,7 @@ export interface TabsRootProps extends React.HTMLAttributes<HTMLDivElement> {
   activeKey: string;
   /** 탭 변경 콜백 */
   onTabChange: (key: string) => void;
-  /** 탭 스타일 변형 (`line` | `chip`). 기본 `line` */
+  /** 탭 스타일 변형 (`line` | `chip` | `segment`). 기본 `line` */
   variant?: TabsVariant;
   /** 사이즈 (Mobile / PC). 기본 `pc` */
   size?: TabsSize;
@@ -328,7 +329,7 @@ export interface TabsProps {
   activeKey: string;
   /** 탭 변경 콜백 */
   onTabChange: (key: string) => void;
-  /** 스타일 변형 (`line` | `chip`). 기본 `line` */
+  /** 스타일 변형 (`line` | `chip` | `segment`). 기본 `line` */
   variant?: TabsVariant;
   /** 사이즈 (Mobile / PC). 기본 `pc` */
   size?: TabsSize;

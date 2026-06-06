@@ -208,7 +208,7 @@ export const multiSelectStyles = `
     border: 1.5px solid ${cv.borderRole.strong};
     border-radius: ${radius.sm}px;
     background: ${cv.surface.default};
-    color: #fff;
+    color: ${cv.button.textDefault};
     transition: background-color ${transition.default}, border-color ${transition.default};
   }
   :where(.${MS_OPTION_CHECK_CLASS}) svg { opacity: 0; }

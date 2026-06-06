@@ -45,3 +45,20 @@ export const NoArrows: Story = {
     <PaginationExample page={3} totalPages={10} showArrows={false} onPageChange={() => {}} />
   ),
 };
+
+export const CashwalkBizBoxed: Story = {
+  name: "Brand/캐포비 박스형",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'data-brand="cashwalk-biz" cascade — 각 페이지/화살표가 개별 보더 박스로 렌더되고 활성 페이지는 캐포비 시그니처 검정 채움(Figma 3001:31310 배너광고 리포트). 마크업/props 는 base 와 동일.',
+      },
+    },
+  },
+  render: () => (
+    <div data-brand="cashwalk-biz">
+      <PaginationExample page={1} totalPages={5} siblings={2} onPageChange={() => {}} />
+    </div>
+  ),
+};
