@@ -495,7 +495,8 @@ export async function findIcon(args: {
  */
 // export: find-slim.test.ts 의 응답 슬림(토큰 절감) 회귀 테스트용 (런타임 동작 변경 없음).
 export function findToken(args: { group?: string; query?: string; brand?: string }) {
-  const brand = args.brand?.trim().toLowerCase() || undefined;
+  const requestedBrand = args.brand?.trim().toLowerCase() || undefined;
+  const brand = requestedBrand ? (canonicalBrandSlug(requestedBrand) ?? requestedBrand) : undefined;
   // brand 필터:
   //  - 미지정 → base(shared, brands 필드 없음)만. 브랜드 고유 토큰이 크로스브랜드로
   //    새는 것을 막아 기존 nudge 워크플로우와 동일(예: mint 안 보임).
@@ -535,6 +536,7 @@ export function findToken(args: { group?: string; query?: string; brand?: string
       "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. Add `brand` (e.g. 'geniet', 'cashpobi') to scope to a brand's tokens + brand-specific values. No-arg call returns only the summary to save tokens.",
     total: pool.length,
     ...(brand ? { brand } : {}),
+    ...(requestedBrand && brand && requestedBrand !== brand ? { requestedBrand } : {}),
     groups,
   };
 }
@@ -543,26 +545,10 @@ function visualReferencePrompt(toolName: string) {
   return {
     rule: "visual-reference-first-response",
     tool: toolName,
+    required: true,
     requiredFirstResponseQuestion: VISUAL_REFERENCE_QUESTION,
-    repeatPolicy:
-      "Ask once per mockup task. SKIP ONLY IF (A) the user already answered in the CURRENT conversation OR (B) references.md/.references exists AND its first line is `task: <slug>` matching the current task scope (brand + screen). If references.md exists but is for a previous/unrelated task (different brand, different screen, stale slug), TREAT IT AS ABSENT and ask again — do not infer 'already answered' from file existence alone.",
-    instruction:
-      "For any mockup/screen/page creation request, ask this before implementation. If the user already provided references, ask whether to use those as the visual source of truth and whether there are additional good/bad references.",
-    afterAnswer:
-      "Create references.md in the mockup workspace root. FIRST LINE MUST be `task: <brand>-<screen-slug>` (e.g. `task: geniet-diary-hub`). Then lines like: [good] source=<figma-url|image-filename> caption=<1-line reason> and [bad] source=<figma-url|image-filename> caption=<1-line reason>.",
-    acceptedSourceTypes:
-      "ONLY accept as `source`: Figma URLs (figma.com/...), image files (.png/.jpg/.jpeg/.webp/.gif/.svg), or screenshot filenames. REJECT: .md/.txt/.pdf/PRD/spec/요구사항 문서 — text documents are SPECs, not visual references. If the user only provides a text PRD, you MUST still ask for at least 1 visual (Figma node or screenshot). Do NOT self-justify 'PRD has ASCII layout / color spec, so it counts as visual'.",
-    useReferences:
-      "Use MCP-bundled component/pattern references from get_guide responses first as the DS baseline (figmaNodeUrl, references[], imageAbsolutePath). Then read task-specific references.md and write a short visual plan that maps good references to concrete layout/spacing/typography/color decisions and bad references to explicit avoid rules. In the final response, summarize both MCP reference cues and task reference cues that were applied.",
-    enforcement:
-      "REQUIRED first-response gate. NOT a 'soft prompt' — skipping is a process violation that users have flagged repeatedly. Even when (a) user tone sounds decisive ('그냥 만들어줘', 'PRD 지켜서'), (b) PRD has detailed visual spec, (c) auto-mode is active, (d) a stale references.md exists — ALL of these have been used as past justifications for skipping and ALL are invalid. Surface the question first; await user reply.",
-    knownBypassPatterns: [
-      "stale-references-md: references.md from a previous unrelated task → treated as 'answered'. Fix: check `task:` slug.",
-      "prd-as-visual: text PRD with ASCII/spec → self-justified as visual reference. Fix: text ≠ visual; require Figma URL or image.",
-      "decisive-tone: '바로 만들어줘' / 'PRD 지켜서' → interpreted as 'skip questions'. Fix: tone does not override gate.",
-      "soft-prompt-misread: old 'soft prompt' wording → interpreted as optional. Fix: this gate is REQUIRED.",
-      "checklist-omission: memory/checklist mentions later steps but not this gate → gate demoted to advisory. Fix: this gate runs BEFORE every other checklist item.",
-    ],
+    fullGuide: "pattern:visual-reference",
+    next: "Ask this before code or DS lookup. After the user answers, write references.md with task:<brand>-<screen-slug> and [good]/[bad] visual sources. Full gate details: get_guide({ topic:'pattern:visual-reference' }).",
   };
 }
 
@@ -695,6 +681,26 @@ function attachScoreGate<T>(result: T): T {
     return { ...(result as Record<string, unknown>), scoreGate } as T;
   }
   return result;
+}
+
+function summarizeObservabilityResults(
+  results: Array<{ ok?: boolean; path?: string; error?: string; status?: number }>,
+) {
+  const ok = results.filter((r) => r.ok === true).length;
+  const failed = results.length - ok;
+  const failedPaths = results
+    .filter((r) => r.ok !== true)
+    .map((r) => r.path)
+    .filter((p): p is string => typeof p === "string");
+  return {
+    count: results.length,
+    ok,
+    failed,
+    notice:
+      failed > 0
+        ? `observability ${failed}/${results.length} failed${failedPaths.length > 0 ? `: ${failedPaths.join(", ")}` : ""}`
+        : `observability ${ok}/${results.length} ok`,
+  };
 }
 
 function getTokenLookupScore(token: Manifest["tokens"][number], query: string): number {
@@ -842,7 +848,15 @@ configureClientIdentity({
 
 const toolHandlers = {
   get_brand: (args: ToolArgs) =>
-    withVisualReferencePrompt("get_brand", getBrand(args as { brand?: string })),
+    withVisualReferencePrompt(
+      "get_brand",
+      getBrand(
+        args as {
+          brand?: string;
+          assetKind?: "logos" | "snsLogos" | "profileImages" | "illustrations" | "marathonEvents";
+        },
+      ),
+    ),
   find_component: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "find_component",
@@ -1136,7 +1150,10 @@ registerToolHandlers(server, toolHandlers, {
         typeof result === "object" &&
         !Array.isArray(result)
       ) {
-        next = { ...(result as Record<string, unknown>), _observability: observability };
+        next = {
+          ...(result as Record<string, unknown>),
+          _observability: summarizeObservabilityResults(observability),
+        };
       }
     } catch {
       /* sink 장애가 툴 응답을 깨지 않게 */

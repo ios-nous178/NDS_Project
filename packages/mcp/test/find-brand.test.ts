@@ -53,9 +53,14 @@ describe("find_token brand scoping", () => {
 
   it("base = shared-only, brand 풀 = shared + 고유 토큰(superset)", () => {
     const base = findToken({}) as { total: number; brand?: string };
-    const cashpobi = findToken({ brand: "cashpobi" }) as { total: number; brand: string };
+    const cashpobi = findToken({ brand: "cashpobi" }) as {
+      total: number;
+      brand: string;
+      requestedBrand: string;
+    };
     expect(base.brand).toBeUndefined();
-    expect(cashpobi.brand).toBe("cashpobi");
+    expect(cashpobi.brand).toBe("cashwalk-biz");
+    expect(cashpobi.requestedBrand).toBe("cashpobi");
     expect(cashpobi.total).toBeGreaterThan(base.total);
   });
 });

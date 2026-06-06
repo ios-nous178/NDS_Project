@@ -456,6 +456,7 @@ function pickSections<T extends Record<string, unknown>>(
   const META_KEYS = new Set([
     "_advisory",
     "_htmlAdvisory",
+    "_principlesDigest",
     "_nextSuggestion",
     "_readyMade",
     "intent",
@@ -537,6 +538,36 @@ function viewToSections(topic: string, view: GuideView): string[] | undefined {
   if (isPattern) return ["summary", "rules", "avoid"];
   if (isComponent) return ["summary", "pitfalls", "recommended"];
   return ["summary", "dos", "donts", "bannedPatterns"]; // principles / dos-donts 등
+}
+
+const DEFAULT_BATCH_PRINCIPLES_SECTIONS = ["colors", "typography", "spacing", "shapes"];
+
+/**
+ * topics[] 배치는 "한 번에 많이 가져오기" 경로라 full default 가 토큰을 크게 먹는다.
+ * 명시적 sections/aspects/view 가 없을 때만 topic 별 안전한 슬림 기본값을 준다.
+ * - component/pattern: 보통 필요한 복붙 예시 중심(examples)
+ * - principles/dos-donts/admin-cms 등 fixed topic: examples 키가 없어 에러가 나지 않도록
+ *   실제 top-level section 으로 축약
+ * - view:'full' 명시 시 기존 full 응답 유지
+ */
+function defaultBatchArgsForTopic(
+  topic: string,
+): Pick<Parameters<typeof getGuide>[0], "view" | "sections"> {
+  if (topic.startsWith("component:") || topic.startsWith("pattern:")) {
+    return { view: "examples" };
+  }
+  switch (topic) {
+    case "principles":
+      return { sections: DEFAULT_BATCH_PRINCIPLES_SECTIONS };
+    case "dos-donts":
+      return { sections: ["dos", "donts"] };
+    case "ux-writing":
+      return { sections: ["voiceTone", "microcopy", "eapDomain"] };
+    case "admin-cms":
+      return { sections: ["layout", "searchForm", "table", "forms", "colors"] };
+    default:
+      return {};
+  }
 }
 
 /** aspects(친화적 이름)를 pickSections 용 top-level 섹션 키로 펼친다. unknown 은 따로 반환. */
@@ -724,22 +755,26 @@ export function getGuide(args: {
     ? args.topics.filter((topic): topic is string => typeof topic === "string" && topic.length > 0)
     : undefined;
   if (topics && topics.length > 0) {
-    const entries = topics.map(
-      (topic) =>
-        [
+    const hasExplicitSlice =
+      args.view !== undefined ||
+      (Array.isArray(args.sections) && args.sections.length > 0) ||
+      (aspectList && aspectList.length > 0);
+    const entries = topics.map((topic) => {
+      const batchDefaults = hasExplicitSlice ? {} : defaultBatchArgsForTopic(topic);
+      return [
+        topic,
+        getGuide({
           topic,
-          getGuide({
-            topic,
-            intent: args.intent,
-            target: args.target,
-            view: args.view,
-            sections: args.sections,
-            aspects: aspectList, // principles 자식에서만 실제 적용된다
-            brand: args.brand,
-            cwd: args.cwd, // principles 자식에서 학습된 원칙 승격에 사용
-          }) as Record<string, unknown>,
-        ] as const,
-    );
+          intent: args.intent,
+          target: args.target,
+          view: args.view ?? batchDefaults.view,
+          sections: args.sections ?? batchDefaults.sections,
+          aspects: aspectList, // principles 자식에서만 실제 적용된다
+          brand: args.brand,
+          cwd: args.cwd, // principles 자식에서 학습된 원칙 승격에 사용
+        }) as Record<string, unknown>,
+      ] as const;
+    });
     // ② 배치 보일러플레이트 dedup: 모든 child 에 동일 값으로 들어가는 키(_principlesDigest 등)는
     //    최상위 _shared 로 1회만 올리고 child 에서 제거 — 토픽 수만큼 반복되던 중복 제거.
     const children = entries.map(([, v]) => v);
@@ -758,7 +793,7 @@ export function getGuide(args: {
     }
     return {
       _advisory:
-        "Batch get_guide response. Use topics[] to avoid repeated MCP calls; each key contains the same result shape as a single topic call. 응답이 크면 view:'examples'|'rules' 로 슬림하게 받으세요. 모든 토픽 공통 값은 _shared 로 한 번만 노출됩니다.",
+        "Batch get_guide response. Default batch view is slim; pass view:'full' for full matrices/references. 모든 토픽 공통 값은 _shared 로 한 번만 노출됩니다.",
       ...(Object.keys(shared).length > 0 ? { _shared: shared } : {}),
       topics: Object.fromEntries(entries),
     };
@@ -1427,7 +1462,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
 - 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA에는 붙이지 않는다.
 - 단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시한다.
-- 브랜드 모드(\`brand='geniet'\`/\`'trost'\`)에서 작업할 때는 해당 브랜드 prefix 아이콘(예: \`GenietRecordIcon\`, \`GenietGpointIcon\`)을 공용 아이콘보다 **우선 사용**. 매칭 가능한 brand 아이콘 목록은 \`get_brand({ brand: '<slug>' }).detail.brandIcons\` 로 조회. 공통 컴포넌트(Footer/BottomNav 등)의 *구현* 안에 \`if (brand === ...)\` 분기를 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.
+- 브랜드 모드(\`brand='geniet'\`/\`'trost'\`)에서 작업할 때는 해당 브랜드 prefix 아이콘(예: \`GenietRecordIcon\`, \`GenietGpointIcon\`)을 공용 아이콘보다 **우선 사용**. 매칭 가능한 brand 아이콘은 \`get_brand({ brand: '<slug>' }).detail.brandIconLookup\` 또는 \`find_icon({ query: '<BrandPrefix>' })\` 로 조회. 공통 컴포넌트(Footer/BottomNav 등)의 *구현* 안에 \`if (brand === ...)\` 분기를 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.
 - 브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(\`HomeIcon\`, \`SearchIcon\` 등)을 먼저 사용하고, 그 다음에만 \`MockupLinear*Icon\` / \`MockupBold*Icon\` 을 fallback 으로 사용한다. 자체 생성 SVG는 마지막 수단이다.
 - primary solid 버튼은 한 화면의 대표 액션 1개만 사용한다.
 - Chip/Badge는 상태, 분류, 짧은 속성 표시용으로만 사용하고 안내문/섹션 장식으로 남발하지 않는다.

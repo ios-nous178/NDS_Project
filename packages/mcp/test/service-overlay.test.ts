@@ -156,7 +156,7 @@ describe("service overlay merge — Modal (overlay + matrixOverrides 동시 적�
       "bg #DDDDDD (atomic Neutral/400) + text #FFFFFF (Figma 3098:1079).",
     );
     expect(state["primary/solid/disabled"]).not.toContain("NudgeEAP"); // base 텍스트 사라짐
-    expect(state.hover).toContain("primary=#017EE4"); // base 의 다른 키는 보존
+    expect(state.hover).toContain("primary=var(--semantic-fill-brand-hover)"); // base 의 다른 키는 보존
 
     // dimensions
     const dims = result.dimensions as Record<string, string>;
