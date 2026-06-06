@@ -8,16 +8,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const catalogPath = path.join(ROOT, "packages/mcp/catalog.json");
 const manifestPath = path.join(ROOT, "packages/mcp/manifest.json");
+const skipBuild = process.argv.includes("--no-build");
 
 const previousCatalog = readWorkingTreeCatalog();
 const previousManifestText = fs.existsSync(manifestPath)
   ? fs.readFileSync(manifestPath, "utf8")
   : "";
 
-execFileSync("pnpm", ["--filter", "@nudge-design/mcp", "build:manifest"], {
-  cwd: ROOT,
-  stdio: "inherit",
-});
+if (!skipBuild) {
+  execFileSync("pnpm", ["--filter", "@nudge-design/mcp", "build:manifest"], {
+    cwd: ROOT,
+    stdio: "inherit",
+  });
+}
 
 if (previousCatalog?.generatedAt && fs.existsSync(catalogPath)) {
   const nextCatalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));

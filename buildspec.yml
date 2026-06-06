@@ -23,7 +23,7 @@ phases:
   pre_build:
     commands:
       - pnpm install --frozen-lockfile
-      - pnpm generate:brand-coverage
+      - pnpm generate:ssot
 
   build:
     commands:

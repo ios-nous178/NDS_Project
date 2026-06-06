@@ -25,6 +25,8 @@ export type { BadgeColor, BadgeSize, BadgeVariant } from "./components/nds-badge
 export { NdsBanner } from "./components/nds-banner.js";
 export type { BannerVariant } from "./components/nds-banner.js";
 
+export { NdsTipCard } from "./components/nds-tip-card.js";
+
 export { NdsNoticeAlert } from "./components/nds-notice-alert.js";
 export type { NoticeAlertVariant } from "./components/nds-notice-alert.js";
 
@@ -139,8 +141,6 @@ export { NdsStarRating } from "./components/nds-star-rating.js";
 export { NdsNumberStepper } from "./components/nds-number-stepper.js";
 export type { NumberStepperSize } from "./components/nds-number-stepper.js";
 
-export { NdsStepProgress } from "./components/nds-step-progress.js";
-
 export { NdsSlider } from "./components/nds-slider.js";
 
 export { NdsSegmented } from "./components/nds-segmented.js";
@@ -157,22 +157,12 @@ export type { CountdownFormat } from "./components/nds-countdown-timer.js";
 
 export { NdsExpandableText } from "./components/nds-expandable-text.js";
 
-export { NdsCardVisual } from "./components/nds-card-visual.js";
-export type { CardVisualBrand } from "./components/nds-card-visual.js";
-
 export { NdsOrderSummaryCard } from "./components/nds-order-summary-card.js";
-
-export { NdsStreakCard } from "./components/nds-streak-card.js";
 
 export { NdsChatBubble } from "./components/nds-chat-bubble.js";
 export type { ChatRole, ChatGroupPosition } from "./components/nds-chat-bubble.js";
 
-export { NdsJournalEntry } from "./components/nds-journal-entry.js";
-
 export { NdsContentViewer } from "./components/nds-content-viewer.js";
-
-export { NdsBreathingGuide } from "./components/nds-breathing-guide.js";
-export type { BreathingPhaseKind } from "./components/nds-breathing-guide.js";
 
 export { NdsQuickActionGrid } from "./components/nds-quick-action-grid.js";
 
@@ -191,8 +181,8 @@ export {
   NdsAccordionContent,
 } from "./components/nds-accordion.js";
 
-export { NdsTimeline, NdsTimelineItem } from "./components/nds-timeline.js";
-export type { TimelineStatus } from "./components/nds-timeline.js";
+export { NdsTimeline } from "./components/nds-timeline.js";
+export type { TimelineStatus, TimelineMode, TimelineDirection } from "./components/nds-timeline.js";
 
 export { NdsAppointmentCard } from "./components/nds-appointment-card.js";
 export type { AppointmentStatus, AppointmentMode } from "./components/nds-appointment-card.js";
@@ -214,8 +204,6 @@ export type { FABSize, FABColor, FABPosition } from "./components/nds-fab.js";
 export { NdsPriceTag } from "./components/nds-price-tag.js";
 export type { PriceTagSize } from "./components/nds-price-tag.js";
 
-export { NdsMoodSelector } from "./components/nds-mood-selector.js";
-
 export { NdsCounselorCard } from "./components/nds-counselor-card.js";
 
 export { NdsNotificationItem } from "./components/nds-notification-item.js";
@@ -223,12 +211,8 @@ export type { NotificationKind } from "./components/nds-notification-item.js";
 
 export { NdsPageHeader } from "./components/nds-page-header.js";
 
-export { NdsGreetingHeader } from "./components/nds-greeting-header.js";
-
 export { NdsUserCard } from "./components/nds-user-card.js";
 export type { UserCardLayout } from "./components/nds-user-card.js";
-
-export { NdsReactionPicker } from "./components/nds-reaction-picker.js";
 
 export { NdsFloatingCtaBanner } from "./components/nds-floating-cta-banner.js";
 export type { FloatingCtaBannerSize } from "./components/nds-floating-cta-banner.js";
@@ -241,8 +225,6 @@ export { NdsCommentItem } from "./components/nds-comment-item.js";
 
 export { NdsLikeButton } from "./components/nds-like-button.js";
 export type { LikeButtonSize } from "./components/nds-like-button.js";
-
-export { NdsCouponCard } from "./components/nds-coupon-card.js";
 
 export { NdsMediaCard } from "./components/nds-media-card.js";
 
@@ -265,9 +247,6 @@ export { NdsConsentChecklist } from "./components/nds-consent-checklist.js";
 
 export { NdsVotePoll } from "./components/nds-vote-poll.js";
 
-export { NdsMedicationItem } from "./components/nds-medication-item.js";
-export type { MedicationTime } from "./components/nds-medication-item.js";
-
 export { NdsPinPad } from "./components/nds-pin-pad.js";
 
 export { NdsProductCard } from "./components/nds-product-card.js";
@@ -284,9 +263,6 @@ export { NdsTimePicker } from "./components/nds-time-picker.js";
 
 export { NdsMediaThumbnail } from "./components/nds-media-thumbnail.js";
 export type { MediaRounded, MediaFit } from "./components/nds-media-thumbnail.js";
-
-export { NdsActivityTimeline } from "./components/nds-activity-timeline.js";
-export type { ActivityTimelineStatus } from "./components/nds-activity-timeline.js";
 
 export { NdsCalendar } from "./components/nds-calendar.js";
 
@@ -306,8 +282,6 @@ export { NdsDateRangePicker } from "./components/nds-date-range-picker.js";
 export { NdsDsHighlight } from "./components/nds-ds-highlight.js";
 export type { DSHighlightMode } from "./components/nds-ds-highlight.js";
 
-export { NdsEmotionHeatmap } from "./components/nds-emotion-heatmap.js";
-
 export { NdsFileUpload } from "./components/nds-file-upload.js";
 
 export { NdsImageCropper } from "./components/nds-image-cropper.js";
@@ -315,8 +289,6 @@ export { NdsImageCropper } from "./components/nds-image-cropper.js";
 export { NdsImageUpload } from "./components/nds-image-upload.js";
 
 export { NdsLightbox } from "./components/nds-lightbox.js";
-
-export { NdsMentionInput } from "./components/nds-mention-input.js";
 
 export { NdsMultiStepForm } from "./components/nds-multi-step-form.js";
 
@@ -328,9 +300,6 @@ export type { SegmentedControlSize } from "./components/nds-segmented-control.js
 export { NdsSidebar } from "./components/nds-sidebar.js";
 
 export { NdsSignaturePad } from "./components/nds-signature-pad.js";
-
-export { NdsStatusTimeline } from "./components/nds-status-timeline.js";
-export type { StatusTimelineDirection } from "./components/nds-status-timeline.js";
 
 export { NdsVideoPlayer } from "./components/nds-video-player.js";
 

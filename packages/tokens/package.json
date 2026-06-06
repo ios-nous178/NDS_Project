@@ -23,7 +23,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && node scripts/generate-css.js",
+    "build": "rm -rf dist && tsc && node scripts/generate-css.js",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

@@ -7,19 +7,21 @@ import {
   buildManifest,
   htmlStatus,
   reactStatus,
-  writeManifestJson,
+  serializeManifest,
 } from "./coverage-manifest.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const metadataPath = path.join(rootDir, "metadata", "tdsComponents.json");
+const manifestJsonPath = path.join(rootDir, "metadata", "coverage-manifest.json");
 const outputPath = path.join(rootDir, "docs", "components", "brand-coverage.mdx");
+const checkMode = process.argv.includes("--check");
 
 const data = JSON.parse(await fs.readFile(metadataPath, "utf8"));
 
 const manifest = await buildManifest();
-const manifestJsonPath = await writeManifestJson(manifest);
+const previousManifestGeneratedAt = await readPreviousGeneratedAt(manifestJsonPath);
 
 /** 셀 마크: ● 코드+브랜드Figma / ○ 코드만 / — 없음. brandChrome 행은 브랜드 chrome 폴더 기준. */
 function glyph(status) {
@@ -131,6 +133,52 @@ lines.push(
   `_데이터 출처: \`metadata/tdsComponents.json\` · \`metadata/coverage-manifest.json\` (parsed from \`packages/{react,html}/src/index.ts\` + \`packages/react/src/{brand}/\`)_`,
 );
 
-await fs.writeFile(outputPath, `${lines.join("\n").trimEnd()}\n`, "utf8");
-console.log(`Generated ${path.relative(rootDir, outputPath)}`);
-console.log(`Generated ${path.relative(rootDir, manifestJsonPath)}`);
+const docsBody = `${lines.join("\n").trimEnd()}\n`;
+const manifestBody = `${JSON.stringify(
+  serializeManifest(manifest, previousManifestGeneratedAt ?? undefined),
+  null,
+  2,
+)}\n`;
+
+if (checkMode) {
+  const [currentDocs, currentManifest] = await Promise.all([
+    readExistingText(outputPath),
+    readExistingText(manifestJsonPath),
+  ]);
+  if (currentDocs !== docsBody || currentManifest !== manifestBody) {
+    console.error(
+      "[generate-brand-coverage] docs/components/brand-coverage.mdx 또는 metadata/coverage-manifest.json 이 stale 합니다. " +
+        "Run `pnpm generate:brand-coverage`.",
+    );
+    process.exit(1);
+  }
+} else {
+  await Promise.all([
+    fs.writeFile(outputPath, docsBody, "utf8"),
+    fs.writeFile(manifestJsonPath, manifestBody, "utf8"),
+  ]);
+}
+
+console.log(
+  checkMode
+    ? `[generate-brand-coverage] up to date (${path.relative(rootDir, outputPath)}, ${path.relative(rootDir, manifestJsonPath)})`
+    : `Generated ${path.relative(rootDir, outputPath)}\nGenerated ${path.relative(rootDir, manifestJsonPath)}`,
+);
+
+async function readPreviousGeneratedAt(filePath) {
+  try {
+    const text = await fs.readFile(filePath, "utf8");
+    const json = JSON.parse(text);
+    return typeof json.generatedAt === "string" ? json.generatedAt : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+async function readExistingText(filePath) {
+  try {
+    return await fs.readFile(filePath, "utf8");
+  } catch {
+    return null;
+  }
+}
