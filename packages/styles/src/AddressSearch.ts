@@ -14,7 +14,6 @@ const AS_CLASS = "nds-address-search";
 const AS_LABEL_CLASS = `${AS_CLASS}__label`;
 const AS_FIELD_ROW_CLASS = `${AS_CLASS}__field-row`;
 const AS_INPUT_CLASS = `${AS_CLASS}__input`;
-const AS_BTN_CLASS = `${AS_CLASS}__btn`;
 const AS_RESULT_CLASS = `${AS_CLASS}__result`;
 const AS_RESULT_LIST_CLASS = `${AS_CLASS}__result-list`;
 const AS_RESULT_ITEM_CLASS = `${AS_CLASS}__result-item`;
@@ -57,20 +56,10 @@ export const asStyles = `
   :where(.${AS_INPUT_CLASS}:focus) { outline: none; border-color: ${cv.borderRole.brand}; }
   :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
 
-  :where(.${AS_BTN_CLASS}) {
-    height: ${sizing.input.default}px;
-    padding: 0 var(--semantic-inset-card);
-    border-radius: ${radius.md}px;
-    border: none;
-    background: ${cv.surface.inverse};
-    color: ${cv.surface.default};
-    cursor: pointer;
-    font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.semibold};
-    flex-shrink: 0;
-  }
-  :where(.${AS_BTN_CLASS}:hover) { opacity: 0.85; }
+  /* 검색 버튼은 DS Button(.nds-button) 을 합성 — 비주얼은 Button 토큰이 SSOT.
+     여기서는 field-row 안에서 줄어들지 않도록 레이아웃만 고정한다.
+     (react: <button class="nds-button">, html: <nds-button>(display:contents) > inner .nds-button — 둘 다 descendant 매칭) */
+  :where(.${AS_FIELD_ROW_CLASS}) :where(.nds-button) { flex-shrink: 0; }
 
   :where(.${AS_RESULT_LIST_CLASS}) {
     list-style: none;

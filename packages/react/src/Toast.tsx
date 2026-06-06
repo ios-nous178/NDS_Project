@@ -6,16 +6,17 @@ import { WebPortal } from "./internal/web";
 const TOAST_CLASS = "nds-toast";
 const TOAST_VIEWPORT_CLASS = `${TOAST_CLASS}__viewport`;
 const TOAST_ITEM_CLASS = `${TOAST_CLASS}__item`;
-const TOAST_ICON_CLASS = `${TOAST_CLASS}__icon`;
 const TOAST_MESSAGE_CLASS = `${TOAST_CLASS}__message`;
-const TOAST_ACTION_CLASS = `${TOAST_CLASS}__action`;
-const TOAST_CLOSE_CLASS = `${TOAST_CLASS}__close`;
 
 /* ─── Types ─── */
 
 export type ToastVariant = "default" | "success" | "error" | "warning" | "info";
 export type ToastPosition = "top" | "bottom" | "top-right";
 
+/**
+ * Toast 는 **인터랙션 없는 일시 메시지** 전용 — 자동으로 사라지므로 액션(되돌리기/다시시도)이나
+ * 닫기 버튼을 두지 않는다. 액션·닫기·브랜드 카드(캐포비 흰 카드)가 필요하면 Snackbar 를 사용한다.
+ */
 export interface ToastData {
   /** 토스트 고유 식별자 */
   id: string;
@@ -25,11 +26,6 @@ export interface ToastData {
   variant?: ToastVariant;
   /** 자동 닫힘 시간 (ms). 0이면 자동 닫힘 없음 */
   duration?: number;
-  /** 액션 버튼 (라벨 + 클릭 콜백) */
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
 }
 /* ─── Utils ─── */
 
@@ -95,7 +91,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
         message,
         variant: options?.variant ?? "default",
         duration: options?.duration ?? duration,
-        action: options?.action,
       };
 
       setToasts((prev) => {
@@ -138,50 +133,6 @@ const ToastViewport: React.FC = () => {
   );
 };
 
-/* ─── Status / close icons (캐포비 흰 카드 토스트에서만 CSS 로 노출) ─── */
-
-const StatusIcon: React.FC<{ variant: ToastVariant }> = ({ variant }) => {
-  if (variant === "default") return null;
-  return (
-    <span className={TOAST_ICON_CLASS} aria-hidden="true">
-      {/* 캐포비 토스트 아이콘 = 둥근 사각형 칩(currentColor) + 흰 글리프. 색은 CSS 의 state 별 토큰. */}
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-        <rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" />
-        {variant === "success" && (
-          <path
-            d="M8 12.3l2.8 2.8 5.4-5.8"
-            stroke="#fff"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        )}
-        {variant === "error" && (
-          <path d="M9 9l6 6M15 9l-6 6" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-        )}
-        {variant === "warning" && (
-          <>
-            <path d="M12 7.5v5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="12" cy="16" r="1.1" fill="#fff" />
-          </>
-        )}
-        {variant === "info" && (
-          <>
-            <circle cx="12" cy="8" r="1.1" fill="#fff" />
-            <path d="M12 11v5.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-          </>
-        )}
-      </svg>
-    </span>
-  );
-};
-
-const CloseIcon: React.FC = () => (
-  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-  </svg>
-);
-
 /* ─── Toast Item (internal) ─── */
 
 interface ToastItemProps {
@@ -221,28 +172,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ data, onDismiss }) => {
       aria-live={data.variant === "error" ? "assertive" : undefined}
       onAnimationEnd={handleAnimationEnd}
     >
-      <StatusIcon variant={data.variant ?? "default"} />
       <span className={TOAST_MESSAGE_CLASS}>{data.message}</span>
-      {data.action && (
-        <button
-          type="button"
-          className={TOAST_ACTION_CLASS}
-          onClick={() => {
-            data.action!.onClick();
-            setExiting(true);
-          }}
-        >
-          {data.action.label}
-        </button>
-      )}
-      <button
-        type="button"
-        className={TOAST_CLOSE_CLASS}
-        aria-label="닫기"
-        onClick={() => setExiting(true)}
-      >
-        <CloseIcon />
-      </button>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React from "react";
+import { circularMetrics } from "./viz-svg";
 
 /* ─── Constants ─── */
 
@@ -37,8 +38,6 @@ export interface CircularProgressProps extends React.HTMLAttributes<HTMLDivEleme
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
-const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
-
 /* ─── Component ─── */
 
 export const CircularProgress = React.forwardRef<HTMLDivElement, CircularProgressProps>(
@@ -60,13 +59,12 @@ export const CircularProgress = React.forwardRef<HTMLDivElement, CircularProgres
     },
     ref,
   ) => {
-    const stroke = thickness ?? Math.max(4, Math.round(size / 12));
-    const radius = (size - stroke) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const ratio = clamp(value / max, 0, 1);
-    const dashOffset = circumference * (1 - ratio);
-    const percent = Math.round(ratio * 100);
-    const valueSize = Math.max(12, Math.round(size / 5));
+    const { stroke, radius, circumference, dashOffset, percent, valueSize } = circularMetrics(
+      value,
+      max,
+      size,
+      thickness,
+    );
 
     const styleVars: React.CSSProperties = {
       "--nds-cp-value-size": `${valueSize}px`,

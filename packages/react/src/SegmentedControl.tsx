@@ -5,10 +5,12 @@ import React from "react";
 const SC_CLASS = "nds-segmented";
 const SC_ROOT_CLASS = `${SC_CLASS}__root`;
 const SC_ITEM_CLASS = `${SC_CLASS}__item`;
+const SC_ICON_CLASS = `${SC_CLASS}__icon`;
 
 /* ─── Types ─── */
 
-export type SegmentedControlSize = "sm" | "md";
+/** sm 32 / md 36 / lg 40px(PC — 구 Tabs.segment 흡수, 아이콘 동반 가능) */
+export type SegmentedControlSize = "sm" | "md" | "lg";
 
 /**
  * 시각 변형.
@@ -23,6 +25,8 @@ export interface SegmentedOption<T extends string = string> {
   value: T;
   /** 표시 라벨 */
   label: React.ReactNode;
+  /** 라벨 앞 아이콘 (선택 — PC 세그먼트 네비 등) */
+  icon?: React.ReactNode;
   /** 비활성화 */
   disabled?: boolean;
 }
@@ -91,6 +95,11 @@ export const SegmentedControl = <T extends string = string>({
             }}
             className={SC_ITEM_CLASS}
           >
+            {opt.icon && (
+              <span className={SC_ICON_CLASS} aria-hidden="true">
+                {opt.icon}
+              </span>
+            )}
             {opt.label}
           </button>
         );

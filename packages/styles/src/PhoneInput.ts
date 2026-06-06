@@ -17,13 +17,14 @@ const PI_LABEL_CLASS = `${PI_CLASS}__label`;
 const PI_FIELD_CLASS = `${PI_CLASS}__field`;
 const PI_FIELD_WRAP_CLASS = `${PI_CLASS}__field-wrap`;
 const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
+const PI_DIAL_CODE_CLASS = `${PI_CLASS}__dial-code`;
 const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
-const PI_FLAG_CLASS = `${PI_CLASS}__flag`;
 const PI_DIVIDER_CLASS = `${PI_CLASS}__divider`;
 const PI_INPUT_CLASS = `${PI_CLASS}__input`;
 const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
 const PI_MENU_CLASS = `${PI_CLASS}__menu`;
 const PI_MENU_ITEM_CLASS = `${PI_CLASS}__menu-item`;
+const PI_MENU_CODE_CLASS = `${PI_CLASS}__menu-code`;
 const PI_MENU_NAME_CLASS = `${PI_CLASS}__menu-name`;
 const PI_MENU_DIAL_CLASS = `${PI_CLASS}__menu-dial`;
 
@@ -89,9 +90,8 @@ export const phoneInputStyles = `
 
   :where(.${PI_DIAL_CLASS}:disabled) { cursor: not-allowed; opacity: 0.6; }
 
-  :where(.${PI_FLAG_CLASS}) {
-    font-size: 18px;
-    line-height: 1;
+  :where(.${PI_DIAL_CODE_CLASS}) {
+    font-variant-numeric: tabular-nums;
   }
 
   :where(.${PI_CHEVRON_CLASS}) {
@@ -141,6 +141,15 @@ export const phoneInputStyles = `
   :where(.${PI_MENU_ITEM_CLASS}:hover),
   :where(.${PI_MENU_ITEM_CLASS}[data-selected="true"]) {
     background: ${cv.surface.page};
+  }
+
+  :where(.${PI_MENU_CODE_CLASS}) {
+    flex-shrink: 0;
+    min-width: 22px;
+    color: ${cv.textRole.subtle};
+    font-size: ${typeScale.caption1.fontSize}px;
+    font-weight: ${fontWeight.semibold};
+    letter-spacing: 0.02em;
   }
 
   :where(.${PI_MENU_NAME_CLASS}) {

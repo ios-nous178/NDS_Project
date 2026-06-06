@@ -36,9 +36,12 @@ describe("nds-address-search — DOM parity with React AddressSearch", () => {
     expect(input.value).toBe("테헤란");
     expect(input.placeholder).toBe("도로명 또는 지번 주소");
 
-    const button = root.querySelector("button.nds-address-search__btn") as HTMLButtonElement;
-    expect(button.textContent).toBe("검색");
-    expect(button.disabled).toBe(false);
+    // 검색 버튼은 DS Button(nds-button) 합성 (size="field")
+    const button = root.querySelector("nds-button") as HTMLElement;
+    expect(button).not.toBeNull();
+    expect(button.getAttribute("size")).toBe("field");
+    expect(button.textContent?.trim()).toBe("검색");
+    expect(button.hasAttribute("disabled")).toBe(false);
 
     // 검색 전에는 결과 영역이 표시되지 않음
     expect(root.querySelector(".nds-address-search__result")).toBeNull();
@@ -73,7 +76,7 @@ describe("nds-address-search — DOM parity with React AddressSearch", () => {
       searches.push((e as CustomEvent<{ query: string }>).detail.query);
     });
 
-    (el.querySelector("button.nds-address-search__btn") as HTMLButtonElement).click();
+    (el.querySelector("nds-button") as HTMLElement).click();
     await flush();
     expect(searches).toEqual(["강남"]);
 
@@ -153,9 +156,9 @@ describe("nds-address-search — DOM parity with React AddressSearch", () => {
     el.setAttribute("loading", "");
     document.body.appendChild(el);
     await flush();
-    const button = el.querySelector("button.nds-address-search__btn") as HTMLButtonElement;
-    expect(button.disabled).toBe(true);
-    expect(button.textContent).toBe("검색 중...");
+    const button = el.querySelector("nds-button") as HTMLElement;
+    expect(button.hasAttribute("disabled")).toBe(true);
+    expect(button.textContent?.trim()).toBe("검색 중...");
   });
 
   it("error sets input data-error and helper data-error", async () => {

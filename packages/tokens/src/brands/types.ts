@@ -250,6 +250,16 @@ export interface ComponentOverrides {
   /** ActionChip — 캐포비 radius 6 / bg #ECECEC. 다른 브랜드는 radius.sm(4) / fill.neutralSubtle fallback. */
   "action-chip"?: { radius?: ComponentValue; bg?: ComponentValue };
   /**
+   * Chip(SelectChip) selected 상태의 채움 위 텍스트/보더/배경 override.
+   * 캐포비는 노랑 채움 위 가독성을 위해 selectedText=검정(#111). 다른 브랜드는 fallback
+   * (FILL_COLORS — selected 텍스트 inverse 흰) 유지. 좌측 ✓ 체크 아이콘은 currentColor 를 따른다.
+   */
+  chip?: {
+    selectedBackground?: ComponentValue;
+    selectedText?: ComponentValue;
+    selectedBorder?: ComponentValue;
+  };
+  /**
    * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,
    * label Pretendard 10/12. 다른 브랜드는 fallback (active=textRole.normal #333, label 11/14).
    */

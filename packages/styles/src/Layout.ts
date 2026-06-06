@@ -53,7 +53,10 @@ const SHELL_CONTENT_CLASS = `${SHELL_CLASS}__content`;
 export const shellStyles = `
   :where(.${SHELL_CLASS}) {
     display: grid;
-    grid-template-columns: var(--nds-shell-sidebar-width, 240px) 1fr;
+    /* 사이드바 트랙은 실제 사이드바 폭(nds-sidebar = 300px, collapsed 72px)에 맞춰 auto 로 사이징.
+       과거 고정 240px 디폴트는 300px sidebar 가 트랙을 60px 넘쳐 본문을 가리는 회귀를 냈다
+       (캐포비 어드민 '본문이 사이드바에 가려짐'). 커스텀 폭은 --nds-shell-sidebar-width 로 override. */
+    grid-template-columns: var(--nds-shell-sidebar-width, auto) minmax(0, 1fr);
     min-height: 100vh;
     font-family: ${fontFamily.web};
     background: ${cv.surface.subtle};

@@ -25,8 +25,6 @@ export type { BadgeColor, BadgeSize, BadgeVariant } from "./components/nds-badge
 export { NdsBanner } from "./components/nds-banner.js";
 export type { BannerVariant } from "./components/nds-banner.js";
 
-export { NdsTipCard } from "./components/nds-tip-card.js";
-
 export { NdsNoticeAlert } from "./components/nds-notice-alert.js";
 export type { NoticeAlertVariant } from "./components/nds-notice-alert.js";
 
@@ -114,8 +112,12 @@ export { NdsModal } from "./components/nds-modal.js";
 export { NdsSelect, NdsSelectOption } from "./components/nds-select.js";
 export { NdsMultiSelect } from "./components/nds-multi-select.js";
 export { NdsCheckboxTree } from "./components/nds-checkbox-tree.js";
+export { NdsCheckboxGroup } from "./components/nds-checkbox-group.js";
 
 export { NdsToast } from "./components/nds-toast.js";
+
+export { NdsSnackbar } from "./components/nds-snackbar.js";
+export { NdsSnackbarHost } from "./components/nds-snackbar-host.js";
 
 export { NdsToggle } from "./components/nds-toggle.js";
 export type { ToggleSize } from "./components/nds-toggle.js";
@@ -129,8 +131,8 @@ export type { ProgressBarSize } from "./components/nds-progress-bar.js";
 export { NdsSkeleton } from "./components/nds-skeleton.js";
 export type { SkeletonVariant } from "./components/nds-skeleton.js";
 
-export { NdsTitleBlock } from "./components/nds-title-block.js";
-export type { TitleBlockLevel } from "./components/nds-title-block.js";
+export { NdsTitleGroup } from "./components/nds-title-group.js";
+export type { TitleGroupLevel } from "./components/nds-title-group.js";
 
 export { NdsAvatarGroup } from "./components/nds-avatar-group.js";
 
@@ -148,7 +150,11 @@ export type { SegmentedSize } from "./components/nds-segmented.js";
 
 export { NdsActionChip } from "./components/nds-action-chip.js";
 
-export { NdsSelectedItemsPanel, NdsRegionRow } from "./components/nds-selected-items-panel.js";
+export {
+  NdsSelectedItemsPanel,
+  NdsSelectedItemRow,
+  NdsRegionRow,
+} from "./components/nds-selected-items-panel.js";
 
 export { NdsChart } from "./components/nds-chart.js";
 
@@ -186,9 +192,6 @@ export type { TimelineStatus, TimelineMode, TimelineDirection } from "./componen
 
 export { NdsAppointmentCard } from "./components/nds-appointment-card.js";
 export type { AppointmentStatus, AppointmentMode } from "./components/nds-appointment-card.js";
-
-export { NdsAssessmentResultCard } from "./components/nds-assessment-result-card.js";
-export type { AssessmentLevel } from "./components/nds-assessment-result-card.js";
 
 export { NdsAttachmentItem } from "./components/nds-attachment-item.js";
 export type { AttachmentFileType, AttachmentStatus } from "./components/nds-attachment-item.js";
@@ -235,15 +238,11 @@ export { NdsSelectionCard, NdsSelectionCardItem } from "./components/nds-selecti
 export type { SelectionCardMode, SelectionCardLayout } from "./components/nds-selection-card.js";
 export { NdsSelectionButtonGroup } from "./components/nds-selection-button-group.js";
 
-export { NdsShareSheet } from "./components/nds-share-sheet.js";
-
 export { NdsFilterBar } from "./components/nds-filter-bar.js";
 
 export { NdsTimeSlotPicker } from "./components/nds-time-slot-picker.js";
 
 export { NdsPhoneInput } from "./components/nds-phone-input.js";
-
-export { NdsConsentChecklist } from "./components/nds-consent-checklist.js";
 
 export { NdsVotePoll } from "./components/nds-vote-poll.js";
 
@@ -293,9 +292,6 @@ export { NdsLightbox } from "./components/nds-lightbox.js";
 export { NdsMultiStepForm } from "./components/nds-multi-step-form.js";
 
 export { NdsPullToRefresh } from "./components/nds-pull-to-refresh.js";
-
-export { NdsSegmentedControl } from "./components/nds-segmented-control.js";
-export type { SegmentedControlSize } from "./components/nds-segmented-control.js";
 
 export { NdsSidebar } from "./components/nds-sidebar.js";
 

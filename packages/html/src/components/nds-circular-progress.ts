@@ -6,6 +6,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { circularMetrics } from "./viz-svg.js";
 
 const CP_CLASS = "nds-circular-progress";
 const CP_SVG_CLASS = `${CP_CLASS}__svg`;
@@ -14,8 +15,6 @@ const CP_FILL_CLASS = `${CP_CLASS}__fill`;
 const CP_LABEL_CLASS = `${CP_CLASS}__label`;
 const CP_VALUE_CLASS = `${CP_CLASS}__value`;
 const CP_CAPTION_CLASS = `${CP_CLASS}__caption`;
-
-const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
 
 export class NdsCircularProgress extends NdsElement {
   static elementName = "nds-circular-progress";
@@ -86,13 +85,12 @@ export class NdsCircularProgress extends NdsElement {
     const caption = this.getAttribute("caption");
     const hideLabel = this.boolAttr("hide-label");
 
-    const stroke = thicknessAttr ? parseFloat(thicknessAttr) : Math.max(4, Math.round(size / 12));
-    const radius = (size - stroke) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const ratio = clamp(value / max, 0, 1);
-    const dashOffset = circumference * (1 - ratio);
-    const percent = Math.round(ratio * 100);
-    const valueSize = Math.max(12, Math.round(size / 5));
+    const { stroke, radius, circumference, dashOffset, percent, valueSize } = circularMetrics(
+      value,
+      max,
+      size,
+      thicknessAttr ? parseFloat(thicknessAttr) : undefined,
+    );
 
     this._root.setAttribute("aria-valuemax", String(max));
     this._root.setAttribute("aria-valuenow", String(value));
