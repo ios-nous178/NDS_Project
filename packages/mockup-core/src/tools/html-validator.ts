@@ -24,6 +24,7 @@
  *  - unknown-nds-class    : class="nds-foo" 가 React DS stylesheet 에 없는 클래스
  *  - invalid-nds-attr-value : nds-* attribute enum 위반
  *  - button-without-interaction : 활성 버튼에 click/submit 동작 연결 근거가 없음
+ *  - cashwalk-biz-gender-selection-control : 캐포비 admin 성별 타겟팅을 SelectionButtonGroup + selection chip 이 아닌 입력 컴포넌트로 구현
  *  - raw-shell-pattern    : <style> 안 raw .page / .topbar / .section / .form-row 정의 (admin-shell 가이드 위반)
  *
  * 검출 룰 (JSX 에서 포팅 — 컨테이너 / 카운팅 / 시각 위계):
@@ -182,6 +183,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "amount-as-text-input": "warn",
   // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
   "amount-as-static-display": "warn",
+  // 캐포비 admin 성별 타겟팅은 SelectionButtonGroup(전체/특정) + selection chip 묶음으로 고정.
+  "cashwalk-biz-gender-selection-control": "warn",
   // 선택 결과 add 어포던스 중복(외부 추가 + 패널 '추가 선택') — 모달 1개로 통일해야 함.
   // 가이드(SelectedItemsPanel 3641)가 "검증룰이 막음"이라 명시한 회귀이고, 현장에서 재발("또 두개
   // 노출")했으므로 warn→error 로 승격해 빌드 게이트가 실제로 막게 함.
@@ -365,6 +368,41 @@ function isNonInlinableImgRef(rawUrl: string): boolean {
   if (!url) return false;
   if (url.startsWith("#")) return false;
   return !INLINABLE_IMG_PREFIXES.some((p) => url.startsWith(p));
+}
+
+interface DocumentValidationScope {
+  surface: HtmlSurface;
+  brand?: string;
+  pagePattern?: CashwalkBizPagePattern;
+}
+
+function resolveDocumentBrand($: cheerio.CheerioAPI, declaredBrand?: string): string | undefined {
+  const classBrand = ($("body").attr("class") ?? "").match(/\bbrand-([a-z0-9-]+)\b/i)?.[1];
+  return (
+    canonicalBrandSlug(declaredBrand) ??
+    canonicalBrandSlug($("html").attr("data-brand")) ??
+    canonicalBrandSlug($("body").attr("data-brand")) ??
+    canonicalBrandSlug(classBrand)
+  );
+}
+
+function resolveDocumentPagePattern($: cheerio.CheerioAPI): CashwalkBizPagePattern | undefined {
+  const candidates = [
+    $("html").attr("data-page-pattern"),
+    $("body").attr("data-page-pattern"),
+    $(".mockup-screen[data-page-pattern]").first().attr("data-page-pattern"),
+    $("[data-page-pattern]").first().attr("data-page-pattern"),
+  ];
+  for (const raw of candidates) {
+    if (!raw) continue;
+    const pattern = canonicalPagePattern(raw);
+    if (pattern) return pattern;
+  }
+  return undefined;
+}
+
+function isCashwalkBizAdminScope(scope: DocumentValidationScope): boolean {
+  return scope.surface === "admin" && scope.brand === "cashwalk-biz";
 }
 
 /** srcset 의 각 URL 토큰을 추출 (descriptor 제외). */
@@ -560,6 +598,8 @@ export function validateHtmlSource(
   //     eligible 미스로 분모에 가산 — div 로 재발명한 컴포넌트가 비율에서 invisible 하던 사각지대를 막는다.
   let avoidableReinventionCount = 0;
   const $ = cheerio.load(source, { xmlMode: false });
+  const documentBrand = resolveDocumentBrand($, declaredBrand);
+  const pagePattern = resolveDocumentPagePattern($);
   const scriptText = $("script")
     .map((_i, el) => $(el).text())
     .get()
@@ -1317,7 +1357,11 @@ export function validateHtmlSource(
   //   여러 디바이스 프레임(.mockup-screen)을 한 파일에 그리면 같은 화면이 N벌 반복되므로
   //   "화면당 1개" 류 카운트 임계값을 프레임 수만큼 비례 확대한다(프레임 1개 = 기존과 동일).
   const screenCount = Math.max(1, $(".mockup-screen").length);
-  collectDocumentLevelViolations(source, $, violations, screenCount);
+  collectDocumentLevelViolations(source, $, violations, screenCount, {
+    surface,
+    brand: documentBrand,
+    pagePattern,
+  });
 
   // E1: DS 반영도(dsRatio) 최소선 게이트.
   //   "DS 반영"이 보고만 되고 강제되지 않던 구멍을 막는다 — nds-* 1개만 있어도 통과하던 문제.
@@ -1541,6 +1585,7 @@ function collectDocumentLevelViolations(
   $: cheerio.CheerioAPI,
   out: HtmlViolation[],
   screenCount = 1,
+  scope: DocumentValidationScope,
 ): void {
   const chipTotal = $("nds-chip").length;
   if (chipTotal > 8 * screenCount) {
@@ -1557,21 +1602,25 @@ function collectDocumentLevelViolations(
     });
   }
 
-  // region-as-chip: 지역 경로(시/도 > 시/군/구)가 든 Chip = 선택한 결과를 Chip 으로 잘못 표현한 신호.
-  //   캐포비 타겟팅 폼의 '특정 지역' 결과는 SelectedItemsPanel + SelectedItemRow 로 그려야 한다 — 노란
-  //   outlined 칩은 SelectionButton 과 혼동되고 '추가 선택/선택 해제'·개수 강조·개별 제거가 빠진다.
-  $("nds-chip").each((_i, el) => {
-    const txt = $(el).text().replace(/\s+/g, " ").trim();
-    if (!/\s>\s/.test(txt)) return; // 시/도 > 시/군/구 같은 지역 경로만 — 일반 칩은 통과
-    out.push({
-      rule: "region-as-chip",
-      line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
-      selector: describeElement(el as unknown as DomElement),
-      detail: `선택한 지역으로 보이는 항목("${txt.slice(0, 32)}")을 <nds-chip> 으로 표현했습니다 — 지역 경로(시/도 > 시/군/구)는 Chip 자리가 아닙니다.`,
-      suggestion:
-        "동적 다중 선택 결과(지역/카테고리)는 <nds-selected-items-panel> + <nds-selected-item-row> 로 그릴 것 (회색 패널 · '+ 추가' · 개별 제거 X · 개수 강조). 노란 outlined Chip 은 SelectionButton 과 혼동됨. get_guide({ topic: 'component:SelectedItemsPanel' }). Figma 3001:49174.",
+  const isCashwalkBizAdmin = isCashwalkBizAdminScope(scope);
+
+  if (isCashwalkBizAdmin) {
+    // region-as-chip: 지역 경로(시/도 > 시/군/구)가 든 Chip = 캐포비 타겟팅 결과를 Chip 으로 잘못 표현한 신호.
+    //   캐포비 타겟팅 폼의 '특정 지역' 결과는 SelectedItemsPanel + SelectedItemRow 로 그려야 한다 — 노란
+    //   outlined 칩은 SelectionButton 과 혼동되고 '추가 선택/선택 해제'·개수 강조·개별 제거가 빠진다.
+    $("nds-chip").each((_i, el) => {
+      const txt = $(el).text().replace(/\s+/g, " ").trim();
+      if (!/\s>\s/.test(txt)) return; // 시/도 > 시/군/구 같은 지역 경로만 — 일반 칩은 통과
+      out.push({
+        rule: "region-as-chip",
+        line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
+        selector: describeElement(el as unknown as DomElement),
+        detail: `캐포비 admin 선택 지역으로 보이는 항목("${txt.slice(0, 32)}")을 <nds-chip> 으로 표현했습니다 — 지역 경로(시/도 > 시/군/구)는 Chip 자리가 아닙니다.`,
+        suggestion:
+          "캐포비 admin 타겟팅의 동적 지역 선택 결과는 <nds-selected-items-panel> + <nds-selected-item-row> 로 그릴 것 (회색 패널 · '+ 추가 선택' · 개별 제거 X · 개수 강조). 노란 outlined Chip 은 SelectionButton 과 혼동됨. get_guide({ topic: 'component:SelectedItemsPanel' }). Figma 3001:49174.",
+      });
     });
-  });
+  }
 
   // amount-as-static-display: 폼 입력 필드 자리에 정적 숫자(콤마+단위)를 박은 안티패턴.
   //   대시보드 KPI 통계(정적 숫자 표시)는 정상이므로, 폼 컨텍스트(.nds-form-row / nds-form-field /
@@ -1598,53 +1647,56 @@ function collectDocumentLevelViolations(
     });
   });
 
-  // selected-item-add-affordance-duplicated: 선택 결과 add 어포던스가 2개 이상
-  //   (외부 점선 '+ 추가' 버튼 + SelectedItemsPanel '추가 선택'). 추가는 패널 onAdd 한 곳으로 통일.
-  //   (회귀: 캐포비 타겟팅 폼 — 모달이 안 뜨고 중복 add UI. 현장 재발 '또 두개 노출'.)
-  //   ★ 패널의 '추가 선택' 은 웹컴포넌트가 런타임에 렌더하므로 정적 텍스트엔 안 나온다 — hide-add 없는
-  //     페이지 패널을 '암묵적 add 어포던스' 로 세고, nds-add-button 은 label 속성으로도 매칭한다.
-  const RE_SELECTED_ITEM_ADD = /^\+?\s*((지역|항목|선택\s*결과)\s*추가(하기)?|추가\s*선택|선택\s*추가)$/;
-  const matchesSelectedItemAdd = ($el: ReturnType<typeof $>): boolean => {
-    const t = $el.text().replace(/\s+/g, " ").trim();
-    const label = ($el.attr("label") ?? "").replace(/\s+/g, " ").trim();
-    return RE_SELECTED_ITEM_ADD.test(t) || RE_SELECTED_ITEM_ADD.test(label);
-  };
-  // 패널 '밖' 의 명시 add 어포던스(별도 추가 버튼 등) — 패널 자체 add 와 별개 경로.
-  const externalAdds = $("button, nds-button, nds-add-button, a, [role='button']")
-    .filter(
-      (_i, el) =>
-        matchesSelectedItemAdd($(el)) &&
-        $(el).closest("nds-selected-items-panel, .nds-selected-items-panel").length === 0,
-    )
-    .toArray() as unknown as DomElement[];
-  // 페이지(모달 밖) 패널이 제공하는 add 경로 — hide-add 없으면 헤더 '추가 선택' 을 런타임 렌더(정적
-  //   텍스트엔 안 보임), 또는 패널 안에 명시 '추가 선택' 버튼을 둠. 어느 쪽이든 add 경로 1개.
-  const panelAdds = $("nds-selected-items-panel, .nds-selected-items-panel")
-    .filter((_i, el) => {
-      if ($(el).closest("nds-modal").length > 0) return false; // 모달 안은 hide-add 가 정답(별도 룰)
-      if ($(el).attr("hide-add") === undefined) return true;
-      return (
-        $(el)
-          .find("button, nds-button, nds-add-button, [role='button']")
-          .filter((_j, b) => matchesSelectedItemAdd($(b))).length > 0
-      );
-    })
-    .toArray() as unknown as DomElement[];
-  // 발화: ① 패널 밖 명시 add 가 2개 이상, 또는 ② 패널 add 경로 + 패널 밖 별도 add 가 공존(중복).
-  //   (페이지 패널 1개만 = 정답 단일 경로 → 미발화. 멀티 패널 폼도 패널 밖 add 가 없으면 미발화.)
-  if (externalAdds.length >= 2 || (externalAdds.length >= 1 && panelAdds.length >= 1)) {
-    const marker = externalAdds[externalAdds.length - 1] ?? externalAdds[0];
-    const total = externalAdds.length + panelAdds.length;
-    out.push({
-      rule: "selected-item-add-affordance-duplicated",
-      line: marker
-        ? lineNumberAt(source, (marker as unknown as { startIndex?: number }).startIndex ?? 0)
-        : 1,
-      selector: marker ? describeElement(marker) : undefined,
-      detail: `선택 결과 추가 어포던스가 ${total}개입니다(패널 '추가 선택'${panelAdds.length ? "(컴포넌트 렌더)" : ""} + 패널 밖 별도 추가 등) — 추가 경로가 중복됩니다.`,
-      suggestion:
-        "추가는 SelectedItemsPanel 의 onAdd(=모달 열기) 한 곳으로 통일하세요. 패널 밖 별도 추가 버튼(nds-add-button)을 또 두지 말 것. '추가 선택' 클릭 → 2단 모달(좌: 검색+체크박스 트리, 우: SelectedItemsPanel hide-add) → 풀폭 '적용'. get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
-    });
+  if (isCashwalkBizAdmin) {
+    // selected-item-add-affordance-duplicated: 캐포비 선택 결과 add 어포던스가 2개 이상
+    //   (외부 점선 '+ 추가' 버튼 + SelectedItemsPanel '추가 선택'). 추가는 패널 onAdd 한 곳으로 통일.
+    //   (회귀: 캐포비 타겟팅 폼 — 모달이 안 뜨고 중복 add UI. 현장 재발 '또 두개 노출'.)
+    //   ★ 패널의 '추가 선택' 은 웹컴포넌트가 런타임에 렌더하므로 정적 텍스트엔 안 나온다 — hide-add 없는
+    //     페이지 패널을 '암묵적 add 어포던스' 로 세고, nds-add-button 은 label 속성으로도 매칭한다.
+    const RE_SELECTED_ITEM_ADD =
+      /^\+?\s*((지역|항목|선택\s*결과)\s*추가(하기)?|추가\s*선택|선택\s*추가)$/;
+    const matchesSelectedItemAdd = ($el: ReturnType<typeof $>): boolean => {
+      const t = $el.text().replace(/\s+/g, " ").trim();
+      const label = ($el.attr("label") ?? "").replace(/\s+/g, " ").trim();
+      return RE_SELECTED_ITEM_ADD.test(t) || RE_SELECTED_ITEM_ADD.test(label);
+    };
+    // 패널 '밖' 의 명시 add 어포던스(별도 추가 버튼 등) — 패널 자체 add 와 별개 경로.
+    const externalAdds = $("button, nds-button, nds-add-button, a, [role='button']")
+      .filter(
+        (_i, el) =>
+          matchesSelectedItemAdd($(el)) &&
+          $(el).closest("nds-selected-items-panel, .nds-selected-items-panel").length === 0,
+      )
+      .toArray() as unknown as DomElement[];
+    // 페이지(모달 밖) 패널이 제공하는 add 경로 — hide-add 없으면 헤더 '추가 선택' 을 런타임 렌더(정적
+    //   텍스트엔 안 보임), 또는 패널 안에 명시 '추가 선택' 버튼을 둠. 어느 쪽이든 add 경로 1개.
+    const panelAdds = $("nds-selected-items-panel, .nds-selected-items-panel")
+      .filter((_i, el) => {
+        if ($(el).closest("nds-modal").length > 0) return false; // 모달 안은 hide-add 가 정답(별도 룰)
+        if ($(el).attr("hide-add") === undefined) return true;
+        return (
+          $(el)
+            .find("button, nds-button, nds-add-button, [role='button']")
+            .filter((_j, b) => matchesSelectedItemAdd($(b))).length > 0
+        );
+      })
+      .toArray() as unknown as DomElement[];
+    // 발화: ① 패널 밖 명시 add 가 2개 이상, 또는 ② 패널 add 경로 + 패널 밖 별도 add 가 공존(중복).
+    //   (페이지 패널 1개만 = 정답 단일 경로 → 미발화. 멀티 패널 폼도 패널 밖 add 가 없으면 미발화.)
+    if (externalAdds.length >= 2 || (externalAdds.length >= 1 && panelAdds.length >= 1)) {
+      const marker = externalAdds[externalAdds.length - 1] ?? externalAdds[0];
+      const total = externalAdds.length + panelAdds.length;
+      out.push({
+        rule: "selected-item-add-affordance-duplicated",
+        line: marker
+          ? lineNumberAt(source, (marker as unknown as { startIndex?: number }).startIndex ?? 0)
+          : 1,
+        selector: marker ? describeElement(marker) : undefined,
+        detail: `캐포비 admin 선택 결과 추가 어포던스가 ${total}개입니다(패널 '추가 선택'${panelAdds.length ? "(컴포넌트 렌더)" : ""} + 패널 밖 별도 추가 등) — 추가 경로가 중복됩니다.`,
+        suggestion:
+          "캐포비 admin 타겟팅의 추가는 SelectedItemsPanel 의 onAdd(=모달 열기) 한 곳으로 통일하세요. 패널 밖 별도 추가 버튼(nds-add-button)을 또 두지 말 것. '추가 선택' 클릭 → 2단 모달(좌: 검색+체크박스 트리, 우: SelectedItemsPanel hide-add) → 풀폭 '적용'. get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
+      });
+    }
   }
 
   // selected-item-row-duplicated: SelectedItemsPanel 안 같은 선택 항목이 중복.
@@ -1673,40 +1725,73 @@ function collectDocumentLevelViolations(
   //   (회귀: 추가 후 누적되는 행을 패널 body 가 아니라 패널 다음 sibling 으로 append → 패널
   //   body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고, 회색 surface.subtle 패널 밖에 렌더된다.
   //   가이드 SelectedItemsPanel: 갱신은 body 의 selected-item-row 자식만 교체.)
-  $("nds-selected-item-row, .nds-selected-item-row, nds-region-row, .nds-region-row").each((_i, el) => {
-    if (el.type !== "tag") return;
-    if ($(el).closest("nds-selected-items-panel, .nds-selected-items-panel").length > 0) return;
-    out.push({
-      rule: "selected-item-row-outside-panel",
-      line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
-      selector: describeElement(el as unknown as DomElement),
-      detail:
-        "SelectedItemRow 가 SelectedItemsPanel 밖에 있습니다 — 패널 body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고, 회색 패널 밖에 렌더됩니다.",
-      suggestion:
-        "선택 항목 행은 <nds-selected-items-panel> 의 자식(body)으로 넣으세요. 항목을 추가할 때 패널 다음 sibling 으로 append 하지 말고 패널 body 안 nds-selected-item-row 자식만 교체할 것(헤더/개수는 컴포넌트 chrome). get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
-    });
-  });
+  $("nds-selected-item-row, .nds-selected-item-row, nds-region-row, .nds-region-row").each(
+    (_i, el) => {
+      if (el.type !== "tag") return;
+      if ($(el).closest("nds-selected-items-panel, .nds-selected-items-panel").length > 0) return;
+      out.push({
+        rule: "selected-item-row-outside-panel",
+        line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
+        selector: describeElement(el as unknown as DomElement),
+        detail:
+          "SelectedItemRow 가 SelectedItemsPanel 밖에 있습니다 — 패널 body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고, 회색 패널 밖에 렌더됩니다.",
+        suggestion:
+          "선택 항목 행은 <nds-selected-items-panel> 의 자식(body)으로 넣으세요. 항목을 추가할 때 패널 다음 sibling 으로 append 하지 말고 패널 body 안 nds-selected-item-row 자식만 교체할 것(헤더/개수는 컴포넌트 chrome). get_guide({ topic: 'component:SelectedItemsPanel' }) 참조.",
+      });
+    },
+  );
 
-  // selected-items-modal-missing-panel: 선택 모달(시/도 + 시/군/구)인데 우측 SelectedItemsPanel 이 없음.
-  //   (회귀: 캐포비 '지역 추가' 클릭 → 정답은 2단 모달[좌 검색+체크박스 트리 / 우 SelectedItemsPanel
-  //   hide-add + 풀폭 '적용']인데, 단순 2컬럼 팝오버[시/도 | 시/군/구]로 작게 떠 우측 선택결과 패널이
-  //   통째 빠진 채 렌더됨. dimensions.selectionModal SSOT.)
-  $("nds-modal, .nds-modal").each((_i, el) => {
-    if (el.type !== "tag") return;
-    const $m = $(el);
-    const txt = $m.text().replace(/\s+/g, " ");
-    if (!(/시\/도/.test(txt) && /시\/군\/구/.test(txt))) return; // 선택 모달 시그니처
-    if ($m.find("nds-selected-items-panel, .nds-selected-items-panel").length > 0) return; // 우측 패널 있으면 정답
-    out.push({
-      rule: "selected-items-modal-missing-panel",
-      line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
-      selector: describeElement(el as unknown as DomElement),
-      detail:
-        "선택 모달(시/도 · 시/군/구)에 우측 SelectedItemsPanel(선택한 N개 · 선택 해제 · 제거 가능 리스트)이 없습니다 — 단순 2컬럼 팝오버로 떴습니다.",
-      suggestion:
-        "선택은 대형 2단 모달입니다(width~960 · 2컬럼): 좌 = 검색 input + '전체 선택' + 시/도▸시/군/구 체크박스 트리(선택=옐로우 체크), 우 = <nds-selected-items-panel hide-add>(선택한 N개 + 선택 해제 + 제거 가능 SelectedItemRow), 풋터 = 풀폭 옐로우 '적용'. get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) ⑥ 선택/피커 모달 · component:SelectedItemsPanel 참조.",
+  if (isCashwalkBizAdmin) {
+    // selected-items-modal-missing-panel: 캐포비 선택 모달(시/도 + 시/군/구)인데 우측 SelectedItemsPanel 이 없음.
+    //   (회귀: 캐포비 '지역 추가' 클릭 → 정답은 2단 모달[좌 검색+체크박스 트리 / 우 SelectedItemsPanel
+    //   hide-add + 풀폭 '적용']인데, 단순 2컬럼 팝오버[시/도 | 시/군/구]로 작게 떠 우측 선택결과 패널이
+    //   통째 빠진 채 렌더됨. dimensions.selectionModal SSOT.)
+    $("nds-modal, .nds-modal").each((_i, el) => {
+      if (el.type !== "tag") return;
+      const $m = $(el);
+      const txt = $m.text().replace(/\s+/g, " ");
+      if (!(/시\/도/.test(txt) && /시\/군\/구/.test(txt))) return; // 선택 모달 시그니처
+      if ($m.find("nds-selected-items-panel, .nds-selected-items-panel").length > 0) return; // 우측 패널 있으면 정답
+      out.push({
+        rule: "selected-items-modal-missing-panel",
+        line: lineNumberAt(source, (el as unknown as { startIndex?: number }).startIndex ?? 0),
+        selector: describeElement(el as unknown as DomElement),
+        detail:
+          "캐포비 admin 선택 모달(시/도 · 시/군/구)에 우측 SelectedItemsPanel(선택한 N개 · 선택 해제 · 제거 가능 리스트)이 없습니다 — 단순 2컬럼 팝오버로 떴습니다.",
+        suggestion:
+          "캐포비 admin 지역 선택은 대형 2단 모달입니다(width~960 · 2컬럼): 좌 = 검색 input + '전체 선택' + 시/도▸시/군/구 체크박스 트리(선택=옐로우 체크), 우 = <nds-selected-items-panel hide-add>(선택한 N개 + 선택 해제 + 제거 가능 SelectedItemRow), 풋터 = 풀폭 옐로우 '적용'. get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) ⑥ 선택/피커 모달 · component:SelectedItemsPanel 참조.",
+      });
     });
-  });
+
+    // cashwalk-biz-gender-selection-control: 캐포비 타겟팅 폼의 성별 입력은
+    //   SelectionButtonGroup(전체/특정) + selection chip(남성/여성/알 수 없음) 조합으로 고정.
+    //   표/차트의 '성별' 텍스트는 제외하고, 폼 row/field 안 잘못된 입력 컴포넌트만 잡는다.
+    $("nds-form-field, .nds-form-row, .nds-form-field__root").each((_i, el) => {
+      if (el.type !== "tag") return;
+      const $field = $(el);
+      const txt = $field.text().replace(/\s+/g, " ");
+      if (!/성별/.test(txt)) return;
+      if ($field.find("nds-selection-button-group, .nds-selection-button-group").length > 0) return;
+      const wrongControl = $field
+        .find(
+          "nds-select, nds-segmented, nds-radio-group, nds-checkbox-group, select, input[type='radio'], input[type='checkbox']",
+        )
+        .get(0) as DomElement | undefined;
+      if (!wrongControl) return;
+      out.push({
+        rule: "cashwalk-biz-gender-selection-control",
+        line: lineNumberAt(
+          source,
+          (wrongControl as unknown as { startIndex?: number }).startIndex ?? 0,
+        ),
+        selector: describeElement(wrongControl),
+        detail:
+          "캐포비 admin 성별 타겟팅 필드를 SelectionButtonGroup 없이 다른 입력 컴포넌트로 구현했습니다.",
+        suggestion:
+          '캐포비 admin 성별 선택은 <nds-selection-button-group options=\'[{"value":"all","label":"전체"},{"value":"custom","label":"특정 성별"}]\'> + 특정 성별일 때 <nds-chip selected interactive>남성</nds-chip> 같은 selection chip 묶음으로 구성하세요. Select/Radio/CheckboxGroup/Segmented 금지. get_guide({ topic: \'pattern:cashwalk-biz-form-layout\' }) 및 component:SelectionButtonGroup 참조.',
+      });
+    });
+  }
 
   const cardTotal = $("nds-card").length;
   if (cardTotal >= 5 * screenCount) {
@@ -2147,6 +2232,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "date-as-text-input": "component",
   "amount-as-text-input": "component",
   "amount-as-static-display": "component",
+  "cashwalk-biz-gender-selection-control": "component",
   // icon (icon-usage): 이모지/기호·인라인 svg·heading 장식 아이콘
   "emoji-banned": "icon",
   "text-symbol-banned": "icon",
