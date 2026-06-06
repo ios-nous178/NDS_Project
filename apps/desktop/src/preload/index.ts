@@ -16,6 +16,7 @@ import type {
   StartAgentErrorCode,
 } from "../main/agent-runner.js";
 import type { ChatSession, Transport } from "../main/sessions.js";
+import type { SessionDashboardResult } from "../main/session-dashboard.js";
 import type { ChatMessage } from "../main/chat-types.js";
 import type { RunIntakeArgs } from "../main/intake.js";
 import type { AppEventInput } from "@nudge-design/mockup-core";
@@ -35,6 +36,7 @@ export type {
   StartAgentErrorCode,
 } from "../main/agent-runner.js";
 export type { ChatSession, Transport } from "../main/sessions.js";
+export type { SessionDashboardResult } from "../main/session-dashboard.js";
 export type { ChatMessage } from "../main/chat-types.js";
 export type { Platform, RunIntakeArgs, ScreenshotInput, Surface } from "../main/intake.js";
 export type { UpdateCheckResult } from "../main/update-check.js";
@@ -227,6 +229,9 @@ const harness = {
   /** 세션 메타 + raw 트랜스크립트 삭제(실행 중이면 main 이 먼저 종료). */
   deleteSession: (projectPath: string, sessionId: string): Promise<{ ok: boolean }> =>
     ipcRenderer.invoke("session:delete", { projectPath, sessionId }),
+  /** 세션별 파일/피드백/점수 대시보드 조회. */
+  getSessionDashboard: (projectPath: string): Promise<SessionDashboardResult> =>
+    ipcRenderer.invoke("session:dashboard", { projectPath }),
   /**
    * 끝난 세션을 CLI 네이티브 resume 으로 이어간다(resume v1, resumable 세션만). 성공하면
    * main 이 PTY 를 재spawn 하므로 렌더러는 sessionId 로 터미널 attach 한다(startIntake 와 동일 패턴).
