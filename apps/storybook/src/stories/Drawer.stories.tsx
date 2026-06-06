@@ -13,7 +13,7 @@ import {
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/Drawer",
+  title: "Components/Overlay/Drawer",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",

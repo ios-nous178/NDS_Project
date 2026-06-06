@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { CashwalkBizFooter } from "@nudge-design/react";
 
 const meta: Meta = {
-  title: "Components/Footer",
+  title: "Brands/CashwalkBiz/Footer",
   parameters: { layout: "fullscreen" },
   globals: { brand: "cashwalk-biz" },
 };

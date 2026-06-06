@@ -3,11 +3,13 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, waitFor } from "storybook/test";
 import { BottomSheet, Button, type BottomSheetProps } from "@nudge-design/react";
 import { colors } from "@nudge-design/tokens";
+import { LinkIcon, DownloadIcon } from "@nudge-design/icons";
+import { getSnsLogo } from "@nudge-design/assets";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<BottomSheetProps> = {
-  title: "Components/BottomSheet",
+  title: "Components/Overlay/BottomSheet",
   component: BottomSheet,
   tags: ["autodocs"],
   parameters: {
@@ -382,6 +384,154 @@ export const NoOverlay: Story = {
   render: () => <NoOverlayExample />,
 };
 
+/* ─── Share Sheet (SNS 공유) ───
+ * ShareSheet 는 별도 컴포넌트가 아니라 BottomSheet + 4칸 공유 그리드 + 링크 복사로
+ * 조립하는 레시피. SNS 아이콘은 @nudge-design/assets 의 SNS 로고를 쓴다.
+ */
+
+// SNS 로고를 가져오는 두 가지 방법 — (A) 를 기본으로 두고 (B) 는 주석.
+//
+// (A) 패키지 코드 (권장 · SSOT): assets 패키지의 getSnsLogo 로 base64 dataUri 를 조회.
+//     색상은 kakao=black(노란 버튼 위 검은 심볼), naver=white(초록 버튼 위 흰 심볼).
+const kakaoLogo = getSnsLogo("kakao", "black")?.dataUri ?? "";
+const naverLogo = getSnsLogo("naver", "white")?.dataUri ?? "";
+//
+// (B) base64 인라인 (assets 패키지 없이도 안 깨지는 fallback) — (A) 대신 쓰려면 주석 해제.
+//     packages/assets/src/sns-logos/{kakao-black,naver-white}.svg 를 base64 인코딩한 값.
+// const kakaoLogo =
+//   "data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgdmlld0JveD0iMCAwIDYwIDU2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBpZD0iUGF0aCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zMC4wMDAyIDBDMTMuNDMwNiAwIDAgMTAuMzc2NSAwIDIzLjE3NDNDMCAzMS4xMzM0IDUuMTk0NyAzOC4xNDk5IDEzLjEwNTEgNDIuMzIzMUw5Ljc3NjggNTQuNDgxNkM5LjQ4Mjc0IDU1LjU1NTkgMTAuNzExNCA1Ni40MTIyIDExLjY1NDkgNTUuNzg5N0wyNi4yNDQ2IDQ2LjE2MDZDMjcuNDc1OCA0Ni4yNzk1IDI4LjcyNyA0Ni4zNDg4IDMwLjAwMDIgNDYuMzQ4OEM0Ni41Njg0IDQ2LjM0ODggNjAgMzUuOTcyNyA2MCAyMy4xNzQzQzYwIDEwLjM3NjUgNDYuNTY4NCAwIDMwLjAwMDIgMCIgZmlsbD0idmFyKC0tZmlsbC0wLCBibGFjaykiLz4KPC9zdmc+Cg==";
+// const naverLogo =
+//   "data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgdmlld0JveD0iMCAwIDYwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBpZD0iUGF0aCIgZD0iTTQwLjY4NDIgMjcuODlMMTguNDM4MyA2MEgwVjBIMTkuMzE1OFYzMi4xMTVMNDEuNTYxNyAwSDYwVjYwSDQwLjY4NDJWMjcuODlaIiBmaWxsPSJ2YXIoLS1maWxsLTAsIHdoaXRlKSIvPgo8L3N2Zz4K";
+
+function ShareSheetExample() {
+  const [open, setOpen] = useState(false);
+  const targets = [
+    { key: "kakao", label: "카카오톡", logo: kakaoLogo, bg: "#FEE500" },
+    { key: "naver", label: "네이버", logo: naverLogo, bg: "#03C75A" },
+    {
+      key: "copy",
+      label: "링크 복사",
+      icon: <LinkIcon size={22} color={colors.neutral[700]} />,
+      bg: colors.neutral[200],
+    },
+    {
+      key: "save",
+      label: "이미지 저장",
+      icon: <DownloadIcon size={22} color={colors.neutral[700]} />,
+      bg: colors.neutral[200],
+    },
+  ];
+
+  return (
+    <div style={{ width: 360 }}>
+      <Button onClick={() => setOpen(true)}>공유하기</Button>
+      <BottomSheet open={open} onClose={() => setOpen(false)} title="공유하기" closable>
+        <div style={shareGridStyle}>
+          {targets.map((target) => (
+            <button
+              key={target.key}
+              type="button"
+              onClick={() => setOpen(false)}
+              style={shareTargetStyle}
+            >
+              <span style={{ ...shareIconStyle, background: target.bg }}>
+                {target.logo ? (
+                  <img src={target.logo} alt="" width={22} height={22} />
+                ) : (
+                  target.icon
+                )}
+              </span>
+              <span style={shareLabelStyle}>{target.label}</span>
+            </button>
+          ))}
+        </div>
+        <div style={shareLinkRowStyle}>
+          <input
+            aria-label="공유 링크"
+            readOnly
+            value="https://app.nudge.health/contents/abc123"
+            style={shareLinkInputStyle}
+          />
+          <button type="button" onClick={() => undefined} style={shareCopyButtonStyle}>
+            복사
+          </button>
+        </div>
+        <div style={shareNoteStyle}>외부 SDK 호출은 각 버튼의 onClick 에서 직접 연결합니다.</div>
+      </BottomSheet>
+    </div>
+  );
+}
+
+const shareGridStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
+  gap: "var(--semantic-gap-comfortable)",
+  marginTop: 8,
+};
+
+const shareTargetStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "var(--semantic-gap-default)",
+  padding: "var(--semantic-inset-chip)",
+  border: "none",
+  background: "transparent",
+  borderRadius: 12,
+};
+
+const shareIconStyle: React.CSSProperties = {
+  width: 48,
+  height: 48,
+  borderRadius: 9999,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const shareLabelStyle: React.CSSProperties = {
+  fontSize: 12,
+  lineHeight: 1.3,
+  color: "var(--nds-text-normal, #1c1c1c)",
+  textAlign: "center",
+};
+
+const shareLinkRowStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: "var(--semantic-gap-default)",
+  marginTop: 16,
+  padding: "var(--semantic-inset-chip) var(--semantic-inset-input)",
+  background: "var(--nds-surface-section, #f6f7f8)",
+  borderRadius: 12,
+};
+
+const shareLinkInputStyle: React.CSSProperties = {
+  flex: 1,
+  border: "none",
+  background: "transparent",
+  minWidth: 0,
+  font: "inherit",
+};
+
+const shareCopyButtonStyle: React.CSSProperties = {
+  height: 32,
+  padding: "0 var(--semantic-inset-input)",
+  border: "none",
+  borderRadius: 9999,
+  background: "var(--nds-surface-inverse, #222)",
+  color: "white",
+  font: "inherit",
+  fontWeight: 600,
+};
+
+const shareNoteStyle: React.CSSProperties = {
+  marginTop: 12,
+  fontSize: 12,
+  lineHeight: 1.5,
+  color: "var(--nds-text-subtle, #666)",
+};
+
 export const Compound: Story = {
   name: "Recipe/Compound API",
   render: () => <CompoundExample />,
@@ -395,6 +545,11 @@ export const ListSelection: Story = {
 export const TwoButtonFooter: Story = {
   name: "Recipe/Two Button Footer",
   render: () => <TwoButtonFooterExample />,
+};
+
+export const ShareSheet: Story = {
+  name: "Recipe/Share Sheet (SNS 공유)",
+  render: () => <ShareSheetExample />,
 };
 
 /* ─── Interaction Tests ─── */

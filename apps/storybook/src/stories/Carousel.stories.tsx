@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Carousel } from "@nudge-design/react";
 
 const meta: Meta<typeof Carousel> = {
-  title: "Components/Carousel",
+  title: "Components/Display/Carousel",
   component: Carousel,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

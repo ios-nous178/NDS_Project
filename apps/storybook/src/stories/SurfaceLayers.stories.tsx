@@ -22,7 +22,7 @@ const LAYERS = [
   {
     label: "L3 Notice (의미 전달)",
     token: "--semantic-bg-brand-subtle",
-    use: "핵심 Notice, CrisisCallout, 상태성 안내",
+    use: "핵심 Notice, 상태성 안내",
     bg: "var(--semantic-bg-brand-subtle)",
   },
 ];
@@ -76,7 +76,7 @@ function DoCard() {
     <div
       style={{
         background: "var(--semantic-bg-brand-subtle)",
-        border: "1px solid var(--semantic-border-brand-default, #2B96ED)",
+        border: "1px solid var(--semantic-border-brand-default)",
         borderRadius: 8,
         padding: "var(--semantic-inset-card)",
         marginBottom: 12,

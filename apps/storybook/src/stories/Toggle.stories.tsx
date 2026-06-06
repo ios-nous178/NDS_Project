@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Toggle } from "@nudge-design/react";
 
 const meta: Meta<typeof Toggle> = {
-  title: "Components/Toggle",
+  title: "Components/Controls/Toggle",
   component: Toggle,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -27,7 +27,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Size/비교",
+  name: "Variant/비교",
   render: function Render() {
     const [a, setA] = useState(true);
     const [b, setB] = useState(false);

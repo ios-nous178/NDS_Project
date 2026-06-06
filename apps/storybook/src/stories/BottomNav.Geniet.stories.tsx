@@ -6,7 +6,7 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("geniet");
 
 const meta: Meta = {
-  title: "Components/BottomNav",
+  title: "Brands/Geniet/BottomNav",
   parameters: { layout: "fullscreen" },
   globals: { brand: "geniet" },
 };
@@ -45,6 +45,6 @@ function GenietTabBarDemo() {
  * Figma 90:2 — 5탭. 탭을 클릭하면 해당 탭이 활성화됩니다.
  */
 export const GenietTabBar: Story = {
-  name: "Geniet (5탭, Figma 90:2)",
+  name: "Variant/Geniet (5탭, Figma 90:2)",
   render: () => <GenietTabBarDemo />,
 };

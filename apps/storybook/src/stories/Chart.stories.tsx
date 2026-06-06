@@ -3,7 +3,7 @@ import { Chart } from "@nudge-design/react";
 import React from "react";
 
 const meta: Meta<typeof Chart> = {
-  title: "Components/Chart",
+  title: "Components/Data/Chart",
   component: Chart,
   parameters: {
     layout: "padded",
@@ -74,7 +74,7 @@ export const GroupedBar: Story = {
 
 /** 도넛 — 성별 분포. 시리즈 1개 = 1 세그먼트, 범례에 % 표기. 알수없음은 --nds-chart-empty(회색). */
 export const Donut: Story = {
-  name: "Donut (성별 분포)",
+  name: "Variant/Donut (성별 분포)",
   render: () => (
     <Card title="성별">
       <Chart
@@ -92,7 +92,7 @@ export const Donut: Story = {
 
 /** 도넛 빈 상태 — 데이터 0 이면 전체 회색 링 + 범례 0%. */
 export const DonutEmpty: Story = {
-  name: "Donut/빈 상태 (0%)",
+  name: "Variant/Donut 빈 상태 (0%)",
   render: () => (
     <Card title="성별">
       <Chart

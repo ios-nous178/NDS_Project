@@ -180,7 +180,7 @@ function Grid({ size, color, bg }: { size: number; color: string; bg: string }) 
 }
 
 export const All: Story = {
-  name: "전체",
+  name: "Variant/전체",
   globals: { brand: "trost" },
   render: () => (
     <Grid
@@ -192,7 +192,7 @@ export const All: Story = {
 };
 
 export const BrandTint: Story = {
-  name: "Brand 색 (cobalt)",
+  name: "Variant/Brand 색 (cobalt)",
   globals: { brand: "trost" },
   parameters: {
     docs: {
@@ -212,7 +212,7 @@ export const BrandTint: Story = {
 };
 
 export const Size32: Story = {
-  name: "Size 32 (mental 카테고리 칩)",
+  name: "Variant/Size 32 (mental 카테고리 칩)",
   globals: { brand: "trost" },
   parameters: {
     docs: {
@@ -232,7 +232,7 @@ export const Size32: Story = {
 };
 
 export const Size20: Story = {
-  name: "Size 20 (Button 내부)",
+  name: "Variant/Size 20 (Button 내부)",
   globals: { brand: "trost" },
   render: () => (
     <Grid
@@ -244,7 +244,7 @@ export const Size20: Story = {
 };
 
 export const OnDarkSurface: Story = {
-  name: "다크 배경",
+  name: "Variant/다크 배경",
   globals: { brand: "trost" },
   render: () => <Grid size={24} color="#FFFFFF" bg="#1F1F1F" />,
 };

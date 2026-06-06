@@ -6,7 +6,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta = {
-  title: "Components/MultiSelect",
+  title: "Components/Controls/MultiSelect",
   tags: ["autodocs"],
   parameters: {
     layout: "padded",

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { TimePicker } from "@nudge-design/react";
 
 const meta: Meta<typeof TimePicker> = {
-  title: "Components/TimePicker",
+  title: "Components/Inputs/TimePicker",
   component: TimePicker,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -30,7 +30,7 @@ export const Playground: Story = {
 };
 
 export const WithPresets: Story = {
-  name: "캐포비/빠른설정 프리셋 (자정까지)",
+  name: "Recipe/캐포비 빠른설정 프리셋 (자정까지)",
   render: function Render() {
     const [t, setT] = useState("18:00");
     return (

@@ -13,7 +13,7 @@ import {
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/FormField",
+  title: "Components/Inputs/FormField",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -259,19 +259,19 @@ function RadioWrappedExample() {
   );
 }
 
-export const Basic: Story = { name: "기본", render: () => <BasicExample /> };
-export const Error: Story = { name: "에러 상태", render: () => <ErrorExample /> };
-export const WithCounter: Story = { name: "글자수 카운터", render: () => <CounterExample /> };
+export const Basic: Story = { name: "State/기본", render: () => <BasicExample /> };
+export const Error: Story = { name: "State/에러 상태", render: () => <ErrorExample /> };
+export const WithCounter: Story = { name: "Variant/글자수 카운터", render: () => <CounterExample /> };
 export const WrappingLikert: Story = {
-  name: "LikertScale 감싸기",
+  name: "Recipe/LikertScale 감싸기",
   render: () => <LikertWrappedExample />,
 };
 export const WrappingRadio: Story = {
-  name: "RadioGroup 감싸기",
+  name: "Recipe/RadioGroup 감싸기",
   render: () => <RadioWrappedExample />,
 };
 export const LabelLeft: Story = {
-  name: "라벨 좌측 (admin)",
+  name: "Recipe/라벨 좌측 (admin)",
   render: () => <LabelLeftExample />,
   parameters: {
     docs: {
@@ -283,7 +283,7 @@ export const LabelLeft: Story = {
   },
 };
 export const CashwalkBizAdminTextField: Story = {
-  name: "캐포비 admin · TextField 5 states",
+  name: "Recipe/캐포비 admin · TextField 5 states",
   render: () => <CashwalkBizAdminTextFieldExample />,
   parameters: {
     docs: {
@@ -295,7 +295,7 @@ export const CashwalkBizAdminTextField: Story = {
   },
 };
 export const CashwalkBizAdminFormSection: Story = {
-  name: "캐포비 admin · FormSection + InputGroup",
+  name: "Recipe/캐포비 admin · FormSection + InputGroup",
   render: () => <AdminFormSectionExample />,
   parameters: {
     docs: {

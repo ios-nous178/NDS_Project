@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { PinPad } from "@nudge-design/react";
 
 const meta: Meta<typeof PinPad> = {
-  title: "Components/PinPad",
+  title: "Components/Inputs/PinPad",
   component: PinPad,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

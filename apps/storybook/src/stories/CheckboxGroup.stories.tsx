@@ -6,7 +6,8 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta = {
-  title: "Components/CheckboxGroup",
+  title: "Components/Controls/CheckboxGroup",
+  id: "components-checkboxgroup",
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
@@ -24,7 +25,7 @@ type Story = StoryObj;
 /* ─── 레이아웃 모드 (children 직접) ─── */
 
 export const LayoutMode: Story = {
-  name: "Layout/직접 조립 (children)",
+  name: "Recipe/직접 조립 (children)",
   render: () => {
     const Harness = () => {
       const [items, setItems] = useState<Record<string, boolean>>({
@@ -66,7 +67,7 @@ const FILTERS: CheckboxGroupItem[] = [
 ];
 
 export const DataSelectAll: Story = {
-  name: "Data/전체선택 (indeterminate)",
+  name: "Variant/전체선택 (indeterminate)",
   render: () => {
     const Harness = () => {
       const [v, setV] = useState<string[]>(["stress"]);
@@ -86,7 +87,7 @@ export const DataSelectAll: Story = {
   },
 };
 
-/* ─── 동의 화면 (badge + detail + 전체동의) — ConsentChecklist 대체 ─── */
+/* ─── 동의 화면 (badge + detail + 전체동의) ─── */
 
 const TERMS: CheckboxGroupItem[] = [
   {
@@ -116,7 +117,7 @@ const TERMS: CheckboxGroupItem[] = [
 ];
 
 export const ConsentScreen: Story = {
-  name: "Pattern/약관 동의 (pattern:consent)",
+  name: "Variant/약관 동의 (pattern:consent)",
   render: () => {
     const Harness = () => {
       // pre-tick 금지(개인정보보호법) — 초기값 빈 배열

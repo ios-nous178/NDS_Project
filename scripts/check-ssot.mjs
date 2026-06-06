@@ -49,6 +49,11 @@ const steps = [
     args: ["scripts/check-mirror-parity.mjs", "--no-regen"],
   },
   {
+    label: "check Storybook catalog coverage",
+    command: "node",
+    args: ["scripts/check-storybook-catalog.mjs"],
+  },
+  {
     label: "check component guide JSON",
     command: "node",
     args: ["scripts/generate-component-guides.mjs", "--check"],

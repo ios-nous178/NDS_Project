@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Banner } from "@nudge-design/react";
 
 const meta: Meta<typeof Banner> = {
-  title: "Components/Banner",
+  title: "Components/Display/Banner",
   component: Banner,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -32,7 +32,7 @@ export const Outlined: Story = {
 };
 
 export const WithImage: Story = {
-  name: "Example/이미지 포함",
+  name: "Recipe/이미지 포함",
   args: {
     title: "앱에서 더 많은 기능을 만나보세요",
     description: "다운로드하고 모든 서비스를 이용하세요.",
@@ -44,7 +44,7 @@ export const WithImage: Story = {
 };
 
 export const Closable: Story = {
-  name: "Example/닫기 가능",
+  name: "Recipe/닫기 가능",
   args: {
     title: "공지사항",
     description: "서비스 점검이 예정되어 있습니다.",

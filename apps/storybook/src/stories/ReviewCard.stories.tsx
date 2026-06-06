@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ReviewCard, Avatar, LikeButton } from "@nudge-design/react";
 
 const meta: Meta<typeof ReviewCard> = {
-  title: "Components/ReviewCard",
+  title: "Components/Domain/ReviewCard",
   component: ReviewCard,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

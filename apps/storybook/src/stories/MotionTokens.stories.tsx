@@ -24,7 +24,9 @@ function DurationItem({ token, value }: { token: string; value: number }) {
             width: 48,
             height: 48,
             borderRadius: 8,
-            backgroundColor: active ? "#2B96ED" : "#E3F2FC",
+            backgroundColor: active
+              ? "var(--semantic-fill-brand-default)"
+              : "var(--semantic-bg-brand-subtle)",
             transition: `background-color ${value}ms ease`,
             cursor: "pointer",
           }}
@@ -59,7 +61,7 @@ function EasingItem({ token, value }: { token: string; value: string }) {
             width: 48,
             height: 48,
             borderRadius: 8,
-            backgroundColor: "#2B96ED",
+            backgroundColor: "var(--semantic-fill-brand-default)",
             transform: active ? "translateX(80px)" : "translateX(0)",
             transition: `transform 300ms ${value}`,
             cursor: "pointer",

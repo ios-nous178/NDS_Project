@@ -222,9 +222,14 @@ function computeDrift(catalog) {
     // 3) attr 이름 set parity
     if (Array.isArray(c.htmlObservedAttrs)) {
       const htmlAttrSet = new Set(c.htmlObservedAttrs);
+      // 정방향(react→html): attr 후보(슬롯/이벤트/노드 prop 제외)만 html attr 을 요구한다.
       const reactAttrNames = new Set(
         (c.props ?? []).filter(isAttrCandidate).map((p) => toKebab(p.name)),
       );
+      // 역방향(html→react): 이름만 본다. html 의 string attr 은 react 에선 ReactNode(예: emptyMessage)
+      // 로 받는 게 정상적인 paradigm 차이이므로, isAttrCandidate 로 거른 후보가 아니라 "이름이 같은
+      // react prop 이 있는가"로 매칭한다. (안 그러면 ReactNode prop 이 있는데도 오탐이 난다.)
+      const reactAllPropNames = new Set((c.props ?? []).map((p) => toKebab(p.name)));
       for (const name of reactAttrNames) {
         if (!htmlAttrSet.has(name)) {
           drift.push({
@@ -236,7 +241,7 @@ function computeDrift(catalog) {
       }
       for (const attr of htmlAttrSet) {
         if (HTML_INTERNAL_ATTRS.has(attr)) continue;
-        if (!reactAttrNames.has(attr)) {
+        if (!reactAllPropNames.has(attr)) {
           drift.push({
             component: c.name,
             kind: "prop-name",

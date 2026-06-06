@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { SelectionCard } from "@nudge-design/react";
+import {
+  MockupBoldBookIcon,
+  MockupBoldMoonIcon,
+  MockupBoldSunIcon,
+} from "@nudge-design/icons";
 
 const meta: Meta = {
-  title: "Components/SelectionCard",
+  title: "Components/Controls/SelectionCard",
   tags: ["autodocs"],
   parameters: { layout: "padded" },
 };
@@ -12,7 +17,7 @@ export default meta;
 type Story = StoryObj;
 
 export const SingleChoice: Story = {
-  name: "Single/단일 선택",
+  name: "Variant/단일 선택",
   render: function Render() {
     const [v, setV] = useState("chat");
     return (
@@ -36,7 +41,7 @@ export const SingleChoice: Story = {
 };
 
 export const MultipleChoice: Story = {
-  name: "Multiple/다중 선택",
+  name: "Variant/다중 선택",
   render: function Render() {
     const [vs, setVs] = useState<string[]>(["sleep"]);
     return (
@@ -75,19 +80,19 @@ export const WithIcons: Story = {
             value="morning"
             title="아침 명상"
             description="하루를 시작하는 5분"
-            icon={<span style={{ fontSize: 24 }}>🌅</span>}
+            icon={<MockupBoldSunIcon size={24} />}
           />
           <SelectionCard.Item
             value="lunch"
             title="점심 휴식"
             description="에너지 회복 호흡"
-            icon={<span style={{ fontSize: 24 }}>☀️</span>}
+            icon={<MockupBoldBookIcon size={24} />}
           />
           <SelectionCard.Item
             value="night"
             title="잠들기 전"
             description="긴장 이완 가이드"
-            icon={<span style={{ fontSize: 24 }}>🌙</span>}
+            icon={<MockupBoldMoonIcon size={24} />}
           />
         </SelectionCard.Group>
       </div>
@@ -96,7 +101,7 @@ export const WithIcons: Story = {
 };
 
 export const Horizontal: Story = {
-  name: "Layout/가로 배치",
+  name: "Recipe/가로 배치",
   render: function Render() {
     const [v, setV] = useState("low");
     return (

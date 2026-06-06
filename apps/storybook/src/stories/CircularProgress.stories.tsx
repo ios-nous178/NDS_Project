@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { CircularProgress } from "@nudge-design/react";
 
 const meta: Meta<typeof CircularProgress> = {
-  title: "Components/CircularProgress",
+  title: "Components/Feedback/CircularProgress",
   component: CircularProgress,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -22,7 +22,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Size/sm md lg",
+  name: "Variant/sm md lg",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-wide)", alignItems: "center" }}>
       <CircularProgress value={70} size={48} />
@@ -33,7 +33,7 @@ export const Sizes: Story = {
 };
 
 export const Colors: Story = {
-  name: "Color/semantic 톤",
+  name: "Variant/semantic 톤",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-wide)" }}>
       <CircularProgress value={80} size={80} caption="목표" />

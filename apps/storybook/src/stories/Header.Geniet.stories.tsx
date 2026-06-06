@@ -48,7 +48,7 @@ const ctaButtons: GenietAppBarCta[] = [
 ];
 
 const meta: Meta = {
-  title: "Components/Header",
+  title: "Brands/Geniet/Header",
   parameters: { layout: "fullscreen" },
   globals: { brand: "geniet" },
 };

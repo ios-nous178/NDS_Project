@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { CounselorCard } from "@nudge-design/react";
 
 const meta: Meta<typeof CounselorCard> = {
-  title: "Components/CounselorCard",
+  title: "Components/Domain/CounselorCard",
   component: CounselorCard,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

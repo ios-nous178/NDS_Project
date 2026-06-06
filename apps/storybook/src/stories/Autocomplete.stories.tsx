@@ -12,7 +12,7 @@ const ALL_MEDICATIONS: AutocompleteOption[] = [
 ];
 
 const meta: Meta<typeof Autocomplete> = {
-  title: "Components/Autocomplete",
+  title: "Components/Inputs/Autocomplete",
   component: Autocomplete,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

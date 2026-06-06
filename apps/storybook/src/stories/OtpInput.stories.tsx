@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { OtpInput } from "@nudge-design/react";
 
 const meta: Meta<typeof OtpInput> = {
-  title: "Components/OtpInput",
+  title: "Components/Inputs/OtpInput",
   component: OtpInput,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

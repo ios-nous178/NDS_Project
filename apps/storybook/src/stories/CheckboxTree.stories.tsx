@@ -11,7 +11,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta = {
-  title: "Components/CheckboxTree",
+  title: "Components/Controls/CheckboxTree",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -168,7 +168,7 @@ function StandaloneTreeDemo() {
 }
 
 export const RegionPicker: Story = {
-  name: "Pattern/지역 선택 모달",
+  name: "Variant/지역 선택 모달",
   render: () => <RegionPickerDemo />,
   parameters: { layout: "padded" },
 };

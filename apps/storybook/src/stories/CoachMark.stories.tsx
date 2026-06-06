@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { CoachMark } from "@nudge-design/react";
-import { EditIcon, SettingIcon } from "@nudge-design/icons";
+import {
+  EditIcon,
+  MockupBoldFlashCircleIcon,
+  SettingIcon,
+} from "@nudge-design/icons";
 
 const meta: Meta<typeof CoachMark> = {
-  title: "Components/CoachMark",
+  title: "Components/Overlay/CoachMark",
   component: CoachMark,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
@@ -37,7 +41,8 @@ export const Playground: Story = {
             <EditIcon size={16} color="var(--semantic-icon-normal-default)" /> 기록
           </button>
           <button id="t-discover" style={{ padding: "12px 24px" }}>
-            ✨ 둘러보기
+            <MockupBoldFlashCircleIcon size={16} color="var(--semantic-icon-normal-default)" />{" "}
+            둘러보기
           </button>
           <button
             id="t-settings"

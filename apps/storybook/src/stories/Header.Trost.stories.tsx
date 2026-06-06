@@ -21,7 +21,7 @@ const trostLogo = `${import.meta.env.BASE_URL}brand-logos/trost-logo.svg`;
 const nudgeEapSymbol = `${import.meta.env.BASE_URL}brand-logos/nudge-eap/nudge-eap-symbol.svg`;
 
 const meta: Meta = {
-  title: "Components/Header",
+  title: "Brands/Trost/Header",
   parameters: { layout: "fullscreen" },
   globals: { brand: "trost" },
 };

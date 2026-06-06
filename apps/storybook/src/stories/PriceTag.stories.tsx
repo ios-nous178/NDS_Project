@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { PriceTag } from "@nudge-design/react";
 
 const meta: Meta<typeof PriceTag> = {
-  title: "Components/PriceTag",
+  title: "Components/Display/PriceTag",
   component: PriceTag,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -19,7 +19,7 @@ type Story = StoryObj<typeof PriceTag>;
 export const Playground: Story = { render: (args) => <PriceTag {...args} /> };
 
 export const Sizes: Story = {
-  name: "Size/sm md lg",
+  name: "Variant/sm md lg",
   render: () => (
     <div
       style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}

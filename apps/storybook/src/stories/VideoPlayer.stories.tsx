@@ -8,7 +8,7 @@ const SAMPLE_POSTER =
   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg";
 
 const meta: Meta<typeof VideoPlayer> = {
-  title: "Components/VideoPlayer",
+  title: "Components/Display/VideoPlayer",
   component: VideoPlayer,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

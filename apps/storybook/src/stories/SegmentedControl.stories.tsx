@@ -4,7 +4,7 @@ import { SegmentedControl } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/SegmentedControl",
+  title: "Components/Controls/SegmentedControl",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -83,22 +83,64 @@ function DisabledItemExample() {
   );
 }
 
+const DashIcon = (
+  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+    <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+  </svg>
+);
+const RiskIcon = (
+  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+    <path d="M10 2L18 17H2L10 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M10 8V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <circle cx="10" cy="14" r="0.8" fill="currentColor" />
+  </svg>
+);
+
+/** lg(PC) + 아이콘 — 구 Tabs variant="segment" 의 어드민 세그먼트 용도 흡수 */
+function LargePcExample() {
+  const [value, setValue] = useState<"dashboard" | "risk" | "counsel">("dashboard");
+  return (
+    <div style={{ width: 520 }}>
+      <SegmentedControl
+        size="lg"
+        fullWidth
+        options={[
+          { value: "dashboard", label: "통합 대시보드", icon: DashIcon },
+          { value: "risk", label: "고위험군 관리", icon: RiskIcon },
+          { value: "counsel", label: "상담" },
+        ]}
+        value={value}
+        onValueChange={setValue}
+      />
+    </div>
+  );
+}
+
 export const Basic: Story = {
-  name: "기본",
+  name: "State/기본",
   render: () => <BasicExample />,
 };
 
 export const Medium: Story = {
-  name: "Medium 사이즈",
+  name: "Variant/Medium 사이즈",
   render: () => <MediumExample />,
 };
 
 export const FullWidth: Story = {
-  name: "Full Width",
+  name: "Variant/Full Width",
   render: () => <FullWidthExample />,
 };
 
 export const DisabledItem: Story = {
-  name: "비활성 아이템 포함",
+  name: "State/비활성 아이템 포함",
   render: () => <DisabledItemExample />,
+};
+
+export const LargePc: Story = {
+  name: "Variant/PC + 아이콘 (구 Tabs.segment)",
+  parameters: { layout: "padded" },
+  render: () => <LargePcExample />,
 };

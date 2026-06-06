@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { DateRangePicker, defaultRangePresets, type DateRange } from "@nudge-design/react";
 
 const meta: Meta<typeof DateRangePicker> = {
-  title: "Components/DateRangePicker",
+  title: "Components/Inputs/DateRangePicker",
   component: DateRangePicker,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

@@ -6,7 +6,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<PopupProps> = {
-  title: "Components/Popup",
+  title: "Components/Overlay/Popup",
   component: Popup,
   tags: ["autodocs"],
   parameters: {

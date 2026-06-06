@@ -7,7 +7,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser, pause } from "./interactionTest";
 
 const meta: Meta<InputProps> = {
-  title: "Components/Input",
+  title: "Components/Inputs/Input",
   component: Input,
   tags: ["autodocs"],
   parameters: {
@@ -75,7 +75,12 @@ const HELPER_VARIANT_ROWS: Array<{
   usage: string;
 }> = [
   { variant: "default", token: "Text/Muted/Default", color: "#999999", usage: "일반 도움말" },
-  { variant: "success", token: "Text/Brand/Default", color: "#2B96ED", usage: "폼 검증 통과" },
+  {
+    variant: "success",
+    token: "Text/Brand/Default",
+    color: "var(--semantic-text-brand-default)",
+    usage: "폼 검증 통과",
+  },
   { variant: "error", token: "Text/Status/Error", color: "#F13F00", usage: "폼 오류" },
   { variant: "disabled", token: "Text/Disabled/Default", color: "#C7C7C7", usage: "비활성" },
 ];

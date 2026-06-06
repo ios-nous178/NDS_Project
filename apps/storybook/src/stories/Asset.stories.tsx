@@ -4,7 +4,7 @@ import { CalendarIcon, CounselIcon } from "@nudge-design/icons/mono";
 import { GenietPlayIcon, TrostMentalDepressionIcon } from "@nudge-design/icons/multicolor";
 
 const meta: Meta<typeof Asset> = {
-  title: "Components/Asset",
+  title: "Components/Display/Asset",
   component: Asset,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -30,12 +30,12 @@ export const Playground: Story = {
 };
 
 export const ContentImage: Story = {
-  name: "Content/이미지",
+  name: "Variant/Content 이미지",
   args: { size: "lg", content: { type: "image", src: SAMPLE, alt: "프로필" } },
 };
 
 export const ContentIcon: Story = {
-  name: "Content/아이콘 (mono)",
+  name: "Variant/Content 아이콘 (mono)",
   args: {
     size: "lg",
     shape: "rounded",
@@ -44,12 +44,12 @@ export const ContentIcon: Story = {
 };
 
 export const ContentInitial: Story = {
-  name: "Content/이니셜",
+  name: "Variant/Content 이니셜",
   args: { size: "lg", content: { type: "initial", name: "이정민" } },
 };
 
 export const ContentMulticolor: Story = {
-  name: "Content/Multicolor 아이콘",
+  name: "Variant/Content Multicolor 아이콘",
   args: {
     size: "xl",
     shape: "rounded",
@@ -58,7 +58,7 @@ export const ContentMulticolor: Story = {
 };
 
 export const Fallback: Story = {
-  name: "Fallback/이미지 오류 → 이니셜",
+  name: "Variant/Fallback 이미지 오류 → 이니셜",
   args: {
     size: "lg",
     content: { type: "image", src: "https://broken.invalid/x.jpg", alt: "김상담" },
@@ -66,7 +66,7 @@ export const Fallback: Story = {
 };
 
 export const Shapes: Story = {
-  name: "Frame/Shape 비교",
+  name: "Variant/Shape 비교",
   render: () => (
     <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
       <Asset size="lg" shape="square" content={{ type: "image", src: SAMPLE, alt: "" }} />
@@ -77,7 +77,7 @@ export const Shapes: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Frame/Size 비교",
+  name: "Variant/Size 비교",
   render: () => (
     <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
       {(["xs", "sm", "md", "lg", "xl", "2xl"] as const).map((s) => (
@@ -88,7 +88,7 @@ export const Sizes: Story = {
 };
 
 export const UnionOverlap: Story = {
-  name: "Union/Overlap (AvatarGroup 대체)",
+  name: "Variant/Union Overlap (AvatarGroup 대체)",
   render: () => (
     <div style={{ display: "flex" }}>
       <Asset
@@ -112,7 +112,7 @@ export const UnionOverlap: Story = {
 };
 
 export const UnionAcc: Story = {
-  name: "Union/Accessory (status dot)",
+  name: "Variant/Union Accessory (status dot)",
   render: () => (
     <div style={{ display: "flex", gap: 16 }}>
       <Asset
@@ -155,7 +155,7 @@ export const UnionAcc: Story = {
 };
 
 export const BrandSignature: Story = {
-  name: "통합/브랜드 시그니처 (Geniet/Trost)",
+  name: "Recipe/브랜드 시그니처 (Geniet/Trost)",
   render: () => (
     <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
       <Asset size="xl" shape="rounded" content={{ type: "icon", icon: <GenietPlayIcon /> }} />
