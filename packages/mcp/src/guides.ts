@@ -1186,15 +1186,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Select: {
     name: "Select",
     examplesHtml: {
-      do: '<nds-select value="kr" label="국가" placeholder="선택하세요">\n  <nds-select-option value="kr">대한민국</nds-select-option>\n  <nds-select-option value="jp" disabled>일본</nds-select-option>\n</nds-select>\n<script>sel.addEventListener("select-change", e => setCountry(e.detail.value));</script>',
-      dont: '<!-- nds-select 안에 raw <option> -> 드롭다운이 렌더 안 됨 -->\n<nds-select value="kr"><option value="kr">대한민국</option></nds-select>',
+      do: '<nds-select value="kr" label="국가" placeholder="선택하세요">\n  <nds-select-option value="kr">대한민국</nds-select-option>\n  <nds-select-option value="jp" disabled>일본</nds-select-option>\n</nds-select>\n<script>sel.addEventListener("select-change", e => setCountry(e.detail.value));</script>\n<!-- 옵션이 많으면 searchable(검색형, Ant showSearch 모델) — 값은 여전히 옵션 중에서만 선택 -->\n<nds-select label="거주 지역" placeholder="선택" searchable search-placeholder="지역명으로 검색">\n  <nds-select-option value="seoul">서울특별시</nds-select-option>\n  <nds-select-option value="busan">부산광역시</nds-select-option>\n</nds-select>',
+      dont: '<!-- nds-select 안에 raw <option> -> 드롭다운이 렌더 안 됨 -->\n<nds-select value="kr"><option value="kr">대한민국</option></nds-select>\n<!-- 자유 입력(목록에 없는 값)이 필요한데 searchable 로 우회 — 그건 Autocomplete -->\n<nds-select searchable>...직접 입력값 허용 의도...</nds-select>',
     },
-    summary: "드롭다운. options + value + onValueChange.",
+    summary:
+      "드롭다운. options + value + onValueChange. 옵션이 많으면 `searchable`(검색형, Ant showSearch 모델)로 label 필터 — 단, 값은 항상 옵션 중에서만 선택된다(자유 입력 X).",
     pitfalls: [
       '**폭은 기본 전체너비(fullWidth/full-width=true)** — 폼/FormField 안에서 트리거가 100% 를 채운다(캐포비 어드민 폼 기본 규칙). 좁게 써야 하는 경우(어드민 검색 필터 등)에만 `full-width="false"`(React `fullWidth={false}`)를 명시. 드롭다운 메뉴 폭은 전체너비면 트리거 폭으로 고정, auto(좁은) 셀렉트는 가장 넓은 옵션까지 grow 후 캡(360px) — 캡/트리거폭에 닿으면 옵션 라벨이 줄바꿈 대신 말줄임. 메뉴를 트리거보다 임의로 넓게 만들지 말 것.',
       "변경 핸들러는 **onValueChange** (onChange 아님). React 표준이 아닌 DS 컨벤션.",
       "**드롭다운 흉내 금지** — `<nds-button>` / raw `<button>` + ChevronRight/ChevronDown 아이콘 조합으로 드롭다운 모양만 따라 그리지 말 것. 키보드 탐색·focus trap·옵션 list a11y 가 전부 빠짐. 옵션이 1개라도 있으면 무조건 `<nds-select>` 또는 React `<Select>`. 'scope switcher / sort / filter' 같이 옵션이 동적이면 더더욱 raw button 금지.",
       "옵션이 2-3 개의 토글성 선택지면 Tabs / Segment 도 고려 — Select 는 옵션 수가 많거나 라벨이 긴 경우.",
+      "**Select(searchable) vs Autocomplete 구분** — 옵션 목록에서 *고르는* 검색은 `Select searchable`(값은 옵션으로 제약). 사용자가 *목록에 없는 값을 자유 입력*하거나 서버에서 비동기로 받은 제안을 보여주는 거면 Autocomplete. searchable 로 자유 입력을 흉내내지 말 것.",
+      "`searchable` 검색 placeholder 는 `search-placeholder`(React `searchPlaceholder`), 결과 0건 문구는 `empty-message`(React `emptyMessage`).",
     ],
   },
   Banner: {
@@ -1519,22 +1522,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["10분 미만 단일 가이드: SkipBack/Forward 생략. 시리즈 재생만 둘 다 부착."],
   },
-  ActivityTimeline: {
-    name: "ActivityTimeline",
-    examplesHtml: {
-      do: '<nds-activity-timeline items=\'[\n  {"key":"1","date":"2026.05.25","title":"상담 예약 완료","status":"completed"},\n  {"key":"2","date":"2026.05.28","title":"자가검사","status":"ongoing","statusLabel":"진행 중"}\n]\'></nds-activity-timeline>',
-      dont: '<!-- 자식 element 를 직접 쓰면 nds-timeline 사용 (이 가이드는 flat items API) -->\n<nds-activity-timeline>\n  <nds-timeline-item title="…"></nds-timeline-item>\n</nds-activity-timeline>',
-    },
-    summary: "상담/검사 이력 타임라인. dot + line + 날짜/제목/상태 배지.",
-    pitfalls: [
-      "마지막 항목의 line은 자동으로 안 그려짐(:last-child). 중간에 splice해서 추가/삭제할 때 key 유지 잘 할 것.",
-      'status="ongoing"는 box-shadow ring 효과 — 한 화면에 여럿 두면 시각 잡음. 보통 1개만.',
-      "statusLabel 없이 status만 주면 dot 색만 바뀌고 우측 배지는 안 뜸. 둘 다 필요.",
-      "items 길이가 20+ 넘으면 페이지네이션 또는 가상화 권장.",
-    ],
-    interactivePattern:
-      "각 아이템을 클릭 가능하게 하려면 description 자리에 작은 TextButton/Link를 넣는 패턴 — 행 전체 onClick은 우발 클릭 위험.",
-  },
   OtpInput: {
     name: "OtpInput",
     examplesHtml: {
@@ -1684,8 +1671,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- options 를 단일 따옴표 없이 JSON.stringify 결과 그대로 — 따옴표 escape 가 깨짐 -->\n<nds-autocomplete options=\"[{value:'1',label:'A'}]\"></nds-autocomplete>",
     },
     summary:
-      "입력 + 드롭다운 추천. SearchInput(자유 검색)과 Select(고정 목록)의 중간. 키보드 ↓↑/Enter/Esc 내장.",
+      "입력 + 드롭다운 추천(자유 입력 허용). SearchInput(자유 검색)과 Select(고정 목록)의 중간. 키보드 ↓↑/Enter/Esc 내장. ⚠️ 목록에서 *고르기만* 하면(자유 입력 불필요) `Select searchable` 이 맞다 — Autocomplete 는 값이 옵션에 없어도 되는 경우.",
     pitfalls: [
+      "**Select searchable 과 구분** — 옵션 중 하나를 *선택*하는 검색이면 `Select searchable`(값이 옵션으로 제약). Autocomplete 는 자유 입력 + 비동기 제안용.",
       "options는 외부에서 필터링해 전달 — 컴포넌트가 자동 필터링하지 않음 (서버 검색을 위한 의도적 설계).",
       "onSelect 후 onValueChange(label)이 자동 호출됨. value를 다시 set하지 말 것 (이중 호출).",
       "minQueryLength=0으로 두면 빈 입력에서도 드롭다운이 열림. 추천 노출이 의도가 아니면 1+ 권장.",
@@ -2544,24 +2532,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["상담사 리스트: showLabel=true로 텍스트 함께", "아바타 점: 라벨 없이 size=10"],
   },
-  TipCard: {
-    name: "TipCard",
-    examplesHtml: {
-      do: '<nds-tip-card tone="info" label="팁" tip-title="더 잘 자려면"\n  description="자기 1시간 전엔 화면을 멀리해보세요"></nds-tip-card>',
-      dont: '<!-- TipCard 를 위기/긴급 안내에 사용 — 시그널 강도가 부족 -->\n<nds-tip-card tone="info" tip-title="자해 충동이 든다면"></nds-tip-card>',
-    },
-    summary: "한 줄 인사이트/팁 카드. info/success/warning/neutral 톤. 페이지 띠는 Banner.",
-    pitfalls: [
-      "위기/긴급 안내에 사용하지 말 것 — 전용 위기 안내 패턴을 쓸 것.",
-      "페이지 상단 띠 알림은 Banner. TipCard는 콘텐츠 영역 안의 카드.",
-      "actionLabel + onClick 함께 줘도 액션 버튼은 stopPropagation됨 (의도적).",
-    ],
-    recommended: [
-      "오늘의 팁: tone='info' label='오늘의 팁' actionLabel='시작하기'",
-      "챌린지 격려: tone='success' (완료 후 안내)",
-      "홈 카드: 짧은 description + actionLabel",
-    ],
-  },
   PinPad: {
     name: "PinPad",
     examplesHtml: {
@@ -2586,10 +2556,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       do: '<nds-time-picker value="18:00" step="600"\n  label="노출 종료 시간"\n  presets=\'[{"label":"자정까지","value":"23:59"}]\'></nds-time-picker>\n<script>el.addEventListener("nds-time-change", e => setTime(e.detail.value));</script>',
       dont: '<!-- step 0 — 분/초 단위 무제한 — 예약 정확도 깨짐 -->\n<nds-time-picker value="14:30" step="0"></nds-time-picker>',
     },
-    summary: "시간만 선택 (HH:mm). step(초 단위)/min/max 지원. 날짜+시간은 DatePicker와 조합.",
+    summary:
+      "시간만 선택 (HH:mm). 네이티브 시간 입력이 아니라 DS 팝오버 패널(시/분 스크롤 컬럼, DatePicker 와 동일 surface)로 선택. step(초 단위)/min/max 지원. 날짜+시간은 DatePicker와 조합.",
     pitfalls: [
-      "step은 초 단위 — 5분이면 300, 15분이면 900.",
-      "min/max도 HH:mm 문자열 — Date 객체 X.",
+      "트리거(시계아이콘 포함)를 누르면 시/분 컬럼 팝오버가 열린다 — OS 기본 시간 UI(showPicker)는 쓰지 않는다. 선택값은 브랜드 fill 로 강조.",
+      "step은 초 단위 — 5분이면 300, 15분이면 900. 분 컬럼 간격으로 환산된다.",
+      "min/max도 HH:mm 문자열 — Date 객체 X. 범위 밖 시/분 옵션은 자동 비활성.",
       "상담 슬롯 목록에서 선택은 TimeSlotPicker가 적합 — TimePicker는 자유 시각 입력.",
       '**(캐포비 어드민) 시간 인풋의 \'빠른설정\' 프리셋은 `nds-time-picker` 의 `presets` 속성으로 — 손조립·노란 brand Chip 금지.** 광고 노출 스케줄 등에서 시간 필드 트레일링(`00:00` + 시계아이콘 우측)에 `자정까지`(= 시간을 즉시 세팅) 같은 빠른설정 칩이 붙는다. 이건 컴포넌트 내장 기능이다: `presets=\'[{"label":"자정까지","value":"23:59"}]\'`(React `presets={[{label,value}]}`) — 클릭하면 value 가 세팅되는 **회색 중립 칩**으로 자동 렌더(시계 아이콘 ic_time_picker 포함). raw `<div>`/`<nds-chip>` 으로 손조립하지 말 것. **노란 outlined Chip / SelectionButton 으로 그리면 회귀**(SelectionButton 과 혼동되는 \'지역=노란칩\'과 동일 함정 — region-as-chip 참조). Figma 3001:19122.',
     ],
@@ -2832,25 +2804,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "송금: presets +1만/+5만/전액(set), max=balance",
       "후원: presets에 set:true 4종 (5천/1만/3만/5만)",
-    ],
-  },
-  StatusTimeline: {
-    name: "StatusTimeline",
-    examplesHtml: {
-      do: '<nds-status-timeline current="1" direction="vertical"\n  steps=\'[\n    {"key":"received","label":"접수","time":"05/20"},\n    {"key":"processing","label":"처리 중","time":"05/22"},\n    {"key":"done","label":"완료"}\n  ]\'></nds-status-timeline>',
-      dont: '<!-- 이벤트 로그를 status-timeline 으로 — nds-timeline 또는 nds-activity-timeline 사용 -->\n<nds-status-timeline steps=\'[{"key":"e1","label":"5/20 신청"},{"key":"e2","label":"5/21 검사"}]\'></nds-status-timeline>',
-    },
-    summary:
-      "단계 진행 트래커 (가로/세로). current 이전은 완료, 이후는 todo. ActivityTimeline(시간순 로그)과 분리.",
-    pitfalls: [
-      "current는 현재 진행 인덱스 (0-based). 전부 완료는 current=steps.length.",
-      "ActivityTimeline은 자유로운 시간순 로그 — StatusTimeline은 정해진 단계 트래커.",
-      "단계 5개 이상은 가로형이 좁아짐 — 세로형 권장.",
-    ],
-    recommended: [
-      "배송 추적: 가로형 4단계, time 표시",
-      "상담 진행: 세로형, description으로 단계 설명",
-      "신청서: 접수→검토→승인 3단계",
     ],
   },
   FilterBar: {
@@ -3859,32 +3812,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Stepper: {
     name: "Stepper",
     summary:
-      "원형 번호/점 인디케이터로 다단계 작업(가입/결제/온보딩) 의 현재 진척만 표시. variant=numbered|dots. 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. 단계 5개 이상은 사용자 인지 부담. (가로 막대형 어드민 흐름=StepProgress, time/desc 슬롯 상태 트래커=StatusTimeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
-    pitfalls: [
-      "status 는 prop 이 아님 — steps 에 {key,label} 만 주고 상태는 current(0-based)로 결정. 'status' 를 박으면 무시됨.",
-      "variant 는 numbered|dots 뿐 — 'horizontal'/'vertical' 같은 값은 없음(Stepper 는 항상 가로). 세로 방향 단계 트래커가 필요하면 StatusTimeline(direction='vertical').",
-      "현재 단계가 마지막인데 current 를 그대로 두면 completed 신호가 안 뜸 — 전부 완료는 current=steps.length.",
-      "step.key 누락 — 안정적 식별자(react key)로 권장.",
-    ],
-    examplesHtml: {
-      do: '<nds-stepper current="1" variant="numbered" steps=\'[{"key":"info","label":"기본 정보"},{"key":"pay","label":"결제"},{"key":"confirm","label":"확인"}]\'></nds-stepper>',
-      dont: '<!-- variant="horizontal" + per-step status 는 존재하지 않는 prop — 무시됨 -->\n<nds-stepper variant="horizontal" steps=\'[{"label":"기본 정보","status":"completed"},{"label":"결제","status":"current"}]\'></nds-stepper>',
-    },
-  },
-  StepProgress: {
-    name: "StepProgress",
-    summary:
-      "가로 막대형 단계 진행 표시. 각 스텝 = 막대 + 라벨(스텝번호 + 제목 2단). 캐시워크 for Business 어드민 다단계 흐름(캠페인 → 광고 → 소재 만들기) 기준.",
+      "다단계 작업의 현재 진척 표시. variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
     pitfalls: [
-      "원형 번호형(Stepper)과 혼동 금지 — StepProgress 는 가로 막대 + 스텝번호/제목 라벨 전용(어드민 화면).",
-      "current 미설정 — 0(첫 스텝)으로 폴백돼 진척이 안 보임. 0-based 인덱스로 현재 단계 지정.",
-      "막대 색을 직접 지정 — completed/current 는 브랜드색, upcoming 은 border-normal 로 토큰 자동 결정. hex 박지 말 것.",
-      "라벨은 label(스텝번호 'Step 1')과 title(제목 '캠페인 만들기') 두 갈래. 한쪽만 써도 되지만 어드민 흐름은 둘 다 권장.",
+      "status 는 prop 이 아님 — steps 에 {key,label,title?} 만 주고 상태는 current(0-based)로 결정. 'status' 를 박으면 무시됨.",
+      "variant 는 numbered|dots|bar 뿐 — 'horizontal'/'vertical' 같은 값은 없음(Stepper 는 항상 가로). 세로 방향 트래커가 필요하면 Timeline(direction='vertical').",
+      "title 은 variant=bar 의 두 번째 라벨 줄(예: '캠페인 만들기'). numbered/dots 에서는 무시됨 — 원형 단계명은 label 사용.",
+      "막대(bar) 색을 직접 지정 — completed/current 는 브랜드색, upcoming 은 border-normal 로 토큰 자동 결정. hex 박지 말 것.",
+      "현재 단계가 마지막인데 current 를 그대로 두면 completed 신호가 안 뜸 — 전부 완료는 current=steps.length.",
     ],
     examplesHtml: {
-      do: '<nds-step-progress current="1" steps=\'[{"label":"Step 1","title":"캠페인 만들기"},{"label":"Step 2","title":"광고 만들기"},{"label":"Step 3","title":"소재 만들기"}]\'></nds-step-progress>',
-      dont: '<!-- current 누락 + 막대 색 직접 지정 -->\n<nds-step-progress steps=\'[{"title":"캠페인"},{"title":"광고"}]\' style="--bar:#ffd200"></nds-step-progress>',
+      do: '<!-- 원형 단계 -->\n<nds-stepper current="1" variant="numbered" steps=\'[{"key":"info","label":"기본 정보"},{"key":"pay","label":"결제"},{"key":"confirm","label":"확인"}]\'></nds-stepper>\n<!-- 어드민 가로 막대(구 StepProgress) -->\n<nds-stepper current="1" variant="bar" steps=\'[{"key":"c","label":"Step 1","title":"캠페인 만들기"},{"key":"a","label":"Step 2","title":"광고 만들기"},{"key":"m","label":"Step 3","title":"소재 만들기"}]\'></nds-stepper>',
+      dont: '<!-- variant="horizontal" + per-step status 는 존재하지 않는 prop — 무시됨. 막대 색 직접 지정 금지 -->\n<nds-stepper variant="horizontal" steps=\'[{"label":"기본 정보","status":"completed"}]\'></nds-stepper>',
     },
   },
   Textarea: {
@@ -4073,15 +4012,17 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Timeline: {
     name: "Timeline",
     summary:
-      "상담/검사 이력 타임라인 — compound API. flat JSON 으로 받으려면 ActivityTimeline 사용.",
+      "타임라인 — data-array(items) API. mode=activity(시간순 이벤트 로그 — date/title/description + status/statusLabel 배지) + mode=tracker(정해진 단계 진행 트래커 — current 인덱스로 done/current/todo 파생, direction=vertical|horizontal). 구 ActivityTimeline+StatusTimeline 통합. (단계 진척만 간결히 보이려면 Stepper, 다단계 폼 컨테이너는 MultiStepForm.)",
     pitfalls: [
-      "ActivityTimeline 과 시각/DOM 은 동일 — items 가 정적이고 자식 markup 으로 표현하기 편한 곳에만 사용. 동적 데이터는 ActivityTimeline.",
-      "status='ongoing' 은 box-shadow ring 효과 — 한 화면에 여럿 두면 시각 잡음. 보통 1개만.",
-      "items 20+ 면 페이지네이션 / 가상화 권장. 한 번에 노출하면 스크롤 부담.",
+      "items 의 각 항목은 { key, title, date?, description?, status?, statusLabel? }. title 은 필수(이벤트/단계 이름), date 는 시점.",
+      "mode=tracker 는 current(0-based)로 상태 파생 — per-item status 는 무시됨. 전부 완료는 current=items.length.",
+      "mode=activity 는 per-item status(default/completed/ongoing/warning/error) 명시. statusLabel 없이 status만 주면 dot 색만 바뀌고 우측 배지는 안 뜸 — 둘 다 필요.",
+      "direction='horizontal' 은 tracker 에서만 의미(가로 단계 트래커). activity 는 항상 세로.",
+      "status='ongoing' 은 box-shadow ring 효과 — 한 화면에 여럿 두면 시각 잡음. 보통 1개. items 20+ 면 페이지네이션/가상화 권장.",
     ],
     examplesHtml: {
-      do: '<nds-timeline>\n  <nds-timeline-item date="2026.05.25" title="상담 예약 완료" status="completed"></nds-timeline-item>\n  <nds-timeline-item date="2026.05.28" title="자가검사 진행" status="ongoing" status-label="진행 중"></nds-timeline-item>\n</nds-timeline>',
-      dont: "<!-- items 를 JSON 으로 넘기려면 nds-activity-timeline -->\n<nds-timeline items='[...]'></nds-timeline>",
+      do: '<!-- 이벤트 로그 -->\n<nds-timeline mode="activity" items=\'[\n  {"key":"1","date":"2026.05.25","title":"상담 예약 완료","status":"completed","statusLabel":"완료"},\n  {"key":"2","date":"2026.05.28","title":"자가검사","status":"ongoing","statusLabel":"진행 중"}\n]\'></nds-timeline>\n<!-- 단계 트래커 -->\n<nds-timeline mode="tracker" current="1" direction="horizontal" items=\'[\n  {"key":"r","title":"접수","date":"05/20"},\n  {"key":"p","title":"처리 중"},\n  {"key":"d","title":"완료"}\n]\'></nds-timeline>',
+      dont: '<!-- 슬롯 자식(nds-timeline-item)·steps 속성은 폐기 — items 배열 + mode 사용 -->\n<nds-timeline><nds-timeline-item title="…"></nds-timeline-item></nds-timeline>',
     },
   },
   BrandHeader: {
@@ -4361,7 +4302,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "로고의 gradient/accent 컬러를 UI 배경/태그/CTA 컬러처럼 사용하지 마세요 — 로고 표현과 UI 시스템 컬러는 분리",
     "DS 컴포넌트에 정확히 매칭되는 쓰임이 있는데 raw <button>/<input>/<span>으로 대체 금지",
     "이모지 절대 사용 금지 — 어떤 위치에서도(라벨/버튼/제목/placeholder/empty state) 이모지를 텍스트로 박지 마세요. 아이콘이 필요하면 find_icon. validate_mockup 의 emoji-banned 룰로 자동 검출됨.",
-    "→ ← ✓ ★ • 같은 텍스트 기호 사용 금지 — 화살표/체크/별점/불릿을 문자로 표현하지 마세요. 아이콘은 find_icon, 진행/별점/리스트는 DS 컴포넌트(StatusTimeline/Rating/Dense list) 사용. validate_mockup 의 text-symbol-banned 룰로 자동 검출됨.",
+    "→ ← ✓ ★ • 같은 텍스트 기호 사용 금지 — 화살표/체크/별점/불릿을 문자로 표현하지 마세요. 아이콘은 find_icon, 진행/별점/리스트는 DS 컴포넌트(Timeline/Stepper/Rating/Dense list) 사용. validate_mockup 의 text-symbol-banned 룰로 자동 검출됨.",
     "Primitive spacing(--spacing-N) / 임의 px (5/7/9/11/13/15) 사용 금지 — 반드시 --semantic-gap-* / --semantic-inset-* semantic 토큰으로 표현",
     "Inset(내부 여백) 자리에 Gap 토큰 사용 금지 (또는 그 반대) — padding 자리에 --semantic-gap-*, gap 자리에 --semantic-inset-* 쓰지 않기",
     "Brand background 를 단순 시각 구분·decorative section·KPI 카드·summary 카드 배경으로 사용 금지 — 의미 전달 없는 색 배경은 위계를 망가뜨림",
@@ -4968,6 +4909,33 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       maxHeightMixPerRow: 1,
       gapBetweenItems: "8 / 12 / 16 px (--semantic-gap-component-*)",
       verticalAlign: "center",
+    },
+  },
+  consent: {
+    name: "consent",
+    summary:
+      "약관/개인정보 동의 화면 — 전체동의 + 필수/선택 + 약관 펼침. DS 는 전용 컴포넌트 대신 **Checkbox(indeterminate) 조립 패턴**으로 간다(MUI/Ant 가 indeterminate Checkbox 만 주고 동의 화면은 앱이 조립하는 것과 같은 층위). 한국 개인정보보호법 정합(능동 동의·pre-tick 금지·필수/선택 구분)이 핵심이라 패턴으로 박제한다.",
+    rules: [
+      "마스터 '전체 동의' 체크박스는 자식 선택 비율로 **파생** — 모두 체크=checked, 일부=indeterminate(옐로우 마이너스), 전무=unchecked. `<Checkbox indeterminate>`(HTML `<nds-checkbox indeterminate>`)를 그대로 쓴다. 색/아이콘을 직접 손계산하지 말 것.",
+      "전체동의 클릭 동작: '모두 체크면 전체 해제, 아니면(부분/전무) 전체 체크'. 전체동의는 **독립 상태를 갖지 않고 항상 자식에 의존** — 이 동기화가 동의 화면 #1 버그 지점이다.",
+      "**필수/선택 구분 필수** — 각 항목에 `[필수]`/`[선택]` 명시(필수=text statusError 톤, 선택=text subtle). 필수 미동의 시 다음 단계 진행 불가(가드는 호출부 책임).",
+      "**pre-tick(선택 항목 기본 체크) 금지** — 마케팅 수신 등 선택 항목을 미리 체크해두면 개인정보보호법상 능동 동의가 아니라 위법(행정처분 대상). 초기 value 는 빈 배열 또는 사용자가 과거 동의한 것만.",
+      "전체동의는 사용자가 직접 누른 능동 동의라 합법 — 단 누르면 선택까지 싹 체크되는 마찰을 줄이려면 '필수만 동의' 보조 동선 또는 필수/선택 전체동의 분리를 검토(토스식).",
+      "약관 전문은 detail 펼침(chevron 접기/펼치기)으로 — 기본 접힘, 필요 시 확장. 전문이 길면 '전문 보기' 외부 링크.",
+      "개별 항목 체크박스는 원자 `<Checkbox>` 재사용 + 라벨 옆 필수/선택 뱃지 + (선택) 펼침 토글. 별도 'ConsentChecklist' 컴포넌트를 다시 만들지 말 것 — 이 조립으로 충분.",
+    ],
+    avoid: [
+      "전체동의 상태를 자식과 독립으로 관리 — 체크 동기화가 깨진다(동의 화면 최다 버그).",
+      "선택 항목을 기본 체크(pre-tick) — 위법(개인정보보호법, 능동 동의 아님).",
+      "부분 선택을 그냥 빈 체크로 표시 — indeterminate(마이너스)로 시각화해야 '일부 동의'가 보인다.",
+      "필수/선택 구분 없이 '전체 동의'만 노출 — 사용자가 무엇에 동의하는지 불명확 + 법적 리스크.",
+      "계층(시/도 ▸ 시/군구) 다중 선택을 이 패턴으로 — 그건 component:CheckboxTree(부모 indeterminate 자동).",
+    ],
+    metrics: {
+      masterCheckbox: "Checkbox indeterminate (자식 비율로 파생)",
+      requiredEnforcement: "호출부 책임 (필수 미동의 → 진행 불가)",
+      preTick: "금지 (개인정보보호법)",
+      hierarchy: "1단계 (계층은 CheckboxTree)",
     },
   },
   "cta-group": {
@@ -5975,7 +5943,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     avoid: [
       "Box Default 텍스트를 회색으로 바꾸지 말 것 — 캐포비 가이드는 #DDD 위 흰 텍스트(저대비)가 의도된 스펙.",
       "Underline 인디케이터를 3px(base) 로 두지 말 것 — 캐포비는 2px. 단, 브랜드 cascade 가 처리하므로 직접 px 박지 말 것.",
-      "Tab 으로 다단계 폼 진행도(Step)를 표현하지 말 것 — StepProgress 사용.",
+      "Tab 으로 다단계 폼 진행도(Step)를 표현하지 말 것 — Stepper variant=bar 사용.",
     ],
     metrics: {
       variants: "line(Underline) · chip(Box)",
@@ -6017,17 +5985,17 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-step-progress": {
     name: "cashwalk-biz-step-progress",
     summary:
-      "캐시워크 포 비즈니스 admin 의 단계형 진행 표시(StepProgress) — 가로 막대 + 스텝번호/제목 2단 라벨. 다단계 폼(캠페인→광고→소재) 진행도.",
+      "캐시워크 포 비즈니스 admin 의 단계형 진행 표시 — Stepper variant=bar(가로 막대 + 스텝번호/제목 2단 라벨). 다단계 폼(캠페인→광고→소재) 진행도. (구 StepProgress 는 Stepper variant=bar 로 통합됨.)",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
     rules: [
-      '마크업: `<nds-step-progress current="1" steps=\'[{"label":"Step 1","title":"캠페인 만들기"},{"label":"Step 2","title":"광고 만들기"},{"label":"Step 3","title":"소재 만들기"}]\'></nds-step-progress>`. `current` 는 0-based.',
+      '마크업: `<nds-stepper variant="bar" current="1" steps=\'[{"key":"c","label":"Step 1","title":"캠페인 만들기"},{"key":"a","label":"Step 2","title":"광고 만들기"},{"key":"m","label":"Step 3","title":"소재 만들기"}]\'></nds-stepper>`. `current` 는 0-based.',
       "각 스텝 = 막대(8px·radius 6) + 라벨(스텝번호 'Step N' + 제목). 상태: Done(idx<current)=막대 brand·라벨 normal medium / Current(idx===current)=막대 brand·라벨 strong bold / Upcoming(idx>current)=막대 border-normal·라벨 subtle.",
-      "다단계 Form 화면(`pattern:cashwalk-biz-page-form`)의 상단 진행도로 사용 — 단건 Form(`cashwalk-biz-form-layout`)에는 StepProgress 없음.",
-      "원형 번호형 `Stepper` 와 구분 — StepProgress 는 가로 막대 + 2단 라벨 전용(어드민).",
+      "다단계 Form 화면(`pattern:cashwalk-biz-page-form`)의 상단 진행도로 사용 — 단건 Form(`cashwalk-biz-form-layout`)에는 진행도 없음.",
+      "원형 번호형(`variant=numbered`)과 구분 — 어드민 가로 막대는 `variant=bar`.",
     ],
     avoid: [
       "막대 색을 직접 지정 금지 — Done/Current=brand, Upcoming=border-normal 으로 토큰 자동 결정.",
-      "단건(한 화면) 폼에 StepProgress 를 붙이지 말 것 — 다단계 흐름에만.",
+      "단건(한 화면) 폼에 진행도 막대를 붙이지 말 것 — 다단계 흐름에만.",
     ],
     metrics: {
       bar: "8px · radius 6",
