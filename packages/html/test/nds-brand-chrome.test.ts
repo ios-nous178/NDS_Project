@@ -23,7 +23,7 @@ describe("nds-brand-header / nds-brand-footer", () => {
   it("renders a CashwalkBiz web header with brand-specific yellow primary CTA", async () => {
     const el = document.createElement("nds-brand-header");
     el.setAttribute("brand", "cashwalk-biz");
-    el.setAttribute("active-key", "campaign");
+    el.setAttribute("active-key", "ad");
     document.body.appendChild(el);
     await flush();
 
@@ -32,11 +32,12 @@ describe("nds-brand-header / nds-brand-footer", () => {
     expect(header).toBeTruthy();
     /* 로고는 self-contained data URI (cashwalk-biz 는 svg 원본). */
     expect(logo?.getAttribute("src")).toMatch(/^data:image\/svg\+xml;base64,/);
-    expect(el.textContent).toContain("캠페인");
+    // Figma 98:1082 마케팅 GNB — 활성 탭은 '광고'(key 'ad').
+    expect(el.textContent).toContain("광고");
     const activeMenu = el.querySelector(
       '.nds-brand-cashwalk-biz__menu-item[data-active="true"]',
     ) as HTMLElement | null;
-    expect(activeMenu?.textContent).toContain("캠페인");
+    expect(activeMenu?.textContent).toContain("광고");
     const cta = el.querySelector(
       ".nds-brand-cashwalk-biz__primary-cta",
     ) as HTMLAnchorElement | null;
