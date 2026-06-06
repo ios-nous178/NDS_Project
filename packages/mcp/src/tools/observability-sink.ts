@@ -84,19 +84,19 @@ function isLoopback(url: string): boolean {
 }
 
 /**
- * PRD/HTML **원문(raw content)** 전송 게이트. 기본은 OFF — 본문에 기획 내용·내부 식별자가
- * 담기므로 명시 opt-in(NUDGE_OBSERVABILITY_ARTIFACTS=1) 없이는 메타데이터(kind/source/hash/bytes)만
- * 보낸다. 원격(non-loopback) sink 로 보낼 때는 더더욱 명시 동의가 있어야만 본문이 나간다.
+ * PRD/HTML **원문(raw content)** 전송 게이트. 정책은 "원문은 머신 밖으로 안 나간다":
+ *   - loopback(127.0.0.1/localhost) sink → **기본 ON**. 사내 대시보드가 같은 머신에 있으므로
+ *     env 없이 바로 원문이 보인다. NUDGE_OBSERVABILITY_ARTIFACTS=0 으로 끌 수 있다.
+ *   - 원격(non-loopback) sink → **기본 OFF**. 명시 opt-in(ARTIFACTS=1) + ARTIFACTS_REMOTE=1
+ *     둘 다 켜야만 본문이 나간다. 안 켜면 메타데이터(kind/source/hash/bytes)만 송신.
  */
 function artifactsContentEnabled(base: string): boolean {
   const flag = process.env.NUDGE_OBSERVABILITY_ARTIFACTS;
-  if (flag === undefined) return false; // 기본 OFF
-  if (isFlagOff(flag)) return false;
-  // 원격 타깃은 명시 opt-in 이어도 한 번 더 게이트: ARTIFACTS_REMOTE 까지 켜야 본문 송신.
-  if (!isLoopback(base) && isFlagOff(process.env.NUDGE_OBSERVABILITY_ARTIFACTS_REMOTE ?? "0")) {
-    return false;
-  }
-  return true;
+  if (isFlagOff(flag)) return false; // 명시 OFF 면 어디든 끈다
+  if (isLoopback(base)) return true; // 같은 머신이면 기본 ON
+  // 원격 타깃: 명시 opt-in + ARTIFACTS_REMOTE 둘 다 켜야 본문 송신.
+  if (flag === undefined) return false;
+  return !isFlagOff(process.env.NUDGE_OBSERVABILITY_ARTIFACTS_REMOTE ?? "0");
 }
 
 /** 선택적 공유 시크릿 — 설정 시 모든 sink POST 에 Authorization 헤더로 붙는다(무인증 평문 완화). */
