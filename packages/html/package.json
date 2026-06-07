@@ -28,7 +28,7 @@
     "./dist/components/*.js"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc && node scripts/copy-styles.mjs && node scripts/build-standalone.mjs",
+    "build": "node ../../scripts/check-runtime-registry.mjs && rm -rf dist && tsc && node scripts/copy-styles.mjs && node scripts/build-standalone.mjs",
     "build:fixture": "node test-fixture/build-fixture.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

@@ -117,3 +117,16 @@ import "./components/nds-add-button.js";
 import "./components/nds-multi-select.js";
 import "./components/nds-checkbox-tree.js";
 import "./components/nds-checkbox-group.js";
+// 회귀 방지: 아래 컴포넌트들은 자기 파일에서 define() 하지만 이 side-effect 엔트리에
+// import 되지 않아 standalone 번들에 미포함 → <nds-*> 가 런타임 미등록(빈 박스)이었다.
+// scripts/check-runtime-registry.mjs 가 define()↔runtime.ts import drift 를 하드 게이트한다.
+import "./components/nds-coach-mark.js";
+import "./components/nds-empty-state.js";
+import "./components/nds-online-indicator.js";
+import "./components/nds-pagination.js";
+import "./components/nds-popup.js";
+import "./components/nds-snackbar.js";
+import "./components/nds-snackbar-host.js";
+import "./components/nds-sparkline.js";
+import "./components/nds-stepper.js";
+import "./components/nds-text-button.js";

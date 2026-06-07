@@ -367,6 +367,18 @@ const packagesMeta = [
 const componentNames = readDtsExports(reactDist);
 const unionMap = collectStringLiteralUnions([reactDist]);
 
+// 하드 가드 — react dist 가 없거나 안 빌드된 상태면 readDtsExports 가 [] 를 조용히 반환해
+// 컴포넌트 0개짜리 깨진 catalog.json 이 생성되던 회귀를 차단한다. icons/tokens/html 메타는
+// 따로 채워져 빌드 로그가 '정상'처럼 보이므로(false-healthy) 여기서 명시적으로 실패시킨다.
+const MIN_REACT_COMPONENTS = 50; // 현재 ~121개. 50 미만이면 react dist 가 비었거나 미빌드.
+if (componentNames.length < MIN_REACT_COMPONENTS) {
+  throw new Error(
+    `[emit-manifest] react 컴포넌트가 ${componentNames.length}개뿐 (기대 ≥ ${MIN_REACT_COMPONENTS}). ` +
+      `packages/react/dist 가 비었거나 안 빌드됐습니다 — 깨진 catalog 생성을 막기 위해 중단합니다. ` +
+      `'pnpm build --filter @nudge-design/react' (또는 'pnpm build') 후 다시 실행하세요.`,
+  );
+}
+
 /**
  * `nds-icon-button` → `IconButton`. emit-manifest 가 components 와 nds-* 메타를
  * cross-link 할 때 사용. parser.ts 의 ndsTagToComponentName 과 동일 컨벤션.

@@ -357,7 +357,7 @@
         "do": "<!-- 2버튼(가로 분할): 취소 + 확정. slot=\"footer\" 는 자동으로 .nds-modal__footer 로 승격됨 -->\n<nds-modal open title=\"신청을 취소할까요?\" max-width=\"400\" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot=\"footer\">\n    <nds-button color=\"assistive\" variant=\"outlined\">닫기</nds-button>\n    <nds-button color=\"error\" variant=\"solid\">취소하기</nds-button>\n  </div>\n</nds-modal>\n<!-- 캐포비(data-brand=\"cashwalk-biz\") 단일 버튼: 우측 정렬 · hug 너비 · 검정 pill (full-width 아님). full-width 속성 붙이지 말 것 — footer cascade 가 우측 정렬 처리 -->\n<nds-modal open title=\"검수를 승인할까요?\" max-width=\"480\">\n  <p>승인하면 즉시 노출됩니다.</p>\n  <div slot=\"footer\">\n    <nds-button color=\"secondary\" variant=\"solid\" shape=\"pill\">승인</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener(\"modal-close\", () => modal.removeAttribute(\"open\"));</script>",
         "dont": "<!-- closable + max-width 누락 + 본문 없음 — 의도/구조가 부족 -->\n<nds-modal open></nds-modal>\n<!-- raw <dialog> 로 모달 흉내 — focus trap / 토큰이 적용 안 됨 -->\n<dialog open><p>알림</p></dialog>"
       },
-      "summary": "사용자의 현재 흐름을 일시적으로 중단하고 중요한 결정/응답을 받기 위한 오버레이 UI. (기본/모바일) Radius 8 / 카드 padding 비대칭 28·16·16 / PC 332 · Mobile 294 / 본문↔버튼 24px gap / 50% overlay / shadow.md. Type: default / title(헤더) / Image(64×64 아이콘+타이틀). Button: 최대 2개. (기본/모바일) 1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할. **(캐포비 admin) 1개=우측 정렬 · hug 너비 · 검정 pill (full-width 아님), 2개=가로 분할** — single 우측정렬은 footer cascade 가 자동 처리(full-width 붙이지 말 것). Modal API/props 는 brand 무관 동일 — CSS cascade 만 다름. brand 별 spec 변형 (예: admin desktop 4가지 패턴) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
+      "summary": "사용자의 현재 흐름을 일시적으로 중단하고 중요한 결정/응답을 받기 위한 오버레이 UI. (기본/모바일) Radius 8 / 카드 padding 비대칭 28·16·16 / PC 332 · Mobile 294 / 본문↔버튼 24px gap / 50% overlay / shadow.md. Type: default / title(헤더) / Image(64×64 아이콘+타이틀). Button: 최대 2개. (기본/모바일) 1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할. **(캐포비 admin) 1개=우측 정렬 · hug 너비 · 검정 pill (full-width 아님), 2개=우측 hug** — 버튼 배치는 actionsLayout('split'=가로균등 | 'end'=우측 hug) 으로 제어하고, 생략 시 브랜드 기본이 강제된다(캐포비=end, 그 외=split. react=actionsLayout prop, html=actions-layout 속성). full-width 붙이지 말 것. Modal API/props 는 brand 무관 동일 — 색/pill 모양은 브랜드 토큰, 배치만 actionsLayout(data-layout) variant. brand 별 spec 변형 (예: admin desktop 4가지 패턴) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
       "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9947",
       "references": [
         {
@@ -433,14 +433,15 @@
         "do": "<nds-tabs active-key=\"home\" variant=\"line\" size=\"mobile\">\n  <nds-tabs-list>\n    <nds-tabs-trigger key=\"home\">홈</nds-tabs-trigger>\n    <nds-tabs-trigger key=\"profile\">프로필</nds-tabs-trigger>\n  </nds-tabs-list>\n  <nds-tabs-panel key=\"home\">홈 콘텐츠</nds-tabs-panel>\n  <nds-tabs-panel key=\"profile\">프로필 콘텐츠</nds-tabs-panel>\n</nds-tabs>\n<script>tabs.addEventListener(\"tabs-change\", e => console.log(e.detail.activeKey));</script>",
         "dont": "<!-- panel 의 key 가 trigger 의 key 와 불일치 — 빈 화면이 노출됨 -->\n<nds-tabs active-key=\"home\">\n  <nds-tabs-list><nds-tabs-trigger key=\"home\">홈</nds-tabs-trigger></nds-tabs-list>\n  <nds-tabs-panel key=\"HOME\">홈 콘텐츠</nds-tabs-panel>\n</nds-tabs>"
       },
-      "summary": "line/chip 2가지 variant. items + activeKey + onTabChange. 동일 depth 콘텐츠 전환 · category navigation · section switching 전용. CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지. (세그먼트형 단일 값 선택은 Tabs variant='segment' — 구 SegmentedControl 흡수.)",
+      "summary": "line/chip/segment 3가지 variant + tone(neutral|color) + size(mobile|pc). items + activeKey + onTabChange. line/chip = 동일 depth 콘텐츠 전환 · category navigation · section switching(tablist) 전용. segment = 뷰/기간/상태 단일 값 토글(구 SegmentedControl 흡수, 콘텐츠 패널 전환 아님). CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지.",
       "pitfalls": [
         "items 형식은 {key, title}[]. label 같은 다른 키 이름 사용 시 렌더 실패.",
         "변경 핸들러는 onTabChange (onChange 아님).",
         "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 보기 전환만.",
         "같은 리스트의 '필터' 는 FilterBar, Tab 은 '뷰/카테고리/섹션 전환' — 둘을 섞어 쓰지 말 것.",
         "세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tabs variant='segment' (mobile/pc). line/chip 은 패널 전환(tablist) 전용.",
-        "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서."
+        "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.",
+        "캐포비(cashwalk-biz)는 chip 치수만 브랜드 토큰으로 override(radius 10·height 52·padding 20). 비활성 chip 컬러는 NudgeEAP 와 동일(subtle bg + subtle text, hover 시 surface.section + strong) — 흰 텍스트 저대비로 만들지 말 것."
       ],
       "usagePolicy": {
         "useFor": [
@@ -455,8 +456,9 @@
           "세그먼트형 단일 값 선택 (Tabs variant='segment' 사용)"
         ],
         "variantPolicy": {
-          "line": "기본 — 모바일/PC 공통, 콘텐츠 전환",
-          "chip": "강조형 — 알약(Pill) 필터 탭, 모바일/PC 카테고리 분류"
+          "line": "기본 — 모바일/PC 공통, 콘텐츠 전환. 활성 탭 하단 인디케이터. tone=neutral(진한 텍스트)/color(브랜드).",
+          "chip": "강조형 — 알약(Pill) 필터 탭, 모바일/PC 카테고리 분류. tone=neutral(활성 다크 채움)/color(활성 브랜드 채움).",
+          "segment": "연결된 회색 트랙 위 균등 분할 단일 값 토글(구 SegmentedControl 흡수) — 뷰/기간/상태. 콘텐츠 패널 전환 아님. tone=color 면 활성이 브랜드 채움."
         }
       }
     },
@@ -684,7 +686,7 @@
         "활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.",
         "캐시워크 포 비즈니스 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
         "**★ HTML `<nds-sidebar>` 의 item `icon` = inline SVG 문자열 (이름 아님).** `icon` 은 innerHTML 로 주입되므로 `\"icon\":\"home\"` 이나 `\"icon\":\"CashwalkBizGnbBannerIcon\"` 처럼 **이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자). 절차: `find_icon({ name })` → 반환 inline SVG 를 `icon` 에 주입. React `<Sidebar>` 의 `icon?: ReactNode`(엘리먼트)와 대칭일 뿐, **HTML 목업이라 아이콘이 안 된다는 건 사실이 아니다**(런타임 한계 X). `items` 가 JSON 속성이라 SVG 안 `\"` 는 `\\\"` 로 이스케이프.",
-        "GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 get_brand({ brand:'<slug>' }).brandIcons 참조. (이때 얻은 이름을 그대로 HTML icon 에 넣지 말고 find_icon 으로 SVG 를 받아 주입.)",
+        "GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 find_icon({ query:'CashwalkBizGnb' }) 참조. (이때 얻은 이름을 그대로 HTML icon 에 넣지 말고 find_icon 으로 SVG 를 받아 주입.)",
         "**★ items JSON 이스케이프 함정 — 사이드바가 로고만 뜨고 메뉴가 통째로 사라지는 #1 원인.** 단일따옴표 `items='...'` 안에서 JSON **구조용 따옴표까지** `\\\"` 로 이스케이프하면(`items='[{\\\"key\\\"...]'`) HTML 속성에서 백슬래시는 리터럴이라 JSON 파싱이 깨지고, 컴포넌트가 메뉴를 통째로 버린다(로고/헤더만 렌더). 구조용 따옴표는 **bare**, SVG 내부 따옴표만 `\\\"`. 헷갈리면 `<script type=\"application/json\" slot=\"items\">` 자식을 쓰면 이스케이프가 아예 필요 없다. 빌드 validator(`nds-json-attr-unparseable`)가 깨진 JSON 을 error 로 잡아 빌드를 막고, 컴포넌트도 조용히 비우지 않고 console.warn 한다.",
         "서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).",
         "collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).",
@@ -869,16 +871,17 @@
     "DateRangePicker": {
       "name": "DateRangePicker",
       "examplesHtml": {
-        "do": "<nds-date-range-picker from=\"2026-05-01\" to=\"2026-05-31\"\n  presets='[{\"label\":\"최근 7일\",\"days\":7},{\"label\":\"이번 달\",\"days\":30}]'></nds-date-range-picker>\n<script>el.addEventListener(\"nds-date-range-change\", e => apply(e.detail));</script>",
+        "do": "<nds-date-range-picker from=\"2026-05-01\" to=\"2026-05-31\" allow-clear\n  presets='[{\"key\":\"7d\",\"label\":\"최근 7일\",\"from\":\"2026-05-25\",\"to\":\"2026-05-31\"},{\"key\":\"month\",\"label\":\"이번 달\",\"from\":\"2026-05-01\",\"to\":\"2026-05-31\"}]'></nds-date-range-picker>\n<script>el.addEventListener(\"nds-date-range-change\", e => apply(e.detail));</script>",
         "dont": "<!-- to < from — 의미 없는 범위. min-date / max-date 로 가드 권장 -->\n<nds-date-range-picker from=\"2026-05-31\" to=\"2026-05-01\"></nds-date-range-picker>"
       },
-      "summary": "시작/끝 날짜 한 쌍 선택. DatePicker 두 개 + 빠른 프리셋(최근 7일 등).",
+      "summary": "시작/끝 날짜 한 쌍 선택. 단일 트리거 + range 전용 캘린더 패널 + 빠른 프리셋(최근 7일 등).",
       "pitfalls": [
         "**기간(노출 기간/시작~종료)을 raw text input 2개로 손수 만들지 말 것** — placeholder 'YYYY-MM-DD' 텍스트 입력은 달력 팝오버·범위 검증·간격이 전부 빠진다. 한 컴포넌트 <nds-date-range-picker> 로. (검증룰 date-as-text-input 이 막음. 단일 날짜는 DatePicker.)",
         "value는 { from?, to? } — 부분 선택 가능 (시작만 있을 수 있음). 폼 검증 시 둘 다 있는지 체크.",
-        "끝일은 자동으로 minDate=시작일 — 시작일을 뒤로 옮기면 끝일이 자동으로 비워짐(value.to>from 체크).",
+        "시작/종료를 한 패널에서 차례로 선택 — 역순으로 고르면 자동 정렬된다.",
         "프리셋은 defaultRangePresets로 빠른 것 3개 제공 (7일/30일/이번 달). 검사·리포트마다 다른 기본값이 필요하면 직접 정의.",
-        "presets[].range는 함수 — 호출 시점의 \"오늘\"을 기준으로 계산하기 위함. 객체 리터럴로 박지 말 것."
+        "presets[].range는 함수 — 호출 시점의 \"오늘\"을 기준으로 계산하기 위함. 객체 리터럴로 박지 말 것.",
+        "선택 불가 날짜는 React disabledDate, HTML disabled-dates(JSON 배열 또는 comma-separated ISO)로 막는다."
       ],
       "recommended": [
         "리포트 기간 필터: defaultRangePresets 그대로 사용",
@@ -2680,6 +2683,7 @@
         "checked 와 default-checked 동시 사용 — controlled / uncontrolled 가 섞임.",
         "label 없이 단독으로 던지지 말 것 — 한 줄 안내문이라도 aria-label 로 제공.",
         "`indeterminate` 는 `checked` 보다 우선 표시되고, 클릭하면 네이티브와 동일하게 `checked=true` 로 전이된다(부분→전체). '부모/전체선택' 행에만 쓰고 leaf 엔 쓰지 말 것.",
+        "상태 SSOT 는 호스트의 `checked` **프로퍼티** — `el.checked = true` 로 코드에서 바꿔도 `change` 는 발생하지 않는다(네이티브 동일, 사용자 입력에만 발화). 전체선택 헤더는 ①헤더 `change` → 자식 `.checked` 를 일괄 set, ②자식 `change` → 선택 수로 헤더 `checked`/`indeterminate` 3상태 재계산, 두 방향을 직접 잇는다. `onclick` 시점엔 아직 토글 전이라 상태가 안 settled — 반드시 `change` 를 들을 것. (`.click()` 만으론 호스트 토글이 안 됨.)",
         "**시/도 ▸ 시/군구 같은 계층 트리는 CheckboxTree** 가 부모 indeterminate 를 자동 계산 — 직접 indeterminate 를 손계산해 트리를 손조립하지 말 것. component:CheckboxTree.",
         "소규모 고정 옵션 다중선택(예: 연령대 10대~70대)은 **SelectChip**(`<nds-chip selected>`) 우선 — 체크박스 리스트는 약관 동의·긴 가변 리스트·행 단위 선택에. (`pattern:cashwalk-biz-badge-chip`)"
       ],
@@ -2917,11 +2921,12 @@
     },
     "Popup": {
       "name": "Popup",
-      "summary": "단순 확인/거부(취소·삭제·종료) 1-액션 다이얼로그. 본문이 긴 경우엔 Modal, 비차단 알림은 Snackbar.",
+      "summary": "단순 확인/거부(취소·삭제·종료) 1-액션 다이얼로그. 본문이 긴 경우엔 Modal, 비차단 알림은 Snackbar. 버튼 배치는 actionsLayout('split'=2버튼 50/50·1버튼 세로 스택 | 'end'=우측 hug)으로 제어하고, 생략 시 브랜드 기본(캐포비=end, 그 외=split)이 강제된다(react=actionsLayout prop, html=actions-layout 속성). 색/pill 모양은 브랜드 토큰이 별도 결정.",
       "pitfalls": [
         "Popup 본문에 form / 멀티 입력을 두지 말 것 — Modal 이 맞음.",
         "destructive 액션의 confirm-text 가 '확인' 처럼 일반 — 'X 삭제하기' / 'X 종료' 처럼 결과 명시.",
-        "show-cancel 끄고 confirm 만 — 사용자에게 거부권을 주지 않음 (info popup 외에는 비권장)."
+        "show-cancel 끄고 confirm 만 — 사용자에게 거부권을 주지 않음 (info popup 외에는 비권장).",
+        "버튼 배치를 직접 flex/justify 로 덮어쓰지 말 것 — actionsLayout='split'|'end' 사용(브랜드 기본은 자동)."
       ],
       "examplesHtml": {
         "do": "<nds-popup open title=\"신청을 취소할까요?\" description=\"입력한 내용은 저장되지 않아요\"\n  confirm-text=\"신청 취소하기\" cancel-text=\"계속 작성\" show-cancel></nds-popup>\n<script>el.addEventListener(\"popup-confirm\", cancel); el.addEventListener(\"popup-cancel\", () => el.removeAttribute(\"open\"));</script>",
@@ -3086,12 +3091,14 @@
     "DatePicker": {
       "name": "DatePicker",
       "examplesHtml": {
-        "do": "<nds-date-picker value=\"2026-05-25\" min-date=\"2026-05-01\" max-date=\"2026-12-31\"\n  placeholder=\"날짜 선택\"></nds-date-picker>\n<script>el.addEventListener(\"nds-date-change\", e => setDate(e.detail.value));</script>",
+        "do": "<nds-date-picker value=\"2026-05-25\" min-date=\"2026-05-01\" max-date=\"2026-12-31\"\n  placeholder=\"날짜 선택\" allow-clear></nds-date-picker>\n<script>el.addEventListener(\"nds-date-change\", e => setDate(e.detail.value));\nel.addEventListener(\"nds-date-clear\", () => setDate(null));</script>",
         "dont": "<!-- min-date / max-date 누락 — 사용자가 과거/먼 미래 선택 가능 -->\n<nds-date-picker placeholder=\"날짜\"></nds-date-picker>"
       },
-      "summary": "단일 날짜 선택. 캘린더 팝업 + 키보드 입력. 시간까지 필요하면 별도 TimePicker 또는 DateTimePicker 조합.",
+      "summary": "단일 날짜 선택. 캘린더 팝업 + 키보드 grid 이동(Arrow/Home/End/PageUp/PageDown) + clear/open/status 제어. 시간까지 필요하면 별도 TimePicker 또는 DateTimePicker 조합. (폼에서 날짜 고르기는 항상 DatePicker — Calendar 는 마커가 있는 독립 인라인 월 뷰로 용도가 다르다.)",
       "pitfalls": [
         "min/max 누락 — 사용자가 과거/먼 미래 날짜를 선택해 데이터 검증 실패.",
+        "주말/휴일/마감일 같은 업무 제약은 React disabledDate, HTML disabled-dates(JSON 배열 또는 comma-separated ISO)로 막는다.",
+        "값 초기화가 필요한 필터는 allowClear + onClear/nds-date-clear 를 연결한다.",
         "한국어 로케일 누락 — '월/일/연도' 영문 형식 노출.",
         "Calendar 컴포넌트로 month/year 보기 + 직접 select 흉내내지 말 것 — 컨트롤 일관성 깨짐."
       ]
@@ -3364,7 +3371,8 @@
         "버튼 위 보조 설명(서브카피)이 버튼 라벨과 의미상 중복되지 않도록 한다. 둘 다 같은 가치 제안을 반복하면 버튼 역할이 흐려진다.",
         "다이얼로그/모달의 왼쪽(보조) 버튼 라벨은 항상 **닫기**. '취소'는 사용자가 진행 중이던 작업이 취소된다고 오해할 수 있어 사용 금지. 자세한 라이팅 룰은 get_guide({ topic: 'ux-writing' }) 참고.",
         "거절 가능한 비파괴 옵션이 항상 1개 이상 있어야 한다. CTA가 '확인' 하나뿐인 다이얼로그는 다크패턴 — get_guide({ topic: 'pattern:dark-patterns' }) 참고.",
-        "외부 링크는 화살표보다 Link/ExternalLink 성격의 아이콘을 검토."
+        "외부 링크는 화살표보다 Link/ExternalLink 성격의 아이콘을 검토.",
+        "모달/팝업 푸터의 액션 그룹은 별도 규칙 — 버튼 `shape=\"pill\"` + 배치는 `actionsLayout`(react=actionsLayout / html=actions-layout 속성; 생략 시 브랜드 기본 강제: 캐포비=end 우측 hug, 그 외=split 가로 분할). 일반 화면 cta-group 규칙을 모달 푸터에 그대로 적용(사각 shape·full-width)하지 말 것. 푸터 결정 트리는 get_guide({ topic: 'component:Modal' }) 참고."
       ],
       "avoid": [
         "모든 '자세히 보기' 버튼에 화살표 반복",
@@ -3373,7 +3381,8 @@
         "버튼 위 카피와 버튼 라벨에 같은 문장을 반복 (예: '지금 시작해 보세요' → [지금 시작])",
         "다이얼로그 보조 버튼에 '취소' 사용",
         "거절·닫기 옵션 없이 '확인' 하나만 있는 다이얼로그",
-        "한 뷰포트에 primary solid CTA 2개 이상"
+        "한 뷰포트에 primary solid CTA 2개 이상",
+        "모달/팝업 푸터 버튼에 default 사각 shape 또는 full-width 남용 (확인 팝업은 우측 hug pill — Modal 가이드 SSOT)"
       ],
       "metrics": {
         "maxArrowIconButtonPerViewport": 1,
@@ -3697,12 +3706,13 @@
         "목업 작성 전에는 프롬프트에 이미지, 스크린샷, Figma 링크, figmaNodeUrl 이 이미 있어도 항상 사용자에게 시각 레퍼런스 확인 질문을 한다.",
         "단, 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, references.md 의 첫 줄 `task:` 슬러그가 현재 task 와 일치하면 다시 묻지 말고 읽어서 적용한다. 이전 task 의 stale references.md (예: cashwalk-biz-form 작업물이 남은 상태에서 geniet-diary 시작) 는 없는 것으로 간주.",
         "references.md 첫 줄은 `task: <brand>-<screen-slug>` 형식 필수 (예: `task: geniet-diary-hub`). 이게 staleness 판정 기준.",
+        "새 목업 요청에서 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 `동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?` 라고 묻고 답변 전 기존 폴더를 수정하지 않는다. 억지로 찾지 말 것(깊은 재귀/전체 디스크/유사도 검색 금지).",
         "사용자 응답으로 기존 첨부/링크를 기준으로 진행해도 되는지, 추가 정답/오답 레퍼런스가 있는지 확인한다.",
         "권장 세트는 정답 1-2장 + 오답 1-2장. 각 레퍼런스는 '왜 맞는지/틀린지' 1줄 캡션을 붙인다.",
         "`source` 로 허용되는 것은 Figma URL (`figma.com/...`) 또는 이미지 파일 (`.png/.jpg/.jpeg/.webp/.gif/.svg`) 뿐. PRD/spec/요구사항 `.md` 는 source 가 아니다 (텍스트 문서는 spec 이지 visual reference 가 아님).",
         "레퍼런스를 받은 뒤에는 brandTone 문장보다 레퍼런스 캡션을 우선한다.",
         "구현 전 references.md 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적는다.",
-        "완료 보고에는 어떤 reference cue 를 실제 화면에 반영했는지 2-4개로 요약한다."
+        "완료 보고에는 어떤 reference cue 를 실제 화면에 반영했는지 2-4개로 요약하고, 최종 산출물의 full 절대경로를 반드시 포함한다."
       ],
       "avoid": [
         "레퍼런스 없이 '차분한/전문적인/친근한' 같은 형용사만 보고 화면 생성",
@@ -3713,7 +3723,9 @@
         "[prd-as-visual] PRD 에 ASCII 레이아웃·컬러 스펙이 있다고 'visual reference 로 간주' — 텍스트 ≠ 시각자료, Figma 또는 이미지 필요",
         "[decisive-tone-bypass] 사용자 어조 ('바로 만들어줘' / 'PRD 지켜서') 가 단호하다고 게이트 skip — 어조는 우회 사유가 아님",
         "[soft-prompt-misread] 가이드의 'soft prompt' 표현을 'optional 권고' 로 약화 해석 — 이 게이트는 REQUIRED",
-        "[checklist-omission] 메모리/체크리스트의 후반 단계만 따라가다 이 게이트를 'principles 응답에 끼어있는 부차 advisory' 로 격하"
+        "[checklist-omission] 메모리/체크리스트의 후반 단계만 따라가다 이 게이트를 'principles 응답에 끼어있는 부차 advisory' 로 격하",
+        "[same-folder-overwrite] 같은 기획으로 보이는 기존 작업폴더가 명백히 보였는데도 v2 생성 여부를 묻지 않고 기존 폴더를 수정",
+        "[relative-path-only] 완료 응답을 `dist/index.html` 같은 상대경로만으로 끝냄 — full 절대경로 필수"
       ],
       "referenceInputs": {
         "accepted": [
