@@ -117,6 +117,22 @@ function currentSessionId(): string | null {
   );
 }
 
+function syntheticSessionId(cwd: string | undefined, mockupFile: string | null): string {
+  const workspace = cwd ? path.resolve(cwd) : "unknown-workspace";
+  const seed = `${workspace}:${mockupFile || "unknown-mockup"}`;
+  return `mcp_${hash(seed, 20)}`;
+}
+
+function resolveSessionId(cwd: string | undefined, mockupFile: string | null): string {
+  return currentSessionId() ?? syntheticSessionId(cwd, mockupFile);
+}
+
+function sessionTitle(cwd: string | undefined, mockupFile: string | null): string {
+  if (mockupFile) return mockupFile;
+  if (cwd) return path.basename(path.resolve(cwd)) || cwd;
+  return "MCP mockup session";
+}
+
 /**
  * "어떤 에이전트(codex/claude)가 어떤 표면(code/cli/chat)에서 호출했나"를 run/event 레코드에
  * 붙인다. client-identity 가 SSOT(자동 clientInfo + 명시 env override). best-effort 라 throw X.
@@ -221,10 +237,12 @@ async function send(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
 
 function usageEndpoint(
   report: ReportHtmlMockupUsageResult | undefined,
-  sessionId: string | null,
+  sessionId: string,
+  client: JsonObject,
+  runId?: string,
 ): SinkEndpoint[] {
   if (!report?.usage) return [];
-  return [{ path: "/usage/import", body: { ...report.usage, sessionId } }];
+  return [{ path: "/usage/import", body: { ...report.usage, sessionId, runId, client } }];
 }
 
 function violationsEndpoint(args: {
@@ -252,6 +270,42 @@ function violationsEndpoint(args: {
       })),
     },
   ];
+}
+
+function sessionEndpoint(args: {
+  sessionId: string;
+  client: JsonObject;
+  tool: string;
+  cwd?: string;
+  mockupFile: string | null;
+  status?: string;
+  dsVersion?: string | null;
+}): SinkEndpoint {
+  const agent =
+    typeof args.client.agent === "string" && args.client.agent
+      ? args.client.agent
+      : args.tool.includes("claude")
+        ? "claude"
+        : args.tool.includes("codex")
+          ? "codex"
+          : "unknown";
+  return {
+    path: "/sessions/import",
+    body: {
+      clientId: args.sessionId,
+      tool: agent,
+      title: sessionTitle(args.cwd, args.mockupFile),
+      status: args.status ?? "completed",
+      metadata: {
+        cwdHash: args.cwd ? hash(path.resolve(args.cwd), 16) : null,
+        mockupFile: args.mockupFile,
+        dsVersion: args.dsVersion,
+        client: args.client,
+        source: "mcp-observability",
+      },
+      messages: [],
+    },
+  };
 }
 
 function qualityEndpoint(args: {
@@ -356,10 +410,19 @@ function artifactsEndpoint(args: {
 export async function recordBuildObservability(args: RecordBuildArgs): Promise<SinkPostResult[]> {
   const outputRel = rel(args.cwd, args.result.outputPath);
   const runId = buildRunId("build", args.cwd, outputRel);
-  const sessionId = currentSessionId();
   const client = clientContext();
+  const sessionId = resolveSessionId(args.cwd, outputRel);
   const validation = args.result.validation;
   const endpoints: SinkEndpoint[] = [
+    sessionEndpoint({
+      sessionId,
+      client,
+      tool: args.tool,
+      cwd: args.cwd,
+      mockupFile: outputRel,
+      status: args.result.ok ? "completed" : "failed",
+      dsVersion: args.dsVersion,
+    }),
     {
       path: "/mockup-runs/import",
       body: {
@@ -400,7 +463,7 @@ export async function recordBuildObservability(args: RecordBuildArgs): Promise<S
         },
       },
     },
-    ...usageEndpoint(args.result.report, sessionId),
+    ...usageEndpoint(args.result.report, sessionId, client, runId),
     ...qualityEndpoint({ runId, sessionId, mockupFile: outputRel, validation }),
     ...violationsEndpoint({ runId, sessionId, mockupFile: outputRel, validation }),
     ...artifactsEndpoint({
@@ -420,9 +483,18 @@ export async function recordValidationObservability(
 ): Promise<SinkPostResult[]> {
   const mockupFile = rel(args.cwd, args.filePath);
   const runId = buildRunId("validate", args.cwd, mockupFile);
-  const sessionId = currentSessionId();
   const client = clientContext();
+  const sessionId = resolveSessionId(args.cwd, mockupFile);
   const endpoints: SinkEndpoint[] = [
+    sessionEndpoint({
+      sessionId,
+      client,
+      tool: args.tool,
+      cwd: args.cwd,
+      mockupFile,
+      status: args.result.ok ? "completed" : "failed",
+      dsVersion: args.dsVersion,
+    }),
     {
       path: "/mockup-runs/import",
       body: {
@@ -456,7 +528,7 @@ export async function recordValidationObservability(
         },
       },
     },
-    ...usageEndpoint(args.result.report, sessionId),
+    ...usageEndpoint(args.result.report, sessionId, client, runId),
     ...qualityEndpoint({ runId, sessionId, mockupFile, validation: args.result }),
     ...violationsEndpoint({ runId, sessionId, mockupFile, validation: args.result }),
   ];
@@ -541,9 +613,18 @@ export async function recordQualityObservability(
 ): Promise<SinkPostResult[]> {
   const mockupFile = rel(args.cwd, args.filePath);
   const runId = buildRunId("quality", args.cwd, mockupFile);
-  const sessionId = currentSessionId();
   const client = clientContext();
+  const sessionId = resolveSessionId(args.cwd, mockupFile);
   return send([
+    sessionEndpoint({
+      sessionId,
+      client,
+      tool: args.tool,
+      cwd: args.cwd,
+      mockupFile,
+      status: args.verdict === "fail" ? "failed" : "completed",
+      dsVersion: args.dsVersion,
+    }),
     {
       path: "/quality/import",
       body: {

@@ -150,6 +150,15 @@ function rowClient(row) {
   return row && row.client && typeof row.client === "object" ? row.client : null;
 }
 
+function rowStatus(row) {
+  if (!row) return null;
+  if (row.status) return row.status;
+  if (row.type === "error_occurred" || row.eventType === "error_occurred") return "failed";
+  if (row.verdict === "fail") return "failed";
+  if (row.type || row.eventType || row.runId || row.mockupFile) return "completed";
+  return null;
+}
+
 // 세션을 대표하는 클라이언트(agent/surface)를 고른다 — runs/quality/events 순으로 최신부터
 // 훑어 agent 또는 surface 가 채워진 첫 레코드의 client 를 쓴다(레코드는 sortRecent 정렬).
 function pickClient(...rowLists) {
@@ -196,8 +205,53 @@ function sessionTitle(session) {
   );
 }
 
+function buildSyntheticSessions(rows) {
+  const existingIds = new Set(rows.sessions.map((row) => row.clientId).filter(Boolean));
+  const existingMockups = new Set(rows.sessions.flatMap((row) => [...sessionMockupKeys(row)]));
+  const grouped = new Map();
+  const sourceRows = [
+    ...rows.runs,
+    ...rows.quality,
+    ...rows.usage,
+    ...rows.events,
+    ...rows.reviews,
+    ...rows.violations,
+    ...rows.artifacts,
+  ];
+
+  for (const row of sourceRows) {
+    const explicitSessionId = rowSessionId(row);
+    const mockupFile = rowMockupFile(row);
+    if (explicitSessionId && existingIds.has(explicitSessionId)) continue;
+    if (!explicitSessionId && mockupFile && existingMockups.has(mockupFile)) continue;
+    const clientId =
+      explicitSessionId || (mockupFile ? stableId("mockup-session", mockupFile) : null);
+    if (!clientId || existingIds.has(clientId)) continue;
+    const prev = grouped.get(clientId);
+    const client = rowClient(row) || rowClient(prev) || null;
+    const timestamp = row.timestamp || row.loggedAt || row.createdAt || row.receivedAt || null;
+    grouped.set(clientId, {
+      ...(prev || {}),
+      clientId,
+      userId: row.userId || prev?.userId || null,
+      tool: client?.agent || row.tool || row.agentType || prev?.tool || "unknown",
+      title: mockupFile || row.mockupName || prev?.title || clientId,
+      status: rowStatus(row) || prev?.status || "completed",
+      metadata: {
+        ...(prev?.metadata || {}),
+        mockupFile: mockupFile || prev?.metadata?.mockupFile || null,
+        mockupName: row.mockupName || prev?.metadata?.mockupName || null,
+        client: client || prev?.metadata?.client || null,
+        synthetic: true,
+      },
+      receivedAt: timestamp || prev?.receivedAt || new Date().toISOString(),
+    });
+  }
+  return [...grouped.values()];
+}
+
 function loadDashboardRows() {
-  return {
+  const rows = {
     sessions: latestBy(readJsonl("sessions"), "clientId"),
     messages: readJsonl("messages"),
     reviews: readJsonl("reviews"),
@@ -208,6 +262,8 @@ function loadDashboardRows() {
     violations: readJsonl("violations"),
     artifacts: readJsonl("artifacts"),
   };
+  rows.sessions = latestBy([...rows.sessions, ...buildSyntheticSessions(rows)], "clientId");
+  return rows;
 }
 
 function buildSessionDetail(sessionId) {
@@ -371,6 +427,9 @@ app.post("/sessions/import", (req, res) => {
     tool: body.tool || body.agentType || "unknown",
     title: body.title || null,
     status: body.status || "unknown",
+    mockupFile: body.mockupFile || body.metadata?.mockupFile || null,
+    mockupName: body.mockupName || body.metadata?.mockupName || null,
+    client: body.client || body.metadata?.client || null,
     metadata: body.metadata || {},
   });
   const messages = Array.isArray(body.messages) ? body.messages : [];
@@ -390,9 +449,12 @@ app.post("/reviews", (req, res) => {
   const clientId = body.clientId || stableId("review", body);
   const review = appendJsonl("reviews", {
     clientId,
+    sessionId: body.sessionId || body.metadata?.sessionId || null,
     userId: body.userId || null,
     category: body.category || body.kind || "feedback",
     content: body.content || body.comment || "",
+    mockupFile: body.mockupFile || body.metadata?.mockupFile || null,
+    screen: body.screen || body.metadata?.screen || null,
     metadata: body.metadata || {},
   });
   res.json({ ok: true, review });
@@ -670,11 +732,19 @@ function dashboardHtml() {
         border-collapse: collapse;
         font-size: 13px;
       }
+      .table-scroll {
+        width: 100%;
+        overflow-x: auto;
+      }
+      .data-table {
+        table-layout: fixed;
+      }
       th, td {
         text-align: left;
         padding: 10px 8px;
         border-bottom: 1px solid var(--line);
         vertical-align: top;
+        min-width: 0;
       }
       th {
         color: var(--muted);
@@ -684,9 +754,45 @@ function dashboardHtml() {
       td {
         color: var(--text);
       }
+      .data-table th,
+      .data-table td {
+        overflow: hidden;
+        overflow-wrap: anywhere;
+        word-break: keep-all;
+      }
+      .col-main { width: auto; }
+      .col-badge { width: 86px; }
+      .col-agent { width: 148px; }
+      .col-score { width: 56px; text-align: right; }
+      .col-percent { width: 58px; text-align: right; }
+      .col-version { width: 72px; text-align: right; }
+      .col-verdict { width: 76px; }
+      .col-screen { width: 132px; }
+      .col-badge,
+      .col-score,
+      .col-percent,
+      .col-version,
+      .col-verdict {
+        white-space: nowrap;
+      }
       .mono {
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-size: 12px;
+      }
+      .path-cell,
+      .text-cell {
+        display: -webkit-box;
+        max-width: 100%;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+      }
+      .path-cell {
+        -webkit-line-clamp: 2;
+        word-break: break-all;
+      }
+      .text-cell {
+        -webkit-line-clamp: 2;
+        line-height: 18px;
       }
       .pass { color: var(--green); }
       .warn { color: var(--yellow); }
@@ -1011,15 +1117,18 @@ function dashboardHtml() {
         }).join("");
       }
 
-      function table(id, columns, rows) {
+      function table(id, columns, rows, options = {}) {
         const el = document.getElementById(id);
         if (!rows || rows.length === 0) {
           el.innerHTML = '<div class="empty">아직 데이터가 없습니다.</div>';
           return;
         }
-        el.innerHTML = '<table><thead><tr>' + columns.map((c) => '<th>' + esc(c.label) + '</th>').join("") + '</tr></thead><tbody>' +
-          rows.map((row) => '<tr>' + columns.map((c) => '<td>' + c.render(row) + '</td>').join("") + '</tr>').join("") +
-          '</tbody></table>';
+        const tableClass = options.className ? ' ' + options.className : "";
+        el.innerHTML = '<div class="table-scroll"><table class="data-table' + esc(tableClass) + '"><thead><tr>' +
+          columns.map((c) => '<th class="' + esc(c.className || "") + '">' + esc(c.label) + '</th>').join("") +
+          '</tr></thead><tbody>' +
+          rows.map((row) => '<tr>' + columns.map((c) => '<td class="' + esc(c.className || "") + '">' + c.render(row) + '</td>').join("") + '</tr>').join("") +
+          '</tbody></table></div>';
       }
 
       function inlineTable(columns, rows, limit = 6) {
@@ -1227,26 +1336,38 @@ function dashboardHtml() {
           }
         }
         table("usageTable", [
-          { label: "목업", render: (r) => '<span class="mono">' + esc(r.mockupFile || r.mockupName || r.clientId) + '</span>' },
-          { label: "브랜드", render: (r) => '<nds-badge variant="ghost" color="brand" size="sm">' + esc(r.brand || "?") + '</nds-badge>' },
-          { label: "DS", render: (r) => esc((r.meta?.adoptionRatio ?? r.adoptionRatio ?? "-") + "%") },
-          { label: "버전", render: (r) => esc(r.dsVersions?.primary || r.dsVersion || "알 수 없음") }
+          { label: "목업", className: "col-main", render: (r) => {
+            const value = r.mockupFile || r.mockupName || r.clientId;
+            return '<span class="mono path-cell" title="' + esc(value) + '">' + esc(value) + '</span>';
+          } },
+          { label: "브랜드", className: "col-badge", render: (r) => '<nds-badge variant="ghost" color="brand" size="sm">' + esc(r.brand || "?") + '</nds-badge>' },
+          { label: "DS", className: "col-percent", render: (r) => esc((r.meta?.adoptionRatio ?? r.adoptionRatio ?? "-") + "%") },
+          { label: "버전", className: "col-version", render: (r) => esc(r.dsVersions?.primary || r.dsVersion || "알 수 없음") }
         ], data.recent.usage);
         table("qualityTable", [
-          { label: "실행", render: (r) => '<span class="mono">' + esc(r.mockupFile || r.runId || r.clientId) + '</span>' },
-          { label: "에이전트", render: (r) => {
+          { label: "실행", className: "col-main", render: (r) => {
+            const value = r.mockupFile || r.runId || r.clientId;
+            return '<span class="mono path-cell" title="' + esc(value) + '">' + esc(value) + '</span>';
+          } },
+          { label: "에이전트", className: "col-agent", render: (r) => {
             const c = r.client || {};
             if (!c.agent || c.agent === "unknown") return '<span class="chip">-</span>';
             const surface = c.surface && c.surface !== "unknown" ? ' / ' + ko(c.surface) : "";
             return '<span class="chip agent">' + esc(ko(c.agent) + surface) + '</span>';
           } },
-          { label: "점수", render: (r) => esc(r.overall ?? r.codeScores?.overall ?? r.codeOverall ?? "-") },
-          { label: "판정", render: (r) => '<nds-badge variant="ghost" color="' + verdictColor(r.verdict) + '" size="sm">' + esc(ko(r.verdict)) + '</nds-badge>' }
+          { label: "점수", className: "col-score", render: (r) => esc(r.overall ?? r.codeScores?.overall ?? r.codeOverall ?? "-") },
+          { label: "판정", className: "col-verdict", render: (r) => '<nds-badge variant="ghost" color="' + verdictColor(r.verdict) + '" size="sm">' + esc(ko(r.verdict)) + '</nds-badge>' }
         ], data.recent.quality);
         table("reviewTable", [
-          { label: "종류", render: (r) => '<nds-badge variant="ghost" color="neutral" size="sm">' + esc(ko(r.category || r.kind || "feedback")) + '</nds-badge>' },
-          { label: "내용", render: (r) => esc(r.content || r.comment || "") },
-          { label: "화면", render: (r) => esc(r.metadata?.screen || r.screen || "") }
+          { label: "종류", className: "col-badge", render: (r) => '<nds-badge variant="ghost" color="neutral" size="sm">' + esc(ko(r.category || r.kind || "feedback")) + '</nds-badge>' },
+          { label: "내용", className: "col-main", render: (r) => {
+            const value = r.content || r.comment || "";
+            return '<span class="text-cell" title="' + esc(value) + '">' + esc(value) + '</span>';
+          } },
+          { label: "화면", className: "col-screen", render: (r) => {
+            const value = r.metadata?.screen || r.screen || "";
+            return '<span class="text-cell" title="' + esc(value) + '">' + esc(value) + '</span>';
+          } }
         ], data.recent.reviews);
       }
 
