@@ -9,7 +9,7 @@ import type { ServiceOverlay } from "../types.js";
  *   - Tab / Box       → variant="chip"  (박스/필 형태, 선택=검정 inverse fill)
  *
  * 빠진 내용 (의도적, SSOT 분리):
- *   - Box 선택 색(bg-inverse #111 / text-inverse #FFF), default(#F5F5F5), radius 10 은 컴포넌트 토큰이 SSOT.
+ *   - Box 선택 색(bg-inverse #111 / text-inverse #FFF), 비활성 색(NudgeEAP 와 동일 — subtle bg/text, hover 시 surface.section+strong), radius 10 은 컴포넌트 토큰이 SSOT.
  *   - Underline 인디케이터 색/굵기도 컴포넌트가 처리 — overlay 는 사용처 분기만 담당.
  */
 export const TabsOverlay: ServiceOverlay = {

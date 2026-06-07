@@ -1,5 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
 
+/*
+ * Calendar 는 마커/도트를 가진 독립 인라인 월 뷰다. DatePicker 와 grid 가 비슷하지만
+ * 별개 컴포넌트로 유지한다(의도된 분리 — DatePicker.tsx 상단 주석 참고). 날짜를 폼에서
+ * 고르는 용도는 Calendar 가 아니라 DatePicker 를 쓴다.
+ */
+
 /* ─── Constants ─── */
 
 const CL_CLASS = "nds-calendar";

@@ -21,7 +21,7 @@ const meta: Meta<TabsProps> = {
   argTypes: {
     variant: {
       control: "radio",
-      options: ["line", "chip"],
+      options: ["line", "chip", "segment"],
     },
     size: {
       control: "radio",
@@ -141,7 +141,7 @@ export const Playground: Story = {
 };
 
 /* ════════════════════════════════════════════
- * Overview — 3가지 유형 한눈에 보기
+ * Overview — 3가지 variant 한눈에 보기
  * ════════════════════════════════════════════ */
 
 function OverviewCard({
@@ -195,14 +195,19 @@ export const Overview: Story = {
       style={{ display: "flex", gap: "var(--semantic-gap-loose)", width: "100%", maxWidth: 1200 }}
     >
       <OverviewCard
-        badge="Mobile"
+        badge="Mobile / PC"
         title="Line Type"
-        description="App · Web · Mobile 하단 밑줄(언더라인)로 활성 탭을 표시. Neutral과 Color 두 가지 스타일 지원."
+        description="하단 밑줄(언더라인)로 활성 탭을 표시. 모바일/PC 공통, Neutral과 Color 두 가지 톤 지원."
       />
       <OverviewCard
         badge="Mobile / PC"
         title="Chip Type"
         description="App · Web · Mobile & PC 알약(Pill) 형태의 필터 탭. 콘텐츠 카테고리 분류에 주로 사용."
+      />
+      <OverviewCard
+        badge="Mobile / PC"
+        title="Segment Type"
+        description="연결된 회색 트랙 위 균등 분할 단일선택. 구 SegmentedControl 을 흡수 — 콘텐츠 패널이 아니라 뷰/기간/상태 값 토글에 사용."
       />
     </div>
   ),

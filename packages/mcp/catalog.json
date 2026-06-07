@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-06T17:55:35.210Z",
+  "generatedAt": "2026-06-07T02:55:50.301Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -2211,6 +2211,47 @@
           "type": "boolean"
         },
         {
+          "name": "status",
+          "optional": true,
+          "type": "\"default\" | \"error\" | \"warning\"",
+          "allowedValues": ["default", "error", "warning"]
+        },
+        {
+          "name": "allowClear",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onClear",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "disabledDate",
+          "optional": true,
+          "type": "(date: Date) => boolean"
+        },
+        {
+          "name": "disabledDates",
+          "optional": true,
+          "type": "Date[]"
+        },
+        {
+          "name": "open",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "defaultOpen",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onOpenChange",
+          "optional": true,
+          "type": "(open: boolean) => void"
+        },
+        {
           "name": "fullWidth",
           "optional": true,
           "type": "boolean"
@@ -2240,6 +2281,12 @@
         "placeholder",
         "disabled",
         "error",
+        "status",
+        "allow-clear",
+        "disabled-dates",
+        "open",
+        "default-open",
+        "portal-container",
         "full-width"
       ]
     },
@@ -2267,6 +2314,11 @@
           "type": "React.ReactNode"
         },
         {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string"
+        },
+        {
           "name": "presets",
           "optional": true,
           "type": "DateRangePreset[]"
@@ -2282,14 +2334,75 @@
           "type": "Date"
         },
         {
+          "name": "disabledDate",
+          "optional": true,
+          "type": "(date: Date) => boolean"
+        },
+        {
+          "name": "disabledDates",
+          "optional": true,
+          "type": "Date[]"
+        },
+        {
           "name": "disabled",
           "optional": true,
           "type": "boolean"
         },
         {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "\"default\" | \"error\" | \"warning\"",
+          "allowedValues": ["default", "error", "warning"]
+        },
+        {
+          "name": "allowClear",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onClear",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "open",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "defaultOpen",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onOpenChange",
+          "optional": true,
+          "type": "(open: boolean) => void"
+        },
+        {
           "name": "className",
           "optional": true,
           "type": "string"
+        },
+        {
+          "name": "portalContainer",
+          "optional": true,
+          "type": "HTMLElement | null"
+        },
+        {
+          "name": "formatValue",
+          "optional": true,
+          "type": "(d: Date) => string"
         }
       ],
       "dtsRelPath": "packages/react/dist/DateRangePicker.d.ts",
@@ -2301,8 +2414,17 @@
         "max-date",
         "start-label",
         "end-label",
+        "placeholder",
         "presets",
-        "disabled"
+        "disabled",
+        "error",
+        "status",
+        "allow-clear",
+        "disabled-dates",
+        "open",
+        "default-open",
+        "portal-container",
+        "full-width"
       ]
     },
     {
@@ -3666,6 +3788,11 @@
           "type": "boolean"
         },
         {
+          "name": "actionsLayout",
+          "optional": true,
+          "type": "ActionsLayout"
+        },
+        {
           "name": "maxWidth",
           "optional": true,
           "type": "number"
@@ -3738,7 +3865,15 @@
       ],
       "dtsRelPath": "packages/react/dist/Modal.d.ts",
       "htmlTag": "nds-modal",
-      "htmlObservedAttrs": ["open", "title", "closable", "mask", "is-mask-close", "max-width"]
+      "htmlObservedAttrs": [
+        "open",
+        "title",
+        "closable",
+        "mask",
+        "is-mask-close",
+        "max-width",
+        "actions-layout"
+      ]
     },
     {
       "name": "MultiSelect",
@@ -4475,6 +4610,11 @@
           "type": "() => void"
         },
         {
+          "name": "actionsLayout",
+          "optional": true,
+          "type": "ActionsLayout"
+        },
+        {
           "name": "isMaskClose",
           "optional": true,
           "type": "boolean"
@@ -4510,7 +4650,8 @@
         "cancel-text",
         "show-cancel",
         "no-mask-close",
-        "max-width"
+        "max-width",
+        "actions-layout"
       ]
     },
     {
@@ -10383,13 +10524,13 @@
     },
     {
       "name": "--nds-tabs-chip-default-bg",
-      "value": "var(--semantic-button-bg-disabled)",
+      "value": "var(--semantic-bg-surface-subtle)",
       "group": "nds",
       "brands": ["cashwalk-biz"]
     },
     {
       "name": "--nds-tabs-chip-default-color",
-      "value": "var(--semantic-text-inverse-default)",
+      "value": "var(--semantic-text-subtle-default)",
       "group": "nds",
       "brands": ["cashwalk-biz"]
     },
@@ -12609,6 +12750,12 @@
         "placeholder",
         "disabled",
         "error",
+        "status",
+        "allow-clear",
+        "disabled-dates",
+        "open",
+        "default-open",
+        "portal-container",
         "full-width"
       ]
     },
@@ -12622,8 +12769,17 @@
         "max-date",
         "start-label",
         "end-label",
+        "placeholder",
         "presets",
-        "disabled"
+        "disabled",
+        "error",
+        "status",
+        "allow-clear",
+        "disabled-dates",
+        "open",
+        "default-open",
+        "portal-container",
+        "full-width"
       ]
     },
     {
@@ -12849,7 +13005,15 @@
     {
       "tag": "nds-modal",
       "attrs": {},
-      "observedAttrs": ["open", "title", "closable", "mask", "is-mask-close", "max-width"]
+      "observedAttrs": [
+        "open",
+        "title",
+        "closable",
+        "mask",
+        "is-mask-close",
+        "max-width",
+        "actions-layout"
+      ]
     },
     {
       "tag": "nds-multi-select",
@@ -12968,7 +13132,8 @@
         "cancel-text",
         "show-cancel",
         "no-mask-close",
-        "max-width"
+        "max-width",
+        "actions-layout"
       ]
     },
     {

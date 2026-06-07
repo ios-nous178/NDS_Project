@@ -12,6 +12,7 @@ import {
 const SBG_CLASS = "nds-selection-button-group";
 const SBG_ROOT_CLASS = `${SBG_CLASS}__root`;
 const SBG_ITEM_CLASS = `${SBG_CLASS}__item`;
+const SBG_LABEL_CLASS = `${SBG_CLASS}__label`;
 
 export const selectionButtonGroupStyles = `
   /*
@@ -38,7 +39,9 @@ export const selectionButtonGroupStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[14]}px ${spacing[24]}px;
+    /* 좌우 패딩은 슬롯으로 노출하되 기본 24 — 셀이 좁아져도 라벨이 ellipsis 로 줄어들
+       뿐(아래 __label), 패딩을 침범하지 않도록 최소 패딩을 보장한다. */
+    padding: ${spacing[14]}px var(--nds-selection-button-padding-x, ${spacing[24]}px);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
@@ -51,6 +54,14 @@ export const selectionButtonGroupStyles = `
     white-space: nowrap;
     transition: background-color ${transition.default}, border-color ${transition.default}, color ${transition.default};
     box-sizing: border-box;
+  }
+
+  /* 라벨 — 셀이 좁아지면 패딩을 먹지 않고 말줄임. (flex child 라 min-width:0 필수) */
+  :where(.${SBG_LABEL_CLASS}) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* 등폭 그리드 셀을 꽉 채우고, 긴 라벨도 셀 안에서 줄어들 수 있게 한다(grid 기본 stretch). */

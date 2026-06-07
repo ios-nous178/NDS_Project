@@ -9,6 +9,7 @@ const TA_WRAPPER_CLASS = `${TA_CLASS}__wrapper`;
 const TA_FIELD_CLASS = `${TA_CLASS}__field`;
 const TA_HELPER_CLASS = `${TA_CLASS}__helper`;
 const TA_COUNT_CLASS = `${TA_CLASS}__count`;
+const TA_FOOTER_CLASS = `${TA_CLASS}__footer`;
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -136,25 +137,29 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             onChange={handleChange}
             {...rest}
           />
-          {maxLength !== undefined && (
-            <div
-              data-slot="count"
-              data-over={charCount > maxLength ? "true" : "false"}
-              className={TA_COUNT_CLASS}
-            >
-              {charCount}/{maxLength}
-            </div>
-          )}
         </div>
-        {helperText && (
-          <span
-            data-slot="helper"
-            data-error={error ? "true" : "false"}
-            id={helperId}
-            className={TA_HELPER_CLASS}
-          >
-            {helperText}
-          </span>
+        {(helperText || maxLength !== undefined) && (
+          <div data-slot="footer" className={TA_FOOTER_CLASS}>
+            {helperText && (
+              <span
+                data-slot="helper"
+                data-error={error ? "true" : "false"}
+                id={helperId}
+                className={TA_HELPER_CLASS}
+              >
+                {helperText}
+              </span>
+            )}
+            {maxLength !== undefined && (
+              <div
+                data-slot="count"
+                data-over={charCount > maxLength ? "true" : "false"}
+                className={TA_COUNT_CLASS}
+              >
+                {charCount}/{maxLength}
+              </div>
+            )}
+          </div>
         )}
       </div>
     );

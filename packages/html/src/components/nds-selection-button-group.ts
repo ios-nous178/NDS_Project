@@ -25,6 +25,7 @@ import { NdsElement, define } from "../base/nds-element.js";
 const SBG_CLASS = "nds-selection-button-group";
 const SBG_ROOT_CLASS = `${SBG_CLASS}__root`;
 const SBG_ITEM_CLASS = `${SBG_CLASS}__item`;
+const SBG_LABEL_CLASS = `${SBG_CLASS}__label`;
 
 interface SelectionButtonOption {
   value: string;
@@ -130,7 +131,10 @@ export class NdsSelectionButtonGroup extends NdsElement {
     button.dataset.selected = isSelected ? "true" : "false";
     button.setAttribute("role", "radio");
     button.setAttribute("aria-checked", isSelected ? "true" : "false");
-    button.textContent = option.label;
+    const label = document.createElement("span");
+    label.className = SBG_LABEL_CLASS;
+    label.textContent = option.label;
+    button.replaceChildren(label);
 
     const itemDisabled = groupDisabled || !!option.disabled;
     if (itemDisabled) button.disabled = true;

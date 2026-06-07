@@ -250,8 +250,10 @@ export const cashwalkBizTheme: BrandTheme = {
     },
     // Figma 캐포비 Tab 가이드 (3544:206):
     //   Underline: subtitle1 16/24, default medium(500), indicator 2px, padding 16/12 → height 48
-    //   Box(chip): radius 10, padding 20/14 → height 52, selected bg-inverse(#111),
-    //              default button-bg-disabled(#ddd), 양쪽 흰 텍스트 bold (의도된 저대비)
+    //   Box(chip): radius 10, padding 20/14 → height 52, selected bg-inverse(#111).
+    //   비활성 chip 컬러는 NudgeEAP 스타일(subtle bg + subtle text)로 통일 — 기존 흰 텍스트
+    //   /button-bg-disabled "의도된 저대비"는 hover 시 배경이 더 연해지고 글자가 검정으로
+    //   뒤집혀 어색했다(사용자 피드백 2026-06). 치수(radius/height/padding/weight)는 유지.
     tabs: {
       lineFontSize: 16,
       lineLineHeight: 24,
@@ -265,8 +267,8 @@ export const cashwalkBizTheme: BrandTheme = {
       chipFontSize: 16,
       chipLineHeight: 24,
       chipSelectedBg: "var(--semantic-bg-inverse-default)",
-      chipDefaultBg: "var(--semantic-button-bg-disabled)",
-      chipDefaultColor: "var(--semantic-text-inverse-default)",
+      chipDefaultBg: "var(--semantic-bg-surface-subtle)",
+      chipDefaultColor: "var(--semantic-text-subtle-default)",
       chipDefaultWeight: "700",
     },
   },

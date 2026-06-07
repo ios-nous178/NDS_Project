@@ -16,6 +16,7 @@ const TA_WRAPPER_CLASS = `${TA_CLASS}__wrapper`;
 const TA_FIELD_CLASS = `${TA_CLASS}__field`;
 const TA_HELPER_CLASS = `${TA_CLASS}__helper`;
 const TA_COUNT_CLASS = `${TA_CLASS}__count`;
+const TA_FOOTER_CLASS = `${TA_CLASS}__footer`;
 
 export const textareaStyles = `
   :where(.${TA_ROOT_CLASS}) {
@@ -106,12 +107,25 @@ export const textareaStyles = `
     color: ${cv.textRole.statusError};
   }
 
+  /* helper 와 같은 줄(footer)에 우측 정렬 — resize 그립(필드 우하단)과 상하로 겹치지 않게
+     wrapper 밖으로 분리한다. helper 가 없어도 margin-left:auto 로 항상 우측. */
+  :where(.${TA_FOOTER_CLASS}) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--semantic-gap-default);
+  }
+
+  :where(.${TA_FOOTER_CLASS}) > .${TA_HELPER_CLASS} {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   :where(.${TA_COUNT_CLASS}) {
-    text-align: right;
+    flex: 0 0 auto;
+    margin-left: auto;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     color: ${cv.textRole.muted};
-    margin-top: ${spacing[4]}px;
   }
 
   :where(.${TA_COUNT_CLASS}[data-over="true"]) {
