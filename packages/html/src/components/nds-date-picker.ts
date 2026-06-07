@@ -25,6 +25,7 @@ const DP_ROOT_CLASS = `${DP_CLASS}__root`;
 const DP_TRIGGER_CLASS = `${DP_CLASS}__trigger`;
 const DP_TRIGGER_TEXT_CLASS = `${DP_CLASS}__trigger-text`;
 const DP_ICON_CLASS = `${DP_CLASS}__icon`;
+const DP_CLEAR_BTN_CLASS = `${DP_CLASS}__clear-btn`;
 const DP_PANEL_CLASS = `${DP_CLASS}__panel`;
 const DP_HEADER_CLASS = `${DP_CLASS}__header`;
 const DP_NAV_BTN_CLASS = `${DP_CLASS}__nav-btn`;
@@ -79,28 +80,44 @@ export class NdsDatePicker extends NdsElement {
   static elementName = "nds-date-picker";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "min-date", "max-date", "placeholder", "disabled", "error", "full-width"];
+    return [
+      "value",
+      "min-date",
+      "max-date",
+      "placeholder",
+      "disabled",
+      "error",
+      "status",
+      "allow-clear",
+      "disabled-dates",
+      "open",
+      "default-open",
+      "portal-container",
+      "full-width",
+    ];
   }
 
   private _root: HTMLDivElement | null = null;
   private _trigger: HTMLButtonElement | null = null;
   private _triggerText: HTMLSpanElement | null = null;
+  private _clearBtn: HTMLButtonElement | null = null;
   private _panel: HTMLDivElement | null = null;
   private _open = false;
+  private _defaultOpenConsumed = false;
   private _viewYear = 0;
   private _viewMonth = 0;
 
   private _onDocClick = (e: MouseEvent) => {
     if (!this._open || !this._root) return;
     if (!this._root.contains(e.target as Node)) {
-      this._open = false;
+      this._setOpen(false);
       this.scheduleUpdate();
     }
   };
   private _onEsc = (e: KeyboardEvent) => {
     if (this._open && e.key === "Escape") {
       e.preventDefault();
-      this._open = false;
+      this._setOpen(false);
       this._trigger?.focus();
       this.scheduleUpdate();
     }
@@ -131,7 +148,7 @@ export class NdsDatePicker extends NdsElement {
     trigger.setAttribute("aria-haspopup", "dialog");
     trigger.addEventListener("click", () => {
       if (this.boolAttr("disabled")) return;
-      this._open = !this._open;
+      this._setOpen(!this._open);
       if (this._open) {
         const val = parseIso(this.getAttribute("value") || "") || new Date();
         this._viewYear = val.getFullYear();
@@ -152,11 +169,66 @@ export class NdsDatePicker extends NdsElement {
 
     trigger.append(triggerText, iconWrap);
     root.appendChild(trigger);
+
+    const clearBtn = document.createElement("button");
+    clearBtn.type = "button";
+    clearBtn.className = DP_CLEAR_BTN_CLASS;
+    clearBtn.setAttribute("aria-label", "날짜 지우기");
+    clearBtn.textContent = "×";
+    clearBtn.hidden = true;
+    clearBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.removeAttribute("value");
+      this._setOpen(false);
+      this.dispatchEvent(
+        new CustomEvent("nds-date-clear", {
+          detail: { value: null },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+      this.scheduleUpdate();
+      this._trigger?.focus();
+    });
+    root.appendChild(clearBtn);
     this.appendChild(root);
 
     this._root = root;
     this._trigger = trigger;
     this._triggerText = triggerText;
+    this._clearBtn = clearBtn;
+  }
+
+  private _setOpen(open: boolean): void {
+    if (this._open === open) return;
+    this._open = open;
+    if (open) this.setAttribute("open", "");
+    else this.removeAttribute("open");
+    this.dispatchEvent(
+      new CustomEvent("nds-date-open-change", {
+        detail: { open },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  private _disabledDateSet(): Set<string> {
+    const raw = this.getAttribute("disabled-dates");
+    if (!raw) return new Set();
+    try {
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return new Set();
+      return new Set(parsed.filter((v) => typeof v === "string"));
+    } catch {
+      return new Set(
+        raw
+          .split(",")
+          .map((v) => v.trim())
+          .filter(Boolean),
+      );
+    }
   }
 
   private _renderPanel(): void {
@@ -181,6 +253,7 @@ export class NdsDatePicker extends NdsElement {
     const value = parseIso(this.getAttribute("value") || "");
     const minDate = parseIso(this.getAttribute("min-date") || "");
     const maxDate = parseIso(this.getAttribute("max-date") || "");
+    const disabledDates = this._disabledDateSet();
     const minDay = minDate ? startOfDay(minDate) : null;
     const maxDay = maxDate ? startOfDay(maxDate) : null;
     const today = startOfDay(new Date());
@@ -246,7 +319,10 @@ export class NdsDatePicker extends NdsElement {
 
     grid.forEach((d) => {
       const inMonth = d.getMonth() === this._viewMonth;
-      const disabledDay = (minDay && d < minDay) || (maxDay && d > maxDay) ? true : false;
+      const disabledDay =
+        (minDay && d < minDay) || (maxDay && d > maxDay) || disabledDates.has(toIso(d))
+          ? true
+          : false;
       const selected = value ? sameDay(d, value) : false;
       const isToday = sameDay(d, today);
 
@@ -267,7 +343,7 @@ export class NdsDatePicker extends NdsElement {
         if (disabledDay) return;
         const iso = toIso(d);
         this.setAttribute("value", iso);
-        this._open = false;
+        this._setOpen(false);
         this.dispatchEvent(
           new CustomEvent("nds-date-change", {
             detail: { value: iso },
@@ -286,22 +362,31 @@ export class NdsDatePicker extends NdsElement {
   }
 
   protected update(): void {
-    if (!this._root || !this._trigger || !this._triggerText) return;
+    if (!this._root || !this._trigger || !this._triggerText || !this._clearBtn) return;
     if (this.style.display !== "contents") this.style.display = "contents";
 
     const value = this.getAttribute("value");
     const placeholder = this.getAttribute("placeholder") || "YYYY-MM-DD";
     const disabled = this.boolAttr("disabled");
     const error = this.boolAttr("error");
+    const status = error ? "error" : this.getAttribute("status") || "default";
     const fullWidth = this.boolAttr("full-width");
+    if (!this._defaultOpenConsumed && this.boolAttr("default-open")) {
+      this._open = true;
+      this._defaultOpenConsumed = true;
+    } else {
+      this._open = this.boolAttr("open");
+    }
 
     this._root.dataset.fullwidth = fullWidth ? "true" : "false";
     this._root.style.setProperty("--nds-date-picker-width", fullWidth ? "100%" : "auto");
 
     this._trigger.disabled = disabled;
     this._trigger.dataset.open = String(this._open);
-    this._trigger.dataset.error = error ? "true" : "false";
+    this._trigger.dataset.error = status === "error" ? "true" : "false";
+    this._trigger.dataset.status = status;
     this._trigger.setAttribute("aria-expanded", String(this._open));
+    this._clearBtn.hidden = !(this.boolAttr("allow-clear") && !!value && !disabled);
 
     this._triggerText.textContent = value || placeholder;
     this._triggerText.dataset.placeholder = value ? "false" : "true";

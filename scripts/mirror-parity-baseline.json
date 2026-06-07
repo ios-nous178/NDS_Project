@@ -85,7 +85,6 @@
     "DataTable::prop-name::react prop → \"default-expanded-keys\" 가 html observedAttributes 에 없음",
     "DataTable::prop-name::react prop → \"expanded-keys\" 가 html observedAttributes 에 없음",
     "DataTable::prop-name::react prop → \"expander-column-key\" 가 html observedAttributes 에 없음",
-    "DatePicker::prop-name::react prop → \"portal-container\" 가 html observedAttributes 에 없음",
     "DateRangePicker::prop-name::html attr \"from\" 에 대응하는 react prop 이 없음",
     "DateRangePicker::prop-name::html attr \"to\" 에 대응하는 react prop 이 없음",
     "DateRangePicker::prop-name::react prop → \"value\" 가 html observedAttributes 에 없음",
