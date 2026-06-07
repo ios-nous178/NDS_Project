@@ -74,7 +74,7 @@ export const dateRangeStyles = `
   }
 
   :where(.${DR_TRIGGER_CLASS}[data-status="warning"]) {
-    border-color: ${cv.textRole.statusWarning};
+    border-color: ${cv.textRole.statusCaution};
   }
 
   :where(.${DR_TRIGGER_CLASS}:disabled) {

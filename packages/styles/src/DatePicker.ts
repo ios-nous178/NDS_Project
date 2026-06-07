@@ -70,7 +70,7 @@ export const datePickerStyles = `
   }
 
   :where(.${DP_TRIGGER_CLASS}[data-status="warning"]) {
-    border-color: ${cv.textRole.statusWarning};
+    border-color: ${cv.textRole.statusCaution};
   }
 
   :where(.${DP_TRIGGER_CLASS}:disabled) {
