@@ -1,0 +1,146 @@
+---
+title: CheckboxGroup
+description: 체크박스 묶음. items 데이터 모드(value 관리 + 전체선택 indeterminate 자동) / children 레이아웃 모드
+category: 입력
+---
+
+# CheckboxGroup
+
+체크박스 묶음입니다. `items` 데이터 모드(value 관리 + 전체선택 indeterminate 자동)와 `children` 레이아웃 모드를 한 컴포넌트로 제공합니다. 약관 동의·다중 필터·설정 묶음의 "전체선택 + 체크 리스트"를 단일 컴포넌트로 커버합니다.
+
+```tsx
+import { CheckboxGroup } from "@nudge-design/react";
+```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 평면(계층 없는) 다중 선택이 필요할 때 — 다중 필터, 설정 묶음 등
+- 약관·개인정보 동의 화면 — `items`의 `badge`(필수/선택), `detail`(전문 펼침), `selectAll`(전체 동의)을 그대로 씁니다
+- 전체선택 체크박스가 자식 선택 비율에 따라 자동으로 indeterminate 표시되어야 할 때
+- 항상 펼쳐진 인라인 체크 리스트로 보여줄 때 (드롭다운이 아닌 노출형)
+
+### 이럴 때 사용하지 마세요
+
+- 계층(시/도 ▸ 시/군구) 선택 → CheckboxTree를 사용하세요 (부모 indeterminate 자동·접기/펼치기)
+- 닫힌 드롭다운 + 검색 + 적용 버튼 형태의 필터 → MultiSelect를 사용하세요
+- 상호 배타적 단일 선택 → RadioGroup 또는 SelectionButtonGroup을 사용하세요
+
+### 자주 하는 실수
+
+- `items` 모드의 `value`는 controlled입니다 — `onValueChange`로만 갱신하세요. **전체선택은 자식 선택 비율로 자동 파생**(checked/indeterminate/unchecked)되므로 직접 손계산하지 마세요.
+- 약관/개인정보 동의 화면은 consent 패턴을 함께 보세요 — 필수/선택 badge, **pre-tick(선택 항목 기본 체크) 금지(개인정보보호법)**, 필수 미동의 가드는 호출부에서. 초기 `value`는 빈 배열로 두세요.
+- 계층(시/도 ▸ 시/군구) 선택을 CheckboxGroup으로 구현하지 마세요 — CheckboxTree가 맞습니다.
+- `badge`는 도메인 중립 슬롯(`[필수]`/`[선택]`/`NEW`)입니다. 색·강조는 호출부에서 처리하세요(필수=status-error 톤 등).
+
+---
+
+## 기본 사용법
+
+```tsx
+<CheckboxGroup
+  selectAll
+  selectAllLabel="전체 동의"
+  expandable
+  items={[
+    { value: "terms", label: "이용약관", badge: "[필수]", detail: "…전문…" },
+    { value: "privacy", label: "개인정보 수집·이용", badge: "[필수]" },
+    { value: "marketing", label: "마케팅 수신", badge: "[선택]" },
+  ]}
+  value={agreed}
+  onValueChange={setAgreed}
+/>
+```
+
+`onValueChange`는 `items` 순서로 정렬된 값 배열을 전달합니다.
+
+---
+
+## 모드
+
+`items`를 주면 **데이터 모드**, 주지 않고 `children`을 직접 조립하면 **레이아웃 모드**입니다.
+
+| 모드        | 활성 조건       | 동작                                                                       |
+| ----------- | --------------- | -------------------------------------------------------------------------- |
+| 데이터 모드 | `items` 지정    | `value`/`onValueChange`로 선택 관리, `selectAll`·`badge`·`detail` 슬롯 지원 |
+| 레이아웃 모드 | `items` 미지정 | 직접 조립한 `<Checkbox>`들을 `layout`·`gap`으로 배치만 함 (선택 상태 관리 없음) |
+
+### 레이아웃 모드
+
+```tsx
+<CheckboxGroup layout="horizontal" gap={16}>
+  <Checkbox label="옵션 A" />
+  <Checkbox label="옵션 B" />
+  <Checkbox label="옵션 C" />
+</CheckboxGroup>
+```
+
+각 데이터 모드 행은 내부적으로 `Checkbox`를 재사용합니다(지표 단일 소스).
+
+---
+
+## Props
+
+| Prop             | 타입                            | 기본값       | 설명                                                                  |
+| ---------------- | ------------------------------- | ------------ | --------------------------------------------------------------------- |
+| `layout`         | `"vertical" \| "horizontal"`    | `"vertical"` | 방향 (레이아웃 모드 / 데이터 모드 공통)                               |
+| `gap`            | `number`                        | —            | 아이템 간격(px)                                                       |
+| `items`          | `CheckboxGroupItem[]`           | —            | 옵션 목록 — 주면 `value`/`onValueChange`로 선택을 관리하는 데이터 모드 |
+| `value`          | `string[]`                      | —            | 선택된 값 (controlled)                                                |
+| `onValueChange`  | `(value: string[]) => void`     | —            | 선택 변경 콜백 — `items` 순서로 정렬된 값 배열                        |
+| `selectAll`      | `boolean`                       | `false`      | 전체선택 행 노출 — 자식 선택 비율로 checked/indeterminate/unchecked 자동 파생 |
+| `selectAllLabel` | `ReactNode`                     | `"전체 선택"` | 전체선택 라벨                                                          |
+| `expandable`     | `boolean`                       | `true`       | `detail` 펼침 토글 노출 (`detail` 있는 항목 한정)                     |
+| `children`       | `ReactNode`                     | —            | 직접 조립한 `<Checkbox>`들 (`items` 미지정 시)                        |
+
+`onChange`·`children`을 제외한 `<div>` HTML 속성을 모두 지원합니다.
+
+### CheckboxGroupItem
+
+| 속성       | 타입        | 설명                                                                  |
+| ---------- | ----------- | --------------------------------------------------------------------- |
+| `value`    | `string`    | 옵션 값                                                               |
+| `label`    | `ReactNode` | 표시 라벨                                                             |
+| `disabled` | `boolean`   | 비활성화 (전체선택 계산에서도 제외됨)                                 |
+| `badge`    | `ReactNode` | 라벨 옆 뱃지 — `[필수]`/`[선택]`/`NEW` 등 (도메인 중립 슬롯)          |
+| `detail`   | `ReactNode` | 펼쳐서 보여줄 보조 콘텐츠(약관 전문 등). `expandable`과 함께 chevron 노출 |
+
+---
+
+## CSS 변수
+
+`gap` prop을 주면 컨테이너 인라인 스타일로 `--nds-checkbox-group-gap`(과 `--nds-choice-group-gap`)이 px 값으로 설정됩니다. 그 외 색·간격은 semantic 토큰(`--semantic-inset-input`, `--semantic-inset-chip`, `--semantic-gap-default` 등)을 내부에서 참조하며, 별도로 노출하는 커스텀 프로퍼티는 없습니다.
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="group"] [data-layout] [data-mode="data"]   (role="group")
+├── div [data-slot="select-all"]            (selectAll 일 때)
+│   └── Checkbox (master — checked/indeterminate 자동)
+├── div [data-slot="divider"]               (selectAll 일 때, aria-hidden)
+└── div [data-slot="list"]
+    └── div [data-slot="item"]
+        ├── div (row)
+        │   ├── Checkbox                      (item.label)
+        │   ├── span [data-slot="badge"]      (item.badge 있을 때)
+        │   └── button [data-slot="toggle"] [data-open]  (expandable + item.detail 있을 때)
+        └── div [data-slot="detail"]          (펼침 상태일 때)
+```
+
+레이아웃 모드(`items` 미지정)는 `div [data-slot="group"] [data-layout]`(role="group") 하나에 `children`을 그대로 담습니다.
+
+---
+
+## 접근성
+
+- 컨테이너는 `role="group"`으로 묶입니다
+- `divider`는 장식적 구분선으로 `aria-hidden="true"`
+- `detail` 펼침 토글 버튼은 `aria-expanded`로 펼침 상태를, `aria-label`로 "펼치기"/"접기"를 알립니다
+- chevron SVG는 `aria-hidden="true"` (장식적)
+- 전체선택 체크박스는 자식 선택 비율에 따라 indeterminate 상태를 표시합니다
+- 각 행과 전체선택은 `Checkbox`를 재사용하므로 키보드 포커스·토글 동작은 Checkbox와 동일합니다

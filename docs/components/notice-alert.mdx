@@ -1,0 +1,138 @@
+---
+title: NoticeAlert
+description: 폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스. 5 variant(info/notice/caution/success/error).
+category: 피드백
+---
+
+# NoticeAlert
+
+폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스입니다. DS notice 패턴의 구현체로, 입력 컨텍스트 옆에 머무르며 명시적으로 닫기 전까지 유지됩니다.
+
+```tsx
+import { NoticeAlert } from "@nudge-design/react";
+```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 입력 필드·폼 섹션 옆에 **지속적으로 머무는 안내**(예: 입력 규칙, 단위 안내)를 보여줄 때
+- 저장 실패·검증 오류처럼 **조치가 필요한 인라인 에러**를 입력 컨텍스트 바로 옆에 표시할 때
+- 완료(success)·차분한 공지(notice)처럼 상태에 의미를 부여한 인라인 메시지가 필요할 때
+- 명시적으로 닫기 전까지 사라지면 안 되는 메시지일 때 (Toast 처럼 자동으로 사라지면 안 될 때)
+
+### 이럴 때 사용하지 마세요
+
+- 액션·확인 버튼이 필요한 메시지 → Modal/Dialog 를 사용하세요
+- 일시적인 결과 알림(자동 사라짐) → Toast 를 사용하세요
+- 페이지 상단 전역 띠 공지 → Banner 를 사용하세요
+- 제목 + 본문 + 액션 버튼이 있는 멀티라인 안내 카드 → Card + Button 으로 구성하세요 (48px 인라인 strip 에 욱여넣지 마세요)
+
+### 자주 하는 실수
+
+- `error` variant 를 단순 안내용으로 남발하지 마세요 — 의미가 흐려집니다. 단순 정보는 `info`, 주의는 `caution` 이 맞습니다.
+- 액션·확인 버튼이 필요한 메시지를 NoticeAlert 로 만들지 마세요 → Modal/Dialog. 일시적 결과 알림 → Toast. 전역 공지 → Banner.
+- 같은 화면에 색 배경 박스(`notice`/`success`/`error`)를 여러 개 쌓지 마세요 — notice 패턴 강조 예산(화면당 색 박스 1개 권장). `info`/`caution`(회색)은 비교적 자유롭습니다.
+- 색을 임의 hex 로 박지 마세요 — `variant` 만 지정하면 semantic status 토큰(bg/text/icon)이 cascade 로 함께 적용됩니다.
+- 안내가 필요한 입력 필드와 멀리 떨어진 위치에 배치하지 마세요 — 입력 컨텍스트 바로 옆에 두세요.
+
+---
+
+## 기본 사용법
+
+```tsx
+<NoticeAlert
+  variant="caution"
+  message="목표 참여자 수는 1,000명 단위로 입력해 주세요."
+/>
+```
+
+`message` 대신 `children` 으로 본문을 전달할 수도 있습니다. 여러 줄 텍스트가 허용됩니다(`white-space: pre-line`).
+
+```tsx
+<NoticeAlert variant="error">필수 정보가 누락되어 저장할 수 없어요.</NoticeAlert>
+```
+
+---
+
+## Variant
+
+5개 variant 가 메시지의 의미·톤을 결정합니다. 좌측 status 아이콘과 배경/본문 색은 variant 별 semantic status 토큰으로 자동 결정됩니다.
+
+| variant     | 톤 / 용도              | 배경        | 좌측 아이콘            |
+| ----------- | ---------------------- | ----------- | ---------------------- |
+| `info`      | 중립 안내 (기본값)     | 중립 회색   | 없음 (텍스트만)        |
+| `notice`    | 차분한 공지            | 블루 tinted | 정보(i) 아이콘         |
+| `caution`   | 주의                   | 중립 회색   | 옐로우 경고 삼각형     |
+| `success`   | 완료                   | 그린 tinted | 그린 체크              |
+| `error`     | 조치 필요 (오류)       | 레드 tinted | 레드 X — 본문도 레드   |
+
+```tsx
+<NoticeAlert variant="info" message="입력한 내용은 자동으로 저장됩니다." />
+<NoticeAlert variant="notice" message="검사 결과는 7일간 보관됩니다." />
+<NoticeAlert variant="caution" message="목표 참여자 수는 1,000명 단위로 입력해 주세요." />
+<NoticeAlert variant="success" message="설정이 저장되었어요." />
+<NoticeAlert variant="error" message="필수 정보가 누락되어 저장할 수 없어요." />
+```
+
+### 아이콘 제어
+
+`icon` 으로 좌측 status 아이콘을 덮어쓰거나 숨길 수 있습니다.
+
+- 미지정: variant 별 기본 아이콘 (`info` 는 아이콘 없음)
+- `false`: 아이콘 강제 숨김
+- ReactNode: 커스텀 아이콘 (20×20 권장)
+
+```tsx
+{/* variant 아이콘 숨김 */}
+<NoticeAlert variant="caution" icon={false} message="아이콘 없는 주의 메시지." />
+
+{/* 커스텀 아이콘 */}
+<NoticeAlert variant="notice" icon={<MyGlyph />} message="커스텀 아이콘 안내." />
+```
+
+---
+
+## Props
+
+| Prop      | 타입                          | 기본값   | 설명                                                                                       |
+| --------- | ----------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `variant` | `NoticeAlertVariant`          | `"info"` | 메시지 의미·톤 결정. `"info" \| "notice" \| "caution" \| "success" \| "error"`             |
+| `message` | `ReactNode`                   | —        | 본문 텍스트. 여러 줄 허용. (`children` 으로도 전달 가능)                                    |
+| `icon`    | `ReactNode \| false`          | —        | 좌측 status 아이콘 override. 미지정=variant 기본, `false`=숨김, ReactNode=커스텀(20×20 권장) |
+| `children`| `ReactNode`                   | —        | `message` 대신 본문 전달 가능                                                               |
+
+`children` 을 제외한 `<div>` HTML 속성(`HTMLAttributes<HTMLDivElement>`)을 모두 지원합니다. `message` 와 `children` 이 모두 있으면 `message` 가 우선합니다.
+
+---
+
+## CSS 변수
+
+이 컴포넌트는 자체 CSS 커스텀 프로퍼티를 노출하지 않습니다. 배경·본문 색은 variant 별 semantic status 토큰으로 바인딩되며, 레이아웃은 `--semantic-gap-default` / `--semantic-inset-input` / `--semantic-inset-card` 를 참조합니다.
+
+---
+
+## data-slot 구조
+
+`data-slot` 속성은 사용하지 않고 BEM 식 클래스 + `data-variant` 로 구성됩니다.
+
+```
+div .nds-notice-alert [data-variant="info|notice|caution|success|error"]
+    (role="status" 또는 error 면 "alert" / aria-live)
+├── span .nds-notice-alert__icon [aria-hidden="true"]   (아이콘이 있을 때만)
+│   └── <svg> 또는 커스텀 아이콘 (20×20)
+└── span .nds-notice-alert__message                      (message 또는 children)
+```
+
+`info` variant 이거나 `icon={false}` 이면 아이콘 `span` 은 렌더링되지 않습니다.
+
+---
+
+## 접근성
+
+- `error` variant 는 `role="alert"` + `aria-live="assertive"` — 스크린리더가 즉시 안내합니다.
+- 그 외 variant 는 `role="status"` + `aria-live="polite"` — 흐름을 끊지 않고 안내합니다.
+- 좌측 status 아이콘은 장식적이므로 `aria-hidden="true"` 이며, 내부 SVG glyph 도 `aria-hidden="true"` 입니다 — 의미는 본문 텍스트로 전달하세요.
+- 색만으로 의미를 구분하지 말고, variant 의 톤에 맞는 명확한 본문 문구를 함께 제공하세요.
