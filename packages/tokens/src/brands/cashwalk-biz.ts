@@ -49,6 +49,7 @@ export type { CashwalkBizSemanticTokens } from "./cashwalk-biz.semantic.js";
 
 export const cashwalkBizTheme: BrandTheme = {
   name: "cashwalk-biz",
+  actionsLayout: "end",
   palette: {
     common: cashwalkBizCommon,
     neutral: cashwalkBizNeutral,

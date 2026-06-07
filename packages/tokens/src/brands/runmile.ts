@@ -33,6 +33,7 @@ export type { RunmileSemanticTokens } from "./runmile.semantic.js";
 
 export const runmileTheme: BrandTheme = {
   name: "runmile",
+  actionsLayout: "split",
   palette: {
     orange: runmileOrange,
     blue: runmileBlue,

@@ -31,6 +31,12 @@ export {
 export { elevation, shadow, zIndex, elevationLevel } from "./elevation";
 export type { ShadowLevel, ElevationLevelName } from "./elevation";
 export { motion, duration, easing, transition } from "./motion";
+export {
+  BRAND_ACTIONS_LAYOUT,
+  DEFAULT_ACTIONS_LAYOUT,
+  resolveActionsLayout,
+} from "./actionsLayout";
+export type { ActionsLayout } from "./actionsLayout";
 
 // Brand themes
 export type {

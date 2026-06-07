@@ -187,6 +187,22 @@ export const modalStyles = `
     border-color: ${cv.textRole.brandStrong};
   }
 
+  /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).
+     split(기본)은 위 .footer-action{flex:1} 가로 균등. end 는 1버튼 120px 고정,
+     2버튼 우측 hug. data-layout 은 resolveActionsLayout(브랜드 기본 + prop override)이 설정.
+     pill 모양/색은 별도(브랜드 토큰/cascade) — 배치만 여기서. ─── */
+  :where(.${FOOTER_CLASS}[data-layout="end"]) {
+    justify-content: flex-end;
+  }
+
+  :where(.${FOOTER_CLASS}[data-layout="end"] .${FOOTER_ACTION_CLASS}) {
+    flex: 0 0 auto;
+  }
+
+  :where(.${FOOTER_CLASS}[data-layout="end"]:not([data-has-both-actions="true"]) .${FOOTER_ACTION_CLASS}) {
+    flex: 0 0 120px;
+  }
+
   @keyframes nds-modal-fade-in {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -267,24 +283,8 @@ export const modalStyles = `
     gap: ${spacing[8]}px;
   }
 
-  /* Single action (취소 없이 confirm 만) → 우측 정렬 + 120px 고정 */
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CLASS}:not([data-has-both-actions="true"]):not([data-layout="custom"])) {
-    justify-content: flex-end;
-  }
-
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CLASS}:not([data-has-both-actions="true"]):not([data-layout="custom"]) .${FOOTER_ACTION_CLASS}) {
-    flex: 0 0 120px;
-  }
-
-  /* Dual action (취소+실행) → 우측 정렬 hug pill 2개 (Figma ModalGuide ②④ 3418-471 — 50/50 분할 아님).
-     base 는 flex:1 가로분할(타 브랜드)이지만 캐포비 확인/결정 팝업은 우측 hug 검정 pill + outlined 취소. */
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CLASS}[data-has-both-actions="true"]:not([data-layout="custom"])) {
-    justify-content: flex-end;
-  }
-
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CLASS}[data-has-both-actions="true"]:not([data-layout="custom"]) .${FOOTER_ACTION_CLASS}) {
-    flex: 0 0 auto;
-  }
+  /* 캐포비 버튼 배치(우측 hug)는 이제 actionsLayout="end"(data-layout) 가 담당 —
+     resolveActionsLayout 가 cashwalk-biz 기본을 "end" 로 잡는다. 여기서는 색/pill 모양만. */
 
   /* CashwalkBiz 버튼: pill / 44px / Body2(14/20) Medium */
   :where([data-brand="cashwalk-biz"] .${FOOTER_ACTION_CLASS}) {

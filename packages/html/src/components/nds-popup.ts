@@ -25,6 +25,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { observeBrand, resolveLayoutFor } from "../base/brand.js";
 
 const POPUP_CLASS = "nds-popup";
 const ROOT_CLASS = `${POPUP_CLASS}__root`;
@@ -53,6 +54,7 @@ export class NdsPopup extends NdsElement {
       "show-cancel",
       "no-mask-close",
       "max-width",
+      "actions-layout",
     ];
   }
 
@@ -61,14 +63,19 @@ export class NdsPopup extends NdsElement {
   private _onKey = (e: KeyboardEvent) => this._handleKey(e);
   private _titleId = "";
   private _descId = "";
+  private _unobserveBrand: (() => void) | null = null;
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
+    // 브랜드 토글 시 actionsLayout 기본값 재적용(스토리북 brand switch 등).
+    if (!this._unobserveBrand) this._unobserveBrand = observeBrand(() => this.scheduleUpdate());
     super.connectedCallback();
   }
 
   override disconnectedCallback(): void {
     document.removeEventListener("keydown", this._onKey, true);
+    this._unobserveBrand?.();
+    this._unobserveBrand = null;
   }
 
   private _mount(): void {
@@ -155,6 +162,8 @@ export class NdsPopup extends NdsElement {
     const wrap = document.createElement("div");
     wrap.className = ACTIONS_CLASS;
     wrap.dataset.slot = "actions";
+    // 버튼 배치 — actions-layout attr 우선, 없으면 브랜드 기본(SSOT).
+    wrap.dataset.layout = resolveLayoutFor(this, this.getAttribute("actions-layout"));
     const showCancel = this.boolAttr("show-cancel");
     wrap.dataset.single = showCancel ? "false" : "true";
 
