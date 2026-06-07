@@ -18,7 +18,7 @@ DS 패키지는 **Changesets** 로 버저닝한다. 자동화는 `release-mcpb.y
 - **DS 4개 패키지**(`@nudge-design/{react,tokens,icons,tailwind-preset}`)의 `package.json` version 이 **SSOT**.
 - 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 **미러** — `sync-mcpb-version.mjs` 가 둘을 최대 DS 버전으로 끌어올린다.
 - 루트 미러는 `pack-local-packages.mjs` 가 tarball 파일명에 박는 값이라, sync 빠지면 `pack` 이 의도치 않은 다운그레이드를 만든다 → 빠뜨리지 말 것.
-- `@nudge-design/mcp`(내부)는 의도적으로 분리. 함께 bump 하려면 changeset 에 명시.
+- `@nudge-design/mcp`(내부)는 버전 SSOT 에선 분리돼 있지만 **이 스킬은 기본으로 함께 bump** 한다 — step 1 changeset 에 `@nudge-design/mcp` 도 항상 포함(보통 DS 4개와 같은 bump 레벨). 의도적으로 빼야 하는 경우에만 사용자에게 확인받고 제외.
 - 워크플로우 트리거 경로: `packages/mcp/src/**`, `packages/tokens/src/**`, `packages/react/src/**`, `packages/icons/svg/**`, `packages/mcp/manifest.json`. **단 `manifest.json` version 이 기존 tag 와 같으면 release skip** → step 2 의 자동 동기화가 핵심.
 - CI `pnpm lint` 의 `sync-mcpb-version --check` 가 루트/manifest drift 를 막는다(손으로 어긋나면 빨갛게). `pack-local-packages.mjs` 도 root ↔ DS 4개 일치를 assert.
 
@@ -28,6 +28,7 @@ DS 패키지는 **Changesets** 로 버저닝한다. 자동화는 `release-mcpb.y
 # 1. DS 소스 수정 후 변경 기록 (대화형 또는 .changeset/{name}.md 직접 작성)
 pnpm changeset
 #    영향 패키지 / major·minor·patch / 한 줄 요약. → .changeset/{auto-name}.md
+#    ★ @nudge-design/mcp 도 기본 포함 (DS 4개와 같은 bump 레벨). 빼야 하면 사용자 확인 후 제외.
 #    (가이드/원칙만 바꿔도 외부 전파 필요하면 영향 패키지 골라 patch.)
 
 # 2. 누적 changeset 일괄 반영
@@ -43,9 +44,14 @@ pnpm version-packages
 - **[Claude 로 릴리즈 = 기본]** Claude 가 직접 `git log` 보고 이 파일을 비개발자 톤으로 작성한다. `pnpm release-notes` 스크립트는 안 돌려도 됨. "릴리즈 하자" 요청 받으면 step 1~2 직후·push 전에 자동으로 만들어 **같은 커밋에 포함**(사람이 한 번 읽고 OK).
 - **[사람이 로컬에서]** `pnpm release-notes`(haiku 초안, `ANTHROPIC_API_KEY` 필요) / `pnpm release-notes:dry`(미리보기) / 또는 손으로 작성.
 
-### 4. 커밋 + main push
+### 4. 커밋 + push (★ push 전 사용자 확인 게이트)
 
-- changeset·version bump·`.release-notes/pending.md` 를 커밋 → main push → `release-mcpb.yml` 이 빌드/태그/슬랙까지 자동.
+- changeset·version bump·`.release-notes/pending.md` 를 **먼저 커밋**.
+- ★ **push 하기 전에 반드시 사용자에게 두 가지를 묻고 답을 받는다** — 묻지 않고 push 금지:
+  1. **push 할지 여부** (지금 push? 아니면 커밋만 남기고 멈춤?)
+  2. **어느 브랜치로 push 할지** (기본 권장: `main`. 사용자가 다른 브랜치를 지정하면 그대로).
+- 사용자가 push 승인 + 브랜치 확정하면 그때 push → `release-mcpb.yml` 이 빌드/태그/슬랙까지 자동.
+- 단, CI 자동 릴리즈는 **`main` 기준**으로 동작 — 사용자가 다른 브랜치를 고르면 "그 브랜치에선 자동 릴리즈가 안 돈다"는 점을 알리고 진행.
 - GitHub Release body 는 손대지 않음(개발자용 raw 커밋 로그 = 디버깅용).
 
 ## 슬랙 공유용 톤 가이드 (`.release-notes/pending.md`)
@@ -71,5 +77,6 @@ pnpm version-packages
 
 ## 안 하는 것
 
-- main 이 아닌 브랜치에서 릴리즈(먼저 main 으로). 사용자 확인 없이 push.
+- push 여부·push 브랜치를 사용자에게 확인받지 않고 push(step 4 게이트 필수).
+- 사용자가 `main` 외 브랜치를 골랐는데 "CI 자동 릴리즈가 안 돈다"는 점을 안 알리고 진행.
 - `.release-notes/pending.md` 를 개발자 톤(커밋 로그 복붙)으로 — 비개발자가 못 읽음.
