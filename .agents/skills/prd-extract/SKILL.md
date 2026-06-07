@@ -1,9 +1,11 @@
 ---
 name: prd-extract
-description: 기획서(Figma 디자인 URL/노드 또는 Export된 PNG/PDF 슬라이드)를 읽어 상세 PRD 마크다운으로 추출한다. 화면 순서를 SSOT로 삼아 개요·버전이력·화면흐름·정책·화면별 사양·Acceptance·SPEC OUT까지 정리하고, 중요 와이어프레임은 이미지로 함께 뽑는다. 트리거 — "이 기획서 PRD 뽑아줘", "Figma 읽고 PRD 만들어줘", "기획서 md로 추출", "/prd-extract <Figma URL 또는 PNG 폴더>". 단순 목업 작성·컴포넌트 생성은 이 스킬이 아니다.
+description: 기획서(Figma 디자인 URL/노드 또는 Export된 PNG/PDF 슬라이드)를 읽어 상세 PRD 마크다운으로 추출한다. 화면 순서를 SSOT로 삼아 개요·버전이력·화면흐름·정책·화면별 사양·Acceptance·SPEC OUT까지 정리하고, 중요 와이어프레임은 이미지로 함께 뽑는다. 트리거 — "이 기획서 PRD 뽑아줘", "Figma 읽고 PRD 만들어줘", "기획서 md로 추출", "/prd-extract <Figma URL 또는 PNG 폴더>", "$prd-extract <Figma URL 또는 PNG 폴더>". 단순 목업 작성·컴포넌트 생성은 이 스킬이 아니다.
 ---
 
 # prd-extract — 기획서 → 상세 PRD(md)
+
+> **Codex skill (생성됨).** SSOT 는 `.claude/skills/prd-extract/SKILL.md` — 직접 수정 금지, SSOT 수정 후 `pnpm sync:skills`. 명시 호출 `/skills` → `prd-extract` 또는 `$prd-extract <figma|png>`. Figma MCP 또는 Export된 PNG 입력.
 
 기획서(Figma 또는 Export된 슬라이드 이미지)를 정독해 **상세 PRD 마크다운**을 만든다.
 **화면(슬라이드) 순서가 SSOT** 다. 추측하지 말고 보이는 것만 옮기되, 흩어진 사양을 구조화한다.
