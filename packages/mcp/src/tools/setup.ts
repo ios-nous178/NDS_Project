@@ -676,7 +676,7 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 
   steps.push({
     step: 2,
-    title: "시각 레퍼런스 수집 — references.md 작성",
+    title: "시각 레퍼런스 수집 + 기존 폴더 v2 확인 — references.md 작성",
     code:
       "# references.md\n" +
       "[good] source=<figma-url-or-image-name> caption=<why this is the target tone>\n" +
@@ -684,6 +684,8 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     note:
       "프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 코드 작성 전에 항상 사용자에게 확인 질문: " +
       '"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요." ' +
+      "또한 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 " +
+      '"동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?" 라고 묻고 답변 전 기존 폴더를 수정하지 않는다. 억지로 찾지는 말 것. ' +
       "references.md 또는 .references/ 가 없으면 build_singlefile_html 이 missing-visual-references 로 빌드를 차단한다.",
   });
 
@@ -746,7 +748,8 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     commands: ["build_singlefile_html({ cwd: '<프로젝트>' })"],
     note:
       "JS · CSS · <nds-*> runtime · DS 이미지까지 전부 inline 된 1개 파일. " +
-      "html intent 는 빌드가 validate + usage report 까지 자동 실행합니다. 번들러/npm 불필요.",
+      "html intent 는 빌드가 validate + usage report 까지 자동 실행합니다. 번들러/npm 불필요. " +
+      "완료 응답에는 반드시 산출물 full 절대경로를 포함하고, 상대경로 dist/index.html 만으로 끝내지 않습니다.",
   });
 
   steps.push({
@@ -754,7 +757,8 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     title: "미리보기 (dev 서버 불필요)",
     note:
       "dist/index.html 은 자체완결이라 브라우저로 그냥 열면 됩니다(file://). 메신저 dnd/첨부로 공유해도 그대로 열립니다. " +
-      "Nudge Studio 데스크톱 앱이라면 미리보기 패널이 자동으로 dist 를 띄웁니다.",
+      "Nudge Studio 데스크톱 앱이라면 미리보기 패널이 자동으로 dist 를 띄웁니다. " +
+      "사용자에게 전달할 때는 full 절대경로를 함께 적습니다.",
   });
 
   if (installMode === "mcpb") {
@@ -818,11 +822,12 @@ function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: strin
     steps: [
       "Create or open a plain folder for the mockup (no vite/npm — the build inlines DS runtime/CSS).",
       "Collect visual references first and save them in references.md.",
+      "If an obvious same-PRD/same-screen folder is visible in the current workspace, ask whether to create a v2 before editing anything.",
       "Create both CLAUDE.md and AGENTS.md so Claude/Codex receive the same mockup gates.",
       'Write index.html with real <nds-*> elements (set <html data-brand="..."> for brand tokens). No <script>/imports needed.',
       "Use find_icon({ name }) to get paste-ready inline SVGs for icons.",
       "Validate/analyze, then build_singlefile_html to get a self-contained dist/index.html.",
-      "Open dist/index.html directly to preview (no dev server).",
+      "Open dist/index.html directly to preview (no dev server) and include its full absolute path in the final response.",
     ],
     nextTools: [
       "get_guide({ topic: 'principles' })",

@@ -125,6 +125,8 @@ function resolvePatternReferenceImages(
 export const ENTRY_TOOL_ADVISORY =
   "FIRST RESPONSE GATE: If the user asks to create, generate, revise, or build any mockup/screen/page, ask for visual references before any tool lookup or code work. " +
   'Use this exact question and stop: "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요." ' +
+  "Before creating/editing mockup files, do a shallow current-workspace collision check only; if an obvious same-PRD/same-screen work folder is found, ask whether to create a v2 instead and stop. Do not modify the existing folder without that answer. Do not exhaustive-search. " +
+  "Every completed mockup response must include the final artifact full absolute path, not only a relative dist/index.html path. " +
   "이 MCP의 역할은 '별도 외부 목업 프로젝트를 빌드하고 목업을 생성하는 것'입니다. " +
   "DS 레포 소스 수정, git commit/push, GitHub 레포 변경, npm publish 같은 작업은 이 MCP의 역할이 아닙니다. " +
   "사용자가 그런 작업을 요청하면 DS 레포에서 직접 작업하라고 안내하세요. " +
@@ -992,15 +994,16 @@ function getSlimClaudeMdTemplate(args: {
 ## Workflow
 
 1. Collect visual references once per mockup task. If the user already answered or \`references.md\` / \`.references/\` exists, do not ask again.
-2. Read \`references.md\` before implementation and write a short visual plan: which good cues to apply, which bad cues to avoid.
-3. Use MCP-bundled references from \`get_guide\` first as the DS baseline: \`figmaNodeUrl\`, \`references[]\`, and \`imageAbsolutePath\`.
-4. For component examples, call \`get_guide({ topic: "component:<Name>", target: "html" })\`. **For brand-specific screens (task slug \`<brand>-<screen>\` exposes the brand), pass \`brand: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz"\`** — service overlay, matrixOverrides spec, and brand-aware metadata fold into the response under \`_brandApplied\` / \`_matrixOverrideApplied\` / \`_brandAwareApplied\`. Without \`brand\` you only get \`_brandVariants\` (slim summary of which brands have overlays).
-5. Use \`get_guide({ topic: "principles" })\` and relevant \`pattern:<name>\` guides only as needed. Keep calls small: pass \`aspects\` for the principle slices this screen needs (e.g. \`get_guide({ topic: "principles", aspects: ["spacing","radius","typography","color"] })\`), or \`sections\` for arbitrary top-level keys.
-6. Write root \`index.html\` with real \`<nds-*>\` elements.
-7. Run \`validate_html_mockup({ filePath: "index.html" })\`; fix until violation count is 0.
-8. Run \`validate_html_mockup({ filePath: "index.html", withStats: true })\` for DS adoption stats (\`stats.counts.dsRatio\`).
-9. Run \`dev_server({ action: "start" })\` and open the preview URL in a browser to check it.
-10. Build the shareable file with \`build_singlefile_html({})\`.
+2. Before creating/editing mockup files, do a shallow current-workspace collision check only. If an obvious same-PRD/same-screen folder is found, ask "동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?" and stop until the user answers. Do not exhaustive-search and do not modify the existing folder without this answer.
+3. Read \`references.md\` before implementation and write a short visual plan: which good cues to apply, which bad cues to avoid.
+4. Use MCP-bundled references from \`get_guide\` first as the DS baseline: \`figmaNodeUrl\`, \`references[]\`, and \`imageAbsolutePath\`.
+5. For component examples, call \`get_guide({ topic: "component:<Name>", target: "html" })\`. **For brand-specific screens (task slug \`<brand>-<screen>\` exposes the brand), pass \`brand: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz"\`** — service overlay, matrixOverrides spec, and brand-aware metadata fold into the response under \`_brandApplied\` / \`_matrixOverrideApplied\` / \`_brandAwareApplied\`. Without \`brand\` you only get \`_brandVariants\` (slim summary of which brands have overlays).
+6. Use \`get_guide({ topic: "principles" })\` and relevant \`pattern:<name>\` guides only as needed. Keep calls small: pass \`aspects\` for the principle slices this screen needs (e.g. \`get_guide({ topic: "principles", aspects: ["spacing","radius","typography","color"] })\`), or \`sections\` for arbitrary top-level keys.
+7. Write root \`index.html\` with real \`<nds-*>\` elements.
+8. Run \`validate_html_mockup({ filePath: "index.html" })\`; fix until violation count is 0.
+9. Run \`validate_html_mockup({ filePath: "index.html", withStats: true })\` for DS adoption stats (\`stats.counts.dsRatio\`).
+10. Run \`dev_server({ action: "start" })\` and open the preview URL in a browser to check it.
+11. Build the shareable file with \`build_singlefile_html({})\`.
 
 ## Completion Gate
 
@@ -1008,6 +1011,7 @@ function getSlimClaudeMdTemplate(args: {
 - Before final response, report which MCP-bundled reference cues and \`references.md\` good/bad cues were applied to layout, spacing, typography, color, and content density.
 - Before final response, report spacing status, remaining text-symbol-as-icon issues, and any requested scope left unfinished.
 - Before final response, confirm whether the Google Sheets usage POST was sent: \`webhook ok\`, \`webhook queued(...)\`, or \`webhook skipped\`.
+- Final response must include the final artifact full absolute path (for example \`/Users/.../dist/index.html\`). Relative paths like \`dist/index.html\` alone are not enough.
 - These checks intentionally repeat validator/tool rules. Do not omit them because similar guidance already exists elsewhere.
 
 ## Hard Rules
@@ -1050,7 +1054,16 @@ export function getClaudeMdTemplate(args: {
 - ❌ 코드 outline, pseudo-code, 컴포넌트 트리 스케치 — 머릿속 설계도 글로 풀어내지 말 것
 - ❌ "일단 골격만 만들고 나중에 디테일 맞추겠다" / "PRD 에 디자인 톤이 있으니 그걸 기준으로" / "auto-mode 니까 빠르게" — 전부 거부 사유
 
-### Step 3. 답변을 받으면 \`references.md\` (워크스페이스 루트) 에 즉시 기록
+### Step 3. 기존 작업폴더 충돌을 얕게 확인한다 (hard gate)
+
+- 답변을 받은 뒤 파일을 만들거나 수정하기 전에, 현재 워크스페이스의 바로 보이는 폴더명/파일명만 확인한다. 같은 PRD/같은 화면으로 보이는 작업폴더가 **명백히** 있으면 반드시 질문하고 중단:
+
+> "동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?"
+
+- 사용자가 답하기 전까지 기존 폴더의 파일을 수정하지 않는다.
+- 억지로 찾지 않는다. 전체 디스크 검색, 깊은 재귀 탐색, 오래 걸리는 유사도 검색은 금지. "보이면 묻고, 안 보이면 진행"이다.
+
+### Step 4. 답변을 받으면 \`references.md\` (워크스페이스 루트) 에 즉시 기록
 
 \`\`\`
 # references.md
@@ -1062,7 +1075,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 \`source\` 로 허용되는 것: **Figma URL** (\`figma.com/...\`) 또는 **이미지 파일** (\`.png/.jpg/.jpeg/.webp/.gif/.svg\`). **PRD/spec/요구사항 \`.md\` 파일은 source 로 인정되지 않음** — 텍스트 문서는 spec 이지 visual reference 가 아니다.
 
-### 예외 (3 가지만)
+### 예외 (4 가지만)
 
 1. 사용자가 첫 메시지에 Figma 링크/스크린샷을 **명시적으로** 첨부했고, **추가 레퍼런스가 필요 없다고 명시**한 경우 → 그 자료만으로 \`references.md\` 작성하고 진행.
 2. 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, 워크스페이스에 유효한 \`references.md\` / \`.references/\` 가 있고 **\`task:\` 첫 줄이 현재 task 와 일치**하는 경우 → 다시 묻지 말고 읽어서 적용. (이전 task 의 stale references.md 는 없는 것으로 간주, 반드시 다시 질문)
@@ -1071,13 +1084,14 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ### 흔한 우회 패턴 (모두 무효 — 절대 따라가지 말 것)
 
-이 5가지는 실제 사용자 회고에서 게이트 우회 사유로 잡힌 사례다:
+이 6가지는 실제 사용자 회고에서 게이트 우회 사유로 잡힌 사례다:
 
 1. **stale-references-md** — 이전 task 의 \`references.md\` 가 남아 있음 → "이미 답변 받음" 으로 오인. **Fix:** \`task:\` 슬러그 비교, 다르면 stale 처리하고 다시 질문.
 2. **prd-as-visual** — PRD 에 ASCII 레이아웃·컬러 스펙이 있어서 "이게 사실상 visual reference" 라고 자체 합리화. **Fix:** 텍스트 ≠ 시각자료. Figma 노드 또는 이미지 파일이 필요.
 3. **decisive-tone** — 사용자 어조 ("바로 만들어줘" / "PRD 지켜서") 를 "묻지 말라" 로 오독. **Fix:** 어조는 게이트 우회 사유가 아님.
 4. **soft-prompt-misread** — 가이드 응답의 "soft prompt" 표현을 "skip 해도 되는 권고" 로 약화 해석. **Fix:** 이 게이트는 REQUIRED. soft 가 아님.
 5. **checklist-omission** — 메모리/체크리스트에 후반 단계만 있고 이 게이트는 빠져 있어서 advisory 로 격하. **Fix:** 이 게이트는 다른 모든 체크리스트보다 먼저 실행.
+6. **same-folder-overwrite** — 새 목업 요청인데 같은 기획으로 보이는 기존 폴더를 발견하고도 확인 없이 수정. **Fix:** 얕게 발견된 경우 반드시 v2 생성 여부를 묻고 답변 전 기존 폴더를 수정하지 않는다.
 
 ### 왜 이 게이트가 필요한가
 
@@ -1120,17 +1134,19 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 **아래는 발견 즉시 작업 중단 + 사용자에게 보고 사유. 어떤 변명으로도 우회 금지:**
 
 1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 \`references.md\` 에 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
-2. **\`.tsx\` 파일 작성 금지.** 이 워크플로우는 React 가 없다. JSX 가 필요하면 intent 를 'user-app' 으로 바꿔 다른 워크스페이스에서 작업하라고 안내. \`<Button color="primary">\` 처럼 PascalCase + JSX 컨테이너 prop 패턴이 나타나면 즉시 \`<nds-button color="primary">\` (kebab-case attribute) 로 교체.
-3. **\`<nds-*>\` 흉내 금지 — raw \`<button class="nds-button">\` 으로 시각만 따라 그리기 X.** 반드시 \`<nds-button>\` 같은 실제 custom-element 를 쓸 것. main.ts 의 \`import "@nudge-design/html/runtime"\` 한 줄로 모든 element 가 등록된다.
-4. **이벤트는 inline \`onclick="..."\` 대신 \`addEventListener\`.** \`document.querySelector("nds-select").addEventListener("select-change", e => …)\` 패턴. WC 가 dispatch 하는 커스텀 이벤트(\`nds-*-change\`, \`select-change\`, \`tabs-change\` 등) 사용. 자세한 이벤트명은 \`get_guide({ topic: "component:<Name>", target: "html" })\` 응답의 examples.do/dont 참고.
-5. **버튼은 반드시 동작해야 한다.** 모든 활성 \`<nds-button>\` / 버튼형 컴포넌트에는 \`data-action\` 또는 \`id\` 를 붙이고, \`addEventListener("click", ...)\` 에서 실제 상태 변경(모달 열기, 선택 적용, 단계 이동, 토스트/라이브 영역 피드백, 값 초기화 등)을 구현한다. 장식용 버튼 금지. \`validate_html_mockup\` 의 \`button-without-interaction\` 룰이 버튼별로 잡는다.
-6. **PRD/brief 일부 구현 금지.** 코드 작성 전에 사용자 PRD/brief 의 명시 요구사항을 전부 분해하고, \`index.html\` 에 \`<script type="application/json" data-prd-coverage>{"requirements":[...]}</script>\` 로 남긴다. 각 항목은 \`status:"implemented"\` 와 실제 DOM \`evidence\` selector 를 가져야 한다. \`build_singlefile_html\` 은 매니페스트 누락을 \`missing-prd-coverage\` 로 막고, 최종 응답의 \`prdValidation\` 또는 별도 \`validate_prd_coverage\` 가 미완료/증거 누락을 실패시킨다. DS 품질 점수(\`validate_html_mockup\`)와 PRD 커버리지 verdict 는 분리해서 본다.
-7. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다.
-8. **산출물은 반드시 \`build_singlefile_html\`.** raw \`vite build\` 결과의 다중 파일 \`dist/\` 폴더로 끝내지 말 것. 디자이너/PM 에게 공유 가능한 표준 산출물은 \`vite-plugin-singlefile\` 로 inline 된 \`dist/index.html\` 1개 파일이다. MCP 가 vite.config 패치 + 빌드까지 자동 수행한다.
+2. **같은 기획 기존 폴더 발견 시 v2 확인 필수.** 새 목업 요청에서 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 *"동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?"* 라고 묻고 답변 전까지 기존 폴더를 수정하지 않는다. 억지로 찾지 말 것(깊은 재귀/전체 디스크/유사도 검색 금지). 하지만 보였는데도 묻지 않는 것은 hard rule 위반.
+3. **\`.tsx\` 파일 작성 금지.** 이 워크플로우는 React 가 없다. JSX 가 필요하면 intent 를 'user-app' 으로 바꿔 다른 워크스페이스에서 작업하라고 안내. \`<Button color="primary">\` 처럼 PascalCase + JSX 컨테이너 prop 패턴이 나타나면 즉시 \`<nds-button color="primary">\` (kebab-case attribute) 로 교체.
+4. **\`<nds-*>\` 흉내 금지 — raw \`<button class="nds-button">\` 으로 시각만 따라 그리기 X.** 반드시 \`<nds-button>\` 같은 실제 custom-element 를 쓸 것. main.ts 의 \`import "@nudge-design/html/runtime"\` 한 줄로 모든 element 가 등록된다.
+5. **이벤트는 inline \`onclick="..."\` 대신 \`addEventListener\`.** \`document.querySelector("nds-select").addEventListener("select-change", e => …)\` 패턴. WC 가 dispatch 하는 커스텀 이벤트(\`nds-*-change\`, \`select-change\`, \`tabs-change\` 등) 사용. 자세한 이벤트명은 \`get_guide({ topic: "component:<Name>", target: "html" })\` 응답의 examples.do/dont 참고.
+6. **버튼은 반드시 동작해야 한다.** 모든 활성 \`<nds-button>\` / 버튼형 컴포넌트에는 \`data-action\` 또는 \`id\` 를 붙이고, \`addEventListener("click", ...)\` 에서 실제 상태 변경(모달 열기, 선택 적용, 단계 이동, 토스트/라이브 영역 피드백, 값 초기화 등)을 구현한다. 장식용 버튼 금지. \`validate_html_mockup\` 의 \`button-without-interaction\` 룰이 버튼별로 잡는다.
+7. **PRD/brief 일부 구현 금지.** 코드 작성 전에 사용자 PRD/brief 의 명시 요구사항을 전부 분해하고, \`index.html\` 에 \`<script type="application/json" data-prd-coverage>{"requirements":[...]}</script>\` 로 남긴다. 각 항목은 \`status:"implemented"\` 와 실제 DOM \`evidence\` selector 를 가져야 한다. \`build_singlefile_html\` 은 매니페스트 누락을 \`missing-prd-coverage\` 로 막고, 최종 응답의 \`prdValidation\` 또는 별도 \`validate_prd_coverage\` 가 미완료/증거 누락을 실패시킨다. DS 품질 점수(\`validate_html_mockup\`)와 PRD 커버리지 verdict 는 분리해서 본다.
+8. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다.
+9. **산출물은 반드시 \`build_singlefile_html\`.** raw \`vite build\` 결과의 다중 파일 \`dist/\` 폴더로 끝내지 말 것. 디자이너/PM 에게 공유 가능한 표준 산출물은 \`vite-plugin-singlefile\` 로 inline 된 \`dist/index.html\` 1개 파일이다. MCP 가 vite.config 패치 + 빌드까지 자동 수행한다.
 
 **우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
 
 - [ ] 워크스페이스 루트에 \`references.md\` 가 존재하고, 정답/오답 시각 기준이 캡션과 함께 적혀 있다.
+- [ ] 새 목업 요청에서 같은 기획으로 보이는 기존 작업폴더가 명백히 보이면 v2 생성 여부를 물었고, 답변 전 기존 폴더를 수정하지 않았다.
 - [ ] 구현 전 \`references.md\` 를 읽고 good/bad 기준을 실제 레이아웃·간격·타이포·컬러 결정에 반영했다.
 - [ ] root \`index.html\` 이 존재하고 \`<nds-*>\` custom-element 를 1개 이상 사용한다.
 - [ ] \`src/\` 에 \`.tsx\` 파일이 없다 (\`.ts\` + 필요 시 \`.css\` 만).
@@ -1213,7 +1229,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 10. \`get_guide({ topic: "dos-donts" })\` 로 최종 확인.
 11. **\`build_singlefile_html\` 호출 → \`dist/index.html\` 1개 파일 산출**. 결과 humanReadable 을 사용자에게 그대로 보여줄 것 (\`[OK] dist/index.html (NN KB, Ms)\`). MCP 가 intent='html' 을 자동 감지해 \`vite-plugin-singlefile\` 설치 + vite.config 패치 + 빌드까지 수행. 산출물 1개 파일이 메신저 dnd / 첨부로 공유 가능. 응답의 \`dsUsageSummary\` (예: \`DS@0.1.10 · DS 12 (45%)\`) 를 \`<footer>\` 안에 visible 하게 렌더 — \`<span data-ds-badge>...</span>\` 형태. (HTML 주석만으로는 디자이너/PM 이 어떤 DS 버전인지 확인 불가)
 12. **반드시 \`validate_html_mockup({ filePath: 'dist/index.html', report: true })\` 호출** — build 응답의 \`humanReadable\` 첫 줄 NEXT STEP 라인을 따라 즉시 실행. (vanilla HTML 워크스페이스는 정적 파일이 곧 렌더 결과라 \`filePath\` 그대로 OK.) 사용자에게 묻지 말고 그냥 실행. 이 호출은 (a) DS 사용량을 구글시트에 적재하고 (b) 마지막 위반 검사를 수행. 빠뜨리면 운영팀이 채택 비율 추적 불가 + ds-badge-missing / emoji-banned 같은 마지막 위반이 산출물에 그대로 남음.
-13. 사용자에게 dev 서버 URL 또는 \`dist/index.html\` 경로를 명확히 전달. 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
+13. 사용자에게 dev 서버 URL 또는 \`dist/index.html\` 의 **full 절대경로**를 명확히 전달. 상대경로만 쓰지 말 것. 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
 
 ## Self-Check
 
@@ -1231,6 +1247,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] \`build_singlefile_html\` 호출 후 \`validate_html_mockup({ filePath, report: true })\` 까지 실행 완료 (구글시트 적재 + 마지막 위반 검사).
 - [ ] 최종 응답에 Google Sheets POST 상태를 명시함: \`webhook ok\` / \`webhook queued(...)\` / \`webhook skipped\`.
 - [ ] 최종 응답에 간격 점검 결과, 텍스트 기호 아이콘 잔존 여부, 요청 범위 누락 항목을 명시함.
+- [ ] 최종 응답에 산출물 full 절대경로를 포함함 (상대경로 \`dist/index.html\` 만으로 끝내지 않음).
 - [ ] 가이드 호출은 단계별로만 — 시작 시점에 12개씩 병렬 fetch 하지 않음.
 - [ ] 최종 산출물은 \`build_singlefile_html\` 이 만든 단일 \`dist/index.html\` 이다 (raw \`vite build\` 결과의 다중파일 dist/ 가 아님).
 `;
@@ -1336,7 +1353,16 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - ❌ 코드 outline, pseudo-code, 컴포넌트 트리 스케치 — 머릿속 설계도 글로 풀어내지 말 것
 - ❌ "일단 골격만 만들고 나중에 디테일 맞추겠다" / "PRD 에 디자인 톤이 있으니 그걸 기준으로" / "auto-mode 니까 빠르게" — 전부 거부 사유
 
-### Step 3. 답변을 받으면 \`references.md\` (워크스페이스 루트) 에 즉시 기록
+### Step 3. 기존 작업폴더 충돌을 얕게 확인한다 (hard gate)
+
+- 답변을 받은 뒤 파일을 만들거나 수정하기 전에, 현재 워크스페이스의 바로 보이는 폴더명/파일명만 확인한다. 같은 PRD/같은 화면으로 보이는 작업폴더가 **명백히** 있으면 반드시 질문하고 중단:
+
+> "동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?"
+
+- 사용자가 답하기 전까지 기존 폴더의 파일을 수정하지 않는다.
+- 억지로 찾지 않는다. 전체 디스크 검색, 깊은 재귀 탐색, 오래 걸리는 유사도 검색은 금지. "보이면 묻고, 안 보이면 진행"이다.
+
+### Step 4. 답변을 받으면 \`references.md\` (워크스페이스 루트) 에 즉시 기록
 
 \`\`\`
 # references.md
@@ -1357,13 +1383,14 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ### 흔한 우회 패턴 (모두 무효 — 절대 따라가지 말 것)
 
-이 5가지는 실제 사용자 회고에서 게이트 우회 사유로 잡힌 사례다:
+이 6가지는 실제 사용자 회고에서 게이트 우회 사유로 잡힌 사례다:
 
 1. **stale-references-md** — 이전 task 의 \`references.md\` 가 남아 있음 → "이미 답변 받음" 으로 오인. **Fix:** \`task:\` 슬러그 비교, 다르면 stale 처리하고 다시 질문.
 2. **prd-as-visual** — PRD 에 ASCII 레이아웃·컬러 스펙이 있어서 "이게 사실상 visual reference" 라고 자체 합리화. **Fix:** 텍스트 ≠ 시각자료. Figma 노드 또는 이미지 파일이 필요.
 3. **decisive-tone** — 사용자 어조 ("바로 만들어줘" / "PRD 지켜서") 를 "묻지 말라" 로 오독. **Fix:** 어조는 게이트 우회 사유가 아님.
 4. **soft-prompt-misread** — 가이드 응답의 "soft prompt" 표현을 "skip 해도 되는 권고" 로 약화 해석. **Fix:** 이 게이트는 REQUIRED. soft 가 아님.
 5. **checklist-omission** — 메모리/체크리스트에 후반 단계만 있고 이 게이트는 빠져 있어서 advisory 로 격하. **Fix:** 이 게이트는 다른 모든 체크리스트보다 먼저 실행.
+6. **same-folder-overwrite** — 새 목업 요청인데 같은 기획으로 보이는 기존 폴더를 발견하고도 확인 없이 수정. **Fix:** 얕게 발견된 경우 반드시 v2 생성 여부를 묻고 답변 전 기존 폴더를 수정하지 않는다.
 
 ### 왜 이 게이트가 필요한가
 
@@ -1398,14 +1425,16 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 **아래는 발견 즉시 작업 중단 + 사용자에게 보고 사유. 어떤 변명으로도 우회 금지:**
 
 1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 워크스페이스 루트의 \`references.md\` 에 \`[good|bad] source=<figma-url|image-name> caption=<1-line reason>\` 형식으로 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 이 파일이 비어 있거나 없으면 \`build_singlefile_html\` pre-flight audit 가 차단한다 (\`missing-visual-references\`). "브랜드 톤 가이드 보고 알아서 만들게요" 식 우회 X — brandTone 형용사만 보고 만든 화면이 반복적으로 거절되어 왔다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
-2. **\`src/\` 하위에 손으로 작성한 \`.html\` 파일 금지.** "스탠드얼론 HTML 로 빠르게 보여드릴게요" / "그냥 한 파일로 끝내고 싶어요" / "HTML 이 더 단순해요" 식 우회 X. 결과적으로 DS prop API 검증·\`validate_mockup\` AST 검사·\`report_mockup_usage\` 집계가 **전부 무력화**된다. \`dist/index.html\` 은 \`build_singlefile_html\` 산출물이므로 예외.
-3. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
-4. **DS 컴포넌트를 HTML/CSS 로 "시각만 흉내" 금지.** \`<button className="my-btn">\` 으로 Button 모양만 따라 그리기, \`<div className="chip">\` 으로 Chip 흉내 X. 반드시 \`import { Button, Chip, IconButton, ... } from "@nudge-design/react"\` 의 **실제 JSX** 를 쓸 것 — prop API · 토큰 · a11y 가 자동으로 보장된다.
-5. **\`vite build\` / esbuild / webpack / parcel / rollup 직접 호출 금지.** 단일 HTML 산출은 **오직 \`build_singlefile_html({})\` 로만**. 다른 번들러 / 손수 inline 화는 \`nds-*\` 클래스 · onClick 인터랙션 · 토큰 변수 해석이 손실됨.
+2. **같은 기획 기존 폴더 발견 시 v2 확인 필수.** 새 목업 요청에서 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 *"동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?"* 라고 묻고 답변 전까지 기존 폴더를 수정하지 않는다. 억지로 찾지 말 것(깊은 재귀/전체 디스크/유사도 검색 금지). 하지만 보였는데도 묻지 않는 것은 hard rule 위반.
+3. **\`src/\` 하위에 손으로 작성한 \`.html\` 파일 금지.** "스탠드얼론 HTML 로 빠르게 보여드릴게요" / "그냥 한 파일로 끝내고 싶어요" / "HTML 이 더 단순해요" 식 우회 X. 결과적으로 DS prop API 검증·\`validate_mockup\` AST 검사·\`report_mockup_usage\` 집계가 **전부 무력화**된다. \`dist/index.html\` 은 \`build_singlefile_html\` 산출물이므로 예외.
+4. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
+5. **DS 컴포넌트를 HTML/CSS 로 "시각만 흉내" 금지.** \`<button className="my-btn">\` 으로 Button 모양만 따라 그리기, \`<div className="chip">\` 으로 Chip 흉내 X. 반드시 \`import { Button, Chip, IconButton, ... } from "@nudge-design/react"\` 의 **실제 JSX** 를 쓸 것 — prop API · 토큰 · a11y 가 자동으로 보장된다.
+6. **\`vite build\` / esbuild / webpack / parcel / rollup 직접 호출 금지.** 단일 HTML 산출은 **오직 \`build_singlefile_html({})\` 로만**. 다른 번들러 / 손수 inline 화는 \`nds-*\` 클래스 · onClick 인터랙션 · 토큰 변수 해석이 손실됨.
 
 **우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
 
 - [ ] 워크스페이스 루트에 \`references.md\` (또는 \`.references/\` 폴더) 가 존재하고, 정답 1장 + 오답 1장 이상의 시각 기준이 캡션과 함께 적혀 있다.
+- [ ] 새 목업 요청에서 같은 기획으로 보이는 기존 작업폴더가 명백히 보이면 v2 생성 여부를 물었고, 답변 전 기존 폴더를 수정하지 않았다.
 - [ ] 구현 전 \`references.md\` 를 읽고 good/bad 기준을 실제 레이아웃·간격·타이포·컬러 결정에 반영했다.
 - [ ] \`src/\` 에 손으로 작성한 \`.html\` 파일이 없다 (\`dist/index.html\` 은 빌드 산출물이라 예외).
 - [ ] \`src/\` 의 \`.css\` / \`.scss\` 어디에도 \`:root { --semantic-* / --nds-* / --color-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
@@ -1447,6 +1476,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **브랜드 헤더/푸터 사용 여부 점검** — 사용자 앱 화면이면 해당 브랜드의 표준 헤더/푸터 (또는 GNB·BottomNav) 가 적용됐는지 마지막에 한 번 더 확인. brand prop 하나로 자동 분기되는 MockupLayout (\`mockup-layout.tsx\`) 또는 동등 헬퍼를 우선 사용 — 인라인 손수 그리기 금지. 랜딩/스플래시/모달-only 같은 의도적 예외라면 최종 응답에 "헤더/푸터 의도적으로 생략" 명시.
 - 최종 응답에는 Google Sheets POST 상태를 반드시 쓴다: \`webhook ok\`, \`webhook queued(...)\`, \`webhook skipped\` 중 하나.
 - 최종 응답에는 간격 점검 결과, 텍스트 기호를 아이콘처럼 사용한 곳의 잔존 여부, 요청 범위에서 빠진 항목을 짧게 보고한다.
+- 최종 응답에는 산출물 full 절대경로를 반드시 포함한다(예: \`/Users/.../dist/index.html\`). 상대경로 \`dist/index.html\` 만 쓰고 끝내지 않는다.
 - 위 항목은 이미 검증 로직이나 다른 가이드에 있어도 반복 확인한다. 확인하지 못한 항목은 확인하지 못했다고 쓴다.
 
 ## UI 구현 규칙
@@ -1488,12 +1518,12 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
     - 이 워크스페이스의 **표준 산출물 형식은 단일 HTML 파일**입니다. mockup 작성 후 **반드시 \`build_singlefile_html({})\` 호출** — 사용자에게 "만들어 드릴까요" 라고 묻지 말 것. 그냥 실행하세요.
     - 사용자가 명시적으로 "빌드하지 마" / "TSX 만 줘" / "HTML 필요 없어" 라고 거부한 경우에만 생략 가능.
     - **다른 출력 방식 모두 금지**: 손으로 .html 작성, \`vite build\` 직접 실행, esbuild/parcel/webpack 사용, .tsx 만 남기고 종료 — 모두 금지. nds-* 클래스와 onClick 인터랙션이 손실됨.
-    - 빌드 후 \`dist/index.html\` 경로와 파일 크기를 사용자에게 알릴 것 — 이게 슬랙/메일 공유용 최종 산출물입니다.
+    - 빌드 후 \`dist/index.html\` 의 full 절대경로와 파일 크기를 사용자에게 알릴 것 — 이게 슬랙/메일 공유용 최종 산출물입니다. 상대경로만 쓰지 말 것.
 12. **최종 검증 + 시트 적재 (필수 · 묻지 말고 즉시 실행)**:
     - 빌드 산출물(\`dist/index.html\`) 또는 렌더된 HTML 을 검증한다 — **\`validate_html_mockup({ filePath: '<프로젝트>/dist/index.html' })\` 또는 \`validate_html_mockup({ source: <렌더된 HTML> })\` 호출** (report 는 default true 라 구글시트까지 자동 적재).
     - React/Vite 워크스페이스는 \`<nds-*>\` 가 런타임에 주입되므로 정적 \`dist/index.html\` shell 만 검증하면 DS 사용량이 낮게 잡힐 수 있다. 정확한 수치가 필요하면 dev 서버에서 렌더된 HTML 을 복사해 \`source\` 로 넘긴다.
     - 응답의 \`dsUsageSummary\` (예: \`DS@0.1.10 · DS 12 (45%)\`) 를 받아 \`<footer>\` 안에 visible 하게 렌더 — \`<span data-ds-badge>DS@0.1.10 · DS 12 (45%)</span>\` 형태. 풋터에 없으면 validator 가 \`ds-badge-missing\` 으로 막음. 통계는 본인이 직접 \`<div>/<span>\` 카운트하지 말 것 — validator 가 단일 SSOT.
-13. 사용자가 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
+13. 사용자에게 dev 서버 URL 또는 \`dist/index.html\` 의 full 절대경로를 명확히 전달한다. 사용자가 검토를 마치면 \`dev_server({ action: "stop" })\` 로 종료.
 `;
 }
 

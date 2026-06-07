@@ -160,6 +160,8 @@ describe("html setup visual reference guardrail", () => {
     expect(template).toContain("webhook queued");
     expect(template).toContain("webhook skipped");
     expect(template).toContain("text-symbol-as-icon");
+    expect(template).toContain("same-PRD/same-screen folder");
+    expect(template).toContain("full absolute path");
   });
 
   it("keeps repeated completion reporting gates in generated default CLAUDE.md", () => {
@@ -169,9 +171,13 @@ describe("html setup visual reference guardrail", () => {
     expect(htmlTemplate).toContain("DS MCP/Package 버전");
     expect(htmlTemplate).toContain("Google Sheets POST 상태");
     expect(htmlTemplate).toContain("텍스트 기호 아이콘 잔존 여부");
+    expect(htmlTemplate).toContain("동일한 기획으로 보이는 작업폴더");
+    expect(htmlTemplate).toContain("full 절대경로");
     expect(reactTemplate).toContain("DS MCP/Package 버전");
     expect(reactTemplate).toContain("Google Sheets POST 상태");
     expect(reactTemplate).toContain("텍스트 기호를 아이콘처럼 사용한 곳");
+    expect(reactTemplate).toContain("동일한 기획으로 보이는 작업폴더");
+    expect(reactTemplate).toContain("full 절대경로");
   });
 
   it("surfaces visual reference collection in summary flow", () => {
@@ -182,6 +188,9 @@ describe("html setup visual reference guardrail", () => {
     const result = getSetup({ step: "full", intent: "html" });
     expect("steps" in result ? result.steps : []).toContain(
       "Collect visual references first and save them in references.md.",
+    );
+    expect("steps" in result ? result.steps : []).toContain(
+      "If an obvious same-PRD/same-screen folder is visible in the current workspace, ask whether to create a v2 before editing anything.",
     );
     expect("steps" in result ? result.steps : []).toContain(
       "Create both CLAUDE.md and AGENTS.md so Claude/Codex receive the same mockup gates.",
@@ -205,6 +214,8 @@ describe("html setup visual reference guardrail", () => {
     expect(content).toContain("Completion Gate");
     expect(content).toContain("DS MCP/package version");
     expect(content).toContain("Google Sheets usage POST");
+    expect(content).toContain("same-PRD/same-screen folder");
+    expect(content).toContain("full absolute path");
   });
 
   it("brand 와 함께 claude-md 셋업 시 nudge.brand 마커를 canonical slug 로 박는다", () => {
@@ -240,8 +251,12 @@ describe("html setup visual reference guardrail", () => {
 
     expect(referenceStep?.code).toContain("# references.md");
     expect(referenceStep?.note).toContain("코드 작성 전에 항상 사용자에게 확인 질문");
+    expect(referenceStep?.note).toContain("동일한 기획으로 보이는 작업폴더");
     expect(referenceStep?.note).toContain("이미 있어도");
     expect(referenceStep?.note).toContain("missing-visual-references");
+
+    const buildStep = steps.find((step) => step.title.includes("최종 산출물"));
+    expect(buildStep?.note).toContain("full 절대경로");
 
     const instructionStep = steps.find((step) => step.title.includes("AGENTS.md"));
     expect(instructionStep?.commands).toContain(
