@@ -45,11 +45,21 @@ const SHARED = {
       "> **Codex skill (생성됨).** SSOT 는 `.claude/skills/ds-release/SKILL.md` — 직접 수정 금지, SSOT 수정 후 `pnpm sync:skills`. " +
       "명시 호출 `/skills` → `ds-release` 또는 `$ds-release`. main push 는 사용자 확인 후에만.",
   },
+  "ds-fix": {
+    header:
+      "> **Codex skill (생성됨).** SSOT 는 `.claude/skills/ds-fix/SKILL.md` — 직접 수정 금지, SSOT 수정 후 `pnpm sync:skills`. " +
+      "명시 호출 `/skills` → `ds-fix` 또는 `$ds-fix <피드백 텍스트>`. 컴포넌트 수정은 ds-component 플로우 재사용.",
+  },
+  "prd-extract": {
+    header:
+      "> **Codex skill (생성됨).** SSOT 는 `.claude/skills/prd-extract/SKILL.md` — 직접 수정 금지, SSOT 수정 후 `pnpm sync:skills`. " +
+      "명시 호출 `/skills` → `prd-extract` 또는 `$prd-extract <figma|png>`. Figma MCP 또는 Export된 PNG 입력.",
+  },
 };
 
 /** Codex 단일홈(손 관리) / Claude 단일홈(미러 안 함) — 침묵 누락 방지용 명시 목록. */
 const CODEX_ONLY = ["ds-consumer-setup", "ds-quality-review"];
-const CLAUDE_ONLY = ["ds-fix", "prd-extract"];
+const CLAUDE_ONLY = [];
 
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
