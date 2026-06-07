@@ -1,0 +1,133 @@
+name: Release Desktop
+
+# Nudge Studio(apps/desktop) 패키징 — macOS arm64·x64 분리(.dmg/.zip) + Windows(.exe/nsis).
+#
+# 왜 OS 매트릭스인가:
+#   node-pty 는 네이티브 모듈이라 타깃 OS/arch 에서 빌드해야 동작하는 .node 가 나온다.
+#   특히 Windows 용 .node 는 macOS 에서 크로스빌드가 불가 → 반드시 windows runner 에서 패키징.
+#   macOS 는 arm64·x64 dmg 를 분리 산출(universal 단일본 대신) — 사용자가 자기 arch 것만 받아
+#   다운로드가 작아지고, 동봉 claude 바이너리(arch 당 ~205MB)도 한 벌만 들어간다
+#   (node-pty 1.1.0 은 darwin-arm64/x64 prebuild 동봉 → npmRebuild:false 로 양쪽 패킹 가능).
+#
+# 코드서명은 아직 미설정 → CSC_IDENTITY_AUTO_DISCOVERY=false 로 끄고 unsigned 산출물을 만든다.
+#   배포 시 사용자는 mac 은 "우클릭 → 열기"(Gatekeeper), win 은 SmartScreen "추가 정보 → 실행" 필요.
+#
+# 트리거:
+#   - 수동(workflow_dispatch)
+#   - 태그 push (desktop-v*) → 산출물을 GitHub Release(prerelease)로 업로드
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - "desktop-v*"
+
+permissions:
+  contents: write
+
+env:
+  # GitHub-hosted runners are moving JavaScript actions from Node 20 to Node 24.
+  # Opt in now so deprecation warnings surface as real compatibility issues before the cutoff.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      # arch 별 잡 — mac 을 arm64·x64 로 분리해 산출물(아티팩트)을 하나씩 따로 낸다.
+      #  · ebArgs       : electron-builder 플랫폼·arch 플래그(해당 arch 만 빌드).
+      #  · claudeTarget : 그 arch 의 동봉 claude 바이너리 하나만 받는다(.claude-bundle).
+      matrix:
+        include:
+          - os: macos-latest
+            label: mac-arm64
+            ebArgs: --mac --arm64
+            claudeTarget: darwin-arm64
+          - os: macos-latest
+            label: mac-x64
+            ebArgs: --mac --x64
+            claudeTarget: darwin-x64
+          - os: windows-latest
+            label: win-x64
+            ebArgs: --win --x64
+            claudeTarget: win32-x64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 9.6.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+          # setup-node v5 의 packageManager 자동 감지 캐시를 끔(ci.yml 과 동일 이유).
+          package-manager-cache: false
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # DS 소스 dist 전체 생성 — bundle-mcp-desktop 이 요구하는
+      # packages/html/dist/standalone · packages/assets/dist/files · mockup-core 등.
+      - name: Build workspace
+        run: pnpm build
+
+      # 동봉 claude 바이너리(arch 당 ~205MB)는 npm 에서 받으므로 버전 키로 캐싱 — 같은 claude
+      # 버전이면 매 빌드 재다운로드를 생략한다(bundle:claude 가 version.json 으로 캐시 적중 판정).
+      # 키에 matrix.label(arch 별)을 넣어 잡마다 자기 arch 바이너리만 캐싱한다.
+      - name: Resolve claude version
+        id: claudever
+        shell: bash
+        run: echo "version=$(npm view @anthropic-ai/claude-code version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache claude bundle
+        uses: actions/cache@v4
+        with:
+          path: apps/desktop/.claude-bundle
+          key: claude-bundle-${{ matrix.label }}-${{ steps.claudever.outputs.version }}
+
+      # arch 별 패키징 — bundle:mcp(.mcp-bundle) + bundle:claude(이 arch 바이너리 하나) →
+      # electron-vite build → electron-builder(이 플랫폼·arch 만). 잡당 dmg/exe 한 종류만 나온다.
+      # npmRebuild:false 라도 node-pty 1.1.0 prebuild 가 darwin-arm64/x64·win32-x64 를 커버.
+      - name: Package desktop app
+        shell: bash
+        run: |
+          node scripts/bundle-mcp-desktop.mjs
+          node scripts/bundle-claude-desktop.mjs --targets=${{ matrix.claudeTarget }}
+          pnpm --filter @nudge-design/desktop exec electron-vite build
+          pnpm --filter @nudge-design/desktop exec electron-builder ${{ matrix.ebArgs }}
+        env:
+          # 코드서명 미설정 — 자동 인증서 탐색을 꺼서 빌드 실패를 막는다(unsigned 산출물).
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          # electron-builder 가 임의로 GitHub publish 를 시도하지 않도록 명시.
+          GH_TOKEN: ""
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nudge-studio-${{ matrix.label }}
+          if-no-files-found: error
+          path: |
+            apps/desktop/release/*.dmg
+            apps/desktop/release/*.zip
+            apps/desktop/release/*.exe
+            apps/desktop/release/*.blockmap
+            apps/desktop/release/latest*.yml
+
+      # 태그(desktop-v*)로 트리거된 경우에만 Release 에 첨부. unsigned 라 prerelease 로 표시.
+      - name: Attach to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/desktop-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          fail_on_unmatched_files: false
+          files: |
+            apps/desktop/release/*.dmg
+            apps/desktop/release/*.zip
+            apps/desktop/release/*.exe
