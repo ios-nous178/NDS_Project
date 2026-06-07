@@ -20,6 +20,9 @@ const ENV_KEYS = [
   "NUDGE_OBSERVABILITY_ARTIFACTS",
   "NUDGE_OBSERVABILITY_ARTIFACTS_REMOTE",
   "NUDGE_OBSERVABILITY_TOKEN",
+  "NUDGE_MOCKUP_SESSION_ID",
+  "NUDGE_AGENT_SESSION_ID",
+  "NUDGE_SESSION_ID",
 ] as const;
 
 const saved: Record<string, string | undefined> = {};
@@ -57,6 +60,10 @@ function buildResult() {
 function artifactsRows(): Row[] {
   const ep = posts.find((p) => p.url.endsWith("/artifacts/import"));
   return (ep?.body as Row[] | undefined) ?? [];
+}
+
+function postBody(pathname: string): Row | undefined {
+  return posts.find((p) => p.url.endsWith(pathname))?.body as Row | undefined;
 }
 
 beforeEach(() => {
@@ -163,6 +170,42 @@ describe("send 병렬/내성 + 인증", () => {
       result: buildResult(),
     });
     expect(posts.every((p) => p.headers.Authorization === "Bearer s3cret")).toBe(true);
+  });
+});
+
+describe("세션 연결", () => {
+  it("세션 env가 없으면 workspace 기반 synthetic 세션을 만들고 모든 row에 붙인다", async () => {
+    vi.stubGlobal("fetch", fakeFetch());
+    await recordBuildObservability({
+      tool: "build_singlefile_html",
+      cwd: tmpDir,
+      result: buildResult(),
+    });
+
+    const session = postBody("/sessions/import");
+    expect(session?.clientId).toMatch(/^mcp_[a-f0-9]+$/);
+    expect(session?.metadata).toMatchObject({
+      mockupFile: "out/mockup.html",
+      source: "mcp-observability",
+    });
+
+    const sessionId = session?.clientId;
+    expect(postBody("/mockup-runs/import")?.sessionId).toBe(sessionId);
+    expect(postBody("/events/import")?.sessionId).toBe(sessionId);
+    expect(artifactsRows().every((r) => r.sessionId === sessionId)).toBe(true);
+  });
+
+  it("NUDGE_MOCKUP_SESSION_ID가 있으면 그 세션으로 묶는다", async () => {
+    process.env.NUDGE_MOCKUP_SESSION_ID = "claude-desktop-session-1";
+    vi.stubGlobal("fetch", fakeFetch());
+    await recordBuildObservability({
+      tool: "build_singlefile_html",
+      cwd: tmpDir,
+      result: buildResult(),
+    });
+
+    expect(postBody("/sessions/import")?.clientId).toBe("claude-desktop-session-1");
+    expect(postBody("/mockup-runs/import")?.sessionId).toBe("claude-desktop-session-1");
   });
 });
 
