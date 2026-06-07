@@ -30,14 +30,29 @@
  *   collapsed: 접힘 상태
  *   show-toggle: 토글 버튼 노출 (있으면 사이드바 헤더에 표시)
  *   width / collapsed-width
+ *   brand: "cashwalk-biz" | "nudge-eap" | "trost" | "geniet" | "runmile"
+ *          — 설정 시 해당 브랜드 로고를 brand-logo-defaults 에서 자동 주입(35KB data URI 복붙 불필요).
+ *            명시적 logo-src 가 있으면 그쪽이 우선. (`<nds-brand-header brand>` 과 동일 SSOT)
  *   logo-src / logo-alt / logo-width / logo-height / logo-href
  *   title / subtitle
  *   user: JSON { name, role?, avatar?, avatarAlt? }
+ *   account: JSON { email?, balanceLabel?, balance?, actions?: [{ label, variant?: 'solid'|'outlined', href?, key? }] }
+ *            — 로고 아래 고정 계정 블록(캐포비: 이메일 → 잔액 → 충전하기/내역보기 CTA 쌍). 메뉴와 분리.
+ *   footer-actions: JSON [{ label, variant?, href?, key? }] — 푸터 고정 액션(예: 로그아웃 outlined).
  *   full-height (기본 true → 100vh sticky)
+ *
+ * 이벤트(추가): action-click (detail: { key, action }) — 계정/푸터 액션 버튼 클릭
  */
 
 import { cv, fontFamily, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
 import { NdsElement, define } from "../base/nds-element.js";
+import {
+  CASHWALK_BIZ_LOGO_DATA_URI,
+  GENIET_LOGO_PC_DATA_URI,
+  NUDGE_EAP_LOGO_DATA_URI,
+  RUNMILE_LOGO_DATA_URI,
+  TROST_LOGO_DATA_URI,
+} from "./brand-logo-defaults.js";
 
 const SB_CLASS = "nds-sidebar";
 const SB_ROOT_CLASS = `${SB_CLASS}__root`;
@@ -63,6 +78,15 @@ const SB_USER_AVATAR_CLASS = `${SB_CLASS}__user-avatar`;
 const SB_USER_META_CLASS = `${SB_CLASS}__user-meta`;
 const SB_USER_NAME_CLASS = `${SB_CLASS}__user-name`;
 const SB_USER_ROLE_CLASS = `${SB_CLASS}__user-role`;
+// 고정 계정 블록(로고 아래) + 푸터 액션 — 캐포비 어드민의 로고→이메일→잔액→CTA쌍, 로그아웃.
+const SB_ACCOUNT_CLASS = `${SB_CLASS}__account`;
+const SB_ACCOUNT_EMAIL_CLASS = `${SB_CLASS}__account-email`;
+const SB_ACCOUNT_BALANCE_CLASS = `${SB_CLASS}__account-balance`;
+const SB_ACCOUNT_BALANCE_LABEL_CLASS = `${SB_CLASS}__account-balance-label`;
+const SB_ACCOUNT_BALANCE_AMOUNT_CLASS = `${SB_CLASS}__account-balance-amount`;
+const SB_ACCOUNT_ACTIONS_CLASS = `${SB_CLASS}__account-actions`;
+const SB_ACTION_CLASS = `${SB_CLASS}__action`;
+const SB_FOOTER_ACTIONS_CLASS = `${SB_CLASS}__footer-actions`;
 
 const STYLE_ID = "nds-sidebar-style";
 
@@ -88,6 +112,57 @@ interface SidebarUser {
   avatar?: string;
   avatarAlt?: string;
 }
+
+interface SidebarAction {
+  key?: string;
+  label: string;
+  /** solid = 강조(충전하기), outlined = 보조(내역보기 / 로그아웃). 기본 outlined. */
+  variant?: "solid" | "outlined";
+  href?: string;
+}
+
+/**
+ * 로고 아래 고정 계정 블록 — 캐포비 어드민의 "로고→계정 이메일→잔액(충전 금액)→CTA 쌍".
+ * 메뉴(스크롤 영역)와 분리된 상단 고정 블록으로 렌더된다.
+ */
+interface SidebarAccount {
+  /** 계정 이메일 등 식별 정보. */
+  email?: string;
+  /** 잔액 라벨(예: "충전 잔액"). */
+  balanceLabel?: string;
+  /** 잔액 금액 텍스트(예: "₩1,250,000"). */
+  balance?: string;
+  /** 하단 CTA 쌍 — 보통 [충전하기(solid), 내역보기(outlined)]. */
+  actions?: SidebarAction[];
+}
+
+/**
+ * `brand` 속성 → 로고 자동 주입 맵. `<nds-brand-header>` 와 동일 SSOT(brand-logo-defaults).
+ *
+ * 사이드바 `logo-src` 에 35KB 짜리 base64 data URI 를 손으로 붙이지 않게 하기 위함이다.
+ * 거대 블롭을 LLM 이 그대로 재현/추출하다 깨뜨리는 회귀(가이드 마크업을 unicode_escape 로
+ * 추출 → 한글 모지바케 + 로고 유실)를 원천 차단한다. 명시적 `logo-src` 가 있으면 그쪽이 우선.
+ */
+interface SidebarBrandLogo {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+const SIDEBAR_BRAND_LOGOS: Record<string, SidebarBrandLogo> = {
+  "cashwalk-biz": {
+    src: CASHWALK_BIZ_LOGO_DATA_URI,
+    alt: "Cashwalk for Business",
+    // Storybook(Brands/CashwalkBiz/Sidebar = SSOT) · 시안(Figma 3304:617) 정합:
+    // for-business 가로 로고(106.667×32, ~3.33:1)를 높이 56 로 가운데 정렬(폭 ~187).
+    width: 187,
+    height: 56,
+  },
+  "nudge-eap": { src: NUDGE_EAP_LOGO_DATA_URI, alt: "NudgeEAP", width: 124, height: 28 },
+  trost: { src: TROST_LOGO_DATA_URI, alt: "Trost", width: 90, height: 36 },
+  geniet: { src: GENIET_LOGO_PC_DATA_URI, alt: "Geniet", width: 165, height: 54 },
+  runmile: { src: RUNMILE_LOGO_DATA_URI, alt: "Runmile", width: 142, height: 32 },
+};
 
 const isSectionList = (input: SidebarItem[] | SidebarSection[]): input is SidebarSection[] => {
   if (!Array.isArray(input) || input.length === 0) return false;
@@ -150,6 +225,9 @@ const sidebarStyles = `
   }
   :where(.${SB_LOGO_CLASS}) { display: inline-flex; align-items: center; flex-shrink: 0; color: inherit; text-decoration: none; }
   :where(.${SB_LOGO_CLASS} img) { display: block; max-height: 28px; width: auto; }
+  /* 캐포비(cashwalk-biz): Storybook/시안 정합 — 로고 가운데 정렬 + 높이 56(28px 캡 해제). 폭은 viewBox 비율로 auto. */
+  :where([data-brand="cashwalk-biz"] .${SB_HEADER_CLASS}) { justify-content: center; }
+  :where([data-brand="cashwalk-biz"] .${SB_LOGO_CLASS} img) { max-height: none; height: 56px; width: auto; }
 
   :where(.${SB_TITLE_CLASS}) {
     margin: 0; font-size: ${typeScale.body1.fontSize}px; line-height: 20px;
@@ -290,6 +368,57 @@ const sidebarStyles = `
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_META_CLASS}) { display: none; }
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_CLASS}) { justify-content: center; padding: ${spacing[4]}px; }
 
+  /* ── 고정 계정 블록 (로고 아래) + 액션 버튼 (CTA 쌍 / 로그아웃) ───── */
+  :where(.${SB_ACCOUNT_CLASS}) {
+    display: flex; flex-direction: column; gap: ${spacing[12]}px;
+    padding: 0 ${spacing[24]}px ${spacing[16]}px;
+    box-sizing: border-box;
+  }
+  :where(.${SB_ACCOUNT_EMAIL_CLASS}) {
+    margin: 0; font-size: ${typeScale.caption1.fontSize}px; line-height: 18px;
+    color: var(--nds-sidebar-text-subtle);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  :where(.${SB_ACCOUNT_BALANCE_CLASS}) {
+    display: flex; flex-direction: column; gap: ${spacing[4]}px;
+    padding: ${spacing[12]}px ${spacing[16]}px; border-radius: 12px;
+    background: ${cv.surface.section};
+  }
+  :where(.${SB_ACCOUNT_BALANCE_LABEL_CLASS}) {
+    margin: 0; font-size: ${typeScale.caption1.fontSize}px; line-height: 16px;
+    color: var(--nds-sidebar-text-subtle);
+  }
+  :where(.${SB_ACCOUNT_BALANCE_AMOUNT_CLASS}) {
+    margin: 0; font-size: 20px; line-height: 26px; font-weight: ${fontWeight.bold};
+    color: var(--nds-sidebar-text-active);
+  }
+  :where(.${SB_ACCOUNT_ACTIONS_CLASS}) { display: flex; gap: ${spacing[8]}px; }
+  :where(.${SB_ACCOUNT_ACTIONS_CLASS} .${SB_ACTION_CLASS}) { flex: 1; }
+
+  :where(.${SB_ACTION_CLASS}) {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 40px; padding: 0 ${spacing[16]}px; border-radius: 10px;
+    border: 1px solid transparent; box-sizing: border-box;
+    font-family: inherit; font-size: 14px; font-weight: ${fontWeight.semibold}; line-height: 1;
+    text-decoration: none; cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  }
+  :where(.${SB_ACTION_CLASS}[data-variant="solid"]) {
+    background: ${cv.button.bgDefault}; color: ${cv.button.textDefault};
+  }
+  :where(.${SB_ACTION_CLASS}[data-variant="solid"]:hover) { background: ${cv.button.bgHover}; }
+  :where(.${SB_ACTION_CLASS}[data-variant="outlined"]) {
+    background: ${cv.surface.default}; color: ${cv.textRole.brand}; border-color: ${cv.borderRole.brand};
+  }
+  :where(.${SB_ACTION_CLASS}[data-variant="outlined"]:hover) { background: ${cv.surface.brandSubtle}; }
+  :where(.${SB_ACTION_CLASS}:focus-visible) { outline: 2px solid ${cv.borderRole.focus}; outline-offset: 1px; }
+
+  :where(.${SB_FOOTER_ACTIONS_CLASS}) { display: flex; flex-direction: column; gap: ${spacing[8]}px; }
+  :where(.${SB_FOOTER_ACTIONS_CLASS} .${SB_ACTION_CLASS}) { width: 100%; }
+
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ACCOUNT_CLASS}),
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_FOOTER_ACTIONS_CLASS}) { display: none; }
+
   /*
    * CashwalkBiz 튜닝 (캐포비 Library MenuItem 3302:641 실측). react Sidebar.tsx 와 미러.
    * 색은 --semantic-* 토큰 cascade 가 SSOT — hex 로 박지 않는다:
@@ -298,11 +427,31 @@ const sidebarStyles = `
    * 캐포비만 갈라지는 것은 시멘틱 색 토큰으로 표현 불가능한 둘뿐:
    *   1) active radius — base 는 idle 16 → active 12, 캐포비는 idle 과 동일 16 유지 (geometry).
    *   2) active 라벨 색 — base 는 strong(#111) darkening, 캐포비는 선택 시에도 normal(#333) 유지 (text role 선택).
+   *   3) CTA / footer 액션 — base 는 solid=primary(노랑) · outlined=brand(노랑 보더 + 주황 텍스트).
+   *      캐포비 어드민(Figma 3304:617 / Storybook SSOT)은 "시그니처 검정" 톤이고, account CTA 와 footer 가
+   *      서로 다른 outlined 를 쓴다 → 새 토큰 슬롯 없이 account-actions / footer-actions 를 분리 타겟해
+   *      기존 cv 토큰 + geometry(r8 · footer pill r28/h48)로 직접 정렬한다:
+   *        · solid           = button secondary (bgSecondary #000 + textSecondary 흰), radius 8
+   *        · account outlined = 검정 보더+텍스트 (textRole.strong #111), radius 8
+   *        · footer outlined  = 회색 보더(borderRole.normal #EEE) + 텍스트 #111, pill radius 28 · height 48
    */
   :where([data-brand="cashwalk-biz"] .${SB_ROOT_CLASS}) {
     --nds-sidebar-item-active-radius: 16px;
     --nds-sidebar-text-active: ${cv.textRole.normal};
   }
+  :where([data-brand="cashwalk-biz"] .${SB_ACTION_CLASS}) { border-radius: 8px; }
+  :where([data-brand="cashwalk-biz"] .${SB_ACTION_CLASS}[data-variant="solid"]) {
+    background: ${cv.button.bgSecondary}; color: ${cv.button.textSecondary};
+  }
+  :where([data-brand="cashwalk-biz"] .${SB_ACTION_CLASS}[data-variant="solid"]:hover) { background: ${cv.button.bgSecondaryHover}; }
+  :where([data-brand="cashwalk-biz"] .${SB_ACCOUNT_ACTIONS_CLASS} .${SB_ACTION_CLASS}[data-variant="outlined"]) {
+    color: ${cv.textRole.strong}; border-color: ${cv.textRole.strong};
+  }
+  :where([data-brand="cashwalk-biz"] .${SB_ACCOUNT_ACTIONS_CLASS} .${SB_ACTION_CLASS}[data-variant="outlined"]:hover) { background: ${cv.surface.subtle}; }
+  :where([data-brand="cashwalk-biz"] .${SB_FOOTER_ACTIONS_CLASS} .${SB_ACTION_CLASS}[data-variant="outlined"]) {
+    color: ${cv.textRole.strong}; border-color: ${cv.borderRole.normal}; border-radius: 28px; height: 48px;
+  }
+  :where([data-brand="cashwalk-biz"] .${SB_FOOTER_ACTIONS_CLASS} .${SB_ACTION_CLASS}[data-variant="outlined"]:hover) { background: ${cv.surface.subtle}; }
 `;
 
 const injectStyleOnce = (): void => {
@@ -329,6 +478,7 @@ export class NdsSidebar extends NdsElement {
       "show-toggle",
       "width",
       "collapsed-width",
+      "brand",
       "logo-src",
       "logo-alt",
       "logo-width",
@@ -337,6 +487,8 @@ export class NdsSidebar extends NdsElement {
       "title",
       "subtitle",
       "user",
+      "account",
+      "footer-actions",
       "full-height",
     ];
   }
@@ -360,13 +512,31 @@ export class NdsSidebar extends NdsElement {
   }
 
   private _parseItems(): SidebarSection[] {
-    const raw = this.getAttribute("items");
-    if (!raw) return [];
+    // 1순위: 자식 <script type="application/json" slot="items"> — 속성이 아니라 텍스트
+    //   노드라 따옴표/이스케이프 함정이 구조적으로 없다(권장 패턴, 단일파일 빌드에도 안전).
+    // 2순위: items 속성(하위 호환).
+    const script = this.querySelector<HTMLScriptElement>(
+      'script[type="application/json"][slot="items"]',
+    );
+    const raw = script ? script.textContent : this.getAttribute("items");
+    if (!raw || !raw.trim()) return [];
     try {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) return normalizeSections(parsed);
-    } catch {
-      /* ignore */
+      console.warn("[nds-sidebar] items 가 JSON 배열이 아닙니다 — 메뉴를 비웁니다.", {
+        rawHead: raw.slice(0, 80),
+      });
+    } catch (err) {
+      // 조용히 [] 를 반환하면 "로고만 뜨고 메뉴가 통째로 사라지는" 디버깅 불가 증상이 된다.
+      // 가장 흔한 원인: 단일따옴표 items 속성에서 JSON 구조용 따옴표까지 \" 로 과이스케이프
+      //   (예: items='[{\"key\"...]'). 구조 따옴표는 bare 여야 하고 SVG 내부 따옴표만 \" 가 맞다.
+      //   더 안전: <nds-sidebar><script type="application/json" slot="items">[...]</script>.
+      console.warn(
+        "[nds-sidebar] items 가 유효한 JSON 이 아닙니다 — 메뉴를 비웁니다. " +
+          'JSON 구조용 따옴표를 \\" 로 이스케이프하지 마세요. ' +
+          '가능하면 <script type="application/json" slot="items"> 자식을 쓰세요.',
+        { error: err, rawHead: raw.slice(0, 80) },
+      );
     }
     return [];
   }
@@ -383,6 +553,72 @@ export class NdsSidebar extends NdsElement {
       /* ignore */
     }
     return null;
+  }
+
+  private _parseAccount(): SidebarAccount | null {
+    // items 와 동일 규약: 1순위 <script type="application/json" slot="account"> 텍스트 노드
+    //   (한글 JSON 을 속성 이스케이프·인코딩 사고 없이 그대로 둘 수 있다), 2순위 account 속성.
+    const script = this.querySelector<HTMLScriptElement>(
+      'script[type="application/json"][slot="account"]',
+    );
+    const raw = script ? script.textContent : this.getAttribute("account");
+    if (!raw || !raw.trim()) return null;
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        return parsed as SidebarAccount;
+      }
+    } catch {
+      console.warn(
+        "[nds-sidebar] account 가 유효한 JSON 객체가 아닙니다 — 계정 블록을 생략합니다.",
+        {
+          rawHead: raw.slice(0, 80),
+        },
+      );
+    }
+    return null;
+  }
+
+  private _parseActions(slot: string): SidebarAction[] {
+    // 1순위 <script type="application/json" slot="footer-actions"> 텍스트 노드, 2순위 동명 속성.
+    const script = this.querySelector<HTMLScriptElement>(
+      `script[type="application/json"][slot="${slot}"]`,
+    );
+    const raw = script ? script.textContent : this.getAttribute(slot);
+    if (!raw || !raw.trim()) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(
+          (a): a is SidebarAction => !!a && typeof a === "object" && typeof a.label === "string",
+        );
+      }
+    } catch {
+      console.warn(`[nds-sidebar] ${slot} 가 유효한 JSON 배열이 아닙니다 — 액션을 생략합니다.`, {
+        rawHead: raw.slice(0, 80),
+      });
+    }
+    return [];
+  }
+
+  private _buildAction(action: SidebarAction): HTMLElement {
+    const variant = action.variant === "solid" ? "solid" : "outlined";
+    const el = action.href ? document.createElement("a") : document.createElement("button");
+    el.className = SB_ACTION_CLASS;
+    el.dataset.variant = variant;
+    if (el instanceof HTMLButtonElement) el.type = "button";
+    if (el instanceof HTMLAnchorElement && action.href) el.href = action.href;
+    el.textContent = action.label;
+    el.addEventListener("click", () => {
+      this.dispatchEvent(
+        new CustomEvent("action-click", {
+          detail: { key: action.key, action },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
+    return el;
   }
 
   private _renderItem(item: SidebarItem, activeKey: string | null, depth: number): HTMLLIElement {
@@ -483,16 +719,27 @@ export class NdsSidebar extends NdsElement {
     const activeKey = this.getAttribute("active-key");
     const title = this.getAttribute("title");
     const subtitle = this.getAttribute("subtitle");
-    const logoSrc = this.getAttribute("logo-src");
-    const logoAlt = this.attr("logo-alt", "");
-    const logoWidth = this.getAttribute("logo-width");
-    const logoHeight = this.getAttribute("logo-height");
+    // 로고: 명시 logo-src 가 1순위, 없으면 brand 속성으로 brand-logo-defaults 에서 자동 주입.
+    //   → 35KB base64 를 손으로 붙일 필요가 사라져 "거대 블롭 추출 중 한글 깨짐 + 로고 유실" 회귀를 차단.
+    const brand = this.getAttribute("brand");
+    const brandLogo = brand ? SIDEBAR_BRAND_LOGOS[brand] : undefined;
+    const logoSrc = this.getAttribute("logo-src") ?? brandLogo?.src ?? null;
+    const logoAlt = this.getAttribute("logo-alt") ?? brandLogo?.alt ?? "";
+    const logoWidth =
+      this.getAttribute("logo-width") ?? (brandLogo ? String(brandLogo.width) : null);
+    const logoHeight =
+      this.getAttribute("logo-height") ?? (brandLogo ? String(brandLogo.height) : null);
     const logoHref = this.getAttribute("logo-href");
     const user = this._parseUser();
+    const account = this._parseAccount();
+    const footerActions = this._parseActions("footer-actions");
     const sections = this._parseItems();
 
     this._root.dataset.collapsed = collapsed ? "true" : "false";
     this._root.dataset.fullHeight = fullHeight ? "true" : "false";
+    // brand 를 root 에 미러 → [data-brand="..."] 스코프 CSS(로고 사이즈 등)가
+    // shell 래퍼 없이 standalone <nds-sidebar brand="..."> 에서도 적용된다.
+    if (brand) this._root.dataset.brand = brand;
     if (widthAttr) this._root.style.setProperty("--nds-sidebar-width", `${widthAttr}px`);
     if (collapsedWidthAttr) {
       this._root.style.setProperty("--nds-sidebar-collapsed-width", `${collapsedWidthAttr}px`);
@@ -554,6 +801,47 @@ export class NdsSidebar extends NdsElement {
       children.push(header);
     }
 
+    // 고정 계정 블록 (로고 아래, 메뉴 위) — 이메일 → 잔액 → CTA 쌍.
+    if (account && (account.email || account.balance || account.actions?.length)) {
+      const accountEl = document.createElement("div");
+      accountEl.dataset.slot = "account";
+      accountEl.className = SB_ACCOUNT_CLASS;
+
+      if (account.email) {
+        const email = document.createElement("p");
+        email.className = SB_ACCOUNT_EMAIL_CLASS;
+        email.textContent = account.email;
+        accountEl.appendChild(email);
+      }
+
+      if (account.balance || account.balanceLabel) {
+        const balance = document.createElement("div");
+        balance.className = SB_ACCOUNT_BALANCE_CLASS;
+        if (account.balanceLabel) {
+          const label = document.createElement("p");
+          label.className = SB_ACCOUNT_BALANCE_LABEL_CLASS;
+          label.textContent = account.balanceLabel;
+          balance.appendChild(label);
+        }
+        if (account.balance) {
+          const amount = document.createElement("p");
+          amount.className = SB_ACCOUNT_BALANCE_AMOUNT_CLASS;
+          amount.textContent = account.balance;
+          balance.appendChild(amount);
+        }
+        accountEl.appendChild(balance);
+      }
+
+      if (account.actions?.length) {
+        const actions = document.createElement("div");
+        actions.className = SB_ACCOUNT_ACTIONS_CLASS;
+        account.actions.forEach((a) => actions.appendChild(this._buildAction(a)));
+        accountEl.appendChild(actions);
+      }
+
+      children.push(accountEl);
+    }
+
     const nav = document.createElement("nav");
     nav.dataset.slot = "body";
     nav.className = SB_BODY_CLASS;
@@ -575,36 +863,48 @@ export class NdsSidebar extends NdsElement {
     });
     children.push(nav);
 
-    if (user) {
+    if (user || footerActions.length) {
       const footer = document.createElement("div");
       footer.dataset.slot = "footer";
       footer.className = SB_FOOTER_CLASS;
-      const userBlock = document.createElement("div");
-      userBlock.className = SB_USER_CLASS;
-      const avatar = document.createElement("span");
-      avatar.className = SB_USER_AVATAR_CLASS;
-      if (user.avatar) {
-        const img = document.createElement("img");
-        img.src = user.avatar;
-        img.alt = user.avatarAlt ?? "";
-        avatar.appendChild(img);
-      } else {
-        avatar.textContent = (user.name || "").slice(0, 1).toUpperCase();
+
+      if (user) {
+        const userBlock = document.createElement("div");
+        userBlock.className = SB_USER_CLASS;
+        const avatar = document.createElement("span");
+        avatar.className = SB_USER_AVATAR_CLASS;
+        if (user.avatar) {
+          const img = document.createElement("img");
+          img.src = user.avatar;
+          img.alt = user.avatarAlt ?? "";
+          avatar.appendChild(img);
+        } else {
+          avatar.textContent = (user.name || "").slice(0, 1).toUpperCase();
+        }
+        const meta = document.createElement("div");
+        meta.className = SB_USER_META_CLASS;
+        const name = document.createElement("p");
+        name.className = SB_USER_NAME_CLASS;
+        name.textContent = user.name;
+        meta.appendChild(name);
+        if (user.role) {
+          const role = document.createElement("p");
+          role.className = SB_USER_ROLE_CLASS;
+          role.textContent = user.role;
+          meta.appendChild(role);
+        }
+        userBlock.append(avatar, meta);
+        footer.appendChild(userBlock);
       }
-      const meta = document.createElement("div");
-      meta.className = SB_USER_META_CLASS;
-      const name = document.createElement("p");
-      name.className = SB_USER_NAME_CLASS;
-      name.textContent = user.name;
-      meta.appendChild(name);
-      if (user.role) {
-        const role = document.createElement("p");
-        role.className = SB_USER_ROLE_CLASS;
-        role.textContent = user.role;
-        meta.appendChild(role);
+
+      // 푸터 액션 (로그아웃 등) — 메뉴 스크롤과 분리된 하단 고정.
+      if (footerActions.length) {
+        const actions = document.createElement("div");
+        actions.className = SB_FOOTER_ACTIONS_CLASS;
+        footerActions.forEach((a) => actions.appendChild(this._buildAction(a)));
+        footer.appendChild(actions);
       }
-      userBlock.append(avatar, meta);
-      footer.appendChild(userBlock);
+
       children.push(footer);
     }
 

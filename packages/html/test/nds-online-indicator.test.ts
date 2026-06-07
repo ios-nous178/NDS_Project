@@ -24,7 +24,9 @@ describe("nds-online-indicator — DOM parity with React OnlineIndicator", () =>
 
     expect(root.dataset.slot).toBe("root");
     expect(root.getAttribute("aria-label")).toBe("오프라인");
-    expect(root.style.getPropertyValue("--nds-presence-color")).toBe("#A0A4AC");
+    expect(root.style.getPropertyValue("--nds-presence-color")).toBe(
+      "var(--semantic-icon-disabled-default)",
+    );
     expect(root.style.getPropertyValue("--nds-presence-size")).toBe("8px");
     expect(dot.dataset.status).toBe("offline");
     expect(dot.getAttribute("aria-hidden")).toBe("true");

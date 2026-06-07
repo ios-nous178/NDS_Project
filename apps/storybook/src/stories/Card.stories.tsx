@@ -8,7 +8,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<CardProps> = {
-  title: "Components/Card",
+  title: "Components/Display/Card",
   component: Card,
   tags: ["autodocs"],
   parameters: {

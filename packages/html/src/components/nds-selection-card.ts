@@ -23,6 +23,7 @@ const SC_INDICATOR_CLASS = `${SC_CLASS}__indicator`;
 const SC_BODY_CLASS = `${SC_CLASS}__body`;
 const SC_TITLE_CLASS = `${SC_CLASS}__title`;
 const SC_DESCRIPTION_CLASS = `${SC_CLASS}__description`;
+const SC_CONTENT_CLASS = `${SC_CLASS}__content`;
 const SC_ICON_CLASS = `${SC_CLASS}__icon`;
 
 export type SelectionCardMode = "single" | "multiple";
@@ -139,7 +140,9 @@ export class NdsSelectionCardItem extends NdsElement {
   private _bodyWrap: HTMLSpanElement | null = null;
   private _titleEl: HTMLSpanElement | null = null;
   private _descEl: HTMLSpanElement | null = null;
+  private _contentWrap: HTMLSpanElement | null = null;
   private _iconStash: DocumentFragment | null = null;
+  private _contentStash: DocumentFragment | null = null;
   private _itemId = `nds-sc-item-${Math.random().toString(36).slice(2, 7)}`;
 
   override connectedCallback(): void {
@@ -149,14 +152,18 @@ export class NdsSelectionCardItem extends NdsElement {
 
   private _mount(): void {
     const stash = document.createDocumentFragment();
+    const contentStash = document.createDocumentFragment();
     Array.from(this.childNodes).forEach((node) => {
       if (node instanceof HTMLElement && node.getAttribute("slot") === "icon") {
         stash.appendChild(node);
+      } else if (node instanceof HTMLElement && node.getAttribute("slot") === "content") {
+        contentStash.appendChild(node);
       } else {
         node.parentNode?.removeChild(node);
       }
     });
     this._iconStash = stash;
+    this._contentStash = contentStash;
 
     const label = document.createElement("label");
     label.className = SC_ITEM_CLASS;
@@ -190,7 +197,11 @@ export class NdsSelectionCardItem extends NdsElement {
     const descEl = document.createElement("span");
     descEl.className = SC_DESCRIPTION_CLASS;
 
-    bodyWrap.append(titleEl, descEl);
+    const contentWrap = document.createElement("span");
+    contentWrap.className = SC_CONTENT_CLASS;
+    if (contentStash.childNodes.length > 0) contentWrap.appendChild(contentStash.cloneNode(true));
+
+    bodyWrap.append(titleEl, descEl, contentWrap);
 
     label.append(input, indicator, iconWrap, bodyWrap);
     this.appendChild(label);
@@ -202,6 +213,7 @@ export class NdsSelectionCardItem extends NdsElement {
     this._bodyWrap = bodyWrap;
     this._titleEl = titleEl;
     this._descEl = descEl;
+    this._contentWrap = contentWrap;
   }
 
   refreshFromParent(): void {
@@ -274,6 +286,11 @@ export class NdsSelectionCardItem extends NdsElement {
       this._descEl.style.display = "";
     } else {
       this._descEl.style.display = "none";
+    }
+
+    if (this._contentWrap) {
+      this._contentWrap.style.display =
+        this._contentStash && this._contentStash.childNodes.length > 0 ? "" : "none";
     }
   }
 }

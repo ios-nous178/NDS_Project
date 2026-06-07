@@ -129,7 +129,7 @@ function ZIndexItem({ token, value }: { token: string; value: number }) {
           width: Math.max(value / 5, 8),
           height: 16,
           borderRadius: 999,
-          backgroundColor: "#2B96ED",
+          backgroundColor: "var(--semantic-fill-brand-default)",
         }}
       />
     </div>
@@ -140,8 +140,8 @@ function GuideBanner() {
   return (
     <div
       style={{
-        background: "var(--semantic-bg-status-info, #E3F2FC)",
-        color: "var(--semantic-text-status-info, #017EE4)",
+        background: "var(--semantic-bg-brand-subtle)",
+        color: "var(--semantic-text-strong-default)",
         padding: "var(--semantic-inset-input) var(--semantic-inset-card)",
         borderRadius: 8,
         fontSize: 13,
@@ -149,7 +149,7 @@ function GuideBanner() {
         marginBottom: 24,
       }}
     >
-      ✅ <strong>Figma 가이드 정합 완료</strong> · 검증일 2026-05-13 ·{" "}
+      <strong>Figma 가이드 정합 완료</strong> · 검증일 2026-05-13 ·{" "}
       <a
         href="https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=556-2"
         target="_blank"

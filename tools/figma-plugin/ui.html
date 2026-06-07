@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        font-family: Inter, -apple-system, system-ui, sans-serif;
+        font-size: 12px;
+        color: #333;
+      }
+      body {
+        margin: 0;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        height: calc(100vh - 24px);
+        box-sizing: border-box;
+      }
+      p {
+        margin: 0;
+        color: #666;
+        line-height: 1.5;
+      }
+      textarea {
+        flex: 1;
+        resize: none;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 8px;
+        font-family: ui-monospace, Menlo, monospace;
+        font-size: 11px;
+        outline: none;
+      }
+      textarea:focus {
+        border-color: #18a0fb;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      button {
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .primary {
+        background: #18a0fb;
+        color: #fff;
+      }
+      .primary:disabled {
+        background: #b8b8b8;
+        cursor: not-allowed;
+      }
+      .ghost {
+        background: #f0f0f0;
+        color: #333;
+      }
+      #status {
+        color: #888;
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      데스크탑 앱에서 <b>Figma (canary)</b> 를 누르면 scene 이 클립보드에 복사됩니다.
+      아래에 <b>붙여넣기(⌘V)</b> 후 가져오기를 누르세요.
+    </p>
+    <textarea id="scene" placeholder="여기에 scene.json 붙여넣기…"></textarea>
+    <div class="row">
+      <span id="status"></span>
+      <button class="ghost" id="cancel">닫기</button>
+      <button class="primary" id="render" disabled>가져오기</button>
+    </div>
+    <script>
+      var ta = document.getElementById("scene");
+      var btn = document.getElementById("render");
+      var status = document.getElementById("status");
+
+      ta.addEventListener("input", function () {
+        btn.disabled = ta.value.trim().length === 0;
+      });
+
+      document.getElementById("cancel").onclick = function () {
+        parent.postMessage({ pluginMessage: { type: "close" } }, "*");
+      };
+
+      // data: URL → 바이트 배열(플러그인 샌드박스엔 fetch/atob 가 없어 UI 에서 디코드).
+      async function dataUrlToBytes(dataUrl) {
+        var res = await fetch(dataUrl);
+        var buf = await res.arrayBuffer();
+        return Array.from(new Uint8Array(buf));
+      }
+
+      // scene 은 트리(frame.children) 이고 이미지 노드는 카드/섹션 안에 중첩돼 있다.
+      // 최상위만 훑으면 중첩 이미지가 디코드되지 않아 플러그인이 전부 버린다(빈 박스).
+      // → 트리를 재귀 순회하며 data: 이미지 노드를 전부 모은다.
+      function collectImageNodes(nodes, out) {
+        for (var i = 0; i < nodes.length; i++) {
+          var n = nodes[i];
+          if (n.type === "image" && typeof n.image === "string" && n.image.indexOf("data:") === 0) {
+            out.push(n);
+          }
+          if (n.children && n.children.length) collectImageNodes(n.children, out);
+        }
+        return out;
+      }
+
+      document.getElementById("render").onclick = async function () {
+        var scene;
+        try {
+          scene = JSON.parse(ta.value);
+        } catch (e) {
+          status.textContent = "JSON 파싱 실패";
+          return;
+        }
+        if (!scene || !Array.isArray(scene.nodes)) {
+          status.textContent = "scene.nodes 가 없습니다";
+          return;
+        }
+        btn.disabled = true;
+        status.textContent = "이미지 디코드 중…";
+        try {
+          var imageNodes = collectImageNodes(scene.nodes, []);
+          for (var i = 0; i < imageNodes.length; i++) {
+            var n = imageNodes[i];
+            status.textContent = "이미지 디코드 중… (" + (i + 1) + "/" + imageNodes.length + ")";
+            n.bytes = await dataUrlToBytes(n.image);
+            delete n.image; // 용량 절감
+          }
+        } catch (e) {
+          status.textContent = "이미지 디코드 실패: " + e.message;
+          btn.disabled = false;
+          return;
+        }
+        status.textContent = "캔버스에 그리는 중…";
+        parent.postMessage({ pluginMessage: { type: "render", scene: scene } }, "*");
+      };
+    </script>
+  </body>
+</html>

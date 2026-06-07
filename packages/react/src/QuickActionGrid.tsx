@@ -23,7 +23,7 @@ export interface QuickAction {
   badge?: React.ReactNode;
   /** 비활성화 */
   disabled?: boolean;
-  /** 아이콘 배경 색 (기본 자동 — primary tint) */
+  /** 아이콘 배경 색 (기본 자동 — status-info tint) */
   iconBg?: string;
 }
 

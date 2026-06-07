@@ -11,6 +11,8 @@ export { NdsElement, define } from "./base/nds-element.js";
 export { NdsButton } from "./components/nds-button.js";
 export type { ButtonColor, ButtonSize, ButtonVariant } from "./components/nds-button.styles.js";
 
+export { NdsAddButton } from "./components/nds-add-button.js";
+
 export { NdsIconButton } from "./components/nds-icon-button.js";
 export type { IconButtonSize } from "./components/nds-icon-button.js";
 
@@ -22,6 +24,9 @@ export type { BadgeColor, BadgeSize, BadgeVariant } from "./components/nds-badge
 
 export { NdsBanner } from "./components/nds-banner.js";
 export type { BannerVariant } from "./components/nds-banner.js";
+
+export { NdsNoticeAlert } from "./components/nds-notice-alert.js";
+export type { NoticeAlertVariant } from "./components/nds-notice-alert.js";
 
 export { NdsBreadcrumb, NdsBreadcrumbItem } from "./components/nds-breadcrumb.js";
 
@@ -105,9 +110,20 @@ export { NdsFormField } from "./components/nds-form-field.js";
 export { NdsModal } from "./components/nds-modal.js";
 
 export { NdsSelect, NdsSelectOption } from "./components/nds-select.js";
+export { NdsMultiSelect } from "./components/nds-multi-select.js";
+export { NdsCheckboxTree } from "./components/nds-checkbox-tree.js";
+export { NdsCheckboxGroup } from "./components/nds-checkbox-group.js";
+
+export { NdsToast } from "./components/nds-toast.js";
+
+export { NdsSnackbar } from "./components/nds-snackbar.js";
+export { NdsSnackbarHost } from "./components/nds-snackbar-host.js";
 
 export { NdsToggle } from "./components/nds-toggle.js";
 export type { ToggleSize } from "./components/nds-toggle.js";
+
+export { NdsTooltip } from "./components/nds-tooltip.js";
+export type { TooltipPlacement } from "./components/nds-tooltip.js";
 
 export { NdsProgressBar } from "./components/nds-progress-bar.js";
 export type { ProgressBarSize } from "./components/nds-progress-bar.js";
@@ -115,8 +131,8 @@ export type { ProgressBarSize } from "./components/nds-progress-bar.js";
 export { NdsSkeleton } from "./components/nds-skeleton.js";
 export type { SkeletonVariant } from "./components/nds-skeleton.js";
 
-export { NdsTitleBlock } from "./components/nds-title-block.js";
-export type { TitleBlockLevel } from "./components/nds-title-block.js";
+export { NdsTitleGroup } from "./components/nds-title-group.js";
+export type { TitleGroupLevel } from "./components/nds-title-group.js";
 
 export { NdsAvatarGroup } from "./components/nds-avatar-group.js";
 
@@ -127,34 +143,34 @@ export { NdsStarRating } from "./components/nds-star-rating.js";
 export { NdsNumberStepper } from "./components/nds-number-stepper.js";
 export type { NumberStepperSize } from "./components/nds-number-stepper.js";
 
+// 누락 회귀: React Stepper 는 export 돼 있으나 html 미러가 index 에서 빠져 define() 부작용이
+// 실행 안 돼 customElements 에 미등록 → <nds-stepper> 가 높이 0 으로 안 보였음(목업 폼 스텝퍼).
+export { NdsStepper } from "./components/nds-stepper.js";
+export type { StepperVariant } from "./components/nds-stepper.js";
+
 export { NdsSlider } from "./components/nds-slider.js";
 
-export { NdsSegmented } from "./components/nds-segmented.js";
-export type { SegmentedSize } from "./components/nds-segmented.js";
-
 export { NdsActionChip } from "./components/nds-action-chip.js";
+
+export {
+  NdsSelectedItemsPanel,
+  NdsSelectedItemRow,
+  NdsRegionRow,
+} from "./components/nds-selected-items-panel.js";
+
+export { NdsChart } from "./components/nds-chart.js";
 
 export { NdsCountdownTimer } from "./components/nds-countdown-timer.js";
 export type { CountdownFormat } from "./components/nds-countdown-timer.js";
 
 export { NdsExpandableText } from "./components/nds-expandable-text.js";
 
-export { NdsCardVisual } from "./components/nds-card-visual.js";
-export type { CardVisualBrand } from "./components/nds-card-visual.js";
-
 export { NdsOrderSummaryCard } from "./components/nds-order-summary-card.js";
-
-export { NdsStreakCard } from "./components/nds-streak-card.js";
 
 export { NdsChatBubble } from "./components/nds-chat-bubble.js";
 export type { ChatRole, ChatGroupPosition } from "./components/nds-chat-bubble.js";
 
-export { NdsJournalEntry } from "./components/nds-journal-entry.js";
-
 export { NdsContentViewer } from "./components/nds-content-viewer.js";
-
-export { NdsBreathingGuide } from "./components/nds-breathing-guide.js";
-export type { BreathingPhaseKind } from "./components/nds-breathing-guide.js";
 
 export { NdsQuickActionGrid } from "./components/nds-quick-action-grid.js";
 
@@ -173,14 +189,11 @@ export {
   NdsAccordionContent,
 } from "./components/nds-accordion.js";
 
-export { NdsTimeline, NdsTimelineItem } from "./components/nds-timeline.js";
-export type { TimelineStatus } from "./components/nds-timeline.js";
+export { NdsTimeline } from "./components/nds-timeline.js";
+export type { TimelineStatus, TimelineMode, TimelineDirection } from "./components/nds-timeline.js";
 
 export { NdsAppointmentCard } from "./components/nds-appointment-card.js";
 export type { AppointmentStatus, AppointmentMode } from "./components/nds-appointment-card.js";
-
-export { NdsAssessmentResultCard } from "./components/nds-assessment-result-card.js";
-export type { AssessmentLevel } from "./components/nds-assessment-result-card.js";
 
 export { NdsAttachmentItem } from "./components/nds-attachment-item.js";
 export type { AttachmentFileType, AttachmentStatus } from "./components/nds-attachment-item.js";
@@ -196,8 +209,6 @@ export type { FABSize, FABColor, FABPosition } from "./components/nds-fab.js";
 export { NdsPriceTag } from "./components/nds-price-tag.js";
 export type { PriceTagSize } from "./components/nds-price-tag.js";
 
-export { NdsMoodSelector } from "./components/nds-mood-selector.js";
-
 export { NdsCounselorCard } from "./components/nds-counselor-card.js";
 
 export { NdsNotificationItem } from "./components/nds-notification-item.js";
@@ -205,12 +216,8 @@ export type { NotificationKind } from "./components/nds-notification-item.js";
 
 export { NdsPageHeader } from "./components/nds-page-header.js";
 
-export { NdsGreetingHeader } from "./components/nds-greeting-header.js";
-
 export { NdsUserCard } from "./components/nds-user-card.js";
 export type { UserCardLayout } from "./components/nds-user-card.js";
-
-export { NdsReactionPicker } from "./components/nds-reaction-picker.js";
 
 export { NdsFloatingCtaBanner } from "./components/nds-floating-cta-banner.js";
 export type { FloatingCtaBannerSize } from "./components/nds-floating-cta-banner.js";
@@ -224,8 +231,6 @@ export { NdsCommentItem } from "./components/nds-comment-item.js";
 export { NdsLikeButton } from "./components/nds-like-button.js";
 export type { LikeButtonSize } from "./components/nds-like-button.js";
 
-export { NdsCouponCard } from "./components/nds-coupon-card.js";
-
 export { NdsMediaCard } from "./components/nds-media-card.js";
 
 export { NdsScoreGauge } from "./components/nds-score-gauge.js";
@@ -233,8 +238,7 @@ export type { GaugeLevel } from "./components/nds-score-gauge.js";
 
 export { NdsSelectionCard, NdsSelectionCardItem } from "./components/nds-selection-card.js";
 export type { SelectionCardMode, SelectionCardLayout } from "./components/nds-selection-card.js";
-
-export { NdsShareSheet } from "./components/nds-share-sheet.js";
+export { NdsSelectionButtonGroup } from "./components/nds-selection-button-group.js";
 
 export { NdsFilterBar } from "./components/nds-filter-bar.js";
 
@@ -242,12 +246,7 @@ export { NdsTimeSlotPicker } from "./components/nds-time-slot-picker.js";
 
 export { NdsPhoneInput } from "./components/nds-phone-input.js";
 
-export { NdsConsentChecklist } from "./components/nds-consent-checklist.js";
-
 export { NdsVotePoll } from "./components/nds-vote-poll.js";
-
-export { NdsMedicationItem } from "./components/nds-medication-item.js";
-export type { MedicationTime } from "./components/nds-medication-item.js";
 
 export { NdsPinPad } from "./components/nds-pin-pad.js";
 
@@ -265,9 +264,6 @@ export { NdsTimePicker } from "./components/nds-time-picker.js";
 
 export { NdsMediaThumbnail } from "./components/nds-media-thumbnail.js";
 export type { MediaRounded, MediaFit } from "./components/nds-media-thumbnail.js";
-
-export { NdsActivityTimeline } from "./components/nds-activity-timeline.js";
-export type { ActivityTimelineStatus } from "./components/nds-activity-timeline.js";
 
 export { NdsCalendar } from "./components/nds-calendar.js";
 
@@ -287,8 +283,6 @@ export { NdsDateRangePicker } from "./components/nds-date-range-picker.js";
 export { NdsDsHighlight } from "./components/nds-ds-highlight.js";
 export type { DSHighlightMode } from "./components/nds-ds-highlight.js";
 
-export { NdsEmotionHeatmap } from "./components/nds-emotion-heatmap.js";
-
 export { NdsFileUpload } from "./components/nds-file-upload.js";
 
 export { NdsImageCropper } from "./components/nds-image-cropper.js";
@@ -297,21 +291,13 @@ export { NdsImageUpload } from "./components/nds-image-upload.js";
 
 export { NdsLightbox } from "./components/nds-lightbox.js";
 
-export { NdsMentionInput } from "./components/nds-mention-input.js";
-
 export { NdsMultiStepForm } from "./components/nds-multi-step-form.js";
 
 export { NdsPullToRefresh } from "./components/nds-pull-to-refresh.js";
 
-export { NdsSegmentedControl } from "./components/nds-segmented-control.js";
-export type { SegmentedControlSize } from "./components/nds-segmented-control.js";
-
 export { NdsSidebar } from "./components/nds-sidebar.js";
 
 export { NdsSignaturePad } from "./components/nds-signature-pad.js";
-
-export { NdsStatusTimeline } from "./components/nds-status-timeline.js";
-export type { StatusTimelineDirection } from "./components/nds-status-timeline.js";
 
 export { NdsVideoPlayer } from "./components/nds-video-player.js";
 
@@ -320,3 +306,23 @@ export { NdsVoiceRecorder } from "./components/nds-voice-recorder.js";
 export { NdsWaveformPlayer } from "./components/nds-waveform-player.js";
 
 export { NdsInspector } from "./components/nds-inspector.js";
+
+// react↔html export parity 복원 — 이 컴포넌트들은 runtime.ts 에는 등록돼 있으나
+// index 배럴에서 빠져 있었다(NdsStepper 회귀와 동일 계열).
+export { NdsCoachMark } from "./components/nds-coach-mark.js";
+export type { CoachMarkPlacement } from "./components/nds-coach-mark.js";
+
+export { NdsEmptyState } from "./components/nds-empty-state.js";
+
+export { NdsOnlineIndicator } from "./components/nds-online-indicator.js";
+export type { PresenceStatus } from "./components/nds-online-indicator.js";
+
+export { NdsPagination } from "./components/nds-pagination.js";
+
+export { NdsPopup } from "./components/nds-popup.js";
+
+export { NdsSparkline } from "./components/nds-sparkline.js";
+export type { SparklineKind } from "./components/nds-sparkline.js";
+
+export { NdsTextButton } from "./components/nds-text-button.js";
+export type { TextButtonSize } from "./components/nds-text-button.js";

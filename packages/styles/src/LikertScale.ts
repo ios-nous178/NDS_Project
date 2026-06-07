@@ -92,7 +92,7 @@ export const likertStyles = `
   }
 
   :where(.${LK_ITEM_CLASS}:hover .${LK_DOT_CLASS}) {
-    border-color: ${"#91CAF6"};
+    border-color: ${cv.borderRole.focus};
   }
 
   :where(.${LK_DOT_CLASS}[data-checked="true"]) {

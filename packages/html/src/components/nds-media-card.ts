@@ -45,7 +45,7 @@ const renderStars = (rating: number, container: HTMLElement) => {
     svg.setAttribute("viewBox", "0 0 14 14");
     svg.setAttribute("aria-hidden", "true");
     svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" fill="${
-      filled ? "#FFB800" : "#E0E0E0"
+      filled ? "#FFD54F" : "#E0E0E0"
     }"/>`;
     container.appendChild(svg);
   }

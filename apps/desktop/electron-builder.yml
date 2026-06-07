@@ -1,0 +1,73 @@
+# electron-builder — Nudge Studio 패키징 (Phase 4)
+#
+# electron-vite 가 out/{main,preload,renderer} 로 번들한 뒤 이 설정으로 installer 를 만든다.
+# main/preload 는 deps 외부화(externalizeDepsPlugin) 라 런타임에 node_modules 를 resolve 한다
+# → 그 production 의존성(@nudge-design/*, chokidar, cheerio→undici, @babel/parser …)이
+#   asar 안에 들어가야 packaged 앱이 동작한다(electron-builder 가 자동 포함).
+#
+# catalog.json 은 번들 외부 리소스로 동봉 → main/catalog.ts 의
+#   process.resourcesPath/catalog.json 분기가 packaged 환경에서 이걸 읽는다.
+appId: io.cashwalk.nudge-studio
+productName: Nudge Studio
+directories:
+  output: release
+files:
+  - out/**
+  - package.json
+  # pnpm 워크스페이스 의존성은 패키지 루트가 심볼릭 링크라 turbo 캐시(.turbo/*.log)까지
+  # asar 수집 대상에 끌려온다. realpath 가 apps/desktop 밖이라 패킹 시 상대경로 계산이
+  # 터지므로(getRelativePath) 명시적으로 제외한다.
+  - "!**/.turbo"
+  - "!**/.turbo/**"
+extraResources:
+  - from: ../../packages/mcp/catalog.json
+    to: catalog.json
+  # nudge-ds MCP 서버 자체완결 번들(esbuild 단일 파일 + catalog + references) → resources/mcp/.
+  # scripts/bundle-mcp-desktop.mjs 산출물(apps/desktop/.mcp-bundle/). node_modules·네이티브
+  # 모듈 없음 → Win/Mac 그대로 복사. agent-runner 가 claude 실행 시
+  # resources/mcp/dist/tools/server.mjs 를 Electron-as-node 로 띄워 --mcp-config 로 주입
+  # → 받는 사람이 node/MCP 설치 없이도 nudge-ds 도구가 붙는다.
+  - from: .mcp-bundle
+    to: mcp
+  # 앱 동봉 claude CLI 네이티브 바이너리(scripts/bundle-claude-desktop.mjs 산출물) → resources/claude/.
+  # 사용자 PATH 에 claude 가 없을 때의 폴백 — 받는 사람이 따로 설치/로그인하지 않아도 앱이 동작한다.
+  # 플랫폼별 단일 실행파일(.claude-bundle/{platform}-{arch}/claude[.exe], 플랫폼당 ~200MB).
+  # mac universal 은 arm64·x64 둘 다 동봉(런타임에 process.arch 로 선택). 네이티브 모듈·심볼릭
+  # 링크 없음 → 그대로 복사. (제거하려면 이 두 줄 + .claude-bundle 삭제 → 런타임이 PATH 폴백으로 복귀.)
+  - from: .claude-bundle
+    to: claude
+asar: true
+# node-pty 의 네이티브 `.node` 는 asar 안에서 dlopen 불가 → asar 밖으로 추출해야 로드된다.
+asarUnpack:
+  - "**/node_modules/node-pty/**"
+# node-pty 1.1.0 ships prebuilds for darwin-arm64/darwin-x64/win32-x64. Rebuilding it
+# during packaging can hang inside @electron/rebuild on Apple Silicon, while the
+# packaged app can load the bundled prebuilds as long as node-pty is unpacked.
+npmRebuild: false
+# prebuild 의 spawn-helper 가 0644(실행불가)로 풀려 패키징되면 PTY spawn 시
+# "posix_spawnp failed" 로 죽는다 → afterPack 에서 0755 강제. (scripts/after-pack.cjs)
+afterPack: scripts/after-pack.cjs
+# 앱 아이콘 — build/icon-master.svg(docs 로고 마크, 흰색) → icns/ico/png 로 생성.
+# build/ 는 electron-builder 의 기본 buildResources 라 자동 감지되지만 명시해 둔다.
+mac:
+  icon: build/icon.icns
+  # arch 별 산출물(arm64 / x64 각각) — universal 단일본 대신 분리한다.
+  #  · universal 은 모든 바이너리(electron·node-pty·동봉 claude)를 arm64+x64 두 벌로 안고 가
+  #    산출물이 거의 2배(arm64 dmg 113MB vs universal 190MB). 게다가 동봉 claude 는 arch 당 ~205MB라
+  #    universal 이면 한 dmg 에 두 바이너리(~430MB)가 다 들어간다.
+  #  · 분리하면 사용자는 자기 arch 것만 받는다(arm64 맥 → arm64 dmg + claude arm64 한 벌).
+  #    다른 arch 의 동봉 claude 는 afterPack(scripts/after-pack.cjs)이 빌드 arch 기준으로 잘라낸다.
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+    - target: zip
+      arch: [arm64, x64]
+  category: public.app-category.developer-tools
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch: x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

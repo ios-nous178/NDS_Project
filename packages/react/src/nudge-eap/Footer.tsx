@@ -1,6 +1,7 @@
 import React from "react";
 import { Footer as BaseFooter } from "../Footer";
 import type { FooterLinkItem, CompanyInfoData } from "../Footer";
+import { NUDGE_EAP_LOGO_FOOTER_DATA_URI } from "../brand-logo-defaults";
 
 /* ─────────────────────────────────────────────────────
    App surface — 회사 정보 푸터 (base Footer.Info wrapper)
@@ -17,6 +18,7 @@ export interface NudgeEAPFooterAppProps {
   links?: FooterLinkItem[];
   company: CompanyInfoData;
   extra?: React.ReactNode;
+  /** 미지정 시 base64 내장 로고 (nudge-eap-logo-footer) 사용 — 파일 호스팅 불필요. */
   logo?: NudgeEAPFooterLogo;
 }
 
@@ -28,9 +30,9 @@ const NudgeEAPFooterApp = React.forwardRef<HTMLElement, NudgeEAPFooterAppProps>(
         {extra && <BaseFooter.Extra>{extra}</BaseFooter.Extra>}
         <BaseFooter.CompanyInfo
           data={company}
-          logoSrc={logo?.src}
-          logoWidth={logo?.width}
-          logoHeight={logo?.height}
+          logoSrc={logo?.src ?? NUDGE_EAP_LOGO_FOOTER_DATA_URI}
+          logoWidth={logo?.width ?? 100}
+          logoHeight={logo?.height ?? 23}
         />
       </BaseFooter.Info>
     );

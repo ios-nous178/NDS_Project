@@ -5,7 +5,7 @@ import { MoreIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/DropdownMenu",
+  title: "Components/Overlay/DropdownMenu",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",

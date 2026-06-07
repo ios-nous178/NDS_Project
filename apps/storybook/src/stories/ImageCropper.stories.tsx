@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ImageCropper, type ImageCropperHandle } from "@nudge-design/react";
 
 const meta: Meta<typeof ImageCropper> = {
-  title: "Components/ImageCropper",
+  title: "Components/Inputs/ImageCropper",
   component: ImageCropper,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

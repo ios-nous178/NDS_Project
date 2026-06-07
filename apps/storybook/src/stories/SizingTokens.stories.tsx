@@ -22,8 +22,8 @@ function SizeRow({ label, value }: { label: string; value: number }) {
             width: Math.max(value * 2, 48),
             height: value,
             borderRadius: 8,
-            backgroundColor: "#E3F2FC",
-            border: "1px solid #91CAF6",
+            backgroundColor: "var(--semantic-bg-brand-subtle)",
+            border: "1px solid var(--semantic-border-brand-default)",
             boxSizing: "border-box",
           }}
         />

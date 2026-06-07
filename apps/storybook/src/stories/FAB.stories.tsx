@@ -7,7 +7,7 @@ const plusIconNode = <PlusIcon size={22} aria-hidden />;
 const editIconNode = <EditIcon size={22} aria-hidden />;
 
 const meta: Meta<typeof FAB> = {
-  title: "Components/FAB",
+  title: "Components/Display/FAB",
   component: FAB,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -39,7 +39,7 @@ export const Extended: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Size/md vs lg",
+  name: "Variant/md vs lg",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-loose)", alignItems: "center" }}>
       <FAB icon={plusIconNode} aria-label="md" size="md" position="static" />
@@ -49,7 +49,7 @@ export const Sizes: Story = {
 };
 
 export const Colors: Story = {
-  name: "Color/primary secondary neutral",
+  name: "Variant/primary secondary neutral",
   render: () => (
     <div
       style={{
@@ -68,7 +68,7 @@ export const Colors: Story = {
 };
 
 export const FixedBottomRight: Story = {
-  name: "Position/bottom-right (fixed)",
+  name: "Variant/bottom-right (fixed)",
   render: () => (
     <div
       style={{

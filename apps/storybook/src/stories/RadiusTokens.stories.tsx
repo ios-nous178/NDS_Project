@@ -49,7 +49,7 @@ function BorderWidthItem({ token, value }: { token: string; value: number }) {
           height: 56,
           borderRadius: 8,
           backgroundColor: "#FFFFFF",
-          border: `${value}px solid #2B96ED`,
+          border: `${value}px solid var(--semantic-border-brand-default)`,
           boxSizing: "border-box",
         }}
       />

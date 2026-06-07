@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ProgressBar } from "@nudge-design/react";
 
 const meta: Meta<typeof ProgressBar> = {
-  title: "Components/ProgressBar",
+  title: "Components/Display/ProgressBar",
   component: ProgressBar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -26,7 +26,7 @@ type Story = StoryObj<typeof ProgressBar>;
 export const Playground: Story = {};
 
 export const Sizes: Story = {
-  name: "Size/비교",
+  name: "Variant/비교",
   render: () => (
     <div
       style={{
@@ -44,7 +44,7 @@ export const Sizes: Story = {
 };
 
 export const CustomColor: Story = {
-  name: "Example/색상 오버라이드",
+  name: "Recipe/색상 오버라이드",
   render: () => (
     <div
       style={{
@@ -62,7 +62,7 @@ export const CustomColor: Story = {
 };
 
 export const Steps: Story = {
-  name: "Example/심리검사 진행률",
+  name: "Recipe/심리검사 진행률",
   render: () => (
     <div style={{ width: 300 }}>
       <div

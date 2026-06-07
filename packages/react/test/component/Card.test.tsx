@@ -138,22 +138,24 @@ describe("Card variant 조합 & 엣지 케이스", () => {
     expect(container.querySelector("[data-slot='footer']")).not.toBeInTheDocument();
   });
 
-  it("meta만 있어도 header가 렌더링된다", () => {
+  it("meta만 있어도 텍스트 영역(meta 슬롯)이 렌더링된다", () => {
+    // flat API: meta(ReactNode)는 header 가 아니라 text-content 안 meta 슬롯에 렌더된다.
     const { container } = render(<Card meta={<span>D-3</span>} />);
-    expect(container.querySelector("[data-slot='header']")).toBeInTheDocument();
+    expect(container.querySelector("[data-slot='meta']")).toBeInTheDocument();
     expect(screen.getByText("D-3")).toBeVisible();
   });
 
-  it("footer noBorder 옵션이 data-no-border로 적용된다", () => {
+  it("footerNoBorder=true 면 divider(구분선)가 렌더되지 않는다", () => {
+    // flat API legacy 매핑: footer(ReactNode)는 cta 슬롯으로, footerNoBorder=true 는 divider 숨김으로.
     const { container } = render(<Card title="제목" footer={<span>푸터</span>} footerNoBorder />);
-    const footer = container.querySelector("[data-slot='footer']")!;
-    expect(footer).toHaveAttribute("data-no-border", "true");
+    expect(container.querySelector("[data-slot='cta']")).toBeInTheDocument();
+    expect(container.querySelector("[data-slot='divider']")).not.toBeInTheDocument();
   });
 
-  it("footerNoBorder=false가 기본값이다", () => {
+  it("기본값(footerNoBorder=false)이면 cta 위에 divider 가 렌더된다", () => {
     const { container } = render(<Card title="제목" footer={<span>푸터</span>} />);
-    const footer = container.querySelector("[data-slot='footer']")!;
-    expect(footer).toHaveAttribute("data-no-border", "false");
+    expect(container.querySelector("[data-slot='cta']")).toBeInTheDocument();
+    expect(container.querySelector("[data-slot='divider']")).toBeInTheDocument();
   });
 
   it("thumbnailRatio를 커스텀으로 설정할 수 있다", () => {
@@ -165,6 +167,7 @@ describe("Card variant 조합 & 엣지 케이스", () => {
   });
 
   it("slotProps로 각 슬롯에 className을 전달할 수 있다", () => {
+    // flat API 가 실제 렌더하는 슬롯에 매핑: footer(ReactNode)→cta 슬롯, meta→meta 슬롯.
     const { container } = render(
       <Card
         title="슬롯"
@@ -173,9 +176,9 @@ describe("Card variant 조합 & 엣지 케이스", () => {
         footer={<span>푸터</span>}
         slotProps={{
           root: { className: "root-custom" },
-          header: { className: "header-custom" },
           title: { className: "title-custom" },
-          footer: { className: "footer-custom" },
+          meta: { className: "meta-custom" },
+          cta: { className: "cta-custom" },
         }}
       >
         본문
@@ -183,8 +186,8 @@ describe("Card variant 조합 & 엣지 케이스", () => {
     );
 
     expect(container.querySelector("[data-slot='root']")!.className).toContain("root-custom");
-    expect(container.querySelector("[data-slot='header']")!.className).toContain("header-custom");
     expect(container.querySelector("[data-slot='title']")!.className).toContain("title-custom");
-    expect(container.querySelector("[data-slot='footer']")!.className).toContain("footer-custom");
+    expect(container.querySelector("[data-slot='meta']")!.className).toContain("meta-custom");
+    expect(container.querySelector("[data-slot='cta']")!.className).toContain("cta-custom");
   });
 });

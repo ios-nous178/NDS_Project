@@ -30,26 +30,59 @@ import {
 import type { Catalog, Manifest, McpbManifest } from "./types/manifest.js";
 import { configureMockupValidator } from "./tools/mockup-validator.js";
 export { validateMockupSource } from "./tools/mockup-validator.js";
-import { configureHtmlValidator, validateHtmlMockup } from "./tools/html-validator.js";
-export { validateHtmlSource } from "./tools/html-validator.js";
+import {
+  configureHtmlValidator,
+  validateHtmlMockup,
+} from "@nudge-design/mockup-core/tools/html-validator";
+export { validateHtmlSource } from "@nudge-design/mockup-core/tools/html-validator";
+// 품질 점수 SSOT(데스크톱 하네스와 공유) — D2 정성 채점 + verdict/포맷.
+import {
+  formatScoreCard,
+  gateGuidance,
+  SCORE_THRESHOLDS,
+  VERDICT_LABELS,
+  type LlmScoreResult,
+} from "@nudge-design/mockup-core/tools/quality-score-core";
+import { scoreMockupQuality } from "@nudge-design/mockup-core/tools/quality-score-runner";
+import { resolveClaudeBin } from "./claude-bin.js";
+// validate_html_mockup 컨텍스트 도출 SSOT — 데스크탑 하네스(catalog.ts)도 같은 헬퍼를 쓴다.
+import { deriveHtmlValidationContext } from "@nudge-design/mockup-core/tools/catalog-config";
+import { configureUsageCatalog } from "@nudge-design/mockup-core/tools/usage/parser";
 import {
   analyzeHtmlMockup,
   convertHtmlToDsHtml,
   reportHtmlMockupUsage,
-} from "./tools/html-analyzer.js";
-import type { AnalyzeHtmlMockupResult } from "./tools/html-analyzer.js";
-export { countHtmlUsage } from "./tools/html-analyzer.js";
-import { devServer, registerDevServerCleanup } from "./tools/preview.js";
-import { attachUsageGuardOutcome, runUsageGuards } from "./tools/usage.js";
-import { buildSinglefileHtml } from "./tools/build-html.js";
-import { getGuide } from "./tools/guides.js";
-import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
-import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
+} from "@nudge-design/mockup-core/tools/html-analyzer";
+import type { AnalyzeHtmlMockupResult } from "@nudge-design/mockup-core/tools/html-analyzer";
+export { countHtmlUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
+import { devServer, registerDevServerCleanup } from "@nudge-design/mockup-core/tools/preview";
 import {
+  canonicalBrandSlug,
+  listStandaloneBrands,
+} from "@nudge-design/mockup-core/tools/standalone-assets";
+import { recommendPagePattern } from "@nudge-design/mockup-core/tools/page-pattern-recommender";
+import {
+  attachUsageGuardOutcome,
+  flushPendingUsageWebhookQueue,
+  runUsageGuards,
+} from "./tools/usage.js";
+import { captureContext } from "./tools/context-capture.js";
+import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
+import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
+import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
+import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
+import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
+import { recordObservability } from "./tools/observability-sink.js";
+import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
+import { configureClientIdentity } from "./tools/client-identity.js";
+import { getIconSvg } from "./icon-svg.js";
+import {
+  markVisualRefEmitted,
   noteReportSent,
   noteReportSuppressed,
   principlesAcked,
   principlesCalledAt,
+  visualRefEmitted,
 } from "./tools/session-state.js";
 
 const VISUAL_REFERENCE_QUESTION =
@@ -148,45 +181,33 @@ configureMockupValidator({
   propAllowedValues,
 });
 
-// validate_html_mockup 용 context. nds-* 태그/클래스 prefix 셋.
-const ndsHtmlTagSet = new Set(manifest.ndsHtmlTags ?? []);
-[
-  "nds-select-option",
-  "nds-footer-info",
-  "nds-footer-tab-bar",
-  "nds-footer-tab-item",
-  "nds-footer-company-info",
-  "nds-footer-web",
-  "nds-footer-web-row",
-  "nds-footer-web-section",
-].forEach((tag) => ndsHtmlTagSet.add(tag));
-// React 컴포넌트 이름 → BEM-ish 베이스 클래스 prefix.
-// 예: "Button" → "nds-button", "IconButton" → "nds-icon-button".
-// stylesheet 룰은 대개 .nds-button { ... } 또는 .nds-card__root { ... } 라
-// __sub / --modifier 는 잘라낸 base prefix 만 비교한다.
-const ndsClassPrefixSet = new Set<string>();
-for (const c of manifest.components) {
-  const kebab = c.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-  ndsClassPrefixSet.add(`nds-${kebab}`);
+// usage 집계기(parser)에도 같은 카탈로그를 주입 — non-DS 요소를 avoidable(대체재 있음) vs
+// forced(대체재 없음)로 정밀 분류해 adoptionRatio(A) / overallRatio(B)를 산출하게 한다.
+configureUsageCatalog(new Set(componentByName.keys()));
+
+// validate_html_mockup 용 context (nds-* 태그/클래스 prefix/attr enum 셋) — 도출 로직은
+// mockup-core 의 catalog-config(deriveHtmlValidationContext)가 SSOT 다. 예전엔 server.ts 가
+// 같은 보강 목록(EXTRA 태그/prefix)을 인라인으로 손-동기화했지만, 데스크탑 하네스(catalog.ts)와
+// 어긋나면 unknown-nds-tag 검출이 한쪽에서 조용히 무력화될 위험이 있어 공유 헬퍼로 단일화했다.
+// DesignSpec 검증기도 같은 ndsAttrEnums 를 재사용한다(아래 configureDesignSpec).
+const htmlCtx = deriveHtmlValidationContext(manifest);
+configureHtmlValidator(htmlCtx);
+
+// DesignSpec(경량 IR) 검증기에도 같은 카탈로그를 주입한다 — prompt→spec→code 의 코드前 검증용.
+// 브랜드 셋은 자산 디렉토리에서 읽으므로(런타임엔 번들/dev 양쪽 해석됨) 방어적으로 — 미해석 시
+// brand 엄격검사는 design-spec 쪽에서 자동 skip 된다.
+let standaloneBrandSet = new Set<string>();
+try {
+  standaloneBrandSet = new Set(listStandaloneBrands());
+} catch {
+  standaloneBrandSet = new Set();
 }
-// @nudge-design/styles 의 layout primitives — 컴포넌트가 아니라 클래스만 제공하므로
-// manifest.components 에 없다. validator 가 unknown-nds-class 로 잘못 잡지 않게 명시 추가.
-// 가이드: get_guide({ topic: 'pattern:admin-shell' }).
-ndsClassPrefixSet.add("nds-shell");
-ndsClassPrefixSet.add("nds-section");
-ndsClassPrefixSet.add("nds-form-row");
-// nds-* tag 별 attribute enum (예: nds-button.color = primary|secondary|assistive)
-const ndsAttrEnums = new Map<string, Map<string, string[]>>();
-for (const el of manifest.ndsHtmlElements ?? []) {
-  const attrMap = new Map<string, string[]>();
-  for (const [k, v] of Object.entries(el.attrs)) attrMap.set(k, v);
-  if (attrMap.size > 0) ndsAttrEnums.set(el.tag, attrMap);
-}
-configureHtmlValidator({
+configureDesignSpec({
   tokenSet,
-  ndsTagSet: ndsHtmlTagSet,
-  ndsClassPrefixSet,
-  ndsAttrEnums,
+  componentNames: new Set(componentByName.keys()),
+  brands: standaloneBrandSet,
+  propAllowedValues,
+  ndsAttrEnums: htmlCtx.ndsAttrEnums,
 });
 
 // mcpb 번들은 packages/mcp/ 옆에 local-packages/ 를 동봉, dev 모드는 레포 루트 아래.
@@ -211,6 +232,40 @@ function scoreMatch(query: string, name: string): number {
   return s;
 }
 
+/**
+ * 컴포넌트 검색 별칭 — substring 기반 scoreMatch 가 0점을 주는 흔한 약어·한글 질의를
+ * 가산 보정한다. **가산만** 하고 기존 매치는 절대 제거하지 않으므로 오탐의 최악 사례는
+ * "후보가 하나 늘어남" 수준(틀린 단독 매치가 아님). key = 컴포넌트 이름에 substring 으로
+ * 존재하는 정규 영문, value = 그 별칭들(소문자). 예: '버튼' → name 에 'button' 포함 → Button.
+ */
+const COMPONENT_SEARCH_ALIASES: Record<string, string[]> = {
+  button: ["btn", "버튼"],
+  select: ["dropdown", "셀렉트", "드롭다운"],
+  input: ["인풋", "텍스트필드"],
+  checkbox: ["체크박스"],
+  radio: ["라디오"],
+  modal: ["모달", "다이얼로그", "dialog"],
+  toggle: ["스위치", "switch"],
+  chip: ["칩"],
+  tabs: ["탭"],
+  tooltip: ["툴팁"],
+  badge: ["뱃지", "배지"],
+  toast: ["토스트"],
+  card: ["카드"],
+  avatar: ["아바타"],
+};
+
+/** 별칭이 정규 영문을 포함하는 이름과 맞으면 substring(60) 보다 낮은 50점을 준다. */
+function aliasScore(query: string, name: string): number {
+  const q = query.toLowerCase().trim();
+  if (!q) return 0;
+  const n = name.toLowerCase();
+  for (const [canonical, aliases] of Object.entries(COMPONENT_SEARCH_ALIASES)) {
+    if (n.includes(canonical) && aliases.includes(q)) return 50;
+  }
+  return 0;
+}
+
 /* ───────────── Tool 핸들러 ───────────── */
 
 function clampLimit(value: unknown, fallback: number, max: number): number {
@@ -226,7 +281,7 @@ function searchComponent(query: string, limit = 10) {
       htmlTag: c.htmlTag,
       propsCount: c.props?.length ?? 0,
       guideHint: getComponentGuideHint(c.name),
-      score: scoreMatch(query, c.name),
+      score: Math.max(scoreMatch(query, c.name), aliasScore(query, c.name)),
     }))
     .filter((c) => c.score > 0)
     .sort((a, b) => b.score - a.score)
@@ -257,7 +312,13 @@ function getComponentGuideHint(name: string): string | undefined {
  * 펼치면 수 KB. 한 번에 9개씩 병렬 호출하던 사용 패턴에서 토큰을 크게 잡아먹었다.
  * 슬림 응답이면 prop 존재 여부 확인엔 충분하고, 시그니처 까지 필요하면 verbose:true 로 명시.
  */
-function findComponent(args: { name?: string; query?: string; limit?: number; verbose?: boolean }) {
+// export: find-miss.test.ts 의 query-miss 대칭 / 별칭 회귀 테스트용 (런타임 동작 변경 없음).
+export function findComponent(args: {
+  name?: string;
+  query?: string;
+  limit?: number;
+  verbose?: boolean;
+}) {
   const limit = clampLimit(args.limit, 20, 100);
   if (args.name) {
     const c = componentByName.get(args.name);
@@ -283,7 +344,19 @@ function findComponent(args: { name?: string; query?: string; limit?: number; ve
         "Slim response — prop names only. Pass verbose:true for full signatures (type/allowedValues/etc). For usage examples + guidance, prefer get_guide({ topic: `component:${c.name}` }).",
     };
   }
-  if (args.query) return searchComponent(args.query, clampLimit(args.limit, 10, 50));
+  if (args.query) {
+    const results = searchComponent(args.query, clampLimit(args.limit, 10, 50));
+    if (results.length === 0) {
+      // name-miss 경로와 대칭: 빈 배열([]) 대신 error+suggestions 를 돌려준다. []는 외부
+      // 에이전트가 "컴포넌트 없음 → native 직접 작성" 으로 오판하게 만들고(실제로는 존재),
+      // 그 오판이 taxonomy-gap 신호로 집계되면 수집 데이터까지 오염된다.
+      return {
+        error: `No component matched query '${args.query}'. Call find_component with no args to list all components, or check spelling/synonyms.`,
+        suggestions: [],
+      };
+    }
+    return results;
+  }
   return {
     _hint:
       "No-arg call returns a capped component name list. Use `{ query }` or `{ name }` for details.",
@@ -307,19 +380,83 @@ function decorateIcon(name: string) {
 
 /**
  * find_icon 통합 라우터.
+ *  - { name } → 그 아이콘의 inline SVG (붙여 넣을 수 있는 완성형) + 메타
  *  - 인자 없음 → 카테고리별 count summary
- *  - { query } → top 10 점수 매치
+ *  - { query } → top 10 점수 매치 (이름만 — SVG 가 필요하면 find_icon({ name }) 재호출)
  *  - { category } → 해당 카테고리 아이콘 목록
  */
-function findIcon(args: { query?: string; category?: string; limit?: number }) {
+// export: find-slim.test.ts 의 응답 슬림(토큰 절감) 회귀 테스트용 (런타임 동작 변경 없음).
+export async function findIcon(args: {
+  name?: string;
+  query?: string;
+  category?: string;
+  limit?: number;
+  size?: number;
+}) {
   const categoryIndex = getIconCategoryIndex();
   const limit = clampLimit(args.limit, 20, 100);
+  // { name } 정확 매치 → inline SVG 반환. 무번들러(데스크톱/외부 html)에서 npm 설치 없이
+  // index.html 에 바로 붙여 넣을 수 있게 한다.
+  if (args.name) {
+    if (!iconSet.has(args.name)) {
+      const suggestions = manifest.icons
+        .map((name) => ({ name, score: scoreMatch(args.name as string, name) }))
+        .filter((c) => c.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map((c) => c.name);
+      return {
+        error: `Icon '${args.name}' not found. find_icon({ query: '${args.name}' }) 로 검색하거나 아래 후보 확인.`,
+        suggestions,
+      };
+    }
+    try {
+      const svg = await getIconSvg(args.name, args.size);
+      if (!svg) {
+        return {
+          ...decorateIcon(args.name),
+          error: `'${args.name}' 의 SVG 정의를 찾지 못했습니다(메타만 등록). 인라인 SVG 를 직접 작성하세요.`,
+        };
+      }
+      // 캐포비 어드민 사이드바(GNB) 아이콘은 9종을 한 개씩 find_icon 하지 말고
+      // ready-made 픽업(아이콘 이미 인라인)으로 유도 — 오용(9× 루프) 재발 방지.
+      const isCashwalkBizGnb = /^CashwalkBizGnb/.test(args.name);
+      return {
+        ...decorateIcon(args.name),
+        ...svg,
+        _hint:
+          (isCashwalkBizGnb
+            ? "⚠ 캐포비 어드민 사이드바(GNB) 아이콘이면 9종을 한 개씩 find_icon 하지 말 것 — 아이콘이 이미 인라인된 ready-made 가 있다: get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' }) (HTML/React + 로고 data URI). 가져와서 activeKey 만 화면 키로. 사이드바가 아닌 단독 아이콘 용도면 아래 svg 그대로 사용. "
+            : "") +
+          "svg 를 그대로 index.html 의 <nds-icon-button> 등 안에 붙여 넣으세요(npm 설치 불필요). " +
+          "색은 부모의 color/currentColor 를 상속합니다.",
+      };
+    } catch (err) {
+      return {
+        ...decorateIcon(args.name),
+        error: `아이콘 SVG 로드 실패: ${(err as Error).message}`,
+      };
+    }
+  }
   if (args.query) {
-    return manifest.icons
-      .map((name) => ({ ...decorateIcon(name), score: scoreMatch(args.query as string, name) }))
+    // 이름 찾기 분기 — name(+분류용 category)만. categoryLabel/style/pair·SVG 는
+    // 삽입 시점의 find_icon({ name }) 에서 제공(이미 그 경로 존재). score 는 정렬 후 drop.
+    const matches = manifest.icons
+      .map((name) => ({ name, score: scoreMatch(args.query as string, name) }))
       .filter((c) => c.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, clampLimit(args.limit, 10, 50));
+    if (matches.length === 0) {
+      // { name } 미스 경로와 대칭: 빈 배열 대신 error 를 돌려줘 "아이콘 전무" 오판을 막는다.
+      return {
+        error: `No icon matched query '${args.query}'. find_icon 인자 없이 호출하면 카테고리 인덱스를 볼 수 있습니다. 더 일반적인 영문 키워드로 다시 시도하세요.`,
+        suggestions: [],
+      };
+    }
+    return matches.map(({ name }) => {
+      const category = ICON_METADATA[name]?.category;
+      return category ? { name, category } : { name };
+    });
   }
   if (args.category) {
     const category = args.category as IconCategory;
@@ -356,26 +493,50 @@ function findIcon(args: { query?: string; category?: string; limit?: number }) {
  *  - { query } → 점수 기반 매치 (semantic 우선, raw palette deprioritize)
  *  - 둘 다 → query 우선
  */
-function findToken(args: { group?: string; query?: string }) {
+// export: find-slim.test.ts 의 응답 슬림(토큰 절감) 회귀 테스트용 (런타임 동작 변경 없음).
+export function findToken(args: { group?: string; query?: string; brand?: string }) {
+  const requestedBrand = args.brand?.trim().toLowerCase() || undefined;
+  const brand = requestedBrand ? (canonicalBrandSlug(requestedBrand) ?? requestedBrand) : undefined;
+  // brand 필터:
+  //  - 미지정 → base(shared, brands 필드 없음)만. 브랜드 고유 토큰이 크로스브랜드로
+  //    새는 것을 막아 기존 nudge 워크플로우와 동일(예: mint 안 보임).
+  //  - 지정 → shared + 그 브랜드 고유 토큰.
+  const inBrand = (t: Manifest["tokens"][number]) =>
+    brand ? !t.brands || t.brands.includes(brand) : !t.brands;
+  // brand 지정 시 시멘틱 값을 그 브랜드 실제 값으로 치환해 보여준다(이름은 공통).
+  const view = (t: Manifest["tokens"][number]) => {
+    if (brand && t.brandValues && t.brandValues[brand] !== undefined) {
+      const { brandValues: _bv, ...rest } = t;
+      return { ...rest, value: t.brandValues[brand], baseValue: t.value, brand };
+    }
+    return t;
+  };
+  const pool = manifest.tokens.filter(inBrand);
+
   if (args.query) {
     const normalizedQuery = args.query.trim().toLowerCase();
-    return manifest.tokens
-      .map((t) => ({
-        ...t,
-        policy: getTokenLookupPolicy(t),
-        score: getTokenLookupScore(t, normalizedQuery),
-      }))
-      .filter((t) => t.score > 0)
+    // score 는 정렬용 — 출력엔 싣지 않는다. policy 객체(safe+note)도 매 토큰 반복하지 않고,
+    // 회피해야 할 raw palette 토큰에만 짧은 avoid 플래그를 단다(semantic 우선은 기본 기대).
+    return pool
+      .map((t) => ({ token: t, score: getTokenLookupScore(t, normalizedQuery) }))
+      .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
+      .slice(0, 10)
+      .map(({ token }) =>
+        isRawPaletteToken(token)
+          ? { ...view(token), avoid: "raw palette — --semantic-* 토큰 우선" }
+          : view(token),
+      );
   }
-  if (args.group) return manifest.tokens.filter((t) => t.group === args.group);
+  if (args.group) return pool.filter((t) => t.group === args.group).map(view);
   const groups: Record<string, number> = {};
-  for (const t of manifest.tokens) groups[t.group] = (groups[t.group] ?? 0) + 1;
+  for (const t of pool) groups[t.group] = (groups[t.group] ?? 0) + 1;
   return {
     _hint:
-      "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. No-arg call returns only the summary to save tokens.",
-    total: manifest.tokens.length,
+      "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. Add `brand` (e.g. 'geniet', 'cashpobi') to scope to a brand's tokens + brand-specific values. No-arg call returns only the summary to save tokens.",
+    total: pool.length,
+    ...(brand ? { brand } : {}),
+    ...(requestedBrand && brand && requestedBrand !== brand ? { requestedBrand } : {}),
     groups,
   };
 }
@@ -384,31 +545,35 @@ function visualReferencePrompt(toolName: string) {
   return {
     rule: "visual-reference-first-response",
     tool: toolName,
+    required: true,
     requiredFirstResponseQuestion: VISUAL_REFERENCE_QUESTION,
-    repeatPolicy:
-      "Ask once per mockup task. SKIP ONLY IF (A) the user already answered in the CURRENT conversation OR (B) references.md/.references exists AND its first line is `task: <slug>` matching the current task scope (brand + screen). If references.md exists but is for a previous/unrelated task (different brand, different screen, stale slug), TREAT IT AS ABSENT and ask again — do not infer 'already answered' from file existence alone.",
-    instruction:
-      "For any mockup/screen/page creation request, ask this before implementation. If the user already provided references, ask whether to use those as the visual source of truth and whether there are additional good/bad references.",
-    afterAnswer:
-      "Create references.md in the mockup workspace root. FIRST LINE MUST be `task: <brand>-<screen-slug>` (e.g. `task: geniet-diary-hub`). Then lines like: [good] source=<figma-url|image-filename> caption=<1-line reason> and [bad] source=<figma-url|image-filename> caption=<1-line reason>.",
-    acceptedSourceTypes:
-      "ONLY accept as `source`: Figma URLs (figma.com/...), image files (.png/.jpg/.jpeg/.webp/.gif/.svg), or screenshot filenames. REJECT: .md/.txt/.pdf/PRD/spec/요구사항 문서 — text documents are SPECs, not visual references. If the user only provides a text PRD, you MUST still ask for at least 1 visual (Figma node or screenshot). Do NOT self-justify 'PRD has ASCII layout / color spec, so it counts as visual'.",
-    useReferences:
-      "Use MCP-bundled component/pattern references from get_guide responses first as the DS baseline (figmaNodeUrl, references[], imageAbsolutePath). Then read task-specific references.md and write a short visual plan that maps good references to concrete layout/spacing/typography/color decisions and bad references to explicit avoid rules. In the final response, summarize both MCP reference cues and task reference cues that were applied.",
-    enforcement:
-      "REQUIRED first-response gate. NOT a 'soft prompt' — skipping is a process violation that users have flagged repeatedly. Even when (a) user tone sounds decisive ('그냥 만들어줘', 'PRD 지켜서'), (b) PRD has detailed visual spec, (c) auto-mode is active, (d) a stale references.md exists — ALL of these have been used as past justifications for skipping and ALL are invalid. Surface the question first; await user reply.",
-    knownBypassPatterns: [
-      "stale-references-md: references.md from a previous unrelated task → treated as 'answered'. Fix: check `task:` slug.",
-      "prd-as-visual: text PRD with ASCII/spec → self-justified as visual reference. Fix: text ≠ visual; require Figma URL or image.",
-      "decisive-tone: '바로 만들어줘' / 'PRD 지켜서' → interpreted as 'skip questions'. Fix: tone does not override gate.",
-      "soft-prompt-misread: old 'soft prompt' wording → interpreted as optional. Fix: this gate is REQUIRED.",
-      "checklist-omission: memory/checklist mentions later steps but not this gate → gate demoted to advisory. Fix: this gate runs BEFORE every other checklist item.",
-    ],
+    fullGuide: "pattern:visual-reference",
+    next: "Ask this before code or DS lookup. After the user answers, write references.md with task:<brand>-<screen-slug> and [good]/[bad] visual sources. Full gate details: get_guide({ topic:'pattern:visual-reference' }).",
   };
 }
 
-function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
-  const prompt = visualReferencePrompt(toolName);
+/**
+ * 첫 호출 이후 재첨부되는 슬림 stub. 풀 게이트는 세션 첫 응답에서 100% 보존되고,
+ * enforcement 는 툴 description / 생성된 CLAUDE.md / pattern:visual-reference 에도 상주하므로
+ * 이후 응답은 운영 큐(task 슬러그 확인 + 풀 게이트 재조회 경로)만 1줄로 유지한다.
+ */
+function visualReferencePromptStub(toolName: string) {
+  return {
+    rule: "visual-reference-first-response",
+    tool: toolName,
+    required: false,
+    recap:
+      "레퍼런스 게이트는 이번 세션 첫 응답에서 안내됨. 새 mockup task 면 references.md 의 `task: <slug>` 가 현재 스코프(브랜드+화면)와 맞는지 확인 — 다르거나 없으면 get_guide({ topic: 'pattern:visual-reference' }) 로 풀 게이트 재조회.",
+  };
+}
+
+// export: visual-reference-session.test.ts 의 세션-once 회귀 테스트용 (런타임 동작 변경 없음).
+export function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
+  // 세션 첫 호출만 풀 게이트, 이후엔 슬림 stub — 매 조회 응답의 풀 블록 재첨부는 순수 중복.
+  const prompt = visualRefEmitted()
+    ? visualReferencePromptStub(toolName)
+    : visualReferencePrompt(toolName);
+  markVisualRefEmitted();
   if (Array.isArray(result)) {
     return {
       _visualReferenceFirstResponse: prompt,
@@ -437,15 +602,24 @@ function withVisualReferencePrompt<T>(toolName: string, result: T): T | object {
  */
 function attachPrinciplesAck<T>(result: T): T | object {
   const principlesCalled = principlesAcked();
-  const ack = {
-    rule: "principles-first",
-    required: !principlesCalled,
-    principlesCalled,
-    calledAt: principlesCalledAt() ?? null,
-    question: "이번 세션에 get_guide({ topic:'principles' }) 호출 기록 있나요?",
-    shortcut:
-      "없으면 지금 호출 — 평균 25-30% 토큰 절약 (회고 데이터). 배치 호출 예: get_guide({ topics:['principles','dos-donts'] }).",
-  };
+  // 이미 호출한 세션이면 question/shortcut 환기 텍스트는 순수 중복(required 도 항상 false)
+  // → 1줄 ack 로 축약. 미호출 세션에서만 풀 넛지를 띄워 다음 사이클에서 챙기게 한다.
+  const ack = principlesCalled
+    ? {
+        rule: "principles-first",
+        required: false,
+        principlesCalled: true,
+        calledAt: principlesCalledAt() ?? null,
+      }
+    : {
+        rule: "principles-first",
+        required: true,
+        principlesCalled: false,
+        calledAt: null,
+        question: "이번 세션에 get_guide({ topic:'principles' }) 호출 기록 있나요?",
+        shortcut:
+          "없으면 지금 호출 — 평균 25-30% 토큰 절약 (회고 데이터). 배치 호출 예: get_guide({ topics:['principles','dos-donts'] }).",
+      };
   if (Array.isArray(result)) {
     return { _principlesAck: ack, results: result };
   }
@@ -453,6 +627,80 @@ function attachPrinciplesAck<T>(result: T): T | object {
     return { _principlesAck: ack, ...(result as Record<string, unknown>) };
   }
   return { _principlesAck: ack, result };
+}
+
+/** 결과(또는 .validation)의 D1 scores 전체(overall + dimensions) 추출 — 카드 표시용.
+ *  build 는 .validation 아래, validate 는 top-level. */
+function extractCodeScores(
+  result: unknown,
+): { overall: number; dimensions: Record<string, number> } | null {
+  if (!result || typeof result !== "object") return null;
+  const r = result as Record<string, unknown>;
+  const v = (r.validation && typeof r.validation === "object" ? r.validation : r) as Record<
+    string,
+    unknown
+  >;
+  const scores = v.scores as Record<string, unknown> | undefined;
+  if (!scores || typeof scores.overall !== "number") return null;
+  const dimensions =
+    scores.dimensions && typeof scores.dimensions === "object"
+      ? (scores.dimensions as Record<string, number>)
+      : {};
+  return { overall: scores.overall, dimensions };
+}
+
+/**
+ * validate/build 응답에 score 게이트 + **풀 스코어카드**를 부착한다.
+ * 데스크톱 design-score 카드와 같은 임계값/verdict 규칙(gradeQuality SSOT)을 쓰고,
+ * formatScoreCard 로 D1 6개 차원(icon 포함)을 한 덩어리 카드로 만들어 그대로 싣는다 —
+ * 회고: 에이전트가 좋은 차원 5개만 발췌하고 낮은 icon 차원을 빼서 "왜 81?" 이 안 보였음.
+ * mustSurface 로 카드를 발췌 없이 그대로 노출하게 강제. 정성(D2)은 score_mockup_quality.
+ */
+function attachScoreGate<T>(result: T): T {
+  const codeScores = extractCodeScores(result);
+  if (codeScores == null) return result;
+  const card = formatScoreCard({
+    codeScores,
+    llm: { ok: false, error: "미채점 — 정성(D2)까지 보려면 score_mockup_quality 호출" },
+  });
+  const grade = card.grade;
+  const scoreGate = {
+    rule: "score-gate",
+    verdict: grade.verdict,
+    verdictLabel: VERDICT_LABELS[grade.verdict],
+    overall: grade.overall,
+    dimensions: codeScores.dimensions,
+    thresholds: SCORE_THRESHOLDS,
+    scoreCard: card.text,
+    mustSurface:
+      "이 scoreCard 를 사용자에게 그대로 보여주세요 — D1 6개 차원(color/typography/spacing/layout/component/icon)을 빠짐없이. 점수가 낮은 차원을 발췌·생략하지 말 것(특히 icon).",
+    guidance: gateGuidance(grade.verdict),
+    note: "D1(코드) 점수 기준. 정성(D2·ux/interaction/flow/form)까지 채점하려면 score_mockup_quality 를 호출하세요.",
+  };
+  if (result && typeof result === "object" && !Array.isArray(result)) {
+    return { ...(result as Record<string, unknown>), scoreGate } as T;
+  }
+  return result;
+}
+
+function summarizeObservabilityResults(
+  results: Array<{ ok?: boolean; path?: string; error?: string; status?: number }>,
+) {
+  const ok = results.filter((r) => r.ok === true).length;
+  const failed = results.length - ok;
+  const failedPaths = results
+    .filter((r) => r.ok !== true)
+    .map((r) => r.path)
+    .filter((p): p is string => typeof p === "string");
+  return {
+    count: results.length,
+    ok,
+    failed,
+    notice:
+      failed > 0
+        ? `observability ${failed}/${results.length} failed${failedPaths.length > 0 ? `: ${failedPaths.join(", ")}` : ""}`
+        : `observability ${ok}/${results.length} ok`,
+  };
 }
 
 function getTokenLookupScore(token: Manifest["tokens"][number], query: string): number {
@@ -468,31 +716,6 @@ function getTokenLookupScore(token: Manifest["tokens"][number], query: string): 
   return score;
 }
 
-function getTokenLookupPolicy(token: Manifest["tokens"][number]) {
-  if (token.group === "semantic") {
-    return {
-      safeForMockup: true,
-      note: "Preferred semantic token. Use this before raw palette tokens.",
-    };
-  }
-  if (isPolicyRadiusOrShapeToken(token)) {
-    return {
-      safeForMockup: true,
-      note: "Approved radius/shape policy token.",
-    };
-  }
-  if (isRawPaletteToken(token)) {
-    return {
-      safeForMockup: false,
-      note: "Raw palette token. Avoid in mockups unless you are implementing the DS itself; prefer --semantic-* tokens.",
-    };
-  }
-  return {
-    safeForMockup: true,
-    note: "Policy-safe design token.",
-  };
-}
-
 function isPolicyRadiusOrShapeToken(token: Manifest["tokens"][number]) {
   return (
     (token.group === "radius" || token.group === "shape") &&
@@ -501,7 +724,14 @@ function isPolicyRadiusOrShapeToken(token: Manifest["tokens"][number]) {
 }
 
 function isRawPaletteToken(token: Manifest["tokens"][number]) {
-  return /^--color-(?:neutral|coolGray|blue|magenta|yellow|red|green)-/.test(token.name);
+  // base(nudge) 팔레트는 기존 동작 유지. 추가로 브랜드 고유 팔레트(--color-mint-500 등,
+  // brands 필드가 붙은 color 스케일 토큰)도 deprioritize 해 시멘틱 우선 규칙을 지킨다.
+  return (
+    /^--color-(?:neutral|coolGray|blue|magenta|yellow|red|green)-/.test(token.name) ||
+    (token.group === "color" &&
+      Array.isArray(token.brands) &&
+      /^--color-[a-zA-Z]+-\d/.test(token.name))
+  );
 }
 
 function isRawPaletteQuery(query: string) {
@@ -553,6 +783,53 @@ function suggestReplacement(args: { snippet: string; rule?: string }) {
   return { suggestions };
 }
 
+/**
+ * PRD → 캐포비 어드민 Page Pattern 1차 추천(키워드 점수). 점수 로직은 mockup-core 가 SSOT —
+ * 데스크탑 추천 카드와 동일 함수. 응답은 ranked 5종 + top/confident + drill-down 힌트 + "Claude/
+ * 사용자 확정" 안내를 담는다. 최종 확정(screen.pagePattern 선언)은 호출자가 한다(여기서 강제 X).
+ */
+function recommendPagePatternTool(args: { prd?: string; brand?: string; surface?: string }) {
+  const prd = String(args.prd ?? "");
+  const brand = canonicalBrandSlug(args.brand);
+  const surface = args.surface?.trim().toLowerCase();
+  const rec = recommendPagePattern(prd);
+
+  // 캐포비 어드민에서만 hard 게이트. 브랜드/표면 미지정이면 advisory 로 동작.
+  const appliesToCashwalkBizAdmin =
+    (!args.brand || brand === "cashwalk-biz") && (!surface || surface === "admin");
+
+  const ranked = rec.ranked.map((c) => ({
+    pattern: c.pattern,
+    label: c.label,
+    score: c.score,
+    when: c.when,
+    why: c.why,
+    guide: `pattern:cashwalk-biz-page-${c.pattern}`,
+  }));
+
+  const nextStep = rec.top
+    ? `1차 추천: '${rec.ranked[0].label}'. 키워드 점수 기반 후보일 뿐이니 PRD 를 직접 읽고 확정하세요(다른 후보로 바꿔도 됨). 확정하면 get_guide({ topic: 'pattern:cashwalk-biz-page-${rec.top}' }) 로 구조를 확인하고 save_design_spec 의 screen.pagePattern 에 그 값을 넣으세요. (데스크탑 하네스에서 카드로 이미 골랐다면 nudge.pagePattern 마커가 자동 주입합니다.)`
+    : "PRD 키워드로는 패턴을 특정하지 못했습니다 — ranked 5종을 사용자에게 보여주고 직접 고르게 하세요.";
+
+  const humanReadable = [
+    rec.reason,
+    ...ranked.map((c, i) => `${i === 0 ? "▶" : "·"} ${c.label} (score ${c.score}) — ${c.why}`),
+  ].join("\n");
+
+  return {
+    appliesToCashwalkBizAdmin,
+    top: rec.top,
+    confident: rec.confident,
+    reason: rec.reason,
+    ranked,
+    nextStep,
+    humanReadable,
+    note: appliesToCashwalkBizAdmin
+      ? undefined
+      : "참고: Page Pattern 시스템은 cashwalk-biz 어드민 전용입니다. 다른 브랜드/표면엔 강제되지 않으니 advisory 로만 참고하세요.",
+  };
+}
+
 /* ───────────── MCP 서버 등록 ───────────── */
 
 const server = new Server(
@@ -560,23 +837,47 @@ const server = new Server(
   { capabilities: { tools: {} } },
 );
 
+// 클라이언트 식별(어떤 에이전트·표면이 호출했나) SSOT 를 서버에 묶는다 — observability-sink 가
+// 매 레코드에서 getClientIdentity() 로 읽어 붙인다. clientInfo 는 initialize 후 채워지므로
+// 여기서 server 참조만 넘기고 해석은 호출 시점에 lazy 하게 한다.
+configureClientIdentity({
+  server,
+  installMode,
+  mcpVersion: mcpbManifest?.version ?? null,
+});
+
 const toolHandlers = {
   get_brand: (args: ToolArgs) =>
-    withVisualReferencePrompt("get_brand", getBrand(args as { brand?: string })),
+    withVisualReferencePrompt(
+      "get_brand",
+      getBrand(
+        args as {
+          brand?: string;
+          assetKind?: "logos" | "snsLogos" | "profileImages" | "illustrations" | "marathonEvents";
+        },
+      ),
+    ),
   find_component: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "find_component",
       findComponent(args as { name?: string; query?: string; limit?: number; verbose?: boolean }),
     ),
-  find_icon: (args: ToolArgs) =>
+  find_icon: async (args: ToolArgs) =>
     withVisualReferencePrompt(
       "find_icon",
-      findIcon(args as { query?: string; category?: string; limit?: number }),
+      await findIcon(
+        args as { name?: string; query?: string; category?: string; limit?: number; size?: number },
+      ),
     ),
   find_token: (args: ToolArgs) =>
-    withVisualReferencePrompt("find_token", findToken(args as { group?: string; query?: string })),
+    withVisualReferencePrompt(
+      "find_token",
+      findToken(args as { group?: string; query?: string; brand?: string }),
+    ),
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
+  recommend_page_pattern: (args: ToolArgs) =>
+    recommendPagePatternTool(args as { prd?: string; brand?: string; surface?: string }),
   get_guide: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "get_guide",
@@ -587,10 +888,13 @@ const toolHandlers = {
           intent?: string;
           target?: "react" | "html";
           sections?: string[];
+          aspects?: string[];
           brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
+          cwd?: string;
         },
       ),
     ),
+  list_figma_sync_status: () => listFigmaSyncStatus(),
   get_setup: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "get_setup",
@@ -612,26 +916,39 @@ const toolHandlers = {
         },
       ),
     ),
-  dev_server: (args: ToolArgs) =>
-    devServer(
-      args as {
-        action: "start" | "stop";
-        cwd?: string;
-        command?: string;
-        args?: string[];
-        url?: string;
-        port?: number;
-        timeoutMs?: number;
-        sessionId?: string;
-      },
-    ),
+  dev_server: async (args: ToolArgs) => {
+    const typed = args as {
+      action: "start" | "stop";
+      cwd?: string;
+      command?: string;
+      args?: string[];
+      url?: string;
+      port?: number;
+      timeoutMs?: number;
+      sessionId?: string;
+    };
+    const result = await devServer(typed);
+    // stop 은 한동안 report 가 안 올 수 있는 지점 → 밀린 webhook 큐를 여기서 한 번 비운다.
+    if (typed.action === "stop") await flushPendingUsageWebhookQueue();
+    return result;
+  },
   build_singlefile_html: async (args: ToolArgs) => {
-    const result = await buildSinglefileHtml(
-      args as { cwd?: string; skipAudit?: boolean; intent?: "react" | "html" },
-    );
+    const typedArgs = args as {
+      cwd?: string;
+      skipAudit?: boolean;
+      allowIncomplete?: boolean;
+      intent?: "react" | "html";
+    };
+    const result = await buildSinglefileHtml({
+      ...typedArgs,
+      // HTML 목업은 node_modules/package.json 이 없어 버전 fs 탐지가 null → MCP 가 아는
+      // 번들 DS 버전(manifest = 최대 DS 버전 미러)을 fallback 으로 흘려 스탬프/시트 null 차단.
+      dsVersion: mcpbManifest?.version,
+    });
+    // observability 적재는 registerToolHandlers({ afterCall }) 단일 choke-point 로 이관됨.
     // html intent 빌드는 내부에서 validate + report 까지 자동 실행하므로 report-suppress 카운터에도
-    // 영향을 미친다. 이 시점에 principles 호출 여부를 함께 노출한다.
-    return attachPrinciplesAck(result);
+    // 영향을 미친다. 이 시점에 principles 호출 여부 + score 게이트(D1 verdict)를 함께 노출한다.
+    return attachPrinciplesAck(attachScoreGate(result));
   },
   validate_html_mockup: async (args: ToolArgs) => {
     const typed = args as {
@@ -648,7 +965,12 @@ const toolHandlers = {
     const effectiveSource = typed.source;
     const effectiveFilePath = typed.filePath;
 
-    const result = validateHtmlMockup({ source: effectiveSource, filePath: effectiveFilePath });
+    // cwd 를 넘겨 nudge.surface 마커로 표면 불일치(admin↔소비자 chrome)까지 검출.
+    const result = validateHtmlMockup({
+      source: effectiveSource,
+      filePath: effectiveFilePath,
+      cwd: typed.cwd,
+    });
     let extras: {
       // root 의 violations[] / violationsByRule 와 동일하므로 stats 에서는 둘 다 제외해 응답 크기 절약.
       stats?: Omit<AnalyzeHtmlMockupResult, "violations" | "violationsByRule">;
@@ -672,6 +994,7 @@ const toolHandlers = {
       } = analyzeHtmlMockup({
         source: effectiveSource,
         filePath: effectiveFilePath,
+        cwd: typed.cwd,
       });
       extras = {
         ...(extras ?? {}),
@@ -689,6 +1012,8 @@ const toolHandlers = {
         mockupName: typed.mockupName,
         cwd: typed.cwd,
         dryRun: typed.dryRun,
+        // fs 탐지가 null 인 HTML 목업에서 시트에 DS 버전이 빠지던 버그 차단(번들 버전으로 fallback).
+        dsVersionFallback: mcpbManifest?.version,
       });
       noteReportSent();
       extras = { ...(extras ?? {}), report };
@@ -710,43 +1035,156 @@ const toolHandlers = {
         },
       };
     }
-    return attachPrinciplesAck(extras ? { ...result, ...extras } : result);
+    const withExtras = extras ? { ...result, ...extras } : result;
+    // observability 적재는 afterCall 단일 choke-point 로 이관됨.
+    return attachPrinciplesAck(
+      attachScoreGate({
+        ...withExtras,
+        _prdCoverageNextStep:
+          "PRD/brief 커버리지는 DS 점수와 분리됨. 최종 전 validate_prd_coverage({ source|filePath }) 또는 build_singlefile_html.prdValidation 을 확인하세요.",
+      }),
+    );
+  },
+  validate_prd_coverage: (args: ToolArgs) => {
+    const typed = args as { source?: string; filePath?: string };
+    return validatePrdCoverage(typed);
+  },
+  score_mockup_quality: async (args: ToolArgs) => {
+    const typed = args as {
+      html?: string;
+      filePath?: string;
+      brand?: string;
+      surface?: string;
+      cwd?: string;
+    };
+    // HTML 확보 — html 인자 우선, 없으면 filePath 를 렌더드 산출물로 읽는다.
+    let html = typed.html;
+    if (!html && typed.filePath) {
+      try {
+        html = fs.readFileSync(typed.filePath, "utf8");
+      } catch (e) {
+        return { ok: false, error: `filePath 읽기 실패: ${String(e)}` };
+      }
+    }
+    if (!html) return { ok: false, error: "html 또는 filePath 중 하나가 필요합니다." };
+
+    // D1 코드 점수 — 정적 검증으로 차원별 점수를 뽑아 데스크톱 D3 카드와 동일 구성으로 합친다.
+    let codeScores: { overall: number; dimensions: Record<string, number> } | null = null;
+    try {
+      const v = validateHtmlMockup({ source: html, cwd: typed.cwd });
+      codeScores = v.scores ?? null;
+    } catch {
+      /* D1 실패해도 D2 는 진행 */
+    }
+
+    // D2 정성 점수 — 독립 claude -p. 못 찾으면 graceful: D1(코드)만 카드에 반영.
+    const bin = resolveClaudeBin();
+    let llm: LlmScoreResult;
+    if (!bin) {
+      llm = {
+        ok: false,
+        error: "claude 실행 파일 미발견(CLAUDE_BIN/PATH) — 코드 점수(D1)만 반영",
+      };
+    } else {
+      llm = await scoreMockupQuality({
+        html,
+        brand: typed.brand,
+        surface: typed.surface,
+        bin,
+        env: { ...process.env } as Record<string, string>,
+      });
+    }
+
+    const { text, grade } = formatScoreCard({ codeScores, llm });
+    // observability 적재는 afterCall 단일 choke-point 로 이관됨.
+    return {
+      ok: true,
+      codeScores,
+      llm,
+      verdict: grade.verdict,
+      verdictLabel: VERDICT_LABELS[grade.verdict],
+      overall: grade.overall,
+      thresholds: SCORE_THRESHOLDS,
+      guidance: gateGuidance(grade.verdict),
+      card: text,
+    };
   },
   convert_html_to_ds_html: (args: ToolArgs) =>
     convertHtmlToDsHtml(
       args as { source?: string; filePath?: string; rewriteInlineColors?: boolean },
+    ),
+  validate_design_spec: (args: ToolArgs) =>
+    withVisualReferencePrompt(
+      "validate_design_spec",
+      validateDesignSpec((args as { spec?: unknown }).spec),
+    ),
+  save_design_spec: (args: ToolArgs) =>
+    withVisualReferencePrompt(
+      "save_design_spec",
+      saveDesignSpec(args as { spec?: unknown; cwd?: string; fileName?: string }),
     ),
 } satisfies ToolHandlers;
 
 registerDevServerCleanup();
 registerToolHandlers(server, toolHandlers, {
   afterCall: async ({ name, args, result }) => {
+    // Tier 1 · LOCAL 컨텍스트 수집 — 모든 툴 결과가 지나는 이 한 지점에서 잡는다.
+    // 내부에서 전 과정 best-effort(throw 안 함)라 본기능에 무해. build(html) 의
+    // early-return 이전에 둬서 html 빌드 산출물도 스냅샷되도록 한다.
+    captureContext({ name, args, result });
+
+    // observability 적재 SSOT — record{Build,Validation,Quality} 를 핸들러에서 끌어와 이 단일
+    // choke-point 로 통합(새 툴 누락 방지). sink 실패는 본기능에 무해해야 하므로 throw 차단.
+    let next = result;
+    try {
+      const observability = await recordObservability({
+        name,
+        args,
+        result,
+        dsVersion: mcpbManifest?.version,
+      });
+      if (
+        observability &&
+        observability.length > 0 &&
+        result &&
+        typeof result === "object" &&
+        !Array.isArray(result)
+      ) {
+        next = {
+          ...(result as Record<string, unknown>),
+          _observability: summarizeObservabilityResults(observability),
+        };
+      }
+    } catch {
+      /* sink 장애가 툴 응답을 깨지 않게 */
+    }
+
     try {
       if (
         name === "build_singlefile_html" &&
-        result &&
-        typeof result === "object" &&
-        !Array.isArray(result) &&
-        (result as { intent?: unknown }).intent === "html"
+        next &&
+        typeof next === "object" &&
+        !Array.isArray(next) &&
+        (next as { intent?: unknown }).intent === "html"
       ) {
-        return undefined;
+        return next;
       }
       const guardArgs =
         name === "build_singlefile_html" &&
         !args.cwd &&
-        result &&
-        typeof result === "object" &&
-        !Array.isArray(result) &&
-        typeof (result as { outputPath?: unknown }).outputPath === "string"
+        next &&
+        typeof next === "object" &&
+        !Array.isArray(next) &&
+        typeof (next as { outputPath?: unknown }).outputPath === "string"
           ? {
               ...args,
-              cwd: path.dirname(path.dirname((result as { outputPath: string }).outputPath)),
+              cwd: path.dirname(path.dirname((next as { outputPath: string }).outputPath)),
             }
           : args;
       const guard = await runUsageGuards(name, guardArgs);
-      return attachUsageGuardOutcome(result, guard);
+      return attachUsageGuardOutcome(next, guard);
     } catch {
-      return undefined;
+      return next;
     }
   },
 });

@@ -58,14 +58,14 @@ export const timeSlotPickerStyles = `
   }
 
   :where(.${TS_SLOT_CLASS}:hover:not(:disabled):not([data-selected="true"])) {
-    border-color: ${"#91CAF6"};
+    border-color: ${cv.borderRole.focus};
     background: ${cv.surface.brandSubtle};
   }
 
   :where(.${TS_SLOT_CLASS}[data-selected="true"]) {
     background: ${cv.surface.brand};
     border-color: ${cv.borderRole.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
     font-weight: ${fontWeight.medium};
   }
 

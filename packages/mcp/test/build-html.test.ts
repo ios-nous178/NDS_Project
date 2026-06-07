@@ -7,7 +7,7 @@ import {
   detectWorkspaceIntent,
   injectHtmlUsageSummary,
   patchViteConfig,
-} from "../src/tools/build-html.js";
+} from "@nudge-design/mockup-core/tools/build-html";
 
 describe("patchViteConfig", () => {
   it("inserts import + viteSingleFile() into a typical vite.config", () => {
@@ -148,9 +148,12 @@ describe("injectHtmlUsageSummary", () => {
       const summary = injectHtmlUsageSummary(tmp, outputPath);
       const html = fs.readFileSync(outputPath, "utf-8");
 
-      expect(summary).toBe("DS@0.1.10 · DS 4 (100%)");
-      expect(html).toContain(`<span data-ds-badge>DS@0.1.10 · DS 4 (100%)</span>`);
-      expect(html).toContain("Nudge DS usage: DS@0.1.10 · DS 4 (100%)");
+      // DS 4종 채택(brand-header/button/card/chip) + raw <footer> 1개. raw <footer>는
+      // nds-brand-footer 로 대체 가능한 "회피가능 재발명"이라 분모에 들어가 4/5 = 80%.
+      // (이 테스트의 핵심은 badge 텍스트 치환·DS 4·stale 제거이며, % 는 새 사각지대 집계 반영분.)
+      expect(summary).toBe("DS@0.1.10 · DS 4 (80%)");
+      expect(html).toContain(`<span data-ds-badge>DS@0.1.10 · DS 4 (80%)</span>`);
+      expect(html).toContain("Nudge DS usage: DS@0.1.10 · DS 4 (80%)");
       expect(html).not.toContain("DS 14 (94%)");
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
@@ -338,7 +341,7 @@ describe("auditMockupWorkspace", () => {
       fs.writeFileSync(path.join(tmp, "src", "App.tsx"), `export default () => null;`);
       fs.writeFileSync(
         path.join(tmp, "REFERENCES.md"),
-        `[good] source=figma caption=ok hero with single CTA emphasis`,
+        `[good] source=figma.com/x caption=ok hero with single CTA emphasis`,
       );
       const v = auditMockupWorkspace(tmp).find((x) => x.rule === "missing-visual-references");
       expect(v).toBeUndefined();
@@ -404,13 +407,17 @@ describe("detectWorkspaceIntent", () => {
 
 describe("auditMockupWorkspace — html intent", () => {
   let tmp: string;
+  const prdCoverage =
+    `<script type="application/json" data-prd-coverage>` +
+    `{"requirements":[{"id":"R1","requirement":"CTA","status":"implemented","evidence":"nds-button"}]}` +
+    `</script>`;
 
   beforeEach(() => {
     tmp = fs.mkdtempSync(path.join(os.tmpdir(), "audit-html-"));
     fs.mkdirSync(path.join(tmp, "src"));
     fs.writeFileSync(
       path.join(tmp, "references.md"),
-      `[good] source=figma caption=clean hero with single CTA`,
+      `[good] source=figma.com/x caption=clean hero with single CTA`,
     );
   });
 
@@ -421,10 +428,21 @@ describe("auditMockupWorkspace — html intent", () => {
   it("clean html workspace (root index.html with <nds-*>, main.ts) → 0 violations", () => {
     fs.writeFileSync(
       path.join(tmp, "index.html"),
-      `<!doctype html><body><nds-button color="primary">상담 신청</nds-button><script type="module" src="/src/main.ts"></script></body>`,
+      `<!doctype html><body><nds-button color="primary">상담 신청</nds-button>${prdCoverage}<script type="module" src="/src/main.ts"></script></body>`,
     );
     fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-design/html/runtime";`);
     expect(auditMockupWorkspace(tmp, "html")).toEqual([]);
+  });
+
+  it("flags missing PRD/brief coverage manifest (missing-prd-coverage)", () => {
+    fs.writeFileSync(
+      path.join(tmp, "index.html"),
+      `<!doctype html><body><nds-button color="primary">상담 신청</nds-button></body>`,
+    );
+    fs.writeFileSync(path.join(tmp, "src", "main.ts"), `import "@nudge-design/html/runtime";`);
+    const v = auditMockupWorkspace(tmp, "html").find((x) => x.rule === "missing-prd-coverage");
+    expect(v).toBeTruthy();
+    expect(v?.detail).toContain("data-prd-coverage");
   });
 
   it("flags missing root index.html (no-html-entry-found)", () => {

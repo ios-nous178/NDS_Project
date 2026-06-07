@@ -94,6 +94,23 @@ const options = [
 <Select label="상담 유형" options={options} value="mental" onValueChange={setValue} disabled />
 ```
 
+### 검색형 (searchable)
+
+옵션이 많을 때 `searchable`을 켜면 드롭다운 상단에 검색 인풋이 생겨 label로 필터됩니다 (Ant `showSearch` 모델).
+값은 **항상 options 중에서만** 선택됩니다 — 목록에 없는 값을 자유 입력해야 하면 [Autocomplete](/components/autocomplete)를 사용하세요.
+
+```tsx
+<Select
+  label="거주 지역"
+  options={regions}
+  value={value}
+  onValueChange={setValue}
+  placeholder="지역을 선택해주세요"
+  searchable
+  searchPlaceholder="지역명으로 검색"
+/>
+```
+
 ---
 
 ## Compound API
@@ -129,6 +146,9 @@ const options = [
 | `errorMessage`    | `string`              | —               | 에러 메시지            |
 | `disabled`        | `boolean`             | `false`         | 비활성화               |
 | `fullWidth`       | `boolean`             | `true`          | 전체 너비              |
+| `searchable`        | `boolean`             | `false`            | 드롭다운 상단 검색 인풋으로 옵션 필터 (값은 옵션으로 제약) |
+| `searchPlaceholder` | `string`              | `"검색"`           | 검색 인풋 placeholder (searchable 일 때)                  |
+| `emptyMessage`      | `ReactNode`           | `"검색 결과가 없어요"` | 검색 결과 0건 메시지 (searchable 일 때)                   |
 | `portalContainer` | `HTMLElement \| null` | `document.body` | 드롭다운 포털 컨테이너 |
 | `slotProps`       | `SelectSlotProps`     | —               | 슬롯 프롭              |
 

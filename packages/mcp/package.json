@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build:manifest": "node scripts/emit-manifest.mjs",
-    "build": "pnpm run build:manifest && tsc",
+    "build": "rm -rf dist && pnpm run build:manifest && tsc",
     "start": "node dist/server.js",
     "dev": "pnpm run build:manifest && tsc --watch",
     "typecheck": "tsc --noEmit",
@@ -28,6 +28,7 @@
     "@babel/traverse": "^7.25.0",
     "@babel/types": "^7.25.0",
     "@modelcontextprotocol/sdk": "^1.0.4",
+    "@nudge-design/mockup-core": "workspace:*",
     "@nudge-design/assets": "workspace:*",
     "@nudge-design/tokens": "workspace:*",
     "@nudge-design/react": "workspace:*",

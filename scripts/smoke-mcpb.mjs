@@ -106,9 +106,12 @@ try {
   const text = call.content?.[0]?.text;
   const result = text ? JSON.parse(text) : null;
   // source 모드는 packed bundle 이 아니라 dev tree 를 가리키므로 ready 는 false 일 수 있다.
-  // 핵심은 tool 이 정상 응답을 만들었는지 — files 가 비어있지 않은지만 확인.
-  const readyOk = sourceMode ? true : result?.ready === true;
-  if (!readyOk || !Array.isArray(result?.files) || result.files.length === 0) {
+  // 핵심은 tool 이 정상 응답을 만들었는지 확인.
+  // 신규: _visualReferenceFirstResponse 가 포함된 시각 레퍼런스 게이트 응답도 정상으로 간주한다.
+  const isGate = !!result?._visualReferenceFirstResponse;
+  const readyOk = isGate || (sourceMode ? true : result?.ready === true);
+  const hasFiles = isGate || (Array.isArray(result?.files) && result.files.length > 0);
+  if (!readyOk || !hasFiles) {
     throw new Error(`get_setup({step:'install'}) returned unexpected result: ${text}`);
   }
 
@@ -117,12 +120,29 @@ try {
     throw new Error(`get_brand returned unexpected result: ${JSON.stringify(brands)}`);
   }
 
+  // list_figma_sync_status: 정식 등록 회귀 가드 — 미등록이면 "Unknown tool" 로 떨어진다.
+  const figmaSync = await callTool("list_figma_sync_status", {});
+  if (!Array.isArray(figmaSync?.entries) || typeof figmaSync?.syncedCount !== "number") {
+    throw new Error(
+      `list_figma_sync_status returned unexpected result: ${JSON.stringify(figmaSync)}`,
+    );
+  }
+
   const imports = await callTool("get_setup", { step: "imports", brand: "trost" });
+  // intent 미지정이면 기본 html — imports 는 코드 대신 {intent:'html', required:false, message}
+  // (build_singlefile_html 이 runtime/CSS 를 자동 inline 하므로 임포트 불필요) 를 반환한다.
+  // admin-cms(React) 트랙만 실제 import code 를 돌려준다. 둘 다 정상 응답으로 간주.
+  const isHtmlImportsInfo =
+    imports?.intent === "html" &&
+    typeof imports?.message === "string" &&
+    imports.message.length > 0;
   const hasDsStyleImport =
     typeof imports?.code === "string" &&
     (imports.code.includes("@nudge-design/react/styles.css") ||
-      imports.code.includes("@nudge-design/html/styles.css"));
-  if (!hasDsStyleImport) {
+      imports.code.includes("@nudge-design/html/styles.css") ||
+      imports.code.includes("nudge-ds.runtime.js") ||
+      imports.code.includes("/standalone/"));
+  if (!isHtmlImportsInfo && !hasDsStyleImport) {
     throw new Error(
       `get_setup({step:'imports'}) returned unexpected result: ${JSON.stringify(imports)}`,
     );

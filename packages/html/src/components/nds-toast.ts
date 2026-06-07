@@ -3,6 +3,9 @@
  *
  * Astro/vanilla 앱에서 실제로 쓰기 쉽도록 host 는 매니저 역할만 하고,
  * toast viewport 는 document.body 로 portal 렌더링한다.
+ *
+ * Toast 는 **인터랙션 없는 일시 메시지** 전용 — 자동으로 사라지므로 액션/닫기 버튼이나
+ * 브랜드 카드(캐포비 흰 카드)는 두지 않는다. 그런 알림은 <nds-snackbar> 를 사용한다.
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -11,17 +14,15 @@ const TOAST_CLASS = "nds-toast";
 const TOAST_VIEWPORT_CLASS = `${TOAST_CLASS}__viewport`;
 const TOAST_ITEM_CLASS = `${TOAST_CLASS}__item`;
 const TOAST_MESSAGE_CLASS = `${TOAST_CLASS}__message`;
-const TOAST_ACTION_CLASS = `${TOAST_CLASS}__action`;
 
-export type ToastVariant = "default" | "success" | "error" | "info";
-export type ToastPosition = "top" | "bottom";
+export type ToastVariant = "default" | "success" | "error" | "warning" | "info";
+export type ToastPosition = "top" | "bottom" | "top-right";
 
 export interface ToastShowOptions {
   id?: string;
   message: string;
   variant?: ToastVariant;
   duration?: number;
-  actionLabel?: string;
 }
 
 interface ToastItem {
@@ -29,11 +30,10 @@ interface ToastItem {
   message: string;
   variant: ToastVariant;
   duration: number;
-  actionLabel?: string;
 }
 
-const VARIANTS: readonly ToastVariant[] = ["default", "success", "error", "info"];
-const POSITIONS: readonly ToastPosition[] = ["top", "bottom"];
+const VARIANTS: readonly ToastVariant[] = ["default", "success", "error", "warning", "info"];
+const POSITIONS: readonly ToastPosition[] = ["top", "bottom", "top-right"];
 
 let toastId = 0;
 
@@ -41,7 +41,7 @@ export class NdsToast extends NdsElement {
   static elementName = "nds-toast";
 
   static get observedAttributes(): readonly string[] {
-    return ["position", "duration", "max-count", "message", "variant", "action-label", "open"];
+    return ["position", "duration", "max-count", "message", "variant", "open"];
   }
 
   private _viewport: HTMLDivElement | null = null;
@@ -93,7 +93,6 @@ export class NdsToast extends NdsElement {
       message: input.message,
       variant: normalize(input.variant, VARIANTS, "default"),
       duration: input.duration ?? this._numberAttr("duration", 3000),
-      actionLabel: input.actionLabel,
     };
 
     this._items = [...this._items.filter((entry) => entry.id !== id), item].slice(
@@ -133,7 +132,6 @@ export class NdsToast extends NdsElement {
         message,
         variant: normalize(this.getAttribute("variant"), VARIANTS, "default"),
         duration: this._numberAttr("duration", 3000),
-        actionLabel: this.getAttribute("action-label") ?? undefined,
       });
     }
     if (!this.boolAttr("open")) this._initialOpenShown = false;
@@ -171,22 +169,6 @@ export class NdsToast extends NdsElement {
     message.textContent = item.message;
     root.appendChild(message);
 
-    if (item.actionLabel) {
-      const action = document.createElement("button");
-      action.type = "button";
-      action.className = TOAST_ACTION_CLASS;
-      action.textContent = item.actionLabel;
-      action.addEventListener("click", () => {
-        this.dispatchEvent(
-          new CustomEvent("nds-toast-action", {
-            detail: { id: item.id, item },
-            bubbles: true,
-          }),
-        );
-        this.dismiss(item.id);
-      });
-      root.appendChild(action);
-    }
     return root;
   }
 

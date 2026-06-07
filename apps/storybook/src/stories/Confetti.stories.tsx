@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Confetti, Button } from "@nudge-design/react";
 
 const meta: Meta<typeof Confetti> = {
-  title: "Components/Confetti",
+  title: "Components/Feedback/Confetti",
   component: Confetti,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -17,7 +17,7 @@ export const Playground: Story = {
     const [active, setActive] = useState(false);
     return (
       <div>
-        <Button onClick={() => setActive(true)}>축하! 🎉</Button>
+        <Button onClick={() => setActive(true)}>축하 효과 보기</Button>
         <Confetti active={active} onComplete={() => setActive(false)} />
       </div>
     );
@@ -37,7 +37,7 @@ export const ChallengeComplete: Story = {
           gap: "var(--semantic-gap-loose)",
         }}
       >
-        <h2>🎯 14일 챌린지 달성!</h2>
+        <h2>14일 챌린지 달성!</h2>
         <p style={{ color: "#666" }}>꾸준한 기록으로 큰 변화를 만들었어요.</p>
         <Button onClick={() => setActive(true)}>축하 효과 다시 보기</Button>
         <Confetti active={active} onComplete={() => setActive(false)} />

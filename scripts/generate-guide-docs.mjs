@@ -20,13 +20,14 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const mcpDist = path.join(rootDir, "packages/mcp/dist/guides.js");
 const outDir = path.join(rootDir, "docs/guide");
+const checkMode = process.argv.includes("--check");
 
 try {
   await fs.access(mcpDist);
 } catch {
   console.error(
     `[generate-guide-docs] ${path.relative(rootDir, mcpDist)} 가 없습니다. ` +
-      `먼저 'pnpm build --filter @nudge-design/mcp' 로 빌드하세요.`,
+      `먼저 'pnpm --filter @nudge-design/mcp build' 로 빌드하세요.`,
   );
   process.exit(1);
 }
@@ -96,7 +97,7 @@ function pushRuleSection(lines, sectionTitle, groups, flatList) {
   lines.push(`## ${sectionTitle}`, "");
   if (Array.isArray(groups) && groups.length > 0) {
     for (const group of groups) {
-      lines.push(`### ${esc(group.heading)}`, "");
+      lines.push(`### ${esc(sectionTitle)} · ${esc(group.heading)}`, "");
       for (const item of group.items) lines.push(`- ${esc(item)}`);
       lines.push("");
     }
@@ -174,13 +175,38 @@ function renderVisualAntipatterns() {
 await fs.mkdir(outDir, { recursive: true });
 
 const uxOut = path.join(outDir, "ux-writing.md");
-await fs.writeFile(uxOut, renderUxWriting(), "utf8");
-console.log(`Generated ${path.relative(rootDir, uxOut)}`);
-
 const dpOut = path.join(outDir, "dark-patterns.md");
-await fs.writeFile(dpOut, renderDarkPatterns(), "utf8");
-console.log(`Generated ${path.relative(rootDir, dpOut)}`);
-
 const vaOut = path.join(outDir, "visual-antipatterns.md");
-await fs.writeFile(vaOut, renderVisualAntipatterns(), "utf8");
-console.log(`Generated ${path.relative(rootDir, vaOut)}`);
+const outputs = new Map([
+  [uxOut, renderUxWriting()],
+  [dpOut, renderDarkPatterns()],
+  [vaOut, renderVisualAntipatterns()],
+]);
+
+if (checkMode) {
+  const stale = [];
+  for (const [filePath, body] of outputs) {
+    const current = await readExistingText(filePath);
+    if (current !== body) stale.push(path.relative(rootDir, filePath));
+  }
+  if (stale.length > 0) {
+    console.error(
+      "[generate-guide-docs] docs/guide/*.md 이 stale 합니다. " +
+        "Run `pnpm generate:guide-docs` after building @nudge-design/mcp.",
+    );
+    process.exit(1);
+  }
+} else {
+  for (const [filePath, body] of outputs) {
+    await fs.writeFile(filePath, body, "utf8");
+    console.log(`Generated ${path.relative(rootDir, filePath)}`);
+  }
+}
+
+async function readExistingText(filePath) {
+  try {
+    return await fs.readFile(filePath, "utf8");
+  } catch {
+    return null;
+  }
+}

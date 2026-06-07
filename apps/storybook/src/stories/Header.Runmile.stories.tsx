@@ -21,7 +21,7 @@ const RUNMILE_GNB = [
 ];
 
 const meta: Meta = {
-  title: "Components/Header",
+  title: "Brands/Runmile/Header",
   parameters: { layout: "fullscreen" },
   globals: { brand: "runmile" },
 };

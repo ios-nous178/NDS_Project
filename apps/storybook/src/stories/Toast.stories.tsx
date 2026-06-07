@@ -8,7 +8,7 @@ import { createInteractionUser } from "./interactionTest";
 const { Provider: ToastProvider, useToast } = Toast;
 
 const meta: Meta = {
-  title: "Components/Toast",
+  title: "Components/Feedback/Toast",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -19,8 +19,12 @@ const meta: Meta = {
     },
   },
   decorators: [
-    (Story) => (
-      <ToastProvider>
+    // 스토리별 parameters 로 position/maxCount 를 받는 단일 Provider — 중첩 Provider(=viewport 2개) 방지.
+    (Story, ctx) => (
+      <ToastProvider
+        position={ctx.parameters.toastPosition ?? "bottom"}
+        maxCount={ctx.parameters.toastMaxCount ?? 3}
+      >
         <Story />
       </ToastProvider>
     ),
@@ -56,6 +60,12 @@ function VariantsExample() {
       </Button>
       <Button variant="soft" onClick={() => toast("오류가 발생했습니다", { variant: "error" })}>
         Error
+      </Button>
+      <Button
+        variant="soft"
+        onClick={() => toast("이미 추가된 항목입니다", { variant: "warning" })}
+      >
+        Warning
       </Button>
       <Button variant="soft" onClick={() => toast("새 소식이 있습니다", { variant: "info" })}>
         Info
@@ -158,59 +168,6 @@ export const Stacking: Story = {
   render: () => <StackingExample />,
 };
 
-/* ─── With Action ─── */
-
-function WithActionExample() {
-  const { toast } = useToast();
-
-  return (
-    <Button
-      onClick={() =>
-        toast("상담 예약이 취소되었습니다", {
-          action: {
-            label: "되돌리기",
-            onClick: () => alert("되돌리기 실행"),
-          },
-        })
-      }
-    >
-      액션 토스트
-    </Button>
-  );
-}
-
-export const WithAction: Story = {
-  name: "Recipe/With Action",
-  render: () => <WithActionExample />,
-};
-
-/* ─── Error + Action (실패 후 재시도) ─── */
-
-function ErrorWithActionExample() {
-  const { toast } = useToast();
-
-  return (
-    <Button
-      onClick={() =>
-        toast("저장에 실패했습니다", {
-          variant: "error",
-          action: {
-            label: "다시 시도",
-            onClick: () => alert("재시도 실행"),
-          },
-        })
-      }
-    >
-      에러 + 액션 토스트
-    </Button>
-  );
-}
-
-export const ErrorWithAction: Story = {
-  name: "Recipe/Error With Action",
-  render: () => <ErrorWithActionExample />,
-};
-
 /* ─── Success Flow (실무 시나리오) ─── */
 
 function SuccessFlowExample() {
@@ -223,12 +180,7 @@ function SuccessFlowExample() {
       </Button>
       <Button
         variant="soft"
-        onClick={() =>
-          toast("상담 일정이 확정되었습니다", {
-            variant: "success",
-            action: { label: "일정 보기", onClick: () => alert("일정 페이지로 이동") },
-          })
-        }
+        onClick={() => toast("상담 일정이 확정되었습니다", { variant: "success" })}
       >
         일정 확정
       </Button>
@@ -264,21 +216,6 @@ export const ToastVariantsInteraction: Story = {
 
     await user.click(canvas.getByRole("button", { name: "Error" }));
     await expect(within(document.body).getByText("오류가 발생했습니다")).toBeInTheDocument();
-  },
-};
-
-export const ToastActionInteraction: Story = {
-  name: "Interaction/Toast Action Button",
-  render: () => <WithActionExample />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const user = createInteractionUser();
-
-    await user.click(canvas.getByRole("button", { name: "액션 토스트" }));
-    await expect(within(document.body).getByText("상담 예약이 취소되었습니다")).toBeInTheDocument();
-
-    const actionButton = within(document.body).getByRole("button", { name: "되돌리기" });
-    await expect(actionButton).toBeInTheDocument();
   },
 };
 

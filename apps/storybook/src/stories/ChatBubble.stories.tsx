@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ChatBubble } from "@nudge-design/react";
 
 const meta: Meta<typeof ChatBubble> = {
-  title: "Components/ChatBubble",
+  title: "Components/Domain/ChatBubble",
   component: ChatBubble,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

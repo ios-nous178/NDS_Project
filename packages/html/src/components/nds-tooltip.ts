@@ -18,7 +18,15 @@ export class NdsTooltip extends NdsElement {
   static elementName = "nds-tooltip";
 
   static get observedAttributes(): readonly string[] {
-    return ["content", "trigger-label", "placement", "open", "disabled", ...FORWARDED_ATTRS];
+    return [
+      "content",
+      "trigger-label",
+      "placement",
+      "open",
+      "disabled",
+      "max-width",
+      ...FORWARDED_ATTRS,
+    ];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -66,7 +74,19 @@ export class NdsTooltip extends NdsElement {
     content.id = id;
     content.role = "tooltip";
     content.className = TT_CONTENT_CLASS;
-    content.textContent = this.attr("content", "");
+
+    // 리치 본문: <template slot="content"> 가 있으면 그 HTML(제목+불릿 등 멀티라인/리치)을 본문으로,
+    // 없으면 content 속성을 평문으로. (평문도 max-width 안에서 자동 줄바꿈 — 두 줄/긴 안내 허용.)
+    const richSource = this.querySelector<HTMLTemplateElement>(':scope > template[slot="content"]');
+    if (richSource) {
+      content.dataset.rich = "true";
+      content.appendChild(richSource.content.cloneNode(true));
+    } else {
+      content.textContent = this.attr("content", "");
+    }
+
+    const maxWidth = this.getAttribute("max-width");
+    if (maxWidth) content.style.maxWidth = /^\d+$/.test(maxWidth) ? `${maxWidth}px` : maxWidth;
 
     const arrow = document.createElement("span");
     arrow.className = TT_ARROW_CLASS;

@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AudioPlayer } from "@nudge-design/react";
 
 const meta: Meta<typeof AudioPlayer> = {
-  title: "Components/AudioPlayer",
+  title: "Components/Domain/AudioPlayer",
   component: AudioPlayer,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

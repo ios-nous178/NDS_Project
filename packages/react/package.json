@@ -18,7 +18,7 @@
     "./styles.css": "./dist/styles.css"
   },
   "scripts": {
-    "build": "tsc && node scripts/copy-styles.mjs",
+    "build": "rm -rf dist && tsc && node scripts/copy-styles.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

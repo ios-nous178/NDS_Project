@@ -84,6 +84,7 @@ export type VanillaMonoIconName =
   | "GenietMypageIcon"
   | "GenietRecordIcon"
   | "GenietReviewIcon"
+  | "GenietSearchDeleteIcon"
   | "GenietSearchIcon"
   | "HamburgerIcon"
   | "HomeActiveIcon"
@@ -2029,6 +2030,7 @@ export type VanillaMonoIconName =
   | "TrostMyIcon"
   | "TrostPlusCircleIcon"
   | "TrostPsychTestIcon"
+  | "TrostSearchDeleteIcon"
   | "TrostSearchIcon"
   | "TrostSettingIcon"
   | "TrostTestresultDangerIcon"
@@ -2210,7 +2212,7 @@ export const vanillaIconDefinitions: Record<VanillaMonoIconName, IconDefinition>
   },
   CashwalkBizSearchDeleteIcon: {
     viewBox: "0 0 24 24",
-    body: "<circle cx=\"10.5\" cy=\"10.5\" r=\"6.25\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n  <path d=\"M15 15l5 5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n  <path d=\"M8.5 8.5l4 4M12.5 8.5l-4 4\" stroke=\"currentColor\" stroke-width=\"1.3\" stroke-linecap=\"round\"/>",
+    body: "<g transform=\"translate(2 2)\">\n    <circle cx=\"10\" cy=\"10\" r=\"10\" fill=\"currentColor\" fill-opacity=\"0.4\"/>\n    <path d=\"M13.33361 5.555582C13.64043 5.248757 14.13789 5.248758 14.44472 5.555583C14.75154 5.862408 14.75154 6.35987 14.44472 6.66669L6.66694 14.44447C6.36011 14.7513 5.862651 14.7513 5.555827 14.44447C5.249002 14.13765 5.249002 13.64019 5.555827 13.33336L13.33361 5.555582Z\" fill=\"currentColor\"/>\n    <path d=\"M5.555555 6.66683C5.24873 6.36 5.248731 5.862543 5.555556 5.555718C5.862381 5.248893 6.35984 5.248894 6.66667 5.555719L14.44445 13.3335C14.75127 13.64032 14.75127 14.13778 14.44444 14.44461C14.13762 14.75143 13.64016 14.75143 13.33333 14.44461L5.555555 6.66683Z\" fill=\"currentColor\"/>\n  </g>",
   },
   CenterIcon: {
     viewBox: "0 0 24 24",
@@ -2387,6 +2389,10 @@ export const vanillaIconDefinitions: Record<VanillaMonoIconName, IconDefinition>
   GenietReviewIcon: {
     viewBox: "0 0 24 24",
     body: "<g id=\"icon/bottomnavi/review/on\" clip-path=\"url(#clip0_0_35)\">\n<g id=\"Rectangle\">\n</g>\n<path id=\"Combined-Shape\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M18 2C19.6569 2 21 3.34315 21 5V19C21 20.6569 19.6569 22 18 22H6C4.34315 22 3 20.6569 3 19V5C3 3.34315 4.34315 2 6 2H18ZM16.6179 16.5863H6.15641C5.70229 16.5863 5.33415 16.9544 5.33415 17.4086C5.33415 17.8627 5.70229 18.2308 6.15641 18.2308H16.6179C17.072 18.2308 17.4401 17.8627 17.4401 17.4086C17.4401 16.9544 17.072 16.5863 16.6179 16.5863ZM14.6444 13.383H6.15641C5.70229 13.383 5.33415 13.7511 5.33415 14.2052C5.33415 14.6594 5.70229 15.0275 6.15641 15.0275H14.6444C15.0985 15.0275 15.4667 14.6594 15.4667 14.2052C15.4667 13.7511 15.0985 13.383 14.6444 13.383ZM10.2659 5.42548C9.59821 5.42548 9.01824 5.78509 8.69591 6.31792C8.37358 5.78509 7.7947 5.42548 7.12702 5.42548C6.1107 5.42548 5.33009 6.21377 5.34653 7.47787C5.36956 9.29453 8.10607 11.2767 8.62574 11.2767C9.10923 11.2767 11.9521 9.29453 11.9992 7.47787C12.0288 6.34642 11.2822 5.42548 10.2659 5.42548Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_0_35\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>",
+  },
+  GenietSearchDeleteIcon: {
+    viewBox: "0 0 24 24",
+    body: "<g transform=\"translate(2 2)\">\n    <circle cx=\"10\" cy=\"10\" r=\"10\" fill=\"currentColor\" fill-opacity=\"0.4\"/>\n    <path d=\"M13.33361 5.555582C13.64043 5.248757 14.13789 5.248758 14.44472 5.555583C14.75154 5.862408 14.75154 6.35987 14.44472 6.66669L6.66694 14.44447C6.36011 14.7513 5.862651 14.7513 5.555827 14.44447C5.249002 14.13765 5.249002 13.64019 5.555827 13.33336L13.33361 5.555582Z\" fill=\"currentColor\"/>\n    <path d=\"M5.555555 6.66683C5.24873 6.36 5.248731 5.862543 5.555556 5.555718C5.862381 5.248893 6.35984 5.248894 6.66667 5.555719L14.44445 13.3335C14.75127 13.64032 14.75127 14.13778 14.44444 14.44461C14.13762 14.75143 13.64016 14.75143 13.33333 14.44461L5.555555 6.66683Z\" fill=\"currentColor\"/>\n  </g>",
   },
   GenietSearchIcon: {
     viewBox: "0 0 24 24",
@@ -10167,6 +10173,10 @@ export const vanillaIconDefinitions: Record<VanillaMonoIconName, IconDefinition>
   TrostPsychTestIcon: {
     viewBox: "0 0 24 24",
     body: "<path d=\"M20 15V5C20 3.89543 19.1046 3 18 3H6C4.89543 3 4 3.89543 4 5V19C4 20.1046 4.89543 21 6 21H16.2353\" stroke=\"currentColor\" stroke-width=\"1.5\"/>\n<path d=\"M8 8H16\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n<path d=\"M8 12H16\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n<path d=\"M8 16H12\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\n<path d=\"M14.6965 15.698C13.7936 16.6283 13.7424 17.8746 14.6965 19.0682C15.6506 20.2618 18.5128 23 18.5128 23C18.5128 23 21.4432 20.2618 22.3292 19.0682C23.2151 17.8746 23.2321 16.6283 22.3292 15.698C22.1144 15.4767 21.8594 15.3012 21.5788 15.1814C21.2981 15.0616 20.9973 15 20.6936 15C20.3898 15 20.089 15.0616 19.8084 15.1814C19.5278 15.3012 19.2728 15.4767 19.058 15.698L18.5128 16.2597L17.9676 15.698C17.7529 15.4767 17.4979 15.3012 17.2172 15.1814C16.9366 15.0616 16.6358 15 16.3321 15C16.0283 15 15.7275 15.0616 15.4469 15.1814C15.1663 15.3012 14.9113 15.4767 14.6965 15.698Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/>",
+  },
+  TrostSearchDeleteIcon: {
+    viewBox: "0 0 24 24",
+    body: "<g transform=\"translate(2 2)\">\n    <circle cx=\"10\" cy=\"10\" r=\"10\" fill=\"currentColor\" fill-opacity=\"0.4\"/>\n    <path d=\"M13.33361 5.555582C13.64043 5.248757 14.13789 5.248758 14.44472 5.555583C14.75154 5.862408 14.75154 6.35987 14.44472 6.66669L6.66694 14.44447C6.36011 14.7513 5.862651 14.7513 5.555827 14.44447C5.249002 14.13765 5.249002 13.64019 5.555827 13.33336L13.33361 5.555582Z\" fill=\"currentColor\"/>\n    <path d=\"M5.555555 6.66683C5.24873 6.36 5.248731 5.862543 5.555556 5.555718C5.862381 5.248893 6.35984 5.248894 6.66667 5.555719L14.44445 13.3335C14.75127 13.64032 14.75127 14.13778 14.44444 14.44461C14.13762 14.75143 13.64016 14.75143 13.33333 14.44461L5.555555 6.66683Z\" fill=\"currentColor\"/>\n  </g>",
   },
   TrostSearchIcon: {
     viewBox: "0 0 24 24",

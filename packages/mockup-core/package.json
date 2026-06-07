@@ -1,0 +1,40 @@
+{
+  "name": "@nudge-design/mockup-core",
+  "version": "0.0.1",
+  "private": true,
+  "description": "DS 목업 빌드/검증 코어 — MCP 와 데스크탑이 공유.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./tools/*": {
+      "types": "./dist/tools/*.d.ts",
+      "default": "./dist/tools/*.js"
+    },
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "default": "./dist/types/*.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test 'src/**/*.test.ts'"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.25.0",
+    "@babel/types": "^7.25.0",
+    "@nudge-design/assets": "workspace:*",
+    "@nudge-design/html": "workspace:*",
+    "@nudge-design/react": "workspace:*",
+    "@nudge-design/tokens": "workspace:*",
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}

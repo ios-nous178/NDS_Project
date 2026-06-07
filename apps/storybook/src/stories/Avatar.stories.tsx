@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Avatar } from "@nudge-design/react";
 
 const meta: Meta<typeof Avatar> = {
-  title: "Components/Avatar",
+  title: "Components/Display/Avatar",
   component: Avatar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -20,27 +20,27 @@ export const Playground: Story = {
 };
 
 export const WithImage: Story = {
-  name: "Fallback/이미지",
+  name: "Variant/이미지",
   args: { src: "https://i.pravatar.cc/150?img=5", alt: "사용자", size: "lg" },
 };
 
 export const WithInitials: Story = {
-  name: "Fallback/이니셜",
+  name: "Variant/이니셜",
   args: { name: "홍길동", size: "lg" },
 };
 
 export const DefaultIcon: Story = {
-  name: "Fallback/기본 아이콘",
+  name: "Variant/기본 아이콘",
   args: { size: "lg" },
 };
 
 export const BrokenImage: Story = {
-  name: "Fallback/이미지 오류→이니셜",
+  name: "Variant/이미지 오류→이니셜",
   args: { src: "https://broken-url.invalid/404.jpg", name: "김철수", size: "lg" },
 };
 
 export const AllSizes: Story = {
-  name: "Size/전체 비교",
+  name: "Variant/Size 전체 비교",
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}>
       <Avatar size="xs" name="A" />

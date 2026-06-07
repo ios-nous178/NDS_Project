@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { CallControlBar } from "@nudge-design/react";
 
 const meta: Meta<typeof CallControlBar> = {
-  title: "Components/CallControlBar",
+  title: "Components/Domain/CallControlBar",
   component: CallControlBar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

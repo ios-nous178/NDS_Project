@@ -4,7 +4,7 @@ import { Stepper, Button } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/Stepper",
+  title: "Components/Layout/Stepper",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -54,6 +54,22 @@ function DotsExample() {
   );
 }
 
+function BarExample() {
+  return (
+    <div style={{ width: 480 }}>
+      <Stepper
+        variant="bar"
+        current={1}
+        steps={[
+          { key: "campaign", label: "Step 1", title: "캠페인 만들기" },
+          { key: "ad", label: "Step 2", title: "광고 만들기" },
+          { key: "creative", label: "Step 3", title: "소재 만들기" },
+        ]}
+      />
+    </div>
+  );
+}
+
 function InteractiveExample() {
   const [current, setCurrent] = useState(0);
   const total = COUNSEL_STEPS.length;
@@ -89,21 +105,26 @@ function InteractiveExample() {
 }
 
 export const Numbered: Story = {
-  name: "기본 (numbered)",
+  name: "State/기본 (numbered)",
   render: () => <NumberedExample />,
 };
 
 export const Completed: Story = {
-  name: "거의 완료",
+  name: "State/거의 완료",
   render: () => <CompletedExample />,
 };
 
 export const Dots: Story = {
-  name: "도트 스타일",
+  name: "Variant/도트 스타일",
   render: () => <DotsExample />,
 };
 
+export const Bar: Story = {
+  name: "Variant/막대 스타일 (어드민, 구 StepProgress)",
+  render: () => <BarExample />,
+};
+
 export const Interactive: Story = {
-  name: "인터랙션",
+  name: "Interaction/인터랙션",
   render: () => <InteractiveExample />,
 };

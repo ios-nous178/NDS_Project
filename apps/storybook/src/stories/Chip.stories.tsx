@@ -32,7 +32,7 @@ const COLOR_LABEL: Record<ChipColor, string> = {
 };
 
 const meta: Meta<ChipProps> = {
-  title: "Components/Chip",
+  title: "Components/Controls/Chip",
   component: Chip,
   tags: ["autodocs"],
   parameters: {
@@ -73,7 +73,7 @@ type Story = StoryObj<ChipProps>;
 export const Playground: Story = {};
 
 export const StyleMatrix: Story = {
-  name: "Figma/Style × Color Matrix",
+  name: "Spec/Style × Color Matrix",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       {VARIANTS.map((variant) => (
@@ -99,7 +99,7 @@ export const StyleMatrix: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Figma/Sizes",
+  name: "Spec/Sizes",
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
       <Chip label="Small" size="sm" variant="fill" color="brand" />
@@ -271,7 +271,7 @@ export const DisabledChipInteraction: Story = {
 };
 
 export const DesignGuideOverview: Story = {
-  name: "Design Guide/Overview",
+  name: "Recipe/Overview",
   parameters: {
     docs: {
       description: {

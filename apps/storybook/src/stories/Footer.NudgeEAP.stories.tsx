@@ -6,7 +6,7 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("nudge-eap");
 
 const meta: Meta = {
-  title: "Components/Footer",
+  title: "Brands/NudgeEAP/Footer",
   parameters: { layout: "fullscreen" },
   globals: { brand: "nudge-eap" },
 };

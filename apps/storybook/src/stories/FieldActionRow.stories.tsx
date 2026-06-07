@@ -6,7 +6,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<FieldActionRowProps> = {
-  title: "Components/FieldActionRow",
+  title: "Components/Layout/FieldActionRow",
   component: FieldActionRow,
   tags: ["autodocs"],
   parameters: {
@@ -225,37 +225,6 @@ function FullFlowExample() {
   );
 }
 
-function CompoundExample() {
-  const [phone, setPhone] = useState("");
-
-  return (
-    <div style={{ width: 360 }}>
-      <FieldActionRow.Root>
-        <FieldActionRow.Row>
-          <FieldActionRow.Field>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(formatPhone(e.target.value))}
-              placeholder="010-0000-0000"
-            />
-          </FieldActionRow.Field>
-          <FieldActionRow.Action tone="outline">
-            <button
-              type="button"
-              disabled={phone.replace(/\D/g, "").length < 10}
-              style={{ minWidth: 114 }}
-            >
-              인증번호 받기
-            </button>
-          </FieldActionRow.Action>
-        </FieldActionRow.Row>
-        <FieldActionRow.Helper>Compound API로 자유롭게 구성 가능합니다</FieldActionRow.Helper>
-      </FieldActionRow.Root>
-    </div>
-  );
-}
-
 export const PhoneVerification: Story = {
   name: "State/Phone Verification",
   render: () => <PhoneVerificationExample />,
@@ -284,11 +253,6 @@ export const ExpiredTimer: Story = {
 export const FullFlow: Story = {
   name: "Recipe/Full Verification Flow",
   render: () => <FullFlowExample />,
-};
-
-export const Compound: Story = {
-  name: "Recipe/Compound API",
-  render: () => <CompoundExample />,
 };
 
 export const PhoneVerificationInteraction: Story = {

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { MediaThumbnail } from "@nudge-design/react";
 
 const meta: Meta<typeof MediaThumbnail> = {
-  title: "Components/MediaThumbnail",
+  title: "Components/Domain/MediaThumbnail",
   component: MediaThumbnail,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -20,17 +20,17 @@ export const Default: Story = {
 };
 
 export const Square: Story = {
-  name: "Ratio/Square",
+  name: "Variant/Square",
   render: () => <MediaThumbnail src={SAMPLE} alt="" aspectRatio="1/1" width={200} rounded="lg" />,
 };
 
 export const Pill: Story = {
-  name: "Rounded/Pill (avatar-like)",
+  name: "Variant/Pill (avatar-like)",
   render: () => <MediaThumbnail src={SAMPLE} alt="" aspectRatio="1/1" width={80} rounded="pill" />,
 };
 
 export const Contain: Story = {
-  name: "Fit/Contain",
+  name: "Variant/Contain",
   render: () => (
     <MediaThumbnail
       src={SAMPLE}

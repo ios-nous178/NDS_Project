@@ -115,6 +115,16 @@ function generateSpacing() {
     lines.push("} as const;\n");
   }
 
+  // gapTitle (Figma · TitleGapGuide · Semantic Gap/Title — 헤딩 ↔ 서브타이틀 간격)
+  // DESIGN.md 의 `gap-title:` (kebab) 가 SSOT. level→px 매핑·실측 주석은 DESIGN.md 에 보존.
+  if (tokens["gap-title"]) {
+    lines.push("export const gapTitle = {");
+    for (const [k, v] of Object.entries(tokens["gap-title"])) {
+      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+    }
+    lines.push("} as const;\n");
+  }
+
   // padding (Figma · SpacingGuide · Semantic Padding)
   if (tokens.padding) {
     lines.push("export const padding = {");

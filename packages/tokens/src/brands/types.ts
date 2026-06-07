@@ -7,6 +7,7 @@
  */
 
 import type { TypeStyle } from "../typography";
+import type { ActionsLayout } from "../actionsLayout";
 
 /** 팔레트 컬러 — 브랜드 고유 색상 스케일 */
 export type ColorScale = Record<string | number, string>;
@@ -213,9 +214,52 @@ export interface ElevationOverrides {
 type ComponentValue = number | string;
 export interface ComponentOverrides {
   input?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
-  select?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
-  textarea?: { radius?: ComponentValue; paddingX?: ComponentValue; paddingY?: ComponentValue };
-  datepicker?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
+  /**
+   * Select(Dropdown). 캐포비 InputGuide(3080:741)는 trigger/option Body2 14/20,
+   * 선택 항목 = 회색 배경(#F5F5F5) + Strong 텍스트 + Medium 500 + radius 6 + 메뉴 inset.
+   * 다른 브랜드는 fallback (Body3 13/18, brand-tint 선택, flat option) 유지.
+   */
+  select?: {
+    radius?: ComponentValue;
+    height?: ComponentValue;
+    paddingX?: ComponentValue;
+    fontSize?: ComponentValue;
+    lineHeight?: ComponentValue;
+    optionPadding?: ComponentValue;
+    optionRadius?: ComponentValue;
+    optionSelectedBg?: ComponentValue;
+    optionSelectedColor?: ComponentValue;
+    optionSelectedWeight?: ComponentValue;
+    dropdownPadding?: ComponentValue;
+    dropdownGap?: ComponentValue;
+  };
+  textarea?: {
+    radius?: ComponentValue;
+    paddingX?: ComponentValue;
+    paddingY?: ComponentValue;
+    minHeight?: ComponentValue;
+  };
+  datepicker?: {
+    radius?: ComponentValue;
+    height?: ComponentValue;
+    paddingX?: ComponentValue;
+    fontSize?: ComponentValue;
+    lineHeight?: ComponentValue;
+  };
+  /** TextField/FormField 라벨 — 캐포비는 Strong(#111). 다른 브랜드는 Normal(#333) fallback. */
+  "form-field"?: { labelColor?: ComponentValue };
+  /** ActionChip — 캐포비 radius 6 / bg #ECECEC. 다른 브랜드는 radius.sm(4) / fill.neutralSubtle fallback. */
+  "action-chip"?: { radius?: ComponentValue; bg?: ComponentValue };
+  /**
+   * Chip(SelectChip) selected 상태의 채움 위 텍스트/보더/배경 override.
+   * 캐포비는 노랑 채움 위 가독성을 위해 selectedText=검정(#111). 다른 브랜드는 fallback
+   * (FILL_COLORS — selected 텍스트 inverse 흰) 유지. 좌측 ✓ 체크 아이콘은 currentColor 를 따른다.
+   */
+  chip?: {
+    selectedBackground?: ComponentValue;
+    selectedText?: ComponentValue;
+    selectedBorder?: ComponentValue;
+  };
   /**
    * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,
    * label Pretendard 10/12. 다른 브랜드는 fallback (active=textRole.normal #333, label 11/14).
@@ -243,11 +287,60 @@ export interface ComponentOverrides {
     disabledCheckedBg?: ComponentValue;
     disabledCheckedBorderColor?: ComponentValue;
   };
+  /**
+   * Badge(Label) 시각 변형. 캐포비 ChipGuide(3782:20558 · Rounded Square):
+   *   radius 5 · padding 4/10 · Caption 12/16 · Medium(500) (base 는 bold·radius 4/6).
+   *   톤(색)은 ghost 변형 + semantic 색이 이미 캐포비값으로 cascade → 별도 색 override 불필요.
+   * 다른 브랜드는 fallback (bold·md radius 4) 유지.
+   */
+  badge?: {
+    radius?: ComponentValue;
+    height?: ComponentValue;
+    paddingX?: ComponentValue;
+    paddingY?: ComponentValue;
+    fontSize?: ComponentValue;
+    lineHeight?: ComponentValue;
+    fontWeight?: ComponentValue;
+  };
+  /**
+   * Tab 시각 변형. 캐포비 가이드(3544:206):
+   *   Underline(line) = subtitle1 16/24 · default medium(500) · indicator 2px · padding 16/12(h48)
+   *   Box(chip) = radius 10 · padding 20/14(h52) · selected bg-inverse(#111) ·
+   *               default button-bg-disabled(#ddd) + 양쪽 흰 텍스트 bold
+   * 다른 브랜드는 fallback (line body3 14/20·indicator 3px, chip pill·subtle gray) 유지.
+   */
+  tabs?: {
+    lineFontSize?: ComponentValue;
+    lineLineHeight?: ComponentValue;
+    lineDefaultWeight?: ComponentValue;
+    lineIndicatorHeight?: ComponentValue;
+    lineTabHeight?: ComponentValue;
+    linePaddingX?: ComponentValue;
+    chipRadius?: ComponentValue;
+    chipTabHeight?: ComponentValue;
+    chipPaddingX?: ComponentValue;
+    chipFontSize?: ComponentValue;
+    chipLineHeight?: ComponentValue;
+    chipSelectedBg?: ComponentValue;
+    chipDefaultBg?: ComponentValue;
+    chipDefaultColor?: ComponentValue;
+    chipDefaultWeight?: ComponentValue;
+  };
 }
 
 /** 브랜드 테마 전체 정의 */
 export interface BrandTheme {
   name: string;
+  /**
+   * 컴포넌트 액션(버튼) 기본 배치 — Modal/Popup 등 푸터 배치 하네스의 브랜드 기본값.
+   *   · "split" — 가로 균등 분할(2버튼 50/50, 1버튼 full).
+   *   · "end"   — 우측 정렬 hug(admin 톤).
+   * 색/pill 모양은 토큰/cascade 가 따로 담당하고, 이 값은 구조 variant 만 정한다.
+   * 컴포넌트는 `actionsLayout` prop / `actions-layout` 속성으로 override 가능.
+   * 미지정 시 `DEFAULT_ACTIONS_LAYOUT`("split") fallback. 새 브랜드는 반드시 선언해야
+   * 하며 `pnpm lint:actions-layout` 가 누락을 막는다. (SSOT — react/html 양쪽이 읽음)
+   */
+  actionsLayout?: ActionsLayout;
   /** 브랜드 고유 팔레트 컬러 */
   palette: Record<string, ColorScale>;
   /** 시맨틱 컬러 오버라이드 (Figma role-based 트리의 Partial) */

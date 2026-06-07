@@ -1,0 +1,52 @@
+/**
+ * global.css — 전역 포커스/버튼 톤 (Phase 6).
+ *
+ * index.html 의 <style> 은 electron-vite 에서 HMR 이 안 잡혀 변경이 늦게 반영된다.
+ * main.tsx 에서 import 하는 이 파일은 Vite CSS HMR 이 즉시 처리하므로 여기로 분리한다.
+ */
+
+/* macOS Chromium 은 <button> 을 OS 네이티브로 그려, 클릭(:active)/포커스 시 눌린 음영과
+   검정 focus ring 을 덧칠한다("연한 회색 보더 → 검정"의 정체). appearance:none 으로
+   네이티브 페인팅을 끄고, 배경/보더는 컴포넌트 인라인 스타일이 100% 결정하게 한다. */
+button {
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 버튼: 클릭/포커스 시 어떤 링도 그리지 않음. */
+button:focus,
+button:focus-visible,
+button:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 입력 요소: 두꺼운 기본 outline·글로우 제거. 보더 강조는 각 컴포넌트에서 결정한다. */
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 상단바 메인 CTA(목업 제작) — 단색 솔리드(주변은 전부 ghost 라 이것만 옐로 → 자연 강조).
+   평소엔 장식 0(미니멀), hover 때만 살짝 떠오르며 부드러운 옐로 글로우.
+   ⚠️ 글로우는 box-shadow 가 아니라 filter:drop-shadow — 위 button:focus/:active 의
+   `box-shadow:none !important` 가 box-shadow 글로우를 죽이기 때문. drop-shadow 는 영향 없음. */
+.nds-cta-primary {
+  transition:
+    transform 120ms ease,
+    filter 120ms ease;
+}
+.nds-cta-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04) drop-shadow(0 3px 10px rgba(255, 211, 61, 0.45));
+}
+.nds-cta-primary:active {
+  transform: translateY(0);
+  filter: brightness(0.97);
+}

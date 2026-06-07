@@ -1,11 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { configureHtmlValidator } from "../src/tools/html-validator";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import {
+  configureHtmlValidator,
+  validateHtmlSource,
+} from "@nudge-design/mockup-core/tools/html-validator";
 import {
   analyzeHtmlMockup,
   convertHtmlToDsHtml,
   countHtmlUsage,
   reportHtmlMockupUsage,
-} from "../src/tools/html-analyzer";
+} from "@nudge-design/mockup-core/tools/html-analyzer";
 
 configureHtmlValidator({
   tokenSet: new Set(["--semantic-bg-brand-default", "--semantic-text-inverse-default"]),
@@ -58,6 +64,61 @@ describe("countHtmlUsage", () => {
   });
 });
 
+describe("countHtmlUsage — 회피가능 재발명(avoidableReinvention)", () => {
+  it("raw landmark(header/footer/aside)를 회피가능 미스로 집계", () => {
+    const c = countHtmlUsage(`<header>h</header><footer>f</footer><aside>a</aside>`);
+    expect(c.avoidableReinvention.total).toBe(3);
+    expect(c.avoidableReinvention.byKind.landmark).toBe(3);
+  });
+
+  it("role/onclick 위젯(div/span)을 컨트롤 재발명으로 집계", () => {
+    const c = countHtmlUsage(
+      `<div role="button">go</div><span onclick="x()">click</span><div role="tab">t</div>`,
+    );
+    expect(c.avoidableReinvention.total).toBe(3);
+    expect(c.avoidableReinvention.byKind["role-widget"]).toBe(3);
+  });
+
+  it("admin-shell 처방 chrome(nds-shell__*)과 일반 레이아웃 div 는 제외", () => {
+    const c = countHtmlUsage(
+      `<header class="nds-shell__topbar">bar</header><div>layout</div><div class="row">x</div>`,
+    );
+    expect(c.avoidableReinvention.total).toBe(0);
+  });
+
+  it("nds-* 래퍼 내부의 landmark/위젯은 제외(우리 WC inner 마크업)", () => {
+    const c = countHtmlUsage(`<nds-card><div role="button">x</div></nds-card>`);
+    expect(c.avoidableReinvention.total).toBe(0);
+  });
+
+  it("재발명이 dsRatio 분모에 들어가 비율을 낮춘다(사각지대 차단)", () => {
+    // 2 nds-tag 채택 + raw header/footer 2개 재발명 = 2/4 = 50%
+    const c = countHtmlUsage(
+      `<nds-button>a</nds-button><nds-button>b</nds-button><header>h</header><footer>f</footer>`,
+    );
+    expect(c.avoidableReinvention.total).toBe(2);
+    expect(c.dsRatio).toBe(50);
+  });
+});
+
+describe("low-ds-ratio 게이트 — 재발명 반영", () => {
+  it("nds 채택은 적고 raw landmark 다수 → 게이트가 잡는다", () => {
+    // 1 nds + raw header/footer/aside/(div role=button) 4개 = 1/5 = 20% (<50)
+    const src = `<html><body><nds-button>x</nds-button><header>h</header><footer>f</footer><aside>a</aside><div role="button">go</div></body></html>`;
+    const v = validateHtmlSource(src);
+    const hit = v.find((x) => x.rule === "low-ds-ratio");
+    expect(hit).toBeTruthy();
+    expect(hit?.severity).toBe("error");
+  });
+
+  it("admin-shell chrome(nds-shell__*)은 재발명으로 카운트되지 않아 억울하게 막지 않는다", () => {
+    // shell chrome 3개는 제외 → eligible 1개(nds) → MIN_ELIGIBLE 미만 면제
+    const src = `<html><body><header class="nds-shell__topbar">t</header><aside class="nds-shell__sidebar">s</aside><nds-button>x</nds-button></body></html>`;
+    const v = validateHtmlSource(src);
+    expect(v.find((x) => x.rule === "low-ds-ratio")).toBeUndefined();
+  });
+});
+
 describe("analyzeHtmlMockup", () => {
   it("combines counts + violations + recommendations", () => {
     const r = analyzeHtmlMockup({
@@ -76,7 +137,15 @@ describe("analyzeHtmlMockup", () => {
 
   it("clean HTML → 0 violations + healthy recommendation", () => {
     const r = analyzeHtmlMockup({
-      source: `<nds-button color="primary">go</nds-button>`,
+      source: `
+        <nds-button color="primary" data-action="go">go</nds-button>
+        <p id="status"></p>
+        <script>
+          document.querySelector('[data-action="go"]').addEventListener('click', () => {
+            document.querySelector('#status').textContent = 'done';
+          });
+        </script>
+      `,
     });
     expect(r.violations.length).toBe(0);
     expect(r.recommendations.join(" ")).toContain("위반 없음");
@@ -168,12 +237,12 @@ describe("reportHtmlMockupUsage", () => {
 
   it("maps nds-* tags to React component names (PascalCase + alias)", async () => {
     const r = await reportHtmlMockupUsage({
-      source: `<nds-icon-button>a</nds-icon-button><nds-fab>b</nds-fab><nds-segmented>c</nds-segmented>`,
+      source: `<nds-icon-button>a</nds-icon-button><nds-fab>b</nds-fab>`,
       mockupName: "alias-test",
       dryRun: true,
     });
     const names = r.usage.ds.map((d) => d.component).sort();
-    expect(names).toEqual(["FAB", "IconButton", "SegmentedControl"]);
+    expect(names).toEqual(["FAB", "IconButton"]);
   });
 
   it("classifies nds-* className imitations as customNative with nds-imitation: prefix", async () => {
@@ -185,5 +254,34 @@ describe("reportHtmlMockupUsage", () => {
     // Real DS usage = 0 because <button class="nds-button"> is NOT a custom element.
     expect(r.usage.ds.length).toBe(0);
     expect(r.usage.customNative.find((c) => c.tag === "nds-imitation:nds-button")?.count).toBe(1);
+  });
+
+  describe("DS version for HTML mockups (no node_modules/package.json)", () => {
+    // HTML 목업은 node_modules/package.json 이 없어 detectDsVersions 가 항상 unknown → 버전이
+    // 시트에 null 로 박히던 버그. 빈 temp dir 을 cwd 로 줘 그 상태를 결정론적으로 재현한다.
+    const emptyCwd = fs.mkdtempSync(path.join(os.tmpdir(), "ds-ver-"));
+
+    it("without a fallback, version is null (documents the bug surface)", async () => {
+      const r = await reportHtmlMockupUsage({
+        source: `<nds-button>a</nds-button>`,
+        cwd: emptyCwd,
+        dryRun: true,
+      });
+      expect(r.usage.dsVersions?.source).toBe("unknown");
+      expect(r.usage.dsVersions?.primary).toBeNull();
+    });
+
+    it("uses dsVersionFallback (MCP bundle version) when fs detection is unknown", async () => {
+      const r = await reportHtmlMockupUsage({
+        source: `<nds-button>a</nds-button>`,
+        cwd: emptyCwd,
+        dryRun: true,
+        dsVersionFallback: "9.9.9",
+      });
+      expect(r.usage.dsVersions?.source).toBe("mcp-bundle");
+      expect(r.usage.dsVersions?.primary).toBe("9.9.9");
+      // primary mirror 도 채워져 시트의 @nudge-design/react 컬럼이 비지 않는다
+      expect(r.usage.dsVersions?.packages["@nudge-design/react"]).toBe("9.9.9");
+    });
   });
 });

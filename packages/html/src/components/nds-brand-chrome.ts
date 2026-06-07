@@ -36,6 +36,8 @@ import {
   TROST_LOGO_DATA_URI,
   TROST_LOGO_MOBILE_DATA_URI,
   CASHWALK_BIZ_LOGO_DATA_URI,
+  RUNMILE_LOGO_DATA_URI,
+  RUNMILE_LOGO_GRAY700_DATA_URI,
 } from "./brand-logo-defaults.js";
 
 /* ──────────────── Types ──────────────── */
@@ -172,6 +174,11 @@ interface BrandChrome {
     bannerCtaAccent: string;
     bannerCtaSuffix: string;
     bannerHref: string;
+    /** 모바일 rich 2단 헤더 (Storybook TrostWebviewHome) — 포인트 칩 금액 / row2 검색 placeholder. */
+    mobilePointAmount: string;
+    mobileSearchPlaceholder: string;
+    /** webview surface 기본 타이틀 (sub level). */
+    webviewTitle: string;
   };
 
   /** NudgeEAP 전용 — appDownload 버튼 옵션 */
@@ -209,7 +216,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
     maxWidth: 1200,
     webMenu: [
       { key: "counsel", label: "상담하기", href: "/counsel" },
-      { key: "test", label: "심리검사", href: "/tests" },
+      { key: "test", label: "심리검사", href: "/test" },
       { key: "therapy", label: "심리치료", href: "/therapy" },
       { key: "letter", label: "주간레터", href: "/letter" },
       { key: "news", label: "소식", href: "/news" },
@@ -220,6 +227,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
     footerTone: "light",
     footerSurface: "web",
     footerLinks: [
+      { label: "고객센터", href: "/support" },
       { label: "개인정보 처리방침", href: "/privacy", bold: true },
       { label: "서비스 이용약관", href: "/terms" },
       { label: "위치기반 서비스 이용약관", href: "/location-terms" },
@@ -228,7 +236,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       name: "주식회사 다인",
       ceo: "한상범",
       bizNumber: "101-86-16191",
-      address: "서울특별시 강남구 역삼로1길 8, 5층",
+      address: "서울특별시 강남구 역삼로1길 8, 5층 (역삼동, 넛지캠퍼스빌딩)",
       phone: "02-2268-5980",
       email: "support@nudgeeap.com",
       copyright: "Copyright 2024 Dain Co.Ltd. All Rights Reserved.",
@@ -276,12 +284,15 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
     logo: { src: TROST_LOGO_DATA_URI, alt: "Trost", width: 90, height: 36 },
     mobileLogo: { src: TROST_LOGO_MOBILE_DATA_URI, alt: "Trost", width: 80, height: 28 },
     maxWidth: 1080,
+    /* renderTrostHeader 는 t.tabs 를 렌더 — webMenu 는 직접 안 읽지만 다른 소비자/일관성용으로
+     * 실제 탭(Storybook SSOT)과 동기화해 stale 트랩 제거. */
     webMenu: [
       { key: "home", label: "홈", href: "/" },
-      { key: "counsel", label: "상담", href: "/counsel" },
-      { key: "test", label: "심리검사", href: "/tests" },
-      { key: "care", label: "마음케어", href: "/care" },
-      { key: "center", label: "상담센터", href: "/center" },
+      { key: "community", label: "커뮤니티", href: "/community" },
+      { key: "quotes", label: "오늘의 명언/성경", href: "/quotes" },
+      { key: "counsel", label: "전문 심리상담", href: "/counsel" },
+      { key: "test", label: "심리검사", href: "/test" },
+      { key: "medicine", label: "약물치료", href: "/medicine" },
     ],
     mobileTitle: "Trost",
     authLabel: "로그인",
@@ -322,6 +333,9 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       bannerCtaAccent: "넛지EAP",
       bannerCtaSuffix: " 이용해보기",
       bannerHref: "https://eapkorea.co.kr/",
+      mobilePointAmount: "123,990",
+      mobileSearchPlaceholder: "심리검사, 상담, 마음챙김을 검색해보세요.",
+      webviewTitle: "타이틀",
     },
     /* React TrostBottomNav (홈/심리상담/커뮤니티/멘탈케어/내공간) — active 색은 브랜드
      * 옐로가 아니라 icon-strong (#333). active/inactive 그래픽 분리. */
@@ -363,7 +377,7 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
      * 주면 resolveAssetUrl 이 data: 는 그대로 통과시키므로 override 도 안전. */
     logo: { src: GENIET_LOGO_PC_DATA_URI, alt: "Geniet", width: 165, height: 54 },
     mobileLogo: { src: GENIET_LOGO_MOBILE_DATA_URI, alt: "Geniet", width: 97, height: 32 },
-    footerLogo: { src: GENIET_LOGO_FOOTER_DATA_URI, alt: "Geniet", width: 110, height: 32 },
+    footerLogo: { src: GENIET_LOGO_FOOTER_DATA_URI, alt: "Geniet", width: 166, height: 48 },
     maxWidth: 1280,
     webMenu: [
       { key: "home", label: "홈", href: "/" },
@@ -385,9 +399,9 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       name: "넛지모바일 주식회사",
       ceo: "한상범",
       bizNumber: "897-87-02757",
-      address: "서울시 강남구 테헤란로20길 18, 6층",
+      address: "서울시 강남구 테헤란로20길 18, 6층(역삼동, 부봉빌딩)",
       email: "geniet_app@geniet.co.kr",
-      copyright: "Copyright 2024 by Geniet, Inc. All Rights Reserved.",
+      copyright: "Copyright 2024 by Geniet, Inc. ALL Rights Reserved",
     },
     extra:
       "지니어트는 통신판매중개자이며 통신판매의 당사자가 아닙니다. 따라서 지니어트는 상품 거래정보 및 거래에 대하여 책임을 지지 않습니다.",
@@ -477,19 +491,21 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       width: 107,
       height: 32,
     },
+    /* React CashwalkBizWebHeader mobile 은 로고를 ≤74×22 로 clamp — Storybook 렌더와 맞춤. */
     mobileLogo: {
       src: CASHWALK_BIZ_LOGO_DATA_URI,
       alt: "Cashwalk for Business",
-      width: 80,
-      height: 24,
+      width: 74,
+      height: 22,
     },
     maxWidth: 1600,
+    /* Figma 98:1082 (한국 캐시워크 WEB Dev) — 마케팅 GNB 5탭, 광고 활성. Storybook SSOT. */
     webMenu: [
-      { key: "home", label: "홈", href: "/" },
-      { key: "campaign", label: "캠페인", href: "/campaigns" },
-      { key: "member", label: "회원", href: "/members" },
-      { key: "channel", label: "채널", href: "/channels" },
-      { key: "setting", label: "설정", href: "/settings" },
+      { key: "channel", label: "채널", href: "/channel" },
+      { key: "ad", label: "광고", href: "/ad" },
+      { key: "case", label: "성공사례", href: "/case" },
+      { key: "notice", label: "공지사항", href: "/notice" },
+      { key: "guide", label: "이용방법", href: "/guide" },
     ],
     mobileTitle: "CashwalkBiz",
     authLabel: "로그인",
@@ -517,10 +533,12 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
   },
   runmile: {
     label: "Runmile",
-    /* Runmile 은 coral 워드마크를 텍스트로 직접 렌더한다 (HTML 패키지에 로고 자산
-     * 없음). logo 는 BrandLogo 타입을 만족시키기 위한 더미 — web 헤더는 renderLogoImg
-     * 대신 <span> 워드마크를 쓰고, footer 도 src "" 라 깨진 이미지가 안 나온다. */
-    logo: { src: "", alt: "Runmile", width: 142, height: 32 },
+    /* Runmile 로고 = @nudge-design/assets base64 data URI (Storybook 과 동일, self-contained).
+     * 헤더/모바일 = coral default(BRAND_LOGOS.runmile.default), footer = muted gray700
+     * (BRAND_LOGOS.runmile.muted). 외부 호스팅 없이도 깨지지 않게 inline. */
+    logo: { src: RUNMILE_LOGO_DATA_URI, alt: "Runmile", width: 142, height: 32 },
+    mobileLogo: { src: RUNMILE_LOGO_DATA_URI, alt: "Runmile", width: 100, height: 23 },
+    footerLogo: { src: RUNMILE_LOGO_GRAY700_DATA_URI, alt: "Runmile", width: 142, height: 32 },
     maxWidth: 1440,
     webMenu: [
       { key: "race", label: "대회 정보", href: "/race" },
@@ -690,6 +708,15 @@ const TROST_ICONS = {
   search: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6" /><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>`,
   bell: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3.5a6 6 0 0 0-6 6v3.4l-1.6 2.6a.8.8 0 0 0 .68 1.2h13.84a.8.8 0 0 0 .68-1.2L18 12.9V9.5a6 6 0 0 0-6-6Zm0 17a2.5 2.5 0 0 1-2.45-2h4.9A2.5 2.5 0 0 1 12 20.5Z" fill="currentColor"/></svg>`,
   hamburger: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>`,
+};
+
+/* Trost mobile/webview chrome 아이콘 — packages/icons/src/{mono,multicolor}/Trost*.tsx 1:1 복제.
+ * coin 은 multicolor (고정색 #333 disc / #FFF42E bolt), 나머지는 currentColor. React AppBar 와 동일 그래픽. */
+const TROST_CHROME_ICONS = {
+  coin: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1.2 1.2)"><circle cx="10" cy="10" r="9.167" fill="#333"/><path d="M9.27 4.543c.523-1.014 2.063-.495 1.866.629L10.63 8.06h2.28c.745 0 1.226.789.884 1.452l-3.063 5.945c-.523 1.014-2.063.495-1.866-.629l.506-2.888H7.09a.996.996 0 0 1-.885-1.452L9.27 4.543z" fill="#FFF42E"/></g></svg>`,
+  bell: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(3 1.75)"><path d="M9 1.33955C13.4586 1.33955 17.0967 4.61117 17.0967 8.67647V13.904C17.6492 14.2799 18 14.8988 18 15.5837L17.9893 15.7937C17.8873 16.7605 17.0893 17.5293 16.0859 17.6276L15.8672 17.6384H12.6436C12.2445 19.2806 10.7649 20.4997 9 20.4997C7.23506 20.4997 5.75545 19.2806 5.35645 17.6384H2.13281L1.91406 17.6276C0.910673 17.5293 0.112746 16.7605 0.0107422 15.7937L0 15.5837C0 14.8988 0.350759 14.2799 0.90332 13.904V8.67647C0.90332 4.61117 4.54135 1.33955 9 1.33955ZM6.93262 17.6384C7.27718 18.4392 8.07293 18.9997 9 18.9997C9.92707 18.9997 10.7228 18.4392 11.0674 17.6384H6.93262ZM9 2.83955C5.22381 2.83955 2.40332 5.57839 2.40332 8.67647V14.698L1.74707 15.1442C1.58085 15.2573 1.5 15.424 1.5 15.5837C1.50022 15.8379 1.73063 16.1384 2.13281 16.1384H15.8672C16.2694 16.1384 16.4998 15.8379 16.5 15.5837C16.5 15.4239 16.4191 15.2573 16.2529 15.1442L15.5967 14.698V8.67647C15.5967 5.57839 12.7762 2.83955 9 2.83955Z" fill="currentColor"/><path d="M9 0.75L9 1.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g></svg>`,
+  search: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(2.64 2.29)"><path d="M2.91998 2.91992C5.81366 0.0262501 10.5057 0.0264718 13.3995 2.91992C16.2933 5.81371 16.2933 10.5056 13.3995 13.3994C10.5057 16.2932 5.81377 16.2932 2.91998 13.3994C0.0265265 10.5056 0.0263055 5.8136 2.91998 2.91992Z" stroke="currentColor" stroke-width="1.5"/><path d="M13.4612 14.16L17.9612 18.66" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g></svg>`,
+  back: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 5.25L7.5 12L15 18.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 };
 
 /* Runmile icons — currentColor stroke glyphs (chat / login / search).
@@ -1375,20 +1402,214 @@ function renderTrostHeader(
   const t = brand.trost;
   if (!t) return "";
 
+  /* Trost mobile/webview 공용 시멘틱 토큰 (data-brand="trost" cascade + hex fallback). */
+  const TC_BG = "var(--semantic-bg-surface-default, #FFFFFF)";
+  const TC_TEXT_STRONG = "var(--semantic-text-strong-default, #000000)";
+  const TC_TEXT_NORMAL = "var(--semantic-text-normal-default, #333333)";
+  const TC_TEXT_MUTED = "var(--semantic-text-muted-default, #979797)";
+  const TC_ICON_STRONG = "var(--semantic-icon-strong-default, #333333)";
+  const TC_BORDER_SUBTLE = "var(--semantic-border-subtle-default, #F2F2F2)";
+  const TC_BORDER_NORMAL = "var(--semantic-border-normal-default, #E5E5E5)";
+  const TC_FONT = "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif";
+
   if (surface === "webview") {
-    return renderWebviewHeader(brand.mobileTitle);
+    /* React TrostAppBar variant="webview" 의 기본 케이스 (sub / app=trost):
+     * 뒤로 chevron + 중앙 타이틀 + 우측 알림 벨, 44h. (Storybook "sub — 뒤로+타이틀+알림") */
+    const styleId = "nds-brand-chrome-trost-webview";
+    const css = `
+      .nds-brand-trost-webview {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 44px;
+        padding: 0 16px;
+        box-sizing: border-box;
+        background: ${TC_BG};
+        border-bottom: 1px solid ${TC_BORDER_SUBTLE};
+        font-family: ${TC_FONT};
+      }
+      .nds-brand-trost-webview__back {
+        all: unset;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+        color: ${TC_ICON_STRONG};
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .nds-brand-trost-webview__title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 56%;
+        margin: 0;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 24px;
+        color: ${TC_TEXT_STRONG};
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        font-family: inherit;
+      }
+      .nds-brand-trost-webview__right {
+        margin-left: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        flex-shrink: 0;
+      }
+      .nds-brand-trost-webview__action {
+        all: unset;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        color: ${TC_ICON_STRONG};
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+    `;
+    const wvTitle = t.webviewTitle || brand.mobileTitle;
+    return `
+      ${ensureStyle(styleId, css)}
+      <header class="nds-brand-trost-webview" data-slot="root" data-level="sub" data-app="trost">
+        <button type="button" class="nds-brand-trost-webview__back" aria-label="뒤로">${TROST_CHROME_ICONS.back}</button>
+        <h1 class="nds-brand-trost-webview__title">${escapeHtml(wvTitle)}</h1>
+        <div class="nds-brand-trost-webview__right">
+          <button type="button" class="nds-brand-trost-webview__action" aria-label="알림">${TROST_CHROME_ICONS.bell}</button>
+        </div>
+      </header>
+    `;
   }
 
   if (surface === "mobile") {
+    /* React TrostAppBar variant="mobile" rich 2단 홈 (Storybook TrostWebviewHome):
+     * row1 = 로고 + 포인트 칩 + 알림 벨, row2 = 풀폭 검색바. */
+    const styleId = "nds-brand-chrome-trost-mobile";
     const logoImg = brand.mobileLogo ?? brand.logo;
-    /* logo 가 좌측에 떨어지므로 별도 header-title 은 제거 (둘 다 노출되면 중복). */
+    const css = `
+      .nds-brand-trost-mobile {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        box-sizing: border-box;
+        background: ${TC_BG};
+        border-bottom: 1px solid ${TC_BORDER_SUBTLE};
+        font-family: ${TC_FONT};
+      }
+      .nds-brand-trost-mobile__row1 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 56px;
+        flex-shrink: 0;
+        padding: 0 16px;
+      }
+      .nds-brand-trost-mobile__logo {
+        display: inline-flex;
+        flex-shrink: 0;
+        line-height: 0;
+        text-decoration: none;
+      }
+      .nds-brand-trost-mobile__right {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .nds-brand-trost-mobile__point {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: ${TC_TEXT_STRONG};
+        font-size: 15px;
+        line-height: 22px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .nds-brand-trost-mobile__coin { display: inline-flex; line-height: 0; }
+      .nds-brand-trost-mobile__bell {
+        all: unset;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        color: ${TC_ICON_STRONG};
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .nds-brand-trost-mobile__row2 {
+        display: flex;
+        align-items: center;
+        height: 52px;
+        flex-shrink: 0;
+        padding: 0 16px 8px;
+      }
+      .nds-brand-trost-mobile__search {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 44px;
+        border: 1px solid ${TC_BORDER_SUBTLE};
+        border-radius: 12px;
+        padding: 0 40px 0 16px;
+        background: ${TC_BG};
+        box-sizing: border-box;
+        transition: border-color 200ms ease;
+      }
+      .nds-brand-trost-mobile__search:focus-within { border-color: ${TC_BORDER_NORMAL}; }
+      .nds-brand-trost-mobile__search input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: inherit;
+        font-size: 15px;
+        line-height: 22px;
+        color: ${TC_TEXT_NORMAL};
+      }
+      .nds-brand-trost-mobile__search input::placeholder { color: ${TC_TEXT_MUTED}; }
+      .nds-brand-trost-mobile__search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        line-height: 0;
+        color: ${TC_ICON_STRONG};
+        cursor: pointer;
+      }
+    `;
     return `
-      <nds-header variant="compact">
-        <nds-header-logo slot="left" href="/">${renderLogoImg(logoImg, assetBaseUrl)}</nds-header-logo>
-        <nds-header-actions slot="right">
-          <nds-header-auth-button label="${escapeAttr(brand.authLabel ?? "로그인")}"></nds-header-auth-button>
-        </nds-header-actions>
-      </nds-header>
+      ${ensureStyle(styleId, css)}
+      <header class="nds-brand-trost-mobile" data-slot="root">
+        <div class="nds-brand-trost-mobile__row1">
+          <a class="nds-brand-trost-mobile__logo" href="/">${renderLogoImg(logoImg, assetBaseUrl, { height: 28 })}</a>
+          <div class="nds-brand-trost-mobile__right">
+            <a class="nds-brand-trost-mobile__point" href="/point" aria-label="포인트 ${escapeAttr(t.mobilePointAmount)}P">
+              <span class="nds-brand-trost-mobile__coin">${TROST_CHROME_ICONS.coin}</span>
+              <span>${escapeHtml(t.mobilePointAmount)} P</span>
+            </a>
+            <button type="button" class="nds-brand-trost-mobile__bell" aria-label="알림">${TROST_CHROME_ICONS.bell}</button>
+          </div>
+        </div>
+        <div class="nds-brand-trost-mobile__row2">
+          <div class="nds-brand-trost-mobile__search">
+            <input type="text" placeholder="${escapeAttr(t.mobileSearchPlaceholder)}" autocomplete="off" />
+            <span class="nds-brand-trost-mobile__search-icon" role="button" aria-label="검색">${TROST_CHROME_ICONS.search}</span>
+          </div>
+        </div>
+      </header>
     `;
   }
 
@@ -1675,7 +1896,7 @@ function renderCashwalkBizHeader(
     .nds-brand-cashwalk-biz__inner {
       max-width: ${brand.maxWidth}px;
       margin: 0 auto;
-      height: 64px;
+      height: 68px;
       display: flex;
       align-items: center;
       gap: ${spacing[16]}px;
@@ -1684,7 +1905,7 @@ function renderCashwalkBizHeader(
     }
     .nds-brand-cashwalk-biz__inner--mobile {
       height: ${c?.mobileHeight ?? 56}px;
-      padding: 0 ${spacing[16]}px;
+      padding: 0 ${spacing[20]}px;
       justify-content: space-between;
     }
     .nds-brand-cashwalk-biz__logo {
@@ -1745,8 +1966,8 @@ function renderCashwalkBizHeader(
       justify-content: center;
       height: 36px;
       padding: 0 12px;
-      background: #ffd200;
-      color: #333;
+      background: var(--semantic-primary-default, #ffd200);
+      color: var(--semantic-text-strong-default, #333333);
       font-family: inherit;
       font-weight: 700;
       font-size: 14px;
@@ -1819,7 +2040,7 @@ function renderRunmileHeader(
   brand: BrandChrome,
   surface: HeaderSurface,
   activeKey: string,
-  _assetBaseUrl: string,
+  assetBaseUrl: string,
 ): string {
   const r = brand.runmile;
   if (!r) return "";
@@ -1865,7 +2086,7 @@ function renderRunmileHeader(
     return `
       ${ensureStyle(styleId, css)}
       <header class="nds-brand-runmile-mobile" data-slot="root">
-        <a class="nds-brand-runmile-mobile__logo" href="/">Runmile</a>
+        <a class="nds-brand-runmile-mobile__logo" href="/">${renderLogoImg(brand.mobileLogo ?? brand.logo, assetBaseUrl)}</a>
       </header>
     `;
   }
@@ -2009,7 +2230,7 @@ function renderRunmileHeader(
     ${ensureStyle(styleId, css)}
     <header class="nds-brand-runmile-web" data-slot="root">
       <div class="nds-brand-runmile-web__inner">
-        <a class="nds-brand-runmile-web__logo" href="/"><span>Runmile</span></a>
+        <a class="nds-brand-runmile-web__logo" href="/">${renderLogoImg(brand.logo, assetBaseUrl)}</a>
         <nav class="nds-brand-runmile-web__nav">${navHtml}</nav>
         <div class="nds-brand-runmile-web__search">
           <input type="text" placeholder="${escapeAttr(r.searchPlaceholder)}" autocomplete="off" />

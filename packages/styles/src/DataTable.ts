@@ -23,6 +23,9 @@ const DT_CARD_CLASS = `${DT_CLASS}__card`;
 const DT_CARD_ROW_CLASS = `${DT_CLASS}__card-row`;
 const DT_CARD_LABEL_CLASS = `${DT_CLASS}__card-label`;
 const DT_CARD_VALUE_CLASS = `${DT_CLASS}__card-value`;
+const DT_EXPAND_CELL_CLASS = `${DT_CLASS}__expand-cell`;
+const DT_EXPANDER_CLASS = `${DT_CLASS}__expander`;
+const DT_EXPANDER_SPACER_CLASS = `${DT_CLASS}__expander-spacer`;
 
 export const dataTableStyles = `
   :where(.${DT_CLASS}) {
@@ -45,9 +48,14 @@ export const dataTableStyles = `
     table-layout: auto;
   }
 
+  /* 펼침 표: 컬럼 너비를 헤더 기준으로 고정 — 행을 펼쳐도 컬럼/헤더 정렬이 흔들리지 않음 */
+  :where(.${DT_CLASS}[data-expandable="true"]) .${DT_TABLE_CLASS} {
+    table-layout: fixed;
+  }
+
   :where(.${DT_TH_CLASS}) {
-    text-align: left;
-    padding: ${spacing[10]}px var(--semantic-inset-input);
+    text-align: center;
+    padding: var(--semantic-inset-card);
     background: ${cv.surface.page};
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
@@ -103,7 +111,7 @@ export const dataTableStyles = `
   }
 
   :where(.${DT_TD_CLASS}) {
-    padding: var(--semantic-inset-input);
+    padding: var(--semantic-inset-card);
     color: ${cv.textRole.normal};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -111,6 +119,8 @@ export const dataTableStyles = `
   }
   :where(.${DT_TD_CLASS}[data-align="center"]) { text-align: center; }
   :where(.${DT_TD_CLASS}[data-align="right"])  { text-align: right; }
+  /* 이미지/큰 셀 — 16px 대신 12px 패딩(썸네일이 행을 과하게 키우지 않게) */
+  :where(.${DT_TD_CLASS}[data-cell="media"]) { padding: ${spacing[12]}px; }
 
   :where(.${DT_CLASS}[data-size="sm"]) .${DT_TH_CLASS},
   :where(.${DT_CLASS}[data-size="sm"]) .${DT_TD_CLASS} {
@@ -181,4 +191,43 @@ export const dataTableStyles = `
     line-height: ${typeScale.body3.lineHeight}px;
     word-break: break-word;
   }
+
+  /* ─── expandable rows (tree) ─── */
+  :where(.${DT_EXPAND_CELL_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-gap-default);
+    min-width: 0;
+  }
+  :where(.${DT_EXPANDER_CLASS}) {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: ${cv.textRole.subtle};
+    border-radius: ${radius.sm}px;
+    cursor: pointer;
+    transition: background-color ${transition.default}, color ${transition.default};
+  }
+  :where(.${DT_EXPANDER_CLASS}:hover) {
+    background: ${cv.surface.page};
+    color: ${cv.textRole.normal};
+  }
+  :where(.${DT_EXPANDER_SPACER_CLASS}) {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: ${cv.textRole.subtle};
+  }
+  /* 자식 행은 살짝 가라앉은 배경으로 위계 표시 */
+  :where(.${DT_TR_CLASS}[data-depth="1"]) > .${DT_TD_CLASS} { background: ${cv.surface.page}; }
+  :where(.${DT_TR_CLASS}[data-depth="2"]) > .${DT_TD_CLASS} { background: ${cv.surface.section}; }
 `;

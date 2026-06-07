@@ -16,6 +16,7 @@ const TA_WRAPPER_CLASS = `${TA_CLASS}__wrapper`;
 const TA_FIELD_CLASS = `${TA_CLASS}__field`;
 const TA_HELPER_CLASS = `${TA_CLASS}__helper`;
 const TA_COUNT_CLASS = `${TA_CLASS}__count`;
+const TA_FOOTER_CLASS = `${TA_CLASS}__footer`;
 
 export const textareaStyles = `
   :where(.${TA_ROOT_CLASS}) {
@@ -39,7 +40,7 @@ export const textareaStyles = `
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: var(--semantic-inset-input) var(--semantic-inset-card);
+    padding: var(--semantic-inset-input) var(--nds-textarea-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-textarea-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-textarea-radius, ${radius.md}px);
     background: var(--nds-textarea-background, ${cv.surface.default});
@@ -106,15 +107,44 @@ export const textareaStyles = `
     color: ${cv.textRole.statusError};
   }
 
+  /* helper 와 같은 줄(footer)에 우측 정렬 — resize 그립(필드 우하단)과 상하로 겹치지 않게
+     wrapper 밖으로 분리한다. helper 가 없어도 margin-left:auto 로 항상 우측. */
+  :where(.${TA_FOOTER_CLASS}) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--semantic-gap-default);
+  }
+
+  :where(.${TA_FOOTER_CLASS}) > .${TA_HELPER_CLASS} {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   :where(.${TA_COUNT_CLASS}) {
-    text-align: right;
+    flex: 0 0 auto;
+    margin-left: auto;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     color: ${cv.textRole.muted};
-    margin-top: ${spacing[4]}px;
   }
 
   :where(.${TA_COUNT_CLASS}[data-over="true"]) {
     color: ${cv.textRole.statusError};
+  }
+
+  /* 캐포비(cashwalk-biz) admin 전용 — 에러 헬퍼 앞 빨간 경고 아이콘(Figma 04ic/report/red). 다른 브랜드 미노출. */
+  [data-brand="cashwalk-biz"] :where(.${TA_HELPER_CLASS}[data-error="true"]) {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-gap-tight);
+  }
+  [data-brand="cashwalk-biz"] :where(.${TA_HELPER_CLASS}[data-error="true"])::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E") center / contain no-repeat;
   }
 `;

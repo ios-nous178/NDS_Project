@@ -25,7 +25,7 @@ const sampleItems: PopularPostsItem[] = [
 ];
 
 const meta: Meta<typeof PopularPosts> = {
-  title: "Components/PopularPosts",
+  title: "Components/Domain/PopularPosts",
   component: PopularPosts,
   parameters: {
     layout: "centered",

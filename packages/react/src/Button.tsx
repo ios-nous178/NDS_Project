@@ -190,7 +190,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
   },
   secondary: {
     // Figma: Solid/Secondary — 브랜드별 의도가 다른 슬롯.
-    //   · NudgeEAP : 옅은 파랑 bg (#F1F8FD) + brand blue 텍스트
+    //   · NudgeEAP : `--semantic-bg-brand-subtle` + brand blue 텍스트
     //   · Trost    : 옅은 cobalt bg (#EFF1FA) + cobalt 텍스트
     //   · Geniet   : 검정 bg (#333333) + 흰 텍스트  ← dark inverse 패턴
     // 슬롯 자체가 브랜드별 override 를 받으므로 컴포넌트는 슬롯만 박는다.

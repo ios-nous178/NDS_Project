@@ -131,7 +131,7 @@ export const apptStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.semibold};
     background: var(--nds-appt-status-bg, var(--semantic-bg-section-default));
-    color: var(--nds-appt-status-fg, #666);
+    color: var(--nds-appt-status-fg, var(--semantic-text-muted-default));
   }
 
   :where(.${AC_ACTIONS_CLASS}) {

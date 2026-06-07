@@ -6,7 +6,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<SelectProps> = {
-  title: "Components/Select",
+  title: "Components/Controls/Select",
   component: Select,
   tags: ["autodocs"],
   parameters: {
@@ -124,6 +124,68 @@ function ManyOptionsExample() {
 export const ManyOptions: Story = {
   name: "State/Many Options Scrollable",
   render: () => <ManyOptionsExample />,
+};
+
+/* ─── Searchable (검색형, Ant showSearch 모델) ─── */
+
+const searchableRegions = [
+  { value: "seoul", label: "서울특별시" },
+  { value: "busan", label: "부산광역시" },
+  { value: "daegu", label: "대구광역시" },
+  { value: "incheon", label: "인천광역시" },
+  { value: "gwangju", label: "광주광역시" },
+  { value: "daejeon", label: "대전광역시" },
+  { value: "ulsan", label: "울산광역시" },
+  { value: "sejong", label: "세종특별자치시" },
+  { value: "gyeonggi", label: "경기도" },
+  { value: "gangwon", label: "강원특별자치도" },
+  { value: "chungbuk", label: "충청북도" },
+  { value: "jeju", label: "제주특별자치도" },
+];
+
+function SearchableExample() {
+  const [value, setValue] = useState<string | undefined>();
+
+  return (
+    <div style={{ width: 320 }}>
+      <Select
+        label="거주 지역"
+        options={searchableRegions}
+        value={value}
+        onValueChange={setValue}
+        placeholder="지역을 선택해주세요"
+        searchable
+        searchPlaceholder="지역명으로 검색"
+        helperText="옵션이 많을 때 검색으로 빠르게 찾으세요"
+      />
+    </div>
+  );
+}
+
+export const Searchable: Story = {
+  name: "State/Searchable",
+  render: () => <SearchableExample />,
+};
+
+export const SearchableFilterInteraction: Story = {
+  name: "Interaction/Searchable Filter And Select",
+  render: () => <SearchableExample />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = createInteractionUser();
+
+    const trigger = canvas.getByRole("button", { name: /거주 지역/i });
+    await user.click(trigger);
+
+    // 검색 인풋으로 필터 → 매칭 옵션만 노출
+    const search = within(document.body).getByPlaceholderText("지역명으로 검색");
+    await user.type(search, "제주");
+
+    const option = within(document.body).getByRole("option", { name: "제주특별자치도" });
+    await user.click(option);
+
+    await expect(canvas.getByText("제주특별자치도")).toBeInTheDocument();
+  },
 };
 
 /* ─── Disabled Options ─── */
@@ -293,7 +355,7 @@ function FormValidationExample() {
           padding: "10px var(--semantic-inset-card)",
           border: "none",
           borderRadius: 8,
-          background: "#2B96ED",
+          background: "var(--semantic-fill-brand-default)",
           color: "#fff",
           fontWeight: 700,
           cursor: "pointer",

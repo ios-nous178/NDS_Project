@@ -1,55 +1,13 @@
-import { Meta, Canvas } from "@storybook/addon-docs/blocks";
-
-import * as NudgeEAP from "./Header.NudgeEAP.stories";
-import * as Geniet from "./Header.Geniet.stories";
-import * as Trost from "./Header.Trost.stories";
-import * as CashwalkBiz from "./Header.CashwalkBiz.stories";
-import * as Runmile from "./Header.Runmile.stories";
+import { Meta } from "@storybook/addon-docs/blocks";
 
 <Meta title="Components/Header/개요" />
 
 # Header
 
-브랜드별 상단 헤더 모음. 모든 브랜드가 **Desktop / Mobile / Webview** 축으로 구성됩니다.
-브랜드 색·로고는 토큰(`--semantic-*`)과 `@nudge-design/assets` 가 자동 적용되며, 콘텐츠(메뉴·로고·액션)만 props 로 주입합니다.
+브랜드 전용 완성형 헤더는 `Brands/*/개요` 페이지에서 봅니다.
 
-| 브랜드 | Desktop | Mobile | Webview | 비고 |
-| --- | --- | --- | --- | --- |
-| **NudgeEAP** | ✓ | ✓ | ✓ | 데스크톱 = 풀 WebHeader |
-| **Geniet** | ✓ (Search/Menu 2단) | ✓ | ✓ | — |
-| **Trost** | ✓ (배너+유틸+탭 3단) | ✓ | ✓ (단단 · 홈 2단) | — |
-| **CashwalkBiz** | ✓ | ✓ | — | 웹 전용 |
-| **Runmile** | ✓ | ✓ (title-icon · logo · menu-title) | — | 앱 모바일 3 variant |
-
-> 기본(base) `<Header>` 컴포넌트의 슬롯/variant 데모는 `Components/Header/Base/*` 를 참고하세요.
-
-## NudgeEAP
-
-<Canvas of={NudgeEAP.NudgeEAPWebHeaderDesktop} />
-<Canvas of={NudgeEAP.NudgeEAPMobile} />
-<Canvas of={NudgeEAP.NudgeEAPWebview} />
-
-## Geniet
-
-<Canvas of={Geniet.GenietDesktop} />
-<Canvas of={Geniet.GenietMobile} />
-<Canvas of={Geniet.GenietWebview} />
-
-## Trost
-
-<Canvas of={Trost.TrostWebHeaderDesktop} />
-<Canvas of={Trost.TrostMobile} />
-<Canvas of={Trost.TrostWebview} />
-<Canvas of={Trost.TrostWebviewHome} />
-
-## CashwalkBiz
-
-<Canvas of={CashwalkBiz.CashwalkBizDesktop} />
-<Canvas of={CashwalkBiz.CashwalkBizMobile} />
-
-## Runmile
-
-<Canvas of={Runmile.RunmileWebHeaderLoggedOut} />
-<Canvas of={Runmile.TitleIcon} />
-<Canvas of={Runmile.Logo} />
-<Canvas of={Runmile.MenuTitle} />
+- [NudgeEAP](?path=/docs/brands-nudgeeap--docs)
+- [Geniet](?path=/docs/brands-geniet--docs)
+- [Trost](?path=/docs/brands-trost--docs)
+- [CashwalkBiz](?path=/docs/brands-cashwalkbiz--docs)
+- [Runmile](?path=/docs/brands-runmile--docs)

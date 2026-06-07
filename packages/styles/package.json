@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "node scripts/extract-styles.mjs",
+    "build": "rm -rf dist && node scripts/extract-styles.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

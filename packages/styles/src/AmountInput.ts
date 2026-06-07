@@ -4,6 +4,7 @@ import {
   fontFamily,
   fontWeight,
   radius,
+  sizing,
   spacing,
   transition,
   typeScale,
@@ -29,29 +30,31 @@ export const aiStyles = `
   }
 
   :where(.${AI_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.medium};
+    line-height: ${typeScale.caption2.lineHeight}px;
     color: ${cv.textRole.normal};
   }
 
   :where(.${AI_FIELD_CLASS}) {
     display: flex;
     align-items: center;
-    height: 56px;
+    min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-card);
     border: 1px solid ${cv.borderRole.normal};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
     transition: border-color ${transition.default};
   }
-  :where(.${AI_FIELD_CLASS}:focus-within) { border-color: ${cv.borderRole.brand}; }
-  :where(.${AI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
+  :where(.${AI_FIELD_CLASS}:focus-within) { border-color: ${cv.input.borderFocus}; }
+  :where(.${AI_FIELD_CLASS}[data-error="true"]) { border-color: ${cv.input.borderError}; }
 
   :where(.${AI_PREFIX_CLASS}),
   :where(.${AI_UNIT_CLASS}) {
-    font-size: 22px;
-    font-weight: ${fontWeight.bold};
-    color: ${cv.textRole.normal};
+    font-size: ${typeScale.body2.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.body2.lineHeight}px;
+    color: ${cv.textRole.strong};
   }
 
   :where(.${AI_PREFIX_CLASS}) { margin-right: ${spacing[4]}px; }
@@ -63,9 +66,11 @@ export const aiStyles = `
     background: transparent;
     outline: none;
     font-family: inherit;
-    font-size: 24px;
-    font-weight: ${fontWeight.bold};
-    color: ${cv.textRole.normal};
+    font-size: ${typeScale.body2.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.body2.lineHeight}px;
+    /* base Input 필드와 동일 — Figma --color-label-normal = #111 (neutral/900) */
+    color: ${cv.textRole.strong};
     text-align: right;
     font-variant-numeric: tabular-nums;
     min-width: 0;
@@ -73,7 +78,7 @@ export const aiStyles = `
 
   :where(.${AI_INPUT_CLASS}::placeholder) {
     color: ${cv.textRole.muted};
-    font-weight: ${fontWeight.medium};
+    font-weight: ${fontWeight.regular};
   }
 
   :where(.${AI_PRESETS_CLASS}) {
@@ -98,8 +103,10 @@ export const aiStyles = `
   :where(.${AI_PRESET_CLASS}:hover) { background: ${cv.surface.section}; }
 
   :where(.${AI_HELPER_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.textRole.subtle};
+    font-size: ${typeScale.caption2.fontSize}px;
+    font-weight: ${fontWeight.regular};
+    line-height: ${typeScale.caption2.lineHeight}px;
+    color: ${cv.input.helpertextDefault};
   }
-  :where(.${AI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
+  :where(.${AI_HELPER_CLASS}[data-error="true"]) { color: ${cv.input.helpertextError}; }
 `;

@@ -254,9 +254,9 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         border: cv.borderRole.subtle,
       },
       hover: {
-        background: "#7E8593",
+        background: cv.button.bgAssistiveHover,
         text: cv.surface.default,
-        border: "#7E8593",
+        border: cv.button.bgAssistiveHover,
       },
     },
     soft: {

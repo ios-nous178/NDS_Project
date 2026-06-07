@@ -11,8 +11,10 @@ const INPUT_FIELD_CLASS = `${INPUT_CLASS}__field`;
 const INPUT_PREFIX_CLASS = `${INPUT_CLASS}__prefix`;
 const INPUT_SUFFIX_CLASS = `${INPUT_CLASS}__suffix`;
 const INPUT_CLEAR_CLASS = `${INPUT_CLASS}__clear`;
+const INPUT_PASSWORD_TOGGLE_CLASS = `${INPUT_CLASS}__password-toggle`;
 const INPUT_HELPER_CLASS = `${INPUT_CLASS}__helper`;
 const INPUT_HELPER_GROUP_CLASS = `${INPUT_CLASS}__helper-group`;
+const INPUT_COUNT_CLASS = `${INPUT_CLASS}__count`;
 
 export type InputSize = "default" | "field" | "compact";
 
@@ -138,7 +140,11 @@ export const InputRoot: React.FC<InputRootProps> = ({
         style={
           {
             "--nds-input-width": fullWidth ? "100%" : "auto",
-            "--nds-input-height": `${sizeStyle.height}px`,
+            // size="default" 는 inline 높이 생략 → 브랜드 :root override(캐포비 admin 40)가
+            // cascade 로 이김. inline 으로 박으면 nds-select(40) 와 높이 어긋남(48 vs 40).
+            ...(size !== "default" && {
+              "--nds-input-height": `${sizeStyle.height}px`,
+            }),
             "--nds-input-label-gap": `${sizeStyle.labelGap}px`,
             "--nds-input-helper-gap": `${sizeStyle.helperGap}px`,
             ...(sizeStyle.paddingX !== undefined && {
@@ -277,6 +283,58 @@ export const InputClearButton: React.FC<InputClearButtonProps> = React.memo(
 );
 InputClearButton.displayName = "InputClearButton";
 
+/* ─── Compound: PasswordToggle ─── */
+
+export interface InputPasswordToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** 현재 평문 노출 상태. true = 보임(eye-off 아이콘으로 "숨기기" 안내). */
+  revealed: boolean;
+}
+
+/**
+ * `type="password"` 입력의 표시/숨김 토글 버튼 — 우측 끝 눈 아이콘.
+ * eye = 가려진 상태(누르면 보임), eye-off = 노출된 상태(누르면 숨김). 아이콘 path 는 DS eye/eye-off 와 동일.
+ */
+export const InputPasswordToggle: React.FC<InputPasswordToggleProps> = React.memo(
+  ({ revealed, className, onClick, ...rest }) => (
+    <button
+      type="button"
+      data-slot="password-toggle"
+      aria-label={revealed ? "비밀번호 숨기기" : "비밀번호 표시"}
+      aria-pressed={revealed}
+      className={cx(INPUT_PASSWORD_TOGGLE_CLASS, className)}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      {...rest}
+    >
+      {revealed ? (
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g transform="translate(0 3)">
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M0.156796 8.93661C-0.0522653 9.29924 -0.0522653 9.74743 0.156796 10.1101C1.13231 11.8068 2.42448 13.2384 3.94195 14.3485L2.30912 15.9984C2.08973 16.2174 1.96625 16.516 1.96625 16.8276C1.96625 17.1392 2.08973 17.4378 2.30912 17.6568C2.76253 18.1144 3.49706 18.1144 3.95046 17.6568L19.4557 1.98908C20.48 0.900126 18.8557 -0.72313 17.7912 0.354086L15.6388 2.53121C9.77336 0.79921 3.16154 3.5654 0.156022 8.9374L0.156796 8.93661ZM20.0661 4.69033L16.4513 8.34286C16.5798 8.82005 16.6347 9.35201 16.5906 9.8605C16.4381 12.7057 13.5402 14.7944 10.8312 14.0207L8.35371 16.5241C14.2385 18.2271 20.8279 15.4977 23.8435 10.1101C24.0525 9.7502 24.0525 9.29647 23.8435 8.93661C22.8804 7.23356 21.5843 5.8403 20.0661 4.68955V4.69033ZM7.5485 10.7046L13.1693 5.02518C10.3187 4.21551 7.3503 6.52718 7.39443 9.52336C7.39443 9.93015 7.44863 10.3291 7.5485 10.7046Z"
+              fill="currentColor"
+            />
+          </g>
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g transform="translate(0 4)">
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M12 0C17.4219 0 21.887 4.62766 23.6412 6.54255C24.1196 7.18085 24.1196 7.81915 23.6412 8.45745C21.887 10.3723 17.2625 15 12 15C6.57807 15 1.95349 10.5319 0.358804 8.45745C-0.119601 7.97872 -0.119601 7.18085 0.358804 6.70213C1.95349 4.62766 6.57807 0 12 0ZM6.7377 7.49999C6.7377 10.3723 9.12972 12.7659 12.0002 12.7659C14.8706 12.7659 17.2626 10.3723 17.2626 7.49999C17.2626 4.62765 14.8706 2.23403 12.0002 2.23403C9.12972 2.23403 6.7377 4.62765 6.7377 7.49999Z"
+              fill="currentColor"
+            />
+            <ellipse cx="11.9997" cy="7.49997" rx="2.5515" ry="2.55319" fill="currentColor" />
+          </g>
+        </svg>
+      )}
+    </button>
+  ),
+);
+InputPasswordToggle.displayName = "InputPasswordToggle";
+
 /* ─── Compound: HelperGroup ─── */
 
 export interface InputHelperGroupProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -413,6 +471,16 @@ export interface InputProps extends Omit<
   clearable?: boolean;
   /** 클리어 시 콜백 */
   onClear?: () => void;
+  /**
+   * `maxLength` 와 함께 우측에 "현재/최대" 글자수 카운터를 노출 (예: 24/25).
+   * Figma 캐포비 캠페인 이름 입력(3782:19709) 정합. Textarea 의 카운터와 동일 톤.
+   */
+  showCount?: boolean;
+  /**
+   * `type="password"` 일 때 우측 눈 아이콘으로 표시/숨김 토글을 노출. **기본 자동 노출**.
+   * `passwordToggle={false}` 로 끌 수 있다 (type 이 password 가 아니면 무시).
+   */
+  passwordToggle?: boolean;
   /** 우측 addon (버튼 등) */
   suffix?: React.ReactNode;
   /** 좌측 addon (아이콘 등) */
@@ -442,6 +510,10 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
       helperIcon,
       clearable = false,
       onClear,
+      showCount = false,
+      maxLength,
+      passwordToggle,
+      type,
       suffix,
       prefix,
       fullWidth = true,
@@ -467,10 +539,16 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
     const inputRef = (ref as React.RefObject<HTMLInputElement>) ?? internalRef;
 
     const [internalValue, setInternalValue] = useState(defaultValue ?? "");
+    const [revealed, setRevealed] = useState(false);
+    // type="password" 면 기본으로 눈 토글을 노출(passwordToggle={false} 로 끔). 노출 시 실제 type 을 토글.
+    const showPasswordToggle = type === "password" && passwordToggle !== false;
+    const fieldType = showPasswordToggle ? (revealed ? "text" : "password") : type;
 
     const isControlled = value !== undefined;
     const currentValue = isControlled ? value : internalValue;
     const hasValue = currentValue !== "" && currentValue !== undefined && currentValue !== null;
+    const charCount = String(currentValue ?? "").length;
+    const showCounter = showCount && typeof maxLength === "number";
     const showError = error || !!errorMessage;
     const showSuccess = !showError && (complete || !!successMessage);
     // 단일 헬퍼 우선순위: errorMessage > successMessage > helperText
@@ -530,7 +608,9 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
           )}
           <InputField
             ref={inputRef}
+            type={fieldType}
             value={currentValue}
+            maxLength={maxLength}
             onChange={handleChange}
             onFocus={onFocus}
             onBlur={onBlur}
@@ -543,6 +623,22 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
               className={slotProps?.clearButton?.className}
               style={slotProps?.clearButton?.style}
               onClick={handleClear}
+            />
+          )}
+          {showCounter && (
+            <span
+              data-slot="count"
+              data-over={charCount > maxLength! ? "true" : "false"}
+              className={INPUT_COUNT_CLASS}
+            >
+              {charCount}/{maxLength}
+            </span>
+          )}
+          {showPasswordToggle && (
+            <InputPasswordToggle
+              revealed={revealed}
+              disabled={disabled}
+              onClick={() => setRevealed((v) => !v)}
             />
           )}
           {suffix && (

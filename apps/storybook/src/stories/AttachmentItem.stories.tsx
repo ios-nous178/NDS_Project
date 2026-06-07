@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AttachmentItem } from "@nudge-design/react";
 
 const meta: Meta<typeof AttachmentItem> = {
-  title: "Components/AttachmentItem",
+  title: "Components/Domain/AttachmentItem",
   component: AttachmentItem,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -16,7 +16,7 @@ type Story = StoryObj<typeof AttachmentItem>;
 const w = (children: React.ReactNode) => <div style={{ width: 480 }}>{children}</div>;
 
 export const Pdf: Story = {
-  name: "Type/PDF",
+  name: "Variant/PDF",
   render: () =>
     w(
       <AttachmentItem name="2026-04-10_PHQ9_결과.pdf" size={245760} href="#" onRemove={() => {}} />,
@@ -24,12 +24,12 @@ export const Pdf: Story = {
 };
 
 export const Image: Story = {
-  name: "Type/Image",
+  name: "Variant/Image",
   render: () => w(<AttachmentItem name="profile.png" size={1228800} onDownload={() => {}} />),
 };
 
 export const Document: Story = {
-  name: "Type/Document",
+  name: "Variant/Document",
   render: () => w(<AttachmentItem name="진단서.docx" size={51200} href="#" />),
 };
 

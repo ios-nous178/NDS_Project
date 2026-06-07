@@ -32,7 +32,7 @@ const COLOR_LABEL: Record<BadgeColor, string> = {
 };
 
 const meta: Meta<typeof Badge> = {
-  title: "Components/Badge",
+  title: "Components/Display/Badge",
   component: Badge,
   tags: ["autodocs"],
   parameters: {
@@ -72,7 +72,7 @@ type Story = StoryObj<typeof Badge>;
 export const Playground: Story = {};
 
 export const StyleMatrix: Story = {
-  name: "Figma/Style × Color Matrix",
+  name: "Spec/Style × Color Matrix",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       {VARIANTS.map((variant) => (
@@ -104,7 +104,7 @@ export const StyleMatrix: Story = {
 };
 
 export const SizeScale: Story = {
-  name: "Figma/Size Scale",
+  name: "Spec/Size Scale",
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
       <Badge size="sm" color="brand">
@@ -121,7 +121,7 @@ export const SizeScale: Story = {
 };
 
 export const ColorUsage: Story = {
-  name: "Figma/Color Usage",
+  name: "Spec/Color Usage",
   render: () => (
     <div
       style={{
@@ -255,7 +255,7 @@ export const SizeContractInteraction: Story = {
 };
 
 export const DesignGuideOverview: Story = {
-  name: "Design Guide/Overview",
+  name: "Recipe/Design Guide Overview",
   parameters: {
     docs: {
       description: {

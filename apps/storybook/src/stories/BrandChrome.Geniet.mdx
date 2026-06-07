@@ -1,0 +1,46 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+import { BrandScope } from "../BrandScope";
+import * as Banner from "./Banner.Geniet.stories";
+import * as Header from "./Header.Geniet.stories";
+import * as Footer from "./Footer.Geniet.stories";
+import * as BottomNav from "./BottomNav.Geniet.stories";
+import * as Icons from "./Icons.Geniet.stories";
+
+<Meta title="Brands/Geniet/개요" />
+
+# Geniet
+
+브랜드 전용 완성형 헤더/푸터/바텀네비를 모아둔 문서입니다.
+
+## Header
+
+<BrandScope brand="geniet">
+  <Canvas of={Header.GenietDesktop} />
+  <Canvas of={Header.GenietMobile} />
+  <Canvas of={Header.GenietWebview} />
+</BrandScope>
+
+## Banner
+
+<BrandScope brand="geniet">
+  <Canvas of={Banner.HealthyDeal} />
+  <Canvas of={Banner.FriendInvite} />
+  <Canvas of={Banner.DietRecord} />
+</BrandScope>
+
+## Footer
+
+<BrandScope brand="geniet">
+  <Canvas of={Footer.GenietInfoFooter} />
+</BrandScope>
+
+## BottomNav
+
+<BrandScope brand="geniet">
+  <Canvas of={BottomNav.GenietTabBar} />
+</BrandScope>
+
+## Icons
+
+<Canvas of={Icons.All} />

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Lightbox } from "@nudge-design/react";
 
 const meta: Meta<typeof Lightbox> = {
-  title: "Components/Lightbox",
+  title: "Components/Overlay/Lightbox",
   component: Lightbox,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

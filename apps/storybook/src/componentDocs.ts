@@ -5,10 +5,11 @@ type InventoryEntry = (typeof inventory)[number] & {
   figmaSynced?: boolean;
   /** Figma sync 검증 일자 (YYYY-MM-DD). */
   figmaSyncedAt?: string;
+  /** Storybook meta id override. docs URL 생성 시 title 대신 사용. */
+  storybookId?: string;
 };
 
 const DOCS_BASE_URL = "";
-const STORYBOOK_BASE_URL = "/storybook";
 
 function toStoryId(title: string) {
   return title
@@ -20,6 +21,10 @@ function toStoryId(title: string) {
 
 function findEntry(componentName: string): InventoryEntry | undefined {
   return inventory.find((entry) => entry.name === componentName) as InventoryEntry | undefined;
+}
+
+function getStorybookDocsUrl(entry: InventoryEntry) {
+  return `/storybook/?path=/docs/${toStoryId(entry.storybookId ?? entry.storybookTitle)}--docs`;
 }
 
 export function isFigmaSynced(componentName: string): boolean {
@@ -38,8 +43,8 @@ export function getComponentDocsDescription(componentName: string) {
     ].join("\n");
   }
 
-  const storybookUrl = `${STORYBOOK_BASE_URL}/?path=/docs/${toStoryId(entry.storybookTitle)}--docs`;
-  const docsUrl = `${DOCS_BASE_URL}${entry.docsPath}`;
+  const storybookUrl = getStorybookDocsUrl(entry);
+  const docsUrl = entry.docsPath ? `${DOCS_BASE_URL}${entry.docsPath}` : storybookUrl;
   const figmaLine = entry.figmaUrl
     ? `- Figma: [열기](${entry.figmaUrl})${entry.figmaNodeId ? ` (${entry.figmaNodeId})` : ""}`
     : "- Figma: 연결 필요";

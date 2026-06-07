@@ -13,8 +13,8 @@ export const actionChipStyles = `
     align-items: center;
     gap: ${spacing[2]}px;
     padding: ${spacing[2]}px ${spacing[6]}px;
-    border-radius: ${radius.sm}px;
-    background: ${cv.fill.neutralSubtle};
+    border-radius: var(--nds-action-chip-radius, ${radius.sm}px);
+    background: var(--nds-action-chip-bg, ${cv.fill.neutralSubtle});
     color: ${cv.textRole.subtle};
     font-family: ${fontFamily.web};
     font-size: ${typeScale.caption1.fontSize}px;

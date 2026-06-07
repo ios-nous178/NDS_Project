@@ -26,8 +26,8 @@ const DM_ITEM_TRAILING_CLASS = `${DM_CLASS}__item-trailing`;
 export interface DropdownMenuItem {
   key: string;
   label: string;
-  leading?: string; // Icon name or emoji
-  trailing?: string;
+  leading?: string; // inline SVG 마크업 (find_icon 결과) — 이름/이모지 아님 (innerHTML 주입). React DropdownMenu 의 leading?:ReactNode 와 대칭.
+  trailing?: string; // inline SVG 또는 단축키 등 짧은 텍스트 (innerHTML 주입)
   disabled?: boolean;
   danger?: boolean;
 }
@@ -185,7 +185,8 @@ export class NdsDropdownMenu extends NdsElement {
         if (item.leading) {
           const leading = document.createElement("span");
           leading.className = DM_ITEM_LEADING_CLASS;
-          leading.textContent = item.leading;
+          // leading = inline SVG (find_icon). 이름/이모지를 textContent 로 흘리지 말 것 (nds-sidebar 와 동일 규약).
+          leading.innerHTML = item.leading;
           btn.appendChild(leading);
         }
 
@@ -197,7 +198,8 @@ export class NdsDropdownMenu extends NdsElement {
         if (item.trailing) {
           const trailing = document.createElement("span");
           trailing.className = DM_ITEM_TRAILING_CLASS;
-          trailing.textContent = item.trailing;
+          // trailing = inline SVG 또는 단축키 등 짧은 텍스트. SVG 가 텍스트로 흘러나오지 않도록 innerHTML.
+          trailing.innerHTML = item.trailing;
           btn.appendChild(trailing);
         }
 

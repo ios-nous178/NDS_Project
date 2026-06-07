@@ -43,6 +43,7 @@ export type { GenietSemanticTokens } from "./geniet.semantic.js";
 
 export const genietTheme: BrandTheme = {
   name: "geniet",
+  actionsLayout: "split",
   palette: {
     mint: genietMint,
     red: genietRed,

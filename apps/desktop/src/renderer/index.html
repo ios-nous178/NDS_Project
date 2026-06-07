@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSP 는 Phase 4 보안 강화에서 dev(Vite HMR 허용)/prod 분기로 추가.
+         지금 default-src 'self' 를 박으면 dev HMR(eval/ws)이 깨져 부팅 검증을 방해함. -->
+    <title>Nudge Studio</title>
+    <style>
+      /* 다크 톤 전역 (Phase 6) — body 기본 마진/흰 배경 제거. */
+      html,
+      body,
+      #root {
+        margin: 0;
+        height: 100%;
+        background: #1e1e1e;
+      }
+      body {
+        color: #d4d4d4;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* 다크 스크롤바 */
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3c3c3c;
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      /* 다크 select 옵션 */
+      option {
+        background: #252526;
+        color: #d4d4d4;
+      }
+      /* 버튼 native 렌더링 제거 — macOS Chromium 은 <button> 을 OS 네이티브로 그려
+         클릭(:active) 시 눌린 음영을 덧칠해 까맣게 보임. appearance:none 으로 차단하고
+         배경/보더는 컴포넌트 인라인 스타일이 100% 결정하게 한다. */
+      button {
+        -webkit-appearance: none;
+        appearance: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      /* 포커스 링 통일 — 기본 검정 outline 전부 제거.
+         버튼: 클릭/포커스 시 어떤 링도 안 그림(보더 색은 컴포넌트 인라인 스타일이 결정).
+         입력 요소: 글로우 없이 보더만 은은한 노랑으로. (인라인 border 를 이기려면 !important) */
+      button:focus,
+      button:focus-visible,
+      button:active {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      input:focus,
+      input:focus-visible,
+      textarea:focus,
+      textarea:focus-visible,
+      select:focus,
+      select:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
+</html>

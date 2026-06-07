@@ -23,6 +23,7 @@ export type { NudgeEapSemanticTokens } from "./nudge-eap.semantic.js";
 
 export const nudgeEapTheme: BrandTheme = {
   name: "nudge-eap",
+  actionsLayout: "split",
   palette: {
     neutral,
     coolGray,

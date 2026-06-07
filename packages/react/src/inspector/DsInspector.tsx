@@ -28,9 +28,9 @@ const ANTD_CLASS_PREFIX = "ant-";
 const NATIVE_TAGS = new Set(["BUTTON", "INPUT", "SELECT", "TEXTAREA", "FORM", "LABEL"]);
 
 const CATEGORY_COLOR: Record<Category, string> = {
-  ds: "#22c55e",
-  antd: "#f97316",
-  native: "#ef4444",
+  ds: "var(--semantic-text-status-success)",
+  antd: "var(--semantic-text-status-caution)",
+  native: "var(--semantic-text-status-error)",
 };
 
 const CATEGORY_LABEL: Record<Category, string> = {
@@ -172,7 +172,7 @@ export function DsInspector({
           "-apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif",
         fontSize: 12,
         lineHeight: 1.4,
-        color: "#111",
+        color: "var(--semantic-text-strong-default)",
       }}
     >
       {!enabled && (
@@ -181,8 +181,8 @@ export function DsInspector({
           onClick={() => setEnabled(true)}
           title="DS Inspector 켜기 (Ctrl/Cmd+Shift+D)"
           style={{
-            background: "#111",
-            color: "#fff",
+            background: "var(--semantic-bg-inverse-default)",
+            color: "var(--semantic-text-inverse-default)",
             border: "none",
             borderRadius: 9999,
             padding: "var(--semantic-inset-chip) 14px",
@@ -198,8 +198,8 @@ export function DsInspector({
       {enabled && (
         <div
           style={{
-            background: "#fff",
-            border: "1px solid #e0e0e0",
+            background: "var(--semantic-bg-surface-default)",
+            border: "1px solid var(--semantic-border-normal-default)",
             borderRadius: 12,
             boxShadow: "0 8px 24px rgba(0,0,0,0.16)",
             padding: "var(--semantic-inset-input)",
@@ -225,7 +225,7 @@ export function DsInspector({
                 cursor: "pointer",
                 fontSize: 16,
                 lineHeight: 1,
-                color: "#666",
+                color: "var(--semantic-text-muted-default)",
               }}
             >
               ×
@@ -242,15 +242,16 @@ export function DsInspector({
             style={{
               marginTop: 8,
               paddingTop: 8,
-              borderTop: "1px solid #f0f0f0",
+              borderTop: "1px solid var(--semantic-border-subtle-default)",
               display: "flex",
               justifyContent: "space-between",
-              color: "#666",
+              color: "var(--semantic-text-muted-default)",
             }}
           >
             <span>총 {total}</span>
             <span>
-              DS 비율 <strong style={{ color: "#111" }}>{dsRatio}%</strong>
+              DS 비율{" "}
+              <strong style={{ color: "var(--semantic-text-strong-default)" }}>{dsRatio}%</strong>
             </span>
           </div>
           <label
@@ -270,7 +271,7 @@ export function DsInspector({
             />
             <span>outline 표시</span>
           </label>
-          <div style={{ marginTop: 6, color: "#999", fontSize: 11 }}>
+          <div style={{ marginTop: 6, color: "var(--semantic-text-muted-default)", fontSize: 11 }}>
             Ctrl/Cmd + Shift + D 로 토글
           </div>
         </div>

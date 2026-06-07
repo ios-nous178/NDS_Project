@@ -144,11 +144,11 @@ export const calendarStyles = `
 
   :where(.${CL_DAY_CLASS}[data-selected="true"]) {
     background: ${cv.surface.brand};
-    color: ${cv.surface.default};
+    color: ${cv.button.textDefault};
   }
 
   :where(.${CL_DAY_CLASS}[data-selected="true"][data-today="true"]) {
-    color: ${cv.surface.default};
+    color: ${cv.button.textDefault};
   }
 
   :where(.${CL_DAY_CLASS}[disabled]) {

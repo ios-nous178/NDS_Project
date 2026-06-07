@@ -14,3 +14,4 @@ export * from "./profile-image-metadata.js";
 export * from "./illustration-metadata.js";
 export * from "./marathon-event-metadata.js";
 export * from "./nudge-img-metadata.js";
+export * from "./cashwalk-biz-asset-metadata.js";

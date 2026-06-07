@@ -10,3 +10,12 @@ pnpm-lock.yaml
 # 슬랙 mrkdwn 호환 본문 — prettier 가 `*Bold*` 를 `_Italic_` 으로 자동 변환하면
 # 슬랙에서 bold 가 아니라 italic 으로 렌더되어 의도가 깨진다.
 .release-notes/pending.md
+
+# 자동 생성 SSOT 산출물 — 생성기(emit-manifest / generate-component-guides /
+# generate-brand-coverage)가 JSON.stringify(…, null, 2) 로 찍는 형식이 SSOT 다.
+# prettier 가 짧은 배열을 한 줄로 접으면 생성기의 raw-text --check 와 어긋나
+# lint:ssot(generate-*.mjs --check)가 stale 로 깨진다. (회귀: 커밋 시 lint-staged
+# prettier 가 catalog/componentGuides 를 mangle 해 CI lint 가 빨개짐.)
+packages/mcp/catalog.json
+metadata/componentGuides.json
+metadata/coverage-manifest.json

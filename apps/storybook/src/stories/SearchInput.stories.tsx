@@ -7,7 +7,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser, pause } from "./interactionTest";
 
 const meta: Meta<SearchInputProps> = {
-  title: "Components/SearchInput",
+  title: "Components/Inputs/SearchInput",
   component: SearchInput,
   tags: ["autodocs"],
   parameters: {

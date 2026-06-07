@@ -7,6 +7,16 @@ import "../../../packages/react/dist/styles.css";
 const TOKEN_OVERRIDE_KEY = "nds-token-overrides";
 const SPEC_OVERLAY_KEY = "nds-spec-overlay";
 
+function rankByOrder(value: string, order: string[]): number {
+  const index = order.indexOf(value);
+  return index === -1 ? order.length : index;
+}
+
+function isDocsEntry(title: string, name: string): boolean {
+  const tail = title.split("/").at(-1) ?? "";
+  return tail === "개요" || tail.toLowerCase() === "docs" || name.toLowerCase() === "docs";
+}
+
 /* ═══════════════════════════════════════
    Brand Theme Decorator
    ═══════════════════════════════════════ */
@@ -899,6 +909,69 @@ const preview: Preview = {
   },
   decorators: [withBrandTheme, withSpecOverlay, withCssEditor],
   parameters: {
+    options: {
+      // 사이드바 순서: Foundations 최상단 → Components → 나머지.
+      // Components 안에서는 브랜드 프레임(Header → Footer → BottomNav)을 먼저,
+      // 그 뒤로 의미 버킷(Inputs/Controls/Display/…)을 둔다.
+      //
+      // 같은 컴포넌트 그룹 안에서는 docs(개요)를 항상 최상단에 둔다.
+      storySort: (a, b) => {
+        const rankByOrder = (value, order) => {
+          const index = order.indexOf(value);
+          return index === -1 ? order.length : index;
+        };
+        const isDocsEntry = (title, name) => {
+          const tail = title.split("/").at(-1) ?? "";
+          return tail === "개요" || tail.toLowerCase() === "docs" || name.toLowerCase() === "docs";
+        };
+
+        const aParts = a.title.split("/");
+        const bParts = b.title.split("/");
+
+        const rootOrder = ["Foundations", "Brands", "Components"];
+        const aRootRank = rankByOrder(aParts[0] ?? "", rootOrder);
+        const bRootRank = rankByOrder(bParts[0] ?? "", rootOrder);
+        if (aRootRank !== bRootRank) return aRootRank - bRootRank;
+
+        if ((aParts[0] ?? "") === "Components" && (bParts[0] ?? "") === "Components") {
+          const sectionOrder = [
+            "Header",
+            "Footer",
+            "BottomNav",
+            "Inputs",
+            "Controls",
+            "Display",
+            "Navigation",
+            "Overlay",
+            "Layout",
+            "Feedback",
+            "Domain",
+          ];
+          const aSectionRank = rankByOrder(aParts[1] ?? "", sectionOrder);
+          const bSectionRank = rankByOrder(bParts[1] ?? "", sectionOrder);
+          if (aSectionRank !== bSectionRank) return aSectionRank - bSectionRank;
+
+          const aDocs = isDocsEntry(a.title, a.name);
+          const bDocs = isDocsEntry(b.title, b.name);
+          if (aDocs !== bDocs) return aDocs ? -1 : 1;
+        }
+
+        if ((aParts[0] ?? "") === "Brands" && (bParts[0] ?? "") === "Brands") {
+          const brandOrder = ["NudgeEAP", "Geniet", "Trost", "CashwalkBiz", "Runmile"];
+          const aBrandRank = rankByOrder(aParts[1] ?? "", brandOrder);
+          const bBrandRank = rankByOrder(bParts[1] ?? "", brandOrder);
+          if (aBrandRank !== bBrandRank) return aBrandRank - bBrandRank;
+
+          const aDocs = isDocsEntry(a.title, a.name);
+          const bDocs = isDocsEntry(b.title, b.name);
+          if (aDocs !== bDocs) return aDocs ? -1 : 1;
+        }
+
+        const titleCmp = a.title.localeCompare(b.title, "ko");
+        if (titleCmp !== 0) return titleCmp;
+        return a.name.localeCompare(b.name, "ko");
+      },
+    },
     a11y: {
       test: "error",
       config: {

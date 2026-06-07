@@ -19,7 +19,7 @@ const meta: Meta = {
     docs: {
       description: {
         component: [
-          "> ✅ **Figma Iconography(379:490) 정합 완료** — 모든 아이콘은 24×24 viewBox / currentColor 규약으로 통일되어 있습니다.",
+          "> **Figma Iconography(379:490) 정합 완료** — 모든 아이콘은 24×24 viewBox / currentColor 규약으로 통일되어 있습니다.",
           "",
           `총 **${ICON_ENTRIES.length}개** 아이콘. 클릭하면 컴포넌트 이름이 클립보드에 복사됩니다.`,
           "",
@@ -261,14 +261,14 @@ function BrandChips({
 }
 
 export const All: Story = {
-  name: "Catalog/All Icons",
+  name: "Spec/All Icons",
   render: () => (
     <Catalog size={24} color="var(--semantic-icon-strong-default, #111111)" bg="#FFFFFF" />
   ),
 };
 
 export const Size20: Story = {
-  name: "Catalog/Size 20 (Button)",
+  name: "Spec/Size 20 (Button)",
   parameters: {
     docs: {
       description: {
@@ -282,7 +282,7 @@ export const Size20: Story = {
 };
 
 export const OnDarkSurface: Story = {
-  name: "Catalog/On Dark Surface",
+  name: "Spec/On Dark Surface",
   parameters: {
     docs: {
       description: {
@@ -295,7 +295,7 @@ export const OnDarkSurface: Story = {
 };
 
 export const UsageExamples: Story = {
-  name: "Usage/Examples",
+  name: "Recipe/Examples",
   parameters: {
     docs: {
       description: {
@@ -312,7 +312,7 @@ export const UsageExamples: Story = {
       >
         <span
           style={{
-            color: "#2B96ED",
+            color: "var(--semantic-icon-brand-default)",
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
@@ -335,7 +335,7 @@ export const UsageExamples: Story = {
             height: 48,
             padding: "0 var(--semantic-inset-card)",
             borderRadius: 8,
-            background: "#2B96ED",
+            background: "var(--semantic-bg-brand-default)",
             color: "#FFFFFF",
             fontSize: 16,
             fontWeight: 700,

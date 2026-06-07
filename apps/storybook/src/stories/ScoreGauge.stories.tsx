@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ScoreGauge } from "@nudge-design/react";
 
 const meta: Meta<typeof ScoreGauge> = {
-  title: "Components/ScoreGauge",
+  title: "Components/Data/ScoreGauge",
   component: ScoreGauge,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -7,10 +7,12 @@ import { NdsQuickActionGrid } from "../src/components/nds-quick-action-grid.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
+// icon = inline SVG 마크업 (find_icon 결과). 이름/이모지가 아니라 innerHTML 로 주입된다.
+const ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z" /></svg>';
 const ACTIONS = JSON.stringify([
-  { key: "call", label: "전화", icon: "☎️", badge: "NEW" },
-  { key: "chat", label: "채팅", icon: "💬", badge: "3", iconBg: "#abc" },
-  { key: "book", label: "예약", icon: "📅", disabled: true },
+  { key: "call", label: "전화", icon: ICON_SVG, badge: "NEW" },
+  { key: "chat", label: "채팅", icon: ICON_SVG, badge: "3", iconBg: "#abc" },
+  { key: "book", label: "예약", icon: ICON_SVG, disabled: true },
 ]);
 
 describe("nds-quick-action-grid — DOM parity with React QuickActionGrid", () => {
@@ -32,7 +34,8 @@ describe("nds-quick-action-grid — DOM parity with React QuickActionGrid", () =
     expect(items).toHaveLength(3);
     expect(items[0].dataset.key).toBe("call");
     expect(items[0].type).toBe("button");
-    expect(items[0].querySelector(".nds-quick-action-grid__icon")!.textContent).toBe("☎️");
+    // icon 은 innerHTML 로 주입된 inline SVG → svg 엘리먼트로 렌더 (이름/이모지가 텍스트로 흘러나오지 않음)
+    expect(items[0].querySelector(".nds-quick-action-grid__icon svg")).not.toBeNull();
     expect(items[0].querySelector(".nds-quick-action-grid__label")!.textContent).toBe("전화");
     expect(items[0].querySelector(".nds-quick-action-grid__badge")!.textContent).toBe("NEW");
     expect(el.style.display).toBe("contents");

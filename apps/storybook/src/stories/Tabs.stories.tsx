@@ -7,7 +7,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<TabsProps> = {
-  title: "Components/Tabs",
+  title: "Components/Navigation/Tabs",
   component: Tabs,
   tags: ["autodocs"],
   parameters: {
@@ -40,55 +40,7 @@ type Story = StoryObj<TabsProps>;
 
 const mobileFrame: React.CSSProperties = { width: 390 };
 const pcFrame: React.CSSProperties = { width: 720 };
-const segmentFrame: React.CSSProperties = { width: 1024 };
 const panelStyle: React.CSSProperties = { padding: "var(--semantic-inset-card-large)" };
-
-/* ────────────────────────────────────────────
- * 데모용 아이콘 (Segment 변형)
- * ──────────────────────────────────────────── */
-
-const SegmentIcons = {
-  dashboard: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  highRisk: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M10 2L18 17H2L10 2Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <path d="M10 8V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="10" cy="14" r="0.8" fill="currentColor" />
-    </svg>
-  ),
-  counsel: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M3 5C3 3.9 3.9 3 5 3H15C16.1 3 17 3.9 17 5V12C17 13.1 16.1 14 15 14H8L4 17V5Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  mentalCare: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M10 17C10 17 3 13 3 8C3 5.8 4.8 4 7 4C8.4 4 9.5 4.7 10 5.8C10.5 4.7 11.6 4 13 4C15.2 4 17 5.8 17 8C17 13 10 17 10 17Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-};
 
 /* ────────────────────────────────────────────
  * Showcase wrapper
@@ -164,19 +116,11 @@ const sampleItems = [
 
 function PlaygroundDemo({ variant, size, tone }: Pick<TabsProps, "variant" | "size" | "tone">) {
   const [activeKey, setActiveKey] = useState("all");
-  const frame = variant === "segment" ? segmentFrame : size === "mobile" ? mobileFrame : pcFrame;
+  const frame = size === "mobile" ? mobileFrame : pcFrame;
   return (
     <div style={frame}>
       <Tabs
-        items={
-          variant === "segment"
-            ? [
-                { key: "all", title: "통합 대시보드", icon: SegmentIcons.dashboard },
-                { key: "counsel", title: "고위험군 관리", icon: SegmentIcons.highRisk },
-                { key: "challenge", title: "상담", icon: SegmentIcons.counsel },
-              ]
-            : sampleItems
-        }
+        items={sampleItems}
         activeKey={activeKey}
         onTabChange={setActiveKey}
         variant={variant}
@@ -197,7 +141,7 @@ export const Playground: Story = {
 };
 
 /* ════════════════════════════════════════════
- * Overview — 3가지 유형 한눈에 보기
+ * Overview — 3가지 variant 한눈에 보기
  * ════════════════════════════════════════════ */
 
 function OverviewCard({
@@ -244,16 +188,16 @@ function OverviewCard({
 }
 
 export const Overview: Story = {
-  name: "Guide/Overview",
+  name: "Recipe/Overview",
   parameters: { layout: "padded" },
   render: () => (
     <div
       style={{ display: "flex", gap: "var(--semantic-gap-loose)", width: "100%", maxWidth: 1200 }}
     >
       <OverviewCard
-        badge="Mobile"
+        badge="Mobile / PC"
         title="Line Type"
-        description="App · Web · Mobile 하단 밑줄(언더라인)로 활성 탭을 표시. Neutral과 Color 두 가지 스타일 지원."
+        description="하단 밑줄(언더라인)로 활성 탭을 표시. 모바일/PC 공통, Neutral과 Color 두 가지 톤 지원."
       />
       <OverviewCard
         badge="Mobile / PC"
@@ -261,9 +205,9 @@ export const Overview: Story = {
         description="App · Web · Mobile & PC 알약(Pill) 형태의 필터 탭. 콘텐츠 카테고리 분류에 주로 사용."
       />
       <OverviewCard
-        badge="PC only"
+        badge="Mobile / PC"
         title="Segment Type"
-        description="CMS · PC 전용 고정 너비로 균등 분할된 세그먼트 탭. 아이콘 + 텍스트 조합 사용."
+        description="연결된 회색 트랙 위 균등 분할 단일선택. 구 SegmentedControl 을 흡수 — 콘텐츠 패널이 아니라 뷰/기간/상태 값 토글에 사용."
       />
     </div>
   ),
@@ -308,7 +252,7 @@ function LineDemo({ size, tone }: { size: "mobile" | "pc"; tone: "neutral" | "co
 }
 
 export const LineNeutral: Story = {
-  name: "Line/Neutral (Mobile + PC)",
+  name: "Variant/Line · Neutral (Mobile + PC)",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
@@ -328,7 +272,7 @@ export const LineNeutral: Story = {
 };
 
 export const LineColor: Story = {
-  name: "Line/Color (Brand)",
+  name: "Variant/Line · Color (Brand)",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
@@ -391,7 +335,7 @@ function ChipDemo({ size, tone }: { size: "mobile" | "pc"; tone: "neutral" | "co
 }
 
 export const ChipNeutral: Story = {
-  name: "Chip/Neutral",
+  name: "Variant/Chip · Neutral",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
@@ -411,7 +355,7 @@ export const ChipNeutral: Story = {
 };
 
 export const ChipColor: Story = {
-  name: "Chip/Color (Brand)",
+  name: "Variant/Chip · Color (Brand)",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
@@ -431,40 +375,46 @@ export const ChipColor: Story = {
 };
 
 /* ════════════════════════════════════════════
- * Segment Type (PC · CMS only)
+ * Segmented Control
  * ════════════════════════════════════════════ */
 
-function SegmentDemo({ activeIndex }: { activeIndex: 0 | 1 | 2 | 3 }) {
-  const items = [
-    { key: "dashboard", title: "통합 대시보드", icon: SegmentIcons.dashboard },
-    { key: "highrisk", title: "고위험군 관리", icon: SegmentIcons.highRisk },
-    { key: "counsel", title: "상담", icon: SegmentIcons.counsel },
-    { key: "mentalcare", title: "멘탈케어 솔루션", icon: SegmentIcons.mentalCare },
-  ];
-  const [active, setActive] = useState(items[activeIndex].key);
+function SegmentedDemo({ size }: { size: "mobile" | "pc" }) {
+  const [value, setValue] = useState("all");
   return (
-    <div style={segmentFrame}>
-      <Tabs items={items} activeKey={active} onTabChange={setActive} variant="segment" />
+    <div style={{ width: size === "pc" ? 520 : 280 }}>
+      <Tabs
+        variant="segment"
+        size={size}
+        activeKey={value}
+        onTabChange={setValue}
+        items={[
+          { key: "all", title: "전체" },
+          { key: "risk", title: "고위험군" },
+          { key: "counsel", title: "상담" },
+        ]}
+      />
     </div>
   );
 }
 
-export const Segment: Story = {
-  name: "Segment/PC (CMS)",
+export const Segmented: Story = {
+  name: "Variant/Segment",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
-      title="Segment · PC (CMS only)"
-      description="PC CMS 전용 탭 유형. 전체 너비를 탭 수로 균등 분할하며, 아이콘과 텍스트를 조합하여 표시합니다. 활성 탭은 슬레이트 배경/흰색 텍스트로 강조됩니다."
+      title="Segment"
+      description="연결된 회색 트랙 위 균등 분할 단일선택(뷰/기간/상태 토글). 구 SegmentedControl 을 흡수한 variant='segment' — 콘텐츠 패널 전환이 아니라 값 토글에 사용합니다."
     >
-      <PlatformLabel text="Neutral · PC" />
-      <SegmentDemo activeIndex={0} />
-      <SegmentDemo activeIndex={1} />
-      <SegmentDemo activeIndex={2} />
-      <SegmentDemo activeIndex={3} />
-      <p style={{ fontSize: 12, color: colors.neutral[500] }}>
-        높이 56px · Padding 0·16px · Caption1 · 균등 분할
-      </p>
+      <div style={{ display: "flex", gap: 16, flexDirection: "column" }}>
+        <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
+          <PlatformLabel text="Mobile (36px)" />
+          <SegmentedDemo size="mobile" />
+        </div>
+        <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
+          <PlatformLabel text="PC (40px)" />
+          <SegmentedDemo size="pc" />
+        </div>
+      </div>
     </ShowcaseSection>
   ),
 };
@@ -531,12 +481,12 @@ function MiniLineTab({ state }: { state: "default" | "active" | "hover" | "disab
 }
 
 export const States: Story = {
-  name: "Guide/States",
+  name: "Recipe/States",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
       title="States"
-      description="각 탭 타입의 상태(State)별 시각적 처리 방식입니다. Line/Chip은 네 가지 상태, Segment는 세 가지 상태를 지원합니다."
+      description="각 탭 타입의 상태(State)별 시각적 처리 방식입니다. Line/Chip은 네 가지 상태(Default/Active/Hover/Disabled)를 지원합니다."
     >
       <div style={{ display: "flex", gap: "var(--semantic-gap-loose)", flexWrap: "wrap" }}>
         <StateDemoFrame
@@ -617,7 +567,7 @@ function SpecTable({
 }
 
 export const SizeSpecs: Story = {
-  name: "Guide/Size & Specs",
+  name: "Recipe/Size & Specs",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
@@ -680,13 +630,6 @@ export const SizeSpecs: Story = {
                 padding: "10·var(--semantic-inset-card)",
                 radius: "Radius/Full",
                 font: "Body3 Regular/Bold",
-              },
-              {
-                type: "Segment",
-                height: "56px",
-                padding: "16·0px",
-                radius: "—",
-                font: "Caption1 Regular/Bold",
               },
             ]}
           />
@@ -758,7 +701,7 @@ function GuideCard({
 }
 
 export const DoDont: Story = {
-  name: "Guide/DO & Don't",
+  name: "Recipe/DO & Don't",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection title="DO / Don't" description="Tabs 컴포넌트 사용 시 권장/지양 케이스입니다.">
@@ -768,7 +711,7 @@ export const DoDont: Story = {
           title="DO"
           items={[
             "같은 계층의 콘텐츠 전환에만 사용하세요",
-            "플랫폼에 맞는 탭 유형을 선택하세요 (PC Web · Mobile→Line/Chip, PC CMS→Segment)",
+            "플랫폼에 맞는 탭 유형을 선택하세요 (Line=밑줄·콘텐츠 전환, Chip=알약·카테고리 필터, Segment=연결 트랙·값 토글).",
             "Chip 탭은 콘텐츠 필터링·카테고리 분류에 사용하세요",
             "탭 레이블은 간결한 명사/동사구로 작성하세요",
           ]}
@@ -778,7 +721,7 @@ export const DoDont: Story = {
           title="Don't"
           items={[
             "서로 다른 계층의 페이지 이동에 탭을 사용하지 마세요",
-            "Segment Type을 Mobile 환경에 사용하지 마세요",
+            "세그먼트형 단일 선택(값 토글)에는 variant='segment' 를, 콘텐츠 패널 전환에는 line/chip 을 사용하세요",
             "탭 유형을 한 화면에서 혼용하지 마세요",
             "탭 레이블에 긴 문장을 넣지 마세요 (2줄 이상 금지)",
           ]}
@@ -888,7 +831,7 @@ function FlatVsCompoundParityDemo() {
 }
 
 export const FlatVsCompoundParity: Story = {
-  name: "QA/Flat Vs Compound Parity",
+  name: "Interaction/Flat Vs Compound Parity",
   parameters: {
     chromatic: { disableSnapshot: true },
   },
@@ -922,7 +865,7 @@ function ManyChipsDemo() {
 }
 
 export const ScrollableChips: Story = {
-  name: "QA/Scrollable Chip Tabs",
+  name: "Interaction/Scrollable Chip Tabs",
   parameters: {
     chromatic: { disableSnapshot: true },
   },
@@ -957,7 +900,7 @@ function KeyboardNavigationReviewDemo() {
 }
 
 export const KeyboardNavigationReview: Story = {
-  name: "QA/Keyboard Navigation Review",
+  name: "Interaction/Keyboard Navigation Review",
   parameters: {
     chromatic: { disableSnapshot: true },
   },

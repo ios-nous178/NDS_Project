@@ -1,0 +1,279 @@
+import { contextBridge, ipcRenderer, webUtils, type IpcRendererEvent } from "electron";
+import type {
+  RecommendPagePatternResult,
+  ValidateHtmlMockupResult,
+} from "@nudge-design/mockup-core";
+import type { OpenProjectResult, CurrentProjectResult } from "../main/ipc.js";
+import type { ExportResult } from "../main/export-runner.js";
+import type { FigmaExportResult } from "../main/figma-export.js";
+import type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
+import type {
+  AgentCheck,
+  AgentType,
+  ClaudeInstall,
+  InstallResult,
+  StartAgentArgs,
+  StartAgentErrorCode,
+} from "../main/agent-runner.js";
+import type { ChatSession, Transport } from "../main/sessions.js";
+import type { SessionDashboardResult } from "../main/session-dashboard.js";
+import type { ChatMessage } from "../main/chat-types.js";
+import type { RunIntakeArgs } from "../main/intake.js";
+import type { AppEventInput } from "@nudge-design/mockup-core";
+import type { UpdateCheckResult } from "../main/update-check.js";
+
+// renderer 가 preload 를 단일 타입 계약 표면으로 쓰도록 재export.
+export type { ExportResult } from "../main/export-runner.js";
+export type { FigmaExportResult } from "../main/figma-export.js";
+export type { OpenProjectResult, CurrentProjectResult } from "../main/ipc.js";
+export type { SubmitFeedbackArgs, SubmitFeedbackResult } from "../main/feedback.js";
+export type {
+  AgentCheck,
+  AgentType,
+  ClaudeInstall,
+  InstallResult,
+  StartAgentArgs,
+  StartAgentErrorCode,
+} from "../main/agent-runner.js";
+export type { ChatSession, Transport } from "../main/sessions.js";
+export type { SessionDashboardResult } from "../main/session-dashboard.js";
+export type { ChatMessage } from "../main/chat-types.js";
+export type { Platform, RunIntakeArgs, ScreenshotInput, Surface } from "../main/intake.js";
+export type { UpdateCheckResult } from "../main/update-check.js";
+
+/** intake:start 요청 — RunIntakeArgs(projectPath 제외, 렌더러가 주입 안 함) + 터미널 치수 + transport. */
+export type StartIntakeArgs = Omit<RunIntakeArgs, "projectPath"> & {
+  projectPath: string;
+  cols?: number;
+  rows?: number;
+  transport?: Transport;
+};
+
+export interface FileChangedEvent {
+  filePath: string;
+  relPath: string;
+}
+
+/** 와처가 오류로 중단됐을 때의 신호(정상 종료 제외). renderer 가 자동추적을 끄고 안내한다. */
+export interface WatchStoppedEvent {
+  reason: string;
+}
+
+export interface AgentDataEvent {
+  sessionId: string;
+  data: string;
+}
+export interface AgentExitEvent {
+  sessionId: string;
+  exitCode: number;
+}
+/** 설정 충돌 등 사후 진단 신호 — 구버전/중복 claude 정리 안내 패널용. */
+export interface AgentDiagnosticEvent {
+  sessionId: string;
+  kind: "settings-conflict";
+  /** PATH·동봉 claude 실행본 목록(active/version 표시) — 어느 걸 정리할지 보여준다. */
+  installs: ClaudeInstall[];
+}
+/** 구조화(stream-json) 세션의 정규화 메시지 1건. */
+export interface AgentMessageEvent {
+  sessionId: string;
+  message: ChatMessage;
+}
+
+/** 렌더러가 main 의 hash 처리를 거치도록 projectPathHash 는 제외하고 넘긴다. */
+export type AppEventArgs = { projectPath: string } & Omit<AppEventInput, "projectPathHash">;
+
+/**
+ * renderer 가 접근하는 유일한 표면. main 의 IPC 핸들러를 타입드 래퍼로 노출한다.
+ */
+const harness = {
+  /** 커스텀 타이틀바 패딩(신호등 vs Windows 오버레이)을 헤더가 분기하도록 노출. */
+  platform: process.platform,
+  /** 앱 버전(package.json) — 상단바 상시 노출용. */
+  getVersion: (): Promise<string> => ipcRenderer.invoke("app:version"),
+  /** 초기 전체화면 상태(헤더 좌측 신호등 패딩 분기용). */
+  isFullscreen: (): Promise<boolean> => ipcRenderer.invoke("window:isFullscreen"),
+  /** 전체화면 진입/해제 구독. 반환 함수로 해제. */
+  onFullscreenChange: (cb: (isFullscreen: boolean) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, isFullscreen: boolean): void => cb(isFullscreen);
+    ipcRenderer.on("window:fullscreen", listener);
+    return () => ipcRenderer.removeListener("window:fullscreen", listener);
+  },
+  /** 헬프 센터의 링크/메일을 기본 브라우저·메일 앱으로 연다(http/https/mailto 만). */
+  openExternal: (url: string): Promise<void> => ipcRenderer.invoke("shell:openExternal", { url }),
+  /** GitHub Releases 최신 데스크탑 빌드를 조회해 현재 버전과 비교(알림만, 자동설치 X). */
+  checkForUpdate: (): Promise<UpdateCheckResult> => ipcRenderer.invoke("update:check"),
+  openProject: (): Promise<OpenProjectResult | { canceled: true }> =>
+    ipcRenderer.invoke("project:open"),
+  /** 재시작 후 마지막 프로젝트 복원(없으면 projectPath: null). 렌더러 마운트 시 호출. */
+  currentProject: (): Promise<CurrentProjectResult> => ipcRenderer.invoke("project:current"),
+  /** 작업 폴더 선택(새 채팅 cwd). 취소 시 { canceled: true }. */
+  pickFolder: (): Promise<{ folder: string } | { canceled: true }> =>
+    ipcRenderer.invoke("dialog:pick-folder"),
+  readMockup: (filePath: string): Promise<{ source: string }> =>
+    ipcRenderer.invoke("mockup:read", { filePath }),
+  validate: (filePath: string): Promise<ValidateHtmlMockupResult> =>
+    ipcRenderer.invoke("validate:run", { filePath }),
+  stopWatch: (): Promise<{ ok: true }> => ipcRenderer.invoke("watch:stop"),
+  /** 활성 프로젝트의 목업 목록을 다시 스캔(새 목업 생성 후 드롭다운 갱신용). */
+  rescanMockups: (projectPath: string): Promise<{ htmlEntries: string[] }> =>
+    ipcRenderer.invoke("project:rescan", { projectPath }),
+  /** 파일 변경 구독. 반환된 함수로 구독 해제. */
+  onFileChanged: (cb: (e: FileChangedEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: FileChangedEvent): void => cb(payload);
+    ipcRenderer.on("watch:fileChanged", listener);
+    return () => ipcRenderer.removeListener("watch:fileChanged", listener);
+  },
+  /** 와처가 오류로 중단됐을 때 구독(정상 종료 제외). 반환 함수로 해제. */
+  onWatchStopped: (cb: (e: WatchStoppedEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: WatchStoppedEvent): void => cb(payload);
+    ipcRenderer.on("watch:stopped", listener);
+    return () => ipcRenderer.removeListener("watch:stopped", listener);
+  },
+  /** 미리보기 iframe 용 mockup:// URL. 프로젝트 루트 기준 상대경로 + 캐시버스터. */
+  previewUrl: (relPath: string, bust: number): string =>
+    `mockup://preview/${relPath.split("/").map(encodeURIComponent).join("/")}?t=${bust}`,
+  /** 미리보기 목업을 별도 창으로 연다(더블클릭 느낌). mockup:// 로 로드해 런타임/스탬프 동일. */
+  openMockupWindow: (relPath: string): Promise<void> =>
+    ipcRenderer.invoke("preview:openWindow", { relPath }),
+  /**
+   * 미리보기 루트(previewRoot)를 그 세션의 작업 폴더(cwd)로 가볍게 전환. 채팅 세션은 전역
+   * 저장이라 폴더가 제각각인데 previewRoot 는 단일 — 과거 세션 미리보기를 띄우기 직전 이걸 맞춰야
+   * mockupFile(폴더 기준 상대경로)이 올바로 풀린다(안 맞추면 "not found"). 와처/저장은 안 건드림.
+   */
+  setPreviewRoot: (root: string): Promise<{ ok: boolean }> =>
+    ipcRenderer.invoke("preview:setRoot", { root }),
+
+  // ── 비파괴 내보내기 (공유용 HTML) ──
+  /** 원본 무변경 — 자체완결 dist/index.html 생성 + 버전 stamp + usage + webhook.
+   *  mockupDir = 활성 목업 서브폴더(빌드 cwd). 없으면 projectPath 루트에서 빌드. */
+  exportMockup: (projectPath: string, mockupDir?: string): Promise<ExportResult> =>
+    ipcRenderer.invoke("export:run", { projectPath, mockupDir }),
+  /** 내보낼 위치/파일명을 먼저 고른다(빌드 전). 취소 시 path 없음. */
+  pickExportPath: (defaultPath: string): Promise<{ path?: string }> =>
+    ipcRenderer.invoke("export:pickPath", { defaultPath }),
+  /** 빌드된 자체완결 산출물을 미리 고른 목적지로 기록. */
+  placeExport: (sourcePath: string, destPath: string): Promise<{ path: string }> =>
+    ipcRenderer.invoke("export:place", { sourcePath, destPath }),
+
+  // ── Figma 평면 레이어 export (canary) ──
+  /** dist 렌더 → DOM 추출 → dist/.figma/scene.json 저장 + 클립보드 복사. 짝 플러그인이 캔버스에 짓는다. */
+  exportFigmaScene: (projectPath: string, mockupDir?: string): Promise<FigmaExportResult> =>
+    ipcRenderer.invoke("figma:export", { projectPath, mockupDir }),
+
+  // ── 유저 피드백 (Phase 3) — 로컬 저장만 ──
+  /** 현재 목업에 대한 수정요청/기타 피드백 1건을 `.ds-feedback-log.jsonl` 에 적재. */
+  submitFeedback: (args: SubmitFeedbackArgs): Promise<SubmitFeedbackResult> =>
+    ipcRenderer.invoke("feedback:submit", args),
+
+  // ── 앱 이벤트 로그 (Phase 5) — 로컬 .ds-app-events.jsonl ──
+  /** UI 맥락 이벤트(mockup_selected · validation_completed 등) 명시 기록. */
+  appendEvent: (args: AppEventArgs): Promise<{ ok: true }> =>
+    ipcRenderer.invoke("event:append", args),
+
+  // ── 인앱 에이전트 (Phase 5) — claude/codex PTY ──
+  startAgent: (
+    args: StartAgentArgs,
+  ): Promise<{ ok: boolean; error?: string; code?: StartAgentErrorCode }> =>
+    ipcRenderer.invoke("agent:start", args),
+  /** 에이전트 CLI 설치 상태 점검(설치 안내 패널 분기용). */
+  checkAgent: (agentType: AgentType): Promise<AgentCheck> =>
+    ipcRenderer.invoke("agent:check", { agentType }),
+  /** 에이전트 CLI 를 `npm install -g` 로 자동 설치. 실패 시 output 에 raw 로그. */
+  installAgent: (agentType: AgentType): Promise<InstallResult> =>
+    ipcRenderer.invoke("agent:install", { agentType }),
+  sendAgentInput: (sessionId: string, data: string): Promise<void> =>
+    ipcRenderer.invoke("agent:input", { sessionId, data }),
+  /** 구조화(stream-json) 세션의 다음 유저 턴(전체 메시지 1건). pty 세션이면 무시됨. */
+  sendAgentTurn: (sessionId: string, text: string): Promise<void> =>
+    ipcRenderer.invoke("agent:sendTurn", { sessionId, text }),
+  resizeAgent: (sessionId: string, cols: number, rows: number): Promise<void> =>
+    ipcRenderer.invoke("agent:resize", { sessionId, cols, rows }),
+  stopAgent: (sessionId: string): Promise<void> => ipcRenderer.invoke("agent:stop", { sessionId }),
+  /** 에이전트 PTY 출력 구독. 반환 함수로 해제. */
+  onAgentData: (cb: (e: AgentDataEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: AgentDataEvent): void => cb(payload);
+    ipcRenderer.on("agent:data", listener);
+    return () => ipcRenderer.removeListener("agent:data", listener);
+  },
+  /** 에이전트 종료 구독. 반환 함수로 해제. */
+  onAgentExit: (cb: (e: AgentExitEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: AgentExitEvent): void => cb(payload);
+    ipcRenderer.on("agent:exit", listener);
+    return () => ipcRenderer.removeListener("agent:exit", listener);
+  },
+  /** 사후 진단 신호 구독(구버전/중복 claude 정리 안내용). 반환 함수로 해제. */
+  onAgentDiagnostic: (cb: (e: AgentDiagnosticEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: AgentDiagnosticEvent): void => cb(payload);
+    ipcRenderer.on("agent:diagnostic", listener);
+    return () => ipcRenderer.removeListener("agent:diagnostic", listener);
+  },
+  /** 구조화(stream-json) 세션의 정규화 메시지 구독. 반환 함수로 해제. */
+  onAgentMessage: (cb: (e: AgentMessageEvent) => void): (() => void) => {
+    const listener = (_e: IpcRendererEvent, payload: AgentMessageEvent): void => cb(payload);
+    ipcRenderer.on("agent:message", listener);
+    return () => ipcRenderer.removeListener("agent:message", listener);
+  },
+
+  // ── 채팅기록 (Phase 6) — 로컬 세션 조회 ──
+  listSessions: (projectPath: string): Promise<ChatSession[]> =>
+    ipcRenderer.invoke("session:list", { projectPath }),
+  readTranscript: (projectPath: string, sessionId: string): Promise<{ text: string }> =>
+    ipcRenderer.invoke("session:transcript", { projectPath, sessionId }),
+  /** 구조화(stream-json) 세션의 정규화 메시지 배열(카드형 재생용). */
+  readStructuredTranscript: (
+    projectPath: string,
+    sessionId: string,
+  ): Promise<{ messages: ChatMessage[] }> =>
+    ipcRenderer.invoke("session:structuredTranscript", { projectPath, sessionId }),
+  /** 세션 메타 + raw 트랜스크립트 삭제(실행 중이면 main 이 먼저 종료). */
+  deleteSession: (projectPath: string, sessionId: string): Promise<{ ok: boolean }> =>
+    ipcRenderer.invoke("session:delete", { projectPath, sessionId }),
+  /** 세션별 파일/피드백/점수 대시보드 조회. */
+  getSessionDashboard: (projectPath: string): Promise<SessionDashboardResult> =>
+    ipcRenderer.invoke("session:dashboard", { projectPath }),
+  /**
+   * 끝난 세션을 CLI 네이티브 resume 으로 이어간다(resume v1, resumable 세션만). 성공하면
+   * main 이 PTY 를 재spawn 하므로 렌더러는 sessionId 로 터미널 attach 한다(startIntake 와 동일 패턴).
+   */
+  resumeSession: (
+    projectPath: string,
+    sessionId: string,
+    cols?: number,
+    rows?: number,
+  ): Promise<{ ok: boolean; error?: string }> =>
+    ipcRenderer.invoke("session:resume", { projectPath, sessionId, cols, rows }),
+  /** 세션 제목 변경(채팅기록 인라인 편집). 빈 문자열이면 기본 제목으로 복귀. */
+  renameSession: (
+    projectPath: string,
+    sessionId: string,
+    title: string,
+  ): Promise<{ ok: boolean }> =>
+    ipcRenderer.invoke("session:rename", { projectPath, sessionId, title }),
+
+  // ── 인테이크 (Level 2) ──
+  /** 게이트 충족 파일 작성 후 시드 세션 시작. 성공 시 sessionId 로 터미널 attach. */
+  startIntake: (
+    args: StartIntakeArgs,
+  ): Promise<{
+    ok: boolean;
+    sessionId?: string;
+    slug?: string;
+    intent?: "html" | "admin-cms";
+    error?: string;
+    code?: StartAgentErrorCode;
+  }> => ipcRenderer.invoke("intake:start", args),
+  /** PRD → 캐포비 어드민 Page Pattern 1차 추천(키워드 점수). intake 추천 카드 전용. */
+  recommendPagePattern: (args: {
+    prd: string;
+    brand?: string;
+    surface?: string;
+  }): Promise<RecommendPagePatternResult> =>
+    ipcRenderer.invoke("intake:recommend-page-pattern", args),
+  /** 드래그드롭 File → 실제 절대경로(File.path 대체). 멀티MB IPC 회피용. 동기·read-only. */
+  pathForFile: (file: File): string => webUtils.getPathForFile(file),
+};
+
+contextBridge.exposeInMainWorld("harness", harness);
+
+export type HarnessApi = typeof harness;

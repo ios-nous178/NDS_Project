@@ -8,6 +8,7 @@ const SC_INDICATOR_CLASS = `${SC_CLASS}__indicator`;
 const SC_BODY_CLASS = `${SC_CLASS}__body`;
 const SC_TITLE_CLASS = `${SC_CLASS}__title`;
 const SC_DESCRIPTION_CLASS = `${SC_CLASS}__description`;
+const SC_CONTENT_CLASS = `${SC_CLASS}__content`;
 const SC_ICON_CLASS = `${SC_CLASS}__icon`;
 
 export const selectionCardStyles = `
@@ -138,5 +139,16 @@ export const selectionCardStyles = `
     line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.subtle};
     margin: 0;
+  }
+
+  /* 리치 중첩 콘텐츠 (Chip 행·bullet 리스트 등). title/description 아래 간격 확보 */
+  :where(.${SC_CONTENT_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-gap-tight);
+    margin-top: var(--semantic-gap-tight);
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
+    color: ${cv.textRole.subtle};
   }
 `;
