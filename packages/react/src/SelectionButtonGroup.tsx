@@ -5,6 +5,7 @@ import React from "react";
 const SBG_CLASS = "nds-selection-button-group";
 const SBG_ROOT_CLASS = `${SBG_CLASS}__root`;
 const SBG_ITEM_CLASS = `${SBG_CLASS}__item`;
+const SBG_LABEL_CLASS = `${SBG_CLASS}__label`;
 
 /* ─── Types ─── */
 
@@ -88,7 +89,7 @@ export const SelectionButtonGroup = <T extends string = string>({
             }}
             className={SBG_ITEM_CLASS}
           >
-            {opt.label}
+            <span className={SBG_LABEL_CLASS}>{opt.label}</span>
           </button>
         );
       })}

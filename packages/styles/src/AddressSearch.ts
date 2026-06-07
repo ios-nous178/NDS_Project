@@ -52,6 +52,9 @@ export const asStyles = `
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     transition: border-color ${transition.default};
+    /* border-box: height 토큰(48)이 곧 실제 높이가 되도록 — 없으면 1px border 가 더해져
+       옆의 검색 Button(border-box 48) 과 2px 어긋난다. */
+    box-sizing: border-box;
   }
   :where(.${AS_INPUT_CLASS}:focus) { outline: none; border-color: ${cv.input.borderFocus}; }
   :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
