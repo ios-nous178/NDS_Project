@@ -827,7 +827,9 @@
         "title prop도 HTMLDivElement.title과 충돌하지 않도록 Omit됨. ReactNode 가능.",
         "onSkipBack/Forward는 옵셔널 — 단일 트랙이면 둘 다 생략하면 표시 안 됨."
       ],
-      "recommended": ["10분 미만 단일 가이드: SkipBack/Forward 생략. 시리즈 재생만 둘 다 부착."]
+      "recommended": [
+        "10분 미만 단일 가이드: SkipBack/Forward 생략. 시리즈 재생만 둘 다 부착."
+      ]
     },
     "OtpInput": {
       "name": "OtpInput",
@@ -1784,7 +1786,10 @@
         "online에 별도 강조 효과 추가하지 말 것 — 자동 펄스 있음.",
         "아바타 우하단에 올릴 때 부모 position:relative + 점 position:absolute."
       ],
-      "recommended": ["상담사 리스트: showLabel=true로 텍스트 함께", "아바타 점: 라벨 없이 size=10"]
+      "recommended": [
+        "상담사 리스트: showLabel=true로 텍스트 함께",
+        "아바타 점: 라벨 없이 size=10"
+      ]
     },
     "PinPad": {
       "name": "PinPad",
@@ -1853,7 +1858,10 @@
         "outputSize는 보통 200-400 — 너무 작으면 화질 저하.",
         "CSS transform 기반 변환이라 매우 큰 이미지(>4000px)는 모바일에서 끊길 수 있음."
       ],
-      "recommended": ["프로필 사진: shape='circle' outputSize=200", "커버: shape='square' size=320"]
+      "recommended": [
+        "프로필 사진: shape='circle' outputSize=200",
+        "커버: shape='square' size=320"
+      ]
     },
     "PullToRefresh": {
       "name": "PullToRefresh",
@@ -2051,7 +2059,10 @@
         "옵션 8개 이상이면 가로 스크롤. 데스크톱은 Tabs/Drawer 필터 검토.",
         "Tabs는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터."
       ],
-      "recommended": ["콘텐츠 리스트: 다중 선택 + count", "상담사 분야: single"]
+      "recommended": [
+        "콘텐츠 리스트: 다중 선택 + count",
+        "상담사 분야: single"
+      ]
     },
     "UserCard": {
       "name": "UserCard",
@@ -3194,23 +3205,57 @@
       },
       "validPropValues": {
         "trost": {
-          "activeKey": ["home", "counsel", "test", "care", "center"]
+          "activeKey": [
+            "home",
+            "counsel",
+            "test",
+            "care",
+            "center"
+          ]
         },
         "geniet": {
-          "activeKey": ["home", "community", "deal", "review"]
+          "activeKey": [
+            "home",
+            "community",
+            "deal",
+            "review"
+          ]
         },
         "nudge-eap": {
-          "activeKey": ["counsel", "test", "therapy", "letter", "news", "my"]
+          "activeKey": [
+            "counsel",
+            "test",
+            "therapy",
+            "letter",
+            "news",
+            "my"
+          ]
         },
         "cashwalk-biz": {
-          "activeKey": ["channel", "ad", "case", "notice", "guide"]
+          "activeKey": [
+            "channel",
+            "ad",
+            "case",
+            "notice",
+            "guide"
+          ]
         }
       },
       "assetManifest": {
-        "trost": ["trost-logo.svg"],
-        "geniet": ["geniet-logo-pc.webp", "geniet-logo-footer.webp"],
-        "nudge-eap": ["nudge-eap-logo.png", "nudge-eap-logo-footer.png"],
-        "cashwalk-biz": ["cashwalk-biz/cashwalk-for-business-horizontal.svg"]
+        "trost": [
+          "trost-logo.svg"
+        ],
+        "geniet": [
+          "geniet-logo-pc.webp",
+          "geniet-logo-footer.webp"
+        ],
+        "nudge-eap": [
+          "nudge-eap-logo.png",
+          "nudge-eap-logo-footer.png"
+        ],
+        "cashwalk-biz": [
+          "cashwalk-biz/cashwalk-for-business-horizontal.svg"
+        ]
       }
     },
     "BrandFooter": {
@@ -3243,8 +3288,12 @@
       },
       "assetManifest": {
         "trost": [],
-        "geniet": ["geniet-logo-footer.webp"],
-        "nudge-eap": ["nudge-eap-logo-footer.png"],
+        "geniet": [
+          "geniet-logo-footer.webp"
+        ],
+        "nudge-eap": [
+          "nudge-eap-logo-footer.png"
+        ],
         "cashwalk-biz": []
       }
     },
@@ -3271,7 +3320,9 @@
         "dont": "<!-- 손수 조립 안티패턴 — 탭/아이콘/색을 인라인으로 박으면 브랜드 데이터와 분리되어 다음 화면에서 또 적게 됨 -->\n<nds-footer-tab-bar active-tab=\"home\">\n  <nds-footer-tab-item key=\"home\" label=\"홈\" href=\"/\">\n    <span slot=\"icon\"><svg ...></svg></span>\n    <span slot=\"active-icon\"><svg ...></svg></span>\n  </nds-footer-tab-item>\n  <!-- ...4 more... -->\n</nds-footer-tab-bar>"
       },
       "usagePolicy": {
-        "useFor": ["사용자 앱 (Trost/Geniet/NudgeEAP/Runmile) 모바일 하단 5탭 내비게이션"],
+        "useFor": [
+          "사용자 앱 (Trost/Geniet/NudgeEAP/Runmile) 모바일 하단 5탭 내비게이션"
+        ],
         "doNotUseFor": [
           "웹 전용 브랜드(CashwalkBiz) — BottomNav 자체가 없음",
           "어드민/CMS 좌측 내비 — Sidebar 사용"
@@ -3280,13 +3331,31 @@
       },
       "validPropValues": {
         "trost": {
-          "activeKey": ["home", "counsel", "community", "care", "my"]
+          "activeKey": [
+            "home",
+            "counsel",
+            "community",
+            "care",
+            "my"
+          ]
         },
         "geniet": {
-          "activeKey": ["home", "record", "benefit", "review", "community"]
+          "activeKey": [
+            "home",
+            "record",
+            "benefit",
+            "review",
+            "community"
+          ]
         },
         "nudge-eap": {
-          "activeKey": ["home", "challenge", "counsel", "care", "my"]
+          "activeKey": [
+            "home",
+            "challenge",
+            "counsel",
+            "care",
+            "my"
+          ]
         }
       }
     },
