@@ -971,8 +971,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "(기본/모바일) Radius 8 / 카드 padding 비대칭 28·16·16 / PC 332 · Mobile 294 / 본문↔버튼 24px gap / 50% overlay / shadow.md. " +
       "Type: default / title(헤더) / Image(64×64 아이콘+타이틀). " +
       "Button: 최대 2개. (기본/모바일) 1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할. " +
-      "**(캐포비 admin) 1개=우측 정렬 · hug 너비 · 검정 pill (full-width 아님), 2개=가로 분할** — single 우측정렬은 footer cascade 가 자동 처리(full-width 붙이지 말 것). " +
-      "Modal API/props 는 brand 무관 동일 — CSS cascade 만 다름. brand 별 spec 변형 (예: admin desktop 4가지 패턴) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
+      "**(캐포비 admin) 1개=우측 정렬 · hug 너비 · 검정 pill (full-width 아님), 2개=우측 hug** — 버튼 배치는 actionsLayout('split'=가로균등 | 'end'=우측 hug) 으로 제어하고, 생략 시 브랜드 기본이 강제된다(캐포비=end, 그 외=split. react=actionsLayout prop, html=actions-layout 속성). full-width 붙이지 말 것. " +
+      "Modal API/props 는 brand 무관 동일 — 색/pill 모양은 브랜드 토큰, 배치만 actionsLayout(data-layout) variant. brand 별 spec 변형 (예: admin desktop 4가지 패턴) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9947",
     references: [
       {
@@ -3738,11 +3738,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Popup: {
     name: "Popup",
     summary:
-      "단순 확인/거부(취소·삭제·종료) 1-액션 다이얼로그. 본문이 긴 경우엔 Modal, 비차단 알림은 Snackbar.",
+      "단순 확인/거부(취소·삭제·종료) 1-액션 다이얼로그. 본문이 긴 경우엔 Modal, 비차단 알림은 Snackbar. " +
+      "버튼 배치는 actionsLayout('split'=2버튼 50/50·1버튼 세로 스택 | 'end'=우측 hug)으로 제어하고, 생략 시 브랜드 기본(캐포비=end, 그 외=split)이 강제된다(react=actionsLayout prop, html=actions-layout 속성). 색/pill 모양은 브랜드 토큰이 별도 결정.",
     pitfalls: [
       "Popup 본문에 form / 멀티 입력을 두지 말 것 — Modal 이 맞음.",
       "destructive 액션의 confirm-text 가 '확인' 처럼 일반 — 'X 삭제하기' / 'X 종료' 처럼 결과 명시.",
       "show-cancel 끄고 confirm 만 — 사용자에게 거부권을 주지 않음 (info popup 외에는 비권장).",
+      "버튼 배치를 직접 flex/justify 로 덮어쓰지 말 것 — actionsLayout='split'|'end' 사용(브랜드 기본은 자동).",
     ],
     examplesHtml: {
       do: '<nds-popup open title="신청을 취소할까요?" description="입력한 내용은 저장되지 않아요"\n  confirm-text="신청 취소하기" cancel-text="계속 작성" show-cancel></nds-popup>\n<script>el.addEventListener("popup-confirm", cancel); el.addEventListener("popup-cancel", () => el.removeAttribute("open"));</script>',

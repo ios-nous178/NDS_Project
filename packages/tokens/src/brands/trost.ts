@@ -30,6 +30,7 @@ export type { TrostSemanticTokens } from "./trost.semantic.js";
 
 export const trostTheme: BrandTheme = {
   name: "trost",
+  actionsLayout: "split",
   palette: {
     yellow: trostYellow,
     cobalt: trostCobalt,

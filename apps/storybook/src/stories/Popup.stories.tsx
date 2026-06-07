@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
 import { Button, Popup, type PopupProps } from "@nudge-design/react";
+import { resolveActionsLayout } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
+
+/** 정적 프리뷰용 — 현재 브랜드 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
+function currentActionsLayout(): "split" | "end" {
+  const brand =
+    typeof document !== "undefined" ? document.documentElement.getAttribute("data-brand") : null;
+  return resolveActionsLayout(brand);
+}
 
 const meta: Meta<PopupProps> = {
   title: "Components/Overlay/Popup",
@@ -19,6 +27,11 @@ const meta: Meta<PopupProps> = {
   },
   argTypes: {
     isMaskClose: { control: "boolean" },
+    actionsLayout: {
+      control: "radio",
+      options: [undefined, "split", "end"],
+      description: "버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split).",
+    },
   },
   args: {
     title: "알림",
@@ -79,7 +92,11 @@ function PopupStaticPreview({
         <p className="nds-popup__title">{title}</p>
         <p className="nds-popup__description">{description}</p>
       </div>
-      <div className="nds-popup__actions" data-single={dual ? undefined : "true"}>
+      <div
+        className="nds-popup__actions"
+        data-layout={currentActionsLayout()}
+        data-single={dual ? undefined : "true"}
+      >
         {dual && (
           <button type="button" className="nds-popup__btn nds-popup__btn--cancel">
             {cancelText}

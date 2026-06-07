@@ -123,9 +123,16 @@ import {
   TelephoneIcon,
   VideocameraIcon,
 } from "@nudge-design/icons";
-import { cv, radius, shadow } from "@nudge-design/tokens";
+import { cv, radius, shadow, resolveActionsLayout } from "@nudge-design/tokens";
 import inventory from "../../../../metadata/componentInventory.json";
 import componentGuides from "../../../../metadata/componentGuides.json";
+
+/** 갤러리 정적 프리뷰용 — 현재 브랜드 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
+function currentActionsLayout(): "split" | "end" {
+  const brand =
+    typeof document !== "undefined" ? document.documentElement.getAttribute("data-brand") : null;
+  return resolveActionsLayout(brand);
+}
 
 type ComponentGuide = {
   name: string;
@@ -341,7 +348,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
       const [chipC, setChipC] = useState("all");
       const [chipN, setChipN] = useState("all");
       const [seg, setSeg] = useState("week");
-      const [segPc, setSegPc] = useState("week");
       const segItems = [
         { key: "day", title: "일" },
         { key: "week", title: "주" },
@@ -419,22 +425,12 @@ const PREVIEWS: Record<string, PreviewRender> = {
             />
           </div>
           <div style={row}>
-            <div style={cap}>Segment · mobile (구 SegmentedControl)</div>
+            <div style={cap}>Segment (구 SegmentedControl)</div>
             <Tabs
               activeKey={seg}
               onTabChange={setSeg}
               variant="segment"
               size="mobile"
-              items={segItems}
-            />
-          </div>
-          <div style={row}>
-            <div style={cap}>Segment · pc</div>
-            <Tabs
-              activeKey={segPc}
-              onTabChange={setSegPc}
-              variant="segment"
-              size="pc"
               items={segItems}
             />
           </div>
@@ -510,19 +506,38 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Snackbar variant="error" title="저장에 실패했어요" closable onClose={() => {}} />
     </div>
   ),
+  /* 실제 컴포넌트와 동일한 nds-modal__* 클래스로 렌더 → styles.css 가 그대로 적용되어
+     브랜드 기본 버튼 배치(캐포비=end hug, 그 외=split)를 정확히 추종한다. */
   Modal: () => (
-    <div style={mockModalSurface}>
-      <div style={mockModalHeader}>
-        <div style={mockModalHeaderSpacer} aria-hidden />
-        <div style={mockModalHeaderTitle}>알림</div>
-        <span style={mockModalClose} aria-hidden>
-          <CloseIcon size={16} color="var(--semantic-icon-normal-default)" />
-        </span>
+    <div className="nds-modal__content" style={{ width: 244, margin: "0 auto" }}>
+      <div className="nds-modal__header" data-slot="header" data-has-title="true">
+        <span aria-hidden className="nds-modal__header-spacer" data-slot="header-spacer" />
+        <h3 className="nds-modal__header-title">알림</h3>
+        <button
+          type="button"
+          aria-hidden
+          tabIndex={-1}
+          className="nds-modal__close"
+          data-slot="close"
+        >
+          ✕
+        </button>
       </div>
-      <div style={mockModalBody}>저장된 변경사항을 적용할까요?</div>
-      <div style={mockModalFooter}>
-        <div style={mockModalCancelBtn}>취소</div>
-        <div style={mockModalConfirmBtn}>확인</div>
+      <div className="nds-modal__body" data-slot="body">
+        저장된 변경사항을 적용할까요?
+      </div>
+      <div
+        className="nds-modal__footer"
+        data-slot="footer"
+        data-layout={currentActionsLayout()}
+        data-has-both-actions="true"
+      >
+        <button type="button" className="nds-modal__footer-action nds-modal__footer-cancel">
+          취소
+        </button>
+        <button type="button" className="nds-modal__footer-action nds-modal__footer-confirm">
+          확인
+        </button>
       </div>
     </div>
   ),
@@ -539,13 +554,33 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
 
   /* ─── Overlay (정적 미리보기) ─── */
+  /* 실제 컴포넌트와 동일한 nds-popup__* 클래스로 렌더 → 브랜드 기본 버튼 배치 추종. */
   Popup: () => (
-    <div style={mockPopupSurface}>
-      <div style={mockPopupTitle}>정말 삭제할까요?</div>
-      <div style={mockPopupDesc}>이 작업은 되돌릴 수 없습니다.</div>
-      <div style={mockPopupActions}>
-        <div style={mockPopupCancelBtn}>취소</div>
-        <div style={mockPopupConfirmBtn}>삭제</div>
+    <div
+      className="nds-popup__content"
+      data-slot="content"
+      style={{ width: 224, margin: "0 auto" }}
+    >
+      <div className="nds-popup__text" data-slot="text-info">
+        <h3 className="nds-popup__title" data-slot="title">
+          정말 삭제할까요?
+        </h3>
+        <p className="nds-popup__description" data-slot="description">
+          이 작업은 되돌릴 수 없습니다.
+        </p>
+      </div>
+      <div
+        className="nds-popup__actions"
+        data-slot="actions"
+        data-layout={currentActionsLayout()}
+        data-single="false"
+      >
+        <button type="button" className="nds-popup__btn nds-popup__btn--cancel">
+          취소
+        </button>
+        <button type="button" className="nds-popup__btn nds-popup__btn--confirm">
+          삭제
+        </button>
       </div>
     </div>
   ),
@@ -760,7 +795,18 @@ const PREVIEWS: Record<string, PreviewRender> = {
     function M() {
       const [v, setV] = useState<string[]>(["a"]);
       return (
-        <div style={{ width: "100%", maxWidth: 280 }}>
+        // 드롭다운이 열릴 때 카드(overflow:hidden)에 가려지지 않도록 입력을 위쪽에
+        // 고정하고 아래로 열릴 세로 공간(≈ 트리거+옵션 목록)을 미리 확보한다.
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 280,
+            minHeight: 300,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+          }}
+        >
           <MultiSelect
             placeholder="모든 광고"
             searchPlaceholder="광고명으로 검색"
@@ -1896,142 +1942,10 @@ const previewRow: React.CSSProperties = {
 
 /* ──────────────────────────────────────────
    Overlay 정적 미리보기용 스타일
-   (Modal·Popup·BottomSheet·Toast 등 포털 컴포넌트의 시각적 형태만 흉내)
+   (BottomSheet·Toast 등 포털 컴포넌트의 시각적 형태만 흉내)
+   Modal·Popup 은 실제 nds-*__ 클래스로 렌더하므로 mock 스타일이 없다 —
+   브랜드 기본 버튼 배치(actionsLayout)를 styles.css 로 정확히 추종한다.
    ────────────────────────────────────────── */
-
-/* Modal — 헤더(타이틀 + ×) + 본문 + 분할 푸터 (Modal.tsx 토큰 정합) */
-const mockModalSurface: React.CSSProperties = {
-  width: 244,
-  background: cv.surface.default,
-  border: `1px solid ${cv.borderRole.subtle}`,
-  borderRadius: radius.lg,
-  padding: "18px 18px 14px",
-  boxShadow: shadow["3"],
-  display: "flex",
-  flexDirection: "column",
-  gap: "var(--semantic-gap-default)",
-};
-
-const mockModalHeader: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-};
-
-const mockModalHeaderSpacer: React.CSSProperties = {
-  width: 20,
-  height: 20,
-};
-
-const mockModalHeaderTitle: React.CSSProperties = {
-  flex: 1,
-  textAlign: "center",
-  fontSize: 14,
-  fontWeight: 700,
-  color: cv.textRole.normal,
-};
-
-const mockModalClose: React.CSSProperties = {
-  width: 20,
-  height: 20,
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: cv.textRole.muted,
-  fontSize: 14,
-};
-
-const mockModalBody: React.CSSProperties = {
-  fontSize: 12,
-  lineHeight: 1.55,
-  color: cv.textRole.normal,
-  textAlign: "center",
-  padding: "4px 4px var(--semantic-inset-chip)",
-};
-
-const mockModalFooter: React.CSSProperties = {
-  display: "flex",
-  gap: "var(--semantic-gap-default)",
-};
-
-const mockModalCancelBtn: React.CSSProperties = {
-  flex: 1,
-  padding: "9px 0",
-  borderRadius: radius.md,
-  border: `1px solid ${cv.borderRole.normal}`,
-  background: cv.surface.default,
-  color: cv.textRole.normal,
-  fontSize: 12,
-  fontWeight: 500,
-  textAlign: "center",
-};
-
-const mockModalConfirmBtn: React.CSSProperties = {
-  flex: 1,
-  padding: "10px 0",
-  borderRadius: radius.md,
-  background: cv.surface.brand,
-  color: cv.textRole.inverse,
-  fontSize: 12,
-  fontWeight: 700,
-  textAlign: "center",
-};
-
-/* Popup — alert 톤. 닫기 없음, 컴팩트, disabled-gray cancel + primary confirm (Popup.tsx 토큰 정합) */
-const mockPopupSurface: React.CSSProperties = {
-  width: 224,
-  background: cv.surface.default,
-  borderRadius: radius.md,
-  padding: "var(--semantic-inset-card-large) var(--semantic-inset-card-large) 14px",
-  boxShadow: shadow["3"],
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: 6,
-};
-
-const mockPopupTitle: React.CSSProperties = {
-  fontSize: 14,
-  fontWeight: 700,
-  color: cv.textRole.normal,
-  textAlign: "center",
-};
-
-const mockPopupDesc: React.CSSProperties = {
-  fontSize: 12,
-  lineHeight: 1.55,
-  color: cv.textRole.subtle,
-  textAlign: "center",
-  marginBottom: 8,
-};
-
-const mockPopupActions: React.CSSProperties = {
-  display: "flex",
-  gap: "var(--semantic-gap-default)",
-  width: "100%",
-};
-
-const mockPopupCancelBtn: React.CSSProperties = {
-  flex: 1,
-  padding: "10px 0",
-  borderRadius: radius.md,
-  background: cv.textRole.muted,
-  color: cv.surface.default,
-  fontSize: 12,
-  fontWeight: 700,
-  textAlign: "center",
-};
-
-const mockPopupConfirmBtn: React.CSSProperties = {
-  flex: 1,
-  padding: "10px 0",
-  borderRadius: radius.md,
-  background: cv.surface.brand,
-  color: cv.textRole.inverse,
-  fontSize: 12,
-  fontWeight: 700,
-  textAlign: "center",
-};
 
 const mockTooltipWrap: React.CSSProperties = {
   position: "relative",
@@ -2427,7 +2341,8 @@ const dsHighlightModeActive: React.CSSProperties = {
   ...dsHighlightMode,
   background: cv.surface.brand,
   borderColor: cv.borderRole.brand,
-  color: cv.textRole.inverse,
+  // 브랜드 배경 위 텍스트 — 실제 Button 과 같은 토큰(캐포비 노랑 위 검정, 그 외 흰색).
+  color: cv.button.textDefault,
 };
 
 /* Header / Footer — 화면 프레임 안에 배치해야 비례가 맞다 */

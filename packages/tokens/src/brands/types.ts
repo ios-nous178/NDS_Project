@@ -7,6 +7,7 @@
  */
 
 import type { TypeStyle } from "../typography";
+import type { ActionsLayout } from "../actionsLayout";
 
 /** 팔레트 컬러 — 브랜드 고유 색상 스케일 */
 export type ColorScale = Record<string | number, string>;
@@ -330,6 +331,16 @@ export interface ComponentOverrides {
 /** 브랜드 테마 전체 정의 */
 export interface BrandTheme {
   name: string;
+  /**
+   * 컴포넌트 액션(버튼) 기본 배치 — Modal/Popup 등 푸터 배치 하네스의 브랜드 기본값.
+   *   · "split" — 가로 균등 분할(2버튼 50/50, 1버튼 full).
+   *   · "end"   — 우측 정렬 hug(admin 톤).
+   * 색/pill 모양은 토큰/cascade 가 따로 담당하고, 이 값은 구조 variant 만 정한다.
+   * 컴포넌트는 `actionsLayout` prop / `actions-layout` 속성으로 override 가능.
+   * 미지정 시 `DEFAULT_ACTIONS_LAYOUT`("split") fallback. 새 브랜드는 반드시 선언해야
+   * 하며 `pnpm lint:actions-layout` 가 누락을 막는다. (SSOT — react/html 양쪽이 읽음)
+   */
+  actionsLayout?: ActionsLayout;
   /** 브랜드 고유 팔레트 컬러 */
   palette: Record<string, ColorScale>;
   /** 시맨틱 컬러 오버라이드 (Figma role-based 트리의 Partial) */

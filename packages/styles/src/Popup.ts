@@ -113,6 +113,19 @@ export const popupStyles = `
     color: ${cv.button.textDefault};
   }
 
+  /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).
+     split(기본)은 위: 2버튼 50/50, 1버튼 세로 스택. end 는 1·2버튼 모두 우측 hug row.
+     data-layout 은 resolveActionsLayout(브랜드 기본 + prop override)이 설정. pill/색은 별도. ─── */
+  :where(.${POPUP_ACTIONS_CLASS}[data-layout="end"]),
+  :where(.${POPUP_ACTIONS_CLASS}[data-layout="end"][data-single="true"]) {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  :where(.${POPUP_ACTIONS_CLASS}[data-layout="end"] .${POPUP_BTN_CLASS}) {
+    flex: 0 0 auto;
+  }
+
   /* ─── CashwalkBiz 확인/결정 팝업 — Figma ModalGuide ①②④ (3418-471) 정합 ───
      base Popup 은 가운데 정렬 + 50/50 회색 버튼이지만, 캐포비는 Modal 확인창과 동일하게
      좌측 정렬 본문 + 우측 hug pill 푸터(검정 confirm · outlined 취소). 텍스트/버튼 토큰은 Modal cashwalk 와 통일. */
@@ -140,16 +153,14 @@ export const popupStyles = `
     color: ${cv.textRole.normal};
   }
 
-  /* 푸터: 우측 정렬 hug pill (50/50·세로 스택 아님 — 1버튼/2버튼 모두 우측 hug) */
+  /* 푸터 배치(우측 hug)는 actionsLayout="end"(data-layout) 가 담당 —
+     resolveActionsLayout 가 cashwalk-biz 기본을 "end" 로 잡는다. 여기서는 gap·pill·색만. */
   :where([data-brand="cashwalk-biz"] .${POPUP_ACTIONS_CLASS}),
   :where([data-brand="cashwalk-biz"] .${POPUP_ACTIONS_CLASS}[data-single="true"]) {
-    flex-direction: row;
-    justify-content: flex-end;
     gap: ${spacing[8]}px;
   }
 
   :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CLASS}) {
-    flex: 0 0 auto;
     min-height: 44px;
     padding: ${spacing[12]}px ${spacing[18]}px;
     border: 1px solid transparent;

@@ -2,9 +2,16 @@ import React, { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, waitFor } from "storybook/test";
 import { Badge, Button, Modal, type ModalProps } from "@nudge-design/react";
-import { cv } from "@nudge-design/tokens";
+import { cv, resolveActionsLayout } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
+
+/** 정적 프리뷰용 — 현재 브랜드 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
+function currentActionsLayout(): "split" | "end" {
+  const brand =
+    typeof document !== "undefined" ? document.documentElement.getAttribute("data-brand") : null;
+  return resolveActionsLayout(brand);
+}
 
 /* Modal 은 createPortal 로 document.body 에 mount 되므로 캐스케이드를
    적용하려면 <html data-brand="cashwalk-biz"> 가 필요. 캐포비 admin 스토리는
@@ -216,6 +223,13 @@ const meta: Meta<ModalProps> = {
       description: {
         component: getComponentDocsDescription("Modal"),
       },
+    },
+  },
+  argTypes: {
+    actionsLayout: {
+      control: "radio",
+      options: [undefined, "split", "end"],
+      description: "푸터 버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split).",
     },
   },
 };
@@ -933,7 +947,11 @@ function ModalStaticPreview({
       <div className="nds-modal__body" style={{ textAlign: "left" }}>
         {body}
       </div>
-      <div className="nds-modal__footer" data-has-both-actions={dual ? "true" : undefined}>
+      <div
+        className="nds-modal__footer"
+        data-layout={currentActionsLayout()}
+        data-has-both-actions={dual ? "true" : undefined}
+      >
         {dual && (
           <button type="button" className="nds-modal__footer-action nds-modal__footer-cancel">
             {cancelText}

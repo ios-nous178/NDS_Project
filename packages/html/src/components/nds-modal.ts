@@ -28,6 +28,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { observeBrand, resolveLayoutFor } from "../base/brand.js";
 
 const MODAL_CLASS = "nds-modal";
 const ROOT_CLASS = `${MODAL_CLASS}__root`;
@@ -51,7 +52,7 @@ export class NdsModal extends NdsElement {
   static elementName = "nds-modal";
 
   static get observedAttributes(): readonly string[] {
-    return ["open", "title", "closable", "mask", "is-mask-close", "max-width"];
+    return ["open", "title", "closable", "mask", "is-mask-close", "max-width", "actions-layout"];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -59,10 +60,12 @@ export class NdsModal extends NdsElement {
   private _content: HTMLDivElement | null = null;
   private _header: HTMLDivElement | null = null;
   private _body: HTMLDivElement | null = null;
+  private _footer: HTMLElement | null = null;
   private _close: HTMLButtonElement | null = null;
   private _userBody: HTMLDivElement | null = null;
   private _wasOpen = false;
   private _previousFocus: Element | null = null;
+  private _unobserveBrand: (() => void) | null = null;
   private _onKey = (e: KeyboardEvent) => this._handleKey(e);
   private _onOverlayClick = () => {
     const maskClose = this.getAttribute("is-mask-close") !== "false";
@@ -72,11 +75,15 @@ export class NdsModal extends NdsElement {
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
+    // 브랜드 토글 시 actionsLayout 기본값을 다시 적용(스토리북 brand switch 등).
+    if (!this._unobserveBrand) this._unobserveBrand = observeBrand(() => this.scheduleUpdate());
     super.connectedCallback();
   }
 
   override disconnectedCallback(): void {
     document.removeEventListener("keydown", this._onKey, true);
+    this._unobserveBrand?.();
+    this._unobserveBrand = null;
   }
 
   private _mount(): void {
@@ -141,6 +148,7 @@ export class NdsModal extends NdsElement {
         if (actionCount >= 2) footerSource.dataset.hasBothActions = "true";
       }
       content.appendChild(footerSource);
+      this._footer = footerSource;
     }
 
     root.append(overlay, content);
@@ -170,6 +178,11 @@ export class NdsModal extends NdsElement {
 
     if (maxWidth) this._content.style.setProperty("--nds-modal-max-width", `${maxWidth}px`);
     else this._content.style.removeProperty("--nds-modal-max-width");
+
+    // 버튼 배치 — actions-layout attr 우선, 없으면 브랜드 기본(SSOT). custom 은 존중.
+    if (this._footer && this._footer.dataset.layout !== "custom") {
+      this._footer.dataset.layout = resolveLayoutFor(this, this.getAttribute("actions-layout"));
+    }
 
     this._syncHeader(titleText, closable);
 
