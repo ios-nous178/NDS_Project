@@ -306,3 +306,23 @@ export { NdsVoiceRecorder } from "./components/nds-voice-recorder.js";
 export { NdsWaveformPlayer } from "./components/nds-waveform-player.js";
 
 export { NdsInspector } from "./components/nds-inspector.js";
+
+// react↔html export parity 복원 — 이 컴포넌트들은 runtime.ts 에는 등록돼 있으나
+// index 배럴에서 빠져 있었다(NdsStepper 회귀와 동일 계열).
+export { NdsCoachMark } from "./components/nds-coach-mark.js";
+export type { CoachMarkPlacement } from "./components/nds-coach-mark.js";
+
+export { NdsEmptyState } from "./components/nds-empty-state.js";
+
+export { NdsOnlineIndicator } from "./components/nds-online-indicator.js";
+export type { PresenceStatus } from "./components/nds-online-indicator.js";
+
+export { NdsPagination } from "./components/nds-pagination.js";
+
+export { NdsPopup } from "./components/nds-popup.js";
+
+export { NdsSparkline } from "./components/nds-sparkline.js";
+export type { SparklineKind } from "./components/nds-sparkline.js";
+
+export { NdsTextButton } from "./components/nds-text-button.js";
+export type { TextButtonSize } from "./components/nds-text-button.js";

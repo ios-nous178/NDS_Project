@@ -22,7 +22,10 @@ if (!skipBuild) {
   });
 }
 
-if (previousCatalog?.generatedAt && fs.existsSync(catalogPath)) {
+// generatedAt 복원 write 는 빌드를 실제로 돌렸을 때만(=catalog 가 새로 생성됐을 때만) 한다.
+// --no-build(검증 모드)에서는 catalog 를 재생성하지 않으므로 이 write 가 working tree 를 헛되이
+// 더럽혔다(회귀: `pnpm lint`/검증이 catalog.json 을 리포맷해 dirty 로 만듦). check 는 non-mutating 이어야 함.
+if (!skipBuild && previousCatalog?.generatedAt && fs.existsSync(catalogPath)) {
   const nextCatalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
   nextCatalog.generatedAt = previousCatalog.generatedAt;
   fs.writeFileSync(catalogPath, `${JSON.stringify(nextCatalog, null, 2)}\n`, "utf8");

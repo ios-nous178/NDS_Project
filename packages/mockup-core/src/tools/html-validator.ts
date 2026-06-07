@@ -183,6 +183,12 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "amount-as-text-input": "warn",
   // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
   "amount-as-static-display": "warn",
+  // div+role/onclick 로 특정 DS 컴포넌트(파일업로드·페이지네이션·스텝퍼·검색)를 재발명 — dsRatio 만으론
+  //   90%대로 통과해 invisible 하던 사각지대를 named warn 으로 표면화(회귀: 캐포비 자작 페이저·스텝바).
+  "avoidable-reinvention": "warn",
+  // <script> 에서 nds-* 호스트의 textContent/innerText/innerHTML 직접 대입 — 컴포넌트 내부 렌더가
+  //   통째로 지워져 빈 박스/깨진 버튼이 됨(회귀: nds-button 라벨을 textContent 로 갈아끼움).
+  "nds-custom-element-content-mutation": "warn",
   // 캐포비 admin 성별 타겟팅은 SelectionButtonGroup(전체/특정) + selection chip 묶음으로 고정.
   "cashwalk-biz-gender-selection-control": "warn",
   // 선택 결과 add 어포던스 중복(외부 추가 + 패널 '추가 선택') — 모달 1개로 통일해야 함.
@@ -329,6 +335,39 @@ export function avoidableReinventionKind(
     const role = (attrs.role ?? "").toLowerCase();
     if (role && INTERACTIVE_ARIA_ROLES.has(role)) return "role-widget";
     if (attrs.onclick) return "role-widget";
+  }
+  return null;
+}
+
+/**
+ * role-widget 재발명(div/span + role/onclick)이 특정 DS 컴포넌트를 흉내 낸 것인지 시그니처로 판정.
+ * 매칭되면 named warn(avoidable-reinvention)으로 "무엇을" 재발명했는지 알린다. dsRatio 게이트와 무관.
+ * 오탐을 줄이려고 구체 시그니처(페이지 번호+이전/다음, Step N, 파일/이미지 업로드 문구, role=search)만 잡는다.
+ */
+function reinventedComponentHint(
+  attrs: Record<string, string>,
+  text: string,
+): { component: string; tag: string; guide: string } | null {
+  const t = text.replace(/\s+/g, " ").trim();
+  const role = (attrs.role ?? "").toLowerCase();
+  // pagination: 페이지 번호 나열(1 2 3 / 123) + 이전/다음(또는 ‹ › « »)
+  //   span 분리 마크업이면 $(el).text() 가 "‹123›" 로 붙으므로 자릿수 사이 구분자는 \D{0,3} 로 허용.
+  if (/(이전|다음|prev|next|‹|›|◀|▶|«|»)/i.test(t) && /1\D{0,3}2\D{0,3}3/.test(t)) {
+    return { component: "Pagination", tag: "nds-pagination", guide: "component:Pagination" };
+  }
+  // stepper: Step N / N단계 / 1—2—3 진행 표시
+  if (/step\s*\d/i.test(t) || /\d\s*단계/.test(t) || /1\s*[—–\-·>]\s*2\s*[—–\-·>]\s*3/.test(t)) {
+    return { component: "Stepper", tag: "nds-stepper", guide: "component:Stepper" };
+  }
+  // file/image upload: 파일/이미지 첨부·업로드·드래그
+  if (/(파일\s*(첨부|선택|업로드)|이미지\s*(첨부|추가|업로드)|드래그|drag\s*&?\s*drop)/i.test(t)) {
+    return /(이미지|image|사진)/i.test(t)
+      ? { component: "ImageUpload", tag: "nds-image-upload", guide: "component:ImageUpload" }
+      : { component: "FileUpload", tag: "nds-file-upload", guide: "component:FileUpload" };
+  }
+  // search: 검색 입력을 role=search/searchbox 위젯으로 (raw <input> 재발명은 native-interactive 가 잡음)
+  if (role === "search" || role === "searchbox") {
+    return { component: "SearchInput", tag: "nds-search-input", guide: "component:SearchInput" };
   }
   return null;
 }
@@ -630,6 +669,67 @@ export function validateHtmlSource(
     }
   }
 
+  // ─── nds-* 커스텀 엘리먼트 내부 텍스트 직접 변경 감지 — 문서 전역 1회 ───
+  //   <script> 에서 nds-* 엘리먼트의 textContent/innerText/innerHTML 을 대입하면 컴포넌트가 렌더한
+  //   내부 구조(슬롯/버튼/라벨)가 통째로 지워져 빈 박스/깨진 버튼이 된다(회귀: nds-button 라벨을
+  //   textContent 로 갈아끼워 내부가 날아감). 정적 분석이라 런타임 렌더 자체는 못 보지만, "nds-* 참조에
+  //   textContent= 대입" 이라는 코드 패턴은 잡는다. raw <div> 등에 대한 textContent 대입은 정상이므로 제외.
+  if (scriptText.trim() && /(textContent|innerText|innerHTML)/.test(scriptText)) {
+    // 1) nds-* 엘리먼트의 id / class 수집 → 셀렉터가 nds-* 를 가리키는지 판정용
+    const ndsIds = new Set<string>();
+    const ndsClasses = new Set<string>();
+    $("*").each((_i, e) => {
+      if (e.type !== "tag" || !e.tagName.toLowerCase().startsWith("nds-")) return;
+      const a = e.attribs ?? {};
+      if (a.id) ndsIds.add(a.id);
+      for (const c of (a.class ?? "").split(/\s+/).filter(Boolean)) ndsClasses.add(c);
+    });
+    const selectorHitsNds = (sel: string, byId: boolean): boolean => {
+      if (byId) return ndsIds.has(sel);
+      if (/(^|[\s,>+~(])nds-[a-z0-9-]+/.test(sel)) return true; // nds-* 태그 셀렉터
+      for (const m of sel.matchAll(/#([\w-]+)/g)) if (ndsIds.has(m[1])) return true;
+      for (const m of sel.matchAll(/\.([\w-]+)/g)) if (ndsClasses.has(m[1])) return true;
+      return false;
+    };
+    // 2) script 내 변수 → 셀렉터 매핑 (const x = document.querySelector('...') / getElementById('id'))
+    const varSelector = new Map<string, { sel: string; byId: boolean }>();
+    for (const m of scriptText.matchAll(
+      /(?:const|let|var)\s+([\w$]+)\s*=\s*(?:document\s*\.\s*)?(querySelector(?:All)?|getElementById)\s*\(\s*(['"`])([^'"`]+)\3/g,
+    )) {
+      varSelector.set(m[1], { sel: m[4], byId: m[2] === "getElementById" });
+    }
+    // 3) textContent / innerText / innerHTML 대입을 찾고, 좌변이 nds-* 참조면 위반
+    const seen = new Set<string>();
+    for (const m of scriptText.matchAll(
+      /((?:document\s*\.\s*)?(?:querySelector(?:All)?|getElementById)\s*\(\s*['"`][^'"`]+['"`]\s*\)|[\w$]+(?:\s*\.\s*[\w$]+|\s*\[[^\]]+\])*)\s*\.\s*(textContent|innerText|innerHTML)\s*=(?!=)/g,
+    )) {
+      const lhs = m[1];
+      const prop = m[2];
+      let isNds = false;
+      const inline = lhs.match(/(querySelector(?:All)?|getElementById)\s*\(\s*(['"`])([^'"`]+)\2/);
+      if (inline) {
+        isNds = selectorHitsNds(inline[3], inline[1] === "getElementById");
+      } else {
+        const head = lhs.match(/^[\w$]+/)?.[0] ?? "";
+        const mapped = varSelector.get(head);
+        if (mapped) isNds = selectorHitsNds(mapped.sel, mapped.byId);
+      }
+      if (!isNds) continue;
+      const key = `${lhs}.${prop}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const idx = source.indexOf(m[0]);
+      violations.push({
+        rule: "nds-custom-element-content-mutation",
+        line: idx >= 0 ? lineNumberAt(source, idx) : 1,
+        selector: "(script)",
+        detail: `<script> 에서 nds-* 커스텀 엘리먼트의 ${prop} 를 직접 설정 — 컴포넌트가 렌더한 내부 구조가 지워집니다(빈 박스/깨진 버튼).`,
+        suggestion:
+          "nds-* 호스트의 textContent/innerText/innerHTML 을 덮어쓰지 마세요. 값은 .value/.checked 프로퍼티, 라벨 텍스트는 슬롯 자식 텍스트 노드, 표시 토글은 속성(setAttribute)으로 바꿉니다.",
+      });
+    }
+  }
+
   // 모든 element 순회 — style / class / svg / native button 검사
   $("*").each((_idx, el) => {
     if (el.type !== "tag") return;
@@ -657,16 +757,31 @@ export function validateHtmlSource(
     }
     // E1 집계: 회피가능 재발명 — native 4종(별도 집계)·nds 채택을 제외한 raw landmark / role·onclick 위젯.
     //   nds-* 래퍼 내부(우리 WC 가 만든 inner 마크업)는 제외. countHtmlUsage 와 동일 판정(avoidableReinventionKind).
-    if (
+    const reinvKind =
       !countedAsNds &&
       tag !== "button" &&
       tag !== "input" &&
       tag !== "select" &&
       tag !== "textarea" &&
-      avoidableReinventionKind(tag, attrs) !== null &&
       !hasAncestorNdsTag(el)
-    ) {
+        ? avoidableReinventionKind(tag, attrs)
+        : null;
+    if (reinvKind !== null) {
       avoidableReinventionCount++;
+      // 추가: div+role/onclick 로 특정 DS 컴포넌트를 재발명했으면 named warn 으로 표면화한다.
+      //   (count 는 dsRatio 게이트용으로 그대로 유지 — 이건 비율과 무관하게 "무엇을" 재발명했는지 알린다.)
+      if (reinvKind === "role-widget") {
+        const hint = reinventedComponentHint(attrs, $(el).text());
+        if (hint) {
+          violations.push({
+            rule: "avoidable-reinvention",
+            line,
+            selector,
+            detail: `<${tag}> 가 role/onclick 로 ${hint.component} 를 재발명했습니다 — DS 컴포넌트 대체재가 있습니다.`,
+            suggestion: `<${hint.tag}> 를 사용하세요. get_guide({ topic: '${hint.guide}', target: 'html' }) 참조.`,
+          });
+        }
+      }
     }
 
     // 1. style="..." 검사
@@ -2232,6 +2347,8 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "date-as-text-input": "component",
   "amount-as-text-input": "component",
   "amount-as-static-display": "component",
+  "avoidable-reinvention": "component",
+  "nds-custom-element-content-mutation": "component",
   "cashwalk-biz-gender-selection-control": "component",
   // icon (icon-usage): 이모지/기호·인라인 svg·heading 장식 아이콘
   "emoji-banned": "icon",

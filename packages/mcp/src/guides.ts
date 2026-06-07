@@ -3484,6 +3484,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "checked 와 default-checked 동시 사용 — controlled / uncontrolled 가 섞임.",
       "label 없이 단독으로 던지지 말 것 — 한 줄 안내문이라도 aria-label 로 제공.",
       "`indeterminate` 는 `checked` 보다 우선 표시되고, 클릭하면 네이티브와 동일하게 `checked=true` 로 전이된다(부분→전체). '부모/전체선택' 행에만 쓰고 leaf 엔 쓰지 말 것.",
+      "상태 SSOT 는 호스트의 `checked` **프로퍼티** — `el.checked = true` 로 코드에서 바꿔도 `change` 는 발생하지 않는다(네이티브 동일, 사용자 입력에만 발화). 전체선택 헤더는 ①헤더 `change` → 자식 `.checked` 를 일괄 set, ②자식 `change` → 선택 수로 헤더 `checked`/`indeterminate` 3상태 재계산, 두 방향을 직접 잇는다. `onclick` 시점엔 아직 토글 전이라 상태가 안 settled — 반드시 `change` 를 들을 것. (`.click()` 만으론 호스트 토글이 안 됨.)",
       "**시/도 ▸ 시/군구 같은 계층 트리는 CheckboxTree** 가 부모 indeterminate 를 자동 계산 — 직접 indeterminate 를 손계산해 트리를 손조립하지 말 것. component:CheckboxTree.",
       "소규모 고정 옵션 다중선택(예: 연령대 10대~70대)은 **SelectChip**(`<nds-chip selected>`) 우선 — 체크박스 리스트는 약관 동의·긴 가변 리스트·행 단위 선택에. (`pattern:cashwalk-biz-badge-chip`)",
     ],
@@ -4921,6 +4922,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "다이얼로그/모달의 왼쪽(보조) 버튼 라벨은 항상 **닫기**. '취소'는 사용자가 진행 중이던 작업이 취소된다고 오해할 수 있어 사용 금지. 자세한 라이팅 룰은 get_guide({ topic: 'ux-writing' }) 참고.",
       "거절 가능한 비파괴 옵션이 항상 1개 이상 있어야 한다. CTA가 '확인' 하나뿐인 다이얼로그는 다크패턴 — get_guide({ topic: 'pattern:dark-patterns' }) 참고.",
       "외부 링크는 화살표보다 Link/ExternalLink 성격의 아이콘을 검토.",
+      "모달/팝업 푸터의 액션 그룹은 별도 규칙 — 버튼 `shape=\"pill\"` + 배치는 `actionsLayout`(react=actionsLayout / html=actions-layout 속성; 생략 시 브랜드 기본 강제: 캐포비=end 우측 hug, 그 외=split 가로 분할). 일반 화면 cta-group 규칙을 모달 푸터에 그대로 적용(사각 shape·full-width)하지 말 것. 푸터 결정 트리는 get_guide({ topic: 'component:Modal' }) 참고.",
     ],
     avoid: [
       "모든 '자세히 보기' 버튼에 화살표 반복",
@@ -4930,6 +4932,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "다이얼로그 보조 버튼에 '취소' 사용",
       "거절·닫기 옵션 없이 '확인' 하나만 있는 다이얼로그",
       "한 뷰포트에 primary solid CTA 2개 이상",
+      "모달/팝업 푸터 버튼에 default 사각 shape 또는 full-width 남용 (확인 팝업은 우측 hug pill — Modal 가이드 SSOT)",
     ],
     metrics: {
       maxArrowIconButtonPerViewport: 1,

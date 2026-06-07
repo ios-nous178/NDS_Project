@@ -132,6 +132,24 @@ if (!fs.existsSync(iconsVanillaSrc)) {
   process.exit(1);
 }
 
+// ── DS 정합성 하드 게이트 — 깨진 .mcpb 발행 차단 ──────────────────────────────
+//   --no-build 경로(html build 가 안 돌아 registry 임베드 게이트가 안 뜀)와 일반 경로 모두에서
+//   (1) 런타임 등록 누락(빈 박스 회귀)과 (2) react dist 없이 생성된 깨진 catalog(컴포넌트 0개)를
+//   패킹 직전에 확정 차단한다.
+run("node", ["scripts/check-runtime-registry.mjs"]);
+const packCatalog = readJson(path.join(MCP, "catalog.json"));
+const reactComponentCount = (packCatalog.components ?? []).filter((c) =>
+  String(c.dtsRelPath ?? "").startsWith("packages/react/"),
+).length;
+const MIN_REACT_COMPONENTS = 50; // 현재 ~121개. 50 미만이면 react dist 없이 만든 깨진 카탈로그.
+if (reactComponentCount < MIN_REACT_COMPONENTS) {
+  console.error(
+    `[pack-mcpb] catalog.json 의 react 컴포넌트가 ${reactComponentCount}개뿐 (기대 ≥ ${MIN_REACT_COMPONENTS}) — ` +
+      `react dist 없이 생성된 깨진 카탈로그입니다. 'pnpm build' 후 (필요 시 --no-build 빼고) 다시 패킹하세요.`,
+  );
+  process.exit(1);
+}
+
 removeIfExists(BUNDLE_DIR);
 ensureDir(path.join(BUNDLE_DIR, "dist/tools"));
 ensureDir(OUT_ROOT);
