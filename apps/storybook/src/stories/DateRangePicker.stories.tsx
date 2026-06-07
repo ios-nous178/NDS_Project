@@ -19,7 +19,13 @@ export const Default: Story = {
     const [v, setV] = useState<DateRange>({});
     return (
       <div style={{ width: 520 }}>
-        <DateRangePicker value={v} onValueChange={setV} />
+        <DateRangePicker
+          value={v}
+          onValueChange={setV}
+          allowClear
+          onClear={() => setV({})}
+          fullWidth
+        />
       </div>
     );
   },
@@ -31,7 +37,14 @@ export const WithPresets: Story = {
     const [v, setV] = useState<DateRange>({});
     return (
       <div style={{ width: 520 }}>
-        <DateRangePicker value={v} onValueChange={setV} presets={defaultRangePresets} />
+        <DateRangePicker
+          value={v}
+          onValueChange={setV}
+          presets={defaultRangePresets}
+          allowClear
+          onClear={() => setV({})}
+          fullWidth
+        />
       </div>
     );
   },
@@ -46,7 +59,35 @@ export const Prefilled: Story = {
     const [v, setV] = useState<DateRange>({ from: start, to: today });
     return (
       <div style={{ width: 520 }}>
-        <DateRangePicker value={v} onValueChange={setV} presets={defaultRangePresets} />
+        <DateRangePicker
+          value={v}
+          onValueChange={setV}
+          presets={defaultRangePresets}
+          allowClear
+          onClear={() => setV({})}
+          fullWidth
+        />
+      </div>
+    );
+  },
+};
+
+export const WeekdayOnly: Story = {
+  name: "Constraint/Weekday Only",
+  render: () => {
+    const [v, setV] = useState<DateRange>({});
+    return (
+      <div style={{ width: 520 }}>
+        <DateRangePicker
+          value={v}
+          onValueChange={setV}
+          disabledDate={(d) => d.getDay() === 0 || d.getDay() === 6}
+          status="warning"
+          placeholder="평일 기간 선택"
+          allowClear
+          onClear={() => setV({})}
+          fullWidth
+        />
       </div>
     );
   },
