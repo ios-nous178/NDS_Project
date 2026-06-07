@@ -16,7 +16,8 @@
     "bundle:mcp": "node ../../scripts/bundle-mcp-desktop.mjs",
     "bundle:claude": "node ../../scripts/bundle-claude-desktop.mjs",
     "package": "pnpm bundle:mcp && pnpm bundle:claude && electron-vite build && electron-builder",
-    "package:mac:arm64": "pnpm bundle:mcp && pnpm bundle:claude --targets=darwin-arm64 && electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg --arm64"
+    "package:mac:arm64": "pnpm bundle:mcp && pnpm bundle:claude --targets=darwin-arm64 && electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg --arm64",
+    "package:mac:x64": "pnpm bundle:mcp && pnpm bundle:claude --targets=darwin-x64 && electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg --x64"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.11.0",
