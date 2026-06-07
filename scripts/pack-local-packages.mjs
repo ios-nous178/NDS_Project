@@ -33,13 +33,18 @@ const ROOT = path.join(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "local-packages");
 
 // 순서는 의존성 그래프 기준 (deps 가 먼저 와야 tsc 가 .d.ts 를 찾을 수 있음):
-//   tokens / icons (no deps)
+//   tokens / icons / assets (no deps)
 //   → styles / tailwind-preset (tokens 의존)
-//   → react (tokens + icons + styles)
-// 이 순서가 깨지면 CI clean checkout 에서 `Cannot find module '@nudge-design/icons'` 같은
+//   → react (tokens + icons + styles + assets)
+// 이 순서가 깨지면 CI clean checkout 에서 `Cannot find module '@nudge-design/assets'` 같은
 // TS2307 에러로 빌드가 죽는다. 로컬에서는 stale dist/ 가 있어 빌드가 통과하므로
 // 사고가 잘 안 드러난다. 손대기 전 위 layer 분류를 다시 확인할 것.
-const PACKAGES = ["tokens", "icons", "styles", "tailwind-preset", "react"];
+//
+// assets 가 여기 있는 이유: react·html 둘 다 @nudge-design/assets(브랜드 로고 base64
+// SSOT)에 의존한다. 빠지면 외부 목업 프로젝트가 react/html .tgz 설치 시
+// "로컬에 assets .tgz 가 없다" 며 깨진다. 현재 전 패키지 version 이 0.0.1 로 정렬돼 있어
+// version 검증 대상에 포함해도 무방.
+const PACKAGES = ["tokens", "icons", "assets", "styles", "tailwind-preset", "react"];
 
 // SSOT version 검증 대상 외에 mcpb 와 함께 배포하는 부가 패키지.
 // MCP 처럼 별도 라이프사이클로 — html 만 변경된 릴리즈에서 DS 4개를 같이

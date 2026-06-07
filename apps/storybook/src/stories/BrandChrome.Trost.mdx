@@ -1,0 +1,51 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+import { BrandScope } from "../BrandScope";
+import * as Banner from "./Banner.Trost.stories";
+import * as Header from "./Header.Trost.stories";
+import * as Footer from "./Footer.Trost.stories";
+import * as BottomNav from "./BottomNav.Trost.stories";
+import * as Icons from "./Icons.Trost.stories";
+
+<Meta title="Brands/Trost/개요" />
+
+# Trost
+
+브랜드 전용 완성형 헤더/푸터/바텀네비를 모아둔 문서입니다.
+
+## Header
+
+<BrandScope brand="trost">
+  <Canvas of={Header.TrostWebHeaderDesktop} />
+  <Canvas of={Header.TrostMobile} />
+  <Canvas of={Header.TrostWebview} />
+  <Canvas of={Header.TrostWebviewHome} />
+</BrandScope>
+
+## Banner
+
+<BrandScope brand="trost">
+  <Canvas of={Banner.AppDownload} />
+  <Canvas of={Banner.CashtalkSubs} />
+  <Canvas of={Banner.AtoZGuide} />
+  <Canvas of={Banner.MobileDownload} />
+</BrandScope>
+
+## Footer
+
+<BrandScope brand="trost">
+  <Canvas of={Footer.TrostWeb} />
+  <Canvas of={Footer.TrostAppMobile} />
+  <Canvas of={Footer.TrostAppDesktop} />
+</BrandScope>
+
+## BottomNav
+
+<BrandScope brand="trost">
+  <Canvas of={BottomNav.TrostTabBar} />
+  <Canvas of={BottomNav.CashwalkTrostTabBar} />
+</BrandScope>
+
+## Icons
+
+<Canvas of={Icons.All} />

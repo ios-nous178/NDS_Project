@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { NumberStepper } from "@nudge-design/react";
 
 const meta: Meta<typeof NumberStepper> = {
-  title: "Components/NumberStepper",
+  title: "Components/Inputs/NumberStepper",
   component: NumberStepper,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -26,7 +26,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Size/sm md lg",
+  name: "Variant/sm md lg",
   render: function Render() {
     const [a, setA] = useState(1);
     const [b, setB] = useState(2);

@@ -308,8 +308,8 @@ function McpPitch() {
               <span className={clsx(styles.mcpAvatar, styles.mcpAvatarAi)}>AI</span>
               <p className={clsx(styles.mcpBubble, styles.mcpBubbleAi)}>
                 <code>get_guide(&#123; topic: 'principles' &#125;)</code> →{" "}
-                <code>find_component(&#123; query: 'mood' &#125;)</code> →{" "}
-                <code>get_guide(&#123; topic: 'component:MoodSelector' &#125;)</code> → 작성 →{" "}
+                <code>find_component(&#123; query: 'counselor' &#125;)</code> →{" "}
+                <code>get_guide(&#123; topic: 'component:CounselorCard' &#125;)</code> → 작성 →{" "}
                 <code>validate_mockup</code> 토큰 위반 0건.
               </p>
             </div>

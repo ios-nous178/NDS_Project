@@ -9,16 +9,25 @@ const ST_INDICATOR_CLASS = `${ST_CLASS}__indicator`;
 const ST_LABEL_CLASS = `${ST_CLASS}__label`;
 const ST_CONNECTOR_CLASS = `${ST_CLASS}__connector`;
 const ST_CHECK_CLASS = `${ST_CLASS}__check`;
+const ST_BAR_CLASS = `${ST_CLASS}__bar`;
+const ST_STEP_CLASS = `${ST_CLASS}__step`;
+const ST_TITLE_CLASS = `${ST_CLASS}__title`;
 
 /* ─── Types ─── */
 
-export type StepperVariant = "numbered" | "dots";
+/**
+ * - `numbered` / `dots`: 원형 인디케이터 + 커넥터 (가입·결제·온보딩 진척).
+ * - `bar`: 가로 막대 + 2단 라벨(step + title) — 어드민 다단계 흐름(구 StepProgress).
+ */
+export type StepperVariant = "numbered" | "dots" | "bar";
 
 export interface StepItem {
   /** 스텝 고유 키 */
   key: string;
-  /** 스텝 라벨 */
+  /** 스텝 라벨 — numbered/dots 는 단계명, bar 는 상단 eyebrow(예: "Step 1") */
   label?: React.ReactNode;
+  /** 보조 제목 — bar variant 의 두 번째 라벨 줄(예: "캠페인 만들기"). numbered/dots 는 무시 */
+  title?: React.ReactNode;
 }
 
 export interface StepperProps extends React.HTMLAttributes<HTMLOListElement> {
@@ -54,6 +63,41 @@ export const Stepper: React.FC<StepperProps> = ({
       {steps.map((step, idx) => {
         const state = idx < current ? "completed" : idx === current ? "current" : "upcoming";
         const isLast = idx === steps.length - 1;
+
+        if (variant === "bar") {
+          return (
+            <li
+              key={step.key}
+              data-slot="item"
+              data-variant="bar"
+              data-state={state}
+              aria-current={state === "current" ? "step" : undefined}
+              className={ST_ITEM_CLASS}
+            >
+              <span
+                aria-hidden="true"
+                data-slot="bar"
+                data-variant="bar"
+                className={ST_BAR_CLASS}
+              />
+              {(step.label !== undefined || step.title !== undefined) && (
+                <span data-slot="label" data-variant="bar" className={ST_LABEL_CLASS}>
+                  {step.label !== undefined && (
+                    <span data-slot="step" className={ST_STEP_CLASS}>
+                      {step.label}
+                    </span>
+                  )}
+                  {step.title !== undefined && (
+                    <span data-slot="title" className={ST_TITLE_CLASS}>
+                      {step.title}
+                    </span>
+                  )}
+                </span>
+              )}
+            </li>
+          );
+        }
+
         return (
           <li
             key={step.key}

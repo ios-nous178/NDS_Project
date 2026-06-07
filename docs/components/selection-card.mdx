@@ -24,6 +24,7 @@ description: 카드형 단일/다중 선택지. RadioCard / CheckboxCard를 한 
 
 ```tsx
 import { SelectionCard } from "@nudge-design/react";
+import { MockupBoldSunIcon } from "@nudge-design/icons";
 
 // 단일 선택 (RadioCard)
 <SelectionCard.Group mode="single" value={v} onValueChange={setV}>
@@ -38,7 +39,7 @@ import { SelectionCard } from "@nudge-design/react";
 </SelectionCard.Group>
 
 // 아이콘 포함
-<SelectionCard.Item title="아침 명상" icon={<span>🌅</span>} ... />
+<SelectionCard.Item title="아침 명상" icon={<MockupBoldSunIcon size={24} />} ... />
 
 // 가로 배치
 <SelectionCard.Group layout="horizontal" ...>

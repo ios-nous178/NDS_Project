@@ -18,7 +18,7 @@ export interface FoodItem {
   name: string;
   nameEn: string;
   category: string;
-  imageEmoji: string;
+  imageInitial: string;
   calories: number;
   servingSize: string;
   nutrients: NutrientInfo[];
@@ -37,7 +37,7 @@ export interface RelatedRecipe {
   calories: number;
   cookTime: string;
   difficulty: "쉬움" | "보통" | "어려움";
-  imageEmoji: string;
+  imageInitial: string;
   rating: number;
   reviewCount: number;
 }
@@ -48,7 +48,7 @@ export interface HealthyDeal {
   originalPrice: number;
   salePrice: number;
   discountPercent: number;
-  imageEmoji: string;
+  imageInitial: string;
   rating: number;
   reviewCount: number;
   badge?: string;
@@ -68,7 +68,7 @@ export interface SimilarFood {
   id: string;
   name: string;
   calories: number;
-  imageEmoji: string;
+  imageInitial: string;
   category: string;
   mainNutrient: string;
   mainNutrientAmount: string;
@@ -93,7 +93,7 @@ export const currentFood: FoodItem = {
   name: "아보카도",
   nameEn: "Avocado",
   category: "과일",
-  imageEmoji: "🥑",
+  imageInitial: "아",
   calories: 160,
   servingSize: "100g (약 1/2개)",
   nutrients: [
@@ -133,10 +133,10 @@ export const currentFood: FoodItem = {
  * ──────────────────────────────────────────── */
 
 export const comparisonFoods = [
-  { name: "아보카도", calories: 160, fat: 14.7, protein: 2.0, fiber: 6.7, emoji: "🥑" },
-  { name: "바나나", calories: 89, fat: 0.3, protein: 1.1, fiber: 2.6, emoji: "🍌" },
-  { name: "사과", calories: 52, fat: 0.2, protein: 0.3, fiber: 2.4, emoji: "🍎" },
-  { name: "블루베리", calories: 57, fat: 0.3, protein: 0.7, fiber: 2.4, emoji: "🫐" },
+  { name: "아보카도", calories: 160, fat: 14.7, protein: 2.0, fiber: 6.7 },
+  { name: "바나나", calories: 89, fat: 0.3, protein: 1.1, fiber: 2.6 },
+  { name: "사과", calories: 52, fat: 0.2, protein: 0.3, fiber: 2.4 },
+  { name: "블루베리", calories: 57, fat: 0.3, protein: 0.7, fiber: 2.4 },
 ];
 
 /* ────────────────────────────────────────────
@@ -150,7 +150,7 @@ export const relatedRecipes: RelatedRecipe[] = [
     calories: 420,
     cookTime: "15분",
     difficulty: "쉬움",
-    imageEmoji: "🍣",
+    imageInitial: "아",
     rating: 4.8,
     reviewCount: 324,
   },
@@ -160,7 +160,7 @@ export const relatedRecipes: RelatedRecipe[] = [
     calories: 350,
     cookTime: "10분",
     difficulty: "쉬움",
-    imageEmoji: "🍳",
+    imageInitial: "아",
     rating: 4.7,
     reviewCount: 512,
   },
@@ -170,7 +170,7 @@ export const relatedRecipes: RelatedRecipe[] = [
     calories: 220,
     cookTime: "5분",
     difficulty: "쉬움",
-    imageEmoji: "🥤",
+    imageInitial: "아",
     rating: 4.5,
     reviewCount: 189,
   },
@@ -180,7 +180,7 @@ export const relatedRecipes: RelatedRecipe[] = [
     calories: 280,
     cookTime: "15분",
     difficulty: "보통",
-    imageEmoji: "🫔",
+    imageInitial: "과",
     rating: 4.6,
     reviewCount: 276,
   },
@@ -190,7 +190,7 @@ export const relatedRecipes: RelatedRecipe[] = [
     calories: 310,
     cookTime: "20분",
     difficulty: "보통",
-    imageEmoji: "🥗",
+    imageInitial: "아",
     rating: 4.4,
     reviewCount: 148,
   },
@@ -200,7 +200,7 @@ export const relatedRecipes: RelatedRecipe[] = [
     calories: 380,
     cookTime: "30분",
     difficulty: "보통",
-    imageEmoji: "🍙",
+    imageInitial: "아",
     rating: 4.3,
     reviewCount: 97,
   },
@@ -217,7 +217,7 @@ export const healthyDeals: HealthyDeal[] = [
     originalPrice: 18000,
     salePrice: 12900,
     discountPercent: 28,
-    imageEmoji: "🥑",
+    imageInitial: "유",
     rating: 4.7,
     reviewCount: 1243,
     badge: "베스트",
@@ -228,7 +228,7 @@ export const healthyDeals: HealthyDeal[] = [
     originalPrice: 9900,
     salePrice: 7500,
     discountPercent: 24,
-    imageEmoji: "🧊",
+    imageInitial: "냉",
     rating: 4.5,
     reviewCount: 567,
   },
@@ -238,7 +238,7 @@ export const healthyDeals: HealthyDeal[] = [
     originalPrice: 15000,
     salePrice: 11200,
     discountPercent: 25,
-    imageEmoji: "🫒",
+    imageInitial: "아",
     rating: 4.8,
     reviewCount: 892,
     badge: "인기",
@@ -249,7 +249,7 @@ export const healthyDeals: HealthyDeal[] = [
     originalPrice: 32000,
     salePrice: 24900,
     discountPercent: 22,
-    imageEmoji: "🥤",
+    imageInitial: "아",
     rating: 4.3,
     reviewCount: 234,
   },
@@ -320,7 +320,7 @@ export const similarFoods: SimilarFood[] = [
     id: "s1",
     name: "올리브",
     calories: 115,
-    imageEmoji: "🫒",
+    imageInitial: "올",
     category: "과일",
     mainNutrient: "올레산",
     mainNutrientAmount: "11g",
@@ -329,7 +329,7 @@ export const similarFoods: SimilarFood[] = [
     id: "s2",
     name: "코코넛",
     calories: 354,
-    imageEmoji: "🥥",
+    imageInitial: "코",
     category: "과일",
     mainNutrient: "MCT 지방",
     mainNutrientAmount: "33g",
@@ -338,7 +338,7 @@ export const similarFoods: SimilarFood[] = [
     id: "s3",
     name: "호두",
     calories: 654,
-    imageEmoji: "🌰",
+    imageInitial: "호",
     category: "견과류",
     mainNutrient: "오메가-3",
     mainNutrientAmount: "9g",
@@ -347,7 +347,7 @@ export const similarFoods: SimilarFood[] = [
     id: "s4",
     name: "아몬드",
     calories: 579,
-    imageEmoji: "🫘",
+    imageInitial: "아",
     category: "견과류",
     mainNutrient: "비타민 E",
     mainNutrientAmount: "25mg",
@@ -356,7 +356,7 @@ export const similarFoods: SimilarFood[] = [
     id: "s5",
     name: "연어",
     calories: 208,
-    imageEmoji: "🐟",
+    imageInitial: "연",
     category: "생선",
     mainNutrient: "오메가-3",
     mainNutrientAmount: "2.3g",
@@ -365,7 +365,7 @@ export const similarFoods: SimilarFood[] = [
     id: "s6",
     name: "치아씨드",
     calories: 486,
-    imageEmoji: "🌱",
+    imageInitial: "치",
     category: "씨앗",
     mainNutrient: "식이섬유",
     mainNutrientAmount: "34g",
@@ -452,12 +452,12 @@ export const seasonalInfo: SeasonalInfo = {
  * ──────────────────────────────────────────── */
 
 export const trendingFoods = [
-  { name: "고구마", emoji: "🍠", calories: 86, searches: 12400 },
-  { name: "닭가슴살", emoji: "🍗", calories: 165, searches: 18200 },
-  { name: "브로콜리", emoji: "🥦", calories: 34, searches: 8900 },
-  { name: "귀리", emoji: "🌾", calories: 389, searches: 7600 },
-  { name: "연어", emoji: "🐟", calories: 208, searches: 15300 },
-  { name: "블루베리", emoji: "🫐", calories: 57, searches: 9800 },
-  { name: "계란", emoji: "🥚", calories: 155, searches: 21000 },
-  { name: "퀴노아", emoji: "🍚", calories: 120, searches: 5400 },
+  { name: "고구마", calories: 86, searches: 12400 },
+  { name: "닭가슴살", calories: 165, searches: 18200 },
+  { name: "브로콜리", calories: 34, searches: 8900 },
+  { name: "귀리", calories: 389, searches: 7600 },
+  { name: "연어", calories: 208, searches: 15300 },
+  { name: "블루베리", calories: 57, searches: 9800 },
+  { name: "계란", calories: 155, searches: 21000 },
+  { name: "퀴노아", calories: 120, searches: 5400 },
 ];

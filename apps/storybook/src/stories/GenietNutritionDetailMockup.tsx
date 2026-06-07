@@ -289,7 +289,7 @@ export default function GenietNutritionDetailMockup() {
               flexShrink: 0,
             }}
           >
-            {food.imageEmoji}
+            {food.imageInitial}
           </div>
 
           {/* 텍스트 정보 */}
@@ -519,7 +519,7 @@ export default function GenietNutritionDetailMockup() {
                 title: "식품",
                 render: (f, idx) => (
                   <span style={{ fontWeight: idx === 0 ? 700 : 400, color: G.black }}>
-                    {f.emoji} {f.name}
+                    {f.name}
                     {idx === 0 && (
                       <Badge variant="ghost" color="brand" size="sm" style={{ marginLeft: 8 }}>
                         현재
@@ -573,7 +573,7 @@ export default function GenietNutritionDetailMockup() {
                     fontSize: isMobile ? 40 : 48,
                   }}
                 >
-                  {recipe.imageEmoji}
+                  {recipe.imageInitial}
                 </div>
               }
               thumbnailRatio={isMobile ? "5/3" : "4/3"}
@@ -645,7 +645,7 @@ export default function GenietNutritionDetailMockup() {
                     position: "relative",
                   }}
                 >
-                  {deal.imageEmoji}
+                  {deal.imageInitial}
                   {deal.badge && (
                     <div style={{ position: "absolute", top: 8, left: 8 }}>
                       <Badge variant="fill" color="brand" size="sm">
@@ -830,7 +830,7 @@ export default function GenietNutritionDetailMockup() {
                     fontSize: isMobile ? 36 : 48,
                   }}
                 >
-                  {sf.imageEmoji}
+                  {sf.imageInitial}
                 </div>
               }
               thumbnailRatio="1/1"
@@ -890,7 +890,6 @@ export default function GenietNutritionDetailMockup() {
                   >
                     {i + 1}
                   </span>
-                  <span style={{ fontSize: 20, flexShrink: 0 }}>{tf.emoji}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 500, color: G.black }}>{tf.name}</div>
                     <div style={{ fontSize: 11, color: G.muted }}>{tf.calories}kcal</div>

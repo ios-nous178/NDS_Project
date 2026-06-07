@@ -5,12 +5,11 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  ActivityTimeline,
+  Timeline,
   AddressSearch,
   AmountInput,
   AppointmentCard,
   Footer,
-  AssessmentResultCard,
   Asset,
   AttachmentItem,
   AudioPlayer,
@@ -19,12 +18,12 @@ import {
   AvatarGroup,
   Badge,
   Banner,
+  NoticeAlert,
   Breadcrumb,
-  BreathingGuide,
   Button,
+  AddButton,
   Calendar,
   Card,
-  CardVisual,
   Carousel,
   ChatBubble,
   Checkbox,
@@ -32,19 +31,15 @@ import {
   CircularProgress,
   CommentItem,
   Confetti,
-  ConsentChecklist,
   ContentViewer,
   CounselorCard,
   CountdownTimer,
-  CouponCard,
-  CrisisCallout,
   DataTable,
   type DataTableColumn,
   type DateRange,
   DatePicker,
   DateRangePicker,
   Divider,
-  EmotionHeatmap,
   EmptyState,
   ExpandableText,
   FAB,
@@ -52,20 +47,15 @@ import {
   FileUpload,
   FilterBar,
   FormField,
-  GreetingHeader,
   Header,
   IconButton,
   Input,
-  JournalEntry,
   LikeButton,
   LikertScale,
   List,
   ListItem,
   MediaCard,
   MediaThumbnail,
-  MedicationItem,
-  MentionInput,
-  MoodSelector,
   NotificationItem,
   NumberStepper,
   OnlineIndicator,
@@ -80,39 +70,42 @@ import {
   ProgressBar,
   QuickActionGrid,
   Radio,
-  ReactionPicker,
   ReviewCard,
   ScoreGauge,
   SearchInput,
-  SegmentedControl,
   Select,
+  MultiSelect,
+  CheckboxTree,
+  CheckboxGroup,
+  PageSizeSelect,
   SelectionCard,
+  SelectionButtonGroup,
   Skeleton,
   Slider,
   Snackbar,
   Sparkline,
   Spinner,
   StarRating,
-  StatCard,
-  StatusTimeline,
   Stepper,
-  StreakCard,
   Tabs,
   TagInput,
   TextButton,
   Textarea,
   TimePicker,
   TimeSlotPicker,
-  TipCard,
-  TitleBlock,
+  TitleGroup,
   Toggle,
   TrendingKeywords,
   PopularPosts,
   FloatingCtaBanner,
   ImageUpload,
   ActionChip,
+  SelectedItemsPanel,
+  SelectedItemRow,
   UserCard,
   VotePoll,
+  Chart,
+  StatsTable,
 } from "@nudge-design/react";
 import {
   CalendarIcon,
@@ -130,9 +123,16 @@ import {
   TelephoneIcon,
   VideocameraIcon,
 } from "@nudge-design/icons";
-import { cv, radius, shadow } from "@nudge-design/tokens";
+import { cv, radius, shadow, resolveActionsLayout } from "@nudge-design/tokens";
 import inventory from "../../../../metadata/componentInventory.json";
 import componentGuides from "../../../../metadata/componentGuides.json";
+
+/** 갤러리 정적 프리뷰용 — 현재 브랜드 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
+function currentActionsLayout(): "split" | "end" {
+  const brand =
+    typeof document !== "undefined" ? document.documentElement.getAttribute("data-brand") : null;
+  return resolveActionsLayout(brand);
+}
 
 type ComponentGuide = {
   name: string;
@@ -142,7 +142,9 @@ type ComponentGuide = {
   usagePolicy?: {
     useFor?: string[];
     doNotUseFor?: string[];
-    limits?: Record<string, string | number>;
+    // SSOT(packages/mcp guides.ts ComponentGuide)는 boolean 도 허용(예: ProductCard
+    // rankingBadgeAndSoldOutMutuallyExclusive: true). 좁게 복제돼 drift 났던 것을 맞춤.
+    limits?: Record<string, string | number | boolean>;
   };
   figmaNodeUrl?: string;
   accessibility?: string[];
@@ -150,6 +152,22 @@ type ComponentGuide = {
 
 const GUIDES: Record<string, ComponentGuide> =
   (componentGuides as { components?: Record<string, ComponentGuide> }).components ?? {};
+
+function isBrandSpecificEntry(entry: {
+  name?: string;
+  storybookTitle?: string;
+  category?: string;
+}) {
+  const brandPrefixes = ["Geniet", "Trost", "NudgeEAP", "CashwalkBiz", "Runmile"];
+  return Boolean(
+    entry.storybookTitle?.startsWith("Brands/") ||
+    brandPrefixes.some(
+      (prefix) => entry.storybookTitle?.includes(`/${prefix}/`) || entry.name?.startsWith(prefix),
+    ) ||
+    entry.category === "브랜드" ||
+    entry.category === "Brand",
+  );
+}
 
 /* ──────────────────────────────────────────
    Preview registry
@@ -166,6 +184,14 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Button size="sm" variant="outlined">
         취소
       </Button>
+    </div>
+  ),
+  AddButton: () => (
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%", maxWidth: 360 }}
+    >
+      <AddButton>지역 추가</AddButton>
+      <AddButton error>지역 추가</AddButton>
     </div>
   ),
   TextButton: () => (
@@ -317,73 +343,95 @@ const PREVIEWS: Record<string, PreviewRender> = {
   },
   Tabs: () => {
     function TabsPreview() {
-      const [lineKey, setLineKey] = useState("home");
-      const [chipKey, setChipKey] = useState("all");
-      const [segKey, setSegKey] = useState("dash");
-      const dashIcon = (
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-          <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-          <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-          <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-          <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      );
-      const riskIcon = (
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M10 2L18 17H2L10 2Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-          />
-        </svg>
-      );
+      const [lineN, setLineN] = useState("home");
+      const [lineC, setLineC] = useState("home");
+      const [chipC, setChipC] = useState("all");
+      const [chipN, setChipN] = useState("all");
+      const [seg, setSeg] = useState("week");
+      const segItems = [
+        { key: "day", title: "일" },
+        { key: "week", title: "주" },
+        { key: "month", title: "월" },
+      ];
+      const lineItems = [
+        { key: "home", title: "홈" },
+        { key: "list", title: "목록" },
+      ];
+      const chipItems = [
+        { key: "all", title: "전체" },
+        { key: "work", title: "직장" },
+        { key: "love", title: "연애" },
+      ];
+      const cap: React.CSSProperties = {
+        fontSize: 11,
+        fontWeight: 700,
+        color: "var(--semantic-text-subtle-default)",
+        marginBottom: 4,
+      };
+      const row: React.CSSProperties = { width: "100%", maxWidth: 260 };
       return (
         <div
           style={{
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: "var(--semantic-gap-default)",
+            gap: "var(--semantic-gap-comfortable)",
           }}
         >
-          <div style={{ width: "100%", maxWidth: 240 }}>
+          <div style={row}>
+            <div style={cap}>Line · neutral</div>
             <Tabs
-              activeKey={lineKey}
-              onTabChange={setLineKey}
+              activeKey={lineN}
+              onTabChange={setLineN}
               variant="line"
               size="mobile"
               tone="neutral"
-              items={[
-                { key: "home", title: "홈" },
-                { key: "list", title: "목록" },
-              ]}
+              items={lineItems}
             />
           </div>
-          <div style={{ width: "100%", maxWidth: 240 }}>
+          <div style={row}>
+            <div style={cap}>Line · color</div>
             <Tabs
-              activeKey={chipKey}
-              onTabChange={setChipKey}
+              activeKey={lineC}
+              onTabChange={setLineC}
+              variant="line"
+              size="mobile"
+              tone="color"
+              items={lineItems}
+            />
+          </div>
+          <div style={row}>
+            <div style={cap}>Chip · color</div>
+            <Tabs
+              activeKey={chipC}
+              onTabChange={setChipC}
               variant="chip"
               size="mobile"
               tone="color"
               fullWidth={false}
-              items={[
-                { key: "all", title: "전체" },
-                { key: "work", title: "직장" },
-                { key: "love", title: "연애" },
-              ]}
+              items={chipItems}
             />
           </div>
-          <div style={{ width: "100%", maxWidth: 240 }}>
+          <div style={row}>
+            <div style={cap}>Chip · neutral</div>
             <Tabs
-              activeKey={segKey}
-              onTabChange={setSegKey}
+              activeKey={chipN}
+              onTabChange={setChipN}
+              variant="chip"
+              size="mobile"
+              tone="neutral"
+              fullWidth={false}
+              items={chipItems}
+            />
+          </div>
+          <div style={row}>
+            <div style={cap}>Segment (구 SegmentedControl)</div>
+            <Tabs
+              activeKey={seg}
+              onTabChange={setSeg}
               variant="segment"
-              items={[
-                { key: "dash", title: "대시보드", icon: dashIcon },
-                { key: "risk", title: "고위험군", icon: riskIcon },
-              ]}
+              size="mobile"
+              items={segItems}
             />
           </div>
         </div>
@@ -434,29 +482,62 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Banner variant="filled" title="이번주 신규 콘텐츠" />
     </div>
   ),
+  NoticeAlert: () => (
+    <div style={{ width: "100%", maxWidth: 240 }}>
+      <NoticeAlert variant="caution" message="1,000명 단위로 입력해 주세요." />
+    </div>
+  ),
   EmptyState: () => (
     <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
       <EmptyState title="아직 항목이 없어요" description="새로 추가해보세요" />
     </div>
   ),
   Snackbar: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <Snackbar variant="success" title="저장되었어요" />
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%", maxWidth: 340 }}>
+      <Snackbar
+        variant="success"
+        title="저장되었어요"
+        description="변경 사항이 반영되었습니다"
+        actionLabel="실행취소"
+        onAction={() => {}}
+        closable
+        onClose={() => {}}
+      />
+      <Snackbar variant="error" title="저장에 실패했어요" closable onClose={() => {}} />
     </div>
   ),
+  /* 실제 컴포넌트와 동일한 nds-modal__* 클래스로 렌더 → styles.css 가 그대로 적용되어
+     브랜드 기본 버튼 배치(캐포비=end hug, 그 외=split)를 정확히 추종한다. */
   Modal: () => (
-    <div style={mockModalSurface}>
-      <div style={mockModalHeader}>
-        <div style={mockModalHeaderSpacer} aria-hidden />
-        <div style={mockModalHeaderTitle}>알림</div>
-        <span style={mockModalClose} aria-hidden>
-          <CloseIcon size={16} color="var(--semantic-icon-normal-default)" />
-        </span>
+    <div className="nds-modal__content" style={{ width: 244, margin: "0 auto" }}>
+      <div className="nds-modal__header" data-slot="header" data-has-title="true">
+        <span aria-hidden className="nds-modal__header-spacer" data-slot="header-spacer" />
+        <h3 className="nds-modal__header-title">알림</h3>
+        <button
+          type="button"
+          aria-hidden
+          tabIndex={-1}
+          className="nds-modal__close"
+          data-slot="close"
+        >
+          ✕
+        </button>
       </div>
-      <div style={mockModalBody}>저장된 변경사항을 적용할까요?</div>
-      <div style={mockModalFooter}>
-        <div style={mockModalCancelBtn}>취소</div>
-        <div style={mockModalConfirmBtn}>확인</div>
+      <div className="nds-modal__body" data-slot="body">
+        저장된 변경사항을 적용할까요?
+      </div>
+      <div
+        className="nds-modal__footer"
+        data-slot="footer"
+        data-layout={currentActionsLayout()}
+        data-has-both-actions="true"
+      >
+        <button type="button" className="nds-modal__footer-action nds-modal__footer-cancel">
+          취소
+        </button>
+        <button type="button" className="nds-modal__footer-action nds-modal__footer-confirm">
+          확인
+        </button>
       </div>
     </div>
   ),
@@ -473,13 +554,33 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
 
   /* ─── Overlay (정적 미리보기) ─── */
+  /* 실제 컴포넌트와 동일한 nds-popup__* 클래스로 렌더 → 브랜드 기본 버튼 배치 추종. */
   Popup: () => (
-    <div style={mockPopupSurface}>
-      <div style={mockPopupTitle}>정말 삭제할까요?</div>
-      <div style={mockPopupDesc}>이 작업은 되돌릴 수 없습니다.</div>
-      <div style={mockPopupActions}>
-        <div style={mockPopupCancelBtn}>취소</div>
-        <div style={mockPopupConfirmBtn}>삭제</div>
+    <div
+      className="nds-popup__content"
+      data-slot="content"
+      style={{ width: 224, margin: "0 auto" }}
+    >
+      <div className="nds-popup__text" data-slot="text-info">
+        <h3 className="nds-popup__title" data-slot="title">
+          정말 삭제할까요?
+        </h3>
+        <p className="nds-popup__description" data-slot="description">
+          이 작업은 되돌릴 수 없습니다.
+        </p>
+      </div>
+      <div
+        className="nds-popup__actions"
+        data-slot="actions"
+        data-layout={currentActionsLayout()}
+        data-single="false"
+      >
+        <button type="button" className="nds-popup__btn nds-popup__btn--cancel">
+          취소
+        </button>
+        <button type="button" className="nds-popup__btn nds-popup__btn--confirm">
+          삭제
+        </button>
       </div>
     </div>
   ),
@@ -520,29 +621,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <div style={mockLightboxCounter}>1 / 4</div>
     </div>
   ),
-  ShareSheet: () => (
-    <div style={mockOverlayStage}>
-      <div style={mockStageBody}>본문 영역</div>
-      <div style={mockStageScrim} aria-hidden />
-      <div style={mockShareSheetPanel}>
-        <div style={mockGrabber} aria-hidden />
-        <div style={mockShareSheetRow}>
-          {[
-            { key: "copy", label: "복사" },
-            { key: "link", label: "링크" },
-            { key: "more", label: "더보기" },
-          ].map((t) => (
-            <div key={t.key} style={mockShareItem}>
-              <span style={mockShareIcon} aria-hidden>
-                <ShareIcon size={16} />
-              </span>
-              <span style={mockShareLabel}>{t.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  ),
   CoachMark: () => (
     <div style={mockCoachWrap}>
       <Button size="sm" variant="outlined">
@@ -568,48 +646,60 @@ const PREVIEWS: Record<string, PreviewRender> = {
       />
     </div>
   ),
-  JournalEntry: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <JournalEntry date="오늘" body="오랜만에 마음이 가벼웠다." mood="🙂" />
-    </div>
-  ),
-  StreakCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <StreakCard
-        streak={7}
-        unit="일"
-        days={[true, true, true, true, true, true, true].map((done, i) => ({
-          date: `D-${6 - i}`,
-          done,
-        }))}
-      />
-    </div>
-  ),
-  EmotionHeatmap: () => (
-    <div style={{ width: "100%", maxWidth: 220 }}>
-      <EmotionHeatmap
-        entries={Array.from({ length: 14 }, (_, i) => ({
-          date: `2026-05-${String(i + 1).padStart(2, "0")}`,
-          level: (i % 5) as 0 | 1 | 2 | 3 | 4,
-        }))}
-      />
-    </div>
-  ),
-  BreathingGuide: () => (
-    <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
-      <BreathingGuide autoStart={false} />
-    </div>
-  ),
   ChatComposer: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <Input placeholder="메시지 입력 (ChatComposer 대체 미리보기)" />
     </div>
   ),
-  CommentItem: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <CommentItem author="홍길동" text="좋은 글 잘 읽었습니다." time="방금 전" />
-    </div>
-  ),
+  CommentItem: () => {
+    function CommentLike({ count, size = "sm" }: { count: number; size?: "sm" | "md" }) {
+      const [liked, setLiked] = useState(false);
+      return (
+        <LikeButton size={size} liked={liked} count={count + (liked ? 1 : 0)} onChange={setLiked} />
+      );
+    }
+    return (
+      <div style={{ width: "100%", maxWidth: 320 }}>
+        <CommentItem
+          avatar={<Avatar name="이수영" size="sm" />}
+          author="이수영"
+          authorBadge={
+            <Badge variant="fill" color="brand" size="sm">
+              작성자
+            </Badge>
+          }
+          time="2시간 전"
+          text="좋은 글 잘 읽었습니다. 다음 편도 기대할게요!"
+          likeAction={<CommentLike count={12} />}
+          onReply={() => {}}
+          more={
+            <button
+              type="button"
+              aria-label="더보기"
+              style={{ border: "none", background: "transparent", cursor: "pointer", padding: 0 }}
+            >
+              ⋯
+            </button>
+          }
+          replies={
+            <CommentItem
+              isReply
+              avatar={<Avatar name="최서연" size="sm" />}
+              author="최서연"
+              authorBadge={
+                <Badge variant="line" color="brand" size="sm">
+                  상담사
+                </Badge>
+              }
+              time="1시간 전"
+              text="공감해 주셔서 감사합니다 :)"
+              likeAction={<CommentLike count={3} />}
+            />
+          }
+        />
+      </div>
+    );
+  },
   LikeButton: () => {
     function L() {
       const [liked, setLiked] = useState(false);
@@ -635,36 +725,171 @@ const PREVIEWS: Record<string, PreviewRender> = {
       />
     </div>
   ),
-  ReactionPicker: () => {
-    function R() {
-      const [v, setV] = useState<string[]>([]);
+  Chart: () => {
+    const labels = ["10", "20", "30", "40", "50", "60"];
+    const series = [
+      { name: "남성", values: [14, 15, 22, 25, 26, 16] },
+      { name: "여성", values: [14, 18, 20, 28, 26, 14] },
+    ];
+    const cap: React.CSSProperties = {
+      fontSize: 11,
+      fontWeight: 700,
+      color: "var(--semantic-text-subtle-default)",
+    };
+    return (
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%", maxWidth: 320 }}
+      >
+        <div>
+          <div style={cap}>Bar</div>
+          <Chart type="bar" labels={labels} series={series} />
+        </div>
+        <div>
+          <div style={cap}>Line</div>
+          <Chart type="line" labels={labels} series={series} />
+        </div>
+        <div>
+          <div style={cap}>Donut</div>
+          <Chart
+            type="donut"
+            labels={["직장", "연애", "건강", "기타"]}
+            series={[{ name: "비율", values: [42, 28, 18, 12] }]}
+          />
+        </div>
+      </div>
+    );
+  },
+  StatsTable: () => (
+    <div style={{ width: "100%", maxWidth: 360 }}>
+      <StatsTable>
+        <thead>
+          <tr>
+            <th>연령</th>
+            <th>성별</th>
+            <th>당첨자 수</th>
+            <th>지급 캐시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="is-summary">
+            <td colSpan={2}>총합</td>
+            <td>999,999</td>
+            <td>1,234,567</td>
+          </tr>
+          <tr>
+            <td rowSpan={2}>30대</td>
+            <td>남성</td>
+            <td>99</td>
+            <td>12,300</td>
+          </tr>
+          <tr>
+            <td>여성</td>
+            <td>120</td>
+            <td>15,600</td>
+          </tr>
+        </tbody>
+      </StatsTable>
+    </div>
+  ),
+  MultiSelect: () => {
+    function M() {
+      const [v, setV] = useState<string[]>(["a"]);
       return (
-        <ReactionPicker
-          value={v}
-          onValueChange={setV}
-          options={[
-            { key: "1", emoji: "👍" },
-            { key: "2", emoji: "❤️" },
-            { key: "3", emoji: "🙏" },
-          ]}
-        />
+        // 드롭다운이 열릴 때 카드(overflow:hidden)에 가려지지 않도록 입력을 위쪽에
+        // 고정하고 아래로 열릴 세로 공간(≈ 트리거+옵션 목록)을 미리 확보한다.
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 280,
+            minHeight: 300,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+          }}
+        >
+          <MultiSelect
+            placeholder="모든 광고"
+            searchPlaceholder="광고명으로 검색"
+            value={v}
+            onValueChange={setV}
+            options={[
+              { value: "a", label: "캠페인 A 타겟팅" },
+              { value: "b", label: "캠페인 B 리타겟" },
+              { value: "c", label: "캠페인 C 포커싱" },
+            ]}
+          />
+        </div>
       );
     }
-    return <R />;
+    return <M />;
   },
-  GreetingHeader: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <GreetingHeader name="지민" greeting="안녕하세요" question="오늘 기분 어떠세요?" />
-    </div>
-  ),
-  TipCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <TipCard tone="info" title="작은 팁" description="천천히 호흡해보세요." />
-    </div>
-  ),
-  TitleBlock: () => (
+  CheckboxGroup: () => {
+    function CG() {
+      const [v, setV] = useState<string[]>(["service"]);
+      return (
+        <div style={{ width: "100%", maxWidth: 320 }}>
+          <CheckboxGroup
+            value={v}
+            onValueChange={setV}
+            selectAll
+            selectAllLabel="전체 동의"
+            items={[
+              { value: "service", label: "이용약관", badge: "[필수]" },
+              { value: "privacy", label: "개인정보 수집·이용", badge: "[필수]" },
+              { value: "marketing", label: "마케팅 수신", badge: "[선택]" },
+            ]}
+          />
+        </div>
+      );
+    }
+    return <CG />;
+  },
+  CheckboxTree: () => {
+    function CT() {
+      const [v, setV] = useState<string[]>(["gangneung"]);
+      return (
+        <div style={{ width: "100%", maxWidth: 320 }}>
+          <CheckboxTree
+            value={v}
+            onValueChange={setV}
+            searchable={false}
+            defaultExpanded={["gangwon"]}
+            style={{ ["--nds-checkbox-tree-max-height" as string]: "260px" }}
+            nodes={[
+              {
+                value: "gangwon",
+                label: "강원도특별자치도",
+                children: [
+                  { value: "gangneung", label: "강릉시" },
+                  { value: "donghae", label: "동해시" },
+                  { value: "sokcho", label: "속초시" },
+                ],
+              },
+              {
+                value: "gyeongnam",
+                label: "경상남도",
+                children: [
+                  { value: "changwon", label: "창원시" },
+                  { value: "jinju", label: "진주시" },
+                ],
+              },
+            ]}
+          />
+        </div>
+      );
+    }
+    return <CT />;
+  },
+  PageSizeSelect: () => {
+    function P() {
+      const [n, setN] = useState(100);
+      return <PageSizeSelect value={n} onValueChange={setN} />;
+    }
+    return <P />;
+  },
+  TitleGroup: () => (
     <div style={{ width: "100%", maxWidth: 280 }}>
-      <TitleBlock level="h4" title="바로 상담하기" subtitle="급한 문제는 5분 내 바로 상담" />
+      <TitleGroup level="h4" title="바로 상담하기" subtitle="급한 문제는 5분 내 바로 상담" />
     </div>
   ),
   NotificationItem: () => (
@@ -673,8 +898,20 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   UserCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <UserCard name="홍길동" handle="@gildong" bio="EAP 전문 상담사" />
+    <div style={{ width: "100%", maxWidth: 280 }}>
+      <UserCard
+        avatar={<Avatar name="홍길동" />}
+        name="홍길동"
+        handle="@gildong"
+        bio="EAP 전문 상담사"
+        verified
+        meta="상담 1,204회 · 평점 4.9"
+        action={
+          <Button size="sm" variant="outlined">
+            팔로우
+          </Button>
+        }
+      />
     </div>
   ),
   ProductCard: () => (
@@ -685,11 +922,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
       price={13900}
     />
   ),
-  CouponCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <CouponCard discount="30%" title="신규 가입 쿠폰" expiry="~5/31" />
-    </div>
-  ),
   OrderSummaryCard: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <OrderSummaryCard
@@ -698,23 +930,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
           { label: "할인", value: "-3,000원" },
         ]}
         total="29,000원"
-      />
-    </div>
-  ),
-  CardVisual: () => (
-    <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
-      <CardVisual brand="visa" number="**** **** **** 1234" holder="홍길동" expiry="12/27" />
-    </div>
-  ),
-  StatusTimeline: () => (
-    <div style={{ width: "100%", maxWidth: 220 }}>
-      <StatusTimeline
-        steps={[
-          { key: "1", label: "접수" },
-          { key: "2", label: "진행" },
-          { key: "3", label: "완료" },
-        ]}
-        current={1}
       />
     </div>
   ),
@@ -792,17 +1007,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
     }
     return <T />;
   },
-  MentionInput: () => {
-    function M() {
-      const [v, setV] = useState("");
-      return (
-        <div style={{ width: "100%", maxWidth: 220 }}>
-          <MentionInput value={v} onValueChange={setV} users={[{ key: "1", name: "홍길동" }]} />
-        </div>
-      );
-    }
-    return <M />;
-  },
   PinPad: () => {
     function P() {
       const [v, setV] = useState("");
@@ -816,10 +1020,14 @@ const PREVIEWS: Record<string, PreviewRender> = {
   },
   TimePicker: () => {
     function T() {
-      const [v, setV] = useState("14:00");
+      const [v, setV] = useState("18:00");
       return (
-        <div style={{ width: "100%", maxWidth: 200 }}>
-          <TimePicker value={v} onValueChange={setV} />
+        <div style={{ width: "100%", maxWidth: 320 }} data-brand="cashwalk-biz">
+          <TimePicker
+            value={v}
+            onValueChange={setV}
+            presets={[{ label: "자정까지", value: "23:59" }]}
+          />
         </div>
       );
     }
@@ -907,8 +1115,22 @@ const PREVIEWS: Record<string, PreviewRender> = {
           marginBottom: 8,
         }}
       >
-        <div style={{ flex: 1, height: 4, background: "#2B96ED", borderRadius: 2 }} />
-        <div style={{ flex: 1, height: 4, background: "#2B96ED", borderRadius: 2 }} />
+        <div
+          style={{
+            flex: 1,
+            height: 4,
+            background: "var(--semantic-fill-brand-default)",
+            borderRadius: 2,
+          }}
+        />
+        <div
+          style={{
+            flex: 1,
+            height: 4,
+            background: "var(--semantic-fill-brand-default)",
+            borderRadius: 2,
+          }}
+        />
         <div style={{ flex: 1, height: 4, background: "#E6E7EB", borderRadius: 2 }} />
         <span style={{ fontSize: 11, color: "#888", marginLeft: 4 }}>2 / 3</span>
       </div>
@@ -965,11 +1187,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   Sparkline: () => <Sparkline data={[3, 5, 4, 8, 6, 9, 7, 11]} width={140} height={40} />,
-  StatCard: () => (
-    <div style={{ width: "100%", maxWidth: 200 }}>
-      <StatCard label="이번주 기록" value="12" unit="회" />
-    </div>
-  ),
   ExpandableText: () => (
     <div style={{ width: "100%", maxWidth: 220 }}>
       <ExpandableText lines={2}>
@@ -999,10 +1216,50 @@ const PREVIEWS: Record<string, PreviewRender> = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: 28,
       }}
     >
-      🎉
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden>
+        <rect
+          x="10"
+          y="14"
+          width="8"
+          height="5"
+          rx="1"
+          fill="#FF6B6B"
+          transform="rotate(-18 14 16)"
+        />
+        <circle cx="46" cy="16" r="3.5" fill="#06D6A0" />
+        <rect
+          x="30"
+          y="9"
+          width="7"
+          height="4"
+          rx="1"
+          fill="#FFD166"
+          transform="rotate(24 33 11)"
+        />
+        <circle cx="18" cy="34" r="3" fill="#118AB2" />
+        <rect
+          x="42"
+          y="32"
+          width="8"
+          height="5"
+          rx="1"
+          fill="#9D4EDD"
+          transform="rotate(32 46 34)"
+        />
+        <rect
+          x="22"
+          y="46"
+          width="7"
+          height="4"
+          rx="1"
+          fill="#FF9F1C"
+          transform="rotate(-12 25 48)"
+        />
+        <circle cx="48" cy="48" r="3.5" fill="#FFD166" />
+        <circle cx="33" cy="30" r="2.5" fill="#FF6B6B" />
+      </svg>
       <Confetti active={false} onComplete={() => {}} />
     </div>
   ),
@@ -1012,7 +1269,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
         <div
           style={{
             height: 70,
-            background: "#E6F3FD",
+            background: "var(--semantic-bg-brand-subtle)",
             borderRadius: 8,
             display: "flex",
             alignItems: "center",
@@ -1088,7 +1345,10 @@ const PREVIEWS: Record<string, PreviewRender> = {
             style={{
               width: 3,
               height: h,
-              background: i < 5 ? "#2B96ED" : "#D8D8D8",
+              background:
+                i < 5
+                  ? "var(--semantic-fill-brand-default)"
+                  : "var(--semantic-fill-brand-disabled)",
               borderRadius: 2,
             }}
           />
@@ -1181,7 +1441,12 @@ const PREVIEWS: Record<string, PreviewRender> = {
   /* 입력 */
   Textarea: () => (
     <div style={{ width: "100%", maxWidth: 220 }}>
-      <Textarea placeholder="오늘의 일기를 적어보세요" minHeight={72} />
+      <Textarea
+        placeholder="오늘의 일기를 적어보세요"
+        defaultValue="오늘은 상담이 잘 풀렸다."
+        minHeight={72}
+        maxLength={200}
+      />
     </div>
   ),
   FormField: () => (
@@ -1261,17 +1526,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
     }
     return <T />;
   },
-  MoodSelector: () => {
-    function M() {
-      const [v, setV] = useState("good");
-      return (
-        <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
-          <MoodSelector value={v} onValueChange={setV} showLabels={false} />
-        </div>
-      );
-    }
-    return <M />;
-  },
   LikertScale: () => {
     function L() {
       const [v, setV] = useState<string | number>(3);
@@ -1289,21 +1543,20 @@ const PREVIEWS: Record<string, PreviewRender> = {
     }
     return <L />;
   },
-  SegmentedControl: () => {
+
+  SelectionButtonGroup: () => {
     function S() {
-      const [v, setV] = useState("week");
+      const [v, setV] = useState("always");
       return (
-        <div style={{ width: "100%", maxWidth: 200 }}>
-          <SegmentedControl
-            value={v}
-            onValueChange={setV}
-            options={[
-              { value: "day", label: "일" },
-              { value: "week", label: "주" },
-              { value: "month", label: "월" },
-            ]}
-          />
-        </div>
+        <SelectionButtonGroup
+          value={v}
+          onValueChange={setV}
+          options={[
+            { value: "always", label: "항상" },
+            { value: "time", label: "특정 시간만" },
+            { value: "weekday", label: "특정 요일/시간만" },
+          ]}
+        />
       );
     }
     return <S />;
@@ -1476,27 +1729,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
 
   /* 도메인 */
-  AssessmentResultCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <AssessmentResultCard
-        title="PHQ-9 우울 검사"
-        score={12}
-        maxScore={27}
-        level="mild"
-        description="가벼운 우울 수준이에요."
-      />
-    </div>
-  ),
-  CrisisCallout: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <CrisisCallout
-        tone="danger"
-        title="지금 도움이 필요하다면"
-        description="자살예방상담전화로 연결할 수 있어요."
-        actions={[{ label: "1393", phoneNumber: "1393", withPhoneIcon: true }]}
-      />
-    </div>
-  ),
   CounselorCard: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <CounselorCard
@@ -1519,38 +1751,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
       </ChatBubble>
     </div>
   ),
-  ConsentChecklist: () => {
-    function C() {
-      const [v, setV] = useState<string[]>(["service"]);
-      return (
-        <div style={{ width: "100%", maxWidth: 240 }}>
-          <ConsentChecklist
-            value={v}
-            onValueChange={setV}
-            items={[
-              { key: "service", label: "서비스 이용 약관", required: true },
-              { key: "privacy", label: "개인정보 수집·이용", required: true },
-              { key: "marketing", label: "마케팅 정보 수신 (선택)" },
-            ]}
-          />
-        </div>
-      );
-    }
-    return <C />;
-  },
   ScoreGauge: () => (
     <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
       <ScoreGauge value={42} max={100} showLabel />
-    </div>
-  ),
-  MedicationItem: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <MedicationItem
-        name="라믹탈"
-        dosage="25mg · 1정"
-        times={["morning", "bedtime"]}
-        note="식후 30분"
-      />
     </div>
   ),
   AudioPlayer: () => (
@@ -1565,9 +1768,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
       />
     </div>
   ),
-  ActivityTimeline: () => (
+  Timeline: () => (
     <div style={{ width: "100%", maxWidth: 220 }}>
-      <ActivityTimeline
+      <Timeline
         items={[
           { key: "1", date: "5/12", title: "1차 상담", status: "completed", statusLabel: "완료" },
           { key: "2", date: "5/19", title: "2차 상담", status: "ongoing", statusLabel: "진행" },
@@ -1609,18 +1812,34 @@ const PREVIEWS: Record<string, PreviewRender> = {
     </div>
   ),
   DataTable: () => {
-    type Row = { id: string; name: string; status: string };
+    type Status = "완료" | "예약" | "취소";
+    type Row = { id: string; name: string; status: Status; sessions: number };
+    const tone: Record<Status, "success" | "neutral" | "error"> = {
+      완료: "success",
+      예약: "neutral",
+      취소: "error",
+    };
     const columns: DataTableColumn<Row>[] = [
       { key: "name", title: "이름", render: (r) => r.name },
-      { key: "status", title: "상태", render: (r) => r.status, align: "right" },
+      { key: "sessions", title: "상담", render: (r) => `${r.sessions}회`, align: "right" },
+      {
+        key: "status",
+        title: "상태",
+        align: "center",
+        render: (r) => (
+          <Badge color={tone[r.status]} variant="ghost">
+            {r.status}
+          </Badge>
+        ),
+      },
     ];
     const data: Row[] = [
-      { id: "1", name: "홍길동", status: "완료" },
-      { id: "2", name: "김상담", status: "예약" },
-      { id: "3", name: "이지원", status: "취소" },
+      { id: "1", name: "홍길동", status: "완료", sessions: 12 },
+      { id: "2", name: "김상담", status: "예약", sessions: 3 },
+      { id: "3", name: "이지원", status: "취소", sessions: 0 },
     ];
     return (
-      <div style={{ width: "100%", maxWidth: 240 }}>
+      <div style={{ width: "100%", maxWidth: 300 }}>
         <DataTable
           columns={columns}
           data={data}
@@ -1692,6 +1911,26 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <ActionChip label="다운로드" />
     </div>
   ),
+  SelectedItemsPanel: () => (
+    <div style={{ transform: "scale(0.72)", transformOrigin: "center" }}>
+      <div
+        style={
+          {
+            width: 360,
+            padding: "0 4px",
+            // 카탈로그 카드 안에서 헤더가 항상 보이도록 본문만 스크롤 제한
+            "--nds-selected-items-panel-body-max-height": "132px",
+          } as React.CSSProperties
+        }
+      >
+        <SelectedItemsPanel title="선택한 항목" count={3} onAdd={() => {}} onClear={() => {}}>
+          <SelectedItemRow onRemove={() => {}}>카테고리 &gt; 멤버 A</SelectedItemRow>
+          <SelectedItemRow onRemove={() => {}}>카테고리 &gt; 멤버 B</SelectedItemRow>
+          <SelectedItemRow onRemove={() => {}}>카테고리 &gt; 멤버 C</SelectedItemRow>
+        </SelectedItemsPanel>
+      </div>
+    </div>
+  ),
 };
 
 const previewRow: React.CSSProperties = {
@@ -1703,142 +1942,10 @@ const previewRow: React.CSSProperties = {
 
 /* ──────────────────────────────────────────
    Overlay 정적 미리보기용 스타일
-   (Modal·Popup·BottomSheet·Toast 등 포털 컴포넌트의 시각적 형태만 흉내)
+   (BottomSheet·Toast 등 포털 컴포넌트의 시각적 형태만 흉내)
+   Modal·Popup 은 실제 nds-*__ 클래스로 렌더하므로 mock 스타일이 없다 —
+   브랜드 기본 버튼 배치(actionsLayout)를 styles.css 로 정확히 추종한다.
    ────────────────────────────────────────── */
-
-/* Modal — 헤더(타이틀 + ×) + 본문 + 분할 푸터 (Modal.tsx 토큰 정합) */
-const mockModalSurface: React.CSSProperties = {
-  width: 244,
-  background: cv.surface.default,
-  border: `1px solid ${cv.borderRole.subtle}`,
-  borderRadius: radius.lg,
-  padding: "18px 18px 14px",
-  boxShadow: shadow["3"],
-  display: "flex",
-  flexDirection: "column",
-  gap: "var(--semantic-gap-default)",
-};
-
-const mockModalHeader: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-};
-
-const mockModalHeaderSpacer: React.CSSProperties = {
-  width: 20,
-  height: 20,
-};
-
-const mockModalHeaderTitle: React.CSSProperties = {
-  flex: 1,
-  textAlign: "center",
-  fontSize: 14,
-  fontWeight: 700,
-  color: cv.textRole.normal,
-};
-
-const mockModalClose: React.CSSProperties = {
-  width: 20,
-  height: 20,
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: cv.textRole.muted,
-  fontSize: 14,
-};
-
-const mockModalBody: React.CSSProperties = {
-  fontSize: 12,
-  lineHeight: 1.55,
-  color: cv.textRole.normal,
-  textAlign: "center",
-  padding: "4px 4px var(--semantic-inset-chip)",
-};
-
-const mockModalFooter: React.CSSProperties = {
-  display: "flex",
-  gap: "var(--semantic-gap-default)",
-};
-
-const mockModalCancelBtn: React.CSSProperties = {
-  flex: 1,
-  padding: "9px 0",
-  borderRadius: radius.md,
-  border: `1px solid ${cv.borderRole.normal}`,
-  background: cv.surface.default,
-  color: cv.textRole.normal,
-  fontSize: 12,
-  fontWeight: 500,
-  textAlign: "center",
-};
-
-const mockModalConfirmBtn: React.CSSProperties = {
-  flex: 1,
-  padding: "10px 0",
-  borderRadius: radius.md,
-  background: cv.surface.brand,
-  color: cv.textRole.inverse,
-  fontSize: 12,
-  fontWeight: 700,
-  textAlign: "center",
-};
-
-/* Popup — alert 톤. 닫기 없음, 컴팩트, disabled-gray cancel + primary confirm (Popup.tsx 토큰 정합) */
-const mockPopupSurface: React.CSSProperties = {
-  width: 224,
-  background: cv.surface.default,
-  borderRadius: radius.md,
-  padding: "var(--semantic-inset-card-large) var(--semantic-inset-card-large) 14px",
-  boxShadow: shadow["3"],
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: 6,
-};
-
-const mockPopupTitle: React.CSSProperties = {
-  fontSize: 14,
-  fontWeight: 700,
-  color: cv.textRole.normal,
-  textAlign: "center",
-};
-
-const mockPopupDesc: React.CSSProperties = {
-  fontSize: 12,
-  lineHeight: 1.55,
-  color: cv.textRole.subtle,
-  textAlign: "center",
-  marginBottom: 8,
-};
-
-const mockPopupActions: React.CSSProperties = {
-  display: "flex",
-  gap: "var(--semantic-gap-default)",
-  width: "100%",
-};
-
-const mockPopupCancelBtn: React.CSSProperties = {
-  flex: 1,
-  padding: "10px 0",
-  borderRadius: radius.md,
-  background: cv.textRole.muted,
-  color: cv.surface.default,
-  fontSize: 12,
-  fontWeight: 700,
-  textAlign: "center",
-};
-
-const mockPopupConfirmBtn: React.CSSProperties = {
-  flex: 1,
-  padding: "10px 0",
-  borderRadius: radius.md,
-  background: cv.surface.brand,
-  color: cv.textRole.inverse,
-  fontSize: 12,
-  fontWeight: 700,
-  textAlign: "center",
-};
 
 const mockTooltipWrap: React.CSSProperties = {
   position: "relative",
@@ -1869,7 +1976,7 @@ const mockTooltipArrow: React.CSSProperties = {
   background: cv.textRole.normal,
 };
 
-/* BottomSheet / ShareSheet / Toast — 화면 안 dim + 하단 시트 */
+/* BottomSheet / Toast — 화면 안 dim + 하단 시트 */
 const mockOverlayStage: React.CSSProperties = {
   position: "relative",
   width: 220,
@@ -1905,27 +2012,6 @@ const mockBottomSheetPanel: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: 6,
-};
-
-const mockShareSheetPanel: React.CSSProperties = {
-  position: "absolute",
-  left: 0,
-  right: 0,
-  bottom: 0,
-  background: cv.surface.default,
-  borderTopLeftRadius: radius.lg,
-  borderTopRightRadius: radius.lg,
-  padding: "var(--semantic-inset-chip) var(--semantic-inset-input) var(--semantic-inset-input)",
-  display: "flex",
-  flexDirection: "column",
-  gap: 6,
-};
-
-const mockShareSheetRow: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-around",
-  alignItems: "center",
-  gap: "var(--semantic-gap-default)",
 };
 
 const mockToastFloating: React.CSSProperties = {
@@ -2056,30 +2142,6 @@ const mockLightboxCounter: React.CSSProperties = {
   color: "#fff",
   fontSize: 10,
   fontWeight: 600,
-};
-
-const mockShareItem: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: 6,
-};
-
-const mockShareIcon: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: 36,
-  height: 36,
-  borderRadius: radius.pill,
-  background: cv.surface.page,
-  color: cv.textRole.normal,
-};
-
-const mockShareLabel: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 600,
-  color: cv.textRole.subtle,
 };
 
 const mockCoachWrap: React.CSSProperties = {
@@ -2256,7 +2318,7 @@ const dsHighlightFrame: React.CSSProperties = {
   padding: "10px 14px",
   border: `1px dashed ${cv.borderRole.brand}`,
   borderRadius: radius.md,
-  background: "rgba(43,150,237,0.06)",
+  background: "var(--semantic-bg-brand-subtle)",
 };
 
 const dsHighlightLabel: React.CSSProperties = {
@@ -2279,7 +2341,8 @@ const dsHighlightModeActive: React.CSSProperties = {
   ...dsHighlightMode,
   background: cv.surface.brand,
   borderColor: cv.borderRole.brand,
-  color: cv.textRole.inverse,
+  // 브랜드 배경 위 텍스트 — 실제 Button 과 같은 토큰(캐포비 노랑 위 검정, 그 외 흰색).
+  color: cv.button.textDefault,
 };
 
 /* Header / Footer — 화면 프레임 안에 배치해야 비례가 맞다 */
@@ -2533,14 +2596,19 @@ function Catalog() {
   const [category, setCategory] = useState("전체");
   const [syncedOnly, setSyncedOnly] = useState(false);
 
-  const syncedCount = useMemo(
-    () => inventory.filter((e) => (e as InventoryEntry).figmaSynced).length,
+  const catalogInventory = useMemo(
+    () => inventory.filter((entry) => !isBrandSpecificEntry(entry)),
     [],
+  );
+
+  const syncedCount = useMemo(
+    () => catalogInventory.filter((e) => (e as InventoryEntry).figmaSynced).length,
+    [catalogInventory],
   );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return inventory.filter((entry) => {
+    return catalogInventory.filter((entry) => {
       const matchesCategory = category === "전체" || entry.category === category;
       const matchesQuery =
         !q ||
@@ -2550,7 +2618,7 @@ function Catalog() {
       const matchesSynced = !syncedOnly || Boolean((entry as InventoryEntry).figmaSynced);
       return matchesCategory && matchesQuery && matchesSynced;
     });
-  }, [query, category, syncedOnly]);
+  }, [query, category, syncedOnly, catalogInventory]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, InventoryEntry[]>();
@@ -2564,6 +2632,21 @@ function Catalog() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div style={catalogNote}>
+        <p style={catalogNoteTitle}>Floating UI 구분</p>
+        <div style={catalogNoteGrid}>
+          <p style={catalogNoteItem}>
+            <strong>Modal</strong>은 응답이 필요한 큰 흐름, <strong>Popup</strong>은 짧은
+            확인/거부용입니다.
+          </p>
+          <p style={catalogNoteItem}>
+            <strong>Toast</strong>는 인터랙션 없이 자동 사라지는 일시 메시지,{" "}
+            <strong>Snackbar</strong>는 액션/되돌리기·닫기가 붙는 카드형 알림(캐포비 흰 카드
+            포함)입니다.
+          </p>
+        </div>
+      </div>
+
       <div style={controlsRow}>
         <input
           type="search"
@@ -2598,7 +2681,7 @@ function Catalog() {
           <span style={syncedToggleCount}>{syncedCount}</span>
         </label>
         <span style={countLabel}>
-          {filtered.length} / {inventory.length}
+          {filtered.length} / {catalogInventory.length}
         </span>
       </div>
 
@@ -2638,6 +2721,37 @@ const controlsRow: React.CSSProperties = {
   position: "sticky",
   top: 0,
   zIndex: 5,
+};
+
+const catalogNote: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  padding: "14px 16px",
+  border: "1px solid #E5E7EB",
+  borderRadius: 10,
+  background: "#F8FAFC",
+};
+
+const catalogNoteTitle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  fontWeight: 800,
+  color: "#111827",
+  letterSpacing: "-0.01em",
+};
+
+const catalogNoteGrid: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gap: 12,
+};
+
+const catalogNoteItem: React.CSSProperties = {
+  margin: 0,
+  fontSize: 12,
+  lineHeight: 1.55,
+  color: "#475569",
 };
 
 const searchInput: React.CSSProperties = {

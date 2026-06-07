@@ -26,6 +26,14 @@ const SB_USER_AVATAR_CLASS = `${SB_CLASS}__user-avatar`;
 const SB_USER_META_CLASS = `${SB_CLASS}__user-meta`;
 const SB_USER_NAME_CLASS = `${SB_CLASS}__user-name`;
 const SB_USER_ROLE_CLASS = `${SB_CLASS}__user-role`;
+const SB_ACCOUNT_CLASS = `${SB_CLASS}__account`;
+const SB_ACCOUNT_EMAIL_CLASS = `${SB_CLASS}__account-email`;
+const SB_ACCOUNT_BALANCE_CLASS = `${SB_CLASS}__account-balance`;
+const SB_ACCOUNT_BALANCE_LABEL_CLASS = `${SB_CLASS}__account-balance-label`;
+const SB_ACCOUNT_BALANCE_AMOUNT_CLASS = `${SB_CLASS}__account-balance-amount`;
+const SB_ACCOUNT_ACTIONS_CLASS = `${SB_CLASS}__account-actions`;
+const SB_ACTION_CLASS = `${SB_CLASS}__action`;
+const SB_FOOTER_ACTIONS_CLASS = `${SB_CLASS}__footer-actions`;
 
 export const sidebarStyles = `
   :where(.${SB_ROOT_CLASS}) {
@@ -410,5 +418,114 @@ export const sidebarStyles = `
   :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_USER_CLASS}) {
     justify-content: center;
     padding: ${spacing[4]}px;
+  }
+
+  /* ── 고정 계정 블록 (로고 아래) + 액션 버튼 (CTA 쌍 / 로그아웃) — nds-sidebar.ts 와 미러 ───── */
+  :where(.${SB_ACCOUNT_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[12]}px;
+    padding: 0 ${spacing[24]}px ${spacing[16]}px;
+    box-sizing: border-box;
+  }
+
+  :where(.${SB_ACCOUNT_EMAIL_CLASS}) {
+    margin: 0;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: 18px;
+    color: var(--nds-sidebar-text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :where(.${SB_ACCOUNT_BALANCE_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[4]}px;
+    padding: ${spacing[12]}px ${spacing[16]}px;
+    border-radius: 12px;
+    background: ${cv.surface.section};
+  }
+
+  :where(.${SB_ACCOUNT_BALANCE_LABEL_CLASS}) {
+    margin: 0;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: 16px;
+    color: var(--nds-sidebar-text-subtle);
+  }
+
+  :where(.${SB_ACCOUNT_BALANCE_AMOUNT_CLASS}) {
+    margin: 0;
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: ${fontWeight.bold};
+    color: var(--nds-sidebar-text-active);
+  }
+
+  :where(.${SB_ACCOUNT_ACTIONS_CLASS}) {
+    display: flex;
+    gap: ${spacing[8]}px;
+  }
+
+  :where(.${SB_ACCOUNT_ACTIONS_CLASS} .${SB_ACTION_CLASS}) {
+    flex: 1;
+  }
+
+  :where(.${SB_ACTION_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 ${spacing[16]}px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: ${fontWeight.semibold};
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  }
+
+  :where(.${SB_ACTION_CLASS}[data-variant="solid"]) {
+    background: ${cv.button.bgDefault};
+    color: ${cv.button.textDefault};
+  }
+
+  :where(.${SB_ACTION_CLASS}[data-variant="solid"]:hover) {
+    background: ${cv.button.bgHover};
+  }
+
+  :where(.${SB_ACTION_CLASS}[data-variant="outlined"]) {
+    background: ${cv.surface.default};
+    color: ${cv.textRole.brand};
+    border-color: ${cv.borderRole.brand};
+  }
+
+  :where(.${SB_ACTION_CLASS}[data-variant="outlined"]:hover) {
+    background: ${cv.surface.brandSubtle};
+  }
+
+  :where(.${SB_ACTION_CLASS}:focus-visible) {
+    outline: 2px solid ${cv.borderRole.focus};
+    outline-offset: 1px;
+  }
+
+  :where(.${SB_FOOTER_ACTIONS_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[8]}px;
+  }
+
+  :where(.${SB_FOOTER_ACTIONS_CLASS} .${SB_ACTION_CLASS}) {
+    width: 100%;
+  }
+
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_ACCOUNT_CLASS}),
+  :where(.${SB_ROOT_CLASS}[data-collapsed="true"] .${SB_FOOTER_ACTIONS_CLASS}) {
+    display: none;
   }
 `;

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Calendar } from "@nudge-design/react";
 
 const meta: Meta<typeof Calendar> = {
-  title: "Components/Calendar",
+  title: "Components/Inputs/Calendar",
   component: Calendar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

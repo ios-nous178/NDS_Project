@@ -5,6 +5,7 @@ import {
   RunmileAccountActiveIcon,
   RunmileSearchIcon,
 } from "@nudge-design/icons";
+import { RUNMILE_LOGO_DATA_URI } from "../brand-logo-defaults";
 
 /**
  * Runmile PC 메인 헤더 (Figma 1058:13271 / 1058:13336 / 1059:13975).
@@ -41,7 +42,7 @@ export interface RunmileWebHeaderMenuItem {
 }
 
 export interface RunmileWebHeaderProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
-  /** 로고 이미지 src (coral 워드마크 142×32 권장). @nudge-design/assets 의 runmile default dataUri 등. */
+  /** 로고 이미지 src (coral 워드마크 142×32). 미지정 시 base64 내장 Runmile 로고 — 파일 호스팅 불필요. */
   logoSrc?: string;
   logoAlt?: string;
   /** 로고 링크. 기본 "/". */
@@ -144,7 +145,7 @@ function ActionItem({ label, href, onClick, children, badge }: ActionItemProps) 
 export const RunmileWebHeader = React.forwardRef<HTMLElement, RunmileWebHeaderProps>(
   (
     {
-      logoSrc,
+      logoSrc = RUNMILE_LOGO_DATA_URI,
       logoAlt = "Runmile",
       logoHref = "/",
       logoWidth = 142,

@@ -16,9 +16,11 @@ export const CashwalkBizSearchDeleteIcon = React.forwardRef<SVGSVGElement, Cashw
       color={color}
       {...props}
     >
-      <circle cx="10.5" cy="10.5" r="6.25" stroke="currentColor" strokeWidth="1.5"/>
-  <path d="M15 15l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-  <path d="M8.5 8.5l4 4M12.5 8.5l-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+      <g transform="translate(2 2)">
+    <circle cx="10" cy="10" r="10" fill="currentColor" fill-opacity="0.4"/>
+    <path d="M13.33361 5.555582C13.64043 5.248757 14.13789 5.248758 14.44472 5.555583C14.75154 5.862408 14.75154 6.35987 14.44472 6.66669L6.66694 14.44447C6.36011 14.7513 5.862651 14.7513 5.555827 14.44447C5.249002 14.13765 5.249002 13.64019 5.555827 13.33336L13.33361 5.555582Z" fill="currentColor"/>
+    <path d="M5.555555 6.66683C5.24873 6.36 5.248731 5.862543 5.555556 5.555718C5.862381 5.248893 6.35984 5.248894 6.66667 5.555719L14.44445 13.3335C14.75127 13.64032 14.75127 14.13778 14.44444 14.44461C14.13762 14.75143 13.64016 14.75143 13.33333 14.44461L5.555555 6.66683Z" fill="currentColor"/>
+  </g>
     </svg>
   )
 );

@@ -6,10 +6,12 @@
  *     └─ <div class="nds-textarea__root" data-slot="root">
  *          ├─ <label class="nds-textarea__label" data-slot="label">메모</label>
  *          ├─ <div class="nds-textarea__wrapper" data-slot="wrapper" ...>
- *          │    ├─ <textarea class="nds-textarea__field" data-slot="field"></textarea>
- *          │    └─ <div class="nds-textarea__count" data-slot="count">0/200</div>
- *          └─ <span class="nds-textarea__helper" data-slot="helper">최대 200자</span>
+ *          │    └─ <textarea class="nds-textarea__field" data-slot="field"></textarea>
+ *          └─ <div class="nds-textarea__footer" data-slot="footer">   (helper 또는 count 있을 때)
+ *               ├─ <span class="nds-textarea__helper" data-slot="helper">최대 200자</span>
+ *               └─ <div class="nds-textarea__count" data-slot="count">0/200</div>
  *        </div>
+ *   (count 를 wrapper 밖 footer 로 빼 resize 그립과 상하로 겹치지 않게 한다.)
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -21,6 +23,7 @@ const TA_WRAPPER_CLASS = `${TA_CLASS}__wrapper`;
 const TA_FIELD_CLASS = `${TA_CLASS}__field`;
 const TA_HELPER_CLASS = `${TA_CLASS}__helper`;
 const TA_COUNT_CLASS = `${TA_CLASS}__count`;
+const TA_FOOTER_CLASS = `${TA_CLASS}__footer`;
 
 type TextareaResize = "none" | "vertical" | "horizontal" | "both";
 
@@ -70,6 +73,7 @@ export class NdsTextarea extends NdsElement {
   private _label: HTMLLabelElement | null = null;
   private _wrapper: HTMLDivElement | null = null;
   private _field: HTMLTextAreaElement | null = null;
+  private _footer: HTMLDivElement | null = null;
   private _count: HTMLDivElement | null = null;
   private _helper: HTMLSpanElement | null = null;
   private _inputId = "";
@@ -178,6 +182,26 @@ export class NdsTextarea extends NdsElement {
     this._syncLabel();
     this._syncHelper();
     this._syncCount();
+    this._removeFooterIfEmpty();
+  }
+
+  /** helper/count 를 담는 footer 행을 wrapper 뒤에 lazy 생성. */
+  private _ensureFooter(): HTMLDivElement {
+    if (!this._footer) {
+      const footer = document.createElement("div");
+      footer.className = TA_FOOTER_CLASS;
+      footer.dataset.slot = "footer";
+      this._root!.appendChild(footer);
+      this._footer = footer;
+    }
+    return this._footer;
+  }
+
+  private _removeFooterIfEmpty(): void {
+    if (this._footer && this._footer.childElementCount === 0) {
+      this._footer.remove();
+      this._footer = null;
+    }
   }
 
   private _syncLabel(): void {
@@ -213,8 +237,10 @@ export class NdsTextarea extends NdsElement {
       this._helper = document.createElement("span");
       this._helper.className = TA_HELPER_CLASS;
       this._helper.dataset.slot = "helper";
-      this._root.appendChild(this._helper);
     }
+    // footer 의 첫 요소로 — count 보다 앞에 둔다(count 는 margin-left:auto 로 우측).
+    const footer = this._ensureFooter();
+    if (this._helper.parentElement !== footer) footer.insertBefore(this._helper, footer.firstChild);
     this._helper.id = helperId;
     this._helper.dataset.error = error ? "true" : "false";
     this._helper.textContent = text;
@@ -233,8 +259,10 @@ export class NdsTextarea extends NdsElement {
       this._count = document.createElement("div");
       this._count.className = TA_COUNT_CLASS;
       this._count.dataset.slot = "count";
-      this._wrapper.appendChild(this._count);
     }
+    // footer 끝(helper 뒤)에 — wrapper 밖이라 resize 그립과 분리된다.
+    const footer = this._ensureFooter();
+    if (this._count.parentElement !== footer) footer.appendChild(this._count);
     const count = this._field.value.length;
     this._count.dataset.over = count > maxLength ? "true" : "false";
     this._count.textContent = `${count}/${maxLength}`;

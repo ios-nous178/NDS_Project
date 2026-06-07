@@ -367,16 +367,27 @@ const packagesMeta = [
 const componentNames = readDtsExports(reactDist);
 const unionMap = collectStringLiteralUnions([reactDist]);
 
+// 하드 가드 — react dist 가 없거나 안 빌드된 상태면 readDtsExports 가 [] 를 조용히 반환해
+// 컴포넌트 0개짜리 깨진 catalog.json 이 생성되던 회귀를 차단한다. icons/tokens/html 메타는
+// 따로 채워져 빌드 로그가 '정상'처럼 보이므로(false-healthy) 여기서 명시적으로 실패시킨다.
+const MIN_REACT_COMPONENTS = 50; // 현재 ~121개. 50 미만이면 react dist 가 비었거나 미빌드.
+if (componentNames.length < MIN_REACT_COMPONENTS) {
+  throw new Error(
+    `[emit-manifest] react 컴포넌트가 ${componentNames.length}개뿐 (기대 ≥ ${MIN_REACT_COMPONENTS}). ` +
+      `packages/react/dist 가 비었거나 안 빌드됐습니다 — 깨진 catalog 생성을 막기 위해 중단합니다. ` +
+      `'pnpm build --filter @nudge-design/react' (또는 'pnpm build') 후 다시 실행하세요.`,
+  );
+}
+
 /**
  * `nds-icon-button` → `IconButton`. emit-manifest 가 components 와 nds-* 메타를
  * cross-link 할 때 사용. parser.ts 의 ndsTagToComponentName 과 동일 컨벤션.
  *
- * 일부 React 명명이 PascalCase 단순 변환과 다른 경우 (FAB 약어, SegmentedControl 풀네임)
+ * 일부 React 명명이 PascalCase 단순 변환과 다른 경우 (FAB 약어 등)
  * 는 NDS_TAG_TO_REACT_ALIAS 로 보정한다 — 둘은 의미적으로 동일 컴포넌트라 한 엔트리에 합치는 게 맞음.
  */
 const NDS_TAG_TO_REACT_ALIAS = {
   "nds-fab": "FAB",
-  "nds-segmented": "SegmentedControl",
 };
 function ndsTagToPascal(tag) {
   if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];
@@ -404,20 +415,68 @@ const components = componentNames.map((name) => {
 
 const icons = readIconExports(iconsDist);
 
-let tokens = [];
-if (fs.existsSync(tokensCssPath)) {
-  const css = fs.readFileSync(tokensCssPath, "utf-8");
-  const seen = new Map();
+// CSS 파일 하나를 { --name: value } Map 으로. (첫 정의 우선 — base 와 동일 규칙)
+function parseCssVars(file) {
+  const map = new Map();
+  if (!fs.existsSync(file)) return map;
+  const css = fs.readFileSync(file, "utf-8");
   const re = /(--[\w-]+)\s*:\s*([^;]+);/g;
   let m;
   while ((m = re.exec(css)) !== null) {
-    if (!seen.has(m[1])) seen.set(m[1], m[2].trim());
+    if (!map.has(m[1])) map.set(m[1], m[2].trim());
   }
-  tokens = [...seen.entries()].map(([name, value]) => {
-    const group = name.replace(/^--/, "").split("-")[0];
-    return { name, value, group };
-  });
+  return map;
 }
+
+const tokenGroupOf = (name) => name.replace(/^--/, "").split("-")[0];
+
+// base = tokens.css = nudge-eap. 나머지 dist/*.css 는 브랜드 테마(full token set).
+// 같은 이름·다른 값 → brandValues 오버라이드. base 에 없는 이름 → 브랜드 고유 토큰.
+const baseMap = parseCssVars(tokensCssPath);
+const brandCssMaps = fs.existsSync(tokensDistDir)
+  ? fs
+      .readdirSync(tokensDistDir)
+      .filter((f) => f.endsWith(".css") && f !== "tokens.css")
+      .sort()
+      .map((f) => ({
+        slug: f.replace(/\.css$/, ""),
+        map: parseCssVars(path.join(tokensDistDir, f)),
+      }))
+  : [];
+
+// base(공통) 토큰 — 브랜드가 값을 덮으면 brandValues 에 기록.
+const baseTokens = [...baseMap.entries()].map(([name, value]) => {
+  const entry = { name, value, group: tokenGroupOf(name) };
+  const brandValues = {};
+  for (const { slug, map } of brandCssMaps) {
+    const bv = map.get(name);
+    if (bv !== undefined && bv !== value) brandValues[slug] = bv;
+  }
+  if (Object.keys(brandValues).length) entry.brandValues = brandValues;
+  return entry;
+});
+
+// base 에 없는 브랜드 고유 토큰 (예: geniet --color-mint-*).
+const uniqueMap = new Map(); // name -> { value, brands:Set, brandValues:{} }
+for (const { slug, map } of brandCssMaps) {
+  for (const [name, value] of map) {
+    if (baseMap.has(name)) continue; // 오버라이드는 위에서 처리됨
+    if (!uniqueMap.has(name)) {
+      uniqueMap.set(name, { value, brands: new Set([slug]), brandValues: {} });
+    } else {
+      const u = uniqueMap.get(name);
+      u.brands.add(slug);
+      if (value !== u.value) u.brandValues[slug] = value;
+    }
+  }
+}
+const brandTokens = [...uniqueMap.entries()].map(([name, u]) => {
+  const entry = { name, value: u.value, group: tokenGroupOf(name), brands: [...u.brands].sort() };
+  if (Object.keys(u.brandValues).length) entry.brandValues = u.brandValues;
+  return entry;
+});
+
+const tokens = [...baseTokens, ...brandTokens];
 
 const brands = collectBrands();
 
@@ -492,9 +551,27 @@ function collectNdsHtmlElements() {
       const values = [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
       if (values.length > 0) attrs[attrName] = values;
     }
-    out.push({ tag, attrs });
+    out.push({ tag, attrs, observedAttrs: extractObservedAttrs(mainSrc, tag) });
   }
   return out;
+}
+
+/**
+ * 파일의 메인 엘리먼트(`static elementName === tag`)의 observedAttributes 배열을 뽑는다.
+ * 한 파일에 보조 엘리먼트(nds-accordion-item 등)가 같이 있으면 그쪽 observedAttributes
+ * 까지 섞이지 않도록, elementName 선언 위치부터 첫 observedAttributes return 만 읽는다.
+ * elementName 선언이 없으면(메인 = 파일명) 파일 첫 observedAttributes 로 폴백.
+ * react props ↔ html attr 이름 set parity 비교(check-mirror-parity)의 한쪽 축.
+ */
+function extractObservedAttrs(src, tag) {
+  const escaped = tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const elIdx = src.search(new RegExp(`static\\s+elementName\\s*=\\s*["']${escaped}["']`));
+  const scope = elIdx >= 0 ? src.slice(elIdx) : src;
+  const m = scope.match(
+    /static\s+get\s+observedAttributes\s*\([^)]*\)\s*:[^{]*\{\s*return\s*\[([\s\S]*?)\]/,
+  );
+  if (!m) return [];
+  return [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
 }
 const ndsHtmlElements = collectNdsHtmlElements();
 
@@ -517,6 +594,7 @@ const DEV_ONLY_NDS_TAGS = new Set(["nds-inspector"]);
     if (existing) {
       existing.htmlTag = el.tag;
       if (Object.keys(el.attrs).length > 0) existing.htmlAttrs = el.attrs;
+      if (el.observedAttrs.length > 0) existing.htmlObservedAttrs = el.observedAttrs;
       continue;
     }
     // React 에 짝이 없는 html-only 컴포넌트 — props 는 없지만 htmlAttrs 가 곧 prop 스펙 역할.
@@ -527,6 +605,7 @@ const DEV_ONLY_NDS_TAGS = new Set(["nds-inspector"]);
       htmlTag: el.tag,
     };
     if (Object.keys(el.attrs).length > 0) entry.htmlAttrs = el.attrs;
+    if (el.observedAttrs.length > 0) entry.htmlObservedAttrs = el.observedAttrs;
     components.push(entry);
     componentIndex.set(pascal, entry);
   }

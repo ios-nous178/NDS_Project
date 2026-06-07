@@ -8,6 +8,11 @@
  *     <nds-select-option value="us" disabled>미국 (off)</nds-select-option>
  *   </nds-select>
  *
+ * 폭:
+ *   기본 full-width=true(트리거 100% — 폼/캐포비 기본, React fullWidth 기본과 일치).
+ *   좁게 쓰려면 full-width="false"(어드민 검색 필터 등). 드롭다운 메뉴 폭은 전체너비면
+ *   트리거 폭으로 고정, auto 면 가장 넓은 옵션까지 grow 후 캡(넘으면 옵션 말줄임).
+ *
  * 이벤트:
  *   option 선택 → host 에 `value` attribute 설정 + "select-change" CustomEvent
  *   (detail: { value }, bubbles: true).
@@ -32,7 +37,25 @@ const TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
 const CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
 const DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const OPTION_CLASS = `${SELECT_CLASS}__option`;
+const OPTION_LABEL_CLASS = `${SELECT_CLASS}__option-label`;
+const OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
+const SEARCH_CLASS = `${SELECT_CLASS}__search`;
+const EMPTY_CLASS = `${SELECT_CLASS}__empty`;
+
+const SEARCH_ICON_SVG =
+  '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+  '<circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/>' +
+  '<path d="M13 13l-2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
+  "</svg>";
+
+/** auto(좁은) 셀렉트에서 드롭다운이 가장 넓은 옵션까지 grow 할 때의 상한(px). React 와 동일. */
+const SELECT_AUTO_MENU_MAX_WIDTH = 360;
 const HELPER_CLASS = `${SELECT_CLASS}__helper`;
+
+const OPTION_CHECK_SVG =
+  '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+  '<path d="M3.5 8.5L6.5 11.5L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+  "</svg>";
 
 let nextSelectId = 0;
 
@@ -50,6 +73,9 @@ export class NdsSelect extends NdsElement {
       "full-width",
       "open",
       "select-id",
+      "searchable",
+      "search-placeholder",
+      "empty-message",
     ];
   }
 
@@ -60,6 +86,13 @@ export class NdsSelect extends NdsElement {
   private _chevron: HTMLSpanElement | null = null;
   private _dropdown: HTMLDivElement | null = null;
   private _helper: HTMLSpanElement | null = null;
+  // searchable(검색형, React Select.searchable / Ant showSearch 모델) 전용 노드
+  private _search: HTMLDivElement | null = null;
+  private _searchInput: HTMLInputElement | null = null;
+  private _empty: HTMLDivElement | null = null;
+  private _query = "";
+  private _focusSearchOnOpen = false;
+  private _childObserver: MutationObserver | null = null;
   private _selectId = "";
   private _activeValue: string | null = null;
   private _outsideClick = (e: MouseEvent) => {
@@ -79,6 +112,7 @@ export class NdsSelect extends NdsElement {
   }
 
   override disconnectedCallback(): void {
+    this._childObserver?.disconnect();
     document.removeEventListener("click", this._outsideClick, true);
     document.removeEventListener("keydown", this._onKey, true);
     window.removeEventListener("scroll", this._onReposition, true);
@@ -149,16 +183,6 @@ export class NdsSelect extends NdsElement {
       const value = opt.getAttribute("value") ?? "";
       this.pickValue(value);
     });
-    for (const opt of options) {
-      dropdown.appendChild(opt);
-      // innerHTML 으로 children 이 박힐 때 부모 (nds-select) 의 connectedCallback 이
-      // 자식 (nds-select-option) 보다 먼저 호출되어 자식이 아직 upgrade 전일 수 있음.
-      // 명시적으로 upgrade 후 setOwner — option 은 portal 후 closest("nds-select")
-      // 가 부모를 못 찾으므로 owner ref 필수.
-      customElements.upgrade(opt);
-      (opt as NdsSelectOption).setOwner(this);
-    }
-
     root.append(trigger, dropdown);
     this.appendChild(root);
 
@@ -167,6 +191,42 @@ export class NdsSelect extends NdsElement {
     this._triggerText = triggerText;
     this._chevron = chevron;
     this._dropdown = dropdown;
+
+    // mount 시점에 이미 존재하는 옵션 입양.
+    for (const opt of options) this._adoptOption(opt as HTMLElement);
+
+    // 스트리밍 HTML 파서(목업 단일 HTML 파일)에서는 부모 <nds-select> 의 connectedCallback 이
+    // 자식 <nds-select-option> 보다 먼저 실행돼 위 초기 수집이 0개일 수 있다 → 드롭다운이 빈 채로
+    // 열리거나 옵션이 host 직속에 raw 로 남는다(이 때문에 목업에서 Select 대신 Segmented 로 우회함).
+    // 늦게 파싱되어 host 직속으로 들어오는 옵션을 dropdown 으로 입양한다.
+    this._childObserver = new MutationObserver((mutations) => {
+      let adopted = false;
+      for (const m of mutations) {
+        for (const node of Array.from(m.addedNodes)) {
+          if (
+            node instanceof HTMLElement &&
+            node.tagName.toLowerCase() === "nds-select-option" &&
+            node.parentElement === this
+          ) {
+            this._adoptOption(node);
+            adopted = true;
+          }
+        }
+      }
+      if (adopted) this.scheduleUpdate();
+    });
+    this._childObserver.observe(this, { childList: true });
+  }
+
+  /**
+   * host 직속 <nds-select-option> 을 dropdown 안으로 옮겨 메뉴에 편입.
+   * option 은 portal 후 closest("nds-select") 로 부모를 못 찾으므로 upgrade + setOwner 보장.
+   */
+  private _adoptOption(opt: HTMLElement): void {
+    if (!this._dropdown || opt.parentElement === this._dropdown) return;
+    this._dropdown.appendChild(opt);
+    customElements.upgrade(opt);
+    (opt as NdsSelectOption).setOwner?.(this);
   }
 
   protected update(): void {
@@ -179,8 +239,11 @@ export class NdsSelect extends NdsElement {
     const helperText = this.getAttribute("helper-text");
     const disabled = this.boolAttr("disabled");
     const error = this.boolAttr("error");
-    const fullWidth = this.boolAttr("full-width");
+    // 기본 full-width=true (React fullWidth 기본과 일치 — 폼/캐포비는 전체너비가 기본).
+    // 좁게 쓰려면 full-width="false" 명시(예: 어드민 검색 필터).
+    const fullWidth = this.attr("full-width", "true") !== "false";
     const open = this.boolAttr("open");
+    const searchable = this.boolAttr("searchable");
     const hasValue = value !== null && value !== "";
 
     this._root.style.width = fullWidth ? "100%" : "auto";
@@ -234,6 +297,17 @@ export class NdsSelect extends NdsElement {
       opt.setActive(v === this._activeValue);
     });
 
+    // searchable(검색형): 검색 인풋 + 빈 상태 보장/제거 후 옵션 필터 적용
+    if (searchable) {
+      this._ensureSearchUI();
+      this._applyFilter(options);
+    } else {
+      this._removeSearchUI();
+      options.forEach((opt) => {
+        opt.style.display = "";
+      });
+    }
+
     this._syncLabel(labelText);
     this._syncHelper(helperText, error);
 
@@ -249,6 +323,12 @@ export class NdsSelect extends NdsElement {
       document.removeEventListener("keydown", this._onKey, true);
       window.removeEventListener("scroll", this._onReposition, true);
       window.removeEventListener("resize", this._onReposition);
+    }
+
+    // 검색형: 열린 직후 한 번 검색 인풋으로 포커스 (이후 update 에선 포커스 가로채지 않음)
+    if (open && searchable && this._focusSearchOnOpen && this._searchInput) {
+      this._focusSearchOnOpen = false;
+      this._searchInput.focus();
     }
   }
 
@@ -267,7 +347,14 @@ export class NdsSelect extends NdsElement {
     const placeAbove = spaceBelow < dropdownH && spaceAbove > spaceBelow;
 
     this._dropdown.style.left = `${rect.left}px`;
-    this._dropdown.style.width = `${rect.width}px`;
+    // 메뉴 폭(React 와 동일 전략): 항상 트리거 폭 이상. fullWidth 면 트리거 폭으로 고정,
+    // auto 면 가장 넓은 옵션까지 grow 후 캡(넘으면 옵션 말줄임).
+    const fullWidth = this.attr("full-width", "true") !== "false";
+    this._dropdown.style.minWidth = `${rect.width}px`;
+    this._dropdown.style.width = "max-content";
+    this._dropdown.style.maxWidth = fullWidth
+      ? `${rect.width}px`
+      : `${SELECT_AUTO_MENU_MAX_WIDTH}px`;
     if (placeAbove) {
       this._dropdown.style.top = "";
       this._dropdown.style.bottom = `${viewportH - rect.top}px`;
@@ -320,13 +407,76 @@ export class NdsSelect extends NdsElement {
     return this._dropdown.querySelector<NdsSelectOption>(`nds-select-option[value="${value}"]`);
   }
 
+  /** searchable: 드롭다운 상단 검색 인풋 + 빈 상태 노드를 보장(없으면 생성). */
+  private _ensureSearchUI(): void {
+    if (!this._dropdown) return;
+    if (!this._search) {
+      const search = document.createElement("div");
+      search.className = SEARCH_CLASS;
+      search.dataset.slot = "search";
+      search.innerHTML = SEARCH_ICON_SVG;
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.dataset.slot = "search-input";
+      input.addEventListener("input", () => {
+        this._query = input.value;
+        this.scheduleUpdate();
+      });
+      search.appendChild(input);
+      // 항상 드롭다운 최상단
+      this._dropdown.insertBefore(search, this._dropdown.firstChild);
+      this._search = search;
+      this._searchInput = input;
+    }
+    if (!this._empty) {
+      const empty = document.createElement("div");
+      empty.className = EMPTY_CLASS;
+      empty.dataset.slot = "empty";
+      this._dropdown.appendChild(empty);
+      this._empty = empty;
+    }
+    this._searchInput!.placeholder = this.attr("search-placeholder", "검색");
+    this._empty!.textContent = this.attr("empty-message", "검색 결과가 없어요");
+  }
+
+  /** searchable 해제 시 검색 UI 제거 + 검색어 리셋. */
+  private _removeSearchUI(): void {
+    this._search?.remove();
+    this._empty?.remove();
+    this._search = null;
+    this._searchInput = null;
+    this._empty = null;
+    this._query = "";
+  }
+
+  /** 현재 검색어로 옵션 표시/숨김 + 빈 상태 토글. */
+  private _applyFilter(options: NodeListOf<NdsSelectOption>): void {
+    const q = this._query.trim().toLowerCase();
+    let visible = 0;
+    options.forEach((opt) => {
+      const label = (opt.textContent ?? "").trim().toLowerCase();
+      const match = q === "" || label.includes(q);
+      opt.style.display = match ? "" : "none";
+      if (match) visible += 1;
+    });
+    if (this._empty) this._empty.style.display = visible === 0 ? "" : "none";
+  }
+
   private _setOpen(next: boolean): void {
     if (next && !this.hasAttribute("open")) {
       this.setAttribute("open", "");
       this._activeValue = this.getAttribute("value");
+      // 검색형: 열 때마다 검색어 초기화 + 검색 인풋으로 포커스 예약
+      if (this.boolAttr("searchable")) {
+        this._query = "";
+        if (this._searchInput) this._searchInput.value = "";
+        this._focusSearchOnOpen = true;
+      }
     } else if (!next && this.hasAttribute("open")) {
       this.removeAttribute("open");
       this._activeValue = null;
+      this._query = "";
     }
   }
 
@@ -362,9 +512,14 @@ export class NdsSelect extends NdsElement {
       this._trigger?.focus();
       return;
     }
+    // 검색형: 활성/필터로 숨겨진(display:none) 옵션은 탐색 대상에서 제외.
     const options = Array.from(
       this._dropdown.querySelectorAll<NdsSelectOption>("nds-select-option"),
-    ).filter((o) => !o.hasAttribute("disabled"));
+    ).filter((o) => !o.hasAttribute("disabled") && o.style.display !== "none");
+    const typingInSearch = e.target === this._searchInput;
+
+    // 검색어에 공백 입력 — 선택으로 가로채지 않는다.
+    if (e.key === " " && typingInSearch) return;
     if (options.length === 0) return;
     const values = options.map((o) => o.getAttribute("value") ?? "");
     const currentIdx = values.indexOf(this._activeValue ?? "");
@@ -381,7 +536,9 @@ export class NdsSelect extends NdsElement {
     }
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      if (this._activeValue !== null) this.pickValue(this._activeValue);
+      // active 가 없거나 필터로 사라졌으면 첫 번째 보이는 옵션을 선택(검색형 UX).
+      const target = currentIdx >= 0 ? values[currentIdx] : (values[0] ?? null);
+      if (target !== null) this.pickValue(target);
     }
   }
 }
@@ -414,6 +571,19 @@ export class NdsSelectOption extends NdsElement {
     this.classList.add(OPTION_CLASS);
     this.dataset.slot = "option";
     this.setAttribute("role", "option");
+    // 라벨 콘텐츠(텍스트)를 label span 으로 감싼다 — 메뉴 폭이 캡/트리거폭에 닿으면 줄바꿈
+    // 대신 말줄임(text-overflow). host.textContent 는 그대로라 trigger 라벨 추출에 영향 없음.
+    const label = document.createElement("span");
+    label.className = OPTION_LABEL_CLASS;
+    while (this.firstChild) label.appendChild(this.firstChild);
+    this.appendChild(label);
+    // 선택 표시용 trailing 체크 — 평소엔 CSS 로 숨김, data-selected 일 때만 노출.
+    // svg 는 텍스트가 없으므로 host.textContent(= trigger 라벨)에 영향 없음.
+    const check = document.createElement("span");
+    check.className = OPTION_CHECK_CLASS;
+    check.setAttribute("aria-hidden", "true");
+    check.innerHTML = OPTION_CHECK_SVG;
+    this.appendChild(check);
     // 클릭 처리는 dropdown delegation 으로 옮김 — portal 후 jsdom 에서
     // 옵션 자체의 listener 가 안 잡히는 케이스를 피한다.
     this._wrapped = true;
@@ -442,5 +612,11 @@ export class NdsSelectOption extends NdsElement {
   }
 }
 
-define(NdsSelect);
+// ⚠️ 등록 순서 — leaf(option) 를 부모(select) 보다 먼저 define 해야 한다.
+// customElements.define 은 문서에 이미 있는 매칭 요소를 동기 upgrade 하므로, 정적 HTML
+// 목업에서 NdsSelect 를 먼저 define 하면 <nds-select> 가 즉시 upgrade → _mount 가
+// 아직 미정의인 <nds-select-option> 에 setOwner 를 호출 → throw → 옵션이 raw 텍스트로
+// 새어 나온다(드롭다운 안 만들어짐). option 을 먼저 등록하면 부모 upgrade 시점에
+// customElements.upgrade(opt) 가 실제로 동작하고 setOwner 가 존재한다.
 define(NdsSelectOption);
+define(NdsSelect);

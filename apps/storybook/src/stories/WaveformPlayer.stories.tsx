@@ -5,7 +5,7 @@ import { WaveformPlayer } from "@nudge-design/react";
 const SAMPLE_AUDIO = "https://www.kozco.com/tech/piano2.wav";
 
 const meta: Meta<typeof WaveformPlayer> = {
-  title: "Components/WaveformPlayer",
+  title: "Components/Domain/WaveformPlayer",
   component: WaveformPlayer,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

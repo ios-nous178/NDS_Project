@@ -29,12 +29,23 @@ export const tooltipStyles = `
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
     border-radius: ${radius.md}px;
-    white-space: nowrap;
     pointer-events: none;
     max-width: 240px;
     white-space: normal;
     word-break: keep-all;
   }
+
+  /* 리치 본문(<template slot="content">) — 제목+불릿 등 멀티라인 안내. 좌측 정렬·본문 타이포 16/24. */
+  :where(.${TT_CONTENT_CLASS}[data-rich="true"]) {
+    text-align: left;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  :where(.${TT_CONTENT_CLASS}[data-rich="true"] strong) { font-weight: ${fontWeight.bold}; }
+  :where(.${TT_CONTENT_CLASS}[data-rich="true"] p) { margin: 0; }
+  :where(.${TT_CONTENT_CLASS}[data-rich="true"] ul) { margin: 4px 0 0; padding-left: 22px; }
+  :where(.${TT_CONTENT_CLASS}[data-rich="true"] li) { list-style: disc; }
+  :where(.${TT_CONTENT_CLASS}[data-rich="true"] li + li) { margin-top: 4px; }
 
   :where(.${TT_CONTENT_CLASS}[data-placement="top"]) {
     bottom: calc(100% + 8px);

@@ -11,13 +11,29 @@ import {
   flushUsageWebhookQueue,
   type UsageWebhookQueueFlushResult,
 } from "./usage/tracker.js";
-import { isFilesystemRoot, resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
-import { detectWorkspaceIntent } from "./build-html.js";
-import { reportHtmlMockupUsage } from "./html-analyzer.js";
+import {
+  isFilesystemRoot,
+  resolveQueueDir,
+  resolveWritableLogDir,
+  safeAppendUsageToLog,
+} from "./usage/log-path.js";
+import { detectWorkspaceIntent } from "@nudge-design/mockup-core/tools/build-html";
+import { reportHtmlMockupUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
+import { USAGE_WEBHOOK_URL } from "@nudge-design/mockup-core";
 import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
 
-const USAGE_WEBHOOK_URL =
-  "https://script.google.com/macros/s/AKfycbzgWCu2Y5BygcMakF9qItU3d-bvducUD3mFkryqLQ5RiSRPF1ExzUnkyYDimsTb7d74/exec";
+/**
+ * 고정 큐 dir 의 webhook 재시도 큐를 한 번 비운다 (best-effort, throw 안 함).
+ * report 가 한동안 안 불릴 수 있는 지점(예: dev_server stop)에서 호출해 밀린 실패분을 흘려보낸다.
+ */
+export async function flushPendingUsageWebhookQueue(): Promise<UsageWebhookQueueFlushResult | null> {
+  try {
+    const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
+    return await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
+  } catch {
+    return null;
+  }
+}
 
 export async function reportMockupUsage(args: {
   filePath: string;
@@ -90,7 +106,8 @@ export async function reportMockupUsage(args: {
     attempted: false,
   };
   if (!dryRun) {
-    const queuePath = path.join(logDir, ".ds-usage-webhook-queue.jsonl");
+    // 큐는 cwd-독립 고정 dir — 호출마다 logDir 이 바뀌어도 고아 안 됨(보냈는데 안 옴 방지).
+    const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
     const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
     if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
       webhook.flushedQueue = flushedQueue;
@@ -118,7 +135,17 @@ export async function reportMockupUsage(args: {
 
   // 사람이 보기 좋게 한 줄 요약 (사용자에게 보여줘야 의미 있음).
   // MUST: DS 사용 비율(%)과 DS 버전은 항상 함께 표기한다 — 두 값은 분리해서 빠뜨릴 수 없는 한 쌍이다.
-  const { totalDs, totalAdminCms, totalCustomNative, totalExternal, dsRatio } = usage.meta;
+  const {
+    totalDs,
+    totalAdminCms,
+    totalCustomNative,
+    totalExternal,
+    dsRatio,
+    adoptionRatio,
+    overallRatio,
+    avoidableMiss,
+    forcedCustom,
+  } = usage.meta;
   const webhookStatus = !webhook.attempted
     ? "skipped"
     : webhook.ok
@@ -128,9 +155,14 @@ export async function reportMockupUsage(args: {
     ? ` · queue retry ${webhook.flushedQueue.succeeded}/${webhook.flushedQueue.attempted}`
     : "";
   const dsVersionLabel = formatDsVersionLabel(usage.dsVersions);
+  // 채택률(A) = 쓸 수 있었던 것 중 DS 비율, 전체(B) = DS 공백 포함. 갭이 크면 "만들어야 할 DS" 신호.
+  const ratioLabel =
+    overallRatio === adoptionRatio
+      ? `${dsRatio}%`
+      : `채택 ${adoptionRatio}% · 전체 ${overallRatio}% (회피가능 ${avoidableMiss} · 불가피 ${forcedCustom})`;
   const humanReadable =
     `[usage] ${usage.mockupName} (${usage.brand ?? "?"}) · DS@${dsVersionLabel} · ` +
-    `DS ${totalDs} (${dsRatio}%) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}${queueStatus}`;
+    `DS ${totalDs} (${ratioLabel}) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}${queueStatus}`;
 
   const _nextSuggestion =
     "⚠️ MUST: 사용자에게 보여줄 한 줄 요약(humanReadable)에는 **DS 사용 비율(%) 과 DS 버전** 이 항상 함께 들어가야 합니다 — 둘 중 하나만 노출하거나 생략하지 마세요. " +
@@ -173,7 +205,14 @@ function formatDsSummary(outcomes: AutoReportOutcome[]): string {
   if (outcomes.length === 0) return "";
   return outcomes
     .map((o) => {
-      const ratio = typeof o.dsRatio === "number" ? `${o.dsRatio}%` : "?%";
+      const ratio =
+        typeof o.adoptionRatio === "number" &&
+        typeof o.overallRatio === "number" &&
+        o.adoptionRatio !== o.overallRatio
+          ? `채택 ${o.adoptionRatio}% · 전체 ${o.overallRatio}%`
+          : typeof o.dsRatio === "number"
+            ? `${o.dsRatio}%`
+            : "?%";
       const version = o.dsVersion ?? "unknown";
       const name = o.filePath.split("/").pop() ?? o.filePath;
       return `${name} (DS@${version} · ${ratio})`;
@@ -205,9 +244,31 @@ interface AutoReportOutcome {
   totalDs?: number;
   /** % of tracked JSX that came from @nudge-design/react. Always surfaced alongside dsVersion. */
   dsRatio?: number;
+  /** A. 채택률 = DS / (DS + 대체재 있는 non-DS). */
+  adoptionRatio?: number;
+  /** B. 전체 사용률 = DS / 추적 전체(DS 공백 포함). == dsRatio. */
+  overallRatio?: number;
   /** Installed @nudge-design/react version (or declared range fallback). Always paired with dsRatio. */
   dsVersion?: string | null;
   reason: PendingMockupReport["reason"];
+}
+
+function summarizeAutoReportOutcomes(outcomes: AutoReportOutcome[]) {
+  const ok = outcomes.filter((o) => o.ok).length;
+  const failed = outcomes.length - ok;
+  const queued = outcomes.filter((o) => o.queued).length;
+  const dsSummary = formatDsSummary(outcomes);
+  return {
+    count: outcomes.length,
+    ok,
+    failed,
+    queued,
+    ...(dsSummary ? { dsSummary } : {}),
+    notice:
+      failed > 0
+        ? `usage auto-report ${failed}/${outcomes.length} failed or queued`
+        : `usage auto-report ${ok}/${outcomes.length} ok`,
+  };
 }
 
 async function autoReportPendingMockups(
@@ -232,6 +293,8 @@ async function autoReportPendingMockups(
         queued: res.webhook.queued,
         totalDs: res.usage.meta.totalDs,
         dsRatio: res.usage.meta.dsRatio,
+        adoptionRatio: res.usage.meta.adoptionRatio,
+        overallRatio: res.usage.meta.overallRatio,
         dsVersion: res.usage.dsVersions?.primary ?? null,
         reason: p.reason,
       });
@@ -330,8 +393,10 @@ export function attachUsageGuardOutcome(result: unknown, guard: UsageGuardOutcom
     result && typeof result === "object" && !Array.isArray(result)
       ? { ...(result as Record<string, unknown>) }
       : { result };
-  if (guard.autoReported) base._autoReportedUsage = guard.autoReported;
-  if (guard.pendingNotReported) base._pendingMockupReports = guard.pendingNotReported;
+  if (guard.autoReported) base._autoReportedUsage = summarizeAutoReportOutcomes(guard.autoReported);
+  if (guard.pendingNotReported) {
+    base._pendingMockupReports = { count: guard.pendingNotReported.length };
+  }
   if (guard.notice) base._usageGuardNotice = guard.notice;
   return base;
 }

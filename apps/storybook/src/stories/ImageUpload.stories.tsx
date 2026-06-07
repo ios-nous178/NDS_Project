@@ -3,7 +3,7 @@ import { ImageUpload } from "@nudge-design/react";
 import React, { useState } from "react";
 
 const meta: Meta<typeof ImageUpload> = {
-  title: "Components/ImageUpload",
+  title: "Components/Inputs/ImageUpload",
   component: ImageUpload,
   parameters: {
     layout: "centered",
@@ -79,6 +79,6 @@ function InteractiveStory() {
 }
 
 export const Interactive: Story = {
-  name: "Interactive (FileReader)",
+  name: "Interaction/FileReader",
   render: () => <InteractiveStory />,
 };

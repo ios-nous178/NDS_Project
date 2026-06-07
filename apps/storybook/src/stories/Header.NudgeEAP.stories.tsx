@@ -7,7 +7,7 @@ import { DesktopPreview } from "../desktop-preview";
 const b = getBrandFixture("nudge-eap");
 
 const meta: Meta = {
-  title: "Components/Header",
+  title: "Brands/NudgeEAP/Header",
   parameters: { layout: "fullscreen" },
   globals: { brand: "nudge-eap" },
 };

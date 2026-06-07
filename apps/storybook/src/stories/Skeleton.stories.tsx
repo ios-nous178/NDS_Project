@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Skeleton } from "@nudge-design/react";
 
 const meta: Meta<typeof Skeleton> = {
-  title: "Components/Skeleton",
+  title: "Components/Display/Skeleton",
   component: Skeleton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -35,7 +35,7 @@ export const Text: Story = {
 };
 
 export const CardSkeleton: Story = {
-  name: "Example/카드 로딩",
+  name: "Recipe/카드 로딩",
   render: () => (
     <div
       style={{

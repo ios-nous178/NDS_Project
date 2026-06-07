@@ -1,0 +1,166 @@
+---
+title: CheckboxTree
+description: 검색 + 전체선택 + 계층(시/도 ▸ 시/군/구) 체크박스 트리. 부모는 하위 leaf 선택 비율로 checked/indeterminate/unchecked 자동, 부모 클릭은 하위 전체 토글.
+category: 입력
+---
+
+# CheckboxTree
+
+검색 + 전체선택 + 계층(시/도 ▸ 시/군/구) 체크박스 트리입니다. 부모 노드는 하위 leaf 의 선택 비율에 따라 checked / indeterminate / unchecked 를 자동 표시하고, 부모 클릭은 하위 leaf 전체를 토글합니다.
+
+```tsx
+import { CheckboxTree } from "@nudge-design/react";
+```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 시/도 ▸ 시/군/구처럼 **부모-자식 계층**이 있는 다중 선택일 때
+- 부모 선택 상태(전체/부분/없음)를 자식 비율로 **자동 계산**하고 싶을 때
+- 긴 목록을 검색으로 좁히고, 전체선택 한 번에 토글하고 싶을 때
+- 캐포비 타겟팅 지역 선택 모달 좌측처럼 검색 + 전체선택 + 트리가 한 컨테이너에 필요할 때
+
+### 이럴 때 사용하지 마세요
+
+- 계층이 없는 평면 다중 선택 → MultiSelect 를 사용하세요
+- 즉시 반영되는 단일 선택 → Select 를 사용하세요
+- "선택한 항목" 요약 패널은 이 컴포넌트에 포함되지 않습니다 → SelectedItemsPanel 로 따로 조립하세요
+
+### 자주 하는 실수
+
+- **평면(계층 없음) 다중선택을 CheckboxTree 로** — 그건 MultiSelect 가 맞습니다. CheckboxTree 는 부모/자식 트리 전용입니다.
+- **`value` 에 부모 값을 주입** — 선택은 leaf 값만 담아야 합니다. 부모의 checked / indeterminate 는 자식 비율로 컴포넌트가 계산합니다.
+- **"선택한 항목" 요약 패널을 트리 안에서 찾기** — 트리에는 없습니다. `SelectedItemsPanel` + `SelectedItemRow` 로 오른쪽에 따로 조립하세요(시/도 전체 선택이면 시/도명만, 일부면 "시/도 ▸ 시/군구").
+- **펼침 상태를 직접 강제** — 검색이 켜져 있으면 매치된 노드의 부모를 자동 펼칩니다. 펼침을 손으로 강제하지 마세요. 검색이 필요 없으면 `searchable` 을 끄세요.
+- **전체선택이 전체 목록 기준이라고 가정** — 전체선택은 **현재 검색 필터된** leaf 기준으로 토글됩니다(MultiSelect 와 동일 규칙).
+- **행마다 padding 을 손대 들여쓰기** — 들여쓰기는 `--nds-checkbox-tree-indent`(기본 32px) × depth 로 자동 계산됩니다.
+
+---
+
+## 기본 사용법
+
+```tsx
+const regions = [
+  {
+    value: "gangwon",
+    label: "강원특별자치도",
+    children: [
+      { value: "gangneung", label: "강릉시" },
+      { value: "donghae", label: "동해시" },
+    ],
+  },
+];
+
+function Example() {
+  const [selected, setSelected] = useState<string[]>([]);
+  return (
+    <CheckboxTree
+      nodes={regions}
+      value={selected}
+      onValueChange={setSelected}
+      searchPlaceholder="소재명으로 검색하기"
+      defaultExpanded={["gangwon"]}
+    />
+  );
+}
+```
+
+`value` 에는 **선택된 leaf 값**만 담습니다(부모 값은 파생). `onValueChange` 는 트리 순서로 정렬된 leaf 값 배열을 돌려줍니다.
+
+---
+
+## 기능 / 모드
+
+| 기능       | 제어 prop                  | 기본값             | 설명                                                       |
+| ---------- | -------------------------- | ------------------ | ---------------------------------------------------------- |
+| 검색       | `searchable`               | `true`             | 상단 검색창 노출. `false` 면 검색창 숨김                    |
+| 전체선택   | `showSelectAll`            | `true`             | 전체선택 행 노출. 현재 필터된 leaf 기준으로 토글           |
+| 초기 펼침  | `defaultExpanded`          | `[]`               | 처음 펼쳐 둘 부모 값 목록 (uncontrolled)                   |
+| 빈 상태    | `emptyMessage`             | `검색 결과가 없습니다.` | 검색 결과가 없을 때 표시되는 메시지                     |
+
+검색이 켜진 상태에서 검색어가 입력되면, 매치된 노드의 부모는 자동으로 펼쳐집니다. 비활성 노드(`disabled`)는 해당 leaf 가 선택 대상에서 제외됩니다.
+
+```tsx
+<CheckboxTree
+  nodes={regions}
+  value={selected}
+  onValueChange={setSelected}
+  searchable={false}
+  showSelectAll={false}
+/>
+```
+
+---
+
+## Props
+
+| Prop                | 타입                            | 기본값                  | 설명                                              |
+| ------------------- | ------------------------------- | ----------------------- | ------------------------------------------------- |
+| `nodes`             | `CheckboxTreeNode[]`            | —                       | 트리 노드 (시/도 ▸ 시/군/구 등 계층)              |
+| `value`             | `string[]`                     | —                       | 선택된 leaf 값 목록 (controlled)                  |
+| `onValueChange`     | `(value: string[]) => void`    | —                       | 선택 변경 콜백 — 트리 순서로 정렬된 leaf 값 배열  |
+| `searchable`        | `boolean`                      | `true`                  | 검색창 노출                                       |
+| `searchPlaceholder` | `string`                       | `"검색"`                | 검색 placeholder                                  |
+| `showSelectAll`     | `boolean`                      | `true`                  | 전체선택 행 노출                                  |
+| `selectAllLabel`    | `string`                       | `"전체 선택"`           | 전체선택 라벨                                     |
+| `defaultExpanded`   | `string[]`                     | —                       | 초기 펼침 부모 값 (uncontrolled)                  |
+| `emptyMessage`      | `string`                       | `"검색 결과가 없습니다."` | 검색 결과 없음 메시지                           |
+| `className`         | `string`                       | —                       | 루트 className                                    |
+| `style`             | `React.CSSProperties`          | —                       | 루트 style                                        |
+
+### CheckboxTreeNode
+
+| 속성       | 타입                  | 설명                                                          |
+| ---------- | --------------------- | ------------------------------------------------------------ |
+| `value`    | `string`              | 노드 값 (선택은 leaf 값 기준으로 보고됨)                     |
+| `label`    | `string`              | 표시 라벨 (검색 대상)                                        |
+| `children` | `CheckboxTreeNode[]`  | 하위 노드 — 있으면 부모(접기/펼치기 + 부분선택), 없으면 leaf |
+| `disabled` | `boolean`             | 비활성화 (해당 노드/하위 leaf 선택 불가)                     |
+
+---
+
+## CSS 변수
+
+| 변수                              | 기본값  | 설명                                                       |
+| --------------------------------- | ------- | ---------------------------------------------------------- |
+| `--nds-checkbox-tree-indent`      | `32px`  | depth 한 단계당 들여쓰기 폭 (행 padding 자동 계산)         |
+| `--nds-checkbox-tree-max-height`  | `none`  | 트리 리스트 스크롤 높이 (넘치면 세로 스크롤)               |
+
+`--nds-checkbox-tree-depth` 는 각 행의 depth 에 따라 컴포넌트가 내부에서 설정하므로 직접 지정하지 않습니다. 색/radius 는 semantic 토큰으로 브랜드 cascade 됩니다(캐포비 = `fill.brand` 옐로우).
+
+---
+
+## data-slot 구조
+
+```
+div [data-slot="root"]
+├── div [data-slot="search"]                  (searchable 일 때)
+│   ├── input (검색 입력)
+│   └── span (검색 아이콘)
+└── div [data-slot="tree"] (role="tree")
+    ├── div .nds-checkbox-tree__row [data-select-all="true"] [data-state]   (showSelectAll + 노드 있을 때)
+    ├── div [role="treeitem"] [aria-expanded] [aria-selected]               (각 노드)
+    │   ├── div .nds-checkbox-tree__row [data-state] [data-disabled]
+    │   │   ├── label (input + 체크 인디케이터 + 라벨)
+    │   │   └── button .nds-checkbox-tree__chevron [data-expanded]          (자식 있을 때)
+    │   └── div [role="group"]                                              (펼쳐졌을 때 자식)
+    └── div [data-slot="empty"]                                             (검색 결과 없을 때)
+```
+
+`data-state` 는 `checked` / `indeterminate` / `unchecked` 중 하나로, 부모 행은 하위 leaf 선택 비율에 따라 자동 결정됩니다.
+
+---
+
+## 접근성
+
+- 트리 컨테이너는 `role="tree"`, 각 노드는 `role="treeitem"`, 펼쳐진 자식 묶음은 `role="group"` 입니다.
+- 자식이 있는 노드에는 `aria-expanded` 가 펼침/접힘에 따라 부여됩니다.
+- 노드의 선택 상태는 `aria-selected` 로, 체크박스 입력은 `aria-checked` 로 전달됩니다. indeterminate(부분 선택)는 `aria-checked="mixed"` 와 input 의 `indeterminate` 속성으로 표현됩니다.
+- 실제 체크박스 `<input>` 은 시각적으로 숨기되 DOM 에 남겨 키보드 포커스 및 스크린리더 접근을 유지하고, 포커스 시 `:focus-visible` 로 체크 인디케이터에 포커스 링을 표시합니다.
+- 펼침/접힘 버튼에는 `aria-label`("펼치기" / "접기")이 부여됩니다.
+- 검색 입력에는 placeholder 와 동일한 `aria-label` 이 부여됩니다.
+- 장식용 SVG 아이콘(검색/체크/마이너스/셰브론)과 체크 인디케이터 컨테이너는 `aria-hidden="true"` 입니다.
+- `disabled` 노드는 해당 leaf 가 선택 대상에서 제외되고 입력이 비활성화됩니다.

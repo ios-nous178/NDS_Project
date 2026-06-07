@@ -1,3 +1,11 @@
+import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
+import {
+  CASHWALK_BIZ_ADMIN_SIDEBAR_HTML,
+  CASHWALK_BIZ_ADMIN_SIDEBAR_SHELL_HTML,
+  CASHWALK_BIZ_ADMIN_SIDEBAR_REACT,
+  CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS,
+} from "./guides/cashwalk-biz-sidebar-example.js";
+
 /**
  * 컴포넌트별 사용 가이드 — d.ts 파싱만으로는 잡히지 않는
  * "이 컴포넌트를 어떻게 써야 하는가"의 큐레이션된 지식.
@@ -25,7 +33,7 @@
  *
  * 사용자 앱으로 간주하는 키워드:
  *   사용자 앱 / 모바일 앱 / 마이페이지 / 회원가입 / 상담 신청 / 챌린지 / 일기 / 콘텐츠 카드
- *   Trost / Geniet / NudgeEAP 사용자 화면
+ *   Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile 사용자 화면
  * ────────────────────────────────────────────────────────────────────── */
 
 const ADMIN_KEYWORDS = [
@@ -126,7 +134,11 @@ export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | 
 export const DS_ADMIN_BRANDS = ["cashwalk-biz"] as const;
 
 export function isDsAdminBrand(brand?: string | null): boolean {
-  return !!brand && (DS_ADMIN_BRANDS as readonly string[]).includes(brand);
+  // 별칭 정규화 필수 — cashpobi / cash-pobi / cashwalkbiz 등 입력도 cashwalk-biz 로 resolve 해야
+  // admin 발화가 antd(NudgeEAPCMS)가 아니라 DS 경로로 우회된다. raw 매치만 하면 brand='cashpobi'
+  // 가 새어나가 NudgeEAPCMS 사이드바(240px·INFO·CMS MENU·Copyright Nudge EAP)가 캐포비에 잘못 적용됨.
+  const canon = canonicalBrandSlug(brand ?? undefined);
+  return !!canon && (DS_ADMIN_BRANDS as readonly string[]).includes(canon);
 }
 
 /**
@@ -147,7 +159,7 @@ export function resolveEffectiveIntent(
 }
 
 export const SCOPE_ADVISORY = {
-  scope: "사용자 앱 (Trost / Geniet / NudgeEAP) 화면 전용",
+  scope: "사용자 앱 (Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile) 화면 전용",
   role: {
     purpose:
       "이 MCP의 역할은 '별도의 외부 목업 프로젝트(예: Vite + React)에서 DS를 소비해 목업을 만드는 것'이다. " +
@@ -194,7 +206,7 @@ export const SCOPE_ADVISORY = {
       action:
         "vanilla HTML / Web Component 워크플로우(react 없이 <nds-*> 직접 작성) 라면 " +
         "@nudge-design/html 패키지를 사용한다. .tsx 가 아니라 root index.html 을 직접 작성하고 " +
-        "validate_html_mockup / analyze_html_mockup 으로 검증, " +
+        "validate_html_mockup({ withStats: true }) 으로 검증(위반 + DS 채택률·통계 한 번에), " +
         "최종 산출물은 build_singlefile_html 로 dist/index.html (단일 파일) 만든다 — 디자이너/PM 에게 dnd 공유 가능. " +
         "get_setup({ step: 'full', intent: 'html' }) 로 Vite vanilla-ts 셋업, " +
         "get_guide({ topic: 'component:<Name>', target: 'html' }) 로 <nds-*> 예시를 가져와 작성.",
@@ -202,7 +214,7 @@ export const SCOPE_ADVISORY = {
         "get_setup({ step: 'full', intent: 'html' })",
         "get_guide({ topic: 'component:<Name>', target: 'html' })",
         "validate_html_mockup({ filePath })",
-        "analyze_html_mockup({ filePath })",
+        "validate_html_mockup({ filePath, withStats: true })",
         "build_singlefile_html({ cwd })",
       ],
     },
@@ -305,7 +317,8 @@ export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
       position: "fixed (좌측 0, top 0, height 100vh)",
       borderRight: "1px solid #ececec",
       zIndex: "10",
-      topAccent: "상단 6px 브랜드 컬러 라인 (border-top: 6px solid var(--color-main, #2B96ED))",
+      topAccent:
+        "상단 6px 브랜드 컬러 라인 (border-top: 6px solid var(--semantic-border-brand-default))",
     },
     sideUserInfo:
       "Sider 상단 24px padding 영역에 [로고/h1] + TinyHeader('INFO') + 이메일(12px #333) + " +
@@ -389,7 +402,8 @@ export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
       "antd 기본 footer (확인/취소) 또는 우측 그룹 액션 정렬. 좌측엔 파괴 액션(종료처리, 삭제) 분리.",
   },
   colors: {
-    "--color-main": "#2B96ED — 사이드바 톱 액센트 / 메뉴 선택 우측 보더 / 링크",
+    "--color-main":
+      "var(--semantic-border-brand-default) — 사이드바 톱 액센트 / 메뉴 선택 우측 보더 / 링크",
     text: "#383838 (제목) / #727272 (보조) / #aaa (subtle) / #b1b1b1 (footer)",
     border: "#ececec (light) / #e4e4e4 (HeaderSubject 하단)",
     bg: "#f4f4f4 (body) / #fafafa (hover/header) / #ffffff (sider, content surface)",
@@ -476,7 +490,7 @@ export interface ComponentGuide {
    * - 태그는 kebab-case `<nds-button>` 형태.
    * - attribute 도 kebab-case (`full-width`, `right-icon`).
    * - 이벤트는 attribute (`onclick="..."`) 가 아니라 `addEventListener("nds-...", ...)` 패턴으로 설명.
-   * - JSON-encoded attribute 값 (예: `<nds-segmented options='[...]' />`) 은 적절한 따옴표 escape 로 표기.
+   * - JSON-encoded attribute 값 (예: `<nds-select options='[...]' />`) 은 적절한 따옴표 escape 로 표기.
    * - children 콜백/compound 패턴 등 React 전용 표현은 단순화하거나 `slot=` 으로 표현.
    */
   examplesHtml?: {
@@ -487,6 +501,12 @@ export interface ComponentGuide {
    * `target: 'html'` 호출 시 examplesHtml 가 비어 있는 react-only 컴포넌트임을 명시.
    * 값은 'no-html-equivalent' 만 허용 (현재 정의된 마커).
    * 라우터는 이 값이 있으면 `_htmlAdvisory` 한 줄을 응답에 첨부하고 react examples 를 그대로 노출.
+   *
+   * 브랜드 크롬(BrandX WebHeader / AppBar / Footer)에도 이 마커를 쓰되, 라우터의
+   * `brandChromeHtmlRedirect(name)` 가 컴포넌트 이름으로 `<nds-brand-header>` / `<nds-brand-footer>`
+   * 표지판 advisory 를 자동 생성한다 (막다른 길 안내가 아니라 brand wrapper 로 유도). 단, 본문
+   * summary/recommended 에도 wrapper 한 줄을 같이 박아 조회 순서와 무관하게 노출되게 할 것
+   * (BottomNav 가이드 패턴 — 회고: 진입점 하나만 보고 멈추는 실수 방지).
    */
   _htmlStatus?: "no-html-equivalent";
   /** color × variant 별 표시 톤 요약 */
@@ -554,7 +574,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
     pitfalls: [
-      "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
+      "**라벨을 JS 로 갈아끼우지 말 것 (HTML 한정 함정)** — `nds-button` 은 실제 `<button>` 을 light DOM 에 렌더하므로 `el.textContent = '...'` / `el.innerHTML = '...'` 로 라벨을 바꾸면 컴포넌트가 렌더한 `<button>` 이 통째로 지워지고, host(display:contents)에 맨 텍스트만 남아 스타일·포인터(cursor)·클릭 동작이 전부 사라진다(회귀: 위저드 하단 '다음 단계'→'심사 신청' 라벨 교체로 버튼이 무스타일 텍스트가 됨). 단계별로 라벨이 달라야 하면 (1) 라벨 고정 nds-button 을 단계 수만큼 두고 show/hide 로 전환하거나 (2) host 자체를 새 nds-button 으로 교체하라. **라벨 텍스트만 노드 변이(textContent/innerHTML) 금지.**",
+      "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. **아이콘↔텍스트 간격은 컴포넌트가 `.nds-button__label` 의 gap 으로 자동 적용**하므로 margin-right/padding 으로 직접 띄우지 말 것. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
       "**React 한정** — `<Button leftIcon={<svg/>}>...</Button>` / `rightIcon={<svg/>}` 사용. 빈 React Element 를 넘기고 ref 로 innerHTML 박는 패턴 금지.",
       "color='assistive' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
       "Geniet 브랜드에서 variant='soft' 또는 variant='outlined-sub' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
@@ -601,12 +622,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
 <Button rightIcon={<ArrowNextIcon />}>자세히 보기</Button>`,
     },
     colorMatrix: {
-      "primary/solid": "#2B96ED 배경 + 흰 텍스트 — 가장 중요한 CTA",
-      "primary/outlined": "흰 배경 + #2B96ED 보더/텍스트 — 밝은 배경 위 보조 액션",
+      "primary/solid":
+        "var(--semantic-bg-brand-default) 배경 + var(--semantic-text-inverse-default) 텍스트 — 가장 중요한 CTA",
+      "primary/outlined":
+        "흰 배경 + var(--semantic-border-brand-default) 보더/텍스트 — 밝은 배경 위 보조 액션",
       "primary/soft":
         "surface.brandSubtle 배경 + textRole.brand 텍스트 — 3차 액션 (Figma 라이브러리엔 별도 셀 없음). 색 값은 packages/tokens/src/brands/<brand>.semantic.ts 토큰 SSOT 참조.",
       "secondary/solid":
-        "#F1F8FD 배경 + #2B96ED 텍스트 — 파란 카드/배경 위 강조 (default), hover=#E3F2FC",
+        "var(--semantic-bg-brand-subtle) 배경 + var(--semantic-text-brand-default) 텍스트 — 카드/배경 위 강조 (default), hover=var(--semantic-fill-brand-hover)",
       "assistive/outlined":
         "흰 배경 + #D8D8D8 보더 + #383838 medium weight 텍스트 — 중립 액션. Figma는 M/S/XS 만 지원, disabled 없음",
       "error/solid": "error fill + 흰 텍스트 — 파괴 액션 한정",
@@ -622,7 +645,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "primary/solid/disabled": "bg #9CA2AE cool-gray + 흰 텍스트.",
       "secondary/solid/disabled": "bg #E6E7EB + 텍스트 #9CA2AE.",
       outlined_disabled: "흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE.",
-      hover: "primary=#017EE4 / secondary=#E3F2FC / outlined/assistive=#FAFAFA",
+      hover:
+        "primary=var(--semantic-fill-brand-hover) / secondary=var(--semantic-bg-brand-subtle) / outlined/assistive=var(--semantic-bg-surface-subtle)",
     },
     /**
      * Cashwalk-biz Button 의 spec 차이 (Figma 3098:1032 / 1079 SSOT).
@@ -861,6 +885,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Fill Badge 남용 금지 — 한 카드/리스트 Row 에 Fill Badge 가 2개 이상 보이면 위계가 무너진다. 일반 카테고리는 ghost/line 우선.",
       "Brand color 는 '현재 선택 / 핵심 강조' 에만 사용. 일반 카테고리·상태 표시에는 neutral 우선.",
       "상태 색(success/error/caution/info) 은 의미 전달 목적에만 사용 — 단순 강조용 컬러로 쓰지 말 것.",
+      "**대기/검수/검토 같은 '중립 워크플로 상태'는 neutral 로** — caution(앰버)은 *주의/경고/선착순* 의미라 '검수 대기'·'대기중'·'검토중' 같은 진행 단계에 쓰면 불필요한 경고처럼 보인다(회귀: 캐포비 '검수 대기' 를 앰버 caution 으로 표기 → '이 색 어디서 나왔나' 혼동). 진행 단계 라벨은 `color=\"neutral\"`, 경고/위험만 caution.",
       "Tone-on-Tone 금지: 연한 Blue 배경 위에 Blue Fill Badge, 연한 Mint Surface 위 Mint Badge 같은 동일 계열 중첩 금지.",
       "Badge 안에 긴 문장/CTA 보조 문구 금지 — 8자 안팎 짧은 라벨만.",
       "Chip 과 혼용 금지 — Chip 은 '선택/필터/분류 액션', Badge 는 '상태/속성 표시(비액션)'.",
@@ -900,7 +925,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Chip: {
     name: "Chip",
     examplesHtml: {
-      do: '<nds-chip variant="outlined" color="brand" interactive>전체</nds-chip>\n<nds-chip variant="ghost" color="caution" size="sm" removable>주의 필요</nds-chip>',
+      do: '<nds-chip variant="outlined" color="brand" interactive>전체</nds-chip>\n<nds-chip variant="ghost" color="caution" size="sm" removable>주의 필요</nds-chip>\n<!-- 선택형(SelectChip): 좌측 ✓ 체크는 slot="icon" 자식으로. 색은 currentColor(텍스트색)를 따름 -->\n<nds-chip selected interactive><svg slot="icon" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>30대</nds-chip>',
       dont: '<!-- disabled 와 removable 동시 사용 — 누가 X 버튼을 누를 수 있는지 모호 -->\n<nds-chip disabled removable>태그</nds-chip>\n<!-- interactive 없이 클릭 핸들러만 — 키보드 포커스가 안 잡힘 -->\n<nds-chip onclick="…">필터</nds-chip>',
     },
     summary:
@@ -908,6 +933,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "**React 한정** — `<Chip>{children}</Chip>` 으로 children 넣지 말 것. 반드시 `<Chip label='...' />`. 함정: HTML 예시(`<nds-chip>라벨</nds-chip>`)를 보고 React 에도 children 쓰면 API 어긋남.",
       "**HTML 한정** — `<nds-chip label='...' />` 처럼 label attribute 쓰지 말 것. nds-chip 은 label attribute 가 없고 children/text content 만 받음 (nds-chip.ts L189: `while (this.firstChild) label.appendChild(this.firstChild)`).",
+      '**HTML 토글은 attribute 로** — `nds-chip` 은 `selected`/`color`/`variant` 등을 observedAttributes 로 감지해 자동 리렌더한다(NdsElement base 가 attributeChangedCallback→update). `setAttribute("selected","")` / `removeAttribute("selected")` 로 토글하면 색이 즉시 바뀐다 — **칩 노드를 통째로 교체하는 워크어라운드는 불필요**. 단 **property 대입(`el.selected = true`)은 무시됨**(setter 없음, attribute 만 읽음) → 이게 \'클릭해도 색이 안 변한다\'의 진짜 원인. 삭제는 `removable` + `chip-remove` 이벤트로 연결.',
+      '**좌측 아이콘/체크/도트** — React 는 `icon` prop, HTML 은 `slot="icon"` 자식: `<nds-chip selected><svg slot="icon">…</svg>30대</nds-chip>` (slot 없는 자식은 전부 label 로 들어감). 아이콘은 `currentColor` 를 따르므로 텍스트색(=선택 시 채움 위 텍스트색)으로 렌더된다. brand-subtle 등 다른 선택 톤/텍스트색은 hex 말고 `--nds-chip-selected-background/text/border` override(예: 캐포비는 노랑 위 검정 텍스트로 `--nds-chip-selected-text` override).',
       "Chip은 상태/분류/짧은 속성 표시용이다. 새 섹션을 강조하거나 일반 안내문을 꾸미는 장식으로 쓰지 말 것.",
       "모든 카드/섹션 제목 앞에 Chip을 붙이면 위계가 무너진다. 카드당 최대 1-2개, 섹션당 최대 2개 수준으로 제한.",
       "긴 문장이나 CTA 보조 문구를 Chip에 넣지 말 것. 8자 안팎의 짧은 라벨만 자연스럽다.",
@@ -936,15 +963,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Modal: {
     name: "Modal",
     examplesHtml: {
-      do: '<nds-modal open title="신청을 취소할까요?" max-width="400" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot="footer">\n    <nds-button color="assistive" variant="outlined">닫기</nds-button>\n    <nds-button color="error" variant="solid">취소하기</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener("modal-close", () => modal.removeAttribute("open"));</script>',
+      do: '<!-- 2버튼(가로 분할): 취소 + 확정. slot="footer" 는 자동으로 .nds-modal__footer 로 승격됨 -->\n<nds-modal open title="신청을 취소할까요?" max-width="400" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot="footer">\n    <nds-button color="assistive" variant="outlined">닫기</nds-button>\n    <nds-button color="error" variant="solid">취소하기</nds-button>\n  </div>\n</nds-modal>\n<!-- 캐포비(data-brand="cashwalk-biz") 단일 버튼: 우측 정렬 · hug 너비 · 검정 pill (full-width 아님). full-width 속성 붙이지 말 것 — footer cascade 가 우측 정렬 처리 -->\n<nds-modal open title="검수를 승인할까요?" max-width="480">\n  <p>승인하면 즉시 노출됩니다.</p>\n  <div slot="footer">\n    <nds-button color="secondary" variant="solid" shape="pill">승인</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener("modal-close", () => modal.removeAttribute("open"));</script>',
       dont: "<!-- closable + max-width 누락 + 본문 없음 — 의도/구조가 부족 -->\n<nds-modal open></nds-modal>\n<!-- raw <dialog> 로 모달 흉내 — focus trap / 토큰이 적용 안 됨 -->\n<dialog open><p>알림</p></dialog>",
     },
     summary:
       "사용자의 현재 흐름을 일시적으로 중단하고 중요한 결정/응답을 받기 위한 오버레이 UI. " +
       "(기본/모바일) Radius 8 / 카드 padding 비대칭 28·16·16 / PC 332 · Mobile 294 / 본문↔버튼 24px gap / 50% overlay / shadow.md. " +
       "Type: default / title(헤더) / Image(64×64 아이콘+타이틀). " +
-      "Button: 최대 2개 (1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할). " +
-      "Modal API/props 는 brand 무관 동일 — CSS cascade 만 다름. brand 별 spec 변형 (예: admin desktop 4가지 패턴) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
+      "Button: 최대 2개. (기본/모바일) 1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할. " +
+      "**(캐포비 admin) 1개=우측 정렬 · hug 너비 · 검정 pill (full-width 아님), 2개=우측 hug** — 버튼 배치는 actionsLayout('split'=가로균등 | 'end'=우측 hug) 으로 제어하고, 생략 시 브랜드 기본이 강제된다(캐포비=end, 그 외=split. react=actionsLayout prop, html=actions-layout 속성). full-width 붙이지 말 것. " +
+      "Modal API/props 는 brand 무관 동일 — 색/pill 모양은 브랜드 토큰, 배치만 actionsLayout(data-layout) variant. brand 별 spec 변형 (예: admin desktop 4가지 패턴) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9947",
     references: [
       {
@@ -952,6 +980,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3418-471",
         caption:
           "Cashwalk for Business · ModalGuide. Single / Dual / With Close / Confirm+Slot 4가지 슬롯 기반 admin 패턴 SSOT.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "CashwalkBiz ⑥ 선택/피커 모달 — 지역 선택 (SSOT)",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-50116",
+        caption:
+          "대형 2컬럼 선택 모달(좌 검색+체크박스 트리 / 우 SelectedItemsPanel) + 본문 풀폭 옐로우 '적용' CTA. dimensions.selectionModal SSOT. (빈 셸 3001-50787 의 400centered·radius10 적용 버튼은 오류.)",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "CashwalkBiz ⑦ 데이터 로더 모달 — 소재 불러오기",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-32822",
+        caption:
+          "대형 선택형 DataTable 모달(행 radio 선택 + 페이지네이션 + 'N개씩 보기') + 푸터 취소(outlined)/불러오기(검정 pill). dimensions.dataLoaderModal SSOT.",
         brand: "cashwalk-biz",
       },
     ],
@@ -967,9 +1009,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           radius: "16px (base 8)",
           padding: "32px 균등 (base 비대칭 28/16/16)",
           gapBodyToFooter: "20px (base 24)",
-          buttonHeight: "44px pill (base 변형 없음)",
+          buttonHeight:
+            "44px pill (base 변형 없음) — 모달 액션 버튼 shape 는 pill 이 맞음 (Figma ModalGuide 3418-471). default 사각으로 바꾸지 말 것.",
+          footerLayout:
+            'Single(확정 1개) = 우측 정렬 · hug 너비(footer-action 구조면 120px 고정) · 검정 pill — **full-width 아님**. Dual(취소+확정) = 가로 분할. HTML 은 `<div slot="footer">` 로 감싸면 자동으로 .nds-modal__footer 로 승격돼 이 레이아웃이 적용됨(버튼 2개면 data-has-both-actions="true" 자동). single 에 full-width 를 붙이거나 footer 컨테이너 없이 버튼만 두면(본문 가운데 끼임) 회귀.',
+          confirmCta:
+            '주 action(확인/적용) = color="secondary" variant="solid" → 캐포비 시그니처 **검정 CTA**(#000 배경·흰 텍스트, buttonBg.secondary 토큰 cascade). colorMatrix 만 보면 secondary/solid 가 파랑(#F1F8FD)으로 보이지만 data-brand="cashwalk-biz" 에서는 검정으로 cascade 됨. 취소/닫기 = color="assistive" variant="outlined". 파괴적 확정(삭제 등)만 color="error".',
           titleTypo: "Title2 18·26 좌측 정렬 (base 중앙 정렬)",
           bodyTypo: "Body2 14·20 medium 좌측 정렬 (base 중앙 정렬)",
+          dataModal:
+            "**⑤ Data Modal (대형·조회 전용, 확인 팝업 ①~④ 와 구분)**: 목록/상세 데이터를 조회·확인하는 대형 모달. width ~560+ · **radius 12 · padding 24 · gap 16**(확인 모달의 16/32 와 다름) · border #E5E7EB. 헤더 = 제목(16 Bold) + 우상단 Close X(#999, 푸터 CTA 없음 — 조회 전용). 본문 = DataTable(헤더행 bg #F7F8FA · 셀 border #EEE · 36px · 12px) — 상세 + 목록 등 다중 테이블 가능. 페이지 패턴 아님 → Modal + DataTable 조합. Figma ModalGuide 3418-471(⑤ Data Modal 3832-1057).",
+          selectionModal:
+            "**⑥ 선택/피커 모달 (대형·다중 선택)**: 항목을 검색·다중 선택해 적용하는 대형 모달(예: 지역·카테고리·타겟 선택). **width ~960 · radius 16 · padding 48 · 흰 배경**. 헤더 = 제목 Bold 24 #383838(좌) + Close X 28(#999, 우). 본문 = **2컬럼(각 ~422 · 높이 ~652 · gap 20)**: 좌 = 필터(검색 input + '전체 선택' 체크박스 + 시/도▸시/군/구 체크박스 트리, 선택 시 옐로우 체크) / 우 = `SelectedItemsPanel`(component:SelectedItemsPanel · SelectedItemRow) — '선택한 N개' + '선택 해제'(reset) + 제거 가능한 선택 항목 리스트. **모달 안 패널은 '선택 해제'만 — '추가 선택' 버튼 노출 금지(HTML `hide-add` 속성 필수 · React `onAdd` 미전달). '추가 선택'은 모달 밖 페이지/타겟팅 폼에서만 쓰며 secondary Button + plus(+) 아이콘.** 푸터 = **본문 풀폭 단일 '적용' CTA**: Solid/Primary(옐로우 #FFD200·검정 텍스트, **pill**) · 비활성 = Neutral/400 #DDD. ⚠️ 확인팝업(①~④)의 '우측 hug 검정 pill' 규칙을 적용하지 말 것 — 선택 적용은 **풀폭 옐로우**. 버튼 shape 는 모달 BottomCTA 라 pill 이며, 시안 3001:50787(빈 셸)의 radius10·400centered 적용 버튼은 오류 — 채워진 SSOT 는 **3001:50116**(풀폭 적용). Figma 3001-50116.",
+          dataLoaderModal:
+            '**⑦ 데이터 로더 모달 (⑤ Data Modal 의 선택형)**: 기존 항목을 표에서 골라 불러오는 대형 모달(예: 소재 불러오기). ⑤ 구조 + **행 선택(radio/check) + 페이지네이션 + 푸터 액션**. 헤더 = 제목 Bold 24 + 검색 input + Close X. 본문 = 선택형 DataTable(상태칩·이미지·텍스트 컬럼 등) + 하단 페이지네이션 + \'N개씩 보기\' 드롭다운. 푸터 = **취소(color="assistive" outlined) + 불러오기(color="secondary" solid · 검정 pill)** 각 ~170×56 (확인팝업 dual 푸터와 동일). 조회 전용 ⑤ 와 달리 선택·확정 액션이 있다. Figma 3001-32822.',
           activationCondition:
             '`<html data-brand="cashwalk-biz">` 가 박힌 환경에서만 자동 적용 — 그 외에서는 base 모바일 스펙 유지',
         },
@@ -983,6 +1036,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
+      '캐포비 admin 모달의 주 action(확인/적용)은 color="secondary" variant="solid" — 브랜드 시그니처 **검정 CTA**(#000·흰 텍스트). 취소/닫기는 color="assistive" variant="outlined", 파괴적 확정만 color="error". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (검정인데 파랑으로 나오면 data-brand="cashwalk-biz" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)',
+      '**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot="footer">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot="footer"><nds-button color="secondary" variant="solid" shape="pill">확인</nds-button></div>` — slot="footer" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할. **단, 이 규칙은 확인/결정 팝업(①~④) 한정** — 모달 종류별로 푸터가 다르다(아래).',
+      '**모달 종류별 푸터 결정 트리** (혼동 금지): ① 확인/결정 팝업 = 우측 hug **검정 pill**(secondary), 취소는 assistive outlined. ② 선택/피커 모달(⑥, dimensions.selectionModal) = **본문 풀폭 단일 "적용" 옐로우 Solid/Primary pill** (검정 아님·hug 아님). ③ 데이터 로더(⑦, dimensions.dataLoaderModal) = 취소(outlined) + 불러오기 **검정 pill**. ④ 조회 전용 Data Modal(⑤) = 푸터 CTA 없음(Close X 만). 어떤 모달인지 먼저 정하고 그 푸터를 쓸 것 — 선택 모달에 검정 hug 를, 확인 팝업에 옐로우 풀폭을 쓰면 회귀.',
     ],
     usagePolicy: {
       useFor: [
@@ -990,10 +1046,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "현재 흐름 중단이 정당화되는 중요한 결정",
         "추가 입력 없이 한 화면에서 결정을 마쳐야 하는 짧은 폼",
         "(캐시워크 포 비즈니스 admin) 검수/등록/노출 변경 같은 admin 워크플로우의 확인 다이얼로그",
+        "(캐시워크 포 비즈니스 admin) 목록/상세 데이터 조회 — Data Modal(대형 · 본문 DataTable · Close X · 푸터 CTA 최소). 확인 팝업(①~④)과 사이즈/역할 구분(dimensions.dataModal 참조).",
       ],
       doNotUseFor: [
         "단순 정보 전달 — inline Notice / Banner / section 안내 사용",
-        "긴 콘텐츠/스크롤 페이지 — 별도 페이지나 BottomSheet 검토",
+        "긴 콘텐츠/스크롤 페이지 — 별도 페이지나 BottomSheet 검토 (단, 데이터 조회 목적의 대형 모달은 캐포비 Data Modal 패턴 허용)",
         "여러 단계 분기 — Wizard / 별도 페이지",
         "에러 메시지 — Toast 또는 inline error 사용",
       ],
@@ -1008,15 +1065,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- panel 의 key 가 trigger 의 key 와 불일치 — 빈 화면이 노출됨 -->\n<nds-tabs active-key="home">\n  <nds-tabs-list><nds-tabs-trigger key="home">홈</nds-tabs-trigger></nds-tabs-list>\n  <nds-tabs-panel key="HOME">홈 콘텐츠</nds-tabs-panel>\n</nds-tabs>',
     },
     summary:
-      "line/pill/square 3가지 variant. items + activeKey + onTabChange. " +
-      "동일 depth 콘텐츠 전환 · category navigation · section switching 전용. CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지.",
+      "line/chip/segment 3가지 variant + tone(neutral|color) + size(mobile|pc). items + activeKey + onTabChange. " +
+      "line/chip = 동일 depth 콘텐츠 전환 · category navigation · section switching(tablist) 전용. segment = 뷰/기간/상태 단일 값 토글(구 SegmentedControl 흡수, 콘텐츠 패널 전환 아님). CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지.",
     pitfalls: [
       "items 형식은 {key, title}[]. label 같은 다른 키 이름 사용 시 렌더 실패.",
       "변경 핸들러는 onTabChange (onChange 아님).",
       "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 보기 전환만.",
       "같은 리스트의 '필터' 는 FilterBar, Tab 은 '뷰/카테고리/섹션 전환' — 둘을 섞어 쓰지 말 것.",
-      "Segment(variant='square') 는 PC CMS · 주요 기능 전환에만 사용. 모바일 일반 화면에서는 line / pill 사용.",
+      "세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tabs variant='segment' (mobile/pc). line/chip 은 패널 전환(tablist) 전용.",
       "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.",
+      "캐포비(cashwalk-biz)는 chip 치수만 브랜드 토큰으로 override(radius 10·height 52·padding 20). 비활성 chip 컬러는 NudgeEAP 와 동일(subtle bg + subtle text, hover 시 surface.section + strong) — 흰 텍스트 저대비로 만들지 말 것.",
     ],
     usagePolicy: {
       useFor: [
@@ -1028,12 +1086,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "CTA 대체 (저장/신청/다음 단계)",
         "필터 컨트롤 (FilterBar 사용)",
         "페이지 단위 라우팅 (좌측 메뉴 · Breadcrumb 사용)",
-        "모바일 일반 화면에서 Segment(variant='square')",
+        "세그먼트형 단일 값 선택 (Tabs variant='segment' 사용)",
       ],
       variantPolicy: {
-        line: "기본 — 모바일/PC 공통, 콘텐츠 전환",
-        pill: "강조형 — 모바일 카드 헤더 안쪽",
-        square: "Segment — PC CMS · 주요 기능 전환 전용, 모바일 일반 화면 금지",
+        line: "기본 — 모바일/PC 공통, 콘텐츠 전환. 활성 탭 하단 인디케이터. tone=neutral(진한 텍스트)/color(브랜드).",
+        chip: "강조형 — 알약(Pill) 필터 탭, 모바일/PC 카테고리 분류. tone=neutral(활성 다크 채움)/color(활성 브랜드 채움).",
+        segment:
+          "연결된 회색 트랙 위 균등 분할 단일 값 토글(구 SegmentedControl 흡수) — 뷰/기간/상태. 콘텐츠 패널 전환 아님. tone=color 면 활성이 브랜드 채움.",
       },
     },
   },
@@ -1137,14 +1196,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Select: {
     name: "Select",
     examplesHtml: {
-      do: '<nds-select value="kr" label="국가" placeholder="선택하세요">\n  <nds-select-option value="kr">대한민국</nds-select-option>\n  <nds-select-option value="jp" disabled>일본</nds-select-option>\n</nds-select>\n<script>sel.addEventListener("select-change", e => setCountry(e.detail.value));</script>',
-      dont: '<!-- nds-select 안에 raw <option> -> 드롭다운이 렌더 안 됨 -->\n<nds-select value="kr"><option value="kr">대한민국</option></nds-select>',
+      do: '<nds-select value="kr" label="국가" placeholder="선택하세요">\n  <nds-select-option value="kr">대한민국</nds-select-option>\n  <nds-select-option value="jp" disabled>일본</nds-select-option>\n</nds-select>\n<script>sel.addEventListener("select-change", e => setCountry(e.detail.value));</script>\n<!-- 옵션이 많으면 searchable(검색형, Ant showSearch 모델) — 값은 여전히 옵션 중에서만 선택 -->\n<nds-select label="거주 지역" placeholder="선택" searchable search-placeholder="지역명으로 검색">\n  <nds-select-option value="seoul">서울특별시</nds-select-option>\n  <nds-select-option value="busan">부산광역시</nds-select-option>\n</nds-select>',
+      dont: '<!-- nds-select 안에 raw <option> -> 드롭다운이 렌더 안 됨 -->\n<nds-select value="kr"><option value="kr">대한민국</option></nds-select>\n<!-- 자유 입력(목록에 없는 값)이 필요한데 searchable 로 우회 — 그건 Autocomplete -->\n<nds-select searchable>...직접 입력값 허용 의도...</nds-select>',
     },
-    summary: "드롭다운. options + value + onValueChange.",
+    summary:
+      "드롭다운. options + value + onValueChange. 옵션이 많으면 `searchable`(검색형, Ant showSearch 모델)로 label 필터 — 단, 값은 항상 옵션 중에서만 선택된다(자유 입력 X).",
     pitfalls: [
+      '**폭은 기본 전체너비(fullWidth/full-width=true)** — 폼/FormField 안에서 트리거가 100% 를 채운다(캐포비 어드민 폼 기본 규칙). 좁게 써야 하는 경우(어드민 검색 필터 등)에만 `full-width="false"`(React `fullWidth={false}`)를 명시. 드롭다운 메뉴 폭은 전체너비면 트리거 폭으로 고정, auto(좁은) 셀렉트는 가장 넓은 옵션까지 grow 후 캡(360px) — 캡/트리거폭에 닿으면 옵션 라벨이 줄바꿈 대신 말줄임. 메뉴를 트리거보다 임의로 넓게 만들지 말 것.',
       "변경 핸들러는 **onValueChange** (onChange 아님). React 표준이 아닌 DS 컨벤션.",
       "**드롭다운 흉내 금지** — `<nds-button>` / raw `<button>` + ChevronRight/ChevronDown 아이콘 조합으로 드롭다운 모양만 따라 그리지 말 것. 키보드 탐색·focus trap·옵션 list a11y 가 전부 빠짐. 옵션이 1개라도 있으면 무조건 `<nds-select>` 또는 React `<Select>`. 'scope switcher / sort / filter' 같이 옵션이 동적이면 더더욱 raw button 금지.",
       "옵션이 2-3 개의 토글성 선택지면 Tabs / Segment 도 고려 — Select 는 옵션 수가 많거나 라벨이 긴 경우.",
+      "**Select(searchable) vs Autocomplete 구분** — 옵션 목록에서 *고르는* 검색은 `Select searchable`(값은 옵션으로 제약). 사용자가 *목록에 없는 값을 자유 입력*하거나 서버에서 비동기로 받은 제안을 보여주는 거면 Autocomplete. searchable 로 자유 입력을 흉내내지 말 것.",
+      "`searchable` 검색 placeholder 는 `search-placeholder`(React `searchPlaceholder`), 결과 0건 문구는 `empty-message`(React `emptyMessage`).",
     ],
   },
   Banner: {
@@ -1158,21 +1221,53 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Banner의 배경에 linear-gradient 사용하지 말 것. 단색 토큰만 (semantic-info-bg 등).",
     ],
   },
+  NoticeAlert: {
+    name: "NoticeAlert",
+    summary:
+      "폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스 — DS notice 패턴의 구현체. " +
+      "입력 컨텍스트 옆에 머무르며 명시적으로 닫기 전까지 유지됨. " +
+      "Toast(액션 결과·자동 사라짐) · Banner(페이지 상단 전역 띠) · Modal(즉각 판단 요구)과 분리 — 인라인 지속 메시지만 NoticeAlert. " +
+      "5 variant — info(중립 회색·아이콘 없음) / notice(블루·차분한 공지) / caution(옐로우 아이콘·회색 배경) / success(그린·완료) / error(레드 배경+레드 텍스트·조치 필요). " +
+      "캐포비 admin Figma node 3902:1212 가 시각 SSOT(height 48 · radius 12 · padding 12/16 · gap 10 · 좌측 status 아이콘 20×20 + 본문). 색은 임의 hex 금지, semantic status 토큰 binding. notice 패턴 규칙(강조 예산·화면당 색 박스 1개)을 그대로 따른다.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3902-1212",
+    references: [
+      {
+        label: "Cashwalk for Business · NoticeAlertGuide",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3902-1212",
+        caption:
+          "캐포비 라이브러리 인라인 알림 박스 가이드 — state(info/caution/error) 기준 anatomy·token mapping·Use Cases·Do/Don't SSOT. DS 에서는 notice 패턴 + 5 variant 로 흡수.",
+        brand: "cashwalk-biz",
+      },
+    ],
+    pitfalls: [
+      "error variant 를 단순 안내용으로 남발하지 말 것 — 의미가 흐려짐. 단순 정보는 info, 주의는 caution.",
+      "액션·확인 버튼이 필요한 메시지는 NoticeAlert 가 아님 → Modal/Dialog. 일시적 결과 알림 → Toast. 전역 공지 → Banner.",
+      "같은 화면에 색 배경 박스(notice/success/error) 를 여러 개 쌓지 말 것 — notice 패턴 강조 예산(화면당 색 박스 1개 권장). info/caution(회색)은 비교적 자유.",
+      "색을 임의 hex 로 박지 말 것 — variant 만 지정하면 semantic status 토큰(bg/text/icon)이 cascade 로 함께 적용됨.",
+      "안내가 필요한 입력 필드와 멀리 떨어진 위치에 배치하지 말 것 — 입력 컨텍스트 바로 옆.",
+    ],
+    examplesHtml: {
+      do: '<nds-notice-alert variant="caution" message="목표 참여자 수는 1,000명 단위로 입력해 주세요."></nds-notice-alert>\n<nds-notice-alert variant="error" message="필수 정보가 누락되어 저장할 수 없어요."></nds-notice-alert>',
+      dont: '<!-- 단순 안내인데 error 남발 → 의미 흐려짐 (info/caution 이 맞음) -->\n<nds-notice-alert variant="error" message="최대 30자 이내로 입력해 주세요."></nds-notice-alert>\n<!-- 확인 버튼이 필요한 메시지를 NoticeAlert 로 — Modal 이 맞음 -->\n<nds-notice-alert variant="notice" message="삭제하시겠어요? [확인]"></nds-notice-alert>',
+    },
+  },
   Input: {
     name: "Input",
     examplesHtml: {
-      do: '<nds-input label="이메일" placeholder="example@nudge.kr" clearable></nds-input>\n<script>el.addEventListener("input", e => setValue(e.target.value));</script>',
-      dont: '<!-- value 와 default-value 를 동시에 설정 — controlled / uncontrolled 가 섞임 -->\n<nds-input label="이메일" value="a@b" default-value="x@y"></nds-input>\n<!-- raw <input> + className 으로 모양만 흉내 -->\n<input class="nds-input" />',
+      do: '<nds-input label="이메일" placeholder="example@nudge.kr" clearable></nds-input>\n<!-- 글자수 카운터(24/25): maxlength + show-count (React: maxLength + showCount) -->\n<nds-input label="캠페인 이름" maxlength="25" show-count></nds-input>\n<!-- 비밀번호: type=password 면 눈 토글 자동 노출 -->\n<nds-input label="비밀번호" type="password"></nds-input>\n<script>el.addEventListener("input", e => setValue(e.target.value));</script>',
+      dont: '<!-- value 와 default-value 를 동시에 설정 — controlled / uncontrolled 가 섞임 -->\n<nds-input label="이메일" value="a@b" default-value="x@y"></nds-input>\n<!-- 글자수 카운터를 suffix 텍스트로 직접 박지 말 것 — show-count 사용 -->\n<nds-input label="이름" suffix="0/25"></nds-input>\n<!-- 비밀번호 눈 아이콘을 suffix 로 손수 조립 금지 — type=password 가 자동 제공 -->\n<nds-input label="비밀번호" type="password" suffix="👁"></nds-input>\n<!-- raw <input> + className 으로 모양만 흉내 -->\n<input class="nds-input" />',
     },
     summary:
       "1px 보더, 흰 배경, 48px 높이. label/wrapper(field+addon)/helper 의 compound 구조 (Figma Library node 171:9903 기준).",
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9903",
     pitfalls: [
       "검색 변형이 필요하면 SearchInput을 사용. Input에 SearchIcon을 직접 박지 말 것.",
+      "**매 키 입력마다 value 를 재포맷하지 말 것** — `input` 이벤트에서 천단위 콤마/단위를 붙여 `el.value` 를 되쓰면 nds-input 의 내부 controlled 상태와 충돌해 커서가 튀고 한 글자만 입력되거나 수정이 막힌다(회귀: 입찰단가/예산 콤마 라이브 포맷으로 '한 글자 이상 입력·수정 불가'). 금액·수량은 콤마·단위·clamp 가 내장된 **AmountInput(`<nds-amount-input>`)** 을 쓰고(검증룰 amount-as-text-input 이 일반 금액 input 자체를 막음), 굳이 일반 input 이면 포맷은 blur 시점이나 제출 시 파싱으로 미루고 입력 중에는 raw 값을 그대로 유지하라.",
       "label/helper 의 typography 는 caption-2(12/16) — body3(14/20) 로 키우지 말 것. Figma 명세보다 크면 폼이 산만해짐.",
       "complete=true 와 errorMessage 를 동시에 주지 말 것 — error 가 우선이지만 success 의도가 묻힘.",
       "errorMessage/successMessage/helperText 중 하나라도 있으면 helpers 배열은 무시됨. 단일/멀티 의도를 분리해서 사용.",
       "**helperText 와 errorMessage 동시 노출 금지** (★ 핵심 룰). DS 는 우선순위 error > success > helper 로 1 줄만 표시하도록 이미 강제하지만, 가이드/스토리/목업에서도 두 줄 동시 표시한 형태로 그리지 말 것. 헬퍼는 '비어 있을 때의 안내', 에러는 '검증 실패 후의 즉시 피드백' — 의미가 충돌하고 인지 부하가 커진다. 검증 실패 순간 helper 는 같은 자리에서 error 메시지로 교체되어야 함 (자리 점프 X, 두 줄 누적 X).",
+      "**글자수 카운터(24/25)** 는 `maxlength` + `show-count`(React `maxLength` + `showCount`) — 우측에 자동 노출, 초과 시 빨간색. suffix 에 직접 텍스트로 박지 말 것. (Textarea 는 maxlength 만 주면 카운터 자동.)",
     ],
     recommended: [
       "기본: <Input label='이메일' placeholder='example@nudge.kr' helperText='...' />",
@@ -1180,6 +1275,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "검증 성공: complete + successMessage — primary 컬러 헬퍼로 자동 전환",
       "달력/검색 같은 아이콘 affordance: suffix prop (24x24)",
       "Multi-helper(비밀번호 규칙 체크리스트 등): helpers={[{ text, icon?, variant? }, ...]} — 또는 compound <Input.HelperGroup><Input.Helper>…</Input.Helper>…</Input.HelperGroup>",
+      '비밀번호: type=\'password\' (HTML `type="password"`) → 우측 눈 아이콘 표시/숨김 토글이 **자동** 노출(auth/로그인 화면). 끄려면 passwordToggle={false} / `password-toggle="false"`. suffix 에 eye 아이콘을 손수 박지 말 것.',
     ],
     sizeMatrix: {
       default: "height 48 / padding 16·13 / wrapper gap 10 / radius 8",
@@ -1189,7 +1285,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     stateMatrix: {
       default: "border #D8D8D8 / bg white / placeholder #999",
-      typing: "border #2B96ED (cv.border.focus) / text #111 (cv.text.normal)",
+      typing:
+        "border var(--semantic-border-focus-default) (cv.border.focus) / text var(--semantic-text-strong-default) (cv.text.normal)",
       error: "border #F13F00 (cv.error.main) / helper color same",
       disabled: "border #D8D8D8 / bg #FAFAFA (cv.bg.light) / text #999",
       complete: "border #D8D8D8 / bg white / helper variant=success(=primary blue)",
@@ -1237,8 +1334,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Sidebar: {
     name: "Sidebar",
     examplesHtml: {
-      do: '<nds-sidebar active-key="home" width="240"\n  items=\'[{"key":"home","label":"홈","icon":"home"},{"key":"chat","label":"상담","icon":"chat"}]\'\n  title="NudgeEAP"></nds-sidebar>\n<script>el.addEventListener("item-click", e => navigate(e.detail.key));</script>',
-      dont: "<!-- 어드민에 nds-sidebar 사용 — 어드민은 antd Layout.Sider -->\n<nds-sidebar items='...'></nds-sidebar>",
+      do: '<!-- 권장: items 를 자식 <script type="application/json" slot="items"> 로 넣는다 — 속성이 아니라 텍스트라 따옴표 이스케이프 함정이 아예 없고 단일파일 빌드에도 안전 -->\n<nds-sidebar active-key="home" width="240" title="NudgeEAP">\n  <script type="application/json" slot="items">\n  [{"key":"home","label":"홈","icon":"<svg ...>...</svg>"},{"key":"chat","label":"상담","icon":"<svg ...>...</svg>"}]\n  </script>\n</nds-sidebar>\n<!-- 속성 형태도 가능: items=\'[{"key":"home",...}]\' — 단, 구조용 따옴표는 bare 로 두고 SVG 내부 따옴표만 \\" 로 이스케이프(구조 따옴표를 \\" 로 만들면 파싱 실패→메뉴 통째 유실). icon = find_icon({name}) inline SVG 그대로(이름 넣으면 텍스트로 흘러나옴) -->\n<script>el.addEventListener("item-click", e => navigate(e.detail.key));</script>',
+      dont: "<!-- 일반 어드민/CMS(=antd 영역)에서 nds-sidebar 사용 — 일반 어드민은 antd Layout.Sider. -->\n<!-- ★ 단, 캐포비(cashwalk-biz) 어드민은 정반대 — nds-sidebar 가 정답이다 (DS 자체 admin DS). 아래 pitfalls 참고 -->\n<nds-sidebar items='...'></nds-sidebar>",
     },
     summary:
       "어드민/CMS용 좌측 수직 내비게이션. 캐시워크 포 비즈니스(CashwalkBiz) Figma 168:1250 / 290:1593 기준으로 정합. " +
@@ -1246,15 +1343,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     figmaNodeUrl:
       "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B5%AD-%EC%BA%90%EC%8B%9C%EC%9B%8C%ED%81%AC_WEB-Dev?node-id=168-1250",
     pitfalls: [
+      "**★ 캐포비(cashwalk-biz) 어드민 = nds-sidebar 가 정답.** 일반 브랜드의 어드민/CMS 는 antd Layout.Sider 가 규칙이지만(get_guide({ topic:'admin-cms' })), 캐포비는 DS 안에 자체 admin DS(sidebar 300px · admin 토큰)를 갖고 있어 antd 가 아니라 이 `<nds-sidebar>`(React `<Sidebar>`) 를 쓴다. `intent='admin-cms' + brand='cashwalk-biz'` 면 라우터도 antd 가 아니라 html/DS 로 보낸다. `:root[data-brand='cashwalk-biz']` cascade 로 brand-subtle bg + 노란 indicator 가 자동 적용 — 색 hex 박지 말 것.",
       "items prop 은 flat SidebarItem[] 또는 SidebarSection[] 둘 다 받지만, **섹션 라벨이 필요하면** SidebarSection[] 으로 넘길 것. flat 배열 안에 빈 객체로 'spacer' 만들지 말 것.",
       "활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.",
       "캐시워크 포 비즈니스 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.",
-      "GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 get_brand({ brand:'<slug>' }).brandIcons 참조.",
+      '**★ HTML `<nds-sidebar>` 의 item `icon` = inline SVG 문자열 (이름 아님).** `icon` 은 innerHTML 로 주입되므로 `"icon":"home"` 이나 `"icon":"CashwalkBizGnbBannerIcon"` 처럼 **이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자). 절차: `find_icon({ name })` → 반환 inline SVG 를 `icon` 에 주입. React `<Sidebar>` 의 `icon?: ReactNode`(엘리먼트)와 대칭일 뿐, **HTML 목업이라 아이콘이 안 된다는 건 사실이 아니다**(런타임 한계 X). `items` 가 JSON 속성이라 SVG 안 `"` 는 `\\"` 로 이스케이프.',
+      "GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 find_icon({ query:'CashwalkBizGnb' }) 참조. (이때 얻은 이름을 그대로 HTML icon 에 넣지 말고 find_icon 으로 SVG 를 받아 주입.)",
+      '**★ items JSON 이스케이프 함정 — 사이드바가 로고만 뜨고 메뉴가 통째로 사라지는 #1 원인.** 단일따옴표 `items=\'...\'` 안에서 JSON **구조용 따옴표까지** `\\"` 로 이스케이프하면(`items=\'[{\\"key\\"...]\'`) HTML 속성에서 백슬래시는 리터럴이라 JSON 파싱이 깨지고, 컴포넌트가 메뉴를 통째로 버린다(로고/헤더만 렌더). 구조용 따옴표는 **bare**, SVG 내부 따옴표만 `\\"`. 헷갈리면 `<script type="application/json" slot="items">` 자식을 쓰면 이스케이프가 아예 필요 없다. 빌드 validator(`nds-json-attr-unparseable`)가 깨진 JSON 을 error 로 잡아 빌드를 막고, 컴포넌트도 조용히 비우지 않고 console.warn 한다.',
       "서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).",
       "collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).",
       "footer 와 user 를 동시에 주면 footer 가 우선. user 는 'avatar + 이름 + 역할' 정형 패턴 단축이라 footer 가 있으면 무시.",
+      "**★ 캐포비 계정 헤더 / 로그아웃은 구조화 slot — 손수 div 금지.** 로고 아래 계정 블록(이메일→잔액→충전/내역 CTA 쌍)은 `account` slot(HTML `account='{…}'` / React `account={{…}}`), 최하단 로그아웃은 `footer-actions` slot(HTML `footer-actions='[…]'` / React `footerActions={[…]}`). `account.actions` / `footer-actions` 의 `variant` 는 'solid'|'outlined'(기본 outlined)로 DS 버튼 토큰을 자동 적용 — hex/직접 버튼 마크업 금지. 이 slot 들을 모르고 `header` 에 raw HTML 로 조립하거나 통째로 빼먹는 게 캐포비 사이드바 재발 #1.",
+      "**사이드바는 풀하이트 셸(.nds-shell) 안에 둔다.** `<nds-sidebar>` 는 기본 full-height(100vh sticky)지만, body 직속·height 미확정 컨테이너에 두면 높이가 화면을 못 채우거나 레이아웃이 깨진다. `<div class='nds-shell'>…<nds-sidebar/>…<main class='nds-shell__main'>` 형태로 감쌀 것 — get_guide({ topic: 'pattern:admin-shell' }) / ready-made 셸은 pattern:cashwalk-biz-admin-sidebar.",
     ],
     recommended: [
+      "**캐포비 어드민이면 ready-made 픽업**: items 를 손으로 만들지 말고 `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' })` 의 복붙 트리(React/HTML, 아이콘 inline 완료)를 쓰고 activeKey 만 화면 키로. BrandHeader/Footer 처럼 한 번에 끌어온다.",
       "<Sidebar items={items} activeKey={key} onItemClick={(it) => navigate(it.key)} user={{ name, role }} />",
       "섹션 그룹: items={[{ key: 'content', label: '콘텐츠 운영', items: [...] }, { key: 'system', label: '시스템', items: [...] }]}",
       "icon-only 사이드바: collapsed + onToggleCollapse 페어로 controlled. 토글 버튼은 헤더에 자동 노출.",
@@ -1301,64 +1404,28 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       '리스트 끝 무한스크롤: <Spinner size="md" />',
     ],
   },
-  MoodSelector: {
-    name: "MoodSelector",
+  Chart: {
+    name: "Chart",
     examplesHtml: {
-      do: '<nds-mood-selector value="calm" name="today-mood"></nds-mood-selector>',
-      dont: "<!-- 5개 nds-icon-button 으로 직접 조립 — 단일 선택/포커스 룰 모두 손실 -->\n<nds-icon-button>😀</nds-icon-button><nds-icon-button>😐</nds-icon-button>…",
-    },
-    summary: "5단계 기분 선택. EAP 앱 첫 화면 핵심 인터랙션. 기본 5개 옵션이 내장됨.",
-    pitfalls: [
-      "options를 직접 넘길 때 5개를 벗어나면 가로 폭 문제 — 4-6개가 권장 범위.",
-      "이모지 대신 아이콘 컴포넌트를 emoji 자리에 넘기지 말 것. emoji는 string 필드.",
-      "value 미선택 상태가 default이므로 폼 제출 전 검증 필수.",
-    ],
-    recommended: [
-      "기본: <MoodSelector value={mood} onValueChange={setMood} /> (5단계 자동)",
-      "showLabels=false로 컴팩트하게 (좁은 카드 안)",
-    ],
-    interactivePattern:
-      "기록 후 다음 단계(메모/저장)로 이어주는 게 자연스러움. 선택 직후 토스트만 띄우고 끝내지 말 것.",
-  },
-  AssessmentResultCard: {
-    name: "AssessmentResultCard",
-    examplesHtml: {
-      do: '<nds-assessment-result-card title="우울감 자가검사 결과"\n  score="12" max-score="27" level="caution" level-text="중간 수준"\n  description="가벼운 우울감을 보일 수 있어요"></nds-assessment-result-card>',
-      dont: '<!-- level 만 있고 level-text/description 누락 — 사용자에게 의미가 전달되지 않음 -->\n<nds-assessment-result-card score="12" max-score="27" level="caution"></nds-assessment-result-card>',
+      do: '<!-- 라인: 데이터는 자식 <script type="application/json"> 로 -->\n<nds-chart type="line">\n  <script type="application/json">\n    { "labels": ["10","20","30","40","50","60"],\n      "series": [{ "name": "지급된 캐시", "values": [11000000,28000000,33000000,40000000,42000000,47000000] }],\n      "tooltip": { "index": 3, "text": "123,456,789 w/s" } }\n  </script>\n</nds-chart>\n\n<!-- 그룹 막대: 다중 시리즈 = 남/여 그룹 -->\n<nds-chart type="bar">\n  <script type="application/json">\n    { "labels": ["10","20","30","40","50","60"],\n      "series": [\n        { "name": "남성", "values": [14000000,15500000,22000000,25000000,26000000,16000000] },\n        { "name": "여성", "values": [14000000,18500000,20500000,28000000,26000000,14500000] } ] }\n  </script>\n</nds-chart>',
+      dont: '<!-- 외부 차트 라이브러리(canvas/Chart.js)·이미지로 차트를 박지 말 것 — 목업은 무번들러. nds-chart 정적 SVG 사용 -->\n<canvas id="chart"></canvas><script src="chart.js"></script>\n<!-- series 색을 raw hex 로 하드코딩하지 말 것. 기본 팔레트(캐포비)면 color 생략, 바꾸려면 --nds-chart-* 오버라이드 -->\n<nds-chart type="bar" data=\'{"labels":["a"],"series":[{"color":"#ff0000","values":[1]}]}\'></nds-chart>',
     },
     summary:
-      "심리검사 결과 카드. score/maxScore + level(normal/mild/moderate/severe) + 색 자동 매핑.",
+      '캐포비 어드민 통계 차트 — line / grouped-bar. 런타임 라이브러리 없이 정적 inline-SVG 로 렌더(무번들러 목업 정합). 데이터는 자식 <script type="application/json"> 또는 data 속성. Figma 퀴즈 통계(3001:47404).',
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-47404",
     pitfalls: [
-      "level과 점수를 임의로 분리하지 말 것 — 외부에서 점수 → 단계 매핑이 검사마다 다르므로 호출부에서 결정해서 넘김.",
-      'title prop은 검사명("PHQ-9" 등). HTMLDivElement.title과 충돌 방지를 위해 Omit되어 있으니 ReactNode 가능.',
-      'severe인데 description만 있고 후속 액션이 없으면 안전. severe 결과엔 actionLabel("상담 연결") 또는 옆에 CrisisCallout을 같이 둘 것.',
-      "❌ **좌측 컬러 보더(border-left) 디자인 절대 금지** — 한때 단계별 색을 좌측 라인으로도 강조했으나 카드 형태가 어그러지고, 스크롤 리스트에서 시각 잡음이 누적되어 폐기. 단계 색은 배지·점수 텍스트·게이지·액션 으로만 전달. 시안에 좌측 라인이 있어도 컴포넌트에 다시 넣지 말 것.",
-      "❌ severe 위급도를 보더 두께/색으로 표시 금지 — 배경 톤(surface.statusError) + 점수/배지/액션 색으로만 강조.",
-    ],
-    colorMatrix: {
-      normal: "success.bg + success.main — 정상",
-      mild: "caution.bg + caution.text — 주의",
-      moderate: "caution.bg + caution.text — 경계 (mild보다 진한 텍스트로 톤 차이)",
-      severe: "error.bg + error.main — 심각",
-    },
-    interactivePattern:
-      "actionLabel 클릭은 결과 상세 또는 다음 액션(상담 예약)으로. severe면 CrisisCallout과 묶어서 같이 노출.",
-  },
-  CrisisCallout: {
-    name: "CrisisCallout",
-    examplesHtml: {
-      do: '<nds-crisis-callout tone="error" title="위기 상황이세요?"\n  description="언제든 1577-0199 로 전화하실 수 있어요"></nds-crisis-callout>',
-      dont: '<!-- crisis-callout 을 마케팅/홍보 톤에 사용 — 강한 시그널이 오염됨 -->\n<nds-crisis-callout tone="info" title="신규 이벤트" description="…"></nds-crisis-callout>',
-    },
-    summary: "위기 신호 시 1393/119 등 즉시 연결 박스. dismiss 불가능. EAP의 안전 책임 영역.",
-    pitfalls: [
-      "Banner와 외형이 비슷하지만 절대 closable 만들지 말 것 — 위기 안내는 dismiss 되면 안 됨.",
-      'tone="caution"은 "잠시 휴식이 필요해요" 수준에만. 자살 사고 등 실제 위기는 무조건 tone="danger".',
-      "phoneNumber 제공 시 자동으로 tel: 링크 — 모바일에서 바로 통화. 데스크톱에서도 동작은 OS 핸들러가 받음.",
-      "CrisisCallout 단독으로 화면 어딘가에 두지 말고, severe 결과 옆/혹은 채팅 화면 상단에 배치.",
+      "**캐포비(cashwalk-biz) 어드민 통계 전용** — 소비자(모바일) 화면용 차트 아님. 대시보드/통계 페이지에서만 사용.",
+      '**데이터는 JSON** — 큰 데이터는 `data="..."` 속성보다 자식 `<script type="application/json">` 권장(과이스케이프 방지, cf. nds-sidebar). values 는 **숫자**(따옴표 X).',
+      "**type** 은 `line` | `bar`. bar 에 시리즈를 2개 이상 주면 그룹(나란히) 막대. line 도 다중 시리즈 가능.",
+      "**시리즈 색은 토큰 슬롯** — 기본값이 캐포비 팔레트(line=#FFD200, bar1=#007AFF 남성, bar2=#FF8437 여성)라 보통 `color` 생략. 바꾸려면 `--nds-chart-line` / `--nds-chart-1` / `--nds-chart-2` CSS 변수 오버라이드(raw hex 하드코딩 금지).",
+      "**y축 상한**: 미지정 시 데이터 기준 자동(눈금에 나눠떨어지게). 캐포비 시안처럼 헤드룸을 두려면 `y-max`(웹컴포넌트) / `yMax`(React) 명시.",
+      "범례는 시리즈 `name` 이 있을 때만 자동 표시. 숨기려면 `no-legend`(웹컴포넌트) / `showLegend={false}`(React).",
+      "차트 카드(흰 라운드 박스 + 타이틀)는 차트 외부 컨테이너로 직접 구성 — nds-chart 는 plot+범례만 그림.",
     ],
     recommended: [
-      'tone="danger" + actions=[{ label: "1393 자살예방상담", phoneNumber: "1393" }, { label: "119 응급", phoneNumber: "119", variant: "outlined" }]',
+      "연령대별/시간대별 추세 = line (필요 시 tooltip 으로 특정 포인트 강조)",
+      "성별/카테고리 비교 = bar (그룹 막대, 시리즈 2개)",
+      "React: <Chart type=\"bar\" labels={ages} series={[{name:'남성',values:[...]},{name:'여성',values:[...]}]} />",
     ],
   },
   CounselorCard: {
@@ -1395,28 +1462,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "긴 대화 화면은 list virtualization 권장 (DS는 단순 렌더만 제공)",
     ],
   },
-  ConsentChecklist: {
-    name: "ConsentChecklist",
-    examplesHtml: {
-      do: '<nds-consent-checklist\n  items=\'[\n    {"key":"terms","label":"이용약관 동의","required":true},\n    {"key":"privacy","label":"개인정보 처리방침","required":true},\n    {"key":"marketing","label":"마케팅 정보 수신 (선택)"}\n  ]\'\n  all-label="전체 동의"></nds-consent-checklist>\n<script>el.addEventListener("nds-consent-change", e => setConsent(e.detail.value));</script>',
-      dont: '<!-- 개별 nds-checkbox 여러 개로 흉내 — 전체 동의 / required 가드 사라짐 -->\n<nds-checkbox label="약관 동의" required></nds-checkbox>\n<nds-checkbox label="개인정보 동의" required></nds-checkbox>',
-    },
-    summary: "전체동의 + 항목별 체크 + 펼치기. 회원가입/민감정보 동의에 표준화.",
-    pitfalls: [
-      "items[].required=true인데 체크 안 됐을 때의 검증은 호출부 책임. 컴포넌트 자체에서 막지 않음.",
-      'detail이 길면 펼친 영역이 화면을 덮음 — 본문은 핵심만, 전문은 "전문 보기" 링크로.',
-      '전체동의 토글 동작이 직관적이어야 함: 부분 체크 상태에서 누르면 "전체 체크"가 아니라 "전체 해제"로 가는 사례가 있는데, 이 컴포넌트는 "모두 체크면 해제, 아니면 전체 체크".',
-    ],
-    interactivePattern:
-      "필수만 자동체크 후 사용자가 선택만 토글하는 흐름이 회원가입 컨버전에 유리.",
-  },
   ScoreGauge: {
     name: "ScoreGauge",
     examplesHtml: {
       do: '<nds-score-gauge value="22" max="27"\n  segments=\'[\n    {"level":"normal","label":"정상","from":0,"to":9},\n    {"level":"mild","label":"경미","from":10,"to":18},\n    {"level":"moderate","label":"중간","from":19,"to":27}\n  ]\'\n  show-label show-legend value-suffix="점"></nds-score-gauge>',
       dont: '<!-- segments 의 level 이 정의된 enum 외 값 — 색이 fallback -->\n<nds-score-gauge value="5" segments=\'[{"level":"good","from":0,"to":10}]\'></nds-score-gauge>',
     },
-    summary: "점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑.",
+    summary:
+      "점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑. CircularProgress 와 함께 radial progress family 를 이룬다.",
     pitfalls: [
       "단계 경계는 검사마다 다름. segments prop으로 직접 넘겨 결과 해석을 통일.",
       "needle은 transform: rotate로 회전. CSS transform 충돌 환경(예: 부모 transform)에선 어긋날 수 있어 wrapper 별도 권장.",
@@ -1426,21 +1479,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       'PHQ-9: <ScoreGauge value={score} max={27} segments={[{level:"normal",label:"정상",from:0,to:5}, {level:"mild",label:"경증",from:5,to:10}, ...]} />',
     ],
-  },
-  MedicationItem: {
-    name: "MedicationItem",
-    examplesHtml: {
-      do: '<nds-medication-item med-name="우울증 약" dosage="50mg"\n  times=\'[{"time":"08:00"},{"time":"20:00"}]\'\n  note="식후 복용" show-check></nds-medication-item>\n<script>el.addEventListener("nds-medication-taken-change", e => save(e.detail));</script>',
-      dont: '<!-- 복용량/시간 정보 누락 — 환자에게 핵심 정보가 빠짐 -->\n<nds-medication-item med-name="약"></nds-medication-item>',
-    },
-    summary: "복용약 한 줄 표시. 이름/용량/시기/노트 + 체크.",
-    pitfalls: [
-      "리스트로 쌓을 때는 부모에 gap 8-12px. MedicationItem은 자체 margin 없음.",
-      "onTakenChange를 안 넘기면 체크박스가 안 보임 — 표시 전용으로 쓸 수 있음.",
-      'times는 morning/noon/evening/bedtime 4개 enum만. 복약 시간을 분 단위로 보여주려면 note에 "식후 30분" 같이 텍스트로.',
-    ],
-    interactivePattern:
-      '체크 후 즉시 토스트보다 리스트 상단에 "오늘 X/Y 복용 완료" 진행도 ProgressBar 표시가 더 동기 부여됨.',
   },
   AudioPlayer: {
     name: "AudioPlayer",
@@ -1456,22 +1494,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "onSkipBack/Forward는 옵셔널 — 단일 트랙이면 둘 다 생략하면 표시 안 됨.",
     ],
     recommended: ["10분 미만 단일 가이드: SkipBack/Forward 생략. 시리즈 재생만 둘 다 부착."],
-  },
-  ActivityTimeline: {
-    name: "ActivityTimeline",
-    examplesHtml: {
-      do: '<nds-activity-timeline items=\'[\n  {"key":"1","date":"2026.05.25","title":"상담 예약 완료","status":"completed"},\n  {"key":"2","date":"2026.05.28","title":"자가검사","status":"ongoing","statusLabel":"진행 중"}\n]\'></nds-activity-timeline>',
-      dont: '<!-- 자식 element 를 직접 쓰면 nds-timeline 사용 (이 가이드는 flat items API) -->\n<nds-activity-timeline>\n  <nds-timeline-item title="…"></nds-timeline-item>\n</nds-activity-timeline>',
-    },
-    summary: "상담/검사 이력 타임라인. dot + line + 날짜/제목/상태 배지.",
-    pitfalls: [
-      "마지막 항목의 line은 자동으로 안 그려짐(:last-child). 중간에 splice해서 추가/삭제할 때 key 유지 잘 할 것.",
-      'status="ongoing"는 box-shadow ring 효과 — 한 화면에 여럿 두면 시각 잡음. 보통 1개만.',
-      "statusLabel 없이 status만 주면 dot 색만 바뀌고 우측 배지는 안 뜸. 둘 다 필요.",
-      "items 길이가 20+ 넘으면 페이지네이션 또는 가상화 권장.",
-    ],
-    interactivePattern:
-      "각 아이템을 클릭 가능하게 하려면 description 자리에 작은 TextButton/Link를 넣는 패턴 — 행 전체 onClick은 우발 클릭 위험.",
   },
   OtpInput: {
     name: "OtpInput",
@@ -1516,15 +1538,18 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   DateRangePicker: {
     name: "DateRangePicker",
     examplesHtml: {
-      do: '<nds-date-range-picker from="2026-05-01" to="2026-05-31"\n  presets=\'[{"label":"최근 7일","days":7},{"label":"이번 달","days":30}]\'></nds-date-range-picker>\n<script>el.addEventListener("nds-date-range-change", e => apply(e.detail));</script>',
+      do: '<nds-date-range-picker from="2026-05-01" to="2026-05-31" allow-clear\n  presets=\'[{"key":"7d","label":"최근 7일","from":"2026-05-25","to":"2026-05-31"},{"key":"month","label":"이번 달","from":"2026-05-01","to":"2026-05-31"}]\'></nds-date-range-picker>\n<script>el.addEventListener("nds-date-range-change", e => apply(e.detail));</script>',
       dont: '<!-- to < from — 의미 없는 범위. min-date / max-date 로 가드 권장 -->\n<nds-date-range-picker from="2026-05-31" to="2026-05-01"></nds-date-range-picker>',
     },
-    summary: "시작/끝 날짜 한 쌍 선택. DatePicker 두 개 + 빠른 프리셋(최근 7일 등).",
+    summary:
+      "시작/끝 날짜 한 쌍 선택. 단일 트리거 + range 전용 캘린더 패널 + 빠른 프리셋(최근 7일 등).",
     pitfalls: [
+      "**기간(노출 기간/시작~종료)을 raw text input 2개로 손수 만들지 말 것** — placeholder 'YYYY-MM-DD' 텍스트 입력은 달력 팝오버·범위 검증·간격이 전부 빠진다. 한 컴포넌트 <nds-date-range-picker> 로. (검증룰 date-as-text-input 이 막음. 단일 날짜는 DatePicker.)",
       "value는 { from?, to? } — 부분 선택 가능 (시작만 있을 수 있음). 폼 검증 시 둘 다 있는지 체크.",
-      "끝일은 자동으로 minDate=시작일 — 시작일을 뒤로 옮기면 끝일이 자동으로 비워짐(value.to>from 체크).",
+      "시작/종료를 한 패널에서 차례로 선택 — 역순으로 고르면 자동 정렬된다.",
       "프리셋은 defaultRangePresets로 빠른 것 3개 제공 (7일/30일/이번 달). 검사·리포트마다 다른 기본값이 필요하면 직접 정의.",
       'presets[].range는 함수 — 호출 시점의 "오늘"을 기준으로 계산하기 위함. 객체 리터럴로 박지 말 것.',
+      "선택 불가 날짜는 React disabledDate, HTML disabled-dates(JSON 배열 또는 comma-separated ISO)로 막는다.",
     ],
     recommended: [
       "리포트 기간 필터: defaultRangePresets 그대로 사용",
@@ -1621,8 +1646,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- options 를 단일 따옴표 없이 JSON.stringify 결과 그대로 — 따옴표 escape 가 깨짐 -->\n<nds-autocomplete options=\"[{value:'1',label:'A'}]\"></nds-autocomplete>",
     },
     summary:
-      "입력 + 드롭다운 추천. SearchInput(자유 검색)과 Select(고정 목록)의 중간. 키보드 ↓↑/Enter/Esc 내장.",
+      "입력 + 드롭다운 추천(자유 입력 허용). SearchInput(자유 검색)과 Select(고정 목록)의 중간. 키보드 ↓↑/Enter/Esc 내장. ⚠️ 목록에서 *고르기만* 하면(자유 입력 불필요) `Select searchable` 이 맞다 — Autocomplete 는 값이 옵션에 없어도 되는 경우.",
     pitfalls: [
+      "**Select searchable 과 구분** — 옵션 중 하나를 *선택*하는 검색이면 `Select searchable`(값이 옵션으로 제약). Autocomplete 는 자유 입력 + 비동기 제안용.",
       "options는 외부에서 필터링해 전달 — 컴포넌트가 자동 필터링하지 않음 (서버 검색을 위한 의도적 설계).",
       "onSelect 후 onValueChange(label)이 자동 호출됨. value를 다시 set하지 말 것 (이중 호출).",
       "minQueryLength=0으로 두면 빈 입력에서도 드롭다운이 열림. 추천 노출이 의도가 아니면 1+ 권장.",
@@ -1637,13 +1663,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   SelectionCard: {
     name: "SelectionCard",
     examplesHtml: {
-      do: '<nds-selection-card mode="single" value="chat">\n  <nds-selection-card-item value="chat" item-title="채팅 상담" description="텍스트로 편하게"></nds-selection-card-item>\n  <nds-selection-card-item value="video" item-title="영상 상담" description="얼굴 보며 깊이 있게"></nds-selection-card-item>\n</nds-selection-card>\n<script>el.addEventListener("nds-selection-change", e => setMode(e.detail.value));</script>',
+      do: '<nds-selection-card mode="single" value="chat">\n  <nds-selection-card-item value="chat" item-title="채팅 상담" description="텍스트로 편하게"></nds-selection-card-item>\n  <nds-selection-card-item value="video" item-title="영상 상담" description="얼굴 보며 깊이 있게"></nds-selection-card-item>\n</nds-selection-card>\n<!-- 리치 카드: title/description 아래에 Chip 행·bullet 리스트를 slot="content" 로 -->\n<nds-selection-card mode="single" value="brand">\n  <nds-selection-card-item value="brand" item-title="브랜드 노출 확대" description="최대한 많은 사용자에게 도달">\n    <div slot="content">\n      <div>사용 가능 광고 유형: <nds-chip>프리미엄형</nds-chip> <nds-chip>디스플레이형</nds-chip></div>\n      <ul><li>신규 브랜드를 알리고 싶을 때</li></ul>\n    </div>\n  </nds-selection-card-item>\n</nds-selection-card>\n<script>el.addEventListener("nds-selection-change", e => setMode(e.detail.value));</script>',
       dont: '<!-- mode=\'multiple\' 인데 value 속성 사용 — values (배열) 사용 -->\n<nds-selection-card mode="multiple" value="chat">…</nds-selection-card>',
     },
-    summary: "카드형 단일/다중 선택지 (RadioCard/CheckboxCard 통합). compound — Group + Item.",
+    summary:
+      '카드형 단일/다중 선택지 (RadioCard/CheckboxCard 통합). compound — Group + Item. title/description 외에 **리치 중첩 콘텐츠**(Chip 행·bullet 리스트)를 React `children` / HTML `slot="content"` 로 카드 본문에 넣을 수 있음(캐포비 캠페인 목표 카드).',
     pitfalls: [
+      "**카드형 단일선택을 손수 만들지 말 것** — `nds-selection-card`(mode='single')는 좌측 라디오 인디케이터(미선택=회색 링 / 선택=브랜드 채움 도트)를 **내장**한다(showIndicator 기본 true). 커스텀 `<div>` 카드 + 수동 라디오 동그라미 div 로 재발명하면 도트가 빠지거나 토큰·포커스·a11y(role=radiogroup)가 어긋난다(회귀: 캐포비 '소진 방식/목표/유형' 카드에서 라디오 UI 누락 — '기준이 뭐냐'). 소진방식·목표·유형 등 설명 있는 카드형 단일선택은 전부 nds-selection-card 로.",
       "라벨만 있는 단순 선택은 Radio/Checkbox를 쓸 것 — SelectionCard는 카드 단위(타이틀+설명+아이콘) 전제.",
       "mode='single'에서는 value/onValueChange, mode='multiple'에서는 values/onValuesChange. 헷갈리지 말 것.",
+      '**카드 안에 Chip 행·bullet 같은 부가 내용**은 React `children`(Item 자식) / HTML `<div slot="content">` 로 — description 에 줄바꿈으로 욱여넣지 말 것.',
       "옵션이 5개 이상이면서 라벨이 짧다면 Chip 토글 그룹이 더 컴팩트.",
       "horizontal 레이아웃은 옵션 3개 이하일 때만. 그 이상은 wrap돼서 어색해짐.",
     ],
@@ -1658,24 +1687,64 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Snackbar: {
     name: "Snackbar",
     examplesHtml: {
-      do: '<nds-snackbar variant="success" snackbar-title="저장 완료"\n  action-label="되돌리기" duration="4000" open></nds-snackbar>\n<script>bar.addEventListener("snackbar-action", undo);</script>',
-      dont: '<!-- 단순 알림에 위계 강한 Modal 사용 — 흐름을 끊음 -->\n<nds-modal open title="저장 완료"></nds-modal>',
+      do: '<nds-snackbar variant="success" snackbar-title="저장 완료"\n  action-label="되돌리기" closable></nds-snackbar>\n<script>bar.addEventListener("nds-snackbar-action", undo);</script>\n<!-- 자동 사라짐·우측 상단·단일 교체가 필요하면 host 매니저: -->\n<nds-snackbar-host position="top-right" max-count="1" brand="cashwalk-biz"></nds-snackbar-host>',
+      dont: '<!-- 단순 확인 없는 일시 메시지에 위계 강한 Modal 사용 — 흐름을 끊음 -->\n<nds-modal open title="저장 완료"></nds-modal>',
     },
     summary:
-      "inline 알림. 액션(되돌리기) / 닫기 버튼 / 시맨틱 variant 지원. Toast(자동 사라짐)와 분리된 컴포넌트.",
+      "**액션/닫기가 있는 카드형 알림**. 시맨틱 variant(info/success/warning/error) · 액션(되돌리기/다시시도) · 닫기 버튼 지원. " +
+      "두 가지 모드: ① **인라인**(`<Snackbar>` / `<nds-snackbar>`) — 부모가 mount/unmount 로 표시 통제(자체 visibility 없음). " +
+      "② **Provider**(`Snackbar.Provider` + `useSnackbar()` / `<nds-snackbar-host>`) — 포지셔닝·자동닫힘·단일교체·스택을 DS 가 관리(캐포비 admin 흰 카드 알림의 SSOT). " +
+      "Toast(인터랙션 없는 일시 메시지·자동 사라짐 전용)와 분리 — 액션·닫기가 있는 알림은 자동으로 사라지면 안 되므로 Snackbar 가 담당. " +
+      "brand 별 spec 변형은 get_guide({ topic:'component:Snackbar', brand:'<slug>' }).dimensions 참조.",
+    references: [
+      {
+        label: "CashwalkBiz Admin Snackbar Guide (구 ToastGuide)",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3858-1005",
+        caption:
+          "Cashwalk for Business · 흰 카드 알림. state success/error/warning · 우측 상단 고정 · auto-dismiss 3–5s(Error 5s) · 단일 노출(교체) · status 칩 아이콘 + 메시지 + 닫기 X. (Figma 상 'Toast' 였으나 액션/닫기/카드 chrome 이라 DS 에선 Snackbar 로 구현.)",
+        brand: "cashwalk-biz",
+      },
+    ],
+    /**
+     * brand 별 spec override. Cashwalk-biz admin 흰 카드 알림 — 구 Toast 에서 Snackbar 로 이관.
+     * state(success/error/warning), 우측 상단 고정, 단일 노출(교체), 흰 카드 + status 칩 아이콘.
+     */
+    matrixOverrides: {
+      "cashwalk-biz": {
+        dimensions: {
+          states:
+            "success / error / warning 3종. Success = check 칩(그린) · Error = error 칩(레드) · Warning = caution 칩(옐로). status 칩 아이콘 24×24 가 좌측. default/info 도 컴포넌트는 지원하나 캐포비 admin 은 주로 success/error/warning 사용.",
+          anatomy:
+            '① Status 칩 아이콘 24×24 (둥근 사각형 칩 + 흰 글리프, 색만 state 별) ② Message — Bold 16 / line-height 24, 한 줄 권장 ③ Close Icon(회색, 클릭 시 즉시 닫힘). 좌→우: 아이콘 · 메시지 · 닫기. **DS Snackbar(`<nds-snackbar-host brand="cashwalk-biz">` / `Snackbar.Provider brand="cashwalk-biz"`)가 칩 아이콘 + 흰 카드 chrome 을 직접 렌더** — 더 이상 호스트 커스텀 렌더 불필요.',
+          container:
+            "BG/Surface/Default(흰 배경) · border subtle · radius 8 · padding 16 · shadow E1(0 2 6 / .12). data-brand='cashwalk-biz' cascade 가 variant 틴트 배경을 흰 카드로 덮는다(아이콘 색은 유지).",
+          position:
+            "viewport 기준 position:fixed · 우측 상단 고정. **`position='top-right'`**(우측 정렬 viewport)로 지원. base 의 top/bottom(가로 중앙)과 다름.",
+          behavior:
+            "자동 dismiss 3–5초(Error 만 5s, duration 으로 지정) · 동시 노출 1개 — 새 알림이 기존을 교체. **단일 교체는 maxCount=1(Snackbar.Provider) / max-count='1'(nds-snackbar-host)**. base 기본 maxCount=3(multi-stack)과 다름.",
+          message:
+            "한 문장 · 30자 이내 · 결과 중심('저장 완료' · '전송 실패'). Error 는 원인 + 다음 행동을 한 문장으로('네트워크 오류로 중단되었습니다. 다시 시도해 주세요') + action='다시 시도'. 두 줄 이상 긴 본문은 Alert/Modal.",
+          usage:
+            "Use = 저장·전송·삭제 등 액션 결과 알림 / 되돌리기·재시도 액션 / 닫기 가능. Don't = 결정·확인 요구(→Modal) / 긴·다단 정보(→Alert·Modal) / 여러 알림 누적(최대 1개) / 임의 위치 / state 의미 오용(성공에 warning).",
+          activationCondition:
+            '`<html data-brand="cashwalk-biz">` 환경 admin 화면 기준. Provider(`brand="cashwalk-biz"`)가 칩 아이콘을, data-brand cascade 가 흰 카드 외형을 적용.',
+        },
+      },
+    },
     pitfalls: [
-      "임시 메시지(저장됨/복사됨)에 Snackbar를 길게 띄우지 말 것 — Toast가 더 적합.",
+      "인터랙션 없는 단순 일시 메시지(저장됨/복사됨)는 Toast 가 더 적합 — 액션·닫기가 없으면 Snackbar 를 길게 띄우지 말 것.",
       "액션이 두 개 이상 필요하면 Snackbar 대신 Modal/Popup을 검토.",
-      "variant 미지정 시 검은 배경. 페이지가 흰 배경일 때 가장 강조되며, 시맨틱 톤이 필요하면 variant 사용.",
       "title 없이 description만 사용하지 말 것 — 시맨틱 의미가 무너짐.",
+      "인라인 `<Snackbar>` 는 자동으로 사라지지 않음(부모가 통제). 자동닫힘·우측상단·단일교체가 필요하면 `Snackbar.Provider`/`<nds-snackbar-host>` 사용.",
     ],
     recommended: [
       "되돌리기: <Snackbar title='삭제됐어요' actionLabel='되돌리기' onAction={undo} />",
       "에러 + 재시도: variant='error' actionLabel='다시 시도'",
-      "사용자가 닫을 때까지 유지: closable + onClose",
+      "자동 사라짐 + 우측상단: <Snackbar.Provider position='top-right' maxCount={1}>…useSnackbar().snackbar('저장 완료',{variant:'success'})",
+      "캐포비 흰 카드: <Snackbar.Provider brand='cashwalk-biz' position='top-right' maxCount={1} duration={5000}>",
     ],
     interactivePattern:
-      "Snackbar는 자체 visibility를 관리하지 않음 — 부모가 mount/unmount로 표시 여부 통제.",
+      "두 모드 — 인라인 Snackbar 는 부모가 mount/unmount 로 통제, Provider(useSnackbar) 는 호출형으로 viewport·타이머·단일교체를 DS 가 관리.",
   },
   FAB: {
     name: "FAB",
@@ -1698,62 +1767,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "하단바 있는 화면: offset={72}",
     ],
   },
-  BreathingGuide: {
-    name: "BreathingGuide",
-    examplesHtml: {
-      do: '<nds-breathing-guide cycles="5" auto-start></nds-breathing-guide>',
-      dont: '<!-- raw CSS @keyframes 로 호흡 시각만 흉내 — 카운트/단계 음성이 없음 -->\n<div class="breath-anim"></div>',
-    },
-    summary:
-      "호흡 가이드 애니메이션. 원이 커지고 작아지면서 들숨/멈춤/날숨/쉼을 시각화. phases로 사이클 자유 정의.",
-    pitfalls: [
-      "cycles 미지정 시 무한 반복. 콘텐츠 종료를 원하면 cycles + onComplete 페어 사용.",
-      "phases의 seconds는 정수만(타이머 1초 단위). 분 단위 호흡은 의도적으로 미지원.",
-      "외부에서 playing prop 줄 때 onPlayingChange를 빼먹으면 내부 시작/정지 버튼이 동작 안 함.",
-      "CrisisCallout 위에 즉시 노출하면 압박감을 줄 수 있음. 위기 상황 → 안내 후 별도 화면에서 시작 권장.",
-    ],
-    recommended: [
-      "박스 호흡(기본): <BreathingGuide />",
-      "수면 유도: phases=[{inhale:4},{hold:7},{exhale:8}]",
-      "콘텐츠 카드: cycles=3, autoStart, onComplete로 다음 단계",
-    ],
-  },
-  StreakCard: {
-    name: "StreakCard",
-    examplesHtml: {
-      do: '<nds-streak-card title="연속 기록" streak="15" unit="일" days="30">\n  <svg slot="icon" viewBox="0 0 24 24">…</svg>\n</nds-streak-card>',
-      dont: '<!-- streak 만 있고 단위(unit)/총합(days) 누락 — 진행도가 모호 -->\n<nds-streak-card streak="15"></nds-streak-card>',
-    },
-    summary: "연속 기록 트래커 카드. streak 숫자 + 최근 7-14일 점 그리드. 챌린지/습관 강화 화면.",
-    pitfalls: [
-      "days는 최근 7-14일이 시각적으로 적절. 30일 이상이면 EmotionHeatmap 사용 검토.",
-      "streak=0 상태로 풀 너비 카드를 노출하면 동기 부여 효과가 약함 — 시작 단계에는 더 작은 EmptyState 안내가 좋음.",
-      "오늘 데이터가 미완료일 때는 자동으로 점선 테두리(today)로 표시. 'today' 표시를 직접 만들지 말 것.",
-    ],
-    recommended: [
-      "감정 기록 7일: days=[{date,label:'일',done}, ...] 7개",
-      "복약 트래킹: icon prop 에는 @nudge-design/icons 컴포넌트(예: PillIcon — find_icon('pill') 로 확인) 를 넘기고 숫자만 강조 (days 생략). icon prop 에 이모지 문자열 절대 금지.",
-      "끊긴 후 재시작: footer로 '작은 시작' 같은 격려 문구",
-    ],
-  },
-  EmotionHeatmap: {
-    name: "EmotionHeatmap",
-    examplesHtml: {
-      do: '<nds-emotion-heatmap month="2026-05"\n  entries=\'[{"date":"2026-05-25","level":4}]\'\n  colors=\'["#fff","#fee","#f99","#f00","#900"]\'\n  low-label="낮음" high-label="높음"></nds-emotion-heatmap>',
-      dont: '<!-- colors 가 5개가 아니면 cell 색이 깨짐 -->\n<nds-emotion-heatmap month="2026-05" colors=\'["#fff","#000"]\'></nds-emotion-heatmap>',
-    },
-    summary: "월간 감정 히트맵. 5단계(0-4)를 색 강도로 시각화. 셀 클릭으로 그 날 상세 화면 진입.",
-    pitfalls: [
-      "entries에 없는 날짜는 자동으로 빈 셀(점선). 0 단계로 채우지 말 것 — treatZeroAsEmpty 기본 true.",
-      "colors는 5개 필수 + 옅음→짙음 순서. 4개나 6개 넘기면 인덱스 어긋남.",
-      "30일 미만 기록(7-14일)은 StreakCard가 더 적절 — 히트맵은 한 달 단위.",
-    ],
-    recommended: [
-      "기분 트렌드: 기본 푸른 5단계, onCellClick으로 일기 화면 이동",
-      "스트레스 강도: warm 톤(#FFE9C4 → #C25B0E), legendLabels={low:'차분',high:'활기'}",
-      "챌린지 30일: title='30일 챌린지', 빈 셀이 남은 일자",
-    ],
-  },
   AppointmentCard: {
     name: "AppointmentCard",
     examplesHtml: {
@@ -1771,25 +1784,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "내 예약 리스트: <AppointmentCard ... actions=[{label:'상세'},{label:'참여',primary:true}] />",
       "홈 다음 일정: onClick으로 디테일 화면, 액션 없이 카드 전체 클릭",
       "방문 상담: mode='in-person', location='강남센터 3층 301호'",
-    ],
-  },
-  JournalEntry: {
-    name: "JournalEntry",
-    examplesHtml: {
-      do: '<nds-journal-entry date="2026-05-25" mood="calm" title="좋은 산책"\n  body="아침에 30분 걸으니 머리가 맑아졌다" max-lines="3" clickable></nds-journal-entry>',
-      dont: '<!-- body 가 길어 max-lines 가 필요한데 누락 — 카드가 늘어남 -->\n<nds-journal-entry title="…" body="… 매우 긴 텍스트 …"></nds-journal-entry>',
-    },
-    summary:
-      "감정 일기 한 건 카드. 무드(이모지) + 날짜 + 제목 + 본문 클램프 + 태그 + 썸네일 + 푸터.",
-    pitfalls: [
-      "본문은 기본 3줄 클램프. 전체 노출하려면 maxLines={9999}로 해제.",
-      "title 없이 body만으로도 동작 — 짧은 메모형 일기에는 title 생략이 자연스러움.",
-      "tags 안에 # 기호를 넣지 말 것. 컴포넌트가 자동으로 # 접두사 붙임.",
-    ],
-    recommended: [
-      "리스트: onClick으로 디테일 진입",
-      "감정 일기: mood에 이모지, tags에 감정 키워드",
-      "사진 일기: thumbnailSrc 추가",
     ],
   },
   ChatComposer: {
@@ -1818,7 +1812,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- 다이얼 코드(+82) 를 country-code 로 — ISO 코드 사용 -->\n<nds-phone-input country-code="+82"></nds-phone-input>',
     },
     summary:
-      "국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드/국기는 countries 데이터에서 조회.",
+      "국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드는 countries 데이터에서 조회. 국기 이모지 없이 다이얼코드/ISO코드/국가명만 표시(텍스트 이모지 금지 규칙 준수).",
     pitfalls: [
       "countryCode는 ISO code(KR, US 등)로 관리. '+82' 문자열을 state에 두지 말 것.",
       "번호 마스킹/하이픈 자동화는 컴포넌트가 강제하지 않음 — 필요하면 onValueChange에서 직접.",
@@ -1892,7 +1886,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- max 가 음수/0 — 0으로 나눠 표시 깨짐 -->\n<nds-circular-progress value="50" max="0"></nds-circular-progress>',
     },
     summary:
-      "원형 진행도. 단순 value/max 비율 표시. ScoreGauge(단계 분류 결과)와 분리, ProgressBar(가로)와 분리.",
+      "원형 진행도. 단순 value/max 비율 표시. ScoreGauge(단계 분류 결과)와 분리, ProgressBar(가로)와 분리. 둘은 같은 radial family 이지만 해석이 다르다.",
     pitfalls: [
       "심리검사 결과 등 단계 분류가 중요하면 ScoreGauge를 쓸 것 — CircularProgress는 비율만.",
       "가로 막대로 충분한 단순 진행은 ProgressBar가 적절. CircularProgress는 강조/포커스 용도.",
@@ -1933,7 +1927,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary: "긴 텍스트 줄 수 클램프 + '더보기/접기' 자동. 짧은 텍스트면 토글 자동 숨김.",
     pitfalls: [
       "본문 안에 폰트 사이즈가 섞이면 line-height 측정 정확도 떨어짐 — 단일 톤 텍스트에만 사용.",
-      "JournalEntry는 자체 본문 클램프(maxLines)를 가지고 있음. 카드 안에서 ExpandableText 중첩하지 말 것.",
+      "자체 본문 클램프(maxLines)를 가진 카드 안에서 ExpandableText 중첩하지 말 것.",
       "hideCollapse=true는 약관 같이 한 번 펼치면 끝나는 케이스용. 일기/콘텐츠는 접기도 가능해야 함.",
     ],
     recommended: [
@@ -2017,6 +2011,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Webview: `<GenietAppBar variant='webview' webviewTitle='건강 기록' onBack={...} />` — BackButton 자동.",
       "카테고리 박스 라벨/링크 변경: `category={{ label: '카테고리', href: '/cat' }}`. 숨기려면 `category={false}`.",
       "GNB 5탭 기본: 홈 / 커뮤니티 / 헬시딜 / 음식 리뷰 / 기록 (Pretendard Bold 17).",
+      "HTML 목업(vanilla): `<nds-brand-header brand='geniet' surface='mobile' active-key='home'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'.",
     ],
     references: [
       {
@@ -2047,6 +2042,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: [
       "`<GenietFooter links={...} company={{ name, ceo, address, bizNumber, email, copyright }} extra='지니어트는 통신판매중개자이며...' logo={{ src, width, height }} />`",
+      "HTML 목업(vanilla): `<nds-brand-footer brand='geniet' surface='app'>` — Footer.Info 손수 조립 금지 (BrandFooter 가이드).",
     ],
   },
   GenietBottomNav: {
@@ -2097,6 +2093,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Webview sub ((캐시워크)트로스트, 화살표 back): `<TrostAppBar variant='webview' app='cashwalk-trost' webviewTitle='타이틀' onBack={...} onSettingClick={...} onNotificationClick={...} />`",
       "Webview main (좌측 타이틀 + 검색): `<TrostAppBar variant='webview' webviewLevel='main' webviewTitle='심리상담' onSearchClick={...} onNotificationClick={...} />`",
       "Webview sub/text (완료 등 텍스트 액션): `<TrostAppBar variant='webview' webviewTitle='타이틀' onBack={...} webviewActionText='완료' onWebviewActionText={...} />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='trost' surface='mobile' active-key='home'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'.",
     ],
   },
   TrostFooter: {
@@ -2115,6 +2112,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Web (PC): `<TrostFooter surface='web' />` — 기본값 다 갖춤. 커스텀 약관: `<TrostFooter surface='web' termsHref='...' locationTermsHref='...' />`",
       "App desktop: `<TrostFooter surface='app' layout='desktop' links={...} company={...} extra='긴급 위기상담 ...' logo={...} />`",
       "App mobile: `<TrostFooter surface='app' layout='mobile' links={...} company={...} />`",
+      "HTML 목업(vanilla): `<nds-brand-footer brand='trost' surface='app'>` (PC 다크 푸터는 surface='web') — Footer 손수 조립 금지 (BrandFooter 가이드).",
     ],
   },
   TrostBottomNav: {
@@ -2140,7 +2138,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "TrostWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "Trost 데스크톱(≥1024) 웹 헤더. 3슬롯 컴파운드 — EAP 배너 (Rectangle 2613) + 유틸리티 헤더 (로고 Path / 검색 Rectangle 2522 / 로그인 / 앱 다운로드) + 탭 네비게이션. `TrostDesktopHeader` 의 alias — brand chrome 5개 슬롯 중 WebHeader 자리.",
+      "Trost 데스크톱(≥1024) 웹 헤더. 3슬롯 컴파운드 — EAP 배너 (Rectangle 2613) + 유틸리티 헤더 (로고 Path / 검색 Rectangle 2522 / 로그인 / 앱 다운로드) + 탭 네비게이션. `TrostDesktopHeader` 의 alias — brand chrome 5개 슬롯 중 WebHeader 자리. **HTML 목업은 `<nds-brand-header brand='trost' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
     pitfalls: [
       "<1024 viewport 에서는 display:none. 모바일에는 `TrostAppBar variant='mobile'` 사용.",
       "3슬롯 (banner / utility / tabs) 모두 ReactNode — 호스트 앱이 `TrostEAPBanner` / `TrostUtilityHeader` / `TrostTabNavigation` 을 직접 컴포지션. 단일 prop 으로 데이터 주입하는 형태 아님.",
@@ -2151,6 +2149,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "기본: `<TrostWebHeader banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbolSrc} />} utility={<TrostUtilityHeader logoSrc={trostLogo} searchSlot={<TrostSearchForm onSearch={...} />} loginSlot={<TrostLoginSection ... />} appDownloadSlot={<TrostAppDownloadButton />} />} tabs={<TrostTabNavigation tabs={TROST_TABS} currentPath={pathname} />} />`",
       "EAP 배너 숨기기: `banner` prop 비워두면 됨.",
       "sticky 끄기: `<TrostWebHeader sticky={false} ... />` (기본 true).",
+      "HTML 목업(vanilla): `<nds-brand-header brand='trost' surface='web' active-key='counsel'>` — base nds-header 슬롯 손수 조립 금지 (BrandHeader 가이드). 모바일은 surface='mobile'.",
     ],
     figmaNodeUrl: "https://zpl.io/Dp775xl",
     references: [
@@ -2178,6 +2177,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Desktop: `<NudgeEAPAppBar variant='desktop' logo={...} gnbItems={...} activeKey='home' authItems={[{ key:'login', label:'로그인' }]} />`",
       "Mobile: `<NudgeEAPAppBar variant='mobile' logo={...} authItems={...} />`",
       "Webview: `<NudgeEAPAppBar variant='webview' webviewTitle='심리검사 결과' onBack={...} />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='nudge-eap' surface='mobile' active-key='counsel'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'.",
     ],
   },
   NudgeEAPFooter: {
@@ -2195,6 +2195,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "Web (PC): `<NudgeEAPFooter surface='web' links={...} company={{ address, bizNumber, phone, fax, email, copyright }} appDownloads={...} iso={{ imgSrc, captionLines }} dain={{ logoSrc, label }} poweredBy='powered by Cashwalk' maxWidth={1200} />`",
       "App (surface 생략 가능): `<NudgeEAPFooter links={...} company={{ name:'(주)다인', address, bizNumber, copyright }} logo={{ src, width, height }} />`",
+      "HTML 목업(vanilla): `<nds-brand-footer brand='nudge-eap' surface='app'>` (PC 풍부 푸터는 surface='web') — Footer 손수 조립 금지 (BrandFooter 가이드).",
     ],
   },
   NudgeEAPBottomNav: {
@@ -2232,7 +2233,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "NudgeEAPWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      'NudgeEAP 웹 헤더 (PC) — base Header (variant="web") wrapper. 로고 200×60 (Symbol + KO+EN horizontal) + GNB 6탭 (상담하기/심리검사/심리치료/주간레터/소식/마이페이지) + 우측 앱다운로드 + 로그인/로그아웃.',
+      "NudgeEAP 웹 헤더 (PC) — base Header (variant=\"web\") wrapper. 로고 200×60 (Symbol + KO+EN horizontal) + GNB 6탭 (상담하기/심리검사/심리치료/주간레터/소식/마이페이지) + 우측 앱다운로드 + 로그인/로그아웃. **HTML 목업은 `<nds-brand-header brand='nudge-eap' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
     figmaNodeUrl: "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=39-5751",
     pitfalls: [
       "NudgeEAPAppBar 와 분리 — AppBar 는 앱(모바일/웹뷰) 전용 (Figma 20:3235), WebHeader 는 데스크톱 (39:5751).",
@@ -2241,13 +2242,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: [
       "`<NudgeEAPWebHeader logo={{ src, alt:'NudgeEAP', href:'/' }} menuItems={GNB} activeKey={current} showAppDownload appDownloadHref='/download' authState={isLoggedIn ? 'logout' : 'login'} authHref='/auth' />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 모바일/웹뷰는 surface='mobile'|'webview'.",
     ],
   },
   CashwalkBizWebHeader: {
     name: "CashwalkBizWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "캐시워크 포 비즈니스 (Cashwalk for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐시워크 포 비즈니스는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공.",
+      "캐시워크 포 비즈니스 (Cashwalk for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐시워크 포 비즈니스는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공. **HTML 목업은 `<nds-brand-header brand='cashwalk-biz' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
     figmaNodeUrl: "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-1739",
     pitfalls: [
       "캐시워크 포 비즈니스 화면에는 base `<Header>` 가 아니라 `<CashwalkBizWebHeader>` 사용.",
@@ -2257,6 +2259,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "Desktop: `<CashwalkBizWebHeader variant='desktop' logo={{...}} menuItems={...} activeKey='home' actions={[{ key:'login', label:'로그인', href:'#' }]} />`",
       "Mobile: `<CashwalkBizWebHeader variant='mobile' logo={{...}} onMobileMenu={() => openDrawer()} />`",
+      "HTML 목업(vanilla): `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='ad'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 모바일은 반응형 web (별도 AppBar 없음).",
     ],
   },
   CashwalkBizFooter: {
@@ -2273,24 +2276,26 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "Desktop: `<CashwalkBizFooter layout='desktop' links={...} company={{ name:'캐시워크 주식회사', address:..., bizNumber:..., copyright:... }} maxWidth={1600} />`",
       "Mobile: `<CashwalkBizFooter layout='mobile' links={...} company={...} />`",
+      "HTML 목업(vanilla): `<nds-brand-footer brand='cashwalk-biz' surface='web'>` — Footer 손수 조립 금지 (BrandFooter 가이드).",
     ],
   },
   RunmileWebHeader: {
     name: "RunmileWebHeader",
     _htmlStatus: "no-html-equivalent",
     summary:
-      "Runmile 데스크톱 PC 헤더 (height 80, bg white, border-bottom 1px gray300, content max-width 1440 / 좌우 80px). 로고(coral) + 좌측 GNB(대회 정보/커뮤니티, Bold 18) + 중앙 검색바(coral 2px border, rounded 100) + 우측 액션(아이콘 28 + 라벨 14). `loggedIn` 으로 우측 액션 분기: false=채팅/로그인, true=채팅(미읽음 badge)/마이페이지. 모바일/웹뷰는 RunmileAppBar.",
+      "Runmile 데스크톱 PC 헤더 (height 80, bg white, border-bottom 1px gray300, content max-width 1440 / 좌우 80px). 로고(coral) + 좌측 GNB(대회 정보/커뮤니티, Bold 18) + 중앙 검색바(coral 2px border, rounded 100) + 우측 액션(아이콘 28 + 라벨 14). `loggedIn` 으로 우측 액션 분기: false=채팅/로그인, true=채팅(미읽음 badge)/마이페이지. 모바일/웹뷰는 RunmileAppBar. **HTML 목업은 `<nds-brand-header brand='runmile' surface='web'>` (BottomNav 와 동일한 brand wrapper 패턴 — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
     figmaNodeUrl: "https://www.figma.com/design/g3ifA735EE6EKjeL4ZW2ax/?node-id=1058-13336",
     pitfalls: [
       "데스크톱 전용. 모바일/웹뷰 헤더는 `RunmileAppBar` (Figma 36:258) 사용.",
-      "Runmile 로고는 `@nudge-design/assets` 의 `BRAND_LOGOS.runmile.default.dataUri` (coral #FF5B37) 를 `logoSrc` 로 주입. 미지정 시 'Runmile' 텍스트 폴백.",
+      "로고는 base64 내장이 기본값 — `logoSrc` 안 줘도 coral #FF5B37 워드마크가 자동 렌더 (파일 호스팅 불필요). 자체 로고로 바꿀 때만 `logoSrc` 주입. `logoSrc=''` 처럼 빈 값을 명시하면 'Runmile' 텍스트 폴백.",
       "우측 채팅 아이콘은 단일 말풍선(RunmileChattingIcon) — 바텀네비 채팅 탭의 이중 말풍선(RunmileChats)과 다름.",
       "미읽음 badge 는 `loggedIn && chatUnreadCount > 0` 일 때만 노출 (99 초과 시 '99+').",
       '색은 전부 data-brand="runmile" cascade 의 --semantic-* 토큰 — host 가 hex 로 덮지 말 것.',
     ],
     recommended: [
-      "로그인 전: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={[{key:'competition',label:'대회 정보',href:'/competitions'},{key:'community',label:'커뮤니티',href:'/community'}]} activeKey='competition' loggedIn={false} onSearch={...} />`",
-      "로그인 후: `<RunmileWebHeader logoSrc={runmileLogo} menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />`",
+      "로그인 전 (로고 생략 = base64 기본): `<RunmileWebHeader menuItems={[{key:'competition',label:'대회 정보',href:'/competitions'},{key:'community',label:'커뮤니티',href:'/community'}]} activeKey='competition' loggedIn={false} onSearch={...} />`",
+      "로그인 후: `<RunmileWebHeader menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />` — 자체 로고로 바꾸려면 `logoSrc={...}` 추가.",
+      "HTML 목업(vanilla): `<nds-brand-header brand='runmile' surface='web' active-key='race'>` — base nds-header + nds-header-menu-item 손수 조립 금지 (BrandHeader 가이드). 모바일 bar 는 surface='mobile'.",
     ],
     // 런마일 목업 예시 이미지 일시 비활성화 — MCP 가 참고하지 못하도록 주석 처리.
     // 다시 노출하려면 아래 블록 주석을 해제하고 가이드 재빌드.
@@ -2362,59 +2367,41 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "탭형 페이지: title + bottom={<Tabs />}",
     ],
   },
-  TitleBlock: {
-    name: "TitleBlock",
+  TitleGroup: {
+    name: "TitleGroup",
     examplesHtml: {
-      do: '<nds-title-block level="h2" title="이번 주 미션" subtitle="작은 변화부터 시작해요"></nds-title-block>',
-      dont: '<!-- level 누락 -> 기본값이 적용돼 페이지 위계가 무너짐 -->\n<nds-title-block title="…"></nds-title-block>',
+      do: '<nds-title-group level="h2" title="이번 주 미션" subtitle="작은 변화부터 시작해요"></nds-title-group>',
+      dont: '<!-- level 누락 -> 기본값이 적용돼 페이지 위계가 무너짐 -->\n<nds-title-group title="…"></nds-title-group>',
     },
     summary:
       "헤딩 + 서브타이틀 표준 블록. level (h1~h5) 만 결정하면 헤딩 폰트와 Gap/Title 토큰이 자동 적용 — Figma TitleGapGuide 859:5614 (6 페이지 58건 실측) 기반.",
     pitfalls: [
       "헤딩 + 서브타이틀 묶음에는 직접 <h{n}> + <p> + margin-top 으로 짜지 말 것. level↔gap 미스매치(h4 에 12px gap 등) 가 생기는 가장 흔한 안티패턴.",
       "h4/h5 가 '★ 가장 자주' — 카드 헤딩(h4 · gap 6) / 서브 헤딩(h5 · gap 8). h1~h3 은 페이지 단위 hero / 큰 섹션 / 페이지 헤더.",
-      "서브타이틀 폰트도 level 에 묶여 자동 결정: h1~h3 = Body3(14px), h4~h5 = Caption1(13px). 다른 사이즈가 필요하면 TitleBlock 을 쓰지 말고 raw 헤딩으로.",
+      "서브타이틀 폰트도 level 에 묶여 자동 결정: h1~h3 = Body3(14px), h4~h5 = Caption1(13px). 다른 사이즈가 필요하면 TitleGroup 을 쓰지 말고 raw 헤딩으로.",
       "위계가 같은 자리에서는 같은 level 유지. h4 카드 헤딩들 사이에 h2 가 끼면 시각적 위계 망가짐.",
-      "Card / PageHeader 안에 TitleBlock 을 중첩해서 쓰는 패턴이 정상. 단, PageHeader 가 이미 title 슬롯을 가진 경우엔 PageHeader 의 title 을 우선 사용.",
+      "Card / PageHeader 안에 TitleGroup 을 중첩해서 쓰는 패턴이 정상. 단, PageHeader 가 이미 title 슬롯을 가진 경우엔 PageHeader 의 title 을 우선 사용.",
     ],
     recommended: [
-      "카드 헤딩 (★ 가장 자주): <TitleBlock level='h4' title='바로 상담하기' subtitle='급한 문제는 5분 내 바로 상담' />",
-      "서브 헤딩 (★ 가장 자주): <TitleBlock level='h5' title='오늘의 루틴' subtitle='...' />",
-      "Hero 영역: <TitleBlock level='h1' title='마음까지 건강한 업무환경' subtitle='...' />",
+      "카드 헤딩 (★ 가장 자주): <TitleGroup level='h4' title='바로 상담하기' subtitle='급한 문제는 5분 내 바로 상담' />",
+      "서브 헤딩 (★ 가장 자주): <TitleGroup level='h5' title='오늘의 루틴' subtitle='...' />",
+      "Hero 영역: <TitleGroup level='h1' title='마음까지 건강한 업무환경' subtitle='...' />",
       "단독 헤딩: subtitle 생략 — 헤딩 + Gap 만 토큰화하고 싶을 때.",
     ],
     figmaNodeUrl: "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=859-5614",
   },
-  StatCard: {
-    name: "StatCard",
-    examplesHtml: {
-      do: '<nds-stat-card label="이번 주 기록" value="5" unit="일" trend="up" compare="지난주 +2일"></nds-stat-card>',
-      dont: '<!-- 트렌드/단위 없이 숫자만 — 사용자가 의미를 추측해야 함 -->\n<nds-stat-card label="…" value="5"></nds-stat-card>',
-    },
-    summary: "메트릭 강조 카드. 라벨 + 큰 숫자/단위 + delta(변화량) + Sparkline 슬롯(trailing).",
-    pitfalls: [
-      "trend만 주고 delta를 빼면 trend 색이 의미 없어짐. 둘 다 함께 사용.",
-      "그리드에서 카드마다 value 자릿수 차이가 크면 baseline이 흔들림 — 동일 단위로 통일.",
-      "trailing에 Sparkline을 넣을 때 width 100-120, height 36-48 정도가 적절. 그 이상은 카드 균형 깨짐.",
-    ],
-    recommended: [
-      "대시보드 4-up 그리드: <StatCard label, value, unit, delta, trend>",
-      "리포트 hero: + icon으로 강조",
-      "추이 시각화: trailing={<Sparkline />} 결합",
-    ],
-  },
   QuickActionGrid: {
     name: "QuickActionGrid",
     examplesHtml: {
-      do: '<nds-quick-action-grid columns="3" gap="12"\n  actions=\'[{"label":"홈","icon":"home","href":"/"},{"label":"기록","icon":"book","href":"/log"}]\'></nds-quick-action-grid>',
-      dont: '<!-- actions JSON 에 onClick 함수 박음 — WC attribute 는 함수 못 받음. href 로 -->\n<nds-quick-action-grid actions=\'[{"label":"홈","onClick":"go()"}]\'></nds-quick-action-grid>',
+      do: '<nds-quick-action-grid columns="3" gap="12"\n  actions=\'[{"key":"home","label":"홈","icon":"<svg ...>...</svg>"},{"key":"log","label":"기록","icon":"<svg ...>...</svg>"}]\'></nds-quick-action-grid>\n<!-- icon = find_icon({name}) 가 준 inline SVG 문자열 (이름/이모지 아님 — innerHTML). actions 는 JSON 속성이라 SVG의 " 는 \\" 로 이스케이프. 각 action 은 key 필수(없으면 렌더 제외) -->\n<script>el.addEventListener("quick-action", e => navigate(e.detail.key));</script>',
+      dont: '<!-- actions JSON 에 onClick 함수 박음 — WC attribute 는 함수 못 받음. key + quick-action 이벤트로 -->\n<nds-quick-action-grid actions=\'[{"label":"홈","icon":"home","onClick":"go()"}]\'></nds-quick-action-grid>\n<!-- 틀린 점 2개 더: key 누락(렌더 제외) · icon 에 이름 "home"(텍스트로 흘러나옴 — inline SVG 여야) -->',
     },
     summary: "홈 빠른 액션 그리드. 4-6칸 아이콘+라벨, 배지 지원. 4칸이 기본 균형.",
     pitfalls: [
       "라벨이 길면 줄바꿈됨. 4글자 이하 권장.",
       "5칸은 배치가 어색 — columns=4 + 8개(2행) 또는 columns=3 사용.",
       "배지는 알림 카운트(숫자) 또는 짧은 라벨('N','NEW') 위주. 긴 텍스트 X.",
-      "아이콘은 이모지가 가장 단순하지만, 통일된 톤이 필요하면 SVG icon 컴포넌트로 교체.",
+      '**icon = inline SVG 문자열 (이름/이모지 아님).** `icon` 은 innerHTML 로 주입되므로 `"icon":"home"` 같은 이름이나 이모지를 넣으면 그대로 텍스트로 흘러나온다(이모지는 `validate_mockup` 의 emoji-banned 위반). `find_icon({ name })` → 반환 inline SVG 를 `icon` 에 넣는다. React `QuickActionGrid` 의 `icon: ReactNode` 와 대칭, nds-sidebar 와 동일 규약.',
     ],
     recommended: [
       "홈 진입: 4칸 (감정기록 / 상담 / 챌린지 / 콘텐츠)",
@@ -2561,60 +2548,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["상담사 리스트: showLabel=true로 텍스트 함께", "아바타 점: 라벨 없이 size=10"],
   },
-  ReactionPicker: {
-    name: "ReactionPicker",
-    examplesHtml: {
-      do: '<nds-reaction-picker\n  options=\'[{"key":"like","emoji":"👍","label":"좋아요","count":5},{"key":"care","emoji":"💙","label":"공감","count":12}]\'\n  value=\'["like"]\'></nds-reaction-picker>\n<script>el.addEventListener("nds-reaction-change", e => save(e.detail.value));</script>',
-      dont: '<!-- options 의 emoji / label 누락 — 의미 전달 실패 -->\n<nds-reaction-picker options=\'[{"key":"like"}]\'></nds-reaction-picker>',
-    },
-    summary: "콘텐츠 반응 칩 그룹. 이모지 + 카운트, 다중 또는 단일 선택, hideCount 옵션.",
-    pitfalls: [
-      "value는 single이어도 string[] (길이 0-1) — 일관된 형태로 처리.",
-      "options.count가 undefined면 자동 숨김. 0은 표시됨.",
-      "옵션 4-6개 권장. 8개 이상이면 가로 폭 부담.",
-    ],
-    recommended: [
-      "콘텐츠 좋아요/응원: 다중 선택 + 카운트 표시",
-      "사용자 한 표: single + hideCount",
-    ],
-  },
-  GreetingHeader: {
-    name: "GreetingHeader",
-    examplesHtml: {
-      do: '<nds-greeting-header name="이정민" greeting="좋은 아침이에요"\n  question="오늘 기분은 어떠세요?"></nds-greeting-header>',
-      dont: '<!-- greeting / question 을 slot 으로 — 둘 다 attribute 사용 -->\n<nds-greeting-header name="A"><span slot="greeting">좋은 아침</span></nds-greeting-header>',
-    },
-    summary:
-      "홈 인삿말 카드. 사용자 호칭({name}님 자동) + 인삿말 + 질문 + 액션 슬롯(MoodSelector 등).",
-    pitfalls: [
-      "greeting은 시간대 자동 인식 X — 외부에서 '좋은 아침이에요' 같은 시간대 표현 결정.",
-      "name에 '님' 직접 붙이지 말 것 — 컴포넌트가 자동.",
-      "tone='primary'는 카드 위에 또 카드를 올릴 때(흰 배경 위) 시각 분리에 유용.",
-    ],
-    recommended: [
-      "홈 진입: actions={<MoodSelector />}로 첫 인터랙션 결합",
-      "마이페이지: trailing={<Avatar />}",
-    ],
-  },
-  TipCard: {
-    name: "TipCard",
-    examplesHtml: {
-      do: '<nds-tip-card tone="info" label="팁" tip-title="더 잘 자려면"\n  description="자기 1시간 전엔 화면을 멀리해보세요"></nds-tip-card>',
-      dont: '<!-- TipCard 를 위기/긴급 안내에 사용 — 시그널 강도가 부족 -->\n<nds-tip-card tone="info" tip-title="자해 충동이 든다면"></nds-tip-card>',
-    },
-    summary:
-      "한 줄 인사이트/팁 카드. info/success/warning/neutral 톤. 위기는 CrisisCallout, 페이지 띠는 Banner.",
-    pitfalls: [
-      "위기/긴급 안내에 사용하지 말 것 — CrisisCallout이 적합.",
-      "페이지 상단 띠 알림은 Banner. TipCard는 콘텐츠 영역 안의 카드.",
-      "actionLabel + onClick 함께 줘도 액션 버튼은 stopPropagation됨 (의도적).",
-    ],
-    recommended: [
-      "오늘의 팁: tone='info' label='오늘의 팁' actionLabel='시작하기'",
-      "챌린지 격려: tone='success' (완료 후 안내)",
-      "홈 카드: 짧은 description + actionLabel",
-    ],
-  },
   PinPad: {
     name: "PinPad",
     examplesHtml: {
@@ -2636,16 +2569,23 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   TimePicker: {
     name: "TimePicker",
     examplesHtml: {
-      do: '<nds-time-picker value="14:30" step="600"\n  label="상담 시간 선택" min="09:00" max="18:00"></nds-time-picker>\n<script>el.addEventListener("nds-time-change", e => setTime(e.detail.value));</script>',
+      do: '<nds-time-picker value="18:00" step="600"\n  label="노출 종료 시간"\n  presets=\'[{"label":"자정까지","value":"23:59"}]\'></nds-time-picker>\n<script>el.addEventListener("nds-time-change", e => setTime(e.detail.value));</script>',
       dont: '<!-- step 0 — 분/초 단위 무제한 — 예약 정확도 깨짐 -->\n<nds-time-picker value="14:30" step="0"></nds-time-picker>',
     },
-    summary: "시간만 선택 (HH:mm). step(초 단위)/min/max 지원. 날짜+시간은 DatePicker와 조합.",
+    summary:
+      "시간만 선택 (HH:mm). 네이티브 시간 입력이 아니라 DS 팝오버 패널(시/분 스크롤 컬럼, DatePicker 와 동일 surface)로 선택. step(초 단위)/min/max 지원. 날짜+시간은 DatePicker와 조합.",
     pitfalls: [
-      "step은 초 단위 — 5분이면 300, 15분이면 900.",
-      "min/max도 HH:mm 문자열 — Date 객체 X.",
+      "트리거(시계아이콘 포함)를 누르면 시/분 컬럼 팝오버가 열린다 — OS 기본 시간 UI(showPicker)는 쓰지 않는다. 선택값은 브랜드 fill 로 강조.",
+      "step은 초 단위 — 5분이면 300, 15분이면 900. 분 컬럼 간격으로 환산된다.",
+      "min/max도 HH:mm 문자열 — Date 객체 X. 범위 밖 시/분 옵션은 자동 비활성.",
       "상담 슬롯 목록에서 선택은 TimeSlotPicker가 적합 — TimePicker는 자유 시각 입력.",
+      '**(캐포비 어드민) 시간 인풋의 \'빠른설정\' 프리셋은 `nds-time-picker` 의 `presets` 속성으로 — 손조립·노란 brand Chip 금지.** 광고 노출 스케줄 등에서 시간 필드 트레일링(`00:00` + 시계아이콘 우측)에 `자정까지`(= 시간을 즉시 세팅) 같은 빠른설정 칩이 붙는다. 이건 컴포넌트 내장 기능이다: `presets=\'[{"label":"자정까지","value":"23:59"}]\'`(React `presets={[{label,value}]}`) — 클릭하면 value 가 세팅되는 **회색 중립 칩**으로 자동 렌더(시계 아이콘 ic_time_picker 포함). raw `<div>`/`<nds-chip>` 으로 손조립하지 말 것. **노란 outlined Chip / SelectionButton 으로 그리면 회귀**(SelectionButton 과 혼동되는 \'지역=노란칩\'과 동일 함정 — region-as-chip 참조). Figma 3001:19122.',
     ],
-    recommended: ["알림: step=300, min='07:00' max='23:00'", "복약: step=900"],
+    recommended: [
+      "알림: step=300, min='07:00' max='23:00'",
+      "복약: step=900",
+      '캐포비 광고 스케줄: nds-time-picker presets=\'[{"label":"자정까지","value":"23:59"}]\' — 시계아이콘 + 회색 중립 빠른설정 칩이 내장 렌더(노란 brand 아님). Figma 3001:19122.',
+    ],
   },
   AddressSearch: {
     name: "AddressSearch",
@@ -2714,20 +2654,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "내 메시지: color=primary, 상대 메시지: color='#666'",
     ],
   },
-  MentionInput: {
-    name: "MentionInput",
-    examplesHtml: {
-      do: '<nds-mention-input label="댓글" placeholder="@로 멘션 가능"\n  users=\'[{"key":"alice","name":"앨리스","description":"엔지니어"}]\'></nds-mention-input>\n<script>el.addEventListener("mention", e => track(e.detail.user));</script>',
-      dont: '<!-- users 누락 — @ 입력 시 후보가 안 뜸 -->\n<nds-mention-input placeholder="@로 멘션"></nds-mention-input>',
-    },
-    summary: "@멘션 입력. 자동완성 드롭다운 + 키보드 네비. 트리거 커스텀 (#로 해시태그도 가능).",
-    pitfalls: [
-      "users는 전체 목록 — 컴포넌트가 자동 필터. 외부에서 미리 필터링하지 말 것.",
-      "저장된 텍스트는 plain '@김민지' 형태 — ID로 보존하려면 별도 파싱.",
-      "trigger 앞에 공백 또는 시작 위치여야 자동완성 트리거. 'email@a.com' 같은 케이스는 무시됨 (의도적).",
-    ],
-    recommended: ["단체 채팅 댓글: trigger='@'", "해시태그 자동완성: trigger='#'"],
-  },
   Confetti: {
     name: "Confetti",
     examplesHtml: {
@@ -2769,35 +2695,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       do: '<nds-like-button liked count="42" size="md"></nds-like-button>\n<script>el.addEventListener("nds-like-change", e => persist(e.detail));</script>',
       dont: '<!-- count 를 사용자가 변경한 후 서버에 반영하지 않음 — 새로고침 시 사라짐 -->\n<nds-like-button count="42"></nds-like-button>  <!-- listener 없음 -->',
     },
-    summary:
-      "좋아요 토글 + 카운트. 클릭 펑 애니메이션, 1000+는 자동 K 변환. ReactionPicker(여러 이모지)와 분리.",
+    summary: "좋아요 토글 + 카운트. 클릭 펑 애니메이션, 1000+는 자동 K 변환. 단일 좋아요 전용.",
     pitfalls: [
       "liked/count는 controlled — 외부 source of truth + onChange에서 둘 다 갱신.",
-      "여러 종류 반응(공감/응원/와우)이 필요하면 ReactionPicker — LikeButton은 단일 좋아요.",
+      "LikeButton은 단일 좋아요 토글 전용 — 여러 종류 반응 칩 그룹 용도로 쓰지 말 것.",
       "카운트가 음수가 되지 않도록 외부 가드.",
     ],
     recommended: [
       "콘텐츠 푸터: size='md' count 자동 K",
       "CommentItem: likeAction={<LikeButton size='sm' />}",
       "primary 톤: activeColor=primary로 좋아요/북마크 같은 의미 강조",
-    ],
-  },
-  ShareSheet: {
-    name: "ShareSheet",
-    examplesHtml: {
-      do: '<nds-share-sheet open sheet-title="공유하기"\n  targets=\'[{"key":"kakao","label":"카카오톡","emoji":"💬"},{"key":"sms","label":"문자","emoji":"✉️"}]\'\n  link="https://nudge.kr/p/1"></nds-share-sheet>\n<script>el.addEventListener("nds-share-target", e => share(e.detail.target));</script>',
-      dont: "<!-- targets 누락 — 시트가 비어 보임. 최소 1개 -->\n<nds-share-sheet open></nds-share-sheet>",
-    },
-    summary:
-      "BottomSheet 형태 공유 모달. 4칸 그리드 + 선택적 링크 복사. 외부 SDK(카카오/메시지)는 onClick에서 직접 호출.",
-    pitfalls: [
-      "컴포넌트가 SDK를 부르지 않음 — targets[i].onClick 안에서 카카오/네이버 등 직접 호출.",
-      "link 복사는 navigator.clipboard 사용 — HTTPS 환경 필요. file://나 http://에선 동작 X.",
-      "Modal/BottomSheet과 별도. ShareSheet은 그리드 4칸 + 링크 정형 패턴.",
-    ],
-    recommended: [
-      "콘텐츠 공유: 카카오/SMS/이메일/저장 + link",
-      "챌린지 인증: 이미지 저장 + 카카오톡",
     ],
   },
   ReviewCard: {
@@ -2885,8 +2792,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- 값에 통화기호와 쉼표 직접 박음 — number 파싱이 깨짐 -->\n<nds-amount-input value="₩10,000"></nds-amount-input>',
     },
     summary:
-      "큰 금액 입력. 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프. NumberStepper(작은 정수)와 분리.",
+      "큰 금액/수량 입력(원·명·개·포인트 등). 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프. NumberStepper(작은 정수)와 분리.",
     pitfalls: [
+      "**금액/수량을 입력받는 폼 필드를 일반 text input 이나 정적 숫자 표시('3,000,000 명' 큰 글씨)로 만들지 말 것** — 사용자가 못 고치고 콤마/단위/clamp 가 빠진다. <nds-amount-input value=… unit='명|원|개' placeholder='0'> 로. unit 은 '원' 외에도 '명/개' 등 자유 (검증룰 amount-as-text-input / amount-as-static-display 가 막음).",
       "value는 number | null. 빈 입력은 null (0이 아님).",
       "presets의 set: true = 값 설정, false/미지정 = 누적. 헷갈리지 말 것.",
       "max/min 자동 클램프 — 외부 검증 X. 단, 에러 메시지는 외부에서 helperText로.",
@@ -2894,25 +2802,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     recommended: [
       "송금: presets +1만/+5만/전액(set), max=balance",
       "후원: presets에 set:true 4종 (5천/1만/3만/5만)",
-    ],
-  },
-  StatusTimeline: {
-    name: "StatusTimeline",
-    examplesHtml: {
-      do: '<nds-status-timeline current="1" direction="vertical"\n  steps=\'[\n    {"key":"received","label":"접수","time":"05/20"},\n    {"key":"processing","label":"처리 중","time":"05/22"},\n    {"key":"done","label":"완료"}\n  ]\'></nds-status-timeline>',
-      dont: '<!-- 이벤트 로그를 status-timeline 으로 — nds-timeline 또는 nds-activity-timeline 사용 -->\n<nds-status-timeline steps=\'[{"key":"e1","label":"5/20 신청"},{"key":"e2","label":"5/21 검사"}]\'></nds-status-timeline>',
-    },
-    summary:
-      "단계 진행 트래커 (가로/세로). current 이전은 완료, 이후는 todo. ActivityTimeline(시간순 로그)과 분리.",
-    pitfalls: [
-      "current는 현재 진행 인덱스 (0-based). 전부 완료는 current=steps.length.",
-      "ActivityTimeline은 자유로운 시간순 로그 — StatusTimeline은 정해진 단계 트래커.",
-      "단계 5개 이상은 가로형이 좁아짐 — 세로형 권장.",
-    ],
-    recommended: [
-      "배송 추적: 가로형 4단계, time 표시",
-      "상담 진행: 세로형, description으로 단계 설명",
-      "신청서: 접수→검토→승인 3단계",
     ],
   },
   FilterBar: {
@@ -3042,7 +2931,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       doNotUseFor: [
         "장문 설명이 핵심인 콘텐츠 → Card",
         "사용자 프로필 / 상담사 → UserCard / CounselorCard",
-        "쿠폰 진열 → CouponCard",
         "임의 width(180/200 등) — sm/md 두 사이즈만 SSOT.",
       ],
       limits: {
@@ -3053,24 +2941,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         buyersCountAutoTruncate: "10,000 이상은 '9,999+명'",
       },
     },
-  },
-  CouponCard: {
-    name: "CouponCard",
-    examplesHtml: {
-      do: '<nds-coupon-card discount="30%" coupon-title="첫 상담 30% 할인"\n  expiry="2026-06-30 까지" action-label="사용하기"></nds-coupon-card>\n<script>el.addEventListener("nds-coupon-action", () => useCoupon());</script>',
-      dont: '<!-- expiry 누락 — 사용자가 유효기간을 모름 -->\n<nds-coupon-card discount="30%" coupon-title="할인"></nds-coupon-card>',
-    },
-    summary: "쿠폰 카드. 좌측 할인율(큰 숫자) + 우측 정보·사용 버튼. 점선 + 반원 컷아웃 자동.",
-    pitfalls: [
-      "discount와 discountSuffix는 분리 — '30%할인'이 아니라 '30%' + '할인'.",
-      "disabled=true면 버튼 자동 disabledLabel로 변경.",
-      "쿠폰 발급/사용 처리는 외부 API — onAction 안에서.",
-    ],
-    recommended: [
-      "% 할인: discount='30%' discountSuffix='할인'",
-      "금액 할인: discount='5,000' discountSuffix='원'",
-      "무료: discount='무료' discountSuffix=''",
-    ],
   },
   OrderSummaryCard: {
     name: "OrderSummaryCard",
@@ -3089,38 +2959,56 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "EAP 무료 상담: 회사 부담 emphasis='info'",
     ],
   },
-  CardVisual: {
-    name: "CardVisual",
+  StatsTable: {
+    name: "StatsTable",
     examplesHtml: {
-      do: '<nds-card-visual brand="nudge-eap" number="1234 56•• •••• 7890" holder="홍길동" expiry="12/29"></nds-card-visual>',
-      dont: '<!-- 카드 번호/만료일을 자체 HTML 로 픽셀 흉내 — 토큰/브랜드 룰이 적용 안 됨 -->\n<div class="fake-card"><span>1234…</span></div>',
+      do: '<!-- 통계/집계 리포트 표 — 병합셀(rowspan/colspan) + 합계행. native table 에 class -->\n<table class="nds-stats-table">\n  <thead>\n    <tr><th>연령</th><th>성별</th><th>당첨자 수</th><th>지급된 캐시</th></tr>\n  </thead>\n  <tbody>\n    <tr class="is-summary"><td colspan="2">총합</td><td>999,999</td><td>999,999</td></tr>\n    <tr><td rowspan="2">알 수 없음</td><td>남성</td><td>99</td><td>999</td></tr>\n    <tr><td>여성</td><td>99</td><td>999</td></tr>\n    <tr class="is-summary"><td colspan="2">알 수 없음 총합</td><td>999</td><td>99,999</td></tr>\n  </tbody>\n</table>\n<!-- 표 아래 페이지네이션은 component:Pagination (nds-pagination) -->',
+      dont: "<!-- 합계행/병합셀 리포트 표를 nds-data-table(columns/data API)로 억지로 만들지 말 것 — rowspan·합계행 표현 불가 -->\n<nds-data-table columns='...' data='...'></nds-data-table>\n<!-- 합계행을 굵게 하려고 인라인 style 로 font-weight 박지 말 것. <tr class=\"is-summary\"> 사용 -->\n<tr style=\"font-weight:bold\"><td>총합</td>...</tr>",
     },
-    summary: "신용/체크카드 비주얼. 8개 브랜드 톤 내장. 마지막 4자리만 표시 (자동 마스킹).",
+    summary:
+      '캐포비 어드민 통계/집계 리포트 표 — 회색 헤더 + 가는 그리드 + 병합셀(rowspan/colspan) + 합계행(굵게). 2단 **그룹 슈퍼헤더**(예: "남성"이 10대~60대 하위열을 colspan 으로 묶음)와 **가로 스크롤 + 좌측열 고정** 지원. native <table class="nds-stats-table"> 구조형 컴포넌트. 동적 정렬·모바일 카드뷰는 DataTable 사용. Figma 퀴즈 통계(3001:47404)·인구통계별 리포트(3001:30014).',
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-30014",
     pitfalls: [
-      "전체 카드번호 넣어도 마지막 4자리만 표시 — 보안 위해 의도적.",
-      "만료된 카드는 disabled + label='만료됨' 패턴.",
-      "그라데이션 배경은 토큰이 아닌 브랜드 정체성 — 외부에서 override 자제.",
+      '**병합셀은 native rowspan/colspan** — 합계행(`총합`)은 라벨이 앞 2열을 `colspan="2"` 로 병합, 그룹행(`알 수 없음`/`NN대`)은 첫 열을 `rowspan="2"` 로 병합(남/여 2행). DataTable 의 columns/data 로는 표현 불가.',
+      '**그룹 슈퍼헤더(2단 헤더)** — `<thead>` 에 2개의 `<tr>`: 첫 행은 `<th rowspan="2">날짜</th><th colspan="6" data-align="center">남성</th><th colspan="6" data-align="center">여성</th>`, 둘째 행은 하위열(10대~60대) 나열. 슈퍼헤더는 `data-align="center"`.',
+      '**합계/요약 행 = `<tr class="is-summary">`** (또는 `data-summary`). 전체 셀 Bold + 강조색이 자동 적용 — 인라인 font-weight 금지.',
+      '**열이 많아 가로로 넘치면** 표를 `<div class="nds-stats-table__scroll">` 로 감싼다(레이아웃 안 깨지고 표만 스크롤). React 는 `<StatsTable scroll>`.',
+      "**좌측 라벨 열 고정** — `nds-stats-table--sticky-first` 클래스(React `stickyFirst`)로 첫 열을 스크롤 중 freeze. `scroll` 과 함께 사용.",
+      '셀 정렬은 `data-align="right"|"center"`. 기본 좌측(Figma 정합). 숫자는 자동 tabular-nums.',
+      "헤더/그리드 색은 토큰 자동(헤더 bg=surface.page, 보더=border subtle). raw hex 금지.",
+      "표는 plot/범례처럼 카드 외부 컨테이너(흰 라운드 박스 + 타이틀) 안에 배치 — nds-stats-table 은 표만 그림.",
+      '**열 헤더 설명 툴팁(ⓘ)** — CTR/CPC/CPM 처럼 헤더에 설명이 필요하면 `<th>` 안에 component:Tooltip(nds-tooltip) 을 합성(`<th>CTR <nds-tooltip text="클릭률">ⓘ</nds-tooltip></th>`).',
+      "페이지가 나뉘는 긴 표는 표 아래에 component:Pagination(nds-pagination) + 행수 선택 component:PageSizeSelect 을 둘 것.",
     ],
-    recommended: ["결제 수단 관리: brand별 자동 색", "별명: label='용돈 카드'"],
+    recommended: [
+      '집계/합계가 있는 리포트 표(통계 화면) = nds-stats-table + <tr class="is-summary">',
+      '와이드 인구통계 리포트(슈퍼헤더 + 가로 스크롤) = <div class="nds-stats-table__scroll"><table class="nds-stats-table nds-stats-table--sticky-first">',
+      "정렬·필터·페이지 인터랙션이 필요한 데이터 그리드 = DataTable",
+      'React: <StatsTable scroll stickyFirst><thead/>…<tr className="is-summary"><td colSpan={2}>총합</td>…</StatsTable>',
+    ],
   },
   DataTable: {
     name: "DataTable",
     examplesHtml: {
-      do: '<nds-data-table\n  columns=\'[{"key":"name","title":"이름","sortable":true},{"key":"age","title":"나이"}]\'\n  data=\'[{"name":"홍길동","age":30}]\'\n  size="md" responsive="cards" row-clickable></nds-data-table>\n<script>\nel.addEventListener("nds-data-table-sort", e => sort(e.detail));\nel.addEventListener("nds-data-table-row-click", e => openRow(e.detail.row));\n</script>',
+      do: '<nds-data-table\n  columns=\'[{"key":"name","title":"이름","sortable":true},{"key":"age","title":"나이"}]\'\n  data=\'[{"name":"홍길동","age":30}]\'\n  size="md" responsive="cards" row-clickable></nds-data-table>\n<script>\nel.addEventListener("nds-data-table-sort", e => sort(e.detail));\nel.addEventListener("nds-data-table-row-click", e => openRow(e.detail.row));\n</script>\n\n<!-- 펼침(트리): sub-rows-key 로 자식 배열 필드 지정 -->\n<nds-data-table row-key="id" sub-rows-key="subRows"\n  columns=\'[{"key":"date","title":"날짜"},{"key":"spend","title":"소진액","align":"right"}]\'\n  data=\'[{"id":"d1","date":"2025-08-28","spend":"11,111","subRows":[{"id":"d1a","date":"2025-08-28","spend":"6,000"}]}]\'></nds-data-table>',
       dont: "<!-- 어드민/CMS 페이지에 DataTable 사용 — 어드민은 antd Table -->\n<nds-data-table columns='...'></nds-data-table>",
     },
     summary:
-      "정렬·클릭·빈 상태·로딩·모바일 카드 변환을 모두 갖춘 표. 사용자 앱(약 복용 이력 등)과 운영툴 양쪽에 사용.",
+      "정렬·클릭·빈 상태·로딩·모바일 카드 변환에 더해 getSubRows(React)/sub-rows-key(HTML)로 펼침·접힘(트리) 자식 행까지 갖춘 표. 사용자 앱(약 복용 이력 등)과 운영툴·리포트 양쪽에 사용.",
     pitfalls: [
       "CMS/어드민은 antd Table을 우선 — DataTable은 사용자 앱(특히 모바일 cards 모드)에서 강점.",
       "columns[].key는 데이터 객체의 실제 key 또는 임의 식별자. render가 있으면 key 자체는 매핑 안 해도 됨.",
       "정렬은 controlled — sortKey/sortDirection/onSort 셋을 부모에서 관리. 컴포넌트가 자체 정렬하지 않음.",
       'responsive="cards"는 max-width 640px에서만 카드로 전환. cardLabel/hideOnCard로 카드 모드 표시 조절.',
       "rowKey는 함수 — index 사용은 reorder 시 버그. 가능하면 row.id 같은 안정적 키.",
+      "펼침(getSubRows/sub-rows-key) 사용 시 rowKey/row-key 는 반드시 행 고유값(자식 포함 유일) — index 기반이면 접었다 펼 때 키가 흔들려 펼침 상태가 깨짐.",
+      '합계/병합셀(rowspan) 리포트 표는 여전히 nds-stats-table(`<tr class="is-summary">`). DataTable 펼침은 트리(자식 행)용 — 표 하단 합계행 렌더는 StatsTable 담당이며 둘을 조합한다.',
+      "기본 정렬 = **중앙**(헤더·셀 동일, 캐포비 리스트 SSOT 3613-365). 텍스트 좌측·숫자 우측이 필요하면 컬럼에 align='left'/'right' 지정 — 펼침 토글 컬럼은 자동 좌측. 셀 패딩은 **16px 고정(상하좌우)**이고 행 높이는 내용에 따라 가변 — 이미지/썸네일 등 큰 셀은 컬럼에 `media`(React)/`media:true`(HTML JSON) 로 12px. 조밀한 표는 size='sm'. 펼침 표는 컬럼 width 를 지정하면 table-layout:fixed 로 정렬이 안정적.",
     ],
     recommended: [
       '사용자 앱 약 복용 이력: responsive="cards" + size="sm"',
       "리스트가 길면 외부에 Pagination 컴포넌트와 조합",
+      "펼침 리포트(캐포비 날짜별/광고별 — 날짜 행 펼치면 캠페인·광고 자식 행): getSubRows(React) / sub-rows-key(HTML) + (옵션) defaultExpandedKeys·expandedKeys. expanderColumnKey/expander-column 로 토글 컬럼 지정(기본 첫 컬럼).",
     ],
     interactivePattern:
       "행 클릭으로 상세 진입. 정렬 가능 컬럼은 sortable: true 명시 + 외부에서 정렬 처리.",
@@ -3337,7 +3225,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       ],
       doNotUseFor: [
         "다중 액션 (버튼 2개 이상) — Bottom Sheet 또는 Modal",
-        "긴 안내문 + 액션 — Banner (페이지 상단 띠) 또는 CrisisCallout",
+        "긴 안내문 + 액션 — Banner (페이지 상단 띠)",
         "토스트성 일시 알림 → Toast / Snackbar",
         "사이드바 카드형 진입 → Card",
       ],
@@ -3466,6 +3354,65 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       },
     },
   },
+  SelectedItemsPanel: {
+    name: "SelectedItemsPanel",
+    examplesHtml: {
+      do: '<nds-selected-items-panel panel-title="선택한 항목" count="2">\n  <nds-selected-item-row>카테고리 &gt; 멤버 A</nds-selected-item-row>\n  <nds-selected-item-row>카테고리 &gt; 멤버 B</nds-selected-item-row>\n</nds-selected-items-panel>\n<script>\n  el.addEventListener("nds-selected-items-add", openPicker);\n  el.addEventListener("nds-selected-items-clear", clearAll);\n  el.addEventListener("nds-selected-item-remove", e => e.target.remove());\n  el.addEventListener("nds-region-remove", e => e.target.remove());\n</script>',
+      dont: '<!-- count 를 직접 헤더 텍스트에 박지 말 것 — count 속성이 브랜드색 강조를 담당 -->\n<nds-selected-items-panel panel-title="선택한 항목 2개"></nds-selected-items-panel>',
+    },
+    summary:
+      "선택 항목 슬롯 패널 — 헤더(타이틀 + 강조 개수 + 선택 해제 + 옵션 추가 선택), 본문은 SelectedItemRow 리스트·폼·테이블 등으로 swap 하는 INSTANCE_SWAP 슬롯. 캐포비 admin 의 다중 선택 결과 패널. **피커 모달 안에서는 '선택 해제'만 노출(추가 선택 X)**. SelectedItemRow(라벨 + 삭제 X) 동봉, RegionRow 는 하위호환 alias.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3828-1577",
+    pitfalls: [
+      "**선택한 항목/지역/카테고리/멤버 등 '동적 다중 선택 결과'를 Chip/ActionChip 으로 인라인 나열 금지** — 노란 outlined 칩은 SelectionButton 과 시각적으로 같아 혼동되고, '추가 선택/선택 해제'·개수 강조·개별 제거 affordance 가 빠진다. 회색 `SelectedItemsPanel`(surface.subtle 패널) + `SelectedItemRow`(라벨 + 삭제 X) 로 그릴 것. 지역 picker 는 한 예시일 뿐이며, 그 경우에도 row 컴포넌트는 동일하다.",
+      "개수를 타이틀 문자열에 직접 넣지 말 것 — `count` prop/속성이 text.brand 색으로 강조 렌더. 타이틀은 명사만.",
+      "헤더 액션은 **선택 해제(onClear)** 가 기본이고 **추가 선택(onAdd)은 옵션** — 임의의 버튼을 헤더에 더 끼워넣지 말 것. **★ 피커 모달 우측 패널에서는 '추가 선택' 노출 금지 → 선택 해제만.** React 는 `onAdd` 미전달 시 자동 숨김이지만, **HTML 웹컴포넌트(`nds-selected-items-panel`)는 추가/해제 둘 다 기본 렌더라 모달에서는 `hide-add` 속성을 반드시 줘야 한다**(안 주면 모달 안에 '추가 선택'이 떠서 회귀). '추가 선택'은 모달 밖에서만 쓰며, 시각 스펙은 **secondary Button + plus(+) 아이콘**.",
+      "**캐포비 admin 타겟팅에서 추가 경로(add 어포던스)는 하나만** — 패널 밖 별도 추가 버튼 + 패널 안 '추가 선택' 을 둘 다 두지 말 것(중복 UI, 회귀). 추가는 패널 onAdd(=모달 열기) 한 곳으로 통일하고, 그 클릭이 **2단 모달**(좌: 검색+체크박스 트리, 우: SelectedItemsPanel `hide-add` + 선택 해제, 풋터: full-width '적용')을 띄운다 — 모달이 안 뜨고 페이지에 인라인으로 또 그리면 안 된다. 캐포비 admin validator 에서만 `selected-item-add-affordance-duplicated` 로 막는다(다른 브랜드/표면 전역 룰 아님).",
+      "**같은 항목을 패널에 중복 추가 금지** — 추가 시 이미 있으면 무시(유니크). 같은 항목이 두 줄 = 회귀(검증룰 selected-item-row-duplicated).",
+      "본문 항목 삭제는 SelectedItemRow 의 onRemove(또는 nds-selected-item-remove / nds-region-remove 이벤트)로 — 패널이 항목 상태를 들고 있지 않음(controlled). 호스트가 리스트를 갱신.",
+      "본문이 길어지면 화면을 덮지 않도록 `--nds-selected-items-panel-body-max-height` 로 스크롤 제한.",
+      "SelectedItemRow 는 패널 전용 행 — 일반 리스트/태그 자리에는 ListItem/Chip 사용. **패널 밖 sibling 으로 SelectedItemRow 를 두지 말 것** — 추가분을 패널 다음에 append 하면 패널 body 의 flex gap(8)을 못 타서 행끼리 간격 없이 붙고 회색 패널 밖에 렌더된다(검증룰 selected-item-row-outside-panel).",
+      "**(HTML) 항목 갱신 시 `panel.innerHTML = ''` 로 통째로 비우지 말 것** — 헤더(타이틀/개수/추가·해제 액션)는 컴포넌트가 mount 시 생성하는 chrome 이라 innerHTML 을 비우면 헤더까지 사라지고 자동 복구되지 않음(connectedCallback 재실행 안 함). 갱신은 ① body 의 `nds-selected-item-row` 자식만 교체(추가·제거)하거나 ② `<nds-selected-items-panel>` 엘리먼트 자체를 새로 만들어 통째 교체. 개수는 `count` 속성으로만 갱신.",
+      "**(HTML) 이벤트(nds-selected-items-add/clear, nds-selected-item-remove, nds-region-remove)는 재렌더로 사라지지 않게 host(또는 상위 컨테이너)에 위임** — 행을 매번 새로 그리면 행에 직접 단 리스너는 유실됨. 부모에서 한 번만 바인딩하고 `e.target`/`closest('nds-selected-item-row, nds-region-row')` 로 분기.",
+    ],
+    recommended: [
+      '피커 모달 우측 패널(추가 선택 없음): <SelectedItemsPanel title="선택한 항목" count={items.length} onClear={clearAll}>{items.map(i => <SelectedItemRow key={i.id} onRemove={() => remove(i.id)}>{i.label}</SelectedItemRow>)}</SelectedItemsPanel> · HTML 은 <nds-selected-items-panel hide-add …>.',
+      '모달 밖 페이지/타겟팅 폼(추가 선택 있음): onAdd 추가 — <SelectedItemsPanel title="선택한 항목" count={items.length} onAdd={openPicker} onClear={clearAll}>…</SelectedItemsPanel>. onAdd 가 렌더하는 추가 버튼 = secondary + plus(+) 아이콘.',
+      "본문 swap: SelectedItemRow 리스트 대신 폼/데이터테이블을 children 으로 그대로 넣어도 됨.",
+      "액션 숨김: showActions={false} (읽기 전용 요약 패널).",
+    ],
+    sizeMatrix: {
+      panel: "padding inset-modal · border border.normal · radius xl(16) · bg surface.subtle",
+      title: "headline4 18/26 Bold · text.strong",
+      count: "headline4 18/26 Bold · text.brand (강조 개수)",
+      actionPrimary: "fill.neutral bg · text.inverse · radius md(8) · body3 Bold · + 아이콘 16",
+      actionGhost: "transparent + border.strong · text.subtle · radius md(8) · refresh 아이콘 16",
+      body: "flex column · gap 8 · overflow-y auto (max-height = --nds-selected-items-panel-body-max-height)",
+      selectedItemRow:
+        "padding 8/12/8/16 · radius lg(12) · bg surface.section · label body1 · 삭제 X 20px",
+    },
+    accessibility: [
+      "SelectedItemRow 삭제 버튼: `aria-label`(기본 '삭제') 자동 부착 — removeLabel 로 항목명 포함 권장.",
+      "헤더 액션은 native button — Tab/Enter/Space 자동.",
+      "count 는 시각 강조용 — 스크린리더가 타이틀+개수를 순서대로 읽도록 같은 그룹에 배치.",
+    ],
+    usagePolicy: {
+      useFor: [
+        "캐시워크 포 비즈니스 admin 의 다중 선택 결과 패널 (선택한 항목/지역/카테고리/멤버 N개)",
+        "선택 picker 와 짝을 이루는 '현재 선택' 요약 + 개별 제거",
+      ],
+      doNotUseFor: [
+        "단일 선택 — Select/Dropdown",
+        "일반 정보 카드 — Card",
+        "체크박스 목록 자체 — Checkbox 그룹",
+      ],
+      limits: {
+        headerActions:
+          "선택 해제(기본) + 추가 선택(옵션). 피커 모달 안 = 선택 해제만(HTML hide-add / React onAdd 미전달). 추가 선택 시각 = secondary Button + plus 아이콘.",
+        body: "INSTANCE_SWAP 슬롯 (SelectedItemRow / 폼 / 테이블)",
+      },
+    },
+  },
   Accordion: {
     name: "Accordion",
     summary:
@@ -3530,12 +3477,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Checkbox: {
     name: "Checkbox",
     summary:
-      "다중 선택 / on-off / 약관 동의 체크. 라벨이 함께 와야 의미가 전달되고, 단일 선택 그룹은 Radio 가 맞음.",
+      "다중 선택 / on-off / 약관 동의 체크. 라벨이 함께 와야 의미가 전달되고, 단일 선택 그룹은 Radio 가 맞음. `indeterminate` 로 '일부 자식만 선택됨'(부모/전체선택)을 옐로우 마이너스로 표시.",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3295-547",
     pitfalls: [
       "약관/필수 동의에 disabled 로 잠가두면 시각 위계가 모호 — required 또는 별도 안내문으로 명시.",
       "checked 와 default-checked 동시 사용 — controlled / uncontrolled 가 섞임.",
       "label 없이 단독으로 던지지 말 것 — 한 줄 안내문이라도 aria-label 로 제공.",
+      "`indeterminate` 는 `checked` 보다 우선 표시되고, 클릭하면 네이티브와 동일하게 `checked=true` 로 전이된다(부분→전체). '부모/전체선택' 행에만 쓰고 leaf 엔 쓰지 말 것.",
+      "상태 SSOT 는 호스트의 `checked` **프로퍼티** — `el.checked = true` 로 코드에서 바꿔도 `change` 는 발생하지 않는다(네이티브 동일, 사용자 입력에만 발화). 전체선택 헤더는 ①헤더 `change` → 자식 `.checked` 를 일괄 set, ②자식 `change` → 선택 수로 헤더 `checked`/`indeterminate` 3상태 재계산, 두 방향을 직접 잇는다. `onclick` 시점엔 아직 토글 전이라 상태가 안 settled — 반드시 `change` 를 들을 것. (`.click()` 만으론 호스트 토글이 안 됨.)",
+      "**시/도 ▸ 시/군구 같은 계층 트리는 CheckboxTree** 가 부모 indeterminate 를 자동 계산 — 직접 indeterminate 를 손계산해 트리를 손조립하지 말 것. component:CheckboxTree.",
+      "소규모 고정 옵션 다중선택(예: 연령대 10대~70대)은 **SelectChip**(`<nds-chip selected>`) 우선 — 체크박스 리스트는 약관 동의·긴 가변 리스트·행 단위 선택에. (`pattern:cashwalk-biz-badge-chip`)",
     ],
     examplesHtml: {
       do: '<nds-checkbox name="agree-terms" label="이용약관에 동의합니다" required></nds-checkbox>\n<nds-checkbox name="optional-marketing" label="마케팅 정보 수신 (선택)"></nds-checkbox>',
@@ -3547,7 +3498,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary:
       "섹션 사이의 시각적 분리선. 카드 안 내부 분할에 남발하지 말고, 한 화면당 의미 있는 분리에만 사용.",
     pitfalls: [
-      "Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — TitleBlock + spacing 토큰이 우선.",
+      "Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — TitleGroup + spacing 토큰이 우선.",
       "List 의 항목 사이에 Divider 를 직접 박지 말 것. nds-list variant='divided' 가 책임짐.",
       "orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임.",
     ],
@@ -3578,6 +3529,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "옵션이 많아서 스크롤이 필요한 경우 DropdownMenu 가 아님 (Select / 검색형 UI 사용).",
       "destructive 액션은 별도 group 으로 분리하거나 최하단에 배치 — 다른 일반 액션 사이에 끼우지 말 것.",
       "메뉴 항목에 disabled 가 많으면 차라리 그 항목들을 빼고 권한 설명을 별도 영역에 노출.",
+      "**item `leading`/`trailing` = inline SVG (이름/이모지 아님).** innerHTML 로 주입되므로 아이콘 이름을 넣으면 텍스트로 흘러나온다. `find_icon({ name })` 의 inline SVG 를 넣을 것 (trailing 은 단축키 등 짧은 텍스트도 가능). React DropdownMenu 의 `leading?/trailing?: ReactNode` 와 대칭.",
     ],
     examplesHtml: {
       do: '<nds-dropdown-menu items=\'[{"label":"편집","value":"edit"},{"label":"공유","value":"share"},{"label":"삭제","value":"delete","destructive":true}]\'></nds-dropdown-menu>\n<script>el.addEventListener("dropdown-select", e => handle(e.detail.value));</script>',
@@ -3693,20 +3645,107 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "전체 페이지 수 5 이하 / 항목 30 이하면 Pagination 자체가 과한 UI — 한 페이지로 노출.",
       "show-arrows 와 siblings 를 둘 다 끄면 현재 페이지 ±1 만 보여 탐색이 끊김.",
       "PaginationChange 이벤트 처리 없이 page attribute 만 바꿔도 데이터 fetch 가 안 일어남 — 이벤트 핸들러에서 fetch 호출.",
+      '캐포비(data-brand="cashwalk-biz")에서는 각 페이지/화살표가 개별 보더 박스 + 활성 페이지가 검정 채움으로 자동 렌더된다(cascade). markup/attribute 는 base 와 동일 — 박스 모양을 흉내내려 직접 div/border 를 짜지 말 것.',
     ],
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-31310",
     examplesHtml: {
-      do: '<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>\n<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>',
+      do: '<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>\n<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>\n<!-- 한 페이지 행 수 선택은 component:PageSizeSelect — 보통 표 하단 우측 -->\n<!-- 캐포비 박스형은 <html data-brand="cashwalk-biz"> 만 박혀 있으면 자동 적용 -->',
       dont: '<!-- siblings 0 + arrows 없음 — 옆 페이지가 보이지 않음 -->\n<nds-pagination page="1" total-pages="10" siblings="0"></nds-pagination>',
     },
+  },
+  PageSizeSelect: {
+    name: "PageSizeSelect",
+    summary:
+      '리포트/리스트 표 하단 우측의 "한 페이지 행 수" 선택 드롭다운("100개씩 보기"). Pagination 과 짝. 내부적으로 Select(auto 폭) 재사용. HTML 은 nds-select 에 "N개씩 보기" 라벨 옵션으로 구성.',
+    pitfalls: [
+      "Pagination(페이지 이동)과 혼동하지 말 것 — PageSizeSelect 는 행 수만 바꾼다(둘은 보통 같은 줄 좌/우).",
+      "값 변경 시 1페이지로 리셋하지 않으면 현재 페이지가 범위를 벗어날 수 있음 — onValueChange 에서 page=1 처리.",
+      "HTML 목업에서는 전용 태그가 없다 — nds-select 에 {30,50,100} 옵션 + label 'N개씩 보기' 로 만든다(React 만 <PageSizeSelect>).",
+    ],
+    examplesHtml: {
+      do: '<!-- HTML: nds-select 로 구성 -->\n<nds-select value="100" options=\'[{"value":"30","label":"30개씩 보기"},{"value":"50","label":"50개씩 보기"},{"value":"100","label":"100개씩 보기"}]\'></nds-select>\n<!-- React -->\n<!-- <PageSizeSelect value={pageSize} onValueChange={setPageSize} /> -->',
+      dont: "<!-- 페이지 이동을 PageSizeSelect 로 흉내내지 말 것 — Pagination 사용 -->",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-30014",
+  },
+  MultiSelect: {
+    name: "MultiSelect",
+    summary:
+      "검색 + 전체선택/해제 + 체크박스 리스트 + 취소/적용 푸터 + 빈 상태를 가진 다중 선택 필터 드롭다운. 일반 Select(단일·즉시 반영)와 달리 패널 안 초안을 편집하고 **적용** 시에만 반영. 리포트 상단 '광고 다중 선택' 등 필터. Figma 캐포비 광고별 리포트(3001:28554).",
+    pitfalls: [
+      "**단일 선택이면 Select** — MultiSelect 는 적용 버튼이 있는 다중 필터 전용. 즉시 반영 단일 드롭다운에 쓰면 과함.",
+      "적용(apply) 전까지 onValueChange 가 발화하지 않음 — 취소/바깥클릭은 초안 폐기. value(적용값)와 패널 내 draft 를 혼동하지 말 것.",
+      "검색 결과 0건이면 자동으로 빈 상태('검색 결과가 없습니다.') 노출 — 직접 그리지 말 것.",
+      "전체선택/해제는 **현재 검색 필터된 항목** 기준으로 토글된다(전체 목록 아님).",
+      "여러 필터를 한 줄에 둘 때는 component:FilterBar(칩 토글)가 아니라 SearchInput/Select/DateRangePicker/MultiSelect 를 가로로 조합 — FilterBar 는 카테고리 칩 전용.",
+    ],
+    examplesHtml: {
+      do: '<nds-multi-select placeholder="모든 광고" search-placeholder="광고명으로 검색" value=\'[]\'\n  options=\'[{"value":"a","label":"캠페인 A 타겟팅"},{"value":"b","label":"캠페인 B 리타겟"}]\'></nds-multi-select>\n<script>el.addEventListener("nds-multi-select-change", e => filterByAds(e.detail.value));</script>',
+      dont: '<!-- 단일 선택에 MultiSelect — 적용 버튼이 불필요한 마찰. nds-select 사용 -->\n<nds-multi-select options=\'[{"value":"asc","label":"오름차순"},{"value":"desc","label":"내림차순"}]\'></nds-multi-select>',
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-28554",
+  },
+  CheckboxGroup: {
+    name: "CheckboxGroup",
+    summary:
+      "체크박스 묶음. 두 모드 — **items(데이터 모드)**: value/onValueChange 로 선택 관리 + `select-all`(자식 비율로 indeterminate 자동) + `badge`(필수/선택 등)·`detail`(펼침) 슬롯. **children(레이아웃 모드)**: 직접 조립한 nds-checkbox 들을 배치만. '전체선택 + 체크 리스트'(약관 동의·다중 필터·설정 묶음)의 단일 컴포넌트. antd Checkbox.Group 대응.",
+    pitfalls: [
+      "items 모드 value 는 controlled — `nds-checkbox-group-change`(React onValueChange)로만 갱신. **전체선택은 자식 선택 비율로 자동 파생**(checked/indeterminate/unchecked) — 직접 손계산하지 말 것.",
+      "약관/개인정보 **동의 화면은 pattern:consent** 를 함께 볼 것 — 필수/선택 badge, **pre-tick(선택 항목 기본 체크) 금지(개인정보보호법)**, 필수 미동의 가드(호출부). consent 패턴은 `CheckboxGroup` data mode 로 조립한다.",
+      "**계층(시/도 ▸ 시/군구) 선택은 CheckboxGroup 이 아니라 component:CheckboxTree** (부모 indeterminate 자동·접기/펼치기).",
+      "닫힌 드롭다운 + 검색 + 적용 버튼 형태의 필터는 component:MultiSelect — CheckboxGroup 은 항상 펼쳐진 인라인 리스트.",
+      "`badge` 는 도메인 중립 슬롯([필수]/[선택]/NEW). 색/강조는 호출부에서(필수=status-error 톤 등).",
+    ],
+    examplesHtml: {
+      do: '<nds-checkbox-group select-all select-all-label="전체 동의" expandable value=\'[]\'\n  items=\'[{"value":"terms","label":"이용약관","badge":"[필수]","detail":"…전문…"},{"value":"marketing","label":"마케팅 수신","badge":"[선택]"}]\'></nds-checkbox-group>\n<script>el.addEventListener("nds-checkbox-group-change", e => setAgreed(e.detail.value));</script>',
+      dont: '<!-- 계층(시/도▸시군구)을 CheckboxGroup 으로 — CheckboxTree 가 맞음 -->\n<nds-checkbox-group items=\'[{"value":"gangwon","label":"강원도"}]\'></nds-checkbox-group>\n<!-- 선택 항목 pre-tick (위법) — 초기 value 는 빈 배열 -->\n<nds-checkbox-group select-all value=\'["marketing"]\' items=\'[…]\'></nds-checkbox-group>',
+    },
+  },
+  CheckboxTree: {
+    name: "CheckboxTree",
+    summary:
+      "검색은 기본 활성화지만 옵션인 전체선택 + 계층(시/도 ▸ 시/군/구) 체크박스 트리. 부모는 하위 leaf 선택 비율에 따라 checked / indeterminate / unchecked 를 **자동** 표시하고, 부모 클릭은 하위 leaf 전체를 on/off. value 는 **선택된 leaf 값**만 담는다(부모는 파생). 캐포비 지역 선택 모달 좌측(3001:50785).",
+    pitfalls: [
+      "**평면(계층 없음) 다중선택이면 MultiSelect**, 즉시 반영 단일선택이면 Select — CheckboxTree 는 부모/자식 트리 전용.",
+      "value 에 부모 값을 넣지 말 것 — 선택은 leaf 값만. 부모 checked/indeterminate 는 자식 비율로 컴포넌트가 계산한다.",
+      "'선택한 항목' 요약 패널은 CheckboxTree 안에 없음 — `SelectedItemsPanel` + `SelectedItemRow` 로 오른쪽에 따로 조립(시/도 전체 선택이면 시/도명만, 일부면 '시/도 > 시/군구'). component:SelectedItemsPanel. RegionRow 는 하위호환 alias.",
+      "검색은 기본 노출이지만 필요 없으면 `searchable={false}` 로 숨길 수 있다. 검색이 켜져 있으면 매치된 노드의 부모를 자동 펼침 — 펼침 상태를 직접 강제하지 말 것.",
+      "빈 결과는 자동 빈 상태('검색 결과가 없습니다.').",
+      "전체선택은 **현재 검색 필터된** leaf 기준으로 토글된다(전체 목록 아님). MultiSelect 와 동일 규칙.",
+      "들여쓰기는 `--nds-checkbox-tree-indent`(기본 32px) × depth 자동 — 행마다 padding 을 손대지 말 것. 스크롤 높이는 `--nds-checkbox-tree-max-height`.",
+    ],
+    examplesHtml: {
+      do: '<nds-checkbox-tree search-placeholder="소재명으로 검색하기" value=\'["gangneung"]\' default-expanded=\'["gangwon"]\'\n  nodes=\'[{"value":"gangwon","label":"강원도특별자치도","children":[{"value":"gangneung","label":"강릉시"},{"value":"donghae","label":"동해시"}]}]\'></nds-checkbox-tree>\n<script>el.addEventListener("nds-checkbox-tree-change", e => setRegions(e.detail.value));</script>',
+      dont: '<!-- 계층 없는 평면 다중선택을 CheckboxTree 로 — MultiSelect 가 맞음 -->\n<nds-checkbox-tree nodes=\'[{"value":"a","label":"옵션 A"},{"value":"b","label":"옵션 B"}]\'></nds-checkbox-tree>\n<!-- value 에 부모 값 주입 — leaf 만 담아야 함 -->\n<nds-checkbox-tree value=\'["gangwon"]\'></nds-checkbox-tree>',
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-50785",
+  },
+  AddButton: {
+    name: "AddButton",
+    summary:
+      '폼 안에서 "항목 추가"(지역/옵션/행)를 유도하는 점선 affordance 버튼. 일반 Button(solid/outlined CTA)과 의도가 다름 — 반복 추가 슬롯이라 점선 보더. 필수 미선택 시 error 로 빨간 실선 강조. Figma 캐포비 타겟팅 "지역 추가"(3001:18966).',
+    pitfalls: [
+      "일반 제출/확정 CTA 에 쓰지 말 것 — 그건 Button. AddButton 은 '리스트에 한 줄 더 추가' affordance.",
+      'error 는 보더만 빨갛게 한다 — **인라인 에러 메시지("…를 선택해 주세요")는 FormField/필드그룹 쪽에서 별도로** 노출(AddButton 내부엔 메시지 없음).',
+      "보더/배경/에러색은 토큰 자동(점선=border strong, 에러=border status-error #FC3500). raw hex 금지.",
+      "기본 full-width. 좁게 두려면 full-width 끄기.",
+    ],
+    examplesHtml: {
+      do: '<nds-add-button label="지역 추가"></nds-add-button>\n<!-- 필수 미선택 에러 — 빨간 실선. 메시지는 아래 FormField 등에서 별도 -->\n<nds-add-button label="지역 추가" error></nds-add-button>',
+      dont: '<!-- 폼 제출 CTA 에 AddButton — Button(solid)이 맞음 -->\n<nds-add-button label="저장하기"></nds-add-button>',
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-18966",
   },
   Popup: {
     name: "Popup",
     summary:
-      "단순 확인/거부(취소·삭제·종료) 1-액션 다이얼로그. 본문이 긴 경우엔 Modal, 비차단 알림은 Snackbar.",
+      "단순 확인/거부(취소·삭제·종료) 1-액션 다이얼로그. 본문이 긴 경우엔 Modal, 비차단 알림은 Snackbar. " +
+      "버튼 배치는 actionsLayout('split'=2버튼 50/50·1버튼 세로 스택 | 'end'=우측 hug)으로 제어하고, 생략 시 브랜드 기본(캐포비=end, 그 외=split)이 강제된다(react=actionsLayout prop, html=actions-layout 속성). 색/pill 모양은 브랜드 토큰이 별도 결정.",
     pitfalls: [
       "Popup 본문에 form / 멀티 입력을 두지 말 것 — Modal 이 맞음.",
       "destructive 액션의 confirm-text 가 '확인' 처럼 일반 — 'X 삭제하기' / 'X 종료' 처럼 결과 명시.",
       "show-cancel 끄고 confirm 만 — 사용자에게 거부권을 주지 않음 (info popup 외에는 비권장).",
+      "버튼 배치를 직접 flex/justify 로 덮어쓰지 말 것 — actionsLayout='split'|'end' 사용(브랜드 기본은 자동).",
     ],
     examplesHtml: {
       do: '<nds-popup open title="신청을 취소할까요?" description="입력한 내용은 저장되지 않아요"\n  confirm-text="신청 취소하기" cancel-text="계속 작성" show-cancel></nds-popup>\n<script>el.addEventListener("popup-confirm", cancel); el.addEventListener("popup-cancel", () => el.removeAttribute("open"));</script>',
@@ -3727,18 +3766,23 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- debounce 없음 + min-query-length 없음 — 매 keystroke fetch -->\n<nds-search-input placeholder="검색"></nds-search-input>',
     },
   },
-  SegmentedControl: {
-    name: "SegmentedControl",
-    summary: "2-5 개의 평행 옵션 중 단일 선택 (탭의 가벼운 대체). 4개 초과면 Select / Tabs.",
+  SelectionButtonGroup: {
+    name: "SelectionButtonGroup",
+    summary:
+      "폼 내 상호 배타적 옵션의 단일 선택 (권장 2~3개). 브랜드색 아웃라인의 개별 버튼을 gap 으로 나열 — FormField ContentSlot 에 교체. 선택 시 brand-subtle 배경 + brand 보더 + 굵은 텍스트.",
     pitfalls: [
-      "옵션이 6개 이상 — 가로 폭 부족으로 라벨 truncate. Select 사용.",
-      "Segmented 와 Tabs 를 같은 화면에서 동시 사용 — 위계가 모호.",
-      "full-width 가 아닌데 화면 가운데 정렬로 옆 여백이 큰 모바일 화면 — 부모 컨테이너 폭 점검.",
+      "Tabs variant='segment' 와 혼동 — segment 는 연결된 회색 트랙(뷰/상태 전환), SelectionButtonGroup 은 폼 입력(개별 브랜드색 버튼). 폼 안 단일선택이면 이 컴포넌트.",
+      "옵션 4개 이상 — 가로 폭 부족. Select 또는 SelectionCard 사용.",
+      "라벨+설명+아이콘이 필요한 카드형 선택 — SelectionCard 가 적합.",
+      "선택색을 hex 로 박지 말 것 — selected 는 --semantic-bg-brand-subtle / --semantic-border-brand-default 캐스케이드로 5개 브랜드 자동 대응.",
+      "**그룹 내 옵션은 등폭이 기본** — '전체'(좁음)/'특정 지역'(넓음)처럼 라벨 길이가 달라도 컴포넌트가 가장 넓은 옵션 기준으로 자동 균등하게 그린다(손으로 width 박지 말 것). 한 화면에서 같은 성격의 그룹은 너비를 통일. 컨테이너 100% 로 늘리려면 fullWidth/full-width.",
+      "**'특정 X'(특정 지역/연령/카테고리) 선택 시 노출되는 '선택 결과'를 또 다른 SelectionButton·노란 outlined 칩으로 그리지 말 것** — 결과 컴포넌트는 따로다: ① 소수 고정 선택지(연령대 6~7개)는 **toggle Chip**(`<nds-chip selected>` — **선택표시 기본 = 브랜드 채움(solid fill)**. ✓ 체크/좌측 도트는 옵션: React `icon` prop, HTML 은 `<nds-chip selected><svg slot='icon'>…</svg>30대</nds-chip>`. 채움 대신 brand-subtle 등 부드러운 선택 톤을 원하면 hex 박지 말고 `--nds-chip-selected-background/text/border` override) 한 묶음, ② 동적 다중 선택(지역·카테고리처럼 picker 로 추가)은 **`SelectedItemsPanel` + `SelectedItemRow`**(회색 패널 안 추가 버튼 → 추가하면 SelectedItemRow 누적, 개별 제거 X). 특히 **선택한 항목을 노란 outlined 칩으로 인라인 나열 = 회귀(SelectionButton 과 시각적으로 동일해 혼동)** — get_guide({ topic:'component:SelectedItemsPanel' }) 의 SelectedItemRow 사용. 캐포비 타겟팅 폼 SSOT: Figma 3001:49174.",
     ],
     examplesHtml: {
-      do: '<nds-segmented value="week" size="md" options=\'[{"label":"주","value":"week"},{"label":"월","value":"month"},{"label":"연","value":"year"}]\'></nds-segmented>\n<script>el.addEventListener("segmented-change", e => setPeriod(e.detail.value));</script>',
-      dont: '<!-- 6개 옵션 — segmented 의 시각 위계 깨짐 -->\n<nds-segmented options=\'[{"label":"1","value":"1"},{"label":"2","value":"2"},{"label":"3","value":"3"},{"label":"4","value":"4"},{"label":"5","value":"5"},{"label":"6","value":"6"}]\'></nds-segmented>',
+      do: '<nds-selection-button-group value="always" options=\'[{"value":"always","label":"항상"},{"value":"time","label":"특정 시간만"},{"value":"weekday","label":"특정 요일/시간만"}]\'></nds-selection-button-group>\n<script>el.addEventListener("selection-button-change", e => setSchedule(e.detail.value));</script>',
+      dont: '<!-- 뷰 전환에 SelectionButtonGroup — 폼 입력 컴포넌트라 위계가 어색. Tabs variant=segment 사용 -->\n<nds-selection-button-group options=\'[{"value":"list","label":"목록"},{"value":"grid","label":"그리드"}]\'></nds-selection-button-group>',
     },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-703",
   },
   Skeleton: {
     name: "Skeleton",
@@ -3770,15 +3814,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   Stepper: {
     name: "Stepper",
-    summary: "다단계 작업(가입/결제/온보딩) 의 현재 진척 표시. 단계 5개 이상은 사용자 인지 부담.",
+    summary:
+      "다단계 작업의 현재 진척 표시. variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
     pitfalls: [
-      "completed 단계 라벨에 description 누락 — 사용자가 이전 단계에서 뭘 했는지 떠올리기 어려움.",
-      "vertical / horizontal 혼용 — 한 화면 안에선 한 방향 통일.",
-      "현재 단계가 마지막인데 'current' status 유지 — 'completed' 로 갱신해야 완료 신호.",
+      "status 는 prop 이 아님 — steps 에 {key,label,title?} 만 주고 상태는 current(0-based)로 결정. 'status' 를 박으면 무시됨.",
+      "variant 는 numbered|dots|bar 뿐 — 'horizontal'/'vertical' 같은 값은 없음(Stepper 는 항상 가로). 세로 방향 트래커가 필요하면 Timeline(direction='vertical').",
+      "title 은 variant=bar 의 두 번째 라벨 줄(예: '캠페인 만들기'). numbered/dots 에서는 무시됨 — 원형 단계명은 label 사용.",
+      "막대(bar) 색을 직접 지정 — completed/current 는 브랜드색, upcoming 은 border-normal 로 토큰 자동 결정. hex 박지 말 것.",
+      "현재 단계가 마지막인데 current 를 그대로 두면 completed 신호가 안 뜸 — 전부 완료는 current=steps.length.",
     ],
     examplesHtml: {
-      do: '<nds-stepper current="1" variant="horizontal" steps=\'[{"label":"기본 정보","status":"completed"},{"label":"결제","status":"current"},{"label":"확인"}]\'></nds-stepper>',
-      dont: '<!-- step status 모두 누락 — 진척이 시각화 안 됨 -->\n<nds-stepper current="1" steps=\'[{"label":"1단계"},{"label":"2단계"},{"label":"3단계"}]\'></nds-stepper>',
+      do: '<!-- 원형 단계 -->\n<nds-stepper current="1" variant="numbered" steps=\'[{"key":"info","label":"기본 정보"},{"key":"pay","label":"결제"},{"key":"confirm","label":"확인"}]\'></nds-stepper>\n<!-- 어드민 가로 막대(구 StepProgress) -->\n<nds-stepper current="1" variant="bar" steps=\'[{"key":"c","label":"Step 1","title":"캠페인 만들기"},{"key":"a","label":"Step 2","title":"광고 만들기"},{"key":"m","label":"Step 3","title":"소재 만들기"}]\'></nds-stepper>',
+      dont: '<!-- variant="horizontal" + per-step status 는 존재하지 않는 prop — 무시됨. 막대 색 직접 지정 금지 -->\n<nds-stepper variant="horizontal" steps=\'[{"label":"기본 정보","status":"completed"}]\'></nds-stepper>',
     },
   },
   Textarea: {
@@ -3797,44 +3845,50 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Toast: {
     name: "Toast",
     summary:
-      "비차단 알림 (저장 완료 / 네트워크 에러 등). Snackbar 와 거의 동일 기능이지만 multi-stack 가능.",
+      "**인터랙션 없는 일시 메시지** 전용 (저장 완료 / 복사됨 / 네트워크 에러 등). 확인·클릭 없이 자동으로 사라지는 가벼운 결과 피드백 — multi-stack 가능(maxCount). " +
+      "자동으로 사라지므로 **액션(되돌리기/다시시도)이나 닫기 버튼·브랜드 카드(캐포비 흰 카드)는 두지 않는다** — 그런 알림은 Snackbar 를 사용한다. (액션이 사라지는 토스트에 붙으면 사용자가 누를 새가 없다.) " +
+      "**캐시워크 포 비즈니스(admin) 는 알림 기본을 Snackbar 로 둔다** — 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 가 캐포비 알림 SSOT 라, Toast 는 캐포비에서 거의 쓰지 않는다(닫기·액션 없는 순수 일시 메시지일 때만 예외). get_guide({ topic: 'component:Snackbar', brand: 'cashwalk-biz' }).",
     pitfalls: [
       "duration 0 으로 영구 표시 — 차단 의도면 Modal/Popup, 영구 알림이면 Banner.",
       "변형(default/success/error/warning) 없이 모두 default — 시각 위계가 사라짐.",
       "Toast 안에 input/form 두지 말 것 — interactive 영역이면 Drawer/Modal.",
+      "**액션(되돌리기/다시시도)·닫기 버튼이 필요하면 Toast 가 아니라 Snackbar** — Toast 는 action API 가 없다(자동 사라짐 전용). 캐포비 admin 흰 카드 알림도 Snackbar(get_guide component:Snackbar, brand:'cashwalk-biz')로 이관됐다.",
     ],
     examplesHtml: {
       do: '<nds-toast message="저장되었습니다" variant="success" position="bottom" duration="2500" open></nds-toast>\n<script>el.addEventListener("toast-close", () => el.removeAttribute("open"));</script>',
-      dont: '<!-- duration 0 + form 포함 — Toast 가 아니라 Modal/Drawer 사용 -->\n<nds-toast open duration="0" message="<input />" variant="default"></nds-toast>',
+      dont: '<!-- 액션이 필요 — Toast 가 아니라 Snackbar 사용 -->\n<nds-toast open message="삭제됨" variant="default"></nds-toast><!-- 되돌리기 버튼 불가 -->',
     },
   },
   Toggle: {
     name: "Toggle",
     summary:
-      "즉시 적용되는 on/off 스위치. 설정 페이지 / 알림 토글에 사용. 폼 제출 후 적용되는 binary 는 Checkbox 가 맞음.",
+      "즉시 적용되는 on/off 스위치. 설정 페이지 / 알림 토글에 사용. 폼 제출 후 적용되는 binary 는 Checkbox 가 맞음. " +
+      "**라벨 내장 status 변형** — onLabel/offLabel(HTML on-label/off-label)을 주면 트랙 **안**에 텍스트(예: 노출/미노출)가 들어가고 폭이 auto 로 넓어진다. tone='success' 면 켜짐 트랙이 초록(노출/활성 status). 어드민 리스트의 노출 토글에 사용.",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3295-547",
     pitfalls: [
-      "label 없는 단독 Toggle — 무엇을 켜고 끄는지 시각만으론 불명확.",
+      "label 없는 단독 Toggle — 무엇을 켜고 끄는지 시각만으론 불명확. (라벨 내장 status 변형이면 on-label/off-label 자체가 안내 역할.)",
       "Toggle 변경 후 별도 '저장' 버튼이 필요한 UI 라면 Checkbox 가 맞음 — Toggle 은 즉시 반영 시그널.",
       "size='sm' 을 본문 안 inline 텍스트와 함께 — 시각 위계 부족, baseline 어색.",
+      "노출/활성 status 토글의 켜짐 초록을 raw hex(#60be34 등)로 박지 말 것 — tone='success' 가 semantic status-success 토큰으로 5 브랜드 자동 대응. 라벨 내장 status 토글은 size 무시(고정 30 / thumb 25).",
     ],
     examplesHtml: {
-      do: '<nds-toggle name="push-notification" label="푸시 알림 받기" checked></nds-toggle>\n<script>el.addEventListener("change", e => savePref(e.target.checked));</script>',
+      do: '<nds-toggle name="push-notification" label="푸시 알림 받기" checked></nds-toggle>\n<!-- 어드민 리스트 노출 토글: 라벨 내장 + 초록 status -->\n<nds-toggle on-label="노출" off-label="미노출" tone="success" checked></nds-toggle>\n<script>el.addEventListener("change", e => savePref(e.target.checked));</script>',
       dont: '<!-- 라벨 없는 단독 토글 -->\n<nds-toggle></nds-toggle>\n<!-- 즉시 반영 안 되는 form -->\n<form>\n  <nds-toggle name="x" label="설정 A"></nds-toggle>\n  <nds-button color="primary" type="submit">저장</nds-button> <!-- Checkbox 가 맞음 -->\n</form>',
     },
   },
   Tooltip: {
     name: "Tooltip",
     summary:
-      "trigger 에 마우스 hover / focus 시 보조 설명. 모바일에선 사실상 보이지 않으므로 핵심 정보는 본문에 둘 것.",
+      "trigger 에 마우스 hover / focus 시 보조 설명. **두 줄·여러 줄 본문 허용** — 짧은 힌트는 `content` 속성(자동 줄바꿈), 제목+불릿 같은 **리치 안내**(예: 캐포비 '권한 안내')는 `<template slot=\"content\">` 로 넣고 `max-width` 로 폭 조절. 다크 배경(surface.inverse) + 흰 텍스트 + 하단/방향별 tail 은 공통. 모바일에선 사실상 안 보이므로 핵심 정보는 본문에 둘 것.",
     pitfalls: [
       "Tooltip 안에 인터랙티브 요소(링크/버튼) — 모바일/터치에서는 도달 불가.",
       "trigger 가 aria-label 만 갖고 visible 텍스트가 없는 아이콘 버튼인데 Tooltip 도 같은 내용 — 중복.",
-      "Tooltip 텍스트가 한 문장 초과로 길어짐 — Popover / Modal 사용.",
+      "본문 길이/줄 수 제한은 없음 — 두 줄·여러 줄·제목+불릿 리치까지 허용(`<template slot=\"content\">` + 필요 시 `max-width`). 단 (a) 사용자의 응답/결정이 필요하거나 (b) 한 화면을 채울 만큼 길면 Modal — Tooltip 은 어디까지나 hover 보조 안내. (이전의 '한 문장 초과 금지' 규칙은 폐기.)",
+      '리치 본문은 `content` 속성(평문)이 아니라 **`<template slot="content">`** 로 — HTML(제목 `<p style="font-weight:700">` · 불릿 `<ul><li>` · 강조 `<strong>`)을 넣어야 렌더된다. content 속성에 태그 문자열을 넣으면 그대로 escape 됨.',
     ],
     examplesHtml: {
-      do: '<nds-tooltip content="삭제하면 복구할 수 없어요" placement="top" trigger-label="?"></nds-tooltip>',
-      dont: '<!-- 모바일에서 보이지 않는 본질 정보 -->\n<nds-tooltip content="이용약관 동의가 필수입니다" trigger-label="?"></nds-tooltip>',
+      do: '<!-- ① 짧은 힌트(자동 줄바꿈) -->\n<nds-tooltip content="삭제하면 복구할 수 없어요" placement="top" trigger-label="?"></nds-tooltip>\n<!-- ② 리치 안내(제목+불릿·멀티라인) — 캐포비 권한 안내 형태 -->\n<nds-tooltip trigger-label="?" placement="top" max-width="346" open>\n  <template slot="content">\n    <p style="font-weight:700">권한 안내</p>\n    <ul>\n      <li>비즈니스 계정 : <strong>모든 광고 계정</strong>에 접근할 수 있으며, 광고 계정 생성 및 수정 권한을 가집니다.</li>\n      <li>일반 계정 : <strong>초대된 광고 계정</strong>에 한해 광고 조회 및 관리가 가능합니다.</li>\n    </ul>\n  </template>\n</nds-tooltip>',
+      dont: '<!-- 모바일에서 보이지 않는 본질 정보를 툴팁에만 -->\n<nds-tooltip content="이용약관 동의가 필수입니다" trigger-label="?"></nds-tooltip>\n<!-- 리치 본문을 content 속성에 태그 문자열로 (escape 되어 깨짐) -->\n<nds-tooltip trigger-label="?" content="<strong>권한 안내</strong><ul>..."></nds-tooltip>',
     },
   },
   BottomSheet: {
@@ -3844,9 +3898,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- nds-bottom-sheet-close 미처리 — overlay/ESC 가 닫지 못함 -->\n<nds-bottom-sheet open sheet-title="선택"></nds-bottom-sheet>',
     },
     summary:
-      "모바일에서 화면 하단에서 올라오는 시트. 옵션 선택 / 짧은 작업에 적합. 데스크탑에선 Drawer 가 자연스러움.",
+      "모바일에서 화면 하단에서 올라오는 시트. 옵션 선택 / 짧은 작업에 적합. 데스크탑에선 Drawer 가 자연스러움. 공유 시트는 이 컴포넌트로 4칸 그리드 + 링크 복사 레시피로 조립한다.",
     pitfalls: [
       "BottomSheet 안에 깊은 nested form / 멀티 탭 — 사용자가 컨텍스트를 잃음. 별도 화면 또는 Modal 사용.",
+      "공유 기능은 별도 ShareSheet 컴포넌트보다 BottomSheet + 버튼 그리드 + 링크 복사 레시피로 조립.",
       "open 상태에서 뒤 페이지 scroll 잠그지 않으면 body scroll 충돌.",
       "트리거 버튼 없이 자동 open — 사용자 의도 없는 시트는 다크 패턴.",
     ],
@@ -3867,13 +3922,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   DatePicker: {
     name: "DatePicker",
     examplesHtml: {
-      do: '<nds-date-picker value="2026-05-25" min-date="2026-05-01" max-date="2026-12-31"\n  placeholder="날짜 선택"></nds-date-picker>\n<script>el.addEventListener("nds-date-change", e => setDate(e.detail.value));</script>',
+      do: '<nds-date-picker value="2026-05-25" min-date="2026-05-01" max-date="2026-12-31"\n  placeholder="날짜 선택" allow-clear></nds-date-picker>\n<script>el.addEventListener("nds-date-change", e => setDate(e.detail.value));\nel.addEventListener("nds-date-clear", () => setDate(null));</script>',
       dont: '<!-- min-date / max-date 누락 — 사용자가 과거/먼 미래 선택 가능 -->\n<nds-date-picker placeholder="날짜"></nds-date-picker>',
     },
     summary:
-      "단일 날짜 선택. 캘린더 팝업 + 키보드 입력. 시간까지 필요하면 별도 TimePicker 또는 DateTimePicker 조합.",
+      "단일 날짜 선택. 캘린더 팝업 + 키보드 grid 이동(Arrow/Home/End/PageUp/PageDown) + clear/open/status 제어. 시간까지 필요하면 별도 TimePicker 또는 DateTimePicker 조합. (폼에서 날짜 고르기는 항상 DatePicker — Calendar 는 마커가 있는 독립 인라인 월 뷰로 용도가 다르다.)",
     pitfalls: [
       "min/max 누락 — 사용자가 과거/먼 미래 날짜를 선택해 데이터 검증 실패.",
+      "주말/휴일/마감일 같은 업무 제약은 React disabledDate, HTML disabled-dates(JSON 배열 또는 comma-separated ISO)로 막는다.",
+      "값 초기화가 필요한 필터는 allowClear + onClear/nds-date-clear 를 연결한다.",
       "한국어 로케일 누락 — '월/일/연도' 영문 형식 노출.",
       "Calendar 컴포넌트로 month/year 보기 + 직접 select 흉내내지 말 것 — 컨트롤 일관성 깨짐.",
     ],
@@ -3885,10 +3942,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- slot 미지정 — 위치/스타일이 적용 안 됨 -->\n<nds-field-action-row>\n  <nds-input></nds-input>\n  <nds-button>재전송</nds-button>\n</nds-field-action-row>",
     },
     summary:
-      "Form field 옆에 inline action(다시 보내기 / 자동 채우기 / 외부 링크) 을 배치하는 보조 row.",
+      "전화번호 인증 / 인증코드 입력처럼 '입력 1개 + 액션 버튼 1개(+타이머)' 한 줄 패턴 전용 helper. React 는 flat API 하나만 — 구 Compound API(.Root/.Field/.Action…) 는 제거됨.",
     pitfalls: [
+      "범용 폼 레이아웃 용도 아님 — 여러 필드/버튼은 Input + Button 직접 조합. 이 컴포넌트는 인증 row 1줄에만.",
       "Action 이 핵심 폼 동작(검색 / 제출) 이면 row 안이 아니라 별도 CTA 영역.",
       "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1-2 단어로 유지.",
+      "React 에서 더는 .Root/.Row/.Field/.Timer/.Action/.Helper 합성 불가 — field/action/timer/helperText prop 으로 전달.",
     ],
   },
   TimeSlotPicker: {
@@ -3922,36 +3981,40 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Timeline: {
     name: "Timeline",
     summary:
-      "상담/검사 이력 타임라인 — compound API. flat JSON 으로 받으려면 ActivityTimeline 사용.",
+      "타임라인 — data-array(items) API. mode=activity(시간순 이벤트 로그 — date/title/description + status/statusLabel 배지) + mode=tracker(정해진 단계 진행 트래커 — current 인덱스로 done/current/todo 파생, direction=vertical|horizontal). 구 ActivityTimeline+StatusTimeline 통합. (단계 진척만 간결히 보이려면 Stepper, 다단계 폼 컨테이너는 MultiStepForm.)",
     pitfalls: [
-      "ActivityTimeline 과 시각/DOM 은 동일 — items 가 정적이고 자식 markup 으로 표현하기 편한 곳에만 사용. 동적 데이터는 ActivityTimeline.",
-      "status='ongoing' 은 box-shadow ring 효과 — 한 화면에 여럿 두면 시각 잡음. 보통 1개만.",
-      "items 20+ 면 페이지네이션 / 가상화 권장. 한 번에 노출하면 스크롤 부담.",
+      "items 의 각 항목은 { key, title, date?, description?, status?, statusLabel? }. title 은 필수(이벤트/단계 이름), date 는 시점.",
+      "mode=tracker 는 current(0-based)로 상태 파생 — per-item status 는 무시됨. 전부 완료는 current=items.length.",
+      "mode=activity 는 per-item status(default/completed/ongoing/warning/error) 명시. statusLabel 없이 status만 주면 dot 색만 바뀌고 우측 배지는 안 뜸 — 둘 다 필요.",
+      "direction='horizontal' 은 tracker 에서만 의미(가로 단계 트래커). activity 는 항상 세로.",
+      "status='ongoing' 은 box-shadow ring 효과 — 한 화면에 여럿 두면 시각 잡음. 보통 1개. items 20+ 면 페이지네이션/가상화 권장.",
     ],
     examplesHtml: {
-      do: '<nds-timeline>\n  <nds-timeline-item date="2026.05.25" title="상담 예약 완료" status="completed"></nds-timeline-item>\n  <nds-timeline-item date="2026.05.28" title="자가검사 진행" status="ongoing" status-label="진행 중"></nds-timeline-item>\n</nds-timeline>',
-      dont: "<!-- items 를 JSON 으로 넘기려면 nds-activity-timeline -->\n<nds-timeline items='[...]'></nds-timeline>",
+      do: '<!-- 이벤트 로그 -->\n<nds-timeline mode="activity" items=\'[\n  {"key":"1","date":"2026.05.25","title":"상담 예약 완료","status":"completed","statusLabel":"완료"},\n  {"key":"2","date":"2026.05.28","title":"자가검사","status":"ongoing","statusLabel":"진행 중"}\n]\'></nds-timeline>\n<!-- 단계 트래커 -->\n<nds-timeline mode="tracker" current="1" direction="horizontal" items=\'[\n  {"key":"r","title":"접수","date":"05/20"},\n  {"key":"p","title":"처리 중"},\n  {"key":"d","title":"완료"}\n]\'></nds-timeline>',
+      dont: '<!-- 슬롯 자식(nds-timeline-item)·steps 속성은 폐기 — items 배열 + mode 사용 -->\n<nds-timeline><nds-timeline-item title="…"></nds-timeline-item></nds-timeline>',
     },
   },
   BrandHeader: {
     name: "BrandHeader",
     summary:
-      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
+      "**브랜드 GNB 헤더 — 손수 조립하지 말고 무조건 이걸 먼저 쓸 것.** `<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...'>` 한 줄로 로고/메뉴/auth 버튼/검색바가 브랜드별 BRAND_DATA 에서 자동 렌더. nds-header + nds-header-logo + nds-header-menu + nds-header-menu-item × N + nds-header-actions + nds-header-auth-button 직접 조립 = 안티패턴.",
     pitfalls: [
       "**손수 조립 금지** — nds-header / nds-header-logo / nds-header-menu / nds-header-menu-item / nds-header-actions / nds-header-auth-button 를 직접 박지 말 것. 메뉴 라벨/href/순서를 손으로 적으면 브랜드 일관성이 깨지고 다음 브랜드 화면에서 또 적게 됨. BrandHeader 한 줄이 BRAND_DATA 에서 전부 자동.",
-      "**asset-base-url 안 주면 `/brand-logos` 가 default** — 워크스페이스에 그 폴더가 없으면 로고가 깨짐. `public/brand-logos/` 디렉토리 만들고 브랜드별 파일 배치 필요 (아래 recommended 참고).",
+      "**로고는 base64 내장 — 자산 파일·호스팅 불필요.** 5개 브랜드 로고가 BRAND_DATA 에 data URI 로 박혀 있어 `asset-base-url` 없이도 어디서든 안 깨지고 렌더된다 (단일 HTML 목업 그대로 OK). `asset-base-url` 은 **자체 로고로 바꿀 때만** 쓰는 선택적 override — `public/brand-logos/` 폴더를 만들 의무는 없다.",
       "**surface 별 출력 다름** — `web` (PC GNB · 로고+메뉴+auth), `mobile` (compact 헤더 · 로고+auth), `webview` (뒤로가기 + 타이틀만). 모바일 화면이면 surface='mobile' 명시.",
       "active-key 는 BRAND_DATA[brand].webMenu 의 key 와 매칭. 잘못 적으면 활성 메뉴 표시가 안 됨. 각 브랜드 key 목록은 nds-brand-chrome.ts BRAND_DATA 또는 아래 recommended 참고.",
     ],
     recommended: [
-      "Trost: `<nds-brand-header brand='trost' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/trost-logo.svg` · webMenu keys: home / counsel / test / care / center",
-      "Geniet: `<nds-brand-header brand='geniet' surface='web' active-key='deal' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/geniet-logo-pc.webp` + `geniet-logo-footer.webp` · webMenu keys: home / community / deal / review",
-      "NudgeEAP: `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/nudge-eap-logo.png` + `nudge-eap-logo-footer.png` · webMenu keys: counsel / test / therapy / letter / news / my",
-      "CashwalkBiz: `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='campaign' asset-base-url='/brand-logos' />` · 필요 파일: `public/brand-logos/cashwalk-biz/cashwalk-for-business-horizontal.svg` · webMenu keys: home / campaign / member / channel / setting",
-      "Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashwalk-biz-header>` — brand attribute 안 써도 동일 동작.",
+      "Trost: `<nds-brand-header brand='trost' surface='web' active-key='counsel' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: home / counsel / test / care / center",
+      "Geniet: `<nds-brand-header brand='geniet' surface='web' active-key='deal' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: home / community / deal / review",
+      "NudgeEAP: `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: counsel / test / therapy / letter / news / my",
+      "CashwalkBiz: `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='ad' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: channel / ad / case / notice / guide",
+      "Runmile: `<nds-brand-header brand='runmile' surface='web' active-key='race' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: race / community · web 헤더 = 좌측 워드마크+nav · 중앙 coral 검색바 · 우측 채팅/로그인 액션 자동. mobile=52h 중앙 워드마크 bar.",
+      "자체 로고로 교체할 때만: `asset-base-url='/brand-logos'` + 해당 파일 배치 (override 전용 · 기본 목업엔 불필요).",
+      "Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashwalk-biz-header>`, `<nds-runmile-header>` — brand attribute 안 써도 동일 동작.",
     ],
     examplesHtml: {
-      do: '<nds-brand-header brand="geniet" surface="web" active-key="deal" asset-base-url="/brand-logos"></nds-brand-header>',
+      do: '<nds-brand-header brand="geniet" surface="web" active-key="deal"></nds-brand-header>',
       dont:
         "<!-- 손수 조립 안티패턴 — 메뉴 라벨/href 를 인라인으로 적으면 브랜드 데이터와 분리되어 다음 화면에서 또 적게 됨 -->\n" +
         '<nds-header variant="web" position="static" max-width="1200">\n' +
@@ -3964,12 +4027,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     },
     usagePolicy: {
       useFor: [
-        "사용자 앱 (Trost/Geniet/NudgeEAP/CashwalkBiz) PC GNB",
+        "사용자 앱 (Trost/Geniet/NudgeEAP/CashwalkBiz/Runmile) PC GNB",
         "사용자 앱 모바일 compact 헤더 (surface='mobile')",
         "webview 페이지 뒤로가기/타이틀 헤더 (surface='webview')",
       ],
       doNotUseFor: [
-        "어드민/CMS — antd Layout.Sider 사용",
+        "어드민/CMS — antd Layout.Sider 사용 (단, 캐포비(cashwalk-biz) 어드민은 예외로 DS Sidebar — get_guide({ topic:'component:Sidebar' }))",
         "단일 시연용 임시 화면이라 브랜드 정체성이 무의미한 경우",
       ],
       emphasisRule:
@@ -3978,6 +4041,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     /**
      * Pattern 'Brand-aware Base' metadata (Figma 450:68 v2).
      * BRAND_DATA SSOT 는 `packages/html/src/components/nds-brand-chrome.ts` — 본 metadata 는 그 미러 (가이드 응답용).
+     * runmile 은 BrandSlug 타입 union 밖이라 구조화 fold(validPropValues/assetManifest)에는 못 넣는다 —
+     * `<nds-brand-header brand='runmile'>` 는 코드상 완전 지원(렌더/alias 모두). 활성 key(race/community)와
+     * 자산(파일 불필요) 는 summary/recommended prose 로 노출. BrandBottomNav 와 동일 정책.
      */
     validPropValues: {
       trost: { activeKey: ["home", "counsel", "test", "care", "center"] },
@@ -3986,7 +4052,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         activeKey: ["counsel", "test", "therapy", "letter", "news", "my"],
       },
       "cashwalk-biz": {
-        activeKey: ["home", "campaign", "member", "channel", "setting"],
+        activeKey: ["channel", "ad", "case", "notice", "guide"],
       },
     },
     assetManifest: {
@@ -3999,22 +4065,24 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   BrandFooter: {
     name: "BrandFooter",
     summary:
-      "**브랜드 글로벌 푸터 — 손수 조립하지 말 것.** `<nds-brand-footer brand='...' surface='web|app' asset-base-url='/brand-logos'>` 한 줄로 이용약관/개인정보처리방침/사업자정보/copyright/푸터 로고가 BRAND_DATA 에서 자동 렌더. nds-footer + nds-footer-links + nds-footer-company 직접 조립 = 안티패턴.",
+      "**브랜드 글로벌 푸터 — 손수 조립하지 말 것.** `<nds-brand-footer brand='...' surface='web|app'>` 한 줄로 이용약관/개인정보처리방침/사업자정보/copyright/푸터 로고가 BRAND_DATA 에서 자동 렌더. nds-footer + nds-footer-links + nds-footer-company 직접 조립 = 안티패턴.",
     pitfalls: [
       "**손수 조립 금지** — 이용약관/개인정보 링크, 사업자번호, CEO 이름 등을 매번 입력하지 말 것. 한 번 잘못 적으면 법적 표기 누락 위험.",
-      "**asset-base-url 일관성** — BrandHeader 와 같은 asset-base-url 사용. 푸터 로고 파일이 따로 있는 브랜드(nudge-eap: `*-logo-footer.png`, geniet: `geniet-logo-footer.webp`) 는 그 파일도 같이 배치.",
+      "**푸터 로고도 base64 내장 — 파일·호스팅 불필요.** 푸터 로고가 따로 있는 브랜드(nudge-eap/geniet/runmile)도 data URI 로 박혀 있어 `asset-base-url` 없이 그대로 렌더된다. `asset-base-url` 은 자체 로고로 바꿀 때만 쓰는 선택적 override.",
       "**surface 차이** — `web` (PC 전용 wide 푸터 · 로고+링크+회사정보), `app` (모바일 앱 footer · 압축형). 사용자 앱 모바일 화면이면 surface='app'.",
       "footerTone 은 브랜드별 고정 (trost=dark / 나머지=light) — 임의 override 시도 시 디자인 인텐트 어긋남.",
     ],
     recommended: [
-      "Trost (dark): `<nds-brand-footer brand='trost' surface='app' asset-base-url='/brand-logos' />`",
-      "Geniet (light): `<nds-brand-footer brand='geniet' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `geniet-logo-footer.webp`",
-      "NudgeEAP (light): `<nds-brand-footer brand='nudge-eap' surface='web' asset-base-url='/brand-logos' />` · 필요 파일: `nudge-eap-logo-footer.png`",
-      "CashwalkBiz (light): `<nds-brand-footer brand='cashwalk-biz' surface='web' asset-base-url='/brand-logos' />`",
-      "Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashwalk-biz-footer>`",
+      "Trost (dark): `<nds-brand-footer brand='trost' surface='app' />` · 로고 base64 내장 (파일 불필요)",
+      "Geniet (light): `<nds-brand-footer brand='geniet' surface='web' />` · 로고 base64 내장 (파일 불필요)",
+      "NudgeEAP (light): `<nds-brand-footer brand='nudge-eap' surface='web' />` · 로고 base64 내장 (파일 불필요)",
+      "CashwalkBiz (light): `<nds-brand-footer brand='cashwalk-biz' surface='web' />` · 로고 base64 내장 (파일 불필요)",
+      "Runmile (light): `<nds-brand-footer brand='runmile' surface='app' />` · 로고 base64 내장 (gray700 워드마크) · footerTone=light (forcedProps '*' default)",
+      "자체 로고로 교체할 때만: `asset-base-url='/brand-logos'` (override 전용 · 기본 목업엔 불필요).",
+      "Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashwalk-biz-footer>`, `<nds-runmile-footer>`",
     ],
     examplesHtml: {
-      do: '<nds-brand-footer brand="geniet" surface="web" asset-base-url="/brand-logos"></nds-brand-footer>',
+      do: '<nds-brand-footer brand="geniet" surface="web"></nds-brand-footer>',
       dont:
         "<!-- 손수 조립 안티패턴 — 사업자 정보/copyright/링크를 인라인으로 적으면 법적 표기 누락/잘못된 정보가 SSOT 깨고 페이지 간 불일치 -->\n" +
         '<footer class="my-footer">\n' +
@@ -4095,7 +4163,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "BRAND_DATA 를 수정하려면 DS 레포의 `packages/html/src/components/nds-brand-chrome.ts` 직접 편집 (외부 mockup 프로젝트에서는 불가능).",
     ],
     examplesHtml: {
-      do: '<nds-brand-header brand="trost" surface="web" active-key="counsel" asset-base-url="/brand-logos"></nds-brand-header>\n<!-- ...page content... -->\n<nds-brand-bottom-nav brand="trost" active-key="counsel"></nds-brand-bottom-nav>\n<nds-brand-footer brand="trost" surface="app" asset-base-url="/brand-logos"></nds-brand-footer>',
+      do: '<nds-brand-header brand="trost" surface="web" active-key="counsel"></nds-brand-header>\n<!-- ...page content... -->\n<nds-brand-bottom-nav brand="trost" active-key="counsel"></nds-brand-bottom-nav>\n<nds-brand-footer brand="trost" surface="app"></nds-brand-footer>',
       dont: '<!-- nds-brand-chrome 단독 사용 — wrapper 라 의미 없음 -->\n<nds-brand-chrome brand="trost"></nds-brand-chrome>',
     },
   },
@@ -4119,7 +4187,8 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
   brandTone:
     "낮은 진입 장벽과 전문적 신뢰감을 주되, 흔한 SaaS/헬스케어 클리셰처럼 보이면 안 됩니다. Linear/Notion식 회색 카드 그리드, 스톡사진+파스텔 그라데이션, 모든 카드에 아이콘을 꽂는 대시보드 톤, 과한 감성 카피/일러스트 장식은 금지. Neutral surface와 텍스트 위계를 기본으로 두고 primary blue는 대표 CTA와 핵심 인터랙션에만 제한합니다.",
   colors: {
-    primary: "#2B96ED — CTA, 활성, 핵심 인터랙티브. 화면당 가장 중요한 1개 액션만.",
+    primary:
+      "var(--semantic-bg-brand-default) — CTA, 활성, 핵심 인터랙티브. 화면당 가장 중요한 1개 액션만.",
     secondary: "#ED2E77 — 마젠타 포인트. 프로모션, 감정 표현, 보조 강조.",
     error: "#F13F00 — 유효성 오류, 파괴적 액션.",
     caution: "#FFC303 — 주의 알림. 텍스트는 #FFA100.",
@@ -4167,10 +4236,12 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     pill: "9999px — 칩, 토글",
   },
   dos: [
+    "★ 선언된 표면(surface: admin/service)이 화면 이름 통념을 지배한다 — 작업 시작 시 표면부터 확정하고 모든 레이아웃을 거기 맞춘다. surface=admin 이면 '회원가입/로그인/온보딩'처럼 소비자 플로우를 연상시켜도 어드민 화면(admin-shell 사이드바+톱바, 또는 어드민 온보딩 중앙 카드)으로 만든다. 표면의 SSOT 는 brief/CLAUDE.md 선언 + nudge.surface 마커 — 화면 제목으로 추측하지 말 것.",
     "Primary 색상은 화면당 가장 중요한 1개 액션에만 사용",
     "강조 장치는 화면당 우선순위가 가장 높은 영역에 집중하고, 안내/보조 영역은 기본적으로 neutral surface를 사용",
     "텍스트 대비비 WCAG AA (4.5:1) 이상 유지",
     "터치 타겟은 최소 44px 보장",
+    "★ 모든 목업은 반응형으로 — 고정폭 1개 화면으로 끝내지 말 것. 레이아웃은 고정 px 폭이 아니라 유연 컨테이너(max-width + 좌우 패딩, flex/grid + wrap, min-width:0)로 짜고, 좁은 화면(모바일 ~360, 태블릿 ~768)에서 가로 스크롤·요소 깨짐·겹침이 없어야 한다. 콘텐츠 폭은 Desktop center 1200 / Mobile 좌우 16. DataTable 은 responsive='cards', 컴포넌트의 size 분기(예: Tabs size mobile/pc, BrandFooter layout desktop/mobile)는 미디어쿼리/JS 로 전환. 입력 필드는 Field Width 6단계(고정 px) 안에서 반응형 컨테이너만 Full 100%.",
     "4pt 그리드에 맞춰 간격 설정. Gap(요소 간)과 Inset(컨테이너 내부)을 구분해 항상 semantic 토큰(--semantic-gap-* / --semantic-inset-*) 사용",
     "Brand background(--semantic-bg-brand-*)는 주의/안내/하이라이트 의미 전달이 필요할 때만, 한 화면당 1개 이내로 사용 — 자세히는 get_guide({ topic: 'pattern:surface-layer' })",
     "인터랙티브 요소(Button/IconButton/Card.Root clickable/Tabs)에는 onClick 등 핸들러를 반드시 부착",
@@ -4181,11 +4252,12 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "Tab 은 동일 depth 콘텐츠 전환·category navigation·section switching 에만 사용 — 필터/CTA/라우팅 대체용 금지",
     "Modal 은 즉각적 판단/응답이 필요할 때만 사용 — 단순 정보는 inline Notice/Banner, 에러는 Toast/inline error 사용",
     "Badge 는 보조 정보 — 일반 카테고리는 ghost/line + neutral 우선, Brand color 는 '현재 선택·핵심 강조' 에만",
-    "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 사용 가능한 브랜드 아이콘 목록은 get_brand({ brand: '<slug>' }).detail.brandIcons 로 조회.",
+    "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 브랜드별 아이콘 수와 검색 힌트는 get_brand({ brand: '<slug>' }).detail.brandIconCount / brandIconLookup 으로 확인하고, 실제 후보는 find_icon({ query: '<BrandPrefix>' }) 로 조회.",
     "브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(`HomeIcon`, `SearchIcon` 등)을 먼저 찾고, 그 다음에만 목업용 기본 아이콘(`MockupLinear*Icon`, `MockupBold*Icon`)을 사용. 자체 생성 SVG는 마지막 수단.",
     "브랜드 분기는 공통 컴포넌트 구현이 아니라 **브랜드 전용 화면/스토리** 에서 처리 — 브랜드 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<Footer.TabBar tabs={[{ icon: <GenietRecordIcon /> }]} />`)",
   ],
   donts: [
+    "표면=admin 화면에 소비자 brand chrome(<nds-brand-header> / <nds-brand-footer> / <nds-brand-bottom-nav>) 사용 금지 — 어드민은 admin-shell(사이드바+톱바) 또는 어드민 온보딩 카드. '회원가입/로그인'이라는 화면 이름으로 소비자 플로우를 추측하지 마세요. build_singlefile_html / validate_html_mockup 의 admin-surface-consumer-chrome 룰(error)로 자동 차단됨.",
     "한 화면에 3개 이상의 폰트 웨이트를 혼용하지 마세요",
     "둥근 코너와 각진 코너를 같은 뷰에서 섞지 마세요",
     "그림자와 보더를 동시에 적용하여 이중 계층을 만들지 마세요",
@@ -4200,7 +4272,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "로고의 gradient/accent 컬러를 UI 배경/태그/CTA 컬러처럼 사용하지 마세요 — 로고 표현과 UI 시스템 컬러는 분리",
     "DS 컴포넌트에 정확히 매칭되는 쓰임이 있는데 raw <button>/<input>/<span>으로 대체 금지",
     "이모지 절대 사용 금지 — 어떤 위치에서도(라벨/버튼/제목/placeholder/empty state) 이모지를 텍스트로 박지 마세요. 아이콘이 필요하면 find_icon. validate_mockup 의 emoji-banned 룰로 자동 검출됨.",
-    "→ ← ✓ ★ • 같은 텍스트 기호 사용 금지 — 화살표/체크/별점/불릿을 문자로 표현하지 마세요. 아이콘은 find_icon, 진행/별점/리스트는 DS 컴포넌트(StatusTimeline/Rating/Dense list) 사용. validate_mockup 의 text-symbol-banned 룰로 자동 검출됨.",
+    "→ ← ✓ ★ • 같은 텍스트 기호 사용 금지 — 화살표/체크/별점/불릿을 문자로 표현하지 마세요. 아이콘은 find_icon, 진행/별점/리스트는 DS 컴포넌트(Timeline/Stepper/Rating/Dense list) 사용. validate_mockup 의 text-symbol-banned 룰로 자동 검출됨.",
     "Primitive spacing(--spacing-N) / 임의 px (5/7/9/11/13/15) 사용 금지 — 반드시 --semantic-gap-* / --semantic-inset-* semantic 토큰으로 표현",
     "Inset(내부 여백) 자리에 Gap 토큰 사용 금지 (또는 그 반대) — padding 자리에 --semantic-gap-*, gap 자리에 --semantic-inset-* 쓰지 않기",
     "Brand background 를 단순 시각 구분·decorative section·KPI 카드·summary 카드 배경으로 사용 금지 — 의미 전달 없는 색 배경은 위계를 망가뜨림",
@@ -4208,7 +4280,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "서브타이틀(h3/h4) 앞 장식 아이콘 · Form Label 앞 장식 아이콘 · 본문 텍스트 앞 decorative icon 금지 — 한 화면에서 일부 헤딩에만 아이콘을 붙이면 hierarchy 가 깨짐",
     "헤딩 앞 아이콘 5개 이상 사용 시 자동 위반 — 아이콘을 hierarchy 표현 수단으로 쓰지 마세요",
     "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 동일 depth 콘텐츠 전환 전용",
-    "Segment Tab(variant='square') 을 모바일 일반 화면에 사용 금지 — PC CMS · 주요 기능 전환에만 사용",
+    "세그먼트형 단일 값 선택은 Tabs variant='segment' 사용. line/chip 은 패널 전환 전용",
     "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 즉각적 판단/응답이 필요할 때만",
     "Modal 내부에 또 다른 강조(Card·Brand BG·Chip 그룹)를 쌓지 마세요 — 핵심 action 1 + 보조 action 1 구조가 기본",
     "Fill Badge 를 한 카드/Row 안에 2개 이상 두지 마세요 — 일반 카테고리는 ghost/line 우선, Fill 은 카드당 최대 1개",
@@ -4239,7 +4311,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "같은 depth(부모 컨테이너 안의 형제 요소들) 에 서로 다른 spacing 을 적용하지 마세요 — 형제는 같은 --semantic-gap-* 으로 통일",
     // ── Brand Icon ──
     "공통 컴포넌트(Footer/BottomNav/Header 등) 의 *구현* 안에 brand 분기 로직(`if (brand === 'geniet') return <GenietRecordIcon />`)을 넣지 마세요 — DS 컴포넌트는 brand-agnostic 으로 유지. 분기는 사용처(브랜드 전용 화면)에서 명시적 icon prop 으로 표현.",
-    "브랜드 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 brand prefix 아이콘이 있으면 그게 우선. get_brand({ brand: '<slug>' }).detail.brandIcons 로 매칭 확인.",
+    "브랜드 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 brand prefix 아이콘이 있으면 그게 우선. get_brand({ brand: '<slug>' }).detail.brandIconLookup 또는 find_icon({ query: '<BrandPrefix>' }) 로 매칭 확인.",
     "NudgeEAP 기본 아이콘이나 MockupLinear*/MockupBold* 아이콘을 확인하지 않고 인라인 SVG/직접 생성 아이콘으로 넘어가지 마세요 — 자체 생성은 마지막 수단.",
   ],
   bannedPatterns: [
@@ -4428,6 +4500,17 @@ export interface PatternGuide {
     caption?: string;
     brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile";
   }>;
+  /**
+   * 복붙용 ready-made 트리(예: 캐포비 사이드바 HTML/React/SHELL). `_` prefix 라 pickSections 가
+   * 모든 view(examples/rules/full)에서 항상 보존한다 — view:'examples' 가 rules 를 드롭해도
+   * 로고/계정/메뉴가 안 사라진다(손조립 회귀 차단). rules[] 에는 여기로의 포인터만 둔다(토큰 중복 방지).
+   */
+  _readyMade?: {
+    note?: string;
+    html?: string;
+    react?: string;
+    shellHtml?: string;
+  };
 }
 
 /** ruleGroups / avoidGroups 를 flat 배열로 펼친다. SSOT 인 flat rules/avoid 에 일관되게 채우기 위한 헬퍼. */
@@ -4447,7 +4530,7 @@ function flattenGroups(groups: Array<{ items: string[] }>): string[] {
  * **브랜드 모드(brand='geniet' / 'trost' 등) 작업 시:**
  *   - 같은 의미의 brand prefix 아이콘이 존재하면 **반드시 그쪽을 우선 사용**.
  *     (예: Geniet bottom nav → `GenietRecordIcon` (단일 그래픽 + color cascade), 공용 PushActiveIcon X)
- *   - 사용 가능한 brand 아이콘 목록은 `get_brand({ brand: '<slug>' }).detail.brandIcons` 로 조회.
+ *   - 사용 가능한 brand 아이콘은 `get_brand({ brand: '<slug>' }).detail.brandIconLookup` 또는 `find_icon({ query: '<BrandPrefix>' })` 로 조회.
  *   - 매칭이 없으면 공용 아이콘 fallback 으로 사용 (예: `LikeIcon` 은 Geniet 매칭 없음 → 공용 OK).
  *
  * **컴포넌트 구현(공통 DS) 에서는:**
@@ -4798,6 +4881,33 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       verticalAlign: "center",
     },
   },
+  consent: {
+    name: "consent",
+    summary:
+      "약관/개인정보 동의 화면 — 전체동의 + 필수/선택 + 약관 펼침. DS 는 전용 컴포넌트 대신 **Checkbox(indeterminate) 조립 패턴**으로 간다(MUI/Ant 가 indeterminate Checkbox 만 주고 동의 화면은 앱이 조립하는 것과 같은 층위). 한국 개인정보보호법 정합(능동 동의·pre-tick 금지·필수/선택 구분)이 핵심이라 패턴으로 박제한다.",
+    rules: [
+      "마스터 '전체 동의' 체크박스는 자식 선택 비율로 **파생** — 모두 체크=checked, 일부=indeterminate(옐로우 마이너스), 전무=unchecked. `<Checkbox indeterminate>`(HTML `<nds-checkbox indeterminate>`)를 그대로 쓴다. 색/아이콘을 직접 손계산하지 말 것.",
+      "전체동의 클릭 동작: '모두 체크면 전체 해제, 아니면(부분/전무) 전체 체크'. 전체동의는 **독립 상태를 갖지 않고 항상 자식에 의존** — 이 동기화가 동의 화면 #1 버그 지점이다.",
+      "**필수/선택 구분 필수** — 각 항목에 `[필수]`/`[선택]` 명시(필수=text statusError 톤, 선택=text subtle). 필수 미동의 시 다음 단계 진행 불가(가드는 호출부 책임).",
+      "**pre-tick(선택 항목 기본 체크) 금지** — 마케팅 수신 등 선택 항목을 미리 체크해두면 개인정보보호법상 능동 동의가 아니라 위법(행정처분 대상). 초기 value 는 빈 배열 또는 사용자가 과거 동의한 것만.",
+      "전체동의는 사용자가 직접 누른 능동 동의라 합법 — 단 누르면 선택까지 싹 체크되는 마찰을 줄이려면 '필수만 동의' 보조 동선 또는 필수/선택 전체동의 분리를 검토(토스식).",
+      "약관 전문은 detail 펼침(chevron 접기/펼치기)으로 — 기본 접힘, 필요 시 확장. 전문이 길면 '전문 보기' 외부 링크.",
+      "**`CheckboxGroup`(items + `selectAll`)으로 조립** — items 의 `badge`([필수]/[선택]) · `detail`(약관 전문 펼침) 슬롯 + 전체선택(자동 indeterminate)이 동의 화면을 그대로 커버한다. 개별 원자는 `<Checkbox>`. 별도 동의 전용 컴포넌트를 새로 만들지 말 것. component:CheckboxGroup.",
+    ],
+    avoid: [
+      "전체동의 상태를 자식과 독립으로 관리 — 체크 동기화가 깨진다(동의 화면 최다 버그).",
+      "선택 항목을 기본 체크(pre-tick) — 위법(개인정보보호법, 능동 동의 아님).",
+      "부분 선택을 그냥 빈 체크로 표시 — indeterminate(마이너스)로 시각화해야 '일부 동의'가 보인다.",
+      "필수/선택 구분 없이 '전체 동의'만 노출 — 사용자가 무엇에 동의하는지 불명확 + 법적 리스크.",
+      "계층(시/도 ▸ 시/군구) 다중 선택을 이 패턴으로 — 그건 component:CheckboxTree(부모 indeterminate 자동).",
+    ],
+    metrics: {
+      masterCheckbox: "Checkbox indeterminate (자식 비율로 파생)",
+      requiredEnforcement: "호출부 책임 (필수 미동의 → 진행 불가)",
+      preTick: "금지 (개인정보보호법)",
+      hierarchy: "1단계 (계층은 CheckboxTree)",
+    },
+  },
   "cta-group": {
     name: "cta-group",
     summary: "여러 CTA가 함께 있는 영역의 위계 / 아이콘 / 라벨 명료성 정책.",
@@ -4812,6 +4922,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "다이얼로그/모달의 왼쪽(보조) 버튼 라벨은 항상 **닫기**. '취소'는 사용자가 진행 중이던 작업이 취소된다고 오해할 수 있어 사용 금지. 자세한 라이팅 룰은 get_guide({ topic: 'ux-writing' }) 참고.",
       "거절 가능한 비파괴 옵션이 항상 1개 이상 있어야 한다. CTA가 '확인' 하나뿐인 다이얼로그는 다크패턴 — get_guide({ topic: 'pattern:dark-patterns' }) 참고.",
       "외부 링크는 화살표보다 Link/ExternalLink 성격의 아이콘을 검토.",
+      "모달/팝업 푸터의 액션 그룹은 별도 규칙 — 버튼 `shape=\"pill\"` + 배치는 `actionsLayout`(react=actionsLayout / html=actions-layout 속성; 생략 시 브랜드 기본 강제: 캐포비=end 우측 hug, 그 외=split 가로 분할). 일반 화면 cta-group 규칙을 모달 푸터에 그대로 적용(사각 shape·full-width)하지 말 것. 푸터 결정 트리는 get_guide({ topic: 'component:Modal' }) 참고.",
     ],
     avoid: [
       "모든 '자세히 보기' 버튼에 화살표 반복",
@@ -4821,6 +4932,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "다이얼로그 보조 버튼에 '취소' 사용",
       "거절·닫기 옵션 없이 '확인' 하나만 있는 다이얼로그",
       "한 뷰포트에 primary solid CTA 2개 이상",
+      "모달/팝업 푸터 버튼에 default 사각 shape 또는 full-width 남용 (확인 팝업은 우측 hug pill — Modal 가이드 SSOT)",
     ],
     metrics: {
       maxArrowIconButtonPerViewport: 1,
@@ -4856,6 +4968,48 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       maxPrimarySolidPerScreen: 1,
     },
   },
+  "multi-screen": {
+    name: "multi-screen",
+    summary:
+      "한 HTML 파일에 여러 화면을 '화면처럼' 보여주는 디바이스 프레임 + 탭 스위처 패턴. 회고: 스크린 높이를 내용에 맡겨(min-height 없음) 화면마다 제각각이고, 각 스크린이 자체 헤더/푸터도 없어 디바이스가 아니라 하나의 긴 페이지로 보였다. → .mockup-canvas 안에 .mockup-screen[data-device] 프레임을 나열하고, 각 스크린은 자체 헤더(+필요시 푸터) + device 최소높이로 자기완결시킨다. 화면이 2개 이상이면 런타임이 상단에 전환 탭을 자동 주입(기본 '탭' = 한 번에 한 화면, '전체' = 옆으로 나란히). 프레임 CSS/JS 는 build_singlefile_html 이 자동 inline — 클래스만 쓰면 된다(별도 <style>/스크립트 불필요).",
+    rules: [
+      "여러 화면 = `.mockup-canvas` > `.mockup-screen` N개. 프레임마다 `data-device='mobile|webview|web|tablet'` 로 디바이스 폭+최소높이를 정한다(mobile 390×844 / webview 390×720 / web 1440×900 / tablet 834×1112).",
+      "각 `.mockup-screen` 은 자기완결: 자체 `<nds-brand-header surface=…>`(+필요시 `<nds-brand-footer>`) + device 최소높이. 내용이 짧아도 device 높이를 유지해 '화면'처럼 보인다 — 높이를 내용에 맡기지 말 것.",
+      "화면 ≥2 → 런타임이 상단 전환 탭을 자동 생성(탭 라벨 = 각 스크린 `data-label`, 없으면 '화면 N'). 기본 모드 '탭'(한 번에 한 화면 — 미리보기 친화), 스위처의 '전체' 또는 `<div class=\"mockup-canvas\" data-mode=\"grid\">` 로 옆으로 나란히 비교.",
+      "브랜드 헤더는 프레임 안에서 `<nds-brand-header brand surface='web|mobile|webview'>` — surface 로 디바이스별 헤더(PC GNB / 모바일 컴팩트 / 웹뷰 뒤로가기)가 자동 분기. base `<nds-header>` 손수 조립 금지.",
+      "프레임/스위처(.mockup-canvas · .mockup-screen)는 목업 전용으로 빌드가 자동 inline — `<style>` 에 `.screen{width:…}` 나 미디어쿼리 토글을 직접 쓰지 말 것(클래스만 사용).",
+      "단일 화면 목업이면 `.mockup-screen` 하나(또는 캔버스 없이 `<main>` 하나)로 충분 — 탭은 화면이 2개 이상일 때만 자동 생성.",
+    ],
+    avoid: [
+      "스크린 높이를 내용에 맡겨(min-height 없이) 화면마다 높이가 제각각",
+      "각 스크린에 자체 헤더/푸터 없이 하나의 긴 페이지로 쌓기",
+      "@media 로 모바일/웹 헤더를 display 토글 (동시 비교 불가)",
+      "base <nds-header> + nds-header-logo/menu 손수 조립으로 브랜드 GNB 흉내",
+      "디바이스 프레임 너비/높이를 <style> 에 손으로 재정의 (.mockup-screen[data-device] 프리셋 사용)",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source:
+          '<div class="mockup-canvas">\n  <section class="mockup-screen" data-device="mobile" data-label="홈">\n    <nds-brand-header brand="runmile" surface="mobile"></nds-brand-header>\n    <main style="flex:1; padding: var(--semantic-inset-screen);">…</main>\n  </section>\n  <section class="mockup-screen" data-device="webview" data-label="상세">\n    <nds-brand-header brand="runmile" surface="webview"></nds-brand-header>\n    <main style="flex:1; padding: var(--semantic-inset-screen);">…</main>\n  </section>\n</div>\n<!-- 화면 2개 → 상단 전환 탭 자동(홈/상세). 기본 탭, \'전체\'로 나란히. -->',
+        caption:
+          "각 스크린이 자체 헤더 + device 최소높이로 자기완결. 화면 2개라 탭 스위처 자동 — 기본은 한 번에 한 화면(미리보기 친화), '전체'로 나란히 비교.",
+      },
+      {
+        verdict: "bad",
+        source:
+          '<main style="max-width:720px;margin:0 auto;">…홈…</main>\n<main style="max-width:720px;margin:0 auto;">…상세…</main>\n<style>@media(max-width:600px){.web-header{display:none}}</style>',
+        caption:
+          "max-width 컨테이너로 세로로 쌓고(높이는 내용에 맡김) 헤더는 미디어쿼리 토글 — 디바이스 프레임도 자기완결도 없음.",
+      },
+    ],
+    metrics: {
+      canvasClass: "mockup-canvas",
+      screenClass: "mockup-screen",
+      deviceFrames: "mobile 390×844 / webview 390×720 / web 1440×900 / tablet 834×1112",
+      defaultMode: "tabs (화면 ≥2 자동) · data-mode='grid' 로 나란히",
+    },
+  },
   "icon-color": {
     name: "icon-color",
     summary:
@@ -4864,7 +5018,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "아이콘 컴포넌트의 기본값은 currentColor다. 단독 배치 시 부모 color가 명시되어 있지 않으면 본문색/검정으로 보여 어색할 수 있다.",
       "Button, IconButton, Chip, Select 등 DS 컴포넌트 슬롯 안의 아이콘은 컴포넌트가 정한 텍스트 컬러를 상속하게 두는 것이 기본이다.",
       "안내/상태/빈 상태/카드 장식처럼 단독으로 배치한 아이콘은 `color` prop 또는 부모 `style.color`를 `var(--semantic-icon-*)` 토큰으로 명시한다.",
-      "용도별 토큰 매핑(Figma Color Usage 표):\n  · 본문 옆 강조 → `--semantic-icon-strong-default` (Neutral/800 · #383838)\n  · 보조 정보·메타 → `--semantic-icon-normal-default` (Neutral/600 · #666666)\n  · 비활성 → `--semantic-icon-disabled-default` (Neutral/300 · #C7C7C7)\n  · 어두운 배경 위 → `--semantic-icon-inverse-default` (White · #FFFFFF)\n  · 브랜드 강조 → `--semantic-icon-brand-default` (Bright Blue/500 · #2B96ED)",
+      "용도별 토큰 매핑(Figma Color Usage 표):\n  · 본문 옆 강조 → `--semantic-icon-strong-default`\n  · 보조 정보·메타 → `--semantic-icon-normal-default`\n  · 비활성 → `--semantic-icon-disabled-default`\n  · 어두운 배경 위 → `--semantic-icon-inverse-default`\n  · 브랜드 강조 → `--semantic-icon-brand-default`",
       "상태 의미가 있을 때만 status 토큰을 사용한다:\n  · 성공 → `--semantic-icon-status-success` (Teal/500 · #13BFA2)\n  · 오류 → `--semantic-icon-status-error` (Orange Red/500 · #F13F00)\n  · 주의 → `--semantic-icon-status-caution` (Golden Yellow/500 · #FFC303)",
       "TestresultSafe/Warning/Danger, Siren 같은 '컬러 아이콘'(다색 일러스트성)은 시맨틱 토큰을 덧씌우지 않는다. 그대로 사용한다.",
       "아이콘만 별도 강한 색으로 튀게 하지 않는다. 강조가 필요하면 텍스트, 배경, 아이콘 중 1-2개만 함께 조합한다.",
@@ -5080,12 +5234,13 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "목업 작성 전에는 프롬프트에 이미지, 스크린샷, Figma 링크, figmaNodeUrl 이 이미 있어도 항상 사용자에게 시각 레퍼런스 확인 질문을 한다.",
       "단, 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, references.md 의 첫 줄 `task:` 슬러그가 현재 task 와 일치하면 다시 묻지 말고 읽어서 적용한다. 이전 task 의 stale references.md (예: cashwalk-biz-form 작업물이 남은 상태에서 geniet-diary 시작) 는 없는 것으로 간주.",
       "references.md 첫 줄은 `task: <brand>-<screen-slug>` 형식 필수 (예: `task: geniet-diary-hub`). 이게 staleness 판정 기준.",
+      "새 목업 요청에서 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 `동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?` 라고 묻고 답변 전 기존 폴더를 수정하지 않는다. 억지로 찾지 말 것(깊은 재귀/전체 디스크/유사도 검색 금지).",
       "사용자 응답으로 기존 첨부/링크를 기준으로 진행해도 되는지, 추가 정답/오답 레퍼런스가 있는지 확인한다.",
       "권장 세트는 정답 1-2장 + 오답 1-2장. 각 레퍼런스는 '왜 맞는지/틀린지' 1줄 캡션을 붙인다.",
       "`source` 로 허용되는 것은 Figma URL (`figma.com/...`) 또는 이미지 파일 (`.png/.jpg/.jpeg/.webp/.gif/.svg`) 뿐. PRD/spec/요구사항 `.md` 는 source 가 아니다 (텍스트 문서는 spec 이지 visual reference 가 아님).",
       "레퍼런스를 받은 뒤에는 brandTone 문장보다 레퍼런스 캡션을 우선한다.",
       "구현 전 references.md 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적는다.",
-      "완료 보고에는 어떤 reference cue 를 실제 화면에 반영했는지 2-4개로 요약한다.",
+      "완료 보고에는 어떤 reference cue 를 실제 화면에 반영했는지 2-4개로 요약하고, 최종 산출물의 full 절대경로를 반드시 포함한다.",
     ],
     avoid: [
       "레퍼런스 없이 '차분한/전문적인/친근한' 같은 형용사만 보고 화면 생성",
@@ -5097,6 +5252,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "[decisive-tone-bypass] 사용자 어조 ('바로 만들어줘' / 'PRD 지켜서') 가 단호하다고 게이트 skip — 어조는 우회 사유가 아님",
       "[soft-prompt-misread] 가이드의 'soft prompt' 표현을 'optional 권고' 로 약화 해석 — 이 게이트는 REQUIRED",
       "[checklist-omission] 메모리/체크리스트의 후반 단계만 따라가다 이 게이트를 'principles 응답에 끼어있는 부차 advisory' 로 격하",
+      "[same-folder-overwrite] 같은 기획으로 보이는 기존 작업폴더가 명백히 보였는데도 v2 생성 여부를 묻지 않고 기존 폴더를 수정",
+      "[relative-path-only] 완료 응답을 `dist/index.html` 같은 상대경로만으로 끝냄 — full 절대경로 필수",
     ],
     referenceInputs: {
       accepted: [
@@ -5137,7 +5294,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   notice: {
     name: "notice",
     summary:
-      "안내문/콜아웃/인라인 알림 박스의 강조 예산 + variant·size·구성 규칙. 컨텐츠 영역에 인라인으로 놓여 명시적으로 닫을 때까지 유지되는 메시지(정보·공지·주의·완료·오류). 페이지 상단 전역 띠는 Banner, 자동 사라지는 피드백은 Toast/Snackbar, 즉각 판단 요구는 Modal, EAP 위기 안내는 CrisisCallout — 인라인 지속 메시지만 이 패턴.",
+      "안내문/콜아웃/인라인 알림 박스의 강조 예산 + variant·size·구성 규칙. 컨텐츠 영역에 인라인으로 놓여 명시적으로 닫을 때까지 유지되는 메시지(정보·공지·주의·완료·오류). 페이지 상단 전역 띠는 Banner, 자동 사라지는 피드백은 Toast/Snackbar, 즉각 판단 요구는 Modal — 인라인 지속 메시지만 이 패턴. **구현체 = NoticeAlert 컴포넌트** (`<NoticeAlert>` / `<nds-notice-alert>`, get_guide({ topic:'component:NoticeAlert' })).",
     rules: [
       "안내문은 기본적으로 neutral surface와 본문 텍스트로 처리.",
       "주의/성공/오류처럼 의미가 명확한 경우에만 semantic color 사용.",
@@ -5260,7 +5417,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     summary:
       "Surface / Background 의 4단계 레이어 정의와 Brand background 사용 원칙. Brand background 는 시각 장식이 아니라 '의미 전달'(주의·안내·강조) 목적으로만 사용한다. notice 패턴과 짝.",
     rules: [
-      "Layer 정의 (낮은 → 높은 위계):\n  · L0 기본 surface → `--semantic-bg-surface-default` (#FFFFFF) — 기본 카드/박스 (Card, Info Box)\n  · L1 페이지 배경 → `--semantic-bg-page-default` (≈#F8F9FB) — body, 페이지 전체 배경\n  · L2 Subtle BG → `--semantic-bg-surface-subtle` / `--semantic-bg-section-default` — 비활성 영역, 표 헤더, 섹션 분리\n  · L3 Notice (의미 전달) → `--semantic-bg-brand-subtle` 또는 `--semantic-bg-status-*` — CrisisCallout, 핵심 Notice, 상태성 안내",
+      "Layer 정의 (낮은 → 높은 위계):\n  · L0 기본 surface → `--semantic-bg-surface-default` (#FFFFFF) — 기본 카드/박스 (Card, Info Box)\n  · L1 페이지 배경 → `--semantic-bg-page-default` (≈#F8F9FB) — body, 페이지 전체 배경\n  · L2 Subtle BG → `--semantic-bg-surface-subtle` / `--semantic-bg-section-default` — 비활성 영역, 표 헤더, 섹션 분리\n  · L3 Notice (의미 전달) → `--semantic-bg-brand-subtle` 또는 `--semantic-bg-status-*` — 핵심 Notice, 상태성 안내",
       "Brand background (`--semantic-bg-brand-*`) 는 다음 모두를 만족할 때만 사용:\n  1) 사용자에게 주의 / 안내 / 하이라이트 의미 전달이 필요한가?\n  2) 현재 화면에 이미 사용 중인 brand background 가 없는가?\n  3) 단순 decoration 목적이 아닌가?\n  → 셋 모두 YES 일 때만. 하나라도 NO 면 `--semantic-bg-surface-default` 로 처리.",
       "한 화면당 brand background 최대 1개. 같은 영역에 brand bg + brand chip + brand icon 을 동시에 쌓지 않는다 (tone-on-tone).",
       "상태 의미가 명확할 때만 status 배경(`--semantic-bg-status-error|success|caution|info`) 사용. 일반 안내문은 neutral 우선.",
@@ -5287,6 +5444,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     summary:
       "아이콘은 장식이 아니라 행동 / 상태 / affordance 전달 목적에만 사용한다. 어디에 써도 되고 어디에 쓰면 안 되는지를 정의하는 화이트리스트 / 블랙리스트. 아이콘 컬러는 get_guide({ topic: 'pattern:icon-color' }), 사이즈/스타일은 get_guide({ topic: 'pattern:iconography' }) 참고.",
     rules: [
+      "**flex 행 안 인라인 아이콘은 `flex-shrink:0` + 고정 width/height 필수** — 텍스트 옆(상태 뱃지 옆 [i], 칩 안, 라벨 옆)에 둔 SVG 는 flex 자식이라 공간이 부족하면 가로폭이 0 까지 눌려 세로로 찌그러진다(회귀: '반려' 뱃지 옆 [i] 아이콘이 1px 너비로 찌그러짐). DS 입력/체크박스는 아이콘 슬롯에 이미 flex-shrink:0 을 주지만(Input prefix/suffix·Checkbox indicator), 손수 넣은 SVG 는 작성자가 `flex-shrink:0; width:16px; height:16px` 를 직접 줘야 한다. find_icon 산출 SVG 도 컨테이너가 flex 면 동일.",
       "**필수 선택 순서**: 브랜드 전용 아이콘 → NudgeEAP 기본 아이콘 → MockupLinear*/MockupBold* 목업 기본 아이콘 → 자체 생성 SVG. find_icon 으로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 이동.",
       "허용 위치 (화이트리스트):\n  · AppBar / Header 기능 버튼 (검색 · 알림 · 뒤로가기 · 메뉴)\n  · Bottom Tab Navigation\n  · IconButton\n  · 동일 위계의 카테고리 그룹 (Concern Grid · Category Grid)\n  · 상태 아이콘 (Success · Warning · Error)\n  · Form Field affordance (검색 · 캘린더 · 드롭다운 토글)",
       "동일 위계의 텍스트는 아이콘 사용 여부가 일관되어야 한다 — 같은 GNB / 같은 카드 리스트 / 같은 헤딩 그룹 안에서 일부에만 아이콘이 붙으면 hierarchy 가 깨진다.",
@@ -5378,34 +5536,39 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-form-layout": {
     name: "cashwalk-biz-form-layout",
     summary:
-      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → 페이지 끝 inline 센터 [취소][저장] 알약(rounded-28) cluster' 표준. " +
+      "캐시워크 포 비즈니스 admin 폼 페이지 레이아웃 — 'PageTitle 32 Bold (+부제) → 섹션 헤딩 24 Bold (카드 밖) → 카드(48×36 padding · radius 16) → 라벨-인라인-좌측 (172px 컬럼) 필드 → **콘텐츠 하단 우측 정렬 [취소][저장] 인라인 액션**(별도 흰 배경 바·sticky 고정 없음)' 표준. " +
       "Figma 290:1197 (퀴즈 등록하기) 실측. 필드 단위 컴포넌트 정책은 pattern:cashwalk-biz-input, CTA 정책은 pattern:cashwalk-biz-button 과 함께 본다.",
     rules: [
       "**페이지 컨테이너**: 사이드바(좌 300px) 우측 본문. 페이지 bg `#FAFAFA`, 콘텐츠 컬럼 폭 1491px (실측), 좌측 padding 32px.",
-      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838. 타이틀 아래 76px 후 **1px hairline divider #D8D8D8** 풀폭. 우측에는 액션 두지 말 것.",
+      "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838 **+ (있으면) 바로 아래 부제** Pretendard Regular 16/24 #666. **레퍼런스에 부제가 있으면 반드시 유지 — title-only 로 축소 금지.** **타이틀/부제 아래에 divider(밑줄·border-bottom·hr) 를 넣지 말 것** — 헤더는 라인 없이 여백만 두고 다음 섹션으로 바로 이어진다. 타이틀/부제 아래 ~76px 여백 후 섹션 헤딩 시작. **페이지 배경 위에 얹는다 — 별도 박스/sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 우측에는 액션 두지 말 것(액션은 콘텐츠 하단 우측 정렬 [취소][저장]).",
       "**섹션 헤딩 (카드 위 분리 노출)**: 헤딩(예: '기본 정보') 은 카드 **밖** 위에 위치 — Pretendard **Bold 24 / lh 30** #383838. 헤딩 아래 ~54px 후 카드 시작.",
       "**섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.",
-      "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**, 필드 우측 ~684px (long) 또는 ~228px (date/short). 라벨은 row 중앙 정렬.",
+      "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**. 입력 필드 가로 너비는 **Field Width 6단계 스케일**(xs 120 / sm 200 / **md 304 default** / lg 400 / xl 488 / full 100%)에서 **px 고정**으로 선택 — 폼 일반 입력 = **Medium 304px**, 같은 행 input 은 같은 사이즈로 통일, Textarea 는 Full(100%). (임의 너비 ~684/228 류·hug·% 금지 — 스케일·use case 는 `pattern:cashwalk-biz-input` 의 Field Width 가 SSOT.) 라벨은 row 중앙 정렬.",
       "**라벨 타이포**: Pretendard **Medium 16 / lh 24, #666** (text.subtle). 'strong' 색을 쓰지 않는다 — 빽빽한 폼에서 라벨은 subtle 로 둬도 위계가 명확.",
-      "**필드 컴포넌트**: 높이 **48px**, `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border 는 `pattern:cashwalk-biz-input` 참조.",
+      '**필드 컴포넌트**: 높이 **40px** (`nds-input`/`nds-select` 동일 높이로 정렬 — nds-input 은 size 미지정(default)이면 브랜드 :root 40 으로 cascade 되고 `size="compact"` 도 40. **48 로 두면 nds-select(40) 와 높이가 어긋남**), `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border·정확한 radius 는 `pattern:cashwalk-biz-input` 참조.',
       "**행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.",
       "**Helper text**: Pretendard Regular **14 / lh 20, #666**. 글자 수 카운터(`0/30`) 는 14 Medium #999 우측 정렬.",
       "**필수 마커**: 라벨 옆 ` *` color **`#FC3500`** (Coral Red-Orange). 'optional' 표기 X.",
-      "**액션바**: NOT sticky. 페이지 끝 inline + **센터 정렬 cluster** — [취소] + [저장], 각 **w-160 h-56 rounded-28 (알약)**. Cancel: white + 1px #D8D8D8 + #666. Primary: bg `#FFD200` + 검정 텍스트. Disabled: bg `#D8D8D8` + 흰 텍스트.",
+      "**액션바 = 콘텐츠 하단 우측 정렬 [취소][저장] 인라인 액션**: 폼 콘텐츠 맨 끝에 **페이지 배경 위로 우측 정렬** 배치 — **별도 흰 배경 바(`--semantic-bg-surface-default`)·풀폭 상단 border·sticky/fixed 고정을 두지 않는다.** 저장=primary solid, 취소=outlined — CTA shape/색 실측은 `pattern:cashwalk-biz-button` (BottomCTA) 가 SSOT. Disabled: `#D8D8D8` neutral.",
       "**액션 위계**: primary solid CTA 1개. 파괴(삭제) 액션은 별도 위치(헤더 우측 또는 카드 우측 상단) 분리.",
       "**선택 chip / 활성 토큰**: `bg #FFFAE2 + border #FFD200` (옅은 노란 + 노란 보더) + Bold #111. 강조 숫자/카운트는 `#FD9B02` (amber).",
+      "**타겟팅 지역 선택(캐포비 한정 SSOT)**: 폼 페이지에는 `SelectedItemsPanel` 로 현재 선택 지역을 보여주고, 첫 선택/추가 선택 클릭 시에만 대형 선택 모달을 연다. 모달 본문은 좌측 `CheckboxTree`(검색 + 전체선택 + 시/도▸시/군/구) + 우측 `SelectedItemsPanel hide-add`(선택 해제 + 제거 가능한 SelectedItemRow) 조합, 푸터는 본문 풀폭 옐로우 `적용` CTA. **모달 안 우측 패널에는 '추가 선택' 버튼을 절대 두지 않는다**(HTML `hide-add`, React `onAdd` 미전달) — 모달 안에 입력 버튼이 2개처럼 보이는 회귀 방지.",
+      "**타겟팅 성별 선택(캐포비 한정 SSOT)**: 성별 필드는 `SelectionButtonGroup` 으로 `전체 / 특정 성별` 을 먼저 고르고, `특정 성별` 상태에서만 selection chip 묶음(`<nds-chip selected interactive>남성</nds-chip>`, `<nds-chip selected interactive>여성</nds-chip>`, 필요 시 `알 수 없음`)을 노출한다. Select / RadioGroup / CheckboxGroup 로 대체하지 말 것 — 캐포비 타겟팅 폼에서는 입력 종류가 흔들리면 목업 품질이 가장 크게 흔들린다.",
       "**우측 보조 사이드 카드 (선택)**: 메인 필드 우측에 요약 카드 (border #ECECEC rounded-16 padding 25×32 w-406) — 미리보기/도움말.",
       "**유효성 검사**: 입력 중 에러 표시 X (onBlur/submit). 글자 수 카운터만 실시간.",
     ],
     avoid: [
+      "**타이틀 아래에 라인(divider·border-bottom·hr·밑줄) 추가 — 금지.** 캐시워크 포 비즈니스 폼 헤더는 라인 없이 여백만으로 분리한다. PageHeader 컴포넌트면 `bordered` 를 켜지 말 것.",
       "라벨을 필드 위에 배치 (label-above 2단 흐름) — 캐시워크 포 비즈니스 admin 은 인라인-좌측 (172px 라벨 컬럼) 패턴.",
-      "페이지 헤더 우측에 [저장] 버튼 — 하단 센터 액션바와 중복.",
+      "페이지 헤더 우측에 [저장] 버튼 — 하단 [취소][저장] 액션과 중복.",
       "필수 마커 색을 `#FF4141` 으로 — 캐시워크 포 비즈니스 폼은 `#FC3500` (Coral Red-Orange).",
       "Disabled CTA 를 Yellow/100 (#FFFAE5) 로 — 폼 액션바 disabled 는 `#D8D8D8` neutral gray.",
-      "액션바를 우측 정렬 또는 sticky bottom — 캐시워크 포 비즈니스 폼은 페이지 끝 inline 센터.",
+      "하단 액션을 **센터** 정렬하거나 알약 cluster 로 묶기 — 하단 [취소][저장] 은 **콘텐츠 끝 우측 정렬**이 표준(별도 흰 배경 바·sticky 고정 없이 페이지 배경 위).",
       "CTA 모양을 8px rounded 사각형 — Figma 는 56h rounded-28 알약 (pill).",
       "필드 border-radius 를 8px 로 — Figma 는 10px.",
       "필수 라벨을 brand yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.",
+      "캐포비 타겟팅 지역 선택을 Chip 인라인 나열/평면 CheckboxGroup/작은 팝오버로 구현 — 폼 페이지 `SelectedItemsPanel` + 대형 선택 모달(`CheckboxTree` + `SelectedItemsPanel hide-add`)이 SSOT.",
+      "캐포비 타겟팅 성별 선택을 Select/RadioGroup/CheckboxGroup 로 구현 — `SelectionButtonGroup` + selected Chip 묶음이 SSOT.",
       "한 폼 안에 카드 간격 일정한 24px — Figma 는 의미 단위 64-80px 가변.",
     ],
     examples: [
@@ -5413,19 +5576,21 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         verdict: "good",
         source: "Figma 290:1197 캐시워크 포 비즈니스 admin form (퀴즈 등록하기)",
         caption:
-          "PageTitle 32 Bold → 1px divider → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-48 rounded-10 → 페이지 끝 [취소][저장] 알약 cluster 센터.",
+          "PageTitle 32 Bold (+부제, 아래 divider 없음) → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-40 rounded-10 → 콘텐츠 하단 우측 정렬 [취소][저장](별도 흰 바·고정 없음).",
       },
       {
         verdict: "bad",
         source: "잘못된 admin form 레이아웃",
         caption:
-          "라벨-위 흐름 + 우측 정렬 sticky 액션바 + rounded-8 사각 CTA + #FF4141 필수마커 — 모두 캐시워크 포 비즈니스 admin 컨벤션 위반.",
+          "라벨-위 흐름 + 헤더를 박스 sticky topbar 로 감쌈 + 부제 삭제 + #FF4141 필수마커 — 모두 캐시워크 포 비즈니스 admin form 컨벤션 위반.",
       },
     ],
     metrics: {
       pageBg: "#FAFAFA",
       pageTitle: "Pretendard Bold 32/60 #383838",
-      titleToDivider: "76px (then 1px hairline #D8D8D8)",
+      pageSubtitle: "Pretendard Regular 16/24 #666 (레퍼런스에 있으면 유지 — title-only 축소 금지)",
+      pageHeaderContainer: "페이지 배경 위 (박스/sticky nds-shell__topbar 아님)",
+      titleDivider: "없음 — 타이틀/부제 아래 divider·border·hr 금지 (여백 ~76px 만)",
       sectionHeading: "Pretendard Bold 24/30 #383838 (카드 밖 위)",
       sectionHeadingToCardGap: "~54px",
       cardPadding: "48px × 36px (px × py)",
@@ -5434,22 +5599,30 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       cardShadow: "0 10px 20px rgba(102,102,102,0.05)",
       interCardGap: "~64–80px (의미 단위 가변)",
       labelColumnWidth: "172px",
+      fieldWidth:
+        "Field Width 6단계 px 고정 — xs120/sm200/md304(default)/lg400/xl488/full100%. 폼 일반 입력 Medium 304, Textarea Full. 스케일 SSOT=pattern:cashwalk-biz-input.",
       labelTypography: "Pretendard Medium 16/24 #666",
       requiredMarker: "라벨 옆 ' *' #FC3500",
-      fieldHeight: "48px",
+      fieldHeight:
+        "40px (nds-input/nds-select 동일 — input default 는 brand :root 로 cascade, 48 로 두면 select 와 어긋남)",
       fieldRadius: "10px",
       fieldBorder: "1px #D8D8D8",
       fieldBg: "white",
       placeholderColor: "#999",
       helperTypography: "Pretendard Regular 14/20 #666 (counter #999)",
-      actionBarPosition: "inline at page-end (NOT sticky)",
-      actionBarAlignment: "center cluster",
-      ctaSize: "w-160 h-56 rounded-28 (pill)",
+      actionBarPosition:
+        "콘텐츠 하단 인라인 액션 (별도 흰 배경 바·sticky/fixed 고정·풀폭 상단 border 없음 · 페이지 배경 위)",
+      actionBarAlignment: "right",
+      ctaSize: "cashwalk-biz-button BottomCTA 참조 (저장=primary solid, 취소=outlined)",
       ctaPrimary: "bg #FFD200 + 검정",
       ctaCancel: "white + 1px #D8D8D8 + #666",
       ctaDisabled: "bg #D8D8D8 + 흰 텍스트",
       maxPrimarySolidPerScreen: 1,
       validationTiming: "onBlur or submit",
+      targetingRegion:
+        "페이지 SelectedItemsPanel → 첫 선택/추가 선택 클릭 시 selection modal(CheckboxTree + SelectedItemsPanel hide-add + full-width yellow 적용)",
+      targetingGender:
+        "SelectionButtonGroup(전체/특정 성별) + selected Chip(남성/여성/알 수 없음). Select/Radio/CheckboxGroup/Segmented 금지.",
       relatedPatterns: "cashwalk-biz-input, cashwalk-biz-button, cta-group",
     },
     figmaNodeUrl:
@@ -5571,10 +5744,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**심리검사 캐러셀**: h-280, 카드 rounded-16 gap 24. 표준 **240w bg #FAFAFA**, featured **440w bg #FFF7E6 + 'GO' 원형 pill (#FFA411)**. 양 끝 chevron 버튼 68×68 원형 border #D8D8D8. 좌우 white gradient fade.",
       "**주간레터 그리드**: 3 × 385w 카드, 썸네일 **250h rounded-8 bg #EBEBEB** + 타이틀 20/28 Medium. gap 24.",
       "**공지 list (회사소식)**: border `#ECECEC rounded-8` 카드, `pt-24 pb-16 px-24`. 52px 행, divider #EEE. 배지 공지 `#DFF1FF / #007EE4`, 이벤트 `#FCE3EC / #ED2E77` rounded-13 Bold 14.",
-      "**보조 배너 띠**: 1200×110-120 풀폭. brown `#67544D` + white pill (생활상담), blue `#2B96ED` + white pill (앱 다운로드).",
+      "**보조 배너 띠**: 1200×110-120 풀폭. brown `#67544D` + white pill (생활상담), `var(--semantic-bg-brand-default)` + white pill (앱 다운로드).",
       "**채널톡 FAB**: 우측 하단 56×56 원형. desktop 이므로 BottomNav 없음.",
       "**Footer**: 1920×198 bg `#F5F5F5`. 주소/사업자번호/연락처 14/20 Regular #383838 + ISO 27001 로고 우측.",
-      "**컬러 토큰**: page bg #fff, section bg #FAFAFA, primary card #F1F8FD, featured #FFF7E6, thumb #EBEBEB, brand #2B96ED, magenta #ED2E77 (이벤트 한정).",
+      "**컬러 토큰**: page bg #fff, section bg #FAFAFA, primary card `var(--semantic-bg-brand-subtle)`, featured #FFF7E6, thumb #EBEBEB, brand `var(--semantic-bg-brand-default)`, magenta #ED2E77 (이벤트 한정).",
       "**B2B 화이트라벨**: 좌측 상단 로고가 고객사 (e.g. 아모레퍼시픽). NudgeEAP 자체 브랜딩은 footer 에만.",
     ],
     avoid: [
@@ -5585,7 +5758,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "3-카드 빠른 액션을 4개 이상으로 — 3개가 위계 한계.",
       "심리검사 캐러셀 카드 색 다양화 — 표준 #FAFAFA + featured #FFF7E6 두 톤만.",
       "Banner strip 을 페이지 상단 추가 — hero 1개 + 중간 strip 1-2개가 한계.",
-      "한 페이지에 primary `#2B96ED` solid CTA 2개 이상.",
+      "한 페이지에 primary `var(--semantic-bg-brand-default)` solid CTA 2개 이상.",
     ],
     examples: [
       {
@@ -5611,10 +5784,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       noticeBadgeNotice: "#DFF1FF / #007EE4 rounded-13 Bold 14",
       noticeBadgeEvent: "#FCE3EC / #ED2E77",
       bannerBrown: "#67544D + white pill CTA",
-      bannerBlue: "#2B96ED + white pill CTA",
+      bannerBlue: "var(--semantic-bg-brand-default) + white pill CTA",
       fabSize: "56×56 채널톡",
       footerHeight: "1920×198 bg #F5F5F5",
-      brandPrimary: "#2B96ED",
+      brandPrimary: "var(--semantic-bg-brand-default)",
       magentaAccent: "#ED2E77 (이벤트 한정)",
       maxPrimarySolidPerScreen: 1,
       whitelabel: "true (고객사 로고/명 + CMS 스트립 인사말)",
@@ -5705,30 +5878,128 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       },
     ],
   },
+  "selection-controls": {
+    name: "selection-controls",
+    summary:
+      "선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tabs(variant=segment) / Dropdown 중 하나로 매핑한다.",
+    rules: [
+      "① 다중 선택 + 짧은 라벨(연령대·시군구·태그·관심사) → SelectChip (`<nds-chip selected interactive>`, 캐포비=노란 채움/검정 텍스트).",
+      "② 단일 선택 + 설명 없는 짧은 옵션 2~3개(OS 전체/Android/iOS·성별·노출 구분) → SelectionButtonGroup.",
+      "③ 단일 선택 + 설명/아이콘 있는 카드(캠페인 목표·유형·소진 방식) → SelectionCard(mode=single) — 라디오 도트 내장, 커스텀 카드 금지.",
+      "④ 목록 상태 필터(전체/송출중/정지) → Tabs variant='segment' 또는 캐포비 Box Tab(pattern:cashwalk-biz-tab).",
+      "⑤ 단일 선택 옵션 4개 초과 → Dropdown.",
+    ],
+    avoid: [
+      "같은 용도(예: 연령=다중·짧은 라벨, 지역 시군구=다중·짧은 라벨)인데 화면마다 다른 컴포넌트로 만들기 — 둘 다 SelectChip 으로 통일.",
+    ],
+  },
 
   "cashwalk-biz-input": {
     name: "cashwalk-biz-input",
     summary:
-      "캐시워크 포 비즈니스 admin 의 Input/Form 컴포넌트 카탈로그. 8 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
+      "캐시워크 포 비즈니스 admin 의 Input/Form 컴포넌트 카탈로그. 11 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
     rules: [
-      "TextInput (5 states), TextField (Label+Input+Helper, 5 states), Dropdown (Default/Hover/Active/Error/Disabled), DateInput (5 states), Textarea (5 states), Checkbox (4 variants), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션).",
+      "TextInput (5 states), TextField (Label+Input+Helper, 5 states), Dropdown (Default/Hover/Active/Error/Disabled + Expanded 메뉴), DateInput (5 states), Textarea (5 states), Checkbox (4 variants), SelectionButton/SelectionButtonGroup (선택 버튼 · FormField 교체), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션), SelectedItemsPanel (선택 항목 슬롯 패널 + SelectedItemRow).",
       "Input/Border/Focus 는 ★ Neutral/900 (#111111) 검정 — 다른 브랜드(brand 색 focus) 와 달리 캐시워크 포 비즈니스 admin 은 검정 outline.",
       "Input/BG/Disabled = Neutral/50 (#FAFAFA), Input/Border/Default = Neutral/200 (#EEEEEE).",
+      "Input·Dropdown·DateInput 의 입력 텍스트는 Body2 14/20 (base DS 의 Select/DateInput 13/18 보다 큼 — 캐시워크 포 비즈니스 전용).",
+      "Dropdown 선택(Selected) 항목은 ★ 회색 배경(Section #F5F5F5) + Strong 텍스트 + Medium 500 + 우측 체크 — 다른 브랜드의 brand-tint 선택과 다름. 메뉴 항목 radius 6 / inset 패딩.",
       "Checkbox 의 'on-green' SVG 가 별도 — success 표시(이미 처리 완료) 의미. 일반 checked 와 구분.",
       "ImageUpload 는 캐시워크 포 비즈니스 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.",
       "Input focus 는 brand 색(노랑) 이 아니라 검정 outline. 가이드 명시.",
-      "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline.",
+      "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline. radius 6 / bg #ECECEC.",
+      "SelectedItemsPanel 헤더 = 선택 해제(기본) + 추가 선택(옵션 onAdd) — **피커 모달 안에서는 추가 선택 빼고 선택 해제만**(HTML `hide-add` / React onAdd 미전달). 추가 선택은 모달 밖에서만, secondary Button + plus 아이콘. count 는 text.brand 강조. 본문은 SelectedItemRow 리스트 등으로 swap.",
+      "**Field Width — 입력 필드 가로 너비 6단계 스케일** (TextInput·Dropdown·DateInput·Selection 등 모든 입력 공통, 컨테이너 안에서는 **항상 px 고정값**): XSmall **120px**(field-width-xs · 코드·짧은 ID·숫자, 예 사업자번호 토큰) · Small **200px**(field-width-sm · 단일 키워드 검색·Filter Dropdown·페이지네이션 옆 셀렉트) · **Medium 304px(field-width-md, default — 폼 내부 일반 입력 이메일·이름·계정명, 가장 흔함)** · Large **400px**(field-width-lg · 모달 내부 메인 입력·단독 검색바) · XLarge **488px**(field-width-xl · 와이드 페이지 필터·상세 폼 강조) · Full **100%**(field-width-full · Textarea·반응형 폼). 같은 행에 여러 input 이면 같은 사이즈로 통일. 관측 정규화: Dropdown 105/164/222 → Small(200)·Medium(304), 모달 명/번호 input ~396 → Large(400), '100개씩 보기' 152 → Small(200). Figma InputGuide Field Width(3897-1578).",
     ],
     avoid: [
       "Input focus 를 노란색으로 바꾸지 말 것 — 가이드 위반.",
       "ImageUpload Error 상태에서 박스 자체를 빨갛게 칠하지 말 것 — border + helper text 로만 표현.",
+      "입력 필드 너비를 미지정(%/auto/fit-content/hug)으로 두거나 임의값(281·317·396 등)으로 — **Field Width 6단계(120/200/304/400/488/100%) 중 px 고정**으로. (반응형 컨테이너의 Full 100% 만 예외.) XSmall 120 미만·내용물에 맞춘 hug(placeholder 가림) 금지.",
     ],
     metrics: {
       components:
-        "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · ImageUpload · ActionChip",
+        "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · SelectionButton · SelectionButtonGroup · ImageUpload · ActionChip · SelectedItemsPanel",
       defaultStates: "default / typing / error / disabled / complete",
       focusBorder: "#111111 (Neutral/900, 검정)",
-      relatedPatterns: "cashwalk-biz-button, dropdown",
+      fieldWidth:
+        "6단계 px 고정 — xs 120(field-width-xs) / sm 200(field-width-sm) / md 304(field-width-md, default) / lg 400(field-width-lg) / xl 488(field-width-xl) / full 100%(field-width-full). 폼 일반=Medium 304, 모달 메인=Large 400, Textarea=Full.",
+      relatedPatterns: "cashwalk-biz-button, dropdown, cashwalk-biz-form-layout",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3897-1578",
+  },
+
+  "cashwalk-biz-tab": {
+    name: "cashwalk-biz-tab",
+    summary:
+      '캐시워크 포 비즈니스 admin 의 Tab 카탈로그 — Underline(line) + Box(chip) 2 변형. DS `Tabs` 컴포넌트로 구현, 브랜드 색·치수는 data-brand="cashwalk-biz" 시 자동 cascade.',
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3544-206",
+    rules: [
+      '**Underline(line)** = 페이지 메인 카테고리·목록 필터·단계 전환. 마크업: `<nds-tabs variant="line" size="pc" tone="neutral">`. 텍스트 Subtitle1 16/24, Selected=Strong(#111) Bold + 하단 2px 검정 인디케이터, Default=Subtle(#666) Medium.',
+      '**Box(chip)** = 상태/좁은 영역 필터(진행중·진행예정·종료 등). 마크업: `<nds-tabs variant="chip" size="pc" tone="neutral">`. radius 10, Selected=#111(bg-inverse) bg + 흰 텍스트 Bold, Default=#DDD(button-bg-disabled) bg + 흰 텍스트 Bold (의도된 저대비 — 가이드 명시).',
+      '치수·색은 모두 캐포비 브랜드 토큰(`--nds-tabs-*`)으로 cascade — 별도 style 오버라이드 금지. `data-brand="cashwalk-biz"` 만 루트에 있으면 자동 적용된다.',
+      "동적 상태(진행/종료)는 Box, 페이지 카테고리는 Underline — 혼용 주의. 단계형 진행 표시는 Tab 이 아니라 `pattern:cashwalk-biz-step-progress`.",
+    ],
+    avoid: [
+      "Box Default 텍스트를 회색으로 바꾸지 말 것 — 캐포비 가이드는 #DDD 위 흰 텍스트(저대비)가 의도된 스펙.",
+      "Underline 인디케이터를 3px(base) 로 두지 말 것 — 캐포비는 2px. 단, 브랜드 cascade 가 처리하므로 직접 px 박지 말 것.",
+      "Tab 으로 다단계 폼 진행도(Step)를 표현하지 말 것 — Stepper variant=bar 사용.",
+    ],
+    metrics: {
+      variants: "line(Underline) · chip(Box)",
+      font: "Subtitle1 16/24",
+      lineIndicator: "2px",
+      boxRadius: 10,
+      relatedPatterns:
+        "cashwalk-biz-step-progress, cashwalk-biz-badge-chip, cashwalk-biz-page-patterns",
+    },
+  },
+
+  "cashwalk-biz-badge-chip": {
+    name: "cashwalk-biz-badge-chip",
+    summary:
+      "캐시워크 포 비즈니스 admin 의 Label & Chip 카탈로그 — Badge(Rounded Square / Pill) + SelectChip + ActionChip. 톤은 semantic 색으로 cascade.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20558",
+    rules: [
+      '**Badge — Rounded Square (radius 5)** = 거래/처리 동적 상태·카테고리(충전·사용·적립·만료·취소…). 데이터 테이블·리스트 셀에서 가장 빈번. 마크업: `<nds-badge variant="ghost" color="...">충전</nds-badge>`. 톤=의미별 semantic 색: 충전/강조=brand, 사용/안내=info, 적립/완료=success, 만료/중립=neutral, 취소/실패=error.',
+      '**Badge — Pill (radius full)** = 계정 유형·식별 정적 태그(일반 계정·프리미엄·신규…). 헤더/타이틀 옆 식별 표식. 마크업: `<nds-badge variant="ghost" color="..." style="--nds-badge-radius:999px">프리미엄</nds-badge>`. 동적 상태값에는 Pill 쓰지 말 것(Rounded Square 사용).',
+      'Badge 치수(radius 5 · padding 4/10 · Caption 12/16 · Medium 500)는 캐포비 브랜드 토큰(`--nds-badge-*`)으로 cascade. `variant="ghost"` + semantic `color` 만 지정하면 연한 bg + 컬러 텍스트(soft 톤)가 자동 적용된다.',
+      '**SelectChip** = 선택형 칩(다중 선택 그룹, 예: 연령대 선택). DS `Chip` 의 `selected` 상태로 구현 — HTML: `<nds-chip selected>30대</nds-chip>` / `<nds-chip>30대</nds-chip>`. **출시 기본**: Selected=브랜드 채움(solid fill, FILL_COLORS) + Bold, Default=#FAFAFA bg + #EEE border + Medium. 캐포비(cashwalk-biz)는 노랑 채움 위 가독성을 위해 selected 텍스트·체크를 **검정**으로 override 함(`--nds-chip-selected-text`). 좌측 ✓ 체크는 React `icon` prop / HTML `slot="icon"`(`<nds-chip selected><svg slot="icon">…</svg>30대</nds-chip>`). \'brand-subtle bg\' 룩이 필요하면 hex 박지 말고 `--nds-chip-selected-background/text/border` override. 채움만으로도 선택 표시는 충분.',
+      "**ActionChip** = TextField helper text 영역 옆 보조 액션(예시 이미지·수정·다운로드). radius 6 / bg #ECECEC / icon 14 + 12 Medium. inline 배치(별도 row 아님). 상세는 `pattern:cashwalk-biz-input`.",
+    ],
+    avoid: [
+      "Badge 에 hex 인라인(예: background:#FFD400) 금지 — semantic color 토큰을 잃는다. `color` prop 으로 의미 톤 지정.",
+      "동적 상태(충전·사용 등)에 Pill, 정적 식별(프리미엄·신규)에 Rounded Square — 혼용 주의(가이드 명시).",
+      "Badge(비액션 상태/속성)와 Chip(선택/필터 액션) 혼용 금지.",
+      "Badge 라벨은 8자 안팎 — 긴 문장·CTA 금지.",
+    ],
+    metrics: {
+      badgeRoundedRadius: 5,
+      badgePillRadius: "full",
+      badgeFont: "Caption 12/16 Medium",
+      tones: "brand · info · success · neutral · error",
+      relatedPatterns: "cashwalk-biz-tab, cashwalk-biz-input, cashwalk-biz-page-list",
+    },
+  },
+
+  "cashwalk-biz-step-progress": {
+    name: "cashwalk-biz-step-progress",
+    summary:
+      "캐시워크 포 비즈니스 admin 의 단계형 진행 표시 — Stepper variant=bar(가로 막대 + 스텝번호/제목 2단 라벨). 다단계 폼(캠페인→광고→소재) 진행도. (구 StepProgress 는 Stepper variant=bar 로 통합됨.)",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
+    rules: [
+      '마크업: `<nds-stepper variant="bar" current="1" steps=\'[{"key":"c","label":"Step 1","title":"캠페인 만들기"},{"key":"a","label":"Step 2","title":"광고 만들기"},{"key":"m","label":"Step 3","title":"소재 만들기"}]\'></nds-stepper>`. `current` 는 0-based.',
+      "각 스텝 = 막대(8px·radius 6) + 라벨(스텝번호 'Step N' + 제목). 상태: Done(idx<current)=막대 brand·라벨 normal medium / Current(idx===current)=막대 brand·라벨 strong bold / Upcoming(idx>current)=막대 border-normal·라벨 subtle.",
+      "다단계 Form 화면(`pattern:cashwalk-biz-page-form`)의 상단 진행도로 사용 — 단건 Form(`cashwalk-biz-form-layout`)에는 진행도 없음.",
+      "원형 번호형(`variant=numbered`)과 구분 — 어드민 가로 막대는 `variant=bar`.",
+    ],
+    avoid: [
+      "막대 색을 직접 지정 금지 — Done/Current=brand, Upcoming=border-normal 으로 토큰 자동 결정.",
+      "단건(한 화면) 폼에 진행도 막대를 붙이지 말 것 — 다단계 흐름에만.",
+    ],
+    metrics: {
+      bar: "8px · radius 6",
+      label: "스텝번호(Step N) + 제목 2단",
+      relatedPatterns: "cashwalk-biz-page-form, cashwalk-biz-tab, cashwalk-biz-page-patterns",
     },
   },
 
@@ -5840,6 +6111,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**브랜드 토큰만 사용**: 색/보더/배경은 nds-shell 계열이 이미 `--semantic-bg-surface-default` / `--semantic-border-normal-default` / `--semantic-text-strong-default` 등을 참조. raw hex 또는 `var(--semantic-*)` 인라인 override 금지 — 브랜드 스왑 시 깨짐.",
       "**Aside / sticky** 가 자체 white card 가 필요하면 → `<nds-section>` 으로 감싸기. 별도 `.aside { background: ...; border: 1px solid ...; border-radius: ...; padding: 24px; }` 를 새로 정의 금지 (nds-section 의 의도된 중복).",
       "**Validator 강제**: html-validator 가 `<style>` 블록의 raw shell 패턴을 `raw-shell-pattern: error` 로 차단. 의도된 예외(예: 마케팅 랜딩의 hero 등 admin shell 이 아닌 layout) 만 별도 클래스명 (`.lp-hero` 등 nds- 접두 회피) + 인라인 토큰 사용으로 우회.",
+      '**사이드바 아이콘 = inline SVG (이름 아님)**: `<nds-sidebar items=\'[...]\'>` 의 각 item `icon` 필드는 **innerHTML 로 주입되는 raw SVG 마크업**이다. `"icon":"CashwalkBizGnbBannerIcon"` 처럼 **아이콘 이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자로 흘러나옴). 올바른 절차: `find_icon({ name })` → 반환된 inline SVG 문자열을 `icon` 에 넣는다. `icon` 은 React `<Sidebar>` 의 `icon?: ReactNode` 와 대칭 — HTML 은 SVG 문자열, React 는 엘리먼트. **HTML 목업이라 사이드바가 라벨 전용이라는 건 사실이 아니다**(런타임 한계 아님). `items` 는 JSON 속성이므로 SVG 안의 `"` 는 `\\"` 로 이스케이프할 것.',
     ],
     avoid: [
       '`<style>` 안에 `.page { display: grid; grid-template-columns: 240px 1fr }` 직접 정의 — `class="nds-shell"` 사용',
@@ -5851,11 +6123,15 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "nds-form-row__label 폰트/색을 다시 정의 — semantic 토큰 의도 깨짐. 폭만 바꾸려면 `--nds-form-row-label-width`",
       "어드민 페이지 1개 안에서 nds-shell 클래스 + raw shell CSS 혼용 (drift 보장)",
       "raw `<header>` / `<main>` / `<aside>` 만 사용하고 nds-shell 클래스 미부여 — landmark 의미는 그대로 두되 클래스로 visual contract 보장",
+      'nds-sidebar item `icon` 에 아이콘 이름(`"CashwalkBizGnbBannerIcon"`)을 넣기 — innerHTML 이라 텍스트로 흘러나옴. find_icon 의 inline SVG 문자열을 넣을 것',
+      "아이콘이 안 박힌다고 사이드바를 라벨 전용으로 두고 'HTML 런타임 한계'로 결론내리기 — icon=inline SVG 로 정상 렌더됨",
     ],
     metrics: {
       requiredImport: "@nudge-design/styles/styles.css",
       pageShellClass: "nds-shell",
       sidebarClass: "nds-shell__sidebar",
+      sidebarIcon:
+        'nds-sidebar item.icon = inline SVG (find_icon 결과 주입, 이름 아님 — innerHTML) · React Sidebar 는 icon?:ReactNode 로 대칭 · JSON 속성이라 SVG의 " 는 이스케이프',
       mainClass: "nds-shell__main",
       topbarClass: "nds-shell__topbar (+ -title-group / -title / -subtitle / -actions)",
       tabsClass: "nds-shell__tabs",
@@ -5870,6 +6146,788 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       defaultFormRowLabelWidth: "140px (--nds-form-row-label-width)",
       enforcementRule:
         "raw-shell-pattern (error) — <style> 안 raw .page / .topbar / .section / .form-row 정의 차단",
+    },
+  },
+  "ui-direction-proposal": {
+    name: "ui-direction-proposal",
+    summary:
+      "기획서가 화면 구조를 명확히 정하지 않은 경우, 코드 작성 전에 같은 기획서 안의 UI/UX 설계 방향 2-3개를 제안하고 사용자 선택을 받는 패턴.",
+    rules: [
+      "항상 A/B/C 를 묻지 않는다. PRD 에 첫 화면 강조점, 정보 우선순위, CTA 전략, 핵심 흐름, 레퍼런스 의도가 명확하면 방향 제안 없이 그대로 진행한다.",
+      "PRD 가 기능/데이터 목록 중심이고 화면 안의 구성 전략이 불명확하면, 코드 작성 전에 2-3개 방향을 제안하고 사용자 선택을 기다린다.",
+      "방향 제안은 '예약/결제/온보딩/목록' 같은 화면 유형 재분류가 아니다. 이미 정해진 화면 안에서 정보 위계, 사용자 흐름, CTA 배치, 불안/망설임 해소 방식이 어떻게 달라지는지 비교한다.",
+      "각 방향은 이 기획서의 도메인 단어를 써서 구체적인 이름을 붙인다. 범용 이름(빠른 실행 중심, 탐색 중심, 신뢰 중심)만 쓰지 않는다.",
+      "각 방향은 첫 화면에서 가장 먼저 보이는 것, 핵심 흐름, CTA 전략, 장점, 리스크, 추천 조건을 포함한다.",
+      "사용자가 방향을 선택하면 brief.md 또는 작업 메모리에 Selected UI Direction 을 남기고, 이후 구현은 그 방향을 기준으로 고정한다.",
+      "시각 레퍼런스 게이트가 더 우선이다. references.md 가 없으면 방향 제안은 가능하지만 index.html 작성/빌드는 Figma 또는 스크린샷 레퍼런스를 받은 뒤 진행한다.",
+    ],
+    ruleGroups: [
+      {
+        heading: "방향 제안 없이 진행해도 되는 경우",
+        items: [
+          "첫 화면에서 무엇을 강조할지 명시됨",
+          "CTA 위치/역할이 명시됨",
+          "사용 흐름이 단계별로 명시됨",
+          "정보 우선순위가 있음",
+          "참고 화면에서 무엇을 따라야 하는지 명확함",
+        ],
+      },
+      {
+        heading: "방향 제안을 먼저 해야 하는 경우",
+        items: [
+          "기능/데이터 목록만 있음",
+          "'깔끔하게', '보기 좋게' 같은 추상 표현이 많음",
+          "CTA 또는 정보 우선순위가 없음",
+          "같은 목적을 여러 정보 구조로 풀 수 있음",
+          "레퍼런스는 있지만 무엇을 따라야 하는지 불명확함",
+        ],
+      },
+      {
+        heading: "제안 포맷",
+        items: [
+          "방향명: 이 화면에 맞춘 구체적 이름",
+          "첫 화면에서 가장 먼저 보이는 것",
+          "핵심 흐름",
+          "CTA 배치 방식",
+          "장점",
+          "리스크",
+          "추천 조건",
+        ],
+      },
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "상담사 예약 화면 PRD",
+        caption:
+          "A 가능 시간 먼저 선택(시간 선택→상담사 확인→하단 CTA) / B 상담사 신뢰 먼저 형성(프로필·후기→가능 시간→CTA)처럼 같은 예약 화면 안의 정보 위계와 CTA 전략을 비교.",
+      },
+      {
+        verdict: "bad",
+        source: "범용 A/B/C 제안",
+        caption:
+          "빠른 실행 중심 / 비교·탐색 중심 / 신뢰·안내 중심처럼 화면 유형을 다시 분류하는 수준이면 PRD 맥락을 충분히 반영하지 못함.",
+      },
+    ],
+    avoid: [
+      "PRD 가 이미 충분히 명확한데도 매번 방향 선택을 강제",
+      "화면 유형을 다시 분류하는 수준의 제안",
+      "A/B/C 이름만 다르고 정보 위계와 CTA 전략이 같은 제안",
+      "방향을 제안해 놓고 사용자의 선택 없이 임의로 구현",
+      "시각 레퍼런스가 없는 상태에서 방향 선택만으로 구현/빌드 진행",
+    ],
+  },
+
+  "html-mockup-intake": {
+    name: "html-mockup-intake",
+    summary:
+      "기존 HTML 목업(또는 HTML 형식의 기획서)이 입력으로 들어왔을 때, 그것을 '재설계 대상'이 아니라 '재현할 정답 디자인'으로 보고 구조·콘텐츠·문구·위계를 보존한 채 primitive 만 DS(<nds-*> + 시멘틱 토큰 + 브랜드 크롬)로 바꿔 충실히 옮기는 패턴.",
+    rules: [
+      "이건 재설계가 아니라 재현이다. 첨부된 HTML 은 이미 정해진 디자인의 정답 소스다 — ui-direction-proposal 처럼 새 레이아웃 방향을 제안하지 말고, 원본의 구조/섹션 순서/정보 위계/문구를 그대로 보존한다.",
+      "시각 게이트와의 관계: 렌더되는 HTML 목업은 '구조·콘텐츠의 정답'이므로 구조 게이트를 충족한다(prd-as-visual 처럼 막지 말 것 — 그건 텍스트 스펙 얘기다). 다만 브랜드 톤/색 정합은 Figma/스크린샷이 있으면 대조하고, 없으면 브랜드 토큰을 기준으로 한다.",
+      "1) 원본 HTML 을 끝까지 읽고 영역을 식별한다: header/nav, hero, section/card, list, form, cta, footer 등. 어떤 콘텐츠가 어디에 어떤 위계로 있는지 메모한다.",
+      "2) 각 영역을 가장 가까운 DS 컴포넌트로 매핑한다 — find_component({ query }) 로 후보 확인, get_guide({ topic: 'component:<Name>', target: 'html', brand }) 로 정확한 <nds-*> 사용법을 가져온다(추측 금지).",
+      "3) 사용자 노출 문구/카피는 원본 그대로 보존한다. placeholder 라고 임의로 다시 쓰지 말 것 — 다듬어야 할 것 같으면 먼저 사용자에게 확인한다. (단 ux-writing 위반이 명백하면 get_guide({ topic: 'ux-writing' }) 기준으로 제안 후 확인.)",
+      "4) raw 색/여백/타이포를 토큰으로 치환한다: 색은 find_token 으로 --semantic-* 매칭, 여백은 4의 배수 또는 --semantic-gap-*/--semantic-inset-*. raw hex/rgb/gradient 금지.",
+      "5) 표면에 맞는 브랜드 크롬을 주입한다 — 원본이 자체 <header>/<footer> 로 그린 것을 DS 크롬으로 교체한다. surface=service → <nds-brand-header>/<nds-brand-footer>/<nds-brand-bottom-nav>, surface=admin → admin-shell(사이드바+톱바) 또는 어드민 온보딩 카드(소비자 brand chrome 금지).",
+      "6) validate_html_mockup 으로 위반 0 + low-ds-ratio 없음(DS 반영도 충분)까지 고친다. native 잔존(<button> 등)이 남으면 convert_html_to_ds_html 로 1차 변환한 뒤 variant/색을 손으로 마감한다. withStats:true 로 stats.counts.dsRatio 를 확인.",
+      "7) build_singlefile_html 으로 단일 파일을 만들고, 완료 보고에 ① 영역별 before(native)→after(nds-*) 매핑, ② 그대로 보존한 핵심 문구, ③ 적용한 토큰/컴포넌트, ④ dsUsageSummary 뱃지를 포함한다.",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "마케팅 랜딩 HTML 목업",
+        caption:
+          "hero/feature/CTA/footer 영역을 식별해 각각 <nds-*> 로 1:1 매핑, 헤드라인·본문 카피는 원본 그대로, 색/여백만 시멘틱 토큰으로, 원본 자체 header/footer 는 <nds-brand-header>/<nds-brand-footer> 로 교체.",
+      },
+      {
+        verdict: "bad",
+        source: "className 흉내 + 카피 재작성",
+        caption:
+          '원본 <button> 을 <button class="nds-button"> 로만 바꾸고 실제 <nds-button> 컴포넌트는 안 쓰고(흉내), 원본 문구를 임의로 다시 쓰고 섹션 순서를 재배치 — 재현이 아니라 다른 화면이 됨.',
+      },
+    ],
+    avoid: [
+      "className 만 nds-* 로 바꾸고 실제 <nds-*> 컴포넌트로 교체하지 않음(흉내) — dsRatio 게이트(low-ds-ratio)가 잡는다",
+      "원본 문구를 임의로 다시 쓰거나 정보 위계/섹션 순서를 재배치 — 이건 재현이지 재설계가 아님",
+      "ui-direction-proposal 처럼 새 UI 방향을 2-3개 제안 — 디자인은 이미 HTML 로 정해져 있음",
+      "원본의 자체 <header>/<footer> 를 그대로 두고 DS 브랜드 크롬을 빠뜨림(raw-landmark)",
+      "raw hex/그라데이션/non-4pt 여백을 토큰화하지 않고 그대로 둠",
+      "[html-as-prd-spec] 렌더되는 HTML 목업을 '텍스트 스펙(prd-as-visual)' 으로 오해해 시각 레퍼런스로 인정하지 않고 빌드를 막음 — HTML 은 구조의 정답 소스, 톤/색만 Figma/스크린샷으로 보강",
+    ],
+  },
+
+  "design-spec": {
+    name: "design-spec",
+    summary:
+      "prompt → **DesignSpec(JSON)** → code 의 경량 중간표현. 복잡/다단계 화면이거나 사용자와 구성 합의가 필요할 때, HTML 작성 전에 save_design_spec 으로 의도 스펙을 만들고 ok:true + 사용자 동의 후 build_singlefile_html 로 진행(soft 승인 게이트). 추적성·정밀편집·코드前 검증을 얻는다.",
+    rules: [
+      "언제 쓰나: 다화면/복잡 플로우, 컴포넌트 선택이 모호, 또는 사용자가 화면 구성에 합의하고 싶을 때. 단순 단일 화면이면 생략하고 바로 HTML 로 가도 된다(과한 절차 강제 금지).",
+      "⛔ 예외 — 캐포비(cashwalk-biz) 어드민 화면은 복잡도와 무관하게 save_design_spec 필수(생략 금지): validate 가 5종 Page Pattern(screen.surfaceKind:'admin' + screen.pagePattern, Onboarding/Dashboard/List/Detail/Form) 선언을 hard error 로 강제하므로, spec 을 건너뛰면 화면-분류 게이트도 통째로 건너뛰어 어드민 일관성이 깨진다. 코드 전에 먼저 분류: get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }).",
+      "스펙은 '의도'만 담는다: 컴포넌트 트리(시멘틱 이름), 참조할 시멘틱 토큰 '이름', brand/surface, 그리고 결정 근거(rationale). 좌표·resolved 색·px·이미지 바이트는 담지 않는다 — 그건 코드→Figma scene.json(역방향 추출) 담당이다.",
+      "토큰은 시멘틱 only: tokens[] 에는 '--semantic-*' 같은 토큰 이름만. raw hex/rgb 금지(raw-hex-token error). raw 팔레트(--color-blue-500 등)는 warn — --semantic-* 우선.",
+      "save_design_spec 은 카탈로그 기준으로 자동 검증한다(브랜드 실재·토큰 존재·prop enum·컴포넌트 존재). ok:false 면 violations 를 고쳐 재저장한 뒤, ok:true 가 되어야 빌드로 넘어간다(validate-before-code).",
+      "저장한 스펙을 사용자에게 한 번 보여주고 동의를 받은 뒤 build_singlefile_html 로 HTML 을 만든다(soft gate). 스펙과 다른 화면을 임의로 만들지 않는다.",
+      "component 는 PascalCase('Button') 또는 nds-tag('nds-button') 둘 다 허용 — scene.ts(코드→Figma)의 ndsTagToComponentName 어휘를 공유하므로, 정방향 스펙과 역방향 scene 을 컴포넌트 정체성으로 JOIN 할 수 있다.",
+      "ui-direction-proposal 로 방향이 정해졌으면 그 방향을 DesignSpec 으로 구체화한다(두 패턴은 상호 보완 — 방향 합의 → 스펙 고정 → 빌드).",
+      "시각 레퍼런스 게이트가 더 우선이다. references.md(Figma/스크린샷)가 없으면 스펙은 만들 수 있어도 build 는 레퍼런스를 받은 뒤 진행한다.",
+      "결정 로그: save_design_spec 은 design-spec.json(매번 덮어씀) 옆에 decisions/rationale 을 designDecisions.jsonl 로 한 줄씩 누적한다(화면별 dedup, 최근 N행 상한). 결정 이력/메모리 소스이며, 소비 프로젝트에서는 gitignore 권장.",
+    ],
+    metrics: {
+      file: "design-spec.json",
+      decisionLog: "designDecisions.jsonl",
+      blocksCode: false,
+      semanticTokensOnly: true,
+    },
+    examples: [
+      {
+        verdict: "good",
+        source:
+          '{ "screen": { "brand": "geniet", "surface": "app", "intent": "리뷰 상세 — 평점·본문·도움돼요" }, "tree": [ { "component": "Card", "role": "리뷰 본문", "tokens": ["--semantic-bg-default","--semantic-text-default"], "children": [ { "component": "Button", "role": "primary CTA", "props": { "color": "secondary" }, "rationale": "Geniet secondary = dark inverse" } ] } ], "decisions": ["primary CTA 1개만", "raw hex 없음 — 전부 --semantic-*"] }',
+        caption:
+          "의도·컴포넌트·시멘틱 토큰 이름·근거만. 좌표/색값/px 없음. component 는 DS 이름 또는 nds-tag.",
+      },
+      {
+        verdict: "bad",
+        source:
+          '{ "tree": [ { "component": "Button", "props": { "background": "#1A1A1A" }, "x": 24, "y": 600 } ] }',
+        caption:
+          "좌표(x/y)·raw hex 를 스펙에 넣으면 scene.json 열화판이 된다. screen(brand/surface/intent)·근거 누락. → raw-hex-prop error.",
+      },
+    ],
+    avoid: [
+      "단순 단일 화면에도 매번 스펙을 강제(과한 절차)",
+      "스펙에 좌표·resolved 색·px·이미지를 담기(그건 scene.json 몫)",
+      "tokens 에 raw hex/rgb 또는 카탈로그에 없는 토큰 이름",
+      "save_design_spec 이 ok:false 인데 그대로 build 로 진행",
+      "스펙만 만들고 사용자 동의 없이 빌드 / 스펙과 다른 HTML 작성",
+      "캐포비(cashwalk-biz) 어드민인데 save_design_spec 을 생략하고 바로 HTML — 5종 Page Pattern 분류 게이트를 우회하게 됨",
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // 캐시워크 포 비즈니스 어드민 Page Pattern System (골격 — Figma 실측 대기)
+  //
+  // 캐포비 어드민 화면은 등록/수정/목록/상세/통계 안에서 반복된다. 개별 컴포넌트를
+  // 계속 추가하는 대신 "페이지 패턴 → 섹션 → 조립 규칙" 을 먼저 정의하고 그 위에
+  // 컴포넌트를 끼우는 방식. 5개 패턴(Onboarding / Dashboard / List / Detail / Form)
+  // 으로 표준화.  Figma 파일 7dCJU5lNPfgcAjFPwbbLIu (🗄️ 캐포비 - Library → 📐 Page
+  // Pattern), 각 패턴은 docs 노드 + pattern 노드 한 쌍.
+  //
+  // ⚠️ 아래 5개는 **골격** 이다. rules/metrics 의 정확한 px·색·간격은 Figma 노드
+  //    실측으로 채워야 한다(순차 업데이트 2단계). 현재 rules 는 Slack 정리본의 구성
+  //    슬롯 수준만 담는다. 채우기 전까지 metrics.status = "skeleton".
+  // ───────────────────────────────────────────────────────────────────────
+  // ───────────────────────────────────────────────────────────────────────
+  // 캐포비 어드민 사이드바(LNB) ready-made 픽업 — 메뉴 트리 SSOT + 복붙 예시.
+  //   회고: Sidebar 컴포넌트는 완성됐지만 BrandHeader/Footer 처럼 "한 줄 픽업" 이 없어
+  //   매번 items 를 산문 가이드 보고 재조립 → 결과가 들쭉날쭉. 여기서 정규 메뉴 구조 +
+  //   복붙 가능한 React/HTML 예시(아이콘 inline)를 단일 주소로 제공. (라벨/구조는 오버레이
+  //   기반 best-effort — Figma 3304:617 미검증. 실제 메뉴가 확정되면 생성 스크립트 재실행.)
+  // ───────────────────────────────────────────────────────────────────────
+  "cashwalk-biz-admin-sidebar": {
+    name: "cashwalk-biz-admin-sidebar",
+    summary:
+      "**[캐포비 어드민 사이드바 ready-made]** cashwalk-biz admin LNB 를 한 번에 픽업하는 SSOT. " +
+      "`<Sidebar>`(React) / `<nds-sidebar>`(HTML) 컴포넌트는 완성돼 있지만 BrandHeader/Footer 와 달리 메뉴 데이터가 안 박혀 있어 매번 손조립하던 마찰을 해소한다. " +
+      "헤더 블록(로고→계정→잔액→충전/내역 CTA) + 3섹션(광고 관리 / 자산 관리 / 계정 관리) + GNB 아이콘 9종이 들어간 메뉴 트리를 그대로 복붙. " +
+      "활성 bg(Yellow/100)·radius(16)·텍스트색은 `data-brand='cashwalk-biz'` cascade 로 자동 — 색 hex 박지 말 것. 컴포넌트 props 함정은 `get_guide({ topic:'component:Sidebar', brand:'cashwalk-biz' })`, shell 조립은 `pattern:admin-shell`.",
+    // ready-made 복붙 트리 — `_` prefix 라 pickSections 가 모든 view(examples/rules/full)에서 항상 보존.
+    // rules[] 에만 두면 view:'examples'(=['summary','examples'])가 통째로 드롭해 로고/계정/메뉴를
+    // 손조립하게 되던 회귀를 차단한다. rules 의 'HTML/React/SHELL 복붙' 항목은 여기로 포인터만 남김(토큰 중복 제거).
+    _readyMade: {
+      note: '이 트리를 그대로 복붙(손대지 말 것). brand= 가 로고 자동주입, items/account/footer-actions 는 <script type="application/json" slot="..."> 텍스트 노드라 따옴표 이스케이프·인코딩 사고가 없다. Python decode(\'unicode_escape\')/Latin-1 로 추출·재인코딩 금지(한글 모지바케). 화면별로 active-key 만 변경.',
+      html: CASHWALK_BIZ_ADMIN_SIDEBAR_HTML,
+      react: CASHWALK_BIZ_ADMIN_SIDEBAR_REACT,
+      shellHtml: CASHWALK_BIZ_ADMIN_SIDEBAR_SHELL_HTML,
+    },
+    rules: [
+      "**먼저 이 패턴으로 사이드바를 픽업한다**: 캐포비 어드민 화면(`pattern:cashwalk-biz-page-{dashboard,list,detail,form}` 의 '01 Sidebar')은 사이드바 items 를 새로 발명하지 말고 아래 ready-made 트리를 복붙해 시작한다. 화면별로 `activeKey` 만 바꾸면 LNB 가 동일하게 유지된다(목록/상세/대시보드/폼 공통).",
+      "**React 복붙**: `_readyMade.react` 트리를 그대로 복붙(아이콘 = 컴포넌트 엘리먼트, find_icon 불필요). 화면별 activeKey 만 변경.",
+      '**HTML 복붙**: `_readyMade.html` 트리를 그대로 복붙(brand= 로고 자동주입, item.icon inline SVG 완료 — find_icon 9회 불필요, items/account/footer-actions 는 `<script type="application/json" slot="...">` 텍스트 노드). active-key 만 변경.',
+      "**섹션 그룹은 SidebarSection[]**: items 를 flat 배열 + 빈 spacer 로 만들지 말고 `{ key, label, items: [...] }` 섹션 객체로 그룹핑(광고 관리 / 자산 관리 / 계정 관리). 라벨이 섹션 헤더로 렌더된다.",
+      "**서브메뉴는 1단계까지**: '배너'처럼 children(등록/목록/리포트)을 갖는 항목만 캐럿 노출. children 안에 또 children = 금지(2단계 이상 트리 금지).",
+      "**활성 표현은 면(bg)만**: 좌측 accent stripe·Bold 라벨·진한 노랑(Yellow/200) 금지. 활성 여부는 `activeKey` 로만 결정(item 에 isActive boolean 박지 말 것).",
+      '**계정 블록은 구조화된 slot 으로 — 손수 div 조립 금지**: 로고 아래 고정 블록(계정 이메일→잔액(충전 금액)→충전하기(solid)/내역보기(outlined) 2-up CTA)은 **HTML `<nds-sidebar account=\'{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}\'>`**, **React `<Sidebar account={{ email, balanceLabel, balance, actions }}>`** 로 넣는다. 위 ready-made 예시에 이미 박혀 있으니 그대로 복붙. 잔액/충전을 메뉴 item 으로 섞지 말 것. (예전 가이드가 \'HTML 상단 slot\' 이라고만 적어 매번 누락되던 회귀를 컴포넌트 slot 으로 차단.)',
+      '**로그아웃은 footer-actions slot 에 고정**: 최하단 로그아웃(outlined)은 **HTML `footer-actions=\'[{"label":"로그아웃","variant":"outlined"}]\'`**, **React `footerActions={[{ label: \'로그아웃\', variant: \'outlined\' }]}`**. 메뉴 리스트 맨 아래 item 으로 넣지 말 것 — 스크롤과 분리된 고정 푸터.',
+      "**사이드바는 풀하이트 셸 안에 둔다(높이가 화면을 안 채우는 #1 원인)**: `<nds-sidebar>` 는 기본 full-height(100vh sticky)지만, body 직속이나 height 미확정 컨테이너에 두면 레이아웃이 깨지거나 높이가 안 찬다. 반드시 `.nds-shell`(grid + min-height:100vh) 안에 넣을 것. 셸까지 끼운 형태는 `_readyMade.shellHtml` 참조.",
+      "**아이콘은 brand-prefix 우선**: 메뉴 아이콘은 `CashwalkBizGnb*` 9종이 공용 아이콘보다 우선. import 목록: " +
+        CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS.join(", ") +
+        ".",
+      '**로고는 `brand="cashwalk-biz"` 로 자동 주입 (35KB data URI 복붙·상대경로 금지)**: 위 HTML 예시처럼 `<nds-sidebar brand="cashwalk-biz">` 만 두면 BrandHeader 와 동일 로고 SSOT 가 컴포넌트 내부에서 주입돼 단일 HTML 에서도 안 깨진다. `logo-src` 에 `data:image/svg+xml;base64,…` 35KB 블롭을 손으로 붙이지 말 것 — 그 거대 블롭을 추출/재인코딩하다 한글이 깨지고 로고가 유실되던 회귀의 직접 원인이다. `/brand-logos/cashwalk-biz.svg` 같은 상대경로도 단일 파일에서 깨지므로 금지. React 앱은 자산을 번들하므로 `logo={{ src: \'/brand-logos/cashwalk-biz.svg\' }}` public 경로로 충분.',
+      "**마크업을 스크립트로 추출·재인코딩하지 말 것 — 한글 모지바케 #1 원인**: 위 HTML/React 블록은 손대지 말고 그대로 복붙한다. 특히 Python `decode('unicode_escape')` 나 Latin-1 디코딩으로 가공하면 UTF-8 한글(광고 관리 등)이 글자당 3개의 깨진 라틴 문자(Ã/ë…)로 망가지고, 깨진 items JSON 때문에 사이드바 파싱이 흔들려 로고까지 사라진다(= '한글 다 깨지고 로고 안 보임' 증상). 가공이 꼭 필요하면 UTF-8 `json.loads` 만 사용. 이 예시는 items/account/footer-actions 를 `<script type=\"application/json\" slot=\"...\">` 텍스트 노드로 전달해 따옴표 과이스케이프·인코딩 깨짐을 둘 다 구조적으로 차단한다.",
+    ],
+    avoid: [
+      "사이드바 items 를 화면마다 새로 발명 — 이 ready-made 트리를 복붙하고 activeKey 만 변경",
+      "HTML 에서 item.icon 에 아이콘 이름('CashwalkBizGnbBannerIcon')을 넣기 — innerHTML 이라 텍스트로 흘러나옴. 위 예시는 inline SVG 가 이미 박혀 있으니 그대로 사용",
+      "활성 아이템에 좌측 세로 accent bar / Bold 라벨 / Yellow/200 진한 노랑",
+      "잔액·충전 CTA 를 메뉴 리스트에 섞기 (헤더 블록 고정)",
+      "children 2단계 이상 트리화",
+      "활성 bg·radius·텍스트색을 inline/hex 로 다시 박기 — data-brand cascade 가 처리",
+    ],
+    metrics: {
+      status: "ready-made (메뉴 라벨/구조는 오버레이 기반 best-effort — Figma 3304:617 미검증)",
+      sectionCount: 3,
+      sections: "광고 관리 / 자산 관리 / 계정 관리",
+      width: "300px (캐포비 admin 기준)",
+      gnbIcons: CASHWALK_BIZ_ADMIN_SIDEBAR_ICON_IMPORTS.join(", "),
+      iconPickup:
+        "HTML 예시는 SVG 인라인 완료 — find_icon 반복 불필요 / React 는 아이콘 컴포넌트 직접 import",
+      relatedGuides:
+        "component:Sidebar (props 함정), admin-shell (shell 조립), cashwalk-biz-page-{dashboard,list,detail,form}",
+    },
+    references: [
+      {
+        label: "캐포비 Library Sidebar (메뉴 구조 SSOT)",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3304-617",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 사이드바 레퍼런스 스크린샷",
+        image: "references/cashwalk-biz-sidebar-168-1250.png",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-patterns": {
+    name: "cashwalk-biz-page-patterns",
+    summary:
+      "**[Page Pattern System 오버뷰]** 캐시워크 포 비즈니스 어드민 화면을 5개 페이지 패턴으로 표준화 — Onboarding / Dashboard / List / Detail / Form. " +
+      "개별 컴포넌트부터 쌓지 말고 'PRD → 페이지 패턴 매핑 → 섹션 구조화 → 패턴 내 반복 컴포넌트 조립' 순서로 화면을 만든다. " +
+      "패턴별 상세는 `pattern:cashwalk-biz-page-{onboarding|dashboard|list|detail|form}`. 필드/CTA/입력 단위 실측은 `pattern:cashwalk-biz-form-layout` · `pattern:cashwalk-biz-button` · `pattern:cashwalk-biz-input`, shell 보일러플레이트는 `pattern:admin-shell`. " +
+      "Figma 7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern).",
+    rules: [
+      "**먼저 패턴을 고른다 (하드 게이트)**: 새 어드민 화면을 받으면 PRD 의 목적을 5개 패턴 중 하나로 먼저 분류한다 — 로그인/계정복구=Onboarding, 통계/요약 홈=Dashboard, 목록·검색=List, 단건 상세/탭=Detail, 등록·수정=Form. **Form 은 다시 단건/다단계로 갈린다 — 한 화면(Step Progress 없음, 제목+부제+콘텐츠 하단 우측 정렬 [취소][저장])=`cashwalk-biz-form-layout`, 다단계(캠페인→광고→소재 등 Step Progress)=`cashwalk-biz-page-form`. 이름이 비슷하니 하단 액션이 헷갈리면 단건은 콘텐츠 끝 우측 정렬 [취소][저장](별도 바·고정 없음), 다단계는 좌/우 분리 Footer.** 분류 없이 컴포넌트부터 배치하지 않는다. **이건 권고가 아니라 강제다** — surface=admin + brand=cashwalk-biz 화면은 패턴 선언이 없으면 validate 가 error(`cashwalk-biz-admin-page-pattern`)로 막는다.",
+      '**패턴 선언 방법**: HTML 목업은 루트에 `data-page-pattern` 마커 — 예: `<html data-brand="cashwalk-biz" data-page-pattern="list">`(또는 body / .mockup-screen). DesignSpec 은 `screen.pagePattern` 필드에 `onboarding|dashboard|list|detail|form` 중 하나. surfaceKind=admin 은 nudge.surface 마커에서 자동 주입되니 보통 pagePattern 만 채우면 된다.',
+      "**조립 순서 고정**: ① 페이지 패턴 선택 → ② 패턴의 섹션 슬롯 채우기(섹션 단위 구조화) → ③ 섹션 안 반복 컴포넌트(테이블·필터·필드·차트)를 DS 컴포넌트로 조립 → ④ validate. 역순(컴포넌트 먼저)으로 가면 패턴 일관성이 깨진다.",
+      "**shell 은 공통**: 모든 패턴은 사이드바 + topbar + content 의 `admin-shell`(nds-shell 계열) 위에 얹힌다. 패턴은 content 영역의 섹션 구성만 정의한다 — raw shell CSS 재정의 금지(`pattern:admin-shell`).",
+      "**한 화면 = 한 패턴**: 한 페이지에 List + Form 을 섞지 않는다. 인라인 등록이 필요하면 List 안의 모달/드로어로 Form 패턴을 띄우되, 패턴 경계는 유지한다.",
+      "**필드/버튼/입력 실측은 위임**: 페이지 패턴은 '무엇이 어디에' 까지만 정의. 라벨 컬럼·필드 높이·CTA 알약 같은 px 단위는 `cashwalk-biz-form-layout` / `cashwalk-biz-button` / `cashwalk-biz-input` 가 SSOT.",
+    ],
+    avoid: [
+      "패턴 분류 없이 컴포넌트부터 화면에 배치",
+      "한 페이지에 두 패턴(예: 목록 + 등록 폼)을 한 흐름으로 섞기",
+      "페이지 패턴 가이드 안에 필드 높이·CTA px 같은 컴포넌트 단위 실측을 중복 정의 (cashwalk-biz-* 컴포넌트 가이드가 SSOT)",
+      'admin-shell 대신 raw <div class="page"> + grid CSS 로 shell 직접 작성',
+    ],
+    metrics: {
+      status: "skeleton — Figma 실측 대기",
+      patternCount: 5,
+      patterns: "onboarding / dashboard / list / detail / form",
+      figmaFile: "7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern)",
+      assemblyOrder: "① 패턴 선택 → ② 섹션 구조화 → ③ 컴포넌트 조립 → ④ validate",
+      relatedPatterns:
+        "cashwalk-biz-page-{onboarding,dashboard,list,detail,form}, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-button, cashwalk-biz-input, cashwalk-biz-tab, cashwalk-biz-badge-chip, cashwalk-biz-step-progress",
+    },
+    references: [
+      {
+        label: "Onboarding docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-792",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Onboarding pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3611-2",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Dashboard docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-855",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Dashboard pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "List docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-915",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "List pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Detail docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-978",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Detail pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3614-367",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Form docs",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-1041",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "Form pattern",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-onboarding": {
+    name: "cashwalk-biz-page-onboarding",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **Onboarding 패턴** — 로그인 · 아이디 찾기 · 비밀번호 찾기 등 인증 진입 화면. shell(사이드바/네비) 없이 탈색 회색 캔버스 중앙에 480px 고정 카드 1개. " +
+      "구성: 01 Logo → 02 Form → 03 Primary CTA → 04 Helper. 오버뷰 `pattern:cashwalk-biz-page-patterns`. CTA/입력 실측은 `pattern:cashwalk-biz-button` · `pattern:cashwalk-biz-input`. Figma docs 3626-792 / pattern 3611-2 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '로그인 / 회원가입 / 비밀번호 찾기 / 이메일 인증 / 가입 완료' 키워드가 있고, 사이드바·네비게이션 없이 단독 흐름으로 진행되며, 단일 목적 + 단일 폼 + 단일 CTA 로 구성되는 화면.",
+      "**중앙 카드 1개 (shell 없음)**: 비로그인 상태라 admin-shell(사이드바/topbar) 미적용. 캔버스 배경 = `--semantic-bg-surface-subtle`(#FAFAFA 탈색 회색), 그 위에 카드를 **수직+수평 중앙** 정렬.",
+      "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing).",
+      "**01 Logo**: 카드 상단 중앙 정렬. 캐포비 로고 컴포넌트 사용(직접 SVG 조립 X). 찾기 화면은 로고 아래 안내문(예: '캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.')을 둔다.",
+      "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
+      "**03 Primary CTA**: Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득). 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개(`pattern:cashwalk-biz-button`).",
+      "**04 Helper**: 보조 링크는 **TextButton(Medium)** — 로그인 화면의 '아이디 찾기 | 비밀번호 찾기', 가입 유도 등. solid 버튼으로 만들지 않는다.",
+      "**상태 분기는 같은 골격**: 로그인 / 아이디 찾기 / 비밀번호 찾기는 동일한 480px 중앙 카드 레이아웃의 변형. 화면마다 다른 골격을 만들지 않는다.",
+      "**Validate**: ① Step ≥ 3 → 별도 Multi-step Onboarding 으로(상단 Step Progress 추가). ② Form 필드 > 5 → `pattern:cashwalk-biz-page-form` 전환 검토. ③ 외부 인증(SMS/Email) 필요 → 인증 코드 입력 Section 추가. ④ 이용약관 동의 필요 → Form 위에 CheckboxGroup 추가.",
+    ],
+    avoid: [
+      "온보딩 카드에 사이드바/topbar(admin-shell) 부착 — 비로그인 인증 화면은 중앙 카드만",
+      "카드 폭을 480px 외 값으로 (고정 폭 패턴)",
+      "로그인·아이디찾기·비밀번호찾기마다 다른 레이아웃 골격",
+      "Primary CTA 를 카드 폭보다 좁게 / 2개 이상 / outlined 로",
+      "보조 링크(찾기·가입)를 solid 버튼으로 — TextButton(Medium) 텍스트 링크가 맞다",
+      "로고를 직접 SVG 로 조립 — 캐포비 로고 컴포넌트 사용",
+      "필드 6개 이상·3스텝 이상을 단일 온보딩 카드에 욱여넣기 (Validate Rule 위반 → Form/Multi-step 전환)",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3611-2 (캐포비 Onboarding 패턴 — 로그인 / 아이디 찾기 / 비밀번호 찾기)",
+        caption:
+          "탈색 회색 캔버스 중앙 480px 카드. 01 Logo(중앙) → 02 Form(로그인=TextInput / 찾기=RadioGroup) → 03 Primary CTA(Solid/Primary/X-Large FILL yellow) → 04 Helper(TextButton). 세 화면 동일 골격.",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 온보딩 화면",
+        caption:
+          "사이드바 부착 + 가변 폭 카드 + 좁은/2개 CTA + 보조 링크를 solid 버튼으로 — Onboarding 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-792 / pattern 3611-2)",
+      composition: "01 Logo → 02 Form → 03 Primary CTA → 04 Helper",
+      shell: "none (비로그인 — admin-shell 미적용)",
+      cardWidth: "480px (고정)",
+      cardPadding: "48px",
+      cardRadius: "16px (--semantic-bg radius/16)",
+      cardBg: "--semantic-bg-surface-default (#FFFFFF)",
+      canvasBg: "--semantic-bg-surface-subtle (#FAFAFA)",
+      cardItemSpacing: "40px (큰 단위 그룹간)",
+      cardAlign: "vertical + horizontal center",
+      logo: "캐포비 로고 컴포넌트 (중앙 정렬)",
+      formLogin: "TextInput (ID + Password eye 토글)",
+      formFind: "RadioGroup (찾기 방법 선택 — 전화/이메일)",
+      primaryCta: "Button Solid/Primary/X-Large 가로 FILL · #FFD200 + 검정",
+      helper: "TextButton(Medium) 보조 링크",
+      validateStepThreshold: "Step ≥ 3 → Multi-step Onboarding",
+      validateFieldThreshold: "필드 > 5 → cashwalk-biz-page-form 전환",
+      maxPrimarySolidPerScreen: 1,
+      relatedPatterns: "cashwalk-biz-page-patterns, cashwalk-biz-button, cashwalk-biz-input",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3611-2",
+    references: [
+      {
+        label: "캐포비 Onboarding 패턴 SSOT — 로그인/아이디찾기/비밀번호찾기 (Figma 3611-2)",
+        image: "references/cashwalk-biz-onboarding-3611-2.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3611-2",
+        caption:
+          "세 인증 화면이 동일한 480px 중앙 카드 골격. 본 가이드 metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 Onboarding docs (Figma 3626-792)",
+        image: "references/cashwalk-biz-onboarding-docs-3626-792.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-792",
+        caption:
+          "언제 사용 · 지원 화면 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-dashboard": {
+    name: "cashwalk-biz-page-dashboard",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **Dashboard 패턴** — 주요 지표·통계·차트를 한눈에 보여주는 통계/현황 화면. " +
+      "구성: 01 Sidebar → 02 Page Header+Actions(Pill) → 03 Summary Strip(인라인 지표, **개별 KPI 카드 미사용**) → 04 Charts(라인+바 2-up) → 05 Stats Table. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-855 / pattern 3612-9 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '대시보드 / 메인 / 홈 / 요약 / 현황 / KPI' 키워드가 있고, 여러 데이터를 시각화해 한눈에 보여줘야 하며, 사용자가 가장 먼저 보는 진입 화면일 때.",
+      "**Main Area**: admin-shell content 영역 padding **48px**, 섹션 간 itemSpacing **32px**. 섹션 순서는 위→아래로 요약→추세→상세: 02 Header → 03 Summary → 04 Charts → 05 Table.",
+      "**02 Page Header + Actions**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **Pill 액션** — [기간 조회](outline/white pill) + [자료 다운로드](solid yellow #FFD200 pill + download 아이콘). 본문에 액션을 흩뿌리지 않고 헤더 우측에 모은다.",
+      "**03 Summary Strip (개별 KPI 카드 미사용)**: 핵심 지표를 **한 줄 strip** 으로 — 좌측 상태 라벨(예: '전체 캠페인 성과' + '실시간 집계 · {갱신시각} 기준'), 우측에 지표들을 **세로 구분선으로 나눠 인라인** 배치. 각 지표 = 라벨(Caption 12/16 #666) 위, 값(Bold) 아래. strip 배경은 brand 노란 틴트 `Yellow/100 (#FFFAE5)`. **KPI 마다 별도 카드를 만들지 않는다.**",
+      "**04 Charts**: 차트 카드 안에 **라인 차트 + 바 차트 2-up**(좌 추이 라인 / 우 항목별 비교 바). gridline + 범례 포함. 차트 카드 높이 **360px**(기본).",
+      "**05 Stats Table**: 항목별 통계 테이블 — 헤더 행(연회색 bg) + 데이터 행. 우측 정렬 숫자 컬럼(노출수/클릭수/전환율/소진액 등).",
+      "**카드 규격(차트·테이블 공통)**: radius **12px**, padding **24px**, border **1px `--semantic-border-normal-subtle`(#F5F5F5)**, bg `--semantic-bg-surface-default`(#FFFFFF). 페이지 캔버스는 `--semantic-bg-surface-subtle`(#FAFAFA).",
+      "**01 Sidebar**: 좌측 LNB = Sidebar 컴포넌트(Figma 3304:617) — 계정 정보 + 광고/자산/계정 관리 섹션. admin-shell 의 nds-shell__sidebar 슬롯. **items 를 새로 만들지 말고 `pattern:cashwalk-biz-admin-sidebar` 의 ready-made 트리를 복붙(아이콘 inline 완료)하고 activeKey 만 이 화면 키로.**",
+      "**Validate**: ① 핵심 지표 ≤ 4개 → Summary Strip, 그 이상 → 별도 통계 카드/그리드 검토. ② Chart 종류(Line/Bar/Donut) 명시 — Chart Library 25종 참조. ③ 데이터 없음 → Empty State 변형(회색 패널 + 안내문). ④ 갱신 시각 필요 → Header(또는 Summary)에 '마지막 갱신 mm/dd hh:mm' 추가.",
+    ],
+    avoid: [
+      "Summary 지표를 **개별 KPI 카드**(카드 4장 grid)로 — 캐포비 대시보드는 노란 틴트 인라인 strip 1개",
+      "요약·차트·테이블 위계를 뒤섞어 배치",
+      "헤더 Pill 액션 대신 본문 곳곳에 액션 버튼 분산",
+      "차트 카드 radius/padding 을 폼 카드(16/48)와 다르게 임의 설정 — 대시보드 카드는 12/24",
+      "데이터 없음 상태를 빈 차트/빈 테이블로 방치 — Empty State 패널 + 안내문",
+      "차트 종류를 정의 없이 그리기 (Line/Bar/Donut 중 무엇인지 명시)",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3612-9 (캐포비 Dashboard 패턴)",
+        caption:
+          "Sidebar + 헤더(제목 + 기간조회/자료다운로드 Pill) + 노란 틴트 Summary Strip(인라인 지표 4종 구분선) + 라인/바 2-up 차트 카드(h360) + 항목별 통계 테이블. 카드 12/24.",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 대시보드",
+        caption:
+          "지표를 KPI 카드 4장 grid 로 + 차트 종류 불명 + 데이터 없을 때 빈 차트 방치 — Dashboard 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-855 / pattern 3612-9)",
+      composition:
+        "01 Sidebar → 02 Header+Actions → 03 Summary Strip → 04 Charts(2-up) → 05 Stats Table",
+      shell: "admin-shell (Sidebar 3304:617)",
+      mainAreaPadding: "48px",
+      sectionItemSpacing: "32px",
+      pageTitle: "Heading1 Bold 32/40 #111",
+      headerActions: "Pill — [기간 조회] outline + [자료 다운로드] solid yellow #FFD200",
+      summaryStrip:
+        "인라인 지표 strip (개별 KPI 카드 미사용) · 라벨 Caption 12/16 #666 + 값 Bold · 세로 구분선 · bg Yellow/100 #FFFAE5",
+      charts: "라인 + 바 2-up (gridline·범례) · 카드 높이 360px",
+      statsTable: "헤더 행(연회색) + 데이터 행 · 숫자 우측 정렬",
+      cardRadius: "12px",
+      cardPadding: "24px",
+      cardBorder: "1px #F5F5F5 (--semantic-border-normal-subtle)",
+      cardBg: "--semantic-bg-surface-default (#FFFFFF)",
+      canvasBg: "--semantic-bg-surface-subtle (#FAFAFA)",
+      validateSummaryThreshold: "핵심 지표 ≤ 4 → Summary Strip / >4 → 별도 카드·그리드",
+      emptyState: "데이터 없음 → 회색 패널 + 안내문",
+      relatedPatterns: "cashwalk-biz-page-patterns, admin-shell, dense-list",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9",
+    references: [
+      {
+        label: "캐포비 Dashboard 패턴 SSOT (Figma 3612-9)",
+        image: "references/cashwalk-biz-dashboard-3612-9.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9",
+        caption:
+          "Sidebar + 헤더 Pill + 노란 틴트 Summary Strip + 라인/바 2-up + 통계 테이블. metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 Dashboard docs (Figma 3626-855)",
+        image: "references/cashwalk-biz-dashboard-docs-3626-855.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-855",
+        caption: "언제 사용 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-list": {
+    name: "cashwalk-biz-page-list",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **List 패턴** — 검색/필터/페이지네이션이 있는 데이터 목록 화면. " +
+      "구성: 01 Sidebar → 02 PageHeader+Primary Action('등록하기') → 03 FilterBar → 04 Table(썸네일·상태배지·노출토글·수정/삭제) → 05 Pagination. Detail 진입 전 단계. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-915 / pattern 3613-234 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '목록 / 조회 / 검색 / 필터링 / 리포트(테이블)' 키워드가 있고, 여러 row 데이터를 비교·탐색해야 하며, Detail 화면으로 진입하기 전 단계일 때.",
+      "**02 PageHeader + Primary Action**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **'등록하기' Primary Button** 1개(cashwalk-biz Solid/Primary = 노란 #FFD200 + 검정, `pattern:cashwalk-biz-button`). 목록의 주 액션은 헤더 우측에만 둔다.",
+      "**(선택) 광고비/충전 안내 배너**: 잔액 소진 임박 등 조건 충족 시 PageHeader 아래·탭/FilterBar 위에 `pattern:cashwalk-biz-admin-alert-banner`(soft 옐로우 + 종 일러스트 + 노란 pill CTA) 1개. 상시 노출 아님.",
+      "**03 FilterBar**: 테이블 위 한 줄(`pattern:action-row`) — Search Input + Dropdown 필터(상태 등) + 기간(DateRange). 카드 형태: radius **12px**, padding **20/24**. **상태 필터(활성/정지 등)는 Dropdown 필터 또는 상태 톤 칩으로 — solid 초록(활성)/빨강(정지) 버튼 금지**(테이블 상태 Badge 색과 충돌하고, 필터 선택과 상태 표시가 혼동됨).",
+      "**04 Table**: 헤더 행 + 데이터 행. 헤더 행 배경 `--semantic-bg-surface-subtle`(#FAFAFA). 카드 radius **12px**, Row padding **16/24**, Row 사이 **1px border `#F5F5F5`**. 컬럼은 균등 또는 flex.",
+      "**행 셀 컴포넌트**: 썸네일(이미지 컬럼) + 핵심 텍스트(클릭 시 Detail 진입 — 링크색) + **상태 = Badge**(진행중=success/green · 진행예정=subtle · 종료=neutral gray) + 숫자 컬럼 우측 정렬 + **노출 = Toggle**(노출 on green / 미노출 off) + **관리 = 수정(pencil)·삭제(trash) 아이콘 액션**. 상태를 raw 텍스트로, 노출을 체크박스로 만들지 않는다.",
+      '**펼침(트리) 리포트 행 (선택)**: 날짜별/그룹별 리포트처럼 상위 행을 펼쳐 하위(캠페인·광고) 행을 보는 표는 `nds-data-table` 의 `sub-rows-key`(React `getSubRows`) — [+]/[−] 토글 + 자식 행 들여쓰기 자동. 표 하단 합계행이 같이 필요하면 StatsTable 의 `<tr class="is-summary">` 와 조합.',
+      "**05 Pagination**: 중앙 정렬 페이지 번호, 버튼 **32×32**, **현재 페이지 = 검정(neutral 900 / #111) fill + 흰 텍스트**(brand yellow 아님 — 노랑은 활성/선택 강조용이라 페이지네이션 현재 페이지와 시각 충돌). 우측에 페이지 사이즈 셀렉트('10개씩 보기') 배치 가능.",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(대시보드와 동일 LNB). ready-made items 는 `pattern:cashwalk-biz-admin-sidebar` 복붙 + activeKey 만 변경.",
+      "**Validate**: ① Row > 50 → 페이지네이션 필수 / ≤ 10 → 페이지네이션 생략. ② 필터 > 4개 → 필터 패널 분리(좌측 또는 상단 collapsible). ③ Row 클릭 액션 있으면 → 행 hover effect + cursor pointer. ④ Empty state 필수 → '등록된 OOO이 없습니다' + CTA. ⑤ 정렬 가능 컬럼 → Header 셀에 화살표 아이콘.",
+    ],
+    avoid: [
+      "필터를 테이블과 떨어뜨려 본문 곳곳에 배치 — FilterBar 는 테이블 위 한 줄",
+      "상태를 raw 텍스트로 (Badge 미사용), 노출 on/off 를 체크박스로 (Toggle 미사용)",
+      "관리 컬럼에 수정/삭제 외 잡다한 버튼 추가",
+      "헤더에 '등록하기' 외 primary 액션 여러 개",
+      "Empty state 를 빈 테이블로 방치 — '등록된 OOO이 없습니다' + CTA 필수",
+      "FilterBar/Table radius 를 12px 외로 · 헤더 행 배경 누락",
+      "페이지네이션 현재 페이지를 brand yellow fill 로 — 현재 페이지는 검정(#111) fill + 흰 텍스트",
+      "상태 필터를 solid 초록(활성)/빨강(정지) 버튼으로 — Dropdown 필터 또는 상태 톤 칩. 초록/빨강 solid 는 테이블 상태 Badge 와 충돌·혼동",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3613-234 (캐포비 List 패턴 — 배너광고 목록)",
+        caption:
+          "헤더(제목 + 등록하기) + FilterBar(검색·상태·기간) + 테이블(이미지·캠페인명·상태 Badge·노출수·클릭수·소진액·노출 Toggle·관리 수정/삭제) + 중앙 페이지네이션 + 페이지 사이즈 셀렉트.",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 목록 화면",
+        caption:
+          "상태를 색 없는 텍스트로 + 노출을 체크박스로 + 행마다 버튼 흩뿌리기 + Empty state 없이 빈 테이블 — List 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-915 / pattern 3613-234)",
+      composition: "01 Sidebar → 02 Header+등록하기 → 03 FilterBar → 04 Table → 05 Pagination",
+      shell: "admin-shell",
+      pageTitle: "Heading1 Bold 32/40 #111",
+      primaryAction: "'등록하기' Primary Button (헤더 우측)",
+      filterBar: "Search Input + Dropdown 필터 + DateRange · radius 12 · padding 20/24",
+      tableRadius: "12px",
+      tableRowPadding: "16/24",
+      tableRowBorder: "1px #F5F5F5 (row 사이)",
+      tableHeaderBg: "--semantic-bg-surface-subtle (#FAFAFA)",
+      rowCells:
+        "썸네일 + 링크 텍스트 + 상태 Badge + 숫자(우측정렬) + 노출 Toggle + 관리(수정/삭제 아이콘)",
+      statusBadge: "진행중=success · 진행예정=subtle · 종료=neutral",
+      pagination:
+        "중앙 정렬 · 버튼 32×32 · 현재 페이지 = 검정(#111) fill + 흰 텍스트 (brand yellow 아님)",
+      pageSizeSelect: "'10개씩 보기' 셀렉트 (우측)",
+      validatePaginationThreshold: "Row > 50 필수 / ≤ 10 생략",
+      validateFilterThreshold: "필터 > 4 → 패널 분리",
+      emptyState: "'등록된 OOO이 없습니다' + CTA 필수",
+      relatedPatterns:
+        "cashwalk-biz-page-patterns, admin-shell, action-row, dense-list, cashwalk-biz-page-detail, cashwalk-biz-badge-chip, cashwalk-biz-tab, cashwalk-biz-admin-alert-banner",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
+    references: [
+      {
+        label: "캐포비 List 패턴 SSOT — 배너광고 목록 (Figma 3613-234)",
+        image: "references/cashwalk-biz-list-3613-234.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
+        caption:
+          "헤더 + FilterBar + 상태배지/노출토글/관리 테이블 + 페이지네이션. metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 List docs (Figma 3626-915)",
+        image: "references/cashwalk-biz-list-docs-3626-915.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-915",
+        caption: "언제 사용 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-admin-alert-banner": {
+    name: "cashwalk-biz-admin-alert-banner",
+    summary:
+      "캐시워크 포 비즈니스 admin **광고비/충전 안내 배너** — 페이지 본문 상단(PageHeader 아래)에 얹는 soft 옐로우 알림 카드. " +
+      "구성: 좌측 일러스트(@nudge-design/assets `charge-alert-bell`) + 제목/설명 + 우측 단일 CTA(노란 pill). " +
+      "NoticeAlert(48px 인라인 strip)·Banner(우측 이미지)·FloatingCtaBanner(하단 sticky pill)와 구분 — 일러스트 동반 멀티라인 안내 카드. Figma 3001-21374.",
+    rules: [
+      "**언제 쓰나**: 잔액 소진 임박 등 계정/광고 상태에 대한 능동 안내 + 즉시 행동(충전) 유도가 필요할 때. 단순 정책 안내는 page-form 의 02b 안내 콜아웃(info) 또는 NoticeAlert.",
+      "**배치**: 리스트/폼 페이지 본문 최상단(PageHeader 아래, 탭/FilterBar 위). 페이지당 1개. 상시 노출이 아니라 조건 충족 시(잔액 임박)에만.",
+      "**박스**: bg `--semantic-bg-brand-subtle`(soft 옐로우 #FFF4C0 계열) · radius **16** · padding 20/24 · 그림자·보더 없음 · 그라데이션 금지.",
+      "**좌측 일러스트**: `@nudge-design/assets` 의 `charge-alert-bell`(종) — 표시 크기 60×60. 라인 아이콘으로 대체하지 말 것(일러스트 자산).",
+      "**텍스트**: 제목 Bold **18/30** `--semantic-text-strong`(#383838) + 설명 Medium **16/24** 동일 계열. 제목에 개수/금액을 직접 박지 말고 본문에서 서술.",
+      "**CTA**: 우측 단일 버튼 = cashwalk-biz **Solid/Primary(노란 #FFD200 + 검정 텍스트) · pill** (`pattern:cashwalk-biz-button` SSOT 그대로). 검정/파랑/outlined 로 바꾸지 말 것 · 버튼 2개 이상 금지(단일 행동).",
+    ],
+    avoid: [
+      "라인 아이콘으로 종 일러스트 대체 — 일러스트 자산(charge-alert-bell) 사용",
+      "NoticeAlert(48px strip)로 제목+설명+CTA 욱여넣기 — 멀티라인 안내 카드는 별물",
+      "CTA 를 검정/파랑/outlined 로 — 충전 같은 주 행동은 노란 Solid/Primary pill",
+      "배너를 페이지에 여러 개 쌓기 / 상시 노출 — 조건 충족 시 1개",
+      "그라데이션 배경 — 단색 brand-subtle 토큰만",
+    ],
+    metrics: {
+      placement: "본문 최상단(PageHeader 아래·탭/FilterBar 위) · 페이지당 1개 · 조건부 노출",
+      box: "bg --semantic-bg-brand-subtle(#FFF4C0) · radius 16 · padding 20/24 · no shadow/border",
+      illustration: "@nudge-design/assets charge-alert-bell(종) · 60×60",
+      title: "Bold 18/30 #383838",
+      description: "Medium 16/24 #383838",
+      cta: "우측 단일 Solid/Primary(노란 #FFD200 + 검정) pill — cashwalk-biz-button SSOT",
+      relatedPatterns:
+        "cashwalk-biz-page-list, cashwalk-biz-page-form, cashwalk-biz-button, cashwalk-biz-page-patterns",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-21374",
+  },
+  "cashwalk-biz-page-detail": {
+    name: "cashwalk-biz-page-detail",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **Detail 패턴** — 개별 항목의 정보를 보고 액션을 수행하는 화면. " +
+      "구성: 01 Sidebar → 02 Breadcrumb → 03 PageHeader+Status+Actions → 04 Tab Navigation(underline) → 05 Info Card(key-value). List 에서 row 클릭 후 진입. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-978 / pattern 3614-367 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '상세 / 정보 보기 / 수정 / 편집' 키워드가 있고, List 에서 row 클릭 후 진입하며, 관련 액션(수정/삭제/실행)이 동반될 때.",
+      "**02 Breadcrumb (필수)**: 상위 페이지 경로를 명시(예: '배너광고 목록 / 여름 시즌 프로모션 상세'). 타이포 Body3/Subtle, **divider '/' 문자**, itemSpacing **8px**. 상세는 항상 목록에서 진입하므로 경로 생략 금지.",
+      "**03 PageHeader + Status + Actions**: 좌측 제목(Heading1 Bold 32/40) + **상태 ActionChip**(title 과 gap **12px**), 우측 **액션 버튼들**(예: outline 보조 + solid 주). 삭제 같은 위험 액션은 별도 Outlined/Neutral 버튼으로 **우측 끝** 배치.",
+      "**04 Tab Navigation**: **Underline 탭**(예: 기본 정보 / 성과 리포트 / 히스토리). 데이터 항목이 많으면 탭으로 분리.",
+      "**05 Info Card**: 정보 블록 = **key-value rows**(또는 FormSection). **key 컬럼 width 240px 고정, value 컬럼 flex**. key-value row padding **16/24**, **border-bottom `--semantic-border-normal-subtle`(#F5F5F5)**. 카드 안 상단에 섹션 제목.",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(목록/대시보드와 동일 LNB). ready-made items 는 `pattern:cashwalk-biz-admin-sidebar` 복붙 + activeKey 만 변경.",
+      "**편집은 Form 패턴으로 분리**: 상세 화면은 보기 중심. 편집 가능 필드만 있는 화면이면 Detail 이 아니라 `pattern:cashwalk-biz-page-form` 으로 만든다. 인라인 편집 폼을 상세에 펼치지 않는다.",
+      "**Validate**: ① 데이터 항목 > 15개 → Tab 으로 분리(탭당 5~8개). ② 편집 가능 필드만 있는 경우 → Form 패턴으로 변경. ③ 삭제 액션 → 별도 Outlined/Neutral 버튼, 우측 끝 배치. ④ 위험 액션(삭제) → 확인 Modal 필수 호출. ⑤ 권한별 액션 숨김 → BOOLEAN prop 또는 변형 변경.",
+    ],
+    avoid: [
+      "Breadcrumb 생략 (상세 진입 경로 불명확) · divider 를 '>' 등으로 (캐포비는 '/' 문자)",
+      "상세 화면 안에서 바로 인라인 편집 폼 펼치기 — 편집은 Form 패턴으로 분리",
+      "Info Card key 컬럼을 가변 폭으로 — key 240px 고정 + value flex",
+      "삭제(위험) 액션을 solid/primary 로 또는 확인 Modal 없이 즉시 실행",
+      "데이터 항목 15개 초과를 한 카드에 나열 — Tab 으로 분리",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3614-367 (캐포비 Detail 패턴 — 여름 시즌 프로모션 상세)",
+        caption:
+          "Breadcrumb('목록 / OO 상세', '/' divider) + 제목 + 상태칩 + 우측 액션 + Underline 탭(기본정보/성과/히스토리) + Info Card(key 240 고정 / value flex, row 16/24 border-bottom).",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 상세 화면",
+        caption:
+          "Breadcrumb 없이 진입 + 상세 안에 인라인 편집 폼 + 삭제를 primary 버튼으로 확인 Modal 없이 — Detail 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-978 / pattern 3614-367)",
+      composition:
+        "01 Sidebar → 02 Breadcrumb → 03 Header+Status+Actions → 04 Tab(underline) → 05 Info Card",
+      shell: "admin-shell",
+      breadcrumb: "Body3/Subtle · divider '/' · itemSpacing 8",
+      pageHeader: "제목 Heading1 Bold 32/40 + 상태 ActionChip (gap 12) + 우측 액션 버튼",
+      tabs: "Underline (기본 정보 / 성과 / 히스토리 등)",
+      infoCardKeyWidth: "240px 고정",
+      infoCardValue: "flex",
+      keyValueRowPadding: "16/24",
+      keyValueRowBorder: "border-bottom 1px #F5F5F5 (--semantic-border-normal-subtle)",
+      deleteAction: "Outlined/Neutral · 우측 끝 · 확인 Modal 필수",
+      validateTabThreshold: "데이터 항목 > 15 → Tab 분리 (탭당 5~8)",
+      relatedPatterns:
+        "cashwalk-biz-page-patterns, admin-shell, cashwalk-biz-page-list, cashwalk-biz-page-form, card-section",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3614-367",
+    references: [
+      {
+        label: "캐포비 Detail 패턴 SSOT — 여름 시즌 프로모션 상세 (Figma 3614-367)",
+        image: "references/cashwalk-biz-detail-3614-367.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3614-367",
+        caption:
+          "Breadcrumb + 제목/상태칩/액션 + Underline 탭 + key-value Info Card. metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 Detail docs (Figma 3626-978)",
+        image: "references/cashwalk-biz-detail-docs-3626-978.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-978",
+        caption: "언제 사용 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+  "cashwalk-biz-page-form": {
+    name: "cashwalk-biz-page-form",
+    summary:
+      "캐시워크 포 비즈니스 어드민 **Form 패턴** — 다단계 입력으로 새 항목을 등록하는 화면. " +
+      "구성: 01 Sidebar → 01b Page Header(title+부제, 페이지 배경 위) → 02 Step Progress → 02b 안내 콜아웃(선택) → 03 Form Sections(FormSection 반복) → 04 Summary/Preview Panel(선택, 우측 400px) → 05 Footer Actions. " +
+      "**필드 단위 실측(라벨 컬럼·필드 높이·필수 마커 등)은 `pattern:cashwalk-biz-form-layout` 이 SSOT** — 이 패턴은 페이지 조립(Step/섹션/요약/Footer) + **PRD→컴포넌트 매핑**을 정의. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-1041 / pattern 3615-522 실측 반영.",
+    rules: [
+      "**언제 쓰나**: PRD 에 '등록 / 만들기 / 생성 / 신규 / Step' 키워드가 있고, 여러 정책 옵션을 단계별로 설정하거나 '캠페인 → 광고 → 소재'처럼 계층 구조를 등록할 때. **단건(한 화면, Step Progress 없음) 폼이면 이 page-form 이 아니라 `pattern:cashwalk-biz-form-layout` 이 페이지 SSOT** — 이름이 비슷하니 주의: 단건=form-layout, 다단계=page-form.",
+      "**01b Page Header**: 좌측 타이틀 Bold 32 **+ (있으면) 부제 16/24 #666**. **타이틀/부제 아래에 divider(라인·border-bottom·hr) 를 넣지 말 것** — 여백만으로 다음 영역과 분리한다. **페이지 배경 위에 얹는다 — 박스 sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 상세 px 는 `pattern:cashwalk-biz-form-layout` 의 페이지 헤더 참조(여기서 중복 정의 X).",
+      "**02 Step Progress**: 가로 막대 + Step N 라벨(Done / Current / Todo 상태). 다단계 등록일 때 사용 — Step ≥ 3 이면 필수. 영역 padding **32/48**, 하단 **border 1px**. 단건이면 생략.",
+      "**02b 안내 콜아웃 (선택)**: 폼 본문 위에 이 화면의 목적을 설명하는 안내 카드 — 제목(예 '캠페인이란?') + 본문 + (선택)다운로드 버튼('상품 소개서'·'광고 가이드', outlined + download 아이콘). 톤은 info(파랑 `--semantic-bg-status-info` #E5F2FF) 카드(radius 12·padding 24). **NoticeAlert(48px 인라인 strip)로 만들지 말 것** — 제목+본문+액션 버튼이 있는 멀티라인 안내는 별물(Card + 다운로드 Button). 한 화면에 1개, 폼 섹션 위에만.",
+      "**03 Form Sections**: **FormSection 컴포넌트 반복** — 각 섹션 = 제목(예: '광고 정보') + 설명 + 필드 슬롯(label-좌측 + 입력 + helper). 섹션 사이 gap **32px**. 필드 슬롯의 라벨 컬럼·필드 높이·필수 마커 등 px·색은 `pattern:cashwalk-biz-form-layout` 을 그대로 따른다(여기서 중복 정의 X).",
+      "**04 Summary / Preview Panel (선택)**: 메인 폼 우측 보조 패널 **400px** — 예상 성과·미리보기·입력 요약. 2컬럼 = 메인 폼(FILL) + 패널 400px. 없으면 단일 컬럼.",
+      "**05 Footer Actions**: 페이지 끝 Footer — **좌측 [이전 단계]·[임시저장] / 우측 [다음 단계]·[등록](Solid)**. **Step1(이전 단계 없음)은 좌측 [이전 단계] 대신 [목록으로](outlined + 좌측 chevron) + [임시저장], Step2+ 부터 [이전 단계]. 마지막 Step 우측은 [다음 단계] 대신 [등록](Solid).** Footer 영역 padding **24/48**, 상단 **border 1px**, 배경 `--semantic-bg-surface-default`, **뷰포트 하단 sticky 고정**(폼이 길어도 항상 보이게 — 본문과 같이 스크롤되는 인라인 바 아님). (단건 폼의 inline 센터 [취소][저장] 클러스터는 `cashwalk-biz-form-layout` 참조 — 다단계는 좌/우 분리 sticky Footer.)",
+      "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트. ready-made items 는 `pattern:cashwalk-biz-admin-sidebar` 복붙 + activeKey 만 변경.",
+      "**Validate — PRD → 컴포넌트 매핑(정량)**: 글자 ≤ 40 → **TextInput** / 글자 > 40 → **Textarea** / 단일 선택 ≤ 3 → **SelectionButtonGroup** / 단일 선택 > 3 → **Dropdown** / 다중 선택 → **CheckboxGroup** / ON·OFF 즉시 적용 → **Toggle** / 날짜·시간 → **DateInput** / 이미지·파일 → **ImageUpload**.",
+      "**Validate — 구조**: Step ≥ 3 → Step Progress 필수 / 필수 필드 → FormField `required=true` / 조건부 노출 → Boolean variant 또는 컨테이너 hide.",
+    ],
+    avoid: [
+      "**Page Header 타이틀 아래에 라인(divider·border-bottom·hr) 추가 — 금지.** 여백만으로 분리. PageHeader 컴포넌트면 `bordered` 끔.",
+      "필드 높이·라벨 컬럼·필수 마커 px 를 이 패턴에 중복 정의 (cashwalk-biz-form-layout 이 SSOT)",
+      "단건 폼에 불필요한 Step Progress — Step ≥ 3 일 때만",
+      "다단계 Footer 를 inline 센터 클러스터로 — 다단계는 좌(이전/임시저장)·우(다음/등록) 분리 sticky Footer + 상단 border",
+      "Step1 좌측을 [이전 단계]로 — 이전 단계가 없는 첫 Step 은 [목록으로]. 마지막 Step 우측은 [다음 단계] 가 아니라 [등록]",
+      "안내 콜아웃(제목+본문+다운로드 버튼)을 NoticeAlert(48px strip)로 — 멀티라인 안내 카드는 Card + 다운로드 Button(info 톤)",
+      "입력 타입을 임의 선택 — PRD→컴포넌트 매핑(글자수/선택수/타입)으로 결정",
+      "요약/미리보기 패널 폭을 400px 외로 임의 설정",
+    ],
+    examples: [
+      {
+        verdict: "good",
+        source: "Figma 3615-522 (캐포비 Form 패턴 — 다단계 광고 등록)",
+        caption:
+          "Step Progress(캠페인→광고그룹→소재) + 상단 안내 콜아웃('캠페인이란?' info 카드 + 상품 소개서/광고 가이드 다운로드 버튼) + FormSection 반복(광고 정보/기간/예산, 섹션 gap 32) + 우측 미리보기 패널 400px + Footer(Step1 좌 목록으로/임시저장 · 우 다음 단계 solid, 상단 border, sticky).",
+      },
+      {
+        verdict: "bad",
+        source: "잘못된 등록 폼",
+        caption:
+          "단건인데 Step Progress 부착 + 입력 타입을 매핑 없이 임의 선택 + Footer 를 inline 센터로 + 필드 px 를 여기서 재정의 — Form 패턴 위반.",
+      },
+    ],
+    metrics: {
+      status: "Figma 실측 반영 (docs 3626-1041 / pattern 3615-522)",
+      composition:
+        "01 Sidebar → 01b Page Header(title+부제, 페이지 배경 위) → 02 Step Progress → 02b 안내 콜아웃(선택) → 03 Form Sections → 04 Summary Panel(선택) → 05 Footer Actions",
+      shell: "admin-shell",
+      stepProgress:
+        "가로 막대 + Step N (Done/Current/Todo) · padding 32/48 · 하단 border 1px · Step≥3 필수",
+      formSectionGap: "32px (섹션 사이)",
+      twoColumn: "메인 폼(FILL) + Summary/Preview 패널 400px (선택)",
+      footer:
+        "좌 [이전 단계]·[임시저장] / 우 [다음 단계]·[등록](Solid) · Step1 좌측은 [목록으로](이전 단계 대신) · 마지막 Step 우측 [등록] · padding 24/48 · 상단 border 1px · bg surface · 뷰포트 하단 sticky",
+      introCallout:
+        "02b 안내 콜아웃(선택) — info 카드(`--semantic-bg-status-info` #E5F2FF · radius 12 · padding 24): 제목 + 본문 + (선택)다운로드 버튼(outlined+download). NoticeAlert(48px strip) 아님 = Card + Button",
+      fieldSpecSsot: "cashwalk-biz-form-layout (라벨 컬럼·필드 높이·필수 마커 px)",
+      prdComponentMapping:
+        "≤40자 TextInput · >40자 Textarea · 단일≤3 SelectionButtonGroup · 단일>3 Dropdown · 다중 CheckboxGroup · ON/OFF Toggle · 날짜 DateInput · 파일 ImageUpload",
+      requiredFieldProp: "FormField required=true",
+      conditionalField: "Boolean variant 또는 컨테이너 hide",
+      relatedPatterns:
+        "cashwalk-biz-page-patterns, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-input, cashwalk-biz-button, cashwalk-biz-step-progress, cashwalk-biz-tab",
+    },
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
+    references: [
+      {
+        label: "캐포비 Form 패턴 SSOT — 다단계 등록 (Figma 3615-522)",
+        image: "references/cashwalk-biz-form-pattern-3615-522.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
+        caption:
+          "Step Progress + FormSection 반복 + 우측 미리보기 패널 + 좌/우 분리 Footer. metrics 는 이 노드 실측 기준.",
+        brand: "cashwalk-biz",
+      },
+      {
+        label: "캐포비 Form docs — PRD→컴포넌트 매핑 포함 (Figma 3626-1041)",
+        image: "references/cashwalk-biz-form-docs-3626-1041.png",
+        url: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-1041",
+        caption:
+          "언제 사용 · Section 구조 · Layout Spec · Validate Rule(PRD→컴포넌트 매핑) 원문 스펙 문서.",
+        brand: "cashwalk-biz",
+      },
+    ],
+  },
+
+  "host-spacing": {
+    name: "host-spacing",
+    summary:
+      "NDS 웹컴포넌트(<nds-*>)는 light-DOM 미러라 호스트 엘리먼트가 `display: contents` 로 그려진다 — 호스트 자신은 박스를 만들지 않으므로 호스트에 직접 준 margin / padding / width / height / flex / gap / background / border 는 브라우저가 전부 무시한다. 간격·크기·레이아웃은 호스트가 아니라 호스트를 감싼 일반 div(또는 부모 컨테이너의 gap)에 준다. ('컴포넌트끼리 딱 붙음 / 모달 헤더 사라짐 / 여백 사라짐' 의 단일 근본 원인.)",
+    rules: [
+      "호스트(<nds-*>)에는 박스 스타일을 주지 않는다 — `display: contents` 라 margin/padding/width/height/flex/align-self/gap/background/border/box-shadow/position 이 전부 드롭된다.",
+      "간격이 필요하면 컴포넌트를 일반 `<div>` 로 감싸고 그 wrapper 에 margin/padding 을 준다. 또는 부모 컨테이너를 flex/grid 로 만들고 부모의 `gap`(semantic-gap-*)으로 컴포넌트 사이를 띄운다 — wrapper 보다 부모 gap 이 우선.",
+      '크기(width/height)가 필요해도 호스트가 아니라 wrapper 에 준다 (예: 폼 안에서 Select 를 240px 로 → `<div style="width:240px"><nds-select …></nds-select></div>`).',
+      "호스트에 줘도 되는 inline 스타일은 CSS 커스텀 프로퍼티뿐 — `--nds-*` / `--semantic-*` 변수(컴포넌트 슬롯·토큰 전달)와 `display: contents` 자신. 그 외 표준 박스 프로퍼티는 금지.",
+      "예외: `display: contents` 를 안 쓰는 소수 컴포넌트(brand-chrome / input-group / inspector)는 호스트 스타일이 먹지만, 일관성을 위해 동일하게 wrapper 패턴을 권장.",
+    ],
+    avoid: [
+      '<nds-selection-button-group style="margin-bottom:16px"> — 호스트 margin 무시 → 하단 패널과 딱 붙음. wrapper div 로 감쌀 것.',
+      '<nds-card style="padding:16px"> — 호스트 padding 무시. 카드 내부 여백은 nds-card-body 가 처리.',
+      '<nds-select style="width:240px"> — 호스트 width 무시. wrapper div 에 width.',
+      "컴포넌트 사이 간격을 호스트 margin 으로 주려는 모든 시도 — 부모 gap 또는 wrapper 로.",
+    ],
+    metrics: {
+      hostDisplay: "contents",
+      affectsComponents: "117 / 121 nds-* (제외: brand-chrome / input-group / inspector)",
+      droppedProps:
+        "margin / padding / width / height / flex / align-self / gap / background / border / box-shadow / position",
+      allowedOnHost: "--nds-* · --semantic-* custom properties · display:contents",
+      fix: "wrapper div 또는 부모 컨테이너 gap",
+      validatorRule: "nds-host-box-style",
     },
   },
 };

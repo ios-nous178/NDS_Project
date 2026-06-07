@@ -59,7 +59,7 @@ export const cmStyles = `
     align-items: center;
     padding: 2px var(--semantic-inset-chip);
     border-radius: 9999px;
-    background: ${"#91CAF6"};
+    background: ${cv.surface.brandSubtle};
     color: ${cv.textRole.brand};
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.semibold};
@@ -138,7 +138,7 @@ export const cmStyles = `
     border-radius: ${radius.md}px;
     border: none;
     background: ${cv.surface.brand};
-    color: #fff;
+    color: ${cv.button.textDefault};
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AvatarGroup } from "@nudge-design/react";
 
 const meta: Meta<typeof AvatarGroup> = {
-  title: "Components/AvatarGroup",
+  title: "Components/Display/AvatarGroup",
   component: AvatarGroup,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -31,7 +31,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Size/모든 크기",
+  name: "Variant/모든 크기",
   render: () => (
     <div
       style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}

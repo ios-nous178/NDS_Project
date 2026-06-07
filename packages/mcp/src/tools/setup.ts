@@ -31,6 +31,7 @@ import {
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
 import { createAgentsMd, createClaudeMd } from "./guides.js";
 import { ensureInspectorInMainTsx } from "./inspector-installer.js";
+import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
 
 export interface SetupContext {
   manifest: Manifest;
@@ -92,6 +93,13 @@ const HTML_REQUIRED_PACKAGES = [
   "@nudge-design/html",
   "@nudge-design/icons",
 ];
+
+export type BrandAssetKind =
+  | "logos"
+  | "snsLogos"
+  | "profileImages"
+  | "illustrations"
+  | "marathonEvents";
 
 /* ───────────── 패키지 조회 ───────────── */
 
@@ -562,104 +570,92 @@ export function getHtmlEntryImports(args: { brand?: string }) {
 }
 
 /**
- * Vite vanilla-ts 템플릿이 만드는 기본 style.css 를 덮어쓰는 minimal reset.
- * React 워크플로우의 MINIMAL_RESET_CSS 와 동일 — DS 컴포넌트 스타일을
- * :where(.nds-*) 가 직접 책임지므로 그대로 재사용해도 안전하다.
+ * 무번들러 html 목업의 index.html 출발점 — <nds-*> 사용처.
+ * vite/main.ts/import 없음: DS runtime/CSS 는 build_singlefile_html 이 자동 inline 한다.
+ * 브랜드는 <html data-brand="..."> 로 지정 — 빌드가 그 토큰을 inline 한다(미지정 시 기본 브랜드).
+ *
+ * 여러 화면 = .mockup-canvas 안에 .mockup-screen[data-device] 프레임을 나열한다. 각 스크린은
+ * 자기완결: 자체 헤더(+필요시 푸터) + device 최소높이라 내용이 짧아도 "화면"처럼 보인다.
+ * 화면이 2개 이상이면 런타임이 상단에 전환 탭을 자동 주입 — 기본 '탭'(한 번에 한 화면, 미리보기
+ * 친화), '전체' 토글로 옆으로 나란히 비교. 프레임 CSS/JS 는 빌드가 자동 inline(별도 <style> 불필요).
  */
-const HTML_MINIMAL_RESET_CSS = `/* nudge-ds minimal reset — vanilla HTML 워크플로우
- * tokens.css 이후 import 되어야 var(--font-family-default) 등이 적용된다.
- * @nudge-design/html/styles.css 이전 import 되어야 DS 컴포넌트 룰이 reset을 이긴다.
- */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-:where(html, body) {
-  margin: 0;
-  padding: 0;
-}
-
-:where(body) {
-  font-family: var(--font-family-default);
-  font-size: var(--font-size-body-2);
-  line-height: var(--line-height-body-2);
-  color: var(--semantic-text-default);
-  background: var(--semantic-bg-white);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-
-:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
-  margin: 0;
-}
-
-:where(a) {
-  color: inherit;
-  text-decoration: none;
-}
-
-:where(img, svg, video, canvas, audio, iframe) {
-  display: block;
-  max-width: 100%;
-}
-
-:where(ul, ol) {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-`;
-
-/** Vite vanilla-ts 템플릿의 src/main.ts 자리에 들어갈 최소 entry. */
-const HTML_MAIN_TS_TEMPLATE = `// nudge-ds vanilla HTML entry — DS 토큰 + 스타일 + runtime 등록
-// 자세한 작업 흐름은 CLAUDE.md 의 "산출물 형식 강제" 섹션 참고.
-
-// 1) 토큰 / 스타일 / reset — import 순서 중요
-import "@nudge-design/tokens/css";
-import "@nudge-design/html/styles.css";
-import "./index.css";
-
-// 2) <nds-*> custom element 등록 (side-effect)
-import "@nudge-design/html/runtime";
-
-// 3) 동적 코드는 여기에. <nds-*> 이벤트 바인딩 예시:
-//    document.querySelector("nds-button")?.addEventListener("click", () => {
-//      console.log("clicked");
-//    });
-`;
-
-/** Vite vanilla-ts 템플릿의 index.html 출발점 — <nds-*> 사용처. */
-const HTML_INDEX_HTML_TEMPLATE = `<!doctype html>
-<html lang="ko">
+function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
+  const brand = brandSlug ?? "nudge-eap";
+  return `<!doctype html>
+<html lang="ko"${brandAttr}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NudgeEAP Mockup</title>
   </head>
   <body>
-    <main id="app" style="max-width: 720px; margin: 0 auto; padding: var(--semantic-inset-screen);">
-      <nds-title-block level="h1" title="안녕하세요" subtitle="첫 번째 vanilla HTML 목업입니다"></nds-title-block>
+    <!-- 여러 화면을 디바이스 프레임으로 나열. data-device: mobile | webview | web | tablet
+         · 화면 2개 이상 → 상단 전환 탭 자동(기본 '탭', '전체'로 나란히 보기)
+         · 처음부터 나란히 보려면 <div class="mockup-canvas" data-mode="grid"> -->
+    <div class="mockup-canvas">
 
-      <div style="display: flex; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
-        <nds-button color="primary" variant="solid">상담 신청하기</nds-button>
-        <nds-button color="assistive" variant="outlined">자세히 보기</nds-button>
-      </div>
-    </main>
-    <script type="module" src="/src/main.ts"></script>
+      <!-- 화면 1: 홈 (모바일) — 브랜드 헤더는 손수 조립 금지, surface='mobile' 한 줄 -->
+      <section class="mockup-screen" data-device="mobile" data-label="홈">
+        <nds-brand-header brand="${brand}" surface="mobile"></nds-brand-header>
+        <main style="flex: 1; padding: var(--semantic-inset-screen);">
+          <nds-title-group level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-group>
+          <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
+            <nds-button color="primary" variant="solid" data-action="request-counseling">상담 신청하기</nds-button>
+            <nds-button color="assistive" variant="outlined" data-action="show-details">자세히 보기</nds-button>
+          </div>
+          <p id="home-feedback" aria-live="polite" style="margin-top: var(--semantic-gap-md); color: var(--semantic-text-secondary);"></p>
+        </main>
+      </section>
+
+      <!-- 화면 2: 상세 (모바일 웹뷰, surface='webview' = 뒤로가기 헤더) -->
+      <section class="mockup-screen" data-device="webview" data-label="상세">
+        <nds-brand-header brand="${brand}" surface="webview"></nds-brand-header>
+        <main style="flex: 1; padding: var(--semantic-inset-screen);">
+          <nds-title-group level="h1" title="상담 상세" subtitle="두 번째 화면입니다"></nds-title-group>
+          <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
+            <nds-button color="primary" variant="solid" data-action="complete-request">신청 완료하기</nds-button>
+          </div>
+          <p id="detail-feedback" aria-live="polite" style="margin-top: var(--semantic-gap-md); color: var(--semantic-text-secondary);"></p>
+        </main>
+      </section>
+
+      <!-- 웹(PC) 화면이 필요하면 data-device="web" 으로 추가:
+           <section class="mockup-screen" data-device="web" data-label="홈 (웹)">
+             <nds-brand-header brand="${brand}" surface="web" asset-base-url="/brand-logos"></nds-brand-header> … -->
+
+    </div>
+    <script type="application/json" data-prd-coverage>
+      {
+        "requirements": [
+          { "id": "R1", "requirement": "홈 화면에 상담 신청 CTA를 제공한다", "status": "implemented", "evidence": "[data-action='request-counseling']" },
+          { "id": "R2", "requirement": "상세 화면에 신청 완료 CTA를 제공한다", "status": "implemented", "evidence": "[data-action='complete-request']" },
+          { "id": "R3", "requirement": "모든 버튼은 클릭 시 사용자에게 상태 변화를 보여준다", "status": "implemented", "evidence": "#home-feedback, #detail-feedback" }
+        ]
+      }
+    </script>
+    <script>
+      const homeFeedback = document.querySelector("#home-feedback");
+      const detailFeedback = document.querySelector("#detail-feedback");
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.getAttribute("data-action");
+          if (action === "request-counseling") homeFeedback.textContent = "상담 신청 흐름을 시작했어요.";
+          if (action === "show-details") homeFeedback.textContent = "상세 화면에서 신청 내용을 확인할 수 있어요.";
+          if (action === "complete-request") detailFeedback.textContent = "신청이 완료된 상태로 표시했어요.";
+        });
+      });
+    </script>
+    <!-- DS runtime/CSS + 디바이스 프레임/스위처 는 build_singlefile_html 이 자동 inline 합니다. 인터랙션/PRD coverage 스크립트는 index.html 에 직접 둡니다. -->
   </body>
 </html>
 `;
+}
 
 function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
-  const { installMode, manifest, tgzDirDefault } = getCtx();
-  const tgzDir = args.tgzDir ? path.resolve(args.tgzDir) : tgzDirDefault;
-  const install = getInstallCommandHtml({ tgzDir });
-  // brand 별로 다른 토큰 CSS import 라인을 얻어 응답에 함께 노출한다.
-  const imports = getHtmlEntryImports({ brand: args.brand });
+  const { installMode, manifest } = getCtx();
+  const resolved = resolveBrand(args.brand);
+  const brandSlug = resolved.ok && resolved.brand ? resolved.brand.slug : undefined;
+  const brandAttr = brandSlug ? ` data-brand="${brandSlug}"` : "";
 
   const steps: Array<{
     step: number;
@@ -671,40 +667,16 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 
   steps.push({
     step: 1,
-    title: "Vite vanilla-ts 프로젝트 생성 (이미 있으면 건너뛰기)",
-    commands: [
-      "npm create vite@latest my-html-mockups -- --template vanilla-ts",
-      "cd my-html-mockups",
-    ],
-    note: "react-ts 가 아니라 vanilla-ts 템플릿을 사용한다. React 의존성이 없고 .ts + .html 만으로 충분.",
+    title: "목업 폴더 준비 (빌드 도구 불필요)",
+    commands: ["mkdir -p my-mockup && cd my-mockup"],
+    note:
+      "vite/npm/번들러가 필요 없습니다. 이 폴더에 index.html 하나만 두면 build_singlefile_html 이 " +
+      "DS runtime/CSS 를 자동 inline 합니다. (npm create vite / npm install @nudge-design/* 하지 마세요.)",
   });
 
   steps.push({
     step: 2,
-    title: "DS html 패키지 설치 (@nudge-design/html + tokens + icons)",
-    commands: [install.recommendedCommand],
-    note: install.note,
-  });
-
-  steps.push({
-    step: 3,
-    title: "src/main.ts 를 DS entry 로 교체",
-    code: HTML_MAIN_TS_TEMPLATE,
-    note: "Vite 템플릿이 만든 main.ts 를 덮어쓰기. import 순서가 중요 — tokens → styles → reset → runtime.",
-  });
-
-  steps.push({
-    step: 4,
-    title: "src/index.css 에 minimal reset 작성 (Vite 템플릿 기본 style.css 를 덮어쓰기)",
-    code: HTML_MINIMAL_RESET_CSS,
-    note:
-      "main.ts 가 './index.css' 를 import 하므로 파일명은 index.css 로 통일. " +
-      "DS 컴포넌트 스타일은 :where(.nds-*) 가 책임지므로 추가 reset 불필요.",
-  });
-
-  steps.push({
-    step: 5,
-    title: "시각 레퍼런스 수집 — references.md 작성",
+    title: "시각 레퍼런스 수집 + 기존 폴더 v2 확인 — references.md 작성",
     code:
       "# references.md\n" +
       "[good] source=<figma-url-or-image-name> caption=<why this is the target tone>\n" +
@@ -712,30 +684,13 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     note:
       "프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 코드 작성 전에 항상 사용자에게 확인 질문: " +
       '"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요." ' +
+      "또한 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 " +
+      '"동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?" 라고 묻고 답변 전 기존 폴더를 수정하지 않는다. 억지로 찾지는 말 것. ' +
       "references.md 또는 .references/ 가 없으면 build_singlefile_html 이 missing-visual-references 로 빌드를 차단한다.",
   });
 
   steps.push({
-    step: 6,
-    title: "index.html 을 <nds-*> 직접 작성으로 교체",
-    code: HTML_INDEX_HTML_TEMPLATE,
-    note:
-      "index.html 의 <body> 안에 <nds-*> 를 그대로 사용. " +
-      "이벤트는 addEventListener('nds-*-change' 등) 로 main.ts 에서 바인딩. " +
-      "코드 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져온다.",
-  });
-
-  steps.push({
-    step: 7,
-    title: "기본 폴더 구조 생성",
-    commands: ["mkdir -p src/mockups prds docs"],
-    note:
-      "src/mockups/ 하위에 각 화면별 .html 을 두고, index.html 에서 link 하거나 별도 entry 로 빌드. " +
-      "추가 entry 가 필요하면 vite.config.ts 의 rollupOptions.input 에 등록.",
-  });
-
-  steps.push({
-    step: 8,
+    step: 3,
     title: "에이전트 지침 파일 생성 — CLAUDE.md + AGENTS.md",
     commands: [
       "get_setup({ step: 'claude-md', cwd: '<프로젝트 루트>' })",
@@ -744,6 +699,66 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     note:
       "두 파일은 같은 템플릿을 사용합니다. Claude Code 는 CLAUDE.md, Codex/일반 에이전트는 AGENTS.md 를 읽으므로 " +
       "DS 버전/사용량 뱃지, Google Sheets POST 상태, 간격/텍스트기호/누락 항목 보고 게이트가 양쪽에 모두 들어가야 합니다.",
+  });
+
+  steps.push({
+    step: 4,
+    title: "index.html 을 <nds-*> 로 직접 작성",
+    code: htmlIndexTemplate(brandAttr, brandSlug),
+    note:
+      "DS runtime/CSS 는 빌드가 자동 inline 하므로 <script>/import 가 필요 없습니다. " +
+      (brandSlug
+        ? `<html data-brand="${brandSlug}"> 로 브랜드 토큰이 적용됩니다. `
+        : '브랜드는 <html data-brand="<slug>"> 로 지정하세요(get_brand 로 확인). 미지정 시 기본 브랜드. ') +
+      "컴포넌트 예시는 get_guide({ topic: 'component:<Name>', target: 'html' }) 로 가져옵니다. " +
+      "【헤더/푸터】 사용자 앱 화면이면 base <nds-header> 를 손수 조립하지 말고 <nds-brand-header brand surface='web|mobile|webview'> / <nds-brand-footer> 한 줄을 쓰세요(BrandHeader/BrandFooter 가이드). " +
+      "【여러 화면】 한 파일에 여러 화면을 그릴 땐 .mockup-canvas > .mockup-screen[data-device='mobile|webview|web|tablet'] 프레임으로 나열 — 각 스크린은 자체 헤더(+필요시 푸터)+device 최소높이로 자기완결시킵니다(높이를 내용에 맡기지 말 것). 화면 2개 이상이면 상단 전환 탭이 자동 생성(기본 '탭'=한 번에 한 화면·미리보기 친화, '전체'=나란히 비교; data-mode='grid' 로 처음부터 나란히). get_guide({ topic: 'pattern:multi-screen' }). " +
+      "【버튼/인터랙션】 모든 활성 버튼은 data-action/id + addEventListener('click', ...) 로 실제 상태 변경을 만듭니다. validate_html_mockup 의 button-without-interaction 룰이 버튼별로 잡습니다. " +
+      "【PRD 커버리지】 사용자 요구사항을 <script type='application/json' data-prd-coverage> 에 전부 남기고 evidence selector 를 실제 DOM 에 연결합니다. build 는 missing-prd-coverage 로 누락을 차단하고, validate_prd_coverage / build.prdValidation 이 미완료 항목을 DS 점수와 별도로 검증합니다. " +
+      "【이미지】 DS 자산 이미지는 get_brand 의 inlineRef(@nudge-design/assets/files/…) 규약으로 <img src> 에 쓰면 빌드가 base64 inline(내부·외부 모두 보임). 상대경로 /…/x.png 는 단일 파일에서 깨집니다.",
+  });
+
+  steps.push({
+    step: 5,
+    title: "아이콘 — find_icon 으로 inline SVG 받기",
+    commands: [
+      "find_icon({ query: '<검색어>' })   // 후보 이름 찾기",
+      "find_icon({ name: '<IconName>' })  // 붙여넣을 inline svg 반환",
+    ],
+    note:
+      "find_icon({ name }) 응답의 svg 필드를 <nds-icon-button> 등 안에 그대로 붙여 넣으세요(npm 설치 불필요). " +
+      "색은 부모의 color/currentColor 를 상속합니다. 이모지·텍스트 기호 금지(validate 의 emoji-banned/text-symbol-banned).",
+  });
+
+  steps.push({
+    step: 6,
+    title: "정적 검증 루프 — validate_html_mockup (withStats 로 채택률 포함)",
+    commands: [
+      "validate_html_mockup({ filePath: '<프로젝트>/index.html' })",
+      "validate_html_mockup({ filePath: '<프로젝트>/index.html', withStats: true })",
+    ],
+    note:
+      "validate_html_mockup 위반 0건 + withStats.counts.dsRatio 충분히 높은 상태를 DS ship 기준으로 사용. " +
+      "button-without-interaction 은 DS/static 품질 error 입니다. PRD/brief 누락은 validate_prd_coverage 또는 build_singlefile_html.prdValidation 으로 별도 확인합니다.",
+  });
+
+  steps.push({
+    step: 7,
+    title: "최종 산출물 빌드 — 단일 dist/index.html",
+    commands: ["build_singlefile_html({ cwd: '<프로젝트>' })"],
+    note:
+      "JS · CSS · <nds-*> runtime · DS 이미지까지 전부 inline 된 1개 파일. " +
+      "html intent 는 빌드가 validate + usage report 까지 자동 실행합니다. 번들러/npm 불필요. " +
+      "완료 응답에는 반드시 산출물 full 절대경로를 포함하고, 상대경로 dist/index.html 만으로 끝내지 않습니다.",
+  });
+
+  steps.push({
+    step: 8,
+    title: "미리보기 (dev 서버 불필요)",
+    note:
+      "dist/index.html 은 자체완결이라 브라우저로 그냥 열면 됩니다(file://). 메신저 dnd/첨부로 공유해도 그대로 열립니다. " +
+      "Nudge Studio 데스크톱 앱이라면 미리보기 패널이 자동으로 dist 를 띄웁니다. " +
+      "사용자에게 전달할 때는 full 절대경로를 함께 적습니다.",
   });
 
   if (installMode === "mcpb") {
@@ -765,59 +780,14 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     });
   }
 
-  steps.push({
-    step: 10,
-    title: "동작 확인 (dev 서버)",
-    commands: ["npm run dev"],
-    note:
-      "MCP 의 dev_server({ action: 'start' }) 로 띄운 미리보기 URL 을 브라우저에서 직접 열어 " +
-      "런타임 에러 / 빈 화면 / unknown custom-element 경고 여부 확인.",
-  });
-
-  steps.push({
-    step: 11,
-    title: "정적 검증 루프 — validate_html_mockup / analyze_html_mockup",
-    commands: [
-      "// .html 작성/수정 직후마다 호출:",
-      "validate_html_mockup({ filePath: '<프로젝트>/src/mockups/<이름>.html' })",
-      "// 채택 비율 / native 잔존 확인:",
-      "analyze_html_mockup({ filePath: '<프로젝트>/src/mockups/<이름>.html' })",
-    ],
-    note:
-      "validate_html_mockup 위반 0건 + analyze_html_mockup.dsRatio 충분히 높은 상태를 ship 기준으로 사용. " +
-      "최종 산출물은 build_singlefile_html 이 만든 단일 dist/index.html — intent='html' 자동 감지로 " +
-      "vite-plugin-singlefile 만 패치/설치되며 React 도구는 안 끌어들인다.",
-  });
-
-  steps.push({
-    step: 12,
-    title: "최종 산출물 빌드 — 단일 dist/index.html",
-    commands: [
-      "// JS · CSS · @nudge-design/html runtime 까지 전부 inline 된 1개 파일:",
-      "build_singlefile_html({ cwd: '<프로젝트>' })",
-    ],
-    note:
-      "결과 humanReadable 을 사용자에게 그대로 전달 — 디자이너/PM 에게 메신저 dnd / 첨부로 공유 가능합니다. " +
-      "MCP 가 vite-plugin-singlefile 자동 설치 + vite.config 패치까지 처리합니다.",
-  });
-
   return {
     intent: "html",
+    bundler: "none",
     _advisory:
-      "이 셋업은 vanilla HTML / Web Component (<nds-*>) 워크플로우용입니다. " +
-      "일반 목업은 intent 를 생략하거나 'html' 로 두고, 어드민이면 'admin-cms' 로 지정하세요.",
-    summary: {
-      tgzDir,
-      requiredPackages: HTML_REQUIRED_PACKAGES,
-      optionalPackages: ["@nudge-design/tailwind-preset"],
-      installReady: install.ready,
-      resolvedBrand: imports.resolvedBrand,
-      brandResolvedImports: imports.code,
-    },
-    dependencyGraph: manifest.packages.map((p) => ({
-      name: p.name,
-      dependsOn: Object.keys(p.dependencies).filter((d) => d.startsWith("@nudge-design/")),
-    })),
+      "vanilla HTML / Web Component(<nds-*>) 워크플로우 — vite/npm/번들러 없이 build_singlefile_html 이 " +
+      "DS runtime/CSS 를 자동 inline 합니다. 어드민(antd)만 vite react-ts 가 필요하며 intent='admin-cms' 로 분기됩니다.",
+    resolvedBrand: brandSlug,
+    availableBrands: resolved.availableBrands,
     steps,
   };
 }
@@ -843,27 +813,21 @@ function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: strin
     };
   }
 
-  const { tgzDirDefault } = getCtx();
-  const tgzDir = args.tgzDir ? path.resolve(args.tgzDir) : tgzDirDefault;
-  const install = getInstallCommandHtml({ tgzDir });
-  const imports = getHtmlEntryImports({ brand: args.brand });
+  const resolved = resolveBrand(args.brand);
   return {
     intent: "html",
     mode: "summary",
-    tgzDir,
-    installReady: install.ready,
-    command: install.recommendedCommand,
-    resolvedBrand: imports.resolvedBrand,
-    importTarget: imports.targetFile,
-    importCode: imports.code,
+    bundler: "none",
+    resolvedBrand: resolved.ok && resolved.brand ? resolved.brand.slug : undefined,
     steps: [
-      "Create or open a Vite vanilla-ts mockup project.",
-      "Install @nudge-design/html + tokens + icons using `command`.",
-      "Use the returned importCode in src/main.ts.",
-      "Create both CLAUDE.md and AGENTS.md so Claude/Codex receive the same mockup gates.",
+      "Create or open a plain folder for the mockup (no vite/npm — the build inlines DS runtime/CSS).",
       "Collect visual references first and save them in references.md.",
-      "Write root index.html with real <nds-*> elements.",
-      "Validate/analyze, preview, then build_singlefile_html.",
+      "If an obvious same-PRD/same-screen folder is visible in the current workspace, ask whether to create a v2 before editing anything.",
+      "Create both CLAUDE.md and AGENTS.md so Claude/Codex receive the same mockup gates.",
+      'Write index.html with real <nds-*> elements (set <html data-brand="..."> for brand tokens). No <script>/imports needed.',
+      "Use find_icon({ name }) to get paste-ready inline SVGs for icons.",
+      "Validate/analyze, then build_singlefile_html to get a self-contained dist/index.html.",
+      "Open dist/index.html directly to preview (no dev server) and include its full absolute path in the final response.",
     ],
     nextTools: [
       "get_guide({ topic: 'principles' })",
@@ -871,12 +835,12 @@ function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: strin
       "get_setup({ step: 'agents-md', cwd: '<project>' })",
       "get_guide({ topic: 'pattern:visual-reference' })",
       "get_guide({ topic: 'component:Button', target: 'html' })",
+      "find_icon({ name: '<IconName>' })",
       "validate_html_mockup({ filePath: 'index.html' })",
-      "analyze_html_mockup({ filePath: 'index.html' })",
       "build_singlefile_html({})",
     ],
     _hint:
-      "Call get_setup({ step: 'full', intent: 'html', mode: 'full' }) for detailed setup with templates.",
+      "Call get_setup({ step: 'full', intent: 'html', mode: 'full' }) for detailed vite-free setup.",
   };
 }
 
@@ -1225,16 +1189,24 @@ export function listBrands() {
 /**
  * get_brand 통합 라우터 — 옛 list_brands + get_brand_info 진입점.
  *  - 인자 없음 → 모든 브랜드 목록
- *  - { brand: '<slug>' } → 해당 브랜드 풀 정보 + 목록도 함께
+ *  - { brand: '<slug>' } → 해당 브랜드 요약 + 목록도 함께
+ *  - { brand: '<slug>', assetKind } → 해당 자산 종류의 상세 파일 목록까지
  */
-export function getBrand(args: { brand?: string }) {
+export function getBrand(args: { brand?: string; assetKind?: BrandAssetKind }) {
   const list = listBrands();
   if (!args.brand) return list;
-  const detail = getBrandInfo({ brand: args.brand });
-  return { ...list, detail };
+  const detail = getBrandInfo({ brand: args.brand, assetKind: args.assetKind });
+  // detail 호출에선 전체 브랜드 메타(description·cssImport·version·primaryColor)는 중복 →
+  // 다른 브랜드는 slug/name/ready 로스터로만 축약. 한-화면-한-브랜드 룰(note)은 유지.
+  return {
+    count: list.count,
+    brands: list.brands.map((b) => ({ slug: b.slug, name: b.name, ready: b.ready })),
+    note: list.note,
+    detail,
+  };
 }
 
-export function getBrandInfo(args: { brand: string }) {
+export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }) {
   const slug = args.brand;
   const brandsList = getManifestBrands();
   const brand = brandsList.find((b) => b.slug === slug);
@@ -1306,108 +1278,135 @@ export function getBrandInfo(args: { brand: string }) {
       })
     : [];
 
-  return {
-    ok: true,
-    ...brand,
-    brandIcons,
-    brandComponents,
-    iconPolicy:
-      brandIcons.length > 0
-        ? `이 브랜드 모드(brand='${slug}') 로 작업 시 위 ${brandIcons.length}개 아이콘은 같은 의미의 공용 아이콘보다 **우선 사용**. 매칭이 없는 의미만 공용 fallback. 공통 컴포넌트(Footer/BottomNav 등) 의 *구현* 에는 brand 분기 로직을 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.`
-        : `이 브랜드 전용 prefix 아이콘은 아직 없습니다. 공용 @nudge-design/icons 의 아이콘을 그대로 사용하세요.`,
-    assets: {
-      logos: {
-        package: "@nudge-design/assets",
-        variants: logoVariants,
-        files: logoFiles,
-        importExample:
+  const fullAssets = {
+    logos: {
+      package: "@nudge-design/assets",
+      variants: logoVariants,
+      files: logoFiles,
+      importExample:
+        logoVariants.length > 0
+          ? `import { getBrandLogo } from "@nudge-design/assets";\nconst logo = getBrandLogo("${slug}"${logoVariants[0] === "default" ? "" : `, "${logoVariants[0]}"`});\n// → { filename, dataUri, mimeType }`
+          : null,
+      publicHosting: {
+        baseDir: "public/brand-logos/",
+        assetBaseUrlAttr: "/brand-logos",
+        note:
           logoVariants.length > 0
-            ? `import { getBrandLogo } from "@nudge-design/assets";\nconst logo = getBrandLogo("${slug}"${logoVariants[0] === "default" ? "" : `, "${logoVariants[0]}"`});\n// → { filename, dataUri, mimeType }`
-            : null,
-        publicHosting: {
-          baseDir: "public/brand-logos/",
-          assetBaseUrlAttr: "/brand-logos",
-          note:
-            logoVariants.length > 0
-              ? `외부 소비자가 헤더/푸터(<BrandHeader brand='${slug}' /> 또는 <nds-brand-header brand='${slug}'>)를 사용할 때 위 'files' 의 파일들을 public/brand-logos/ 에 호스팅. asset-base-url 미지정 시 default '/brand-logos' 사용.`
-              : `'${slug}' 브랜드는 아직 로고 자산이 등록되지 않았습니다. packages/assets/src/brand-logos/ 에 추가 후 brand-logo-metadata.ts 에 등록.`,
-        },
+            ? `외부 소비자가 헤더/푸터(<BrandHeader brand='${slug}' /> 또는 <nds-brand-header brand='${slug}'>)를 사용할 때 위 'files' 의 파일들을 public/brand-logos/ 에 호스팅. asset-base-url 미지정 시 default '/brand-logos' 사용.`
+            : `'${slug}' 브랜드는 아직 로고 자산이 등록되지 않았습니다. packages/assets/src/brand-logos/ 에 추가 후 brand-logo-metadata.ts 에 등록.`,
       },
-      snsLogos: snsForBrand
+    },
+    snsLogos: snsForBrand
+      ? {
+          package: "@nudge-design/assets",
+          services: snsForBrand,
+          files: snsFiles,
+          importExample: `import { getSnsLogo } from "@nudge-design/assets";\nconst logo = getSnsLogo("naver", "main");\n// → { filename, dataUri, mimeType, figmaNodeId }`,
+          publicHosting: {
+            baseDir: "public/sns-logos/",
+            note: `Runmile 라이브러리 (Figma 107:1045) 의 SNS 로그인 버튼 자산. 4 서비스(naver/kakao/google/apple) × 색상(white/main/black) 조합. 외부 소비자가 SNS 로그인 화면을 만들 때 \`public/sns-logos/{service}-{color}.svg\` 로 호스팅하거나, dataUri 로 직접 인라인.`,
+          },
+        }
+      : null,
+    profileImages:
+      slug === "runmile"
         ? {
             package: "@nudge-design/assets",
-            services: snsForBrand,
-            files: snsFiles,
-            importExample: `import { getSnsLogo } from "@nudge-design/assets";\nconst logo = getSnsLogo("naver", "main");\n// → { filename, dataUri, mimeType, figmaNodeId }`,
+            ids: PROFILE_IMAGE_IDS,
+            files: PROFILE_IMAGE_IDS.map((id) => ({
+              id,
+              filename: PROFILE_IMAGE_METADATA[id].filename,
+              mimeType: PROFILE_IMAGE_METADATA[id].mimeType,
+              figmaNodeId: PROFILE_IMAGE_METADATA[id].figmaNodeId,
+              source: PROFILE_IMAGE_METADATA[id].source,
+              inlineRef: `@nudge-design/assets/files/${PROFILE_IMAGE_METADATA[id].filename}`,
+              publicPath: `/${PROFILE_IMAGE_METADATA[id].filename}`,
+            })),
+            importExample: `// ① 단일 HTML 목업 (build_singlefile_html 가 base64 inline) — 이게 기본:\n<img src="@nudge-design/assets/files/profile-images/profile-1.jpg" width="24" height="24" alt="" />\n// ② React/호스팅 앱: import { getProfileImage } from "@nudge-design/assets"; getProfileImage(1) → { filename, mimeType, figmaNodeId, source }, public/ 호스팅 후 /profile-images/profile-1.jpg`,
             publicHosting: {
-              baseDir: "public/sns-logos/",
-              note: `Runmile 라이브러리 (Figma 107:1045) 의 SNS 로그인 버튼 자산. 4 서비스(naver/kakao/google/apple) × 색상(white/main/black) 조합. 외부 소비자가 SNS 로그인 화면을 만들 때 \`public/sns-logos/{service}-{color}.svg\` 로 호스팅하거나, dataUri 로 직접 인라인.`,
+              baseDir: "public/profile-images/",
+              note: `Runmile 라이브러리 21:136 의 사용자 프로필 기본 이미지 12종. id 1/2/9~12 는 단일 raster export (원본 사진/일러스트, ~600KB max), id 3~8 은 Figma screenshot flatten 24×24 (~1.5KB). **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 규약을 <img src> 에 그대로 써라 — build_singlefile_html 이 base64 로 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/profile-images/…)는 단일 파일에 안 박혀 깨진다(호스팅 앱 전용).** dataUri 메타데이터는 미제공(inline 은 빌드가 처리).`,
             },
           }
         : null,
-      profileImages:
-        slug === "runmile"
-          ? {
-              package: "@nudge-design/assets",
-              ids: PROFILE_IMAGE_IDS,
-              files: PROFILE_IMAGE_IDS.map((id) => ({
-                id,
-                filename: PROFILE_IMAGE_METADATA[id].filename,
-                mimeType: PROFILE_IMAGE_METADATA[id].mimeType,
-                figmaNodeId: PROFILE_IMAGE_METADATA[id].figmaNodeId,
-                source: PROFILE_IMAGE_METADATA[id].source,
-                publicPath: `/${PROFILE_IMAGE_METADATA[id].filename}`,
-              })),
-              importExample: `import { getProfileImage } from "@nudge-design/assets";\nconst meta = getProfileImage(1);\n// → { filename: "profile-images/profile-1.jpg", mimeType, figmaNodeId, source }`,
-              publicHosting: {
-                baseDir: "public/profile-images/",
-                note: `Runmile 라이브러리 21:136 의 사용자 프로필 기본 이미지 12종. id 1/2/9~12 는 단일 raster export (원본 사진/일러스트, ~600KB max), id 3~8 은 Figma screenshot flatten 24×24 (~1.5KB). 모두 파일 호스팅으로 사용 — dataUri 미제공.`,
-              },
-            }
-          : null,
-      illustrations:
-        slug === "runmile"
-          ? {
-              package: "@nudge-design/assets",
-              ids: ILLUSTRATION_IDS,
-              files: ILLUSTRATION_IDS.map((id) => ({
-                id,
-                filename: ILLUSTRATION_METADATA[id].filename,
-                mimeType: ILLUSTRATION_METADATA[id].mimeType,
-                figmaNodeId: ILLUSTRATION_METADATA[id].figmaNodeId,
-                figmaNodeName: ILLUSTRATION_METADATA[id].figmaNodeName,
-                publicPath: `/${ILLUSTRATION_METADATA[id].filename}`,
-              })),
-              importExample: `import { getIllustration } from "@nudge-design/assets";\nconst meta = getIllustration("page-error");\n// → { filename: "illustrations/page-error.png", mimeType: "image/png", figmaNodeId, figmaNodeName }`,
-              publicHosting: {
-                baseDir: "public/illustrations/",
-                note: `Runmile 라이브러리 55:955 의 빈 상태 / 에러 / 알람 일러스트 10종 (140×140 PNG). Figma screenshot flatten 으로 export (원본은 multi-layer composite). 파일 호스팅으로 사용.`,
-              },
-            }
-          : null,
-      marathonEvents:
-        slug === "runmile"
-          ? {
-              package: "@nudge-design/assets",
-              ids: MARATHON_EVENT_IDS,
-              files: MARATHON_EVENT_IDS.map((id) => ({
-                id,
-                filename: MARATHON_EVENT_METADATA[id].filename,
-                filename3x: MARATHON_EVENT_METADATA[id].filename3x,
-                mimeType: MARATHON_EVENT_METADATA[id].mimeType,
-                figmaNodeId: MARATHON_EVENT_METADATA[id].figmaNodeId,
-                figmaNodeName: MARATHON_EVENT_METADATA[id].figmaNodeName,
-                publicPath: `/${MARATHON_EVENT_METADATA[id].filename}`,
-                publicPath3x: `/${MARATHON_EVENT_METADATA[id].filename3x}`,
-              })),
-              importExample: `import { getMarathonEvent } from "@nudge-design/assets";\nconst meta = getMarathonEvent("hangang-night-run");\n// → { filename: "marathon-events/hangang-night-run.png", filename3x: "...@3x.png", mimeType, figmaNodeName: "한강나이트런" }\n// srcset 예: <img src={\`/\${meta.filename}\`} srcSet={\`/\${meta.filename} 2x, /\${meta.filename3x} 3x\`} width={180} height={180} />`,
-              publicHosting: {
-                baseDir: "public/marathon-events/",
-                note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종. Figma 원본 래스터에서 재export: base 360×360 (2x) + @3x 540×540 (3x). srcset '2x/3x' 로 사용하고 180×180 슬롯에 렌더. 댕댕이레이스/개나리런/포켓몬런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
-              },
-            }
-          : null,
-    },
+    illustrations:
+      slug === "runmile"
+        ? {
+            package: "@nudge-design/assets",
+            ids: ILLUSTRATION_IDS,
+            files: ILLUSTRATION_IDS.map((id) => ({
+              id,
+              filename: ILLUSTRATION_METADATA[id].filename,
+              mimeType: ILLUSTRATION_METADATA[id].mimeType,
+              figmaNodeId: ILLUSTRATION_METADATA[id].figmaNodeId,
+              figmaNodeName: ILLUSTRATION_METADATA[id].figmaNodeName,
+              inlineRef: `@nudge-design/assets/files/${ILLUSTRATION_METADATA[id].filename}`,
+              publicPath: `/${ILLUSTRATION_METADATA[id].filename}`,
+            })),
+            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline) — 기본:\n<img src="@nudge-design/assets/files/illustrations/page-error.png" width="140" height="140" alt="" />\n// ② React/호스팅 앱: import { getIllustration } from "@nudge-design/assets"; getIllustration("page-error") → { filename, mimeType, figmaNodeId, figmaNodeName }`,
+            publicHosting: {
+              baseDir: "public/illustrations/",
+              note: `Runmile 라이브러리 55:955 의 빈 상태 / 에러 / 알람 일러스트 10종 (140×140 PNG). Figma screenshot flatten 으로 export. **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 를 <img src> 에 쓰면 build_singlefile_html 이 base64 inline. 상대경로(/illustrations/…)는 단일 파일에서 깨짐(호스팅 앱 전용).**`,
+            },
+          }
+        : null,
+    marathonEvents:
+      slug === "runmile"
+        ? {
+            package: "@nudge-design/assets",
+            ids: MARATHON_EVENT_IDS,
+            files: MARATHON_EVENT_IDS.map((id) => ({
+              id,
+              filename: MARATHON_EVENT_METADATA[id].filename,
+              filename3x: MARATHON_EVENT_METADATA[id].filename3x,
+              mimeType: MARATHON_EVENT_METADATA[id].mimeType,
+              figmaNodeId: MARATHON_EVENT_METADATA[id].figmaNodeId,
+              figmaNodeName: MARATHON_EVENT_METADATA[id].figmaNodeName,
+              inlineRef: `@nudge-design/assets/files/${MARATHON_EVENT_METADATA[id].filename}`,
+              inlineRef3x: `@nudge-design/assets/files/${MARATHON_EVENT_METADATA[id].filename3x}`,
+              publicPath: `/${MARATHON_EVENT_METADATA[id].filename}`,
+              publicPath3x: `/${MARATHON_EVENT_METADATA[id].filename3x}`,
+            })),
+            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline, srcset 토큰까지 치환) — 기본:\n<img src="@nudge-design/assets/files/marathon-events/hangang-night-run.png"\n     srcset="@nudge-design/assets/files/marathon-events/hangang-night-run.png 2x, @nudge-design/assets/files/marathon-events/hangang-night-run@3x.png 3x"\n     width="180" height="180" alt="한강나이트런" />\n// ② React/호스팅 앱: import { getMarathonEvent } from "@nudge-design/assets"; getMarathonEvent("hangang-night-run") → { filename, filename3x, mimeType, figmaNodeName }, public/ 호스팅 후 /marathon-events/…`,
+            publicHosting: {
+              baseDir: "public/marathon-events/",
+              note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종. base 360×360 (2x) + @3x 540×540 (3x), srcset 으로 180×180 슬롯에 렌더. **단일 HTML 목업이면 inlineRef / inlineRef3x(@nudge-design/assets/files/…) 를 src·srcset 에 그대로 써라 — build_singlefile_html 이 두 토큰 모두 base64 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/marathon-events/…)는 단일 파일에서 깨짐(호스팅 앱 전용).** 댕댕이레이스/개나리런/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
+            },
+          }
+        : null,
+  };
+
+  const assetSummary = {
+    logos: { count: logoFiles.length, variants: logoVariants },
+    snsLogos: snsForBrand ? { count: snsFiles.length, services: snsForBrand } : null,
+    profileImages: slug === "runmile" ? { count: PROFILE_IMAGE_IDS.length } : null,
+    illustrations: slug === "runmile" ? { count: ILLUSTRATION_IDS.length } : null,
+    marathonEvents: slug === "runmile" ? { count: MARATHON_EVENT_IDS.length } : null,
+  };
+  const selectedAsset = args.assetKind ? fullAssets[args.assetKind] : undefined;
+
+  return {
+    ok: true,
+    ...brand,
+    brandIconCount: brandIcons.length,
+    brandComponentCount: brandComponents.length,
+    brandIconLookup:
+      brandIcons.length > 0 ? `find_icon({ query: '${brandComponentPrefix}' })` : undefined,
+    brandComponentLookup:
+      brandComponents.length > 0 ? `find_component({ query: '${componentPrefix}' })` : undefined,
+    iconPolicy:
+      brandIcons.length > 0
+        ? `이 브랜드 모드(brand='${slug}') 에는 브랜드 전용 아이콘 ${brandIcons.length}개가 있습니다. 실제 SVG 삽입 전 ${`find_icon({ query: '${brandComponentPrefix}' })`} 로 후보를 확인하고 공용 아이콘보다 우선 사용하세요.`
+        : `이 브랜드 전용 prefix 아이콘은 아직 없습니다. 공용 @nudge-design/icons 의 아이콘을 그대로 사용하세요.`,
+    assetSummary,
+    _assetHint:
+      "Default get_brand detail is summary-only. Pass assetKind:'logos'|'snsLogos'|'profileImages'|'illustrations'|'marathonEvents' to fetch one detailed asset list.",
+    ...(args.assetKind
+      ? {
+          assetKind: args.assetKind,
+          assets: { [args.assetKind]: selectedAsset ?? null },
+        }
+      : {}),
     usage: {
       cssImport: brand.cssImport
         ? `import "${brand.cssImport}";`
@@ -1468,6 +1467,7 @@ function resolveBrand(input?: string): {
  *     - "update"    → getUpdateInstructions({ source?, includeLocalPackages? })
  *     - "claude-md" → createClaudeMd({ cwd?, projectName?, overwrite?, intent? })
  *     - "agents-md" → createAgentsMd({ cwd?, projectName?, overwrite?, intent? })
+ *     - "external-starter" → CLAUDE.md + AGENTS.md + .mcp.json + 검증 루프 + 프롬프트 템플릿 한 번에
  *     - "full"      → getSetupInstructions({ ...all }) — 외부 mockup 프로젝트 셋업 전 과정
  *
  * 모든 추가 args 는 top-level optional. step 별로 사용하는 필드만 적용된다.
@@ -1479,9 +1479,90 @@ export const SETUP_STEPS = [
   "claude-md",
   "agents-md",
   "inspector",
+  "external-starter",
   "full",
 ] as const;
 export type SetupStep = (typeof SETUP_STEPS)[number];
+
+/* ───────────── external-starter (도구 중립 온보딩) ───────────── */
+
+/**
+ * MCP 서버 등록 안내 — Claude Code / Cursor / Codex 공용 .mcp.json + claude mcp add 명령.
+ * 경로는 기존 getSetupInstructions(step:'full') 의 server.js 경로와 동일 SSOT.
+ */
+function getMcpConfigSetup() {
+  const { installMode, manifest } = getCtx();
+  const serverPath = path.join(manifest.repoRoot, "packages/mcp/dist/server.js");
+  const mcpJson = JSON.stringify(
+    { mcpServers: { "nudge-ds": { command: "node", args: [serverPath] } } },
+    null,
+    2,
+  );
+  return {
+    serverPath,
+    // 프로젝트 루트 .mcp.json — Claude Code · Cursor · Codex 등 .mcp.json 규약을 읽는 도구가 공유.
+    mcpJson,
+    claudeCodeCommand: `claude mcp add nudge-ds --scope project -- node ${serverPath}`,
+    claudeDesktopNote:
+      installMode === "mcpb"
+        ? "Claude Desktop 사용자는 nudge-ds.mcpb 를 더블클릭해 한 번 설치하면 .mcp.json 없이 모든 프로젝트에서 자동 활성화됩니다."
+        : "Claude Desktop 은 nudge-ds.mcpb(Desktop Extension) 더블클릭 설치도 가능합니다.",
+    note:
+      "프로젝트 루트에 위 mcpJson 을 .mcp.json 으로 저장하면 Claude Code · Cursor · Codex 등 .mcp.json 규약을 읽는 도구가 공유합니다. " +
+      "Claude Code 만 쓰면 claudeCodeCommand 한 줄로도 등록됩니다.",
+  };
+}
+
+/** 권장 검증 루프 — validate → build → score. 외부 에이전트가 산출 직후 따라야 할 순서. */
+function getValidationLoopSummary() {
+  return [
+    {
+      step: 1,
+      tool: "validate_html_mockup({ filePath })",
+      why: "DS 토큰·간격·네이티브 요소·아이콘·패턴·active-button 위반을 정적 검사.",
+    },
+    {
+      step: 2,
+      tool: "build_singlefile_html({})",
+      why: "단일 dist/index.html 산출 — 빌드가 DS 검증 + PRD 커버리지 + usage report 를 자동 실행. DS error 가 있으면 빌드를 막는다(allowIncomplete 로만 우회).",
+    },
+    {
+      step: 3,
+      tool: "score_mockup_quality({ filePath })",
+      why: "D1(코드) + D2(정성 LLM) 품질 점수와 통과/주의/미달 verdict — 사용자에게 그대로 보여줄 카드.",
+    },
+  ];
+}
+
+/** "NDS 써서 ..." 재사용 프롬프트 템플릿. 브랜드가 캐포비면 어드민 Page-Pattern 템플릿을 덧붙인다. */
+function getNdsPromptTemplates(brand?: string) {
+  const brandSlug = canonicalBrandSlug(brand);
+  const brandClause = brandSlug ? `${brandSlug} 브랜드로 ` : "";
+  const templates = [
+    {
+      title: "화면 목업 (NDS 우선)",
+      prompt: `NDS(Nudge DS)로 ${brandClause}<화면 이름> 목업 만들어줘. 먼저 시각 레퍼런스(Figma 링크/스크린샷)부터 물어보고, find_component / get_guide 로 DS 컴포넌트를 조회해서 raw HTML 없이 <nds-*> 로 작성해줘.`,
+    },
+    {
+      title: "기능 구현 (컴포넌트·토큰 우선)",
+      prompt:
+        "이 기능을 NDS 컴포넌트로 구현해줘. find_component 로 맞는 컴포넌트를, find_token 으로 색·간격 토큰(--semantic-*)을 먼저 조회하고, 하드코딩 hex/px 없이 작성해줘.",
+    },
+    {
+      title: "검증 루프",
+      prompt:
+        "목업이 끝나면 build_singlefile_html 로 단일 파일을 산출하고 score_mockup_quality 로 품질 점수(D1+D2)까지 사용자에게 보여줘.",
+    },
+  ];
+  if (brandSlug === "cashwalk-biz") {
+    templates.push({
+      title: "캐포비 어드민 (Page Pattern 먼저)",
+      prompt:
+        "캐포비 어드민 <화면> 만들어줘. 코드 전에 recommend_page_pattern 으로 Page Pattern(Onboarding/Dashboard/List/Detail/Form)을 고르고 save_design_spec 으로 pagePattern 을 선언해 design-spec.json 을 먼저 저장한 뒤 빌드해줘. (이 단계 없으면 build_singlefile_html 이 막는다.)",
+    });
+  }
+  return templates;
+}
 
 export function getSetup(args: {
   step: string;
@@ -1508,11 +1589,24 @@ export function getSetup(args: {
   switch (step) {
     case "install":
       return isHtmlIntent
-        ? getInstallCommandHtml({ tgzDir: args.tgzDir })
+        ? {
+            intent: "html",
+            required: false,
+            message:
+              "html(vanilla <nds-*>) 목업은 DS 패키지 설치가 필요 없습니다 — build_singlefile_html 이 " +
+              "DS runtime/CSS 를 자동 inline 합니다(vite/npm 불필요). 어드민(antd)만 설치가 필요하며 " +
+              "get_setup({ step:'install', intent:'admin-cms' }) 로 호출하세요.",
+          }
         : getInstallCommand({ tgzDir: args.tgzDir, includeTailwind: args.includeTailwind });
     case "imports":
       return isHtmlIntent
-        ? getHtmlEntryImports({ brand: args.brand })
+        ? {
+            intent: "html",
+            required: false,
+            message:
+              "html 목업은 src/main.ts 임포트가 필요 없습니다(번들러 없음). index.html 에 <nds-*> 만 작성하면 " +
+              'build_singlefile_html 이 DS runtime/CSS 를 inline 합니다. 브랜드는 <html data-brand="<slug>"> 로 지정.',
+          }
         : getMainTsxImports({ brand: args.brand });
     case "update": {
       // 옛 check_mcp_update 도구 흡수 — 업데이트 안내와 GitHub Releases 의 최신 .mcpb 정보를 한 번에.
@@ -1553,6 +1647,55 @@ export function getSetup(args: {
       }
       const cwd = args.cwd ? path.resolve(args.cwd) : process.cwd();
       return { cwd, ...ensureInspectorInMainTsx(cwd) };
+    }
+    case "external-starter": {
+      // 외부 프로젝트 도구-중립 온보딩 — CLAUDE.md + AGENTS.md + .mcp.json + 검증 루프 + 프롬프트 템플릿.
+      // 파일 생성은 기존 createClaudeMd / createAgentsMd 재사용(둘 다 nudge.brand 마커도 박는다).
+      const claudeMd = createClaudeMd({
+        cwd: args.cwd,
+        projectName: args.projectName,
+        overwrite: args.overwrite,
+        intent: args.intent,
+        brand: args.brand,
+        template: args.template,
+      });
+      const agentsMd = createAgentsMd({
+        cwd: args.cwd,
+        projectName: args.projectName,
+        overwrite: args.overwrite,
+        intent: args.intent,
+        brand: args.brand,
+        template: args.template,
+      });
+      const filesOk = claudeMd.ok === true && agentsMd.ok === true;
+      return {
+        ok: filesOk,
+        step: "external-starter",
+        intent: resolveEffectiveIntent(args.intent, args.brand),
+        brand: canonicalBrandSlug(args.brand) ?? null,
+        files: {
+          claudeMd: {
+            ok: claudeMd.ok === true,
+            filePath: claudeMd.filePath,
+            error: claudeMd.error,
+          },
+          agentsMd: {
+            ok: agentsMd.ok === true,
+            filePath: agentsMd.filePath,
+            error: agentsMd.error,
+          },
+        },
+        mcpConfig: getMcpConfigSetup(),
+        validationLoop: getValidationLoopSummary(),
+        promptTemplates: getNdsPromptTemplates(args.brand),
+        nextSteps: [
+          filesOk
+            ? "CLAUDE.md + AGENTS.md 생성 완료 — Claude Code 와 Codex 가 같은 DS 규칙을 읽습니다."
+            : "일부 파일이 이미 존재합니다. overwrite: true 로 다시 호출하면 덮어씁니다(files[].error 확인).",
+          "mcpConfig.mcpJson 을 프로젝트 루트 .mcp.json 으로 저장(또는 mcpConfig.claudeCodeCommand 실행)해 MCP 서버를 등록하세요.",
+          "IDE/세션을 재시작해 새 지침을 적용한 뒤 promptTemplates 의 프롬프트로 시작하세요.",
+        ],
+      };
     }
     case "full":
       if (args.mode !== "full") {

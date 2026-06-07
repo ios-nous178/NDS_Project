@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { MultiStepForm } from "@nudge-design/react";
 
 const meta: Meta<typeof MultiStepForm> = {
-  title: "Components/MultiStepForm",
+  title: "Components/Layout/MultiStepForm",
   component: MultiStepForm,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

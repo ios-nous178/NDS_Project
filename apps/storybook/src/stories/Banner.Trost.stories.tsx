@@ -12,6 +12,14 @@ export default meta;
 type Story = StoryObj;
 
 const TROST_ONELINK = "https://trost.onelink.me/";
+const TROST_DOWNLOAD_APP_IMAGE =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDYiIGhlaWdodD0iMTMwIiB2aWV3Qm94PSIwIDAgMTA2IDEzMCI+PHJlY3Qgd2lkdGg9IjEwNiIgaGVpZ2h0PSIxMzAiIHJ4PSIxNCIgZmlsbD0iI0RERTlGRiIvPjxyZWN0IHg9IjE2IiB5PSIxOCIgd2lkdGg9Ijc0IiBoZWlnaHQ9Ijk0IiByeD0iMTAiIGZpbGw9IiNGRkZGRkYiLz48cmVjdCB4PSIyNyIgeT0iMzIiIHdpZHRoPSI1MiIgaGVpZ2h0PSI1MiIgcng9IjEyIiBmaWxsPSIjNDk2OEZGIiBvcGFjaXR5PSIwLjE0Ii8+PHBhdGggZD0iTTUzIDQwdjI4bTAgMCAxMC0xMG0tMTAgMTAtMTAtMTBNMzggODBoMzAiIHN0cm9rZT0iIzQ5NjhGRiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48dGV4dCB4PSI1MyIgeT0iMTAyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPlRyb3N0IEFwcDwvdGV4dD48L3N2Zz4=";
+const TROST_CHANNEL_TOGGLE_IMAGE =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCAxMDAgNjAiPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNjAiIHJ4PSIxMiIgZmlsbD0iI0Y0RjVGNyIvPjxyZWN0IHg9IjgiIHk9IjEyIiB3aWR0aD0iODQiIGhlaWdodD0iMzYiIHJ4PSIxOCIgZmlsbD0iI0ZGRkZGRiIgc3Ryb2tlPSIjRDhEOEQ4Ii8+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMTMiIGZpbGw9IiM0OTY4RkYiLz48cmVjdCB4PSI0NiIgeT0iMjEiIHdpZHRoPSIyOCIgaGVpZ2h0PSIxOCIgcng9IjkiIGZpbGw9IiNFM0U5RkYiLz48L3N2Zz4=";
+const TROST_ATOZ_IMAGE =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MiIgaGVpZ2h0PSI3MiIgdmlld0JveD0iMCAwIDcyIDcyIj48cmVjdCB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHJ4PSIxMiIgZmlsbD0iI0VDRUZGRiIvPjx0ZXh0IHg9IjM2IiB5PSIzMSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5BPC90ZXh0Pjx0ZXh0IHg9IjM2IiB5PSI1MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNDk2OEZGIj5aPC90ZXh0Pjwvc3ZnPg==";
+const TROST_BANNER_FULL_IMAGE =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NjAiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgOTYwIDI1NiI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeDI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNFQ0VGRkYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNEQ0U2RkYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iOTYwIiBoZWlnaHQ9IjI1NiIgcng9IjI4IiBmaWxsPSJ1cmwoI2cpIi8+PHJlY3QgeD0iNTYiIHk9IjU2IiB3aWR0aD0iNDQwIiBoZWlnaHQ9IjE0NCIgcng9IjIwIiBmaWxsPSIjRkZGRkZGIi8+PHRleHQgeD0iODgiIHk9IjEyMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjM0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5Ucm9zdCBBcHAgRG93bmxvYWQ8L3RleHQ+PHRleHQgeD0iODgiIHk9IjE2MiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmb250LXdlaWdodD0iNDAwIiBmaWxsPSIjNDk2OEZGIj5TbGVlcCAmIGhlYWxpbmcgc291bmQ8L3RleHQ+PHJlY3QgeD0iNTk2IiB5PSI0OCIgd2lkdGg9IjI2MCIgaGVpZ2h0PSIxNjAiIHJ4PSIyMiIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC45Ii8+PGNpcmNsZSBjeD0iNzI2IiBjeT0iMTI4IiByPSI1MCIgZmlsbD0iIzQ5NjhGRiIgb3BhY2l0eT0iMC4xOCIvPjxwYXRoIGQ9Ik03MjYgODR2NTZtMCAwIDIwLTIwbS0yMCAyMC0yMC0yMCIgc3Ryb2tlPSIjNDk2OEZGIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=";
 
 export const AppDownload: Story = {
   name: "Desktop/앱 다운로드 배너",
@@ -21,7 +29,7 @@ export const AppDownload: Story = {
       description="더 많은 수면/힐링 사운드를 트로스트 앱에서 들어보세요."
       actionLabel="앱 다운로드 하기"
       actionHref={TROST_ONELINK}
-      imageSrc="/images/home/img-download-app.webp"
+      imageSrc={TROST_DOWNLOAD_APP_IMAGE}
       imageAlt="트로스트 앱"
       imageWidth={106}
       imageHeight={130}
@@ -84,7 +92,7 @@ export const AppDownload: Story = {
           </a>
         </div>
         <img
-          src="https://assets.trost.co.kr/images/home/img-download-app.webp"
+          src={TROST_DOWNLOAD_APP_IMAGE}
           alt="앱"
           width={106}
           height={130}
@@ -118,7 +126,7 @@ export const CashtalkSubs: Story = {
         }}
       >
         <img
-          src="https://assets.trost.co.kr/images/home/img-trost-channel-toggle.webp"
+          src={TROST_CHANNEL_TOGGLE_IMAGE}
           alt=""
           width={100}
           height={60}
@@ -194,7 +202,7 @@ export const AtoZGuide: Story = {
           </div>
         </div>
         <img
-          src="https://assets.trost.co.kr/images/home/img-atoz-guide.webp"
+          src={TROST_ATOZ_IMAGE}
           alt=""
           width={72}
           height={72}
@@ -218,8 +226,7 @@ export const MobileDownload: Story = {
     <Banner
       variant="image"
       href={TROST_ONELINK}
-      fullImageSrc="https://assets.trost.co.kr/images/home/img-banner-trost-download.webp"
-      fullImageSrcSet="https://assets.trost.co.kr/images/home/img-banner-trost-download.webp 320w, https://assets.trost.co.kr/images/home/img-banner-trost-download@2x.webp 640w, https://assets.trost.co.kr/images/home/img-banner-trost-download@3x.webp 960w"
+      fullImageSrc={TROST_BANNER_FULL_IMAGE}
       imageAlt="트로스트 앱 다운로드"
       style={{ aspectRatio: "360 / 96" }}
     />

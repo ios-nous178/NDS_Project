@@ -8,6 +8,9 @@ const ST_INDICATOR_CLASS = `${ST_CLASS}__indicator`;
 const ST_LABEL_CLASS = `${ST_CLASS}__label`;
 const ST_CONNECTOR_CLASS = `${ST_CLASS}__connector`;
 const ST_CHECK_CLASS = `${ST_CLASS}__check`;
+const ST_BAR_CLASS = `${ST_CLASS}__bar`;
+const ST_STEP_CLASS = `${ST_CLASS}__step`;
+const ST_TITLE_CLASS = `${ST_CLASS}__title`;
 
 export const stepperStyles = `
   :where(.${ST_ROOT_CLASS}) {
@@ -54,12 +57,12 @@ export const stepperStyles = `
 
   :where(.${ST_ITEM_CLASS}[data-state="current"] .${ST_INDICATOR_CLASS}) {
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
   }
 
   :where(.${ST_ITEM_CLASS}[data-state="completed"] .${ST_INDICATOR_CLASS}) {
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
   }
 
   :where(.${ST_INDICATOR_CLASS}[data-variant="dots"]) {
@@ -116,5 +119,57 @@ export const stepperStyles = `
 
   :where(.${ST_ITEM_CLASS}[data-state="completed"] .${ST_CONNECTOR_CLASS}) {
     background: ${cv.surface.brand};
+  }
+
+  /* ── variant="bar" (구 StepProgress — 가로 막대 + 2단 라벨) ── */
+
+  :where(.${ST_ROOT_CLASS}[data-variant="bar"]) {
+    gap: var(--semantic-gap-default);
+  }
+
+  :where(.${ST_ITEM_CLASS}[data-variant="bar"]) {
+    flex: 1 1 0;
+    align-items: stretch;
+    gap: var(--semantic-gap-default);
+  }
+
+  :where(.${ST_BAR_CLASS}) {
+    height: 8px;
+    width: 100%;
+    border-radius: 6px;
+    background: ${cv.borderRole.normal};
+    transition: background-color ${transition.default};
+  }
+
+  :where(.${ST_ITEM_CLASS}[data-state="current"] .${ST_BAR_CLASS}),
+  :where(.${ST_ITEM_CLASS}[data-state="completed"] .${ST_BAR_CLASS}) {
+    background: ${cv.surface.brand};
+  }
+
+  :where(.${ST_LABEL_CLASS}[data-variant="bar"]) {
+    display: flex;
+    gap: 5px;
+    align-items: baseline;
+    text-align: left;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    font-weight: ${fontWeight.regular};
+    color: ${cv.textRole.subtle};
+    word-break: keep-all;
+  }
+
+  :where(.${ST_ITEM_CLASS}[data-state="completed"] .${ST_LABEL_CLASS}[data-variant="bar"]) {
+    color: ${cv.textRole.normal};
+    font-weight: ${fontWeight.medium};
+  }
+
+  :where(.${ST_ITEM_CLASS}[data-state="current"] .${ST_LABEL_CLASS}[data-variant="bar"]) {
+    color: ${cv.textRole.strong};
+    font-weight: ${fontWeight.bold};
+  }
+
+  :where(.${ST_STEP_CLASS}),
+  :where(.${ST_TITLE_CLASS}) {
+    white-space: nowrap;
   }
 `;

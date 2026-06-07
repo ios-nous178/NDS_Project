@@ -37,14 +37,12 @@ export const gap = {
   wide: 24,
 } as const;
 
-// Gap/Title — 헤딩 ↔ 서브타이틀 간격 (Figma TitleGapGuide 859:5614)
-// 6개 페이지 58건 실측 기반 — level 별 표준값
 export const gapTitle = {
-  h1: 12, // 36px Bold · Hero
-  h2: 12, // 28px Bold · 큰 섹션 · 다이얼로그 헤더
-  h3: 12, // 24px Bold · 페이지 헤더
-  h4: 6, // 20px Bold · ★ 카드 헤딩 (가장 자주)
-  h5: 8, // 18px Bold · ★ 서브 헤딩 (가장 자주)
+  h1: 12,
+  h2: 12,
+  h3: 12,
+  h4: 6,
+  h5: 8,
 } as const;
 
 export const inset = {

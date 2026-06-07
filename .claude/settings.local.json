@@ -56,7 +56,20 @@
       "Bash(rtk ls *)",
       "Bash(rtk grep *)",
       "Bash(rtk git *)",
-      "Bash(rtk read *)"
+      "Bash(rtk read *)",
+      "Read(//Users/eprnf/Downloads/[퍼포멘토] 배너광고 구조 및 UIUX 개선_광고주CMS_v1.0.1/**)",
+      "Bash(rm -f /tmp/crops/*)",
+      "Bash(sips -c 1094 1430 --cropOffset 0 0 \"Background+Shadow-27.png\" --out \"/tmp/crops/27_full.png\")",
+      "Bash(sips -Z 3400 \"/tmp/crops/27_full.png\" --out \"/tmp/crops/27_full_big.png\")",
+      "Bash(sips -c 560 1430 --cropOffset 0 0 \"Background+Shadow-27.png\" --out \"/tmp/crops/27_top.png\")",
+      "Bash(sips -c 547 1907 --cropOffset 0 0 \"Background+Shadow-27.png\" --out \"/tmp/crops/27_t.png\")",
+      "Bash(sips -c 547 1907 --cropOffset 547 0 \"Background+Shadow-27.png\" --out \"/tmp/crops/27_b.png\")",
+      "Bash(sips -Z 3814 \"/tmp/crops/27_t.png\" --out \"/tmp/crops/27_t_big.png\")",
+      "Bash(sips -c 300 1907 --cropOffset 60 0 \"Background+Shadow-27.png\" --out \"/tmp/crops/27_u.png\")",
+      "Bash(sips -Z 3814 \"/tmp/crops/27_u.png\" --out \"/tmp/crops/27_u_big.png\")",
+      "Bash(sips -g pixelWidth -g pixelHeight /tmp/crops/27_u_big.png)",
+      "Bash(sips -c 250 1430 --cropOffset 820 0 \"Background+Shadow-24.png\" --out \"/tmp/crops/24_bl.png\")",
+      "Bash(sips -Z 3000 \"/tmp/crops/24_bl.png\" --out \"/tmp/crops/24_bl_big.png\")"
     ]
   },
   "enabledMcpjsonServers": ["nudge-design-system", "apps-in-toss", "nudge-ds"]

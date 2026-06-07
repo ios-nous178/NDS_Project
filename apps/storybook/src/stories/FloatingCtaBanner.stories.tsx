@@ -17,7 +17,7 @@ function SaladIllustration() {
 }
 
 const meta: Meta<typeof FloatingCtaBanner> = {
-  title: "Components/FloatingCtaBanner",
+  title: "Components/Domain/FloatingCtaBanner",
   component: FloatingCtaBanner,
   parameters: {
     layout: "centered",

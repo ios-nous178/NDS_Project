@@ -4,7 +4,7 @@ import { DownloadIcon, EditIcon, InfoIcon } from "@nudge-design/icons";
 import React from "react";
 
 const meta: Meta<typeof ActionChip> = {
-  title: "Components/ActionChip",
+  title: "Components/Controls/ActionChip",
   component: ActionChip,
   parameters: {
     layout: "centered",
@@ -24,7 +24,7 @@ type Story = StoryObj<typeof ActionChip>;
 /* ─── Example: 예시 이미지 ─── */
 
 export const Example: Story = {
-  name: "Example (예시 이미지)",
+  name: "Variant/Example (예시 이미지)",
   args: {
     icon: <InfoIcon width={14} height={14} />,
     label: "예시 이미지",
@@ -34,7 +34,7 @@ export const Example: Story = {
 /* ─── Edit ─── */
 
 export const Edit: Story = {
-  name: "Edit (수정)",
+  name: "Variant/Edit (수정)",
   args: {
     icon: <EditIcon width={14} height={14} />,
     label: "수정",
@@ -44,7 +44,7 @@ export const Edit: Story = {
 /* ─── Download ─── */
 
 export const Download: Story = {
-  name: "Download (다운로드)",
+  name: "Variant/Download (다운로드)",
   args: {
     icon: <DownloadIcon width={14} height={14} />,
     label: "다운로드",
@@ -72,7 +72,7 @@ export const Disabled: Story = {
 /* ─── ActionChip Group ─── */
 
 export const Group: Story = {
-  name: "Group (helper 영역 예시)",
+  name: "Recipe/helper 영역 예시",
   render: () => (
     <div style={{ display: "inline-flex", gap: 8 }}>
       <ActionChip icon={<InfoIcon width={14} height={14} />} label="예시 이미지" />

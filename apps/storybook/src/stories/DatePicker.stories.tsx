@@ -4,7 +4,7 @@ import { DatePicker, FormField } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/DatePicker",
+  title: "Components/Inputs/DatePicker",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -23,7 +23,13 @@ function BasicExample() {
   const [date, setDate] = useState<Date>();
   return (
     <div style={{ width: 280 }}>
-      <DatePicker value={date} onChange={setDate} fullWidth />
+      <DatePicker
+        value={date}
+        onChange={setDate}
+        allowClear
+        onClear={() => setDate(undefined)}
+        fullWidth
+      />
     </div>
   );
 }
@@ -38,6 +44,24 @@ function FutureOnlyExample() {
       <FormField label="상담 희망일" required helper="오늘부터 3개월 이내로 선택해주세요">
         <DatePicker value={date} onChange={setDate} minDate={today} maxDate={max} fullWidth />
       </FormField>
+    </div>
+  );
+}
+
+function DisabledDateExample() {
+  const [date, setDate] = useState<Date>();
+  return (
+    <div style={{ width: 320 }}>
+      <DatePicker
+        value={date}
+        onChange={setDate}
+        disabledDate={(d) => d.getDay() === 0 || d.getDay() === 6}
+        status="warning"
+        placeholder="평일만 선택"
+        allowClear
+        onClear={() => setDate(undefined)}
+        fullWidth
+      />
     </div>
   );
 }
@@ -61,5 +85,9 @@ function DisabledExample() {
 
 export const Basic: Story = { name: "기본", render: () => <BasicExample /> };
 export const Booking: Story = { name: "상담 예약 (min/max)", render: () => <FutureOnlyExample /> };
+export const DisabledDates: Story = {
+  name: "선택 불가 날짜",
+  render: () => <DisabledDateExample />,
+};
 export const PreFilled: Story = { name: "초기값 있음", render: () => <PreFilledExample /> };
 export const Disabled: Story = { name: "비활성화", render: () => <DisabledExample /> };

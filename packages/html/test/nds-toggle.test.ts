@@ -14,6 +14,24 @@ describe("nds-toggle — DOM parity with React Toggle", () => {
     expect(customElements.get("nds-toggle")).toBe(NdsToggle);
   });
 
+  it("exposes a host .checked property (read + write) like native input", async () => {
+    const el = document.createElement("nds-toggle") as InstanceType<typeof NdsToggle>;
+    document.body.appendChild(el);
+    await flush();
+
+    expect(el.checked).toBe(false);
+
+    el.checked = true;
+    await flush();
+    expect(el.hasAttribute("checked")).toBe(true);
+    expect((el.querySelector("input") as HTMLInputElement).checked).toBe(true);
+    expect(el.checked).toBe(true);
+
+    el.checked = false;
+    await flush();
+    expect(el.checked).toBe(false);
+  });
+
   it("renders label root, switch input, track, thumb, and label slot", async () => {
     const el = document.createElement("nds-toggle");
     el.setAttribute("checked", "");
@@ -165,5 +183,51 @@ describe("nds-toggle — DOM parity with React Toggle", () => {
     await flush();
     expect(input.id).toBe("notify-toggle-2");
     expect(root.htmlFor).toBe("notify-toggle-2");
+  });
+});
+
+describe("nds-toggle — 라벨 내장(status) 변형 + tone", () => {
+  const setup = async (attrs: Record<string, string>) => {
+    const el = document.createElement("nds-toggle");
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    document.body.appendChild(el);
+    await flush();
+    return el;
+  };
+
+  it("on-label/off-label 이 있으면 data-labeled=true + 두 라벨 모두 렌더(고정폭)", async () => {
+    const el = await setup({ "on-label": "노출", "off-label": "미노출" });
+    const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
+    expect(track.dataset.labeled).toBe("true");
+    // 두 라벨을 한 셀에 스택 → 셀 폭=긴 라벨 기준이라 상태가 바뀌어도 트랙 width 동일.
+    const on = el.querySelector('[data-slot="inner-label"][data-state="on"]');
+    const off = el.querySelector('[data-slot="inner-label"][data-state="off"]');
+    expect(on?.textContent).toBe("노출");
+    expect(off?.textContent).toBe("미노출");
+  });
+
+  it("checked 여부와 무관하게 on/off 라벨이 모두 존재(활성 라벨만 CSS 로 표시 — 고정폭)", async () => {
+    const el = await setup({ "on-label": "노출", "off-label": "미노출", checked: "" });
+    // 고정폭의 핵심: 두 라벨 항상 렌더(비활성은 visibility:hidden 으로 자리만 차지).
+    expect(el.querySelectorAll('[data-slot="inner-label"]').length).toBe(2);
+    const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
+    expect(track.dataset.checked).toBe("true");
+    // 활성(보이는) 라벨은 on-label. 라벨↔썸 좌우 위치는 CSS order 가 결정(DOM 순서 아님).
+    expect(el.querySelector('[data-slot="inner-label"][data-state="on"]')?.textContent).toBe(
+      "노출",
+    );
+  });
+
+  it('tone="success" 는 track data-tone=success', async () => {
+    const el = await setup({ "on-label": "노출", tone: "success", checked: "" });
+    const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
+    expect(track.dataset.tone).toBe("success");
+  });
+
+  it("on/off-label 없으면 data-labeled=false + inner-label 없음", async () => {
+    const el = await setup({ label: "알림" });
+    const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
+    expect(track.dataset.labeled).toBe("false");
+    expect(el.querySelector('[data-slot="inner-label"]')).toBeNull();
   });
 });

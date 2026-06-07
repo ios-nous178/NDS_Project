@@ -1,225 +1,307 @@
 ---
 sidebar_position: 10
 title: MCP 도구 레퍼런스
-description: nudge-ds MCP 서버가 제공하는 15개 도구의 용도/입력/대표 사용 시점 정리
+description: nudge-ds MCP 서버가 제공하는 17개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
 ---
+
+<!-- AUTO-GENERATED FILE. SSOT: packages/mcp/src/tools/registry.ts (TOOLS 배열). 본문을 바꾸려면 registry.ts 를 고치고 `pnpm generate:mcp-tools` 를 다시 실행하세요. 손으로 편집하지 마세요. -->
+<!-- markdownlint-disable MD024 MD033 MD036 -->
 
 # MCP 도구 레퍼런스
 
-`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **15개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 어떤 상황에 어떤 도구가 쓰이는지 한눈에 보여주는 레퍼런스입니다.
+`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **17개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
 
 > 사용 흐름과 환경 설치는 [MCP 사용 가이드](/NUDGE_DS_MCP_USAGE) 를 먼저 참고하세요.
-> 단일 출처: `packages/mcp/src/tools/registry.ts` (도구 정의) + `packages/mcp/src/tools/guides.ts` / `setup.ts` (핸들러).
-
-> 💡 **2026-Q2 통합 안내 — 도구 이름이 바뀌었습니다**
-> 옛 21개 도구는 15개로 통합됐습니다. 옛 이름으로 호출하면 `Unknown tool` 에러가 납니다.
 >
-> | 옛 이름                                                                                                                                  | 새 호출                                          |
-> | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-> | `list_brands` / `get_brand_info`                                                                                                          | **`get_brand`** (인자 없거나 `{ brand }`)        |
-> | `list_components` / `get_component` / `search_component`                                                                                  | **`find_component`** (인자 없거나 `{ query }`/`{ name }`) |
-> | `list_icons`                                                                                                                              | **`find_icon`** (인자 없으면 전체)               |
-> | `list_tokens` / `lookup_token`                                                                                                            | **`find_token`** (`{ group }` 또는 `{ query }`)   |
-> | `start_dev_server` / `stop_dev_server`                                                                                                    | **`dev_server`** (`{ action: 'start' \| 'stop' }`) |
-> | `get_design_principles` / `get_dos_and_donts` / `get_admin_cms_guide` / `get_scope_advisory` / `get_inspector_setup` / `get_component_guide` / `get_pattern_guide` | **`get_guide({ topic })`**                       |
-> | `get_install_command` / `get_main_tsx_imports` / `get_update_instructions` / `create_claude_md` / `get_setup_instructions`                | **`get_setup({ step })`**                        |
-> | `get_export_html_instructions`                                                                                                            | **`build_singlefile_html`** (액션 도구 — 실제 빌드까지) |
+> 옛 도구 이름(`validate_mockup` · `report_mockup_usage` · `check_preview` · `list_packages` · `check_mcp_update` · `list_brands` 등)으로 호출하면 `Unknown tool` 에러가 납니다. 현재 유효한 도구는 아래 표가 SSOT 입니다.
+
+## 한눈에 보기
+
+| 카테고리                               | 개수   | 도구                                                                                                                                                    |
+| -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 브랜드 · 컴포넌트 · 아이콘 · 토큰 조회 | 4      | `get_brand` · `find_component` · `find_icon` · `find_token`                                                                                             |
+| 가이드 · 패턴 · 원칙                   | 2      | `get_guide` · `list_figma_sync_status`                                                                                                                  |
+| 설계 보조 (DesignSpec · 페이지 패턴)   | 3      | `recommend_page_pattern` · `save_design_spec` · `validate_design_spec`                                                                                  |
+| 목업 빌드 · 검증 · 변환                | 6      | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
+| Dev 서버 / 미리보기                    | 1      | `dev_server`                                                                                                                                            |
+| 외부 프로젝트 셋업                     | 1      | `get_setup`                                                                                                                                             |
+| **합계**                               | **17** |                                                                                                                                                         |
 
 ---
 
-## 카테고리별 한눈 보기
+## 브랜드 · 컴포넌트 · 아이콘 · 토큰 조회
 
-| 카테고리              | 도구 개수 | 도구                                                            |
-| --------------------- | --------- | --------------------------------------------------------------- |
-| 브랜드 / 컴포넌트     | 2         | `get_brand`, `find_component`                                   |
-| 아이콘 / 토큰         | 2         | `find_icon`, `find_token`                                       |
-| 가이드 (통합)         | 2         | `get_guide`, `list_figma_sync_status`                           |
-| 검증 / 집계           | 3         | `validate_mockup`, `suggest_replacement`, `report_mockup_usage` |
-| Dev 서버 / 미리보기   | 2         | `dev_server`, `check_preview`                                   |
-| HTML 빌드             | 1         | `build_singlefile_html`                                         |
-| 외부 프로젝트 셋업    | 2         | `get_setup`, `list_packages`                                    |
-| 유지보수              | 1         | `check_mcp_update`                                              |
+작업 전 어떤 브랜드/컴포넌트/아이콘/토큰을 쓸지 정하는 조회 도구들. 모두 **인자 없으면 목록, 있으면 상세** 패턴이다. (목업/화면 작업은 먼저 사용자에게 시각 레퍼런스를 받아 `references.md` 를 만든 뒤 호출)
+
+### `get_brand`
+
+Brand metadata: no args lists brands, `{ brand }` returns summary/imports/colors/counts, `{ brand, assetKind }` returns one detailed asset list. (Mockup work: collect visual refs first.)
+
+**인자**
+
+- `brand` `string` — Optional brand slug (e.g. 'trost', 'nudge-eap', 'geniet', 'cashwalk-biz'). Omit to list all.
+- `assetKind` `logos` \| `snsLogos` \| `profileImages` \| `illustrations` \| `marathonEvents` — [brand lookup only] Fetch one detailed asset list. Omit for summary-only brand metadata.
+
+### `find_component`
+
+Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only), `verbose:true` for full signatures (type/allowedValues). For usage examples prefer get_guide(\{ topic: `component:<Name>` \}). (Mockup work: collect visual refs first.)
+
+**인자**
+
+- `query` `string` — Optional fuzzy search query.
+- `name` `string` — Optional exact component name (case-sensitive).
+- `verbose` `boolean` — [name-lookup only] If true, response includes full prop signatures (type, allowedValues, optional flags). Default false — slim shape with prop names only.
+- `limit` `number` — Max results for list/search calls.
+
+### `find_icon`
+
+Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready inline `svg` (no npm install needed), no args→icon index. (Mockup work: collect visual refs first.)
+
+**인자**
+
+- `name` `string` — Exact icon name (e.g. 'CalendarIcon'). Returns paste-ready inline `svg` + `viewBox`/`body`.
+- `query` `string` — Optional natural-language search query.
+- `category` `string` — Optional icon category from the no-arg summary.
+- `limit` `number` — Max icons returned for query/category calls.
+- `size` `number` — Optional width/height(px) for the returned inline svg. Default 24.
+
+### `find_token`
+
+Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.)
+
+**인자**
+
+- `group` `string` — Optional token group filter.
+- `query` `string` — Optional name/value query (e.g. '#FF5722').
+- `brand` `string` — Optional brand slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + brand-specific tokens and shows brand-specific values for shared semantic tokens. Omit for NudgeEAP/base.
 
 ---
 
-## 1. 브랜드 / 컴포넌트
+## 가이드 · 패턴 · 원칙
 
-작업을 시작하기 전 어떤 브랜드 / 어떤 컴포넌트를 쓸지 결정하는 도구들. 둘 다 **"인자 없으면 목록, 있으면 상세"** 패턴.
+디자인 원칙·컴포넌트 함정·UX 패턴·어드민 규약을 단일 도구로 받는다. Figma 정합 상태 점검은 DS 유지보수용.
 
-| 도구              | 용도                                                                                                                                                            | 호출 시점                       |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| `get_brand`       | 인자 없으면 brands/ 폴더 + 토큰 dist 에서 자동 발견된 서브 브랜드 목록(슬러그/이름/주색상/CSS 경로/ready 플래그). `{ brand: '<slug>' }` 면 시멘틱 컬러·폰트·CSS/JS import·`main.tsx` import 순서·브랜드 prefix 아이콘까지 풀 정보 | 브랜드 분기 직전 / 특정 브랜드 작업 시작 시 |
-| `find_component`  | 인자 없으면 사용자 앱(Trost / Geniet / NudgeEAP) DS React 컴포넌트 전체 목록. `{ query }` fuzzy 검색, `{ name }` 정확 매치(props·allowedValues 상세). `name` 이 `query` 보다 우선 | 컴포넌트 선택 / props 확인 / 이름 모를 때 |
+### `get_guide`
 
-> ⚠️ 어드민/CMS 화면은 `find_component` 결과를 사용하지 말고 `get_guide({ topic: "admin-cms" })` 를 호출해 antd 5.5.1 규약을 따르세요.
+Fetch DS guidance by topic (`component:<Name>`, `pattern:<name>`, or fixed like 'principles'/'dos-donts'/'admin-cms'); batch with `topics:[...]`. Size control: `view:'examples'|'rules'` (biggest saver for batches), `sections`/`aspects` (principles slices), `target:'html'` for &lt;nds-\*&gt; examples, `brand` for the service overlay. Call principles once per session. **Mockup first-response gate: ask for Figma/screenshots and write references.md before any guide/component/token lookup or code work.**
 
----
+**인자**
 
-## 2. 아이콘 / 토큰
-
-| 도구          | 용도                                                                                                                                                                                                                                                                                                | 호출 시점                            |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `find_icon`   | 인자 없으면 `@nudge-design/icons` 전체 + Figma Iconography(379:490) 카테고리 / Line·Filled·Color 스타일 메타데이터 + `byCategory` 인덱스. `{ query }` 자연어 검색은 category/style/pair 포함해 Line vs Filled 정확히 선택 가능                                                                            | 카탈로그 탐색 / 용도만 알 때         |
-| `find_token`  | 인자 없으면 그룹별 카운트 요약만. `{ group: 'color' \| 'spacing' \| 'semantic' \| 'font' \| 'radius' \| 'size' \| 'line' \| 'gap' \| 'padding' \| 'border' \| 'grid' \| 'shadow' \| 'shape' \| 'stroke' \| 'z' }` 면 토큰 상세. `{ query: '#FF5722' \| 'primary' }` 면 매칭 (시멘틱 우선, raw palette deprioritize) | 토큰 탐색 / 시안 색을 토큰으로 환원 시 |
-
-> 아이콘 사이즈 / 터치 / 스타일 규칙은 `get_guide({ topic: "pattern:iconography" })`, 색상 토큰 매핑은 `get_guide({ topic: "pattern:icon-color" })` 로 보강하세요.
-> 인라인 컬러/스페이싱이 들어 있는 코드 스니펫을 통째로 토큰화하려면 [`suggest_replacement`](#4-검증--집계) 를 쓰세요.
-
----
-
-## 3. 가이드 (통합)
-
-원칙·패턴·컴포넌트 가이드·어드민 규약·인스펙터 셋업·스코프 분기 안내까지 **단일 도구 `get_guide`** 로 통합돼 있습니다.
-
-### `get_guide({ topic })`
-
-`topic` 으로 무엇을 받을지 지정합니다.
-
-| topic 패턴          | 반환                                                                                                                                                                                                       | 호출 시점                                     |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| `principles`        | DESIGN.md 기반 — 브랜드 톤, 컬러 시멘틱, 타이포, 스페이싱, 엘리베이션, 셰이프, do's/don'ts, 금지 패턴                                                                                                          | 사용자 앱 목업 시작 시 **항상 호출**            |
-| `dos-donts`         | `principles` 의 do/don't 서브셋 — 짧은 sanity check 용                                                                                                                                                       | 목업 마무리 직전                              |
-| `ux-writing`        | UX 라이팅 / 마이크로카피 가이드 (말투·문장 길이·금칙어 등)                                                                                                                                                    | 카피 작성 / 검수 시                            |
-| `admin-cms`         | 어드민 / CMS / 운영툴 / 백오피스 시안용 antd 5.5.1 규약 — sider, page header, search form, table, modal                                                                                                       | 어드민 시안 작업 시. 이때는 `principles` 대신 |
-| `scope-advisory`    | 이 MCP 의 적용 범위 + 사용자 앱 vs 어드민 CMS 분기 규칙                                                                                                                                                       | 모호한 작업 진입 시                           |
-| `inspector-setup`   | dev-only DsInspector 를 src/main.tsx 에 마운트하는 수동 가이드 (Ctrl/Cmd+Shift+D 토글). 자동 마운트는 `get_setup({ step: "inspector" })` 가 권장                                                                | 인스펙터 수동 가이드가 필요할 때              |
-| `component:<Name>`  | 큐레이션된 컴포넌트 가이드 — props 함정, 매트릭스, 접근성, Figma 노드. `Button` / `Card` / `Chip` / `IconButton` / `Tabs` / `Select` / `Banner` / `Modal` / `List` 등                                          | 핵심 컴포넌트 첫 사용 직전 — 항상 먼저 호출    |
-| `pattern:<name>`    | UX 패턴 가이드 (아래 키 참고)                                                                                                                                                                                 | 위계 / 아이콘 / 밀도 결정이 모호할 때          |
-
-**`pattern:` 키 목록**
-
-`cta-group` · `dark-patterns` · `icon-color` · `iconography` · `visual-reference` · `visual-antipatterns` · `notice` · `dropdown` · `dense-list`
+- `topic` `string` — Single fixed topic, `component:<Name>`, or `pattern:<name>`. Omit when using `topics`.
+- `topics` `string[]` — Batch mode. Multiple fixed/component/pattern topics returned as `{ topics: { [topic]: result } }`. Use this to avoid 5-10 repeated get_guide calls.
+- `intent` `string` — Optional free-text intent passed through to topic='admin-cms' for confirmation. Ignored for other topics.
+- `target` `react` \| `html` — Component example format. Use 'html' for new &lt;nds-\*&gt; mockups.
+- `view` `examples` \| `rules` \| `full` — Response size control (biggest saver for batched guides). 'examples'→summary + usage examples; 'rules'→summary + pitfalls/recommended (component) or rules/avoid (pattern); 'full' (default)→whole guide incl. metrics/matrixOverrides. `sections` overrides `view`. 5-guide batch: ~35KB→~5KB with 'examples'.
+- `sections` `string[]` — Optional. Pick only these top-level keys from the response (e.g. ['dos', 'donts'] on `principles`, or ['colorMatrix', 'sizeMatrix'] on a component guide). Meta keys (\_advisory, \_htmlAdvisory) are always preserved. If none match, response is an error with availableSections listed.
+- `aspects` `string[]` — Principles-focused. Friendly names for the slices a screen needs — e.g. ['spacing','radius','typography','color'] returns only those blocks. Sugar over `sections` with aliases (radius→shapes, color→colors, tone→brandTone, font→typography, shadow→elevation, dos-donts→dos+donts+bannedPatterns). Merged with `sections`. No aspect resolves → error lists validAspects.
+- `brand` `trost` \| `geniet` \| `cashwalk-biz` \| `nudge-eap` \| `runmile` — Optional brand slug. Set → base guide merged with the brand's service overlay (allowedVariants/disallowed/preferred/forbiddenPatterns, servicePitfalls, iconSet, copyTone). Omitted → a `_brandVariants` slim summary lists which brands have an overlay. For `principles`, also scopes learned-principles promotion.
+- `cwd` `string` — `principles`-focused. Workspace root to read `designDecisions.jsonl` — recurring decisions (≥ threshold distinct screens) are promoted into a `_learnedPrinciples` block. Defaults to MCP process cwd (= where save_design_spec writes).
 
 ### `list_figma_sync_status`
 
-| 도구                       | 용도                                                                                          | 호출 시점                              |
-| -------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `list_figma_sync_status`   | 큐레이션 가이드별 Figma 노드 매핑 상태(figmaNodeUrl / sizeMatrix / stateMatrix)                  | 디자인 QA — Figma 정합 audit 누락 점검 |
+List DS component guides' Figma Library sync status — figmaNodeUrl (synced vs pending) plus which size/state/color matrices and a11y notes are filled. No args. Internal DS-maintenance audit (= get_guide(\{ topic: 'figma-sync' \})).
+
+**인자**
+
+_인자 없음._
 
 ---
 
-## 4. 검증 / 집계
+## 설계 보조 (DesignSpec · 페이지 패턴)
 
-| 도구                  | 용도                                                                                                                                                                                                                                                                                                              | 호출 시점                                                                                                              |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `validate_mockup`     | 목업 `.tsx` 소스(or `filePath`) 를 DS 규칙으로 검증 — 인라인 색/스페이싱, native 요소, 인라인 SVG, 이모지·텍스트 기호, gradient, **invalid-prop-value** (잘못된 union 리터럴, 예: `IconButton size="md"`), 패턴 안티패턴(CTA / Chip / Card / 아이콘 과다, antd 잔존 등). 5-item Self-Check (스페이싱 토큰 / 4pt Grid / Brand BG 1개 이하 / 헤딩 장식 아이콘 없음 / Primary Button 영역별 단일성) 도 함께 수행. `intent: 'admin-cms'` 면 antd 허용 | 목업 작성 직후 / 저장 시. 1차 위반 수정 후 **반드시 2차 재실행** 까지                                                  |
-| `suggest_replacement` | 인라인 컬러 / 스페이싱이 든 코드 스니펫 → 토큰 치환 제안                                                                                                                                                                                                                                                              | `validate_mockup` 후 자동 fix 만들 때                                                                                  |
-| `report_mockup_usage` | TSX 를 AST 로 파싱 → 각 JSX 를 `ds`(`@nudge-design/react`) / `adminCms`(antd) / `customNative`(raw `<button>`) / `external` 로 분류·집계. 로컬 `.ds-usage-log.jsonl` + 공용 Google Sheets webhook 동시 적재 (인증 불필요)                                                                                                | 목업 생성/수정 후, HTML export 후 — CLAUDE.md 에 명시된 **필수 단계**. 빠뜨리면 사용량 집계가 비어 보임 |
+코드를 만들기 전 의도를 가벼운 중간표현으로 고정한다. prompt → **DesignSpec** → code 흐름의 중간 단계로, 빌드 전에 사용자 합의를 받는 소프트 게이트.
 
-> `validate_mockup` 통과 후 반드시 `npx tsc --noEmit` 도 한 번 돌려야 합니다 — `validate_mockup` 은 패턴 검사만 하고, 잘못된 prop union 값 일부는 tsc 만 잡습니다.
-> **알려진 위반 상태로 제출 금지.** 검사 결과의 `summary.checklistReport` 는 사용자에게 그대로 노출해야 합니다.
+### `recommend_page_pattern`
 
----
+First-pass suggestion of a Cashwalk-Biz admin Page Pattern (onboarding/dashboard/list/detail/form) from a PRD — keyword-scored ranking of all 5 + confidence flag. Read the PRD to confirm, then set screen.pagePattern in save_design_spec.
 
-## 5. Dev 서버 / 미리보기
+**인자**
 
-목업의 런타임 동작을 자동 검증할 때 사용. `start` / `stop` 은 하나의 `dev_server` 도구로 합쳐졌습니다.
+- `prd` `string` · **필수** — PRD / 기획 설명 텍스트 (자연어). 화면이 무엇을 하는지.
+- `brand` `string` — Optional brand slug. Page Pattern 시스템은 cashwalk-biz 어드민 전용 — 다른 브랜드면 advisory 로만 동작.
+- `surface` `string` — Optional 'admin' | 'service'. 강제는 admin 에서만.
 
-| 도구                | 용도                                                                                                                                                                                                                                                                                  | 호출 시점                                                |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| `dev_server`        | `{ action: 'start' }` — 프로젝트 루트에서 로컬 dev 서버 기동(`npm run dev` 또는 `command`/`args` 커스텀) + URL 응답까지 대기 → `sessionId` / `url` 반환. `{ action: 'stop', sessionId? }` — 특정 세션 종료. `sessionId` 생략 시 이 MCP 프로세스가 소유한 모든 dev 세션 종료              | 시각 / 런타임 프리뷰 직전 (start) / 검증 끝났을 때 (stop) |
-| `check_preview`     | Playwright 로 dev URL 을 열고 런타임 에러 / Vite overlay / 실패 요청 / 빈 화면 감지. 시안 프로젝트에 Playwright 설치 필요                                                                                                                                                              | dev 서버 기동 후                                          |
+### `save_design_spec`
 
----
+Save a DesignSpec (prompt→DesignSpec→code IR) to `<cwd>/design-spec.json`, validating against the DS catalog first. Captures INTENT only — component tree, semantic token names (no hex), brand/surface, rationale — not pixel geometry. Call BEFORE build_singlefile_html (show spec → get agreement → build, soft gate); if `ok:false`, fix violations and re-save. `component` accepts PascalCase or nds-tag. Side effect: appends a row to `<cwd>/designDecisions.jsonl` (append-only decision history; consider gitignoring).
 
-## 6. HTML 빌드 (단일 파일 산출물)
+**인자**
 
-| 도구                     | 용도                                                                                                                                                                                                                                                                                                                                | 호출 시점                                  |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| `build_singlefile_html`  | 현재 Vite 목업을 의존성 없는 **단일 .html** 로 빌드 (인터랙션 + `nds-*` 클래스 + onClick 보존). `vite-plugin-singlefile` 자동 설치 + vite.config 패치 + `vite build` 실행 → `dist/index.html` 경로와 크기 반환. **목업 워크플로우의 필수 마지막 단계** — 사용자에게 묻지 말고 자동 실행. Pre-flight workspace audit 포함 (raw .html / `:root` 토큰 재정의 / .tsx 0개 / visual references 미수집은 차단). `skipAudit: true` 는 사용자가 명시 우회한 경우에만 | 목업 완성 후                               |
+- `spec` `object` — DesignSpec object: \{ screen: \{ brand, surface: 'web'|'app', intent \}, tree: [\{ component, role?, props?, tokens?, rationale?, children? \}], decisions?: string[] \}. May also be passed as a JSON string.
+- `cwd` `string` — Workspace dir to write design-spec.json (and append designDecisions.jsonl) into. Defaults to process cwd.
+- `fileName` `string` — Output file name. Default 'design-spec.json'.
 
-> 손으로 .html 작성, `vite build` 직접 실행, 다른 번들러 사용, .tsx 만 남기고 종료 — **모두 금지**. `nds-*` 토큰과 React 인터랙티비티가 사라집니다.
-> 정적 캡처(snapshot) 가 필요한 특수 케이스는 Playwright 로 별도 처리하세요.
+### `validate_design_spec`
 
----
+Validate a DesignSpec against the DS catalog WITHOUT writing a file — semantic-token-only (no raw hex), known tokens, resolvable brand slug, known components, prop enum legality. Returns violations by severity (error/warn/info) + ok. Use during self-correction before save_design_spec.
 
-## 7. 외부 프로젝트 셋업 (통합)
+**인자**
 
-새 시안 프로젝트에 DS 를 붙일 때 쓰는 도구들. 보통 한 번씩만 호출합니다.
-
-### `get_setup({ step })`
-
-| step          | 용도                                                                                                                                              |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `install`     | `local-packages/` 의 `.tgz` 4개를 사용한 `npm install ./...tgz` 커맨드 생성. 파일 존재 검증 포함. `includeTailwind: true` 면 tailwind-preset 도     |
-| `imports`     | `src/main.tsx` 에 추가해야 할 CSS import 라인. `brand` 슬러그를 받아 `get_brand` 로 검증 — CSS 미준비 브랜드는 경고                                  |
-| `update`      | DS 본 레포 최신화 + MCP 재빌드 커맨드. `includeLocalPackages: true` 면 `pnpm release:local` 까지                                                       |
-| `claude-md`   | 시안 프로젝트에 `CLAUDE.md` 생성. `intent: "admin-cms"` / `"user-app"` 분기. `overwrite: true` 옵션 제공                                            |
-| `inspector`   | `src/main.tsx` 를 직접 패치해 dev-only `DsInspector` 마운트 (idempotent — 재실행 안전)                                                                |
-| `full`        | 신규 시안 프로젝트용 단계별 종합 셋업 가이드 (install / imports / claude-md / withRouter / includeTailwind 옵션)                                      |
-
-### `list_packages`
-
-| 도구             | 용도                                                                                            | 호출 시점                          |
-| ---------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `list_packages`  | DS 패키지 목록 — 버전, required / optional, 내부 의존성, peer deps, CSS 익스포트                 | 무엇을 install 해야 할지 파악할 때 |
+- `spec` `object` — DesignSpec object (or JSON string) to validate. See save_design_spec for shape.
 
 ---
 
-## 8. 유지보수
+## 목업 빌드 · 검증 · 변환
 
-| 도구                 | 용도                                                                                                                                          | 호출 시점                                                 |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| `check_mcp_update`   | GitHub Releases 와 비교해 새 `.mcpb` 가 있는지 확인. 설치본 / 최신 버전, 다운로드 URL, 단계별 업데이트 안내 반환                                  | "최신 버전 있어?" / "MCP 업데이트 있어?" / "check for updates" |
+목업을 단일 HTML 산출물로 빌드하고 DS 규칙/PRD 커버리지/품질을 검증한다. `build_singlefile_html` 은 빌드 시 DS 검증·PRD 검증·사용량 리포트를 자동 수행하므로 별도 호출이 필요 없다.
 
-> DS 본 레포의 git pull + 빌드 자체는 `get_setup({ step: "update" })` 가 담당합니다. 둘은 짝.
+### `build_singlefile_html`
+
+Build a Vite mockup into one shareable dist/index.html. Auto-runs DS validation (`validation`), PRD coverage (`prdValidation`), and usage report on the artifact — no separate calls for final build. Runs workspace audit unless skipAudit. **html intent requires a PRD coverage manifest (`script[type=application/json][data-prd-coverage]`) and real click behavior on every active button.**
+
+**인자**
+
+- `cwd` `string` — Project root that contains package.json + vite.config. Defaults to the MCP process cwd.
+- `skipAudit` `boolean` — Skip workspace audit only after explicit user approval. Defaults to false.
+- `allowIncomplete` `boolean` — DS 검증 에러가 있어도 강제로 빌드(사용자 판단). 기본 false — 에러는 빌드를 막음. true 면 산출물은 만들어지지만 위반은 validation.violations[] 에 그대로 보고되고 '미해결 DS 에러 N건으로 강제 빌드' 경고가 붙는다.
+- `intent` `react` \| `html` — Force workspace intent. Defaults to auto-detect.
+
+### `validate_html_mockup`
+
+Validate HTML/&lt;nds-\*&gt; mockups for DS/static quality (token, spacing, native element, icon, pattern, active-button interaction). Pass `source` (HTML string) or `filePath` (.html). `withStats:true` adds DS adoption stats. Not PRD coverage — use validate_prd_coverage. Usage report auto-on; `report:false` only to suppress noisy iterations (final must report).
+
+**인자**
+
+- `source` `string` — HTML source string. One of `source` / `filePath` is required.
+- `filePath` `string` — Absolute path to an .html file (the file IS the rendered output). For React/Vite workspaces where &lt;nds-\*&gt; are injected at runtime, build a single-file artifact first via build_singlefile_html, or pass the rendered HTML through `source`.
+- `withStats` `boolean` — If true, response also includes DS adoption stats, grouped violations, and recommendations (legacy analyze_html_mockup output). Default false.
+- `report` `boolean` — Write DS usage report (JSONL + Sheets webhook). Default true — prefer omitting. `false` triggers a session warning: the final iteration must report (or the sheet stays stale). Combine with `url`/`sessionId` so rendered (not static-shell) stats reach the sheet.
+- `mockupName` `string` — [report:true] Optional friendly name. Defaults to file basename or a timestamp.
+- `cwd` `string` — [report:true] Working directory where .ds-html-usage-log.jsonl is appended (when not dryRun).
+- `dryRun` `boolean` — [report:true] If true, inspect only — skip JSONL/webhook write. Default false.
+- `autoReport` `boolean` — If true, run pending usage-guard auto-report after validation. Default false.
+
+### `validate_prd_coverage`
+
+Validate PRD/brief coverage (separate from DS quality): checks the `script[type=application/json][data-prd-coverage]` manifest — every requirement implemented and every evidence selector present in the DOM. Pass `source` or `filePath`. Use alongside validate_html_mockup or read build_singlefile_html.prdValidation.
+
+**인자**
+
+- `source` `string` — HTML source string. One of `source` / `filePath` is required.
+- `filePath` `string` — Absolute path to an .html file.
+
+### `score_mockup_quality`
+
+Grade a built mockup (Eval D3): D1 deterministic code score (color/typography/spacing/layout/component/icon) + D2 qualitative LLM score (ux/interaction/flow/form, from a separate tool-less `claude -p`), combined `verdict` (통과/주의/미달 = ≥80/≥60/&lt;60) on the WEAKER group, plus a display `card` — mirrors the desktop harness post-build SSOT. Pass `html` or `filePath`. No `claude` binary (CLAUDE_BIN/PATH) → D1 only. Call after a clean build/validate.
+
+**인자**
+
+- `html` `string` — Rendered HTML string to score. One of `html` / `filePath` is required.
+- `filePath` `string` — Absolute path to a built .html file (read as the rendered output).
+- `brand` `string` — Optional brand slug for scoring context (e.g. 'geniet', 'cashwalk-biz').
+- `surface` `string` — Optional surface for context ('admin' / 'service').
+- `cwd` `string` — Optional workspace root (lets D1 detect surface-mismatch via nudge.surface).
+
+### `convert_html_to_ds_html`
+
+Rewrite common native HTML controls to &lt;nds-\*&gt; elements and optionally replace known colors.
+
+**인자**
+
+- `source` `string` — HTML source string.
+- `filePath` `string` — Absolute path to an .html file.
+- `rewriteInlineColors` `boolean` — Default true. Set false to leave inline hex colors alone.
+
+### `suggest_replacement`
+
+Suggest token replacements for inline color/spacing snippets.
+
+**인자**
+
+- `snippet` `string` · **필수**
+- `rule` `string`
+
+---
+
+## Dev 서버 / 미리보기
+
+react/admin-cms(.tsx) 워크스페이스의 런타임 프리뷰용. html(vanilla `<nds-*>`) 목업은 `build_singlefile_html` 산출물을 바로 열면 되므로 불필요하다.
+
+### `dev_server`
+
+Start/stop a local mockup dev server (Vite) → preview URL/session id. React/admin-cms (.tsx) only — for html (&lt;nds-\*&gt;) use build_singlefile_html instead (start on an html workspace returns guidance, no spawn).
+
+**인자**
+
+- `action` `start` \| `stop` · **필수** — 'start' to launch dev server, 'stop' to terminate.
+- `cwd` `string` — [start] Project root. Defaults to the MCP process cwd.
+- `command` `string` — [start] Executable to run. Default: npm.
+- `args` `string[]` — [start] Command args. Default: ['run', 'dev', '--', '--host', '127.0.0.1'].
+- `url` `string` — [start] Expected dev server URL. If omitted, parsed from logs or falls back to http://127.0.0.1:5173.
+- `port` `number` — [start] Convenience fallback for url, e.g. 5173.
+- `timeoutMs` `number` — [start] Wait timeout. Default: 20000.
+- `autoReport` `boolean` — If true, run pending usage auto-report after this call. Default false.
+- `sessionId` `string` — [stop] Session id returned by start. Omit to stop all sessions.
+
+---
+
+## 외부 프로젝트 셋업
+
+새 시안 프로젝트에 DS 를 붙일 때 쓰는 통합 라우터. 보통 단계별로 한 번씩 호출한다.
+
+### `get_setup`
+
+Setup router: install/imports/update/claude-md/agents-md/inspector/external-starter/full. Defaults to HTML/&lt;nds-\*&gt;. external-starter onboards external projects in one call (writes CLAUDE.md + AGENTS.md, returns a shared .mcp.json for Claude Code/Cursor/Codex, the validate→build→score loop, and 'NDS 써서' prompt templates). Generated mockup instructions enforce the visual-reference-first gate.
+
+**인자**
+
+- `step` `install` \| `imports` \| `update` \| `claude-md` \| `agents-md` \| `inspector` \| `external-starter` \| `full` · **필수** — install | imports | update | claude-md | agents-md | inspector | external-starter | full.
+- `tgzDir` `string` — [step=install|full] Directory containing the .tgz files. Default: &lt;DS_repo&gt;/local-packages
+- `brand` `string` — [step=imports|full|claude-md|agents-md] Brand slug (see get_brand). Omitted → first 'ready' brand. Admin routing: brand='cashwalk-biz' + intent='admin-cms' routes to the Nudge DS (html), NOT antd — 캐포비만 DS 안에 자체 admin 디자인 시스템을 가짐.
+- `withRouter` `boolean` — [step=full] Include the react-router-dom install step (default: true).
+- `includeTailwind` `boolean` — [step=install|full] Include @nudge-design/tailwind-preset install (default: false).
+- `intent` `admin-cms` \| `html` — Workspace intent. Default/html → vanilla &lt;nds-\*&gt;; admin-cms → antd conventions. Exception: admin-cms + brand='cashwalk-biz' routes to the DS (html), not antd.
+- `template` `slim` \| `default` — [step=claude-md|agents-md] Instruction template size. Default: slim.
+- `mode` `summary` \| `full` — [step=full] Response size. Default: summary; use full for all setup details.
+- `source` `string` — [step=update] Where the repo came from. Default: 'github'.
+- `includeLocalPackages` `boolean` — [step=update] Also include pnpm release:local for .tgz package refresh. Default: false.
+- `cwd` `string` — [step=claude-md|agents-md|inspector] Project root. For claude-md/agents-md, where the instruction file will be created. For inspector, where src/main.tsx will be patched. Defaults to the MCP process cwd.
+- `projectName` `string` — [step=claude-md|agents-md] Optional title for the generated instruction file.
+- `overwrite` `boolean` — [step=claude-md|agents-md] Replace an existing instruction file. Default: false.
 
 ---
 
 ## 호출 흐름 치트시트
 
-### 새 사용자 앱 시안을 만들 때
+### 새 HTML 목업 (vanilla `<nds-*>`, 사용자 앱)
 
 ```
-1. get_guide({ topic: "scope-advisory" })            (분기 확인)
-2. get_brand → get_brand({ brand })                   (브랜드 선택)
-3. get_guide({ topic: "principles" })                 (전역 규칙 로드)
-4. (필요 시) find_component (인자 없거나 { query })
-5. (핵심 컴포넌트 첫 사용 직전) get_guide({ topic: "component:Button" })
-6. (모호한 패턴이면) get_guide({ topic: "pattern:cta-group" })
-7. (아이콘 필요) find_icon ({ query } or 무인자)
-8. (토큰 매칭) find_token  /  suggest_replacement
-9. validate_mockup                                    (저장 시 — 1차)
-10. npx tsc --noEmit                                  (prop union 검증)
-11. validate_mockup                                   (수정 후 2차 — 필수)
-12. dev_server({ action: 'start' }) → check_preview → dev_server({ action: 'stop' })
-13. build_singlefile_html                             (단일 HTML 산출 — 필수)
-14. report_mockup_usage                               (집계 적재 — 필수)
+1. (첫 응답) 사용자에게 Figma/스크린샷 요청 → references.md 작성   (코드·조회 전)
+2. get_guide({ topics: ["principles", "pattern:..."] })
+3. get_brand({ brand })
+4. find_component / find_icon / find_token
+5. save_design_spec (또는 validate_design_spec 로 사전 검증)
+6. build_singlefile_html   (DS 검증 + PRD 커버리지 + 사용량 리포트 자동)
+7. score_mockup_quality   (D1(코드) + D2(정성) 품질 점수)
 ```
 
-### 어드민 CMS 시안을 만들 때
+### 어드민 / CMS 시안 (cashwalk-biz)
 
 ```
-1. get_guide({ topic: "scope-advisory" })             (어드민이면 여기서 분기)
-2. get_guide({ topic: "admin-cms" })                  (= antd 규약)
-3. (목업 작성 — antd 우선)
-4. validate_mockup({ intent: "admin-cms" }) → report_mockup_usage
+1. get_guide({ topic: "admin-cms" })   (antd 규약 (캐포비는 DS 라우팅))
+2. recommend_page_pattern({ prd })   (어드민 페이지 패턴 1차 추천)
+3. save_design_spec → build_singlefile_html → score_mockup_quality
+```
+
+### react/Vite 목업 런타임 프리뷰
+
+```
+1. dev_server({ action: "start" }) → (확인) → dev_server({ action: "stop" })
+2. build_singlefile_html   (최종 단일 HTML 산출)
 ```
 
 ### 새 시안 프로젝트 초기화
 
 ```
-1. get_setup({ step: "full", intent: "user-app" | "admin-cms" })
-2. list_packages → get_setup({ step: "install" })
-3. (설치 후) get_setup({ step: "imports", brand: "trost" })
-4. get_setup({ step: "claude-md" })
-5. get_setup({ step: "inspector" })                   (dev-only DsInspector 자동 마운트)
-6. dev_server({ action: 'start' }) → check_preview → dev_server({ action: 'stop' })
+1. get_setup({ step: "full" })
+2. get_setup({ step: "install" }) → get_setup({ step: "imports", brand })
+3. get_setup({ step: "claude-md" })  // 또는 step: "agents-md"
+4. get_setup({ step: "inspector" })   (dev-only DsInspector 자동 마운트)
 ```
-
-### MCP 업데이트 확인
-
-```
-1. check_mcp_update                                   (새 .mcpb 있나?)
-2. (있으면) get_setup({ step: "update", includeLocalPackages: true })
-3. Claude Code 재시작
-```
-
----
 
 ## 안 보일 때
 
 - `/mcp` 입력 → `nudge-ds` 가 떠 있는지 확인
-- 떠 있는데 도구가 없으면 → Claude Code 재시작 (MCP 는 시작 시점에만 도구 로드)
-- `Unknown tool: list_brands` 같은 에러가 보이면 → 옛 이름을 호출한 것. 위 통합 안내 표 참조
+- 떠 있는데 도구가 없으면 → Claude Code 재시작 (MCP 는 시작 시점에만 도구를 로드)
+- `Unknown tool: list_brands` 같은 에러가 보이면 → 사라진 옛 이름을 호출한 것. 위 표의 현재 도구명을 쓰세요
 - 그래도 안 되면 → [MCP 사용 가이드 — 안 될 때](/NUDGE_DS_MCP_USAGE)

@@ -19,12 +19,12 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import "./nds-button.js";
 
 const AS_CLASS = "nds-address-search";
 const AS_LABEL_CLASS = `${AS_CLASS}__label`;
 const AS_FIELD_ROW_CLASS = `${AS_CLASS}__field-row`;
 const AS_INPUT_CLASS = `${AS_CLASS}__input`;
-const AS_BTN_CLASS = `${AS_CLASS}__btn`;
 const AS_RESULT_CLASS = `${AS_CLASS}__result`;
 const AS_RESULT_LIST_CLASS = `${AS_CLASS}__result-list`;
 const AS_RESULT_ITEM_CLASS = `${AS_CLASS}__result-item`;
@@ -143,11 +143,12 @@ export class NdsAddressSearch extends NdsElement {
       }
     });
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = AS_BTN_CLASS;
+    // 검색 버튼은 DS Button 을 합성 (react 의 <Button size="field"> 미러).
+    const button = document.createElement("nds-button");
+    button.setAttribute("type", "button");
+    button.setAttribute("size", "field");
     button.textContent = loading ? "검색 중..." : this.attr("search-label", "검색");
-    button.disabled = loading;
+    if (loading) button.setAttribute("disabled", "");
     button.addEventListener("click", () => this._triggerSearch());
 
     row.append(input, button);

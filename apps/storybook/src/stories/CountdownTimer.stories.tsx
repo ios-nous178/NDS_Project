@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { CountdownTimer } from "@nudge-design/react";
 
 const meta: Meta<typeof CountdownTimer> = {
-  title: "Components/CountdownTimer",
+  title: "Components/Feedback/CountdownTimer",
   component: CountdownTimer,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

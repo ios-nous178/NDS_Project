@@ -8,13 +8,14 @@ const PI_LABEL_CLASS = `${PI_CLASS}__label`;
 const PI_FIELD_CLASS = `${PI_CLASS}__field`;
 const PI_FIELD_WRAP_CLASS = `${PI_CLASS}__field-wrap`;
 const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
+const PI_DIAL_CODE_CLASS = `${PI_CLASS}__dial-code`;
 const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
-const PI_FLAG_CLASS = `${PI_CLASS}__flag`;
 const PI_DIVIDER_CLASS = `${PI_CLASS}__divider`;
 const PI_INPUT_CLASS = `${PI_CLASS}__input`;
 const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
 const PI_MENU_CLASS = `${PI_CLASS}__menu`;
 const PI_MENU_ITEM_CLASS = `${PI_CLASS}__menu-item`;
+const PI_MENU_CODE_CLASS = `${PI_CLASS}__menu-code`;
 const PI_MENU_NAME_CLASS = `${PI_CLASS}__menu-name`;
 const PI_MENU_DIAL_CLASS = `${PI_CLASS}__menu-dial`;
 
@@ -27,16 +28,14 @@ export interface PhoneCountry {
   name: string;
   /** 다이얼 코드 ("+82") */
   dialCode: string;
-  /** 이모지 국기 */
-  flag: string;
 }
 
 const DEFAULT_COUNTRIES: PhoneCountry[] = [
-  { code: "KR", name: "대한민국", dialCode: "+82", flag: "🇰🇷" },
-  { code: "US", name: "United States", dialCode: "+1", flag: "🇺🇸" },
-  { code: "JP", name: "日本", dialCode: "+81", flag: "🇯🇵" },
-  { code: "CN", name: "中国", dialCode: "+86", flag: "🇨🇳" },
-  { code: "GB", name: "United Kingdom", dialCode: "+44", flag: "🇬🇧" },
+  { code: "KR", name: "대한민국", dialCode: "+82" },
+  { code: "US", name: "United States", dialCode: "+1" },
+  { code: "JP", name: "日本", dialCode: "+81" },
+  { code: "CN", name: "中国", dialCode: "+86" },
+  { code: "GB", name: "United Kingdom", dialCode: "+44" },
 ];
 
 export interface PhoneInputProps extends Omit<
@@ -131,10 +130,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
               aria-expanded={open}
               aria-controls={menuId}
             >
-              <span className={PI_FLAG_CLASS} aria-hidden>
-                {country.flag}
-              </span>
-              <span>{country.dialCode}</span>
+              <span className={PI_DIAL_CODE_CLASS}>{country.dialCode}</span>
               <span className={PI_CHEVRON_CLASS} aria-hidden>
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                   <path
@@ -177,8 +173,8 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
                       setOpen(false);
                     }}
                   >
-                    <span className={PI_FLAG_CLASS} aria-hidden>
-                      {c.flag}
+                    <span className={PI_MENU_CODE_CLASS} aria-hidden>
+                      {c.code}
                     </span>
                     <span className={PI_MENU_NAME_CLASS}>{c.name}</span>
                     <span className={PI_MENU_DIAL_CLASS}>{c.dialCode}</span>

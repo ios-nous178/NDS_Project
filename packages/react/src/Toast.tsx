@@ -7,13 +7,16 @@ const TOAST_CLASS = "nds-toast";
 const TOAST_VIEWPORT_CLASS = `${TOAST_CLASS}__viewport`;
 const TOAST_ITEM_CLASS = `${TOAST_CLASS}__item`;
 const TOAST_MESSAGE_CLASS = `${TOAST_CLASS}__message`;
-const TOAST_ACTION_CLASS = `${TOAST_CLASS}__action`;
 
 /* ─── Types ─── */
 
-export type ToastVariant = "default" | "success" | "error" | "info";
-export type ToastPosition = "top" | "bottom";
+export type ToastVariant = "default" | "success" | "error" | "warning" | "info";
+export type ToastPosition = "top" | "bottom" | "top-right";
 
+/**
+ * Toast 는 **인터랙션 없는 일시 메시지** 전용 — 자동으로 사라지므로 액션(되돌리기/다시시도)이나
+ * 닫기 버튼을 두지 않는다. 액션·닫기·브랜드 카드(캐포비 흰 카드)가 필요하면 Snackbar 를 사용한다.
+ */
 export interface ToastData {
   /** 토스트 고유 식별자 */
   id: string;
@@ -23,11 +26,6 @@ export interface ToastData {
   variant?: ToastVariant;
   /** 자동 닫힘 시간 (ms). 0이면 자동 닫힘 없음 */
   duration?: number;
-  /** 액션 버튼 (라벨 + 클릭 콜백) */
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
 }
 /* ─── Utils ─── */
 
@@ -93,7 +91,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
         message,
         variant: options?.variant ?? "default",
         duration: options?.duration ?? duration,
-        action: options?.action,
       };
 
       setToasts((prev) => {
@@ -176,18 +173,6 @@ const ToastItem: React.FC<ToastItemProps> = ({ data, onDismiss }) => {
       onAnimationEnd={handleAnimationEnd}
     >
       <span className={TOAST_MESSAGE_CLASS}>{data.message}</span>
-      {data.action && (
-        <button
-          type="button"
-          className={TOAST_ACTION_CLASS}
-          onClick={() => {
-            data.action!.onClick();
-            setExiting(true);
-          }}
-        >
-          {data.action.label}
-        </button>
-      )}
     </div>
   );
 };

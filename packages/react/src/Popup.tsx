@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { resolveActionsLayout, type ActionsLayout } from "@nudge-design/tokens";
+import { useBrand } from "./internal/useBrand";
 
 /* ─── Class names ─── */
 
@@ -255,13 +257,26 @@ export const PopupDescription: React.FC<PopupDescriptionProps> = ({
 export interface PopupActionsProps extends Omit<DivProps, "children"> {
   /** 액션 버튼 콘텐츠 (CancelButton, ConfirmButton 등) */
   children: React.ReactNode;
+  /**
+   * 버튼 배치. 생략 시 현재 브랜드 기본값(캐포비=end, 그 외=split).
+   * `split`=2버튼 50/50·1버튼 세로 스택, `end`=우측 hug. 색/pill 모양은 브랜드 토큰이 별도 결정.
+   */
+  actionsLayout?: ActionsLayout;
 }
 
-export const PopupActions: React.FC<PopupActionsProps> = ({ children, className, ...rest }) => {
+export const PopupActions: React.FC<PopupActionsProps> = ({
+  children,
+  className,
+  actionsLayout,
+  ...rest
+}) => {
   const count = React.Children.count(children);
+  const brand = useBrand();
+  const resolvedLayout = resolveActionsLayout(brand, actionsLayout);
   return (
     <div
       data-slot="actions"
+      data-layout={resolvedLayout}
       data-single={count <= 1 ? "true" : "false"}
       className={cx(POPUP_ACTIONS_CLASS, className)}
       {...rest}
@@ -353,6 +368,8 @@ export interface PopupProps {
   cancelText?: string;
   /** 취소 콜백 (제공하면 Cancel 버튼 표시) */
   onCancel?: () => void;
+  /** 버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split). `split`|`end`. */
+  actionsLayout?: ActionsLayout;
   /** 오버레이 클릭으로 닫기 */
   isMaskClose?: boolean;
   /** 최대 너비 */
@@ -374,6 +391,7 @@ const PopupComponent: React.FC<PopupProps> = ({
   onConfirm,
   cancelText = "취소",
   onCancel,
+  actionsLayout,
   isMaskClose = true,
   maxWidth,
   className,
@@ -417,7 +435,11 @@ const PopupComponent: React.FC<PopupProps> = ({
             </PopupDescription>
           )}
         </PopupTextInfo>
-        <PopupActions className={slotProps?.actions?.className} style={slotProps?.actions?.style}>
+        <PopupActions
+          actionsLayout={actionsLayout}
+          className={slotProps?.actions?.className}
+          style={slotProps?.actions?.style}
+        >
           {showCancel && (
             <PopupCancelButton
               className={slotProps?.cancelButton?.className}

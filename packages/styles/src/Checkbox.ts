@@ -6,6 +6,7 @@ const CB_ROOT_CLASS = `${CB_CLASS}__root`;
 const CB_INPUT_CLASS = `${CB_CLASS}__input`;
 const CB_INDICATOR_CLASS = `${CB_CLASS}__indicator`;
 const CB_CHECK_ICON_CLASS = `${CB_CLASS}__check`;
+const CB_MINUS_ICON_CLASS = `${CB_CLASS}__minus`;
 const CB_LABEL_CLASS = `${CB_CLASS}__label`;
 const CB_HELPER_CLASS = `${CB_CLASS}__helper`;
 const CB_GROUP_CLASS = `${CB_CLASS}-group`;
@@ -56,7 +57,8 @@ export const checkboxStyles = `
     transition: border-color ${transition.default}, background-color ${transition.default};
   }
 
-  :where(.${CB_INDICATOR_CLASS}[data-state="checked"]) {
+  :where(.${CB_INDICATOR_CLASS}[data-state="checked"]),
+  :where(.${CB_INDICATOR_CLASS}[data-state="indeterminate"]) {
     border-color: ${cv.fill.brand};
     background: ${cv.fill.brand};
   }
@@ -75,7 +77,8 @@ export const checkboxStyles = `
     border-color: var(--nds-checkbox-disabled-checked-border-color, var(--nds-checkbox-disabled-border-color, ${cv.borderRole.disabled}));
   }
 
-  :where(.${CB_CHECK_ICON_CLASS}) {
+  :where(.${CB_CHECK_ICON_CLASS}),
+  :where(.${CB_MINUS_ICON_CLASS}) {
     position: absolute;
     inset: 0;
     margin: auto;
@@ -83,14 +86,19 @@ export const checkboxStyles = `
     height: 14px;
     opacity: 0;
     transition: opacity ${transition.default};
-    color: ${cv.surface.default};
+    color: ${cv.button.textDefault};
   }
 
-  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_CHECK_ICON_CLASS}) {
+  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_CHECK_ICON_CLASS}),
+  :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_MINUS_ICON_CLASS}) {
     color: ${cv.iconRole.disabled};
   }
 
   :where(.${CB_INDICATOR_CLASS}[data-state="checked"] .${CB_CHECK_ICON_CLASS}) {
+    opacity: 1;
+  }
+
+  :where(.${CB_INDICATOR_CLASS}[data-state="indeterminate"] .${CB_MINUS_ICON_CLASS}) {
     opacity: 1;
   }
 

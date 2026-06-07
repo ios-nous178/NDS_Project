@@ -516,7 +516,7 @@ function SourceChips({
 }
 
 export const All: Story = {
-  name: "전체",
+  name: "Variant/전체",
   globals: { brand: "cashwalk-biz" },
   render: () => (
     <Catalog
@@ -528,7 +528,7 @@ export const All: Story = {
 };
 
 export const BrandTint: Story = {
-  name: "Brand 색 (yellow)",
+  name: "Variant/Brand 색 (yellow)",
   globals: { brand: "cashwalk-biz" },
   parameters: {
     docs: {
@@ -547,7 +547,7 @@ export const BrandTint: Story = {
 };
 
 export const Size20: Story = {
-  name: "Size 20 (Button 내부)",
+  name: "Variant/Size 20 (Button 내부)",
   globals: { brand: "cashwalk-biz" },
   render: () => (
     <Catalog
@@ -559,7 +559,7 @@ export const Size20: Story = {
 };
 
 export const OnDarkSurface: Story = {
-  name: "다크 배경",
+  name: "Variant/다크 배경",
   globals: { brand: "cashwalk-biz" },
   render: () => <Catalog size={24} color="#FFFFFF" bg="#111111" />,
 };

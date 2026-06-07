@@ -7,7 +7,7 @@ import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
 const meta: Meta<EmptyStateProps> = {
-  title: "Components/EmptyState",
+  title: "Components/Feedback/EmptyState",
   component: EmptyState,
   tags: ["autodocs"],
   parameters: {
@@ -134,7 +134,7 @@ export const CompoundAPI: Story = {
 };
 
 export const FlatVsCompoundParity: Story = {
-  name: "QA/Flat Vs Compound Parity",
+  name: "Interaction/Flat Vs Compound Parity",
   parameters: {
     chromatic: { disableSnapshot: true },
   },
@@ -183,7 +183,7 @@ export const FlatVsCompoundParity: Story = {
 };
 
 export const MultilineDescriptionReview: Story = {
-  name: "QA/Multiline Description Review",
+  name: "Interaction/Multiline Description Review",
   parameters: {
     chromatic: { disableSnapshot: true },
   },

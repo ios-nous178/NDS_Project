@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 /* ─── Constants ─── */
 
@@ -16,6 +16,9 @@ const DT_CARD_CLASS = `${DT_CLASS}__card`;
 const DT_CARD_ROW_CLASS = `${DT_CLASS}__card-row`;
 const DT_CARD_LABEL_CLASS = `${DT_CLASS}__card-label`;
 const DT_CARD_VALUE_CLASS = `${DT_CLASS}__card-value`;
+const DT_EXPAND_CELL_CLASS = `${DT_CLASS}__expand-cell`;
+const DT_EXPANDER_CLASS = `${DT_CLASS}__expander`;
+const DT_EXPANDER_SPACER_CLASS = `${DT_CLASS}__expander-spacer`;
 
 /* ─── Types ─── */
 
@@ -38,6 +41,8 @@ export interface DataTableColumn<T> {
   cardLabel?: React.ReactNode;
   /** 모바일 카드 모드에서 숨김 */
   hideOnCard?: boolean;
+  /** 이미지/썸네일 등 큰 셀 — 패딩 16px 대신 12px (행이 과하게 커지지 않게) */
+  media?: boolean;
 }
 
 export interface DataTableProps<T> {
@@ -63,6 +68,19 @@ export interface DataTableProps<T> {
   size?: "sm" | "md";
   /** 모바일에서 처리 방식 — scroll: 가로 스크롤 / cards: 카드로 변환 */
   responsive?: "scroll" | "cards";
+  /**
+   * 자식 행 추출 — 반환 배열이 있으면 그 행은 펼침 가능(트리/중첩 행).
+   * ⚠️ 사용 시 rowKey 는 인덱스가 아니라 행 고유값(예: row.id)으로 안정적이어야 함.
+   */
+  getSubRows?: (row: T) => T[] | undefined;
+  /** 펼침 토글을 놓을 컬럼 key (기본: 첫 컬럼) */
+  expanderColumnKey?: string;
+  /** 펼쳐진 행 key 집합 (controlled) */
+  expandedKeys?: string[];
+  /** 초기 펼침 key (uncontrolled) */
+  defaultExpandedKeys?: string[];
+  /** 펼침 변경 콜백 */
+  onExpandedChange?: (keys: string[]) => void;
   /** className */
   className?: string;
 }
@@ -84,6 +102,63 @@ const SortIcon = () => (
   </svg>
 );
 
+const EXPAND_INDENT = 20;
+
+// 04ic/open · 04ic/close (Figma 캐포비 라이브러리 3001:10810 / 3001:10802):
+// 라운드 사각 테두리 + 중앙 −(펼침) / +(접힘). 색은 currentColor 로 토큰 cascade.
+const ExpanderIcon = ({ expanded }: { expanded: boolean }) => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    style={{ display: "block" }}
+  >
+    <rect
+      x="1.2"
+      y="1.2"
+      width="21.6"
+      height="21.6"
+      rx="4"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      opacity="0.32"
+    />
+    <rect x="6.5" y="11" width="11" height="2" rx="1" fill="currentColor" />
+    {!expanded && <rect x="11" y="6.5" width="2" height="11" rx="1" fill="currentColor" />}
+  </svg>
+);
+
+// 자식(하위) 행 머리의 ↳ 분기 화살표 (Figma 날짜별 리포트 자식 행 마커).
+const BranchIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    style={{ display: "block" }}
+  >
+    <path
+      d="M9 6v6a2 2 0 0 0 2 2h6"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity="0.5"
+    />
+    <path
+      d="M14.5 11l3 3-3 3"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity="0.5"
+    />
+  </svg>
+);
+
 /* ─── Component ─── */
 
 export function DataTable<T>({
@@ -99,7 +174,38 @@ export function DataTable<T>({
   size = "md",
   responsive = "scroll",
   className,
+  getSubRows,
+  expanderColumnKey,
+  expandedKeys,
+  defaultExpandedKeys,
+  onExpandedChange,
 }: DataTableProps<T>) {
+  const isExpandControlled = expandedKeys !== undefined;
+  const [internalExpanded, setInternalExpanded] = useState<Set<string>>(
+    () => new Set(defaultExpandedKeys ?? []),
+  );
+  const expandedSet = useMemo(
+    () => (isExpandControlled ? new Set(expandedKeys) : internalExpanded),
+    [isExpandControlled, expandedKeys, internalExpanded],
+  );
+  const expandable = typeof getSubRows === "function";
+  const expanderKey = expanderColumnKey ?? columns[0]?.key;
+
+  // 기본 정렬 = 중앙(헤더·셀 동일). 펼침 토글 컬럼만 좌측(토글+들여쓰기). 숫자는 컬럼에 align="right".
+  const colAlign = (col: DataTableColumn<T>): "left" | "center" | "right" =>
+    expandable && col.key === expanderKey ? "left" : (col.align ?? "center");
+
+  const toggleExpand = useCallback(
+    (key: string) => {
+      const next = new Set(expandedSet);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      if (!isExpandControlled) setInternalExpanded(next);
+      onExpandedChange?.([...next]);
+    },
+    [expandedSet, isExpandControlled, onExpandedChange],
+  );
+
   const handleSort = (col: DataTableColumn<T>) => {
     if (!col.sortable || !onSort) return;
     const nextDir: SortDirection = sortKey === col.key && sortDirection === "asc" ? "desc" : "asc";
@@ -114,11 +220,83 @@ export function DataTable<T>({
 
   const cardColumns = columns.filter((c) => !c.hideOnCard);
 
+  const flatRows = useMemo<
+    Array<{
+      row: T;
+      key: string;
+      depth: number;
+      index: number;
+      hasChildren: boolean;
+      expanded: boolean;
+    }>
+  >(() => {
+    const out: Array<{
+      row: T;
+      key: string;
+      depth: number;
+      index: number;
+      hasChildren: boolean;
+      expanded: boolean;
+    }> = [];
+    let i = 0;
+    const walk = (rows: T[], depth: number) => {
+      for (const row of rows) {
+        const index = i++;
+        const key = rowKey(row, index);
+        const children = expandable ? getSubRows?.(row) : undefined;
+        const hasChildren = !!(children && children.length > 0);
+        const expanded = hasChildren && expandedSet.has(key);
+        out.push({ row, key, depth, index, hasChildren, expanded });
+        if (expanded && children) walk(children, depth + 1);
+      }
+    };
+    walk(data, 0);
+    return out;
+  }, [data, expandable, getSubRows, rowKey, expandedSet]);
+
+  const renderExpandableCell = (
+    col: DataTableColumn<T>,
+    fr: (typeof flatRows)[number],
+  ): React.ReactNode => {
+    const content = renderCell(col, fr.row, fr.index);
+    if (!expandable || col.key !== expanderKey) return content;
+    return (
+      <span
+        className={DT_EXPAND_CELL_CLASS}
+        style={{ paddingInlineStart: fr.depth * EXPAND_INDENT }}
+      >
+        {fr.hasChildren ? (
+          <button
+            type="button"
+            className={DT_EXPANDER_CLASS}
+            data-expanded={fr.expanded ? "true" : "false"}
+            aria-expanded={fr.expanded}
+            aria-label={fr.expanded ? "접기" : "펼치기"}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleExpand(fr.key);
+            }}
+          >
+            <ExpanderIcon expanded={fr.expanded} />
+          </button>
+        ) : fr.depth > 0 ? (
+          <span className={DT_EXPANDER_SPACER_CLASS} aria-hidden="true">
+            <BranchIcon />
+          </span>
+        ) : (
+          <span className={DT_EXPANDER_SPACER_CLASS} aria-hidden="true" />
+        )}
+        <span>{content}</span>
+      </span>
+    );
+  };
+
   return (
     <div
       data-slot="root"
       data-size={size}
       data-responsive={responsive}
+      data-expandable={expandable ? "true" : undefined}
       className={cx(DT_CLASS, className)}
     >
       <div data-slot="scroll" className={DT_SCROLL_CLASS}>
@@ -131,7 +309,7 @@ export function DataTable<T>({
                   <th
                     key={col.key}
                     data-slot="th"
-                    data-align={col.align ?? "left"}
+                    data-align={colAlign(col)}
                     data-sortable={col.sortable ? "true" : "false"}
                     style={{ width: col.width }}
                     className={DT_TH_CLASS}
@@ -170,29 +348,31 @@ export function DataTable<T>({
                   불러오는 중…
                 </td>
               </tr>
-            ) : data.length === 0 ? (
+            ) : flatRows.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className={DT_EMPTY_CLASS}>
                   {emptyMessage}
                 </td>
               </tr>
             ) : (
-              data.map((row, idx) => (
+              flatRows.map((fr) => (
                 <tr
-                  key={rowKey(row, idx)}
+                  key={fr.key}
                   data-slot="tr"
+                  data-depth={expandable ? fr.depth : undefined}
                   data-clickable={onRowClick ? "true" : undefined}
                   className={DT_TR_CLASS}
-                  onClick={() => onRowClick?.(row, idx)}
+                  onClick={() => onRowClick?.(fr.row, fr.index)}
                 >
                   {columns.map((col) => (
                     <td
                       key={col.key}
                       data-slot="td"
-                      data-align={col.align ?? "left"}
+                      data-align={colAlign(col)}
+                      data-cell={col.media ? "media" : undefined}
                       className={DT_TD_CLASS}
                     >
-                      {renderCell(col, row, idx)}
+                      {renderExpandableCell(col, fr)}
                     </td>
                   ))}
                 </tr>
@@ -205,19 +385,40 @@ export function DataTable<T>({
       {/* mobile cards */}
       {responsive === "cards" && !loading && (
         <div data-slot="card-list" className={DT_CARD_CLASS}>
-          {data.length === 0 ? (
+          {flatRows.length === 0 ? (
             <div className={DT_EMPTY_CLASS}>{emptyMessage}</div>
           ) : (
-            data.map((row, idx) => (
+            flatRows.map((fr) => (
               <article
-                key={rowKey(row, idx)}
+                key={fr.key}
+                data-depth={expandable ? fr.depth : undefined}
                 data-clickable={onRowClick ? "true" : undefined}
-                onClick={() => onRowClick?.(row, idx)}
+                style={
+                  expandable && fr.depth > 0
+                    ? { marginInlineStart: fr.depth * EXPAND_INDENT }
+                    : undefined
+                }
+                onClick={() => onRowClick?.(fr.row, fr.index)}
               >
+                {expandable && fr.hasChildren && (
+                  <button
+                    type="button"
+                    className={DT_EXPANDER_CLASS}
+                    data-expanded={fr.expanded ? "true" : "false"}
+                    aria-expanded={fr.expanded}
+                    aria-label={fr.expanded ? "접기" : "펼치기"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleExpand(fr.key);
+                    }}
+                  >
+                    <ExpanderIcon expanded={fr.expanded} />
+                  </button>
+                )}
                 {cardColumns.map((col) => (
                   <div key={col.key} className={DT_CARD_ROW_CLASS}>
                     <span className={DT_CARD_LABEL_CLASS}>{col.cardLabel ?? col.title}</span>
-                    <span className={DT_CARD_VALUE_CLASS}>{renderCell(col, row, idx)}</span>
+                    <span className={DT_CARD_VALUE_CLASS}>{renderCell(col, fr.row, fr.index)}</span>
                   </div>
                 ))}
               </article>

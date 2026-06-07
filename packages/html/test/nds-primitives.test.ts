@@ -52,8 +52,11 @@ describe("nds-badge", () => {
     expect(root.dataset.variant).toBe("fill");
     expect(root.dataset.color).toBe("brand");
     expect(root.dataset.size).toBe("lg");
-    expect(root.style.height).toBe("30px");
-    expect(root.style.padding).toBe("5px 10px");
+    // 치수는 --nds-badge-* 슬롯(폴백 포함)으로 인라인 — 브랜드/밀도 override 여지.
+    expect(root.style.height).toBe("var(--nds-badge-height, 30px)");
+    expect(root.style.padding).toBe(
+      "var(--nds-badge-padding-y, 5px) var(--nds-badge-padding-x, 10px)",
+    );
     expect(root.style.background).toContain("--semantic-fill-brand-default");
 
     const label = el.querySelector(".nds-badge__label")!;

@@ -87,7 +87,7 @@ export const videoPlayerStyles = `
     height: 64px;
     border-radius: 9999px;
     background: rgba(255, 255, 255, 0.92);
-    color: #111;
+    color: ${cv.textRole.strong};
     border: none;
     cursor: pointer;
     display: inline-flex;

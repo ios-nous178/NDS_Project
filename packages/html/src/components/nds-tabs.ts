@@ -16,7 +16,7 @@
  *   부모에서 "tabs-change" CustomEvent (detail: { activeKey }) 디스패치 (bubbles).
  *
  * MVP 제약:
- *   variant: "line" | "chip" | "segment", size 는 resolveSize 로 정규화하지 않고 그대로 박는다.
+ *   variant: "line" | "chip" | "segment" (segment = 연결 트랙 단일선택, 구 SegmentedControl 흡수).
  *   indicator (line variant) measurement 는 active trigger 의 offsetLeft/offsetWidth 사용.
  */
 

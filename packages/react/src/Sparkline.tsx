@@ -1,5 +1,6 @@
 import React, { useId, useMemo } from "react";
 import { cv } from "@nudge-design/tokens";
+import { normalizeSeries } from "./viz-svg";
 
 /* ─── Constants ─── */
 
@@ -35,32 +36,6 @@ export interface SparklineProps extends React.HTMLAttributes<HTMLDivElement> {
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
-interface NormalizedPoint {
-  x: number;
-  y: number;
-}
-
-const normalize = (
-  data: number[],
-  width: number,
-  height: number,
-  pad: number,
-): { points: NormalizedPoint[]; min: number; max: number; midY: number } => {
-  if (data.length === 0) return { points: [], min: 0, max: 0, midY: height / 2 };
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = max - min || 1;
-  const usableW = width - pad * 2;
-  const usableH = height - pad * 2;
-  const stepX = data.length === 1 ? 0 : usableW / (data.length - 1);
-  const points = data.map((v, i) => ({
-    x: pad + stepX * i,
-    y: pad + usableH - ((v - min) / range) * usableH,
-  }));
-  const midY = pad + usableH - ((0 - min) / range) * usableH;
-  return { points, min, max, midY: Math.max(pad, Math.min(height - pad, midY)) };
-};
-
 /* ─── Component ─── */
 
 export const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
@@ -84,7 +59,7 @@ export const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
     const stroke = color ?? cv.iconRole.brand;
     const pad = 2;
     const { points, midY } = useMemo(
-      () => normalize(data, width, height, pad),
+      () => normalizeSeries(data, width, height, pad),
       [data, width, height],
     );
 

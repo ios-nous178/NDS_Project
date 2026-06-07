@@ -6,7 +6,7 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("geniet");
 
 const meta: Meta = {
-  title: "Components/Footer",
+  title: "Brands/Geniet/Footer",
   parameters: { layout: "fullscreen" },
   globals: { brand: "geniet" },
 };

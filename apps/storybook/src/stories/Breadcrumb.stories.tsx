@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Breadcrumb } from "@nudge-design/react";
 
 const meta: Meta<typeof Breadcrumb> = {
-  title: "Components/Breadcrumb",
+  title: "Components/Navigation/Breadcrumb",
   component: Breadcrumb,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -22,14 +22,14 @@ export const Playground: Story = {
 };
 
 export const TwoLevels: Story = {
-  name: "Example/2단계",
+  name: "Variant/2단계",
   args: {
     items: [{ label: "홈", href: "/" }, { label: "마이페이지" }],
   },
 };
 
 export const FourLevels: Story = {
-  name: "Example/4단계",
+  name: "Variant/4단계",
   args: {
     items: [
       { label: "홈", href: "/" },
@@ -41,7 +41,7 @@ export const FourLevels: Story = {
 };
 
 export const CustomSeparator: Story = {
-  name: "Example/커스텀 구분자",
+  name: "Variant/커스텀 구분자",
   args: {
     items: [
       { label: "홈", href: "/" },

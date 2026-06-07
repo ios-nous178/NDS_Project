@@ -5,7 +5,7 @@ import { ChevronRightIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 
 const meta: Meta = {
-  title: "Components/List",
+  title: "Components/Layout/List",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -153,16 +153,19 @@ function DividedExample() {
 }
 
 export const CardWithAvatars: Story = {
-  name: "카드 + 아바타 (상담사 목록)",
+  name: "Recipe/카드 + 아바타 (상담사 목록)",
   render: () => <CardExample />,
 };
 export const SettingsList: Story = {
-  name: "설정 (Toggle trailing)",
+  name: "Recipe/설정 (Toggle trailing)",
   render: () => <SettingsExample />,
 };
-export const PlainNav: Story = { name: "Plain (네비게이션)", render: () => <PlainNavExample /> };
-export const Divided: Story = { name: "Divided (메뉴)", render: () => <DividedExample /> };
+export const PlainNav: Story = {
+  name: "Recipe/Plain (네비게이션)",
+  render: () => <PlainNavExample />,
+};
+export const Divided: Story = { name: "Recipe/Divided (메뉴)", render: () => <DividedExample /> };
 export const WithMetadata: Story = {
-  name: "Metadata 포함 (Title + Description + Metadata)",
+  name: "Recipe/Metadata 포함 (Title + Description + Metadata)",
   render: () => <MetadataExample />,
 };

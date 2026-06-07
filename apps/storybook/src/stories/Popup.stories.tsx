@@ -2,11 +2,19 @@ import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
 import { Button, Popup, type PopupProps } from "@nudge-design/react";
+import { resolveActionsLayout } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
+/** 정적 프리뷰용 — 현재 브랜드 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
+function currentActionsLayout(): "split" | "end" {
+  const brand =
+    typeof document !== "undefined" ? document.documentElement.getAttribute("data-brand") : null;
+  return resolveActionsLayout(brand);
+}
+
 const meta: Meta<PopupProps> = {
-  title: "Components/Popup",
+  title: "Components/Overlay/Popup",
   component: Popup,
   tags: ["autodocs"],
   parameters: {
@@ -19,6 +27,11 @@ const meta: Meta<PopupProps> = {
   },
   argTypes: {
     isMaskClose: { control: "boolean" },
+    actionsLayout: {
+      control: "radio",
+      options: [undefined, "split", "end"],
+      description: "버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split).",
+    },
   },
   args: {
     title: "알림",
@@ -53,6 +66,71 @@ function PopupExample(args: React.ComponentProps<typeof Popup>) {
 
 export const Playground: Story = {
   render: (args) => <PopupExample {...args} />,
+};
+
+/* ─── Single / Dual Action ───────────────────────────────────────────────
+   docs(개요)에서 클릭 없이 바로 UI 가 보이도록, 포털/오버레이 없이 컴포넌트와 동일한
+   DS 클래스(nds-popup__*)로 카드만 인라인 렌더한다 — styles.css 가 그대로 적용되므로
+   브랜드 툴바를 cashwalk-biz 로 두면 우측 hug pill 확인창으로 보인다.
+   (실제 열림/포커스/Esc 동작은 Playground·Interaction 스토리 참고.) */
+
+function PopupStaticPreview({
+  title,
+  description,
+  confirmText,
+  cancelText,
+}: {
+  title: string;
+  description: React.ReactNode;
+  confirmText: string;
+  cancelText?: string;
+}) {
+  const dual = cancelText != null;
+  return (
+    <div className="nds-popup__content" style={{ margin: "0 auto" }}>
+      <div className="nds-popup__text">
+        <p className="nds-popup__title">{title}</p>
+        <p className="nds-popup__description">{description}</p>
+      </div>
+      <div
+        className="nds-popup__actions"
+        data-layout={currentActionsLayout()}
+        data-single={dual ? undefined : "true"}
+      >
+        {dual && (
+          <button type="button" className="nds-popup__btn nds-popup__btn--cancel">
+            {cancelText}
+          </button>
+        )}
+        <button type="button" className="nds-popup__btn nds-popup__btn--confirm">
+          {confirmText}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export const SingleAction: Story = {
+  name: "State/Single Action",
+  render: () => (
+    <PopupStaticPreview
+      title="수정 완료"
+      description="수정이 완료되었습니다. 검수 후 반영됩니다."
+      confirmText="확인"
+    />
+  ),
+};
+
+export const DualAction: Story = {
+  name: "State/Dual Action",
+  render: () => (
+    <PopupStaticPreview
+      title="변경하시겠습니까?"
+      description="변경 시 상태 반영에 최대 5분까지 소요될 수 있습니다."
+      cancelText="취소"
+      confirmText="변경"
+    />
+  ),
 };
 
 /* ─── Alert Only (확인 버튼만) ─── */

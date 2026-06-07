@@ -64,6 +64,17 @@ export default tseslint.config(
     },
   },
   {
+    // Figma 플러그인(tools/figma-plugin) — Figma 샌드박스가 주입하는 전역(figma·__html__).
+    // 앱 빌드와 분리된 무빌드 plain JS 라 별도 글로벌만 등록해 no-undef 를 막는다.
+    files: ["tools/figma-plugin/**/*.js"],
+    languageOptions: {
+      globals: {
+        figma: "readonly",
+        __html__: "readonly",
+      },
+    },
+  },
+  {
     files: ["packages/react/src/**/*.{ts,tsx}", "apps/**/*.{ts,tsx,js,jsx}"],
     ignores: [
       "packages/react/src/trost/**",

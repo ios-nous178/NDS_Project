@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Checkbox, CheckboxGroup } from "../../src/Checkbox";
+import { Checkbox } from "../../src/Checkbox";
+import { CheckboxGroup } from "../../src/CheckboxGroup";
 import { Radio, RadioGroup, RadioGroupItem } from "../../src/Radio";
 
 describe("Checkbox", () => {

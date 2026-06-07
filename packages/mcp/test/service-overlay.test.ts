@@ -156,7 +156,7 @@ describe("service overlay merge — Modal (overlay + matrixOverrides 동시 적�
       "bg #DDDDDD (atomic Neutral/400) + text #FFFFFF (Figma 3098:1079).",
     );
     expect(state["primary/solid/disabled"]).not.toContain("NudgeEAP"); // base 텍스트 사라짐
-    expect(state.hover).toContain("primary=#017EE4"); // base 의 다른 키는 보존
+    expect(state.hover).toContain("primary=var(--semantic-fill-brand-hover)"); // base 의 다른 키는 보존
 
     // dimensions
     const dims = result.dimensions as Record<string, string>;
@@ -217,11 +217,11 @@ describe("Brand-aware Base metadata — BrandHeader / BrandFooter", () => {
     expect(fp.footerTone).toBe("light"); // '*' default 적용
   });
 
-  it("Sidebar cashwalk-biz: iconSet.gnb 7종이 응답에 노출", () => {
+  it("Sidebar cashwalk-biz: iconSet.gnb 9종이 응답에 노출", () => {
     const result = getGuide({ topic: "component:Sidebar", brand: "cashwalk-biz", target: "html" });
     expect(result._brandApplied).toBe("cashwalk-biz");
     const iconSet = result.iconSet as Record<string, string[]>;
-    expect(iconSet.gnb).toHaveLength(7);
+    expect(iconSet.gnb).toHaveLength(9);
     expect(iconSet.gnb).toContain("CashwalkBizGnbBannerIcon");
     expect(iconSet.gnb).toContain("CashwalkBizGnbSettingIcon");
   });

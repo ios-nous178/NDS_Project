@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { VotePoll, type VoteOption } from "@nudge-design/react";
 
 const meta: Meta<typeof VotePoll> = {
-  title: "Components/VotePoll",
+  title: "Components/Domain/VotePoll",
   component: VotePoll,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

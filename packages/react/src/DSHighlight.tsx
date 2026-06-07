@@ -57,7 +57,7 @@ interface OverlayRect {
   color: string;
 }
 
-const AREA_COLOR = "#2b96ed";
+const AREA_COLOR = "var(--semantic-icon-brand-default)";
 const COMPONENT_COLOR = "rgba(237, 46, 119, 0.8)";
 
 /* ─── Provider ─── */
@@ -266,7 +266,7 @@ const DSOverlayPortal: React.FC<{
               top: rect.top - 14,
               left: rect.left + 4,
               background: rect.color,
-              color: "#fff",
+              color: "var(--semantic-text-inverse-default)",
               fontSize: 10,
               fontWeight: 700,
               padding: "1px 6px",
@@ -369,8 +369,11 @@ const DSHighlightToggle: React.FC = () => {
         padding: "10px var(--semantic-inset-card)",
         borderRadius: 999,
         border: "none",
-        background: mode === "off" ? "#383838" : "var(--semantic-icon-brand-default)",
-        color: "#fff",
+        background:
+          mode === "off"
+            ? "var(--semantic-bg-inverse-default)"
+            : "var(--semantic-icon-brand-default)",
+        color: "var(--semantic-text-inverse-default)",
         fontSize: 13,
         fontWeight: 700,
         cursor: "grab",
@@ -386,7 +389,10 @@ const DSHighlightToggle: React.FC = () => {
           width: 8,
           height: 8,
           borderRadius: "50%",
-          background: mode === "off" ? "#666" : "#fff",
+          background:
+            mode === "off"
+              ? "var(--semantic-text-muted-default)"
+              : "var(--semantic-icon-inverse-default)",
           transition: "background 0.2s",
         }}
       />

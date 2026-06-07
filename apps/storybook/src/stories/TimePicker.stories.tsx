@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { TimePicker } from "@nudge-design/react";
 
 const meta: Meta<typeof TimePicker> = {
-  title: "Components/TimePicker",
+  title: "Components/Inputs/TimePicker",
   component: TimePicker,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -23,6 +23,24 @@ export const Playground: Story = {
           onValueChange={setT}
           helperText="5분 단위로 선택할 수 있어요"
           fullWidth
+        />
+      </div>
+    );
+  },
+};
+
+export const WithPresets: Story = {
+  name: "Recipe/캐포비 빠른설정 프리셋 (자정까지)",
+  render: function Render() {
+    const [t, setT] = useState("18:00");
+    return (
+      <div style={{ width: 360 }} data-brand="cashwalk-biz">
+        <TimePicker
+          label="노출 종료 시간"
+          value={t}
+          onValueChange={setT}
+          presets={[{ label: "자정까지", value: "23:59" }]}
+          helperText="시계 아이콘으로 직접 선택하거나 '자정까지'로 빠르게 설정"
         />
       </div>
     );

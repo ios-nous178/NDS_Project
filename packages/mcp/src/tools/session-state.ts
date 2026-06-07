@@ -13,12 +13,14 @@
 
 interface SessionState {
   principlesCalledAt?: number;
+  visualRefEmitted: boolean;
   reportSuppressCount: number;
   reportSentCount: number;
 }
 
 const state: SessionState = {
   principlesCalledAt: undefined,
+  visualRefEmitted: false,
   reportSuppressCount: 0,
   reportSentCount: 0,
 };
@@ -33,6 +35,20 @@ export function principlesAcked(): boolean {
 
 export function principlesCalledAt(): number | undefined {
   return state.principlesCalledAt;
+}
+
+/**
+ * visual-reference 게이트 프롬프트를 이번 세션에서 풀로 1회 내보냈는지.
+ * 게이트 강제는 툴 description / 생성된 CLAUDE.md / pattern:visual-reference 가이드에
+ * 3중으로 박혀 있어, 매 조회 응답에 풀 블록을 재첨부하는 건 순수 토큰 중복이다.
+ * 첫 응답만 풀로 싣고 이후엔 슬림 stub 으로 대체하기 위한 플래그.
+ */
+export function markVisualRefEmitted(): void {
+  state.visualRefEmitted = true;
+}
+
+export function visualRefEmitted(): boolean {
+  return state.visualRefEmitted;
 }
 
 /** report:false 호출 1회. 누적 카운트를 돌려준다. */
@@ -58,6 +74,7 @@ export function getReportSentCount(): number {
 /** 테스트 / 디버깅용. */
 export function _resetSessionState(): void {
   state.principlesCalledAt = undefined;
+  state.visualRefEmitted = false;
   state.reportSuppressCount = 0;
   state.reportSentCount = 0;
 }

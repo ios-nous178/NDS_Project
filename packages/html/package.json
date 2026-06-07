@@ -14,6 +14,7 @@
       "import": "./dist/runtime.js"
     },
     "./styles.css": "./dist/styles.css",
+    "./standalone/*": "./dist/standalone/*",
     "./elements/*": {
       "types": "./dist/components/*.d.ts",
       "import": "./dist/components/*.js"
@@ -27,7 +28,7 @@
     "./dist/components/*.js"
   ],
   "scripts": {
-    "build": "tsc && node scripts/copy-styles.mjs",
+    "build": "node ../../scripts/check-runtime-registry.mjs && rm -rf dist && tsc && node scripts/copy-styles.mjs && node scripts/build-standalone.mjs",
     "build:fixture": "node test-fixture/build-fixture.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

@@ -12,7 +12,17 @@ const SELECT_TRIGGER_TEXT_CLASS = `${SELECT_CLASS}__trigger-text`;
 const SELECT_CHEVRON_CLASS = `${SELECT_CLASS}__chevron`;
 const SELECT_DROPDOWN_CLASS = `${SELECT_CLASS}__dropdown`;
 const SELECT_OPTION_CLASS = `${SELECT_CLASS}__option`;
+const SELECT_OPTION_LABEL_CLASS = `${SELECT_CLASS}__option-label`;
+const SELECT_OPTION_CHECK_CLASS = `${SELECT_CLASS}__option-check`;
 const SELECT_HELPER_CLASS = `${SELECT_CLASS}__helper`;
+const SELECT_SEARCH_CLASS = `${SELECT_CLASS}__search`;
+const SELECT_EMPTY_CLASS = `${SELECT_CLASS}__empty`;
+
+/**
+ * auto(좁은) 셀렉트에서 드롭다운 메뉴가 가장 넓은 옵션까지 grow 할 때의 상한.
+ * fullWidth 셀렉트는 트리거 폭으로 고정되므로 이 캡을 쓰지 않는다. 넘으면 옵션 말줄임.
+ */
+const SELECT_AUTO_MENU_MAX_WIDTH = 360;
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -43,6 +53,8 @@ interface SelectContextValue {
   setActiveOptionValue: React.Dispatch<React.SetStateAction<string | null>>;
   disabled: boolean;
   error: boolean;
+  /** 트리거 100% 폭(폼/캐포비 기본). 드롭다운 메뉴 폭 전략 분기에 사용. */
+  fullWidth: boolean;
   selectId: string;
   labelId: string;
   helperId: string;
@@ -115,6 +127,7 @@ export const SelectRoot: React.FC<SelectRootProps> = ({
         setActiveOptionValue,
         disabled,
         error,
+        fullWidth,
         selectId,
         labelId,
         helperId,
@@ -298,6 +311,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
     portalContainer,
     listboxId,
     selectId,
+    fullWidth,
   } = useSelectContext();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
@@ -321,6 +335,16 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
 
   useEffect(() => {
     if (!open || !dropdownRef.current) return;
+
+    // 검색형(searchable): 드롭다운 상단 검색 인풋이 있으면 거기로 포커스를 주고,
+    // 초기 active option 은 설정하지 않는다(사용자가 타이핑 후 ArrowDown 으로 리스트에 진입).
+    const searchInput = dropdownRef.current.querySelector<HTMLInputElement>(
+      'input[data-slot="search-input"]',
+    );
+    if (searchInput) {
+      searchInput.focus();
+      return;
+    }
 
     const enabledOptions = getEnabledOptionElements(dropdownRef.current);
     const selectedOption =
@@ -361,10 +385,26 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
         style={{
           top: position.top,
           left: position.left,
-          width: position.width,
+          // 메뉴 폭: 항상 트리거 폭 이상(min-width). fullWidth 면 트리거 폭으로 고정
+          // (max-width=트리거폭), auto 면 가장 넓은 옵션까지 grow 후 캡(말줄임).
+          minWidth: position.width,
+          width: "max-content",
+          maxWidth: fullWidth ? position.width : SELECT_AUTO_MENU_MAX_WIDTH,
           ...style,
         }}
         onKeyDown={(event) => {
+          // Escape 는 옵션 유무와 무관하게 항상 닫는다(검색형에서 결과 0건일 때도).
+          if (event.key === "Escape") {
+            event.preventDefault();
+            setOpen(false);
+            triggerRef.current?.focus();
+            return;
+          }
+
+          // 검색형: 포커스가 검색 인풋에 있으면 Space/Home/End 는 텍스트 편집용으로 흘려보낸다.
+          // (Arrow = 리스트 탐색, Enter = 활성/첫 매치 선택 은 검색 중에도 유효)
+          const typingInSearch = (event.target as HTMLElement).tagName === "INPUT";
+
           const enabledOptions = getEnabledOptionElements(dropdownRef.current);
           if (enabledOptions.length === 0) return;
 
@@ -386,15 +426,20 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
             return;
           }
 
-          if (event.key === "Home") {
+          if (event.key === "Home" && !typingInSearch) {
             event.preventDefault();
             setActiveOptionValue(enabledOptions[0]?.dataset.value ?? null);
             return;
           }
 
-          if (event.key === "End") {
+          if (event.key === "End" && !typingInSearch) {
             event.preventDefault();
             setActiveOptionValue(enabledOptions[enabledOptions.length - 1]?.dataset.value ?? null);
+            return;
+          }
+
+          if (event.key === " " && typingInSearch) {
+            // 검색어에 공백 입력 — 선택으로 가로채지 않는다.
             return;
           }
 
@@ -405,12 +450,6 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = ({
             targetOption?.click();
             triggerRef.current?.focus();
             return;
-          }
-
-          if (event.key === "Escape") {
-            event.preventDefault();
-            setOpen(false);
-            triggerRef.current?.focus();
           }
         }}
         {...rest}
@@ -472,7 +511,18 @@ export const SelectOption: React.FC<SelectOptionProps> = ({
       }}
       {...rest}
     >
-      {children}
+      <span className={SELECT_OPTION_LABEL_CLASS}>{children}</span>
+      <span className={SELECT_OPTION_CHECK_CLASS} aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M3.5 8.5L6.5 11.5L12.5 5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
     </div>
   );
 };
@@ -509,6 +559,67 @@ export const SelectHelper: React.FC<SelectHelperProps> = ({
     >
       {children}
     </span>
+  );
+};
+
+/* ─── Internal: searchable dropdown content ───
+ * 드롭다운(open 일 때만 마운트) 안에 검색 인풋 + 필터된 옵션 + 빈 상태를 렌더한다.
+ * query 상태를 이 컴포넌트가 소유하므로 드롭다운이 닫히며 언마운트되면 자동 리셋된다.
+ * 자유 입력 자동완성(Autocomplete)과 달리 값은 항상 options 중에서만 선택된다.
+ */
+interface SelectSearchableContentProps {
+  options: SelectItem[];
+  searchPlaceholder: string;
+  emptyMessage: React.ReactNode;
+  optionClassName?: string;
+  optionStyle?: React.CSSProperties;
+}
+
+const SelectSearchableContent: React.FC<SelectSearchableContentProps> = ({
+  options,
+  searchPlaceholder,
+  emptyMessage,
+  optionClassName,
+  optionStyle,
+}) => {
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const filtered = q ? options.filter((opt) => opt.label.toLowerCase().includes(q)) : options;
+
+  return (
+    <>
+      <div data-slot="search" className={SELECT_SEARCH_CLASS}>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M13 13l-2.5-2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+        <input
+          type="text"
+          data-slot="search-input"
+          value={query}
+          placeholder={searchPlaceholder}
+          onChange={(event) => setQuery(event.target.value)}
+          autoFocus
+        />
+      </div>
+      {filtered.length === 0 ? (
+        <div data-slot="empty" className={SELECT_EMPTY_CLASS}>
+          {emptyMessage}
+        </div>
+      ) : (
+        filtered.map((opt) => (
+          <SelectOption
+            key={opt.value}
+            value={opt.value}
+            disabled={opt.disabled}
+            className={optionClassName}
+            style={optionStyle}
+          >
+            {opt.label}
+          </SelectOption>
+        ))
+      )}
+    </>
   );
 };
 
@@ -562,6 +673,16 @@ export interface SelectProps {
   disabled?: boolean;
   /** 전체 너비 */
   fullWidth?: boolean;
+  /**
+   * 드롭다운 상단에 검색 인풋을 노출해 옵션을 label 로 필터(Ant `showSearch` 모델).
+   * 값은 여전히 options 중에서만 선택된다 — 자유 입력이 필요하면 Autocomplete 사용.
+   * 옵션이 많을 때(대략 10개 초과) 권장.
+   */
+  searchable?: boolean;
+  /** 검색 인풋 placeholder @default "검색" (searchable 일 때만) */
+  searchPlaceholder?: string;
+  /** 검색 결과 0건 메시지 @default "검색 결과가 없어요" (searchable 일 때만). html `empty-message` 는 문자열만. */
+  emptyMessage?: React.ReactNode;
   /** 드롭다운 포털 컨테이너 */
   portalContainer?: HTMLElement | null;
   /** 루트 className */
@@ -583,6 +704,9 @@ const SelectComponent: React.FC<SelectProps> = ({
   errorMessage,
   disabled = false,
   fullWidth = true,
+  searchable = false,
+  searchPlaceholder = "검색",
+  emptyMessage = "검색 결과가 없어요",
   portalContainer,
   className,
   style,
@@ -616,17 +740,27 @@ const SelectComponent: React.FC<SelectProps> = ({
         {selectedLabel}
       </SelectTrigger>
       <SelectDropdown className={slotProps?.dropdown?.className} style={slotProps?.dropdown?.style}>
-        {options.map((opt) => (
-          <SelectOption
-            key={opt.value}
-            value={opt.value}
-            disabled={opt.disabled}
-            className={slotProps?.option?.className}
-            style={slotProps?.option?.style}
-          >
-            {opt.label}
-          </SelectOption>
-        ))}
+        {searchable ? (
+          <SelectSearchableContent
+            options={options}
+            searchPlaceholder={searchPlaceholder}
+            emptyMessage={emptyMessage}
+            optionClassName={slotProps?.option?.className}
+            optionStyle={slotProps?.option?.style}
+          />
+        ) : (
+          options.map((opt) => (
+            <SelectOption
+              key={opt.value}
+              value={opt.value}
+              disabled={opt.disabled}
+              className={slotProps?.option?.className}
+              style={slotProps?.option?.style}
+            >
+              {opt.label}
+            </SelectOption>
+          ))
+        )}
       </SelectDropdown>
       {displayHelper && (
         <SelectHelper

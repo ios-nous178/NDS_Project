@@ -49,6 +49,13 @@ jobs:
       - name: Check MCP catalog freshness
         run: pnpm lint:mcp-catalog
 
+      # react↔html 3면 미러 parity 게이트. 소프트런칭 중 — 신규 drift 를 로그로만
+      # 알리고 PR 을 막지는 않는다(continue-on-error). 안정화되면 이 한 줄을 지워
+      # 하드 게이트로 전환한다. (로직은 이미 baseline 대비 "신규 차단성 drift" 만 잡음.)
+      - name: Check react↔html mirror parity
+        run: pnpm lint:mirror-parity
+        continue-on-error: true
+
       - name: Build Docs
         run: pnpm docs:build
 

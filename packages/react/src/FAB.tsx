@@ -40,7 +40,7 @@ export interface FABProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 const colorConfig: Record<FABColor, { bg: string; fg: string }> = {
   primary: {
     bg: "var(--semantic-bg-brand-default)",
-    fg: "var(--semantic-text-inverse-default)",
+    fg: "var(--semantic-button-text-default)",
   },
   secondary: {
     bg: "var(--semantic-fill-neutral-default)",

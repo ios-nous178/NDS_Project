@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AddressSearch, type AddressResult, type AddressValue } from "@nudge-design/react";
 
 const meta: Meta<typeof AddressSearch> = {
-  title: "Components/AddressSearch",
+  title: "Components/Inputs/AddressSearch",
   component: AddressSearch,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

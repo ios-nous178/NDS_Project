@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ChatComposer } from "@nudge-design/react";
 
 const meta: Meta<typeof ChatComposer> = {
-  title: "Components/ChatComposer",
+  title: "Components/Domain/ChatComposer",
   component: ChatComposer,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -93,9 +93,9 @@ export const WithQuickReplies: Story = {
           onValueChange={setV}
           onSubmit={() => setV("")}
           quickReplies={[
-            { label: "🙂 괜찮아요", onClick: () => setV("괜찮아요") },
-            { label: "😣 힘들어요", onClick: () => setV("힘들어요") },
-            { label: "💬 더 이야기하고 싶어요", onClick: () => setV("더 이야기하고 싶어요") },
+            { label: "괜찮아요", onClick: () => setV("괜찮아요") },
+            { label: "힘들어요", onClick: () => setV("힘들어요") },
+            { label: "더 이야기하고 싶어요", onClick: () => setV("더 이야기하고 싶어요") },
           ]}
         />
       </div>

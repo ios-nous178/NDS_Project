@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CommentItem, Avatar, Badge } from "@nudge-design/react";
+import { CommentItem, Avatar, Badge, LikeButton } from "@nudge-design/react";
 
 const meta: Meta<typeof CommentItem> = {
-  title: "Components/CommentItem",
+  title: "Components/Domain/CommentItem",
   component: CommentItem,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -11,6 +11,14 @@ const meta: Meta<typeof CommentItem> = {
 
 export default meta;
 type Story = StoryObj<typeof CommentItem>;
+
+/** 댓글 좋아요는 DS LikeButton(nds-like-button)을 likeAction 슬롯에 그대로 사용 — 손조립 버튼 금지. */
+function CommentLike({ count = 0, size = "sm" }: { count?: number; size?: "sm" | "md" | "lg" }) {
+  const [liked, setLiked] = useState(false);
+  return (
+    <LikeButton size={size} liked={liked} count={count + (liked ? 1 : 0)} onChange={setLiked} />
+  );
+}
 
 export const Playground: Story = {
   render: () => (
@@ -20,22 +28,7 @@ export const Playground: Story = {
         author="김민지"
         time="3분 전"
         text="이 글 정말 도움이 됐어요. 감사합니다 :)"
-        likeAction={
-          <button
-            type="button"
-            style={{
-              border: "none",
-              background: "transparent",
-              color: "#888",
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            좋아요 12
-          </button>
-        }
+        likeAction={<CommentLike count={12} />}
         onReply={() => alert("답글")}
       />
     </div>
@@ -56,22 +49,7 @@ export const WithBadgeAndReplies: Story = {
         }
         time="10분 전"
         text="좋은 글 잘 읽었어요. 다음 주 상담 때 더 이야기 나눠봐요."
-        likeAction={
-          <button
-            type="button"
-            style={{
-              border: "none",
-              background: "transparent",
-              color: "#888",
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            좋아요 4
-          </button>
-        }
+        likeAction={<CommentLike count={4} />}
         onReply={() => undefined}
         replies={
           <>
@@ -88,7 +66,7 @@ export const WithBadgeAndReplies: Story = {
               avatar={<Avatar name="최서연" size="sm" />}
               author="최서연"
               time="2분 전"
-              text="공감합니다 ☺️"
+              text="공감합니다"
             />
           </>
         }

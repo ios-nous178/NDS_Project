@@ -38,7 +38,7 @@ import { FieldActionRow } from "@nudge-design/react";
 
 ---
 
-## Flat API
+## 사용법
 
 ### 휴대폰 인증
 
@@ -99,26 +99,7 @@ import { FieldActionRow } from "@nudge-design/react";
 
 ---
 
-## Compound API
-
-```tsx
-<FieldActionRow.Root>
-  <FieldActionRow.Row>
-    <FieldActionRow.Field error={hasError}>
-      <input type="tel" placeholder="숫자만 입력해 주세요." />
-      <FieldActionRow.Timer expired={isExpired}>02:58</FieldActionRow.Timer>
-    </FieldActionRow.Field>
-    <FieldActionRow.Action tone="outline">
-      <button type="button">인증 번호 받기</button>
-    </FieldActionRow.Action>
-  </FieldActionRow.Row>
-  <FieldActionRow.Helper error={hasError}>도움 텍스트</FieldActionRow.Helper>
-</FieldActionRow.Root>
-```
-
----
-
-## Flat API Props
+## Props
 
 | Prop           | 타입                      | 기본값      | 설명                                  |
 | -------------- | ------------------------- | ----------- | ------------------------------------- |
@@ -131,19 +112,6 @@ import { FieldActionRow } from "@nudge-design/react";
 | `helperText`   | `string`                  | —           | 도움/에러 텍스트                      |
 | `success`      | `boolean`                 | `false`     | 성공 상태                             |
 | `slotProps`    | `FieldActionRowSlotProps` | —           | 슬롯 프롭                             |
-
----
-
-## Compound 컴포넌트
-
-| 컴포넌트                | 역할                     |
-| ----------------------- | ------------------------ |
-| `FieldActionRow.Root`   | 루트                     |
-| `FieldActionRow.Row`    | 입력 + 버튼 가로 행      |
-| `FieldActionRow.Field`  | 입력 필드 래퍼           |
-| `FieldActionRow.Timer`  | 타이머 표시 (Field 내부) |
-| `FieldActionRow.Action` | 버튼 래퍼 (tone 지원)    |
-| `FieldActionRow.Helper` | 도움/에러/성공 텍스트    |
 
 ---
 

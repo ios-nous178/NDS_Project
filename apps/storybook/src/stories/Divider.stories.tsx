@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Divider } from "@nudge-design/react";
 
 const meta: Meta<typeof Divider> = {
-  title: "Components/Divider",
+  title: "Components/Display/Divider",
   component: Divider,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -28,7 +28,7 @@ export const Playground: Story = {
 };
 
 export const Horizontal: Story = {
-  name: "Orientation/Horizontal",
+  name: "Variant/Horizontal",
   render: () => (
     <div style={{ width: 300 }}>
       <p>위쪽 콘텐츠</p>
@@ -39,7 +39,7 @@ export const Horizontal: Story = {
 };
 
 export const Vertical: Story = {
-  name: "Orientation/Vertical",
+  name: "Variant/Vertical",
   render: () => (
     <div style={{ display: "flex", alignItems: "center" }}>
       <span>이용약관</span>
@@ -52,7 +52,7 @@ export const Vertical: Story = {
 };
 
 export const ThickSection: Story = {
-  name: "Example/섹션 구분선",
+  name: "Recipe/섹션 구분선",
   render: () => (
     <div style={{ width: 300 }}>
       <p>섹션 A</p>

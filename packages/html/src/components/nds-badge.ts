@@ -33,7 +33,7 @@ interface ColorTokens {
 const FILL_COLORS: Record<BadgeColor, ColorTokens> = {
   brand: {
     background: "var(--semantic-fill-brand-default)",
-    text: "var(--semantic-text-inverse-default, #ffffff)",
+    text: "var(--semantic-button-text-default, #ffffff)",
     border: "transparent",
   },
   neutral: {
@@ -201,16 +201,16 @@ export class NdsBadge extends NdsElement {
       alignItems: "center",
       justifyContent: "center",
       gap: "var(--semantic-gap-tight)",
-      height: `${st.height}px`,
-      padding: `${st.paddingY}px ${st.paddingX}px`,
-      borderRadius: `${st.radius}px`,
+      height: `var(--nds-badge-height, ${st.height}px)`,
+      padding: `var(--nds-badge-padding-y, ${st.paddingY}px) var(--nds-badge-padding-x, ${st.paddingX}px)`,
+      borderRadius: `var(--nds-badge-radius, ${st.radius}px)`,
       background: ct.background,
       color: ct.text,
       border: `1px solid ${ct.border}`,
       fontFamily: "var(--font-family-web, 'Pretendard', -apple-system, sans-serif)",
-      fontSize: `${st.fontSize}px`,
-      lineHeight: `${st.lineHeight}px`,
-      fontWeight: "700",
+      fontSize: `var(--nds-badge-font-size, ${st.fontSize}px)`,
+      lineHeight: `var(--nds-badge-line-height, ${st.lineHeight}px)`,
+      fontWeight: "var(--nds-badge-font-weight, 700)",
       boxSizing: "border-box",
       whiteSpace: "nowrap",
     });

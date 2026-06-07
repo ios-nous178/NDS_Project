@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { VoiceRecorder, type VoiceRecorderState } from "@nudge-design/react";
 
 const meta: Meta<typeof VoiceRecorder> = {
-  title: "Components/VoiceRecorder",
+  title: "Components/Domain/VoiceRecorder",
   component: VoiceRecorder,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

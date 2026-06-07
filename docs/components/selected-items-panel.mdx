@@ -1,0 +1,169 @@
+---
+title: SelectedItemsPanel
+description: 선택 항목 슬롯 패널 — 헤더(타이틀 + 강조 개수 + 추가/해제 액션) 고정, 본문은 SelectedItemRow/리스트/폼/테이블 슬롯
+category: 입력
+---
+
+# SelectedItemsPanel
+
+picker 로 추가한 동적 다중 선택 결과를 보여주는 회색 슬롯 패널입니다. 헤더(타이틀 + 강조 개수 + 추가/해제 액션)는 고정이고, 본문은 `SelectedItemRow` 리스트·폼·테이블 등으로 swap 합니다. `SelectedItemRow`(라벨 + 삭제 X)를 함께 export 하며, `RegionRow` 는 하위호환 alias 입니다.
+
+```tsx
+import { SelectedItemsPanel } from "@nudge-design/react";
+```
+
+---
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+
+- 캐시워크 for Business admin 의 **다중 선택 결과 패널**(선택한 항목/지역/카테고리/멤버 N개)
+- 선택 picker 와 짝을 이루는 **현재 선택 요약 + 개별 제거**가 필요할 때
+- 동적으로 추가·삭제되는 선택지를 회색 패널 안에 누적해서 보여줄 때
+- 선택 항목 리스트 대신 폼·데이터테이블을 본문 슬롯에 그대로 넣어 요약 패널로 쓸 때
+
+### 이럴 때 사용하지 마세요
+
+- 단일 선택 → Select/Dropdown 을 사용하세요
+- 일반 정보 카드 → Card 를 사용하세요
+- 체크박스 목록 자체(선택 UI) → Checkbox 그룹을 사용하세요. 계층 선택 트리는 CheckboxTree
+
+### 자주 하는 실수
+
+- **선택 결과를 Chip/ActionChip 으로 인라인 나열하지 마세요.** 노란 outlined 칩은 SelectionButton 과 시각적으로 같아 혼동되고, 추가/해제·개수 강조·개별 제거 affordance 가 빠집니다. 회색 `SelectedItemsPanel`(surface.subtle 패널) + `SelectedItemRow` 로 그리세요.
+- **개수를 타이틀 문자열에 직접 넣지 마세요.** `count` prop 이 text.brand 색으로 강조 렌더하므로 `title` 은 명사만 넣습니다(예: `"선택한 항목 2개"` 대신 `title="선택한 항목"` + `count={2}`).
+- **피커 모달 우측 패널에서는 추가 선택을 노출하지 마세요.** React 는 `onAdd` 미전달 시 추가 버튼이 자동 숨김입니다(HTML 웹컴포넌트는 `hide-add` 속성 필수). 추가 선택은 모달 밖에서만 쓰며, 시각 스펙은 secondary Button + plus 아이콘입니다.
+- **본문 항목 상태는 패널이 들고 있지 않습니다(controlled).** 삭제는 `SelectedItemRow` 의 `onRemove` 로 받아 호스트가 리스트를 갱신합니다.
+- **`SelectedItemRow` 를 패널 밖 sibling 으로 두지 마세요.** 패널 다음에 append 하면 본문 flex gap(8)을 못 타서 행끼리 붙고 회색 패널 밖에 렌더됩니다.
+- 같은 항목을 패널에 중복 추가하지 마세요(추가 시 이미 있으면 무시 — 유니크).
+
+---
+
+## 기본 사용법
+
+```tsx
+<SelectedItemsPanel
+  title="선택한 항목"
+  count={items.length}
+  onAdd={openPicker}
+  onClear={clearAll}
+>
+  {items.map((i) => (
+    <SelectedItemRow key={i.id} onRemove={() => remove(i.id)}>
+      {i.label}
+    </SelectedItemRow>
+  ))}
+</SelectedItemsPanel>
+```
+
+`title` 은 명사만 넣고, 개수는 `count` 로 분리합니다 — `count` 가 브랜드색으로 `{count}{countSuffix}`(기본 접미사 "개")를 강조 렌더합니다.
+
+---
+
+## 모드 / 기능
+
+헤더 액션은 **선택 해제(`onClear`)가 기본**이고 **추가 선택(`onAdd`)은 옵션**입니다. 핸들러를 전달한 액션만 렌더됩니다.
+
+| 상황                          | 전달 prop                       | 헤더 액션              |
+| ----------------------------- | ------------------------------- | ---------------------- |
+| 모달 밖 페이지 / 타겟팅 폼    | `onAdd` + `onClear`             | 추가 선택 + 선택 해제  |
+| 피커 모달 우측 패널           | `onClear` 만 (`onAdd` 미전달)   | 선택 해제              |
+| 읽기 전용 요약                | `showActions={false}`           | 없음                   |
+
+피커 모달 우측 패널 — 추가 선택 없음:
+
+```tsx
+<SelectedItemsPanel title="선택한 항목" count={items.length} onClear={clearAll}>
+  {items.map((i) => (
+    <SelectedItemRow key={i.id} onRemove={() => remove(i.id)}>
+      {i.label}
+    </SelectedItemRow>
+  ))}
+</SelectedItemsPanel>
+```
+
+본문 슬롯 swap — 리스트 대신 폼이나 데이터테이블을 children 으로 넣어도 됩니다:
+
+```tsx
+<SelectedItemsPanel title="선택 요약" count={3} showActions={false}>
+  <SummaryTable rows={rows} />
+</SelectedItemsPanel>
+```
+
+---
+
+## Props
+
+### SelectedItemsPanel
+
+| Prop          | 타입             | 기본값        | 설명                                                              |
+| ------------- | ---------------- | ------------- | ----------------------------------------------------------------- |
+| `title`       | `React.ReactNode`| —             | 패널 타이틀 (예: "선택한 지역"). 명사만 넣고 개수는 `count` 로 분리 |
+| `count`       | `number`         | —             | 타이틀 옆 강조 개수 — 숫자면 `{count}{countSuffix}` 를 브랜드색으로 표시 |
+| `countSuffix` | `string`         | `"개"`        | 개수 접미사                                                       |
+| `showActions` | `boolean`        | `true`        | 헤더 액션 노출 여부 (`false` 면 읽기 전용 요약 패널)              |
+| `onAdd`       | `() => void`     | —             | "추가 선택" 클릭. 미전달 시 추가 버튼 숨김                        |
+| `onClear`     | `() => void`     | —             | "선택 해제" 클릭. 미전달 시 해제 버튼 숨김                        |
+| `addLabel`    | `React.ReactNode`| `"추가 선택"` | 추가 액션 라벨                                                    |
+| `clearLabel`  | `React.ReactNode`| `"선택 해제"` | 해제 액션 라벨                                                    |
+| `children`    | `React.ReactNode`| —             | 본문 슬롯 — `SelectedItemRow` 리스트 / 폼 / 테이블 등             |
+
+`title` 을 제외한 `<div>` HTML 속성을 모두 지원합니다(`className` 등).
+
+### SelectedItemRow
+
+`SelectedItemRow`(alias `RegionRow`) — 패널 본문에 쌓이는 단일 선택 항목 행입니다. 패널 전용 행이므로 일반 리스트/태그 자리에는 ListItem/Chip 을 사용하세요.
+
+| Prop          | 타입               | 기본값   | 설명                                          |
+| ------------- | ------------------ | -------- | --------------------------------------------- |
+| `children`    | `React.ReactNode`  | —        | 행 라벨 (예: "카테고리 > 멤버")               |
+| `onRemove`    | `() => void`       | —        | 우측 삭제 버튼 클릭 — 미지정 시 삭제 버튼 숨김 |
+| `removeLabel` | `string`           | `"삭제"` | 삭제 버튼 `aria-label` (항목명 포함 권장)     |
+
+`children` 을 제외한 `<div>` HTML 속성을 모두 지원합니다. `RegionRowProps` 는 `SelectedItemRowProps` 의 alias 입니다.
+
+---
+
+## CSS 변수
+
+| 변수                                          | 기본값 | 설명                                          |
+| --------------------------------------------- | ------ | --------------------------------------------- |
+| `--nds-selected-items-panel-radius`           | `16px` | 패널 모서리 radius                            |
+| `--nds-selected-items-panel-body-max-height`  | `none` | 본문 최대 높이 — 길어지면 스크롤 제한에 사용  |
+
+색·radius 의 나머지는 semantic 토큰(surface.subtle / border.normal / text.brand 등)으로 브랜드 cascade 됩니다.
+
+---
+
+## DOM 구조
+
+`data-slot` 이 아니라 BEM 클래스명으로 렌더됩니다.
+
+```
+div .nds-selected-items-panel
+├── div .nds-selected-items-panel__header
+│   ├── div .nds-selected-items-panel__title-group
+│   │   ├── span .nds-selected-items-panel__title           (title)
+│   │   └── span .nds-selected-items-panel__count           (count !== undefined 일 때)
+│   └── div .nds-selected-items-panel__actions              (showActions && (onAdd || onClear))
+│       ├── button .nds-selected-items-panel__action [data-variant="primary"]   (onAdd — 추가 선택)
+│       │   └── span .nds-selected-items-panel__action-icon (+ 아이콘)
+│       └── button .nds-selected-items-panel__action [data-variant="ghost"]     (onClear — 선택 해제)
+│           └── span .nds-selected-items-panel__action-icon (refresh 아이콘)
+└── div .nds-selected-items-panel__body                     (children)
+    └── div .nds-selected-item-row .nds-region-row          (SelectedItemRow — 반복)
+        ├── span .nds-selected-item-row__label .nds-region-row__label    (children)
+        └── button .nds-selected-item-row__remove .nds-region-row__remove (onRemove 있을 때, X 아이콘)
+```
+
+`SelectedItemRow` 는 신규 클래스(`nds-selected-item-row`)와 legacy alias 클래스(`nds-region-row`)를 함께 부여합니다.
+
+---
+
+## 접근성
+
+- 헤더의 추가/해제 액션과 행의 삭제 버튼은 native `<button>` 이라 Tab/Enter/Space 가 자동으로 동작합니다.
+- 삭제 버튼에는 `aria-label`(기본 "삭제")이 자동 부착됩니다 — `removeLabel` 로 항목명을 포함하는 것을 권장합니다.
+- 헤더의 +/refresh/X 아이콘 SVG 는 모두 `aria-hidden="true"` (장식적)입니다.
+- `count` 는 시각 강조용이라 타이틀과 같은 그룹(`__title-group`)에 배치되어 스크린리더가 타이틀과 개수를 순서대로 읽습니다.

@@ -102,6 +102,31 @@ describe("nds-checkbox — DOM parity with React Checkbox", () => {
     expect(el.hasAttribute("checked")).toBe(true);
   });
 
+  it("exposes a host .checked property (read + write) like native input", async () => {
+    const el = document.createElement("nds-checkbox") as InstanceType<typeof NdsCheckbox>;
+    document.body.appendChild(el);
+    await flush();
+
+    expect(el.checked).toBe(false);
+
+    let changed = false;
+    el.addEventListener("change", () => {
+      changed = true;
+    });
+    el.checked = true;
+    await flush();
+    expect(el.hasAttribute("checked")).toBe(true);
+    expect((el.querySelector("input") as HTMLInputElement).checked).toBe(true);
+    expect(el.checked).toBe(true);
+    // 프로그래매틱 set 은 native 처럼 change 미발화
+    expect(changed).toBe(false);
+
+    el.checked = false;
+    await flush();
+    expect(el.hasAttribute("checked")).toBe(false);
+    expect(el.checked).toBe(false);
+  });
+
   it("forwards a11y and form attributes to the inner input", async () => {
     const el = document.createElement("nds-checkbox");
     el.setAttribute("aria-label", "동의");

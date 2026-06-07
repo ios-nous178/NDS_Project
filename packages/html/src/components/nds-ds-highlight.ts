@@ -33,7 +33,7 @@ const MODE_LABELS: Record<DSHighlightMode, string> = {
   all: "전체",
 };
 
-const AREA_COLOR = "#2b96ed";
+const AREA_COLOR = "var(--semantic-icon-brand-default)";
 const COMPONENT_COLOR = "rgba(237, 46, 119, 0.8)";
 
 interface OverlayRect {
@@ -131,12 +131,12 @@ export class NdsDsHighlight extends NdsElement {
     const toggleBtn = document.createElement("button");
     toggleBtn.type = "button";
     toggleBtn.style.cssText =
-      "position:fixed;right:24px;bottom:24px;z-index:99999;display:none;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:none;background:#383838;color:#fff;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.25);user-select:none;";
+      "position:fixed;right:24px;bottom:24px;z-index:99999;display:none;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:none;background:var(--semantic-bg-inverse-default);color:var(--semantic-text-inverse-default);font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.25);user-select:none;";
     toggleBtn.addEventListener("click", () => this._cycle());
 
     const dot = document.createElement("span");
     dot.style.cssText =
-      "display:inline-block;width:8px;height:8px;border-radius:50%;background:#666;";
+      "display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--semantic-text-muted-default);";
     const label = document.createElement("span");
     label.textContent = "DS OFF";
 
@@ -205,7 +205,7 @@ export class NdsDsHighlight extends NdsElement {
       border.style.cssText = `position:absolute;top:${rect.top - 3}px;left:${rect.left - 3}px;width:${rect.width + 6}px;height:${rect.height + 6}px;border:2px dashed ${rect.color};border-radius:8px;pointer-events:none;`;
 
       const tag = document.createElement("span");
-      tag.style.cssText = `position:absolute;top:${rect.top - 14}px;left:${rect.left + 4}px;background:${rect.color};color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap;line-height:16px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;pointer-events:none;`;
+      tag.style.cssText = `position:absolute;top:${rect.top - 14}px;left:${rect.left + 4}px;background:${rect.color};color:var(--semantic-text-inverse-default);font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap;line-height:16px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;pointer-events:none;`;
       tag.textContent = rect.label;
 
       wrap.append(border, tag);
@@ -242,9 +242,13 @@ export class NdsDsHighlight extends NdsElement {
     const label = this._toggleBtn.querySelector("span:last-child");
     if (label) label.textContent = `DS ${MODE_LABELS[mode]}`;
     const dot = this._toggleBtn.querySelector("span:first-child") as HTMLElement | null;
-    if (dot) dot.style.background = mode === "off" ? "#666" : "#fff";
+    if (dot)
+      dot.style.background =
+        mode === "off"
+          ? "var(--semantic-text-muted-default)"
+          : "var(--semantic-icon-inverse-default)";
     this._toggleBtn.style.background =
-      mode === "off" ? "#383838" : "var(--semantic-icon-brand-default, #2b96ed)";
+      mode === "off" ? "var(--semantic-bg-inverse-default)" : "var(--semantic-icon-brand-default)";
 
     if (mode === "off") {
       this._overlay.innerHTML = "";

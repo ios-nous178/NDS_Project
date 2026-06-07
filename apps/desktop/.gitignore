@@ -1,0 +1,9 @@
+# electron-vite build output
+out/
+# electron-builder installers (root .gitignore already ignores dist/, kept here for clarity)
+dist/
+release/
+# nudge-ds MCP 동봉 번들 (scripts/bundle-mcp-desktop.mjs 산출물)
+.mcp-bundle/
+# claude CLI 네이티브 바이너리 동봉 번들 (scripts/bundle-claude-desktop.mjs 산출물 — 플랫폼당 ~200MB)
+.claude-bundle/

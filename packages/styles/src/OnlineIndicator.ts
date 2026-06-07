@@ -17,7 +17,7 @@ export const oiStyles = `
     width: var(--nds-presence-size, 8px);
     height: var(--nds-presence-size, 8px);
     border-radius: 9999px;
-    background: var(--nds-presence-color, #A0A4AC);
+    background: var(--nds-presence-color, var(--semantic-icon-disabled-default));
     box-shadow: 0 0 0 2px var(--nds-presence-ring, transparent);
     flex-shrink: 0;
   }

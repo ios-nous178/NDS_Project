@@ -1,0 +1,48 @@
+{
+  "name": "@nudge-design/desktop",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Nudge Studio 데스크탑 앱 — DS 목업 빌드/검증/미리보기/피드백을 지원합니다.",
+  "type": "module",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "node ../../scripts/ensure-mcp-dist.mjs && electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "node --test 'src/**/*.test.ts'",
+    "rebuild": "electron-rebuild -f -w node-pty",
+    "postinstall": "node scripts/fix-pty-perms.cjs",
+    "bundle:mcp": "node ../../scripts/bundle-mcp-desktop.mjs",
+    "bundle:claude": "node ../../scripts/bundle-claude-desktop.mjs",
+    "package": "pnpm bundle:mcp && pnpm bundle:claude && electron-vite build && electron-builder",
+    "package:mac:arm64": "pnpm bundle:mcp && pnpm bundle:claude --targets=darwin-arm64 && electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg --arm64",
+    "package:mac:x64": "pnpm bundle:mcp && pnpm bundle:claude --targets=darwin-x64 && electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg --x64"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "@babel/parser": "^7.25.0",
+    "@babel/types": "^7.25.0",
+    "chokidar": "^4.0.1",
+    "cheerio": "^1.0.0",
+    "node-pty": "^1.1.0"
+  },
+  "devDependencies": {
+    "@nudge-design/mockup-core": "workspace:*",
+    "@nudge-design/react": "workspace:*",
+    "@nudge-design/tokens": "workspace:*",
+    "@electron/rebuild": "^4.0.4",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^35.7.5",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^3.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  }
+}

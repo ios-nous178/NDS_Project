@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Spinner, Button } from "@nudge-design/react";
 
 const meta: Meta<typeof Spinner> = {
-  title: "Components/Spinner",
+  title: "Components/Display/Spinner",
   component: Spinner,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

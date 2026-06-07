@@ -21,13 +21,14 @@ const reactSrcDir = path.join(rootDir, "packages", "react", "src");
 const reactIndexPath = path.join(reactSrcDir, "index.ts");
 const htmlIndexPath = path.join(rootDir, "packages", "html", "src", "index.ts");
 
-export const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz"];
+export const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz", "runmile"];
 
 export const BRAND_LABEL = {
   trost: "Trost",
   geniet: "Geniet",
   "nudge-eap": "NudgeEAP",
   "cashwalk-biz": "CashwalkBiz",
+  runmile: "Runmile",
 };
 
 async function readReactExports() {
@@ -100,7 +101,7 @@ export async function buildManifest() {
 }
 
 /** 직렬화 — Storybook 이 import 할 수 있게 Set → sorted array. */
-export function serializeManifest(manifest) {
+export function serializeManifest(manifest, generatedAt = new Date().toISOString()) {
   return {
     brands: BRANDS,
     brandLabel: BRAND_LABEL,
@@ -109,14 +110,14 @@ export function serializeManifest(manifest) {
     brandChrome: Object.fromEntries(
       BRANDS.map((b) => [b, [...(manifest.brandChrome[b] ?? [])].sort()]),
     ),
-    generatedAt: new Date().toISOString(),
+    generatedAt,
   };
 }
 
 /** metadata/coverage-manifest.json 에 직렬화 결과 기록 — Storybook 소스. */
-export async function writeManifestJson(manifest) {
+export async function writeManifestJson(manifest, generatedAt) {
   const outPath = path.join(rootDir, "metadata", "coverage-manifest.json");
-  const json = serializeManifest(manifest);
+  const json = serializeManifest(manifest, generatedAt);
   const body = `${JSON.stringify(json, null, 2)}\n`;
   await fs.writeFile(outPath, body, "utf8");
   return outPath;

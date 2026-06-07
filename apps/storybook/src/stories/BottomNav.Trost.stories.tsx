@@ -7,7 +7,7 @@ import { getBrandFixture } from "../brand-fixtures";
 const b = getBrandFixture("trost");
 
 const meta: Meta = {
-  title: "Components/BottomNav",
+  title: "Brands/Trost/BottomNav",
   parameters: { layout: "fullscreen" },
   globals: { brand: "trost" },
 };
@@ -53,7 +53,7 @@ function TrostTabBarDemo({
  * 탭을 클릭하면 해당 탭이 활성화됩니다.
  */
 export const TrostTabBar: Story = {
-  name: "Trost 앱 (5탭)",
+  name: "Variant/Trost 앱 (5탭)",
   render: () => <TrostTabBarDemo variant="trost" labels={b.tabBar.tabLabels} />,
 };
 
@@ -63,7 +63,7 @@ export const TrostTabBar: Story = {
  * 트로스트 앱의 게시판(TrostCommunity)과 다른 그래픽입니다.
  */
 export const CashwalkTrostTabBar: Story = {
-  name: "(캐시워크)트로스트 앱 (5탭)",
+  name: "Variant/(캐시워크)트로스트 앱 (5탭)",
   render: () => (
     <TrostTabBarDemo
       variant="cashwalk-trost"

@@ -18,7 +18,7 @@ const SIZE_CONFIG: Record<FABSize, number> = { md: 48, lg: 56 };
 const COLOR_CONFIG: Record<FABColor, { bg: string; fg: string }> = {
   primary: {
     bg: "var(--semantic-bg-brand-default)",
-    fg: "var(--semantic-text-inverse-default)",
+    fg: "var(--semantic-button-text-default)",
   },
   secondary: {
     bg: "var(--semantic-fill-neutral-default)",

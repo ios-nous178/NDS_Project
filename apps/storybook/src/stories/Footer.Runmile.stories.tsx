@@ -6,7 +6,7 @@ import { BRAND_LOGOS } from "@nudge-design/assets";
 const RUNMILE_LOGO = BRAND_LOGOS.runmile?.muted?.dataUri ?? "";
 
 const meta: Meta = {
-  title: "Components/Footer",
+  title: "Brands/Runmile/Footer",
   parameters: { layout: "fullscreen" },
   globals: { brand: "runmile" },
 };

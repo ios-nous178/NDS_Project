@@ -41,11 +41,13 @@ export const searchInputStyles = `
     display: flex;
     align-items: center;
     width: 100%;
-    min-height: var(--nds-search-input-height, 48px);
-    padding: 0 var(--semantic-inset-card);
-    border: 1px solid var(--nds-search-input-border-color, ${cv.borderRole.normal});
-    border-radius: var(--nds-search-input-radius, ${radius.md}px);
-    background: var(--nds-search-input-background, ${cv.surface.default});
+    /* Input 과 동일 토큰(sizing.input.default) — 캐포비는 :root 40 으로 cascade. 48 리터럴이면
+       nds-input/nds-select(40)보다 키 커서 한 행에서 검색 인풋만 떠 보임(회귀: 캐포비 리스트 검색). */
+    min-height: var(--nds-search-input-height, var(--nds-input-height, ${sizing.input.default}px));
+    padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
+    border: 1px solid var(--nds-search-input-border-color, var(--nds-input-border-color, ${cv.borderRole.normal}));
+    border-radius: var(--nds-search-input-radius, var(--nds-input-radius, ${radius.md}px));
+    background: var(--nds-search-input-background, var(--nds-input-background, ${cv.surface.default}));
     box-sizing: border-box;
     transition:
       border-color ${transition.default},
@@ -53,7 +55,7 @@ export const searchInputStyles = `
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-focused="true"]) {
-    border-color: ${cv.borderRole.focus};
+    border-color: ${cv.input.borderFocus};
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-variant="filled"]) {
@@ -62,7 +64,7 @@ export const searchInputStyles = `
   }
 
   :where(.${SEARCH_WRAPPER_CLASS}[data-variant="filled"][data-focused="true"]) {
-    border-color: ${cv.borderRole.focus};
+    border-color: ${cv.input.borderFocus};
   }
 
   :where(.${SEARCH_FIELD_CLASS}) {

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { PullToRefresh } from "@nudge-design/react";
 
 const meta: Meta<typeof PullToRefresh> = {
-  title: "Components/PullToRefresh",
+  title: "Components/Layout/PullToRefresh",
   component: PullToRefresh,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

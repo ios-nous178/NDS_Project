@@ -135,7 +135,7 @@ flowchart TB
     SLACK["Slack 알림<br/>(pending.md 우선,<br/>없으면 git log fallback)"]
   end
 
-  EXT["외부 소비자<br/>Claude Desktop 에 .mcpb 재설치<br/>+ get_install_command 로 .tgz 갱신"]
+  EXT["외부 소비자<br/>Claude Desktop 에 .mcpb 재설치<br/>+ get_setup({ step: 'install' }) 로 .tgz 갱신"]
 
   CS --> VP --> SYNC --> NOTES --> PUSH
   PUSH -->|push trigger| PACK
@@ -167,11 +167,13 @@ import { nudgeEapPreset } from "@nudge-design/tailwind-preset";
 
 ## 멀티 브랜드
 
-3개 브랜드를 CSS 변수 오버라이드로 지원합니다. Storybook 툴바에서 브랜드를 전환하면 동일 컴포넌트가 브랜드별 스타일로 렌더링됩니다.
+5개 브랜드를 CSS 변수 오버라이드로 지원합니다. Storybook 툴바에서 브랜드를 전환하면 동일 컴포넌트가 브랜드별 스타일로 렌더링됩니다.
 
 - **NudgeEAP** (블루) — 기본 토큰, 기업 EAP 멘탈케어
 - **Trost** (옐로우) — 심리 상담 플랫폼
 - **Geniet** (틸) — 건강 관리 + 리워드 커머스
+- **CashwalkBiz** (옐로우) — 캐시워크 포 비즈니스(B2B)
+- **Runmile** (오렌지) — 러닝 대회 + 커뮤니티 + 마이러닝 기록
 
 ```mermaid
 flowchart LR
@@ -221,7 +223,7 @@ flowchart TB
   subgraph SETUP["0. setup (1회)"]
     direction LR
     GS["get_setup({ step: 'claude-md' })<br/>CLAUDE.md 강제"]
-    GI["get_install_command<br/>(.tgz 경로 안내)"]
+    GI["get_setup({ step: 'install' })<br/>(.tgz 경로 안내)"]
   end
 
   subgraph LOOKUP["1. lookup (추측 금지)"]
@@ -244,7 +246,7 @@ flowchart TB
   subgraph PREVIEW["3. preview"]
     direction LR
     DEV["dev_server({ action: 'start' })"]
-    CHK["check_preview<br/>(rendered DOM 캡처)"]
+    STOP["dev_server({ action: 'stop' })"]
   end
 
   WH["usage-tracker<br/>webhook 자동 POST<br/>(report 누락 dispatch 레벨 보완)"]
@@ -256,10 +258,10 @@ flowchart TB
 
 > `build_singlefile_html(intent='html')` 한 번 호출이면 **변환 · 검증 · 사용량 보고가 자동으로 묶입니다.** 사람(LLM)이 직접 부르는 건 lookup 도구 정도이고, 가드레일은 dispatch 레벨에서 강제됩니다.
 
-- `get_component_guide`: Button/Chip/Select 등 컴포넌트별 사용 함정 확인
-- `get_pattern_guide`: CTA 그룹, 안내문 강조, 드롭다운, 고밀도 리스트 배치 기준 확인
-- `validate_mockup`: 토큰 위반뿐 아니라 화살표 CTA 남발, primary CTA 과다, Chip/Badge 장식 사용, 강조 과잉까지 검증
-- **사용량 추적 가드레일**: `report_mockup_usage` 호출 누락을 dispatch 레벨에서 자동 보완 — `validate_mockup` / `check_preview` / `stop_dev_server` / `get_export_html_instructions` 호출 시 펜딩 mockup 파일을 자동으로 webhook 에 POST 하고, 그 외 도구는 응답에 펜딩 목록 경고를 인젝션 (`packages/mcp/README.md` 의 "사용량 추적 가드레일" 참조)
+- `get_guide({ topic: 'component:<Name>' })`: Button/Chip/Select 등 컴포넌트별 사용 함정 확인
+- `get_guide({ topic: 'pattern:<name>' })`: CTA 그룹, 안내문 강조, 드롭다운, 고밀도 리스트 배치 기준 확인
+- `validate_html_mockup`: 토큰 위반뿐 아니라 화살표 CTA 남발, primary CTA 과다, Chip/Badge 장식 사용, 강조 과잉까지 검증 (`build_singlefile_html` 빌드 시 자동 실행)
+- **사용량 추적 가드레일**: DS 사용량 리포트는 `validate_html_mockup`(report 기본 true) · `build_singlefile_html`(자동)에 흡수됐고, 옛 `report_mockup_usage` 단독 도구는 없어졌습니다 — dispatch 레벨에서 펜딩 목업을 자동 리포트하고 그 외 도구는 응답에 펜딩 경고를 인젝션 (`packages/mcp/README.md` 의 "사용량 추적 가드레일" 참조)
 
 ## 문서
 

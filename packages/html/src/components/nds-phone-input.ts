@@ -18,7 +18,7 @@
  *   value: 번호 (국가 코드 제외)
  *   label / placeholder / helper-text
  *   error
- *   countries: JSON 배열 ({ code, name, dialCode, flag })
+ *   countries: JSON 배열 ({ code, name, dialCode })
  *   full-width
  *   disabled
  */
@@ -31,13 +31,14 @@ const PI_LABEL_CLASS = `${PI_CLASS}__label`;
 const PI_FIELD_CLASS = `${PI_CLASS}__field`;
 const PI_FIELD_WRAP_CLASS = `${PI_CLASS}__field-wrap`;
 const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
+const PI_DIAL_CODE_CLASS = `${PI_CLASS}__dial-code`;
 const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
-const PI_FLAG_CLASS = `${PI_CLASS}__flag`;
 const PI_DIVIDER_CLASS = `${PI_CLASS}__divider`;
 const PI_INPUT_CLASS = `${PI_CLASS}__input`;
 const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
 const PI_MENU_CLASS = `${PI_CLASS}__menu`;
 const PI_MENU_ITEM_CLASS = `${PI_CLASS}__menu-item`;
+const PI_MENU_CODE_CLASS = `${PI_CLASS}__menu-code`;
 const PI_MENU_NAME_CLASS = `${PI_CLASS}__menu-name`;
 const PI_MENU_DIAL_CLASS = `${PI_CLASS}__menu-dial`;
 
@@ -45,15 +46,14 @@ interface PhoneCountry {
   code: string;
   name: string;
   dialCode: string;
-  flag: string;
 }
 
 const DEFAULT_COUNTRIES: PhoneCountry[] = [
-  { code: "KR", name: "대한민국", dialCode: "+82", flag: "🇰🇷" },
-  { code: "US", name: "United States", dialCode: "+1", flag: "🇺🇸" },
-  { code: "JP", name: "日本", dialCode: "+81", flag: "🇯🇵" },
-  { code: "CN", name: "中国", dialCode: "+86", flag: "🇨🇳" },
-  { code: "GB", name: "United Kingdom", dialCode: "+44", flag: "🇬🇧" },
+  { code: "KR", name: "대한민국", dialCode: "+82" },
+  { code: "US", name: "United States", dialCode: "+1" },
+  { code: "JP", name: "日本", dialCode: "+81" },
+  { code: "CN", name: "中国", dialCode: "+86" },
+  { code: "GB", name: "United Kingdom", dialCode: "+44" },
 ];
 
 let nextId = 0;
@@ -90,7 +90,6 @@ export class NdsPhoneInput extends NdsElement {
   private _fieldWrap: HTMLDivElement | null = null;
   private _field: HTMLDivElement | null = null;
   private _dialBtn: HTMLButtonElement | null = null;
-  private _dialFlag: HTMLSpanElement | null = null;
   private _dialText: HTMLSpanElement | null = null;
   private _input: HTMLInputElement | null = null;
   private _helperEl: HTMLParagraphElement | null = null;
@@ -143,7 +142,6 @@ export class NdsPhoneInput extends NdsElement {
           code: String(c.code),
           name: String(c.name),
           dialCode: String(c.dialCode),
-          flag: typeof c.flag === "string" ? c.flag : "",
         }));
       return valid.length > 0 ? valid : DEFAULT_COUNTRIES;
     } catch {
@@ -177,18 +175,15 @@ export class NdsPhoneInput extends NdsElement {
       this.scheduleUpdate();
     });
 
-    const dialFlag = document.createElement("span");
-    dialFlag.className = PI_FLAG_CLASS;
-    dialFlag.setAttribute("aria-hidden", "true");
-
     const dialText = document.createElement("span");
+    dialText.className = PI_DIAL_CODE_CLASS;
 
     const chevron = document.createElement("span");
     chevron.className = PI_CHEVRON_CLASS;
     chevron.setAttribute("aria-hidden", "true");
     chevron.appendChild(ChevronDown());
 
-    dialBtn.append(dialFlag, dialText, chevron);
+    dialBtn.append(dialText, chevron);
 
     const divider = document.createElement("span");
     divider.className = PI_DIVIDER_CLASS;
@@ -231,7 +226,6 @@ export class NdsPhoneInput extends NdsElement {
     this._fieldWrap = fieldWrap;
     this._field = field;
     this._dialBtn = dialBtn;
-    this._dialFlag = dialFlag;
     this._dialText = dialText;
     this._input = input;
     this._helperEl = helperEl;
@@ -244,7 +238,6 @@ export class NdsPhoneInput extends NdsElement {
       !this._labelEl ||
       !this._field ||
       !this._dialBtn ||
-      !this._dialFlag ||
       !this._dialText ||
       !this._input ||
       !this._helperEl ||
@@ -278,7 +271,6 @@ export class NdsPhoneInput extends NdsElement {
     this._dialBtn.disabled = disabled;
     this._dialBtn.setAttribute("aria-label", `국가 코드: ${country.name} ${country.dialCode}`);
     this._dialBtn.setAttribute("aria-expanded", String(this._open));
-    this._dialFlag.textContent = country.flag;
     this._dialText.textContent = country.dialCode;
 
     this._input.placeholder = placeholder;
@@ -312,10 +304,10 @@ export class NdsPhoneInput extends NdsElement {
           this.scheduleUpdate();
         });
 
-        const flag = document.createElement("span");
-        flag.className = PI_FLAG_CLASS;
-        flag.setAttribute("aria-hidden", "true");
-        flag.textContent = c.flag;
+        const code = document.createElement("span");
+        code.className = PI_MENU_CODE_CLASS;
+        code.setAttribute("aria-hidden", "true");
+        code.textContent = c.code;
 
         const name = document.createElement("span");
         name.className = PI_MENU_NAME_CLASS;
@@ -325,7 +317,7 @@ export class NdsPhoneInput extends NdsElement {
         dial.className = PI_MENU_DIAL_CLASS;
         dial.textContent = c.dialCode;
 
-        btn.append(flag, name, dial);
+        btn.append(code, name, dial);
         li.appendChild(btn);
         this._menu!.appendChild(li);
       });

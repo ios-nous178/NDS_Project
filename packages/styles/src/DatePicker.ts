@@ -17,6 +17,7 @@ const DP_ROOT_CLASS = `${DP_CLASS}__root`;
 const DP_TRIGGER_CLASS = `${DP_CLASS}__trigger`;
 const DP_TRIGGER_TEXT_CLASS = `${DP_CLASS}__trigger-text`;
 const DP_ICON_CLASS = `${DP_CLASS}__icon`;
+const DP_CLEAR_BTN_CLASS = `${DP_CLASS}__clear-btn`;
 const DP_PANEL_CLASS = `${DP_CLASS}__panel`;
 const DP_HEADER_CLASS = `${DP_CLASS}__header`;
 const DP_NAV_BTN_CLASS = `${DP_CLASS}__nav-btn`;
@@ -30,6 +31,7 @@ const DP_FOOTER_CLASS = `${DP_CLASS}__footer`;
 export const datePickerStyles = `
   :where(.${DP_ROOT_CLASS}) {
     display: inline-flex;
+    position: relative;
     width: var(--nds-date-picker-width, auto);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -52,8 +54,8 @@ export const datePickerStyles = `
     background: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    font-size: var(--nds-datepicker-font-size, ${typeScale.body3.fontSize}px);
+    line-height: var(--nds-datepicker-line-height, ${typeScale.body3.lineHeight}px);
     color: ${cv.textRole.normal};
     transition: border-color ${transition.default};
     box-sizing: border-box;
@@ -65,6 +67,10 @@ export const datePickerStyles = `
 
   :where(.${DP_TRIGGER_CLASS}[data-error="true"]) {
     border-color: ${cv.input.borderError};
+  }
+
+  :where(.${DP_TRIGGER_CLASS}[data-status="warning"]) {
+    border-color: ${cv.textRole.statusCaution};
   }
 
   :where(.${DP_TRIGGER_CLASS}:disabled) {
@@ -89,6 +95,32 @@ export const datePickerStyles = `
     display: inline-flex;
     flex-shrink: 0;
     color: ${cv.iconRole.normal};
+  }
+
+  :where(.${DP_CLEAR_BTN_CLASS}) {
+    position: absolute;
+    top: 50%;
+    right: var(--semantic-inset-card);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: ${cv.surface.subtle};
+    color: ${cv.iconRole.normal};
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  :where(.${DP_CLEAR_BTN_CLASS}:hover) {
+    background: ${cv.surface.disabled};
+    color: ${cv.iconRole.strong};
   }
 
   /* HTML 어댑터(<nds-date-picker>) 는 빈 wrapper 만 두고 CSS mask 로 캘린더 글리프를 그린다.
@@ -225,9 +257,14 @@ export const datePickerStyles = `
     outline-offset: -1px;
   }
 
+  :where(.${DP_DAY_CLASS}[data-active="true"]:focus-visible) {
+    outline: 2px solid ${cv.input.borderFocus};
+    outline-offset: -2px;
+  }
+
   :where(.${DP_DAY_CLASS}[data-selected="true"]) {
     background: ${cv.surface.brand};
-    color: ${cv.textRole.inverse};
+    color: ${cv.button.textDefault};
     font-weight: ${fontWeight.medium};
   }
 

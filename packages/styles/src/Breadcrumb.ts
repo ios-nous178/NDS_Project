@@ -36,9 +36,18 @@ export const breadcrumbStyles = `
   }
 
   :where(.${BC_SEPARATOR_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: ${cv.textRole.muted};
     font-size: ${typeScale.caption1.fontSize}px;
+    line-height: 0;
     user-select: none;
     flex-shrink: 0;
+  }
+
+  /* chevron SVG(또는 커스텀 구분자)을 텍스트 baseline 이 아닌 광학 중앙에 정렬 */
+  :where(.${BC_SEPARATOR_CLASS} svg) {
+    display: block;
   }
 `;

@@ -18,6 +18,7 @@ const rootDir = path.resolve(__dirname, "..");
 
 const guidesDistPath = path.join(rootDir, "packages/mcp/dist/guides.js");
 const outputPath = path.join(rootDir, "metadata/componentGuides.json");
+const checkMode = process.argv.includes("--check");
 
 async function exists(p) {
   try {
@@ -29,6 +30,13 @@ async function exists(p) {
 }
 
 if (!(await exists(guidesDistPath))) {
+  if (checkMode) {
+    console.error(
+      "[generate-component-guides] packages/mcp/dist/guides.js 가 없습니다. " +
+        "먼저 'pnpm --filter @nudge-design/mcp build' 를 실행하세요.",
+    );
+    process.exit(1);
+  }
   console.warn(
     "[generate-component-guides] packages/mcp/dist/guides.js 가 없어 skip. (mcp build 후 다시 시도하세요)",
   );
@@ -42,16 +50,49 @@ const { COMPONENT_GUIDES = {}, PATTERN_GUIDES = {} } = mod;
 
 const componentNames = Object.keys(COMPONENT_GUIDES).sort();
 const patternNames = Object.keys(PATTERN_GUIDES).sort();
+const previous = await readPreviousPayload();
 
 const payload = {
-  generatedAt: new Date().toISOString(),
+  generatedAt: previous?.generatedAt ?? new Date().toISOString(),
   source: "packages/mcp/dist/guides.js",
   components: COMPONENT_GUIDES,
   patterns: PATTERN_GUIDES,
 };
 
-await fs.writeFile(outputPath, JSON.stringify(payload, null, 2) + "\n", "utf8");
+const body = JSON.stringify(payload, null, 2) + "\n";
+
+if (checkMode) {
+  const current = await readExistingBody();
+  if (current !== body) {
+    console.error(
+      "[generate-component-guides] metadata/componentGuides.json 이 stale 합니다. " +
+        "Run `pnpm generate:component-guides` after building @nudge-design/mcp.",
+    );
+    process.exit(1);
+  }
+} else {
+  await fs.writeFile(outputPath, body, "utf8");
+}
 
 console.log(
-  `[generate-component-guides] ${componentNames.length} components · ${patternNames.length} patterns → metadata/componentGuides.json`,
+  checkMode
+    ? `[generate-component-guides] up to date (${componentNames.length} components · ${patternNames.length} patterns)`
+    : `[generate-component-guides] ${componentNames.length} components · ${patternNames.length} patterns → metadata/componentGuides.json`,
 );
+
+async function readPreviousPayload() {
+  try {
+    const text = await fs.readFile(outputPath, "utf8");
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+async function readExistingBody() {
+  try {
+    return await fs.readFile(outputPath, "utf8");
+  } catch {
+    return null;
+  }
+}

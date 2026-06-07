@@ -1,0 +1,30 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+import { BrandScope } from "../BrandScope";
+import * as Header from "./Header.CashwalkBiz.stories";
+import * as Footer from "./Footer.CashwalkBiz.stories";
+import * as Icons from "./Icons.CashwalkBiz.stories";
+
+<Meta title="Brands/CashwalkBiz/개요" />
+
+# CashwalkBiz
+
+브랜드 전용 완성형 헤더/푸터를 모아둔 문서입니다.
+
+## Header
+
+<BrandScope brand="cashwalk-biz">
+  <Canvas of={Header.CashwalkBizDesktop} />
+  <Canvas of={Header.CashwalkBizMobile} />
+</BrandScope>
+
+## Footer
+
+<BrandScope brand="cashwalk-biz">
+  <Canvas of={Footer.CashwalkBizDesktop} />
+  <Canvas of={Footer.CashwalkBizMobile} />
+</BrandScope>
+
+## Icons
+
+<Canvas of={Icons.All} />

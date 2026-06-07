@@ -17,6 +17,10 @@ const TG_CLASS = "nds-toggle";
 const TG_TRACK_CLASS = `${TG_CLASS}__track`;
 const TG_THUMB_CLASS = `${TG_CLASS}__thumb`;
 const TG_LABEL_CLASS = `${TG_CLASS}__label`;
+const TG_INNER_LABELS_CLASS = `${TG_CLASS}__inner-labels`;
+const TG_INNER_LABEL_CLASS = `${TG_CLASS}__inner-label`;
+// 라벨 내장(status) 변형 — react Toggle 의 LABELED 와 동일 (Figma 캐포비 노출 토글 3172:577).
+const LABELED = { trackH: 30, thumbSize: 25, thumbOffset: 2.5 } as const;
 
 export type ToggleSize = "md" | "sm";
 
@@ -48,14 +52,41 @@ export class NdsToggle extends NdsElement {
   static elementName = "nds-toggle";
 
   static get observedAttributes(): readonly string[] {
-    return ["checked", "disabled", "label", "size", "input-id", ...FORWARDED_ATTRS];
+    return [
+      "checked",
+      "disabled",
+      "label",
+      "on-label",
+      "off-label",
+      "tone",
+      "size",
+      "input-id",
+      ...FORWARDED_ATTRS,
+    ];
   }
 
   private _root: HTMLLabelElement | null = null;
   private _input: HTMLInputElement | null = null;
   private _track: HTMLSpanElement | null = null;
   private _label: HTMLSpanElement | null = null;
+  private _innerLabels: HTMLSpanElement | null = null;
+  private _onLabel: HTMLSpanElement | null = null;
+  private _offLabel: HTMLSpanElement | null = null;
   private _inputId = "";
+
+  /**
+   * 켜짐 상태 — 네이티브 `<input>.checked` 와 동일하게 host 프로퍼티로 노출.
+   * 읽기 = `checked` 속성 반영, 쓰기 = 속성 토글(→ update 가 inner input 동기화).
+   * 프로그래매틱 set 은 네이티브와 동일하게 `change` 를 발화하지 않음(사용자 입력 시에만 발화).
+   */
+  get checked(): boolean {
+    return this.boolAttr("checked");
+  }
+
+  set checked(value: boolean) {
+    if (value) this.setAttribute("checked", "");
+    else this.removeAttribute("checked");
+  }
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
@@ -132,11 +163,26 @@ export class NdsToggle extends NdsElement {
     this._input.disabled = disabled;
     this._input.setAttribute("aria-checked", checked ? "true" : "false");
     this._track.dataset.checked = checked ? "true" : "false";
-    this._track.style.setProperty("--nds-toggle-track-w", `${cfg.trackW}px`);
-    this._track.style.setProperty("--nds-toggle-track-h", `${cfg.trackH}px`);
-    this._track.style.setProperty("--nds-toggle-thumb-size", `${cfg.thumbSize}px`);
-    this._track.style.setProperty("--nds-toggle-thumb-offset", `${cfg.thumbOffset}px`);
-    this._track.style.setProperty("--nds-toggle-thumb-travel", `${thumbTravel}px`);
+
+    // on-label/off-label 중 하나라도 있으면 라벨 내장(status) 변형 — 폭 auto + 큰 썸.
+    const labeled =
+      this.getAttribute("on-label") !== null || this.getAttribute("off-label") !== null;
+    this._track.dataset.labeled = labeled ? "true" : "false";
+    this._track.dataset.tone = this.attr("tone", "brand");
+
+    if (labeled) {
+      this._track.style.removeProperty("--nds-toggle-track-w");
+      this._track.style.setProperty("--nds-toggle-track-h", `${LABELED.trackH}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-size", `${LABELED.thumbSize}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-offset", `${LABELED.thumbOffset}px`);
+      this._track.style.removeProperty("--nds-toggle-thumb-travel");
+    } else {
+      this._track.style.setProperty("--nds-toggle-track-w", `${cfg.trackW}px`);
+      this._track.style.setProperty("--nds-toggle-track-h", `${cfg.trackH}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-size", `${cfg.thumbSize}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-offset", `${cfg.thumbOffset}px`);
+      this._track.style.setProperty("--nds-toggle-thumb-travel", `${thumbTravel}px`);
+    }
 
     for (const name of FORWARDED_ATTRS) {
       const value = this.getAttribute(name);
@@ -145,6 +191,43 @@ export class NdsToggle extends NdsElement {
     }
 
     this._syncLabel();
+    this._syncInnerLabel(labeled);
+  }
+
+  // 트랙 안 on/off 라벨 — 두 라벨을 한 셀에 스택(셀 폭=긴 라벨 기준 고정폭). 활성 라벨만 보이고
+  // 라벨셀↔썸 좌우 위치는 CSS order(track[data-checked])가 결정 (DOM 순서 아님).
+  private _syncInnerLabel(labeled: boolean): void {
+    if (!this._track) return;
+    if (!labeled) {
+      this._innerLabels?.remove();
+      this._innerLabels = null;
+      this._onLabel = null;
+      this._offLabel = null;
+      return;
+    }
+    if (!this._innerLabels) {
+      const cell = document.createElement("span");
+      cell.className = TG_INNER_LABELS_CLASS;
+      cell.dataset.slot = "inner-labels";
+      const on = document.createElement("span");
+      on.className = TG_INNER_LABEL_CLASS;
+      on.dataset.slot = "inner-label";
+      on.dataset.state = "on";
+      const off = document.createElement("span");
+      off.className = TG_INNER_LABEL_CLASS;
+      off.dataset.slot = "inner-label";
+      off.dataset.state = "off";
+      cell.append(on, off);
+      this._innerLabels = cell;
+      this._onLabel = on;
+      this._offLabel = off;
+    }
+    this._onLabel!.textContent = this.getAttribute("on-label") ?? "";
+    this._offLabel!.textContent = this.getAttribute("off-label") ?? "";
+    if (this._innerLabels.parentElement !== this._track) {
+      const thumb = this._track.querySelector<HTMLElement>('[data-slot="thumb"]');
+      this._track.insertBefore(this._innerLabels, thumb);
+    }
   }
 
   private _syncLabel(): void {

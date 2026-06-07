@@ -236,6 +236,34 @@ describe("nds-modal", () => {
     await flush();
     expect(el.hasAttribute("open")).toBe(false);
   });
+
+  it('slot="footer" 를 .nds-modal__footer 로 승격 + body 의 형제로 배치 (single)', async () => {
+    const el = document.createElement("nds-modal");
+    el.setAttribute("open", "");
+    el.innerHTML = '<p>본문</p><div slot="footer"><button>확인</button></div>';
+    document.body.appendChild(el);
+    await flush();
+
+    const content = el.querySelector(".nds-modal__content") as HTMLElement;
+    const body = content.querySelector(":scope > .nds-modal__body");
+    const footer = content.querySelector(":scope > .nds-modal__footer") as HTMLElement;
+    expect(footer).toBeTruthy(); // body 에 덤프되지 않고 content 직속으로 승격
+    expect(footer.previousElementSibling).toBe(body); // body 의 형제(다음)
+    expect(footer.querySelector("button")).toBeTruthy();
+    expect(footer.dataset.hasBothActions).toBeUndefined(); // single → 미설정(캐포비 우측정렬 cascade)
+  });
+
+  it("footer 버튼 2개 → data-has-both-actions=true (가로 분할)", async () => {
+    const el = document.createElement("nds-modal");
+    el.setAttribute("open", "");
+    el.innerHTML = '<p>본문</p><div slot="footer"><button>취소</button><button>확인</button></div>';
+    document.body.appendChild(el);
+    await flush();
+
+    const footer = el.querySelector(".nds-modal__footer") as HTMLElement;
+    expect(footer).toBeTruthy();
+    expect(footer.dataset.hasBothActions).toBe("true");
+  });
 });
 
 describe("nds-select", () => {
@@ -258,6 +286,45 @@ describe("nds-select", () => {
 
     const dropdown = document.querySelector(".nds-select__dropdown") as HTMLDivElement;
     expect(dropdown.style.display).toBe("none");
+  });
+
+  it("adopts late-parsed options (스트리밍 파서: 부모가 자식보다 먼저 connect)", async () => {
+    // 목업 단일 HTML 의 스트리밍 파싱 모사 — <nds-select> 가 먼저 connect(_mount, 옵션 0개)된
+    // 뒤 <nds-select-option> 이 늦게 host 직속으로 도착. (이 케이스가 깨져서 Select 대신
+    // Segmented 로 우회했었음.)
+    document.body.innerHTML = "";
+    const sel = document.createElement("nds-select");
+    sel.setAttribute("placeholder", "선택");
+    document.body.appendChild(sel);
+    await twice();
+    const dropdown = sel.querySelector(".nds-select__dropdown") as HTMLDivElement;
+    expect(dropdown.querySelectorAll("nds-select-option").length).toBe(0);
+
+    for (const [v, label] of [
+      ["kr", "대한민국"],
+      ["jp", "일본"],
+    ]) {
+      const opt = document.createElement("nds-select-option");
+      opt.setAttribute("value", v);
+      opt.textContent = label;
+      sel.appendChild(opt);
+    }
+    await twice();
+
+    // 늦게 온 옵션이 dropdown 으로 입양됐는지 + host 직속에 raw 로 안 남는지.
+    expect(dropdown.querySelectorAll("nds-select-option").length).toBe(2);
+    expect(
+      Array.from(sel.children).filter((c) => c.tagName.toLowerCase() === "nds-select-option")
+        .length,
+    ).toBe(0);
+
+    // 우회 없이 드롭다운이 열리고 옵션이 보인다.
+    (sel.querySelector("button.nds-select__trigger") as HTMLButtonElement).click();
+    await twice();
+    expect(sel.hasAttribute("open")).toBe(true);
+    const openDropdown = document.querySelector(".nds-select__dropdown") as HTMLDivElement;
+    expect(openDropdown.style.display).not.toBe("none");
+    expect(openDropdown.querySelectorAll("nds-select-option").length).toBe(2);
   });
 
   it("trigger click toggles open + sets aria-expanded", async () => {
@@ -303,6 +370,24 @@ describe("nds-select", () => {
     expect(sel.getAttribute("value")).toBe("jp");
     expect(detailValue).toBe("jp");
     expect(sel.hasAttribute("open")).toBe(false);
+  });
+
+  it("marks the selected option with data-selected + renders a checkmark", async () => {
+    document.body.innerHTML = `
+      <nds-select value="jp" placeholder="선택">
+        <nds-select-option value="kr">대한민국</nds-select-option>
+        <nds-select-option value="jp">일본</nds-select-option>
+      </nds-select>
+    `;
+    await twice();
+    const optKr = document.querySelector('nds-select-option[value="kr"]') as HTMLElement;
+    const optJp = document.querySelector('nds-select-option[value="jp"]') as HTMLElement;
+    expect(optJp.dataset.selected).toBe("true");
+    expect(optJp.getAttribute("aria-selected")).toBe("true");
+    expect(optKr.dataset.selected).toBe("false");
+    // 선택 표시용 체크가 옵션 내부에 렌더되고, 라벨 textContent 는 영향받지 않는다.
+    expect(optJp.querySelector(".nds-select__option-check svg")).toBeTruthy();
+    expect(optJp.textContent?.trim()).toBe("일본");
   });
 
   it("value attribute shows selected option label in trigger", async () => {

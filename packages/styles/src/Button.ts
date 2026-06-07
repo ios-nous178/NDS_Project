@@ -78,6 +78,11 @@ export const buttonStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    /* HTML <nds-button> 은 아이콘 SVG + 텍스트를 이 label span 하나로 몰아넣으므로
+     * (nds-button._mount), 버튼 본체의 gap 이 둘 사이에 적용되지 않는다. label 자체에
+     * gap 을 줘서 아이콘↔텍스트가 붙는 것을 막는다. (React Button 은 아이콘이 label
+     * 바깥 형제 span 이라 영향 없음 — HTML 전용 보정.) */
+    gap: var(--nds-button-gap, var(--semantic-gap-default));
   }
 
   :where(.${BUTTON_ICON_CLASS}) {

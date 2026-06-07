@@ -3,7 +3,7 @@ import {
   configureHtmlValidator,
   validateHtmlMockup,
   validateHtmlSource,
-} from "../src/tools/html-validator";
+} from "@nudge-design/mockup-core/tools/html-validator";
 
 // 테스트 환경에서는 token set / nds tag set 을 직접 박는다 (server.ts 의 manifest 로딩 우회).
 configureHtmlValidator({
@@ -37,6 +37,9 @@ configureHtmlValidator({
     "nds-brand-footer",
     "nds-footer-info",
     "nds-header",
+    "nds-form-field",
+    "nds-selected-items-panel",
+    "nds-region-row",
   ]),
   ndsClassPrefixSet: new Set(["nds-button", "nds-input", "nds-card", "nds-chip", "nds-badge"]),
   ndsAttrEnums: new Map([
@@ -218,6 +221,25 @@ describe("validateHtmlSource", () => {
     const r = rulesFor(`<nds-button>no color attr</nds-button>`);
     expect(r).not.toContain("invalid-nds-attr-value");
   });
+
+  it("flags active nds-button without a click interaction", () => {
+    expect(rulesFor(`<nds-button color="primary">저장</nds-button>`)).toContain(
+      "button-without-interaction",
+    );
+  });
+
+  it("does NOT flag button when data-action is wired through addEventListener", () => {
+    const html = `
+      <nds-button color="primary" data-action="save">저장</nds-button>
+      <p id="status"></p>
+      <script>
+        document.querySelector('[data-action="save"]').addEventListener('click', () => {
+          document.querySelector('#status').textContent = '저장됨';
+        });
+      </script>
+    `;
+    expect(rulesFor(html)).not.toContain("button-without-interaction");
+  });
 });
 
 // ─── JSX 에서 포팅한 컨테이너 / 카운팅 룰 ───
@@ -283,6 +305,63 @@ describe("validateHtmlSource — ported JSX patterns", () => {
       <nds-modal><nds-button>Apply</nds-button><nds-button>Confirm</nds-button></nds-modal>`;
     expect(rulesFor(html)).toContain("primary-cta-per-container");
     expect(rulesFor(html)).not.toContain("primary-cta-overuse");
+  });
+
+  it("flags cashwalk-biz modal single full-width button (hug 우측정렬이어야 함)", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-modal open title="검수를 승인할까요?">
+        <p>승인하면 즉시 노출됩니다.</p>
+        <div slot="footer"><nds-button color="secondary" variant="solid" full-width>승인</nds-button></div>
+      </nds-modal>
+    </body></html>`;
+    expect(rulesFor(html)).toContain("cashwalk-biz-modal-single-button-fullwidth");
+  });
+
+  it("flags SelectedItemsPanel helper text placed as an adjacent sibling", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-selected-items-panel panel-title="선택한 지역" count="3">
+        <nds-region-row>서울특별시 &gt; 전체</nds-region-row>
+      </nds-selected-items-panel>
+      <p>시/도, 시/군/구를 검색해 노출할 지역을 추가하세요.</p>
+    </body></html>`;
+    expect(rulesFor(html)).toContain("selected-items-helper-outside-form-field");
+  });
+
+  it("does NOT flag SelectedItemsPanel helper when it is owned by FormField", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-form-field label="지역" density="admin" helper="시/도, 시/군/구를 검색해 노출할 지역을 추가하세요.">
+        <nds-selected-items-panel panel-title="선택한 지역" count="3">
+          <nds-region-row>서울특별시 &gt; 전체</nds-region-row>
+        </nds-selected-items-panel>
+      </nds-form-field>
+    </body></html>`;
+    expect(rulesFor(html)).not.toContain("selected-items-helper-outside-form-field");
+  });
+
+  it("does NOT flag cashwalk-biz single modal button when hug (no full-width)", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-modal open title="검수를 승인할까요?">
+        <div slot="footer"><nds-button color="secondary" variant="solid" shape="pill">승인</nds-button></div>
+      </nds-modal>
+    </body></html>`;
+    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
+  });
+
+  it("does NOT flag full-width single modal button outside cashwalk-biz brand", () => {
+    const html = `<nds-modal><div slot="footer"><nds-button full-width>확인</nds-button></div></nds-modal>`;
+    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
+  });
+
+  it("does NOT flag cashwalk-biz dual-button modal (가로 분할은 정상)", () => {
+    const html = `<html data-brand="cashwalk-biz"><body>
+      <nds-modal>
+        <div slot="footer">
+          <nds-button color="assistive" variant="outlined">닫기</nds-button>
+          <nds-button color="secondary" variant="solid" full-width>확정</nds-button>
+        </div>
+      </nds-modal>
+    </body></html>`;
+    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
   });
 
   it("does NOT flag primary-cta-overuse when secondary buttons are non-solid", () => {

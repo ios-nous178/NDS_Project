@@ -43,11 +43,11 @@ export const autocompleteStyles = `
 
   :where(.${AC_INPUT_CLASS}) {
     width: 100%;
-    height: ${sizing.input.default}px;
-    padding: 0 var(--semantic-inset-card);
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
-    background: ${cv.surface.default};
+    height: var(--nds-input-height, ${sizing.input.default}px);
+    padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
+    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border-radius: var(--nds-input-radius, ${radius.md}px);
+    background: var(--nds-input-background, ${cv.surface.default});
     color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
@@ -62,7 +62,7 @@ export const autocompleteStyles = `
 
   :where(.${AC_INPUT_CLASS}:focus-visible) {
     outline: none;
-    border-color: ${cv.borderRole.brand};
+    border-color: ${cv.input.borderFocus};
   }
 
   :where(.${AC_INPUT_CLASS}[data-error="true"]) {
@@ -105,9 +105,14 @@ export const autocompleteStyles = `
     transition: background-color ${transition.default};
   }
 
+  /* hover / 키보드 active — 기존 드롭다운(Select __option)과 동일한 어포던스:
+     배경 surface.section + 글자 textRole.strong. (선택 행은 아래 aria-selected 규칙이
+     소스 순서상 뒤에 와서 브랜드색을 유지.) */
   :where(.${AC_OPTION_CLASS}[data-active="true"]),
   :where(.${AC_OPTION_CLASS}:hover) {
     background: ${cv.surface.section};
+    color: ${cv.textRole.strong};
+    outline: none;
   }
 
   :where(.${AC_OPTION_CLASS}[aria-selected="true"]) {

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Toggle } from "@nudge-design/react";
 
 const meta: Meta<typeof Toggle> = {
-  title: "Components/Toggle",
+  title: "Components/Controls/Toggle",
   component: Toggle,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -27,7 +27,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
-  name: "Size/비교",
+  name: "Variant/비교",
   render: function Render() {
     const [a, setA] = useState(true);
     const [b, setB] = useState(false);
@@ -60,4 +60,39 @@ export const AllStates: Story = {
       <Toggle checked disabled label="Disabled (On)" />
     </div>
   ),
+};
+
+export const StatusLabeled: Story = {
+  name: "Variant/라벨 내장 status (노출/미노출)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "onLabel/offLabel 을 주면 트랙 안에 텍스트가 들어가는 status 변형(폭 auto · 30/thumb25). tone='success' 면 켜짐 트랙이 초록 — 어드민 리스트의 노출 토글. 색은 semantic status-success 토큰.",
+      },
+    },
+  },
+  render: function Render() {
+    const [a, setA] = useState(true);
+    const [b, setB] = useState(false);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 14, alignItems: "flex-start" }}>
+        <Toggle
+          checked={a}
+          onCheckedChange={setA}
+          onLabel="노출"
+          offLabel="미노출"
+          tone="success"
+        />
+        <Toggle
+          checked={b}
+          onCheckedChange={setB}
+          onLabel="노출"
+          offLabel="미노출"
+          tone="success"
+        />
+        <Toggle checked disabled onLabel="노출" offLabel="미노출" tone="success" />
+      </div>
+    );
+  },
 };

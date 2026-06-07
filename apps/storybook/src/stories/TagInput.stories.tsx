@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { TagInput } from "@nudge-design/react";
 
 const meta: Meta<typeof TagInput> = {
-  title: "Components/TagInput",
+  title: "Components/Inputs/TagInput",
   component: TagInput,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

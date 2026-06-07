@@ -11,15 +11,19 @@ const ST_INDICATOR_CLASS = `${ST_CLASS}__indicator`;
 const ST_LABEL_CLASS = `${ST_CLASS}__label`;
 const ST_CONNECTOR_CLASS = `${ST_CLASS}__connector`;
 const ST_CHECK_CLASS = `${ST_CLASS}__check`;
+const ST_BAR_CLASS = `${ST_CLASS}__bar`;
+const ST_STEP_CLASS = `${ST_CLASS}__step`;
+const ST_TITLE_CLASS = `${ST_CLASS}__title`;
 
-export type StepperVariant = "numbered" | "dots";
+export type StepperVariant = "numbered" | "dots" | "bar";
 
 interface StepItem {
   key: string;
   label?: string;
+  title?: string;
 }
 
-const VARIANTS: readonly StepperVariant[] = ["numbered", "dots"];
+const VARIANTS: readonly StepperVariant[] = ["numbered", "dots", "bar"];
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby", "title"] as const;
 
 export class NdsStepper extends NdsElement {
@@ -81,6 +85,42 @@ export class NdsStepper extends NdsElement {
     item.className = ST_ITEM_CLASS;
     if (state === "current") item.setAttribute("aria-current", "step");
 
+    if (variant === "bar") {
+      item.dataset.variant = "bar";
+
+      const bar = document.createElement("span");
+      bar.dataset.slot = "bar";
+      bar.dataset.variant = "bar";
+      bar.className = ST_BAR_CLASS;
+      bar.setAttribute("aria-hidden", "true");
+      item.appendChild(bar);
+
+      const hasLabel = step.label !== undefined && step.label !== "";
+      const hasTitle = step.title !== undefined && step.title !== "";
+      if (hasLabel || hasTitle) {
+        const label = document.createElement("span");
+        label.dataset.slot = "label";
+        label.dataset.variant = "bar";
+        label.className = ST_LABEL_CLASS;
+        if (hasLabel) {
+          const stepEl = document.createElement("span");
+          stepEl.dataset.slot = "step";
+          stepEl.className = ST_STEP_CLASS;
+          stepEl.textContent = step.label as string;
+          label.appendChild(stepEl);
+        }
+        if (hasTitle) {
+          const titleEl = document.createElement("span");
+          titleEl.dataset.slot = "title";
+          titleEl.className = ST_TITLE_CLASS;
+          titleEl.textContent = step.title as string;
+          label.appendChild(titleEl);
+        }
+        item.appendChild(label);
+      }
+      return item;
+    }
+
     const indicator = document.createElement("span");
     indicator.dataset.slot = "indicator";
     indicator.dataset.variant = variant;
@@ -128,6 +168,10 @@ export class NdsStepper extends NdsElement {
                   (item as { label?: unknown }).label === undefined
                     ? undefined
                     : String((item as { label?: unknown }).label),
+                title:
+                  (item as { title?: unknown }).title === undefined
+                    ? undefined
+                    : String((item as { title?: unknown }).title),
               },
         );
       }
