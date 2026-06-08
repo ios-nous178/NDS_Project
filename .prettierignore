@@ -19,3 +19,10 @@ pnpm-lock.yaml
 packages/mcp/catalog.json
 metadata/componentGuides.json
 metadata/coverage-manifest.json
+
+# generate-guide-docs.mjs 가 찍는 가이드 문서 — 생성기의 compact 테이블(`| a | b |`)이
+# SSOT 다. prettier 가 테이블 파이프를 정렬·패딩하면 generate-guide-docs --check 가
+# stale 로 깨진다(lint:ssot). 이 3개는 `<!-- AUTO-GENERATED -->` 헤더가 있는 생성물.
+docs/guide/ux-writing.md
+docs/guide/dark-patterns.md
+docs/guide/visual-antipatterns.md
