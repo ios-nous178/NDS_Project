@@ -4,10 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { delay } from "msw";
 import { http, HttpResponse } from "msw";
 import { FieldActionRow } from "../../src/FieldActionRow";
-import { Toast } from "../../src/Toast";
+import { Snackbar } from "../../src/Snackbar";
 import { server } from "../msw/server";
 
-const { Provider: ToastProvider, useToast } = Toast;
+const { Provider: SnackbarProvider, useSnackbar } = Snackbar;
 const INITIAL_TIMER_SECONDS = 3;
 
 const formatSeconds = (seconds: number) => {
@@ -28,7 +28,7 @@ function VerificationFlow() {
   const [isRequesting, setIsRequesting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
-  const { toast } = useToast();
+  const { snackbar } = useSnackbar();
 
   useEffect(() => {
     if (!sent || verified || secondsLeft === null || secondsLeft <= 0) {
@@ -57,8 +57,8 @@ function VerificationFlow() {
 
     setError(true);
     setHelperText("인증 시간이 만료되었습니다. 인증번호를 다시 받아주세요.");
-    toast("인증 시간이 만료되었습니다", { variant: "error" });
-  }, [secondsLeft, sent, verified, toast]);
+    snackbar("인증 시간이 만료되었습니다", { variant: "error" });
+  }, [secondsLeft, sent, verified, snackbar]);
 
   const handleRequestCode = async () => {
     setIsRequesting(true);
@@ -72,7 +72,7 @@ function VerificationFlow() {
     if (!response.ok) {
       setError(true);
       setHelperText("인증번호 전송에 실패했습니다. 다시 시도해주세요.");
-      toast("인증번호 전송에 실패했습니다", { variant: "error" });
+      snackbar("인증번호 전송에 실패했습니다", { variant: "error" });
       return;
     }
 
@@ -82,7 +82,7 @@ function VerificationFlow() {
     setVerified(false);
     setSecondsLeft(INITIAL_TIMER_SECONDS);
     setHelperText("문자로 전송된 인증번호를 입력해주세요");
-    toast("인증번호를 전송했습니다", { variant: "success" });
+    snackbar("인증번호를 전송했습니다", { variant: "success" });
   };
 
   const handleVerify = async () => {
@@ -101,7 +101,7 @@ function VerificationFlow() {
     if (!response.ok) {
       setError(true);
       setHelperText("인증번호가 올바르지 않습니다. 다시 확인해주세요.");
-      toast("인증에 실패했습니다", {
+      snackbar("인증에 실패했습니다", {
         variant: "error",
         action: {
           label: "다시 시도",
@@ -117,7 +117,7 @@ function VerificationFlow() {
     setError(false);
     setSecondsLeft(null);
     setHelperText("인증이 완료되었습니다");
-    toast("휴대폰 인증이 완료되었습니다", { variant: "success" });
+    snackbar("휴대폰 인증이 완료되었습니다", { variant: "success" });
   };
 
   return (
@@ -182,9 +182,9 @@ function VerificationFlow() {
 
 function renderVerificationFlow() {
   return render(
-    <ToastProvider>
+    <SnackbarProvider>
       <VerificationFlow />
-    </ToastProvider>,
+    </SnackbarProvider>,
   );
 }
 

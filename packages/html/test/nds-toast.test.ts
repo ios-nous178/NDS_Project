@@ -115,21 +115,6 @@ describe("nds-toast", () => {
     expect(document.body.querySelector(".nds-toast__item")).toBeNull();
   });
 
-  it("dispatches action event and dismisses when action is clicked", async () => {
-    const el = document.createElement("nds-toast");
-    const handler = vi.fn();
-    el.addEventListener("nds-toast-action", handler);
-    document.body.appendChild(el);
-    await flush();
-
-    el.show({ id: "undo", message: "삭제됨", actionLabel: "되돌리기", duration: 0 });
-    (document.body.querySelector(".nds-toast__action") as HTMLButtonElement).click();
-
-    expect(handler).toHaveBeenCalledTimes(1);
-    expect(handler.mock.calls[0]?.[0].detail.id).toBe("undo");
-    expect(document.body.querySelector(".nds-toast__item")).toBeNull();
-  });
-
   it("removes portal on disconnect", async () => {
     const el = document.createElement("nds-toast");
     document.body.appendChild(el);

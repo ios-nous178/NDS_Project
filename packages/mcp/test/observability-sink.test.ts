@@ -23,6 +23,7 @@ const ENV_KEYS = [
   "NUDGE_MOCKUP_SESSION_ID",
   "NUDGE_AGENT_SESSION_ID",
   "NUDGE_SESSION_ID",
+  "NUDGE_OBSERVABILITY_DASHBOARD",
 ] as const;
 
 const saved: Record<string, string | undefined> = {};
@@ -71,6 +72,10 @@ beforeEach(() => {
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-sink-"));
   for (const k of ENV_KEYS) delete process.env[k];
   process.env.NUDGE_MOCKUP_API_URL = "http://127.0.0.1:9999";
+  // 이 스위트는 dashboard sink 계약(엔드포인트별 POST · 보안 게이트 · auth 헤더)을
+  // 검증한다. send() 기본값은 raw→Google Sheets webhook 으로 바뀌었으므로(임시),
+  // dashboard 경로를 명시적으로 켜서 검증 대상을 고정한다.
+  process.env.NUDGE_OBSERVABILITY_DASHBOARD = "1";
 });
 
 afterEach(() => {

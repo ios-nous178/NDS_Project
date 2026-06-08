@@ -4,13 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { Modal } from "../../src/Modal";
 import { Input } from "../../src/Input";
 import { Button } from "../../src/Button";
-import { Toast } from "../../src/Toast";
+import { Snackbar } from "../../src/Snackbar";
 import { Select } from "../../src/Select";
 import { Tabs } from "../../src/Tabs";
 import { Chip } from "../../src/Chip";
 import { EmptyState } from "../../src/EmptyState";
 
-const { Provider: ToastProvider, useToast } = Toast;
+const { Provider: SnackbarProvider, useSnackbar } = Snackbar;
 
 describe("통합: Modal 안의 Form (Input + Button)", () => {
   function ModalForm() {
@@ -99,15 +99,15 @@ describe("통합: Modal 안의 Form (Input + Button)", () => {
   });
 });
 
-describe("통합: Toast + Button 연동", () => {
+describe("통합: Snackbar + Button 연동", () => {
   function SavePage() {
-    const { toast } = useToast();
+    const { snackbar } = useSnackbar();
     const [data, setData] = useState("원본 데이터");
 
     const handleSave = () => {
       const prev = data;
       setData("저장된 데이터");
-      toast("저장되었습니다", {
+      snackbar("저장되었습니다", {
         action: {
           label: "되돌리기",
           onClick: () => setData(prev),
@@ -123,13 +123,13 @@ describe("통합: Toast + Button 연동", () => {
     );
   }
 
-  it("저장 → 토스트 표시 → 되돌리기 액션", async () => {
+  it("저장 → 스낵바 표시 → 되돌리기 액션", async () => {
     const user = userEvent.setup();
 
     render(
-      <ToastProvider>
+      <SnackbarProvider>
         <SavePage />
-      </ToastProvider>,
+      </SnackbarProvider>,
     );
 
     expect(screen.getByTestId("data")).toHaveTextContent("원본 데이터");

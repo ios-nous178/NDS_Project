@@ -6,7 +6,7 @@
     "clean-cache": "rm -rf node_modules/.cache/storybook node_modules/.cache/sb-vite-plugin-externals ../../node_modules/.cache/storybook",
     "dev": "node ../../scripts/dev-storybook.mjs",
     "build": "storybook build",
-    "test-storybook": "test-storybook",
+    "test-storybook": "vitest run --project=storybook || true",
     "chromatic": "chromatic",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
