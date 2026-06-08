@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/mockup-core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "DS 목업 빌드/검증 코어 — MCP 와 데스크탑이 공유.",
   "type": "module",

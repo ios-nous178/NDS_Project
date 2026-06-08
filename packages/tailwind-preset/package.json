@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/tailwind-preset",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tailwind CSS preset for Nudge Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
