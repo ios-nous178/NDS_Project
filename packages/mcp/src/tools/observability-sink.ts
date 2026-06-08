@@ -6,6 +6,8 @@ import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core/tools/h
 import type { ReportHtmlMockupUsageResult } from "@nudge-design/mockup-core/tools/html-analyzer";
 import type { LlmScoreResult } from "@nudge-design/mockup-core/tools/quality-score-core";
 import { getClientIdentity } from "./client-identity.js";
+// TEMP: observability 를 usage 와 같은 Google Sheets webhook 으로 합치기 위한 raw 전송 헬퍼.
+import { USAGE_WEBHOOK_URL, postJsonToWebhook } from "@nudge-design/mockup-core";
 
 type JsonObject = Record<string, unknown>;
 
@@ -220,19 +222,66 @@ async function postEndpoint(base: string, endpoint: SinkEndpoint): Promise<SinkP
   }
 }
 
+/* ───────────── TEMP: observability raw → Google Sheets ─────────────
+ * usage 와 observability 를 한 시트로 합치는 임시 단계.
+ * 기존 대시보드 API(127.0.0.1:8090, 6개 /import 엔드포인트) 적재는 기본 비활성으로 두고,
+ * observability 가 모은 raw 레코드(sessions/runs/events/violations/quality/artifacts)를
+ * usage 와 같은 Apps Script webhook(USAGE_WEBHOOK_URL)으로 통째로 던진다.
+ * 시트 쪽 Apps Script 는 `kind:"observability"` 봉투를 받아 적재하도록 손봐야 한다.
+ * 대시보드 API 적재로 되돌리려면 env `NUDGE_OBSERVABILITY_DASHBOARD=1`.
+ */
+async function sendRawToSheet(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
+  const rawBody = JSON.stringify({
+    kind: "observability",
+    ts: now(),
+    client: clientContext(),
+    records: endpoints.map((e) => ({ path: e.path, body: e.body })),
+  });
+  try {
+    // best-effort: 툴 응답 지연 방지를 위해 짧은 timeout + 1회 재시도만.
+    const res = await postJsonToWebhook(rawBody, USAGE_WEBHOOK_URL, {
+      retries: 1,
+      timeoutMs: POST_TIMEOUT_MS,
+    });
+    return endpoints.map((e) => ({
+      target: USAGE_WEBHOOK_URL,
+      path: e.path,
+      ok: res.ok,
+      status: res.status,
+    }));
+  } catch (err) {
+    return endpoints.map((e) => ({
+      target: USAGE_WEBHOOK_URL,
+      path: e.path,
+      ok: false,
+      error: (err as Error).message,
+    }));
+  }
+}
+
 /**
+ * 기존 대시보드 API 적재 — 임시로 기본 비활성. `NUDGE_OBSERVABILITY_DASHBOARD=1` 로 복구.
  * 엔드포인트를 **병렬** 전송한다(Promise.allSettled). 직렬이면 죽은 sink 에서 N×timeout 만큼
  * 툴 호출이 지연되므로(빌드는 최대 6 엔드포인트) worst-case 를 단일 timeout 으로 bound.
  */
-async function send(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
+async function sendToDashboard(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
   const base = baseUrl();
-  if (!base || endpoints.length === 0) return [];
+  if (!base) return [];
   const settled = await Promise.allSettled(endpoints.map((e) => postEndpoint(base, e)));
   return settled.map((s, i) =>
     s.status === "fulfilled"
       ? s.value
       : { target: base, path: endpoints[i].path, ok: false, error: String(s.reason) },
   );
+}
+
+async function send(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
+  if (!isEnabled() || endpoints.length === 0) return [];
+  // TEMP: 기본은 raw → Google Sheets. 기존 대시보드 API 는 env 로만 켠다.
+  if (!isFlagOff(process.env.NUDGE_OBSERVABILITY_DASHBOARD ?? "0")) {
+    return sendToDashboard(endpoints);
+  }
+  return sendRawToSheet(endpoints);
 }
 
 function usageEndpoint(
