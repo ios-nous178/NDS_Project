@@ -183,7 +183,7 @@ export const footerStyles = `
   }
   :where(.${FOOTER_CLASS}[data-variant="web"][data-tone="dark"]) {
     --nds-footer-background: ${cv.textRole.normal};
-    --nds-footer-color: #fff;
+    --nds-footer-color: ${cv.textRole.inverse};
     --nds-footer-divider-color: rgba(255, 255, 255, 0.16);
   }
   :where(.${FOOTER_CLASS}[data-variant="web"]) .${FOOTER_CLASS}__web-inner {

@@ -347,6 +347,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
         data-open={open ? "true" : "false"}
         data-error={resolvedStatus === "error" ? "true" : "false"}
         data-status={resolvedStatus}
+        data-clearable={canClear ? "true" : "false"}
         disabled={disabled}
         aria-haspopup="dialog"
         aria-expanded={open}

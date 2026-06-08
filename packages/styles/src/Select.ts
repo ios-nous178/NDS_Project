@@ -51,7 +51,7 @@ export const selectStyles = `
     width: 100%;
     min-height: var(--nds-select-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
-    border: 1px solid var(--nds-select-border-color, ${cv.borderRole.normal});
+    border: 1px solid var(--nds-select-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-select-radius, ${radius.md}px);
     background: var(--nds-select-background, ${cv.surface.default});
     cursor: pointer;
@@ -88,7 +88,7 @@ export const selectStyles = `
   }
 
   :where(.${SELECT_TRIGGER_TEXT_CLASS}[data-placeholder="true"]) {
-    color: ${cv.textRole.muted};
+    color: ${cv.input.placeholder};
   }
 
   :where(.${SELECT_CHEVRON_CLASS}) {
@@ -161,7 +161,7 @@ export const selectStyles = `
   }
 
   :where(.${SELECT_SEARCH_CLASS} input::placeholder) {
-    color: ${cv.textRole.muted};
+    color: ${cv.input.placeholder};
   }
 
   /* searchable: 검색 결과 0건 */

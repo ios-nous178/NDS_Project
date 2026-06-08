@@ -117,6 +117,13 @@ export const sizing = {
     field: 44,
     compact: 40,
   },
+  fieldWidth: {
+    xs: 120,
+    sm: 200,
+    md: 304,
+    lg: 400,
+    xl: 488,
+  },
 } as const;
 
 export const grid = {

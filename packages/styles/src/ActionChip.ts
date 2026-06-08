@@ -34,13 +34,25 @@ export const actionChipStyles = `
     opacity: 0.6;
   }
 
+  /* 14px 박스 — 얇은 스트로크 아이콘(예: InfoIcon strokeWidth 1.5 → 14px 에서 ~0.9px 하이라인)이
+     연하게 보이지 않도록 icon 색은 normal(#666) 이 아니라 strong(#333) 으로 잡는다.
+     라벨(text.subtle #666)보다 살짝 진해 14px affordance 가 또렷하게 읽힌다. */
   :where(.${AC_ICON_CLASS}) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 14px;
     height: 14px;
-    color: ${cv.iconRole.normal};
+    color: ${cv.iconRole.strong};
+  }
+
+  /* 슬롯 아이콘(React node / HTML <svg slot="icon">)이 intrinsic 크기와 무관하게 14px 박스를
+     꽉 채우도록 — HTML 에서 find_icon SVG(24vb 기본)를 넣어도 안정적으로 렌더된다. currentColor
+     기반 DS 아이콘은 위 color 를 그대로 상속한다. */
+  :where(.${AC_ICON_CLASS}) > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
   :where(.${AC_LABEL_CLASS}) {

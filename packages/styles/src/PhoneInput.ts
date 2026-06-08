@@ -19,7 +19,6 @@ const PI_FIELD_WRAP_CLASS = `${PI_CLASS}__field-wrap`;
 const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
 const PI_DIAL_CODE_CLASS = `${PI_CLASS}__dial-code`;
 const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
-const PI_DIVIDER_CLASS = `${PI_CLASS}__divider`;
 const PI_INPUT_CLASS = `${PI_CLASS}__input`;
 const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
 const PI_MENU_CLASS = `${PI_CLASS}__menu`;
@@ -48,45 +47,41 @@ export const phoneInputStyles = `
     position: relative;
   }
 
+  /* Figma 3001:40209 — 국가코드 드롭다운 박스 + 번호 입력 박스가 분리된 두 박스.
+   * 각 박스는 base Input 시멘틱 토큰(height/radius/border/background)을 그대로 상속. */
   :where(.${PI_FIELD_CLASS}) {
     display: flex;
     align-items: stretch;
-    height: var(--nds-input-height, ${sizing.input.default}px);
-    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
-    border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: var(--nds-input-background, ${cv.surface.default});
-    overflow: hidden;
-    transition: border-color ${transition.default};
+    gap: var(--semantic-gap-default);
   }
 
-  :where(.${PI_FIELD_CLASS}:focus-within) { border-color: ${cv.input.borderFocus}; }
-
-  :where(.${PI_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
-
+  /* 국가 코드 드롭다운 — 독립 박스 (base Input 토큰) */
   :where(.${PI_DIAL_CLASS}) {
     display: inline-flex;
     align-items: center;
+    justify-content: space-between;
     gap: ${spacing[6]}px;
+    height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
-    border: none;
-    background: transparent;
+    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border-radius: var(--nds-input-radius, ${radius.md}px);
+    background: var(--nds-input-background, ${cv.surface.default});
     color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.medium};
     cursor: pointer;
     flex-shrink: 0;
-    transition: background-color ${transition.default};
-  }
-
-  :where(.${PI_DIAL_CLASS}:hover:not(:disabled)) {
-    background: ${cv.surface.page};
+    box-sizing: border-box;
+    transition: border-color ${transition.default};
   }
 
   :where(.${PI_DIAL_CLASS}:focus-visible) {
-    outline: 2px solid ${cv.borderRole.brand};
-    outline-offset: -2px;
+    outline: none;
+    border-color: ${cv.input.borderFocus};
   }
+
+  :where(.${PI_DIAL_CLASS}[aria-expanded="true"]) { border-color: ${cv.input.borderFocus}; }
 
   :where(.${PI_DIAL_CLASS}:disabled) { cursor: not-allowed; opacity: 0.6; }
 
@@ -166,26 +161,39 @@ export const phoneInputStyles = `
     flex-shrink: 0;
   }
 
-  :where(.${PI_DIVIDER_CLASS}) {
-    width: 1px;
-    background: ${cv.borderRole.normal};
-    flex-shrink: 0;
-  }
-
+  /* 번호 입력 — 독립 박스 (base Input 토큰) */
   :where(.${PI_INPUT_CLASS}) {
     flex: 1;
     min-width: 0;
-    padding: 0 var(--semantic-inset-input);
-    border: none;
-    background: transparent;
+    height: var(--nds-input-height, ${sizing.input.default}px);
+    padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
+    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border-radius: var(--nds-input-radius, ${radius.md}px);
+    background: var(--nds-input-background, ${cv.surface.default});
     outline: none;
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.textRole.normal};
+    color: ${cv.textRole.strong};
+    box-sizing: border-box;
+    transition: border-color ${transition.default};
   }
 
+  :where(.${PI_INPUT_CLASS}:focus) { border-color: ${cv.input.borderFocus}; }
+
   :where(.${PI_INPUT_CLASS}::placeholder) { color: ${cv.textRole.muted}; }
+
+  :where(.${PI_INPUT_CLASS}:disabled) {
+    background: ${cv.surface.subtle};
+    color: ${cv.textRole.muted};
+    cursor: default;
+  }
+
+  /* 에러 — 두 박스 모두 에러 보더 */
+  :where(.${PI_FIELD_CLASS}[data-error="true"] .${PI_DIAL_CLASS}),
+  :where(.${PI_FIELD_CLASS}[data-error="true"] .${PI_INPUT_CLASS}) {
+    border-color: ${cv.input.borderError};
+  }
 
   :where(.${PI_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;

@@ -33,7 +33,6 @@ const PI_FIELD_WRAP_CLASS = `${PI_CLASS}__field-wrap`;
 const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
 const PI_DIAL_CODE_CLASS = `${PI_CLASS}__dial-code`;
 const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
-const PI_DIVIDER_CLASS = `${PI_CLASS}__divider`;
 const PI_INPUT_CLASS = `${PI_CLASS}__input`;
 const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
 const PI_MENU_CLASS = `${PI_CLASS}__menu`;
@@ -57,6 +56,19 @@ const DEFAULT_COUNTRIES: PhoneCountry[] = [
 ];
 
 let nextId = 0;
+
+/* ─── 번호 포맷 (react PhoneInput 미러) ─── */
+
+const onlyDigits = (s: string) => s.replace(/\D/g, "");
+const maxDigitsFor = (dialCode: string) => (dialCode === "+82" ? 11 : 15);
+
+const formatPhone = (digits: string, dialCode: string): string => {
+  const d = onlyDigits(digits).slice(0, maxDigitsFor(dialCode));
+  if (dialCode !== "+82") return d;
+  if (d.length < 4) return d;
+  if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`;
+  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+};
 
 const ChevronDown = () => {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -82,7 +94,15 @@ export class NdsPhoneInput extends NdsElement {
       "countries",
       "full-width",
       "disabled",
+      "auto-format",
     ];
+  }
+
+  /** 현재 다이얼 코드 (auto-format 계산용) */
+  private _currentDialCode(): string {
+    const countries = this._parseCountries();
+    const code = this.getAttribute("country-code") || countries[0].code;
+    return (countries.find((c) => c.code === code) ?? countries[0]).dialCode;
   }
 
   private _root: HTMLDivElement | null = null;
@@ -185,10 +205,6 @@ export class NdsPhoneInput extends NdsElement {
 
     dialBtn.append(dialText, chevron);
 
-    const divider = document.createElement("span");
-    divider.className = PI_DIVIDER_CLASS;
-    divider.setAttribute("aria-hidden", "true");
-
     const input = document.createElement("input");
     input.id = this._inputId;
     input.type = "tel";
@@ -196,17 +212,24 @@ export class NdsPhoneInput extends NdsElement {
     input.autocomplete = "tel-national";
     input.className = PI_INPUT_CLASS;
     input.addEventListener("input", () => {
-      this.setAttribute("value", input.value);
+      const autoFormat = this.getAttribute("auto-format") !== "false";
+      let emitted = input.value;
+      if (autoFormat) {
+        const dialCode = this._currentDialCode();
+        emitted = onlyDigits(input.value).slice(0, maxDigitsFor(dialCode));
+        input.value = formatPhone(emitted, dialCode);
+      }
+      this.setAttribute("value", emitted);
       this.dispatchEvent(
         new CustomEvent("nds-phone-change", {
-          detail: { value: input.value },
+          detail: { value: emitted },
           bubbles: true,
           composed: true,
         }),
       );
     });
 
-    field.append(dialBtn, divider, input);
+    field.append(dialBtn, input);
     fieldWrap.appendChild(field);
 
     const menu = document.createElement("ul");
@@ -251,8 +274,11 @@ export class NdsPhoneInput extends NdsElement {
     const countryCode = this.getAttribute("country-code") || countries[0].code;
     const country = countries.find((c) => c.code === countryCode) ?? countries[0];
     const value = this.getAttribute("value") || "";
+    const autoFormat = this.getAttribute("auto-format") !== "false";
     const label = this.getAttribute("label");
-    const placeholder = this.getAttribute("placeholder") || "01012345678";
+    const placeholder =
+      this.getAttribute("placeholder") ||
+      (autoFormat && country.dialCode === "+82" ? "010-1234-5678" : "01012345678");
     const helperText = this.getAttribute("helper-text");
     const error = this.boolAttr("error");
     const fullWidth = this.boolAttr("full-width");
@@ -275,7 +301,8 @@ export class NdsPhoneInput extends NdsElement {
 
     this._input.placeholder = placeholder;
     this._input.disabled = disabled;
-    if (this._input.value !== value) this._input.value = value;
+    const displayValue = autoFormat ? formatPhone(value, country.dialCode) : value;
+    if (this._input.value !== displayValue) this._input.value = displayValue;
 
     this._menu.innerHTML = "";
     if (this._open) {

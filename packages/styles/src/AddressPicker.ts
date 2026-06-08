@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/AddressSearch.tsx during the @nudge-design/styles split. */
+/* Auto-generated from packages/react/src/AddressPicker.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -10,7 +10,7 @@ import {
   typeScale,
 } from "@nudge-design/tokens";
 
-const AS_CLASS = "nds-address-search";
+const AS_CLASS = "nds-address-picker";
 const AS_LABEL_CLASS = `${AS_CLASS}__label`;
 const AS_FIELD_ROW_CLASS = `${AS_CLASS}__field-row`;
 const AS_INPUT_CLASS = `${AS_CLASS}__input`;
@@ -20,7 +20,7 @@ const AS_RESULT_ITEM_CLASS = `${AS_CLASS}__result-item`;
 const AS_DETAIL_CLASS = `${AS_CLASS}__detail`;
 const AS_HELPER_CLASS = `${AS_CLASS}__helper`;
 
-export const asStyles = `
+export const apStyles = `
   :where(.${AS_CLASS}) {
     display: flex;
     flex-direction: column;
@@ -45,7 +45,7 @@ export const asStyles = `
     min-width: 0;
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
-    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: var(--nds-input-background, ${cv.surface.default});
     color: ${cv.textRole.normal};
@@ -57,7 +57,7 @@ export const asStyles = `
     box-sizing: border-box;
   }
   :where(.${AS_INPUT_CLASS}:focus) { outline: none; border-color: ${cv.input.borderFocus}; }
-  :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
+  :where(.${AS_INPUT_CLASS}[data-error="true"]) { border-color: ${cv.input.borderError}; }
 
   /* 검색 버튼은 DS Button(.nds-button) 을 합성 — 비주얼은 Button 토큰이 SSOT.
      여기서는 field-row 안에서 줄어들지 않도록 레이아웃만 고정한다.
@@ -123,7 +123,7 @@ export const asStyles = `
   :where(.${AS_DETAIL_CLASS}) input {
     height: 40px;
     padding: 0 var(--semantic-inset-input);
-    border: 1px solid ${cv.borderRole.normal};
+    border: 1px solid ${cv.input.borderDefault};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
     font-family: inherit;

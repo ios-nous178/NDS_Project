@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
   Timeline,
-  AddressSearch,
+  AddressPicker,
   AmountInput,
   AppointmentCard,
   Footer,
@@ -61,7 +61,7 @@ import {
   NumberStepper,
   OnlineIndicator,
   OrderSummaryCard,
-  OtpInput,
+  VerificationCodeInput,
   PageHeader,
   Pagination,
   PhoneInput,
@@ -80,7 +80,11 @@ import {
   CheckboxGroup,
   PageSizeSelect,
   SelectionCard,
+  SelectionButton,
   SelectionButtonGroup,
+  FormSection,
+  Sidebar,
+  type SidebarSection,
   Skeleton,
   Slider,
   Snackbar,
@@ -113,6 +117,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CloseIcon,
+  DownloadIcon,
+  EditIcon,
   HomeActiveIcon,
   HomeIcon,
   MicrophoneIcon,
@@ -439,6 +445,56 @@ const PREVIEWS: Record<string, PreviewRender> = {
       );
     }
     return <TabsPreview />;
+  },
+  Sidebar: () => {
+    function SidebarPreview() {
+      const [active, setActive] = useState("quiz-list");
+      const sections: SidebarSection[] = [
+        {
+          key: "ad",
+          label: "광고 관리",
+          items: [
+            { key: "banner", label: "배너 등록", icon: <HomeIcon size={20} /> },
+            {
+              key: "quiz",
+              label: "퀴즈 관리",
+              icon: <CalendarIcon size={20} />,
+              children: [
+                { key: "quiz-list", label: "목록" },
+                { key: "quiz-stats", label: "통계" },
+              ],
+            },
+          ],
+        },
+        {
+          key: "account",
+          label: "계정 관리",
+          items: [{ key: "mypage", label: "내 정보", icon: <MypageIcon size={20} /> }],
+        },
+      ];
+      // 어드민 전용 컴포넌트 — 캐포비 브랜드 cascade(활성 bg Yellow/100)가 적용되도록
+      // data-brand="cashwalk-biz" 로 감싸고, 갤러리 셀에 맞춰 240px 로 축소.
+      return (
+        <div
+          data-brand="cashwalk-biz"
+          style={{
+            width: 240,
+            maxHeight: 360,
+            overflow: "hidden",
+            border: "1px solid var(--semantic-bg-surface-subtle)",
+            borderRadius: radius.md,
+          }}
+        >
+          <Sidebar
+            items={sections}
+            activeKey={active}
+            onItemClick={(it) => setActive(it.key)}
+            style={{ "--nds-sidebar-width": "240px" } as React.CSSProperties}
+          />
+        </div>
+      );
+    }
+    return <SidebarPreview />;
   },
   Pagination: () => {
     function PaginationPreview() {
@@ -1030,10 +1086,10 @@ const PREVIEWS: Record<string, PreviewRender> = {
   },
   TagInput: () => {
     function T() {
-      const [v, setV] = useState<string[]>(["수면", "스트레스"]);
+      const [v, setV] = useState<string[]>(["abc1234@google.com"]);
       return (
-        <div style={{ width: "100%", maxWidth: 220 }}>
-          <TagInput value={v} onValueChange={setV} placeholder="태그 추가" />
+        <div style={{ width: "100%", maxWidth: 240 }}>
+          <TagInput value={v} onValueChange={setV} placeholder="이메일 주소 입력" fullWidth />
         </div>
       );
     }
@@ -1065,12 +1121,12 @@ const PREVIEWS: Record<string, PreviewRender> = {
     }
     return <T />;
   },
-  AddressSearch: () => {
+  AddressPicker: () => {
     function A() {
       const [q, setQ] = useState("");
       return (
         <div style={{ width: "100%", maxWidth: 220 }}>
-          <AddressSearch
+          <AddressPicker
             query={q}
             onQueryChange={setQ}
             onSearch={() => {}}
@@ -1505,12 +1561,12 @@ const PREVIEWS: Record<string, PreviewRender> = {
     }
     return <F />;
   },
-  OtpInput: () => {
+  VerificationCodeInput: () => {
     function O() {
       const [v, setV] = useState("12");
       return (
         <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
-          <OtpInput length={6} value={v} onValueChange={setV} />
+          <VerificationCodeInput length={6} value={v} onValueChange={setV} />
         </div>
       );
     }
@@ -1944,9 +2000,37 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ImageUpload: () => <ImageUpload state="empty" />,
   ActionChip: () => (
     <div style={{ display: "inline-flex", gap: 8 }}>
-      <ActionChip label="예시 이미지" />
-      <ActionChip label="수정" />
-      <ActionChip label="다운로드" />
+      <ActionChip icon={<SearchIcon size={14} />} label="예시 이미지" />
+      <ActionChip icon={<EditIcon size={14} />} label="수정" />
+      <ActionChip icon={<DownloadIcon size={14} />} label="다운로드" />
+    </div>
+  ),
+  SelectionButton: () => {
+    function SelectionButtonPreview() {
+      const [sel, setSel] = useState("a");
+      return (
+        <div style={{ display: "inline-flex", gap: 8 }}>
+          <SelectionButton selected={sel === "a"} onClick={() => setSel("a")}>
+            항상
+          </SelectionButton>
+          <SelectionButton selected={sel === "b"} onClick={() => setSel("b")}>
+            특정 시간만
+          </SelectionButton>
+        </div>
+      );
+    }
+    return <SelectionButtonPreview />;
+  },
+  FormSection: () => (
+    <div data-brand="cashwalk-biz" style={{ width: "100%", maxWidth: 520 }}>
+      <FormSection title="기본 정보" description="계정 식별 정보를 입력하세요.">
+        <FormField label="계정명" density="admin" labelPosition="left" labelWidth={120}>
+          <Input placeholder="입력해 주세요" fieldWidth="md" />
+        </FormField>
+        <FormField label="담당자" density="admin" labelPosition="left" labelWidth={120}>
+          <Input placeholder="입력해 주세요" fieldWidth="md" />
+        </FormField>
+      </FormSection>
     </div>
   ),
   SelectedItemsPanel: () => (

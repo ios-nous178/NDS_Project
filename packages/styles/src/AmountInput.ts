@@ -41,8 +41,8 @@ export const aiStyles = `
     align-items: center;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-card);
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
+    border: 1px solid ${cv.input.borderDefault};
+    border-radius: var(--nds-input-radius, ${radius.md}px);
     background: ${cv.surface.default};
     transition: border-color ${transition.default};
   }
@@ -77,7 +77,7 @@ export const aiStyles = `
   }
 
   :where(.${AI_INPUT_CLASS}::placeholder) {
-    color: ${cv.textRole.muted};
+    color: ${cv.input.placeholder};
     font-weight: ${fontWeight.regular};
   }
 

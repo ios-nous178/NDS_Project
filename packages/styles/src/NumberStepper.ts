@@ -59,7 +59,7 @@ export const numberStepperStyles = `
     width: var(--nds-stepper-value-w, 48px);
     height: var(--nds-stepper-btn, 36px);
     text-align: center;
-    border: 1px solid ${cv.borderRole.normal};
+    border: 1px solid ${cv.input.borderDefault};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
     color: ${cv.textRole.normal};
@@ -80,6 +80,6 @@ export const numberStepperStyles = `
   :where(.${NS_INPUT_CLASS}:focus-visible) {
     outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 0;
-    border-color: ${cv.borderRole.brand};
+    border-color: ${cv.input.borderFocus};
   }
 `;

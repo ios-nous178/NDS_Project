@@ -109,6 +109,7 @@ export type { DropdownMenuItem, DropdownMenuGroup } from "./components/nds-dropd
 export { NdsCarousel } from "./components/nds-carousel.js";
 
 export { NdsFormField } from "./components/nds-form-field.js";
+export { NdsFormSection } from "./components/nds-form-section.js";
 
 export { NdsModal } from "./components/nds-modal.js";
 
@@ -187,9 +188,9 @@ export { NdsLikertScale } from "./components/nds-likert-scale.js";
 
 export { NdsAmountInput } from "./components/nds-amount-input.js";
 
-export { NdsOtpInput } from "./components/nds-otp-input.js";
+export { NdsVerificationCodeInput } from "./components/nds-verification-code-input.js";
 
-export { NdsAddressSearch } from "./components/nds-address-search.js";
+export { NdsAddressPicker } from "./components/nds-address-picker.js";
 
 export {
   NdsAccordion,
@@ -247,6 +248,7 @@ export type { GaugeLevel } from "./components/nds-score-gauge.js";
 
 export { NdsSelectionCard, NdsSelectionCardItem } from "./components/nds-selection-card.js";
 export type { SelectionCardMode, SelectionCardLayout } from "./components/nds-selection-card.js";
+export { NdsSelectionButton } from "./components/nds-selection-button.js";
 export { NdsSelectionButtonGroup } from "./components/nds-selection-button-group.js";
 
 export { NdsFilterBar } from "./components/nds-filter-bar.js";

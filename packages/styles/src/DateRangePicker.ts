@@ -53,7 +53,7 @@ export const dateRangeStyles = `
     width: 100%;
     min-height: var(--nds-datepicker-height, ${sizing.input.default}px);
     padding: 0 var(--nds-datepicker-padding-x, var(--semantic-inset-card));
-    border: 1px solid ${cv.borderRole.normal};
+    border: 1px solid ${cv.input.borderDefault};
     border-radius: var(--nds-datepicker-radius, ${radius.md}px);
     background: ${cv.surface.default};
     cursor: pointer;
@@ -92,13 +92,19 @@ export const dateRangeStyles = `
   }
 
   :where(.${DR_TRIGGER_TEXT_CLASS}[data-placeholder="true"]) {
-    color: ${cv.textRole.muted};
+    color: ${cv.input.placeholder};
   }
 
   :where(.${DR_ICON_CLASS}) {
     display: inline-flex;
     flex-shrink: 0;
     color: ${cv.iconRole.normal};
+  }
+
+  /* clear(×) 가 노출될 때 캘린더 글리프와 같은 우측 inset 에서 겹치므로 아이콘을 숨긴다(swap).
+     × 가 캘린더 아이콘 자리를 대체 — 값이 없으면 clear 가 사라지고 캘린더 아이콘이 복귀한다. */
+  :where(.${DR_TRIGGER_CLASS}[data-clearable="true"] .${DR_ICON_CLASS}) {
+    display: none;
   }
 
   :where(.${DR_ICON_CLASS}:empty) {

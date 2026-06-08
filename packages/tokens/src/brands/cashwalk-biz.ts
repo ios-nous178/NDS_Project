@@ -110,10 +110,10 @@ export const cashwalkBizTheme: BrandTheme = {
       "56": 56,
       "64": 64,
     },
-    // Inset 7 tokens — Figma SpacingGuide. input 10px 가 캐포비 기본 (base 12px 와 다름).
+    // Inset 7 tokens — Figma SpacingGuide. input inset 은 12px (base 와 동일).
     inset: {
       chip: 8,
-      input: 10, // ★ 캐포비 기본 (base 12)
+      input: 12,
       card: 16,
       "card-large": 20,
       modal: 24,
@@ -179,17 +179,20 @@ export const cashwalkBizTheme: BrandTheme = {
 
   // Component overrides — Figma 캐포비 InputGuide (3080:741) 기준.
   // base(NudgeEAP/Trost/Geniet) 는 input rounded 8px / height 48px / padding-x = --semantic-inset-card.
-  // 캐포비 admin 은 rounded 4px / height 40px / padding-x = --semantic-inset-input(10px).
+  // 캐포비 admin 은 rounded 10px / height 40px / padding-x = --semantic-inset-input(10px).
   // emit: `--nds-{component}-{prop}` → 각 컴포넌트가 fallback 으로 읽어 cascade (다른 브랜드는 fallback 그대로).
   components: {
-    input: { radius: 4, height: 40, paddingX: "var(--semantic-inset-input)" },
+    // 입력 패밀리(input/select/textarea/datepicker) radius·height 는 --nds-input-radius / --nds-input-height
+    // 하나씩을 공유한다. 여기(input)만 바꾸면 나머지는 var(--nds-input-*) 참조로 전부 따라온다.
+    // (회고: 토큰을 컴포넌트마다 따로 박으면 일괄 변경이 안 됨 — 한 knob 으로 묶는 게 시멘틱 cascade 의 취지.)
+    input: { radius: 10, height: 48, paddingX: "var(--semantic-inset-input)" },
     // Select — 캐포비 InputGuide(3080:741 · Dropdown/DropdownItem).
     //   trigger·option 텍스트 Body2 14/20 (base Body3 13/18 과 다름).
     //   선택 항목 = 회색 배경(Section #F5F5F5) + Strong 텍스트 + Medium 500 (base 의 brand-tint 와 다름),
     //   메뉴 항목 radius 6 / padding 8·12, 메뉴 컨테이너 inset 4 / 항목 간 gap 2.
     select: {
-      radius: 4,
-      height: 40,
+      radius: "var(--nds-input-radius)",
+      height: "var(--nds-input-height)",
       fontSize: 14,
       lineHeight: 20,
       optionPadding: "8px 12px",
@@ -201,11 +204,11 @@ export const cashwalkBizTheme: BrandTheme = {
       dropdownGap: 2,
     },
     // Textarea — 캐포비 가이드(3063:643): px 12 / py 10(inset-input) / min-height 100 (base 80).
-    textarea: { radius: 4, paddingX: 12, minHeight: 100 },
+    textarea: { radius: "var(--nds-input-radius)", paddingX: 12, minHeight: 100 },
     // DateInput — 캐포비 가이드(3076:756): trigger 텍스트 Body2 14/20.
     datepicker: {
-      radius: 4,
-      height: 40,
+      radius: "var(--nds-input-radius)",
+      height: "var(--nds-input-height)",
       paddingX: "var(--semantic-inset-input)",
       fontSize: 14,
       lineHeight: 20,

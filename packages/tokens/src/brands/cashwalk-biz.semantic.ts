@@ -133,7 +133,7 @@ export const cashwalkBizSemantic = {
     // Solid/Secondary — 검정 fill + 흰 텍스트. Geniet dark inverse 와 동일 운용:
     // color=secondary, variant=solid 가 캐포비 시그니처 검정 버튼으로 렌더.
     secondary: {
-      default: cashwalkBizCommon[1000], // #000000 — Solid/Secondary Default
+      default: cashwalkBizNeutral[900], // #111 — Solid/Secondary(Neutral) Default (Figma 3098:1095: neutral/900, 순수 검정 아님)
       hover: cashwalkBizNeutral[800], // #333333 — Solid/Secondary Hover (살짝 옅은 톤)
       disabled: cashwalkBizNeutral[400], // #DDDDDD — Solid/Secondary Disabled (Figma 3098:1121)
     },
@@ -145,7 +145,7 @@ export const cashwalkBizSemantic = {
   },
   buttonText: {
     default: cashwalkBizCommon[1000], // #000000 — ButtonText/Default (Figma 3222:458, 노랑 위 검정)
-    brand: cashwalkBizYellow[700], // #FEAF01 — ButtonText/Outlined
+    brand: cashwalkBizNeutral[900], // #111 — ButtonText/Outlined (Figma 3098:1179: Outlined/Primary 텍스트 = neutral/900 검정, 노랑 아님)
     // Solid/Secondary disabled = 흰 텍스트 (#FFFFFF) — Solid/Primary 와 같은 페어.
     secondary: {
       default: cashwalkBizCommon["00"], // #FFFFFF — 검정 bg 위 흰 텍스트
@@ -157,8 +157,8 @@ export const cashwalkBizSemantic = {
   },
   buttonBorder: {
     outlined: {
-      default: cashwalkBizYellow[500], // #FFD200 — Outlined/Primary default border
-      hover: cashwalkBizYellow[600], // #FFC400 — Outlined/Primary hover border
+      default: cashwalkBizNeutral[900], // #111 — Outlined/Primary default border (Figma 3098:1179: neutral/900 검정)
+      hover: cashwalkBizNeutral[900], // #111 — Outlined/Primary hover border (Figma 3098:1190: 검정 유지, bg만 #FFFEF5 틴트)
       disabled: cashwalkBizNeutral[300], // #E7E7E7 — Outlined/Primary disabled border (Figma 3098:1205)
     },
     assistive: {

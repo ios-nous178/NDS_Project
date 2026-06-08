@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { AddressSearch, type AddressResult, type AddressValue } from "@nudge-design/react";
+import { AddressPicker, type AddressResult, type AddressValue } from "@nudge-design/react";
 
-const meta: Meta<typeof AddressSearch> = {
-  title: "Components/Inputs/AddressSearch",
-  component: AddressSearch,
+const meta: Meta<typeof AddressPicker> = {
+  title: "Components/Inputs/AddressPicker",
+  component: AddressPicker,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
 };
 
 export default meta;
-type Story = StoryObj<typeof AddressSearch>;
+type Story = StoryObj<typeof AddressPicker>;
 
 const MOCK: AddressResult[] = [
   {
@@ -46,7 +46,7 @@ export const Playground: Story = {
 
     return (
       <div style={{ width: 480 }}>
-        <AddressSearch
+        <AddressPicker
           label="배송 주소"
           query={q}
           onQueryChange={setQ}
@@ -71,7 +71,7 @@ export const PreSelected: Story = {
     });
     return (
       <div style={{ width: 480 }}>
-        <AddressSearch
+        <AddressPicker
           label="주소"
           query=""
           onQueryChange={() => undefined}

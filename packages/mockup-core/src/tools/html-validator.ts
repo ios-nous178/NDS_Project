@@ -148,6 +148,10 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "service-surface-admin-shell": "warn",
   // 캐포비 어드민(surface=admin + brand=cashwalk-biz)인데 5종 Page Pattern 중 하나를 선언 안 함 / 미지 값
   "cashwalk-biz-admin-page-pattern": "error",
+  // 캐포비 어드민 onboarding 패턴인데 shell(사이드바/풀하이트 셸)이 있음 — 온보딩은 비로그인 진입 화면이라 shell 금지
+  "cashwalk-biz-onboarding-no-shell": "error",
+  // 캐포비 어드민 onboarding 인데 중앙 카드+로고 골격이 안 보임 — 권고(레이아웃 계약 환기)
+  "cashwalk-biz-onboarding-skeleton": "info",
   // 캐포비 사이드바인데 로고 / 계정 블록(account slot) 누락 — 회귀 #1(로고+로그인영역 유실)
   "cashwalk-biz-sidebar-incomplete": "error",
   // 캐포비 사이드바인데 로그아웃(footer-actions) 누락 — 권고
@@ -1342,66 +1346,112 @@ export function validateHtmlSource(
         });
       }
 
+      // ─── onboarding 패턴은 shell(사이드바/풀하이트 셸) 금지 ───
+      //   회고(2026-06): pagePattern '분류 누락'은 하드 게이트지만 onboarding 의 레이아웃 계약
+      //   (로그인/아이디·비번 찾기 = 비로그인 진입 화면 → shell 없이 480px 중앙 카드 1개)은
+      //   검증 안 됐다. data-page-pattern="onboarding" 으로 선언해 놓고 사이드바/셸을 붙여도
+      //   통과하던 빈틈을 닫는다. (분류는 하드, 분류 위반은 소프트이던 비대칭 해소.)
+      const declaredPattern = resolveDocumentPagePattern($);
+      const isOnboarding = declaredPattern === "onboarding";
+      if (isOnboarding) {
+        $("nds-sidebar, .nds-shell").each((_i, el) => {
+          if (el.type !== "tag") return;
+          const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+          const tag = el.tagName.toLowerCase();
+          violations.push({
+            rule: "cashwalk-biz-onboarding-no-shell",
+            line: lineNumberAt(source, offset),
+            selector: describeElement(el as unknown as DomElement),
+            detail: `data-page-pattern="onboarding" 인데 어드민 shell(<${tag}>)이 있습니다 — 온보딩(로그인·아이디 찾기·비밀번호 찾기)은 비로그인 진입 화면이라 사이드바/풀하이트 셸이 없습니다.`,
+            suggestion:
+              "온보딩은 shell 없이 탈색 회색 캔버스(--semantic-bg-surface-subtle) 중앙에 480px 고정 카드 1개(로고 → Form → 풀폭 Primary CTA → TextButton 보조링크)로 만듭니다. 사이드바/셸이 정말 필요하면 dashboard/list/detail/form 중 하나로 다시 분류하세요. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }).",
+          });
+        });
+
+        // 중앙 카드+로고 골격 부재는 권고(info). 정적으로 '중앙 카드'를 단정하기 어려우니
+        // false-positive 를 줄이려 둘 다(로고·카드) 안 보일 때만 환기한다(명백히 골격 미완).
+        const hasLogo =
+          $("nds-brand-logo, [data-nds-logo]").length > 0 ||
+          $('img[alt*="logo" i], img[src*="logo" i], [class*="logo" i]').length > 0 ||
+          $("svg").length > 0;
+        const hasCard =
+          $('[class*="card" i], nds-card, [data-page-pattern] [class*="box" i]').length > 0;
+        if (!hasLogo && !hasCard) {
+          violations.push({
+            rule: "cashwalk-biz-onboarding-skeleton",
+            line: 1,
+            selector: "<onboarding root>",
+            detail:
+              "onboarding 인데 로고/중앙 카드 골격이 안 보입니다 — 온보딩은 로고 + 480px 카드 + 컨텐츠 구조입니다.",
+            suggestion:
+              "중앙 480px 카드 안에 로고(컴포넌트, raw SVG 금지) → Form → 풀폭 Primary CTA → TextButton 순으로 채웁니다. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }) 의 골격 그대로 복붙.",
+          });
+        }
+      }
+
       // ─── 캐포비 사이드바 구성 검증 (회귀: 로고+로그인영역 누락 / 높이 안 참) ───
       //   캐포비 어드민 사이드바는 로고 + 계정 블록(이메일→잔액→충전/내역 CTA)이 항상 노출되고
       //   풀하이트 셸 안에 있어야 한다. 가이드 권고로는 매번 빠지던 것을 validator 로 차단.
-      $("nds-sidebar").each((_i, el) => {
-        if (el.type !== "tag") return;
-        const attribs = (el as unknown as DomElement).attribs ?? {};
-        const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
-        const line = lineNumberAt(source, offset);
-        const selector = describeElement(el as unknown as DomElement);
-        // 로고: 명시 logo-src 또는 brand= 자동주입 둘 다 인정.
-        // 계정/푸터: account/footer-actions 속성 또는 <script type="application/json" slot="..."> 자식 둘 다 인정
-        //   (신규 ready-made 폼이 한글 JSON 을 텍스트 노드로 전달 — 속성 이스케이프·인코딩 사고 차단).
-        const hasLogo = !!attribs["logo-src"]?.trim() || !!attribs["brand"]?.trim();
-        const hasAccount =
-          !!attribs["account"]?.trim() || $(el).find('script[slot="account"]').length > 0;
-        const hasFooterActions =
-          !!attribs["footer-actions"]?.trim() ||
-          $(el).find('script[slot="footer-actions"]').length > 0;
+      //   단, onboarding 은 사이드바 자체가 금지(위 cashwalk-biz-onboarding-no-shell)라 '완성도'
+      //   검사는 건너뛴다 — "사이드바를 채워라"가 아니라 "사이드바를 빼라"가 맞는 메시지.
+      if (!isOnboarding)
+        $("nds-sidebar").each((_i, el) => {
+          if (el.type !== "tag") return;
+          const attribs = (el as unknown as DomElement).attribs ?? {};
+          const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+          const line = lineNumberAt(source, offset);
+          const selector = describeElement(el as unknown as DomElement);
+          // 로고: 명시 logo-src 또는 brand= 자동주입 둘 다 인정.
+          // 계정/푸터: account/footer-actions 속성 또는 <script type="application/json" slot="..."> 자식 둘 다 인정
+          //   (신규 ready-made 폼이 한글 JSON 을 텍스트 노드로 전달 — 속성 이스케이프·인코딩 사고 차단).
+          const hasLogo = !!attribs["logo-src"]?.trim() || !!attribs["brand"]?.trim();
+          const hasAccount =
+            !!attribs["account"]?.trim() || $(el).find('script[slot="account"]').length > 0;
+          const hasFooterActions =
+            !!attribs["footer-actions"]?.trim() ||
+            $(el).find('script[slot="footer-actions"]').length > 0;
 
-        if (!hasLogo || !hasAccount) {
-          const missing = [
-            !hasLogo && "로고(brand 또는 logo-src)",
-            !hasAccount && "계정 블록(account)",
-          ]
-            .filter(Boolean)
-            .join(" + ");
-          violations.push({
-            rule: "cashwalk-biz-sidebar-incomplete",
-            line,
-            selector,
-            detail: `캐포비 어드민 사이드바에 ${missing} 누락 — 로고+로그인영역이 빠진 채 렌더됩니다.`,
-            suggestion:
-              '<nds-sidebar brand="cashwalk-biz">(로고 자동 주입) + 계정 블록은 <script type="application/json" slot="account">{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}</script> 로 채울 것. ready-made: get_guide({ topic: \'pattern:cashwalk-biz-admin-sidebar\' }) 의 HTML 그대로 복붙(brand/account/footer-actions 이미 포함). 35KB data URI 를 logo-src 에 붙이거나 header 에 raw div 로 손수 조립하지 말 것.',
-          });
-        }
+          if (!hasLogo || !hasAccount) {
+            const missing = [
+              !hasLogo && "로고(brand 또는 logo-src)",
+              !hasAccount && "계정 블록(account)",
+            ]
+              .filter(Boolean)
+              .join(" + ");
+            violations.push({
+              rule: "cashwalk-biz-sidebar-incomplete",
+              line,
+              selector,
+              detail: `캐포비 어드민 사이드바에 ${missing} 누락 — 로고+로그인영역이 빠진 채 렌더됩니다.`,
+              suggestion:
+                '<nds-sidebar brand="cashwalk-biz">(로고 자동 주입) + 계정 블록은 <script type="application/json" slot="account">{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}</script> 로 채울 것. ready-made: get_guide({ topic: \'pattern:cashwalk-biz-admin-sidebar\' }) 의 HTML 그대로 복붙(brand/account/footer-actions 이미 포함). 35KB data URI 를 logo-src 에 붙이거나 header 에 raw div 로 손수 조립하지 말 것.',
+            });
+          }
 
-        if (!hasFooterActions) {
-          violations.push({
-            rule: "cashwalk-biz-sidebar-logout",
-            line,
-            selector,
-            detail: "캐포비 어드민 사이드바에 로그아웃(footer-actions) 누락.",
-            suggestion:
-              '<nds-sidebar footer-actions=\'[{"label":"로그아웃","variant":"outlined"}]\'> 로 최하단 고정 로그아웃을 둘 것 (메뉴 item 으로 섞지 말 것).',
-          });
-        }
+          if (!hasFooterActions) {
+            violations.push({
+              rule: "cashwalk-biz-sidebar-logout",
+              line,
+              selector,
+              detail: "캐포비 어드민 사이드바에 로그아웃(footer-actions) 누락.",
+              suggestion:
+                '<nds-sidebar footer-actions=\'[{"label":"로그아웃","variant":"outlined"}]\'> 로 최하단 고정 로그아웃을 둘 것 (메뉴 item 으로 섞지 말 것).',
+            });
+          }
 
-        // 풀하이트 셸(.nds-shell) 밖이면 100vh 가 화면을 못 채우거나 레이아웃이 깨진다.
-        if ($(el).closest(".nds-shell").length === 0) {
-          violations.push({
-            rule: "cashwalk-biz-sidebar-shell",
-            line,
-            selector,
-            detail:
-              "사이드바가 풀하이트 셸(.nds-shell) 밖에 있습니다 — full-height(100vh)가 화면을 못 채우거나 레이아웃이 깨집니다.",
-            suggestion:
-              '<div class="nds-shell" data-brand="cashwalk-biz"><nds-sidebar .../><main class="nds-shell__main">…</main></div> 형태로 감쌀 것. get_guide({ topic: \'pattern:admin-shell\' }) 또는 pattern:cashwalk-biz-admin-sidebar 의 셸 예시 참조.',
-          });
-        }
-      });
+          // 풀하이트 셸(.nds-shell) 밖이면 100vh 가 화면을 못 채우거나 레이아웃이 깨진다.
+          if ($(el).closest(".nds-shell").length === 0) {
+            violations.push({
+              rule: "cashwalk-biz-sidebar-shell",
+              line,
+              selector,
+              detail:
+                "사이드바가 풀하이트 셸(.nds-shell) 밖에 있습니다 — full-height(100vh)가 화면을 못 채우거나 레이아웃이 깨집니다.",
+              suggestion:
+                '<div class="nds-shell" data-brand="cashwalk-biz"><nds-sidebar .../><main class="nds-shell__main">…</main></div> 형태로 감쌀 것. get_guide({ topic: \'pattern:admin-shell\' }) 또는 pattern:cashwalk-biz-admin-sidebar 의 셸 예시 참조.',
+            });
+          }
+        });
     }
   } else if (surface === "service") {
     // 역방향(warn): 소비자 화면에 어드민 사이드바를 쓰면 표면을 잘못 잡았을 가능성.

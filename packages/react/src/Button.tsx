@@ -149,21 +149,23 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
       },
     },
     // Figma: Outlined
+    // Outlined/Primary — 전용 button-outlined 토큰 사용 (브랜드별 분기: 캐포비 #111, 나머지 brand색).
+    // borderRole.brand/textRole.brand 직참조 금지 — 그러면 캐포비가 brand 노랑으로 잘못 렌더됨.
     outlined: {
       enabled: {
-        background: cv.surface.default,
-        text: cv.textRole.brand,
-        border: cv.borderRole.brand,
+        background: cv.button.bgOutlined,
+        text: cv.button.textBrand,
+        border: cv.button.borderOutlined,
       },
       disabled: {
-        background: cv.surface.default,
+        background: cv.button.bgOutlinedDisabled,
         text: cv.textRole.muted,
-        border: cv.borderRole.normal,
+        border: cv.button.borderOutlinedDisabled,
       },
       hover: {
-        background: cv.surface.brandSubtle,
-        text: cv.textRole.brand,
-        border: cv.borderRole.brand,
+        background: cv.button.bgOutlinedHover,
+        text: cv.button.textBrand,
+        border: cv.button.borderOutlinedHover,
       },
     },
     // Figma: Outlined_sub — neutral border, medium weight
