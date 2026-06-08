@@ -32,7 +32,10 @@ if (!sourceMode) {
   });
 }
 
-const serverPath = path.join(runtimeDir, "dist/server.js");
+// source 모드: packages/mcp 의 tsc 산출물(dist/server.js)을 직접 실행한다.
+// bundle 모드: pack-mcpb 가 esbuild 로 만든 단일 파일(dist/tools/server.mjs).
+//   ← manifest.json 의 server.entry_point 와 동일해야 한다 (SSOT).
+const serverPath = path.join(runtimeDir, sourceMode ? "dist/server.js" : "dist/tools/server.mjs");
 
 if (!fs.existsSync(serverPath)) {
   console.error(`[smoke-mcpb] server not found: ${serverPath}`);
