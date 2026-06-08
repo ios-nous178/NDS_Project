@@ -27,12 +27,16 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
+// changeset `fixed` 그룹과 동일한 집합을 본다 — 한 패키지가 뒤처지면(assets 가
+// 그랬듯) 미러가 stale 한 패키지를 anchor 삼지 않도록. pack-local-packages.mjs 의
+// 드리프트 검사 대상(PACKAGES)과도 같은 목록이어야 세 스크립트가 어긋나지 않는다.
 const DS_PACKAGE_DIRS = [
   "packages/react",
   "packages/tokens",
   "packages/icons",
   "packages/tailwind-preset",
   "packages/styles",
+  "packages/assets",
 ];
 const MANIFEST_PATH = path.join(ROOT, "packages/mcp/manifest.json");
 const MCP_PKG_PATH = path.join(ROOT, "packages/mcp/package.json");

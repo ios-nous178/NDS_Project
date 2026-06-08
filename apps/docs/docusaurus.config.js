@@ -1,7 +1,23 @@
 // @ts-check
 
+const fs = require("node:fs");
+const path = require("node:path");
+
 const storybookUrl = process.env.STORYBOOK_BASE_URL || "/storybook/";
 const dsVersion = require("../../packages/react/package.json").version;
+
+// docs/components/*.{md,mdx} 에 실제로 존재하는 컴포넌트 문서 slug 목록.
+// ComponentGallery 가 inventory 의 모든 엔트리에 무조건 링크를 걸면, docsPath 는
+// 있는데 문서 파일이 없는 컴포넌트에서 broken-link 가 나 빌드(onBrokenLinks: throw)가
+// 깨진다. 이 목록을 customFields 로 넘겨, gallery 가 문서가 있을 때만 docs 로 링크하고
+// 없으면 Storybook 으로 폴백하게 한다. (sidebars.js 의 docExists 와 같은 의도.)
+const componentDocsDir = path.join(__dirname, "../../docs/components");
+const componentDocSlugs = fs.existsSync(componentDocsDir)
+  ? fs
+      .readdirSync(componentDocsDir)
+      .filter((f) => /\.mdx?$/.test(f))
+      .map((f) => f.replace(/\.mdx?$/, ""))
+  : [];
 
 const config = {
   title: "NUDGE Design",
@@ -16,6 +32,7 @@ const config = {
   customFields: {
     storybookUrl,
     dsVersion,
+    componentDocSlugs,
     // "다른 도구로 열기" 의 "GitHub 에서 읽기" 항목용 (개발자가 로그인된 상태에서만 의미 있음).
     // 마크다운 복사·열기·ChatGPT·Claude 는 같은-오리진 /raw/docs/... 경로를 쓰므로
     // 프라이빗 레포여도 동작. (apps/docs/scripts/copy-raw-docs.mjs 가 build/dev 직전에 복사)

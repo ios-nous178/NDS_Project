@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-08T08:09:31.971Z",
+  "generatedAt": "2026-06-08T11:23:12.143Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "dependencies": {},
       "peerDependencies": {},
       "cssExports": [
@@ -16,7 +16,7 @@
     },
     {
       "name": "@nudge-design/react",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "dependencies": {
         "@nudge-design/assets": "workspace:*",
         "@nudge-design/icons": "workspace:*",
@@ -33,7 +33,7 @@
     },
     {
       "name": "@nudge-design/icons",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "dependencies": {},
       "peerDependencies": {
         "react": ">=18.0.0"
@@ -42,7 +42,7 @@
     },
     {
       "name": "@nudge-design/tailwind-preset",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "dependencies": {
         "@nudge-design/tokens": "workspace:*"
       },
@@ -51,7 +51,7 @@
     },
     {
       "name": "@nudge-design/styles",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "dependencies": {
         "@nudge-design/tokens": "workspace:*"
       },
@@ -62,7 +62,7 @@
     },
     {
       "name": "@nudge-design/html",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "dependencies": {
         "@nudge-design/assets": "workspace:*",
         "@nudge-design/icons": "workspace:*",

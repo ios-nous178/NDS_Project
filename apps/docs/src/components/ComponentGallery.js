@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Link from "@docusaurus/Link";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import inventory from "../../../../metadata/componentInventory.json";
 import styles from "./ComponentGallery.module.css";
 
@@ -19,12 +20,24 @@ function toStoryId(title) {
     .replace(/^-+|-+$/g, "");
 }
 
-function getDocsLink(entry) {
-  if (entry.docsPath) return entry.docsPath;
+// docsPath 가 가리키는 문서가 실제로 존재할 때만 docs 로 링크한다. 없으면(inventory 에는
+// 등록됐지만 아직 문서를 안 쓴 컴포넌트) Storybook 으로 폴백해 broken-link 를 피한다.
+function getDocsLink(entry, docSlugs) {
+  if (entry.docsPath?.startsWith("/components/")) {
+    const slug = entry.docsPath.replace("/components/", "");
+    if (docSlugs.has(slug)) return entry.docsPath;
+  } else if (entry.docsPath) {
+    return entry.docsPath;
+  }
   return `/storybook/?path=/docs/${toStoryId(entry.storybookTitle)}--docs`;
 }
 
 export default function ComponentGallery({ storybookBaseUrl = "/storybook" }) {
+  const { siteConfig } = useDocusaurusContext();
+  const docSlugs = useMemo(
+    () => new Set(siteConfig.customFields?.componentDocSlugs ?? []),
+    [siteConfig],
+  );
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("전체");
   const [onlySynced, setOnlySynced] = useState(false);
@@ -99,7 +112,7 @@ export default function ComponentGallery({ storybookBaseUrl = "/storybook" }) {
           </h3>
           <div className={styles.grid}>
             {entries.map((entry) => (
-              <Link key={entry.name} to={getDocsLink(entry)} className={styles.card}>
+              <Link key={entry.name} to={getDocsLink(entry, docSlugs)} className={styles.card}>
                 <div className={styles.cardHead}>
                   <span className={styles.cardName}>{entry.name}</span>
                   {entry.figmaSynced && <span className={styles.syncedTag}>Figma Synced</span>}
