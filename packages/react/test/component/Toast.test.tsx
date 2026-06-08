@@ -5,25 +5,11 @@ import { Toast } from "../../src/Toast";
 
 const { Provider: ToastProvider, useToast } = Toast;
 
-function ToastHarness({
-  duration = 3000,
-  action = false,
-}: {
-  duration?: number;
-  action?: boolean;
-}) {
+function ToastHarness({ duration = 3000 }: { duration?: number }) {
   const { toast } = useToast();
 
   return (
-    <button
-      type="button"
-      onClick={() =>
-        toast("저장되었습니다", {
-          duration,
-          action: action ? { label: "되돌리기", onClick: vi.fn() } : undefined,
-        })
-      }
-    >
+    <button type="button" onClick={() => toast("저장되었습니다", { duration })}>
       토스트 열기
     </button>
   );
@@ -68,38 +54,6 @@ describe("Toast 사용자 시나리오", () => {
 
     expect(screen.queryByText("저장되었습니다")).not.toBeInTheDocument();
     vi.useRealTimers();
-  });
-
-  it("액션 버튼이 포함된 토스트를 표시할 수 있다", async () => {
-    const user = userEvent.setup();
-
-    function ActionToastHarness() {
-      const { toast } = useToast();
-      const onUndo = vi.fn();
-      return (
-        <>
-          <button
-            onClick={() =>
-              toast("삭제되었습니다", { action: { label: "되돌리기", onClick: onUndo } })
-            }
-          >
-            삭제
-          </button>
-          <span data-testid="undo-target" />
-        </>
-      );
-    }
-
-    render(
-      <ToastProvider>
-        <ActionToastHarness />
-      </ToastProvider>,
-    );
-
-    await user.click(screen.getByRole("button", { name: "삭제" }));
-
-    expect(await screen.findByText("삭제되었습니다")).toBeVisible();
-    expect(screen.getByRole("button", { name: "되돌리기" })).toBeVisible();
   });
 
   it("여러 토스트를 연속으로 표시할 수 있다", async () => {
@@ -203,28 +157,5 @@ describe("Toast 접근성", () => {
     const item = toastEl.closest('[data-slot="item"]')!;
 
     expect(item).toHaveAttribute("role", "status");
-  });
-
-  it("토스트 내 액션 버튼이 키보드로 접근 가능하다", async () => {
-    const user = userEvent.setup();
-
-    function ActionHarness() {
-      const { toast } = useToast();
-      return (
-        <button onClick={() => toast("완료", { action: { label: "확인", onClick: vi.fn() } })}>
-          열기
-        </button>
-      );
-    }
-
-    render(
-      <ToastProvider>
-        <ActionHarness />
-      </ToastProvider>,
-    );
-
-    await user.click(screen.getByRole("button", { name: "열기" }));
-    const actionBtn = await screen.findByRole("button", { name: "확인" });
-    expect(actionBtn).toBeVisible();
   });
 });

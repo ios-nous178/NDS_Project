@@ -23,7 +23,7 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "node --test 'src/**/*.test.ts'"
+    "test": "tsc && node --test 'dist/**/*.test.js'"
   },
   "dependencies": {
     "@babel/parser": "^7.25.0",
