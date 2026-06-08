@@ -26,7 +26,12 @@ on:
       - "packages/tokens/src/**"
       - "packages/react/src/**"
       - "packages/icons/svg/**"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "버전과 무관하게 무조건 릴리즈 (이미 같은 tag 가 있으면 기존 release+tag 를 지우고 재생성)"
+        type: boolean
+        default: false
 
 jobs:
   release:
@@ -81,11 +86,25 @@ jobs:
           # `mcpb-` 접두사를 빼고 단순한 v 접두사만 사용한다.
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
+      # force=true (수동 실행에서만 켤 수 있음) 면 같은 버전 tag 가 있어도
+      # 무조건 릴리즈한다 — 기존 remote release+tag 를 지우고 exists=false 로
+      # 떨어뜨려 아래 모든 릴리즈 단계가 새로 돌게 한다.
       - name: Check tag exists
         id: tag_check
+        env:
+          FORCE: ${{ inputs.force }}
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.meta.outputs.tag }}
         run: |
-          if git rev-parse "refs/tags/${{ steps.meta.outputs.tag }}" >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+          if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
+            if [ "$FORCE" = "true" ]; then
+              echo "::notice::force=true — $TAG 가 이미 존재하지만 기존 release+tag 를 지우고 재릴리즈합니다."
+              gh release delete "$TAG" --cleanup-tag --yes || true
+              git push origin ":refs/tags/$TAG" || true
+              echo "exists=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "exists=true" >> "$GITHUB_OUTPUT"
+            fi
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
