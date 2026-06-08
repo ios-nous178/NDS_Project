@@ -114,7 +114,7 @@ export const sizing = {
   },
   input: {
     default: 48,
-    field: 48, // = button.field(48) 정렬 — 폼 옆 버튼↔인풋 행 높이 일치 (field=44 였던 고아값 제거)
+    field: 48,
     compact: 40,
   },
   fieldWidth: {

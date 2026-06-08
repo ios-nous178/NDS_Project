@@ -6,7 +6,7 @@
       "name": "Button",
       "examplesHtml": {
         "do": "<nds-button color=\"primary\" variant=\"solid\">상담 신청하기</nds-button>\n<nds-button color=\"primary\" variant=\"outlined\">검사 시작하기</nds-button>\n<nds-button color=\"neutral\" variant=\"outlined\">자세히 보기</nds-button>",
-        "dont": "<!-- raw <button> + className 흉내. nds-button 룰/토큰이 전혀 적용 안 됨 -->\n<button class=\"nds-button\" onclick=\"handle()\">상담 신청하기</button>\n<!-- neutral + solid 조합은 Figma 라이브러리에 없음 (disabled 와 톤이 겹침) -->\n<nds-button color=\"neutral\" variant=\"solid\">자세히 보기</nds-button>"
+        "dont": "<!-- raw <button> + className 흉내. nds-button 룰/토큰이 전혀 적용 안 됨 -->\n<button class=\"nds-button\" onclick=\"handle()\">상담 신청하기</button>\n<!-- 캐포비는 secondary tone 없음 — 검정/회색 CTA 는 color=\"neutral\" 사용 -->\n<nds-button color=\"secondary\" variant=\"solid\">저장</nds-button>"
       },
       "summary": "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).",
       "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
@@ -14,7 +14,8 @@
         "**라벨을 JS 로 갈아끼우지 말 것 (HTML 한정 함정)** — `nds-button` 은 실제 `<button>` 을 light DOM 에 렌더하므로 `el.textContent = '...'` / `el.innerHTML = '...'` 로 라벨을 바꾸면 컴포넌트가 렌더한 `<button>` 이 통째로 지워지고, host(display:contents)에 맨 텍스트만 남아 스타일·포인터(cursor)·클릭 동작이 전부 사라진다(회귀: 위저드 하단 '다음 단계'→'심사 신청' 라벨 교체로 버튼이 무스타일 텍스트가 됨). 단계별로 라벨이 달라야 하면 (1) 라벨 고정 nds-button 을 단계 수만큼 두고 show/hide 로 전환하거나 (2) host 자체를 새 nds-button 으로 교체하라. **라벨 텍스트만 노드 변이(textContent/innerHTML) 금지.**",
         "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. **아이콘↔텍스트 간격은 컴포넌트가 `.nds-button__label` 의 gap 으로 자동 적용**하므로 margin-right/padding 으로 직접 띄우지 말 것. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
         "**React 한정** — `<Button leftIcon={<svg/>}>...</Button>` / `rightIcon={<svg/>}` 사용. 빈 React Element 를 넘기고 ref 로 innerHTML 박는 패턴 금지.",
-        "color='neutral' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
+        "color='neutral' + variant='solid' 은 **brand 별로 다름** — base/NudgeEAP·Trost·Geniet·Runmile 은 cool-gray/light-gray fill 이라 disabled 처럼 보여 비권장(validator neutral-solid-cta 경고). **단 캐포비(cashwalk-biz)는 neutral solid = #111 검정 CTA(Figma Neutral tone)로 정당** — 캐포비 한정 예외(글자는 fill 명도 대비 자동: 검정 fill→흰글자).",
+        "**캐포비(cashwalk-biz)는 Secondary tone 이 없음** — Figma ButtonGuide(3098:1032) tone = Primary + Neutral 둘뿐. 캐포비 검정/회색 CTA 는 반드시 `color=\"neutral\"` (solid=검정 #111 / soft=회색 #F5F5F5 / outlined=라인). `color=\"secondary\"` 사용 시 dev console 경고 + validator `cashwalk-biz-no-secondary` 가 잡음. (secondary 는 다른 브랜드 전용 tone)",
         "Geniet 브랜드에서 variant='soft' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
         "Geniet Solid/Secondary 는 #333333(gray-900) dark inverse 패턴 + 흰 텍스트 — 다른 브랜드의 옅은 톤 secondary 와 다름. 'dark fill' 이 의도된 결과.",
         "primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
@@ -24,6 +25,7 @@
         "Outlined/Neutral 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=neutral variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
         "**아이콘 색 하드코딩 금지** — `<LockIcon color=\"var(--semantic-icon-inverse-default)\" />` 처럼 inverse/brand 토큰을 박지 말 것. NudgeEAP/Trost(primary=흰 텍스트) 에서는 맞아 보이지만, 캐시워크 포 비즈니스(primary=검정 텍스트 on 노랑) 에서는 흰 아이콘이 노란 배경 위에 떠 보임. 항상 `color=\"currentColor\"` 로 두어 Button 텍스트 색을 상속하게 한다.",
         "**shape='pill' 은 radius 만 바꿈** — color/variant/size 매트릭스와 직교. shape 만 다른 두 버튼을 한 화면에 섞으면 위계 혼란 — 컨텍스트별로 통일. brand 별 shape 사용 패턴은 get_guide({ topic:'component:Button', brand:'<slug>' }).preferredPatterns 참조.",
+        "**풀폭(가로 FILL)은 `full-width` 속성 — CSS 클래스가 아니다.** `class=\"full\"` 같은 임의 클래스나 host(`<nds-button>`, display:contents)에 건 `style=\"width:100%\"` 는 안 먹는다(내부 `<button>` 까지 안 닿음). HTML=`<nds-button full-width>`, React=`<Button fullWidth>`. 온보딩/폼 Primary CTA 가 작게 hug 로 남던 회귀의 원인. **단 모달 푸터는 예외** — 캐포비 단일 버튼은 우측 hug pill 이라 full-width 금지(Modal 가이드 SSOT).",
         "**라벨 1줄 강제 — 두 줄 줄바꿈 금지** (전 브랜드 공통 룰). 라벨이 컨테이너 폭 부족으로 wrap 되면 버튼 높이가 깨지고 좌우 정렬·아이콘 베이스라인이 어긋남. 대응: (1) 라벨을 짧은 동사구로 (2) IconButton 또는 dropdown 으로 분리 (3) 컨테이너 width/grid 재설계. 절대 `white-space: normal` 로 강제 wrap 시키지 말 것 — DS 의 `white-space: nowrap` 이 의도된 가드. 텍스트가 길 수밖에 없으면 size 를 줄이지 말고 단어를 줄여라."
       ],
       "recommended": [
@@ -834,7 +836,7 @@
     "VerificationCodeInput": {
       "name": "VerificationCodeInput",
       "examplesHtml": {
-        "do": "<!-- 코드 입력 필드만. 타이머·확인 버튼이 함께면 nds-field-action-row 로 합성 -->\n<nds-field-action-row helper-text=\"문자로 전송된 인증번호를 입력해주세요\">\n  <nds-verification-code-input slot=\"field\" length=\"6\" auto-focus></nds-verification-code-input>\n  <span slot=\"timer\">02:58</span>\n  <nds-button slot=\"action\" color=\"secondary\" size=\"field\">확인</nds-button>\n</nds-field-action-row>\n<script>document.querySelector(\"nds-verification-code-input\").addEventListener(\"code-complete\", e => verify(e.detail.value));</script>",
+        "do": "<!-- 인증코드 합성 레시피: 코드 입력(이 컴포넌트) + 타이머(nds-countdown-timer) + 확인 버튼(nds-button)\n     을 nds-field-action-row 로 묶는다. 버튼 색은 nds-button 의 color 가 그대로 — 캐포비 검정 확인은 color=\"secondary\". -->\n<nds-field-action-row helper-text=\"문자로 전송된 인증번호를 입력해주세요\">\n  <nds-verification-code-input slot=\"field\" length=\"6\" auto-focus></nds-verification-code-input>\n  <nds-countdown-timer slot=\"timer\" ends-at=\"2026-06-08T12:03:00Z\" format=\"mm:ss\" label=\"남은 시간\"></nds-countdown-timer>\n  <nds-button slot=\"action\" color=\"secondary\" size=\"field\">확인</nds-button>\n</nds-field-action-row>\n<script>\n  const code = document.querySelector(\"nds-verification-code-input\");\n  code.addEventListener(\"code-complete\", e => verify(e.detail.value));\n  // 타이머 만료 시 확인 → 재전송 토글\n  document.querySelector(\"nds-countdown-timer\").addEventListener(\"countdown-complete\", () => {\n    document.querySelector(\"[slot=action]\").textContent = \"재전송\";\n  });\n</script>",
         "dont": "<!-- 자리별 박스를 raw <input> 6개로 흉내 — 붙여넣기/자동완성/접근성 손실. 단일 nds-verification-code-input 사용 -->\n<input maxlength=\"1\"/><input maxlength=\"1\"/>…"
       },
       "summary": "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. 자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FieldActionRow** 로 합성한다(타이머는 FieldActionRow 가 필드 안에 렌더, 버튼은 액션 슬롯). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input. 자리별 PIN 은 PinPad.)",
@@ -843,7 +845,8 @@
         "value는 숫자 string. length만큼 채워지면 onComplete(react)/code-complete(html) 발화 — 그 안에서 자동 제출하면 UX 좋음.",
         "입력은 숫자만 허용(영문/특수문자 자동 필터). 영숫자 OTP가 필요하면 maxLength 늘린 일반 Input 검토.",
         "autoComplete=\"one-time-code\" 가 단일 input 에 적용 — iOS/Android SMS 자동 추출 동작.",
-        "자리별 세그먼트 UI(자리당 박스)가 아님 — length 는 maxLength 로만 작동. 점 인디케이터식 PIN 은 PinPad."
+        "자리별 세그먼트 UI(자리당 박스)가 아님 — length 는 maxLength 로만 작동. 점 인디케이터식 PIN 은 PinPad.",
+        "**자리별 박스(6칸 세그먼트) 는 모바일/네이티브 앱 패턴** — 웹/데스크톱에서는 이 단일 필드가 표준이다(붙여넣기·자동완성·접근성이 자연 동작). 네이티브 앱의 6칸 OTP 화면을 웹 목업으로 그대로 옮겨 자리별 박스를 raw <input> 으로 만들지 말 것. 자리별 PIN 점 인디케이터가 필요하면 PinPad."
       ],
       "recommended": [
         "회원가입/로그인 SMS 인증: FieldActionRow(field=VerificationCodeInput length=6 autoFocus · timer=CountdownTimer · action=Button '확인') · onComplete 로 자동 검증.",
@@ -854,7 +857,7 @@
     "FileUpload": {
       "name": "FileUpload",
       "examplesHtml": {
-        "do": "<nds-file-upload accept=\".pdf,.jpg,.png\" max-size=\"5242880\"\n  description=\"PDF, JPG, PNG · 5MB 이하\"></nds-file-upload>\n<script>\nel.addEventListener(\"files-change\", e => upload(e.detail.files));\nel.addEventListener(\"files-reject\", e => alert(e.detail.reason));\n</script>",
+        "do": "<nds-file-upload accept=\".pdf,.jpg,.png\" max-size=\"5242880\"\n  description=\"PDF, JPG, PNG · 5MB 이하\"></nds-file-upload>\n<script>\nel.addEventListener(\"files-change\", e => upload(e.detail.files));\nel.addEventListener(\"files-reject\", e => el.setAttribute(\"error-message\", e.detail.reason));\n</script>",
         "dont": "<!-- max-size 를 MB 단위로 입력 — bytes 가 정답 (5242880 = 5MB) -->\n<nds-file-upload max-size=\"5\"></nds-file-upload>"
       },
       "summary": "Drag&drop + 클릭 업로드. multiple/accept/maxSize 지원. 제어 컴포넌트.",
@@ -2488,20 +2491,22 @@
     "ImageUpload": {
       "name": "ImageUpload",
       "examplesHtml": {
-        "do": "<nds-image-upload state=\"empty\" accept=\"image/*\"\n  upload-label=\"사진 추가\" size-hint=\"JPG/PNG · 최대 5MB\"></nds-image-upload>\n<script>el.addEventListener(\"file-select\", e => upload(e.detail.files));</script>",
-        "dont": "<!-- state 를 자동으로 'uploaded' 로 바꾸지 않음 — 호스트에서 명시적 갱신 필요 -->\n<nds-image-upload state=\"empty\"></nds-image-upload>  <!-- upload 끝나도 그대로 -->"
+        "do": "<!-- 미리보기만 빠르게: auto-preview 면 선택 즉시 컴포넌트가 objectURL 로 렌더 -->\n<nds-image-upload auto-preview accept=\"image/*\"\n  upload-label=\"사진 추가\" size-hint=\"JPG/PNG · 최대 5MB\"></nds-image-upload>\n<script>el.addEventListener(\"file-select\", e => upload(e.detail.files));</script>\n<!-- 서버 URL 로 controlled: state/image-url 을 직접 관리 -->\n<nds-image-upload state=\"uploaded\" image-url=\"https://cdn/...png\"></nds-image-upload>",
+        "dont": "<!-- auto-preview 없이 state 를 그대로 두면 upload 끝나도 미리보기 안 뜸 -->\n<nds-image-upload state=\"empty\"></nds-image-upload>  <!-- file-select 만 듣고 image-url/state 미갱신 → 영영 empty -->"
       },
       "summary": "캐시워크 포 비즈니스 admin 의 단일 이미지 업로드 위젯. 150×150 preview + 우측 업로드 버튼(135×44) + 사이즈 안내 가로 레이아웃. state(empty/uploaded/error) 별 시각 분기.",
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3078-617",
       "pitfalls": [
         "`<input type=\"file\">` 는 internal trigger — 외부에서 별도 file picker 를 마운트하거나 `onUploadClick` 안에서 직접 input.click() 호출 금지.",
         "Error 상태에서 박스 전체를 빨갛게 칠하지 말 것 — gauge: dashed `fill.statusError` border + soft `surface.statusError` bg. 단색 빨강은 가이드 위반.",
-        "`state=\"uploaded\"` 인데 `imageUrl` 을 안 넘기면 placeholder 가 그대로 노출. 항상 묶어서 관리.",
-        "다중 업로드가 필요하면 이 컴포넌트를 N 개 늘어놓지 말고 별도 갤러리/멀티 업로더로 분기. `multiple` prop 은 OS picker 차원만 지원.",
-        "우상단 X 버튼은 `onRemove` 가 있어야만 노출 — uploaded 상태에서도 onRemove 없으면 안 보임."
+        "`state=\"uploaded\"` 인데 `imageUrl` 을 안 넘기면 placeholder 가 그대로 노출. controlled 로 쓸 땐 항상 묶어서 관리(미리보기만 필요하면 `autoPreview`/`auto-preview` 로 자동화).",
+        "**미리보기 자동화는 `autoPreview`(React) / `auto-preview`(HTML) opt-in** — 켜면 파일 선택 시 첫 이미지를 `URL.createObjectURL` 로 즉시 렌더하고 X 로 해제, revoke·언마운트 정리까지 내부 처리. 단순 미리보기에 `FileReader`/state 보일러플레이트를 손으로 짜지 말 것. **단, `imageUrl`(React)/`image-url`(HTML)을 직접 넘기는 controlled 사용이면 그 값이 우선**하고 자동 미리보기는 비활성 — 서버 업로드 후 CDN URL 을 보여주는 흐름은 여전히 controlled 로.",
+        "다중 업로드가 필요하면 이 컴포넌트를 N 개 늘어놓지 말고 별도 갤러리/멀티 업로더로 분기. `multiple` prop 은 OS picker 차원만 지원(미리보기는 단일 이미지 1장 — `autoPreview` 도 `files[0]` 만 렌더).",
+        "우상단 X 버튼은 `onRemove` 가 있어야만 노출 — uploaded 상태에서도 onRemove 없으면 안 보임. (예외: `autoPreview` 모드는 onRemove 없이도 내부 해제용 X 가 노출됨.)"
       ],
       "recommended": [
-        "기본: <ImageUpload state={state} imageUrl={url} onFileSelect={files => upload(files[0])} onRemove={() => reset()} />",
+        "기본(controlled · 서버 URL): <ImageUpload state={state} imageUrl={url} onFileSelect={files => upload(files[0])} onRemove={() => reset()} />",
+        "미리보기만(uncontrolled): <ImageUpload autoPreview onFileSelect={files => upload(files[0])} /> — state/imageUrl 없이 선택 즉시 미리보기. HTML 은 <nds-image-upload auto-preview>.",
         "권장 사이즈 안내가 다르면 `sizeHint=\"4:3 / 1024×768 권장\"` 같이 명시.",
         "Error 메시지를 도메인별 카피로: `errorText=\"이미지를 등록해 주세요.\"`."
       ],
@@ -3164,7 +3169,7 @@
     "FieldActionRow": {
       "name": "FieldActionRow",
       "examplesHtml": {
-        "do": "<nds-field-action-row helper-text=\"이메일로 인증 코드를 보냈어요\">\n  <nds-input slot=\"field\" label=\"인증 코드\"></nds-input>\n  <nds-button slot=\"action\" color=\"primary\">재전송</nds-button>\n</nds-field-action-row>",
+        "do": "<!-- action 버튼 색은 nds-button 의 color 가 그대로 산다 — 캐포비 검정 확인/재전송은 color=\"secondary\".\n     (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하고 DS 버튼은 건드리지 않음.) -->\n<nds-field-action-row helper-text=\"이메일로 인증 코드를 보냈어요\">\n  <nds-input slot=\"field\" label=\"인증 코드\"></nds-input>\n  <nds-button slot=\"action\" color=\"secondary\">재전송</nds-button>\n</nds-field-action-row>",
         "dont": "<!-- slot 미지정 — 위치/스타일이 적용 안 됨 -->\n<nds-field-action-row>\n  <nds-input></nds-input>\n  <nds-button>재전송</nds-button>\n</nds-field-action-row>"
       },
       "summary": "전화번호 인증 / 인증코드 입력처럼 '입력 1개 + 액션 버튼 1개(+타이머)' 한 줄 패턴 전용 helper. React 는 flat API 하나만 — 구 Compound API(.Root/.Field/.Action…) 는 제거됨.",
@@ -3172,7 +3177,8 @@
         "범용 폼 레이아웃 용도 아님 — 여러 필드/버튼은 Input + Button 직접 조합. 이 컴포넌트는 인증 row 1줄에만.",
         "Action 이 핵심 폼 동작(검색 / 제출) 이면 row 안이 아니라 별도 CTA 영역.",
         "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1-2 단어로 유지.",
-        "React 에서 더는 .Root/.Row/.Field/.Timer/.Action/.Helper 합성 불가 — field/action/timer/helperText prop 으로 전달."
+        "React 에서 더는 .Root/.Row/.Field/.Timer/.Action/.Helper 합성 불가 — field/action/timer/helperText prop 으로 전달.",
+        "action 에 DS Button(<Button>/<nds-button>)을 넣으면 그 버튼의 color/variant 가 그대로 적용된다 — 캐포비 검정 확인 버튼은 color=\"secondary\". (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하므로, color 가 안 먹던 '노란 버튼' 회귀는 해소됨.) actionTone prop 은 raw <button> 전용."
       ]
     },
     "TimeSlotPicker": {

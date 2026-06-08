@@ -327,7 +327,7 @@ sizing:
     height: 56px
   input:
     default: 48px
-    field: 44px
+    field: 48px # 폼 옆 버튼·input.default(48) 와 행 높이 정렬 (field=44 고아값 제거)
     compact: 40px # Admin/Settings 표준 (CashwalkBiz admin TextField) — 라벨 좌측 폼·dense table inline 편집
   fieldWidth: # 입력 필드 가로 너비 스케일 (TextInput·Dropdown·DateInput·Selection 공통, 컨테이너 안에서는 px 고정). full=100% 는 컴포넌트 prop 에서 처리. Figma InputGuide Field Width(3897-1578)
     xs: 120px # 코드·짧은 ID·숫자 (예: 사업자번호 토큰)

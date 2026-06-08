@@ -12,7 +12,7 @@ import { FormSection, FormField, Input, Select } from "@nudge-design/react";
  *   - 입력 너비는 `fieldWidth` 스케일(xs~xl/full) 사용 — 인라인 width 금지.
  */
 const meta: Meta<typeof FormSection> = {
-  title: "Components/FormSection",
+  title: "Components/Inputs/FormSection",
   component: FormSection,
   parameters: { layout: "padded" },
   globals: { brand: "cashwalk-biz" },

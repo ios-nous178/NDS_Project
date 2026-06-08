@@ -872,6 +872,17 @@
     "notes": "Input/Select 등 단일 컨트롤에 label과 헬퍼를 일관되게 붙일 때 사용."
   },
   {
+    "name": "FormSection",
+    "category": "입력",
+    "status": "implemented",
+    "description": "제목 + 보더 카드로 여러 FormField 를 묶는 폼 그룹 컨테이너. 캐포비 admin 폼 표준",
+    "storybookTitle": "Components/Inputs/FormSection",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3466-17405",
+    "figmaNodeId": "3466:17405",
+    "usageSummary": "어드민 폼에서 관련 FormField 행들을 제목 섹션으로 묶을 때",
+    "notes": "FormField density=\"admin\" 행과 짝으로 사용 — 카드 좌우 패딩은 FormSection, 행 간 세로 리듬은 admin FormField. 색·radius 는 data-brand cascade."
+  },
+  {
     "name": "FileUpload",
     "category": "입력",
     "status": "implemented",
