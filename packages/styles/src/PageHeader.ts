@@ -18,7 +18,9 @@ export const phStyles = `
     flex-direction: column;
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-card-large) var(--semantic-inset-modal);
-    background: var(--nds-page-header-bg, ${cv.surface.default});
+    /* 기본 투명 — 페이지 타이틀 영역은 놓인 surface(page/section)를 그대로 비춘다.
+       흰 헤더 카드가 필요하면 --nds-page-header-bg 슬롯으로 opt-in. 본문 분리는 bordered. */
+    background: var(--nds-page-header-bg, transparent);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }

@@ -140,7 +140,9 @@ export const tabsStyles = `
   /* ─── chip variant ─── */
 
   :where(.${TABS_LIST_CLASS}[data-variant="chip"]) {
-    background: ${cv.surface.default};
+    /* 칩 스트립은 투명 — 각 칩이 자기 bg(subtle/brand/neutral)를 칠한다. 회색 페이지 위에
+       흰 띠로 떠 보이지 않게. (line variant 와 동일 처리. 흰 배경이 필요하면 부모가 칠한다.) */
+    background: transparent;
     gap: var(--semantic-gap-default);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
