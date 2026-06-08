@@ -18,6 +18,24 @@ describe("nds-button — DOM parity with React Button", () => {
     expect(customElements.get("nds-button")).toBe(NdsButton);
   });
 
+  it("host .disabled 프로퍼티가 attribute 로 reflect 된다 (회귀: el.disabled=false 가 안 먹어 버튼이 계속 비활성)", async () => {
+    const el = document.createElement("nds-button") as HTMLElement & { disabled: boolean };
+    el.setAttribute("disabled", "");
+    document.body.appendChild(el);
+    await flush();
+    expect((el.querySelector("button") as HTMLButtonElement).disabled).toBe(true);
+
+    el.disabled = false;
+    await flush();
+    expect(el.hasAttribute("disabled")).toBe(false);
+    expect((el.querySelector("button") as HTMLButtonElement).disabled).toBe(false);
+
+    el.disabled = true;
+    await flush();
+    expect(el.hasAttribute("disabled")).toBe(true);
+    expect((el.querySelector("button") as HTMLButtonElement).disabled).toBe(true);
+  });
+
   it("renders inner <button class='nds-button'> with data attributes", async () => {
     const el = document.createElement("nds-button");
     el.setAttribute("color", "primary");

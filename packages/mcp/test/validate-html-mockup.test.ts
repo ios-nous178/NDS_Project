@@ -46,8 +46,8 @@ configureHtmlValidator({
     [
       "nds-button",
       new Map([
-        ["color", ["primary", "secondary", "assistive"]],
-        ["variant", ["solid", "outlined", "soft", "outlined-sub"]],
+        ["color", ["primary", "secondary", "neutral"]],
+        ["variant", ["solid", "outlined", "soft"]],
       ]),
     ],
   ]),
@@ -254,14 +254,14 @@ describe("validateHtmlSource — ported JSX patterns", () => {
     expect(r).not.toContain("card-slot-double-padding");
   });
 
-  it("flags assistive-solid-cta when nds-button color=assistive without variant", () => {
-    const r = rulesFor(`<nds-button color="assistive">취소</nds-button>`);
-    expect(r).toContain("assistive-solid-cta");
+  it("flags neutral-solid-cta when nds-button color=neutral without variant", () => {
+    const r = rulesFor(`<nds-button color="neutral">취소</nds-button>`);
+    expect(r).toContain("neutral-solid-cta");
   });
 
-  it("does NOT flag assistive button when variant=outlined", () => {
-    const r = rulesFor(`<nds-button color="assistive" variant="outlined">취소</nds-button>`);
-    expect(r).not.toContain("assistive-solid-cta");
+  it("does NOT flag neutral button when variant=outlined", () => {
+    const r = rulesFor(`<nds-button color="neutral" variant="outlined">취소</nds-button>`);
+    expect(r).not.toContain("neutral-solid-cta");
   });
 
   it("flags nested-card when nds-card is inside nds-card", () => {
@@ -356,7 +356,7 @@ describe("validateHtmlSource — ported JSX patterns", () => {
     const html = `<html data-brand="cashwalk-biz"><body>
       <nds-modal>
         <div slot="footer">
-          <nds-button color="assistive" variant="outlined">닫기</nds-button>
+          <nds-button color="neutral" variant="outlined">닫기</nds-button>
           <nds-button color="secondary" variant="solid" full-width>확정</nds-button>
         </div>
       </nds-modal>

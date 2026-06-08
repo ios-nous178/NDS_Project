@@ -63,6 +63,7 @@ export class NdsModal extends NdsElement {
   private _footer: HTMLElement | null = null;
   private _close: HTMLButtonElement | null = null;
   private _userBody: HTMLDivElement | null = null;
+  private _title = "";
   private _wasOpen = false;
   private _previousFocus: Element | null = null;
   private _unobserveBrand: (() => void) | null = null;
@@ -169,7 +170,13 @@ export class NdsModal extends NdsElement {
     const open = this.boolAttr("open");
     const mask = this.getAttribute("mask") !== "false";
     const maxWidth = this.getAttribute("max-width");
-    const titleText = this.getAttribute("title");
+    // `title` 은 전역 HTML 속성이라 host 에 남으면 네이티브 브라우저 툴팁(흰 박스)이 뜬다.
+    // 값만 캐시하고 host 에서 떼어내 헤더는 캐시값으로 렌더 → 흰 툴팁 제거.
+    if (this.hasAttribute("title")) {
+      this._title = this.getAttribute("title") ?? "";
+      this.removeAttribute("title");
+    }
+    const titleText = this._title ? this._title : null;
     const closable = this.boolAttr("closable");
 
     this._root.dataset.open = String(open);

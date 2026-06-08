@@ -13,7 +13,7 @@ describe("service overlay merge — Button", () => {
     expect(result.allowedVariants).toEqual(["solid", "outlined"]);
 
     // disallowedVariants: concat-dedupe (base 가 없거나 비어도 overlay 가 추가)
-    expect(result.disallowedVariants).toEqual(expect.arrayContaining(["soft", "outlined-sub"]));
+    expect(result.disallowedVariants).toEqual(expect.arrayContaining(["soft"]));
 
     // preferredPatterns: concat-dedupe — Geniet 시그니처 라인 포함
     const preferred = (result.preferredPatterns as string[] | undefined) ?? [];
@@ -247,7 +247,7 @@ describe("Brand-aware Base metadata — BrandHeader / BrandFooter", () => {
 describe("mergeServiceOverlay — 머지 시맨틱 단위 검증", () => {
   it("allowedVariants 는 overlay 가 전체 교체 (좁히기)", () => {
     const merged = mergeServiceOverlay(
-      { allowedVariants: ["solid", "outlined", "soft", "outlined-sub"] },
+      { allowedVariants: ["solid", "outlined", "soft"] },
       { allowedVariants: ["solid", "outlined"] },
     );
     expect(merged.allowedVariants).toEqual(["solid", "outlined"]);

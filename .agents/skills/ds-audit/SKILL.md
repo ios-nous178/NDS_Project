@@ -57,6 +57,13 @@ description: >-
 - `get_metadata`/`get_design_context` 로 시안 실측(height/padding/radius/color) 추출.
 - 빌드된 브랜드 CSS(`packages/html/dist/standalone/brand.*.css`)의 `--nds-*`/resolved 값과 1:1 대조. 어긋나면 컴포넌트가 아니라 **토큰/브랜드 cascade** 를 의심하라고 보고.
 
+### 8. 패턴 잎(leaf) 커버리지 — **추천 패턴의 모든 조각은 실제 nds-\* 컴포넌트로 존재해야 한다**
+
+- **원칙**: `pattern:*`(특히 `cashwalk-biz-*` 페이지/모달 패턴)이 "이렇게 조립하라"고 지시하는 **각 잎 요소가 전부 실재하는 `nds-*` 컴포넌트(또는 `nds-*` class)** 인가. 셀렉션/피커 모달처럼 단일 컴포넌트로 안 빼고 **패턴(조립)으로 두는 건 정상** — 단 그 전제는 잎이 다 nds 라는 것.
+- **왜 중요**: 목업 점수 `dsRatio`(NDS%)는 "패턴이 한 개의 nds 태그인가"가 아니라 **잎 nds 컴포넌트를 센다**(`html-analyzer.ts` — layout div/p/span 은 분모 제외, 조립 ≠ 감점). 진짜 감점은 **재발명**(`avoidableReinvention`: `<div role=…>`·`<div onclick>`·raw landmark) 뿐. 따라서 패턴의 어떤 잎에 대응 `nds-*` 가 **없으면** → 목업 에이전트가 그 자리를 raw div+role/onclick 으로 재발명 → **점수 깎임 + 에이전트가 억지 수정 시도(thrash)**. 패턴을 컴포넌트로 감싸는 게 아니라 **빠진 잎 컴포넌트를 채우는 것**이 해법(→ `/ds-component`).
+- **점검**: 각 `PATTERN_GUIDES.{p}.rules`/validator 힌트가 언급하는 `<nds-*>` 마크업을 훑어, 거기 등장하는 모든 태그가 `html/src/index.ts` export + runtime 등록에 실재하는지 대조. 패턴이 묘사하는데 DS 에 없는 조각(예: 과거 FormSection·SelectionButton 부재)이 곧 갭. `recommend_page_pattern`/validator 힌트가 가리키는 컴포넌트도 같이 확인.
+- **출력**: 패턴 → 빠진 잎 컴포넌트 → 재발명 위험(어떤 raw 마크업으로 흘러갈지) → 권장(`/ds-component`로 잎 신설). "패턴을 단일 컴포넌트로 추출하라"는 권고가 **아니다** — 잎만 채우면 됨.
+
 ## 출력 (리포트, 수정 X)
 
 - **카테고리별 표**: 위반/드리프트 → 위치(파일·라인) → 심각도 → 권장 조치(어느 스킬로 고칠지).

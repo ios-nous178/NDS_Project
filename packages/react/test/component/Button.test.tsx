@@ -138,7 +138,7 @@ describe("Button 접근성", () => {
 });
 
 describe("Button variant × color × size 조합", () => {
-  const variants = ["solid", "outlined", "soft", "outlined-sub"] as const;
+  const variants = ["solid", "outlined", "soft"] as const;
   const colors = ["primary", "secondary"] as const;
   const sizes = ["xl", "lg", "md", "sm", "xs", "field"] as const;
 

@@ -259,18 +259,17 @@ export function validateMockupSource(
           "그라데이션 금지. 단색 토큰(var(--color-*))만 사용. get_guide({ topic: 'principles' }) 참조.",
       });
     }
-    // 4-3. Button color='assistive' variant='solid' 또는 default(solid)
+    // 4-3. Button color='neutral' variant='solid' 또는 default(solid)
     if (/<\s*Button\b/.test(line)) {
-      const hasAssistive = /color\s*=\s*["']assistive["']/.test(line);
-      const explicitlyNonSolid =
-        /variant\s*=\s*["'](outlined|soft|outlined-sub|text|ghost)["']/.test(line);
-      if (hasAssistive && !explicitlyNonSolid) {
+      const hasNeutral = /color\s*=\s*["']neutral["']/.test(line);
+      const explicitlyNonSolid = /variant\s*=\s*["'](outlined|soft|text|ghost)["']/.test(line);
+      if (hasNeutral && !explicitlyNonSolid) {
         violations.push({
-          rule: "assistive-solid-cta",
+          rule: "neutral-solid-cta",
           line: ln,
           detail: line.trim(),
           suggestion:
-            "Button color='assistive' + solid는 cool-gray 배경이라 비활성처럼 보임. 활성 CTA면 'primary' 또는 'secondary' 사용. get_guide({ topic: 'component:Button' }) 참조.",
+            "Button color='neutral' + solid는 cool-gray 배경이라 비활성처럼 보임. 활성 CTA면 'primary' 또는 'secondary' 사용. get_guide({ topic: 'component:Button' }) 참조.",
         });
       }
     }
@@ -396,7 +395,7 @@ export function validateMockupSource(
     const before = source.slice(Math.max(0, source.indexOf(block) - 240), source.indexOf(block));
     if (
       /\.map\s*\(/.test(before) ||
-      /variant\s*=\s*["'](outlined|outlined-sub|soft|text|ghost)["']/.test(block)
+      /variant\s*=\s*["'](outlined|soft|text|ghost)["']/.test(block)
     ) {
       violations.push({
         rule: "button-arrow-secondary-or-repeated",
@@ -410,9 +409,7 @@ export function validateMockupSource(
 
   const primarySolidButtons = buttonBlocks.filter(({ block }) => {
     const hasPrimary = /color\s*=\s*["']primary["']/.test(block) || !/color\s*=/.test(block);
-    const explicitlyNonSolid = /variant\s*=\s*["'](outlined|outlined-sub|soft|text|ghost)["']/.test(
-      block,
-    );
+    const explicitlyNonSolid = /variant\s*=\s*["'](outlined|soft|text|ghost)["']/.test(block);
     return hasPrimary && !explicitlyNonSolid;
   });
   if (primarySolidButtons.length > 1) {
@@ -421,7 +418,7 @@ export function validateMockupSource(
       line: primarySolidButtons[1].line,
       detail: `primary solid로 보이는 Button이 ${primarySolidButtons.length}개 발견됨.`,
       suggestion:
-        "primary solid는 화면의 가장 중요한 액션 1개만 사용하고, 나머지는 outlined/assistive/text 계열로 낮추세요.",
+        "primary solid는 화면의 가장 중요한 액션 1개만 사용하고, 나머지는 outlined/neutral/text 계열로 낮추세요.",
     });
   }
 
@@ -733,7 +730,7 @@ export function validateMockupSource(
       const buttonBlocksIn = getJsxBlocks(block, "Button");
       const primarySolidInside = buttonBlocksIn.filter(({ block: b }) => {
         const hasPrimary = /color\s*=\s*["']primary["']/.test(b) || !/color\s*=/.test(b);
-        const nonSolid = /variant\s*=\s*["'](outlined|outlined-sub|soft|text|ghost)["']/.test(b);
+        const nonSolid = /variant\s*=\s*["'](outlined|soft|text|ghost)["']/.test(b);
         return hasPrimary && !nonSolid;
       });
       if (primarySolidInside.length > 1) {
@@ -741,7 +738,7 @@ export function validateMockupSource(
           rule: "primary-cta-per-container",
           line,
           detail: `${label} 1개 안에 primary solid Button 이 ${primarySolidInside.length}개.`,
-          suggestion: `한 영역(${label}) 안 Primary Button 은 최대 1개. 보조 액션은 variant="outlined" / color="assistive" / variant="text" 로 낮추세요. get_guide({ topic: 'pattern:cta-group' }) 참조.`,
+          suggestion: `한 영역(${label}) 안 Primary Button 은 최대 1개. 보조 액션은 variant="outlined" / color="neutral" / variant="text" 로 낮추세요. get_guide({ topic: 'pattern:cta-group' }) 참조.`,
         });
       }
     }

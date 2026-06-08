@@ -193,12 +193,12 @@ export function Demo() {
   });
 
   it("captures variant/size/color attribute values for <nds-button> like JSX props", () => {
-    const source = `<nds-button variant="soft" size="md" color="assistive">x</nds-button>`;
+    const source = `<nds-button variant="soft" size="md" color="neutral">x</nds-button>`;
     const usage = parseMockupSource(source, fakePath);
     const entry = usage.ds.find((d) => d.component === "Button");
     expect(entry?.variant).toBe("soft");
     expect(entry?.size).toBe("md");
-    expect(entry?.color).toBe("assistive");
+    expect(entry?.color).toBe("neutral");
   });
 
   it("non-nds lowercase custom elements are ignored (not DS, not native)", () => {

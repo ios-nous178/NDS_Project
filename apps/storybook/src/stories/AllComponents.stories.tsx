@@ -1189,7 +1189,11 @@ const PREVIEWS: Record<string, PreviewRender> = {
     <div style={{ width: "100%", maxWidth: 240 }}>
       <FieldActionRow
         field={<Input placeholder="인증번호 입력" />}
-        action={<Button size="field">확인</Button>}
+        action={
+          <Button size="field" color="secondary">
+            확인
+          </Button>
+        }
       />
     </div>
   ),
@@ -1563,10 +1567,39 @@ const PREVIEWS: Record<string, PreviewRender> = {
   },
   VerificationCodeInput: () => {
     function O() {
-      const [v, setV] = useState("12");
+      const [code, setCode] = useState("1234");
+      const [err, setErr] = useState("99");
+      const [endsAt] = useState(() => Date.now() + 179_000);
       return (
-        <div style={{ transform: "scale(0.85)", transformOrigin: "center" }}>
-          <VerificationCodeInput length={6} value={v} onValueChange={setV} />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 14,
+            transform: "scale(0.8)",
+            transformOrigin: "top center",
+          }}
+        >
+          {/* 완성형: 코드 입력 + 타이머 + 재전송 — VerificationCodeInput 은 입력칸만 담당,
+              타이머/버튼은 CountdownTimer·Button 조합 (FieldActionRow 패턴). */}
+          <div style={mockVciRow}>
+            <span style={mockVciTag}>인증코드 + 타이머 + 재전송</span>
+            <VerificationCodeInput length={6} value={code} onValueChange={setCode} />
+            <div style={mockVciActions}>
+              <CountdownTimer endsAt={endsAt} urgentColor label="남은 시간" />
+              <Button size="sm" color="secondary" variant="outlined">
+                재전송
+              </Button>
+            </div>
+          </div>
+          <div style={mockVciRow}>
+            <span style={mockVciTag}>에러</span>
+            <VerificationCodeInput length={4} value={err} onValueChange={setErr} error />
+          </div>
+          <div style={mockVciRow}>
+            <span style={mockVciTag}>비활성</span>
+            <VerificationCodeInput length={4} value="00" onValueChange={() => undefined} disabled />
+          </div>
         </div>
       );
     }
@@ -2072,6 +2105,27 @@ const previewRow: React.CSSProperties = {
 const mockTooltipWrap: React.CSSProperties = {
   position: "relative",
   paddingTop: 32,
+};
+
+const mockVciRow: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 4,
+  alignItems: "flex-start",
+};
+
+const mockVciTag: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 500,
+  color: cv.textRole.muted,
+};
+
+const mockVciActions: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  marginTop: 6,
 };
 
 const mockTooltipBubble: React.CSSProperties = {

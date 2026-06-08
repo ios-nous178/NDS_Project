@@ -1,9 +1,9 @@
 import React from "react";
 import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-design/tokens";
 
-export type ButtonVariant = "solid" | "outlined" | "soft" | "outlined-sub";
+export type ButtonVariant = "solid" | "soft" | "outlined";
 export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "field";
-export type ButtonColor = "primary" | "secondary" | "assistive";
+export type ButtonColor = "primary" | "secondary" | "neutral";
 /**
  * Button shape.
  * - `default` : radius.md (8px) — 일반 admin 폼/CTA · 페이지 내 액션
@@ -168,27 +168,6 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.button.borderOutlinedHover,
       },
     },
-    // Figma: Outlined_sub — neutral border, medium weight
-    "outlined-sub": {
-      enabled: {
-        background: cv.surface.default,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-      disabled: {
-        background: cv.surface.default,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
-        fontWeight: fontWeight.medium,
-      },
-      hover: {
-        background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-    },
   },
   secondary: {
     // Figma: Solid/Secondary — 브랜드별 의도가 다른 슬롯.
@@ -253,106 +232,67 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.borderRole.normal,
       },
     },
-    "outlined-sub": {
-      enabled: {
-        background: cv.surface.default,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-      disabled: {
-        background: cv.surface.default,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
-        fontWeight: fontWeight.medium,
-      },
-      hover: {
-        background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-    },
   },
-  assistive: {
-    // Solid/Assistive — `buttonBg.assistive` / `buttonText.assistive` 슬롯에서 brand 별 톤 매핑.
+  neutral: {
+    // Solid/Neutral — `buttonBg.neutral` / `buttonText.neutral` 슬롯에서 brand 별 톤 매핑.
     //   · NudgeEAP base : cool-gray fill + white text (#9CA2AE / #FFFFFF — 기존 패턴 유지)
     //   · Geniet        : neutral gray filled (#ECECEC) + gray text
     //   · Runmile       : light gray filled (#F2F4F6) + gray800 text
     solid: {
       enabled: {
-        background: cv.button.bgAssistive,
-        text: cv.button.textAssistive,
-        border: cv.button.bgAssistive,
+        background: cv.button.bgNeutral,
+        text: cv.button.textNeutralSolid,
+        border: cv.button.bgNeutral,
       },
       disabled: {
-        background: cv.button.bgAssistiveDisabled,
-        // Solid Disabled 텍스트는 모든 brand 공용 white — surface.default 가 SSOT.
-        text: cv.surface.default,
-        border: cv.button.bgAssistiveDisabled,
+        background: cv.button.bgNeutralDisabled,
+        // Solid Neutral 텍스트 = fill 명도 대비 토큰(어두운 fill=흰, 밝은 fill=어두운 글자).
+        text: cv.button.textNeutralSolid,
+        border: cv.button.bgNeutralDisabled,
       },
       hover: {
-        background: cv.button.bgAssistiveHover,
-        text: cv.button.textAssistive,
-        border: cv.button.bgAssistiveHover,
+        background: cv.button.bgNeutralHover,
+        text: cv.button.textNeutralSolid,
+        border: cv.button.bgNeutralHover,
       },
     },
+    // Weak/Neutral — 연한 회색 fill + 진한 텍스트 (Figma 3098:1137/1148/1159).
     soft: {
       enabled: {
-        background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.surface.subtle,
+        background: cv.surface.section,
+        text: cv.textRole.strong,
+        border: cv.surface.section,
       },
       disabled: {
-        background: cv.borderRole.subtle,
+        background: cv.surface.subtle,
         text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
+        border: cv.surface.subtle,
       },
       hover: {
-        background: cv.borderRole.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.subtle,
+        background: cv.borderRole.normal,
+        text: cv.textRole.strong,
+        border: cv.borderRole.normal,
       },
     },
-    // Figma: Outlined/Assistive — neutral border + assistive text (Solid 와 enabled 텍스트 공용).
+    // Figma: Outlined/Neutral — neutral border + neutral text (Solid 와 enabled 텍스트 공용).
     outlined: {
       enabled: {
         background: cv.surface.default,
-        text: cv.button.textAssistive,
-        border: cv.button.borderAssistive,
+        text: cv.button.textNeutral,
+        border: cv.button.borderNeutral,
         fontWeight: fontWeight.medium,
       },
       disabled: {
         background: cv.surface.default,
         // Outlined Disabled 텍스트는 brand 별 다른 톤 (Figma 런마일 = gray600 #919CAA).
-        text: cv.button.textAssistiveDisabled,
-        border: cv.button.borderAssistiveDisabled,
+        text: cv.button.textNeutralDisabled,
+        border: cv.button.borderNeutralDisabled,
         fontWeight: fontWeight.medium,
       },
       hover: {
         background: cv.surface.subtle,
-        text: cv.button.textAssistive,
-        border: cv.button.borderAssistive,
-        fontWeight: fontWeight.medium,
-      },
-    },
-    "outlined-sub": {
-      enabled: {
-        background: cv.surface.default,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-      disabled: {
-        background: cv.surface.default,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
-        fontWeight: fontWeight.medium,
-      },
-      hover: {
-        background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
+        text: cv.button.textNeutral,
+        border: cv.button.borderNeutral,
         fontWeight: fontWeight.medium,
       },
     },
@@ -364,24 +304,43 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
  * 누락 키는 "제약 없음" 으로 간주한다. 런타임 영향 없음 — dev-only console.warn 만.
  *
  *   Geniet 207:1853 → Solid / Stroke(=Outlined) 두 스타일만 있음.
- *     soft / outlined-sub 는 Geniet Figma 에 없음 → 사용 시 경고.
+ *     soft 는 Geniet Figma 에 없음 → 사용 시 경고.
  */
 const BRAND_VARIANT_WHITELIST: Record<string, ReadonlyArray<ButtonVariant>> = {
   geniet: ["solid", "outlined"],
+};
+
+/* 브랜드별 미정의 tone — 사용 시 경고. 캐포비 Figma ButtonGuide(3098:1032) 는 Primary + Neutral 만 정의,
+ * Secondary tone 이 없음. 검정/회색 CTA 는 color="neutral" 사용(color="secondary" 아님). */
+const BRAND_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
+  "cashwalk-biz": ["secondary"],
 };
 
 const warnedKeys = new Set<string>();
 function warnIfBrandRestricted(brand: string | null, variant: ButtonVariant, color: ButtonColor) {
   if (!brand) return;
   const allow = BRAND_VARIANT_WHITELIST[brand];
-  if (!allow || allow.includes(variant)) return;
-  const key = `${brand}:${variant}:${color}`;
-  if (warnedKeys.has(key)) return;
-  warnedKeys.add(key);
-  console.warn(
-    `[nds/Button] variant="${variant}" 는 brand="${brand}" Figma 가이드에 없음 — ` +
-      `허용된 variant: [${allow.join(", ")}]. 디자인 인텐트가 어긋날 수 있어요.`,
-  );
+  if (allow && !allow.includes(variant)) {
+    const key = `${brand}:v:${variant}`;
+    if (!warnedKeys.has(key)) {
+      warnedKeys.add(key);
+      console.warn(
+        `[nds/Button] variant="${variant}" 는 brand="${brand}" Figma 가이드에 없음 — ` +
+          `허용된 variant: [${allow.join(", ")}]. 디자인 인텐트가 어긋날 수 있어요.`,
+      );
+    }
+  }
+  const deny = BRAND_TONE_DENYLIST[brand];
+  if (deny && deny.includes(color)) {
+    const key = `${brand}:c:${color}`;
+    if (!warnedKeys.has(key)) {
+      warnedKeys.add(key);
+      console.warn(
+        `[nds/Button] color="${color}" 는 brand="${brand}" Figma 가이드에 없는 tone 입니다. ` +
+          `캐포비는 검정/회색 CTA 에 color="neutral" 을 쓰세요 (secondary 아님).`,
+      );
+    }
+  }
 }
 
 /* ─── Utils ─── */

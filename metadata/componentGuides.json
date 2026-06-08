@@ -5,8 +5,8 @@
     "Button": {
       "name": "Button",
       "examplesHtml": {
-        "do": "<nds-button color=\"primary\" variant=\"solid\">상담 신청하기</nds-button>\n<nds-button color=\"primary\" variant=\"outlined\">검사 시작하기</nds-button>\n<nds-button color=\"assistive\" variant=\"outlined\">자세히 보기</nds-button>",
-        "dont": "<!-- raw <button> + className 흉내. nds-button 룰/토큰이 전혀 적용 안 됨 -->\n<button class=\"nds-button\" onclick=\"handle()\">상담 신청하기</button>\n<!-- assistive + solid 조합은 Figma 라이브러리에 없음 (disabled 와 톤이 겹침) -->\n<nds-button color=\"assistive\" variant=\"solid\">자세히 보기</nds-button>"
+        "do": "<nds-button color=\"primary\" variant=\"solid\">상담 신청하기</nds-button>\n<nds-button color=\"primary\" variant=\"outlined\">검사 시작하기</nds-button>\n<nds-button color=\"neutral\" variant=\"outlined\">자세히 보기</nds-button>",
+        "dont": "<!-- raw <button> + className 흉내. nds-button 룰/토큰이 전혀 적용 안 됨 -->\n<button class=\"nds-button\" onclick=\"handle()\">상담 신청하기</button>\n<!-- neutral + solid 조합은 Figma 라이브러리에 없음 (disabled 와 톤이 겹침) -->\n<nds-button color=\"neutral\" variant=\"solid\">자세히 보기</nds-button>"
       },
       "summary": "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).",
       "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
@@ -14,14 +14,14 @@
         "**라벨을 JS 로 갈아끼우지 말 것 (HTML 한정 함정)** — `nds-button` 은 실제 `<button>` 을 light DOM 에 렌더하므로 `el.textContent = '...'` / `el.innerHTML = '...'` 로 라벨을 바꾸면 컴포넌트가 렌더한 `<button>` 이 통째로 지워지고, host(display:contents)에 맨 텍스트만 남아 스타일·포인터(cursor)·클릭 동작이 전부 사라진다(회귀: 위저드 하단 '다음 단계'→'심사 신청' 라벨 교체로 버튼이 무스타일 텍스트가 됨). 단계별로 라벨이 달라야 하면 (1) 라벨 고정 nds-button 을 단계 수만큼 두고 show/hide 로 전환하거나 (2) host 자체를 새 nds-button 으로 교체하라. **라벨 텍스트만 노드 변이(textContent/innerHTML) 금지.**",
         "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. **아이콘↔텍스트 간격은 컴포넌트가 `.nds-button__label` 의 gap 으로 자동 적용**하므로 margin-right/padding 으로 직접 띄우지 말 것. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
         "**React 한정** — `<Button leftIcon={<svg/>}>...</Button>` / `rightIcon={<svg/>}` 사용. 빈 React Element 를 넘기고 ref 로 innerHTML 박는 패턴 금지.",
-        "color='assistive' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
-        "Geniet 브랜드에서 variant='soft' 또는 variant='outlined-sub' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
+        "color='neutral' + variant='solid' 조합은 Figma 라이브러리에 없음(=의도적으로 막혀 있음). DS 코드에 노출돼 있어도 사용 금지 — cool-gray 배경이라 disabled와 구분되지 않음.",
+        "Geniet 브랜드에서 variant='soft' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
         "Geniet Solid/Secondary 는 #333333(gray-900) dark inverse 패턴 + 흰 텍스트 — 다른 브랜드의 옅은 톤 secondary 와 다름. 'dark fill' 이 의도된 결과.",
         "primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
         "다른 페이지로 이동하는 CTA라고 해서 모든 Button에 화살표 아이콘을 붙이지 말 것. ArrowNext/ChevronRight 류 아이콘은 대표 전진 액션 1개에만 사용.",
         "카드 리스트/섹션 리스트에서 반복되는 '자세히 보기 →' 버튼은 시각 소음이 큼. 반복 CTA는 아이콘 없이 텍스트만 쓰거나 카드 전체 클릭 패턴을 검토.",
         "Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'magenta'를 기대하면 안 됨.",
-        "Outlined/Assistive 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=assistive variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
+        "Outlined/Neutral 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=neutral variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
         "**아이콘 색 하드코딩 금지** — `<LockIcon color=\"var(--semantic-icon-inverse-default)\" />` 처럼 inverse/brand 토큰을 박지 말 것. NudgeEAP/Trost(primary=흰 텍스트) 에서는 맞아 보이지만, 캐시워크 포 비즈니스(primary=검정 텍스트 on 노랑) 에서는 흰 아이콘이 노란 배경 위에 떠 보임. 항상 `color=\"currentColor\"` 로 두어 Button 텍스트 색을 상속하게 한다.",
         "**shape='pill' 은 radius 만 바꿈** — color/variant/size 매트릭스와 직교. shape 만 다른 두 버튼을 한 화면에 섞으면 위계 혼란 — 컨텍스트별로 통일. brand 별 shape 사용 패턴은 get_guide({ topic:'component:Button', brand:'<slug>' }).preferredPatterns 참조.",
         "**라벨 1줄 강제 — 두 줄 줄바꿈 금지** (전 브랜드 공통 룰). 라벨이 컨테이너 폭 부족으로 wrap 되면 버튼 높이가 깨지고 좌우 정렬·아이콘 베이스라인이 어긋남. 대응: (1) 라벨을 짧은 동사구로 (2) IconButton 또는 dropdown 으로 분리 (3) 컨테이너 width/grid 재설계. 절대 `white-space: normal` 로 강제 wrap 시키지 말 것 — DS 의 `white-space: nowrap` 이 의도된 가드. 텍스트가 길 수밖에 없으면 size 를 줄이지 말고 단어를 줄여라."
@@ -30,9 +30,9 @@
         "1차 CTA: color='primary', variant='solid'",
         "보조 액션 (밝은 배경 위): color='primary', variant='outlined'",
         "보조 액션 (파란 카드 위 등): color='secondary', variant='solid' — 옅은 파랑 배경",
-        "중립 액션(취소/뒤로): color='assistive', variant='outlined'",
+        "중립 액션(취소/뒤로): color='neutral', variant='outlined'",
         "파괴 액션: color='error', variant='solid'",
-        "회색 인상을 주려고 assistive/solid 를 쓰지 말 것 — disabled prop 이 정공법"
+        "회색 인상을 주려고 neutral/solid 를 쓰지 말 것 — disabled prop 이 정공법"
       ],
       "usagePolicy": {
         "useFor": [
@@ -51,7 +51,7 @@
         }
       },
       "examples": {
-        "do": "<Button color=\"primary\" variant=\"solid\" rightIcon={<ArrowNextIcon />}>상담 신청하기</Button>\n<Button color=\"primary\" variant=\"outlined\">검사 시작하기</Button>\n<Button color=\"assistive\" variant=\"outlined\">자세히 보기</Button>",
+        "do": "<Button color=\"primary\" variant=\"solid\" rightIcon={<ArrowNextIcon />}>상담 신청하기</Button>\n<Button color=\"primary\" variant=\"outlined\">검사 시작하기</Button>\n<Button color=\"neutral\" variant=\"outlined\">자세히 보기</Button>",
         "dont": "<Button rightIcon={<ArrowNextIcon />}>상담 신청하기</Button>\n<Button rightIcon={<ArrowNextIcon />}>검사 시작하기</Button>\n<Button rightIcon={<ArrowNextIcon />}>자세히 보기</Button>"
       },
       "colorMatrix": {
@@ -59,7 +59,7 @@
         "primary/outlined": "흰 배경 + var(--semantic-border-brand-default) 보더/텍스트 — 밝은 배경 위 보조 액션",
         "primary/soft": "surface.brandSubtle 배경 + textRole.brand 텍스트 — 3차 액션 (Figma 라이브러리엔 별도 셀 없음). 색 값은 packages/tokens/src/brands/<brand>.semantic.ts 토큰 SSOT 참조.",
         "secondary/solid": "var(--semantic-bg-brand-subtle) 배경 + var(--semantic-text-brand-default) 텍스트 — 카드/배경 위 강조 (default), hover=var(--semantic-fill-brand-hover)",
-        "assistive/outlined": "흰 배경 + #D8D8D8 보더 + #383838 medium weight 텍스트 — 중립 액션. Figma는 M/S/XS 만 지원, disabled 없음",
+        "neutral/outlined": "흰 배경 + #D8D8D8 보더 + #383838 medium weight 텍스트 — 중립 액션. Figma는 M/S/XS 만 지원, disabled 없음",
         "error/solid": "error fill + 흰 텍스트 — 파괴 액션 한정"
       },
       "sizeMatrix": {
@@ -73,7 +73,7 @@
         "primary/solid/disabled": "bg #9CA2AE cool-gray + 흰 텍스트.",
         "secondary/solid/disabled": "bg #E6E7EB + 텍스트 #9CA2AE.",
         "outlined_disabled": "흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE.",
-        "hover": "primary=var(--semantic-fill-brand-hover) / secondary=var(--semantic-bg-brand-subtle) / outlined/assistive=var(--semantic-bg-surface-subtle)"
+        "hover": "primary=var(--semantic-fill-brand-hover) / secondary=var(--semantic-bg-brand-subtle) / outlined/neutral=var(--semantic-bg-surface-subtle)"
       },
       "matrixOverrides": {
         "cashwalk-biz": {
@@ -354,7 +354,7 @@
     "Modal": {
       "name": "Modal",
       "examplesHtml": {
-        "do": "<!-- 2버튼(가로 분할): 취소 + 확정. slot=\"footer\" 는 자동으로 .nds-modal__footer 로 승격됨 -->\n<nds-modal open title=\"신청을 취소할까요?\" max-width=\"400\" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot=\"footer\">\n    <nds-button color=\"assistive\" variant=\"outlined\">닫기</nds-button>\n    <nds-button color=\"error\" variant=\"solid\">취소하기</nds-button>\n  </div>\n</nds-modal>\n<!-- 캐포비(data-brand=\"cashwalk-biz\") 단일 버튼: 우측 정렬 · hug 너비 · 검정 pill (full-width 아님). full-width 속성 붙이지 말 것 — footer cascade 가 우측 정렬 처리 -->\n<nds-modal open title=\"검수를 승인할까요?\" max-width=\"480\">\n  <p>승인하면 즉시 노출됩니다.</p>\n  <div slot=\"footer\">\n    <nds-button color=\"secondary\" variant=\"solid\" shape=\"pill\">승인</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener(\"modal-close\", () => modal.removeAttribute(\"open\"));</script>",
+        "do": "<!-- 2버튼(가로 분할): 취소 + 확정. slot=\"footer\" 는 자동으로 .nds-modal__footer 로 승격됨 -->\n<nds-modal open title=\"신청을 취소할까요?\" max-width=\"400\" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot=\"footer\">\n    <nds-button color=\"neutral\" variant=\"outlined\">닫기</nds-button>\n    <nds-button color=\"error\" variant=\"solid\">취소하기</nds-button>\n  </div>\n</nds-modal>\n<!-- 캐포비(data-brand=\"cashwalk-biz\") 단일 버튼: 우측 정렬 · hug 너비 · 검정 pill (full-width 아님). full-width 속성 붙이지 말 것 — footer cascade 가 우측 정렬 처리 -->\n<nds-modal open title=\"검수를 승인할까요?\" max-width=\"480\">\n  <p>승인하면 즉시 노출됩니다.</p>\n  <div slot=\"footer\">\n    <nds-button color=\"secondary\" variant=\"solid\" shape=\"pill\">승인</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener(\"modal-close\", () => modal.removeAttribute(\"open\"));</script>",
         "dont": "<!-- closable + max-width 누락 + 본문 없음 — 의도/구조가 부족 -->\n<nds-modal open></nds-modal>\n<!-- raw <dialog> 로 모달 흉내 — focus trap / 토큰이 적용 안 됨 -->\n<dialog open><p>알림</p></dialog>"
       },
       "summary": "사용자의 현재 흐름을 일시적으로 중단하고 중요한 결정/응답을 받기 위한 오버레이 UI. (기본/모바일) Radius 8 / 카드 padding 비대칭 28·16·16 / PC 332 · Mobile 294 / 본문↔버튼 24px gap / 50% overlay / shadow.md. Type: default / title(헤더) / Image(64×64 아이콘+타이틀). Button: 최대 2개. (기본/모바일) 1개=Primary full-width, 2개=Outlined Cancel + Primary OK 가로 분할. **(캐포비 admin) 1개=우측 정렬 · hug 너비 · 검정 pill (full-width 아님), 2개=우측 hug** — 버튼 배치는 actionsLayout('split'=가로균등 | 'end'=우측 hug) 으로 제어하고, 생략 시 브랜드 기본이 강제된다(캐포비=end, 그 외=split. react=actionsLayout prop, html=actions-layout 속성). full-width 붙이지 말 것. Modal API/props 는 brand 무관 동일 — 색/pill 모양은 브랜드 토큰, 배치만 actionsLayout(data-layout) variant. brand 별 spec 변형 (예: admin desktop 4가지 패턴) 은 get_guide({ topic:'component:Modal', brand:'<slug>' }).dimensions 또는 matrixOverrides 참조.",
@@ -388,12 +388,12 @@
             "gapBodyToFooter": "20px (base 24)",
             "buttonHeight": "44px pill (base 변형 없음) — 모달 액션 버튼 shape 는 pill 이 맞음 (Figma ModalGuide 3418-471). default 사각으로 바꾸지 말 것.",
             "footerLayout": "Single(확정 1개) = 우측 정렬 · hug 너비(footer-action 구조면 120px 고정) · 검정 pill — **full-width 아님**. Dual(취소+확정) = 가로 분할. HTML 은 `<div slot=\"footer\">` 로 감싸면 자동으로 .nds-modal__footer 로 승격돼 이 레이아웃이 적용됨(버튼 2개면 data-has-both-actions=\"true\" 자동). single 에 full-width 를 붙이거나 footer 컨테이너 없이 버튼만 두면(본문 가운데 끼임) 회귀.",
-            "confirmCta": "주 action(확인/적용) = color=\"secondary\" variant=\"solid\" → 캐포비 시그니처 **검정 CTA**(#000 배경·흰 텍스트, buttonBg.secondary 토큰 cascade). colorMatrix 만 보면 secondary/solid 가 파랑(#F1F8FD)으로 보이지만 data-brand=\"cashwalk-biz\" 에서는 검정으로 cascade 됨. 취소/닫기 = color=\"assistive\" variant=\"outlined\". 파괴적 확정(삭제 등)만 color=\"error\".",
+            "confirmCta": "주 action(확인/적용) = color=\"secondary\" variant=\"solid\" → 캐포비 시그니처 **검정 CTA**(#000 배경·흰 텍스트, buttonBg.secondary 토큰 cascade). colorMatrix 만 보면 secondary/solid 가 파랑(#F1F8FD)으로 보이지만 data-brand=\"cashwalk-biz\" 에서는 검정으로 cascade 됨. 취소/닫기 = color=\"neutral\" variant=\"outlined\". 파괴적 확정(삭제 등)만 color=\"error\".",
             "titleTypo": "Title2 18·26 좌측 정렬 (base 중앙 정렬)",
             "bodyTypo": "Body2 14·20 medium 좌측 정렬 (base 중앙 정렬)",
             "dataModal": "**⑤ Data Modal (대형·조회 전용, 확인 팝업 ①~④ 와 구분)**: 목록/상세 데이터를 조회·확인하는 대형 모달. width ~560+ · **radius 12 · padding 24 · gap 16**(확인 모달의 16/32 와 다름) · border #E5E7EB. 헤더 = 제목(16 Bold) + 우상단 Close X(#999, 푸터 CTA 없음 — 조회 전용). 본문 = DataTable(헤더행 bg #F7F8FA · 셀 border #EEE · 36px · 12px) — 상세 + 목록 등 다중 테이블 가능. 페이지 패턴 아님 → Modal + DataTable 조합. Figma ModalGuide 3418-471(⑤ Data Modal 3832-1057).",
             "selectionModal": "**⑥ 선택/피커 모달 (대형·다중 선택)**: 항목을 검색·다중 선택해 적용하는 대형 모달(예: 지역·카테고리·타겟 선택). **width ~960 · radius 16 · padding 48 · 흰 배경**. 헤더 = 제목 Bold 24 #383838(좌) + Close X 28(#999, 우). 본문 = **2컬럼(각 ~422 · 높이 ~652 · gap 20)**: 좌 = 필터(검색 input + '전체 선택' 체크박스 + 시/도▸시/군/구 체크박스 트리, 선택 시 옐로우 체크) / 우 = `SelectedItemsPanel`(component:SelectedItemsPanel · SelectedItemRow) — '선택한 N개' + '선택 해제'(reset) + 제거 가능한 선택 항목 리스트. **모달 안 패널은 '선택 해제'만 — '추가 선택' 버튼 노출 금지(HTML `hide-add` 속성 필수 · React `onAdd` 미전달). '추가 선택'은 모달 밖 페이지/타겟팅 폼에서만 쓰며 secondary Button + plus(+) 아이콘.** 푸터 = **본문 풀폭 단일 '적용' CTA**: Solid/Primary(옐로우 #FFD200·검정 텍스트, **pill**) · 비활성 = Neutral/400 #DDD. ⚠️ 확인팝업(①~④)의 '우측 hug 검정 pill' 규칙을 적용하지 말 것 — 선택 적용은 **풀폭 옐로우**. 버튼 shape 는 모달 BottomCTA 라 pill 이며, 시안 3001:50787(빈 셸)의 radius10·400centered 적용 버튼은 오류 — 채워진 SSOT 는 **3001:50116**(풀폭 적용). Figma 3001-50116.",
-            "dataLoaderModal": "**⑦ 데이터 로더 모달 (⑤ Data Modal 의 선택형)**: 기존 항목을 표에서 골라 불러오는 대형 모달(예: 소재 불러오기). ⑤ 구조 + **행 선택(radio/check) + 페이지네이션 + 푸터 액션**. 헤더 = 제목 Bold 24 + 검색 input + Close X. 본문 = 선택형 DataTable(상태칩·이미지·텍스트 컬럼 등) + 하단 페이지네이션 + 'N개씩 보기' 드롭다운. 푸터 = **취소(color=\"assistive\" outlined) + 불러오기(color=\"secondary\" solid · 검정 pill)** 각 ~170×56 (확인팝업 dual 푸터와 동일). 조회 전용 ⑤ 와 달리 선택·확정 액션이 있다. Figma 3001-32822.",
+            "dataLoaderModal": "**⑦ 데이터 로더 모달 (⑤ Data Modal 의 선택형)**: 기존 항목을 표에서 골라 불러오는 대형 모달(예: 소재 불러오기). ⑤ 구조 + **행 선택(radio/check) + 페이지네이션 + 푸터 액션**. 헤더 = 제목 Bold 24 + 검색 input + Close X. 본문 = 선택형 DataTable(상태칩·이미지·텍스트 컬럼 등) + 하단 페이지네이션 + 'N개씩 보기' 드롭다운. 푸터 = **취소(color=\"neutral\" outlined) + 불러오기(color=\"secondary\" solid · 검정 pill)** 각 ~170×56 (확인팝업 dual 푸터와 동일). 조회 전용 ⑤ 와 달리 선택·확정 액션이 있다. Figma 3001-32822.",
             "activationCondition": "`<html data-brand=\"cashwalk-biz\">` 가 박힌 환경에서만 자동 적용 — 그 외에서는 base 모바일 스펙 유지"
           }
         }
@@ -406,9 +406,9 @@
         "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
         "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
         "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
-        "캐포비 admin 모달의 주 action(확인/적용)은 color=\"secondary\" variant=\"solid\" — 브랜드 시그니처 **검정 CTA**(#000·흰 텍스트). 취소/닫기는 color=\"assistive\" variant=\"outlined\", 파괴적 확정만 color=\"error\". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (검정인데 파랑으로 나오면 data-brand=\"cashwalk-biz\" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)",
+        "캐포비 admin 모달의 주 action(확인/적용)은 color=\"secondary\" variant=\"solid\" — 브랜드 시그니처 **검정 CTA**(#000·흰 텍스트). 취소/닫기는 color=\"neutral\" variant=\"outlined\", 파괴적 확정만 color=\"error\". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (검정인데 파랑으로 나오면 data-brand=\"cashwalk-biz\" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)",
         "**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot=\"footer\">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot=\"footer\"><nds-button color=\"secondary\" variant=\"solid\" shape=\"pill\">확인</nds-button></div>` — slot=\"footer\" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할. **단, 이 규칙은 확인/결정 팝업(①~④) 한정** — 모달 종류별로 푸터가 다르다(아래).",
-        "**모달 종류별 푸터 결정 트리** (혼동 금지): ① 확인/결정 팝업 = 우측 hug **검정 pill**(secondary), 취소는 assistive outlined. ② 선택/피커 모달(⑥, dimensions.selectionModal) = **본문 풀폭 단일 \"적용\" 옐로우 Solid/Primary pill** (검정 아님·hug 아님). ③ 데이터 로더(⑦, dimensions.dataLoaderModal) = 취소(outlined) + 불러오기 **검정 pill**. ④ 조회 전용 Data Modal(⑤) = 푸터 CTA 없음(Close X 만). 어떤 모달인지 먼저 정하고 그 푸터를 쓸 것 — 선택 모달에 검정 hug 를, 확인 팝업에 옐로우 풀폭을 쓰면 회귀."
+        "**모달 종류별 푸터 결정 트리** (혼동 금지): ① 확인/결정 팝업 = 우측 hug **검정 pill**(secondary), 취소는 neutral outlined. ② 선택/피커 모달(⑥, dimensions.selectionModal) = **본문 풀폭 단일 \"적용\" 옐로우 Solid/Primary pill** (검정 아님·hug 아님). ③ 데이터 로더(⑦, dimensions.dataLoaderModal) = 취소(outlined) + 불러오기 **검정 pill**. ④ 조회 전용 Data Modal(⑤) = 푸터 CTA 없음(Close X 만). 어떤 모달인지 먼저 정하고 그 푸터를 쓸 것 — 선택 모달에 검정 hug 를, 확인 팝업에 옐로우 풀폭을 쓰면 회귀."
       ],
       "usagePolicy": {
         "useFor": [
@@ -1122,7 +1122,8 @@
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-40209",
       "pitfalls": [
         "countryCode는 ISO code(KR, US 등)로 관리. '+82' 문자열을 state에 두지 말 것.",
-        "번호 마스킹/하이픈 자동화는 컴포넌트가 강제하지 않음 — 필요하면 onValueChange에서 직접.",
+        "value/onValueChange 는 숫자만 다룸(예: '01012345678'). autoFormat(기본 on)이 화면에만 하이픈(KR 3-4-4)을 붙임 — state 에 하이픈 든 문자열을 넣지 말 것.",
+        "KR(+82) 외 국가는 하이픈 규칙 미정의라 자동 포맷 안 함(숫자 패스스루). 끄려면 autoFormat={false}.",
         "기본 5개국(KR/US/JP/CN/GB) 외 필요하면 countries prop으로 직접 정의.",
         "둥근 모서리/높이를 임의 px 로 박지 말 것 — base Input 토큰(--nds-input-radius/-height) 상속이므로 Input 과 자동 일관."
       ],
@@ -1659,17 +1660,19 @@
     "TagInput": {
       "name": "TagInput",
       "examplesHtml": {
-        "do": "<nds-tag-input value='[\"불안\",\"수면\"]' label=\"관심 주제\"\n  placeholder=\"태그 입력 후 Enter\" max-tags=\"5\" helper-text=\"최대 5개\"></nds-tag-input>\n<script>el.addEventListener(\"nds-tag-change\", e => save(e.detail.value));</script>",
-        "dont": "<!-- max-tags 누락 + helper 없음 — 무한정 입력 가능 -->\n<nds-tag-input placeholder=\"태그\"></nds-tag-input>"
+        "do": "<!-- 기본 stacked: 입력칸 + 추가버튼, 칩은 아래 wrap (이메일 초대/수신자) -->\n<nds-tag-input label=\"멤버 초대하기\" placeholder=\"이메일 주소를 입력해 주세요\"\n  pattern=\"^[^@\\\\s]+@[^@\\\\s]+\\\\.[^@\\\\s]+$\" max-tags=\"50\"\n  helper-text=\"멤버는 최대 50명까지, 한번에 최대 10명까지 초대할 수 있습니다.\"></nds-tag-input>\n<script>\n  el.addEventListener(\"nds-tag-change\", e => save(e.detail.value));\n  el.addEventListener(\"nds-tag-invalid\", e => toast(`이메일 형식이 아니에요: ${e.detail.value}`));\n</script>\n<!-- 해시태그식 인라인 tokenfield -->\n<nds-tag-input variant=\"inline\" prefix=\"#\" label=\"관심 주제\"\n  placeholder=\"태그 입력 후 Enter\" max-tags=\"5\"></nds-tag-input>",
+        "dont": "<!-- 이메일 받으면서 pattern 검증 없음 — 잘못된 주소가 그대로 칩이 됨 -->\n<nds-tag-input label=\"멤버 초대\"></nds-tag-input>\n<!-- 해시태그인데 value 에 직접 # 넣음 — prefix 가 표시 담당, 저장값엔 # 빼기 -->\n<nds-tag-input variant=\"inline\" value='[\"#수면\"]'></nds-tag-input>"
       },
-      "summary": "태그 자유 입력. Enter/쉼표로 추가, Backspace로 마지막 삭제. Chip 표시(읽기 전용)와 분리.",
+      "summary": "토큰(태그) 자유 입력 + 삭제 가능한 칩. **기본 variant=\"stacked\"** — 입력칸 + 우측 추가 버튼(입력 있을 때만 활성)에 칩은 **아래** wrap (이메일 초대/수신자 패턴). **variant=\"inline\"** 은 칩이 입력칸 안쪽 tokenfield(해시태그식). Enter/쉼표/추가버튼으로 추가, Backspace로 마지막 삭제. 이메일 등은 `pattern`(정규식) 으로 검증 — 실패 시 추가 안 되고 `nds-tag-invalid` 이벤트.",
       "pitfalls": [
-        "value의 태그 문자열에 '#' 접두를 직접 넣지 말 것 — 컴포넌트가 표시 시 자동 추가, 입력 시 자동 제거.",
-        "정해진 옵션에서 다중 선택은 SelectionCard mode='multiple' 또는 Chip 토글이 적합.",
-        "자동완성이 필요하면 Autocomplete + 직접 태그 관리 — TagInput은 자유 입력 전용."
+        "이메일/수신자 초대 = 기본 stacked + `pattern` 으로 형식 검증 + `max-tags`. 검증 없으면 잘못된 값이 칩으로 박힘.",
+        "해시태그는 `variant=\"inline\" prefix=\"#\"` — value/저장값엔 `#` 넣지 말 것(prefix 가 표시 시 자동 부착, 입력 시 자동 제거). prefix 기본은 \"\"(없음).",
+        "정해진 옵션에서 다중 선택은 SelectionCard mode='multiple' 또는 Chip 토글이 적합. 자동완성은 Autocomplete.",
+        "초대 모달 푸터(취소/초대하기) 와 제목은 TagInput 바깥에서 조립 — TagInput 은 입력+칩 영역만 담당."
       ],
       "recommended": [
-        "관심사 등록: maxTags=5, onMaxReached로 토스트",
+        "멤버 초대: stacked + pattern(email) + maxTags=50 + helperText 로 제한 안내",
+        "관심사/해시태그: variant=inline + prefix=# + maxTags",
         "콘텐츠 태그: allowDuplicates=false (기본)"
       ]
     },
@@ -4435,7 +4438,8 @@
       "name": "cashwalk-biz-input",
       "summary": "캐시워크 포 비즈니스 admin 의 Input/Form 컴포넌트 카탈로그. 11 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
       "rules": [
-        "TextInput (5 states), TextField (Label+Input+Helper, 5 states), Dropdown (Default/Hover/Active/Error/Disabled + Expanded 메뉴), DateInput (5 states), Textarea (5 states), Checkbox (4 variants), SelectionButton/SelectionButtonGroup (선택 버튼 · FormField 교체), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션), SelectedItemsPanel (선택 항목 슬롯 패널 + SelectedItemRow).",
+        "TextInput (5 states · DS `Input`), TextField (Label+Input+Helper · DS `FormField`, 5 states), Dropdown (Default/Hover/Active/Error/Disabled + Expanded 메뉴 · DS `Select`), DateInput (5 states · DS `DatePicker`), Textarea (5 states), Checkbox (4 variants), SelectionButton(단독 · DS `SelectionButton`)/SelectionButtonGroup (선택 버튼 · FormField 교체), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션), SelectedItemsPanel (선택 항목 슬롯 패널 + SelectedItemRow), FormSection (제목 + 보더 카드로 FormField 묶음 · DS `FormSection`).",
+        "**FormSection** = 제목(Headline3 24 Bold) + 보더 카드(radius 16 cascade · border #EEE · 좌우 padding 24)로 여러 `FormField` 를 묶는 폼 그룹. 마크업: `<nds-form-section title=\"기본 정보\"><nds-form-field density=\"admin\" label-position=\"left\">…</nds-form-field></nds-form-section>`. 세로 리듬은 자식 `FormField density=\"admin\"`(py-24) 이 만든다 — FormSection 에 따로 py 주지 말 것. radius·색은 `data-brand=\"cashwalk-biz\"` cascade.",
         "Input/Border/Focus 는 ★ Neutral/900 (#111111) 검정 — 다른 브랜드(brand 색 focus) 와 달리 캐시워크 포 비즈니스 admin 은 검정 outline.",
         "Input/BG/Disabled = Neutral/50 (#FAFAFA), Input/Border/Default = Neutral/200 (#EEEEEE).",
         "Input·Dropdown·DateInput 의 입력 텍스트는 Body2 14/20 (base DS 의 Select/DateInput 13/18 보다 큼 — 캐시워크 포 비즈니스 전용).",
@@ -4443,9 +4447,9 @@
         "Checkbox 의 'on-green' SVG 가 별도 — success 표시(이미 처리 완료) 의미. 일반 checked 와 구분.",
         "ImageUpload 는 캐시워크 포 비즈니스 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.",
         "Input focus 는 brand 색(노랑) 이 아니라 검정 outline. 가이드 명시.",
-        "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline. radius 6 / bg #ECECEC.",
+        "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline. radius 6 / bg #ECECEC. **아이콘+라벨**(예시 이미지/수정/다운로드): React `icon` prop / HTML `slot=\"icon\"` 으로 14px 아이콘을 라벨 앞에 — 아이콘 없이 라벨만 두지 말 것(Figma 3종 모두 아이콘 동반).",
         "SelectedItemsPanel 헤더 = 선택 해제(기본) + 추가 선택(옵션 onAdd) — **피커 모달 안에서는 추가 선택 빼고 선택 해제만**(HTML `hide-add` / React onAdd 미전달). 추가 선택은 모달 밖에서만, secondary Button + plus 아이콘. count 는 text.brand 강조. 본문은 SelectedItemRow 리스트 등으로 swap.",
-        "**Field Width — 입력 필드 가로 너비 6단계 스케일** (TextInput·Dropdown·DateInput·Selection 등 모든 입력 공통, 컨테이너 안에서는 **항상 px 고정값**): XSmall **120px**(field-width-xs · 코드·짧은 ID·숫자, 예 사업자번호 토큰) · Small **200px**(field-width-sm · 단일 키워드 검색·Filter Dropdown·페이지네이션 옆 셀렉트) · **Medium 304px(field-width-md, default — 폼 내부 일반 입력 이메일·이름·계정명, 가장 흔함)** · Large **400px**(field-width-lg · 모달 내부 메인 입력·단독 검색바) · XLarge **488px**(field-width-xl · 와이드 페이지 필터·상세 폼 강조) · Full **100%**(field-width-full · Textarea·반응형 폼). 같은 행에 여러 input 이면 같은 사이즈로 통일. 관측 정규화: Dropdown 105/164/222 → Small(200)·Medium(304), 모달 명/번호 input ~396 → Large(400), '100개씩 보기' 152 → Small(200). Figma InputGuide Field Width(3897-1578)."
+        "**Field Width — 입력 필드 가로 너비 6단계 스케일** (TextInput·Dropdown·DateInput·Selection 등 모든 입력 공통, 컨테이너 안에서는 **항상 px 고정값**): XSmall **120px**(field-width-xs · 코드·짧은 ID·숫자, 예 사업자번호 토큰) · Small **200px**(field-width-sm · 단일 키워드 검색·Filter Dropdown·페이지네이션 옆 셀렉트) · **Medium 304px(field-width-md, default — 폼 내부 일반 입력 이메일·이름·계정명, 가장 흔함)** · Large **400px**(field-width-lg · 모달 내부 메인 입력·단독 검색바) · XLarge **488px**(field-width-xl · 와이드 페이지 필터·상세 폼 강조) · Full **100%**(field-width-full · Textarea·반응형 폼). 같은 행에 여러 input 이면 같은 사이즈로 통일. 관측 정규화: Dropdown 105/164/222 → Small(200)·Medium(304), 모달 명/번호 input ~396 → Large(400), '100개씩 보기' 152 → Small(200). **DS 구현**: `sizing.fieldWidth` 토큰(SSOT) + `fieldWidth` prop — React `<Input fieldWidth=\"md\">` / `<Select fieldWidth=\"sm\">`, HTML `<nds-input field-width=\"md\">` / `<nds-select field-width=\"sm\">` (xs|sm|md|lg|xl|full). 인라인 width 박지 말고 이 prop 을 쓸 것. Figma InputGuide Field Width(3897-1578)."
       ],
       "avoid": [
         "Input focus 를 노란색으로 바꾸지 말 것 — 가이드 위반.",
@@ -4453,13 +4457,13 @@
         "입력 필드 너비를 미지정(%/auto/fit-content/hug)으로 두거나 임의값(281·317·396 등)으로 — **Field Width 6단계(120/200/304/400/488/100%) 중 px 고정**으로. (반응형 컨테이너의 Full 100% 만 예외.) XSmall 120 미만·내용물에 맞춘 hug(placeholder 가림) 금지."
       ],
       "metrics": {
-        "components": "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · SelectionButton · SelectionButtonGroup · ImageUpload · ActionChip · SelectedItemsPanel",
+        "components": "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · SelectionButton · SelectionButtonGroup · ImageUpload · ActionChip · SelectedItemsPanel · FormSection",
         "defaultStates": "default / typing / error / disabled / complete",
         "focusBorder": "#111111 (Neutral/900, 검정)",
-        "fieldWidth": "6단계 px 고정 — xs 120(field-width-xs) / sm 200(field-width-sm) / md 304(field-width-md, default) / lg 400(field-width-lg) / xl 488(field-width-xl) / full 100%(field-width-full). 폼 일반=Medium 304, 모달 메인=Large 400, Textarea=Full.",
+        "fieldWidth": "6단계 — xs 120 / sm 200 / md 304(default) / lg 400 / xl 488 / full 100%. DS: `sizing.fieldWidth` 토큰 + `fieldWidth` prop(Input·Select) / `field-width` 속성(nds-input·nds-select). 폼 일반=md, 모달 메인=lg, Textarea=full.",
         "relatedPatterns": "cashwalk-biz-button, dropdown, cashwalk-biz-form-layout"
       },
-      "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3897-1578"
+      "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3080-741"
     },
     "cashwalk-biz-tab": {
       "name": "cashwalk-biz-tab",
@@ -4469,18 +4473,29 @@
         "**Underline(line)** = 페이지 메인 카테고리·목록 필터·단계 전환. 마크업: `<nds-tabs variant=\"line\" size=\"pc\" tone=\"neutral\">`. 텍스트 Subtitle1 16/24, Selected=Strong(#111) Bold + 하단 2px 검정 인디케이터, Default=Subtle(#666) Medium.",
         "**Box(chip)** = 상태/좁은 영역 필터(진행중·진행예정·종료 등). 마크업: `<nds-tabs variant=\"chip\" size=\"pc\" tone=\"neutral\">`. radius 10, Selected=#111(bg-inverse) bg + 흰 텍스트 Bold, Default=#DDD(button-bg-disabled) bg + 흰 텍스트 Bold (의도된 저대비 — 가이드 명시).",
         "치수·색은 모두 캐포비 브랜드 토큰(`--nds-tabs-*`)으로 cascade — 별도 style 오버라이드 금지. `data-brand=\"cashwalk-biz\"` 만 루트에 있으면 자동 적용된다.",
-        "동적 상태(진행/종료)는 Box, 페이지 카테고리는 Underline — 혼용 주의. 단계형 진행 표시는 Tab 이 아니라 `pattern:cashwalk-biz-step-progress`."
+        "동적 상태(진행/종료)는 Box, 페이지 카테고리는 Underline — 혼용 주의. 단계형 진행 표시는 Tab 이 아니라 `pattern:cashwalk-biz-step-progress`.",
+        "**Tab vs Filter — 역할이 다르다(혼동 금지).** 둘 다 데이터를 분류해 보여주지만: **Tab** = 데이터를 **상호 배타적으로 분류**(한 번에 한 view 만) → **view 자체가 바뀜** → URL **경로** 변경(`/quizzes/active → /quizzes/done`). 예: 진행중/종료/대기, 승인/반려. **Filter**(`pattern:` FilterBar) = **현재 view 안에서 조건을 점진적으로 좁히기** → 같은 view 에 **결과만 변함** → **쿼리 파라미터**로 누적(`?date=…&keyword=…`, URL 공유 시에도 필터 유지). 예: 날짜 범위·키워드·카테고리 다중.",
+        "**결정 트리** — Q1. view 자체가 바뀌나(목록 전체 교체)? → YES = **Tab**. Q2. 조건을 누적해서 좁히나(다중 필터)? → YES = **Filter(FilterBar)**. Q3. 옵션 2–7개 단일 선택인가? → YES = **Radio / SelectionButtonGroup**(`get_guide` Selection Components). 그 외 = 다른 컨트롤 검토.",
+        "**화면 배치 순서(페이지 패턴)** — 페이지 타이틀 → **Tab** → **FilterBar** → 데이터 영역(위→아래). Tab 으로 큰 분류를 고른 뒤 Filter 로 그 안에서 좁히는 흐름. 한 화면에 Tab 종류는 1개로 통일(Underline 또는 Box 택1), Tab 항목 수는 2–5개 권장(6개+는 메뉴/Select). Filter 항목 수 제한 없음(12개+면 별도 `[필터 더보기]` 모달)."
       ],
       "avoid": [
         "Box Default 텍스트를 회색으로 바꾸지 말 것 — 캐포비 가이드는 #DDD 위 흰 텍스트(저대비)가 의도된 스펙.",
         "Underline 인디케이터를 3px(base) 로 두지 말 것 — 캐포비는 2px. 단, 브랜드 cascade 가 처리하므로 직접 px 박지 말 것.",
-        "Tab 으로 다단계 폼 진행도(Step)를 표현하지 말 것 — Stepper variant=bar 사용."
+        "Tab 으로 다단계 폼 진행도(Step)를 표현하지 말 것 — Stepper variant=bar 사용.",
+        "큰 분류(상호 배타적)를 Filter 로 만들지 말 것 — 예: 진행중/종료를 토글 필터로. → **Tab** 사용.",
+        "조건 좁히기를 Tab 으로 만들지 말 것 — 예: 날짜 범위를 Tab 으로. → **Filter** 사용.",
+        "Tab 안에 또 Tab 을 중첩하지 말 것(계층이 깊어져 길을 잃음) — Sub-section 은 Accordion 또는 Anchor.",
+        "Underline Tab 과 Box Tab 을 같은 화면에서 혼용하지 말 것.",
+        "FilterBar 에 Primary CTA 외 다른 액션 버튼을 여러 개 두지 말 것(CTA 는 1개만)."
       ],
       "metrics": {
         "variants": "line(Underline) · chip(Box)",
         "font": "Subtitle1 16/24",
         "lineIndicator": "2px",
         "boxRadius": 10,
+        "tabVsFilter": "Tab = view 전환(상호 배타·URL 경로) / Filter = 현재 view 좁히기(다중 누적·쿼리 파라미터)",
+        "screenOrder": "페이지 타이틀 → Tab → FilterBar → 데이터 영역",
+        "relatedComponents": "Tabs, FilterBar",
         "relatedPatterns": "cashwalk-biz-step-progress, cashwalk-biz-badge-chip, cashwalk-biz-page-patterns"
       }
     },
@@ -4865,7 +4880,8 @@
         "**조립 순서 고정**: ① 페이지 패턴 선택 → ② 패턴의 섹션 슬롯 채우기(섹션 단위 구조화) → ③ 섹션 안 반복 컴포넌트(테이블·필터·필드·차트)를 DS 컴포넌트로 조립 → ④ validate. 역순(컴포넌트 먼저)으로 가면 패턴 일관성이 깨진다.",
         "**shell 은 공통**: 모든 패턴은 사이드바 + topbar + content 의 `admin-shell`(nds-shell 계열) 위에 얹힌다. 패턴은 content 영역의 섹션 구성만 정의한다 — raw shell CSS 재정의 금지(`pattern:admin-shell`).",
         "**한 화면 = 한 패턴**: 한 페이지에 List + Form 을 섞지 않는다. 인라인 등록이 필요하면 List 안의 모달/드로어로 Form 패턴을 띄우되, 패턴 경계는 유지한다.",
-        "**필드/버튼/입력 실측은 위임**: 페이지 패턴은 '무엇이 어디에' 까지만 정의. 라벨 컬럼·필드 높이·CTA 알약 같은 px 단위는 `cashwalk-biz-form-layout` / `cashwalk-biz-button` / `cashwalk-biz-input` 가 SSOT."
+        "**필드/버튼/입력 실측은 위임**: 페이지 패턴은 '무엇이 어디에' 까지만 정의. 라벨 컬럼·필드 높이·CTA 알약 같은 px 단위는 `cashwalk-biz-form-layout` / `cashwalk-biz-button` / `cashwalk-biz-input` 가 SSOT.",
+        "**페이지 패턴 위에 얹는 액션·선택 규칙(페이지 패턴 아님)**: 추가/등록 액션의 배치·문구(AddButton 3변형 + FilterBar 우측 CTA)는 `pattern:cashwalk-biz-action-pattern`, 계층/대량 항목 선택(Trigger + Modal Picker + SelectedItemsPanel)은 `pattern:cashwalk-biz-selection-pattern`. 둘 다 List/Form 등 어느 패턴 위에도 얹히는 가로 규칙이라 pagePattern 선언과 별개다."
       ],
       "avoid": [
         "패턴 분류 없이 컴포넌트부터 화면에 배치",
@@ -4879,7 +4895,7 @@
         "patterns": "onboarding / dashboard / list / detail / form",
         "figmaFile": "7dCJU5lNPfgcAjFPwbbLIu (📐 Page Pattern)",
         "assemblyOrder": "① 패턴 선택 → ② 섹션 구조화 → ③ 컴포넌트 조립 → ④ validate",
-        "relatedPatterns": "cashwalk-biz-page-{onboarding,dashboard,list,detail,form}, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-button, cashwalk-biz-input, cashwalk-biz-tab, cashwalk-biz-badge-chip, cashwalk-biz-step-progress"
+        "relatedPatterns": "cashwalk-biz-page-{onboarding,dashboard,list,detail,form}, cashwalk-biz-action-pattern, cashwalk-biz-selection-pattern, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-button, cashwalk-biz-input, cashwalk-biz-tab, cashwalk-biz-badge-chip, cashwalk-biz-step-progress"
       },
       "references": [
         {
@@ -4930,6 +4946,26 @@
         {
           "label": "Form pattern",
           "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
+          "brand": "cashwalk-biz"
+        },
+        {
+          "label": "Action docs (#06 — 페이지 패턴 아닌 액션 규칙)",
+          "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4023-1128",
+          "brand": "cashwalk-biz"
+        },
+        {
+          "label": "Action pattern",
+          "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3993-965",
+          "brand": "cashwalk-biz"
+        },
+        {
+          "label": "Selection docs (#07 — 페이지 패턴 아닌 선택 규칙)",
+          "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4023-1194",
+          "brand": "cashwalk-biz"
+        },
+        {
+          "label": "Selection pattern",
+          "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3995-1036",
           "brand": "cashwalk-biz"
         }
       ]
@@ -5135,7 +5171,7 @@
         "validatePaginationThreshold": "Row > 50 필수 / ≤ 10 생략",
         "validateFilterThreshold": "필터 > 4 → 패널 분리",
         "emptyState": "'등록된 OOO이 없습니다' + CTA 필수",
-        "relatedPatterns": "cashwalk-biz-page-patterns, admin-shell, action-row, dense-list, cashwalk-biz-page-detail, cashwalk-biz-badge-chip, cashwalk-biz-tab, cashwalk-biz-admin-alert-banner"
+        "relatedPatterns": "cashwalk-biz-page-patterns, cashwalk-biz-action-pattern, admin-shell, action-row, dense-list, cashwalk-biz-page-detail, cashwalk-biz-badge-chip, cashwalk-biz-tab, cashwalk-biz-admin-alert-banner"
       },
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
       "references": [
@@ -5299,7 +5335,7 @@
         "prdComponentMapping": "≤40자 TextInput · >40자 Textarea · 단일≤3 SelectionButtonGroup · 단일>3 Dropdown · 다중 CheckboxGroup · ON/OFF Toggle · 날짜 DateInput · 파일 ImageUpload",
         "requiredFieldProp": "FormField required=true",
         "conditionalField": "Boolean variant 또는 컨테이너 hide",
-        "relatedPatterns": "cashwalk-biz-page-patterns, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-input, cashwalk-biz-button, cashwalk-biz-step-progress, cashwalk-biz-tab"
+        "relatedPatterns": "cashwalk-biz-page-patterns, cashwalk-biz-selection-pattern, cashwalk-biz-action-pattern, admin-shell, cashwalk-biz-form-layout, cashwalk-biz-input, cashwalk-biz-button, cashwalk-biz-step-progress, cashwalk-biz-tab"
       },
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522",
       "references": [
@@ -5314,6 +5350,140 @@
           "label": "캐포비 Form docs — PRD→컴포넌트 매핑 포함 (Figma 3626-1041)",
           "image": "references/cashwalk-biz-form-docs-3626-1041.png",
           "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-1041",
+          "caption": "언제 사용 · Section 구조 · Layout Spec · Validate Rule(PRD→컴포넌트 매핑) 원문 스펙 문서.",
+          "brand": "cashwalk-biz"
+        }
+      ]
+    },
+    "cashwalk-biz-action-pattern": {
+      "name": "cashwalk-biz-action-pattern",
+      "summary": "캐시워크 포 비즈니스 어드민 **Action 패턴 (#06)** — 어드민 화면에 자주 등장하는 '추가/등록' 액션의 표준 배치·문구. AddButton 3변형(Dashed 빈 자리 · Primary 페이지 진입 · Soft 인라인 추가) + FilterBar 우측 Primary CTA 1개. **페이지 패턴이 아니라 액션 규칙** — List/Form 등 어느 페이지 패턴 위에도 얹힌다. 버튼 실측은 `pattern:cashwalk-biz-button`, 오버뷰 `pattern:cashwalk-biz-page-patterns`. 대량/계층 선택의 진입 버튼은 `pattern:cashwalk-biz-selection-pattern`. Figma docs 4023-1128 / pattern 3993-965 실측 반영.",
+      "rules": [
+        "**언제 쓰나**: PRD 에 '등록 / 추가 / 새로 만들기' 키워드가 있거나, 리스트 페이지 FilterBar 우측에 메인 액션 1개가 필요하거나, SelectedItemsPanel 같은 '빈 슬롯' 에 항목을 추가할 수 있어야 할 때.",
+        "**AddButton 은 3변형 — 맥락으로 고른다 (결정 트리 Q1)**: ① **Dashed (추가 자리)** = 1px 점선 테두리 + 흰 배경, '+ 지역 추가' 처럼 SelectedItemsPanel 등 '비어있는 추가 자리' 를 표현(⚠ 전용 컴포넌트 미생성 — 현재는 합성, 추후 전용 컴포넌트 권장). ② **Primary (페이지·플로우 진입)** = Solid/Primary 캐포비 노랑(#FFD100), '+ 새 퀴즈 등록' 같은 메인 진입 CTA → 실제 Button 인스턴스. ③ **Soft (인라인 추가)** = Soft/Neutral Medium, 리스트 마지막 행 '[+ 옵션 추가]' 같은 작은 인라인 추가 → 실제 Button 인스턴스.",
+        "**텍스트는 항상 '+ 명사' 형식**: '+ 지역 추가 / + 카테고리 추가 / + 이미지 추가'. ⚠ 동사형('추가하기')과 '+' 를 동시에 쓰지 않는다 — '+ 추가하기' 는 의미 중복. 명사형으로 강제.",
+        "**AddButton 크기**: Button Medium (44h) 권장 (`pattern:cashwalk-biz-button`).",
+        "**FilterBar Primary CTA — 우측 끝 1개만**: 리스트 페이지 FilterBar 우측 끝에 주 액션 1개를 둘 수 있다. 페이지에서 가장 빈번한 액션 1개('+ 퀴즈 등록하기', '+ 새 메시지')를 필터·검색과 같은 라인에 둬 도달성을 높인다. 색 = Solid/Primary 노랑(#FFD100). 좌측 영역 = DateInput 2개 + TextInput(검색) 실제 컴포넌트 인스턴스. CTA 는 우측 끝, `layoutSizingHorizontal=FILL` spacer 로 밀어낸다.",
+        "**FilterBar 박스**: 패딩 상하 12 / 좌우 16, 배경 `surface-soft`, radius 8.",
+        "**좁은 화면**: 폭이 좁아지면 CTA 텍스트를 숨기고 아이콘만 노출([+] floating).",
+        "**안티패턴 (하드)**: FilterBar 에 액션 버튼 2개 이상 나열 금지 — 시각 위계가 깨지고 클릭 망설임을 유발한다. 보조 액션(Export·Delete·Setting 등)은 FilterBar 에 두지 말고 페이지 상단 메뉴 / 행별 액션 / 검색 결과 위 액션 칩으로 분산. CTA 없는 페이지는 FilterBar 를 필터·검색만으로 깨끗하게 둔다.",
+        "**Validate (PRD → 컴포넌트 매핑)**: ① 텍스트가 '+ 명사' 형식인가 → 명사형 강제. ② 페이지·플로우 진입 액션 → Button Solid/Primary. ③ 빈 슬롯에 추가 → Dashed AddButton(전용 컴포넌트 추후 권장). ④ 리스트 마지막 행 인라인 → Button Soft/Neutral. ⑤ FilterBar 우측 액션은 1개만."
+      ],
+      "avoid": [
+        "AddButton 텍스트에 '+' 와 동사 동시 사용 ('+ 추가하기') — 의미 중복, '+ 명사' 로",
+        "FilterBar 에 액션 버튼 2개 이상 나열 — 보조 액션은 상단 메뉴/행별/액션 칩으로 분산",
+        "Dashed AddButton 을 페이지 메인 CTA 로 사용 (위계 약함 — 메인 진입은 Primary)",
+        "Primary AddButton 을 인라인 추가에 사용 (시각 과잉 — 인라인은 Soft/Neutral)",
+        "리스트 행별 액션을 FilterBar 로 모으기",
+        "Secondary 액션(Export·Delete·Setting)을 FilterBar 우측에 두기"
+      ],
+      "examples": [
+        {
+          "verdict": "good",
+          "source": "Figma 3993-965 (캐포비 Action 패턴)",
+          "caption": "AddButton 3변형(Dashed '+ 지역 추가' / Primary '+ 새 퀴즈 등록' / Soft '+ 옵션 추가') + FilterBar 우측 끝 [+ 퀴즈 등록하기] 노란 Primary 1개(좌측 DateInput 2 + 검색). 텍스트 전부 '+ 명사'."
+        },
+        {
+          "verdict": "bad",
+          "source": "잘못된 액션 배치",
+          "caption": "FilterBar 에 [등록][Export][설정] 3개 나열 + '+ 추가하기' 동사형 중복 + Dashed 를 페이지 메인 CTA 로 — Action 패턴 위반."
+        }
+      ],
+      "metrics": {
+        "status": "Figma 실측 반영 (docs 4023-1128 / pattern 3993-965)",
+        "composition": "AddButton 3변형(Dashed/Primary/Soft) + FilterBar 우측 Primary CTA 1개",
+        "addButtonVariants": "Dashed(빈 자리·1px 점선·흰 배경) / Primary(페이지 진입·Solid #FFD100) / Soft(인라인·Soft/Neutral Medium)",
+        "addButtonSize": "Button Medium (44h)",
+        "addButtonTextFormat": "'+ 명사' (동사형 + '+' 중복 금지)",
+        "filterBarCta": "우측 끝 Solid/Primary 노랑 #FFD100 1개 · 좌측 DateInput 2 + TextInput 검색",
+        "filterBarBox": "패딩 상하 12 / 좌우 16 · bg surface-soft · radius 8",
+        "ctaPlacement": "FilterBar 우측 끝 (layoutSizingHorizontal=FILL spacer)",
+        "maxFilterBarActions": 1,
+        "narrowViewport": "텍스트 숨기고 [+] 아이콘만",
+        "secondaryActions": "FilterBar 금지 — 상단 메뉴 / 행별 / 액션 칩으로 분산",
+        "validatePrdMapping": "+명사 강제 · 진입=Solid/Primary · 빈 슬롯=Dashed · 인라인=Soft/Neutral · FilterBar 액션 1개",
+        "relatedPatterns": "cashwalk-biz-page-patterns, cashwalk-biz-page-list, cashwalk-biz-selection-pattern, cashwalk-biz-button, action-row"
+      },
+      "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3993-965",
+      "references": [
+        {
+          "label": "캐포비 Action 패턴 SSOT (Figma 3993-965)",
+          "image": "references/cashwalk-biz-action-pattern-3993-965.png",
+          "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3993-965",
+          "caption": "AddButton 3변형 + FilterBar 우측 Primary CTA + 안티패턴 + 결정 트리 + Do/Don't. metrics 는 이 노드 실측 기준.",
+          "brand": "cashwalk-biz"
+        },
+        {
+          "label": "캐포비 Action docs (Figma 4023-1128)",
+          "image": "references/cashwalk-biz-action-docs-4023-1128.png",
+          "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4023-1128",
+          "caption": "언제 사용 · Section 구조 · Layout Spec · Validate Rule(PRD→컴포넌트 매핑) 원문 스펙 문서.",
+          "brand": "cashwalk-biz"
+        }
+      ]
+    },
+    "cashwalk-biz-selection-pattern": {
+      "name": "cashwalk-biz-selection-pattern",
+      "summary": "캐시워크 포 비즈니스 어드민 **Selection 패턴 (#07)** — 계층/대량 항목 선택을 한 세트로 묶는 표준. **Trigger + Modal Picker(TreePicker) + SelectedItemsPanel** 3요소. 지역(시/도 > 시/군/구)·카테고리·타겟팅처럼 항목이 많거나(≥30) 계층 구조이고 선택 결과를 페이지에 지속 노출해야 할 때. 진입 버튼은 `pattern:cashwalk-biz-action-pattern` 의 Dashed AddButton 재사용. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 4023-1194 / pattern 3995-1036 실측 반영.",
+      "rules": [
+        "**언제 쓰나**: PRD 에 '지역 선택 / 카테고리 선택 / 타겟팅' 같은 다중 선택 키워드가 있고, 항목 수가 30개 이상이거나 계층 구조(시/도 > 시/군/구)이며, 선택 결과가 페이지 안에 지속 노출되어야 할 때.",
+        "**3요소를 한 세트로 묶는다**: ① Trigger ② Modal Picker(TreePicker) ③ SelectedItemsPanel. 셋 중 하나만 떼어 쓰지 않는다(특히 Trigger 없이 패널만, 패널 없이 모달만 금지).",
+        "**① Trigger**: 선택 진입점 = **Dashed AddButton 형태**('+ 지역 추가', 1px 점선 + 흰 배경 — `pattern:cashwalk-biz-action-pattern` 의 Dashed 변형 재사용). 클릭 시 Modal Picker 가 현재 선택 항목으로 초기화돼 열린다. 텍스트는 '+ 명사'('+ 지역 추가' / '+ 카테고리 추가'). ⚠ 전용 AddButton 컴포넌트 미생성 — 추후 권장.",
+        "**② Modal Picker (좌·우 분할)**: 크기 **760×440** (좌측 380 + 우측 379 · 헤더 56 · 푸터 72). **좌측(≈50%)** = TextInput 검색 + 트리(각 행에 실제 Checkbox 인스턴스 · 행 **48h** · depth 별 padding-left **+16** · 체크박스 좌측). **우측(≈50%)** = 선택 누적 패널(SelectedItemsPanel 과 동일 구조 · 행 **32h** · 경로 표시 '강원도 > 강릉시' + × 개별 해제 · 헤더에 카운트 + 전체 해제). **푸터** = 우측 Primary CTA **[적용] 1개만**.",
+        "**트리 동작**: 부모 체크 시 자식 모두 선택 / 일부 자식만 선택 시 부모는 **indeterminate**. [적용] 을 누르면 SelectedItemsPanel 에 반영되고 모달이 닫힌다.",
+        "**③ SelectedItemsPanel**: 페이지 안에 선택 결과를 항상 보이게 누적. 헤더 = 라벨 + **선택 카운트(노란 #FFD100 강조)** + 우측 [+ 추가 선택]/[전체 해제]. 각 행 = **경로 표시** + × 개별 해제. 항목 6개 이상이면 max-height + 내부 스크롤(페이지 흐름 보호). 빈 상태(0개) = '선택한 항목 없음' + Trigger 강조. 본문은 컨텐츠 슬롯(리스트/풀/테이블 Swap).",
+        "**SelectedItemsPanel 은 두 위치에서 같은 구조 공유**: 페이지 내(지속 노출 + 다른 필드와 병렬 · 다중 5~30개) / 모달 내 우측(선택 집중 · 다중 30+·계층).",
+        "**Validate (PRD → 컴포넌트 매핑 · 결정 트리)**: ① 항목 < 30 + 평면 구조 → Checkbox 그룹 **인라인**(모달 불필요). ② 항목 ≥ 30 또는 계층 구조 → **Modal Picker(TreePicker)**. ③ 선택 결과가 페이지에 노출돼야 함 → **SelectedItemsPanel 필수**(모달 안에서만 보이면 생략 가능)."
+      ],
+      "avoid": [
+        "Trigger 없이 SelectedItemsPanel 만 노출 (진입점 누락)",
+        "Modal Picker 안에 또 다른 모달 중첩",
+        "체크박스 인라인으로 충분(항목 < 30 + 평면)한데 모달로 분리",
+        "Modal 푸터에 [취소]+[적용]+[초기화] 3개 이상 — Primary [적용] 1개만",
+        "SelectedItemsPanel 행에 경로(강원도 > 강릉시) 없이 말단 이름만 표시",
+        "선택 결과를 모달 닫으면 사라지게 — 페이지 지속 노출이 필요하면 SelectedItemsPanel 유지"
+      ],
+      "examples": [
+        {
+          "verdict": "good",
+          "source": "Figma 3995-1036 (캐포비 Selection 패턴 — 지역 선택)",
+          "caption": "[+ 지역 추가] Trigger → 760×440 좌(검색+트리 Checkbox)/우(선택 누적 경로 + ×) Modal + [적용] → 페이지 SelectedItemsPanel('선택한 지역 48개', 카운트 노랑, 경로 행). 시/도 > 시/군/구 계층."
+        },
+        {
+          "verdict": "bad",
+          "source": "잘못된 선택 화면",
+          "caption": "30개 미만 평면인데 모달로 분리 + 모달 푸터 [취소][적용][초기화] 3개 + Trigger 없이 패널만 — Selection 패턴 위반."
+        }
+      ],
+      "metrics": {
+        "status": "Figma 실측 반영 (docs 4023-1194 / pattern 3995-1036)",
+        "composition": "① Trigger(Dashed AddButton) → ② Modal Picker(TreePicker) → ③ SelectedItemsPanel",
+        "trigger": "Dashed AddButton '+ 지역 추가' (action-pattern Dashed 재사용 · 전용 컴포넌트 추후 권장)",
+        "modalPickerSize": "760×440 (좌 380 + 우 379 · 헤더 56 · 푸터 72)",
+        "modalLeft": "TextInput 검색 + 트리(Checkbox 인스턴스) · 행 48h · depth padding-left +16 · 체크박스 좌측",
+        "modalRight": "선택 누적 · 행 32h · 경로 표시 + × 개별 해제 · 헤더 카운트 + 전체 해제",
+        "modalFooter": "Primary [적용] 1개",
+        "treeBehavior": "부모 체크=자식 전체 / 일부 자식=부모 indeterminate",
+        "selectedItemsPanel": "헤더(라벨 + 카운트 #FFD100 + 전체 해제) · 행=경로 + × · 6개+ 내부 스크롤 · 0개 빈 상태 + Trigger 강조",
+        "panelLocations": "페이지 내(5~30 · 지속 노출) / 모달 내 우측(30+·계층)",
+        "validateCountThreshold": "< 30 평면 → Checkbox 인라인 / ≥ 30 또는 계층 → Modal Picker(TreePicker)",
+        "validatePanelRule": "선택 결과 페이지 노출 → SelectedItemsPanel 필수",
+        "maxModalFooterActions": 1,
+        "relatedPatterns": "cashwalk-biz-page-patterns, cashwalk-biz-action-pattern, cashwalk-biz-page-form, cashwalk-biz-page-list, component:Checkbox, component:Modal, component:TextInput"
+      },
+      "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3995-1036",
+      "references": [
+        {
+          "label": "캐포비 Selection 패턴 SSOT — 지역 선택 (Figma 3995-1036)",
+          "image": "references/cashwalk-biz-selection-pattern-3995-1036.png",
+          "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3995-1036",
+          "caption": "Trigger + 좌우 분할 Modal Picker(트리/선택 누적) + SelectedItemsPanel + 결정 트리 + Do/Don't. metrics 는 이 노드 실측 기준.",
+          "brand": "cashwalk-biz"
+        },
+        {
+          "label": "캐포비 Selection docs (Figma 4023-1194)",
+          "image": "references/cashwalk-biz-selection-docs-4023-1194.png",
+          "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4023-1194",
           "caption": "언제 사용 · Section 구조 · Layout Spec · Validate Rule(PRD→컴포넌트 매핑) 원문 스펙 문서.",
           "brand": "cashwalk-biz"
         }

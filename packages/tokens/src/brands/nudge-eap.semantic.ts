@@ -73,9 +73,9 @@ export const nudgeEapSemantic = {
       hover: blue[50], // #F1F8FD
       disabled: neutral["00"], // #FFFFFF
     },
-    // Solid/Assistive — DS extension (Figma SSOT 미정의, NudgeEAP base 는 cool-gray fill 유지).
+    // Solid/Neutral — DS extension (Figma SSOT 미정의, NudgeEAP base 는 cool-gray fill 유지).
     // Runmile 등 brand 가 light gray filled 톤으로 override.
-    assistive: {
+    neutral: {
       default: coolGray[400], // #9CA2AE (기존 cv.borderRole.brandDisabled 매핑과 동일 톤 — 시각 보존)
       hover: "#7E8593", // 한 단계 어두운 cool-gray (기존 인라인 값 유지)
       disabled: neutral[100], // #F5F5F5 (기존 cv.borderRole.subtle 매핑과 동일)
@@ -89,10 +89,12 @@ export const nudgeEapSemantic = {
       default: blue[500], // #2B96ED
       disabled: coolGray[400], // #9CA2AE
     },
-    // Solid+Outlined Assistive enabled 텍스트 — NudgeEAP base 는 흰 텍스트 (기존 cv.surface.default 매핑 유지).
-    assistive: neutral["00"], // #FFFFFF
-    // Outlined Assistive disabled 텍스트 — 기존 cv.textRole.muted (#999) 매핑 유지.
-    assistiveDisabled: neutral[500], // #999999
+    // Outlined/Weak Neutral enabled 텍스트 — base 는 흰(거의 미사용).
+    neutral: neutral["00"], // #FFFFFF
+    // Solid Neutral 텍스트 — cool-gray(#9CA2AE) fill 위 흰.
+    neutralSolid: neutral["00"], // #FFFFFF
+    // Outlined Neutral disabled 텍스트 — 기존 cv.textRole.muted (#999) 매핑 유지.
+    neutralDisabled: neutral[500], // #999999
     // Figma 실 Button (171:8480) 이 cool-gray/400 (#9CA2AE) 사용 — 이게 SSOT.
     // SemanticColorGuide 의 "Neutral 400" 라벨과 어긋나지만 실 컴포넌트 우선.
     disabled: coolGray[400], // #9CA2AE
@@ -103,7 +105,7 @@ export const nudgeEapSemantic = {
       hover: blue[500], // #2B96ED
       disabled: coolGray[400], // #9CA2AE
     },
-    assistive: {
+    neutral: {
       default: neutral[300], // #D8D8D8
       disabled: neutral[200], // #ECECEC
     },

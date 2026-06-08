@@ -113,6 +113,28 @@ export class NdsInput extends NdsElement {
   private _focused = false;
   private _dirty = false;
 
+  /**
+   * 네이티브 <input> 처럼 host 의 `.value` 로 현재 값을 읽고/쓴다.
+   * (이전엔 host 에 value 접근자가 없어 `el.value` 가 undefined → 내부 field 를
+   *  직접 들춰야 했다. 입력 기반 폼 검증이 전부 빈값으로 동작하던 함정.)
+   * native 시맨틱과 동일하게 property 설정은 value attribute 를 바꾸지 않는다.
+   */
+  get value(): string {
+    return this._field?.value ?? this.getAttribute("value") ?? "";
+  }
+  set value(v: string) {
+    const next = v == null ? "" : String(v);
+    if (this._field) {
+      this._field.value = next;
+      this._dirty = true;
+      this._syncClearVisibility();
+      this._syncCount();
+    } else {
+      // mount 전 설정은 attribute 로 보관 → 첫 update() 가 field 에 반영
+      this.setAttribute("value", next);
+    }
+  }
+
   override connectedCallback(): void {
     if (!this._root) this._mount();
     super.connectedCallback();

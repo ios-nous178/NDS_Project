@@ -55,6 +55,7 @@ interface CgItem {
   label: string;
   disabled?: boolean;
   badge?: string;
+  required?: boolean;
   detail?: string;
 }
 
@@ -104,6 +105,7 @@ export class NdsCheckboxGroup extends NdsElement {
           label: String(i.label),
           disabled: i.disabled === true,
           badge: i.badge != null ? String(i.badge) : undefined,
+          required: i.required === true,
           detail: typeof i.detail === "string" ? i.detail : undefined,
         }));
     } catch {
@@ -227,6 +229,7 @@ export class NdsCheckboxGroup extends NdsElement {
         const badge = document.createElement("span");
         badge.dataset.slot = "badge";
         badge.className = CG_BADGE_CLASS;
+        if (item.required) badge.dataset.required = "true";
         badge.textContent = item.badge;
         row.appendChild(badge);
       }

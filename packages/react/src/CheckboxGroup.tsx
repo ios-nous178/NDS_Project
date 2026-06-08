@@ -45,6 +45,8 @@ export interface CheckboxGroupItem {
   disabled?: boolean;
   /** 라벨 옆 뱃지 — [필수]/[선택]/NEW 등 (도메인 중립 슬롯) */
   badge?: React.ReactNode;
+  /** 필수 항목 — 뱃지를 강조(빨강 + bold)해 선택 항목과 구분. 약관 동의의 [필수] 등 */
+  required?: boolean;
   /** 펼쳐서 보여줄 보조 콘텐츠(약관 전문 등). expandable 과 함께 chevron 노출 */
   detail?: React.ReactNode;
 }
@@ -272,7 +274,11 @@ const DataCheckboxGroup: React.FC<DataProps> = ({
                   label={item.label}
                 />
                 {item.badge != null && (
-                  <span data-slot="badge" className={CG_BADGE_CLASS}>
+                  <span
+                    data-slot="badge"
+                    className={CG_BADGE_CLASS}
+                    data-required={item.required ? "true" : undefined}
+                  >
                     {item.badge}
                   </span>
                 )}

@@ -94,18 +94,21 @@ const TERMS: CheckboxGroupItem[] = [
     value: "service",
     label: "서비스 이용약관",
     badge: "[필수]",
+    required: true,
     detail: "본 약관은 NudgeEAP 멘탈케어 서비스 이용에 관한 권리·의무를 정합니다.",
   },
   {
     value: "privacy",
     label: "개인정보 수집·이용",
     badge: "[필수]",
+    required: true,
     detail: "수집 항목: 이름, 이메일, 휴대폰번호. 목적: 서비스 제공·상담 매칭.",
   },
   {
     value: "sensitive",
     label: "민감정보(검사 결과) 수집·이용",
     badge: "[필수]",
+    required: true,
     detail: "심리검사 결과는 민감정보로 분리 저장되며, 동의 없이 제3자에게 제공되지 않습니다.",
   },
   {

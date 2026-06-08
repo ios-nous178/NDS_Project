@@ -144,28 +144,28 @@ claude
 
 `validate_html_mockup` 이 HTML/`<nds-*>` 목업(`source` 또는 `filePath`)에서 잡는 정적 위반들:
 
-| Rule                                 | 의미                                                                                       |
-| ------------------------------------ | ------------------------------------------------------------------------------------------ |
-| `inline-color`                       | hex/rgb 색상 직접 사용 (토큰 변수 미사용)                                                  |
-| `inline-spacing`                     | 인라인 px/rem (transform 류 제외)                                                          |
-| `native-element`                     | `<button>`, `<input>`, `<select>`, `<textarea>` 직접 사용                                  |
-| `inline-svg`                         | `<svg>` 인라인 정의                                                                        |
-| `unknown-token`                      | 정의되지 않은 `var(--xxx)` 사용                                                            |
-| `unknown-react-export`               | DS에 없는 컴포넌트 import                                                                  |
-| `unknown-icons-export`               | DS에 없는 아이콘 import                                                                    |
-| `gradient-banned`                    | linear/radial/conic-gradient 사용 (DESIGN.md 금지)                                         |
-| `assistive-solid-cta`                | `<Button color="assistive" variant="solid">` 활성 CTA 사용 (회색 배경이라 비활성처럼 보임) |
-| `card-slot-double-padding`           | `Card.Header/Body/Footer`에 외곽 padding 추가 (자체 padding과 충돌)                        |
-| `button-arrow-overuse`               | 화살표/chevron CTA가 한 화면에 여러 개 반복됨                                              |
-| `button-arrow-secondary-or-repeated` | 보조 variant 또는 반복 리스트 CTA에 화살표 아이콘 사용                                     |
-| `primary-cta-overuse`                | primary solid로 보이는 Button이 한 화면에 여러 개 있음                                     |
-| `chip-overuse`                       | Chip이 과도하게 많이 사용됨                                                                |
-| `chip-decorative-use`                | Chip이 상태/분류가 아닌 장식성 라벨처럼 사용됨                                             |
-| `icon-default-color`                 | 단독 아이콘이 주변 UI에 맞는 토큰 컬러 없이 기본 currentColor에 의존함                     |
-| `primary-color-role-overload`        | primary 계열 색상이 배경/CTA/태그/카드/아이콘 등 여러 역할에 과다 사용됨                   |
-| `tone-on-tone-filled`                | 연한 primary 배경 위에 같은 계열 filled/soft 라벨이나 박스가 반복됨                        |
-| `logo-color-as-ui-accent`            | 로고용 gradient/accent 컬러가 UI surface나 강조 요소처럼 사용됨                            |
-| `visual-emphasis-overload`           | 색 배경, 아이콘, Chip/Badge, 그라데이션 등 강조 장치가 동시에 과다 사용됨                  |
+| Rule                                 | 의미                                                                                     |
+| ------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `inline-color`                       | hex/rgb 색상 직접 사용 (토큰 변수 미사용)                                                |
+| `inline-spacing`                     | 인라인 px/rem (transform 류 제외)                                                        |
+| `native-element`                     | `<button>`, `<input>`, `<select>`, `<textarea>` 직접 사용                                |
+| `inline-svg`                         | `<svg>` 인라인 정의                                                                      |
+| `unknown-token`                      | 정의되지 않은 `var(--xxx)` 사용                                                          |
+| `unknown-react-export`               | DS에 없는 컴포넌트 import                                                                |
+| `unknown-icons-export`               | DS에 없는 아이콘 import                                                                  |
+| `gradient-banned`                    | linear/radial/conic-gradient 사용 (DESIGN.md 금지)                                       |
+| `neutral-solid-cta`                  | `<Button color="neutral" variant="solid">` 활성 CTA 사용 (회색 배경이라 비활성처럼 보임) |
+| `card-slot-double-padding`           | `Card.Header/Body/Footer`에 외곽 padding 추가 (자체 padding과 충돌)                      |
+| `button-arrow-overuse`               | 화살표/chevron CTA가 한 화면에 여러 개 반복됨                                            |
+| `button-arrow-secondary-or-repeated` | 보조 variant 또는 반복 리스트 CTA에 화살표 아이콘 사용                                   |
+| `primary-cta-overuse`                | primary solid로 보이는 Button이 한 화면에 여러 개 있음                                   |
+| `chip-overuse`                       | Chip이 과도하게 많이 사용됨                                                              |
+| `chip-decorative-use`                | Chip이 상태/분류가 아닌 장식성 라벨처럼 사용됨                                           |
+| `icon-default-color`                 | 단독 아이콘이 주변 UI에 맞는 토큰 컬러 없이 기본 currentColor에 의존함                   |
+| `primary-color-role-overload`        | primary 계열 색상이 배경/CTA/태그/카드/아이콘 등 여러 역할에 과다 사용됨                 |
+| `tone-on-tone-filled`                | 연한 primary 배경 위에 같은 계열 filled/soft 라벨이나 박스가 반복됨                      |
+| `logo-color-as-ui-accent`            | 로고용 gradient/accent 컬러가 UI surface나 강조 요소처럼 사용됨                          |
+| `visual-emphasis-overload`           | 색 배경, 아이콘, Chip/Badge, 그라데이션 등 강조 장치가 동시에 과다 사용됨                |
 
 `// allow-native` 주석이 같은 줄에 있으면 `native-element` 룰을 통과시킵니다.
 

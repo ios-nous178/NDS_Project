@@ -601,7 +601,7 @@ function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
           <nds-title-group level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-group>
           <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
             <nds-button color="primary" variant="solid" data-action="request-counseling">상담 신청하기</nds-button>
-            <nds-button color="assistive" variant="outlined" data-action="show-details">자세히 보기</nds-button>
+            <nds-button color="neutral" variant="outlined" data-action="show-details">자세히 보기</nds-button>
           </div>
           <p id="home-feedback" aria-live="polite" style="margin-top: var(--semantic-gap-md); color: var(--semantic-text-secondary);"></p>
         </main>

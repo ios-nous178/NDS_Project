@@ -683,7 +683,8 @@ export const TrostAppBar = React.forwardRef<HTMLElement, TrostAppBarProps>((prop
               showAppDownload && (
                 <Button
                   size="sm"
-                  variant="outlined-sub"
+                  variant="outlined"
+                  color="secondary"
                   style={{ marginLeft: 16 }}
                   onClick={onAppDownload}
                 >

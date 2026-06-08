@@ -198,6 +198,11 @@ export const tiStyles = `
     opacity: 1;
     background: rgba(0, 0, 0, 0.08);
   }
+  /* 공유 RemoveIcon(viewBox 14, non-scaling-stroke)은 크기를 CSS 가 정한다 — TagInput 은 10px 렌더(통일 전 사본과 동일). */
+  :where(.${TI_REMOVE_CLASS} svg) {
+    width: 10px;
+    height: 10px;
+  }
 
   :where(.${TI_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;

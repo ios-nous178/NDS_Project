@@ -64,7 +64,7 @@ export const genietSemantic = {
   },
   // Button — SSOT: Figma 지니어트-Dev / Button (207:1853).
   // Geniet 의 Solid Secondary 는 다른 브랜드와 달리 dark inverse 패턴(gray/900).
-  // Solid Assistive 는 채워진 neutral gray (assistive 슬롯에서 별도로 표현).
+  // Solid Neutral 는 채워진 neutral gray (neutral 슬롯에서 별도로 표현).
   buttonBg: {
     default: genietMint[500], // #48C2C5  — Solid/Primary Default
     hover: genietMint[600], // #00A8AC   — Solid/Primary Hover
@@ -81,8 +81,8 @@ export const genietSemantic = {
       hover: genietGray[50], // #FAFAFA — outlined hover bg
       disabled: genietNeutral.white, // #FFFFFF
     },
-    assistive: {
-      // Solid/Assistive — neutral gray filled
+    neutral: {
+      // Solid/Neutral — neutral gray filled
       default: genietGray[200], // #ECECEC
       hover: genietGray[100], // #F5F5F5
       disabled: genietGray[400], // #CCCCCC
@@ -96,7 +96,8 @@ export const genietSemantic = {
       default: genietNeutral.white, // #FFFFFF — gray-900 배경 위
       disabled: genietGray[600], // #999999 — disabled bg(#CCCCCC) 위에서 가독성 유지
     },
-    assistive: genietGray[800], // #666666 — Solid/Outlined Assistive text
+    neutral: genietGray[800], // #666666 — Outlined/Weak Neutral text
+    neutralSolid: genietGray[800], // #666666 — Solid Neutral text (밝은 #ECECEC fill 위 어두운 글자)
     disabled: genietGray[600], // #999999 — Outlined disabled text (solid disabled 는 default 유지 = white)
   },
   buttonBorder: {
@@ -105,8 +106,8 @@ export const genietSemantic = {
       hover: genietMint[600], // #00A8AC
       disabled: genietGray[300], // #DDDDDD
     },
-    assistive: {
-      default: genietGray[300], // #DDDDDD — Outlined/Assistive border
+    neutral: {
+      default: genietGray[300], // #DDDDDD — Outlined/Neutral border
       disabled: genietGray[300], // #DDDDDD
     },
   },

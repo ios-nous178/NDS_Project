@@ -21,12 +21,12 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "radio",
-      options: ["solid", "outlined", "soft", "outlined-sub"],
+      options: ["solid", "soft", "outlined"],
     },
     size: { control: "radio", options: ["xl", "lg", "md", "sm", "xs", "field"] },
     color: {
       control: "radio",
-      options: ["primary", "secondary", "assistive"],
+      options: ["primary", "secondary", "neutral"],
     },
     shape: { control: "radio", options: ["default", "pill"] },
     disabled: { control: "boolean" },
@@ -137,9 +137,9 @@ export const FigmaSpec: Story = {
         </tbody>
       </table>
       <p style={{ margin: 0, fontSize: 12, color: "#666", lineHeight: 1.6 }}>
-        Color × Variant 매트릭스: <code>primary</code>, <code>secondary</code>,
-        <code> assistive</code> × <code>solid</code>, <code>outlined</code>, <code>soft</code>,
-        <code> outlined-sub</code> 조합이 정합 완료되었습니다. 자세한 색상은 아래
+        Color × Variant 매트릭스: <code>primary</code>, <code>secondary</code>,<code> neutral</code>{" "}
+        × <code>solid</code>, <code>soft</code>, <code>outlined</code> 조합이 정합 완료되었습니다.
+        자세한 색상은 아래
         <strong> State/Variant Color Matrix</strong>를 확인하세요.
       </p>
     </div>
@@ -150,7 +150,7 @@ export const ColorMatrix: Story = {
   name: "Spec/Color × Variant Matrix",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-wide)" }}>
-      {(["primary", "secondary", "assistive"] as const).map((color) => (
+      {(["primary", "secondary", "neutral"] as const).map((color) => (
         <div key={color}>
           <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>{color}</p>
           <div
@@ -164,9 +164,6 @@ export const ColorMatrix: Story = {
             </Button>
             <Button color={color} variant="soft">
               Soft
-            </Button>
-            <Button color={color} variant="outlined-sub">
-              Outlined-sub
             </Button>
             <Button color={color} variant="solid" disabled>
               Disabled
@@ -279,21 +276,6 @@ export const VariantMatrix: Story = {
             Primary
           </Button>
           <Button variant="outlined" color="primary" disabled>
-            Disabled
-          </Button>
-        </div>
-      </div>
-      <div>
-        <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 14 }}>
-          Outlined-sub (Medium weight)
-        </p>
-        <div
-          style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center" }}
-        >
-          <Button variant="outlined-sub" color="primary">
-            Primary
-          </Button>
-          <Button variant="outlined-sub" color="primary" disabled>
             Disabled
           </Button>
         </div>
@@ -411,7 +393,7 @@ export const HeaderAndUtilityButtons: Story = {
       <Button size="sm" variant="outlined">
         필터 초기화
       </Button>
-      <Button size="sm" variant="outlined-sub">
+      <Button size="sm" variant="outlined" color="secondary">
         보조 액션
       </Button>
       <Button size="md" color="secondary">
@@ -467,12 +449,12 @@ export const WithIconsAndSlots: Story = {
    color="secondary" 를 사용하므로 스토리 라벨도 Secondary 로 통일한다. */
 const PILL_COLOR_ROWS: Array<{
   label: string;
-  color: "primary" | "secondary" | "assistive";
+  color: "primary" | "secondary" | "neutral";
   variant: "solid" | "outlined" | "soft";
 }> = [
   { label: "Pill · Solid Primary", color: "primary", variant: "solid" },
   { label: "Pill · Solid Secondary", color: "secondary", variant: "solid" },
-  { label: "Pill · Weak Secondary", color: "assistive", variant: "soft" },
+  { label: "Pill · Weak Secondary", color: "neutral", variant: "soft" },
   { label: "Pill · Outlined Primary", color: "primary", variant: "outlined" },
   { label: "Pill · Outlined Secondary", color: "secondary", variant: "outlined" },
 ];

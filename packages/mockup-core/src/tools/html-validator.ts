@@ -29,7 +29,8 @@
  *
  * 검출 룰 (JSX 에서 포팅 — 컨테이너 / 카운팅 / 시각 위계):
  *  - card-slot-double-padding   : <nds-card-header|body|footer> 에 외곽 padding
- *  - assistive-solid-cta        : <nds-button color="assistive"> 가 solid (variant 미지정)
+ *  - neutral-solid-cta        : <nds-button color="neutral"> 가 solid (variant 미지정, 캐포비 제외)
+ *  - cashwalk-biz-no-secondary: 캐포비 <nds-button color="secondary"> — 캐포비엔 secondary tone 없음(neutral 사용)
  *  - heading-decorative-icon    : <h3>/<h4> 안에 <svg> / icon 들어감
  *  - nested-card                : <nds-card> 안에 <nds-card>
  *  - card-badge-overuse         : 1 nds-card 안 nds-chip + nds-badge ≥ 3
@@ -229,7 +230,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "heading-decorative-icon": "warn",
   // 컨테이너 / 카운팅
   "card-slot-double-padding": "warn",
-  "assistive-solid-cta": "warn",
+  "neutral-solid-cta": "warn",
+  "cashwalk-biz-no-secondary": "warn",
   "nested-card": "warn",
   "card-badge-overuse": "warn",
   "card-footer-button-overuse": "warn",
@@ -669,6 +671,33 @@ export function validateHtmlSource(
         suggestion:
           '가이드/컴포넌트 마크업을 Python decode(\'unicode_escape\') 나 Latin-1 로 추출·재인코딩하지 마세요 — UTF-8 그대로 복붙하거나 json.loads(UTF-8) 만 사용. <nds-sidebar> 는 items/account/footer-actions 를 <script type="application/json" slot="..."> 텍스트 노드로 받으면 이스케이프·인코딩 사고가 원천 차단됩니다.',
         severity: "error",
+      });
+    }
+  }
+
+  // ─── 네이티브 alert()/confirm()/prompt() 사용 감지 — 문서 전역 1회 ───
+  //   목업에서 알림·확인·완료를 네이티브 다이얼로그로 처리하지 말 것 — OS 기본 회색 박스라
+  //   브랜드 스타일이 0 이고 디자인 일관성이 깨진다(흔한 회귀: "완료"를 alert() 로 띄움).
+  //   DS 는 <nds-modal>(확인/완료/안내) 과 Toast 패턴(일시 알림)을 제공한다.
+  //   선행 `.`/식별자를 lookbehind 로 배제해 `el.alert(` 같은 메서드 오탐을 막고,
+  //   window./globalThis. prefix 만 허용 매칭한다.
+  if (scriptText.trim()) {
+    const dialogSeen = new Set<string>();
+    for (const m of scriptText.matchAll(
+      /(?<![.\w$])(?:window\s*\.\s*|globalThis\s*\.\s*)?(alert|confirm|prompt)\s*\(/g,
+    )) {
+      const fn = m[1];
+      if (dialogSeen.has(fn)) continue;
+      dialogSeen.add(fn);
+      const idx = source.indexOf(m[0]);
+      violations.push({
+        rule: "native-dialog-in-mockup",
+        line: idx >= 0 ? lineNumberAt(source, idx) : 1,
+        selector: "(script)",
+        detail: `<script> 에서 네이티브 ${fn}() 사용 — OS 기본 회색 다이얼로그라 브랜드 스타일이 0 이고 디자인 일관성이 깨집니다(흔한 회귀: "완료"를 alert 로 처리).`,
+        suggestion:
+          "확인/완료/안내는 <nds-modal>(open 속성 토글) 로, 일시적 알림은 Toast 패턴으로 띄우세요. window.alert/confirm/prompt 는 목업에서 쓰지 않습니다.",
+        severity: "warn",
       });
     }
   }
@@ -1119,26 +1148,36 @@ export function validateHtmlSource(
       });
     }
 
-    // 7. nds-button color="assistive" + solid(default) — cool-gray 배경이라 비활성처럼 보임.
+    // 7. nds-button color="neutral" + solid(default) — base/cool-gray 브랜드에선 비활성처럼 보임.
     //    명시적으로 variant 가 outlined/soft/text 계열이면 OK.
-    if (tag === "nds-button" && attrs.color === "assistive") {
+    //    ※ 캐포비(cashwalk-biz)는 neutral solid = #111 검정 CTA(Figma Neutral tone)라 정당 — 예외.
+    if (tag === "nds-button" && attrs.color === "neutral" && documentBrand !== "cashwalk-biz") {
       const variant = attrs.variant;
       const isNonSolid =
-        variant === "outlined" ||
-        variant === "outlined-sub" ||
-        variant === "soft" ||
-        variant === "text" ||
-        variant === "ghost";
+        variant === "outlined" || variant === "soft" || variant === "text" || variant === "ghost";
       if (!isNonSolid) {
         violations.push({
-          rule: "assistive-solid-cta",
+          rule: "neutral-solid-cta",
           line,
           selector,
-          detail: `<nds-button color="assistive">${variant ? ` variant="${variant}"` : ""}`,
+          detail: `<nds-button color="neutral">${variant ? ` variant="${variant}"` : ""}`,
           suggestion:
-            'nds-button color="assistive" + solid 는 비활성처럼 보임. 활성 CTA 면 color="primary"/"secondary", 보조면 variant="outlined" 또는 "text". get_guide({ topic: \'component:Button\' }) 참조.',
+            'nds-button color="neutral" + solid 는 비활성처럼 보임. 활성 CTA 면 color="primary"/"secondary", 보조면 variant="outlined" 또는 "text". get_guide({ topic: \'component:Button\' }) 참조.',
         });
       }
+    }
+
+    // 7b. nds-button color="secondary" on cashwalk-biz — 캐포비 ButtonGuide(3098:1032) 의
+    //     tone 은 Primary + Neutral 둘뿐. Secondary 는 없음 → neutral 로 써야 함.
+    if (tag === "nds-button" && attrs.color === "secondary" && documentBrand === "cashwalk-biz") {
+      violations.push({
+        rule: "cashwalk-biz-no-secondary",
+        line,
+        selector,
+        detail: `<nds-button color="secondary">`,
+        suggestion:
+          "캐포비(cashwalk-biz)는 Secondary tone 이 없음(Figma ButtonGuide = Primary + Neutral). 검정/회색 CTA 는 color=\"neutral\" 사용 (solid=검정 #111 / soft=회색 #F5F5F5 / outlined=라인). get_guide({ topic: 'component:Button' }) 참조.",
+      });
     }
   });
 
@@ -1654,7 +1693,7 @@ function collectContainerViolations(
           line,
           selector: elementSelector,
           detail: `${label} 1개 안에 primary solid nds-button 이 ${primarySolid.length}개.`,
-          suggestion: `한 영역(${label}) 안 Primary Button 은 최대 1개. 보조 액션은 variant="outlined" / color="assistive" / variant="text" 로 낮추세요. get_guide({ topic: 'pattern:cta-group' }) 참조.`,
+          suggestion: `한 영역(${label}) 안 Primary Button 은 최대 1개. 보조 액션은 variant="outlined" / color="neutral" / variant="text" 로 낮추세요. get_guide({ topic: 'pattern:cta-group' }) 참조.`,
         });
       }
     });
@@ -1983,7 +2022,7 @@ function collectDocumentLevelViolations(
       line: 1,
       detail: `페이지 레벨 primary solid nds-button 이 ${pagePrimarySolidTotal}개.`,
       suggestion:
-        "페이지 primary solid 는 가장 중요한 액션 1개만. 모달/드로어 내부 확인 액션은 별도 surface CTA 로 허용되지만, 페이지의 나머지 액션은 outlined / assistive / text 계열로 낮추세요.",
+        "페이지 primary solid 는 가장 중요한 액션 1개만. 모달/드로어 내부 확인 액션은 별도 surface CTA 로 허용되지만, 페이지의 나머지 액션은 outlined / neutral / text 계열로 낮추세요.",
     });
   }
 
@@ -2193,7 +2232,7 @@ function collectDocumentLevelViolations(
   }
 }
 
-const NON_SOLID_VARIANTS = new Set(["outlined", "outlined-sub", "soft", "text", "ghost"]);
+const NON_SOLID_VARIANTS = new Set(["outlined", "soft", "text", "ghost"]);
 function isPrimarySolidButton(el: DomElement): boolean {
   if (el.type !== "tag" || el.tagName?.toLowerCase() !== "nds-button") return false;
   const attrs = el.attribs ?? {};
@@ -2392,7 +2431,8 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "invalid-nds-attr-value": "component",
   "nds-json-attr-unparseable": "component",
   "ds-badge-missing": "component",
-  "assistive-solid-cta": "component",
+  "neutral-solid-cta": "component",
+  "cashwalk-biz-no-secondary": "component",
   "button-without-interaction": "component",
   "date-as-text-input": "component",
   "amount-as-text-input": "component",

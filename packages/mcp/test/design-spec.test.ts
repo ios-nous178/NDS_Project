@@ -28,10 +28,10 @@ beforeAll(() => {
     componentNames: new Set(["Button", "Card", "Chip", "BrandHeader"]),
     brands: new Set(["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"]),
     propAllowedValues: new Map([
-      ["Button", new Map([["color", ["primary", "secondary", "assistive"]]])],
+      ["Button", new Map([["color", ["primary", "secondary", "neutral"]]])],
     ]),
     ndsAttrEnums: new Map([
-      ["nds-button", new Map([["color", ["primary", "secondary", "assistive"]]])],
+      ["nds-button", new Map([["color", ["primary", "secondary", "neutral"]]])],
     ]),
   });
 });

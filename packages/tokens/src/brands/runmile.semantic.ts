@@ -58,10 +58,10 @@ export const runmileSemantic = {
   // Button — Figma 111:477 — 3 sematic × 2 style × 5 size × 3 state.
   //   Solid/Primary    : bg=orange500, text=white
   //   Solid/Secondary  : bg=black(#221E1F), text=white  ← dark inverse 패턴 (gray900 아님)
-  //   Solid/Assistive  : bg=gray200, text=gray800
+  //   Solid/Neutral  : bg=gray200, text=gray800
   //   Outlined/Primary : bg=white, text=orange500, border=orange500
   //   Outlined/Secondary: bg=white, text=black, border=black (base 의 secondary.outlined 패턴이 자동 적용)
-  //   Outlined/Assistive: bg=white, text=gray800, border=gray400
+  //   Outlined/Neutral: bg=white, text=gray800, border=gray400
   buttonBg: {
     default: runmileOrange[500], // #FF5B37 — Solid/Primary
     hover: runmileOrange[400], // #FF805C — Solid/Primary Hover (Figma SSOT: runmile/primary/orange/400)
@@ -77,11 +77,11 @@ export const runmileSemantic = {
       hover: runmileOrange[100], // #FFF7F5
       disabled: runmileNeutral.white,
     },
-    // Solid/Assistive — Figma SSOT (gray200 / gray300 / gray400 페어).
-    assistive: {
-      default: runmileGray[200], // #F2F4F6 — Solid/Assistive Default
-      hover: runmileGray[300], // #E5E8EB — Solid/Assistive Hover
-      disabled: runmileGray[400], // #D1D6DB — Solid/Assistive Disabled (Figma 111:615)
+    // Solid/Neutral — Figma SSOT (gray200 / gray300 / gray400 페어).
+    neutral: {
+      default: runmileGray[200], // #F2F4F6 — Solid/Neutral Default
+      hover: runmileGray[300], // #E5E8EB — Solid/Neutral Hover
+      disabled: runmileGray[400], // #D1D6DB — Solid/Neutral Disabled (Figma 111:615)
     },
   },
   buttonText: {
@@ -91,11 +91,13 @@ export const runmileSemantic = {
       default: runmileNeutral.white, // #FFFFFF — dark bg 위
       disabled: runmileGray[500], // #B0B8C1
     },
-    // Solid+Outlined Assistive enabled 텍스트 — Figma SSOT gray800.
-    assistive: runmileGray[800], // #4E5968
-    // Outlined Assistive disabled 텍스트 — Figma SSOT gray600. Solid Assistive disabled 텍스트는
+    // Outlined/Weak Neutral enabled 텍스트 — Figma SSOT gray800.
+    neutral: runmileGray[800], // #4E5968
+    // Solid Neutral 텍스트 — 밝은 #F2F4F6 fill 위 어두운 글자.
+    neutralSolid: runmileGray[800], // #4E5968
+    // Outlined Neutral disabled 텍스트 — Figma SSOT gray600. Solid Neutral disabled 텍스트는
     // base 가 cv.surface.default(white) 를 사용 → Figma 111:615 (white 텍스트) 자동 매칭.
-    assistiveDisabled: runmileGray[600], // #919CAA
+    neutralDisabled: runmileGray[600], // #919CAA
     disabled: runmileGray[500], // #B0B8C1
   },
   buttonBorder: {
@@ -105,9 +107,9 @@ export const runmileSemantic = {
       hover: runmileOrange[400], // #FF805C
       disabled: runmileGray[300], // #E5E8EB
     },
-    assistive: {
-      default: runmileGray[400], // #D1D6DB — Figma Outlined/Assistive border
-      // Outlined Assistive disabled border 도 동일 gray400 (Figma 111:711).
+    neutral: {
+      default: runmileGray[400], // #D1D6DB — Figma Outlined/Neutral border
+      // Outlined Neutral disabled border 도 동일 gray400 (Figma 111:711).
       disabled: runmileGray[400], // #D1D6DB
     },
   },

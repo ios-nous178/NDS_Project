@@ -110,9 +110,9 @@
           style="--nds-button-height:48px;--nds-button-padding-x:16px;--nds-button-gap:8px;--nds-button-font-size:16px;--nds-button-line-height:24px;--nds-button-font-weight:700;--nds-button-background:var(--semantic-bg-brand-subtle);--nds-button-text-color:var(--semantic-text-brand-default);--nds-button-border-color:var(--semantic-bg-brand-subtle);">
           <span class="nds-button__label">primary/soft</span>
         </button>
-        <button class="nds-button" data-slot="root" data-variant="outlined-sub" data-size="lg" data-color="primary"
+        <button class="nds-button" data-slot="root" data-variant="outlined" data-size="lg" data-color="primary"
           style="--nds-button-height:48px;--nds-button-padding-x:16px;--nds-button-gap:8px;--nds-button-font-size:16px;--nds-button-line-height:24px;--nds-button-font-weight:500;--nds-button-background:var(--semantic-bg-surface-default);--nds-button-text-color:var(--semantic-text-normal-default);--nds-button-border-color:var(--semantic-border-normal-default);">
-          <span class="nds-button__label">primary/outlined-sub</span>
+          <span class="nds-button__label">primary/outlined</span>
         </button>
       </div>
     </div>
@@ -124,7 +124,7 @@
       </div>
       <div class="row">
         <nds-button color="primary" variant="soft" size="lg">primary/soft</nds-button>
-        <nds-button color="primary" variant="outlined-sub" size="lg">primary/outlined-sub</nds-button>
+        <nds-button color="primary" variant="outlined" size="lg">primary/outlined</nds-button>
       </div>
     </div>
   </div>
@@ -134,7 +134,7 @@
     <nds-button color="primary" size="lg">enabled</nds-button>
     <nds-button color="primary" size="lg" disabled>disabled</nds-button>
     <nds-button color="secondary" size="lg" variant="outlined">secondary outlined</nds-button>
-    <nds-button color="assistive" size="lg" variant="soft">assistive soft</nds-button>
+    <nds-button color="neutral" size="lg" variant="soft">neutral soft</nds-button>
   </div>
   <div class="row" style="margin-top: 12px;">
     <nds-button color="primary" size="lg" full-width>full-width 버튼 (부모 너비 채움)</nds-button>
@@ -150,8 +150,8 @@
 
   <script type="module" src="../dist/runtime.js"></script>
   <script type="module">
-    const variants = ["solid", "outlined", "soft", "outlined-sub"];
-    const colors = ["primary", "secondary", "assistive"];
+    const variants = ["solid", "outlined", "soft", "outlined"];
+    const colors = ["primary", "secondary", "neutral"];
     let vi = 0, ci = 0;
     const el = document.getElementById("dyn");
     el.addEventListener("click", () => {

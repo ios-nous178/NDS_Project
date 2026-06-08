@@ -113,8 +113,8 @@ export const semanticGuide: Record<string, GuideMeta> = {
   "button.borderOutlined": { status: "core", figmaNode: "261:32" },
   "button.borderOutlinedHover": { status: "core", figmaNode: "261:32" },
   "button.borderOutlinedDisabled": { status: "core", figmaNode: "261:32" },
-  "button.borderAssistive": { status: "core", figmaNode: "261:32" },
-  "button.borderAssistiveDisabled": { status: "core", figmaNode: "261:32" },
+  "button.borderNeutral": { status: "core", figmaNode: "261:32" },
+  "button.borderNeutralDisabled": { status: "core", figmaNode: "261:32" },
 
   // ── Input (Section_Input 294:12) ──
   "input.bg": { status: "core", figmaNode: "294:12" },

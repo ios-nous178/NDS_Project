@@ -31,6 +31,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { REMOVE_ICON_SVG } from "../base/remove-icon.js";
 
 export type ChipVariant = "fill" | "outlined" | "ghost";
 export type ChipColor = "brand" | "neutral" | "success" | "error" | "caution";
@@ -292,10 +293,7 @@ export class NdsChip extends NdsElement {
       btn.className = "nds-chip__remove";
       btn.dataset.slot = "remove";
       btn.setAttribute("aria-label", `${this._label?.textContent ?? ""} 삭제`.trim());
-      btn.innerHTML =
-        '<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-        '<path d="M3 3L11 11M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
-        "</svg>";
+      btn.innerHTML = REMOVE_ICON_SVG;
       btn.addEventListener("click", this._onRemoveClick);
       this._root.appendChild(btn);
       this._remove = btn;

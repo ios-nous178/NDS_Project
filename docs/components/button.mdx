@@ -13,7 +13,7 @@ import Playground from "@site/src/components/Playground";
 # Button
 
 :::tip Figma 가이드 정합 완료 (2026-05-12)
-Figma 컴포넌트 세트(node `508:6962`) 및 라이브러리 노드(`171:8385`) 기준으로 **사이즈, 패딩, 토큰, primary·secondary·assistive variant**가 정합 검증되었습니다.
+Figma 컴포넌트 세트(node `508:6962`) 및 라이브러리 노드(`171:8385`) 기준으로 **사이즈, 패딩, 토큰, primary·secondary·neutral variant**가 정합 검증되었습니다.
 이 페이지의 표/예제는 현재 `packages/react/src/Button.tsx`의 구현과 동기화된 값입니다.
 :::
 
@@ -55,7 +55,7 @@ import { Button } from "@nudge-design/react";
 
 - 한 뷰포트에서 화살표 CTA는 최대 1개를 권장합니다.
 - 동일 섹션에 CTA가 여러 개라면 대표 CTA에만 화살표를 붙입니다.
-- `outlined`, `soft`, `outlined-sub` 같은 보조 버튼에는 기본적으로 화살표를 붙이지 않습니다.
+- `outlined`, `soft` 같은 보조 버튼에는 기본적으로 화살표를 붙이지 않습니다.
 - 반복 카드 안의 CTA에는 화살표를 반복하지 않습니다.
 
 ```tsx
@@ -64,7 +64,7 @@ import { Button } from "@nudge-design/react";
   상담 신청하기
 </Button>
 <Button color="primary" variant="outlined">검사 시작하기</Button>
-<Button color="assistive" variant="outlined">자세히 보기</Button>
+<Button color="neutral" variant="outlined">자세히 보기</Button>
 
 // Avoid
 <Button rightIcon={<ArrowNextIcon />}>상담 신청하기</Button>
@@ -82,7 +82,7 @@ import { Button } from "@nudge-design/react";
     {
       name: "variant",
       type: "select",
-      options: ["solid", "outlined", "soft", "outlined-sub"],
+      options: ["solid", "outlined", "soft"],
       default: "solid",
     },
     { name: "size", type: "select", options: ["xl", "lg", "md", "sm", "xs"], default: "lg" },
@@ -130,14 +130,14 @@ import { Button } from "@nudge-design/react";
   <Button variant="solid">Solid</Button>
   <Button variant="outlined">Outlined</Button>
   <Button variant="soft">Soft</Button>
-  <Button variant="outlined-sub">Outlined Sub</Button>
+  <Button variant="outlined">Outlined</Button>
 </ComponentPreview>
 
 ```tsx
 <Button variant="solid">Solid</Button>
 <Button variant="outlined">Outlined</Button>
 <Button variant="soft">Soft</Button>
-<Button variant="outlined-sub">Outlined Sub</Button>
+<Button variant="outlined">Outlined</Button>
 ```
 
 | Variant        | 설명                         | 사용 시점                    |
@@ -145,7 +145,6 @@ import { Button } from "@nudge-design/react";
 | `solid`        | 배경 채움 (기본값)           | 주요 CTA, 강한 강조          |
 | `outlined`     | 테두리만 표시                | 보조 액션, solid와 함께 사용 |
 | `soft`         | 연한 배경 + 컬러 텍스트      | 부드러운 강조                |
-| `outlined-sub` | 회색 테두리 + neutral 텍스트 | 가장 약한 강조, 보조 버튼    |
 
 ---
 
@@ -187,20 +186,20 @@ import { Button } from "@nudge-design/react";
 <ComponentPreview title="Colors">
   <Button color="primary">Primary</Button>
   <Button color="secondary">Secondary</Button>
-  <Button color="assistive">Assistive</Button>
+  <Button color="neutral">Neutral</Button>
 </ComponentPreview>
 
 ```tsx
 <Button color="primary">Primary</Button>
 <Button color="secondary">Secondary</Button>
-<Button color="assistive">Assistive</Button>
+<Button color="neutral">Neutral</Button>
 ```
 
 | Color       | 설명                                       | 주요 사용처             |
 | ----------- | ------------------------------------------ | ----------------------- |
 | `primary`   | Blue 계열 (기본값)                         | 주요 CTA                |
 | `secondary` | Soft Blue 계열 (Solid도 옅은 배경 + 컬러)  | 보조 액션, 가벼운 강조  |
-| `assistive` | Cool Gray 계열 (Solid은 회색 채움)         | 시스템/취소 등 무채색 CTA |
+| `neutral` | Cool Gray 계열 (Solid은 회색 채움)         | 시스템/취소 등 무채색 CTA |
 
 ---
 
@@ -240,7 +239,7 @@ import { SearchIcon, ChevronRightIcon } from "@nudge-design/icons";
   <Button disabled variant="soft">
     비활성화
   </Button>
-  <Button disabled variant="outlined-sub">
+  <Button disabled variant="outlined">
     비활성화
   </Button>
 </ComponentPreview>
@@ -270,11 +269,11 @@ import { SearchIcon, ChevronRightIcon } from "@nudge-design/icons";
 | `className`      | `string`          | —           | 루트 className      |
 | `style`          | `CSSProperties`   | —           | 루트 인라인 스타일  |
 
-**ButtonVariant**: `"solid"` | `"outlined"` | `"soft"` | `"outlined-sub"`
+**ButtonVariant**: `"solid"` | `"outlined"` | `"soft"`
 
 **ButtonSize**: `"xl"` | `"lg"` | `"md"` | `"sm"` | `"xs"` | `"field"`
 
-**ButtonColor**: `"primary"` | `"secondary"` | `"assistive"`
+**ButtonColor**: `"primary"` | `"secondary"` | `"neutral"`
 
 `<button>` HTML 속성을 모두 지원합니다 (`onClick`, `type`, `form` 등).
 

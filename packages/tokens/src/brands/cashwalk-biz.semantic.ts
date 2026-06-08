@@ -87,7 +87,7 @@ export const cashwalkBizSemantic = {
     // 주의: Border/Normal 은 Card/Input/Modal 등 광범위하게 쓰임.
     // Figma ButtonGuide 의 Outlined/Secondary border (#E7E7E7) 와는 1-step 차이가 있지만,
     // SemanticColorGuide 의 Border/Normal 정의(#EEEEEE) 를 따른다.
-    // Outlined/Secondary 만 따로 진한 보더가 필요하면 `buttonBorder.assistive.default`
+    // Outlined/Secondary 만 따로 진한 보더가 필요하면 `buttonBorder.neutral.default`
     // (#E7E7E7) 슬롯을 컴포넌트 레벨에서 채택하는 방식으로 처리.
     // (Figma 캔버스 라벨 "Neutral" = DS 네이밍 "Secondary".)
     normal: { default: cashwalkBizNeutral[200] }, // #EEEEEE — Border/Normal
@@ -96,7 +96,7 @@ export const cashwalkBizSemantic = {
     focus: { default: cashwalkBizYellow[500] }, // #FFD200 — Border/Focus (브랜드 정체성)
     brand: {
       default: cashwalkBizYellow[500], // #FFD200 — Border/Brand
-      disabled: cashwalkBizNeutral[400], // #DDDDDD — assistive/solid bg 와 페어 (base extension)
+      disabled: cashwalkBizNeutral[400], // #DDDDDD — neutral/solid bg 와 페어 (base extension)
     },
     disabled: { default: cashwalkBizNeutral[200] }, // #EEEEEE — Border/Disabled
     status: {
@@ -120,22 +120,29 @@ export const cashwalkBizSemantic = {
   },
 
   // ─── Button (Figma ButtonGuide 3098:1032 SSOT) ───────
-  // Figma 캔버스 라벨은 "Neutral" 로 표기되지만 DS 네이밍은 "Secondary" — 동일 슬롯.
-  // Solid/Primary 와 Solid/Secondary 의 disabled 페어는 동일:
-  //   bg = Neutral/400 #DDDDDD + text = #FFFFFF (Figma 3098:1079 / 3098:1121).
-  // Outlined disabled (Primary/Secondary 모두) 텍스트는 Neutral/500 #BBB,
-  // 보더는 Neutral/300 #E7E7E7. → buttonBorder.*.disabled 슬롯에 반영.
+  // Figma 캐포비 tone = Primary + "Neutral" 둘뿐. **Figma "Neutral" = DS `neutral` tone** 으로 매핑.
+  //   · Solid/Neutral(#111 검정 CTA) = color=neutral, variant=solid
+  //   · Weak/Neutral(#F5F5F5 회색)   = color=neutral, variant=soft
+  //   · Outlined/Neutral(#E7E7E7)    = color=neutral, variant=outlined
+  // secondary tone 은 Figma 미정의 → 하위호환용 검정값만 유지(옵션). 신규는 neutral 사용.
+  // Solid disabled 페어: bg #DDDDDD + text #FFFFFF. Outlined disabled: text #BBB / border #E7E7E7.
   buttonBg: {
     default: cashwalkBizYellow[500], // #FFD200 — Solid/Primary Default
     hover: cashwalkBizYellow[600], // #FFC400 — Solid/Primary Hover
     pressed: cashwalkBizYellow[700], // #FEAF01 — Solid/Primary Pressed
     disabled: cashwalkBizNeutral[400], // #DDDDDD — Solid/Primary Disabled (Figma 3098:1079)
-    // Solid/Secondary — 검정 fill + 흰 텍스트. Geniet dark inverse 와 동일 운용:
-    // color=secondary, variant=solid 가 캐포비 시그니처 검정 버튼으로 렌더.
+    // Solid/Neutral — Figma "Neutral" tone (3098:1095/1106/1117). 캐포비 검정 CTA = color=neutral.
+    neutral: {
+      default: cashwalkBizNeutral[900], // #111 — Solid/Neutral Default
+      hover: cashwalkBizNeutral[800], // #333 — Solid/Neutral Hover
+      disabled: cashwalkBizNeutral[400], // #DDD — Solid/Neutral Disabled
+    },
+    // Solid/Secondary — (옵션) Figma 캐포비엔 Secondary tone 없음. 검정 CTA 는 neutral 로 이관.
+    // 하위호환용 검정값 유지 — 신규는 color=neutral 사용.
     secondary: {
-      default: cashwalkBizNeutral[900], // #111 — Solid/Secondary(Neutral) Default (Figma 3098:1095: neutral/900, 순수 검정 아님)
-      hover: cashwalkBizNeutral[800], // #333333 — Solid/Secondary Hover (살짝 옅은 톤)
-      disabled: cashwalkBizNeutral[400], // #DDDDDD — Solid/Secondary Disabled (Figma 3098:1121)
+      default: cashwalkBizNeutral[900], // #111
+      hover: cashwalkBizNeutral[800], // #333
+      disabled: cashwalkBizNeutral[400], // #DDD
     },
     outlined: {
       default: cashwalkBizCommon["00"], // #FFFFFF
@@ -151,6 +158,10 @@ export const cashwalkBizSemantic = {
       default: cashwalkBizCommon["00"], // #FFFFFF — 검정 bg 위 흰 텍스트
       disabled: cashwalkBizCommon["00"], // #FFFFFF — Solid/Secondary Disabled (#DDDDDD bg 위 흰)
     },
+    // Neutral tone — Solid 은 흰 텍스트(styleMap surface.default). Weak/Outlined enabled 는 #111.
+    neutral: cashwalkBizNeutral[900], // #111 — Weak/Outlined Neutral enabled 텍스트 (Figma 3098:1137/1221)
+    neutralSolid: cashwalkBizCommon["00"], // #FFFFFF — Solid Neutral 텍스트 (#111 검정 fill 위 흰, Figma 3098:1095)
+    neutralDisabled: cashwalkBizNeutral[500], // #BBB — Neutral disabled 텍스트 (Figma 3098:1159/1243)
     // SemanticColorGuide 의 ButtonText/Disabled = #FFFFFF (Solid disabled, 회색 bg 위 흰 텍스트).
     // ※ Outlined disabled 텍스트는 컴포넌트가 cv.textRole.muted 로 직접 처리하므로 이 슬롯과 무관.
     disabled: cashwalkBizCommon["00"], // #FFFFFF — ButtonText/Disabled (Figma 3222:458)
@@ -161,7 +172,7 @@ export const cashwalkBizSemantic = {
       hover: cashwalkBizNeutral[900], // #111 — Outlined/Primary hover border (Figma 3098:1190: 검정 유지, bg만 #FFFEF5 틴트)
       disabled: cashwalkBizNeutral[300], // #E7E7E7 — Outlined/Primary disabled border (Figma 3098:1205)
     },
-    assistive: {
+    neutral: {
       default: cashwalkBizNeutral[300], // #E7E7E7 — Outlined/Secondary default border
       disabled: cashwalkBizNeutral[300], // #E7E7E7 — Outlined/Secondary disabled border
     },

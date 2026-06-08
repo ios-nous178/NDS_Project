@@ -41,6 +41,20 @@ describe("nds-text-button", () => {
     expect(icons[0]?.getAttribute("width")).toBe("16");
   });
 
+  it("슬롯 텍스트로 라벨을 줘도 re-render 시 중복되지 않는다 (회귀: '라벨라벨')", async () => {
+    const el = document.createElement("nds-text-button");
+    el.textContent = "방법 다시 선택";
+    document.body.appendChild(el);
+    await flush();
+    expect(el.querySelector(".nds-text-button__label")?.textContent).toBe("방법 다시 선택");
+
+    // 어떤 속성 변경이든 re-render 를 유발 → 라벨이 두 배로 늘면 회귀
+    el.setAttribute("size", "large");
+    await flush();
+    expect(el.querySelector(".nds-text-button__label")?.textContent).toBe("방법 다시 선택");
+    expect(el.textContent).toBe("방법 다시 선택");
+  });
+
   it("forwards button attributes and disabled state", async () => {
     const el = document.createElement("nds-text-button");
     el.setAttribute("label", "제출");

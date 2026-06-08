@@ -97,7 +97,11 @@ export const fieldActionRowStyles = `
     flex-shrink: 0;
   }
 
-  :where(.${FAR_ACTION_CLASS} button) {
+  /* ─── action 버튼 스타일은 raw <button>(:not(.nds-button)) 에만 강제한다(레거시).
+     DS Button(<Button>/<nds-button> → 내부 .nds-button)을 슬롯에 넣으면 그 버튼의
+     color/variant(secondary=검정 등)가 그대로 살아야 하므로 FAR 가 색을 덮지 않는다.
+     (회고: 조합한 자식을 밖에서 재스타일하면 브랜드색이 강제됨 — 캐포비 노랑 확인 버튼 이슈.) ─── */
+  :where(.${FAR_ACTION_CLASS} button:not(.nds-button)) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -117,36 +121,36 @@ export const fieldActionRowStyles = `
       color ${transition.default};
   }
 
-  :where(.${FAR_ACTION_CLASS}[data-tone="outline"] button) {
+  :where(.${FAR_ACTION_CLASS}[data-tone="outline"] button:not(.nds-button)) {
     border: 1px solid ${cv.borderRole.brand};
     background: ${cv.surface.default};
     color: ${cv.textRole.brand};
   }
 
-  :where(.${FAR_ACTION_CLASS}[data-tone="outline"] button:hover:not(:disabled)) {
+  :where(.${FAR_ACTION_CLASS}[data-tone="outline"] button:not(.nds-button):hover:not(:disabled)) {
     border-color: ${cv.fill.brandHover};
     color: ${cv.fill.brandHover};
   }
 
-  :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button) {
+  :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:not(.nds-button)) {
     border: 1px solid ${cv.borderRole.brand};
     background: ${cv.surface.brand};
     color: ${cv.button.textDefault};
   }
 
-  :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:hover:not(:disabled)) {
+  :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:not(.nds-button):hover:not(:disabled)) {
     background: ${cv.fill.brandHover};
     border-color: ${cv.fill.brandHover};
   }
 
-  :where(.${FAR_ACTION_CLASS} button:disabled) {
+  :where(.${FAR_ACTION_CLASS} button:not(.nds-button):disabled) {
     border-color: ${cv.borderRole.disabled};
     background: ${cv.surface.disabled};
     color: ${cv.textRole.muted};
     cursor: not-allowed;
   }
 
-  :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:disabled) {
+  :where(.${FAR_ACTION_CLASS}[data-tone="solid"] button:not(.nds-button):disabled) {
     border-color: transparent;
     background: ${cv.surface.disabled};
     color: ${cv.textRole.muted};

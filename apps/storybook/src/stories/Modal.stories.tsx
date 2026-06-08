@@ -824,7 +824,7 @@ export const CashwalkBizAdminDualAction: Story = {
       description: {
         story:
           "캐포비 admin Modal · 취소 + 실행 2버튼 패턴 (Figma 3418:471 ②). " +
-          "버튼은 가로 양분, confirm = 검정 CTA, cancel = white + assistive 보더.",
+          "버튼은 가로 양분, confirm = 검정 CTA, cancel = white + neutral 보더.",
       },
     },
   },
