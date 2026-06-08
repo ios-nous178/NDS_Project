@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import { cv, sizing, spacing } from "@nudge-design/tokens";
+import { type FieldWidth, resolveFieldWidth } from "./internal/fieldWidth";
 
 /* ─── Class names ─── */
 
@@ -88,6 +89,11 @@ export interface InputRootProps extends React.HTMLAttributes<HTMLDivElement> {
   complete?: boolean;
   /** 부모 너비에 맞춤 @default true */
   fullWidth?: boolean;
+  /**
+   * 입력 필드 가로 너비 6단계 스케일 (xs 120 / sm 200 / md 304 / lg 400 / xl 488 / full 100%).
+   * 지정 시 `fullWidth` 보다 우선. 컨테이너 안에서는 이 스케일 중 하나를 쓰는 것이 캐포비 admin 표준.
+   */
+  fieldWidth?: FieldWidth;
   /** 입력 필드 높이 변형 @default "default" */
   size?: InputSize;
   /** 외부에서 주입할 input ID (미지정 시 자동 생성) */
@@ -102,6 +108,7 @@ export const InputRoot: React.FC<InputRootProps> = ({
   readOnly = false,
   complete = false,
   fullWidth = true,
+  fieldWidth,
   size = "default",
   inputId: inputIdProp,
   children,
@@ -139,7 +146,7 @@ export const InputRoot: React.FC<InputRootProps> = ({
         data-error={error ? "true" : "false"}
         style={
           {
-            "--nds-input-width": fullWidth ? "100%" : "auto",
+            "--nds-input-width": resolveFieldWidth(fieldWidth) ?? (fullWidth ? "100%" : "auto"),
             // size="default" 는 inline 높이 생략 → 브랜드 :root override(캐포비 admin 40)가
             // cascade 로 이김. inline 으로 박으면 nds-select(40) 와 높이 어긋남(48 vs 40).
             ...(size !== "default" && {
@@ -487,6 +494,11 @@ export interface InputProps extends Omit<
   prefix?: React.ReactNode;
   /** 컴포넌트 너비 */
   fullWidth?: boolean;
+  /**
+   * 입력 필드 가로 너비 6단계 스케일 (xs 120 / sm 200 / md 304 / lg 400 / xl 488 / full 100%).
+   * 지정 시 `fullWidth` 보다 우선. 폼 내부 일반 입력은 `md`(304), 모달 메인 입력은 `lg`(400) 권장.
+   */
+  fieldWidth?: FieldWidth;
   /** 입력 필드 높이 변형 */
   size?: InputSize;
   /** 슬롯 프롭 */
@@ -517,6 +529,7 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
       suffix,
       prefix,
       fullWidth = true,
+      fieldWidth,
       size = "default",
       className,
       style,
@@ -586,6 +599,7 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
         readOnly={readOnly}
         complete={showSuccess}
         fullWidth={fullWidth}
+        fieldWidth={fieldWidth}
         size={size}
         inputId={idProp}
         className={cx(slotProps?.root?.className, className)}

@@ -29,6 +29,17 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 
+// 입력 필드 가로 너비 6단계 — sizing.fieldWidth SSOT 미러 (Figma InputGuide Field Width 3897:1578).
+// react resolveFieldWidth(internal/fieldWidth.ts) · nds-input 과 동일 값. full = 컨테이너 100%.
+const FIELD_WIDTHS: Record<string, string> = {
+  xs: "120px",
+  sm: "200px",
+  md: "304px",
+  lg: "400px",
+  xl: "488px",
+  full: "100%",
+};
+
 const SELECT_CLASS = "nds-select";
 const ROOT_CLASS = `${SELECT_CLASS}__root`;
 const LABEL_CLASS = `${SELECT_CLASS}__label`;
@@ -71,6 +82,7 @@ export class NdsSelect extends NdsElement {
       "disabled",
       "error",
       "full-width",
+      "field-width",
       "open",
       "select-id",
       "searchable",
@@ -242,12 +254,15 @@ export class NdsSelect extends NdsElement {
     // 기본 full-width=true (React fullWidth 기본과 일치 — 폼/캐포비는 전체너비가 기본).
     // 좁게 쓰려면 full-width="false" 명시(예: 어드민 검색 필터).
     const fullWidth = this.attr("full-width", "true") !== "false";
+    const fieldWidthAttr = this.getAttribute("field-width");
+    const resolvedFieldWidth = fieldWidthAttr ? FIELD_WIDTHS[fieldWidthAttr] : undefined;
+    const widthValue = resolvedFieldWidth ?? (fullWidth ? "100%" : "auto");
     const open = this.boolAttr("open");
     const searchable = this.boolAttr("searchable");
     const hasValue = value !== null && value !== "";
 
-    this._root.style.width = fullWidth ? "100%" : "auto";
-    this._root.style.setProperty("--nds-select-width", fullWidth ? "100%" : "auto");
+    this._root.style.width = widthValue;
+    this._root.style.setProperty("--nds-select-width", widthValue);
 
     this._trigger.disabled = disabled;
     this._trigger.dataset.open = String(open);

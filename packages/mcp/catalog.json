@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-08T04:03:07.939Z",
+  "generatedAt": "2026-06-08T05:57:49.874Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -172,7 +172,7 @@
       ]
     },
     {
-      "name": "AddressSearch",
+      "name": "AddressPicker",
       "props": [
         {
           "name": "query",
@@ -235,8 +235,8 @@
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/AddressSearch.d.ts",
-      "htmlTag": "nds-address-search",
+      "dtsRelPath": "packages/react/dist/AddressPicker.d.ts",
+      "htmlTag": "nds-address-picker",
       "htmlObservedAttrs": [
         "query",
         "results",
@@ -3609,6 +3609,32 @@
       ]
     },
     {
+      "name": "FormSection",
+      "props": [
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/FormSection.d.ts",
+      "htmlTag": "nds-form-section",
+      "htmlObservedAttrs": [
+        "title",
+        "description"
+      ]
+    },
+    {
       "name": "Header",
       "props": [
         {
@@ -3934,6 +3960,11 @@
           "type": "boolean"
         },
         {
+          "name": "fieldWidth",
+          "optional": true,
+          "type": "FieldWidth"
+        },
+        {
           "name": "size",
           "optional": true,
           "type": "InputSize",
@@ -3976,6 +4007,7 @@
         "disabled",
         "readonly",
         "full-width",
+        "field-width",
         "clearable",
         "show-count",
         "password-toggle",
@@ -4911,7 +4943,7 @@
       ]
     },
     {
-      "name": "OtpInput",
+      "name": "VerificationCodeInput",
       "props": [
         {
           "name": "length",
@@ -4944,19 +4976,54 @@
           "type": "boolean"
         },
         {
-          "name": "autoFocus",
+          "name": "countdownSeconds",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "onResend",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "resendText",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "countdownFormat",
+          "optional": true,
+          "type": "CountdownFormat",
+          "allowedValues": [
+            "mm:ss",
+            "hh:mm:ss",
+            "remaining"
+          ]
+        },
+        {
+          "name": "timer",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "fullWidth",
           "optional": true,
           "type": "boolean"
         }
       ],
-      "dtsRelPath": "packages/react/dist/OtpInput.d.ts",
-      "htmlTag": "nds-otp-input",
+      "dtsRelPath": "packages/react/dist/VerificationCodeInput.d.ts",
+      "htmlTag": "nds-verification-code-input",
       "htmlObservedAttrs": [
         "length",
         "value",
         "disabled",
         "error",
-        "auto-focus"
+        "auto-focus",
+        "placeholder",
+        "full-width",
+        "timer",
+        "countdown-seconds",
+        "resend-text"
       ]
     },
     {
@@ -5105,6 +5172,11 @@
           "type": "(value: string) => void"
         },
         {
+          "name": "autoFormat",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
           "name": "label",
           "optional": true,
           "type": "React.ReactNode"
@@ -5141,7 +5213,8 @@
         "error",
         "countries",
         "full-width",
-        "disabled"
+        "disabled",
+        "auto-format"
       ]
     },
     {
@@ -5927,6 +6000,11 @@
           "type": "boolean"
         },
         {
+          "name": "fieldWidth",
+          "optional": true,
+          "type": "FieldWidth"
+        },
+        {
           "name": "searchable",
           "optional": true,
           "type": "boolean"
@@ -5972,6 +6050,7 @@
         "disabled",
         "error",
         "full-width",
+        "field-width",
         "open",
         "select-id",
         "searchable",
@@ -6039,6 +6118,32 @@
         "hide-actions",
         "hide-add",
         "hide-clear"
+      ]
+    },
+    {
+      "name": "SelectionButton",
+      "props": [
+        {
+          "name": "selected",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/SelectionButton.d.ts",
+      "htmlTag": "nds-selection-button",
+      "htmlObservedAttrs": [
+        "selected",
+        "disabled"
       ]
     },
     {
@@ -6826,6 +6931,15 @@
           "type": "(tags: string[]) => void"
         },
         {
+          "name": "variant",
+          "optional": true,
+          "type": "TagInputVariant",
+          "allowedValues": [
+            "stacked",
+            "inline"
+          ]
+        },
+        {
           "name": "label",
           "optional": true,
           "type": "React.ReactNode"
@@ -6861,6 +6975,31 @@
           "type": "boolean"
         },
         {
+          "name": "prefix",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "pattern",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "validate",
+          "optional": true,
+          "type": "(value: string) => boolean"
+        },
+        {
+          "name": "onInvalid",
+          "optional": true,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "addButtonLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
           "name": "fullWidth",
           "optional": true,
           "type": "boolean"
@@ -6873,14 +7012,24 @@
       ],
       "dtsRelPath": "packages/react/dist/TagInput.d.ts",
       "htmlTag": "nds-tag-input",
+      "htmlAttrs": {
+        "variant": [
+          "stacked",
+          "inline"
+        ]
+      },
       "htmlObservedAttrs": [
         "value",
+        "variant",
         "label",
         "placeholder",
         "helper-text",
         "error",
         "max-tags",
         "allow-duplicates",
+        "prefix",
+        "pattern",
+        "add-button-label",
         "full-width",
         "disabled"
       ]
@@ -11472,7 +11621,7 @@
     },
     {
       "name": "--nds-datepicker-height",
-      "value": "40px",
+      "value": "var(--nds-input-height)",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -11496,7 +11645,7 @@
     },
     {
       "name": "--nds-datepicker-radius",
-      "value": "4px",
+      "value": "var(--nds-input-radius)",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -11580,7 +11729,7 @@
     },
     {
       "name": "--nds-input-height",
-      "value": "40px",
+      "value": "48px",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -11596,7 +11745,7 @@
     },
     {
       "name": "--nds-input-radius",
-      "value": "4px",
+      "value": "10px",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -11628,7 +11777,7 @@
     },
     {
       "name": "--nds-select-height",
-      "value": "40px",
+      "value": "var(--nds-input-height)",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -11684,7 +11833,7 @@
     },
     {
       "name": "--nds-select-radius",
-      "value": "4px",
+      "value": "var(--nds-input-radius)",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -11828,7 +11977,7 @@
     },
     {
       "name": "--nds-textarea-radius",
-      "value": "4px",
+      "value": "var(--nds-input-radius)",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -12338,7 +12487,7 @@
       "value": "#F1F8FD",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#000000",
+        "cashwalk-biz": "#111111",
         "geniet": "#333333",
         "runmile": "#221E1F",
         "trost": "#F6F7FF"
@@ -12393,7 +12542,7 @@
       "value": "#2B96ED",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#FFD200",
+        "cashwalk-biz": "#111111",
         "geniet": "#00A8AC",
         "runmile": "#FF5B37",
         "trost": "#FFE600"
@@ -12415,7 +12564,7 @@
       "value": "#2B96ED",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#FFC400",
+        "cashwalk-biz": "#111111",
         "geniet": "#00A8AC",
         "runmile": "#FF805C",
         "trost": "#FFE600"
@@ -12443,7 +12592,7 @@
       "value": "#2B96ED",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#FEAF01",
+        "cashwalk-biz": "#111111",
         "geniet": "#00A8AC",
         "runmile": "#FF5B37",
         "trost": "#FF9D00"
@@ -12872,10 +13021,7 @@
     {
       "name": "--semantic-inset-input",
       "value": "12px",
-      "group": "semantic",
-      "brandValues": {
-        "cashwalk-biz": "10px"
-      }
+      "group": "semantic"
     },
     {
       "name": "--semantic-inset-modal",
@@ -13116,6 +13262,31 @@
     {
       "name": "--size-button-xs",
       "value": "38px",
+      "group": "size"
+    },
+    {
+      "name": "--size-fieldWidth-lg",
+      "value": "400px",
+      "group": "size"
+    },
+    {
+      "name": "--size-fieldWidth-md",
+      "value": "304px",
+      "group": "size"
+    },
+    {
+      "name": "--size-fieldWidth-sm",
+      "value": "200px",
+      "group": "size"
+    },
+    {
+      "name": "--size-fieldWidth-xl",
+      "value": "488px",
+      "group": "size"
+    },
+    {
+      "name": "--size-fieldWidth-xs",
+      "value": "120px",
       "group": "size"
     },
     {
@@ -13528,7 +13699,7 @@
     "nds-accordion-trigger",
     "nds-action-chip",
     "nds-add-button",
-    "nds-address-search",
+    "nds-address-picker",
     "nds-amount-input",
     "nds-appointment-card",
     "nds-attachment-item",
@@ -13593,6 +13764,7 @@
     "nds-footer-web-row",
     "nds-footer-web-section",
     "nds-form-field",
+    "nds-form-section",
     "nds-header",
     "nds-header-actions",
     "nds-header-auth-button",
@@ -13623,7 +13795,7 @@
     "nds-number-stepper",
     "nds-online-indicator",
     "nds-order-summary-card",
-    "nds-otp-input",
+    "nds-verification-code-input",
     "nds-page-header",
     "nds-pagination",
     "nds-phone-input",
@@ -13644,6 +13816,7 @@
     "nds-select-option",
     "nds-selected-item-row",
     "nds-selected-items-panel",
+    "nds-selection-button",
     "nds-selection-button-group",
     "nds-selection-card",
     "nds-selection-card-item",
@@ -13707,7 +13880,7 @@
       ]
     },
     {
-      "tag": "nds-address-search",
+      "tag": "nds-address-picker",
       "attrs": {},
       "observedAttrs": [
         "query",
@@ -14426,6 +14599,14 @@
       ]
     },
     {
+      "tag": "nds-form-section",
+      "attrs": {},
+      "observedAttrs": [
+        "title",
+        "description"
+      ]
+    },
+    {
       "tag": "nds-header",
       "attrs": {},
       "observedAttrs": [
@@ -14503,6 +14684,7 @@
         "disabled",
         "readonly",
         "full-width",
+        "field-width",
         "clearable",
         "show-count",
         "password-toggle",
@@ -14707,14 +14889,19 @@
       ]
     },
     {
-      "tag": "nds-otp-input",
+      "tag": "nds-verification-code-input",
       "attrs": {},
       "observedAttrs": [
         "length",
         "value",
         "disabled",
         "error",
-        "auto-focus"
+        "auto-focus",
+        "placeholder",
+        "full-width",
+        "timer",
+        "countdown-seconds",
+        "resend-text"
       ]
     },
     {
@@ -14749,7 +14936,8 @@
         "error",
         "countries",
         "full-width",
-        "disabled"
+        "disabled",
+        "auto-format"
       ]
     },
     {
@@ -14924,6 +15112,7 @@
         "disabled",
         "error",
         "full-width",
+        "field-width",
         "open",
         "select-id",
         "searchable",
@@ -14953,6 +15142,14 @@
         "full-width",
         "disabled",
         "options"
+      ]
+    },
+    {
+      "tag": "nds-selection-button",
+      "attrs": {},
+      "observedAttrs": [
+        "selected",
+        "disabled"
       ]
     },
     {
@@ -15147,15 +15344,24 @@
     },
     {
       "tag": "nds-tag-input",
-      "attrs": {},
+      "attrs": {
+        "variant": [
+          "stacked",
+          "inline"
+        ]
+      },
       "observedAttrs": [
         "value",
+        "variant",
         "label",
         "placeholder",
         "helper-text",
         "error",
         "max-tags",
         "allow-duplicates",
+        "prefix",
+        "pattern",
+        "add-button-label",
         "full-width",
         "disabled"
       ]

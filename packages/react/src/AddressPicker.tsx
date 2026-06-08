@@ -4,7 +4,7 @@ import { Button } from "./Button";
 
 /* ─── Constants ─── */
 
-const AS_CLASS = "nds-address-search";
+const AS_CLASS = "nds-address-picker";
 const AS_LABEL_CLASS = `${AS_CLASS}__label`;
 const AS_FIELD_ROW_CLASS = `${AS_CLASS}__field-row`;
 const AS_INPUT_CLASS = `${AS_CLASS}__input`;
@@ -34,7 +34,7 @@ export interface AddressValue {
   detail: string;
 }
 
-export interface AddressSearchProps extends Omit<
+export interface AddressPickerProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onChange" | "results"
 > {
@@ -68,7 +68,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /* ─── Component ─── */
 
-export const AddressSearch = React.forwardRef<HTMLDivElement, AddressSearchProps>(
+export const AddressPicker = React.forwardRef<HTMLDivElement, AddressPickerProps>(
   (
     {
       query,
@@ -122,7 +122,13 @@ export const AddressSearch = React.forwardRef<HTMLDivElement, AddressSearchProps
               }
             }}
           />
-          <Button type="button" size="field" onClick={handleSearch} disabled={loading}>
+          <Button
+            type="button"
+            color="secondary"
+            size="field"
+            onClick={handleSearch}
+            disabled={loading}
+          >
             {loading ? "검색 중..." : searchLabel}
           </Button>
         </div>
@@ -175,4 +181,4 @@ export const AddressSearch = React.forwardRef<HTMLDivElement, AddressSearchProps
   },
 );
 
-AddressSearch.displayName = "AddressSearch";
+AddressPicker.displayName = "AddressPicker";

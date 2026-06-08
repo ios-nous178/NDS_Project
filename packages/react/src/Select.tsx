@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 
+import { type FieldWidth, resolveFieldWidth } from "./internal/fieldWidth";
 import { addDismissableLayerListeners, WebPortal } from "./internal/web";
 
 /* ─── Class names ─── */
@@ -88,6 +89,11 @@ export interface SelectRootProps extends React.HTMLAttributes<HTMLDivElement> {
   error?: boolean;
   /** 부모 너비에 맞춤 @default true */
   fullWidth?: boolean;
+  /**
+   * 입력 필드 가로 너비 6단계 스케일 (xs 120 / sm 200 / md 304 / lg 400 / xl 488 / full 100%).
+   * 지정 시 `fullWidth` 보다 우선. Filter Dropdown 은 `sm`(200), 폼 내부는 `md`(304) 권장.
+   */
+  fieldWidth?: FieldWidth;
   /** 드롭다운이 렌더링될 포털 컨테이너 (미지정 시 document.body) */
   portalContainer?: HTMLElement | null;
   /** Root 내부 콘텐츠 (Label, Trigger, Dropdown, Helper 등) */
@@ -100,6 +106,7 @@ export const SelectRoot: React.FC<SelectRootProps> = ({
   disabled = false,
   error = false,
   fullWidth = true,
+  fieldWidth,
   portalContainer,
   children,
   className,
@@ -145,7 +152,7 @@ export const SelectRoot: React.FC<SelectRootProps> = ({
         className={cx(SELECT_ROOT_CLASS, className)}
         style={
           {
-            "--nds-select-width": fullWidth ? "100%" : "auto",
+            "--nds-select-width": resolveFieldWidth(fieldWidth) ?? (fullWidth ? "100%" : "auto"),
             ...style,
           } as React.CSSProperties
         }
@@ -674,6 +681,11 @@ export interface SelectProps {
   /** 전체 너비 */
   fullWidth?: boolean;
   /**
+   * 입력 필드 가로 너비 6단계 스케일 (xs 120 / sm 200 / md 304 / lg 400 / xl 488 / full 100%).
+   * 지정 시 `fullWidth` 보다 우선. Filter Dropdown 은 `sm`(200), 폼 내부는 `md`(304) 권장.
+   */
+  fieldWidth?: FieldWidth;
+  /**
    * 드롭다운 상단에 검색 인풋을 노출해 옵션을 label 로 필터(Ant `showSearch` 모델).
    * 값은 여전히 options 중에서만 선택된다 — 자유 입력이 필요하면 Autocomplete 사용.
    * 옵션이 많을 때(대략 10개 초과) 권장.
@@ -704,6 +716,7 @@ const SelectComponent: React.FC<SelectProps> = ({
   errorMessage,
   disabled = false,
   fullWidth = true,
+  fieldWidth,
   searchable = false,
   searchPlaceholder = "검색",
   emptyMessage = "검색 결과가 없어요",
@@ -723,6 +736,7 @@ const SelectComponent: React.FC<SelectProps> = ({
       disabled={disabled}
       error={showError}
       fullWidth={fullWidth}
+      fieldWidth={fieldWidth}
       portalContainer={portalContainer}
       className={cx(slotProps?.root?.className, className)}
       style={{ ...slotProps?.root?.style, ...style }}

@@ -45,7 +45,7 @@ export const autocompleteStyles = `
     width: 100%;
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
-    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: var(--nds-input-background, ${cv.surface.default});
     color: ${cv.textRole.normal};
@@ -57,7 +57,7 @@ export const autocompleteStyles = `
   }
 
   :where(.${AC_INPUT_CLASS}::placeholder) {
-    color: ${cv.textRole.muted};
+    color: ${cv.input.placeholder};
   }
 
   :where(.${AC_INPUT_CLASS}:focus-visible) {
@@ -66,7 +66,7 @@ export const autocompleteStyles = `
   }
 
   :where(.${AC_INPUT_CLASS}[data-error="true"]) {
-    border-color: var(--semantic-border-status-error);
+    border-color: ${cv.input.borderError};
   }
 
   :where(.${AC_INPUT_CLASS}[disabled]) {

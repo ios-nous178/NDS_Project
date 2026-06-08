@@ -51,17 +51,17 @@ export const tpStyles = `
     display: flex;
     align-items: center;
     gap: var(--semantic-gap-default);
-    height: ${sizing.input.default}px;
+    height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 ${spacing[8]}px 0 var(--semantic-inset-card);
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
+    border: 1px solid ${cv.input.borderDefault};
+    border-radius: var(--nds-input-radius, ${radius.md}px);
     background: ${cv.surface.default};
     transition: border-color ${transition.default};
     box-sizing: border-box;
   }
 
-  :where(.${TP_FIELD_CLASS}[data-open="true"]) { border-color: ${cv.borderRole.brand}; }
-  :where(.${TP_FIELD_CLASS}[data-error="true"]) { border-color: var(--semantic-border-status-error); }
+  :where(.${TP_FIELD_CLASS}[data-open="true"]) { border-color: ${cv.input.borderFocus}; }
+  :where(.${TP_FIELD_CLASS}[data-error="true"]) { border-color: ${cv.input.borderError}; }
   :where(.${TP_FIELD_CLASS}[data-disabled="true"]) {
     background: ${cv.surface.section};
   }
@@ -85,7 +85,7 @@ export const tpStyles = `
     font-variant-numeric: tabular-nums;
   }
   :where(.${TP_TRIGGER_CLASS}:disabled) { cursor: not-allowed; color: ${cv.textRole.disabled}; }
-  :where(.${TP_TRIGGER_CLASS}[data-placeholder="true"] .${TP_TRIGGER_TEXT_CLASS}) { color: ${cv.textRole.muted}; }
+  :where(.${TP_TRIGGER_CLASS}[data-placeholder="true"] .${TP_TRIGGER_TEXT_CLASS}) { color: ${cv.input.placeholder}; }
 
   :where(.${TP_TRIGGER_TEXT_CLASS}) {
     flex: 1;

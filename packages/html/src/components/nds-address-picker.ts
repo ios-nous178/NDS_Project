@@ -1,5 +1,5 @@
 /**
- * <nds-address-search> — DS AddressSearch 의 vanilla Web Component 버전.
+ * <nds-address-picker> — DS AddressPicker 의 vanilla Web Component 버전.
  *
  * Attributes:
  *   query          현재 검색어
@@ -21,7 +21,7 @@
 import { NdsElement, define } from "../base/nds-element.js";
 import "./nds-button.js";
 
-const AS_CLASS = "nds-address-search";
+const AS_CLASS = "nds-address-picker";
 const AS_LABEL_CLASS = `${AS_CLASS}__label`;
 const AS_FIELD_ROW_CLASS = `${AS_CLASS}__field-row`;
 const AS_INPUT_CLASS = `${AS_CLASS}__input`;
@@ -47,8 +47,8 @@ interface AddressValue {
 
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby"] as const;
 
-export class NdsAddressSearch extends NdsElement {
-  static elementName = "nds-address-search";
+export class NdsAddressPicker extends NdsElement {
+  static elementName = "nds-address-picker";
 
   static get observedAttributes(): readonly string[] {
     return [
@@ -143,9 +143,10 @@ export class NdsAddressSearch extends NdsElement {
       }
     });
 
-    // 검색 버튼은 DS Button 을 합성 (react 의 <Button size="field"> 미러).
+    // 검색 버튼은 DS Button 을 합성 (react 의 <Button color="secondary" size="field"> 미러).
     const button = document.createElement("nds-button");
     button.setAttribute("type", "button");
+    button.setAttribute("color", "secondary");
     button.setAttribute("size", "field");
     button.textContent = loading ? "검색 중..." : this.attr("search-label", "검색");
     if (loading) button.setAttribute("disabled", "");
@@ -313,4 +314,4 @@ export class NdsAddressSearch extends NdsElement {
   }
 }
 
-define(NdsAddressSearch);
+define(NdsAddressPicker);

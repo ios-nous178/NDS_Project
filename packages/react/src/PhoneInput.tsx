@@ -10,7 +10,6 @@ const PI_FIELD_WRAP_CLASS = `${PI_CLASS}__field-wrap`;
 const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
 const PI_DIAL_CODE_CLASS = `${PI_CLASS}__dial-code`;
 const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
-const PI_DIVIDER_CLASS = `${PI_CLASS}__divider`;
 const PI_INPUT_CLASS = `${PI_CLASS}__input`;
 const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
 const PI_MENU_CLASS = `${PI_CLASS}__menu`;
@@ -46,10 +45,18 @@ export interface PhoneInputProps extends Omit<
   countryCode: string;
   /** 국가 코드 변경 콜백 */
   onCountryChange: (code: string) => void;
-  /** 번호 (국가코드 제외) */
+  /**
+   * 번호 (숫자만, 국가코드 제외). autoFormat 켜져 있으면 화면에는 하이픈이 자동으로 붙고
+   * 이 값/콜백은 항상 숫자만 다룹니다 (예: "01012345678").
+   */
   value: string;
-  /** 번호 변경 콜백 */
+  /** 번호 변경 콜백 — autoFormat 시 숫자만 전달 */
   onValueChange: (value: string) => void;
+  /**
+   * 입력 시 하이픈 자동 삽입 (KR/+82 모바일 3-4-4). @default true
+   * 끄면 입력값을 그대로 emit (포맷 미적용).
+   */
+  autoFormat?: boolean;
   /** 라벨 */
   label?: React.ReactNode;
   /** 헬퍼 텍스트 */
@@ -64,6 +71,25 @@ export interface PhoneInputProps extends Omit<
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
+/* ─── 번호 포맷 ─── */
+
+/** 다이얼 코드별 최대 자릿수 (KR=11, 그 외 E.164 최대 15) */
+const maxDigitsFor = (dialCode: string) => (dialCode === "+82" ? 11 : 15);
+
+const onlyDigits = (s: string) => s.replace(/\D/g, "");
+
+/**
+ * 숫자열을 다이얼 코드에 맞춰 하이픈 포맷. KR(+82) 모바일은 3-4-4(점진적),
+ * 그 외 국가는 하이픈 없이 숫자 그대로 (국가별 규칙 미정의 — 안전한 패스스루).
+ */
+const formatPhone = (digits: string, dialCode: string): string => {
+  const d = onlyDigits(digits).slice(0, maxDigitsFor(dialCode));
+  if (dialCode !== "+82") return d;
+  if (d.length < 4) return d;
+  if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`;
+  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+};
+
 /* ─── Component ─── */
 
 export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
@@ -73,6 +99,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       onCountryChange,
       value,
       onValueChange,
+      autoFormat = true,
       label,
       helperText,
       error = false,
@@ -143,7 +170,6 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
                 </svg>
               </span>
             </button>
-            <span className={PI_DIVIDER_CLASS} aria-hidden />
             <input
               ref={ref}
               id={inputId}
@@ -151,10 +177,19 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
               inputMode="tel"
               autoComplete="tel-national"
               className={PI_INPUT_CLASS}
-              value={value}
+              value={autoFormat ? formatPhone(value, country.dialCode) : value}
               disabled={disabled}
-              placeholder={placeholder ?? "01012345678"}
-              onChange={(e) => onValueChange(e.target.value)}
+              placeholder={
+                placeholder ??
+                (autoFormat && country.dialCode === "+82" ? "010-1234-5678" : "01012345678")
+              }
+              onChange={(e) =>
+                onValueChange(
+                  autoFormat
+                    ? onlyDigits(e.target.value).slice(0, maxDigitsFor(country.dialCode))
+                    : e.target.value,
+                )
+              }
               {...rest}
             />
           </div>

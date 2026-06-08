@@ -386,7 +386,9 @@ export class NdsDatePicker extends NdsElement {
     this._trigger.dataset.error = status === "error" ? "true" : "false";
     this._trigger.dataset.status = status;
     this._trigger.setAttribute("aria-expanded", String(this._open));
-    this._clearBtn.hidden = !(this.boolAttr("allow-clear") && !!value && !disabled);
+    const canClear = this.boolAttr("allow-clear") && !!value && !disabled;
+    this._clearBtn.hidden = !canClear;
+    this._trigger.dataset.clearable = String(canClear);
 
     this._triggerText.textContent = value || placeholder;
     this._triggerText.dataset.placeholder = value ? "false" : "true";

@@ -1,11 +1,11 @@
 import React from "react";
 
+import { SelectionButton } from "./SelectionButton";
+
 /* ─── Class names ─── */
 
 const SBG_CLASS = "nds-selection-button-group";
 const SBG_ROOT_CLASS = `${SBG_CLASS}__root`;
-const SBG_ITEM_CLASS = `${SBG_CLASS}__item`;
-const SBG_LABEL_CLASS = `${SBG_CLASS}__label`;
 
 /* ─── Types ─── */
 
@@ -76,21 +76,16 @@ export const SelectionButtonGroup = <T extends string = string>({
         const isSelected = opt.value === value;
         const isDisabled = disabled || opt.disabled;
         return (
-          <button
+          <SelectionButton
             key={opt.value}
-            type="button"
-            role="radio"
-            aria-checked={isSelected}
-            data-slot="item"
-            data-selected={isSelected ? "true" : "false"}
+            selected={isSelected}
             disabled={isDisabled}
             onClick={() => {
               if (!isDisabled && !isSelected) onValueChange(opt.value);
             }}
-            className={SBG_ITEM_CLASS}
           >
-            <span className={SBG_LABEL_CLASS}>{opt.label}</span>
-          </button>
+            {opt.label}
+          </SelectionButton>
         );
       })}
     </div>

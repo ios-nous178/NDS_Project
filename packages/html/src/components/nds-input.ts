@@ -23,6 +23,17 @@ export type InputSize = "default" | "field" | "compact";
 
 const SIZES: readonly InputSize[] = ["default", "field", "compact"];
 
+// 입력 필드 가로 너비 6단계 — sizing.fieldWidth SSOT 미러 (Figma InputGuide Field Width 3897:1578).
+// react resolveFieldWidth(internal/fieldWidth.ts) 와 동일 값. full = 컨테이너 100%.
+const FIELD_WIDTHS: Record<string, string> = {
+  xs: "120px",
+  sm: "200px",
+  md: "304px",
+  lg: "400px",
+  xl: "488px",
+  full: "100%",
+};
+
 // sizing.input.{default,field,compact} = {48, 44, 40}px. compact 는 캐포비 admin TextField (Figma 3082:846).
 const SIZE_CONFIG: Record<
   InputSize,
@@ -78,6 +89,7 @@ export class NdsInput extends NdsElement {
       "disabled",
       "readonly",
       "full-width",
+      "field-width",
       "clearable",
       "show-count",
       "password-toggle",
@@ -159,6 +171,8 @@ export class NdsInput extends NdsElement {
     const disabled = this.boolAttr("disabled");
     const readOnly = this.boolAttr("readonly");
     const fullWidth = this.boolAttr("full-width");
+    const fieldWidthAttr = this.getAttribute("field-width");
+    const resolvedFieldWidth = fieldWidthAttr ? FIELD_WIDTHS[fieldWidthAttr] : undefined;
     const cfg = SIZE_CONFIG[size];
 
     if (inputId !== this._inputId) {
@@ -171,7 +185,10 @@ export class NdsInput extends NdsElement {
     root.dataset.size = size;
     root.dataset.disabled = String(disabled);
     root.dataset.error = String(error);
-    root.style.setProperty("--nds-input-width", fullWidth ? "100%" : "auto");
+    root.style.setProperty(
+      "--nds-input-width",
+      resolvedFieldWidth ?? (fullWidth ? "100%" : "auto"),
+    );
     // size="default" 는 inline 높이를 박지 않는다 — 그래야 브랜드 :root override
     // (예: 캐포비 admin --nds-input-height:40)가 cascade 로 이긴다. inline 으로 박으면
     // :root 를 눌러 nds-select(40, inline 안 박음) 와 높이가 어긋난다(48 vs 40).

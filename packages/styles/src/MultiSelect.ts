@@ -22,11 +22,8 @@ const MS_SELECT_ALL_CLASS = `${MS_CLASS}__select-all`;
 const MS_COUNT_CLASS = `${MS_CLASS}__count`;
 const MS_LIST_CLASS = `${MS_CLASS}__list`;
 const MS_OPTION_CLASS = `${MS_CLASS}__option`;
-const MS_OPTION_CHECK_CLASS = `${MS_CLASS}__option-check`;
-const MS_OPTION_LABEL_CLASS = `${MS_CLASS}__option-label`;
 const MS_EMPTY_CLASS = `${MS_CLASS}__empty`;
 const MS_FOOTER_CLASS = `${MS_CLASS}__footer`;
-const MS_FOOTER_BTN_CLASS = `${MS_CLASS}__footer-button`;
 
 export const multiSelectStyles = `
   :where(.${MS_CLASS}) {
@@ -50,8 +47,8 @@ export const multiSelectStyles = `
     width: 100%;
     min-height: var(--nds-select-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.md}px;
+    border: 1px solid ${cv.input.borderDefault};
+    border-radius: var(--nds-select-radius, ${radius.md}px);
     background: ${cv.surface.default};
     cursor: pointer;
     font-family: inherit;
@@ -78,7 +75,7 @@ export const multiSelectStyles = `
     text-overflow: ellipsis;
     text-align: left;
   }
-  :where(.${MS_TRIGGER_TEXT_CLASS}[data-placeholder="true"]) { color: ${cv.textRole.muted}; }
+  :where(.${MS_TRIGGER_TEXT_CLASS}[data-placeholder="true"]) { color: ${cv.input.placeholder}; }
 
   :where(.${MS_CHEVRON_CLASS}) {
     display: flex;
@@ -111,50 +108,37 @@ export const multiSelectStyles = `
     animation: nds-select-fade-in ${transition.default};
   }
 
-  /* ── Search ── */
+  /* ── Search (SearchInput 조합) — 패널 상단 flush. SearchInput 자체 보더 박스를 끄고
+     하단 구분선만 남겨 박스-in-박스 방지. 끄는 방법은 :where 오버라이드(소스순서에 짐)가
+     아니라 SearchInput 이 노출한 슬롯(--nds-search-input-*)으로 — cascade 라 순서 무관. ── */
   :where(.${MS_SEARCH_CLASS}) {
-    display: flex;
-    align-items: center;
-    gap: var(--semantic-gap-tight);
-    margin: ${spacing[8]}px;
-    padding: 0 var(--semantic-inset-input);
-    min-height: 40px;
-    border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.sm}px;
-    background: ${cv.surface.default};
+    --nds-search-input-border-color: transparent;
+    --nds-search-input-background: transparent;
+    --nds-search-input-radius: 0;
+    border-bottom: 1px solid ${cv.borderRole.subtle};
+    transition: border-color ${transition.default};
   }
-  :where(.${MS_SEARCH_CLASS}) svg { width: 16px; height: 16px; flex-shrink: 0; color: ${cv.iconRole.normal}; }
-  :where(.${MS_SEARCH_CLASS}) input {
-    flex: 1;
-    min-width: 0;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.textRole.normal};
+  :where(.${MS_SEARCH_CLASS}:focus-within) {
+    border-bottom-color: ${cv.input.borderFocus};
   }
-  :where(.${MS_SEARCH_CLASS}) input::placeholder { color: ${cv.textRole.muted}; }
+  :where(.${MS_SEARCH_CLASS} .nds-search-input__root) { width: 100%; }
+  /* 포커스 시 wrapper 의 하드코딩 border-color(borderFocus)가 박스 보더를 다시 그리지 않게
+     — 슬롯이 못 덮는 focus 상태라 specificity 확보용으로 :where 미사용(의도적). */
+  .${MS_SEARCH_CLASS} .nds-search-input__wrapper[data-focused="true"] {
+    border-color: transparent;
+  }
 
-  /* ── Select-all row ── */
+  /* ── Select-all row (Checkbox indeterminate 조합) ── */
   :where(.${MS_SELECT_ALL_CLASS}) {
     display: flex;
     align-items: center;
     gap: var(--semantic-gap-comfortable);
     width: 100%;
     padding: ${spacing[8]}px var(--semantic-inset-input);
-    border: none;
     border-bottom: 1px solid ${cv.borderRole.subtle};
-    background: transparent;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.textRole.normal};
-    text-align: left;
+    box-sizing: border-box;
   }
-  :where(.${MS_SELECT_ALL_CLASS}:disabled) { cursor: not-allowed; opacity: 0.5; }
+  :where(.${MS_SELECT_ALL_CLASS} .nds-checkbox__root) { flex: 1; align-items: center; }
   :where(.${MS_COUNT_CLASS}) {
     margin-left: auto;
     flex-shrink: 0;
@@ -169,54 +153,25 @@ export const multiSelectStyles = `
     max-height: 220px;
     overflow-y: auto;
   }
+  /* 옵션 행 = Checkbox 조합. 행 전체가 클릭되도록 checkbox root 를 width:100% 로 채운다. */
   :where(.${MS_OPTION_CLASS}) {
     display: flex;
     align-items: center;
-    gap: var(--semantic-gap-comfortable);
     padding: ${spacing[8]}px var(--semantic-inset-input);
-    cursor: pointer;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.textRole.normal};
     transition: background-color ${transition.default};
   }
   :where(.${MS_OPTION_CLASS}:hover) { background: ${cv.surface.section}; }
-  :where(.${MS_OPTION_CLASS}[data-disabled="true"]) { color: ${cv.textRole.muted}; cursor: not-allowed; }
-  :where(.${MS_OPTION_CLASS}) input {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0);
-    white-space: nowrap; border: 0;
-  }
-  :where(.${MS_OPTION_LABEL_CLASS}) {
+  :where(.${MS_OPTION_CLASS}[data-checked="true"]) { background: ${cv.surface.subtle}; }
+  :where(.${MS_OPTION_CLASS} .nds-checkbox__root) { width: 100%; align-items: center; }
+  :where(.${MS_OPTION_CLASS} .nds-checkbox__label) {
     flex: 1;
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
   }
-
-  /* ── Checkbox indicator (select-all + option 공용) ── */
-  :where(.${MS_OPTION_CHECK_CLASS}) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    border: 1.5px solid ${cv.borderRole.strong};
-    border-radius: ${radius.sm}px;
-    background: ${cv.surface.default};
-    color: ${cv.button.textDefault};
-    transition: background-color ${transition.default}, border-color ${transition.default};
-  }
-  :where(.${MS_OPTION_CHECK_CLASS}) svg { opacity: 0; }
-  :where(.${MS_OPTION_CHECK_CLASS}[data-checked="true"]) {
-    background: ${cv.surface.brand};
-    border-color: ${cv.borderRole.brand};
-  }
-  :where(.${MS_OPTION_CHECK_CLASS}[data-checked="true"]) svg { opacity: 1; }
 
   /* ── Empty state ── */
   :where(.${MS_EMPTY_CLASS}) {
@@ -231,30 +186,12 @@ export const multiSelectStyles = `
     color: ${cv.textRole.muted};
   }
 
-  /* ── Footer (취소 / 적용) ── */
+  /* ── Footer (Button 컴포넌트 조합 — 취소 outlined / 적용 secondary solid) ── */
   :where(.${MS_FOOTER_CLASS}) {
     display: flex;
     gap: var(--semantic-gap-tight);
     padding: ${spacing[8]}px;
     border-top: 1px solid ${cv.borderRole.subtle};
   }
-  :where(.${MS_FOOTER_BTN_CLASS}) {
-    flex: 1;
-    min-height: 36px;
-    padding: 0 var(--semantic-inset-input);
-    border-radius: ${radius.sm}px;
-    border: 1px solid ${cv.borderRole.normal};
-    background: ${cv.surface.default};
-    cursor: pointer;
-    font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    color: ${cv.textRole.normal};
-    transition: background-color ${transition.default}, border-color ${transition.default};
-  }
-  :where(.${MS_FOOTER_BTN_CLASS}[data-variant="apply"]) {
-    border-color: ${cv.surface.inverse};
-    background: ${cv.surface.inverse};
-    color: ${cv.textRole.inverse};
-  }
+  :where(.${MS_FOOTER_CLASS} .nds-button) { flex: 1; }
 `;

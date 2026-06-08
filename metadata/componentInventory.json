@@ -437,13 +437,13 @@
     "name": "TagInput",
     "category": "입력",
     "status": "implemented",
-    "description": "태그 자유 입력. Enter/쉼표로 추가, Backspace로 삭제, maxTags 제한",
+    "description": "토큰 입력 + 삭제 칩. 기본 stacked(입력+추가버튼, 칩 아래) / inline(tokenfield). pattern 검증·maxTags",
     "storybookTitle": "Components/Inputs/TagInput",
     "docsPath": "/components/tag-input",
     "figmaUrl": "",
     "figmaNodeId": "",
-    "usageSummary": "관심사/키워드 입력, 일기 태그, 알림 키워드 등록",
-    "notes": "# 접두는 자동. 정해진 옵션은 SelectionCard 또는 Chip 토글 사용."
+    "usageSummary": "멤버/이메일 초대, 수신자 입력(stacked), 관심사·해시태그(inline)",
+    "notes": "기본 stacked(이메일 초대형). 해시태그는 variant=inline + prefix=#. 이메일은 pattern 으로 형식 검증."
   },
   {
     "name": "Lightbox",
@@ -539,7 +539,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "앱 진입 PIN, 간편 결제 비밀번호, 보안 키패드",
-    "notes": "OtpInput과 분리. shuffleSeed는 useMemo로 고정."
+    "notes": "VerificationCodeInput과 분리. shuffleSeed는 useMemo로 고정."
   },
   {
     "name": "TimePicker",
@@ -554,11 +554,11 @@
     "notes": "네이티브 시간 UI 아님 — 시/분 스크롤 컬럼 팝오버. step은 초 단위 (5분=300). 슬롯 목록 선택은 TimeSlotPicker."
   },
   {
-    "name": "AddressSearch",
+    "name": "AddressPicker",
     "category": "입력",
     "status": "implemented",
     "description": "주소 검색 + 상세 주소 입력. 외부 API 결과를 results로 받는 패턴",
-    "storybookTitle": "Components/Inputs/AddressSearch",
+    "storybookTitle": "Components/Inputs/AddressPicker",
     "docsPath": "/components/address-search",
     "figmaUrl": "",
     "figmaNodeId": "",
@@ -884,16 +884,16 @@
     "notes": "이미 업로드된 파일 표시는 AttachmentItem과 페어로 사용."
   },
   {
-    "name": "OtpInput",
+    "name": "VerificationCodeInput",
     "category": "입력",
     "status": "implemented",
     "description": "N자리 인증코드 입력. 자동 포커스 이동, 붙여넣기 분배, 숫자 전용 옵션",
-    "storybookTitle": "Components/Inputs/OtpInput",
+    "storybookTitle": "Components/Inputs/VerificationCodeInput",
     "docsPath": "/components/otp-input",
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "휴대폰/이메일 인증, 2FA, EAP 가입 인증",
-    "notes": "간편 비밀번호는 PinPad. OtpInput은 6자리 인증코드."
+    "notes": "간편 비밀번호는 PinPad. VerificationCodeInput은 6자리 인증코드."
   },
   {
     "name": "DatePicker",

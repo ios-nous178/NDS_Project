@@ -540,7 +540,9 @@ export class NdsDateRangePicker extends NdsElement {
     this._triggerText.textContent =
       from && to ? `${from} ~ ${to}` : from ? `${from} ~` : placeholder;
     this._triggerText.dataset.placeholder = hasValue ? "false" : "true";
-    this._clearBtn.hidden = !(this.boolAttr("allow-clear") && hasValue && !disabled);
+    const canClear = this.boolAttr("allow-clear") && hasValue && !disabled;
+    this._clearBtn.hidden = !canClear;
+    this._trigger.dataset.clearable = String(canClear);
 
     this._renderPanel();
   }

@@ -311,7 +311,7 @@ sizing:
     md: 44px
     sm: 42px
     xs: 38px
-    field: 48px
+    field: 48px # 폼 옆 버튼 — 인풋 행 높이(input.default 48)와 맞춤
   tabs:
     line:
       mobile: 50px
@@ -329,6 +329,12 @@ sizing:
     default: 48px
     field: 44px
     compact: 40px # Admin/Settings 표준 (CashwalkBiz admin TextField) — 라벨 좌측 폼·dense table inline 편집
+  fieldWidth: # 입력 필드 가로 너비 스케일 (TextInput·Dropdown·DateInput·Selection 공통, 컨테이너 안에서는 px 고정). full=100% 는 컴포넌트 prop 에서 처리. Figma InputGuide Field Width(3897-1578)
+    xs: 120px # 코드·짧은 ID·숫자 (예: 사업자번호 토큰)
+    sm: 200px # 단일 키워드 검색·Filter Dropdown·페이지네이션 옆 셀렉트
+    md: 304px # 폼 내부 일반 입력 (이메일·이름·계정명) — default, 가장 흔함
+    lg: 400px # 모달 내부 메인 입력·단독 검색바
+    xl: 488px # 와이드 페이지 필터·상세 폼 강조
 
 # ── Elevation ───────────────────────────────────────────────
 elevation:

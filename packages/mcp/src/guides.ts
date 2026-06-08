@@ -1495,25 +1495,28 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     recommended: ["10분 미만 단일 가이드: SkipBack/Forward 생략. 시리즈 재생만 둘 다 부착."],
   },
-  OtpInput: {
-    name: "OtpInput",
+  VerificationCodeInput: {
+    name: "VerificationCodeInput",
     examplesHtml: {
-      do: '<nds-otp-input length="6" auto-focus></nds-otp-input>\n<script>el.addEventListener("otp-complete", e => verify(e.detail.value));</script>',
-      dont: '<!-- raw <input> 6개로 OTP 흉내 — 자동 포커스 이동/붙여넣기/접근성 모두 손실 -->\n<input maxlength="1"/><input maxlength="1"/>…',
+      do: '<!-- 코드 입력 필드만. 타이머·확인 버튼이 함께면 nds-field-action-row 로 합성 -->\n<nds-field-action-row helper-text="문자로 전송된 인증번호를 입력해주세요">\n  <nds-verification-code-input slot="field" length="6" auto-focus></nds-verification-code-input>\n  <span slot="timer">02:58</span>\n  <nds-button slot="action" color="secondary" size="field">확인</nds-button>\n</nds-field-action-row>\n<script>document.querySelector("nds-verification-code-input").addEventListener("code-complete", e => verify(e.detail.value));</script>',
+      dont: '<!-- 자리별 박스를 raw <input> 6개로 흉내 — 붙여넣기/자동완성/접근성 손실. 단일 nds-verification-code-input 사용 -->\n<input maxlength="1"/><input maxlength="1"/>…',
     },
-    summary: "N자리 인증코드 입력. 자동 포커스 이동, 붙여넣기 분배, 숫자 전용.",
+    summary:
+      "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. " +
+      "자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. " +
+      "타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FieldActionRow** 로 합성한다(타이머는 FieldActionRow 가 필드 안에 렌더, 버튼은 액션 슬롯). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input. 자리별 PIN 은 PinPad.)",
     pitfalls: [
-      "value는 string. length만큼 채워지면 onComplete 발화 — 그 안에서 자동 제출 처리하면 사용자 경험 좋음.",
-      'autoComplete="one-time-code"가 첫 셀에만 붙음 — iOS/Android에서 SMS 자동 추출이 동작하려면 첫 셀만이어야 함.',
-      "입력은 숫자만 허용 (영문/특수문자 자동 필터링). 영숫자 OTP가 필요하면 별도 컴포넌트 필요.",
-      "Backspace는 두 단계 동작: 현재 셀에 값 있으면 비우고, 비어있으면 이전 셀로 포커스 이동 + 비움.",
+      "이 컴포넌트는 코드 필드만 — 타이머/재전송/확인 버튼은 직접 넣지 말고 FieldActionRow 로 합성한다(내장 타이머 없음).",
+      "value는 숫자 string. length만큼 채워지면 onComplete(react)/code-complete(html) 발화 — 그 안에서 자동 제출하면 UX 좋음.",
+      "입력은 숫자만 허용(영문/특수문자 자동 필터). 영숫자 OTP가 필요하면 maxLength 늘린 일반 Input 검토.",
+      'autoComplete="one-time-code" 가 단일 input 에 적용 — iOS/Android SMS 자동 추출 동작.',
+      "자리별 세그먼트 UI(자리당 박스)가 아님 — length 는 maxLength 로만 작동. 점 인디케이터식 PIN 은 PinPad.",
     ],
     recommended: [
-      "회원가입/로그인 SMS 인증: length=6, autoFocus, onComplete로 자동 검증 호출",
-      "에러 시 error prop + Toast 같이 띄우기. 자동 clear는 사용자 혼란 유발 — 호출부에서 결정.",
+      "회원가입/로그인 SMS 인증: FieldActionRow(field=VerificationCodeInput length=6 autoFocus · timer=CountdownTimer · action=Button '확인') · onComplete 로 자동 검증.",
+      "재전송: 타이머 만료(timerExpired) 시 FieldActionRow 의 action 버튼을 '재전송'으로 토글 → 클릭에서 재발송.",
+      "에러 시 error prop + Toast. 자동 clear 는 호출부에서 결정(전체 clear가 보통 안전).",
     ],
-    interactivePattern:
-      "인증 실패 시 자동 clear는 옵션 — 어떤 자리가 틀렸는지 모르므로 보통 통째 clear가 안전.",
   },
   FileUpload: {
     name: "FileUpload",
@@ -1817,7 +1820,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-40209",
     pitfalls: [
       "countryCode는 ISO code(KR, US 등)로 관리. '+82' 문자열을 state에 두지 말 것.",
-      "번호 마스킹/하이픈 자동화는 컴포넌트가 강제하지 않음 — 필요하면 onValueChange에서 직접.",
+      "value/onValueChange 는 숫자만 다룸(예: '01012345678'). autoFormat(기본 on)이 화면에만 하이픈(KR 3-4-4)을 붙임 — state 에 하이픈 든 문자열을 넣지 말 것.",
+      "KR(+82) 외 국가는 하이픈 규칙 미정의라 자동 포맷 안 함(숫자 패스스루). 끄려면 autoFormat={false}.",
       "기본 5개국(KR/US/JP/CN/GB) 외 필요하면 countries prop으로 직접 정의.",
       "둥근 모서리/높이를 임의 px 로 박지 말 것 — base Input 토큰(--nds-input-radius/-height) 상속이므로 Input 과 자동 일관.",
     ],
@@ -2415,18 +2419,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   TagInput: {
     name: "TagInput",
     examplesHtml: {
-      do: '<nds-tag-input value=\'["불안","수면"]\' label="관심 주제"\n  placeholder="태그 입력 후 Enter" max-tags="5" helper-text="최대 5개"></nds-tag-input>\n<script>el.addEventListener("nds-tag-change", e => save(e.detail.value));</script>',
-      dont: '<!-- max-tags 누락 + helper 없음 — 무한정 입력 가능 -->\n<nds-tag-input placeholder="태그"></nds-tag-input>',
+      do: '<!-- 기본 stacked: 입력칸 + 추가버튼, 칩은 아래 wrap (이메일 초대/수신자) -->\n<nds-tag-input label="멤버 초대하기" placeholder="이메일 주소를 입력해 주세요"\n  pattern="^[^@\\\\s]+@[^@\\\\s]+\\\\.[^@\\\\s]+$" max-tags="50"\n  helper-text="멤버는 최대 50명까지, 한번에 최대 10명까지 초대할 수 있습니다."></nds-tag-input>\n<script>\n  el.addEventListener("nds-tag-change", e => save(e.detail.value));\n  el.addEventListener("nds-tag-invalid", e => toast(`이메일 형식이 아니에요: ${e.detail.value}`));\n</script>\n<!-- 해시태그식 인라인 tokenfield -->\n<nds-tag-input variant="inline" prefix="#" label="관심 주제"\n  placeholder="태그 입력 후 Enter" max-tags="5"></nds-tag-input>',
+      dont: '<!-- 이메일 받으면서 pattern 검증 없음 — 잘못된 주소가 그대로 칩이 됨 -->\n<nds-tag-input label="멤버 초대"></nds-tag-input>\n<!-- 해시태그인데 value 에 직접 # 넣음 — prefix 가 표시 담당, 저장값엔 # 빼기 -->\n<nds-tag-input variant="inline" value=\'["#수면"]\'></nds-tag-input>',
     },
     summary:
-      "태그 자유 입력. Enter/쉼표로 추가, Backspace로 마지막 삭제. Chip 표시(읽기 전용)와 분리.",
+      '토큰(태그) 자유 입력 + 삭제 가능한 칩. **기본 variant="stacked"** — 입력칸 + 우측 추가 버튼(입력 있을 때만 활성)에 칩은 **아래** wrap (이메일 초대/수신자 패턴). **variant="inline"** 은 칩이 입력칸 안쪽 tokenfield(해시태그식). Enter/쉼표/추가버튼으로 추가, Backspace로 마지막 삭제. 이메일 등은 `pattern`(정규식) 으로 검증 — 실패 시 추가 안 되고 `nds-tag-invalid` 이벤트.',
     pitfalls: [
-      "value의 태그 문자열에 '#' 접두를 직접 넣지 말 것 — 컴포넌트가 표시 시 자동 추가, 입력 시 자동 제거.",
-      "정해진 옵션에서 다중 선택은 SelectionCard mode='multiple' 또는 Chip 토글이 적합.",
-      "자동완성이 필요하면 Autocomplete + 직접 태그 관리 — TagInput은 자유 입력 전용.",
+      "이메일/수신자 초대 = 기본 stacked + `pattern` 으로 형식 검증 + `max-tags`. 검증 없으면 잘못된 값이 칩으로 박힘.",
+      '해시태그는 `variant="inline" prefix="#"` — value/저장값엔 `#` 넣지 말 것(prefix 가 표시 시 자동 부착, 입력 시 자동 제거). prefix 기본은 ""(없음).',
+      "정해진 옵션에서 다중 선택은 SelectionCard mode='multiple' 또는 Chip 토글이 적합. 자동완성은 Autocomplete.",
+      "초대 모달 푸터(취소/초대하기) 와 제목은 TagInput 바깥에서 조립 — TagInput 은 입력+칩 영역만 담당.",
     ],
     recommended: [
-      "관심사 등록: maxTags=5, onMaxReached로 토스트",
+      "멤버 초대: stacked + pattern(email) + maxTags=50 + helperText 로 제한 안내",
+      "관심사/해시태그: variant=inline + prefix=# + maxTags",
       "콘텐츠 태그: allowDuplicates=false (기본)",
     ],
   },
@@ -2574,13 +2580,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     name: "PinPad",
     examplesHtml: {
       do: '<nds-pin-pad pin-length="6" label="인증 번호 입력" shuffle></nds-pin-pad>\n<script>el.addEventListener("nds-pin-complete", e => verify(e.detail.value));</script>',
-      dont: '<!-- OTP / SMS 인증을 PinPad 로 — OtpInput 가 맞음 (자동 채움 / 붙여넣기) -->\n<nds-pin-pad pin-length="6" label="SMS 인증"></nds-pin-pad>',
+      dont: '<!-- OTP / SMS 인증을 PinPad 로 — VerificationCodeInput 가 맞음 (자동 채움 / 붙여넣기) -->\n<nds-pin-pad pin-length="6" label="SMS 인증"></nds-pin-pad>',
     },
-    summary: "PIN 키패드. 점 인디케이터 + 숫자 그리드. SMS 인증은 OtpInput, 일반 입력은 Input.",
+    summary:
+      "PIN 키패드. 점 인디케이터 + 숫자 그리드. SMS 인증은 VerificationCodeInput, 일반 입력은 Input.",
     pitfalls: [
       "shuffleSeed를 매 렌더 새로 계산하면 키 배치 흔들림 — useMemo로 진입 시점에 고정.",
       "onComplete는 길이 도달 시 1회. 실패 시 value=''로 리셋해야 다시 입력 가능.",
-      "OtpInput과 혼동 금지 — PIN은 사용자 비밀, OTP는 외부에서 받는 인증번호.",
+      "VerificationCodeInput과 혼동 금지 — PIN은 사용자 비밀, OTP는 외부에서 받는 인증번호.",
     ],
     recommended: [
       "앱 진입 PIN: length=6 (기본)",
@@ -2609,18 +2616,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       '캐포비 광고 스케줄: nds-time-picker presets=\'[{"label":"자정까지","value":"23:59"}]\' — 시계아이콘 + 회색 중립 빠른설정 칩이 내장 렌더(노란 brand 아님). Figma 3001:19122.',
     ],
   },
-  AddressSearch: {
-    name: "AddressSearch",
+  AddressPicker: {
+    name: "AddressPicker",
     examplesHtml: {
-      do: '<nds-address-search label="주소" search-label="주소 검색"\n  empty-message="검색 결과가 없어요" helper-text="도로명/지번 모두 가능"></nds-address-search>\n<script>el.addEventListener("address-query", e => search(e.detail.query));</script>',
-      dont: '<!-- results 를 string 으로 그대로 박음 — JSON 배열이어야 렌더 가능 -->\n<nds-address-search results="결과 없음"></nds-address-search>',
+      do: '<nds-address-picker label="주소" search-label="주소 검색"\n  empty-message="검색 결과가 없어요" helper-text="도로명/지번 모두 가능"></nds-address-picker>\n<script>el.addEventListener("address-query", e => search(e.detail.query));</script>',
+      dont: '<!-- results 를 string 으로 그대로 박음 — JSON 배열이어야 렌더 가능 -->\n<nds-address-picker results="결과 없음"></nds-address-picker>',
     },
     summary:
-      "주소 검색 + 상세 주소 입력. 검색 자체는 외부 API(카카오/네이버)로 처리, results만 전달.",
+      "주소 수집 전체 플로우(단순 검색창 아님) — 키워드 검색 + 결과 리스트 선택 + 상세주소 입력까지 한 컴포넌트. 검색 자체는 외부 API(카카오/네이버)로 처리, results만 전달. (구 이름 AddressSearch — 2026-06 AddressPicker 로 개명, 태그 nds-address-picker.)",
     pitfalls: [
+      "단순 주소 검색창이 아님 — 검색→선택→상세입력까지의 picker. SearchInput 으로 흉내내지 말 것.",
       "onSearch는 외부 API 호출 트리거 — 컴포넌트가 직접 검색 안 함.",
       "value는 주소 + 상세 한 묶음 — 폼 state에서 단일 값으로 관리.",
       "loading 상태 동안 검색 버튼 비활성 — 직접 disabled 처리 X.",
+      '검색 버튼은 color="secondary"(캐포비/지니어트 검정 CTA) — 색 hex 박지 말고 브랜드 cascade.',
     ],
     recommended: [
       "회원가입 주소: query/results를 외부 hook으로 관리",
@@ -5944,7 +5953,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     summary:
       "캐시워크 포 비즈니스 admin 의 Input/Form 컴포넌트 카탈로그. 11 컴포넌트 · 5 상태 (Default/Typing/Error/Disabled/Complete).",
     rules: [
-      "TextInput (5 states), TextField (Label+Input+Helper, 5 states), Dropdown (Default/Hover/Active/Error/Disabled + Expanded 메뉴), DateInput (5 states), Textarea (5 states), Checkbox (4 variants), SelectionButton/SelectionButtonGroup (선택 버튼 · FormField 교체), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션), SelectedItemsPanel (선택 항목 슬롯 패널 + SelectedItemRow).",
+      "TextInput (5 states · DS `Input`), TextField (Label+Input+Helper · DS `FormField`, 5 states), Dropdown (Default/Hover/Active/Error/Disabled + Expanded 메뉴 · DS `Select`), DateInput (5 states · DS `DatePicker`), Textarea (5 states), Checkbox (4 variants), SelectionButton(단독 · DS `SelectionButton`)/SelectionButtonGroup (선택 버튼 · FormField 교체), ImageUpload (Empty/Uploaded/Error), ActionChip (helper 옆 보조 액션), SelectedItemsPanel (선택 항목 슬롯 패널 + SelectedItemRow), FormSection (제목 + 보더 카드로 FormField 묶음 · DS `FormSection`).",
+      '**FormSection** = 제목(Headline3 24 Bold) + 보더 카드(radius 16 cascade · border #EEE · 좌우 padding 24)로 여러 `FormField` 를 묶는 폼 그룹. 마크업: `<nds-form-section title="기본 정보"><nds-form-field density="admin" label-position="left">…</nds-form-field></nds-form-section>`. 세로 리듬은 자식 `FormField density="admin"`(py-24) 이 만든다 — FormSection 에 따로 py 주지 말 것. radius·색은 `data-brand="cashwalk-biz"` cascade.',
       "Input/Border/Focus 는 ★ Neutral/900 (#111111) 검정 — 다른 브랜드(brand 색 focus) 와 달리 캐시워크 포 비즈니스 admin 은 검정 outline.",
       "Input/BG/Disabled = Neutral/50 (#FAFAFA), Input/Border/Default = Neutral/200 (#EEEEEE).",
       "Input·Dropdown·DateInput 의 입력 텍스트는 Body2 14/20 (base DS 의 Select/DateInput 13/18 보다 큼 — 캐시워크 포 비즈니스 전용).",
@@ -5952,9 +5962,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "Checkbox 의 'on-green' SVG 가 별도 — success 표시(이미 처리 완료) 의미. 일반 checked 와 구분.",
       "ImageUpload 는 캐시워크 포 비즈니스 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.",
       "Input focus 는 brand 색(노랑) 이 아니라 검정 outline. 가이드 명시.",
-      "ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline. radius 6 / bg #ECECEC.",
+      'ActionChip 은 TextField 의 helper text 영역 옆에 배치 — 별도 row 가 아니라 inline. radius 6 / bg #ECECEC. **아이콘+라벨**(예시 이미지/수정/다운로드): React `icon` prop / HTML `slot="icon"` 으로 14px 아이콘을 라벨 앞에 — 아이콘 없이 라벨만 두지 말 것(Figma 3종 모두 아이콘 동반).',
       "SelectedItemsPanel 헤더 = 선택 해제(기본) + 추가 선택(옵션 onAdd) — **피커 모달 안에서는 추가 선택 빼고 선택 해제만**(HTML `hide-add` / React onAdd 미전달). 추가 선택은 모달 밖에서만, secondary Button + plus 아이콘. count 는 text.brand 강조. 본문은 SelectedItemRow 리스트 등으로 swap.",
-      "**Field Width — 입력 필드 가로 너비 6단계 스케일** (TextInput·Dropdown·DateInput·Selection 등 모든 입력 공통, 컨테이너 안에서는 **항상 px 고정값**): XSmall **120px**(field-width-xs · 코드·짧은 ID·숫자, 예 사업자번호 토큰) · Small **200px**(field-width-sm · 단일 키워드 검색·Filter Dropdown·페이지네이션 옆 셀렉트) · **Medium 304px(field-width-md, default — 폼 내부 일반 입력 이메일·이름·계정명, 가장 흔함)** · Large **400px**(field-width-lg · 모달 내부 메인 입력·단독 검색바) · XLarge **488px**(field-width-xl · 와이드 페이지 필터·상세 폼 강조) · Full **100%**(field-width-full · Textarea·반응형 폼). 같은 행에 여러 input 이면 같은 사이즈로 통일. 관측 정규화: Dropdown 105/164/222 → Small(200)·Medium(304), 모달 명/번호 input ~396 → Large(400), '100개씩 보기' 152 → Small(200). Figma InputGuide Field Width(3897-1578).",
+      '**Field Width — 입력 필드 가로 너비 6단계 스케일** (TextInput·Dropdown·DateInput·Selection 등 모든 입력 공통, 컨테이너 안에서는 **항상 px 고정값**): XSmall **120px**(field-width-xs · 코드·짧은 ID·숫자, 예 사업자번호 토큰) · Small **200px**(field-width-sm · 단일 키워드 검색·Filter Dropdown·페이지네이션 옆 셀렉트) · **Medium 304px(field-width-md, default — 폼 내부 일반 입력 이메일·이름·계정명, 가장 흔함)** · Large **400px**(field-width-lg · 모달 내부 메인 입력·단독 검색바) · XLarge **488px**(field-width-xl · 와이드 페이지 필터·상세 폼 강조) · Full **100%**(field-width-full · Textarea·반응형 폼). 같은 행에 여러 input 이면 같은 사이즈로 통일. 관측 정규화: Dropdown 105/164/222 → Small(200)·Medium(304), 모달 명/번호 input ~396 → Large(400), \'100개씩 보기\' 152 → Small(200). **DS 구현**: `sizing.fieldWidth` 토큰(SSOT) + `fieldWidth` prop — React `<Input fieldWidth="md">` / `<Select fieldWidth="sm">`, HTML `<nds-input field-width="md">` / `<nds-select field-width="sm">` (xs|sm|md|lg|xl|full). 인라인 width 박지 말고 이 prop 을 쓸 것. Figma InputGuide Field Width(3897-1578).',
     ],
     avoid: [
       "Input focus 를 노란색으로 바꾸지 말 것 — 가이드 위반.",
@@ -5963,14 +5973,14 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     ],
     metrics: {
       components:
-        "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · SelectionButton · SelectionButtonGroup · ImageUpload · ActionChip · SelectedItemsPanel",
+        "TextInput · TextField · Dropdown · DateInput · Textarea · Checkbox · SelectionButton · SelectionButtonGroup · ImageUpload · ActionChip · SelectedItemsPanel · FormSection",
       defaultStates: "default / typing / error / disabled / complete",
       focusBorder: "#111111 (Neutral/900, 검정)",
       fieldWidth:
-        "6단계 px 고정 — xs 120(field-width-xs) / sm 200(field-width-sm) / md 304(field-width-md, default) / lg 400(field-width-lg) / xl 488(field-width-xl) / full 100%(field-width-full). 폼 일반=Medium 304, 모달 메인=Large 400, Textarea=Full.",
+        "6단계 — xs 120 / sm 200 / md 304(default) / lg 400 / xl 488 / full 100%. DS: `sizing.fieldWidth` 토큰 + `fieldWidth` prop(Input·Select) / `field-width` 속성(nds-input·nds-select). 폼 일반=md, 모달 메인=lg, Textarea=full.",
       relatedPatterns: "cashwalk-biz-button, dropdown, cashwalk-biz-form-layout",
     },
-    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3897-1578",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3080-741",
   },
 
   "cashwalk-biz-tab": {

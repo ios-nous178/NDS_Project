@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { addDismissableLayerListeners } from "./internal/web";
+import { Checkbox } from "./Checkbox";
+import { SearchInput } from "./SearchInput";
+import { Button } from "./Button";
 
 /* ─── Class names ─── */
 
@@ -14,11 +17,8 @@ const MS_SELECT_ALL_CLASS = `${MS_CLASS}__select-all`;
 const MS_COUNT_CLASS = `${MS_CLASS}__count`;
 const MS_LIST_CLASS = `${MS_CLASS}__list`;
 const MS_OPTION_CLASS = `${MS_CLASS}__option`;
-const MS_OPTION_CHECK_CLASS = `${MS_CLASS}__option-check`;
-const MS_OPTION_LABEL_CLASS = `${MS_CLASS}__option-label`;
 const MS_EMPTY_CLASS = `${MS_CLASS}__empty`;
 const MS_FOOTER_CLASS = `${MS_CLASS}__footer`;
-const MS_FOOTER_BTN_CLASS = `${MS_CLASS}__footer-button`;
 
 /* ─── Utils ─── */
 
@@ -76,18 +76,15 @@ export interface MultiSelectProps {
 /**
  * MultiSelect — 검색 + 전체선택 + 체크박스 + 취소/적용 푸터를 가진 다중 선택 필터 드롭다운.
  *
+ * 내부는 DS 컴포넌트 조합: 검색=`SearchInput`, 전체선택/옵션=`Checkbox`(indeterminate),
+ * 푸터=`Button`. 체크박스/입력/버튼의 토큰·a11y·브랜드 cascade 를 그대로 물려받는다.
+ *
  * 일반 `Select`(단일 선택, 즉시 반영)와 다르다: 초안(draft)을 패널 안에서 편집하고
- * **적용** 을 눌러야 `onValueChange` 가 발화한다(취소는 초안 폐기). 리포트 상단의
- * "광고 다중 선택" 같은 필터에 쓴다. Figma 캐포비 광고별 리포트(3001:28554) 정합.
+ * **적용** 을 눌러야 `onValueChange` 가 발화한다(취소는 초안 폐기).
  *
  * @example
- * <MultiSelect
- *   options={ads}
- *   value={selectedAds}
- *   onValueChange={setSelectedAds}
- *   placeholder="모든 광고"
- *   searchPlaceholder="광고명으로 검색"
- * />
+ * <MultiSelect options={ads} value={selectedAds} onValueChange={setSelectedAds}
+ *   placeholder="모든 광고" searchPlaceholder="광고명으로 검색" />
  */
 export const MultiSelect: React.FC<MultiSelectProps> = ({
   options,
@@ -141,8 +138,10 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   }, [options, query]);
 
   const filteredEnabled = useMemo(() => filtered.filter((o) => !o.disabled), [filtered]);
+  const selectedCount = filteredEnabled.filter((o) => draft.has(o.value)).length;
   const allFilteredSelected =
-    filteredEnabled.length > 0 && filteredEnabled.every((o) => draft.has(o.value));
+    filteredEnabled.length > 0 && selectedCount === filteredEnabled.length;
+  const someFilteredSelected = selectedCount > 0 && !allFilteredSelected;
 
   const toggleOption = useCallback((optionValue: string) => {
     setDraft((prev) => {
@@ -222,8 +221,8 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         <div
           ref={dropdownRef}
           data-slot="dropdown"
-          role="listbox"
-          aria-multiselectable="true"
+          role="group"
+          aria-label={placeholder}
           className={MS_DROPDOWN_CLASS}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
@@ -234,50 +233,28 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         >
           {searchable && (
             <div data-slot="search" className={MS_SEARCH_CLASS}>
-              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
-                <path
-                  d="M13 13l-2.5-2.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <input
-                type="text"
+              <SearchInput
                 value={query}
-                placeholder={searchPlaceholder}
                 onChange={(e) => setQuery(e.target.value)}
+                placeholder={searchPlaceholder}
+                showSearchButton={false}
+                fullWidth
                 autoFocus
+                aria-label={searchPlaceholder}
               />
             </div>
           )}
 
-          <button
-            type="button"
-            data-slot="select-all"
-            className={MS_SELECT_ALL_CLASS}
-            onClick={toggleSelectAll}
-            disabled={filteredEnabled.length === 0}
-          >
-            <span
-              data-checked={allFilteredSelected ? "true" : "false"}
-              className={MS_OPTION_CHECK_CLASS}
-              aria-hidden
-            >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M2.5 6.5l2.5 2.5L9.5 3.5"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <span>{selectAllLabel}</span>
+          <div data-slot="select-all" className={MS_SELECT_ALL_CLASS}>
+            <Checkbox
+              checked={allFilteredSelected}
+              indeterminate={someFilteredSelected}
+              disabled={filteredEnabled.length === 0}
+              label={selectAllLabel}
+              onCheckedChange={toggleSelectAll}
+            />
             <span className={MS_COUNT_CLASS}>{draft.size}개 선택</span>
-          </button>
+          </div>
 
           <div data-slot="list" className={MS_LIST_CLASS}>
             {filtered.length === 0 ? (
@@ -288,59 +265,38 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
               filtered.map((opt) => {
                 const checked = draft.has(opt.value);
                 return (
-                  <label
+                  <div
                     key={opt.value}
-                    role="option"
-                    aria-selected={checked}
+                    data-slot="option"
                     data-checked={checked ? "true" : "false"}
                     data-disabled={opt.disabled ? "true" : "false"}
                     className={MS_OPTION_CLASS}
                   >
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={checked}
                       disabled={opt.disabled}
-                      onChange={() => toggleOption(opt.value)}
+                      label={opt.label}
+                      onCheckedChange={() => toggleOption(opt.value)}
                     />
-                    <span
-                      data-checked={checked ? "true" : "false"}
-                      className={MS_OPTION_CHECK_CLASS}
-                      aria-hidden
-                    >
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path
-                          d="M2.5 6.5l2.5 2.5L9.5 3.5"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </span>
-                    <span className={MS_OPTION_LABEL_CLASS}>{opt.label}</span>
-                  </label>
+                  </div>
                 );
               })
             )}
           </div>
 
           <div data-slot="footer" className={MS_FOOTER_CLASS}>
-            <button
-              type="button"
-              data-variant="cancel"
-              className={MS_FOOTER_BTN_CLASS}
+            <Button
+              size="sm"
+              color="secondary"
+              variant="outlined"
+              data-slot="cancel"
               onClick={close}
             >
               {cancelLabel}
-            </button>
-            <button
-              type="button"
-              data-variant="apply"
-              className={MS_FOOTER_BTN_CLASS}
-              onClick={apply}
-            >
+            </Button>
+            <Button size="sm" color="secondary" variant="solid" data-slot="apply" onClick={apply}>
               {applyLabel}
-            </button>
+            </Button>
           </div>
         </div>
       )}
