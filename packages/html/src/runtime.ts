@@ -40,6 +40,7 @@ import "./components/nds-select.js";
 import "./components/nds-toast.js";
 import "./components/nds-toggle.js";
 import "./components/nds-tooltip.js";
+import "./components/nds-confirm-tooltip.js";
 import "./components/nds-progress-bar.js";
 import "./components/nds-skeleton.js";
 import "./components/nds-title-group.js";
@@ -120,6 +121,7 @@ import "./components/nds-checkbox-group.js";
 // 회귀 방지: 아래 컴포넌트들은 자기 파일에서 define() 하지만 이 side-effect 엔트리에
 // import 되지 않아 standalone 번들에 미포함 → <nds-*> 가 런타임 미등록(빈 박스)이었다.
 // scripts/check-runtime-registry.mjs 가 define()↔runtime.ts import drift 를 하드 게이트한다.
+import "./components/nds-brand-logo.js";
 import "./components/nds-coach-mark.js";
 import "./components/nds-empty-state.js";
 import "./components/nds-online-indicator.js";

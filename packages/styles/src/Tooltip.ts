@@ -1,5 +1,13 @@
 /* Auto-generated from packages/react/src/Tooltip.tsx during the @nudge-design/styles split. */
-import { cv, fontFamily, fontWeight, radius, typeScale, zIndex } from "@nudge-design/tokens";
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  radius,
+  spacing,
+  typeScale,
+  zIndex,
+} from "@nudge-design/tokens";
 
 const TT_CLASS = "nds-tooltip";
 const TT_TRIGGER_CLASS = `${TT_CLASS}__trigger`;
@@ -23,7 +31,8 @@ export const tooltipStyles = `
     position: absolute;
     z-index: ${zIndex.popup};
     padding: var(--semantic-inset-chip) var(--semantic-inset-input);
-    background: ${cv.surface.inverse};
+    /* --nds-tooltip-bg 슬롯: 미설정 시 surface.inverse (기존 동작) — 브랜드 cascade override 여지. */
+    background: var(--nds-tooltip-bg, ${cv.surface.inverse});
     color: ${cv.textRole.inverse};
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
@@ -75,7 +84,7 @@ export const tooltipStyles = `
     position: absolute;
     width: 8px;
     height: 8px;
-    background: ${cv.surface.inverse};
+    background: var(--nds-tooltip-bg, ${cv.surface.inverse});
     transform: rotate(45deg);
   }
 
@@ -101,5 +110,30 @@ export const tooltipStyles = `
     left: -4px;
     top: 50%;
     margin-top: -4px;
+  }
+
+  /* ─── 캐포비(cashwalk-biz) 어드민 Tooltip — Figma 7dCJU5lNPfgcAjFPwbbLIu 4018:1161 정합.
+     · 배경(#333): --nds-tooltip-bg 슬롯을 brand 토큰맵에서 --semantic-fill-neutral-default 로 override
+       (cashwalk-biz.ts components.tooltip.bg). 컴포넌트 CSS 엔 hex 없음 — 시멘틱 cascade.
+     · 리치 본문: Figma compact 스펙(padding 14/16, gap 6, 제목 13 Medium · 본문 12/18).
+     다른 브랜드는 슬롯 미설정 → surface.inverse · 16/24 rich 유지(영향 없음). ─── */
+  :where([data-brand="cashwalk-biz"] .${TT_CONTENT_CLASS}[data-rich="true"]) {
+    gap: ${spacing[6]}px;
+    padding: ${spacing[14]}px ${spacing[16]}px;
+    border-radius: ${radius.md}px;
+    font-size: ${typeScale.caption2.fontSize}px;
+    line-height: 18px;
+  }
+  :where([data-brand="cashwalk-biz"] .${TT_CONTENT_CLASS}[data-rich="true"] p:first-child) {
+    font-size: ${typeScale.caption1.fontSize}px;
+    font-weight: ${fontWeight.medium};
+    line-height: normal;
+  }
+  :where([data-brand="cashwalk-biz"] .${TT_CONTENT_CLASS}[data-rich="true"] ul) {
+    margin: 0;
+    padding-left: 18px;
+  }
+  :where([data-brand="cashwalk-biz"] .${TT_CONTENT_CLASS}[data-rich="true"] li + li) {
+    margin-top: ${spacing[6]}px;
   }
 `;

@@ -1812,11 +1812,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- 다이얼 코드(+82) 를 country-code 로 — ISO 코드 사용 -->\n<nds-phone-input country-code="+82"></nds-phone-input>',
     },
     summary:
-      "국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드는 countries 데이터에서 조회. 국기 이모지 없이 다이얼코드/ISO코드/국가명만 표시(텍스트 이모지 금지 규칙 준수).",
+      "국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드는 countries 데이터에서 조회. 국기 이모지 없이 다이얼코드/ISO코드/국가명만 표시(텍스트 이모지 금지 규칙 준수). " +
+      "레이아웃 = 국가코드 드롭다운 박스 + 번호 입력 박스가 분리된 두 박스(gap). 두 박스 모두 base Input 시멘틱 토큰(height 48 · radius md · border/background)을 상속하므로 brand cascade(--nds-input-*)가 그대로 적용됨.",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-40209",
     pitfalls: [
       "countryCode는 ISO code(KR, US 등)로 관리. '+82' 문자열을 state에 두지 말 것.",
       "번호 마스킹/하이픈 자동화는 컴포넌트가 강제하지 않음 — 필요하면 onValueChange에서 직접.",
       "기본 5개국(KR/US/JP/CN/GB) 외 필요하면 countries prop으로 직접 정의.",
+      "둥근 모서리/높이를 임의 px 로 박지 말 것 — base Input 토큰(--nds-input-radius/-height) 상속이므로 Input 과 자동 일관.",
     ],
     recommended: [
       "회원가입: helperText='인증번호를 받을 번호를 입력해주세요'",
@@ -2547,6 +2550,25 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "아바타 우하단에 올릴 때 부모 position:relative + 점 position:absolute.",
     ],
     recommended: ["상담사 리스트: showLabel=true로 텍스트 함께", "아바타 점: 라벨 없이 size=10"],
+  },
+  BrandLogo: {
+    name: "BrandLogo",
+    examplesHtml: {
+      do: '<nds-brand-logo brand="cashwalk-biz" height="40"></nds-brand-logo>\n<!-- 링크: --><nds-brand-logo brand="nudge-eap" href="/"></nds-brand-logo>',
+      dont: '<!-- 35KB base64 를 손으로 붙이거나 raw img/svg 로 로고 조립 — 모지바케·로고 유실 회귀 -->\n<img src="data:image/svg+xml;base64,PHN2Zy…(35KB)…" />',
+    },
+    summary:
+      "브랜드 대표 로고(trost/geniet/nudge-eap/cashwalk-biz/runmile)를 컴포넌트로 박는다. base64 data URI 가 내장돼 단일 HTML/오프라인에서도 안 깨진다. `<nds-sidebar brand>` / `<nds-brand-header brand>` 가 주입하는 것과 동일한 로고 SSOT(brand-logo-defaults). brand chrome(헤더/사이드바)이 없는 화면 — 특히 캐포비 어드민 온보딩 카드 — 에서 로고를 넣는 표준 진입점.",
+    pitfalls: [
+      "35KB base64 data URI 를 logo-src/img 로 손수 붙이지 말 것 — brand 만 주면 자동 주입. 거대 블롭 추출·재인코딩이 한글 모지바케+로고 유실 회귀의 직접 원인.",
+      "raw <img>/<svg> 로 로고를 직접 조립하지 말 것 — BrandLogo 로 박아야 5개 브랜드 일관 + SSOT 유지.",
+      "height 만 주면 폭은 비율 유지(auto). width 를 강제하면 찌그러질 수 있다.",
+      "헤더/푸터/사이드바 안에서는 BrandLogo 를 또 박지 말 것 — 그 컴포넌트들은 brand 속성으로 로고를 이미 자동 주입한다. BrandLogo 는 chrome 이 없는 화면용.",
+    ],
+    recommended: [
+      "캐포비 어드민 온보딩 카드 상단: <nds-brand-logo brand='cashwalk-biz' height='40'> (pattern:cashwalk-biz-page-onboarding)",
+      "로고 클릭 시 홈 이동: href 지정",
+    ],
   },
   PinPad: {
     name: "PinPad",
@@ -3883,12 +3905,35 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     pitfalls: [
       "Tooltip 안에 인터랙티브 요소(링크/버튼) — 모바일/터치에서는 도달 불가.",
       "trigger 가 aria-label 만 갖고 visible 텍스트가 없는 아이콘 버튼인데 Tooltip 도 같은 내용 — 중복.",
-      "본문 길이/줄 수 제한은 없음 — 두 줄·여러 줄·제목+불릿 리치까지 허용(`<template slot=\"content\">` + 필요 시 `max-width`). 단 (a) 사용자의 응답/결정이 필요하거나 (b) 한 화면을 채울 만큼 길면 Modal — Tooltip 은 어디까지나 hover 보조 안내. (이전의 '한 문장 초과 금지' 규칙은 폐기.)",
+      "본문 길이/줄 수 제한은 없음 — 두 줄·여러 줄·제목+불릿 리치까지 허용(`<template slot=\"content\">` + 필요 시 `max-width`). 단 (a) 사용자의 응답/결정이 필요하면 component:ConfirmTooltip(가벼운 인라인 확인) 또는 Modal/Popup(차단형), (b) 한 화면을 채울 만큼 길면 Modal — Tooltip 은 어디까지나 hover 보조 안내. (이전의 '한 문장 초과 금지' 규칙은 폐기.)",
       '리치 본문은 `content` 속성(평문)이 아니라 **`<template slot="content">`** 로 — HTML(제목 `<p style="font-weight:700">` · 불릿 `<ul><li>` · 강조 `<strong>`)을 넣어야 렌더된다. content 속성에 태그 문자열을 넣으면 그대로 escape 됨.',
     ],
     examplesHtml: {
       do: '<!-- ① 짧은 힌트(자동 줄바꿈) -->\n<nds-tooltip content="삭제하면 복구할 수 없어요" placement="top" trigger-label="?"></nds-tooltip>\n<!-- ② 리치 안내(제목+불릿·멀티라인) — 캐포비 권한 안내 형태 -->\n<nds-tooltip trigger-label="?" placement="top" max-width="346" open>\n  <template slot="content">\n    <p style="font-weight:700">권한 안내</p>\n    <ul>\n      <li>비즈니스 계정 : <strong>모든 광고 계정</strong>에 접근할 수 있으며, 광고 계정 생성 및 수정 권한을 가집니다.</li>\n      <li>일반 계정 : <strong>초대된 광고 계정</strong>에 한해 광고 조회 및 관리가 가능합니다.</li>\n    </ul>\n  </template>\n</nds-tooltip>',
       dont: '<!-- 모바일에서 보이지 않는 본질 정보를 툴팁에만 -->\n<nds-tooltip content="이용약관 동의가 필수입니다" trigger-label="?"></nds-tooltip>\n<!-- 리치 본문을 content 속성에 태그 문자열로 (escape 되어 깨짐) -->\n<nds-tooltip trigger-label="?" content="<strong>권한 안내</strong><ul>..."></nds-tooltip>',
+    },
+  },
+  ConfirmTooltip: {
+    name: "ConfirmTooltip",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4018-1226",
+    summary:
+      "캐포비 어드민 **popconfirm** — 트리거(버튼/링크) 옆에서 가볍게 확인받는 **흰 말풍선**. 제목 + 보조 본문 + 1~2 액션 버튼(검정 secondary CTA) + 방향 tail. `open` controlled, 트리거 클릭 핸들러에서 토글. 확인/취소는 React `onConfirm`/`onCancel`, HTML `nds-confirm-tooltip-confirm`/`nds-confirm-tooltip-cancel` 이벤트. **Tooltip(다크 hover 안내)과 분리** — 이건 사용자의 응답/결정이 필요한 경우. 색은 전부 semantic 토큰이라 brand cascade 로 해석(캐포비 = 검정 CTA).",
+    pitfalls: [
+      "차단형 결정·되돌리기 어려운 작업·한 화면을 채울 만큼 긴 본문은 ConfirmTooltip 이 아니라 Modal/Popup. ConfirmTooltip 은 인라인 가벼운 확인용.",
+      "단순 hover 보조 설명에 쓰지 말 것 — 그건 component:Tooltip(다크 말풍선). ConfirmTooltip 은 액션 버튼이 있는 확인 팝업.",
+      "`open` 은 controlled — 트리거 클릭에서 직접 토글하고, onConfirm/onCancel 에서 닫아야(open=false) 한다. (HTML 은 `open` 속성 토글 + 이벤트 리슨.)",
+      'actions="single" 이면 확인 버튼만 — 이때 cancelLabel 은 무시된다. 취소가 필요하면 actions="dual".',
+      "트리거는 React children / HTML light-DOM child (실제 버튼). trigger-label 같은 평문 속성 없음 — Tooltip 과 다르다.",
+    ],
+    examplesHtml: {
+      do: '<!-- 인라인 확인 (취소+해제) — open 토글 + 이벤트 리슨 -->\n<nds-confirm-tooltip\n  title="연결을 해제하시겠습니까?"\n  description="연결을 해제하면 광고에 해당 소재는 더이상 노출되지 않습니다."\n  confirm-label="해제" cancel-label="취소" placement="top" open>\n  <nds-button color="secondary" variant="outlined" size="sm">연결 해제</nds-button>\n</nds-confirm-tooltip>\n<script>\n  el.addEventListener("nds-confirm-tooltip-confirm", () => el.removeAttribute("open"));\n  el.addEventListener("nds-confirm-tooltip-cancel", () => el.removeAttribute("open"));\n</script>\n<!-- 확인만 -->\n<nds-confirm-tooltip title="저장되었습니다" actions="single" confirm-label="확인" open>\n  <nds-button color="secondary" variant="outlined" size="sm">안내</nds-button>\n</nds-confirm-tooltip>',
+      dont: '<!-- 되돌리기 어려운 차단형 결정을 popconfirm 으로 — Modal/Popup 이 맞음 -->\n<nds-confirm-tooltip title="계정을 영구 삭제할까요?" open>...</nds-confirm-tooltip>\n<!-- hover 보조 설명에 ConfirmTooltip (액션 없는 안내는 Tooltip) -->\n<nds-confirm-tooltip title="CTR = 클릭률" actions="single"></nds-confirm-tooltip>',
+    },
+    stateMatrix: {
+      "actions=dual":
+        "취소(흰 배경·검정 border·검정 텍스트) + 확인(검정 fill·흰 텍스트). 우측 정렬.",
+      "actions=single": "확인 버튼 1개만 (검정 fill·흰 텍스트). 우측 정렬.",
+      placement: "top(기본)/bottom/left/right — tail 이 트리거를 가리키도록 anchor 반대편에 배치.",
     },
   },
   BottomSheet: {
@@ -5938,17 +5983,29 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       '**Box(chip)** = 상태/좁은 영역 필터(진행중·진행예정·종료 등). 마크업: `<nds-tabs variant="chip" size="pc" tone="neutral">`. radius 10, Selected=#111(bg-inverse) bg + 흰 텍스트 Bold, Default=#DDD(button-bg-disabled) bg + 흰 텍스트 Bold (의도된 저대비 — 가이드 명시).',
       '치수·색은 모두 캐포비 브랜드 토큰(`--nds-tabs-*`)으로 cascade — 별도 style 오버라이드 금지. `data-brand="cashwalk-biz"` 만 루트에 있으면 자동 적용된다.',
       "동적 상태(진행/종료)는 Box, 페이지 카테고리는 Underline — 혼용 주의. 단계형 진행 표시는 Tab 이 아니라 `pattern:cashwalk-biz-step-progress`.",
+      "**Tab vs Filter — 역할이 다르다(혼동 금지).** 둘 다 데이터를 분류해 보여주지만: **Tab** = 데이터를 **상호 배타적으로 분류**(한 번에 한 view 만) → **view 자체가 바뀜** → URL **경로** 변경(`/quizzes/active → /quizzes/done`). 예: 진행중/종료/대기, 승인/반려. **Filter**(`pattern:` FilterBar) = **현재 view 안에서 조건을 점진적으로 좁히기** → 같은 view 에 **결과만 변함** → **쿼리 파라미터**로 누적(`?date=…&keyword=…`, URL 공유 시에도 필터 유지). 예: 날짜 범위·키워드·카테고리 다중.",
+      "**결정 트리** — Q1. view 자체가 바뀌나(목록 전체 교체)? → YES = **Tab**. Q2. 조건을 누적해서 좁히나(다중 필터)? → YES = **Filter(FilterBar)**. Q3. 옵션 2–7개 단일 선택인가? → YES = **Radio / SelectionButtonGroup**(`get_guide` Selection Components). 그 외 = 다른 컨트롤 검토.",
+      "**화면 배치 순서(페이지 패턴)** — 페이지 타이틀 → **Tab** → **FilterBar** → 데이터 영역(위→아래). Tab 으로 큰 분류를 고른 뒤 Filter 로 그 안에서 좁히는 흐름. 한 화면에 Tab 종류는 1개로 통일(Underline 또는 Box 택1), Tab 항목 수는 2–5개 권장(6개+는 메뉴/Select). Filter 항목 수 제한 없음(12개+면 별도 `[필터 더보기]` 모달).",
     ],
     avoid: [
       "Box Default 텍스트를 회색으로 바꾸지 말 것 — 캐포비 가이드는 #DDD 위 흰 텍스트(저대비)가 의도된 스펙.",
       "Underline 인디케이터를 3px(base) 로 두지 말 것 — 캐포비는 2px. 단, 브랜드 cascade 가 처리하므로 직접 px 박지 말 것.",
       "Tab 으로 다단계 폼 진행도(Step)를 표현하지 말 것 — Stepper variant=bar 사용.",
+      "큰 분류(상호 배타적)를 Filter 로 만들지 말 것 — 예: 진행중/종료를 토글 필터로. → **Tab** 사용.",
+      "조건 좁히기를 Tab 으로 만들지 말 것 — 예: 날짜 범위를 Tab 으로. → **Filter** 사용.",
+      "Tab 안에 또 Tab 을 중첩하지 말 것(계층이 깊어져 길을 잃음) — Sub-section 은 Accordion 또는 Anchor.",
+      "Underline Tab 과 Box Tab 을 같은 화면에서 혼용하지 말 것.",
+      "FilterBar 에 Primary CTA 외 다른 액션 버튼을 여러 개 두지 말 것(CTA 는 1개만).",
     ],
     metrics: {
       variants: "line(Underline) · chip(Box)",
       font: "Subtitle1 16/24",
       lineIndicator: "2px",
       boxRadius: 10,
+      tabVsFilter:
+        "Tab = view 전환(상호 배타·URL 경로) / Filter = 현재 view 좁히기(다중 누적·쿼리 파라미터)",
+      screenOrder: "페이지 타이틀 → Tab → FilterBar → 데이터 영역",
+      relatedComponents: "Tabs, FilterBar",
       relatedPatterns:
         "cashwalk-biz-step-progress, cashwalk-biz-badge-chip, cashwalk-biz-page-patterns",
     },
@@ -6481,7 +6538,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**언제 쓰나**: PRD 에 '로그인 / 회원가입 / 비밀번호 찾기 / 이메일 인증 / 가입 완료' 키워드가 있고, 사이드바·네비게이션 없이 단독 흐름으로 진행되며, 단일 목적 + 단일 폼 + 단일 CTA 로 구성되는 화면.",
       "**중앙 카드 1개 (shell 없음)**: 비로그인 상태라 admin-shell(사이드바/topbar) 미적용. 캔버스 배경 = `--semantic-bg-surface-subtle`(#FAFAFA 탈색 회색), 그 위에 카드를 **수직+수평 중앙** 정렬.",
       "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing).",
-      "**01 Logo**: 카드 상단 중앙 정렬. 캐포비 로고 컴포넌트 사용(직접 SVG 조립 X). 찾기 화면은 로고 아래 안내문(예: '캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.')을 둔다.",
+      '**01 Logo**: 카드 상단 중앙 정렬. **BrandLogo 컴포넌트로 박는다** — HTML `<nds-brand-logo brand="cashwalk-biz">` / React `<BrandLogo brand="cashwalk-biz" />`. 사이드바와 동일한 로고 SSOT 가 data URI 로 내장돼 단일 HTML 에서도 안 깨진다. **35KB base64 를 손으로 붙이거나 raw <img>/SVG 로 조립 금지**(모지바케·로고 유실 회귀의 직접 원인). 찾기 화면은 로고 아래 안내문(예: \'캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.\')을 둔다.',
       "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
       "**03 Primary CTA**: Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득). 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개(`pattern:cashwalk-biz-button`).",
       "**04 Helper**: 보조 링크는 **TextButton(Medium)** — 로그인 화면의 '아이디 찾기 | 비밀번호 찾기', 가입 유도 등. solid 버튼으로 만들지 않는다.",
@@ -6494,7 +6551,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "로그인·아이디찾기·비밀번호찾기마다 다른 레이아웃 골격",
       "Primary CTA 를 카드 폭보다 좁게 / 2개 이상 / outlined 로",
       "보조 링크(찾기·가입)를 solid 버튼으로 — TextButton(Medium) 텍스트 링크가 맞다",
-      "로고를 직접 SVG 로 조립 — 캐포비 로고 컴포넌트 사용",
+      '로고를 raw <img>/SVG 로 조립하거나 35KB base64 를 손으로 붙이기 — `<nds-brand-logo brand="cashwalk-biz">` / `<BrandLogo brand="cashwalk-biz" />` 사용',
       "필드 6개 이상·3스텝 이상을 단일 온보딩 카드에 욱여넣기 (Validate Rule 위반 → Form/Multi-step 전환)",
     ],
     examples: [
@@ -6522,7 +6579,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       canvasBg: "--semantic-bg-surface-subtle (#FAFAFA)",
       cardItemSpacing: "40px (큰 단위 그룹간)",
       cardAlign: "vertical + horizontal center",
-      logo: "캐포비 로고 컴포넌트 (중앙 정렬)",
+      logo: "BrandLogo 컴포넌트 — <nds-brand-logo brand='cashwalk-biz'> / <BrandLogo brand='cashwalk-biz' /> (중앙 정렬, height~40, data URI 내장). 전 온보딩 화면 가로형 lockup 통일 — 사이드바와 동일 로고 SSOT. (Figma 3611-2 로그인 화면은 세로형 lockup 으로 그려졌으나 DS 는 세로형 에셋이 없어 가로형으로 통일 — 의도된 divergence.)",
       formLogin: "TextInput (ID + Password eye 토글)",
       formFind: "RadioGroup (찾기 방법 선택 — 전화/이메일)",
       primaryCta: "Button Solid/Primary/X-Large 가로 FILL · #FFD200 + 검정",

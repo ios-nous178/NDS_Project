@@ -326,6 +326,11 @@ export interface ComponentOverrides {
     chipDefaultColor?: ComponentValue;
     chipDefaultWeight?: ComponentValue;
   };
+  /**
+   * Tooltip 다크 말풍선 배경 슬롯. 캐포비는 Fill/Neutral(#333) — base inverse(#111)와 다름.
+   * 다른 브랜드는 미설정 → 컴포넌트 fallback (surface.inverse) 유지.
+   */
+  tooltip?: { bg?: ComponentValue };
 }
 
 /** 브랜드 테마 전체 정의 */
