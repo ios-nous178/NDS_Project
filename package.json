@@ -20,7 +20,7 @@
     "generate:component-guides": "node scripts/generate-component-guides.mjs",
     "generate:brand-coverage": "node scripts/generate-brand-coverage.mjs",
     "generate:guide-docs": "node scripts/generate-guide-docs.mjs",
-    "generate:ssot": "pnpm --filter @nudge-design/mcp build && pnpm generate:component-guides && pnpm generate:brand-coverage && pnpm generate:guide-docs",
+    "generate:ssot": "turbo build --filter=@nudge-design/mcp^... --output-logs=errors-only && pnpm --filter @nudge-design/mcp build && pnpm generate:component-guides && pnpm generate:brand-coverage && pnpm generate:guide-docs",
     "generate:mcp-tools": "node scripts/generate-mcp-tools-reference.mjs",
     "lint:mcp-tools": "node scripts/generate-mcp-tools-reference.mjs --check",
     "generate:tokens": "node scripts/sync-tokens.mjs --write && pnpm --filter=@nudge-design/tokens build",
