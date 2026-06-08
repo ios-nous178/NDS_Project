@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/icons",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "SVG icon components for Nudge Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
