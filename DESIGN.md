@@ -552,7 +552,7 @@ Z-index 레이어: base(0) → dropdown(100) → sticky(200) → appBar(300) →
 
 ### Button
 
-4가지 variant: **solid**(기본 CTA), **outlined**(보조 액션), **soft**(3차 액션), **outlined-sub**(마젠타 보조).
+3가지 variant: **solid**(기본 CTA), **outlined**(보조 액션), **soft**(3차 액션).
 6가지 사이즈: xl(56px) / lg(48px) / md(44px) / sm(42px) / xs(38px) / field(48px).
 기본 radius 8px, solid는 primary fill + 흰색 텍스트.
 

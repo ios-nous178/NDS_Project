@@ -172,7 +172,7 @@ export const popupStyles = `
 
   :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CANCEL_CLASS}) {
     background: ${cv.surface.default};
-    border-color: ${cv.button.borderAssistive};
+    border-color: ${cv.button.borderNeutral};
     color: ${cv.textRole.strong};
   }
 

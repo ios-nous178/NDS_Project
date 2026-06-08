@@ -224,7 +224,7 @@ export const modalStyles = `
            ① Single (onConfirm 만)         → 우측 정렬 · 120px 고정
            ② Dual   (onConfirm + onClose)  → 가로 양분 (기존 동작)
        · confirm = 검정 CTA (button.bgSecondary)
-       · cancel  = white + assistive 회색 보더
+       · cancel  = white + neutral 회색 보더
      기존 props 만으로 4가지 admin 패턴 모두 표현 가능 — Modal API
      변경 없이 CSS cascade 만 추가. <html data-brand="cashwalk-biz"> 가
      박혀 있을 때만 자동 적용.
@@ -298,13 +298,13 @@ export const modalStyles = `
 
   :where([data-brand="cashwalk-biz"] .${FOOTER_CANCEL_CLASS}) {
     background-color: ${cv.surface.default};
-    border-color: ${cv.button.borderAssistive};
+    border-color: ${cv.button.borderNeutral};
     color: ${cv.textRole.strong};
   }
 
   :where([data-brand="cashwalk-biz"] .${FOOTER_CANCEL_CLASS}:hover) {
     background-color: ${cv.surface.subtle};
-    border-color: ${cv.button.borderAssistive};
+    border-color: ${cv.button.borderNeutral};
   }
 
   :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}) {

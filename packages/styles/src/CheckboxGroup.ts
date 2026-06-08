@@ -69,6 +69,11 @@ export const checkboxGroupStyles = `
     font-weight: ${fontWeight.medium};
     color: ${cv.textRole.subtle};
   }
+  /* 필수 항목 뱃지 — 선택 항목(회색)과 구분되도록 강조(빨강 + bold) */
+  :where(.${CG_BADGE_CLASS}[data-required="true"]) {
+    color: ${cv.textRole.statusError};
+    font-weight: ${fontWeight.bold};
+  }
 
   :where(.${CG_TOGGLE_CLASS}) {
     appearance: none;

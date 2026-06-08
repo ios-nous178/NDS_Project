@@ -81,7 +81,7 @@ export const trostSemantic = {
       hover: trostYellow.border,
       disabled: trostNeutral[300],
     },
-    assistive: { default: trostNeutral[200], disabled: trostNeutral[200] },
+    neutral: { default: trostNeutral[200], disabled: trostNeutral[200] },
   },
   icon: {
     strong: { default: trostNeutral[800] },

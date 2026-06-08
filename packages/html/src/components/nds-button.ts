@@ -84,6 +84,25 @@ export class NdsButton extends NdsElement {
   private _inner: HTMLButtonElement | null = null;
   private _label: HTMLSpanElement | null = null;
 
+  /**
+   * 네이티브 <button> 처럼 `.disabled` / `.fullWidth` 프로퍼티로도 토글 가능하게 한다.
+   * (attribute 만 지원하면 `el.disabled = false` 가 attribute 에 반영되지 않아
+   *  버튼이 계속 비활성으로 남는 함정이 있었다 — nds-checkbox 와 동일하게 reflect.)
+   */
+  get disabled(): boolean {
+    return this.boolAttr("disabled");
+  }
+  set disabled(value: boolean) {
+    this.toggleAttribute("disabled", !!value);
+  }
+
+  get fullWidth(): boolean {
+    return this.boolAttr("full-width");
+  }
+  set fullWidth(value: boolean) {
+    this.toggleAttribute("full-width", !!value);
+  }
+
   override connectedCallback(): void {
     if (!this._inner) this._mount();
     super.connectedCallback();

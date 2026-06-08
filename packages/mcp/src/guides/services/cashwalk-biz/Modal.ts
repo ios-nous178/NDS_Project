@@ -10,7 +10,7 @@ import type { ServiceOverlay } from "../types.js";
  */
 export const ModalOverlay: ServiceOverlay = {
   preferredPatterns: [
-    "Confirm = 검정 CTA (`cv.button.bgSecondary` = #000), Cancel = white + `cv.button.borderAssistive` 회색 보더.",
+    "Confirm = 검정 CTA (`cv.button.bgSecondary` = #000), Cancel = white + `cv.button.borderNeutral` 회색 보더.",
     "Footer 1버튼(Single): 우측 정렬 + 120px 고정 폭 (`data-has-both-actions` 속성 자동 감지).",
     "Footer 2버튼(Dual): 가로 양분 — base 와 동일.",
   ],

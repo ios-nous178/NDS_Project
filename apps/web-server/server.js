@@ -989,7 +989,7 @@ function dashboardHtml() {
       <div class="brand"><img src="/logo.svg" alt="" /> Nudge DS 로그 대시보드</div>
       <div class="header-meta">
         <span id="updated">불러오는 중</span>
-        <nds-button id="seedBtn" size="sm" color="assistive" variant="outlined">샘플 적재</nds-button>
+        <nds-button id="seedBtn" size="sm" color="neutral" variant="outlined">샘플 적재</nds-button>
         <nds-button id="refreshBtn" size="sm" color="primary" variant="solid">새로고침</nds-button>
       </div>
     </header>

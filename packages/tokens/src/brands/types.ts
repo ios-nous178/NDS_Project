@@ -59,36 +59,38 @@ export interface SemanticColors {
     secondary?: { default?: string; hover?: string; disabled?: string };
     outlined?: { default?: string; hover?: string; disabled?: string };
     /**
-     * Filled neutral 톤. Geniet 의 "Solid Assistive" 처럼 primary/secondary 보다
+     * Filled neutral 톤. Geniet 의 "Solid Neutral" 처럼 primary/secondary 보다
      * 낮은 위계에서 사용되는 채워진 회색 버튼 패턴. NudgeEAP base / Trost 는
      * 기본 사용 안 함 (해당 브랜드는 outlined 로 같은 위계를 표현).
      */
-    assistive?: { default?: string; hover?: string; disabled?: string };
+    neutral?: { default?: string; hover?: string; disabled?: string };
   };
   /**
    * `secondary` — Solid/Secondary 텍스트 색. 브랜드별로 의도가 달라 분리:
    *   · NudgeEAP: brand blue (light blue bg 위)
    *   · Trost: cobalt brand (cobalt-50 bg 위)
    *   · Geniet: white (dark inverse bg 위) — Geniet 고유 패턴
-   * `assistive` — Geniet 의 assistive/outlined-assistive 버튼 텍스트 색
+   * `neutral` — Geniet 의 neutral/outlined-neutral 버튼 텍스트 색
    * (보통 gray/strong). 다른 브랜드는 미사용.
    */
   buttonText?: {
     default?: string;
     brand?: string;
     secondary?: { default?: string; disabled?: string };
-    /** Solid/Outlined Assistive enabled 텍스트 (공용). */
-    assistive?: string;
+    /** Outlined/Weak Neutral enabled 텍스트 (흰/투명 bg → 어두운 톤). */
+    neutral?: string;
     /**
-     * Outlined Assistive disabled 텍스트. Solid Assistive disabled 는 보편적으로
-     * `cv.surface.default` (white) 를 사용해 base 가 처리 → 별도 슬롯 불필요.
+     * Solid Neutral 텍스트 — fill 명도 대비용. 어두운 fill(cashpobi #111·nudge cool-gray)=흰,
+     * 밝은 fill(geniet #ECECEC·runmile #F2F4F6)=어두운 톤. `neutral`(outlined)과 분리.
      */
-    assistiveDisabled?: string;
+    neutralSolid?: string;
+    /** Neutral disabled 텍스트 (Outlined). */
+    neutralDisabled?: string;
     disabled?: string;
   };
   buttonBorder?: {
     outlined?: { default?: string; hover?: string; disabled?: string };
-    assistive?: { default?: string; disabled?: string };
+    neutral?: { default?: string; disabled?: string };
   };
   icon?: {
     strong?: { default?: string };

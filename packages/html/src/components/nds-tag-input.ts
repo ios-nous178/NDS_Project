@@ -17,6 +17,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { REMOVE_ICON_SVG } from "../base/remove-icon.js";
 
 const TI_CLASS = "nds-tag-input";
 const TI_ROOT_CLASS = `${TI_CLASS}__root`;
@@ -46,12 +47,6 @@ const makeSvg = (size: string, inner: string) => {
   svg.innerHTML = inner;
   return svg;
 };
-
-const RemoveIcon = () =>
-  makeSvg(
-    "10",
-    `<path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`,
-  );
 
 const AddIcon = () =>
   makeSvg(
@@ -232,7 +227,7 @@ export class NdsTagInput extends NdsElement {
       removeBtn.type = "button";
       removeBtn.className = TI_REMOVE_CLASS;
       removeBtn.setAttribute("aria-label", `${tag} 제거`);
-      removeBtn.appendChild(RemoveIcon());
+      removeBtn.innerHTML = REMOVE_ICON_SVG;
       removeBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         this._removeAt(idx);

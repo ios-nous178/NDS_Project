@@ -38,6 +38,7 @@ export class NdsTextButton extends NdsElement {
   }
 
   private _button: HTMLButtonElement | null = null;
+  private _slotLabel = "";
 
   override connectedCallback(): void {
     if (!this._button) this._mount();
@@ -45,6 +46,11 @@ export class NdsTextButton extends NdsElement {
   }
 
   private _mount(): void {
+    // 슬롯 텍스트는 mount 시 1회만 캡처하고 host 에서 비운다.
+    // (이후 update 가 host.textContent 를 다시 읽으면 렌더된 라벨까지 합산돼
+    //  "라벨라벨" 로 중복되던 함정 — react 미러처럼 label attr | 슬롯 텍스트 1회만.)
+    this._slotLabel = this.textContent?.trim() ?? "";
+    this.textContent = "";
     const button = document.createElement("button");
     button.dataset.slot = "root";
     button.className = TB_CLASS;
@@ -82,7 +88,7 @@ export class NdsTextButton extends NdsElement {
     const label = document.createElement("span");
     label.dataset.slot = "label";
     label.className = TB_LABEL_CLASS;
-    label.textContent = this.getAttribute("label") ?? this.textContent?.trim() ?? "";
+    label.textContent = this.getAttribute("label") ?? this._slotLabel;
     return label;
   }
 

@@ -88,3 +88,27 @@ describe("nds-input — 비밀번호 표시/숨김 토글", () => {
     expect(el.querySelector('[data-slot="password-toggle"]')).toBeNull();
   });
 });
+
+describe("nds-input — host .value 접근자 (네이티브 input 정합)", () => {
+  const flushP = () => new Promise<void>((r) => setTimeout(r, 0));
+
+  it("사용자 입력 후 host.value 가 내부 field 값을 반환한다 (회귀: undefined)", async () => {
+    const el = document.createElement("nds-input") as HTMLElement & { value: string };
+    document.body.appendChild(el);
+    await flushP();
+    const field = el.querySelector<HTMLInputElement>('[data-slot="field"]')!;
+    field.value = "123";
+    field.dispatchEvent(new Event("input", { bubbles: true }));
+    expect(el.value).toBe("123");
+  });
+
+  it("host.value 설정이 내부 field 에 반영된다", async () => {
+    const el = document.createElement("nds-input") as HTMLElement & { value: string };
+    document.body.appendChild(el);
+    await flushP();
+    el.value = "hello";
+    const field = el.querySelector<HTMLInputElement>('[data-slot="field"]')!;
+    expect(field.value).toBe("hello");
+    expect(el.value).toBe("hello");
+  });
+});

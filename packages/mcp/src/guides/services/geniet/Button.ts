@@ -7,7 +7,7 @@ import type { ServiceOverlay } from "../types.js";
  */
 export const ButtonOverlay: ServiceOverlay = {
   allowedVariants: ["solid", "outlined"],
-  disallowedVariants: ["soft", "outlined-sub"],
+  disallowedVariants: ["soft"],
   preferredPatterns: [
     "secondary/solid 는 #333333(gray-900) dark inverse + 흰 텍스트 — Geniet 고유 패턴 (다른 brand 의 light subtle 과 다름).",
   ],

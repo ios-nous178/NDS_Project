@@ -11,7 +11,7 @@
     "figmaSynced": true,
     "figmaSyncedAt": "2026-05-12",
     "usageSummary": "기본 CTA, 보조 액션, 필드 버튼",
-    "notes": "Figma 508:6962 / 라이브러리 노드 171:8385 기준으로 사이즈(xl 52 / lg 48 / md 44 / sm 42 / xs 38 / field 48), 패딩, 토큰, primary·secondary·assistive variant 정합 완료."
+    "notes": "Figma 508:6962 / 라이브러리 노드 171:8385 기준으로 사이즈(xl 52 / lg 48 / md 44 / sm 42 / xs 38 / field 48), 패딩, 토큰, primary·secondary·neutral variant 정합 완료."
   },
   {
     "name": "Badge",

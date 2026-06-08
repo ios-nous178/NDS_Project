@@ -44,8 +44,7 @@ const TEST_CASES = [
   { color: "primary", variant: "solid", size: "lg", label: "예약하기" },
   { color: "primary", variant: "outlined", size: "md", label: "outlined md" },
   { color: "secondary", variant: "solid", size: "xl", label: "secondary xl" },
-  { color: "assistive", variant: "soft", size: "sm", label: "assistive soft sm" },
-  { color: "primary", variant: "outlined-sub", size: "field", label: "outlined-sub field" },
+  { color: "neutral", variant: "soft", size: "sm", label: "neutral soft sm" },
 ];
 
 let failures = 0;

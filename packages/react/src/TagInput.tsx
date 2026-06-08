@@ -1,5 +1,7 @@
 import React, { useId, useRef, useState } from "react";
 
+import { RemoveIcon } from "./internal/RemoveIcon";
+
 /* ─── Constants ─── */
 
 const TI_CLASS = "nds-tag-input";
@@ -26,12 +28,6 @@ export type TagInputVariant = "stacked" | "inline";
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
-
-const RemoveIcon = () => (
-  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden>
-    <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-  </svg>
-);
 
 const AddIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>

@@ -10,19 +10,14 @@
 
 import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-design/tokens";
 
-export type ButtonVariant = "solid" | "outlined" | "soft" | "outlined-sub";
+export type ButtonVariant = "solid" | "soft" | "outlined";
 export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "field";
-export type ButtonColor = "primary" | "secondary" | "assistive";
+export type ButtonColor = "primary" | "secondary" | "neutral";
 export type ButtonShape = "default" | "pill";
 
-export const BUTTON_VARIANTS: readonly ButtonVariant[] = [
-  "solid",
-  "outlined",
-  "soft",
-  "outlined-sub",
-] as const;
+export const BUTTON_VARIANTS: readonly ButtonVariant[] = ["solid", "soft", "outlined"] as const;
 export const BUTTON_SIZES: readonly ButtonSize[] = ["xl", "lg", "md", "sm", "xs", "field"] as const;
-export const BUTTON_COLORS: readonly ButtonColor[] = ["primary", "secondary", "assistive"] as const;
+export const BUTTON_COLORS: readonly ButtonColor[] = ["primary", "secondary", "neutral"] as const;
 export const BUTTON_SHAPES: readonly ButtonShape[] = ["default", "pill"] as const;
 
 export const SHAPE_RADIUS: Record<ButtonShape, string> = {
@@ -148,26 +143,6 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         border: cv.button.borderOutlinedHover,
       },
     },
-    "outlined-sub": {
-      enabled: {
-        background: cv.surface.default,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-      disabled: {
-        background: cv.surface.default,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
-        fontWeight: fontWeight.medium,
-      },
-      hover: {
-        background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-    },
   },
   secondary: {
     solid: {
@@ -221,83 +196,45 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         border: cv.borderRole.normal,
       },
     },
-    "outlined-sub": {
-      enabled: {
-        background: cv.surface.default,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-      disabled: {
-        background: cv.surface.default,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
-        fontWeight: fontWeight.medium,
-      },
-      hover: {
-        background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-    },
   },
-  assistive: {
+  neutral: {
+    // Solid/Neutral — react Button 미러. cv.button.bgNeutral (캐포비 #111, base cool-gray).
     solid: {
       enabled: {
-        background: cv.borderRole.brandDisabled,
-        text: cv.surface.default,
-        border: cv.borderRole.brandDisabled,
+        background: cv.button.bgNeutral,
+        text: cv.button.textNeutralSolid,
+        border: cv.button.bgNeutral,
       },
       disabled: {
-        background: cv.borderRole.subtle,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
+        background: cv.button.bgNeutralDisabled,
+        text: cv.button.textNeutralSolid,
+        border: cv.button.bgNeutralDisabled,
       },
       hover: {
-        background: cv.button.bgAssistiveHover,
-        text: cv.surface.default,
-        border: cv.button.bgAssistiveHover,
+        background: cv.button.bgNeutralHover,
+        text: cv.button.textNeutralSolid,
+        border: cv.button.bgNeutralHover,
       },
     },
+    // Weak/Neutral — 연한 회색 fill + 진한 텍스트 (Figma 3098:1137/1148/1159).
     soft: {
       enabled: {
-        background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.surface.subtle,
+        background: cv.surface.section,
+        text: cv.textRole.strong,
+        border: cv.surface.section,
       },
       disabled: {
-        background: cv.borderRole.subtle,
+        background: cv.surface.subtle,
         text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
+        border: cv.surface.subtle,
       },
       hover: {
-        background: cv.borderRole.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.subtle,
+        background: cv.borderRole.normal,
+        text: cv.textRole.strong,
+        border: cv.borderRole.normal,
       },
     },
     outlined: {
-      enabled: {
-        background: cv.surface.default,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-      disabled: {
-        background: cv.surface.default,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
-        fontWeight: fontWeight.medium,
-      },
-      hover: {
-        background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
-        fontWeight: fontWeight.medium,
-      },
-    },
-    "outlined-sub": {
       enabled: {
         background: cv.surface.default,
         text: cv.textRole.normal,

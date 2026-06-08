@@ -152,7 +152,7 @@ export function MockupHeader({
           separator={b.header.auth.separator}
           extra={
             b.header.auth.hasAppDownload ? (
-              <Button size="sm" variant="outlined-sub" style={{ marginLeft: 16 }}>
+              <Button size="sm" variant="outlined" color="secondary" style={{ marginLeft: 16 }}>
                 앱 다운로드
               </Button>
             ) : undefined

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-08T05:57:49.874Z",
+  "generatedAt": "2026-06-08T08:09:31.971Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1111,9 +1111,8 @@
           "type": "ButtonVariant",
           "allowedValues": [
             "solid",
-            "outlined",
             "soft",
-            "outlined-sub"
+            "outlined"
           ]
         },
         {
@@ -1136,7 +1135,7 @@
           "allowedValues": [
             "primary",
             "secondary",
-            "assistive"
+            "neutral"
           ]
         },
         {
@@ -1179,9 +1178,8 @@
       "htmlAttrs": {
         "variant": [
           "solid",
-          "outlined",
           "soft",
-          "outlined-sub"
+          "outlined"
         ],
         "size": [
           "xl",
@@ -1194,7 +1192,7 @@
         "color": [
           "primary",
           "secondary",
-          "assistive"
+          "neutral"
         ]
       },
       "htmlObservedAttrs": [
@@ -3822,6 +3820,11 @@
           "type": "boolean"
         },
         {
+          "name": "autoPreview",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
           "name": "onFileSelect",
           "optional": true,
           "type": "(files: FileList) => void"
@@ -3875,6 +3878,7 @@
         "image-alt",
         "accept",
         "multiple",
+        "auto-preview",
         "upload-label",
         "size-hint",
         "helper-text",
@@ -4940,90 +4944,6 @@
         "rows",
         "total-label",
         "total"
-      ]
-    },
-    {
-      "name": "VerificationCodeInput",
-      "props": [
-        {
-          "name": "length",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "value",
-          "optional": false,
-          "type": "string"
-        },
-        {
-          "name": "onValueChange",
-          "optional": false,
-          "type": "(value: string) => void"
-        },
-        {
-          "name": "onComplete",
-          "optional": true,
-          "type": "(value: string) => void"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "error",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "countdownSeconds",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "onResend",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "resendText",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "countdownFormat",
-          "optional": true,
-          "type": "CountdownFormat",
-          "allowedValues": [
-            "mm:ss",
-            "hh:mm:ss",
-            "remaining"
-          ]
-        },
-        {
-          "name": "timer",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "fullWidth",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/VerificationCodeInput.d.ts",
-      "htmlTag": "nds-verification-code-input",
-      "htmlObservedAttrs": [
-        "length",
-        "value",
-        "disabled",
-        "error",
-        "auto-focus",
-        "placeholder",
-        "full-width",
-        "timer",
-        "countdown-seconds",
-        "resend-text"
       ]
     },
     {
@@ -7603,6 +7523,57 @@
         "verified",
         "layout",
         "clickable"
+      ]
+    },
+    {
+      "name": "VerificationCodeInput",
+      "props": [
+        {
+          "name": "length",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "onComplete",
+          "optional": true,
+          "type": "(value: string) => void"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "fullWidth",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/VerificationCodeInput.d.ts",
+      "htmlTag": "nds-verification-code-input",
+      "htmlObservedAttrs": [
+        "length",
+        "value",
+        "disabled",
+        "error",
+        "auto-focus",
+        "placeholder",
+        "full-width"
       ]
     },
     {
@@ -12391,33 +12362,6 @@
       ]
     },
     {
-      "name": "--semantic-button-bg-assistive-default",
-      "value": "#9CA2AE",
-      "group": "semantic",
-      "brandValues": {
-        "geniet": "#ECECEC",
-        "runmile": "#F2F4F6"
-      }
-    },
-    {
-      "name": "--semantic-button-bg-assistive-disabled",
-      "value": "#F5F5F5",
-      "group": "semantic",
-      "brandValues": {
-        "geniet": "#CCCCCC",
-        "runmile": "#D1D6DB"
-      }
-    },
-    {
-      "name": "--semantic-button-bg-assistive-hover",
-      "value": "#7E8593",
-      "group": "semantic",
-      "brandValues": {
-        "geniet": "#F5F5F5",
-        "runmile": "#E5E8EB"
-      }
-    },
-    {
       "name": "--semantic-button-bg-default",
       "value": "#2B96ED",
       "group": "semantic",
@@ -12448,6 +12392,36 @@
         "geniet": "#00A8AC",
         "runmile": "#FF805C",
         "trost": "#FFE600"
+      }
+    },
+    {
+      "name": "--semantic-button-bg-neutral-default",
+      "value": "#9CA2AE",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#111111",
+        "geniet": "#ECECEC",
+        "runmile": "#F2F4F6"
+      }
+    },
+    {
+      "name": "--semantic-button-bg-neutral-disabled",
+      "value": "#F5F5F5",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#DDDDDD",
+        "geniet": "#CCCCCC",
+        "runmile": "#D1D6DB"
+      }
+    },
+    {
+      "name": "--semantic-button-bg-neutral-hover",
+      "value": "#7E8593",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#333333",
+        "geniet": "#F5F5F5",
+        "runmile": "#E5E8EB"
       }
     },
     {
@@ -12516,7 +12490,7 @@
       }
     },
     {
-      "name": "--semantic-button-border-assistive-default",
+      "name": "--semantic-button-border-neutral-default",
       "value": "#D8D8D8",
       "group": "semantic",
       "brandValues": {
@@ -12527,7 +12501,7 @@
       }
     },
     {
-      "name": "--semantic-button-border-assistive-disabled",
+      "name": "--semantic-button-border-neutral-disabled",
       "value": "#ECECEC",
       "group": "semantic",
       "brandValues": {
@@ -12571,23 +12545,6 @@
       }
     },
     {
-      "name": "--semantic-button-text-assistive",
-      "value": "#FFFFFF",
-      "group": "semantic",
-      "brandValues": {
-        "geniet": "#666666",
-        "runmile": "#4E5968"
-      }
-    },
-    {
-      "name": "--semantic-button-text-assistive-disabled",
-      "value": "#999999",
-      "group": "semantic",
-      "brandValues": {
-        "runmile": "#919CAA"
-      }
-    },
-    {
       "name": "--semantic-button-text-brand",
       "value": "#2B96ED",
       "group": "semantic",
@@ -12616,6 +12573,34 @@
         "geniet": "#999999",
         "runmile": "#B0B8C1",
         "trost": "#979797"
+      }
+    },
+    {
+      "name": "--semantic-button-text-neutral",
+      "value": "#FFFFFF",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#111111",
+        "geniet": "#666666",
+        "runmile": "#4E5968"
+      }
+    },
+    {
+      "name": "--semantic-button-text-neutral-disabled",
+      "value": "#999999",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#BBBBBB",
+        "runmile": "#919CAA"
+      }
+    },
+    {
+      "name": "--semantic-button-text-neutral-solid",
+      "value": "#FFFFFF",
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "#666666",
+        "runmile": "#4E5968"
       }
     },
     {
@@ -13316,7 +13301,7 @@
     },
     {
       "name": "--size-input-field",
-      "value": "44px",
+      "value": "48px",
       "group": "size"
     },
     {
@@ -13795,7 +13780,6 @@
     "nds-number-stepper",
     "nds-online-indicator",
     "nds-order-summary-card",
-    "nds-verification-code-input",
     "nds-page-header",
     "nds-pagination",
     "nds-phone-input",
@@ -13846,6 +13830,7 @@
     "nds-tooltip",
     "nds-trending-keywords",
     "nds-user-card",
+    "nds-verification-code-input",
     "nds-video-player",
     "nds-voice-recorder",
     "nds-vote-poll",
@@ -14089,9 +14074,8 @@
       "attrs": {
         "variant": [
           "solid",
-          "outlined",
           "soft",
-          "outlined-sub"
+          "outlined"
         ],
         "size": [
           "xl",
@@ -14104,7 +14088,7 @@
         "color": [
           "primary",
           "secondary",
-          "assistive"
+          "neutral"
         ]
       },
       "observedAttrs": [
@@ -14653,6 +14637,7 @@
         "image-alt",
         "accept",
         "multiple",
+        "auto-preview",
         "upload-label",
         "size-hint",
         "helper-text",
@@ -14886,22 +14871,6 @@
         "rows",
         "total-label",
         "total"
-      ]
-    },
-    {
-      "tag": "nds-verification-code-input",
-      "attrs": {},
-      "observedAttrs": [
-        "length",
-        "value",
-        "disabled",
-        "error",
-        "auto-focus",
-        "placeholder",
-        "full-width",
-        "timer",
-        "countdown-seconds",
-        "resend-text"
       ]
     },
     {
@@ -15509,6 +15478,19 @@
         "verified",
         "layout",
         "clickable"
+      ]
+    },
+    {
+      "tag": "nds-verification-code-input",
+      "attrs": {},
+      "observedAttrs": [
+        "length",
+        "value",
+        "disabled",
+        "error",
+        "auto-focus",
+        "placeholder",
+        "full-width"
       ]
     },
     {

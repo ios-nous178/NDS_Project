@@ -17,6 +17,9 @@
  *   image-alt
  *   accept (기본 "image/*")
  *   multiple
+ *   auto-preview: 파일 선택 시 컴포넌트가 직접 첫 이미지를 objectURL 로
+ *     미리보기에 렌더(image-url/state 수동 갱신 불필요). X 로 해제, revoke·
+ *     언마운트 정리 내부 처리. image-url 을 직접 지정하면 그 값이 우선.
  *   upload-label / size-hint / helper-text / error-text
  */
 
@@ -71,6 +74,7 @@ export class NdsImageUpload extends NdsElement {
       "image-alt",
       "accept",
       "multiple",
+      "auto-preview",
       "upload-label",
       "size-hint",
       "helper-text",
@@ -80,10 +84,24 @@ export class NdsImageUpload extends NdsElement {
 
   private _root: HTMLDivElement | null = null;
   private _input: HTMLInputElement | null = null;
+  /** auto-preview 모드에서 생성한 objectURL — revoke 추적용. */
+  private _autoUrl: string | null = null;
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
     super.connectedCallback();
+  }
+
+  override disconnectedCallback(): void {
+    this._revokeAuto();
+    super.disconnectedCallback();
+  }
+
+  private _revokeAuto(): void {
+    if (this._autoUrl) {
+      URL.revokeObjectURL(this._autoUrl);
+      this._autoUrl = null;
+    }
   }
 
   private _mount(): void {
@@ -104,6 +122,7 @@ export class NdsImageUpload extends NdsElement {
     const imageAlt = this.attr("image-alt", "");
     const accept = this.attr("accept", "image/*");
     const multiple = this.boolAttr("multiple");
+    const autoPreview = this.boolAttr("auto-preview");
     const uploadLabel = this.attr("upload-label", "이미지 업로드");
     const sizeHint = this.attr("size-hint", "사이즈 : 200*200 px 권장");
     const helperText = this.attr("helper-text", "이미지를 업로드해 주세요.");
@@ -140,6 +159,12 @@ export class NdsImageUpload extends NdsElement {
       remove.setAttribute("aria-label", "이미지 제거");
       remove.appendChild(DeleteSvg());
       remove.addEventListener("click", () => {
+        // auto-preview 모드면 내부 objectURL 해제 + 속성 초기화까지 처리.
+        if (autoPreview) {
+          this._revokeAuto();
+          this.removeAttribute("image-url");
+          this.setAttribute("state", "empty");
+        }
         this.dispatchEvent(new CustomEvent("image-remove", { bubbles: true, composed: true }));
       });
       previewBox.appendChild(remove);
@@ -187,6 +212,13 @@ export class NdsImageUpload extends NdsElement {
     input.addEventListener("change", (e) => {
       const target = e.target as HTMLInputElement;
       if (target.files && target.files.length > 0) {
+        // auto-preview 모드면 첫 이미지를 objectURL 로 즉시 렌더(속성 갱신은 내부 처리).
+        if (autoPreview) {
+          this._revokeAuto();
+          this._autoUrl = URL.createObjectURL(target.files[0]);
+          this.setAttribute("image-url", this._autoUrl);
+          this.setAttribute("state", "uploaded");
+        }
         this.dispatchEvent(
           new CustomEvent("file-select", {
             detail: { files: target.files },

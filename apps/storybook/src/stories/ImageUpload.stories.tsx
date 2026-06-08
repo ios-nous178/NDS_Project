@@ -82,3 +82,20 @@ export const Interactive: Story = {
   name: "Interaction/FileReader",
   render: () => <InteractiveStory />,
 };
+
+/* ─── 자동 미리보기 (uncontrolled) ─── */
+
+export const AutoPreview: Story = {
+  name: "Interaction/AutoPreview",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`autoPreview` — state/imageUrl 를 직접 관리하지 않아도 파일 선택 시 컴포넌트가 첫 이미지를 " +
+          "`URL.createObjectURL` 로 즉시 미리보기에 렌더한다. X 버튼으로 해제하고, objectURL revoke·언마운트 정리는 내부 처리. " +
+          "파일을 직접 골라 동작을 확인하세요.",
+      },
+    },
+  },
+  render: () => <ImageUpload autoPreview />,
+};

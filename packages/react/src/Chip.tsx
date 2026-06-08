@@ -1,6 +1,8 @@
 import React from "react";
 import { fontFamily, fontWeight, radius, transition } from "@nudge-design/tokens";
 
+import { RemoveIcon } from "./internal/RemoveIcon";
+
 /* ─── Class names ─── */
 
 const CHIP_CLASS = "nds-chip";
@@ -319,14 +321,7 @@ export const Chip: React.FC<ChipProps> = ({
               onRemove?.();
             }}
           >
-            <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M3 3L11 11M11 3L3 11"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
+            <RemoveIcon />
           </button>
         )}
       </div>
