@@ -724,6 +724,18 @@
     "notes": "모바일에서는 트리거가 제한적이므로 중요 정보를 Tooltip에만 두지 않는다. 상세 안내는 CoachMark."
   },
   {
+    "name": "ConfirmTooltip",
+    "category": "오버레이",
+    "status": "implemented",
+    "description": "흰 말풍선 popconfirm — 제목/본문 + 1~2 액션 버튼(검정 secondary CTA) + 방향 tail. 인라인 확인용",
+    "storybookTitle": "Components/Overlay/ConfirmTooltip",
+    "docsPath": "/components/confirm-tooltip",
+    "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4018-1226",
+    "figmaNodeId": "4018:1226",
+    "usageSummary": "연결 해제/삭제 등 인라인 트리거 옆에서 가벼운 확인을 받는 popconfirm",
+    "notes": "사용자의 응답/결정이 필요한 가벼운 확인용. 차단형·긴 본문은 Modal/Popup. 다크 hover 안내는 Tooltip."
+  },
+  {
     "name": "Drawer",
     "category": "오버레이",
     "status": "implemented",

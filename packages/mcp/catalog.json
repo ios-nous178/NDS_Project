@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-08T01:08:57.097Z",
+  "generatedAt": "2026-06-08T04:03:07.939Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1028,6 +1028,52 @@
         "surface",
         "active-key",
         "asset-base-url"
+      ]
+    },
+    {
+      "name": "BrandLogo",
+      "props": [
+        {
+          "name": "brand",
+          "optional": false,
+          "type": "BrandLogoBrand",
+          "allowedValues": [
+            "trost",
+            "geniet",
+            "nudge-eap",
+            "cashwalk-biz",
+            "runmile"
+          ]
+        },
+        {
+          "name": "height",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "width",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "alt",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "href",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/BrandLogo.d.ts",
+      "htmlTag": "nds-brand-logo",
+      "htmlObservedAttrs": [
+        "brand",
+        "width",
+        "height",
+        "alt",
+        "href"
       ]
     },
     {
@@ -2186,6 +2232,88 @@
         "count",
         "duration",
         "colors"
+      ]
+    },
+    {
+      "name": "ConfirmTooltip",
+      "props": [
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "open",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "placement",
+          "optional": true,
+          "type": "ConfirmTooltipPlacement",
+          "allowedValues": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ]
+        },
+        {
+          "name": "actions",
+          "optional": true,
+          "type": "ConfirmTooltipActions",
+          "allowedValues": [
+            "dual",
+            "single"
+          ]
+        },
+        {
+          "name": "bodyWidth",
+          "optional": true,
+          "type": "number | string"
+        },
+        {
+          "name": "confirmLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "cancelLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "onConfirm",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "onCancel",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ConfirmTooltip.d.ts",
+      "htmlTag": "nds-confirm-tooltip",
+      "htmlObservedAttrs": [
+        "title",
+        "description",
+        "open",
+        "placement",
+        "actions",
+        "confirm-label",
+        "cancel-label",
+        "body-width"
       ]
     },
     {
@@ -11707,6 +11835,14 @@
       ]
     },
     {
+      "name": "--nds-tooltip-bg",
+      "value": "var(--semantic-fill-neutral-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
       "name": "--radius-0",
       "value": "0px",
       "group": "radius",
@@ -13407,6 +13543,7 @@
     "nds-brand-chrome",
     "nds-brand-footer",
     "nds-brand-header",
+    "nds-brand-logo",
     "nds-breadcrumb",
     "nds-breadcrumb-item",
     "nds-button",
@@ -13429,6 +13566,7 @@
     "nds-coach-mark",
     "nds-comment-item",
     "nds-confetti",
+    "nds-confirm-tooltip",
     "nds-content-viewer",
     "nds-counselor-card",
     "nds-countdown-timer",
@@ -13755,6 +13893,17 @@
       ]
     },
     {
+      "tag": "nds-brand-logo",
+      "attrs": {},
+      "observedAttrs": [
+        "brand",
+        "width",
+        "height",
+        "alt",
+        "href"
+      ]
+    },
+    {
       "tag": "nds-breadcrumb",
       "attrs": {},
       "observedAttrs": [
@@ -14008,6 +14157,20 @@
         "count",
         "duration",
         "colors"
+      ]
+    },
+    {
+      "tag": "nds-confirm-tooltip",
+      "attrs": {},
+      "observedAttrs": [
+        "title",
+        "description",
+        "open",
+        "placement",
+        "actions",
+        "confirm-label",
+        "cancel-label",
+        "body-width"
       ]
     },
     {

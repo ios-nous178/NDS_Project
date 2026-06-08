@@ -13,6 +13,9 @@ export type { ButtonColor, ButtonSize, ButtonVariant } from "./components/nds-bu
 
 export { NdsAddButton } from "./components/nds-add-button.js";
 
+export { NdsBrandLogo } from "./components/nds-brand-logo.js";
+export type { BrandLogoBrand } from "./components/nds-brand-logo.js";
+
 export { NdsIconButton } from "./components/nds-icon-button.js";
 export type { IconButtonSize } from "./components/nds-icon-button.js";
 
@@ -124,6 +127,12 @@ export type { ToggleSize } from "./components/nds-toggle.js";
 
 export { NdsTooltip } from "./components/nds-tooltip.js";
 export type { TooltipPlacement } from "./components/nds-tooltip.js";
+
+export { NdsConfirmTooltip } from "./components/nds-confirm-tooltip.js";
+export type {
+  ConfirmTooltipPlacement,
+  ConfirmTooltipActions,
+} from "./components/nds-confirm-tooltip.js";
 
 export { NdsProgressBar } from "./components/nds-progress-bar.js";
 export type { ProgressBarSize } from "./components/nds-progress-bar.js";

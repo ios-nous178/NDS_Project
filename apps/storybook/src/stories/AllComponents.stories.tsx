@@ -54,6 +54,7 @@ import {
   LikertScale,
   List,
   ListItem,
+  BrandLogo,
   MediaCard,
   MediaThumbnail,
   NotificationItem,
@@ -549,6 +550,37 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <div style={mockTooltipBubble}>
         툴팁 내용
         <span style={mockTooltipArrow} aria-hidden />
+      </div>
+    </div>
+  ),
+  /* nds-confirm-tooltip__* 실제 클래스로 정적 렌더 (position 만 static 으로 덮어 썸네일화). */
+  ConfirmTooltip: () => (
+    <div
+      className="nds-confirm-tooltip__content"
+      data-slot="content"
+      style={{ position: "static", margin: "0 auto" }}
+    >
+      <p className="nds-confirm-tooltip__title" data-slot="title">
+        연결을 해제하시겠습니까?
+      </p>
+      <p className="nds-confirm-tooltip__desc" data-slot="description" style={{ width: 220 }}>
+        연결을 해제하면 광고에 해당 소재는 더이상 노출되지 않습니다.
+      </p>
+      <div
+        className="nds-confirm-tooltip__actions"
+        data-slot="actions"
+        data-actions="dual"
+        style={{ width: 220 }}
+      >
+        <button type="button" className="nds-confirm-tooltip__btn nds-confirm-tooltip__btn--cancel">
+          취소
+        </button>
+        <button
+          type="button"
+          className="nds-confirm-tooltip__btn nds-confirm-tooltip__btn--confirm"
+        >
+          해제
+        </button>
       </div>
     </div>
   ),
@@ -1203,6 +1235,12 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12 }}>
         <OnlineIndicator status="away" /> away
       </span>
+    </div>
+  ),
+  BrandLogo: () => (
+    <div style={{ ...previewRow, gap: "var(--semantic-gap-loose)" }}>
+      <BrandLogo brand="cashwalk-biz" height={28} />
+      <BrandLogo brand="nudge-eap" height={28} />
     </div>
   ),
   CountdownTimer: () => <CountdownTimer endsAt={new Date(Date.now() + 65 * 1000)} />,
