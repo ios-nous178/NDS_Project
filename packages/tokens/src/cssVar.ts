@@ -100,6 +100,13 @@ export const cv = {
     borderNeutral: v("--semantic-button-border-neutral-default"),
     borderNeutralDisabled: v("--semantic-button-border-neutral-disabled"),
   },
+  // ── Confirm CTA (모달/팝업 주 액션 버튼 — base=brand 참조, 캐포비=neutral 검정) ──
+  confirmCta: {
+    bg: v("--semantic-confirm-cta-bg"),
+    hover: v("--semantic-confirm-cta-hover"),
+    active: v("--semantic-confirm-cta-active"),
+    text: v("--semantic-confirm-cta-text"),
+  },
   // ── Fill (Figma `Section_Fill` 227:160) ───────────────────
   fill: {
     brand: v("--semantic-fill-brand-default"),

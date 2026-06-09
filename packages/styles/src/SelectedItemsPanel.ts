@@ -189,4 +189,29 @@ export const selectedItemsPanelStyles = `
     width: 20px;
     height: 20px;
   }
+
+  /* ─── 캐포비(cashwalk-biz) SelectedItemRow — Figma 3001:18463 ───
+     gray/200(#eee) fill · radius 10 · 삭제 글리프 = 원형 CashwalkBizSearchDeleteIcon(serchdelete).
+     #eee 는 캐포비 neutral/200 = Border/Normal 토큰(캐포비 광역 중립 톤). radius 10 은 표준 토큰
+     공백(md8/lg12 사이)이라 브랜드 전용 px. 삭제는 민자 X(svg) 를 숨기고 ::before 에 serchdelete
+     를 mask 로 swap — 색 의미(iconRole.normal → hover statusError)는 base 그대로 상속한다. */
+  :where([data-brand="cashwalk-biz"] .${ROW_CLASS}),
+  :where([data-brand="cashwalk-biz"] .${LEGACY_ROW_CLASS}) {
+    background: ${cv.borderRole.normal};
+    border-radius: 10px;
+  }
+  :where([data-brand="cashwalk-biz"] .${ROW_REMOVE_CLASS}) svg,
+  :where([data-brand="cashwalk-biz"] .${LEGACY_ROW_REMOVE_CLASS}) svg {
+    display: none;
+  }
+  :where([data-brand="cashwalk-biz"] .${ROW_REMOVE_CLASS})::before,
+  :where([data-brand="cashwalk-biz"] .${LEGACY_ROW_REMOVE_CLASS})::before {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><circle cx='10' cy='10' r='10' fill='black' fill-opacity='0.4'/><path d='M13.33361 5.555582C13.64043 5.248757 14.13789 5.248758 14.44472 5.555583C14.75154 5.862408 14.75154 6.35987 14.44472 6.66669L6.66694 14.44447C6.36011 14.7513 5.862651 14.7513 5.555827 14.44447C5.249002 14.13765 5.249002 13.64019 5.555827 13.33336L13.33361 5.555582Z' fill='black'/><path d='M5.555555 6.66683C5.24873 6.36 5.248731 5.862543 5.555556 5.555718C5.862381 5.248893 6.35984 5.248894 6.66667 5.555719L14.44445 13.3335C14.75127 13.64032 14.75127 14.13778 14.44444 14.44461C14.13762 14.75143 13.64016 14.75143 13.33333 14.44461L5.555555 6.66683Z' fill='black'/></svg>") center / contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><circle cx='10' cy='10' r='10' fill='black' fill-opacity='0.4'/><path d='M13.33361 5.555582C13.64043 5.248757 14.13789 5.248758 14.44472 5.555583C14.75154 5.862408 14.75154 6.35987 14.44472 6.66669L6.66694 14.44447C6.36011 14.7513 5.862651 14.7513 5.555827 14.44447C5.249002 14.13765 5.249002 13.64019 5.555827 13.33336L13.33361 5.555582Z' fill='black'/><path d='M5.555555 6.66683C5.24873 6.36 5.248731 5.862543 5.555556 5.555718C5.862381 5.248893 6.35984 5.248894 6.66667 5.555719L14.44445 13.3335C14.75127 13.64032 14.75127 14.13778 14.44444 14.44461C14.13762 14.75143 13.64016 14.75143 13.33333 14.44461L5.555555 6.66683Z' fill='black'/></svg>") center / contain no-repeat;
+  }
 `;

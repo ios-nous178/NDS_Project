@@ -43,6 +43,9 @@ export const modalStyles = `
     position: relative;
     width: 100%;
     max-width: var(--nds-modal-max-width, 332px);
+    /* 뷰포트(root 의 inset-card-large 패딩 제외) 안으로 높이 제한 — 넘치면 본문(.body)이 스크롤.
+       100% 는 root 의 content-box(= 화면 − 패딩 2개) 기준이라 화면 밖으로 잘리지 않는다. */
+    max-height: var(--nds-modal-max-height, 100%);
     display: flex;
     flex-direction: column;
     gap: var(--semantic-gap-default);
@@ -113,6 +116,11 @@ export const modalStyles = `
     line-height: ${typeScale.body3.lineHeight}px;
     color: ${cv.textRole.normal};
     text-align: center;
+    /* 본문이 길어 content 의 max-height 를 넘으면 헤더/푸터는 고정하고 본문만 스크롤.
+       min-height:0 가 있어야 flex column 에서 본문이 줄어들어 스크롤이 생긴다. */
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   /* 본문 그룹(image/header/body)과 푸터 사이 24px gap:
@@ -181,21 +189,24 @@ export const modalStyles = `
     background-color: ${cv.surface.subtle};
   }
 
+  /* confirm = 주 액션 CTA. confirmCta 토큰은 base 에서 brand 색을 var() 로 참조하므로
+     브랜드별 자기 brand 색이 되고, 캐포비만 neutral 검정으로 override 된다(토큰 :root 로 흘러
+     data-brand 속성 없는 standalone 목업에서도 적용 — 옛 [data-brand] 캐스케이드 회귀 해소). */
   :where(.${FOOTER_CONFIRM_CLASS}) {
-    background-color: ${cv.surface.brand};
-    border-color: ${cv.borderRole.brand};
+    background-color: ${cv.confirmCta.bg};
+    border-color: ${cv.confirmCta.bg};
     color: ${cv.textRole.inverse};
     font-weight: 700;
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}:hover) {
-    background-color: ${cv.fill.brandHover};
-    border-color: ${cv.fill.brandHover};
+    background-color: ${cv.confirmCta.hover};
+    border-color: ${cv.confirmCta.hover};
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}:active) {
-    background-color: ${cv.textRole.brandStrong};
-    border-color: ${cv.textRole.brandStrong};
+    background-color: ${cv.confirmCta.active};
+    border-color: ${cv.confirmCta.active};
   }
 
   /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).
@@ -320,22 +331,7 @@ export const modalStyles = `
     border-color: ${cv.button.borderNeutral};
   }
 
-  /* confirm = 캐포비 시그니처 검정 CTA. 캐포비 ButtonGuide(3098:1032) tone 은 Primary + Neutral
-     뿐 — Secondary 없음. 그래서 button.bgNeutral(검정 #111)/textNeutralSolid(흰) 로 통일한다.
-     (과거엔 bgSecondary 를 썼으나 cashwalk-biz-no-secondary 검증룰과 모순돼 작성자 오용을 유발했음.) */
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}) {
-    background-color: ${cv.button.bgNeutral};
-    border-color: ${cv.button.bgNeutral};
-    color: ${cv.button.textNeutralSolid};
-  }
-
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}:hover) {
-    background-color: ${cv.button.bgNeutralHover};
-    border-color: ${cv.button.bgNeutralHover};
-  }
-
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}:active) {
-    background-color: ${cv.button.bgNeutralHover};
-    border-color: ${cv.button.bgNeutralHover};
-  }
+  /* confirm(검정 CTA)은 더 이상 여기서 [data-brand] 캐스케이드로 분기하지 않는다 —
+     base 규칙이 confirmCta 토큰을 쓰고, 캐포비 :root 가 그 토큰을 neutral 검정으로 덮는다.
+     (그래야 data-brand 속성 없는 standalone 목업에서도 노랑이 아니라 검정으로 나온다.) */
 `;

@@ -14,6 +14,12 @@ export const ctStyles = `
     color: ${cv.textRole.normal};
   }
 
+  /* tone="brand" — 진행 중 타이머를 브랜드 액센트로(캐포비 text.brand=#FD9B02 오렌지).
+     urgent/expired 가 source 순서상 뒤라 그 상태에선 빨강/회색이 우선한다. */
+  :where(.${CT_CLASS}[data-tone="brand"]) {
+    color: ${cv.textRole.brand};
+  }
+
   :where(.${CT_CLASS}[data-urgent="true"]) {
     color: var(--semantic-text-status-error);
   }

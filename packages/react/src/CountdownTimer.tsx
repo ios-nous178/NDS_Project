@@ -21,6 +21,12 @@ export interface CountdownTimerProps extends Omit<React.HTMLAttributes<HTMLSpanE
   onTick?: (ms: number) => void;
   /** 임박(10초 이하) 시 빨간색 강조 */
   urgentColor?: boolean;
+  /**
+   * 색 톤 — `"default"`(텍스트 기본색) | `"brand"`(브랜드 액센트 — 캐포비=오렌지 #FD9B02).
+   * 진행 중 타이머를 브랜드색으로 강조하는 인증 입력 등에 사용. urgent(≤10s)는 톤과 무관하게 빨강 우선.
+   * @default "default"
+   */
+  tone?: "default" | "brand";
   /** 라벨 (시간 옆) */
   label?: React.ReactNode;
   /** 시간이 0 이하일 때 표시할 노드 */
@@ -62,6 +68,7 @@ export const CountdownTimer = React.forwardRef<HTMLSpanElement, CountdownTimerPr
       onComplete,
       onTick,
       urgentColor = true,
+      tone = "default",
       label,
       expiredText = "만료됨",
       className,
@@ -100,6 +107,7 @@ export const CountdownTimer = React.forwardRef<HTMLSpanElement, CountdownTimerPr
         data-slot="root"
         data-urgent={urgent ? "true" : "false"}
         data-expired={expired ? "true" : "false"}
+        data-tone={tone}
         className={cx(CT_CLASS, className)}
         aria-live="polite"
         {...rest}

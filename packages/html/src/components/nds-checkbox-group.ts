@@ -59,6 +59,15 @@ interface CgItem {
   detail?: string;
 }
 
+/**
+ * 뱃지를 필수 강조할지 결정 — required 명시값 우선, 미지정이면 badge 에 "필수" 포함 시 자동 강조.
+ * (react CheckboxGroup 의 isBadgeRequired 미러 — `badge:"[필수]"` 에 required 누락 방지)
+ */
+function isBadgeRequired(item: CgItem): boolean {
+  if (typeof item.required === "boolean") return item.required;
+  return typeof item.badge === "string" && item.badge.includes("필수");
+}
+
 let nextId = 0;
 
 export class NdsCheckboxGroup extends NdsElement {
@@ -105,7 +114,7 @@ export class NdsCheckboxGroup extends NdsElement {
           label: String(i.label),
           disabled: i.disabled === true,
           badge: i.badge != null ? String(i.badge) : undefined,
-          required: i.required === true,
+          required: typeof i.required === "boolean" ? i.required : undefined,
           detail: typeof i.detail === "string" ? i.detail : undefined,
         }));
     } catch {
@@ -229,7 +238,7 @@ export class NdsCheckboxGroup extends NdsElement {
         const badge = document.createElement("span");
         badge.dataset.slot = "badge";
         badge.className = CG_BADGE_CLASS;
-        if (item.required) badge.dataset.required = "true";
+        if (isBadgeRequired(item)) badge.dataset.required = "true";
         badge.textContent = item.badge;
         row.appendChild(badge);
       }
