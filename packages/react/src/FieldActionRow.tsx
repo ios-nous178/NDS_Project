@@ -47,15 +47,18 @@ FieldActionRowRow.displayName = "FieldActionRowRow";
 interface FieldActionRowFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   error?: boolean;
   success?: boolean;
+  /** 타이머 슬롯 존재 — true 면 우측 타이머 공간을 예약(겹침 방지) */
+  hasTimer?: boolean;
   children: React.ReactNode;
 }
 
 const FieldActionRowField: React.FC<FieldActionRowFieldProps> = React.memo(
-  ({ error = false, success = false, children, className, ...rest }) => (
+  ({ error = false, success = false, hasTimer = false, children, className, ...rest }) => (
     <div
       data-slot="field"
       data-error={error ? "true" : "false"}
       data-success={success ? "true" : "false"}
+      data-has-timer={hasTimer ? "true" : "false"}
       className={cx(FAR_FIELD_CLASS, className)}
       {...rest}
     >
@@ -180,7 +183,12 @@ const FieldActionRowComponent: React.FC<FieldActionRowProps> = ({
     style={{ ...slotProps?.root?.style, ...style }}
   >
     <FieldActionRowRow>
-      <FieldActionRowField error={error} success={success} className={slotProps?.field?.className}>
+      <FieldActionRowField
+        error={error}
+        success={success}
+        hasTimer={timer !== undefined}
+        className={slotProps?.field?.className}
+      >
         {field}
         {timer !== undefined && (
           <FieldActionRowTimer expired={timerExpired}>{timer}</FieldActionRowTimer>

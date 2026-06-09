@@ -75,7 +75,6 @@ function VerificationCodeExample() {
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
             placeholder="인증번호 6자리"
-            style={{ paddingRight: 60 }}
           />
         }
         action={
@@ -132,13 +131,7 @@ function ExpiredTimerExample() {
     <div style={{ width: 360 }}>
       <FieldActionRow
         field={
-          <input
-            type="text"
-            inputMode="numeric"
-            defaultValue=""
-            placeholder="인증번호 6자리"
-            style={{ paddingRight: 60 }}
-          />
+          <input type="text" inputMode="numeric" defaultValue="" placeholder="인증번호 6자리" />
         }
         action={
           <button type="button" disabled>
@@ -203,7 +196,6 @@ function FullFlowExample() {
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
               placeholder="인증번호 6자리"
               readOnly={verified}
-              style={{ paddingRight: 60 }}
             />
           }
           action={

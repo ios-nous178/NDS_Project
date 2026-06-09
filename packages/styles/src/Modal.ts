@@ -56,7 +56,9 @@ export const modalStyles = `
   }
 
   /* Header: 좌측 28px 고스트 스페이서 + flex:1 타이틀 + 우측 28px 닫기 버튼.
-     스페이서가 X 버튼 폭을 좌측에 미러링해서 타이틀이 모달 박스 기준 정중앙에 정렬됨. */
+     스페이서가 X 버튼 폭을 좌측에 미러링해서 타이틀이 모달 박스 기준 정중앙에 정렬됨.
+     타이틀이 없으면 스페이서도 안 그려지므로(닫기만 남음) 닫기 버튼은 margin-left:auto 로
+     항상 우측에 붙인다 — 없으면 space-between 에서 단독 자식이 좌측으로 떨어진다(회귀). */
   :where(.${HEADER_CLASS}) {
     display: flex;
     align-items: center;
@@ -84,6 +86,9 @@ export const modalStyles = `
   :where(.${CLOSE_CLASS}) {
     flex: 0 0 28px;
     height: 28px;
+    /* 타이틀 유무와 무관하게 항상 우측. 타이틀 있을 땐 flex:1 타이틀이 공간을 다 먹어
+       margin-left:auto 가 no-op 이고, 타이틀 없을 땐(닫기 단독) 우측으로 밀어낸다. */
+    margin-left: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -96,7 +101,13 @@ export const modalStyles = `
     color: ${cv.textRole.muted};
   }
 
+  /* 본문은 세로 스택 — 설명 텍스트 + (옵션) 콘텐츠 슬롯(NoticeAlert / Input / Select / DatePicker)을
+     일정 간격으로 쌓는다(Figma ④ Confirm + Slot 3418-471). 단일 텍스트만 있으면 gap 은 무영향.
+     슬롯은 full-width 로 늘어남(align-items:stretch 기본). */
   :where(.${BODY_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-gap-default);
     padding: 0;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -223,7 +234,7 @@ export const modalStyles = `
        · 푸터(44px, pill r9999, Body2 medium):
            ① Single (onConfirm 만)         → 우측 정렬 · 120px 고정
            ② Dual   (onConfirm + onClose)  → 가로 양분 (기존 동작)
-       · confirm = 검정 CTA (button.bgSecondary)
+       · confirm = 검정 CTA (button.bgNeutral — 캐포비 tone=Primary+Neutral, Secondary 없음)
        · cancel  = white + neutral 회색 보더
      기존 props 만으로 4가지 admin 패턴 모두 표현 가능 — Modal API
      변경 없이 CSS cascade 만 추가. <html data-brand="cashwalk-biz"> 가
@@ -266,8 +277,10 @@ export const modalStyles = `
     color: ${cv.iconRole.normal};
   }
 
-  /* CashwalkBiz Body2 = DS body3 (14/20) — 픽셀 매핑. */
+  /* CashwalkBiz Body2 = DS body3 (14/20) — 픽셀 매핑. 본문은 좌측 정렬 + 콘텐츠 슬롯과 20px gap
+     (Figma ④ Confirm+Slot 은 헤더·설명·슬롯·푸터가 모두 형제인 평면 gap-20 — 설명↔슬롯도 20). */
   :where([data-brand="cashwalk-biz"] .${BODY_CLASS}) {
+    gap: ${spacing[20]}px;
     text-align: left;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -307,19 +320,22 @@ export const modalStyles = `
     border-color: ${cv.button.borderNeutral};
   }
 
+  /* confirm = 캐포비 시그니처 검정 CTA. 캐포비 ButtonGuide(3098:1032) tone 은 Primary + Neutral
+     뿐 — Secondary 없음. 그래서 button.bgNeutral(검정 #111)/textNeutralSolid(흰) 로 통일한다.
+     (과거엔 bgSecondary 를 썼으나 cashwalk-biz-no-secondary 검증룰과 모순돼 작성자 오용을 유발했음.) */
   :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}) {
-    background-color: ${cv.button.bgSecondary};
-    border-color: ${cv.button.bgSecondary};
-    color: ${cv.button.textSecondary};
+    background-color: ${cv.button.bgNeutral};
+    border-color: ${cv.button.bgNeutral};
+    color: ${cv.button.textNeutralSolid};
   }
 
   :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}:hover) {
-    background-color: ${cv.button.bgSecondaryHover};
-    border-color: ${cv.button.bgSecondaryHover};
+    background-color: ${cv.button.bgNeutralHover};
+    border-color: ${cv.button.bgNeutralHover};
   }
 
   :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}:active) {
-    background-color: ${cv.button.bgSecondaryHover};
-    border-color: ${cv.button.bgSecondaryHover};
+    background-color: ${cv.button.bgNeutralHover};
+    border-color: ${cv.button.bgNeutralHover};
   }
 `;

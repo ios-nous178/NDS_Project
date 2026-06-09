@@ -1255,10 +1255,13 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
     publicPath: `/brand-logos/${logoMetaSet[variant as keyof typeof logoMetaSet]!.filename}`,
   }));
 
-  // SNS 로그인 자산 — 현재 Runmile 라이브러리에서만 정의됨. 다른 브랜드가
-  // 추후 자체 SNS 자산을 가지면 brand 별 분기 추가.
+  // SNS 로그인 자산 — 자산 자체는 Runmile 라이브러리(Figma 107:1045) 원본이지만 제3자 서비스
+  // 차원이라 brand 무관하게 쓸 수 있다. snsByBrand 는 get_brand 가 어떤 브랜드 화면에
+  // 노출할지(=그 브랜드가 실제 제공하는 소셜 로그인)를 선언한다. cashwalk-biz 온보딩은
+  // 구글/카카오/네이버 간편 로그인을 제공하므로 노출(이니셜 텍스트 G/K/N 회귀 차단).
   const snsByBrand: Record<string, readonly SnsService[]> = {
     runmile: SNS_SERVICES,
+    "cashwalk-biz": ["google", "kakao", "naver"],
   };
   const snsForBrand = snsByBrand[slug];
   const snsFiles = snsForBrand
