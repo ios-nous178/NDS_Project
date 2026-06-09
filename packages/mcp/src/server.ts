@@ -67,6 +67,7 @@ import {
   runUsageGuards,
 } from "./tools/usage.js";
 import { captureContext } from "./tools/context-capture.js";
+import { captureTelemetry } from "./tools/telemetry-egress.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
 import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
@@ -1132,6 +1133,10 @@ registerToolHandlers(server, toolHandlers, {
     // 내부에서 전 과정 best-effort(throw 안 함)라 본기능에 무해. build(html) 의
     // early-return 이전에 둬서 html 빌드 산출물도 스냅샷되도록 한다.
     captureContext({ name, args, result });
+
+    // Tier 2 · EGRESS — find_*(히트/미스) + 프롬프트를 중앙 수집 서버로 fire-and-forget 전송.
+    // NUDGE_TELEMETRY_URL 미설정이면 내부에서 즉시 no-op(기본 OFF). 본기능 무해(throw 안 함).
+    captureTelemetry({ name, args, result });
 
     // observability 적재 SSOT — record{Build,Validation,Quality} 를 핸들러에서 끌어와 이 단일
     // choke-point 로 통합(새 툴 누락 방지). sink 실패는 본기능에 무해해야 하므로 throw 차단.

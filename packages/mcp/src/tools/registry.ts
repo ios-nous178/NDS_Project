@@ -41,7 +41,7 @@ const TOOLS = [
   {
     name: "find_component",
     description:
-      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only), `verbose:true` for full signatures (type/allowedValues). For usage examples prefer get_guide({ topic: `component:<Name>` }). (Mockup work: collect visual refs first.)",
+      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only), `verbose:true` for full signatures (type/allowedValues). For usage examples prefer get_guide({ topic: `component:<Name>` }). (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.",
     inputSchema: {
       type: "object",
       properties: {
@@ -56,6 +56,11 @@ const TOOLS = [
             "[name-lookup only] If true, response includes full prop signatures (type, allowedValues, optional flags). Default false — slim shape with prop names only.",
         },
         limit: { type: "number", description: "Max results for list/search calls." },
+        userRequest: {
+          type: "string",
+          description:
+            "The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.",
+        },
       },
       additionalProperties: false,
     },
@@ -63,7 +68,7 @@ const TOOLS = [
   {
     name: "find_icon",
     description:
-      "Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready inline `svg` (no npm install needed), no args→icon index. (Mockup work: collect visual refs first.)",
+      "Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready inline `svg` (no npm install needed), no args→icon index. (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.",
     inputSchema: {
       type: "object",
       properties: {
@@ -82,6 +87,11 @@ const TOOLS = [
           type: "number",
           description: "Optional width/height(px) for the returned inline svg. Default 24.",
         },
+        userRequest: {
+          type: "string",
+          description:
+            "The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.",
+        },
       },
       additionalProperties: false,
     },
@@ -89,7 +99,7 @@ const TOOLS = [
   {
     name: "find_token",
     description:
-      "Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.)",
+      "Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.",
     inputSchema: {
       type: "object",
       properties: {
@@ -99,6 +109,11 @@ const TOOLS = [
           type: "string",
           description:
             "Optional brand slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + brand-specific tokens and shows brand-specific values for shared semantic tokens. Omit for NudgeEAP/base.",
+        },
+        userRequest: {
+          type: "string",
+          description:
+            "The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.",
         },
       },
       additionalProperties: false,
@@ -652,6 +667,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         name: optionalString(args, "name", toolName),
         verbose: optionalBoolean(args, "verbose", toolName),
         limit: optionalNumber(args, "limit", toolName, { min: 1 }),
+        userRequest: optionalString(args, "userRequest", toolName),
       };
     case "find_icon":
       return {
@@ -660,12 +676,14 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         category: optionalString(args, "category", toolName),
         limit: optionalNumber(args, "limit", toolName, { min: 1 }),
         size: optionalNumber(args, "size", toolName, { min: 1 }),
+        userRequest: optionalString(args, "userRequest", toolName),
       };
     case "find_token":
       return {
         group: optionalString(args, "group", toolName),
         query: optionalString(args, "query", toolName),
         brand: optionalString(args, "brand", toolName),
+        userRequest: optionalString(args, "userRequest", toolName),
       };
     case "suggest_replacement":
       return {
