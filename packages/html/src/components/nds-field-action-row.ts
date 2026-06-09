@@ -73,6 +73,8 @@ export class NdsFieldActionRow extends NdsElement {
     const field = document.createElement("div");
     field.dataset.slot = "field";
     field.className = FAR_FIELD_CLASS;
+    // 타이머 슬롯이 있으면 우측 공간 예약(겹침 방지) — react data-has-timer 미러.
+    field.dataset.hasTimer = this._hasTimer ? "true" : "false";
     fieldStash.forEach((n) => field.appendChild(n));
 
     const timer = document.createElement("span");

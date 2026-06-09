@@ -131,4 +131,50 @@ describe("nds-amount-input — DOM parity with React AmountInput", () => {
     await flush();
     expect(el.querySelector(".nds-amount-input__presets")).toBeNull();
   });
+
+  // ─── caret 위치 보존 (재포맷 후 커서가 끝으로 튀지 않음) ───
+  // 회고(2026-06): 매 입력마다 toLocaleString 재포맷+value 통째 교체 → caret 끝으로 튐("동작이상함").
+  describe("caret 위치 보존", () => {
+    const typeAt = (input: HTMLInputElement, nextValue: string, caret: number) => {
+      input.value = nextValue;
+      input.setSelectionRange(caret, caret);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+
+    it("중간에 숫자를 끼워넣어도 caret 이 끝으로 튀지 않는다", async () => {
+      const el = document.createElement("nds-amount-input");
+      el.setAttribute("value", "1000");
+      document.body.appendChild(el);
+      await flush();
+      const input = el.querySelector("input") as HTMLInputElement;
+      expect(input.value).toBe("1,000");
+      // "1,000" 의 첫 "1" 뒤(pos 1)에 "9" 삽입 → "19,000", caret 2
+      typeAt(input, "19,000", 2);
+      expect(input.value).toBe("19,000");
+      // 앞에서 2번째 숫자("9") 바로 뒤 = index 2 (끝이 아님)
+      expect(input.selectionStart).toBe(2);
+    });
+
+    it("끝에 입력하면 caret 도 끝에 유지된다", async () => {
+      const el = document.createElement("nds-amount-input");
+      el.setAttribute("value", "1000");
+      document.body.appendChild(el);
+      await flush();
+      const input = el.querySelector("input") as HTMLInputElement;
+      typeAt(input, "1,0005", 6); // 끝에 "5" 추가 → raw 10005
+      expect(input.value).toBe("10,005");
+      expect(input.selectionStart).toBe(6); // 문자열 끝
+    });
+
+    it("전체 삭제 시 빈 값 + caret 0", async () => {
+      const el = document.createElement("nds-amount-input");
+      el.setAttribute("value", "1000");
+      document.body.appendChild(el);
+      await flush();
+      const input = el.querySelector("input") as HTMLInputElement;
+      typeAt(input, "", 0);
+      expect(input.value).toBe("");
+      expect(input.selectionStart).toBe(0);
+    });
+  });
 });

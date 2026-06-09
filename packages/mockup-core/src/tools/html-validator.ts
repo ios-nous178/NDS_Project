@@ -153,6 +153,16 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "cashwalk-biz-onboarding-no-shell": "error",
   // 캐포비 어드민 onboarding 인데 중앙 카드+로고 골격이 안 보임 — 권고(레이아웃 계약 환기)
   "cashwalk-biz-onboarding-skeleton": "info",
+  // 온보딩 카드에 <nds-brand-logo> 컴포넌트가 없음 — raw img/svg 로고 조립 또는 누락(skeleton 의 빈틈 보완)
+  "onboarding-missing-brand-logo": "warn",
+  // 소셜 로그인을 텍스트/이니셜(G/K/N)로 때움 — sns-logos 자산 미사용
+  "onboarding-social-bare-text": "warn",
+  // 성공/완료 상태를 체크 없는 민무늬 초록 원으로 표현 — check-circle 아이콘 미사용
+  "onboarding-success-plain-circle": "warn",
+  // 인증번호 입력/타이머를 손으로 조립 — verification-code-input + countdown-timer + field-action-row 미사용
+  "verification-manual-assembly": "warn",
+  // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
+  "consent-raw-checkbox": "warn",
   // 캐포비 사이드바인데 로고 / 계정 블록(account slot) 누락 — 회귀 #1(로고+로그인영역 유실)
   "cashwalk-biz-sidebar-incomplete": "error",
   // 캐포비 사이드바인데 로그아웃(footer-actions) 누락 — 권고
@@ -1426,6 +1436,145 @@ export function validateHtmlSource(
               "중앙 480px 카드 안에 로고(컴포넌트, raw SVG 금지) → Form → 풀폭 Primary CTA → TextButton 순으로 채웁니다. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }) 의 골격 그대로 복붙.",
           });
         }
+
+        // ─── 1) 온보딩 카드에 브랜드 로고 컴포넌트가 없음 (onboarding-missing-brand-logo) ───
+        //   skeleton 룰은 로고+카드 둘 다 없을 때만 info 로 환기한다. 카드는 있는데 <nds-brand-logo>
+        //   만 빠진(=raw img/svg 로고를 조립했거나 아예 누락한) 케이스를 별도 warn 으로 잡는다.
+        if ($("nds-brand-logo").length === 0) {
+          violations.push({
+            rule: "onboarding-missing-brand-logo",
+            line: 1,
+            selector: "<onboarding root>",
+            detail:
+              "온보딩 카드에 브랜드 로고가 없음 — <nds-brand-logo> 컴포넌트가 하나도 없습니다.",
+            suggestion:
+              '<nds-brand-logo brand="cashwalk-biz" height="40"> 로 카드 상단에 박을 것. raw <img>/<svg> 로 로고를 조립하지 말 것. get_guide({ topic: \'component:BrandLogo\' }).',
+          });
+        }
+
+        // ─── 2) 소셜 로그인을 텍스트/이니셜로 때움 (onboarding-social-bare-text) ───
+        //   "소셜"/"간편" 신호가 명확할 때만 발화(보수적). sns-logos 자산이나 google/kakao/naver/apple
+        //   식별자(src/class/alt)가 전혀 없으면 → 로고 자산 미사용으로 본다.
+        {
+          const docText = $("body").text();
+          const hasSocialSignal = /소셜|간편/.test(docText);
+          if (hasSocialSignal) {
+            const hasSnsAsset =
+              $('img[src*="sns-logos" i]').length > 0 ||
+              $(
+                '[src*="google" i], [src*="kakao" i], [src*="naver" i], [src*="apple" i], [class*="google" i], [class*="kakao" i], [class*="naver" i], [class*="apple" i], [alt*="google" i], [alt*="kakao" i], [alt*="naver" i], [alt*="apple" i]',
+              ).length > 0;
+            if (!hasSnsAsset) {
+              violations.push({
+                rule: "onboarding-social-bare-text",
+                line: 1,
+                selector: "<onboarding root>",
+                detail:
+                  "소셜 로그인을 텍스트/이니셜(G/K/N 등)로 표현 — sns-logos 자산을 쓰지 않았습니다.",
+                suggestion:
+                  "@nudge-design/assets 의 sns-logos(google/kakao/naver/apple × main/white/black)를 버튼에 넣을 것. get_guide({ topic: 'pattern:social-login' }).",
+              });
+            }
+          }
+        }
+
+        // ─── 3) 성공/완료 화면의 민무늬 색 원(체크 없음) (onboarding-success-plain-circle) ───
+        //   "완료/성공/심사" 신호가 있을 때만. 초록 계열 배경의 원형 요소인데 그 안에 svg/아이콘/체크
+        //   문자가 없으면 → 민무늬 원으로 본다(보수적).
+        {
+          const docText = $("body").text();
+          const hasSuccessSignal = /완료|성공|심사/.test(docText);
+          if (hasSuccessSignal) {
+            $("[style], [class]").each((_i, el) => {
+              if (el.type !== "tag") return;
+              const attribs = (el as unknown as DomElement).attribs ?? {};
+              const style = (attribs.style ?? "").toLowerCase();
+              const cls = (attribs.class ?? "").toLowerCase();
+              const blob = `${style} ${cls}`;
+              // 원형 신호: border-radius: 50% / ≥9999px, 또는 class 에 circle
+              const isCircle =
+                /border-radius\s*:\s*(?:50%|[5-9]\d{3,}px|9999px)/.test(style) ||
+                /\bcircle\b/.test(cls);
+              if (!isCircle) return;
+              // 초록 배경 신호 (보수적): green 키워드 또는 success 시멘틱 토큰만 인정
+              const greenBg =
+                /background[^;]*green/.test(style) || /--semantic-bg-success/.test(blob);
+              if (!greenBg) return;
+              // 안에 체크/아이콘이 있으면 OK
+              const $el = $(el);
+              const hasIcon =
+                $el.find("svg, nds-icon, [class*='check' i], [class*='icon' i]").length > 0 ||
+                /[✓✔]/.test($el.text());
+              if (hasIcon) return;
+              const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+              violations.push({
+                rule: "onboarding-success-plain-circle",
+                line: lineNumberAt(source, offset),
+                selector: describeElement(el as unknown as DomElement),
+                detail: "성공/완료 상태 아이콘에 체크 표시가 없음(민무늬 원).",
+                suggestion:
+                  "cashwalk-biz-check-circle-on 등 체크 아이콘을 원 안에 넣을 것. find_icon({ query: 'check circle' }).",
+              });
+            });
+          }
+        }
+
+        // ─── 4) 인증번호 입력/타이머를 손으로 조립 (verification-manual-assembly) ───
+        //   placeholder 에 "인증번호"/"6자리" 가 있거나, 인증 입력 근처에 카운트다운 텍스트(남은 시간
+        //   / mm:ss)가 있는데 <nds-verification-code-input> 도 아니고 <nds-field-action-row> 로
+        //   감싸이지도 않은 경우.
+        {
+          const hasVerificationInputComponent = $("nds-verification-code-input").length > 0;
+          const hasFieldActionRow = $("nds-field-action-row").length > 0;
+          if (!hasVerificationInputComponent && !hasFieldActionRow) {
+            const docText = $("body").text();
+            const hasCountdown = /남은\s*시간/.test(docText) || /\b\d{1,2}:\d{2}\b/.test(docText);
+            let manualVerifInput: DomElement | null = null;
+            $("input").each((_i, el) => {
+              if (el.type !== "tag") return;
+              const ph = ((el as unknown as DomElement).attribs?.placeholder ?? "").toString();
+              if (/인증번호|6자리/.test(ph)) {
+                if (!manualVerifInput) manualVerifInput = el as unknown as DomElement;
+              }
+            });
+            const phSignal = manualVerifInput !== null;
+            if (phSignal || (hasCountdown && $("input").length > 0)) {
+              const el =
+                manualVerifInput ?? ($("input").get(0) as unknown as DomElement | undefined);
+              const offset =
+                (el as unknown as { startIndex?: number } | undefined)?.startIndex ?? 0;
+              violations.push({
+                rule: "verification-manual-assembly",
+                line: el ? lineNumberAt(source, offset) : 1,
+                selector: el ? describeElement(el) : "<onboarding root>",
+                detail: "인증번호 입력/타이머를 손으로 조립.",
+                suggestion:
+                  "<nds-verification-code-input length=\"6\"> + <nds-countdown-timer> 를 <nds-field-action-row> 로 합성할 것. get_guide({ topic: 'component:FieldActionRow' }).",
+              });
+            }
+          }
+        }
+
+        // ─── 5) 약관 동의를 raw 체크박스로 조립 (consent-raw-checkbox) ───
+        //   input[type=checkbox] 가 있고 근처(같은 컨테이너) 텍스트에 약관/동의/필수 신호가 있는데
+        //   <nds-checkbox>/<nds-checkbox-group> 가 아닌 경우.
+        $('input[type="checkbox"]').each((_i, el) => {
+          if (el.type !== "tag") return;
+          const $el = $(el);
+          // 같은 컨테이너(부모) 텍스트로 약관 신호 판정
+          const containerText = $el.parent().text();
+          if (!/약관|동의|필수/.test(containerText)) return;
+          const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+          violations.push({
+            rule: "consent-raw-checkbox",
+            line: lineNumberAt(source, offset),
+            selector: describeElement(el as unknown as DomElement),
+            detail:
+              "약관 동의를 raw 체크박스로 조립 — [필수]/[선택] 강조·전체동의 indeterminate 가 누락되기 쉽습니다.",
+            suggestion:
+              "<nds-checkbox-group> (items 에 badge [필수]/[선택]) 로 조립. get_guide({ topic: 'pattern:consent' }).",
+          });
+        });
       }
 
       // ─── 캐포비 사이드바 구성 검증 (회귀: 로고+로그인영역 누락 / 높이 안 참) ───
@@ -2440,6 +2589,11 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "avoidable-reinvention": "component",
   "nds-custom-element-content-mutation": "component",
   "cashwalk-biz-gender-selection-control": "component",
+  "onboarding-missing-brand-logo": "component",
+  "onboarding-social-bare-text": "component",
+  "onboarding-success-plain-circle": "component",
+  "verification-manual-assembly": "component",
+  "consent-raw-checkbox": "component",
   // icon (icon-usage): 이모지/기호·인라인 svg·heading 장식 아이콘
   "emoji-banned": "icon",
   "text-symbol-banned": "icon",

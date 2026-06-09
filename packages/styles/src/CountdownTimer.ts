@@ -24,7 +24,7 @@ export const ctStyles = `
 
   :where(.${CT_TIME_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.bold};
+    font-weight: ${fontWeight.regular};
     font-variant-numeric: tabular-nums;
   }
 

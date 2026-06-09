@@ -78,7 +78,7 @@ export const tiStyles = `
   :where(.${TI_INPUT_CLASS}::placeholder) { color: ${cv.input.placeholder}; }
 
   /* 추가 버튼 — 입력칸에 붙는 정사각 affordance: 높이/라운드는 입력 슬롯을 그대로 추종
-     (캐포비 40/4, base 48/8). 색은 button 시멘틱(secondary CTA = 브랜드 검정 채움). */
+     (캐포비 40/4, base 48/8). 색은 button 시멘틱(검정 채움 CTA). */
   :where(.${TI_ADD_CLASS}) {
     flex: 0 0 auto;
     width: var(--nds-input-height, ${sizing.input.default}px);
@@ -92,6 +92,12 @@ export const tiStyles = `
     color: ${cv.button.textSecondary};
     cursor: pointer;
     transition: background-color ${transition.default}, opacity ${transition.default};
+  }
+  /* 캐포비: tone=Primary+Neutral 뿐(Secondary 없음) → 검정 추가버튼을 neutral 로 통일
+     (Modal/Popup/ConfirmTooltip 과 동일). 타 브랜드는 base secondary 유지. :disabled 가 뒤에서 이김. */
+  :where([data-brand="cashwalk-biz"] .${TI_ADD_CLASS}) {
+    background: ${cv.button.bgNeutral};
+    color: ${cv.button.textNeutralSolid};
   }
   :where(.${TI_ADD_CLASS}:disabled) {
     background: ${cv.surface.disabled};

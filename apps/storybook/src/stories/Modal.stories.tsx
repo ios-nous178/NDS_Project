@@ -679,7 +679,7 @@ function CashwalkBizSingleActionExample() {
 
   return (
     <>
-      <Button color="secondary" variant="solid" onClick={() => setOpen(true)}>
+      <Button color="neutral" variant="solid" onClick={() => setOpen(true)}>
         ① Single Action 열기
       </Button>
       <Modal
@@ -703,7 +703,7 @@ function CashwalkBizDualActionExample() {
 
   return (
     <>
-      <Button color="secondary" variant="solid" onClick={() => setOpen(true)}>
+      <Button color="neutral" variant="solid" onClick={() => setOpen(true)}>
         ② Dual Action 열기
       </Button>
       <Modal
@@ -729,7 +729,7 @@ function CashwalkBizWithCloseExample() {
 
   return (
     <>
-      <Button color="secondary" variant="solid" onClick={() => setOpen(true)}>
+      <Button color="neutral" variant="solid" onClick={() => setOpen(true)}>
         ③ With Close 열기
       </Button>
       <Modal.Root open={open} onClose={() => setOpen(false)}>
@@ -748,6 +748,33 @@ function CashwalkBizWithCloseExample() {
   );
 }
 
+/* 회귀 가드: 타이틀이 없고 닫기(X)만 있는 모달. 헤더 스페이서가 타이틀과 함께만
+   렌더되던 탓에, 타이틀이 없으면 X 가 space-between 에서 좌측으로 떨어지던 버그를 고정한다.
+   close 버튼의 margin-left:auto 로 타이틀 유무와 무관하게 항상 우측이어야 한다. */
+function CashwalkBizCloseOnlyNoTitleExample() {
+  useForceCashwalkBizBrand();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button color="neutral" variant="solid" onClick={() => setOpen(true)}>
+        ⑤ 타이틀 없이 X만 열기
+      </Button>
+      <Modal.Root open={open} onClose={() => setOpen(false)}>
+        <Modal.Overlay />
+        <Modal.Content>
+          <Modal.Header closable />
+          <Modal.Body>
+            내 정보 페이지로 이동합니다.
+            <br />X 버튼은 타이틀이 없어도 항상 우측에 있어야 합니다.
+          </Modal.Body>
+          <Modal.Footer confirmText="확인" onConfirm={() => setOpen(false)} />
+        </Modal.Content>
+      </Modal.Root>
+    </>
+  );
+}
+
 function CashwalkBizConfirmSlotExample() {
   useForceCashwalkBizBrand();
   const [open, setOpen] = useState(false);
@@ -755,7 +782,7 @@ function CashwalkBizConfirmSlotExample() {
 
   return (
     <>
-      <Button color="secondary" variant="solid" onClick={() => setOpen(true)}>
+      <Button color="neutral" variant="solid" onClick={() => setOpen(true)}>
         ④ Confirm + Slot 열기
       </Button>
       <Modal.Root open={open} onClose={() => setOpen(false)}>
@@ -843,6 +870,20 @@ export const CashwalkBizAdminWithClose: Story = {
     },
   },
   render: () => <CashwalkBizWithCloseExample />,
+};
+
+export const CashwalkBizAdminCloseOnlyNoTitle: Story = {
+  name: "Brand/CashwalkBiz Admin · ⑤ Close Only (no title)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "타이틀 없이 닫기(X)만 있는 모달 — X 는 항상 우측. 회귀 가드: 타이틀이 없으면 " +
+          "헤더 스페이서가 안 그려져 X 가 좌측으로 떨어지던 버그를 close 버튼 margin-left:auto 로 고정.",
+      },
+    },
+  },
+  render: () => <CashwalkBizCloseOnlyNoTitleExample />,
 };
 
 export const CashwalkBizAdminConfirmSlot: Story = {

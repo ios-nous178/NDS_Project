@@ -176,10 +176,12 @@ export const popupStyles = `
     color: ${cv.textRole.strong};
   }
 
+  /* confirm = 캐포비 검정 CTA. 캐포비 tone 은 Primary + Neutral 뿐(Secondary 없음) →
+     button.bgNeutral(#111)/textNeutralSolid(흰) 로 통일(Modal 과 동일). cashwalk-biz-no-secondary 정합. */
   :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CONFIRM_CLASS}) {
-    background: ${cv.button.bgSecondary};
-    border-color: ${cv.button.bgSecondary};
-    color: ${cv.button.textSecondary};
+    background: ${cv.button.bgNeutral};
+    border-color: ${cv.button.bgNeutral};
+    color: ${cv.button.textNeutralSolid};
   }
 
   @keyframes nds-popup-fade-in {
