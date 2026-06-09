@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-09T00:18:25.328Z",
+  "generatedAt": "2026-06-09T03:56:45.148Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -2449,6 +2449,15 @@
           "type": "boolean"
         },
         {
+          "name": "tone",
+          "optional": true,
+          "type": "\"default\" | \"brand\"",
+          "allowedValues": [
+            "default",
+            "brand"
+          ]
+        },
+        {
           "name": "label",
           "optional": true,
           "type": "React.ReactNode"
@@ -2466,7 +2475,8 @@
         "format",
         "label",
         "expired-text",
-        "no-urgent"
+        "no-urgent",
+        "tone"
       ]
     },
     {
@@ -3245,7 +3255,7 @@
         },
         {
           "name": "action",
-          "optional": false,
+          "optional": true,
           "type": "React.ReactNode"
         },
         {
@@ -12626,6 +12636,38 @@
       }
     },
     {
+      "name": "--semantic-confirm-cta-active",
+      "value": "var(--semantic-text-brand-strong)",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#333333"
+      }
+    },
+    {
+      "name": "--semantic-confirm-cta-bg",
+      "value": "var(--semantic-bg-brand-default)",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#111111"
+      }
+    },
+    {
+      "name": "--semantic-confirm-cta-hover",
+      "value": "var(--semantic-fill-brand-hover)",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#333333"
+      }
+    },
+    {
+      "name": "--semantic-confirm-cta-text",
+      "value": "var(--semantic-button-text-default)",
+      "group": "semantic",
+      "brandValues": {
+        "cashwalk-biz": "#FFFFFF"
+      }
+    },
+    {
       "name": "--semantic-fill-brand-default",
       "value": "#2B96ED",
       "group": "semantic",
@@ -14363,7 +14405,8 @@
         "format",
         "label",
         "expired-text",
-        "no-urgent"
+        "no-urgent",
+        "tone"
       ]
     },
     {

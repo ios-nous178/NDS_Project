@@ -128,6 +128,36 @@ export const tiStyles = `
     background: ${cv.iconRole.normal};
   }
 
+  /* ─── 캐포비(cashwalk-biz) stacked 태그 — SelectedItemRow 와 동일 트리트먼트(Figma 3001:18463) ───
+     gray/200(#eee) fill · radius 10(pill→라운드 사각) · 삭제 = 원형 serchdelete. text #333 는
+     base(textRole.normal) 그대로. 삭제는 솔리드 원형 X(svg) 대신 ::before serchdelete mask 로 swap
+     — 색 gray(iconRole.normal) → hover red(statusError), SelectedItemRow 와 동일. */
+  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_TAG_CLASS}) {
+    background: ${cv.borderRole.normal};
+    border-radius: 10px;
+  }
+  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}) {
+    background: transparent;
+    color: ${cv.iconRole.normal};
+    opacity: 1;
+  }
+  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}:hover) {
+    background: transparent;
+    color: ${cv.textRole.statusError};
+  }
+  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}) svg {
+    display: none;
+  }
+  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS})::before {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><circle cx='10' cy='10' r='10' fill='black' fill-opacity='0.4'/><path d='M13.33361 5.555582C13.64043 5.248757 14.13789 5.248758 14.44472 5.555583C14.75154 5.862408 14.75154 6.35987 14.44472 6.66669L6.66694 14.44447C6.36011 14.7513 5.862651 14.7513 5.555827 14.44447C5.249002 14.13765 5.249002 13.64019 5.555827 13.33336L13.33361 5.555582Z' fill='black'/><path d='M5.555555 6.66683C5.24873 6.36 5.248731 5.862543 5.555556 5.555718C5.862381 5.248893 6.35984 5.248894 6.66667 5.555719L14.44445 13.3335C14.75127 13.64032 14.75127 14.13778 14.44444 14.44461C14.13762 14.75143 13.64016 14.75143 13.33333 14.44461L5.555555 6.66683Z' fill='black'/></svg>") center / contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><circle cx='10' cy='10' r='10' fill='black' fill-opacity='0.4'/><path d='M13.33361 5.555582C13.64043 5.248757 14.13789 5.248758 14.44472 5.555583C14.75154 5.862408 14.75154 6.35987 14.44472 6.66669L6.66694 14.44447C6.36011 14.7513 5.862651 14.7513 5.555827 14.44447C5.249002 14.13765 5.249002 13.64019 5.555827 13.33336L13.33361 5.555582Z' fill='black'/><path d='M5.555555 6.66683C5.24873 6.36 5.248731 5.862543 5.555556 5.555718C5.862381 5.248893 6.35984 5.248894 6.66667 5.555719L14.44445 13.3335C14.75127 13.64032 14.75127 14.13778 14.44444 14.44461C14.13762 14.75143 13.64016 14.75143 13.33333 14.44461L5.555555 6.66683Z' fill='black'/></svg>") center / contain no-repeat;
+  }
+
   /* ─────────────────────────────────────────────
      variant="inline" — tokenfield (칩이 입력칸 안쪽, 구 기본 동작)
      ───────────────────────────────────────────── */

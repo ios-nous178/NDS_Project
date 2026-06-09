@@ -159,6 +159,11 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "onboarding-social-bare-text": "warn",
   // 성공/완료 상태를 체크 없는 민무늬 초록 원으로 표현 — check-circle 아이콘 미사용
   "onboarding-success-plain-circle": "warn",
+  // 온보딩 단일 액션 주 CTA(Primary solid)가 full-width 가 아님 — 모달 단일버튼(hug)과 혼동.
+  // 단일 액션 온보딩은 카드 폭 가득(FILL)이 하드 계약 → error. (멀티스텝=이전버튼 있으면 면제)
+  "onboarding-cta-not-fullwidth": "error",
+  // 멀티스텝 온보딩의 [이전 단계] 버튼이 카드 안에 있음 — 카드와 분리해 하단 푸터에 둬야 함.
+  "onboarding-back-button-inside-card": "warn",
   // 인증번호 입력/타이머를 손으로 조립 — verification-code-input + countdown-timer + field-action-row 미사용
   "verification-manual-assembly": "warn",
   // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
@@ -194,6 +199,7 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "button-without-interaction": "error",
   // 날짜/기간을 raw text input(placeholder 'YYYY-MM-DD')으로 구현 — DatePicker/DateRangePicker 미사용
   "date-as-text-input": "warn",
+  "address-as-text-input": "warn",
   // 금액/수량을 일반 input 으로 구현 — AmountInput(콤마·단위·clamp) 미사용
   "amount-as-text-input": "warn",
   // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
@@ -242,6 +248,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "card-slot-double-padding": "warn",
   "neutral-solid-cta": "warn",
   "cashwalk-biz-no-secondary": "warn",
+  // 캐포비 알림 SSOT 는 Snackbar(흰 카드·우측 상단·상태 칩·닫기 X). Toast 는 캐포비에서 미사용 — 전면 금지.
+  "cashwalk-biz-toast": "error",
   "nested-card": "warn",
   "card-badge-overuse": "warn",
   "card-footer-button-overuse": "warn",
@@ -923,6 +931,26 @@ export function validateHtmlSource(
               "숫자(금액/수량)는 <nds-amount-input unit='명|원|개'>(천단위 콤마·단위 suffix·min/max clamp). 일반 text input 금지. get_guide({ topic: 'component:AmountInput', target: 'html' }) 참조.",
           });
         }
+        // 우편/도로명 주소 수집을 plain input 으로 손조립 (address-as-text-input).
+        //   강한 신호(도로명/지번/우편번호/상세주소/배송지)이거나, "주소"이되 이메일/URL 맥락이 아닐 때.
+        //   시/도▸시/군구 계층 선택(CheckboxTree)이나 "이메일 주소"/"사이트 주소"엔 발화하지 않는다.
+        const addrText = `${ph} ${lbl}`;
+        const isAddressLike =
+          /(도로명|지번|우편번호|상세\s*주소|주소\s*검색|배송\s*지|배송\s*주소)/.test(addrText) ||
+          (/주소/.test(addrText) &&
+            !/(이메일|메일|e-?mail|url|https?|링크|link|사이트|홈페이지|도메인|domain)/i.test(
+              addrText,
+            ));
+        if (!isDateLike && !isAmountLike && isAddressLike) {
+          violations.push({
+            rule: "address-as-text-input",
+            line,
+            selector,
+            detail: `주소 입력으로 보이는 <${tag}${ph ? ` placeholder="${ph.slice(0, 24)}"` : ""}> 를 일반 텍스트/select 로 손조립함`,
+            suggestion:
+              "주소 수집은 <nds-address-picker> 한 컴포넌트(도로명/지번 검색 → 결과 선택 → 상세주소). 검색 API(카카오/네이버)는 results 로만 전달, plain input/select 손조립 금지. get_guide({ topic: 'component:AddressPicker', target: 'html' }) 참조. (시/도▸시/군구 계층 선택은 별개 — get_guide({ topic: 'pattern:cashwalk-biz-page-targeting-regions' }).)",
+          });
+        }
       }
     }
 
@@ -1187,6 +1215,19 @@ export function validateHtmlSource(
         detail: `<nds-button color="secondary">`,
         suggestion:
           "캐포비(cashwalk-biz)는 Secondary tone 이 없음(Figma ButtonGuide = Primary + Neutral). 검정/회색 CTA 는 color=\"neutral\" 사용 (solid=검정 #111 / soft=회색 #F5F5F5 / outlined=라인). get_guide({ topic: 'component:Button' }) 참조.",
+      });
+    }
+
+    // 7c. nds-toast on cashwalk-biz — 캐포비 알림 SSOT 는 Snackbar(흰 카드 chrome·우측 상단 고정·
+    //     상태 칩 아이콘·닫기 X). 캐포비는 Snackbar 만 사용하고 Toast 는 쓰지 않는다(예외 없음).
+    if (tag === "nds-toast" && documentBrand === "cashwalk-biz") {
+      violations.push({
+        rule: "cashwalk-biz-toast",
+        line,
+        selector,
+        detail: `<nds-toast>`,
+        suggestion:
+          "캐포비(cashwalk-biz)는 알림을 Snackbar 만 사용합니다(Toast 미사용). <nds-snackbar-host brand=\"cashwalk-biz\"> + <nds-snackbar> 로 교체하세요 — 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 가 캐포비 알림 SSOT. get_guide({ topic: 'component:Snackbar', brand: 'cashwalk-biz' }) 참조.",
       });
     }
   });
@@ -1575,6 +1616,60 @@ export function validateHtmlSource(
               "<nds-checkbox-group> (items 에 badge [필수]/[선택]) 로 조립. get_guide({ topic: 'pattern:consent' }).",
           });
         });
+
+        // ─── 6) 온보딩 주 CTA 너비 + 이전버튼 배치 (단일 vs 멀티스텝 구분) ───
+        //   온보딩은 두 레이아웃:
+        //   · 단일 액션(로그인 등): 카드 안 Primary CTA = 카드 폭 가득(full-width). 모달 hug 와 혼동 금지.
+        //   · 멀티스텝(가입 심사 등): 카드 *아래* 분리된 캔버스 푸터 = [이전 단계](좌 outlined hug) +
+        //     [다음/제출](우 primary solid hug). 이땐 제출이 hug 라 full-width 를 강제하지 않는다.
+        //   멀티스텝 신호 = Back/이전 버튼 존재. (이전버튼이 있으면 푸터-내브로 보고 full-width 면제)
+        const onboardingBackButtons = $("nds-button").filter((_i, el) => {
+          if (el.type !== "tag") return false;
+          return /이전|뒤로/.test($(el).text());
+        });
+        const isMultiStepFooter = onboardingBackButtons.length > 0;
+
+        if (!isMultiStepFooter) {
+          // 단일 액션 — 카드 폭 가득(FILL) 강제(error). primary solid 만 본다.
+          $("nds-button").each((_i, el) => {
+            if (el.type !== "tag") return;
+            const attribs = (el as unknown as DomElement).attribs ?? {};
+            const color = (attribs.color ?? "primary").toLowerCase();
+            const variant = (attribs.variant ?? "solid").toLowerCase();
+            if (color !== "primary" || variant !== "solid") return;
+            const hasFullWidth =
+              attribs["full-width"] !== undefined || attribs["fullwidth"] !== undefined;
+            if (hasFullWidth) return;
+            const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+            violations.push({
+              rule: "onboarding-cta-not-fullwidth",
+              line: lineNumberAt(source, offset),
+              selector: describeElement(el as unknown as DomElement),
+              detail:
+                "온보딩 단일 액션 Primary CTA 에 full-width 가 없음 — 모달 단일버튼(우측 hug)과 혼동한 좁은 버튼.",
+              suggestion:
+                '단일 액션 온보딩 주 CTA 는 카드 폭 가득(FILL) — <nds-button full-width color="primary" ...>. (이전/다음이 있는 멀티스텝이면 카드 아래 분리 푸터에 hug 로.) get_guide({ topic: \'pattern:cashwalk-biz-page-onboarding\' }).',
+            });
+          });
+        } else {
+          // 멀티스텝 — [이전 단계] 버튼은 카드(섹션)와 분리해 카드 *아래* 푸터에 둬야 한다.
+          //   카드 안에 들어가 있으면 warn (사용자 지적: 하단에 섹션이랑 분리해서 위치).
+          onboardingBackButtons.each((_i, el) => {
+            if (el.type !== "tag") return;
+            const insideCard = $(el).closest('[class*="card" i], nds-card').length > 0;
+            if (!insideCard) return;
+            const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+            violations.push({
+              rule: "onboarding-back-button-inside-card",
+              line: lineNumberAt(source, offset),
+              selector: describeElement(el as unknown as DomElement),
+              detail:
+                "온보딩 멀티스텝의 [이전 단계] 버튼이 카드 안에 있음 — 카드(섹션)와 분리해 하단 푸터에 둬야 함.",
+              suggestion:
+                "멀티스텝 온보딩 푸터는 카드 *아래* 분리된 캔버스 행 — 좌측 [이전 단계](outlined hug) + 우측 [다음/제출](primary solid hug). 카드 안에 넣지 말 것. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }).",
+            });
+          });
+        }
       }
 
       // ─── 캐포비 사이드바 구성 검증 (회귀: 로고+로그인영역 누락 / 높이 안 참) ───
@@ -2585,6 +2680,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "button-without-interaction": "component",
   "date-as-text-input": "component",
   "amount-as-text-input": "component",
+  "address-as-text-input": "component",
   "amount-as-static-display": "component",
   "avoidable-reinvention": "component",
   "nds-custom-element-content-mutation": "component",

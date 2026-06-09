@@ -85,8 +85,15 @@ export const phoneInputStyles = `
 
   :where(.${PI_DIAL_CLASS}:disabled) { cursor: not-allowed; opacity: 0.6; }
 
+  /* dial 박스가 "+82"(3글자) 폭 이하로 줄지 않도록 코드 텍스트에 floor.
+   * inline-block 이라야 min-width 가 먹고, 3ch(폰트 상대 — 매직 px 없음)는
+   * tabular-nums 기준 3글자 폭. "+1" 처럼 짧아도 박스가 +82 폭을 유지하고,
+   * 더 긴 코드는 자연 확장. flex-shrink:0 인 dial 박스가 이 child 를 못 줄인다. */
   :where(.${PI_DIAL_CODE_CLASS}) {
     font-variant-numeric: tabular-nums;
+    display: inline-block;
+    min-width: 3ch;
+    text-align: center;
   }
 
   :where(.${PI_CHEVRON_CLASS}) {

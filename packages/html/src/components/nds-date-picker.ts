@@ -15,7 +15,8 @@
  *   placeholder (default "YYYY-MM-DD")
  *   disabled / error / full-width
  *
- * React 버전의 Portal 은 미지원 — 패널은 inline absolute positioning.
+ * 패널은 document.body 로 portal + position:fixed(트리거 rect 기준) — Modal 등
+ * overflow:hidden 컨테이너 안에서도 잘리지 않는다(nds-select 와 동일 전략).
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -109,11 +110,14 @@ export class NdsDatePicker extends NdsElement {
 
   private _onDocClick = (e: MouseEvent) => {
     if (!this._open || !this._root) return;
-    if (!this._root.contains(e.target as Node)) {
-      this._setOpen(false);
-      this.scheduleUpdate();
-    }
+    const target = e.target as Node;
+    // 패널은 portal 되어 _root 밖(document.body)에 있으므로 패널 내부 클릭(이전/다음 달 등)도 무시.
+    if (this._root.contains(target)) return;
+    if (this._panel && this._panel.contains(target)) return;
+    this._setOpen(false);
+    this.scheduleUpdate();
   };
+  private _onReposition = () => this._positionPanel();
   private _onEsc = (e: KeyboardEvent) => {
     if (this._open && e.key === "Escape") {
       e.preventDefault();
@@ -133,6 +137,13 @@ export class NdsDatePicker extends NdsElement {
   override disconnectedCallback(): void {
     document.removeEventListener("mousedown", this._onDocClick);
     document.removeEventListener("keydown", this._onEsc);
+    window.removeEventListener("scroll", this._onReposition, true);
+    window.removeEventListener("resize", this._onReposition);
+    // portal 된 패널도 정리.
+    if (this._panel && this._panel.parentElement === document.body) {
+      this._panel.remove();
+      this._panel = null;
+    }
   }
 
   private _mount(): void {
@@ -238,16 +249,18 @@ export class NdsDatePicker extends NdsElement {
       this._panel.remove();
       this._panel = null;
     }
-    if (!this._open) return;
+    if (!this._open) {
+      window.removeEventListener("scroll", this._onReposition, true);
+      window.removeEventListener("resize", this._onReposition);
+      return;
+    }
 
     const panel = document.createElement("div");
     panel.setAttribute("role", "dialog");
     panel.dataset.slot = "panel";
     panel.className = DP_PANEL_CLASS;
-    panel.style.position = "absolute";
-    panel.style.top = "100%";
-    panel.style.left = "0";
-    panel.style.marginTop = "4px";
+    // Modal 등 overflow:hidden 컨테이너에서 잘리지 않도록 body 로 portal + fixed.
+    panel.style.position = "fixed";
     panel.style.zIndex = "1000";
 
     const value = parseIso(this.getAttribute("value") || "");
@@ -357,8 +370,37 @@ export class NdsDatePicker extends NdsElement {
     });
     panel.appendChild(gridEl);
 
-    this._root.appendChild(panel);
+    document.body.appendChild(panel);
     this._panel = panel;
+    this._positionPanel();
+    // scroll/resize 시 트리거 위치가 바뀌므로 reposition. capture:true 로
+    // overflow:auto 부모(모달 본문 스크롤 등)까지 잡는다. 동일 ref 라 중복 등록 안 됨.
+    window.addEventListener("scroll", this._onReposition, true);
+    window.addEventListener("resize", this._onReposition);
+  }
+
+  /**
+   * 트리거 위치 기준으로 패널 fixed position 설정.
+   * 화면 하단 공간이 부족하면 트리거 위로 띄운다(nds-select 와 동일 전략).
+   */
+  private _positionPanel(): void {
+    if (!this._panel || !this._trigger || !this._open) return;
+    const rect = this._trigger.getBoundingClientRect();
+    const viewportH = window.innerHeight;
+    const panelH = this._panel.offsetHeight || 340;
+    const gap = 4;
+    const spaceBelow = viewportH - rect.bottom;
+    const spaceAbove = rect.top;
+    const placeAbove = spaceBelow < panelH + gap && spaceAbove > spaceBelow;
+
+    this._panel.style.left = `${rect.left}px`;
+    if (placeAbove) {
+      this._panel.style.top = "";
+      this._panel.style.bottom = `${viewportH - rect.top + gap}px`;
+    } else {
+      this._panel.style.bottom = "";
+      this._panel.style.top = `${rect.bottom + gap}px`;
+    }
   }
 
   protected update(): void {

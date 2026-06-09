@@ -42,6 +42,7 @@ export class NdsFieldActionRow extends NdsElement {
   private _action: HTMLDivElement | null = null;
   private _helper: HTMLSpanElement | null = null;
   private _hasTimer = false;
+  private _hasAction = false;
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
@@ -62,6 +63,7 @@ export class NdsFieldActionRow extends NdsElement {
       node.parentNode?.removeChild(node);
     });
     this._hasTimer = timerStash.length > 0;
+    this._hasAction = actionStash.length > 0;
 
     const root = document.createElement("div");
     root.dataset.slot = "root";
@@ -83,12 +85,14 @@ export class NdsFieldActionRow extends NdsElement {
     timerStash.forEach((n) => timer.appendChild(n));
     if (this._hasTimer) field.appendChild(timer);
 
+    // action 은 옵션 — 슬롯 콘텐츠가 없으면 액션 div 자체를 만들지 않는다(코드+타이머만 레이아웃).
     const action = document.createElement("div");
     action.dataset.slot = "action";
     action.className = FAR_ACTION_CLASS;
     actionStash.forEach((n) => action.appendChild(n));
 
-    row.append(field, action);
+    row.appendChild(field);
+    if (this._hasAction) row.appendChild(action);
     root.appendChild(row);
 
     const helper = document.createElement("span");

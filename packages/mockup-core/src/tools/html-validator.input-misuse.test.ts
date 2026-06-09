@@ -13,6 +13,7 @@ const CTX: HtmlValidationContext = {
     "nds-input",
     "nds-date-range-picker",
     "nds-amount-input",
+    "nds-address-picker",
     "nds-selection-button-group",
     "nds-select",
     "nds-radio-group",
@@ -82,6 +83,56 @@ test("대시보드 통계의 정적 숫자(폼 밖)는 위반 아님(false-posit
     <nds-card><div class="kpi"><span>3,000,000 명</span></div></nds-card>
   </body></html>`;
   assert.equal(has(html, "amount-as-static-display"), false);
+});
+
+// ── 주소 입력 (address-as-text-input) ─────────────────────────
+test("도로명 주소 placeholder text input → address-as-text-input", () => {
+  const found = v(
+    `<html><body><nds-input placeholder="도로명 주소를 입력하세요"></nds-input></body></html>`,
+  ).find((x) => x.rule === "address-as-text-input");
+  assert.ok(found, "주소 손조립 input 을 잡아야 한다");
+  assert.match(found!.suggestion ?? "", /nds-address-picker/);
+});
+
+test("우편번호 input → address-as-text-input", () => {
+  assert.equal(
+    has(`<html><body><input placeholder="우편번호"></body></html>`, "address-as-text-input"),
+    true,
+  );
+});
+
+test("'이메일 주소'는 주소 입력이 아님 → 미발화(오탐 방지)", () => {
+  assert.equal(
+    has(
+      `<html><body><nds-input placeholder="이메일 주소를 입력하세요"></nds-input></body></html>`,
+      "address-as-text-input",
+    ),
+    false,
+  );
+});
+
+test("'사이트 주소(URL)'는 미발화(오탐 방지)", () => {
+  assert.equal(
+    has(
+      `<html><body><nds-input placeholder="사이트 주소(URL)"></nds-input></body></html>`,
+      "address-as-text-input",
+    ),
+    false,
+  );
+});
+
+test("nds-address-picker 사용은 위반 아님(주소 input 손조립 없음)", () => {
+  const html = `<html><body><nds-address-picker label="주소"></nds-address-picker></body></html>`;
+  assert.equal(has(html, "address-as-text-input"), false);
+});
+
+test("시/도▸시/군구 계층 선택(select)은 address-as-text-input 미발화", () => {
+  // region targeting(CheckboxTree 패턴)은 AddressPicker scope 아님 — select 라 input 블록 밖.
+  const html = `<html><body>
+    <nds-select placeholder="시/도 선택"></nds-select>
+    <nds-select placeholder="시/군/구 선택"></nds-select>
+  </body></html>`;
+  assert.equal(has(html, "address-as-text-input"), false);
 });
 
 // ── #6 지역 선택 ──────────────────────────────────────────────

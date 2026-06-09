@@ -1275,6 +1275,7 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
             filename: meta.filename,
             mimeType: meta.mimeType,
             figmaNodeId: meta.figmaNodeId,
+            inlineRef: `@nudge-design/assets/files/${meta.filename}`,
             publicPath: `/${meta.filename}`,
           };
         });
@@ -1304,10 +1305,10 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
           package: "@nudge-design/assets",
           services: snsForBrand,
           files: snsFiles,
-          importExample: `import { getSnsLogo } from "@nudge-design/assets";\nconst logo = getSnsLogo("naver", "main");\n// → { filename, dataUri, mimeType, figmaNodeId }`,
+          importExample: `// ① 단일 HTML 목업 (build_singlefile_html 가 base64 inline) — 이게 기본. 아이콘으로 못 가져온다(find_icon 에 없음), 이 자산 경로를 <img src> 에 그대로 박아라:\n<button style="height:48px;background:#FEE500"><img src="@nudge-design/assets/files/sns-logos/kakao-black.svg" width="18" height="18" alt=""> 카카오로 시작하기</button>\n// 조합: naver(white/main)·kakao(black/main)·google(white/main)·apple(white/black). 배치/색 규칙은 get_guide({ topic: 'pattern:social-login' }).\n// ② React/호스팅 앱: import { getSnsLogo } from "@nudge-design/assets"; getSnsLogo("naver", "main") → { filename, dataUri, mimeType, figmaNodeId }`,
           publicHosting: {
             baseDir: "public/sns-logos/",
-            note: `Runmile 라이브러리 (Figma 107:1045) 의 SNS 로그인 버튼 자산. 4 서비스(naver/kakao/google/apple) × 색상(white/main/black) 조합. 외부 소비자가 SNS 로그인 화면을 만들 때 \`public/sns-logos/{service}-{color}.svg\` 로 호스팅하거나, dataUri 로 직접 인라인.`,
+            note: `Runmile 라이브러리 (Figma 107:1045) 의 SNS 로그인 버튼 자산. 4 서비스(naver/kakao/google/apple) × 색상(white/main/black) 조합. **단일 HTML 목업이면 위 inlineRef(@nudge-design/assets/files/sns-logos/…) 를 <img src> 에 그대로 써라 — build_singlefile_html 이 base64 inline. 상대경로(/sns-logos/…)는 단일 파일에서 깨진다(호스팅 앱 전용).** 외부 소비자가 SNS 로그인 화면을 호스팅하면 \`public/sns-logos/{service}-{color}.svg\`, 또는 dataUri 로 직접 인라인.`,
           },
         }
       : null,

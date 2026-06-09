@@ -45,10 +45,24 @@ export interface CheckboxGroupItem {
   disabled?: boolean;
   /** 라벨 옆 뱃지 — [필수]/[선택]/NEW 등 (도메인 중립 슬롯) */
   badge?: React.ReactNode;
-  /** 필수 항목 — 뱃지를 강조(빨강 + bold)해 선택 항목과 구분. 약관 동의의 [필수] 등 */
+  /**
+   * 필수 항목 — 뱃지를 강조(빨강 + bold)해 선택 항목과 구분. 약관 동의의 [필수] 등.
+   * 미지정이면 badge 텍스트에 "필수" 가 들어있을 때 자동으로 강조한다(반복 누락 방지).
+   * 자동 강조를 끄려면 `required={false}` 를 명시.
+   */
   required?: boolean;
   /** 펼쳐서 보여줄 보조 콘텐츠(약관 전문 등). expandable 과 함께 chevron 노출 */
   detail?: React.ReactNode;
+}
+
+/**
+ * 뱃지를 필수 강조(빨강+bold)할지 결정한다.
+ * required 가 명시되면 그 값을, 미지정이면 badge 가 "필수" 를 포함하는 문자열일 때 자동 강조.
+ * (약관 동의의 `badge:"[필수]"` 에 required 를 매번 붙이는 누락을 방지)
+ */
+function isBadgeRequired(item: CheckboxGroupItem): boolean {
+  if (item.required !== undefined) return item.required;
+  return typeof item.badge === "string" && item.badge.includes("필수");
 }
 
 export interface CheckboxGroupProps extends Omit<
@@ -277,7 +291,7 @@ const DataCheckboxGroup: React.FC<DataProps> = ({
                   <span
                     data-slot="badge"
                     className={CG_BADGE_CLASS}
-                    data-required={item.required ? "true" : undefined}
+                    data-required={isBadgeRequired(item) ? "true" : undefined}
                   >
                     {item.badge}
                   </span>

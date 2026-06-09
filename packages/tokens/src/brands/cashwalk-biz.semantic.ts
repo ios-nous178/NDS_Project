@@ -214,6 +214,18 @@ export const cashwalkBizSemantic = {
     helpertextDisabled: cashwalkBizNeutral[400], // #DDDDDD
   },
 
+  // ─── Confirm CTA (모달/팝업 주 액션 버튼) ─────────────
+  // 캐포비 ButtonGuide(3098:1032) tone = Primary + Neutral 뿐. 모달/팝업 confirm 은 검정 Neutral CTA.
+  // base 는 var(--semantic-bg-brand-default)=노랑을 참조하므로, 캐포비는 neutral 검정으로 override.
+  // (과거 Modal.ts 의 [data-brand="cashwalk-biz"] 캐스케이드는 :root 교체식 standalone 목업에서
+  //  안 걸려 노랑이 새던 회귀 → 토큰으로 흘려 목업·Storybook 양쪽에 적용되게 함.)
+  confirmCta: {
+    bg: cashwalkBizNeutral[900], // #111111 — Solid/Neutral
+    hover: cashwalkBizNeutral[800], // #333333
+    active: cashwalkBizNeutral[800], // #333333 — press (구 cascade 의 bgNeutralHover 와 동일)
+    text: cashwalkBizCommon["00"], // #FFFFFF — 검정 fill 위 흰 텍스트
+  },
+
   // ─── Brand/Logo (3 tokens, 캐시워크 로고용 — 캐포비 신규 그룹) ───
   brandLogo: {
     default: cashwalkBizBrown[500], // #5E5050 — Brand/Logo/Default
