@@ -136,6 +136,18 @@ export interface SemanticColors {
     helpertextDisabled?: string;
   };
   /**
+   * 모달/팝업 confirm(주 액션) 버튼 색. base 는 brand 토큰을 `var(...)` 로 참조 → 브랜드별
+   * 자기 brand 색으로 late-bind. **캐포비만 neutral 검정으로 override**(Primary+Neutral tone 체계).
+   * data-brand 캐스케이드가 아니라 토큰(`:root` 변수)으로 흐르게 해, data-brand 속성을 안 쓰는
+   * standalone 목업(브랜드 :root CSS 교체)에서도 캐포비 모달/팝업 버튼이 검정으로 나오게 한다.
+   */
+  confirmCta?: {
+    bg?: string;
+    hover?: string;
+    active?: string;
+    text?: string;
+  };
+  /**
    * 캐시워크 로고 등 brand identity asset 전용 색상 슬롯.
    * CashwalkBiz 가이드의 `Brand/Logo/{Default,Subtle,Strong}` (Brown 톤).
    * NudgeEAP base / Trost / Geniet 는 사용하지 않음 — 로고 raw hex 또는 별도 자산 사용.

@@ -153,6 +153,21 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "cashwalk-biz-onboarding-no-shell": "error",
   // 캐포비 어드민 onboarding 인데 중앙 카드+로고 골격이 안 보임 — 권고(레이아웃 계약 환기)
   "cashwalk-biz-onboarding-skeleton": "info",
+  // 온보딩 카드에 <nds-brand-logo> 컴포넌트가 없음 — raw img/svg 로고 조립 또는 누락(skeleton 의 빈틈 보완)
+  "onboarding-missing-brand-logo": "warn",
+  // 소셜 로그인을 텍스트/이니셜(G/K/N)로 때움 — sns-logos 자산 미사용
+  "onboarding-social-bare-text": "warn",
+  // 성공/완료 상태를 체크 없는 민무늬 초록 원으로 표현 — check-circle 아이콘 미사용
+  "onboarding-success-plain-circle": "warn",
+  // 온보딩 단일 액션 주 CTA(Primary solid)가 full-width 가 아님 — 모달 단일버튼(hug)과 혼동.
+  // 단일 액션 온보딩은 카드 폭 가득(FILL)이 하드 계약 → error. (멀티스텝=이전버튼 있으면 면제)
+  "onboarding-cta-not-fullwidth": "error",
+  // 멀티스텝 온보딩의 [이전 단계] 버튼이 카드 안에 있음 — 카드와 분리해 하단 푸터에 둬야 함.
+  "onboarding-back-button-inside-card": "warn",
+  // 인증번호 입력/타이머를 손으로 조립 — verification-code-input + countdown-timer + field-action-row 미사용
+  "verification-manual-assembly": "warn",
+  // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
+  "consent-raw-checkbox": "warn",
   // 캐포비 사이드바인데 로고 / 계정 블록(account slot) 누락 — 회귀 #1(로고+로그인영역 유실)
   "cashwalk-biz-sidebar-incomplete": "error",
   // 캐포비 사이드바인데 로그아웃(footer-actions) 누락 — 권고
@@ -184,6 +199,7 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "button-without-interaction": "error",
   // 날짜/기간을 raw text input(placeholder 'YYYY-MM-DD')으로 구현 — DatePicker/DateRangePicker 미사용
   "date-as-text-input": "warn",
+  "address-as-text-input": "warn",
   // 금액/수량을 일반 input 으로 구현 — AmountInput(콤마·단위·clamp) 미사용
   "amount-as-text-input": "warn",
   // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
@@ -232,6 +248,8 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "card-slot-double-padding": "warn",
   "neutral-solid-cta": "warn",
   "cashwalk-biz-no-secondary": "warn",
+  // 캐포비 알림 SSOT 는 Snackbar(흰 카드·우측 상단·상태 칩·닫기 X). Toast 는 캐포비에서 미사용 — 전면 금지.
+  "cashwalk-biz-toast": "error",
   "nested-card": "warn",
   "card-badge-overuse": "warn",
   "card-footer-button-overuse": "warn",
@@ -913,6 +931,26 @@ export function validateHtmlSource(
               "숫자(금액/수량)는 <nds-amount-input unit='명|원|개'>(천단위 콤마·단위 suffix·min/max clamp). 일반 text input 금지. get_guide({ topic: 'component:AmountInput', target: 'html' }) 참조.",
           });
         }
+        // 우편/도로명 주소 수집을 plain input 으로 손조립 (address-as-text-input).
+        //   강한 신호(도로명/지번/우편번호/상세주소/배송지)이거나, "주소"이되 이메일/URL 맥락이 아닐 때.
+        //   시/도▸시/군구 계층 선택(CheckboxTree)이나 "이메일 주소"/"사이트 주소"엔 발화하지 않는다.
+        const addrText = `${ph} ${lbl}`;
+        const isAddressLike =
+          /(도로명|지번|우편번호|상세\s*주소|주소\s*검색|배송\s*지|배송\s*주소)/.test(addrText) ||
+          (/주소/.test(addrText) &&
+            !/(이메일|메일|e-?mail|url|https?|링크|link|사이트|홈페이지|도메인|domain)/i.test(
+              addrText,
+            ));
+        if (!isDateLike && !isAmountLike && isAddressLike) {
+          violations.push({
+            rule: "address-as-text-input",
+            line,
+            selector,
+            detail: `주소 입력으로 보이는 <${tag}${ph ? ` placeholder="${ph.slice(0, 24)}"` : ""}> 를 일반 텍스트/select 로 손조립함`,
+            suggestion:
+              "주소 수집은 <nds-address-picker> 한 컴포넌트(도로명/지번 검색 → 결과 선택 → 상세주소). 검색 API(카카오/네이버)는 results 로만 전달, plain input/select 손조립 금지. get_guide({ topic: 'component:AddressPicker', target: 'html' }) 참조. (시/도▸시/군구 계층 선택은 별개 — get_guide({ topic: 'pattern:cashwalk-biz-page-targeting-regions' }).)",
+          });
+        }
       }
     }
 
@@ -1179,6 +1217,19 @@ export function validateHtmlSource(
           "캐포비(cashwalk-biz)는 Secondary tone 이 없음(Figma ButtonGuide = Primary + Neutral). 검정/회색 CTA 는 color=\"neutral\" 사용 (solid=검정 #111 / soft=회색 #F5F5F5 / outlined=라인). get_guide({ topic: 'component:Button' }) 참조.",
       });
     }
+
+    // 7c. nds-toast on cashwalk-biz — 캐포비 알림 SSOT 는 Snackbar(흰 카드 chrome·우측 상단 고정·
+    //     상태 칩 아이콘·닫기 X). 캐포비는 Snackbar 만 사용하고 Toast 는 쓰지 않는다(예외 없음).
+    if (tag === "nds-toast" && documentBrand === "cashwalk-biz") {
+      violations.push({
+        rule: "cashwalk-biz-toast",
+        line,
+        selector,
+        detail: `<nds-toast>`,
+        suggestion:
+          "캐포비(cashwalk-biz)는 알림을 Snackbar 만 사용합니다(Toast 미사용). <nds-snackbar-host brand=\"cashwalk-biz\"> + <nds-snackbar> 로 교체하세요 — 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 가 캐포비 알림 SSOT. get_guide({ topic: 'component:Snackbar', brand: 'cashwalk-biz' }) 참조.",
+      });
+    }
   });
 
   // 8. text 노드 + attribute 값 + <style> 안의 emoji / strict symbol
@@ -1424,6 +1475,199 @@ export function validateHtmlSource(
               "onboarding 인데 로고/중앙 카드 골격이 안 보입니다 — 온보딩은 로고 + 480px 카드 + 컨텐츠 구조입니다.",
             suggestion:
               "중앙 480px 카드 안에 로고(컴포넌트, raw SVG 금지) → Form → 풀폭 Primary CTA → TextButton 순으로 채웁니다. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }) 의 골격 그대로 복붙.",
+          });
+        }
+
+        // ─── 1) 온보딩 카드에 브랜드 로고 컴포넌트가 없음 (onboarding-missing-brand-logo) ───
+        //   skeleton 룰은 로고+카드 둘 다 없을 때만 info 로 환기한다. 카드는 있는데 <nds-brand-logo>
+        //   만 빠진(=raw img/svg 로고를 조립했거나 아예 누락한) 케이스를 별도 warn 으로 잡는다.
+        if ($("nds-brand-logo").length === 0) {
+          violations.push({
+            rule: "onboarding-missing-brand-logo",
+            line: 1,
+            selector: "<onboarding root>",
+            detail:
+              "온보딩 카드에 브랜드 로고가 없음 — <nds-brand-logo> 컴포넌트가 하나도 없습니다.",
+            suggestion:
+              '<nds-brand-logo brand="cashwalk-biz" height="40"> 로 카드 상단에 박을 것. raw <img>/<svg> 로 로고를 조립하지 말 것. get_guide({ topic: \'component:BrandLogo\' }).',
+          });
+        }
+
+        // ─── 2) 소셜 로그인을 텍스트/이니셜로 때움 (onboarding-social-bare-text) ───
+        //   "소셜"/"간편" 신호가 명확할 때만 발화(보수적). sns-logos 자산이나 google/kakao/naver/apple
+        //   식별자(src/class/alt)가 전혀 없으면 → 로고 자산 미사용으로 본다.
+        {
+          const docText = $("body").text();
+          const hasSocialSignal = /소셜|간편/.test(docText);
+          if (hasSocialSignal) {
+            const hasSnsAsset =
+              $('img[src*="sns-logos" i]').length > 0 ||
+              $(
+                '[src*="google" i], [src*="kakao" i], [src*="naver" i], [src*="apple" i], [class*="google" i], [class*="kakao" i], [class*="naver" i], [class*="apple" i], [alt*="google" i], [alt*="kakao" i], [alt*="naver" i], [alt*="apple" i]',
+              ).length > 0;
+            if (!hasSnsAsset) {
+              violations.push({
+                rule: "onboarding-social-bare-text",
+                line: 1,
+                selector: "<onboarding root>",
+                detail:
+                  "소셜 로그인을 텍스트/이니셜(G/K/N 등)로 표현 — sns-logos 자산을 쓰지 않았습니다.",
+                suggestion:
+                  "@nudge-design/assets 의 sns-logos(google/kakao/naver/apple × main/white/black)를 버튼에 넣을 것. get_guide({ topic: 'pattern:social-login' }).",
+              });
+            }
+          }
+        }
+
+        // ─── 3) 성공/완료 화면의 민무늬 색 원(체크 없음) (onboarding-success-plain-circle) ───
+        //   "완료/성공/심사" 신호가 있을 때만. 초록 계열 배경의 원형 요소인데 그 안에 svg/아이콘/체크
+        //   문자가 없으면 → 민무늬 원으로 본다(보수적).
+        {
+          const docText = $("body").text();
+          const hasSuccessSignal = /완료|성공|심사/.test(docText);
+          if (hasSuccessSignal) {
+            $("[style], [class]").each((_i, el) => {
+              if (el.type !== "tag") return;
+              const attribs = (el as unknown as DomElement).attribs ?? {};
+              const style = (attribs.style ?? "").toLowerCase();
+              const cls = (attribs.class ?? "").toLowerCase();
+              const blob = `${style} ${cls}`;
+              // 원형 신호: border-radius: 50% / ≥9999px, 또는 class 에 circle
+              const isCircle =
+                /border-radius\s*:\s*(?:50%|[5-9]\d{3,}px|9999px)/.test(style) ||
+                /\bcircle\b/.test(cls);
+              if (!isCircle) return;
+              // 초록 배경 신호 (보수적): green 키워드 또는 success 시멘틱 토큰만 인정
+              const greenBg =
+                /background[^;]*green/.test(style) || /--semantic-bg-success/.test(blob);
+              if (!greenBg) return;
+              // 안에 체크/아이콘이 있으면 OK
+              const $el = $(el);
+              const hasIcon =
+                $el.find("svg, nds-icon, [class*='check' i], [class*='icon' i]").length > 0 ||
+                /[✓✔]/.test($el.text());
+              if (hasIcon) return;
+              const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+              violations.push({
+                rule: "onboarding-success-plain-circle",
+                line: lineNumberAt(source, offset),
+                selector: describeElement(el as unknown as DomElement),
+                detail: "성공/완료 상태 아이콘에 체크 표시가 없음(민무늬 원).",
+                suggestion:
+                  "cashwalk-biz-check-circle-on 등 체크 아이콘을 원 안에 넣을 것. find_icon({ query: 'check circle' }).",
+              });
+            });
+          }
+        }
+
+        // ─── 4) 인증번호 입력/타이머를 손으로 조립 (verification-manual-assembly) ───
+        //   placeholder 에 "인증번호"/"6자리" 가 있거나, 인증 입력 근처에 카운트다운 텍스트(남은 시간
+        //   / mm:ss)가 있는데 <nds-verification-code-input> 도 아니고 <nds-field-action-row> 로
+        //   감싸이지도 않은 경우.
+        {
+          const hasVerificationInputComponent = $("nds-verification-code-input").length > 0;
+          const hasFieldActionRow = $("nds-field-action-row").length > 0;
+          if (!hasVerificationInputComponent && !hasFieldActionRow) {
+            const docText = $("body").text();
+            const hasCountdown = /남은\s*시간/.test(docText) || /\b\d{1,2}:\d{2}\b/.test(docText);
+            let manualVerifInput: DomElement | null = null;
+            $("input").each((_i, el) => {
+              if (el.type !== "tag") return;
+              const ph = ((el as unknown as DomElement).attribs?.placeholder ?? "").toString();
+              if (/인증번호|6자리/.test(ph)) {
+                if (!manualVerifInput) manualVerifInput = el as unknown as DomElement;
+              }
+            });
+            const phSignal = manualVerifInput !== null;
+            if (phSignal || (hasCountdown && $("input").length > 0)) {
+              const el =
+                manualVerifInput ?? ($("input").get(0) as unknown as DomElement | undefined);
+              const offset =
+                (el as unknown as { startIndex?: number } | undefined)?.startIndex ?? 0;
+              violations.push({
+                rule: "verification-manual-assembly",
+                line: el ? lineNumberAt(source, offset) : 1,
+                selector: el ? describeElement(el) : "<onboarding root>",
+                detail: "인증번호 입력/타이머를 손으로 조립.",
+                suggestion:
+                  "<nds-verification-code-input length=\"6\"> + <nds-countdown-timer> 를 <nds-field-action-row> 로 합성할 것. get_guide({ topic: 'component:FieldActionRow' }).",
+              });
+            }
+          }
+        }
+
+        // ─── 5) 약관 동의를 raw 체크박스로 조립 (consent-raw-checkbox) ───
+        //   input[type=checkbox] 가 있고 근처(같은 컨테이너) 텍스트에 약관/동의/필수 신호가 있는데
+        //   <nds-checkbox>/<nds-checkbox-group> 가 아닌 경우.
+        $('input[type="checkbox"]').each((_i, el) => {
+          if (el.type !== "tag") return;
+          const $el = $(el);
+          // 같은 컨테이너(부모) 텍스트로 약관 신호 판정
+          const containerText = $el.parent().text();
+          if (!/약관|동의|필수/.test(containerText)) return;
+          const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+          violations.push({
+            rule: "consent-raw-checkbox",
+            line: lineNumberAt(source, offset),
+            selector: describeElement(el as unknown as DomElement),
+            detail:
+              "약관 동의를 raw 체크박스로 조립 — [필수]/[선택] 강조·전체동의 indeterminate 가 누락되기 쉽습니다.",
+            suggestion:
+              "<nds-checkbox-group> (items 에 badge [필수]/[선택]) 로 조립. get_guide({ topic: 'pattern:consent' }).",
+          });
+        });
+
+        // ─── 6) 온보딩 주 CTA 너비 + 이전버튼 배치 (단일 vs 멀티스텝 구분) ───
+        //   온보딩은 두 레이아웃:
+        //   · 단일 액션(로그인 등): 카드 안 Primary CTA = 카드 폭 가득(full-width). 모달 hug 와 혼동 금지.
+        //   · 멀티스텝(가입 심사 등): 카드 *아래* 분리된 캔버스 푸터 = [이전 단계](좌 outlined hug) +
+        //     [다음/제출](우 primary solid hug). 이땐 제출이 hug 라 full-width 를 강제하지 않는다.
+        //   멀티스텝 신호 = Back/이전 버튼 존재. (이전버튼이 있으면 푸터-내브로 보고 full-width 면제)
+        const onboardingBackButtons = $("nds-button").filter((_i, el) => {
+          if (el.type !== "tag") return false;
+          return /이전|뒤로/.test($(el).text());
+        });
+        const isMultiStepFooter = onboardingBackButtons.length > 0;
+
+        if (!isMultiStepFooter) {
+          // 단일 액션 — 카드 폭 가득(FILL) 강제(error). primary solid 만 본다.
+          $("nds-button").each((_i, el) => {
+            if (el.type !== "tag") return;
+            const attribs = (el as unknown as DomElement).attribs ?? {};
+            const color = (attribs.color ?? "primary").toLowerCase();
+            const variant = (attribs.variant ?? "solid").toLowerCase();
+            if (color !== "primary" || variant !== "solid") return;
+            const hasFullWidth =
+              attribs["full-width"] !== undefined || attribs["fullwidth"] !== undefined;
+            if (hasFullWidth) return;
+            const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+            violations.push({
+              rule: "onboarding-cta-not-fullwidth",
+              line: lineNumberAt(source, offset),
+              selector: describeElement(el as unknown as DomElement),
+              detail:
+                "온보딩 단일 액션 Primary CTA 에 full-width 가 없음 — 모달 단일버튼(우측 hug)과 혼동한 좁은 버튼.",
+              suggestion:
+                '단일 액션 온보딩 주 CTA 는 카드 폭 가득(FILL) — <nds-button full-width color="primary" ...>. (이전/다음이 있는 멀티스텝이면 카드 아래 분리 푸터에 hug 로.) get_guide({ topic: \'pattern:cashwalk-biz-page-onboarding\' }).',
+            });
+          });
+        } else {
+          // 멀티스텝 — [이전 단계] 버튼은 카드(섹션)와 분리해 카드 *아래* 푸터에 둬야 한다.
+          //   카드 안에 들어가 있으면 warn (사용자 지적: 하단에 섹션이랑 분리해서 위치).
+          onboardingBackButtons.each((_i, el) => {
+            if (el.type !== "tag") return;
+            const insideCard = $(el).closest('[class*="card" i], nds-card').length > 0;
+            if (!insideCard) return;
+            const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+            violations.push({
+              rule: "onboarding-back-button-inside-card",
+              line: lineNumberAt(source, offset),
+              selector: describeElement(el as unknown as DomElement),
+              detail:
+                "온보딩 멀티스텝의 [이전 단계] 버튼이 카드 안에 있음 — 카드(섹션)와 분리해 하단 푸터에 둬야 함.",
+              suggestion:
+                "멀티스텝 온보딩 푸터는 카드 *아래* 분리된 캔버스 행 — 좌측 [이전 단계](outlined hug) + 우측 [다음/제출](primary solid hug). 카드 안에 넣지 말 것. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }).",
+            });
           });
         }
       }
@@ -2436,10 +2680,16 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "button-without-interaction": "component",
   "date-as-text-input": "component",
   "amount-as-text-input": "component",
+  "address-as-text-input": "component",
   "amount-as-static-display": "component",
   "avoidable-reinvention": "component",
   "nds-custom-element-content-mutation": "component",
   "cashwalk-biz-gender-selection-control": "component",
+  "onboarding-missing-brand-logo": "component",
+  "onboarding-social-bare-text": "component",
+  "onboarding-success-plain-circle": "component",
+  "verification-manual-assembly": "component",
+  "consent-raw-checkbox": "component",
   // icon (icon-usage): 이모지/기호·인라인 svg·heading 장식 아이콘
   "emoji-banned": "icon",
   "text-symbol-banned": "icon",

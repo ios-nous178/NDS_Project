@@ -47,15 +47,18 @@ FieldActionRowRow.displayName = "FieldActionRowRow";
 interface FieldActionRowFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   error?: boolean;
   success?: boolean;
+  /** 타이머 슬롯 존재 — true 면 우측 타이머 공간을 예약(겹침 방지) */
+  hasTimer?: boolean;
   children: React.ReactNode;
 }
 
 const FieldActionRowField: React.FC<FieldActionRowFieldProps> = React.memo(
-  ({ error = false, success = false, children, className, ...rest }) => (
+  ({ error = false, success = false, hasTimer = false, children, className, ...rest }) => (
     <div
       data-slot="field"
       data-error={error ? "true" : "false"}
       data-success={success ? "true" : "false"}
+      data-has-timer={hasTimer ? "true" : "false"}
       className={cx(FAR_FIELD_CLASS, className)}
       {...rest}
     >
@@ -136,8 +139,11 @@ export interface FieldActionRowSlotProps {
 export interface FieldActionRowProps {
   /** 입력 필드 (Input 또는 native input) */
   field: React.ReactNode;
-  /** 액션 버튼 */
-  action: React.ReactNode;
+  /**
+   * 액션 버튼 (옵션). 생략하면 "필드(+타이머)만" 한 줄 — 인라인 버튼 없이 코드 입력 + 우측 타이머만
+   * 두는 레이아웃(예: 캐포비 본인인증의 별도 full-width 재전송 버튼 + 타이머만 있는 코드 입력).
+   */
+  action?: React.ReactNode;
   /** 버튼 톤 */
   actionTone?: "outline" | "solid";
   /** 타이머 표시 */
@@ -159,7 +165,8 @@ export interface FieldActionRowProps {
 }
 
 /**
- * 전화번호 인증 / 인증코드 입력처럼 "입력 1개 + 액션 버튼 1개(+타이머)" 한 줄 패턴 전용 helper.
+ * 전화번호 인증 / 인증코드 입력처럼 "입력 1개 (+ 액션 버튼) (+타이머)" 한 줄 패턴 전용 helper.
+ * action 은 옵션 — 생략하면 코드 입력 + 우측 타이머만(인라인 버튼 없는 캐포비 본인인증 레이아웃).
  * 일반 폼 레이아웃(여러 필드/버튼)에는 쓰지 않는다 — Input + Button 직접 조합을 사용.
  */
 const FieldActionRowComponent: React.FC<FieldActionRowProps> = ({
@@ -180,15 +187,22 @@ const FieldActionRowComponent: React.FC<FieldActionRowProps> = ({
     style={{ ...slotProps?.root?.style, ...style }}
   >
     <FieldActionRowRow>
-      <FieldActionRowField error={error} success={success} className={slotProps?.field?.className}>
+      <FieldActionRowField
+        error={error}
+        success={success}
+        hasTimer={timer !== undefined}
+        className={slotProps?.field?.className}
+      >
         {field}
         {timer !== undefined && (
           <FieldActionRowTimer expired={timerExpired}>{timer}</FieldActionRowTimer>
         )}
       </FieldActionRowField>
-      <FieldActionRowAction tone={actionTone} className={slotProps?.action?.className}>
-        {action}
-      </FieldActionRowAction>
+      {action != null && (
+        <FieldActionRowAction tone={actionTone} className={slotProps?.action?.className}>
+          {action}
+        </FieldActionRowAction>
+      )}
     </FieldActionRowRow>
     {helperText && (
       <FieldActionRowHelper

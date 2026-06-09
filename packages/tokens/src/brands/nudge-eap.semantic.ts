@@ -179,6 +179,21 @@ export const nudgeEapSemantic = {
     helpertextError: red[500], // #F13F00 ← Text/Status/Error
     helpertextDisabled: neutral[400], // #C7C7C7 ← Text/Disabled/Default
   },
+
+  /**
+   * 모달/팝업 confirm(주 액션) 버튼 — base 는 brand 토큰을 var() 로 참조한다.
+   * 브랜드 :root 가 `--semantic-bg-brand-default` 등을 자기 색으로 덮으므로, confirmCta 를
+   * 따로 정의 안 한 브랜드(Trost/Geniet/Runmile)는 자동으로 자기 brand 색 confirm 버튼이 된다.
+   * 캐포비만 cashwalk-biz.semantic.ts 에서 neutral 검정으로 override.
+   */
+  confirmCta: {
+    bg: "var(--semantic-bg-brand-default)",
+    hover: "var(--semantic-fill-brand-hover)",
+    active: "var(--semantic-text-brand-strong)",
+    // Popup confirm 의 텍스트색(Modal 은 text-inverse 직접 사용). base 는 button-text-default 참조 —
+    // 브랜드별 자기 값(Trost=검정, 나머지=흰). 캐포비만 검정 fill 위 흰으로 override.
+    text: "var(--semantic-button-text-default)",
+  },
 } as const;
 
 export type NudgeEapSemanticTokens = typeof nudgeEapSemantic;

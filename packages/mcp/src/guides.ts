@@ -965,7 +965,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Modal: {
     name: "Modal",
     examplesHtml: {
-      do: '<!-- 2버튼(가로 분할): 취소 + 확정. slot="footer" 는 자동으로 .nds-modal__footer 로 승격됨 -->\n<nds-modal open title="신청을 취소할까요?" max-width="400" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot="footer">\n    <nds-button color="neutral" variant="outlined">닫기</nds-button>\n    <nds-button color="error" variant="solid">취소하기</nds-button>\n  </div>\n</nds-modal>\n<!-- 캐포비(data-brand="cashwalk-biz") 단일 버튼: 우측 정렬 · hug 너비 · 검정 pill (full-width 아님). full-width 속성 붙이지 말 것 — footer cascade 가 우측 정렬 처리 -->\n<nds-modal open title="검수를 승인할까요?" max-width="480">\n  <p>승인하면 즉시 노출됩니다.</p>\n  <div slot="footer">\n    <nds-button color="secondary" variant="solid" shape="pill">승인</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener("modal-close", () => modal.removeAttribute("open"));</script>',
+      do: '<!-- 2버튼(가로 분할): 취소 + 확정. slot="footer" 는 자동으로 .nds-modal__footer 로 승격됨 -->\n<nds-modal open title="신청을 취소할까요?" max-width="400" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot="footer">\n    <nds-button color="neutral" variant="outlined">닫기</nds-button>\n    <nds-button color="error" variant="solid">취소하기</nds-button>\n  </div>\n</nds-modal>\n<!-- 캐포비(data-brand="cashwalk-biz") 단일 버튼: 우측 정렬 · hug 너비 · 검정 pill (full-width 아님). full-width 속성 붙이지 말 것 — footer cascade 가 우측 정렬 처리 -->\n<nds-modal open title="검수를 승인할까요?" max-width="480">\n  <p>승인하면 즉시 노출됩니다.</p>\n  <div slot="footer">\n    <nds-button color="neutral" variant="solid" shape="pill">승인</nds-button>\n  </div>\n</nds-modal>\n<!-- ④ Confirm + Slot: 확인 모달 본문에 콘텐츠 슬롯(NoticeAlert/Input/Select/DatePicker)을 끼움. 설명 <p> 와 슬롯을 본문 children 형제로 두면 ModalBody 가 자동 간격(캐포비 20px)으로 쌓는다 — 직접 wrapper/margin 불필요. 슬롯은 full-width. -->\n<nds-modal open title="종료 사유를 입력해주세요" max-width="480">\n  <p>광고비는 전액 청구되며 환불·보상·재집행은 불가합니다.</p>\n  <nds-notice-alert variant="caution" message="종료 후에는 되돌릴 수 없어요."></nds-notice-alert>\n  <nds-input label="사유" placeholder="사유를 입력하세요"></nds-input>\n  <div slot="footer">\n    <nds-button color="neutral" variant="outlined">취소</nds-button>\n    <nds-button color="neutral" variant="solid">확정</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener("modal-close", () => modal.removeAttribute("open"));</script>',
       dont: "<!-- closable + max-width 누락 + 본문 없음 — 의도/구조가 부족 -->\n<nds-modal open></nds-modal>\n<!-- raw <dialog> 로 모달 흉내 — focus trap / 토큰이 적용 안 됨 -->\n<dialog open><p>알림</p></dialog>",
     },
     summary:
@@ -1016,7 +1016,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           footerLayout:
             'Single(확정 1개) = 우측 정렬 · hug 너비(footer-action 구조면 120px 고정) · 검정 pill — **full-width 아님**. Dual(취소+확정) = 가로 분할. HTML 은 `<div slot="footer">` 로 감싸면 자동으로 .nds-modal__footer 로 승격돼 이 레이아웃이 적용됨(버튼 2개면 data-has-both-actions="true" 자동). single 에 full-width 를 붙이거나 footer 컨테이너 없이 버튼만 두면(본문 가운데 끼임) 회귀.',
           confirmCta:
-            '주 action(확인/적용) = color="secondary" variant="solid" → 캐포비 시그니처 **검정 CTA**(#000 배경·흰 텍스트, buttonBg.secondary 토큰 cascade). colorMatrix 만 보면 secondary/solid 가 파랑(#F1F8FD)으로 보이지만 data-brand="cashwalk-biz" 에서는 검정으로 cascade 됨. 취소/닫기 = color="neutral" variant="outlined". 파괴적 확정(삭제 등)만 color="error".',
+            '주 action(확인/적용) = color="neutral" variant="solid" → 캐포비 시그니처 **검정 CTA**(#111 배경·흰 텍스트, buttonBg.neutral 토큰 cascade). (캐포비는 secondary tone 이 Figma 미정의라 Button/validator 가 경고 — 검정은 neutral 이 정답. secondary 는 하위호환 잔재.) 취소/닫기 = color="neutral" variant="outlined", 파괴적 확정(삭제 등)만 color="error".',
           titleTypo: "Title2 18·26 좌측 정렬 (base 중앙 정렬)",
           bodyTypo: "Body2 14·20 medium 좌측 정렬 (base 중앙 정렬)",
           dataModal:
@@ -1038,9 +1038,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
-      '캐포비 admin 모달의 주 action(확인/적용)은 color="secondary" variant="solid" — 브랜드 시그니처 **검정 CTA**(#000·흰 텍스트). 취소/닫기는 color="neutral" variant="outlined", 파괴적 확정만 color="error". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (검정인데 파랑으로 나오면 data-brand="cashwalk-biz" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)',
-      '**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot="footer">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot="footer"><nds-button color="secondary" variant="solid" shape="pill">확인</nds-button></div>` — slot="footer" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할. **단, 이 규칙은 확인/결정 팝업(①~④) 한정** — 모달 종류별로 푸터가 다르다(아래).',
-      '**모달 종류별 푸터 결정 트리** (혼동 금지): ① 확인/결정 팝업 = 우측 hug **검정 pill**(secondary), 취소는 neutral outlined. ② 선택/피커 모달(⑥, dimensions.selectionModal) = **본문 풀폭 단일 "적용" 옐로우 Solid/Primary pill** (검정 아님·hug 아님). ③ 데이터 로더(⑦, dimensions.dataLoaderModal) = 취소(outlined) + 불러오기 **검정 pill**. ④ 조회 전용 Data Modal(⑤) = 푸터 CTA 없음(Close X 만). 어떤 모달인지 먼저 정하고 그 푸터를 쓸 것 — 선택 모달에 검정 hug 를, 확인 팝업에 옐로우 풀폭을 쓰면 회귀.',
+      '캐포비 admin 모달의 주 action(확인/적용)은 color="neutral" variant="solid" — 브랜드 시그니처 **검정 CTA**(#111·흰 텍스트). 취소/닫기는 color="neutral" variant="outlined", 파괴적 확정만 color="error". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (캐포비는 secondary tone 이 없어 Button/validator 가 경고하니 검정은 neutral 로. 검정인데 색이 틀리면 data-brand="cashwalk-biz" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)',
+      '**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot="footer">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot="footer"><nds-button color="neutral" variant="solid" shape="pill">확인</nds-button></div>` — slot="footer" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할. **단, 이 규칙은 확인/결정 팝업(①~④) 한정** — 모달 종류별로 푸터가 다르다(아래).',
+      '**모달 종류별 푸터 결정 트리** (혼동 금지): ① 확인/결정 팝업 = 우측 hug **검정 pill**(color="neutral" — 캐포비엔 secondary 없음), 취소는 neutral outlined. ② 선택/피커 모달(⑥, dimensions.selectionModal) = **본문 풀폭 단일 "적용" 옐로우 Solid/Primary pill** (검정 아님·hug 아님). ③ 데이터 로더(⑦, dimensions.dataLoaderModal) = 취소(outlined) + 불러오기 **검정 pill**. ④ 조회 전용 Data Modal(⑤) = 푸터 CTA 없음(Close X 만). 어떤 모달인지 먼저 정하고 그 푸터를 쓸 것 — 선택 모달에 검정 hug 를, 확인 팝업에 옐로우 풀폭을 쓰면 회귀.',
+      '**④ Confirm + Slot — 본문 콘텐츠 슬롯**(Figma ModalGuide 3418-471): 확인 모달 본문에 인라인 알림/입력이 필요하면 `nds-notice-alert`(info/caution/error) · `nds-input` · `nds-select` · `nds-date-picker` 를 **설명 `<p>` 와 함께 본문 children 형제로** 둔다(슬롯은 footer 가 아니라 본문 — `slot="footer"` 붙이지 말 것). ModalBody 가 세로 스택 + 자동 간격(캐포비 20px / base `--semantic-gap-default`)을 잡으므로 **슬롯마다 wrapper/margin 으로 간격을 직접 주지 말 것**(직접 주면 이중 간격 회귀). 슬롯은 full-width 로 늘어남. 푸터는 ①과 동일(취소 neutral outlined + 확정 검정 neutral).',
+      '**높이/스크롤·중첩 팝오버는 DS 가 알아서 처리한다 — 손대지 말 것.** (a) 본문이 길어 화면을 넘으면 ModalContent 가 뷰포트(카드 패딩 제외) 안으로 max-height 를 걸고 **헤더/푸터는 고정한 채 본문(.nds-modal__body)만 스크롤**한다. 모달 패널에 직접 height/max-height/overflow 를 박아 이 동작을 깨지 말 것(`--nds-modal-max-height` 로 상한만 오버라이드 가능). (b) 본문 슬롯의 `nds-date-picker`/`nds-select` 캘린더·드롭다운은 `document.body` 로 portal 되어 모달 `overflow:hidden` 밖으로 뜬다(잘리지 않음) — 팝오버를 모달 밖으로 빼내려고 별도 컨테이너/position 을 만들지 말 것.',
     ],
     usagePolicy: {
       useFor: [
@@ -1500,7 +1502,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   VerificationCodeInput: {
     name: "VerificationCodeInput",
     examplesHtml: {
-      do: '<!-- 인증코드 합성 레시피: 코드 입력(이 컴포넌트) + 타이머(nds-countdown-timer) + 확인 버튼(nds-button)\n     을 nds-field-action-row 로 묶는다. 버튼 색은 nds-button 의 color 가 그대로 — 캐포비 검정 확인은 color="secondary". -->\n<nds-field-action-row helper-text="문자로 전송된 인증번호를 입력해주세요">\n  <nds-verification-code-input slot="field" length="6" auto-focus></nds-verification-code-input>\n  <nds-countdown-timer slot="timer" ends-at="2026-06-08T12:03:00Z" format="mm:ss" label="남은 시간"></nds-countdown-timer>\n  <nds-button slot="action" color="secondary" size="field">확인</nds-button>\n</nds-field-action-row>\n<script>\n  const code = document.querySelector("nds-verification-code-input");\n  code.addEventListener("code-complete", e => verify(e.detail.value));\n  // 타이머 만료 시 확인 → 재전송 토글\n  document.querySelector("nds-countdown-timer").addEventListener("countdown-complete", () => {\n    document.querySelector("[slot=action]").textContent = "재전송";\n  });\n</script>',
+      do: '<!-- 레시피A · 인라인 확인 버튼형: 코드 입력 + 타이머 + 확인 버튼을 nds-field-action-row 한 줄로.\n     버튼 색은 nds-button 의 color 가 그대로 — 캐포비 검정 확인은 color="neutral"(secondary 아님). -->\n<nds-field-action-row helper-text="문자로 전송된 인증번호를 입력해주세요">\n  <nds-verification-code-input slot="field" length="6" auto-focus></nds-verification-code-input>\n  <nds-countdown-timer slot="timer" ends-at="2026-06-08T12:03:00Z" format="mm:ss" tone="brand"></nds-countdown-timer>\n  <nds-button slot="action" color="neutral" size="field">확인</nds-button>\n</nds-field-action-row>\n\n<!-- 레시피B · 캐포비 본인인증형(pattern:cashwalk-biz-verification): 전송/재전송은 별도 full-width 검정 버튼,\n     코드 입력엔 인라인 버튼 없이 타이머만(FieldActionRow 의 action 생략), 확정은 하단 [다음](primary full-width). -->\n<nds-button color="neutral" full-width>인증번호 재전송</nds-button>\n<nds-field-action-row>\n  <nds-verification-code-input slot="field" length="6" auto-focus></nds-verification-code-input>\n  <nds-countdown-timer slot="timer" ends-at="2026-06-08T12:03:00Z" format="mm:ss" tone="brand"></nds-countdown-timer>\n</nds-field-action-row>\n<!-- …다른 폼 필드… -->\n<nds-button color="primary" full-width>다음</nds-button>\n<script>\n  document.querySelector("nds-verification-code-input").addEventListener("code-complete", e => verify(e.detail.value));\n</script>',
       dont: '<!-- 자리별 박스를 raw <input> 6개로 흉내 — 붙여넣기/자동완성/접근성 손실. 단일 nds-verification-code-input 사용 -->\n<input maxlength="1"/><input maxlength="1"/>…',
     },
     summary:
@@ -1632,9 +1634,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: '<!-- 자유 입력을 nds-input 으로 받고 stepper 흉내 — 범위/단위 룰이 빠짐 -->\n<nds-input type="number" />',
     },
     summary:
-      "수량 조절 +/- 버튼 입력. Stepper(과정 인디케이터)와 이름은 비슷하지만 전혀 다른 용도.",
+      "**수량 조절 +/- 버튼 입력 (폼 필드)** — 복약 횟수·장바구니 수량·알림 빈도 등 '폼 안에서 숫자를 올리고 내리는 칸'. ⚠️ **`Stepper`(다단계 *진행 표시* 막대/원)와 이름만 비슷한 전혀 다른 컴포넌트.** 헷갈리면: 값을 입력받는 폼 컨트롤이면 **NumberStepper**, 지금 몇 단계인지 보여주는 인디케이터면 **Stepper**(component:Stepper).",
     pitfalls: [
-      "Stepper(StepperVariant: numbered/dots)와 혼동 금지. 그건 회원가입 단계 같은 '진행도 표시'.",
+      "**Stepper(진행 표시)와 혼동 금지** — 그건 회원가입/멀티스텝 폼 같은 '지금 몇 단계' 표시(component:Stepper). NumberStepper 는 폼 필드의 수량 입력이다.",
       "큰 범위(100+) 입력에는 부적합. tap/click을 N번 해야 하므로 Input type='number'를 쓸 것.",
       "min/max 도달 시 해당 버튼이 자동 비활성. 외부에서 또 비활성 처리할 필요 없음.",
     ],
@@ -2421,6 +2423,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   TagInput: {
     name: "TagInput",
+    figmaNodeUrl:
+      "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-18463",
     examplesHtml: {
       do: '<!-- 기본 stacked: 입력칸 + 추가버튼, 칩은 아래 wrap (이메일 초대/수신자) -->\n<nds-tag-input label="멤버 초대하기" placeholder="이메일 주소를 입력해 주세요"\n  pattern="^[^@\\\\s]+@[^@\\\\s]+\\\\.[^@\\\\s]+$" max-tags="50"\n  helper-text="멤버는 최대 50명까지, 한번에 최대 10명까지 초대할 수 있습니다."></nds-tag-input>\n<script>\n  el.addEventListener("nds-tag-change", e => save(e.detail.value));\n  el.addEventListener("nds-tag-invalid", e => toast(`이메일 형식이 아니에요: ${e.detail.value}`));\n</script>\n<!-- 해시태그식 인라인 tokenfield -->\n<nds-tag-input variant="inline" prefix="#" label="관심 주제"\n  placeholder="태그 입력 후 Enter" max-tags="5"></nds-tag-input>',
       dont: '<!-- 이메일 받으면서 pattern 검증 없음 — 잘못된 주소가 그대로 칩이 됨 -->\n<nds-tag-input label="멤버 초대"></nds-tag-input>\n<!-- 해시태그인데 value 에 직접 # 넣음 — prefix 가 표시 담당, 저장값엔 # 빼기 -->\n<nds-tag-input variant="inline" value=\'["#수면"]\'></nds-tag-input>',
@@ -2432,6 +2436,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       '해시태그는 `variant="inline" prefix="#"` — value/저장값엔 `#` 넣지 말 것(prefix 가 표시 시 자동 부착, 입력 시 자동 제거). prefix 기본은 ""(없음).',
       "정해진 옵션에서 다중 선택은 SelectionCard mode='multiple' 또는 Chip 토글이 적합. 자동완성은 Autocomplete.",
       "초대 모달 푸터(취소/초대하기) 와 제목은 TagInput 바깥에서 조립 — TagInput 은 입력+칩 영역만 담당.",
+      "캐포비(cashwalk-biz) stacked 태그는 SelectedItemRow 와 동일 트리트먼트(Figma 3001:18463): gray/200(#eee) fill · radius 10 라운드 사각 · 삭제 = 원형 serchdelete 아이콘. data-brand cascade 가 자동 적용하니 칩 색/모양을 손으로 덮어쓰지 말 것.",
     ],
     recommended: [
       "멤버 초대: stacked + pattern(email) + maxTags=50 + helperText 로 제한 안내",
@@ -2535,11 +2540,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       dont: "<!-- ends-at 이 과거값이고 expired-text 누락 — '0초' 가 영원히 표시됨 -->\n<nds-countdown-timer ends-at=\"2020-01-01T00:00:00Z\"></nds-countdown-timer>",
     },
     summary:
-      "종료 시각까지 자동 카운트다운. 1초 단위 갱신, 10초 이하 빨강 강조, mm:ss/hh:mm:ss/remaining 포맷.",
+      "종료 시각까지 자동 카운트다운. 1초 단위 갱신, 10초 이하 빨강 강조, mm:ss/hh:mm:ss/remaining 포맷. **tone=\"brand\"** 면 진행 중 시간을 브랜드 액센트색(캐포비=오렌지 #FD9B02)으로 — 인증 입력의 타이머처럼 강조할 때. (urgent ≤10s 빨강은 tone 과 무관하게 우선.)",
     pitfalls: [
       "endsAt을 매 렌더 새로 계산하면 카운트가 흔들림 — useMemo로 고정.",
       "onComplete는 0초 도달 시 1회만. 재시작은 endsAt을 새로 set.",
       "remaining 포맷은 자연어 — 정확한 카운트가 필요하면 mm:ss/hh:mm:ss.",
+      "기본 색은 텍스트 기본(회색계). 캐포비 본인인증 코드 입력의 오렌지 타이머처럼 강조하려면 tone=\"brand\" (react `tone=\"brand\"` / html `tone=\"brand\"`). FieldActionRow 의 timer 슬롯 wrapper 는 이미 brand 색이지만, 그 안에 CountdownTimer 컴포넌트를 넣으면 컴포넌트 자체 색이 이겨서 회색이 되므로 tone=\"brand\" 를 줘야 오렌지로 나온다.",
     ],
     recommended: [
       "인증 만료: useMemo로 expiry 고정 + onComplete로 재발송",
@@ -2632,7 +2638,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "onSearch는 외부 API 호출 트리거 — 컴포넌트가 직접 검색 안 함.",
       "value는 주소 + 상세 한 묶음 — 폼 state에서 단일 값으로 관리.",
       "loading 상태 동안 검색 버튼 비활성 — 직접 disabled 처리 X.",
-      '검색 버튼은 color="secondary"(캐포비/지니어트 검정 CTA) — 색 hex 박지 말고 브랜드 cascade.',
+      '검색 버튼 검정 CTA — 지니어트는 color="secondary", **캐포비는 color="neutral"**(캐포비 secondary 는 Figma 미정의라 Button/validator 가 경고). 색 hex 박지 말고 브랜드 cascade.',
     ],
     recommended: [
       "회원가입 주소: query/results를 외부 hook으로 관리",
@@ -3037,7 +3043,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "rowKey는 함수 — index 사용은 reorder 시 버그. 가능하면 row.id 같은 안정적 키.",
       "펼침(getSubRows/sub-rows-key) 사용 시 rowKey/row-key 는 반드시 행 고유값(자식 포함 유일) — index 기반이면 접었다 펼 때 키가 흔들려 펼침 상태가 깨짐.",
       '합계/병합셀(rowspan) 리포트 표는 여전히 nds-stats-table(`<tr class="is-summary">`). DataTable 펼침은 트리(자식 행)용 — 표 하단 합계행 렌더는 StatsTable 담당이며 둘을 조합한다.',
-      "기본 정렬 = **중앙**(헤더·셀 동일, 캐포비 리스트 SSOT 3613-365). 텍스트 좌측·숫자 우측이 필요하면 컬럼에 align='left'/'right' 지정 — 펼침 토글 컬럼은 자동 좌측. 셀 패딩은 **16px 고정(상하좌우)**이고 행 높이는 내용에 따라 가변 — 이미지/썸네일 등 큰 셀은 컬럼에 `media`(React)/`media:true`(HTML JSON) 로 12px. 조밀한 표는 size='sm'. 펼침 표는 컬럼 width 를 지정하면 table-layout:fixed 로 정렬이 안정적.",
+      "정렬 = **헤더·셀 모두 중앙이 기본이자 표준**(캐포비 리스트 SSOT 3613-365). 엑셀처럼 컬럼마다 좌/우 정렬을 섞지 말 것 — 그냥 중앙으로 둔다. (펼침 토글 컬럼만 토글+들여쓰기 때문에 자동 좌측.) 셀 패딩은 **16px 고정(상하좌우)**이고 행 높이는 내용에 따라 가변 — 이미지/썸네일 등 큰 셀은 컬럼에 `media`(React)/`media:true`(HTML JSON) 로 12px. 조밀한 표는 size='sm'. 펼침 표는 컬럼 width 를 지정하면 table-layout:fixed 로 정렬이 안정적.",
     ],
     recommended: [
       '사용자 앱 약 복용 이력: responsive="cards" + size="sm"',
@@ -3425,7 +3431,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       actionGhost: "transparent + border.strong · text.subtle · radius md(8) · refresh 아이콘 16",
       body: "flex column · gap 8 · overflow-y auto (max-height = --nds-selected-items-panel-body-max-height)",
       selectedItemRow:
-        "padding 8/12/8/16 · radius lg(12) · bg surface.section · label body1 · 삭제 X 20px",
+        "padding 8/12/8/16 · radius lg(12) · bg surface.section · label body1 · 삭제 X 20px. **캐포비(cashwalk-biz)**: bg gray/200(#eee) · radius 10 · 삭제 = 원형 serchdelete 아이콘 (Figma 3001:18463, data-brand cascade 자동).",
     },
     accessibility: [
       "SelectedItemRow 삭제 버튼: `aria-label`(기본 '삭제') 자동 부착 — removeLabel 로 항목명 포함 권장.",
@@ -3730,7 +3736,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "약관/개인정보 **동의 화면은 pattern:consent** 를 함께 볼 것 — 필수/선택 badge, **pre-tick(선택 항목 기본 체크) 금지(개인정보보호법)**, 필수 미동의 가드(호출부). consent 패턴은 `CheckboxGroup` data mode 로 조립한다.",
       "**계층(시/도 ▸ 시/군구) 선택은 CheckboxGroup 이 아니라 component:CheckboxTree** (부모 indeterminate 자동·접기/펼치기).",
       "닫힌 드롭다운 + 검색 + 적용 버튼 형태의 필터는 component:MultiSelect — CheckboxGroup 은 항상 펼쳐진 인라인 리스트.",
-      "`badge` 는 도메인 중립 슬롯([필수]/[선택]/NEW). 색/강조는 호출부에서(필수=status-error 톤 등).",
+      "`badge` 는 도메인 중립 슬롯([필수]/[선택]/NEW). **badge 텍스트에 \"필수\" 가 들어있으면 컴포넌트가 자동으로 강조(빨강+bold)** 한다 — `required` 를 따로 안 붙여도 [필수] 는 강조된다. 자동 강조를 끄려면 `required={false}`(React) / `\"required\":false`(items JSON) 를 명시. NEW 등 다른 강조색이 필요하면 호출부에서 직접.",
     ],
     examplesHtml: {
       do: '<nds-checkbox-group select-all select-all-label="전체 동의" expandable value=\'[]\'\n  items=\'[{"value":"terms","label":"이용약관","badge":"[필수]","detail":"…전문…"},{"value":"marketing","label":"마케팅 수신","badge":"[선택]"}]\'></nds-checkbox-group>\n<script>el.addEventListener("nds-checkbox-group-change", e => setAgreed(e.detail.value));</script>',
@@ -3851,7 +3857,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   Stepper: {
     name: "Stepper",
     summary:
-      "다단계 작업의 현재 진척 표시. variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
+      "**다단계 작업의 현재 진척 *표시*** (지금 몇 단계인지 보여주는 막대/원, 입력 컨트롤 아님). variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. ⚠️ **폼 필드의 수량 +/- 입력은 `NumberStepper`(component:NumberStepper)** — 이름만 비슷한 다른 컴포넌트. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
     figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
     pitfalls: [
       "status 는 prop 이 아님 — steps 에 {key,label,title?} 만 주고 상태는 current(0-based)로 결정. 'status' 를 박으면 무시됨.",
@@ -3883,12 +3889,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     summary:
       "**인터랙션 없는 일시 메시지** 전용 (저장 완료 / 복사됨 / 네트워크 에러 등). 확인·클릭 없이 자동으로 사라지는 가벼운 결과 피드백 — multi-stack 가능(maxCount). " +
       "자동으로 사라지므로 **액션(되돌리기/다시시도)이나 닫기 버튼·브랜드 카드(캐포비 흰 카드)는 두지 않는다** — 그런 알림은 Snackbar 를 사용한다. (액션이 사라지는 토스트에 붙으면 사용자가 누를 새가 없다.) " +
-      "**캐시워크 포 비즈니스(admin) 는 알림 기본을 Snackbar 로 둔다** — 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 가 캐포비 알림 SSOT 라, Toast 는 캐포비에서 거의 쓰지 않는다(닫기·액션 없는 순수 일시 메시지일 때만 예외). get_guide({ topic: 'component:Snackbar', brand: 'cashwalk-biz' }).",
+      "**캐시워크 포 비즈니스(cashwalk-biz/캐포비)는 알림을 Snackbar 만 사용한다 — Toast 를 쓰지 않는다(예외 없음).** 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 가 캐포비 알림 SSOT. 캐포비 화면의 `<nds-toast>` 는 validator 가 `cashwalk-biz-toast` error 로 차단한다. get_guide({ topic: 'component:Snackbar', brand: 'cashwalk-biz' }).",
     pitfalls: [
       "duration 0 으로 영구 표시 — 차단 의도면 Modal/Popup, 영구 알림이면 Banner.",
       "변형(default/success/error/warning) 없이 모두 default — 시각 위계가 사라짐.",
       "Toast 안에 input/form 두지 말 것 — interactive 영역이면 Drawer/Modal.",
       "**액션(되돌리기/다시시도)·닫기 버튼이 필요하면 Toast 가 아니라 Snackbar** — Toast 는 action API 가 없다(자동 사라짐 전용). 캐포비 admin 흰 카드 알림도 Snackbar(get_guide component:Snackbar, brand:'cashwalk-biz')로 이관됐다.",
+      "**캐포비(cashwalk-biz)에서는 Toast 자체를 쓰지 않는다 — Snackbar 만 사용**(순수 일시 메시지여도 예외 없음). validator `cashwalk-biz-toast` 룰이 `<nds-toast>` 를 error 로 막는다.",
     ],
     examplesHtml: {
       do: '<nds-toast message="저장되었습니다" variant="success" position="bottom" duration="2500" open></nds-toast>\n<script>el.addEventListener("toast-close", () => el.removeAttribute("open"));</script>',
@@ -3997,17 +4004,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   FieldActionRow: {
     name: "FieldActionRow",
     examplesHtml: {
-      do: '<!-- action 버튼 색은 nds-button 의 color 가 그대로 산다 — 캐포비 검정 확인/재전송은 color="secondary".\n     (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하고 DS 버튼은 건드리지 않음.) -->\n<nds-field-action-row helper-text="이메일로 인증 코드를 보냈어요">\n  <nds-input slot="field" label="인증 코드"></nds-input>\n  <nds-button slot="action" color="secondary">재전송</nds-button>\n</nds-field-action-row>',
+      do: '<!-- action 버튼 색은 nds-button 의 color 가 그대로 산다 — 캐포비 검정 확인/재전송은 color="neutral"\n     (캐포비는 secondary tone 이 Figma 가이드에 없어 denylist+콘솔 경고. 검정/회색 CTA = neutral).\n     (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하고 DS 버튼은 건드리지 않음.) -->\n<nds-field-action-row helper-text="이메일로 인증 코드를 보냈어요">\n  <nds-input slot="field" label="인증 코드"></nds-input>\n  <nds-button slot="action" color="neutral">재전송</nds-button>\n</nds-field-action-row>',
       dont: "<!-- slot 미지정 — 위치/스타일이 적용 안 됨 -->\n<nds-field-action-row>\n  <nds-input></nds-input>\n  <nds-button>재전송</nds-button>\n</nds-field-action-row>",
     },
     summary:
-      "전화번호 인증 / 인증코드 입력처럼 '입력 1개 + 액션 버튼 1개(+타이머)' 한 줄 패턴 전용 helper. React 는 flat API 하나만 — 구 Compound API(.Root/.Field/.Action…) 는 제거됨.",
+      "전화번호 인증 / 인증코드 입력처럼 '입력 1개 (+ 액션 버튼) (+타이머)' 한 줄 패턴 전용 helper. **action 은 옵션** — 생략하면 코드 입력 + 우측 타이머만(인라인 버튼 없는 레이아웃, 예: 캐포비 본인인증의 별도 full-width 재전송 버튼 + 타이머만 있는 코드 입력. pattern:cashwalk-biz-verification). React 는 flat API 하나만 — 구 Compound API(.Root/.Field/.Action…) 는 제거됨.",
     pitfalls: [
+      "**action 생략 = 필드+타이머만** (인라인 버튼 없음). 캐포비 본인인증처럼 '전송/재전송'이 별도 full-width 검정 버튼이고 코드 입력엔 타이머만 있는 레이아웃에 쓴다 — field + timer 만 넘기고 action 은 비운다.",
       "범용 폼 레이아웃 용도 아님 — 여러 필드/버튼은 Input + Button 직접 조합. 이 컴포넌트는 인증 row 1줄에만.",
       "Action 이 핵심 폼 동작(검색 / 제출) 이면 row 안이 아니라 별도 CTA 영역.",
       "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1-2 단어로 유지.",
       "React 에서 더는 .Root/.Row/.Field/.Timer/.Action/.Helper 합성 불가 — field/action/timer/helperText prop 으로 전달.",
-      "action 에 DS Button(<Button>/<nds-button>)을 넣으면 그 버튼의 color/variant 가 그대로 적용된다 — 캐포비 검정 확인 버튼은 color=\"secondary\". (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하므로, color 가 안 먹던 '노란 버튼' 회귀는 해소됨.) actionTone prop 은 raw <button> 전용.",
+      "타이머는 필드 우측 안에 떠도, **필드가 자동으로 우측 공간을 예약**(data-has-timer)하므로 입력값/placeholder 가 타이머 밑으로 안 파고든다 — 필드 input 에 수동 paddingRight 를 넣지 말 것(구 회귀 워크어라운드). 좁은 폭이 부족하면 `--nds-far-timer-reserve` 로 조정.",
+      "필드 **안**에 들어가는 타이머는 값만(mm:ss) 두고 '남은 시간' 라벨은 생략한다 — helper-text 가 맥락을 주고, 라벨을 넣으면 좁은 필드가 더 빡빡해진다. (CountdownTimer 에 label prop 을 안 주면 값만 렌더.)",
+      'action 에 DS Button(<Button>/<nds-button>)을 넣으면 그 버튼의 color/variant 가 그대로 적용된다 — 캐포비 검정 확인 버튼은 color="neutral" (secondary 아님 — 캐포비는 secondary tone 이 Figma 가이드에 없어 Button 이 denylist+콘솔 경고로 막는다. 검정 #111 = neutral/solid, 회색 = neutral/soft). 메인 제출 CTA 만 노랑 color="primary". (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하므로, color 가 안 먹던 \'노란 버튼\' 회귀는 해소됨.) actionTone prop 은 raw <button> 전용.',
     ],
   },
   TimeSlotPicker: {
@@ -4949,7 +4959,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     rules: [
       "마스터 '전체 동의' 체크박스는 자식 선택 비율로 **파생** — 모두 체크=checked, 일부=indeterminate(옐로우 마이너스), 전무=unchecked. `<Checkbox indeterminate>`(HTML `<nds-checkbox indeterminate>`)를 그대로 쓴다. 색/아이콘을 직접 손계산하지 말 것.",
       "전체동의 클릭 동작: '모두 체크면 전체 해제, 아니면(부분/전무) 전체 체크'. 전체동의는 **독립 상태를 갖지 않고 항상 자식에 의존** — 이 동기화가 동의 화면 #1 버그 지점이다.",
-      "**필수/선택 구분 필수** — 각 항목에 `[필수]`/`[선택]` 명시(필수=text statusError 톤, 선택=text subtle). 필수 미동의 시 다음 단계 진행 불가(가드는 호출부 책임).",
+      "**필수/선택 구분 필수** — 각 항목에 `[필수]`/`[선택]` badge 명시. **`badge:\"[필수]\"` 면 CheckboxGroup 이 자동으로 빨강+bold 강조**(필수=text statusError) — `required` 를 따로 안 붙여도 된다. `[선택]` 은 회색(text subtle). 필수 미동의 시 다음 단계 진행 불가(가드는 호출부 책임).",
       "**pre-tick(선택 항목 기본 체크) 금지** — 마케팅 수신 등 선택 항목을 미리 체크해두면 개인정보보호법상 능동 동의가 아니라 위법(행정처분 대상). 초기 value 는 빈 배열 또는 사용자가 과거 동의한 것만.",
       "전체동의는 사용자가 직접 누른 능동 동의라 합법 — 단 누르면 선택까지 싹 체크되는 마찰을 줄이려면 '필수만 동의' 보조 동선 또는 필수/선택 전체동의 분리를 검토(토스식).",
       "약관 전문은 detail 펼침(chevron 접기/펼치기)으로 — 기본 접힘, 필요 시 확장. 전문이 길면 '전문 보기' 외부 링크.",
@@ -4967,6 +4977,32 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       requiredEnforcement: "호출부 책임 (필수 미동의 → 진행 불가)",
       preTick: "금지 (개인정보보호법)",
       hierarchy: "1단계 (계층은 CheckboxTree)",
+    },
+  },
+  "social-login": {
+    name: "social-login",
+    summary:
+      "소셜/간편 로그인(네이버·카카오·구글·애플) 버튼. DS 는 4 서비스 × 색상 로고 자산(@nudge-design/assets `sns-logos/`, Figma 107:1045)을 제공한다 — **이니셜 텍스트(G/K/N)나 손글씨 SVG 로 때우지 말고 이 자산을 버튼에 박는다.** 자산은 brand 차원이 아니라 제3자 서비스 차원이라 모든 브랜드 화면에서 쓸 수 있고, 단일 HTML 목업은 `@nudge-design/assets/files/sns-logos/{service}-{color}.svg` 를 `<img src>` 에 그대로 쓰면 build_singlefile_html 이 base64 인라인한다.",
+    rules: [
+      'do — 풀폭 브랜드 버튼 세로 스택: `<button style="height:48px;background:#FEE500"><img src="@nudge-design/assets/files/sns-logos/kakao-black.svg" width="18" height="18" alt=""> 카카오로 시작하기</button>` (네이버는 bg #03C75A + naver-white, 구글은 흰 bg+보더 + google-main). don\'t — `<span>G</span><span>K</span><span>N</span>` 이니셜 텍스트.',
+      "서비스 식별은 **공식 로고 자산**으로 — `@nudge-design/assets/files/sns-logos/{service}-{color}.svg`. 보유 조합: naver(white/main) · kakao(black/main) · google(white/main) · apple(white/black). 이니셜 글자(G/K/N)·이모지·손글씨 SVG 금지.",
+      "서비스 시그니처 색을 버튼 bg 로 — 카카오 #FEE500(로고 kakao-black) · 네이버 #03C75A(로고 naver-white) · 구글 흰 bg + 1px 보더(로고 google-main, 멀티컬러 G) · 애플 검정 bg(로고 apple-white). bg 와 대비되는 로고 색을 고른다.",
+      "라벨은 '○○로 시작하기' / '○○로 계속하기' 처럼 행동이 분명하게. 로고만 있는 아이콘 버튼이면 aria-label 로 서비스명 보강.",
+      "배치는 풀폭 세로 스택이 기본(식별·터치 영역 명확). 가로 아이콘 행(원형 버튼)은 보조 — 이때도 텍스트 이니셜이 아니라 로고 자산을 원 안에 넣는다.",
+      "버튼 높이는 폼의 다른 입력/CTA 와 같은 height bucket(48 권장)으로 맞춘다 — pattern:action-row.",
+      "현재 자산은 Runmile 라이브러리 원본이지만 제3자 서비스 자산이라 brand 무관하게 사용 가능. get_brand 의 snsLogos 가 해당 브랜드에 안 떠도 자산 경로로 직접 인라인하면 된다.",
+    ],
+    avoid: [
+      "이니셜/약자 텍스트(G·K·N)로 소셜 버튼을 표현 — 어떤 서비스인지 식별 불가 + 브랜드 가이드 위반.",
+      "로고를 raw <svg> 손글씨나 임의 이모지로 대체 — 공식 자산을 쓴다.",
+      "모든 서비스를 같은 회색/검정 버튼으로 통일 — 서비스 시그니처 색으로 구분되어야 즉시 인지된다.",
+      "상대경로(/sns-logos/x.svg)를 단일 HTML 목업에 쓰기 — 단독 파일에서 깨진다. inlineRef(@nudge-design/assets/files/…)로 써야 base64 인라인.",
+    ],
+    metrics: {
+      assets: "@nudge-design/assets/files/sns-logos/{service}-{color}.svg (4 서비스 × 색상)",
+      services: "naver(white/main) · kakao(black/main) · google(white/main) · apple(white/black)",
+      layout: "풀폭 세로 스택 기본 · 가로 아이콘 행 보조",
+      heightBucket: "48px (pattern:action-row)",
     },
   },
   "cta-group": {
@@ -6578,16 +6614,19 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing).",
       '**01 Logo**: 카드 상단 중앙 정렬. **BrandLogo 컴포넌트로 박는다** — HTML `<nds-brand-logo brand="cashwalk-biz">` / React `<BrandLogo brand="cashwalk-biz" />`. 사이드바와 동일한 로고 SSOT 가 data URI 로 내장돼 단일 HTML 에서도 안 깨진다. **35KB base64 를 손으로 붙이거나 raw <img>/SVG 로 조립 금지**(모지바케·로고 유실 회귀의 직접 원인). 찾기 화면은 로고 아래 안내문(예: \'캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.\')을 둔다.',
       "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
-      "**03 Primary CTA**: Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득). 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개(`pattern:cashwalk-biz-button`).",
+      "**03 Primary CTA (단일 액션 화면)**: 로그인·찾기처럼 액션이 **하나뿐**인 화면은 Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득) — `<nds-button full-width>`. 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개. ⚠️ **모달 단일버튼(우측 hug)과 혼동 금지** — 단일 액션 온보딩 CTA 는 full-width 가 하드 계약(validator `onboarding-cta-not-fullwidth` error). 모달 단일버튼은 반대로 hug 우측정렬. (`pattern:cashwalk-biz-button`)",
+      "**03b Footer Nav (멀티스텝 화면)**: 가입 심사처럼 **이전/다음(제출)** 이 있는 멀티스텝은 버튼을 카드 안에 넣지 않는다 — **카드(섹션) *아래* 분리된 캔버스 행**에 둔다(흰 바·상단 border·sticky 없음, 카드와 gap). **좌측 [이전 단계]**(Outlined, hug) + **우측 [다음 단계]/[제출]**(Solid/Primary, hug, 우측정렬). 멀티스텝 푸터의 버튼은 full-width 가 아니라 **hug** (validator 가 이전버튼 존재를 감지해 full-width 강제를 면제). 이전버튼을 카드 안에 넣으면 `onboarding-back-button-inside-card` warn. **상단엔 진행 표시 `Stepper`**(component:Stepper, variant=bar/numbered) — 폼 필드의 수량 입력 `NumberStepper` 와 혼동 금지.",
+      "**03c 본인 인증 Section (휴대폰/이메일 → 인증번호)**: 연락처 입력(전화/이메일 TextInput) → **[인증번호 전송/재전송]은 별도 full-width 검정 버튼**(`<nds-button color=\"neutral\" full-width>` — primary 노랑 아님, 인라인 버튼도 아님) → 그 아래 **인증번호 입력 = FieldActionRow(action 생략) + 코드 입력 + 우측 인라인 타이머**. 타이머는 `CountdownTimer tone=\"brand\"`(캐포비 오렌지 #FD9B02). 인증 입력엔 인라인 확인 버튼을 두지 않고, 확정은 하단 [다음](primary full-width)으로 한다. raw <input> 6칸·자작 +/- 금지(`verification-manual-assembly` warn) — `nds-verification-code-input` 단일 박스 사용.",
       "**04 Helper**: 보조 링크는 **TextButton(Medium)** — 로그인 화면의 '아이디 찾기 | 비밀번호 찾기', 가입 유도 등. solid 버튼으로 만들지 않는다.",
       "**상태 분기는 같은 골격**: 로그인 / 아이디 찾기 / 비밀번호 찾기는 동일한 480px 중앙 카드 레이아웃의 변형. 화면마다 다른 골격을 만들지 않는다.",
-      "**Validate**: ① Step ≥ 3 → 별도 Multi-step Onboarding 으로(상단 Step Progress 추가). ② Form 필드 > 5 → `pattern:cashwalk-biz-page-form` 전환 검토. ③ 외부 인증(SMS/Email) 필요 → 인증 코드 입력 Section 추가. ④ 이용약관 동의 필요 → Form 위에 CheckboxGroup 추가.",
+      "**Validate**: ① 멀티스텝(이전/다음·제출) → 상단 진행 `Stepper`(component:Stepper) + 카드 아래 분리 Footer Nav(위 03b). ② Form 필드 > 5 → `pattern:cashwalk-biz-page-form` 전환 검토. ③ 외부 인증(SMS/Email) 필요 → **본인 인증 Section(위 03c)** 추가. ④ 이용약관 동의 필요 → Form 위에 CheckboxGroup 추가.",
     ],
     avoid: [
       "온보딩 카드에 사이드바/topbar(admin-shell) 부착 — 비로그인 인증 화면은 중앙 카드만",
       "카드 폭을 480px 외 값으로 (고정 폭 패턴)",
       "로그인·아이디찾기·비밀번호찾기마다 다른 레이아웃 골격",
-      "Primary CTA 를 카드 폭보다 좁게 / 2개 이상 / outlined 로",
+      "**단일 액션 화면**의 Primary CTA 를 카드 폭보다 좁게(hug) / 2개 이상 / outlined 로 (단, 멀티스텝은 이전+제출 footer nav 가 정상 — 위 03b)",
+      "멀티스텝의 [이전 단계]/제출 버튼을 카드 *안*에 넣기 — 카드와 분리해 하단 캔버스 footer nav 로 (`onboarding-back-button-inside-card`)",
       "보조 링크(찾기·가입)를 solid 버튼으로 — TextButton(Medium) 텍스트 링크가 맞다",
       '로고를 raw <img>/SVG 로 조립하거나 35KB base64 를 손으로 붙이기 — `<nds-brand-logo brand="cashwalk-biz">` / `<BrandLogo brand="cashwalk-biz" />` 사용',
       "필드 6개 이상·3스텝 이상을 단일 온보딩 카드에 욱여넣기 (Validate Rule 위반 → Form/Multi-step 전환)",

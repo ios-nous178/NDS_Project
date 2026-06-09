@@ -146,6 +146,19 @@ describe("setup brand registry", () => {
     expect(detailed.detail.assetKind).toBe("illustrations");
     expect(detailed.detail.assets?.illustrations?.files?.length).toBeGreaterThan(0);
     expect(JSON.stringify(detailed.detail.assets)).not.toContain("marathon-events");
+
+    // snsLogos 파일은 붙여넣기용 inlineRef 를 줘야 한다(profileImages/illustrations 와 parity).
+    // 없으면 작성자가 경로를 손으로 조립하다 "계속 못 가져오네" 로 빠진다.
+    const sns = getBrand({ brand: "runmile", assetKind: "snsLogos" }) as {
+      detail: { assets?: { snsLogos?: { files?: Array<{ inlineRef?: string }> } } };
+    };
+    const snsFiles = sns.detail.assets?.snsLogos?.files ?? [];
+    expect(snsFiles.length).toBeGreaterThan(0);
+    expect(
+      snsFiles.every((f) =>
+        /^@nudge-design\/assets\/files\/sns-logos\/.+\.svg$/.test(f.inlineRef ?? ""),
+      ),
+    ).toBe(true);
   });
 });
 

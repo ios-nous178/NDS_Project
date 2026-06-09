@@ -38,7 +38,7 @@ export const fieldActionRowStyles = `
     position: relative;
   }
 
-  :where(.${FAR_FIELD_CLASS} input) {
+  :where(.${FAR_FIELD_CLASS} > input) {
     width: 100%;
     height: 48px;
     padding: 0 var(--semantic-inset-card);
@@ -56,27 +56,35 @@ export const fieldActionRowStyles = `
     -moz-appearance: textfield;
   }
 
-  :where(.${FAR_FIELD_CLASS} input::-webkit-outer-spin-button),
-  :where(.${FAR_FIELD_CLASS} input::-webkit-inner-spin-button) {
+  :where(.${FAR_FIELD_CLASS} > input::-webkit-outer-spin-button),
+  :where(.${FAR_FIELD_CLASS} > input::-webkit-inner-spin-button) {
     -webkit-appearance: none;
     margin: 0;
   }
 
-  :where(.${FAR_FIELD_CLASS} input::placeholder) {
+  :where(.${FAR_FIELD_CLASS} > input::placeholder) {
     color: ${cv.textRole.muted};
     font-size: ${typeScale.body2.fontSize}px;
   }
 
-  :where(.${FAR_FIELD_CLASS} input:focus) {
+  :where(.${FAR_FIELD_CLASS} > input:focus) {
     border-color: ${cv.borderRole.focus};
   }
 
-  :where(.${FAR_FIELD_CLASS}[data-error="true"] input) {
+  :where(.${FAR_FIELD_CLASS}[data-error="true"] > input) {
     border-color: ${cv.borderRole.statusError};
   }
 
-  :where(.${FAR_FIELD_CLASS}[data-success="true"] input) {
+  :where(.${FAR_FIELD_CLASS}[data-success="true"] > input) {
     border-color: ${cv.iconRole.statusSuccess};
+  }
+
+  /* 타이머가 있으면 필드 콘텐츠(raw <input> 또는 VerificationCodeInput 박스 등)가 우측의
+     absolute 타이머와 겹치지 않게 우측 공간을 예약한다. 타이머(data-slot="timer")는 제외.
+     입력값/placeholder 가 "02:09" 밑으로 파고들던 회귀를 막는다.
+     (:not 으로 specificity (0,3,0) 을 만들어 VC 박스의 :where padding 을 안정적으로 이긴다.) */
+  .${FAR_FIELD_CLASS}[data-has-timer="true"] > :not([data-slot="timer"]) {
+    padding-right: var(--nds-far-timer-reserve, 64px);
   }
 
   :where(.${FAR_TIMER_CLASS}) {

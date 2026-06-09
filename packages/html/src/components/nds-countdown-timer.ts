@@ -11,6 +11,7 @@
  *   label          시간 옆에 붙는 보조 라벨
  *   expired-text   0초 이하 도달 후 표시할 텍스트 (default "만료됨")
  *   no-urgent      boolean — 10초 이하 임박 컬러 비활성화
+ *   tone           "default" | "brand" — brand=브랜드 액센트(캐포비 오렌지). urgent(≤10s)는 빨강 우선
  *
  * 이벤트:
  *   countdown-tick      매 1초 (detail: { ms: number })  ── 남은 ms
@@ -35,7 +36,7 @@ export class NdsCountdownTimer extends NdsElement {
   static elementName = "nds-countdown-timer";
 
   static get observedAttributes(): readonly string[] {
-    return ["ends-at", "format", "label", "expired-text", "no-urgent", ...FORWARDED_ATTRS];
+    return ["ends-at", "format", "label", "expired-text", "no-urgent", "tone", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLSpanElement | null = null;
@@ -129,6 +130,7 @@ export class NdsCountdownTimer extends NdsElement {
 
     this._root.dataset.urgent = urgent ? "true" : "false";
     this._root.dataset.expired = expired ? "true" : "false";
+    this._root.dataset.tone = this.attr("tone", "default");
 
     if (expired) {
       this._timeEl.textContent = this.attr("expired-text", "만료됨");

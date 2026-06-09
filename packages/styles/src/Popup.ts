@@ -108,9 +108,12 @@ export const popupStyles = `
     color: ${cv.surface.default};
   }
 
+  /* confirm = 주 액션 CTA. confirmCta 토큰(base=brand 참조)으로 브랜드별 자기 색이 되고,
+     캐포비만 :root 에서 neutral 검정으로 override 된다 — data-brand 속성 없는 standalone
+     목업에서도 검정으로 나오게(옛 [data-brand] 캐스케이드 회귀 해소). */
   :where(.${POPUP_BTN_CONFIRM_CLASS}) {
-    background: ${cv.surface.brand};
-    color: ${cv.button.textDefault};
+    background: ${cv.confirmCta.bg};
+    color: ${cv.confirmCta.text};
   }
 
   /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).
@@ -176,11 +179,8 @@ export const popupStyles = `
     color: ${cv.textRole.strong};
   }
 
-  :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CONFIRM_CLASS}) {
-    background: ${cv.button.bgSecondary};
-    border-color: ${cv.button.bgSecondary};
-    color: ${cv.button.textSecondary};
-  }
+  /* confirm(검정 CTA)은 더 이상 [data-brand] 캐스케이드로 분기하지 않는다 — confirmCta 토큰이
+     캐포비 :root 에서 neutral 검정으로 덮이므로 standalone 목업에서도 적용된다(Modal 과 동일). */
 
   @keyframes nds-popup-fade-in {
     from { opacity: 0; }

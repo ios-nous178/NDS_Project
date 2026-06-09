@@ -6,8 +6,8 @@
  *   · 본문 표면      : surface.default (캐포비 #FFF)
  *   · 제목           : textRole.strong (캐포비 #111 — Figma #212121 근사)
  *   · 본문 설명      : textRole.subtle (캐포비 #666 — Figma #595959 근사)
- *   · confirm 버튼   : button.bgSecondary / textSecondary (캐포비 검정 CTA)
- *   · cancel 버튼    : 검정 CTA 의 outlined 형제 — border/text = button.bgSecondary
+ *   · confirm 버튼   : button.bgNeutral / textNeutralSolid (캐포비 검정 CTA — tone=Primary+Neutral, Secondary 없음)
+ *   · cancel 버튼    : 검정 CTA 의 outlined 형제 — border = button.bgNeutral
  * radius(10/6) 와 본문 폭(280) 은 geometry raw px (skill 규칙: 특정 radius/치수 허용).
  */
 import {
@@ -106,17 +106,19 @@ export const confirmTooltipStyles = `
     opacity: 0.85;
   }
 
+  /* confirm = 캐포비 검정 CTA. 캐포비 tone 은 Primary + Neutral 뿐(Secondary 없음) →
+     Modal/Popup 과 동일하게 button.bgNeutral(#111)/textNeutralSolid(흰) 로 통일. */
   :where(.${CT_BTN_CONFIRM_CLASS}) {
-    background: ${cv.button.bgSecondary};
-    border-color: ${cv.button.bgSecondary};
-    color: ${cv.button.textSecondary};
+    background: ${cv.button.bgNeutral};
+    border-color: ${cv.button.bgNeutral};
+    color: ${cv.button.textNeutralSolid};
   }
 
-  /* cancel = 검정 CTA 의 outlined 형제 — 캐포비엔 검정 border semantic 이 없어
-     secondary fill 슬롯(검정)을 border/text 로 차용 (Figma 는 neutral-900 #111 바인딩). */
+  /* cancel = 검정 CTA 의 outlined 형제 — neutral fill 슬롯(검정 #111)을 border/text 로 차용
+     (Figma 는 neutral-900 #111 바인딩). */
   :where(.${CT_BTN_CANCEL_CLASS}) {
     background: ${cv.surface.default};
-    border-color: ${cv.button.bgSecondary};
+    border-color: ${cv.button.bgNeutral};
     color: ${cv.textRole.strong};
   }
 

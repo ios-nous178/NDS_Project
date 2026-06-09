@@ -254,6 +254,9 @@ const COMPONENT_SEARCH_ALIASES: Record<string, string[]> = {
   toast: ["토스트"],
   card: ["카드"],
   avatar: ["아바타"],
+  // AddressPicker — 작성자가 주소 입력을 plain input/select 로 손조립하지 않게 발견성 보강.
+  // (canonical "address" 가 "AddressPicker" 의 substring 이라 매칭됨)
+  address: ["주소", "주소입력", "주소검색", "우편번호", "도로명", "지번", "postal", "zipcode"],
 };
 
 /** 별칭이 정규 영문을 포함하는 이름과 맞으면 substring(60) 보다 낮은 50점을 준다. */
@@ -379,6 +382,27 @@ function decorateIcon(name: string) {
   };
 }
 
+// 소셜/간편 로그인(네이버·카카오·구글·애플) 로고는 아이콘이 아니라 @nudge-design/assets 의
+// sns-logos 자산이다. find_icon 으로 찾으면 0 매치 → 작성자가 이니셜/이모지로 때우거나 계속 헛삽질한다.
+// 이 용어들이 들어오면 아이콘 검색을 끊고 자산 경로로 리다이렉트한다(오용 재발 방지).
+const SOCIAL_LOGIN_TERMS =
+  /(kakao|naver|google|apple|카카오|네이버|구글|애플|소셜|social|sns|oauth|간편)/i;
+function socialLoginAssetRedirect(term: string) {
+  if (!SOCIAL_LOGIN_TERMS.test(term)) return null;
+  return {
+    redirect: "sns-logos (asset, not icon)",
+    detail: `소셜/간편 로그인 로고(네이버·카카오·구글·애플)는 아이콘이 아니라 @nudge-design/assets 의 sns-logos 자산입니다. find_icon 에는 없습니다 — 아래 자산 경로를 <img src> 에 그대로 박으면 build_singlefile_html 이 base64 인라인합니다.`,
+    assets:
+      "@nudge-design/assets/files/sns-logos/{service}-{color}.svg — naver(white/main) · kakao(black/main) · google(white/main) · apple(white/black)",
+    example:
+      '<button style="height:48px;background:#FEE500"><img src="@nudge-design/assets/files/sns-logos/kakao-black.svg" width="18" height="18" alt=""> 카카오로 시작하기</button>',
+    seeAlso: [
+      "get_guide({ topic: 'pattern:social-login' }) — 배치·서비스 시그니처 색·라벨 규칙",
+      "get_brand({ assetKind: 'snsLogos' }) — 서비스별 inlineRef 경로 목록",
+    ],
+  };
+}
+
 /**
  * find_icon 통합 라우터.
  *  - { name } → 그 아이콘의 inline SVG (붙여 넣을 수 있는 완성형) + 메타
@@ -400,6 +424,8 @@ export async function findIcon(args: {
   // index.html 에 바로 붙여 넣을 수 있게 한다.
   if (args.name) {
     if (!iconSet.has(args.name)) {
+      const social = socialLoginAssetRedirect(args.name);
+      if (social) return social;
       const suggestions = manifest.icons
         .map((name) => ({ name, score: scoreMatch(args.name as string, name) }))
         .filter((c) => c.score > 0)
@@ -440,6 +466,8 @@ export async function findIcon(args: {
     }
   }
   if (args.query) {
+    const social = socialLoginAssetRedirect(args.query);
+    if (social) return social;
     // 이름 찾기 분기 — name(+분류용 category)만. categoryLabel/style/pair·SVG 는
     // 삽입 시점의 find_icon({ name }) 에서 제공(이미 그 경로 존재). score 는 정렬 후 drop.
     const matches = manifest.icons

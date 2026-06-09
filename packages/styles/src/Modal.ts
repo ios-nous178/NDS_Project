@@ -43,6 +43,9 @@ export const modalStyles = `
     position: relative;
     width: 100%;
     max-width: var(--nds-modal-max-width, 332px);
+    /* 뷰포트(root 의 inset-card-large 패딩 제외) 안으로 높이 제한 — 넘치면 본문(.body)이 스크롤.
+       100% 는 root 의 content-box(= 화면 − 패딩 2개) 기준이라 화면 밖으로 잘리지 않는다. */
+    max-height: var(--nds-modal-max-height, 100%);
     display: flex;
     flex-direction: column;
     gap: var(--semantic-gap-default);
@@ -56,7 +59,9 @@ export const modalStyles = `
   }
 
   /* Header: 좌측 28px 고스트 스페이서 + flex:1 타이틀 + 우측 28px 닫기 버튼.
-     스페이서가 X 버튼 폭을 좌측에 미러링해서 타이틀이 모달 박스 기준 정중앙에 정렬됨. */
+     스페이서가 X 버튼 폭을 좌측에 미러링해서 타이틀이 모달 박스 기준 정중앙에 정렬됨.
+     타이틀이 없으면 스페이서도 안 그려지므로(닫기만 남음) 닫기 버튼은 margin-left:auto 로
+     항상 우측에 붙인다 — 없으면 space-between 에서 단독 자식이 좌측으로 떨어진다(회귀). */
   :where(.${HEADER_CLASS}) {
     display: flex;
     align-items: center;
@@ -84,6 +89,9 @@ export const modalStyles = `
   :where(.${CLOSE_CLASS}) {
     flex: 0 0 28px;
     height: 28px;
+    /* 타이틀 유무와 무관하게 항상 우측. 타이틀 있을 땐 flex:1 타이틀이 공간을 다 먹어
+       margin-left:auto 가 no-op 이고, 타이틀 없을 땐(닫기 단독) 우측으로 밀어낸다. */
+    margin-left: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -96,12 +104,23 @@ export const modalStyles = `
     color: ${cv.textRole.muted};
   }
 
+  /* 본문은 세로 스택 — 설명 텍스트 + (옵션) 콘텐츠 슬롯(NoticeAlert / Input / Select / DatePicker)을
+     일정 간격으로 쌓는다(Figma ④ Confirm + Slot 3418-471). 단일 텍스트만 있으면 gap 은 무영향.
+     슬롯은 full-width 로 늘어남(align-items:stretch 기본). */
   :where(.${BODY_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-gap-default);
     padding: 0;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
     color: ${cv.textRole.normal};
     text-align: center;
+    /* 본문이 길어 content 의 max-height 를 넘으면 헤더/푸터는 고정하고 본문만 스크롤.
+       min-height:0 가 있어야 flex column 에서 본문이 줄어들어 스크롤이 생긴다. */
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   /* 본문 그룹(image/header/body)과 푸터 사이 24px gap:
@@ -170,21 +189,24 @@ export const modalStyles = `
     background-color: ${cv.surface.subtle};
   }
 
+  /* confirm = 주 액션 CTA. confirmCta 토큰은 base 에서 brand 색을 var() 로 참조하므로
+     브랜드별 자기 brand 색이 되고, 캐포비만 neutral 검정으로 override 된다(토큰 :root 로 흘러
+     data-brand 속성 없는 standalone 목업에서도 적용 — 옛 [data-brand] 캐스케이드 회귀 해소). */
   :where(.${FOOTER_CONFIRM_CLASS}) {
-    background-color: ${cv.surface.brand};
-    border-color: ${cv.borderRole.brand};
+    background-color: ${cv.confirmCta.bg};
+    border-color: ${cv.confirmCta.bg};
     color: ${cv.textRole.inverse};
     font-weight: 700;
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}:hover) {
-    background-color: ${cv.fill.brandHover};
-    border-color: ${cv.fill.brandHover};
+    background-color: ${cv.confirmCta.hover};
+    border-color: ${cv.confirmCta.hover};
   }
 
   :where(.${FOOTER_CONFIRM_CLASS}:active) {
-    background-color: ${cv.textRole.brandStrong};
-    border-color: ${cv.textRole.brandStrong};
+    background-color: ${cv.confirmCta.active};
+    border-color: ${cv.confirmCta.active};
   }
 
   /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).
@@ -223,7 +245,7 @@ export const modalStyles = `
        · 푸터(44px, pill r9999, Body2 medium):
            ① Single (onConfirm 만)         → 우측 정렬 · 120px 고정
            ② Dual   (onConfirm + onClose)  → 가로 양분 (기존 동작)
-       · confirm = 검정 CTA (button.bgSecondary)
+       · confirm = 검정 CTA (button.bgNeutral — 캐포비 tone=Primary+Neutral, Secondary 없음)
        · cancel  = white + neutral 회색 보더
      기존 props 만으로 4가지 admin 패턴 모두 표현 가능 — Modal API
      변경 없이 CSS cascade 만 추가. <html data-brand="cashwalk-biz"> 가
@@ -266,8 +288,10 @@ export const modalStyles = `
     color: ${cv.iconRole.normal};
   }
 
-  /* CashwalkBiz Body2 = DS body3 (14/20) — 픽셀 매핑. */
+  /* CashwalkBiz Body2 = DS body3 (14/20) — 픽셀 매핑. 본문은 좌측 정렬 + 콘텐츠 슬롯과 20px gap
+     (Figma ④ Confirm+Slot 은 헤더·설명·슬롯·푸터가 모두 형제인 평면 gap-20 — 설명↔슬롯도 20). */
   :where([data-brand="cashwalk-biz"] .${BODY_CLASS}) {
+    gap: ${spacing[20]}px;
     text-align: left;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -307,19 +331,7 @@ export const modalStyles = `
     border-color: ${cv.button.borderNeutral};
   }
 
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}) {
-    background-color: ${cv.button.bgSecondary};
-    border-color: ${cv.button.bgSecondary};
-    color: ${cv.button.textSecondary};
-  }
-
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}:hover) {
-    background-color: ${cv.button.bgSecondaryHover};
-    border-color: ${cv.button.bgSecondaryHover};
-  }
-
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CONFIRM_CLASS}:active) {
-    background-color: ${cv.button.bgSecondaryHover};
-    border-color: ${cv.button.bgSecondaryHover};
-  }
+  /* confirm(검정 CTA)은 더 이상 여기서 [data-brand] 캐스케이드로 분기하지 않는다 —
+     base 규칙이 confirmCta 토큰을 쓰고, 캐포비 :root 가 그 토큰을 neutral 검정으로 덮는다.
+     (그래야 data-brand 속성 없는 standalone 목업에서도 노랑이 아니라 검정으로 나온다.) */
 `;

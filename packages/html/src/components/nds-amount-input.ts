@@ -35,6 +35,30 @@ function formatNumber(n: number): string {
   return n.toLocaleString("ko-KR");
 }
 
+/** caret 앞쪽의 숫자(0-9) 개수 — 천단위 콤마 재포맷 후 같은 자릿수 위치로 복원하기 위한 기준. */
+function countDigitsBefore(text: string, caret: number): number {
+  let count = 0;
+  for (let i = 0; i < caret && i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    if (c >= 48 && c <= 57) count++;
+  }
+  return count;
+}
+
+/** 포맷 문자열에서 "앞에서 n번째 숫자 바로 뒤" 인덱스 — countDigitsBefore 의 역연산. */
+function caretAfterDigits(formatted: string, digits: number): number {
+  if (digits <= 0) return 0;
+  let count = 0;
+  for (let i = 0; i < formatted.length; i++) {
+    const c = formatted.charCodeAt(i);
+    if (c >= 48 && c <= 57) {
+      count++;
+      if (count === digits) return i + 1;
+    }
+  }
+  return formatted.length;
+}
+
 export class NdsAmountInput extends NdsElement {
   static elementName = "nds-amount-input";
 
@@ -165,9 +189,11 @@ export class NdsAmountInput extends NdsElement {
 
   private _handleInput(e: Event): void {
     const target = e.target as HTMLInputElement;
+    const caret = target.selectionStart ?? target.value.length;
+    const caretDigits = countDigitsBefore(target.value, caret);
     const raw = target.value.replace(/[^0-9]/g, "");
     const next = raw ? this._clamp(Number(raw)) : null;
-    this._writeValue(next, target);
+    this._writeValue(next, target, caretDigits);
   }
 
   private _applyPreset(preset: AmountPreset): void {
@@ -176,12 +202,21 @@ export class NdsAmountInput extends NdsElement {
     this._writeValue(this._clamp(next));
   }
 
-  private _writeValue(value: number | null, sourceInput?: HTMLInputElement): void {
+  private _writeValue(
+    value: number | null,
+    sourceInput?: HTMLInputElement,
+    caretDigits?: number,
+  ): void {
     if (value === null) this.removeAttribute("value");
     else this.setAttribute("value", String(value));
     if (sourceInput) {
-      // 입력 위치 보존이 어려운 경우엔 단순히 포맷된 문자열로 교체.
       sourceInput.value = value === null ? "" : formatNumber(value);
+      // 재포맷으로 콤마 위치가 바뀐 만큼 caret 을 같은 자릿수 위치로 되돌린다 —
+      // 안 하면 매 입력마다 caret 이 끝으로 튀어 중간 수정이 불가능(돈입력 "동작이상함" 핵심).
+      if (caretDigits !== undefined) {
+        const pos = value === null ? 0 : caretAfterDigits(sourceInput.value, caretDigits);
+        sourceInput.setSelectionRange(pos, pos);
+      }
     }
     this.dispatchEvent(
       new CustomEvent("amount-change", {

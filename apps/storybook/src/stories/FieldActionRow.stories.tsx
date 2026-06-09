@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { FieldActionRow, type FieldActionRowProps } from "@nudge-design/react";
+import {
+  Button,
+  CountdownTimer,
+  FieldActionRow,
+  type FieldActionRowProps,
+  VerificationCodeInput,
+} from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
@@ -75,7 +81,6 @@ function VerificationCodeExample() {
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
             placeholder="인증번호 6자리"
-            style={{ paddingRight: 60 }}
           />
         }
         action={
@@ -132,13 +137,7 @@ function ExpiredTimerExample() {
     <div style={{ width: 360 }}>
       <FieldActionRow
         field={
-          <input
-            type="text"
-            inputMode="numeric"
-            defaultValue=""
-            placeholder="인증번호 6자리"
-            style={{ paddingRight: 60 }}
-          />
+          <input type="text" inputMode="numeric" defaultValue="" placeholder="인증번호 6자리" />
         }
         action={
           <button type="button" disabled>
@@ -203,7 +202,6 @@ function FullFlowExample() {
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
               placeholder="인증번호 6자리"
               readOnly={verified}
-              style={{ paddingRight: 60 }}
             />
           }
           action={
@@ -225,9 +223,46 @@ function FullFlowExample() {
   );
 }
 
+// 캐포비 본인인증 레이아웃(pattern:cashwalk-biz-verification):
+//   별도 full-width 검정 [재전송] + 인라인 버튼 없는 코드 입력(FieldActionRow action 생략) +
+//   tone="brand" 오렌지 타이머 + 하단 full-width 노랑 [다음].
+function CashpobiVerificationExample() {
+  const [code, setCode] = useState("");
+  const endsAt = useMemo(() => Date.now() + 10 * 60 * 1000, []);
+  return (
+    <div
+      data-brand="cashwalk-biz"
+      style={{
+        width: 400,
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--semantic-gap-default)",
+      }}
+    >
+      <Button color="neutral" fullWidth>
+        인증번호 재전송
+      </Button>
+      <FieldActionRow
+        field={
+          <VerificationCodeInput value={code} onValueChange={setCode} length={6} autoFocus />
+        }
+        timer={<CountdownTimer endsAt={endsAt} format="mm:ss" tone="brand" expiredText="00:00" />}
+      />
+      <Button color="primary" fullWidth>
+        다음
+      </Button>
+    </div>
+  );
+}
+
 export const PhoneVerification: Story = {
   name: "State/Phone Verification",
   render: () => <PhoneVerificationExample />,
+};
+
+export const CashpobiVerification: Story = {
+  name: "Recipe/CashwalkBiz 본인인증 (action 생략 + brand 타이머)",
+  render: () => <CashpobiVerificationExample />,
 };
 
 export const VerificationCode: Story = {
