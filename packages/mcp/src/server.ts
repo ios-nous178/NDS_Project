@@ -930,6 +930,7 @@ const toolHandlers = {
           sections?: string[];
           aspects?: string[];
           brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
+          serviceName?: string;
           cwd?: string;
         },
       ),
@@ -946,6 +947,7 @@ const toolHandlers = {
           withRouter?: boolean;
           includeTailwind?: boolean;
           intent?: string;
+          serviceName?: string;
           source?: string;
           includeLocalPackages?: boolean;
           cwd?: string;

@@ -170,7 +170,7 @@ const TOOLS = [
   {
     name: "dev_server",
     description:
-      "Start/stop a local mockup dev server (Vite) → preview URL/session id. React/admin-cms (.tsx) only — for html (<nds-*>) use build_singlefile_html instead (start on an html workspace returns guidance, no spawn).",
+      "Start/stop a local mockup dev server (Vite) → preview URL/session id. React/backoffice (.tsx) only — for html (<nds-*>) use build_singlefile_html instead (start on an html workspace returns guidance, no spawn).",
     inputSchema: {
       type: "object",
       properties: {
@@ -420,7 +420,7 @@ const TOOLS = [
   {
     name: "get_guide",
     description:
-      "Fetch DS guidance by topic (`component:<Name>`, `pattern:<name>`, or fixed like 'principles'/'dos-donts'/'admin-cms'); batch with `topics:[...]`. Size control: `view:'examples'|'rules'` (biggest saver for batches), `sections`/`aspects` (principles slices), `target:'html'` for <nds-*> examples, `brand` for the service overlay. Call principles once per session. **Mockup first-response gate: ask for Figma/screenshots and write references.md before any guide/component/token lookup or code work.**",
+      "Fetch DS guidance by topic (`component:<Name>`, `pattern:<name>`, or fixed like 'principles'/'dos-donts'/'backoffice' — 'admin-cms' is a permanent alias of 'backoffice'); batch with `topics:[...]`. Size control: `view:'examples'|'rules'` (biggest saver for batches), `sections`/`aspects` (principles slices), `target:'html'` for <nds-*> examples, `brand` for the service overlay. Call principles once per session. **Mockup first-response gate: ask for Figma/screenshots and write references.md before any guide/component/token lookup or code work.**",
     inputSchema: {
       type: "object",
       properties: {
@@ -438,7 +438,12 @@ const TOOLS = [
         intent: {
           type: "string",
           description:
-            "Optional free-text intent passed through to topic='admin-cms' for confirmation. Ignored for other topics.",
+            "Optional intent passed through to topic='backoffice'/'admin-cms'. Pass 'admin' to get the DS redirect for hard-gated b2b admin brands (cashwalk-biz/nudge-eap). Ignored for other topics.",
+        },
+        serviceName: {
+          type: "string",
+          description:
+            "[topic=backoffice] Service display name injected into service-specific copy (e.g. footer 'Copyright © <serviceName>'). Example: 'Runmile'.",
         },
         target: {
           type: "string",
@@ -518,7 +523,7 @@ const TOOLS = [
         brand: {
           type: "string",
           description:
-            "[step=imports|full|claude-md|agents-md] Brand slug (see get_brand). Omitted → first 'ready' brand. Admin routing: brand='cashwalk-biz' + intent='admin-cms' routes to the Nudge DS (html), NOT antd — 캐포비만 DS 안에 자체 admin 디자인 시스템을 가짐.",
+            "[step=imports|full|claude-md|agents-md] Brand slug (see get_brand). Omitted → first 'ready' brand. Admin routing: intent='admin' is hard-gated to cashwalk-biz/nudge-eap and routes to the Nudge DS (html), NOT antd — other brands are blocked. 캐포비는 자체 admin 디자인 시스템 보유라 백오피스/CMS 발화도 DS 로 우회.",
         },
         withRouter: {
           type: "boolean",
@@ -531,9 +536,14 @@ const TOOLS = [
         },
         intent: {
           type: "string",
-          enum: ["admin-cms", "html"],
+          enum: ["admin", "backoffice", "admin-cms", "html"],
           description:
-            "Workspace intent. Default/html → vanilla <nds-*>; admin-cms → antd conventions. Exception: admin-cms + brand='cashwalk-biz' routes to the DS (html), not antd.",
+            "Workspace intent. Default/html → vanilla <nds-*>; backoffice → 사내 어드민/CMS, neutral antd conventions ('admin-cms' is a deprecated alias of backoffice); admin → 외부 제공(b2b) 어드민, hard-gated to cashwalk-biz/nudge-eap and built with the DS (html) — other brands are blocked, and admin without brand returns a clarification question instead of proceeding.",
+        },
+        serviceName: {
+          type: "string",
+          description:
+            "[intent=backoffice] Service display name injected into service-specific copy (e.g. footer 'Copyright © <serviceName>'). Example: 'Runmile'.",
         },
         template: {
           type: "string",
@@ -609,7 +619,8 @@ const TOOLS = [
         },
         target: {
           type: "string",
-          description: "Related component/token/screen name if any (e.g. 'Modal', 'cv.input.border').",
+          description:
+            "Related component/token/screen name if any (e.g. 'Modal', 'cv.input.border').",
         },
         brand: {
           type: "string",
@@ -779,6 +790,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
           ["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"] as const,
           toolName,
         ),
+        serviceName: optionalString(args, "serviceName", toolName),
         cwd: optionalString(args, "cwd", toolName),
       };
     case "list_figma_sync_status":
@@ -795,6 +807,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         withRouter: optionalBoolean(args, "withRouter", toolName),
         includeTailwind: optionalBoolean(args, "includeTailwind", toolName),
         intent: optionalString(args, "intent", toolName),
+        serviceName: optionalString(args, "serviceName", toolName),
         source: optionalString(args, "source", toolName),
         includeLocalPackages: optionalBoolean(args, "includeLocalPackages", toolName),
         cwd: optionalString(args, "cwd", toolName),

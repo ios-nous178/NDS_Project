@@ -1,4 +1,5 @@
 import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
+import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
 
 /**
  * 컴포넌트별 사용 가이드 — d.ts 파싱만으로는 잡히지 않는
@@ -11,43 +12,55 @@ import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-a
  */
 
 /* ──────────────────────────────────────────────────────────────────────
- * Intent 감지 / 분기
+ * Intent 감지 / 분기 — 영역 3분화: 서비스 / 어드민(b2b) / 백오피스(사내)
  *
- * 이 MCP는 본질적으로 "사용자 앱(@nudge-design/react)" 컴포넌트 라이브러리를
- * 노출하지만, 사용자가 어드민/CMS 화면을 만들 때는 antd를 써야 한다.
+ * 이 MCP는 본질적으로 "사용자 앱(서비스)" DS 컴포넌트 라이브러리를 노출하지만,
+ * 운영자가 보는 화면은 두 영역으로 갈린다:
  *
- * ★ 예외 — 캐포비(cashwalk-biz): 이 브랜드는 DS 안에 자체 admin 디자인 시스템을 갖고 있다
- *   (admin layout 1920/sidebar 300, input admin radius4/h40, Modal admin desktop 480, checkbox admin).
- *   따라서 admin 발화라도 brand=cashwalk-biz 면 antd 가 아니라 DS(html 워크플로우 + cashwalk-biz
- *   cascade)로 만든다. resolveEffectiveIntent() 가 이 우회를 단일 지점에서 결정한다.
+ *   - 어드민(admin): 외부에 제공되는 b2b 어드민 *서비스*. DS_ADMIN_BRANDS 하드게이트
+ *     브랜드(캐포비/넛지EAP)만 지원하며 DS(html 워크플로우)로 만든다.
+ *     그 외 브랜드는 차단(blocked-admin).
  *
- * 사용자의 자연어 요청에 다음 키워드가 보이면 admin-cms 의도로 간주:
- *   어드민 / 운영툴 / 관리자 / 관리자페이지 / CMS / 백오피스 / admin / cms / backoffice
- *   상담 관리(admin), 멤버십 관리(admin) 같이 운영자가 보는 화면
+ *   - 백오피스(backoffice): 사내 어드민/운영툴/CMS. 브랜드 무관 전 서비스 기본 지원 —
+ *     중립 antd 컨벤션(buildBackofficeGuide, 서비스명 파라미터)으로 만든다.
+ *     (구명 'admin-cms' 는 외부 워크스페이스 호환을 위한 영구 별칭.)
  *
- * 사용자 앱으로 간주하는 키워드:
+ * ★ 키워드로 두 영역을 가르지 않는다 — "어드민"이라 부르는 사내 툴, "CMS"라 부르는 b2b
+ *   어드민이 흔해 휴리스틱 오분류가 잦다. 운영자 화면 키워드(OPERATOR_KEYWORDS)가 보이면
+ *   추측하지 말고 사용자 확답(ambiguous-operator — 하드스톱)을 받은 뒤 intent:'admin' 또는
+ *   intent:'backoffice' 로 진행한다.
+ *
+ * ★ 캐포비(cashwalk-biz)는 DS 안에 자체 admin 디자인 시스템까지 갖고 있어
+ *   (admin layout 1920/sidebar 300, input admin radius4/h40, Modal admin desktop 480),
+ *   admin/백오피스 어느 쪽이든 결과가 DS(html + cascade) — 질문 없이 우회한다(회귀 보존).
+ *   넛지EAP 어드민은 자체 admin 토큰 없이 기존 DS 컴포넌트/토큰으로 목업한다.
+ *   resolveIntentRouting() 이 이 분기를 단일 지점에서 결정한다.
+ *
+ * 사용자 앱(서비스)으로 간주하는 키워드:
  *   사용자 앱 / 모바일 앱 / 마이페이지 / 회원가입 / 상담 신청 / 챌린지 / 일기 / 콘텐츠 카드
  *   Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile 사용자 화면
  * ────────────────────────────────────────────────────────────────────── */
 
-const ADMIN_KEYWORDS = [
+/**
+ * 운영자 화면(어드민/백오피스) 신호 — 합쳐서 '감지'만 하고, 영역(b2b 어드민 vs 사내
+ * 백오피스)은 키워드로 가르지 않는다. 사용자 확답을 받은 뒤 intent:'admin' /
+ * intent:'backoffice' 명시 재호출로 진행한다.
+ */
+const OPERATOR_KEYWORDS = [
   "어드민",
-  "운영툴",
-  "운영 툴",
   "관리자페이지",
   "관리자 페이지",
   "관리자툴",
   "관리자 툴",
+  "admin",
   "백오피스",
   "백 오피스",
-  "CMS",
-  "cms",
-  "Cms",
-  "admin",
-  "Admin",
-  "ADMIN",
   "backoffice",
   "back-office",
+  "back office",
+  "cms",
+  "운영툴",
+  "운영 툴",
   "정산 관리",
   "감사 로그",
 ];
@@ -98,7 +111,7 @@ const HTML_KEYWORDS = [
 /**
  * 발화 → 워크스페이스 intent 분류.
  *
- * 정책 변경 (2026-05-25): admin-cms 가 아니면 무조건 **html** 로 라우팅.
+ * 정책 변경 (2026-05-25): admin/backoffice 가 아니면 무조건 **html** 로 라우팅.
  * 더 이상 user-app(.tsx + React) 을 default 로 안내하지 않는다 — 신규 mockup
  * 워크스페이스는 모두 vanilla HTML (@nudge-design/html + Vite vanilla-ts) 로 셋업.
  * 기존 React mockup 워크스페이스는 detectWorkspaceIntent (build-html.ts) 가
@@ -107,11 +120,12 @@ const HTML_KEYWORDS = [
  * 반환에 "user-app" 이 포함된 건 호출처가 분기를 유지하기 위한 백워드 호환 — 신규
  * 발화는 "user-app" 으로 떨어지지 않는다.
  */
-export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | "html" {
+export function detectIntentFromText(text?: string): "operator" | "user-app" | "html" {
   if (!text) return "html";
   const normalized = text.toLowerCase();
-  for (const k of ADMIN_KEYWORDS) {
-    if (normalized.includes(k.toLowerCase())) return "admin-cms";
+  // 운영자 화면 신호는 '감지'까지만 — admin/backoffice 영역 확정은 사용자 확답으로.
+  for (const k of OPERATOR_KEYWORDS) {
+    if (normalized.includes(k)) return "operator";
   }
   // HTML_KEYWORDS 매칭은 명시적 신호 — html 분기를 강하게 표현하기 위해 남겨두지만
   // 매칭 안 되는 발화도 default 가 html 이므로 결과는 동일하다.
@@ -122,34 +136,153 @@ export function detectIntentFromText(text?: string): "admin-cms" | "user-app" | 
 }
 
 /**
- * DS 안에 자체 admin 디자인 시스템을 갖춰, admin 발화라도 antd 가 아니라 DS 로 만드는 브랜드.
- * 지금은 캐포비(cashwalk-biz) 단독 — admin layout/input/Modal admin 토큰이 DS 에 정의돼 있다.
+ * 어드민(외부 제공 b2b 어드민 서비스)을 DS 로 만드는 하드게이트 브랜드.
+ * 이 목록 밖 브랜드의 어드민 발화는 차단(blocked-admin)된다 — 백오피스(중립 antd)로
+ * 진행하거나 DS 팀에 어드민 편입을 요청해야 한다.
+ *  - cashwalk-biz: DS 안에 자체 admin 디자인 시스템(admin 토큰/page-pattern) 보유
+ *  - nudge-eap:    자체 admin 토큰 없이 기존 DS 컴포넌트/토큰으로 어드민 목업 제작
  */
-export const DS_ADMIN_BRANDS = ["cashwalk-biz"] as const;
+export const DS_ADMIN_BRANDS = ["cashwalk-biz", "nudge-eap"] as const;
 
 export function isDsAdminBrand(brand?: string | null): boolean {
   // 별칭 정규화 필수 — cashpobi / cash-pobi / cashwalkbiz 등 입력도 cashwalk-biz 로 resolve 해야
-  // admin 발화가 antd(NudgeEAPCMS)가 아니라 DS 경로로 우회된다. raw 매치만 하면 brand='cashpobi'
-  // 가 새어나가 NudgeEAPCMS 사이드바(240px·INFO·CMS MENU·Copyright Nudge EAP)가 캐포비에 잘못 적용됨.
+  // admin 발화가 antd(백오피스)가 아니라 DS 경로로 우회된다. raw 매치만 하면 brand='cashpobi'
+  // 가 새어나가 백오피스 사이드바(240px·INFO·CMS MENU)가 캐포비에 잘못 적용됨.
   const canon = canonicalBrandSlug(brand ?? undefined);
   return !!canon && (DS_ADMIN_BRANDS as readonly string[]).includes(canon);
 }
 
 /**
- * intent + brand 를 합쳐 '실효 워크스페이스 intent' 를 결정하는 단일 지점.
- *   - admin 발화 + DS_ADMIN_BRANDS(캐포비) → "html"  (antd 우회, DS 로 제작)
- *   - admin 발화 + 그 외/무지정            → "admin-cms" (antd · NudgeEAPCMS 컨벤션)
- *   - 그 외                                 → "html"
+ * DS 안에 '자체 admin 디자인 시스템'(admin 토큰·page-pattern)까지 갖춘 브랜드인지.
+ * 이 브랜드(현재 캐포비)는 백오피스/CMS 발화라도 DS 경로로 우회한다 — "캐포비 CMS"
+ * 발화가 antd 로 새던 회귀를 막는 게이트. 판정은 brand profile 의 admin.pagePatternSystem
+ * 선언을 SSOT 로 쓴다(슬러그 하드코딩 회피).
+ */
+function hasOwnAdminDesignSystem(canonicalBrand?: string | null): boolean {
+  return !!canonicalBrand && !!getBrandProfile(canonicalBrand)?.admin?.pagePatternSystem;
+}
+
+/** resolveIntentRouting 의 결과 — 영역 3분화 라우팅의 단일 진리원천. */
+export type IntentRouting =
+  | { kind: "html"; surface?: "admin"; brand?: string }
+  | { kind: "backoffice" }
+  | {
+      kind: "blocked-admin";
+      requestedBrand: string;
+      supportedAdminBrands: readonly string[];
+      error: string;
+      options: string[];
+    }
+  | {
+      kind: "ambiguous-operator";
+      requestedBrand?: string;
+      question: string;
+      options: string[];
+    };
+
+/**
+ * intent + brand 를 합쳐 영역(서비스/어드민/백오피스) 라우팅을 결정하는 단일 지점.
+ *
+ *   - intent:'backoffice'(또는 레거시 'admin-cms')                  → backoffice (중립 antd)
+ *   - intent:'admin' + DS_ADMIN_BRANDS                             → html (DS admin)
+ *   - intent:'admin' + 게이트 밖 브랜드 명시                         → blocked-admin (차단)
+ *   - intent:'admin' + 브랜드 미지정                                 → ambiguous-operator (지원 브랜드 확답 필요)
+ *   - 운영자 키워드 자유발화(어드민/백오피스/CMS/운영툴/admin/...)    → ambiguous-operator (하드스톱 —
+ *     b2b 어드민인지 사내 백오피스인지 확답 받기 전 진행 금지)
+ *   - 그 외                                                         → html
+ *
+ * ★ 예외 — 자체 admin DS 보유 브랜드(캐포비): 운영자 발화가 admin/backoffice 어느 쪽이든
+ *   결과가 DS(html) 라 질문이 무의미 — 확답 없이 DS 경로로 우회한다 ("캐포비 CMS" 회귀 보존).
+ *
+ * ★ blocked/ambiguous 일 때 호출처는 어떤 가이드/셋업 본문도 반환하지 말 것 — 질문/안내와
+ *   본문을 같이 주면 소비 에이전트가 질문을 무시하고 본문으로 진행해버린다.
+ *
+ * 레거시 intent:'admin-cms' 는 "antd 가이드를 달라"는 뜻이므로 차단 대상이 아니라
+ * backoffice 로 정규화한다 (이미 배포된 외부 CLAUDE.md 호환).
  * 모든 라우팅 지점(setup / CLAUDE.md 생성)은 detectIntentFromText 대신 이 함수를 써야
  * brand 신호가 누락되지 않는다.
+ */
+export function resolveIntentRouting(intent?: string, brand?: string | null): IntentRouting {
+  const explicit =
+    intent === "admin" || intent === "backoffice" || intent === "admin-cms" || intent === "html"
+      ? intent
+      : undefined;
+  const track =
+    explicit === "admin-cms" ? "backoffice" : (explicit ?? detectIntentFromText(intent));
+  const canon = canonicalBrandSlug(brand ?? undefined);
+
+  if (track === "html" || track === "user-app") return { kind: "html", brand: canon };
+
+  // 자체 admin DS 보유 브랜드(캐포비)는 admin/backoffice/operator 어느 발화든 DS 경로.
+  if (hasOwnAdminDesignSystem(canon)) {
+    return { kind: "html", surface: "admin", brand: canon };
+  }
+
+  if (track === "backoffice") return { kind: "backoffice" };
+
+  if (track === "admin") {
+    if (isDsAdminBrand(brand)) return { kind: "html", surface: "admin", brand: canon };
+    if (brand && brand.trim()) {
+      const requested = canon ?? brand.trim();
+      return {
+        kind: "blocked-admin",
+        requestedBrand: requested,
+        supportedAdminBrands: DS_ADMIN_BRANDS,
+        error:
+          `이 브랜드(${requested})는 어드민(외부 제공 b2b) 미지원입니다. ` +
+          `어드민 목업은 ${DS_ADMIN_BRANDS.join(" / ")} 만 DS 로 제작할 수 있습니다.`,
+        options: [
+          "사내 백오피스 화면이라면 intent:'backoffice' 로 다시 호출 — 중립 antd 컨벤션으로 진행",
+          "이 브랜드의 어드민(b2b) 편입이 필요하면 DS 팀에 요청",
+        ],
+      };
+    }
+    return {
+      kind: "ambiguous-operator",
+      question:
+        "어드민(b2b)은 하드게이트 브랜드만 지원합니다. 어느 브랜드의 어드민인가요? " +
+        `지원 브랜드(${DS_ADMIN_BRANDS.join(", ")}) 를 brand 로 명시해 재호출하세요. ` +
+        "확답을 받기 전에는 가이드/셋업을 진행하지 않습니다.",
+      options: [
+        `b2b 어드민 → brand 명시해 재호출 (지원: ${DS_ADMIN_BRANDS.join(", ")})`,
+        "사내 백오피스였다면 → intent:'backoffice' 로 재호출 (중립 antd, 전 서비스 기본 지원)",
+      ],
+    };
+  }
+
+  // track === "operator" — 운영자 화면 발화이지만 영역 미확정. 키워드로 추측하지 않고
+  // 사용자 확답을 받은 뒤 intent:'admin' / intent:'backoffice' 명시 재호출로만 진행한다.
+  const gateNote =
+    brand && brand.trim() && !isDsAdminBrand(brand)
+      ? ` 참고: 이 브랜드(${canon ?? brand.trim()})는 어드민(b2b) 미지원 — b2b 어드민이라면 차단되며, ` +
+        "사내 백오피스로 진행하거나 DS 팀에 어드민 편입을 요청해야 합니다."
+      : "";
+  return {
+    kind: "ambiguous-operator",
+    requestedBrand: canon ?? (brand?.trim() || undefined),
+    question:
+      "운영자 화면 요청으로 보입니다. 이 화면은 어느 영역인가요? 사용자에게 확답을 받기 전에는 " +
+      "가이드/셋업을 진행하지 않습니다. " +
+      `(1) 외부 제공(b2b) 어드민 — intent:'admin' + 지원 브랜드(${DS_ADMIN_BRANDS.join(", ")}) 로 재호출, ` +
+      "(2) 사내 백오피스 — intent:'backoffice' 로 재호출." +
+      gateNote,
+    options: [
+      `b2b 어드민 → intent:'admin' + brand 명시해 재호출 (지원: ${DS_ADMIN_BRANDS.join(", ")})`,
+      "사내 백오피스 → intent:'backoffice' 로 재호출 (중립 antd, 전 서비스 기본 지원)",
+    ],
+  };
+}
+
+/**
+ * @deprecated resolveIntentRouting 을 사용할 것 — 이 wrapper 는 blocked/ambiguous 를
+ * 구분하지 못하고 "admin-cms" 로 뭉개서 반환한다(구 dist 호환용으로 한 릴리즈 유지).
  */
 export function resolveEffectiveIntent(
   intent?: string,
   brand?: string | null,
 ): "admin-cms" | "html" {
-  const isAdmin = intent === "admin-cms" || detectIntentFromText(intent) === "admin-cms";
-  if (isAdmin && !isDsAdminBrand(brand)) return "admin-cms";
-  return "html";
+  const routing = resolveIntentRouting(intent, brand);
+  return routing.kind === "html" ? "html" : "admin-cms";
 }
 
 export const SCOPE_ADVISORY = {
@@ -161,7 +294,7 @@ export const SCOPE_ADVISORY = {
     inScope: [
       "외부 목업 프로젝트에서 DS 컴포넌트/아이콘/토큰 조회",
       "외부 목업 프로젝트에 CLAUDE.md / 환경 셋업 생성",
-      "사용자 앱 또는 어드민/CMS 목업 .tsx 작성·검증",
+      "서비스(사용자 앱) / 어드민(b2b, 하드게이트 브랜드) / 백오피스(사내, antd) 목업 작성·검증",
       "목업 dev 서버 실행 / preview 확인 / 종료",
     ],
     outOfScope: [
@@ -175,19 +308,40 @@ export const SCOPE_ADVISORY = {
       "이 MCP는 외부 프로젝트에서 DS를 '소비'하는 쪽이며, DS 레포를 '생산'하는 쪽이 아니다.",
   },
   intentBranching: {
-    "admin-cms": {
-      keywords: ADMIN_KEYWORDS,
+    "operator-screens": {
+      keywords: OPERATOR_KEYWORDS,
       action:
-        "어드민/CMS/운영툴/백오피스 화면이라면 이 DS(@nudge-design/react)를 쓰지 말 것. " +
-        "antd v5를 사용하고, 시각/구조 컨벤션은 get_guide({ topic: 'admin-cms' })를 호출해 확인할 것. " +
-        "두 라이브러리를 한 화면에서 섞어쓰지 말 것. " +
-        "★ 단, 캐포비(cashwalk-biz) 어드민은 예외 — antd 가 아니라 DS 로 만든다. brand='cashwalk-biz' 를 " +
-        "넘기면 get_setup / CLAUDE.md 가 자동으로 DS(html) 워크플로우로 우회한다.",
+        "운영자 화면 키워드(어드민/백오피스/CMS/운영툴/admin 등)가 보이면 영역을 키워드로 추측하지 말 것 — " +
+        "b2b 어드민인지 사내 백오피스인지 **사용자에게 확답을 받은 뒤** intent:'admin' 또는 intent:'backoffice' 로 " +
+        "재호출해 진행한다. 확답 전에는 가이드/셋업/코드 작성을 진행하지 않는다 (get_setup 이 ambiguous-operator " +
+        "질문 페이로드로 하드스톱한다). " +
+        "★ 예외: 캐포비(cashwalk-biz)는 자체 admin 디자인 시스템 보유 — 어느 쪽이든 DS(html) 경로라 질문 없이 우회.",
+    },
+    admin: {
+      action:
+        "어드민(외부 제공 b2b 어드민 서비스)은 하드게이트 브랜드만 지원한다 — " +
+        `${DS_ADMIN_BRANDS.join(" / ")}. 이 브랜드들의 어드민은 antd 가 아니라 DS(html 워크플로우)로 ` +
+        "만든다 (brand 를 넘기면 get_setup / CLAUDE.md 가 자동으로 DS 경로로 우회). " +
+        "그 외 브랜드의 어드민 요청은 차단된다 — 사내 백오피스 화면이면 intent:'backoffice' 로 진행하고, " +
+        "이 브랜드의 어드민 편입이 필요하면 DS 팀에 요청할 것.",
       tools: [
-        "get_guide({ topic: 'admin-cms' })",
-        "get_setup({ step: 'full', intent: 'admin-cms' })",
+        `get_setup({ step: 'full', intent: 'admin', brand: '${DS_ADMIN_BRANDS[0]}' })`,
+        "get_guide({ topic: 'backoffice' }) — 사내 백오피스로 전환할 때",
       ],
     },
+    backoffice: {
+      action:
+        "백오피스(사내 어드민/운영툴/CMS)는 브랜드 무관 전 서비스 기본 지원 — 이 DS(@nudge-design/react)를 " +
+        "쓰지 말고 antd v5 를 사용한다. 시각/구조 컨벤션은 get_guide({ topic: 'backoffice', serviceName: '<서비스명>' }) 로 " +
+        "확인할 것. 두 라이브러리를 한 화면에서 섞어쓰지 말 것. (구명 'admin-cms' 는 영구 별칭으로 계속 동작.) " +
+        "★ 단, 캐포비(cashwalk-biz)는 백오피스/CMS 발화라도 DS(html) 경로로 우회한다 — DS 안에 자체 admin " +
+        "디자인 시스템을 갖고 있다.",
+      tools: [
+        "get_guide({ topic: 'backoffice', serviceName: '<서비스명>' })",
+        "get_setup({ step: 'full', intent: 'backoffice' })",
+      ],
+    },
+    "admin-cms": "→ 'backoffice' 로 rename 됨 (영구 별칭으로 계속 동작) — backoffice 항목 참조.",
     "user-app": {
       action:
         "[deprecated] React/.tsx + @nudge-design/react 워크플로우. 신규 mockup 워크스페이스는 " +
@@ -217,9 +371,10 @@ export const SCOPE_ADVISORY = {
 };
 
 /* ──────────────────────────────────────────────────────────────────────
- * Admin / CMS 컨벤션
+ * 백오피스(사내 어드민/CMS/운영툴) 컨벤션 — 브랜드 무관 전 서비스 기본 지원
  *
- * 출처: NudgeEAPCMS 코드베이스(Next.js + antd 5.5.1 + styled-components)
+ * 출처: NudgeEAPCMS 코드베이스(Next.js + antd 5.5.1 + styled-components)에서
+ * 추출한 공통 컨벤션. 서비스 고유 표기(푸터 카피 등)는 serviceName 파라미터로 주입.
  *   /src/styled/reset.css           (폰트 스택, body bg)
  *   /src/app/(primary)/layout.tsx   (Shell + content padding + footer)
  *   /src/layout/ScreenLocalNavigationBar.tsx (라이트 사이더 + 6px 브랜드 액센트)
@@ -234,11 +389,11 @@ export const SCOPE_ADVISORY = {
  *   /src/feature/partner/constant/partnerListColumns.tsx     (테이블 컬럼 컨벤션)
  * ────────────────────────────────────────────────────────────────────── */
 
-export interface AdminCmsGuide {
+export interface BackofficeGuide {
   scope: string;
   rationale: string;
-  /** antd 가 아니라 DS 로 만드는 브랜드 예외 안내 (캐포비). */
-  brandException?: string;
+  /** antd 가 아니라 DS 로 만드는 어드민 하드게이트 브랜드 안내 (캐포비/넛지EAP). */
+  dsAdminException?: string;
   techStack: {
     required: string[];
     forbidden: string[];
@@ -273,154 +428,167 @@ export interface AdminCmsGuide {
   example: string;
 }
 
-export const ADMIN_CMS_GUIDE: AdminCmsGuide = {
-  scope:
-    "어드민/CMS/운영툴/백오피스 화면. 사용자 앱이 아닌 운영자가 보는 화면. " +
-    "출처: NudgeEAPCMS (Next.js + antd 5.5.1 + styled-components) 실제 운영 코드.",
-  rationale:
-    "Nudge DS는 B2C 멘탈케어 앱 화면을 위한 컴포넌트 셋이다. 어드민은 정보 밀도 / 표 / 폼 / " +
-    "필터 위주라 antd가 더 적합하고, 운영팀이 익숙한 시각 언어와도 일치한다.",
-  brandException:
-    "캐포비(cashwalk-biz) 어드민은 이 antd 컨벤션을 따르지 말 것 — 이 브랜드는 DS 안에 자체 admin " +
-    "디자인 시스템(admin layout/input/Modal admin 토큰)을 갖추고 있어 DS(html 워크플로우)로 만든다. " +
-    "brand='cashwalk-biz' 를 넘기면 get_setup / CLAUDE.md / get_guide 가 자동으로 DS 경로로 우회한다.",
-  techStack: {
-    required: [
-      "react ^18",
-      "antd ^5 (NudgeEAPCMS 기준 5.5.1)",
-      "@ant-design/icons ^5",
-      "dayjs (locale: ko)",
-    ],
+/** 구명 호환 — 'admin-cms' 시절 타입명. 신규 코드는 BackofficeGuide 를 사용. */
+export type AdminCmsGuide = BackofficeGuide;
+
+/**
+ * 백오피스(사내 어드민) 가이드 본문 생성 — 브랜드 무관 전 서비스 기본 지원.
+ * 레이아웃/검색폼/테이블 컨벤션은 NudgeEAPCMS 실코드에서 추출한 공통 패턴 그대로,
+ * 서비스 고유 표기(푸터 카피)만 serviceName 으로 주입한다.
+ */
+export function buildBackofficeGuide(serviceName?: string): BackofficeGuide {
+  const name = serviceName?.trim() || "<서비스명>";
+  const footerCopy = `Copyright © ${name}. All Rights Reserved.`;
+  return {
+    scope:
+      "백오피스(사내 어드민/CMS/운영툴) 화면. 사용자 앱이 아닌 운영자가 보는 사내 화면. " +
+      "브랜드 무관 전 서비스 기본 지원 — 서비스 고유 표기는 serviceName 파라미터로 주입. " +
+      "출처: NudgeEAPCMS (Next.js + antd 5.5.1 + styled-components) 실제 운영 코드에서 추출한 공통 컨벤션.",
+    rationale:
+      "Nudge DS는 B2C 멘탈케어 앱 화면을 위한 컴포넌트 셋이다. 백오피스는 정보 밀도 / 표 / 폼 / " +
+      "필터 위주라 antd가 더 적합하고, 운영팀이 익숙한 시각 언어와도 일치한다.",
+    dsAdminException:
+      "어드민(외부 제공 b2b) 하드게이트 브랜드 — 캐포비(cashwalk-biz)·넛지EAP(nudge-eap) — 의 어드민은 " +
+      "이 antd 컨벤션을 따르지 말 것. 이 브랜드들의 어드민은 DS(html 워크플로우)로 만든다 " +
+      "(캐포비는 자체 admin 토큰/page-pattern, 넛지EAP 는 기존 DS 컴포넌트/토큰). " +
+      "intent:'admin' + brand 를 넘기면 get_setup / CLAUDE.md / get_guide 가 자동으로 DS 경로로 우회한다.",
+    techStack: {
+      required: [
+        "react ^18",
+        "antd ^5 (NudgeEAPCMS 기준 5.5.1)",
+        "@ant-design/icons ^5",
+        "dayjs (locale: ko)",
+      ],
+      forbidden: [
+        "@nudge-design/react — 사용자 앱 DS, 백오피스에서 절대 import 금지",
+        "@nudge-design/tokens — 백오피스에서는 antd 기본 토큰 사용",
+        "큰 그라디언트, 마케팅 히어로, 장식 배경",
+      ],
+      optional: ["styled-components (CMS 본 레포 컨벤션)", "react-router-dom (Vite 단독일 때)"],
+    },
+    layout: {
+      body: {
+        background: "#f4f4f4",
+        fontFamily:
+          "Mulish, Gothic_A1, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', helvetica, 'Apple SD Gothic Neo', sans-serif",
+      },
+      sider: {
+        width: "240px (SIDEBAR_WIDTH 상수)",
+        theme: 'antd Sider theme="light"',
+        background: "#ffffff",
+        position: "fixed (좌측 0, top 0, height 100vh)",
+        borderRight: "1px solid #ececec",
+        zIndex: "10",
+        topAccent:
+          "상단 6px 브랜드 컬러 라인 (border-top: 6px solid var(--semantic-border-brand-default))",
+      },
+      sideUserInfo:
+        "Sider 상단 24px padding 영역에 [로고/h1] + TinyHeader('INFO') + 이메일(12px #333) + " +
+        "antd Tag(이름, borderRadius 3) + '권한:' + TagAdminRole(60px width center).",
+      sideMenu: {
+        header: "TinyHeader('CMS MENU', padding '0 24px')",
+        menu: '<Menu theme="light" mode="inline" inlineIndent={22} items={...} selectedKeys={[현재경로]} />',
+        selectedItem: "border-right: 6px solid var(--color-main); color: #000;",
+        submenuSelected: "color: #000; font-weight: 600;",
+        itemColors: "기본 #383838 / hover #000 / disabled 회색 (실제 권한 매트릭스에 따라 필터링)",
+      },
+      sideSetting:
+        "Sider 하단에 별도 section. TinyHeader('SETTING', padding '0') + " +
+        "두 개의 antd Button (LogoutOutlined '로그아웃', UserOutlined '정보수정' disabled). " +
+        "버튼 높이 35px, font-size 12px, 두 버튼 width 48.5%씩.",
+      content: {
+        marginLeft: "240px",
+        padding: "40px 60px 200px",
+        width: "100%",
+        maxWidth: "고정 max-width 없음 — 전체 폭 사용",
+      },
+      footer: {
+        placement: "content 아래 70px margin-top",
+        text: footerCopy,
+        style:
+          "text-align center / padding 13px 0 / border-top 1px solid #ececec / color #b1b1b1 / font-weight 100 / font-size 12px / letter-spacing 0.2px",
+      },
+    },
+    pageHeader: {
+      component: "components/header/HeaderSubject (Breadcrumb + h1 + desc)",
+      structure:
+        '<HeaderSubject subject="고객사 관리" desc="..." navigationItems={[{title:"Partner"},{title:"Partner Management",href:"/partner/list"}]} />',
+      style: {
+        wrapper: "border-bottom: 1px solid #e4e4e4; padding: 0 0 25px; margin: 0 0 25px;",
+        breadcrumb:
+          '<Breadcrumb items={...} separator=">" />, font-size 11px, color #727272, link color #000',
+        title:
+          "h1: font-size 22px / weight 700 / color #383838 / margin-bottom 12px / text-transform capitalize",
+        desc: "font-size 12px / color #6b6a6a / padding-left 3px / text-transform capitalize",
+      },
+    },
+    searchForm: {
+      pattern:
+        "antd Form 안에 Select(검색 기준) + Input.Search(enterButton='검색') + Button(초기화). " +
+        "필터(Segmented / Select 등)와 액션(생성/내보내기)은 우측 정렬. 그 아래 한 줄에 '검색된 개수: N'.",
+      leftRow: [
+        "<Form.Item name='searchBy'><Select style={{width:100}} options={[{value:'TITLE',label:'멤버십명'},{value:'ID',label:'멤버십 ID'}]} /></Form.Item>",
+        "<Form.Item name='keyword'><Input.Search placeholder='검색어를 입력해주세요' enterButton='검색' onSearch={handleSearch} /></Form.Item>",
+        "<Button htmlType='button' onClick={handleReset}>초기화</Button>",
+      ],
+      rightRow: [
+        "추가 필터 (Segmented '전체/진행중/대기/종료 포함', 고객사 Select 등)",
+        "주요 액션 버튼 (생성, CSV 내보내기 등)",
+      ],
+      countLine:
+        "<div className='cms-search-form__count'>검색된 개수: {count}</div> — font-size 12, color #6b6a6a",
+    },
+    table: {
+      base: '<Table size="middle" rowKey="id" />',
+      pagination:
+        'pagination={{ defaultPageSize: 20, position: ["bottomCenter"], showSizeChanger: false, size: "default", total }}',
+      columns:
+        "거의 모든 컬럼에 align:'center'. 행 정보 가독성보다 컬럼 헤더와 셀 정렬을 일관되게 유지하는 게 우선.",
+      clickableCell:
+        "ID/이름/숫자 등 클릭 가능한 셀은 <Button type='link'>{value}</Button>으로 감싼다. 굵은 텍스트로 대체 X.",
+      rowHeight: "size='middle' 기본 (~48px). 직접 px 지정 금지.",
+      headerStyle:
+        "antd 기본값 유지. headerBg #fafafa, headerColor #727272 정도까지만 ConfigProvider로 조정.",
+    },
+    tag: {
+      statusTagWidth:
+        "상태/권한 같은 enum Tag는 width: 60px; text-align: center; (TagAdminRole 컨벤션)",
+      statusColors:
+        "active=green, pending=gold, ended=default(grey), warning=orange, error=red. 운영자 권한별 색은 admin red / volcano / green / gold / lime / purple / cyan / blue.",
+    },
+    modal: {
+      invocation: "Modal.useModal() 또는 <Modal open={...} />. centered + destroyOnClose 권장.",
+      formLayout:
+        'Form layout="vertical" 기본. 라벨 좌측 정렬이 필요하면 labelAlign="left" labelCol={{flex:"120px"}} colon={false}.',
+      footer:
+        "antd 기본 footer (확인/취소) 또는 우측 그룹 액션 정렬. 좌측엔 파괴 액션(종료처리, 삭제) 분리.",
+    },
+    colors: {
+      "--color-main":
+        "var(--semantic-border-brand-default) — 사이드바 톱 액센트 / 메뉴 선택 우측 보더 / 링크",
+      text: "#383838 (제목) / #727272 (보조) / #aaa (subtle) / #b1b1b1 (footer)",
+      border: "#ececec (light) / #e4e4e4 (HeaderSubject 하단)",
+      bg: "#f4f4f4 (body) / #fafafa (hover/header) / #ffffff (sider, content surface)",
+      note: "백오피스에서는 Nudge DS 토큰을 import하지 말 것. 위 색상을 인라인 또는 styled-components로 직접 지정.",
+    },
     forbidden: [
-      "@nudge-design/react — 사용자 앱 DS, 어드민에서 절대 import 금지",
-      "@nudge-design/tokens — 어드민에서는 antd 기본 토큰 사용",
-      "큰 그라디언트, 마케팅 히어로, 장식 배경",
+      "@nudge-design/react / @nudge-design/tokens / @nudge-design/icons import (백오피스 화면에서)",
+      "큰 히어로 카드, 마케팅 톤, 그라디언트 배경",
+      "antd Table 위에 별도 Card wrapper로 그림자+패딩 추가 (CMS는 본문에 직접 노출)",
+      "Tabs를 페이지 단위로 남발 (CMS는 페이지 단위 Tabs 거의 사용 안 함)",
     ],
-    optional: ["styled-components (CMS 본 레포 컨벤션)", "react-router-dom (Vite 단독일 때)"],
-  },
-  layout: {
-    body: {
-      background: "#f4f4f4",
-      fontFamily:
-        "Mulish, Gothic_A1, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', helvetica, 'Apple SD Gothic Neo', sans-serif",
-    },
-    sider: {
-      width: "240px (SIDEBAR_WIDTH 상수)",
-      theme: 'antd Sider theme="light"',
-      background: "#ffffff",
-      position: "fixed (좌측 0, top 0, height 100vh)",
-      borderRight: "1px solid #ececec",
-      zIndex: "10",
-      topAccent:
-        "상단 6px 브랜드 컬러 라인 (border-top: 6px solid var(--semantic-border-brand-default))",
-    },
-    sideUserInfo:
-      "Sider 상단 24px padding 영역에 [로고/h1] + TinyHeader('INFO') + 이메일(12px #333) + " +
-      "antd Tag(이름, borderRadius 3) + '권한:' + TagAdminRole(60px width center).",
-    sideMenu: {
-      header: "TinyHeader('CMS MENU', padding '0 24px')",
-      menu: '<Menu theme="light" mode="inline" inlineIndent={22} items={...} selectedKeys={[현재경로]} />',
-      selectedItem: "border-right: 6px solid var(--color-main); color: #000;",
-      submenuSelected: "color: #000; font-weight: 600;",
-      itemColors: "기본 #383838 / hover #000 / disabled 회색 (실제 권한 매트릭스에 따라 필터링)",
-    },
-    sideSetting:
-      "Sider 하단에 별도 section. TinyHeader('SETTING', padding '0') + " +
-      "두 개의 antd Button (LogoutOutlined '로그아웃', UserOutlined '정보수정' disabled). " +
-      "버튼 높이 35px, font-size 12px, 두 버튼 width 48.5%씩.",
-    content: {
-      marginLeft: "240px",
-      padding: "40px 60px 200px",
-      width: "100%",
-      maxWidth: "고정 max-width 없음 — 전체 폭 사용",
-    },
-    footer: {
-      placement: "content 아래 70px margin-top",
-      text: "Copyright © Nudge EAP. All Rights Reserved.",
-      style:
-        "text-align center / padding 13px 0 / border-top 1px solid #ececec / color #b1b1b1 / font-weight 100 / font-size 12px / letter-spacing 0.2px",
-    },
-  },
-  pageHeader: {
-    component: "components/header/HeaderSubject (Breadcrumb + h1 + desc)",
-    structure:
-      '<HeaderSubject subject="고객사 관리" desc="..." navigationItems={[{title:"Partner"},{title:"Partner Management",href:"/partner/list"}]} />',
-    style: {
-      wrapper: "border-bottom: 1px solid #e4e4e4; padding: 0 0 25px; margin: 0 0 25px;",
-      breadcrumb:
-        '<Breadcrumb items={...} separator=">" />, font-size 11px, color #727272, link color #000',
-      title:
-        "h1: font-size 22px / weight 700 / color #383838 / margin-bottom 12px / text-transform capitalize",
-      desc: "font-size 12px / color #6b6a6a / padding-left 3px / text-transform capitalize",
-    },
-  },
-  searchForm: {
-    pattern:
-      "antd Form 안에 Select(검색 기준) + Input.Search(enterButton='검색') + Button(초기화). " +
-      "필터(Segmented / Select 등)와 액션(생성/내보내기)은 우측 정렬. 그 아래 한 줄에 '검색된 개수: N'.",
-    leftRow: [
-      "<Form.Item name='searchBy'><Select style={{width:100}} options={[{value:'TITLE',label:'멤버십명'},{value:'ID',label:'멤버십 ID'}]} /></Form.Item>",
-      "<Form.Item name='keyword'><Input.Search placeholder='검색어를 입력해주세요' enterButton='검색' onSearch={handleSearch} /></Form.Item>",
-      "<Button htmlType='button' onClick={handleReset}>초기화</Button>",
+    selfCheck: [
+      "antd에서 import 했는가 (직접 button/input/select 만들지 않았는가)",
+      "@nudge-design/* 패키지를 어드민 화면에서 import 하지 않았는가",
+      "사이드바에 라이트 240px + 6px 톱 액센트 + INFO + CMS MENU + SETTING 블록이 있는가",
+      `본문 padding 40 60 200, body #f4f4f4, footer '${footerCopy}' 있는가`,
+      "HeaderSubject(Breadcrumb separator='>', h1 22/700, desc 12)로 페이지 헤더를 구성했는가",
+      "검색 폼이 [Select + Input.Search + 초기화] 패턴인가, 검색된 개수 N이 노출되는가",
+      "Table 컬럼이 align:center 일관 + pagination position bottomCenter인가",
+      "클릭 가능한 셀이 <Button type='link'>인가",
+      "tsc --noEmit 통과하는가",
     ],
-    rightRow: [
-      "추가 필터 (Segmented '전체/진행중/대기/종료 포함', 고객사 Select 등)",
-      "주요 액션 버튼 (생성, CSV 내보내기 등)",
-    ],
-    countLine:
-      "<div className='cms-search-form__count'>검색된 개수: {count}</div> — font-size 12, color #6b6a6a",
-  },
-  table: {
-    base: '<Table size="middle" rowKey="id" />',
-    pagination:
-      'pagination={{ defaultPageSize: 20, position: ["bottomCenter"], showSizeChanger: false, size: "default", total }}',
-    columns:
-      "거의 모든 컬럼에 align:'center'. 행 정보 가독성보다 컬럼 헤더와 셀 정렬을 일관되게 유지하는 게 우선.",
-    clickableCell:
-      "ID/이름/숫자 등 클릭 가능한 셀은 <Button type='link'>{value}</Button>으로 감싼다. 굵은 텍스트로 대체 X.",
-    rowHeight: "size='middle' 기본 (~48px). 직접 px 지정 금지.",
-    headerStyle:
-      "antd 기본값 유지. headerBg #fafafa, headerColor #727272 정도까지만 ConfigProvider로 조정.",
-  },
-  tag: {
-    statusTagWidth:
-      "상태/권한 같은 enum Tag는 width: 60px; text-align: center; (TagAdminRole 컨벤션)",
-    statusColors:
-      "active=green, pending=gold, ended=default(grey), warning=orange, error=red. 운영자 권한별 색은 admin red / volcano / green / gold / lime / purple / cyan / blue.",
-  },
-  modal: {
-    invocation: "Modal.useModal() 또는 <Modal open={...} />. centered + destroyOnClose 권장.",
-    formLayout:
-      'Form layout="vertical" 기본. 라벨 좌측 정렬이 필요하면 labelAlign="left" labelCol={{flex:"120px"}} colon={false}.',
-    footer:
-      "antd 기본 footer (확인/취소) 또는 우측 그룹 액션 정렬. 좌측엔 파괴 액션(종료처리, 삭제) 분리.",
-  },
-  colors: {
-    "--color-main":
-      "var(--semantic-border-brand-default) — 사이드바 톱 액센트 / 메뉴 선택 우측 보더 / 링크",
-    text: "#383838 (제목) / #727272 (보조) / #aaa (subtle) / #b1b1b1 (footer)",
-    border: "#ececec (light) / #e4e4e4 (HeaderSubject 하단)",
-    bg: "#f4f4f4 (body) / #fafafa (hover/header) / #ffffff (sider, content surface)",
-    note: "어드민에서는 NudgeEAP 토큰을 import하지 말 것. 위 색상을 인라인 또는 styled-components로 직접 지정.",
-  },
-  forbidden: [
-    "@nudge-design/react / @nudge-design/tokens / @nudge-design/icons import (어드민 화면에서)",
-    "큰 히어로 카드, 마케팅 톤, 그라디언트 배경",
-    "antd Table 위에 별도 Card wrapper로 그림자+패딩 추가 (CMS는 본문에 직접 노출)",
-    "Tabs를 페이지 단위로 남발 (CMS는 페이지 단위 Tabs 거의 사용 안 함)",
-  ],
-  selfCheck: [
-    "antd에서 import 했는가 (직접 button/input/select 만들지 않았는가)",
-    "@nudge-design/* 패키지를 어드민 화면에서 import 하지 않았는가",
-    "사이드바에 라이트 240px + 6px 톱 액센트 + INFO + CMS MENU + SETTING 블록이 있는가",
-    "본문 padding 40 60 200, body #f4f4f4, footer 'Copyright © Nudge EAP...' 있는가",
-    "HeaderSubject(Breadcrumb separator='>', h1 22/700, desc 12)로 페이지 헤더를 구성했는가",
-    "검색 폼이 [Select + Input.Search + 초기화] 패턴인가, 검색된 개수 N이 노출되는가",
-    "Table 컬럼이 align:center 일관 + pagination position bottomCenter인가",
-    "클릭 가능한 셀이 <Button type='link'>인가",
-    "tsc --noEmit 통과하는가",
-  ],
-  example: `// pages/MembershipDetail.tsx (요약)
+    example: `// pages/MembershipDetail.tsx (요약)
 import { Layout, Menu, Breadcrumb, Tag, Table, Form, Select, Input, Button, Segmented } from "antd";
 import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -453,7 +621,15 @@ import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
     pagination={{ defaultPageSize: 20, position: ["bottomCenter"], showSizeChanger: false }}
   />
 </AdminLayout>`,
-};
+  };
+}
+
+/**
+ * 구명 호환 — serviceName 미주입 기본형(푸터 카피는 <서비스명> 플레이스홀더).
+ * 신규 코드는 buildBackofficeGuide(serviceName) 를 사용할 것.
+ */
+export const ADMIN_CMS_GUIDE: BackofficeGuide = buildBackofficeGuide();
+export const BACKOFFICE_GUIDE: BackofficeGuide = ADMIN_CMS_GUIDE;
 
 /* ───────────── 컴포넌트/패턴 가이드 본문 — SSOT 는 guides-src/**.md ─────────────
  * 본문 수정: packages/mcp/guides-src/{components|patterns}/<Name>.md

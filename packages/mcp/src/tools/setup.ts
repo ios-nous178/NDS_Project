@@ -24,10 +24,12 @@ import { PROFILE_IMAGE_METADATA, PROFILE_IMAGE_IDS } from "@nudge-design/assets/
 import { ILLUSTRATION_METADATA, ILLUSTRATION_IDS } from "@nudge-design/assets/illustrations";
 import { MARATHON_EVENT_METADATA, MARATHON_EVENT_IDS } from "@nudge-design/assets/marathon-events";
 import {
-  ADMIN_CMS_GUIDE,
+  buildBackofficeGuide,
   COMPONENT_GUIDES,
   ICON_METADATA,
-  resolveEffectiveIntent,
+  DS_ADMIN_BRANDS,
+  resolveIntentRouting,
+  type IntentRouting,
 } from "../guides.js";
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
 import { createAgentsMd, createClaudeMd } from "./guides.js";
@@ -792,31 +794,65 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
     bundler: "none",
     _advisory:
       "vanilla HTML / Web Component(<nds-*>) 워크플로우 — vite/npm/번들러 없이 build_singlefile_html 이 " +
-      "DS runtime/CSS 를 자동 inline 합니다. 어드민(antd)만 vite react-ts 가 필요하며 intent='admin-cms' 로 분기됩니다.",
+      "DS runtime/CSS 를 자동 inline 합니다. 백오피스(사내 어드민, antd)만 vite react-ts 가 필요하며 " +
+      "intent='backoffice' 로 분기됩니다.",
     resolvedBrand: brandSlug,
     availableBrands: resolved.availableBrands,
     steps,
   };
 }
 
-function getSetupSummary(args: { brand?: string; tgzDir?: string; intent?: string }) {
-  // 캐포비 admin 은 resolveEffectiveIntent 가 "html" 로 우회 → antd 셋업이 아니라 DS(html) 셋업.
-  if (resolveEffectiveIntent(args.intent, args.brand) === "admin-cms") {
+/**
+ * blocked/ambiguous 라우팅의 공통 하드스톱 페이로드 — 셋업/가이드 본문을 일절 포함하지
+ * 않는다. 질문/안내와 본문을 같이 주면 소비 에이전트가 질문을 무시하고 진행해버린다.
+ */
+function routingHardStop(routing: IntentRouting) {
+  if (routing.kind === "blocked-admin") {
     return {
-      intent: "admin-cms",
+      ok: false as const,
+      blocked: true,
+      error: routing.error,
+      options: routing.options,
+      supportedAdminBrands: routing.supportedAdminBrands,
+    };
+  }
+  if (routing.kind === "ambiguous-operator") {
+    return {
+      ok: false as const,
+      needsClarification: routing.question,
+      options: routing.options,
+    };
+  }
+  return null;
+}
+
+function getSetupSummary(args: {
+  brand?: string;
+  tgzDir?: string;
+  intent?: string;
+  serviceName?: string;
+}) {
+  // 어드민 하드게이트 브랜드(캐포비/넛지EAP)는 routing 이 "html" 로 우회 → antd 가 아니라 DS(html) 셋업.
+  const routing = resolveIntentRouting(args.intent, args.brand);
+  const hardStop = routingHardStop(routing);
+  if (hardStop) return hardStop;
+  if (routing.kind === "backoffice") {
+    const serviceNameArg = args.serviceName ? `, serviceName: '${args.serviceName}'` : "";
+    return {
+      intent: "backoffice",
       mode: "summary",
       stack: ["antd v5", "@ant-design/icons", "dayjs"],
       commands: [
-        "npm create vite@latest my-admin-mockup -- --template react-ts",
+        "npm create vite@latest my-backoffice-mockup -- --template react-ts",
         "npm install antd@5 @ant-design/icons dayjs",
       ],
       nextTools: [
-        "get_guide({ topic: 'admin-cms' })",
+        `get_guide({ topic: 'backoffice'${serviceNameArg} })`,
         "dev_server({ action: 'start' })",
         "build_singlefile_html({})",
       ],
       _hint:
-        "Call get_setup({ step: 'full', intent: 'admin-cms', mode: 'full' }) for detailed setup.",
+        "Call get_setup({ step: 'full', intent: 'backoffice', mode: 'full' }) for detailed setup.",
     };
   }
 
@@ -926,7 +962,10 @@ const MINIMAL_RESET_CSS = `/* nudge-ds minimal reset
 
 /* ───────────── 셋업 가이드 ───────────── */
 
-function getSetupInstructionsAdminCms(args: { withRouter?: boolean }) {
+function getSetupInstructionsBackoffice(args: { withRouter?: boolean; serviceName?: string }) {
+  const backofficeGuide = buildBackofficeGuide(args.serviceName);
+  const serviceNameArg = args.serviceName ? `, serviceName: '${args.serviceName}'` : "";
+  const footerCopy = backofficeGuide.layout.footer.text;
   const steps: Array<{
     step: number;
     title: string;
@@ -988,7 +1027,7 @@ const theme = {
 //     <HashRouter>...</HashRouter>
 //   </AntdApp>
 // </ConfigProvider>`,
-    note: "어드민에서는 NudgeEAP 토큰을 import하지 마세요. antd 기본 토큰 + 위 색상만 사용.",
+    note: "백오피스에서는 Nudge DS 토큰을 import하지 마세요. antd 기본 토큰 + 위 색상만 사용.",
   });
 
   steps.push({
@@ -1006,9 +1045,9 @@ const theme = {
     step: 5,
     title: "AdminLayout / HeaderSubject / SideSetting / TinyHeader 컴포넌트 작성",
     note:
-      "구체적 패턴은 get_guide({ topic: 'admin-cms' }) 호출 결과 참고. " +
+      `구체적 패턴은 get_guide({ topic: 'backoffice'${serviceNameArg} }) 호출 결과 참고. ` +
       "사이더 240px 라이트 + 6px 톱 액센트 + INFO/CMS MENU/SETTING 블록, " +
-      "본문 padding 40 60 200, 푸터 'Copyright © Nudge EAP. All Rights Reserved.'",
+      `본문 padding 40 60 200, 푸터 '${footerCopy}'`,
   });
 
   steps.push({
@@ -1019,13 +1058,14 @@ const theme = {
   });
 
   return {
-    intent: "admin-cms",
+    intent: "backoffice",
     rationale:
-      "어드민/CMS 화면은 Nudge DS가 아니라 antd v5 + NudgeEAPCMS 시각 컨벤션을 따릅니다. " +
-      "이 셋업은 그 컨벤션과 1:1로 맞춥니다. 시각 디테일은 get_guide({ topic: 'admin-cms' }) 참고.",
-    techStack: ADMIN_CMS_GUIDE.techStack,
+      "백오피스(사내 어드민/CMS) 화면은 Nudge DS가 아니라 antd v5 + 공통 백오피스 시각 컨벤션" +
+      "(출처: NudgeEAPCMS)을 따릅니다. 브랜드 무관 전 서비스 기본 지원 — 이 셋업은 그 컨벤션과 1:1로 " +
+      `맞춥니다. 시각 디테일은 get_guide({ topic: 'backoffice'${serviceNameArg} }) 참고.`,
+    techStack: backofficeGuide.techStack,
     steps,
-    nextTools: ["get_guide({ topic: 'admin-cms' })"],
+    nextTools: [`get_guide({ topic: 'backoffice'${serviceNameArg} })`],
   };
 }
 
@@ -1035,17 +1075,23 @@ export function getSetupInstructions(args: {
   withRouter?: boolean;
   includeTailwind?: boolean;
   intent?: string;
+  serviceName?: string;
 }) {
-  // 캐포비 admin 은 resolveEffectiveIntent 가 "html" 로 우회 → antd 가 아니라 DS(html) 셋업.
-  const effectiveIntent = resolveEffectiveIntent(args.intent, args.brand);
-  if (effectiveIntent === "admin-cms") {
-    return getSetupInstructionsAdminCms({ withRouter: args.withRouter });
+  // 어드민 하드게이트 브랜드(캐포비/넛지EAP)는 routing 이 "html" 로 우회 → antd 가 아니라 DS(html) 셋업.
+  const routing = resolveIntentRouting(args.intent, args.brand);
+  const hardStop = routingHardStop(routing);
+  if (hardStop) return hardStop;
+  if (routing.kind === "backoffice") {
+    return getSetupInstructionsBackoffice({
+      withRouter: args.withRouter,
+      serviceName: args.serviceName,
+    });
   }
-  // 정책 (2026-05-25): admin-cms 가 아니면 모두 html 워크플로우로 안내한다.
+  // 정책 (2026-05-25): backoffice 가 아니면 모두 html 워크플로우로 안내한다.
   // user-app(.tsx + React) 신규 셋업은 더 이상 노출하지 않는다 — detectIntentFromText 가
-  // 발화 매칭이 안 되는 경우에도 default 가 'html' 이라 여기까지 admin-cms 외에는 도달하지 않지만,
+  // 발화 매칭이 안 되는 경우에도 default 가 'html' 이라 여기까지 backoffice 외에는 도달하지 않지만,
   // 호출자가 명시적으로 intent='user-app' 을 넘긴 경우에도 안전하게 html 로 보낸다.
-  if (effectiveIntent === "html" || args.intent === "user-app" || !args.intent) {
+  if (routing.kind === "html" || args.intent === "user-app" || !args.intent) {
     return getSetupInstructionsHtml({ brand: args.brand, tgzDir: args.tgzDir });
   }
 
@@ -1150,7 +1196,8 @@ export function getSetupInstructions(args: {
     intent: "user-app",
     _advisory:
       "이 셋업은 사용자 앱(Trost/Geniet/NudgeEAP) 화면용입니다. " +
-      "어드민/CMS/운영툴 화면이면 'intent: \"admin-cms\"' 옵션을 넘겨 antd 기반 셋업으로 전환하세요.",
+      "사내 백오피스(어드민/CMS/운영툴) 화면이면 'intent: \"backoffice\"' 옵션을 넘겨 antd 기반 셋업으로 전환하세요. " +
+      `외부 제공(b2b) 어드민은 ${DS_ADMIN_BRANDS.join("/")} 만 지원 — 'intent: \"admin\", brand: \"<slug>\"' 로 DS(html) 셋업.`,
     summary: {
       tgzDir,
       requiredPackages: REQUIRED_PACKAGES,
@@ -1589,6 +1636,7 @@ export function getSetup(args: {
   withRouter?: boolean;
   includeTailwind?: boolean;
   intent?: string;
+  serviceName?: string;
   source?: string;
   includeLocalPackages?: boolean;
   cwd?: string;
@@ -1598,12 +1646,14 @@ export function getSetup(args: {
   mode?: "summary" | "full";
 }) {
   const step = args.step;
-  // 정책 (2026-05-25): admin-cms 가 아니면 모두 html. 'user-app' 명시도 deprecated 로
+  // 정책 (2026-05-25): backoffice 가 아니면 모두 html. 'user-app' 명시도 deprecated 로
   // 보고 html 로 라우팅 — 신규 mockup 워크스페이스는 React 트랙을 권장하지 않는다.
-  // detectIntentFromText 도 default 가 'html' 이므로 이 boolean 은 사실상 "admin-cms 아님"
-  // 과 동의어이지만, 가독성을 위해 명시적으로 둔다.
-  // 캐포비 admin 은 resolveEffectiveIntent 가 "html" 로 우회시키므로 isHtmlIntent=true 가 된다.
-  const isHtmlIntent = resolveEffectiveIntent(args.intent, args.brand) !== "admin-cms";
+  // 어드민 하드게이트 브랜드(캐포비/넛지EAP)는 routing 이 "html" 로 우회시키므로 isHtmlIntent=true 가 된다.
+  // blocked/ambiguous 라우팅은 step 공통 하드스톱 — 어떤 셋업 본문도 주지 않고 확답을 요구한다.
+  const routing = resolveIntentRouting(args.intent, args.brand);
+  const hardStop = routingHardStop(routing);
+  if (hardStop && step !== "update") return hardStop;
+  const isHtmlIntent = routing.kind === "html";
   switch (step) {
     case "install":
       return isHtmlIntent
@@ -1612,8 +1662,8 @@ export function getSetup(args: {
             required: false,
             message:
               "html(vanilla <nds-*>) 목업은 DS 패키지 설치가 필요 없습니다 — build_singlefile_html 이 " +
-              "DS runtime/CSS 를 자동 inline 합니다(vite/npm 불필요). 어드민(antd)만 설치가 필요하며 " +
-              "get_setup({ step:'install', intent:'admin-cms' }) 로 호출하세요.",
+              "DS runtime/CSS 를 자동 inline 합니다(vite/npm 불필요). 백오피스(antd)만 설치가 필요하며 " +
+              "get_setup({ step:'install', intent:'backoffice' }) 로 호출하세요.",
           }
         : getInstallCommand({ tgzDir: args.tgzDir, includeTailwind: args.includeTailwind });
     case "imports":
@@ -1641,6 +1691,7 @@ export function getSetup(args: {
         overwrite: args.overwrite,
         intent: args.intent,
         brand: args.brand,
+        serviceName: args.serviceName,
         template: args.template,
       });
     case "agents-md":
@@ -1650,6 +1701,7 @@ export function getSetup(args: {
         overwrite: args.overwrite,
         intent: args.intent,
         brand: args.brand,
+        serviceName: args.serviceName,
         template: args.template,
       });
     case "inspector": {
@@ -1675,6 +1727,7 @@ export function getSetup(args: {
         overwrite: args.overwrite,
         intent: args.intent,
         brand: args.brand,
+        serviceName: args.serviceName,
         template: args.template,
       });
       const agentsMd = createAgentsMd({
@@ -1683,13 +1736,14 @@ export function getSetup(args: {
         overwrite: args.overwrite,
         intent: args.intent,
         brand: args.brand,
+        serviceName: args.serviceName,
         template: args.template,
       });
       const filesOk = claudeMd.ok === true && agentsMd.ok === true;
       return {
         ok: filesOk,
         step: "external-starter",
-        intent: resolveEffectiveIntent(args.intent, args.brand),
+        intent: routing.kind === "backoffice" ? "backoffice" : "html",
         brand: canonicalBrandSlug(args.brand) ?? null,
         files: {
           claudeMd: {
@@ -1721,6 +1775,7 @@ export function getSetup(args: {
           tgzDir: args.tgzDir,
           brand: args.brand,
           intent: args.intent,
+          serviceName: args.serviceName,
         });
       }
       return getSetupInstructions({
@@ -1729,6 +1784,7 @@ export function getSetup(args: {
         withRouter: args.withRouter,
         includeTailwind: args.includeTailwind,
         intent: args.intent,
+        serviceName: args.serviceName,
       });
     default:
       return {

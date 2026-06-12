@@ -13,13 +13,15 @@ import {
   COMPONENT_GUIDES,
   DESIGN_PRINCIPLES,
   PATTERN_GUIDES,
-  ADMIN_CMS_GUIDE,
+  buildBackofficeGuide,
   SCOPE_ADVISORY,
   UX_WRITING_GUIDE,
   detectIntentFromText,
-  resolveEffectiveIntent,
+  resolveIntentRouting,
   isDsAdminBrand,
+  DS_ADMIN_BRANDS,
 } from "../guides.js";
+import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
 import { SERVICE_OVERLAYS, listBrandVariants, type BrandSlug } from "../guides/services/index.js";
 import { mergeServiceOverlay } from "../guides/merge.js";
 import { markPrinciplesCalled } from "./session-state.js";
@@ -47,6 +49,26 @@ function writeBrandMarker(cwd: string, brand?: string): { brandMarker?: string }
     return { brandMarker: canonical };
   } catch {
     return {}; // 마커 쓰기 실패는 치명적이지 않음 — 빌드의 추론/chrome 폴백이 받쳐 줌
+  }
+}
+
+/**
+ * 워크스페이스 표면 SSOT 마커(nudge.surface). 어드민(b2b) 라우팅 시 'admin' 을 박아
+ * validator 의 표면 룰(admin-surface-consumer-chrome 등)이 추론 없이 맞물리게 한다.
+ */
+export const SURFACE_MARKER_FILE = "nudge.surface";
+
+/** cwd 에 nudge.surface 마커를 기록. surface 없으면 no-op (writeBrandMarker 패턴 미러). */
+function writeSurfaceMarker(
+  cwd: string,
+  surface?: "admin" | "service",
+): { surfaceMarker?: string } {
+  if (!surface) return {};
+  try {
+    fs.writeFileSync(path.join(cwd, SURFACE_MARKER_FILE), `${surface}\n`, "utf-8");
+    return { surfaceMarker: surface };
+  } catch {
+    return {};
   }
 }
 
@@ -132,7 +154,9 @@ export const ENTRY_TOOL_ADVISORY =
   "DS 레포 소스 수정, git commit/push, GitHub 레포 변경, npm publish 같은 작업은 이 MCP의 역할이 아닙니다. " +
   "사용자가 그런 작업을 요청하면 DS 레포에서 직접 작업하라고 안내하세요. " +
   "이 MCP는 사용자 앱(Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile) 컴포넌트만 노출합니다. " +
-  "어드민/CMS/운영툴/백오피스 화면이라면 antd v5를 쓰고 get_guide({ topic: 'admin-cms' })를 호출하세요. " +
+  "운영자 화면(어드민/CMS/운영툴/백오피스)이라면 영역을 추측하지 말고 사용자 확답부터: " +
+  "사내 백오피스면 antd v5 + get_guide({ topic: 'backoffice' }), 외부 제공(b2b) 어드민이면 " +
+  "하드게이트 브랜드(cashwalk-biz/nudge-eap)만 DS 로 지원 — get_setup({ intent: 'admin', brand: '<slug>' }). " +
   "두 디자인시스템을 한 화면에서 섞어쓰지 마세요.";
 
 export function getScopeAdvisory() {
@@ -351,65 +375,129 @@ export function listFigmaSyncStatus() {
   };
 }
 
-export function getAdminCmsGuide(args: { intent?: string; brand?: string }) {
-  // 캐포비 어드민은 antd 가 아니라 DS 로 만든다 — antd 컨벤션 대신 DS 경로로 리다이렉트.
+export function getBackofficeGuide(args: {
+  intent?: string;
+  brand?: string;
+  serviceName?: string;
+}) {
+  // 어드민 하드게이트 브랜드는 antd 가 아니라 DS 로 만든다 — antd 컨벤션 대신 DS 경로로 리다이렉트.
+  // 단, 넛지EAP 는 자체 admin DS 가 없어 '사내 백오피스(NudgeEAPCMS)' 요청일 수 있다 —
+  // intent:'admin' 명시일 때만 리다이렉트하고, topic 호출만으로는 antd 백오피스 가이드를 준다.
   if (isDsAdminBrand(args.brand)) {
     const canonicalBrand = canonicalBrandSlug(args.brand) ?? args.brand;
-    return {
-      intent: "html" as const,
-      brand: canonicalBrand,
-      requestedBrand: args.brand,
-      note:
-        `${args.brand}(=${canonicalBrand}) 어드민은 antd 가 아니라 Nudge DS 로 만든다. ` +
-        "이 브랜드는 DS 안에 자체 admin 디자인 시스템(admin layout/input/Modal admin 토큰)을 갖추고 있어, " +
-        "NudgeEAPCMS antd 컨벤션(240px Sider · INFO/CMS MENU/SETTING · 'Copyright Nudge EAP' 푸터)을 따르지 말 것. " +
-        "이 antd 패턴을 캐포비 어드민에 그대로 적용하면 잘못된 화면이 된다.",
-      "NDS 쓰기의 의미":
-        "캐포비 어드민에서 'NDS 를 쓴다'는 건 단순히 <nds-*> 태그를 남기고 빌더 검증을 통과시키는 게 아니라, " +
-        "캐포비 어드민의 실제 화면 패턴(Page Pattern System 5종)과 admin 토큰/사이드바를 따르는 것이다. " +
-        "PRD/시안의 화면 맥락이 antd 가이드보다 우선이다.",
-      useInstead: [
-        `get_setup({ step: 'full', intent: 'admin-cms', brand: '${args.brand}' }) — DS(html) 셋업으로 자동 우회`,
-        `get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) — 캐포비 어드민 화면 5종(onboarding/dashboard/list/detail/form) 중 PRD 에 맞는 패턴 선언`,
-        `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' }) — 캐포비 자체 사이드바(300px·로고 인라인). NudgeEAPCMS 240px Sider 아님`,
-        `get_guide({ topic: 'component:<Name>', brand: '${args.brand}', target: 'html' }) — admin 토큰이 cascade 된 DS 컴포넌트`,
-        `get_guide({ topic: 'principles', brand: '${args.brand}' })`,
-      ],
-      techStack: {
-        required: [
-          "@nudge-design/html (<nds-*>)",
-          "@nudge-design/tokens/css",
-          `${canonicalBrand} 브랜드 css`,
+    const ownAdminSystem = !!getBrandProfile(canonicalBrand)?.admin?.pagePatternSystem;
+    if (ownAdminSystem) {
+      return {
+        intent: "html" as const,
+        brand: canonicalBrand,
+        requestedBrand: args.brand,
+        note:
+          `${args.brand}(=${canonicalBrand}) 어드민은 antd 가 아니라 Nudge DS 로 만든다. ` +
+          "이 브랜드는 DS 안에 자체 admin 디자인 시스템(admin layout/input/Modal admin 토큰)을 갖추고 있어, " +
+          "백오피스 antd 컨벤션(240px Sider · INFO/CMS MENU/SETTING 푸터)을 따르지 말 것. " +
+          "이 antd 패턴을 캐포비 어드민에 그대로 적용하면 잘못된 화면이 된다.",
+        "NDS 쓰기의 의미":
+          "캐포비 어드민에서 'NDS 를 쓴다'는 건 단순히 <nds-*> 태그를 남기고 빌더 검증을 통과시키는 게 아니라, " +
+          "캐포비 어드민의 실제 화면 패턴(Page Pattern System 5종)과 admin 토큰/사이드바를 따르는 것이다. " +
+          "PRD/시안의 화면 맥락이 antd 가이드보다 우선이다.",
+        useInstead: [
+          `get_setup({ step: 'full', intent: 'admin', brand: '${args.brand}' }) — DS(html) 셋업으로 자동 우회`,
+          `get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) — 캐포비 어드민 화면 5종(onboarding/dashboard/list/detail/form) 중 PRD 에 맞는 패턴 선언`,
+          `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' }) — 캐포비 자체 사이드바(300px·로고 인라인). 백오피스 240px Sider 아님`,
+          `get_guide({ topic: 'component:<Name>', brand: '${args.brand}', target: 'html' }) — admin 토큰이 cascade 된 DS 컴포넌트`,
+          `get_guide({ topic: 'principles', brand: '${args.brand}' })`,
         ],
-        forbidden: ["antd", "@ant-design/icons"],
-      },
-    };
+        techStack: {
+          required: [
+            "@nudge-design/html (<nds-*>)",
+            "@nudge-design/tokens/css",
+            `${canonicalBrand} 브랜드 css`,
+          ],
+          forbidden: ["antd", "@ant-design/icons"],
+        },
+      };
+    }
+    if (args.intent === "admin") {
+      // 넛지EAP 어드민(b2b) — 자체 admin 토큰 없이 기존 DS 컴포넌트/토큰으로 목업한다.
+      return {
+        intent: "html" as const,
+        brand: canonicalBrand,
+        requestedBrand: args.brand,
+        note:
+          `${args.brand}(=${canonicalBrand}) 어드민(외부 제공 b2b)은 antd 가 아니라 Nudge DS 로 만든다. ` +
+          "캐포비와 달리 전용 admin 토큰/page-pattern 게이트는 없다 — 기존 DS 컴포넌트와 토큰으로 " +
+          "어드민 기획서를 목업하면 된다 (design-spec/page-pattern 선언 불필요).",
+        useInstead: [
+          `get_setup({ step: 'full', intent: 'admin', brand: '${args.brand}' }) — DS(html) 셋업으로 자동 우회`,
+          "get_guide({ topic: 'pattern:admin-shell' }) — 어드민 사이드바+톱바 셸 패턴",
+          `get_guide({ topic: 'component:<Name>', brand: '${args.brand}', target: 'html' })`,
+          `get_guide({ topic: 'principles', brand: '${args.brand}' })`,
+        ],
+        techStack: {
+          required: [
+            "@nudge-design/html (<nds-*>)",
+            "@nudge-design/tokens/css",
+            `${canonicalBrand} 브랜드 css`,
+          ],
+          forbidden: ["antd", "@ant-design/icons"],
+        },
+      };
+    }
   }
+  const guide = buildBackofficeGuide(args.serviceName);
+  const canon = canonicalBrandSlug(args.brand);
+  const outsideGateBrand = !!args.brand?.trim() && !isDsAdminBrand(args.brand);
   return {
-    intent: "admin-cms",
-    "⚠ 브랜드 확인 먼저": ADMIN_CMS_GUIDE.brandException,
+    intent: "backoffice",
+    "⚠ 영역 확인 먼저": guide.dsAdminException,
     note:
-      "어드민/CMS 화면을 만들 때 따라야 할 시각/구조 컨벤션. " +
-      "이 가이드는 NudgeEAPCMS(antd 5.5.1) 실제 운영 코드에서 추출한 **NudgeEAP 전용** 패턴입니다. " +
-      "다른 브랜드 어드민(특히 캐포비 = cashpobi/cashwalk-biz)에는 그대로 적용하지 마세요 — " +
-      "대상이 캐포비면 get_guide({ topic: 'admin-cms', brand: 'cashpobi' }) 로 다시 호출해 DS 경로를 받으세요. " +
-      "PRD 의 제품 맥락이 이 일반 admin-cms 가이드보다 우선입니다.",
-    detectedKeyword:
-      args.intent && detectIntentFromText(args.intent) === "admin-cms"
-        ? "admin-cms 의도로 인식됨"
-        : undefined,
-    ...ADMIN_CMS_GUIDE,
+      "백오피스(사내 어드민/CMS/운영툴) 화면을 만들 때 따라야 할 시각/구조 컨벤션. " +
+      "NudgeEAPCMS(antd 5.5.1) 실제 운영 코드에서 추출한 공통 패턴으로, 브랜드 무관 전 서비스 기본 지원입니다. " +
+      "푸터 카피 등 서비스 고유 표기는 serviceName 파라미터로 주입하세요 — " +
+      "예: get_guide({ topic: 'backoffice', serviceName: 'Runmile' }). " +
+      "PRD 의 제품 맥락이 이 공통 백오피스 가이드보다 우선입니다.",
+    ...(args.serviceName
+      ? { serviceName: args.serviceName }
+      : {
+          _note:
+            "serviceName 미지정 — 푸터 카피가 <서비스명> 플레이스홀더로 나갑니다. " +
+            "get_guide({ topic: 'backoffice', serviceName: '<서비스 표기명>' }) 으로 주입하세요.",
+        }),
+    ...(outsideGateBrand
+      ? {
+          _advisory:
+            `이 브랜드(${canon ?? args.brand})는 어드민(외부 제공 b2b) 미지원입니다 — b2b 어드민 화면이라면 ` +
+            `진행하지 말 것 (지원: ${DS_ADMIN_BRANDS.join(", ")} / 편입은 DS 팀에 요청). ` +
+            "이 가이드는 사내 백오피스 전제입니다.",
+        }
+      : {}),
+    ...(args.intent &&
+    !["admin", "backoffice", "admin-cms", "html"].includes(args.intent) &&
+    detectIntentFromText(args.intent) === "operator"
+      ? {
+          _operatorKeywordNotice:
+            "운영자 화면 발화가 감지됐습니다. 이 가이드는 '사내 백오피스' 전제 — 외부 제공(b2b) 어드민이라면 " +
+            `intent:'admin' + brand(지원: ${DS_ADMIN_BRANDS.join(", ")}) 로 get_setup 을 재호출하세요. ` +
+            "영역이 불확실하면 사용자에게 확답을 받기 전 진행하지 마세요.",
+        }
+      : {}),
+    ...guide,
   };
 }
+
+/** @deprecated getBackofficeGuide 로 rename — 구명 호환 export. */
+export const getAdminCmsGuide = getBackofficeGuide;
 
 /* ───────────── get_guide 라우터 ─────────────
  *
  * 8개로 흩어져 있던 가이드 도구를 단일 진입점으로 통합.
  * topic 포맷:
- *   - "principles" | "dos-donts" | "admin-cms" | "scope-advisory" | "inspector-setup"
+ *   - "principles" | "dos-donts" | "backoffice" | "scope-advisory" | "inspector-setup"
  *   - "component:<Name>" — 예: "component:Button"
  *   - "pattern:<name>"   — 예: "pattern:cta-group"
  *
+ * 'admin-cms' 는 'backoffice' 의 영구 별칭 — 이미 배포된 외부 CLAUDE.md 가 하드코딩하고
+ * 있어 끊으면 기존 워크스페이스가 전부 깨진다.
  * 알 수 없는 topic 은 사용 가능한 목록을 함께 돌려준다.
  */
 
@@ -417,6 +505,7 @@ export const GUIDE_FIXED_TOPICS = [
   "principles",
   "dos-donts",
   "ux-writing",
+  "backoffice",
   "admin-cms",
   "scope-advisory",
   "inspector-setup",
@@ -603,6 +692,7 @@ function defaultBatchArgsForTopic(
       return { sections: ["dos", "donts"] };
     case "ux-writing":
       return { sections: ["voiceTone", "microcopy", "eapDomain"] };
+    case "backoffice":
     case "admin-cms":
       return { sections: ["layout", "searchForm", "table", "forms", "colors"] };
     default:
@@ -781,6 +871,8 @@ export function getGuide(args: {
   sections?: string[];
   aspects?: string[];
   brand?: BrandSlug;
+  /** [backoffice] 서비스 표기명 — 푸터 카피 등 서비스 고유 표기에 주입 (예: 'Runmile'). */
+  serviceName?: string;
   /** [principles] 워크스페이스 루트 — designDecisions.jsonl 에서 학습된 원칙을 승격해 머지한다. 기본 MCP 프로세스 cwd. */
   cwd?: string;
 }): Record<string, unknown> {
@@ -934,11 +1026,18 @@ export function getGuide(args: {
       const base = getUxWritingGuide() as Record<string, unknown>;
       return pickSections(applyBrandOverlay("ux-writing", base, args.brand), sections);
     }
-    case "admin-cms":
-      return pickSections(
-        getAdminCmsGuide({ intent: args.intent, brand: args.brand }) as Record<string, unknown>,
-        sections,
-      );
+    case "backoffice":
+    case "admin-cms": {
+      const guide = getBackofficeGuide({
+        intent: args.intent,
+        brand: args.brand,
+        serviceName: args.serviceName,
+      }) as Record<string, unknown>;
+      if (topic === "admin-cms") {
+        guide._alias = "admin-cms → backoffice (renamed — 'admin-cms' 는 영구 별칭으로 유지)";
+      }
+      return pickSections(guide, sections);
+    }
     case "scope-advisory":
       return pickSections(getScopeAdvisory() as unknown as Record<string, unknown>, sections);
     case "inspector-setup":
@@ -997,26 +1096,29 @@ export type ClaudeMdTemplateVariant = "slim" | "default";
 
 function getSlimClaudeMdTemplate(args: {
   projectName?: string;
-  intent?: "user-app" | "admin-cms" | "html";
+  intent?: "user-app" | "backoffice" | "admin-cms" | "html";
+  serviceName?: string;
 }) {
   const title = args.projectName ? `# ${args.projectName}` : "# Nudge Mockup Workspace";
-  if (args.intent === "admin-cms") {
+  if (args.intent === "backoffice" || args.intent === "admin-cms") {
+    const serviceNameArg = args.serviceName ? `, serviceName: "${args.serviceName}"` : "";
     return `${title}
 
 ## Role
 
-- Build admin/CMS mockups in this external project.
+- Build internal backoffice (사내 어드민/CMS) mockups in this external project.
 - Do not modify the Nudge Design System repo, publish packages, push git changes, or open DS PRs from here.
 
 ## Stack
 
-- Use antd v5 for admin/CMS screens.
-- Do not use @nudge-design/react, @nudge-design/html, @nudge-design/tokens, or @nudge-design/icons in admin/CMS mockups.
-- Check conventions with \`get_guide({ topic: "admin-cms" })\`.
+- Use antd v5 for backoffice screens.
+- Do not use @nudge-design/react, @nudge-design/html, @nudge-design/tokens, or @nudge-design/icons in backoffice mockups.
+- Check conventions with \`get_guide({ topic: "backoffice"${serviceNameArg} })\`.
+- B2B admin services (외부 제공 어드민) are different: only ${DS_ADMIN_BRANDS.join(" / ")} are supported and they are built with the DS, not antd — re-run \`get_setup({ step: "claude-md", intent: "admin", brand: "<slug>" })\` in that case.
 
 ## Workflow
 
-1. Read \`get_guide({ topic: "admin-cms" })\`.
+1. Read \`get_guide({ topic: "backoffice"${serviceNameArg} })\`.
 2. Implement with real antd components, not raw HTML/CSS lookalikes.
 3. Run typecheck, then \`dev_server({ action: "start" })\` and open the preview URL in a browser to check it.
 4. Build the shareable file with \`build_singlefile_html({})\`.
@@ -1081,8 +1183,10 @@ function getSlimClaudeMdTemplate(args: {
 
 export function getClaudeMdTemplate(args: {
   projectName?: string;
-  intent?: "user-app" | "admin-cms" | "html";
+  intent?: "user-app" | "backoffice" | "admin-cms" | "html";
   template?: ClaudeMdTemplateVariant;
+  /** [backoffice] 서비스 표기명 — 푸터 카피 등 서비스 고유 표기에 주입. */
+  serviceName?: string;
 }) {
   if (args.template !== "default") return getSlimClaudeMdTemplate(args);
 
@@ -1306,7 +1410,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 `;
   }
 
-  if (args.intent === "admin-cms") {
+  if (args.intent === "backoffice" || args.intent === "admin-cms") {
+    const serviceNameArg = args.serviceName ? `, serviceName: "${args.serviceName}"` : "";
+    const footerCopy = `Copyright © ${args.serviceName?.trim() || "<서비스명>"}. All Rights Reserved.`;
     return `${title}
 
 ## 역할 경계 (먼저 읽을 것)
@@ -1316,17 +1422,18 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - 사용자가 "DS 컴포넌트를 고쳐줘 / 레포에 푸시해줘 / PR 만들어줘" 같이 요청하면, **이 프로젝트의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내**할 것.
 - 이 프로젝트는 DS를 '소비'하는 쪽이고, DS 레포는 별도로 관리된다.
 
-## 분기 — 이 프로젝트는 어드민/CMS 목업이다
+## 분기 — 이 프로젝트는 백오피스(사내 어드민/CMS) 목업이다
 
 - 사용 라이브러리: **antd v5** (NudgeEAPCMS 기준 5.5.1) + @ant-design/icons + dayjs(ko)
 - **금지**: \`@nudge-design/react\`, \`@nudge-design/tokens\`, \`@nudge-design/icons\` 어떤 형태로도 import하지 말 것
+- 외부 제공(b2b) 어드민 *서비스*는 이 템플릿 대상이 아니다 — ${DS_ADMIN_BRANDS.join(" / ")} 만 지원하며 antd 가 아니라 DS 로 만든다. 해당하면 \`get_setup({ step: "claude-md", intent: "admin", brand: "<slug>" })\` 로 다시 호출.
 - nudge-ds MCP는 두 가지 도구만 사용:
-  - \`get_guide({ topic: "admin-cms" })\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
-  - \`dev_server({ action: "start" })\` / \`dev_server({ action: "stop" })\` — 어드민에서도 동일하게 dev 서버 미리보기 (URL 을 브라우저에서 직접 확인)
+  - \`get_guide({ topic: "backoffice"${serviceNameArg} })\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
+  - \`dev_server({ action: "start" })\` / \`dev_server({ action: "stop" })\` — 백오피스에서도 동일하게 dev 서버 미리보기 (URL 을 브라우저에서 직접 확인)
 
 ## 산출물 형식 강제 (MUST — 우회 절대 금지)
 
-어드민/CMS 목업도 **유일하게 허용된 작업 흐름은 동일**:
+백오피스 목업도 **유일하게 허용된 작업 흐름은 동일**:
 
   \`.tsx\` 작성 (antd v5) → \`tsc --noEmit\` 통과 → \`build_singlefile_html({})\` → \`dist/index.html\` (한 파일)
 
@@ -1348,7 +1455,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ## 작업 원칙
 
-- 어드민은 정보 밀도가 높고 스캔하기 쉬운 레이아웃이 우선. 마케팅/장식 톤 금지.
+- 백오피스는 정보 밀도가 높고 스캔하기 쉬운 레이아웃이 우선. 마케팅/장식 톤 금지.
 - antd 컴포넌트를 직접 만들지 말고 그대로 사용 (\`Button\`, \`Form\`, \`Input\`, \`Select\`, \`DatePicker\`, \`Table\`, \`Modal\`, \`Tabs\`, \`Tag\`, \`Space\`, \`Card\`, \`Pagination\`).
 - 색/타이포/외형은 antd 기본값 유지. \`ConfigProvider\` 토큰은 색·폰트·라디우스 정도만.
 
@@ -1363,13 +1470,13 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **검색 폼**: \`Form\` 안 \`Select(100px) + Input.Search(enterButton="검색") + 초기화 Button\` / 우측 액션 / 하단 "검색된 개수: N"
 - **Table**: \`size="middle"\`, 컬럼 거의 모두 \`align: "center"\`, 클릭 가능한 셀은 \`<Button type="link">\`, \`pagination={{ defaultPageSize: 20, position: ["bottomCenter"], showSizeChanger: false }}\`
 - **Status Tag**: \`width: 60px; text-align: center;\` (TagAdminRole 컨벤션)
-- **푸터**: \`Copyright © Nudge EAP. All Rights Reserved.\` (12px / #b1b1b1 / border-top #ececec)
+- **푸터**: \`${footerCopy}\` (12px / #b1b1b1 / border-top #ececec)
 
-자세한 코드 예시는 \`get_guide({ topic: "admin-cms" })\`를 호출해 가져오세요.
+자세한 코드 예시는 \`get_guide({ topic: "backoffice"${serviceNameArg} })\`를 호출해 가져오세요.
 
 ## 검증 루프
 
-1. \`get_guide({ topic: "admin-cms" })\` 호출해 컨벤션 재확인
+1. \`get_guide({ topic: "backoffice"${serviceNameArg} })\` 호출해 컨벤션 재확인
 2. AdminLayout(Sider+Content+Footer) → 페이지 작성
 3. \`tsc --noEmit\` 통과
 4. \`dev_server({ action: "start" })\` → 브라우저에서 dev URL 열어 에러 0건 확인
@@ -1464,9 +1571,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ## 분기 (먼저 확인)
 
-- **어드민/CMS/운영툴/백오피스 화면이라면 이 CLAUDE.md를 따르지 말 것.**
-  \`get_setup({ step: "claude-md", intent: "admin-cms" })\` 도구로 다시 호출해 어드민용 가이드를 받으세요.
-  어드민에는 antd v5를 사용하고 \`get_guide({ topic: "admin-cms" })\`로 컨벤션을 확인합니다.
+- **운영자 화면(어드민/CMS/운영툴/백오피스)이라면 이 CLAUDE.md를 따르지 말 것.** 영역을 추측하지 말고 사용자에게 확답을 받은 뒤 분기:
+  - **사내 백오피스** → \`get_setup({ step: "claude-md", intent: "backoffice" })\` 로 다시 호출. antd v5 를 사용하고 \`get_guide({ topic: "backoffice" })\` 로 컨벤션 확인.
+  - **외부 제공(b2b) 어드민 서비스** → ${DS_ADMIN_BRANDS.join(" / ")} 만 지원(하드게이트). \`get_setup({ step: "claude-md", intent: "admin", brand: "<slug>" })\` 로 다시 호출하면 DS(html) 워크플로우로 우회. 그 외 브랜드는 미지원 — 백오피스로 진행하거나 DS 팀에 편입 요청.
 - 이 가이드는 사용자 앱(Trost/Geniet/NudgeEAP) 화면용입니다.
 
 ## 산출물 형식 강제 (MUST — 우회 절대 금지)
@@ -1586,9 +1693,29 @@ function createInstructionMd(args: {
   overwrite?: boolean;
   intent?: string;
   brand?: string;
+  serviceName?: string;
   template?: ClaudeMdTemplateVariant;
   fileName: "CLAUDE.md" | "AGENTS.md";
 }) {
+  // 라우팅 먼저 — blocked/ambiguous 는 어떤 파일도 만들지 않고 하드스톱한다 (확답 받고 재호출).
+  const routing = resolveIntentRouting(args.intent, args.brand);
+  if (routing.kind === "blocked-admin") {
+    return {
+      ok: false,
+      blocked: true,
+      error: routing.error,
+      options: routing.options,
+      supportedAdminBrands: routing.supportedAdminBrands,
+    };
+  }
+  if (routing.kind === "ambiguous-operator") {
+    return {
+      ok: false,
+      needsClarification: routing.question,
+      options: routing.options,
+    };
+  }
+
   const cwd = path.resolve(args.cwd ?? process.cwd());
   if (!fs.existsSync(cwd)) {
     return { ok: false, error: `cwd not found: ${cwd}` };
@@ -1606,17 +1733,27 @@ function createInstructionMd(args: {
     };
   }
 
-  // 정책 (2026-05-25): admin-cms 가 아니면 모두 html 템플릿. 신규 CLAUDE.md 는 slim 이 기본이고,
+  // 정책 (2026-05-25): backoffice 가 아니면 모두 html 템플릿. 신규 CLAUDE.md 는 slim 이 기본이고,
   // 기존 장문 템플릿은 template: "default" 를 명시했을 때만 생성한다.
-  // 캐포비 admin 은 resolveEffectiveIntent 가 "html" 로 우회시켜 DS 템플릿이 나간다.
-  const intent = resolveEffectiveIntent(args.intent, args.brand);
+  // 어드민 하드게이트 브랜드(캐포비/넛지EAP)는 routing 이 html(surface=admin) 로 우회시켜 DS 템플릿이 나간다.
+  const intent = routing.kind === "backoffice" ? "backoffice" : "html";
 
   const template = args.template === "default" ? "default" : "slim";
-  const content = getClaudeMdTemplate({ projectName: args.projectName, intent, template });
+  const content = getClaudeMdTemplate({
+    projectName: args.projectName,
+    intent,
+    template,
+    serviceName: args.serviceName,
+  });
   fs.writeFileSync(filePath, content, "utf-8");
 
   // 계층 1 — 브랜드 SSOT 마커. brand 가 오면 nudge.brand 를 박아 빌드가 단일 출처에서 읽게 한다.
   const { brandMarker } = writeBrandMarker(cwd, args.brand);
+  // 표면 SSOT 마커 — 어드민(b2b) 라우팅이면 nudge.surface=admin 을 박아 validator 표면 룰과 맞물린다.
+  const { surfaceMarker } = writeSurfaceMarker(
+    cwd,
+    routing.kind === "html" ? routing.surface : undefined,
+  );
 
   return {
     ok: true,
@@ -1626,6 +1763,7 @@ function createInstructionMd(args: {
     intent,
     template,
     brandMarker,
+    ...(surfaceMarker ? { surfaceMarker } : {}),
     next:
       args.fileName === "AGENTS.md"
         ? "Restart or reload Codex/agent sessions in this project so the new AGENTS.md instructions are picked up."
@@ -1639,6 +1777,7 @@ export function createClaudeMd(args: {
   overwrite?: boolean;
   intent?: string;
   brand?: string;
+  serviceName?: string;
   template?: ClaudeMdTemplateVariant;
 }) {
   return createInstructionMd({ ...args, fileName: "CLAUDE.md" });
@@ -1650,6 +1789,7 @@ export function createAgentsMd(args: {
   overwrite?: boolean;
   intent?: string;
   brand?: string;
+  serviceName?: string;
   template?: ClaudeMdTemplateVariant;
 }) {
   return createInstructionMd({ ...args, fileName: "AGENTS.md" });
