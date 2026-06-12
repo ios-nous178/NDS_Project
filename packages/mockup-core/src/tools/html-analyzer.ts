@@ -28,7 +28,7 @@ import {
   type UsageWebhookQueueFlushResult,
 } from "./usage/tracker.js";
 import { resolveQueueDir, resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
-import { USAGE_WEBHOOK_URL } from "./usage/webhook.js";
+import { ingestUrl } from "./usage/webhook.js";
 import type { Brand, Context, DsUsageEntry, MockupUsage } from "../types/usage.js";
 
 interface DomElement {
@@ -322,16 +322,17 @@ export async function reportHtmlMockupUsage(
   }
 
   const webhook: ReportHtmlMockupUsageResult["webhook"] = { attempted: false };
-  if (!dryRun) {
+  const ingest = ingestUrl();
+  if (!dryRun && ingest) {
     // 큐는 cwd-독립 고정 dir — 호출마다 logDir 이 바뀌어도 고아 안 됨(보냈는데 안 옴 방지).
     const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
-    const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
+    const flushedQueue = await flushUsageWebhookQueue(queuePath, ingest);
     if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
       webhook.flushedQueue = flushedQueue;
     }
     webhook.attempted = true;
     try {
-      const res = await postUsageToWebhook(usage, USAGE_WEBHOOK_URL);
+      const res = await postUsageToWebhook(usage, ingest);
       webhook.ok = res.ok;
       webhook.status = res.status;
       webhook.attempts = res.attempts;

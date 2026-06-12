@@ -3,7 +3,7 @@
  *
  * 책임 범위:
  *  - `.ds-usage-log.jsonl` append
- *  - 공용 Google Sheets webhook POST + 재시도
+ *  - Supabase ingest POST(`{kind:"usage", usage}` 봉투) + 재시도
  *  - 실패 시 큐 파일에 적재 / 재시도 flush
  *  - 외부 프로젝트 cwd 를 스캔해 보고되지 않은 `*Mockup.tsx` 후보 산출
  *
@@ -25,6 +25,7 @@ import {
 import { dirname, join } from "node:path";
 import type { DsVersions, MockupUsage, PendingMockupReport } from "../../types/usage.js";
 import { relativeSafe, serializeUsage } from "./parser.js";
+import { ingestHeaders } from "./webhook.js";
 
 /* ───────────── DS version detector ─────────────
  *
@@ -128,6 +129,8 @@ export interface PostUsageOptions {
   retries?: number;
   timeoutMs?: number;
   retryDelayMs?: number;
+  /** 추가/대체 헤더 — 기본은 ingest 공통 헤더(Content-Type + Bearer anon key). */
+  headers?: Record<string, string>;
 }
 
 export async function postUsageToWebhook(
@@ -135,7 +138,8 @@ export async function postUsageToWebhook(
   url: string,
   opts: PostUsageOptions = {},
 ): Promise<{ ok: boolean; status: number; body: string; attempts: number }> {
-  return postJsonToWebhook(serializeUsage(usage), url, opts);
+  // ingest 함수의 usage 분기 봉투 — 로컬 jsonl(serializeUsage 평탄형)과 달리 kind 판별자를 싣는다.
+  return postJsonToWebhook(`{"kind":"usage","usage":${serializeUsage(usage)}}`, url, opts);
 }
 
 /**
@@ -162,7 +166,7 @@ export async function postJsonToWebhook(
       try {
         const res = await fetch(url, {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: opts.headers ?? ingestHeaders(),
           body,
           signal: controller.signal,
         });

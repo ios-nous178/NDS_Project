@@ -6,8 +6,8 @@ import type { ValidateHtmlMockupResult } from "@nudge-design/mockup-core/tools/h
 import type { ReportHtmlMockupUsageResult } from "@nudge-design/mockup-core/tools/html-analyzer";
 import type { LlmScoreResult } from "@nudge-design/mockup-core/tools/quality-score-core";
 import { getClientIdentity } from "./client-identity.js";
-// TEMP: observability 를 usage 와 같은 Google Sheets webhook 으로 합치기 위한 raw 전송 헬퍼.
-import { USAGE_WEBHOOK_URL, postJsonToWebhook } from "@nudge-design/mockup-core";
+// 기본 sink = Supabase ingest (URL/토큰은 mockup-core ingest 설정 SSOT 와 공유).
+import { ingestUrl, ingestHeaders, postJsonToWebhook } from "@nudge-design/mockup-core";
 
 type JsonObject = Record<string, unknown>;
 
@@ -222,15 +222,16 @@ async function postEndpoint(base: string, endpoint: SinkEndpoint): Promise<SinkP
   }
 }
 
-/* ───────────── TEMP: observability raw → Google Sheets ─────────────
- * usage 와 observability 를 한 시트로 합치는 임시 단계.
- * 기존 대시보드 API(127.0.0.1:8090, 6개 /import 엔드포인트) 적재는 기본 비활성으로 두고,
- * observability 가 모은 raw 레코드(sessions/runs/events/violations/quality/artifacts)를
- * usage 와 같은 Apps Script webhook(USAGE_WEBHOOK_URL)으로 통째로 던진다.
- * 시트 쪽 Apps Script 는 `kind:"observability"` 봉투를 받아 적재하도록 손봐야 한다.
- * 대시보드 API 적재로 되돌리려면 env `NUDGE_OBSERVABILITY_DASHBOARD=1`.
+/* ───────────── observability raw → Supabase ingest ─────────────
+ * 기본 sink. raw 레코드(sessions/runs/events/violations/quality/artifacts)를
+ * `{kind:"observability", records:[{path, body}]}` 봉투 그대로 Supabase Edge Function
+ * `ingest` 로 보낸다 — 함수가 path 별로 obs_records 컬렉션에 분배한다(supabase/README.md).
+ * (이전의 TEMP Google Sheets 경로와 로컬 대시보드 API 기본값을 대체. 로컬 대시보드
+ * 적재로 되돌리려면 env `NUDGE_OBSERVABILITY_DASHBOARD=1`.)
  */
-async function sendRawToSheet(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
+async function sendRawToIngest(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
+  const url = ingestUrl();
+  if (!url) return []; // 엔드포인트 미설정/킬 스위치 — 전송 생략
   const rawBody = JSON.stringify({
     kind: "observability",
     ts: now(),
@@ -239,19 +240,20 @@ async function sendRawToSheet(endpoints: SinkEndpoint[]): Promise<SinkPostResult
   });
   try {
     // best-effort: 툴 응답 지연 방지를 위해 짧은 timeout + 1회 재시도만.
-    const res = await postJsonToWebhook(rawBody, USAGE_WEBHOOK_URL, {
+    const res = await postJsonToWebhook(rawBody, url, {
       retries: 1,
       timeoutMs: POST_TIMEOUT_MS,
+      headers: ingestHeaders(),
     });
     return endpoints.map((e) => ({
-      target: USAGE_WEBHOOK_URL,
+      target: url,
       path: e.path,
       ok: res.ok,
       status: res.status,
     }));
   } catch (err) {
     return endpoints.map((e) => ({
-      target: USAGE_WEBHOOK_URL,
+      target: url,
       path: e.path,
       ok: false,
       error: (err as Error).message,
@@ -275,13 +277,23 @@ async function sendToDashboard(endpoints: SinkEndpoint[]): Promise<SinkPostResul
   );
 }
 
+/**
+ * 실제 적재가 향하는 sink URL — artifacts 원문 게이트(loopback 판정)는 반드시 이 URL 로
+ * 평가해야 한다. (대시보드 기본값 127.0.0.1 로 판정하면 원격 Supabase 로 보내면서
+ * loopback 기본 ON 이 적용되는 원문 유출 버그가 된다.)
+ */
+function effectiveSinkUrl(): string | null {
+  if (!isFlagOff(process.env.NUDGE_OBSERVABILITY_DASHBOARD ?? "0")) return baseUrl();
+  return ingestUrl();
+}
+
 async function send(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
   if (!isEnabled() || endpoints.length === 0) return [];
-  // TEMP: 기본은 raw → Google Sheets. 기존 대시보드 API 는 env 로만 켠다.
+  // 기본은 raw → Supabase ingest. 로컬 대시보드 API 는 env 로만 켠다(디버그용).
   if (!isFlagOff(process.env.NUDGE_OBSERVABILITY_DASHBOARD ?? "0")) {
     return sendToDashboard(endpoints);
   }
-  return sendRawToSheet(endpoints);
+  return sendRawToIngest(endpoints);
 }
 
 function usageEndpoint(
@@ -419,7 +431,7 @@ function artifactsEndpoint(args: {
   includePrd: boolean;
   includeOutputHtml: boolean;
 }): SinkEndpoint[] {
-  const base = baseUrl();
+  const base = effectiveSinkUrl(); // 원문 게이트는 실제 적재 대상 URL 로 판정
   if (!base) return [];
   const withContent = artifactsContentEnabled(base);
   const rows: JsonObject[] = [];
