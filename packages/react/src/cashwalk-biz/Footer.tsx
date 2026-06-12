@@ -1,6 +1,6 @@
 import React from "react";
-import { Footer as BaseFooter } from "../Footer";
-import type { FooterLinkItem, CompanyInfoData } from "../Footer";
+import { Footer as BaseFooter } from "../Footer.js";
+import type { FooterLinkItem, CompanyInfoData } from "../Footer.js";
 
 /**
  * CashwalkBiz 웹 푸터.

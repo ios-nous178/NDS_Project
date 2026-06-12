@@ -1,6 +1,6 @@
 import React from "react";
 import { trostNeutral } from "@nudge-design/tokens";
-import type { TrostUser } from "./types";
+import type { TrostUser } from "./types.js";
 
 export interface TrostLoginSectionProps {
   user?: TrostUser | null;

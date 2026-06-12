@@ -1,6 +1,6 @@
 import React from "react";
-import { FooterInfo } from "../Footer";
-import { RUNMILE_LOGO_GRAY700_DATA_URI } from "../brand-logo-defaults";
+import { FooterInfo } from "../Footer.js";
+import { RUNMILE_LOGO_GRAY700_DATA_URI } from "../brand-logo-defaults.js";
 
 /**
  * Runmile Footer (Figma 22:80 PC · 43:846 Mobile).

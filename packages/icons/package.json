@@ -7,41 +7,49 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./mono": {
       "types": "./dist/mono/index.d.ts",
-      "import": "./dist/mono/index.js"
+      "import": "./dist/mono/index.js",
+      "default": "./dist/mono/index.js"
     },
     "./multicolor": {
       "types": "./dist/multicolor/index.d.ts",
-      "import": "./dist/multicolor/index.js"
+      "import": "./dist/multicolor/index.js",
+      "default": "./dist/multicolor/index.js"
     },
     "./vanilla": {
       "types": "./dist/vanilla.d.ts",
-      "import": "./dist/vanilla.js"
+      "import": "./dist/vanilla.js",
+      "default": "./dist/vanilla.js"
     },
     "./remote-url": {
       "types": "./dist/remote-url.d.ts",
-      "import": "./dist/remote-url.js"
+      "import": "./dist/remote-url.js",
+      "default": "./dist/remote-url.js"
     },
     "./mono/vanilla": {
       "types": "./dist/mono/vanilla.d.ts",
-      "import": "./dist/mono/vanilla.js"
+      "import": "./dist/mono/vanilla.js",
+      "default": "./dist/mono/vanilla.js"
     },
     "./multicolor/vanilla": {
       "types": "./dist/multicolor/vanilla.d.ts",
-      "import": "./dist/multicolor/vanilla.js"
+      "import": "./dist/multicolor/vanilla.js",
+      "default": "./dist/multicolor/vanilla.js"
     },
     "./manifest.json": "./dist/manifest.json"
   },
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
-    "generate": "node scripts/generate.js",
+    "generate": "node scripts/generate.cjs",
     "import:mockup": "node scripts/import-iconsax-mockup.mjs",
-    "build": "rm -rf dist && node scripts/generate.js && tsc && node scripts/generate-manifest.mjs",
+    "build": "rm -rf dist && node scripts/generate.cjs && tsc && node scripts/generate-manifest.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
@@ -52,5 +60,6 @@
     "react": "^18.0.0",
     "@types/react": "^18.0.0",
     "typescript": "^5.7.0"
-  }
+  },
+  "type": "module"
 }

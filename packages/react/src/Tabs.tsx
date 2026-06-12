@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 
-import { getMeasuredIndicatorStyle, getTabsPanelId, getTabsTriggerId } from "./internal/tabs";
+import { getMeasuredIndicatorStyle, getTabsPanelId, getTabsTriggerId } from "./internal/tabs.js";
 
 /* ─── Class names ─── */
 

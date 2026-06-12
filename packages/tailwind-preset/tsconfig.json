@@ -3,9 +3,11 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "declaration": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

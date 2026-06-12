@@ -1,7 +1,7 @@
 import React from "react";
-import { Header } from "../Header";
-import type { HeaderMenuItemData as WebHeaderMenuItem } from "../Header";
-import { CASHWALK_BIZ_LOGO_DATA_URI } from "../brand-logo-defaults";
+import { Header } from "../Header.js";
+import type { HeaderMenuItemData as WebHeaderMenuItem } from "../Header.js";
+import { CASHWALK_BIZ_LOGO_DATA_URI } from "../brand-logo-defaults.js";
 
 /**
  * CashwalkBiz (캐포비 · 캐시워크 for Business) 웹 헤더.

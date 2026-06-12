@@ -1,6 +1,6 @@
 import React from "react";
-import { FooterTabBar } from "../Footer";
-import type { FooterTabItem } from "../Footer";
+import { FooterTabBar } from "../Footer.js";
+import type { FooterTabItem } from "../Footer.js";
 import {
   HomeIcon,
   HomeActiveIcon,

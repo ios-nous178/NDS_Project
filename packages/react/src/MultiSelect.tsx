@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { addDismissableLayerListeners } from "./internal/web";
-import { Checkbox } from "./Checkbox";
-import { SearchInput } from "./SearchInput";
-import { Button } from "./Button";
+import { addDismissableLayerListeners } from "./internal/web.js";
+import { Checkbox } from "./Checkbox.js";
+import { SearchInput } from "./SearchInput.js";
+import { Button } from "./Button.js";
 
 /* ─── Class names ─── */
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { cv } from "@nudge-design/tokens";
-import { arcPath, clamp, findSegment } from "./viz-svg";
+import { arcPath, clamp, findSegment } from "./viz-svg.js";
 
 /* ─── Constants ─── */
 

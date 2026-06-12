@@ -1,8 +1,8 @@
 import React from "react";
-import { Header } from "../Header";
-import type { HeaderMenuItemData as WebHeaderMenuItem } from "../Header";
-import { NudgeEAPLogo } from "./Logo";
-import type { NudgeEAPLogoVariant } from "./Logo";
+import { Header } from "../Header.js";
+import type { HeaderMenuItemData as WebHeaderMenuItem } from "../Header.js";
+import { NudgeEAPLogo } from "./Logo.js";
+import type { NudgeEAPLogoVariant } from "./Logo.js";
 
 /**
  * NudgeEAP 웹 헤더 (PC) — Figma 39:5751 (NudgeEAP Dev) 정합.

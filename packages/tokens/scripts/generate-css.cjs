@@ -1,6 +1,6 @@
 /**
  * Generates CSS custom properties from compiled token JS files.
- * Run after tsc: node scripts/generate-css.js
+ * Run after tsc: node scripts/generate-css.cjs
  *
  * Outputs:
  *   dist/tokens.css   — NudgeEAP 기본 토큰
@@ -497,3 +497,10 @@ fs.writeFileSync(
   generateBrandTokens({ theme: runmileTheme, title: "runmile", cssImport: "runmile" }),
 );
 console.log(`Generated ${runmilePath}`);
+
+// 확장자 없는 "./css*" 서브패스의 types 조건이 가리키는 스텁.
+// 없으면 TS 6(새 Vite 템플릿 기본)에서 `import "@nudge-design/tokens/css"` 가
+// TS2882(side-effect import 타입 미발견)로 깨진다.
+const cssStubPath = path.join(distDir, "css-stub.d.ts");
+fs.writeFileSync(cssStubPath, "export {};\n");
+console.log(`Generated ${cssStubPath}`);

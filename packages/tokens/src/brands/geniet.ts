@@ -10,7 +10,7 @@
  *   - geniet.ts (이 파일) : palette + semantic + typography/spacing/elevation 묶음
  */
 
-import type { BrandTheme } from "./types";
+import type { BrandTheme } from "./types.js";
 import {
   genietBlue,
   genietGray,

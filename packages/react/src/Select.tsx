@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 
-import { type FieldWidth, resolveFieldWidth } from "./internal/fieldWidth";
-import { addDismissableLayerListeners, WebPortal } from "./internal/web";
+import { type FieldWidth, resolveFieldWidth } from "./internal/fieldWidth.js";
+import { addDismissableLayerListeners, WebPortal } from "./internal/web.js";
 
 /* ─── Class names ─── */
 

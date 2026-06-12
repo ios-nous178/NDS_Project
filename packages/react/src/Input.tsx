@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import { cv, sizing, spacing } from "@nudge-design/tokens";
-import { type FieldWidth, resolveFieldWidth } from "./internal/fieldWidth";
+import { type FieldWidth, resolveFieldWidth } from "./internal/fieldWidth.js";
 
 /* ─── Class names ─── */
 

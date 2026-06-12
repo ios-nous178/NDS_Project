@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { WebPortal } from "./internal/web";
+import { WebPortal } from "./internal/web.js";
 
 /* ─── Class names ─── */
 

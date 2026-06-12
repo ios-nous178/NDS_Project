@@ -4,14 +4,14 @@ export {
   BRAND_ALIAS_MAP,
   resolveBrandSlug,
   getBrandProfile,
-} from "./brand-profiles";
+} from "./brand-profiles.js";
 export type {
   BrandSlug,
   BrandProfile,
   BrandCtaPolicy,
   BrandModalPolicy,
   BrandNotificationPolicy,
-} from "./brand-profiles";
+} from "./brand-profiles.js";
 export {
   colors,
   neutral,
@@ -23,13 +23,13 @@ export {
   coralRed,
   green,
   amber,
-} from "./colors";
-export { cv } from "./cssVar";
-export type { CssVarRef } from "./cssVar";
-export { semanticGuide, getSemanticGuide } from "./guide";
-export type { GuideStatus, GuideMeta } from "./guide";
-export { typography, fontFamily, fontWeight, typeScale } from "./typography";
-export type { TypeStyle } from "./typography";
+} from "./colors.js";
+export { cv } from "./cssVar.js";
+export type { CssVarRef } from "./cssVar.js";
+export { semanticGuide, getSemanticGuide } from "./guide.js";
+export type { GuideStatus, GuideMeta } from "./guide.js";
+export { typography, fontFamily, fontWeight, typeScale } from "./typography.js";
+export type { TypeStyle } from "./typography.js";
 export {
   spacing,
   gap,
@@ -41,16 +41,16 @@ export {
   stroke,
   sizing,
   grid,
-} from "./spacing";
-export { elevation, shadow, zIndex, elevationLevel } from "./elevation";
-export type { ShadowLevel, ElevationLevelName } from "./elevation";
-export { motion, duration, easing, transition } from "./motion";
+} from "./spacing.js";
+export { elevation, shadow, zIndex, elevationLevel } from "./elevation.js";
+export type { ShadowLevel, ElevationLevelName } from "./elevation.js";
+export { motion, duration, easing, transition } from "./motion.js";
 export {
   BRAND_ACTIONS_LAYOUT,
   DEFAULT_ACTIONS_LAYOUT,
   resolveActionsLayout,
-} from "./actionsLayout";
-export type { ActionsLayout } from "./actionsLayout";
+} from "./actionsLayout.js";
+export type { ActionsLayout } from "./actionsLayout.js";
 
 // Brand themes
 export type {
@@ -60,7 +60,7 @@ export type {
   TypographyOverrides,
   SpacingOverrides,
   ElevationOverrides,
-} from "./brands";
+} from "./brands/index.js";
 export {
   nudgeEapTheme,
   nudgeEapSemantic,
@@ -68,14 +68,14 @@ export {
   genietTheme,
   cashwalkBizTheme,
   runmileTheme,
-} from "./brands";
+} from "./brands/index.js";
 export type {
   NudgeEapSemanticTokens,
   TrostSemanticTokens,
   GenietSemanticTokens,
   CashwalkBizSemanticTokens,
   RunmileSemanticTokens,
-} from "./brands";
+} from "./brands/index.js";
 export {
   trostYellow,
   trostCobalt,
@@ -84,7 +84,7 @@ export {
   trostStatus,
   trostSemantic,
   trostEapBanner,
-} from "./brands";
+} from "./brands/index.js";
 export {
   genietMint,
   genietRed,
@@ -96,7 +96,7 @@ export {
   genietNeutral,
   genietStatus,
   genietSemantic,
-} from "./brands";
+} from "./brands/index.js";
 export {
   cashwalkBizCommon,
   cashwalkBizNeutral,
@@ -107,7 +107,7 @@ export {
   cashwalkBizBrown,
   cashwalkBizStatus,
   cashwalkBizSemantic,
-} from "./brands";
+} from "./brands/index.js";
 export {
   runmileOrange,
   runmileBlue,
@@ -116,4 +116,4 @@ export {
   runmileNeutral,
   runmileStatus,
   runmileSemantic,
-} from "./brands";
+} from "./brands/index.js";

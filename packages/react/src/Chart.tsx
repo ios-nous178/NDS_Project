@@ -6,7 +6,7 @@ import {
   type ChartConfig,
   type ChartSeries,
   type ChartTooltip,
-} from "./chart-svg";
+} from "./chart-svg.js";
 
 /**
  * Chart — 캐포비 어드민 통계 차트 (line / grouped-bar).
@@ -54,4 +54,4 @@ export function Chart({
   return <div className={rootClass} {...rest} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-export type { ChartSeries, ChartTooltip, ChartConfig } from "./chart-svg";
+export type { ChartSeries, ChartTooltip, ChartConfig } from "./chart-svg.js";

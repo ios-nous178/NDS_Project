@@ -11,7 +11,7 @@
  *   - nudge-eap.ts (이 파일): palette + semantic + typography/spacing/elevation 묶음
  */
 
-import type { BrandTheme } from "./types";
+import type { BrandTheme } from "./types.js";
 import { neutral, coolGray, blue, magenta, yellow, red, coralRed, green, amber } from "../colors.js";
 import { fontFamily, typeScale } from "../typography.js";
 import { radius } from "../spacing.js";

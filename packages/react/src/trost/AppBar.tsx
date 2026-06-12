@@ -10,14 +10,14 @@ import {
   typeScale,
   zIndex,
 } from "@nudge-design/tokens";
-import { Header } from "../Header";
+import { Header } from "../Header.js";
 import type {
   HeaderMenuItemData as AppBarGNBItem,
   HeaderAuthMenuItem as AppBarAuthMenuItem,
-} from "../Header";
-import { Button } from "../Button";
-import { TrendingKeywords } from "../TrendingKeywords";
-import type { TrendingKeywordItem } from "../TrendingKeywords";
+} from "../Header.js";
+import { Button } from "../Button.js";
+import { TrendingKeywords } from "../TrendingKeywords.js";
+import type { TrendingKeywordItem } from "../TrendingKeywords.js";
 import {
   TrostEnergyCoinIcon,
   TrostBackIcon,
@@ -26,7 +26,7 @@ import {
   TrostAlarmIcon,
   TrostSettingIcon,
 } from "@nudge-design/icons";
-import { TROST_LOGO_DATA_URI, TROST_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults";
+import { TROST_LOGO_DATA_URI, TROST_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults.js";
 
 /* ─── Constants (Trost 웹사이트 실측 스펙 + 모바일 홈 헤더 2단 가이드) ─── */
 

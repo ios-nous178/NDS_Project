@@ -1,6 +1,6 @@
 import React from "react";
 import { trostNeutral, trostStatus } from "@nudge-design/tokens";
-import type { TrostTabItem } from "./types";
+import type { TrostTabItem } from "./types.js";
 
 export interface TrostTabNavigationProps {
   tabs: TrostTabItem[];

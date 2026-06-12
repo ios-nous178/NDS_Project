@@ -1,10 +1,10 @@
 import React from "react";
-import { Header } from "../Header";
+import { Header } from "../Header.js";
 import type {
   HeaderMenuItemData as AppBarGNBItem,
   HeaderAuthMenuItem as AppBarAuthMenuItem,
-} from "../Header";
-import { NudgeEAPLogo } from "./Logo";
+} from "../Header.js";
+import { NudgeEAPLogo } from "./Logo.js";
 
 /**
  * NudgeEAP 상단 헤더.

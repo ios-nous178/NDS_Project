@@ -1,6 +1,6 @@
 import React from "react";
 import { trostNeutral } from "@nudge-design/tokens";
-import { TROST_LOGO_DATA_URI } from "../brand-logo-defaults";
+import { TROST_LOGO_DATA_URI } from "../brand-logo-defaults.js";
 
 export interface TrostUtilityHeaderProps {
   /** 좌측 로고 링크 href */

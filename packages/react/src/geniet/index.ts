@@ -5,6 +5,6 @@
  * 부르면 된다. 토큰·아이콘·구조는 DS 가 들고있고, 콘텐츠 (logo, gnb items, company info)
  * 만 props 로 주입.
  */
-export * from "./AppBar";
-export * from "./Footer";
-export * from "./BottomNav";
+export * from "./AppBar.js";
+export * from "./Footer.js";
+export * from "./BottomNav.js";

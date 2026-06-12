@@ -5,10 +5,10 @@ export type {
   TypographyOverrides,
   SpacingOverrides,
   ElevationOverrides,
-} from "./types";
+} from "./types.js";
 
-export { nudgeEapTheme, nudgeEapSemantic } from "./nudge-eap";
-export type { NudgeEapSemanticTokens } from "./nudge-eap";
+export { nudgeEapTheme, nudgeEapSemantic } from "./nudge-eap.js";
+export type { NudgeEapSemanticTokens } from "./nudge-eap.js";
 
 export {
   trostTheme,
@@ -19,8 +19,8 @@ export {
   trostStatus,
   trostSemantic,
   trostEapBanner,
-} from "./trost";
-export type { TrostSemanticTokens } from "./trost";
+} from "./trost.js";
+export type { TrostSemanticTokens } from "./trost.js";
 
 export {
   genietTheme,
@@ -34,8 +34,8 @@ export {
   genietNeutral,
   genietStatus,
   genietSemantic,
-} from "./geniet";
-export type { GenietSemanticTokens } from "./geniet";
+} from "./geniet.js";
+export type { GenietSemanticTokens } from "./geniet.js";
 
 export {
   cashwalkBizTheme,
@@ -48,8 +48,8 @@ export {
   cashwalkBizBrown,
   cashwalkBizStatus,
   cashwalkBizSemantic,
-} from "./cashwalk-biz";
-export type { CashwalkBizSemanticTokens } from "./cashwalk-biz";
+} from "./cashwalk-biz.js";
+export type { CashwalkBizSemanticTokens } from "./cashwalk-biz.js";
 
 export {
   runmileTheme,
@@ -60,5 +60,5 @@ export {
   runmileNeutral,
   runmileStatus,
   runmileSemantic,
-} from "./runmile";
-export type { RunmileSemanticTokens } from "./runmile";
+} from "./runmile.js";
+export type { RunmileSemanticTokens } from "./runmile.js";

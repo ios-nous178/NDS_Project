@@ -5,7 +5,7 @@ import {
   RunmileAccountActiveIcon,
   RunmileSearchIcon,
 } from "@nudge-design/icons";
-import { RUNMILE_LOGO_DATA_URI } from "../brand-logo-defaults";
+import { RUNMILE_LOGO_DATA_URI } from "../brand-logo-defaults.js";
 
 /**
  * Runmile PC 메인 헤더 (Figma 1058:13271 / 1058:13336 / 1059:13975).

@@ -1,6 +1,6 @@
 import React, { useId, useRef, useState } from "react";
 
-import { RemoveIcon } from "./internal/RemoveIcon";
+import { RemoveIcon } from "./internal/RemoveIcon.js";
 
 /* ─── Constants ─── */
 

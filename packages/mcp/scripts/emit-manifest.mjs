@@ -346,7 +346,12 @@ function readPkg(relDir) {
     dependencies: pkg.dependencies ?? {},
     peerDependencies: pkg.peerDependencies ?? {},
     cssExports: Object.entries(pkg.exports ?? {})
-      .filter(([_k, v]) => typeof v === "string" && v.endsWith(".css"))
+      // 문자열 타깃 또는 조건 객체의 default 타깃 — tokens 의 "./css*" 처럼
+      // { types: <stub.d.ts>, default: <*.css> } 형태도 CSS export 로 집계한다.
+      .filter(([_k, v]) => {
+        const target = typeof v === "string" ? v : v?.default;
+        return typeof target === "string" && target.endsWith(".css");
+      })
       .map(([k]) => `${pkg.name}${k.replace(/^\./, "")}`),
   };
 }

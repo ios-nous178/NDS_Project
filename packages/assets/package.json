@@ -8,47 +8,58 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./brand-logos": {
       "types": "./dist/brand-logos/index.d.ts",
-      "import": "./dist/brand-logos/index.js"
+      "import": "./dist/brand-logos/index.js",
+      "default": "./dist/brand-logos/index.js"
     },
     "./brand-logo-metadata": {
       "types": "./dist/brand-logo-metadata.d.ts",
-      "import": "./dist/brand-logo-metadata.js"
+      "import": "./dist/brand-logo-metadata.js",
+      "default": "./dist/brand-logo-metadata.js"
     },
     "./brand-logo-defaults": {
       "types": "./dist/brand-logo-defaults.d.ts",
-      "import": "./dist/brand-logo-defaults.js"
+      "import": "./dist/brand-logo-defaults.js",
+      "default": "./dist/brand-logo-defaults.js"
     },
     "./sns-logos": {
       "types": "./dist/sns-logo-manifest.d.ts",
-      "import": "./dist/sns-logo-manifest.js"
+      "import": "./dist/sns-logo-manifest.js",
+      "default": "./dist/sns-logo-manifest.js"
     },
     "./sns-logo-metadata": {
       "types": "./dist/sns-logo-metadata.d.ts",
-      "import": "./dist/sns-logo-metadata.js"
+      "import": "./dist/sns-logo-metadata.js",
+      "default": "./dist/sns-logo-metadata.js"
     },
     "./sns-logo-defaults": {
       "types": "./dist/sns-logo-defaults.d.ts",
-      "import": "./dist/sns-logo-defaults.js"
+      "import": "./dist/sns-logo-defaults.js",
+      "default": "./dist/sns-logo-defaults.js"
     },
     "./profile-images": {
       "types": "./dist/profile-image-metadata.d.ts",
-      "import": "./dist/profile-image-metadata.js"
+      "import": "./dist/profile-image-metadata.js",
+      "default": "./dist/profile-image-metadata.js"
     },
     "./illustrations": {
       "types": "./dist/illustration-metadata.d.ts",
-      "import": "./dist/illustration-metadata.js"
+      "import": "./dist/illustration-metadata.js",
+      "default": "./dist/illustration-metadata.js"
     },
     "./marathon-events": {
       "types": "./dist/marathon-event-metadata.d.ts",
-      "import": "./dist/marathon-event-metadata.js"
+      "import": "./dist/marathon-event-metadata.js",
+      "default": "./dist/marathon-event-metadata.js"
     },
     "./nudge-img": {
       "types": "./dist/nudge-img-metadata.d.ts",
-      "import": "./dist/nudge-img-metadata.js"
+      "import": "./dist/nudge-img-metadata.js",
+      "default": "./dist/nudge-img-metadata.js"
     },
     "./nudge-eap-images": {
       "types": "./dist/nudge-eap-image-metadata.d.ts",

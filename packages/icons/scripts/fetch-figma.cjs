@@ -9,7 +9,7 @@
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
-const { normalize } = require("./normalize-figma.js");
+const { normalize } = require("./normalize-figma.cjs");
 
 const ICONS_JSON = path.join(__dirname, "figma-icons.json");
 const SVG_OUT = path.join(__dirname, "..", "svg");

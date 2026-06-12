@@ -9,5 +9,5 @@
  *   - Footer PC: 380:2208 / Mobile: 98:1267
  *   - Logo guide: 3154:550 (캐포비 Library)
  */
-export * from "./WebHeader";
-export * from "./Footer";
+export * from "./WebHeader.js";
+export * from "./Footer.js";

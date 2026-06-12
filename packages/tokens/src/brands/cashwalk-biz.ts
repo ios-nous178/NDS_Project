@@ -18,7 +18,7 @@
  * Gap (tight/default/comfortable/loose/wide) 도 base 와 동일 → cascade.
  */
 
-import type { BrandTheme } from "./types";
+import type { BrandTheme } from "./types.js";
 import {
   cashwalkBizBlue,
   cashwalkBizBrown,
