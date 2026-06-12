@@ -46,12 +46,22 @@ Windows: PowerShell 권장. `pnpm` 설치 시 실행 정책 문제가 나면
 
 ## 주요 커맨드
 
-| 명령                                                      | 설명               |
-| --------------------------------------------------------- | ------------------ |
-| `pnpm --filter storybook dev`                             | 스토리북 개발 서버 |
-| `pnpm build`                                              | 전체 빌드          |
-| `pnpm build --filter @nudge-design/tokens`                | 토큰만 빌드        |
-| `npx tsc --noEmit --project apps/storybook/tsconfig.json` | 타입 체크          |
+| 명령                                                      | 설명                                                                                         |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `pnpm --filter storybook dev`                             | 스토리북 개발 서버                                                                           |
+| `pnpm build`                                              | 전체 빌드                                                                                    |
+| `pnpm build --filter @nudge-design/tokens`                | 토큰만 빌드                                                                                  |
+| `npx tsc --noEmit --project apps/storybook/tsconfig.json` | 타입 체크                                                                                    |
+| `pnpm fix`                                                | **커밋 전 필수** — 모든 파생 생성물을 올바른 빌드 순서로 일괄 재생성 (CI 게이트와 동일 기준) |
+
+## 커밋 전 게이트 (CI 안 터지게)
+
+CI 실패의 최다 원인은 **생성물 커밋 누락** — 16개 `--check` 게이트는 검증만 하고 재생성은 안 해준다.
+
+1. **커밋 전 `pnpm fix`** — 생성물(guides.generated.ts·catalog.json·metadata/\*·tokens src 등) 일괄 재생성. 출력된 "재생성된 파일" 목록을 변경분과 **같이 커밋**한다.
+2. pre-commit(husky)과 Claude Code hook 이 `scripts/precommit-gate.mjs`(staged 기반 무빌드 선별 게이트, ~1초)를 자동 실행해 drift 를 차단한다. 비상시 `git commit --no-verify`.
+3. 게이트 정의는 `scripts/gates.mjs` 가 SSOT — check-ssot(CI)·fix-all(`pnpm fix`)·precommit-gate 가 공유. 게이트 추가/변경은 거기 한 곳만.
+4. DS 패키지 소스를 고치면 `pnpm changeset`, 의존성을 바꾸면 `pnpm-lock.yaml` 도 같이 — gate 가 경고로 알려준다.
 
 ## 주요 디렉토리
 

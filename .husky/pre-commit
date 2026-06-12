@@ -1,0 +1,2 @@
+pnpm lint-staged
+node scripts/precommit-gate.mjs

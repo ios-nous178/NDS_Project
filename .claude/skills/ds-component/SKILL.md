@@ -18,7 +18,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 2. **토큰-퍼스트, raw hex/px 금지.** 색은 semantic 토큰(`cv.*` / `--semantic-*`), 크기는 `sizing.*`/`spacing.*`/`radius.*`. **Figma hex 가 어떤 토큰에도 안 맞으면 새 값을 지어내지 말고 멈춰서 사용자/디자이너에게 flag.** (예: 토글 `#60be34`, 보더 `#111` — 토큰 부재 시 보고)
 3. **브랜드는 cascade 로.** 컴포넌트는 hex 를 박지 않는다. 브랜드 분기(예: 캐포비 admin input 40px/radius4, 캐포비 시그니처 검정 버튼)는 `data-brand` cascade + `--nds-*` 슬롯/시멘틱 토큰으로. Figma 노드의 브랜드/페이지로 어느 브랜드인지 먼저 파악.
 4. **3면 미러 lockstep.** `react .tsx` ↔ `styles .ts` ↔ `html nds-*.ts` 는 같은 클래스명·`data-slot`·동작·치수를 공유한다. 하나만 고치고 끝내지 않는다.
-5. **외부 전파는 1급 단계** (가장 자주 누락). Storybook 스토리 + **AllComponents 카탈로그** + **MCP 가이드(guides-src/*.md + build:guides)** + **changeset**. 빠지면 외부 프로젝트에 전파 안 됨.
+5. **외부 전파는 1급 단계** (가장 자주 누락). Storybook 스토리 + **AllComponents 카탈로그** + **MCP 가이드(guides-src/\*.md + build:guides)** + **changeset**. 빠지면 외부 프로젝트에 전파 안 됨.
 
 ## 표면 맵 (어디를 건드리나)
 
@@ -89,6 +89,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 - **정합 검증("스타일 다 맞아?")** — 빌드된 브랜드 CSS 실측값을 Figma 치수와 대조:
   - `packages/html/dist/standalone/brand.*.css` 에서 `--nds-*` / 토큰 resolved 값을 grep → Figma metadata(height/padding/radius/color)와 1:1 비교. 어긋나면 컴포넌트가 아니라 **토큰/브랜드 cascade** 를 의심.
 - HTML 산출물 검증: 예시 마크업에 `validate_html_mockup` (위반 0).
+- **생성물 일괄 재생성(필수 마지막 단계)**: `pnpm fix` — 모든 파생 생성물(guides.generated.ts·catalog.json·metadata/\*·미러 등)을 올바른 빌드 순서로 재생성하고, 쓰기 모드 없는 게이트(runtime-registry·storybook-catalog·mirror-parity 등)까지 검증한다. 출력된 "재생성된 파일" 목록을 변경분과 **같이 staged** 해야 CI(`pnpm lint`)가 통과한다. (CI 터짐의 최다 원인 = 생성물 커밋 누락 — 이 단계가 그걸 닫는다.)
 
 ### Phase 6 — changeset + Storybook 띄우기
 
