@@ -112,7 +112,7 @@ export const composerStyles = `
     box-sizing: border-box;
   }
 
-  :where(.${CC_TEXTAREA_CLASS}::placeholder) { color: ${cv.textRole.muted}; }
+  :where(.${CC_TEXTAREA_CLASS}::placeholder) { color: ${cv.input.placeholder}; }
 
   :where(.${CC_SEND_CLASS}) {
     width: 36px;

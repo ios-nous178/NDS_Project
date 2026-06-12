@@ -137,7 +137,7 @@ export const headerStyles = `
   }
 
   :where(.${H_SEARCH_CLASS} input::placeholder) {
-    color: ${cv.textRole.muted};
+    color: ${cv.input.placeholder};
   }
 
   :where(.${H_SEARCH_CLASS}) .${H_SEARCH_ICON_CLASS} {
