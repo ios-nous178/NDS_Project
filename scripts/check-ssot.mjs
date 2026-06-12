@@ -64,6 +64,11 @@ const steps = [
     args: ["scripts/check-brand-completeness.mjs"],
   },
   {
+    label: "check generated component-attrs freshness",
+    command: "node",
+    args: ["packages/html/scripts/generate-component-attrs.mjs", "--check"],
+  },
+  {
     label: "check Storybook catalog coverage",
     command: "node",
     args: ["scripts/check-storybook-catalog.mjs"],

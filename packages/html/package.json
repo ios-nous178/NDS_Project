@@ -32,7 +32,8 @@
     "build:fixture": "node test-fixture/build-fixture.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "generate:attrs": "node scripts/generate-component-attrs.mjs"
   },
   "dependencies": {
     "@nudge-design/assets": "workspace:*",

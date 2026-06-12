@@ -22,6 +22,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import {
   BUTTON_COLORS,
   BUTTON_SHAPES,
@@ -68,17 +69,10 @@ const FORWARDED_ATTRS = [
 export class NdsButton extends NdsElement {
   static elementName = "nds-button";
 
+  // react Props 파생분은 코드젠 SSOT(generated/component-attrs.ts) — react prop 추가/삭제 자동 반영.
+  // 인라인 문자열은 html 전용 attr (react 는 DOM 위임/내부 상태로 처리).
   static get observedAttributes(): readonly string[] {
-    return [
-      "variant",
-      "size",
-      "color",
-      "shape",
-      "disabled",
-      "full-width",
-      "type",
-      ...FORWARDED_ATTRS,
-    ];
+    return [...COMPONENT_ATTRS["nds-button"].observedAttributes, "disabled", "type", ...FORWARDED_ATTRS];
   }
 
   private _inner: HTMLButtonElement | null = null;

@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 export type BadgeVariant = "fill" | "ghost" | "line";
 export type BadgeColor = "brand" | "neutral" | "success" | "error" | "caution" | "info";
@@ -153,8 +154,9 @@ const SIZE_TOKENS: Record<BadgeSize, SizeTokens> = {
 export class NdsBadge extends NdsElement {
   static elementName = "nds-badge";
 
+  // react Props 파생분은 코드젠 SSOT (generated/component-attrs.ts)
   static get observedAttributes(): readonly string[] {
-    return ["variant", "color", "size"];
+    return [...COMPONENT_ATTRS["nds-badge"].observedAttributes];
   }
 
   private _root: HTMLSpanElement | null = null;

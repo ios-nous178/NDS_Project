@@ -35,6 +35,7 @@
     "lint:input-focus": "node scripts/check-input-tests.mjs",
     "lint:actions-layout": "node scripts/check-actions-layout.mjs",
     "lint:brand-completeness": "node scripts/check-brand-completeness.mjs",
+    "lint:component-attrs": "node packages/html/scripts/generate-component-attrs.mjs --check",
     "lint:runtime-registry": "node scripts/check-runtime-registry.mjs",
     "lint:ssot": "node scripts/check-ssot.mjs",
     "sync:skills": "node scripts/sync-skills.mjs",
