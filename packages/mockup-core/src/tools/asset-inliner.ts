@@ -1,7 +1,7 @@
 /**
  * tools/asset-inliner.ts — DS raster/vector 자산 on-demand base64 인라이너.
  *
- * `@nudge-design/assets` 의 화면 이미지(nudge-img 58종 · 일러스트 · 프로필 등)는
+ * `@nudge-design/assets` 의 화면 이미지(NudgeEAP images · 일러스트 · 프로필 등)는
  * 로고와 달리 dataUri 를 미제공한다(raster PNG/webp 라 전부 인라인하면 비대). 따라서
  * standalone 번들에도 안 들어간다. 대신 **목업이 실제로 참조한 자산만** 빌드 시 base64
  * data URI 로 치환해, 단일 HTML 의 self-contained · 무배포(S3 불필요) 성질을 유지한다.

@@ -131,6 +131,8 @@ if (!fs.existsSync(iconsVanillaSrc)) {
   );
   process.exit(1);
 }
+const assetsManifestSrc = path.join(ROOT, "packages/assets/dist/manifest.json");
+const iconsManifestSrc = path.join(ROOT, "packages/icons/dist/manifest.json");
 
 // ── DS 정합성 하드 게이트 — 깨진 .mcpb 발행 차단 ──────────────────────────────
 //   --no-build 경로(html build 가 안 돌아 registry 임베드 게이트가 안 뜀)와 일반 경로 모두에서
@@ -175,7 +177,9 @@ copyFile(path.join(MCP, "manifest.json"), path.join(BUNDLE_DIR, "dist/manifest.j
 copyFile(path.join(MCP, "catalog.json"), path.join(BUNDLE_DIR, "dist/catalog.json"));
 copyDir(standaloneSrc, path.join(BUNDLE_DIR, "dist/standalone"));
 copyDir(assetsFilesSrc, path.join(BUNDLE_DIR, "dist/assets"));
+if (fs.existsSync(assetsManifestSrc)) copyFile(assetsManifestSrc, path.join(BUNDLE_DIR, "dist/assets/manifest.json"));
 copyFile(iconsVanillaSrc, path.join(BUNDLE_DIR, "dist/icons/vanilla.js"));
+if (fs.existsSync(iconsManifestSrc)) copyFile(iconsManifestSrc, path.join(BUNDLE_DIR, "dist/icons/manifest.json"));
 
 // 3) get_setup 가 외부 목업 프로젝트에 설치 안내하는 DS .tgz.
 //    server 는 mcpb 모드에서 __dirname/../local-packages (= dist/local-packages) 를 읽는다.

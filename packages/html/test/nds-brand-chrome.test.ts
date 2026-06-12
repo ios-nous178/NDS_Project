@@ -173,7 +173,7 @@ describe("nds-brand-header / nds-brand-footer", () => {
      * BRAND_DATA 외 별도 자산을 쓸 때만 asset-base-url 이 prefix 로 적용. */
     const el = document.createElement("nds-brand-header");
     el.setAttribute("brand", "nudge-eap");
-    el.setAttribute("asset-base-url", "https://cdn.example.com/nds/brand-logos/");
+    el.setAttribute("asset-base-url", "https://cdn.example.com/nds/assets/");
     document.body.appendChild(el);
     await flush();
 

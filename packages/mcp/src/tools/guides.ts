@@ -187,7 +187,7 @@ export function brandChromeHtmlRedirect(name: string): string | undefined {
     case "WebHeader":
     case "DesktopHeader":
       return (
-        `<nds-brand-header brand='${slug}' surface='web' active-key='...' asset-base-url='/brand-logos'> ` +
+        `<nds-brand-header brand='${slug}' surface='web' active-key='...' asset-base-url='/assets'> ` +
         `— 상세: get_guide({ topic: 'component:BrandHeader', target: 'html' })`
       );
     case "AppBar":
@@ -199,7 +199,7 @@ export function brandChromeHtmlRedirect(name: string): string | undefined {
     case "Footer":
     case "WebFooter":
       return (
-        `<nds-brand-footer brand='${slug}' surface='web' asset-base-url='/brand-logos'> ` +
+        `<nds-brand-footer brand='${slug}' surface='web' asset-base-url='/assets'> ` +
         `(앱 푸터는 surface='app') — 상세: get_guide({ topic: 'component:BrandFooter', target: 'html' })`
       );
     case "AppFooter":
@@ -1253,7 +1253,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## UI 구현 규칙
 
 - 가능한 한 DS 컴포넌트(\`<nds-*>\`) 를 우선 사용한다.
-- **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/brand-logos'>\` + \`<nds-brand-footer brand='...' surface='web|app' asset-base-url='/brand-logos'>\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 BRAND_DATA 에서 자동. nds-header / nds-header-logo / nds-header-menu(-item) / nds-header-actions / nds-header-auth-button 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:BrandHeader", target: "html" })\` 로 브랜드별 필요 로고 파일 (\`public/brand-logos/*.png|svg|webp\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-brand-chrome\`) find_component 결과만 보고 못 짚는 함정 — BrandHeader/BrandFooter 가이드를 먼저 호출하라.**
+- **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/assets'>\` + \`<nds-brand-footer brand='...' surface='web|app' asset-base-url='/assets'>\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 BRAND_DATA 에서 자동. nds-header / nds-header-logo / nds-header-menu(-item) / nds-header-actions / nds-header-auth-button 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:BrandHeader", target: "html" })\` 로 브랜드별 필요 로고 파일 (\`public/assets/brand/{brand}/logos/*\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-brand-chrome\`) find_component 결과만 보고 못 짚는 함정 — BrandHeader/BrandFooter 가이드를 먼저 호출하라.**
 - **모든 버튼은 동작한다.** 클릭 후 아무 변화가 없는 버튼은 산출물 결함이다. 필터/탭/모달/선택 피커/초기화/저장/다음/이전/삭제 버튼은 실제 DOM 상태를 바꿔야 하고, 단순 데모 CTA 도 aria-live 피드백이나 모달/상태 텍스트를 갱신해야 한다.
 - **DS 뱃지 숫자는 직접 세지 말 것.** \`build_singlefile_html\` 이 산출된 \`dist/index.html\` 기준으로 \`data-ds-badge\` 텍스트를 최신 \`dsUsageSummary\` 로 자동 치환한다. 원본에 임시 숫자를 넣어도 최종 산출물은 build 응답 값을 SSOT 로 삼는다.
 - **기존 antd/HTML 코드를 받았을 때 className 만 치환하지 말 것**. \`<button class="nds-button">\` 은 nds-button 흉내일 뿐 실제 Web Component 가 아님 — 반드시 \`<nds-button>\` 으로 element 자체를 바꾼다.
@@ -1535,7 +1535,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## UI 구현 규칙
 
 - 가능한 한 DS 컴포넌트를 우선 사용한다.
-- **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<BrandHeader brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' activeKey='...' assetBaseUrl='/brand-logos' />\` + \`<BrandFooter brand='...' surface='web|app' assetBaseUrl='/brand-logos' />\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 BRAND_DATA 에서 자동. Header / HeaderLogo / HeaderMenu(Item) / HeaderActions / HeaderAuthButton 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:BrandHeader" })\` 로 브랜드별 필요 로고 파일 (\`public/brand-logos/*.png|svg|webp\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-brand-chrome\` / \`BrandChrome\`) find_component 결과만 보고 못 짚는 함정 — BrandHeader/BrandFooter 가이드를 먼저 호출하라.**
+- **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<BrandHeader brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' activeKey='...' assetBaseUrl='/assets' />\` + \`<BrandFooter brand='...' surface='web|app' assetBaseUrl='/assets' />\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 BRAND_DATA 에서 자동. Header / HeaderLogo / HeaderMenu(Item) / HeaderActions / HeaderAuthButton 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:BrandHeader" })\` 로 브랜드별 필요 로고 파일 (\`public/assets/brand/{brand}/logos/*\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-brand-chrome\` / \`BrandChrome\`) find_component 결과만 보고 못 짚는 함정 — BrandHeader/BrandFooter 가이드를 먼저 호출하라.**
 - **기존 antd/HTML 코드를 받았을 때 변수명만 치환하지 말 것**. 색상값을 \`var(--...)\` 로 바꾸는 것만으론 "DS 적용"이 아니다. antd \`<Table>\` → DS \`<DataTable>\`, antd \`<Form>\` → DS \`Input\`/\`Select\` 조합 식으로 **컴포넌트 구조를 처음부터 재구성**한다. 한 줄이라도 antd import 가 남아 있으면 변환 미완료로 본다 (validate_mockup 의 \`antd-import-in-user-app\` 으로 자동 검출됨).
 - raw \`button\`, \`input\`, \`select\`, \`textarea\`는 특별한 이유가 없으면 사용하지 않는다.
 - **이모지·텍스트 기호 절대 금지**. 라벨/버튼/제목/placeholder/empty state 어디에도 이모지(😀 🔥 ⭐ 💡 ✅ ⚠️ 등) 박지 말 것. → ← ✓ ★ • 같은 기호 텍스트도 금지. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-design/icons\` 에서 찾고, 없으면 인라인 SVG. 진행/별점/불릿은 DS 컴포넌트 사용. \`validate_mockup\` 의 \`emoji-banned\` / \`text-symbol-banned\` 룰로 자동 위반 카운트됨.

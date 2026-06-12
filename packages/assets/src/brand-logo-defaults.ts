@@ -7,10 +7,10 @@
  * @nudge-design/html 과 @nudge-design/react 는 이 모듈을 re-export 한다
  * (이전엔 1:1 복제로 drift 위험이 있었음).
  *
- * 원본 파일: ./brand-logos/{brand}/* (각 브랜드 디렉토리)
+ * 원본 파일: ./files/brand/{brand}/logos/*
  *
  * 갱신 절차:
- *   1. src/brand-logos/{brand}/{file} 교체
+ *   1. src/files/brand/{brand}/logos/{file} 교체
  *   2. 본 파일의 해당 상수 base64 를 재생성 (`base64 -i {file}` 또는 build script)
  *   3. brand-logo-manifest.ts 에 새 variant 추가가 있으면 거기도 갱신
  */

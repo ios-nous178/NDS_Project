@@ -2,7 +2,7 @@
 /**
  * sync-mcpb-version.mjs — DS 패키지 버전 → 파생 버전 미러 동기화
  *
- * DS 패키지(@nudge-design/{react,tokens,icons,tailwind-preset}) 의 package.json
+ * DS 코드 패키지(@nudge-design/{react,tokens,styles,tailwind-preset,html}) 의 package.json
  * version 이 SSOT 이고, 다음 두 파생 미러를 같은 버전으로 맞춘다.
  *
  *   1. packages/mcp/manifest.json   — release-mcpb 워크플로우가 release tag 로 사용
@@ -27,17 +27,18 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
-// changeset `fixed` 그룹과 동일한 집합을 본다 — 한 패키지가 뒤처지면(assets 가
-// 그랬듯) 미러가 stale 한 패키지를 anchor 삼지 않도록. pack-local-packages.mjs 의
-// 드리프트 검사 대상(PACKAGES)과도 같은 목록이어야 세 스크립트가 어긋나지 않는다.
+// changeset `fixed` 그룹과 동일한 DS 코드 집합을 본다. assets/icons 는 별도
+// 버전 트랙이라 root/MCPB version anchor 에서 제외하고 manifest 의 asset_version /
+// icon_version 에만 기록한다.
 const DS_PACKAGE_DIRS = [
   "packages/react",
   "packages/tokens",
-  "packages/icons",
   "packages/tailwind-preset",
   "packages/styles",
-  "packages/assets",
+  "packages/html",
 ];
+const ASSET_PKG_PATH = path.join(ROOT, "packages/assets/package.json");
+const ICON_PKG_PATH = path.join(ROOT, "packages/icons/package.json");
 const MANIFEST_PATH = path.join(ROOT, "packages/mcp/manifest.json");
 const MCP_PKG_PATH = path.join(ROOT, "packages/mcp/package.json");
 const ROOT_PKG_PATH = path.join(ROOT, "package.json");
@@ -88,6 +89,8 @@ const targetVersion = maxEntry.version.raw;
 
 const manifest = readJson(MANIFEST_PATH);
 const rootPkg = readJson(ROOT_PKG_PATH);
+const assetPkg = readJson(ASSET_PKG_PATH);
+const iconPkg = readJson(ICON_PKG_PATH);
 
 const mirrors = [
   { label: "packages/mcp/manifest.json", path: MANIFEST_PATH, obj: manifest },
@@ -95,10 +98,25 @@ const mirrors = [
 ];
 
 const drift = mirrors.filter((m) => m.obj.version !== targetVersion);
+const manifestVersionFields = [
+  {
+    key: "asset_version",
+    label: "packages/mcp/manifest.json asset_version",
+    have: manifest.asset_version,
+    expected: assetPkg.version,
+  },
+  {
+    key: "icon_version",
+    label: "packages/mcp/manifest.json icon_version",
+    have: manifest.icon_version,
+    expected: iconPkg.version,
+  },
+];
+const manifestFieldDrift = manifestVersionFields.filter((m) => m.have !== m.expected);
 
-if (drift.length === 0) {
+if (drift.length === 0 && manifestFieldDrift.length === 0) {
   console.log(
-    `[sync-mcpb-version] all mirrors already at ${targetVersion} (max DS package = ${maxEntry.name})`,
+    `[sync-mcpb-version] all mirrors already at ${targetVersion}; assets=${assetPkg.version}, icons=${iconPkg.version}`,
   );
   process.exit(0);
 }
@@ -109,6 +127,9 @@ if (mode === "check") {
   );
   for (const m of drift) {
     console.error(`  - ${m.label}: have ${m.obj.version}, expected ${targetVersion}`);
+  }
+  for (const m of manifestFieldDrift) {
+    console.error(`  - ${m.label}: have ${m.have ?? "(missing)"}, expected ${m.expected}`);
   }
   console.error(`  Run \`pnpm sync:mcpb-version\` to fix.`);
   process.exit(1);
@@ -121,6 +142,15 @@ for (const m of drift) {
   console.log(
     `[sync-mcpb-version] ${m.label} ${before} → ${targetVersion} (anchor: ${maxEntry.name}@${targetVersion})`,
   );
+}
+
+if (manifestFieldDrift.length > 0) {
+  for (const field of manifestFieldDrift) {
+    const before = manifest[field.key];
+    manifest[field.key] = field.expected;
+    console.log(`[sync-mcpb-version] ${field.label} ${before ?? "(missing)"} → ${field.expected}`);
+  }
+  writeJson(MANIFEST_PATH, manifest);
 }
 
 // `@nudge-design/mcp` (내부 패키지) 의 package.json version 도 같이 맞춰주면

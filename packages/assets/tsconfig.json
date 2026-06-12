@@ -5,5 +5,5 @@
     "rootDir": "./src"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/brand-logos/**/*"]
+  "exclude": ["src/files/**/*"]
 }

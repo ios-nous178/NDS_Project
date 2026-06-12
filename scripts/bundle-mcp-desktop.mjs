@@ -178,9 +178,17 @@ copyDir(path.join(MCP, "references"), path.join(OUT, "references"));
 copyDir(standaloneSrc, path.join(OUT, "dist/standalone"));
 // DS 화면 이미지 자산 → dist/assets (server.mjs 의 __dirname/../assets 으로 resolve).
 copyDir(assetsFilesSrc, path.join(OUT, "dist/assets"));
+const assetsManifestSrc = path.join(ROOT, "packages/assets/dist/manifest.json");
+if (fs.existsSync(assetsManifestSrc)) {
+  fs.copyFileSync(assetsManifestSrc, path.join(OUT, "dist/assets/manifest.json"));
+}
 // 아이콘 vanilla 정의 → dist/icons/vanilla.js (server.mjs 의 __dirname/../icons/vanilla.js).
 fs.mkdirSync(path.join(OUT, "dist/icons"), { recursive: true });
 fs.copyFileSync(iconsVanillaSrc, path.join(OUT, "dist/icons/vanilla.js"));
+const iconsManifestSrc = path.join(ROOT, "packages/icons/dist/manifest.json");
+if (fs.existsSync(iconsManifestSrc)) {
+  fs.copyFileSync(iconsManifestSrc, path.join(OUT, "dist/icons/manifest.json"));
+}
 // vanilla.js 는 ESM(`export …`)인데 패키징되면 이 트리가 resources/mcp/ 로 떨어지며
 // 위쪽 `"type":"module"` package.json 조상이 사라진다. 그러면 Electron-as-node 가 bare
 // `.js` 를 CommonJS 로 파싱해 `Unexpected token 'export'` 로 죽고 find_icon 의 모든 아이콘

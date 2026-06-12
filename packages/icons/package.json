@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/icons",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "description": "SVG icon components for Nudge Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -21,6 +21,10 @@
       "types": "./dist/vanilla.d.ts",
       "import": "./dist/vanilla.js"
     },
+    "./remote-url": {
+      "types": "./dist/remote-url.d.ts",
+      "import": "./dist/remote-url.js"
+    },
     "./mono/vanilla": {
       "types": "./dist/mono/vanilla.d.ts",
       "import": "./dist/mono/vanilla.js"
@@ -28,7 +32,8 @@
     "./multicolor/vanilla": {
       "types": "./dist/multicolor/vanilla.d.ts",
       "import": "./dist/multicolor/vanilla.js"
-    }
+    },
+    "./manifest.json": "./dist/manifest.json"
   },
   "files": [
     "dist"
@@ -36,7 +41,7 @@
   "scripts": {
     "generate": "node scripts/generate.js",
     "import:mockup": "node scripts/import-iconsax-mockup.mjs",
-    "build": "rm -rf dist && node scripts/generate.js && tsc",
+    "build": "rm -rf dist && node scripts/generate.js && tsc && node scripts/generate-manifest.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

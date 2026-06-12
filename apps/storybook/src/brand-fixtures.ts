@@ -12,34 +12,38 @@ import type {
   CompanyInfoData,
   TrendingKeywordItem,
 } from "@nudge-design/react";
+import { getBrandLogo } from "@nudge-design/assets";
 
 /* ─── Logo asset URLs ─── */
 /**
- * 브랜드 로고는 `@nudge-design/assets` 가 SSOT 이며, Storybook 은 이를
- * `/brand-logos/*` 로 정적 마운트해서 서빙한다 (.storybook/main.ts staticDirs).
+ * 브랜드 로고는 `@nudge-design/assets` 가 SSOT 이며, Storybook 은 `src/files` 를
+ * `/assets/*` 로 정적 마운트해서 서빙한다 (.storybook/main.ts staticDirs).
  * 따라서 모듈 import 가 아니라 마운트 URL 로 참조한다.
  * `BASE_URL` prefix 로 프로덕션 base("/storybook/") 까지 자동 반영.
  */
-const BRAND_LOGOS_BASE = `${import.meta.env.BASE_URL}brand-logos/`;
+const ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
+const assetUrl = (filename: string | undefined): string => `${ASSET_BASE}${filename ?? ""}`;
 
 /**
  * Figma 698:87 (NudgeEAP Library) Logo Guide 의 Symbol + KO+EN horizontal (대표 로고).
  * @nudge-design/assets 의 scalable SVG (getBrandLogo("nudge-eap", "koEnHorizontal")).
  * NudgeEAP 헤더는 내장 vector 로고를 기본 사용하고, 이 fixture 는 목업/푸터 fallback 용.
  */
-const nudgeEapHeaderLogo = `${BRAND_LOGOS_BASE}nudge-eap/nudge-eap-koen.svg`;
-const trostLogo = `${BRAND_LOGOS_BASE}trost-logo.svg`;
-const trostLogoMobile = `${BRAND_LOGOS_BASE}trost-logo-mobile.webp`;
-const genietLogoPc = `${BRAND_LOGOS_BASE}geniet-logo-pc.webp`;
-const genietLogoMobile = `${BRAND_LOGOS_BASE}geniet-logo-mobile.webp`;
-const genietLogoFooter = `${BRAND_LOGOS_BASE}geniet-logo-footer.webp`;
-const cashwalkVertical = `${BRAND_LOGOS_BASE}cashwalk-biz/cashwalk-vertical.png`;
+const nudgeEapHeaderLogo = assetUrl(getBrandLogo("nudge-eap", "koEnHorizontal")?.filename);
+const trostLogo = assetUrl(getBrandLogo("trost")?.filename);
+const trostLogoMobile = assetUrl(getBrandLogo("trost", "mobile")?.filename);
+const genietLogoPc = assetUrl(getBrandLogo("geniet", "pc")?.filename);
+const genietLogoMobile = assetUrl(getBrandLogo("geniet", "mobile")?.filename);
+const genietLogoFooter = assetUrl(getBrandLogo("geniet", "footer")?.filename);
+const cashwalkVertical = assetUrl(getBrandLogo("cashwalk-biz", "vertical")?.filename);
 /**
  * Figma 9lJ9XCwVYFSoZGcmRuJtI4 / 98:1082 — 캐포비 admin GNB 의 logo_cfb_horizontal.
  * cashwalk wordmark + 'for business' 텍스트 + 신발 마스코트가 합쳐진 헤더 전용 lockup (106.667 × 32).
  * 라이브러리 horizontal(cashwalk only) 과는 별개 — 헤더용 lockup 으로 신규 등록.
  */
-const cashwalkForBusinessHorizontal = `${BRAND_LOGOS_BASE}cashwalk-biz/cashwalk-for-business-horizontal.svg`;
+const cashwalkForBusinessHorizontal = assetUrl(
+  getBrandLogo("cashwalk-biz", "horizontalSvg")?.filename,
+);
 
 /* ─── Types ─── */
 

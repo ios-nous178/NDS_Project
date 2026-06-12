@@ -45,48 +45,48 @@ export const SNS_LOGO_FIGMA_FILE_KEY = "Wd1BqKFPvrlLORr7E6EwjB";
 export const SNS_LOGO_METADATA: Record<SnsService, SnsLogoMetaSet> = {
   naver: {
     white: {
-      filename: "sns-logos/naver-white.svg",
+      filename: "shared/sns-logos/naver-white.svg",
       mimeType: "image/svg+xml",
       figmaNodeId: "107:1044",
     },
     main: {
-      filename: "sns-logos/naver-main.svg",
+      filename: "shared/sns-logos/naver-main.svg",
       mimeType: "image/svg+xml",
       figmaNodeId: "107:1043",
     },
   },
   kakao: {
     black: {
-      filename: "sns-logos/kakao-black.svg",
+      filename: "shared/sns-logos/kakao-black.svg",
       mimeType: "image/svg+xml",
       figmaNodeId: "107:1042",
     },
     main: {
-      filename: "sns-logos/kakao-main.svg",
+      filename: "shared/sns-logos/kakao-main.svg",
       mimeType: "image/svg+xml",
       figmaNodeId: "107:1041",
     },
   },
   google: {
     white: {
-      filename: "sns-logos/google-white.svg",
+      filename: "shared/sns-logos/google-white.svg",
       mimeType: "image/svg+xml",
       figmaNodeId: "107:1038",
     },
     main: {
-      filename: "sns-logos/google-main.svg",
+      filename: "shared/sns-logos/google-main.svg",
       mimeType: "image/svg+xml",
       figmaNodeId: "107:1040",
     },
   },
   apple: {
     white: {
-      filename: "sns-logos/apple-white.svg",
+      filename: "shared/sns-logos/apple-white.svg",
       mimeType: "image/svg+xml",
       figmaNodeId: "107:1037",
     },
     black: {
-      filename: "sns-logos/apple-black.svg",
+      filename: "shared/sns-logos/apple-black.svg",
       mimeType: "image/svg+xml",
       figmaNodeId: "107:1039",
     },

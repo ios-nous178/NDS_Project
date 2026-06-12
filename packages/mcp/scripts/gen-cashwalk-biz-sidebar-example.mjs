@@ -141,7 +141,7 @@ import { Sidebar } from "@nudge-design/react";
 const items = ${reactItems};
 
 <Sidebar items={items} activeKey="banner-list" width={300}
-  logo={{ src: "/brand-logos/cashwalk-biz.svg", alt: "Cashwalk for Business" }}
+  logo={{ src: "/assets/brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg", alt: "Cashwalk for Business" }}
   onItemClick={(it) => navigate(it.key)} />\`;
 `;
 // prettier 로 포맷해 lint-staged/CI 와 동일한 결과 보장(재생성 = 결정적, 포맷 드리프트 없음).

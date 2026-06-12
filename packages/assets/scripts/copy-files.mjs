@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * src 하위 자산 카테고리들을 dist/files/ 로 복사.
+ * src/files 하위 자산 taxonomy 를 dist/files/ 로 복사.
  *
  * tsc 는 .ts 만 빌드하므로 PNG/WEBP/SVG 는 따로 복사해야 한다.
- * 그래야 `@nudge-design/assets/files/{category}/{path}` import 가 동작하고,
+ * 그래야 `@nudge-design/assets/files/{brand|shared}/{path}` import 가 동작하고,
  * apps/storybook · packages/html/test-fixture 도 이 디렉토리를 동기화 소스로 쓴다.
  *
- * 카테고리:
- *   - brand-logos/  — 5 브랜드 로고
- *   - sns-logos/    — SNS 로그인 버튼용 (naver/kakao/google/apple × white/main/black)
+ * public taxonomy:
+ *   - brand/{slug}/... — 브랜드/프로덕트 전용 자산
+ *   - shared/...       — 제3자/공용 자산
  */
 import { cp, mkdir, readdir, rm } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -17,25 +17,8 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SRC_ROOT = resolve(__dirname, "..", "src");
+const FILES_ROOT = resolve(SRC_ROOT, "files");
 const DST_ROOT = resolve(__dirname, "..", "dist", "files");
-
-const CATEGORIES = [
-  "brand-logos",
-  "sns-logos",
-  "profile-images",
-  "illustrations",
-  "marathon-events",
-  // NudgeEAP "img" section (file mvecozaRQoGRePffskRgmh, section 20:1699)
-  "psych-tests",
-  "menu-app",
-  "menu-web",
-  "circle-icons",
-  "consult",
-  "gift",
-  "3d",
-  "rank",
-  "eap-profiles",
-];
 
 // src 에 더 이상 없는 파일이 dist 에 stale 로 남는 걸 방지 — 매 빌드마다 reset.
 await rm(DST_ROOT, { recursive: true, force: true });
@@ -67,11 +50,10 @@ async function countFiles(dir) {
   return count;
 }
 
-for (const category of CATEGORIES) {
-  const src = resolve(SRC_ROOT, category);
-  if (!existsSync(src)) continue;
-  const dst = resolve(DST_ROOT, category);
-  await copyRecursive(src, dst);
-  const n = await countFiles(dst);
-  console.log(`✓ ${category}: copied ${n} files`);
+if (!existsSync(FILES_ROOT)) {
+  throw new Error(`assets files root not found: ${FILES_ROOT}`);
 }
+
+await copyRecursive(FILES_ROOT, DST_ROOT);
+const n = await countFiles(DST_ROOT);
+console.log(`✓ files: copied ${n} files`);

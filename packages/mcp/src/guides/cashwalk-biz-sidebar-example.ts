@@ -247,7 +247,7 @@ const account = {
 };
 
 <Sidebar items={items} activeKey="banner-list" width={300}
-  logo={{ src: "/brand-logos/cashwalk-biz.svg", alt: "Cashwalk for Business" }}
+  logo={{ src: "/assets/brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg", alt: "Cashwalk for Business" }}
   account={account}
   footerActions={[{ key: "logout", label: "로그아웃", variant: "outlined", onClick: () => logout() }]}
   onItemClick={(it) => navigate(it.key)} />`;

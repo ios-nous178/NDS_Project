@@ -2446,7 +2446,7 @@ export class NdsBrandHeader extends NdsElement {
       "web",
     );
     const activeKey = this.getAttribute("active-key") ?? "home";
-    const assetBaseUrl = this.getAttribute("asset-base-url") ?? "/brand-logos";
+    const assetBaseUrl = this.getAttribute("asset-base-url") ?? "/assets";
     this.setAttribute("data-brand", brand);
 
     /* active-key 만 바뀐 경우 innerHTML 재빌드 금지 — 검색 input 등 내부 노드가
@@ -2486,7 +2486,7 @@ export class NdsBrandFooter extends NdsElement {
       brandDefaults.footerSurface,
     );
     const layout = this.getAttribute("layout") ?? "desktop";
-    const assetBaseUrl = this.getAttribute("asset-base-url") ?? "/brand-logos";
+    const assetBaseUrl = this.getAttribute("asset-base-url") ?? "/assets";
     this.setAttribute("data-brand", brand);
     this.innerHTML = renderFooter(brand, surface, layout, assetBaseUrl);
   }
@@ -2506,7 +2506,7 @@ export class NdsBrandBottomNav extends NdsElement {
       (this.constructor as typeof NdsBrandBottomNav).brandFallback,
     );
     const activeKey = this.getAttribute("active-key") ?? "home";
-    const assetBaseUrl = this.getAttribute("asset-base-url") ?? "/brand-logos";
+    const assetBaseUrl = this.getAttribute("asset-base-url") ?? "/assets";
     this.setAttribute("data-brand", brand);
     this.innerHTML = renderBottomNav(brand, activeKey, assetBaseUrl);
   }

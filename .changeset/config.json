@@ -6,10 +6,8 @@
     [
       "@nudge-design/react",
       "@nudge-design/tokens",
-      "@nudge-design/icons",
       "@nudge-design/styles",
       "@nudge-design/tailwind-preset",
-      "@nudge-design/assets",
       "@nudge-design/html"
     ]
   ],

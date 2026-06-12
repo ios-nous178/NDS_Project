@@ -15,7 +15,7 @@
  * 3~8 은 screenshot flatten 이라 24×24 크기 그대로 (~1.5KB). 작아서 base64 인라인
  * 가능하지만, 카테고리 일관성을 위해 마찬가지로 파일 호스팅 권장.
  *
- * 외부 소비자는 `public/profile-images/` 에 호스팅해서 사용.
+ * 외부 소비자는 `@nudge-design/assets/files/brand/runmile/profiles/...` 또는 CDN mirror 로 사용.
  */
 
 export type ProfileImageId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
@@ -32,73 +32,73 @@ export interface ProfileImageMeta {
 
 export const PROFILE_IMAGE_METADATA: Record<ProfileImageId, ProfileImageMeta> = {
   1: {
-    filename: "profile-images/profile-1.jpg",
+    filename: "brand/runmile/profiles/profile-1.jpg",
     mimeType: "image/jpeg",
     figmaNodeId: "21:135",
     source: "single-raster",
   },
   2: {
-    filename: "profile-images/profile-2.jpg",
+    filename: "brand/runmile/profiles/profile-2.jpg",
     mimeType: "image/jpeg",
     figmaNodeId: "21:134",
     source: "single-raster",
   },
   3: {
-    filename: "profile-images/profile-3.png",
+    filename: "brand/runmile/profiles/profile-3.png",
     mimeType: "image/png",
     figmaNodeId: "21:133",
     source: "screenshot-flatten",
   },
   4: {
-    filename: "profile-images/profile-4.png",
+    filename: "brand/runmile/profiles/profile-4.png",
     mimeType: "image/png",
     figmaNodeId: "21:132",
     source: "screenshot-flatten",
   },
   5: {
-    filename: "profile-images/profile-5.png",
+    filename: "brand/runmile/profiles/profile-5.png",
     mimeType: "image/png",
     figmaNodeId: "21:131",
     source: "screenshot-flatten",
   },
   6: {
-    filename: "profile-images/profile-6.png",
+    filename: "brand/runmile/profiles/profile-6.png",
     mimeType: "image/png",
     figmaNodeId: "21:130",
     source: "screenshot-flatten",
   },
   7: {
-    filename: "profile-images/profile-7.png",
+    filename: "brand/runmile/profiles/profile-7.png",
     mimeType: "image/png",
     figmaNodeId: "21:129",
     source: "screenshot-flatten",
   },
   8: {
-    filename: "profile-images/profile-8.png",
+    filename: "brand/runmile/profiles/profile-8.png",
     mimeType: "image/png",
     figmaNodeId: "52:836",
     source: "screenshot-flatten",
   },
   9: {
-    filename: "profile-images/profile-9.png",
+    filename: "brand/runmile/profiles/profile-9.png",
     mimeType: "image/png",
     figmaNodeId: "510:2667",
     source: "single-raster",
   },
   10: {
-    filename: "profile-images/profile-10.png",
+    filename: "brand/runmile/profiles/profile-10.png",
     mimeType: "image/png",
     figmaNodeId: "510:2674",
     source: "single-raster",
   },
   11: {
-    filename: "profile-images/profile-11.png",
+    filename: "brand/runmile/profiles/profile-11.png",
     mimeType: "image/png",
     figmaNodeId: "510:2681",
     source: "single-raster",
   },
   12: {
-    filename: "profile-images/profile-12.png",
+    filename: "brand/runmile/profiles/profile-12.png",
     mimeType: "image/png",
     figmaNodeId: "510:2688",
     source: "single-raster",

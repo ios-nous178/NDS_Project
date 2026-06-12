@@ -29,7 +29,7 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 
 ## HTML 목업
 
-`@nudge-design/html`에서는 브랜드별 완성형 header/footer/bottom-nav wrapper 를 제공합니다. 로고 asset 은 기본적으로 `/brand-logos` 아래에서 찾고, 공유용 HTML처럼 경로가 다른 경우 `asset-base-url`만 바꿉니다.
+`@nudge-design/html`에서는 브랜드별 완성형 header/footer/bottom-nav wrapper 를 제공합니다. 로고 asset 은 기본적으로 `/assets` 아래의 brand-first taxonomy 에서 찾고, 공유용 HTML처럼 경로가 다른 경우 `asset-base-url`만 바꿉니다.
 
 ```html
 <nds-brand-header brand="nudge-eap" surface="web"></nds-brand-header>
@@ -43,7 +43,7 @@ description: 브랜드별 헤더, 푸터, 바텀네비 진입점
 
 <nds-brand-header
   brand="geniet"
-  asset-base-url="https://cdn.example.com/nds/brand-logos"
+  asset-base-url="https://cdn.example.com/nds/assets"
 ></nds-brand-header>
 ```
 

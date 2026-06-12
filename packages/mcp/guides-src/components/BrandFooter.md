@@ -30,7 +30,7 @@ assetManifest:
 - NudgeEAP (light): `<nds-brand-footer brand='nudge-eap' surface='web' />` · 로고 base64 내장 (파일 불필요)
 - CashwalkBiz (light): `<nds-brand-footer brand='cashwalk-biz' surface='web' />` · 로고 base64 내장 (파일 불필요)
 - Runmile (light): `<nds-brand-footer brand='runmile' surface='app' />` · 로고 base64 내장 (gray700 워드마크) · footerTone=light (forcedProps '*' default)
-- 자체 로고로 교체할 때만: `asset-base-url='/brand-logos'` (override 전용 · 기본 목업엔 불필요).
+- 자체 로고로 교체할 때만: `asset-base-url='/assets'` (override 전용 · 기본 목업엔 불필요).
 - Aliases: `<nds-trost-footer>`, `<nds-geniet-footer>`, `<nds-nudge-eap-footer>`, `<nds-cashwalk-biz-footer>`, `<nds-runmile-footer>`
 
 ## examplesHtml.do

@@ -92,6 +92,13 @@ const VISUAL_REFERENCE_QUESTION =
   "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요.";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+function remoteIconModuleRef(): string | undefined {
+  const base = process.env.NUDGE_DS_ICON_BASE_URL?.trim();
+  if (!base) return undefined;
+  return `${base.replace(/\/+$/, "")}/vanilla.js`;
+}
+
 const isDirectRun =
   process.argv[1] !== undefined &&
   pathToFileURL(fs.realpathSync(path.resolve(process.argv[1]))).href ===
@@ -403,9 +410,9 @@ function socialLoginAssetRedirect(term: string) {
     redirect: "sns-logos (asset, not icon)",
     detail: `소셜/간편 로그인 로고(네이버·카카오·구글·애플)는 아이콘이 아니라 @nudge-design/assets 의 sns-logos 자산입니다. find_icon 에는 없습니다 — 아래 자산 경로를 <img src> 에 그대로 박으면 build_singlefile_html 이 base64 인라인합니다.`,
     assets:
-      "@nudge-design/assets/files/sns-logos/{service}-{color}.svg — naver(white/main) · kakao(black/main) · google(white/main) · apple(white/black)",
+      "@nudge-design/assets/files/shared/sns-logos/{service}-{color}.svg — naver(white/main) · kakao(black/main) · google(white/main) · apple(white/black)",
     example:
-      '<button style="height:48px;background:#FEE500"><img src="@nudge-design/assets/files/sns-logos/kakao-black.svg" width="18" height="18" alt=""> 카카오로 시작하기</button>',
+      '<button style="height:48px;background:#FEE500"><img src="@nudge-design/assets/files/shared/sns-logos/kakao-black.svg" width="18" height="18" alt=""> 카카오로 시작하기</button>',
     seeAlso: [
       "get_guide({ topic: 'pattern:social-login' }) — 배치·서비스 시그니처 색·라벨 규칙",
       "get_brand({ assetKind: 'snsLogos' }) — 서비스별 inlineRef 경로 목록",
@@ -461,6 +468,7 @@ export async function findIcon(args: {
       return {
         ...decorateIcon(args.name),
         ...svg,
+        remoteModule: remoteIconModuleRef(),
         _hint:
           (isCashwalkBizGnb
             ? "⚠ 캐포비 어드민 사이드바(GNB) 아이콘이면 9종을 한 개씩 find_icon 하지 말 것 — 아이콘이 이미 인라인된 ready-made 가 있다: get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' }) (HTML/React + 로고 data URI). 가져와서 activeKey 만 화면 키로. 사이드바가 아닌 단독 아이콘 용도면 아래 svg 그대로 사용. "

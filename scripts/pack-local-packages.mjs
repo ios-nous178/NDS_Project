@@ -9,7 +9,7 @@
  * Output: local-packages/nudge-design-{name}-{version}.tgz (4 files)
  * Old .tgz files for the same package (different version) are removed automatically.
  *
- * Version contract: DS 패키지 4개(tokens/react/icons/tailwind-preset)의 package.json
+ * Version contract: DS 코드 패키지(tokens/react/styles/tailwind-preset/html)의 package.json
  * version 이 SSOT 이고, 루트 package.json version 은 그 미러 (sync-mcpb-version.mjs 가
  * 동기화). 이 스크립트는 두 값이 일치하는지 *검증만* 한다. 드리프트가 있으면
  * 종료 — 조용한 다운그레이드를 만들지 않는다.
@@ -33,22 +33,22 @@ const ROOT = path.join(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "local-packages");
 
 // 순서는 의존성 그래프 기준 (deps 가 먼저 와야 tsc 가 .d.ts 를 찾을 수 있음):
-//   tokens / icons / assets (no deps)
+//   tokens / icons / assets (no deps; icons/assets are independent version tracks)
 //   → styles / tailwind-preset (tokens 의존)
 //   → react (tokens + icons + styles + assets)
 // 이 순서가 깨지면 CI clean checkout 에서 `Cannot find module '@nudge-design/assets'` 같은
 // TS2307 에러로 빌드가 죽는다. 로컬에서는 stale dist/ 가 있어 빌드가 통과하므로
 // 사고가 잘 안 드러난다. 손대기 전 위 layer 분류를 다시 확인할 것.
 //
-// assets 가 여기 있는 이유: react·html 둘 다 @nudge-design/assets(브랜드 로고 base64
-// SSOT)에 의존한다. 빠지면 외부 목업 프로젝트가 react/html .tgz 설치 시
-// "로컬에 assets .tgz 가 없다" 며 깨진다. 현재 전 패키지 version 이 0.0.1 로 정렬돼 있어
-// version 검증 대상에 포함해도 무방.
+// assets/icons 가 여기 있는 이유: react·html 둘 다 @nudge-design/assets/icons 에
+// 의존한다. 빠지면 외부 목업 프로젝트가 react/html .tgz 설치 시 로컬 패키지를 못 찾는다.
 const PACKAGES = ["tokens", "icons", "assets", "styles", "tailwind-preset", "react"];
 
+// root DS version 과 일치해야 하는 코드 패키지. assets/icons 는 별도 버전 트랙이라
+// 패킹은 하되 root version drift 검사에서 제외한다.
+const ROOT_VERSION_PACKAGES = ["tokens", "styles", "tailwind-preset", "react", "html"];
+
 // SSOT version 검증 대상 외에 mcpb 와 함께 배포하는 부가 패키지.
-// MCP 처럼 별도 라이프사이클로 — html 만 변경된 릴리즈에서 DS 4개를 같이
-// 끌어올리지 않는다. 외부 mockup 프로젝트는 .tgz 를 같이 받는다.
 const EXTRA_PACKAGES = ["html"];
 
 const skipBuild = process.argv.includes("--no-build");
@@ -73,7 +73,7 @@ if (!rootVersion || typeof rootVersion !== "string" || rootVersion === "0.0.0") 
   process.exit(1);
 }
 
-const dsPkgs = PACKAGES.map((name) => {
+const dsPkgs = ROOT_VERSION_PACKAGES.map((name) => {
   const pkgJsonPath = path.join(ROOT, "packages", name, "package.json");
   const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
   return { name, version: pkg.version };

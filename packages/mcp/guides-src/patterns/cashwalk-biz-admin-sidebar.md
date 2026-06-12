@@ -37,7 +37,7 @@ references:
 - **로그아웃은 footer-actions slot 에 고정**: 최하단 로그아웃(outlined)은 **HTML `footer-actions='[{"label":"로그아웃","variant":"outlined"}]'`**, **React `footerActions={[{ label: '로그아웃', variant: 'outlined' }]}`**. 메뉴 리스트 맨 아래 item 으로 넣지 말 것 — 스크롤과 분리된 고정 푸터.
 - **사이드바는 풀하이트 셸 안에 둔다(높이가 화면을 안 채우는 #1 원인)**: `<nds-sidebar>` 는 기본 full-height(100vh sticky)지만, body 직속이나 height 미확정 컨테이너에 두면 레이아웃이 깨지거나 높이가 안 찬다. 반드시 `.nds-shell`(grid + min-height:100vh) 안에 넣을 것. 셸까지 끼운 형태는 `_readyMade.shellHtml` 참조.
 - **아이콘은 brand-prefix 우선**: 메뉴 아이콘은 `CashwalkBizGnb*` 9종이 공용 아이콘보다 우선. import 목록: CashwalkBizGnbBannerIcon, CashwalkBizGnbChannelIcon, CashwalkBizGnbQuizIcon, CashwalkBizGnbChatIcon, CashwalkBizGnbCashIcon, CashwalkBizGnbCatalogIcon, CashwalkBizGnbMemberIcon, CashwalkBizGnbEditIcon, CashwalkBizGnbSettingIcon.
-- **로고는 `brand="cashwalk-biz"` 로 자동 주입 (35KB data URI 복붙·상대경로 금지)**: 위 HTML 예시처럼 `<nds-sidebar brand="cashwalk-biz">` 만 두면 BrandHeader 와 동일 로고 SSOT 가 컴포넌트 내부에서 주입돼 단일 HTML 에서도 안 깨진다. `logo-src` 에 `data:image/svg+xml;base64,…` 35KB 블롭을 손으로 붙이지 말 것 — 그 거대 블롭을 추출/재인코딩하다 한글이 깨지고 로고가 유실되던 회귀의 직접 원인이다. `/brand-logos/cashwalk-biz.svg` 같은 상대경로도 단일 파일에서 깨지므로 금지. React 앱은 자산을 번들하므로 `logo={{ src: '/brand-logos/cashwalk-biz.svg' }}` public 경로로 충분.
+- **로고는 `brand="cashwalk-biz"` 로 자동 주입 (35KB data URI 복붙·상대경로 금지)**: 위 HTML 예시처럼 `<nds-sidebar brand="cashwalk-biz">` 만 두면 BrandHeader 와 동일 로고 SSOT 가 컴포넌트 내부에서 주입돼 단일 HTML 에서도 안 깨진다. `logo-src` 에 `data:image/svg+xml;base64,…` 35KB 블롭을 손으로 붙이지 말 것 — 그 거대 블롭을 추출/재인코딩하다 한글이 깨지고 로고가 유실되던 회귀의 직접 원인이다. `/assets/brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg` 같은 상대경로도 단일 파일에서 깨지므로 금지. React 앱은 자산을 번들하므로 `logo={{ src: '/assets/brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg' }}` public 경로로 충분.
 - **마크업을 스크립트로 추출·재인코딩하지 말 것 — 한글 모지바케 #1 원인**: 위 HTML/React 블록은 손대지 말고 그대로 복붙한다. 특히 Python `decode('unicode_escape')` 나 Latin-1 디코딩으로 가공하면 UTF-8 한글(광고 관리 등)이 글자당 3개의 깨진 라틴 문자(Ã/ë…)로 망가지고, 깨진 items JSON 때문에 사이드바 파싱이 흔들려 로고까지 사라진다(= '한글 다 깨지고 로고 안 보임' 증상). 가공이 꼭 필요하면 UTF-8 `json.loads` 만 사용. 이 예시는 items/account/footer-actions 를 `<script type="application/json" slot="...">` 텍스트 노드로 전달해 따옴표 과이스케이프·인코딩 깨짐을 둘 다 구조적으로 차단한다.
 
 ## avoid
@@ -161,7 +161,7 @@ const account = {
 };
 
 <Sidebar items={items} activeKey="banner-list" width={300}
-  logo={{ src: "/brand-logos/cashwalk-biz.svg", alt: "Cashwalk for Business" }}
+  logo={{ src: "/assets/brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg", alt: "Cashwalk for Business" }}
   account={account}
   footerActions={[{ key: "logout", label: "로그아웃", variant: "outlined", onClick: () => logout() }]}
   onItemClick={(it) => navigate(it.key)} />

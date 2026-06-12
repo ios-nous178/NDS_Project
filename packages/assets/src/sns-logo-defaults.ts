@@ -6,7 +6,7 @@
  * base64 로 인코딩.
  *
  * 갱신 절차:
- *   1. packages/assets/src/sns-logos/{file}.svg 교체
+ *   1. packages/assets/src/files/shared/sns-logos/{file}.svg 교체
  *   2. `base64 -i {file}.svg` 출력으로 해당 상수 갱신
  *   3. sns-logo-metadata.ts 의 mimeType / filename 도 동기화
  *

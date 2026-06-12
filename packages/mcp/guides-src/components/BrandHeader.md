@@ -47,7 +47,7 @@ assetManifest:
     - nudge-eap-logo.png
     - nudge-eap-logo-footer.png
   cashwalk-biz:
-    - cashwalk-biz/cashwalk-for-business-horizontal.svg
+    - brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg
 ---
 
 ## summary
@@ -57,7 +57,7 @@ assetManifest:
 ## pitfalls
 
 - **손수 조립 금지** — nds-header / nds-header-logo / nds-header-menu / nds-header-menu-item / nds-header-actions / nds-header-auth-button 를 직접 박지 말 것. 메뉴 라벨/href/순서를 손으로 적으면 브랜드 일관성이 깨지고 다음 브랜드 화면에서 또 적게 됨. BrandHeader 한 줄이 BRAND_DATA 에서 전부 자동.
-- **로고는 base64 내장 — 자산 파일·호스팅 불필요.** 5개 브랜드 로고가 BRAND_DATA 에 data URI 로 박혀 있어 `asset-base-url` 없이도 어디서든 안 깨지고 렌더된다 (단일 HTML 목업 그대로 OK). `asset-base-url` 은 **자체 로고로 바꿀 때만** 쓰는 선택적 override — `public/brand-logos/` 폴더를 만들 의무는 없다.
+- **로고는 base64 내장 — 자산 파일·호스팅 불필요.** 5개 브랜드 로고가 BRAND_DATA 에 data URI 로 박혀 있어 `asset-base-url` 없이도 어디서든 안 깨지고 렌더된다 (단일 HTML 목업 그대로 OK). `asset-base-url` 은 **자체 로고로 바꿀 때만** 쓰는 선택적 override — `public/assets/brand/{brand}/logos/` 폴더를 만들 의무는 없다.
 - **surface 별 출력 다름** — `web` (PC GNB · 로고+메뉴+auth), `mobile` (compact 헤더 · 로고+auth), `webview` (뒤로가기 + 타이틀만). 모바일 화면이면 surface='mobile' 명시.
 - active-key 는 BRAND_DATA[brand].webMenu 의 key 와 매칭. 잘못 적으면 활성 메뉴 표시가 안 됨. 각 브랜드 key 목록은 nds-brand-chrome.ts BRAND_DATA 또는 아래 recommended 참고.
 
@@ -68,7 +68,7 @@ assetManifest:
 - NudgeEAP: `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: counsel / test / therapy / letter / news / my
 - CashwalkBiz: `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='ad' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: channel / ad / case / notice / guide
 - Runmile: `<nds-brand-header brand='runmile' surface='web' active-key='race' />` · 로고 base64 내장 (파일 불필요) · webMenu keys: race / community · web 헤더 = 좌측 워드마크+nav · 중앙 coral 검색바 · 우측 채팅/로그인 액션 자동. mobile=52h 중앙 워드마크 bar.
-- 자체 로고로 교체할 때만: `asset-base-url='/brand-logos'` + 해당 파일 배치 (override 전용 · 기본 목업엔 불필요).
+- 자체 로고로 교체할 때만: `asset-base-url='/assets'` + 해당 파일 배치 (override 전용 · 기본 목업엔 불필요).
 - Aliases (선택): `<nds-trost-header>`, `<nds-geniet-header>`, `<nds-nudge-eap-header>`, `<nds-cashwalk-biz-header>`, `<nds-runmile-header>` — brand attribute 안 써도 동일 동작.
 
 ## examplesHtml.do

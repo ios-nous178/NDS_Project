@@ -27,7 +27,7 @@ export interface CashwalkBizAssetMeta {
 
 export const CASHWALK_BIZ_ASSET_METADATA: Record<CashwalkBizAssetId, CashwalkBizAssetMeta> = {
   "charge-alert-bell": {
-    filename: "cashwalk-biz/charge-alert-bell.png",
+    filename: "brand/cashwalk-biz/illustrations/charge-alert-bell.png",
     mimeType: "image/png",
     width: 400,
     height: 413,

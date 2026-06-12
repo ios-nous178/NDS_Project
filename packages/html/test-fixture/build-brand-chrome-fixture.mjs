@@ -6,8 +6,8 @@
  *   - tokens.css / styles.css 를 <style> 로 인라인
  *   - dist/runtime.js 를 esbuild 로 IIFE bundle 해서 <script> 로 인라인
  *     (workspace import @nudge-design/tokens 등을 해소)
- *   - @nudge-design/assets (SSOT) 의 brand-logos 를 test-fixture/_assets/brand-logos/ 로 복사
- *     (asset-base-url 을 /test-fixture/_assets/brand-logos 로 박아 self-contained)
+ *   - @nudge-design/assets (SSOT) 의 files taxonomy 를 test-fixture/_assets/ 로 복사
+ *     (asset-base-url 을 /test-fixture/_assets 로 박아 self-contained)
  *
  * 사용:
  *   node test-fixture/build-brand-chrome-fixture.mjs
@@ -55,10 +55,10 @@ const result = await build({
 });
 const bundledJs = result.outputFiles[0].text;
 
-/* ── 3. copy brand-logos to be self-contained ── */
-const assetsDir = path.join(__dirname, "_assets/brand-logos");
-// SSOT: @nudge-design/assets — apps/storybook 도 같은 경로를 staticDir 로 마운트.
-const srcLogosDir = path.join(root, "packages/assets/src/brand-logos");
+/* ── 3. copy assets to be self-contained ── */
+const assetsDir = path.join(__dirname, "_assets");
+// SSOT: @nudge-design/assets — apps/storybook 도 src/files 를 staticDir 로 마운트.
+const srcLogosDir = path.join(root, "packages/assets/src/files");
 fs.rmSync(assetsDir, { recursive: true, force: true });
 fs.mkdirSync(assetsDir, { recursive: true });
 function copyRecursive(src, dst) {
@@ -76,7 +76,7 @@ function copyRecursive(src, dst) {
 copyRecursive(srcLogosDir, assetsDir);
 
 /* ── 4. build HTML ── */
-const ASSET_BASE = "_assets/brand-logos";
+const ASSET_BASE = "_assets";
 const html = `<!DOCTYPE html>
 <html lang="ko">
 <head>

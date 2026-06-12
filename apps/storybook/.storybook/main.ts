@@ -16,12 +16,11 @@ const config: StorybookConfig = {
   ],
   staticDirs: [
     "../public",
-    // brand-logos 는 @nudge-design/assets 가 SSOT. Storybook 은 직접 마운트해서
-    // /brand-logos/* URL 로 서빙 (공개 API contract 와 동일 경로).
-    // apps/storybook/public/brand-logos/ 의 복제본은 더 이상 존재하지 않음.
+    // binary assets 는 @nudge-design/assets 가 SSOT. Storybook 은 새 S3 mirror taxonomy 와
+    // 같은 /assets/* URL 로 src/files 전체를 직접 마운트한다.
     {
-      from: "../../../packages/assets/src/brand-logos",
-      to: "/brand-logos",
+      from: "../../../packages/assets/src/files",
+      to: "/assets",
     },
   ],
   framework: {

@@ -29,6 +29,7 @@
     "lint:docs": "node scripts/sync-version-docs.mjs --check",
     "sync:mcpb-version": "node scripts/sync-mcpb-version.mjs",
     "lint:mcpb-version": "node scripts/sync-mcpb-version.mjs --check",
+    "publish:assets-s3": "node scripts/publish-assets-s3.mjs",
     "lint:mcp-catalog": "node scripts/check-mcp-catalog.mjs",
     "lint:mirror-parity": "node scripts/check-mirror-parity.mjs",
     "lint:mirror-parity:update": "node scripts/check-mirror-parity.mjs --update",

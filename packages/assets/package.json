@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/assets",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "description": "Raster/vector brand assets (logos) for Nudge Design System — single SSOT, brand-swap interface, base64 fallback for zero-config consumers.",
   "type": "module",
   "main": "./dist/index.js",
@@ -50,7 +50,16 @@
       "types": "./dist/nudge-img-metadata.d.ts",
       "import": "./dist/nudge-img-metadata.js"
     },
+    "./nudge-eap-images": {
+      "types": "./dist/nudge-eap-image-metadata.d.ts",
+      "import": "./dist/nudge-eap-image-metadata.js"
+    },
+    "./remote-url": {
+      "types": "./dist/remote-url.d.ts",
+      "import": "./dist/remote-url.js"
+    },
     "./files/*": "./dist/files/*",
+    "./manifest.json": "./dist/manifest.json",
     "./package.json": "./package.json"
   },
   "files": [
@@ -58,7 +67,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc && node scripts/copy-files.mjs",
+    "build": "tsc && node scripts/copy-files.mjs && node scripts/generate-manifest.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

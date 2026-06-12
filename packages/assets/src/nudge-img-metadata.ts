@@ -1,5 +1,5 @@
 /**
- * NudgeEAP "IMG" 화면 자산 메타데이터 (dataUri 제외).
+ * NudgeEAP 화면 이미지 자산 메타데이터 (dataUri 제외).
  *
  * NudgeEAP Dev Figma (file `mvecozaRQoGRePffskRgmh`, section 20:1699 "img") 의
  * 화면용 이미지 자산 58종 · 8 카테고리:
@@ -23,6 +23,7 @@
  *
  * raster PNG 라 dataUri 미제공 — 파일 호스팅 필수.
  * 외부 소비자는 `@nudge-design/assets/files/{filename}` 로 참조.
+ * public path 에서는 Figma 섹션명 `nudge-img` 를 쓰지 않고 brand-first taxonomy 를 사용한다.
  */
 
 export type NudgeImgCategory =
@@ -58,11 +59,15 @@ function meta(
   figmaNodeId: string,
   figmaNodeName: string,
 ): NudgeImgMeta {
+  const basePath =
+    category === "eap-profiles"
+      ? "brand/nudge-eap/profiles"
+      : `brand/nudge-eap/images/${category === "3d" ? "three-d" : category}`;
   return {
     category,
     id,
-    filename: `${category}/${id}.png`,
-    filename3x: `${category}/${id}@3x.png`,
+    filename: `${basePath}/${id}.png`,
+    filename3x: `${basePath}/${id}@3x.png`,
     mimeType: "image/png",
     figmaNodeId,
     figmaNodeName,

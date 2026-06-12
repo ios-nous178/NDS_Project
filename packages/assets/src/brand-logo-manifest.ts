@@ -36,25 +36,25 @@ export type BrandLogoSet = Partial<Record<LogoVariant, BrandLogo>>;
  * brand-logo-defaults 의 상수명은 SCREAMING_SNAKE_CASE 라 직접 매핑 테이블로 둔다.
  */
 const DATA_URI_BY_FILENAME: Record<string, string> = {
-  "trost-logo.svg": defaults.TROST_LOGO_DATA_URI,
-  "trost-logo-mobile.webp": defaults.TROST_LOGO_MOBILE_DATA_URI,
+  "brand/trost/logos/trost-logo.svg": defaults.TROST_LOGO_DATA_URI,
+  "brand/trost/logos/trost-logo-mobile.webp": defaults.TROST_LOGO_MOBILE_DATA_URI,
 
-  "geniet-logo-pc.webp": defaults.GENIET_LOGO_PC_DATA_URI,
-  "geniet-logo-mobile.webp": defaults.GENIET_LOGO_MOBILE_DATA_URI,
-  "geniet-logo-footer.webp": defaults.GENIET_LOGO_FOOTER_DATA_URI,
+  "brand/geniet/logos/geniet-logo-pc.webp": defaults.GENIET_LOGO_PC_DATA_URI,
+  "brand/geniet/logos/geniet-logo-mobile.webp": defaults.GENIET_LOGO_MOBILE_DATA_URI,
+  "brand/geniet/logos/geniet-logo-footer.webp": defaults.GENIET_LOGO_FOOTER_DATA_URI,
 
-  "nudge-eap-logo.png": defaults.NUDGE_EAP_LOGO_DATA_URI,
+  "brand/nudge-eap/logos/nudge-eap-logo.png": defaults.NUDGE_EAP_LOGO_DATA_URI,
   // SVG variant 는 같은 base64 fallback (PNG) 사용 — SVG dataUri 미준비
-  "nudge-eap-logo.svg": defaults.NUDGE_EAP_LOGO_DATA_URI,
-  "nudge-eap-logo-footer.png": defaults.NUDGE_EAP_LOGO_FOOTER_DATA_URI,
+  "brand/nudge-eap/logos/nudge-eap-logo.svg": defaults.NUDGE_EAP_LOGO_DATA_URI,
+  "brand/nudge-eap/logos/nudge-eap-logo-footer.png": defaults.NUDGE_EAP_LOGO_FOOTER_DATA_URI,
 
-  "cashwalk-biz/cashwalk-vertical.png": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
-  "cashwalk-biz/cashwalk-horizontal.png": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
-  "cashwalk-biz/cashwalk-for-business-horizontal.svg": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
+  "brand/cashwalk-biz/logos/cashwalk-vertical.png": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
+  "brand/cashwalk-biz/logos/cashwalk-horizontal.png": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
+  "brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
 
-  "runmile-logo.svg": defaults.RUNMILE_LOGO_DATA_URI,
-  "runmile-logo-black.svg": defaults.RUNMILE_LOGO_BLACK_DATA_URI,
-  "runmile-logo-gray700.svg": defaults.RUNMILE_LOGO_GRAY700_DATA_URI,
+  "brand/runmile/logos/runmile-logo.svg": defaults.RUNMILE_LOGO_DATA_URI,
+  "brand/runmile/logos/runmile-logo-black.svg": defaults.RUNMILE_LOGO_BLACK_DATA_URI,
+  "brand/runmile/logos/runmile-logo-gray700.svg": defaults.RUNMILE_LOGO_GRAY700_DATA_URI,
 };
 
 function augment(meta: BrandLogoMeta): BrandLogo {

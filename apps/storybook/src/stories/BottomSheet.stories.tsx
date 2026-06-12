@@ -397,7 +397,7 @@ const kakaoLogo = getSnsLogo("kakao", "black")?.dataUri ?? "";
 const naverLogo = getSnsLogo("naver", "white")?.dataUri ?? "";
 //
 // (B) base64 인라인 (assets 패키지 없이도 안 깨지는 fallback) — (A) 대신 쓰려면 주석 해제.
-//     packages/assets/src/sns-logos/{kakao-black,naver-white}.svg 를 base64 인코딩한 값.
+//     packages/assets/src/files/shared/sns-logos/{kakao-black,naver-white}.svg 를 base64 인코딩한 값.
 // const kakaoLogo =
 //   "data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgdmlld0JveD0iMCAwIDYwIDU2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBpZD0iUGF0aCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zMC4wMDAyIDBDMTMuNDMwNiAwIDAgMTAuMzc2NSAwIDIzLjE3NDNDMCAzMS4xMzM0IDUuMTk0NyAzOC4xNDk5IDEzLjEwNTEgNDIuMzIzMUw5Ljc3NjggNTQuNDgxNkM5LjQ4Mjc0IDU1LjU1NTkgMTAuNzExNCA1Ni40MTIyIDExLjY1NDkgNTUuNzg5N0wyNi4yNDQ2IDQ2LjE2MDZDMjcuNDc1OCA0Ni4yNzk1IDI4LjcyNyA0Ni4zNDg4IDMwLjAwMDIgNDYuMzQ4OEM0Ni41Njg0IDQ2LjM0ODggNjAgMzUuOTcyNyA2MCAyMy4xNzQzQzYwIDEwLjM3NjUgNDYuNTY4NCAwIDMwLjAwMDIgMCIgZmlsbD0idmFyKC0tZmlsbC0wLCBibGFjaykiLz4KPC9zdmc+Cg==";
 // const naverLogo =

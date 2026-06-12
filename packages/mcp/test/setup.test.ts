@@ -156,7 +156,7 @@ describe("setup brand registry", () => {
     expect(snsFiles.length).toBeGreaterThan(0);
     expect(
       snsFiles.every((f) =>
-        /^@nudge-design\/assets\/files\/sns-logos\/.+\.svg$/.test(f.inlineRef ?? ""),
+        /^@nudge-design\/assets\/files\/shared\/sns-logos\/.+\.svg$/.test(f.inlineRef ?? ""),
       ),
     ).toBe(true);
   });

@@ -31,14 +31,14 @@ export type SnsLogoSet = Partial<Record<SnsLogoColor, SnsLogo>>;
  * sns-logo-defaults 의 상수명은 SCREAMING_SNAKE_CASE 라 직접 매핑 테이블로 둔다.
  */
 const DATA_URI_BY_FILENAME: Record<string, string> = {
-  "sns-logos/naver-white.svg": defaults.SNS_NAVER_WHITE_DATA_URI,
-  "sns-logos/naver-main.svg": defaults.SNS_NAVER_MAIN_DATA_URI,
-  "sns-logos/kakao-black.svg": defaults.SNS_KAKAO_BLACK_DATA_URI,
-  "sns-logos/kakao-main.svg": defaults.SNS_KAKAO_MAIN_DATA_URI,
-  "sns-logos/google-white.svg": defaults.SNS_GOOGLE_WHITE_DATA_URI,
-  "sns-logos/google-main.svg": defaults.SNS_GOOGLE_MAIN_DATA_URI,
-  "sns-logos/apple-white.svg": defaults.SNS_APPLE_WHITE_DATA_URI,
-  "sns-logos/apple-black.svg": defaults.SNS_APPLE_BLACK_DATA_URI,
+  "shared/sns-logos/naver-white.svg": defaults.SNS_NAVER_WHITE_DATA_URI,
+  "shared/sns-logos/naver-main.svg": defaults.SNS_NAVER_MAIN_DATA_URI,
+  "shared/sns-logos/kakao-black.svg": defaults.SNS_KAKAO_BLACK_DATA_URI,
+  "shared/sns-logos/kakao-main.svg": defaults.SNS_KAKAO_MAIN_DATA_URI,
+  "shared/sns-logos/google-white.svg": defaults.SNS_GOOGLE_WHITE_DATA_URI,
+  "shared/sns-logos/google-main.svg": defaults.SNS_GOOGLE_MAIN_DATA_URI,
+  "shared/sns-logos/apple-white.svg": defaults.SNS_APPLE_WHITE_DATA_URI,
+  "shared/sns-logos/apple-black.svg": defaults.SNS_APPLE_BLACK_DATA_URI,
 };
 
 function augment(meta: SnsLogoMeta): SnsLogo {

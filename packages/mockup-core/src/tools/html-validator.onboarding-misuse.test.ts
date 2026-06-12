@@ -54,8 +54,8 @@ test("소셜 영역에 sns-logos 자산을 쓰면 위반 아님", () => {
   const html = wrap(`
     <nds-brand-logo brand="cashwalk-biz"></nds-brand-logo>
     <div class="social-row"><span>간편 로그인</span>
-      <button><img src="@nudge-design/assets/files/sns-logos/google-main.png" alt="google" /></button>
-      <button><img src="@nudge-design/assets/files/sns-logos/kakao-main.png" alt="kakao" /></button></div>`);
+      <button><img src="@nudge-design/assets/files/shared/sns-logos/google-main.png" alt="google" /></button>
+      <button><img src="@nudge-design/assets/files/shared/sns-logos/kakao-main.png" alt="kakao" /></button></div>`);
   assert.equal(has(html, "onboarding-social-bare-text"), undefined);
 });
 

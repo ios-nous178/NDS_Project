@@ -64,7 +64,7 @@ describe("find_icon — 소셜 로그인 → sns-logos 자산 리다이렉트", 
       expect(Array.isArray(result)).toBe(false);
       expect(result.redirect).toBe("sns-logos (asset, not icon)");
       expect(result.assets).toMatch(/sns-logos/);
-      expect(result.example).toMatch(/@nudge-design\/assets\/files\/sns-logos\//);
+      expect(result.example).toMatch(/@nudge-design\/assets\/files\/shared\/sns-logos\//);
       expect(JSON.stringify(result.seeAlso)).toMatch(/pattern:social-login/);
     },
   );

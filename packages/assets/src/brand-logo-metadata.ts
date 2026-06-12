@@ -39,39 +39,39 @@ export interface BrandLogoMeta {
 export type BrandLogoMetaSet = Partial<Record<LogoVariant, BrandLogoMeta>>;
 
 /**
- * variant → 파일명 매핑. 파일명은 외부 public API contract — 변경 금지.
+ * variant → 파일명 매핑. filename 은 `@nudge-design/assets/files/` 아래 public path.
  */
 export const BRAND_LOGO_METADATA: Record<BrandSlug, BrandLogoMetaSet> = {
   trost: {
-    default: { filename: "trost-logo.svg", mimeType: "image/svg+xml" },
-    mobile: { filename: "trost-logo-mobile.webp", mimeType: "image/webp" },
+    default: { filename: "brand/trost/logos/trost-logo.svg", mimeType: "image/svg+xml" },
+    mobile: { filename: "brand/trost/logos/trost-logo-mobile.webp", mimeType: "image/webp" },
   },
 
   geniet: {
-    pc: { filename: "geniet-logo-pc.webp", mimeType: "image/webp" },
-    mobile: { filename: "geniet-logo-mobile.webp", mimeType: "image/webp" },
-    footer: { filename: "geniet-logo-footer.webp", mimeType: "image/webp" },
+    pc: { filename: "brand/geniet/logos/geniet-logo-pc.webp", mimeType: "image/webp" },
+    mobile: { filename: "brand/geniet/logos/geniet-logo-mobile.webp", mimeType: "image/webp" },
+    footer: { filename: "brand/geniet/logos/geniet-logo-footer.webp", mimeType: "image/webp" },
   },
 
   // 기존 default/footer/svg 는 외부 contract — 유지.
   // ko/koEn/en/enMono/symbol 은 공식 로고 가이드(698:87) SVG (124×28, symbol 64×64).
   // DAIN 로고는 브랜드 variant 가 아니라 별도 DAIN_LOGO 로 분리 (아래 참고).
   "nudge-eap": {
-    default: { filename: "nudge-eap-logo.png", mimeType: "image/png" },
-    footer: { filename: "nudge-eap-logo-footer.png", mimeType: "image/png" },
-    svg: { filename: "nudge-eap-logo.svg", mimeType: "image/svg+xml" },
-    koHorizontal: { filename: "nudge-eap/nudge-eap-ko.svg", mimeType: "image/svg+xml" },
-    koEnHorizontal: { filename: "nudge-eap/nudge-eap-koen.svg", mimeType: "image/svg+xml" },
-    enHorizontal: { filename: "nudge-eap/nudge-eap-en.svg", mimeType: "image/svg+xml" },
-    enMono: { filename: "nudge-eap/nudge-eap-en-dark.svg", mimeType: "image/svg+xml" },
-    symbol: { filename: "nudge-eap/nudge-eap-symbol.svg", mimeType: "image/svg+xml" },
+    default: { filename: "brand/nudge-eap/logos/nudge-eap-logo.png", mimeType: "image/png" },
+    footer: { filename: "brand/nudge-eap/logos/nudge-eap-logo-footer.png", mimeType: "image/png" },
+    svg: { filename: "brand/nudge-eap/logos/nudge-eap-logo.svg", mimeType: "image/svg+xml" },
+    koHorizontal: { filename: "brand/nudge-eap/logos/nudge-eap-ko.svg", mimeType: "image/svg+xml" },
+    koEnHorizontal: { filename: "brand/nudge-eap/logos/nudge-eap-koen.svg", mimeType: "image/svg+xml" },
+    enHorizontal: { filename: "brand/nudge-eap/logos/nudge-eap-en.svg", mimeType: "image/svg+xml" },
+    enMono: { filename: "brand/nudge-eap/logos/nudge-eap-en-dark.svg", mimeType: "image/svg+xml" },
+    symbol: { filename: "brand/nudge-eap/logos/nudge-eap-symbol.svg", mimeType: "image/svg+xml" },
   },
 
   "cashwalk-biz": {
-    vertical: { filename: "cashwalk-biz/cashwalk-vertical.png", mimeType: "image/png" },
-    horizontal: { filename: "cashwalk-biz/cashwalk-horizontal.png", mimeType: "image/png" },
+    vertical: { filename: "brand/cashwalk-biz/logos/cashwalk-vertical.png", mimeType: "image/png" },
+    horizontal: { filename: "brand/cashwalk-biz/logos/cashwalk-horizontal.png", mimeType: "image/png" },
     horizontalSvg: {
-      filename: "cashwalk-biz/cashwalk-for-business-horizontal.svg",
+      filename: "brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg",
       mimeType: "image/svg+xml",
     },
   },
@@ -80,9 +80,9 @@ export const BRAND_LOGO_METADATA: Record<BrandSlug, BrandLogoMetaSet> = {
   // SVG 내부에 fill="var(--fill-0, #FF5B37)" 형태로 CSS 변수 fallback 까지 들어있어
   // 테마 override 도 가능. default=red(브랜드 primary), mono=black(단색), muted=gray700(저강조).
   runmile: {
-    default: { filename: "runmile-logo.svg", mimeType: "image/svg+xml" },
-    mono: { filename: "runmile-logo-black.svg", mimeType: "image/svg+xml" },
-    muted: { filename: "runmile-logo-gray700.svg", mimeType: "image/svg+xml" },
+    default: { filename: "brand/runmile/logos/runmile-logo.svg", mimeType: "image/svg+xml" },
+    mono: { filename: "brand/runmile/logos/runmile-logo-black.svg", mimeType: "image/svg+xml" },
+    muted: { filename: "brand/runmile/logos/runmile-logo-gray700.svg", mimeType: "image/svg+xml" },
   },
 };
 
@@ -96,7 +96,7 @@ export const BRAND_SLUGS: readonly BrandSlug[] = Object.keys(BRAND_LOGO_METADATA
  * 독립 상수로 분리. (로고 가이드 Figma Library 698:87 Section_DAIN)
  */
 export const DAIN_LOGO: BrandLogoMeta = {
-  filename: "nudge-eap/dain-logo.svg",
+  filename: "brand/nudge-eap/logos/dain-logo.svg",
   mimeType: "image/svg+xml",
 };
 
