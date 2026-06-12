@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/html",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Vanilla Web Components for Nudge Design System — framework-agnostic DOM elements that pair with @nudge-design/styles.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

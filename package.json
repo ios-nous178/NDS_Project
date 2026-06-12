@@ -1,7 +1,7 @@
 {
   "name": "nudge-design-system",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Nudge Design System monorepo",
   "packageManager": "pnpm@9.6.0",
   "engines": {

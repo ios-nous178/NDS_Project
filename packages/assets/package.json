@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/assets",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Raster/vector brand assets (logos) for Nudge Design System — single SSOT, brand-swap interface, base64 fallback for zero-config consumers.",
   "type": "module",
   "main": "./dist/index.js",

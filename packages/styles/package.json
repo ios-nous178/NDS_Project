@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/styles",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Framework-agnostic CSS bundle for Nudge Design System — consumed by @nudge-design/react and @nudge-design/html.",
   "exports": {
     "./styles.css": "./dist/styles.css"

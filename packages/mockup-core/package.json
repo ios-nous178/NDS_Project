@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/mockup-core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "description": "DS 목업 빌드/검증 코어 — MCP 와 데스크탑이 공유.",
   "type": "module",
@@ -21,9 +21,9 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "typecheck": "tsc --noEmit",
-    "test": "tsc && node --test 'dist/**/*.test.js'"
+    "test": "rm -rf dist && tsc && node --test 'dist/**/*.test.js'"
   },
   "dependencies": {
     "@babel/parser": "^7.25.0",

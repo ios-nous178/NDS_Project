@@ -1,5 +1,50 @@
 # @nudge-design/tokens
 
+## 0.0.3
+
+### Patch Changes
+
+- a2ff1a0: 브랜드 프로필(brand-profiles) 신설 — 브랜드별 의미/정책 차이를 한 파일의 데이터로 수렴.
+  검정 CTA 매핑(캐포비 neutral · Geniet secondary), 금지 Button color, 모달 정책(confirm 검정 CTA·단일버튼 hug·세로스택 금지), 알림 컴포넌트 금지(캐포비 Toast), 어드민 Page Pattern System 적용 여부, slug 별칭(cashpobi 등)이 들어간다. 목업 validator 는 이제 브랜드 slug 를 하드코딩하지 않고 프로필을 읽는다 — 새 브랜드가 같은 정책을 선언하면 검증룰이 코드 수정 없이 그대로 적용된다.
+
+  룰 id 일반화: 프로필 정책 룰 5종의 validator 룰 id 가 브랜드 중립으로 바뀐다 —
+  `cashwalk-biz-no-secondary`→`brand-denied-button-color` · `cashwalk-biz-toast`→`brand-banned-notification` · `cashwalk-biz-modal-primary-cta`→`brand-modal-confirm-cta` · `cashwalk-biz-modal-single-button-fullwidth`→`brand-modal-single-button-fullwidth` · `cashwalk-biz-modal-footer-stacked`→`brand-modal-footer-stacked`. (캐포비 어드민 패턴 시스템 콘텐츠 룰 `cashwalk-biz-*` 는 유지.)
+
+- e7a2978: 캐포비 admin input placeholder/helper 텍스트 색 정합 (Figma TextField 3447-467)
+  - `input.placeholder` #DDD(Neutral400) → #BBB(Neutral500) — Figma 라이브러리 SSOT 정합 + 대비(a11y) 개선.
+  - `input.helpertextDefault` #BBB(Neutral500) → #666(Neutral700 = text.subtle) — 기존 "가이드 미정의" 추정값 교정(Geniet 와 동일 톤). 전 캐포비 input 에 브랜드 cascade 로 전파.
+
+- 7a04a69: 약관동의 [필수] 자동 강조 · 캐포비 모달/팝업 검정 CTA 회귀(노랑) 정착 · 온보딩 풀폭 CTA 게이트
+
+  세 가지 반복 피드백을 DS 근본에서 닫는다.
+  - **약관동의 [필수] 강조 누락(반복)** — CheckboxGroup 이 `badge` 에 "필수" 가 들어있으면 `required` 를 따로 안 붙여도 자동으로 빨강+bold 강조하도록 했다(react/html 미러). 그동안 `required` opt-in 을 매번 누락해 회색으로 나오던 footgun 제거. 끄려면 `required={false}` 명시.
+  - **캐포비 모달/팝업 버튼이 노랑(반복)** — 모달/팝업 confirm 버튼 색을 `[data-brand="cashwalk-biz"]` CSS 캐스케이드 대신 신규 `--semantic-confirm-cta-*` 토큰으로 흐르게 바꿨다. 기존 캐스케이드는 `data-brand` 속성을 쓰지 않는 standalone 목업(브랜드 `:root` 교체식)에서 안 걸려 base 의 brand 노랑이 새던 회귀의 원인이었다. 토큰은 목업·Storybook 양쪽에 적용되고, base 는 각 브랜드 brand 색을 참조하므로 캐포비만 검정(#111)으로 override 된다(타 브랜드 무영향).
+  - **온보딩 단일 CTA 가 좁게(반복)** — 온보딩 주 CTA(Primary solid)에 full-width 가 없으면 `validate_html_mockup` 이 `onboarding-cta-not-fullwidth` error 로 막는다. 작성자가 모달 단일버튼(우측 hug)과 혼동하던 회귀 차단. 가이드(pattern:cashwalk-biz-page-onboarding)도 명시 강화.
+
+- 67741ea: Toast — Figma 가이드(1330:2) 정렬: 단일 다크 토스트로 정리
+
+  Toast 디자인 가이드(Figma 1330:2)에 맞춰 컴포넌트를 **비차단형 단일 다크 메시지**로 재정의했다. 위치가 곧 형태다 — `top`(PC·상단 중앙·**pill**·패딩 16/32·body2) / `bottom`(모바일·하단·**rounded 24**·패딩 12/20·body3). 배경은 다크값(#212121·0.92) + 흰 텍스트, drop shadow(y8 blur12 18%) 추가.
+
+  배경/그림자는 role-based 시멘틱 변수(Figma SSOT) 집합 밖이라 **`--nds-toast-bg` / `--nds-toast-shadow` 컴포넌트 토큰**으로 신설(base `nudge-eap` theme `components` 맵 → `:root` emit, 브랜드 cascade 가능). styles 는 raw hex 없이 `var(--nds-toast-*)` 만 참조한다.
+
+  **BREAKING**
+  - **색 변형 제거** — `variant`(`success`/`error`/`warning`/`info`) 와 `ToastVariant` 타입을 삭제했다. Toast 는 단일 다크 스타일만 가진다. 심각한 오류·결정 요청은 Modal/Alert, 액션·닫기·브랜드 카드(캐포비 흰 카드)는 Snackbar 로 라우팅. `error` 토스트의 `role=alert`/`aria-live=assertive` 도 함께 제거(모든 토스트 `role=status`·polite — 비차단형 일관).
+  - **`top-right` position 제거** — `ToastPosition` 은 `top | bottom` 만 남는다(가이드 2-position 모델). 유일 소비처였던 캐포비 admin 은 이미 Toast 자체가 banned(Snackbar 만 사용).
+  - **동시 1개 노출이 기본** — `maxCount` 기본값을 3 → **1** 로 변경(새 토스트가 기존을 즉시 대체). 스택이 필요하면 `maxCount` 를 올려 opt-in.
+
+  기타: z-index 토큰 `toast` 1200 → **1500**(가이드 spec, Snackbar 와 공유). MCP 가이드(`component:Toast`)에 `figmaNodeUrl` 추가 + 단일 다크/2-position/1개 노출 모델로 갱신.
+
+- 72d2018: Tooltip — Figma 가이드(1380:13) 규격 정렬
+
+  Tooltip 을 디자인 가이드(Figma 1380:13) 스펙에 맞췄다. React/HTML 컴포넌트 구조·API·동작(hover·focus, show 200ms·hide 0ms, 4 position, 단일 노출)은 이미 부합해 변경 없이 **시각 규격(CSS·토큰)만** 정렬했다.
+  - **단일 다크 톤 #333333** — 배경을 `surface.inverse`(#111) → `--nds-tooltip-bg`(#333333, **전 브랜드 동일**)로. base `nudge-eap` theme 이 `:root` 로 emit. 기존 캐포비 전용 `tooltip.bg` 브랜드 override 는 base 가 흡수해 **중복 제거**.
+  - **본문** — Caption1 **Medium** 13/18(weight regular → medium), 흰 텍스트.
+  - **패딩 14/16**(상하/좌우, 기존 8/12), radius 8 유지.
+  - **꼬리 12×8 triangle** — 기존 8×8 rotate(45deg) 사각형 → border 로 그린 정삼각형(4 방향), 본체 외부 가운데에서 트리거 방향. 본체-트리거 8px 간격을 꼬리가 메운다.
+  - **z-index** — `popup`(1100) → 신설 토큰 `tooltip`(**1400**, 모달·토스트 1500 보다 아래).
+
+  MCP 가이드(`component:Tooltip`)에 `figmaNodeUrl` + 규격 갱신. 리치 본문(`<template slot="content">`)·캐포비 compact 타이포 override 는 유지.
+
 ## 0.0.2
 
 ### Patch Changes

@@ -1,5 +1,137 @@
 # @nudge-design/react
 
+## 0.0.3
+
+### Patch Changes
+
+- 5771516: AmountInput(돈입력): 천단위 콤마 재포맷 후 커서(caret) 위치 보존
+
+  매 입력마다 `toLocaleString` 으로 재포맷하며 input 값을 통째로 교체해, 커서가 항상 문자열 끝으로 튀던 문제(중간 자리 수정 불가 — "동작 이상")를 고친다. 입력 시점 커서 앞의 숫자 개수를 세고, 재포맷된 문자열에서 같은 자릿수 위치로 커서를 되돌린다. react `useLayoutEffect` + html `setSelectionRange` 로 양쪽 미러 동시 반영. 캐럿 보존 케이스(중간 삽입/끝 입력/전체 삭제)를 테스트로 고정.
+
+- b68ed61: Asset 사이즈를 Avatar 새 스케일에 정합
+
+  Asset 의 size 프리셋을 Avatar(Figma 1337:8)와 동일 스케일로 맞췄다 — **md 40→48 · lg 48→64 · xl 64→96**(xs 24·sm 32 동일), Asset 전용 `2xl` 은 80→120 으로 상향(순서 유지). shape='rounded' 의 cornerRadius 도 고정 8px → **사이즈별 4/6/8/10/12(2xl 14)** 로 Avatar 와 동일하게(`--nds-asset-radius` 슬롯, 임의 px size 는 ~0.16 비율). 이제 같은 size·shape 에서 Asset 과 Avatar 가 시각적으로 일치한다. 프로덕션 소비처 없음(스토리만 사용) — 외부에서 Asset size 를 픽셀 의도로 쓰던 곳만 확인 필요.
+
+- e69fcf9: Avatar Shape 3종 + 가이드 사이즈 정합 · 넛지EAP Card 규칙 패턴
+
+  **Avatar (Figma 1337:8 정합)** — `shape` prop 신규(circle 기본 · rounded · square, 사이즈별 rounded radius 4/6/8/10/12) + 사이즈 스케일을 가이드 5종(24/32/48/64/96)에 맞춤. 키 API 는 유지(xs/sm/md/lg/xl)하되 픽셀값을 가이드에 정합 — **md 40→48 · lg 48→64 · xl 64→96 으로 변경**(xs 24·sm 32 동일). 이미지 부재 fallback 은 이니셜 **1자 Bold**(기존 2자→1자). AvatarGroup 도 동일 스케일·shape 전파(px/font 는 `avatarSizeConfig` 에서 파생해 중복 하드코딩 제거). 프로덕션 DS 컴포넌트는 Avatar 를 슬롯(ReactNode)으로 받으므로 사이즈 변경의 직접 영향 없음 — 앱에서 `size="md/lg/xl"` 를 픽셀 의도로 쓰던 곳은 새 스케일 확인 필요.
+
+  **Card (Figma 713:2 — 넛지EAP CardRulesGuide)** — `pattern:nudge-eap-card` 신규: 넛지EAP 서비스 카드는 ① 내부 CTA 허용(4종: Full-width 48 / Compact 40 / Icon+Text 44 / Ghost), ② shadow 금지·border-only, ③ radius 12 고정. 기존 `component:Card` 가이드의 "[Figma 권위 룰]"(CTA 금지·Elevation 0/1)은 Geniet 도메인 기준임을 명시하는 브랜드 분기 캐비엇 추가(컴포넌트는 Card.Cta/Footer 슬롯으로 양쪽 모두 지원 — 차이는 사용 규칙).
+
+- 73eca2e: Badge `shape` prop 추가 (default | pill) — 캐포비 admin Badge 가이드 동기화 (Figma 3782-20558)
+  - `shape="default"`(라운드 사각)=동적 상태값(충전·사용·적립·만료·취소), `shape="pill"`(완전 둥근)=정적 식별 태그(일반 계정·프리미엄·신규). 기본값 default 로 기존 동작 유지.
+  - React `Badge`/HTML `<nds-badge shape>` 미러. 톤은 기존 ghost 변형으로 매핑(신규 토큰 없음).
+  - MCP 가이드에 shape 정책·캐포비 ChipGuide 레퍼런스·동적/정적 혼용 금지 pitfall 추가.
+
+- 07ce830: 캐포비 admin Modal 가이드 동기화 (Figma ModalGuide 3418-471)
+  - 푸터 액션 버튼 크기 갱신: 높이 44px→48px, 폭 120px(single)/hug(dual)→**128px 고정**(Single·Dual 모두 우측 정렬 pill).
+  - ④ Confirm + Slot 을 **두 개의 독립 슬롯**으로 가이드에 명문화 — slot a=severity(Notice info/caution/error) · slot b=BodyContent 컨트롤(ContentSlot/Input/Select/DatePicker). Variant Showcase 반영.
+
+- 5771516: Modal·Popup·ConfirmTooltip·TagInput: 캐포비 검정 CTA 를 secondary → neutral 토큰으로 통일
+
+  캐포비(cashwalk-biz)는 Figma ButtonGuide 상 tone 이 Primary + Neutral 둘뿐이고 Secondary 가 없는데도, 모달/팝업/popconfirm 확정 버튼·TagInput 추가 버튼이 `button.bgSecondary` 를 참조하고 있었다. (TagInput 은 타 브랜드 영향을 막기 위해 base 는 secondary 유지하고 `[data-brand="cashwalk-biz"]` 게이트로만 neutral override.) 이 탓에 "캐포비엔 secondary 없음(neutral 사용)"이라는 `cashwalk-biz-no-secondary` 검증룰·Button 가이드와 모순돼, 작성자가 footer 버튼 색을 잘못(primary 노랑) 쓰는 오용의 원인이 됐다. confirm 을 `button.bgNeutral`(검정 #111)/`textNeutralSolid`(흰)/`bgNeutralHover` 로 바꿔 캐포비 전역 taxonomy 와 일치시킨다(시각은 동일한 검정, 색은 `[data-brand="cashwalk-biz"]` cascade 로만 적용 — 타 브랜드 무영향).
+
+- 7a04a69: 캐포비 본인인증(휴대폰/이메일 → 인증번호) 플로우 구현 지원 — FieldActionRow action 옵션화 · CountdownTimer tone="brand"
+
+  캐포비 비밀번호 찾기 등 본인인증 화면(연락처 입력 → 별도 full-width 검정 [재전송] → 코드 입력 + 인라인 타이머 → 하단 [다음])을 DS 컴포넌트로 그대로 구현할 수 있게 두 군데 갭을 메웠다.
+  - **FieldActionRow `action` 옵션화** — 이제 action 을 생략하면 "코드 입력 + 우측 타이머만"(인라인 버튼 없는 줄)을 렌더한다. 인증번호 전송/재전송이 별도 full-width 버튼이고 코드 입력엔 타이머만 두는 캐포비 레이아웃을 직접 만들 수 있다. (react/html 미러)
+  - **CountdownTimer `tone="brand"`** — 진행 중 타이머를 브랜드 액센트색으로(캐포비 = 오렌지 #FD9B02, `text.brand` 토큰). 인증 코드 입력의 오렌지 타이머를 정확히 재현한다. urgent(≤10초) 빨강은 tone 과 무관하게 우선. (react/html/styles 미러)
+  - **가이드** — 온보딩 패턴에 "03c 본인 인증 Section" 추가, VerificationCodeInput 가이드에 캐포비 본인인증 레시피(별도 재전송 + 타이머만 코드 입력) 추가, FieldActionRow·CountdownTimer 가이드에 신규 옵션 반영.
+
+- 7a04a69: 약관동의 [필수] 자동 강조 · 캐포비 모달/팝업 검정 CTA 회귀(노랑) 정착 · 온보딩 풀폭 CTA 게이트
+
+  세 가지 반복 피드백을 DS 근본에서 닫는다.
+  - **약관동의 [필수] 강조 누락(반복)** — CheckboxGroup 이 `badge` 에 "필수" 가 들어있으면 `required` 를 따로 안 붙여도 자동으로 빨강+bold 강조하도록 했다(react/html 미러). 그동안 `required` opt-in 을 매번 누락해 회색으로 나오던 footgun 제거. 끄려면 `required={false}` 명시.
+  - **캐포비 모달/팝업 버튼이 노랑(반복)** — 모달/팝업 confirm 버튼 색을 `[data-brand="cashwalk-biz"]` CSS 캐스케이드 대신 신규 `--semantic-confirm-cta-*` 토큰으로 흐르게 바꿨다. 기존 캐스케이드는 `data-brand` 속성을 쓰지 않는 standalone 목업(브랜드 `:root` 교체식)에서 안 걸려 base 의 brand 노랑이 새던 회귀의 원인이었다. 토큰은 목업·Storybook 양쪽에 적용되고, base 는 각 브랜드 brand 색을 참조하므로 캐포비만 검정(#111)으로 override 된다(타 브랜드 무영향).
+  - **온보딩 단일 CTA 가 좁게(반복)** — 온보딩 주 CTA(Primary solid)에 full-width 가 없으면 `validate_html_mockup` 이 `onboarding-cta-not-fullwidth` error 로 막는다. 작성자가 모달 단일버튼(우측 hug)과 혼동하던 회귀 차단. 가이드(pattern:cashwalk-biz-page-onboarding)도 명시 강화.
+
+- 5771516: FieldActionRow/VerificationCodeInput/CountdownTimer: 인증번호 입력 합성 정리
+  - **타이머 겹침 수정**: FieldActionRow 의 우측 타이머가 입력값/placeholder 위로 겹치던 문제를, 타이머가 있을 때 필드 콘텐츠에 우측 공간을 자동 예약(`data-has-timer`)해 해소. 더는 입력에 수동 paddingRight 가 필요 없다(`--nds-far-timer-reserve` 로 조정 가능).
+  - **박스 이중 스타일 제거**: FieldActionRow 의 범용 입력 스타일을 직접 자식 `> input` 으로 한정 — VerificationCodeInput/Input 같은 DS 컴포넌트가 자체 박스를 가질 때 테두리·패딩이 이중으로 얹히던 문제 해소.
+  - **CountdownTimer 시간 볼드 제거**: 카운트다운 값을 bold → regular(tabular-nums 유지)로 — 불필요한 강조 제거. 필드 안 타이머는 '남은 시간' 라벨 없이 값(mm:ss)만 두는 것을 권장.
+
+- e7a2978: 모든 텍스트 인풋의 placeholder/helper 색을 `cv.input.*` 토큰으로 통일 (드리프트 교정)
+  - placeholder: FieldActionRow·PhoneInput·Header(검색)·ChatComposer·CheckboxTree(검색) 가 `cv.textRole.muted` → `cv.input.placeholder` 로. (runmile 등에서 실제 색 달랐음)
+  - helper text: AddressPicker·FormField·PhoneInput·TimePicker·Textarea·ImageUpload·Select·SearchInput 이 `cv.textRole.subtle`/`muted` → `cv.input.helpertextDefault` 로. (base/geniet/runmile/trost 에서 canonical Input 헬퍼와 색 달랐음)
+  - 이제 `--semantic-input-placeholder` / `--semantic-input-helpertext-*` 단일 토큰이 전 인풋을 제어. Checkbox/Radio(선택 컨트롤)는 범위 제외.
+
+- 5771516: Modal: 닫기(X) 버튼을 타이틀 유무와 무관하게 항상 우측 정렬
+
+  타이틀이 없는 모달에서 헤더 스페이서가 함께 렌더되지 않아, `justify-content: space-between` 의 단독 자식이 된 닫기 버튼이 좌측으로 떨어지던 회귀를 고친다. 닫기 버튼에 `margin-left: auto` 를 주어 타이틀이 있을 땐 no-op(타이틀 flex:1 이 공간을 차지), 없을 땐 우측으로 밀어낸다. react/html 공용 CSS 라 양쪽에 동시 반영. 타이틀 없는 closable 스토리(CashwalkBiz ⑤)로 고정.
+
+- 5771516: Modal: 본문에 콘텐츠 슬롯(NoticeAlert/Input/Select/DatePicker)을 둘 때 간격 지원 (④ Confirm + Slot)
+
+  `ModalBody` 가 단일 텍스트만 가정해 `display:flex` 가 없던 탓에, 설명 텍스트 + 콘텐츠 슬롯(인라인 알림/입력/드롭다운/날짜)을 함께 넣으면 둘이 간격 없이 붙던 문제를 고친다. 본문을 세로 스택(`flex-direction:column` + `gap`)으로 만들어 Figma ④ Confirm+Slot(3418-471)처럼 설명↔슬롯이 일정 간격으로 쌓이게 한다(캐포비 = 20px 평면 gap, base = `--semantic-gap-default`). 단일 텍스트 본문은 무영향, 슬롯은 full-width 로 늘어남.
+
+- d6e2deb: MultiSelect(다중 선택 드롭다운) 패널을 캐포비 어드민 Figma 실측(MultiSelectDropdown 4123-1406)에 맞춰 정리
+
+  리포트/필터의 다중 선택 드롭다운 모양을 디자인 시안과 일치시킨다. 동작(초안 편집 → 적용)은 그대로, 패널의 시각 구조만 손봤다. (react/styles/html 미러)
+  - **검색**: 테두리 없는 flush 입력 → **테두리 있는 인셋 검색창**(패널 상단 패딩 박스 + 하단 구분선).
+  - **전체선택 행**: 배경을 옅은 회색(surface.subtle)으로 구분하고 라벨을 한 단계 큰 16/medium 으로(옵션 14 와 위계 분리).
+  - **행 높이/여백**: 옵션·전체선택 행을 48→44h 정렬(좌우 16 / 상하 12).
+  - **푸터**: 풀폭으로 양쪽에 꽉 차던 [취소][적용] → **우측 hug 정렬**. 색을 `secondary` → **`neutral`** 로(캐포비 검정 CTA 규칙 — 적용=검정 solid, 취소=outlined. secondary 는 캐포비 denylist 라 잠재 회귀였음).
+  - **패널 폭**: 360 → 392px.
+  - MCP `component:MultiSelect` 가이드에 패널 내부 구조·푸터 규칙을 고정하고 컴포넌트 SSOT Figma 노드(4123-1406)로 갱신.
+
+- 9530a80: QuickMenu(신규): PC 우측 고정 퀵메뉴 컴포넌트
+
+  PC 화면 우측에 고정(sticky/fixed)되어 자주 쓰는 전역 액션 2~4개(3개 권장)를 빠르게 노출하는 보조 navigation 컴포넌트를 추가했다. Container(width 120 · radius 12 · White · overlay shadow) + Header("QUICK MENU" Bold/brand 색 + divider) + Menu Item × N(IconCircle 60 + 라벨) + 하단 TOP(맨 위로) 버튼 구조.
+  - React `<QuickMenu items={[…]} fixed showTop onTopClick />` · HTML `<nds-quick-menu items='[…]' fixed>` 3면 미러.
+  - 색은 전부 시멘틱 토큰 — 헤더는 `--semantic-text-brand-default`(brand cascade)라 5개 브랜드 색이 자동 적용. raw hex 없음.
+  - `fixed` 속성으로 PC 우측 고정 위치(top 172 · right 40 · z 900) + 모바일/태블릿(<1024) 자동 숨김(하단 Tab Bar 로 대체).
+  - 아이템 클릭 → `quick-menu-item`(detail.key) · TOP 클릭 → `quick-menu-top` 이벤트. icon 은 inline SVG(이름/이모지 아님).
+  - MCP 가이드(`component:QuickMenu`) · Storybook 스토리 · AllComponents 카탈로그 등재.
+
+- 67741ea: Toast — Figma 가이드(1330:2) 정렬: 단일 다크 토스트로 정리
+
+  Toast 디자인 가이드(Figma 1330:2)에 맞춰 컴포넌트를 **비차단형 단일 다크 메시지**로 재정의했다. 위치가 곧 형태다 — `top`(PC·상단 중앙·**pill**·패딩 16/32·body2) / `bottom`(모바일·하단·**rounded 24**·패딩 12/20·body3). 배경은 다크값(#212121·0.92) + 흰 텍스트, drop shadow(y8 blur12 18%) 추가.
+
+  배경/그림자는 role-based 시멘틱 변수(Figma SSOT) 집합 밖이라 **`--nds-toast-bg` / `--nds-toast-shadow` 컴포넌트 토큰**으로 신설(base `nudge-eap` theme `components` 맵 → `:root` emit, 브랜드 cascade 가능). styles 는 raw hex 없이 `var(--nds-toast-*)` 만 참조한다.
+
+  **BREAKING**
+  - **색 변형 제거** — `variant`(`success`/`error`/`warning`/`info`) 와 `ToastVariant` 타입을 삭제했다. Toast 는 단일 다크 스타일만 가진다. 심각한 오류·결정 요청은 Modal/Alert, 액션·닫기·브랜드 카드(캐포비 흰 카드)는 Snackbar 로 라우팅. `error` 토스트의 `role=alert`/`aria-live=assertive` 도 함께 제거(모든 토스트 `role=status`·polite — 비차단형 일관).
+  - **`top-right` position 제거** — `ToastPosition` 은 `top | bottom` 만 남는다(가이드 2-position 모델). 유일 소비처였던 캐포비 admin 은 이미 Toast 자체가 banned(Snackbar 만 사용).
+  - **동시 1개 노출이 기본** — `maxCount` 기본값을 3 → **1** 로 변경(새 토스트가 기존을 즉시 대체). 스택이 필요하면 `maxCount` 를 올려 opt-in.
+
+  기타: z-index 토큰 `toast` 1200 → **1500**(가이드 spec, Snackbar 와 공유). MCP 가이드(`component:Toast`)에 `figmaNodeUrl` 추가 + 단일 다크/2-position/1개 노출 모델로 갱신.
+
+- c0efbfa: ValidationChip 신규 + 폼 검증/합성 패턴 가이드 (넛지EAP InputFormGuide)
+
+  넛지EAP Library 의 새 인풋 가이드(InputFormGuide 1399:124)에서 유일하게 DS 에 없던 **ValidationChip** 을 추가했다 — 입력 형식 요구사항 1개의 실시간 충족 신호(16px 체크 아이콘 + 12px 라벨). `state` 3종: `incomplete`(muted)·`complete`(Brand Blue)·`error`(status-error). 아이콘·텍스트가 같은 색이라 root `color` 하나만 semantic 토큰으로 두고 SVG 는 `currentColor` 로 상속 → 5 브랜드 cascade 자동 대응. react `<ValidationChip>` + html `<nds-validation-chip>` 3면 미러, Storybook 스토리·AllComponents 카탈로그 동시 등재.
+
+  가이드(MCP): `component:ValidationChip` + 신규 `pattern:form-validation` — 회원가입 합성 3종(Input+ValidationChip 실시간 검증 · Input+Inline Button=FieldActionRow · Input+내장 password-toggle)과 Label/Helper/Error 규칙·검증 시점(onBlur/onSubmit/onChange)을 정리했다. 단일 필드 레이아웃은 기존 `pattern:nudge-eap-form-layout`, 컨트롤 선택은 `pattern:selection-controls` 로 위임.
+
+- d6e2deb: 본인인증 UI 정리(FieldActionRow label · 인증코드 자간/placeholder) · 캐포비 모달 노랑 CTA 재발 가드
+
+  목업 피드백에서 드러난 본인인증 화면 회귀 4건을 DS 근본에서 닫는다.
+  - **FieldActionRow `label` 신설(react/styles/html 미러)** — 라벨이 필요한 인증 row(예: "휴대폰 번호" + [인증번호 받기])에서 라벨을 손으로 버튼과 같은 줄에 욱여넣어 버튼이 라벨 높이에 떠 어긋나던 회귀를 막는다. 이제 `label` 을 넘기면 라벨은 한 줄 위, 입력+버튼은 인라인으로 컴포넌트가 정렬한다.
+  - **VerificationCodeInput 자간/placeholder** — 코드 값의 `letter-spacing` 을 0.08em → normal 로(단일 필드에서 숫자가 부자연스럽게 벌어져 어색하던 자간 수정). 기본 placeholder 도 "인증번호 6자리" → "인증번호 입력"(헬퍼가 이미 6자리를 안내해 중복 제거). (react/html/styles 미러)
+  - **캐포비 모달/팝업 노랑(primary) CTA 재발 가드** — 색 캐스케이드는 이미 토큰으로 잡혔지만, 작성자가 모달 footer 버튼에 `color="primary"` 를 쓰거나 `color` 를 생략(Button 기본값이 primary)하면 여전히 노랑이 됐다(5회+ 재발의 진짜 원인). `validate_html_mockup` 에 `cashwalk-biz-modal-primary-cta`(error: 확인/팝업 모달 footer 의 primary/색생략 버튼 → 검정 neutral 요구, 대형 선택/데이터 모달은 면제) + `cashwalk-biz-modal-footer-stacked`(warn: 2버튼 세로 스택 금지 — 라벨 축약 방향) 룰을 추가하고, Modal·cta-group·FieldActionRow 가이드에 "모달 버튼 color 생략 금지(기본 노랑)·2버튼 가로 유지·전송 후 [재전송] 토글"을 명시했다.
+
+- Updated dependencies [b68ed61]
+- Updated dependencies [e69fcf9]
+- Updated dependencies [a2ff1a0]
+- Updated dependencies [e7a2978]
+- Updated dependencies [07ce830]
+- Updated dependencies [5771516]
+- Updated dependencies [7a04a69]
+- Updated dependencies [7a04a69]
+- Updated dependencies [9257d0a]
+- Updated dependencies [5771516]
+- Updated dependencies [e7a2978]
+- Updated dependencies [5771516]
+- Updated dependencies [5771516]
+- Updated dependencies [d6e2deb]
+- Updated dependencies [d6e2deb]
+- Updated dependencies [9530a80]
+- Updated dependencies [67741ea]
+- Updated dependencies [72d2018]
+- Updated dependencies [d6e2deb]
+  - @nudge-design/styles@0.0.3
+  - @nudge-design/tokens@0.0.3
+  - @nudge-design/icons@0.0.3
+  - @nudge-design/assets@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
