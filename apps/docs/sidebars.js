@@ -97,12 +97,9 @@ module.exports = {
       type: "category",
       label: "내부 문서",
       collapsed: true,
-      items: [
-        "TOKENS",
-        "FIGMA_TO_REACT_WORKFLOW",
-        "STYLING_STRUCTURE_GUIDE",
-        "COMPONENT_DOC_TEMPLATE",
-      ],
+      // TOKENS(수기 토큰 정의서)는 자동 생성되는 semantic-tokens + 토큰 카탈로그로 대체돼 삭제.
+      // COMPONENT_DOC_TEMPLATE 은 가이드 작성용 템플릿 — 독자용 사이트에 게시하지 않는다.
+      items: ["FIGMA_TO_REACT_WORKFLOW", "STYLING_STRUCTURE_GUIDE"],
     },
   ],
 };
