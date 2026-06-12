@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T07:00:26.053Z",
+  "generatedAt": "2026-06-12T07:11:54.988Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -11997,10 +11997,7 @@
     {
       "name": "--nds-tooltip-bg",
       "value": "var(--semantic-fill-neutral-default)",
-      "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "group": "nds"
     },
     {
       "name": "--radius-0",
@@ -13636,6 +13633,11 @@
         "runmile": "400",
         "trost": "400"
       }
+    },
+    {
+      "name": "--z-tooltip",
+      "value": "1400",
+      "group": "z"
     }
   ],
   "brands": [

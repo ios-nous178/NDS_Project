@@ -2154,22 +2154,25 @@ const mockTooltipBubble: React.CSSProperties = {
   left: "50%",
   transform: "translateX(-50%)",
   padding: "6px 10px",
-  background: cv.textRole.normal,
+  background: cv.fill.neutral,
   color: cv.textRole.inverse,
-  borderRadius: radius.sm,
+  borderRadius: radius.md,
   fontSize: 11,
   fontWeight: 500,
   whiteSpace: "nowrap",
 };
 
+// 12×8 triangle (Figma 1380:13 꼬리) — border 로 그린 아래 방향 삼각형.
 const mockTooltipArrow: React.CSSProperties = {
   position: "absolute",
-  bottom: -4,
+  bottom: -8,
   left: "50%",
-  transform: "translateX(-50%) rotate(45deg)",
-  width: 8,
-  height: 8,
-  background: cv.textRole.normal,
+  transform: "translateX(-50%)",
+  width: 0,
+  height: 0,
+  borderLeft: "6px solid transparent",
+  borderRight: "6px solid transparent",
+  borderTop: `8px solid ${cv.fill.neutral}`,
 };
 
 /* BottomSheet / Toast — 화면 안 dim + 하단 시트 */

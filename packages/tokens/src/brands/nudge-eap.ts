@@ -64,5 +64,8 @@ export const nudgeEapTheme: BrandTheme = {
       bg: "rgba(33, 33, 33, 0.92)",
       shadow: "0px 8px 12px rgba(0, 0, 0, 0.18)",
     },
+    // Tooltip — 단일 다크 톤 (Figma 1380:13 #333). "중립 채움" 역할 = fill.neutral 시멘틱에 바인딩 →
+    // base #383838 / 캐포비 #333 으로 브랜드 cascade(슬롯값=시멘틱 var). 모든 브랜드 :root emit.
+    tooltip: { bg: "var(--semantic-fill-neutral-default)" },
   },
 };

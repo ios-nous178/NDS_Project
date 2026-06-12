@@ -3302,7 +3302,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Tooltip": {
     "name": "Tooltip",
-    "summary": "trigger 에 마우스 hover / focus 시 보조 설명. **두 줄·여러 줄 본문 허용** — 짧은 힌트는 `content` 속성(자동 줄바꿈), 제목+불릿 같은 **리치 안내**(예: 캐포비 '권한 안내')는 `<template slot=\"content\">` 로 넣고 `max-width` 로 폭 조절. 다크 배경(surface.inverse) + 흰 텍스트 + 하단/방향별 tail 은 공통. 모바일에선 사실상 안 보이므로 핵심 정보는 본문에 둘 것.",
+    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1380-13",
+    "summary": "trigger 에 마우스 hover / focus 시 보조 설명(Figma 1380:13). **단일 다크 톤** — 배경 `--nds-tooltip-bg`(fill.neutral 역할, #333) + 흰 텍스트(Caption1 Medium 13), padding 14/16, radius 8, **꼬리 12×8 triangle**(본체 외부 가운데). Position 4종(Top/Bottom/Left/Right, 트리거 기준), trigger=Hover·Focus, delay Show 200ms·Hide 0ms(플리커 방지), z-index 1400(모달·토스트보다 아래), **동시 1개만 노출**. **두 줄·여러 줄 본문 허용** — 짧은 힌트는 `content` 속성(자동 줄바꿈, 1줄 권장·최대 2줄), 제목+불릿 같은 **리치 안내**(예: 캐포비 '권한 안내')는 `<template slot=\"content\">` 로 넣고 `max-width` 로 폭 조절. 모바일/터치 only 환경에선 사실상 안 보이므로 핵심 정보는 본문에 둘 것.",
     "pitfalls": [
       "Tooltip 안에 인터랙티브 요소(링크/버튼) — 모바일/터치에서는 도달 불가.",
       "trigger 가 aria-label 만 갖고 visible 텍스트가 없는 아이콘 버튼인데 Tooltip 도 같은 내용 — 중복.",
