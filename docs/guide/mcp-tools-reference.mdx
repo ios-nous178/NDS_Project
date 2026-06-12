@@ -1,7 +1,7 @@
 ---
 sidebar_position: 10
 title: MCP 도구 레퍼런스
-description: nudge-ds MCP 서버가 제공하는 17개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
+description: nudge-ds MCP 서버가 제공하는 18개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
 ---
 
 <!-- AUTO-GENERATED FILE. SSOT: packages/mcp/src/tools/registry.ts (TOOLS 배열). 본문을 바꾸려면 registry.ts 를 고치고 `pnpm generate:mcp-tools` 를 다시 실행하세요. 손으로 편집하지 마세요. -->
@@ -9,7 +9,7 @@ description: nudge-ds MCP 서버가 제공하는 17개 도구의 용도·입력 
 
 # MCP 도구 레퍼런스
 
-`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **17개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
+`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **18개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
 
 > 사용 흐름과 환경 설치는 [MCP 사용 가이드](/NUDGE_DS_MCP_USAGE) 를 먼저 참고하세요.
 >
@@ -25,7 +25,8 @@ description: nudge-ds MCP 서버가 제공하는 17개 도구의 용도·입력 
 | 목업 빌드 · 검증 · 변환                | 6      | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
 | Dev 서버 / 미리보기                    | 1      | `dev_server`                                                                                                                                            |
 | 외부 프로젝트 셋업                     | 1      | `get_setup`                                                                                                                                             |
-| **합계**                               | **17** |                                                                                                                                                         |
+| 피드백 · 텔레메트리                    | 1      | `log_feedback`                                                                                                                                          |
+| **합계**                               | **18** |                                                                                                                                                         |
 
 ---
 
@@ -53,6 +54,7 @@ Look up DS components. No args lists names; `{ query }` searches; `{ name }` ret
 - `verbose` `boolean` — [name-lookup only] If true, response includes full prop signatures (type, allowedValues, optional flags). Default false — slim shape with prop names only.
 - `limit` `number` — Max results for list/search calls.
 - `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.
+- `brand` `string` — Optional brand slug in context (e.g. 'cashwalk-biz', 'trost'). Pass it so lookups/misses can be grouped by brand.
 
 ### `find_icon`
 
@@ -66,6 +68,7 @@ Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready 
 - `limit` `number` — Max icons returned for query/category calls.
 - `size` `number` — Optional width/height(px) for the returned inline svg. Default 24.
 - `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.
+- `brand` `string` — Optional brand slug in context (e.g. 'cashwalk-biz', 'trost'). Pass it so lookups/misses can be grouped by brand.
 
 ### `find_token`
 
@@ -173,6 +176,8 @@ Validate HTML/&lt;nds-\*&gt; mockups for DS/static quality (token, spacing, nati
 - `cwd` `string` — [report:true] Working directory where .ds-html-usage-log.jsonl is appended (when not dryRun).
 - `dryRun` `boolean` — [report:true] If true, inspect only — skip JSONL/webhook write. Default false.
 - `autoReport` `boolean` — If true, run pending usage-guard auto-report after validation. Default false.
+- `brand` `string` — Optional brand slug. Overrides the nudge.brand marker for brand-specific rules and telemetry grouping.
+- `surface` `string` — Optional surface (admin/service/…). Overrides the nudge.surface marker.
 
 ### `validate_prd_coverage`
 
@@ -261,6 +266,23 @@ Setup router: install/imports/update/claude-md/agents-md/inspector/external-star
 - `cwd` `string` — [step=claude-md|agents-md|inspector] Project root. For claude-md/agents-md, where the instruction file will be created. For inspector, where src/main.tsx will be patched. Defaults to the MCP process cwd.
 - `projectName` `string` — [step=claude-md|agents-md] Optional title for the generated instruction file.
 - `overwrite` `boolean` — [step=claude-md|agents-md] Replace an existing instruction file. Default: false.
+
+---
+
+## 피드백 · 텔레메트리
+
+DS 사용 중 느낀 불편/요청을 기록한다. 누적된 피드백은 DS 고도화 루프(telemetry 파이프라인)로 흘러간다.
+
+### `log_feedback`
+
+Log a user's design-system correction into DS telemetry so recurring DS gaps get fixed automatically. ═══ HARD SEQUENCING RULE (not optional) ═══ If the user objects to a DS choice and you are ABOUT TO CHANGE IT, you MUST call log_feedback FIRST, then make the change. The correction itself is the trigger — the instant you think 'oh they're right, let me fix that', STOP and log it before touching code. Logging-after-the-fix is forgotten almost every time (you get absorbed in fixing). Do NOT ask permission to log — just call it (fire-and-forget, one call per distinct correction, near-zero cost). ═══ WHEN to call ═══ The user signals the DESIGN SYSTEM ITSELF is wrong: '이거 틀렸어 / 아니야 / 왜 이래 / 이거 말고 / 저거 쓰는 게 맞아? / 시안이랑 달라', a wrong component/variant/token/color/spacing, a guide that misled you, or a component that doesn't exist. ALSO when the user merely QUESTIONS a choice ('저거 맞아?', '이게 맞나?') and you then CONCLUDE you were wrong — log your conclusion (the questioning + your realization IS the feedback). ═══ NOT when ═══ Plain task instructions ('다음 화면 만들어줘', '여기 버튼 추가해') or your own stylistic preference. Only genuine 'the DS got it wrong' signals. ═══ ARGS ═══ text = the correction in one line (what was wrong → what's right). category = component|token|guide|pattern|bug|other. target = the component/token/screen. brand = brand slug. ═══ WORKED EXAMPLE ═══ User: '캐포비 스텝은 numbered 말고 bar 아니야?' → you check the guide, realize bar is right → FIRST call log_feedback(\{ text: '캐포비 어드민 단계 진행은 numbered(원형) 말고 bar variant 가 맞다 — 가이드 혼동', category: 'guide', target: 'Stepper', brand: 'cashwalk-biz' \}) THEN switch the code to bar. Never the reverse.
+
+**인자**
+
+- `text` `string` · **필수** — The user's feedback/correction, summarized (or quoted).
+- `category` `component` \| `token` \| `guide` \| `pattern` \| `bug` \| `other` — What kind of DS issue: component(없거나 잘못된 컴포넌트) / token(색·간격 등 토큰) / guide(가이드 혼동·오류) / pattern(화면 패턴) / bug / other.
+- `target` `string` — Related component/token/screen name if any (e.g. 'Modal', 'cv.input.border').
+- `brand` `string` — Related brand slug if any (e.g. 'cashwalk-biz', 'trost').
 
 ---
 
