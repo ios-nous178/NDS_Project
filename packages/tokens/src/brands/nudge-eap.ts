@@ -58,5 +58,11 @@ export const nudgeEapTheme: BrandTheme = {
       empty: "#BBBBBB",
     },
     rating: { star: "#FFD54F" },
+    // Toast — 단일 다크 토스트 (Figma 1330:2). role-based 시멘틱 변수 집합 밖이라 --nds-* 슬롯.
+    // 모든 브랜드 공통 기본값 (캐포비는 Toast 자체가 banned → Snackbar).
+    toast: {
+      bg: "rgba(33, 33, 33, 0.92)",
+      shadow: "0px 8px 12px rgba(0, 0, 0, 0.18)",
+    },
   },
 };

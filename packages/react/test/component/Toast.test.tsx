@@ -56,7 +56,33 @@ describe("Toast 사용자 시나리오", () => {
     vi.useRealTimers();
   });
 
-  it("여러 토스트를 연속으로 표시할 수 있다", async () => {
+  it("기본값(maxCount 1)은 새 토스트가 기존을 대체한다", async () => {
+    const user = userEvent.setup();
+
+    function ReplaceHarness() {
+      const { toast } = useToast();
+      return (
+        <>
+          <button onClick={() => toast("첫 번째")}>토스트 1</button>
+          <button onClick={() => toast("두 번째")}>토스트 2</button>
+        </>
+      );
+    }
+
+    render(
+      <ToastProvider>
+        <ReplaceHarness />
+      </ToastProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "토스트 1" }));
+    await user.click(screen.getByRole("button", { name: "토스트 2" }));
+
+    expect(await screen.findByText("두 번째")).toBeVisible();
+    expect(screen.queryByText("첫 번째")).not.toBeInTheDocument();
+  });
+
+  it("maxCount 를 올리면 여러 토스트를 동시에 스택할 수 있다 (opt-in)", async () => {
     const user = userEvent.setup();
 
     function MultiToastHarness() {
@@ -70,7 +96,7 @@ describe("Toast 사용자 시나리오", () => {
     }
 
     render(
-      <ToastProvider>
+      <ToastProvider maxCount={2}>
         <MultiToastHarness />
       </ToastProvider>,
     );
@@ -119,30 +145,7 @@ describe("Toast 브랜치 커버리지: 명령형 API", () => {
 });
 
 describe("Toast 접근성", () => {
-  it("에러 토스트는 role=alert, aria-live=assertive로 즉시 읽힌다", async () => {
-    const user = userEvent.setup();
-
-    function ErrorHarness() {
-      const { toast } = useToast();
-      return <button onClick={() => toast("오류 발생", { variant: "error" })}>에러 토스트</button>;
-    }
-
-    render(
-      <ToastProvider>
-        <ErrorHarness />
-      </ToastProvider>,
-    );
-
-    await user.click(screen.getByRole("button", { name: "에러 토스트" }));
-
-    const toastEl = await screen.findByText("오류 발생");
-    const item = toastEl.closest('[data-slot="item"]')!;
-
-    expect(item).toHaveAttribute("role", "alert");
-    expect(item).toHaveAttribute("aria-live", "assertive");
-  });
-
-  it("일반 토스트는 role=status로 보조 기술에 공손하게 전달된다", async () => {
+  it("토스트는 비차단형이므로 role=status로 보조 기술에 공손하게 전달된다", async () => {
     const user = userEvent.setup();
 
     render(

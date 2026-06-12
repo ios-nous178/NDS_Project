@@ -700,10 +700,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     <div style={mockOverlayStage}>
       <div style={mockStageBody}>본문 영역</div>
       <div style={mockToastFloating}>
-        <span style={mockToastIcon} aria-hidden>
-          ✓
-        </span>
-        <span>저장되었어요</span>
+        <span>저장되었습니다</span>
       </div>
     </div>
   ),
@@ -2249,19 +2246,6 @@ const mockSheetBody: React.CSSProperties = {
   fontSize: 11,
   lineHeight: 1.55,
   color: cv.textRole.subtle,
-};
-
-const mockToastIcon: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: 16,
-  height: 16,
-  borderRadius: radius.pill,
-  background: cv.iconRole.statusSuccess,
-  color: cv.textRole.inverse,
-  fontSize: 10,
-  fontWeight: 800,
 };
 
 /* Lightbox — 풀스크린 dark stage + 가운데 이미지 + 닫기/네비/카운터 */

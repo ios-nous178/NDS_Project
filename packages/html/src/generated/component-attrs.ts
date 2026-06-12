@@ -1602,8 +1602,7 @@ export const COMPONENT_ATTRS = {
     "enums": {
       "position": [
         "top",
-        "bottom",
-        "top-right"
+        "bottom"
       ]
     }
   },

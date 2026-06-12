@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T07:15:43.439Z",
+  "generatedAt": "2026-06-12T07:00:26.053Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -693,16 +693,6 @@
           "type": "AvatarSize"
         },
         {
-          "name": "shape",
-          "optional": true,
-          "type": "AvatarShape",
-          "allowedValues": [
-            "square",
-            "rounded",
-            "circle"
-          ]
-        },
-        {
           "name": "fallback",
           "optional": true,
           "type": "React.ReactNode"
@@ -713,7 +703,6 @@
       "htmlObservedAttrs": [
         "alt",
         "name",
-        "shape",
         "size",
         "src",
         "fallback"
@@ -738,16 +727,6 @@
           "type": "AvatarSize"
         },
         {
-          "name": "shape",
-          "optional": true,
-          "type": "AvatarShape",
-          "allowedValues": [
-            "square",
-            "rounded",
-            "circle"
-          ]
-        },
-        {
           "name": "overlap",
           "optional": true,
           "type": "number"
@@ -768,7 +747,6 @@
         "items",
         "max",
         "overlap",
-        "shape",
         "size",
         "aria-label"
       ]
@@ -810,15 +788,6 @@
           ]
         },
         {
-          "name": "shape",
-          "optional": true,
-          "type": "BadgeShape",
-          "allowedValues": [
-            "default",
-            "pill"
-          ]
-        },
-        {
           "name": "labelClassName",
           "optional": true,
           "type": "string"
@@ -853,7 +822,6 @@
       },
       "htmlObservedAttrs": [
         "color",
-        "shape",
         "size",
         "variant"
       ]
@@ -5671,50 +5639,6 @@
       ]
     },
     {
-      "name": "QuickMenu",
-      "props": [
-        {
-          "name": "items",
-          "optional": false,
-          "type": "QuickMenuItem[]"
-        },
-        {
-          "name": "heading",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "showTop",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "topLabel",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "onTopClick",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "fixed",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/QuickMenu.d.ts",
-      "htmlTag": "nds-quick-menu",
-      "htmlObservedAttrs": [
-        "items",
-        "heading",
-        "show-top",
-        "top-label",
-        "fixed"
-      ]
-    },
-    {
       "name": "Radio",
       "props": [
         {
@@ -7342,8 +7266,7 @@
           "type": "ToastPosition",
           "allowedValues": [
             "top",
-            "bottom",
-            "top-right"
+            "bottom"
           ]
         },
         {
@@ -7369,21 +7292,11 @@
       ],
       "dtsRelPath": "packages/react/dist/Toast.d.ts",
       "htmlTag": "nds-toast",
-      "htmlAttrs": {
-        "variant": [
-          "default",
-          "success",
-          "error",
-          "warning",
-          "info"
-        ]
-      },
       "htmlObservedAttrs": [
         "position",
         "duration",
         "max-count",
         "message",
-        "variant",
         "open"
       ]
     },
@@ -7605,31 +7518,6 @@
         "bio",
         "meta",
         "clickable"
-      ]
-    },
-    {
-      "name": "ValidationChip",
-      "props": [
-        {
-          "name": "state",
-          "optional": true,
-          "type": "ValidationChipState",
-          "allowedValues": [
-            "incomplete",
-            "complete",
-            "error"
-          ]
-        },
-        {
-          "name": "labelClassName",
-          "optional": true,
-          "type": "string"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/ValidationChip.d.ts",
-      "htmlTag": "nds-validation-chip",
-      "htmlObservedAttrs": [
-        "state"
       ]
     },
     {
@@ -12097,6 +11985,16 @@
       ]
     },
     {
+      "name": "--nds-toast-bg",
+      "value": "rgba(33, 33, 33, 0.92)",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-toast-shadow",
+      "value": "0px 8px 12px rgba(0, 0, 0, 0.18)",
+      "group": "nds"
+    },
+    {
       "name": "--nds-tooltip-bg",
       "value": "var(--semantic-fill-neutral-default)",
       "group": "nds",
@@ -13114,7 +13012,7 @@
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#666666",
+        "cashwalk-biz": "#BBBBBB",
         "geniet": "#666666",
         "runmile": "#6B7684",
         "trost": "#979797"
@@ -13157,7 +13055,7 @@
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#BBBBBB",
+        "cashwalk-biz": "#DDDDDD",
         "runmile": "#B0B8C1",
         "trost": "#979797"
       }
@@ -13731,7 +13629,7 @@
     },
     {
       "name": "--z-toast",
-      "value": "1200",
+      "value": "1500",
       "group": "z",
       "brandValues": {
         "geniet": "400",
@@ -13965,7 +13863,6 @@
     "nds-progress-bar",
     "nds-pull-to-refresh",
     "nds-quick-action-grid",
-    "nds-quick-menu",
     "nds-radio",
     "nds-region-row",
     "nds-review-card",
@@ -14006,7 +13903,6 @@
     "nds-tooltip",
     "nds-trending-keywords",
     "nds-user-card",
-    "nds-validation-chip",
     "nds-verification-code-input",
     "nds-video-player",
     "nds-voice-recorder",
@@ -14143,7 +14039,6 @@
         "items",
         "max",
         "overlap",
-        "shape",
         "size",
         "aria-label"
       ]
@@ -14154,7 +14049,6 @@
       "observedAttrs": [
         "alt",
         "name",
-        "shape",
         "size",
         "src",
         "fallback"
@@ -14184,7 +14078,6 @@
       },
       "observedAttrs": [
         "color",
-        "shape",
         "size",
         "variant"
       ]
@@ -15200,17 +15093,6 @@
       ]
     },
     {
-      "tag": "nds-quick-menu",
-      "attrs": {},
-      "observedAttrs": [
-        "items",
-        "heading",
-        "show-top",
-        "top-label",
-        "fixed"
-      ]
-    },
-    {
       "tag": "nds-radio",
       "attrs": {},
       "observedAttrs": [
@@ -15614,21 +15496,12 @@
     },
     {
       "tag": "nds-toast",
-      "attrs": {
-        "variant": [
-          "default",
-          "success",
-          "error",
-          "warning",
-          "info"
-        ]
-      },
+      "attrs": {},
       "observedAttrs": [
         "position",
         "duration",
         "max-count",
         "message",
-        "variant",
         "open"
       ]
     },
@@ -15679,13 +15552,6 @@
         "bio",
         "meta",
         "clickable"
-      ]
-    },
-    {
-      "tag": "nds-validation-chip",
-      "attrs": {},
-      "observedAttrs": [
-        "state"
       ]
     },
     {

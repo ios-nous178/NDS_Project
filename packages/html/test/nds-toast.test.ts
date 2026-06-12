@@ -34,56 +34,53 @@ describe("nds-toast", () => {
     await flush();
 
     el.show("첫번째", { duration: 0 });
-    el.show({ message: "두번째", variant: "success", duration: 0 });
-    el.show("세번째", { variant: "info", duration: 0 });
+    el.show({ message: "두번째", duration: 0 });
+    el.show("세번째", { duration: 0 });
 
     const items = document.body.querySelectorAll(".nds-toast__item");
     expect(items).toHaveLength(2);
     expect(items[0]?.querySelector(".nds-toast__message")?.textContent).toBe("두번째");
-    expect((items[0] as HTMLElement).dataset.variant).toBe("success");
+    expect((items[0] as HTMLElement).role).toBe("status");
     expect(items[1]?.querySelector(".nds-toast__message")?.textContent).toBe("세번째");
   });
 
-  it("supports warning variant and top-right position (캐포비 admin)", async () => {
+  it("supports top position (PC · pill)", async () => {
     const el = document.createElement("nds-toast");
-    el.setAttribute("position", "top-right");
+    el.setAttribute("position", "top");
     document.body.appendChild(el);
     await flush();
 
-    el.show("이미 추가된 이메일 주소입니다", { variant: "warning", duration: 0 });
+    el.show("상단에 표시됩니다", { duration: 0 });
 
     const viewport = document.body.querySelector(".nds-toast__viewport") as HTMLElement;
-    expect(viewport.dataset.position).toBe("top-right");
+    expect(viewport.dataset.position).toBe("top");
     const item = document.body.querySelector(".nds-toast__item") as HTMLElement;
-    expect(item.dataset.variant).toBe("warning");
+    expect(item.role).toBe("status");
   });
 
-  it("replaces existing toast when max-count is 1 (단일 교체)", async () => {
+  it("defaults to single toast — new replaces existing (max-count 1)", async () => {
     const el = document.createElement("nds-toast");
-    el.setAttribute("max-count", "1");
     document.body.appendChild(el);
     await flush();
 
-    el.show("저장 완료", { variant: "success", duration: 0 });
-    el.show("전송 완료", { variant: "success", duration: 0 });
+    el.show("저장 완료", { duration: 0 });
+    el.show("전송 완료", { duration: 0 });
 
     const items = document.body.querySelectorAll(".nds-toast__item");
     expect(items).toHaveLength(1);
     expect(items[0]?.querySelector(".nds-toast__message")?.textContent).toBe("전송 완료");
   });
 
-  it("falls back to defaults for unknown variant/position", async () => {
+  it("falls back to default position for unknown value", async () => {
     const el = document.createElement("nds-toast");
     el.setAttribute("position", "left");
     document.body.appendChild(el);
     await flush();
 
-    el.show("메시지", { variant: "bogus" as never, duration: 0 });
+    el.show("메시지", { duration: 0 });
 
     const viewport = document.body.querySelector(".nds-toast__viewport") as HTMLElement;
     expect(viewport.dataset.position).toBe("bottom");
-    const item = document.body.querySelector(".nds-toast__item") as HTMLElement;
-    expect(item.dataset.variant).toBe("default");
   });
 
   it("supports window nds-toast-show and nds-toast-dismiss events", async () => {
@@ -93,7 +90,7 @@ describe("nds-toast", () => {
 
     window.dispatchEvent(
       new CustomEvent("nds-toast-show", {
-        detail: { id: "save", message: "저장되었습니다", variant: "info", duration: 0 },
+        detail: { id: "save", message: "저장되었습니다", duration: 0 },
       }),
     );
     expect(document.body.querySelector(".nds-toast__message")?.textContent).toBe("저장되었습니다");

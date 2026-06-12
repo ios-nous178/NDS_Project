@@ -4,8 +4,9 @@
  * Astro/vanilla 앱에서 실제로 쓰기 쉽도록 host 는 매니저 역할만 하고,
  * toast viewport 는 document.body 로 portal 렌더링한다.
  *
- * Toast 는 **인터랙션 없는 일시 메시지** 전용 — 자동으로 사라지므로 액션/닫기 버튼이나
- * 브랜드 카드(캐포비 흰 카드)는 두지 않는다. 그런 알림은 <nds-snackbar> 를 사용한다.
+ * Toast 는 **인터랙션 없는 단일 다크 일시 메시지** 전용 — 자동으로 사라지므로 액션/닫기 버튼이나
+ * 색 변형(success/error…)·브랜드 카드(캐포비 흰 카드)는 두지 않는다. 그런 알림은 <nds-snackbar>,
+ * 심각한 오류·결정 요청은 Modal/Alert 를 사용한다. 동시에 1개만 노출이 기본이다.
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -15,25 +16,22 @@ const TOAST_VIEWPORT_CLASS = `${TOAST_CLASS}__viewport`;
 const TOAST_ITEM_CLASS = `${TOAST_CLASS}__item`;
 const TOAST_MESSAGE_CLASS = `${TOAST_CLASS}__message`;
 
-export type ToastVariant = "default" | "success" | "error" | "warning" | "info";
-export type ToastPosition = "top" | "bottom" | "top-right";
+/** 노출 위치 — `top`(PC·상단·pill) / `bottom`(모바일·하단·rounded 24). 위치가 곧 형태다(Figma 1330:2). */
+export type ToastPosition = "top" | "bottom";
 
 export interface ToastShowOptions {
   id?: string;
   message: string;
-  variant?: ToastVariant;
   duration?: number;
 }
 
 interface ToastItem {
   id: string;
   message: string;
-  variant: ToastVariant;
   duration: number;
 }
 
-const VARIANTS: readonly ToastVariant[] = ["default", "success", "error", "warning", "info"];
-const POSITIONS: readonly ToastPosition[] = ["top", "bottom", "top-right"];
+const POSITIONS: readonly ToastPosition[] = ["top", "bottom"];
 
 let toastId = 0;
 
@@ -41,7 +39,7 @@ export class NdsToast extends NdsElement {
   static elementName = "nds-toast";
 
   static get observedAttributes(): readonly string[] {
-    return ["position", "duration", "max-count", "message", "variant", "open"];
+    return ["position", "duration", "max-count", "message", "open"];
   }
 
   private _viewport: HTMLDivElement | null = null;
@@ -91,7 +89,6 @@ export class NdsToast extends NdsElement {
     const item: ToastItem = {
       id,
       message: input.message,
-      variant: normalize(input.variant, VARIANTS, "default"),
       duration: input.duration ?? this._numberAttr("duration", 3000),
     };
 
@@ -130,7 +127,6 @@ export class NdsToast extends NdsElement {
       this._initialOpenShown = true;
       this.show({
         message,
-        variant: normalize(this.getAttribute("variant"), VARIANTS, "default"),
         duration: this._numberAttr("duration", 3000),
       });
     }
@@ -157,12 +153,10 @@ export class NdsToast extends NdsElement {
   private _createItem(item: ToastItem): HTMLDivElement {
     const root = document.createElement("div");
     root.dataset.slot = "item";
-    root.dataset.variant = item.variant;
     root.dataset.entering = "true";
     root.dataset.exiting = "false";
     root.className = TOAST_ITEM_CLASS;
-    root.role = item.variant === "error" ? "alert" : "status";
-    if (item.variant === "error") root.setAttribute("aria-live", "assertive");
+    root.role = "status";
 
     const message = document.createElement("span");
     message.className = TOAST_MESSAGE_CLASS;
@@ -188,7 +182,7 @@ export class NdsToast extends NdsElement {
   }
 
   private _maxCount(): number {
-    return Math.max(1, this._numberAttr("max-count", 3));
+    return Math.max(1, this._numberAttr("max-count", 1));
   }
 
   private _numberAttr(name: string, defaultValue: number): number {

@@ -361,6 +361,13 @@ export interface ComponentOverrides {
   };
   /** 별점(StarRating/ReviewCard/각종 카드) 채움 색 — `--nds-rating-star` */
   rating?: { star?: ComponentValue };
+  /**
+   * Toast — 단일 다크 토스트의 배경/그림자 슬롯 (`--nds-toast-bg` / `--nds-toast-shadow`).
+   * Figma 1330:2 의 다크값(#212121·0.92)과 drop shadow 는 role-based 시멘틱 변수(Figma SSOT)
+   * 집합 밖이라 `--semantic-*` 이 아닌 `--nds-*` 컴포넌트 슬롯으로 둔다. base(nudge-eap) theme 이
+   * :root 로 기본값을 emit — 브랜드 :root override 여지. (캐포비는 Toast 자체가 banned.)
+   */
+  toast?: { bg?: ComponentValue; shadow?: ComponentValue };
 }
 
 /** 브랜드 테마 전체 정의 */

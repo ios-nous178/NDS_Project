@@ -23,7 +23,7 @@ const meta: Meta = {
     (Story, ctx) => (
       <ToastProvider
         position={ctx.parameters.toastPosition ?? "bottom"}
-        maxCount={ctx.parameters.toastMaxCount ?? 3}
+        maxCount={ctx.parameters.toastMaxCount ?? 1}
       >
         <Story />
       </ToastProvider>
@@ -47,36 +47,27 @@ export const Default: Story = {
   render: () => <DefaultToastExample />,
 };
 
-/* ─── All Variants ─── */
+/* ─── Position = Shape (Top: PC pill · Bottom: 모바일 rounded 24) ─── */
 
-function VariantsExample() {
+function BottomShapeExample() {
   const { toast } = useToast();
-
-  return (
-    <div style={{ display: "flex", gap: "var(--semantic-gap-default)", flexWrap: "wrap" }}>
-      <Button onClick={() => toast("기본 메시지입니다")}>Default</Button>
-      <Button variant="soft" onClick={() => toast("저장이 완료되었습니다", { variant: "success" })}>
-        Success
-      </Button>
-      <Button variant="soft" onClick={() => toast("오류가 발생했습니다", { variant: "error" })}>
-        Error
-      </Button>
-      <Button
-        variant="soft"
-        onClick={() => toast("이미 추가된 항목입니다", { variant: "warning" })}
-      >
-        Warning
-      </Button>
-      <Button variant="soft" onClick={() => toast("새 소식이 있습니다", { variant: "info" })}>
-        Info
-      </Button>
-    </div>
-  );
+  return <Button onClick={() => toast("저장되었습니다")}>하단 · rounded 24</Button>;
 }
 
-export const Variants: Story = {
-  name: "State/Variants",
-  render: () => <VariantsExample />,
+export const BottomShape: Story = {
+  name: "State/Bottom (모바일 · rounded 24)",
+  render: () => <BottomShapeExample />,
+};
+
+function TopShapeExample() {
+  const { toast } = useToast();
+  return <Button onClick={() => toast("저장되었습니다")}>상단 · pill</Button>;
+}
+
+export const TopShape: Story = {
+  name: "State/Top (PC · pill)",
+  parameters: { toastPosition: "top" },
+  render: () => <TopShapeExample />,
 };
 
 /* ─── Multiline ─── */
@@ -127,9 +118,7 @@ function TopPositionExample() {
 
 function TopPositionInner() {
   const { toast } = useToast();
-  return (
-    <Button onClick={() => toast("상단에 표시됩니다", { variant: "info" })}>상단 토스트</Button>
-  );
+  return <Button onClick={() => toast("상단에 표시됩니다")}>상단 토스트</Button>;
 }
 
 export const TopPosition: Story = {
@@ -148,13 +137,7 @@ function StackingExample() {
       <Button
         onClick={() => {
           count++;
-          toast(`알림 ${count}`, {
-            variant: ["default", "success", "error", "info"][count % 4] as
-              | "default"
-              | "success"
-              | "error"
-              | "info",
-          });
+          toast(`알림 ${count}`);
         }}
       >
         연속 호출 (최대 3개)
@@ -164,33 +147,30 @@ function StackingExample() {
 }
 
 export const Stacking: Story = {
-  name: "Recipe/Stacking Max Count",
+  name: "Recipe/Stacking Max Count (opt-in)",
+  // 기본값은 1개 교체 — maxCount 를 올려야 스택된다.
+  parameters: { toastMaxCount: 3 },
   render: () => <StackingExample />,
 };
 
-/* ─── Success Flow (실무 시나리오) ─── */
+/* ─── Feedback Flow (실무 시나리오) ─── */
 
-function SuccessFlowExample() {
+function FeedbackFlowExample() {
   const { toast } = useToast();
 
   return (
     <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
-      <Button onClick={() => toast("프로필이 저장되었습니다", { variant: "success" })}>
-        프로필 저장
-      </Button>
-      <Button
-        variant="soft"
-        onClick={() => toast("상담 일정이 확정되었습니다", { variant: "success" })}
-      >
+      <Button onClick={() => toast("프로필이 저장되었습니다")}>프로필 저장</Button>
+      <Button variant="soft" onClick={() => toast("상담 일정이 확정되었습니다")}>
         일정 확정
       </Button>
     </div>
   );
 }
 
-export const SuccessFlow: Story = {
-  name: "Recipe/Success Flow",
-  render: () => <SuccessFlowExample />,
+export const FeedbackFlow: Story = {
+  name: "Recipe/Feedback Flow",
+  render: () => <FeedbackFlowExample />,
 };
 
 /* ─── Interaction Tests ─── */
@@ -207,21 +187,22 @@ export const ToastAppearInteraction: Story = {
   },
 };
 
-export const ToastVariantsInteraction: Story = {
-  name: "Interaction/Toast Variants",
-  render: () => <VariantsExample />,
+export const ToastTopShapeInteraction: Story = {
+  name: "Interaction/Top Pill Appears",
+  parameters: { toastPosition: "top" },
+  render: () => <TopShapeExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const user = createInteractionUser();
 
-    await user.click(canvas.getByRole("button", { name: "Error" }));
-    await expect(within(document.body).getByText("오류가 발생했습니다")).toBeInTheDocument();
+    await user.click(canvas.getByRole("button", { name: "상단 · pill" }));
+    await expect(within(document.body).getByText("저장되었습니다")).toBeInTheDocument();
   },
 };
 
-export const ToastSuccessFlowInteraction: Story = {
-  name: "Interaction/Success Flow",
-  render: () => <SuccessFlowExample />,
+export const ToastFeedbackFlowInteraction: Story = {
+  name: "Interaction/Feedback Flow",
+  render: () => <FeedbackFlowExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const user = createInteractionUser();

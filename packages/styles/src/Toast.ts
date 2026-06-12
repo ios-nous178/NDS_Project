@@ -1,5 +1,5 @@
-/* Auto-generated from packages/react/src/Toast.tsx during the @nudge-design/styles split. */
-import { cv, fontFamily, fontWeight, transition, typeScale, zIndex } from "@nudge-design/tokens";
+/* CSS SSOT for Toast — shared by @nudge-design/react <Toast> and @nudge-design/html <nds-toast>. */
+import { cv, fontFamily, fontWeight, radius, spacing, transition, typeScale, zIndex } from "@nudge-design/tokens";
 
 const TOAST_CLASS = "nds-toast";
 const TOAST_VIEWPORT_CLASS = `${TOAST_CLASS}__viewport`;
@@ -15,64 +15,55 @@ export const toastStyles = `
     flex-direction: column;
     align-items: center;
     gap: var(--semantic-gap-default);
-    padding: var(--semantic-inset-card);
     z-index: ${zIndex.toast};
     pointer-events: none;
     box-sizing: border-box;
   }
 
+  /* PC · 상단 중앙 · safe area 상단 80 · 좌우 auto (Figma Position=Top). */
   :where(.${TOAST_VIEWPORT_CLASS}[data-position="top"]) {
     top: 0;
+    padding-top: ${spacing[80]}px;
   }
 
+  /* 모바일 · 하단 중앙 · safe area 하단 96 · 좌우 16 (Figma Position=Bottom). */
   :where(.${TOAST_VIEWPORT_CLASS}[data-position="bottom"]) {
     bottom: 0;
+    padding-bottom: 96px;
+    padding-left: ${spacing[16]}px;
+    padding-right: ${spacing[16]}px;
   }
 
-  /* 우측 상단 고정 (캐포비 admin). 가로 중앙 정렬 대신 오른쪽 정렬 — viewport 패딩이 top/right 오프셋을 만든다. */
-  :where(.${TOAST_VIEWPORT_CLASS}[data-position="top-right"]) {
-    top: 0;
-    align-items: flex-end;
-  }
-
+  /*
+   * Toast item — 단일 다크 스타일 (Figma 1330:2). 색 변형(success/error…) 없음:
+   * 비차단형 피드백 전용이며 심각한 알림은 Modal/Alert 로 라우팅한다.
+   * bg/shadow(#212121·0.92 / y8 blur12 18%)는 role-based 시멘틱 변수(Figma SSOT) 집합 밖이라
+   * --nds-toast-* 컴포넌트 슬롯으로 토큰화 — 값 SSOT 는 tokens/src/brands/nudge-eap.ts (:root emit).
+   */
   :where(.${TOAST_ITEM_CLASS}) {
     display: inline-flex;
     align-items: center;
     gap: var(--semantic-gap-comfortable);
     max-width: 400px;
     padding: var(--semantic-inset-input) var(--semantic-inset-card-large);
-    border-radius: 22px;
+    border-radius: 24px;
+    background: var(--nds-toast-bg);
+    color: ${cv.textRole.inverse};
+    box-shadow: var(--nds-toast-shadow);
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.regular};
+    font-weight: ${fontWeight.medium};
     line-height: ${typeScale.body3.lineHeight}px;
     pointer-events: auto;
     box-sizing: border-box;
   }
 
-  :where(.${TOAST_ITEM_CLASS}[data-variant="default"]) {
-    background: rgba(17, 17, 17, 0.8);
-    color: ${cv.textRole.inverse};
-  }
-
-  :where(.${TOAST_ITEM_CLASS}[data-variant="success"]) {
-    background: ${cv.surface.statusSuccess};
-    color: ${cv.iconRole.statusSuccess};
-  }
-
-  :where(.${TOAST_ITEM_CLASS}[data-variant="error"]) {
-    background: ${cv.surface.statusError};
-    color: ${cv.textRole.statusError};
-  }
-
-  :where(.${TOAST_ITEM_CLASS}[data-variant="warning"]) {
-    background: ${cv.surface.statusCaution};
-    color: ${cv.textRole.statusCaution};
-  }
-
-  :where(.${TOAST_ITEM_CLASS}[data-variant="info"]) {
-    background: ${cv.surface.statusInfo};
-    color: ${cv.textRole.brand};
+  /* PC(top) 는 pill + 더 큰 패딩/타이포 (Figma Position=Top: pill · 16/32 · body2). */
+  :where(.${TOAST_VIEWPORT_CLASS}[data-position="top"] .${TOAST_ITEM_CLASS}) {
+    border-radius: ${radius.pill}px;
+    padding: var(--semantic-inset-card) ${spacing[32]}px;
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
   }
 
   :where(.${TOAST_ITEM_CLASS}[data-entering="true"]) {
