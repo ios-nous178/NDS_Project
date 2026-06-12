@@ -123,19 +123,33 @@ export const COMPONENT_ATTRS = {
     "observedAttributes": [
       "alt",
       "name",
+      "shape",
       "size",
       "src"
     ],
-    "enums": {}
+    "enums": {
+      "shape": [
+        "square",
+        "rounded",
+        "circle"
+      ]
+    }
   },
   "nds-avatar-group": {
     "observedAttributes": [
       "items",
       "max",
       "overlap",
+      "shape",
       "size"
     ],
-    "enums": {}
+    "enums": {
+      "shape": [
+        "square",
+        "rounded",
+        "circle"
+      ]
+    }
   },
   "nds-badge": {
     "observedAttributes": [

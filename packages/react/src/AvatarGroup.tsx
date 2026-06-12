@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, type AvatarSize } from "./Avatar";
+import { Avatar, avatarSizeConfig, type AvatarShape, type AvatarSize } from "./Avatar";
 
 /* ─── Constants ─── */
 
@@ -7,20 +7,13 @@ const AG_CLASS = "nds-avatar-group";
 const AG_ITEM_CLASS = `${AG_CLASS}__item`;
 const AG_MORE_CLASS = `${AG_CLASS}__more`;
 
+/** 겹침 px — Avatar 사이즈(24/32/48/64/96) 대비 ~1/3. px/font 는 avatarSizeConfig 에서 파생. */
 const sizeOverlap: Record<AvatarSize, number> = {
   xs: 8,
   sm: 10,
-  md: 12,
-  lg: 14,
-  xl: 18,
-};
-
-const sizePx: Record<AvatarSize, number> = {
-  xs: 24,
-  sm: 32,
-  md: 40,
-  lg: 48,
-  xl: 64,
+  md: 16,
+  lg: 22,
+  xl: 32,
 };
 
 /* ─── Types ─── */
@@ -41,6 +34,8 @@ export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   max?: number;
   /** 크기 */
   size?: AvatarSize;
+  /** 아바타 모양 (기본 circle) — 그룹 내 전 아바타에 적용 */
+  shape?: AvatarShape;
   /** 겹침 정도 px (size별 기본값 자동) */
   overlap?: number;
 }
@@ -50,13 +45,12 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 /* ─── Component ─── */
 
 export const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
-  ({ items, max = 4, size = "md", overlap, className, style, ...rest }, ref) => {
+  ({ items, max = 4, size = "md", shape = "circle", overlap, className, style, ...rest }, ref) => {
     const visible = items.slice(0, max);
     const remaining = items.length - visible.length;
     const overlapPx = overlap ?? sizeOverlap[size];
-    const moreSize = sizePx[size];
-    const moreFont =
-      size === "xs" ? 10 : size === "sm" ? 12 : size === "lg" ? 14 : size === "xl" ? 16 : 13;
+    const moreSize = avatarSizeConfig[size].size;
+    const moreFont = avatarSizeConfig[size].fontSize;
 
     return (
       <div
@@ -82,6 +76,7 @@ export const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
             name={item.name}
             alt={item.alt ?? item.name ?? ""}
             size={size}
+            shape={shape}
           />
         ))}
         {remaining > 0 && (

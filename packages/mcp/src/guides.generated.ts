@@ -224,15 +224,25 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Avatar": {
     "name": "Avatar",
-    "summary": "사용자 / 상담사 / 브랜드 식별을 위한 원형 이미지 + fallback. 이름 이니셜 / 기본 아이콘으로 graceful degrade.",
+    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1337-8",
+    "sizeMatrix": {
+      "xs": "24px · font 11 · rounded radius 4 — 인디케이터·메타정보",
+      "sm": "32px · font 14 · rounded radius 6 — 리스트 셀·작은 메뉴",
+      "md": "48px · font 20 · rounded radius 8 — 댓글·채팅·작은 카드 (기본)",
+      "lg": "64px · font 26 · rounded radius 10 — 카드 썸네일·상담사 리스트",
+      "xl": "96px · font 38 · rounded radius 12 — 프로필 헤더·상세 페이지"
+    },
+    "summary": "사용자 / 상담사 / 앱을 시각적으로 표현하는 이미지 단위 + fallback(이니셜 1자 Bold / 기본 아이콘). **Shape 3종 × Size 5종 = 15 variants**(Figma 1337:8). Shape: `circle`(인물 프로필·댓글·채팅·헤더 식별, 기본) · `rounded`(앱 아이콘·상담사 카드 썸네일, 사이즈별 radius 4~12) · `square`(콘텐츠 카드·일러스트·제품 이미지, radius 0). Size 키 `xs/sm/md/lg/xl` = `24/32/48/64/96px`. 정사각 비율 이미지를 swap 하고 clipsContent 로 모서리 밖을 자른다. 색은 semantic 토큰(bg=surface.section, fallback=text subtle)으로 5 브랜드 cascade.",
     "pitfalls": [
-      "src 만 있고 alt 누락 — 이미지 로드 실패 시 비어 보임 + 스크린리더 무용지물. alt 또는 name (fallback initials 자동 생성) 둘 중 하나는 필수.",
-      "size 를 px 인라인으로 강제하지 말 것. xs/sm/md/lg/xl 매트릭스가 toked 사이즈/폰트 비율 보장.",
-      "Avatar 위에 OnlineIndicator 를 직접 absolute 로 얹지 말고, AvatarGroup / 부모 컨테이너에서 layout 결정."
+      "같은 화면에서 같은 entity 에 다른 Shape 혼용 금지 — 사용자=circle, 앱=rounded 처럼 entity별 Shape 를 한 화면 내내 일관 유지.",
+      "직사각(가로>세로) 이미지를 그대로 넣으면 잘림 — 정사각 비율 이미지만 swap. 96+ 사이즈는 circle 권장(square/rounded 는 콘텐츠 카드와 혼동).",
+      "src 만 있고 alt/name 둘 다 누락 — 로드 실패 시 빈 박스 + 스크린리더 무용. alt 또는 name(이니셜 1자 자동) 중 하나는 필수.",
+      "size 를 px 인라인(`style=\"width:33px\"`)으로 강제하지 말 것 — `xs/sm/md/lg/xl`(24/32/48/64/96)가 폰트/이니셜/radius 비율을 함께 보장. 임의 px 는 sizeMatrix 불일치.",
+      "Avatar 위에 OnlineIndicator/badge 를 직접 absolute 로 얹지 말고 부모 컨테이너에서 layout 결정. AvatarGroup 은 size/shape 를 그룹 전체에 전파(개별 Avatar 에 다시 박지 말 것)."
     ],
     "examplesHtml": {
-      "do": "<nds-avatar src=\"/u.jpg\" alt=\"홍길동\" size=\"md\"></nds-avatar>\n<nds-avatar name=\"이정민\" size=\"lg\"></nds-avatar> <!-- src 실패 시 '이' 이니셜 표시 -->",
-      "dont": "<!-- alt / name 둘 다 없음 — 로드 실패 시 ghost 박스 -->\n<nds-avatar src=\"/u.jpg\" size=\"md\"></nds-avatar>\n<!-- 인라인 px 로 강제 사이즈 — sizeMatrix 와 불일치 -->\n<nds-avatar src=\"/u.jpg\" alt=\"A\" style=\"width:33px;height:33px\"></nds-avatar>"
+      "do": "<!-- 인물 프로필: circle (기본) -->\n<nds-avatar src=\"/u.jpg\" alt=\"홍길동\" size=\"md\"></nds-avatar>\n<nds-avatar name=\"이정민\" size=\"lg\"></nds-avatar> <!-- src 실패 시 '이' 1자 Bold -->\n<!-- 앱 아이콘/썸네일: rounded · 콘텐츠/제품: square -->\n<nds-avatar src=\"/app.png\" alt=\"앱\" size=\"lg\" shape=\"rounded\"></nds-avatar>\n<nds-avatar src=\"/product.png\" alt=\"제품\" size=\"lg\" shape=\"square\"></nds-avatar>",
+      "dont": "<!-- alt / name 둘 다 없음 — 로드 실패 시 ghost 박스 -->\n<nds-avatar src=\"/u.jpg\" size=\"md\"></nds-avatar>\n<!-- 인라인 px 로 강제 사이즈 — sizeMatrix 와 불일치 -->\n<nds-avatar src=\"/u.jpg\" alt=\"A\" style=\"width:33px;height:33px\"></nds-avatar>\n<!-- 같은 사용자 프로필인데 화면마다 shape 다르게 -->\n<nds-avatar name=\"홍\" shape=\"square\"></nds-avatar>"
     }
   },
   "AvatarGroup": {
@@ -777,7 +787,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "pressed": "transition 100ms — bg tint 또는 scale(0.99). shadow 깜빡임 금지.",
       "note": "[Figma 권위 룰] 같은 화면 안에서 카드마다 elevation 종류가 다르면 안 됨. 한 리스트 = 한 elevation."
     },
-    "summary": "동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. Figma 헤더 제약 4종: 3 Variants · PC & Mobile (반응형) · Image Optional (이미지 없는 변형 허용) · Semantic Token (raw hex / 임의 색 금지). Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1-2종만 함께 사용. List = 이미지 없이 텍스트+메타데이터로 나열 (트리거: 한 페이지 10개 이상 / 분류별 식품 리스트), Thumb = 썸네일 + 보조 정보 가로형 (트리거: 콘텐츠 식별이 텍스트만으로 부족 / 식품 카드·영양 코칭), Cover = 큰 이미지가 콘텐츠의 핵심 (트리거: 그리드로 시각적 임팩트 필요 / 4-up·2-up 그리드·커뮤니티). 도메인 출처: 지니어트(Geniet) 칼로리계산기 허브 페이지의 식품 리스트·영양 토픽·커뮤니티 카드. Compound 슬롯(순서 고정, 모두 Optional): Card.Root / Thumbnail / Avatar / Chips / Title / Description / Metadata / Divider / Cta / FooterText. (legacy: Header / Body / Footer 도 유지). Flat API props: thumbnail, avatar, chips, title, description, metadata, divider, cta, footerText, children. Anatomy 슬롯 (Figma SSOT, 한 카드 안에서 동일 위치 = 항상 같은 의미): Media(썸네일/커버, Thumb=정사각·Cover=4:3·단색 폴백 허용) · Title(필수, 카드 식별 핵심 라벨, 최대 2줄 + ellipsis, Body 2~H4 Bold) · Meta(보조 정보, 1줄, ' · ' 구분자, Caption Regular) · Status(상태 Badge, Success/Caution/Error 중 1개만) · Action(탭/이동 트리거 — 카드 전체 클릭이 기본, 내부 CTA 버튼 X) · Composition(optional, 도메인 카드가 Base 위에 얹는 슬롯). 도메인 카드(헬시딜·식품 검색·커뮤니티·랭킹·리뷰·식단 추천 등)는 새 variant 를 만들지 말고 Base variant 위에 Composition 슬롯을 얹어 표현 — 슬롯 카탈로그 16종(kcal chip · star rating · promotion badge · nutrition tag row · like overlay · author meta · discount badge · strikethrough price · shipping chip · certification chip · ranking leading · macro nutrition bar · category banner header · friend social proof · trending count · forum meta row)은 `get_guide({ topic: 'pattern:card-composition' })` 에서 슬롯별 사용 룰·위치·한도·금지 조합을 확인. Section/Group Card(카드 안에 list rows 를 담는 컨테이너 — '루테인 포함 영양제 · 총 84개 제품' 같은 묶음)는 단일 Card 가 아닌 별도 패턴 — `get_guide({ topic: 'pattern:card-section' })` 참고.",
+    "summary": "**브랜드 분기 (먼저 확인)**: 아래 \"[Figma 권위 룰]\" 다수는 Geniet 도메인 카드(식품·영양, figma 131:1769) 기준이다. **넛지EAP 서비스 카드는 규칙이 다르다 — `pattern:nudge-eap-card`(Figma 713:2) 를 따른다**: ① 내부 CTA 허용(카드 최하단 Primary CTA 1개 — 상담 예약·전문가·프로그램 카드. Geniet 의 'CTA 금지'·`maxCtaButtonsInsideCard:0` 은 NudgeEAP 에 적용 안 됨), ② shadow 전면 금지·border-only(Geniet 의 'Elevation 0 또는 1 택1' 과 달리 NudgeEAP 는 elevation 미사용), ③ border-radius 12px 고정. 컴포넌트는 양쪽을 모두 지원(Card.Cta/Card.Footer 슬롯 존재) — 차이는 브랜드별 사용 규칙이다.\n\n동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. Figma 헤더 제약 4종: 3 Variants · PC & Mobile (반응형) · Image Optional (이미지 없는 변형 허용) · Semantic Token (raw hex / 임의 색 금지). Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1-2종만 함께 사용. List = 이미지 없이 텍스트+메타데이터로 나열 (트리거: 한 페이지 10개 이상 / 분류별 식품 리스트), Thumb = 썸네일 + 보조 정보 가로형 (트리거: 콘텐츠 식별이 텍스트만으로 부족 / 식품 카드·영양 코칭), Cover = 큰 이미지가 콘텐츠의 핵심 (트리거: 그리드로 시각적 임팩트 필요 / 4-up·2-up 그리드·커뮤니티). 도메인 출처: 지니어트(Geniet) 칼로리계산기 허브 페이지의 식품 리스트·영양 토픽·커뮤니티 카드. Compound 슬롯(순서 고정, 모두 Optional): Card.Root / Thumbnail / Avatar / Chips / Title / Description / Metadata / Divider / Cta / FooterText. (legacy: Header / Body / Footer 도 유지). Flat API props: thumbnail, avatar, chips, title, description, metadata, divider, cta, footerText, children. Anatomy 슬롯 (Figma SSOT, 한 카드 안에서 동일 위치 = 항상 같은 의미): Media(썸네일/커버, Thumb=정사각·Cover=4:3·단색 폴백 허용) · Title(필수, 카드 식별 핵심 라벨, 최대 2줄 + ellipsis, Body 2~H4 Bold) · Meta(보조 정보, 1줄, ' · ' 구분자, Caption Regular) · Status(상태 Badge, Success/Caution/Error 중 1개만) · Action(탭/이동 트리거 — 카드 전체 클릭이 기본, 내부 CTA 버튼 X) · Composition(optional, 도메인 카드가 Base 위에 얹는 슬롯). 도메인 카드(헬시딜·식품 검색·커뮤니티·랭킹·리뷰·식단 추천 등)는 새 variant 를 만들지 말고 Base variant 위에 Composition 슬롯을 얹어 표현 — 슬롯 카탈로그 16종(kcal chip · star rating · promotion badge · nutrition tag row · like overlay · author meta · discount badge · strikethrough price · shipping chip · certification chip · ranking leading · macro nutrition bar · category banner header · friend social proof · trending count · forum meta row)은 `get_guide({ topic: 'pattern:card-composition' })` 에서 슬롯별 사용 룰·위치·한도·금지 조합을 확인. Section/Group Card(카드 안에 list rows 를 담는 컨테이너 — '루테인 포함 영양제 · 총 84개 제품' 같은 묶음)는 단일 Card 가 아닌 별도 패턴 — `get_guide({ topic: 'pattern:card-section' })` 참고.",
     "pitfalls": [
       "[Figma 권위 룰] Variant 혼용 금지 — 한 그리드 안에서 List/Thumb/Cover 를 섞으면 위계가 충돌. 한 화면에 1-2종만, 그리드 내부는 1종만.",
       "[Figma 권위 룰] Card 위에 별도 CTA 버튼 추가 금지 — Action 은 카드 전체 클릭이 기본. 카드 내부에 Solid/Outlined 버튼을 두면 카드 전체 클릭 영역과 충돌. 섹션 하단 '더보기' 같은 CTA 는 Card 가 아니라 Section 의 것.",
@@ -5084,6 +5094,29 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "Error variant를 단순 정보 안내에 사용",
       "본문 3줄 이상을 인라인 메시지에 담기 — Modal로 분리",
       "임의 색상 직접 지정 — semantic token 미사용"
+    ]
+  },
+  "nudge-eap-card": {
+    "name": "nudge-eap-card",
+    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=713-2",
+    "summary": "넛지EAP 서비스 카드(App·Web·PC) 생성 규칙 SSOT(Figma 713:2 CardRulesGuide). Card 컴포넌트(component:Card)의 Compound 슬롯을 쓰되, **넛지EAP 도메인 한정**으로 Geniet 도메인 카드와 다른 두 규칙을 적용한다 — ① **내부 CTA 허용**(상담 예약·전문가·프로그램 카드는 카드 최하단 CTA 1개를 가짐), ② **shadow 전면 금지**(카드 구분은 border 1px 로만, box-shadow/elevation 금지). Title 이 유일한 Required, 나머지 슬롯(Thumbnail·Avatar·Badge/Chip·Description·Metadata·CTA·Footer)은 모두 Optional 이며 화면 목적에 따라 조합한다. 색은 semantic 토큰만 — White/Surface bg, Border/Default, Brand Color 는 CTA·인디케이터에만.",
+    "rules": [
+      "Anatomy — Title(필수·Primary, 생략 불가) + Optional: Thumbnail(max 1, Avatar와 배타) · Avatar(max 1, Thumbnail과 배타) · Badge/Chip(max 2) · Description(max 3줄, line-clamp) · Metadata(max 2항목, Muted 12–13px) · CTA(max 1) · Footer(min-h 40, border-top + padding-top 16).",
+      "Surface — Background: White 또는 Surface/Neutral 토큰만. Border: 1px `--semantic-border-default`(#E2E6EA). **Border-radius: 12px 고정**(radius.lg). **Shadow 사용 금지** — border 로만 카드 구분(넛지EAP 서비스 카드는 elevation 미사용).",
+      "Spacing — Padding 16(min)~24(max) 전 방향 동일. 카드 간 gap 8(min)~16(max). 요소 간: Title↔Description 4px · Description↔Metadata 8px · Metadata↔CTA 16px. Footer separator: border-top 1px + padding-top 16px.",
+      "Hierarchy(폰트 Pretendard) — Title=Headline5 Bold 18/26(`--font-size-headline-5`) 항상 최강조 · Description=Body3 Regular 14/20(`--font-size-body-3`) · Metadata=Caption1 Regular 13/18(`--font-size-caption-1`) Muted 필수 · CTA=Body3 Medium 14/20. Title 외 Primary 강조 1개 초과 금지.",
+      "CTA 유형 4종(카드 컨텍스트별, 임의 크기 변형 금지) — ① Full-width: Btn Large 48px, 카드 너비 100%, radius 8, Solid/Primary(Brand bg·white), Mobile/App 콘텐츠·프로그램 카드. ② Compact: Btn Small 40px, auto(min 80), radius 6, Outlined 또는 Solid/Primary, 요약·수치·공간 제약 카드. ③ Icon+Text: Btn Medium 44px, icon 16 + text(간격 6), radius 8, PC 상담 예약·전문가·퀵 액션 카드. ④ Ghost/Link: Text Button, \"더 보기\"·\"자세히\" 보조 액션, Brand Color 텍스트 + underline/chevron.",
+      "CTA 위치 — 항상 카드 최하단. Primary CTA 1개 원칙. clickable 카드 전체 + 내부 CTA 를 함께 쓸 땐 CTA 가 카드의 단일 Primary 액션이 되도록(중복 핸들러 주의)."
+    ],
+    "avoid": [
+      "임의 pastel/gradient/opacity 배경(#E8F4FD·#FFF8E1·linear-gradient·rgba) — White/Surface 토큰 외 배경 금지.",
+      "box-shadow / drop-shadow / elevation 레벨 — 넛지EAP 카드는 border-only.",
+      "Brand Color(#2B96ED) 카드 배경 — Brand 는 CTA·인디케이터 전용. 카드 bg 로 채우기·brand gradient 헤더 금지.",
+      "Nested Card(카드 안 카드·bordered 박스 흉내) — List/Table/Section 으로 대체.",
+      "Decorative/빈 카드·Title 없는 카드·아이콘만 든 카드.",
+      "Badge+Chip+CTA+Metadata 4개 동시 — Optional 은 최대 2개 권장(정보 위계 붕괴).",
+      "CTA 2개 이상·CTA 를 상단/중간 배치 — Primary 1개, 항상 최하단.",
+      "radius/CTA 크기 임의 변형 — radius 12 고정, CTA 는 위 4종 크기만."
     ]
   },
   "nudge-eap-form-layout": {

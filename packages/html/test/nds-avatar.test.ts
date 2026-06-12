@@ -25,8 +25,10 @@ describe("nds-avatar — DOM parity with React Avatar", () => {
 
     expect(root.dataset.slot).toBe("root");
     expect(root.dataset.size).toBe("md");
-    expect(root.style.getPropertyValue("--nds-avatar-size")).toBe("40px");
-    expect(root.style.getPropertyValue("--nds-avatar-font-size")).toBe("14px");
+    expect(root.dataset.shape).toBe("circle");
+    expect(root.style.getPropertyValue("--nds-avatar-size")).toBe("48px");
+    expect(root.style.getPropertyValue("--nds-avatar-font-size")).toBe("20px");
+    expect(root.style.getPropertyValue("--nds-avatar-radius")).toBe("9999px");
     expect(fallback).toBeTruthy();
     expect(svg.getAttribute("viewBox")).toBe("0 0 24 24");
     expect(el.style.display).toBe("contents");
@@ -46,14 +48,14 @@ describe("nds-avatar — DOM parity with React Avatar", () => {
     expect(img.getAttribute("alt")).toBe("홍길동");
   });
 
-  it("falls back to initials from name", async () => {
+  it("falls back to single-character initial from name (Figma: 이니셜 1자)", async () => {
     const el = document.createElement("nds-avatar");
     el.setAttribute("name", "Hong Gil");
     document.body.appendChild(el);
     await flush();
 
     const fallback = el.querySelector(".nds-avatar__fallback")!;
-    expect(fallback.textContent).toBe("HG");
+    expect(fallback.textContent).toBe("H");
   });
 
   it("uses single-character initial for a single name", async () => {
@@ -85,14 +87,34 @@ describe("nds-avatar — DOM parity with React Avatar", () => {
 
     const root = el.querySelector(".nds-avatar") as HTMLElement;
     expect(root.dataset.size).toBe("xl");
-    expect(root.style.getPropertyValue("--nds-avatar-size")).toBe("64px");
-    expect(root.style.getPropertyValue("--nds-avatar-font-size")).toBe("20px");
+    expect(root.style.getPropertyValue("--nds-avatar-size")).toBe("96px");
+    expect(root.style.getPropertyValue("--nds-avatar-font-size")).toBe("38px");
 
     el.setAttribute("size", "xs");
     await flush();
     expect(root.dataset.size).toBe("xs");
     expect(root.style.getPropertyValue("--nds-avatar-size")).toBe("24px");
-    expect(root.style.getPropertyValue("--nds-avatar-font-size")).toBe("10px");
+    expect(root.style.getPropertyValue("--nds-avatar-font-size")).toBe("11px");
+  });
+
+  it("maps shape variants to data-shape and radius", async () => {
+    const el = document.createElement("nds-avatar");
+    el.setAttribute("size", "md"); // rounded radius for md = 8px
+    el.setAttribute("shape", "rounded");
+    document.body.appendChild(el);
+    await flush();
+
+    const root = el.querySelector(".nds-avatar") as HTMLElement;
+    expect(root.dataset.shape).toBe("rounded");
+    expect(root.style.getPropertyValue("--nds-avatar-radius")).toBe("8px");
+
+    el.setAttribute("shape", "square");
+    await flush();
+    expect(root.style.getPropertyValue("--nds-avatar-radius")).toBe("0");
+
+    el.setAttribute("shape", "circle");
+    await flush();
+    expect(root.style.getPropertyValue("--nds-avatar-radius")).toBe("9999px");
   });
 
   it("falls back to md for invalid size", async () => {
@@ -103,7 +125,7 @@ describe("nds-avatar — DOM parity with React Avatar", () => {
 
     const root = el.querySelector(".nds-avatar") as HTMLElement;
     expect(root.dataset.size).toBe("md");
-    expect(root.style.getPropertyValue("--nds-avatar-size")).toBe("40px");
+    expect(root.style.getPropertyValue("--nds-avatar-size")).toBe("48px");
   });
 
   it("switches to fallback after image error", async () => {
@@ -118,7 +140,7 @@ describe("nds-avatar — DOM parity with React Avatar", () => {
     await flush();
 
     expect(el.querySelector("img")).toBeNull();
-    expect(el.querySelector(".nds-avatar__fallback")?.textContent).toBe("HG");
+    expect(el.querySelector(".nds-avatar__fallback")?.textContent).toBe("H");
   });
 
   it("forwards a11y text attributes to root", async () => {

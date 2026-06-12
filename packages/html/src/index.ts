@@ -20,7 +20,7 @@ export { NdsIconButton } from "./components/nds-icon-button.js";
 export type { IconButtonSize } from "./components/nds-icon-button.js";
 
 export { NdsAvatar } from "./components/nds-avatar.js";
-export type { AvatarSize } from "./components/nds-avatar.js";
+export type { AvatarShape, AvatarSize } from "./components/nds-avatar.js";
 
 export { NdsBadge } from "./components/nds-badge.js";
 export type { BadgeColor, BadgeShape, BadgeSize, BadgeVariant } from "./components/nds-badge.js";

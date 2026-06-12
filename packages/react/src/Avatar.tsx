@@ -6,28 +6,38 @@ const AV_CLASS = "nds-avatar";
 const AV_IMAGE_CLASS = `${AV_CLASS}__image`;
 const AV_FALLBACK_CLASS = `${AV_CLASS}__fallback`;
 
-/* ─── Sizes ─── */
-
+/* ─── Sizes (Figma 1337:8 — 24/32/48/64/96, 5종) ─── */
+/** rounded: shape='rounded' 일 때 cornerRadius (Figma 사이즈별 4/6/8/10/12). */
 const sizeConfig = {
-  xs: { size: 24, fontSize: 10 },
-  sm: { size: 32, fontSize: 12 },
-  md: { size: 40, fontSize: 14 },
-  lg: { size: 48, fontSize: 16 },
-  xl: { size: 64, fontSize: 20 },
+  xs: { size: 24, fontSize: 11, rounded: 4 },
+  sm: { size: 32, fontSize: 14, rounded: 6 },
+  md: { size: 48, fontSize: 20, rounded: 8 },
+  lg: { size: 64, fontSize: 26, rounded: 10 },
+  xl: { size: 96, fontSize: 38, rounded: 12 },
 } as const;
 
 export type AvatarSize = keyof typeof sizeConfig;
+
+/** Avatar 사이즈별 px/fontSize/rounded — AvatarGroup 등이 동일 스케일을 재사용(중복 하드코딩 drift 방지). */
+export const avatarSizeConfig = sizeConfig;
+
+/* ─── Shapes (Figma 1337:8 — 3종) ─── */
+export type AvatarShape = "square" | "rounded" | "circle";
+
+/** shape → border-radius CSS 값. circle=완전 원, square=0, rounded=사이즈별 px. */
+const resolveRadius = (shape: AvatarShape, rounded: number): string => {
+  if (shape === "circle") return "9999px";
+  if (shape === "square") return "0";
+  return `${rounded}px`;
+};
+
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
-/** 이름에서 이니셜 추출 */
-const getInitials = (name: string): string => {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-};
+/** 이름에서 이니셜 1자 추출 (Figma: 이미지 부재 시 이니셜 1자 Bold). */
+const getInitials = (name: string): string => name.trim().charAt(0).toUpperCase();
 
 /** 기본 사용자 아이콘 SVG */
 const DefaultIcon = () => (
@@ -51,14 +61,16 @@ export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   alt?: string;
   /** 폴백에 표시할 이름 (이니셜 추출) */
   name?: string;
-  /** 크기 */
+  /** 크기 (Figma 24/32/48/64/96 = xs/sm/md/lg/xl) */
   size?: AvatarSize;
+  /** 모양 (Figma Shape): circle(인물 프로필·기본) · rounded(앱/썸네일) · square(콘텐츠/제품 이미지) */
+  shape?: AvatarShape;
   /** 커스텀 폴백 렌더 */
   fallback?: React.ReactNode;
 }
 
 export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
-  ({ src, alt = "", name, size = "md", fallback, className, style, ...rest }, ref) => {
+  ({ src, alt = "", name, size = "md", shape = "circle", fallback, className, style, ...rest }, ref) => {
     const [imgError, setImgError] = useState(false);
     const s = sizeConfig[size];
     const showImage = src && !imgError;
@@ -80,11 +92,13 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         ref={ref}
         data-slot="root"
         data-size={size}
+        data-shape={shape}
         className={cx(AV_CLASS, className)}
         style={
           {
             "--nds-avatar-size": `${s.size}px`,
             "--nds-avatar-font-size": `${s.fontSize}px`,
+            "--nds-avatar-radius": resolveRadius(shape, s.rounded),
             ...style,
           } as React.CSSProperties
         }

@@ -29,9 +29,9 @@ describe("nds-avatar-group — DOM parity with React AvatarGroup", () => {
 
     const root = el.querySelector(".nds-avatar-group") as HTMLElement;
     expect(root.dataset.slot).toBe("root");
-    expect(root.style.getPropertyValue("--nds-avatar-group-overlap")).toBe("12px");
-    expect(root.style.getPropertyValue("--nds-avatar-group-more-size")).toBe("40px");
-    expect(root.style.getPropertyValue("--nds-avatar-group-more-font")).toBe("13px");
+    expect(root.style.getPropertyValue("--nds-avatar-group-overlap")).toBe("16px");
+    expect(root.style.getPropertyValue("--nds-avatar-group-more-size")).toBe("48px");
+    expect(root.style.getPropertyValue("--nds-avatar-group-more-font")).toBe("20px");
     expect(root.getAttribute("aria-label")).toBe("총 5명");
 
     const avatars = root.querySelectorAll("nds-avatar");
@@ -74,12 +74,13 @@ describe("nds-avatar-group — DOM parity with React AvatarGroup", () => {
     await flush();
 
     const root = el.querySelector(".nds-avatar-group") as HTMLElement;
-    expect(root.style.getPropertyValue("--nds-avatar-group-overlap")).toBe("14px");
-    expect(root.style.getPropertyValue("--nds-avatar-group-more-size")).toBe("48px");
-    expect(root.style.getPropertyValue("--nds-avatar-group-more-font")).toBe("14px");
+    expect(root.style.getPropertyValue("--nds-avatar-group-overlap")).toBe("22px");
+    expect(root.style.getPropertyValue("--nds-avatar-group-more-size")).toBe("64px");
+    expect(root.style.getPropertyValue("--nds-avatar-group-more-font")).toBe("26px");
 
     const avatar = root.querySelector("nds-avatar")!;
     expect(avatar.getAttribute("size")).toBe("lg");
+    expect(avatar.getAttribute("shape")).toBe("circle");
   });
 
   it("overlap attribute wins over size default", async () => {

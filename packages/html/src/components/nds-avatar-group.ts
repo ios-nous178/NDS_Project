@@ -17,36 +17,38 @@
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
-import type { AvatarSize } from "./nds-avatar.js";
+import type { AvatarShape, AvatarSize } from "./nds-avatar.js";
 
 const AG_CLASS = "nds-avatar-group";
 const AG_ITEM_CLASS = `${AG_CLASS}__item`;
 const AG_MORE_CLASS = `${AG_CLASS}__more`;
 
 const AVATAR_SIZES: readonly AvatarSize[] = ["xs", "sm", "md", "lg", "xl"];
+const AVATAR_SHAPES: readonly AvatarShape[] = ["square", "rounded", "circle"];
 
+// Figma 1337:8 스케일 — React Avatar.tsx avatarSizeConfig / AvatarGroup sizeOverlap 와 1:1.
 const SIZE_OVERLAP: Record<AvatarSize, number> = {
   xs: 8,
   sm: 10,
-  md: 12,
-  lg: 14,
-  xl: 18,
+  md: 16,
+  lg: 22,
+  xl: 32,
 };
 
 const SIZE_PX: Record<AvatarSize, number> = {
   xs: 24,
   sm: 32,
-  md: 40,
-  lg: 48,
-  xl: 64,
+  md: 48,
+  lg: 64,
+  xl: 96,
 };
 
 const SIZE_MORE_FONT: Record<AvatarSize, number> = {
-  xs: 10,
-  sm: 12,
-  md: 13,
-  lg: 14,
-  xl: 16,
+  xs: 11,
+  sm: 14,
+  md: 20,
+  lg: 26,
+  xl: 38,
 };
 
 interface AvatarGroupItem {
@@ -89,6 +91,7 @@ export class NdsAvatarGroup extends NdsElement {
     const items = this._readItems();
     const max = this._intAttr("max", 4);
     const size = this._normalizedSize();
+    const shape = this._normalizedShape();
     const overlap = this._intAttr("overlap", SIZE_OVERLAP[size]);
     const moreSize = SIZE_PX[size];
     const moreFont = SIZE_MORE_FONT[size];
@@ -108,7 +111,7 @@ export class NdsAvatarGroup extends NdsElement {
 
     const visible = items.slice(0, Math.max(0, max));
     const remaining = items.length - visible.length;
-    const children: Node[] = visible.map((item) => this._createAvatar(item, size));
+    const children: Node[] = visible.map((item) => this._createAvatar(item, size, shape));
     if (remaining > 0) children.push(this._createMore(remaining));
     this._root.replaceChildren(...children);
   }
@@ -146,10 +149,11 @@ export class NdsAvatarGroup extends NdsElement {
     return items;
   }
 
-  private _createAvatar(item: AvatarGroupItem, size: AvatarSize): HTMLElement {
+  private _createAvatar(item: AvatarGroupItem, size: AvatarSize, shape: AvatarShape): HTMLElement {
     const avatar = document.createElement("nds-avatar");
     avatar.classList.add(AG_ITEM_CLASS);
     avatar.setAttribute("size", size);
+    avatar.setAttribute("shape", shape);
     if (item.src) avatar.setAttribute("src", item.src);
     if (item.name) avatar.setAttribute("name", item.name);
     const alt = item.alt ?? item.name ?? "";
@@ -168,6 +172,11 @@ export class NdsAvatarGroup extends NdsElement {
   private _normalizedSize(): AvatarSize {
     const value = this.attr("size", "md");
     return (AVATAR_SIZES as readonly string[]).includes(value) ? (value as AvatarSize) : "md";
+  }
+
+  private _normalizedShape(): AvatarShape {
+    const value = this.attr("shape", "circle");
+    return (AVATAR_SHAPES as readonly string[]).includes(value) ? (value as AvatarShape) : "circle";
   }
 
   private _intAttr(name: string, fallback: number): number {

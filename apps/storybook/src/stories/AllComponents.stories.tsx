@@ -245,7 +245,8 @@ const PREVIEWS: Record<string, PreviewRender> = {
   Avatar: () => (
     <div style={previewRow}>
       <Avatar name="홍길동" size="md" />
-      <Avatar name="김상담" size="md" />
+      <Avatar name="김상담" size="md" shape="rounded" />
+      <Avatar name="제품" size="md" shape="square" />
     </div>
   ),
   Asset: () => (

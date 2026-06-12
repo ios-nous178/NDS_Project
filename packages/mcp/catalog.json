@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T06:52:52.658Z",
+  "generatedAt": "2026-06-12T07:15:43.439Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -693,6 +693,16 @@
           "type": "AvatarSize"
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "AvatarShape",
+          "allowedValues": [
+            "square",
+            "rounded",
+            "circle"
+          ]
+        },
+        {
           "name": "fallback",
           "optional": true,
           "type": "React.ReactNode"
@@ -703,6 +713,7 @@
       "htmlObservedAttrs": [
         "alt",
         "name",
+        "shape",
         "size",
         "src",
         "fallback"
@@ -727,6 +738,16 @@
           "type": "AvatarSize"
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "AvatarShape",
+          "allowedValues": [
+            "square",
+            "rounded",
+            "circle"
+          ]
+        },
+        {
           "name": "overlap",
           "optional": true,
           "type": "number"
@@ -747,6 +768,7 @@
         "items",
         "max",
         "overlap",
+        "shape",
         "size",
         "aria-label"
       ]
@@ -14121,6 +14143,7 @@
         "items",
         "max",
         "overlap",
+        "shape",
         "size",
         "aria-label"
       ]
@@ -14131,6 +14154,7 @@
       "observedAttrs": [
         "alt",
         "name",
+        "shape",
         "size",
         "src",
         "fallback"
