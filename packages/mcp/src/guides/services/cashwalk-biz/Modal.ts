@@ -11,8 +11,8 @@ import type { ServiceOverlay } from "../types.js";
 export const ModalOverlay: ServiceOverlay = {
   preferredPatterns: [
     "Confirm = 검정 CTA (`cv.button.bgSecondary` = #000), Cancel = white + `cv.button.borderNeutral` 회색 보더.",
-    "Footer 1버튼(Single): 우측 정렬 + 120px 고정 폭 (`data-has-both-actions` 속성 자동 감지).",
-    "Footer 2버튼(Dual): 가로 양분 — base 와 동일.",
+    "Footer 1버튼(Single): 우측 정렬 + 128px 고정 폭 (`data-has-both-actions` 속성 자동 감지). 버튼 48px pill (Figma 3418-471 — 옛 44/120 폐기).",
+    "Footer 2버튼(Dual): 우측 정렬 + 128px 고정 ×2 (취소 outlined + 확정 검정).",
   ],
   servicePitfalls: [
     "헤더 spacer 가 좌측 정렬 위해 자동 display:none — 그래도 인라인 style 로 spacer 박지 말 것.",
