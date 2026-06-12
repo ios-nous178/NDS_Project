@@ -741,13 +741,10 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
 
   steps.push({
     step: 6,
-    title: "정적 검증 루프 — validate_html_mockup (withStats 로 채택률 포함)",
-    commands: [
-      "validate_html_mockup({ filePath: '<프로젝트>/index.html' })",
-      "validate_html_mockup({ filePath: '<프로젝트>/index.html', withStats: true })",
-    ],
+    title: "정적 검증 루프 — validate_html_mockup (위반 0 통과 시 채택률 stats 자동 동봉)",
+    commands: ["validate_html_mockup({ filePath: '<프로젝트>/index.html' })"],
     note:
-      "validate_html_mockup 위반 0건 + withStats.counts.dsRatio 충분히 높은 상태를 DS ship 기준으로 사용. " +
+      "validate_html_mockup 위반 0건 + 통과 응답에 자동 동봉되는 stats.counts.dsRatio 충분히 높은 상태를 DS ship 기준으로 사용 (별도 withStats 호출 불필요). " +
       "button-without-interaction 은 DS/static 품질 error 입니다. PRD/brief 누락은 validate_prd_coverage 또는 build_singlefile_html.prdValidation 으로 별도 확인합니다.",
   });
 
@@ -1711,7 +1708,7 @@ export function getSetup(args: {
           error:
             "intent='html' 워크플로우는 DsInspector 를 사용하지 않습니다. " +
             "DsInspector 는 React (.tsx) 트리에 마운트되는 dev-only 패널이며, vanilla HTML 에는 적용되지 않습니다. " +
-            "<nds-*> 채택 비율은 validate_html_mockup({ filePath, withStats: true }) 로 확인하세요.",
+            "<nds-*> 채택 비율은 validate_html_mockup({ filePath }) 통과 응답에 자동 동봉되는 stats 로 확인하세요.",
           intent: "html",
         };
       }

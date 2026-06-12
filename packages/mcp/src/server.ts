@@ -433,6 +433,7 @@ export async function findIcon(args: {
   query?: string;
   category?: string;
   limit?: number;
+  offset?: number;
   size?: number;
 }) {
   const categoryIndex = getIconCategoryIndex();
@@ -508,12 +509,22 @@ export async function findIcon(args: {
   if (args.category) {
     const category = args.category as IconCategory;
     const names = categoryIndex[category] ?? [];
+    // offset 페이징 — limit 을 키우는 대신 다음 페이지를 넘겨 큰 카테고리도 슬림하게 순회.
+    const offset = Math.max(0, Math.floor(args.offset ?? 0));
+    const nextOffset = offset + limit < names.length ? offset + limit : null;
     return {
       category: args.category,
       label: ICON_CATEGORY_LABELS[category],
       total: names.length,
       limit,
-      icons: names.slice(0, limit).map(decorateIcon),
+      offset,
+      ...(nextOffset !== null
+        ? {
+            nextOffset,
+            _hint: `다음 페이지: find_icon({ category: '${args.category}', offset: ${nextOffset} })`,
+          }
+        : {}),
+      icons: names.slice(offset, offset + limit).map(decorateIcon),
     };
   }
   return {
@@ -875,7 +886,8 @@ configureClientIdentity({
   mcpVersion: mcpbManifest?.version ?? null,
 });
 
-const toolHandlers = {
+// export 는 테스트용 — 핸들러 응답 정형(stats 자동 동봉 등)을 단위로 잠근다.
+export const toolHandlers = {
   get_brand: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "get_brand",
@@ -1028,7 +1040,9 @@ const toolHandlers = {
     // withStats:true → analyzeHtmlMockup 결과(stats / grouped / recommendations) 를 함께 반환.
     // 옛 analyze_html_mockup 도구의 호출자가 그대로 옮겨올 수 있도록 필드를 분리해 노출.
     // violations[] 은 root 의 result.violations 와 동일하므로 응답 크기 절약을 위해 제거 — 카운트만 violationsByRule 로 남긴다.
-    if (typed.withStats) {
+    // ★ 위반 0 통과 시에는 withStats 없이도 stats 를 자동 동봉 — "0 위반 확인 → withStats 별도
+    //   1회" 로 두 라운드 쓰던 워크플로우를 한 라운드로 줄인다(분석은 같은 파일 로컬 재파싱이라 싸다).
+    if (typed.withStats || result.ok) {
       const {
         violations: _dupViolations,
         violationsByRule: _dupByRule,

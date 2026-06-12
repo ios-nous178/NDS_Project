@@ -4,95 +4,29 @@
  *
  * Storybook / docs / MCP derived artifacts are checked together so the root lint
  * chain can validate the shared source-of-truth surface in one place.
+ *
+ * 게이트 정의는 scripts/gates.mjs 가 SSOT — fix-all.mjs(pnpm fix) /
+ * precommit-gate.mjs 와 같은 목록을 공유한다. 게이트 추가/변경은 gates.mjs 에서.
  */
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { BUILD_FILTERS, GATES } from "./gates.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
 const steps = [
-  {
-    label: "build @nudge-design/tokens",
+  ...BUILD_FILTERS.map((filter) => ({
+    label: `build ${filter}`,
     command: "pnpm",
-    args: ["--filter", "@nudge-design/tokens", "build"],
-  },
-  {
-    label: "build @nudge-design/icons",
-    command: "pnpm",
-    args: ["--filter", "@nudge-design/icons", "build"],
-  },
-  {
-    label: "build @nudge-design/styles",
-    command: "pnpm",
-    args: ["--filter", "@nudge-design/styles", "build"],
-  },
-  {
-    label: "build @nudge-design/react",
-    command: "pnpm",
-    args: ["--filter", "@nudge-design/react", "build"],
-  },
-  {
-    label: "build @nudge-design/mcp",
-    command: "pnpm",
-    args: ["--filter", "@nudge-design/mcp", "build"],
-  },
-  {
-    label: "check guide markdown sources (guides-src → guides.generated.ts)",
-    command: "node",
-    args: ["packages/mcp/scripts/build-guides.mjs", "--check"],
-  },
-  {
-    label: "check MCP catalog freshness",
-    command: "node",
-    args: ["scripts/check-mcp-catalog.mjs", "--no-build"],
-  },
-  {
-    label: "check react/html mirror parity",
-    command: "node",
-    args: ["scripts/check-mirror-parity.mjs", "--no-regen"],
-  },
-  {
-    label: "check input focus-preservation tests",
-    command: "node",
-    args: ["scripts/check-input-tests.mjs"],
-  },
-  {
-    label: "check brand semantic completeness",
-    command: "node",
-    args: ["scripts/check-brand-completeness.mjs"],
-  },
-  {
-    label: "check generated component-attrs freshness",
-    command: "node",
-    args: ["packages/html/scripts/generate-component-attrs.mjs", "--check"],
-  },
-  {
-    label: "check Storybook catalog coverage",
-    command: "node",
-    args: ["scripts/check-storybook-catalog.mjs"],
-  },
-  {
-    label: "check component guide JSON",
-    command: "node",
-    args: ["scripts/generate-component-guides.mjs", "--check"],
-  },
-  {
-    label: "check brand coverage docs",
-    command: "node",
-    args: ["scripts/generate-brand-coverage.mjs", "--check"],
-  },
-  {
-    label: "check guide markdown",
-    command: "node",
-    args: ["scripts/generate-guide-docs.mjs", "--check"],
-  },
-  {
-    label: "check MCP tools reference",
-    command: "node",
-    args: ["scripts/generate-mcp-tools-reference.mjs", "--check"],
-  },
+    args: ["--filter", filter, "build"],
+  })),
+  ...GATES.filter((g) => g.ssot).map((g) => ({
+    label: `check ${g.label}`,
+    command: g.check[0],
+    args: g.check.slice(1),
+  })),
 ];
 
 for (const step of steps) {

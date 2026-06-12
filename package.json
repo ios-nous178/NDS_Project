@@ -39,6 +39,8 @@
     "lint:component-attrs": "node packages/html/scripts/generate-component-attrs.mjs --check",
     "lint:runtime-registry": "node scripts/check-runtime-registry.mjs",
     "lint:ssot": "node scripts/check-ssot.mjs",
+    "fix": "node scripts/fix-all.mjs",
+    "precommit": "node scripts/precommit-gate.mjs",
     "sync:skills": "node scripts/sync-skills.mjs",
     "lint:skills": "node scripts/sync-skills.mjs --check",
     "pack:local": "node scripts/pack-local-packages.mjs",

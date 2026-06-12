@@ -66,6 +66,7 @@ Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready 
 - `query` `string` — Optional natural-language search query.
 - `category` `string` — Optional icon category from the no-arg summary.
 - `limit` `number` — Max icons returned for query/category calls.
+- `offset` `number` — [category] Pagination start index. Response includes `nextOffset` when more icons remain — prefer paging over a large `limit`.
 - `size` `number` — Optional width/height(px) for the returned inline svg. Default 24.
 - `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.
 - `brand` `string` — Optional brand slug in context (e.g. 'cashwalk-biz', 'trost'). Pass it so lookups/misses can be grouped by brand.
@@ -165,13 +166,13 @@ Build a Vite mockup into one shareable dist/index.html. Auto-runs DS validation 
 
 ### `validate_html_mockup`
 
-Validate HTML/&lt;nds-\*&gt; mockups for DS/static quality (token, spacing, native element, icon, pattern, active-button interaction). Pass `source` (HTML string) or `filePath` (.html). `withStats:true` adds DS adoption stats. Not PRD coverage — use validate_prd_coverage. Usage report auto-on; `report:false` only to suppress noisy iterations (final must report).
+Validate HTML/&lt;nds-\*&gt; mockups for DS/static quality (token, spacing, native element, icon, pattern, active-button interaction). Pass `source` (HTML string) or `filePath` (.html). On a clean pass (0 violations) the response automatically includes DS adoption stats — no separate `withStats` call needed; `withStats:true` forces stats even with violations. Not PRD coverage — use validate_prd_coverage. Usage report auto-on; `report:false` only to suppress noisy iterations (final must report).
 
 **인자**
 
 - `source` `string` — HTML source string. One of `source` / `filePath` is required.
 - `filePath` `string` — Absolute path to an .html file (the file IS the rendered output). For React/Vite workspaces where &lt;nds-\*&gt; are injected at runtime, build a single-file artifact first via build_singlefile_html, or pass the rendered HTML through `source`.
-- `withStats` `boolean` — If true, response also includes DS adoption stats, grouped violations, and recommendations (legacy analyze_html_mockup output). Default false.
+- `withStats` `boolean` — Force-include DS adoption stats, grouped violations, and recommendations even when violations remain. Stats are included automatically on a clean pass (0 violations), so this is rarely needed.
 - `report` `boolean` — Write DS usage report (JSONL + Sheets webhook). Default true — prefer omitting. `false` triggers a session warning: the final iteration must report (or the sheet stays stale). Combine with `url`/`sessionId` so rendered (not static-shell) stats reach the sheet.
 - `mockupName` `string` — [report:true] Optional friendly name. Defaults to file basename or a timestamp.
 - `cwd` `string` — [report:true] Working directory where .ds-html-usage-log.jsonl is appended (when not dryRun).

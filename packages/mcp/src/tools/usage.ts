@@ -19,7 +19,7 @@ import {
 } from "./usage/log-path.js";
 import { detectWorkspaceIntent } from "@nudge-design/mockup-core/tools/build-html";
 import { reportHtmlMockupUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
-import { USAGE_WEBHOOK_URL } from "@nudge-design/mockup-core";
+import { ingestUrl } from "@nudge-design/mockup-core";
 import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
 
 /**
@@ -28,8 +28,10 @@ import type { MockupUsage, PendingMockupReport } from "../types/usage.js";
  */
 export async function flushPendingUsageWebhookQueue(): Promise<UsageWebhookQueueFlushResult | null> {
   try {
+    const ingest = ingestUrl();
+    if (!ingest) return null; // 수집 엔드포인트 미설정/킬 스위치 — 전송 생략
     const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
-    return await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
+    return await flushUsageWebhookQueue(queuePath, ingest);
   } catch {
     return null;
   }
@@ -105,17 +107,18 @@ export async function reportMockupUsage(args: {
   } = {
     attempted: false,
   };
-  if (!dryRun) {
+  const ingest = ingestUrl();
+  if (!dryRun && ingest) {
     // 큐는 cwd-독립 고정 dir — 호출마다 logDir 이 바뀌어도 고아 안 됨(보냈는데 안 옴 방지).
     const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
-    const flushedQueue = await flushUsageWebhookQueue(queuePath, USAGE_WEBHOOK_URL);
+    const flushedQueue = await flushUsageWebhookQueue(queuePath, ingest);
     if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
       webhook.flushedQueue = flushedQueue;
     }
 
     webhook.attempted = true;
     try {
-      const res = await postUsageToWebhook(usage, USAGE_WEBHOOK_URL);
+      const res = await postUsageToWebhook(usage, ingest);
       webhook.ok = res.ok;
       webhook.status = res.status;
       webhook.attempts = res.attempts;

@@ -88,6 +88,11 @@ const TOOLS = [
           description: "Optional icon category from the no-arg summary.",
         },
         limit: { type: "number", description: "Max icons returned for query/category calls." },
+        offset: {
+          type: "number",
+          description:
+            "[category] Pagination start index. Response includes `nextOffset` when more icons remain — prefer paging over a large `limit`.",
+        },
         size: {
           type: "number",
           description: "Optional width/height(px) for the returned inline svg. Default 24.",
@@ -252,7 +257,7 @@ const TOOLS = [
   {
     name: "validate_html_mockup",
     description:
-      "Validate HTML/<nds-*> mockups for DS/static quality (token, spacing, native element, icon, pattern, active-button interaction). Pass `source` (HTML string) or `filePath` (.html). `withStats:true` adds DS adoption stats. Not PRD coverage — use validate_prd_coverage. Usage report auto-on; `report:false` only to suppress noisy iterations (final must report).",
+      "Validate HTML/<nds-*> mockups for DS/static quality (token, spacing, native element, icon, pattern, active-button interaction). Pass `source` (HTML string) or `filePath` (.html). On a clean pass (0 violations) the response automatically includes DS adoption stats — no separate `withStats` call needed; `withStats:true` forces stats even with violations. Not PRD coverage — use validate_prd_coverage. Usage report auto-on; `report:false` only to suppress noisy iterations (final must report).",
     inputSchema: {
       type: "object",
       properties: {
@@ -268,7 +273,7 @@ const TOOLS = [
         withStats: {
           type: "boolean",
           description:
-            "If true, response also includes DS adoption stats, grouped violations, and recommendations (legacy analyze_html_mockup output). Default false.",
+            "Force-include DS adoption stats, grouped violations, and recommendations even when violations remain. Stats are included automatically on a clean pass (0 violations), so this is rarely needed.",
         },
         report: {
           type: "boolean",
@@ -759,6 +764,7 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         query: optionalString(args, "query", toolName),
         category: optionalString(args, "category", toolName),
         limit: optionalNumber(args, "limit", toolName, { min: 1 }),
+        offset: optionalNumber(args, "offset", toolName, { min: 0 }),
         size: optionalNumber(args, "size", toolName, { min: 1 }),
         userRequest: optionalString(args, "userRequest", toolName),
         brand: optionalString(args, "brand", toolName),

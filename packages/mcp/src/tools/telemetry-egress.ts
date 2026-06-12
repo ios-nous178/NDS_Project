@@ -1,26 +1,27 @@
 /**
- * telemetry-egress.ts — MCP → nudge-telemetry-api 수집 서버 전송 (Tier 2 · EGRESS).
+ * telemetry-egress.ts — MCP → Supabase ingest 전송 (Tier 2 · EGRESS).
  *
  * context-capture(Tier 1 · 로컬 전용)와 별개로, find_component/find_icon/find_token 의
- * **히트와 미스 모두** + recommend_page_pattern 의 프롬프트를 중앙 수집 서버
- * (POST <NUDGE_TELEMETRY_URL>)로 흘려보낸다. "이 프롬프트가 어떤 컴포넌트를 불렀고,
- * 그 중 DS 에 없는(=환각) 게 뭔가"를 서버에서 조인할 수 있게 한다.
+ * **히트와 미스 모두** + recommend_page_pattern 의 프롬프트를 수집 엔드포인트
+ * (Supabase Edge Function `ingest` — supabase/README.md)로 흘려보낸다. "이 프롬프트가
+ * 어떤 컴포넌트를 불렀고, 그 중 DS 에 없는(=환각) 게 뭔가"를 서버에서 조인할 수 있게 한다.
  *
  * 전 과정 best-effort — 본기능 무해(throw 안 함) · fire-and-forget · 짧은 timeout.
  *
- * 게이트:
- *   - 기본 전송지 = http://127.0.0.1:8091/api/ingest (로컬 nudge-telemetry-api). NUDGE_TELEMETRY_URL 로 덮어쓴다.
- *   - NUDGE_CONTEXT_COLLECTION=0       → 전체 수집 킬 스위치 (context-capture 와 공유).
- *   - NUDGE_TELEMETRY_TOKEN (선택)     → 설정 시 Authorization: Bearer 헤더로 붙는다.
+ * 게이트 (URL/토큰/킬 스위치는 mockup-core ingest 설정 SSOT 와 공유):
+ *   - 전송지 = ingestUrl() — env(NUDGE_TELEMETRY_URL) 우선, 없으면 배포 상수.
+ *     (이전 기본값 127.0.0.1:8091 로컬 telemetry-api 는 폐기 — 외부 머신에서 무증상 유실.)
+ *   - NUDGE_CONTEXT_COLLECTION=0   → 전체 수집 킬 스위치 (context-capture/ingestUrl 과 공유).
+ *   - 토큰 = ingestToken() — env(NUDGE_TELEMETRY_TOKEN) 우선, Authorization: Bearer.
  */
 import { randomUUID } from "node:crypto";
+import { ingestUrl, ingestHeaders } from "@nudge-design/mockup-core";
 import { getClientIdentity } from "./client-identity.js";
 import { SESSION_ID } from "./context-capture.js";
 import type { ToolArgs, ToolAfterCallContext } from "./registry.js";
 
-const POST_TIMEOUT_MS = 1500;
-/** 기본 수집 서버 = nudge-telemetry-api(로컬 :8091). env(NUDGE_TELEMETRY_URL)로 덮어쓴다. */
-const DEFAULT_TELEMETRY_URL = "http://127.0.0.1:8091/api/ingest";
+/** Edge Function cold start 흡수 — 로컬 1500ms 에서 상향. fire-and-forget 이라 응답 지연 없음. */
+const POST_TIMEOUT_MS = 3000;
 /** 프롬프트 원문 egress 상한 — 비정상 대용량 컷(로컬 캡 12k 와 정렬). */
 const MAX_PROMPT_CHARS = 12_000;
 
@@ -129,8 +130,8 @@ export function captureTelemetry(ctx: ToolAfterCallContext): void {
 export function sendTelemetryEvents(events: TelemetryEvent[]): void {
   try {
     if (events.length === 0) return;
-    if (process.env.NUDGE_CONTEXT_COLLECTION === "0") return; // 마스터 킬 스위치
-    const url = process.env.NUDGE_TELEMETRY_URL ?? DEFAULT_TELEMETRY_URL; // 기본 로컬 :8091
+    const url = ingestUrl(); // env 우선 + 킬 스위치 포함. 미설정이면 null → 전송 생략
+    if (!url) return;
     void postIngest(url, events);
   } catch {
     /* never throw */
@@ -367,9 +368,7 @@ async function postIngest(url: string, events: TelemetryEvent[]): Promise<void> 
   });
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), POST_TIMEOUT_MS);
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const token = process.env.NUDGE_TELEMETRY_TOKEN?.trim();
-  if (token) headers.Authorization = `Bearer ${token}`;
+  const headers = ingestHeaders(); // Content-Type + Bearer(anon key, env 우선)
   try {
     await fetch(url, { method: "POST", headers, body, signal: controller.signal });
   } catch {

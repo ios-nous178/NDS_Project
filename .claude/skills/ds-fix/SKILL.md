@@ -57,17 +57,18 @@ description: >-
 
 ### 2. 라우팅 (표면별로 고친다)
 
-| 이슈 유형                     | 손대는 곳                                                                                                         |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| 컴포넌트가 시안과 다르다/없다 | **`/ds-component` 플로우 재사용** — react/styles/html 3면 + 스토리 + AllComponents + COMPONENT_GUIDES + changeset |
-| 색/크기 토큰 문제             | `packages/tokens/src/**` (+ 브랜드) + `DESIGN.md` + `pnpm build --filter @nudge-design/tokens`                    |
-| 합성/사용 규칙(패턴)          | `packages/mcp/guides-src/patterns/<name>.md` (+ build:guides 재생성) + (필요 시) `html-validator.ts` 검증룰 + 예시                                        |
-| 검증이 못 잡음                | `packages/mockup-core/src/tools/html-validator.ts` 룰 추가 + 테스트 + (catalog-config 컨텍스트)                   |
-| 가이드만 틀림/누락            | `packages/mcp/guides-src/{components,patterns}/<Name>.md` 본문 (+ build:guides 재생성)                                                              |
+| 이슈 유형                     | 손대는 곳                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 컴포넌트가 시안과 다르다/없다 | **`/ds-component` 플로우 재사용** — react/styles/html 3면 + 스토리 + AllComponents + COMPONENT_GUIDES + changeset  |
+| 색/크기 토큰 문제             | `packages/tokens/src/**` (+ 브랜드) + `DESIGN.md` + `pnpm build --filter @nudge-design/tokens`                     |
+| 합성/사용 규칙(패턴)          | `packages/mcp/guides-src/patterns/<name>.md` (+ build:guides 재생성) + (필요 시) `html-validator.ts` 검증룰 + 예시 |
+| 검증이 못 잡음                | `packages/mockup-core/src/tools/html-validator.ts` 룰 추가 + 테스트 + (catalog-config 컨텍스트)                    |
+| 가이드만 틀림/누락            | `packages/mcp/guides-src/{components,patterns}/<Name>.md` 본문 (+ build:guides 재생성)                             |
 
 ### 3. 검증 (이슈가 실제로 닫혔는지)
 
 - `/ds-component` 검증 게이트와 동일: 패키지별 `tsc` + `vitest`(react/html) + `node --test`(mockup-core) + **정합 게이트**(빌드된 브랜드 CSS ↔ 시안 치수) + 예시 `validate_html_mockup`.
+- **마무리 전 `pnpm fix`(하드 게이트)** — 파생 생성물(guides.generated.ts·catalog.json·metadata/\* 등)을 일괄 재생성하고, 출력된 "재생성된 파일" 목록을 변경분과 같이 staged 하도록 안내. 생성물 커밋 누락이 CI 터짐의 최다 원인이다.
 - **이슈 재현 시나리오로 확인** — 그 피드백을 유발한 입력(목업 조각/오용 패턴)에 다시 돌려 위반/점수/외형이 실제로 해소됐는지 본다. (검증룰을 추가했으면, 그 룰이 해당 오용을 이제 잡는지 테스트로 고정.)
 
 ### 4. 종료 판정
