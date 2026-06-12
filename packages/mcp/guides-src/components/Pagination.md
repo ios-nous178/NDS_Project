@@ -14,6 +14,10 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4118-
 - 캐포비(data-brand="cashwalk-biz")에서는 각 페이지/화살표가 개별 보더 박스(radius 4, 34h) + 활성 페이지가 검정 채움으로 자동 렌더된다(cascade). markup/attribute 는 base 와 동일 — 박스 모양을 흉내내려 직접 div/border 를 짜지 말 것.
 - 총 데이터 0건이면 Pagination 자체를 숨길 것(렌더하지 않음). 총 1페이지면 PageItem 1개 + Prev/Next disabled.
 - Prev/Next 가 끝(1페이지·마지막페이지)에 도달하면 활성으로 두지 말고 disabled — 캐포비는 흐림이 아니라 옅은 회색 박스로 표시된다.
+- **URL 쿼리 파라미터로 상태 관리 (새로고침·공유 시 보존)** (Figma PaginationGuide 4118-1186): 페이지 번호와 노출 개수는 URL 쿼리로 관리한다. 페이지 번호 클릭 → `?page=N`, Prev/Next → `?page=N±1`, PageSizeSelect 변경 → `?size=N&page=1`(노출 개수 변경 시 **반드시 page=1 로 리셋** — 현재 페이지 유지하면 범위를 벗어난 빈 페이지로 갈 수 있음). 모든 트리거는 데이터 재조회를 동반.
+- **총 페이지 8개+ 면 생략(…) 압축 표시 검토** — `siblings` 로 현재 페이지 주변만 펼치고 양 끝/말줄임으로 압축.
+- **배치**: 리스트 페이지 **우하단 고정**, 좌측 페이지 클러스터 + 우측 PageSizeSelect 를 같은 가로 줄(FilterBar 와 동일 정렬)로 둔다. 리스트 페이지마다 다른 Pagination 디자인을 쓰지 말 것(전 페이지 통일).
+- **노출 개수 조절은 PageSizeSelect(Dropdown) 로 통일** — Toggle/Radio 등 다른 컴포넌트로 행 수를 바꾸지 말 것. 현재 페이지 active 시각 표시(검정 채움)를 빠뜨리지 말 것.
 
 ## examplesHtml.do
 
