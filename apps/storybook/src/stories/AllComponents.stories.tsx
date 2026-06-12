@@ -222,6 +222,9 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Badge variant="line" color="error">
         필수
       </Badge>
+      <Badge variant="ghost" color="brand" shape="pill">
+        프리미엄
+      </Badge>
     </div>
   ),
   Chip: () => (

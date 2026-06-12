@@ -23,7 +23,7 @@ export { NdsAvatar } from "./components/nds-avatar.js";
 export type { AvatarSize } from "./components/nds-avatar.js";
 
 export { NdsBadge } from "./components/nds-badge.js";
-export type { BadgeColor, BadgeSize, BadgeVariant } from "./components/nds-badge.js";
+export type { BadgeColor, BadgeShape, BadgeSize, BadgeVariant } from "./components/nds-badge.js";
 
 export { NdsBanner } from "./components/nds-banner.js";
 export type { BannerVariant } from "./components/nds-banner.js";

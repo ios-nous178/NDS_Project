@@ -57,6 +57,11 @@ const meta: Meta<typeof Badge> = {
       control: "select",
       options: ["sm", "md", "lg"],
     },
+    shape: {
+      control: "select",
+      options: ["default", "pill"],
+      description: "Figma `Shape` — default(라운드 사각, 동적 상태값) / pill(완전 둥근, 정적 식별 태그)",
+    },
   },
   args: {
     variant: "fill",
@@ -120,6 +125,20 @@ export const SizeScale: Story = {
   ),
 };
 
+export const ShapeScale: Story = {
+  name: "Spec/Shape",
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
+      <Badge shape="default" variant="ghost" color="brand">
+        default
+      </Badge>
+      <Badge shape="pill" variant="ghost" color="brand">
+        pill
+      </Badge>
+    </div>
+  ),
+};
+
 export const ColorUsage: Story = {
   name: "Spec/Color Usage",
   render: () => (
@@ -170,6 +189,50 @@ export const StatusBadges: Story = {
       <Badge variant="line" color="info">
         공지
       </Badge>
+    </div>
+  ),
+};
+
+export const CashwalkBizAdminTags: Story = {
+  name: "Recipe/CashwalkBiz Admin Tags",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "캐포비 admin(Figma 3782-20558): 동적 상태값 = 라운드 사각(shape 기본), 정적 식별 태그 = pill. 톤은 ghost 매핑(충전=brand·사용=info·적립=success·만료=neutral·취소=error).",
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)" }}>
+        <Badge variant="ghost" color="brand" size="sm">
+          충전
+        </Badge>
+        <Badge variant="ghost" color="info" size="sm">
+          사용
+        </Badge>
+        <Badge variant="ghost" color="success" size="sm">
+          적립
+        </Badge>
+        <Badge variant="ghost" color="neutral" size="sm">
+          만료
+        </Badge>
+        <Badge variant="ghost" color="error" size="sm">
+          취소
+        </Badge>
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)" }}>
+        <Badge variant="ghost" color="neutral" shape="pill" size="sm">
+          일반 계정
+        </Badge>
+        <Badge variant="ghost" color="brand" shape="pill" size="sm">
+          프리미엄
+        </Badge>
+        <Badge variant="ghost" color="info" shape="pill" size="sm">
+          신규
+        </Badge>
+      </div>
     </div>
   ),
 };
@@ -251,6 +314,25 @@ export const SizeContractInteraction: Story = {
 
     const lg = canvas.getByText("Large").closest('[data-slot="root"]');
     await expect(lg).toHaveAttribute("data-size", "lg");
+  },
+};
+
+export const ShapeContractInteraction: Story = {
+  name: "Interaction/Shape Contract",
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
+      <Badge shape="default">Square</Badge>
+      <Badge shape="pill">Pill</Badge>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const square = canvas.getByText("Square").closest('[data-slot="root"]');
+    await expect(square).toHaveAttribute("data-shape", "default");
+
+    const pill = canvas.getByText("Pill").closest('[data-slot="root"]');
+    await expect(pill).toHaveAttribute("data-shape", "pill");
   },
 };
 

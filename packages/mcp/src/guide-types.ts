@@ -20,6 +20,8 @@ export interface ComponentGuide {
     colorPolicy?: Record<string, string>;
     /** variant 별 사용 정책 (Badge / Tabs 등) */
     variantPolicy?: Record<string, string>;
+    /** shape 별 사용 정책 (Badge default/pill 등) */
+    shapePolicy?: Record<string, string>;
     /** 추가 룰 한 줄 (Modal emphasisRule 등) */
     emphasisRule?: string;
   };

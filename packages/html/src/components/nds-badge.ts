@@ -19,10 +19,12 @@ import { NdsElement, define } from "../base/nds-element.js";
 export type BadgeVariant = "fill" | "ghost" | "line";
 export type BadgeColor = "brand" | "neutral" | "success" | "error" | "caution" | "info";
 export type BadgeSize = "sm" | "md" | "lg";
+export type BadgeShape = "default" | "pill";
 
 const VARIANTS: readonly BadgeVariant[] = ["fill", "ghost", "line"];
 const COLORS: readonly BadgeColor[] = ["brand", "neutral", "success", "error", "caution", "info"];
 const SIZES: readonly BadgeSize[] = ["sm", "md", "lg"];
+const SHAPES: readonly BadgeShape[] = ["default", "pill"];
 
 interface ColorTokens {
   background: string;
@@ -154,7 +156,7 @@ export class NdsBadge extends NdsElement {
   static elementName = "nds-badge";
 
   static get observedAttributes(): readonly string[] {
-    return ["variant", "color", "size"];
+    return ["variant", "color", "size", "shape"];
   }
 
   private _root: HTMLSpanElement | null = null;
@@ -186,14 +188,17 @@ export class NdsBadge extends NdsElement {
     const variant = this._norm("variant", VARIANTS, "fill");
     const color = this._norm("color", COLORS, "neutral");
     const size = this._norm("size", SIZES, "md");
+    const shape = this._norm("shape", SHAPES, "default");
 
     const ct = COLORS_BY_VARIANT[variant][color];
     const st = SIZE_TOKENS[size];
+    const resolvedRadius = shape === "pill" ? "9999px" : `${st.radius}px`;
 
     const root = this._root;
     root.dataset.variant = variant;
     root.dataset.color = color;
     root.dataset.size = size;
+    root.dataset.shape = shape;
 
     // React Badge 의 rootStyle 객체와 1:1 동일
     Object.assign(root.style, {
@@ -203,7 +208,7 @@ export class NdsBadge extends NdsElement {
       gap: "var(--semantic-gap-tight)",
       height: `var(--nds-badge-height, ${st.height}px)`,
       padding: `var(--nds-badge-padding-y, ${st.paddingY}px) var(--nds-badge-padding-x, ${st.paddingX}px)`,
-      borderRadius: `var(--nds-badge-radius, ${st.radius}px)`,
+      borderRadius: `var(--nds-badge-radius, ${resolvedRadius})`,
       background: ct.background,
       color: ct.text,
       border: `1px solid ${ct.border}`,

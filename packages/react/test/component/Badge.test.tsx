@@ -68,6 +68,35 @@ describe("Badge variant 조합", () => {
   });
 });
 
+describe("Badge shape (default / pill)", () => {
+  it("기본 shape=default 가 적용된다", () => {
+    render(<Badge>기본</Badge>);
+    const root = screen.getByText("기본").closest("[data-slot='root']")!;
+    expect(root).toHaveAttribute("data-shape", "default");
+  });
+
+  it("shape=pill 은 data-shape=pill + 완전 둥근 radius(9999px) 를 적용한다", () => {
+    render(
+      <Badge shape="pill" size="sm">
+        프리미엄
+      </Badge>,
+    );
+    const root = screen.getByText("프리미엄").closest("[data-slot='root']") as HTMLElement;
+    expect(root).toHaveAttribute("data-shape", "pill");
+    expect(root.style.borderRadius).toContain("9999px");
+  });
+
+  it("shape=default 은 size 별 라운드 사각 radius 를 유지한다(pill 아님)", () => {
+    render(
+      <Badge shape="default" size="sm">
+        충전
+      </Badge>,
+    );
+    const root = screen.getByText("충전").closest("[data-slot='root']") as HTMLElement;
+    expect(root.style.borderRadius).not.toContain("9999px");
+  });
+});
+
 describe("Badge slotProps & 스타일 커스터마이징", () => {
   it("className이 root에 적용된다", () => {
     render(<Badge className="custom-class">커스텀</Badge>);

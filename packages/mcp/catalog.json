@@ -788,6 +788,15 @@
           ]
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "BadgeShape",
+          "allowedValues": [
+            "default",
+            "pill"
+          ]
+        },
+        {
           "name": "labelClassName",
           "optional": true,
           "type": "string"
@@ -823,7 +832,8 @@
       "htmlObservedAttrs": [
         "variant",
         "color",
-        "size"
+        "size",
+        "shape"
       ]
     },
     {
@@ -14054,7 +14064,8 @@
       "observedAttrs": [
         "variant",
         "color",
-        "size"
+        "size",
+        "shape"
       ]
     },
     {
