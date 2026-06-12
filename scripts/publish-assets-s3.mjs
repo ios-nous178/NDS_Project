@@ -33,7 +33,7 @@ const cdnOrigin = (
   valueOf("--cdn-origin") ??
   process.env.NUDGE_DS_ASSET_CDN_ORIGIN ??
   process.env.NUDGE_DS_CDN_ORIGIN ??
-  "https://asset.nudge-dev.com"
+  "https://nudge-design-assets.s3.ap-northeast-2.amazonaws.com"
 ).replace(/\/+$/g, "");
 
 if (!bucket) {
