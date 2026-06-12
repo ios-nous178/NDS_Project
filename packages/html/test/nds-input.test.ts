@@ -10,6 +10,10 @@
 
 import { describe, expect, it } from "vitest";
 import { NdsInput } from "../src/index.js";
+import {
+  expectAttrUpdatePreservesFocus,
+  expectTypingPreservesFocus,
+} from "./helpers/focus-preservation.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
@@ -110,5 +114,33 @@ describe("nds-input — host .value 접근자 (네이티브 input 정합)", () =
     const field = el.querySelector<HTMLInputElement>('[data-slot="field"]')!;
     expect(field.value).toBe("hello");
     expect(el.value).toBe("hello");
+  });
+});
+
+// ─── 포커스/커서 보존 (mount-once 계약) ───
+// base Input 은 모든 입력 합성의 기준 — focus/blur 가 scheduleUpdate 를 부르므로
+// update() 가 field 를 재생성하면 포커스만 줘도 입력이 끊긴다.
+describe("nds-input — focus preservation", () => {
+  const FIELD = "input.nds-input__field";
+
+  it("typing keeps the same field node, focus, and cursor", async () => {
+    const el = document.createElement("nds-input");
+    el.setAttribute("label", "이름");
+    document.body.appendChild(el);
+    await flush();
+    await expectTypingPreservesFocus({
+      requery: () => el.querySelector<HTMLInputElement>(FIELD),
+    });
+  });
+
+  it("external attribute update keeps focused field alive", async () => {
+    const el = document.createElement("nds-input");
+    document.body.appendChild(el);
+    await flush();
+    const target = { requery: () => el.querySelector<HTMLInputElement>(FIELD) };
+    await expectTypingPreservesFocus(target, "트로");
+    // 입력 중 헬퍼/에러가 바뀌어도(검증 피드백 경로) field 는 살아 있어야 한다.
+    await expectAttrUpdatePreservesFocus(el, target, "helper-text", "공백 없이 입력하세요");
+    await expectAttrUpdatePreservesFocus(el, target, "error", "");
   });
 });

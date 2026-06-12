@@ -6,6 +6,10 @@
 
 import { describe, expect, it } from "vitest";
 import { NdsTextarea } from "../src/components/nds-textarea.js";
+import {
+  expectAttrUpdatePreservesFocus,
+  expectTypingPreservesFocus,
+} from "./helpers/focus-preservation.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
@@ -170,5 +174,34 @@ describe("nds-textarea — DOM parity with React Textarea", () => {
     const root = el.querySelector(".nds-textarea__root") as HTMLElement;
     expect(root.style.getPropertyValue("--nds-textarea-min-height")).toBe("144px");
     expect(root.style.getPropertyValue("--nds-textarea-resize")).toBe("none");
+  });
+});
+
+// ─── 포커스/커서 보존 (mount-once 계약) ───
+// focus/blur 가 scheduleUpdate 를 부르므로 update() 가 textarea 를 재생성하면
+// 포커스만 줘도 입력이 끊긴다.
+describe("nds-textarea — focus preservation", () => {
+  const FIELD = "textarea.nds-textarea__field";
+
+  it("typing keeps the same textarea node, focus, and cursor", async () => {
+    const el = document.createElement("nds-textarea");
+    el.setAttribute("label", "상담 메모");
+    el.setAttribute("max-length", "200");
+    document.body.appendChild(el);
+    await flush();
+    await expectTypingPreservesFocus({
+      requery: () => el.querySelector<HTMLTextAreaElement>(FIELD),
+    });
+  });
+
+  it("external attribute update keeps focused textarea alive", async () => {
+    const el = document.createElement("nds-textarea");
+    document.body.appendChild(el);
+    await flush();
+    const target = { requery: () => el.querySelector<HTMLTextAreaElement>(FIELD) };
+    await expectTypingPreservesFocus(target, "메모");
+    // 입력 중 헬퍼/에러가 바뀌어도(검증 피드백 경로) textarea 는 살아 있어야 한다.
+    await expectAttrUpdatePreservesFocus(el, target, "helper-text", "200자 이내로 입력하세요");
+    await expectAttrUpdatePreservesFocus(el, target, "error", "");
   });
 });

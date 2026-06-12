@@ -4,6 +4,10 @@
 
 import { describe, expect, it } from "vitest";
 import { NdsVerificationCodeInput } from "../src/components/nds-verification-code-input.js";
+import {
+  expectAttrUpdatePreservesFocus,
+  expectTypingPreservesFocus,
+} from "./helpers/focus-preservation.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 const inputOf = (el: Element) =>
@@ -113,5 +117,28 @@ describe("nds-verification-code-input — DOM parity with React VerificationCode
     document.body.appendChild(el);
     await flush();
     expect(inputOf(el).value).toBe("1234");
+  });
+});
+
+// ─── 포커스/커서 보존 (mount-once 계약) ───
+// 한 글자마다 setAttribute("value") → update() 가 도는 입력이라
+// input 재생성 시 인증번호 6자리를 한 번에 못 친다.
+describe("nds-verification-code-input — focus preservation", () => {
+  it("typing digits keeps the same input node, focus, and cursor", async () => {
+    const el = document.createElement("nds-verification-code-input");
+    document.body.appendChild(el);
+    await flush();
+    await expectTypingPreservesFocus({ requery: () => inputOf(el) }, "031259");
+    expect(el.getAttribute("value")).toBe("031259");
+  });
+
+  it("external attribute update keeps focused input alive", async () => {
+    const el = document.createElement("nds-verification-code-input");
+    document.body.appendChild(el);
+    await flush();
+    const target = { requery: () => inputOf(el) };
+    await expectTypingPreservesFocus(target, "0312");
+    // 입력 중 외부에서 에러 상태가 바뀌어도(검증 실패 피드백) input 은 살아 있어야 한다.
+    await expectAttrUpdatePreservesFocus(el, target, "error", "");
   });
 });

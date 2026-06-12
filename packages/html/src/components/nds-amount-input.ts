@@ -81,6 +81,14 @@ export class NdsAmountInput extends NdsElement {
   }
 
   private _root: HTMLDivElement | null = null;
+  private _field: HTMLDivElement | null = null;
+  private _input: HTMLInputElement | null = null;
+  private _labelEl: HTMLLabelElement | null = null;
+  private _prefixEl: HTMLSpanElement | null = null;
+  private _unitEl: HTMLSpanElement | null = null;
+  private _presetsEl: HTMLDivElement | null = null;
+  private _presetsKey: string | null = null;
+  private _helperEl: HTMLParagraphElement | null = null;
   private _inputId = "";
   private _onInput = (e: Event) => this._handleInput(e);
 
@@ -89,102 +97,162 @@ export class NdsAmountInput extends NdsElement {
     super.connectedCallback();
   }
 
+  /**
+   * mount-once: input 을 포함한 골격은 1회만 만든다. update() 가 input 을 재생성하면
+   * 키 입력(setAttribute("value") → update)마다 포커스/커서가 유실된다 —
+   * AddressPicker/DatePicker 회귀 클래스(scripts/check-input-tests.mjs 게이트).
+   */
   private _mount(): void {
     this._inputId = `nds-amount-${++nextAmountId}`;
     const root = document.createElement("div");
     root.dataset.slot = "root";
     root.className = AI_CLASS;
-    this.replaceChildren(root);
-    this._root = root;
-  }
 
-  protected update(): void {
-    if (!this._root) return;
-    if (this.style.display !== "contents") this.style.display = "contents";
-
-    const fullWidth = this.boolAttr("full-width");
-    const error = this.boolAttr("error");
-    this._root.dataset.fullWidth = fullWidth ? "true" : "false";
-
-    const children: Node[] = [];
-    const label = this.getAttribute("label");
-    if (label) children.push(this._createLabel(label));
-    children.push(this._createField(error));
-    const presets = this._readPresets();
-    if (presets.length > 0) children.push(this._createPresets(presets));
-    const helper = this.getAttribute("helper-text");
-    if (helper) children.push(this._createHelper(helper, error));
-
-    this._root.replaceChildren(...children);
-  }
-
-  private _createLabel(text: string): HTMLLabelElement {
-    const label = document.createElement("label");
-    label.htmlFor = this._inputId;
-    label.className = AI_LABEL_CLASS;
-    label.textContent = text;
-    return label;
-  }
-
-  private _createField(error: boolean): HTMLDivElement {
     const field = document.createElement("div");
     field.className = AI_FIELD_CLASS;
-    field.dataset.error = error ? "true" : "false";
-
-    const prefix = this.getAttribute("prefix");
-    if (prefix) {
-      const span = document.createElement("span");
-      span.className = AI_PREFIX_CLASS;
-      span.textContent = prefix;
-      field.appendChild(span);
-    }
 
     const input = document.createElement("input");
     input.id = this._inputId;
     input.type = "text";
     input.inputMode = "numeric";
     input.className = AI_INPUT_CLASS;
-    input.placeholder = this.attr("placeholder", "0");
-    const value = this._parsedValue();
-    input.value = value === null ? "" : formatNumber(value);
-    if (this.boolAttr("disabled")) input.disabled = true;
-    for (const name of FORWARDED_ATTRS) {
-      const attr = this.getAttribute(name);
-      if (attr !== null) input.setAttribute(name, attr);
-    }
     input.addEventListener("input", this._onInput);
     field.appendChild(input);
 
+    root.appendChild(field);
+    this.replaceChildren(root);
+    this._root = root;
+    this._field = field;
+    this._input = input;
+  }
+
+  protected update(): void {
+    if (!this._root || !this._field || !this._input) return;
+    if (this.style.display !== "contents") this.style.display = "contents";
+
+    const error = this.boolAttr("error");
+    this._root.dataset.fullWidth = this.boolAttr("full-width") ? "true" : "false";
+    this._field.dataset.error = error ? "true" : "false";
+
+    this._syncLabel();
+    this._syncPrefix();
+    this._syncInput();
+    this._syncUnit();
+    this._syncPresets();
+    this._syncHelper(error);
+  }
+
+  private _syncLabel(): void {
+    const text = this.getAttribute("label");
+    if (!text) {
+      this._labelEl?.remove();
+      this._labelEl = null;
+      return;
+    }
+    if (!this._labelEl) {
+      const label = document.createElement("label");
+      label.htmlFor = this._inputId;
+      label.className = AI_LABEL_CLASS;
+      this._root!.insertBefore(label, this._field);
+      this._labelEl = label;
+    }
+    this._labelEl.textContent = text;
+  }
+
+  private _syncPrefix(): void {
+    const prefix = this.getAttribute("prefix");
+    if (!prefix) {
+      this._prefixEl?.remove();
+      this._prefixEl = null;
+      return;
+    }
+    if (!this._prefixEl) {
+      const span = document.createElement("span");
+      span.className = AI_PREFIX_CLASS;
+      this._field!.insertBefore(span, this._input);
+      this._prefixEl = span;
+    }
+    this._prefixEl.textContent = prefix;
+  }
+
+  private _syncInput(): void {
+    const input = this._input!;
+    input.placeholder = this.attr("placeholder", "0");
+    input.disabled = this.boolAttr("disabled");
+    for (const name of FORWARDED_ATTRS) {
+      const attr = this.getAttribute(name);
+      if (attr === null) input.removeAttribute(name);
+      else input.setAttribute(name, attr);
+    }
+    // 타이핑 경로의 재포맷/caret 복원은 _handleInput 이 처리 — 같은 값이면 건드리지 않는다.
+    const value = this._parsedValue();
+    const formatted = value === null ? "" : formatNumber(value);
+    if (input.value !== formatted) input.value = formatted;
+  }
+
+  private _syncUnit(): void {
     const unit = this.getAttribute("unit") ?? "원";
-    if (unit) {
+    if (!unit) {
+      this._unitEl?.remove();
+      this._unitEl = null;
+      return;
+    }
+    if (!this._unitEl) {
       const span = document.createElement("span");
       span.className = AI_UNIT_CLASS;
-      span.textContent = unit;
-      field.appendChild(span);
+      this._field!.appendChild(span);
+      this._unitEl = span;
     }
-    return field;
+    this._unitEl.textContent = unit;
   }
 
-  private _createPresets(presets: AmountPreset[]): HTMLDivElement {
-    const wrap = document.createElement("div");
-    wrap.className = AI_PRESETS_CLASS;
-    for (const preset of presets) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = AI_PRESET_CLASS;
-      button.textContent = preset.label;
-      button.addEventListener("click", () => this._applyPreset(preset));
-      wrap.appendChild(button);
+  private _syncPresets(): void {
+    const attr = this.getAttribute("presets");
+    const presets = this._readPresets();
+    if (presets.length === 0) {
+      this._presetsEl?.remove();
+      this._presetsEl = null;
+      this._presetsKey = null;
+      return;
     }
-    return wrap;
+    if (!this._presetsEl) {
+      const wrap = document.createElement("div");
+      wrap.className = AI_PRESETS_CLASS;
+      this._field!.after(wrap); // field 바로 뒤(helper 앞)
+      this._presetsEl = wrap;
+      this._presetsKey = null;
+    }
+    // 버튼은 presets attribute 가 실제로 바뀐 경우에만 재구성 (value 변경마다 재생성 금지).
+    if (this._presetsKey !== attr) {
+      this._presetsKey = attr;
+      this._presetsEl.replaceChildren(
+        ...presets.map((preset) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = AI_PRESET_CLASS;
+          button.textContent = preset.label;
+          button.addEventListener("click", () => this._applyPreset(preset));
+          return button;
+        }),
+      );
+    }
   }
 
-  private _createHelper(text: string, error: boolean): HTMLParagraphElement {
-    const p = document.createElement("p");
-    p.className = AI_HELPER_CLASS;
-    p.dataset.error = error ? "true" : "false";
-    p.textContent = text;
-    return p;
+  private _syncHelper(error: boolean): void {
+    const text = this.getAttribute("helper-text");
+    if (!text) {
+      this._helperEl?.remove();
+      this._helperEl = null;
+      return;
+    }
+    if (!this._helperEl) {
+      const p = document.createElement("p");
+      p.className = AI_HELPER_CLASS;
+      this._root!.appendChild(p);
+      this._helperEl = p;
+    }
+    this._helperEl.dataset.error = error ? "true" : "false";
+    this._helperEl.textContent = text;
   }
 
   private _handleInput(e: Event): void {

@@ -4,6 +4,7 @@
 
 import { describe, expect, it } from "vitest";
 import { NdsLikertScale } from "../src/components/nds-likert-scale.js";
+import { expectAttrUpdatePreservesNode } from "./helpers/focus-preservation.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
@@ -130,5 +131,42 @@ describe("nds-likert-scale — DOM parity with React LikertScale", () => {
     document.body.appendChild(el);
     await flush();
     expect(el.querySelectorAll(".nds-likert__item")).toHaveLength(0);
+  });
+});
+
+// ─── 포커스 보존 (mount-once 계약) ───
+// radio 는 텍스트 커서가 없으니 노드 동일성 + activeElement 만 잠근다.
+// update() 가 track 을 통째로 재구성하면 키보드 탐색 중 외부 attr 갱신(value/anchor)마다
+// 포커스된 radio 가 증발한다.
+describe("nds-likert-scale — focus preservation", () => {
+  it("외부 attribute 갱신에도 포커스된 radio 노드가 보존된다", async () => {
+    const el = document.createElement("nds-likert-scale");
+    el.setAttribute("options", OPTIONS);
+    el.setAttribute("name", "likert-focus");
+    el.setAttribute("value", "2");
+    document.body.appendChild(el);
+    await flush();
+
+    const radio = () => el.querySelector<HTMLInputElement>("#likert-focus-3");
+    expect(radio()).not.toBeNull();
+    // 앵커 라벨이 외부에서 바뀌어도 radio 는 재생성되지 않는다.
+    await expectAttrUpdatePreservesNode(el, radio, "end-label", "매우 그렇다");
+    // 선택값(value) 변경도 골격 재구성 없이 기존 노드를 패치한다.
+    await expectAttrUpdatePreservesNode(el, radio, "value", "3");
+    expect(radio()!.checked).toBe(true);
+    const item = radio()!.closest<HTMLElement>(".nds-likert__item")!;
+    expect(item.dataset.checked).toBe("true");
+  });
+
+  it("options 가 실제로 바뀌면 골격을 재구성한다 (키 기반 rebuild)", async () => {
+    const el = document.createElement("nds-likert-scale");
+    el.setAttribute("options", OPTIONS);
+    document.body.appendChild(el);
+    await flush();
+    expect(el.querySelectorAll(".nds-likert__item")).toHaveLength(5);
+
+    el.setAttribute("options", JSON.stringify([{ value: "1" }, { value: "2" }]));
+    await flush();
+    expect(el.querySelectorAll(".nds-likert__item")).toHaveLength(2);
   });
 });

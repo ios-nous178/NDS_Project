@@ -108,6 +108,19 @@ function parentValues(nodes: CtNode[]): string[] {
   );
 }
 
+/** 빌드된 행 한 벌 — _syncTree 가 이 노드들에 선택 상태만 입힌다(재생성 금지). */
+interface CtRowRefs {
+  row: HTMLElement;
+  input: HTMLInputElement;
+  check: HTMLElement;
+  labelEl: HTMLElement;
+}
+
+interface CtNodeRowRefs extends CtRowRefs {
+  node: CtNode;
+  treeitem: HTMLElement;
+}
+
 export class NdsCheckboxTree extends NdsElement {
   static elementName = "nds-checkbox-tree";
 
@@ -125,11 +138,19 @@ export class NdsCheckboxTree extends NdsElement {
   }
 
   private _root: HTMLDivElement | null = null;
+  private _search: HTMLDivElement | null = null;
+  private _searchInput: HTMLInputElement | null = null;
   private _list: HTMLDivElement | null = null;
 
   private _query = "";
   private _expanded = new Set<string>();
   private _expandedInit = false;
+
+  /** 트리 구조 시그니처 — 바뀔 때만 행을 재구성(포커스 보존: input 재생성 금지). */
+  private _treeSig: string | null = null;
+  private _selectAllRef: CtRowRefs | null = null;
+  private _rowRefs: CtNodeRowRefs[] = [];
+  private _emptyEl: HTMLDivElement | null = null;
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
@@ -171,6 +192,7 @@ export class NdsCheckboxTree extends NdsElement {
 
   private _commit(next: Set<string>): void {
     const ordered = allLeafValues(this._getNodes()).filter((v) => next.has(v));
+    // value attributeChangedCallback → scheduleUpdate → _syncTree 가 상태를 입힌다.
     this.setAttribute("value", JSON.stringify(ordered));
     this.dispatchEvent(
       new CustomEvent("nds-checkbox-tree-change", {
@@ -179,21 +201,49 @@ export class NdsCheckboxTree extends NdsElement {
         composed: true,
       }),
     );
-    this._renderTree();
   }
 
-  /* ── mount ── */
+  /* ── mount — 검색 input 은 여기서 1회만 생성(타이핑 중 재생성 = 포커스 유실) ── */
 
   private _mount(): void {
     const root = document.createElement("div");
     root.dataset.slot = "root";
     root.className = CT_CLASS;
+
+    const search = document.createElement("div");
+    search.dataset.slot = "search";
+    search.className = CT_SEARCH_CLASS;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.addEventListener("input", () => {
+      this._query = input.value;
+      this._renderNow(); // 리스트만 재구성 — 검색 input 자신은 건드리지 않는다
+    });
+
+    const icon = document.createElement("span");
+    icon.className = `${CT_SEARCH_CLASS}-icon`;
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = SEARCH_SVG;
+
+    search.append(input, icon);
+    root.appendChild(search);
+
+    const list = document.createElement("div");
+    list.dataset.slot = "tree";
+    list.className = CT_LIST_CLASS;
+    list.setAttribute("role", "tree");
+    root.appendChild(list);
+
     this.replaceChildren(root);
     this._root = root;
+    this._search = search;
+    this._searchInput = input;
+    this._list = list;
   }
 
   protected update(): void {
-    if (!this._root) return;
+    if (!this._root || !this._search || !this._searchInput) return;
     if (this.style.display !== "contents") this.style.display = "contents";
 
     if (!this._expandedInit) {
@@ -209,90 +259,67 @@ export class NdsCheckboxTree extends NdsElement {
       }
     }
 
-    this._renderAll();
+    /* 검색 영역 — input 노드는 _mount 의 것 그대로, 표시 속성만 sync */
+    const searchable = this.attr("searchable", "true") !== "false";
+    this._search.style.display = searchable ? "" : "none";
+    const placeholder = this.attr("search-placeholder", "검색");
+    if (this._searchInput.placeholder !== placeholder) {
+      this._searchInput.placeholder = placeholder;
+      this._searchInput.setAttribute("aria-label", placeholder);
+    }
+
+    this._renderNow();
   }
 
   /* ── render ── */
 
-  private _renderAll(): void {
-    if (!this._root) return;
-    const searchable = this.attr("searchable", "true") !== "false";
-
-    this._root.replaceChildren();
-
-    if (searchable) {
-      const search = document.createElement("div");
-      search.dataset.slot = "search";
-      search.className = CT_SEARCH_CLASS;
-
-      const input = document.createElement("input");
-      input.type = "text";
-      input.value = this._query;
-      input.placeholder = this.attr("search-placeholder", "검색");
-      input.setAttribute("aria-label", input.placeholder);
-      input.addEventListener("input", () => {
-        this._query = input.value;
-        this._renderTree();
-        const next = this._list?.parentElement?.querySelector<HTMLInputElement>(
-          `.${CT_SEARCH_CLASS} input`,
-        );
-        if (next) {
-          next.focus();
-          next.setSelectionRange(input.value.length, input.value.length);
-        }
-      });
-
-      const icon = document.createElement("span");
-      icon.className = `${CT_SEARCH_CLASS}-icon`;
-      icon.setAttribute("aria-hidden", "true");
-      icon.innerHTML = SEARCH_SVG;
-
-      search.append(input, icon);
-      this._root.appendChild(search);
+  /**
+   * 구조(nodes/검색어/펼침/전체선택 노출)가 바뀔 때만 행을 재구성하고,
+   * 그 외(value·라벨 텍스트)는 기존 노드에 상태만 입힌다 — update() 가 input 을
+   * 재생성하면 체크/타이핑마다 포커스가 유실되는 회귀 클래스.
+   */
+  private _renderNow(): void {
+    const sig = [
+      this.getAttribute("nodes") ?? "",
+      this._query.trim().toLowerCase(),
+      [...this._expanded].sort().join(","),
+      this.attr("show-select-all", "true"),
+    ].join(" ");
+    if (sig !== this._treeSig) {
+      this._treeSig = sig;
+      this._buildTree();
     }
-
-    const list = document.createElement("div");
-    list.dataset.slot = "tree";
-    list.className = CT_LIST_CLASS;
-    list.setAttribute("role", "tree");
-    this._root.appendChild(list);
-    this._list = list;
-
-    this._renderTree();
+    this._syncTree();
   }
 
-  private _renderTree(): void {
+  private _visibleNodes(): CtNode[] {
+    return filterNodes(this._getNodes(), this._query.trim().toLowerCase());
+  }
+
+  /** 트리 행 구조 구성 — 선택 상태는 _syncTree 가 입힌다. */
+  private _buildTree(): void {
     if (!this._list) return;
-    const selected = new Set(this._getValue());
     const q = this._query.trim().toLowerCase();
-    const visibleNodes = filterNodes(this._getNodes(), q);
+    const visibleNodes = this._visibleNodes();
     const showSelectAll = this.attr("show-select-all", "true") !== "false";
     const searchExpanded = q ? new Set(parentValues(visibleNodes)) : null;
     const isExpanded = (val: string) =>
       searchExpanded ? searchExpanded.has(val) : this._expanded.has(val);
 
+    this._selectAllRef = null;
+    this._rowRefs = [];
+    this._emptyEl = null;
     this._list.replaceChildren();
 
     /* select-all */
     if (showSelectAll && visibleNodes.length > 0) {
-      const visibleLeaves = allLeafValues(visibleNodes);
-      const hit = visibleLeaves.filter((v) => selected.has(v)).length;
-      const state: NodeState =
-        hit === 0 ? "unchecked" : hit === visibleLeaves.length ? "checked" : "indeterminate";
-
-      const row = this._buildRow({
-        label: this.attr("select-all-label", "전체 선택"),
-        state,
+      const ref = this._buildRow({
         depth: null,
         selectAll: true,
-        onToggle: () => {
-          const next = new Set(selected);
-          if (state === "checked") visibleLeaves.forEach((v) => next.delete(v));
-          else visibleLeaves.forEach((v) => next.add(v));
-          this._commit(next);
-        },
+        onToggle: () => this._toggleAll(),
       });
-      this._list.appendChild(row);
+      this._selectAllRef = ref;
+      this._list.appendChild(ref.row);
     }
 
     /* empty / nodes */
@@ -300,57 +327,97 @@ export class NdsCheckboxTree extends NdsElement {
       const empty = document.createElement("div");
       empty.dataset.slot = "empty";
       empty.className = CT_EMPTY_CLASS;
-      empty.textContent = this.attr("empty-message", "검색 결과가 없습니다.");
+      this._emptyEl = empty;
       this._list.appendChild(empty);
       return;
     }
 
     const baseDepth = showSelectAll ? 1 : 0;
     for (const node of visibleNodes) {
-      this._list.appendChild(this._renderNode(node, baseDepth, selected, isExpanded));
+      this._list.appendChild(this._buildNode(node, baseDepth, isExpanded));
     }
   }
 
-  private _renderNode(
+  /** 기존 행 노드에 선택 상태/라벨 텍스트만 반영 — input 재생성 금지(포커스 보존). */
+  private _syncTree(): void {
+    const selected = new Set(this._getValue());
+
+    if (this._selectAllRef) {
+      const visibleLeaves = allLeafValues(this._visibleNodes());
+      const hit = visibleLeaves.filter((v) => selected.has(v)).length;
+      const state: NodeState =
+        hit === 0 ? "unchecked" : hit === visibleLeaves.length ? "checked" : "indeterminate";
+      this._applyRowState(this._selectAllRef, state);
+      this._selectAllRef.labelEl.textContent = this.attr("select-all-label", "전체 선택");
+    }
+
+    for (const ref of this._rowRefs) {
+      const state = nodeState(ref.node, selected);
+      this._applyRowState(ref, state);
+      ref.treeitem.setAttribute("aria-selected", state === "checked" ? "true" : "false");
+    }
+
+    if (this._emptyEl) {
+      this._emptyEl.textContent = this.attr("empty-message", "검색 결과가 없습니다.");
+    }
+  }
+
+  private _applyRowState(ref: CtRowRefs, state: NodeState): void {
+    ref.row.dataset.state = state;
+    ref.input.checked = state === "checked";
+    ref.input.indeterminate = state === "indeterminate";
+    if (state === "indeterminate") ref.input.setAttribute("aria-checked", "mixed");
+    else ref.input.removeAttribute("aria-checked");
+    ref.check.dataset.state = state;
+  }
+
+  /** 전체 선택 토글 — 클릭 시점의 attr/검색 상태로 계산(스테일 클로저 금지). */
+  private _toggleAll(): void {
+    const selected = new Set(this._getValue());
+    const visibleLeaves = allLeafValues(this._visibleNodes());
+    const allOn = visibleLeaves.length > 0 && visibleLeaves.every((v) => selected.has(v));
+    if (allOn) visibleLeaves.forEach((v) => selected.delete(v));
+    else visibleLeaves.forEach((v) => selected.add(v));
+    this._commit(selected);
+  }
+
+  private _buildNode(
     node: CtNode,
     depth: number,
-    selected: Set<string>,
     isExpanded: (val: string) => boolean,
   ): HTMLElement {
-    const state = nodeState(node, selected);
     const hasChildren = !!node.children?.length;
     const open = hasChildren && isExpanded(node.value);
 
     const treeitem = document.createElement("div");
     treeitem.setAttribute("role", "treeitem");
     if (hasChildren) treeitem.setAttribute("aria-expanded", open ? "true" : "false");
-    treeitem.setAttribute("aria-selected", state === "checked" ? "true" : "false");
 
-    const row = this._buildRow({
+    const ref = this._buildRow({
       label: node.label,
-      state,
       depth,
       disabled: node.disabled,
-      onToggle: () => this._commit(toggleNode(node, selected)),
+      onToggle: () => this._commit(toggleNode(node, new Set(this._getValue()))),
       chevron: hasChildren
         ? {
             open,
             onClick: () => {
               if (this._expanded.has(node.value)) this._expanded.delete(node.value);
               else this._expanded.add(node.value);
-              this._renderTree();
+              this._renderNow();
             },
           }
         : undefined,
     });
-    treeitem.appendChild(row);
+    treeitem.appendChild(ref.row);
+    this._rowRefs.push({ ...ref, node, treeitem });
 
     if (open) {
       const group = document.createElement("div");
       group.setAttribute("role", "group");
       group.className = CT_GROUP_CLASS;
       for (const child of node.children!) {
-        group.appendChild(this._renderNode(child, depth + 1, selected, isExpanded));
+        group.appendChild(this._buildNode(child, depth + 1, isExpanded));
       }
       treeitem.appendChild(group);
     }
@@ -359,17 +426,15 @@ export class NdsCheckboxTree extends NdsElement {
   }
 
   private _buildRow(opts: {
-    label: string;
-    state: NodeState;
+    label?: string;
     depth: number | null;
     selectAll?: boolean;
     disabled?: boolean;
     onToggle: () => void;
     chevron?: { open: boolean; onClick: () => void };
-  }): HTMLElement {
+  }): CtRowRefs {
     const row = document.createElement("div");
     row.className = CT_ROW_CLASS;
-    row.dataset.state = opts.state;
     if (opts.selectAll) row.dataset.selectAll = "true";
     row.dataset.disabled = opts.disabled ? "true" : "false";
     if (opts.depth !== null) row.style.setProperty("--nds-checkbox-tree-depth", String(opts.depth));
@@ -380,10 +445,7 @@ export class NdsCheckboxTree extends NdsElement {
     const input = document.createElement("input");
     input.type = "checkbox";
     input.className = CT_INPUT_CLASS;
-    input.checked = opts.state === "checked";
-    input.indeterminate = opts.state === "indeterminate";
     if (opts.disabled) input.disabled = true;
-    if (opts.state === "indeterminate") input.setAttribute("aria-checked", "mixed");
     input.addEventListener("change", () => {
       if (opts.disabled) return;
       opts.onToggle();
@@ -391,13 +453,12 @@ export class NdsCheckboxTree extends NdsElement {
 
     const check = document.createElement("span");
     check.className = CT_CHECK_CLASS;
-    check.dataset.state = opts.state;
     check.setAttribute("aria-hidden", "true");
     check.innerHTML = CHECK_SVG + MINUS_SVG;
 
     const text = document.createElement("span");
     text.className = CT_LABEL_CLASS;
-    text.textContent = opts.label;
+    if (opts.label != null) text.textContent = opts.label;
 
     label.append(input, check, text);
     row.appendChild(label);
@@ -413,7 +474,7 @@ export class NdsCheckboxTree extends NdsElement {
       row.appendChild(chevron);
     }
 
-    return row;
+    return { row, input, check, labelEl: text };
   }
 }
 

@@ -180,3 +180,46 @@ describe("nds-brand-header / nds-brand-footer", () => {
     expect(el.querySelector("img")?.getAttribute("src")).toMatch(/^data:image\/png;base64,/);
   });
 });
+
+describe("nds-brand-header — focus preservation (active-key in-place patch)", () => {
+  /* active-key 만 바뀌면 innerHTML 재빌드 대신 data-key 앵커의 data-active 만
+   * 패치한다 — 검색 input(geniet/trost/runmile 헤더)이 재생성되면 포커스가
+   * 유실되는 mount-once 계약. focus-preservation 헬퍼 계열 게이트 커버. */
+
+  it("active-key 갱신이 검색 input 을 재생성하지 않고 메뉴 활성만 옮긴다", async () => {
+    const el = document.createElement("nds-brand-header");
+    el.setAttribute("brand", "geniet");
+    el.setAttribute("active-key", "home");
+    document.body.appendChild(el);
+    await flush();
+
+    const input = el.querySelector<HTMLInputElement>(".nds-brand-geniet__search-input input")!;
+    expect(input).toBeTruthy();
+    input.focus();
+
+    el.setAttribute("active-key", "review");
+    await flush();
+
+    // 노드 동일성 + 포커스 보존 (innerHTML 재빌드면 둘 다 깨진다)
+    expect(el.querySelector(".nds-brand-geniet__search-input input")).toBe(input);
+    expect(document.activeElement).toBe(input);
+
+    // 활성 표시는 in-place 로 옮겨져야 한다
+    const active = el.querySelectorAll('.nds-brand-geniet__gnb-item[data-active="true"]');
+    expect(active).toHaveLength(1);
+    expect(active[0].textContent).toContain("음식 리뷰");
+  });
+
+  it("brand/surface 가 바뀌면 full re-render 로 새 chrome 을 그린다", async () => {
+    const el = document.createElement("nds-brand-header");
+    el.setAttribute("brand", "geniet");
+    document.body.appendChild(el);
+    await flush();
+    expect(el.querySelector(".nds-brand-geniet--desktop")).toBeTruthy();
+
+    el.setAttribute("brand", "cashwalk-biz");
+    await flush();
+    expect(el.querySelector(".nds-brand-geniet--desktop")).toBeNull();
+    expect(el.querySelector(".nds-brand-cashwalk-biz")).toBeTruthy();
+  });
+});

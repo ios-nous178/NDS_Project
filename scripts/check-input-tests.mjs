@@ -25,35 +25,8 @@ const ROOT = path.join(__dirname, "..");
 const COMPONENTS_DIR = path.join(ROOT, "packages/html/src/components");
 const TEST_DIR = path.join(ROOT, "packages/html/test");
 
-// 게이트 도입 시점(2026-06) 미커버 잔존분. 줄이는 방향으로만 수정할 것.
-const ALLOWLIST = new Set([
-  "nds-amount-input",
-  "nds-audio-player",
-  "nds-autocomplete",
-  "nds-brand-chrome",
-  "nds-chat-composer",
-  "nds-checkbox-group",
-  "nds-checkbox-tree",
-  "nds-checkbox",
-  "nds-file-upload",
-  "nds-header",
-  "nds-image-cropper",
-  "nds-image-upload",
-  "nds-input",
-  "nds-inspector",
-  "nds-likert-scale",
-  "nds-number-stepper",
-  "nds-phone-input",
-  "nds-radio",
-  "nds-select",
-  "nds-selection-card",
-  "nds-slider",
-  "nds-tag-input",
-  "nds-textarea",
-  "nds-toggle",
-  "nds-verification-code-input",
-  "nds-video-player",
-]);
+// 게이트 도입 시점(2026-06) 미커버 잔존분 — 전량 해소 완료(2026-06). 비워진 상태 유지.
+const ALLOWLIST = new Set([]);
 
 const INPUT_SURFACE_RE =
   /createElement\(\s*["'`](input|textarea|nds-search-input)["'`]|<(input|textarea|nds-search-input)[\s>/]/;

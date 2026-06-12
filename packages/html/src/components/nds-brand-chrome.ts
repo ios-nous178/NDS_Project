@@ -901,7 +901,7 @@ function renderNudgeEAPHeader(
   const menu = brand.webMenu
     .map(
       (item) =>
-        `<a class="nds-brand-nudge-eap-web__menu-item" href="${escapeAttr(item.href)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
+        `<a class="nds-brand-nudge-eap-web__menu-item" href="${escapeAttr(item.href)}" data-key="${escapeAttr(item.key)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
     )
     .join("");
   const appDl = brand.nudgeEap
@@ -1344,7 +1344,7 @@ function renderGenietHeader(
   const gnbHtml = brand.webMenu
     .map(
       (item) =>
-        `<a class="nds-brand-geniet__gnb-item" href="${escapeAttr(item.href)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
+        `<a class="nds-brand-geniet__gnb-item" href="${escapeAttr(item.href)}" data-key="${escapeAttr(item.key)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
     )
     .join("");
 
@@ -2007,7 +2007,7 @@ function renderCashwalkBizHeader(
   const menuHtml = brand.webMenu
     .map(
       (item) =>
-        `<a class="nds-brand-cashwalk-biz__menu-item" href="${escapeAttr(item.href)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
+        `<a class="nds-brand-cashwalk-biz__menu-item" href="${escapeAttr(item.href)}" data-key="${escapeAttr(item.key)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
     )
     .join("");
 
@@ -2222,7 +2222,7 @@ function renderRunmileHeader(
   const navHtml = brand.webMenu
     .map(
       (item) =>
-        `<a class="nds-brand-runmile-web__nav-item" href="${escapeAttr(item.href)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
+        `<a class="nds-brand-runmile-web__nav-item" href="${escapeAttr(item.href)}" data-key="${escapeAttr(item.key)}" ${item.key === activeKey ? 'data-active="true"' : ""}>${escapeHtml(item.label)}</a>`,
     )
     .join("");
 
@@ -2432,6 +2432,9 @@ export class NdsBrandHeader extends NdsElement {
     return ["brand", "surface", "active-key", "asset-base-url"];
   }
 
+  /** 마지막 full-render 의 brand|surface|assetBaseUrl 키 — 같으면 in-place 패치만. */
+  private _renderedKey: string | null = null;
+
   protected update(): void {
     const brand = normalizeBrand(
       this.getAttribute("brand"),
@@ -2445,6 +2448,20 @@ export class NdsBrandHeader extends NdsElement {
     const activeKey = this.getAttribute("active-key") ?? "home";
     const assetBaseUrl = this.getAttribute("asset-base-url") ?? "/brand-logos";
     this.setAttribute("data-brand", brand);
+
+    /* active-key 만 바뀐 경우 innerHTML 재빌드 금지 — 검색 input 등 내부 노드가
+     * 통째로 재생성돼 포커스가 유실된다 (mount-once 계약,
+     * packages/html/test/nds-brand-chrome.test.ts 가 잠근다).
+     * 메뉴 활성 표시(data-active)만 data-key 앵커에 in-place 패치한다. */
+    const renderedKey = `${brand}|${surface}|${assetBaseUrl}`;
+    if (this._renderedKey === renderedKey) {
+      this.querySelectorAll<HTMLElement>("[data-key]").forEach((el) => {
+        if (el.dataset.key === activeKey) el.dataset.active = "true";
+        else el.removeAttribute("data-active");
+      });
+      return;
+    }
+    this._renderedKey = renderedKey;
     this.innerHTML = renderHeader(brand, surface, activeKey, assetBaseUrl);
   }
 }

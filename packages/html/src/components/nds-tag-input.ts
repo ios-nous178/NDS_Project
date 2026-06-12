@@ -79,6 +79,10 @@ export class NdsTagInput extends NdsElement {
   private _labelEl: HTMLLabelElement | null = null;
   private _input: HTMLInputElement | null = null;
   private _addBtn: HTMLButtonElement | null = null;
+  private _fieldEl: HTMLDivElement | null = null;
+  private _rowEl: HTMLDivElement | null = null;
+  private _chipsEl: HTMLDivElement | null = null;
+  private _mountedVariant: TagInputVariant | null = null;
   private _helperEl: HTMLParagraphElement | null = null;
   private _inputId = `nds-tag-input-${++nextId}`;
 
@@ -217,6 +221,43 @@ export class NdsTagInput extends NdsElement {
     return v && (VARIANTS as readonly string[]).includes(v) ? (v as TagInputVariant) : "stacked";
   }
 
+  /** variant 전환(또는 첫 update) 시에만 컨테이너 골격을 구성 — input 노드는 재사용. */
+  private _mountVariant(variant: TagInputVariant): void {
+    if (!this._labelEl || !this._input) return;
+    this._fieldEl?.remove();
+    this._rowEl?.remove();
+    this._chipsEl?.remove();
+    this._fieldEl = null;
+    this._rowEl = null;
+    this._chipsEl = null;
+    this._addBtn = null;
+
+    if (variant === "inline") {
+      const field = document.createElement("div");
+      field.className = TI_FIELD_CLASS;
+      field.addEventListener("click", () => this._input?.focus());
+      field.appendChild(this._input);
+      this._labelEl.after(field);
+      this._fieldEl = field;
+    } else {
+      const row = document.createElement("div");
+      row.className = TI_ROW_CLASS;
+      row.appendChild(this._input);
+
+      const addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.className = TI_ADD_CLASS;
+      addBtn.appendChild(AddIcon());
+      addBtn.addEventListener("click", () => this._addTag(this._input!.value));
+      row.appendChild(addBtn);
+      this._addBtn = addBtn;
+
+      this._labelEl.after(row);
+      this._rowEl = row;
+    }
+    this._mountedVariant = variant;
+  }
+
   private _buildTag(tag: string, idx: number, disabled: boolean): HTMLSpanElement {
     const prefix = this.getAttribute("prefix") ?? "";
     const span = document.createElement("span");
@@ -259,12 +300,11 @@ export class NdsTagInput extends NdsElement {
       this._labelEl.style.display = "none";
     }
 
-    // variant 컨테이너 재구성 (input 은 보존해 재배치).
-    this._input.remove();
-    this._addBtn = null;
-    this._root
-      .querySelectorAll(`.${TI_FIELD_CLASS}, .${TI_ROW_CLASS}, .${TI_CHIPS_CLASS}`)
-      .forEach((el) => el.remove());
+    // variant 컨테이너는 variant 가 실제로 바뀔 때만 재구성. 매 update 마다 input 을
+    // remove/append 하면 노드는 같아도 detach 순간 포커스가 떨어진다 — Enter 로 태그를
+    // 추가할 때마다(setAttribute("value") → update) 입력이 끊기는 회귀 클래스
+    // (scripts/check-input-tests.mjs 게이트).
+    if (variant !== this._mountedVariant) this._mountVariant(variant);
 
     this._input.placeholder = variant === "inline" && value.length > 0 ? "" : placeholder;
     this._input.disabled = disabled;
@@ -272,36 +312,28 @@ export class NdsTagInput extends NdsElement {
     else delete this._input.dataset.error;
 
     if (variant === "inline") {
-      const field = document.createElement("div");
-      field.className = TI_FIELD_CLASS;
+      const field = this._fieldEl!;
       field.dataset.error = error ? "true" : "false";
       field.dataset.disabled = disabled ? "true" : "false";
-      field.addEventListener("click", () => this._input?.focus());
-      value.forEach((tag, idx) => field.appendChild(this._buildTag(tag, idx, disabled)));
-      field.appendChild(this._input);
-      this._labelEl.after(field);
+      // 칩만 갈아끼우고 input 은 그대로 둔다.
+      field.querySelectorAll(`.${TI_TAG_CLASS}`).forEach((el) => el.remove());
+      value.forEach((tag, idx) =>
+        field.insertBefore(this._buildTag(tag, idx, disabled), this._input),
+      );
     } else {
-      const row = document.createElement("div");
-      row.className = TI_ROW_CLASS;
-      row.appendChild(this._input);
-
-      const addBtn = document.createElement("button");
-      addBtn.type = "button";
-      addBtn.className = TI_ADD_CLASS;
-      addBtn.setAttribute("aria-label", this.getAttribute("add-button-label") || "추가");
-      addBtn.appendChild(AddIcon());
-      addBtn.addEventListener("click", () => this._addTag(this._input!.value));
-      row.appendChild(addBtn);
-      this._addBtn = addBtn;
-
-      this._labelEl.after(row);
-
+      this._addBtn!.setAttribute("aria-label", this.getAttribute("add-button-label") || "추가");
       if (value.length > 0) {
-        const chips = document.createElement("div");
-        chips.dataset.slot = "chips";
-        chips.className = TI_CHIPS_CLASS;
-        value.forEach((tag, idx) => chips.appendChild(this._buildTag(tag, idx, disabled)));
-        row.after(chips);
+        if (!this._chipsEl) {
+          const chips = document.createElement("div");
+          chips.dataset.slot = "chips";
+          chips.className = TI_CHIPS_CLASS;
+          this._rowEl!.after(chips);
+          this._chipsEl = chips;
+        }
+        this._chipsEl.replaceChildren(...value.map((tag, idx) => this._buildTag(tag, idx, disabled)));
+      } else {
+        this._chipsEl?.remove();
+        this._chipsEl = null;
       }
       this._syncAddBtn();
     }

@@ -48,6 +48,29 @@ export async function expectTypingPreservesFocus(
  * 외부 attribute 갱신(attributeChangedCallback → update() 경로)이 돌아도
  * 포커스 중인 input 노드가 보존되는지 단언한다.
  */
+/**
+ * 토글류(checkbox/radio/range 등 비텍스트 input)·합성 컴포넌트용 — 커서 단언 없이
+ * ① 노드 동일성 ② activeElement 보존만 잠근다. (type=checkbox 는 selectionStart
+ * 접근이 throw 라 expectAttrUpdatePreservesFocus 를 쓸 수 없다.)
+ */
+export async function expectAttrUpdatePreservesNode(
+  host: Element,
+  requery: () => HTMLElement | null,
+  attr: string,
+  value: string,
+): Promise<void> {
+  const node = requery();
+  expect(node, "대상 노드를 찾지 못함 (requery 셀렉터 확인)").not.toBeNull();
+  node!.focus();
+
+  host.setAttribute(attr, value);
+  await flush();
+
+  const after = requery();
+  expect(after, `attribute "${attr}" 갱신 후 노드가 재생성됨 — mount-once 계약 위반`).toBe(node);
+  expect(document.activeElement, `attribute "${attr}" 갱신 후 포커스 유실`).toBe(node);
+}
+
 export async function expectAttrUpdatePreservesFocus(
   host: Element,
   target: FocusTarget,

@@ -4,6 +4,7 @@
 
 import { describe, expect, it } from "vitest";
 import { NdsCheckbox } from "../src/index.js";
+import { expectAttrUpdatePreservesNode } from "./helpers/focus-preservation.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
@@ -164,5 +165,21 @@ describe("nds-checkbox — DOM parity with React Checkbox", () => {
     await flush();
     expect(input.id).toBe("terms-checkbox-2");
     expect(root.htmlFor).toBe("terms-checkbox-2");
+  });
+});
+
+describe("nds-checkbox — focus preservation", () => {
+  it("표시용 label attr 갱신이 포커스 중인 input 을 재생성하지 않는다 (mount-once)", async () => {
+    const el = document.createElement("nds-checkbox");
+    el.setAttribute("label", "약관에 동의합니다");
+    document.body.appendChild(el);
+    await flush();
+
+    await expectAttrUpdatePreservesNode(
+      el,
+      () => el.querySelector<HTMLInputElement>("input.nds-checkbox__input"),
+      "label",
+      "마케팅 수신에 동의합니다",
+    );
   });
 });

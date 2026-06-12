@@ -114,58 +114,47 @@ export class NdsAudioPlayer extends NdsElement {
   }
 
   private _root: HTMLDivElement | null = null;
+  private _head: HTMLDivElement | null = null;
+  private _titleEl: HTMLParagraphElement | null = null;
+  private _subtitleEl: HTMLSpanElement | null = null;
+  private _fill: HTMLSpanElement | null = null;
+  private _input: HTMLInputElement | null = null;
+  private _curTimeEl: HTMLSpanElement | null = null;
+  private _durTimeEl: HTMLSpanElement | null = null;
+  private _skipBackBtn: HTMLButtonElement | null = null;
+  private _playBtn: HTMLButtonElement | null = null;
+  private _skipForwardBtn: HTMLButtonElement | null = null;
+  private _playingIcon: boolean | null = null;
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
     super.connectedCallback();
   }
 
+  /**
+   * DOM 골격 1회 구성 — update() 는 텍스트/값/표시 여부만 반영한다.
+   * (update() 에서 range input 을 재생성하면 시크 드래그 중 포커스가 유실되는
+   * AddressPicker 류 회귀 — packages/html/test/nds-audio-player.test.ts 가 잠근다.)
+   */
   private _mount(): void {
     const root = document.createElement("div");
     root.dataset.slot = "root";
     root.className = AP_CLASS;
-    this.appendChild(root);
-    this._root = root;
-  }
-
-  protected update(): void {
-    if (!this._root) return;
-    if (this.style.display !== "contents") this.style.display = "contents";
-
-    const title = this.getAttribute("title");
-    const subtitle = this.getAttribute("subtitle");
-    const playing = this.boolAttr("playing");
-    const currentTime = parseFloat(this.attr("current-time", "0"));
-    const duration = parseFloat(this.attr("duration", "0"));
-
-    const safeDuration = duration > 0 ? duration : 1;
-    const percent = Math.min(100, Math.max(0, (currentTime / safeDuration) * 100));
-
-    const children: Node[] = [];
 
     // Head
-    if (title || subtitle) {
-      const head = document.createElement("div");
-      head.dataset.slot = "head";
-      head.className = AP_HEAD_CLASS;
+    const head = document.createElement("div");
+    head.dataset.slot = "head";
+    head.className = AP_HEAD_CLASS;
 
-      if (title) {
-        const p = document.createElement("p");
-        p.dataset.slot = "title";
-        p.className = AP_TITLE_CLASS;
-        p.textContent = title;
-        head.appendChild(p);
-      }
+    const titleEl = document.createElement("p");
+    titleEl.dataset.slot = "title";
+    titleEl.className = AP_TITLE_CLASS;
 
-      if (subtitle) {
-        const span = document.createElement("span");
-        span.dataset.slot = "subtitle";
-        span.className = AP_SUBTITLE_CLASS;
-        span.textContent = subtitle;
-        head.appendChild(span);
-      }
-      children.push(head);
-    }
+    const subtitleEl = document.createElement("span");
+    subtitleEl.dataset.slot = "subtitle";
+    subtitleEl.className = AP_SUBTITLE_CLASS;
+
+    head.append(titleEl, subtitleEl);
 
     // Track
     const track = document.createElement("div");
@@ -175,14 +164,11 @@ export class NdsAudioPlayer extends NdsElement {
     const fill = document.createElement("span");
     fill.setAttribute("aria-hidden", "true");
     fill.className = AP_FILL_CLASS;
-    fill.style.width = `${percent}%`;
 
     const input = document.createElement("input");
     input.type = "range";
     input.min = "0";
-    input.max = String(duration);
     input.step = "1";
-    input.value = String(Math.min(currentTime, duration));
     input.className = AP_INPUT_CLASS;
     input.setAttribute("aria-label", "재생 위치");
     input.addEventListener("input", (e) => {
@@ -193,7 +179,6 @@ export class NdsAudioPlayer extends NdsElement {
     });
 
     track.append(fill, input);
-    children.push(track);
 
     // Times
     const times = document.createElement("div");
@@ -203,68 +188,115 @@ export class NdsAudioPlayer extends NdsElement {
     const curTimeSpan = document.createElement("span");
     curTimeSpan.dataset.slot = "time";
     curTimeSpan.className = AP_TIME_CLASS;
-    curTimeSpan.textContent = fmtTime(currentTime);
 
     const durTimeSpan = document.createElement("span");
     durTimeSpan.dataset.slot = "time";
     durTimeSpan.className = AP_TIME_CLASS;
-    durTimeSpan.textContent = fmtTime(duration);
 
     times.append(curTimeSpan, durTimeSpan);
-    children.push(times);
 
     // Controls
     const controls = document.createElement("div");
     controls.dataset.slot = "controls";
     controls.className = AP_CONTROLS_CLASS;
 
-    if (this.hasAttribute("skippable")) {
-      const skipBack = document.createElement("button");
-      skipBack.type = "button";
-      skipBack.dataset.slot = "skip-back";
-      skipBack.className = AP_BUTTON_CLASS;
-      skipBack.setAttribute("aria-label", "이전");
-      skipBack.appendChild(SkipBackIcon());
-      skipBack.addEventListener("click", () => {
-        this.dispatchEvent(new CustomEvent("audio-skip-back", { bubbles: true, composed: true }));
-      });
-      controls.appendChild(skipBack);
-    }
+    const skipBack = document.createElement("button");
+    skipBack.type = "button";
+    skipBack.dataset.slot = "skip-back";
+    skipBack.className = AP_BUTTON_CLASS;
+    skipBack.setAttribute("aria-label", "이전");
+    skipBack.appendChild(SkipBackIcon());
+    skipBack.addEventListener("click", () => {
+      this.dispatchEvent(new CustomEvent("audio-skip-back", { bubbles: true, composed: true }));
+    });
 
     const playBtn = document.createElement("button");
     playBtn.type = "button";
     playBtn.dataset.slot = "play";
     playBtn.className = AP_PLAY_CLASS;
-    playBtn.setAttribute("aria-label", playing ? "일시정지" : "재생");
-    playBtn.appendChild(playing ? PauseIcon() : PlayIcon());
     playBtn.addEventListener("click", () => {
       this.dispatchEvent(
         new CustomEvent("audio-play-pause", {
-          detail: { playing: !playing },
+          detail: { playing: !this.boolAttr("playing") },
           bubbles: true,
           composed: true,
         }),
       );
     });
-    controls.appendChild(playBtn);
 
-    if (this.hasAttribute("skippable")) {
-      const skipForward = document.createElement("button");
-      skipForward.type = "button";
-      skipForward.dataset.slot = "skip-forward";
-      skipForward.className = AP_BUTTON_CLASS;
-      skipForward.setAttribute("aria-label", "다음");
-      skipForward.appendChild(SkipForwardIcon());
-      skipForward.addEventListener("click", () => {
-        this.dispatchEvent(
-          new CustomEvent("audio-skip-forward", { bubbles: true, composed: true }),
-        );
-      });
-      controls.appendChild(skipForward);
+    const skipForward = document.createElement("button");
+    skipForward.type = "button";
+    skipForward.dataset.slot = "skip-forward";
+    skipForward.className = AP_BUTTON_CLASS;
+    skipForward.setAttribute("aria-label", "다음");
+    skipForward.appendChild(SkipForwardIcon());
+    skipForward.addEventListener("click", () => {
+      this.dispatchEvent(new CustomEvent("audio-skip-forward", { bubbles: true, composed: true }));
+    });
+
+    controls.append(skipBack, playBtn, skipForward);
+
+    root.append(head, track, times, controls);
+    this.appendChild(root);
+
+    this._root = root;
+    this._head = head;
+    this._titleEl = titleEl;
+    this._subtitleEl = subtitleEl;
+    this._fill = fill;
+    this._input = input;
+    this._curTimeEl = curTimeSpan;
+    this._durTimeEl = durTimeSpan;
+    this._skipBackBtn = skipBack;
+    this._playBtn = playBtn;
+    this._skipForwardBtn = skipForward;
+  }
+
+  protected update(): void {
+    if (!this._root || !this._input) return;
+    if (this.style.display !== "contents") this.style.display = "contents";
+
+    const title = this.getAttribute("title");
+    const subtitle = this.getAttribute("subtitle");
+    const playing = this.boolAttr("playing");
+    const currentTime = parseFloat(this.attr("current-time", "0"));
+    const duration = parseFloat(this.attr("duration", "0"));
+    const skippable = this.hasAttribute("skippable");
+
+    const safeDuration = duration > 0 ? duration : 1;
+    const percent = Math.min(100, Math.max(0, (currentTime / safeDuration) * 100));
+
+    // Head — 텍스트만 반영, 없으면 숨김
+    if (this._head) this._head.style.display = title || subtitle ? "" : "none";
+    if (this._titleEl) {
+      this._titleEl.textContent = title ?? "";
+      this._titleEl.style.display = title ? "" : "none";
     }
-    children.push(controls);
+    if (this._subtitleEl) {
+      this._subtitleEl.textContent = subtitle ?? "";
+      this._subtitleEl.style.display = subtitle ? "" : "none";
+    }
 
-    this._root.replaceChildren(...children);
+    // Track — 기존 input 에 값만 반영 (재생성 금지)
+    if (this._fill) this._fill.style.width = `${percent}%`;
+    this._input.max = String(duration);
+    const value = String(Math.min(currentTime, duration));
+    if (this._input.value !== value) this._input.value = value;
+
+    // Times
+    if (this._curTimeEl) this._curTimeEl.textContent = fmtTime(currentTime);
+    if (this._durTimeEl) this._durTimeEl.textContent = fmtTime(duration);
+
+    // Controls
+    if (this._skipBackBtn) this._skipBackBtn.style.display = skippable ? "" : "none";
+    if (this._skipForwardBtn) this._skipForwardBtn.style.display = skippable ? "" : "none";
+    if (this._playBtn) {
+      this._playBtn.setAttribute("aria-label", playing ? "일시정지" : "재생");
+      if (this._playingIcon !== playing) {
+        this._playingIcon = playing;
+        this._playBtn.replaceChildren(playing ? PauseIcon() : PlayIcon());
+      }
+    }
   }
 }
 
