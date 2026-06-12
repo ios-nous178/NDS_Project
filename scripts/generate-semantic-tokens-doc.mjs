@@ -241,7 +241,7 @@ for (const s of sections) {
   }
   if (s.groupKey === "_unmapped") {
     lines.push(
-      "아래 CSS 변수는 generate-css.js 가 emit 하지만 `cv` 객체에는 노출되지 않음 — 직접 `var(...)` 로만 사용.",
+      "아래 CSS 변수는 generate-css.cjs 가 emit 하지만 `cv` 객체에는 노출되지 않음 — 직접 `var(...)` 로만 사용.",
     );
     lines.push("");
   }

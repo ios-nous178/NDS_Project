@@ -5,7 +5,7 @@ import {
   NUDGE_EAP_LOGO_DATA_URI,
   CASHWALK_BIZ_LOGO_DATA_URI,
   RUNMILE_LOGO_DATA_URI,
-} from "./brand-logo-defaults";
+} from "./brand-logo-defaults.js";
 
 /* ─── Constants ─── */
 

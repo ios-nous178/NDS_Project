@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { resolveActionsLayout, type ActionsLayout } from "@nudge-design/tokens";
-import { useBrand } from "./internal/useBrand";
+import { useBrand } from "./internal/useBrand.js";
 
 /* ─── Class names ─── */
 

@@ -15,9 +15,9 @@ import {
   isSameDay,
   startOfDay,
   toDateKey,
-} from "./internal/dateCore";
-import { addDismissableLayerListeners, WebPortal } from "./internal/web";
-import { useBrand } from "./internal/useBrand";
+} from "./internal/dateCore.js";
+import { addDismissableLayerListeners, WebPortal } from "./internal/web.js";
+import { useBrand } from "./internal/useBrand.js";
 
 /*
  * DatePicker 는 Calendar 컴포넌트를 합성하지 않고 자체 month-grid(buildMonthGrid +

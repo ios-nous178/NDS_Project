@@ -7,17 +7,20 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./runtime": {
       "types": "./dist/runtime.d.ts",
-      "import": "./dist/runtime.js"
+      "import": "./dist/runtime.js",
+      "default": "./dist/runtime.js"
     },
     "./styles.css": "./dist/styles.css",
     "./standalone/*": "./dist/standalone/*",
     "./elements/*": {
       "types": "./dist/components/*.d.ts",
-      "import": "./dist/components/*.js"
+      "import": "./dist/components/*.js",
+      "default": "./dist/components/*.js"
     }
   },
   "files": [
@@ -46,5 +49,6 @@
     "jsdom": "^25.0.1",
     "typescript": "^5.7.0",
     "vitest": "^2.1.9"
-  }
+  },
+  "type": "module"
 }

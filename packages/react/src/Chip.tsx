@@ -1,7 +1,7 @@
 import React from "react";
 import { fontFamily, fontWeight, radius, transition } from "@nudge-design/tokens";
 
-import { RemoveIcon } from "./internal/RemoveIcon";
+import { RemoveIcon } from "./internal/RemoveIcon.js";
 
 /* ─── Class names ─── */
 

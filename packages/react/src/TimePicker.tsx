@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
-import { addDismissableLayerListeners, WebPortal } from "./internal/web";
+import { addDismissableLayerListeners, WebPortal } from "./internal/web.js";
 
 /* ─── Constants ─── */
 

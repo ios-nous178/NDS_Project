@@ -9,12 +9,12 @@ import {
   typeScale,
   zIndex,
 } from "@nudge-design/tokens";
-import { Header } from "../Header";
-import type { HeaderMenuItemData as AppBarGNBItem } from "../Header";
-import { TrendingKeywords } from "../TrendingKeywords";
-import type { TrendingKeywordItem } from "../TrendingKeywords";
+import { Header } from "../Header.js";
+import type { HeaderMenuItemData as AppBarGNBItem } from "../Header.js";
+import { TrendingKeywords } from "../TrendingKeywords.js";
+import type { TrendingKeywordItem } from "../TrendingKeywords.js";
 import { GenietMenuIcon, GenietSearchIcon, GenietGpointIcon } from "@nudge-design/icons";
-import { GENIET_LOGO_PC_DATA_URI, GENIET_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults";
+import { GENIET_LOGO_PC_DATA_URI, GENIET_LOGO_MOBILE_DATA_URI } from "../brand-logo-defaults.js";
 
 /* ─── Constants (Figma 77:2 — Geniet_TopHeader_Guide) ───
  *   Desktop: 1920 × 172 (pad-top 40 + Search Header 54 + gap 20 + Menu Header 58)

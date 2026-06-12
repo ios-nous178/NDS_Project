@@ -1,5 +1,5 @@
 import React from "react";
-import { circularMetrics } from "./viz-svg";
+import { circularMetrics } from "./viz-svg.js";
 
 /* ─── Constants ─── */
 

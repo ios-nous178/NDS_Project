@@ -1,7 +1,7 @@
 import React from "react";
-import { Footer as BaseFooter } from "../Footer";
-import type { FooterLinkItem, CompanyInfoData } from "../Footer";
-import { GENIET_LOGO_FOOTER_DATA_URI } from "../brand-logo-defaults";
+import { Footer as BaseFooter } from "../Footer.js";
+import type { FooterLinkItem, CompanyInfoData } from "../Footer.js";
+import { GENIET_LOGO_FOOTER_DATA_URI } from "../brand-logo-defaults.js";
 
 export interface GenietFooterLogo {
   src: string;

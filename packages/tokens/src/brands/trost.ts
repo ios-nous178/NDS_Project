@@ -10,7 +10,7 @@
  *   - trost.ts (이 파일) : palette + semantic 을 묶어 BrandTheme 로 export
  */
 
-import type { BrandTheme } from "./types";
+import type { BrandTheme } from "./types.js";
 import {
   trostCobalt,
   trostEapBanner,

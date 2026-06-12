@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useRef } from "react";
-import { WebPortal } from "./internal/web";
+import { WebPortal } from "./internal/web.js";
 
 /* ─── Class names ─── */
 

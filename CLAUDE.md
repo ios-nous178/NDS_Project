@@ -74,6 +74,8 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 변경이 **외부 프로젝트까지 전파되려면** MCP 가이드와 MCPB 릴리즈까지 같이 손대야 합니다.
 대부분 위 **스킬**(`/ds-component`·`/ds-fix`·`/ds-release`)이 이 절차를 끝까지 끌고 갑니다 — 아래는 손으로 할 때의 표면 quick-ref. 자주 누락되는 항목은 ★.
 
+배포 패키지(tokens/icons/assets/react/html/tailwind-preset)는 **Node-로더블 ESM**(`type: module` + tsc NodeNext) — 소스의 상대 임포트는 `.js` 확장자 필수(`from "./Button.js"`, tsc 가 누락 시 에러). icons 의 src barrel 은 `scripts/generate.cjs` 가 생성하므로 specifier 규칙 변경 시 생성기도 같이 수정.
+
 ### DS 편입 기준 (admission)
 
 컴포넌트 1개 = 미러 3면 + 스토리 + 카탈로그 + MCP 가이드 + parity + 테스트 비용. 편입 전 체크:

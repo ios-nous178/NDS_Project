@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, avatarSizeConfig, type AvatarShape, type AvatarSize } from "./Avatar";
+import { Avatar, avatarSizeConfig, type AvatarShape, type AvatarSize } from "./Avatar.js";
 
 /* ─── Constants ─── */
 

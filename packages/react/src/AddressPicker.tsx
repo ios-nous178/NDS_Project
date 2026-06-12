@@ -1,6 +1,6 @@
 import React, { useId, useState } from "react";
 import { cv } from "@nudge-design/tokens";
-import { Button } from "./Button";
+import { Button } from "./Button.js";
 
 /* ─── Constants ─── */
 

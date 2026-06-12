@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SelectionButton } from "./SelectionButton";
+import { SelectionButton } from "./SelectionButton.js";
 
 /* ─── Class names ─── */
 

@@ -1,6 +1,6 @@
 import React, { cloneElement, isValidElement, useEffect, useId, useRef, useState } from "react";
 
-import { addDismissableLayerListeners, WebPortal } from "./internal/web";
+import { addDismissableLayerListeners, WebPortal } from "./internal/web.js";
 
 /* ─── Class names ─── */
 

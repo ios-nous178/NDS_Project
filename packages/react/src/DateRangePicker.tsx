@@ -17,9 +17,9 @@ import {
   isSameDay,
   startOfDay,
   toDateKey,
-} from "./internal/dateCore";
-import { useBrand } from "./internal/useBrand";
-import { addDismissableLayerListeners, WebPortal } from "./internal/web";
+} from "./internal/dateCore.js";
+import { useBrand } from "./internal/useBrand.js";
+import { addDismissableLayerListeners, WebPortal } from "./internal/web.js";
 
 /* ─── Constants ─── */
 

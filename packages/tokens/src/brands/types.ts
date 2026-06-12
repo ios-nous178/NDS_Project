@@ -6,8 +6,8 @@
  * base(NudgeEAP) 값이 그대로 cascade 된다.
  */
 
-import type { TypeStyle } from "../typography";
-import type { ActionsLayout } from "../actionsLayout";
+import type { TypeStyle } from "../typography.js";
+import type { ActionsLayout } from "../actionsLayout.js";
 
 /** 팔레트 컬러 — 브랜드 고유 색상 스케일 */
 export type ColorScale = Record<string | number, string>;

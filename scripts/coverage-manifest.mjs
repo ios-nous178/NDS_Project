@@ -34,7 +34,8 @@ export const BRAND_LABEL = {
 async function readReactExports() {
   const src = await fs.readFile(reactIndexPath, "utf8");
   const exports = new Set();
-  for (const m of src.matchAll(/export\s+\*\s+from\s+"\.\/([A-Z][^"]*)"/g)) {
+  // NodeNext 전환으로 specifier 에 .js 확장자가 붙는다 — 컴포넌트명에서는 떼어낸다.
+  for (const m of src.matchAll(/export\s+\*\s+from\s+"\.\/([A-Z][^"]*?)(?:\.js)?"/g)) {
     exports.add(m[1]);
   }
   return exports;

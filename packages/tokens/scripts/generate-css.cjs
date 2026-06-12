@@ -1,6 +1,6 @@
 /**
  * Generates CSS custom properties from compiled token JS files.
- * Run after tsc: node scripts/generate-css.js
+ * Run after tsc: node scripts/generate-css.cjs
  *
  * Outputs:
  *   dist/tokens.css   — NudgeEAP 기본 토큰

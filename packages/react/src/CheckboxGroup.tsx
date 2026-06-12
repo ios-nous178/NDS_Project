@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import { Checkbox } from "./Checkbox";
+import { Checkbox } from "./Checkbox.js";
 
 /* ─── Class names ─── */
 

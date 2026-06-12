@@ -1,9 +1,9 @@
 import React from "react";
 import { trostNeutral } from "@nudge-design/tokens";
-import { Footer as BaseFooter } from "../Footer";
-import { TROST_LOGO_DATA_URI } from "../brand-logo-defaults";
-import type { FooterLinkItem, CompanyInfoData } from "../Footer";
-import type { TrostSnsLink } from "./types";
+import { Footer as BaseFooter } from "../Footer.js";
+import { TROST_LOGO_DATA_URI } from "../brand-logo-defaults.js";
+import type { FooterLinkItem, CompanyInfoData } from "../Footer.js";
+import type { TrostSnsLink } from "./types.js";
 
 /* ─── Trost 표준 에셋 (CDN). prop 으로 override 가능. ─── */
 

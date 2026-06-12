@@ -1,6 +1,6 @@
 import React, { useId, useMemo } from "react";
 import { cv } from "@nudge-design/tokens";
-import { normalizeSeries } from "./viz-svg";
+import { normalizeSeries } from "./viz-svg.js";
 
 /* ─── Constants ─── */
 

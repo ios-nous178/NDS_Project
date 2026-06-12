@@ -1,5 +1,5 @@
 import React from "react";
-import { en_darkLogoData, symbolLogoData } from "./assets/nudge-eap";
+import { en_darkLogoData, symbolLogoData } from "./assets/nudge-eap.js";
 import {
   koen_symbolSvg,
   koen_textSvg,
@@ -7,7 +7,7 @@ import {
   ko_textSvg,
   enSvg,
   dainSvg,
-} from "./assets/nudge-eap-svg";
+} from "./assets/nudge-eap-svg.js";
 
 /**
  * NudgeEAPLogo — Figma 698:87 (NudgeEAP Library) Logo Guide 의 6종 variant 자체-포함 React 컴포넌트.

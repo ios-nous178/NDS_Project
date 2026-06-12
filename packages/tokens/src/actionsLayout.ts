@@ -18,7 +18,7 @@
  * `pnpm lint:actions-layout` 가 tokens/src/brands/*.ts 를 검사해 누락 시 빌드를 막는다.
  * react(useBrand)·html(data-brand) 양쪽이 이 한 곳을 읽는다.
  */
-import { nudgeEapTheme, trostTheme, genietTheme, cashwalkBizTheme, runmileTheme } from "./brands";
+import { nudgeEapTheme, trostTheme, genietTheme, cashwalkBizTheme, runmileTheme } from "./brands/index.js";
 
 export type ActionsLayout = "split" | "end";
 

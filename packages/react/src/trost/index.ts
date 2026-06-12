@@ -9,24 +9,24 @@
  * 그리드 + semantic spacing 토큰 사용이 원칙.
  */
 
-export * from "./types";
-export * from "./EAPBanner";
-export * from "./SearchForm";
-export * from "./LoginSection";
-export * from "./AppDownloadButton";
-export * from "./UtilityHeader";
-export * from "./TabNavigation";
-export * from "./DesktopHeader";
+export * from "./types.js";
+export * from "./EAPBanner.js";
+export * from "./SearchForm.js";
+export * from "./LoginSection.js";
+export * from "./AppDownloadButton.js";
+export * from "./UtilityHeader.js";
+export * from "./TabNavigation.js";
+export * from "./DesktopHeader.js";
 
 /* ─── Brand chrome (header / footer / bottom-nav) ─── */
-export * from "./AppBar";
-export * from "./Footer";
-export * from "./BottomNav";
+export * from "./AppBar.js";
+export * from "./Footer.js";
+export * from "./BottomNav.js";
 
 /**
  * WebHeader alias — Trost 데스크톱 헤더.
  * TrostDesktopHeader 구현 재노출 — EAPBanner / UtilityHeader / TabNavigation 3슬롯 컴파운드.
  * Zeplin zpl.io/Dp775xl 정합 (Rectangle 2613 = EAPBanner / Path = Logo / Rectangle 2522 = Search).
  */
-export { TrostDesktopHeader as TrostWebHeader } from "./DesktopHeader";
-export type { TrostDesktopHeaderProps as TrostWebHeaderProps } from "./DesktopHeader";
+export { TrostDesktopHeader as TrostWebHeader } from "./DesktopHeader.js";
+export type { TrostDesktopHeaderProps as TrostWebHeaderProps } from "./DesktopHeader.js";
