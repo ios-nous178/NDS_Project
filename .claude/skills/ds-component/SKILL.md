@@ -81,6 +81,10 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 - 테스트:
   - react/html: 해당 패키지에서 `npx vitest run`
   - mockup-core: `npx tsx --test packages/mockup-core/src/tools/<file>.test.ts` (또는 `npm test`)
+- **입력 컴포넌트 포커스 보존 테스트(하드 게이트)** — 컴포넌트가 input/textarea 를 만들거나 `nds-search-input` 을 합성하면:
+  - `packages/html/test/helpers/focus-preservation.ts` 헬퍼로 **양면 잠금** — ① 타이핑 중 input 노드/포커스/커서 보존 ② 외부 attribute 갱신 후 보존 (예시: `nds-search-input.test.ts` / `nds-multi-select.test.ts`).
+  - html 구현은 mount-once 패턴 필수 — input 은 `_mount()` 에서 한 번만 만들고 `update()` 는 값/노출만 패치 (`replaceChildren` 으로 input 재생성 금지 — AddressPicker "한 글자마다 끊김" 회귀 클래스).
+  - `pnpm lint:input-focus` 통과 확인 (`scripts/check-input-tests.mjs` — 신규 컴포넌트는 ALLOWLIST 에 넣지 말고 테스트를 쓴다).
 - 토큰 빌드(토큰 손댔으면): `pnpm build --filter @nudge-design/tokens` → 의존 패키지 빌드.
 - **정합 검증("스타일 다 맞아?")** — 빌드된 브랜드 CSS 실측값을 Figma 치수와 대조:
   - `packages/html/dist/standalone/brand.*.css` 에서 `--nds-*` / 토큰 resolved 값을 grep → Figma metadata(height/padding/radius/color)와 1:1 비교. 어긋나면 컴포넌트가 아니라 **토큰/브랜드 cascade** 를 의심.

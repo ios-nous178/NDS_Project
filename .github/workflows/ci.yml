@@ -58,6 +58,12 @@ jobs:
         run: pnpm lint:mirror-parity
         continue-on-error: true
 
+      # 입력 컴포넌트 포커스-보존 테스트 게이트 — update() input 재생성 회귀
+      # (AddressPicker/DatePicker "한 글자마다 끊김" 클래스)를 테스트 의무화로 차단.
+      # 기존 미커버분은 스크립트 ALLOWLIST 에 흡수 — 신규만 막으므로 하드 게이트.
+      - name: Check input focus-preservation tests
+        run: pnpm lint:input-focus
+
       - name: Build Docs
         run: pnpm docs:build
 

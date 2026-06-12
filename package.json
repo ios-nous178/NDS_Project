@@ -32,6 +32,7 @@
     "lint:mcp-catalog": "node scripts/check-mcp-catalog.mjs",
     "lint:mirror-parity": "node scripts/check-mirror-parity.mjs",
     "lint:mirror-parity:update": "node scripts/check-mirror-parity.mjs --update",
+    "lint:input-focus": "node scripts/check-input-tests.mjs",
     "lint:actions-layout": "node scripts/check-actions-layout.mjs",
     "lint:runtime-registry": "node scripts/check-runtime-registry.mjs",
     "lint:ssot": "node scripts/check-ssot.mjs",

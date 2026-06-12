@@ -137,151 +137,169 @@ export function configureHtmlValidator(ctx: HtmlValidationContext) {
  *
  * raw-landmark 는 컨텍스트에 따라 (brand 변형 가용 vs 아님) 달라지므로 push 시점에 명시.
  */
-const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
+/**
+ * 룰 분류(kind) — 수명 정책의 입력. 분류는 1차 패스이며 재분류 환영.
+ *
+ *  invariant   : DS/목업 계약 위반 — 저작 주체(사람/AI)와 무관하게 항상 틀림.
+ *                토큰·시멘틱·시각 위계·표면 계약·단일파일 규약. 폐기 대상 아님.
+ *  model-guard : 특정 시점 AI 생성 실수 패턴 가드 — 환각(unknown-*)·손조립 재발명·
+ *                인코딩 깨짐 등. 모델 세대가 바뀌면 히트가 0 으로 갈 수 있음 →
+ *                텔레메트리(rule-stats) 기준 30일 히트 0 인 warn/info 룰은 폐기 후보
+ *                (/ds-audit 가 리포트. error 룰은 "룰이 효과적이라 위반이 사라진" 경우와
+ *                구분이 안 되므로 후보에서 제외).
+ *  brand-policy: 특정 브랜드의 의미/정책 분기 — 브랜드 프로필(brand-profiles)로
+ *                일반화할 대상. 이 kind 의 룰 수가 줄어드는 게 프로필 일반화의 진척 지표.
+ */
+export type RuleKind = "invariant" | "model-guard" | "brand-policy";
+export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: RuleKind }> = {
   // contract / DS 미사용
-  "native-interactive": "error",
+  "native-interactive": { severity: "error", kind: "invariant" },
   // DS 반영도(dsRatio)가 최소선 미달 — "DS 반영"을 강제하는 집계 게이트(E1).
-  "low-ds-ratio": "error",
-  "raw-landmark": "warn",
+  "low-ds-ratio": { severity: "error", kind: "invariant" },
+  "raw-landmark": { severity: "warn", kind: "invariant" },
   // 브랜드 화면인데 base nds-header 를 손수 조립 (회고: brand chrome 미사용 안티패턴)
-  "manual-brand-header": "warn",
+  "manual-brand-header": { severity: "warn", kind: "model-guard" },
   // 선언 표면=admin 인데 소비자 brand chrome(header/footer/bottom-nav) 사용 (회고: 가입 admin 화면을 소비자 플로우로 오제작)
-  "admin-surface-consumer-chrome": "error",
+  "admin-surface-consumer-chrome": { severity: "error", kind: "invariant" },
   // 선언 표면=service 인데 어드민 사이드바(nds-sidebar) 사용 — 표면 불일치(역방향)
-  "service-surface-admin-shell": "warn",
+  "service-surface-admin-shell": { severity: "warn", kind: "invariant" },
   // 캐포비 어드민(surface=admin + brand=cashwalk-biz)인데 5종 Page Pattern 중 하나를 선언 안 함 / 미지 값
-  "cashwalk-biz-admin-page-pattern": "error",
+  "cashwalk-biz-admin-page-pattern": { severity: "error", kind: "brand-policy" },
   // 캐포비 어드민 onboarding 패턴인데 shell(사이드바/풀하이트 셸)이 있음 — 온보딩은 비로그인 진입 화면이라 shell 금지
-  "cashwalk-biz-onboarding-no-shell": "error",
+  "cashwalk-biz-onboarding-no-shell": { severity: "error", kind: "brand-policy" },
   // 캐포비 어드민 onboarding 인데 중앙 카드+로고 골격이 안 보임 — 권고(레이아웃 계약 환기)
-  "cashwalk-biz-onboarding-skeleton": "info",
+  "cashwalk-biz-onboarding-skeleton": { severity: "info", kind: "brand-policy" },
   // 온보딩 카드에 <nds-brand-logo> 컴포넌트가 없음 — raw img/svg 로고 조립 또는 누락(skeleton 의 빈틈 보완)
-  "onboarding-missing-brand-logo": "warn",
+  "onboarding-missing-brand-logo": { severity: "warn", kind: "model-guard" },
   // 소셜 로그인을 텍스트/이니셜(G/K/N)로 때움 — sns-logos 자산 미사용
-  "onboarding-social-bare-text": "warn",
+  "onboarding-social-bare-text": { severity: "warn", kind: "model-guard" },
   // 성공/완료 상태를 체크 없는 민무늬 초록 원으로 표현 — check-circle 아이콘 미사용
-  "onboarding-success-plain-circle": "warn",
+  "onboarding-success-plain-circle": { severity: "warn", kind: "model-guard" },
   // 온보딩 단일 액션 주 CTA(Primary solid)가 full-width 가 아님 — 모달 단일버튼(hug)과 혼동.
   // 단일 액션 온보딩은 카드 폭 가득(FILL)이 하드 계약 → error. (멀티스텝=이전버튼 있으면 면제)
-  "onboarding-cta-not-fullwidth": "error",
+  "onboarding-cta-not-fullwidth": { severity: "error", kind: "invariant" },
   // 멀티스텝 온보딩의 [이전 단계] 버튼이 카드 안에 있음 — 카드와 분리해 하단 푸터에 둬야 함.
-  "onboarding-back-button-inside-card": "warn",
+  "onboarding-back-button-inside-card": { severity: "warn", kind: "invariant" },
   // 온보딩에 상단 GNB/글로벌 헤더(raw <header>/.topbar/nds-header 등) 부착 — 비로그인 진입 화면은
   // shell·GNB 없는 탈색 캔버스 중앙 카드. 브랜드 식별은 카드 안 <nds-brand-logo> 에셋만(텍스트 로고 금지).
-  "cashwalk-biz-onboarding-no-gnb": "error",
+  "cashwalk-biz-onboarding-no-gnb": { severity: "error", kind: "brand-policy" },
   // 온보딩 카드에 inset 패딩이 없어 컨텐츠/CTA 가 카드 모서리에 full-bleed 로 붙음 — 가이드 카드 padding 48 미적용.
-  "onboarding-card-no-padding": "error",
+  "onboarding-card-no-padding": { severity: "error", kind: "invariant" },
   // 멀티스텝 온보딩(Stepper 존재)인데 제출 CTA 가 카드 안에 있음 — 카드 *아래* 분리 footer-nav(hug)로 빼야 함.
-  "onboarding-multistep-cta-inside-card": "error",
+  "onboarding-multistep-cta-inside-card": { severity: "error", kind: "invariant" },
   // 인증번호 입력/타이머를 손으로 조립 — verification-code-input + countdown-timer + field-action-row 미사용
-  "verification-manual-assembly": "warn",
+  "verification-manual-assembly": { severity: "warn", kind: "model-guard" },
   // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
-  "consent-raw-checkbox": "warn",
+  "consent-raw-checkbox": { severity: "warn", kind: "model-guard" },
   // 캐포비 사이드바인데 로고 / 계정 블록(account slot) 누락 — 회귀 #1(로고+로그인영역 유실)
-  "cashwalk-biz-sidebar-incomplete": "error",
+  "cashwalk-biz-sidebar-incomplete": { severity: "error", kind: "brand-policy" },
   // 캐포비 사이드바인데 로그아웃(footer-actions) 누락 — 권고
-  "cashwalk-biz-sidebar-logout": "warn",
+  "cashwalk-biz-sidebar-logout": { severity: "warn", kind: "brand-policy" },
   // 사이드바가 풀하이트 셸(.nds-shell) 밖 — 100vh 가 화면을 못 채움(회귀: 높이 안 참)
-  "cashwalk-biz-sidebar-shell": "error",
+  "cashwalk-biz-sidebar-shell": { severity: "error", kind: "brand-policy" },
   // 캐포비 모달 단일 버튼은 우측 정렬 hug 검정 pill — full-width 금지(회귀: 퍼포멘토 등의 full-width 를 잘못 가져옴)
-  "cashwalk-biz-modal-single-button-fullwidth": "warn",
+  "cashwalk-biz-modal-single-button-fullwidth": { severity: "warn", kind: "brand-policy" },
   // 캐포비 확인/팝업 모달 footer 의 주 action 이 primary(노랑) — 색 생략 시 Button 기본값이 primary 라
   // 자동으로 노랑이 됨. 캐포비 확인 모달 주 action = 검정 CTA(color="neutral"). 5회+ 재발한 회귀의 근본.
-  "cashwalk-biz-modal-primary-cta": "error",
+  "cashwalk-biz-modal-primary-cta": { severity: "error", kind: "brand-policy" },
   // 모달 footer 의 두 버튼이 세로로 스택됨 — 라벨이 길어도 가로 유지 + 라벨 축약이 원칙(세로 금지).
-  "cashwalk-biz-modal-footer-stacked": "warn",
+  "cashwalk-biz-modal-footer-stacked": { severity: "warn", kind: "brand-policy" },
   // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
-  "unknown-brand-slug": "error",
+  "unknown-brand-slug": { severity: "error", kind: "model-guard" },
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
-  "non-inlinable-img-src": "warn",
-  "unknown-nds-tag": "error",
-  "unknown-nds-class": "error",
-  "invalid-nds-attr-value": "error",
+  "non-inlinable-img-src": { severity: "warn", kind: "invariant" },
+  "unknown-nds-tag": { severity: "error", kind: "model-guard" },
+  "unknown-nds-class": { severity: "error", kind: "model-guard" },
+  "invalid-nds-attr-value": { severity: "error", kind: "model-guard" },
   // nds-* 의 JSON 속성(items/options/reward 등)이 파싱 불가 — 컴포넌트가 조용히 빈 값 렌더(메뉴 유실)
-  "nds-json-attr-unparseable": "error",
+  "nds-json-attr-unparseable": { severity: "error", kind: "model-guard" },
   // UTF-8 한글을 Latin-1/unicode_escape 로 잘못 디코딩 → 모지바케(Ã/ë…). 깨진 JSON 도 파싱은 되므로
   // nds-json-attr-unparseable 로는 안 잡힘 (회귀: 사이드바 한글 전부 깨짐 + 로고 유실)
-  "mojibake-encoding": "error",
+  "mojibake-encoding": { severity: "error", kind: "model-guard" },
   // 선택 결과(지역/카테고리/멤버 등)를 Chip 으로 인라인 표현 — SelectionButton 과 혼동 + 제거/개수
   // affordance 누락. SelectedItemsPanel + SelectedItemRow 로 그려야 함 (회귀: 캐포비 타겟팅 폼)
-  "region-as-chip": "warn",
+  "region-as-chip": { severity: "warn", kind: "model-guard" },
   // SelectedItemsPanel 바로 아래 helper 텍스트를 sibling 으로 붙이면 패널과 helper 가 붙어 보임.
   // FormField helper 슬롯/속성으로 넣어 control gap 을 타게 해야 함 (회귀: 캐포비 타겟팅 폼).
-  "selected-items-helper-outside-form-field": "error",
+  "selected-items-helper-outside-form-field": { severity: "error", kind: "invariant" },
   // 목업 버튼은 장식이 아니라 실제 동작해야 함. 정적 검증에서는 버튼별 식별자와
   // addEventListener/click/submit 연결 근거를 확인한다.
-  "button-without-interaction": "error",
+  "button-without-interaction": { severity: "error", kind: "invariant" },
   // 날짜/기간을 raw text input(placeholder 'YYYY-MM-DD')으로 구현 — DatePicker/DateRangePicker 미사용
-  "date-as-text-input": "warn",
-  "address-as-text-input": "warn",
+  "date-as-text-input": { severity: "warn", kind: "model-guard" },
+  "address-as-text-input": { severity: "warn", kind: "model-guard" },
   // 금액/수량을 일반 input 으로 구현 — AmountInput(콤마·단위·clamp) 미사용
-  "amount-as-text-input": "warn",
+  "amount-as-text-input": { severity: "warn", kind: "model-guard" },
   // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
-  "amount-as-static-display": "warn",
+  "amount-as-static-display": { severity: "warn", kind: "model-guard" },
   // div+role/onclick 로 특정 DS 컴포넌트(파일업로드·페이지네이션·스텝퍼·검색)를 재발명 — dsRatio 만으론
   //   90%대로 통과해 invisible 하던 사각지대를 named warn 으로 표면화(회귀: 캐포비 자작 페이저·스텝바).
-  "avoidable-reinvention": "warn",
+  "avoidable-reinvention": { severity: "warn", kind: "model-guard" },
   // <script> 에서 nds-* 호스트의 textContent/innerText/innerHTML 직접 대입 — 컴포넌트 내부 렌더가
   //   통째로 지워져 빈 박스/깨진 버튼이 됨(회귀: nds-button 라벨을 textContent 로 갈아끼움).
-  "nds-custom-element-content-mutation": "warn",
+  "nds-custom-element-content-mutation": { severity: "warn", kind: "model-guard" },
   // 캐포비 admin 성별 타겟팅은 SelectionButtonGroup(전체/특정) + selection chip 묶음으로 고정.
-  "cashwalk-biz-gender-selection-control": "warn",
+  "cashwalk-biz-gender-selection-control": { severity: "warn", kind: "brand-policy" },
   // 선택 결과 add 어포던스 중복(외부 추가 + 패널 '추가 선택') — 모달 1개로 통일해야 함.
   // 가이드(SelectedItemsPanel 3641)가 "검증룰이 막음"이라 명시한 회귀이고, 현장에서 재발("또 두개
   // 노출")했으므로 warn→error 로 승격해 빌드 게이트가 실제로 막게 함.
-  "selected-item-add-affordance-duplicated": "error",
+  "selected-item-add-affordance-duplicated": { severity: "error", kind: "invariant" },
   // SelectedItemsPanel 안에 같은 선택 항목이 중복 — 선택 결과는 유니크해야 함
-  "selected-item-row-duplicated": "warn",
+  "selected-item-row-duplicated": { severity: "warn", kind: "invariant" },
   // nds-selected-item-row / nds-region-row 가 nds-selected-items-panel 밖에 sibling 으로 떨어짐 — 패널 body 의 gap(8)을
   // 못 타서 행끼리 간격 없이 붙고 회색 패널 밖에 렌더된다(회귀: 캐포비 타겟팅 추가 후 누적분이
   // 패널 밖으로 샘). 갱신은 패널 body 안 자식만 교체해야 함.
-  "selected-item-row-outside-panel": "warn",
+  "selected-item-row-outside-panel": { severity: "warn", kind: "invariant" },
   // 선택 모달(시/도+시/군/구)인데 우측 SelectedItemsPanel 이 빠짐 — 단순 2컬럼 팝오버로 떴음.
   // 정답은 대형 2단 모달(좌 검색+체크박스 트리 / 우 SelectedItemsPanel hide-add + 풀폭 '적용').
-  "selected-items-modal-missing-panel": "warn",
-  "unknown-token": "error",
-  "ds-badge-missing": "error",
+  "selected-items-modal-missing-panel": { severity: "warn", kind: "invariant" },
+  "unknown-token": { severity: "error", kind: "model-guard" },
+  "ds-badge-missing": { severity: "error", kind: "invariant" },
   // 토큰 / 시멘틱
-  "inline-color": "error",
-  "inline-spacing": "warn",
-  "non-4pt-spacing": "warn",
-  "non-semantic-spacing": "warn",
+  "inline-color": { severity: "error", kind: "invariant" },
+  "inline-spacing": { severity: "warn", kind: "invariant" },
+  "non-4pt-spacing": { severity: "warn", kind: "invariant" },
+  "non-semantic-spacing": { severity: "warn", kind: "invariant" },
   // nds-* 호스트(display:contents)에 직접 준 box 스타일 — 브라우저가 드롭(딱 붙음/여백 사라짐 근본원인)
-  "nds-host-box-style": "warn",
+  "nds-host-box-style": { severity: "warn", kind: "invariant" },
   // 금지 패턴
-  "gradient-banned": "error",
-  "emoji-banned": "error",
-  "text-symbol-banned": "error",
-  "text-icon-substitute": "error",
+  "gradient-banned": { severity: "error", kind: "invariant" },
+  "emoji-banned": { severity: "error", kind: "invariant" },
+  "text-symbol-banned": { severity: "error", kind: "invariant" },
+  "text-icon-substitute": { severity: "error", kind: "invariant" },
   // 아이콘 / 시각
   // inline-svg = info(권고). find_icon 이 HTML 용으로 내려주는 DS 아이콘 인라인은 불가피한
   // 정상 패턴이라 게이트 점수를 깎으면 안 됨(warn=8 → info=3). standalone <svg> 권고로만 노출.
-  "inline-svg": "info",
-  "heading-decorative-icon": "warn",
+  "inline-svg": { severity: "info", kind: "invariant" },
+  "heading-decorative-icon": { severity: "warn", kind: "invariant" },
   // 컨테이너 / 카운팅
-  "card-slot-double-padding": "warn",
-  "neutral-solid-cta": "warn",
-  "cashwalk-biz-no-secondary": "warn",
+  "card-slot-double-padding": { severity: "warn", kind: "invariant" },
+  "neutral-solid-cta": { severity: "warn", kind: "brand-policy" },
+  "cashwalk-biz-no-secondary": { severity: "warn", kind: "brand-policy" },
   // 캐포비 알림 SSOT 는 Snackbar(흰 카드·우측 상단·상태 칩·닫기 X). Toast 는 캐포비에서 미사용 — 전면 금지.
-  "cashwalk-biz-toast": "error",
-  "nested-card": "warn",
-  "card-badge-overuse": "warn",
-  "card-footer-button-overuse": "warn",
-  "primary-cta-per-container": "warn",
-  "primary-cta-overuse": "warn",
-  "chip-overuse": "warn",
-  "card-everything": "warn",
-  "repeated-h1": "error",
-  "repeated-h2": "warn",
-  "bold-overuse": "warn",
-  "brand-bg-overuse": "warn",
-  "decorative-shadow": "warn",
-  "tone-on-tone-filled": "warn",
-  "visual-emphasis-overload": "warn",
-  "primary-color-role-overload": "warn",
+  "cashwalk-biz-toast": { severity: "error", kind: "brand-policy" },
+  "nested-card": { severity: "warn", kind: "invariant" },
+  "card-badge-overuse": { severity: "warn", kind: "invariant" },
+  "card-footer-button-overuse": { severity: "warn", kind: "invariant" },
+  "primary-cta-per-container": { severity: "warn", kind: "invariant" },
+  "primary-cta-overuse": { severity: "warn", kind: "invariant" },
+  "chip-overuse": { severity: "warn", kind: "invariant" },
+  "card-everything": { severity: "warn", kind: "invariant" },
+  "repeated-h1": { severity: "error", kind: "invariant" },
+  "repeated-h2": { severity: "warn", kind: "invariant" },
+  "bold-overuse": { severity: "warn", kind: "invariant" },
+  "brand-bg-overuse": { severity: "warn", kind: "invariant" },
+  "decorative-shadow": { severity: "warn", kind: "invariant" },
+  "tone-on-tone-filled": { severity: "warn", kind: "invariant" },
+  "visual-emphasis-overload": { severity: "warn", kind: "invariant" },
+  "primary-color-role-overload": { severity: "warn", kind: "invariant" },
   // admin-shell 강제 (pattern:admin-shell)
-  "raw-shell-pattern": "error",
+  "raw-shell-pattern": { severity: "error", kind: "model-guard" },
 };
+/** 룰별 기본 severity — RULE_META 에서 파생(기존 소비처 호환). */
+const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = Object.fromEntries(
+  Object.entries(RULE_META).map(([rule, meta]) => [rule, meta.severity]),
+);
 
 /**
  * raw-shell-pattern detector — <style> 안 layout primitive 재정의 감지.
@@ -463,7 +481,10 @@ function elementHasInsetPadding(source: string, el: DomElement): boolean {
   const styleText = collectStyleText(source);
   if (!styleText) return false;
   const tokens = [
-    ...(attribs.class ?? "").split(/\s+/).filter(Boolean).map((c) => `\\.${escapeForSelectorRe(c)}`),
+    ...(attribs.class ?? "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((c) => `\\.${escapeForSelectorRe(c)}`),
     ...(attribs.id ? [`#${escapeForSelectorRe(attribs.id)}`] : []),
   ];
   for (const tk of tokens) {
@@ -479,7 +500,9 @@ function elementHasInsetPadding(source: string, el: DomElement): boolean {
 const CARDISH_CLASS_RE = /\b(?:card|section|panel|box|surface|sheet)\b/;
 /** el 의 가장 가까운 카드형 조상(nds-card / card-ish 클래스 / 흰 배경+radius 인라인). 없으면 null. */
 function nearestCardAncestor($: cheerio.CheerioAPI, el: DomElement): DomElement | null {
-  for (const p of $(el as unknown as never).parents().toArray()) {
+  for (const p of $(el as unknown as never)
+    .parents()
+    .toArray()) {
     const pe = p as unknown as DomElement;
     const ptag = (pe.tagName ?? "").toLowerCase();
     if (ptag === "body" || ptag === "html" || !ptag) break;
@@ -1557,7 +1580,7 @@ export function validateHtmlSource(
             selector: describeElement(el as unknown as DomElement),
             detail: `온보딩에 상단 GNB/글로벌 헤더(<${tag}>)가 있습니다 — 온보딩은 shell 도 GNB 도 없는 탈색 캔버스 중앙 카드입니다(텍스트 로고도 금지).`,
             suggestion:
-              '온보딩에서 GNB/상단 헤더를 제거하세요. 브랜드 식별은 카드 상단의 <nds-brand-logo brand="cashwalk-biz"> 에셋 하나뿐 — "cashwalk for business" 같은 텍스트 로고나 raw <header> 로 GNB 를 조립하지 않습니다. get_guide({ topic: \'pattern:cashwalk-biz-page-onboarding\' }) · get_guide({ topic: \'component:BrandLogo\' }).',
+              "온보딩에서 GNB/상단 헤더를 제거하세요. 브랜드 식별은 카드 상단의 <nds-brand-logo brand=\"cashwalk-biz\"> 에셋 하나뿐 — \"cashwalk for business\" 같은 텍스트 로고나 raw <header> 로 GNB 를 조립하지 않습니다. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }) · get_guide({ topic: 'component:BrandLogo' }).",
           });
         });
 
@@ -1743,9 +1766,9 @@ export function validateHtmlSource(
         //   카드 모서리에 full-bleed 로 붙어도 통과했다(사용자 지적). 폼/CTA 를 감싼 카드형 요소가
         //   inset 패딩(가이드 48px)을 안 가지면 error. nds-card 는 패딩 내장이라 면제.
         {
-          const anchor = ($("nds-button, nds-input, input, nds-radio-group, nds-checkbox-group").get(
-            0,
-          ) ?? undefined) as unknown as DomElement | undefined;
+          const anchor = ($(
+            "nds-button, nds-input, input, nds-radio-group, nds-checkbox-group",
+          ).get(0) ?? undefined) as unknown as DomElement | undefined;
           const card = anchor ? nearestCardAncestor($, anchor) : null;
           if (card && (card.tagName ?? "").toLowerCase() !== "nds-card") {
             if (!elementHasInsetPadding(source, card)) {
@@ -1782,7 +1805,7 @@ export function validateHtmlSource(
               detail:
                 "온보딩 단일 액션 Primary CTA 에 full-width 가 없음 — 모달 단일버튼(우측 hug)과 혼동한 좁은 버튼.",
               suggestion:
-                '단일 액션 온보딩 주 CTA 는 카드 폭 가득(FILL) — <nds-button full-width color="primary" ...>. (이전/다음이 있는 멀티스텝이면 카드 아래 분리 푸터에 hug 로.) get_guide({ topic: \'pattern:cashwalk-biz-page-onboarding\' }).',
+                "단일 액션 온보딩 주 CTA 는 카드 폭 가득(FILL) — <nds-button full-width color=\"primary\" ...>. (이전/다음이 있는 멀티스텝이면 카드 아래 분리 푸터에 hug 로.) get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }).",
             });
           });
         } else {
@@ -2973,6 +2996,8 @@ export interface ValidateHtmlMockupResult {
     rule: string;
     count: number;
     severity: HtmlViolationSeverity;
+    /** 룰 분류(invariant/model-guard/brand-policy) — 텔레메트리 rule-stats 조인·수명 정책용. */
+    kind?: RuleKind;
     lines: number[];
   }>;
   /** severity 별 집계. 사용자가 error 부터 우선 처리할 수 있도록 응답 상단에 노출. */
@@ -3035,7 +3060,13 @@ function summarizeByRule(
   }
   const SEVERITY_ORDER: Record<HtmlViolationSeverity, number> = { error: 0, warn: 1, info: 2 };
   return Array.from(byRule.entries())
-    .map(([rule, { severity, lines }]) => ({ rule, severity, count: lines.length, lines }))
+    .map(([rule, { severity, lines }]) => ({
+      rule,
+      severity,
+      ...(RULE_META[rule] ? { kind: RULE_META[rule].kind } : {}),
+      count: lines.length,
+      lines,
+    }))
     .sort((a, b) => {
       const sev = SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity];
       if (sev !== 0) return sev;

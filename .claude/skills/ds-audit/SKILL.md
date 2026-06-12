@@ -62,6 +62,17 @@ description: >-
 - **점검**: 각 `PATTERN_GUIDES.{p}.rules`/validator 힌트가 언급하는 `<nds-*>` 마크업을 훑어, 거기 등장하는 모든 태그가 `html/src/index.ts` export + runtime 등록에 실재하는지 대조. 패턴이 묘사하는데 DS 에 없는 조각(예: 과거 FormSection·SelectionButton 부재)이 곧 갭. `recommend_page_pattern`/validator 힌트가 가리키는 컴포넌트도 같이 확인.
 - **출력**: 패턴 → 빠진 잎 컴포넌트 → 재발명 위험(어떤 raw 마크업으로 흘러갈지) → 권장(`/ds-component`로 잎 신설). "패턴을 단일 컴포넌트로 추출하라"는 권고가 **아니다** — 잎만 채우면 됨.
 
+### 9. validator 룰 수명 (model-guard 폐기 후보 + 미분류 부채)
+
+- **룰 분류 SSOT**: `packages/mockup-core/src/tools/html-validator.ts` 의 `RULE_META` — `invariant`(DS 계약, 폐기 대상 아님) / `model-guard`(AI 실수 패턴 가드 — 모델 세대 바뀌면 죽은 룰로 쌓임) / `brand-policy`(브랜드 분기 — 프로필 일반화 대상).
+- **폐기 후보 리포트**: 텔레메트리 서버(nudge-telemetry-api, `:8091`)가 살아 있으면 validation 이벤트의 룰별 히트(`ruleKind` 포함)를 조회해, **`model-guard` 중 최근 30일 히트 0 인 `warn`/`info` 룰**을 폐기 후보로 나열. `error` 룰은 제외 — "룰이 효과적이라 위반이 사라진" 경우와 구분 불가. 서버 미가용이면 이 항목은 skip 하고 명시.
+- **분류 부채**: `RULE_META` 에 없는 신규 룰(분류 누락) → flag. `brand-policy` 룰 중 브랜드 slug 가 코드에 하드코딩된 것의 수 = 프로필 일반화 잔여 지표로 보고.
+- **자동 삭제 금지** — 후보 나열 + 사유까지만. 삭제 결정은 사람.
+
+### 10. 미러 baseline 분류 부채 (TRIAGE-PENDING)
+
+- `scripts/mirror-parity-baseline.json` 의 `reason: "TRIAGE-PENDING…"` 엔트리(주로 slot 누락 분)를 컴포넌트별로 열어 **의도(children 합성)인지 구현 누락인지 판정** → reason 을 실제 사유로 교체하거나 "미러 수정 필요" 로 보고. `reason: "TODO"` 잔존은 그 자체로 위반(check 게이트가 차단).
+
 ## 출력 (리포트, 수정 X)
 
 - **카테고리별 표**: 위반/드리프트 → 위치(파일·라인) → 심각도 → 권장 조치(어느 스킬로 고칠지).

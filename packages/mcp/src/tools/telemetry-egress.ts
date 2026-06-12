@@ -54,7 +54,8 @@ interface ComponentLookupEvent {
 /** validate_html_mockup → 검증 룰 위반 집계. "어떤 룰이 자주 깨지나" = 객관적 DS 공백. */
 interface ValidationEvent {
   kind: "validation";
-  rules: Array<{ rule: string; severity: string; count: number }>;
+  /** ruleKind = 룰 분류(invariant/model-guard/brand-policy) — model-guard 히트 0 추적(폐기 후보)용. */
+  rules: Array<{ rule: string; severity: string; ruleKind?: string; count: number }>;
   errorCount: number;
   warnCount: number;
   /** validate 의 코드 점수 overall(0~100, D1). */
@@ -175,6 +176,7 @@ function projectValidation(args: ToolArgs, result: unknown): ValidationEvent[] {
     .map((r) => ({
       rule: strField(r.rule) ?? "unknown",
       severity: strField(r.severity) ?? "warn",
+      ...(strField(r.kind) ? { ruleKind: strField(r.kind) } : {}),
       count: typeof r.count === "number" ? r.count : 0,
     }));
   if (rules.length === 0) return []; // 위반 0건이면 보낼 신호 없음
@@ -311,11 +313,7 @@ function projectLookup(
 }
 
 /** find_token 은 exact name 분기가 없다 — query 만 demand 신호로 적재(fuzzy). */
-function projectTokenLookup(
-  tool: string,
-  args: ToolArgs,
-  result: unknown,
-): ComponentLookupEvent[] {
+function projectTokenLookup(tool: string, args: ToolArgs, result: unknown): ComponentLookupEvent[] {
   const query = strField(args.query);
   if (!query) return [];
   const obj = asObject(result);

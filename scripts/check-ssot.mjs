@@ -49,6 +49,11 @@ const steps = [
     args: ["scripts/check-mirror-parity.mjs", "--no-regen"],
   },
   {
+    label: "check input focus-preservation tests",
+    command: "node",
+    args: ["scripts/check-input-tests.mjs"],
+  },
+  {
     label: "check Storybook catalog coverage",
     command: "node",
     args: ["scripts/check-storybook-catalog.mjs"],
