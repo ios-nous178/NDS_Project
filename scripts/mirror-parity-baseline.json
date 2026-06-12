@@ -33,7 +33,7 @@
     },
     {
       "key": "Asset::react-only::react 컴포넌트에 html 미러(nds-*)가 없음",
-      "reason": "TRIAGE-PENDING — html 미러 부재가 의도인지 미분류",
+      "reason": "의도적 react 단면 — DS 에셋 렌더 유틸(자산 규약 @nudge-design/assets 해석). html 목업은 asset-inliner 가 <img> 로 직결하므로 미러 불필요",
       "since": "2026-06"
     },
     {
@@ -703,7 +703,7 @@
     },
     {
       "key": "PageSizeSelect::react-only::react 컴포넌트에 html 미러(nds-*)가 없음",
-      "reason": "TRIAGE-PENDING — html 미러 부재가 의도인지 미분류",
+      "reason": "의도적 react 단면 — 어드민 전용 Select 합성 래퍼. html 어드민 목업은 nds-select 직접 사용이 관례",
       "since": "2026-06"
     },
     {
@@ -949,11 +949,6 @@
     {
       "key": "StarRating::prop-name::html attr \"readonly\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "StatsTable::react-only::react 컴포넌트에 html 미러(nds-*)가 없음",
-      "reason": "TRIAGE-PENDING — html 미러 부재가 의도인지 미분류",
       "since": "2026-06"
     },
     {

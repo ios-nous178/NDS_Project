@@ -101,6 +101,7 @@ import "./components/nds-call-control-bar.js";
 import "./components/nds-chat-composer.js";
 import "./components/nds-confetti.js";
 import "./components/nds-data-table.js";
+import "./components/nds-stats-table.js";
 import "./components/nds-date-picker.js";
 import "./components/nds-date-range-picker.js";
 import "./components/nds-ds-highlight.js";

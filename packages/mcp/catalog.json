@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T04:45:30.119Z",
+  "generatedAt": "2026-06-12T05:14:49.142Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -6704,7 +6704,12 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/StatsTable.d.ts"
+      "dtsRelPath": "packages/react/dist/StatsTable.d.ts",
+      "htmlTag": "nds-stats-table",
+      "htmlObservedAttrs": [
+        "scroll",
+        "sticky-first"
+      ]
     },
     {
       "name": "Stepper",
@@ -13846,6 +13851,7 @@
     "nds-sparkline",
     "nds-spinner",
     "nds-star-rating",
+    "nds-stats-table",
     "nds-stepper",
     "nds-tabs",
     "nds-tabs-list",
@@ -15303,6 +15309,14 @@
         "show-value",
         "disabled",
         "readonly"
+      ]
+    },
+    {
+      "tag": "nds-stats-table",
+      "attrs": {},
+      "observedAttrs": [
+        "scroll",
+        "sticky-first"
       ]
     },
     {

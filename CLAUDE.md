@@ -74,6 +74,15 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 변경이 **외부 프로젝트까지 전파되려면** MCP 가이드와 MCPB 릴리즈까지 같이 손대야 합니다.
 대부분 위 **스킬**(`/ds-component`·`/ds-fix`·`/ds-release`)이 이 절차를 끝까지 끌고 갑니다 — 아래는 손으로 할 때의 표면 quick-ref. 자주 누락되는 항목은 ★.
 
+### DS 편입 기준 (admission)
+
+컴포넌트 1개 = 미러 3면 + 스토리 + 카탈로그 + MCP 가이드 + parity + 테스트 비용. 편입 전 체크:
+
+1. **2+ 브랜드에서 사용** 또는 브랜드 전용이어야 하는 명시적 사유 (예: 캐포비 어드민 패턴)
+2. **Figma 가이드 노드 존재** (`figmaNodeUrl`) — 디자인 근거 없는 컴포넌트는 받지 않는다
+3. **앱 비즈니스 로직 없음** — 데이터 fetch/도메인 규칙이 들어가면 앱 컴포넌트
+4. **react + html 미러 동시 제공이 기본** — 단면 제공은 `mirror-parity-baseline.json` 에 사유 박제 필수 (예: Asset=react 유틸, BrandChrome=html 목업 셸)
+
 ### 신규 컴포넌트 추가 (전체 자동화는 `/ds-component`)
 
 | 단계                          | 위치 / 명령                                                                                                                          |

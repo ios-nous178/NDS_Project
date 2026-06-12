@@ -287,6 +287,8 @@ export { NdsConfetti } from "./components/nds-confetti.js";
 export { NdsDataTable } from "./components/nds-data-table.js";
 export type { DataTableSortDirection } from "./components/nds-data-table.js";
 
+export { NdsStatsTable } from "./components/nds-stats-table.js";
+
 export { NdsDatePicker } from "./components/nds-date-picker.js";
 
 export { NdsDateRangePicker } from "./components/nds-date-range-picker.js";
