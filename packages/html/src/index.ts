@@ -183,6 +183,7 @@ export type { ChatRole, ChatGroupPosition } from "./components/nds-chat-bubble.j
 export { NdsContentViewer } from "./components/nds-content-viewer.js";
 
 export { NdsQuickActionGrid } from "./components/nds-quick-action-grid.js";
+export { NdsQuickMenu } from "./components/nds-quick-menu.js";
 
 export { NdsLikertScale } from "./components/nds-likert-scale.js";
 
