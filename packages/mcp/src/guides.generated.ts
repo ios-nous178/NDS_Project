@@ -3417,6 +3417,26 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- avatar / action 을 slot 없이 children 으로 — 레이아웃이 깨짐 -->\n<nds-user-card name=\"A\"><img src=\"/u.jpg\"><button>팔로우</button></nds-user-card>"
     }
   },
+  "ValidationChip": {
+    "name": "ValidationChip",
+    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1413-569",
+    "stateMatrix": {
+      "incomplete": "muted — icon/text var(--semantic-text-muted-default) (#999) · 체크 글리프 · 아직 미충족(기본값)",
+      "complete": "brand — icon/text var(--semantic-text-brand-default) (#2b96ed) · 체크 글리프 · 규칙 충족",
+      "error": "error — icon/text var(--semantic-text-status-error) (#f13f00) · X 글리프 · 형식 위반"
+    },
+    "summary": "입력 형식 요구사항 1개의 **실시간 충족 신호**. 16px 체크 아이콘 + 12px 라벨, gap 4px 의 읽기 전용 인라인 인디케이터(클릭 동작 없음). 회원가입 비밀번호/이메일처럼 규칙이 여러 개일 때 Input 아래 한 줄에 여러 개를 나열하고(pattern:form-validation), 입력값이 규칙을 충족할 때마다 `incomplete → complete` 로 전환한다. 상태색은 semantic 토큰 — incomplete=`--semantic-text-muted-default`(회색), complete=`--semantic-text-brand-default`(Brand Blue), error=`--semantic-text-status-error`. 아이콘·텍스트가 같은 색이라 root `color` 하나만 두고 SVG 는 `currentColor` 로 상속(브랜드 cascade 자동 대응).",
+    "pitfalls": [
+      "Chip / Badge 와 혼동 — Chip 은 **선택·필터용 인터랙티브 태그**(`<nds-chip selected interactive>`), Badge 는 **상태 라벨**, ValidationChip 은 **검증 규칙 1개의 충족 신호**다. 선택 UI 에 ValidationChip 을 쓰지 말 것.",
+      "단독으로 에러 메시지를 대체하지 말 것 — ValidationChip 은 규칙 체크리스트(여러 개 동시 노출)용. 폼 필드의 **단일 에러 1줄**은 FormField 의 helper/error 슬롯이 담당(pattern:form-validation 의 Helper/Error 규칙).",
+      "색을 raw hex(#2b96ed·#f13f00·#999)로 박지 말 것 — state prop 만 바꾸면 semantic 토큰이 5 브랜드 자동 대응. 컴포넌트에 hex 를 넣으면 브랜드 cascade 가 끊긴다.",
+      "complete 전환은 입력값이 실제로 규칙을 충족할 때만 — 빈 입력에서 미리 complete(파랑)로 보이면 충족 신호가 거짓이 된다. 초기값은 incomplete."
+    ],
+    "examplesHtml": {
+      "do": "<!-- 비밀번호 규칙 체크리스트 — Input 아래 한 줄에 나열 -->\n<nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>\n<div style=\"display:flex; gap:12px; margin-top:8px\">\n  <nds-validation-chip state=\"complete\">6자 이상</nds-validation-chip>\n  <nds-validation-chip state=\"incomplete\">영문+숫자</nds-validation-chip>\n</div>",
+      "dont": "<!-- 선택 UI 를 ValidationChip 으로 (→ nds-chip selected interactive 가 맞음) -->\n<nds-validation-chip state=\"complete\">관심사: 운동</nds-validation-chip>\n\n<!-- 색을 hex 로 박아 브랜드 cascade 차단 -->\n<nds-validation-chip style=\"color:#2b96ed\">6자 이상</nds-validation-chip>"
+    }
+  },
   "VerificationCodeInput": {
     "name": "VerificationCodeInput",
     "summary": "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. 자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FieldActionRow** 로 합성한다(타이머는 FieldActionRow 가 필드 안에 렌더, 버튼은 액션 슬롯). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input. 자리별 PIN 은 PinPad.)",
@@ -4788,6 +4808,32 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "옵션 15개 초과인데 검색 없이 긴 스크롤만 제공",
       "모바일에서 좁은 팝오버 안에 긴 옵션 목록 표시"
     ]
+  },
+  "form-validation": {
+    "name": "form-validation",
+    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1399-124",
+    "summary": "폼 입력의 검증·합성 규칙 SSOT(넛지EAP Library · InputFormGuide 1399:124). 단일 필드 레이아웃(라벨-위·필드 치수·여백)은 pattern:nudge-eap-form-layout 이 담당하고, 이 가이드는 그 위에서 **검증 표시(ValidationChip)·합성 컨트롤(인라인 버튼·비밀번호 토글)·Label/Helper/Error 규칙·검증 시점**을 정한다. 회원가입처럼 규칙이 여러 개인 폼에서 어떤 신호를 언제 보여줄지 결정한다.",
+    "rules": [
+      "합성 ① Input + ValidationChip — 형식 규칙이 2개 이상일 때 Input 아래 한 줄에 `<nds-validation-chip>` 를 나열. 입력값이 규칙을 충족할 때마다 해당 chip 을 `state=\"incomplete\" → \"complete\"`(Brand Blue) 로 전환. 비밀번호/이메일 형식 안내에 사용(component:ValidationChip).",
+      "합성 ② Input + Inline Button — 인증번호 받기·중복 확인 같은 **단일 액션**은 Input 과 같은 행에 작은 outlined 버튼을 둔다. `FieldActionRow` 컴포넌트가 이 레이아웃의 1급 표현 — 커스텀 flex 행을 새로 만들지 말 것(component:FieldActionRow).",
+      "합성 ③ Input + Eye Icon — 비밀번호 표시/숨김은 `<nds-input type=\"password\">` 의 **내장 password-toggle** 이 자동 제공(우측 눈 버튼, type 토글·포커스 유지까지 처리). 별도 trailing 버튼을 만들지 말 것 — 끄려면 `password-toggle=\"false\"`.",
+      "Label / Placeholder — Label 은 항상 필드 위(Top Label). 필수 항목은 별표(`*`) + `aria-required`. Placeholder 는 형식 힌트만 — **Label 을 대체하지 않는다**.",
+      "Helper / Error — 같은 자리에서 교차한다(동시 노출 X). 여러 검증이 실패해도 Error 는 **1줄만**(우선순위: 필수 → 형식 → 길이 → 도메인 → 서버). Helper/Error 영역은 표시 안 돼도 1줄 높이를 예약해 레이아웃 점프를 막는다.",
+      "Validation 시점 — onBlur(권장, 필드 떠날 때 1회) · onSubmit(제출 시 일괄, 첫 에러 필드로 자동 스크롤·포커스) · onChange(비밀번호 강도 게이지 같은 즉시 피드백 한정).",
+      "Submit / Errors — 제출 중에는 버튼 비활성 + 로딩, 폼 비활성. 서버 오류는 폼 상단 Alert(notice/NoticeAlert) + 입력값 보존. 성공은 Toast(\"저장되었습니다\", 자동 사라짐).",
+      "컨트롤 선택(Checkbox/Radio/Toggle/Dropdown/SelectionButton)은 pattern:selection-controls 결정 트리를 따른다 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일."
+    ],
+    "avoid": [
+      "ValidationChip 으로 폼 필드의 단일 에러 1줄을 대체 — 에러 1줄은 FormField helper/error 슬롯, ValidationChip 은 규칙 체크리스트(여러 개 동시).",
+      "Helper 와 Error 동시 노출 — 한 자리에서 교차해야 한다.",
+      "검증 실패 메시지를 규칙별로 여러 줄 — Error 는 우선순위 1줄.",
+      "인라인 액션 버튼을 커스텀 flex 로 새로 — FieldActionRow 재사용.",
+      "chip·버튼·헬퍼 색을 raw hex 로 — state/semantic 토큰으로 5 브랜드 자동 대응."
+    ],
+    "_readyMade": {
+      "note": "넛지EAP 회원가입 합성 3종. 색은 모두 semantic 토큰(ValidationChip state · Button color)으로 브랜드 cascade 자동 대응.",
+      "html": "<!-- ① Input + ValidationChip (비밀번호 실시간 검증) -->\n<div style=\"display:flex; flex-direction:column; gap:8px; max-width:332px\">\n  <nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>\n  <div style=\"display:flex; gap:12px\">\n    <nds-validation-chip state=\"complete\">6자 이상</nds-validation-chip>\n    <nds-validation-chip state=\"incomplete\">영문+숫자</nds-validation-chip>\n  </div>\n</div>\n\n<!-- ② Input + Inline Button (인증번호 받기) — FieldActionRow (action-tone 이 버튼 톤 결정) -->\n<nds-field-action-row action-tone=\"outline\">\n  <nds-input slot=\"field\" placeholder=\"휴대폰 번호\"></nds-input>\n  <nds-button slot=\"action\">인증번호 받기</nds-button>\n</nds-field-action-row>\n\n<!-- ③ Input + Eye Icon (비밀번호 표시·숨김) — type=\"password\" 면 눈 토글 자동, 별도 마크업 불필요 -->\n<nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>"
+    }
   },
   "host-spacing": {
     "name": "host-spacing",

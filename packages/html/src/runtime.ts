@@ -12,6 +12,7 @@ import "./components/nds-button.js";
 import "./components/nds-icon-button.js";
 import "./components/nds-avatar.js";
 import "./components/nds-badge.js";
+import "./components/nds-validation-chip.js";
 import "./components/nds-banner.js";
 import "./components/nds-notice-alert.js";
 import "./components/nds-breadcrumb.js";

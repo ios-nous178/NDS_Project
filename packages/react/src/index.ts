@@ -7,6 +7,7 @@ export * from "./IconButton";
 export * from "./Badge";
 export { badgeGuide, badgeVariantGuide, badgeColorGuide } from "./Badge.guide";
 export type { BadgeVariantKey, BadgeColorKey } from "./Badge.guide";
+export * from "./ValidationChip";
 export * from "./Modal";
 export * from "./Input";
 export * from "./Popup";

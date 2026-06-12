@@ -28,6 +28,20 @@
     "notes": "Figma 171:10856 기준 정합 완료 — Style(fill/ghost/line) × Color(brand/neutral/success/error/caution/info), Size(sm 22 / md 26 / lg 30, 모바일 기준), semantic 토큰 직접 바인딩."
   },
   {
+    "name": "ValidationChip",
+    "category": "일반",
+    "status": "implemented",
+    "description": "입력 형식 요구사항의 실시간 충족 여부를 보여주는 인라인 표시. 16px 아이콘 + 12px 라벨. incomplete(muted)/complete(brand)/error(status-error) 3 states.",
+    "storybookTitle": "Components/Inputs/ValidationChip",
+    "docsPath": "/components/validation-chip",
+    "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1413-569",
+    "figmaNodeId": "1413:569",
+    "figmaSynced": true,
+    "figmaSyncedAt": "2026-06-12",
+    "usageSummary": "회원가입 비밀번호·이메일 규칙 실시간 검증 신호",
+    "notes": "Figma 1413:569(넛지EAP Library · InputFormGuide) 기준 정합. 아이콘·텍스트는 root color(상태 semantic 토큰)를 currentColor 로 상속 — incomplete=text-muted, complete=text-brand, error=text-status-error. Chip(선택)·Badge(상태 라벨)와 구분되는 검증 전용 인디케이터. 합성 사용은 pattern:form-validation."
+  },
+  {
     "name": "Input",
     "category": "입력",
     "status": "implemented",

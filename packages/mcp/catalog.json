@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T06:02:29.595Z",
+  "generatedAt": "2026-06-12T06:52:52.658Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -831,10 +831,9 @@
       },
       "htmlObservedAttrs": [
         "color",
+        "shape",
         "size",
-        "variant",
-        "size",
-        "shape"
+        "variant"
       ]
     },
     {
@@ -7587,6 +7586,31 @@
       ]
     },
     {
+      "name": "ValidationChip",
+      "props": [
+        {
+          "name": "state",
+          "optional": true,
+          "type": "ValidationChipState",
+          "allowedValues": [
+            "incomplete",
+            "complete",
+            "error"
+          ]
+        },
+        {
+          "name": "labelClassName",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ValidationChip.d.ts",
+      "htmlTag": "nds-validation-chip",
+      "htmlObservedAttrs": [
+        "state"
+      ]
+    },
+    {
       "name": "VerificationCodeInput",
       "props": [
         {
@@ -13068,7 +13092,7 @@
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#BBBBBB",
+        "cashwalk-biz": "#666666",
         "geniet": "#666666",
         "runmile": "#6B7684",
         "trost": "#979797"
@@ -13111,7 +13135,7 @@
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#DDDDDD",
+        "cashwalk-biz": "#BBBBBB",
         "runmile": "#B0B8C1",
         "trost": "#979797"
       }
@@ -13960,6 +13984,7 @@
     "nds-tooltip",
     "nds-trending-keywords",
     "nds-user-card",
+    "nds-validation-chip",
     "nds-verification-code-input",
     "nds-video-player",
     "nds-voice-recorder",
@@ -14135,9 +14160,9 @@
       },
       "observedAttrs": [
         "color",
-        "variant",
+        "shape",
         "size",
-        "shape"
+        "variant"
       ]
     },
     {
@@ -15630,6 +15655,13 @@
         "bio",
         "meta",
         "clickable"
+      ]
+    },
+    {
+      "tag": "nds-validation-chip",
+      "attrs": {},
+      "observedAttrs": [
+        "state"
       ]
     },
     {

@@ -140,6 +140,7 @@ export const COMPONENT_ATTRS = {
   "nds-badge": {
     "observedAttributes": [
       "color",
+      "shape",
       "size",
       "variant"
     ],
@@ -161,6 +162,10 @@ export const COMPONENT_ATTRS = {
         "sm",
         "md",
         "lg"
+      ],
+      "shape": [
+        "default",
+        "pill"
       ]
     }
   },
@@ -1213,6 +1218,14 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
+  "nds-quick-menu": {
+    "observedAttributes": [
+      "fixed",
+      "items",
+      "show-top"
+    ],
+    "enums": {}
+  },
   "nds-radio": {
     "observedAttributes": [
       "checked",
@@ -1627,6 +1640,18 @@ export const COMPONENT_ATTRS = {
       "layout": [
         "row",
         "stacked"
+      ]
+    }
+  },
+  "nds-validation-chip": {
+    "observedAttributes": [
+      "state"
+    ],
+    "enums": {
+      "state": [
+        "incomplete",
+        "complete",
+        "error"
       ]
     }
   },

@@ -25,6 +25,9 @@ export type { AvatarSize } from "./components/nds-avatar.js";
 export { NdsBadge } from "./components/nds-badge.js";
 export type { BadgeColor, BadgeShape, BadgeSize, BadgeVariant } from "./components/nds-badge.js";
 
+export { NdsValidationChip } from "./components/nds-validation-chip.js";
+export type { ValidationChipState } from "./components/nds-validation-chip.js";
+
 export { NdsBanner } from "./components/nds-banner.js";
 export type { BannerVariant } from "./components/nds-banner.js";
 

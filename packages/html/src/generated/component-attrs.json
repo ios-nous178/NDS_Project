@@ -136,6 +136,7 @@
   "nds-badge": {
     "observedAttributes": [
       "color",
+      "shape",
       "size",
       "variant"
     ],
@@ -157,6 +158,10 @@
         "sm",
         "md",
         "lg"
+      ],
+      "shape": [
+        "default",
+        "pill"
       ]
     }
   },
@@ -1209,6 +1214,14 @@
     ],
     "enums": {}
   },
+  "nds-quick-menu": {
+    "observedAttributes": [
+      "fixed",
+      "items",
+      "show-top"
+    ],
+    "enums": {}
+  },
   "nds-radio": {
     "observedAttributes": [
       "checked",
@@ -1623,6 +1636,18 @@
       "layout": [
         "row",
         "stacked"
+      ]
+    }
+  },
+  "nds-validation-chip": {
+    "observedAttributes": [
+      "state"
+    ],
+    "enums": {
+      "state": [
+        "incomplete",
+        "complete",
+        "error"
       ]
     }
   },

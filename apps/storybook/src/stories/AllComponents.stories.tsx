@@ -17,6 +17,7 @@ import {
   Avatar,
   AvatarGroup,
   Badge,
+  ValidationChip,
   Banner,
   NoticeAlert,
   Breadcrumb,
@@ -226,6 +227,13 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Badge variant="ghost" color="brand" shape="pill">
         프리미엄
       </Badge>
+    </div>
+  ),
+  ValidationChip: () => (
+    <div style={previewRow}>
+      <ValidationChip state="incomplete">6자 이상</ValidationChip>
+      <ValidationChip state="complete">6자 이상</ValidationChip>
+      <ValidationChip state="error">8-20자 이내</ValidationChip>
     </div>
   ),
   Chip: () => (
