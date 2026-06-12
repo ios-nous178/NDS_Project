@@ -11,6 +11,7 @@ import {
 
 const FAR_CLASS = "nds-field-action-row";
 const FAR_ROOT_CLASS = `${FAR_CLASS}__root`;
+const FAR_LABEL_CLASS = `${FAR_CLASS}__label`;
 const FAR_FIELD_CLASS = `${FAR_CLASS}__field`;
 const FAR_ACTION_CLASS = `${FAR_CLASS}__action`;
 const FAR_HELPER_CLASS = `${FAR_CLASS}__helper`;
@@ -24,6 +25,16 @@ export const fieldActionRowStyles = `
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
+  }
+
+  /* 라벨(옵션) — 입력+버튼 한 줄 위에 블록으로. 라벨↔행 간격은 root 의 flex gap 이 잡는다. */
+  :where(.${FAR_LABEL_CLASS}) {
+    display: block;
+    font-family: ${fontFamily.web};
+    font-size: ${typeScale.body2.fontSize}px;
+    font-weight: ${fontWeight.medium};
+    line-height: ${typeScale.body2.lineHeight}px;
+    color: ${cv.textRole.normal};
   }
 
   :where(.${FAR_ROOT_CLASS} > [data-slot="row"]) {

@@ -1039,6 +1039,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
       '캐포비 admin 모달의 주 action(확인/적용)은 color="neutral" variant="solid" — 브랜드 시그니처 **검정 CTA**(#111·흰 텍스트). 취소/닫기는 color="neutral" variant="outlined", 파괴적 확정만 color="error". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (캐포비는 secondary tone 이 없어 Button/validator 가 경고하니 검정은 neutral 로. 검정인데 색이 틀리면 data-brand="cashwalk-biz" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)',
+      '**★ 캐포비 확인/팝업 모달 버튼에 `color` 를 절대 생략하지 말 것 — 생략하면 노랑(primary)이 된다.** Button/<nds-button> 의 기본 color 는 `primary`(노랑)라, 모달 footer 에 `<nds-button>비즈니스 그룹 만들기</nds-button>` 처럼 color 를 안 적으면 캐포비 검정 CTA 가 아니라 노랑 버튼이 렌더된다(5회+ 재발한 회귀의 근본). **반드시 `color="neutral" variant="solid" shape="pill"` 를 명시**한다. validator `cashwalk-biz-modal-primary-cta` 가 확인/팝업 모달의 primary/색생략 footer 버튼을 error 로 잡는다. (본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/피커(⑥)·데이터로더(⑦) 같은 대형 모달뿐 — max-width 720+.)',
+      '**모달/팝업 버튼이 2개일 때는 항상 가로 정렬을 유지한다 — 라벨이 길어 안 들어가도 세로 스택 금지.** 좁아서 한 줄에 안 들어가면 세로로 쌓지 말고 **라벨 텍스트를 줄인다**(예: "비즈니스 그룹 만들기"→"그룹 만들기", "나중에 다시 하기"→"나중에", "지금 확인할게요"→"확인"). 모달 footer 에 `flex-direction:column` / `actions-layout="stack"` 을 넣지 말 것 — validator `cashwalk-biz-modal-footer-stacked` 가 warn. (모달 버튼 라벨은 1~2 단어로.)',
       '**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot="footer">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot="footer"><nds-button color="neutral" variant="solid" shape="pill">확인</nds-button></div>` — slot="footer" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할. **단, 이 규칙은 확인/결정 팝업(①~④) 한정** — 모달 종류별로 푸터가 다르다(아래).',
       '**모달 종류별 푸터 결정 트리** (혼동 금지): ① 확인/결정 팝업 = 우측 hug **검정 pill**(color="neutral" — 캐포비엔 secondary 없음), 취소는 neutral outlined. ② 선택/피커 모달(⑥, dimensions.selectionModal) = **본문 풀폭 단일 "적용" 옐로우 Solid/Primary pill** (검정 아님·hug 아님). ③ 데이터 로더(⑦, dimensions.dataLoaderModal) = 취소(outlined) + 불러오기 **검정 pill**. ④ 조회 전용 Data Modal(⑤) = 푸터 CTA 없음(Close X 만). 어떤 모달인지 먼저 정하고 그 푸터를 쓸 것 — 선택 모달에 검정 hug 를, 확인 팝업에 옐로우 풀폭을 쓰면 회귀.',
       '**④ Confirm + Slot — 본문 콘텐츠 슬롯**(Figma ModalGuide 3418-471): 확인 모달 본문에 인라인 알림/입력이 필요하면 `nds-notice-alert`(info/caution/error) · `nds-input` · `nds-select` · `nds-date-picker` 를 **설명 `<p>` 와 함께 본문 children 형제로** 둔다(슬롯은 footer 가 아니라 본문 — `slot="footer"` 붙이지 말 것). ModalBody 가 세로 스택 + 자동 간격(캐포비 20px / base `--semantic-gap-default`)을 잡으므로 **슬롯마다 wrapper/margin 으로 간격을 직접 주지 말 것**(직접 주면 이중 간격 회귀). 슬롯은 full-width 로 늘어남. 푸터는 ①과 동일(취소 neutral outlined + 확정 검정 neutral).',
@@ -3687,9 +3689,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "전체 페이지 수 5 이하 / 항목 30 이하면 Pagination 자체가 과한 UI — 한 페이지로 노출.",
       "show-arrows 와 siblings 를 둘 다 끄면 현재 페이지 ±1 만 보여 탐색이 끊김.",
       "PaginationChange 이벤트 처리 없이 page attribute 만 바꿔도 데이터 fetch 가 안 일어남 — 이벤트 핸들러에서 fetch 호출.",
-      '캐포비(data-brand="cashwalk-biz")에서는 각 페이지/화살표가 개별 보더 박스 + 활성 페이지가 검정 채움으로 자동 렌더된다(cascade). markup/attribute 는 base 와 동일 — 박스 모양을 흉내내려 직접 div/border 를 짜지 말 것.',
+      '캐포비(data-brand="cashwalk-biz")에서는 각 페이지/화살표가 개별 보더 박스(radius 4, 34h) + 활성 페이지가 검정 채움으로 자동 렌더된다(cascade). markup/attribute 는 base 와 동일 — 박스 모양을 흉내내려 직접 div/border 를 짜지 말 것.',
+      "총 데이터 0건이면 Pagination 자체를 숨길 것(렌더하지 않음). 총 1페이지면 PageItem 1개 + Prev/Next disabled.",
+      "Prev/Next 가 끝(1페이지·마지막페이지)에 도달하면 활성으로 두지 말고 disabled — 캐포비는 흐림이 아니라 옅은 회색 박스로 표시된다.",
     ],
-    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-31310",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4118-1186",
     examplesHtml: {
       do: '<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>\n<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>\n<!-- 한 페이지 행 수 선택은 component:PageSizeSelect — 보통 표 하단 우측 -->\n<!-- 캐포비 박스형은 <html data-brand="cashwalk-biz"> 만 박혀 있으면 자동 적용 -->',
       dont: '<!-- siblings 0 + arrows 없음 — 옆 페이지가 보이지 않음 -->\n<nds-pagination page="1" total-pages="10" siblings="0"></nds-pagination>',
@@ -3713,19 +3717,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   MultiSelect: {
     name: "MultiSelect",
     summary:
-      "검색 + 전체선택/해제 + 체크박스 리스트 + 취소/적용 푸터 + 빈 상태를 가진 다중 선택 필터 드롭다운. 일반 Select(단일·즉시 반영)와 달리 패널 안 초안을 편집하고 **적용** 시에만 반영. 리포트 상단 '광고 다중 선택' 등 필터. Figma 캐포비 광고별 리포트(3001:28554).",
+      "검색 + 전체선택/해제 + 체크박스 리스트 + 취소/적용 푸터 + 빈 상태를 가진 다중 선택 필터 드롭다운(MultiSelectDropdown · 392px 패널). 일반 Select(단일·즉시 반영)와 달리 패널 안 초안을 편집하고 **적용** 시에만 반영. 리포트 상단 '광고 다중 선택' 등 필터. **옵션 8~30개 + 평면 구조**에 적합 — 30개+ 또는 계층 구조면 pattern:cashwalk-biz-selection-pattern 의 Modal Picker(CheckboxTree). 컴포넌트 SSOT Figma 4123-1406, 사용 맥락 캐포비 광고별 리포트 3001:28554.",
     pitfalls: [
       "**단일 선택이면 Select** — MultiSelect 는 적용 버튼이 있는 다중 필터 전용. 즉시 반영 단일 드롭다운에 쓰면 과함.",
       "적용(apply) 전까지 onValueChange 가 발화하지 않음 — 취소/바깥클릭은 초안 폐기. value(적용값)와 패널 내 draft 를 혼동하지 말 것.",
       "검색 결과 0건이면 자동으로 빈 상태('검색 결과가 없습니다.') 노출 — 직접 그리지 말 것.",
       "전체선택/해제는 **현재 검색 필터된 항목** 기준으로 토글된다(전체 목록 아님).",
       "여러 필터를 한 줄에 둘 때는 component:FilterBar(칩 토글)가 아니라 SearchInput/Select/DateRangePicker/MultiSelect 를 가로로 조합 — FilterBar 는 카테고리 칩 전용.",
+      "**패널 내부 구조는 컴포넌트가 고정**(Figma 4123-1406): 상단 검색(테두리 인셋 TextInput) → 전체선택 행(배경 surface.subtle · 라벨 16/medium · 우측 'N개 선택') → 옵션 행(44h) → **우측 hug 푸터([취소] neutral outlined + [적용] neutral solid 검정)**. 푸터를 풀폭 split 으로 그리거나 적용 버튼을 secondary/노랑으로 바꾸지 말 것 — 캐포비 검정 CTA = neutral.",
     ],
     examplesHtml: {
       do: '<nds-multi-select placeholder="모든 광고" search-placeholder="광고명으로 검색" value=\'[]\'\n  options=\'[{"value":"a","label":"캠페인 A 타겟팅"},{"value":"b","label":"캠페인 B 리타겟"}]\'></nds-multi-select>\n<script>el.addEventListener("nds-multi-select-change", e => filterByAds(e.detail.value));</script>',
       dont: '<!-- 단일 선택에 MultiSelect — 적용 버튼이 불필요한 마찰. nds-select 사용 -->\n<nds-multi-select options=\'[{"value":"asc","label":"오름차순"},{"value":"desc","label":"내림차순"}]\'></nds-multi-select>',
     },
-    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-28554",
+    figmaNodeUrl: "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4123-1406",
   },
   CheckboxGroup: {
     name: "CheckboxGroup",
@@ -4004,13 +4009,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   FieldActionRow: {
     name: "FieldActionRow",
     examplesHtml: {
-      do: '<!-- action 버튼 색은 nds-button 의 color 가 그대로 산다 — 캐포비 검정 확인/재전송은 color="neutral"\n     (캐포비는 secondary tone 이 Figma 가이드에 없어 denylist+콘솔 경고. 검정/회색 CTA = neutral).\n     (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하고 DS 버튼은 건드리지 않음.) -->\n<nds-field-action-row helper-text="이메일로 인증 코드를 보냈어요">\n  <nds-input slot="field" label="인증 코드"></nds-input>\n  <nds-button slot="action" color="neutral">재전송</nds-button>\n</nds-field-action-row>',
+      do: '<!-- 라벨이 필요한 인증 row(예: 휴대폰 번호 + [인증번호 받기])는 label 속성을 쓴다 —\n     라벨은 한 줄 위, 입력+버튼은 인라인으로 컴포넌트가 정렬한다. 전송 후 버튼은 [재전송]으로 토글. -->\n<nds-field-action-row label="휴대폰 번호" helper-text="\'-\' 없이 숫자만 입력해주세요">\n  <nds-input slot="field" placeholder="01012345678"></nds-input>\n  <nds-button slot="action" color="neutral" variant="outlined">인증번호 받기</nds-button>\n</nds-field-action-row>\n\n<!-- action 버튼 색은 nds-button 의 color 가 그대로 산다 — 캐포비 검정 확인/재전송은 color="neutral"\n     (캐포비는 secondary tone 이 Figma 가이드에 없어 denylist+콘솔 경고. 검정/회색 CTA = neutral).\n     (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하고 DS 버튼은 건드리지 않음.) -->\n<nds-field-action-row helper-text="이메일로 인증 코드를 보냈어요">\n  <nds-input slot="field" label="인증 코드"></nds-input>\n  <nds-button slot="action" color="neutral">재전송</nds-button>\n</nds-field-action-row>',
       dont: "<!-- slot 미지정 — 위치/스타일이 적용 안 됨 -->\n<nds-field-action-row>\n  <nds-input></nds-input>\n  <nds-button>재전송</nds-button>\n</nds-field-action-row>",
     },
     summary:
       "전화번호 인증 / 인증코드 입력처럼 '입력 1개 (+ 액션 버튼) (+타이머)' 한 줄 패턴 전용 helper. **action 은 옵션** — 생략하면 코드 입력 + 우측 타이머만(인라인 버튼 없는 레이아웃, 예: 캐포비 본인인증의 별도 full-width 재전송 버튼 + 타이머만 있는 코드 입력. pattern:cashwalk-biz-verification). React 는 flat API 하나만 — 구 Compound API(.Root/.Field/.Action…) 는 제거됨.",
     pitfalls: [
-      "**action 생략 = 필드+타이머만** (인라인 버튼 없음). 캐포비 본인인증처럼 '전송/재전송'이 별도 full-width 검정 버튼이고 코드 입력엔 타이머만 있는 레이아웃에 쓴다 — field + timer 만 넘기고 action 은 비운다.",
+      "**라벨이 필요하면 `label`(html: label 속성 / react: label prop)을 쓴다 — 라벨을 손으로 버튼과 같은 줄에 넣지 말 것.** '휴대폰 번호' 같은 필드 라벨이 필요한 인증 row 에서 라벨을 별도 마크업으로 버튼 옆/위에 욱여넣으면 버튼이 라벨 높이에 떠 입력칸과 어긋난다(회귀). label 을 넘기면 라벨은 한 줄 위, 입력+버튼은 인라인으로 컴포넌트가 정렬한다.",
+      "**전송/재전송 토글** — 휴대폰 인증에서 [인증번호 받기] 버튼은 전송 후 [재전송]으로 라벨을 토글한다(상태는 호출부 useState). 표준 라벨은 '재전송'(SMS 재발송) — '재시도'는 실패 재시도 뉘앙스라 인증 발송엔 '재전송'을 쓴다.",
       "범용 폼 레이아웃 용도 아님 — 여러 필드/버튼은 Input + Button 직접 조합. 이 컴포넌트는 인증 row 1줄에만.",
       "Action 이 핵심 폼 동작(검색 / 제출) 이면 row 안이 아니라 별도 CTA 영역.",
       "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1-2 단어로 유지.",
@@ -5020,6 +5026,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "거절 가능한 비파괴 옵션이 항상 1개 이상 있어야 한다. CTA가 '확인' 하나뿐인 다이얼로그는 다크패턴 — get_guide({ topic: 'pattern:dark-patterns' }) 참고.",
       "외부 링크는 화살표보다 Link/ExternalLink 성격의 아이콘을 검토.",
       "모달/팝업 푸터의 액션 그룹은 별도 규칙 — 버튼 `shape=\"pill\"` + 배치는 `actionsLayout`(react=actionsLayout / html=actions-layout 속성; 생략 시 브랜드 기본 강제: 캐포비=end 우측 hug, 그 외=split 가로 분할). 일반 화면 cta-group 규칙을 모달 푸터에 그대로 적용(사각 shape·full-width)하지 말 것. 푸터 결정 트리는 get_guide({ topic: 'component:Modal' }) 참고.",
+      "모달/팝업 버튼 2개는 항상 **가로 정렬 유지** — 라벨이 길어 한 줄에 안 들어가도 세로로 스택하지 말고 **라벨을 축약**한다(예: '비즈니스 그룹 만들기'→'그룹 만들기'). 모달 버튼 라벨은 1~2 단어. `flex-direction:column`/`actions-layout=\"stack\"` 금지(validator cashwalk-biz-modal-footer-stacked).",
+      "캐포비 확인/팝업 모달의 주 action 버튼은 `color=\"neutral\"`(검정 CTA)를 **명시** — color 를 생략하면 Button 기본값 primary(노랑)로 떨어진다(반복 회귀). 노랑 풀폭 '적용'은 선택/데이터 등 대형 모달에서만.",
     ],
     avoid: [
       "모든 '자세히 보기' 버튼에 화살표 반복",
@@ -5030,6 +5038,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "거절·닫기 옵션 없이 '확인' 하나만 있는 다이얼로그",
       "한 뷰포트에 primary solid CTA 2개 이상",
       "모달/팝업 푸터 버튼에 default 사각 shape 또는 full-width 남용 (확인 팝업은 우측 hug pill — Modal 가이드 SSOT)",
+      "모달 2버튼을 세로로 스택 (라벨이 길면 세로로 쌓지 말고 라벨을 축약 — 항상 가로 유지)",
+      "캐포비 모달 버튼에 color 생략 (기본값 primary=노랑 → 검정 CTA 가 안 나옴. color=\"neutral\" 명시)",
     ],
     metrics: {
       maxArrowIconButtonPerViewport: 1,
@@ -6610,12 +6620,12 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "구성: 01 Logo → 02 Form → 03 Primary CTA → 04 Helper. 오버뷰 `pattern:cashwalk-biz-page-patterns`. CTA/입력 실측은 `pattern:cashwalk-biz-button` · `pattern:cashwalk-biz-input`. Figma docs 3626-792 / pattern 3611-2 실측 반영.",
     rules: [
       "**언제 쓰나**: PRD 에 '로그인 / 회원가입 / 비밀번호 찾기 / 이메일 인증 / 가입 완료' 키워드가 있고, 사이드바·네비게이션 없이 단독 흐름으로 진행되며, 단일 목적 + 단일 폼 + 단일 CTA 로 구성되는 화면.",
-      "**중앙 카드 1개 (shell 없음)**: 비로그인 상태라 admin-shell(사이드바/topbar) 미적용. 캔버스 배경 = `--semantic-bg-surface-subtle`(#FAFAFA 탈색 회색), 그 위에 카드를 **수직+수평 중앙** 정렬.",
-      "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing).",
+      "**중앙 카드 1개 (shell·GNB 없음)**: 비로그인 상태라 admin-shell(사이드바/topbar) **그리고 상단 GNB/글로벌 헤더 둘 다 미적용**. 캔버스 배경 = `--semantic-bg-surface-subtle`(#FAFAFA 탈색 회색), 그 위에 카드를 **수직+수평 중앙** 정렬. ⚠️ 상단에 GNB 바(raw `<header>`/`.topbar`/`nds-header`)를 두고 로고를 텍스트(\"cashwalk for business\")로 박지 말 것 — 브랜드 식별은 **카드 안 `<nds-brand-logo>` 에셋 하나뿐**(validator `cashwalk-biz-onboarding-no-gnb` error).",
+      "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing). ⚠️ **카드 패딩을 빼면 CTA·컨텐츠가 카드 모서리에 full-bleed 로 붙는다** — full-width CTA 도 이 48px 패딩 *안에서* 카드 폭을 채워야지 모서리에 붙으면 안 됨(validator `onboarding-card-no-padding` error). `<nds-card>` 로 쓰면 패딩이 자동 적용된다.",
       '**01 Logo**: 카드 상단 중앙 정렬. **BrandLogo 컴포넌트로 박는다** — HTML `<nds-brand-logo brand="cashwalk-biz">` / React `<BrandLogo brand="cashwalk-biz" />`. 사이드바와 동일한 로고 SSOT 가 data URI 로 내장돼 단일 HTML 에서도 안 깨진다. **35KB base64 를 손으로 붙이거나 raw <img>/SVG 로 조립 금지**(모지바케·로고 유실 회귀의 직접 원인). 찾기 화면은 로고 아래 안내문(예: \'캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.\')을 둔다.',
       "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
       "**03 Primary CTA (단일 액션 화면)**: 로그인·찾기처럼 액션이 **하나뿐**인 화면은 Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득) — `<nds-button full-width>`. 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개. ⚠️ **모달 단일버튼(우측 hug)과 혼동 금지** — 단일 액션 온보딩 CTA 는 full-width 가 하드 계약(validator `onboarding-cta-not-fullwidth` error). 모달 단일버튼은 반대로 hug 우측정렬. (`pattern:cashwalk-biz-button`)",
-      "**03b Footer Nav (멀티스텝 화면)**: 가입 심사처럼 **이전/다음(제출)** 이 있는 멀티스텝은 버튼을 카드 안에 넣지 않는다 — **카드(섹션) *아래* 분리된 캔버스 행**에 둔다(흰 바·상단 border·sticky 없음, 카드와 gap). **좌측 [이전 단계]**(Outlined, hug) + **우측 [다음 단계]/[제출]**(Solid/Primary, hug, 우측정렬). 멀티스텝 푸터의 버튼은 full-width 가 아니라 **hug** (validator 가 이전버튼 존재를 감지해 full-width 강제를 면제). 이전버튼을 카드 안에 넣으면 `onboarding-back-button-inside-card` warn. **상단엔 진행 표시 `Stepper`**(component:Stepper, variant=bar/numbered) — 폼 필드의 수량 입력 `NumberStepper` 와 혼동 금지.",
+      "**03b Footer Nav (멀티스텝 화면)**: 가입 심사처럼 **이전/다음(제출)** 이 있는 멀티스텝은 버튼을 카드 안에 넣지 않는다 — **카드(섹션) *아래* 분리된 캔버스 행**에 둔다(흰 바·상단 border·sticky 없음, 카드와 gap). **좌측 [이전 단계]**(Outlined, hug) + **우측 [다음 단계]/[제출]**(Solid/Primary, hug, 우측정렬). 멀티스텝 푸터의 버튼은 full-width 가 아니라 **hug** (validator 가 이전버튼/Stepper 존재를 감지해 full-width 강제를 면제). **제출(다음) Primary 버튼도 카드 안에 넣지 말 것** — 카드 안 Primary solid 는 `onboarding-multistep-cta-inside-card` error(이전버튼을 텍스트 링크로 두고 제출을 카드 안 full-width 로 박는 회귀 차단). 이전버튼을 카드 안에 넣으면 `onboarding-back-button-inside-card` warn. **상단엔 진행 표시 `Stepper`**(component:Stepper, variant=bar/numbered) — `Stepper` 가 있으면 validator 가 멀티스텝으로 인식한다. 폼 필드의 수량 입력 `NumberStepper` 와 혼동 금지.",
       "**03c 본인 인증 Section (휴대폰/이메일 → 인증번호)**: 연락처 입력(전화/이메일 TextInput) → **[인증번호 전송/재전송]은 별도 full-width 검정 버튼**(`<nds-button color=\"neutral\" full-width>` — primary 노랑 아님, 인라인 버튼도 아님) → 그 아래 **인증번호 입력 = FieldActionRow(action 생략) + 코드 입력 + 우측 인라인 타이머**. 타이머는 `CountdownTimer tone=\"brand\"`(캐포비 오렌지 #FD9B02). 인증 입력엔 인라인 확인 버튼을 두지 않고, 확정은 하단 [다음](primary full-width)으로 한다. raw <input> 6칸·자작 +/- 금지(`verification-manual-assembly` warn) — `nds-verification-code-input` 단일 박스 사용.",
       "**04 Helper**: 보조 링크는 **TextButton(Medium)** — 로그인 화면의 '아이디 찾기 | 비밀번호 찾기', 가입 유도 등. solid 버튼으로 만들지 않는다.",
       "**상태 분기는 같은 골격**: 로그인 / 아이디 찾기 / 비밀번호 찾기는 동일한 480px 중앙 카드 레이아웃의 변형. 화면마다 다른 골격을 만들지 않는다.",
@@ -6623,6 +6633,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     ],
     avoid: [
       "온보딩 카드에 사이드바/topbar(admin-shell) 부착 — 비로그인 인증 화면은 중앙 카드만",
+      "상단 GNB/글로벌 헤더(raw <header>/.topbar/nds-header) 부착 + 텍스트 로고(\"cashwalk for business\") — 온보딩은 GNB 없음, 로고는 카드 안 <nds-brand-logo> 에셋만 (`cashwalk-biz-onboarding-no-gnb`)",
+      "카드에 패딩을 안 줘서 CTA·컨텐츠가 카드 모서리에 full-bleed 로 붙기 — 카드 padding 48px(또는 <nds-card>) 필수 (`onboarding-card-no-padding`)",
+      "멀티스텝(Stepper 있음) 제출 버튼을 카드 안 full-width 로 박기 — 카드 아래 footer-nav 우측 hug 로 (`onboarding-multistep-cta-inside-card`)",
       "카드 폭을 480px 외 값으로 (고정 폭 패턴)",
       "로그인·아이디찾기·비밀번호찾기마다 다른 레이아웃 골격",
       "**단일 액션 화면**의 Primary CTA 를 카드 폭보다 좁게(hug) / 2개 이상 / outlined 로 (단, 멀티스텝은 이전+제출 footer nav 가 정상 — 위 03b)",

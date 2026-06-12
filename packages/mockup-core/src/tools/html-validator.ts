@@ -37,6 +37,8 @@
  *  - card-footer-button-overuse : nds-card-footer 안 nds-button ≥ 3
  *  - primary-cta-per-container  : 영역 1개 안 primary solid nds-button > 1
  *  - cashwalk-biz-modal-single-button-fullwidth : 캐포비 모달 단일 footer 버튼이 full-width (우측 hug 여야 함)
+ *  - cashwalk-biz-modal-primary-cta : 캐포비 확인/팝업 모달 footer 주 action 이 primary(노랑)/색생략 (검정 neutral 이어야 함)
+ *  - cashwalk-biz-modal-footer-stacked : 모달 footer 두 버튼 세로 스택 (가로 유지 + 라벨 축약)
  *  - primary-cta-overuse        : 페이지 레벨 primary solid nds-button > 1
  *  - chip-overuse               : nds-chip > 8
  *  - card-everything            : nds-card ≥ 5
@@ -164,6 +166,13 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "onboarding-cta-not-fullwidth": "error",
   // 멀티스텝 온보딩의 [이전 단계] 버튼이 카드 안에 있음 — 카드와 분리해 하단 푸터에 둬야 함.
   "onboarding-back-button-inside-card": "warn",
+  // 온보딩에 상단 GNB/글로벌 헤더(raw <header>/.topbar/nds-header 등) 부착 — 비로그인 진입 화면은
+  // shell·GNB 없는 탈색 캔버스 중앙 카드. 브랜드 식별은 카드 안 <nds-brand-logo> 에셋만(텍스트 로고 금지).
+  "cashwalk-biz-onboarding-no-gnb": "error",
+  // 온보딩 카드에 inset 패딩이 없어 컨텐츠/CTA 가 카드 모서리에 full-bleed 로 붙음 — 가이드 카드 padding 48 미적용.
+  "onboarding-card-no-padding": "error",
+  // 멀티스텝 온보딩(Stepper 존재)인데 제출 CTA 가 카드 안에 있음 — 카드 *아래* 분리 footer-nav(hug)로 빼야 함.
+  "onboarding-multistep-cta-inside-card": "error",
   // 인증번호 입력/타이머를 손으로 조립 — verification-code-input + countdown-timer + field-action-row 미사용
   "verification-manual-assembly": "warn",
   // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
@@ -176,6 +185,11 @@ const RULE_SEVERITY: Record<string, HtmlViolationSeverity> = {
   "cashwalk-biz-sidebar-shell": "error",
   // 캐포비 모달 단일 버튼은 우측 정렬 hug 검정 pill — full-width 금지(회귀: 퍼포멘토 등의 full-width 를 잘못 가져옴)
   "cashwalk-biz-modal-single-button-fullwidth": "warn",
+  // 캐포비 확인/팝업 모달 footer 의 주 action 이 primary(노랑) — 색 생략 시 Button 기본값이 primary 라
+  // 자동으로 노랑이 됨. 캐포비 확인 모달 주 action = 검정 CTA(color="neutral"). 5회+ 재발한 회귀의 근본.
+  "cashwalk-biz-modal-primary-cta": "error",
+  // 모달 footer 의 두 버튼이 세로로 스택됨 — 라벨이 길어도 가로 유지 + 라벨 축약이 원칙(세로 금지).
+  "cashwalk-biz-modal-footer-stacked": "warn",
   // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
   "unknown-brand-slug": "error",
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
@@ -408,6 +422,74 @@ const EMOJI_RE =
 
 function lineNumberAt(source: string, index: number): number {
   return source.slice(0, index).split("\n").length;
+}
+
+/** 소스의 모든 <style> 블록 텍스트를 이어붙여 반환 (클래스/id 단위 padding 해석용). */
+function collectStyleText(source: string): string {
+  const re = /<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi;
+  let out = "";
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(source))) out += `\n${m[1]}`;
+  return out;
+}
+
+const PADDING_DECL_RE =
+  /padding(?:-(?:top|right|bottom|left|inline|block)(?:-(?:start|end))?)?\s*:\s*([^;{}]+)/gi;
+
+/** CSS 조각 안에 0 이 아닌 padding 선언이 하나라도 있는지. var(--*) 는 값 있음으로 인정. */
+function hasNonZeroPadding(cssChunk: string): boolean {
+  if (!cssChunk) return false;
+  PADDING_DECL_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = PADDING_DECL_RE.exec(cssChunk))) {
+    const val = m[1].trim();
+    if (/var\(\s*--/.test(val)) return true; // 시멘틱 inset 토큰 등
+    // "0" / "0px 0px" 류는 zero — 0 과 단위를 지운 뒤 1-9 가 남으면 실제 padding 있음.
+    if (/[1-9]/.test(val.replace(/0(?:px|rem|em|%|vh|vw|pt)?/gi, ""))) return true;
+  }
+  return false;
+}
+
+function escapeForSelectorRe(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** 카드형 요소가 inset 패딩(인라인 또는 <style> 클래스/id 규칙)을 갖는지. nds-card 는 padding 내장 → true. */
+function elementHasInsetPadding(source: string, el: DomElement): boolean {
+  const tag = (el.tagName ?? "").toLowerCase();
+  if (tag === "nds-card") return true; // DS 카드가 패딩을 굽는다
+  const attribs = el.attribs ?? {};
+  if (hasNonZeroPadding(attribs.style ?? "")) return true;
+  const styleText = collectStyleText(source);
+  if (!styleText) return false;
+  const tokens = [
+    ...(attribs.class ?? "").split(/\s+/).filter(Boolean).map((c) => `\\.${escapeForSelectorRe(c)}`),
+    ...(attribs.id ? [`#${escapeForSelectorRe(attribs.id)}`] : []),
+  ];
+  for (const tk of tokens) {
+    const re = new RegExp(`${tk}\\b[^{}]*\\{([^}]*)\\}`, "gi");
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(styleText))) {
+      if (hasNonZeroPadding(m[1])) return true;
+    }
+  }
+  return false;
+}
+
+const CARDISH_CLASS_RE = /\b(?:card|section|panel|box|surface|sheet)\b/;
+/** el 의 가장 가까운 카드형 조상(nds-card / card-ish 클래스 / 흰 배경+radius 인라인). 없으면 null. */
+function nearestCardAncestor($: cheerio.CheerioAPI, el: DomElement): DomElement | null {
+  for (const p of $(el as unknown as never).parents().toArray()) {
+    const pe = p as unknown as DomElement;
+    const ptag = (pe.tagName ?? "").toLowerCase();
+    if (ptag === "body" || ptag === "html" || !ptag) break;
+    if (ptag === "nds-card") return pe;
+    const cls = (pe.attribs?.class ?? "").toLowerCase();
+    if (CARDISH_CLASS_RE.test(cls)) return pe;
+    const style = (pe.attribs?.style ?? "").toLowerCase();
+    if (/background(?:-color)?\s*:/.test(style) && /border-radius/.test(style)) return pe;
+  }
+  return null;
 }
 
 /**
@@ -1458,6 +1540,27 @@ export function validateHtmlSource(
           });
         });
 
+        // ─── 상단 GNB/글로벌 헤더도 금지 (cashwalk-biz-onboarding-no-gnb) ───
+        //   no-shell 룰은 사이드바/풀하이트 셸만 잡아, 상단에 GNB 바(raw <header>/.topbar/nds-header)를
+        //   붙여 로고를 텍스트로 박는 회귀를 놓쳤다. 온보딩은 비로그인 진입 화면 → shell 도 GNB 도 없고,
+        //   브랜드 식별은 카드 안 <nds-brand-logo> 에셋 하나뿐. nds-brand-header/footer/bottom-nav 는
+        //   admin-surface-consumer-chrome 가 따로 잡으므로 여기선 raw/base 헤더만 본다.
+        $(
+          'header:not(.nds-shell__topbar), nds-header, .gnb, [class*="gnb" i], .topbar, .top-bar, .app-bar, .app-header, .global-nav, .navbar',
+        ).each((_i, el) => {
+          if (el.type !== "tag") return;
+          const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+          const tag = el.tagName.toLowerCase();
+          violations.push({
+            rule: "cashwalk-biz-onboarding-no-gnb",
+            line: lineNumberAt(source, offset),
+            selector: describeElement(el as unknown as DomElement),
+            detail: `온보딩에 상단 GNB/글로벌 헤더(<${tag}>)가 있습니다 — 온보딩은 shell 도 GNB 도 없는 탈색 캔버스 중앙 카드입니다(텍스트 로고도 금지).`,
+            suggestion:
+              '온보딩에서 GNB/상단 헤더를 제거하세요. 브랜드 식별은 카드 상단의 <nds-brand-logo brand="cashwalk-biz"> 에셋 하나뿐 — "cashwalk for business" 같은 텍스트 로고나 raw <header> 로 GNB 를 조립하지 않습니다. get_guide({ topic: \'pattern:cashwalk-biz-page-onboarding\' }) · get_guide({ topic: \'component:BrandLogo\' }).',
+          });
+        });
+
         // 중앙 카드+로고 골격 부재는 권고(info). 정적으로 '중앙 카드'를 단정하기 어려우니
         // false-positive 를 줄이려 둘 다(로고·카드) 안 보일 때만 환기한다(명백히 골격 미완).
         const hasLogo =
@@ -1627,7 +1730,38 @@ export function validateHtmlSource(
           if (el.type !== "tag") return false;
           return /이전|뒤로/.test($(el).text());
         });
-        const isMultiStepFooter = onboardingBackButtons.length > 0;
+        // 멀티스텝 신호 = (a) 이전/뒤로 nds-button, 또는 (b) Stepper 존재(nds-stepper, 또는
+        //   "Step N"/"N단계" 라벨 ≥ 2개). '이전'이 nds-button 이 아니라 텍스트 링크로 들어가
+        //   단일 액션으로 오분류되던 빈틈(회귀: 캐포비 가입 멀티스텝)을 Stepper 감지로 닫는다.
+        const onboardingBodyText = $("body").text();
+        const stepLabels = onboardingBodyText.match(/step\s*[1-9]|[1-9]\s*단계/gi) ?? [];
+        const hasStepper = $("nds-stepper").length > 0 || stepLabels.length >= 2;
+        const isMultiStepFooter = onboardingBackButtons.length > 0 || hasStepper;
+
+        // ─── 카드 inset 패딩 검사 (onboarding-card-no-padding) ───
+        //   onboarding-cta-not-fullwidth 는 full-width 여부만 봐서, 패딩 없는 카드에 full-width CTA 가
+        //   카드 모서리에 full-bleed 로 붙어도 통과했다(사용자 지적). 폼/CTA 를 감싼 카드형 요소가
+        //   inset 패딩(가이드 48px)을 안 가지면 error. nds-card 는 패딩 내장이라 면제.
+        {
+          const anchor = ($("nds-button, nds-input, input, nds-radio-group, nds-checkbox-group").get(
+            0,
+          ) ?? undefined) as unknown as DomElement | undefined;
+          const card = anchor ? nearestCardAncestor($, anchor) : null;
+          if (card && (card.tagName ?? "").toLowerCase() !== "nds-card") {
+            if (!elementHasInsetPadding(source, card)) {
+              const offset = card.startIndex ?? 0;
+              violations.push({
+                rule: "onboarding-card-no-padding",
+                line: lineNumberAt(source, offset),
+                selector: describeElement(card),
+                detail:
+                  "온보딩 카드에 inset 패딩이 없어 컨텐츠/CTA 가 카드 모서리에 붙습니다(full-bleed) — 가이드 카드 padding 48px 미적용.",
+                suggestion:
+                  "온보딩 카드는 padding 48px(또는 var(--semantic-inset-*))로 컨텐츠를 안쪽으로 들입니다. full-width CTA 도 패딩 안에서 카드 폭을 채워야지 모서리에 붙으면 안 됩니다. 카드를 <nds-card> 로 쓰면 패딩이 자동 적용됩니다. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }).",
+              });
+            }
+          }
+        }
 
         if (!isMultiStepFooter) {
           // 단일 액션 — 카드 폭 가득(FILL) 강제(error). primary solid 만 본다.
@@ -1667,6 +1801,29 @@ export function validateHtmlSource(
                 "온보딩 멀티스텝의 [이전 단계] 버튼이 카드 안에 있음 — 카드(섹션)와 분리해 하단 푸터에 둬야 함.",
               suggestion:
                 "멀티스텝 온보딩 푸터는 카드 *아래* 분리된 캔버스 행 — 좌측 [이전 단계](outlined hug) + 우측 [다음/제출](primary solid hug). 카드 안에 넣지 말 것. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }).",
+            });
+          });
+
+          // 제출(다음) CTA 도 카드 *아래* footer-nav 로 — 카드 안 Primary solid 금지(error).
+          //   회귀: 멀티스텝인데 제출 버튼을 카드 안 full-width 로 박아(패딩 없으면 full-bleed) 단일
+          //   액션처럼 그림. 멀티스텝 forward CTA = 카드 밖 hug. 인증 전송 등 인라인은 neutral 이라 제외됨.
+          $("nds-button").each((_i, el) => {
+            if (el.type !== "tag") return;
+            const attribs = (el as unknown as DomElement).attribs ?? {};
+            const color = (attribs.color ?? "primary").toLowerCase();
+            const variant = (attribs.variant ?? "solid").toLowerCase();
+            if (color !== "primary" || variant !== "solid") return;
+            if (/이전|뒤로/.test($(el).text())) return; // back 버튼은 별도 룰
+            if (nearestCardAncestor($, el as unknown as DomElement) == null) return; // 이미 카드 밖 → OK
+            const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+            violations.push({
+              rule: "onboarding-multistep-cta-inside-card",
+              line: lineNumberAt(source, offset),
+              selector: describeElement(el as unknown as DomElement),
+              detail:
+                "멀티스텝 온보딩(Stepper)인데 제출 Primary CTA 가 카드 안에 있습니다 — 카드 *아래* 분리 footer-nav(hug)로 빼야 합니다.",
+              suggestion:
+                '멀티스텝 제출 버튼은 카드 밖 하단 footer-nav 우측에 hug 로 둡니다 — <nds-button color="primary" variant="solid">제출</nds-button> (full-width 아님, 카드 안 아님). 좌측엔 [이전 단계](outlined hug). get_guide({ topic: \'pattern:cashwalk-biz-page-onboarding\' }).',
             });
           });
         }
@@ -1970,6 +2127,71 @@ function collectContainerViolations(
         detail: "캐포비 모달의 단일 버튼에 full-width 가 붙음.",
         suggestion:
           "캐포비(cashwalk-biz) 단일 버튼 모달은 우측 정렬 + hug 너비 검정 pill 입니다 — full-width 아님. <nds-button> 에서 full-width 를 제거하고 <div slot=\"footer\"> 로 감싸면 footer cascade 가 우측 hug 로 정렬합니다(버튼 2개일 때만 가로 분할). get_guide({ topic: 'component:Modal', brand: 'cashwalk-biz' }) 참조.",
+      });
+    });
+
+    // 캐포비 확인/팝업 모달의 주 action 은 검정 CTA(color="neutral") — primary(노랑) 금지.
+    //   근본 원인: <nds-button>/Button 은 color 생략 시 기본값이 primary(노랑)라, 모달 footer 버튼에
+    //   color 를 안 적으면 자동으로 노랑이 된다(가이드는 neutral 이라고만 말하고 기본값은 노랑 →
+    //   5회+ 재발). isPrimarySolidButton = color 가 primary 이거나 생략(=기본 primary)인 solid 버튼.
+    //   예외: 선택/피커(⑥)·데이터로더(⑦) 등 대형 모달은 본문 풀폭 옐로우 '적용'이 정상 → 면제.
+    $("nds-modal").each((_i, el) => {
+      if (el.type !== "tag") return;
+      const $el = $(el);
+      // 대형 선택/데이터 모달 면제 (옐로우 '적용' CTA 가 정상인 모달들)
+      const maxW = Number($el.attr("max-width") ?? $el.attr("maxwidth") ?? "0");
+      const isLargeDataModal =
+        $el.find("nds-data-table, nds-selected-items-panel").length > 0 || maxW >= 720;
+      if (isLargeDataModal) return;
+
+      const footerBtns = $el
+        .find('[slot="footer"] nds-button, nds-modal-footer nds-button')
+        .toArray();
+      const buttons = (footerBtns.length
+        ? footerBtns
+        : $el.find("nds-button").toArray()) as unknown as DomElement[];
+
+      buttons.forEach((btn) => {
+        if (!isPrimarySolidButton(btn)) return; // primary 이거나 color 생략(=기본 primary) solid 만
+        const offset = (btn as unknown as { startIndex?: number }).startIndex ?? 0;
+        const omitted = !(btn.attribs ?? {}).color;
+        out.push({
+          rule: "cashwalk-biz-modal-primary-cta",
+          line: lineNumberAt(source, offset),
+          selector: describeElement(btn),
+          detail: omitted
+            ? "캐포비 확인/팝업 모달의 주 action 버튼에 color 가 생략됨 — Button 기본값이 primary(노랑)라 자동으로 노랑 CTA 가 됩니다."
+            : '캐포비 확인/팝업 모달의 주 action 버튼이 color="primary"(노랑) 입니다.',
+          suggestion:
+            '캐포비 확인/팝업 모달의 주 action(확인/적용/완료/만들기)은 브랜드 시그니처 검정 CTA — color="neutral" variant="solid" shape="pill" 을 명시하세요(예: <nds-button color="neutral" variant="solid" shape="pill">비즈니스 그룹 만들기</nds-button>). color 를 생략하면 기본값 primary(노랑)로 떨어집니다. 본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/데이터 모달뿐(max-width 720+). get_guide({ topic: \'component:Modal\', brand: \'cashwalk-biz\' }) 참조.',
+        });
+      });
+    });
+
+    // 모달 footer 두 버튼은 항상 가로 — 라벨이 길어 좁아도 세로 스택 금지(라벨을 축약하는 방향).
+    $("nds-modal").each((_i, el) => {
+      if (el.type !== "tag") return;
+      const $el = $(el);
+      const $footer = $el.find('[slot="footer"], nds-modal-footer').first();
+      if ($footer.length === 0) return;
+      const btnCount = $footer.find("nds-button").length;
+      if (btnCount < 2) return;
+      const footerStyle = ($footer.attr("style") ?? "").toLowerCase();
+      const layout = ($el.attr("actions-layout") ?? $el.attr("actionslayout") ?? "").toLowerCase();
+      const stacked =
+        /flex-direction\s*:\s*column/.test(footerStyle) ||
+        layout === "stack" ||
+        layout === "vertical" ||
+        layout === "column";
+      if (!stacked) return;
+      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+      out.push({
+        rule: "cashwalk-biz-modal-footer-stacked",
+        line: lineNumberAt(source, offset),
+        selector: describeElement(el as unknown as DomElement),
+        detail: "모달 footer 의 두 버튼이 세로로 스택되어 있습니다.",
+        suggestion:
+          "모달/팝업의 두 버튼은 항상 가로 정렬을 유지하세요. 라벨이 길어 가로로 안 들어가면 세로 스택이 아니라 **라벨 텍스트를 축약**하는 방향으로(예: '비즈니스 그룹 만들기'→'그룹 만들기', '나중에 다시 하기'→'나중에'). flex-direction:column / actions-layout=\"stack\" 을 제거하고 캐포비 기본(우측 hug) 또는 split(가로 분할)을 쓰세요. get_guide({ topic: 'pattern:cta-group' }) 참조.",
       });
     });
   }
@@ -2643,6 +2865,8 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "cashwalk-biz-sidebar-shell": "layout",
   "cashwalk-biz-admin-page-pattern": "layout",
   "cashwalk-biz-modal-single-button-fullwidth": "layout",
+  "cashwalk-biz-modal-primary-cta": "layout",
+  "cashwalk-biz-modal-footer-stacked": "layout",
   "raw-landmark": "layout",
   "nested-card": "layout",
   "card-badge-overuse": "layout",

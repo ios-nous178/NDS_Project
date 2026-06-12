@@ -41,7 +41,8 @@ export const verificationCodeStyles = `
     pointer-events: none;
   }
 
-  /* 코드 입력 — 투명 배경, 살짝 자간을 줘 코드 가독성 확보 */
+  /* 코드 입력 — 투명 배경. 자간은 일반(normal): 단일 필드라 0.08em 처럼 넓게 트래킹하면
+     숫자가 부자연스럽게 벌어져 어색하다(사용자 피드백). 한글 placeholder 와도 일관. */
   :where(.${VC_INPUT_CLASS}) {
     flex: 1;
     min-width: 0;
@@ -52,7 +53,7 @@ export const verificationCodeStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.medium};
-    letter-spacing: 0.08em;
+    letter-spacing: normal;
     color: ${cv.textRole.strong};
     -moz-appearance: textfield;
   }

@@ -1188,6 +1188,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
   FieldActionRow: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <FieldActionRow
+        label="인증 코드"
         field={<Input placeholder="인증번호 입력" />}
         action={
           <Button size="field" color="secondary">

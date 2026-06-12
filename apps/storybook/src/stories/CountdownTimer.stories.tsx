@@ -58,7 +58,7 @@ export const InContext: Story = {
       }}
     >
       <input
-        placeholder="인증번호 6자리"
+        placeholder="인증번호 입력"
         style={{
           flex: 1,
           height: 40,

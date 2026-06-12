@@ -98,7 +98,7 @@ export const VerificationCodeInput = React.forwardRef<HTMLInputElement, Verifica
           value={value}
           disabled={disabled}
           autoFocus={autoFocus}
-          placeholder={placeholder ?? `인증번호 ${length}자리`}
+          placeholder={placeholder ?? "인증번호 입력"}
           onChange={(e) => commit(e.target.value)}
           onPaste={(e) => {
             e.preventDefault();

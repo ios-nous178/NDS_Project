@@ -13,7 +13,7 @@
  * 속성:
  *   length      — 자릿수 (기본 6, maxLength)
  *   value       — 현재 값 (숫자만)
- *   placeholder — 미지정 시 "인증번호 {length}자리"
+ *   placeholder — 미지정 시 "인증번호 입력"
  *   error / disabled / auto-focus / full-width
  *
  * 이벤트:
@@ -84,7 +84,7 @@ export class NdsVerificationCodeInput extends NdsElement {
     const disabled = this.boolAttr("disabled");
     const error = this.boolAttr("error");
     const fullWidth = this.getAttribute("full-width") !== "false";
-    const placeholder = this.getAttribute("placeholder") || `인증번호 ${length}자리`;
+    const placeholder = this.getAttribute("placeholder") || "인증번호 입력";
 
     this._root.dataset.disabled = disabled ? "true" : "false";
     this._root.dataset.error = error ? "true" : "false";

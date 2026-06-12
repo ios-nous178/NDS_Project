@@ -29,7 +29,7 @@ describe("nds-verification-code-input — DOM parity with React VerificationCode
     expect(input.maxLength).toBe(6);
     expect(input.inputMode).toBe("numeric");
     expect(input.getAttribute("aria-label")).toBe("인증번호");
-    expect(input.placeholder).toBe("인증번호 6자리");
+    expect(input.placeholder).toBe("인증번호 입력");
     expect(el.style.display).toBe("contents");
   });
 

@@ -298,7 +298,7 @@ export class NdsMultiSelect extends NdsElement {
     onClick: () => void,
   ): HTMLElement {
     const btn = document.createElement("nds-button");
-    btn.setAttribute("color", "secondary");
+    btn.setAttribute("color", "neutral");
     btn.setAttribute("variant", variant);
     btn.setAttribute("size", "sm");
     btn.dataset.slot = slot;

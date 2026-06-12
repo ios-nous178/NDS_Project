@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-09T03:56:45.148Z",
+  "generatedAt": "2026-06-10T01:52:23.278Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -3249,6 +3249,11 @@
       "name": "FieldActionRow",
       "props": [
         {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
           "name": "field",
           "optional": false,
           "type": "React.ReactNode"
@@ -3311,6 +3316,7 @@
       "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts",
       "htmlTag": "nds-field-action-row",
       "htmlObservedAttrs": [
+        "label",
         "action-tone",
         "error",
         "success",
@@ -14557,6 +14563,7 @@
       "tag": "nds-field-action-row",
       "attrs": {},
       "observedAttrs": [
+        "label",
         "action-tone",
         "error",
         "success",
