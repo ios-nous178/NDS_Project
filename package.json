@@ -73,11 +73,6 @@
     "prepare": "test -d .git && husky || true",
     "lint:input-tokens": "node scripts/check-input-token-binding.mjs"
   },
-  "prebuild": "pnpm generate:ssot",
-  "predev": "pnpm generate:ssot",
-  "predocs:dev": "pnpm generate:ssot",
-  "predocs:build": "pnpm generate:ssot",
-  "prestorybook": "pnpm generate:ssot",
   "devDependencies": {
     "@changesets/cli": "^2.29.6",
     "@eslint/js": "^9.27.0",
