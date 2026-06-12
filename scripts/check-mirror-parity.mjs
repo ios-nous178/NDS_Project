@@ -238,6 +238,9 @@ function collectHtmlSlots(htmlTag) {
   const patterns = [
     /<[^>]*\sslot\s*=\s*["'`]([a-zA-Z0-9_-]+)["'`]/g,
     /\[\s*slot\s*=\s*["'`]([a-zA-Z0-9_-]+)["'`]\s*\]/g,
+    // 코드 레벨 light-DOM slot 소비 — `getAttribute("slot") === "x"` 직접 비교 또는
+    // `const slot = …; if (slot === "x")` 변수 비교 (nds-bottom-sheet/nds-comment-item 패턴).
+    /(?:getAttribute\(\s*["'`]slot["'`]\s*\)|\bslot)\s*===?\s*["'`]([a-zA-Z0-9_-]+)["'`]/g,
   ];
   for (const re of patterns) {
     let match;

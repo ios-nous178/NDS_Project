@@ -7,11 +7,6 @@
       "since": "2026-06"
     },
     {
-      "key": "ActionChip::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
       "key": "AddButton::prop-name::html attr \"disabled\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -23,7 +18,7 @@
     },
     {
       "key": "AddButton::slot::react ReactNode prop \"left-icon\" 에 대응하는 html slot=\"left-icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 + 아이콘 내장 고정(AddButton 정체성) — 커스텀 아이콘은 react 전용. 의도적",
       "since": "2026-06"
     },
     {
@@ -43,7 +38,7 @@
     },
     {
       "key": "AttachmentItem::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 파일 타입 기반 내장 아이콘 자동 렌더 — 커스텀 교체는 react 전용. 의도적",
       "since": "2026-06"
     },
     {
@@ -117,18 +112,13 @@
       "since": "2026-06"
     },
     {
-      "key": "BottomSheet::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
       "key": "BrandChrome::html-only::html 전용(nds-brand-chrome) — react 미러가 없음",
       "reason": "html 전용 목업 셸 래퍼 — react 소비처는 헤더/푸터를 직접 조립",
       "since": "2026-06"
     },
     {
       "key": "Breadcrumb::slot::react ReactNode prop \"separator\" 에 대응하는 html slot=\"separator\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 separator attr(문자열)로 수신 — 커스텀 노드 separator 는 react 전용. 의도적",
       "since": "2026-06"
     },
     {
@@ -143,12 +133,12 @@
     },
     {
       "key": "Button::slot::react ReactNode prop \"left-icon\" 에 대응하는 html slot=\"left-icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "DRIFT — followup: nds-button 아이콘 슬롯 미구현 (소스 헤더에 \"향후 확장\" 명시). html 버튼 아이콘 수요 확인 후 attr 또는 slot 으로 구현",
       "since": "2026-06"
     },
     {
       "key": "Button::slot::react ReactNode prop \"right-icon\" 에 대응하는 html slot=\"right-icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "DRIFT — followup: nds-button 아이콘 슬롯 미구현 — left-icon 과 동일",
       "since": "2026-06"
     },
     {
@@ -164,11 +154,6 @@
     {
       "key": "CallControlBar::prop-name::html attr \"show-speaker\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "CallControlBar::slot::react ReactNode prop \"extra\" 에 대응하는 html slot=\"extra\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
       "since": "2026-06"
     },
     {
@@ -218,17 +203,17 @@
     },
     {
       "key": "Card::slot::react ReactNode prop \"avatar\" 에 대응하는 html slot=\"avatar\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 카드는 light DOM 자유 조립(nds-avatar 직접 배치) — 전용 래퍼 불필요. 의도적",
       "since": "2026-06"
     },
     {
       "key": "Card::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 nds-card-footer 서브 컴포넌트로 제공 — slot 아닌 컴파운드 패턴. 의도적",
       "since": "2026-06"
     },
     {
       "key": "Card::slot::react ReactNode prop \"thumbnail\" 에 대응하는 html slot=\"thumbnail\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 nds-card-thumbnail 서브 컴포넌트로 제공 — slot 아닌 컴파운드 패턴. 의도적",
       "since": "2026-06"
     },
     {
@@ -302,11 +287,6 @@
       "since": "2026-06"
     },
     {
-      "key": "Chip::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
       "key": "CircularProgress::prop-name::react prop → \"aria-label\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -317,23 +297,28 @@
       "since": "2026-06"
     },
     {
-      "key": "CommentItem::slot::react ReactNode prop \"author-badge\" 에 대응하는 html slot=\"author-badge\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "key": "CommentItem::slot::html slot=\"badge\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react authorBadge prop 과 동일 슬롯 — html 은 짧은 이름(badge) 사용. 명명 차이 박제",
       "since": "2026-06"
     },
     {
-      "key": "CommentItem::slot::react ReactNode prop \"avatar\" 에 대응하는 html slot=\"avatar\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "key": "CommentItem::slot::html slot=\"like\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react likeAction prop 과 동일 슬롯 — html 은 짧은 이름(like) 사용. 명명 차이 박제",
+      "since": "2026-06"
+    },
+    {
+      "key": "CommentItem::slot::html slot=\"replies\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react replies?: ReactNode prop 존재 — 검출기 slot-prop name-gate 에 replies 가 없어 생기는 위양성",
+      "since": "2026-06"
+    },
+    {
+      "key": "CommentItem::slot::react ReactNode prop \"author-badge\" 에 대응하는 html slot=\"author-badge\" 구현이 없음",
+      "reason": "html 은 slot=\"badge\" 로 동일 기능 제공 — 명명 차이 박제 (html slot=badge 엔트리와 쌍)",
       "since": "2026-06"
     },
     {
       "key": "CommentItem::slot::react ReactNode prop \"like-action\" 에 대응하는 html slot=\"like-action\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
-      "key": "CommentItem::slot::react ReactNode prop \"more\" 에 대응하는 html slot=\"more\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 slot=\"like\" 로 동일 기능 제공 — 명명 차이 박제 (html slot=like 엔트리와 쌍)",
       "since": "2026-06"
     },
     {
@@ -437,11 +422,6 @@
       "since": "2026-06"
     },
     {
-      "key": "Drawer::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
       "key": "DropdownMenu::prop-name::react prop → \"portal-container\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -463,12 +443,12 @@
     },
     {
       "key": "EmptyState::slot::react ReactNode prop \"action\" 에 대응하는 html slot=\"action\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 action attr(라벨)로 내장 버튼 렌더 — 커스텀 액션 노드는 react 전용. 의도적",
       "since": "2026-06"
     },
     {
       "key": "EmptyState::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 내장 기본 아이콘 + hide-icon attr — 커스텀 아이콘은 react 전용. 의도적",
       "since": "2026-06"
     },
     {
@@ -483,22 +463,22 @@
     },
     {
       "key": "FAB::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 icon attr(아이콘 이름)로 수신 — 커스텀 노드는 react 전용. 의도적",
       "since": "2026-06"
     },
     {
-      "key": "FieldActionRow::slot::react ReactNode prop \"action\" 에 대응하는 html slot=\"action\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "key": "FieldActionRow::slot::html slot=\"field\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react 는 field 를 children 으로 모델링 — html 만 명명 슬롯. 모델 차이 박제",
+      "since": "2026-06"
+    },
+    {
+      "key": "FieldActionRow::slot::html slot=\"timer\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react timer prop 존재(내부 data-slot=timer 렌더) — 모델 차이/name-gate 위양성",
       "since": "2026-06"
     },
     {
       "key": "FileUpload::prop-name::react prop → \"value\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "FloatingCtaBanner::slot::react ReactNode prop \"leading-icon\" 에 대응하는 html slot=\"leading-icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
       "since": "2026-06"
     },
     {
@@ -517,13 +497,23 @@
       "since": "2026-06"
     },
     {
+      "key": "Header::slot::html slot=\"left\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react leftSlot prop 과 동일 슬롯 — html 은 짧은 이름(left) 사용. 명명 차이 박제",
+      "since": "2026-06"
+    },
+    {
+      "key": "Header::slot::html slot=\"right\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react rightSlot prop 과 동일 슬롯 — html 은 짧은 이름(right) 사용. 명명 차이 박제",
+      "since": "2026-06"
+    },
+    {
       "key": "Header::slot::react ReactNode prop \"left-slot\" 에 대응하는 html slot=\"left-slot\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 slot=\"left\" 로 동일 기능 제공 — 명명 차이 박제 (html slot=left 엔트리와 쌍)",
       "since": "2026-06"
     },
     {
       "key": "Header::slot::react ReactNode prop \"right-slot\" 에 대응하는 html slot=\"right-slot\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 slot=\"right\" 로 동일 기능 제공 — 명명 차이 박제 (html slot=right 엔트리와 쌍)",
       "since": "2026-06"
     },
     {
@@ -543,7 +533,7 @@
     },
     {
       "key": "IconButton::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 children(light DOM 자식) 자체가 icon — 명명 슬롯 불필요. 의도적",
       "since": "2026-06"
     },
     {
@@ -593,17 +583,17 @@
     },
     {
       "key": "Input::slot::react ReactNode prop \"helper-icon\" 에 대응하는 html slot=\"helper-icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "DRIFT — followup: nds-input helper 영역 아이콘 미구현 — 우선순위 낮음",
       "since": "2026-06"
     },
     {
       "key": "Input::slot::react ReactNode prop \"prefix\" 에 대응하는 html slot=\"prefix\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "DRIFT — followup: nds-input prefix(통화기호 등) 미구현 — 금액/단위 입력 목업에서 수요 있는 표면",
       "since": "2026-06"
     },
     {
       "key": "Input::slot::react ReactNode prop \"suffix\" 에 대응하는 html slot=\"suffix\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "DRIFT — followup: nds-input suffix(단위 등) 미구현 — prefix 와 동일",
       "since": "2026-06"
     },
     {
@@ -627,8 +617,8 @@
       "since": "2026-06"
     },
     {
-      "key": "MediaCard::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "key": "MediaCard::slot::html slot=\"image\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react 는 image 를 src 문자열 prop 으로 모델링 — html slot 은 커스텀 노드 주입용 확장. 모델 차이 박제",
       "since": "2026-06"
     },
     {
@@ -668,7 +658,7 @@
     },
     {
       "key": "NoticeAlert::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 variant 별 내장 아이콘 렌더 — 커스텀은 react 전용. 의도적",
       "since": "2026-06"
     },
     {
@@ -682,11 +672,6 @@
       "since": "2026-06"
     },
     {
-      "key": "NotificationItem::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
       "key": "NumberStepper::prop-name::react prop → \"aria-label\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -697,8 +682,13 @@
       "since": "2026-06"
     },
     {
-      "key": "OrderSummaryCard::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "key": "OrderSummaryCard::slot::html slot=\"title\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react 는 title 을 문자열 prop 으로 모델링 — html slot 은 커스텀 노드 확장. 모델 차이 박제",
+      "since": "2026-06"
+    },
+    {
+      "key": "OrderSummaryCard::slot::html slot=\"total\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react 는 total 을 데이터 prop 으로 모델링 — html slot 은 커스텀 노드 확장. 모델 차이 박제",
       "since": "2026-06"
     },
     {
@@ -709,21 +699,6 @@
     {
       "key": "PageHeader::prop-name::html attr \"show-back\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "PageHeader::slot::react ReactNode prop \"actions\" 에 대응하는 html slot=\"actions\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
-      "key": "PageHeader::slot::react ReactNode prop \"bottom\" 에 대응하는 html slot=\"bottom\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
-      "key": "PageHeader::slot::react ReactNode prop \"breadcrumb\" 에 대응하는 html slot=\"breadcrumb\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
       "since": "2026-06"
     },
     {
@@ -812,16 +787,6 @@
       "since": "2026-06"
     },
     {
-      "key": "ReviewCard::slot::react ReactNode prop \"avatar\" 에 대응하는 html slot=\"avatar\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
-      "key": "ReviewCard::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
       "key": "ScoreGauge::prop-name::html attr \"value-suffix\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -843,7 +808,7 @@
     },
     {
       "key": "SearchInput::slot::react ReactNode prop \"search-icon\" 에 대응하는 html slot=\"search-icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 내장 검색 아이콘 렌더 — 커스텀 교체는 react 전용. 의도적",
       "since": "2026-06"
     },
     {
@@ -938,22 +903,22 @@
     },
     {
       "key": "Sidebar::slot::html slot=\"account\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 사이드바는 <script slot> JSON 스펙 기반(모지바케 가드) — react 는 props 배열. 모델 차이 의도적",
       "since": "2026-06"
     },
     {
       "key": "Sidebar::slot::html slot=\"items\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 사이드바는 <script slot> JSON 스펙 기반(모지바케 가드) — react 는 props 배열. 모델 차이 의도적",
       "since": "2026-06"
     },
     {
       "key": "Sidebar::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 사이드바는 JSON 스펙 렌더 — footer 커스텀 노드는 react 전용(어드민 한정). 의도적",
       "since": "2026-06"
     },
     {
       "key": "Sidebar::slot::react ReactNode prop \"header\" 에 대응하는 html slot=\"header\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 사이드바는 JSON 스펙 렌더 — header 커스텀 노드는 react 전용(어드민 한정). 의도적",
       "since": "2026-06"
     },
     {
@@ -968,7 +933,7 @@
     },
     {
       "key": "Snackbar::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 variant 가 아이콘을 결정(VARIANT_CONFIG) — 커스텀은 react 전용. 의도적",
       "since": "2026-06"
     },
     {
@@ -1033,12 +998,12 @@
     },
     {
       "key": "TextButton::slot::react ReactNode prop \"left-icon\" 에 대응하는 html slot=\"left-icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 left-icon attr(아이콘 이름)로 수신 — 의도적",
       "since": "2026-06"
     },
     {
       "key": "TextButton::slot::react ReactNode prop \"right-icon\" 에 대응하는 html slot=\"right-icon\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "reason": "html 은 right-icon attr(아이콘 이름)로 수신 — 의도적",
       "since": "2026-06"
     },
     {
@@ -1107,16 +1072,6 @@
       "since": "2026-06"
     },
     {
-      "key": "UserCard::slot::react ReactNode prop \"action\" 에 대응하는 html slot=\"action\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
-      "key": "UserCard::slot::react ReactNode prop \"avatar\" 에 대응하는 html slot=\"avatar\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
-      "since": "2026-06"
-    },
-    {
       "key": "VerificationCodeInput::prop-name::html attr \"auto-focus\" 에 대응하는 react prop 이 없음",
       "reason": "react 는 InputHTMLAttributes 상속(autoFocus 보유) — 파서가 extends 미해석해 생기는 위양성",
       "since": "2026-06"
@@ -1134,11 +1089,6 @@
     {
       "key": "VideoPlayer::prop-name::react prop → \"auto-play\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "VotePoll::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
       "since": "2026-06"
     },
     {
