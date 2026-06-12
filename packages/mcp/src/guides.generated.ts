@@ -1375,11 +1375,23 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "FilterBar": {
     "name": "FilterBar",
-    "summary": "가로 필터 칩 그룹. 다중/단일 선택, 카운트, 자동 초기화. Tabs(라우팅)와 분리 — FilterBar는 list 필터.",
+    "references": [
+      {
+        "label": "Tab vs Filter — 역할·배치·결정 트리 (DesignGuide)",
+        "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3544-206",
+        "caption": "FilterBar = 현재 view 안에서 조건 좁히기(다중 누적·쿼리 파라미터). Tab(view 전환)과 역할 구분. 배치 순서·결정 트리, 캐포비 admin 풀 스펙은 pattern:cashwalk-biz-tab.",
+        "brand": "cashwalk-biz"
+      }
+    ],
+    "summary": "가로 필터 칩 그룹. 다중/단일 선택, 카운트, 자동 초기화. **FilterBar = 현재 view 안에서 데이터를 점진적으로 좁히기(날짜·키워드·상태 등 다중 조건 누적 · 쿼리 파라미터로 URL 유지)** — view 자체를 전환하는 **Tab** 과 역할이 다르다(상호 배타적 큰 분류는 Tab). 배치: 페이지 타이틀 → Tab → FilterBar → 데이터.",
     "pitfalls": [
       "single은 라디오와 다름 — 같은 칩 다시 누르면 해제됨.",
       "옵션 8개 이상이면 가로 스크롤. 데스크톱은 Tabs/Drawer 필터 검토.",
-      "Tabs는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터."
+      "Tabs는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터.",
+      "**상호 배타적 큰 분류(진행중/종료 같은 view 전환)를 FilterBar 로 만들지 말 것 — Tab 사용.** 반대로 날짜 범위·키워드 같은 조건 좁히기를 Tab 으로 만들지 말 것 — FilterBar 사용. (결정 트리: view 바뀌면 Tab / 조건 누적이면 Filter / 2–7개 단일 선택이면 Radio·SelectionButtonGroup.)",
+      "**배치**: 페이지 타이틀 → Tab → FilterBar → 데이터 영역. Filter 는 쿼리 파라미터로 누적돼 URL 공유 시에도 유지된다.",
+      "**FilterBar 에 Primary CTA 외 다른 액션 버튼을 여러 개 두지 말 것 — CTA 는 1개만.** 필터 항목이 12개+ 면 별도 `[필터 더보기]` 모달로.",
+      "캐포비 admin 풀 스펙(Tab Underline/Box·치수·색)은 `pattern:cashwalk-biz-tab`. Figma DesignGuide/Tab 3544-206."
     ],
     "recommended": [
       "콘텐츠 리스트: 다중 선택 + count",
@@ -3049,6 +3061,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Tabs": {
     "name": "Tabs",
+    "references": [
+      {
+        "label": "Tab vs Filter — 역할·배치·결정 트리 (DesignGuide)",
+        "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3544-206",
+        "caption": "Tab(Underline/Box)으로 view 전환 · Filter(FilterBar)로 현재 view 좁히기. 결정 트리·배치 순서·DO/Don't 요약은 pitfalls, 캐포비 admin 풀 스펙은 pattern:cashwalk-biz-tab.",
+        "brand": "cashwalk-biz"
+      }
+    ],
     "usagePolicy": {
       "useFor": [
         "동일 depth 콘텐츠 전환 (예: 내 상담 / 받은 추천)",
@@ -3067,7 +3087,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "segment": "연결된 회색 트랙 위 균등 분할 단일 값 토글(구 SegmentedControl 흡수) — 뷰/기간/상태. 콘텐츠 패널 전환 아님. tone=color 면 활성이 브랜드 채움."
       }
     },
-    "summary": "line/chip/segment 3가지 variant + tone(neutral|color) + size(mobile|pc). items + activeKey + onTabChange. line/chip = 동일 depth 콘텐츠 전환 · category navigation · section switching(tablist) 전용. segment = 뷰/기간/상태 단일 값 토글(구 SegmentedControl 흡수, 콘텐츠 패널 전환 아님). CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지.",
+    "summary": "line/chip/segment 3가지 variant + tone(neutral|color) + size(mobile|pc). items + activeKey + onTabChange. line/chip = 동일 depth 콘텐츠 전환 · category navigation · section switching(tablist) 전용. segment = 뷰/기간/상태 단일 값 토글(구 SegmentedControl 흡수, 콘텐츠 패널 전환 아님). CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지. **Tab = view 자체 전환(상호 배타·한 번에 한 view·URL 경로 변경) vs Filter(FilterBar) = 현재 view 안에서 조건 좁히기(다중 누적·쿼리 파라미터)** — 역할이 다르다(아래 결정 트리). Underline=line, Box=chip 으로 매핑되며 캐포비 admin 풀 스펙은 `pattern:cashwalk-biz-tab`.",
     "pitfalls": [
       "items 형식은 {key, title}[]. label 같은 다른 키 이름 사용 시 렌더 실패.",
       "변경 핸들러는 onTabChange (onChange 아님).",
@@ -3075,7 +3095,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "같은 리스트의 '필터' 는 FilterBar, Tab 은 '뷰/카테고리/섹션 전환' — 둘을 섞어 쓰지 말 것.",
       "세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tabs variant='segment' (mobile/pc). line/chip 은 패널 전환(tablist) 전용.",
       "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.",
-      "캐포비(cashwalk-biz)는 chip 치수만 브랜드 토큰으로 override(radius 10·height 52·padding 20). 비활성 chip 컬러는 NudgeEAP 와 동일(subtle bg + subtle text, hover 시 surface.section + strong) — 흰 텍스트 저대비로 만들지 말 것."
+      "캐포비(cashwalk-biz)는 chip 치수만 브랜드 토큰으로 override(radius 10·height 52·padding 20). 비활성 chip 컬러는 NudgeEAP 와 동일(subtle bg + subtle text, hover 시 surface.section + strong) — 흰 텍스트 저대비로 만들지 말 것.",
+      "**Underline(line) vs Box(chip) 용도 구분 (Figma DesignGuide/Tab 3544-206)**: Underline=페이지 메인 카테고리·목록 필터·단계 전환, Box=상태/좁은 영역 필터(진행중·진행예정·종료). **한 화면에 Tab 종류는 1개로 통일 — Underline 과 Box 를 같은 화면에서 혼용하지 말 것.** Tab 항목 수는 2–5개 권장(6개+는 메뉴/Select 검토).",
+      "**Tab vs Filter 결정 트리 (혼동 금지)**: Q1. view 자체가 바뀌나(목록 전체 교체)? → YES = **Tab**(URL 경로 변경). Q2. 조건을 누적해 좁히나(다중 필터)? → YES = **Filter(FilterBar)**(쿼리 파라미터 누적). Q3. 옵션 2–7개 단일 선택? → YES = **Radio / SelectionButtonGroup**. 큰 분류(상호 배타)를 Filter 로, 조건 좁히기를 Tab 으로 만들지 말 것.",
+      "**화면 배치 순서**: 페이지 타이틀 → **Tab** → **FilterBar** → 데이터 영역(위→아래). Tab 으로 큰 분류를 고른 뒤 Filter 로 좁히는 흐름. Tab 안에 또 Tab 중첩 금지(Sub-section 은 Accordion/Anchor). 캐포비 admin 풀 스펙·치수는 `pattern:cashwalk-biz-tab`."
     ],
     "examplesHtml": {
       "do": "<nds-tabs active-key=\"home\" variant=\"line\" size=\"mobile\">\n  <nds-tabs-list>\n    <nds-tabs-trigger key=\"home\">홈</nds-tabs-trigger>\n    <nds-tabs-trigger key=\"profile\">프로필</nds-tabs-trigger>\n  </nds-tabs-list>\n  <nds-tabs-panel key=\"home\">홈 콘텐츠</nds-tabs-panel>\n  <nds-tabs-panel key=\"profile\">프로필 콘텐츠</nds-tabs-panel>\n</nds-tabs>\n<script>tabs.addEventListener(\"tabs-change\", e => console.log(e.detail.activeKey));</script>",

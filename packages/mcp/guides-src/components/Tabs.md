@@ -1,4 +1,9 @@
 ---
+references:
+  - label: Tab vs Filter — 역할·배치·결정 트리 (DesignGuide)
+    url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3544-206
+    caption: Tab(Underline/Box)으로 view 전환 · Filter(FilterBar)로 현재 view 좁히기. 결정 트리·배치 순서·DO/Don't 요약은 pitfalls, 캐포비 admin 풀 스펙은 pattern:cashwalk-biz-tab.
+    brand: cashwalk-biz
 usagePolicy:
   useFor:
     - "동일 depth 콘텐츠 전환 (예: 내 상담 / 받은 추천)"
@@ -17,7 +22,7 @@ usagePolicy:
 
 ## summary
 
-line/chip/segment 3가지 variant + tone(neutral|color) + size(mobile|pc). items + activeKey + onTabChange. line/chip = 동일 depth 콘텐츠 전환 · category navigation · section switching(tablist) 전용. segment = 뷰/기간/상태 단일 값 토글(구 SegmentedControl 흡수, 콘텐츠 패널 전환 아님). CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지.
+line/chip/segment 3가지 variant + tone(neutral|color) + size(mobile|pc). items + activeKey + onTabChange. line/chip = 동일 depth 콘텐츠 전환 · category navigation · section switching(tablist) 전용. segment = 뷰/기간/상태 단일 값 토글(구 SegmentedControl 흡수, 콘텐츠 패널 전환 아님). CTA·필터·페이지 단위 라우팅 대체용으로 사용 금지. **Tab = view 자체 전환(상호 배타·한 번에 한 view·URL 경로 변경) vs Filter(FilterBar) = 현재 view 안에서 조건 좁히기(다중 누적·쿼리 파라미터)** — 역할이 다르다(아래 결정 트리). Underline=line, Box=chip 으로 매핑되며 캐포비 admin 풀 스펙은 `pattern:cashwalk-biz-tab`.
 
 ## pitfalls
 
@@ -28,6 +33,9 @@ line/chip/segment 3가지 variant + tone(neutral|color) + size(mobile|pc). items
 - 세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tabs variant='segment' (mobile/pc). line/chip 은 패널 전환(tablist) 전용.
 - Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.
 - 캐포비(cashwalk-biz)는 chip 치수만 브랜드 토큰으로 override(radius 10·height 52·padding 20). 비활성 chip 컬러는 NudgeEAP 와 동일(subtle bg + subtle text, hover 시 surface.section + strong) — 흰 텍스트 저대비로 만들지 말 것.
+- **Underline(line) vs Box(chip) 용도 구분 (Figma DesignGuide/Tab 3544-206)**: Underline=페이지 메인 카테고리·목록 필터·단계 전환, Box=상태/좁은 영역 필터(진행중·진행예정·종료). **한 화면에 Tab 종류는 1개로 통일 — Underline 과 Box 를 같은 화면에서 혼용하지 말 것.** Tab 항목 수는 2–5개 권장(6개+는 메뉴/Select 검토).
+- **Tab vs Filter 결정 트리 (혼동 금지)**: Q1. view 자체가 바뀌나(목록 전체 교체)? → YES = **Tab**(URL 경로 변경). Q2. 조건을 누적해 좁히나(다중 필터)? → YES = **Filter(FilterBar)**(쿼리 파라미터 누적). Q3. 옵션 2–7개 단일 선택? → YES = **Radio / SelectionButtonGroup**. 큰 분류(상호 배타)를 Filter 로, 조건 좁히기를 Tab 으로 만들지 말 것.
+- **화면 배치 순서**: 페이지 타이틀 → **Tab** → **FilterBar** → 데이터 영역(위→아래). Tab 으로 큰 분류를 고른 뒤 Filter 로 좁히는 흐름. Tab 안에 또 Tab 중첩 금지(Sub-section 은 Accordion/Anchor). 캐포비 admin 풀 스펙·치수는 `pattern:cashwalk-biz-tab`.
 
 ## examplesHtml.do
 
