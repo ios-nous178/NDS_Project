@@ -8,7 +8,8 @@ EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 5개 브랜드: **T
 이 모노레포의 CLAUDE.md 에는 DS 사용 규칙을 중복 작성하지 않습니다. 규칙을 바꾸려면 아래 파일을 수정하세요.
 
 - `packages/mcp/src/tools/guides.ts` — `getClaudeMdTemplate` (외부 프로젝트가 받는 CLAUDE.md 본문)
-- `packages/mcp/src/guides.ts` — 컴포넌트 / 패턴 / 원칙 / 어드민 가이드 본문 (`COMPONENT_GUIDES` / `PATTERN_GUIDES` / `DESIGN_PRINCIPLES` / `ADMIN_CMS_GUIDE`)
+- `packages/mcp/guides-src/{components,patterns}/<Name>.md` — **컴포넌트/패턴 가이드 본문 SSOT** (가이드 하나=파일 하나, frontmatter=구조 필드 / 본문=prose·코드 섹션). 수정 후 `pnpm --filter @nudge-design/mcp build:guides` 로 `src/guides.generated.ts` 재생성해 같이 커밋 (`pnpm lint` 의 check-ssot 가 stale 차단)
+- `packages/mcp/src/guides.ts` — 원칙 / 어드민 / UX라이팅 / 아이콘 메타 본문 (`DESIGN_PRINCIPLES` / `ADMIN_CMS_GUIDE` 등) + 가이드 re-export
 
 작업 중 규칙을 직접 확인해야 하면 MCP 도구 호출:
 
@@ -62,7 +63,8 @@ packages/tokens/src/    ← 디자인 토큰
 packages/mcp/src/       ← MCP 서버 (외부 프로젝트가 받는 가이드 SSOT)
   server.ts             ← MCP 서버 엔트리 (툴 등록 / find_token / suggest_replacement 등)
   tools/guides.ts       ← getClaudeMdTemplate (get_setup({ step: 'claude-md' }) 본문) + get_guide
-  guides.ts             ← 컴포넌트 / 패턴 / 원칙 / 어드민 가이드 본문
+  guides-src/           ← 컴포넌트/패턴 가이드 본문 SSOT (.md — build:guides 가 guides.generated.ts 생성)
+  guides.ts             ← 원칙 / 어드민 / UX라이팅 가이드 본문 + 가이드 re-export
 apps/storybook/         ← 스토리북 (DS 컴포넌트 데모용)
 DESIGN.md               ← 디자인 토큰 YAML 정의
 ```
@@ -82,7 +84,7 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 | Export                        | `packages/react/src/index.ts` · `packages/html/src/index.ts`                                                                         |
 | Storybook 스토리              | `apps/storybook/src/stories/{Component}.stories.tsx`                                                                                 |
 | ★ 카탈로그                    | `apps/storybook/src/stories/AllComponents.stories.tsx` — import + 엔트리 추가                                                        |
-| ★ MCP 가이드 (외부 전파 핵심) | `packages/mcp/src/guides.ts` 의 `COMPONENT_GUIDES` — props 함정 · 매트릭스 · `figmaNodeUrl`                                          |
+| ★ MCP 가이드 (외부 전파 핵심) | `packages/mcp/guides-src/components/{Name}.md` — props 함정 · 매트릭스 · `figmaNodeUrl` (+ `build:guides` 재생성)                    |
 | 타입체크                      | `npx tsc --noEmit --project apps/storybook/tsconfig.json`                                                                            |
 | ★ 미러 parity                 | `pnpm lint:mirror-parity` — react↔html set/enum drift 게이트. 의도된 divergence 면 `pnpm lint:mirror-parity:update` 로 baseline 갱신 |
 
@@ -95,7 +97,7 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 
 ### 가이드 · 패턴 · 원칙만 추가
 
-- 본문: `packages/mcp/src/guides.ts` 의 `COMPONENT_GUIDES` / `PATTERN_GUIDES` / `DESIGN_PRINCIPLES`
+- 컴포넌트/패턴 본문: `packages/mcp/guides-src/{components,patterns}/<Name>.md` (+ `pnpm --filter @nudge-design/mcp build:guides`) · 원칙: `guides.ts` 의 `DESIGN_PRINCIPLES`
 - 컴포넌트 가이드에는 가능하면 `figmaNodeUrl` 까지 — `list_figma_sync_status` 로 sync 누락 점검
 
 ### 외부 전파 (MCPB 릴리즈) → `/ds-release`

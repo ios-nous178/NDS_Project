@@ -20,7 +20,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 2. **토큰-퍼스트, raw hex/px 금지.** 색은 semantic 토큰(`cv.*` / `--semantic-*`), 크기는 `sizing.*`/`spacing.*`/`radius.*`. **Figma hex 가 어떤 토큰에도 안 맞으면 새 값을 지어내지 말고 멈춰서 사용자/디자이너에게 flag.** (예: 토글 `#60be34`, 보더 `#111` — 토큰 부재 시 보고)
 3. **브랜드는 cascade 로.** 컴포넌트는 hex 를 박지 않는다. 브랜드 분기(예: 캐포비 admin input 40px/radius4, 캐포비 시그니처 검정 버튼)는 `data-brand` cascade + `--nds-*` 슬롯/시멘틱 토큰으로. Figma 노드의 브랜드/페이지로 어느 브랜드인지 먼저 파악.
 4. **3면 미러 lockstep.** `react .tsx` ↔ `styles .ts` ↔ `html nds-*.ts` 는 같은 클래스명·`data-slot`·동작·치수를 공유한다. 하나만 고치고 끝내지 않는다.
-5. **외부 전파는 1급 단계** (가장 자주 누락). Storybook 스토리 + **AllComponents 카탈로그** + **MCP 가이드(guides.ts)** + **changeset**. 빠지면 외부 프로젝트에 전파 안 됨.
+5. **외부 전파는 1급 단계** (가장 자주 누락). Storybook 스토리 + **AllComponents 카탈로그** + **MCP 가이드(guides-src/*.md + build:guides)** + **changeset**. 빠지면 외부 프로젝트에 전파 안 됨.
 
 ## 표면 맵 (어디를 건드리나)
 
@@ -33,7 +33,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 | HTML export        | `packages/html/src/index.ts`                                                            | `export { Nds{Component} }`                                                  |
 | Storybook 스토리   | `apps/storybook/src/stories/{Component}.stories.tsx`                                    | interaction test 포함 권장                                                   |
 | ★ 카탈로그         | `apps/storybook/src/stories/AllComponents.stories.tsx`                                  | import + 엔트리 (자주 누락)                                                  |
-| ★ MCP 가이드       | `packages/mcp/src/guides.ts` `COMPONENT_GUIDES`                                         | summary·pitfalls·examplesHtml(do/dont)·`figmaNodeUrl`·sizeMatrix·stateMatrix |
+| ★ MCP 가이드       | `packages/mcp/guides-src/components/{Component}.md` + `build:guides` 재생성             | summary·pitfalls·examplesHtml(do/dont)·`figmaNodeUrl`·sizeMatrix·stateMatrix |
 | 토큰(신규 필요 시) | `packages/tokens/src/**` + `DESIGN.md`                                                  | 새 시멘틱 토큰은 base + 브랜드. `pnpm build --filter @nudge-design/tokens`   |
 | 데스크탑 검증      | `apps/desktop/src/main/catalog.ts` / `packages/mockup-core/src/tools/catalog-config.ts` | 새 `nds-*` 태그/attr 이면 검증 컨텍스트에 들어가는지 확인                    |
 | 테스트             | `packages/react/test/**`, `packages/html/test/**`                                       | 동작/DOM parity                                                              |
@@ -67,7 +67,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 
 - `stories/{Component}.stories.tsx` — 변형/상태 스토리 + 가능하면 interaction test(play).
 - `AllComponents.stories.tsx` 에 import + 엔트리 추가. (★)
-- `guides.ts` `COMPONENT_GUIDES.{Component}` — summary, pitfalls(props 함정·혼동 컴포넌트), examplesHtml(do/dont), `figmaNodeUrl`, sizeMatrix/stateMatrix. (★)
+- `packages/mcp/guides-src/components/{Component}.md` — summary, pitfalls(props 함정·혼동 컴포넌트), examplesHtml(do/dont), `figmaNodeUrl`, sizeMatrix/stateMatrix. 수정 후 `pnpm --filter @nudge-design/mcp build:guides` 로 guides.generated.ts 재생성. (★)
 
 ### Phase 4 — 데스크탑 & 검증 컨텍스트
 

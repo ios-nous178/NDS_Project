@@ -63,9 +63,9 @@ description: >-
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | 컴포넌트가 시안과 다르다/없다 | **`/ds-component` 플로우 재사용** — react/styles/html 3면 + 스토리 + AllComponents + COMPONENT_GUIDES + changeset |
 | 색/크기 토큰 문제             | `packages/tokens/src/**` (+ 브랜드) + `DESIGN.md` + `pnpm build --filter @nudge-design/tokens`                    |
-| 합성/사용 규칙(패턴)          | `guides.ts` `PATTERN_GUIDES` + (필요 시) `html-validator.ts` 검증룰 + 예시                                        |
+| 합성/사용 규칙(패턴)          | `packages/mcp/guides-src/patterns/<name>.md` (+ build:guides 재생성) + (필요 시) `html-validator.ts` 검증룰 + 예시                                        |
 | 검증이 못 잡음                | `packages/mockup-core/src/tools/html-validator.ts` 룰 추가 + 테스트 + (catalog-config 컨텍스트)                   |
-| 가이드만 틀림/누락            | `guides.ts` `COMPONENT_GUIDES`/`PATTERN_GUIDES` 본문                                                              |
+| 가이드만 틀림/누락            | `packages/mcp/guides-src/{components,patterns}/<Name>.md` 본문 (+ build:guides 재생성)                                                              |
 
 ### 3. 검증 (이슈가 실제로 닫혔는지)
 

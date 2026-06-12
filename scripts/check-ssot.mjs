@@ -39,6 +39,11 @@ const steps = [
     args: ["--filter", "@nudge-design/mcp", "build"],
   },
   {
+    label: "check guide markdown sources (guides-src → guides.generated.ts)",
+    command: "node",
+    args: ["packages/mcp/scripts/build-guides.mjs", "--check"],
+  },
+  {
     label: "check MCP catalog freshness",
     command: "node",
     args: ["scripts/check-mcp-catalog.mjs", "--no-build"],

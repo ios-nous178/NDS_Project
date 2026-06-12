@@ -1,0 +1,32 @@
+---
+figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4118-1186
+---
+
+## summary
+
+리스트가 한 화면을 넘을 때 페이지 단위로 끊어 보기. 무한 스크롤이 적절한 경우(피드/리뷰) 에는 사용 안 함.
+
+## pitfalls
+
+- 전체 페이지 수 5 이하 / 항목 30 이하면 Pagination 자체가 과한 UI — 한 페이지로 노출.
+- show-arrows 와 siblings 를 둘 다 끄면 현재 페이지 ±1 만 보여 탐색이 끊김.
+- PaginationChange 이벤트 처리 없이 page attribute 만 바꿔도 데이터 fetch 가 안 일어남 — 이벤트 핸들러에서 fetch 호출.
+- 캐포비(data-brand="cashwalk-biz")에서는 각 페이지/화살표가 개별 보더 박스(radius 4, 34h) + 활성 페이지가 검정 채움으로 자동 렌더된다(cascade). markup/attribute 는 base 와 동일 — 박스 모양을 흉내내려 직접 div/border 를 짜지 말 것.
+- 총 데이터 0건이면 Pagination 자체를 숨길 것(렌더하지 않음). 총 1페이지면 PageItem 1개 + Prev/Next disabled.
+- Prev/Next 가 끝(1페이지·마지막페이지)에 도달하면 활성으로 두지 말고 disabled — 캐포비는 흐림이 아니라 옅은 회색 박스로 표시된다.
+
+## examplesHtml.do
+
+```html
+<nds-pagination page="1" total-pages="10" siblings="2" show-arrows></nds-pagination>
+<script>el.addEventListener("pagination-change", e => loadPage(e.detail.page));</script>
+<!-- 한 페이지 행 수 선택은 component:PageSizeSelect — 보통 표 하단 우측 -->
+<!-- 캐포비 박스형은 <html data-brand="cashwalk-biz"> 만 박혀 있으면 자동 적용 -->
+```
+
+## examplesHtml.dont
+
+```html
+<!-- siblings 0 + arrows 없음 — 옆 페이지가 보이지 않음 -->
+<nds-pagination page="1" total-pages="10" siblings="0"></nds-pagination>
+```
