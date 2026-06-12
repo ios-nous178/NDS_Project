@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T07:27:31.382Z",
+  "generatedAt": "2026-06-12T08:08:16.756Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -693,6 +693,16 @@
           "type": "AvatarSize"
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "AvatarShape",
+          "allowedValues": [
+            "square",
+            "rounded",
+            "circle"
+          ]
+        },
+        {
           "name": "fallback",
           "optional": true,
           "type": "React.ReactNode"
@@ -703,6 +713,7 @@
       "htmlObservedAttrs": [
         "alt",
         "name",
+        "shape",
         "size",
         "src",
         "fallback"
@@ -727,6 +738,16 @@
           "type": "AvatarSize"
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "AvatarShape",
+          "allowedValues": [
+            "square",
+            "rounded",
+            "circle"
+          ]
+        },
+        {
           "name": "overlap",
           "optional": true,
           "type": "number"
@@ -747,6 +768,7 @@
         "items",
         "max",
         "overlap",
+        "shape",
         "size",
         "aria-label"
       ]
@@ -788,6 +810,15 @@
           ]
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "BadgeShape",
+          "allowedValues": [
+            "default",
+            "pill"
+          ]
+        },
+        {
           "name": "labelClassName",
           "optional": true,
           "type": "string"
@@ -822,6 +853,7 @@
       },
       "htmlObservedAttrs": [
         "color",
+        "shape",
         "size",
         "variant"
       ]
@@ -5639,6 +5671,50 @@
       ]
     },
     {
+      "name": "QuickMenu",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "QuickMenuItem[]"
+        },
+        {
+          "name": "heading",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "showTop",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "topLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onTopClick",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "fixed",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/QuickMenu.d.ts",
+      "htmlTag": "nds-quick-menu",
+      "htmlObservedAttrs": [
+        "items",
+        "heading",
+        "show-top",
+        "top-label",
+        "fixed"
+      ]
+    },
+    {
       "name": "Radio",
       "props": [
         {
@@ -7518,6 +7594,31 @@
         "bio",
         "meta",
         "clickable"
+      ]
+    },
+    {
+      "name": "ValidationChip",
+      "props": [
+        {
+          "name": "state",
+          "optional": true,
+          "type": "ValidationChipState",
+          "allowedValues": [
+            "incomplete",
+            "complete",
+            "error"
+          ]
+        },
+        {
+          "name": "labelClassName",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ValidationChip.d.ts",
+      "htmlTag": "nds-validation-chip",
+      "htmlObservedAttrs": [
+        "state"
       ]
     },
     {
@@ -13009,7 +13110,7 @@
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#BBBBBB",
+        "cashwalk-biz": "#666666",
         "geniet": "#666666",
         "runmile": "#6B7684",
         "trost": "#979797"
@@ -13052,7 +13153,7 @@
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#DDDDDD",
+        "cashwalk-biz": "#BBBBBB",
         "runmile": "#B0B8C1",
         "trost": "#979797"
       }
@@ -13865,6 +13966,7 @@
     "nds-progress-bar",
     "nds-pull-to-refresh",
     "nds-quick-action-grid",
+    "nds-quick-menu",
     "nds-radio",
     "nds-region-row",
     "nds-review-card",
@@ -13905,6 +14007,7 @@
     "nds-tooltip",
     "nds-trending-keywords",
     "nds-user-card",
+    "nds-validation-chip",
     "nds-verification-code-input",
     "nds-video-player",
     "nds-voice-recorder",
@@ -14041,6 +14144,7 @@
         "items",
         "max",
         "overlap",
+        "shape",
         "size",
         "aria-label"
       ]
@@ -14051,6 +14155,7 @@
       "observedAttrs": [
         "alt",
         "name",
+        "shape",
         "size",
         "src",
         "fallback"
@@ -14080,6 +14185,7 @@
       },
       "observedAttrs": [
         "color",
+        "shape",
         "size",
         "variant"
       ]
@@ -15095,6 +15201,17 @@
       ]
     },
     {
+      "tag": "nds-quick-menu",
+      "attrs": {},
+      "observedAttrs": [
+        "items",
+        "heading",
+        "show-top",
+        "top-label",
+        "fixed"
+      ]
+    },
+    {
       "tag": "nds-radio",
       "attrs": {},
       "observedAttrs": [
@@ -15554,6 +15671,13 @@
         "bio",
         "meta",
         "clickable"
+      ]
+    },
+    {
+      "tag": "nds-validation-chip",
+      "attrs": {},
+      "observedAttrs": [
+        "state"
       ]
     },
     {
