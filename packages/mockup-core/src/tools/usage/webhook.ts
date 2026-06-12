@@ -14,10 +14,14 @@
  * 0개, Edge Function 의 JWT 게이트 통과 용도로만 쓰인다.
  */
 
-/** Supabase Edge Function ingest URL — 프로젝트 생성 후 채움 (supabase/README.md). */
-export const DEFAULT_INGEST_URL = "";
-/** Supabase anon key — 프로젝트 생성 후 채움. */
-export const DEFAULT_INGEST_ANON_KEY = "";
+/** Supabase Edge Function ingest URL (프로젝트: nudge-ds-telemetry / wqcmarhjlervejuoqksg). */
+export const DEFAULT_INGEST_URL = "https://wqcmarhjlervejuoqksg.supabase.co/functions/v1/ingest";
+/**
+ * Supabase anon key — 공개되어도 무해한 키 (전 테이블 RLS·anon 정책 0개, Edge Function
+ * JWT 게이트 통과 용도만). 회수 = anon key 재발급 + MCPB 패치 릴리즈.
+ */
+export const DEFAULT_INGEST_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY21hcmhqbGVydmVqdW9xa3NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTM5ODgsImV4cCI6MjA5NjgyOTk4OH0.pxcucxbTnPJ-I8ryMDlwk-qLDZP1luorqtXmObuDECY";
 
 /**
  * 수집 엔드포인트 URL. env 우선, 없으면 배포 상수. 마스터 킬 스위치

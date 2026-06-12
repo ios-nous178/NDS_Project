@@ -2,7 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { ingestUrl, ingestToken, ingestHeaders } from "@nudge-design/mockup-core";
+import {
+  ingestUrl,
+  ingestToken,
+  ingestHeaders,
+  DEFAULT_INGEST_URL,
+  DEFAULT_INGEST_ANON_KEY,
+} from "@nudge-design/mockup-core";
 import type { BuildSinglefileHtmlResult } from "@nudge-design/mockup-core/tools/build-html";
 import { sendTelemetryEvents } from "../src/tools/telemetry-egress";
 import { recordBuildObservability } from "../src/tools/observability-sink";
@@ -86,10 +92,12 @@ describe("Tier 2 telemetry → ingest", () => {
     ]);
   });
 
-  it("엔드포인트 미설정(env 없음 + 배포 상수 미채움)이면 전송을 생략한다", async () => {
+  it("env 미설정이면 배포 상수(기본 ingest URL + anon key)로 전송한다", async () => {
+    expect(DEFAULT_INGEST_URL).toMatch(/^https:\/\/.+\/functions\/v1\/ingest$/);
     sendTelemetryEvents([{ kind: "guide-demand", topic: "component:Button", resolved: true }]);
-    await new Promise((r) => setTimeout(r, 20));
-    expect(posts.length).toBe(0);
+    await vi.waitFor(() => expect(posts.length).toBe(1));
+    expect(posts[0].url).toBe(DEFAULT_INGEST_URL);
+    expect(posts[0].headers.Authorization).toBe(`Bearer ${DEFAULT_INGEST_ANON_KEY}`);
   });
 
   it("킬 스위치가 켜져 있으면 전송하지 않는다", async () => {
@@ -144,7 +152,8 @@ describe("Tier 3 observability → ingest (원문 게이트는 실효 sink URL �
     expect(flat).not.toContain("raw-mockup-source");
   });
 
-  it("ingest 미설정이면 observability 전송도 생략한다", async () => {
+  it("킬 스위치(NUDGE_CONTEXT_COLLECTION=0)면 observability 전송도 생략한다", async () => {
+    process.env.NUDGE_CONTEXT_COLLECTION = "0";
     const results = await recordBuildObservability({
       tool: "build_singlefile_html",
       cwd: tmpDir,
