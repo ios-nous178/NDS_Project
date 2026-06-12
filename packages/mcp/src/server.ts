@@ -138,13 +138,21 @@ function checkCatalogFreshness() {
     "packages/react/dist/index.d.ts",
     "packages/icons/dist/index.d.ts",
   ];
+  // 기본은 경고(인터랙티브 dev 의 tsc --watch 플로우 보호).
+  // NUDGE_DS_CATALOG_STRICT=1 또는 CI 에서는 하드 실패 — stale catalog 로 기동한 서버가
+  // 외부 소비자에게 낡은 컴포넌트/토큰 메타를 서빙하는 경로를 차단한다.
+  const strict = process.env.NUDGE_DS_CATALOG_STRICT === "1" || !!process.env.CI;
   for (const rel of sources) {
     const p = path.join(repoRoot, rel);
     if (fs.existsSync(p) && fs.statSync(p).mtimeMs > catalogMtime) {
-      console.error(
-        `[nudge-mcp] WARN: catalog may be stale (${rel} is newer). ` +
-          `Run 'pnpm build --filter @nudge-design/mcp' in DS repo to refresh.`,
-      );
+      const msg =
+        `catalog may be stale (${rel} is newer). ` +
+        `Run 'pnpm build --filter @nudge-design/mcp' in DS repo to refresh.`;
+      if (strict) {
+        console.error(`[nudge-mcp] ERROR: ${msg} (strict mode — NUDGE_DS_CATALOG_STRICT/CI)`);
+        process.exit(1);
+      }
+      console.error(`[nudge-mcp] WARN: ${msg}`);
       return;
     }
   }
