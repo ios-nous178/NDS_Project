@@ -89,13 +89,14 @@ Look up design tokens. No args→group counts; `{ group }`→list a group; `{ qu
 
 ### `get_guide`
 
-Fetch DS guidance by topic (`component:<Name>`, `pattern:<name>`, or fixed like 'principles'/'dos-donts'/'admin-cms'); batch with `topics:[...]`. Size control: `view:'examples'|'rules'` (biggest saver for batches), `sections`/`aspects` (principles slices), `target:'html'` for &lt;nds-\*&gt; examples, `brand` for the service overlay. Call principles once per session. **Mockup first-response gate: ask for Figma/screenshots and write references.md before any guide/component/token lookup or code work.**
+Fetch DS guidance by topic (`component:<Name>`, `pattern:<name>`, or fixed like 'principles'/'dos-donts'/'backoffice' — 'admin-cms' is a permanent alias of 'backoffice'); batch with `topics:[...]`. Size control: `view:'examples'|'rules'` (biggest saver for batches), `sections`/`aspects` (principles slices), `target:'html'` for &lt;nds-\*&gt; examples, `brand` for the service overlay. Call principles once per session. **Mockup first-response gate: ask for Figma/screenshots and write references.md before any guide/component/token lookup or code work.**
 
 **인자**
 
 - `topic` `string` — Single fixed topic, `component:<Name>`, or `pattern:<name>`. Omit when using `topics`.
 - `topics` `string[]` — Batch mode. Multiple fixed/component/pattern topics returned as `{ topics: { [topic]: result } }`. Use this to avoid 5-10 repeated get_guide calls.
-- `intent` `string` — Optional free-text intent passed through to topic='admin-cms' for confirmation. Ignored for other topics.
+- `intent` `string` — Optional intent passed through to topic='backoffice'/'admin-cms'. Pass 'admin' to get the DS redirect for hard-gated b2b admin brands (cashwalk-biz/nudge-eap). Ignored for other topics.
+- `serviceName` `string` — [topic=backoffice] Service display name injected into service-specific copy (e.g. footer 'Copyright © &lt;serviceName&gt;'). Example: 'Runmile'.
 - `target` `react` \| `html` — Component example format. Use 'html' for new &lt;nds-\*&gt; mockups.
 - `view` `examples` \| `rules` \| `full` — Response size control (biggest saver for batched guides). 'examples'→summary + usage examples; 'rules'→summary + pitfalls/recommended (component) or rules/avoid (pattern); 'full' (default)→whole guide incl. metrics/matrixOverrides. `sections` overrides `view`. 5-guide batch: ~35KB→~5KB with 'examples'.
 - `sections` `string[]` — Optional. Pick only these top-level keys from the response (e.g. ['dos', 'donts'] on `principles`, or ['colorMatrix', 'sizeMatrix'] on a component guide). Meta keys (\_advisory, \_htmlAdvisory) are always preserved. If none match, response is an error with availableSections listed.
@@ -227,7 +228,7 @@ react/admin-cms(.tsx) 워크스페이스의 런타임 프리뷰용. html(vanilla
 
 ### `dev_server`
 
-Start/stop a local mockup dev server (Vite) → preview URL/session id. React/admin-cms (.tsx) only — for html (&lt;nds-\*&gt;) use build_singlefile_html instead (start on an html workspace returns guidance, no spawn).
+Start/stop a local mockup dev server (Vite) → preview URL/session id. React/backoffice (.tsx) only — for html (&lt;nds-\*&gt;) use build_singlefile_html instead (start on an html workspace returns guidance, no spawn).
 
 **인자**
 
@@ -255,10 +256,11 @@ Setup router: install/imports/update/claude-md/agents-md/inspector/external-star
 
 - `step` `install` \| `imports` \| `update` \| `claude-md` \| `agents-md` \| `inspector` \| `external-starter` \| `full` · **필수** — install | imports | update | claude-md | agents-md | inspector | external-starter | full.
 - `tgzDir` `string` — [step=install|full] Directory containing the .tgz files. Default: &lt;DS_repo&gt;/local-packages
-- `brand` `string` — [step=imports|full|claude-md|agents-md] Brand slug (see get_brand). Omitted → first 'ready' brand. Admin routing: brand='cashwalk-biz' + intent='admin-cms' routes to the Nudge DS (html), NOT antd — 캐포비만 DS 안에 자체 admin 디자인 시스템을 가짐.
+- `brand` `string` — [step=imports|full|claude-md|agents-md] Brand slug (see get_brand). Omitted → first 'ready' brand. Admin routing: intent='admin' is hard-gated to cashwalk-biz/nudge-eap and routes to the Nudge DS (html), NOT antd — other brands are blocked. 캐포비는 자체 admin 디자인 시스템 보유라 백오피스/CMS 발화도 DS 로 우회.
 - `withRouter` `boolean` — [step=full] Include the react-router-dom install step (default: true).
 - `includeTailwind` `boolean` — [step=install|full] Include @nudge-design/tailwind-preset install (default: false).
-- `intent` `admin-cms` \| `html` — Workspace intent. Default/html → vanilla &lt;nds-\*&gt;; admin-cms → antd conventions. Exception: admin-cms + brand='cashwalk-biz' routes to the DS (html), not antd.
+- `intent` `admin` \| `backoffice` \| `admin-cms` \| `html` — Workspace intent. Default/html → vanilla &lt;nds-\*&gt;; backoffice → 사내 어드민/CMS, neutral antd conventions ('admin-cms' is a deprecated alias of backoffice); admin → 외부 제공(b2b) 어드민, hard-gated to cashwalk-biz/nudge-eap and built with the DS (html) — other brands are blocked, and admin without brand returns a clarification question instead of proceeding.
+- `serviceName` `string` — [intent=backoffice] Service display name injected into service-specific copy (e.g. footer 'Copyright © &lt;serviceName&gt;'). Example: 'Runmile'.
 - `template` `slim` \| `default` — [step=claude-md|agents-md] Instruction template size. Default: slim.
 - `mode` `summary` \| `full` — [step=full] Response size. Default: summary; use full for all setup details.
 - `source` `string` — [step=update] Where the repo came from. Default: 'github'.

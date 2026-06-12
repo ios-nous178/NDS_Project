@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { getGuide } from "../src/tools/guides.js";
+import { resolveIntentRouting, resolveEffectiveIntent } from "../src/guides.js";
 import { _resetSessionState, principlesAcked } from "../src/tools/session-state.js";
 import { DESIGN_DECISIONS_FILE, type DesignDecisionRow } from "../src/tools/design-spec.js";
 
@@ -46,12 +47,63 @@ describe("getGuide", () => {
     });
   }
 
-  it("nudge-eap admin-cms guide warns it is NudgeEAP-only and surfaces the brand exception", () => {
-    const r = getGuide({ topic: "admin-cms" }) as Record<string, unknown>;
-    expect(r.intent).toBe("admin-cms");
-    // 캐포비 사용자가 brand 없이 호출해도 '대상 브랜드 먼저 확인' 경고가 상단에 보여야 한다
-    expect(r["⚠ 브랜드 확인 먼저"]).toBeTypeOf("string");
-    expect(String(r.note)).toContain("캐포비");
+  // 영역 3분화: nudge-eap 은 어드민(b2b) 하드게이트 브랜드 — intent:'admin' 일 때만 DS 우회.
+  // topic 호출만으로는(사내 백오피스=NudgeEAPCMS 일 수 있음) antd 백오피스 가이드를 준다.
+  for (const brand of ["nudge-eap", "nudgeeap", "nudge", "eap"]) {
+    it(`routes admin intent to DS(html) path for brand='${brand}' (b2b admin, no antd)`, () => {
+      const r = getGuide({ topic: "backoffice", intent: "admin", brand: brand as never }) as Record<
+        string,
+        unknown
+      >;
+      expect(r.intent).toBe("html");
+      expect(r.brand).toBe("nudge-eap");
+      expect(r.layout).toBeUndefined();
+      expect(r.searchForm).toBeUndefined();
+      expect((r.techStack as { forbidden?: string[] })?.forbidden).toContain("antd");
+      // 캐포비 전용 패턴(page-pattern/sidebar)이 EAP 어드민으로 새면 안 된다
+      expect(JSON.stringify(r.useInstead)).not.toContain("cashwalk-biz-page-patterns");
+      expect(JSON.stringify(r.useInstead)).toContain("admin-shell");
+    });
+  }
+
+  it("nudge-eap + topic backoffice (no admin intent) stays on the antd backoffice guide", () => {
+    const r = getGuide({ topic: "backoffice", brand: "nudge-eap" }) as Record<string, unknown>;
+    expect(r.intent).toBe("backoffice");
+    expect(r.layout).toBeTypeOf("object");
+  });
+
+  it("brandless backoffice guide is neutral (no hardcoded Nudge EAP footer) and surfaces the gate notice", () => {
+    const r = getGuide({ topic: "backoffice" }) as Record<string, unknown>;
+    expect(r.intent).toBe("backoffice");
+    // 영역(어드민 하드게이트) 안내가 상단에 보여야 한다
+    expect(r["⚠ 영역 확인 먼저"]).toBeTypeOf("string");
+    expect(String(r["⚠ 영역 확인 먼저"])).toContain("캐포비");
+    expect(String(r["⚠ 영역 확인 먼저"])).toContain("nudge-eap");
+    // 중립화 — NudgeEAP 전용 푸터 카피가 박혀 있으면 안 되고 플레이스홀더가 나간다
+    const footer = (r.layout as { footer?: { text?: string } })?.footer;
+    expect(footer?.text).toBe("Copyright © <서비스명>. All Rights Reserved.");
+    expect(r._note).toBeTypeOf("string");
+  });
+
+  it("injects serviceName into the backoffice footer copy", () => {
+    const r = getGuide({ topic: "backoffice", serviceName: "Runmile" }) as Record<string, unknown>;
+    const footer = (r.layout as { footer?: { text?: string } })?.footer;
+    expect(footer?.text).toBe("Copyright © Runmile. All Rights Reserved.");
+    expect(r.serviceName).toBe("Runmile");
+  });
+
+  it("keeps 'admin-cms' as a permanent alias of 'backoffice' with an _alias marker", () => {
+    const alias = getGuide({ topic: "admin-cms" }) as Record<string, unknown>;
+    const canonical = getGuide({ topic: "backoffice" }) as Record<string, unknown>;
+    expect(alias._alias).toContain("backoffice");
+    expect(alias.layout).toEqual(canonical.layout);
+    expect(alias.searchForm).toEqual(canonical.searchForm);
+  });
+
+  it("flags an outside-gate brand on the backoffice guide as b2b-admin-unsupported (advisory only)", () => {
+    const r = getGuide({ topic: "backoffice", brand: "trost" }) as Record<string, unknown>;
+    expect(r.intent).toBe("backoffice");
+    expect(String(r._advisory)).toContain("미지원");
   });
 });
 
@@ -338,5 +390,71 @@ describe("getGuide principles — learned principles promotion", () => {
       if (prev === undefined) delete process.env.NUDGE_LEARNED_PRINCIPLES;
       else process.env.NUDGE_LEARNED_PRINCIPLES = prev;
     }
+  });
+});
+
+describe("resolveIntentRouting — 영역 3분화 매트릭스", () => {
+  it("일반 발화/무발화는 html", () => {
+    expect(resolveIntentRouting(undefined, undefined).kind).toBe("html");
+    expect(resolveIntentRouting("트로스트 마이페이지 목업").kind).toBe("html");
+  });
+
+  it("운영자 키워드 자유발화는 브랜드 유무와 무관하게 확답 요구 (캐포비 제외)", () => {
+    for (const utterance of [
+      "어드민 화면",
+      "백오피스 만들어줘",
+      "CMS 목록",
+      "운영툴",
+      "admin page",
+    ]) {
+      expect(resolveIntentRouting(utterance).kind).toBe("ambiguous-operator");
+    }
+    expect(resolveIntentRouting("어드민 화면", "trost").kind).toBe("ambiguous-operator");
+    expect(resolveIntentRouting("EAP 어드민", "nudge-eap").kind).toBe("ambiguous-operator");
+  });
+
+  it("캐포비는 자체 admin DS 보유 — 운영자/백오피스/어드민 어느 발화든 질문 없이 DS(html)", () => {
+    for (const intent of ["캐포비 CMS", "admin", "backoffice", "admin-cms", "어드민 온보딩"]) {
+      const r = resolveIntentRouting(intent, "cashpobi");
+      expect(r.kind).toBe("html");
+      expect(r.kind === "html" && r.surface).toBe("admin");
+      expect(r.kind === "html" && r.brand).toBe("cashwalk-biz");
+    }
+  });
+
+  it("intent:'admin' 하드게이트 — 게이트 브랜드는 html, 밖은 차단, 미지정은 질문", () => {
+    const eap = resolveIntentRouting("admin", "eap");
+    expect(eap.kind).toBe("html");
+    expect(eap.kind === "html" && eap.surface).toBe("admin");
+    expect(eap.kind === "html" && eap.brand).toBe("nudge-eap");
+
+    const blocked = resolveIntentRouting("admin", "trost");
+    expect(blocked.kind).toBe("blocked-admin");
+    expect(blocked.kind === "blocked-admin" && blocked.requestedBrand).toBe("trost");
+    expect(
+      blocked.kind === "blocked-admin" && blocked.supportedAdminBrands.includes("nudge-eap"),
+    ).toBe(true);
+
+    expect(resolveIntentRouting("admin", undefined).kind).toBe("ambiguous-operator");
+  });
+
+  it("미지(unknown) 브랜드 + intent:'admin' 은 차단 (지원 확인 불가)", () => {
+    const r = resolveIntentRouting("admin", "some-unknown-brand");
+    expect(r.kind).toBe("blocked-admin");
+  });
+
+  it("intent:'backoffice' / 레거시 'admin-cms' 는 backoffice (질문/차단 없음)", () => {
+    expect(resolveIntentRouting("backoffice").kind).toBe("backoffice");
+    expect(resolveIntentRouting("backoffice", "trost").kind).toBe("backoffice");
+    expect(resolveIntentRouting("backoffice", "nudge-eap").kind).toBe("backoffice");
+    expect(resolveIntentRouting("admin-cms").kind).toBe("backoffice");
+    expect(resolveIntentRouting("admin-cms", "runmile").kind).toBe("backoffice");
+  });
+
+  it("deprecated resolveEffectiveIntent 는 html 외 전부를 admin-cms 로 뭉갠다 (구 dist 호환)", () => {
+    expect(resolveEffectiveIntent("backoffice")).toBe("admin-cms");
+    expect(resolveEffectiveIntent("어드민")).toBe("admin-cms");
+    expect(resolveEffectiveIntent("admin", "cashpobi")).toBe("html");
+    expect(resolveEffectiveIntent("마이페이지")).toBe("html");
   });
 });

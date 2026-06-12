@@ -8,7 +8,7 @@ figmaNodeUrl: https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B
 
 ## pitfalls
 
-- **★ 캐포비(cashwalk-biz) 어드민 = nds-sidebar 가 정답.** 일반 브랜드의 어드민/CMS 는 antd Layout.Sider 가 규칙이지만(get_guide({ topic:'admin-cms' })), 캐포비는 DS 안에 자체 admin DS(sidebar 300px · admin 토큰)를 갖고 있어 antd 가 아니라 이 `<nds-sidebar>`(React `<Sidebar>`) 를 쓴다. `intent='admin-cms' + brand='cashwalk-biz'` 면 라우터도 antd 가 아니라 html/DS 로 보낸다. `:root[data-brand='cashwalk-biz']` cascade 로 brand-subtle bg + 노란 indicator 가 자동 적용 — 색 hex 박지 말 것.
+- **★ 어드민(b2b 하드게이트 브랜드) = nds-sidebar 가 정답.** 사내 백오피스는 antd Layout.Sider 가 규칙이지만(get_guide({ topic:'backoffice' })), 어드민(외부 제공 b2b)은 캐포비(cashwalk-biz)·넛지EAP(nudge-eap)만 지원하며 antd 가 아니라 이 `<nds-sidebar>`(React `<Sidebar>`) 를 쓴다. `intent='admin' + brand` 면 라우터도 antd 가 아니라 html/DS 로 보낸다(캐포비는 CMS 발화도 우회). 캐포비는 자체 admin DS(sidebar 300px · admin 토큰) — `:root[data-brand='cashwalk-biz']` cascade 로 brand-subtle bg + 노란 indicator 가 자동 적용, 색 hex 박지 말 것.
 - items prop 은 flat SidebarItem[] 또는 SidebarSection[] 둘 다 받지만, **섹션 라벨이 필요하면** SidebarSection[] 으로 넘길 것. flat 배열 안에 빈 객체로 'spacer' 만들지 말 것.
 - 활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.
 - 캐시워크 포 비즈니스 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.
@@ -54,7 +54,7 @@ figmaNodeUrl: https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B
 ## examplesHtml.dont
 
 ```html
-<!-- 일반 어드민/CMS(=antd 영역)에서 nds-sidebar 사용 — 일반 어드민은 antd Layout.Sider. -->
-<!-- ★ 단, 캐포비(cashwalk-biz) 어드민은 정반대 — nds-sidebar 가 정답이다 (DS 자체 admin DS). 아래 pitfalls 참고 -->
+<!-- 사내 백오피스(=antd 영역)에서 nds-sidebar 사용 — 백오피스는 antd Layout.Sider. -->
+<!-- ★ 단, 어드민 하드게이트 브랜드(캐포비/넛지EAP)는 정반대 — nds-sidebar 가 정답이다. 아래 pitfalls 참고 -->
 <nds-sidebar items='...'></nds-sidebar>
 ```

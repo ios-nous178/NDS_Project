@@ -352,3 +352,121 @@ describe("get_setup external-starter (도구 중립 온보딩)", () => {
     expect(result.files.claudeMd.error).toContain("already exists");
   });
 });
+
+describe("영역 3분화 라우팅 — get_setup 하드게이트/하드스톱", () => {
+  it("intent:'admin' + 게이트 밖 브랜드(trost)는 차단되고 셋업 본문이 없다", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const result = getSetup({ step: "full", intent: "admin", brand: "trost" }) as Record<
+      string,
+      unknown
+    >;
+    expect(result.ok).toBe(false);
+    expect(result.blocked).toBe(true);
+    expect(String(result.error)).toContain("미지원");
+    expect(JSON.stringify(result.options)).toContain("backoffice");
+    // 하드스톱 — 셋업 본문(steps/commands)을 절대 같이 주지 않는다
+    expect(result.steps).toBeUndefined();
+    expect(result.commands).toBeUndefined();
+  });
+
+  it("운영자 키워드 자유발화(브랜드 미지정)는 확답 질문만 반환한다 (ambiguous 하드스톱)", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const result = getSetup({ step: "full", intent: "어드민 화면 만들어줘" }) as Record<
+      string,
+      unknown
+    >;
+    expect(result.ok).toBe(false);
+    expect(result.needsClarification).toBeTypeOf("string");
+    expect(String(result.needsClarification)).toContain("backoffice");
+    expect(result.steps).toBeUndefined();
+    expect(result.commands).toBeUndefined();
+  });
+
+  it("운영자 키워드 + nudge-eap 도 확답 질문 (EAP 는 b2b 어드민=DS / 사내 CMS=antd 둘 다 가능)", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const result = getSetup({ step: "full", intent: "EAP 어드민 목업", brand: "eap" }) as Record<
+      string,
+      unknown
+    >;
+    expect(result.ok).toBe(false);
+    expect(result.needsClarification).toBeTypeOf("string");
+  });
+
+  it("캐포비는 운영자 키워드 발화라도 질문 없이 DS(html) 셋업으로 우회한다 (회귀 보존)", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const result = getSetup({
+      step: "full",
+      intent: "캐포비 CMS 화면",
+      brand: "cashpobi",
+    }) as Record<string, unknown>;
+    expect(result.intent).toBe("html");
+    expect(result.needsClarification).toBeUndefined();
+  });
+
+  it("intent:'backoffice' 는 중립 antd 셋업 — serviceName 이 nextTools 에 전파된다", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const result = getSetup({
+      step: "full",
+      intent: "backoffice",
+      serviceName: "Runmile",
+    }) as Record<string, unknown>;
+    expect(result.intent).toBe("backoffice");
+    expect(JSON.stringify(result.nextTools)).toContain("Runmile");
+  });
+
+  it("레거시 intent:'admin-cms' 는 차단이 아니라 backoffice 로 정규화된다 (외부 CLAUDE.md 호환)", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const result = getSetup({ step: "full", intent: "admin-cms" }) as Record<string, unknown>;
+    expect(result.intent).toBe("backoffice");
+    expect(result.blocked).toBeUndefined();
+    expect(result.needsClarification).toBeUndefined();
+  });
+
+  it("intent:'admin' + brand='eap' claude-md 는 DS(html) 템플릿 + nudge.surface=admin 마커", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-admin-md-"));
+    const result = getSetup({ step: "claude-md", cwd, intent: "admin", brand: "eap" }) as Record<
+      string,
+      unknown
+    >;
+    expect(result.ok).toBe(true);
+    expect(result.intent).toBe("html");
+    expect(result.brandMarker).toBe("nudge-eap");
+    expect(result.surfaceMarker).toBe("admin");
+    expect(fs.readFileSync(path.join(cwd, "nudge.surface"), "utf-8").trim()).toBe("admin");
+    // DS(html) 템플릿이 나가야 한다 — antd 백오피스 본문이 아니라
+    const content = fs.readFileSync(path.join(cwd, "CLAUDE.md"), "utf-8");
+    expect(content).toContain("nds-");
+    expect(content).not.toContain("antd v5 for backoffice");
+  });
+
+  it("차단된 claude-md 호출은 파일을 만들지 않는다", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-blocked-md-"));
+    const result = getSetup({ step: "claude-md", cwd, intent: "admin", brand: "trost" }) as Record<
+      string,
+      unknown
+    >;
+    expect(result.ok).toBe(false);
+    expect(result.blocked).toBe(true);
+    expect(fs.existsSync(path.join(cwd, "CLAUDE.md"))).toBe(false);
+    expect(fs.existsSync(path.join(cwd, "nudge.surface"))).toBe(false);
+  });
+
+  it("backoffice claude-md 는 antd 템플릿 + serviceName 푸터 카피 주입", () => {
+    configureWithManifest({ packages: htmlSetupPackages() });
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-bo-md-"));
+    const result = getSetup({
+      step: "claude-md",
+      cwd,
+      intent: "backoffice",
+      serviceName: "Runmile",
+      template: "default",
+    }) as Record<string, unknown>;
+    expect(result.ok).toBe(true);
+    expect(result.intent).toBe("backoffice");
+    const content = fs.readFileSync(path.join(cwd, "CLAUDE.md"), "utf-8");
+    expect(content).toContain("antd v5");
+    expect(content).toContain("Copyright © Runmile. All Rights Reserved.");
+  });
+});
