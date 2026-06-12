@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T05:16:17.885Z",
+  "generatedAt": "2026-06-12T05:50:47.604Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -5636,6 +5636,50 @@
         "actions",
         "columns",
         "gap"
+      ]
+    },
+    {
+      "name": "QuickMenu",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "QuickMenuItem[]"
+        },
+        {
+          "name": "heading",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "showTop",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "topLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onTopClick",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "fixed",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/QuickMenu.d.ts",
+      "htmlTag": "nds-quick-menu",
+      "htmlObservedAttrs": [
+        "items",
+        "heading",
+        "show-top",
+        "top-label",
+        "fixed"
       ]
     },
     {
@@ -13829,6 +13873,7 @@
     "nds-progress-bar",
     "nds-pull-to-refresh",
     "nds-quick-action-grid",
+    "nds-quick-menu",
     "nds-radio",
     "nds-region-row",
     "nds-review-card",
@@ -15056,6 +15101,17 @@
         "actions",
         "columns",
         "gap"
+      ]
+    },
+    {
+      "tag": "nds-quick-menu",
+      "attrs": {},
+      "observedAttrs": [
+        "items",
+        "heading",
+        "show-top",
+        "top-label",
+        "fixed"
       ]
     },
     {

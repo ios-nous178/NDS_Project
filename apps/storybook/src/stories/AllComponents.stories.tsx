@@ -70,6 +70,7 @@ import {
   ProductCard,
   ProgressBar,
   QuickActionGrid,
+  QuickMenu,
   Radio,
   ReviewCard,
   ScoreGauge,
@@ -1237,6 +1238,15 @@ const PREVIEWS: Record<string, PreviewRender> = {
         { key: "2", label: "추가", icon: <PlusIcon size={20} />, onClick: () => {} },
         { key: "3", label: "캘린더", icon: <CalendarIcon size={20} />, onClick: () => {} },
         { key: "4", label: "공유", icon: <ShareIcon size={20} />, onClick: () => {} },
+      ]}
+    />
+  ),
+  QuickMenu: () => (
+    <QuickMenu
+      items={[
+        { key: "counsel", label: "바로 상담하기", icon: <SearchIcon size={32} /> },
+        { key: "search", label: "상담사 찾기", icon: <SearchIcon size={32} /> },
+        { key: "room", label: "내 상담방", icon: <SearchIcon size={32} /> },
       ]}
     />
   ),

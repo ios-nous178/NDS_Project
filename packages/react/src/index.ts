@@ -92,6 +92,7 @@ export * from "./ExpandableText";
 export * from "./PageHeader";
 export * from "./TitleGroup";
 export * from "./QuickActionGrid";
+export * from "./QuickMenu";
 export * from "./TagInput";
 export * from "./Lightbox";
 export * from "./AvatarGroup";
