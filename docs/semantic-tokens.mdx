@@ -20,9 +20,10 @@ import { SectionNav, TokenGrid, TokenCard } from "@site/src/components/SemanticT
   { label: "Role · Text", count: 12, href: "#role-text" },
   { label: "Role · Icon", count: 8, href: "#role-icon" },
   { label: "Role · Border", count: 9, href: "#role-border" },
-  { label: "Role · Button", count: 20, href: "#role-button" },
+  { label: "Role · Button", count: 26, href: "#role-button" },
   { label: "Role · Fill", count: 9, href: "#role-fill" },
   { label: "Role · Input", count: 12, href: "#role-input" },
+  { label: "cv 매핑 없음", count: 15, href: "#cv-매핑-없음" },
 ]} />
 
 ## Role · Surface (배경)
@@ -110,10 +111,16 @@ import { SectionNav, TokenGrid, TokenCard } from "@site/src/components/SemanticT
   <TokenCard name="button.bgOutlined" cssVar="--semantic-button-bg-outlined-default" base="#FFFFFF" trost="#FFFFFF" geniet="#FFFFFF" guide="core" figmaNode="231:2" />
   <TokenCard name="button.bgOutlinedHover" cssVar="--semantic-button-bg-outlined-hover" base="#F1F8FD" trost="#FFF8B8" geniet="#FAFAFA" guide="core" figmaNode="231:2" />
   <TokenCard name="button.bgOutlinedDisabled" cssVar="--semantic-button-bg-outlined-disabled" base="#FFFFFF" trost="#FFFFFF" geniet="#FFFFFF" guide="core" figmaNode="231:2" />
+  <TokenCard name="button.bgNeutral" cssVar="--semantic-button-bg-neutral-default" base="#9CA2AE" geniet="#ECECEC" />
+  <TokenCard name="button.bgNeutralHover" cssVar="--semantic-button-bg-neutral-hover" base="#7E8593" geniet="#F5F5F5" />
+  <TokenCard name="button.bgNeutralDisabled" cssVar="--semantic-button-bg-neutral-disabled" base="#F5F5F5" geniet="#CCCCCC" />
   <TokenCard name="button.textDefault" cssVar="--semantic-button-text-default" base="#FFFFFF" trost="#000000" geniet="#FFFFFF" guide="core" figmaNode="231:46" />
   <TokenCard name="button.textBrand" cssVar="--semantic-button-text-brand" base="#2B96ED" trost="#FF9D00" geniet="#00A8AC" guide="core" figmaNode="231:46" />
   <TokenCard name="button.textSecondary" cssVar="--semantic-button-text-secondary-default" base="#2B96ED" trost="#4968FF" geniet="#FFFFFF" />
   <TokenCard name="button.textSecondaryDisabled" cssVar="--semantic-button-text-secondary-disabled" base="#9CA2AE" trost="#979797" geniet="#999999" />
+  <TokenCard name="button.textNeutral" cssVar="--semantic-button-text-neutral" base="#FFFFFF" geniet="#666666" />
+  <TokenCard name="button.textNeutralSolid" cssVar="--semantic-button-text-neutral-solid" base="#FFFFFF" geniet="#666666" />
+  <TokenCard name="button.textNeutralDisabled" cssVar="--semantic-button-text-neutral-disabled" base="#999999" geniet="#999999" />
   <TokenCard name="button.textDisabled" cssVar="--semantic-button-text-disabled" base="#9CA2AE" trost="#979797" geniet="#999999" guide="core" figmaNode="231:46" />
   <TokenCard name="button.borderOutlined" cssVar="--semantic-button-border-outlined-default" base="#2B96ED" trost="#FFE600" geniet="#00A8AC" guide="core" figmaNode="261:32" />
   <TokenCard name="button.borderOutlinedHover" cssVar="--semantic-button-border-outlined-hover" base="#2B96ED" trost="#FFE600" geniet="#00A8AC" guide="core" figmaNode="261:32" />
@@ -157,6 +164,28 @@ Input · Field 입력 영역 색상.
   <TokenCard name="input.helpertextDisabled" cssVar="--semantic-input-helpertext-disabled" base="#C7C7C7" trost="#C7C7C7" geniet="#BBBBBB" guide="core" figmaNode="294:12" />
 </TokenGrid>
 
+## cv 매핑 없음
+
+아래 CSS 변수는 generate-css.cjs 가 emit 하지만 `cv` 객체에는 노출되지 않음 — 직접 `var(...)` 로만 사용.
+
+<TokenGrid>
+  <TokenCard name="--semantic-gap-tight" cssVar="--semantic-gap-tight" base="4px" />
+  <TokenCard name="--semantic-gap-default" cssVar="--semantic-gap-default" base="10px" />
+  <TokenCard name="--semantic-gap-comfortable" cssVar="--semantic-gap-comfortable" base="12px" />
+  <TokenCard name="--semantic-gap-loose" cssVar="--semantic-gap-loose" base="16px" />
+  <TokenCard name="--semantic-gap-wide" cssVar="--semantic-gap-wide" base="24px" />
+  <TokenCard name="--semantic-gap-title-h1" cssVar="--semantic-gap-title-h1" base="12px" />
+  <TokenCard name="--semantic-gap-title-h2" cssVar="--semantic-gap-title-h2" base="12px" />
+  <TokenCard name="--semantic-gap-title-h3" cssVar="--semantic-gap-title-h3" base="12px" />
+  <TokenCard name="--semantic-gap-title-h4" cssVar="--semantic-gap-title-h4" base="6px" />
+  <TokenCard name="--semantic-gap-title-h5" cssVar="--semantic-gap-title-h5" base="8px" />
+  <TokenCard name="--semantic-inset-chip" cssVar="--semantic-inset-chip" base="8px" />
+  <TokenCard name="--semantic-inset-input" cssVar="--semantic-inset-input" base="12px" />
+  <TokenCard name="--semantic-inset-card" cssVar="--semantic-inset-card" base="16px" />
+  <TokenCard name="--semantic-inset-card-large" cssVar="--semantic-inset-card-large" base="20px" />
+  <TokenCard name="--semantic-inset-modal" cssVar="--semantic-inset-modal" base="24px" />
+</TokenGrid>
+
 ---
 
-총 83 개 시멘틱 토큰.
+총 104 개 시멘틱 토큰.

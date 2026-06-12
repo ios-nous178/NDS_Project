@@ -267,9 +267,23 @@ lines.push("");
 lines.push(`총 ${totalCount} 개 시멘틱 토큰.`);
 lines.push("");
 
-fs.writeFileSync(OUTPUT, lines.join("\n"));
-// 과거 .md 잔재가 있으면 제거 (Docusaurus 가 두 확장자 중 하나만 라우팅하도록)
-if (fs.existsSync(LEGACY_OUTPUT)) {
-  fs.unlinkSync(LEGACY_OUTPUT);
+const generated = lines.join("\n");
+
+if (process.argv.includes("--check")) {
+  const current = fs.existsSync(OUTPUT) ? fs.readFileSync(OUTPUT, "utf8") : "";
+  if (current !== generated) {
+    console.error(
+      `✗ ${path.relative(ROOT, OUTPUT)} 가 토큰 소스와 어긋났습니다. ` +
+        "`node scripts/generate-semantic-tokens-doc.mjs` 로 재생성 후 같이 커밋하세요.",
+    );
+    process.exit(1);
+  }
+  console.log(`✓ ${path.relative(ROOT, OUTPUT)} 동기화됨 (${totalCount} tokens)`);
+} else {
+  fs.writeFileSync(OUTPUT, generated);
+  // 과거 .md 잔재가 있으면 제거 (Docusaurus 가 두 확장자 중 하나만 라우팅하도록)
+  if (fs.existsSync(LEGACY_OUTPUT)) {
+    fs.unlinkSync(LEGACY_OUTPUT);
+  }
+  console.log(`✓ ${path.relative(ROOT, OUTPUT)} (${totalCount} tokens)`);
 }
-console.log(`✓ ${path.relative(ROOT, OUTPUT)} (${totalCount} tokens)`);

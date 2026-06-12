@@ -42,6 +42,7 @@
     "fix": "node scripts/fix-all.mjs",
     "precommit": "node scripts/precommit-gate.mjs",
     "sync:skills": "node scripts/sync-skills.mjs",
+    "sync:agents-md": "node scripts/sync-agents-md.mjs",
     "lint:skills": "node scripts/sync-skills.mjs --check",
     "pack:local": "node scripts/pack-local-packages.mjs",
     "pack:local:no-build": "node scripts/pack-local-packages.mjs --no-build",

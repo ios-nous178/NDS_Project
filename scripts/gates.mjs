@@ -98,13 +98,18 @@ export const GATES = [
   },
   {
     id: "storybook-catalog",
-    label: "Storybook catalog coverage",
+    label: "Storybook catalog coverage (스토리·inventory·PREVIEWS 3면 대조)",
     check: ["node", "scripts/check-storybook-catalog.mjs"],
     fix: null,
     fixHint:
-      "스토리 추가/삭제 시 metadata/componentInventory.json 과 " +
-      "AllComponents.stories.tsx 카탈로그를 같이 갱신하세요.",
-    watch: ["apps/storybook/src/stories/", "metadata/componentInventory.json"],
+      "신규 컴포넌트는 metadata/componentInventory.json + AllComponents PREVIEWS 에 등록. " +
+      "의도된 제외는 scripts/storybook-catalog-baseline.json 에 사유와 함께 추가.",
+    watch: [
+      "apps/storybook/src/stories/",
+      "metadata/componentInventory.json",
+      "packages/react/src/index.ts",
+      "scripts/storybook-catalog-baseline.json",
+    ],
     buildFree: true,
     ssot: true,
   },
@@ -133,6 +138,15 @@ export const GATES = [
     fix: ["node", "scripts/generate-guide-docs.mjs"],
     watch: ["packages/mcp/src/guides.ts", "packages/mcp/guides-src/"],
     buildFree: false, // packages/mcp/dist/guides.js 를 읽음
+    ssot: true,
+  },
+  {
+    id: "semantic-tokens-doc",
+    label: "시멘틱 토큰 카탈로그 문서 (docs/semantic-tokens.mdx)",
+    check: ["node", "scripts/generate-semantic-tokens-doc.mjs", "--check"],
+    fix: ["node", "scripts/generate-semantic-tokens-doc.mjs"],
+    watch: ["packages/tokens/src/", "docs/semantic-tokens.mdx"],
+    buildFree: false, // packages/tokens/dist/*.css 를 읽음 — stale dist 오탐 방지
     ssot: true,
   },
   {
@@ -219,6 +233,27 @@ export const GATES = [
     watch: [".claude/skills/", ".agents/skills/"],
     buildFree: true,
     ssot: false,
+  },
+  {
+    id: "guide-figma-links",
+    label: "컴포넌트 가이드 figmaNodeUrl (신규 누락 차단 + 기존 waiver 경고)",
+    check: ["node", "scripts/check-guide-figma-links.mjs"],
+    fix: null,
+    fixHint:
+      "guides-src/components/<Name>.md frontmatter 에 figmaNodeUrl 을 추가하세요. " +
+      "기존 누락 정리는 scripts/guide-figma-baseline.json 에서 추적.",
+    watch: ["packages/mcp/guides-src/components/", "scripts/guide-figma-baseline.json"],
+    buildFree: true,
+    ssot: true,
+  },
+  {
+    id: "agents-md",
+    label: "AGENTS.md 미러 (CLAUDE.md → AGENTS.md)",
+    check: ["node", "scripts/sync-agents-md.mjs", "--check"],
+    fix: ["node", "scripts/sync-agents-md.mjs"],
+    watch: ["CLAUDE.md", "AGENTS.md"],
+    buildFree: true,
+    ssot: true,
   },
 ];
 
