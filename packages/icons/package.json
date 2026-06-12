@@ -33,6 +33,7 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
     "generate": "node scripts/generate.js",
     "import:mockup": "node scripts/import-iconsax-mockup.mjs",

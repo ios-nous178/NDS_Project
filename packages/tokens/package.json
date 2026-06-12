@@ -17,15 +17,31 @@
       "types": "./dist/brand-profiles.d.ts",
       "import": "./dist/brand-profiles.js"
     },
-    "./css": "./dist/tokens.css",
-    "./css/trost": "./dist/trost.css",
-    "./css/geniet": "./dist/geniet.css",
-    "./css/cashwalk-biz": "./dist/cashwalk-biz.css",
-    "./css/runmile": "./dist/runmile.css"
+    "./css": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/tokens.css"
+    },
+    "./css/trost": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/trost.css"
+    },
+    "./css/geniet": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/geniet.css"
+    },
+    "./css/cashwalk-biz": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/cashwalk-biz.css"
+    },
+    "./css/runmile": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/runmile.css"
+    }
   },
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
     "build": "rm -rf dist && tsc && node scripts/generate-css.js",
     "lint": "eslint .",

@@ -17,6 +17,12 @@
     },
     "./styles.css": "./dist/styles.css"
   },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc && node scripts/copy-styles.mjs",
     "lint": "eslint .",
