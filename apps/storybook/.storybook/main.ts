@@ -60,10 +60,6 @@ const config: StorybookConfig = {
         ...config.resolve,
         dedupe: [...(config.resolve?.dedupe ?? []), "react", "react-dom"],
       },
-      optimizeDeps: {
-        ...config.optimizeDeps,
-        force: true,
-      },
       server: {
         ...config.server,
         fs: {
