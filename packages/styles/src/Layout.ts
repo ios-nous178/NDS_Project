@@ -35,7 +35,7 @@
  *     </main>
  *   </div>
  */
-import { cv, fontFamily, radius, spacing } from "@nudge-design/tokens";
+import { cv, fontFamily, grid, radius, spacing } from "@nudge-design/tokens";
 
 /* ─── Shell — 페이지 전체 레이아웃 (sidebar + main + topbar + content) ─── */
 
@@ -240,5 +240,38 @@ export const formRowStyles = `
     font-size: 13px;
     color: ${cv.textRole.subtle};
     line-height: 1.5;
+  }
+`;
+
+/* ─── Container — 컨텐츠 가로 폭을 viewport 안에 가두는 반응형 래퍼 (Figma 1385:13).
+   PC ≥1024: max 1200 · 좌우 40 / Tablet 768~1023: max 768 · 좌우 24 / Mobile <768: 100% · 좌우 16.
+   Layout primitive 컨벤션대로 web component 없이 클래스만 — `<div class="nds-container">…`.
+   Section(세로 블록)은 컴포넌트화하지 않고 룰만 — get_guide({ topic: 'pattern:container-section' }). ─── */
+
+const CONTAINER_CLASS = "nds-container";
+
+export const containerStyles = `
+  :where(.${CONTAINER_CLASS}) {
+    width: 100%;
+    max-width: ${grid.desktop.contentWidth}px;
+    margin-inline: auto;
+    padding-inline: ${spacing[40]}px;
+    box-sizing: border-box;
+  }
+
+  /* Tablet — 768~1023 */
+  @media (max-width: 1023px) {
+    :where(.${CONTAINER_CLASS}) {
+      max-width: 768px;
+      padding-inline: ${spacing[24]}px;
+    }
+  }
+
+  /* Mobile — <768 */
+  @media (max-width: 767px) {
+    :where(.${CONTAINER_CLASS}) {
+      max-width: 100%;
+      padding-inline: ${spacing[16]}px;
+    }
   }
 `;
