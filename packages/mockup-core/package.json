@@ -23,7 +23,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "typecheck": "tsc --noEmit",
-    "test": "rm -rf dist && tsc && node --test 'dist/**/*.test.js'"
+    "test": "node --test 'dist/**/*.test.js'"
   },
   "dependencies": {
     "@babel/parser": "^7.25.0",
