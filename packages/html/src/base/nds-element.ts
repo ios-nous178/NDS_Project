@@ -8,6 +8,16 @@
  *  · host element 자체에 className / data-* / inline CSS variables 를 박는 패턴.
  *    React DS Button 의 `<button class="nds-button" data-variant=...>` 구조를 그대로 모방.
  *  · children 은 절대 건드리지 않는다 — 사용자/AI 가 쓴 markup 을 보존.
+ *
+ * ── mount/update 계약 (input 재생성 footgun 의 구조적 차단) ──
+ *  · mount()  = DOM 골격을 **1회만** 구성 (베이스가 1회 보장 — disconnect 후
+ *    재연결돼도 다시 호출되지 않는다).
+ *  · update() = attribute 변화를 기존 노드에 **반영만** 한다. update() 안에서
+ *    input/textarea 를 재생성하면 키 입력마다 포커스가 유실된다
+ *    (AddressPicker/DatePicker "한 글자마다 끊김" 클래스 — 회귀 테스트 의무,
+ *    scripts/check-input-tests.mjs 게이트).
+ *  · 기존 컴포넌트의 `if (!this._root) this._mount()` 자가 가드 패턴도 유효하나,
+ *    신규 컴포넌트는 mount() override 를 사용한다.
  */
 
 export abstract class NdsElement extends HTMLElement {
@@ -15,8 +25,26 @@ export abstract class NdsElement extends HTMLElement {
   static elementName: string = "";
 
   private _renderScheduled = false;
+  private _ndsMounted = false;
+
+  /** mount() 가 이미 실행됐는지. 자식 클래스 가드/디버깅용. */
+  protected get mounted(): boolean {
+    return this._ndsMounted;
+  }
+
+  /**
+   * DOM 골격 1회 구성 훅 — 첫 connectedCallback 직전에 베이스가 정확히 한 번
+   * 호출한다. 기본은 no-op (자가 _mount 가드를 쓰는 기존 컴포넌트 하위호환).
+   */
+  protected mount(): void {
+    /* no-op base — 신규 컴포넌트가 override */
+  }
 
   connectedCallback(): void {
+    if (!this._ndsMounted) {
+      this._ndsMounted = true;
+      this.mount();
+    }
     this.scheduleUpdate();
   }
 
