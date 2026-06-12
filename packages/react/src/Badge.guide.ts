@@ -1,8 +1,8 @@
 /**
- * Badge 컴포넌트의 design guide 확정 메타
- *
- * Figma 가이드(171:10856)에 등재된 variant/color/size 만 core 로 표기.
- * Storybook DesignGuideBadge 가 이 정보를 카드 옆에 노출한다.
+ * @deprecated 이 모듈 전체가 폐기 예정 — SSOT 는 `packages/mcp/guides-src/components/Badge.md`
+ * frontmatter(figmaNodeUrl). 모든 항목이 동일한 core 메타라 정보량이 frontmatter 와 같아
+ * 이중 관리만 남았다. Storybook 은 metadata/componentGuides.json 파생(guideMeta.ts)으로 전환됨.
+ * 외부 호환을 위해 export 만 유지 — 차기 minor 에서 제거 예정.
  */
 
 import type { GuideMeta } from "@nudge-design/tokens";

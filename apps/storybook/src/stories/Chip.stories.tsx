@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import {
-  Chip,
-  chipColorGuide,
-  chipVariantGuide,
-  type ChipColor,
-  type ChipProps,
-  type ChipVariant,
-} from "@nudge-design/react";
+import { Chip, type ChipColor, type ChipProps, type ChipVariant } from "@nudge-design/react";
 import { PinIcon, TelephoneIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 import { DesignGuideBadge } from "../components/DesignGuideBadge";
+import { coreGuideMeta } from "../components/guideMeta";
+
+// Figma 가이드(171:10856) 등재 메타 — SSOT 는 guides-src/components/Chip.md frontmatter
+const chipGuideMeta = coreGuideMeta("Chip");
 
 const VARIANTS: ChipVariant[] = ["fill", "outlined", "ghost"];
 const COLORS: ChipColor[] = ["brand", "neutral", "success", "error", "caution"];
@@ -303,7 +300,7 @@ export const DesignGuideOverview: Story = {
               }}
             >
               <Chip label={variant} variant={variant} color="brand" />
-              <DesignGuideBadge meta={chipVariantGuide[variant]} />
+              <DesignGuideBadge meta={chipGuideMeta} />
             </div>
           ))}
         </div>
@@ -330,7 +327,7 @@ export const DesignGuideOverview: Story = {
               }}
             >
               <Chip label={COLOR_LABEL[color]} variant="fill" color={color} />
-              <DesignGuideBadge meta={chipColorGuide[color]} />
+              <DesignGuideBadge meta={chipGuideMeta} />
             </div>
           ))}
         </div>

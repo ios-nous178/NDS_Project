@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import {
-  Badge,
-  badgeColorGuide,
-  badgeVariantGuide,
-  type BadgeColor,
-  type BadgeVariant,
-} from "@nudge-design/react";
+import { Badge, type BadgeColor, type BadgeVariant } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { DesignGuideBadge } from "../components/DesignGuideBadge";
+import { coreGuideMeta } from "../components/guideMeta";
+
+// Figma 가이드(171:10856) 등재 메타 — SSOT 는 guides-src/components/Badge.md frontmatter
+const badgeGuideMeta = coreGuideMeta("Badge");
 
 const VARIANTS: BadgeVariant[] = ["fill", "ghost", "line"];
 const COLORS: BadgeColor[] = ["brand", "neutral", "success", "error", "caution", "info"];
@@ -60,7 +58,8 @@ const meta: Meta<typeof Badge> = {
     shape: {
       control: "select",
       options: ["default", "pill"],
-      description: "Figma `Shape` — default(라운드 사각, 동적 상태값) / pill(완전 둥근, 정적 식별 태그)",
+      description:
+        "Figma `Shape` — default(라운드 사각, 동적 상태값) / pill(완전 둥근, 정적 식별 태그)",
     },
   },
   args: {
@@ -369,7 +368,7 @@ export const DesignGuideOverview: Story = {
               }}
             >
               <Badge variant={variant}>{variant}</Badge>
-              <DesignGuideBadge meta={badgeVariantGuide[variant]} />
+              <DesignGuideBadge meta={badgeGuideMeta} />
             </div>
           ))}
         </div>
@@ -396,7 +395,7 @@ export const DesignGuideOverview: Story = {
               }}
             >
               <Badge color={color}>{color}</Badge>
-              <DesignGuideBadge meta={badgeColorGuide[color]} />
+              <DesignGuideBadge meta={badgeGuideMeta} />
             </div>
           ))}
         </div>
