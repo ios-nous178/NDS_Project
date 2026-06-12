@@ -21,7 +21,8 @@ function readDtsExports(dir) {
     .readdirSync(dir)
     .filter((f) => f.endsWith(".d.ts") && !f.endsWith(".d.ts.map"))
     .map((f) => f.replace(/\.d\.ts$/, ""))
-    .filter((n) => n !== "index" && /^[A-Z]/.test(n));
+    // `Badge.guide.d.ts` 같은 보조 모듈(.guide 등 dot-suffix)은 컴포넌트가 아니다.
+    .filter((n) => n !== "index" && /^[A-Z]/.test(n) && !n.includes("."));
 }
 
 /**
@@ -388,6 +389,8 @@ if (componentNames.length < MIN_REACT_COMPONENTS) {
  */
 const NDS_TAG_TO_REACT_ALIAS = {
   "nds-fab": "FAB",
+  // 연속 대문자 약어는 kebab 왕복이 안 됨 (nds-ds-highlight → DsHighlight ≠ DSHighlight).
+  "nds-ds-highlight": "DSHighlight",
 };
 function ndsTagToPascal(tag) {
   if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];

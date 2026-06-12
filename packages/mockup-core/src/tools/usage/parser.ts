@@ -369,6 +369,8 @@ function isLowerCaseTag(name: string): boolean {
  */
 const NDS_TAG_TO_REACT_ALIAS: Record<string, string> = {
   "nds-fab": "FAB",
+  // 연속 대문자 약어는 kebab 왕복이 안 됨 (nds-ds-highlight → DsHighlight ≠ DSHighlight).
+  "nds-ds-highlight": "DSHighlight",
 };
 export function ndsTagToComponentName(tag: string): string | null {
   if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];

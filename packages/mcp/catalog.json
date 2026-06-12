@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T01:52:23.278Z",
+  "generatedAt": "2026-06-12T04:45:30.119Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -825,11 +825,6 @@
         "color",
         "size"
       ]
-    },
-    {
-      "name": "Badge.guide",
-      "props": [],
-      "dtsRelPath": "packages/react/dist/Badge.guide.d.ts"
     },
     {
       "name": "Banner",
@@ -1981,11 +1976,6 @@
       ]
     },
     {
-      "name": "Chip.guide",
-      "props": [],
-      "dtsRelPath": "packages/react/dist/Chip.guide.d.ts"
-    },
-    {
       "name": "CircularProgress",
       "props": [
         {
@@ -3048,17 +3038,6 @@
       ]
     },
     {
-      "name": "DsHighlight",
-      "props": [],
-      "dtsRelPath": "packages/html/src/components/nds-ds-highlight.ts",
-      "htmlTag": "nds-ds-highlight",
-      "htmlObservedAttrs": [
-        "mode",
-        "hide-toggle",
-        "default-mode"
-      ]
-    },
-    {
       "name": "DSHighlight",
       "props": [
         {
@@ -3078,7 +3057,13 @@
           ]
         }
       ],
-      "dtsRelPath": "packages/react/dist/DSHighlight.d.ts"
+      "dtsRelPath": "packages/react/dist/DSHighlight.d.ts",
+      "htmlTag": "nds-ds-highlight",
+      "htmlObservedAttrs": [
+        "mode",
+        "hide-toggle",
+        "default-mode"
+      ]
     },
     {
       "name": "EmptyState",

@@ -52,11 +52,6 @@
       "since": "2026-06"
     },
     {
-      "key": "Badge.guide::react-only::react 컴포넌트에 html 미러(nds-*)가 없음",
-      "reason": "가이드 데모 전용 컴포넌트 — 외부 제공/미러 대상 아님",
-      "since": "2026-06"
-    },
-    {
       "key": "Banner::prop-name::html attr \"banner-title\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -312,11 +307,6 @@
       "since": "2026-06"
     },
     {
-      "key": "Chip.guide::react-only::react 컴포넌트에 html 미러(nds-*)가 없음",
-      "reason": "가이드 데모 전용 컴포넌트 — 외부 제공/미러 대상 아님",
-      "since": "2026-06"
-    },
-    {
       "key": "CircularProgress::prop-name::react prop → \"aria-label\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -457,13 +447,13 @@
       "since": "2026-06"
     },
     {
-      "key": "DsHighlight::html-only::html 전용(nds-ds-highlight) — react 미러가 없음",
-      "reason": "casing 분기 — react 측은 DSHighlight 로 별도 항목 인식",
+      "key": "DSHighlight::prop-name::html attr \"hide-toggle\" 에 대응하는 react prop 이 없음",
+      "reason": "dev 도구 — react 는 Provider/DSMark 컴파운드 API(토글 UI 내장), html 은 attr 제어. 미러 비대상",
       "since": "2026-06"
     },
     {
-      "key": "DSHighlight::react-only::react 컴포넌트에 html 미러(nds-*)가 없음",
-      "reason": "casing 분기 — html 측은 DsHighlight(nds-ds-highlight) 로 별도 항목 인식",
+      "key": "DSHighlight::prop-name::html attr \"mode\" 에 대응하는 react prop 이 없음",
+      "reason": "dev 도구 — react 는 Provider context state 로 mode 관리, html 은 attr 반영. 미러 비대상",
       "since": "2026-06"
     },
     {
@@ -1124,6 +1114,16 @@
     {
       "key": "UserCard::slot::react ReactNode prop \"avatar\" 에 대응하는 html slot=\"avatar\" 구현이 없음",
       "reason": "TRIAGE-PENDING — children 합성 의도인지 slot 구현 누락인지 미분류 (/ds-audit 분류 대상)",
+      "since": "2026-06"
+    },
+    {
+      "key": "VerificationCodeInput::prop-name::html attr \"auto-focus\" 에 대응하는 react prop 이 없음",
+      "reason": "react 는 InputHTMLAttributes 상속(autoFocus 보유) — 파서가 extends 미해석해 생기는 위양성",
+      "since": "2026-06"
+    },
+    {
+      "key": "VerificationCodeInput::prop-name::html attr \"placeholder\" 에 대응하는 react prop 이 없음",
+      "reason": "react 는 InputHTMLAttributes 상속(placeholder 보유) — 파서가 extends 미해석해 생기는 위양성",
       "since": "2026-06"
     },
     {

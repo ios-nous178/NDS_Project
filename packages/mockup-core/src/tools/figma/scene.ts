@@ -185,11 +185,14 @@ export function buildFigmaSceneScript(): string {
     };
   }
   // kebab nds-tag → PascalCase (ndsTagToComponentName 규칙 미러, 브라우저 인라인).
+  // 연속 대문자 약어는 단순 변환이 안 돼 alias 보정 (parser.ts NDS_TAG_TO_REACT_ALIAS 와 동일 셋).
+  var NDS_TAG_ALIAS = { "nds-fab": "FAB", "nds-ds-highlight": "DSHighlight" };
   function dsNameFor(el) {
     var node = el;
     while (node && node.tagName) {
       var tag = node.tagName.toLowerCase();
       if (tag.indexOf("nds-") === 0) {
+        if (NDS_TAG_ALIAS[tag]) return NDS_TAG_ALIAS[tag];
         var parts = tag.slice(4).split("-").map(function (p) { return p ? p.charAt(0).toUpperCase() + p.slice(1) : ""; });
         return parts.join("");
       }
