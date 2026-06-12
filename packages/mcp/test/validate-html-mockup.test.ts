@@ -314,7 +314,7 @@ describe("validateHtmlSource — ported JSX patterns", () => {
         <div slot="footer"><nds-button color="secondary" variant="solid" full-width>승인</nds-button></div>
       </nds-modal>
     </body></html>`;
-    expect(rulesFor(html)).toContain("cashwalk-biz-modal-single-button-fullwidth");
+    expect(rulesFor(html)).toContain("brand-modal-single-button-fullwidth");
   });
 
   it("flags SelectedItemsPanel helper text placed as an adjacent sibling", () => {
@@ -344,12 +344,12 @@ describe("validateHtmlSource — ported JSX patterns", () => {
         <div slot="footer"><nds-button color="secondary" variant="solid" shape="pill">승인</nds-button></div>
       </nds-modal>
     </body></html>`;
-    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
+    expect(rulesFor(html)).not.toContain("brand-modal-single-button-fullwidth");
   });
 
   it("does NOT flag full-width single modal button outside cashwalk-biz brand", () => {
     const html = `<nds-modal><div slot="footer"><nds-button full-width>확인</nds-button></div></nds-modal>`;
-    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
+    expect(rulesFor(html)).not.toContain("brand-modal-single-button-fullwidth");
   });
 
   it("does NOT flag cashwalk-biz dual-button modal (가로 분할은 정상)", () => {
@@ -361,7 +361,7 @@ describe("validateHtmlSource — ported JSX patterns", () => {
         </div>
       </nds-modal>
     </body></html>`;
-    expect(rulesFor(html)).not.toContain("cashwalk-biz-modal-single-button-fullwidth");
+    expect(rulesFor(html)).not.toContain("brand-modal-single-button-fullwidth");
   });
 
   it("does NOT flag primary-cta-overuse when secondary buttons are non-solid", () => {

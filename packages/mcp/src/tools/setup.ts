@@ -19,6 +19,7 @@ import {
   type SnsLogoColor,
   type SnsService,
 } from "@nudge-design/assets/sns-logo-metadata";
+import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
 import { PROFILE_IMAGE_METADATA, PROFILE_IMAGE_IDS } from "@nudge-design/assets/profile-images";
 import { ILLUSTRATION_METADATA, ILLUSTRATION_IDS } from "@nudge-design/assets/illustrations";
 import { MARATHON_EVENT_METADATA, MARATHON_EVENT_IDS } from "@nudge-design/assets/marathon-events";
@@ -1558,7 +1559,8 @@ function getNdsPromptTemplates(brand?: string) {
         "목업이 끝나면 build_singlefile_html 로 단일 파일을 산출하고 score_mockup_quality 로 품질 점수(D1+D2)까지 사용자에게 보여줘.",
     },
   ];
-  if (brandSlug === "cashwalk-biz") {
+  // Page Pattern System 브랜드(프로필)면 DesignSpec-first 템플릿 추가 (현재 선언 = 캐포비).
+  if (getBrandProfile(brandSlug)?.admin?.pagePatternSystem) {
     templates.push({
       title: "캐포비 어드민 (Page Pattern 먼저)",
       prompt:

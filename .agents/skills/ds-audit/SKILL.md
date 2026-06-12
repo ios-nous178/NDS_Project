@@ -69,6 +69,7 @@ description: >-
 - **룰 분류 SSOT**: `packages/mockup-core/src/tools/html-validator.ts` 의 `RULE_META` — `invariant`(DS 계약, 폐기 대상 아님) / `model-guard`(AI 실수 패턴 가드 — 모델 세대 바뀌면 죽은 룰로 쌓임) / `brand-policy`(브랜드 분기 — 프로필 일반화 대상).
 - **폐기 후보 리포트**: 텔레메트리 서버(nudge-telemetry-api, `:8091`)가 살아 있으면 validation 이벤트의 룰별 히트(`ruleKind` 포함)를 조회해, **`model-guard` 중 최근 30일 히트 0 인 `warn`/`info` 룰**을 폐기 후보로 나열. `error` 룰은 제외 — "룰이 효과적이라 위반이 사라진" 경우와 구분 불가. 서버 미가용이면 이 항목은 skip 하고 명시.
 - **분류 부채**: `RULE_META` 에 없는 신규 룰(분류 누락) → flag. `brand-policy` 룰 중 브랜드 slug 가 코드에 하드코딩된 것의 수 = 프로필 일반화 잔여 지표로 보고.
+- **프로필 ↔ 가이드 정합**: `packages/tokens/src/brand-profiles.ts` 의 정책(blackCta·deniedButtonColors·modal·bannedComponents)과 `guides.ts` 의 브랜드 정책 prose(Button/Modal/Snackbar/Toast 가이드의 캐포비 단락)가 어긋나면 flag — 정책 데이터의 SSOT 는 프로필, prose 는 그 서술이다.
 - **자동 삭제 금지** — 후보 나열 + 사유까지만. 삭제 결정은 사람.
 
 ### 10. 미러 baseline 분류 부채 (TRIAGE-PENDING)

@@ -30,15 +30,15 @@
  * 검출 룰 (JSX 에서 포팅 — 컨테이너 / 카운팅 / 시각 위계):
  *  - card-slot-double-padding   : <nds-card-header|body|footer> 에 외곽 padding
  *  - neutral-solid-cta        : <nds-button color="neutral"> 가 solid (variant 미지정, 캐포비 제외)
- *  - cashwalk-biz-no-secondary: 캐포비 <nds-button color="secondary"> — 캐포비엔 secondary tone 없음(neutral 사용)
+ *  - brand-denied-button-color: 캐포비 <nds-button color="secondary"> — 캐포비엔 secondary tone 없음(neutral 사용)
  *  - heading-decorative-icon    : <h3>/<h4> 안에 <svg> / icon 들어감
  *  - nested-card                : <nds-card> 안에 <nds-card>
  *  - card-badge-overuse         : 1 nds-card 안 nds-chip + nds-badge ≥ 3
  *  - card-footer-button-overuse : nds-card-footer 안 nds-button ≥ 3
  *  - primary-cta-per-container  : 영역 1개 안 primary solid nds-button > 1
- *  - cashwalk-biz-modal-single-button-fullwidth : 캐포비 모달 단일 footer 버튼이 full-width (우측 hug 여야 함)
- *  - cashwalk-biz-modal-primary-cta : 캐포비 확인/팝업 모달 footer 주 action 이 primary(노랑)/색생략 (검정 neutral 이어야 함)
- *  - cashwalk-biz-modal-footer-stacked : 모달 footer 두 버튼 세로 스택 (가로 유지 + 라벨 축약)
+ *  - brand-modal-single-button-fullwidth : 캐포비 모달 단일 footer 버튼이 full-width (우측 hug 여야 함)
+ *  - brand-modal-confirm-cta : 캐포비 확인/팝업 모달 footer 주 action 이 primary(노랑)/색생략 (검정 neutral 이어야 함)
+ *  - brand-modal-footer-stacked : 모달 footer 두 버튼 세로 스택 (가로 유지 + 라벨 축약)
  *  - primary-cta-overuse        : 페이지 레벨 primary solid nds-button > 1
  *  - chip-overuse               : nds-chip > 8
  *  - card-everything            : nds-card ≥ 5
@@ -148,8 +148,20 @@ export function configureHtmlValidator(ctx: HtmlValidationContext) {
  *                텔레메트리(rule-stats) 기준 30일 히트 0 인 warn/info 룰은 폐기 후보
  *                (/ds-audit 가 리포트. error 룰은 "룰이 효과적이라 위반이 사라진" 경우와
  *                구분이 안 되므로 후보에서 제외).
- *  brand-policy: 특정 브랜드의 의미/정책 분기 — 브랜드 프로필(brand-profiles)로
- *                일반화할 대상. 이 kind 의 룰 수가 줄어드는 게 프로필 일반화의 진척 지표.
+ *  brand-policy: 특정 브랜드의 의미/정책 분기 — 브랜드 프로필(brand-profiles)이 발화를 결정.
+ *
+ * brand-policy 네이밍 컨벤션:
+ *  - `brand-*`        : 프로필 데이터로 일반화된 정책 룰 — 어떤 브랜드든 같은 정책을 선언하면 발화.
+ *  - `cashwalk-biz-*` : 캐포비 어드민 Page Pattern System 의 콘텐츠 룰(onboarding/sidebar/페이지 패턴
+ *                       골격) — 패턴 내용 자체가 캐포비 어드민 DS 라 브랜드명 유지. 발화 게이트만
+ *                       프로필(admin.pagePatternSystem)이 결정.
+ *
+ * 2026-06 룰 id 일반화(텔레메트리 조인 시 legacy 매핑):
+ *  - cashwalk-biz-no-secondary                → brand-denied-button-color
+ *  - cashwalk-biz-toast                       → brand-banned-notification
+ *  - cashwalk-biz-modal-primary-cta           → brand-modal-confirm-cta
+ *  - cashwalk-biz-modal-single-button-fullwidth → brand-modal-single-button-fullwidth
+ *  - cashwalk-biz-modal-footer-stacked        → brand-modal-footer-stacked
  */
 export type RuleKind = "invariant" | "model-guard" | "brand-policy";
 export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: RuleKind }> = {
@@ -199,12 +211,12 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // 사이드바가 풀하이트 셸(.nds-shell) 밖 — 100vh 가 화면을 못 채움(회귀: 높이 안 참)
   "cashwalk-biz-sidebar-shell": { severity: "error", kind: "brand-policy" },
   // 캐포비 모달 단일 버튼은 우측 정렬 hug 검정 pill — full-width 금지(회귀: 퍼포멘토 등의 full-width 를 잘못 가져옴)
-  "cashwalk-biz-modal-single-button-fullwidth": { severity: "warn", kind: "brand-policy" },
+  "brand-modal-single-button-fullwidth": { severity: "warn", kind: "brand-policy" },
   // 캐포비 확인/팝업 모달 footer 의 주 action 이 primary(노랑) — 색 생략 시 Button 기본값이 primary 라
   // 자동으로 노랑이 됨. 캐포비 확인 모달 주 action = 검정 CTA(color="neutral"). 5회+ 재발한 회귀의 근본.
-  "cashwalk-biz-modal-primary-cta": { severity: "error", kind: "brand-policy" },
+  "brand-modal-confirm-cta": { severity: "error", kind: "brand-policy" },
   // 모달 footer 의 두 버튼이 세로로 스택됨 — 라벨이 길어도 가로 유지 + 라벨 축약이 원칙(세로 금지).
-  "cashwalk-biz-modal-footer-stacked": { severity: "warn", kind: "brand-policy" },
+  "brand-modal-footer-stacked": { severity: "warn", kind: "brand-policy" },
   // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
   "unknown-brand-slug": { severity: "error", kind: "model-guard" },
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
@@ -276,9 +288,9 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // 컨테이너 / 카운팅
   "card-slot-double-padding": { severity: "warn", kind: "invariant" },
   "neutral-solid-cta": { severity: "warn", kind: "brand-policy" },
-  "cashwalk-biz-no-secondary": { severity: "warn", kind: "brand-policy" },
+  "brand-denied-button-color": { severity: "warn", kind: "brand-policy" },
   // 캐포비 알림 SSOT 는 Snackbar(흰 카드·우측 상단·상태 칩·닫기 X). Toast 는 캐포비에서 미사용 — 전면 금지.
-  "cashwalk-biz-toast": { severity: "error", kind: "brand-policy" },
+  "brand-banned-notification": { severity: "error", kind: "brand-policy" },
   "nested-card": { severity: "warn", kind: "invariant" },
   "card-badge-overuse": { severity: "warn", kind: "invariant" },
   "card-footer-button-overuse": { severity: "warn", kind: "invariant" },
@@ -1327,7 +1339,7 @@ export function validateHtmlSource(
       );
       if (denied) {
         violations.push({
-          rule: "cashwalk-biz-no-secondary",
+          rule: "brand-denied-button-color",
           line,
           selector,
           detail: `<nds-button color="${attrs.color}">`,
@@ -1345,7 +1357,7 @@ export function validateHtmlSource(
       );
       if (banned) {
         violations.push({
-          rule: "cashwalk-biz-toast",
+          rule: "brand-banned-notification",
           line,
           selector,
           detail: `<${tag}>`,
@@ -2165,7 +2177,7 @@ function collectContainerViolations(
         if (buttons[0].attribs?.["full-width"] === undefined) return;
         const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
         out.push({
-          rule: "cashwalk-biz-modal-single-button-fullwidth",
+          rule: "brand-modal-single-button-fullwidth",
           line: lineNumberAt(source, offset),
           selector: describeElement(el as unknown as DomElement),
           detail: "캐포비 모달의 단일 버튼에 full-width 가 붙음.",
@@ -2202,7 +2214,7 @@ function collectContainerViolations(
           const offset = (btn as unknown as { startIndex?: number }).startIndex ?? 0;
           const omitted = !(btn.attribs ?? {}).color;
           out.push({
-            rule: "cashwalk-biz-modal-primary-cta",
+            rule: "brand-modal-confirm-cta",
             line: lineNumberAt(source, offset),
             selector: describeElement(btn),
             detail: omitted
@@ -2237,7 +2249,7 @@ function collectContainerViolations(
         if (!stacked) return;
         const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
         out.push({
-          rule: "cashwalk-biz-modal-footer-stacked",
+          rule: "brand-modal-footer-stacked",
           line: lineNumberAt(source, offset),
           selector: describeElement(el as unknown as DomElement),
           detail: "모달 footer 의 두 버튼이 세로로 스택되어 있습니다.",
@@ -2915,9 +2927,9 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   // layout (layout-structure): 카드 중첩·CTA 위계·칩 과다·장식
   "cashwalk-biz-sidebar-shell": "layout",
   "cashwalk-biz-admin-page-pattern": "layout",
-  "cashwalk-biz-modal-single-button-fullwidth": "layout",
-  "cashwalk-biz-modal-primary-cta": "layout",
-  "cashwalk-biz-modal-footer-stacked": "layout",
+  "brand-modal-single-button-fullwidth": "layout",
+  "brand-modal-confirm-cta": "layout",
+  "brand-modal-footer-stacked": "layout",
   "raw-landmark": "layout",
   "nested-card": "layout",
   "card-badge-overuse": "layout",
@@ -2951,7 +2963,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "nds-json-attr-unparseable": "component",
   "ds-badge-missing": "component",
   "neutral-solid-cta": "component",
-  "cashwalk-biz-no-secondary": "component",
+  "brand-denied-button-color": "component",
   "button-without-interaction": "component",
   "date-as-text-input": "component",
   "amount-as-text-input": "component",

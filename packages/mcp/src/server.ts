@@ -20,6 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   ICON_METADATA,
@@ -804,9 +805,11 @@ function recommendPagePatternTool(args: { prd?: string; brand?: string; surface?
   const surface = args.surface?.trim().toLowerCase();
   const rec = recommendPagePattern(prd);
 
-  // 캐포비 어드민에서만 hard 게이트. 브랜드/표면 미지정이면 advisory 로 동작.
+  // Page Pattern System 브랜드(프로필 admin.pagePatternSystem) 어드민에서만 hard 게이트.
+  // 브랜드/표면 미지정이면 advisory 로 동작.
   const appliesToCashwalkBizAdmin =
-    (!args.brand || brand === "cashwalk-biz") && (!surface || surface === "admin");
+    (!args.brand || getBrandProfile(brand)?.admin?.pagePatternSystem === true) &&
+    (!surface || surface === "admin");
 
   const ranked = rec.ranked.map((c) => ({
     pattern: c.pattern,
