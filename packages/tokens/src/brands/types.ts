@@ -345,6 +345,22 @@ export interface ComponentOverrides {
    * 다른 브랜드는 미설정 → 컴포넌트 fallback (surface.inverse) 유지.
    */
   tooltip?: { bg?: ComponentValue };
+  /**
+   * Chart — 어드민 통계 차트 시리즈 색 슬롯 (`--nds-chart-*`).
+   * 기본값(캐포비 데이터-뷰 팔레트)은 base(nudge-eap) theme 이 :root 로 emit —
+   * 컴포넌트 요소에 박지 않아야 브랜드 :root override 가 마스킹되지 않는다.
+   * 데이터-뷰 색은 아토믹 팔레트 밖(디자이너 토큰화 대기) — hex 직접 기입 허용 예외.
+   */
+  chart?: {
+    line?: ComponentValue;
+    "1"?: ComponentValue;
+    "2"?: ComponentValue;
+    "3"?: ComponentValue;
+    "4"?: ComponentValue;
+    empty?: ComponentValue;
+  };
+  /** 별점(StarRating/ReviewCard/각종 카드) 채움 색 — `--nds-rating-star` */
+  rating?: { star?: ComponentValue };
 }
 
 /** 브랜드 테마 전체 정의 */

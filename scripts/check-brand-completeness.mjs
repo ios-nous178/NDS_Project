@@ -124,7 +124,9 @@ const CONSUMER_DIRS = [
   "packages/mockup-core/src",
 ];
 const consumed = new Set();
+const dynamicPrefixes = new Set(); // `--nds-chart-${i+1}` 류 — 템플릿 조립 변수명의 prefix
 const NDS_VAR_RE = /--nds-[a-z0-9][a-z0-9-]*/g;
+const NDS_DYNAMIC_RE = /--nds-[a-z0-9][a-z0-9-]*-(?=\$\{)/g;
 for (const dir of CONSUMER_DIRS) {
   const abs = path.join(root, dir);
   if (!fs.existsSync(abs)) continue;
@@ -137,12 +139,16 @@ for (const dir of CONSUMER_DIRS) {
       else if (/\.(ts|tsx|css)$/.test(entry.name)) {
         const src = fs.readFileSync(p, "utf-8");
         for (const m of src.matchAll(NDS_VAR_RE)) consumed.add(m[0]);
+        for (const m of src.matchAll(NDS_DYNAMIC_RE)) dynamicPrefixes.add(m[0]);
       }
     }
   }
 }
 
-const orphanSlots = [...emittedSlots.entries()].filter(([varName]) => !consumed.has(varName));
+const orphanSlots = [...emittedSlots.entries()].filter(
+  ([varName]) =>
+    !consumed.has(varName) && ![...dynamicPrefixes].some((pre) => varName.startsWith(pre)),
+);
 
 /* ── 리포트 ───────────────────────────────────────────────────────── */
 

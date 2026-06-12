@@ -68,7 +68,7 @@ const StarFilled = (size = 14) => {
   svg.setAttribute("height", String(size));
   svg.setAttribute("viewBox", "0 0 14 14");
   svg.setAttribute("aria-hidden", "true");
-  svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" fill="#FFD54F"/>`;
+  svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" style="fill: var(--nds-rating-star, #FFD54F)"/>`;
   return svg;
 };
 

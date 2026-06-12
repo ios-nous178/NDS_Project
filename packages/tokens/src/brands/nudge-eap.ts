@@ -47,4 +47,16 @@ export const nudgeEapTheme: BrandTheme = {
     shadow,
     zIndex,
   },
+  components: {
+    // 캐포비 데이터-뷰 팔레트 (아토믹 외 — 디자이너 토큰화 대기). 모든 브랜드 공통 기본값.
+    chart: {
+      line: "#FFD200",
+      "1": "#007AFF",
+      "2": "#FF8437",
+      "3": "#FFD200",
+      "4": "#34C759",
+      empty: "#BBBBBB",
+    },
+    rating: { star: "#FFD54F" },
+  },
 };
