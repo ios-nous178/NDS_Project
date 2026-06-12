@@ -59,6 +59,11 @@ const steps = [
     args: ["scripts/check-input-tests.mjs"],
   },
   {
+    label: "check brand semantic completeness",
+    command: "node",
+    args: ["scripts/check-brand-completeness.mjs"],
+  },
+  {
     label: "check Storybook catalog coverage",
     command: "node",
     args: ["scripts/check-storybook-catalog.mjs"],

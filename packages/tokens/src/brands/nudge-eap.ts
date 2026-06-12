@@ -12,10 +12,10 @@
  */
 
 import type { BrandTheme } from "./types";
-import { neutral, coolGray, blue, magenta, yellow, red, coralRed, green, amber } from "../colors";
-import { fontFamily, typeScale } from "../typography";
-import { radius } from "../spacing";
-import { shadow, zIndex } from "../elevation";
+import { neutral, coolGray, blue, magenta, yellow, red, coralRed, green, amber } from "../colors.js";
+import { fontFamily, typeScale } from "../typography.js";
+import { radius } from "../spacing.js";
+import { shadow, zIndex } from "../elevation.js";
 import { nudgeEapSemantic } from "./nudge-eap.semantic.js";
 
 export { nudgeEapSemantic };

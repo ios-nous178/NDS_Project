@@ -17,6 +17,10 @@ import {
   runmileOrange,
   runmileRed,
 } from "./runmile.palette.js";
+// 런마일 Figma library 에는 caution(노랑)/success(초록) 패밀리가 없다.
+// status.caution/success 는 base 값을 *명시적으로* 채워 silent fallback 을 없앤다
+// (값은 base 와 동일 — 디자이너가 런마일 톤을 확정하면 여기만 교체).
+import { yellow as baseYellow, green as baseGreen } from "../colors.js";
 
 export const runmileSemantic = {
   bg: {
@@ -35,6 +39,8 @@ export const runmileSemantic = {
     status: {
       error: runmileRed[200], // #FFE9E9
       info: runmileOrange[100], // #FFF7F5 — brand info bg
+      caution: baseYellow[50], // base 명시 채움 — 런마일 노랑 톤 미정
+      success: baseGreen[50], // base 명시 채움 — 런마일 초록 톤 미정
     },
     overlay: "rgba(0, 0, 0, 0.5)",
     disabled: runmileGray[300], // #E5E8EB
@@ -53,6 +59,8 @@ export const runmileSemantic = {
     status: {
       error: runmileRed[500], // #FF2428
       info: runmileBlue[500], // #007AFF
+      caution: baseYellow[600], // base 명시 채움 — 런마일 노랑 톤 미정
+      success: baseGreen[400], // base 명시 채움 — 런마일 초록 톤 미정
     },
   },
   // Button — Figma 111:477 — 3 sematic × 2 style × 5 size × 3 state.
@@ -129,6 +137,8 @@ export const runmileSemantic = {
     brand: { default: runmileOrange[500] }, // #FF5B37
     status: {
       error: runmileRed[500], // #FF2428
+      caution: baseYellow[500], // base 명시 채움 — 런마일 노랑 톤 미정
+      success: baseGreen[300], // base 명시 채움 — 런마일 초록 톤 미정
     },
   },
   border: {
@@ -144,6 +154,7 @@ export const runmileSemantic = {
     disabled: { default: runmileGray[300] }, // #E5E8EB
     status: {
       error: runmileRed[500], // #FF2428
+      caution: baseYellow[500], // base 명시 채움 — 런마일 노랑 톤 미정
     },
   },
   fill: {
@@ -162,6 +173,7 @@ export const runmileSemantic = {
     inverse: { default: runmileNeutral.white },
     status: {
       error: runmileRed[500], // #FF2428
+      caution: baseYellow[500], // base 명시 채움 — 런마일 노랑 톤 미정
     },
   },
   input: {

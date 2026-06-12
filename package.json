@@ -34,6 +34,7 @@
     "lint:mirror-parity:update": "node scripts/check-mirror-parity.mjs --update",
     "lint:input-focus": "node scripts/check-input-tests.mjs",
     "lint:actions-layout": "node scripts/check-actions-layout.mjs",
+    "lint:brand-completeness": "node scripts/check-brand-completeness.mjs",
     "lint:runtime-registry": "node scripts/check-runtime-registry.mjs",
     "lint:ssot": "node scripts/check-ssot.mjs",
     "sync:skills": "node scripts/sync-skills.mjs",

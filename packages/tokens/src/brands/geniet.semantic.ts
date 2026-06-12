@@ -98,6 +98,7 @@ export const genietSemantic = {
     },
     neutral: genietGray[800], // #666666 — Outlined/Weak Neutral text
     neutralSolid: genietGray[800], // #666666 — Solid Neutral text (밝은 #ECECEC fill 위 어두운 글자)
+    neutralDisabled: genietGray[600], // #999999 — Outlined/Neutral disabled text (base 동치 명시)
     disabled: genietGray[600], // #999999 — Outlined disabled text (solid disabled 는 default 유지 = white)
   },
   buttonBorder: {

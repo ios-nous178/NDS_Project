@@ -94,6 +94,7 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 2. 시멘틱은 두 갈래만 사용 — Figma 정합 토큰은 `--semantic-*` (색: bg/text/icon/fill/border/button*/input + 여백: gap/gap-title/inset 모두 SSOT 1:1 미러), DS 자체 컴포넌트 슬롯은 `--nds-*` (`--nds-sidebar-_`, `--nds-chip-_`, `--nds-{brand}-_` 등). raw hex 신규 추가 금지. 옛 prefix(`--eap-_`, `--color-semantic-_`)는 폐기. `--gap-_`/`--inset-_`는`--semantic-gap-_`/`--semantic-inset-\*`의 deprecated alias — 새 코드는`--semantic-` prefix 사용.
 3. 토큰 정의 의도는 `DESIGN.md` YAML 에도 동기화
 4. `pnpm build --filter @nudge-design/tokens` (의존 패키지가 import 하므로 필수)
+5. ★ `pnpm lint:brand-completeness` — base 시멘틱 leaf 는 4개 브랜드에 **명시 정의 or waiver**(`scripts/brand-completeness-baseline.json`, 사유 필수) 둘 중 하나여야 한다. silent base-fallback(브랜드 화면에 base 파랑이 새는 버그 클래스) 차단 게이트. `--nds-*` 슬롯명 오타(소비처 없는 슬롯)도 함께 검출.
 
 ### 가이드 · 패턴 · 원칙만 추가
 
