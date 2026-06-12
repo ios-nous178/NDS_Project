@@ -84,3 +84,66 @@ describe("nds-date-picker — 패널 portal (모달 overflow 탈출)", () => {
     expect(document.body.querySelector(":scope > .nds-date-picker__panel")).toBeNull();
   });
 });
+
+/**
+ * clear(×) ↔ 캘린더 아이콘 겹침 방지 — DS 는 swap 설계다: 값+allow-clear 면 trigger 에
+ * data-clearable="true" 가 붙고, CSS 가 캘린더 아이콘을 숨겨 그 자리에 × 를 놓는다(겹치지 않게).
+ * 이 wiring(× 노출 ⇔ data-clearable ⇔ 아이콘 숨김)이 리팩터로 어긋나면 둘이 겹친다 — 회귀 고정.
+ */
+describe("nds-date-picker — clearable swap (× ↔ 캘린더 아이콘 겹침 방지)", () => {
+  const trigger = (el: Element) => el.querySelector(".nds-date-picker__trigger") as HTMLElement;
+  const clearBtn = (el: Element) =>
+    el.querySelector(".nds-date-picker__clear-btn") as HTMLButtonElement;
+
+  it("allow-clear + value → data-clearable=true · × 노출 (아이콘은 CSS 가 숨겨 swap)", async () => {
+    const el = document.createElement("nds-date-picker");
+    el.setAttribute("allow-clear", "");
+    el.setAttribute("value", "2026-05-25");
+    document.body.appendChild(el);
+    await flush();
+    expect(trigger(el).dataset.clearable).toBe("true");
+    expect(clearBtn(el).hidden).toBe(false);
+  });
+
+  it("값 없으면 × 숨김 · data-clearable=false (캘린더 아이콘만 — 겹칠 × 없음)", async () => {
+    const el = document.createElement("nds-date-picker");
+    el.setAttribute("allow-clear", "");
+    document.body.appendChild(el);
+    await flush();
+    expect(trigger(el).dataset.clearable).toBe("false");
+    expect(clearBtn(el).hidden).toBe(true);
+  });
+
+  it("allow-clear 없으면 값이 있어도 × 숨김", async () => {
+    const el = document.createElement("nds-date-picker");
+    el.setAttribute("value", "2026-05-25");
+    document.body.appendChild(el);
+    await flush();
+    expect(trigger(el).dataset.clearable).toBe("false");
+    expect(clearBtn(el).hidden).toBe(true);
+  });
+
+  it("disabled 면 × 안 띄움(data-clearable=false)", async () => {
+    const el = document.createElement("nds-date-picker");
+    el.setAttribute("allow-clear", "");
+    el.setAttribute("value", "2026-05-25");
+    el.setAttribute("disabled", "");
+    document.body.appendChild(el);
+    await flush();
+    expect(trigger(el).dataset.clearable).toBe("false");
+    expect(clearBtn(el).hidden).toBe(true);
+  });
+
+  it("× 클릭 → value 제거 + data-clearable=false 복귀(캘린더 아이콘 복귀)", async () => {
+    const el = document.createElement("nds-date-picker");
+    el.setAttribute("allow-clear", "");
+    el.setAttribute("value", "2026-05-25");
+    document.body.appendChild(el);
+    await flush();
+    clearBtn(el).click();
+    await flush();
+    expect(el.hasAttribute("value")).toBe(false);
+    expect(trigger(el).dataset.clearable).toBe("false");
+    expect(clearBtn(el).hidden).toBe(true);
+  });
+});
