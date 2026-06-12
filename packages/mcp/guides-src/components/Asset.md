@@ -9,7 +9,7 @@ Toss TDS 식 통합 미디어 컴포넌트. image / icon / initial / lottie / cu
 ## pitfalls
 
 - content prop 은 discriminated union — `{ type: 'image', src }` / `{ type: 'icon', icon }` / `{ type: 'initial', name }` / `{ type: 'lottie', src }` / `{ type: 'custom', render }` 중 하나. 객체로 묶어서 넘기지 말고 type 키로 분기한 형태로 정확히 전달.
-- size 는 xs/sm/md/lg/xl/2xl 프리셋 또는 임의 px 숫자. 임의 px 은 비표준 사이즈가 박힐 수 있으므로 가능하면 프리셋 사용.
+- size 는 xs/sm/md/lg/xl/2xl 프리셋 또는 임의 px 숫자. 프리셋 px 은 **Avatar 와 동일 스케일**(Figma 1337:8): xs 24 · sm 32 · md 48 · lg 64 · xl 96 + Asset 전용 2xl 120. shape='rounded' radius 도 Avatar 와 동일(사이즈별 4/6/8/10/12, 2xl 14). 임의 px 은 비표준 사이즈가 박힐 수 있으므로 가능하면 프리셋 사용.
 - shape='circle' + content.type='image' 가 가장 흔한 사용 — 이 경우 Avatar 와 거의 같음. Avatar 는 그대로 둔다 (사람 한정 시멘틱). Asset 은 일반 미디어 박스.
 - overlap prop 은 우측 음수 마진. AvatarGroup 처럼 옆 Asset 위로 겹쳐 놓을 때만 사용. 단독 사용 시 0.
 - acc(accessory) 는 우측 하단 status dot / count badge / online indicator 슬롯. 풀-사이즈 컴포넌트(긴 텍스트 라벨 등) 를 넣지 말 것 — 작은 시각 신호만.
