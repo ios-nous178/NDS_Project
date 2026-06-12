@@ -31,7 +31,7 @@ export const tooltipStyles = `
     position: absolute;
     z-index: ${zIndex.tooltip};
     padding: ${spacing[14]}px ${spacing[16]}px;
-    /* 단일 다크 톤 (Figma 1380:13). --nds-tooltip-bg = fill.neutral 역할 — base theme :root emit. */
+    /* 단일 다크 톤 #333333 (Figma 1380:13). --nds-tooltip-bg = 전 브랜드 동일 — base theme :root emit. */
     background: var(--nds-tooltip-bg);
     color: ${cv.textRole.inverse};
     font-size: ${typeScale.caption1.fontSize}px;

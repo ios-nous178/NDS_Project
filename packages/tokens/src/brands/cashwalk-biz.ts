@@ -274,8 +274,7 @@ export const cashwalkBizTheme: BrandTheme = {
       chipDefaultColor: "var(--semantic-text-subtle-default)",
       chipDefaultWeight: "700",
     },
-    // Tooltip bg(#333) 는 이제 base theme 이 --nds-tooltip-bg = fill.neutral 로 emit —
-    // 캐포비 fill-neutral(#333) 이 자동 cascade 되므로 브랜드별 override 불필요(중복 제거).
+    // Tooltip bg(#333333) 는 base theme 이 --nds-tooltip-bg 로 전 브랜드 동일 emit — 브랜드 override 불필요.
     // 캐포비 리치 툴팁의 compact 타이포는 styles/Tooltip.ts 의 [data-brand] 블록이 담당.
   },
 };

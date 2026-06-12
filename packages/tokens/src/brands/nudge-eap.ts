@@ -64,8 +64,8 @@ export const nudgeEapTheme: BrandTheme = {
       bg: "rgba(33, 33, 33, 0.92)",
       shadow: "0px 8px 12px rgba(0, 0, 0, 0.18)",
     },
-    // Tooltip — 단일 다크 톤 (Figma 1380:13 #333). "중립 채움" 역할 = fill.neutral 시멘틱에 바인딩 →
-    // base #383838 / 캐포비 #333 으로 브랜드 cascade(슬롯값=시멘틱 var). 모든 브랜드 :root emit.
-    tooltip: { bg: "var(--semantic-fill-neutral-default)" },
+    // Tooltip — 단일 다크 톤 #333333 (Figma 1380:13). role-based 시멘틱 변수 집합 밖이라 --nds-* 슬롯.
+    // 전 브랜드 동일 톤(디자이너 확정) — base theme :root emit, 브랜드 override 없음.
+    tooltip: { bg: "#333333" },
   },
 };

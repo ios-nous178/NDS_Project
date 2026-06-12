@@ -2154,7 +2154,7 @@ const mockTooltipBubble: React.CSSProperties = {
   left: "50%",
   transform: "translateX(-50%)",
   padding: "6px 10px",
-  background: cv.fill.neutral,
+  background: "var(--nds-tooltip-bg)",
   color: cv.textRole.inverse,
   borderRadius: radius.md,
   fontSize: 11,
@@ -2172,7 +2172,7 @@ const mockTooltipArrow: React.CSSProperties = {
   height: 0,
   borderLeft: "6px solid transparent",
   borderRight: "6px solid transparent",
-  borderTop: `8px solid ${cv.fill.neutral}`,
+  borderTop: "8px solid var(--nds-tooltip-bg)",
 };
 
 /* BottomSheet / Toast — 화면 안 dim + 하단 시트 */
