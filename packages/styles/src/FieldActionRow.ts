@@ -74,7 +74,7 @@ export const fieldActionRowStyles = `
   }
 
   :where(.${FAR_FIELD_CLASS} > input::placeholder) {
-    color: ${cv.textRole.muted};
+    color: ${cv.input.placeholder};
     font-size: ${typeScale.body2.fontSize}px;
   }
 
@@ -179,7 +179,7 @@ export const fieldActionRowStyles = `
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: 1.5;
-    color: ${cv.textRole.muted};
+    color: ${cv.input.helpertextDefault};
     transition: color ${transition.default};
   }
 

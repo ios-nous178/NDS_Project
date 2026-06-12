@@ -133,7 +133,7 @@ export const apStyles = `
 
   :where(.${AS_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.textRole.subtle};
+    color: ${cv.input.helpertextDefault};
   }
   :where(.${AS_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
 `;

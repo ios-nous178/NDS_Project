@@ -242,7 +242,7 @@ export const selectStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.muted};
+    color: ${cv.input.helpertextDefault};
   }
 
   :where(.${SELECT_HELPER_CLASS}[data-error="true"]) {
