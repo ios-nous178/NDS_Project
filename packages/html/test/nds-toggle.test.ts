@@ -6,6 +6,7 @@
 
 import { describe, expect, it } from "vitest";
 import { NdsToggle } from "../src/components/nds-toggle.js";
+import { expectAttrUpdatePreservesNode } from "./helpers/focus-preservation.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
@@ -229,5 +230,19 @@ describe("nds-toggle — 라벨 내장(status) 변형 + tone", () => {
     const track = el.querySelector<HTMLElement>('[data-slot="track"]')!;
     expect(track.dataset.labeled).toBe("false");
     expect(el.querySelector('[data-slot="inner-label"]')).toBeNull();
+  });
+});
+
+describe("nds-toggle — focus preservation", () => {
+  it("표시용 attr(label/on-label) 갱신이 포커스 중인 switch input 을 재생성하지 않는다", async () => {
+    const el = document.createElement("nds-toggle");
+    el.setAttribute("label", "알림 받기");
+    document.body.appendChild(el);
+    await flush();
+
+    const requery = () => el.querySelector<HTMLInputElement>('input[role="switch"]');
+    await expectAttrUpdatePreservesNode(el, requery, "label", "야간 알림 받기");
+    // 라벨 내장(status) 변형으로 전환돼도 input 은 살아 있어야 한다.
+    await expectAttrUpdatePreservesNode(el, requery, "on-label", "노출");
   });
 });

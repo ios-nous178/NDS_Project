@@ -18,6 +18,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const ET_CLASS = "nds-expandable-text";
 const ET_BODY_CLASS = `${ET_CLASS}__body`;
@@ -29,14 +30,7 @@ export class NdsExpandableText extends NdsElement {
   static elementName = "nds-expandable-text";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "lines",
-      "expand-label",
-      "collapse-label",
-      "hide-collapse",
-      "expanded",
-      ...FORWARDED_ATTRS,
-    ];
+    return [...COMPONENT_ATTRS["nds-expandable-text"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

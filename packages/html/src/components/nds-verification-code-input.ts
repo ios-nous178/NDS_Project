@@ -13,7 +13,7 @@
  * 속성:
  *   length      — 자릿수 (기본 6, maxLength)
  *   value       — 현재 값 (숫자만)
- *   placeholder — 미지정 시 "인증번호 {length}자리"
+ *   placeholder — 미지정 시 "인증번호 입력"
  *   error / disabled / auto-focus / full-width
  *
  * 이벤트:
@@ -22,6 +22,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const VC_CLASS = "nds-verification-code";
 const VC_ROOT_CLASS = `${VC_CLASS}__root`;
@@ -35,7 +36,7 @@ export class NdsVerificationCodeInput extends NdsElement {
   static elementName = "nds-verification-code-input";
 
   static get observedAttributes(): readonly string[] {
-    return ["length", "value", "disabled", "error", "auto-focus", "placeholder", "full-width"];
+    return [...COMPONENT_ATTRS["nds-verification-code-input"].observedAttributes, "auto-focus", "placeholder"];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -84,7 +85,7 @@ export class NdsVerificationCodeInput extends NdsElement {
     const disabled = this.boolAttr("disabled");
     const error = this.boolAttr("error");
     const fullWidth = this.getAttribute("full-width") !== "false";
-    const placeholder = this.getAttribute("placeholder") || `인증번호 ${length}자리`;
+    const placeholder = this.getAttribute("placeholder") || "인증번호 입력";
 
     this._root.dataset.disabled = disabled ? "true" : "false";
     this._root.dataset.error = error ? "true" : "false";

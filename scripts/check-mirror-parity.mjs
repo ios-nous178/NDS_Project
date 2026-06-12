@@ -21,10 +21,18 @@
  * 스냅샷해 두고, baseline 에 없는 "신규 drift" 만 위반으로 본다. normalization 특성상
  * 초기 노이즈가 있으므로 baseline 으로 현 상태를 흡수한 뒤 신규만 차단하는 구조다.
  *
+ * baseline 엔트리는 { key, reason, since } — reason 으로 "의도된 divergence" 와
+ * "그냥 누락" 을 분리한다:
+ *   - reason: "TODO"            → --update 가 신규 drift 에 자동으로 박는 placeholder.
+ *                                  check 모드가 차단하므로 사람이 사유를 써야 게이트가 열린다.
+ *   - reason: "TRIAGE-PENDING …" → 일괄 흡수분 중 의도/누락 미분류 — 통과시키되 매번 카운트 노출.
+ *   - 그 외 자유 서술           → 의도된 divergence 의 사유 박제.
+ *
  * 사용:
  *   node scripts/check-mirror-parity.mjs            # --check (CI 기본): 신규 drift 있으면 exit 1
  *   node scripts/check-mirror-parity.mjs --warn-only # 출력만, 항상 exit 0 (로컬/소프트런칭)
- *   node scripts/check-mirror-parity.mjs --update     # baseline 을 현 상태로 재생성
+ *   node scripts/check-mirror-parity.mjs --update     # baseline merge 갱신 (기존 reason 보존,
+ *                                                     #  해소분 제거, 신규는 reason:"TODO" 로 추가)
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -230,6 +238,9 @@ function collectHtmlSlots(htmlTag) {
   const patterns = [
     /<[^>]*\sslot\s*=\s*["'`]([a-zA-Z0-9_-]+)["'`]/g,
     /\[\s*slot\s*=\s*["'`]([a-zA-Z0-9_-]+)["'`]\s*\]/g,
+    // 코드 레벨 light-DOM slot 소비 — `getAttribute("slot") === "x"` 직접 비교 또는
+    // `const slot = …; if (slot === "x")` 변수 비교 (nds-bottom-sheet/nds-comment-item 패턴).
+    /(?:getAttribute\(\s*["'`]slot["'`]\s*\)|\bslot)\s*===?\s*["'`]([a-zA-Z0-9_-]+)["'`]/g,
   ];
   for (const re of patterns) {
     let match;
@@ -351,23 +362,49 @@ function computeDrift(catalog) {
   return drift;
 }
 
+/** baseline 정규화 — 신 포맷(entries)과 구 포맷(keys 평탄 배열) 모두 entries 로 읽는다. */
 function readBaseline() {
   if (!fs.existsSync(BASELINE_PATH)) return null;
   try {
-    return JSON.parse(fs.readFileSync(BASELINE_PATH, "utf8"));
+    const raw = JSON.parse(fs.readFileSync(BASELINE_PATH, "utf8"));
+    if (Array.isArray(raw.entries)) return { ...raw, entries: raw.entries };
+    if (Array.isArray(raw.keys)) {
+      // 구 포맷 폴백 — reason 없이 흡수돼 있던 항목들.
+      return { ...raw, entries: raw.keys.map((key) => ({ key, reason: "legacy(미기재)" })) };
+    }
+    return { ...raw, entries: [] };
   } catch {
     return null;
   }
 }
 
-function writeBaseline(drift) {
+/**
+ * baseline 갱신은 전체 덮어쓰기가 아니라 merge —
+ *   현재도 drift 인 기존 엔트리: reason/since 보존
+ *   해소된 엔트리: 제거
+ *   신규 drift: reason "TODO" 로 추가 → check 모드가 차단하므로 사유를 써야 게이트가 열린다.
+ */
+function writeBaseline(drift, prevEntries = []) {
+  const prevByKey = new Map(prevEntries.map((e) => [e.key, e]));
+  const month = new Date().toISOString().slice(0, 7);
+  let added = 0;
+  const entries = drift.map((d) => {
+    const key = driftKey(d);
+    const prev = prevByKey.get(key);
+    if (prev) return prev;
+    added += 1;
+    return { key, reason: "TODO", since: month };
+  });
   const payload = {
     note:
       "react↔html 미러 parity 의 알려진/허용된 divergence 스냅샷. " +
-      "신규 drift 만 게이트가 차단한다. 항목을 해소했으면 `pnpm lint:mirror-parity:update` 로 갱신.",
-    keys: drift.map(driftKey),
+      "신규 drift 만 게이트가 차단한다. 엔트리마다 reason 필수 — " +
+      '"TODO" 는 check 가 차단, "TRIAGE-PENDING…" 은 통과하되 카운트 노출. ' +
+      "항목을 해소했으면 `pnpm lint:mirror-parity:update` 로 갱신(merge — 기존 reason 보존).",
+    entries,
   };
   fs.writeFileSync(BASELINE_PATH, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  return { total: entries.length, added, removed: prevEntries.length - (entries.length - added) };
 }
 
 function groupByKind(items) {
@@ -407,10 +444,16 @@ const drift = computeDrift(catalog);
 const componentByName = new Map((catalog.components ?? []).map((c) => [c.name, c]));
 
 if (MODE === "update") {
-  writeBaseline(drift);
+  const prev = readBaseline();
+  const stat = writeBaseline(drift, prev?.entries ?? []);
   console.log(
-    `[check-mirror-parity] baseline 갱신: ${drift.length} 건 → ${path.relative(ROOT, BASELINE_PATH)}`,
+    `[check-mirror-parity] baseline merge 갱신: 총 ${stat.total} 건 (신규 +${stat.added} · 해소 -${stat.removed}) → ${path.relative(ROOT, BASELINE_PATH)}`,
   );
+  if (stat.added > 0) {
+    console.log(
+      `  ⚠ 신규 ${stat.added} 건은 reason: "TODO" 로 추가됨 — 사유를 채워야 check 게이트가 통과합니다.`,
+    );
+  }
   process.exit(0);
 }
 
@@ -422,7 +465,8 @@ if (!baseline) {
   process.exit(1);
 }
 
-const baselineKeys = new Set(baseline.keys ?? []);
+const baselineEntries = baseline.entries ?? [];
+const baselineKeys = new Set(baselineEntries.map((e) => e.key));
 const currentKeys = new Set(drift.map(driftKey));
 
 const newDrift = drift.filter((d) => !baselineKeys.has(driftKey(d)));
@@ -453,9 +497,31 @@ if (staleSignals.length > 0) {
 const newBlocking = newDrift.filter((d) => !ADVISORY_KINDS.has(d.kind));
 const newAdvisory = newDrift.filter((d) => ADVISORY_KINDS.has(d.kind));
 
+// reason 게이트 — "TODO" placeholder 가 남아 있으면 차단(사유 강제),
+// "TRIAGE-PENDING" 은 통과시키되 분류 부채로 매번 노출한다.
+const todoEntries = baselineEntries.filter(
+  (e) => typeof e.reason !== "string" || e.reason.trim() === "" || e.reason.trim() === "TODO",
+);
+const triagePending = baselineEntries.filter((e) =>
+  String(e.reason ?? "").startsWith("TRIAGE-PENDING"),
+);
+
 console.log(
   `[check-mirror-parity] 전체 drift ${drift.length} 건 (baseline ${baselineKeys.size} 건 허용).`,
 );
+if (triagePending.length > 0) {
+  console.log(
+    `  △ TRIAGE-PENDING ${triagePending.length} 건 — 의도/누락 미분류 분 (/ds-audit 로 분류해 reason 을 채우세요).`,
+  );
+}
+
+if (todoEntries.length > 0 && MODE !== "warn-only") {
+  console.error(
+    `\n✗ baseline 에 reason 미작성(TODO) 엔트리 ${todoEntries.length} 건 — 의도된 divergence 면 사유를, 누락이면 미러를 고치고 update 하세요:`,
+  );
+  for (const e of todoEntries) console.error(`    - ${e.key}`);
+  process.exit(1);
+}
 
 if (resolvedKeys.length > 0) {
   console.log(

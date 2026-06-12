@@ -25,7 +25,8 @@ export const zIndex = {
   appBar: 300,
   modal: 1000,
   popup: 1100,
-  toast: 1200,
+  tooltip: 1400,
+  toast: 1500,
 } as const;
 
 export const elevation = {

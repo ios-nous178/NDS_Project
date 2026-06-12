@@ -123,7 +123,7 @@ export const formFieldStyles = `
     flex: 1 1 auto;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.subtle};
+    color: ${cv.input.helpertextDefault};
   }
 
   :where(.${FF_ERROR_CLASS}) {

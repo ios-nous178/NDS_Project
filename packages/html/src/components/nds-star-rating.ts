@@ -9,13 +9,14 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SR_CLASS = "nds-star-rating";
 const SR_STAR_CLASS = `${SR_CLASS}__star`;
 const SR_VALUE_CLASS = `${SR_CLASS}__value`;
 
 const STAR_PATH = "M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z";
-const FILLED_COLOR = "#FFD54F";
+const FILLED_COLOR = "var(--nds-rating-star, #FFD54F)"; // 슬롯 토큰 — style.fill 로 적용(attr 는 var() 미보장)
 const EMPTY_COLOR = "#E0E0E0";
 const DEFAULT_STAR_SIZE = 16;
 const STAR_SIZE_BY_NAME = {
@@ -39,7 +40,7 @@ export class NdsStarRating extends NdsElement {
   static elementName = "nds-star-rating";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "size", "max", "show-value", "disabled", "readonly"];
+    return [...COMPONENT_ATTRS["nds-star-rating"].observedAttributes, "readonly"];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -121,7 +122,7 @@ export class NdsStarRating extends NdsElement {
 
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", STAR_PATH);
-      path.setAttribute("fill", filled ? FILLED_COLOR : EMPTY_COLOR);
+      path.style.fill = filled ? FILLED_COLOR : EMPTY_COLOR;
 
       svg.appendChild(path);
       span.appendChild(svg);

@@ -90,6 +90,8 @@ function fontFamilyKeyToFigma(key) {
 
 // ─── NudgeEAP tokens.css ────────────────────────────────
 
+const { nudgeEapTheme } = require("../dist/brands/nudge-eap");
+
 function generateBaseTokens() {
   const lines = [":root {"];
 
@@ -226,6 +228,28 @@ function generateBaseTokens() {
   lines.push("  /* ── Z-Index ── */");
   for (const [key, value] of Object.entries(zIndex)) {
     lines.push(`  --z-${key}: ${value};`);
+  }
+
+  // Component slots — `--nds-{component}-{prop}` (브랜드 emission 과 동일 규칙).
+  // base 가 :root 로 기본값을 깔아야 컴포넌트 요소-레벨 정의(브랜드 override 마스킹) 없이
+  // var(--nds-…, fallback) cascade 가 성립한다 (chart/rating 등).
+  if (nudgeEapTheme.components) {
+    const componentBlocks = [];
+    for (const [component, props] of Object.entries(nudgeEapTheme.components)) {
+      if (!props) continue;
+      for (const [prop, value] of Object.entries(props)) {
+        let cssValue;
+        if (typeof value === "number") cssValue = `${value}px`;
+        else if (typeof value === "string") cssValue = value;
+        else continue;
+        componentBlocks.push(`  --nds-${component}-${camelToKebab(prop)}: ${cssValue};`);
+      }
+    }
+    if (componentBlocks.length > 0) {
+      lines.push("");
+      lines.push("  /* ── Components (base defaults) ── */");
+      lines.push(...componentBlocks);
+    }
   }
 
   lines.push("}");

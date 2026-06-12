@@ -12,6 +12,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const RADIO_CLASS = "nds-radio";
 const RADIO_ROOT_CLASS = `${RADIO_CLASS}__root`;
@@ -39,7 +40,7 @@ export class NdsRadio extends NdsElement {
   static elementName = "nds-radio";
 
   static get observedAttributes(): readonly string[] {
-    return ["checked", "disabled", "label", "input-id", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-radio"].observedAttributes, "label", "input-id", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLLabelElement | null = null;

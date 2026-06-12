@@ -10,20 +10,22 @@ const TOAST_MESSAGE_CLASS = `${TOAST_CLASS}__message`;
 
 /* ─── Types ─── */
 
-export type ToastVariant = "default" | "success" | "error" | "warning" | "info";
-export type ToastPosition = "top" | "bottom" | "top-right";
+/**
+ * 노출 위치 — `top`(PC·상단 중앙·pill) / `bottom`(모바일·하단·rounded 24).
+ * 위치가 곧 형태다(Figma 1330:2): top 은 pill + 큰 패딩, bottom 은 둥근 사각.
+ */
+export type ToastPosition = "top" | "bottom";
 
 /**
- * Toast 는 **인터랙션 없는 일시 메시지** 전용 — 자동으로 사라지므로 액션(되돌리기/다시시도)이나
- * 닫기 버튼을 두지 않는다. 액션·닫기·브랜드 카드(캐포비 흰 카드)가 필요하면 Snackbar 를 사용한다.
+ * Toast 는 **인터랙션 없는 단일 다크 일시 메시지** 전용 — 자동으로 사라지므로 액션(되돌리기/다시시도)이나
+ * 닫기 버튼을 두지 않는다. 색 변형(success/error…)도 없다 — 심각한 오류·결정 요청은 Modal/Alert,
+ * 액션·닫기·브랜드 카드(캐포비 흰 카드)가 필요하면 Snackbar 를 사용한다. 동시에 1개만 노출이 기본이다.
  */
 export interface ToastData {
   /** 토스트 고유 식별자 */
   id: string;
   /** 표시할 메시지 텍스트 */
   message: string;
-  /** 토스트 색상 변형 @default "default" */
-  variant?: ToastVariant;
   /** 자동 닫힘 시간 (ms). 0이면 자동 닫힘 없음 */
   duration?: number;
 }
@@ -57,7 +59,7 @@ export interface ToastProviderProps {
   position?: ToastPosition;
   /** 기본 지속 시간 (ms) */
   duration?: number;
-  /** 최대 동시 표시 개수 */
+  /** 최대 동시 표시 개수 @default 1 (가이드: 동시에 1개만 노출 — 새 토스트가 기존을 대체) */
   maxCount?: number;
   /** 토스트가 렌더링될 포털 컨테이너 */
   portalContainer?: HTMLElement | null;
@@ -68,7 +70,7 @@ export interface ToastProviderProps {
 export const ToastProvider: React.FC<ToastProviderProps> = ({
   position = "bottom",
   duration = 3000,
-  maxCount = 3,
+  maxCount = 1,
   portalContainer,
   children,
 }) => {
@@ -89,7 +91,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
       const newToast: ToastData = {
         id,
         message,
-        variant: options?.variant ?? "default",
         duration: options?.duration ?? duration,
       };
 
@@ -164,12 +165,10 @@ const ToastItem: React.FC<ToastItemProps> = ({ data, onDismiss }) => {
   return (
     <div
       data-slot="item"
-      data-variant={data.variant ?? "default"}
       data-entering={!exiting ? "true" : "false"}
       data-exiting={exiting ? "true" : "false"}
       className={TOAST_ITEM_CLASS}
-      role={data.variant === "error" ? "alert" : "status"}
-      aria-live={data.variant === "error" ? "assertive" : undefined}
+      role="status"
       onAnimationEnd={handleAnimationEnd}
     >
       <span className={TOAST_MESSAGE_CLASS}>{data.message}</span>

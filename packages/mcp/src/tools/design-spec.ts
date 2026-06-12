@@ -17,6 +17,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { ndsTagToComponentName } from "@nudge-design/mockup-core/tools/usage/parser";
+import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
 import {
   canonicalBrandSlug,
   canonicalPagePattern,
@@ -250,12 +251,15 @@ export function validateDesignSpec(input: unknown): ValidateDesignSpecResult {
       add("missing-field", "warn", "screen.intent", "intent(화면 한 줄 설명) 가 비었습니다.");
     }
 
-    // ── 캐포비 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ──
-    //   캐시워크 포 비즈니스는 DS 안에 자체 admin 디자인 시스템을 가진 유일한 브랜드라,
+    // ── Page Pattern System 브랜드 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ──
+    //   적용 여부 = 브랜드 프로필 admin.pagePatternSystem (현재 선언 브랜드 = cashwalk-biz).
     //   어드민 화면은 Onboarding/Dashboard/List/Detail/Form 5종으로 표준화. 코드 직전 게이트에서
     //   "분류부터 한다"(pattern:cashwalk-biz-page-patterns)를 권고가 아닌 하드 룰로 강제한다.
     //   surfaceKind 는 모델 선언 또는 saveDesignSpec 가 nudge.surface 마커에서 주입.
-    if (canonicalBrand === "cashwalk-biz" && screen.surfaceKind === "admin") {
+    if (
+      getBrandProfile(canonicalBrand)?.admin?.pagePatternSystem &&
+      screen.surfaceKind === "admin"
+    ) {
       if (!screen.pagePattern) {
         add(
           "cashwalk-biz-admin-page-pattern",

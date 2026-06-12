@@ -14,6 +14,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const AC_CLASS = "nds-autocomplete";
 const AC_ROOT_CLASS = `${AC_CLASS}__root`;
@@ -35,18 +36,7 @@ export class NdsAutocomplete extends NdsElement {
   static elementName = "nds-autocomplete";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "value",
-      "placeholder",
-      "disabled",
-      "error",
-      "full-width",
-      "loading",
-      "empty-message",
-      "min-query-length",
-      "highlight",
-      "options",
-    ];
+    return [...COMPONENT_ATTRS["nds-autocomplete"].observedAttributes, "empty-message"];
   }
 
   private _root: HTMLDivElement | null = null;

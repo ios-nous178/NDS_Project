@@ -21,6 +21,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SBG_CLASS = "nds-selection-button-group";
 const SBG_ROOT_CLASS = `${SBG_CLASS}__root`;
@@ -39,7 +40,7 @@ export class NdsSelectionButtonGroup extends NdsElement {
   static elementName = "nds-selection-button-group";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "full-width", "disabled", "options", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-selection-button-group"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

@@ -7,7 +7,7 @@
  *
  * 사용:
  *   node apps/desktop/scripts/import-chats-to-api.mjs
- *   API_URL=http://localhost:3000 NUDGE_API_USER=you@x node apps/desktop/scripts/import-chats-to-api.mjs
+ *   API_URL=http://localhost:8080 NUDGE_API_USER=you@x node apps/desktop/scripts/import-chats-to-api.mjs
  *
  * ※ 메시지 본문은 transport="stream-json" 세션(<id>.jsonl)에만 존재.
  *   pty 세션은 메타데이터만 들어간다(raw .log 는 전송하지 않음).
@@ -16,7 +16,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import os from "node:os";
 
-const API_URL = (process.env.API_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+const API_URL = (process.env.API_URL ?? "http://localhost:8080").replace(/\/+$/, "");
 const USER_ID = process.env.NUDGE_API_USER || safeUser();
 
 function safeUser() {

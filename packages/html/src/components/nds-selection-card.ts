@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SC_CLASS = "nds-selection-card";
 const SC_ROOT_CLASS = `${SC_CLASS}__root`;
@@ -37,7 +38,7 @@ export class NdsSelectionCard extends NdsElement {
   static elementName = "nds-selection-card";
 
   static get observedAttributes(): readonly string[] {
-    return ["mode", "value", "values", "layout", "name"];
+    return [...COMPONENT_ATTRS["nds-selection-card"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;

@@ -9,6 +9,7 @@
  *   </nds-field-action-row>
  *
  * 속성:
+ *   label: 필드 라벨 (선택) — 주면 입력+버튼 한 줄 위에 라벨이 렌더됨
  *   action-tone: "outline" | "solid"
  *   error / success
  *   timer-expired
@@ -21,9 +22,11 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const FAR_CLASS = "nds-field-action-row";
 const FAR_ROOT_CLASS = `${FAR_CLASS}__root`;
+const FAR_LABEL_CLASS = `${FAR_CLASS}__label`;
 const FAR_FIELD_CLASS = `${FAR_CLASS}__field`;
 const FAR_ACTION_CLASS = `${FAR_CLASS}__action`;
 const FAR_HELPER_CLASS = `${FAR_CLASS}__helper`;
@@ -33,10 +36,11 @@ export class NdsFieldActionRow extends NdsElement {
   static elementName = "nds-field-action-row";
 
   static get observedAttributes(): readonly string[] {
-    return ["action-tone", "error", "success", "timer-expired", "helper-text"];
+    return [...COMPONENT_ATTRS["nds-field-action-row"].observedAttributes, "label"];
   }
 
   private _root: HTMLDivElement | null = null;
+  private _label: HTMLSpanElement | null = null;
   private _field: HTMLDivElement | null = null;
   private _timer: HTMLSpanElement | null = null;
   private _action: HTMLDivElement | null = null;
@@ -68,6 +72,12 @@ export class NdsFieldActionRow extends NdsElement {
     const root = document.createElement("div");
     root.dataset.slot = "root";
     root.className = FAR_ROOT_CLASS;
+
+    // 라벨(옵션) — 입력+버튼 한 줄 위. helper 처럼 항상 만들고 update 에서 표시/숨김.
+    const label = document.createElement("span");
+    label.dataset.slot = "label";
+    label.className = FAR_LABEL_CLASS;
+    root.appendChild(label);
 
     const row = document.createElement("div");
     row.dataset.slot = "row";
@@ -103,6 +113,7 @@ export class NdsFieldActionRow extends NdsElement {
     this.appendChild(root);
 
     this._root = root;
+    this._label = label;
     this._field = field;
     this._timer = timer;
     this._action = action;
@@ -110,8 +121,17 @@ export class NdsFieldActionRow extends NdsElement {
   }
 
   protected update(): void {
-    if (!this._root || !this._field || !this._timer || !this._action || !this._helper) return;
+    if (!this._root || !this._label || !this._field || !this._timer || !this._action || !this._helper)
+      return;
     if (this.style.display !== "contents") this.style.display = "contents";
+
+    const labelText = this.getAttribute("label");
+    if (labelText) {
+      this._label.textContent = labelText;
+      this._label.style.display = "";
+    } else {
+      this._label.style.display = "none";
+    }
 
     const actionTone = this.getAttribute("action-tone") || "outline";
     const error = this.boolAttr("error");

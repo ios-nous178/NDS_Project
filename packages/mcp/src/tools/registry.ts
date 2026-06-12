@@ -41,7 +41,7 @@ const TOOLS = [
   {
     name: "find_component",
     description:
-      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only), `verbose:true` for full signatures (type/allowedValues). For usage examples prefer get_guide({ topic: `component:<Name>` }). (Mockup work: collect visual refs first.)",
+      "Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only), `verbose:true` for full signatures (type/allowedValues). For usage examples prefer get_guide({ topic: `component:<Name>` }). (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.",
     inputSchema: {
       type: "object",
       properties: {
@@ -56,6 +56,16 @@ const TOOLS = [
             "[name-lookup only] If true, response includes full prop signatures (type, allowedValues, optional flags). Default false — slim shape with prop names only.",
         },
         limit: { type: "number", description: "Max results for list/search calls." },
+        userRequest: {
+          type: "string",
+          description:
+            "The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.",
+        },
+        brand: {
+          type: "string",
+          description:
+            "Optional brand slug in context (e.g. 'cashwalk-biz', 'trost'). Pass it so lookups/misses can be grouped by brand.",
+        },
       },
       additionalProperties: false,
     },
@@ -63,7 +73,7 @@ const TOOLS = [
   {
     name: "find_icon",
     description:
-      "Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready inline `svg` (no npm install needed), no args→icon index. (Mockup work: collect visual refs first.)",
+      "Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready inline `svg` (no npm install needed), no args→icon index. (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.",
     inputSchema: {
       type: "object",
       properties: {
@@ -82,6 +92,16 @@ const TOOLS = [
           type: "number",
           description: "Optional width/height(px) for the returned inline svg. Default 24.",
         },
+        userRequest: {
+          type: "string",
+          description:
+            "The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.",
+        },
+        brand: {
+          type: "string",
+          description:
+            "Optional brand slug in context (e.g. 'cashwalk-biz', 'trost'). Pass it so lookups/misses can be grouped by brand.",
+        },
       },
       additionalProperties: false,
     },
@@ -89,7 +109,7 @@ const TOOLS = [
   {
     name: "find_token",
     description:
-      "Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.)",
+      "Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.",
     inputSchema: {
       type: "object",
       properties: {
@@ -99,6 +119,11 @@ const TOOLS = [
           type: "string",
           description:
             "Optional brand slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + brand-specific tokens and shows brand-specific values for shared semantic tokens. Omit for NudgeEAP/base.",
+        },
+        userRequest: {
+          type: "string",
+          description:
+            "The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.",
         },
       },
       additionalProperties: false,
@@ -269,6 +294,15 @@ const TOOLS = [
           type: "boolean",
           description:
             "If true, run pending usage-guard auto-report after validation. Default false.",
+        },
+        brand: {
+          type: "string",
+          description:
+            "Optional brand slug. Overrides the nudge.brand marker for brand-specific rules and telemetry grouping.",
+        },
+        surface: {
+          type: "string",
+          description: "Optional surface (admin/service/…). Overrides the nudge.surface marker.",
         },
       },
       additionalProperties: false,
@@ -541,6 +575,51 @@ const TOOLS = [
       additionalProperties: false,
     },
   },
+  {
+    name: "log_feedback",
+    description:
+      "Log a user's design-system correction into DS telemetry so recurring DS gaps get fixed automatically. " +
+      "═══ HARD SEQUENCING RULE (not optional) ═══ " +
+      "If the user objects to a DS choice and you are ABOUT TO CHANGE IT, you MUST call log_feedback FIRST, then make the change. " +
+      "The correction itself is the trigger — the instant you think 'oh they're right, let me fix that', STOP and log it before touching code. " +
+      "Logging-after-the-fix is forgotten almost every time (you get absorbed in fixing). Do NOT ask permission to log — just call it (fire-and-forget, one call per distinct correction, near-zero cost). " +
+      "═══ WHEN to call ═══ " +
+      "The user signals the DESIGN SYSTEM ITSELF is wrong: '이거 틀렸어 / 아니야 / 왜 이래 / 이거 말고 / 저거 쓰는 게 맞아? / 시안이랑 달라', a wrong component/variant/token/color/spacing, a guide that misled you, or a component that doesn't exist. " +
+      "ALSO when the user merely QUESTIONS a choice ('저거 맞아?', '이게 맞나?') and you then CONCLUDE you were wrong — log your conclusion (the questioning + your realization IS the feedback). " +
+      "═══ NOT when ═══ " +
+      "Plain task instructions ('다음 화면 만들어줘', '여기 버튼 추가해') or your own stylistic preference. Only genuine 'the DS got it wrong' signals. " +
+      "═══ ARGS ═══ " +
+      "text = the correction in one line (what was wrong → what's right). category = component|token|guide|pattern|bug|other. target = the component/token/screen. brand = brand slug. " +
+      "═══ WORKED EXAMPLE ═══ " +
+      "User: '캐포비 스텝은 numbered 말고 bar 아니야?' → you check the guide, realize bar is right → FIRST call " +
+      "log_feedback({ text: '캐포비 어드민 단계 진행은 numbered(원형) 말고 bar variant 가 맞다 — 가이드 혼동', category: 'guide', target: 'Stepper', brand: 'cashwalk-biz' }) " +
+      "THEN switch the code to bar. Never the reverse.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        text: {
+          type: "string",
+          description: "The user's feedback/correction, summarized (or quoted).",
+        },
+        category: {
+          type: "string",
+          enum: ["component", "token", "guide", "pattern", "bug", "other"],
+          description:
+            "What kind of DS issue: component(없거나 잘못된 컴포넌트) / token(색·간격 등 토큰) / guide(가이드 혼동·오류) / pattern(화면 패턴) / bug / other.",
+        },
+        target: {
+          type: "string",
+          description: "Related component/token/screen name if any (e.g. 'Modal', 'cv.input.border').",
+        },
+        brand: {
+          type: "string",
+          description: "Related brand slug if any (e.g. 'cashwalk-biz', 'trost').",
+        },
+      },
+      required: ["text"],
+      additionalProperties: false,
+    },
+  },
 ];
 
 export const TOOL_DEFINITIONS = TOOLS;
@@ -561,6 +640,14 @@ const BRAND_ASSET_KIND_VALUES = [
   "profileImages",
   "illustrations",
   "marathonEvents",
+] as const;
+const FEEDBACK_CATEGORY_VALUES = [
+  "component",
+  "token",
+  "guide",
+  "pattern",
+  "bug",
+  "other",
 ] as const;
 const DEV_SERVER_ACTION_VALUES = ["start", "stop"] as const;
 const GUIDE_TARGET_VALUES = ["react", "html"] as const;
@@ -652,6 +739,8 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         name: optionalString(args, "name", toolName),
         verbose: optionalBoolean(args, "verbose", toolName),
         limit: optionalNumber(args, "limit", toolName, { min: 1 }),
+        userRequest: optionalString(args, "userRequest", toolName),
+        brand: optionalString(args, "brand", toolName),
       };
     case "find_icon":
       return {
@@ -660,12 +749,15 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         category: optionalString(args, "category", toolName),
         limit: optionalNumber(args, "limit", toolName, { min: 1 }),
         size: optionalNumber(args, "size", toolName, { min: 1 }),
+        userRequest: optionalString(args, "userRequest", toolName),
+        brand: optionalString(args, "brand", toolName),
       };
     case "find_token":
       return {
         group: optionalString(args, "group", toolName),
         query: optionalString(args, "query", toolName),
         brand: optionalString(args, "brand", toolName),
+        userRequest: optionalString(args, "userRequest", toolName),
       };
     case "suggest_replacement":
       return {
@@ -744,6 +836,8 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         cwd: optionalString(args, "cwd", toolName),
         dryRun: optionalBoolean(args, "dryRun", toolName),
         autoReport: optionalBoolean(args, "autoReport", toolName),
+        brand: optionalString(args, "brand", toolName),
+        surface: optionalString(args, "surface", toolName),
       };
     case "validate_prd_coverage":
       return {
@@ -763,6 +857,13 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         brand: optionalString(args, "brand", toolName),
         surface: optionalString(args, "surface", toolName),
         cwd: optionalString(args, "cwd", toolName),
+      };
+    case "log_feedback":
+      return {
+        text: optionalString(args, "text", toolName),
+        category: optionalEnum(args, "category", FEEDBACK_CATEGORY_VALUES, toolName),
+        target: optionalString(args, "target", toolName),
+        brand: optionalString(args, "brand", toolName),
       };
     default:
       return args;

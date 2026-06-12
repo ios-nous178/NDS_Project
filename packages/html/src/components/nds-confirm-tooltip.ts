@@ -7,6 +7,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CT_CLASS = "nds-confirm-tooltip";
 const CT_TRIGGER_CLASS = `${CT_CLASS}__trigger`;
@@ -29,16 +30,7 @@ export class NdsConfirmTooltip extends NdsElement {
   static elementName = "nds-confirm-tooltip";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "title",
-      "description",
-      "open",
-      "placement",
-      "actions",
-      "confirm-label",
-      "cancel-label",
-      "body-width",
-    ];
+    return [...COMPONENT_ATTRS["nds-confirm-tooltip"].observedAttributes, "title", "description"];
   }
 
   private _root: HTMLDivElement | null = null;

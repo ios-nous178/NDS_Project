@@ -210,19 +210,15 @@ export const modalStyles = `
   }
 
   /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).
-     split(기본)은 위 .footer-action{flex:1} 가로 균등. end 는 1버튼 120px 고정,
-     2버튼 우측 hug. data-layout 은 resolveActionsLayout(브랜드 기본 + prop override)이 설정.
+     split(기본)은 위 .footer-action{flex:1} 가로 균등. end 는 1·2버튼 모두 128px 고정 폭
+     (Figma ModalGuide 3418-471 갱신 — w128). data-layout 은 resolveActionsLayout(브랜드 기본 + prop override)이 설정.
      pill 모양/색은 별도(브랜드 토큰/cascade) — 배치만 여기서. ─── */
   :where(.${FOOTER_CLASS}[data-layout="end"]) {
     justify-content: flex-end;
   }
 
   :where(.${FOOTER_CLASS}[data-layout="end"] .${FOOTER_ACTION_CLASS}) {
-    flex: 0 0 auto;
-  }
-
-  :where(.${FOOTER_CLASS}[data-layout="end"]:not([data-has-both-actions="true"]) .${FOOTER_ACTION_CLASS}) {
-    flex: 0 0 120px;
+    flex: 0 0 128px;
   }
 
   @keyframes nds-modal-fade-in {
@@ -242,9 +238,9 @@ export const modalStyles = `
        · 너비 480 / radius 16 / padding 32 균등 / gap 20
        · 헤더: 타이틀 좌측 정렬(Title2 18/26) + (옵션) 우측 X
        · 본문: Body2 14/20 좌측 정렬, color text/normal
-       · 푸터(44px, pill r9999, Body2 medium):
-           ① Single (onConfirm 만)         → 우측 정렬 · 120px 고정
-           ② Dual   (onConfirm + onClose)  → 가로 양분 (기존 동작)
+       · 푸터(48px, pill r9999, w128 고정, Body2 medium):
+           ① Single (onConfirm 만)         → 우측 정렬 · 128px 고정
+           ② Dual   (onConfirm + onClose)  → 우측 정렬 · 128px ×2
        · confirm = 검정 CTA (button.bgNeutral — 캐포비 tone=Primary+Neutral, Secondary 없음)
        · cancel  = white + neutral 회색 보더
      기존 props 만으로 4가지 admin 패턴 모두 표현 가능 — Modal API
@@ -310,9 +306,9 @@ export const modalStyles = `
   /* 캐포비 버튼 배치(우측 hug)는 이제 actionsLayout="end"(data-layout) 가 담당 —
      resolveActionsLayout 가 cashwalk-biz 기본을 "end" 로 잡는다. 여기서는 색/pill 모양만. */
 
-  /* CashwalkBiz 버튼: pill / 44px / Body2(14/20) Medium */
+  /* CashwalkBiz 버튼: pill / 48px / Body2(14/20) Medium (Figma 3418-471 — 44→48 갱신) */
   :where([data-brand="cashwalk-biz"] .${FOOTER_ACTION_CLASS}) {
-    height: 44px;
+    height: 48px;
     padding: ${spacing[12]}px ${spacing[18]}px;
     border-radius: 9999px;
     font-size: ${typeScale.body3.fontSize}px;

@@ -18,6 +18,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import { createIconSvg, type VanillaIconName } from "@nudge-design/icons/vanilla";
 
 const AC_CLASS = "nds-appointment-card";
@@ -94,7 +95,7 @@ export class NdsAppointmentCard extends NdsElement {
   static elementName = "nds-appointment-card";
 
   static get observedAttributes(): readonly string[] {
-    return ["date", "start-time", "end-time", "title", "mode", "location", "status", "actions"];
+    return [...COMPONENT_ATTRS["nds-appointment-card"].observedAttributes, "title", "location"];
   }
 
   private _root: HTMLDivElement | null = null;

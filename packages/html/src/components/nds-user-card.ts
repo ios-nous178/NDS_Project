@@ -20,6 +20,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const UC_CLASS = "nds-user-card";
 const UC_AVATAR_CLASS = `${UC_CLASS}__avatar`;
@@ -50,7 +51,7 @@ export class NdsUserCard extends NdsElement {
   static elementName = "nds-user-card";
 
   static get observedAttributes(): readonly string[] {
-    return ["name", "handle", "bio", "meta", "verified", "layout", "clickable"];
+    return [...COMPONENT_ATTRS["nds-user-card"].observedAttributes, "name", "handle", "bio", "meta", "clickable"];
   }
 
   private _root: HTMLDivElement | null = null;

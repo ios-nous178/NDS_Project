@@ -77,6 +77,12 @@ export class NdsVideoPlayer extends NdsElement {
   private _root: HTMLDivElement | null = null;
   private _video: HTMLVideoElement | null = null;
   private _overlay: HTMLDivElement | null = null;
+  private _titleEl: HTMLParagraphElement | null = null;
+  private _durEl: HTMLSpanElement | null = null;
+  private _playBtn: HTMLButtonElement | null = null;
+  private _controls: HTMLDivElement | null = null;
+  private _fill: HTMLDivElement | null = null;
+  private _rangeInput: HTMLInputElement | null = null;
 
   private _playing = false;
   private _progress = 0;
@@ -127,12 +133,71 @@ export class NdsVideoPlayer extends NdsElement {
     overlay.className = VP_OVERLAY_CLASS;
     overlay.dataset.slot = "overlay";
 
+    /* overlay 골격도 1회만 구성 — _renderOverlay() 는 텍스트/값/표시 여부만 반영한다.
+     * (매 timeupdate 마다 range input 을 재생성하면 시크 드래그 중 포커스가 유실되는
+     * 회귀 — packages/html/test/nds-video-player.test.ts 가 잠근다.) */
+    const titleEl = document.createElement("p");
+    titleEl.className = VP_TITLE_CLASS;
+    titleEl.style.display = "none";
+
+    const durEl = document.createElement("span");
+    durEl.className = VP_DURATION_CLASS;
+    durEl.style.display = "none";
+
+    const playBtn = document.createElement("button");
+    playBtn.type = "button";
+    playBtn.className = VP_PLAY_BTN_CLASS;
+    playBtn.setAttribute("aria-label", "재생");
+    playBtn.appendChild(PlaySvg());
+    playBtn.addEventListener("click", () => this._togglePlay());
+
+    const controls = document.createElement("div");
+    controls.className = VP_CONTROLS_CLASS;
+    controls.style.display = "none";
+
+    const pauseBtn = document.createElement("button");
+    pauseBtn.type = "button";
+    pauseBtn.className = VP_BTN_CLASS;
+    pauseBtn.setAttribute("aria-label", "일시정지");
+    pauseBtn.appendChild(PauseSvg());
+    pauseBtn.addEventListener("click", () => this._togglePlay());
+
+    const track = document.createElement("div");
+    track.className = VP_TRACK_CLASS;
+
+    const fill = document.createElement("div");
+    fill.className = VP_FILL_CLASS;
+
+    const input = document.createElement("input");
+    input.type = "range";
+    input.min = "0";
+    input.max = "100";
+    input.step = "0.1";
+    input.className = VP_INPUT_CLASS;
+    input.setAttribute("aria-label", "재생 위치");
+    input.addEventListener("input", (e) => {
+      if (!this._video || !this._video.duration) return;
+      const pct = parseFloat((e.target as HTMLInputElement).value);
+      this._video.currentTime = (pct / 100) * this._video.duration;
+      this._progress = pct;
+    });
+
+    track.append(fill, input);
+    controls.append(pauseBtn, track);
+    overlay.append(titleEl, durEl, playBtn, controls);
+
     root.append(video, overlay);
     this.appendChild(root);
 
     this._root = root;
     this._video = video;
     this._overlay = overlay;
+    this._titleEl = titleEl;
+    this._durEl = durEl;
+    this._playBtn = playBtn;
+    this._controls = controls;
+    this._fill = fill;
+    this._rangeInput = input;
   }
 
   private _togglePlay(): void {
@@ -154,75 +219,26 @@ export class NdsVideoPlayer extends NdsElement {
 
     const title = this.getAttribute("title");
     const durationLabel = this.getAttribute("duration-label") || formatTime(this._duration);
-    const showOverlay = !this._interacted || !this._playing;
     this._overlay.dataset.hide = this._interacted && this._playing ? "true" : "false";
-    if (!showOverlay && !(this._interacted && this._playing)) {
-      // when hide=true but no interaction yet, still show
+
+    if (this._titleEl) {
+      this._titleEl.textContent = title ?? "";
+      this._titleEl.style.display = title ? "" : "none";
+    }
+    if (this._durEl) {
+      this._durEl.textContent = durationLabel;
+      this._durEl.style.display = durationLabel ? "" : "none";
+    }
+    if (this._playBtn) this._playBtn.style.display = this._playing ? "none" : "";
+    if (this._controls) {
+      this._controls.style.display = this._interacted && this._playing ? "" : "none";
+    }
+    if (this._fill) this._fill.style.setProperty("--nds-video-fill", `${this._progress}%`);
+    if (this._rangeInput) {
+      const value = String(this._progress);
+      if (this._rangeInput.value !== value) this._rangeInput.value = value;
     }
 
-    const children: Node[] = [];
-    if (title) {
-      const titleEl = document.createElement("p");
-      titleEl.className = VP_TITLE_CLASS;
-      titleEl.textContent = title;
-      children.push(titleEl);
-    }
-    if (durationLabel) {
-      const durEl = document.createElement("span");
-      durEl.className = VP_DURATION_CLASS;
-      durEl.textContent = durationLabel;
-      children.push(durEl);
-    }
-
-    if (!this._playing) {
-      const playBtn = document.createElement("button");
-      playBtn.type = "button";
-      playBtn.className = VP_PLAY_BTN_CLASS;
-      playBtn.setAttribute("aria-label", "재생");
-      playBtn.appendChild(PlaySvg());
-      playBtn.addEventListener("click", () => this._togglePlay());
-      children.push(playBtn);
-    }
-
-    if (this._interacted && this._playing) {
-      const controls = document.createElement("div");
-      controls.className = VP_CONTROLS_CLASS;
-
-      const pauseBtn = document.createElement("button");
-      pauseBtn.type = "button";
-      pauseBtn.className = VP_BTN_CLASS;
-      pauseBtn.setAttribute("aria-label", "일시정지");
-      pauseBtn.appendChild(PauseSvg());
-      pauseBtn.addEventListener("click", () => this._togglePlay());
-
-      const track = document.createElement("div");
-      track.className = VP_TRACK_CLASS;
-
-      const fill = document.createElement("div");
-      fill.className = VP_FILL_CLASS;
-      fill.style.setProperty("--nds-video-fill", `${this._progress}%`);
-
-      const input = document.createElement("input");
-      input.type = "range";
-      input.min = "0";
-      input.max = "100";
-      input.step = "0.1";
-      input.value = String(this._progress);
-      input.className = VP_INPUT_CLASS;
-      input.setAttribute("aria-label", "재생 위치");
-      input.addEventListener("input", (e) => {
-        if (!this._video || !this._video.duration) return;
-        const pct = parseFloat((e.target as HTMLInputElement).value);
-        this._video.currentTime = (pct / 100) * this._video.duration;
-        this._progress = pct;
-      });
-
-      track.append(fill, input);
-      controls.append(pauseBtn, track);
-      children.push(controls);
-    }
-
-    this._overlay.replaceChildren(...children);
     this._overlay.style.display = "";
   }
 

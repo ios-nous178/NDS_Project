@@ -17,3 +17,6 @@ chromatic.log
 .ds-usage-webhook-queue.jsonl
 .ds-context-log.jsonl
 .claude/scheduled_tasks.lock
+
+# MCP transcript 피드백 캡처 커서(로컬 관측 아티팩트)
+.ds-feedback-cursor.json

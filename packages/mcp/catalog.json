@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-09T03:56:45.148Z",
+  "generatedAt": "2026-06-12T08:28:40.087Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -165,9 +165,9 @@
       "dtsRelPath": "packages/react/dist/AddButton.d.ts",
       "htmlTag": "nds-add-button",
       "htmlObservedAttrs": [
-        "label",
         "error",
         "full-width",
+        "label",
         "disabled"
       ]
     },
@@ -238,15 +238,15 @@
       "dtsRelPath": "packages/react/dist/AddressPicker.d.ts",
       "htmlTag": "nds-address-picker",
       "htmlObservedAttrs": [
+        "error",
+        "loading",
         "query",
         "results",
+        "search-label",
         "value",
         "label",
-        "search-label",
         "empty-message",
-        "loading",
-        "helper-text",
-        "error"
+        "helper-text"
       ]
     },
     {
@@ -311,16 +311,16 @@
       "dtsRelPath": "packages/react/dist/AmountInput.d.ts",
       "htmlTag": "nds-amount-input",
       "htmlObservedAttrs": [
-        "value",
-        "prefix",
-        "unit",
-        "label",
-        "helper-text",
         "error",
         "full-width",
-        "presets",
         "max",
         "min",
+        "prefix",
+        "presets",
+        "unit",
+        "value",
+        "label",
+        "helper-text",
         "placeholder",
         "disabled"
       ]
@@ -390,14 +390,14 @@
       "dtsRelPath": "packages/react/dist/AppointmentCard.d.ts",
       "htmlTag": "nds-appointment-card",
       "htmlObservedAttrs": [
+        "actions",
         "date",
-        "start-time",
         "end-time",
-        "title",
         "mode",
-        "location",
+        "start-time",
         "status",
-        "actions"
+        "title",
+        "location"
       ]
     },
     {
@@ -517,12 +517,12 @@
       "dtsRelPath": "packages/react/dist/AttachmentItem.d.ts",
       "htmlTag": "nds-attachment-item",
       "htmlObservedAttrs": [
-        "name",
-        "size",
         "file-type",
-        "status",
-        "progress",
         "href",
+        "name",
+        "progress",
+        "size",
+        "status",
         "error-message"
       ]
     },
@@ -578,11 +578,11 @@
       "dtsRelPath": "packages/react/dist/AudioPlayer.d.ts",
       "htmlTag": "nds-audio-player",
       "htmlObservedAttrs": [
-        "title",
-        "subtitle",
-        "playing",
         "current-time",
-        "duration"
+        "duration",
+        "playing",
+        "title",
+        "subtitle"
       ]
     },
     {
@@ -657,16 +657,16 @@
       "dtsRelPath": "packages/react/dist/Autocomplete.d.ts",
       "htmlTag": "nds-autocomplete",
       "htmlObservedAttrs": [
-        "value",
-        "placeholder",
         "disabled",
         "error",
         "full-width",
-        "loading",
-        "empty-message",
-        "min-query-length",
         "highlight",
-        "options"
+        "loading",
+        "min-query-length",
+        "options",
+        "placeholder",
+        "value",
+        "empty-message"
       ]
     },
     {
@@ -693,6 +693,16 @@
           "type": "AvatarSize"
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "AvatarShape",
+          "allowedValues": [
+            "square",
+            "rounded",
+            "circle"
+          ]
+        },
+        {
           "name": "fallback",
           "optional": true,
           "type": "React.ReactNode"
@@ -701,10 +711,11 @@
       "dtsRelPath": "packages/react/dist/Avatar.d.ts",
       "htmlTag": "nds-avatar",
       "htmlObservedAttrs": [
-        "src",
         "alt",
         "name",
+        "shape",
         "size",
+        "src",
         "fallback"
       ]
     },
@@ -727,6 +738,16 @@
           "type": "AvatarSize"
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "AvatarShape",
+          "allowedValues": [
+            "square",
+            "rounded",
+            "circle"
+          ]
+        },
+        {
           "name": "overlap",
           "optional": true,
           "type": "number"
@@ -746,8 +767,9 @@
       "htmlObservedAttrs": [
         "items",
         "max",
-        "size",
         "overlap",
+        "shape",
+        "size",
         "aria-label"
       ]
     },
@@ -788,6 +810,15 @@
           ]
         },
         {
+          "name": "shape",
+          "optional": true,
+          "type": "BadgeShape",
+          "allowedValues": [
+            "default",
+            "pill"
+          ]
+        },
+        {
           "name": "labelClassName",
           "optional": true,
           "type": "string"
@@ -821,15 +852,11 @@
         ]
       },
       "htmlObservedAttrs": [
-        "variant",
         "color",
-        "size"
+        "shape",
+        "size",
+        "variant"
       ]
-    },
-    {
-      "name": "Badge.guide",
-      "props": [],
-      "dtsRelPath": "packages/react/dist/Badge.guide.d.ts"
     },
     {
       "name": "Banner",
@@ -1069,11 +1096,11 @@
       "dtsRelPath": "packages/react/dist/BrandLogo.d.ts",
       "htmlTag": "nds-brand-logo",
       "htmlObservedAttrs": [
-        "brand",
-        "width",
-        "height",
         "alt",
-        "href"
+        "brand",
+        "height",
+        "href",
+        "width"
       ]
     },
     {
@@ -1196,12 +1223,12 @@
         ]
       },
       "htmlObservedAttrs": [
-        "variant",
-        "size",
         "color",
-        "shape",
-        "disabled",
         "full-width",
+        "shape",
+        "size",
+        "variant",
+        "disabled",
         "type"
       ]
     },
@@ -1252,12 +1279,12 @@
       "dtsRelPath": "packages/react/dist/Calendar.d.ts",
       "htmlTag": "nds-calendar",
       "htmlObservedAttrs": [
+        "hide-header",
+        "markers",
         "month",
         "value",
         "week-starts-on",
-        "markers",
-        "disabled-dates",
-        "hide-header"
+        "disabled-dates"
       ]
     },
     {
@@ -1312,12 +1339,12 @@
       "dtsRelPath": "packages/react/dist/CallControlBar.d.ts",
       "htmlTag": "nds-call-control-bar",
       "htmlObservedAttrs": [
-        "duration",
-        "muted",
-        "show-camera",
         "camera-on",
-        "show-speaker",
-        "speaker-on"
+        "muted",
+        "speaker-on",
+        "duration",
+        "show-camera",
+        "show-speaker"
       ]
     },
     {
@@ -1622,12 +1649,12 @@
       "dtsRelPath": "packages/react/dist/ChatBubble.d.ts",
       "htmlTag": "nds-chat-bubble",
       "htmlObservedAttrs": [
-        "role",
-        "group",
-        "time",
-        "name",
         "avatar-src",
+        "group",
+        "name",
         "read",
+        "role",
+        "time",
         "message"
       ]
     },
@@ -1693,15 +1720,15 @@
       "dtsRelPath": "packages/react/dist/ChatComposer.d.ts",
       "htmlTag": "nds-chat-composer",
       "htmlObservedAttrs": [
-        "value",
-        "placeholder",
-        "max-length",
-        "show-attach",
-        "show-mic",
-        "quick-replies",
         "disabled",
+        "max-height",
+        "max-length",
+        "placeholder",
+        "quick-replies",
         "submit-on-enter",
-        "max-height"
+        "value",
+        "show-attach",
+        "show-mic"
       ]
     },
     {
@@ -1742,8 +1769,8 @@
       "htmlTag": "nds-checkbox",
       "htmlObservedAttrs": [
         "checked",
-        "indeterminate",
         "disabled",
+        "indeterminate",
         "label",
         "input-id"
       ]
@@ -1804,13 +1831,13 @@
       "dtsRelPath": "packages/react/dist/CheckboxGroup.d.ts",
       "htmlTag": "nds-checkbox-group",
       "htmlObservedAttrs": [
-        "items",
-        "value",
-        "select-all",
-        "select-all-label",
         "expandable",
+        "gap",
+        "items",
         "layout",
-        "gap"
+        "select-all",
+        "value",
+        "select-all-label"
       ]
     },
     {
@@ -1875,14 +1902,14 @@
       "dtsRelPath": "packages/react/dist/CheckboxTree.d.ts",
       "htmlTag": "nds-checkbox-tree",
       "htmlObservedAttrs": [
-        "nodes",
-        "value",
-        "searchable",
-        "search-placeholder",
-        "show-select-all",
-        "select-all-label",
+        "default-expanded",
         "empty-message",
-        "default-expanded"
+        "nodes",
+        "search-placeholder",
+        "searchable",
+        "select-all-label",
+        "show-select-all",
+        "value"
       ]
     },
     {
@@ -1979,11 +2006,6 @@
         "interactive",
         "removable"
       ]
-    },
-    {
-      "name": "Chip.guide",
-      "props": [],
-      "dtsRelPath": "packages/react/dist/Chip.guide.d.ts"
     },
     {
       "name": "CircularProgress",
@@ -2105,13 +2127,13 @@
       "dtsRelPath": "packages/react/dist/CoachMark.d.ts",
       "htmlTag": "nds-coach-mark",
       "htmlObservedAttrs": [
-        "open",
-        "step",
-        "steps",
         "finish-label",
+        "hide-skip",
         "next-label",
+        "open",
         "skip-label",
-        "hide-skip"
+        "step",
+        "steps"
       ]
     },
     {
@@ -2176,12 +2198,12 @@
       "dtsRelPath": "packages/react/dist/CommentItem.d.ts",
       "htmlTag": "nds-comment-item",
       "htmlObservedAttrs": [
+        "is-reply",
+        "reply-label",
         "author",
         "time",
         "text",
-        "reply-label",
-        "show-reply",
-        "is-reply"
+        "show-reply"
       ]
     },
     {
@@ -2227,9 +2249,9 @@
       },
       "htmlObservedAttrs": [
         "active",
+        "colors",
         "count",
-        "duration",
-        "colors"
+        "duration"
       ]
     },
     {
@@ -2304,14 +2326,14 @@
       "dtsRelPath": "packages/react/dist/ConfirmTooltip.d.ts",
       "htmlTag": "nds-confirm-tooltip",
       "htmlObservedAttrs": [
-        "title",
-        "description",
+        "actions",
+        "body-width",
+        "cancel-label",
+        "confirm-label",
         "open",
         "placement",
-        "actions",
-        "confirm-label",
-        "cancel-label",
-        "body-width"
+        "title",
+        "description"
       ]
     },
     {
@@ -2404,14 +2426,14 @@
       "dtsRelPath": "packages/react/dist/CounselorCard.d.ts",
       "htmlTag": "nds-counselor-card",
       "htmlObservedAttrs": [
-        "name",
-        "job-title",
+        "cta-label",
         "image-src",
+        "name",
         "rating",
         "review-count",
         "tags",
+        "job-title",
         "bio",
-        "cta-label",
         "clickable"
       ]
     },
@@ -2704,19 +2726,19 @@
       "dtsRelPath": "packages/react/dist/DatePicker.d.ts",
       "htmlTag": "nds-date-picker",
       "htmlObservedAttrs": [
-        "value",
-        "min-date",
-        "max-date",
-        "placeholder",
-        "disabled",
-        "error",
-        "status",
         "allow-clear",
-        "disabled-dates",
-        "open",
         "default-open",
+        "disabled",
+        "disabled-dates",
+        "error",
+        "full-width",
+        "max-date",
+        "min-date",
+        "open",
+        "placeholder",
         "portal-container",
-        "full-width"
+        "status",
+        "value"
       ]
     },
     {
@@ -2897,10 +2919,10 @@
         ]
       },
       "htmlObservedAttrs": [
+        "color",
         "orientation",
-        "thickness",
         "spacing",
-        "color"
+        "thickness"
       ]
     },
     {
@@ -3048,17 +3070,6 @@
       ]
     },
     {
-      "name": "DsHighlight",
-      "props": [],
-      "dtsRelPath": "packages/html/src/components/nds-ds-highlight.ts",
-      "htmlTag": "nds-ds-highlight",
-      "htmlObservedAttrs": [
-        "mode",
-        "hide-toggle",
-        "default-mode"
-      ]
-    },
-    {
       "name": "DSHighlight",
       "props": [
         {
@@ -3078,7 +3089,13 @@
           ]
         }
       ],
-      "dtsRelPath": "packages/react/dist/DSHighlight.d.ts"
+      "dtsRelPath": "packages/react/dist/DSHighlight.d.ts",
+      "htmlTag": "nds-ds-highlight",
+      "htmlObservedAttrs": [
+        "default-mode",
+        "mode",
+        "hide-toggle"
+      ]
     },
     {
       "name": "EmptyState",
@@ -3127,10 +3144,10 @@
       "dtsRelPath": "packages/react/dist/EmptyState.d.ts",
       "htmlTag": "nds-empty-state",
       "htmlObservedAttrs": [
-        "title",
         "description",
-        "action",
         "min-height",
+        "title",
+        "action",
         "hide-icon"
       ]
     },
@@ -3176,11 +3193,11 @@
       "dtsRelPath": "packages/react/dist/ExpandableText.d.ts",
       "htmlTag": "nds-expandable-text",
       "htmlObservedAttrs": [
-        "lines",
-        "expand-label",
         "collapse-label",
+        "expand-label",
+        "expanded",
         "hide-collapse",
-        "expanded"
+        "lines"
       ]
     },
     {
@@ -3249,6 +3266,11 @@
       "name": "FieldActionRow",
       "props": [
         {
+          "name": "label",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
           "name": "field",
           "optional": false,
           "type": "React.ReactNode"
@@ -3313,9 +3335,10 @@
       "htmlObservedAttrs": [
         "action-tone",
         "error",
+        "helper-text",
         "success",
         "timer-expired",
-        "helper-text"
+        "label"
       ]
     },
     {
@@ -3421,11 +3444,11 @@
       "dtsRelPath": "packages/react/dist/FilterBar.d.ts",
       "htmlTag": "nds-filter-bar",
       "htmlObservedAttrs": [
-        "value",
         "options",
-        "single",
+        "reset-label",
         "show-reset",
-        "reset-label"
+        "single",
+        "value"
       ]
     },
     {
@@ -3494,13 +3517,13 @@
       "dtsRelPath": "packages/react/dist/FloatingCtaBanner.d.ts",
       "htmlTag": "nds-floating-cta-banner",
       "htmlObservedAttrs": [
-        "caption",
-        "cta-text",
-        "size",
+        "aria-label",
+        "bottom-offset",
         "floating",
         "show-arrow",
-        "bottom-offset",
-        "aria-label"
+        "size",
+        "caption",
+        "cta-text"
       ]
     },
     {
@@ -3603,17 +3626,17 @@
       "dtsRelPath": "packages/react/dist/FormField.d.ts",
       "htmlTag": "nds-form-field",
       "htmlObservedAttrs": [
+        "density",
+        "html-for",
+        "label-position",
+        "label-width",
+        "optional",
+        "required",
         "label",
         "description",
         "helper",
         "error",
-        "required",
-        "optional",
-        "counter",
-        "html-for",
-        "label-position",
-        "label-width",
-        "density"
+        "counter"
       ]
     },
     {
@@ -3700,11 +3723,11 @@
       "dtsRelPath": "packages/react/dist/Header.d.ts",
       "htmlTag": "nds-header",
       "htmlObservedAttrs": [
-        "variant",
-        "position",
-        "header-title",
         "elevated",
-        "max-width"
+        "max-width",
+        "position",
+        "variant",
+        "header-title"
       ]
     },
     {
@@ -3789,10 +3812,10 @@
       "dtsRelPath": "packages/react/dist/ImageCropper.d.ts",
       "htmlTag": "nds-image-cropper",
       "htmlObservedAttrs": [
-        "src",
+        "output-size",
         "shape",
         "size",
-        "output-size",
+        "src",
         "label"
       ]
     },
@@ -3883,12 +3906,12 @@
       "dtsRelPath": "packages/react/dist/ImageUpload.d.ts",
       "htmlTag": "nds-image-upload",
       "htmlObservedAttrs": [
-        "state",
-        "image-url",
-        "image-alt",
         "accept",
-        "multiple",
         "auto-preview",
+        "image-alt",
+        "image-url",
+        "multiple",
+        "state",
         "upload-label",
         "size-hint",
         "helper-text",
@@ -4061,8 +4084,8 @@
       "dtsRelPath": "packages/react/dist/InputGroup.d.ts",
       "htmlTag": "nds-input-group",
       "htmlObservedAttrs": [
-        "gap",
-        "align"
+        "align",
+        "gap"
       ]
     },
     {
@@ -4097,9 +4120,9 @@
       "dtsRelPath": "packages/react/dist/Lightbox.d.ts",
       "htmlTag": "nds-lightbox",
       "htmlObservedAttrs": [
-        "open",
+        "images",
         "index",
-        "images"
+        "open"
       ]
     },
     {
@@ -4139,11 +4162,11 @@
       "dtsRelPath": "packages/react/dist/LikeButton.d.ts",
       "htmlTag": "nds-like-button",
       "htmlObservedAttrs": [
-        "liked",
+        "active-color",
         "count",
-        "size",
         "hide-count",
-        "active-color"
+        "liked",
+        "size"
       ]
     },
     {
@@ -4188,12 +4211,12 @@
       "dtsRelPath": "packages/react/dist/LikertScale.d.ts",
       "htmlTag": "nds-likert-scale",
       "htmlObservedAttrs": [
+        "disabled",
         "name",
         "options",
         "value",
         "start-label",
-        "end-label",
-        "disabled"
+        "end-label"
       ]
     },
     {
@@ -4285,14 +4308,14 @@
       "dtsRelPath": "packages/react/dist/MediaCard.d.ts",
       "htmlTag": "nds-media-card",
       "htmlObservedAttrs": [
+        "image-aspect-ratio",
+        "rating",
         "image-src",
         "image-alt",
         "image-overlay",
-        "image-aspect-ratio",
         "eyebrow",
         "card-title",
         "body",
-        "rating",
         "clickable"
       ]
     },
@@ -4626,18 +4649,18 @@
       "dtsRelPath": "packages/react/dist/MultiSelect.d.ts",
       "htmlTag": "nds-multi-select",
       "htmlObservedAttrs": [
+        "apply-label",
+        "cancel-label",
+        "disabled",
+        "empty-message",
+        "error",
+        "full-width",
         "options",
-        "value",
         "placeholder",
         "search-placeholder",
         "searchable",
         "select-all-label",
-        "apply-label",
-        "cancel-label",
-        "empty-message",
-        "error",
-        "disabled",
-        "full-width"
+        "value"
       ]
     },
     {
@@ -4697,11 +4720,11 @@
       "dtsRelPath": "packages/react/dist/MultiStepForm.d.ts",
       "htmlTag": "nds-multi-step-form",
       "htmlObservedAttrs": [
-        "steps",
         "current",
         "indicator",
         "next-label",
         "prev-label",
+        "steps",
         "submit-label",
         "submitting"
       ]
@@ -4804,10 +4827,10 @@
       "htmlTag": "nds-notification-item",
       "htmlObservedAttrs": [
         "kind",
+        "unread",
         "item-title",
         "description",
         "time",
-        "unread",
         "clickable"
       ]
     },
@@ -4911,10 +4934,10 @@
       "dtsRelPath": "packages/react/dist/OnlineIndicator.d.ts",
       "htmlTag": "nds-online-indicator",
       "htmlObservedAttrs": [
-        "status",
-        "show-label",
         "label",
+        "show-label",
         "size",
+        "status",
         "aria-label"
       ]
     },
@@ -4950,8 +4973,8 @@
       "dtsRelPath": "packages/react/dist/OrderSummaryCard.d.ts",
       "htmlTag": "nds-order-summary-card",
       "htmlObservedAttrs": [
-        "title",
         "rows",
+        "title",
         "total-label",
         "total"
       ]
@@ -4998,10 +5021,10 @@
       "dtsRelPath": "packages/react/dist/PageHeader.d.ts",
       "htmlTag": "nds-page-header",
       "htmlObservedAttrs": [
+        "bordered",
         "page-title",
         "subtitle",
-        "show-back",
-        "bordered"
+        "show-back"
       ]
     },
     {
@@ -5073,9 +5096,9 @@
       "htmlTag": "nds-pagination",
       "htmlObservedAttrs": [
         "page",
-        "total-pages",
+        "show-arrows",
         "siblings",
-        "show-arrows"
+        "total-pages"
       ]
     },
     {
@@ -5135,16 +5158,16 @@
       "dtsRelPath": "packages/react/dist/PhoneInput.d.ts",
       "htmlTag": "nds-phone-input",
       "htmlObservedAttrs": [
+        "auto-format",
+        "countries",
         "country-code",
+        "error",
+        "full-width",
         "value",
         "label",
         "placeholder",
         "helper-text",
-        "error",
-        "countries",
-        "full-width",
-        "disabled",
-        "auto-format"
+        "disabled"
       ]
     },
     {
@@ -5408,13 +5431,13 @@
       "htmlTag": "nds-price-tag",
       "htmlObservedAttrs": [
         "amount",
-        "original-amount",
-        "unit",
-        "prefix",
-        "size",
         "discount-position",
         "format-thousands",
-        "free-label"
+        "free-label",
+        "original-amount",
+        "prefix",
+        "size",
+        "unit"
       ]
     },
     {
@@ -5518,23 +5541,23 @@
       "dtsRelPath": "packages/react/dist/ProductCard.d.ts",
       "htmlTag": "nds-product-card",
       "htmlObservedAttrs": [
+        "buyers-count",
+        "discount-percent",
+        "free-shipping",
+        "original-price",
+        "point-discount",
+        "price",
+        "ranking-number",
+        "rating",
+        "review-count",
+        "reward",
         "size",
+        "sold-out",
         "thumbnail",
         "thumbnail-alt",
         "badge",
-        "ranking-number",
-        "sold-out",
         "product-title",
-        "original-price",
-        "discount-percent",
-        "price",
         "currency",
-        "reward",
-        "free-shipping",
-        "point-discount",
-        "buyers-count",
-        "rating",
-        "review-count",
         "clickable"
       ]
     },
@@ -5565,10 +5588,10 @@
       "dtsRelPath": "packages/react/dist/ProgressBar.d.ts",
       "htmlTag": "nds-progress-bar",
       "htmlObservedAttrs": [
-        "value",
+        "color",
         "max",
         "size",
-        "color"
+        "value"
       ]
     },
     {
@@ -5613,11 +5636,11 @@
       "dtsRelPath": "packages/react/dist/PullToRefresh.d.ts",
       "htmlTag": "nds-pull-to-refresh",
       "htmlObservedAttrs": [
-        "threshold",
+        "disabled",
         "pull-label",
-        "release-label",
         "refreshing-label",
-        "disabled"
+        "release-label",
+        "threshold"
       ]
     },
     {
@@ -5645,6 +5668,50 @@
         "actions",
         "columns",
         "gap"
+      ]
+    },
+    {
+      "name": "QuickMenu",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "QuickMenuItem[]"
+        },
+        {
+          "name": "heading",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "showTop",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "topLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "onTopClick",
+          "optional": true,
+          "type": "() => void"
+        },
+        {
+          "name": "fixed",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/QuickMenu.d.ts",
+      "htmlTag": "nds-quick-menu",
+      "htmlObservedAttrs": [
+        "items",
+        "heading",
+        "show-top",
+        "top-label",
+        "fixed"
       ]
     },
     {
@@ -5742,14 +5809,14 @@
       "dtsRelPath": "packages/react/dist/ReviewCard.d.ts",
       "htmlTag": "nds-review-card",
       "htmlObservedAttrs": [
+        "rating",
+        "tags",
+        "verified",
         "author",
         "meta",
-        "rating",
         "rating-label",
         "card-title",
-        "body",
-        "tags",
-        "verified"
+        "body"
       ]
     },
     {
@@ -5784,11 +5851,11 @@
       "dtsRelPath": "packages/react/dist/ScoreGauge.d.ts",
       "htmlTag": "nds-score-gauge",
       "htmlObservedAttrs": [
-        "value",
         "max",
         "segments",
         "show-label",
         "show-legend",
+        "value",
         "value-suffix"
       ]
     },
@@ -5863,16 +5930,16 @@
       "dtsRelPath": "packages/react/dist/SearchInput.d.ts",
       "htmlTag": "nds-search-input",
       "htmlObservedAttrs": [
-        "value",
-        "label",
-        "placeholder",
-        "helper-text",
+        "clearable",
         "error",
         "error-message",
-        "variant",
-        "clearable",
-        "show-search-button",
         "full-width",
+        "helper-text",
+        "label",
+        "show-search-button",
+        "variant",
+        "value",
+        "placeholder",
         "disabled"
       ]
     },
@@ -6072,8 +6139,8 @@
       "dtsRelPath": "packages/react/dist/SelectionButton.d.ts",
       "htmlTag": "nds-selection-button",
       "htmlObservedAttrs": [
-        "selected",
-        "disabled"
+        "disabled",
+        "selected"
       ]
     },
     {
@@ -6108,10 +6175,10 @@
       "dtsRelPath": "packages/react/dist/SelectionButtonGroup.d.ts",
       "htmlTag": "nds-selection-button-group",
       "htmlObservedAttrs": [
-        "value",
-        "full-width",
         "disabled",
-        "options"
+        "full-width",
+        "options",
+        "value"
       ]
     },
     {
@@ -6169,11 +6236,11 @@
       "dtsRelPath": "packages/react/dist/SelectionCard.d.ts",
       "htmlTag": "nds-selection-card",
       "htmlObservedAttrs": [
-        "mode",
-        "value",
-        "values",
         "layout",
-        "name"
+        "mode",
+        "name",
+        "value",
+        "values"
       ]
     },
     {
@@ -6335,13 +6402,13 @@
       "dtsRelPath": "packages/react/dist/SignaturePad.d.ts",
       "htmlTag": "nds-signature-pad",
       "htmlObservedAttrs": [
-        "label",
-        "placeholder",
+        "disabled",
         "height",
+        "hide-controls",
         "pen-color",
         "pen-width",
-        "disabled",
-        "hide-controls"
+        "placeholder",
+        "label"
       ]
     },
     {
@@ -6383,10 +6450,10 @@
         ]
       },
       "htmlObservedAttrs": [
-        "variant",
-        "width",
         "height",
-        "radius"
+        "radius",
+        "variant",
+        "width"
       ]
     },
     {
@@ -6451,14 +6518,14 @@
       "dtsRelPath": "packages/react/dist/Slider.d.ts",
       "htmlTag": "nds-slider",
       "htmlObservedAttrs": [
-        "value",
-        "min",
+        "disabled",
         "max",
-        "step",
-        "start-label",
-        "end-label",
+        "min",
         "show-value",
-        "disabled"
+        "step",
+        "value",
+        "start-label",
+        "end-label"
       ]
     },
     {
@@ -6522,11 +6589,11 @@
         ]
       },
       "htmlObservedAttrs": [
+        "action-label",
+        "closable",
         "variant",
         "snackbar-title",
         "description",
-        "action-label",
-        "closable",
         "hide-icon"
       ]
     },
@@ -6639,9 +6706,9 @@
       "dtsRelPath": "packages/react/dist/Spinner.d.ts",
       "htmlTag": "nds-spinner",
       "htmlObservedAttrs": [
-        "size",
         "color",
-        "label"
+        "label",
+        "size"
       ]
     },
     {
@@ -6681,11 +6748,11 @@
       "dtsRelPath": "packages/react/dist/StarRating.d.ts",
       "htmlTag": "nds-star-rating",
       "htmlObservedAttrs": [
-        "value",
-        "size",
+        "disabled",
         "max",
         "show-value",
-        "disabled",
+        "size",
+        "value",
         "readonly"
       ]
     },
@@ -6713,7 +6780,12 @@
           "type": "string"
         }
       ],
-      "dtsRelPath": "packages/react/dist/StatsTable.d.ts"
+      "dtsRelPath": "packages/react/dist/StatsTable.d.ts",
+      "htmlTag": "nds-stats-table",
+      "htmlObservedAttrs": [
+        "scroll",
+        "sticky-first"
+      ]
     },
     {
       "name": "Stepper",
@@ -6749,8 +6821,8 @@
         ]
       },
       "htmlObservedAttrs": [
-        "steps",
         "current",
+        "steps",
         "variant"
       ]
     },
@@ -6949,19 +7021,19 @@
         ]
       },
       "htmlObservedAttrs": [
+        "add-button-label",
+        "allow-duplicates",
+        "disabled",
+        "error",
+        "full-width",
+        "max-tags",
+        "pattern",
+        "placeholder",
+        "prefix",
         "value",
         "variant",
         "label",
-        "placeholder",
-        "helper-text",
-        "error",
-        "max-tags",
-        "allow-duplicates",
-        "prefix",
-        "pattern",
-        "add-button-label",
-        "full-width",
-        "disabled"
+        "helper-text"
       ]
     },
     {
@@ -7012,14 +7084,14 @@
       "dtsRelPath": "packages/react/dist/Textarea.d.ts",
       "htmlTag": "nds-textarea",
       "htmlObservedAttrs": [
-        "label",
-        "helper-text",
         "error",
-        "disabled",
-        "readonly",
         "max-length",
         "min-height",
         "resize",
+        "label",
+        "helper-text",
+        "disabled",
+        "readonly",
         "input-id",
         "value",
         "default-value"
@@ -7051,8 +7123,8 @@
       "dtsRelPath": "packages/react/dist/TextButton.d.ts",
       "htmlTag": "nds-text-button",
       "htmlObservedAttrs": [
-        "label",
         "size",
+        "label",
         "left-icon",
         "right-icon",
         "disabled"
@@ -7093,10 +7165,10 @@
       "dtsRelPath": "packages/react/dist/Timeline.d.ts",
       "htmlTag": "nds-timeline",
       "htmlObservedAttrs": [
-        "items",
-        "mode",
+        "current",
         "direction",
-        "current"
+        "items",
+        "mode"
       ]
     },
     {
@@ -7226,11 +7298,11 @@
       "dtsRelPath": "packages/react/dist/TimeSlotPicker.d.ts",
       "htmlTag": "nds-time-slot-picker",
       "htmlObservedAttrs": [
-        "value",
-        "slots",
-        "groups",
         "columns",
         "disabled",
+        "groups",
+        "slots",
+        "value",
         "empty-text"
       ]
     },
@@ -7270,8 +7342,7 @@
           "type": "ToastPosition",
           "allowedValues": [
             "top",
-            "bottom",
-            "top-right"
+            "bottom"
           ]
         },
         {
@@ -7297,21 +7368,11 @@
       ],
       "dtsRelPath": "packages/react/dist/Toast.d.ts",
       "htmlTag": "nds-toast",
-      "htmlAttrs": {
-        "variant": [
-          "default",
-          "success",
-          "error",
-          "warning",
-          "info"
-        ]
-      },
       "htmlObservedAttrs": [
         "position",
         "duration",
         "max-count",
         "message",
-        "variant",
         "open"
       ]
     },
@@ -7373,11 +7434,11 @@
       "htmlObservedAttrs": [
         "checked",
         "disabled",
+        "size",
+        "tone",
         "label",
         "on-label",
         "off-label",
-        "tone",
-        "size",
         "input-id"
       ]
     },
@@ -7526,13 +7587,38 @@
       "dtsRelPath": "packages/react/dist/UserCard.d.ts",
       "htmlTag": "nds-user-card",
       "htmlObservedAttrs": [
+        "layout",
+        "verified",
         "name",
         "handle",
         "bio",
         "meta",
-        "verified",
-        "layout",
         "clickable"
+      ]
+    },
+    {
+      "name": "ValidationChip",
+      "props": [
+        {
+          "name": "state",
+          "optional": true,
+          "type": "ValidationChipState",
+          "allowedValues": [
+            "incomplete",
+            "complete",
+            "error"
+          ]
+        },
+        {
+          "name": "labelClassName",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ValidationChip.d.ts",
+      "htmlTag": "nds-validation-chip",
+      "htmlObservedAttrs": [
+        "state"
       ]
     },
     {
@@ -7577,13 +7663,13 @@
       "dtsRelPath": "packages/react/dist/VerificationCodeInput.d.ts",
       "htmlTag": "nds-verification-code-input",
       "htmlObservedAttrs": [
-        "length",
-        "value",
         "disabled",
         "error",
+        "full-width",
+        "length",
+        "value",
         "auto-focus",
-        "placeholder",
-        "full-width"
+        "placeholder"
       ]
     },
     {
@@ -7701,11 +7787,11 @@
       "dtsRelPath": "packages/react/dist/VoiceRecorder.d.ts",
       "htmlTag": "nds-voice-recorder",
       "htmlObservedAttrs": [
-        "state",
-        "seconds",
-        "max-seconds",
         "idle-label",
-        "recording-label"
+        "max-seconds",
+        "recording-label",
+        "seconds",
+        "state"
       ]
     },
     {
@@ -7750,11 +7836,11 @@
       "dtsRelPath": "packages/react/dist/VotePoll.d.ts",
       "htmlTag": "nds-vote-poll",
       "htmlObservedAttrs": [
-        "question",
+        "disabled",
         "options",
-        "voted-key",
         "show-results",
-        "disabled"
+        "voted-key",
+        "question"
       ]
     },
     {
@@ -11513,6 +11599,36 @@
       ]
     },
     {
+      "name": "--nds-chart-1",
+      "value": "#007AFF",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-2",
+      "value": "#FF8437",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-3",
+      "value": "#FFD200",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-4",
+      "value": "#34C759",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-empty",
+      "value": "#BBBBBB",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-line",
+      "value": "#FFD200",
+      "group": "nds"
+    },
+    {
       "name": "--nds-checkbox-border-color",
       "value": "var(--semantic-border-strong-default)",
       "group": "nds",
@@ -11731,6 +11847,11 @@
       "brands": [
         "cashwalk-biz"
       ]
+    },
+    {
+      "name": "--nds-rating-star",
+      "value": "#FFD54F",
+      "group": "nds"
     },
     {
       "name": "--nds-select-dropdown-gap",
@@ -11965,12 +12086,19 @@
       ]
     },
     {
+      "name": "--nds-toast-bg",
+      "value": "rgba(33, 33, 33, 0.92)",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-toast-shadow",
+      "value": "0px 8px 12px rgba(0, 0, 0, 0.18)",
+      "group": "nds"
+    },
+    {
       "name": "--nds-tooltip-bg",
-      "value": "var(--semantic-fill-neutral-default)",
-      "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
+      "value": "#333333",
+      "group": "nds"
     },
     {
       "name": "--radius-0",
@@ -12982,7 +13110,7 @@
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#BBBBBB",
+        "cashwalk-biz": "#666666",
         "geniet": "#666666",
         "runmile": "#6B7684",
         "trost": "#979797"
@@ -13025,7 +13153,7 @@
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
-        "cashwalk-biz": "#DDDDDD",
+        "cashwalk-biz": "#BBBBBB",
         "runmile": "#B0B8C1",
         "trost": "#979797"
       }
@@ -13599,13 +13727,18 @@
     },
     {
       "name": "--z-toast",
-      "value": "1200",
+      "value": "1500",
       "group": "z",
       "brandValues": {
         "geniet": "400",
         "runmile": "400",
         "trost": "400"
       }
+    },
+    {
+      "name": "--z-tooltip",
+      "value": "1400",
+      "group": "z"
     }
   ],
   "brands": [
@@ -13833,6 +13966,7 @@
     "nds-progress-bar",
     "nds-pull-to-refresh",
     "nds-quick-action-grid",
+    "nds-quick-menu",
     "nds-radio",
     "nds-region-row",
     "nds-review-card",
@@ -13855,6 +13989,7 @@
     "nds-sparkline",
     "nds-spinner",
     "nds-star-rating",
+    "nds-stats-table",
     "nds-stepper",
     "nds-tabs",
     "nds-tabs-list",
@@ -13872,6 +14007,7 @@
     "nds-tooltip",
     "nds-trending-keywords",
     "nds-user-card",
+    "nds-validation-chip",
     "nds-verification-code-input",
     "nds-video-player",
     "nds-voice-recorder",
@@ -13900,9 +14036,9 @@
       "tag": "nds-add-button",
       "attrs": {},
       "observedAttrs": [
-        "label",
         "error",
         "full-width",
+        "label",
         "disabled"
       ]
     },
@@ -13910,31 +14046,31 @@
       "tag": "nds-address-picker",
       "attrs": {},
       "observedAttrs": [
+        "error",
+        "loading",
         "query",
         "results",
+        "search-label",
         "value",
         "label",
-        "search-label",
         "empty-message",
-        "loading",
-        "helper-text",
-        "error"
+        "helper-text"
       ]
     },
     {
       "tag": "nds-amount-input",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "prefix",
-        "unit",
-        "label",
-        "helper-text",
         "error",
         "full-width",
-        "presets",
         "max",
         "min",
+        "prefix",
+        "presets",
+        "unit",
+        "value",
+        "label",
+        "helper-text",
         "placeholder",
         "disabled"
       ]
@@ -13943,26 +14079,26 @@
       "tag": "nds-appointment-card",
       "attrs": {},
       "observedAttrs": [
+        "actions",
         "date",
-        "start-time",
         "end-time",
-        "title",
         "mode",
-        "location",
+        "start-time",
         "status",
-        "actions"
+        "title",
+        "location"
       ]
     },
     {
       "tag": "nds-attachment-item",
       "attrs": {},
       "observedAttrs": [
-        "name",
-        "size",
         "file-type",
-        "status",
-        "progress",
         "href",
+        "name",
+        "progress",
+        "size",
+        "status",
         "error-message"
       ]
     },
@@ -13970,27 +14106,27 @@
       "tag": "nds-audio-player",
       "attrs": {},
       "observedAttrs": [
-        "title",
-        "subtitle",
-        "playing",
         "current-time",
-        "duration"
+        "duration",
+        "playing",
+        "title",
+        "subtitle"
       ]
     },
     {
       "tag": "nds-autocomplete",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "placeholder",
         "disabled",
         "error",
         "full-width",
-        "loading",
-        "empty-message",
-        "min-query-length",
         "highlight",
-        "options"
+        "loading",
+        "min-query-length",
+        "options",
+        "placeholder",
+        "value",
+        "empty-message"
       ]
     },
     {
@@ -14007,8 +14143,9 @@
       "observedAttrs": [
         "items",
         "max",
-        "size",
         "overlap",
+        "shape",
+        "size",
         "aria-label"
       ]
     },
@@ -14016,10 +14153,11 @@
       "tag": "nds-avatar",
       "attrs": {},
       "observedAttrs": [
-        "src",
         "alt",
         "name",
+        "shape",
         "size",
+        "src",
         "fallback"
       ]
     },
@@ -14046,9 +14184,10 @@
         ]
       },
       "observedAttrs": [
-        "variant",
         "color",
-        "size"
+        "shape",
+        "size",
+        "variant"
       ]
     },
     {
@@ -14096,11 +14235,11 @@
       "tag": "nds-brand-logo",
       "attrs": {},
       "observedAttrs": [
-        "brand",
-        "width",
-        "height",
         "alt",
-        "href"
+        "brand",
+        "height",
+        "href",
+        "width"
       ]
     },
     {
@@ -14134,12 +14273,12 @@
         ]
       },
       "observedAttrs": [
-        "variant",
-        "size",
         "color",
-        "shape",
-        "disabled",
         "full-width",
+        "shape",
+        "size",
+        "variant",
+        "disabled",
         "type"
       ]
     },
@@ -14147,24 +14286,24 @@
       "tag": "nds-calendar",
       "attrs": {},
       "observedAttrs": [
+        "hide-header",
+        "markers",
         "month",
         "value",
         "week-starts-on",
-        "markers",
-        "disabled-dates",
-        "hide-header"
+        "disabled-dates"
       ]
     },
     {
       "tag": "nds-call-control-bar",
       "attrs": {},
       "observedAttrs": [
-        "duration",
-        "muted",
-        "show-camera",
         "camera-on",
-        "show-speaker",
-        "speaker-on"
+        "muted",
+        "speaker-on",
+        "duration",
+        "show-camera",
+        "show-speaker"
       ]
     },
     {
@@ -14207,12 +14346,12 @@
       "tag": "nds-chat-bubble",
       "attrs": {},
       "observedAttrs": [
-        "role",
-        "group",
-        "time",
-        "name",
         "avatar-src",
+        "group",
+        "name",
         "read",
+        "role",
+        "time",
         "message"
       ]
     },
@@ -14220,42 +14359,42 @@
       "tag": "nds-chat-composer",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "placeholder",
-        "max-length",
-        "show-attach",
-        "show-mic",
-        "quick-replies",
         "disabled",
+        "max-height",
+        "max-length",
+        "placeholder",
+        "quick-replies",
         "submit-on-enter",
-        "max-height"
+        "value",
+        "show-attach",
+        "show-mic"
       ]
     },
     {
       "tag": "nds-checkbox-group",
       "attrs": {},
       "observedAttrs": [
-        "items",
-        "value",
-        "select-all",
-        "select-all-label",
         "expandable",
+        "gap",
+        "items",
         "layout",
-        "gap"
+        "select-all",
+        "value",
+        "select-all-label"
       ]
     },
     {
       "tag": "nds-checkbox-tree",
       "attrs": {},
       "observedAttrs": [
-        "nodes",
-        "value",
-        "searchable",
-        "search-placeholder",
-        "show-select-all",
-        "select-all-label",
+        "default-expanded",
         "empty-message",
-        "default-expanded"
+        "nodes",
+        "search-placeholder",
+        "searchable",
+        "select-all-label",
+        "show-select-all",
+        "value"
       ]
     },
     {
@@ -14263,8 +14402,8 @@
       "attrs": {},
       "observedAttrs": [
         "checked",
-        "indeterminate",
         "disabled",
+        "indeterminate",
         "label",
         "input-id"
       ]
@@ -14318,25 +14457,25 @@
       "tag": "nds-coach-mark",
       "attrs": {},
       "observedAttrs": [
-        "open",
-        "step",
-        "steps",
         "finish-label",
+        "hide-skip",
         "next-label",
+        "open",
         "skip-label",
-        "hide-skip"
+        "step",
+        "steps"
       ]
     },
     {
       "tag": "nds-comment-item",
       "attrs": {},
       "observedAttrs": [
+        "is-reply",
+        "reply-label",
         "author",
         "time",
         "text",
-        "reply-label",
-        "show-reply",
-        "is-reply"
+        "show-reply"
       ]
     },
     {
@@ -14353,23 +14492,23 @@
       },
       "observedAttrs": [
         "active",
+        "colors",
         "count",
-        "duration",
-        "colors"
+        "duration"
       ]
     },
     {
       "tag": "nds-confirm-tooltip",
       "attrs": {},
       "observedAttrs": [
-        "title",
-        "description",
+        "actions",
+        "body-width",
+        "cancel-label",
+        "confirm-label",
         "open",
         "placement",
-        "actions",
-        "confirm-label",
-        "cancel-label",
-        "body-width"
+        "title",
+        "description"
       ]
     },
     {
@@ -14386,14 +14525,14 @@
       "tag": "nds-counselor-card",
       "attrs": {},
       "observedAttrs": [
-        "name",
-        "job-title",
+        "cta-label",
         "image-src",
+        "name",
         "rating",
         "review-count",
         "tags",
+        "job-title",
         "bio",
-        "cta-label",
         "clickable"
       ]
     },
@@ -14431,19 +14570,19 @@
       "tag": "nds-date-picker",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "min-date",
-        "max-date",
-        "placeholder",
-        "disabled",
-        "error",
-        "status",
         "allow-clear",
-        "disabled-dates",
-        "open",
         "default-open",
+        "disabled",
+        "disabled-dates",
+        "error",
+        "full-width",
+        "max-date",
+        "min-date",
+        "open",
+        "placeholder",
         "portal-container",
-        "full-width"
+        "status",
+        "value"
       ]
     },
     {
@@ -14478,10 +14617,10 @@
         ]
       },
       "observedAttrs": [
+        "color",
         "orientation",
-        "thickness",
         "spacing",
-        "color"
+        "thickness"
       ]
     },
     {
@@ -14513,19 +14652,19 @@
       "tag": "nds-ds-highlight",
       "attrs": {},
       "observedAttrs": [
+        "default-mode",
         "mode",
-        "hide-toggle",
-        "default-mode"
+        "hide-toggle"
       ]
     },
     {
       "tag": "nds-empty-state",
       "attrs": {},
       "observedAttrs": [
-        "title",
         "description",
-        "action",
         "min-height",
+        "title",
+        "action",
         "hide-icon"
       ]
     },
@@ -14533,11 +14672,11 @@
       "tag": "nds-expandable-text",
       "attrs": {},
       "observedAttrs": [
-        "lines",
-        "expand-label",
         "collapse-label",
+        "expand-label",
+        "expanded",
         "hide-collapse",
-        "expanded"
+        "lines"
       ]
     },
     {
@@ -14559,9 +14698,10 @@
       "observedAttrs": [
         "action-tone",
         "error",
+        "helper-text",
         "success",
         "timer-expired",
-        "helper-text"
+        "label"
       ]
     },
     {
@@ -14581,24 +14721,24 @@
       "tag": "nds-filter-bar",
       "attrs": {},
       "observedAttrs": [
-        "value",
         "options",
-        "single",
+        "reset-label",
         "show-reset",
-        "reset-label"
+        "single",
+        "value"
       ]
     },
     {
       "tag": "nds-floating-cta-banner",
       "attrs": {},
       "observedAttrs": [
-        "caption",
-        "cta-text",
-        "size",
+        "aria-label",
+        "bottom-offset",
         "floating",
         "show-arrow",
-        "bottom-offset",
-        "aria-label"
+        "size",
+        "caption",
+        "cta-text"
       ]
     },
     {
@@ -14612,17 +14752,17 @@
       "tag": "nds-form-field",
       "attrs": {},
       "observedAttrs": [
+        "density",
+        "html-for",
+        "label-position",
+        "label-width",
+        "optional",
+        "required",
         "label",
         "description",
         "helper",
         "error",
-        "required",
-        "optional",
-        "counter",
-        "html-for",
-        "label-position",
-        "label-width",
-        "density"
+        "counter"
       ]
     },
     {
@@ -14637,11 +14777,11 @@
       "tag": "nds-header",
       "attrs": {},
       "observedAttrs": [
-        "variant",
-        "position",
-        "header-title",
         "elevated",
-        "max-width"
+        "max-width",
+        "position",
+        "variant",
+        "header-title"
       ]
     },
     {
@@ -14664,10 +14804,10 @@
       "tag": "nds-image-cropper",
       "attrs": {},
       "observedAttrs": [
-        "src",
+        "output-size",
         "shape",
         "size",
-        "output-size",
+        "src",
         "label"
       ]
     },
@@ -14675,12 +14815,12 @@
       "tag": "nds-image-upload",
       "attrs": {},
       "observedAttrs": [
-        "state",
-        "image-url",
-        "image-alt",
         "accept",
-        "multiple",
         "auto-preview",
+        "image-alt",
+        "image-url",
+        "multiple",
+        "state",
         "upload-label",
         "size-hint",
         "helper-text",
@@ -14691,8 +14831,8 @@
       "tag": "nds-input-group",
       "attrs": {},
       "observedAttrs": [
-        "gap",
-        "align"
+        "align",
+        "gap"
       ]
     },
     {
@@ -14733,32 +14873,32 @@
       "tag": "nds-lightbox",
       "attrs": {},
       "observedAttrs": [
-        "open",
+        "images",
         "index",
-        "images"
+        "open"
       ]
     },
     {
       "tag": "nds-like-button",
       "attrs": {},
       "observedAttrs": [
-        "liked",
+        "active-color",
         "count",
-        "size",
         "hide-count",
-        "active-color"
+        "liked",
+        "size"
       ]
     },
     {
       "tag": "nds-likert-scale",
       "attrs": {},
       "observedAttrs": [
+        "disabled",
         "name",
         "options",
         "value",
         "start-label",
-        "end-label",
-        "disabled"
+        "end-label"
       ]
     },
     {
@@ -14783,14 +14923,14 @@
       "tag": "nds-media-card",
       "attrs": {},
       "observedAttrs": [
+        "image-aspect-ratio",
+        "rating",
         "image-src",
         "image-alt",
         "image-overlay",
-        "image-aspect-ratio",
         "eyebrow",
         "card-title",
         "body",
-        "rating",
         "clickable"
       ]
     },
@@ -14825,29 +14965,29 @@
       "tag": "nds-multi-select",
       "attrs": {},
       "observedAttrs": [
+        "apply-label",
+        "cancel-label",
+        "disabled",
+        "empty-message",
+        "error",
+        "full-width",
         "options",
-        "value",
         "placeholder",
         "search-placeholder",
         "searchable",
         "select-all-label",
-        "apply-label",
-        "cancel-label",
-        "empty-message",
-        "error",
-        "disabled",
-        "full-width"
+        "value"
       ]
     },
     {
       "tag": "nds-multi-step-form",
       "attrs": {},
       "observedAttrs": [
-        "steps",
         "current",
         "indicator",
         "next-label",
         "prev-label",
+        "steps",
         "submit-label",
         "submitting"
       ]
@@ -14874,10 +15014,10 @@
       "attrs": {},
       "observedAttrs": [
         "kind",
+        "unread",
         "item-title",
         "description",
         "time",
-        "unread",
         "clickable"
       ]
     },
@@ -14899,10 +15039,10 @@
       "tag": "nds-online-indicator",
       "attrs": {},
       "observedAttrs": [
-        "status",
-        "show-label",
         "label",
+        "show-label",
         "size",
+        "status",
         "aria-label"
       ]
     },
@@ -14910,8 +15050,8 @@
       "tag": "nds-order-summary-card",
       "attrs": {},
       "observedAttrs": [
-        "title",
         "rows",
+        "title",
         "total-label",
         "total"
       ]
@@ -14920,10 +15060,10 @@
       "tag": "nds-page-header",
       "attrs": {},
       "observedAttrs": [
+        "bordered",
         "page-title",
         "subtitle",
-        "show-back",
-        "bordered"
+        "show-back"
       ]
     },
     {
@@ -14931,25 +15071,25 @@
       "attrs": {},
       "observedAttrs": [
         "page",
-        "total-pages",
+        "show-arrows",
         "siblings",
-        "show-arrows"
+        "total-pages"
       ]
     },
     {
       "tag": "nds-phone-input",
       "attrs": {},
       "observedAttrs": [
+        "auto-format",
+        "countries",
         "country-code",
+        "error",
+        "full-width",
         "value",
         "label",
         "placeholder",
         "helper-text",
-        "error",
-        "countries",
-        "full-width",
-        "disabled",
-        "auto-format"
+        "disabled"
       ]
     },
     {
@@ -14997,36 +15137,36 @@
       "attrs": {},
       "observedAttrs": [
         "amount",
-        "original-amount",
-        "unit",
-        "prefix",
-        "size",
         "discount-position",
         "format-thousands",
-        "free-label"
+        "free-label",
+        "original-amount",
+        "prefix",
+        "size",
+        "unit"
       ]
     },
     {
       "tag": "nds-product-card",
       "attrs": {},
       "observedAttrs": [
+        "buyers-count",
+        "discount-percent",
+        "free-shipping",
+        "original-price",
+        "point-discount",
+        "price",
+        "ranking-number",
+        "rating",
+        "review-count",
+        "reward",
         "size",
+        "sold-out",
         "thumbnail",
         "thumbnail-alt",
         "badge",
-        "ranking-number",
-        "sold-out",
         "product-title",
-        "original-price",
-        "discount-percent",
-        "price",
         "currency",
-        "reward",
-        "free-shipping",
-        "point-discount",
-        "buyers-count",
-        "rating",
-        "review-count",
         "clickable"
       ]
     },
@@ -15034,21 +15174,21 @@
       "tag": "nds-progress-bar",
       "attrs": {},
       "observedAttrs": [
-        "value",
+        "color",
         "max",
         "size",
-        "color"
+        "value"
       ]
     },
     {
       "tag": "nds-pull-to-refresh",
       "attrs": {},
       "observedAttrs": [
-        "threshold",
+        "disabled",
         "pull-label",
-        "release-label",
         "refreshing-label",
-        "disabled"
+        "release-label",
+        "threshold"
       ]
     },
     {
@@ -15058,6 +15198,17 @@
         "actions",
         "columns",
         "gap"
+      ]
+    },
+    {
+      "tag": "nds-quick-menu",
+      "attrs": {},
+      "observedAttrs": [
+        "items",
+        "heading",
+        "show-top",
+        "top-label",
+        "fixed"
       ]
     },
     {
@@ -15074,25 +15225,25 @@
       "tag": "nds-review-card",
       "attrs": {},
       "observedAttrs": [
+        "rating",
+        "tags",
+        "verified",
         "author",
         "meta",
-        "rating",
         "rating-label",
         "card-title",
-        "body",
-        "tags",
-        "verified"
+        "body"
       ]
     },
     {
       "tag": "nds-score-gauge",
       "attrs": {},
       "observedAttrs": [
-        "value",
         "max",
         "segments",
         "show-label",
         "show-legend",
+        "value",
         "value-suffix"
       ]
     },
@@ -15100,16 +15251,16 @@
       "tag": "nds-search-input",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "label",
-        "placeholder",
-        "helper-text",
+        "clearable",
         "error",
         "error-message",
-        "variant",
-        "clearable",
-        "show-search-button",
         "full-width",
+        "helper-text",
+        "label",
+        "show-search-button",
+        "variant",
+        "value",
+        "placeholder",
         "disabled"
       ]
     },
@@ -15150,29 +15301,29 @@
       "tag": "nds-selection-button-group",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "full-width",
         "disabled",
-        "options"
+        "full-width",
+        "options",
+        "value"
       ]
     },
     {
       "tag": "nds-selection-button",
       "attrs": {},
       "observedAttrs": [
-        "selected",
-        "disabled"
+        "disabled",
+        "selected"
       ]
     },
     {
       "tag": "nds-selection-card",
       "attrs": {},
       "observedAttrs": [
-        "mode",
-        "value",
-        "values",
         "layout",
-        "name"
+        "mode",
+        "name",
+        "value",
+        "values"
       ]
     },
     {
@@ -15203,13 +15354,13 @@
       "tag": "nds-signature-pad",
       "attrs": {},
       "observedAttrs": [
-        "label",
-        "placeholder",
+        "disabled",
         "height",
+        "hide-controls",
         "pen-color",
         "pen-width",
-        "disabled",
-        "hide-controls"
+        "placeholder",
+        "label"
       ]
     },
     {
@@ -15222,24 +15373,24 @@
         ]
       },
       "observedAttrs": [
-        "variant",
-        "width",
         "height",
-        "radius"
+        "radius",
+        "variant",
+        "width"
       ]
     },
     {
       "tag": "nds-slider",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "min",
+        "disabled",
         "max",
-        "step",
-        "start-label",
-        "end-label",
+        "min",
         "show-value",
-        "disabled"
+        "step",
+        "value",
+        "start-label",
+        "end-label"
       ]
     },
     {
@@ -15270,11 +15421,11 @@
         ]
       },
       "observedAttrs": [
+        "action-label",
+        "closable",
         "variant",
         "snackbar-title",
         "description",
-        "action-label",
-        "closable",
         "hide-icon"
       ]
     },
@@ -15296,21 +15447,29 @@
       "tag": "nds-spinner",
       "attrs": {},
       "observedAttrs": [
-        "size",
         "color",
-        "label"
+        "label",
+        "size"
       ]
     },
     {
       "tag": "nds-star-rating",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "size",
+        "disabled",
         "max",
         "show-value",
-        "disabled",
+        "size",
+        "value",
         "readonly"
+      ]
+    },
+    {
+      "tag": "nds-stats-table",
+      "attrs": {},
+      "observedAttrs": [
+        "scroll",
+        "sticky-first"
       ]
     },
     {
@@ -15323,8 +15482,8 @@
         ]
       },
       "observedAttrs": [
-        "steps",
         "current",
+        "steps",
         "variant"
       ]
     },
@@ -15363,27 +15522,27 @@
         ]
       },
       "observedAttrs": [
+        "add-button-label",
+        "allow-duplicates",
+        "disabled",
+        "error",
+        "full-width",
+        "max-tags",
+        "pattern",
+        "placeholder",
+        "prefix",
         "value",
         "variant",
         "label",
-        "placeholder",
-        "helper-text",
-        "error",
-        "max-tags",
-        "allow-duplicates",
-        "prefix",
-        "pattern",
-        "add-button-label",
-        "full-width",
-        "disabled"
+        "helper-text"
       ]
     },
     {
       "tag": "nds-text-button",
       "attrs": {},
       "observedAttrs": [
-        "label",
         "size",
+        "label",
         "left-icon",
         "right-icon",
         "disabled"
@@ -15393,14 +15552,14 @@
       "tag": "nds-textarea",
       "attrs": {},
       "observedAttrs": [
-        "label",
-        "helper-text",
         "error",
-        "disabled",
-        "readonly",
         "max-length",
         "min-height",
         "resize",
+        "label",
+        "helper-text",
+        "disabled",
+        "readonly",
         "input-id",
         "value",
         "default-value"
@@ -15427,11 +15586,11 @@
       "tag": "nds-time-slot-picker",
       "attrs": {},
       "observedAttrs": [
-        "value",
-        "slots",
-        "groups",
         "columns",
         "disabled",
+        "groups",
+        "slots",
+        "value",
         "empty-text"
       ]
     },
@@ -15439,10 +15598,10 @@
       "tag": "nds-timeline",
       "attrs": {},
       "observedAttrs": [
-        "items",
-        "mode",
+        "current",
         "direction",
-        "current"
+        "items",
+        "mode"
       ]
     },
     {
@@ -15456,21 +15615,12 @@
     },
     {
       "tag": "nds-toast",
-      "attrs": {
-        "variant": [
-          "default",
-          "success",
-          "error",
-          "warning",
-          "info"
-        ]
-      },
+      "attrs": {},
       "observedAttrs": [
         "position",
         "duration",
         "max-count",
         "message",
-        "variant",
         "open"
       ]
     },
@@ -15480,11 +15630,11 @@
       "observedAttrs": [
         "checked",
         "disabled",
+        "size",
+        "tone",
         "label",
         "on-label",
         "off-label",
-        "tone",
-        "size",
         "input-id"
       ]
     },
@@ -15514,26 +15664,33 @@
       "tag": "nds-user-card",
       "attrs": {},
       "observedAttrs": [
+        "layout",
+        "verified",
         "name",
         "handle",
         "bio",
         "meta",
-        "verified",
-        "layout",
         "clickable"
+      ]
+    },
+    {
+      "tag": "nds-validation-chip",
+      "attrs": {},
+      "observedAttrs": [
+        "state"
       ]
     },
     {
       "tag": "nds-verification-code-input",
       "attrs": {},
       "observedAttrs": [
-        "length",
-        "value",
         "disabled",
         "error",
+        "full-width",
+        "length",
+        "value",
         "auto-focus",
-        "placeholder",
-        "full-width"
+        "placeholder"
       ]
     },
     {
@@ -15555,22 +15712,22 @@
       "tag": "nds-voice-recorder",
       "attrs": {},
       "observedAttrs": [
-        "state",
-        "seconds",
-        "max-seconds",
         "idle-label",
-        "recording-label"
+        "max-seconds",
+        "recording-label",
+        "seconds",
+        "state"
       ]
     },
     {
       "tag": "nds-vote-poll",
       "attrs": {},
       "observedAttrs": [
-        "question",
+        "disabled",
         "options",
-        "voted-key",
         "show-results",
-        "disabled"
+        "voted-key",
+        "question"
       ]
     },
     {

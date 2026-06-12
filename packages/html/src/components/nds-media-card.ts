@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const MC_CLASS = "nds-media-card";
 const MC_MEDIA_CLASS = `${MC_CLASS}__media`;
@@ -55,17 +56,7 @@ export class NdsMediaCard extends NdsElement {
   static elementName = "nds-media-card";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "image-src",
-      "image-alt",
-      "image-overlay",
-      "image-aspect-ratio",
-      "eyebrow",
-      "card-title",
-      "body",
-      "rating",
-      "clickable",
-    ];
+    return [...COMPONENT_ATTRS["nds-media-card"].observedAttributes, "image-src", "image-alt", "image-overlay", "eyebrow", "card-title", "body", "clickable"];
   }
 
   private _root: HTMLDivElement | null = null;

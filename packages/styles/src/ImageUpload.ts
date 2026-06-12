@@ -99,7 +99,7 @@ export const imageUploadStyles = `
     gap: ${spacing[4]}px;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.subtle};
+    color: ${cv.input.helpertextDefault};
   }
 
   :where(.${IU_HELPER_CLASS}[data-state="error"]) {

@@ -59,7 +59,7 @@ export const checkboxTreeStyles = `
     line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.textRole.normal};
   }
-  :where(.${CT_SEARCH_CLASS}) input::placeholder { color: ${cv.textRole.muted}; }
+  :where(.${CT_SEARCH_CLASS}) input::placeholder { color: ${cv.input.placeholder}; }
   :where(.${CT_SEARCH_CLASS}-icon) {
     display: inline-flex;
     flex-shrink: 0;

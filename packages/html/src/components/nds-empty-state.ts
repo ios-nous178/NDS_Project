@@ -6,6 +6,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const EMPTY_CLASS = "nds-empty-state";
 const EMPTY_ROOT_CLASS = `${EMPTY_CLASS}__root`;
@@ -20,7 +21,7 @@ export class NdsEmptyState extends NdsElement {
   static elementName = "nds-empty-state";
 
   static get observedAttributes(): readonly string[] {
-    return ["title", "description", "action", "min-height", "hide-icon", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-empty-state"].observedAttributes, "action", "hide-icon", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

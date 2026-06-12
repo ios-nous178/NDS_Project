@@ -100,7 +100,7 @@ export const textareaStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: var(--nds-textarea-helper-color, ${cv.textRole.subtle});
+    color: var(--nds-textarea-helper-color, ${cv.input.helpertextDefault});
   }
 
   :where(.${TA_HELPER_CLASS}[data-error="true"]) {

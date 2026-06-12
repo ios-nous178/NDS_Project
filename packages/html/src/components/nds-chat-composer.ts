@@ -28,6 +28,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CC_CLASS = "nds-chat-composer";
 const CC_QUICK_CLASS = `${CC_CLASS}__quick`;
@@ -76,17 +77,7 @@ export class NdsChatComposer extends NdsElement {
   static elementName = "nds-chat-composer";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "value",
-      "placeholder",
-      "max-length",
-      "show-attach",
-      "show-mic",
-      "quick-replies",
-      "disabled",
-      "submit-on-enter",
-      "max-height",
-    ];
+    return [...COMPONENT_ATTRS["nds-chat-composer"].observedAttributes, "show-attach", "show-mic"];
   }
 
   private _root: HTMLDivElement | null = null;

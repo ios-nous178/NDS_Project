@@ -206,9 +206,9 @@ export const cashwalkBizSemantic = {
     borderFocus: cashwalkBizNeutral[900], // #111111 — Input/Border/Focus (★ 검정)
     borderError: cashwalkBizCoralRed[500], // #FC3500 — Input/Border/Error
     borderDisabled: cashwalkBizNeutral[200], // #EEEEEE — base alias
-    placeholder: cashwalkBizNeutral[400], // #DDDDDD — Input/Placeholder
-    // helpertext* — 가이드 미정의. text.* 슬롯과 정합되도록 명시.
-    helpertextDefault: cashwalkBizNeutral[500], // #BBBBBB
+    placeholder: cashwalkBizNeutral[500], // #BBBBBB — Input/Placeholder (Figma TextField 3447-467 정합 · 구 Neutral400 #DDD 는 너무 옅음)
+    // helpertext* — Figma TextField 3447-467 정합: default = text.subtle(#666). (success/error/disabled 는 상태색 유지.)
+    helpertextDefault: cashwalkBizNeutral[700], // #666666 — = text.subtle.default (구 Neutral500 #BBB 는 추정값이었음)
     helpertextSuccess: cashwalkBizGreen[600], // #00B350
     helpertextError: cashwalkBizCoralRed[500], // #FC3500
     helpertextDisabled: cashwalkBizNeutral[400], // #DDDDDD

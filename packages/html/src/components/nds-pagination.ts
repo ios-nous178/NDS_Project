@@ -3,6 +3,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const PG_CLASS = "nds-pagination";
 const PG_ITEM_CLASS = `${PG_CLASS}__item`;
@@ -14,7 +15,7 @@ export class NdsPagination extends NdsElement {
   static elementName = "nds-pagination";
 
   static get observedAttributes(): readonly string[] {
-    return ["page", "total-pages", "siblings", "show-arrows", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-pagination"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLElement | null = null;

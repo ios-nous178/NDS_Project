@@ -16,6 +16,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const LB_CLASS = "nds-like-button";
 const LB_ICON_CLASS = `${LB_CLASS}__icon`;
@@ -58,7 +59,7 @@ export class NdsLikeButton extends NdsElement {
   static elementName = "nds-like-button";
 
   static get observedAttributes(): readonly string[] {
-    return ["liked", "count", "size", "hide-count", "active-color"];
+    return [...COMPONENT_ATTRS["nds-like-button"].observedAttributes];
   }
 
   private _btn: HTMLButtonElement | null = null;

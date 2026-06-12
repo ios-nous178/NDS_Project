@@ -39,6 +39,11 @@ const steps = [
     args: ["--filter", "@nudge-design/mcp", "build"],
   },
   {
+    label: "check guide markdown sources (guides-src → guides.generated.ts)",
+    command: "node",
+    args: ["packages/mcp/scripts/build-guides.mjs", "--check"],
+  },
+  {
     label: "check MCP catalog freshness",
     command: "node",
     args: ["scripts/check-mcp-catalog.mjs", "--no-build"],
@@ -47,6 +52,21 @@ const steps = [
     label: "check react/html mirror parity",
     command: "node",
     args: ["scripts/check-mirror-parity.mjs", "--no-regen"],
+  },
+  {
+    label: "check input focus-preservation tests",
+    command: "node",
+    args: ["scripts/check-input-tests.mjs"],
+  },
+  {
+    label: "check brand semantic completeness",
+    command: "node",
+    args: ["scripts/check-brand-completeness.mjs"],
+  },
+  {
+    label: "check generated component-attrs freshness",
+    command: "node",
+    args: ["packages/html/scripts/generate-component-attrs.mjs", "--check"],
   },
   {
     label: "check Storybook catalog coverage",

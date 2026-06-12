@@ -23,6 +23,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CB_CLASS = "nds-call-control-bar";
 const CB_TIMER_CLASS = `${CB_CLASS}__timer`;
@@ -97,7 +98,7 @@ export class NdsCallControlBar extends NdsElement {
   static elementName = "nds-call-control-bar";
 
   static get observedAttributes(): readonly string[] {
-    return ["duration", "muted", "show-camera", "camera-on", "show-speaker", "speaker-on"];
+    return [...COMPONENT_ATTRS["nds-call-control-bar"].observedAttributes, "duration", "show-camera", "show-speaker"];
   }
 
   private _root: HTMLDivElement | null = null;

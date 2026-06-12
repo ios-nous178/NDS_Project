@@ -41,7 +41,11 @@ function PhoneVerificationExample() {
 
   return (
     <div style={{ width: 360 }}>
+      {/* label prop — 라벨은 한 줄 위, 입력+버튼은 인라인으로 컴포넌트가 정렬한다.
+          (라벨을 손으로 버튼과 같은 줄에 욱여넣으면 버튼이 라벨 높이에 떠 어긋난다 — 그 회귀 방지.)
+          전송 후 버튼 라벨은 [인증번호 받기] → [재전송] 으로 토글한다. */}
       <FieldActionRow
+        label="휴대폰 번호"
         field={
           <input
             type="tel"
@@ -61,7 +65,7 @@ function PhoneVerificationExample() {
           </button>
         }
         actionTone="outline"
-        helperText="휴대폰 번호를 입력해주세요"
+        helperText="'-' 없이 숫자만 입력해주세요"
       />
     </div>
   );
@@ -80,7 +84,7 @@ function VerificationCodeExample() {
             maxLength={6}
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-            placeholder="인증번호 6자리"
+            placeholder="인증번호 입력"
           />
         }
         action={
@@ -118,7 +122,7 @@ function SuccessStateExample() {
   return (
     <div style={{ width: 360 }}>
       <FieldActionRow
-        field={<input type="text" defaultValue="123456" readOnly placeholder="인증번호 6자리" />}
+        field={<input type="text" defaultValue="123456" readOnly placeholder="인증번호 입력" />}
         action={
           <button type="button" disabled>
             확인
@@ -137,7 +141,7 @@ function ExpiredTimerExample() {
     <div style={{ width: 360 }}>
       <FieldActionRow
         field={
-          <input type="text" inputMode="numeric" defaultValue="" placeholder="인증번호 6자리" />
+          <input type="text" inputMode="numeric" defaultValue="" placeholder="인증번호 입력" />
         }
         action={
           <button type="button" disabled>
@@ -200,7 +204,7 @@ function FullFlowExample() {
               maxLength={6}
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-              placeholder="인증번호 6자리"
+              placeholder="인증번호 입력"
               readOnly={verified}
             />
           }
@@ -319,7 +323,7 @@ export const FullFlowInteraction: Story = {
     await user.type(phoneInput, "01012345678");
     await user.click(canvas.getByRole("button", { name: "인증번호 받기" }));
 
-    const codeInput = canvas.getByPlaceholderText("인증번호 6자리");
+    const codeInput = canvas.getByPlaceholderText("인증번호 입력");
     await user.type(codeInput, "123456");
     await user.click(canvas.getByRole("button", { name: "확인" }));
 

@@ -19,6 +19,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const VR_CLASS = "nds-voice-recorder";
 const VR_BTN_CLASS = `${VR_CLASS}__btn`;
@@ -65,7 +66,7 @@ export class NdsVoiceRecorder extends NdsElement {
   static elementName = "nds-voice-recorder";
 
   static get observedAttributes(): readonly string[] {
-    return ["state", "seconds", "max-seconds", "idle-label", "recording-label"];
+    return [...COMPONENT_ATTRS["nds-voice-recorder"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;

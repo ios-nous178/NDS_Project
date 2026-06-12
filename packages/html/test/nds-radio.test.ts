@@ -7,6 +7,7 @@
 
 import { describe, expect, it } from "vitest";
 import { NdsRadio } from "../src/components/nds-radio.js";
+import { expectAttrUpdatePreservesNode } from "./helpers/focus-preservation.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
@@ -140,5 +141,21 @@ describe("nds-radio — DOM parity with React Radio", () => {
     await flush();
     expect(input.id).toBe("plan-premium");
     expect(root.htmlFor).toBe("plan-premium");
+  });
+});
+
+describe("nds-radio — focus preservation", () => {
+  it("표시용 label attr 갱신이 포커스 중인 input 을 재생성하지 않는다 (mount-once)", async () => {
+    const el = document.createElement("nds-radio");
+    el.setAttribute("label", "기본 플랜");
+    document.body.appendChild(el);
+    await flush();
+
+    await expectAttrUpdatePreservesNode(
+      el,
+      () => el.querySelector<HTMLInputElement>("input.nds-radio__input"),
+      "label",
+      "프리미엄 플랜",
+    );
   });
 });

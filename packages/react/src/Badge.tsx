@@ -4,6 +4,7 @@ import { fontFamily, fontWeight } from "@nudge-design/tokens";
 export type BadgeVariant = "fill" | "ghost" | "line";
 export type BadgeColor = "brand" | "neutral" | "success" | "error" | "caution" | "info";
 export type BadgeSize = "sm" | "md" | "lg";
+export type BadgeShape = "default" | "pill";
 
 const BADGE_CLASS = "nds-badge";
 const BADGE_LABEL_CLASS = `${BADGE_CLASS}__label`;
@@ -149,6 +150,8 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   color?: BadgeColor;
   /** 크기 */
   size?: BadgeSize;
+  /** 모서리 모양 (Figma "Shape"): default=size별 라운드 사각(동적 상태값) · pill=완전 둥근(정적 식별 태그) */
+  shape?: BadgeShape;
   /** 라벨 래퍼에 추가할 클래스 */
   labelClassName?: string;
   /** 내부 슬롯별 props 전달 */
@@ -161,6 +164,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       variant = "fill",
       color = "neutral",
       size = "md",
+      shape = "default",
       className,
       style,
       labelClassName,
@@ -172,6 +176,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ) => {
     const colorTokens = COLORS_BY_VARIANT[variant][color];
     const sizeTokens = SIZE_TOKENS[size];
+    const resolvedRadius = shape === "pill" ? "9999px" : `${sizeTokens.radius}px`;
 
     const rootStyle: React.CSSProperties = {
       display: "inline-flex",
@@ -180,7 +185,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       gap: "var(--semantic-gap-tight)",
       height: `var(--nds-badge-height, ${sizeTokens.height}px)`,
       padding: `var(--nds-badge-padding-y, ${sizeTokens.paddingY}px) var(--nds-badge-padding-x, ${sizeTokens.paddingX}px)`,
-      borderRadius: `var(--nds-badge-radius, ${sizeTokens.radius}px)`,
+      borderRadius: `var(--nds-badge-radius, ${resolvedRadius})`,
       background: colorTokens.background,
       color: colorTokens.text,
       border: `1px solid ${colorTokens.border}`,
@@ -200,6 +205,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         data-variant={variant}
         data-color={color}
         data-size={size}
+        data-shape={shape}
         className={cx(BADGE_CLASS, className)}
         style={rootStyle}
         {...rest}

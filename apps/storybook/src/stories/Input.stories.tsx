@@ -282,7 +282,7 @@ function SignUpStyleDemo() {
       />
       <Input
         label="인증번호"
-        placeholder="인증번호 6자리"
+        placeholder="인증번호 입력"
         value={code}
         onChange={(event) => setCode(event.target.value)}
         helperText="이메일로 전송된 인증번호를 입력해주세요"

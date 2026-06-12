@@ -20,10 +20,13 @@ export { NdsIconButton } from "./components/nds-icon-button.js";
 export type { IconButtonSize } from "./components/nds-icon-button.js";
 
 export { NdsAvatar } from "./components/nds-avatar.js";
-export type { AvatarSize } from "./components/nds-avatar.js";
+export type { AvatarShape, AvatarSize } from "./components/nds-avatar.js";
 
 export { NdsBadge } from "./components/nds-badge.js";
-export type { BadgeColor, BadgeSize, BadgeVariant } from "./components/nds-badge.js";
+export type { BadgeColor, BadgeShape, BadgeSize, BadgeVariant } from "./components/nds-badge.js";
+
+export { NdsValidationChip } from "./components/nds-validation-chip.js";
+export type { ValidationChipState } from "./components/nds-validation-chip.js";
 
 export { NdsBanner } from "./components/nds-banner.js";
 export type { BannerVariant } from "./components/nds-banner.js";
@@ -183,6 +186,7 @@ export type { ChatRole, ChatGroupPosition } from "./components/nds-chat-bubble.j
 export { NdsContentViewer } from "./components/nds-content-viewer.js";
 
 export { NdsQuickActionGrid } from "./components/nds-quick-action-grid.js";
+export { NdsQuickMenu } from "./components/nds-quick-menu.js";
 
 export { NdsLikertScale } from "./components/nds-likert-scale.js";
 
@@ -286,6 +290,8 @@ export { NdsConfetti } from "./components/nds-confetti.js";
 
 export { NdsDataTable } from "./components/nds-data-table.js";
 export type { DataTableSortDirection } from "./components/nds-data-table.js";
+
+export { NdsStatsTable } from "./components/nds-stats-table.js";
 
 export { NdsDatePicker } from "./components/nds-date-picker.js";
 

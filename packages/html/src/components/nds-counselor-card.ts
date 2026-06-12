@@ -20,6 +20,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CN_CLASS = "nds-counselor-card";
 const CN_AVATAR_CLASS = `${CN_CLASS}__avatar`;
@@ -43,7 +44,7 @@ const StarIcon = () => {
   svg.setAttribute("viewBox", "0 0 14 14");
   svg.setAttribute("fill", "none");
   svg.setAttribute("aria-hidden", "true");
-  svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" fill="#FFD54F" stroke="#FFD54F" stroke-width="0.5" stroke-linejoin="round" />`;
+  svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" style="fill: var(--nds-rating-star, #FFD54F); stroke: var(--nds-rating-star, #FFD54F)" stroke-width="0.5" stroke-linejoin="round" />`;
   return svg;
 };
 
@@ -60,17 +61,7 @@ export class NdsCounselorCard extends NdsElement {
   static elementName = "nds-counselor-card";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "name",
-      "job-title",
-      "image-src",
-      "rating",
-      "review-count",
-      "tags",
-      "bio",
-      "cta-label",
-      "clickable",
-    ];
+    return [...COMPONENT_ATTRS["nds-counselor-card"].observedAttributes, "job-title", "bio", "clickable"];
   }
 
   private _root: HTMLDivElement | null = null;

@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const NA_CLASS = "nds-notice-alert";
 const NA_ICON_CLASS = `${NA_CLASS}__icon`;
@@ -37,7 +38,7 @@ export class NdsNoticeAlert extends NdsElement {
   static elementName = "nds-notice-alert";
 
   static get observedAttributes(): readonly string[] {
-    return ["variant", "message", "hide-icon"];
+    return [...COMPONENT_ATTRS["nds-notice-alert"].observedAttributes, "message", "hide-icon"];
   }
 
   private _root: HTMLDivElement | null = null;

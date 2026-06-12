@@ -17,6 +17,7 @@
 import { typeScale } from "@nudge-design/tokens";
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const TB_CLASS = "nds-title-group";
 const TB_TITLE_CLASS = `${TB_CLASS}__title`;
@@ -54,7 +55,7 @@ export class NdsTitleGroup extends NdsElement {
   static elementName = "nds-title-group";
 
   static get observedAttributes(): readonly string[] {
-    return ["level", "title", "subtitle", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-title-group"].observedAttributes, "title", "subtitle", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

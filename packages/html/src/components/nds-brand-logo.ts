@@ -14,6 +14,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import {
   TROST_LOGO_DATA_URI,
   GENIET_LOGO_PC_DATA_URI,
@@ -43,7 +44,7 @@ export class NdsBrandLogo extends NdsElement {
   static elementName = "nds-brand-logo";
 
   static get observedAttributes(): readonly string[] {
-    return ["brand", "width", "height", "alt", "href"];
+    return [...COMPONENT_ATTRS["nds-brand-logo"].observedAttributes];
   }
 
   private _root: HTMLSpanElement | null = null;

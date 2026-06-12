@@ -1,4 +1,18 @@
 export {
+  BRAND_PROFILES,
+  BRAND_SLUGS,
+  BRAND_ALIAS_MAP,
+  resolveBrandSlug,
+  getBrandProfile,
+} from "./brand-profiles";
+export type {
+  BrandSlug,
+  BrandProfile,
+  BrandCtaPolicy,
+  BrandModalPolicy,
+  BrandNotificationPolicy,
+} from "./brand-profiles";
+export {
   colors,
   neutral,
   coolGray,

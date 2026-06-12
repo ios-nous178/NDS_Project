@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SP_CLASS = "nds-signature-pad";
 const SP_LABEL_CLASS = `${SP_CLASS}__label`;
@@ -28,15 +29,7 @@ export class NdsSignaturePad extends NdsElement {
   static elementName = "nds-signature-pad";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "label",
-      "placeholder",
-      "height",
-      "pen-color",
-      "pen-width",
-      "disabled",
-      "hide-controls",
-    ];
+    return [...COMPONENT_ATTRS["nds-signature-pad"].observedAttributes, "label"];
   }
 
   private _root: HTMLDivElement | null = null;

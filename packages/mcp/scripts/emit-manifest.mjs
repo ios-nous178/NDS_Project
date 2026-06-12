@@ -21,7 +21,8 @@ function readDtsExports(dir) {
     .readdirSync(dir)
     .filter((f) => f.endsWith(".d.ts") && !f.endsWith(".d.ts.map"))
     .map((f) => f.replace(/\.d\.ts$/, ""))
-    .filter((n) => n !== "index" && /^[A-Z]/.test(n));
+    // `Badge.guide.d.ts` 같은 보조 모듈(.guide 등 dot-suffix)은 컴포넌트가 아니다.
+    .filter((n) => n !== "index" && /^[A-Z]/.test(n) && !n.includes("."));
 }
 
 /**
@@ -388,6 +389,8 @@ if (componentNames.length < MIN_REACT_COMPONENTS) {
  */
 const NDS_TAG_TO_REACT_ALIAS = {
   "nds-fab": "FAB",
+  // 연속 대문자 약어는 kebab 왕복이 안 됨 (nds-ds-highlight → DsHighlight ≠ DSHighlight).
+  "nds-ds-highlight": "DSHighlight",
 };
 function ndsTagToPascal(tag) {
   if (NDS_TAG_TO_REACT_ALIAS[tag]) return NDS_TAG_TO_REACT_ALIAS[tag];
@@ -563,14 +566,36 @@ function collectNdsHtmlElements() {
  * elementName 선언이 없으면(메인 = 파일명) 파일 첫 observedAttributes 로 폴백.
  * react props ↔ html attr 이름 set parity 비교(check-mirror-parity)의 한쪽 축.
  */
+/**
+ * react-파생 attr 코드젠 산출물 (packages/html/scripts/generate-component-attrs.mjs).
+ * 마이그레이션된 컴포넌트는 observedAttributes 가
+ * `[...COMPONENT_ATTRS["nds-x"].observedAttributes, "html전용attr", …]` 형태라
+ * 리터럴 스크랩만으로는 react-파생분이 비어 보인다 — JSON 산출물에서 역참조해 합친다.
+ */
+const componentAttrsJsonPath = path.join(
+  repoRoot,
+  "packages/html/src/generated/component-attrs.json",
+);
+const generatedComponentAttrs = fs.existsSync(componentAttrsJsonPath)
+  ? JSON.parse(fs.readFileSync(componentAttrsJsonPath, "utf-8"))
+  : {};
+
 function extractObservedAttrs(src, tag) {
   const escaped = tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const elIdx = src.search(new RegExp(`static\\s+elementName\\s*=\\s*["']${escaped}["']`));
   const scope = elIdx >= 0 ? src.slice(elIdx) : src;
   const m = scope.match(
-    /static\s+get\s+observedAttributes\s*\([^)]*\)\s*:[^{]*\{\s*return\s*\[([\s\S]*?)\]/,
+    /static\s+get\s+observedAttributes\s*\([^)]*\)\s*:[^{]*\{\s*return\s*\[([\s\S]*?)\]\s*;/,
   );
   if (!m) return [];
+  if (m[1].includes("COMPONENT_ATTRS[")) {
+    // 마이그레이션된 컴포넌트 — react-파생분은 JSON 산출물에서, html 전용 attr 은
+    // 참조식(COMPONENT_ATTRS["tag"])을 걷어낸 나머지 인라인 문자열에서 수집.
+    const generated = generatedComponentAttrs[tag]?.observedAttributes ?? [];
+    const rest = m[1].replace(/COMPONENT_ATTRS\[\s*"[^"]+"\s*\]\.observedAttributes/g, "");
+    const literal = [...rest.matchAll(/"([^"]+)"/g)].map((x) => x[1]);
+    return [...new Set([...generated, ...literal])];
+  }
   return [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
 }
 const ndsHtmlElements = collectNdsHtmlElements();

@@ -63,7 +63,7 @@ describe("computeScores", () => {
     );
     expect(computeScores([r("cashwalk-biz-sidebar-shell", "error", 1)]).dimensions.layout).toBe(80);
     expect(
-      computeScores([r("cashwalk-biz-modal-single-button-fullwidth", "warn", 1)]).dimensions.layout,
+      computeScores([r("brand-modal-single-button-fullwidth", "warn", 1)]).dimensions.layout,
     ).toBe(92);
     expect(
       computeScores([r("selected-items-helper-outside-form-field", "error", 1)]).dimensions.layout,

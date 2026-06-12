@@ -19,6 +19,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const NI_CLASS = "nds-notification-item";
 const NI_ICON_CLASS = `${NI_CLASS}__icon`;
@@ -69,7 +70,7 @@ export class NdsNotificationItem extends NdsElement {
   static elementName = "nds-notification-item";
 
   static get observedAttributes(): readonly string[] {
-    return ["kind", "item-title", "description", "time", "unread", "clickable"];
+    return [...COMPONENT_ATTRS["nds-notification-item"].observedAttributes, "item-title", "description", "time", "clickable"];
   }
 
   private _root: HTMLDivElement | null = null;

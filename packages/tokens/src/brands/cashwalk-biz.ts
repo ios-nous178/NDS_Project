@@ -274,9 +274,7 @@ export const cashwalkBizTheme: BrandTheme = {
       chipDefaultColor: "var(--semantic-text-subtle-default)",
       chipDefaultWeight: "700",
     },
-    // Tooltip — 캐포비 Figma(7dCJU5lNPfgcAjFPwbbLIu 4018:1161) 다크그레이 말풍선(#333).
-    //   base inverse(#111)와 달리 캐포비 tooltip 은 Fill/Neutral(#333) — "중립 채움" 시멘틱이 맞는다.
-    //   다른 브랜드는 이 슬롯 미설정 → 컴포넌트 fallback(surface.inverse) 유지.
-    tooltip: { bg: "var(--semantic-fill-neutral-default)" },
+    // Tooltip bg(#333333) 는 base theme 이 --nds-tooltip-bg 로 전 브랜드 동일 emit — 브랜드 override 불필요.
+    // 캐포비 리치 툴팁의 compact 타이포는 styles/Tooltip.ts 의 [data-brand] 블록이 담당.
   },
 };

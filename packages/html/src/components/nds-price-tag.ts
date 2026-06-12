@@ -3,6 +3,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const PT_CLASS = "nds-price-tag";
 const PT_DISCOUNT_CLASS = `${PT_CLASS}__discount`;
@@ -25,17 +26,7 @@ export class NdsPriceTag extends NdsElement {
   static elementName = "nds-price-tag";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "amount",
-      "original-amount",
-      "unit",
-      "prefix",
-      "size",
-      "discount-position",
-      "format-thousands",
-      "free-label",
-      ...FORWARDED_ATTRS,
-    ];
+    return [...COMPONENT_ATTRS["nds-price-tag"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

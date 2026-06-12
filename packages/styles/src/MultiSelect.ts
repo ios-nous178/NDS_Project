@@ -97,7 +97,7 @@ export const multiSelectStyles = `
     flex-direction: column;
     min-width: 100%;
     width: max-content;
-    max-width: 360px;
+    max-width: 392px;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.md}px;
@@ -108,25 +108,15 @@ export const multiSelectStyles = `
     animation: nds-select-fade-in ${transition.default};
   }
 
-  /* ── Search (SearchInput 조합) — 패널 상단 flush. SearchInput 자체 보더 박스를 끄고
-     하단 구분선만 남겨 박스-in-박스 방지. 끄는 방법은 :where 오버라이드(소스순서에 짐)가
-     아니라 SearchInput 이 노출한 슬롯(--nds-search-input-*)으로 — cascade 라 순서 무관. ── */
+  /* ── Search (SearchInput 조합) — 패널 상단 패딩 박스 안의 **테두리 있는 인셋 TextInput**.
+     하단 1px 구분선으로 select-all 과 분리. SearchInput 자체 보더/라운드(--nds-input-*)를 그대로 노출.
+     Figma 4123-1406: 검색행 64h(py8 px16) + TextInput 48h radius. ── */
   :where(.${MS_SEARCH_CLASS}) {
-    --nds-search-input-border-color: transparent;
-    --nds-search-input-background: transparent;
-    --nds-search-input-radius: 0;
+    padding: ${spacing[8]}px ${spacing[16]}px;
     border-bottom: 1px solid ${cv.borderRole.subtle};
-    transition: border-color ${transition.default};
-  }
-  :where(.${MS_SEARCH_CLASS}:focus-within) {
-    border-bottom-color: ${cv.input.borderFocus};
+    box-sizing: border-box;
   }
   :where(.${MS_SEARCH_CLASS} .nds-search-input__root) { width: 100%; }
-  /* 포커스 시 wrapper 의 하드코딩 border-color(borderFocus)가 박스 보더를 다시 그리지 않게
-     — 슬롯이 못 덮는 focus 상태라 specificity 확보용으로 :where 미사용(의도적). */
-  .${MS_SEARCH_CLASS} .nds-search-input__wrapper[data-focused="true"] {
-    border-color: transparent;
-  }
 
   /* ── Select-all row (Checkbox indeterminate 조합) ── */
   :where(.${MS_SELECT_ALL_CLASS}) {
@@ -134,11 +124,18 @@ export const multiSelectStyles = `
     align-items: center;
     gap: var(--semantic-gap-comfortable);
     width: 100%;
-    padding: ${spacing[8]}px var(--semantic-inset-input);
+    padding: ${spacing[12]}px ${spacing[16]}px;
+    background: ${cv.surface.subtle};
     border-bottom: 1px solid ${cv.borderRole.subtle};
     box-sizing: border-box;
   }
   :where(.${MS_SELECT_ALL_CLASS} .nds-checkbox__root) { flex: 1; align-items: center; }
+  /* 전체선택 라벨은 옵션(14)보다 한 단계 큰 16/medium (Figma subtitle1) */
+  :where(.${MS_SELECT_ALL_CLASS} .nds-checkbox__label) {
+    font-size: ${typeScale.body1.fontSize}px;
+    line-height: ${typeScale.body1.lineHeight}px;
+    font-weight: ${fontWeight.medium};
+  }
   :where(.${MS_COUNT_CLASS}) {
     margin-left: auto;
     flex-shrink: 0;
@@ -157,7 +154,7 @@ export const multiSelectStyles = `
   :where(.${MS_OPTION_CLASS}) {
     display: flex;
     align-items: center;
-    padding: ${spacing[8]}px var(--semantic-inset-input);
+    padding: ${spacing[12]}px ${spacing[16]}px;
     transition: background-color ${transition.default};
   }
   :where(.${MS_OPTION_CLASS}:hover) { background: ${cv.surface.section}; }
@@ -186,12 +183,12 @@ export const multiSelectStyles = `
     color: ${cv.textRole.muted};
   }
 
-  /* ── Footer (Button 컴포넌트 조합 — 취소 outlined / 적용 secondary solid) ── */
+  /* ── Footer (Button 컴포넌트 조합 — 취소 neutral outlined / 적용 neutral solid · 우측 hug) ── */
   :where(.${MS_FOOTER_CLASS}) {
     display: flex;
+    justify-content: flex-end;
     gap: var(--semantic-gap-tight);
-    padding: ${spacing[8]}px;
+    padding: ${spacing[10]}px ${spacing[16]}px;
     border-top: 1px solid ${cv.borderRole.subtle};
   }
-  :where(.${MS_FOOTER_CLASS} .nds-button) { flex: 1; }
 `;

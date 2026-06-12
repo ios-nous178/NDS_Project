@@ -28,6 +28,20 @@
     "notes": "Figma 171:10856 기준 정합 완료 — Style(fill/ghost/line) × Color(brand/neutral/success/error/caution/info), Size(sm 22 / md 26 / lg 30, 모바일 기준), semantic 토큰 직접 바인딩."
   },
   {
+    "name": "ValidationChip",
+    "category": "일반",
+    "status": "implemented",
+    "description": "입력 형식 요구사항의 실시간 충족 여부를 보여주는 인라인 표시. 16px 아이콘 + 12px 라벨. incomplete(muted)/complete(brand)/error(status-error) 3 states.",
+    "storybookTitle": "Components/Inputs/ValidationChip",
+    "docsPath": "/components/validation-chip",
+    "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1413-569",
+    "figmaNodeId": "1413:569",
+    "figmaSynced": true,
+    "figmaSyncedAt": "2026-06-12",
+    "usageSummary": "회원가입 비밀번호·이메일 규칙 실시간 검증 신호",
+    "notes": "Figma 1413:569(넛지EAP Library · InputFormGuide) 기준 정합. 아이콘·텍스트는 root color(상태 semantic 토큰)를 currentColor 로 상속 — incomplete=text-muted, complete=text-brand, error=text-status-error. Chip(선택)·Badge(상태 라벨)와 구분되는 검증 전용 인디케이터. 합성 사용은 pattern:form-validation."
+  },
+  {
     "name": "Input",
     "category": "입력",
     "status": "implemented",
@@ -92,6 +106,20 @@
     "figmaSyncedAt": "2026-05-13",
     "usageSummary": "콘텐츠 전환, 카테고리 필터, CMS 페이지 분할",
     "notes": "Line(Mobile·PC), Chip(Mobile·PC), Segment(PC·CMS 전용) 3가지 유형. Line/Chip은 Neutral·Color 두 톤을 지원합니다."
+  },
+  {
+    "name": "QuickMenu",
+    "category": "내비게이션",
+    "status": "implemented",
+    "description": "PC 화면 우측 고정 영역에서 자주 쓰는 전역 액션 2~4개를 빠르게 노출하는 보조 내비게이션",
+    "storybookTitle": "Components/Navigation/QuickMenu",
+    "docsPath": "/components/quick-menu",
+    "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1354-52",
+    "figmaNodeId": "1354:52",
+    "figmaSynced": true,
+    "figmaSyncedAt": "2026-06-12",
+    "usageSummary": "PC 우측 고정 퀵메뉴, 상담 바로가기, TOP 이동",
+    "notes": "Figma 1354:52 기준 정합. PC 전용 보조 navigation으로 3개 액션을 권장하며, 모바일/태블릿에서는 하단 Tab Bar로 대체합니다."
   },
   {
     "name": "BottomSheet",
@@ -970,13 +998,15 @@
     "name": "Avatar",
     "category": "일반",
     "status": "implemented",
-    "description": "사용자/상담사 프로필 원형 이미지. 이미지·이니셜·아이콘 fallback, 5단계 size",
+    "description": "사용자/상담사/앱을 표현하는 이미지 단위. Shape 3종(circle/rounded/square) × Size 5종(24/32/48/64/96) = 15 variants. 이미지·이니셜 1자·아이콘 fallback.",
     "storybookTitle": "Components/Display/Avatar",
     "docsPath": "/components/avatar",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "프로필, 상담사 리스트, 댓글 작성자, 채팅 헤더",
-    "notes": "이미지 로드 실패 시 자동 이니셜→기본 아이콘 fallback. AvatarGroup과 같이 사용."
+    "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1337-8",
+    "figmaNodeId": "1337:8",
+    "usageSummary": "프로필(circle)·앱 썸네일(rounded)·콘텐츠/제품(square)·상담사 리스트·댓글·채팅",
+    "notes": "Figma 1337:8 기준 정합 — Shape circle/rounded/square × Size xs/sm/md/lg/xl(24/32/48/64/96), rounded radius 4/6/8/10/12. 이미지 부재 시 이니셜 1자 Bold. AvatarGroup 이 size/shape 전파. (구 md=40 → 48 로 가이드 정합 재배치, 프로덕션 소비처는 슬롯 방식이라 무영향)",
+    "figmaSynced": true,
+    "figmaSyncedAt": "2026-06-12"
   },
   {
     "name": "Banner",

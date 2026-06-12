@@ -21,16 +21,26 @@ const AS_INITIAL_CLASS = `${AS_CLASS}__initial`;
 const SIZE_PRESET = {
   xs: 24,
   sm: 32,
-  md: 40,
-  lg: 48,
-  xl: 64,
-  "2xl": 80,
+  md: 48,
+  lg: 64,
+  xl: 96,
+  "2xl": 120,
 } as const;
 
 export type AssetSizePreset = keyof typeof SIZE_PRESET;
 export type AssetSize = AssetSizePreset | number;
 export type AssetShape = "square" | "rounded" | "circle";
 export type AssetScaleType = "cover" | "contain" | "fill";
+
+// shape='rounded' cornerRadius — Avatar 와 동일(사이즈별 4/6/8/10/12), 2xl=14.
+const ROUNDED_PRESET: Record<AssetSizePreset, number> = {
+  xs: 4,
+  sm: 6,
+  md: 8,
+  lg: 10,
+  xl: 12,
+  "2xl": 14,
+};
 
 export type AssetContent =
   | { type: "image"; src: string; alt?: string }
@@ -49,6 +59,10 @@ const getInitials = (name: string) => {
 
 const resolveSize = (size: AssetSize) =>
   typeof size === "number" ? size : SIZE_PRESET[size];
+
+/** shape='rounded' 의 cornerRadius(px). 프리셋은 ROUNDED_PRESET, 임의 px 은 비율(~0.16, min 4)로. */
+const resolveRounded = (size: AssetSize) =>
+  typeof size === "number" ? Math.max(4, Math.round(size * 0.16)) : ROUNDED_PRESET[size];
 
 export interface AssetProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "content"> {
   /** Frame 모양 — square(0 radius) / rounded(8) / circle(원) */
@@ -88,6 +102,7 @@ export const Asset = React.forwardRef<HTMLDivElement, AssetProps>(
     const [imgError, setImgError] = useState(false);
     const handleError = useCallback(() => setImgError(true), []);
     const sizePx = resolveSize(size);
+    const roundedPx = resolveRounded(size);
 
     const renderContent = () => {
       switch (content.type) {
@@ -146,6 +161,7 @@ export const Asset = React.forwardRef<HTMLDivElement, AssetProps>(
         style={
           {
             "--nds-asset-size": `${sizePx}px`,
+            "--nds-asset-radius": `${roundedPx}px`,
             "--nds-asset-overlap": overlap ? `-${overlap}px` : "0",
             ...style,
           } as React.CSSProperties

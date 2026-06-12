@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const TL_CLASS = "nds-timeline";
 const TL_ITEM_CLASS = `${TL_CLASS}__item`;
@@ -56,7 +57,7 @@ export class NdsTimeline extends NdsElement {
   static elementName = "nds-timeline";
 
   static get observedAttributes(): readonly string[] {
-    return ["items", "mode", "direction", "current"];
+    return [...COMPONENT_ATTRS["nds-timeline"].observedAttributes];
   }
 
   private _root: HTMLOListElement | null = null;

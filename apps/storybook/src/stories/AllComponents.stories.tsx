@@ -17,6 +17,7 @@ import {
   Avatar,
   AvatarGroup,
   Badge,
+  ValidationChip,
   Banner,
   NoticeAlert,
   Breadcrumb,
@@ -70,6 +71,7 @@ import {
   ProductCard,
   ProgressBar,
   QuickActionGrid,
+  QuickMenu,
   Radio,
   ReviewCard,
   ScoreGauge,
@@ -222,6 +224,16 @@ const PREVIEWS: Record<string, PreviewRender> = {
       <Badge variant="line" color="error">
         필수
       </Badge>
+      <Badge variant="ghost" color="brand" shape="pill">
+        프리미엄
+      </Badge>
+    </div>
+  ),
+  ValidationChip: () => (
+    <div style={previewRow}>
+      <ValidationChip state="incomplete">6자 이상</ValidationChip>
+      <ValidationChip state="complete">6자 이상</ValidationChip>
+      <ValidationChip state="error">8-20자 이내</ValidationChip>
     </div>
   ),
   Chip: () => (
@@ -233,7 +245,8 @@ const PREVIEWS: Record<string, PreviewRender> = {
   Avatar: () => (
     <div style={previewRow}>
       <Avatar name="홍길동" size="md" />
-      <Avatar name="김상담" size="md" />
+      <Avatar name="김상담" size="md" shape="rounded" />
+      <Avatar name="제품" size="md" shape="square" />
     </div>
   ),
   Asset: () => (
@@ -687,10 +700,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
     <div style={mockOverlayStage}>
       <div style={mockStageBody}>본문 영역</div>
       <div style={mockToastFloating}>
-        <span style={mockToastIcon} aria-hidden>
-          ✓
-        </span>
-        <span>저장되었어요</span>
+        <span>저장되었습니다</span>
       </div>
     </div>
   ),
@@ -1188,6 +1198,7 @@ const PREVIEWS: Record<string, PreviewRender> = {
   FieldActionRow: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <FieldActionRow
+        label="인증 코드"
         field={<Input placeholder="인증번호 입력" />}
         action={
           <Button size="field" color="secondary">
@@ -1236,6 +1247,15 @@ const PREVIEWS: Record<string, PreviewRender> = {
         { key: "2", label: "추가", icon: <PlusIcon size={20} />, onClick: () => {} },
         { key: "3", label: "캘린더", icon: <CalendarIcon size={20} />, onClick: () => {} },
         { key: "4", label: "공유", icon: <ShareIcon size={20} />, onClick: () => {} },
+      ]}
+    />
+  ),
+  QuickMenu: () => (
+    <QuickMenu
+      items={[
+        { key: "counsel", label: "바로 상담하기", icon: <SearchIcon size={32} /> },
+        { key: "search", label: "상담사 찾기", icon: <SearchIcon size={32} /> },
+        { key: "room", label: "내 상담방", icon: <SearchIcon size={32} /> },
       ]}
     />
   ),
@@ -2134,22 +2154,25 @@ const mockTooltipBubble: React.CSSProperties = {
   left: "50%",
   transform: "translateX(-50%)",
   padding: "6px 10px",
-  background: cv.textRole.normal,
+  background: "var(--nds-tooltip-bg)",
   color: cv.textRole.inverse,
-  borderRadius: radius.sm,
+  borderRadius: radius.md,
   fontSize: 11,
   fontWeight: 500,
   whiteSpace: "nowrap",
 };
 
+// 12×8 triangle (Figma 1380:13 꼬리) — border 로 그린 아래 방향 삼각형.
 const mockTooltipArrow: React.CSSProperties = {
   position: "absolute",
-  bottom: -4,
+  bottom: -8,
   left: "50%",
-  transform: "translateX(-50%) rotate(45deg)",
-  width: 8,
-  height: 8,
-  background: cv.textRole.normal,
+  transform: "translateX(-50%)",
+  width: 0,
+  height: 0,
+  borderLeft: "6px solid transparent",
+  borderRight: "6px solid transparent",
+  borderTop: "8px solid var(--nds-tooltip-bg)",
 };
 
 /* BottomSheet / Toast — 화면 안 dim + 하단 시트 */
@@ -2226,19 +2249,6 @@ const mockSheetBody: React.CSSProperties = {
   fontSize: 11,
   lineHeight: 1.55,
   color: cv.textRole.subtle,
-};
-
-const mockToastIcon: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: 16,
-  height: 16,
-  borderRadius: radius.pill,
-  background: cv.iconRole.statusSuccess,
-  color: cv.textRole.inverse,
-  fontSize: 10,
-  fontWeight: 800,
 };
 
 /* Lightbox — 풀스크린 dark stage + 가운데 이미지 + 닫기/네비/카운터 */

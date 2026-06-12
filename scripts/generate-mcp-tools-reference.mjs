@@ -162,6 +162,12 @@ const CATEGORIES = [
     blurb: "새 시안 프로젝트에 DS 를 붙일 때 쓰는 통합 라우터. 보통 단계별로 한 번씩 호출한다.",
     tools: ["get_setup"],
   },
+  {
+    title: "피드백 · 텔레메트리",
+    blurb:
+      "DS 사용 중 느낀 불편/요청을 기록한다. 누적된 피드백은 DS 고도화 루프(telemetry 파이프라인)로 흘러간다.",
+    tools: ["log_feedback"],
+  },
 ];
 
 /**

@@ -3,6 +3,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SB_CLASS = "nds-snackbar";
 const SB_ICON_CLASS = `${SB_CLASS}__icon`;
@@ -43,15 +44,7 @@ export class NdsSnackbar extends NdsElement {
   static elementName = "nds-snackbar";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "variant",
-      "snackbar-title",
-      "description",
-      "action-label",
-      "closable",
-      "hide-icon",
-      ...FORWARDED_ATTRS,
-    ];
+    return [...COMPONENT_ATTRS["nds-snackbar"].observedAttributes, "snackbar-title", "description", "hide-icon", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

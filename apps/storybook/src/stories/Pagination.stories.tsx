@@ -52,7 +52,7 @@ export const CashwalkBizBoxed: Story = {
     docs: {
       description: {
         story:
-          'data-brand="cashwalk-biz" cascade — 각 페이지/화살표가 개별 보더 박스로 렌더되고 활성 페이지는 캐포비 시그니처 검정 채움(Figma 3001:31310 배너광고 리포트). 마크업/props 는 base 와 동일.',
+          'data-brand="cashwalk-biz" cascade — 각 페이지/화살표가 개별 보더 박스(radius 4, 34h)로 렌더되고 활성 페이지는 캐포비 시그니처 검정 채움(Figma 캐포비 Library PaginationGuide 4118:1186). 끝 도달한 Prev/Next 는 옅은 회색 박스(boxed disabled). 마크업/props 는 base 와 동일.',
       },
     },
   },

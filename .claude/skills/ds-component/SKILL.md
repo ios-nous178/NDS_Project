@@ -18,7 +18,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 2. **토큰-퍼스트, raw hex/px 금지.** 색은 semantic 토큰(`cv.*` / `--semantic-*`), 크기는 `sizing.*`/`spacing.*`/`radius.*`. **Figma hex 가 어떤 토큰에도 안 맞으면 새 값을 지어내지 말고 멈춰서 사용자/디자이너에게 flag.** (예: 토글 `#60be34`, 보더 `#111` — 토큰 부재 시 보고)
 3. **브랜드는 cascade 로.** 컴포넌트는 hex 를 박지 않는다. 브랜드 분기(예: 캐포비 admin input 40px/radius4, 캐포비 시그니처 검정 버튼)는 `data-brand` cascade + `--nds-*` 슬롯/시멘틱 토큰으로. Figma 노드의 브랜드/페이지로 어느 브랜드인지 먼저 파악.
 4. **3면 미러 lockstep.** `react .tsx` ↔ `styles .ts` ↔ `html nds-*.ts` 는 같은 클래스명·`data-slot`·동작·치수를 공유한다. 하나만 고치고 끝내지 않는다.
-5. **외부 전파는 1급 단계** (가장 자주 누락). Storybook 스토리 + **AllComponents 카탈로그** + **MCP 가이드(guides.ts)** + **changeset**. 빠지면 외부 프로젝트에 전파 안 됨.
+5. **외부 전파는 1급 단계** (가장 자주 누락). Storybook 스토리 + **AllComponents 카탈로그** + **MCP 가이드(guides-src/*.md + build:guides)** + **changeset**. 빠지면 외부 프로젝트에 전파 안 됨.
 
 ## 표면 맵 (어디를 건드리나)
 
@@ -31,7 +31,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 | HTML export        | `packages/html/src/index.ts`                                                            | `export { Nds{Component} }`                                                  |
 | Storybook 스토리   | `apps/storybook/src/stories/{Component}.stories.tsx`                                    | interaction test 포함 권장                                                   |
 | ★ 카탈로그         | `apps/storybook/src/stories/AllComponents.stories.tsx`                                  | import + 엔트리 (자주 누락)                                                  |
-| ★ MCP 가이드       | `packages/mcp/src/guides.ts` `COMPONENT_GUIDES`                                         | summary·pitfalls·examplesHtml(do/dont)·`figmaNodeUrl`·sizeMatrix·stateMatrix |
+| ★ MCP 가이드       | `packages/mcp/guides-src/components/{Component}.md` + `build:guides` 재생성             | summary·pitfalls·examplesHtml(do/dont)·`figmaNodeUrl`·sizeMatrix·stateMatrix |
 | 토큰(신규 필요 시) | `packages/tokens/src/**` + `DESIGN.md`                                                  | 새 시멘틱 토큰은 base + 브랜드. `pnpm build --filter @nudge-design/tokens`   |
 | 데스크탑 검증      | `apps/desktop/src/main/catalog.ts` / `packages/mockup-core/src/tools/catalog-config.ts` | 새 `nds-*` 태그/attr 이면 검증 컨텍스트에 들어가는지 확인                    |
 | 테스트             | `packages/react/test/**`, `packages/html/test/**`                                       | 동작/DOM parity                                                              |
@@ -65,7 +65,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 
 - `stories/{Component}.stories.tsx` — 변형/상태 스토리 + 가능하면 interaction test(play).
 - `AllComponents.stories.tsx` 에 import + 엔트리 추가. (★)
-- `guides.ts` `COMPONENT_GUIDES.{Component}` — summary, pitfalls(props 함정·혼동 컴포넌트), examplesHtml(do/dont), `figmaNodeUrl`, sizeMatrix/stateMatrix. (★)
+- `packages/mcp/guides-src/components/{Component}.md` — summary, pitfalls(props 함정·혼동 컴포넌트), examplesHtml(do/dont), `figmaNodeUrl`, sizeMatrix/stateMatrix. 수정 후 `pnpm --filter @nudge-design/mcp build:guides` 로 guides.generated.ts 재생성. (★)
 
 ### Phase 4 — 데스크탑 & 검증 컨텍스트
 
@@ -81,6 +81,10 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 - 테스트:
   - react/html: 해당 패키지에서 `npx vitest run`
   - mockup-core: `npx tsx --test packages/mockup-core/src/tools/<file>.test.ts` (또는 `npm test`)
+- **입력 컴포넌트 포커스 보존 테스트(하드 게이트)** — 컴포넌트가 input/textarea 를 만들거나 `nds-search-input` 을 합성하면:
+  - `packages/html/test/helpers/focus-preservation.ts` 헬퍼로 **양면 잠금** — ① 타이핑 중 input 노드/포커스/커서 보존 ② 외부 attribute 갱신 후 보존 (예시: `nds-search-input.test.ts` / `nds-multi-select.test.ts`).
+  - html 구현은 mount-once 패턴 필수 — input 은 `_mount()` 에서 한 번만 만들고 `update()` 는 값/노출만 패치 (`replaceChildren` 으로 input 재생성 금지 — AddressPicker "한 글자마다 끊김" 회귀 클래스).
+  - `pnpm lint:input-focus` 통과 확인 (`scripts/check-input-tests.mjs` — 신규 컴포넌트는 ALLOWLIST 에 넣지 말고 테스트를 쓴다).
 - 토큰 빌드(토큰 손댔으면): `pnpm build --filter @nudge-design/tokens` → 의존 패키지 빌드.
 - **정합 검증("스타일 다 맞아?")** — 빌드된 브랜드 CSS 실측값을 Figma 치수와 대조:
   - `packages/html/dist/standalone/brand.*.css` 에서 `--nds-*` / 토큰 resolved 값을 grep → Figma metadata(height/padding/radius/color)와 1:1 비교. 어긋나면 컴포넌트가 아니라 **토큰/브랜드 cascade** 를 의심.

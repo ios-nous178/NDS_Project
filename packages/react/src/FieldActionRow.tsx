@@ -4,6 +4,7 @@ import React from "react";
 
 const FAR_CLASS = "nds-field-action-row";
 const FAR_ROOT_CLASS = `${FAR_CLASS}__root`;
+const FAR_LABEL_CLASS = `${FAR_CLASS}__label`;
 const FAR_FIELD_CLASS = `${FAR_CLASS}__field`;
 const FAR_ACTION_CLASS = `${FAR_CLASS}__action`;
 const FAR_HELPER_CLASS = `${FAR_CLASS}__helper`;
@@ -30,6 +31,19 @@ const FieldActionRowRoot: React.FC<FieldActionRowRootProps> = React.memo(
   ),
 );
 FieldActionRowRoot.displayName = "FieldActionRowRoot";
+
+interface FieldActionRowLabelProps extends React.HTMLAttributes<HTMLSpanElement> {
+  children: React.ReactNode;
+}
+
+const FieldActionRowLabel: React.FC<FieldActionRowLabelProps> = React.memo(
+  ({ children, className, ...rest }) => (
+    <span data-slot="label" className={cx(FAR_LABEL_CLASS, className)} {...rest}>
+      {children}
+    </span>
+  ),
+);
+FieldActionRowLabel.displayName = "FieldActionRowLabel";
 
 interface FieldActionRowRowProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -128,6 +142,8 @@ FieldActionRowHelper.displayName = "FieldActionRowHelper";
 export interface FieldActionRowSlotProps {
   /** 루트 `<div>`에 전달할 추가 props */
   root?: Omit<React.HTMLAttributes<HTMLDivElement>, "children">;
+  /** 라벨 `<span>`에 전달할 추가 props */
+  label?: Omit<React.HTMLAttributes<HTMLSpanElement>, "children">;
   /** 필드 `<div>`에 전달할 추가 props */
   field?: Omit<React.HTMLAttributes<HTMLDivElement>, "children">;
   /** 액션 `<div>`에 전달할 추가 props */
@@ -137,6 +153,12 @@ export interface FieldActionRowSlotProps {
 }
 
 export interface FieldActionRowProps {
+  /**
+   * 필드 라벨 (옵션). 주면 입력+버튼 한 줄 **위**에 라벨이 렌더된다 — 라벨이 필요한 인증 row
+   * (예: 캐포비 본인인증의 "휴대폰 번호" + [인증번호 받기])는 라벨을 손으로 한 줄에 욱여넣지
+   * 말고 이 prop 으로 넘긴다(라벨은 위, 입력+버튼은 한 줄 인라인으로 컴포넌트가 정렬한다).
+   */
+  label?: React.ReactNode;
   /** 입력 필드 (Input 또는 native input) */
   field: React.ReactNode;
   /**
@@ -170,6 +192,7 @@ export interface FieldActionRowProps {
  * 일반 폼 레이아웃(여러 필드/버튼)에는 쓰지 않는다 — Input + Button 직접 조합을 사용.
  */
 const FieldActionRowComponent: React.FC<FieldActionRowProps> = ({
+  label,
   field,
   action,
   actionTone = "outline",
@@ -186,6 +209,9 @@ const FieldActionRowComponent: React.FC<FieldActionRowProps> = ({
     className={cx(slotProps?.root?.className, className)}
     style={{ ...slotProps?.root?.style, ...style }}
   >
+    {label != null && (
+      <FieldActionRowLabel className={slotProps?.label?.className}>{label}</FieldActionRowLabel>
+    )}
     <FieldActionRowRow>
       <FieldActionRowField
         error={error}

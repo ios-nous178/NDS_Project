@@ -4,6 +4,10 @@
 
 import { describe, expect, it } from "vitest";
 import { NdsAmountInput } from "../src/components/nds-amount-input.js";
+import {
+  expectAttrUpdatePreservesFocus,
+  expectTypingPreservesFocus,
+} from "./helpers/focus-preservation.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
@@ -176,5 +180,36 @@ describe("nds-amount-input — DOM parity with React AmountInput", () => {
       expect(input.value).toBe("");
       expect(input.selectionStart).toBe(0);
     });
+  });
+});
+
+// ─── 포커스/커서 보존 (mount-once 계약) ───
+// 타이핑 → setAttribute("value") → update() 가 input 을 재생성하지 않는지 잠근다.
+// 천단위 콤마 재포맷이 끼는 입력이라 재생성 시 caret 까지 같이 깨진다.
+describe("nds-amount-input — focus preservation", () => {
+  const FIELD = "input.nds-amount-input__input";
+
+  it("typing keeps the same input node, focus, and cursor", async () => {
+    const el = document.createElement("nds-amount-input");
+    el.setAttribute("label", "결제 금액");
+    document.body.appendChild(el);
+    await flush();
+    await expectTypingPreservesFocus(
+      { requery: () => el.querySelector<HTMLInputElement>(FIELD) },
+      "12345",
+    );
+    expect(el.getAttribute("value")).toBe("12345");
+  });
+
+  it("external attribute update keeps focused input alive (presets 포함)", async () => {
+    const el = document.createElement("nds-amount-input");
+    el.setAttribute("presets", JSON.stringify([{ label: "+1만", amount: 10000 }]));
+    document.body.appendChild(el);
+    await flush();
+    const target = { requery: () => el.querySelector<HTMLInputElement>(FIELD) };
+    await expectTypingPreservesFocus(target, "5000");
+    // 입력 중 헬퍼/에러가 바뀌어도(검증 피드백 경로) input 은 살아 있어야 한다.
+    await expectAttrUpdatePreservesFocus(el, target, "helper-text", "금액을 확인하세요");
+    await expectAttrUpdatePreservesFocus(el, target, "error", "");
   });
 });

@@ -1,0 +1,102 @@
+name: Release Debt Check
+
+# 릴리즈 부채 알림 — "소스는 고쳐졌는데 번들(MCPB)이 stale" 인 침묵 구간을 깬다.
+# 마지막 v* 태그 이후, release-mcpb.yml 트리거와 동일한 표면(paths)에 커밋이
+# 쌓였는데 릴리즈가 안 됐으면 주 1회 슬랙으로 알린다.
+#
+# changeset 조차 안 쓴 커밋도 잡는 게 목적 — version-pr.yml(changeset 기반)의 그물 밖
+# 케이스를 이 cron 이 받친다. 알림 전용: 절대 실패하지 않고, 아무것도 변경하지 않는다.
+
+on:
+  schedule:
+    - cron: "0 0 * * 1" # 매주 월 09:00 KST
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Compute unreleased release-surface commits
+        id: debt
+        run: |
+          set -euo pipefail
+
+          LAST_TAG=$(git tag --sort=-v:refname | head -n 1 || true)
+          if [ -z "$LAST_TAG" ]; then
+            echo "::notice::릴리즈 태그가 없음 — 첫 릴리즈 전이므로 skip"
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # release-mcpb.yml 의 trigger paths 와 동일한 표면만 센다 — 문서/스토리북
+          # 커밋은 부채가 아니다.
+          COMMITS=$(git log --no-merges --pretty='format:%h %s' "${LAST_TAG}..HEAD" -- \
+            packages/mcp/manifest.json \
+            packages/mcp/src \
+            packages/mcp/scripts \
+            scripts/pack-mcpb.mjs \
+            packages/tokens/src \
+            packages/react/src \
+            packages/icons/svg \
+            || true)
+
+          if [ -z "$(printf '%s' "$COMMITS" | tr -d '[:space:]')" ]; then
+            echo "::notice::${LAST_TAG} 이후 릴리즈 표면 커밋 없음 — 부채 없음"
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          COUNT=$(printf '%s\n' "$COMMITS" | wc -l | tr -d ' ')
+          DAYS=$(( ( $(date +%s) - $(git log -1 --format=%ct "$LAST_TAG") ) / 86400 ))
+          CHANGESETS=$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' | wc -l | tr -d ' ')
+          TOP=$(printf '%s\n' "$COMMITS" | head -n 10 | sed 's/^/· /')
+
+          {
+            echo "count=$COUNT"
+            echo "days=$DAYS"
+            echo "tag=$LAST_TAG"
+            echo "changesets=$CHANGESETS"
+            echo "top<<TOP_EOF"
+            printf '%s\n' "$TOP"
+            echo "TOP_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Notify Slack
+        if: steps.debt.outputs.count != '0' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
+        env:
+          COUNT: ${{ steps.debt.outputs.count }}
+          DAYS: ${{ steps.debt.outputs.days }}
+          TAG: ${{ steps.debt.outputs.tag }}
+          CHANGESETS: ${{ steps.debt.outputs.changesets }}
+          TOP: ${{ steps.debt.outputs.top }}
+        run: |
+          set -euo pipefail
+
+          if [ "$CHANGESETS" -gt 0 ]; then
+            HINT="대기 changeset ${CHANGESETS}개 — *Version Packages PR* 을 검토/머지하면 릴리즈됩니다."
+          else
+            HINT="대기 changeset 없음 — \`pnpm changeset\` 으로 영향 패키지를 골라 bump 부터 필요합니다."
+          fi
+
+          TEXT=$(printf '%s\n\n%s\n%s\n\n%s' \
+            "🧾 *DS 릴리즈 부채* — \`${TAG}\` 이후 *${COUNT}커밋 · ${DAYS}일* 미배포 (외부 소비자는 stale 번들 사용 중)" \
+            "$TOP" \
+            "" \
+            "$HINT")
+
+          PAYLOAD=$(jq -n \
+            --arg channel "$SLACK_CHANNEL_ID" \
+            --arg text "$TEXT" \
+            '{channel: $channel, text: $text, unfurl_links: false, unfurl_media: false}')
+
+          curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            --data "$PAYLOAD" | jq -e '.ok'

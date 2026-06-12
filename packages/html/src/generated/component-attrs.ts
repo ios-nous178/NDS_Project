@@ -1,0 +1,1732 @@
+// AUTO-GENERATED — packages/html/scripts/generate-component-attrs.mjs 가 catalog.json 에서 생성.
+// 직접 수정 금지. 재생성: pnpm --filter @nudge-design/html generate:attrs
+// react Props 파생 attr/enum SSOT — html 전용 attr 은 각 컴포넌트 return 배열에 인라인.
+
+export const COMPONENT_ATTRS = {
+  "nds-accordion": {
+    "observedAttributes": [
+      "type",
+      "value"
+    ],
+    "enums": {
+      "type": [
+        "single",
+        "multiple"
+      ]
+    }
+  },
+  "nds-add-button": {
+    "observedAttributes": [
+      "error",
+      "full-width"
+    ],
+    "enums": {}
+  },
+  "nds-address-picker": {
+    "observedAttributes": [
+      "error",
+      "loading",
+      "query",
+      "results",
+      "search-label",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-amount-input": {
+    "observedAttributes": [
+      "error",
+      "full-width",
+      "max",
+      "min",
+      "prefix",
+      "presets",
+      "unit",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-appointment-card": {
+    "observedAttributes": [
+      "actions",
+      "date",
+      "end-time",
+      "mode",
+      "start-time",
+      "status"
+    ],
+    "enums": {
+      "mode": [
+        "video",
+        "phone",
+        "chat",
+        "in-person"
+      ],
+      "status": [
+        "scheduled",
+        "confirmed",
+        "in-progress",
+        "completed",
+        "canceled"
+      ]
+    }
+  },
+  "nds-attachment-item": {
+    "observedAttributes": [
+      "file-type",
+      "href",
+      "name",
+      "progress",
+      "size",
+      "status"
+    ],
+    "enums": {
+      "file-type": [
+        "pdf",
+        "image",
+        "video",
+        "audio",
+        "document",
+        "archive",
+        "other"
+      ],
+      "status": [
+        "uploading",
+        "done",
+        "error"
+      ]
+    }
+  },
+  "nds-audio-player": {
+    "observedAttributes": [
+      "current-time",
+      "duration",
+      "playing"
+    ],
+    "enums": {}
+  },
+  "nds-autocomplete": {
+    "observedAttributes": [
+      "disabled",
+      "error",
+      "full-width",
+      "highlight",
+      "loading",
+      "min-query-length",
+      "options",
+      "placeholder",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-avatar": {
+    "observedAttributes": [
+      "alt",
+      "name",
+      "shape",
+      "size",
+      "src"
+    ],
+    "enums": {
+      "shape": [
+        "square",
+        "rounded",
+        "circle"
+      ]
+    }
+  },
+  "nds-avatar-group": {
+    "observedAttributes": [
+      "items",
+      "max",
+      "overlap",
+      "shape",
+      "size"
+    ],
+    "enums": {
+      "shape": [
+        "square",
+        "rounded",
+        "circle"
+      ]
+    }
+  },
+  "nds-badge": {
+    "observedAttributes": [
+      "color",
+      "shape",
+      "size",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "fill",
+        "ghost",
+        "line"
+      ],
+      "color": [
+        "brand",
+        "neutral",
+        "success",
+        "error",
+        "caution",
+        "info"
+      ],
+      "size": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "shape": [
+        "default",
+        "pill"
+      ]
+    }
+  },
+  "nds-banner": {
+    "observedAttributes": [
+      "action-href",
+      "action-label",
+      "closable",
+      "full-image-src",
+      "full-image-src-set",
+      "href",
+      "image-alt",
+      "image-height",
+      "image-src",
+      "image-width",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "filled",
+        "outlined",
+        "image"
+      ]
+    }
+  },
+  "nds-bottom-sheet": {
+    "observedAttributes": [
+      "closable",
+      "is-mask-close",
+      "mask",
+      "max-height",
+      "max-width",
+      "open",
+      "show-handle",
+      "title"
+    ],
+    "enums": {}
+  },
+  "nds-brand-logo": {
+    "observedAttributes": [
+      "alt",
+      "brand",
+      "height",
+      "href",
+      "width"
+    ],
+    "enums": {
+      "brand": [
+        "trost",
+        "geniet",
+        "nudge-eap",
+        "cashwalk-biz",
+        "runmile"
+      ]
+    }
+  },
+  "nds-breadcrumb": {
+    "observedAttributes": [
+      "items"
+    ],
+    "enums": {}
+  },
+  "nds-button": {
+    "observedAttributes": [
+      "color",
+      "full-width",
+      "shape",
+      "size",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "solid",
+        "soft",
+        "outlined"
+      ],
+      "size": [
+        "xl",
+        "lg",
+        "md",
+        "sm",
+        "xs",
+        "field"
+      ],
+      "color": [
+        "primary",
+        "secondary",
+        "neutral"
+      ],
+      "shape": [
+        "default",
+        "pill"
+      ]
+    }
+  },
+  "nds-calendar": {
+    "observedAttributes": [
+      "hide-header",
+      "markers",
+      "month",
+      "value",
+      "week-starts-on"
+    ],
+    "enums": {}
+  },
+  "nds-call-control-bar": {
+    "observedAttributes": [
+      "camera-on",
+      "muted",
+      "speaker-on"
+    ],
+    "enums": {}
+  },
+  "nds-card": {
+    "observedAttributes": [
+      "clickable",
+      "description",
+      "divider",
+      "footer-no-border",
+      "footer-text",
+      "metadata",
+      "subtitle",
+      "thumbnail-height",
+      "thumbnail-ratio",
+      "title",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "outlined",
+        "flat"
+      ]
+    }
+  },
+  "nds-carousel": {
+    "observedAttributes": [
+      "active-index",
+      "autoplay",
+      "gap",
+      "indicator",
+      "loop",
+      "show-arrows",
+      "step"
+    ],
+    "enums": {
+      "indicator": [
+        "dots",
+        "counter",
+        "none"
+      ]
+    }
+  },
+  "nds-chart": {
+    "observedAttributes": [
+      "labels",
+      "series",
+      "show-legend",
+      "tooltip",
+      "type",
+      "y-max",
+      "y-ticks"
+    ],
+    "enums": {
+      "type": [
+        "line",
+        "bar",
+        "donut"
+      ]
+    }
+  },
+  "nds-chat-bubble": {
+    "observedAttributes": [
+      "avatar-src",
+      "group",
+      "name",
+      "read",
+      "role"
+    ],
+    "enums": {
+      "role": [
+        "me",
+        "them"
+      ],
+      "group": [
+        "single",
+        "first",
+        "middle",
+        "last"
+      ]
+    }
+  },
+  "nds-chat-composer": {
+    "observedAttributes": [
+      "disabled",
+      "max-height",
+      "max-length",
+      "placeholder",
+      "quick-replies",
+      "submit-on-enter",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-checkbox": {
+    "observedAttributes": [
+      "checked",
+      "disabled",
+      "indeterminate"
+    ],
+    "enums": {}
+  },
+  "nds-checkbox-group": {
+    "observedAttributes": [
+      "expandable",
+      "gap",
+      "items",
+      "layout",
+      "select-all",
+      "value"
+    ],
+    "enums": {
+      "layout": [
+        "vertical",
+        "horizontal"
+      ]
+    }
+  },
+  "nds-checkbox-tree": {
+    "observedAttributes": [
+      "default-expanded",
+      "empty-message",
+      "nodes",
+      "search-placeholder",
+      "searchable",
+      "select-all-label",
+      "show-select-all",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-chip": {
+    "observedAttributes": [
+      "color",
+      "disabled",
+      "label",
+      "selected",
+      "size",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "fill",
+        "outlined",
+        "ghost"
+      ],
+      "color": [
+        "brand",
+        "neutral",
+        "success",
+        "error",
+        "caution"
+      ],
+      "size": [
+        "sm",
+        "md"
+      ]
+    }
+  },
+  "nds-circular-progress": {
+    "observedAttributes": [
+      "aria-label",
+      "color",
+      "hide-label",
+      "max",
+      "size",
+      "thickness",
+      "track-color",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-coach-mark": {
+    "observedAttributes": [
+      "finish-label",
+      "hide-skip",
+      "next-label",
+      "open",
+      "skip-label",
+      "step",
+      "steps"
+    ],
+    "enums": {}
+  },
+  "nds-comment-item": {
+    "observedAttributes": [
+      "is-reply",
+      "reply-label"
+    ],
+    "enums": {}
+  },
+  "nds-confetti": {
+    "observedAttributes": [
+      "active",
+      "colors",
+      "count",
+      "duration"
+    ],
+    "enums": {}
+  },
+  "nds-confirm-tooltip": {
+    "observedAttributes": [
+      "actions",
+      "body-width",
+      "cancel-label",
+      "confirm-label",
+      "open",
+      "placement"
+    ],
+    "enums": {
+      "placement": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "actions": [
+        "dual",
+        "single"
+      ]
+    }
+  },
+  "nds-content-viewer": {
+    "observedAttributes": [
+      "external-link-blank",
+      "html",
+      "image-lazy",
+      "sanitize"
+    ],
+    "enums": {}
+  },
+  "nds-counselor-card": {
+    "observedAttributes": [
+      "cta-label",
+      "image-src",
+      "name",
+      "rating",
+      "review-count",
+      "tags"
+    ],
+    "enums": {}
+  },
+  "nds-countdown-timer": {
+    "observedAttributes": [
+      "ends-at",
+      "format",
+      "tone",
+      "urgent-color"
+    ],
+    "enums": {
+      "format": [
+        "mm:ss",
+        "hh:mm:ss",
+        "remaining"
+      ],
+      "tone": [
+        "default",
+        "brand"
+      ]
+    }
+  },
+  "nds-data-table": {
+    "observedAttributes": [
+      "columns",
+      "data",
+      "default-expanded-keys",
+      "expanded-keys",
+      "expander-column-key",
+      "loading",
+      "responsive",
+      "size",
+      "sort-direction",
+      "sort-key"
+    ],
+    "enums": {
+      "sort-direction": [
+        "asc",
+        "desc"
+      ],
+      "size": [
+        "sm",
+        "md"
+      ],
+      "responsive": [
+        "scroll",
+        "cards"
+      ]
+    }
+  },
+  "nds-date-picker": {
+    "observedAttributes": [
+      "allow-clear",
+      "default-open",
+      "disabled",
+      "disabled-dates",
+      "error",
+      "full-width",
+      "max-date",
+      "min-date",
+      "open",
+      "placeholder",
+      "portal-container",
+      "status",
+      "value"
+    ],
+    "enums": {
+      "status": [
+        "default",
+        "error",
+        "warning"
+      ]
+    }
+  },
+  "nds-date-range-picker": {
+    "observedAttributes": [
+      "allow-clear",
+      "default-open",
+      "disabled",
+      "disabled-dates",
+      "error",
+      "full-width",
+      "max-date",
+      "min-date",
+      "open",
+      "placeholder",
+      "portal-container",
+      "presets",
+      "status",
+      "value"
+    ],
+    "enums": {
+      "status": [
+        "default",
+        "error",
+        "warning"
+      ]
+    }
+  },
+  "nds-divider": {
+    "observedAttributes": [
+      "color",
+      "orientation",
+      "spacing",
+      "thickness"
+    ],
+    "enums": {
+      "orientation": [
+        "horizontal",
+        "vertical"
+      ]
+    }
+  },
+  "nds-drawer": {
+    "observedAttributes": [
+      "close-on-esc",
+      "close-on-overlay-click",
+      "open",
+      "portal-container",
+      "show-close-button",
+      "side",
+      "size",
+      "width"
+    ],
+    "enums": {
+      "side": [
+        "left",
+        "right"
+      ],
+      "size": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    }
+  },
+  "nds-dropdown-menu": {
+    "observedAttributes": [
+      "align",
+      "groups",
+      "items",
+      "min-width",
+      "portal-container"
+    ],
+    "enums": {
+      "align": [
+        "start",
+        "end"
+      ]
+    }
+  },
+  "nds-ds-highlight": {
+    "observedAttributes": [
+      "default-mode"
+    ],
+    "enums": {
+      "default-mode": [
+        "off",
+        "area",
+        "component",
+        "all"
+      ]
+    }
+  },
+  "nds-empty-state": {
+    "observedAttributes": [
+      "description",
+      "min-height",
+      "title"
+    ],
+    "enums": {}
+  },
+  "nds-expandable-text": {
+    "observedAttributes": [
+      "collapse-label",
+      "expand-label",
+      "expanded",
+      "hide-collapse",
+      "lines"
+    ],
+    "enums": {}
+  },
+  "nds-fab": {
+    "observedAttributes": [
+      "aria-label",
+      "color",
+      "offset",
+      "position",
+      "size"
+    ],
+    "enums": {
+      "color": [
+        "primary",
+        "neutral",
+        "secondary"
+      ],
+      "position": [
+        "bottom-right",
+        "bottom-left",
+        "bottom-center",
+        "static"
+      ]
+    }
+  },
+  "nds-field-action-row": {
+    "observedAttributes": [
+      "action-tone",
+      "error",
+      "helper-text",
+      "success",
+      "timer-expired"
+    ],
+    "enums": {
+      "action-tone": [
+        "outline",
+        "solid"
+      ]
+    }
+  },
+  "nds-file-upload": {
+    "observedAttributes": [
+      "accept",
+      "disabled",
+      "max-size",
+      "multiple",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-filter-bar": {
+    "observedAttributes": [
+      "options",
+      "reset-label",
+      "show-reset",
+      "single",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-floating-cta-banner": {
+    "observedAttributes": [
+      "aria-label",
+      "bottom-offset",
+      "floating",
+      "show-arrow",
+      "size"
+    ],
+    "enums": {
+      "size": [
+        "pc",
+        "mobile"
+      ]
+    }
+  },
+  "nds-footer": {
+    "observedAttributes": [
+      "links"
+    ],
+    "enums": {}
+  },
+  "nds-form-field": {
+    "observedAttributes": [
+      "density",
+      "html-for",
+      "label-position",
+      "label-width",
+      "optional",
+      "required"
+    ],
+    "enums": {
+      "label-position": [
+        "top",
+        "left"
+      ],
+      "density": [
+        "default",
+        "admin"
+      ]
+    }
+  },
+  "nds-header": {
+    "observedAttributes": [
+      "elevated",
+      "max-width",
+      "position",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "compact",
+        "webview",
+        "transparent",
+        "web"
+      ],
+      "position": [
+        "sticky",
+        "fixed",
+        "static"
+      ]
+    }
+  },
+  "nds-icon-button": {
+    "observedAttributes": [
+      "aria-label",
+      "size"
+    ],
+    "enums": {
+      "size": [
+        "x-large",
+        "large",
+        "medium",
+        "small"
+      ]
+    }
+  },
+  "nds-image-cropper": {
+    "observedAttributes": [
+      "output-size",
+      "shape",
+      "size",
+      "src"
+    ],
+    "enums": {
+      "shape": [
+        "circle",
+        "square"
+      ]
+    }
+  },
+  "nds-image-upload": {
+    "observedAttributes": [
+      "accept",
+      "auto-preview",
+      "image-alt",
+      "image-url",
+      "multiple",
+      "state"
+    ],
+    "enums": {
+      "state": [
+        "empty",
+        "uploaded",
+        "error"
+      ]
+    }
+  },
+  "nds-input": {
+    "observedAttributes": [
+      "clearable",
+      "complete",
+      "error",
+      "error-message",
+      "field-width",
+      "full-width",
+      "helper-text",
+      "helpers",
+      "label",
+      "password-toggle",
+      "show-count",
+      "size",
+      "success-message"
+    ],
+    "enums": {
+      "size": [
+        "default",
+        "field",
+        "compact"
+      ]
+    }
+  },
+  "nds-input-group": {
+    "observedAttributes": [
+      "align",
+      "gap"
+    ],
+    "enums": {
+      "gap": [
+        "tight",
+        "default",
+        "loose"
+      ],
+      "align": [
+        "stretch",
+        "start"
+      ]
+    }
+  },
+  "nds-lightbox": {
+    "observedAttributes": [
+      "images",
+      "index",
+      "open"
+    ],
+    "enums": {}
+  },
+  "nds-like-button": {
+    "observedAttributes": [
+      "active-color",
+      "count",
+      "hide-count",
+      "liked",
+      "size"
+    ],
+    "enums": {}
+  },
+  "nds-likert-scale": {
+    "observedAttributes": [
+      "disabled",
+      "name",
+      "options",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-list": {
+    "observedAttributes": [
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "plain",
+        "card",
+        "divided"
+      ]
+    }
+  },
+  "nds-media-card": {
+    "observedAttributes": [
+      "image-aspect-ratio",
+      "rating"
+    ],
+    "enums": {}
+  },
+  "nds-media-thumbnail": {
+    "observedAttributes": [
+      "alt",
+      "aspect-ratio",
+      "fallback-src",
+      "fit",
+      "lazy",
+      "rounded",
+      "src",
+      "width"
+    ],
+    "enums": {
+      "fit": [
+        "cover",
+        "contain"
+      ],
+      "rounded": [
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ]
+    }
+  },
+  "nds-modal": {
+    "observedAttributes": [
+      "actions-layout",
+      "closable",
+      "close-text",
+      "confirm-text",
+      "device",
+      "is-mask-close",
+      "mask",
+      "max-width",
+      "open",
+      "show-modal-button-group",
+      "title"
+    ],
+    "enums": {
+      "device": [
+        "pc",
+        "mobile"
+      ]
+    }
+  },
+  "nds-multi-select": {
+    "observedAttributes": [
+      "apply-label",
+      "cancel-label",
+      "disabled",
+      "empty-message",
+      "error",
+      "full-width",
+      "options",
+      "placeholder",
+      "search-placeholder",
+      "searchable",
+      "select-all-label",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-multi-step-form": {
+    "observedAttributes": [
+      "current",
+      "indicator",
+      "next-label",
+      "prev-label",
+      "steps",
+      "submit-label",
+      "submitting"
+    ],
+    "enums": {
+      "indicator": [
+        "progress",
+        "steps",
+        "none"
+      ]
+    }
+  },
+  "nds-notice-alert": {
+    "observedAttributes": [
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "info",
+        "notice",
+        "caution",
+        "success",
+        "error"
+      ]
+    }
+  },
+  "nds-notification-item": {
+    "observedAttributes": [
+      "kind",
+      "unread"
+    ],
+    "enums": {
+      "kind": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "system"
+      ]
+    }
+  },
+  "nds-number-stepper": {
+    "observedAttributes": [
+      "aria-label",
+      "disabled",
+      "editable",
+      "max",
+      "min",
+      "size",
+      "step",
+      "unit",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-online-indicator": {
+    "observedAttributes": [
+      "label",
+      "show-label",
+      "size",
+      "status"
+    ],
+    "enums": {
+      "status": [
+        "online",
+        "away",
+        "busy",
+        "offline"
+      ]
+    }
+  },
+  "nds-order-summary-card": {
+    "observedAttributes": [
+      "rows"
+    ],
+    "enums": {}
+  },
+  "nds-page-header": {
+    "observedAttributes": [
+      "bordered"
+    ],
+    "enums": {}
+  },
+  "nds-pagination": {
+    "observedAttributes": [
+      "page",
+      "show-arrows",
+      "siblings",
+      "total-pages"
+    ],
+    "enums": {}
+  },
+  "nds-phone-input": {
+    "observedAttributes": [
+      "auto-format",
+      "countries",
+      "country-code",
+      "error",
+      "full-width",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-pin-pad": {
+    "observedAttributes": [
+      "error",
+      "length",
+      "shuffle",
+      "shuffle-seed",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-popular-posts": {
+    "observedAttributes": [
+      "active-tab-key",
+      "items",
+      "tabs"
+    ],
+    "enums": {}
+  },
+  "nds-popup": {
+    "observedAttributes": [
+      "actions-layout",
+      "cancel-text",
+      "confirm-text",
+      "is-mask-close",
+      "max-width",
+      "open",
+      "title"
+    ],
+    "enums": {}
+  },
+  "nds-price-tag": {
+    "observedAttributes": [
+      "amount",
+      "discount-position",
+      "format-thousands",
+      "free-label",
+      "original-amount",
+      "prefix",
+      "size",
+      "unit"
+    ],
+    "enums": {
+      "discount-position": [
+        "before",
+        "none"
+      ]
+    }
+  },
+  "nds-product-card": {
+    "observedAttributes": [
+      "buyers-count",
+      "discount-percent",
+      "free-shipping",
+      "original-price",
+      "point-discount",
+      "price",
+      "ranking-number",
+      "rating",
+      "review-count",
+      "reward",
+      "size",
+      "sold-out",
+      "thumbnail",
+      "thumbnail-alt"
+    ],
+    "enums": {
+      "size": [
+        "sm",
+        "md"
+      ]
+    }
+  },
+  "nds-progress-bar": {
+    "observedAttributes": [
+      "color",
+      "max",
+      "size",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-pull-to-refresh": {
+    "observedAttributes": [
+      "disabled",
+      "pull-label",
+      "refreshing-label",
+      "release-label",
+      "threshold"
+    ],
+    "enums": {}
+  },
+  "nds-quick-action-grid": {
+    "observedAttributes": [
+      "actions",
+      "columns",
+      "gap"
+    ],
+    "enums": {}
+  },
+  "nds-quick-menu": {
+    "observedAttributes": [
+      "fixed",
+      "items",
+      "show-top"
+    ],
+    "enums": {}
+  },
+  "nds-radio": {
+    "observedAttributes": [
+      "checked",
+      "disabled"
+    ],
+    "enums": {}
+  },
+  "nds-review-card": {
+    "observedAttributes": [
+      "rating",
+      "tags",
+      "verified"
+    ],
+    "enums": {}
+  },
+  "nds-score-gauge": {
+    "observedAttributes": [
+      "max",
+      "segments",
+      "show-label",
+      "show-legend",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-search-input": {
+    "observedAttributes": [
+      "clearable",
+      "error",
+      "error-message",
+      "full-width",
+      "helper-text",
+      "label",
+      "show-search-button",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "outlined",
+        "filled"
+      ]
+    }
+  },
+  "nds-select": {
+    "observedAttributes": [
+      "disabled",
+      "error",
+      "error-message",
+      "field-width",
+      "full-width",
+      "helper-text",
+      "label",
+      "options",
+      "placeholder",
+      "portal-container",
+      "search-placeholder",
+      "searchable",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-selected-items-panel": {
+    "observedAttributes": [
+      "count",
+      "count-suffix",
+      "show-actions"
+    ],
+    "enums": {}
+  },
+  "nds-selection-button": {
+    "observedAttributes": [
+      "disabled",
+      "selected"
+    ],
+    "enums": {}
+  },
+  "nds-selection-button-group": {
+    "observedAttributes": [
+      "disabled",
+      "full-width",
+      "options",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-selection-card": {
+    "observedAttributes": [
+      "layout",
+      "mode",
+      "name",
+      "value",
+      "values"
+    ],
+    "enums": {
+      "mode": [
+        "single",
+        "multiple"
+      ],
+      "layout": [
+        "vertical",
+        "horizontal"
+      ]
+    }
+  },
+  "nds-sidebar": {
+    "observedAttributes": [
+      "account",
+      "active-key",
+      "collapsed",
+      "collapsed-width",
+      "footer-actions",
+      "full-height",
+      "items",
+      "logo",
+      "user",
+      "width"
+    ],
+    "enums": {}
+  },
+  "nds-signature-pad": {
+    "observedAttributes": [
+      "disabled",
+      "height",
+      "hide-controls",
+      "pen-color",
+      "pen-width",
+      "placeholder"
+    ],
+    "enums": {}
+  },
+  "nds-skeleton": {
+    "observedAttributes": [
+      "height",
+      "radius",
+      "variant",
+      "width"
+    ],
+    "enums": {
+      "variant": [
+        "rectangular",
+        "circular",
+        "text"
+      ]
+    }
+  },
+  "nds-slider": {
+    "observedAttributes": [
+      "disabled",
+      "max",
+      "min",
+      "show-value",
+      "step",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-snackbar": {
+    "observedAttributes": [
+      "action-label",
+      "closable",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "info",
+        "success",
+        "warning",
+        "error"
+      ]
+    }
+  },
+  "nds-sparkline": {
+    "observedAttributes": [
+      "aria-label",
+      "color",
+      "data",
+      "height",
+      "kind",
+      "show-baseline",
+      "show-last-dot",
+      "stroke-width",
+      "width"
+    ],
+    "enums": {
+      "kind": [
+        "line",
+        "area",
+        "bar"
+      ]
+    }
+  },
+  "nds-spinner": {
+    "observedAttributes": [
+      "color",
+      "label",
+      "size"
+    ],
+    "enums": {}
+  },
+  "nds-star-rating": {
+    "observedAttributes": [
+      "disabled",
+      "max",
+      "show-value",
+      "size",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-stats-table": {
+    "observedAttributes": [
+      "scroll",
+      "sticky-first"
+    ],
+    "enums": {}
+  },
+  "nds-stepper": {
+    "observedAttributes": [
+      "current",
+      "steps",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "numbered",
+        "dots",
+        "bar"
+      ]
+    }
+  },
+  "nds-tabs": {
+    "observedAttributes": [
+      "active-key",
+      "full-width",
+      "items",
+      "size",
+      "tone",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "line",
+        "chip",
+        "segment"
+      ],
+      "size": [
+        "mobile",
+        "pc"
+      ],
+      "tone": [
+        "neutral",
+        "color"
+      ]
+    }
+  },
+  "nds-tag-input": {
+    "observedAttributes": [
+      "add-button-label",
+      "allow-duplicates",
+      "disabled",
+      "error",
+      "full-width",
+      "max-tags",
+      "pattern",
+      "placeholder",
+      "prefix",
+      "value",
+      "variant"
+    ],
+    "enums": {
+      "variant": [
+        "stacked",
+        "inline"
+      ]
+    }
+  },
+  "nds-text-button": {
+    "observedAttributes": [
+      "size"
+    ],
+    "enums": {
+      "size": [
+        "large",
+        "medium"
+      ]
+    }
+  },
+  "nds-textarea": {
+    "observedAttributes": [
+      "error",
+      "max-length",
+      "min-height",
+      "resize"
+    ],
+    "enums": {
+      "resize": [
+        "none",
+        "vertical",
+        "horizontal",
+        "both"
+      ]
+    }
+  },
+  "nds-time-picker": {
+    "observedAttributes": [
+      "disabled",
+      "error",
+      "full-width",
+      "max",
+      "min",
+      "placeholder",
+      "portal-container",
+      "presets",
+      "step",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-time-slot-picker": {
+    "observedAttributes": [
+      "columns",
+      "disabled",
+      "groups",
+      "slots",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-timeline": {
+    "observedAttributes": [
+      "current",
+      "direction",
+      "items",
+      "mode"
+    ],
+    "enums": {
+      "mode": [
+        "activity",
+        "tracker"
+      ],
+      "direction": [
+        "vertical",
+        "horizontal"
+      ]
+    }
+  },
+  "nds-title-group": {
+    "observedAttributes": [
+      "level"
+    ],
+    "enums": {}
+  },
+  "nds-toast": {
+    "observedAttributes": [
+      "duration",
+      "max-count",
+      "portal-container",
+      "position"
+    ],
+    "enums": {
+      "position": [
+        "top",
+        "bottom"
+      ]
+    }
+  },
+  "nds-toggle": {
+    "observedAttributes": [
+      "checked",
+      "disabled",
+      "size",
+      "tone"
+    ],
+    "enums": {
+      "tone": [
+        "brand",
+        "success"
+      ]
+    }
+  },
+  "nds-tooltip": {
+    "observedAttributes": [
+      "delay",
+      "disabled",
+      "placement"
+    ],
+    "enums": {
+      "placement": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ]
+    }
+  },
+  "nds-trending-keywords": {
+    "observedAttributes": [
+      "autoplay-delay",
+      "items",
+      "timestamp",
+      "title"
+    ],
+    "enums": {}
+  },
+  "nds-user-card": {
+    "observedAttributes": [
+      "layout",
+      "verified"
+    ],
+    "enums": {
+      "layout": [
+        "row",
+        "stacked"
+      ]
+    }
+  },
+  "nds-validation-chip": {
+    "observedAttributes": [
+      "state"
+    ],
+    "enums": {
+      "state": [
+        "incomplete",
+        "complete",
+        "error"
+      ]
+    }
+  },
+  "nds-verification-code-input": {
+    "observedAttributes": [
+      "disabled",
+      "error",
+      "full-width",
+      "length",
+      "value"
+    ],
+    "enums": {}
+  },
+  "nds-video-player": {
+    "observedAttributes": [
+      "aspect-ratio",
+      "auto-play",
+      "duration-label",
+      "loop",
+      "muted",
+      "native-controls",
+      "poster",
+      "src"
+    ],
+    "enums": {}
+  },
+  "nds-voice-recorder": {
+    "observedAttributes": [
+      "idle-label",
+      "max-seconds",
+      "recording-label",
+      "seconds",
+      "state"
+    ],
+    "enums": {
+      "state": [
+        "idle",
+        "recording",
+        "paused"
+      ]
+    }
+  },
+  "nds-vote-poll": {
+    "observedAttributes": [
+      "disabled",
+      "options",
+      "show-results",
+      "voted-key"
+    ],
+    "enums": {}
+  },
+  "nds-waveform-player": {
+    "observedAttributes": [
+      "auto-play",
+      "bars",
+      "color",
+      "duration",
+      "peaks",
+      "src"
+    ],
+    "enums": {}
+  }
+} as const;
+
+export type GeneratedComponentTag = keyof typeof COMPONENT_ATTRS;

@@ -188,7 +188,7 @@ export const phoneInputStyles = `
 
   :where(.${PI_INPUT_CLASS}:focus) { border-color: ${cv.input.borderFocus}; }
 
-  :where(.${PI_INPUT_CLASS}::placeholder) { color: ${cv.textRole.muted}; }
+  :where(.${PI_INPUT_CLASS}::placeholder) { color: ${cv.input.placeholder}; }
 
   :where(.${PI_INPUT_CLASS}:disabled) {
     background: ${cv.surface.subtle};
@@ -205,7 +205,7 @@ export const phoneInputStyles = `
   :where(.${PI_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.subtle};
+    color: ${cv.input.helpertextDefault};
   }
 
   :where(.${PI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }

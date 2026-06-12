@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import { cv } from "@nudge-design/tokens";
 import { arcPath, clamp, findSegment } from "./viz-svg.js";
 
@@ -64,7 +65,7 @@ export class NdsScoreGauge extends NdsElement {
   static elementName = "nds-score-gauge";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "max", "segments", "show-label", "show-legend", "value-suffix"];
+    return [...COMPONENT_ATTRS["nds-score-gauge"].observedAttributes, "value-suffix"];
   }
 
   private _root: HTMLDivElement | null = null;

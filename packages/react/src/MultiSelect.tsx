@@ -287,14 +287,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
           <div data-slot="footer" className={MS_FOOTER_CLASS}>
             <Button
               size="sm"
-              color="secondary"
+              color="neutral"
               variant="outlined"
               data-slot="cancel"
               onClick={close}
             >
               {cancelLabel}
             </Button>
-            <Button size="sm" color="secondary" variant="solid" data-slot="apply" onClick={apply}>
+            <Button size="sm" color="neutral" variant="solid" data-slot="apply" onClick={apply}>
               {applyLabel}
             </Button>
           </div>

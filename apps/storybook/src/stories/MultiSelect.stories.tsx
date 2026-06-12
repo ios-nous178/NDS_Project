@@ -58,6 +58,34 @@ export const Default: Story = {
   },
 };
 
+export const Expanded: Story = {
+  name: "State/펼침 (패널)",
+  render: () => {
+    const Harness = () => {
+      const [v, setV] = useState<string[]>(["a", "c"]);
+      return (
+        <div style={{ width: 392, minHeight: 560 }}>
+          <MultiSelect
+            options={ADS}
+            value={v}
+            onValueChange={setV}
+            placeholder="모든 광고"
+            searchPlaceholder="광고명으로 검색하기"
+          />
+        </div>
+      );
+    };
+    return <Harness />;
+  },
+  play: async ({ canvasElement }) => {
+    // 패널을 열어둔 채 정지 — 새 구조(테두리 검색 / 전체선택 배경 / 우측 hug 푸터) 시각 확인용
+    const canvas = within(canvasElement);
+    const user = createInteractionUser();
+    await user.click(canvas.getByRole("button", { name: /모든 광고|개 선택/ }));
+    await expect(canvas.getByRole("button", { name: "적용" })).toBeInTheDocument();
+  },
+};
+
 export const Prefilled: Story = {
   name: "State/선택됨 (요약 표시)",
   render: () => {

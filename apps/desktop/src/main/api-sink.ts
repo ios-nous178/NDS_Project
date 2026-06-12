@@ -2,13 +2,13 @@
  * nudge-design-api(로컬 채팅/리뷰 DB) 로 내보내는 **best-effort 싱크**.
  *
  * 로컬-퍼스트 계약 유지:
- *  - 기본 ON + 중앙 서버(192.168.0.40:3000)로 무조건 전송. 끄려면 `NUDGE_API_LOG=0`,
+ *  - 기본 ON + 로컬 서버(localhost:8080)로 무조건 전송. 끄려면 `NUDGE_API_LOG=0`,
  *    주소 바꾸려면 `NUDGE_API_URL` 또는 아래 DEFAULT_API_URL 한 줄.
  *  - fire-and-forget + 절대 throw 안 함. 서버가 꺼져 있어도 조용히 무시(에이전트 UX 영향 0).
  *  - 로컬 JSONL 이 여전히 SSOT. 이건 그 위에 얹는 보조 sink 일 뿐.
  *
  * 활성화(로컬 테스트):
- *   NUDGE_API_LOG=1  [NUDGE_API_URL=http://localhost:3000]  [NUDGE_API_USER=you@x] pnpm dev
+ *   NUDGE_API_LOG=1  [NUDGE_API_URL=http://localhost:8080]  [NUDGE_API_USER=you@x] pnpm dev
  *
  * 전송 대상(전부 clientId=앱의 로컬 id 라 idempotent — 중복 저장 안 됨):
  *  - 세션 메타       → POST /sessions/import (clientId=sessionId, 메시지 빈 배열)
@@ -24,9 +24,9 @@ import type { FeedbackEntry } from "@nudge-design/mockup-core";
 const RAW_FLAG = process.env.NUDGE_API_LOG;
 const ENABLED = !["0", "false", "off", "no"].includes((RAW_FLAG ?? "").toLowerCase());
 
-// ⚠️ 임시 하드코딩: 중앙 DB 서버 주소(현재 이 맥의 LAN IP). env 없이도 무조건 여기로 보낸다.
-//    나중에 도메인/설정 UI 로 바꿀 예정. 그때까지는 이 한 줄만 고치면 됨(또는 NUDGE_API_URL 로 덮어쓰기).
-const DEFAULT_API_URL = "http://192.168.0.40:3000";
+// 기본 DB 서버 주소: 로컬호스트. env 없이도 무조건 여기로 보낸다.
+//    다른 호스트로 보내려면 `NUDGE_API_URL` 로 덮어쓰거나 이 한 줄만 고치면 됨.
+const DEFAULT_API_URL = "http://localhost:8080";
 const BASE_URL = (process.env.NUDGE_API_URL ?? DEFAULT_API_URL).replace(/\/+$/, "");
 
 function safeUser(): string {

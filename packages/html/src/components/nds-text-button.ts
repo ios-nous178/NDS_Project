@@ -5,6 +5,7 @@
 import { createIconSvg, type VanillaIconName } from "@nudge-design/icons/vanilla";
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const TB_CLASS = "nds-text-button";
 const TB_LABEL_CLASS = `${TB_CLASS}__label`;
@@ -34,7 +35,7 @@ export class NdsTextButton extends NdsElement {
   static elementName = "nds-text-button";
 
   static get observedAttributes(): readonly string[] {
-    return ["label", "size", "left-icon", "right-icon", "disabled", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-text-button"].observedAttributes, "label", "left-icon", "right-icon", "disabled", ...FORWARDED_ATTRS];
   }
 
   private _button: HTMLButtonElement | null = null;

@@ -25,6 +25,7 @@ import {
   CASHWALK_BIZ_PAGE_PATTERNS,
   BRAND_ALIASES,
 } from "./standalone-assets.js";
+import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
 import { inlineDsAssetReferences } from "./asset-inliner.js";
 import {
   countHtmlUsage,
@@ -1285,7 +1286,8 @@ function auditCashwalkBizAdminDesignSpec(cwd: string): WorkspaceAuditViolation |
     }
   }
   if (!brandRaw) brandRaw = readBrandMarker(cwd) ?? undefined;
-  if (canonicalBrandSlug(brandRaw) !== "cashwalk-biz") return null;
+  // 게이트 적용 여부 = 브랜드 프로필 admin.pagePatternSystem (현재 선언 브랜드 = cashwalk-biz).
+  if (!getBrandProfile(brandRaw)?.admin?.pagePatternSystem) return null;
 
   // 표면 — service 로 명시된 캐포비 화면만 게이트 제외(드문 경우). admin/미선언은 게이트 ON.
   if (readSurfaceMarker(cwd) === "service") return null;

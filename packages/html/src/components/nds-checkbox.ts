@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CB_CLASS = "nds-checkbox";
 const CB_ROOT_CLASS = `${CB_CLASS}__root`;
@@ -43,7 +44,7 @@ export class NdsCheckbox extends NdsElement {
   static elementName = "nds-checkbox";
 
   static get observedAttributes(): readonly string[] {
-    return ["checked", "indeterminate", "disabled", "label", "input-id", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-checkbox"].observedAttributes, "label", "input-id", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLLabelElement | null = null;

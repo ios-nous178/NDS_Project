@@ -34,7 +34,7 @@ export const assetStyles = `
   }
 
   :where(.${AS_CLASS}[data-shape="rounded"] .${AS_FRAME_CLASS}) {
-    border-radius: ${radius.md}px;
+    border-radius: var(--nds-asset-radius, ${radius.md}px);
   }
 
   :where(.${AS_CLASS}[data-shape="circle"] .${AS_FRAME_CLASS}) {

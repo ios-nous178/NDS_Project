@@ -13,6 +13,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const QA_CLASS = "nds-quick-action-grid";
 const QA_ITEM_CLASS = `${QA_CLASS}__item`;
@@ -39,7 +40,7 @@ export class NdsQuickActionGrid extends NdsElement {
   static elementName = "nds-quick-action-grid";
 
   static get observedAttributes(): readonly string[] {
-    return ["actions", "columns", "gap", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-quick-action-grid"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

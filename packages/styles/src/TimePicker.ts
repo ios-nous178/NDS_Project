@@ -231,7 +231,7 @@ export const tpStyles = `
 
   :where(.${TP_HELPER_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.textRole.subtle};
+    color: ${cv.input.helpertextDefault};
   }
   :where(.${TP_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
 

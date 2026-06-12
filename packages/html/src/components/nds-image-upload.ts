@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 type ImageUploadState = "empty" | "uploaded" | "error";
 
@@ -68,22 +69,20 @@ export class NdsImageUpload extends NdsElement {
   static elementName = "nds-image-upload";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "state",
-      "image-url",
-      "image-alt",
-      "accept",
-      "multiple",
-      "auto-preview",
-      "upload-label",
-      "size-hint",
-      "helper-text",
-      "error-text",
-    ];
+    return [...COMPONENT_ATTRS["nds-image-upload"].observedAttributes, "upload-label", "size-hint", "helper-text", "error-text"];
   }
 
   private _root: HTMLDivElement | null = null;
   private _input: HTMLInputElement | null = null;
+  private _previewBox: HTMLDivElement | null = null;
+  private _previewImg: HTMLImageElement | null = null;
+  private _placeholder: HTMLSpanElement | null = null;
+  private _removeBtn: HTMLButtonElement | null = null;
+  private _helper: HTMLDivElement | null = null;
+  private _errorIcon: HTMLSpanElement | null = null;
+  private _helperText: HTMLSpanElement | null = null;
+  private _uploadBtn: HTMLButtonElement | null = null;
+  private _sizeHintEl: HTMLSpanElement | null = null;
   /** auto-preview 모드에서 생성한 objectURL — revoke 추적용. */
   private _autoUrl: string | null = null;
 
@@ -104,87 +103,55 @@ export class NdsImageUpload extends NdsElement {
     }
   }
 
+  /**
+   * DOM 골격 1회 구성 — update() 는 텍스트/src/표시 여부만 반영한다.
+   * (update() 에서 file input 을 재생성하면 attribute 갱신마다 포커스가 유실되는
+   * 회귀 — packages/html/test/nds-image-upload.test.ts 가 잠근다.)
+   */
   private _mount(): void {
     const root = document.createElement("div");
     root.className = IU_ROOT_CLASS;
-    this.appendChild(root);
-    this._root = root;
-  }
-
-  protected update(): void {
-    if (!this._root) return;
-    if (this.style.display !== "contents") this.style.display = "contents";
-
-    const stateAttr = this.attr("state", "empty") as ImageUploadState;
-    const state: ImageUploadState =
-      stateAttr === "uploaded" || stateAttr === "error" ? stateAttr : "empty";
-    const imageUrl = this.getAttribute("image-url");
-    const imageAlt = this.attr("image-alt", "");
-    const accept = this.attr("accept", "image/*");
-    const multiple = this.boolAttr("multiple");
-    const autoPreview = this.boolAttr("auto-preview");
-    const uploadLabel = this.attr("upload-label", "이미지 업로드");
-    const sizeHint = this.attr("size-hint", "사이즈 : 200*200 px 권장");
-    const helperText = this.attr("helper-text", "이미지를 업로드해 주세요.");
-    const errorText = this.attr("error-text", "이미지를 등록해 주세요.");
-
-    this._root.dataset.state = state;
 
     const previewCol = document.createElement("div");
     previewCol.className = IU_PREVIEW_COL_CLASS;
 
     const previewBox = document.createElement("div");
     previewBox.className = IU_PREVIEW_BOX_CLASS;
-    previewBox.dataset.state = state;
 
-    const showImage = state === "uploaded" && !!imageUrl;
-    const showPlaceholder = state === "empty" || state === "error";
-    if (showImage) {
-      const img = document.createElement("img");
-      img.className = IU_PREVIEW_IMG_CLASS;
-      img.src = imageUrl!;
-      img.alt = imageAlt;
-      previewBox.appendChild(img);
-    }
-    if (showPlaceholder) {
-      const ph = document.createElement("span");
-      ph.className = IU_PLACEHOLDER_CLASS;
-      ph.textContent = "No Image";
-      previewBox.appendChild(ph);
-    }
-    if (state === "uploaded") {
-      const remove = document.createElement("button");
-      remove.type = "button";
-      remove.className = IU_REMOVE_BTN_CLASS;
-      remove.setAttribute("aria-label", "이미지 제거");
-      remove.appendChild(DeleteSvg());
-      remove.addEventListener("click", () => {
-        // auto-preview 모드면 내부 objectURL 해제 + 속성 초기화까지 처리.
-        if (autoPreview) {
-          this._revokeAuto();
-          this.removeAttribute("image-url");
-          this.setAttribute("state", "empty");
-        }
-        this.dispatchEvent(new CustomEvent("image-remove", { bubbles: true, composed: true }));
-      });
-      previewBox.appendChild(remove);
-    }
+    const img = document.createElement("img");
+    img.className = IU_PREVIEW_IMG_CLASS;
+    img.style.display = "none";
+
+    const ph = document.createElement("span");
+    ph.className = IU_PLACEHOLDER_CLASS;
+    ph.textContent = "No Image";
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = IU_REMOVE_BTN_CLASS;
+    remove.setAttribute("aria-label", "이미지 제거");
+    remove.style.display = "none";
+    remove.appendChild(DeleteSvg());
+    remove.addEventListener("click", () => {
+      // auto-preview 모드면 내부 objectURL 해제 + 속성 초기화까지 처리.
+      if (this.boolAttr("auto-preview")) {
+        this._revokeAuto();
+        this.removeAttribute("image-url");
+        this.setAttribute("state", "empty");
+      }
+      this.dispatchEvent(new CustomEvent("image-remove", { bubbles: true, composed: true }));
+    });
+
+    previewBox.append(img, ph, remove);
 
     const helper = document.createElement("div");
     helper.className = IU_HELPER_CLASS;
-    helper.dataset.state = state;
-    if (state === "error") {
-      const errIcon = document.createElement("span");
-      errIcon.className = IU_ERROR_ICON_CLASS;
-      errIcon.appendChild(InfoSvg());
-      const errText = document.createElement("span");
-      errText.textContent = errorText;
-      helper.append(errIcon, errText);
-    } else {
-      const span = document.createElement("span");
-      span.textContent = helperText;
-      helper.appendChild(span);
-    }
+    const errIcon = document.createElement("span");
+    errIcon.className = IU_ERROR_ICON_CLASS;
+    errIcon.style.display = "none";
+    errIcon.appendChild(InfoSvg());
+    const helperText = document.createElement("span");
+    helper.append(errIcon, helperText);
 
     previewCol.append(previewBox, helper);
 
@@ -194,7 +161,6 @@ export class NdsImageUpload extends NdsElement {
     const uploadBtn = document.createElement("button");
     uploadBtn.type = "button";
     uploadBtn.className = IU_UPLOAD_BTN_CLASS;
-    uploadBtn.textContent = uploadLabel;
     uploadBtn.addEventListener("click", () => {
       this.dispatchEvent(new CustomEvent("upload-click", { bubbles: true, composed: true }));
       this._input?.click();
@@ -202,18 +168,15 @@ export class NdsImageUpload extends NdsElement {
 
     const sizeHintEl = document.createElement("span");
     sizeHintEl.className = IU_SIZE_HINT_CLASS;
-    sizeHintEl.textContent = sizeHint;
 
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = accept;
-    input.multiple = multiple;
     input.style.display = "none";
     input.addEventListener("change", (e) => {
       const target = e.target as HTMLInputElement;
       if (target.files && target.files.length > 0) {
         // auto-preview 모드면 첫 이미지를 objectURL 로 즉시 렌더(속성 갱신은 내부 처리).
-        if (autoPreview) {
+        if (this.boolAttr("auto-preview")) {
           this._revokeAuto();
           this._autoUrl = URL.createObjectURL(target.files[0]);
           this.setAttribute("image-url", this._autoUrl);
@@ -229,11 +192,67 @@ export class NdsImageUpload extends NdsElement {
       }
       target.value = "";
     });
-    this._input = input;
 
     rightCol.append(uploadBtn, sizeHintEl, input);
+    root.append(previewCol, rightCol);
+    this.appendChild(root);
 
-    this._root.replaceChildren(previewCol, rightCol);
+    this._root = root;
+    this._input = input;
+    this._previewBox = previewBox;
+    this._previewImg = img;
+    this._placeholder = ph;
+    this._removeBtn = remove;
+    this._helper = helper;
+    this._errorIcon = errIcon;
+    this._helperText = helperText;
+    this._uploadBtn = uploadBtn;
+    this._sizeHintEl = sizeHintEl;
+  }
+
+  protected update(): void {
+    if (!this._root || !this._input) return;
+    if (this.style.display !== "contents") this.style.display = "contents";
+
+    const stateAttr = this.attr("state", "empty") as ImageUploadState;
+    const state: ImageUploadState =
+      stateAttr === "uploaded" || stateAttr === "error" ? stateAttr : "empty";
+    const imageUrl = this.getAttribute("image-url");
+    const imageAlt = this.attr("image-alt", "");
+    const accept = this.attr("accept", "image/*");
+    const multiple = this.boolAttr("multiple");
+    const uploadLabel = this.attr("upload-label", "이미지 업로드");
+    const sizeHint = this.attr("size-hint", "사이즈 : 200*200 px 권장");
+    const helperText = this.attr("helper-text", "이미지를 업로드해 주세요.");
+    const errorText = this.attr("error-text", "이미지를 등록해 주세요.");
+
+    this._root.dataset.state = state;
+    if (this._previewBox) this._previewBox.dataset.state = state;
+
+    const showImage = state === "uploaded" && !!imageUrl;
+    const showPlaceholder = state === "empty" || state === "error";
+    if (this._previewImg) {
+      if (showImage) {
+        if (this._previewImg.getAttribute("src") !== imageUrl) this._previewImg.src = imageUrl!;
+        this._previewImg.alt = imageAlt;
+        this._previewImg.style.display = "";
+      } else {
+        this._previewImg.removeAttribute("src");
+        this._previewImg.style.display = "none";
+      }
+    }
+    if (this._placeholder) this._placeholder.style.display = showPlaceholder ? "" : "none";
+    if (this._removeBtn) this._removeBtn.style.display = state === "uploaded" ? "" : "none";
+
+    if (this._helper) this._helper.dataset.state = state;
+    if (this._errorIcon) this._errorIcon.style.display = state === "error" ? "" : "none";
+    if (this._helperText) this._helperText.textContent = state === "error" ? errorText : helperText;
+
+    if (this._uploadBtn) this._uploadBtn.textContent = uploadLabel;
+    if (this._sizeHintEl) this._sizeHintEl.textContent = sizeHint;
+
+    this._input.accept = accept;
+    this._input.multiple = multiple;
   }
 }
 

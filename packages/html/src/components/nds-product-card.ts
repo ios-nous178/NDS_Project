@@ -33,6 +33,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const PC_CLASS = "nds-product-card";
 const PC_THUMB_CLASS = `${PC_CLASS}__thumb`;
@@ -67,7 +68,7 @@ const StarFilled = (size = 14) => {
   svg.setAttribute("height", String(size));
   svg.setAttribute("viewBox", "0 0 14 14");
   svg.setAttribute("aria-hidden", "true");
-  svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" fill="#FFD54F"/>`;
+  svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" style="fill: var(--nds-rating-star, #FFD54F)"/>`;
   return svg;
 };
 
@@ -85,26 +86,7 @@ export class NdsProductCard extends NdsElement {
   static elementName = "nds-product-card";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "size",
-      "thumbnail",
-      "thumbnail-alt",
-      "badge",
-      "ranking-number",
-      "sold-out",
-      "product-title",
-      "original-price",
-      "discount-percent",
-      "price",
-      "currency",
-      "reward",
-      "free-shipping",
-      "point-discount",
-      "buyers-count",
-      "rating",
-      "review-count",
-      "clickable",
-    ];
+    return [...COMPONENT_ATTRS["nds-product-card"].observedAttributes, "badge", "product-title", "currency", "clickable"];
   }
 
   private _root: HTMLDivElement | null = null;

@@ -23,6 +23,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const FB_CLASS = "nds-filter-bar";
 const FB_LIST_CLASS = `${FB_CLASS}__list`;
@@ -53,7 +54,7 @@ export class NdsFilterBar extends NdsElement {
   static elementName = "nds-filter-bar";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "options", "single", "show-reset", "reset-label"];
+    return [...COMPONENT_ATTRS["nds-filter-bar"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;

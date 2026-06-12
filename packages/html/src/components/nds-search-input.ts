@@ -11,6 +11,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import { cv } from "@nudge-design/tokens";
 
 const SEARCH_CLASS = "nds-search-input";
@@ -28,19 +29,7 @@ export class NdsSearchInput extends NdsElement {
   static elementName = "nds-search-input";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "value",
-      "label",
-      "placeholder",
-      "helper-text",
-      "error",
-      "error-message",
-      "variant",
-      "clearable",
-      "show-search-button",
-      "full-width",
-      "disabled",
-    ];
+    return [...COMPONENT_ATTRS["nds-search-input"].observedAttributes, "value", "placeholder", "disabled"];
   }
 
   private _root: HTMLDivElement | null = null;

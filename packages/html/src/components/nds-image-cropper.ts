@@ -19,6 +19,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const IC_CLASS = "nds-image-cropper";
 const IC_VIEWPORT_CLASS = `${IC_CLASS}__viewport`;
@@ -41,7 +42,7 @@ export class NdsImageCropper extends NdsElement {
   static elementName = "nds-image-cropper";
 
   static get observedAttributes(): readonly string[] {
-    return ["src", "shape", "size", "output-size", "label"];
+    return [...COMPONENT_ATTRS["nds-image-cropper"].observedAttributes, "label"];
   }
 
   private _root: HTMLDivElement | null = null;

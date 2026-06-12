@@ -17,28 +17,30 @@
   ],
   "scripts": {
     "build:manifest": "node scripts/emit-manifest.mjs",
-    "build": "rm -rf dist && pnpm run build:manifest && tsc",
+    "build": "rm -rf dist && pnpm run build:guides && pnpm run build:manifest && tsc",
     "start": "node dist/server.js",
     "dev": "pnpm run build:manifest && tsc --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:guides": "node scripts/build-guides.mjs"
   },
   "dependencies": {
     "@babel/parser": "^7.25.0",
     "@babel/traverse": "^7.25.0",
     "@babel/types": "^7.25.0",
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "@nudge-design/mockup-core": "workspace:*",
     "@nudge-design/assets": "workspace:*",
-    "@nudge-design/tokens": "workspace:*",
-    "@nudge-design/react": "workspace:*",
     "@nudge-design/icons": "workspace:*",
+    "@nudge-design/mockup-core": "workspace:*",
+    "@nudge-design/react": "workspace:*",
+    "@nudge-design/tokens": "workspace:*",
     "cheerio": "^1.0.0"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.20.0",
     "@types/node": "^20.0.0",
     "typescript": "^5.7.0",
-    "vitest": "^2.1.9"
+    "vitest": "^2.1.9",
+    "yaml": "^2.8.3"
   }
 }

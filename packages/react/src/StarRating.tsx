@@ -11,7 +11,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
 const STAR_PATH = "M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z";
-const FILLED_COLOR = "#FFD54F";
+const FILLED_COLOR = "var(--nds-rating-star, #FFD54F)"; // 슬롯 토큰 — style.fill 로 적용(attr 는 var() 미보장)
 const EMPTY_COLOR = "#E0E0E0";
 
 /* ─── Component ─── */
@@ -88,7 +88,7 @@ export const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
               onMouseEnter={() => interactive && setHovered(starValue)}
             >
               <svg width={size} height={size} viewBox="0 0 16 16">
-                <path d={STAR_PATH} fill={filled ? FILLED_COLOR : EMPTY_COLOR} />
+                <path d={STAR_PATH} style={{ fill: filled ? FILLED_COLOR : EMPTY_COLOR }} />
               </svg>
             </span>
           );

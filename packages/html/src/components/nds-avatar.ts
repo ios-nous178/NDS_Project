@@ -9,29 +9,40 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const AV_CLASS = "nds-avatar";
 const AV_IMAGE_CLASS = `${AV_CLASS}__image`;
 const AV_FALLBACK_CLASS = `${AV_CLASS}__fallback`;
 
 export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
+export type AvatarShape = "square" | "rounded" | "circle";
 
-const SIZE_CONFIG: Record<AvatarSize, { size: number; fontSize: number }> = {
-  xs: { size: 24, fontSize: 10 },
-  sm: { size: 32, fontSize: 12 },
-  md: { size: 40, fontSize: 14 },
-  lg: { size: 48, fontSize: 16 },
-  xl: { size: 64, fontSize: 20 },
+// Figma 1337:8 — 24/32/48/64/96, rounded=사이즈별 cornerRadius. React Avatar.tsx sizeConfig 와 1:1.
+const SIZE_CONFIG: Record<AvatarSize, { size: number; fontSize: number; rounded: number }> = {
+  xs: { size: 24, fontSize: 11, rounded: 4 },
+  sm: { size: 32, fontSize: 14, rounded: 6 },
+  md: { size: 48, fontSize: 20, rounded: 8 },
+  lg: { size: 64, fontSize: 26, rounded: 10 },
+  xl: { size: 96, fontSize: 38, rounded: 12 },
 };
 
 const SIZE_NAMES = Object.keys(SIZE_CONFIG) as AvatarSize[];
+const SHAPE_NAMES: readonly AvatarShape[] = ["square", "rounded", "circle"];
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby", "title"] as const;
+
+/** shape → border-radius. circle=완전 원, square=0, rounded=사이즈별 px. */
+function resolveRadius(shape: AvatarShape, rounded: number): string {
+  if (shape === "circle") return "9999px";
+  if (shape === "square") return "0";
+  return `${rounded}px`;
+}
 
 export class NdsAvatar extends NdsElement {
   static elementName = "nds-avatar";
 
   static get observedAttributes(): readonly string[] {
-    return ["src", "alt", "name", "size", "fallback", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-avatar"].observedAttributes, "fallback", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -58,13 +69,16 @@ export class NdsAvatar extends NdsElement {
     }
 
     const size = this._normalizedSize();
+    const shape = this._normalizedShape();
     const cfg = SIZE_CONFIG[size];
     const src = this.getAttribute("src");
     const showImage = !!src && src !== this._imageErrorSrc;
 
     this._root.dataset.size = size;
+    this._root.dataset.shape = shape;
     this._root.style.setProperty("--nds-avatar-size", `${cfg.size}px`);
     this._root.style.setProperty("--nds-avatar-font-size", `${cfg.fontSize}px`);
+    this._root.style.setProperty("--nds-avatar-radius", resolveRadius(shape, cfg.rounded));
 
     for (const name of FORWARDED_ATTRS) {
       const value = this.getAttribute(name);
@@ -107,13 +121,15 @@ export class NdsAvatar extends NdsElement {
     const value = this.attr("size", "md");
     return (SIZE_NAMES as readonly string[]).includes(value) ? (value as AvatarSize) : "md";
   }
+
+  private _normalizedShape(): AvatarShape {
+    const value = this.attr("shape", "circle");
+    return (SHAPE_NAMES as readonly string[]).includes(value) ? (value as AvatarShape) : "circle";
+  }
 }
 
 function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "";
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  return name.trim().charAt(0).toUpperCase();
 }
 
 function createDefaultIcon(): SVGSVGElement {

@@ -169,6 +169,33 @@ describe("getGuide view (response slimming)", () => {
     expect(slim.rules).toBeUndefined();
   });
 
+  it("single oversized topic (no slice) elides large sections and keeps summary (2-②a)", () => {
+    // 회귀: 단일 topic 은 기본 full 이라 pattern:cashwalk-biz-admin-sidebar(_readyMade ~30KB)를
+    //   통째로 컨텍스트에 쏟았다. 슬라이스 미지정 + 본문 >15KB 면 큰 섹션을 생략(크기만)한다.
+    const topic = "pattern:cashwalk-biz-admin-sidebar";
+    const full = getGuide({ topic, view: "full" });
+    const def = getGuide({ topic });
+
+    expect(def._oversized).toBeDefined();
+    expect(size(def)).toBeLessThan(size(full) / 3); // 대폭 축소
+    expect(def.summary).toBeDefined(); // summary 는 보존
+    // 큰 _readyMade 본문은 빠지고 _oversized.elidedSections 에 크기로만 기록
+    expect(def._readyMade).toBeUndefined();
+    const elided = (def._oversized as { elidedSections?: Record<string, number> }).elidedSections;
+    expect(elided?._readyMade).toBeGreaterThan(15_000); // ready-made 트리 본문이 크기로만 기록됨
+  });
+
+  it("view='full' bypasses the oversize guard (전체 본문 유지)", () => {
+    const full = getGuide({ topic: "pattern:cashwalk-biz-admin-sidebar", view: "full" });
+    expect(full._oversized).toBeUndefined();
+    expect((full as { _readyMade?: unknown })._readyMade).toBeDefined();
+  });
+
+  it("small single topic is not affected by the oversize guard", () => {
+    const r = getGuide({ topic: "component:Button", target: "html" });
+    expect(r._oversized).toBeUndefined();
+  });
+
   it("explicit sections override view", () => {
     const slim = getGuide({
       topic: "component:Button",

@@ -79,6 +79,8 @@ export class NdsFileUpload extends NdsElement {
   private _root: HTMLDivElement | null = null;
   private _drop: HTMLDivElement | null = null;
   private _input: HTMLInputElement | null = null;
+  private _error: HTMLSpanElement | null = null;
+  private _list: HTMLUListElement | null = null;
   private _files: File[] = [];
   private _dragover = false;
 
@@ -157,12 +159,27 @@ export class NdsFileUpload extends NdsElement {
       this._acceptFiles(Array.from(dt.files));
     });
 
-    root.append(drop);
+    /* error/list 도 1회만 마운트 — update() 에서 root.replaceChildren 으로 drop 을
+     * 떼었다 붙이면 그 순간 file input 포커스가 유실된다 (mount-once 계약,
+     * packages/html/test/nds-file-upload.test.ts 가 잠근다). */
+    const err = document.createElement("span");
+    err.dataset.slot = "error";
+    err.className = FU_ERROR_CLASS;
+    err.style.display = "none";
+
+    const list = document.createElement("ul");
+    list.dataset.slot = "list";
+    list.className = FU_LIST_CLASS;
+    list.style.display = "none";
+
+    root.append(drop, err, list);
     this.appendChild(root);
 
     this._root = root;
     this._drop = drop;
     this._input = input;
+    this._error = err;
+    this._list = list;
   }
 
   private _acceptFiles(incoming: File[]): void {
@@ -249,19 +266,15 @@ export class NdsFileUpload extends NdsElement {
       }
     }
 
-    // error message + list (after drop)
-    const extras: Node[] = [this._drop];
-    if (errorMessage) {
-      const err = document.createElement("span");
-      err.dataset.slot = "error";
-      err.className = FU_ERROR_CLASS;
-      err.textContent = errorMessage;
-      extras.push(err);
+    // error message + list (after drop) — 노드는 보존, 내용/표시만 갱신
+    if (this._error) {
+      this._error.textContent = errorMessage ?? "";
+      this._error.style.display = errorMessage ? "" : "none";
     }
-    if (this._files.length > 0) {
-      const list = document.createElement("ul");
-      list.dataset.slot = "list";
-      list.className = FU_LIST_CLASS;
+    if (this._list) {
+      const list = this._list;
+      list.style.display = this._files.length > 0 ? "" : "none";
+      const items: Node[] = [];
       this._files.forEach((file, idx) => {
         const li = document.createElement("li");
         li.dataset.slot = "item";
@@ -286,11 +299,10 @@ export class NdsFileUpload extends NdsElement {
         remove.addEventListener("click", () => this._removeAt(idx));
 
         li.append(name, size, remove);
-        list.appendChild(li);
+        items.push(li);
       });
-      extras.push(list);
+      list.replaceChildren(...items);
     }
-    this._root.replaceChildren(...extras);
   }
 }
 

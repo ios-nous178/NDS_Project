@@ -43,8 +43,9 @@ describe("nds-address-picker — DOM parity with React AddressPicker", () => {
     expect(button.textContent?.trim()).toBe("검색");
     expect(button.hasAttribute("disabled")).toBe(false);
 
-    // 검색 전에는 결과 영역이 표시되지 않음
-    expect(root.querySelector(".nds-address-picker__result")).toBeNull();
+    // 검색 전에는 결과 영역이 숨겨짐 (영속 노드 — input 재생성 방지 위해 DOM 에는 존재, hidden 으로 가림)
+    const resultBefore = root.querySelector(".nds-address-picker__result") as HTMLElement;
+    expect(resultBefore.hidden).toBe(true);
     expect(el.style.display).toBe("contents");
   });
 
@@ -159,6 +160,63 @@ describe("nds-address-picker — DOM parity with React AddressPicker", () => {
     const button = el.querySelector("nds-button") as HTMLElement;
     expect(button.hasAttribute("disabled")).toBe(true);
     expect(button.textContent?.trim()).toBe("검색 중...");
+  });
+
+  // ─── 회귀: 키 입력마다 input 재생성으로 포커스/커서 유실("한 글자마다 끊김") ───
+  it("typing does NOT recreate the query input (focus/cursor preserved)", async () => {
+    const el = document.createElement("nds-address-picker");
+    document.body.appendChild(el);
+    await flush();
+
+    const input = el.querySelector("input.nds-address-picker__input") as HTMLInputElement;
+    input.focus();
+
+    // 한 글자 입력 → query 속성 변경 → update 가 돌아도 input 노드는 동일해야 한다.
+    input.value = "강";
+    input.dispatchEvent(new Event("input"));
+    await flush();
+
+    const inputAfter = el.querySelector("input.nds-address-picker__input") as HTMLInputElement;
+    expect(inputAfter).toBe(input); // 같은 노드 — 재생성되면 포커스가 날아간다
+    expect(document.activeElement).toBe(input);
+    expect(inputAfter.value).toBe("강");
+  });
+
+  it("query input survives results update (검색 후에도 입력 노드 동일)", async () => {
+    const el = document.createElement("nds-address-picker");
+    el.setAttribute("query", "강남");
+    document.body.appendChild(el);
+    await flush();
+
+    const input = el.querySelector("input.nds-address-picker__input") as HTMLInputElement;
+    el.setAttribute("results", RESULTS);
+    await flush();
+
+    expect(el.querySelector("input.nds-address-picker__input")).toBe(input);
+  });
+
+  it("detail input survives detail keystrokes (상세 input 노드 동일)", async () => {
+    const el = document.createElement("nds-address-picker");
+    el.setAttribute(
+      "value",
+      JSON.stringify({ address: { roadAddress: "서울시 강남구 테헤란로 123" }, detail: "" }),
+    );
+    document.body.appendChild(el);
+    await flush();
+
+    const detail = el.querySelector(".nds-address-picker__detail") as HTMLElement;
+    const input = detail.querySelector("input") as HTMLInputElement;
+    input.focus();
+    input.value = "1";
+    input.dispatchEvent(new Event("input"));
+    await flush();
+
+    const inputAfter = (el.querySelector(".nds-address-picker__detail") as HTMLElement).querySelector(
+      "input",
+    ) as HTMLInputElement;
+    expect(inputAfter).toBe(input);
+    expect(document.activeElement).toBe(input);
+    expect(inputAfter.value).toBe("1");
   });
 
   it("error sets input data-error and helper data-error", async () => {

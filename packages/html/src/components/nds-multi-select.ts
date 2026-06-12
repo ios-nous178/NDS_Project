@@ -13,6 +13,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 // 조합 대상 커스텀 엘리먼트 등록 보장 (side-effect import).
 import "./nds-checkbox.js";
 import "./nds-search-input.js";
@@ -44,20 +45,7 @@ export class NdsMultiSelect extends NdsElement {
   static elementName = "nds-multi-select";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "options",
-      "value",
-      "placeholder",
-      "search-placeholder",
-      "searchable",
-      "select-all-label",
-      "apply-label",
-      "cancel-label",
-      "empty-message",
-      "error",
-      "disabled",
-      "full-width",
-    ];
+    return [...COMPONENT_ATTRS["nds-multi-select"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -298,7 +286,7 @@ export class NdsMultiSelect extends NdsElement {
     onClick: () => void,
   ): HTMLElement {
     const btn = document.createElement("nds-button");
-    btn.setAttribute("color", "secondary");
+    btn.setAttribute("color", "neutral");
     btn.setAttribute("variant", variant);
     btn.setAttribute("size", "sm");
     btn.dataset.slot = slot;
