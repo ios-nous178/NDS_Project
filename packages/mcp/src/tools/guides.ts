@@ -125,6 +125,7 @@ function resolvePatternReferenceImages(
 export const ENTRY_TOOL_ADVISORY =
   "FIRST RESPONSE GATE: If the user asks to create, generate, revise, or build any mockup/screen/page, ask for visual references before any tool lookup or code work. " +
   'Use this exact question and stop: "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요." ' +
+  "시각 소스 신뢰 위계: **사용자가 채팅에 붙여넣은 스크린샷·이미지는 레이아웃·구성·의도 참고용으로만** 쓰고, 정확한 색/여백/치수/컴포넌트 선택의 근거로 삼지 마세요(거칠고 비공식적인 자료라 그대로 베끼면 회귀의 원인). 픽셀·색·치수·매트릭스의 SSOT 는 **MCP에 저장된 레퍼런스**(get_guide 의 references[].imageAbsolutePath · figmaNodeUrl)이며 더 신뢰합니다 — 사용자 스크린샷과 MCP 레퍼런스가 어긋나면 **MCP 레퍼런스가 우선**입니다. " +
   "Before creating/editing mockup files, do a shallow current-workspace collision check only; if an obvious same-PRD/same-screen work folder is found, ask whether to create a v2 instead and stop. Do not modify the existing folder without that answer. Do not exhaustive-search. " +
   "Every completed mockup response must include the final artifact full absolute path, not only a relative dist/index.html path. " +
   "이 MCP의 역할은 '별도 외부 목업 프로젝트를 빌드하고 목업을 생성하는 것'입니다. " +
@@ -542,6 +543,43 @@ function viewToSections(topic: string, view: GuideView): string[] | undefined {
   return ["summary", "dos", "donts", "bannedPatterns"]; // principles / dos-donts 등
 }
 
+/**
+ * 단일 topic 오버사이즈 가드 (2-②a).
+ * 배치(topics[])는 slim 기본값이 있지만, 단일 topic 은 기본 view='full' 이라
+ * pattern:cashwalk-biz-admin-sidebar(34.7KB·_readyMade 트리) 같은 아웃라이어를 통째로 컨텍스트에 쏟는다.
+ * 명시적 슬라이스(view/sections/aspects)가 없고 직렬화 본문이 임계 초과면,
+ * 작은 키(summary·_advisory·마커)는 그대로 두고 큰 섹션은 본문을 생략하고 byte 크기만 남긴다.
+ * 전체가 필요하면 호출자가 view:'full' 또는 sections:[...] 를 명시한다.
+ */
+const GUIDE_OVERSIZE_BYTES = 15_000;
+const GUIDE_KEEP_KEY_BYTES = 800;
+
+function slimOversizedGuide(
+  topic: string,
+  result: Record<string, unknown>,
+  explicitSlice: boolean,
+): Record<string, unknown> {
+  if (explicitSlice) return result;
+  const json = JSON.stringify(result);
+  if (!json || json.length <= GUIDE_OVERSIZE_BYTES) return result;
+  const slim: Record<string, unknown> = {};
+  const elided: Record<string, number> = {};
+  for (const [k, v] of Object.entries(result)) {
+    const size = JSON.stringify(v)?.length ?? 0;
+    if (k === "summary" || size <= GUIDE_KEEP_KEY_BYTES) slim[k] = v;
+    else elided[k] = size;
+  }
+  slim._oversized = {
+    topic,
+    totalBytes: json.length,
+    elidedSections: elided,
+    notice:
+      `이 가이드 전체는 ${(json.length / 1024).toFixed(1)}KB 입니다. 큰 섹션은 본문을 생략하고 크기(byte)만 표시했습니다. ` +
+      `전체가 필요하면 get_guide({ topic: '${topic}', view: 'full' }), 일부만 필요하면 sections:[...] 또는 aspects 를 지정하세요.`,
+  };
+  return slim;
+}
+
 const DEFAULT_BATCH_PRINCIPLES_SECTIONS = ["colors", "typography", "spacing", "shapes"];
 
 /**
@@ -834,6 +872,12 @@ export function getGuide(args: {
     sections = viewToSections(topic, args.view);
   }
 
+  // 오버사이즈 가드(2-②a)용 — 호출자가 슬라이스를 명시했는지. 명시했으면 가드 미적용.
+  const explicitSlice =
+    args.view !== undefined ||
+    (Array.isArray(args.sections) && args.sections.length > 0) ||
+    (aspectList !== undefined && aspectList.length > 0);
+
   if (topic.startsWith("component:")) {
     const name = topic.slice("component:".length);
     if (!name) {
@@ -845,7 +889,11 @@ export function getGuide(args: {
     const base = getComponentGuide(name, target) as Record<string, unknown>;
     const withMatrix = applyMatrixOverrides(base, args.brand);
     const withMeta = applyBrandAwareMetadata(withMatrix, args.brand);
-    return pickSections(applyBrandOverlay(topic, withMeta, args.brand), sections);
+    return slimOversizedGuide(
+      topic,
+      pickSections(applyBrandOverlay(topic, withMeta, args.brand), sections),
+      explicitSlice,
+    );
   }
   if (topic.startsWith("pattern:")) {
     const name = topic.slice("pattern:".length);
@@ -856,7 +904,11 @@ export function getGuide(args: {
       };
     }
     const base = getPatternGuide(name) as Record<string, unknown>;
-    return pickSections(applyBrandOverlay(topic, base, args.brand), sections);
+    return slimOversizedGuide(
+      topic,
+      pickSections(applyBrandOverlay(topic, base, args.brand), sections),
+      explicitSlice,
+    );
   }
 
   switch (topic) {
@@ -1196,6 +1248,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - dev URL 응답하면 브라우저에서 직접 열어 런타임 에러, unknown custom-element 경고, 빈 화면 여부 확인.
 - 완료 전 \`get_guide({ topic: "dos-donts" })\` 로 최종 sanity check.
 - 작업 종료 시 \`dev_server({ action: "stop" })\` 로 종료.
+- **★ 유저가 DS 선택을 교정/지적하면 — 고치기 직전에 \`log_feedback\` 을 먼저 호출한다 (예외 없음).** 트리거 = "이거 틀렸어 / 아니야 / 왜 이래 / 이거 말고 / 저거 맞아? / 시안이랑 달라 / 색·간격·컴포넌트·variant 가 잘못됐다" 류의, **DS 자체에 대한 교정**. 흐름은 항상 _먼저 \`log_feedback({ text, category, target, brand })\` → 그 다음 수정_. 고치고 나서 잊지 말 것 — 수정에 몰입해 로깅을 건너뛰는 게 가장 흔한 누락이다. (일반 작업 지시 "다음 화면 만들어줘" 는 해당 없음 — DS 가 틀렸다는 신호일 때만.)
 
 ## UI 구현 규칙
 

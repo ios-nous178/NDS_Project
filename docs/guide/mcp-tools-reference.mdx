@@ -44,7 +44,7 @@ Brand metadata: no args lists brands, `{ brand }` returns summary/imports/colors
 
 ### `find_component`
 
-Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only), `verbose:true` for full signatures (type/allowedValues). For usage examples prefer get_guide(\{ topic: `component:<Name>` \}). (Mockup work: collect visual refs first.)
+Look up DS components. No args lists names; `{ query }` searches; `{ name }` returns slim prop metadata (names only), `verbose:true` for full signatures (type/allowedValues). For usage examples prefer get_guide(\{ topic: `component:<Name>` \}). (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.
 
 **인자**
 
@@ -52,10 +52,11 @@ Look up DS components. No args lists names; `{ query }` searches; `{ name }` ret
 - `name` `string` — Optional exact component name (case-sensitive).
 - `verbose` `boolean` — [name-lookup only] If true, response includes full prop signatures (type, allowedValues, optional flags). Default false — slim shape with prop names only.
 - `limit` `number` — Max results for list/search calls.
+- `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.
 
 ### `find_icon`
 
-Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready inline `svg` (no npm install needed), no args→icon index. (Mockup work: collect visual refs first.)
+Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready inline `svg` (no npm install needed), no args→icon index. (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.
 
 **인자**
 
@@ -64,16 +65,18 @@ Search @nudge-design/icons. `{ query }`→find a name, `{ name }`→paste-ready 
 - `category` `string` — Optional icon category from the no-arg summary.
 - `limit` `number` — Max icons returned for query/category calls.
 - `size` `number` — Optional width/height(px) for the returned inline svg. Default 24.
+- `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.
 
 ### `find_token`
 
-Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.)
+Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.
 
 **인자**
 
 - `group` `string` — Optional token group filter.
 - `query` `string` — Optional name/value query (e.g. '#FF5722').
 - `brand` `string` — Optional brand slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + brand-specific tokens and shows brand-specific values for shared semantic tokens. Omit for NudgeEAP/base.
+- `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.
 
 ---
 

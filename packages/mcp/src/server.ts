@@ -68,6 +68,7 @@ import {
 } from "./tools/usage.js";
 import { captureContext } from "./tools/context-capture.js";
 import { captureTelemetry } from "./tools/telemetry-egress.js";
+import { captureTranscriptFeedback } from "./tools/feedback-capture.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
 import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
@@ -712,26 +713,6 @@ function attachScoreGate<T>(result: T): T {
   return result;
 }
 
-function summarizeObservabilityResults(
-  results: Array<{ ok?: boolean; path?: string; error?: string; status?: number }>,
-) {
-  const ok = results.filter((r) => r.ok === true).length;
-  const failed = results.length - ok;
-  const failedPaths = results
-    .filter((r) => r.ok !== true)
-    .map((r) => r.path)
-    .filter((p): p is string => typeof p === "string");
-  return {
-    count: results.length,
-    ok,
-    failed,
-    notice:
-      failed > 0
-        ? `observability ${failed}/${results.length} failed${failedPaths.length > 0 ? `: ${failedPaths.join(", ")}` : ""}`
-        : `observability ${ok}/${results.length} ok`,
-  };
-}
-
 function getTokenLookupScore(token: Manifest["tokens"][number], query: string): number {
   const baseScore = Math.max(scoreMatch(query, token.name), scoreMatch(query, token.value));
   if (baseScore <= 0) return 0;
@@ -907,6 +888,17 @@ const toolHandlers = {
     suggestReplacement(args as { snippet: string; rule?: string }),
   recommend_page_pattern: (args: ToolArgs) =>
     recommendPagePatternTool(args as { prd?: string; brand?: string; surface?: string }),
+  // 핸들러는 ack 만 반환 — 실제 수집은 afterCall → captureTelemetry → projectFeedback 가 처리.
+  log_feedback: (args: ToolArgs) => {
+    const text = typeof args.text === "string" ? args.text.trim() : "";
+    if (!text) return { ok: false, error: "text 가 비어 있습니다." };
+    return {
+      ok: true,
+      logged: true,
+      category: (args.category as string) ?? null,
+      message: "피드백이 기록되었습니다.",
+    };
+  },
   get_guide: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "get_guide",
@@ -1162,35 +1154,34 @@ registerToolHandlers(server, toolHandlers, {
     // early-return 이전에 둬서 html 빌드 산출물도 스냅샷되도록 한다.
     captureContext({ name, args, result });
 
-    // Tier 2 · EGRESS — find_*(히트/미스) + 프롬프트를 중앙 수집 서버로 fire-and-forget 전송.
-    // NUDGE_TELEMETRY_URL 미설정이면 내부에서 즉시 no-op(기본 OFF). 본기능 무해(throw 안 함).
+    // Tier 2 · EGRESS — find_*(히트/미스) + 프롬프트를 수집 서버로 fire-and-forget 전송.
+    // 기본 전송지 = 로컬 nudge-telemetry-api(:8091/api/ingest). NUDGE_TELEMETRY_URL 로 덮어쓰기, NUDGE_CONTEXT_COLLECTION=0 으로 끔.
     captureTelemetry({ name, args, result });
 
+    // 채팅 피드백 자동 캡처 — 모델이 log_feedback 을 안 불러도, 어차피 호출되는 이 툴들의
+    // afterCall 에서 transcript 를 읽어 직전 user 피드백을 줍는다(모델 협조 불필요).
+    // cwd 힌트 = 툴 args(build/validate 등의 cwd). MCP process.cwd() 는 프로젝트가 아닐 수 있어 args 우선.
+    captureTranscriptFeedback(
+      typeof args?.cwd === "string"
+        ? args.cwd
+        : typeof args?.projectPath === "string"
+          ? args.projectPath
+          : null,
+    );
+
     // observability 적재 SSOT — record{Build,Validation,Quality} 를 핸들러에서 끌어와 이 단일
-    // choke-point 로 통합(새 툴 누락 방지). sink 실패는 본기능에 무해해야 하므로 throw 차단.
-    let next = result;
-    try {
-      const observability = await recordObservability({
-        name,
-        args,
-        result,
-        dsVersion: mcpbManifest?.version,
-      });
-      if (
-        observability &&
-        observability.length > 0 &&
-        result &&
-        typeof result === "object" &&
-        !Array.isArray(result)
-      ) {
-        next = {
-          ...(result as Record<string, unknown>),
-          _observability: summarizeObservabilityResults(observability),
-        };
-      }
-    } catch {
-      /* sink 장애가 툴 응답을 깨지 않게 */
-    }
+    // choke-point 로 통합(새 툴 누락 방지). 다른 3개 수집기와 동일하게 fire-and-forget —
+    // await 하면 원격 webhook(timeout 1500ms)이 모든 build/validate/score 호출을 블로킹한다.
+    // 산출물(_observability 요약)은 모델에 무가치한 노이즈라 응답에 머지하지 않는다.
+    void recordObservability({
+      name,
+      args,
+      result,
+      dsVersion: mcpbManifest?.version,
+    }).catch(() => {
+      /* sink 장애는 본기능에 무해 — stderr 로그는 sink 내부 best-effort */
+    });
+    const next = result;
 
     try {
       if (

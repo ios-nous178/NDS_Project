@@ -9,15 +9,18 @@
  * 전 과정 best-effort — 본기능 무해(throw 안 함) · fire-and-forget · 짧은 timeout.
  *
  * 게이트:
- *   - NUDGE_TELEMETRY_URL 미설정       → 완전 비활성 (기본 OFF · opt-in).
+ *   - 기본 전송지 = http://127.0.0.1:8091/api/ingest (로컬 nudge-telemetry-api). NUDGE_TELEMETRY_URL 로 덮어쓴다.
  *   - NUDGE_CONTEXT_COLLECTION=0       → 전체 수집 킬 스위치 (context-capture 와 공유).
  *   - NUDGE_TELEMETRY_TOKEN (선택)     → 설정 시 Authorization: Bearer 헤더로 붙는다.
  */
+import { randomUUID } from "node:crypto";
 import { getClientIdentity } from "./client-identity.js";
 import { SESSION_ID } from "./context-capture.js";
 import type { ToolArgs, ToolAfterCallContext } from "./registry.js";
 
 const POST_TIMEOUT_MS = 1500;
+/** 기본 수집 서버 = nudge-telemetry-api(로컬 :8091). env(NUDGE_TELEMETRY_URL)로 덮어쓴다. */
+const DEFAULT_TELEMETRY_URL = "http://127.0.0.1:8091/api/ingest";
 /** 프롬프트 원문 egress 상한 — 비정상 대용량 컷(로컬 캡 12k 와 정렬). */
 const MAX_PROMPT_CHARS = 12_000;
 
@@ -44,25 +47,97 @@ interface ComponentLookupEvent {
   suggestions?: string[];
   /** 이 조회를 유발한 유저 원 요청 (find_* 의 userRequest 인자). 환각 → "왜" 연결용. */
   userRequest?: string;
+  /** 브랜드 컨텍스트(있으면) — 환각/공백을 브랜드별로 그룹핑. */
+  brand?: string;
 }
 
-type TelemetryEvent = PromptEvent | ComponentLookupEvent;
+/** validate_html_mockup → 검증 룰 위반 집계. "어떤 룰이 자주 깨지나" = 객관적 DS 공백. */
+interface ValidationEvent {
+  kind: "validation";
+  rules: Array<{ rule: string; severity: string; count: number }>;
+  errorCount: number;
+  warnCount: number;
+  /** validate 의 코드 점수 overall(0~100, D1). */
+  scoreOverall?: number;
+  brand?: string;
+  mockupFile?: string;
+}
+
+/** score_mockup_quality → LLM 품질 점수(D2). */
+interface QualityEvent {
+  kind: "quality";
+  ok: boolean;
+  overall?: number;
+  brand?: string;
+}
+
+/** get_guide → 가이드 수요/미스. resolved=false = 그 topic 가이드가 없음. */
+interface GuideDemandEvent {
+  kind: "guide-demand";
+  topic: string;
+  resolved: boolean;
+}
+
+/**
+ * 유저 디자인 피드백/교정 — `log_feedback` 툴 호출로 명시 수집한다.
+ * (자유 채팅은 afterCall 로 안 잡혀, 어시스턴트가 이 툴을 불러 구조화해 보낸다.)
+ */
+interface FeedbackEvent {
+  kind: "feedback";
+  /** idempotency 키(호출마다 randomUUID). */
+  uuid: string;
+  /** MCP SESSION_ID(어느 대화인지). */
+  sessionId: string;
+  /** 유저 피드백 원문/요지. */
+  text: string;
+  /** 분류 — 자동 루프 라우팅용(component/token/guide/pattern/bug/other). */
+  category?: string;
+  /** 관련 대상(컴포넌트/토큰/화면명 등). */
+  target?: string;
+  /** 관련 브랜드 슬러그. */
+  brand?: string;
+  /** ISO timestamp(있으면). */
+  ts?: string;
+  /** 수집 출처 — "tool"(log_feedback) | "transcript"(afterCall 자동 캡처). */
+  source?: "tool" | "transcript";
+}
+
+type TelemetryEvent =
+  | PromptEvent
+  | ComponentLookupEvent
+  | FeedbackEvent
+  | ValidationEvent
+  | QualityEvent
+  | GuideDemandEvent;
 
 /**
  * afterCall 중앙 훅에서 호출되는 단일 진입점. 본기능 무해 — 어떤 예외도 밖으로 던지지 않는다.
  */
 export function captureTelemetry(ctx: ToolAfterCallContext): void {
   try {
-    const url = process.env.NUDGE_TELEMETRY_URL;
-    if (!url) return; // opt-in: URL 없으면 완전 비활성
-    if (process.env.NUDGE_CONTEXT_COLLECTION === "0") return;
-    const events = project(ctx.name, ctx.args, ctx.result);
+    sendTelemetryEvents(project(ctx.name, ctx.args, ctx.result));
+  } catch {
+    /* never throw */
+  }
+}
+
+/**
+ * 게이트 공유 진입점 — feedback-capture.ts(afterCall transcript 캡처)도 이걸로 egress.
+ * best-effort, 절대 throw 안 함.
+ */
+export function sendTelemetryEvents(events: TelemetryEvent[]): void {
+  try {
     if (events.length === 0) return;
+    if (process.env.NUDGE_CONTEXT_COLLECTION === "0") return; // 마스터 킬 스위치
+    const url = process.env.NUDGE_TELEMETRY_URL ?? DEFAULT_TELEMETRY_URL; // 기본 로컬 :8091
     void postIngest(url, events);
   } catch {
     /* never throw */
   }
 }
+
+/** feedback-capture.ts 가 FeedbackEvent 를 만들 때 쓰는 타입. */
+export type { FeedbackEvent };
 
 /* ───────────────────────── projectors ───────────────────────── */
 
@@ -76,9 +151,87 @@ function project(name: string, args: ToolArgs, result: unknown): TelemetryEvent[
       return projectTokenLookup(name, args, result);
     case "recommend_page_pattern":
       return projectPrompt(args, result);
+    case "log_feedback":
+      return projectFeedback(args);
+    case "validate_html_mockup":
+      return projectValidation(args, result);
+    case "score_mockup_quality":
+      return projectQuality(args, result);
+    case "get_guide":
+      return projectGuideDemand(args, result);
     default:
       return [];
   }
+}
+
+/** validate_html_mockup → validation 이벤트(룰별 위반 집계 + 코드 점수). */
+function projectValidation(args: ToolArgs, result: unknown): ValidationEvent[] {
+  const obj = asObject(result);
+  if (!obj) return [];
+  const byRule = Array.isArray(obj.violationsByRule) ? obj.violationsByRule : [];
+  const rules = byRule
+    .map((r) => asObject(r))
+    .filter((r): r is Record<string, unknown> => !!r)
+    .map((r) => ({
+      rule: strField(r.rule) ?? "unknown",
+      severity: strField(r.severity) ?? "warn",
+      count: typeof r.count === "number" ? r.count : 0,
+    }));
+  if (rules.length === 0) return []; // 위반 0건이면 보낼 신호 없음
+  const sev = asObject(obj.severitySummary);
+  const scores = asObject(obj.scores);
+  return [
+    {
+      kind: "validation",
+      rules,
+      errorCount: typeof sev?.error === "number" ? sev.error : 0,
+      warnCount: typeof sev?.warn === "number" ? sev.warn : 0,
+      ...(typeof scores?.overall === "number" ? { scoreOverall: scores.overall } : {}),
+      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+      ...(strField(args.filePath) ? { mockupFile: strField(args.filePath) } : {}),
+    },
+  ];
+}
+
+/** score_mockup_quality → quality 이벤트(LLM 점수 D2). */
+function projectQuality(args: ToolArgs, result: unknown): QualityEvent[] {
+  const obj = asObject(result);
+  if (!obj) return [];
+  return [
+    {
+      kind: "quality",
+      ok: obj.ok === true,
+      ...(typeof obj.overall === "number" ? { overall: obj.overall } : {}),
+      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+    },
+  ];
+}
+
+/** get_guide → guide-demand 이벤트. miss(=result.error 존재) 면 resolved:false. */
+function projectGuideDemand(args: ToolArgs, result: unknown): GuideDemandEvent[] {
+  const topic = strField(args.topic);
+  if (!topic) return []; // 단일 topic 조회만 적재(no-arg/topics[] 는 스킵)
+  const obj = asObject(result);
+  const resolved = !(obj && typeof obj.error === "string");
+  return [{ kind: "guide-demand", topic, resolved }];
+}
+
+/** log_feedback → feedback 이벤트. 호출마다 uuid 생성(idempotency), 세션=MCP SESSION_ID. */
+function projectFeedback(args: ToolArgs): FeedbackEvent[] {
+  const text = strField(args.text);
+  if (!text) return [];
+  return [
+    {
+      kind: "feedback",
+      uuid: randomUUID(),
+      sessionId: SESSION_ID,
+      text: text.slice(0, MAX_PROMPT_CHARS),
+      source: "tool",
+      ...(strField(args.category) ? { category: strField(args.category) } : {}),
+      ...(strField(args.target) ? { target: strField(args.target) } : {}),
+      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+    },
+  ];
 }
 
 /**
@@ -101,7 +254,8 @@ function projectLookup(
   const query = strField(args.query);
   const obj = asObject(result);
   const userRequest = strField(args.userRequest);
-  const withReq = userRequest ? { userRequest } : {};
+  const brand = strField(args.brand);
+  const meta = { ...(userRequest ? { userRequest } : {}), ...(brand ? { brand } : {}) };
 
   if (exact) {
     const miss = hasErrorWithSuggestions(obj);
@@ -113,7 +267,7 @@ function projectLookup(
         term: exact,
         lookup: "exact",
         resolved: !miss,
-        ...withReq,
+        ...meta,
         ...(miss
           ? { suggestions: extractSuggestions(obj) }
           : { matchedName: strField(obj?.name) ?? exact }),
@@ -131,7 +285,7 @@ function projectLookup(
           term: query,
           lookup: "fuzzy",
           resolved: false,
-          ...withReq,
+          ...meta,
           suggestions: extractSuggestions(obj),
         },
       ];
@@ -146,7 +300,7 @@ function projectLookup(
         term: query,
         lookup: "fuzzy",
         resolved,
-        ...withReq,
+        ...meta,
         ...(resolved ? { matchedName: strField(asObject(results[0])?.name) } : {}),
       },
     ];
