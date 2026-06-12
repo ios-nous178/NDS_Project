@@ -90,4 +90,36 @@ export const trostTheme: BrandTheme = {
       toast: 400,
     },
   },
+  // Component overrides — 트로스트 운영 코드 실측값.
+  // (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용)
+  components: {
+    input: { borderColor: trostNeutral[200] },
+    // 카드 테두리 #E0E0E0 — neutral 스케일 밖 실측값 (200 #E5E5E5 / 300 #D8D8D8 사이)
+    card: { radius: 12, borderColor: "#E0E0E0" },
+    modal: { radius: 12 },
+    // 노란 브랜드 위 셀렉트 칩은 다크 채움 (fill.brand 노랑 fallback 과 의도적으로 다름)
+    chip: {
+      selectedBackground: trostNeutral[800],
+      selectedText: trostNeutral["00"],
+      selectedBorder: trostNeutral[800],
+    },
+    // Toggle 40×24 — unchecked #EEE(스케일 밖 실측), checked 다크, material-like 썸 그림자
+    toggle: {
+      trackW: 40,
+      trackH: 24,
+      trackBg: "#EEEEEE",
+      trackActiveBg: trostNeutral[800],
+      thumbShadow:
+        "0 1px 1px 0 rgba(0,0,0,0.24), 0 0 1px 0 rgba(0,0,0,0.12), 0 2.4px 0.8px rgba(0,0,0,0.06), 0 2.4px 6.4px rgba(0,0,0,0.15)",
+    },
+    toast: { shadow: "0px 4px 16px rgba(0,0,0,0.15)" },
+    "bottom-sheet": {
+      radius: 16,
+      handleWidth: 50,
+      handleHeight: 4,
+      handleColor: trostNeutral[200],
+    },
+    // 다크 푸터 텍스트 톤 — neutral 스케일 밖 실측값 (#CCC/#888)
+    footer: { companyColor: "#CCCCCC", mutedColor: "#888888", extraColor: "#CCCCCC" },
+  },
 };

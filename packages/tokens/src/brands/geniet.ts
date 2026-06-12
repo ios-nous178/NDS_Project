@@ -109,9 +109,11 @@ export const genietTheme: BrandTheme = {
       toast: 400,
     },
   },
-  // Component overrides — Figma 지니어트 BottomNav 가이드 (90:2).
-  //   active = mint600 #00A8AC + bold, inactive = gray500 #999.
-  //   label = Pretendard 10/12 (base 11/14 보다 컴팩트).
+  // Component overrides
+  //   footer nav — Figma 지니어트 BottomNav 가이드 (90:2): active = mint600 #00A8AC + bold,
+  //   inactive = gray500 #999, label = Pretendard 10/12 (base 11/14 보다 컴팩트).
+  //   나머지는 GenietHomepage 운영 코드/DESIGN.md 실측값
+  //   (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용).
   components: {
     footer: {
       navActiveColor: "var(--semantic-text-brand-default)", // #00A8AC
@@ -119,6 +121,35 @@ export const genietTheme: BrandTheme = {
       navLabelFontSize: 10,
       navLabelLineHeight: 12,
       navActiveLabelWeight: "700",
+      companyColor: genietGray[600],
+      mutedColor: genietGray[700],
+      extraColor: genietGray[600],
+    },
+    input: { borderColor: genietGray[300] },
+    // DESIGN.md card-default — 8px radius, 1px #ECECEC border
+    card: { radius: 8, borderColor: genietGray[200] },
+    // DESIGN.md — 8px radius, Material 3-layer shadow 는 elevation.shadow[3]
+    modal: { radius: 8 },
+    // DESIGN.md chip-active — selected = primary mint + 흰색
+    chip: {
+      selectedBackground: genietMint[500],
+      selectedText: genietNeutral.white,
+      selectedBorder: genietMint[500],
+    },
+    // Geniet 패턴 — track gray/200, active mint
+    toggle: {
+      trackW: 40,
+      trackH: 24,
+      trackBg: genietGray[200],
+      trackActiveBg: genietMint[500],
+    },
+    toast: { shadow: "0 2px 6px rgba(0, 0, 0, 0.15)" },
+    // DESIGN.md — 18px 상단 radius (rounded-t-[18px])
+    "bottom-sheet": {
+      radius: 18,
+      handleWidth: 50,
+      handleHeight: 4,
+      handleColor: genietGray[300],
     },
   },
 };

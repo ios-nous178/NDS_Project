@@ -199,6 +199,9 @@ function generateBaseTokens() {
   for (const [key, value] of Object.entries(fontFamily)) {
     lines.push(`  --font-family-${fontFamilyKeyToFigma(key)}: ${value};`);
   }
+  // `--font-web` — 브랜드 셸 컴포넌트(runmile AppBar/Footer/WebHeader 등)가 읽는 alias.
+  // var() 참조라 브랜드 css 가 --font-family-default 를 override 하면 함께 따라온다.
+  lines.push("  --font-web: var(--font-family-default);");
 
   // Font Weight
   lines.push("");

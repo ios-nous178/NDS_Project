@@ -1700,6 +1700,7 @@ function createInstructionMd(args: {
   if (routing.kind === "blocked-admin") {
     return {
       ok: false,
+      filePath: undefined,
       blocked: true,
       error: routing.error,
       options: routing.options,
@@ -1709,6 +1710,8 @@ function createInstructionMd(args: {
   if (routing.kind === "ambiguous-operator") {
     return {
       ok: false,
+      filePath: undefined,
+      error: undefined,
       needsClarification: routing.question,
       options: routing.options,
     };
@@ -1716,7 +1719,7 @@ function createInstructionMd(args: {
 
   const cwd = path.resolve(args.cwd ?? process.cwd());
   if (!fs.existsSync(cwd)) {
-    return { ok: false, error: `cwd not found: ${cwd}` };
+    return { ok: false, filePath: undefined, error: `cwd not found: ${cwd}` };
   }
 
   const filePath = path.join(cwd, args.fileName);

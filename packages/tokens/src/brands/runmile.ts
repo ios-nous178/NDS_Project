@@ -94,8 +94,10 @@ export const runmileTheme: BrandTheme = {
       toast: 400,
     },
   },
-  // BottomNav (Figma 83:887) — active=black + filled icon, inactive=gray600 + stroke.
-  // label = Pretendard Medium 12/16 (Figma 실측).
+  // Component overrides
+  //   footer nav — BottomNav (Figma 83:887): active=black + filled icon, inactive=gray600 + stroke,
+  //   label = Pretendard Medium 12/16 (Figma 실측). 나머지는 Figma 런마일 library 실측값
+  //   (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용).
   components: {
     footer: {
       navActiveColor: "var(--semantic-icon-strong-default)", // black #221E1F
@@ -104,6 +106,23 @@ export const runmileTheme: BrandTheme = {
       navLabelLineHeight: 16,
       navLabelWeight: "500",
       navActiveLabelWeight: "500",
+    },
+    // gray400 border (Figma 144:609)
+    input: { borderColor: runmileGray[400] },
+    // Toss 스타일 radius
+    card: { radius: 12 },
+    "bottom-sheet": { radius: 16, handleColor: runmileGray[300] },
+    // Chip selected — orange500 채움 (Figma 172:566)
+    chip: {
+      selectedBackground: runmileOrange[500],
+      selectedText: runmileNeutral.white,
+      selectedBorder: runmileOrange[500],
+    },
+    // Pagination active = gray800 fill, brand orange 아님 (Figma 120:1234)
+    pagination: {
+      activeBg: runmileGray[800],
+      activeBgHover: runmileGray[900],
+      activeText: runmileNeutral.white,
     },
   },
 };

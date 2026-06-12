@@ -227,7 +227,13 @@ export interface ElevationOverrides {
  */
 type ComponentValue = number | string;
 export interface ComponentOverrides {
-  input?: { radius?: ComponentValue; height?: ComponentValue; paddingX?: ComponentValue };
+  input?: {
+    radius?: ComponentValue;
+    height?: ComponentValue;
+    paddingX?: ComponentValue;
+    /** Input 패밀리 기본 테두리 색 — `--nds-input-border-color`. 미설정 시 input.borderDefault fallback. */
+    borderColor?: ComponentValue;
+  };
   /**
    * Select(Dropdown). 캐포비 InputGuide(3080:741)는 trigger/option Body2 14/20,
    * 선택 항목 = 회색 배경(#F5F5F5) + Strong 텍스트 + Medium 500 + radius 6 + 메뉴 inset.
@@ -285,6 +291,35 @@ export interface ComponentOverrides {
     navLabelLineHeight?: ComponentValue;
     navLabelWeight?: ComponentValue;
     navActiveLabelWeight?: ComponentValue;
+    /** 다크 푸터 텍스트 톤 — 회사명/뮤트/부가 링크. 미설정 시 textRole.subtle/muted fallback. */
+    companyColor?: ComponentValue;
+    mutedColor?: ComponentValue;
+    extraColor?: ComponentValue;
+  };
+  /** Card 셸 — radius / 테두리. 미설정 시 radius.lg / borderRole.normal fallback. */
+  card?: { radius?: ComponentValue; borderColor?: ComponentValue };
+  /** Modal 컨테이너 radius. 미설정 시 radius.md fallback. */
+  modal?: { radius?: ComponentValue };
+  /** BottomSheet — 상단 radius / drag handle 치수·색. */
+  "bottom-sheet"?: {
+    radius?: ComponentValue;
+    handleWidth?: ComponentValue;
+    handleHeight?: ComponentValue;
+    handleColor?: ComponentValue;
+  };
+  /** Toggle 트랙 치수·색 + 썸 그림자. 미설정 시 44×24 / borderRole.normal / fill.brand fallback. */
+  toggle?: {
+    trackW?: ComponentValue;
+    trackH?: ComponentValue;
+    trackBg?: ComponentValue;
+    trackActiveBg?: ComponentValue;
+    thumbShadow?: ComponentValue;
+  };
+  /** Pagination active 페이지 시각 — 런마일은 brand orange 가 아닌 gray800 fill (Figma 120:1234). */
+  pagination?: {
+    activeBg?: ComponentValue;
+    activeBgHover?: ComponentValue;
+    activeText?: ComponentValue;
   };
   /**
    * Checkbox 시각 변형. 캐포비 가이드(3082:899)는 box 15×15 / 1.25px border / radius 2px /

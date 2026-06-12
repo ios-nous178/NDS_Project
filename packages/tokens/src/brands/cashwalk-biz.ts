@@ -276,5 +276,7 @@ export const cashwalkBizTheme: BrandTheme = {
     },
     // Tooltip bg(#333333) 는 base theme 이 --nds-tooltip-bg 로 전 브랜드 동일 emit — 브랜드 override 불필요.
     // 캐포비 리치 툴팁의 compact 타이포는 styles/Tooltip.ts 의 [data-brand] 블록이 담당.
+    // BottomSheet — 가이드 명시 top radius 20px (storybook brand-themes.ts 에서 SSOT 회수).
+    "bottom-sheet": { radius: 20 },
   },
 };
