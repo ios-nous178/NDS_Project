@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T05:49:05.435Z",
+  "generatedAt": "2026-06-12T06:02:29.595Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -11509,6 +11509,36 @@
       ]
     },
     {
+      "name": "--nds-chart-1",
+      "value": "#007AFF",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-2",
+      "value": "#FF8437",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-3",
+      "value": "#FFD200",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-4",
+      "value": "#34C759",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-empty",
+      "value": "#BBBBBB",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-chart-line",
+      "value": "#FFD200",
+      "group": "nds"
+    },
+    {
       "name": "--nds-checkbox-border-color",
       "value": "var(--semantic-border-strong-default)",
       "group": "nds",
@@ -11727,6 +11757,11 @@
       "brands": [
         "cashwalk-biz"
       ]
+    },
+    {
+      "name": "--nds-rating-star",
+      "value": "#FFD54F",
+      "group": "nds"
     },
     {
       "name": "--nds-select-dropdown-gap",
