@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const PH_CLASS = "nds-page-header";
 const PH_TOP_CLASS = `${PH_CLASS}__top`;
@@ -51,7 +52,7 @@ export class NdsPageHeader extends NdsElement {
   static elementName = "nds-page-header";
 
   static get observedAttributes(): readonly string[] {
-    return ["page-title", "subtitle", "show-back", "bordered"];
+    return [...COMPONENT_ATTRS["nds-page-header"].observedAttributes, "page-title", "subtitle", "show-back"];
   }
 
   private _root: HTMLElement | null = null;

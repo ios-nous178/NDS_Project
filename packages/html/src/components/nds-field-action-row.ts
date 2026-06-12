@@ -22,6 +22,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const FAR_CLASS = "nds-field-action-row";
 const FAR_ROOT_CLASS = `${FAR_CLASS}__root`;
@@ -35,7 +36,7 @@ export class NdsFieldActionRow extends NdsElement {
   static elementName = "nds-field-action-row";
 
   static get observedAttributes(): readonly string[] {
-    return ["label", "action-tone", "error", "success", "timer-expired", "helper-text"];
+    return [...COMPONENT_ATTRS["nds-field-action-row"].observedAttributes, "label"];
   }
 
   private _root: HTMLDivElement | null = null;

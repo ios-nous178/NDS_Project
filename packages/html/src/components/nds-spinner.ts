@@ -11,6 +11,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SP_CLASS = "nds-spinner";
 
@@ -29,7 +30,7 @@ export class NdsSpinner extends NdsElement {
   static elementName = "nds-spinner";
 
   static get observedAttributes(): readonly string[] {
-    return ["size", "color", "label", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-spinner"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _inner: HTMLSpanElement | null = null;

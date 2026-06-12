@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 import type { AvatarSize } from "./nds-avatar.js";
 
@@ -60,7 +61,7 @@ export class NdsAvatarGroup extends NdsElement {
   static elementName = "nds-avatar-group";
 
   static get observedAttributes(): readonly string[] {
-    return ["items", "max", "size", "overlap", "aria-label", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-avatar-group"].observedAttributes, "aria-label", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

@@ -28,6 +28,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const MS_CLASS = "nds-multi-step-form";
 const MS_HEADER_CLASS = `${MS_CLASS}__header`;
@@ -53,15 +54,7 @@ export class NdsMultiStepForm extends NdsElement {
   static elementName = "nds-multi-step-form";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "steps",
-      "current",
-      "indicator",
-      "next-label",
-      "prev-label",
-      "submit-label",
-      "submitting",
-    ];
+    return [...COMPONENT_ATTRS["nds-multi-step-form"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;

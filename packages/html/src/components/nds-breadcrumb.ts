@@ -19,6 +19,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const BC_CLASS = "nds-breadcrumb";
 const BC_ITEM_CLASS = `${BC_CLASS}__item`;
@@ -46,7 +47,7 @@ export class NdsBreadcrumb extends NdsElement {
   static elementName = "nds-breadcrumb";
 
   static get observedAttributes(): readonly string[] {
-    return ["items", "separator"];
+    return [...COMPONENT_ATTRS["nds-breadcrumb"].observedAttributes, "separator"];
   }
 
   private _nav: HTMLElement | null = null;

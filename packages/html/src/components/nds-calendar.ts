@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CL_CLASS = "nds-calendar";
 const CL_HEADER_CLASS = `${CL_CLASS}__header`;
@@ -97,7 +98,7 @@ export class NdsCalendar extends NdsElement {
   static elementName = "nds-calendar";
 
   static get observedAttributes(): readonly string[] {
-    return ["month", "value", "week-starts-on", "markers", "disabled-dates", "hide-header"];
+    return [...COMPONENT_ATTRS["nds-calendar"].observedAttributes, "disabled-dates"];
   }
 
   private _root: HTMLDivElement | null = null;

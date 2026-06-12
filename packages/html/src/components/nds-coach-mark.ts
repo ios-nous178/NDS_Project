@@ -21,6 +21,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CM_CLASS = "nds-coach-mark";
 const CM_OVERLAY_CLASS = `${CM_CLASS}__overlay`;
@@ -90,7 +91,7 @@ export class NdsCoachMark extends NdsElement {
   static elementName = "nds-coach-mark";
 
   static get observedAttributes(): readonly string[] {
-    return ["open", "step", "steps", "finish-label", "next-label", "skip-label", "hide-skip"];
+    return [...COMPONENT_ATTRS["nds-coach-mark"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;

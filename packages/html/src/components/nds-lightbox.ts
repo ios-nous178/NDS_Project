@@ -22,6 +22,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const LB_CLASS = "nds-lightbox";
 const LB_BACKDROP_CLASS = `${LB_CLASS}__backdrop`;
@@ -74,7 +75,7 @@ export class NdsLightbox extends NdsElement {
   static elementName = "nds-lightbox";
 
   static get observedAttributes(): readonly string[] {
-    return ["open", "index", "images"];
+    return [...COMPONENT_ATTRS["nds-lightbox"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;

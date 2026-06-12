@@ -21,6 +21,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CI_CLASS = "nds-comment-item";
 const CI_AVATAR_CLASS = `${CI_CLASS}__avatar`;
@@ -37,7 +38,7 @@ export class NdsCommentItem extends NdsElement {
   static elementName = "nds-comment-item";
 
   static get observedAttributes(): readonly string[] {
-    return ["author", "time", "text", "reply-label", "show-reply", "is-reply"];
+    return [...COMPONENT_ATTRS["nds-comment-item"].observedAttributes, "author", "time", "text", "show-reply"];
   }
 
   private _root: HTMLDivElement | null = null;

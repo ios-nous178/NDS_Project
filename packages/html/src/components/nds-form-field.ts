@@ -10,6 +10,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const FF_CLASS = "nds-form-field";
 const FF_ROOT_CLASS = `${FF_CLASS}__root`;
@@ -30,19 +31,7 @@ export class NdsFormField extends NdsElement {
   static elementName = "nds-form-field";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "label",
-      "description",
-      "helper",
-      "error",
-      "required",
-      "optional",
-      "counter",
-      "html-for",
-      "label-position",
-      "label-width",
-      "density",
-    ];
+    return [...COMPONENT_ATTRS["nds-form-field"].observedAttributes, "label", "description", "helper", "error", "counter"];
   }
 
   private _root: HTMLDivElement | null = null;

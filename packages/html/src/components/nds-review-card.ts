@@ -19,6 +19,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const RC_CLASS = "nds-review-card";
 const RC_HEADER_CLASS = `${RC_CLASS}__header`;
@@ -87,7 +88,7 @@ export class NdsReviewCard extends NdsElement {
   static elementName = "nds-review-card";
 
   static get observedAttributes(): readonly string[] {
-    return ["author", "meta", "rating", "rating-label", "card-title", "body", "tags", "verified"];
+    return [...COMPONENT_ATTRS["nds-review-card"].observedAttributes, "author", "meta", "rating-label", "card-title", "body"];
   }
 
   private _root: HTMLDivElement | null = null;

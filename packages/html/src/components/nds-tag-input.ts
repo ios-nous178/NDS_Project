@@ -17,6 +17,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import { REMOVE_ICON_SVG } from "../base/remove-icon.js";
 
 const TI_CLASS = "nds-tag-input";
@@ -58,21 +59,7 @@ export class NdsTagInput extends NdsElement {
   static elementName = "nds-tag-input";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "value",
-      "variant",
-      "label",
-      "placeholder",
-      "helper-text",
-      "error",
-      "max-tags",
-      "allow-duplicates",
-      "prefix",
-      "pattern",
-      "add-button-label",
-      "full-width",
-      "disabled",
-    ];
+    return [...COMPONENT_ATTRS["nds-tag-input"].observedAttributes, "label", "helper-text"];
   }
 
   private _root: HTMLDivElement | null = null;

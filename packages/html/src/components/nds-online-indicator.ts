@@ -10,6 +10,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const OI_CLASS = "nds-online-indicator";
 const OI_DOT_CLASS = `${OI_CLASS}__dot`;
@@ -39,7 +40,7 @@ export class NdsOnlineIndicator extends NdsElement {
   static elementName = "nds-online-indicator";
 
   static get observedAttributes(): readonly string[] {
-    return ["status", "show-label", "label", "size", "aria-label", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-online-indicator"].observedAttributes, "aria-label", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLSpanElement | null = null;

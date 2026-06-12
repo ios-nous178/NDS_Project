@@ -25,6 +25,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const VP_CLASS = "nds-vote-poll";
 const VP_QUESTION_CLASS = `${VP_CLASS}__question`;
@@ -45,7 +46,7 @@ export class NdsVotePoll extends NdsElement {
   static elementName = "nds-vote-poll";
 
   static get observedAttributes(): readonly string[] {
-    return ["question", "options", "voted-key", "show-results", "disabled"];
+    return [...COMPONENT_ATTRS["nds-vote-poll"].observedAttributes, "question"];
   }
 
   private _root: HTMLDivElement | null = null;

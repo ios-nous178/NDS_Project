@@ -18,6 +18,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const AP_CLASS = "nds-audio-player";
 const AP_HEAD_CLASS = `${AP_CLASS}__head`;
@@ -110,7 +111,7 @@ export class NdsAudioPlayer extends NdsElement {
   static elementName = "nds-audio-player";
 
   static get observedAttributes(): readonly string[] {
-    return ["title", "subtitle", "playing", "current-time", "duration"];
+    return [...COMPONENT_ATTRS["nds-audio-player"].observedAttributes, "title", "subtitle"];
   }
 
   private _root: HTMLDivElement | null = null;

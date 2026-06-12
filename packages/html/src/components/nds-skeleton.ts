@@ -8,6 +8,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SK_CLASS = "nds-skeleton";
 
@@ -20,7 +21,7 @@ export class NdsSkeleton extends NdsElement {
   static elementName = "nds-skeleton";
 
   static get observedAttributes(): readonly string[] {
-    return ["variant", "width", "height", "radius", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-skeleton"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _inner: HTMLDivElement | null = null;

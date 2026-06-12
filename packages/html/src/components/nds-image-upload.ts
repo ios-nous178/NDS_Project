@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 type ImageUploadState = "empty" | "uploaded" | "error";
 
@@ -68,18 +69,7 @@ export class NdsImageUpload extends NdsElement {
   static elementName = "nds-image-upload";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "state",
-      "image-url",
-      "image-alt",
-      "accept",
-      "multiple",
-      "auto-preview",
-      "upload-label",
-      "size-hint",
-      "helper-text",
-      "error-text",
-    ];
+    return [...COMPONENT_ATTRS["nds-image-upload"].observedAttributes, "upload-label", "size-hint", "helper-text", "error-text"];
   }
 
   private _root: HTMLDivElement | null = null;

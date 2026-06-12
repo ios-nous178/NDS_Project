@@ -20,6 +20,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CN_CLASS = "nds-counselor-card";
 const CN_AVATAR_CLASS = `${CN_CLASS}__avatar`;
@@ -60,17 +61,7 @@ export class NdsCounselorCard extends NdsElement {
   static elementName = "nds-counselor-card";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "name",
-      "job-title",
-      "image-src",
-      "rating",
-      "review-count",
-      "tags",
-      "bio",
-      "cta-label",
-      "clickable",
-    ];
+    return [...COMPONENT_ATTRS["nds-counselor-card"].observedAttributes, "job-title", "bio", "clickable"];
   }
 
   private _root: HTMLDivElement | null = null;

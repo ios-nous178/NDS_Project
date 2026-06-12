@@ -10,6 +10,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const AI_CLASS = "nds-amount-input";
 const AI_LABEL_CLASS = `${AI_CLASS}__label`;
@@ -63,21 +64,7 @@ export class NdsAmountInput extends NdsElement {
   static elementName = "nds-amount-input";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "value",
-      "prefix",
-      "unit",
-      "label",
-      "helper-text",
-      "error",
-      "full-width",
-      "presets",
-      "max",
-      "min",
-      "placeholder",
-      "disabled",
-      ...FORWARDED_ATTRS,
-    ];
+    return [...COMPONENT_ATTRS["nds-amount-input"].observedAttributes, "label", "helper-text", "placeholder", "disabled", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

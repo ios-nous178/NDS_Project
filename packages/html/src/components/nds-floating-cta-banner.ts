@@ -19,6 +19,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const FCB_ROOT_CLASS = "nds-floating-cta-banner";
 const FCB_ICON_CLASS = `${FCB_ROOT_CLASS}__icon`;
@@ -45,7 +46,7 @@ export class NdsFloatingCtaBanner extends NdsElement {
   static elementName = "nds-floating-cta-banner";
 
   static get observedAttributes(): readonly string[] {
-    return ["caption", "cta-text", "size", "floating", "show-arrow", "bottom-offset", "aria-label"];
+    return [...COMPONENT_ATTRS["nds-floating-cta-banner"].observedAttributes, "caption", "cta-text"];
   }
 
   private _btn: HTMLButtonElement | null = null;

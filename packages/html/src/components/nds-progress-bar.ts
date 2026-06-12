@@ -11,6 +11,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const PB_CLASS = "nds-progress-bar";
 const PB_TRACK_CLASS = `${PB_CLASS}__track`;
@@ -31,7 +32,7 @@ export class NdsProgressBar extends NdsElement {
   static elementName = "nds-progress-bar";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "max", "size", "color", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-progress-bar"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

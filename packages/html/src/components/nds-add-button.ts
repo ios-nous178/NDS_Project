@@ -11,6 +11,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const AB_CLASS = "nds-add-button";
 const AB_ICON_CLASS = `${AB_CLASS}__icon`;
@@ -27,7 +28,7 @@ export class NdsAddButton extends NdsElement {
   static elementName = "nds-add-button";
 
   static get observedAttributes(): readonly string[] {
-    return ["label", "error", "full-width", "disabled", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-add-button"].observedAttributes, "label", "disabled", ...FORWARDED_ATTRS];
   }
 
   private _button: HTMLButtonElement | null = null;

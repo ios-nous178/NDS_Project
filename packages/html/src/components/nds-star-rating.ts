@@ -9,6 +9,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SR_CLASS = "nds-star-rating";
 const SR_STAR_CLASS = `${SR_CLASS}__star`;
@@ -39,7 +40,7 @@ export class NdsStarRating extends NdsElement {
   static elementName = "nds-star-rating";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "size", "max", "show-value", "disabled", "readonly"];
+    return [...COMPONENT_ATTRS["nds-star-rating"].observedAttributes, "readonly"];
   }
 
   private _root: HTMLDivElement | null = null;

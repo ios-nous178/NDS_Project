@@ -22,6 +22,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const VC_CLASS = "nds-verification-code";
 const VC_ROOT_CLASS = `${VC_CLASS}__root`;
@@ -35,7 +36,7 @@ export class NdsVerificationCodeInput extends NdsElement {
   static elementName = "nds-verification-code-input";
 
   static get observedAttributes(): readonly string[] {
-    return ["length", "value", "disabled", "error", "auto-focus", "placeholder", "full-width"];
+    return [...COMPONENT_ATTRS["nds-verification-code-input"].observedAttributes, "auto-focus", "placeholder"];
   }
 
   private _root: HTMLDivElement | null = null;

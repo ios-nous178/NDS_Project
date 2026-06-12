@@ -33,6 +33,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const ST_CLASS = "nds-stats-table";
 const ST_SCROLL_CLASS = `${ST_CLASS}__scroll`;
@@ -42,7 +43,7 @@ export class NdsStatsTable extends NdsElement {
   static elementName = "nds-stats-table";
 
   static get observedAttributes(): readonly string[] {
-    return ["scroll", "sticky-first"];
+    return [...COMPONENT_ATTRS["nds-stats-table"].observedAttributes];
   }
 
   protected update(): void {

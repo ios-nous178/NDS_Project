@@ -22,6 +22,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const PR_CLASS = "nds-pull-to-refresh";
 const PR_INDICATOR_CLASS = `${PR_CLASS}__indicator`;
@@ -33,7 +34,7 @@ export class NdsPullToRefresh extends NdsElement {
   static elementName = "nds-pull-to-refresh";
 
   static get observedAttributes(): readonly string[] {
-    return ["threshold", "pull-label", "release-label", "refreshing-label", "disabled"];
+    return [...COMPONENT_ATTRS["nds-pull-to-refresh"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;

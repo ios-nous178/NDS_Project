@@ -12,6 +12,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const TG_CLASS = "nds-toggle";
 const TG_TRACK_CLASS = `${TG_CLASS}__track`;
@@ -52,17 +53,7 @@ export class NdsToggle extends NdsElement {
   static elementName = "nds-toggle";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "checked",
-      "disabled",
-      "label",
-      "on-label",
-      "off-label",
-      "tone",
-      "size",
-      "input-id",
-      ...FORWARDED_ATTRS,
-    ];
+    return [...COMPONENT_ATTRS["nds-toggle"].observedAttributes, "label", "on-label", "off-label", "input-id", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLLabelElement | null = null;

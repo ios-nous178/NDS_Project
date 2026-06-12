@@ -19,6 +19,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const ACC_CLASS = "nds-accordion";
 const ACC_ITEM_CLASS = `${ACC_CLASS}__item`;
@@ -51,7 +52,7 @@ export class NdsAccordion extends NdsElement {
   static elementName = "nds-accordion";
 
   static get observedAttributes(): readonly string[] {
-    return ["type", "value", "base-id"];
+    return [...COMPONENT_ATTRS["nds-accordion"].observedAttributes, "base-id"];
   }
 
   private _root: HTMLDivElement | null = null;

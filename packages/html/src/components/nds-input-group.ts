@@ -16,6 +16,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const IG_ROOT_CLASS = "nds-input-group";
 const GAP_PX = { tight: 8, default: 12, loose: 16 } as const;
@@ -29,7 +30,7 @@ export class NdsInputGroup extends NdsElement {
   static elementName = "nds-input-group";
 
   static get observedAttributes(): readonly string[] {
-    return ["gap", "align"];
+    return [...COMPONENT_ATTRS["nds-input-group"].observedAttributes];
   }
 
   protected update(): void {

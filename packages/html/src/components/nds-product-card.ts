@@ -33,6 +33,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const PC_CLASS = "nds-product-card";
 const PC_THUMB_CLASS = `${PC_CLASS}__thumb`;
@@ -85,26 +86,7 @@ export class NdsProductCard extends NdsElement {
   static elementName = "nds-product-card";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "size",
-      "thumbnail",
-      "thumbnail-alt",
-      "badge",
-      "ranking-number",
-      "sold-out",
-      "product-title",
-      "original-price",
-      "discount-percent",
-      "price",
-      "currency",
-      "reward",
-      "free-shipping",
-      "point-discount",
-      "buyers-count",
-      "rating",
-      "review-count",
-      "clickable",
-    ];
+    return [...COMPONENT_ATTRS["nds-product-card"].observedAttributes, "badge", "product-title", "currency", "clickable"];
   }
 
   private _root: HTMLDivElement | null = null;

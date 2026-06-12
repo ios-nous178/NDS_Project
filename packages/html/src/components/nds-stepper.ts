@@ -3,6 +3,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const ST_CLASS = "nds-stepper";
 const ST_ROOT_CLASS = `${ST_CLASS}__root`;
@@ -30,7 +31,7 @@ export class NdsStepper extends NdsElement {
   static elementName = "nds-stepper";
 
   static get observedAttributes(): readonly string[] {
-    return ["steps", "current", "variant", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-stepper"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLOListElement | null = null;

@@ -22,6 +22,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 export type DSHighlightMode = "off" | "area" | "component" | "all";
 
@@ -63,7 +64,7 @@ export class NdsDsHighlight extends NdsElement {
   static elementName = "nds-ds-highlight";
 
   static get observedAttributes(): readonly string[] {
-    return ["mode", "hide-toggle", "default-mode"];
+    return [...COMPONENT_ATTRS["nds-ds-highlight"].observedAttributes, "mode", "hide-toggle"];
   }
 
   private _overlay: HTMLDivElement | null = null;

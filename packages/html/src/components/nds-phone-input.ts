@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const PI_CLASS = "nds-phone-input";
 const PI_ROOT_CLASS = `${PI_CLASS}__root`;
@@ -84,18 +85,7 @@ export class NdsPhoneInput extends NdsElement {
   static elementName = "nds-phone-input";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "country-code",
-      "value",
-      "label",
-      "placeholder",
-      "helper-text",
-      "error",
-      "countries",
-      "full-width",
-      "disabled",
-      "auto-format",
-    ];
+    return [...COMPONENT_ATTRS["nds-phone-input"].observedAttributes, "label", "placeholder", "helper-text", "disabled"];
   }
 
   /** 현재 다이얼 코드 (auto-format 계산용) */

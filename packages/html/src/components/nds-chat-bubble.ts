@@ -14,6 +14,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CB_CLASS = "nds-chat-bubble";
 const CB_ROW_CLASS = `${CB_CLASS}__row`;
@@ -48,7 +49,7 @@ export class NdsChatBubble extends NdsElement {
   static elementName = "nds-chat-bubble";
 
   static get observedAttributes(): readonly string[] {
-    return ["role", "group", "time", "name", "avatar-src", "read", "message", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-chat-bubble"].observedAttributes, "time", "message", ...FORWARDED_ATTRS];
   }
 
   private _row: HTMLDivElement | null = null;

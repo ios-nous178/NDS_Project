@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import { cv, fontWeight, shadow, sizing, spacing, typeScale, zIndex } from "@nudge-design/tokens";
 
 const HEADER_CLASS = "nds-header";
@@ -86,7 +87,7 @@ export class NdsHeader extends NdsElement {
   static elementName = "nds-header";
 
   static get observedAttributes(): readonly string[] {
-    return ["variant", "position", "header-title", "elevated", "max-width"];
+    return [...COMPONENT_ATTRS["nds-header"].observedAttributes, "header-title"];
   }
 
   private _header: HTMLElement | null = null;

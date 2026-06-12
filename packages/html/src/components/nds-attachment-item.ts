@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const AT_CLASS = "nds-attachment-item";
 const AT_ICON_CLASS = `${AT_CLASS}__icon`;
@@ -144,7 +145,7 @@ export class NdsAttachmentItem extends NdsElement {
   static elementName = "nds-attachment-item";
 
   static get observedAttributes(): readonly string[] {
-    return ["name", "size", "file-type", "status", "progress", "href", "error-message"];
+    return [...COMPONENT_ATTRS["nds-attachment-item"].observedAttributes, "error-message"];
   }
 
   private _root: HTMLDivElement | null = null;

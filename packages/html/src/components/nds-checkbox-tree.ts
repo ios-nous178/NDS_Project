@@ -18,6 +18,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CT_CLASS = "nds-checkbox-tree";
 const CT_SEARCH_CLASS = `${CT_CLASS}__search`;
@@ -125,16 +126,7 @@ export class NdsCheckboxTree extends NdsElement {
   static elementName = "nds-checkbox-tree";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "nodes",
-      "value",
-      "searchable",
-      "search-placeholder",
-      "show-select-all",
-      "select-all-label",
-      "empty-message",
-      "default-expanded",
-    ];
+    return [...COMPONENT_ATTRS["nds-checkbox-tree"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;

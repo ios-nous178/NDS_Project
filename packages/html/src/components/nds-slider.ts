@@ -9,6 +9,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const SL_CLASS = "nds-slider";
 const SL_ROOT_CLASS = `${SL_CLASS}__root`;
@@ -25,7 +26,7 @@ export class NdsSlider extends NdsElement {
   static elementName = "nds-slider";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "min", "max", "step", "start-label", "end-label", "show-value", "disabled"];
+    return [...COMPONENT_ATTRS["nds-slider"].observedAttributes, "start-label", "end-label"];
   }
 
   private _root: HTMLDivElement | null = null;

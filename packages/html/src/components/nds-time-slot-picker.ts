@@ -29,6 +29,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const TS_CLASS = "nds-time-slot-picker";
 const TS_ROOT_CLASS = `${TS_CLASS}__root`;
@@ -54,7 +55,7 @@ export class NdsTimeSlotPicker extends NdsElement {
   static elementName = "nds-time-slot-picker";
 
   static get observedAttributes(): readonly string[] {
-    return ["value", "slots", "groups", "columns", "disabled", "empty-text"];
+    return [...COMPONENT_ATTRS["nds-time-slot-picker"].observedAttributes, "empty-text"];
   }
 
   private _root: HTMLDivElement | null = null;

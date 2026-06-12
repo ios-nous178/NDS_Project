@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const OS_CLASS = "nds-order-summary-card";
 const OS_HEADER_CLASS = `${OS_CLASS}__header`;
@@ -43,7 +44,7 @@ export class NdsOrderSummaryCard extends NdsElement {
   static elementName = "nds-order-summary-card";
 
   static get observedAttributes(): readonly string[] {
-    return ["title", "rows", "total-label", "total", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-order-summary-card"].observedAttributes, "title", "total-label", "total", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

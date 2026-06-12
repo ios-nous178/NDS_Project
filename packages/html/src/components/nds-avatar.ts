@@ -9,6 +9,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const AV_CLASS = "nds-avatar";
 const AV_IMAGE_CLASS = `${AV_CLASS}__image`;
@@ -31,7 +32,7 @@ export class NdsAvatar extends NdsElement {
   static elementName = "nds-avatar";
 
   static get observedAttributes(): readonly string[] {
-    return ["src", "alt", "name", "size", "fallback", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-avatar"].observedAttributes, "fallback", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

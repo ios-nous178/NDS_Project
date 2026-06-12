@@ -24,6 +24,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import "./nds-button.js";
 
 const AS_CLASS = "nds-address-picker";
@@ -56,18 +57,7 @@ export class NdsAddressPicker extends NdsElement {
   static elementName = "nds-address-picker";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "query",
-      "results",
-      "value",
-      "label",
-      "search-label",
-      "empty-message",
-      "loading",
-      "helper-text",
-      "error",
-      ...FORWARDED_ATTRS,
-    ];
+    return [...COMPONENT_ATTRS["nds-address-picker"].observedAttributes, "label", "empty-message", "helper-text", ...FORWARDED_ATTRS];
   }
 
   /* 영속 노드 — _mount 에서 한 번만 만들고 update 에서 패치만 한다(input 재생성 금지). */

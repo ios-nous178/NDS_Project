@@ -23,6 +23,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const CF_CLASS = "nds-confetti";
 
@@ -44,7 +45,7 @@ export class NdsConfetti extends NdsElement {
   static elementName = "nds-confetti";
 
   static get observedAttributes(): readonly string[] {
-    return ["active", "count", "duration", "colors"];
+    return [...COMPONENT_ATTRS["nds-confetti"].observedAttributes];
   }
 
   private _canvas: HTMLCanvasElement | null = null;

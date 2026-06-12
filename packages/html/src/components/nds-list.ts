@@ -29,6 +29,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 export type ListVariant = "plain" | "card" | "divided";
 export type ListItemSize = "sm" | "md" | "lg";
@@ -40,7 +41,7 @@ export class NdsList extends NdsElement {
   static elementName = "nds-list";
 
   static get observedAttributes(): readonly string[] {
-    return ["variant"];
+    return [...COMPONENT_ATTRS["nds-list"].observedAttributes];
   }
 
   private _root: HTMLUListElement | null = null;

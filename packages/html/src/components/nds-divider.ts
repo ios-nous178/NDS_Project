@@ -8,6 +8,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const DIV_CLASS = "nds-divider";
 
@@ -21,7 +22,7 @@ export class NdsDivider extends NdsElement {
   static elementName = "nds-divider";
 
   static get observedAttributes(): readonly string[] {
-    return ["orientation", "thickness", "spacing", "color", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-divider"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
   private _inner: HTMLHRElement | null = null;

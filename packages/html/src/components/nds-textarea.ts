@@ -15,6 +15,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const TA_CLASS = "nds-textarea";
 const TA_ROOT_CLASS = `${TA_CLASS}__root`;
@@ -53,20 +54,7 @@ export class NdsTextarea extends NdsElement {
   static elementName = "nds-textarea";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "label",
-      "helper-text",
-      "error",
-      "disabled",
-      "readonly",
-      "max-length",
-      "min-height",
-      "resize",
-      "input-id",
-      "value",
-      "default-value",
-      ...FORWARDED_ATTRS,
-    ];
+    return [...COMPONENT_ATTRS["nds-textarea"].observedAttributes, "label", "helper-text", "disabled", "readonly", "input-id", "value", "default-value", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;

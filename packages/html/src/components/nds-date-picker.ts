@@ -20,6 +20,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 const DP_CLASS = "nds-date-picker";
 const DP_ROOT_CLASS = `${DP_CLASS}__root`;
@@ -81,21 +82,7 @@ export class NdsDatePicker extends NdsElement {
   static elementName = "nds-date-picker";
 
   static get observedAttributes(): readonly string[] {
-    return [
-      "value",
-      "min-date",
-      "max-date",
-      "placeholder",
-      "disabled",
-      "error",
-      "status",
-      "allow-clear",
-      "disabled-dates",
-      "open",
-      "default-open",
-      "portal-container",
-      "full-width",
-    ];
+    return [...COMPONENT_ATTRS["nds-date-picker"].observedAttributes];
   }
 
   private _root: HTMLDivElement | null = null;
