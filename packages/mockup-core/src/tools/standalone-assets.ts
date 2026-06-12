@@ -17,6 +17,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
+import { BRAND_ALIAS_MAP } from "@nudge-design/tokens/brand-profiles";
 
 export interface StandaloneAssets {
   /** IIFE 런타임 JS 본문(모든 <nds-*> 등록). 브랜드 무관. */
@@ -274,17 +275,11 @@ function loadManifest(dir: string): StandaloneManifest {
  * manifest 에 `cashpobi` 가 없어 조용히 baseOnlyBrand(nudge-eap = 블루)로 폴백 →
  * 캐포비 시그니처 노란 버튼이 DS 기본 블루로 렌더됐다. 통용명/표기 흔들림을 정식 slug 로
  * 정규화하고, 그래도 미지면 호출부(build-html / validator)가 조용히 넘기지 말고 경고한다.
+ *
+ * SSOT 는 브랜드 프로필(@nudge-design/tokens brand-profiles)의 aliases — 여기는 파생.
+ * 새 별칭은 이 파일이 아니라 프로필에 추가한다.
  */
-export const BRAND_ALIASES: Record<string, string> = {
-  cashpobi: "cashwalk-biz",
-  "cash-pobi": "cashwalk-biz",
-  cashwalkbiz: "cashwalk-biz",
-  cashwalk: "cashwalk-biz",
-  cashwalkforbusiness: "cashwalk-biz",
-  nudgeeap: "nudge-eap",
-  nudge: "nudge-eap",
-  eap: "nudge-eap",
-};
+export const BRAND_ALIASES: Record<string, string> = { ...BRAND_ALIAS_MAP };
 
 /** 통용 별칭/표기흔들림을 정식 slug 로 정규화(소문자·trim 후). 미지정은 undefined, 미지 입력은 그대로. */
 export function canonicalBrandSlug(brand?: string): string | undefined {

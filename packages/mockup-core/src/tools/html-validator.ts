@@ -60,6 +60,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as cheerio from "cheerio";
+import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
 import {
   canonicalBrandSlug,
   canonicalPagePattern,
@@ -569,8 +570,11 @@ function resolveDocumentPagePattern($: cheerio.CheerioAPI): CashwalkBizPagePatte
   return undefined;
 }
 
-function isCashwalkBizAdminScope(scope: DocumentValidationScope): boolean {
-  return scope.surface === "admin" && scope.brand === "cashwalk-biz";
+/** 어드민 Page Pattern System 적용 scope — 브랜드 프로필(admin.pagePatternSystem)이 결정. */
+function isPagePatternAdminScope(scope: DocumentValidationScope): boolean {
+  return (
+    scope.surface === "admin" && getBrandProfile(scope.brand)?.admin?.pagePatternSystem === true
+  );
 }
 
 /** srcset 의 각 URL 토큰을 추출 (descriptor 제외). */
@@ -1293,8 +1297,13 @@ export function validateHtmlSource(
 
     // 7. nds-button color="neutral" + solid(default) — base/cool-gray 브랜드에선 비활성처럼 보임.
     //    명시적으로 variant 가 outlined/soft/text 계열이면 OK.
-    //    ※ 캐포비(cashwalk-biz)는 neutral solid = #111 검정 CTA(Figma Neutral tone)라 정당 — 예외.
-    if (tag === "nds-button" && attrs.color === "neutral" && documentBrand !== "cashwalk-biz") {
+    //    ※ 검정 CTA 슬롯이 neutral 인 브랜드(프로필 cta.blackCta="neutral" — 현재 캐포비)는
+    //      neutral solid = 정당한 검정 CTA 라 면제.
+    if (
+      tag === "nds-button" &&
+      attrs.color === "neutral" &&
+      getBrandProfile(documentBrand)?.cta?.blackCta !== "neutral"
+    ) {
       const variant = attrs.variant;
       const isNonSolid =
         variant === "outlined" || variant === "soft" || variant === "text" || variant === "ghost";
@@ -1310,30 +1319,39 @@ export function validateHtmlSource(
       }
     }
 
-    // 7b. nds-button color="secondary" on cashwalk-biz — 캐포비 ButtonGuide(3098:1032) 의
-    //     tone 은 Primary + Neutral 둘뿐. Secondary 는 없음 → neutral 로 써야 함.
-    if (tag === "nds-button" && attrs.color === "secondary" && documentBrand === "cashwalk-biz") {
-      violations.push({
-        rule: "cashwalk-biz-no-secondary",
-        line,
-        selector,
-        detail: `<nds-button color="secondary">`,
-        suggestion:
-          "캐포비(cashwalk-biz)는 Secondary tone 이 없음(Figma ButtonGuide = Primary + Neutral). 검정/회색 CTA 는 color=\"neutral\" 사용 (solid=검정 #111 / soft=회색 #F5F5F5 / outlined=라인). get_guide({ topic: 'component:Button' }) 참조.",
-      });
+    // 7b. 브랜드 금지 Button color — 프로필 cta.deniedButtonColors 선언 브랜드에서 발화.
+    //     (현재 선언 = 캐포비 secondary: ButtonGuide(3098:1032) tone 은 Primary + Neutral 둘뿐.)
+    if (tag === "nds-button" && attrs.color) {
+      const denied = getBrandProfile(documentBrand)?.cta?.deniedButtonColors?.find(
+        (d) => d.color === attrs.color,
+      );
+      if (denied) {
+        violations.push({
+          rule: "cashwalk-biz-no-secondary",
+          line,
+          selector,
+          detail: `<nds-button color="${attrs.color}">`,
+          suggestion: `이 브랜드(${documentBrand})에는 color="${attrs.color}" tone 이 없습니다. ${denied.useInstead}. get_guide({ topic: 'component:Button' }) 참조.`,
+        });
+      }
     }
 
-    // 7c. nds-toast on cashwalk-biz — 캐포비 알림 SSOT 는 Snackbar(흰 카드 chrome·우측 상단 고정·
-    //     상태 칩 아이콘·닫기 X). 캐포비는 Snackbar 만 사용하고 Toast 는 쓰지 않는다(예외 없음).
-    if (tag === "nds-toast" && documentBrand === "cashwalk-biz") {
-      violations.push({
-        rule: "cashwalk-biz-toast",
-        line,
-        selector,
-        detail: `<nds-toast>`,
-        suggestion:
-          "캐포비(cashwalk-biz)는 알림을 Snackbar 만 사용합니다(Toast 미사용). <nds-snackbar-host brand=\"cashwalk-biz\"> + <nds-snackbar> 로 교체하세요 — 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 가 캐포비 알림 SSOT. get_guide({ topic: 'component:Snackbar', brand: 'cashwalk-biz' }) 참조.",
-      });
+    // 7c. 브랜드 금지 알림 컴포넌트 — 프로필 notifications.bannedComponents 선언 브랜드에서 발화.
+    //     (현재 선언 = 캐포비 nds-toast: 알림 SSOT 는 Snackbar(흰 카드 chrome·우측 상단 고정·
+    //      상태 칩 아이콘·닫기 X). 예외 없음.)
+    {
+      const banned = getBrandProfile(documentBrand)?.notifications?.bannedComponents?.find(
+        (b) => b.tag === tag,
+      );
+      if (banned) {
+        violations.push({
+          rule: "cashwalk-biz-toast",
+          line,
+          selector,
+          detail: `<${tag}>`,
+          suggestion: `이 브랜드(${documentBrand})에서 <${tag}> 는 금지 — 알림 SSOT 는 <${banned.useInstead}> 입니다. 캐포비 기준: <nds-snackbar-host brand="cashwalk-biz"> + <nds-snackbar> (흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X). get_guide({ topic: 'component:Snackbar', brand: '${documentBrand}' }) 참조.`,
+        });
+      }
     }
   });
 
@@ -1501,8 +1519,8 @@ export function validateHtmlSource(
       });
     });
 
-    // ─── 캐포비 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ───
-    //   캐시워크 포 비즈니스는 DS 안에 자체 admin 디자인 시스템을 가진 유일한 브랜드라,
+    // ─── Page Pattern System 브랜드 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ───
+    //   (현재 선언 브랜드 = cashwalk-biz. 적용 여부는 브랜드 프로필 admin.pagePatternSystem 이 결정.)
     //   어드민 화면은 Onboarding/Dashboard/List/Detail/Form 5종으로 표준화돼 있다.
     //   "분류 없이 컴포넌트부터 배치하지 않는다"(pattern:cashwalk-biz-page-patterns)를 권고가 아닌
     //   하드 게이트로: 루트(html/body/.mockup-screen)에 data-page-pattern 마커가 없거나 5종이 아니면 error.
@@ -1510,7 +1528,7 @@ export function validateHtmlSource(
       canonicalBrandSlug(declaredBrand) ??
       canonicalBrandSlug($("html").attr("data-brand") ?? $("body").attr("data-brand")) ??
       canonicalBrandSlug(($("body").attr("class") ?? "").match(/\bbrand-([a-z0-9-]+)\b/i)?.[1]);
-    if (effBrand === "cashwalk-biz") {
+    if (getBrandProfile(effBrand)?.admin?.pagePatternSystem) {
       const markerNodes = $("[data-page-pattern]");
       if (markerNodes.length === 0) {
         violations.push({
@@ -2123,100 +2141,110 @@ function collectContainerViolations(
     });
   }
 
-  // 캐포비(cashwalk-biz) 모달 단일 버튼은 우측 정렬 hug 검정 pill — full-width 아님.
-  // 흔한 회귀: 버튼 1개인데 full-width 로 깔림(다른 화면의 full-width 적용 버튼을 잘못 가져옴).
+  // 모달 정책 — 브랜드 프로필 modal.* 선언에 따라 발화(현재 선언 브랜드 = cashwalk-biz).
   const modalBrand = canonicalBrandSlug(
     $("html").attr("data-brand") ?? $("body").attr("data-brand"),
   );
-  if (modalBrand === "cashwalk-biz") {
-    $("nds-modal").each((_i, el) => {
-      if (el.type !== "tag") return;
-      const $el = $(el);
-      const footerBtns = $el
-        .find('[slot="footer"] nds-button, nds-modal-footer nds-button')
-        .toArray();
-      // 슬롯 footer 가 없으면(=버튼을 본문에 직접 둔 경우 포함) 모달 내 전체 버튼으로 폴백.
-      const buttons = (footerBtns.length
-        ? footerBtns
-        : $el.find("nds-button").toArray()) as unknown as DomElement[];
-      // 단일 버튼 모달에만 적용 — 2개(취소+확정)는 가로 분할이 정상.
-      if (buttons.length !== 1) return;
-      if (buttons[0].attribs?.["full-width"] === undefined) return;
-      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
-      out.push({
-        rule: "cashwalk-biz-modal-single-button-fullwidth",
-        line: lineNumberAt(source, offset),
-        selector: describeElement(el as unknown as DomElement),
-        detail: "캐포비 모달의 단일 버튼에 full-width 가 붙음.",
-        suggestion:
-          "캐포비(cashwalk-biz) 단일 버튼 모달은 우측 정렬 + hug 너비 검정 pill 입니다 — full-width 아님. <nds-button> 에서 full-width 를 제거하고 <div slot=\"footer\"> 로 감싸면 footer cascade 가 우측 hug 로 정렬합니다(버튼 2개일 때만 가로 분할). get_guide({ topic: 'component:Modal', brand: 'cashwalk-biz' }) 참조.",
+  const modalPolicy = getBrandProfile(modalBrand)?.modal;
+  if (modalPolicy) {
+    // 단일 버튼 모달 = 우측 정렬 hug 검정 pill — full-width 아님 (modal.singleButtonLayout="hug-right").
+    // 흔한 회귀: 버튼 1개인데 full-width 로 깔림(다른 화면의 full-width 적용 버튼을 잘못 가져옴).
+    if (modalPolicy.singleButtonLayout === "hug-right")
+      $("nds-modal").each((_i, el) => {
+        if (el.type !== "tag") return;
+        const $el = $(el);
+        const footerBtns = $el
+          .find('[slot="footer"] nds-button, nds-modal-footer nds-button')
+          .toArray();
+        // 슬롯 footer 가 없으면(=버튼을 본문에 직접 둔 경우 포함) 모달 내 전체 버튼으로 폴백.
+        const buttons = (footerBtns.length
+          ? footerBtns
+          : $el.find("nds-button").toArray()) as unknown as DomElement[];
+        // 단일 버튼 모달에만 적용 — 2개(취소+확정)는 가로 분할이 정상.
+        if (buttons.length !== 1) return;
+        if (buttons[0].attribs?.["full-width"] === undefined) return;
+        const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+        out.push({
+          rule: "cashwalk-biz-modal-single-button-fullwidth",
+          line: lineNumberAt(source, offset),
+          selector: describeElement(el as unknown as DomElement),
+          detail: "캐포비 모달의 단일 버튼에 full-width 가 붙음.",
+          suggestion:
+            "캐포비(cashwalk-biz) 단일 버튼 모달은 우측 정렬 + hug 너비 검정 pill 입니다 — full-width 아님. <nds-button> 에서 full-width 를 제거하고 <div slot=\"footer\"> 로 감싸면 footer cascade 가 우측 hug 로 정렬합니다(버튼 2개일 때만 가로 분할). get_guide({ topic: 'component:Modal', brand: 'cashwalk-biz' }) 참조.",
+        });
       });
-    });
 
-    // 캐포비 확인/팝업 모달의 주 action 은 검정 CTA(color="neutral") — primary(노랑) 금지.
+    // 확인/팝업 모달의 주 action 은 검정 CTA(color="neutral") — primary(노랑) 금지
+    //   (modal.confirmCtaColor="neutral" 선언 브랜드만).
     //   근본 원인: <nds-button>/Button 은 color 생략 시 기본값이 primary(노랑)라, 모달 footer 버튼에
     //   color 를 안 적으면 자동으로 노랑이 된다(가이드는 neutral 이라고만 말하고 기본값은 노랑 →
     //   5회+ 재발). isPrimarySolidButton = color 가 primary 이거나 생략(=기본 primary)인 solid 버튼.
     //   예외: 선택/피커(⑥)·데이터로더(⑦) 등 대형 모달은 본문 풀폭 옐로우 '적용'이 정상 → 면제.
-    $("nds-modal").each((_i, el) => {
-      if (el.type !== "tag") return;
-      const $el = $(el);
-      // 대형 선택/데이터 모달 면제 (옐로우 '적용' CTA 가 정상인 모달들)
-      const maxW = Number($el.attr("max-width") ?? $el.attr("maxwidth") ?? "0");
-      const isLargeDataModal =
-        $el.find("nds-data-table, nds-selected-items-panel").length > 0 || maxW >= 720;
-      if (isLargeDataModal) return;
+    if (modalPolicy.confirmCtaColor === "neutral")
+      $("nds-modal").each((_i, el) => {
+        if (el.type !== "tag") return;
+        const $el = $(el);
+        // 대형 선택/데이터 모달 면제 (옐로우 '적용' CTA 가 정상인 모달들)
+        const maxW = Number($el.attr("max-width") ?? $el.attr("maxwidth") ?? "0");
+        const isLargeDataModal =
+          $el.find("nds-data-table, nds-selected-items-panel").length > 0 || maxW >= 720;
+        if (isLargeDataModal) return;
 
-      const footerBtns = $el
-        .find('[slot="footer"] nds-button, nds-modal-footer nds-button')
-        .toArray();
-      const buttons = (footerBtns.length
-        ? footerBtns
-        : $el.find("nds-button").toArray()) as unknown as DomElement[];
+        const footerBtns = $el
+          .find('[slot="footer"] nds-button, nds-modal-footer nds-button')
+          .toArray();
+        const buttons = (footerBtns.length
+          ? footerBtns
+          : $el.find("nds-button").toArray()) as unknown as DomElement[];
 
-      buttons.forEach((btn) => {
-        if (!isPrimarySolidButton(btn)) return; // primary 이거나 color 생략(=기본 primary) solid 만
-        const offset = (btn as unknown as { startIndex?: number }).startIndex ?? 0;
-        const omitted = !(btn.attribs ?? {}).color;
-        out.push({
-          rule: "cashwalk-biz-modal-primary-cta",
-          line: lineNumberAt(source, offset),
-          selector: describeElement(btn),
-          detail: omitted
-            ? "캐포비 확인/팝업 모달의 주 action 버튼에 color 가 생략됨 — Button 기본값이 primary(노랑)라 자동으로 노랑 CTA 가 됩니다."
-            : '캐포비 확인/팝업 모달의 주 action 버튼이 color="primary"(노랑) 입니다.',
-          suggestion:
-            '캐포비 확인/팝업 모달의 주 action(확인/적용/완료/만들기)은 브랜드 시그니처 검정 CTA — color="neutral" variant="solid" shape="pill" 을 명시하세요(예: <nds-button color="neutral" variant="solid" shape="pill">비즈니스 그룹 만들기</nds-button>). color 를 생략하면 기본값 primary(노랑)로 떨어집니다. 본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/데이터 모달뿐(max-width 720+). get_guide({ topic: \'component:Modal\', brand: \'cashwalk-biz\' }) 참조.',
+        buttons.forEach((btn) => {
+          if (!isPrimarySolidButton(btn)) return; // primary 이거나 color 생략(=기본 primary) solid 만
+          const offset = (btn as unknown as { startIndex?: number }).startIndex ?? 0;
+          const omitted = !(btn.attribs ?? {}).color;
+          out.push({
+            rule: "cashwalk-biz-modal-primary-cta",
+            line: lineNumberAt(source, offset),
+            selector: describeElement(btn),
+            detail: omitted
+              ? "캐포비 확인/팝업 모달의 주 action 버튼에 color 가 생략됨 — Button 기본값이 primary(노랑)라 자동으로 노랑 CTA 가 됩니다."
+              : '캐포비 확인/팝업 모달의 주 action 버튼이 color="primary"(노랑) 입니다.',
+            suggestion:
+              '캐포비 확인/팝업 모달의 주 action(확인/적용/완료/만들기)은 브랜드 시그니처 검정 CTA — color="neutral" variant="solid" shape="pill" 을 명시하세요(예: <nds-button color="neutral" variant="solid" shape="pill">비즈니스 그룹 만들기</nds-button>). color 를 생략하면 기본값 primary(노랑)로 떨어집니다. 본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/데이터 모달뿐(max-width 720+). get_guide({ topic: \'component:Modal\', brand: \'cashwalk-biz\' }) 참조.',
+          });
         });
       });
-    });
 
-    // 모달 footer 두 버튼은 항상 가로 — 라벨이 길어 좁아도 세로 스택 금지(라벨을 축약하는 방향).
-    $("nds-modal").each((_i, el) => {
-      if (el.type !== "tag") return;
-      const $el = $(el);
-      const $footer = $el.find('[slot="footer"], nds-modal-footer').first();
-      if ($footer.length === 0) return;
-      const btnCount = $footer.find("nds-button").length;
-      if (btnCount < 2) return;
-      const footerStyle = ($footer.attr("style") ?? "").toLowerCase();
-      const layout = ($el.attr("actions-layout") ?? $el.attr("actionslayout") ?? "").toLowerCase();
-      const stacked =
-        /flex-direction\s*:\s*column/.test(footerStyle) ||
-        layout === "stack" ||
-        layout === "vertical" ||
-        layout === "column";
-      if (!stacked) return;
-      const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
-      out.push({
-        rule: "cashwalk-biz-modal-footer-stacked",
-        line: lineNumberAt(source, offset),
-        selector: describeElement(el as unknown as DomElement),
-        detail: "모달 footer 의 두 버튼이 세로로 스택되어 있습니다.",
-        suggestion:
-          "모달/팝업의 두 버튼은 항상 가로 정렬을 유지하세요. 라벨이 길어 가로로 안 들어가면 세로 스택이 아니라 **라벨 텍스트를 축약**하는 방향으로(예: '비즈니스 그룹 만들기'→'그룹 만들기', '나중에 다시 하기'→'나중에'). flex-direction:column / actions-layout=\"stack\" 을 제거하고 캐포비 기본(우측 hug) 또는 split(가로 분할)을 쓰세요. get_guide({ topic: 'pattern:cta-group' }) 참조.",
+    // 모달 footer 두 버튼은 항상 가로 — 세로 스택 금지(라벨 축약 방향) (modal.footerStackBanned).
+    if (modalPolicy.footerStackBanned)
+      $("nds-modal").each((_i, el) => {
+        if (el.type !== "tag") return;
+        const $el = $(el);
+        const $footer = $el.find('[slot="footer"], nds-modal-footer').first();
+        if ($footer.length === 0) return;
+        const btnCount = $footer.find("nds-button").length;
+        if (btnCount < 2) return;
+        const footerStyle = ($footer.attr("style") ?? "").toLowerCase();
+        const layout = (
+          $el.attr("actions-layout") ??
+          $el.attr("actionslayout") ??
+          ""
+        ).toLowerCase();
+        const stacked =
+          /flex-direction\s*:\s*column/.test(footerStyle) ||
+          layout === "stack" ||
+          layout === "vertical" ||
+          layout === "column";
+        if (!stacked) return;
+        const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
+        out.push({
+          rule: "cashwalk-biz-modal-footer-stacked",
+          line: lineNumberAt(source, offset),
+          selector: describeElement(el as unknown as DomElement),
+          detail: "모달 footer 의 두 버튼이 세로로 스택되어 있습니다.",
+          suggestion:
+            "모달/팝업의 두 버튼은 항상 가로 정렬을 유지하세요. 라벨이 길어 가로로 안 들어가면 세로 스택이 아니라 **라벨 텍스트를 축약**하는 방향으로(예: '비즈니스 그룹 만들기'→'그룹 만들기', '나중에 다시 하기'→'나중에'). flex-direction:column / actions-layout=\"stack\" 을 제거하고 캐포비 기본(우측 hug) 또는 split(가로 분할)을 쓰세요. get_guide({ topic: 'pattern:cta-group' }) 참조.",
+        });
       });
-    });
   }
 }
 
@@ -2295,7 +2323,7 @@ function collectDocumentLevelViolations(
     });
   }
 
-  const isCashwalkBizAdmin = isCashwalkBizAdminScope(scope);
+  const isCashwalkBizAdmin = isPagePatternAdminScope(scope);
 
   if (isCashwalkBizAdmin) {
     // region-as-chip: 지역 경로(시/도 > 시/군/구)가 든 Chip = 캐포비 타겟팅 결과를 Chip 으로 잘못 표현한 신호.
