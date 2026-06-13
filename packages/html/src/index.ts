@@ -13,6 +13,16 @@ export type { ButtonColor, ButtonSize, ButtonVariant } from "./components/nds-bu
 
 export { NdsAddButton } from "./components/nds-add-button.js";
 
+export { NdsAgreement } from "./components/nds-agreement.js";
+
+export {
+  NdsArticle,
+  NdsArticleHeader,
+  NdsArticleBody,
+  NdsArticleAttachments,
+  NdsArticleActions,
+} from "./components/nds-article.js";
+
 export { NdsBrandLogo } from "./components/nds-brand-logo.js";
 export type { BrandLogoBrand } from "./components/nds-brand-logo.js";
 
@@ -142,8 +152,8 @@ export type { ProgressBarSize } from "./components/nds-progress-bar.js";
 export { NdsSkeleton } from "./components/nds-skeleton.js";
 export type { SkeletonVariant } from "./components/nds-skeleton.js";
 
-export { NdsTitleGroup } from "./components/nds-title-group.js";
-export type { TitleGroupLevel } from "./components/nds-title-group.js";
+export { NdsHeading } from "./components/nds-heading.js";
+export type { HeadingLevel } from "./components/nds-heading.js";
 
 export { NdsAvatarGroup } from "./components/nds-avatar-group.js";
 

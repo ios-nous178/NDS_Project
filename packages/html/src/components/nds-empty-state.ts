@@ -50,6 +50,8 @@ export class NdsEmptyState extends NdsElement {
 
     this._root.replaceChildren();
 
+    this._root.dataset.status = this._status();
+
     const minHeight = this._dimensionAttr("min-height");
     if (minHeight === undefined) this._root.style.removeProperty("--nds-empty-state-min-height");
     else this._root.style.setProperty("--nds-empty-state-min-height", minHeight);
@@ -74,12 +76,19 @@ export class NdsEmptyState extends NdsElement {
     }
   }
 
+  private _status(): EmptyStateStatus {
+    const raw = this.getAttribute("status");
+    return raw && (STATUS_PATHS as Record<string, unknown>)[raw]
+      ? (raw as EmptyStateStatus)
+      : "empty";
+  }
+
   private _createIcon(): HTMLDivElement {
     const icon = document.createElement("div");
     icon.dataset.slot = "icon";
     icon.className = EMPTY_ICON_CLASS;
     icon.setAttribute("aria-hidden", "true");
-    icon.appendChild(createDefaultEmptyIcon());
+    icon.appendChild(createStatusIcon(this._status()));
     return icon;
   }
 
@@ -121,35 +130,47 @@ export class NdsEmptyState extends NdsElement {
   }
 }
 
-function createDefaultEmptyIcon(): SVGSVGElement {
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+/* ─── status 글리프 (react STATUS_ICONS 미러 · currentColor) ─── */
+
+type EmptyStateStatus = "empty" | "success" | "error" | "info";
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+/** path 의 d, fill 여부, stroke-width, dasharray 를 선언적으로 표현 */
+type Shape = { tag: "circle" | "path"; attrs: Record<string, string> };
+
+const STATUS_PATHS: Record<EmptyStateStatus, Shape[]> = {
+  empty: [
+    { tag: "circle", attrs: { cx: "32", cy: "32", r: "30", "stroke-width": "2", "stroke-dasharray": "4 4" } },
+    { tag: "path", attrs: { d: "M22 32H42", "stroke-width": "2", "stroke-linecap": "round" } },
+    { tag: "path", attrs: { d: "M32 22V42", "stroke-width": "2", "stroke-linecap": "round" } },
+  ],
+  success: [
+    { tag: "circle", attrs: { cx: "32", cy: "32", r: "30", "stroke-width": "2" } },
+    { tag: "path", attrs: { d: "M21 33l8 8 14-16", "stroke-width": "2.5", "stroke-linecap": "round", "stroke-linejoin": "round" } },
+  ],
+  error: [
+    { tag: "circle", attrs: { cx: "32", cy: "32", r: "30", "stroke-width": "2" } },
+    { tag: "path", attrs: { d: "M24 24l16 16M40 24L24 40", "stroke-width": "2.5", "stroke-linecap": "round" } },
+  ],
+  info: [
+    { tag: "circle", attrs: { cx: "32", cy: "32", r: "30", "stroke-width": "2" } },
+    { tag: "circle", attrs: { cx: "32", cy: "21", r: "2.4", fill: "currentColor" } },
+    { tag: "path", attrs: { d: "M32 29v16", "stroke-width": "2.5", "stroke-linecap": "round" } },
+  ],
+};
+
+function createStatusIcon(status: EmptyStateStatus): SVGSVGElement {
+  const svg = document.createElementNS(SVG_NS, "svg");
   svg.setAttribute("viewBox", "0 0 64 64");
   svg.setAttribute("fill", "none");
-  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-
-  const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  circle.setAttribute("cx", "32");
-  circle.setAttribute("cy", "32");
-  circle.setAttribute("r", "30");
-  circle.setAttribute("stroke", "currentColor");
-  circle.setAttribute("stroke-width", "2");
-  circle.setAttribute("stroke-dasharray", "4 4");
-  svg.appendChild(circle);
-
-  const horizontal = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  horizontal.setAttribute("d", "M22 32H42");
-  horizontal.setAttribute("stroke", "currentColor");
-  horizontal.setAttribute("stroke-width", "2");
-  horizontal.setAttribute("stroke-linecap", "round");
-  svg.appendChild(horizontal);
-
-  const vertical = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  vertical.setAttribute("d", "M32 22V42");
-  vertical.setAttribute("stroke", "currentColor");
-  vertical.setAttribute("stroke-width", "2");
-  vertical.setAttribute("stroke-linecap", "round");
-  svg.appendChild(vertical);
-
+  svg.setAttribute("xmlns", SVG_NS);
+  for (const { tag, attrs } of STATUS_PATHS[status]) {
+    const el = document.createElementNS(SVG_NS, tag);
+    if (!("fill" in attrs)) el.setAttribute("stroke", "currentColor");
+    for (const [k, val] of Object.entries(attrs)) el.setAttribute(k, val);
+    svg.appendChild(el);
+  }
   return svg;
 }
 

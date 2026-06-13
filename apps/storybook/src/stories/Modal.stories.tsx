@@ -1157,6 +1157,7 @@ export const WebViewPlaylistEditWithClassNames: Story = {
 
 export const OpenAndCloseInteraction: Story = {
   name: "Interaction/Open And Close",
+  tags: ["!dev", "!autodocs"],
   args: {
     title: "예약 확인",
     closable: true,
@@ -1179,6 +1180,7 @@ export const OpenAndCloseInteraction: Story = {
 
 export const AccessibilityBehavior: Story = {
   name: "Interaction/Accessibility Behavior",
+  tags: ["!dev", "!autodocs"],
   args: {
     title: "접근성 확인",
     closable: true,
@@ -1217,6 +1219,7 @@ export const AccessibilityBehavior: Story = {
 
 export const FocusTrapLoop: Story = {
   name: "Interaction/Focus Trap Loop",
+  tags: ["!dev", "!autodocs"],
   args: {
     title: "포커스 트랩 확인",
     closable: true,
@@ -1255,6 +1258,7 @@ export const FocusTrapLoop: Story = {
 
 export const MaskCloseDisabled: Story = {
   name: "Interaction/Mask Close Disabled",
+  tags: ["!dev", "!autodocs"],
   args: {
     title: "오버레이 닫기 비활성",
     closable: true,
@@ -1283,6 +1287,7 @@ export const MaskCloseDisabled: Story = {
 
 export const CloseButtonAccessibility: Story = {
   name: "Interaction/Close Button Accessibility",
+  tags: ["!dev", "!autodocs"],
   args: {
     title: "닫기 버튼 확인",
     closable: true,
@@ -1343,6 +1348,7 @@ function NestedModalExample() {
 
 export const NestedModalEdge: Story = {
   name: "Edge/Nested Modal Focus",
+  tags: ["!dev", "!autodocs"],
   render: () => <NestedModalExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -1370,6 +1376,7 @@ export const NestedModalEdge: Story = {
 
 export const ConfirmCallbackEdge: Story = {
   name: "Edge/Confirm Callback Closes Modal",
+  tags: ["!dev", "!autodocs"],
   render: function Render() {
     const [open, setOpen] = useState(false);
     const [result, setResult] = useState("");

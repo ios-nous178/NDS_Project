@@ -1,10 +1,10 @@
 import { Meta, Canvas } from "@storybook/addon-docs/blocks";
 
 import { BrandScope } from "../BrandScope";
-import * as Banner from "./Banner.NudgeEAP.stories";
-import * as Header from "./Header.NudgeEAP.stories";
-import * as Footer from "./Footer.NudgeEAP.stories";
-import * as BottomNav from "./BottomNav.NudgeEAP.stories";
+import * as Banner from "./BrandBanner.stories";
+import * as Header from "./BrandHeader.stories";
+import * as Footer from "./BrandFooter.stories";
+import * as BottomNav from "./BrandBottomNav.stories";
 import * as Icons from "./Icons.stories";
 
 <Meta title="Brands/NudgeEAP/개요" />
@@ -25,9 +25,9 @@ import * as Icons from "./Icons.stories";
 ## Banner
 
 <BrandScope brand="nudge-eap">
-  <Canvas of={Banner.EAPIntro} />
-  <Canvas of={Banner.TestRecommend} />
-  <Canvas of={Banner.AppDownload} />
+  <Canvas of={Banner.NudgeEAPIntro} />
+  <Canvas of={Banner.NudgeEAPTestRecommend} />
+  <Canvas of={Banner.NudgeEAPAppDownload} />
 </BrandScope>
 
 ## Footer

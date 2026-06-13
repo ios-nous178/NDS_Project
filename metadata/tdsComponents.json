@@ -100,8 +100,8 @@
       "platforms": ["mobile"],
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/bubble/",
-      "nds": "Tooltip",
-      "ndsNote": "TDS Bubble = 한 줄 안내 풍선. NDS Tooltip 으로 매핑.",
+      "nds": "ChatBubble",
+      "ndsNote": "TDS Bubble = 1:1 상담/챗봇 말풍선. NDS ChatBubble 로 매핑 (한 줄 안내·코치마크 풍선은 TDS Tooltip → NDS Tooltip).",
       "figmaByBrand": {}
     },
     {

@@ -29,6 +29,17 @@ export const emptyStateStyles = `
     color: ${cv.iconRole.normal};
   }
 
+  /* status 시멘틱 — 아이콘 색 (empty 는 중립 유지) */
+  :where(.${EMPTY_ROOT_CLASS}[data-status="success"] .${EMPTY_ICON_CLASS}) {
+    color: ${cv.iconRole.statusSuccess};
+  }
+  :where(.${EMPTY_ROOT_CLASS}[data-status="error"] .${EMPTY_ICON_CLASS}) {
+    color: ${cv.iconRole.statusError};
+  }
+  :where(.${EMPTY_ROOT_CLASS}[data-status="info"] .${EMPTY_ICON_CLASS}) {
+    color: ${cv.textRole.statusInfo};
+  }
+
   :where(.${EMPTY_ICON_CLASS} svg) {
     width: 64px;
     height: 64px;

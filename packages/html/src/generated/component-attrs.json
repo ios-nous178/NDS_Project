@@ -29,6 +29,15 @@
     ],
     "enums": {}
   },
+  "nds-agreement": {
+    "observedAttributes": [
+      "all-label",
+      "items",
+      "value",
+      "view-label"
+    ],
+    "enums": {}
+  },
   "nds-amount-input": {
     "observedAttributes": [
       "error",
@@ -614,9 +623,17 @@
     "observedAttributes": [
       "description",
       "min-height",
+      "status",
       "title"
     ],
-    "enums": {}
+    "enums": {
+      "status": [
+        "empty",
+        "success",
+        "error",
+        "info"
+      ]
+    }
   },
   "nds-expandable-text": {
     "observedAttributes": [
@@ -731,6 +748,12 @@
         "static"
       ]
     }
+  },
+  "nds-heading": {
+    "observedAttributes": [
+      "level"
+    ],
+    "enums": {}
   },
   "nds-icon-button": {
     "observedAttributes": [
@@ -1376,12 +1399,6 @@
         "horizontal"
       ]
     }
-  },
-  "nds-title-group": {
-    "observedAttributes": [
-      "level"
-    ],
-    "enums": {}
   },
   "nds-toast": {
     "observedAttributes": [

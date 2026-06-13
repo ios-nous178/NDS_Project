@@ -1,4 +1,5 @@
 export * from "./Accordion.js";
+export * from "./Agreement.js";
 export * from "./Asset.js";
 export * from "./Button.js";
 export * from "./AddButton.js";
@@ -82,7 +83,7 @@ export * from "./Sparkline.js";
 export * from "./MultiStepForm.js";
 export * from "./ExpandableText.js";
 export * from "./PageHeader.js";
-export * from "./TitleGroup.js";
+export * from "./Heading.js";
 export * from "./QuickActionGrid.js";
 export * from "./QuickMenu.js";
 export * from "./TagInput.js";
