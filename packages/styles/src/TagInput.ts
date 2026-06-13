@@ -25,10 +25,12 @@ export const tiStyles = `
   :where(.${TI_ROOT_CLASS}) {
     display: inline-flex;
     flex-direction: column;
-    gap: var(--semantic-gap-default);
+    gap: ${spacing[8]}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
+  /* label↔input 12(=gap 8 + 4), input↔helper 8 — Input 과 동일 (헬퍼 간격 과다 보정) */
+  :where(.${TI_LABEL_CLASS}) { margin-bottom: var(--semantic-gap-tight); }
 
   :where(.${TI_ROOT_CLASS}[data-full-width="true"]) { width: 100%; }
 

@@ -34,8 +34,8 @@ export const Sizes: Story = {
     const [b, setB] = useState(false);
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
-        <Toggle size="md" checked={a} onCheckedChange={setA} label="Medium (44×24)" />
-        <Toggle size="sm" checked={b} onCheckedChange={setB} label="Small (36×20)" />
+        <Toggle size="md" checked={a} onCheckedChange={setA} label="알림 받기" />
+        <Toggle size="sm" checked={b} onCheckedChange={setB} label="위치 정보" />
       </div>
     );
   },

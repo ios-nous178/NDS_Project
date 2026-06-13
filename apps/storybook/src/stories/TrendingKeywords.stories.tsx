@@ -114,7 +114,7 @@ function TrendingKeywordsWithClickHandler() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-wide)" }}>
       <TrendingKeywords
-        items={sampleItems}
+        items={sampleItems.slice(0, 5)}
         title="인기 검색어"
         timestamp="09:00 기준"
         onKeywordClick={(item) => setClicked(item)}

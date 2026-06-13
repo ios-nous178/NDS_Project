@@ -21,6 +21,21 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
+function CheckboxStatesExample() {
+  const [unchecked, setUnchecked] = useState(false);
+  const [checked, setChecked] = useState(true);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <Checkbox checked={unchecked} onCheckedChange={setUnchecked} label="미선택" />
+      <Checkbox checked={checked} onCheckedChange={setChecked} label="선택됨" />
+      <Checkbox checked={false} indeterminate label="부분 선택" />
+      <Checkbox checked={true} disabled label="비활성 (선택됨)" />
+      <Checkbox checked={false} disabled label="비활성 (미선택)" />
+    </div>
+  );
+}
+
 function CheckboxExample() {
   const [a, setA] = useState(true);
   const [b, setB] = useState(false);
@@ -99,9 +114,14 @@ function CheckboxIndeterminateExample() {
   );
 }
 
+export const States: Story = {
+  name: "Item / States",
+  tags: ["gallery"],
+  render: () => <CheckboxStatesExample />,
+};
+
 export const Vertical: Story = {
   name: "State/Vertical",
-  tags: ["gallery"],
   render: () => <CheckboxExample />,
 };
 
@@ -117,7 +137,6 @@ export const Disabled: Story = {
 
 export const Indeterminate: Story = {
   name: "State/Indeterminate",
-  tags: ["gallery"],
   render: () => <CheckboxIndeterminateExample />,
 };
 

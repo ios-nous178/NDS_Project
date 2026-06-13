@@ -462,18 +462,6 @@
     "notes": "마이크 접근/저장은 외부 처리. seconds는 외부 timer로 갱신."
   },
   {
-    "name": "CountdownTimer",
-    "category": "피드백",
-    "status": "implemented",
-    "description": "종료 시각까지 자동 카운트다운. 3가지 포맷, 임박 시 빨강 강조, onComplete/onTick",
-    "storybookTitle": "Components/Feedback/CountdownTimer",
-    "docsPath": "/components/countdown-timer",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "인증 만료, 라이브 시작까지, 챌린지/미션 마감",
-    "notes": "endsAt은 useMemo로 고정. onComplete는 1회만 호출."
-  },
-  {
     "name": "PinPad",
     "category": "입력",
     "status": "implemented",

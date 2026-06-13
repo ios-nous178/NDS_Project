@@ -27,6 +27,21 @@ export const Filled: Story = {
   ),
 };
 
+export const WithHelper: Story = {
+  name: "Recipe/헬퍼 텍스트",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ width: 280 }}>
+      <Textarea
+        label="상담 메모"
+        placeholder="상담 중 기억할 내용을 적어두세요"
+        helperText="상담사에게만 공유됩니다"
+        minHeight={64}
+      />
+    </div>
+  ),
+};
+
 export const States: Story = {
   name: "State/기본 · 에러 · 비활성",
   render: () => (

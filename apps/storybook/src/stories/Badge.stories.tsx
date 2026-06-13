@@ -101,6 +101,7 @@ export const Playground: Story = {};
 
 export const StyleMatrix: Story = {
   name: "Spec/Style × Color Matrix",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       {VARIANTS.map((variant) => (
@@ -146,6 +147,18 @@ export const SizeScale: Story = {
       </Badge>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const sm = canvas.getByText("SM").closest('[data-slot="root"]');
+    await expect(sm).toHaveAttribute("data-size", "sm");
+
+    const md = canvas.getByText("MD").closest('[data-slot="root"]');
+    await expect(md).toHaveAttribute("data-size", "md");
+
+    const lg = canvas.getByText("LG").closest('[data-slot="root"]');
+    await expect(lg).toHaveAttribute("data-size", "lg");
+  },
 };
 
 export const ShapeScale: Story = {
@@ -160,6 +173,15 @@ export const ShapeScale: Story = {
       </Badge>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const square = canvas.getByText("default").closest('[data-slot="root"]');
+    await expect(square).toHaveAttribute("data-shape", "default");
+
+    const pill = canvas.getByText("pill").closest('[data-slot="root"]');
+    await expect(pill).toHaveAttribute("data-shape", "pill");
+  },
 };
 
 export const ColorUsage: Story = {
@@ -314,48 +336,6 @@ export const AllColorsContractInteraction: Story = {
       const badge = canvas.getByText(color).closest('[data-slot="root"]');
       await expect(badge).toHaveAttribute("data-color", color);
     }
-  },
-};
-
-export const SizeContractInteraction: Story = {
-  name: "Interaction/Size Contract",
-  render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
-      <Badge size="sm">Small</Badge>
-      <Badge size="md">Medium</Badge>
-      <Badge size="lg">Large</Badge>
-    </div>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const sm = canvas.getByText("Small").closest('[data-slot="root"]');
-    await expect(sm).toHaveAttribute("data-size", "sm");
-
-    const md = canvas.getByText("Medium").closest('[data-slot="root"]');
-    await expect(md).toHaveAttribute("data-size", "md");
-
-    const lg = canvas.getByText("Large").closest('[data-slot="root"]');
-    await expect(lg).toHaveAttribute("data-size", "lg");
-  },
-};
-
-export const ShapeContractInteraction: Story = {
-  name: "Interaction/Shape Contract",
-  render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
-      <Badge shape="default">Square</Badge>
-      <Badge shape="pill">Pill</Badge>
-    </div>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const square = canvas.getByText("Square").closest('[data-slot="root"]');
-    await expect(square).toHaveAttribute("data-shape", "default");
-
-    const pill = canvas.getByText("Pill").closest('[data-slot="root"]');
-    await expect(pill).toHaveAttribute("data-shape", "pill");
   },
 };
 

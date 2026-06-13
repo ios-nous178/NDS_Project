@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T13:25:39.221Z",
+  "generatedAt": "2026-06-13T15:28:07.799Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -2116,70 +2116,6 @@
         "no-sanitize",
         "no-image-lazy",
         "no-external-blank"
-      ]
-    },
-    {
-      "name": "CountdownTimer",
-      "props": [
-        {
-          "name": "endsAt",
-          "optional": false,
-          "type": "string | number | Date"
-        },
-        {
-          "name": "format",
-          "optional": true,
-          "type": "CountdownFormat",
-          "allowedValues": [
-            "mm:ss",
-            "hh:mm:ss",
-            "remaining"
-          ]
-        },
-        {
-          "name": "onComplete",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "onTick",
-          "optional": true,
-          "type": "(ms: number) => void"
-        },
-        {
-          "name": "urgentColor",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "tone",
-          "optional": true,
-          "type": "\"default\" | \"brand\"",
-          "allowedValues": [
-            "default",
-            "brand"
-          ]
-        },
-        {
-          "name": "label",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "expiredText",
-          "optional": true,
-          "type": "React.ReactNode"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/CountdownTimer.d.ts",
-      "htmlTag": "nds-countdown-timer",
-      "htmlObservedAttrs": [
-        "ends-at",
-        "format",
-        "label",
-        "expired-text",
-        "no-urgent",
-        "tone"
       ]
     },
     {
@@ -13671,7 +13607,6 @@
     "nds-comment-item",
     "nds-confirm-tooltip",
     "nds-content-viewer",
-    "nds-countdown-timer",
     "nds-data-table",
     "nds-date-picker",
     "nds-date-range-picker",
@@ -14223,18 +14158,6 @@
         "no-sanitize",
         "no-image-lazy",
         "no-external-blank"
-      ]
-    },
-    {
-      "tag": "nds-countdown-timer",
-      "attrs": {},
-      "observedAttrs": [
-        "ends-at",
-        "format",
-        "label",
-        "expired-text",
-        "no-urgent",
-        "tone"
       ]
     },
     {

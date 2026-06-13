@@ -14,9 +14,9 @@ const PT_UNIT_CLASS = `${PT_CLASS}__unit`;
 export type PriceTagSize = "sm" | "md" | "lg";
 
 const SIZE_CONFIG: Record<PriceTagSize, { amount: number; original: number; gap: string }> = {
-  sm: { amount: 14, original: 12, gap: "var(--semantic-gap-tight)" },
+  sm: { amount: 14, original: 12, gap: "6px" },
   md: { amount: 18, original: 13, gap: "6px" },
-  lg: { amount: 24, original: 14, gap: "var(--semantic-gap-default)" },
+  lg: { amount: 24, original: 14, gap: "var(--semantic-gap-comfortable)" },
 };
 
 const SIZE_NAMES = Object.keys(SIZE_CONFIG) as PriceTagSize[];

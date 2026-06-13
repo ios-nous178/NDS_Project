@@ -52,7 +52,6 @@ import "./components/nds-slider.js";
 import "./components/nds-action-chip.js";
 import "./components/nds-selected-items-panel.js";
 import "./components/nds-chart.js";
-import "./components/nds-countdown-timer.js";
 import "./components/nds-expandable-text.js";
 import "./components/nds-order-summary-card.js";
 import "./components/nds-chat-bubble.js";

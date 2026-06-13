@@ -465,25 +465,6 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-countdown-timer": {
-    "observedAttributes": [
-      "ends-at",
-      "format",
-      "tone",
-      "urgent-color"
-    ],
-    "enums": {
-      "format": [
-        "mm:ss",
-        "hh:mm:ss",
-        "remaining"
-      ],
-      "tone": [
-        "default",
-        "brand"
-      ]
-    }
-  },
   "nds-data-table": {
     "observedAttributes": [
       "columns",

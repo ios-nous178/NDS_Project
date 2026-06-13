@@ -31,9 +31,8 @@ type Story = StoryObj<typeof Snackbar>;
 
 /* ─── Gallery (compact, 대표 인라인 프리뷰) ─── */
 
-/** 카탈로그 갤러리용 — 실제 열린 Snackbar 바(메시지 + 액션)를 인라인 정적 렌더. */
+/** 실제 열린 Snackbar 바(메시지 + 액션)를 인라인 정적 렌더. (docs 개요용 — 갤러리는 Variants 가 대표) */
 export const Overview: Story = {
-  tags: ["gallery"],
   name: "Overview",
   render: () => (
     <div style={{ width: 440 }}>
@@ -59,6 +58,7 @@ export const Variants: Story = {
       style={{
         display: "flex",
         flexDirection: "column",
+        alignItems: "center",
         gap: "var(--semantic-gap-comfortable)",
         width: 480,
       }}
@@ -295,9 +295,8 @@ function PhoneFrame({
           aria-hidden
         >
           <div style={{ height: 12, width: 128, borderRadius: 4, background: "#E8E8E8" }} />
-          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
-          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
-          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
+          <div style={{ height: 56, borderRadius: 10, background: "#F3F4F6" }} />
+          <div style={{ height: 56, borderRadius: 10, background: "#F3F4F6" }} />
         </div>
         {children(frame)}
       </div>
@@ -319,27 +318,13 @@ function AutoSnackbar({ message }: { message: string }) {
 
 export const PositionInContext: Story = {
   name: "State/노출 위치 (화면 위)",
+  tags: ["gallery"],
   render: () => (
-    <div style={{ display: "flex", gap: 32, flexWrap: "wrap", justifyContent: "center" }}>
-      <PhoneFrame label="기본 · 하단 중앙">
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <PhoneFrame label="하단 중앙 노출">
         {(frame) =>
           frame && (
             <SnackbarProvider position="bottom" duration={1_000_000} portalContainer={frame}>
-              <AutoSnackbar message="변경사항이 저장됐어요" />
-            </SnackbarProvider>
-          )
-        }
-      </PhoneFrame>
-      <PhoneFrame label="캐포비 · 우측 상단" brand="cashwalk-biz">
-        {(frame) =>
-          frame && (
-            <SnackbarProvider
-              position="top-right"
-              brand="cashwalk-biz"
-              maxCount={1}
-              duration={1_000_000}
-              portalContainer={frame}
-            >
               <AutoSnackbar message="변경사항이 저장됐어요" />
             </SnackbarProvider>
           )
@@ -422,8 +407,8 @@ const phoneFrame: React.CSSProperties = {
   position: "relative",
   // fixed viewport 가 브라우저 창이 아닌 이 프레임 기준으로 잡히도록 containing block 생성.
   transform: "translateZ(0)",
-  width: 300,
-  height: 520,
+  width: 260,
+  height: 380,
   borderRadius: 28,
   border: "8px solid #1F2937",
   background: "#FFF",

@@ -337,16 +337,6 @@
       "since": "2026-06"
     },
     {
-      "key": "CountdownTimer::prop-name::html attr \"no-urgent\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "CountdownTimer::prop-name::react prop → \"urgent-color\" 가 html observedAttributes 에 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
       "key": "DataTable::prop-name::html attr \"expander-column\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"

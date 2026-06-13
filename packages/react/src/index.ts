@@ -92,7 +92,6 @@ export * from "./TagInput.js";
 export * from "./Lightbox.js";
 export * from "./AvatarGroup.js";
 export * from "./VoiceRecorder.js";
-export * from "./CountdownTimer.js";
 export * from "./PinPad.js";
 export * from "./TimePicker.js";
 export * from "./AddressPicker.js";

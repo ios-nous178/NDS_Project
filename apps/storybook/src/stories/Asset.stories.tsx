@@ -97,7 +97,12 @@ export const Sizes: Story = {
   render: () => (
     <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
       {(["xs", "sm", "md", "lg", "xl", "2xl"] as const).map((s) => (
-        <Asset key={s} size={s} content={{ type: "image", src: SAMPLE, alt: "" }} />
+        <Asset
+          key={s}
+          size={s}
+          content={{ type: "image", src: MASCOT, alt: "캐시워크 마스코트" }}
+          style={{ "--nds-asset-bg": MASCOT_BG } as CSSProperties}
+        />
       ))}
     </div>
   ),

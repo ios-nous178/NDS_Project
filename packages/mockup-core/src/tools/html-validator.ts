@@ -178,7 +178,7 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "onboarding-card-no-padding": { severity: "error", kind: "invariant" },
   // 멀티스텝 온보딩(Stepper 존재)인데 제출 CTA 가 카드 안에 있음 — 카드 *아래* 분리 footer-nav(hug)로 빼야 함.
   "onboarding-multistep-cta-inside-card": { severity: "error", kind: "invariant" },
-  // 인증번호 입력/타이머를 손으로 조립 — verification-code-input + countdown-timer 미사용
+  // 인증번호 입력을 손으로 조립 — verification-code-input 미사용 (남은시간 타이머는 앱 합성 인라인)
   "verification-manual-assembly": { severity: "warn", kind: "model-guard" },
   // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
   "consent-raw-checkbox": { severity: "warn", kind: "model-guard" },
@@ -1694,7 +1694,7 @@ export function validateHtmlSource(
                 selector: el ? describeElement(el) : "<onboarding root>",
                 detail: "인증번호 입력/타이머를 손으로 조립.",
                 suggestion:
-                  "<nds-verification-code-input length=\"6\"> + <nds-countdown-timer> 를 <nds-form-field> / <nds-input-group> 로 합성할 것. get_guide({ topic: 'component:VerificationCodeInput' }).",
+                  "<nds-verification-code-input length=\"6\"> 를 <nds-form-field> / <nds-input-group> 로 합성하고, 남은시간 타이머는 인라인 요소로 앱에서 합성할 것. get_guide({ topic: 'component:VerificationCodeInput' }).",
               });
             }
           }
