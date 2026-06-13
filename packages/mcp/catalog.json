@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T03:32:53.438Z",
+  "generatedAt": "2026-06-13T04:40:42.645Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -323,81 +323,6 @@
         "helper-text",
         "placeholder",
         "disabled"
-      ]
-    },
-    {
-      "name": "AppointmentCard",
-      "props": [
-        {
-          "name": "date",
-          "optional": false,
-          "type": "string"
-        },
-        {
-          "name": "startTime",
-          "optional": false,
-          "type": "string"
-        },
-        {
-          "name": "endTime",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "title",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "mode",
-          "optional": true,
-          "type": "AppointmentMode",
-          "allowedValues": [
-            "video",
-            "phone",
-            "chat",
-            "in-person"
-          ]
-        },
-        {
-          "name": "location",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "status",
-          "optional": true,
-          "type": "AppointmentStatus",
-          "allowedValues": [
-            "scheduled",
-            "confirmed",
-            "in-progress",
-            "completed",
-            "canceled"
-          ]
-        },
-        {
-          "name": "actions",
-          "optional": true,
-          "type": "AppointmentAction[]"
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "() => void"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/AppointmentCard.d.ts",
-      "htmlTag": "nds-appointment-card",
-      "htmlObservedAttrs": [
-        "actions",
-        "date",
-        "end-time",
-        "mode",
-        "start-time",
-        "status",
-        "title",
-        "location"
       ]
     },
     {
@@ -2367,74 +2292,6 @@
         "no-sanitize",
         "no-image-lazy",
         "no-external-blank"
-      ]
-    },
-    {
-      "name": "CounselorCard",
-      "props": [
-        {
-          "name": "name",
-          "optional": false,
-          "type": "string"
-        },
-        {
-          "name": "jobTitle",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "imageSrc",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "rating",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "reviewCount",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "tags",
-          "optional": true,
-          "type": "string[]"
-        },
-        {
-          "name": "bio",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "ctaLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "onCtaClick",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "onCardClick",
-          "optional": true,
-          "type": "() => void"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/CounselorCard.d.ts",
-      "htmlTag": "nds-counselor-card",
-      "htmlObservedAttrs": [
-        "cta-label",
-        "image-src",
-        "name",
-        "rating",
-        "review-count",
-        "tags",
-        "job-title",
-        "bio",
-        "clickable"
       ]
     },
     {
@@ -7529,71 +7386,6 @@
         "header-title",
         "timestamp",
         "autoplay-delay"
-      ]
-    },
-    {
-      "name": "UserCard",
-      "props": [
-        {
-          "name": "avatar",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "name",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "handle",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "bio",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "meta",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "action",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "verified",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "layout",
-          "optional": true,
-          "type": "UserCardLayout",
-          "allowedValues": [
-            "row",
-            "stacked"
-          ]
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "() => void"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/UserCard.d.ts",
-      "htmlTag": "nds-user-card",
-      "htmlObservedAttrs": [
-        "layout",
-        "verified",
-        "name",
-        "handle",
-        "bio",
-        "meta",
-        "clickable"
       ]
     },
     {
@@ -14067,7 +13859,6 @@
     "nds-add-button",
     "nds-address-picker",
     "nds-amount-input",
-    "nds-appointment-card",
     "nds-attachment-item",
     "nds-audio-player",
     "nds-autocomplete",
@@ -14105,7 +13896,6 @@
     "nds-confetti",
     "nds-confirm-tooltip",
     "nds-content-viewer",
-    "nds-counselor-card",
     "nds-countdown-timer",
     "nds-data-table",
     "nds-date-picker",
@@ -14212,7 +14002,6 @@
     "nds-toggle",
     "nds-tooltip",
     "nds-trending-keywords",
-    "nds-user-card",
     "nds-validation-chip",
     "nds-verification-code-input",
     "nds-video-player",
@@ -14278,20 +14067,6 @@
         "helper-text",
         "placeholder",
         "disabled"
-      ]
-    },
-    {
-      "tag": "nds-appointment-card",
-      "attrs": {},
-      "observedAttrs": [
-        "actions",
-        "date",
-        "end-time",
-        "mode",
-        "start-time",
-        "status",
-        "title",
-        "location"
       ]
     },
     {
@@ -14724,21 +14499,6 @@
         "no-sanitize",
         "no-image-lazy",
         "no-external-blank"
-      ]
-    },
-    {
-      "tag": "nds-counselor-card",
-      "attrs": {},
-      "observedAttrs": [
-        "cta-label",
-        "image-src",
-        "name",
-        "rating",
-        "review-count",
-        "tags",
-        "job-title",
-        "bio",
-        "clickable"
       ]
     },
     {
@@ -15863,19 +15623,6 @@
         "header-title",
         "timestamp",
         "autoplay-delay"
-      ]
-    },
-    {
-      "tag": "nds-user-card",
-      "attrs": {},
-      "observedAttrs": [
-        "layout",
-        "verified",
-        "name",
-        "handle",
-        "bio",
-        "meta",
-        "clickable"
       ]
     },
     {

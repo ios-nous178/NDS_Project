@@ -39,7 +39,7 @@ usagePolicy:
     - 할인율 + 원가 + 적립 + 무료배송 등 메타가 풍부한 상품 진열
   doNotUseFor:
     - 장문 설명이 핵심인 콘텐츠 → Card
-    - 사용자 프로필 / 상담사 → UserCard / CounselorCard
+    - 사용자/상담사 프로필 → Card 합성 (Avatar+Title+Metadata)
     - 임의 width(180/200 등) — sm/md 두 사이즈만 SSOT.
   limits:
     titleLines: 2

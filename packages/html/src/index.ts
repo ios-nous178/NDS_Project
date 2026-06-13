@@ -206,8 +206,6 @@ export {
 export { NdsTimeline } from "./components/nds-timeline.js";
 export type { TimelineStatus, TimelineMode, TimelineDirection } from "./components/nds-timeline.js";
 
-export { NdsAppointmentCard } from "./components/nds-appointment-card.js";
-export type { AppointmentStatus, AppointmentMode } from "./components/nds-appointment-card.js";
 
 export { NdsAttachmentItem } from "./components/nds-attachment-item.js";
 export type { AttachmentFileType, AttachmentStatus } from "./components/nds-attachment-item.js";
@@ -223,15 +221,12 @@ export type { FABSize, FABColor, FABPosition } from "./components/nds-fab.js";
 export { NdsPriceTag } from "./components/nds-price-tag.js";
 export type { PriceTagSize } from "./components/nds-price-tag.js";
 
-export { NdsCounselorCard } from "./components/nds-counselor-card.js";
 
 export { NdsNotificationItem } from "./components/nds-notification-item.js";
 export type { NotificationKind } from "./components/nds-notification-item.js";
 
 export { NdsPageHeader } from "./components/nds-page-header.js";
 
-export { NdsUserCard } from "./components/nds-user-card.js";
-export type { UserCardLayout } from "./components/nds-user-card.js";
 
 export { NdsFloatingCtaBanner } from "./components/nds-floating-cta-banner.js";
 export type { FloatingCtaBannerSize } from "./components/nds-floating-cta-banner.js";

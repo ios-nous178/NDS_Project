@@ -8,7 +8,6 @@ import {
   Timeline,
   AddressPicker,
   AmountInput,
-  AppointmentCard,
   Footer,
   Asset,
   AttachmentItem,
@@ -33,7 +32,6 @@ import {
   CommentItem,
   Confetti,
   ContentViewer,
-  CounselorCard,
   CountdownTimer,
   DataTable,
   type DataTableColumn,
@@ -109,7 +107,6 @@ import {
   ActionChip,
   SelectedItemsPanel,
   SelectedItemRow,
-  UserCard,
   Chart,
   StatsTable,
 } from "@nudge-design/react";
@@ -732,17 +729,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
 
   /* ─── Domain / Data cards ─── */
-  AppointmentCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <AppointmentCard
-        date="2026-05-12"
-        startTime="14:00"
-        endTime="14:50"
-        title="김상담사 · 화상 상담"
-        status="confirmed"
-      />
-    </div>
-  ),
   ChatComposer: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <Input placeholder="메시지 입력 (ChatComposer 대체 미리보기)" />
@@ -979,23 +965,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
   NotificationItem: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <NotificationItem kind="info" title="예약 알림" description="14:00 상담이 시작됩니다." />
-    </div>
-  ),
-  UserCard: () => (
-    <div style={{ width: "100%", maxWidth: 280 }}>
-      <UserCard
-        avatar={<Avatar name="홍길동" />}
-        name="홍길동"
-        handle="@gildong"
-        bio="EAP 전문 상담사"
-        verified
-        meta="상담 1,204회 · 평점 4.9"
-        action={
-          <Button size="sm" variant="outlined">
-            팔로우
-          </Button>
-        }
-      />
     </div>
   ),
   ProductCard: () => (
@@ -1862,18 +1831,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ),
 
   /* 도메인 */
-  CounselorCard: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <CounselorCard
-        name="김상담"
-        jobTitle="임상심리전문가"
-        rating={4.8}
-        reviewCount={120}
-        tags={["우울", "불안", "직장스트레스"]}
-        bio="EAP 10년차. 직장인 스트레스 전문."
-      />
-    </div>
-  ),
   ChatBubble: () => (
     <div style={{ width: "100%", maxWidth: 240, display: "flex", flexDirection: "column", gap: 6 }}>
       <ChatBubble role="them" name="상담사" time="3:24">

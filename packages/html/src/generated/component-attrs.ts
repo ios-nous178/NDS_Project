@@ -46,31 +46,6 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-appointment-card": {
-    "observedAttributes": [
-      "actions",
-      "date",
-      "end-time",
-      "mode",
-      "start-time",
-      "status"
-    ],
-    "enums": {
-      "mode": [
-        "video",
-        "phone",
-        "chat",
-        "in-person"
-      ],
-      "status": [
-        "scheduled",
-        "confirmed",
-        "in-progress",
-        "completed",
-        "canceled"
-      ]
-    }
-  },
   "nds-attachment-item": {
     "observedAttributes": [
       "file-type",
@@ -517,17 +492,6 @@ export const COMPONENT_ATTRS = {
       "html",
       "image-lazy",
       "sanitize"
-    ],
-    "enums": {}
-  },
-  "nds-counselor-card": {
-    "observedAttributes": [
-      "cta-label",
-      "image-src",
-      "name",
-      "rating",
-      "review-count",
-      "tags"
     ],
     "enums": {}
   },
@@ -1643,18 +1607,6 @@ export const COMPONENT_ATTRS = {
       "title"
     ],
     "enums": {}
-  },
-  "nds-user-card": {
-    "observedAttributes": [
-      "layout",
-      "verified"
-    ],
-    "enums": {
-      "layout": [
-        "row",
-        "stacked"
-      ]
-    }
   },
   "nds-validation-chip": {
     "observedAttributes": [

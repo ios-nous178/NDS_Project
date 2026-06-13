@@ -129,25 +129,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- 값에 통화기호와 쉼표 직접 박음 — number 파싱이 깨짐 -->\n<nds-amount-input value=\"₩10,000\"></nds-amount-input>"
     }
   },
-  "AppointmentCard": {
-    "name": "AppointmentCard",
-    "summary": "**⚠ Deprecated — 앱 레이어로 이관 권장.** 날짜 파생(ISO→월/일/요일)과 status·mode 상태머신 같은 **앱 로직**을 컴포넌트가 소유해 DS 편입 기준에 어긋납니다. 예약 화면은 앱 컴포넌트로 두고(날짜/상태를 앱이 소유) 시각 표현은 `Card` 합성으로 구성하세요. 다음 major 에서 제거 예정. 잡힌 상담 예약 한 건 — 날짜 블록 + 제목/시간/방식/장소/상태 배지 + 액션 버튼들.",
-    "pitfalls": [
-      "상담사 선택 화면에 쓰지 말 것. 그건 CounselorCard 영역. AppointmentCard는 '잡힌 일정' 표시 전용.",
-      "onClick(카드 전체)과 actions를 함께 사용 가능 — 내부에서 액션 클릭 시 stopPropagation됨.",
-      "status에 따라 자동으로 배지 색이 바뀌므로 직접 색을 override하지 말 것 (시맨틱 의미 깨짐).",
-      "in-person 모드일 때 location 필수. 그 외 모드는 location 생략."
-    ],
-    "recommended": [
-      "내 예약 리스트: <AppointmentCard ... actions=[{label:'상세'},{label:'참여',primary:true}] />",
-      "홈 다음 일정: onClick으로 디테일 화면, 액션 없이 카드 전체 클릭",
-      "방문 상담: mode='in-person', location='강남센터 3층 301호'"
-    ],
-    "examplesHtml": {
-      "do": "<nds-appointment-card date=\"2026-06-01\" start-time=\"14:00\" end-time=\"14:50\"\n  title=\"첫 회기\" mode=\"video\" location=\"원격(Zoom)\"></nds-appointment-card>",
-      "dont": "<!-- mode 만 있고 date/start-time 누락 — 핵심 정보가 빠짐 -->\n<nds-appointment-card mode=\"video\"></nds-appointment-card>"
-    }
-  },
   "Asset": {
     "name": "Asset",
     "summary": "Toss TDS 식 통합 미디어 컴포넌트. image / icon / initial / lottie / custom 을 동일한 Frame 위에 표현해 모양·크기·overlap·status accessory 의 일관성을 강제한다. Avatar 가 '사람 식별' 한정 컴포넌트라면 Asset 은 그보다 일반적인 박스 — 카드 썸네일, 카테고리 시그니처, 상품 이미지, 채팅 첨부 등.",
@@ -1146,21 +1127,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "examplesHtml": {
       "do": "<nds-content-viewer html=\"&lt;p&gt;안전한 본문&lt;/p&gt;\"></nds-content-viewer>",
       "dont": "<!-- 사용자 입력 HTML 을 no-sanitize 로 그대로 — XSS 위험 -->\n<nds-content-viewer no-sanitize html=\"…사용자 HTML…\"></nds-content-viewer>"
-    }
-  },
-  "CounselorCard": {
-    "name": "CounselorCard",
-    "summary": "**⚠ Deprecated — Card 합성으로 대체하세요.** `Card.stories` 의 CompoundCounselorCard 가 동일 카드를 순수 Card 합성으로 렌더합니다 (`Card.Avatar` + `Card.Title`(이름) + `Card.Subtitle`(자격) + `Card.Meta`(별점) + `Card.Chips`(태그) + `Card.Description`(소개) + `Card.Cta`(예약)). 도메인 로직이 없어 Card 로 표현되며 다음 major 에서 제거 예정. 상담사 프로필 카드 — 이름/자격/평점/태그/소개/예약 CTA.",
-    "pitfalls": [
-      "imageSrc 없을 때 자동으로 이름 이니셜 표기. 빈 div를 imageSrc로 우회하지 말 것.",
-      "tags는 5개 이하 권장 (그 이상은 시각 잡음). 정말 많이 보여줘야 하면 \"+3\" 더보기 패턴.",
-      "ctaLabel 누르면 stopPropagation 자동 — onCardClick과 별개로 동작. 둘 다 부착해도 안전.",
-      "bio는 -webkit-line-clamp 2로 자동 잘림. 더 긴 본문은 상세 페이지로."
-    ],
-    "interactivePattern": "리스트 화면에서는 카드 전체 클릭 → 상세, CTA(예약)는 상세 안에서. 두 액션을 한 화면에서 동시에 두면 사용자가 헷갈림.",
-    "examplesHtml": {
-      "do": "<nds-counselor-card name=\"이정민 상담사\" job-title=\"심리 상담사\"\n  image-src=\"/dr.jpg\" rating=\"4.8\" review-count=\"124\"\n  tags='[\"불안\",\"번아웃\"]' cta-label=\"상담 신청\"></nds-counselor-card>\n<script>el.addEventListener(\"nds-counselor-cta\", () => navigate(\"/apply\"));</script>",
-      "dont": "<!-- rating 6 (max 5 초과) — 표시 깨짐 -->\n<nds-counselor-card name=\"A\" rating=\"6\"></nds-counselor-card>"
     }
   },
   "CountdownTimer": {
@@ -2553,7 +2519,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       ],
       "doNotUseFor": [
         "장문 설명이 핵심인 콘텐츠 → Card",
-        "사용자 프로필 / 상담사 → UserCard / CounselorCard",
+        "사용자/상담사 프로필 → Card 합성 (Avatar+Title+Metadata)",
         "임의 width(180/200 등) — sm/md 두 사이즈만 SSOT."
       ],
       "limits": {
@@ -3454,23 +3420,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "sticky 끄기: `<TrostWebHeader sticky={false} ... />` (기본 true).",
       "HTML 목업(vanilla): `<nds-brand-header brand='trost' surface='web' active-key='counsel'>` — base nds-header 슬롯 손수 조립 금지 (BrandHeader 가이드). 모바일은 surface='mobile'."
     ]
-  },
-  "UserCard": {
-    "name": "UserCard",
-    "summary": "**⚠ Deprecated — Card 합성으로 대체하세요.** 순수 슬롯 배치라 NudgeEAP Card 가이드의 \"프로필 카드\" 조합(`Card.Avatar` + `Card.Title` + `Card.Subtitle`(handle) + `Card.Description`(bio) + `Card.Metadata` + `Card.Cta`)으로 동일하게 표현됩니다. 다음 major 에서 제거 예정. 범용 프로필 미니카드(row/stacked, verified, action 슬롯) 기능 자체는 유지됩니다.",
-    "pitfalls": [
-      "onClick과 action 동시 사용 가능 — action 클릭은 stopPropagation됨 (의도).",
-      "bio는 자동 2줄 클램프. 디테일은 별도 화면으로.",
-      "EAP 상담사 전용은 CounselorCard. UserCard는 일반 사용자/멤버용."
-    ],
-    "recommended": [
-      "팔로우 리스트: row + 작은 action 버튼",
-      "프로필 모달: stacked + bio + 큰 action"
-    ],
-    "examplesHtml": {
-      "do": "<nds-user-card name=\"이정민\" handle=\"@jeongmin\" bio=\"디자이너\" verified layout=\"row\" clickable>\n  <img slot=\"avatar\" src=\"/u.jpg\" alt=\"\" />\n  <nds-button slot=\"action\" color=\"primary\" variant=\"outlined\">팔로우</nds-button>\n</nds-user-card>",
-      "dont": "<!-- avatar / action 을 slot 없이 children 으로 — 레이아웃이 깨짐 -->\n<nds-user-card name=\"A\"><img src=\"/u.jpg\"><button>팔로우</button></nds-user-card>"
-    }
   },
   "ValidationChip": {
     "name": "ValidationChip",

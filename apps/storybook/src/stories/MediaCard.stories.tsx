@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { MediaCard, Avatar } from "@nudge-design/react";
 
 const meta: Meta<typeof MediaCard> = {
-  title: "Components/Domain/MediaCard",
+  title: "Components/Display/MediaCard",
   component: MediaCard,
   tags: ["autodocs"],
   parameters: {

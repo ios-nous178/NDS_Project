@@ -42,31 +42,6 @@
     ],
     "enums": {}
   },
-  "nds-appointment-card": {
-    "observedAttributes": [
-      "actions",
-      "date",
-      "end-time",
-      "mode",
-      "start-time",
-      "status"
-    ],
-    "enums": {
-      "mode": [
-        "video",
-        "phone",
-        "chat",
-        "in-person"
-      ],
-      "status": [
-        "scheduled",
-        "confirmed",
-        "in-progress",
-        "completed",
-        "canceled"
-      ]
-    }
-  },
   "nds-attachment-item": {
     "observedAttributes": [
       "file-type",
@@ -513,17 +488,6 @@
       "html",
       "image-lazy",
       "sanitize"
-    ],
-    "enums": {}
-  },
-  "nds-counselor-card": {
-    "observedAttributes": [
-      "cta-label",
-      "image-src",
-      "name",
-      "rating",
-      "review-count",
-      "tags"
     ],
     "enums": {}
   },
@@ -1639,18 +1603,6 @@
       "title"
     ],
     "enums": {}
-  },
-  "nds-user-card": {
-    "observedAttributes": [
-      "layout",
-      "verified"
-    ],
-    "enums": {
-      "layout": [
-        "row",
-        "stacked"
-      ]
-    }
   },
   "nds-validation-chip": {
     "observedAttributes": [
