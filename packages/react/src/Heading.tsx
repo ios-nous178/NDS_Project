@@ -1,5 +1,4 @@
 import React from "react";
-import { typeScale } from "@nudge-design/tokens";
 
 /**
  * Heading — 헤딩 + 보조 설명(description) 표준 블록.
@@ -17,22 +16,16 @@ const HD_CLASS = "nds-heading";
 const HD_TITLE_CLASS = `${HD_CLASS}__title`;
 const HD_DESCRIPTION_CLASS = `${HD_CLASS}__description`;
 
-/* ─── Level → 폰트 매핑 (Figma 859:5714 Mapping Table) ─── */
+/* ─── Level → 폰트 매핑 (Figma 859:5714 Mapping Table) ───
+   title/description 의 size+line-height 는 공용 .nds-text-{scale} 클래스로 빌린다
+   (인라인 px 제거 → 타이포 SSOT 하나). weight/color 는 .nds-heading__* 가 유지. */
 
 const LEVEL_CONFIG = {
-  h1: { title: typeScale.headline1, description: typeScale.body3, gapVar: "--semantic-gap-title-h1" },
-  h2: { title: typeScale.headline2, description: typeScale.body3, gapVar: "--semantic-gap-title-h2" },
-  h3: { title: typeScale.headline3, description: typeScale.body3, gapVar: "--semantic-gap-title-h3" },
-  h4: {
-    title: typeScale.headline4,
-    description: typeScale.caption1,
-    gapVar: "--semantic-gap-title-h4",
-  },
-  h5: {
-    title: typeScale.headline5,
-    description: typeScale.caption1,
-    gapVar: "--semantic-gap-title-h5",
-  },
+  h1: { title: "headline1", description: "body3", gapVar: "--semantic-gap-title-h1" },
+  h2: { title: "headline2", description: "body3", gapVar: "--semantic-gap-title-h2" },
+  h3: { title: "headline3", description: "body3", gapVar: "--semantic-gap-title-h3" },
+  h4: { title: "headline4", description: "caption1", gapVar: "--semantic-gap-title-h4" },
+  h5: { title: "headline5", description: "caption1", gapVar: "--semantic-gap-title-h5" },
 } as const;
 
 export type HeadingLevel = keyof typeof LEVEL_CONFIG;
@@ -72,24 +65,13 @@ export const Heading = React.forwardRef<HTMLDivElement, HeadingProps>(
         style={{ gap: `var(${config.gapVar})`, ...style }}
         {...rest}
       >
-        <Tag
-          data-slot="title"
-          className={HD_TITLE_CLASS}
-          style={{
-            fontSize: `${config.title.fontSize}px`,
-            lineHeight: `${config.title.lineHeight}px`,
-          }}
-        >
+        <Tag data-slot="title" className={cx(HD_TITLE_CLASS, `nds-text-${config.title}`)}>
           {title}
         </Tag>
         {description != null && description !== "" && (
           <p
             data-slot="description"
-            className={HD_DESCRIPTION_CLASS}
-            style={{
-              fontSize: `${config.description.fontSize}px`,
-              lineHeight: `${config.description.lineHeight}px`,
-            }}
+            className={cx(HD_DESCRIPTION_CLASS, `nds-text-${config.description}`)}
           >
             {description}
           </p>

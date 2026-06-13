@@ -145,13 +145,13 @@
     },
     "Article": {
       "name": "Article",
-      "summary": "게시글/공지/FAQ **상세 보기** 셸. 제목·메타(Header) + 본문(Body=ContentViewer) + 첨부(Attachments) + 액션(Actions)을 묶는 레이아웃 compound. 좋아요 카운트·권한·작성자 데이터 등 **앱 로직은 0** — 모두 슬롯에 주입한다.",
+      "summary": "게시글/공지/FAQ **상세 보기** 셸. 제목·메타(Header) + 본문(Body) + 첨부(Attachments) + 액션(Actions)을 묶는 레이아웃 compound. 좋아요 카운트·권한·작성자 데이터 등 **앱 로직은 0** — 모두 슬롯에 주입한다.",
       "pitfalls": [
         "**목록/피드의 게시글 \"카드\"는 Article 이 아니다** — Card(Header/Title/Subtitle/Meta/Thumbnail) + ListItem 조합 패턴. Article 은 **상세 한 건** 전용.",
-        "본문은 `Article.Body` 의 `html` prop → 내부에서 ContentViewer 로 sanitize 렌더(태그 allowlist). raw `<div dangerouslySetInnerHTML>` 직접 쓰지 말 것. 신뢰된 본문이면 `sanitize={false}`.",
+        "본문은 `Article.Body` 의 `html` prop → 내부 sanitize 유틸로 안전 렌더(위험태그 제거 + 태그 allowlist). raw `<div dangerouslySetInnerHTML>` 직접 쓰지 말 것. 신뢰된 본문이면 `sanitize={false}`. (구 ContentViewer 강등 — 본문 렌더링이 Article.Body 로 통합됨.)",
         "좋아요/공유/신고 버튼은 `Article.Actions` 에 LikeButton 등을 주입 — Article 은 카운트/토글 상태를 갖지 않는다(앱이 관리).",
         "첨부는 `Article.Attachments` 안에 AttachmentItem 을 넣는다 — 첨부 다운로드 로직은 앱.",
-        "html 은 container + subpart 엘리먼트(`<nds-article>`/`<nds-article-header|body|attachments|actions>`)로 미러 — 본문엔 `<nds-content-viewer>` 를 넣는다."
+        "html 은 container + subpart 엘리먼트(`<nds-article>`/`<nds-article-header|body|attachments|actions>`)로 미러 — 본문은 `<nds-article-body html=\"...\">` 가 직접 sanitize 렌더한다."
       ],
       "recommended": [
         "제목 heading 레벨은 화면 위계에 맞춰 `level`(기본 2)",
@@ -159,7 +159,7 @@
         "Actions 는 1차 액션(좋아요) 좌측, 보조(공유/신고) 우측 정렬은 앱에서 배치"
       ],
       "examplesHtml": {
-        "do": "<nds-article>\n  <nds-article-header>\n    <h2 class=\"nds-article__title\">6월 정기 점검 안내</h2>\n    <div class=\"nds-article__meta\">운영팀 · 2026.06.13 · 조회 1,204</div>\n  </nds-article-header>\n  <nds-article-body><nds-content-viewer html=\"<p>점검 시간은…</p>\"></nds-content-viewer></nds-article-body>\n  <nds-article-actions><nds-like-button count=\"12\"></nds-like-button></nds-article-actions>\n</nds-article>",
+        "do": "<nds-article>\n  <nds-article-header>\n    <h2 class=\"nds-article__title\">6월 정기 점검 안내</h2>\n    <div class=\"nds-article__meta\">운영팀 · 2026.06.13 · 조회 1,204</div>\n  </nds-article-header>\n  <nds-article-body html=\"<p>점검 시간은…</p>\"></nds-article-body>\n  <nds-article-actions><nds-like-button count=\"12\"></nds-like-button></nds-article-actions>\n</nds-article>",
         "dont": "<!-- 목록의 게시글 카드를 Article 로 — Card + ListItem 조합이 맞음 -->\n<nds-article><h3>게시글 제목</h3><span>요약…</span></nds-article>"
       }
     },
@@ -1092,24 +1092,6 @@
         "dont": "<!-- 되돌리기 어려운 차단형 결정을 popconfirm 으로 — Modal/Popup 이 맞음 -->\n<nds-confirm-tooltip title=\"계정을 영구 삭제할까요?\" open>...</nds-confirm-tooltip>\n<!-- hover 보조 설명에 ConfirmTooltip (액션 없는 안내는 Tooltip) -->\n<nds-confirm-tooltip title=\"CTR = 클릭률\" actions=\"single\"></nds-confirm-tooltip>"
       }
     },
-    "ContentViewer": {
-      "name": "ContentViewer",
-      "summary": "HTML/리치 텍스트 본문 렌더러. allowlist 기반 sanitize(허용 prose 태그/속성/URL 스킴만) + 이미지 lazy + 외부 링크 noopener 자동.",
-      "pitfalls": [
-        "내장 sanitize는 allowlist 방식 — 허용 prose 태그(p/h1-6/ul/ol/li/blockquote/pre/code/table/a/img/strong/em…)·속성·http(s)/mailto/tel/상대 URL 만 남기고 나머지는 unwrap·제거(클라이언트 DOM). 문자열 단계에서 script/iframe/on*=/javascript:/vbscript: 도 선제거.",
-        "그래도 신뢰할 수 없는 사용자 입력은 서버나 DOMPurify 로 1차 처리 후 넘기는 게 안전(심층 방어) — 내장 sanitize 는 클라이언트에서만 allowlist 를 강제하고, SSR 동기 출력은 문자열 1차 방어까지만 적용된다.",
-        "내부 링크는 그대로 — http(s)로 시작하는 외부 링크에만 target=_blank + rel='noopener noreferrer' 자동.",
-        "본문 안 table/blockquote/pre 까지 표준 스타일 적용됨 — 검사 해설/명상 가이드 등 긴 본문에 적합."
-      ],
-      "recommended": [
-        "검사 결과 해설, 명상 가이드 본문, 정신건강 콘텐츠 — externalLinkBlank로 외부 참고자료 안전 노출",
-        "이미지 많은 본문은 imageLazy로 초기 렌더 부담 감소"
-      ],
-      "examplesHtml": {
-        "do": "<nds-content-viewer html=\"&lt;p&gt;안전한 본문&lt;/p&gt;\"></nds-content-viewer>",
-        "dont": "<!-- 사용자 입력 HTML 을 no-sanitize 로 그대로 — XSS 위험 -->\n<nds-content-viewer no-sanitize html=\"…사용자 HTML…\"></nds-content-viewer>"
-      }
-    },
     "CountdownTimer": {
       "name": "CountdownTimer",
       "summary": "종료 시각까지 자동 카운트다운. 1초 단위 갱신, 10초 이하 빨강 강조, mm:ss/hh:mm:ss/remaining 포맷. **tone=\"brand\"** 면 진행 중 시간을 브랜드 액센트색(캐포비=오렌지 #FD9B02)으로 — 인증 입력의 타이머처럼 강조할 때. (urgent ≤10s 빨강은 tone 과 무관하게 우선.)",
@@ -1257,24 +1239,6 @@
       "examplesHtml": {
         "do": "<!-- 인라인 빈 상태 -->\n<nds-empty-state title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\" action=\"작성하기\"></nds-empty-state>\n<!-- 풀페이지 결과(성공) -->\n<nds-empty-state status=\"success\" min-height=\"60vh\" title=\"결제가 완료됐어요\" description=\"이용 내역은 마이페이지에서 확인할 수 있어요\" action=\"홈으로\"></nds-empty-state>",
         "dont": "<!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->\n<nds-empty-state title=\"페이지를 찾을 수 없어요\"></nds-empty-state>"
-      }
-    },
-    "ExpandableText": {
-      "name": "ExpandableText",
-      "summary": "긴 텍스트 줄 수 클램프 + '더보기/접기' 자동. 짧은 텍스트면 토글 자동 숨김.",
-      "pitfalls": [
-        "본문 안에 폰트 사이즈가 섞이면 line-height 측정 정확도 떨어짐 — 단일 톤 텍스트에만 사용.",
-        "자체 본문 클램프(maxLines)를 가진 카드 안에서 ExpandableText 중첩하지 말 것.",
-        "hideCollapse=true는 약관 같이 한 번 펼치면 끝나는 케이스용. 일기/콘텐츠는 접기도 가능해야 함."
-      ],
-      "recommended": [
-        "콘텐츠 설명: lines={3}로 미리보기 + 더보기",
-        "약관: hideCollapse + expandLabel='이용약관 전문 보기'",
-        "리뷰: 기본 3줄, 자연스러운 토글"
-      ],
-      "examplesHtml": {
-        "do": "<nds-expandable-text lines=\"3\" expand-label=\"더보기\" collapse-label=\"접기\">\n  긴 설명 텍스트… (스크롤 없이 너무 길어질 때만)\n</nds-expandable-text>",
-        "dont": "<!-- 한 줄짜리 짧은 텍스트에 expandable 사용 — 더보기 버튼이 더 큼 -->\n<nds-expandable-text lines=\"3\">간단한 안내</nds-expandable-text>"
       }
     },
     "FAB": {
@@ -3112,6 +3076,40 @@
         "dont": "<!-- 이메일 받으면서 pattern 검증 없음 — 잘못된 주소가 그대로 칩이 됨 -->\n<nds-tag-input label=\"멤버 초대\"></nds-tag-input>\n<!-- 해시태그인데 value 에 직접 # 넣음 — prefix 가 표시 담당, 저장값엔 # 빼기 -->\n<nds-tag-input variant=\"inline\" value='[\"#수면\"]'></nds-tag-input>"
       }
     },
+    "Text": {
+      "name": "Text",
+      "summary": "타이포 primitive. `variant`(타입 스케일 size+line-height)·`tone`(시맨틱 색)·`weight` 를 토큰에서만 받아 임의의 텍스트에 거는 얇은 컴포넌트 — DS 의 공용 타이포 SSOT(`.nds-text-*` 클래스)를 소비한다. Heading 의 body 짝: \"제목+설명 묶음\"은 Heading, \"한 덩이의 텍스트(본문·라벨·메타·캡션)\"는 Text. `expandable` 로 길면 '더보기/접기' 토글(구 ExpandableText 흡수). (figmaNodeUrl: TODO — 타이포 스케일 노드 게시 후 연결.)",
+      "pitfalls": [
+        "**제목 + 설명 묶음에는 Text 를 두 번 쌓지 말 것** → Heading(level 로 폰트+gap 자동). Text 는 단일 텍스트 런 전용.",
+        "**variant 는 size+line-height 만** 결정한다 — 헤딩 스케일(`headline*`)을 줘도 자동 bold/색이 되지 않는다. 굵기는 `weight`, 색은 `tone` 으로 따로 준다.",
+        "**색은 `tone` 으로만** — raw hex/인라인 색 금지. 브랜드별 색 차이는 컴포넌트가 모르고 `--semantic-text-*`(tone) 토큰이 흘려보낸다.",
+        "`maxLines` 는 **CSS line-clamp(측정 없음)** — 정적으로 N줄에서 잘림. 펼침/접힘 토글이 필요하면 `expandable`.",
+        "`expandable` 본문에 **폰트 사이즈를 섞으면** line-height 측정 정확도가 떨어진다 — 단일 톤 텍스트에만. (html `<nds-text expandable>` 는 expandable 여부가 mount 시 1회 확정 — 런타임 토글 비대상.)",
+        "짧은 텍스트에 `expandable` 을 줘도 토글은 자동으로 숨겨진다 — 한두 줄짜리엔 굳이 쓰지 않는다.",
+        "`as` 는 시맨틱 태그 — 문단이면 `as=\"p\"`, 인라인 강조면 `as=\"strong\"`. 기본 `span`."
+      ],
+      "recommended": [
+        "본문: `<Text variant=\"body1\" tone=\"normal\" as=\"p\">…</Text>` (또는 body2)",
+        "메타/날짜/조회수: `<Text variant=\"caption1\" tone=\"subtle\">2026.06.14 · 조회 1,204</Text>`",
+        "라벨/배지 텍스트: `<Text variant=\"caption1\" weight=\"medium\">필수</Text>`",
+        "상태 메시지: `<Text variant=\"body3\" tone=\"statusError\">입력을 확인해 주세요</Text>`",
+        "카드 설명 미리보기: `<Text variant=\"body3\" expandable maxLines={3}>긴 설명…</Text>`",
+        "약관 미리보기: `<Text expandable maxLines={2} hideCollapse expandLabel=\"이용약관 전문 보기\">…</Text>`"
+      ],
+      "accessibility": [
+        "문단 텍스트는 `as=\"p\"` 로 시맨틱을 맞춘다(스크린리더 흐름·문서 아웃라인).",
+        "`expandable` 토글 버튼은 `aria-expanded` 가 자동 반영된다 — 별도 처리 불필요.",
+        "본문 색은 tone 토큰이 대비를 보장 — `disabled`/`muted` 를 본문 가독 텍스트에 쓰지 말 것."
+      ],
+      "examples": {
+        "do": "<Text variant=\"body1\" tone=\"normal\" as=\"p\">오늘 하루도 수고했어요.</Text>\n<Text variant=\"caption1\" tone=\"subtle\">2026.06.14 · 조회 1,204</Text>\n<Text variant=\"body3\" expandable maxLines={3}>긴 설명 텍스트…</Text>",
+        "dont": "{/* 제목+설명을 Text 두 개로 — Heading 을 써야 level↔gap 이 자동 */}\n<Text variant=\"headline4\" weight=\"bold\">바로 상담하기</Text>\n<Text variant=\"caption1\" tone=\"subtle\">급한 문제는 5분 내 바로 상담</Text>\n\n{/* raw 색 하드코딩 — tone 토큰을 쓸 것 */}\n<Text style={{ color: \"#1A1A1A\" }}>본문</Text>"
+      },
+      "examplesHtml": {
+        "do": "<nds-text variant=\"body1\" tone=\"normal\">오늘 하루도 수고했어요.</nds-text>\n<nds-text variant=\"caption1\" tone=\"subtle\">2026.06.14 · 조회 1,204</nds-text>\n<nds-text expandable max-lines=\"3\">긴 설명 텍스트…</nds-text>",
+        "dont": "<!-- 한 줄짜리 짧은 텍스트에 expandable — 더보기 버튼이 더 큼 -->\n<nds-text expandable max-lines=\"3\">간단한 안내</nds-text>"
+      }
+    },
     "TextButton": {
       "name": "TextButton",
       "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8522",
@@ -4652,7 +4650,7 @@
       "rules": [
         "반복 아이템의 상태, 날짜, 금액, 진행률 위치를 고정해 스캔 경로를 만든다.",
         "카드 하나에 주요 정보 3개, 보조 정보 5개를 넘기지 않는다.",
-        "상세 설명은 기본 노출보다 Accordion/상세 페이지/ExpandableText로 분리.",
+        "상세 설명은 기본 노출보다 Accordion/상세 페이지/Text(expandable)로 분리.",
         "모바일에서는 표보다 카드형, 필터는 가로 스크롤 또는 접힘 영역을 우선.",
         "반복 카드마다 CTA를 2개 이상 두지 않는다."
       ],

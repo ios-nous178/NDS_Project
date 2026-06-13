@@ -1,49 +1,71 @@
 /**
- * <nds-expandable-text> — DS ExpandableText 의 vanilla Web Component 버전.
+ * <nds-text> — DS Text 의 vanilla Web Component (react Text 미러).
  *
- * 사용 패턴:
- *   <nds-expandable-text lines="2" expand-label="더보기" collapse-label="접기">
- *     본문 텍스트... (host 의 light DOM children 이 그대로 body 가 됨)
- *   </nds-expandable-text>
+ * 타이포 스케일(variant)·시맨틱 색(tone)·weight 를 공용 `.nds-text-*` 클래스로 건다.
+ *   <nds-text variant="body1" tone="subtle">메타 텍스트</nds-text>
  *
- * Attributes:
- *   lines           접혔을 때 표시할 줄 수 (default 3)
- *   expand-label    더보기 버튼 라벨 (default "더보기")
- *   collapse-label  접기 버튼 라벨   (default "접기")
- *   hide-collapse   한 번 펼치면 접기 버튼을 숨김
- *   expanded        boolean — 외부 제어용 (있으면 펼친 상태)
+ * expandable: 길면 '더보기/접기' 토글(구 <nds-expandable-text> 흡수).
+ *   <nds-text expandable max-lines="3">긴 본문…</nds-text>
+ * (expandable 여부는 mount 시 1회 확정 — 런타임 토글 비대상. 그 외 attr 은 live 반영.)
  *
- * 이벤트:
- *   expanded-change (detail: { expanded: boolean }) — 토글 클릭 시
+ * 이벤트: expanded-change (detail: { expanded }) — 토글 클릭 시.
+ *
+ * 참고: react 의 `as` prop 은 html attr 로 미러하지 않는다(REACT_ONLY) — html body 는 항상 span.
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
-const ET_CLASS = "nds-expandable-text";
-const ET_BODY_CLASS = `${ET_CLASS}__body`;
-const ET_TOGGLE_CLASS = `${ET_CLASS}__toggle`;
+const TEXT_CLASS = "nds-text";
+const TEXT_EXPANDABLE_CLASS = "nds-text-expandable";
+const TEXT_TOGGLE_CLASS = "nds-text__toggle";
 
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby"] as const;
 
-export class NdsExpandableText extends NdsElement {
-  static elementName = "nds-expandable-text";
+/** tone 값(camelCase or kebab)을 클래스 suffix(kebab)로. statusError → status-error */
+function toneKebab(tone: string): string {
+  return tone.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+export class NdsText extends NdsElement {
+  static elementName = "nds-text";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-expandable-text"].observedAttributes, ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-text"].observedAttributes, ...FORWARDED_ATTRS];
   }
 
-  private _root: HTMLDivElement | null = null;
-  private _body: HTMLParagraphElement | null = null;
+  private _expandableMode = false;
+  private _root: HTMLElement | null = null; // non-exp: = body / exp: wrapper
+  private _body: HTMLElement | null = null;
   private _toggle: HTMLButtonElement | null = null;
   private _resizeObserver: ResizeObserver | null = null;
   private _overflowing = false;
   private _onToggle = () => this._handleToggle();
 
+  protected override mount(): void {
+    this._expandableMode = this.boolAttr("expandable");
+
+    const body = document.createElement("span");
+    body.dataset.slot = "body";
+    while (this.firstChild) body.appendChild(this.firstChild);
+
+    if (this._expandableMode) {
+      const root = document.createElement("div");
+      root.dataset.slot = "root";
+      root.className = TEXT_EXPANDABLE_CLASS;
+      root.appendChild(body);
+      this.appendChild(root);
+      this._root = root;
+    } else {
+      this.appendChild(body);
+      this._root = body;
+    }
+    this._body = body;
+  }
+
   override connectedCallback(): void {
-    if (!this._root) this._mount();
     super.connectedCallback();
-    this._observeBody();
+    if (this._expandableMode) this._observeBody();
   }
 
   override disconnectedCallback(): void {
@@ -52,28 +74,11 @@ export class NdsExpandableText extends NdsElement {
     this._resizeObserver = null;
   }
 
-  private _mount(): void {
-    const root = document.createElement("div");
-    root.dataset.slot = "root";
-    root.className = ET_CLASS;
-
-    const body = document.createElement("p");
-    body.dataset.slot = "body";
-    body.className = ET_BODY_CLASS;
-    while (this.firstChild) body.appendChild(this.firstChild);
-
-    root.appendChild(body);
-    this.appendChild(root);
-    this._root = root;
-    this._body = body;
-  }
-
   protected update(): void {
-    if (!this._root || !this._body) return;
+    if (!this._body || !this._root) return;
     if (this.style.display !== "contents") this.style.display = "contents";
 
-    const lines = this._intAttr("lines", 3);
-    this._root.style.setProperty("--nds-expandable-lines", String(lines));
+    this._body.className = this._bodyClasses();
 
     for (const name of FORWARDED_ATTRS) {
       const value = this.getAttribute(name);
@@ -81,8 +86,30 @@ export class NdsExpandableText extends NdsElement {
       else this._root.setAttribute(name, value);
     }
 
-    this._measureOverflow(lines);
-    this._renderState(lines);
+    if (this._expandableMode) {
+      const lines = this._intAttr("max-lines", 3);
+      this._root.style.setProperty("--nds-text-max-lines", String(lines));
+      this._measureOverflow(lines);
+      this._renderToggle();
+    } else {
+      const max = this.getAttribute("max-lines");
+      if (max !== null && max.trim() !== "") {
+        this._body.style.setProperty("--nds-text-max-lines", String(this._intAttr("max-lines", 1)));
+        this._body.dataset.clamped = "true";
+      } else {
+        this._body.style.removeProperty("--nds-text-max-lines");
+        delete this._body.dataset.clamped;
+      }
+    }
+  }
+
+  private _bodyClasses(): string {
+    const variant = this.attr("variant", "body1");
+    const tone = this.attr("tone", "normal");
+    const weight = this.getAttribute("weight");
+    const classes = [TEXT_CLASS, `nds-text-${variant}`, `nds-text-tone-${toneKebab(tone)}`];
+    if (weight) classes.push(`nds-text-weight-${weight}`);
+    return classes.join(" ");
   }
 
   private _observeBody(): void {
@@ -103,7 +130,7 @@ export class NdsExpandableText extends NdsElement {
     if (previous !== undefined) this._body.dataset.clamped = previous;
   }
 
-  private _renderState(_lines: number): void {
+  private _renderToggle(): void {
     if (!this._body) return;
     const expanded = this.boolAttr("expanded");
     const hideCollapse = this.boolAttr("hide-collapse");
@@ -133,7 +160,7 @@ export class NdsExpandableText extends NdsElement {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.slot = "toggle";
-    button.className = ET_TOGGLE_CLASS;
+    button.className = TEXT_TOGGLE_CLASS;
     button.addEventListener("click", this._onToggle);
     this._root.appendChild(button);
     this._toggle = button;
@@ -160,4 +187,4 @@ export class NdsExpandableText extends NdsElement {
   }
 }
 
-define(NdsExpandableText);
+define(NdsText);

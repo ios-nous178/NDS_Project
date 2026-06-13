@@ -1,5 +1,9 @@
-import React from "react";
-import { ContentViewer } from "./ContentViewer.js";
+import React, { useEffect, useRef } from "react";
+import {
+  decorateContentDom,
+  sanitizeContentDom,
+  stripDangerous,
+} from "./internal/contentSanitize.js";
 
 /* ─── Class names ─── */
 
@@ -63,25 +67,59 @@ ArticleHeader.displayName = "ArticleHeader";
 /* ─── Compound: Body (본문) ─── */
 
 export interface ArticleBodyProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 본문 HTML 문자열 — 주면 ContentViewer 로 sanitize 렌더 */
+  /** 본문 HTML 문자열 — 주면 sanitize(위험태그 제거 + allowlist) 후 안전 렌더 */
   html?: string;
-  /** ContentViewer sanitize 끄기 (신뢰된 본문) @default true */
+  /** sanitize 끄기 (신뢰된 본문) @default true */
   sanitize?: boolean;
+  /** 이미지에 loading="lazy" + decoding="async" 자동 (html 본문) @default true */
+  imageLazy?: boolean;
+  /** 외부 링크에 target="_blank" + rel=noopener 자동 (html 본문) @default true */
+  externalLinkBlank?: boolean;
   /** html 대신 직접 ReactNode 본문 */
   children?: React.ReactNode;
 }
 
+/**
+ * 본문 — html 을 주면 sanitize 유틸(구 ContentViewer 에서 강등)로 안전 렌더하고,
+ * 아니면 children 을 그대로 렌더한다. prose 타이포는 .nds-article__body 가 담당.
+ */
 export const ArticleBody: React.FC<ArticleBodyProps> = ({
   html,
-  sanitize,
+  sanitize = true,
+  imageLazy = true,
+  externalLinkBlank = true,
   children,
   className,
   ...rest
-}) => (
-  <div data-slot="body" className={cx(AR_BODY_CLASS, className)} {...rest}>
-    {html !== undefined ? <ContentViewer html={html} sanitize={sanitize} /> : children}
-  </div>
-);
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const safeHtml = html !== undefined ? (sanitize ? stripDangerous(html) : html) : undefined;
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!root || safeHtml === undefined) return;
+    if (sanitize) sanitizeContentDom(root);
+    decorateContentDom(root, { imageLazy, externalLinkBlank });
+  }, [safeHtml, sanitize, imageLazy, externalLinkBlank]);
+
+  if (safeHtml !== undefined) {
+    return (
+      <div
+        ref={ref}
+        data-slot="body"
+        className={cx(AR_BODY_CLASS, className)}
+        dangerouslySetInnerHTML={{ __html: safeHtml }}
+        {...rest}
+      />
+    );
+  }
+
+  return (
+    <div data-slot="body" className={cx(AR_BODY_CLASS, className)} {...rest}>
+      {children}
+    </div>
+  );
+};
 ArticleBody.displayName = "ArticleBody";
 
 /* ─── Compound: Attachments (첨부) ─── */
@@ -123,7 +161,7 @@ ArticleActions.displayName = "ArticleActions";
 /* ─── Export: Compound ─── */
 
 /**
- * Article — 게시글/공지/FAQ 상세 보기 셸. 제목·메타 + 본문(ContentViewer) + 첨부 + 액션을
+ * Article — 게시글/공지/FAQ 상세 보기 셸. 제목·메타 + 본문(sanitize 렌더) + 첨부 + 액션을
  * 묶는 **레이아웃 셸**이다. 좋아요 카운트·권한·작성자 데이터 등 **앱 로직은 0** — 모두 슬롯에
  * 주입한다. 목록/피드의 게시글 "카드"는 Card + ListItem 조합 패턴을 쓴다(Article 은 상세 전용).
  *

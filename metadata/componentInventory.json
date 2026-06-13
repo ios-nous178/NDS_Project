@@ -378,16 +378,16 @@
     "notes": "Stepper(인디케이터만)와 분리. canProceed 동기 boolean."
   },
   {
-    "name": "ExpandableText",
+    "name": "Text",
     "category": "일반",
     "status": "implemented",
-    "description": "긴 텍스트 줄 수 클램프 + 더보기/접기 자동 토글",
-    "storybookTitle": "Components/Display/ExpandableText",
-    "docsPath": "/components/expandable-text",
+    "description": "타이포 primitive — variant(스케일)·tone(시맨틱 색)·weight 로 텍스트를 그린다. expandable 로 더보기/접기(구 ExpandableText 흡수).",
+    "storybookTitle": "Components/Display/Text",
+    "docsPath": "/components/text",
     "figmaUrl": "",
     "figmaNodeId": "",
-    "usageSummary": "일기 미리보기, 콘텐츠 설명, 약관 미리보기, 리뷰",
-    "notes": "line-height 기반 측정. 자체 클램프가 있는 카드 안에서는 중첩 금지."
+    "usageSummary": "본문·라벨·메타·캡션, 긴 설명 더보기/접기, 상태 메시지",
+    "notes": "제목+설명 묶음은 Heading. 색은 tone 토큰만(raw hex 금지). maxLines는 CSS 클램프."
   },
   {
     "name": "PageHeader",
@@ -1128,18 +1128,6 @@
     "notes": "ProductCard 등 카드 컴포넌트의 이미지 슬롯에 권장."
   },
   {
-    "name": "ContentViewer",
-    "category": "일반",
-    "status": "implemented",
-    "description": "HTML 본문 안전 렌더러. 위험 태그 자동 정리, 이미지 lazy, 외부 링크 noopener 자동",
-    "storybookTitle": "Components/Display/ContentViewer",
-    "docsPath": "/components/content-viewer",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "검사 결과 해설, 명상 가이드, 정신건강 콘텐츠, 약관 본문",
-    "notes": "외부 HTML을 그대로 렌더하지 말 것 — 반드시 ContentViewer로 감싼다."
-  },
-  {
     "name": "DataTable",
     "category": "데이터",
     "status": "implemented",
@@ -1453,15 +1441,15 @@
     "notes": "native <table> 기반. 동적 정렬/모바일 카드뷰는 DataTable 사용."
   },
   {
-    "name": "TitleGroup",
+    "name": "Heading",
     "category": "레이아웃",
     "status": "implemented",
-    "description": "헤딩과 서브타이틀을 묶는 표준 타이틀 블록",
-    "storybookTitle": "Components/Layout/TitleGroup",
-    "docsPath": "",
+    "description": "헤딩 + 보조 설명(description) 표준 블록. level 하나로 폰트와 Gap/Title 토큰 자동.",
+    "storybookTitle": "Components/Layout/Heading",
+    "docsPath": "/components/heading",
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "페이지 헤더, 섹션 타이틀, 카드 헤딩, 루틴/상담 시작 블록",
-    "notes": "level 하나로 폰트와 gap/title 토큰을 동기화."
+    "notes": "level 하나로 폰트와 gap/title 토큰을 동기화. (구 TitleGroup 리네임)"
   }
 ]

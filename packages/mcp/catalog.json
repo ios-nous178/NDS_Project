@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T14:32:32.902Z",
+  "generatedAt": "2026-06-13T16:01:17.055Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -2151,39 +2151,6 @@
       ]
     },
     {
-      "name": "ContentViewer",
-      "props": [
-        {
-          "name": "html",
-          "optional": false,
-          "type": "string"
-        },
-        {
-          "name": "sanitize",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "imageLazy",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "externalLinkBlank",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/ContentViewer.d.ts",
-      "htmlTag": "nds-content-viewer",
-      "htmlObservedAttrs": [
-        "html",
-        "no-sanitize",
-        "no-image-lazy",
-        "no-external-blank"
-      ]
-    },
-    {
       "name": "CountdownTimer",
       "props": [
         {
@@ -2907,55 +2874,6 @@
         "title",
         "action",
         "hide-icon"
-      ]
-    },
-    {
-      "name": "ExpandableText",
-      "props": [
-        {
-          "name": "children",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "lines",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "expandLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "collapseLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "hideCollapse",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "expanded",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "onExpandedChange",
-          "optional": true,
-          "type": "(v: boolean) => void"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/ExpandableText.d.ts",
-      "htmlTag": "nds-expandable-text",
-      "htmlObservedAttrs": [
-        "collapse-label",
-        "expand-label",
-        "expanded",
-        "hide-collapse",
-        "lines"
       ]
     },
     {
@@ -6598,6 +6516,93 @@
         "variant",
         "label",
         "helper-text"
+      ]
+    },
+    {
+      "name": "Text",
+      "props": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "TextVariant"
+        },
+        {
+          "name": "tone",
+          "optional": true,
+          "type": "TextTone"
+        },
+        {
+          "name": "weight",
+          "optional": true,
+          "type": "TextWeight"
+        },
+        {
+          "name": "as",
+          "optional": true,
+          "type": "TextElement",
+          "allowedValues": [
+            "span",
+            "p",
+            "div",
+            "label",
+            "strong",
+            "em",
+            "small"
+          ]
+        },
+        {
+          "name": "maxLines",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "expandable",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "expandLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "collapseLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "hideCollapse",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "expanded",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onExpandedChange",
+          "optional": true,
+          "type": "(expanded: boolean) => void"
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Text.d.ts",
+      "htmlTag": "nds-text",
+      "htmlObservedAttrs": [
+        "collapse-label",
+        "expand-label",
+        "expandable",
+        "expanded",
+        "hide-collapse",
+        "max-lines",
+        "tone",
+        "variant",
+        "weight"
       ]
     },
     {
@@ -13759,7 +13764,6 @@
     "nds-coach-mark",
     "nds-comment-item",
     "nds-confirm-tooltip",
-    "nds-content-viewer",
     "nds-countdown-timer",
     "nds-data-table",
     "nds-date-picker",
@@ -13769,7 +13773,6 @@
     "nds-dropdown-menu",
     "nds-ds-highlight",
     "nds-empty-state",
-    "nds-expandable-text",
     "nds-fab",
     "nds-file-upload",
     "nds-filter-bar",
@@ -13853,6 +13856,7 @@
     "nds-tabs-panel",
     "nds-tabs-trigger",
     "nds-tag-input",
+    "nds-text",
     "nds-text-button",
     "nds-textarea",
     "nds-time-picker",
@@ -14320,16 +14324,6 @@
       ]
     },
     {
-      "tag": "nds-content-viewer",
-      "attrs": {},
-      "observedAttrs": [
-        "html",
-        "no-sanitize",
-        "no-image-lazy",
-        "no-external-blank"
-      ]
-    },
-    {
       "tag": "nds-countdown-timer",
       "attrs": {},
       "observedAttrs": [
@@ -14460,17 +14454,6 @@
         "title",
         "action",
         "hide-icon"
-      ]
-    },
-    {
-      "tag": "nds-expandable-text",
-      "attrs": {},
-      "observedAttrs": [
-        "collapse-label",
-        "expand-label",
-        "expanded",
-        "hide-collapse",
-        "lines"
       ]
     },
     {
@@ -15303,6 +15286,21 @@
         "left-icon",
         "right-icon",
         "disabled"
+      ]
+    },
+    {
+      "tag": "nds-text",
+      "attrs": {},
+      "observedAttrs": [
+        "collapse-label",
+        "expand-label",
+        "expandable",
+        "expanded",
+        "hide-collapse",
+        "max-lines",
+        "tone",
+        "variant",
+        "weight"
       ]
     },
     {

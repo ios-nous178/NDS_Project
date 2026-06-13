@@ -37,6 +37,11 @@
       "reason": "TODO — 어드민 셸 컴포넌트. inventory 분류(어드민 표면) 결정 후 등록."
     },
     {
+      "surface": "inventory",
+      "name": "Agreement",
+      "reason": "TODO — 신규 Agreement 컴포넌트. 스토리북·figma 노드 후속 보류(new-components 작업). 별도 등록 대상."
+    },
+    {
       "surface": "gallery",
       "name": "DSHighlight",
       "reason": "페이지 단위 개발용 오버레이 도구(Provider/Mark/Toggle). body 포털 오버레이라 카드형 미니 프리뷰에 부적합 — 전용 스토리는 있고 카탈로그에선 메타 카드로 표시."

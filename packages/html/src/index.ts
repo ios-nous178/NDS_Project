@@ -181,14 +181,12 @@ export { NdsChart } from "./components/nds-chart.js";
 export { NdsCountdownTimer } from "./components/nds-countdown-timer.js";
 export type { CountdownFormat } from "./components/nds-countdown-timer.js";
 
-export { NdsExpandableText } from "./components/nds-expandable-text.js";
+export { NdsText } from "./components/nds-text.js";
 
 export { NdsOrderSummaryCard } from "./components/nds-order-summary-card.js";
 
 export { NdsChatBubble } from "./components/nds-chat-bubble.js";
 export type { ChatRole, ChatGroupPosition } from "./components/nds-chat-bubble.js";
-
-export { NdsContentViewer } from "./components/nds-content-viewer.js";
 
 export { NdsQuickActionGrid } from "./components/nds-quick-action-grid.js";
 export { NdsQuickMenu } from "./components/nds-quick-menu.js";

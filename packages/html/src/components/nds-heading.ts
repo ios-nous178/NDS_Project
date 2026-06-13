@@ -4,8 +4,8 @@
  * DOM 구조 (React Heading.tsx 와 동일):
  *   <nds-heading level="h2" title="안녕" description="반가워"></nds-heading>
  *     └─ <div class="nds-heading" data-slot="root" data-level="h2" style="gap: var(--semantic-gap-title-h2);">
- *          ├─ <h2 class="nds-heading__title" data-slot="title" style="font-size:...;line-height:...">안녕</h2>
- *          └─ <p  class="nds-heading__description" data-slot="description" style="...">반가워</p>
+ *          ├─ <h2 class="nds-heading__title nds-text-headline2" data-slot="title">안녕</h2>
+ *          └─ <p  class="nds-heading__description nds-text-body3" data-slot="description">반가워</p>
  *
  * title / description attribute 가 없으면 host 의 light DOM 자식을 그대로 사용한다.
  *   <nds-heading level="h3">
@@ -16,8 +16,6 @@
  * as: 렌더 태그 override (기본 = level). 비주얼은 level 이 결정, 시맨틱만 바꿀 때.
  */
 
-import { typeScale } from "@nudge-design/tokens";
-
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
@@ -27,27 +25,13 @@ const HD_DESCRIPTION_CLASS = `${HD_CLASS}__description`;
 
 export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5";
 
-const LEVEL_CONFIG: Record<
-  HeadingLevel,
-  {
-    title: { fontSize: number; lineHeight: number };
-    description: { fontSize: number; lineHeight: number };
-    gapVar: string;
-  }
-> = {
-  h1: { title: typeScale.headline1, description: typeScale.body3, gapVar: "--semantic-gap-title-h1" },
-  h2: { title: typeScale.headline2, description: typeScale.body3, gapVar: "--semantic-gap-title-h2" },
-  h3: { title: typeScale.headline3, description: typeScale.body3, gapVar: "--semantic-gap-title-h3" },
-  h4: {
-    title: typeScale.headline4,
-    description: typeScale.caption1,
-    gapVar: "--semantic-gap-title-h4",
-  },
-  h5: {
-    title: typeScale.headline5,
-    description: typeScale.caption1,
-    gapVar: "--semantic-gap-title-h5",
-  },
+/** title/description 는 공용 .nds-text-{scale} 클래스로 size+line-height 를 빌린다(인라인 px 제거). */
+const LEVEL_CONFIG: Record<HeadingLevel, { title: string; description: string; gapVar: string }> = {
+  h1: { title: "headline1", description: "body3", gapVar: "--semantic-gap-title-h1" },
+  h2: { title: "headline2", description: "body3", gapVar: "--semantic-gap-title-h2" },
+  h3: { title: "headline3", description: "body3", gapVar: "--semantic-gap-title-h3" },
+  h4: { title: "headline4", description: "caption1", gapVar: "--semantic-gap-title-h4" },
+  h5: { title: "headline5", description: "caption1", gapVar: "--semantic-gap-title-h5" },
 };
 
 const LEVELS = Object.keys(LEVEL_CONFIG) as HeadingLevel[];
@@ -57,7 +41,13 @@ export class NdsHeading extends NdsElement {
   static elementName = "nds-heading";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-heading"].observedAttributes, "title", "description", "as", ...FORWARDED_ATTRS];
+    return [
+      ...COMPONENT_ATTRS["nds-heading"].observedAttributes,
+      "title",
+      "description",
+      "as",
+      ...FORWARDED_ATTRS,
+    ];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -136,12 +126,10 @@ export class NdsHeading extends NdsElement {
       this._titleEl?.remove();
       this._titleEl = document.createElement(tag);
       this._titleEl.dataset.slot = "title";
-      this._titleEl.className = HD_TITLE_CLASS;
       this._root.prepend(this._titleEl);
       this._renderedTag = tag;
     }
-    this._titleEl.style.fontSize = `${config.title.fontSize}px`;
-    this._titleEl.style.lineHeight = `${config.title.lineHeight}px`;
+    this._titleEl.className = `${HD_TITLE_CLASS} nds-text-${config.title}`;
     this._titleEl.textContent = text;
   }
 
@@ -155,11 +143,9 @@ export class NdsHeading extends NdsElement {
     if (!this._descriptionEl) {
       this._descriptionEl = document.createElement("p");
       this._descriptionEl.dataset.slot = "description";
-      this._descriptionEl.className = HD_DESCRIPTION_CLASS;
       this._root.appendChild(this._descriptionEl);
     }
-    this._descriptionEl.style.fontSize = `${config.description.fontSize}px`;
-    this._descriptionEl.style.lineHeight = `${config.description.lineHeight}px`;
+    this._descriptionEl.className = `${HD_DESCRIPTION_CLASS} nds-text-${config.description}`;
     this._descriptionEl.textContent = text;
   }
 

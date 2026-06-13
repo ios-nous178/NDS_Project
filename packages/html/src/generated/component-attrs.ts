@@ -465,15 +465,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-content-viewer": {
-    "observedAttributes": [
-      "external-link-blank",
-      "html",
-      "image-lazy",
-      "sanitize"
-    ],
-    "enums": {}
-  },
   "nds-countdown-timer": {
     "observedAttributes": [
       "ends-at",
@@ -650,16 +641,6 @@ export const COMPONENT_ATTRS = {
         "info"
       ]
     }
-  },
-  "nds-expandable-text": {
-    "observedAttributes": [
-      "collapse-label",
-      "expand-label",
-      "expanded",
-      "hide-collapse",
-      "lines"
-    ],
-    "enums": {}
   },
   "nds-fab": {
     "observedAttributes": [
@@ -1418,6 +1399,20 @@ export const COMPONENT_ATTRS = {
         "inline"
       ]
     }
+  },
+  "nds-text": {
+    "observedAttributes": [
+      "collapse-label",
+      "expand-label",
+      "expandable",
+      "expanded",
+      "hide-collapse",
+      "max-lines",
+      "tone",
+      "variant",
+      "weight"
+    ],
+    "enums": {}
   },
   "nds-text-button": {
     "observedAttributes": [

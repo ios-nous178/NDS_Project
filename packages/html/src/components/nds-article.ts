@@ -3,7 +3,8 @@
  *
  * 게시글/공지/FAQ 상세 보기 셸. React Article.tsx 의 compound(Root/Header/Body/Attachments/
  * Actions)를 div/section/article wrapper 서브 엘리먼트로 미러한다. 같은 stylesheet
- * (.nds-article__*) 를 재사용한다. 본문은 안에 <nds-content-viewer> 를 넣는다.
+ * (.nds-article__*) 를 재사용한다. 본문은 <nds-article-body html="..."> 가 직접 sanitize 렌더한다
+ * (구 nds-content-viewer 강등 — sanitize 로직은 base/content-sanitize 공유 유틸).
  *
  * DOM:
  *   <nds-article>
@@ -11,13 +12,18 @@
  *       <h2 class="nds-article__title">제목</h2>
  *       <div class="nds-article__meta">운영팀 · 2026.06.13</div>
  *     </nds-article-header>
- *     <nds-article-body><nds-content-viewer html="..."></nds-content-viewer></nds-article-body>
+ *     <nds-article-body html="<p>본문…</p>"></nds-article-body>
  *     <nds-article-attachments>...</nds-article-attachments>
  *     <nds-article-actions>...</nds-article-actions>
  *   </nds-article>
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
+import {
+  decorateContentDom,
+  sanitizeContentDom,
+  stripDangerousHtml,
+} from "../base/content-sanitize.js";
 
 const AR_CLASS = "nds-article";
 
@@ -92,6 +98,33 @@ export class NdsArticleBody extends ArticleSlot {
   static elementName = "nds-article-body";
   protected slotClass = `${AR_CLASS}__body`;
   protected slotName = "body";
+
+  static get observedAttributes(): readonly string[] {
+    return ["html", "no-sanitize", "no-image-lazy", "no-external-blank"];
+  }
+
+  private _renderedHtml: string | null = null;
+
+  /** html attr 을 주면 sanitize 후 안전 렌더(구 ContentViewer). 없으면 children 그대로. */
+  protected override update(): void {
+    if (this.style.display !== "contents") this.style.display = "contents";
+    if (!this._inner) return;
+
+    const raw = this.getAttribute("html");
+    if (raw === null) return; // children 모드
+
+    const sanitize = !this.boolAttr("no-sanitize");
+    const safe = sanitize ? stripDangerousHtml(raw) : raw;
+    if (safe === this._renderedHtml) return;
+    this._renderedHtml = safe;
+
+    this._inner.innerHTML = safe;
+    if (sanitize) sanitizeContentDom(this._inner);
+    decorateContentDom(this._inner, {
+      imageLazy: !this.boolAttr("no-image-lazy"),
+      externalLinkBlank: !this.boolAttr("no-external-blank"),
+    });
+  }
 }
 
 export class NdsArticleAttachments extends ArticleSlot {
