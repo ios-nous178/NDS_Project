@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from "react";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import { groupByCategorySorted, orderedCategories } from "@nudge-design/catalog";
 import inventory from "../../../../metadata/componentInventory.json";
 import styles from "./ComponentGallery.module.css";
 
-const CATEGORIES = ["전체", ...Array.from(new Set(inventory.map((e) => e.category)))];
+// 카테고리 그룹 순서 + 그룹 내 A-Z 정렬은 @nudge-design/catalog 가 SSOT (storybook AllComponents 와 공유).
+const CATEGORIES = ["전체", ...orderedCategories(inventory)];
 
 const STATUS_LABEL = {
   implemented: "구현됨",
@@ -56,15 +58,7 @@ export default function ComponentGallery({ storybookBaseUrl = "/storybook" }) {
     });
   }, [query, category, onlySynced]);
 
-  const grouped = useMemo(() => {
-    const map = new Map();
-    for (const e of filtered) {
-      const list = map.get(e.category) ?? [];
-      list.push(e);
-      map.set(e.category, list);
-    }
-    return map;
-  }, [filtered]);
+  const grouped = useMemo(() => groupByCategorySorted(filtered), [filtered]);
 
   const syncedCount = inventory.filter((e) => e.figmaSynced).length;
 
@@ -104,7 +98,7 @@ export default function ComponentGallery({ storybookBaseUrl = "/storybook" }) {
         ))}
       </div>
 
-      {Array.from(grouped.entries()).map(([cat, entries]) => (
+      {grouped.map(([cat, entries]) => (
         <section key={cat} className={styles.section}>
           <h3 className={styles.sectionHead}>
             {cat}

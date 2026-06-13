@@ -129,6 +129,7 @@ import {
   VideocameraIcon,
 } from "@nudge-design/icons";
 import { cv, radius, shadow, resolveActionsLayout } from "@nudge-design/tokens";
+import { groupByCategorySorted, orderedCategories } from "@nudge-design/catalog";
 import inventory from "../../../../metadata/componentInventory.json";
 import componentGuides from "../../../../metadata/componentGuides.json";
 
@@ -2524,7 +2525,8 @@ type InventoryEntry = (typeof inventory)[number] & {
   figmaSyncedAt?: string;
 };
 
-const CATEGORIES = ["전체", ...Array.from(new Set(inventory.map((e) => e.category)))];
+// 카테고리 그룹 순서 + 그룹 내 A-Z 정렬은 @nudge-design/catalog 가 SSOT (docs ComponentGallery 와 공유).
+const CATEGORIES = ["전체", ...orderedCategories(inventory)];
 
 const meta: Meta = {
   title: "Foundations/All Components",
@@ -2749,15 +2751,7 @@ function Catalog() {
     });
   }, [query, category, syncedOnly, catalogInventory]);
 
-  const grouped = useMemo(() => {
-    const map = new Map<string, InventoryEntry[]>();
-    for (const e of filtered) {
-      const list = map.get(e.category) ?? [];
-      list.push(e as InventoryEntry);
-      map.set(e.category, list);
-    }
-    return map;
-  }, [filtered]);
+  const grouped = useMemo(() => groupByCategorySorted(filtered as InventoryEntry[]), [filtered]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
@@ -2799,7 +2793,7 @@ function Catalog() {
         </span>
       </div>
 
-      {Array.from(grouped.entries()).map(([cat, entries]) => (
+      {grouped.map(([cat, entries]) => (
         <div key={cat}>
           <p style={categoryHeader}>
             {cat} <span style={categoryHeaderCount}>{entries.length}</span>
