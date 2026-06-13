@@ -113,7 +113,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "AmountInput": {
     "name": "AmountInput",
-    "summary": "큰 금액/수량 입력(원·명·개·포인트 등). 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프. NumberStepper(작은 정수)와 분리.",
+    "summary": "큰 금액/수량 입력(원·명·개·포인트 등). 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프.",
     "pitfalls": [
       "**금액/수량을 입력받는 폼 필드를 일반 text input 이나 정적 숫자 표시('3,000,000 명' 큰 글씨)로 만들지 말 것** — 사용자가 못 고치고 콤마/단위/clamp 가 빠진다. <nds-amount-input value=… unit='명|원|개' placeholder='0'> 로. unit 은 '원' 외에도 '명/개' 등 자유 (검증룰 amount-as-text-input / amount-as-static-display 가 막음).",
       "value는 number | null. 빈 입력은 null (0이 아님).",
@@ -1017,24 +1017,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- disabled 와 removable 동시 사용 — 누가 X 버튼을 누를 수 있는지 모호 -->\n<nds-chip disabled removable>태그</nds-chip>\n<!-- interactive 없이 클릭 핸들러만 — 키보드 포커스가 안 잡힘 -->\n<nds-chip onclick=\"…\">필터</nds-chip>"
     }
   },
-  "CircularProgress": {
-    "name": "CircularProgress",
-    "summary": "원형 진행도. 단순 value/max 비율 표시. ScoreGauge(단계 분류 결과)와 분리, ProgressBar(가로)와 분리. 둘은 같은 radial family 이지만 해석이 다르다.",
-    "pitfalls": [
-      "심리검사 결과 등 단계 분류가 중요하면 ScoreGauge를 쓸 것 — CircularProgress는 비율만.",
-      "가로 막대로 충분한 단순 진행은 ProgressBar가 적절. CircularProgress는 강조/포커스 용도.",
-      "label을 커스텀(분/회 등)할 때 caption으로 max를 표시하면 의미가 분명 (예: label='28분' caption='목표 60분')."
-    ],
-    "recommended": [
-      "일일 목표: <CircularProgress value={done} max={60} label={`${done}분`} caption='목표 60분' />",
-      "달성: color=success일 때 시각 신호 강함",
-      "작은 인디케이터: hideLabel + 작은 size"
-    ],
-    "examplesHtml": {
-      "do": "<nds-circular-progress value=\"75\" max=\"100\" size=\"lg\" label=\"저장 진행\"></nds-circular-progress>",
-      "dont": "<!-- max 가 음수/0 — 0으로 나눠 표시 깨짐 -->\n<nds-circular-progress value=\"50\" max=\"0\"></nds-circular-progress>"
-    }
-  },
   "CoachMark": {
     "name": "CoachMark",
     "summary": "온보딩 dim 툴팁. 특정 DOM 영역을 강조 + 단계별 안내. Tooltip과 분리(가벼운 hover용).",
@@ -1070,24 +1052,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "examplesHtml": {
       "do": "<nds-comment-item author=\"이정민\" time=\"2시간 전\" text=\"공감해요!\" show-reply>\n  <img slot=\"avatar\" src=\"/u.jpg\" alt=\"\" />\n</nds-comment-item>\n<script>el.addEventListener(\"nds-comment-reply\", e => focusReply(e.detail.author));</script>",
       "dont": "<!-- text 를 slot 으로 — text 는 attribute 사용 -->\n<nds-comment-item author=\"A\"><p>본문</p></nds-comment-item>"
-    }
-  },
-  "Confetti": {
-    "name": "Confetti",
-    "summary": "축하 이펙트 (canvas 기반). active=true가 되는 순간 한 번 발사, onComplete에서 false로 리셋.",
-    "pitfalls": [
-      "active를 항상 true로 두지 말 것 — onComplete에서 false 리셋 필수.",
-      "진지한 결과(부정/주의)에 사용 금지 — 톤이 어울리지 않음.",
-      "z-index=9999 — 모달 위에도 그려짐. 의도된 동작.",
-      "prefers-reduced-motion 사용자 배려: 외부에서 매체 쿼리 체크 후 active를 막을 것."
-    ],
-    "recommended": [
-      "챌린지 완료: 결과 화면 마운트 시 1회",
-      "첫 가입 환영: 가입 완료 모달 위에 발사"
-    ],
-    "examplesHtml": {
-      "do": "<nds-confetti active count=\"50\" duration=\"2000\"\n  colors='[\"#FF5722\",\"#FFC107\",\"#4CAF50\"]'></nds-confetti>",
-      "dont": "<!-- 자해/위기 톤 화면 / 부정적 액션 후에 confetti — 시그널 충돌 -->\n<nds-confetti active></nds-confetti>  <!-- after \"계정 삭제 완료\" -->"
     }
   },
   "ConfirmTooltip": {
@@ -2214,25 +2178,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "HTML 목업(vanilla): `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 모바일/웹뷰는 surface='mobile'|'webview'."
     ]
   },
-  "NumberStepper": {
-    "name": "NumberStepper",
-    "summary": "**수량 조절 +/- 버튼 입력 (폼 필드)** — 복약 횟수·장바구니 수량·알림 빈도 등 '폼 안에서 숫자를 올리고 내리는 칸'. ⚠️ **`Stepper`(다단계 *진행 표시* 막대/원)와 이름만 비슷한 전혀 다른 컴포넌트.** 헷갈리면: 값을 입력받는 폼 컨트롤이면 **NumberStepper**, 지금 몇 단계인지 보여주는 인디케이터면 **Stepper**(component:Stepper).",
-    "pitfalls": [
-      "**Stepper(진행 표시)와 혼동 금지** — 그건 회원가입/멀티스텝 폼 같은 '지금 몇 단계' 표시(component:Stepper). NumberStepper 는 폼 필드의 수량 입력이다.",
-      "큰 범위(100+) 입력에는 부적합. tap/click을 N번 해야 하므로 Input type='number'를 쓸 것.",
-      "min/max 도달 시 해당 버튼이 자동 비활성. 외부에서 또 비활성 처리할 필요 없음."
-    ],
-    "recommended": [
-      "복약 횟수: min=1 max=10 unit='회'",
-      "장바구니 수량: min=1 max=99 editable",
-      "알림 빈도: step=5 unit='분'"
-    ],
-    "interactivePattern": "value/onValueChange는 controlled 강제. 내부 state 없음 — 부모에서 관리.",
-    "examplesHtml": {
-      "do": "<nds-number-stepper value=\"1\" min=\"1\" max=\"9\" step=\"1\" unit=\"명\"></nds-number-stepper>\n<script>el.addEventListener(\"number-change\", e => setQty(e.detail.value));</script>",
-      "dont": "<!-- 자유 입력을 nds-input 으로 받고 stepper 흉내 — 범위/단위 룰이 빠짐 -->\n<nds-input type=\"number\" />"
-    }
-  },
   "OnlineIndicator": {
     "name": "OnlineIndicator",
     "summary": "presence 점 (online/away/busy/offline). online은 자동 펄스 애니메이션.",
@@ -2726,7 +2671,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "ScoreGauge": {
     "name": "ScoreGauge",
-    "summary": "점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑. CircularProgress 와 함께 radial progress family 를 이룬다.",
+    "summary": "점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑.",
     "pitfalls": [
       "단계 경계는 검사마다 다름. segments prop으로 직접 넘겨 결과 해석을 통일.",
       "needle은 transform: rotate로 회전. CSS transform 충돌 환경(예: 부모 transform)에선 어긋날 수 있어 wrapper 별도 권장.",
@@ -3091,7 +3036,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   "Stepper": {
     "name": "Stepper",
     "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
-    "summary": "**다단계 작업의 현재 진척 *표시*** (지금 몇 단계인지 보여주는 막대/원, 입력 컨트롤 아님). variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. ⚠️ **폼 필드의 수량 +/- 입력은 `NumberStepper`(component:NumberStepper)** — 이름만 비슷한 다른 컴포넌트. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
+    "summary": "**다단계 작업의 현재 진척 *표시*** (지금 몇 단계인지 보여주는 막대/원, 입력 컨트롤 아님). variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
     "pitfalls": [
       "status 는 prop 이 아님 — steps 에 {key,label,title?} 만 주고 상태는 current(0-based)로 결정. 'status' 를 박으면 무시됨.",
       "variant 는 numbered|dots|bar 뿐 — 'horizontal'/'vertical' 같은 값은 없음(Stepper 는 항상 가로). 세로 방향 트래커가 필요하면 Timeline(direction='vertical').",
@@ -4384,7 +4329,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**01 Logo**: 카드 상단 중앙 정렬. **BrandLogo 컴포넌트로 박는다** — HTML `<nds-brand-logo brand=\"cashwalk-biz\">` / React `<BrandLogo brand=\"cashwalk-biz\" />`. 사이드바와 동일한 로고 SSOT 가 data URI 로 내장돼 단일 HTML 에서도 안 깨진다. **35KB base64 를 손으로 붙이거나 raw <img>/SVG 로 조립 금지**(모지바케·로고 유실 회귀의 직접 원인). 찾기 화면은 로고 아래 안내문(예: '캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.')을 둔다.",
       "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
       "**03 Primary CTA (단일 액션 화면)**: 로그인·찾기처럼 액션이 **하나뿐**인 화면은 Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득) — `<nds-button full-width>`. 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개. ⚠️ **모달 단일버튼(우측 hug)과 혼동 금지** — 단일 액션 온보딩 CTA 는 full-width 가 하드 계약(validator `onboarding-cta-not-fullwidth` error). 모달 단일버튼은 반대로 hug 우측정렬. (`pattern:cashwalk-biz-button`)",
-      "**03b Footer Nav (멀티스텝 화면)**: 가입 심사처럼 **이전/다음(제출)** 이 있는 멀티스텝은 버튼을 카드 안에 넣지 않는다 — **카드(섹션) *아래* 분리된 캔버스 행**에 둔다(흰 바·상단 border·sticky 없음, 카드와 gap). **좌측 [이전 단계]**(Outlined, hug) + **우측 [다음 단계]/[제출]**(Solid/Primary, hug, 우측정렬). 멀티스텝 푸터의 버튼은 full-width 가 아니라 **hug** (validator 가 이전버튼/Stepper 존재를 감지해 full-width 강제를 면제). **제출(다음) Primary 버튼도 카드 안에 넣지 말 것** — 카드 안 Primary solid 는 `onboarding-multistep-cta-inside-card` error(이전버튼을 텍스트 링크로 두고 제출을 카드 안 full-width 로 박는 회귀 차단). 이전버튼을 카드 안에 넣으면 `onboarding-back-button-inside-card` warn. **상단엔 진행 표시 `Stepper`**(component:Stepper, variant=bar/numbered) — `Stepper` 가 있으면 validator 가 멀티스텝으로 인식한다. 폼 필드의 수량 입력 `NumberStepper` 와 혼동 금지.",
+      "**03b Footer Nav (멀티스텝 화면)**: 가입 심사처럼 **이전/다음(제출)** 이 있는 멀티스텝은 버튼을 카드 안에 넣지 않는다 — **카드(섹션) *아래* 분리된 캔버스 행**에 둔다(흰 바·상단 border·sticky 없음, 카드와 gap). **좌측 [이전 단계]**(Outlined, hug) + **우측 [다음 단계]/[제출]**(Solid/Primary, hug, 우측정렬). 멀티스텝 푸터의 버튼은 full-width 가 아니라 **hug** (validator 가 이전버튼/Stepper 존재를 감지해 full-width 강제를 면제). **제출(다음) Primary 버튼도 카드 안에 넣지 말 것** — 카드 안 Primary solid 는 `onboarding-multistep-cta-inside-card` error(이전버튼을 텍스트 링크로 두고 제출을 카드 안 full-width 로 박는 회귀 차단). 이전버튼을 카드 안에 넣으면 `onboarding-back-button-inside-card` warn. **상단엔 진행 표시 `Stepper`**(component:Stepper, variant=bar/numbered) — `Stepper` 가 있으면 validator 가 멀티스텝으로 인식한다.",
       "**03c 본인 인증 Section (휴대폰/이메일 → 인증번호)**: 연락처 입력(전화/이메일 TextInput) → **[인증번호 전송/재전송]은 별도 full-width 검정 버튼**(`<nds-button color=\"neutral\" full-width>` — primary 노랑 아님, 인라인 버튼도 아님) → 그 아래 **인증번호 입력 = FieldActionRow(action 생략) + 코드 입력 + 우측 인라인 타이머**. 타이머는 `CountdownTimer tone=\"brand\"`(캐포비 오렌지 #FD9B02). 인증 입력엔 인라인 확인 버튼을 두지 않고, 확정은 하단 [다음](primary full-width)으로 한다. raw <input> 6칸·자작 +/- 금지(`verification-manual-assembly` warn) — `nds-verification-code-input` 단일 박스 사용.",
       "**04 Helper**: 보조 링크는 **TextButton(Medium)** — 로그인 화면의 '아이디 찾기 | 비밀번호 찾기', 가입 유도 등. solid 버튼으로 만들지 않는다.",
       "**상태 분기는 같은 골격**: 로그인 / 아이디 찾기 / 비밀번호 찾기는 동일한 480px 중앙 카드 레이아웃의 변형. 화면마다 다른 골격을 만들지 않는다.",

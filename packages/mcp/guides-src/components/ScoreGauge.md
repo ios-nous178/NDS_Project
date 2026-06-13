@@ -4,7 +4,7 @@
 
 ## summary
 
-점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑. CircularProgress 와 함께 radial progress family 를 이룬다.
+점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑.
 
 ## pitfalls
 

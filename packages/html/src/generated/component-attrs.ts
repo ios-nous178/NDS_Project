@@ -423,19 +423,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-circular-progress": {
-    "observedAttributes": [
-      "aria-label",
-      "color",
-      "hide-label",
-      "max",
-      "size",
-      "thickness",
-      "track-color",
-      "value"
-    ],
-    "enums": {}
-  },
   "nds-coach-mark": {
     "observedAttributes": [
       "finish-label",
@@ -452,15 +439,6 @@ export const COMPONENT_ATTRS = {
     "observedAttributes": [
       "is-reply",
       "reply-label"
-    ],
-    "enums": {}
-  },
-  "nds-confetti": {
-    "observedAttributes": [
-      "active",
-      "colors",
-      "count",
-      "duration"
     ],
     "enums": {}
   },
@@ -1034,20 +1012,6 @@ export const COMPONENT_ATTRS = {
         "system"
       ]
     }
-  },
-  "nds-number-stepper": {
-    "observedAttributes": [
-      "aria-label",
-      "disabled",
-      "editable",
-      "max",
-      "min",
-      "size",
-      "step",
-      "unit",
-      "value"
-    ],
-    "enums": {}
   },
   "nds-online-indicator": {
     "observedAttributes": [

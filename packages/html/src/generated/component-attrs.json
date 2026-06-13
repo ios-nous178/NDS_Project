@@ -419,19 +419,6 @@
       ]
     }
   },
-  "nds-circular-progress": {
-    "observedAttributes": [
-      "aria-label",
-      "color",
-      "hide-label",
-      "max",
-      "size",
-      "thickness",
-      "track-color",
-      "value"
-    ],
-    "enums": {}
-  },
   "nds-coach-mark": {
     "observedAttributes": [
       "finish-label",
@@ -448,15 +435,6 @@
     "observedAttributes": [
       "is-reply",
       "reply-label"
-    ],
-    "enums": {}
-  },
-  "nds-confetti": {
-    "observedAttributes": [
-      "active",
-      "colors",
-      "count",
-      "duration"
     ],
     "enums": {}
   },
@@ -1030,20 +1008,6 @@
         "system"
       ]
     }
-  },
-  "nds-number-stepper": {
-    "observedAttributes": [
-      "aria-label",
-      "disabled",
-      "editable",
-      "max",
-      "min",
-      "size",
-      "step",
-      "unit",
-      "value"
-    ],
-    "enums": {}
   },
   "nds-online-indicator": {
     "observedAttributes": [

@@ -39,7 +39,6 @@ export { NdsBreadcrumb, NdsBreadcrumbItem } from "./components/nds-breadcrumb.js
 export { NdsChip } from "./components/nds-chip.js";
 export type { ChipColor, ChipSize, ChipVariant } from "./components/nds-chip.js";
 
-export { NdsCircularProgress } from "./components/nds-circular-progress.js";
 
 export { NdsCheckbox } from "./components/nds-checkbox.js";
 
@@ -153,8 +152,6 @@ export { NdsSearchInput } from "./components/nds-search-input.js";
 
 export { NdsStarRating } from "./components/nds-star-rating.js";
 
-export { NdsNumberStepper } from "./components/nds-number-stepper.js";
-export type { NumberStepperSize } from "./components/nds-number-stepper.js";
 
 // 누락 회귀: React Stepper 는 export 돼 있으나 html 미러가 index 에서 빠져 define() 부작용이
 // 실행 안 돼 customElements 에 미등록 → <nds-stepper> 가 높이 0 으로 안 보였음(목업 폼 스텝퍼).
@@ -279,7 +276,6 @@ export { NdsCallControlBar } from "./components/nds-call-control-bar.js";
 
 export { NdsChatComposer } from "./components/nds-chat-composer.js";
 
-export { NdsConfetti } from "./components/nds-confetti.js";
 
 export { NdsDataTable } from "./components/nds-data-table.js";
 export type { DataTableSortDirection } from "./components/nds-data-table.js";
