@@ -74,3 +74,31 @@ deprecate 가 확정되면 노드 확보 대신 baseline 에서 사유를 "depre
 - 레거시 `--semantic-primary-*` 별칭: dist 어디에도 emit 되지 않는데 MCP 가이드 일부(LikeButton·Calendar
   예시, mockup-validator 안내 문구)가 `var(--semantic-primary-main)` 사용을 권장 — 외부 목업에서
   미정의 변수가 된다. 가이드 예시를 `--semantic-*` role 토큰으로 교체 필요 (별도 /ds-fix 건).
+
+---
+
+## 6. 2차 라운드 — 유사 클러스터 전수 스윕 (2026-06-13)
+
+1차에서 다루지 않은 이름·역할 유사 클러스터를 전수 비교했다 (버튼 계열 / 배너·노티스 계열 /
+오버레이 5종 / Input 계열 6종 / Select 계열 4종 / 헤더 계열). 결론: **신규 통합 후보는 1건뿐**.
+
+### 6.1 TextButton ↔ Button (낮은 우선순위, 조건부)
+
+- `TextButton.tsx` 80줄 — Button 과 별개 구현. size 2단(large/medium) + left/rightIcon 만 가진
+  텍스트 전용 버튼. Button 에 `variant="text"` 를 추가하면 API 상으로는 흡수 가능.
+- **반대 근거**: TextButton 은 자체 Figma 노드(171:8550/171:8538)와 자체 MCP 가이드를 가진
+  독립 디자인 엔티티다. Figma SSOT 가 둘을 별개 컴포넌트로 유지하는 한, 코드만 합치면
+  figma↔code 매핑이 어긋난다. **디자인 쪽에서 Button 세트로 합칠 계획이 생길 때만 실행** 권장.
+
+### 6.2 유지 판정 클러스터 (통합 비권장)
+
+| 클러스터                                              | 판정 근거                                                              |
+| ----------------------------------------------------- | ---------------------------------------------------------------------- |
+| AddButton / IconButton / SelectionButton              | 시멘틱·인터랙션 모델이 각각 다름 (추가 액션 / 아이콘 단독 / 선택 토글) |
+| Banner / NoticeAlert / FloatingCtaBanner              | 레이아웃·색상 전략·고정 위치가 본질적으로 다름                         |
+| Modal / Popup / BottomSheet / Tooltip / Popover       | compound 구조로 역할 분리 명확                                         |
+| Input / SearchInput / PhoneInput / AmountInput 등 6종 | 마스킹·도메인 로직이 각자 본질                                         |
+| Select / MultiSelect / PageSizeSelect / Dropdown      | MultiSelect 는 풋터·전체선택, PageSizeSelect 는 preset 이 본질         |
+
+컴포넌트 prop 표면의 deprecated 정리(Card 의 subtitle/meta/footer/footerNoBorder 등 prop-level
+`@deprecated` 4건)는 통합과 별개의 청소 항목으로, major 전에 일괄 제거 라운드를 잡으면 된다.
