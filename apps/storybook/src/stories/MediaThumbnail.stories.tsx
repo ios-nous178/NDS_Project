@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { MediaThumbnail } from "@nudge-design/react";
 
 const meta: Meta<typeof MediaThumbnail> = {
-  title: "Components/Domain/MediaThumbnail",
+  title: "Components/Display/MediaThumbnail",
   component: MediaThumbnail,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
