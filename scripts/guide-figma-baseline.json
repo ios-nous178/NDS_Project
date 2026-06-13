@@ -90,7 +90,6 @@
     "VerificationCodeInput",
     "VideoPlayer",
     "VoiceRecorder",
-    "VotePoll",
     "WaveformPlayer"
   ]
 }

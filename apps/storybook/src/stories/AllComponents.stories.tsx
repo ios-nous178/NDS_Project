@@ -110,7 +110,6 @@ import {
   SelectedItemsPanel,
   SelectedItemRow,
   UserCard,
-  VotePoll,
   Chart,
   StatsTable,
 } from "@nudge-design/react";
@@ -808,19 +807,6 @@ const PREVIEWS: Record<string, PreviewRender> = {
   ReviewCard: () => (
     <div style={{ width: "100%", maxWidth: 240 }}>
       <ReviewCard author="익명" rating={4.5} body="도움이 많이 됐어요." />
-    </div>
-  ),
-  VotePoll: () => (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <VotePoll
-        question="가장 도움된 콘텐츠?"
-        options={[
-          { key: "a", label: "명상", count: 12 },
-          { key: "b", label: "일기", count: 8 },
-        ]}
-        showResults
-        footer="총 20표"
-      />
     </div>
   ),
   Chart: () => {

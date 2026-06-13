@@ -800,18 +800,6 @@
     "notes": "rating 0~5 + 0.5 단위. 본문 pre-wrap 자동."
   },
   {
-    "name": "VotePoll",
-    "category": "도메인",
-    "status": "implemented",
-    "description": "짧은 투표 카드. 질문 + 옵션 + 결과 바. 투표 후 자동 결과 노출",
-    "storybookTitle": "Components/Domain/VotePoll",
-    "docsPath": "/components/vote-poll",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "커뮤니티 투표, 챌린지 주제 정하기, 가벼운 의견 수렴",
-    "notes": "임상 척도는 LikertScale. count는 외부 state로 갱신."
-  },
-  {
     "name": "PriceTag",
     "category": "일반",
     "status": "implemented",
@@ -980,7 +968,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "PHQ-9, GAD-7, EAP 만족도 설문, 임상 자가체크",
-    "notes": "가벼운 의견 수렴은 VotePoll. LikertScale은 정형 설문 척도."
+    "notes": "정형 설문 척도. PHQ-9·GAD-7 등 임상 자가체크용."
   },
   {
     "name": "Timeline",

@@ -1707,15 +1707,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-vote-poll": {
-    "observedAttributes": [
-      "disabled",
-      "options",
-      "show-results",
-      "voted-key"
-    ],
-    "enums": {}
-  },
   "nds-waveform-player": {
     "observedAttributes": [
       "auto-play",

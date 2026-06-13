@@ -261,8 +261,6 @@ export { NdsTimeSlotPicker } from "./components/nds-time-slot-picker.js";
 
 export { NdsPhoneInput } from "./components/nds-phone-input.js";
 
-export { NdsVotePoll } from "./components/nds-vote-poll.js";
-
 export { NdsPinPad } from "./components/nds-pin-pad.js";
 
 export { NdsProductCard } from "./components/nds-product-card.js";

@@ -112,7 +112,6 @@ export * from "./Confetti.js";
 export * from "./CommentItem.js";
 export * from "./LikeButton.js";
 export * from "./ReviewCard.js";
-export * from "./VotePoll.js";
 export * from "./Chart.js";
 export * from "./StatsTable.js";
 export * from "./PriceTag.js";

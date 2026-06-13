@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T18:43:22.172Z",
+  "generatedAt": "2026-06-13T03:32:53.438Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -7795,55 +7795,6 @@
       ]
     },
     {
-      "name": "VotePoll",
-      "props": [
-        {
-          "name": "question",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "options",
-          "optional": false,
-          "type": "VoteOption[]"
-        },
-        {
-          "name": "votedKey",
-          "optional": true,
-          "type": "string | null"
-        },
-        {
-          "name": "onVote",
-          "optional": true,
-          "type": "(key: string) => void"
-        },
-        {
-          "name": "showResults",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "footer",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/VotePoll.d.ts",
-      "htmlTag": "nds-vote-poll",
-      "htmlObservedAttrs": [
-        "disabled",
-        "options",
-        "show-results",
-        "voted-key",
-        "question"
-      ]
-    },
-    {
       "name": "WaveformPlayer",
       "props": [
         {
@@ -14266,7 +14217,6 @@
     "nds-verification-code-input",
     "nds-video-player",
     "nds-voice-recorder",
-    "nds-vote-poll",
     "nds-waveform-player"
   ],
   "ndsHtmlElements": [
@@ -15972,17 +15922,6 @@
         "recording-label",
         "seconds",
         "state"
-      ]
-    },
-    {
-      "tag": "nds-vote-poll",
-      "attrs": {},
-      "observedAttrs": [
-        "disabled",
-        "options",
-        "show-results",
-        "voted-key",
-        "question"
       ]
     },
     {

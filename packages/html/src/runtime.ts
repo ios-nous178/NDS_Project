@@ -90,7 +90,6 @@ import "./components/nds-selection-button-group.js";
 import "./components/nds-filter-bar.js";
 import "./components/nds-time-slot-picker.js";
 import "./components/nds-phone-input.js";
-import "./components/nds-vote-poll.js";
 import "./components/nds-pin-pad.js";
 import "./components/nds-product-card.js";
 import "./components/nds-popular-posts.js";
