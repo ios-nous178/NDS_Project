@@ -23,17 +23,17 @@ export const Default: Story = {
 
 export const PHQ9Custom: Story = {
   tags: ["gallery"],
-  name: "Recipe/PHQ-9 Custom Segments",
+  name: "Recipe/구간별 점수",
   render: () => (
     <div style={{ width: 320 }}>
       <ScoreGauge
-        value={14}
-        max={27}
+        value={72}
+        max={100}
         segments={[
-          { level: "normal", label: "정상", from: 0, to: 5 },
-          { level: "mild", label: "경증", from: 5, to: 10 },
-          { level: "moderate", label: "중등도", from: 10, to: 20 },
-          { level: "severe", label: "심각", from: 20, to: 28 },
+          { level: "normal", label: "낮음", from: 0, to: 40 },
+          { level: "mild", label: "보통", from: 40, to: 70 },
+          { level: "moderate", label: "높음", from: 70, to: 90 },
+          { level: "severe", label: "매우 높음", from: 90, to: 100 },
         ]}
         showLegend
       />

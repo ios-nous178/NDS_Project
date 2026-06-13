@@ -28,15 +28,15 @@ export const Default: Story = {
 
 export const PainScale: Story = {
   tags: ["gallery"],
-  name: "Recipe/Pain Scale",
+  name: "Recipe/값 선택 (0–10)",
   render: () => (
     <Wrapped
       value={3}
       min={0}
       max={10}
       step={1}
-      startLabel="없음"
-      endLabel="극심함"
+      startLabel="낮음"
+      endLabel="높음"
       showValue
       onValueChange={() => {}}
     />
@@ -45,7 +45,7 @@ export const PainScale: Story = {
 
 export const StressPercent: Story = {
   tags: ["gallery"],
-  name: "Recipe/Stress %",
+  name: "Recipe/퍼센트 (%)",
   render: () => (
     <Wrapped
       value={60}
