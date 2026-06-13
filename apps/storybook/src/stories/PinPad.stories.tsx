@@ -44,7 +44,6 @@ export const FourDigit: Story = {
 };
 
 export const Shuffled: Story = {
-  tags: ["gallery"],
   name: "Recipe/키 셔플 (보안)",
   render: function Render() {
     const [pin, setPin] = useState("");

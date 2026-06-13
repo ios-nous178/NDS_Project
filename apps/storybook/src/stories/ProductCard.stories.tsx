@@ -142,7 +142,6 @@ export const CashdealDesktop: Story = {
 /* ─── Recipe: 캐시딜 PC 랭킹 리스트 1~5위 ─── */
 
 export const CashdealRankingRow: Story = {
-  tags: ["gallery"],
   name: "Recipe/랭킹 목록 (Desktop)",
   parameters: {
     docs: {

@@ -183,7 +183,6 @@ export const Disabled: Story = {
 };
 
 export const WithIcon: Story = {
-  tags: ["gallery"],
   name: "Recipe/With Icon",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>

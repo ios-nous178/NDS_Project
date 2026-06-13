@@ -27,7 +27,6 @@ export const Playground: Story = {
 };
 
 export const SaveOnSubmit: Story = {
-  tags: ["gallery"],
   name: "Recipe/제출 시 dataURL 추출",
   render: function Render() {
     const ref = useRef<SignaturePadHandle>(null);

@@ -48,7 +48,6 @@ export const CustomColor: Story = {
 };
 
 export const InChat: Story = {
-  tags: ["gallery"],
   name: "Recipe/채팅 음성 메시지",
   render: () => (
     <div

@@ -96,7 +96,6 @@ export const WithImageOverlay: Story = {
 /* ─── Layout: Grid (4-up) ─── */
 
 export const Grid4Up: Story = {
-  tags: ["gallery"],
   name: "Recipe/Grid 4-up (desktop)",
   render: () => (
     <div

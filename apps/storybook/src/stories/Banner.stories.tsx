@@ -34,7 +34,6 @@ export const Outlined: Story = {
 
 export const WithImage: Story = {
   name: "Recipe/이미지 포함",
-  tags: ["gallery"],
   args: {
     title: "앱에서 더 많은 기능을 만나보세요",
     description: "다운로드하고 모든 서비스를 이용하세요.",
