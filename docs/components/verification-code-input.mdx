@@ -1,0 +1,66 @@
+---
+title: VerificationCodeInput
+description: SMS·이메일 인증코드 입력. 웹용 단일 박스 필드 — 붙여넣기·자동완성(one-time-code) 지원.
+---
+
+# VerificationCodeInput
+
+SMS·이메일로 받은 인증번호를 입력받습니다. 자리별 세그먼트(네이티브식 6칸 박스)가 아니라 base `Input` 과 동일한 **단일 박스 한 줄**이라, 붙여넣기와 자동완성(`one-time-code`)이 자연스럽게 동작하고 높이·둥근모서리는 Input 토큰(`--nds-input-*`)을 상속합니다. 이 컴포넌트는 **코드 입력 필드만** 책임집니다 — 타이머·재전송·확인 버튼은 `FormField` + `InputGroup` 으로 합성하세요.
+
+## 사용법
+
+```tsx
+import { VerificationCodeInput } from "@nudge-design/react";
+
+const [code, setCode] = useState("");
+
+<VerificationCodeInput
+  length={6}
+  value={code}
+  onValueChange={setCode}
+  onComplete={(value) => verify(value)}
+  autoFocus
+/>
+```
+
+타이머·확인 버튼이 함께 있는 인증 폼은 `FormField` + `InputGroup` 으로 합성합니다(남은시간 타이머는 앱이 합성하는 인라인 요소로 코드 입력 우측에 겹쳐 배치):
+
+```tsx
+<FormField helper="문자로 전송된 인증번호를 입력해주세요">
+  <InputGroup align="start">
+    <div style={{ position: "relative", flex: 1 }}>
+      <VerificationCodeInput value={code} onValueChange={setCode} onComplete={verify} />
+      <span style={timerInField}>{remaining}</span>
+    </div>
+    <Button color="secondary" size="field">확인</Button>
+  </InputGroup>
+</FormField>
+```
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `length` | `number` | `6` | 자릿수 (기본 6) — 입력 maxLength |
+| `value` *(필수)* | `string` | — | 현재 값 (숫자 문자열, length 이하) |
+| `onValueChange` *(필수)* | `(value: string) => void` | — | 변경 콜백 (숫자만 전달) |
+| `onComplete` | `(value: string) => void` | — | length 만큼 채워졌을 때 콜백 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `fullWidth` | `boolean` | `true` | 부모 폭 가득 |
+
+<!-- AUTO-GEN:props:END -->
+
+> `autoFocus` 등 표준 `<input>` 속성은 그대로 전달됩니다.
+
+## 가이드
+
+- **단일 박스 필드** — 자리별 6칸 세그먼트가 아니다. `length` 는 `maxLength` 로만 동작한다.
+- 자리별 박스(6칸 세그먼트)는 모바일/네이티브 앱 패턴 — 웹/데스크톱에서는 이 단일 필드가 표준이다(붙여넣기·자동완성·접근성이 자연 동작). 네이티브 6칸 OTP 화면을 raw `<input>` 6개로 흉내 내지 말 것.
+- 숫자만 허용 — 영문/특수문자는 자동 필터링. 영숫자 코드가 필요하면 `maxLength` 늘린 일반 `Input` 을 검토.
+- `autoComplete="one-time-code"` 적용 — iOS/Android SMS 자동 추출 동작.
+- 타이머·재전송·확인 버튼은 **내장하지 않는다** — `FormField`(헬퍼) + `InputGroup`(코드 입력 + 버튼) + 인라인 타이머(앱 합성 요소)로 붙인다.
+- 인증 실패 시 자동 clear 는 호출부에서 결정 — 어떤 자리가 틀렸는지 알 수 없어 통째 clear 가 보통 더 안전.
