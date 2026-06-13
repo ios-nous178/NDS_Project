@@ -78,10 +78,9 @@ export * from "./SelectionButton.js";
 export * from "./SelectionButtonGroup.js";
 export * from "./Snackbar.js";
 export * from "./FAB.js";
-export * from "./ChatComposer.js";
+export * from "./ChatInput.js";
 export * from "./PhoneInput.js";
 export * from "./Sparkline.js";
-export * from "./MultiStepForm.js";
 export * from "./Text.js";
 export * from "./PageHeader.js";
 export * from "./Heading.js";
@@ -104,7 +103,7 @@ export * from "./MediaThumbnail.js";
 export * from "./MediaCard.js";
 export * from "./FilterBar.js";
 export * from "./ProductCard.js";
-export * from "./OrderSummaryCard.js";
+export * from "./SummaryCard.js";
 export * from "./Sidebar.js";
 
 /* ────────────────────────────────────

@@ -306,12 +306,12 @@
     "notes": "한 화면에 1개. StickyBottom CTA와 동시 사용 금지."
   },
   {
-    "name": "ChatComposer",
+    "name": "ChatInput",
     "category": "입력",
     "status": "implemented",
     "description": "채팅 입력바. 자동 확장 textarea, 빠른 응답, 첨부/마이크, 글자수 제한",
-    "storybookTitle": "Components/Inputs/ChatComposer",
-    "docsPath": "/components/chat-composer",
+    "storybookTitle": "Components/Inputs/ChatInput",
+    "docsPath": "/components/chat-input",
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "1:1 채팅 상담, 챗봇 대화, AI 상담 입력",
@@ -331,27 +331,15 @@
   },
   {
     "name": "Sparkline",
-    "category": "일반",
+    "category": "데이터 시각화",
     "status": "implemented",
     "description": "미니 추이 차트 (line/area/bar). 축/레이블 없는 카드용 시각 신호",
-    "storybookTitle": "Components/Display/Sparkline",
+    "storybookTitle": "Components/Data Visualization/Sparkline",
     "docsPath": "/components/sparkline",
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "메트릭 카드 추이, 리스트 트렌드, 대시보드 신호",
     "notes": "본격 차트 아님. 50+ 포인트는 부적합. baseline은 음수 데이터일 때만."
-  },
-  {
-    "name": "MultiStepForm",
-    "category": "레이아웃",
-    "status": "implemented",
-    "description": "다단계 폼 컨테이너. 진행/검증/제출 관리, useMultiStepForm 훅 제공",
-    "storybookTitle": "Components/Layout/MultiStepForm",
-    "docsPath": "/components/multi-step-form",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "회원가입, 본인 인증, 검사 단계, 챌린지 마법사",
-    "notes": "Stepper(인디케이터만)와 분리. canProceed 동기 boolean."
   },
   {
     "name": "Text",
@@ -509,7 +497,7 @@
     "figmaSynced": true,
     "figmaSyncedAt": "2026-06-05",
     "usageSummary": "회원가입 진행도, 검사·결제 흐름, 챌린지 단계 표시, 캐시워크 for Business 어드민 다단계 흐름(variant=bar)",
-    "notes": "값 조절은 NumberStepper. Stepper는 단계 시각화 전용(폼 관리는 MultiStepForm). variant=bar 가 구 StepProgress(캐포비 어드민 가로 막대)를 대체."
+    "notes": "값 조절은 NumberStepper. Stepper는 단계 시각화 전용(폼 관리는 다단계 폼 패턴(pattern:multi-step-form)). variant=bar 가 구 StepProgress(캐포비 어드민 가로 막대)를 대체."
   },
   {
     "name": "CommentItem",
@@ -948,12 +936,12 @@
     "notes": "price 는 number(KRW). 숫자 폰트는 Lato(할인 Medium 18 / 가격 Black 18). badge·soldOut 동시 노출 금지."
   },
   {
-    "name": "OrderSummaryCard",
-    "category": "데이터",
+    "name": "SummaryCard",
+    "category": "데이터 표시",
     "status": "implemented",
     "description": "범용 요약 카드. 라벨:값 행 + 강조 합계 + CTA 슬롯, emphasis 강조 (커머스 전용 아님)",
-    "storybookTitle": "Components/Data/OrderSummaryCard",
-    "docsPath": "/components/order-summary-card",
+    "storybookTitle": "Components/Data Display/SummaryCard",
+    "docsPath": "/components/summary-card",
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "결제 직전, 상담 예약 확인, 신청서 검토, 구독 요약 — 키-값 원장+합계 패턴 전반",
@@ -969,7 +957,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "비대면 상담 채팅, AI 챗봇 대화, 그룹 채팅",
-    "notes": "입력은 ChatComposer."
+    "notes": "입력은 ChatInput."
   },
   {
     "name": "AudioPlayer",
@@ -1021,10 +1009,10 @@
   },
   {
     "name": "DataTable",
-    "category": "데이터",
+    "category": "데이터 표시",
     "status": "implemented",
     "description": "정렬·클릭·빈 상태·로딩·모바일 카드 변환을 갖춘 표. 사용자 앱에서도 사용 가능",
-    "storybookTitle": "Components/Data/DataTable",
+    "storybookTitle": "Components/Data Display/DataTable",
     "docsPath": "/components/data-table",
     "figmaUrl": "",
     "figmaNodeId": "",
@@ -1033,10 +1021,10 @@
   },
   {
     "name": "TrendingKeywords",
-    "category": "데이터",
+    "category": "도메인",
     "status": "implemented",
     "description": "실시간 인기 검색어 리스트. 순위 + 키워드 + trend(new/up/down/same) 화살표",
-    "storybookTitle": "Components/Data/TrendingKeywords",
+    "storybookTitle": "Components/Domain/TrendingKeywords",
     "docsPath": "/components/trending-keywords",
     "figmaUrl": "",
     "figmaNodeId": "",
@@ -1310,10 +1298,10 @@
   },
   {
     "name": "Chart",
-    "category": "데이터",
+    "category": "데이터 시각화",
     "status": "implemented",
     "description": "정적 inline-SVG 기반 도메인 차트. line, grouped-bar, donut 패턴 지원",
-    "storybookTitle": "Components/Data/Chart",
+    "storybookTitle": "Components/Data Visualization/Chart",
     "docsPath": "",
     "figmaUrl": "",
     "figmaNodeId": "",
@@ -1334,10 +1322,10 @@
   },
   {
     "name": "StatsTable",
-    "category": "데이터",
+    "category": "데이터 표시",
     "status": "implemented",
     "description": "병합셀과 합계행을 지원하는 어드민 통계/집계 표",
-    "storybookTitle": "Components/Data/StatsTable",
+    "storybookTitle": "Components/Data Display/StatsTable",
     "docsPath": "",
     "figmaUrl": "",
     "figmaNodeId": "",

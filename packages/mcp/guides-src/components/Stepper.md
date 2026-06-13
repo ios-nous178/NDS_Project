@@ -4,7 +4,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-
 
 ## summary
 
-**다단계 작업의 현재 진척 *표시*** (지금 몇 단계인지 보여주는 막대/원, 입력 컨트롤 아님). variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)
+**다단계 작업의 현재 진척 *표시*** (지금 몇 단계인지 보여주는 막대/원, 입력 컨트롤 아님). variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+단계 네비를 묶는 컨테이너는 DS 컴포넌트가 아니라 조립 패턴=pattern:multi-step-form.)
 
 ## pitfalls
 

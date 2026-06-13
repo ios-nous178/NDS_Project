@@ -1,9 +1,9 @@
 ---
-title: ChatComposer
+title: ChatInput
 description: 채팅 입력바. 자동 확장 textarea, 빠른 응답, 첨부/마이크, 글자수 제한.
 ---
 
-# ChatComposer
+# ChatInput
 
 채팅/상담 화면 하단에 두는 입력바입니다. `ChatBubble`(메시지 표시)과 짝을 이룹니다.
 
@@ -22,9 +22,9 @@ description: 채팅 입력바. 자동 확장 textarea, 빠른 응답, 첨부/마
 ## 사용법
 
 ```tsx
-import { ChatComposer } from "@nudge-design/react";
+import { ChatInput } from "@nudge-design/react";
 
-<ChatComposer
+<ChatInput
   value={text}
   onValueChange={setText}
   onSubmit={(t) => {

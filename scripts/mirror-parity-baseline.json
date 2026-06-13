@@ -247,12 +247,12 @@
       "since": "2026-06"
     },
     {
-      "key": "ChatComposer::prop-name::html attr \"show-attach\" 에 대응하는 react prop 이 없음",
+      "key": "ChatInput::prop-name::html attr \"show-attach\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
     },
     {
-      "key": "ChatComposer::prop-name::html attr \"show-mic\" 에 대응하는 react prop 이 없음",
+      "key": "ChatInput::prop-name::html attr \"show-mic\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
     },
@@ -592,16 +592,6 @@
       "since": "2026-06"
     },
     {
-      "key": "OrderSummaryCard::slot::html slot=\"title\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "react 는 title 을 문자열 prop 으로 모델링 — html slot 은 커스텀 노드 확장. 모델 차이 박제",
-      "since": "2026-06"
-    },
-    {
-      "key": "OrderSummaryCard::slot::html slot=\"total\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "react 는 total 을 데이터 prop 으로 모델링 — html slot 은 커스텀 노드 확장. 모델 차이 박제",
-      "since": "2026-06"
-    },
-    {
       "key": "PageHeader::prop-name::html attr \"page-title\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -844,6 +834,16 @@
     {
       "key": "StarRating::prop-name::html attr \"readonly\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
+      "since": "2026-06"
+    },
+    {
+      "key": "SummaryCard::slot::html slot=\"title\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react 는 title 을 문자열 prop 으로 모델링 — html slot 은 커스텀 노드 확장. 모델 차이 박제",
+      "since": "2026-06"
+    },
+    {
+      "key": "SummaryCard::slot::html slot=\"total\" 에 대응하는 react ReactNode prop 이 없음",
+      "reason": "react 는 total 을 데이터 prop 으로 모델링 — html slot 은 커스텀 노드 확장. 모델 차이 박제",
       "since": "2026-06"
     },
     {

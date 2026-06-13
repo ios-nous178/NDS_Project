@@ -1,9 +1,9 @@
 ---
-title: OrderSummaryCard
+title: SummaryCard
 description: 주문/예약 요약 카드. 라벨:값 행 + 합계 + CTA 슬롯.
 ---
 
-# OrderSummaryCard
+# SummaryCard
 
 결제 직전, 예약 확정 직전에 보여주는 항목별 정리 카드입니다. 라벨:값 행이 줄지어 있고 하단에 합계 + CTA가 들어갑니다.
 
@@ -21,9 +21,9 @@ description: 주문/예약 요약 카드. 라벨:값 행 + 합계 + CTA 슬롯.
 ## 사용법
 
 ```tsx
-import { OrderSummaryCard, Button } from "@nudge-design/react";
+import { SummaryCard, Button } from "@nudge-design/react";
 
-<OrderSummaryCard
+<SummaryCard
   rows={[
     { label: "상품 금액", value: "39,000원" },
     { label: "쿠폰 할인", value: "-5,000원", emphasis: "discount" },
@@ -42,14 +42,14 @@ import { OrderSummaryCard, Button } from "@nudge-design/react";
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
 | `title` | `ReactNode` | `"결제 정보"` | 카드 제목 |
-| `rows` *(필수)* | `OrderSummaryRow[]` | — | 항목 목록 (라벨:값) |
+| `rows` *(필수)* | `SummaryRow[]` | — | 항목 목록 (라벨:값) |
 | `totalLabel` | `ReactNode` | `"총 결제금액"` | 합계 라벨 |
 | `total` *(필수)* | `ReactNode` | — | 합계 값 (PriceTag 권장) |
 | `footer` | `ReactNode` | — | 푸터 슬롯 (CTA 버튼 등) |
 
 <!-- AUTO-GEN:props:END -->
 
-### `OrderSummaryRow`
+### `SummaryRow`
 
 | Prop       | 타입                          | 설명                              |
 | ---------- | ----------------------------- | --------------------------------- |

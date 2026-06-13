@@ -1,14 +1,14 @@
 /**
- * <nds-chat-composer> — DS ChatComposer 의 vanilla Web Component 버전.
+ * <nds-chat-input> — DS ChatInput 의 vanilla Web Component 버전.
  *
  * 사용 예:
- *   <nds-chat-composer
+ *   <nds-chat-input
  *     placeholder="메시지를 입력하세요"
  *     max-length="500"
  *     show-attach
  *     show-mic
  *     quick-replies='[{"label":"네"},{"label":"아니오"}]'
- *   ></nds-chat-composer>
+ *   ></nds-chat-input>
  *
  * 이벤트:
  *   nds-chat-input (detail: { value }) -> 입력 변경
@@ -30,7 +30,7 @@
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
-const CC_CLASS = "nds-chat-composer";
+const CC_CLASS = "nds-chat-input";
 const CC_QUICK_CLASS = `${CC_CLASS}__quick`;
 const CC_QUICK_ITEM_CLASS = `${CC_CLASS}__quick-item`;
 const CC_INPUT_AREA_CLASS = `${CC_CLASS}__input-area`;
@@ -73,11 +73,11 @@ const SendIcon = () => {
   return svg;
 };
 
-export class NdsChatComposer extends NdsElement {
-  static elementName = "nds-chat-composer";
+export class NdsChatInput extends NdsElement {
+  static elementName = "nds-chat-input";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-chat-composer"].observedAttributes, "show-attach", "show-mic"];
+    return [...COMPONENT_ATTRS["nds-chat-input"].observedAttributes, "show-attach", "show-mic"];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -239,7 +239,7 @@ export class NdsChatComposer extends NdsElement {
     const maxHeight = parseInt(this.attr("max-height", "120"), 10) || 120;
     const quick = this._parseQuickReplies();
 
-    this._root.style.setProperty("--nds-chat-composer-max", `${maxHeight}px`);
+    this._root.style.setProperty("--nds-chat-input-max", `${maxHeight}px`);
 
     // Quick replies
     this._quickWrap.innerHTML = "";
@@ -281,4 +281,4 @@ export class NdsChatComposer extends NdsElement {
   }
 }
 
-define(NdsChatComposer);
+define(NdsChatInput);

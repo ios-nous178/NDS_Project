@@ -343,7 +343,7 @@
       ]
     }
   },
-  "nds-chat-composer": {
+  "nds-chat-input": {
     "observedAttributes": [
       "disabled",
       "max-height",
@@ -890,24 +890,6 @@
     ],
     "enums": {}
   },
-  "nds-multi-step-form": {
-    "observedAttributes": [
-      "current",
-      "indicator",
-      "next-label",
-      "prev-label",
-      "steps",
-      "submit-label",
-      "submitting"
-    ],
-    "enums": {
-      "indicator": [
-        "progress",
-        "steps",
-        "none"
-      ]
-    }
-  },
   "nds-notice-alert": {
     "observedAttributes": [
       "variant"
@@ -921,12 +903,6 @@
         "error"
       ]
     }
-  },
-  "nds-order-summary-card": {
-    "observedAttributes": [
-      "rows"
-    ],
-    "enums": {}
   },
   "nds-page-header": {
     "observedAttributes": [
@@ -1255,6 +1231,12 @@
         "bar"
       ]
     }
+  },
+  "nds-summary-card": {
+    "observedAttributes": [
+      "rows"
+    ],
+    "enums": {}
   },
   "nds-tabs": {
     "observedAttributes": [

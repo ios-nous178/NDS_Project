@@ -3,7 +3,7 @@ import { Chart } from "@nudge-design/react";
 import React from "react";
 
 const meta: Meta<typeof Chart> = {
-  title: "Components/Data/Chart",
+  title: "Components/Data Visualization/Chart",
   component: Chart,
   parameters: {
     layout: "padded",

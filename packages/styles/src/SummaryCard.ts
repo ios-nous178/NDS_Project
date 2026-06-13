@@ -1,7 +1,7 @@
-/* Auto-generated from packages/react/src/OrderSummaryCard.tsx during the @nudge-design/styles split. */
+/* Auto-generated from packages/react/src/SummaryCard.tsx during the @nudge-design/styles split. */
 import { cv, fontFamily, fontWeight, radius, spacing, typeScale } from "@nudge-design/tokens";
 
-const OS_CLASS = "nds-order-summary-card";
+const OS_CLASS = "nds-summary-card";
 const OS_HEADER_CLASS = `${OS_CLASS}__header`;
 const OS_TITLE_CLASS = `${OS_CLASS}__title`;
 const OS_LIST_CLASS = `${OS_CLASS}__list`;

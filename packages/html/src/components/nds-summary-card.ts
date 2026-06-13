@@ -1,15 +1,15 @@
 /**
- * <nds-order-summary-card> — DS OrderSummaryCard 의 vanilla Web Component 버전.
+ * <nds-summary-card> — DS SummaryCard 의 vanilla Web Component 버전.
  *
  * 사용:
- *   <nds-order-summary-card
+ *   <nds-summary-card
  *     title="결제 정보"
  *     rows='[{"label":"소계","value":"50,000원"},{"label":"할인","value":"-5,000원","emphasis":"discount"}]'
  *     total-label="총 결제금액"
  *   >
  *     <nds-price-tag slot="total" amount="45000"></nds-price-tag>
  *     <button slot="footer">결제하기</button>
- *   </nds-order-summary-card>
+ *   </nds-summary-card>
  *
  * total 은 slot="total" 자식이 우선이고, 없으면 `total` 텍스트 attribute 를 사용.
  */
@@ -17,7 +17,7 @@
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
-const OS_CLASS = "nds-order-summary-card";
+const OS_CLASS = "nds-summary-card";
 const OS_HEADER_CLASS = `${OS_CLASS}__header`;
 const OS_TITLE_CLASS = `${OS_CLASS}__title`;
 const OS_LIST_CLASS = `${OS_CLASS}__list`;
@@ -40,11 +40,11 @@ interface SummaryRow {
 
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby"] as const;
 
-export class NdsOrderSummaryCard extends NdsElement {
-  static elementName = "nds-order-summary-card";
+export class NdsSummaryCard extends NdsElement {
+  static elementName = "nds-summary-card";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-order-summary-card"].observedAttributes, "title", "total-label", "total", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-summary-card"].observedAttributes, "title", "total-label", "total", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -187,4 +187,4 @@ export class NdsOrderSummaryCard extends NdsElement {
   }
 }
 
-define(NdsOrderSummaryCard);
+define(NdsSummaryCard);

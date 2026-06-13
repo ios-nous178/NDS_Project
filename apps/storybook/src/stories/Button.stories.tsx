@@ -64,6 +64,30 @@ export const Overview: Story = {
         <Button color="secondary">Secondary</Button>
         <Button color="neutral">Neutral</Button>
       </div>
+      {/* color × variant 전체 조합 — soft×neutral 처럼 조합마다 색이 달라지는 케이스까지 노출 */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "auto repeat(3, auto)",
+          gap: "var(--semantic-gap-default)",
+          alignItems: "center",
+        }}
+      >
+        {(["primary", "secondary", "neutral"] as const).map((color) => (
+          <React.Fragment key={color}>
+            <span style={{ fontSize: 13, opacity: 0.6 }}>{color}</span>
+            <Button color={color} variant="solid">
+              Solid
+            </Button>
+            <Button color={color} variant="outlined">
+              Outlined
+            </Button>
+            <Button color={color} variant="soft">
+              Soft
+            </Button>
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   ),
 };

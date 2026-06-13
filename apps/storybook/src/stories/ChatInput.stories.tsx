@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ChatComposer } from "@nudge-design/react";
+import { ChatInput } from "@nudge-design/react";
 
-const meta: Meta<typeof ChatComposer> = {
-  title: "Components/Inputs/ChatComposer",
-  component: ChatComposer,
+const meta: Meta<typeof ChatInput> = {
+  title: "Components/Inputs/ChatInput",
+  component: ChatInput,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
 };
 
 export default meta;
-type Story = StoryObj<typeof ChatComposer>;
+type Story = StoryObj<typeof ChatInput>;
 
 export const Playground: Story = {
   render: function Render() {
@@ -51,7 +51,7 @@ export const Playground: Story = {
             </div>
           )}
         </div>
-        <ChatComposer
+        <ChatInput
           value={v}
           onValueChange={setV}
           onSubmit={(text) => {
@@ -70,7 +70,7 @@ export const WithAttachAndMic: Story = {
     const [v, setV] = useState("");
     return (
       <div style={{ width: 480 }}>
-        <ChatComposer
+        <ChatInput
           value={v}
           onValueChange={setV}
           onSubmit={() => setV("")}
@@ -89,7 +89,7 @@ export const WithQuickReplies: Story = {
     const [v, setV] = useState("");
     return (
       <div style={{ width: 480 }}>
-        <ChatComposer
+        <ChatInput
           value={v}
           onValueChange={setV}
           onSubmit={() => setV("")}
@@ -110,7 +110,7 @@ export const WithMaxLength: Story = {
     const [v, setV] = useState("");
     return (
       <div style={{ width: 480 }}>
-        <ChatComposer value={v} onValueChange={setV} onSubmit={() => setV("")} maxLength={200} />
+        <ChatInput value={v} onValueChange={setV} onSubmit={() => setV("")} maxLength={200} />
       </div>
     );
   },
@@ -121,7 +121,7 @@ export const Disabled: Story = {
   tags: ["gallery"],
   render: () => (
     <div style={{ width: 480 }}>
-      <ChatComposer
+      <ChatInput
         value="전송 중인 메시지..."
         onValueChange={() => undefined}
         onSubmit={() => undefined}

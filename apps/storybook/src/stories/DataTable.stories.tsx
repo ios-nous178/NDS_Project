@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { DataTable, type DataTableColumn, type SortDirection } from "@nudge-design/react";
 
 const meta: Meta<typeof DataTable> = {
-  title: "Components/Data/DataTable",
+  title: "Components/Data Display/DataTable",
   component: DataTable,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

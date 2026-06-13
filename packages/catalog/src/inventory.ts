@@ -10,7 +10,7 @@
 
 /**
  * 카테고리 그룹 표시 순서 (inventory.category 값 기준).
- * 기반(general) → 구조(input/layout) → 탐색/오버레이 → 피드백 → 데이터 → 도메인 순.
+ * 기반(general) → 구조(input/layout) → 탐색/오버레이 → 피드백 → 데이터 표시 → 데이터 시각화 → 도메인 순.
  * 목록에 없는 카테고리는 맨 뒤에 한국어 가나다순으로 붙는다.
  */
 export const COMPONENT_CATEGORY_ORDER = [
@@ -20,7 +20,8 @@ export const COMPONENT_CATEGORY_ORDER = [
   "내비게이션",
   "오버레이",
   "피드백",
-  "데이터",
+  "데이터 표시",
+  "데이터 시각화",
   "도메인",
 ] as const;
 

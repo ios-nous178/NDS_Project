@@ -181,7 +181,7 @@ export { NdsChart } from "./components/nds-chart.js";
 
 export { NdsText } from "./components/nds-text.js";
 
-export { NdsOrderSummaryCard } from "./components/nds-order-summary-card.js";
+export { NdsSummaryCard } from "./components/nds-summary-card.js";
 
 export { NdsChatBubble } from "./components/nds-chat-bubble.js";
 export type { ChatRole, ChatGroupPosition } from "./components/nds-chat-bubble.js";
@@ -263,7 +263,7 @@ export type { MediaRounded, MediaFit } from "./components/nds-media-thumbnail.js
 
 export { NdsCalendar } from "./components/nds-calendar.js";
 
-export { NdsChatComposer } from "./components/nds-chat-composer.js";
+export { NdsChatInput } from "./components/nds-chat-input.js";
 
 export { NdsDataTable } from "./components/nds-data-table.js";
 export type { DataTableSortDirection } from "./components/nds-data-table.js";
@@ -283,7 +283,6 @@ export { NdsFileUpload } from "./components/nds-file-upload.js";
 export { NdsImageUpload } from "./components/nds-image-upload.js";
 
 
-export { NdsMultiStepForm } from "./components/nds-multi-step-form.js";
 
 
 export { NdsSidebar } from "./components/nds-sidebar.js";

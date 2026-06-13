@@ -347,7 +347,7 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-chat-composer": {
+  "nds-chat-input": {
     "observedAttributes": [
       "disabled",
       "max-height",
@@ -894,24 +894,6 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-multi-step-form": {
-    "observedAttributes": [
-      "current",
-      "indicator",
-      "next-label",
-      "prev-label",
-      "steps",
-      "submit-label",
-      "submitting"
-    ],
-    "enums": {
-      "indicator": [
-        "progress",
-        "steps",
-        "none"
-      ]
-    }
-  },
   "nds-notice-alert": {
     "observedAttributes": [
       "variant"
@@ -925,12 +907,6 @@ export const COMPONENT_ATTRS = {
         "error"
       ]
     }
-  },
-  "nds-order-summary-card": {
-    "observedAttributes": [
-      "rows"
-    ],
-    "enums": {}
   },
   "nds-page-header": {
     "observedAttributes": [
@@ -1259,6 +1235,12 @@ export const COMPONENT_ATTRS = {
         "bar"
       ]
     }
+  },
+  "nds-summary-card": {
+    "observedAttributes": [
+      "rows"
+    ],
+    "enums": {}
   },
   "nds-tabs": {
     "observedAttributes": [

@@ -20,14 +20,14 @@
 ## examplesHtml.do
 
 ```html
-<nds-order-summary-card title="결제 요약"
+<nds-summary-card title="결제 요약"
   rows='[{"label":"상품 가격","value":"50,000원"},{"label":"할인","value":"-5,000원"}]'
-  total-label="합계" total="45,000원"></nds-order-summary-card>
+  total-label="합계" total="45,000원"></nds-summary-card>
 ```
 
 ## examplesHtml.dont
 
 ```html
 <!-- rows 를 string 으로 — 줄이 렌더되지 않음. 반드시 JSON 배열 -->
-<nds-order-summary-card rows="상품 50000"></nds-order-summary-card>
+<nds-summary-card rows="상품 50000"></nds-summary-card>
 ```

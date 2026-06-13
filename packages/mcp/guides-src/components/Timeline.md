@@ -4,7 +4,7 @@
 
 ## summary
 
-타임라인 — data-array(items) API. mode=activity(시간순 이벤트 로그 — date/title/description + status/statusLabel 배지) + mode=tracker(정해진 단계 진행 트래커 — current 인덱스로 done/current/todo 파생, direction=vertical|horizontal). 구 ActivityTimeline+StatusTimeline 통합. (단계 진척만 간결히 보이려면 Stepper, 다단계 폼 컨테이너는 MultiStepForm.)
+타임라인 — data-array(items) API. mode=activity(시간순 이벤트 로그 — date/title/description + status/statusLabel 배지) + mode=tracker(정해진 단계 진행 트래커 — current 인덱스로 done/current/todo 파생, direction=vertical|horizontal). 구 ActivityTimeline+StatusTimeline 통합. (단계 진척만 간결히 보이려면 Stepper, 다단계 폼은 조립 패턴=pattern:multi-step-form.)
 
 ## pitfalls
 

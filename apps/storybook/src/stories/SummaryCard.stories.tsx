@@ -1,21 +1,21 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { OrderSummaryCard, Button } from "@nudge-design/react";
+import { SummaryCard, Button } from "@nudge-design/react";
 
-const meta: Meta<typeof OrderSummaryCard> = {
-  title: "Components/Data/OrderSummaryCard",
-  component: OrderSummaryCard,
+const meta: Meta<typeof SummaryCard> = {
+  title: "Components/Data Display/SummaryCard",
+  component: SummaryCard,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
 };
 
 export default meta;
-type Story = StoryObj<typeof OrderSummaryCard>;
+type Story = StoryObj<typeof SummaryCard>;
 
 export const Playground: Story = {
   render: () => (
     <div style={{ width: 480 }}>
-      <OrderSummaryCard
+      <SummaryCard
         rows={[
           { label: "상품 금액", value: "39,000원" },
           { label: "쿠폰 할인", value: "-5,000원", emphasis: "discount" },
@@ -34,7 +34,7 @@ export const Counseling: Story = {
   name: "Recipe/상담 예약 요약",
   render: () => (
     <div style={{ width: 480 }}>
-      <OrderSummaryCard
+      <SummaryCard
         title="상담 예약 정보"
         rows={[
           { label: "상담사", value: "김민지" },
@@ -54,7 +54,7 @@ export const FreeOrder: Story = {
   name: "Edge/무료 (EAP)",
   render: () => (
     <div style={{ width: 480 }}>
-      <OrderSummaryCard
+      <SummaryCard
         title="EAP 무료 상담"
         rows={[
           { label: "상담료", value: "80,000원" },

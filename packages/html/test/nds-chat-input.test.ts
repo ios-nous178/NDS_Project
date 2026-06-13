@@ -1,5 +1,5 @@
 /**
- * nds-chat-composer — 포커스/커서 보존 계약.
+ * nds-chat-input — 포커스/커서 보존 계약.
  *
  * 타이핑 → setAttribute("value") → scheduleUpdate → update() 경로가
  * textarea 를 재생성하지 않는지(mount-once) 잠근다. 채팅 입력은 가장 타이핑이
@@ -7,24 +7,24 @@
  */
 
 import { describe, expect, it } from "vitest";
-import "../src/components/nds-chat-composer.js";
+import "../src/components/nds-chat-input.js";
 import {
   expectAttrUpdatePreservesFocus,
   expectTypingPreservesFocus,
   flush,
 } from "./helpers/focus-preservation.js";
 
-const FIELD = "textarea.nds-chat-composer__textarea";
+const FIELD = "textarea.nds-chat-input__textarea";
 
 async function mount(attrs: Record<string, string> = {}) {
-  const el = document.createElement("nds-chat-composer");
+  const el = document.createElement("nds-chat-input");
   for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
   document.body.appendChild(el);
   await flush();
   return el;
 }
 
-describe("nds-chat-composer — focus preservation", () => {
+describe("nds-chat-input — focus preservation", () => {
   it("typing keeps the same textarea node, focus, and cursor", async () => {
     const el = await mount({ placeholder: "메시지를 입력하세요" });
     await expectTypingPreservesFocus({

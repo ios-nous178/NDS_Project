@@ -1,4 +1,4 @@
-/* Auto-generated from packages/react/src/ChatComposer.tsx during the @nudge-design/styles split. */
+/* Auto-generated from packages/react/src/ChatInput.tsx during the @nudge-design/styles split. */
 import {
   cv,
   fontFamily,
@@ -9,7 +9,7 @@ import {
   typeScale,
 } from "@nudge-design/tokens";
 
-const CC_CLASS = "nds-chat-composer";
+const CC_CLASS = "nds-chat-input";
 const CC_QUICK_CLASS = `${CC_CLASS}__quick`;
 const CC_QUICK_ITEM_CLASS = `${CC_CLASS}__quick-item`;
 const CC_INPUT_AREA_CLASS = `${CC_CLASS}__input-area`;
@@ -19,7 +19,7 @@ const CC_BTN_CLASS = `${CC_CLASS}__btn`;
 const CC_SEND_CLASS = `${CC_CLASS}__send`;
 const CC_COUNT_CLASS = `${CC_CLASS}__count`;
 
-export const composerStyles = `
+export const chatInputStyles = `
   :where(.${CC_CLASS}) {
     display: flex;
     flex-direction: column;
@@ -107,7 +107,7 @@ export const composerStyles = `
     line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.textRole.normal};
     padding: var(--semantic-inset-chip) 4px;
-    max-height: var(--nds-chat-composer-max, 120px);
+    max-height: var(--nds-chat-input-max, 120px);
     overflow-y: auto;
     box-sizing: border-box;
   }

@@ -163,6 +163,7 @@ export const SizeScale: Story = {
 
 export const ShapeScale: Story = {
   name: "Spec/Shape",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
       <Badge shape="default" variant="ghost" color="brand">

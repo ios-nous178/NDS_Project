@@ -923,8 +923,8 @@
         "dont": "<!-- raw <div class=\"bubble\"> 로 시각만 흉내 — 좌/우 정렬/꼬리/그룹 룰이 사라짐 -->\n<div class=\"bubble user\">잘 못 자고 있어요</div>"
       }
     },
-    "ChatComposer": {
-      "name": "ChatComposer",
+    "ChatInput": {
+      "name": "ChatInput",
       "summary": "채팅 입력바. ChatBubble의 짝. 자동 확장 textarea + 빠른 응답 + 첨부/마이크 + 글자수.",
       "pitfalls": [
         "value/onValueChange/onSubmit 모두 controlled — 내부 state 없음.",
@@ -933,12 +933,12 @@
         "onAttach/onMic prop을 안 주면 해당 버튼이 자동 숨김 (UI 요소 안 만들고 깔끔)."
       ],
       "recommended": [
-        "1:1 상담: <ChatComposer value, onValueChange, onSubmit, maxLength={1000}>",
+        "1:1 상담: <ChatInput value, onValueChange, onSubmit, maxLength={1000}>",
         "챗봇 + 빠른 응답: quickReplies=[{label, onClick: ()=> onSubmit(...)}]",
         "음성 메모: onMic만, onAttach 생략"
       ],
       "examplesHtml": {
-        "do": "<nds-chat-composer placeholder=\"메시지를 입력하세요\" max-length=\"500\"\n  quick-replies='[{\"text\":\"네\"},{\"text\":\"아니요\"}]'></nds-chat-composer>\n<script>el.addEventListener(\"nds-chat-submit\", e => send(e.detail.value));</script>",
+        "do": "<nds-chat-input placeholder=\"메시지를 입력하세요\" max-length=\"500\"\n  quick-replies='[{\"text\":\"네\"},{\"text\":\"아니요\"}]'></nds-chat-input>\n<script>el.addEventListener(\"nds-chat-submit\", e => send(e.detail.value));</script>",
         "dont": "<!-- raw <input> + <button> 으로 채팅 입력 흉내 — 자동 grow / quick-replies / 첨부 등 미적용 -->\n<input type=\"text\" /><button>전송</button>"
       }
     },
@@ -1975,25 +1975,6 @@
         "dont": "<!-- 단일 선택에 MultiSelect — 적용 버튼이 불필요한 마찰. nds-select 사용 -->\n<nds-multi-select options='[{\"value\":\"asc\",\"label\":\"오름차순\"},{\"value\":\"desc\",\"label\":\"내림차순\"}]'></nds-multi-select>"
       }
     },
-    "MultiStepForm": {
-      "name": "MultiStepForm",
-      "summary": "다단계 폼 컨테이너. 단계별 검증/진행/제출을 한 컴포넌트에서 관리. Stepper(인디케이터만)와 분리.",
-      "pitfalls": [
-        "canProceed는 동기 boolean — 비동기 검증 결과는 외부 state로 보관 후 boolean으로 전달.",
-        "마지막 단계의 '다음' 버튼은 자동으로 submitLabel + onSubmit으로 동작.",
-        "단계 안에서 `useMultiStepForm()` 훅으로 next/prev 직접 호출 가능 (커스텀 액션 추가 시).",
-        "단순 진행 표시만 필요하면 Stepper를 쓸 것 — MultiStepForm은 폼 흐름 컨테이너."
-      ],
-      "recommended": [
-        "회원가입: indicator='progress', steps에 입력→인증→약관 동의 순서",
-        "검사: indicator='steps' (TODO 단계 표시 강조)",
-        "비동기 제출: submitting prop으로 버튼 비활성, onSubmit async"
-      ],
-      "examplesHtml": {
-        "do": "<nds-multi-step-form\n  steps='[{\"key\":\"info\",\"title\":\"기본 정보\"},{\"key\":\"confirm\",\"title\":\"확인\"}]'\n  current=\"0\">\n  <div data-step=\"info\">기본 정보 form…</div>\n  <div data-step=\"confirm\">최종 확인…</div>\n</nds-multi-step-form>\n<script>el.addEventListener(\"step-submit\", e => save(e.detail.current));</script>",
-        "dont": "<!-- 자식 element 가 data-step 없음 — 어느 step 인지 매칭 불가 -->\n<nds-multi-step-form steps='...'><div>step 1</div><div>step 2</div></nds-multi-step-form>"
-      }
-    },
     "NoticeAlert": {
       "name": "NoticeAlert",
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3902-1212",
@@ -2080,23 +2061,6 @@
         "`<NudgeEAPWebHeader logo={{ src, alt:'NudgeEAP', href:'/' }} menuItems={GNB} activeKey={current} showAppDownload appDownloadHref='/download' authState={isLoggedIn ? 'logout' : 'login'} authHref='/auth' />`",
         "HTML 목업(vanilla): `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 모바일/웹뷰는 surface='mobile'|'webview'."
       ]
-    },
-    "OrderSummaryCard": {
-      "name": "OrderSummaryCard",
-      "summary": "**범용 요약 카드** (도메인 무관) — 라벨:값 행 + 강조 합계 + CTA 슬롯. 결제뿐 아니라 예약 확인·신청서 검토·구독 요약 등 \"키-값 원장 + 합계\" 패턴 전반에 쓰입니다(이름이 Order 로 시작하지만 커머스 전용 아님 — 추후 SummaryCard 별칭 후보). emphasis로 할인/안내 강조.",
-      "pitfalls": [
-        "할인은 emphasis='discount' (빨간색). 음수 금액에 직접 색칠하지 말 것.",
-        "rows 너무 많으면(8+) 한 화면 정보 과다 — 핵심만 추려서.",
-        "total은 ReactNode — PriceTag 또는 문자열 자유."
-      ],
-      "recommended": [
-        "결제: 상품 금액/쿠폰/포인트/배송비 + 합계",
-        "EAP 무료 상담: 회사 부담 emphasis='info'"
-      ],
-      "examplesHtml": {
-        "do": "<nds-order-summary-card title=\"결제 요약\"\n  rows='[{\"label\":\"상품 가격\",\"value\":\"50,000원\"},{\"label\":\"할인\",\"value\":\"-5,000원\"}]'\n  total-label=\"합계\" total=\"45,000원\"></nds-order-summary-card>",
-        "dont": "<!-- rows 를 string 으로 — 줄이 렌더되지 않음. 반드시 JSON 배열 -->\n<nds-order-summary-card rows=\"상품 50000\"></nds-order-summary-card>"
-      }
     },
     "PageHeader": {
       "name": "PageHeader",
@@ -2855,7 +2819,7 @@
     "Stepper": {
       "name": "Stepper",
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20029",
-      "summary": "**다단계 작업의 현재 진척 *표시*** (지금 몇 단계인지 보여주는 막대/원, 입력 컨트롤 아님). variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+네비 컨테이너=MultiStepForm.)",
+      "summary": "**다단계 작업의 현재 진척 *표시*** (지금 몇 단계인지 보여주는 막대/원, 입력 컨트롤 아님). variant=numbered|dots(원형 인디케이터 — 가입/결제/온보딩) + variant=bar(가로 막대 + 스텝번호/제목 2단 라벨 — 캐시워크 for Business 어드민 다단계 흐름, 구 StepProgress 흡수). 상태(completed/current/upcoming)는 current 인덱스로 자동 계산 — per-step status 는 받지 않음. (시간순 이벤트 로그=Timeline, 폼 콘텐츠+단계 네비를 묶는 컨테이너는 DS 컴포넌트가 아니라 조립 패턴=pattern:multi-step-form.)",
       "pitfalls": [
         "status 는 prop 이 아님 — steps 에 {key,label,title?} 만 주고 상태는 current(0-based)로 결정. 'status' 를 박으면 무시됨.",
         "variant 는 numbered|dots|bar 뿐 — 'horizontal'/'vertical' 같은 값은 없음(Stepper 는 항상 가로). 세로 방향 트래커가 필요하면 Timeline(direction='vertical').",
@@ -2866,6 +2830,23 @@
       "examplesHtml": {
         "do": "<!-- 원형 단계 -->\n<nds-stepper current=\"1\" variant=\"numbered\" steps='[{\"key\":\"info\",\"label\":\"기본 정보\"},{\"key\":\"pay\",\"label\":\"결제\"},{\"key\":\"confirm\",\"label\":\"확인\"}]'></nds-stepper>\n<!-- 어드민 가로 막대(구 StepProgress) -->\n<nds-stepper current=\"1\" variant=\"bar\" steps='[{\"key\":\"c\",\"label\":\"Step 1\",\"title\":\"캠페인 만들기\"},{\"key\":\"a\",\"label\":\"Step 2\",\"title\":\"광고 만들기\"},{\"key\":\"m\",\"label\":\"Step 3\",\"title\":\"소재 만들기\"}]'></nds-stepper>",
         "dont": "<!-- variant=\"horizontal\" + per-step status 는 존재하지 않는 prop — 무시됨. 막대 색 직접 지정 금지 -->\n<nds-stepper variant=\"horizontal\" steps='[{\"label\":\"기본 정보\",\"status\":\"completed\"}]'></nds-stepper>"
+      }
+    },
+    "SummaryCard": {
+      "name": "SummaryCard",
+      "summary": "**범용 요약 카드** (도메인 무관) — 라벨:값 행 + 강조 합계 + CTA 슬롯. 결제뿐 아니라 예약 확인·신청서 검토·구독 요약 등 \"키-값 원장 + 합계\" 패턴 전반에 쓰입니다(이름이 Order 로 시작하지만 커머스 전용 아님 — 추후 SummaryCard 별칭 후보). emphasis로 할인/안내 강조.",
+      "pitfalls": [
+        "할인은 emphasis='discount' (빨간색). 음수 금액에 직접 색칠하지 말 것.",
+        "rows 너무 많으면(8+) 한 화면 정보 과다 — 핵심만 추려서.",
+        "total은 ReactNode — PriceTag 또는 문자열 자유."
+      ],
+      "recommended": [
+        "결제: 상품 금액/쿠폰/포인트/배송비 + 합계",
+        "EAP 무료 상담: 회사 부담 emphasis='info'"
+      ],
+      "examplesHtml": {
+        "do": "<nds-summary-card title=\"결제 요약\"\n  rows='[{\"label\":\"상품 가격\",\"value\":\"50,000원\"},{\"label\":\"할인\",\"value\":\"-5,000원\"}]'\n  total-label=\"합계\" total=\"45,000원\"></nds-summary-card>",
+        "dont": "<!-- rows 를 string 으로 — 줄이 렌더되지 않음. 반드시 JSON 배열 -->\n<nds-summary-card rows=\"상품 50000\"></nds-summary-card>"
       }
     },
     "Tabs": {
@@ -3025,7 +3006,7 @@
     },
     "Timeline": {
       "name": "Timeline",
-      "summary": "타임라인 — data-array(items) API. mode=activity(시간순 이벤트 로그 — date/title/description + status/statusLabel 배지) + mode=tracker(정해진 단계 진행 트래커 — current 인덱스로 done/current/todo 파생, direction=vertical|horizontal). 구 ActivityTimeline+StatusTimeline 통합. (단계 진척만 간결히 보이려면 Stepper, 다단계 폼 컨테이너는 MultiStepForm.)",
+      "summary": "타임라인 — data-array(items) API. mode=activity(시간순 이벤트 로그 — date/title/description + status/statusLabel 배지) + mode=tracker(정해진 단계 진행 트래커 — current 인덱스로 done/current/todo 파생, direction=vertical|horizontal). 구 ActivityTimeline+StatusTimeline 통합. (단계 진척만 간결히 보이려면 Stepper, 다단계 폼은 조립 패턴=pattern:multi-step-form.)",
       "pitfalls": [
         "items 의 각 항목은 { key, title, date?, description?, status?, statusLabel? }. title 은 필수(이벤트/단계 이름), date 는 시점.",
         "mode=tracker 는 current(0-based)로 상태 파생 — per-item status 는 무시됨. 전부 완료는 current=items.length.",
@@ -4776,6 +4757,33 @@
         "base <nds-header> + nds-header-logo/menu 손수 조립으로 브랜드 GNB 흉내",
         "디바이스 프레임 너비/높이를 <style> 에 손으로 재정의 (.mockup-screen[data-device] 프리셋 사용)"
       ]
+    },
+    "multi-step-form": {
+      "name": "multi-step-form",
+      "summary": "다단계 폼(마법사)은 **DS 컴포넌트가 아니라 조립 패턴**이다. 진행 표시·단계 헤더·이전/다음 풋터는 이미 있는 조각(Stepper / Heading / FormSection / cta-group)이고, 다단계의 진짜 어려움(단계별 검증, 단계 간 데이터 보관, 뒤로 갔다 와도 값 유지, 비동기 검증, 제출)은 **앱이 소유하는 상태머신**이다. 예전 `<MultiStepForm steps={…} canProceed>` 컨테이너는 칠하는 픽셀이 progress+header+footer 뿐이고 어려운 건 전부 `canProceed` boolean 으로 떠넘기는 얇은 셸이라, 실사용 0·Figma 노드 없음으로 제거(강등)했다. 다단계 흐름은 아래 **조립 계약**을 그대로 따른다 — 새 셸 컴포넌트를 만들지 말 것. (단계 진척 *표시*만 = component:Stepper, 시간순 로그 = component:Timeline.)",
+      "rules": [
+        "① 상태는 앱이 소유한다(MUST) — 부모가 (a) 현재 단계 인덱스, (b) **모든 단계의 입력값을 한 state 객체**, (c) 단계별 유효성을 보관한다. 각 단계 컴포넌트에 값을 흩뿌리지 말 것 — 단일 SSOT 라야 뒤로/앞으로가 안전하다.",
+        "② 구조는 4단 수직 스택으로 고정(MUST) — 위에서 아래로 **진행(Stepper) → 헤더(Heading) → 본문(FormSection/FormField) → 풋터(cta-group)**. 순서·구성을 바꾸지 말 것.\n- 진행 = `Stepper`(이산 단계, `current`=단계 인덱스). 단순 % 진행만이면 `ProgressBar` 도 가능하나 단계가 셀 수 있으면 Stepper 가 우선.\n- 헤더 = `Heading`(현재 단계 title + description). 단계마다 교체.\n- 본문 = `FormSection`/`FormField` 입력. 검증·합성은 pattern:form-validation 을 그대로 따른다.\n- 풋터 = pattern:cta-group — **이전(secondary) + 다음/제출(primary)** 한 행.",
+        "③ 전진은 게이팅한다(MUST) — 현재 단계가 **유효하기 전엔 '다음' 버튼을 disabled**. 클릭만으로 무효 단계를 넘기지 말 것(soft gate 금지). 검증 시점은 pattern:form-validation(onBlur + 단계 제출 시 일괄).",
+        "④ 값은 보존한다(MUST) — '이전' 후 다시 '다음' 하면 입력했던 값이 **그대로 복원**돼야 한다. 단계 전환으로 본문을 언마운트해 값을 잃지 말 것 — 값은 ①의 부모 state 에 남고 본문만 갈아끼운다.",
+        "⑤ 비동기 검증은 게이트에 묶는다(MUST) — 중복확인·인증 같은 async 결과는 boolean 으로 ③ 게이트에 연결. 대기 중엔 '다음' 버튼 로딩, **낙관적 전진 금지**(응답 전 다음 단계로 못 감).",
+        "⑥ 제출 계약(MUST) — 마지막 단계의 primary 는 '제출'(submitLabel). 제출 중 버튼 비활성+스피너, 폼 비활성. 서버 오류는 **모든 단계 값 보존** + 상단 Alert(component:NoticeAlert). 성공은 Toast + 다음 화면 이동.",
+        "⑦ 접근성(MUST) — Stepper 현재 단계 `aria-current=\"step\"`. 단계 전환 시 **포커스를 새 단계 Heading 으로 이동**. 에러는 스크린리더에 알림(role/aria-live).",
+        "⑧ 컴포넌트 승격 기준(governance) — 다단계 셸을 다시 DS 컴포넌트로 만들려면 **2개 이상 브랜드의 실제 채택 + Figma 가이드 노드** 둘 다 충족해야 한다. 둘 중 하나라도 없으면 이 패턴으로 조립한다(예전 셸이 제거된 이유)."
+      ],
+      "avoid": [
+        "진행+헤더+풋터만 그리고 어려운 건 `canProceed` boolean 으로 떠넘기는 **얇은 래퍼 컴포넌트를 새로 만들기** — 직접 조립 대비 가치가 없어 제거된 안티패턴이다.",
+        "검증 없이 클릭으로 단계 전진(soft gate) — ③ 위반.",
+        "'이전' 시 본문 언마운트로 입력값 소실 — ④ 위반.",
+        "단계 값을 각 단계 컴포넌트 로컬 state 나 URL 에만 분산 보관 — 뒤로/앞으로 버그. 부모 단일 state 가 SSOT.",
+        "이산 단계에 ProgressBar 를 하드코딩 %로 — 셀 수 있으면 Stepper.",
+        "비동기 응답 전 낙관적 전진 — ⑤ 위반.",
+        "진행/버튼 색을 raw hex — semantic/state 토큰으로 5 브랜드 자동 대응."
+      ],
+      "_readyMade": {
+        "note": "다단계 폼 1단계의 정규 조립 골격. 상태머신(단계 인덱스·단계별 값·유효성)은 **앱이 소유**하고, 아래 마크업의 `Stepper.current`·본문·'다음' `disabled`·헤더 텍스트를 앱이 단계마다 갈아끼운다. 색은 모두 토큰 — hex 직접 지정 금지.",
+        "html": "<!-- 다단계 폼 = 조립 패턴. 단계 인덱스/값/유효성은 앱 state. -->\n<form style=\"display:flex; flex-direction:column; gap:24px; max-width:480px\">\n  <!-- ① 진행: Stepper.current = 앱의 단계 인덱스 -->\n  <nds-stepper\n    current=\"0\"\n    steps='[{\"key\":\"info\",\"label\":\"정보 입력\"},{\"key\":\"verify\",\"label\":\"본인 인증\"},{\"key\":\"agree\",\"label\":\"약관 동의\"}]'>\n  </nds-stepper>\n\n  <!-- ② 헤더: 단계마다 교체 -->\n  <nds-heading title=\"정보 입력\" description=\"기본 정보를 입력해 주세요\"></nds-heading>\n\n  <!-- ③ 본문: 현재 단계의 입력(검증=pattern:form-validation). 단계 전환 시 값은 앱 state 에 보존 -->\n  <nds-form-section>\n    <nds-form-field label=\"이름\">\n      <nds-input placeholder=\"이름\"></nds-input>\n    </nds-form-field>\n    <nds-form-field label=\"이메일\">\n      <nds-input type=\"email\" placeholder=\"name@example.com\"></nds-input>\n    </nds-form-field>\n  </nds-form-section>\n\n  <!-- ④ 풋터: cta-group(이전 secondary + 다음 primary). '다음'은 현재 단계 유효 전까지 disabled -->\n  <div style=\"display:flex; gap:12px\">\n    <nds-button variant=\"outlined\" style=\"flex:1\">이전</nds-button>\n    <nds-button variant=\"primary\" style=\"flex:1\" disabled>다음</nds-button>\n  </div>\n  <!-- 마지막 단계에서만 '다음' → '제출'(submitLabel) + 제출 중 disabled+스피너 -->\n</form>"
+      }
     },
     "notice": {
       "name": "notice",

@@ -298,8 +298,8 @@
       "platforms": ["mobile"],
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/progress-stepper/",
-      "nds": "MultiStepForm",
-      "ndsNote": "단계 진행 표시 — NDS MultiStepForm 의 indicator.",
+      "nds": "Stepper",
+      "ndsNote": "단계 진행 표시 — NDS Stepper(인디케이터). 폼 흐름 전체는 조립 패턴 pattern:multi-step-form.",
       "figmaByBrand": {}
     },
     {

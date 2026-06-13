@@ -3,7 +3,7 @@ import { StatsTable, Pagination } from "@nudge-design/react";
 import React, { useState } from "react";
 
 const meta: Meta<typeof StatsTable> = {
-  title: "Components/Data/StatsTable",
+  title: "Components/Data Display/StatsTable",
   component: StatsTable,
   parameters: {
     layout: "padded",

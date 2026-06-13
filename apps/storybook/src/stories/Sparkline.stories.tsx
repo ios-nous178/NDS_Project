@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Sparkline } from "@nudge-design/react";
 
 const meta: Meta<typeof Sparkline> = {
-  title: "Components/Display/Sparkline",
+  title: "Components/Data Visualization/Sparkline",
   component: Sparkline,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

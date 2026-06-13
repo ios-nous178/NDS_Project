@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T16:15:14.712Z",
+  "generatedAt": "2026-06-13T16:44:19.419Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1589,7 +1589,7 @@
       ]
     },
     {
-      "name": "ChatComposer",
+      "name": "ChatInput",
       "props": [
         {
           "name": "value",
@@ -1647,8 +1647,8 @@
           "type": "number"
         }
       ],
-      "dtsRelPath": "packages/react/dist/ChatComposer.d.ts",
-      "htmlTag": "nds-chat-composer",
+      "dtsRelPath": "packages/react/dist/ChatInput.d.ts",
+      "htmlTag": "nds-chat-input",
       "htmlObservedAttrs": [
         "disabled",
         "max-height",
@@ -4090,72 +4090,6 @@
       ]
     },
     {
-      "name": "MultiStepForm",
-      "props": [
-        {
-          "name": "steps",
-          "optional": false,
-          "type": "MultiStepFormStep[]"
-        },
-        {
-          "name": "current",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "onCurrentChange",
-          "optional": true,
-          "type": "(index: number) => void"
-        },
-        {
-          "name": "onSubmit",
-          "optional": true,
-          "type": "() => void | Promise<void>"
-        },
-        {
-          "name": "indicator",
-          "optional": true,
-          "type": "MultiStepFormIndicator",
-          "allowedValues": [
-            "progress",
-            "steps",
-            "none"
-          ]
-        },
-        {
-          "name": "nextLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "prevLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "submitLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "submitting",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/MultiStepForm.d.ts",
-      "htmlTag": "nds-multi-step-form",
-      "htmlObservedAttrs": [
-        "current",
-        "indicator",
-        "next-label",
-        "prev-label",
-        "steps",
-        "submit-label",
-        "submitting"
-      ]
-    },
-    {
       "name": "NoticeAlert",
       "props": [
         {
@@ -4201,44 +4135,6 @@
         "variant",
         "message",
         "hide-icon"
-      ]
-    },
-    {
-      "name": "OrderSummaryCard",
-      "props": [
-        {
-          "name": "title",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "rows",
-          "optional": false,
-          "type": "OrderSummaryRow[]"
-        },
-        {
-          "name": "totalLabel",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "total",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "footer",
-          "optional": true,
-          "type": "React.ReactNode"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/OrderSummaryCard.d.ts",
-      "htmlTag": "nds-order-summary-card",
-      "htmlObservedAttrs": [
-        "rows",
-        "title",
-        "total-label",
-        "total"
       ]
     },
     {
@@ -5896,6 +5792,44 @@
         "current",
         "steps",
         "variant"
+      ]
+    },
+    {
+      "name": "SummaryCard",
+      "props": [
+        {
+          "name": "title",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "rows",
+          "optional": false,
+          "type": "SummaryRow[]"
+        },
+        {
+          "name": "totalLabel",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "total",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/SummaryCard.d.ts",
+      "htmlTag": "nds-summary-card",
+      "htmlObservedAttrs": [
+        "rows",
+        "title",
+        "total-label",
+        "total"
       ]
     },
     {
@@ -13247,7 +13181,7 @@
     "nds-carousel",
     "nds-chart",
     "nds-chat-bubble",
-    "nds-chat-composer",
+    "nds-chat-input",
     "nds-checkbox",
     "nds-checkbox-group",
     "nds-checkbox-tree",
@@ -13299,9 +13233,7 @@
     "nds-media-thumbnail",
     "nds-modal",
     "nds-multi-select",
-    "nds-multi-step-form",
     "nds-notice-alert",
-    "nds-order-summary-card",
     "nds-page-header",
     "nds-pagination",
     "nds-phone-input",
@@ -13334,6 +13266,7 @@
     "nds-star-rating",
     "nds-stats-table",
     "nds-stepper",
+    "nds-summary-card",
     "nds-tabs",
     "nds-tabs-list",
     "nds-tabs-panel",
@@ -13683,7 +13616,7 @@
       ]
     },
     {
-      "tag": "nds-chat-composer",
+      "tag": "nds-chat-input",
       "attrs": {},
       "observedAttrs": [
         "disabled",
@@ -14192,19 +14125,6 @@
       ]
     },
     {
-      "tag": "nds-multi-step-form",
-      "attrs": {},
-      "observedAttrs": [
-        "current",
-        "indicator",
-        "next-label",
-        "prev-label",
-        "steps",
-        "submit-label",
-        "submitting"
-      ]
-    },
-    {
       "tag": "nds-notice-alert",
       "attrs": {
         "variant": [
@@ -14219,16 +14139,6 @@
         "variant",
         "message",
         "hide-icon"
-      ]
-    },
-    {
-      "tag": "nds-order-summary-card",
-      "attrs": {},
-      "observedAttrs": [
-        "rows",
-        "title",
-        "total-label",
-        "total"
       ]
     },
     {
@@ -14613,6 +14523,16 @@
         "current",
         "steps",
         "variant"
+      ]
+    },
+    {
+      "tag": "nds-summary-card",
+      "attrs": {},
+      "observedAttrs": [
+        "rows",
+        "title",
+        "total-label",
+        "total"
       ]
     },
     {

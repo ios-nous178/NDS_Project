@@ -3,7 +3,7 @@ import { spacing } from "@nudge-design/tokens";
 
 /* ─── Constants ─── */
 
-const OS_CLASS = "nds-order-summary-card";
+const OS_CLASS = "nds-summary-card";
 const OS_HEADER_CLASS = `${OS_CLASS}__header`;
 const OS_TITLE_CLASS = `${OS_CLASS}__title`;
 const OS_LIST_CLASS = `${OS_CLASS}__list`;
@@ -16,7 +16,7 @@ const OS_TOTAL_VALUE_CLASS = `${OS_CLASS}__total-value`;
 
 /* ─── Types ─── */
 
-export interface OrderSummaryRow {
+export interface SummaryRow {
   /** 라벨 */
   label: React.ReactNode;
   /** 값 (텍스트 or 숫자) */
@@ -25,11 +25,11 @@ export interface OrderSummaryRow {
   emphasis?: "discount" | "info";
 }
 
-export interface OrderSummaryCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+export interface SummaryCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** 카드 제목 */
   title?: React.ReactNode;
   /** 항목 목록 (라벨:값) */
-  rows: OrderSummaryRow[];
+  rows: SummaryRow[];
   /** 합계 라벨 */
   totalLabel?: React.ReactNode;
   /** 합계 값 (PriceTag 권장) */
@@ -42,7 +42,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /* ─── Component ─── */
 
-export const OrderSummaryCard = React.forwardRef<HTMLDivElement, OrderSummaryCardProps>(
+export const SummaryCard = React.forwardRef<HTMLDivElement, SummaryCardProps>(
   (
     { title = "결제 정보", rows, totalLabel = "총 결제금액", total, footer, className, ...rest },
     ref,
@@ -75,4 +75,4 @@ export const OrderSummaryCard = React.forwardRef<HTMLDivElement, OrderSummaryCar
   },
 );
 
-OrderSummaryCard.displayName = "OrderSummaryCard";
+SummaryCard.displayName = "SummaryCard";

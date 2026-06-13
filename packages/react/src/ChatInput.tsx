@@ -2,7 +2,7 @@ import React, { useCallback, useLayoutEffect, useRef } from "react";
 
 /* ─── Constants ─── */
 
-const CC_CLASS = "nds-chat-composer";
+const CC_CLASS = "nds-chat-input";
 const CC_QUICK_CLASS = `${CC_CLASS}__quick`;
 const CC_QUICK_ITEM_CLASS = `${CC_CLASS}__quick-item`;
 const CC_INPUT_AREA_CLASS = `${CC_CLASS}__input-area`;
@@ -21,7 +21,7 @@ export interface QuickReply {
   onClick: () => void;
 }
 
-export interface ChatComposerProps extends Omit<
+export interface ChatInputProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onChange" | "onSubmit"
 > {
@@ -53,7 +53,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /* ─── Component ─── */
 
-export const ChatComposer = React.forwardRef<HTMLDivElement, ChatComposerProps>(
+export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
   (
     {
       value,
@@ -101,7 +101,7 @@ export const ChatComposer = React.forwardRef<HTMLDivElement, ChatComposerProps>(
         ref={ref}
         data-slot="root"
         className={cx(CC_CLASS, className)}
-        style={{ "--nds-chat-composer-max": `${maxHeight}px`, ...style } as React.CSSProperties}
+        style={{ "--nds-chat-input-max": `${maxHeight}px`, ...style } as React.CSSProperties}
         {...rest}
       >
         {quickReplies && quickReplies.length > 0 && (
@@ -197,4 +197,4 @@ export const ChatComposer = React.forwardRef<HTMLDivElement, ChatComposerProps>(
   },
 );
 
-ChatComposer.displayName = "ChatComposer";
+ChatInput.displayName = "ChatInput";

@@ -15,15 +15,15 @@
 
 ## recommended
 
-- 1:1 상담: <ChatComposer value, onValueChange, onSubmit, maxLength={1000}>
+- 1:1 상담: <ChatInput value, onValueChange, onSubmit, maxLength={1000}>
 - 챗봇 + 빠른 응답: quickReplies=[{label, onClick: ()=> onSubmit(...)}]
 - 음성 메모: onMic만, onAttach 생략
 
 ## examplesHtml.do
 
 ```html
-<nds-chat-composer placeholder="메시지를 입력하세요" max-length="500"
-  quick-replies='[{"text":"네"},{"text":"아니요"}]'></nds-chat-composer>
+<nds-chat-input placeholder="메시지를 입력하세요" max-length="500"
+  quick-replies='[{"text":"네"},{"text":"아니요"}]'></nds-chat-input>
 <script>el.addEventListener("nds-chat-submit", e => send(e.detail.value));</script>
 ```
 
