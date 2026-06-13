@@ -252,8 +252,6 @@ export { NdsSelectionButtonGroup } from "./components/nds-selection-button-group
 
 export { NdsFilterBar } from "./components/nds-filter-bar.js";
 
-export { NdsTimeSlotPicker } from "./components/nds-time-slot-picker.js";
-
 export { NdsPhoneInput } from "./components/nds-phone-input.js";
 
 export { NdsPinPad } from "./components/nds-pin-pad.js";
@@ -274,8 +272,6 @@ export { NdsMediaThumbnail } from "./components/nds-media-thumbnail.js";
 export type { MediaRounded, MediaFit } from "./components/nds-media-thumbnail.js";
 
 export { NdsCalendar } from "./components/nds-calendar.js";
-
-export { NdsCallControlBar } from "./components/nds-call-control-bar.js";
 
 export { NdsChatComposer } from "./components/nds-chat-composer.js";
 
@@ -323,9 +319,6 @@ export { NdsCoachMark } from "./components/nds-coach-mark.js";
 export type { CoachMarkPlacement } from "./components/nds-coach-mark.js";
 
 export { NdsEmptyState } from "./components/nds-empty-state.js";
-
-export { NdsOnlineIndicator } from "./components/nds-online-indicator.js";
-export type { PresenceStatus } from "./components/nds-online-indicator.js";
 
 export { NdsPagination } from "./components/nds-pagination.js";
 

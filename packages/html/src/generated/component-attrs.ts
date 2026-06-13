@@ -260,14 +260,6 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-call-control-bar": {
-    "observedAttributes": [
-      "camera-on",
-      "muted",
-      "speaker-on"
-    ],
-    "enums": {}
-  },
   "nds-card": {
     "observedAttributes": [
       "clickable",
@@ -1049,22 +1041,6 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-online-indicator": {
-    "observedAttributes": [
-      "label",
-      "show-label",
-      "size",
-      "status"
-    ],
-    "enums": {
-      "status": [
-        "online",
-        "away",
-        "busy",
-        "offline"
-      ]
-    }
-  },
   "nds-order-summary-card": {
     "observedAttributes": [
       "rows"
@@ -1407,11 +1383,17 @@ export const COMPONENT_ATTRS = {
     "observedAttributes": [
       "disabled",
       "max",
+      "precision",
       "show-value",
       "size",
       "value"
     ],
-    "enums": {}
+    "enums": {
+      "precision": [
+        "full",
+        "half"
+      ]
+    }
   },
   "nds-stats-table": {
     "observedAttributes": [
@@ -1518,16 +1500,6 @@ export const COMPONENT_ATTRS = {
       "portal-container",
       "presets",
       "step",
-      "value"
-    ],
-    "enums": {}
-  },
-  "nds-time-slot-picker": {
-    "observedAttributes": [
-      "columns",
-      "disabled",
-      "groups",
-      "slots",
       "value"
     ],
     "enums": {}

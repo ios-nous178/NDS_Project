@@ -79,7 +79,7 @@ export interface AssetProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
    */
   overlap?: number;
   /**
-   * Union — accessory. 우측 하단에 작은 상태 표시(OnlineIndicator, Badge dot, count 등).
+   * Union — accessory. 우측 하단에 작은 상태 표시(상태 점, Badge dot, count 등).
    */
   acc?: React.ReactNode;
 }

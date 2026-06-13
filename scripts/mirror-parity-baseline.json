@@ -147,16 +147,6 @@
       "since": "2026-06"
     },
     {
-      "key": "CallControlBar::prop-name::html attr \"show-camera\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "CallControlBar::prop-name::html attr \"show-speaker\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
       "key": "Card::prop-name::react prop → \"description\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -668,11 +658,6 @@
     },
     {
       "key": "NumberStepper::prop-name::react prop → \"aria-label\" 가 html observedAttributes 에 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "OnlineIndicator::prop-name::html attr \"aria-label\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
     },

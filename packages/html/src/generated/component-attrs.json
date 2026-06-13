@@ -256,14 +256,6 @@
     ],
     "enums": {}
   },
-  "nds-call-control-bar": {
-    "observedAttributes": [
-      "camera-on",
-      "muted",
-      "speaker-on"
-    ],
-    "enums": {}
-  },
   "nds-card": {
     "observedAttributes": [
       "clickable",
@@ -1045,22 +1037,6 @@
     ],
     "enums": {}
   },
-  "nds-online-indicator": {
-    "observedAttributes": [
-      "label",
-      "show-label",
-      "size",
-      "status"
-    ],
-    "enums": {
-      "status": [
-        "online",
-        "away",
-        "busy",
-        "offline"
-      ]
-    }
-  },
   "nds-order-summary-card": {
     "observedAttributes": [
       "rows"
@@ -1403,11 +1379,17 @@
     "observedAttributes": [
       "disabled",
       "max",
+      "precision",
       "show-value",
       "size",
       "value"
     ],
-    "enums": {}
+    "enums": {
+      "precision": [
+        "full",
+        "half"
+      ]
+    }
   },
   "nds-stats-table": {
     "observedAttributes": [
@@ -1514,16 +1496,6 @@
       "portal-container",
       "presets",
       "step",
-      "value"
-    ],
-    "enums": {}
-  },
-  "nds-time-slot-picker": {
-    "observedAttributes": [
-      "columns",
-      "disabled",
-      "groups",
-      "slots",
       "value"
     ],
     "enums": {}

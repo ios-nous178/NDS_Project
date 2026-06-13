@@ -1,4 +1,5 @@
 import React from "react";
+import { StarRating } from "./StarRating.js";
 
 /* ─── Constants ─── */
 
@@ -61,38 +62,6 @@ export interface ReviewCardProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
-const renderStars = (rating: number) => {
-  const stars: React.ReactElement[] = [];
-  for (let i = 1; i <= 5; i++) {
-    const filled = rating >= i;
-    const half = !filled && rating >= i - 0.5;
-    stars.push(
-      <svg key={i} width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-        {half ? (
-          <>
-            <defs>
-              <linearGradient id={`half-${i}`}>
-                <stop offset="50%" stopColor="currentColor" />
-                <stop offset="50%" style={{ stopColor: "var(--nds-rating-star-empty, #D8D8D8)" }} />
-              </linearGradient>
-            </defs>
-            <path
-              d="M7 1l1.8 3.8L13 5.5l-3 2.9.8 4.3L7 10.5 3.2 12.7 4 8.4 1 5.5l4.2-.7z"
-              fill={`url(#half-${i})`}
-            />
-          </>
-        ) : (
-          <path
-            d="M7 1l1.8 3.8L13 5.5l-3 2.9.8 4.3L7 10.5 3.2 12.7 4 8.4 1 5.5l4.2-.7z"
-            style={{ fill: filled ? "currentColor" : "var(--nds-rating-star-empty, #D8D8D8)" }}
-          />
-        )}
-      </svg>,
-    );
-  }
-  return stars;
-};
-
 /* ─── Component ─── */
 
 export const ReviewCard = React.forwardRef<HTMLDivElement, ReviewCardProps>(
@@ -131,7 +100,7 @@ export const ReviewCard = React.forwardRef<HTMLDivElement, ReviewCardProps>(
             </div>
           </div>
           <div className={RC_RATING_CLASS}>
-            {renderStars(rating)}
+            <StarRating value={rating} max={5} size={14} precision="half" aria-hidden />
             {ratingLabel !== undefined && (
               <span className={`${RC_RATING_CLASS}__label`}>{ratingLabel}</span>
             )}

@@ -219,7 +219,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "직사각(가로>세로) 이미지를 그대로 넣으면 잘림 — 정사각 비율 이미지만 swap. 96+ 사이즈는 circle 권장(square/rounded 는 콘텐츠 카드와 혼동).",
       "src 만 있고 alt/name 둘 다 누락 — 로드 실패 시 빈 박스 + 스크린리더 무용. alt 또는 name(이니셜 1자 자동) 중 하나는 필수.",
       "size 를 px 인라인(`style=\"width:33px\"`)으로 강제하지 말 것 — `xs/sm/md/lg/xl`(24/32/48/64/96)가 폰트/이니셜/radius 비율을 함께 보장. 임의 px 는 sizeMatrix 불일치.",
-      "Avatar 위에 OnlineIndicator/badge 를 직접 absolute 로 얹지 말고 부모 컨테이너에서 layout 결정. AvatarGroup 은 size/shape 를 그룹 전체에 전파(개별 Avatar 에 다시 박지 말 것)."
+      "Avatar 위에 상태 점/badge 를 직접 absolute 로 얹지 말고 부모 컨테이너에서 layout 결정. AvatarGroup 은 size/shape 를 그룹 전체에 전파(개별 Avatar 에 다시 박지 말 것)."
     ],
     "examplesHtml": {
       "do": "<!-- 인물 프로필: circle (기본) -->\n<nds-avatar src=\"/u.jpg\" alt=\"홍길동\" size=\"md\"></nds-avatar>\n<nds-avatar name=\"이정민\" size=\"lg\"></nds-avatar> <!-- src 실패 시 '이' 1자 Bold -->\n<!-- 앱 아이콘/썸네일: rounded · 콘텐츠/제품: square -->\n<nds-avatar src=\"/app.png\" alt=\"앱\" size=\"lg\" shape=\"rounded\"></nds-avatar>\n<nds-avatar src=\"/product.png\" alt=\"제품\" size=\"lg\" shape=\"square\"></nds-avatar>",
@@ -682,24 +682,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "examplesHtml": {
       "do": "<nds-calendar value=\"2026-05-25\" markers='[{\"date\":\"2026-05-25\",\"color\":\"red\"}]'></nds-calendar>\n<script>el.addEventListener(\"nds-calendar-change\", e => setDate(e.detail.value));</script>",
       "dont": "<!-- month / value 형식 위반 (YYYY-MM, YYYY-MM-DD 필수) -->\n<nds-calendar value=\"2026/5/25\"></nds-calendar>"
-    }
-  },
-  "CallControlBar": {
-    "name": "CallControlBar",
-    "summary": "통화 컨트롤. 음소거/카메라/스피커/종료 + duration 표시. 화상은 카메라, 음성은 스피커만 노출.",
-    "pitfalls": [
-      "카메라/스피커는 onChange 콜백을 안 주면 버튼 자동 숨김. 둘 다 노출하지 말 것 (화상에 스피커, 음성에 카메라는 어색).",
-      "종료 버튼 색을 override하지 말 것 — 시맨틱 의미(파괴) 유지를 위해 빨간색 고정.",
-      "duration은 외부 timer state로 갱신 — 컴포넌트가 자체로 시간 계산하지 않음."
-    ],
-    "recommended": [
-      "화상 상담: muted + cameraOn + duration",
-      "음성 상담: muted + speakerOn + duration",
-      "AI 통화: extra slot에 채팅 전환 버튼 추가"
-    ],
-    "examplesHtml": {
-      "do": "<nds-call-control-bar duration=\"00:05:30\" camera-on></nds-call-control-bar>\n<script>\nel.addEventListener(\"nds-call-mute-change\", e => setMute(e.detail.muted));\nel.addEventListener(\"nds-call-end\", endCall);\n</script>",
-      "dont": "<!-- duration 포맷이 HH:MM:SS 아님 -->\n<nds-call-control-bar duration=\"5:30\"></nds-call-control-bar>"
     }
   },
   "Card": {
@@ -2233,22 +2215,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- 자유 입력을 nds-input 으로 받고 stepper 흉내 — 범위/단위 룰이 빠짐 -->\n<nds-input type=\"number\" />"
     }
   },
-  "OnlineIndicator": {
-    "name": "OnlineIndicator",
-    "summary": "presence 점 (online/away/busy/offline). online은 자동 펄스 애니메이션.",
-    "pitfalls": [
-      "online에 별도 강조 효과 추가하지 말 것 — 자동 펄스 있음.",
-      "아바타 우하단에 올릴 때 부모 position:relative + 점 position:absolute."
-    ],
-    "recommended": [
-      "상담사 리스트: showLabel=true로 텍스트 함께",
-      "아바타 점: 라벨 없이 size=10"
-    ],
-    "examplesHtml": {
-      "do": "<nds-avatar src=\"/u.jpg\" alt=\"홍길동\" size=\"md\"></nds-avatar>\n<nds-online-indicator status=\"online\" show-label aria-label=\"온라인\"></nds-online-indicator>",
-      "dont": "<!-- 색 점 하나로 상태 모사 — 4 상태 (online/idle/offline/dnd) 구분 못함 -->\n<span style=\"background:#0a0;width:8px;height:8px\"></span>"
-    }
-  },
   "OrderSummaryCard": {
     "name": "OrderSummaryCard",
     "summary": "**범용 요약 카드** (도메인 무관) — 라벨:값 행 + 강조 합계 + CTA 슬롯. 결제뿐 아니라 예약 확인·신청서 검토·구독 요약 등 \"키-값 원장 + 합계\" 패턴 전반에 쓰입니다(이름이 Order 로 시작하지만 커머스 전용 아님 — 추후 SummaryCard 별칭 후보). emphasis로 할인/안내 강조.",
@@ -3051,13 +3017,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "name": "StarRating",
     "summary": "1-5 / 1-10 별 점수. 후기 입력 + 후기 표시 양쪽에 사용. readonly 와 disabled 구분.",
     "pitfalls": [
-      "0.5 / 부분 별 채움이 필요한데 정수만 받는 input 으로 사용 — 디자인은 0.5 단위 표시 지원.",
+      "0.5 단위 반쪽 별 표시는 `precision=\"half\"` 로 켠다. 기본 `precision=\"full\"` 은 정수 반올림이라 4.5 가 5개로 보인다. 인터랙티브(입력) 모드는 항상 정수.",
       "readonly 와 disabled 혼동 — disabled 는 폼 비활성, readonly 는 보기 전용 (clickable 아님).",
       "max 가 5 인데 value 6 — 표시가 깨짐.",
       "HTML size 는 React 와 동일하게 px 숫자를 우선 사용. \"md\"/\"lg\" alias 는 허용되지만 목업 가이드 예제에서는 숫자 px 로 지시."
     ],
     "examplesHtml": {
-      "do": "<nds-star-rating value=\"4\" size=\"20\" max=\"5\" show-value></nds-star-rating>\n<nds-star-rating value=\"4.5\" size=\"16\" max=\"5\" readonly></nds-star-rating>\n<script>el.addEventListener(\"star-rating-change\", e => setRating(e.detail.value));</script>",
+      "do": "<nds-star-rating value=\"4\" size=\"20\" max=\"5\" show-value></nds-star-rating>\n<nds-star-rating value=\"4.5\" size=\"16\" max=\"5\" precision=\"half\" readonly></nds-star-rating>\n<script>el.addEventListener(\"star-rating-change\", e => setRating(e.detail.value));</script>",
       "dont": "<!-- value 가 max 초과 -->\n<nds-star-rating value=\"6\" max=\"5\"></nds-star-rating>"
     }
   },
@@ -3213,7 +3179,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "트리거(시계아이콘 포함)를 누르면 시/분 컬럼 팝오버가 열린다 — OS 기본 시간 UI(showPicker)는 쓰지 않는다. 선택값은 브랜드 fill 로 강조.",
       "step은 초 단위 — 5분이면 300, 15분이면 900. 분 컬럼 간격으로 환산된다.",
       "min/max도 HH:mm 문자열 — Date 객체 X. 범위 밖 시/분 옵션은 자동 비활성.",
-      "상담 슬롯 목록에서 선택은 TimeSlotPicker가 적합 — TimePicker는 자유 시각 입력.",
       "**(캐포비 어드민) 시간 인풋의 '빠른설정' 프리셋은 `nds-time-picker` 의 `presets` 속성으로 — 손조립·노란 brand Chip 금지.** 광고 노출 스케줄 등에서 시간 필드 트레일링(`00:00` + 시계아이콘 우측)에 `자정까지`(= 시간을 즉시 세팅) 같은 빠른설정 칩이 붙는다. 이건 컴포넌트 내장 기능이다: `presets='[{\"label\":\"자정까지\",\"value\":\"23:59\"}]'`(React `presets={[{label,value}]}`) — 클릭하면 value 가 세팅되는 **회색 중립 칩**으로 자동 렌더(시계 아이콘 ic_time_picker 포함). raw `<div>`/`<nds-chip>` 으로 손조립하지 말 것. **노란 outlined Chip / SelectionButton 으로 그리면 회귀**(SelectionButton 과 혼동되는 '지역=노란칩'과 동일 함정 — region-as-chip 참조). Figma 3001:19122."
     ],
     "recommended": [
@@ -3224,19 +3189,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "examplesHtml": {
       "do": "<nds-time-picker value=\"18:00\" step=\"600\"\n  label=\"노출 종료 시간\"\n  presets='[{\"label\":\"자정까지\",\"value\":\"23:59\"}]'></nds-time-picker>\n<script>el.addEventListener(\"nds-time-change\", e => setTime(e.detail.value));</script>",
       "dont": "<!-- step 0 — 분/초 단위 무제한 — 예약 정확도 깨짐 -->\n<nds-time-picker value=\"14:30\" step=\"0\"></nds-time-picker>"
-    }
-  },
-  "TimeSlotPicker": {
-    "name": "TimeSlotPicker",
-    "summary": "예약 가능한 시간 slot 그리드. 상담 / 예약 / 클래스 일정에 사용. 가용 / 비가용 / 만석 상태 시각화.",
-    "pitfalls": [
-      "한 화면에 30분 단위 24시간 = 48 slot 다 보여주기 — 너무 많아 선택 부담. AM/PM 또는 시간대 필터로 분할.",
-      "비가용 slot 을 단순 회색으로만 — 이유(예약 마감 / 휴무) 미명시.",
-      "선택 후 즉시 다음 step 으로 자동 이동 — 사용자의 confirm 단계를 우회."
-    ],
-    "examplesHtml": {
-      "do": "<nds-time-slot-picker columns=\"3\"\n  groups='[\n    {\"key\":\"am\",\"label\":\"오전\",\"slots\":[{\"value\":\"09:00\"},{\"value\":\"10:00\",\"disabled\":true}]},\n    {\"key\":\"pm\",\"label\":\"오후\",\"slots\":[{\"value\":\"14:00\"},{\"value\":\"15:00\"}]}\n  ]'></nds-time-slot-picker>\n<script>el.addEventListener(\"nds-time-slot-change\", e => pick(e.detail.value));</script>",
-      "dont": "<!-- slots 와 groups 동시 — 둘 중 하나만 -->\n<nds-time-slot-picker slots='[...]' groups='[...]'></nds-time-slot-picker>"
     }
   },
   "Timeline": {

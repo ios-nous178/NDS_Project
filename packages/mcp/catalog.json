@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T05:06:11.039Z",
+  "generatedAt": "2026-06-13T07:07:50.589Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1210,66 +1210,6 @@
         "value",
         "week-starts-on",
         "disabled-dates"
-      ]
-    },
-    {
-      "name": "CallControlBar",
-      "props": [
-        {
-          "name": "muted",
-          "optional": false,
-          "type": "boolean"
-        },
-        {
-          "name": "onMutedChange",
-          "optional": false,
-          "type": "(muted: boolean) => void"
-        },
-        {
-          "name": "cameraOn",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "onCameraChange",
-          "optional": true,
-          "type": "(on: boolean) => void"
-        },
-        {
-          "name": "speakerOn",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "onSpeakerChange",
-          "optional": true,
-          "type": "(on: boolean) => void"
-        },
-        {
-          "name": "onEnd",
-          "optional": false,
-          "type": "() => void"
-        },
-        {
-          "name": "duration",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "extra",
-          "optional": true,
-          "type": "React.ReactNode"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/CallControlBar.d.ts",
-      "htmlTag": "nds-call-control-bar",
-      "htmlObservedAttrs": [
-        "camera-on",
-        "muted",
-        "speaker-on",
-        "duration",
-        "show-camera",
-        "show-speaker"
       ]
     },
     {
@@ -4759,46 +4699,6 @@
       ]
     },
     {
-      "name": "OnlineIndicator",
-      "props": [
-        {
-          "name": "status",
-          "optional": false,
-          "type": "PresenceStatus",
-          "allowedValues": [
-            "online",
-            "away",
-            "busy",
-            "offline"
-          ]
-        },
-        {
-          "name": "showLabel",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "label",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "size",
-          "optional": true,
-          "type": "number"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/OnlineIndicator.d.ts",
-      "htmlTag": "nds-online-indicator",
-      "htmlObservedAttrs": [
-        "label",
-        "show-label",
-        "size",
-        "status",
-        "aria-label"
-      ]
-    },
-    {
       "name": "OrderSummaryCard",
       "props": [
         {
@@ -6600,6 +6500,15 @@
           "name": "disabled",
           "optional": true,
           "type": "boolean"
+        },
+        {
+          "name": "precision",
+          "optional": true,
+          "type": "\"full\" | \"half\"",
+          "allowedValues": [
+            "full",
+            "half"
+          ]
         }
       ],
       "dtsRelPath": "packages/react/dist/StarRating.d.ts",
@@ -6607,6 +6516,7 @@
       "htmlObservedAttrs": [
         "disabled",
         "max",
+        "precision",
         "show-value",
         "size",
         "value",
@@ -7111,56 +7021,6 @@
         "min",
         "max",
         "presets"
-      ]
-    },
-    {
-      "name": "TimeSlotPicker",
-      "props": [
-        {
-          "name": "slots",
-          "optional": true,
-          "type": "TimeSlot[]"
-        },
-        {
-          "name": "groups",
-          "optional": true,
-          "type": "TimeSlotGroup[]"
-        },
-        {
-          "name": "value",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "onValueChange",
-          "optional": false,
-          "type": "(value: string) => void"
-        },
-        {
-          "name": "columns",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "emptyText",
-          "optional": true,
-          "type": "React.ReactNode"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/TimeSlotPicker.d.ts",
-      "htmlTag": "nds-time-slot-picker",
-      "htmlObservedAttrs": [
-        "columns",
-        "disabled",
-        "groups",
-        "slots",
-        "value",
-        "empty-text"
       ]
     },
     {
@@ -13881,7 +13741,6 @@
     "nds-breadcrumb-item",
     "nds-button",
     "nds-calendar",
-    "nds-call-control-bar",
     "nds-card",
     "nds-card-body",
     "nds-card-footer",
@@ -13954,7 +13813,6 @@
     "nds-notice-alert",
     "nds-notification-item",
     "nds-number-stepper",
-    "nds-online-indicator",
     "nds-order-summary-card",
     "nds-page-header",
     "nds-pagination",
@@ -14000,7 +13858,6 @@
     "nds-text-button",
     "nds-textarea",
     "nds-time-picker",
-    "nds-time-slot-picker",
     "nds-timeline",
     "nds-title-group",
     "nds-toast",
@@ -14277,18 +14134,6 @@
         "value",
         "week-starts-on",
         "disabled-dates"
-      ]
-    },
-    {
-      "tag": "nds-call-control-bar",
-      "attrs": {},
-      "observedAttrs": [
-        "camera-on",
-        "muted",
-        "speaker-on",
-        "duration",
-        "show-camera",
-        "show-speaker"
       ]
     },
     {
@@ -15006,17 +14851,6 @@
       ]
     },
     {
-      "tag": "nds-online-indicator",
-      "attrs": {},
-      "observedAttrs": [
-        "label",
-        "show-label",
-        "size",
-        "status",
-        "aria-label"
-      ]
-    },
-    {
       "tag": "nds-order-summary-card",
       "attrs": {},
       "observedAttrs": [
@@ -15428,6 +15262,7 @@
       "observedAttrs": [
         "disabled",
         "max",
+        "precision",
         "show-value",
         "size",
         "value",
@@ -15550,18 +15385,6 @@
         "min",
         "max",
         "presets"
-      ]
-    },
-    {
-      "tag": "nds-time-slot-picker",
-      "attrs": {},
-      "observedAttrs": [
-        "columns",
-        "disabled",
-        "groups",
-        "slots",
-        "value",
-        "empty-text"
       ]
     },
     {

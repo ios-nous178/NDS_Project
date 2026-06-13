@@ -75,7 +75,6 @@ export const rcStyles = `
     align-items: center;
     gap: var(--semantic-gap-tight);
     flex-shrink: 0;
-    color: var(--nds-rating-star, #FFD54F);
     font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.semibold};
   }

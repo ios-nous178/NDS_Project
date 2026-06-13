@@ -1,4 +1,5 @@
 import React from "react";
+import { StarRating } from "./StarRating.js";
 
 /* ─── Constants ─── */
 
@@ -16,25 +17,6 @@ const MC_FOOTER_CLASS = `${MC_CLASS}__footer`;
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
-
-const StarIcon = ({ filled }: { filled: boolean }) => (
-  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-    <path
-      d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z"
-      style={{
-        fill: filled ? "var(--nds-rating-star, #FFD54F)" : "var(--nds-rating-star-empty, #D8D8D8)",
-      }}
-    />
-  </svg>
-);
-
-const renderStars = (rating: number) => {
-  const out: React.ReactElement[] = [];
-  for (let i = 1; i <= 5; i++) {
-    out.push(<StarIcon key={i} filled={rating >= i - 0.25} />);
-  }
-  return out;
-};
 
 /* ─── Types ─── */
 
@@ -131,7 +113,7 @@ export const MediaCard = React.forwardRef<HTMLDivElement, MediaCardProps>(
                   className={MC_RATING_CLASS}
                   aria-label={`평점 ${rating.toFixed(1)} / 5`}
                 >
-                  {renderStars(rating)}
+                  <StarRating value={rating} max={5} size={14} precision="half" aria-hidden />
                 </span>
               )}
             </div>

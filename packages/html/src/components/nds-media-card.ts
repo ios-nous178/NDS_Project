@@ -25,6 +25,7 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
+import { appendStars } from "../base/star-icons.js";
 
 const MC_CLASS = "nds-media-card";
 const MC_MEDIA_CLASS = `${MC_CLASS}__media`;
@@ -37,20 +38,6 @@ const MC_BODY_TEXT_CLASS = `${MC_CLASS}__body-text`;
 const MC_RATING_CLASS = `${MC_CLASS}__rating`;
 const MC_FOOTER_CLASS = `${MC_CLASS}__footer`;
 
-const renderStars = (rating: number, container: HTMLElement) => {
-  for (let i = 1; i <= 5; i++) {
-    const filled = rating >= i - 0.25;
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "14");
-    svg.setAttribute("height", "14");
-    svg.setAttribute("viewBox", "0 0 14 14");
-    svg.setAttribute("aria-hidden", "true");
-    svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" style="fill: ${
-      filled ? "var(--nds-rating-star, #FFD54F)" : "var(--nds-rating-star-empty, #D8D8D8)"
-    }"/>`;
-    container.appendChild(svg);
-  }
-};
 
 export class NdsMediaCard extends NdsElement {
   static elementName = "nds-media-card";
@@ -220,7 +207,7 @@ export class NdsMediaCard extends NdsElement {
         ratingSpan.dataset.slot = "rating";
         ratingSpan.className = MC_RATING_CLASS;
         ratingSpan.setAttribute("aria-label", `평점 ${rating.toFixed(1)} / 5`);
-        renderStars(rating, ratingSpan);
+        appendStars(ratingSpan, rating, { size: 14, precision: "half" });
         footer.appendChild(ratingSpan);
       }
       bodyDiv.appendChild(footer);

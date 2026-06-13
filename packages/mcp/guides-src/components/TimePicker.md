@@ -11,7 +11,6 @@
 - 트리거(시계아이콘 포함)를 누르면 시/분 컬럼 팝오버가 열린다 — OS 기본 시간 UI(showPicker)는 쓰지 않는다. 선택값은 브랜드 fill 로 강조.
 - step은 초 단위 — 5분이면 300, 15분이면 900. 분 컬럼 간격으로 환산된다.
 - min/max도 HH:mm 문자열 — Date 객체 X. 범위 밖 시/분 옵션은 자동 비활성.
-- 상담 슬롯 목록에서 선택은 TimeSlotPicker가 적합 — TimePicker는 자유 시각 입력.
 - **(캐포비 어드민) 시간 인풋의 '빠른설정' 프리셋은 `nds-time-picker` 의 `presets` 속성으로 — 손조립·노란 brand Chip 금지.** 광고 노출 스케줄 등에서 시간 필드 트레일링(`00:00` + 시계아이콘 우측)에 `자정까지`(= 시간을 즉시 세팅) 같은 빠른설정 칩이 붙는다. 이건 컴포넌트 내장 기능이다: `presets='[{"label":"자정까지","value":"23:59"}]'`(React `presets={[{label,value}]}`) — 클릭하면 value 가 세팅되는 **회색 중립 칩**으로 자동 렌더(시계 아이콘 ic_time_picker 포함). raw `<div>`/`<nds-chip>` 으로 손조립하지 말 것. **노란 outlined Chip / SelectionButton 으로 그리면 회귀**(SelectionButton 과 혼동되는 '지역=노란칩'과 동일 함정 — region-as-chip 참조). Figma 3001:19122.
 
 ## recommended

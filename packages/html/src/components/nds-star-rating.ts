@@ -10,14 +10,12 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
+import { createStarSvg, starFillState, type StarPrecision } from "../base/star-icons.js";
 
 const SR_CLASS = "nds-star-rating";
 const SR_STAR_CLASS = `${SR_CLASS}__star`;
 const SR_VALUE_CLASS = `${SR_CLASS}__value`;
 
-const STAR_PATH = "M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z";
-const FILLED_COLOR = "var(--nds-rating-star, #FFD54F)"; // 슬롯 토큰 — style.fill 로 적용(attr 는 var() 미보장)
-const EMPTY_COLOR = "var(--nds-rating-star-empty, #D8D8D8)"; // 빈 별 슬롯 — 기본 neutral[300]
 const DEFAULT_STAR_SIZE = 16;
 const STAR_SIZE_BY_NAME = {
   sm: 14,
@@ -77,7 +75,10 @@ export class NdsStarRating extends NdsElement {
     const readonly = this.boolAttr("readonly") || !this.hasAttribute("on-change"); // or some other flag
 
     const interactive = !disabled && !readonly;
-    const displayValue = this._hovered !== null ? this._hovered : Math.round(value);
+    // 인터랙티브는 반쪽 별 없음(클릭=정수 선택). hover 시엔 hover 값 미리보기.
+    const precision: StarPrecision =
+      !interactive && this.attr("precision", "full") === "half" ? "half" : "full";
+    const displayValue = this._hovered !== null ? this._hovered : value;
 
     this._root.dataset.interactive = String(interactive);
     this._root.setAttribute("role", interactive ? "radiogroup" : "img");
@@ -87,12 +88,13 @@ export class NdsStarRating extends NdsElement {
 
     for (let i = 1; i <= max; i++) {
       const starValue = i;
-      const filled = starValue <= displayValue;
+      const fill = starFillState(starValue, displayValue, precision);
 
       const span = document.createElement("span");
       span.className = SR_STAR_CLASS;
       span.dataset.slot = "star";
-      span.dataset.filled = String(filled);
+      span.dataset.filled = String(fill === "full");
+      span.dataset.fill = fill;
       if (interactive) {
         span.setAttribute("role", "radio");
         span.setAttribute("aria-checked", String(starValue === Math.round(value)));
@@ -115,17 +117,7 @@ export class NdsStarRating extends NdsElement {
         });
       }
 
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.setAttribute("width", String(size));
-      svg.setAttribute("height", String(size));
-      svg.setAttribute("viewBox", "0 0 16 16");
-
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", STAR_PATH);
-      path.style.fill = filled ? FILLED_COLOR : EMPTY_COLOR;
-
-      svg.appendChild(path);
-      span.appendChild(svg);
+      span.appendChild(createStarSvg(fill, size));
       this._root.appendChild(span);
     }
 

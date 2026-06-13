@@ -20,6 +20,7 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
+import { appendStars } from "../base/star-icons.js";
 
 const RC_CLASS = "nds-review-card";
 const RC_HEADER_CLASS = `${RC_CLASS}__header`;
@@ -44,44 +45,6 @@ const VerifiedCheckIcon = () => {
   svg.setAttribute("aria-label", "인증됨");
   svg.innerHTML = `<path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />`;
   return svg;
-};
-
-const renderStars = (rating: number) => {
-  const container = document.createDocumentFragment();
-  for (let i = 1; i <= 5; i++) {
-    const filled = rating >= i;
-    const half = !filled && rating >= i - 0.5;
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "14");
-    svg.setAttribute("height", "14");
-    svg.setAttribute("viewBox", "0 0 14 14");
-    svg.setAttribute("aria-hidden", "true");
-
-    if (half) {
-      const id = `nds-star-half-${Math.random().toString(36).slice(2, 7)}`;
-      svg.innerHTML = `
-        <defs>
-          <linearGradient id="${id}">
-            <stop offset="50%" stop-color="currentColor" />
-            <stop offset="50%" style="stop-color: var(--nds-rating-star-empty, #D8D8D8)" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M7 1l1.8 3.8L13 5.5l-3 2.9.8 4.3L7 10.5 3.2 12.7 4 8.4 1 5.5l4.2-.7z"
-          fill="url(#${id})"
-        />
-      `;
-    } else {
-      svg.innerHTML = `
-        <path
-          d="M7 1l1.8 3.8L13 5.5l-3 2.9.8 4.3L7 10.5 3.2 12.7 4 8.4 1 5.5l4.2-.7z"
-          style="fill: ${filled ? "currentColor" : "var(--nds-rating-star-empty, #D8D8D8)"}"
-        />
-      `;
-    }
-    container.appendChild(svg);
-  }
-  return container;
 };
 
 export class NdsReviewCard extends NdsElement {
@@ -197,7 +160,7 @@ export class NdsReviewCard extends NdsElement {
 
     const ratingDiv = document.createElement("div");
     ratingDiv.className = RC_RATING_CLASS;
-    ratingDiv.appendChild(renderStars(rating));
+    appendStars(ratingDiv, rating, { size: 14, precision: "half" });
     if (ratingLabel !== null) {
       const labelSpan = document.createElement("span");
       labelSpan.className = `${RC_RATING_CLASS}__label`;
