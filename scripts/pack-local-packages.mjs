@@ -49,7 +49,11 @@ const PACKAGES = ["tokens", "icons", "assets", "styles", "tailwind-preset", "rea
 const ROOT_VERSION_PACKAGES = ["tokens", "styles", "tailwind-preset", "react", "html"];
 
 // SSOT version 검증 대상 외에 mcpb 와 함께 배포하는 부가 패키지.
-const EXTRA_PACKAGES = ["html"];
+//   html: react 미러 웹컴포넌트.
+//   migrate: React→DS 코드모드 CLI(@nudge-design/migrate, private·별도 버전). npm 미배포 —
+//            로컬 .tgz 로 말아 mcpb 에 동봉(pack-mcpb step3 가 local-packages 통째 복사).
+//            외부 React 레포가 설치 후 `npx nds-migrate` 로 기계적 교체에 사용.
+const EXTRA_PACKAGES = ["html", "migrate"];
 
 const skipBuild = process.argv.includes("--no-build");
 
