@@ -107,6 +107,10 @@ export interface BuildSinglefileHtmlArgs {
    * 하네스 목업처럼 node_modules 가 없어 자동 감지가 비는 경우 호스트가 직접 주입한다.
    */
   dsVersion?: string;
+  /** 스탬프/usage fallback 용 @nudge-design/assets 버전. MCPB manifest.asset_version. */
+  assetVersion?: string;
+  /** 스탬프/usage fallback 용 @nudge-design/icons 버전. MCPB manifest.icon_version. */
+  iconVersion?: string;
 }
 
 export type WorkspaceIntent = "react" | "html";
@@ -442,6 +446,8 @@ export async function buildSinglefileHtml(
         filePath: outputPath,
         cwd,
         dsVersionFallback: args.dsVersion,
+        assetVersionFallback: args.assetVersion,
+        iconVersionFallback: args.iconVersion,
       });
     } catch (err) {
       // Sheets webhook 실패는 reportHtmlMockupUsage 안에서 큐 적재로 처리되지만
@@ -455,7 +461,15 @@ export async function buildSinglefileHtml(
   // report 가 산출한 usage.meta(overall/adoption)를 그대로 사용 — 재집계 없이 시트와 동일 수치.
   // 순서가 핵심: 스탬프의 인라인 스타일/닫기 버튼이 usage 카운트·검증 위반을 오염시키면 안 된다.
   if (intent === "html") {
-    stampDsBar(cwd, outputPath, args.appVersion, args.dsVersion, report?.usage);
+    stampDsBar(
+      cwd,
+      outputPath,
+      args.appVersion,
+      args.dsVersion,
+      args.assetVersion,
+      args.iconVersion,
+      report?.usage,
+    );
   }
   const sizeBytes = fs.statSync(outputPath).size;
   const sizeKb = Math.round(sizeBytes / 1024);
@@ -962,6 +976,8 @@ function stampDsBar(
   outputPath: string,
   appVersion?: string,
   dsVersionOverride?: string,
+  assetVersionOverride?: string,
+  iconVersionOverride?: string,
   usage?: ReportHtmlMockupUsageResult["usage"],
 ): void {
   try {
@@ -973,7 +989,17 @@ function stampDsBar(
     const adoptionRatio = meta ? meta.adoptionRatio : undefined;
     const dsVersion =
       usage?.dsVersions?.primary ?? dsVersionOverride ?? detectDsVersions(cwd).primary;
-    const next = injectDsStampBar(html, { dsVersion, ratio, adoptionRatio, appVersion });
+    const detectedVersions = usage?.dsVersions ?? detectDsVersions(cwd);
+    const assetVersion = detectedVersions.assetVersion ?? assetVersionOverride;
+    const iconVersion = detectedVersions.iconVersion ?? iconVersionOverride;
+    const next = injectDsStampBar(html, {
+      dsVersion,
+      assetVersion,
+      iconVersion,
+      ratio,
+      adoptionRatio,
+      appVersion,
+    });
     if (next !== html) fs.writeFileSync(outputPath, next, "utf-8");
   } catch {
     // 스탬프 실패는 산출물 자체를 무효화하지 않는다.

@@ -36,6 +36,9 @@ export interface ExternalEntry {
 export interface DsVersions {
   primary: string | null;
   packages: Record<string, string | null>;
+  /** MCPB manifest mirror fields for bundled static asset/icon packages. */
+  assetVersion?: string | null;
+  iconVersion?: string | null;
   /**
    * 버전 출처. `mcp-bundle` = fs 탐지 실패(HTML 목업은 node_modules/package.json 이 없음) 시
    * MCP 가 아는 authoritative 번들 DS 버전으로 채운 경우 — 시트에서 추정/실측 구분용.

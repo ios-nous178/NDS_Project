@@ -1,10 +1,10 @@
 ---
 name: ds-release
 description: >-
-  Nudge DS 패키지를 MCPB 로 릴리즈한다 — Changesets 로 버전 bump 하고, 디자이너/PM/QA 가 읽을 비개발자 톤
-  변경사항(`.release-notes/pending.md`)을 작성해 같은 커밋에 넣고, main push 까지. CI(release-mcpb.yml)가
+  Nudge DS 패키지를 MCPB 로 릴리즈한다 — 선택한 패키지에 Changesets 버전 bump 를 만들고, 디자이너/PM/QA 가 읽을
+  비개발자 톤 변경사항(`.release-notes/pending.md`)을 작성해 같은 커밋에 넣고, main push 까지. CI(release-mcpb.yml)가
   빌드/태그/슬랙 알림을 자동 처리한다. 트리거: "릴리즈 하자", "버전 올리자", "DS 배포해줘", "MCPB 올려줘",
-  "/ds-release", "$ds-release". 단순 커밋/PR 은 이 스킬이 아니다(→ git-pr).
+  "/ds-release", "$ds-release", "/ds-release 0.0.4". 단순 커밋/PR 은 이 스킬이 아니다(→ git-pr).
 ---
 
 # ds-release — DS 패키지 MCPB 릴리즈
@@ -13,14 +13,31 @@ description: >-
 
 DS 패키지는 **Changesets** 로 버저닝한다. 자동화는 `release-mcpb.yml`(CI)이 하지만 **변경 기록(changeset + 슬랙용 release notes)은 사람/Claude 가 남겨야** 한다. 이 스킬은 그 과정을 끝까지 끌고 간다.
 
+## 입력 형태
+
+- `/ds-release` — 변경분을 확인한 뒤 릴리즈 대상 패키지와 bump 레벨을 사용자에게 물어본다.
+- `/ds-release 0.0.4` — 목표 MCPB/root 버전을 0.0.4 로 둔다. 현재 버전과 비교해 patch/minor/major 를 계산하고, 어떤 패키지를 그 릴리즈에 포함할지 사용자에게 확인한다.
+- `/ds-release 0.0.4 react,tokens,mcp` 처럼 패키지 목록이 같이 오면 그 목록을 초안으로 삼되, 실제 변경 파일과 changeset 누락을 대조해 빠진 패키지가 있으면 push 전에 확인한다.
+
+목표 버전이 주어졌더라도 바로 파일을 고치지 말고, 먼저 `git status`, `.changeset/*`, 각 `package.json`, `packages/mcp/manifest.json` 을 확인한다. 목표 버전이 현재 버전보다 낮거나 같은데 새 릴리즈가 필요하다고 보이면 사용자에게 의도를 확인한다.
+
 ## 버전 SSOT (먼저 이해)
 
-- **DS 4개 패키지**(`@nudge-design/{react,tokens,icons,tailwind-preset}`)의 `package.json` version 이 **SSOT**.
-- 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 **미러** — `sync-mcpb-version.mjs` 가 둘을 최대 DS 버전으로 끌어올린다.
+- **MCPB/root 릴리즈 버전 anchor** 는 Changesets fixed 그룹과 같은 DS 코드 패키지(`@nudge-design/{react,tokens,styles,tailwind-preset,html}`)의 `package.json` version 이다.
+- 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 **미러** — `sync-mcpb-version.mjs` 가 둘을 위 DS 코드 패키지의 최대 버전으로 끌어올린다.
 - 루트 미러는 `pack-local-packages.mjs` 가 tarball 파일명에 박는 값이라, sync 빠지면 `pack` 이 의도치 않은 다운그레이드를 만든다 → 빠뜨리지 말 것.
-- `@nudge-design/mcp`(내부)는 버전 SSOT 에선 분리돼 있지만 **이 스킬은 기본으로 함께 bump** 한다 — step 1 changeset 에 `@nudge-design/mcp` 도 항상 포함(보통 DS 4개와 같은 bump 레벨). 의도적으로 빼야 하는 경우에만 사용자에게 확인받고 제외.
+- `@nudge-design/assets`, `@nudge-design/icons` 는 별도 버전 트랙이다. MCPB/root version anchor 에서 제외하고, `packages/mcp/manifest.json` 의 `asset_version` / `icon_version` 에 현재 패키지 버전을 기록한다. 따라서 assets/icons 버전은 MCPB 버전과 달라도 정상이다.
+- `@nudge-design/mcp`(내부)는 버전 SSOT 에선 분리돼 있지만 **MCP 서버 코드/가이드/검증 룰을 고쳤거나 외부 전파 의미가 있으면 함께 bump** 한다. 단순 DS 컴포넌트 변경만이면 사용자 확인 없이 무조건 포함하지 말고, 변경 파일 기준으로 포함 여부를 판단한다.
 - 워크플로우 트리거 경로: `packages/mcp/src/**`, `packages/tokens/src/**`, `packages/react/src/**`, `packages/icons/svg/**`, `packages/mcp/manifest.json`. **단 `manifest.json` version 이 기존 tag 와 같으면 release skip** → step 2 의 자동 동기화가 핵심.
-- CI `pnpm lint` 의 `sync-mcpb-version --check` 가 루트/manifest drift 를 막는다(손으로 어긋나면 빨갛게). `pack-local-packages.mjs` 도 root ↔ DS 4개 일치를 assert.
+- CI `pnpm lint` 의 `sync-mcpb-version --check` 가 루트/manifest drift 와 `asset_version` / `icon_version` drift 를 막는다(손으로 어긋나면 빨갛게). `pack-local-packages.mjs` 도 root ↔ DS 코드 패키지 일치를 assert.
+
+## 릴리즈 대상 선택 규칙
+
+1. `git status --short` 와 최근 커밋/changeset 을 보고 변경 파일을 패키지로 매핑한다.
+2. 사용자에게 릴리즈 대상 패키지를 짧게 확인한다. 기본 추천은 실제 변경된 패키지 + 외부 전파에 필요한 패키지다.
+3. 목표 버전이 주어졌으면 현재 MCPB/root 버전에서 목표 버전까지의 bump 레벨을 계산한다. 예: `0.0.3 -> 0.0.4` 는 patch, `0.0.3 -> 0.1.0` 은 minor.
+4. fixed 그룹(`react`, `tokens`, `styles`, `tailwind-preset`, `html`) 중 하나를 올리면 Changesets 가 그룹 전체를 같은 버전으로 맞춘다. 사용자가 "react 만"이라고 해도 fixed 그룹 특성을 설명하고 진행한다.
+5. assets/icons 를 포함하면 해당 패키지 changeset 을 따로 둔다. MCPB version 과 맞추지 않아도 되며, `pnpm version-packages` 뒤 `sync-mcpb-version.mjs` 가 manifest 의 `asset_version` / `icon_version` 을 맞춘다.
 
 ## 절차
 
@@ -28,13 +45,13 @@ DS 패키지는 **Changesets** 로 버저닝한다. 자동화는 `release-mcpb.y
 # 1. DS 소스 수정 후 변경 기록 (대화형 또는 .changeset/{name}.md 직접 작성)
 pnpm changeset
 #    영향 패키지 / major·minor·patch / 한 줄 요약. → .changeset/{auto-name}.md
-#    ★ @nudge-design/mcp 도 기본 포함 (DS 4개와 같은 bump 레벨). 빼야 하면 사용자 확인 후 제외.
+#    fixed DS 코드 그룹, assets/icons 별도 트랙, mcp 포함 여부를 변경 파일 기준으로 결정한다.
 #    (가이드/원칙만 바꿔도 외부 전파 필요하면 영향 패키지 골라 patch.)
 
 # 2. 누적 changeset 일괄 반영
 pnpm version-packages
-#    → DS 4개 package.json version bump + CHANGELOG.md 갱신
-#    → 후속 자동: sync-mcpb-version.mjs(루트+manifest sync) · sync-version-docs.mjs(docs 버전표)
+#    → 선택 패키지 package.json version bump + CHANGELOG.md 갱신
+#    → 후속 자동: sync-mcpb-version.mjs(루트+manifest/asset_version/icon_version sync) · sync-version-docs.mjs(docs 버전표)
 ```
 
 ### 3. 슬랙용 비개발자 톤 변경사항 — ★ 릴리즈에 항상 포함

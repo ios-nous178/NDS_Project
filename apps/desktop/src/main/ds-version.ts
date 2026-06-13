@@ -8,12 +8,24 @@ import { fileURLToPath } from "node:url";
  *
  * 번들러리스 목업 폴더(node_modules 없음)에선 detectDsVersions 가 비므로, 앱이 동봉한
  * @nudge-design/react 패키지 버전을 진리로 쓴다 — 이게 곧 inline 되는 DS runtime/CSS 의 버전이다.
+ * assets/icons 는 동봉 MCP manifest 의 asset_version/icon_version 을 쓴다.
  * 1회 resolve 후 캐시. 못 찾으면 null(스탬프는 "—" 로 폴백).
  */
-let cached: string | null | undefined;
+export interface BundledDsVersions {
+  dsVersion: string | null;
+  assetVersion: string | null;
+  iconVersion: string | null;
+}
+
+let cached: BundledDsVersions | undefined;
 
 export function resolveBundledDsVersion(): string | null {
+  return resolveBundledDsVersions().dsVersion;
+}
+
+export function resolveBundledDsVersions(): BundledDsVersions {
   if (cached !== undefined) return cached;
+  const manifest = readBundledManifestVersions();
   // 1차: @nudge-design/react 를 resolve (dev/모노레포 — node_modules 심링크가 있을 때).
   try {
     const req = createRequire(import.meta.url);
@@ -24,7 +36,11 @@ export function resolveBundledDsVersion(): string | null {
     const entry = req.resolve("@nudge-design/react");
     const v = readVersionFromAncestors(dirname(entry));
     if (v) {
-      cached = v;
+      cached = {
+        dsVersion: v,
+        assetVersion: manifest?.assetVersion ?? null,
+        iconVersion: manifest?.iconVersion ?? null,
+      };
       return cached;
     }
   } catch {
@@ -33,12 +49,16 @@ export function resolveBundledDsVersion(): string | null {
   }
   // 2차: 동봉된 MCP 번들 manifest.json 의 version (CLAUDE.md SSOT — DS 최대 버전의 미러).
   //      packaged 앱에서 확실히 동봉되는 경로이며, 이게 곧 inline 되는 runtime/CSS 의 버전이다.
-  cached = readBundledManifestVersion() ?? null;
+  cached = {
+    dsVersion: manifest?.dsVersion ?? null,
+    assetVersion: manifest?.assetVersion ?? null,
+    iconVersion: manifest?.iconVersion ?? null,
+  };
   return cached;
 }
 
 /** 동봉 MCP 번들의 manifest.json version 을 packaged / dev 후보 경로에서 찾는다. */
-function readBundledManifestVersion(): string | null {
+function readBundledManifestVersions(): BundledDsVersions | null {
   const candidates: string[] = [];
   const resourcesPath = (process as NodeJS.Process & { resourcesPath?: string }).resourcesPath;
   // packaged: extraResources 로 resources/mcp/ 에 동봉된 번들 manifest.
@@ -55,8 +75,18 @@ function readBundledManifestVersion(): string | null {
   for (const p of candidates) {
     if (!existsSync(p)) continue;
     try {
-      const m = JSON.parse(readFileSync(p, "utf8")) as { version?: string };
-      if (m.version) return m.version;
+      const m = JSON.parse(readFileSync(p, "utf8")) as {
+        version?: string;
+        asset_version?: string;
+        icon_version?: string;
+      };
+      if (m.version || m.asset_version || m.icon_version) {
+        return {
+          dsVersion: m.version ?? null,
+          assetVersion: m.asset_version ?? null,
+          iconVersion: m.icon_version ?? null,
+        };
+      }
     } catch {
       // 손상된 manifest 는 무시하고 다음 후보로.
     }

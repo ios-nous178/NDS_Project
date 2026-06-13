@@ -1,5 +1,5 @@
 import { buildSinglefileHtml, type BuildSinglefileHtmlResult } from "@nudge-design/mockup-core";
-import { resolveBundledDsVersion } from "./ds-version.js";
+import { resolveBundledDsVersions } from "./ds-version.js";
 
 export interface ExportResult {
   build: BuildSinglefileHtmlResult;
@@ -28,6 +28,7 @@ export async function exportMockup(
   workspaceDir: string = projectPath,
   appVersion?: string,
 ): Promise<ExportResult> {
+  const bundledVersions = resolveBundledDsVersions();
   const build = await buildSinglefileHtml({
     cwd: workspaceDir,
     intent: "html",
@@ -36,7 +37,9 @@ export async function exportMockup(
     // 고정 DS 스탬프 바를 공유본에 박는다(하네스 전용). Nudge Studio 버전 + 동봉 DS 버전 노출.
     stampBar: true,
     appVersion,
-    dsVersion: resolveBundledDsVersion() ?? undefined,
+    dsVersion: bundledVersions.dsVersion ?? undefined,
+    assetVersion: bundledVersions.assetVersion ?? undefined,
+    iconVersion: bundledVersions.iconVersion ?? undefined,
   });
 
   let workspaceOutputRel: string | undefined;

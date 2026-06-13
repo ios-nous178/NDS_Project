@@ -10,8 +10,18 @@ import {
 const countOccurrences = (s: string, sub: string): number => s.split(sub).length - 1;
 
 test("renderDsStampBar 은 DS 버전 / NDS% / 앱 버전을 모두 박는다", () => {
-  const bar = renderDsStampBar({ dsVersion: "1.4.2", ratio: 92, appVersion: "0.0.1" });
+  const bar = renderDsStampBar({
+    dsVersion: "1.4.2",
+    assetVersion: "0.2.0",
+    iconVersion: "0.3.0",
+    ratio: 92,
+    appVersion: "0.0.1",
+  });
   assert.match(bar, /v1\.4\.2/);
+  assert.match(bar, /ASSET/);
+  assert.match(bar, /v0\.2\.0/);
+  assert.match(bar, /ICON/);
+  assert.match(bar, /v0\.3\.0/);
   assert.match(bar, /92%/);
   assert.match(bar, /v0\.0\.1/);
   assert.match(bar, /STUDIO/);
@@ -47,6 +57,8 @@ test("adoptionRatio 가 ratio 와 같거나 없으면 단일 '전체%' 로 폴�
 test("앱 버전이 없으면 STUDIO 세그먼트를 생략한다", () => {
   const bar = renderDsStampBar({ dsVersion: "1.4.2", ratio: 50 });
   assert.doesNotMatch(bar, /STUDIO/);
+  assert.doesNotMatch(bar, /ASSET/);
+  assert.doesNotMatch(bar, /ICON/);
   assert.match(bar, /50%/);
 });
 

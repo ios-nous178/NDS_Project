@@ -998,6 +998,8 @@ export const toolHandlers = {
       // HTML 목업은 node_modules/package.json 이 없어 버전 fs 탐지가 null → MCP 가 아는
       // 번들 DS 버전(manifest = 최대 DS 버전 미러)을 fallback 으로 흘려 스탬프/시트 null 차단.
       dsVersion: mcpbManifest?.version,
+      assetVersion: mcpbManifest?.asset_version,
+      iconVersion: mcpbManifest?.icon_version,
     });
     // observability 적재는 registerToolHandlers({ afterCall }) 단일 choke-point 로 이관됨.
     // html intent 빌드는 내부에서 validate + report 까지 자동 실행하므로 report-suppress 카운터에도
@@ -1070,6 +1072,8 @@ export const toolHandlers = {
         dryRun: typed.dryRun,
         // fs 탐지가 null 인 HTML 목업에서 시트에 DS 버전이 빠지던 버그 차단(번들 버전으로 fallback).
         dsVersionFallback: mcpbManifest?.version,
+        assetVersionFallback: mcpbManifest?.asset_version,
+        iconVersionFallback: mcpbManifest?.icon_version,
       });
       noteReportSent();
       extras = { ...(extras ?? {}), report };

@@ -10,7 +10,7 @@ import {
   injectStandaloneRuntime,
   inlineDsAssetReferencesInHtml,
 } from "@nudge-design/mockup-core";
-import { resolveBundledDsVersion } from "./ds-version.js";
+import { resolveBundledDsVersions } from "./ds-version.js";
 
 /**
  * mockup:// — 활성 프로젝트 루트 안의 파일을 iframe 미리보기로 서빙한다.
@@ -114,9 +114,13 @@ export function registerMockupProtocol(): void {
         // NDS% 는 작성자가 쓴 원본 기준 — 주입된 runtime/CSS 가 섞인 html 로 세지 않는다.
         const counts = countHtmlUsage(raw);
         // 동봉 DS 버전(=inline 되는 runtime/CSS 버전)을 우선, 없으면 폴더 기준 자동 감지.
-        const dsVersion = resolveBundledDsVersion() ?? detectDsVersions(dirname(abs)).primary;
+        const bundledVersions = resolveBundledDsVersions();
+        const detectedVersions = detectDsVersions(dirname(abs));
+        const dsVersion = bundledVersions.dsVersion ?? detectedVersions.primary;
         const stamped = injectDsStampBar(html, {
           dsVersion,
+          assetVersion: bundledVersions.assetVersion ?? detectedVersions.assetVersion,
+          iconVersion: bundledVersions.iconVersion ?? detectedVersions.iconVersion,
           ratio: counts.dsRatio,
           appVersion: app.getVersion(),
         });
