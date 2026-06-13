@@ -121,6 +121,17 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 4. `pnpm build --filter @nudge-design/tokens` (의존 패키지가 import 하므로 필수)
 5. ★ `pnpm lint:brand-completeness` — base 시멘틱 leaf 는 4개 브랜드에 **명시 정의 or waiver**(`scripts/brand-completeness-baseline.json`, 사유 필수) 둘 중 하나여야 한다. silent base-fallback(브랜드 화면에 base 파랑이 새는 버그 클래스) 차단 게이트. `--nds-*` 슬롯명 오타(소비처 없는 슬롯)도 함께 검출.
 
+### 브랜드 차이는 토큰으로만 — 컴포넌트에 브랜드 분기 금지 (★)
+
+컴포넌트 스타일은 **브랜드를 모른다**. 색·배경·보더·radius 의 브랜드별 차이는 컴포넌트가 참조하는 토큰 하나(`cv.*` 또는 `--nds-*` 슬롯)를 **브랜드 토큰 파일(`packages/tokens/src/brands/<brand>.ts`)이 값만 덮어서** 컴포넌트로 흘려보낸다. 컴포넌트 `*.ts` 스타일/색 맵에 다음을 박지 않는다:
+
+- ❌ `[data-brand="..."]` 셀렉터로 색·배경·보더를 갈아끼우는 오버라이드 블록 (예: 현재 Snackbar/Modal/Popup/Tooltip 등의 cashwalk-biz 카드 블록 — 마이그레이션 대상). → 해당 슬롯(`--nds-snackbar-*` 등)을 만들고 브랜드 파일에서 값만 override.
+- ❌ `cv.*` 헬퍼를 우회한 raw `var(--semantic-*)` 문자열·하드코딩 hex·타 컴포넌트 토큰 차용 (예: 현재 Chip 색 맵이 raw `var(--semantic-*)` 와 `--semantic-button-text-default`(버튼 토큰)를 칩에 차용 — 마이그레이션 대상). → 자기 컴포넌트 토큰을 `cv.*` 로 참조.
+
+이유: 브랜드 분기가 컴포넌트에 흩어지면 (1) 신규 브랜드 추가 시 전 컴포넌트를 뒤져야 하고 (2) `pnpm lint:brand-completeness` 게이트가 못 잡으며 (3) 한 컴포넌트가 토큰 SSOT 를 우회해 drift 가 샌다.
+
+예외 — 토큰으로 표현 불가한 **구조적** 차이(요소 추가/숨김 등)에 한해 `[data-brand]` 허용. 단 그 안에서도 색·간격·radius 는 반드시 토큰. 기존 위반 인벤토리는 작업 메모리 `token-drift.md` 참고.
+
 ### 가이드 · 패턴 · 원칙만 추가
 
 - 컴포넌트/패턴 본문: `packages/mcp/guides-src/{components,patterns}/<Name>.md` (+ `pnpm --filter @nudge-design/mcp build:guides`) · 원칙: `guides.ts` 의 `DESIGN_PRINCIPLES`
