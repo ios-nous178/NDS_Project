@@ -48,7 +48,7 @@ export const toastStyles = `
     padding: var(--semantic-inset-input) var(--semantic-inset-card-large);
     border-radius: 24px;
     background: var(--nds-toast-bg);
-    color: ${cv.textRole.inverse};
+    color: var(--nds-toast-fg, ${cv.textRole.inverse});
     box-shadow: var(--nds-toast-shadow);
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body3.fontSize}px;

@@ -1,5 +1,5 @@
 import React from "react";
-import { fontFamily, fontWeight, radius, transition } from "@nudge-design/tokens";
+import { cv, fontFamily, fontWeight, radius, transition } from "@nudge-design/tokens";
 
 import { RemoveIcon } from "./internal/RemoveIcon.js";
 
@@ -25,86 +25,93 @@ type ChipColorTokens = {
   border: string;
 };
 
+// cv.* 헬퍼로 통일 (raw var(--semantic-*) + #ffffff fallback 제거 — Button.tsx styleMap 과 동일 규약).
+// 값은 기존과 동일(각 cv.* 가 같은 --semantic-* 로 해석). status fill/border 일부는 전용 토큰 부재로
+// bg/text 토큰을 쓰며, 그 사유는 인라인 주석으로 박제.
 const FILL_COLORS: Record<ChipColor, ChipColorTokens> = {
   brand: {
-    background: "var(--semantic-fill-brand-default)",
-    text: "var(--semantic-button-text-default, #ffffff)",
+    background: cv.fill.brand,
+    // brand fill 위 텍스트 = 버튼 primary 와 동일 대비 토큰(밝은 brand=어두운 글자).
+    // textRole.inverse 직참조 금지 — 캐포비 노랑 fill 위 흰 글자 회귀 방지.
+    text: cv.button.textDefault,
     border: "transparent",
   },
   neutral: {
-    background: "var(--semantic-fill-neutral-default)",
-    text: "var(--semantic-text-inverse-default, #ffffff)",
+    background: cv.fill.neutral,
+    text: cv.textRole.inverse,
     border: "transparent",
   },
   success: {
-    background: "var(--semantic-bg-status-success)",
-    text: "var(--semantic-text-status-success)",
+    // fill-status-success 토큰이 없어 bg-status-success 사용(error/caution 은 fill-status-* 존재).
+    background: cv.surface.statusSuccess,
+    text: cv.textRole.statusSuccess,
     border: "transparent",
   },
   error: {
-    background: "var(--semantic-fill-status-error)",
-    text: "var(--semantic-text-inverse-default, #ffffff)",
+    background: cv.fill.statusError,
+    text: cv.textRole.inverse,
     border: "transparent",
   },
   caution: {
-    background: "var(--semantic-fill-status-caution)",
-    text: "var(--semantic-text-strong-default)",
+    background: cv.fill.statusCaution,
+    text: cv.textRole.strong,
     border: "transparent",
   },
 };
 
 const OUTLINED_COLORS: Record<ChipColor, ChipColorTokens> = {
   brand: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-brand-default)",
-    border: "var(--semantic-border-brand-default)",
+    background: cv.surface.default,
+    text: cv.textRole.brand,
+    border: cv.borderRole.brand,
   },
   neutral: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-normal-default)",
-    border: "var(--semantic-border-normal-default)",
+    background: cv.surface.default,
+    text: cv.textRole.normal,
+    border: cv.borderRole.normal,
   },
   success: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-status-success)",
-    border: "var(--semantic-text-status-success)",
+    background: cv.surface.default,
+    text: cv.textRole.statusSuccess,
+    // border-status-success 토큰이 없어 text-status-success 사용.
+    border: cv.textRole.statusSuccess,
   },
   error: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-status-error)",
-    border: "var(--semantic-border-status-error)",
+    background: cv.surface.default,
+    text: cv.textRole.statusError,
+    border: cv.borderRole.statusError,
   },
   caution: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-status-caution)",
-    border: "var(--semantic-border-status-caution)",
+    background: cv.surface.default,
+    text: cv.textRole.statusCaution,
+    border: cv.borderRole.statusCaution,
   },
 };
 
 const GHOST_COLORS: Record<ChipColor, ChipColorTokens> = {
   brand: {
-    background: "var(--semantic-bg-brand-subtle)",
-    text: "var(--semantic-text-brand-default)",
+    background: cv.surface.brandSubtle,
+    text: cv.textRole.brand,
     border: "transparent",
   },
   neutral: {
-    background: "var(--semantic-bg-surface-subtle)",
-    text: "var(--semantic-text-normal-default)",
+    background: cv.surface.subtle,
+    text: cv.textRole.normal,
     border: "transparent",
   },
   success: {
-    background: "var(--semantic-bg-status-success)",
-    text: "var(--semantic-text-status-success)",
+    background: cv.surface.statusSuccess,
+    text: cv.textRole.statusSuccess,
     border: "transparent",
   },
   error: {
-    background: "var(--semantic-bg-status-error)",
-    text: "var(--semantic-text-status-error)",
+    background: cv.surface.statusError,
+    text: cv.textRole.statusError,
     border: "transparent",
   },
   caution: {
-    background: "var(--semantic-bg-status-caution)",
-    text: "var(--semantic-text-status-caution)",
+    background: cv.surface.statusCaution,
+    text: cv.textRole.statusCaution,
     border: "transparent",
   },
 };
