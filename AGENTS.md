@@ -126,11 +126,34 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 컴포넌트 스타일은 **브랜드를 모른다**. 색·배경·보더·radius 의 브랜드별 차이는 컴포넌트가 참조하는 토큰 하나(`cv.*` 또는 `--nds-*` 슬롯)를 **브랜드 토큰 파일(`packages/tokens/src/brands/<brand>.ts`)이 값만 덮어서** 컴포넌트로 흘려보낸다. 컴포넌트 `*.ts` 스타일/색 맵에 다음을 박지 않는다:
 
 - ❌ `[data-brand="..."]` 셀렉터로 색·배경·보더를 갈아끼우는 오버라이드 블록 (예: 현재 Snackbar/Modal/Popup/Tooltip 등의 cashwalk-biz 카드 블록 — 마이그레이션 대상). → 해당 슬롯(`--nds-snackbar-*` 등)을 만들고 브랜드 파일에서 값만 override.
-- ❌ `cv.*` 헬퍼를 우회한 raw `var(--semantic-*)` 문자열·하드코딩 hex·타 컴포넌트 토큰 차용 (예: 현재 Chip 색 맵이 raw `var(--semantic-*)` 와 `--semantic-button-text-default`(버튼 토큰)를 칩에 차용 — 마이그레이션 대상). → 자기 컴포넌트 토큰을 `cv.*` 로 참조.
+- ❌ `cv.*` 헬퍼를 우회한 raw `var(--semantic-*)` 문자열·하드코딩 hex·타 컴포넌트 토큰 차용. → 자기 컴포넌트 토큰을 `cv.*` 로 참조 (`Button.tsx` styleMap·`Chip.tsx` 색 맵이 모범).
 
 이유: 브랜드 분기가 컴포넌트에 흩어지면 (1) 신규 브랜드 추가 시 전 컴포넌트를 뒤져야 하고 (2) `pnpm lint:brand-completeness` 게이트가 못 잡으며 (3) 한 컴포넌트가 토큰 SSOT 를 우회해 drift 가 샌다.
 
 예외 — 토큰으로 표현 불가한 **구조적** 차이(요소 추가/숨김 등)에 한해 `[data-brand]` 허용. 단 그 안에서도 색·간격·radius 는 반드시 토큰. 기존 위반 인벤토리는 작업 메모리 `token-drift.md` 참고.
+
+#### 색은 슬롯에 넣고 우선순위로 합성 — variant × brand (★ 마이그레이션 패턴)
+
+**원칙: 컴포넌트 CSS 는 색을 "직접" 박지 않는다.** 항상 `--nds-*` 슬롯에 넣고, `var()` 폴백 체인으로 **brand > variant > 기본** 우선순위를 합성한다 — 그래야 컴포넌트가 브랜드·variant 어느 쪽도 모른 채 한 자리에서 합성된다. (`background: var(--semantic-bg-status-info)` 처럼 variant 룰이 색을 직접 박는 옛 패턴은 브랜드가 그 위를 `[data-brand]` cascade 로만 덮을 수 있어 컴포넌트에 브랜드 분기가 새는 원인.)
+
+패턴 (예: Snackbar 배경):
+
+```css
+/* 컴포넌트 root — ① 브랜드 override > ② variant > ③ 기본 */
+background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv.surface.section}));
+/* variant 룰은 background 를 직접 안 박고 ② 슬롯만 set, 값은 글로벌 시멘틱 참조 */
+:where(.nds-snackbar[data-variant="info"]) { --nds-snackbar-variant-bg: var(--semantic-bg-status-info); }
+```
+
+- **① `--nds-{c}-{prop}`** — 브랜드 서피스 override. 브랜드 파일 `components.{c}.{prop}` 가 emit. variant 를 통째로 덮음(예: 캐포비 Snackbar "variant 무시 흰카드"). 평소엔 unset → ②로 폴백.
+- **② `--nds-{c}-variant-{prop}`** — variant 룰이 set. 값은 ③ 글로벌 시멘틱을 참조.
+- **③ 글로벌 시멘틱 `--semantic-*-status-*`** — variant 색의 **브랜드 커스텀 지점**. 브랜드 `semantic.ts` 에서 `--semantic-bg-status-info` 등을 덮으면 그 색을 쓰는 **모든** 컴포넌트(Snackbar·Banner·NoticeAlert…)가 따라간다.
+
+작동 원리: 룰이 전부 `:where()`(특정성 0)라 옛날엔 `[data-brand]` 블록을 **source-order 뒤**에 둬서 variant 를 덮었다. 이를 **`var()` 우선순위 + custom property 상속**으로 대체 — ①(`--nds-snackbar-bg`)이 `[data-brand]`/`:root` 조상에 정의되면 상속돼 var 체인 최우선으로 이기므로, variant 룰의 특정성과 무관하게 브랜드가 이긴다.
+
+**확장(YAGNI)** — "브랜드 X 가 *이 컴포넌트의* info 만 글로벌과 다르게"(예: Banner info ≠ Snackbar info)는 ③(글로벌)으론 안 된다. 그땐 ②를 `var(--nds-snackbar-info-bg, var(--semantic-bg-status-info))` 로 **한 겹 끼우면** 컴포넌트-per-variant 슬롯이 생긴다. **단 실제 요구가 생기기 전엔 만들지 않는다** — 4 variant × N prop × M 컴포넌트로 슬롯 폭발 금지. 캐포비는 ①만 필요하므로 지금은 ①+②③ 만 구현.
+
+**여전히 예외** — "요소 추가/숨김"(예: Input 캐포비 에러 아이콘 `::before` 의 content+mask)은 색·값이 아니라 마크업 차이라 토큰화 불가 → `[data-brand]` 구조적 예외 유지(위 참조).
 
 ### 가이드 · 패턴 · 원칙만 추가
 
