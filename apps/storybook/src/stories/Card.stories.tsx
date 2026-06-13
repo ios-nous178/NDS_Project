@@ -29,16 +29,21 @@ export const Overview: Story = {
   tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-      <div style={{ width: 124 }}>
-        <Card variant="outlined" title="오늘의 명상" description="5분 호흡 훈련" metadata="3분 전" />
+      <div style={{ width: 150 }}>
+        <Card
+          variant="outlined"
+          title="주간 리포트"
+          description="이번 주 활동 요약"
+          metadata="3분 전 업데이트"
+        />
       </div>
-      <div style={{ width: 124 }}>
+      <div style={{ width: 150 }}>
         <Card
           variant="flat"
-          title="주간 리포트"
-          description="감정 변화 확인"
+          title="새 소식"
+          description="업데이트된 내용이 있어요"
           cta={
-            <Button fullWidth size="sm">
+            <Button size="sm" variant="outlined">
               보기
             </Button>
           }

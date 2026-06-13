@@ -48,6 +48,26 @@ type Story = StoryObj<typeof Button>;
 
 export const Playground: Story = {};
 
+/* ─── Overview ─── 갤러리 대표: variant + color 를 2줄 가로로 컴팩트하게(세로 스택 X). */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)", alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
+        <Button variant="solid">Solid</Button>
+        <Button variant="outlined">Outlined</Button>
+        <Button variant="soft">Soft</Button>
+      </div>
+      <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
+        <Button color="primary">Primary</Button>
+        <Button color="secondary">Secondary</Button>
+        <Button color="neutral">Neutral</Button>
+      </div>
+    </div>
+  ),
+};
+
 /* ─── Figma Spec (508:6962 / 171:8385) ─── */
 
 const SPEC_ROWS: Array<{
@@ -148,7 +168,6 @@ export const FigmaSpec: Story = {
 
 export const ColorMatrix: Story = {
   name: "Spec/Color × Variant Matrix",
-  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-wide)" }}>
       {(["primary", "secondary", "neutral"] as const).map((color) => (

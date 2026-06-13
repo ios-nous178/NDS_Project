@@ -26,7 +26,7 @@ const overviewHtml = `
 export const Overview: Story = {
   tags: ["gallery"],
   name: "Overview",
-  render: () => <ContentViewer html={overviewHtml} style={{ maxWidth: 360 }} />,
+  render: () => <ContentViewer html={overviewHtml} style={{ width: 224 }} />,
 };
 
 const articleHtml = `

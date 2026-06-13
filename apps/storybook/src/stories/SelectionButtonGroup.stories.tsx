@@ -22,14 +22,16 @@ type Story = StoryObj;
 function TwoOptionExample() {
   const [value, setValue] = useState<"all" | "unread">("all");
   return (
-    <SelectionButtonGroup
-      options={[
-        { value: "all", label: "전체" },
-        { value: "unread", label: "안 읽음" },
-      ]}
-      value={value}
-      onValueChange={setValue}
-    />
+    <div style={{ width: 240 }}>
+      <SelectionButtonGroup
+        options={[
+          { value: "all", label: "전체" },
+          { value: "unread", label: "안 읽음" },
+        ]}
+        value={value}
+        onValueChange={setValue}
+      />
+    </div>
   );
 }
 
