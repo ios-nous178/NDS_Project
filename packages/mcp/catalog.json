@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T08:04:19.272Z",
+  "generatedAt": "2026-06-13T08:14:13.076Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -11579,6 +11579,14 @@
       ]
     },
     {
+      "name": "--nds-form-section-radius",
+      "value": "16px",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
       "name": "--nds-input-border-color",
       "value": "#DDDDDD",
       "group": "nds",
@@ -11973,6 +11981,14 @@
       }
     },
     {
+      "name": "--nds-toggle-label-active-color",
+      "value": "var(--semantic-text-inverse-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
       "name": "--nds-toggle-thumb-shadow",
       "value": "0 1px 1px 0 rgba(0,0,0,0.24), 0 0 1px 0 rgba(0,0,0,0.12), 0 2.4px 0.8px rgba(0,0,0,0.06), 0 2.4px 6.4px rgba(0,0,0,0.15)",
       "group": "nds",
@@ -11982,13 +11998,15 @@
     },
     {
       "name": "--nds-toggle-track-active-bg",
-      "value": "#48C2C5",
+      "value": "var(--semantic-icon-status-success)",
       "group": "nds",
       "brands": [
+        "cashwalk-biz",
         "geniet",
         "trost"
       ],
       "brandValues": {
+        "geniet": "#48C2C5",
         "trost": "#333333"
       }
     },

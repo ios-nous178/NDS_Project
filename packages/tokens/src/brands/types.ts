@@ -307,13 +307,15 @@ export interface ComponentOverrides {
     handleHeight?: ComponentValue;
     handleColor?: ComponentValue;
   };
-  /** Toggle 트랙 치수·색 + 썸 그림자. 미설정 시 44×24 / borderRole.normal / fill.brand fallback. */
+  /** Toggle 트랙 치수·색 + 썸 그림자 + checked 라벨색. 미설정 시 44×24 / borderRole.normal / fill.brand fallback. */
   toggle?: {
     trackW?: ComponentValue;
     trackH?: ComponentValue;
     trackBg?: ComponentValue;
     trackActiveBg?: ComponentValue;
     thumbShadow?: ComponentValue;
+    /** checked 트랙 위 내장 라벨 색 (`--nds-toggle-label-active-color`). base button.textDefault. */
+    labelActiveColor?: ComponentValue;
   };
   /** Pagination active 페이지 시각 — 런마일은 brand orange 가 아닌 gray800 fill (Figma 120:1234). */
   pagination?: {
@@ -418,6 +420,8 @@ export interface ComponentOverrides {
     closeColor?: ComponentValue;
     closeOpacity?: ComponentValue;
   };
+  /** FormSection admin 카드 radius (`--nds-form-section-radius`). base lg(12) → 캐포비 16. */
+  "form-section"?: { radius?: ComponentValue };
 }
 
 /** 브랜드 테마 전체 정의 */

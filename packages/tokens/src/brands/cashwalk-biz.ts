@@ -290,5 +290,12 @@ export const cashwalkBizTheme: BrandTheme = {
       closeColor: "var(--semantic-icon-normal-default)",
       closeOpacity: "1",
     },
+    // FormSection — admin 카드 radius 16 (base 12, Modal admin 과 동일 cascade 패턴).
+    "form-section": { radius: 16 },
+    // Toggle — admin ON 트랙 초록(status-success) + 초록 위 라벨 흰색. on/off 스위치 관습(켜짐=초록).
+    toggle: {
+      trackActiveBg: "var(--semantic-icon-status-success)",
+      labelActiveColor: "var(--semantic-text-inverse-default)",
+    },
   },
 };

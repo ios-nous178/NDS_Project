@@ -149,21 +149,10 @@ export const toggleStyles = `
   }
 
   :where(.${TG_TRACK_CLASS}[data-checked="true"]) .${TG_INNER_LABEL_CLASS} {
-    color: ${cv.button.textDefault};
+    color: var(--nds-toggle-label-active-color, ${cv.button.textDefault});
   }
 
   :where(.${TG_CLASS}[data-disabled="true"] .${TG_INNER_LABEL_CLASS}) {
     color: ${cv.textRole.disabled};
-  }
-
-  /* ─── 캐포비(cashwalk-biz) — 기본 토글 ON 색은 브랜드 노랑이 아니라 초록.
-     admin on/off 스위치 관습(켜짐=초록). status-success 초록을 ON 트랙 색으로 쓰고,
-     초록 트랙 위 inner-label 은 흰색(검정 button.textDefault 가 초록에서 안 보임).
-     disabled 는 회색 유지(:not([data-disabled])). data-brand cascade — 타 브랜드 무영향. ─── */
-  :where([data-brand="cashwalk-biz"] .${TG_CLASS}:not([data-disabled="true"]) .${TG_TRACK_CLASS}[data-checked="true"]) {
-    background: var(--nds-toggle-track-active-bg, ${cv.iconRole.statusSuccess});
-  }
-  :where([data-brand="cashwalk-biz"] .${TG_TRACK_CLASS}[data-checked="true"]) .${TG_INNER_LABEL_CLASS} {
-    color: ${cv.textRole.inverse};
   }
 `;

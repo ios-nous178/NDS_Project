@@ -51,9 +51,4 @@ export const formSectionStyles = `
     background: ${cv.surface.default};
     box-sizing: border-box;
   }
-
-  /* 캐시워크 for Business admin — 카드 radius 16 (base 12 와 다름, Modal admin 과 동일 cascade 패턴). */
-  :where([data-brand="cashwalk-biz"] .${FS_BODY_CLASS}) {
-    --nds-form-section-radius: 16px;
-  }
 `;
