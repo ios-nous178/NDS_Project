@@ -1140,6 +1140,18 @@
     "notes": "외부 HTML을 그대로 렌더하지 말 것 — 반드시 ContentViewer로 감싼다."
   },
   {
+    "name": "Article",
+    "category": "일반",
+    "status": "implemented",
+    "description": "게시글/공지/FAQ 상세 보기 셸. 제목·메타(Header) + 본문(Body=ContentViewer) + 첨부(Attachments) + 액션(Actions) compound. 앱 로직 0(슬롯 주입).",
+    "storybookTitle": "Components/Display/Article",
+    "docsPath": "/components/article",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "공지/FAQ/게시글 상세 한 건. 목록 카드형은 Card + ListItem 패턴.",
+    "notes": "Body 는 ContentViewer 합성. 좋아요/공유는 Actions 에 LikeButton 등 주입. figma 노드 확정 전(2026-06-13)."
+  },
+  {
     "name": "DataTable",
     "category": "데이터",
     "status": "implemented",
@@ -1247,6 +1259,18 @@
     "figmaNodeId": "3001:50785",
     "usageSummary": "캐포비 admin 의 지역 선택 모달 좌측 트리. value 는 선택된 leaf 값만 담고, '선택한 항목' 요약은 SelectedItemsPanel + SelectedItemRow 로 조립(RegionRow alias 지원).",
     "notes": "value=선택 leaf 값(부모는 파생). indeterminate Checkbox 확장과 한 쌍. 평면 다중선택은 MultiSelect, 즉시 단일선택은 Select. 검색 시 매치 부모 자동 펼침. 스크롤 제한은 --nds-checkbox-tree-max-height."
+  },
+  {
+    "name": "Agreement",
+    "category": "입력",
+    "status": "implemented",
+    "description": "약관 동의 — 전체동의(master) + 필수/선택 항목 cascade. 전체동의는 활성 항목 선택 비율에 따라 checked/indeterminate/unchecked 자동 표시. 필수 배지 + '보기' 링크 슬롯.",
+    "storybookTitle": "Components/Controls/Agreement",
+    "docsPath": "/components/agreement",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "온보딩·회원가입의 약관 동의 영역. value 는 동의된 항목 value 배열, 제출 가능 여부(필수 전체 동의)는 앱이 판정.",
+    "notes": "평면 1-depth 약관 전용 — 계층/검색은 CheckboxTree. react=Root/All/Item compound + flat items API, html=nds-agreement(items/value/all-label). figma 노드 확정 전(2026-06-13)."
   },
   {
     "name": "MultiSelect",
@@ -1453,15 +1477,15 @@
     "notes": "native <table> 기반. 동적 정렬/모바일 카드뷰는 DataTable 사용."
   },
   {
-    "name": "TitleGroup",
+    "name": "Heading",
     "category": "레이아웃",
     "status": "implemented",
-    "description": "헤딩과 서브타이틀을 묶는 표준 타이틀 블록",
-    "storybookTitle": "Components/Layout/TitleGroup",
+    "description": "헤딩 + 보조 설명(description) 표준 블록. level 하나로 헤딩 폰트 + gap/title 토큰이 자동 적용되어 level↔gap 미스매치를 차단. description 없으면 순수 헤딩.",
+    "storybookTitle": "Components/Layout/Heading",
     "docsPath": "",
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "페이지 헤더, 섹션 타이틀, 카드 헤딩, 루틴/상담 시작 블록",
-    "notes": "level 하나로 폰트와 gap/title 토큰을 동기화."
+    "notes": "구 TitleGroup 리네임(subtitle→description). level 하나로 폰트와 gap/title 토큰 동기화, as prop 으로 시각 레벨↔시맨틱 태그 분리."
   }
 ]

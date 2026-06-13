@@ -3,7 +3,9 @@
   "missing": [
     "Accordion",
     "AddressPicker",
+    "Agreement",
     "AmountInput",
+    "Article",
     "Asset",
     "AttachmentItem",
     "AudioPlayer",

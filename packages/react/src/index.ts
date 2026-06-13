@@ -1,5 +1,6 @@
 export * from "./Accordion.js";
 export * from "./Agreement.js";
+export * from "./Article.js";
 export * from "./Asset.js";
 export * from "./Button.js";
 export * from "./AddButton.js";
