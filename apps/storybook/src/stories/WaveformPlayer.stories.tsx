@@ -26,14 +26,16 @@ export const WithPeaks: Story = {
   tags: ["gallery"],
   name: "Recipe/사전 계산된 파형",
   render: () => (
-    <div style={{ width: 320 }}>
-      <WaveformPlayer
-        src={SAMPLE_AUDIO}
-        peaks={[
-          0.3, 0.5, 0.8, 0.6, 0.9, 0.7, 0.4, 0.5, 0.7, 0.6, 0.3, 0.4, 0.5, 0.8, 0.6, 0.5, 0.3, 0.7,
-          0.9, 0.6, 0.4,
-        ]}
-      />
+    <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <div style={{ width: 320 }}>
+        <WaveformPlayer
+          src={SAMPLE_AUDIO}
+          peaks={[
+            0.3, 0.5, 0.8, 0.6, 0.9, 0.7, 0.4, 0.5, 0.7, 0.6, 0.3, 0.4, 0.5, 0.8, 0.6, 0.5, 0.3,
+            0.7, 0.9, 0.6, 0.4,
+          ]}
+        />
+      </div>
     </div>
   ),
 };

@@ -73,11 +73,34 @@ const meta: Meta<typeof Badge> = {
 export default meta;
 type Story = StoryObj<typeof Badge>;
 
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
+      <Badge variant="fill" color="brand">
+        진행 중
+      </Badge>
+      <Badge variant="ghost" color="success">
+        완료
+      </Badge>
+      <Badge variant="line" color="info">
+        공지
+      </Badge>
+      <Badge variant="fill" color="caution">
+        주의
+      </Badge>
+      <Badge variant="fill" color="neutral" shape="pill">
+        태그
+      </Badge>
+    </div>
+  ),
+};
+
 export const Playground: Story = {};
 
 export const StyleMatrix: Story = {
   name: "Spec/Style × Color Matrix",
-  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       {VARIANTS.map((variant) => (

@@ -15,12 +15,10 @@ export const Ratings: Story = {
   name: "Variant/값 · 크기",
   tags: ["gallery"],
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
-      <StarRating value={5} size={20} />
-      <StarRating value={4} size={20} />
-      <StarRating value={3} size={20} />
-      <StarRating value={4} size={20} showValue />
-      <StarRating value={2} size={14} />
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-start" }}>
+      {[1, 2, 3, 4, 5].map((v) => (
+        <StarRating key={v} value={v} size={20} showValue />
+      ))}
     </div>
   ),
 };

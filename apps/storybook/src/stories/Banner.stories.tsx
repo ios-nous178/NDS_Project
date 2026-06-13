@@ -20,6 +20,13 @@ export const Filled: Story = {
     description: "지금 바로 확인해 보세요.",
     actionLabel: "자세히 보기",
   },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 320 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export const Outlined: Story = {

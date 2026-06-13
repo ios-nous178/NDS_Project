@@ -12,6 +12,45 @@ const meta: Meta<typeof MultiStepForm> = {
 export default meta;
 type Story = StoryObj<typeof MultiStepForm>;
 
+export const Overview: Story = {
+  tags: ["gallery"],
+  name: "Overview",
+  render: () => (
+    <div style={{ width: 300 }}>
+      <MultiStepForm
+        indicator="progress"
+        current={1}
+        steps={[
+          { key: "a", title: "시작하기", content: null },
+          {
+            key: "b",
+            title: "정보 입력",
+            description: "간단한 정보만 입력하면 돼요.",
+            content: (
+              <input
+                readOnly
+                value="입력 내용"
+                style={{
+                  width: "100%",
+                  height: 44,
+                  padding: "0 var(--semantic-inset-card)",
+                  borderRadius: 8,
+                  border: "1px solid #ddd",
+                  fontSize: 14,
+                  boxSizing: "border-box",
+                }}
+              />
+            ),
+          },
+          { key: "c", title: "완료", content: null },
+        ]}
+        onSubmit={() => undefined}
+        onCurrentChange={() => undefined}
+      />
+    </div>
+  ),
+};
+
 export const Playground: Story = {
   render: function Render() {
     const [name, setName] = useState("");
@@ -95,7 +134,6 @@ export const Playground: Story = {
 };
 
 export const ProgressIndicator: Story = {
-  tags: ["gallery"],
   name: "Variant/progress 인디케이터 (기본)",
   render: () => (
     <div style={{ width: 480 }}>

@@ -178,16 +178,33 @@ export const Standalone: Story = {
   render: () => <StandaloneTreeDemo />,
 };
 
+/* 갤러리용 컴팩트 트리 (2그룹 · 소수 항목) */
+const COMPACT_NODES: CheckboxTreeNode[] = [
+  {
+    value: "gangwon",
+    label: "강원특별자치도",
+    children: [
+      { value: "gangneung", label: "강릉시" },
+      { value: "donghae", label: "동해시" },
+    ],
+  },
+  {
+    value: "gyeongnam",
+    label: "경상남도",
+    children: [{ value: "changwon", label: "창원시" }],
+  },
+];
+
 export const NoSelectAll: Story = {
   tags: ["gallery"],
   name: "State/전체선택 없음 + 검색 숨김",
   render: () => {
     const Harness = () => {
-      const [value, setValue] = useState<string[]>([]);
+      const [value, setValue] = useState<string[]>(["gangneung"]);
       return (
-        <div style={{ width: 366 }}>
+        <div style={{ width: 248 }}>
           <CheckboxTree
-            nodes={REGIONS}
+            nodes={COMPACT_NODES}
             value={value}
             onValueChange={setValue}
             searchable={false}

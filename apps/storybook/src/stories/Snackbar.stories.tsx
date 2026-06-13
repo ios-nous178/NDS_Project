@@ -29,6 +29,23 @@ const meta: Meta<typeof Snackbar> = {
 export default meta;
 type Story = StoryObj<typeof Snackbar>;
 
+/* ─── Gallery (compact, 대표 인라인 프리뷰) ─── */
+
+/** 카탈로그 갤러리용 — 실제 열린 Snackbar 바(메시지 + 액션)를 인라인 정적 렌더. */
+export const Overview: Story = {
+  tags: ["gallery"],
+  name: "Overview",
+  render: () => (
+    <div style={{ width: 320 }}>
+      <Snackbar
+        title="변경사항이 저장됐어요"
+        actionLabel="되돌리기"
+        onAction={() => {}}
+      />
+    </div>
+  ),
+};
+
 /* ─── Inline (declarative) ─── */
 
 export const Playground: Story = {
@@ -158,7 +175,6 @@ function ManagedActionExample() {
 }
 
 export const ManagedWithAction: Story = {
-  tags: ["gallery"],
   name: "Variant/With Action (되돌리기)",
   render: () => (
     <SnackbarProvider position="bottom" duration={6000}>
@@ -186,7 +202,6 @@ function ManagedErrorActionExample() {
 }
 
 export const ManagedErrorWithAction: Story = {
-  tags: ["gallery"],
   name: "Variant/Error With Action (다시 시도)",
   render: () => (
     <SnackbarProvider position="bottom" duration={6000}>

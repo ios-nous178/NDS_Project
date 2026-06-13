@@ -20,12 +20,12 @@ export default meta;
 type Story = StoryObj;
 
 function TwoOptionExample() {
-  const [value, setValue] = useState<"daily" | "weekly">("daily");
+  const [value, setValue] = useState<"all" | "unread">("all");
   return (
     <SelectionButtonGroup
       options={[
-        { value: "daily", label: "일별" },
-        { value: "weekly", label: "요일별" },
+        { value: "all", label: "전체" },
+        { value: "unread", label: "안 읽음" },
       ]}
       value={value}
       onValueChange={setValue}

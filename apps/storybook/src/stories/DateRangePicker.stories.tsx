@@ -35,9 +35,12 @@ export const WithPresets: Story = {
   tags: ["gallery"],
   name: "Recipe/With Presets",
   render: () => {
-    const [v, setV] = useState<DateRange>({});
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(today.getDate() - 6);
+    const [v, setV] = useState<DateRange>({ from: start, to: today });
     return (
-      <div style={{ width: 520 }}>
+      <div style={{ width: 280 }}>
         <DateRangePicker
           value={v}
           onValueChange={setV}
@@ -52,7 +55,6 @@ export const WithPresets: Story = {
 };
 
 export const Prefilled: Story = {
-  tags: ["gallery"],
   name: "State/Prefilled",
   render: () => {
     const today = new Date();

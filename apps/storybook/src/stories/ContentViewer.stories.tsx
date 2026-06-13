@@ -14,6 +14,21 @@ type Story = StoryObj<typeof ContentViewer>;
 
 const w = (children: React.ReactNode) => <div style={{ maxWidth: 720 }}>{children}</div>;
 
+const overviewHtml = `
+<h3>오늘의 마음 챙김</h3>
+<p>편안한 자리에서 <strong>천천히 호흡</strong>에 집중해보세요. 자세한 안내는 <a href="https://example.com">가이드</a>를 참고하세요.</p>
+<ul>
+  <li>4초간 코로 들이쉬기</li>
+  <li>6초간 입으로 내쉬기</li>
+</ul>
+`;
+
+export const Overview: Story = {
+  tags: ["gallery"],
+  name: "Overview",
+  render: () => <ContentViewer html={overviewHtml} style={{ maxWidth: 360 }} />,
+};
+
 const articleHtml = `
 <h2>오늘의 명상 가이드</h2>
 <p>편안한 자리에 앉아 어깨에 힘을 빼고, <strong>천천히 호흡</strong>에 집중해보세요. 자연스럽게 들어오고 나가는 숨에만 주의를 기울입니다.</p>
@@ -46,7 +61,6 @@ const phqHtml = `
 `;
 
 export const AssessmentExplanation: Story = {
-  tags: ["gallery"],
   name: "Recipe/Assessment Explanation",
   render: () => w(<ContentViewer html={phqHtml} />),
 };
@@ -60,7 +74,6 @@ const dangerousHtml = `
 `;
 
 export const Sanitized: Story = {
-  tags: ["gallery"],
   name: "Recipe/Sanitize Dangerous HTML",
   render: () =>
     w(

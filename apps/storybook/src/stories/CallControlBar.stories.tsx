@@ -37,7 +37,7 @@ export const VideoCall: Story = {
           onMutedChange={setMuted}
           cameraOn={camera}
           onCameraChange={setCamera}
-          onEnd={() => alert("통화 종료")}
+          onEnd={() => undefined}
         />
       </div>
     );
@@ -46,7 +46,6 @@ export const VideoCall: Story = {
 
 export const VoiceCall: Story = {
   name: "Recipe/음성 상담 (스피커)",
-  tags: ["gallery"],
   render: function Render() {
     const [muted, setMuted] = useState(false);
     const [speaker, setSpeaker] = useState(false);

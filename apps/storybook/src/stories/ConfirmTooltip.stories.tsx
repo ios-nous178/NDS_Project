@@ -42,18 +42,54 @@ const meta: Meta<typeof ConfirmTooltip> = {
 export default meta;
 type Story = StoryObj<typeof ConfirmTooltip>;
 
-/* ─── Overview ─── 첫 화면 = 열린 확인 툴팁(클릭 불필요). 실제 nds-confirm-tooltip__* 클래스로 정적 렌더. */
+/* ─── Overview ─── 첫 화면 = 모달(딤) 위에 떠 있는 열린 확인 툴팁. 실제 ConfirmTooltip 을 open 으로 정적 렌더 → tail 포함. */
 export const Overview: Story = {
   name: "Overview",
   tags: ["gallery"],
+  decorators: [],
   render: () => (
-    <div className="nds-confirm-tooltip__content" data-slot="content" style={{ position: "static", margin: "0 auto" }}>
-      <p className="nds-confirm-tooltip__title" data-slot="title">연결을 해제할까요?</p>
-      <p className="nds-confirm-tooltip__desc" data-slot="description" style={{ width: 200 }}>해제하면 다시 연결해야 합니다.</p>
-      <div className="nds-confirm-tooltip__actions" data-slot="actions" data-actions="dual" style={{ width: 200 }}>
-        <button type="button" className="nds-confirm-tooltip__btn nds-confirm-tooltip__btn--cancel">취소</button>
-        <button type="button" className="nds-confirm-tooltip__btn nds-confirm-tooltip__btn--confirm">해제</button>
-      </div>
+    <div
+      data-brand="cashwalk-biz"
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-end",
+        width: 240,
+        height: 200,
+        padding: 16,
+        boxSizing: "border-box",
+        background: "rgba(17, 17, 17, 0.6)",
+        borderRadius: 8,
+      }}
+    >
+      {/* 딤 위에 떠 있는 모달 표면 — 툴팁이 그 위 요소를 anchor */}
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          bottom: 20,
+          transform: "translateX(-50%)",
+          width: 196,
+          height: 84,
+          background: "#fff",
+          borderRadius: 12,
+          boxShadow: "0 12px 32px rgba(0,0,0,0.24)",
+        }}
+        aria-hidden
+      />
+      <ConfirmTooltip
+        open
+        placement="top"
+        actions="dual"
+        bodyWidth={172}
+        title="이 항목을 삭제할까요?"
+        description="삭제하면 다시 되돌릴 수 없습니다."
+        confirmLabel="삭제"
+        cancelLabel="취소"
+      >
+        <span style={{ display: "inline-block", width: 1, height: 1 }} aria-hidden />
+      </ConfirmTooltip>
     </div>
   ),
 };
