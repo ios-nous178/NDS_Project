@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AttachmentItem } from "@nudge-design/react";
 
 const meta: Meta<typeof AttachmentItem> = {
-  title: "Components/Domain/AttachmentItem",
+  title: "Components/Display/AttachmentItem",
   component: AttachmentItem,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
