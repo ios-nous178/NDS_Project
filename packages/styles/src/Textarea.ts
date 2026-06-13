@@ -14,7 +14,7 @@ export const textareaStyles = `
   :where(.${TA_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--semantic-gap-comfortable);
+    gap: var(--semantic-gap-label);
     width: var(--nds-textarea-width, 100%);
     font-family: ${fontFamily.web};
     box-sizing: border-box;

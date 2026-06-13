@@ -33,12 +33,11 @@ export const tpStyles = `
   :where(.${TP_ROOT_CLASS}) {
     display: inline-flex;
     flex-direction: column;
-    gap: ${spacing[8]}px;
+    gap: var(--semantic-gap-label);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
-  /* label↔input 12(=gap 8 + 4), input↔helper 8 — Input 과 동일 (헬퍼 간격 과다 보정) */
-  :where(.${TP_LABEL_CLASS}) { margin-bottom: var(--semantic-gap-tight); }
+  /* label↔input · input↔helper 모두 8 — 단일 root gap(--semantic-gap-label). */
 
   :where(.${TP_ROOT_CLASS}[data-full-width="true"]) { width: 100%; }
 

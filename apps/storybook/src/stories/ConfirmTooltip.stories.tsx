@@ -45,6 +45,7 @@ type Story = StoryObj<typeof ConfirmTooltip>;
 /* ─── Gallery / Open ─── 갤러리 대표 프리뷰. 딤/모달 없이 열린 말풍선 하나만 자연 크기로 노출. */
 export const GalleryOpen: Story = {
   name: "Gallery / Open (단독 말풍선)",
+  tags: ["gallery"],
   render: () => (
     <ConfirmTooltip
       open
@@ -66,7 +67,6 @@ export const GalleryOpen: Story = {
    실제 ConfirmTooltip 을 open 으로 정적 렌더 → tail 포함. */
 export const Overview: Story = {
   name: "Overview / 모달 위 확인 (중복 모달 회피)",
-  tags: ["gallery"],
   decorators: [],
   render: () => (
     <div

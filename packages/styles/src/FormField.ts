@@ -18,7 +18,7 @@ export const formFieldStyles = `
   :where(.${FF_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--semantic-gap-default);
+    gap: var(--semantic-gap-label);
     width: 100%;
     font-family: ${fontFamily.web};
     box-sizing: border-box;

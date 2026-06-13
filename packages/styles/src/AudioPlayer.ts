@@ -144,7 +144,8 @@ export const audioPlayerStyles = `
     width: 40px;
     height: 40px;
     border-radius: ${radius.pill}px;
-    color: ${cv.iconRole.strong};
+    /* skip 버튼은 보조 컨트롤 — play(브랜드)보다 디엠퍼사이즈. iconRole.strong(거의 검정)은 외곽선이 과해 normal 로. */
+    color: ${cv.iconRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default};
   }

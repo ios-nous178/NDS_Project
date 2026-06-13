@@ -23,7 +23,7 @@ export const searchInputStyles = `
   :where(.${SEARCH_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--nds-search-input-label-gap, var(--semantic-gap-comfortable));
+    gap: var(--nds-search-input-label-gap, var(--semantic-gap-label));
     width: var(--nds-search-input-width, 100%);
     font-family: ${fontFamily.web};
     box-sizing: border-box;

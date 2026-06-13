@@ -53,6 +53,7 @@ export const Playground: Story = {
 
 export const Variants: Story = {
   name: "Variant/info success warning error",
+  tags: ["gallery"],
   render: () => (
     <div
       style={{
@@ -60,7 +61,7 @@ export const Variants: Story = {
         flexDirection: "column",
         alignItems: "center",
         gap: "var(--semantic-gap-comfortable)",
-        width: 480,
+        width: 320,
       }}
     >
       <Snackbar variant="info" title="알려드려요" description="상담사 일정이 변경됐어요." />
@@ -318,7 +319,6 @@ function AutoSnackbar({ message }: { message: string }) {
 
 export const PositionInContext: Story = {
   name: "State/노출 위치 (화면 위)",
-  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <PhoneFrame label="하단 중앙 노출">

@@ -24,7 +24,7 @@ export const aiStyles = `
   :where(.${AI_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--semantic-gap-default);
+    gap: var(--semantic-gap-label);
     width: 100%;
     font-family: ${fontFamily.web};
   }

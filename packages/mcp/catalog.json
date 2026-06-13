@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T16:44:19.419Z",
+  "generatedAt": "2026-06-13T17:13:04.347Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10075,6 +10075,11 @@
       "group": "gap"
     },
     {
+      "name": "--gap-label",
+      "value": "var(--semantic-gap-label)",
+      "group": "gap"
+    },
+    {
       "name": "--gap-loose",
       "value": "var(--semantic-gap-loose)",
       "group": "gap"
@@ -12181,6 +12186,11 @@
     {
       "name": "--semantic-gap-default",
       "value": "10px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-label",
+      "value": "8px",
       "group": "semantic"
     },
     {

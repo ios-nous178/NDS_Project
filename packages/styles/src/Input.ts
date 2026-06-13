@@ -32,10 +32,9 @@ export const inputStyles = `
     box-sizing: border-box;
   }
 
-  /* label ↔ wrapper 간격은 label gap, wrapper ↔ helper 간격은 helper gap.
-   * Figma 명세상 두 간격이 다르므로 children에 직접 margin 부여 */
+  /* label↔wrapper = gap-label(8), wrapper↔helper = helper-gap(8). 각 간격을 children margin 으로 직접 부여. */
   :where(.${INPUT_LABEL_CLASS}) + :where(.${INPUT_WRAPPER_CLASS}) {
-    margin-top: var(--nds-input-label-gap, ${spacing[12]}px);
+    margin-top: var(--nds-input-label-gap, var(--semantic-gap-label));
   }
   :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_CLASS}),
   :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_GROUP_CLASS}) {

@@ -88,61 +88,7 @@ export const DataSelectAll: Story = {
   },
 };
 
-/* ─── 동의 화면 (badge + detail + 전체동의) ─── */
-
-const TERMS: CheckboxGroupItem[] = [
-  {
-    value: "service",
-    label: "서비스 이용약관",
-    badge: "[필수]",
-    required: true,
-    detail: "본 약관은 NudgeEAP 멘탈케어 서비스 이용에 관한 권리·의무를 정합니다.",
-  },
-  {
-    value: "privacy",
-    label: "개인정보 수집·이용",
-    badge: "[필수]",
-    required: true,
-    detail: "수집 항목: 이름, 이메일, 휴대폰번호. 목적: 서비스 제공·상담 매칭.",
-  },
-  {
-    value: "sensitive",
-    label: "민감정보(검사 결과) 수집·이용",
-    badge: "[필수]",
-    required: true,
-    detail: "심리검사 결과는 민감정보로 분리 저장되며, 동의 없이 제3자에게 제공되지 않습니다.",
-  },
-  {
-    value: "marketing",
-    label: "마케팅 정보 수신",
-    badge: "[선택]",
-    detail: "프로모션·이벤트 정보를 이메일/문자로 받아보실 수 있어요. 언제든 해지 가능합니다.",
-  },
-];
-
-export const ConsentScreen: Story = {
-  name: "Variant/약관 동의 (pattern:consent)",
-  tags: ["gallery"],
-  render: () => {
-    const Harness = () => {
-      // pre-tick 금지(개인정보보호법) — 초기값 빈 배열
-      const [v, setV] = useState<string[]>([]);
-      return (
-        <div style={{ width: 420 }}>
-          <CheckboxGroup
-            items={TERMS}
-            value={v}
-            onValueChange={setV}
-            selectAll
-            selectAllLabel="전체 동의"
-            expandable
-          />
-        </div>
-      );
-    };
-    return <Harness />;
-  },
-};
+/* 약관/개인정보 동의 화면은 전용 Agreement 컴포넌트로 이관 (badge·detail·전체동의 포함). CheckboxGroup 은 필터/리스트 선택 전용. */
 
 /* ─── Interaction Tests ─── */
 

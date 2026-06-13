@@ -35,6 +35,7 @@ export const gap = {
   comfortable: 12,
   loose: 16,
   wide: 24,
+  label: 8,
 } as const;
 
 export const gapTitle = {

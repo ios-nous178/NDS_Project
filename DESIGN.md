@@ -230,6 +230,7 @@ gap:
   comfortable: 12px # 폼 필드 · 세그먼트
   loose: 16px # 컴포넌트 ↔ 컴포넌트
   wide: 24px # 큰 영역 ↔ 큰 영역
+  label: 8px # ★ 입력 라벨 ↔ 컨트롤 (입력 계열 전체 + FormField top-label 공용 SSOT)
 
 # ── Gap/Title (헤딩 ↔ 서브타이틀, 의도 기반) ──────────────
 # Figma TitleGapGuide 859:5614 · 6 페이지 58건 실측 기반
