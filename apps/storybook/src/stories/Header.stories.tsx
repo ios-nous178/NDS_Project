@@ -112,7 +112,7 @@ export const CompactTwoTier: Story = {
 
 /* ─── Web (옛 WebHeader) ───
  *
- * web variant 의 브랜드 완성형 데모는 각 브랜드 전용 스토리 참조:
- *   · NudgeEAP → "Header/NudgeEAP/*" (WebHeader.NudgeEAP.stories.tsx)
+ * web variant 의 브랜드 완성형 데모는 "Brands/Header" (BrandHeader.stories.tsx) 참조:
+ *   · NudgeEAP → "Brands/Header" 의 NudgeEAP/* 스토리.
  *   · Trost/Geniet → 2단 이상 브랜드 전용 헤더라 단일 tier web variant 와 1:1 매핑 안 됨.
  * 여기서 base 데모를 중복으로 두지 않습니다. */

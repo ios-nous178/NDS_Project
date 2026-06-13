@@ -456,6 +456,7 @@ export const RewardGuideExample: Story = {
 
 export const ConfirmCancelInteraction: Story = {
   name: "Interaction/Confirm And Cancel",
+  tags: ["!dev", "!autodocs"],
   render: (args) => <PopupExample {...args} />,
   args: {
     title: "삭제 확인",
@@ -480,6 +481,7 @@ export const ConfirmCancelInteraction: Story = {
 
 export const AlertDismissInteraction: Story = {
   name: "Interaction/Alert Dismiss",
+  tags: ["!dev", "!autodocs"],
   render: function Render() {
     const [open, setOpen] = useState(false);
 
@@ -512,6 +514,7 @@ export const AlertDismissInteraction: Story = {
 
 export const AccessibilityBehaviorInteraction: Story = {
   name: "Interaction/Accessibility Behavior",
+  tags: ["!dev", "!autodocs"],
   render: (args) => <PopupExample {...args} />,
   args: {
     title: "접근성 확인",
@@ -534,6 +537,7 @@ export const AccessibilityBehaviorInteraction: Story = {
 
 export const EscapeClosesInteraction: Story = {
   name: "Interaction/Escape Closes",
+  tags: ["!dev", "!autodocs"],
   render: (args) => <PopupExample {...args} />,
   args: {
     title: "Escape 테스트",
@@ -556,6 +560,7 @@ export const EscapeClosesInteraction: Story = {
 
 export const FocusReturnInteraction: Story = {
   name: "Interaction/Focus Return To Trigger",
+  tags: ["!dev", "!autodocs"],
   render: function Render() {
     const [open, setOpen] = useState(false);
 
@@ -587,6 +592,7 @@ export const FocusReturnInteraction: Story = {
 
 export const NoMaskCloseInteraction: Story = {
   name: "Interaction/Mask Close Disabled",
+  tags: ["!dev", "!autodocs"],
   render: () => <NoMaskCloseDemo />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

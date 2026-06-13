@@ -1,11 +1,11 @@
 import { Meta, Canvas } from "@storybook/addon-docs/blocks";
 
 import { BrandScope } from "../BrandScope";
-import * as Banner from "./Banner.Geniet.stories";
-import * as Header from "./Header.Geniet.stories";
-import * as Footer from "./Footer.Geniet.stories";
-import * as BottomNav from "./BottomNav.Geniet.stories";
-import * as Icons from "./Icons.Geniet.stories";
+import * as Banner from "./BrandBanner.stories";
+import * as Header from "./BrandHeader.stories";
+import * as Footer from "./BrandFooter.stories";
+import * as BottomNav from "./BrandBottomNav.stories";
+import * as Icons from "./BrandIcons.stories";
 
 <Meta title="Brands/Geniet/개요" />
 
@@ -24,9 +24,9 @@ import * as Icons from "./Icons.Geniet.stories";
 ## Banner
 
 <BrandScope brand="geniet">
-  <Canvas of={Banner.HealthyDeal} />
-  <Canvas of={Banner.FriendInvite} />
-  <Canvas of={Banner.DietRecord} />
+  <Canvas of={Banner.GenietHealthyDeal} />
+  <Canvas of={Banner.GenietFriendInvite} />
+  <Canvas of={Banner.GenietDietRecord} />
 </BrandScope>
 
 ## Footer
@@ -43,4 +43,4 @@ import * as Icons from "./Icons.Geniet.stories";
 
 ## Icons
 
-<Canvas of={Icons.All} />
+<Canvas of={Icons.GenietAll} />

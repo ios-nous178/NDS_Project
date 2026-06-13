@@ -1,11 +1,11 @@
 import { Meta, Canvas } from "@storybook/addon-docs/blocks";
 
 import { BrandScope } from "../BrandScope";
-import * as Banner from "./Banner.Trost.stories";
-import * as Header from "./Header.Trost.stories";
-import * as Footer from "./Footer.Trost.stories";
-import * as BottomNav from "./BottomNav.Trost.stories";
-import * as Icons from "./Icons.Trost.stories";
+import * as Banner from "./BrandBanner.stories";
+import * as Header from "./BrandHeader.stories";
+import * as Footer from "./BrandFooter.stories";
+import * as BottomNav from "./BrandBottomNav.stories";
+import * as Icons from "./BrandIcons.stories";
 
 <Meta title="Brands/Trost/개요" />
 
@@ -25,10 +25,10 @@ import * as Icons from "./Icons.Trost.stories";
 ## Banner
 
 <BrandScope brand="trost">
-  <Canvas of={Banner.AppDownload} />
-  <Canvas of={Banner.CashtalkSubs} />
-  <Canvas of={Banner.AtoZGuide} />
-  <Canvas of={Banner.MobileDownload} />
+  <Canvas of={Banner.TrostAppDownload} />
+  <Canvas of={Banner.TrostCashtalkSubs} />
+  <Canvas of={Banner.TrostAtoZGuide} />
+  <Canvas of={Banner.TrostMobileDownload} />
 </BrandScope>
 
 ## Footer
@@ -48,4 +48,4 @@ import * as Icons from "./Icons.Trost.stories";
 
 ## Icons
 
-<Canvas of={Icons.All} />
+<Canvas of={Icons.TrostAll} />

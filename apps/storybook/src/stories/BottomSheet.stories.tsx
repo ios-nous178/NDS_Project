@@ -573,6 +573,7 @@ export const ShareSheet: Story = {
 
 export const OpenAndCloseInteraction: Story = {
   name: "Interaction/Open And Close",
+  tags: ["!dev", "!autodocs"],
   render: () => <FlatExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -587,6 +588,7 @@ export const OpenAndCloseInteraction: Story = {
 
 export const ListSelectionInteraction: Story = {
   name: "Interaction/List Item Selection",
+  tags: ["!dev", "!autodocs"],
   render: () => <ListSelectionExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -603,6 +605,7 @@ export const ListSelectionInteraction: Story = {
 
 export const EscapeClosesInteraction: Story = {
   name: "Interaction/Escape Closes",
+  tags: ["!dev", "!autodocs"],
   render: () => <FlatExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -617,6 +620,7 @@ export const EscapeClosesInteraction: Story = {
 
 export const CloseButtonAccessibilityInteraction: Story = {
   name: "Interaction/Close Button Accessibility",
+  tags: ["!dev", "!autodocs"],
   render: () => <FlatExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -635,6 +639,7 @@ export const CloseButtonAccessibilityInteraction: Story = {
 
 export const FocusTrapInteraction: Story = {
   name: "Interaction/Focus Trap",
+  tags: ["!dev", "!autodocs"],
   render: () => <CompoundExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -657,6 +662,7 @@ export const FocusTrapInteraction: Story = {
 
 export const FocusReturnEdge: Story = {
   name: "Edge/Focus Return After Close",
+  tags: ["!dev", "!autodocs"],
   render: () => <FlatExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -676,6 +682,7 @@ export const FocusReturnEdge: Story = {
 
 export const MaskCloseDisabledEdge: Story = {
   name: "Edge/Mask Close Disabled Persists",
+  tags: ["!dev", "!autodocs"],
   render: () => <NoHandleNoMaskCloseExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -696,6 +703,7 @@ export const MaskCloseDisabledEdge: Story = {
 
 export const ClosingAnimationCompletes: Story = {
   name: "Edge/Closing Animation Completes",
+  tags: ["!dev", "!autodocs"],
   render: () => <FlatExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -724,6 +732,7 @@ export const ClosingAnimationCompletes: Story = {
 
 export const ScrollLockWhileOpen: Story = {
   name: "Edge/Body Scroll Locked",
+  tags: ["!dev", "!autodocs"],
   render: () => <FlatExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

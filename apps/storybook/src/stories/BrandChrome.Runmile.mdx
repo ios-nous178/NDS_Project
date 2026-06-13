@@ -1,10 +1,10 @@
 import { Meta, Canvas } from "@storybook/addon-docs/blocks";
 
 import { BrandScope } from "../BrandScope";
-import * as Header from "./Header.Runmile.stories";
-import * as Footer from "./Footer.Runmile.stories";
-import * as BottomNav from "./BottomNav.Runmile.stories";
-import * as Icons from "./Icons.Runmile.stories";
+import * as Header from "./BrandHeader.stories";
+import * as Footer from "./BrandFooter.stories";
+import * as BottomNav from "./BrandBottomNav.stories";
+import * as Icons from "./BrandIcons.stories";
 
 <Meta title="Brands/Runmile/개요" />
 
@@ -16,9 +16,9 @@ import * as Icons from "./Icons.Runmile.stories";
 
 <BrandScope brand="runmile">
   <Canvas of={Header.RunmileWebHeaderLoggedOut} />
-  <Canvas of={Header.TitleIcon} />
-  <Canvas of={Header.Logo} />
-  <Canvas of={Header.MenuTitle} />
+  <Canvas of={Header.RunmileTitleIcon} />
+  <Canvas of={Header.RunmileLogo} />
+  <Canvas of={Header.RunmileMenuTitle} />
 </BrandScope>
 
 ## Footer
@@ -36,4 +36,4 @@ import * as Icons from "./Icons.Runmile.stories";
 
 ## Icons
 
-<Canvas of={Icons.All} />
+<Canvas of={Icons.RunmileAll} />
