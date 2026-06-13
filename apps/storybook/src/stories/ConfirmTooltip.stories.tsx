@@ -42,9 +42,30 @@ const meta: Meta<typeof ConfirmTooltip> = {
 export default meta;
 type Story = StoryObj<typeof ConfirmTooltip>;
 
-/* ─── Overview ─── 첫 화면 = 모달(딤) 위에 떠 있는 열린 확인 툴팁. 실제 ConfirmTooltip 을 open 으로 정적 렌더 → tail 포함. */
+/* ─── Gallery / Open ─── 갤러리 대표 프리뷰. 딤/모달 없이 열린 말풍선 하나만 자연 크기로 노출. */
+export const GalleryOpen: Story = {
+  name: "Gallery / Open (단독 말풍선)",
+  render: () => (
+    <ConfirmTooltip
+      open
+      placement="top"
+      actions="dual"
+      title="연결을 해제하시겠습니까?"
+      description="연결을 해제하면 광고에 해당 소재는 더이상 노출되지 않습니다."
+      confirmLabel="해제"
+      cancelLabel="취소"
+    >
+      <Button color="secondary" variant="outlined" size="sm">
+        연결 해제
+      </Button>
+    </ConfirmTooltip>
+  ),
+};
+
+/* ─── Overview ─── 갤러리 대표: 모달(딤) 위에 떠 있는 확인 툴팁 = "두 번째 모달 없이" 모달 위에서 바로 확인받는 용도.
+   실제 ConfirmTooltip 을 open 으로 정적 렌더 → tail 포함. */
 export const Overview: Story = {
-  name: "Overview",
+  name: "Overview / 모달 위 확인 (중복 모달 회피)",
   tags: ["gallery"],
   decorators: [],
   render: () => (
@@ -52,8 +73,8 @@ export const Overview: Story = {
       data-brand="cashwalk-biz"
       style={{
         position: "relative",
-        width: 264,
-        height: 248,
+        width: 300,
+        height: 320,
         borderRadius: 10,
         overflow: "hidden",
         border: "1px solid #ECECEC",
@@ -89,9 +110,9 @@ export const Overview: Story = {
         style={{
           position: "absolute",
           left: "50%",
-          bottom: 16,
+          bottom: 20,
           transform: "translateX(-50%)",
-          width: 196,
+          width: 240,
           background: "#fff",
           borderRadius: 12,
           boxShadow: "0 12px 32px rgba(0,0,0,0.24)",
@@ -110,7 +131,7 @@ export const Overview: Story = {
           open
           placement="top"
           actions="dual"
-          bodyWidth={172}
+          bodyWidth={208}
           title="이 항목을 삭제할까요?"
           description="삭제하면 다시 되돌릴 수 없습니다."
           confirmLabel="삭제"

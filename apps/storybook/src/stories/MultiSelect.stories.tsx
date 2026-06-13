@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { MultiSelect, type MultiSelectOption } from "@nudge-design/react";
+import { MultiSelect, FormField, type MultiSelectOption } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
@@ -101,6 +101,29 @@ export const Prefilled: Story = {
             placeholder="모든 광고"
             searchPlaceholder="광고명으로 검색"
           />
+        </Frame>
+      );
+    };
+    return <Harness />;
+  },
+};
+
+export const WithFormField: Story = {
+  name: "Recipe/FormField 라벨 + 헬퍼",
+  render: () => {
+    const Harness = () => {
+      const [v, setV] = useState<string[]>(["a"]);
+      return (
+        <Frame>
+          <FormField label="대상 광고" helper="리포트에 포함할 광고를 선택하세요">
+            <MultiSelect
+              options={ADS}
+              value={v}
+              onValueChange={setV}
+              placeholder="모든 광고"
+              searchPlaceholder="광고명으로 검색"
+            />
+          </FormField>
         </Frame>
       );
     };

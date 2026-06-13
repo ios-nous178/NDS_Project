@@ -24,6 +24,7 @@ export const Playground: Story = {
           onCountryChange={setCountry}
           value={phone}
           onValueChange={setPhone}
+          helperText="인증번호를 받을 번호를 입력해주세요"
           fullWidth
         />
       </div>

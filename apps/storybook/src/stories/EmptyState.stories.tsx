@@ -112,6 +112,58 @@ export const MinimalMessage: Story = {
   ),
 };
 
+export const StatusVariants: Story = {
+  tags: ["gallery"],
+  name: "State/Status (success·error·info)",
+  render: () => (
+    <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+      <div style={{ width: 240 }}>
+        <EmptyState
+          status="success"
+          title="결제가 완료됐어요"
+          description="이용 내역은 마이페이지에서 확인할 수 있어요."
+          minHeight={220}
+        />
+      </div>
+      <div style={{ width: 240 }}>
+        <EmptyState
+          status="error"
+          title="페이지를 찾을 수 없어요"
+          description="주소가 바뀌었거나 삭제된 페이지예요."
+          minHeight={220}
+        />
+      </div>
+      <div style={{ width: 240 }}>
+        <EmptyState
+          status="info"
+          title="점검 중이에요"
+          description="잠시 후 다시 이용해 주세요."
+          minHeight={220}
+        />
+      </div>
+    </div>
+  ),
+};
+
+export const ResultPage: Story = {
+  name: "State/Result Page (full-height)",
+  render: () => (
+    <div style={{ width: 360 }}>
+      <EmptyState
+        status="success"
+        minHeight="60vh"
+        title="신청이 완료됐어요"
+        description={"담당자 확인 후\n순차적으로 연락드릴게요."}
+        action={
+          <Button variant="solid" size="md">
+            홈으로
+          </Button>
+        }
+      />
+    </div>
+  ),
+};
+
 export const CompoundAPI: Story = {
   name: "Recipe/Compound API",
   render: () => (

@@ -197,7 +197,7 @@
       "platforms": ["mobile", "rn"],
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Keypad/keypad/",
-      "nds": "PinPad",
+      "nds": "",
       "figmaByBrand": {}
     },
     {

@@ -40,7 +40,6 @@ type Story = StoryObj;
 // 열린 토스트 UI 자체를 nds-toast__item / __message 클래스로 인라인 정적 렌더(viewport 는 position:fixed 라 제외).
 export const Overview: Story = {
   name: "Overview",
-  tags: ["gallery"],
   parameters: { layout: "padded" },
   render: () => (
     <div className="nds-toast__item" role="status">
@@ -92,9 +91,8 @@ function ToastFrame({
       <div style={phoneFrame}>
         <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 10 }} aria-hidden>
           <div style={{ height: 12, width: 128, borderRadius: 4, background: "#E8E8E8" }} />
-          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
-          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
-          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
+          <div style={{ height: 56, borderRadius: 10, background: "#F3F4F6" }} />
+          <div style={{ height: 56, borderRadius: 10, background: "#F3F4F6" }} />
         </div>
         <div
           className="nds-toast__viewport"
@@ -112,10 +110,10 @@ function ToastFrame({
 
 export const PositionInContext: Story = {
   name: "State/노출 위치 (화면 위)",
+  tags: ["gallery"],
   render: () => (
-    <div style={{ display: "flex", gap: 32, flexWrap: "wrap", justifyContent: "center" }}>
-      <ToastFrame label="모바일 · 하단 (rounded 24)" position="bottom" message="저장되었습니다" />
-      <ToastFrame label="PC · 상단 (pill)" position="top" message="저장되었습니다" />
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <ToastFrame label="하단 노출 (rounded 24)" position="bottom" message="저장되었습니다" />
     </div>
   ),
 };
@@ -220,8 +218,8 @@ export const ToastStackingLimitEdge: Story = {
 
 const phoneFrame: React.CSSProperties = {
   position: "relative",
-  width: 300,
-  height: 520,
+  width: 260,
+  height: 380,
   borderRadius: 28,
   border: "8px solid #1F2937",
   background: "#FFF",

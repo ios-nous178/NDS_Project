@@ -124,7 +124,7 @@ export const AddressPicker = React.forwardRef<HTMLDivElement, AddressPickerProps
           />
           <Button
             type="button"
-            color="secondary"
+            color="neutral"
             size="field"
             onClick={handleSearch}
             disabled={loading}

@@ -2,7 +2,7 @@
  * <nds-verification-code-input> — DS VerificationCodeInput 의 vanilla Web Component (웹용 단일 필드).
  *
  * 자리별 세그먼트가 아니라 한 줄 박스 한 칸. 숫자만 입력되며 붙여넣기·자동완성(one-time-code) 지원.
- * 높이/둥근모서리는 base Input 토큰 상속. (자리별 PIN 은 <nds-pin-pad>.)
+ * 높이/둥근모서리는 base Input 토큰 상속.
  *
  * 이 컴포넌트는 코드 입력 필드만 책임진다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은
  * 이 필드를 <nds-form-field> + <nds-input-group> 으로 합성한다(타이머는 코드 입력 우측에 겹쳐 배치).
